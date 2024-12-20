@@ -4,12 +4,12 @@
         "beforeBuildCommand": "npm run build",
         "beforeDevCommand": "npm run dev",
         "devPath": "http://localhost:3000",
-        "distDir": "../src",
+        "distDir": "../out",
         "withGlobalTauri": true
     },
     "package": {
         "productName": "Steam Game Idler",
-        "version": "1.5.31"
+        "version": "1.6.0-1"
     },
     "tauri": {
         "allowlist": {
