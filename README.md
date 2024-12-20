@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./assets/logo.png" width='80' alt='Click for larger image' />
+  <img src="./public/logo.png" width='80' alt='Click for larger image' />
   <h1>Steam Game Idler</h1>
   <p>Farm trading cards, unlock achievements, and boost playtime for any game in your Steam library, effortlessly.</p>
 <p>
@@ -10,7 +10,7 @@
 </p>
 </div>
 <div align="center" style="margin-top: 10px;">
-  <img src="./assets/example.png" width='700' alt='Click for larger image' />
+  <img src="./public/example.png" width='700' alt='Click for larger image' />
 </div>
 
 # Download

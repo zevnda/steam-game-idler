@@ -80,7 +80,7 @@ pub async fn get_file_path() -> Result<PathBuf, String> {
 }
 
 #[tauri::command]
-pub async fn log_event(message: String, app_handle: tauri::AppHandle) -> Result<(), String> {
+pub fn log_event(message: String, app_handle: tauri::AppHandle) -> Result<(), String> {
     let app_data_dir = app_handle.path_resolver().app_data_dir()
         .ok_or("Failed to get app data directory")?;
     let app_specific_dir = app_data_dir.parent().unwrap_or(&app_data_dir).join(APP_FOLDER_NAME);
@@ -114,6 +114,21 @@ pub async fn log_event(message: String, app_handle: tauri::AppHandle) -> Result<
         writeln!(file, "{}", line)
             .map_err(|e| format!("Failed to write to log file: {}", e))?;
     }
+    Ok(())
+}
+
+#[tauri::command]
+pub fn clear_log_file(app_handle: tauri::AppHandle) -> Result<(), String> {
+    let app_data_dir = app_handle.path_resolver().app_data_dir()
+        .ok_or("Failed to get app data directory")?;
+    let app_specific_dir = app_data_dir.parent().unwrap_or(&app_data_dir).join(APP_FOLDER_NAME);
+    let log_file_path = app_specific_dir.join("log.txt");
+    let file = OpenOptions::new()
+        .write(true)
+        .open(&log_file_path)
+        .map_err(|e| format!("Failed to open log file: {}", e))?;
+    file.set_len(0)
+        .map_err(|e| format!("Failed to truncate file: {}", e))?;
     Ok(())
 }
 

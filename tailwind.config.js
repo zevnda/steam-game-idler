@@ -3,8 +3,8 @@ import { nextui } from "@nextui-org/react";
 /** @type {import('tailwindcss').Config} */
 module.exports = {
     content: [
-        './pages/**/*.{js,ts,jsx,tsx,mdx}',
-        './components/**/*.{js,ts,jsx,tsx,mdx}',
+        './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
+        './src/components/**/*.{js,ts,jsx,tsx,mdx}',
         './node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}'
     ],
     theme: {
@@ -35,7 +35,7 @@ module.exports = {
                     'sgi': '#137eb5',
                     'offwhite': '#ffffff',
                     'sidebar': '#1a8fcb',
-                    'titlebar': '#efefef',
+                    'titlebar': '#ffffff',
                     'titletext': '#0a0a0a',
                     'titlehover': '#dddddd',
                     'titleborder': '#00000015',
@@ -56,11 +56,15 @@ module.exports = {
                     'modalbody': '#fafafa',
                     'modalfooter': '#ffffff',
                     primary: {
-                        DEFAULT: '#000',
+                        DEFAULT: '#1a8fcb',
                         foreground: '#fff'
                     },
                     secondary: {
                         DEFAULT: '#137eb5',
+                    },
+                    danger: {
+                        DEFAULT: '#ef4444',
+                        foreground: '#fff'
                     }
                 }
             },
@@ -68,12 +72,12 @@ module.exports = {
                 colors: {
                     'sgi': '#137eb5',
                     'offwhite': '#ebebeb',
-                    'sidebar': '#1a8fcb',
-                    'titlebar': '#1c1c1c',
+                    'sidebar': '#1c1c1c',
+                    'titlebar': '#141414',
                     'titletext': '#efefef',
                     'titlehover': '#2b2b2b',
                     'titleborder': '#ffffff15',
-                    'base': '#141414',
+                    'base': '#0a0a0a',
                     'container': '#161616',
                     'containerhover': '#252525',
                     'footer': '#0f0f0f',
@@ -90,11 +94,15 @@ module.exports = {
                     'modalbody': '#171717',
                     'modalfooter': '#121212',
                     primary: {
-                        DEFAULT: '#fff',
+                        DEFAULT: '#ebebeb',
                         foreground: '#000'
                     },
                     secondary: {
                         DEFAULT: '#137eb5',
+                    },
+                    danger: {
+                        DEFAULT: '#ef4444',
+                        foreground: '#fff'
                     }
                 }
             },

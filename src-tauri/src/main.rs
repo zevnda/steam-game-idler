@@ -104,6 +104,7 @@ fn main() {
             lock_achievement,
             update_stat,
             log_event,
+            clear_log_file,
             get_app_log_dir,
             check_steam_status,
             get_user_summary,

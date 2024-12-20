@@ -1,0 +1,47 @@
+import React, { useEffect, useState } from 'react';
+import { useTheme } from 'next-themes';
+import { LuMoonStar } from 'react-icons/lu';
+import { LuSun } from 'react-icons/lu';
+import { HiMiniComputerDesktop } from 'react-icons/hi2';
+import { Divider } from '@nextui-org/react';
+
+export default function ThemeSwitch() {
+    const { theme, setTheme } = useTheme();
+    const [mounted, setMounted] = useState(false);
+
+    const handleClick = () => {
+        if (theme === 'dark') {
+            setTheme('light');
+        } else if (theme === 'light') {
+            setTheme('system');
+        } else {
+            setTheme('dark');
+        }
+    };
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    if (!mounted) return null;
+
+    const renderIcon = () => {
+        if (theme === 'dark') {
+            return <LuMoonStar fontSize={18} />;
+        } else if (theme === 'light') {
+            return <LuSun fontSize={18} />;
+        } else {
+            return <HiMiniComputerDesktop fontSize={18} />;
+        }
+    };
+
+    return (
+        <React.Fragment>
+            <div className='flex justify-center items-center cursor-pointer w-[42px]' onClick={handleClick}>
+                <div className='flex items-center p-2 hover:bg-titlehover rounded-full'>
+                    {renderIcon()}
+                </div>
+            </div>
+        </React.Fragment>
+    );
+}
