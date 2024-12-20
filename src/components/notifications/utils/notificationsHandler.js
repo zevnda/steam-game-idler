@@ -3,7 +3,7 @@ export const fetchNotifications = async (setNotifications, setUnseenNotification
     const now = new Date().getTime();
 
     if (cooldownTimestamp && now < cooldownTimestamp) {
-        const cachedNotifications = JSON.parse(sessionStorage.getItem('cachedNotifications')) || [];
+        const cachedNotifications = JSON.parse(localStorage.getItem('cachedNotifications')) || [];
         setNotifications(cachedNotifications);
         checkUnseenNotifications(cachedNotifications, setUnseenNotifications);
         return;
@@ -14,7 +14,7 @@ export const fetchNotifications = async (setNotifications, setUnseenNotification
         const data = await response.json();
         setNotifications(data.slice(0, 10));
         checkUnseenNotifications(data.slice(0, 10), setUnseenNotifications);
-        sessionStorage.setItem('cachedNotifications', JSON.stringify(data.slice(0, 10)));
+        localStorage.setItem('cachedNotifications', JSON.stringify(data.slice(0, 10)));
         localStorage.setItem('notificationsCooldown', now + 30 * 60 * 1000);
     } catch (error) {
         console.error('Error fetching notifications:', error);
