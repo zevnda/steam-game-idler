@@ -1,5 +1,4 @@
 import React from 'react';
-import Image from 'next/image';
 import ThemeSwitch from './theme/ThemeSwitch';
 import { Divider, Input } from '@nextui-org/react';
 import { BiSolidLeaf } from 'react-icons/bi';
@@ -7,11 +6,10 @@ import { HiMiniMinus } from 'react-icons/hi2';
 import { BiWindows } from 'react-icons/bi';
 import { IoClose } from 'react-icons/io5';
 import { RiSearchLine } from 'react-icons/ri';
-import ExtLink from './ExtLink';
 import useHeader from '../hooks/useHeader';
 import Notifications from '../../notifications/components/Notifications';
 
-export default function Header({ userSummary, inputValue, setInputValue, setIsQuery }) {
+export default function Header({ inputValue, setInputValue, setIsQuery }) {
     const {
         windowMinimize,
         windowToggleMaximize,

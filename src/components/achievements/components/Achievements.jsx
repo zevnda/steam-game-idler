@@ -10,7 +10,6 @@ import useAchievements from '../hooks/useAchievements';
 export default function Achievements({ steamId, appId, appName, setShowAchievements }) {
     const {
         isLoading,
-        isSorted,
         setIsSorted,
         inputValue,
         setInputValue,

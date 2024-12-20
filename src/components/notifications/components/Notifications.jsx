@@ -1,10 +1,9 @@
 import React from 'react';
-import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from '@nextui-org/react';
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from '@nextui-org/react';
 import { IoMdNotificationsOutline } from 'react-icons/io';
-import { useNotifications } from '../hooks/notificationsHooks';
-import { IoCheckmark, IoClose } from 'react-icons/io5';
-import { BsDot } from 'react-icons/bs';
-import { GoDotFill } from "react-icons/go";
+import { useNotifications } from '../hooks/useNotifications';
+import { IoCheckmark } from 'react-icons/io5';
+import { GoDotFill } from 'react-icons/go';
 
 export default function Notifications() {
     const {
@@ -15,7 +14,6 @@ export default function Notifications() {
         setUnseenNotifications,
         dropdownRef,
         markAsSeen,
-        markAllAsSeen,
         handleOpenUrl
     } = useNotifications();
 
@@ -66,10 +64,10 @@ export default function Notifications() {
                                     </div>
                                 )}
                                 <div className='flex flex-col gap-1 max-w-[95%] my-1'>
-                                    <p className={`truncate ${unseenNotifications.some(unseen => unseen.id === notification.id) ? 'font-bold' : 'font-normal'}`}>
+                                    <p className='truncate'>
                                         {notification.title}
                                     </p>
-                                    <p className={`text-xs truncate ${unseenNotifications.some(unseen => unseen.id === notification.id) ? 'font-bold' : 'font-normal'}`}>
+                                    <p className='truncate'>
                                         {notification.message}
                                     </p>
                                 </div>

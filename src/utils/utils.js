@@ -1,12 +1,14 @@
-import moment from "moment";
+import moment from 'moment';
 import { invoke } from '@tauri-apps/api/tauri';
 import { getVersion } from '@tauri-apps/api/app';
-import { Time } from "@internationalized/date";
+import { Time } from '@internationalized/date';
 import { isPermissionGranted, requestPermission, sendNotification } from '@tauri-apps/api/notification';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
+// eslint-disable-next-line no-unused-vars
 let idleCounter = 0;
+// eslint-disable-next-line no-unused-vars
 let achievementCounter = 0;
 let antiAwayInterval = null;
 
@@ -62,7 +64,7 @@ export async function toggleAchievement(appId, achievementId) {
             logEvent(`[Achievement Unlocker] Unlocked/locked ${achievementId} (${appId})`);
             return true;
         } else {
-            logEvent(`[Error] [Achievement Unlocker] Steam is not running`);
+            logEvent('[Error] [Achievement Unlocker] Steam is not running');
             return { error: 'Steam is not running' };
         }
     } catch (error) {
@@ -89,7 +91,7 @@ export async function unlockAchievement(appId, achievementId) {
             updateMongoStats('achievement');
             logEvent(`[Achievement Unlocker] Unlocked ${achievementId} (${appId})`);
         } else {
-            logEvent(`[Error] [Achievement Unlocker] Steam is not running`);
+            logEvent('[Error] [Achievement Unlocker] Steam is not running');
         }
     } catch (error) {
         toast.error(`Error in (unlockAchievement) util: ${error?.message || error}`);
@@ -112,7 +114,7 @@ export async function lockAchievement(appId, achievementId) {
             });
             logEvent(`[Achievement Unlocker] Locked ${achievementId} (${appId})`);
         } else {
-            logEvent(`[Error] [Achievement Unlocker] Steam is not running`);
+            logEvent('[Error] [Achievement Unlocker] Steam is not running');
         }
     } catch (error) {
         toast.error(`Error in (lockAchievement) util: ${error?.message || error}`);
@@ -137,7 +139,7 @@ export async function updateStat(appId, statName, newValue) {
             logEvent(`[Achievement Unlocker] Statistic updated ${statName} (${appId}) with value ${newValue}`);
             return true;
         } else {
-            logEvent(`[Error] [Achievement Unlocker] Steam is not running`);
+            logEvent('[Error] [Achievement Unlocker] Steam is not running');
             return { error: 'Steam is not running' };
         }
     } catch (error) {
