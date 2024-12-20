@@ -12,7 +12,7 @@ export default function UpdateScreen({ updateManifest }) {
     return (
         <React.Fragment>
             <div className='flex justify-between items-center w-screen h-[62px] bg-titlebar' data-tauri-drag-region>
-                <div className='flex items-center gap-1 px-2 bg-sgi dark:bg-[#181818] h-full w-[62px]'>
+                <div className='flex items-center gap-1 px-2 bg-titlebar h-full w-[62px]'>
                     <BiSolidLeaf className='text-offwhite' fontSize={40} />
                 </div>
                 <div className='flex justify-center items-center h-full ml-2'>

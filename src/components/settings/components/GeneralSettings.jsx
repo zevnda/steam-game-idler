@@ -25,7 +25,7 @@ export default function GeneralSettings({ userSummary, settings, setSettings }) 
                     <p className='text-xs text-neutral-400 mb-0.5'>
                         Logged in as
                     </p>
-                    <div className='border border-border rounded hover:bg-input'>
+                    <div className='border border-border rounded bg-input hover:bg-titlebar dark:bg-[#131313] dark:hover:bg-[#171717]'>
                         <ExtLink href={`https://steamcommunity.com/profiles/${userSummary.steamId}`}>
                             <div className='flex items-center gap-2 h-full p-2'>
                                 <Image src={userSummary.avatar} height={40} width={40} alt='user avatar' className='w-[40px] h-[40px] rounded-full' />

@@ -58,7 +58,7 @@ export default function PageHeader({ steamId, setActivePage, sortStyle, setSortS
                         classNames={{
                             listbox: ['p-0'],
                             value: ['text-xs'],
-                            trigger: ['bg-input border border-inputborder data-[hover=true]:!bg-titlebar data-[open=true]:!bg-titlebar duration-100 rounded'],
+                            trigger: ['bg-titlebar border border-border data-[hover=true]:!bg-inputborder data-[open=true]:!bg-titlebar duration-100 rounded'],
                             popoverContent: ['bg-base border border-border rounded justify-start'],
                             listboxWrapper: ['max-h-[270px]']
                         }}

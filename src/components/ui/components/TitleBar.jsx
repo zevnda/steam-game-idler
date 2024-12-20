@@ -5,6 +5,7 @@ import { HiMiniMinus } from 'react-icons/hi2';
 import { BiWindows } from 'react-icons/bi';
 import { IoClose } from 'react-icons/io5';
 import useTitleBar from '../hooks/useTitleBar';
+import { Divider } from '@nextui-org/react';
 
 export default function TitleBar() {
     const { windowMinimize, windowToggleMaximize, windowClose } = useTitleBar();
@@ -22,7 +23,9 @@ export default function TitleBar() {
                             <ThemeSwitch />
                         </div>
 
-                        <div className='flex justify-center items-center h-full ml-2'>
+                        <Divider className='w-[1px] h-full bg-titleborder mx-2' />
+
+                        <div className='flex justify-center items-center h-full'>
                             <div className='flex justify-center items-center hover:bg-titlehover w-[32px] h-full cursor-pointer' onClick={windowMinimize}>
                                 <HiMiniMinus fontSize={20} />
                             </div>

@@ -3,6 +3,7 @@ import { logEvent } from '@/src/utils/utils';
 
 export const fetchAchievementData = async (steamId, appId) => {
     try {
+        console.log('testing');
         const apiKey = localStorage.getItem('apiKey');
         const res = await invoke('get_achievement_data', { steamId: steamId, appId: appId.toString(), apiKey: apiKey });
         const achievementList = res.schema.game?.availableGameStats?.achievements || [];

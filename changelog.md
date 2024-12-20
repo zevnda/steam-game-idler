@@ -7,7 +7,6 @@
 > This release will not receive automatic updates. If a newer beta version becomes available you will need to install it manually.
 
 ## Changelog
-- Major refactor of all components
-  - Main concern here is making sure `card farming` and `achievement unlocker` function as intended as these are the hardest things to test on my own
-- Some backend improvements to speed things up
-- Miscellaneous UI changes and improvements
+- Fixed an error when searching in the `achievements list`
+- Fixed some `div` spacing
+- Other misc styling 

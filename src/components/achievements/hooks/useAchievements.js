@@ -7,6 +7,7 @@ export default function useAchievements(steamId, appId) {
     const [isSorted, setIsSorted] = useState(false);
     const [inputValue, setInputValue] = useState('');
     const [achievementList, setAchievementList] = useState([]);
+    const [originalAchievementList, setOriginalAchievementList] = useState([]);
     const [statisticsList, setStatisticsList] = useState([]);
     const [userGameStats, setUserGameStats] = useState({});
     const [gameAchievementsPercentages, setGameAchievementsPercentages] = useState([]);
@@ -16,25 +17,6 @@ export default function useAchievements(steamId, appId) {
     const [currentTab, setCurrentTab] = useState(null);
     const [initialStatValues, setInitialStatValues] = useState({});
     const [newStatValues, setNewStatValues] = useState({});
-
-    useEffect(() => {
-        const getAchievementData = async () => {
-            try {
-                const data = await fetchAchievementData(steamId, appId);
-                setAchievementList(data.achievementList);
-                setStatisticsList(data.statisticsList);
-                setUserGameStats(data.userGameStats);
-                setGameAchievementsPercentages(data.gameAchievementsPercentages);
-                setAchievementsUnavailable(data.achievementsUnavailable);
-                setStatisticsUnavailable(data.statisticsUnavailable);
-                setIsLoading(false);
-            } catch (error) {
-                toast.error(`Error in (getAchievementData): ${error?.message}`);
-                console.error('Error in (getAchievementData):', error);
-            }
-        };
-        getAchievementData();
-    }, [steamId, appId]);
 
     const userGameAchievementsMap = new Map();
     if (userGameStats?.achievements) {
@@ -53,14 +35,40 @@ export default function useAchievements(steamId, appId) {
     const percentageMap = new Map();
     gameAchievementsPercentages.forEach(item => percentageMap.set(item.name, item.percent));
 
-    if (!isSorted && achievementList && achievementList.length > 0) {
-        setAchievementList(sortAchievements(achievementList, percentageMap));
-        setIsSorted(true);
-    }
+    useEffect(() => {
+        const getAchievementData = async () => {
+            try {
+                const data = await fetchAchievementData(steamId, appId);
+                setAchievementList(data.achievementList);
+                setOriginalAchievementList(data.achievementList);
+                setStatisticsList(data.statisticsList);
+                setUserGameStats(data.userGameStats);
+                setGameAchievementsPercentages(data.gameAchievementsPercentages);
+                setAchievementsUnavailable(data.achievementsUnavailable);
+                setStatisticsUnavailable(data.statisticsUnavailable);
+                setIsLoading(false);
+            } catch (error) {
+                toast.error(`Error in (getAchievementData): ${error?.message}`);
+                console.error('Error in (getAchievementData):', error);
+            }
+        };
+        getAchievementData();
+    }, [steamId, appId]);
 
-    if (inputValue.length > 0) {
-        setAchievementList(filterAchievements(achievementList, inputValue));
-    }
+    useEffect(() => {
+        if (!isSorted && achievementList.length > 0) {
+            setAchievementList(sortAchievements(achievementList, percentageMap));
+            setIsSorted(true);
+        }
+    }, [isSorted, achievementList, percentageMap]);
+
+    useEffect(() => {
+        if (inputValue.length > 0) {
+            setAchievementList(filterAchievements(originalAchievementList, inputValue));
+        } else {
+            setAchievementList(originalAchievementList);
+        }
+    }, [inputValue, originalAchievementList]);
 
     return {
         isLoading,

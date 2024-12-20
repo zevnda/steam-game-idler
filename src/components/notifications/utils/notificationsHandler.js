@@ -10,7 +10,9 @@ export const fetchNotifications = async (setNotifications, setUnseenNotification
     }
 
     try {
-        const response = await fetch('https://raw.githubusercontent.com/zevnda/steam-game-idler/refs/heads/main/notifications.json');
+        const response = await fetch(
+            'https://gist.githubusercontent.com/zevnda/c190947d791eee6744c4ca2cf24494c9/raw/11aa1057e3be4116880e79c726b13d3b60cf495a/notifications.json'
+        );
         const data = await response.json();
         setNotifications(data.slice(0, 10));
         checkUnseenNotifications(data.slice(0, 10), setUnseenNotifications);
