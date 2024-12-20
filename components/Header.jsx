@@ -9,6 +9,7 @@ import { IoClose } from 'react-icons/io5';
 import { RiSearchLine } from 'react-icons/ri';
 import ExtLink from './ExtLink';
 import { isPermissionGranted, requestPermission, sendNotification } from '@tauri-apps/api/notification';
+import Notifications from './notifications/components/Notifications';
 
 export default function Header({ userSummary, inputValue, setInputValue, setIsQuery }) {
     const [appWindow, setAppWindow] = useState();
@@ -89,6 +90,9 @@ export default function Header({ userSummary, inputValue, setInputValue, setIsQu
                                 onClear={() => { setInputValue(''); }}
                             />
                         </div>
+
+                        <Notifications />
+
                         <Divider className='w-[1px] h-full bg-titleborder mx-2' />
 
                         <div className='flex items-center gap-2 h-full'>

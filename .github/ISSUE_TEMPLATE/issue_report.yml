@@ -9,7 +9,7 @@ body:
     attributes:
       label: Describe the issue
       description: A clear and descriptive overview of your issue
-      placeholder: Feel free to include any screenshots or videos that demonstrate your issue 
+      placeholder: Feel free to include any screenshots or videos that demonstrate your issue
     validations:
       required: true
 
@@ -19,17 +19,18 @@ body:
       label: Steps to reproduce the issue
       description: Provide detailed steps to reproduce your issue
       placeholder: Leave this blank if you are unsure
-      
+
   - type: dropdown
     id: sgi-branch
     attributes:
       label: Which branch of SGI?
       options:
         - "Base"
+        - "Beta"
         - "CLI + WebUI"
     validations:
       required: true
-      
+
   - type: dropdown
     id: version
     attributes:

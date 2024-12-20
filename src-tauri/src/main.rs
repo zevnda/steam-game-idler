@@ -119,6 +119,7 @@ fn main() {
             get_free_games,
             anti_away,
             check_process_by_game_id,
+            clear_log_file
         ])
         .build(tauri::generate_context!())
         .expect("error while building tauri application")

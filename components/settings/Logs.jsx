@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { invoke } from '@tauri-apps/api/tauri';
 import { logEvent } from '@/utils/utils';
 import { toast } from 'react-toastify';
+import { Button } from '@nextui-org/react';
 
 export default function Logs() {
     const [logs, setLogs] = useState([]);
@@ -41,13 +42,37 @@ export default function Logs() {
         }
     };
 
+    const handleClearLogs = async () => {
+        try {
+            await invoke('clear_log_file');
+            toast.success('[Logs] Logs cleared successfully');
+            logEvent('[Settings - Logs] Logs cleared successfully');
+        } catch (error) {
+            toast.error(`Error in (handleClearLogs): ${error?.message || error}`);
+            console.error('Error in (handleClearLogs):', error);
+            logEvent(`[Error] in (handleClearLogs): ${error}`);
+        }
+    };
+
     return (
         <React.Fragment>
             <div className='p-2'>
-                <div className='mb-2'>
-                    <p className='text-xs font-mono text-blue-400 cursor-pointer w-fit' onClick={handleOpenLogFile}>
+                <div className='flex gap-2 w-full mb-4'>
+                    <Button
+                        size='sm'
+                        className='font-semibold rounded-sm bg-sgi text-offwhite'
+                        onClick={() => handleOpenLogFile(logPath)}
+                    >
                         Open in File Explorer
-                    </p>
+                    </Button>
+                    <Button
+                        size='sm'
+                        className='font-semibold rounded-sm bg-red-400 text-offwhite'
+                        onClick={handleClearLogs}
+                    >
+                        Clear logs
+                    </Button>
+
                 </div>
                 <div className='bg-container border border-border font-mono text-xs rounded min-h-[200px] max-h-[calc(100vh-260px)] overflow-y-auto'>
                     <table className='w-full border-collapse'>
