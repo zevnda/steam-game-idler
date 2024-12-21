@@ -1,20 +1,17 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+import { AppContext } from '../../layouts/components/AppContext';
 
-export default function usePageHeader({ setShowAchievements, setInputValue }) {
+export default function usePageHeader() {
+    const { setShowAchievements } = useContext(AppContext);
     const [isSorted, setIsSorted] = useState(false);
 
     const handleClick = () => {
         setShowAchievements(false);
     };
 
-    const handleInputChange = (e) => {
-        setInputValue(e.target.value);
-    };
-
     return {
         isSorted,
         setIsSorted,
         handleClick,
-        handleInputChange
     };
 }

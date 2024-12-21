@@ -42,22 +42,17 @@ pub async fn check_process_by_game_id(ids: Vec<String>) -> Result<Vec<String>, S
 }
 
 #[tauri::command]
-pub async fn check_steam_status(file_path: String) -> Result<String, String> {
+pub async fn get_steam_users(file_path: String) -> Result<String, String> {
     let output = std::process::Command::new(file_path)
-        .arg("check_steam")
+        .arg("get_steam_users")
         .creation_flags(0x08000000)
         .output()
-        .map_err(|e| e.to_string())?;
+        .map_err(|e| format!("{{\"error\": \"{}\"}}", e.to_string()))?;
     let output_str = String::from_utf8_lossy(&output.stdout);
-    if output_str.contains("Steam is not running") {
-        Ok("not_running".to_string())
+    if let Some(users) = output_str.split("steamUsers ").nth(1) {
+        Ok(users.trim().to_string())
     } else {
-        let steam_id = output_str
-            .split("steamId ")
-            .nth(1)
-            .ok_or("Failed to parse Steam ID")?
-            .trim();
-        Ok(steam_id.to_string())
+        Ok("{\"error\": \"Failed to get Steam users\"}".to_string())
     }
 }
 

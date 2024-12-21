@@ -1,23 +1,29 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { fetchAchievementData, sortAchievements, filterAchievements } from '../utils/achievementsHandler';
+import { AppContext } from '../../layouts/components/AppContext';
 
-export default function useAchievements(steamId, appId) {
+export default function useAchievements() {
+    const {
+        userSummary,
+        appId,
+        achievementQueryValue,
+        achievementList,
+        setAchievementList,
+        setStatisticsList,
+        setAchievementsUnavailable,
+        setStatisticsUnavailable
+    } = useContext(AppContext);
     const [isLoading, setIsLoading] = useState(true);
     const [isSorted, setIsSorted] = useState(false);
-    const [inputValue, setInputValue] = useState('');
-    const [achievementList, setAchievementList] = useState([]);
     const [originalAchievementList, setOriginalAchievementList] = useState([]);
-    const [statisticsList, setStatisticsList] = useState([]);
     const [userGameStats, setUserGameStats] = useState({});
     const [gameAchievementsPercentages, setGameAchievementsPercentages] = useState([]);
-    const [achievementsUnavailable, setAchievementsUnavailable] = useState(false);
-    const [statisticsUnavailable, setStatisticsUnavailable] = useState(false);
     const [btnLoading, setBtnLoading] = useState(false);
-    const [currentTab, setCurrentTab] = useState(null);
     const [initialStatValues, setInitialStatValues] = useState({});
     const [newStatValues, setNewStatValues] = useState({});
 
+    // Map user game achievements
     const userGameAchievementsMap = new Map();
     if (userGameStats?.achievements) {
         userGameStats.achievements.forEach(item => {
@@ -25,6 +31,7 @@ export default function useAchievements(steamId, appId) {
         });
     }
 
+    // Map user game stats
     const userGameStatsMap = new Map();
     if (userGameStats?.stats) {
         userGameStats.stats.forEach(item => {
@@ -32,30 +39,37 @@ export default function useAchievements(steamId, appId) {
         });
     }
 
+    // Map game achievements percentages
     const percentageMap = new Map();
     gameAchievementsPercentages.forEach(item => percentageMap.set(item.name, item.percent));
 
     useEffect(() => {
+        // Fetch achievement data
         const getAchievementData = async () => {
             try {
-                const data = await fetchAchievementData(steamId, appId);
-                setAchievementList(data.achievementList);
-                setOriginalAchievementList(data.achievementList);
+                const data = await fetchAchievementData(userSummary.steamId, appId);
+                setGameAchievementsPercentages(data.gameAchievementsPercentages);
+                const percentageMap = new Map();
+                data.gameAchievementsPercentages.forEach(item => percentageMap.set(item.name, item.percent));
+                const sortedAchievements = sortAchievements(data.achievementList, percentageMap);
+                setAchievementList(sortedAchievements);
+                setOriginalAchievementList(sortedAchievements);
                 setStatisticsList(data.statisticsList);
                 setUserGameStats(data.userGameStats);
-                setGameAchievementsPercentages(data.gameAchievementsPercentages);
                 setAchievementsUnavailable(data.achievementsUnavailable);
                 setStatisticsUnavailable(data.statisticsUnavailable);
                 setIsLoading(false);
+                setIsSorted(true);
             } catch (error) {
                 toast.error(`Error in (getAchievementData): ${error?.message}`);
                 console.error('Error in (getAchievementData):', error);
             }
         };
         getAchievementData();
-    }, [steamId, appId]);
+    }, [userSummary.steamId, appId]);
 
     useEffect(() => {
+        // Sort achievements if not sorted
         if (!isSorted && achievementList.length > 0) {
             setAchievementList(sortAchievements(achievementList, percentageMap));
             setIsSorted(true);
@@ -63,30 +77,22 @@ export default function useAchievements(steamId, appId) {
     }, [isSorted, achievementList, percentageMap]);
 
     useEffect(() => {
-        if (inputValue.length > 0) {
-            setAchievementList(filterAchievements(originalAchievementList, inputValue));
+        // Filter achievements based on input value
+        if (achievementQueryValue.length > 0) {
+            setAchievementList(filterAchievements(originalAchievementList, achievementQueryValue));
         } else {
             setAchievementList(originalAchievementList);
         }
-    }, [inputValue, originalAchievementList]);
+    }, [achievementQueryValue, originalAchievementList]);
 
     return {
         isLoading,
         isSorted,
         setIsSorted,
-        inputValue,
-        setInputValue,
-        achievementList,
-        setAchievementList,
-        statisticsList,
         userGameStats,
         gameAchievementsPercentages,
-        achievementsUnavailable,
-        statisticsUnavailable,
         btnLoading,
         setBtnLoading,
-        currentTab,
-        setCurrentTab,
         initialStatValues,
         setInitialStatValues,
         newStatValues,

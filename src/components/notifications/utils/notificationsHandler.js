@@ -1,7 +1,9 @@
+// Fetch notifications and update state
 export const fetchNotifications = async (setNotifications, setUnseenNotifications) => {
     const cooldownTimestamp = localStorage.getItem('notificationsCooldown');
     const now = new Date().getTime();
 
+    // Check if cooldown is active and use cached notifications if it is
     if (cooldownTimestamp && now < cooldownTimestamp) {
         const cachedNotifications = JSON.parse(localStorage.getItem('cachedNotifications')) || [];
         setNotifications(cachedNotifications);
@@ -10,12 +12,12 @@ export const fetchNotifications = async (setNotifications, setUnseenNotification
     }
 
     try {
-        const response = await fetch(
-            'https://gist.githubusercontent.com/zevnda/c190947d791eee6744c4ca2cf24494c9/raw/11aa1057e3be4116880e79c726b13d3b60cf495a/notifications.json'
-        );
+        // Fetch notifications
+        const response = await fetch('https://raw.githubusercontent.com/zevnda/steam-game-idler/refs/heads/main/notifications.json');
         const data = await response.json();
         setNotifications(data.slice(0, 10));
         checkUnseenNotifications(data.slice(0, 10), setUnseenNotifications);
+        // Cache notifications and set cooldown timestamp
         localStorage.setItem('cachedNotifications', JSON.stringify(data.slice(0, 10)));
         localStorage.setItem('notificationsCooldown', now + 30 * 60 * 1000);
     } catch (error) {
@@ -23,12 +25,14 @@ export const fetchNotifications = async (setNotifications, setUnseenNotification
     }
 };
 
+// Check for unseen notifications
 export const checkUnseenNotifications = (notifications, setUnseenNotifications) => {
     const seenNotifications = JSON.parse(localStorage.getItem('seenNotifications')) || [];
     const unseen = notifications.filter(notification => !seenNotifications.includes(notification.id));
     setUnseenNotifications(unseen);
 };
 
+// Mark a notification as seen
 export const markAsSeen = (id, unseenNotifications, setUnseenNotifications) => {
     let seenNotifications = JSON.parse(localStorage.getItem('seenNotifications')) || [];
     if (!seenNotifications.includes(id)) {
@@ -41,6 +45,7 @@ export const markAsSeen = (id, unseenNotifications, setUnseenNotifications) => {
     setUnseenNotifications(unseenNotifications.filter(notification => notification.id !== id));
 };
 
+// Mark all notifications as seen
 export const markAllAsSeen = (notifications, setUnseenNotifications) => {
     let seenNotifications = JSON.parse(localStorage.getItem('seenNotifications')) || [];
     notifications.forEach(notification => {
@@ -55,8 +60,8 @@ export const markAllAsSeen = (notifications, setUnseenNotifications) => {
     setUnseenNotifications([]);
 };
 
-export const handleOpenUrl = async (e, url, id, markAsSeen, unseenNotifications, setUnseenNotifications) => {
-    e.preventDefault();
+// Handle opening a URL and marking the notification as seen
+export const handleOpenUrl = async (url, id, markAsSeen, unseenNotifications, setUnseenNotifications) => {
     markAsSeen(id, unseenNotifications, setUnseenNotifications);
     if (url && typeof window !== 'undefined' && window.__TAURI__) {
         try {

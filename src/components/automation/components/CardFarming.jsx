@@ -1,12 +1,14 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useContext } from 'react';
 import { logEvent } from '@/src/utils/utils';
 import { checkGamesForDrops, farmCards, handleCancel } from '@/src/components/automation/utils/cardFarmingHandler';
 import StopButton from './StopButton';
 import { Button, Skeleton, Spinner } from '@nextui-org/react';
 import { IoCheckmark } from 'react-icons/io5';
 import { toast } from 'react-toastify';
+import { AppContext } from '../../layouts/components/AppContext';
 
-export default function CardFarming({ setActivePage }) {
+export default function CardFarming() {
+    const { setActivePage } = useContext(AppContext);
     const isMountedRef = useRef(true);
     const abortControllerRef = useRef(new AbortController());
     const [totalDropsRemaining, setTotalDropsRemaining] = useState(0);
@@ -75,7 +77,7 @@ export default function CardFarming({ setActivePage }) {
 
                 {gamesWithDrops.size > 0 ? (
                     <React.Fragment>
-                        <StopButton setActivePage={setActivePage} gamesWithDrops={gamesWithDrops} isMountedRef={isMountedRef} abortControllerRef={abortControllerRef} screen={'card-farming'} />
+                        <StopButton gamesWithDrops={gamesWithDrops} isMountedRef={isMountedRef} abortControllerRef={abortControllerRef} screen={'card-farming'} />
 
                         <p className='text-sm'>
                             Next action in <span className='font-bold text-sgi'>{countdownTimer}</span>
@@ -90,7 +92,7 @@ export default function CardFarming({ setActivePage }) {
                                     size='sm'
                                     color='danger'
                                     className='min-h-[30px] font-semibold rounded'
-                                    onClick={() => handleCancel(setActivePage, gamesWithDrops, isMountedRef, abortControllerRef)}
+                                    onPress={() => handleCancel(setActivePage, gamesWithDrops, isMountedRef, abortControllerRef)}
                                 >
                                     Cancel
                                 </Button>
@@ -104,7 +106,7 @@ export default function CardFarming({ setActivePage }) {
                                     size='sm'
                                     color='danger'
                                     className='min-h-[30px] font-semibold rounded'
-                                    onClick={() => handleCancel(setActivePage, gamesWithDrops, isMountedRef, abortControllerRef)}
+                                    onPress={() => handleCancel(setActivePage, gamesWithDrops, isMountedRef, abortControllerRef)}
                                 >
                                     Back
                                 </Button>

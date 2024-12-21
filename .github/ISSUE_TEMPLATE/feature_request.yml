@@ -3,7 +3,7 @@ description: Suggest an idea for this project
 title: "Title"
 labels: ["feature request"]
 assignees:
-  - "ProbablyRaging"
+  - "zevnda"
 body:
   - type: textarea
     id: idea

@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@nextui-org/react';
 import { IoPlay, IoSettings } from 'react-icons/io5';
 import { FaAward } from 'react-icons/fa';
 import 'react-toastify/dist/ReactToastify.css';
 import { useAutomate } from '@/src/components/gameslist/hooks/useAutomate';
+import { AppContext } from '../../layouts/components/AppContext';
 
-export default function Automate({ setActivePage }) {
-    const { startCardFarming, startAchievementUnlocker } = useAutomate(setActivePage);
+export default function Automate() {
+    const { setActivePage } = useContext(AppContext);
+    const { startCardFarming, startAchievementUnlocker } = useAutomate();
 
     return (
         <React.Fragment>
@@ -25,28 +27,28 @@ export default function Automate({ setActivePage }) {
                         className='rounded'
                         key='idle'
                         startContent={<IoPlay />}
-                        onClick={startCardFarming}
+                        onPress={startCardFarming}
                         textValue='Start achievement unlocker'
                     >
-                        <p className='text-xs'>Start card farming</p>
+                        <p className='text-sm'>Start card farming</p>
                     </DropdownItem>
                     <DropdownItem
                         className='rounded'
                         key='achiements'
                         startContent={<FaAward />}
-                        onClick={startAchievementUnlocker}
+                        onPress={startAchievementUnlocker}
                         textValue='Start achievement unlocker'
                     >
-                        <p className='text-xs'>Start achievement unlocker</p>
+                        <p className='text-sm'>Start achievement unlocker</p>
                     </DropdownItem>
                     <DropdownItem
                         className='rounded'
                         key='settings'
                         startContent={<IoSettings />}
-                        onClick={() => setActivePage('settings')}
+                        onPress={() => setActivePage('settings')}
                         textValue='Change settings'
                     >
-                        <p className='text-xs'>Change settings</p>
+                        <p className='text-sm'>Change settings</p>
                     </DropdownItem>
                 </DropdownMenu>
             </Dropdown>

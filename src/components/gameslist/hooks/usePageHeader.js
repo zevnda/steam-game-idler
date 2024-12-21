@@ -1,9 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { toast } from 'react-toastify';
 import { logEvent } from '@/src/utils/utils';
 import moment from 'moment';
+import { AppContext } from '../../layouts/components/AppContext';
 
-export const usePageHeader = ({ steamId, setSortStyle, setRefreshKey }) => {
+export const usePageHeader = ({ setSortStyle, setRefreshKey }) => {
+    const { userSummary } = useContext(AppContext);
     const [sortStyle, setSortStyleState] = useState(localStorage.getItem('sortStyle') || 'a-z');
 
     useEffect(() => {
@@ -23,7 +25,7 @@ export const usePageHeader = ({ steamId, setSortStyle, setRefreshKey }) => {
 
     const handleRefetch = () => {
         try {
-            if (steamId !== '76561198158912649' && steamId !== '76561198999797359') {
+            if (userSummary.steamId !== '76561198158912649' && userSummary.steamId !== '76561198999797359') {
                 const cooldown = sessionStorage.getItem('cooldown');
                 if (cooldown && moment().unix() < cooldown) {
                     return toast.error(`Games can be refreshed again at ${moment.unix(cooldown).format('h:mm A')}`);

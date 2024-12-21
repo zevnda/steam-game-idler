@@ -1,5 +1,6 @@
 import { checkDrops, getAllGamesWithDrops, logEvent, startIdler, stopIdler, formatTime } from '@/src/utils/utils';
 
+// Check games for drops and return total drops and games set
 export const checkGamesForDrops = async () => {
     const cardFarming = JSON.parse(localStorage.getItem('cardFarming')) || [];
     const steamCookies = JSON.parse(localStorage.getItem('steamCookies')) || {};
@@ -12,6 +13,7 @@ export const checkGamesForDrops = async () => {
 
     try {
         if (settings.cardFarming.allGames) {
+            // Get all games with drops if the setting is enabled
             const gamesWithDrops = await getAllGamesWithDrops(userSummary.steamId, steamCookies.sid, steamCookies.sls);
             if (gamesWithDrops) {
                 for (const gameData of gamesWithDrops) {
@@ -25,14 +27,17 @@ export const checkGamesForDrops = async () => {
                 }
             }
         } else {
+            // Check drops for each game in the farming list
             const dropCheckPromises = gameDataArr.map(async (gameData) => {
                 if (gamesSet.size >= 32) return;
                 const dropsRemaining = await checkDrops(userSummary.steamId, gameData.appid, steamCookies.sid, steamCookies.sls);
                 if (dropsRemaining > 0) {
+                    // Add game to farming list if drops remaining
                     gamesSet.add({ appId: gameData.appid, name: gameData.name });
                     totalDrops += dropsRemaining;
                     logEvent(`[Card Farming] ${dropsRemaining} drops remaining for ${gameData.name} - starting`);
                 } else {
+                    // Remove game from farming list if no drops remaining
                     console.log('should remove');
                     logEvent(`[Card Farming] ${dropsRemaining} drops remaining for ${gameData.name} - removed from list`);
                     removeGameFromFarmingList(gameData.appid);
@@ -47,11 +52,13 @@ export const checkGamesForDrops = async () => {
     return { totalDrops, gamesSet };
 };
 
+// Farm cards for the games in the set
 export const farmCards = async (gamesSet, setCountdownTimer, isMountedRef, abortControllerRef) => {
     const farmingPromises = Array.from(gamesSet).map(game => farmGame(game, setCountdownTimer, isMountedRef, abortControllerRef));
     await Promise.all(farmingPromises);
 };
 
+// Function for farming a game's cards
 const farmGame = async (game, setCountdownTimer, isMountedRef, abortControllerRef) => {
     const farmingInterval = 60000 * 30;
     const shortDelay = 15000;
@@ -71,6 +78,7 @@ const farmGame = async (game, setCountdownTimer, isMountedRef, abortControllerRe
     }
 };
 
+// Start and stop idler for a game
 const startAndStopIdler = async (appId, name, duration, setCountdownTimer, isMountedRef, abortControllerRef) => {
     try {
         startCountdown(duration / 60000, setCountdownTimer);
@@ -82,11 +90,13 @@ const startAndStopIdler = async (appId, name, duration, setCountdownTimer, isMou
     }
 };
 
+// Delay and update countdown timer
 const delayAndCountdown = async (ms, setCountdownTimer, isMountedRef, abortControllerRef) => {
     startCountdown(ms / 60000, setCountdownTimer);
     await delay(ms, isMountedRef, abortControllerRef);
 };
 
+// Delay function
 const delay = (ms, isMountedRef, abortControllerRef) => {
     return new Promise((resolve, reject) => {
         const checkInterval = 1000;
@@ -110,6 +120,7 @@ const delay = (ms, isMountedRef, abortControllerRef) => {
     });
 };
 
+// Start countdown timer
 const startCountdown = (durationInMinutes, setCountdownTimer) => {
     const durationInMilliseconds = durationInMinutes * 60000;
     let remainingTime = durationInMilliseconds;
@@ -125,6 +136,7 @@ const startCountdown = (durationInMinutes, setCountdownTimer) => {
     }, 1000);
 };
 
+// Remove game from farming list
 const removeGameFromFarmingList = (gameId) => {
     console.log(gameId);
     try {
@@ -136,6 +148,7 @@ const removeGameFromFarmingList = (gameId) => {
     }
 };
 
+// Handle cancel action
 export const handleCancel = async (setActivePage, gamesWithDrops, isMountedRef, abortControllerRef) => {
     setActivePage('games');
     try {
@@ -149,6 +162,7 @@ export const handleCancel = async (setActivePage, gamesWithDrops, isMountedRef, 
     }
 };
 
+// Handle errors
 const handleError = (functionName, error) => {
     console.error(`Error in (${functionName}):`, error);
     logEvent(`[Error] in (${functionName}) ${error}`);

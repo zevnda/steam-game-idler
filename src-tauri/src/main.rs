@@ -106,7 +106,6 @@ fn main() {
             log_event,
             clear_log_file,
             get_app_log_dir,
-            check_steam_status,
             get_user_summary,
             get_games_list,
             get_recent_games,
@@ -120,6 +119,7 @@ fn main() {
             get_free_games,
             anti_away,
             check_process_by_game_id,
+            get_steam_users
         ])
         .build(tauri::generate_context!())
         .expect("error while building tauri application")

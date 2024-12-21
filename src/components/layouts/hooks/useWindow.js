@@ -1,12 +1,15 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { checkForUpdates, changelogModal, defaultSettings, checkForFreeGames, startAutoIdleGames } from '../utils/windowHandler';
+import { AppContext } from '../components/AppContext';
 
 export default function useWindow() {
-    const [userSummary, setUserSummary] = useState(null);
+    const {
+        setUserSummary,
+        setShowFreeGamesTab,
+        setFreeGamesList
+    } = useContext(AppContext);
     const [updateManifest, setUpdateManifest] = useState(null);
     const [initUpdate, setInitUpdate] = useState(false);
-    const [showFreeGamesTab, setShowFreeGamesTab] = useState(false);
-    const [freeGamesList, setFreeGamesList] = useState([]);
     const [showChangelogModal, setShowChangelogModal] = useState(false);
 
     const freeGamesCheck = useCallback(() => {
@@ -25,14 +28,10 @@ export default function useWindow() {
     }, [freeGamesCheck]);
 
     return {
-        userSummary,
-        setUserSummary,
         updateManifest,
         initUpdate,
         setInitUpdate,
         setUpdateManifest,
-        showFreeGamesTab,
-        freeGamesList,
         showChangelogModal,
         setShowChangelogModal
     };

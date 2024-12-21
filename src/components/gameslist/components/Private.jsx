@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Button } from '@nextui-org/react';
 import ExtLink from '@/src/components/ui/components/ExtLink';
+import { AppContext } from '../../layouts/components/AppContext';
 
-export default function Private({ steamId, setRefreshKey }) {
+export default function Private({ setRefreshKey }) {
+    const { userSummary } = useContext(AppContext);
+
     const handleRefresh = () => {
         setRefreshKey(prevKey => prevKey + 1);
     };
@@ -34,14 +37,14 @@ export default function Private({ steamId, setRefreshKey }) {
                                 </li>
                             </ul>
                         </div>
-                        <ExtLink href={`https://steamcommunity.com/profiles/${steamId}/edit/settings`} className={'text-xs text-blue-400 mt-4'}>
+                        <ExtLink href={`https://steamcommunity.com/profiles/${userSummary.steamId}/edit/settings`} className={'text-xs text-blue-400 mt-4'}>
                             Change account privacy
                         </ExtLink>
                         <Button
                             size='sm'
                             color='primary'
                             className='flex justify-center items-center bg-sgi px-3 py-2 mt-5 rounded'
-                            onClick={handleRefresh}
+                            onPress={handleRefresh}
                         >
                             <p className='flex items-center gap-2 font-medium text-xs text-offwhite'>
                                 Try again

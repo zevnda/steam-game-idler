@@ -9,7 +9,7 @@ import ResetSettings from './ResetSettings';
 import { getAppVersion, getDefaultSettings, getUpdatedSettings } from '@/src/components/settings/utils/settingsHandler';
 import { toast } from 'react-toastify';
 
-export default function Settings({ userSummary, setInitUpdate, setUpdateManifest }) {
+export default function Settings({ setInitUpdate, setUpdateManifest }) {
     const [settings, setSettings] = useState(null);
     const [version, setVersion] = useState('v0.0.0');
     const [refreshKey, setRefreshKey] = useState(0);
@@ -60,13 +60,13 @@ export default function Settings({ userSummary, setInitUpdate, setUpdateManifest
                             base: 'bg-titlebar rounded-t p-0 border-t border-l border-r border-border',
                             tabList: 'gap-0 w-full bg-transparent',
                             tab: 'px-6 py-3 rounded-none bg-transparent px-4 data-[hover-unselected=true]:bg-gray-500 data-[hover-unselected=true]:bg-opacity-5 data-[hover-unselected=true]:opacity-100',
-                            tabContent: 'text-xs',
+                            tabContent: 'text-sm',
                             cursor: 'bg-base w-full rounded',
                             panel: 'bg-titlebar rounded rounded-tl-none border border-border',
                         }}
                     >
                         <Tab key='general' title='General'>
-                            <GeneralSettings userSummary={userSummary} settings={settings} setSettings={setSettings} />
+                            <GeneralSettings settings={settings} setSettings={setSettings} />
                         </Tab>
                         <Tab key='card-farming' title='Card Farming'>
                             <CardSettings settings={settings} setSettings={setSettings} />

@@ -8,21 +8,11 @@ export default function useTitleBar() {
         setupAppWindow().then(setAppWindow);
     }, []);
 
-    const windowMinimize = () => {
-        appWindow?.minimize();
-    };
-
-    const windowToggleMaximize = () => {
-        appWindow?.toggleMaximize();
-    };
-
     const windowClose = () => {
         appWindow?.close();
     };
 
     return {
-        windowMinimize,
-        windowToggleMaximize,
         windowClose,
     };
 }

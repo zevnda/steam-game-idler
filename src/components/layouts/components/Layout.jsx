@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Head from 'next/head';
 import { GeistSans } from 'geist/font/sans';
 import { Slide, ToastContainer } from 'react-toastify';
@@ -7,6 +7,28 @@ import { useTheme } from 'next-themes';
 
 export default function Layout({ children }) {
     const { theme } = useTheme();
+
+    const getToastStyles = () => {
+        if (typeof window === 'undefined') return {};
+
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const isDarkMode = theme === 'system' ? prefersDark : theme === 'dark';
+
+        const background = isDarkMode ? '#141414' : '#f5f5f5';
+        const border = isDarkMode ? '1px solid #333' : '1px solid #ccc';
+        const color = isDarkMode ? '#fff' : '#000';
+
+        return { background, border, color, fontSize: 12 };
+    };
+
+    useEffect(() => {
+        if (typeof window === 'undefined') return;
+
+        const toastContainers = document.querySelectorAll('.Toastify__toast');
+        toastContainers.forEach(container => {
+            Object.assign(container.style, getToastStyles());
+        });
+    }, [theme]);
 
     return (
         <React.Fragment>
@@ -18,8 +40,7 @@ export default function Layout({ children }) {
                 {children}
             </main>
             <ToastContainer
-                toastStyle={{ fontSize: 12 }}
-                toastClassName={() => 'relative flex min-h-10 justify-between overflow-hidden p-2 bg-container text-black dark:text-offwhite border border-border rounded mt-2'}
+                toastStyle={getToastStyles()}
                 position='bottom-right'
                 theme={theme}
                 transition={Slide}
@@ -27,7 +48,7 @@ export default function Layout({ children }) {
                 limit={2}
                 pauseOnHover={false}
                 newestOnTop
-                autoClose={1500}
+                autoClose={2000}
             />
         </React.Fragment>
     );

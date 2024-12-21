@@ -23,6 +23,7 @@ namespace SteamUtility.Commands
                 return;
             }
 
+            // Validate the AppID
             uint appId;
             if (!uint.TryParse(args[1], out appId))
             {
@@ -38,8 +39,10 @@ namespace SteamUtility.Commands
             string statName = args[2];
             string newValue = args[3];
 
+            // Set the Steam App ID environment variable
             Environment.SetEnvironmentVariable("SteamAppId", appId.ToString());
 
+            // Initialize the Steam API
             if (!SteamAPI.Init())
             {
                 MessageBox.Show(
@@ -53,10 +56,13 @@ namespace SteamUtility.Commands
 
             try
             {
+                // Get the Steam user ID and create a callback for receiving user stats
                 CSteamID steamId = SteamUser.GetSteamID();
                 statsReceivedCallback = Callback<UserStatsReceived_t>.Create(OnUserStatsReceived);
+                // Request user stats from Steam
                 SteamAPICall_t apiCall = SteamUserStats.RequestUserStats(steamId);
 
+                // Check if the API call is valid
                 if (apiCall == SteamAPICall_t.Invalid)
                 {
                     MessageBox.Show(
@@ -68,6 +74,7 @@ namespace SteamUtility.Commands
                     return;
                 }
 
+                // Wait for the stats to be received
                 DateTime startTime = DateTime.Now;
                 while (!statsReceived)
                 {
@@ -85,6 +92,7 @@ namespace SteamUtility.Commands
                     Thread.Sleep(100);
                 }
 
+                // Update the stat with the new value
                 bool success = false;
                 if (int.TryParse(newValue, out int intValue))
                 {
@@ -105,6 +113,7 @@ namespace SteamUtility.Commands
                     return;
                 }
 
+                // Store the updated stats
                 if (success)
                 {
                     if (SteamUserStats.StoreStats())
@@ -137,10 +146,12 @@ namespace SteamUtility.Commands
             }
             finally
             {
+                // Shutdown the Steam API
                 SteamAPI.Shutdown();
             }
         }
 
+        // Callback method for when user stats are received
         static void OnUserStatsReceived(UserStatsReceived_t pCallback)
         {
             if (pCallback.m_nGameID == SteamUtils.GetAppID().m_AppId)

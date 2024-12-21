@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import Loader from '../../ui/components/Loader';
 import TabButtons from './TabButtons';
 import AchievementsList from './AchievementsList';
@@ -6,22 +6,15 @@ import { Tab, Tabs } from '@nextui-org/react';
 import StatisticsList from './StatisticsList';
 import PageHeader from './PageHeader';
 import useAchievements from '../hooks/useAchievements';
+import { AppContext } from '../../layouts/components/AppContext';
 
-export default function Achievements({ steamId, appId, appName, setShowAchievements }) {
+export default function Achievements() {
+    const { setCurrentTab } = useContext(AppContext);
     const {
         isLoading,
         setIsSorted,
-        inputValue,
-        setInputValue,
-        achievementList,
-        setAchievementList,
-        statisticsList,
-        achievementsUnavailable,
-        statisticsUnavailable,
         btnLoading,
         setBtnLoading,
-        currentTab,
-        setCurrentTab,
         initialStatValues,
         setInitialStatValues,
         newStatValues,
@@ -29,7 +22,7 @@ export default function Achievements({ steamId, appId, appName, setShowAchieveme
         userGameAchievementsMap,
         userGameStatsMap,
         percentageMap
-    } = useAchievements(steamId, appId);
+    } = useAchievements();
 
     if (isLoading) return <Loader />;
 
@@ -37,33 +30,20 @@ export default function Achievements({ steamId, appId, appName, setShowAchieveme
         <React.Fragment>
             <div className='min-h-calc max-h-calc w-full overflow-y-auto overflow-x-hidden'>
                 <div className='p-4'>
-                    <PageHeader
-                        setShowAchievements={setShowAchievements}
-                        achievementList={achievementList}
-                        setAchievementList={setAchievementList}
-                        achievementsUnavailable={achievementsUnavailable}
-                        setIsSorted={setIsSorted}
-                        inputValue={inputValue}
-                        setInputValue={setInputValue}
-                        percentageMap={percentageMap}
-                        userGameAchievementsMap={userGameAchievementsMap}
-                        currentTab={currentTab}
-                    />
+                    <PageHeader />
 
-                    <div className='flex flex-wrap gap-4 mt-2'>
-                        <TabButtons
-                            appId={appId}
-                            appName={appName}
-                            achievementsUnavailable={achievementsUnavailable}
-                            statisticsUnavailable={statisticsUnavailable}
-                            btnLoading={btnLoading}
-                            achievementList={achievementList}
-                            inputValue={inputValue}
-                            setBtnLoading={setBtnLoading}
-                            currentTab={currentTab}
-                            initialStatValues={initialStatValues}
-                            newStatValues={newStatValues}
-                        />
+                    <div className='relative flex flex-wrap gap-4 mt-2'>
+                        <div className='absolute flex justify-end w-full gap-2'>
+                            <TabButtons
+                                initialStatValues={initialStatValues}
+                                newStatValues={newStatValues}
+                                btnLoading={btnLoading}
+                                setBtnLoading={setBtnLoading}
+                                setIsSorted={setIsSorted}
+                                userGameAchievementsMap={userGameAchievementsMap}
+                                percentageMap={percentageMap}
+                            />
+                        </div>
 
                         <div className='flex flex-col w-full'>
                             <Tabs
@@ -76,7 +56,7 @@ export default function Achievements({ steamId, appId, appName, setShowAchieveme
                                     base: 'bg-titlebar rounded-t p-0 border-t border-l border-r border-border',
                                     tabList: 'gap-0 w-full bg-transparent',
                                     tab: 'px-6 py-3 rounded-none bg-transparent px-4',
-                                    tabContent: 'text-xs',
+                                    tabContent: 'text-sm',
                                     cursor: 'bg-base w-full rounded',
                                     panel: 'bg-titlebar rounded rounded-tl-none border border-border',
                                 }}
@@ -84,18 +64,12 @@ export default function Achievements({ steamId, appId, appName, setShowAchieveme
                             >
                                 <Tab key='achievements' title='Achievements'>
                                     <AchievementsList
-                                        appId={appId}
-                                        appName={appName}
-                                        achievementsUnavailable={achievementsUnavailable}
-                                        achievementList={achievementList}
                                         userGameAchievementsMap={userGameAchievementsMap}
                                         percentageMap={percentageMap}
                                     />
                                 </Tab>
                                 <Tab key='statistics' title='Statistics'>
                                     <StatisticsList
-                                        statisticsUnavailable={statisticsUnavailable}
-                                        statisticsList={statisticsList}
                                         userGameStatsMap={userGameStatsMap}
                                         setInitialStatValues={setInitialStatValues}
                                         newStatValues={newStatValues}
@@ -104,7 +78,7 @@ export default function Achievements({ steamId, appId, appName, setShowAchieveme
                                 </Tab>
                             </Tabs>
 
-                            <p className='text-[10px] text-gray-400 mt-1'>
+                            <p className='text-xs text-gray-400 mt-1'>
                                 Please note that changes are instant but may take up to 5 minutes to be reflected on this page. Check your game&apos;s achievements page on Steam for real-time changes.
                             </p>
                         </div>

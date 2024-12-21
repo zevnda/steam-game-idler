@@ -1,9 +1,9 @@
 import { invoke } from '@tauri-apps/api/tauri';
 import { logEvent } from '@/src/utils/utils';
 
+// Fetch achievement data from the Steam API
 export const fetchAchievementData = async (steamId, appId) => {
     try {
-        console.log('testing');
         const apiKey = localStorage.getItem('apiKey');
         const res = await invoke('get_achievement_data', { steamId: steamId, appId: appId.toString(), apiKey: apiKey });
         const achievementList = res.schema.game?.availableGameStats?.achievements || [];
@@ -27,6 +27,7 @@ export const fetchAchievementData = async (steamId, appId) => {
     }
 };
 
+// Sort achievements by percentage
 export const sortAchievements = (achievementList, percentageMap) => {
     return [...achievementList].sort((a, b) => {
         const percentA = percentageMap.get(a.name) || 0;
@@ -35,6 +36,7 @@ export const sortAchievements = (achievementList, percentageMap) => {
     });
 };
 
+// Filter achievements by input value
 export const filterAchievements = (achievementList, inputValue) => {
     return achievementList.filter(achievement =>
         achievement.displayName.toLowerCase().includes(inputValue.toLowerCase())

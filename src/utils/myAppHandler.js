@@ -1,13 +1,16 @@
 import { debounce, logEvent } from '@/src/utils/utils';
 import { toast } from 'react-toastify';
 
+// Set up the application window
 export async function setupAppWindow() {
     const { appWindow, PhysicalSize, PhysicalPosition, primaryMonitor, availableMonitors } = await import('@tauri-apps/api/window');
 
+    // Retrieve saved window state from local storage
     const savedState = localStorage.getItem('windowState');
     let defaultWidth = 1268;
     let defaultHeight = 620;
 
+    // Set the window to a safe position on the screen
     async function setToSafePosition() {
         try {
             const monitor = await primaryMonitor();
@@ -21,6 +24,7 @@ export async function setupAppWindow() {
         }
     }
 
+    // Check if a position is on any screen
     async function isPositionOnScreen(x, y, width, height) {
         try {
             const monitors = await availableMonitors();
@@ -42,6 +46,7 @@ export async function setupAppWindow() {
         }
     }
 
+    // If there is a saved window state, restore it
     if (savedState) {
         const { width, height, isMaximized, positionX, positionY } = JSON.parse(savedState);
         if (isMaximized) {
@@ -64,6 +69,7 @@ export async function setupAppWindow() {
             }
         }
     } else {
+        // If no saved state, set to default size and safe position
         try {
             await appWindow.setSize(new PhysicalSize(defaultWidth, defaultHeight));
             await setToSafePosition();
@@ -74,6 +80,7 @@ export async function setupAppWindow() {
         }
     }
 
+    // Save the current window state to local storage
     const saveWindowState = debounce(async () => {
         try {
             const size = await appWindow.outerSize();
@@ -94,9 +101,11 @@ export async function setupAppWindow() {
         }
     }, 500);
 
+    // Listen for window resize and move events to save the state
     const unlistenResize = await appWindow.onResized(() => saveWindowState());
     const unlistenMove = await appWindow.onMoved(() => saveWindowState());
 
+    // Remove event listeners and cancel debounce
     return () => {
         unlistenResize();
         unlistenMove();

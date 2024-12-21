@@ -1,10 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import StopButton from './StopButton';
 import { Button, Spinner } from '@nextui-org/react';
 import { IoCheckmark } from 'react-icons/io5';
 import { startAchievementUnlocker, handleCancel } from '@/src/components/automation/utils/achievementUnlockerHandler';
+import { AppContext } from '../../layouts/components/AppContext';
 
-export default function AchievementUnlocker({ setActivePage }) {
+export default function AchievementUnlocker() {
+    const { setActivePage } = useContext(AppContext);
     const isMountedRef = useRef(true);
     const abortControllerRef = useRef(new AbortController());
     const [hasPrivateGames, setHasPrivateGames] = useState(false);
@@ -42,7 +44,7 @@ export default function AchievementUnlocker({ setActivePage }) {
                         Achievement Unlocker
                     </p>
                     {hasPrivateGames ? (
-                        <div className='flex flex-col items-center gap-2 text-xs'>
+                        <div className='flex flex-col items-center gap-2 text-sm'>
                             <p>Your games list must be set to <span className='font-bold'>public</span> in order for Achievement Unlocker to work</p>
                             <p>To change your privacy settings go to <span className='font-bold'>Steam &gt; Profile &gt; Edit Profile &gt; Privacy Settings &gt; Game Details &gt; Public</span></p>
                             <p>It may take up to 5 minutes for the changes to be applied</p>
@@ -51,7 +53,7 @@ export default function AchievementUnlocker({ setActivePage }) {
                                 size='sm'
                                 color='danger'
                                 className='min-h-[30px] font-semibold rounded'
-                                onClick={() => handleCancel({ isMountedRef, abortControllerRef, setActivePage, currentGame })}
+                                onPress={() => handleCancel({ isMountedRef, abortControllerRef, setActivePage, currentGame })}
                             >
                                 Back
                             </Button>
@@ -71,7 +73,7 @@ export default function AchievementUnlocker({ setActivePage }) {
                             )}
 
                             {gamesWithAchievements > 0 ? (
-                                <StopButton setActivePage={setActivePage} isMountedRef={isMountedRef} abortControllerRef={abortControllerRef} screen={'achievement-unlocker'} currentGame={currentGame} />
+                                <StopButton isMountedRef={isMountedRef} abortControllerRef={abortControllerRef} screen={'achievement-unlocker'} currentGame={currentGame} />
                             ) : (
                                 <React.Fragment>
                                     {!isComplete ? (
@@ -81,7 +83,7 @@ export default function AchievementUnlocker({ setActivePage }) {
                                                 size='sm'
                                                 color='danger'
                                                 className='min-h-[30px] font-semibold rounded'
-                                                onClick={() => handleCancel({ isMountedRef, abortControllerRef, setActivePage, currentGame })}
+                                                onPress={() => handleCancel({ isMountedRef, abortControllerRef, setActivePage, currentGame })}
                                             >
                                                 Cancel
                                             </Button>
@@ -95,7 +97,7 @@ export default function AchievementUnlocker({ setActivePage }) {
                                                 size='sm'
                                                 color='danger'
                                                 className='min-h-[30px] font-semibold rounded'
-                                                onClick={() => handleCancel({ isMountedRef, abortControllerRef, setActivePage, currentGame })}
+                                                onPress={() => handleCancel({ isMountedRef, abortControllerRef, setActivePage, currentGame })}
                                             >
                                                 Back
                                             </Button>

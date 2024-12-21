@@ -1,9 +1,11 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useContext } from 'react';
 import { fetchGamesList, sortAndFilterGames, fetchLocalStorageLists } from '../utils/gamesListHandler';
 import { logEvent } from '@/src/utils/utils';
 import { toast } from 'react-toastify';
+import { AppContext } from '../../layouts/components/AppContext';
 
-export default function useGamesList(steamId, inputValue, isQuery) {
+export default function useGamesList() {
+    const { userSummary, isQuery, gameQueryValue } = useContext(AppContext);
     const scrollContainerRef = useRef(null);
     const [isLoading, setIsLoading] = useState(true);
     const [gameList, setGameList] = useState(null);
@@ -25,7 +27,7 @@ export default function useGamesList(steamId, inputValue, isQuery) {
                 setIsLoading(true);
                 const sortStyle = localStorage.getItem('sortStyle');
                 if (sortStyle) setSortStyle(sortStyle);
-                const { gameList, recentGames } = await fetchGamesList(steamId);
+                const { gameList, recentGames } = await fetchGamesList(userSummary.steamId);
                 setGameList(gameList);
                 setRecentGames(recentGames);
                 setVisibleGames(gameList.slice(0, gamesPerPage));
@@ -38,16 +40,16 @@ export default function useGamesList(steamId, inputValue, isQuery) {
             }
         };
         getGamesList();
-    }, [steamId, refreshKey]);
+    }, [userSummary.steamId, refreshKey]);
 
     useEffect(() => {
         if (gameList) {
-            const sortedAndFilteredGames = sortAndFilterGames(gameList, recentGames, sortStyle, isQuery, inputValue, favorites, cardFarming, achievementUnlocker, autoIdle, setIsLoading);
+            const sortedAndFilteredGames = sortAndFilterGames(gameList, recentGames, sortStyle, isQuery, gameQueryValue, favorites, cardFarming, achievementUnlocker, autoIdle, setIsLoading);
             setFilteredGames(sortedAndFilteredGames);
             setVisibleGames(sortedAndFilteredGames.slice(0, gamesPerPage));
             setCurrentPage(1);
         }
-    }, [gameList, recentGames, favorites, cardFarming, achievementUnlocker, autoIdle, sortStyle, isQuery, inputValue]);
+    }, [gameList, recentGames, favorites, cardFarming, achievementUnlocker, autoIdle, sortStyle, isQuery, gameQueryValue]);
 
     useEffect(() => {
         try {

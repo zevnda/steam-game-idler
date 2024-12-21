@@ -240,7 +240,7 @@ export function isWithinSchedule(scheduleFrom, scheduleTo) {
 // Fetch the latest data from a remote source
 export async function fetchLatest() {
     try {
-        const res = await fetch('https://raw.githubusercontent.com/probablyraging/steam-game-idler/main/latest.json');
+        const res = await fetch('https://raw.githubusercontent.com/zevnda/steam-game-idler/main/latest.json');
         const data = await res.json();
         return data;
     } catch (error) {

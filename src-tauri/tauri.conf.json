@@ -9,7 +9,7 @@
     },
     "package": {
         "productName": "Steam Game Idler",
-        "version": "1.6.0-1"
+        "version": "1.6.0-2"
     },
     "tauri": {
         "allowlist": {
@@ -52,7 +52,7 @@
         "bundle": {
             "active": true,
             "category": "Utility",
-            "copyright": "Copyright © 2024 ProbablyRaging",
+            "copyright": "Copyright © 2024 zevnda",
             "deb": {
                 "depends": []
             },
@@ -63,7 +63,7 @@
                 "icons/128x128@2x.png",
                 "icons/icon.ico"
             ],
-            "identifier": "com.ProbablyRaging.steam-game-idler",
+            "identifier": "com.zevnda.steam-game-idler",
             "longDescription": "Idle any game in your Steam library",
             "shortDescription": "Steam Game Idler",
             "macOS": {
@@ -89,7 +89,7 @@
         "updater": {
             "active": true,
             "endpoints": [
-                "https://raw.githubusercontent.com/ProbablyRaging/steam-game-idler/main/latest.json"
+                "https://raw.githubusercontent.com/zevnda/steam-game-idler/main/latest.json"
             ],
             "dialog": false,
             "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEQyMTE5REMyMUFGRUYyQzcKUldUSDh2NGF3cDBSMGh6UVk2a1NKNFV0d1BBcnZsRnFFdDkvTTR0KzJQN0hjOTJzSWFpMFhGaysK",

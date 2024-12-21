@@ -1,8 +1,11 @@
 import { useDisclosure } from '@nextui-org/react';
 import { toast } from 'react-toastify';
 import { logEvent } from '@/src/utils/utils';
+import { AppContext } from '../../layouts/components/AppContext';
+import { useContext } from 'react';
 
-export default function useSideBar(setUserSummary, activePage, setActivePage) {
+export default function useSideBar(activePage, setActivePage) {
+    const { setUserSummary } = useContext(AppContext);
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     const openConfirmation = () => {

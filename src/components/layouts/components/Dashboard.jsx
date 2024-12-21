@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
+import { AppContext } from './AppContext';
 import Header from '../../ui/components/Header';
 import SideBar from '../../ui/components/SideBar';
 import CardFarming from '../../automation/components/CardFarming';
@@ -9,13 +10,8 @@ import FreeGamesList from '../../gameslist/components/FreeGamesList';
 import GamesList from '../../gameslist/components/GamesList';
 import Settings from '../../settings/components/Settings';
 
-export default function Dashboard({ userSummary, setUserSummary, setInitUpdate, setUpdateManifest, showFreeGamesTab, freeGamesList }) {
-    const [activePage, setActivePage] = useState('games');
-    const [appId, setAppId] = useState(null);
-    const [appName, setAppName] = useState(null);
-    const [showAchievements, setShowAchievements] = useState(false);
-    const [isQuery, setIsQuery] = useState(false);
-    const [inputValue, setInputValue] = useState('');
+export default function Dashboard({ setInitUpdate, setUpdateManifest }) {
+    const { activePage, showAchievements } = useContext(AppContext);
 
     useEffect(() => {
         antiAwayStatus();
@@ -23,39 +19,29 @@ export default function Dashboard({ userSummary, setUserSummary, setInitUpdate, 
 
     return (
         <React.Fragment>
-            <Header userSummary={userSummary} inputValue={inputValue} setInputValue={setInputValue} setIsQuery={setIsQuery} />
-
+            <Header />
             <div className='flex w-full'>
                 {showAchievements ? (
-                    <Achievements steamId={userSummary.steamId} appId={appId} appName={appName} setShowAchievements={setShowAchievements} isQuery={isQuery} />
+                    <Achievements />
                 ) : activePage === 'games' ? (
                     <React.Fragment>
-                        <SideBar setUserSummary={setUserSummary} activePage={activePage} setActivePage={setActivePage} showFreeGamesTab={showFreeGamesTab} />
-                        <GamesList
-                            steamId={userSummary.steamId}
-                            inputValue={inputValue}
-                            isQuery={isQuery}
-                            setActivePage={setActivePage}
-                            setAppId={setAppId}
-                            setAppName={setAppName}
-                            showAchievements={showAchievements}
-                            setShowAchievements={setShowAchievements}
-                        />
+                        <SideBar />
+                        <GamesList />
                     </React.Fragment>
                 ) : activePage === 'freeGames' ? (
                     <React.Fragment>
-                        <SideBar setUserSummary={setUserSummary} activePage={activePage} setActivePage={setActivePage} showFreeGamesTab={showFreeGamesTab} />
-                        <FreeGamesList freeGamesList={freeGamesList} />
+                        <SideBar />
+                        <FreeGamesList />
                     </React.Fragment>
                 ) : activePage === 'settings' ? (
                     <React.Fragment>
-                        <SideBar setUserSummary={setUserSummary} activePage={activePage} setActivePage={setActivePage} showFreeGamesTab={showFreeGamesTab} />
-                        <Settings userSummary={userSummary} setInitUpdate={setInitUpdate} setUpdateManifest={setUpdateManifest} />
+                        <SideBar />
+                        <Settings setInitUpdate={setInitUpdate} setUpdateManifest={setUpdateManifest} />
                     </React.Fragment>
                 ) : activePage === 'card-farming' ? (
-                    <CardFarming setActivePage={setActivePage} />
+                    <CardFarming />
                 ) : (
-                    <AchievementUnlocker setActivePage={setActivePage} />
+                    <AchievementUnlocker />
                 )}
             </div>
         </React.Fragment>

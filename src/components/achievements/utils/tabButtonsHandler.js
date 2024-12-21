@@ -2,8 +2,10 @@ import { invoke } from '@tauri-apps/api/tauri';
 import { logEvent, unlockAchievement, lockAchievement, updateStat } from '@/src/utils/utils';
 import { toast } from 'react-toastify';
 
+// Handle unlocking all achievements
 export const handleUnlockAll = async (appId, appName, achievementList, setBtnLoading, onClose) => {
     try {
+        // Check if Steam is running
         const steamRunning = await invoke('check_status');
         if (steamRunning) {
             setBtnLoading(true);
@@ -15,6 +17,7 @@ export const handleUnlockAll = async (appId, appName, achievementList, setBtnLoa
                 isLoading: true,
                 closeButton: false
             });
+            // Loop through each achievement and unlock it
             for (const ach of achievementList) {
                 try {
                     await unlockAchievement(appId, ach.name);
@@ -45,8 +48,10 @@ export const handleUnlockAll = async (appId, appName, achievementList, setBtnLoa
     }
 };
 
+// Handle locking all achievements
 export const handleLockAll = async (appId, appName, achievementList, setBtnLoading, onClose) => {
     try {
+        // Check if Steam is running
         const steamRunning = await invoke('check_status');
         if (steamRunning) {
             setBtnLoading(true);
@@ -58,6 +63,7 @@ export const handleLockAll = async (appId, appName, achievementList, setBtnLoadi
                 isLoading: true,
                 closeButton: false
             });
+            // Loop through each achievement and lock it
             for (const ach of achievementList) {
                 try {
                     await lockAchievement(appId, ach.name);
@@ -88,7 +94,9 @@ export const handleLockAll = async (appId, appName, achievementList, setBtnLoadi
     }
 };
 
+// Handle updating all statistics
 export const handleUpdateAll = async (appId, appName, initialStatValues, newStatValues) => {
+    // Filter only values that have changed
     const changedValues = Object.entries(newStatValues).filter(([key, value]) => {
         return value !== initialStatValues[key];
     });
@@ -97,6 +105,7 @@ export const handleUpdateAll = async (appId, appName, initialStatValues, newStat
         toast.info('No changes to save.');
     }
 
+    // Loop through each changed value and update it
     for (const [statName, newValue] of changedValues) {
         try {
             const status = await updateStat(appId, statName, newValue.toString() || '0');

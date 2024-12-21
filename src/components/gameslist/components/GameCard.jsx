@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Image from 'next/image';
 import CardMenu from './CardMenu';
 import { IoPlay } from 'react-icons/io5';
 import { FaAward } from 'react-icons/fa';
-import { handleIdle, viewAchievments, viewStorePage, addToFavorites, removeFromFavorites, addToCardFarming, removeFromCardFarming, addToAchievementUnlocker, removeFromAchievementUnlocker, addToAutoIdle, removeFromAutoIdle } from '@/src/components/gameslist/utils/gameCardHandler';
 import 'react-toastify/dist/ReactToastify.css';
 import Loader from '@/src/components/ui/components/Loader';
+import { AppContext } from '../../layouts/components/AppContext';
+import { handleIdle, viewAchievments, viewStorePage, addToFavorites, removeFromFavorites, addToCardFarming, removeFromCardFarming, addToAchievementUnlocker, removeFromAchievementUnlocker, addToAutoIdle, removeFromAutoIdle } from '@/src/components/gameslist/utils/gameCardHandler';
 
-export default function GameCard({ gameList, favorites, cardFarming, achievementUnlocker, autoIdle, setFavorites, setAchievementUnlocker, setCardFarming, setAutoIdle, showAchievements, setShowAchievements, setAppId, setAppName }) {
+export default function GameCard({ gameList, favorites, cardFarming, achievementUnlocker, autoIdle, setFavorites, setAchievementUnlocker, setCardFarming, setAutoIdle }) {
+    const { setAppId, setAppName, showAchievements, setShowAchievements } = useContext(AppContext);
     const [isLoading, setIsLoading] = useState(true);
 
     setTimeout(() => {
@@ -31,7 +33,7 @@ export default function GameCard({ gameList, favorites, cardFarming, achievement
                             />
                             <div className='absolute flex items-center justify-evenly inset-0 bg-black bg-opacity-0 dark:bg-opacity-20 group-hover:bg-opacity-40 dark:group-hover:bg-opacity-50 transition-opacity duration-200'>
                                 <div className='absolute flex justify-center w-full bottom-0 left-0 px-2 pb-0.5 opacity-0 group-hover:opacity-100 duration-200'>
-                                    <p className='text-xs text-offwhite bg-black bg-opacity-50 rounded-sm px-1 select-none truncate'>
+                                    <p className='text-sm text-offwhite bg-black bg-opacity-50 rounded-sm px-1 select-none truncate'>
                                         {item.name}
                                     </p>
                                 </div>
@@ -59,14 +61,14 @@ export default function GameCard({ gameList, favorites, cardFarming, achievement
                                 handleIdle={handleIdle}
                                 viewAchievments={(item) => viewAchievments(item, setAppId, setAppName, setShowAchievements, showAchievements)}
                                 viewStorePage={viewStorePage}
-                                addToFavorites={(e, item) => addToFavorites(e, item, setFavorites)}
-                                removeFromFavorites={(e, item) => removeFromFavorites(e, item, setFavorites)}
-                                addToCardFarming={(e, item) => addToCardFarming(e, item, setCardFarming)}
-                                removeFromCardFarming={(e, item) => removeFromCardFarming(e, item, setCardFarming)}
-                                addToAchievementUnlocker={(e, item) => addToAchievementUnlocker(e, item, setAchievementUnlocker)}
-                                removeFromAchievementUnlocker={(e, item) => removeFromAchievementUnlocker(e, item, setAchievementUnlocker)}
-                                addToAutoIdle={(e, item) => addToAutoIdle(e, item, setAutoIdle)}
-                                removeFromAutoIdle={(e, item) => removeFromAutoIdle(e, item, setAutoIdle)}
+                                addToFavorites={(item) => addToFavorites(item, setFavorites)}
+                                removeFromFavorites={(item) => removeFromFavorites(item, setFavorites)}
+                                addToCardFarming={(item) => addToCardFarming(item, setCardFarming)}
+                                removeFromCardFarming={(item) => removeFromCardFarming(item, setCardFarming)}
+                                addToAchievementUnlocker={(item) => addToAchievementUnlocker(item, setAchievementUnlocker)}
+                                removeFromAchievementUnlocker={(item) => removeFromAchievementUnlocker(item, setAchievementUnlocker)}
+                                addToAutoIdle={(item) => addToAutoIdle(item, setAutoIdle)}
+                                removeFromAutoIdle={(item) => removeFromAutoIdle(item, setAutoIdle)}
                             />
                         </div>
                     </div>

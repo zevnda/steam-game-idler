@@ -1,7 +1,6 @@
 import React from 'react';
-import { Button, Modal, ModalContent, ModalBody, useDisclosure, Input, ModalFooter } from '@nextui-org/react';
+import { Button, Modal, ModalContent, ModalBody, useDisclosure, Input, ModalFooter, Alert, ModalHeader } from '@nextui-org/react';
 import { IoAdd } from 'react-icons/io5';
-import { FaInfoCircle } from 'react-icons/fa';
 import useManualAdd from '../hooks/useManualAdd';
 
 export default function ManualAdd({ setFavorites }) {
@@ -16,35 +15,40 @@ export default function ManualAdd({ setFavorites }) {
                 isIconOnly
                 className='rounded-full'
                 startContent={<IoAdd fontSize={18} />}
-                onClick={onOpen}
+                onPress={onOpen}
             />
 
-            <Modal isOpen={isOpen} onOpenChange={onOpenChange} onClose={() => setInputValue('')} className='bg-container border border-border rounded-md w-[350px]'>
+            <Modal isOpen={isOpen} onOpenChange={onOpenChange} onClose={() => setInputValue('')} className='bg-container'>
                 <ModalContent>
                     {(onClose) => (
                         <React.Fragment>
-                            <ModalBody className='flex gap-5 p-4'>
-                                <p className='text-sm font-semibold uppercase'>
-                                    Add a game
-                                </p>
-                                <p className='text-xs'>
+                            <ModalHeader className='flex flex-col gap-1 bg-modalheader border-b border-border' data-tauri-drag-region>
+                                Add A Game
+                            </ModalHeader>
+                            <ModalBody className='my-4'>
+                                <p className='text-sm'>
                                     Add games that you do not own, but have in your library, such as family shared games.
                                 </p>
 
-                                <div className='flex items-center gap-1 w-full p-1 bg-[#c3e3fb] dark:text-[#bdddff] dark:bg-[#366f9b] border border-[#93c4e9] dark:border-[#5585aa] rounded-sm'>
-                                    <FaInfoCircle fontSize={14} />
-                                    <p className='text-xs'>
-                                        Games will be added to your &apos;Favorites&apos; list.
-                                    </p>
-                                </div>
+                                <Alert
+                                    color='primary'
+                                    radius='sm'
+                                    className='border border-border'
+                                    classNames={{
+                                        base: ['flex items-center border border-border py-0.5'],
+                                        title: ['text-sm font-normal'],
+                                        iconWrapper: ['h-6 w-6'],
+                                        alertIcon: ['h-4 w-4']
+                                    }}
+                                    title='Games will be added to your &apos;Favorites&apos; list.'
+                                />
 
                                 <Input
                                     isClearable
-                                    size='sm'
                                     placeholder='Enter a game ID'
                                     classNames={{
-                                        inputWrapper: ['bg-input border border-inputborder hover:!bg-titlebar rounded group-data-[focus-visible=true]:ring-transparent group-data-[focus-visible=true]:ring-offset-transparent'],
-                                        input: ['text-xs']
+                                        inputWrapper: ['bg-input border border-inputborder hover:!bg-titlebar rounded group-data-[focus-within=true]:!bg-titlebar group-data-[focus-visible=true]:ring-transparent group-data-[focus-visible=true]:ring-offset-transparent'],
+                                        input: ['text-sm']
                                     }}
                                     value={inputValue}
                                     onChange={handleChange}
@@ -57,8 +61,8 @@ export default function ManualAdd({ setFavorites }) {
                                     size='sm'
                                     color='danger'
                                     variant='light'
-                                    className='max-h-[25px] font-semibold rounded'
-                                    onClick={onClose}
+                                    className='font-semibold rounded'
+                                    onPress={onClose}
                                 >
                                     Cancel
                                 </Button>
@@ -67,8 +71,8 @@ export default function ManualAdd({ setFavorites }) {
                                     color='primary'
                                     isLoading={isLoading}
                                     isDisabled={inputValue.length === 0}
-                                    className='max-h-[25px] font-semibold rounded'
-                                    onClick={() => handleAdd(onClose)}
+                                    className='font-semibold rounded'
+                                    onPress={() => handleAdd(onClose)}
                                 >
                                     Add
                                 </Button>

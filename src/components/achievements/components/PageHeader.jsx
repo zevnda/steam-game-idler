@@ -1,60 +1,39 @@
-import React from 'react';
-import { Button, Input, Select, SelectItem } from '@nextui-org/react';
+import React, { useContext } from 'react';
+import { Button, Tooltip } from '@nextui-org/react';
 import { IoMdArrowRoundBack } from 'react-icons/io';
-import { MdSort } from 'react-icons/md';
-import { RiSearchLine } from 'react-icons/ri';
 import usePageHeader from '../hooks/usePageHeader';
-import { sortOptions, handleChange } from '../utils/pageHeaderHandler';
+import { AppContext } from '../../layouts/components/AppContext';
+import ExtLink from '../../ui/components/ExtLink';
+import { SiSteamdb } from 'react-icons/si';
 
-export default function PageHeader({ setShowAchievements, achievementList, setAchievementList, achievementsUnavailable, inputValue, setInputValue, percentageMap, userGameAchievementsMap, currentTab }) {
-    const { setIsSorted, handleClick, handleInputChange } = usePageHeader({ setShowAchievements, setInputValue });
+export default function PageHeader() {
+    const { appId, appName } = useContext(AppContext);
+    const { handleClick } = usePageHeader();
 
     return (
         <React.Fragment>
             <div className='flex justify-between items-center mb-4'>
-                <Button
-                    size='sm'
-                    color='primary'
-                    isIconOnly
-                    className='w-fit rounded duration-50'
-                    startContent={<IoMdArrowRoundBack fontSize={18} />}
-                    onClick={handleClick}
-                />
-
-                <Input
-                    isClearable
-                    size='sm'
-                    isDisabled={achievementsUnavailable || currentTab === 'statistics'}
-                    placeholder='Search for an achievement'
-                    startContent={<RiSearchLine />}
-                    className='max-w-[400px]'
-                    classNames={{ inputWrapper: ['bg-input border border-inputborder hover:!bg-titlebar rounded'] }}
-                    value={inputValue}
-                    onChange={handleInputChange}
-                    onClear={() => { setInputValue(''); }}
-                />
-
-                <div className='flex gap-2'>
-                    <Select
-                        aria-label='sort'
-                        isDisabled={inputValue.length > 0 || achievementsUnavailable || currentTab === 'statistics'}
-                        disallowEmptySelection
-                        radius='none'
+                <div className='flex gap-3'>
+                    <Button
                         size='sm'
-                        startContent={<MdSort fontSize={26} />}
-                        items={sortOptions}
-                        className='w-[200px]'
-                        classNames={{
-                            listbox: ['p-0'],
-                            value: ['text-xs'],
-                            trigger: ['bg-input border border-inputborder data-[hover=true]:!bg-titlebar data-[open=true]:!bg-titlebar duration-100 rounded'],
-                            popoverContent: ['bg-base border border-border rounded']
-                        }}
-                        defaultSelectedKeys={['percent']}
-                        onSelectionChange={(e) => { handleChange(e, achievementList, setAchievementList, percentageMap, userGameAchievementsMap, setIsSorted); }}
-                    >
-                        {(item) => <SelectItem classNames={{ title: ['text-xs'], base: ['rounded'] }}>{item.label}</SelectItem>}
-                    </Select>
+                        color='primary'
+                        isIconOnly
+                        className='w-fit rounded-full duration-50'
+                        startContent={<IoMdArrowRoundBack fontSize={18} />}
+                        onPress={handleClick}
+                    />
+                    <div className='flex items-center gap-2 w-full'>
+                        <p className='text-lg font-semibold m-0 p-0'>
+                            {appName}
+                        </p>
+                        <Tooltip content='View achievement details on SteamDB' placement='right' closeDelay={0} size='sm'>
+                            <div>
+                                <ExtLink href={`https://steamdb.info/app/${appId}/stats/`}>
+                                    <SiSteamdb fontSize={14} className='text-sgi' />
+                                </ExtLink>
+                            </div>
+                        </Tooltip>
+                    </div>
                 </div>
             </div>
         </React.Fragment>

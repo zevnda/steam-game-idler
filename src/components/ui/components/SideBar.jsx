@@ -1,18 +1,15 @@
-import React from 'react';
-import { Modal, ModalContent, ModalBody, Button, ModalFooter } from '@nextui-org/react';
+import React, { useContext } from 'react';
+import { Modal, ModalContent, ModalBody, Button, ModalFooter, ModalHeader } from '@nextui-org/react';
 import { motion } from 'framer-motion';
 import { FaSignOutAlt } from 'react-icons/fa';
 import { IoGameController, IoGift, IoSettings } from 'react-icons/io5';
 import Sparkles from './Sparkles';
 import useSideBar from '../hooks/useSideBar';
+import { AppContext } from '../../layouts/components/AppContext';
 
-export default function SideBar({ setUserSummary, activePage, setActivePage, showFreeGamesTab }) {
-    const {
-        isOpen,
-        onOpenChange,
-        openConfirmation,
-        handleLogout,
-    } = useSideBar(setUserSummary, activePage, setActivePage);
+export default function SideBar() {
+    const { showFreeGamesTab, activePage, setActivePage } = useContext(AppContext);
+    const { isOpen, onOpenChange, openConfirmation, handleLogout } = useSideBar(activePage, setActivePage);
 
     return (
         <React.Fragment>
@@ -75,15 +72,15 @@ export default function SideBar({ setUserSummary, activePage, setActivePage, sho
                 </div>
             </div>
 
-            <Modal isOpen={isOpen} onOpenChange={onOpenChange} className='bg-container border border-border rounded-md w-[350px]'>
+            <Modal isOpen={isOpen} onOpenChange={onOpenChange} className='bg-container'>
                 <ModalContent>
                     {(onClose) => (
                         <React.Fragment>
-                            <ModalBody className='flex gap-5 p-4'>
-                                <p className='text-sm font-semibold uppercase'>
-                                    Confirm
-                                </p>
-                                <p className='text-xs mb-2'>
+                            <ModalHeader className='flex flex-col gap-1 bg-modalheader border-b border-border' data-tauri-drag-region>
+                                Confirm
+                            </ModalHeader>
+                            <ModalBody className='my-4'>
+                                <p className='text-sm'>
                                     Are you sure you want to log out?
                                 </p>
                             </ModalBody>
@@ -92,16 +89,16 @@ export default function SideBar({ setUserSummary, activePage, setActivePage, sho
                                     size='sm'
                                     color='danger'
                                     variant='light'
-                                    className='max-h-[25px] font-semibold rounded'
-                                    onClick={onClose}
+                                    className='font-semibold rounded'
+                                    onPress={onClose}
                                 >
                                     Cancel
                                 </Button>
                                 <Button
                                     size='sm'
                                     color='primary'
-                                    className='max-h-[25px] font-semibold rounded'
-                                    onClick={() => handleLogout(onClose)}
+                                    className='font-semibold rounded'
+                                    onPress={() => handleLogout(onClose)}
                                 >
                                     Confirm
                                 </Button>

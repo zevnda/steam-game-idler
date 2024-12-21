@@ -14,7 +14,7 @@ export default function Logs() {
                         size='sm'
                         color='primary'
                         className='font-semibold rounded'
-                        onClick={() => handleOpenLogFile(logPath)}
+                        onPress={() => handleOpenLogFile(logPath)}
                     >
                         Open in File Explorer
                     </Button>
@@ -22,7 +22,7 @@ export default function Logs() {
                         size='sm'
                         color='danger'
                         className='font-semibold rounded'
-                        onClick={handleClearLogs}
+                        onPress={handleClearLogs}
                     >
                         Clear logs
                     </Button>

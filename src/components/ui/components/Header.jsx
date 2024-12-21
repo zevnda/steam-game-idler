@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import ThemeSwitch from './theme/ThemeSwitch';
 import { Divider, Input } from '@nextui-org/react';
 import { BiSolidLeaf } from 'react-icons/bi';
@@ -8,15 +8,19 @@ import { IoClose } from 'react-icons/io5';
 import { RiSearchLine } from 'react-icons/ri';
 import useHeader from '../hooks/useHeader';
 import Notifications from '../../notifications/components/Notifications';
+import { AppContext } from '../../layouts/components/AppContext';
 
-export default function Header({ inputValue, setInputValue, setIsQuery }) {
+export default function Header() {
+    const { activePage, showAchievements, gameQueryValue, setGameQueryValue, achievementQueryValue, setAchievementQueryValue, achievementsUnavailable, currentTab } = useContext(AppContext);
+
     const {
         windowMinimize,
         windowToggleMaximize,
         windowClose,
-        handleChange,
+        handleGameQueryChange,
+        handleAchievementQueryChange,
         handleKeyDown
-    } = useHeader(setInputValue, setIsQuery);
+    } = useHeader(setGameQueryValue, setAchievementQueryValue);
 
     return (
         <React.Fragment>
@@ -28,17 +32,33 @@ export default function Header({ inputValue, setInputValue, setIsQuery }) {
 
                     <div className='flex justify-center items-center flex-grow h-full border-b border-border'>
                         <div className='flex flex-grow p-4' data-tauri-drag-region>
-                            <Input
-                                isClearable
-                                placeholder='Search for a game'
-                                startContent={<RiSearchLine />}
-                                className='max-w-[400px]'
-                                classNames={{ inputWrapper: ['bg-input border border-inputborder hover:!bg-titlebar rounded'] }}
-                                value={inputValue}
-                                onChange={handleChange}
-                                onKeyDown={handleKeyDown}
-                                onClear={() => { setInputValue(''); }}
-                            />
+                            {activePage === 'games' && !showAchievements && (
+                                <Input
+                                    isClearable
+                                    isDisabled={activePage !== 'games' || showAchievements}
+                                    placeholder='Search for a game'
+                                    startContent={<RiSearchLine />}
+                                    className='max-w-[400px]'
+                                    classNames={{ inputWrapper: ['bg-input border border-inputborder hover:!bg-titlebar rounded group-data-[focus-within=true]:!bg-titlebar'] }}
+                                    value={gameQueryValue}
+                                    onChange={handleGameQueryChange}
+                                    onKeyDown={handleKeyDown}
+                                    onClear={() => { setGameQueryValue(''); }}
+                                />
+                            )}
+                            {showAchievements && (
+                                <Input
+                                    isClearable
+                                    isDisabled={achievementsUnavailable || currentTab === 'statistics'}
+                                    placeholder='Search for an achievement'
+                                    startContent={<RiSearchLine />}
+                                    className='max-w-[400px]'
+                                    classNames={{ inputWrapper: ['bg-input border border-inputborder hover:!bg-titlebar rounded group-data-[focus-within=true]:!bg-titlebar'] }}
+                                    value={achievementQueryValue}
+                                    onChange={handleAchievementQueryChange}
+                                    onClear={() => { setAchievementQueryValue(''); }}
+                                />
+                            )}
                         </div>
 
                         <Notifications />

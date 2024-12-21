@@ -14,6 +14,7 @@ export default function Notifications() {
         setUnseenNotifications,
         dropdownRef,
         markAsSeen,
+        markAllAsSeen,
         handleOpenUrl
     } = useNotifications();
 
@@ -35,14 +36,24 @@ export default function Notifications() {
 
                 <DropdownMenu
                     aria-label='notifications'
-                    className='w-[300px] max-h-[275px] overflow-y-auto p-0 m-0'
+                    className='w-[350px] max-h-[275px] overflow-y-auto p-0 m-0'
                     classNames={{ list: ['gap-0'] }}
                     ref={dropdownRef}
                 >
-                    {notifications.length === 0 && (
+                    {notifications.length === 0 ? (
                         <DropdownItem textValue='mark-as-seen' className='rounded-none m-0 border-b border-border'>
-                            <p className='w-full text-xs text-center my-2'>
+                            <p className='w-full text-sm text-center my-2'>
                                 No notifications
+                            </p>
+                        </DropdownItem>
+                    ) : (
+                        <DropdownItem
+                            textValue='mark-as-seen'
+                            className='rounded-none m-0 border-b border-border'
+                            onPress={() => markAllAsSeen(notifications, setUnseenNotifications)}
+                        >
+                            <p className='w-full text-xs my-0.5 pr-3 text-end'>
+                                Mark all as read
                             </p>
                         </DropdownItem>
                     )}
@@ -51,7 +62,7 @@ export default function Notifications() {
                             textValue={notification.title}
                             className='rounded-none m-0 border-b border-border'
                             key={index}
-                            onClick={(e) => handleOpenUrl(e, notification.url, notification.id, markAsSeen, unseenNotifications, setUnseenNotifications)}
+                            onPress={() => handleOpenUrl(notification.url, notification.id, markAsSeen, unseenNotifications, setUnseenNotifications)}
                         >
                             <div className='flex items-center py-0.5 px-1'>
                                 {unseenNotifications.some(unseen => unseen.id === notification.id) ? (
@@ -63,8 +74,8 @@ export default function Notifications() {
                                         <IoCheckmark fontSize={14} className='text-green-500' />
                                     </div>
                                 )}
-                                <div className='flex flex-col gap-1 max-w-[95%] my-1'>
-                                    <p className='truncate'>
+                                <div className='flex flex-col gap-0.5 max-w-[300px] my-1'>
+                                    <p className={`truncate ${unseenNotifications.some(unseen => unseen.id === notification.id) ? 'font-semibold' : 'font-normal'}`}>
                                         {notification.title}
                                     </p>
                                     <p className='truncate'>

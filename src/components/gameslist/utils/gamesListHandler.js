@@ -1,5 +1,6 @@
 import { invoke } from '@tauri-apps/api/tauri';
 
+// Fetches the games list and recent games from cache or API
 export const fetchGamesList = async (steamId) => {
     const cachedGameList = sessionStorage.getItem('gamesListCache');
     const cachedRecentGames = sessionStorage.getItem('recentGamesCache');
@@ -19,7 +20,8 @@ export const fetchGamesList = async (steamId) => {
     }
 };
 
-export const sortAndFilterGames = (gameList, recentGames, sortStyle, isQuery, inputValue, favorites, cardFarming, achievementUnlocker, autoIdle) => {
+// Sort and filter the games list based on sortStyle
+export const sortAndFilterGames = (gameList, recentGames, sortStyle, isQuery, gameQueryValue, favorites, cardFarming, achievementUnlocker, autoIdle) => {
     let sortedAndFilteredGames = [...gameList];
     switch (sortStyle) {
         case 'a-z':
@@ -52,14 +54,15 @@ export const sortAndFilterGames = (gameList, recentGames, sortStyle, isQuery, in
         default:
             break;
     }
-    if (isQuery && inputValue.trim()) {
+    if (isQuery && gameQueryValue.trim()) {
         sortedAndFilteredGames = sortedAndFilteredGames.filter(item =>
-            item.name.toLowerCase().includes(inputValue.toLowerCase().trim())
+            item.name.toLowerCase().includes(gameQueryValue.toLowerCase().trim())
         );
     }
     return sortedAndFilteredGames;
 };
 
+// Fetch lists from local storage
 export const fetchLocalStorageLists = () => {
     const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
     const cardFarming = JSON.parse(localStorage.getItem('cardFarming')) || [];

@@ -1,12 +1,23 @@
-import React, { useState } from 'react';
-import { Modal, ModalContent, ModalBody, Button, useDisclosure, ModalFooter, Tooltip } from '@nextui-org/react';
+import React, { useContext, useState } from 'react';
+import { Modal, ModalContent, ModalBody, Button, useDisclosure, ModalFooter, ModalHeader, Select, SelectItem } from '@nextui-org/react';
 import { handleUnlockAll, handleLockAll, handleUpdateAll } from '@/src/components/achievements/utils/tabButtonsHandler';
-import ExtLink from '../../ui/components/ExtLink';
-import { SiSteamdb } from 'react-icons/si';
+import { sortOptions, handleChange } from '../utils/pageHeaderHandler';
+import { AppContext } from '../../layouts/components/AppContext';
+import { MdSort } from 'react-icons/md';
 
-export default function TabButtons({ appId, appName, achievementsUnavailable, statisticsUnavailable, btnLoading, achievementList, inputValue, setBtnLoading, currentTab, initialStatValues, newStatValues }) {
+export default function TabButtons({ initialStatValues, newStatValues, btnLoading, setBtnLoading, setIsSorted, userGameAchievementsMap, percentageMap }) {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const [state, setState] = useState('');
+    const {
+        appId,
+        appName,
+        achievementQueryValue,
+        achievementList,
+        setAchievementList,
+        achievementsUnavailable,
+        statisticsUnavailable,
+        currentTab
+    } = useContext(AppContext);
 
     const handleSetState = (state) => {
         setState(state);
@@ -16,18 +27,6 @@ export default function TabButtons({ appId, appName, achievementsUnavailable, st
     return (
         <React.Fragment>
             <div className='flex justify-center items-center w-full min-h-8'>
-                <div className='flex items-center gap-2 w-full'>
-                    <p className='m-0 p-0'>
-                        {appName}
-                    </p>
-                    <Tooltip content='View achievement details on SteamDB' placement='right' closeDelay={0} size='sm'>
-                        <div>
-                            <ExtLink href={`https://steamdb.info/app/${appId}/stats/`}>
-                                <SiSteamdb className='text-sgi' />
-                            </ExtLink>
-                        </div>
-                    </Tooltip>
-                </div>
                 <div className='flex justify-end w-full'>
                     {!achievementsUnavailable && currentTab === 'achievements' && (
                         <div className='flex items-center gap-2'>
@@ -35,9 +34,9 @@ export default function TabButtons({ appId, appName, achievementsUnavailable, st
                                 size='sm'
                                 color='primary'
                                 isLoading={btnLoading}
-                                isDisabled={!achievementList || inputValue.length > 0 || currentTab === 'statistics'}
+                                isDisabled={!achievementList || achievementQueryValue.length > 0 || currentTab === 'statistics'}
                                 className='font-semibold rounded'
-                                onClick={() => handleSetState('unlock')}
+                                onPress={() => handleSetState('unlock')}
                             >
                                 Unlock all
                             </Button>
@@ -45,9 +44,9 @@ export default function TabButtons({ appId, appName, achievementsUnavailable, st
                                 size='sm'
                                 color='danger'
                                 isLoading={btnLoading}
-                                isDisabled={!achievementList || inputValue.length > 0}
+                                isDisabled={!achievementList || achievementQueryValue.length > 0}
                                 className='font-semibold rounded'
-                                onClick={() => handleSetState('lock')}
+                                onPress={() => handleSetState('lock')}
                             >
                                 Lock all
                             </Button>
@@ -61,7 +60,7 @@ export default function TabButtons({ appId, appName, achievementsUnavailable, st
                                 isLoading={btnLoading}
                                 isDisabled={Object.keys(initialStatValues).length < 1}
                                 className='font-semibold rounded'
-                                onClick={() => handleUpdateAll(appId, appName, initialStatValues, newStatValues)}
+                                onPress={() => handleUpdateAll(appId, appName, initialStatValues, newStatValues)}
                             >
                                 Save changes
                             </Button>
@@ -70,16 +69,39 @@ export default function TabButtons({ appId, appName, achievementsUnavailable, st
                 </div>
             </div>
 
-            <Modal isOpen={isOpen} onOpenChange={onOpenChange} className='bg-container border border-border rounded-md w-[350px]'>
+            {!achievementsUnavailable && currentTab === 'achievements' && (
+                <Select
+                    size='sm'
+                    aria-label='sort'
+                    isDisabled={achievementQueryValue.length > 0 || achievementsUnavailable || currentTab === 'statistics'}
+                    disallowEmptySelection
+                    radius='none'
+                    startContent={<MdSort fontSize={26} />}
+                    items={sortOptions}
+                    className='w-[230px]'
+                    classNames={{
+                        listbox: ['p-0'],
+                        value: ['text-sm'],
+                        trigger: ['bg-input border border-inputborder data-[hover=true]:!bg-titlebar data-[open=true]:!bg-titlebar duration-100 rounded'],
+                        popoverContent: ['bg-base border border-border rounded']
+                    }}
+                    defaultSelectedKeys={['percent']}
+                    onSelectionChange={(e) => { handleChange(e, achievementList, setAchievementList, percentageMap, userGameAchievementsMap, setIsSorted); }}
+                >
+                    {(item) => <SelectItem classNames={{ title: ['text-sm'], base: ['rounded'] }}>{item.label}</SelectItem>}
+                </Select>
+            )}
+
+            <Modal isOpen={isOpen} onOpenChange={onOpenChange} className='bg-container'>
                 <ModalContent>
                     {(onClose) => (
                         <React.Fragment>
-                            <ModalBody className='flex gap-5 p-4'>
-                                <p className='text-sm font-semibold uppercase'>
-                                    Confirm
-                                </p>
-                                <p className='text-xs mb-2'>
-                                    Are you sure you want to {state} all achievements?
+                            <ModalHeader className='flex flex-col gap-1 bg-modalheader border-b border-border' data-tauri-drag-region>
+                                Confirm
+                            </ModalHeader>
+                            <ModalBody className='my-4'>
+                                <p className='text-sm'>
+                                    Are you sure you want to <strong>{state}</strong> all achievements?
                                 </p>
                             </ModalBody>
                             <ModalFooter className='border-t border-border bg-footer px-4 py-3'>
@@ -87,16 +109,16 @@ export default function TabButtons({ appId, appName, achievementsUnavailable, st
                                     size='sm'
                                     color='danger'
                                     variant='light'
-                                    className='max-h-[25px] font-semibold rounded'
-                                    onClick={onClose}
+                                    className='font-semibold rounded'
+                                    onPress={onClose}
                                 >
                                     Cancel
                                 </Button>
                                 <Button
                                     size='sm'
                                     color='primary'
-                                    className='max-h-[25px] font-semibold rounded'
-                                    onClick={state === 'unlock' ? () => handleUnlockAll(appId, appName, achievementList, setBtnLoading, onClose) : () => handleLockAll(appId, appName, achievementList, setBtnLoading, onClose)}
+                                    className='font-semibold rounded'
+                                    onPress={state === 'unlock' ? () => handleUnlockAll(appId, appName, achievementList, setBtnLoading, onClose) : () => handleLockAll(appId, appName, achievementList, setBtnLoading, onClose)}
                                 >
                                     Confirm
                                 </Button>

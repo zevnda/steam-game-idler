@@ -9,7 +9,7 @@ namespace SteamUtility
     {
         static Dictionary<string, ICommand> commands = new Dictionary<string, ICommand>
         {
-            { "check_steam", new CheckSteamCommand() },
+            { "get_steam_users", new GetSteamUsers() },
             { "idle", new IdleCommand() },
             { "update_stat", new StatsCommand() },
             { "toggle_achievement", new ToggleAchievementCommand() },

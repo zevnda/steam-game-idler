@@ -32,8 +32,7 @@ export const viewStorePage = async (item) => {
     }
 };
 
-export const addToFavorites = (e, item, setFavorites) => {
-    e.stopPropagation();
+export const addToFavorites = (item, setFavorites) => {
     setTimeout(() => {
         try {
             let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
@@ -51,8 +50,7 @@ export const addToFavorites = (e, item, setFavorites) => {
     }, 500);
 };
 
-export const removeFromFavorites = (e, item, setFavorites) => {
-    e.stopPropagation();
+export const removeFromFavorites = (item, setFavorites) => {
     setTimeout(() => {
         try {
             const favorites = (localStorage.getItem('favorites') && JSON.parse(localStorage.getItem('favorites'))) || [];
@@ -70,8 +68,8 @@ export const removeFromFavorites = (e, item, setFavorites) => {
     }, 500);
 };
 
-export const addToCardFarming = (e, item, setCardFarming) => {
-    e.stopPropagation();
+export const addToCardFarming = (item, setCardFarming) => {
+    console.log(item);
     setTimeout(() => {
         try {
             let cardFarming = JSON.parse(localStorage.getItem('cardFarming')) || [];
@@ -89,8 +87,7 @@ export const addToCardFarming = (e, item, setCardFarming) => {
     }, 500);
 };
 
-export const removeFromCardFarming = (e, item, setCardFarming) => {
-    e.stopPropagation();
+export const removeFromCardFarming = (item, setCardFarming) => {
     setTimeout(() => {
         try {
             const cardFarming = (localStorage.getItem('cardFarming') && JSON.parse(localStorage.getItem('cardFarming'))) || [];
@@ -108,8 +105,7 @@ export const removeFromCardFarming = (e, item, setCardFarming) => {
     }, 500);
 };
 
-export const addToAchievementUnlocker = (e, item, setAchievementUnlocker) => {
-    e.stopPropagation();
+export const addToAchievementUnlocker = (item, setAchievementUnlocker) => {
     setTimeout(() => {
         try {
             let achievementUnlocker = JSON.parse(localStorage.getItem('achievementUnlocker')) || [];
@@ -127,8 +123,7 @@ export const addToAchievementUnlocker = (e, item, setAchievementUnlocker) => {
     }, 500);
 };
 
-export const removeFromAchievementUnlocker = (e, item, setAchievementUnlocker) => {
-    e.stopPropagation();
+export const removeFromAchievementUnlocker = (item, setAchievementUnlocker) => {
     setTimeout(() => {
         try {
             const achievementUnlocker = (localStorage.getItem('achievementUnlocker') && JSON.parse(localStorage.getItem('achievementUnlocker'))) || [];
@@ -146,8 +141,7 @@ export const removeFromAchievementUnlocker = (e, item, setAchievementUnlocker) =
     }, 500);
 };
 
-export const addToAutoIdle = (e, item, setAutoIdle) => {
-    e.stopPropagation();
+export const addToAutoIdle = (item, setAutoIdle) => {
     setTimeout(() => {
         try {
             let autoIdle = (localStorage.getItem('autoIdle') && JSON.parse(localStorage.getItem('autoIdle'))) || [];
@@ -169,8 +163,7 @@ export const addToAutoIdle = (e, item, setAutoIdle) => {
     }, 500);
 };
 
-export const removeFromAutoIdle = (e, item, setAutoIdle) => {
-    e.stopPropagation();
+export const removeFromAutoIdle = (item, setAutoIdle) => {
     setTimeout(() => {
         try {
             const autoIdle = (localStorage.getItem('autoIdle') && JSON.parse(localStorage.getItem('autoIdle'))) || [];

@@ -19,48 +19,48 @@ export default function CardMenu({ item, favorites, cardFarming, achievementUnlo
                         className='rounded'
                         key='idle'
                         startContent={<IoPlay />}
-                        onClick={() => handleIdle(item)}
+                        onPress={() => handleIdle(item)}
                         textValue='Idle game'
                     >
-                        <p className='text-xs'>Idle game</p>
+                        <p className='text-sms'>Idle game</p>
                     </DropdownItem>
                     <DropdownItem
                         className='rounded'
                         key='achievements'
                         startContent={<FaAward />}
-                        onClick={() => viewAchievments(item)}
+                        onPress={() => viewAchievments(item)}
                         textValue='View achievements'
                     >
-                        <p className='text-xs'>View achievements</p>
+                        <p className='text-sms'>View achievements</p>
                     </DropdownItem>
                     <DropdownItem
                         className='rounded'
                         key='store'
                         startContent={<FaSteam fontSize={13} />}
-                        onClick={() => viewStorePage(item)}
+                        onPress={() => viewStorePage(item)}
                         textValue='View store page'
                     >
-                        <p className='text-xs'>View store page</p>
+                        <p className='text-sms'>View store page</p>
                     </DropdownItem>
                     {favorites.some(arr => arr.appid === item.appid) ? (
                         <DropdownItem
                             className='rounded'
                             key='fav-rem'
                             startContent={<TiMinus />}
-                            onClick={(e) => removeFromFavorites(e, item)}
+                            onPress={() => removeFromFavorites(item)}
                             textValue='Remove from favorites'
                         >
-                            <p className='text-xs'>Remove from favorites</p>
+                            <p className='text-sms'>Remove from favorites</p>
                         </DropdownItem>
                     ) : (
                         <DropdownItem
                             className='rounded'
                             key='fav-add'
                             startContent={<TiPlus />}
-                            onClick={(e) => addToFavorites(e, item)}
+                            onPress={() => addToFavorites(item)}
                             textValue='Add to favorites'
                         >
-                            <p className='text-xs'>Add to favorites</p>
+                            <p className='text-sms'>Add to favorites</p>
                         </DropdownItem>
                     )}
                     {cardFarming.some(arr => arr.appid === item.appid) ? (
@@ -68,20 +68,20 @@ export default function CardMenu({ item, favorites, cardFarming, achievementUnlo
                             className='rounded'
                             key='cf-rem'
                             startContent={<TiMinus />}
-                            onClick={(e) => removeFromCardFarming(e, item)}
+                            onPress={() => removeFromCardFarming(item)}
                             textValue='Remove from card farming'
                         >
-                            <p className='text-xs'>Remove from card farming</p>
+                            <p className='text-sms'>Remove from card farming</p>
                         </DropdownItem>
                     ) : (
                         <DropdownItem
                             className='rounded'
                             key='cf-add'
                             startContent={<TiPlus />}
-                            onClick={(e) => addToCardFarming(e, item)}
+                            onPress={() => addToCardFarming(item)}
                             textValue='Add to card farming'
                         >
-                            <p className='text-xs'>Add to card farming</p>
+                            <p className='text-sms'>Add to card farming</p>
                         </DropdownItem>
                     )}
                     {achievementUnlocker.some(arr => arr.appid === item.appid) ? (
@@ -89,20 +89,20 @@ export default function CardMenu({ item, favorites, cardFarming, achievementUnlo
                             className='rounded'
                             key='au-rem'
                             startContent={<TiMinus />}
-                            onClick={(e) => removeFromAchievementUnlocker(e, item)}
+                            onPress={() => removeFromAchievementUnlocker(item)}
                             textValue='Remove from achievement unlocker'
                         >
-                            <p className='text-xs'>Remove from achievement unlocker</p>
+                            <p className='text-sms'>Remove from achievement unlocker</p>
                         </DropdownItem>
                     ) : (
                         <DropdownItem
                             className='rounded'
                             key='au-add'
                             startContent={<TiPlus />}
-                            onClick={(e) => addToAchievementUnlocker(e, item)}
+                            onPress={() => addToAchievementUnlocker(item)}
                             textValue='Add to achievement unlocker'
                         >
-                            <p className='text-xs'>Add to achievement unlocker</p>
+                            <p className='text-sms'>Add to achievement unlocker</p>
                         </DropdownItem>
                     )}
                     {autoIdle.some(arr => arr.appid === item.appid) ? (
@@ -110,20 +110,20 @@ export default function CardMenu({ item, favorites, cardFarming, achievementUnlo
                             className='rounded'
                             key='auto-rem'
                             startContent={<TiMinus />}
-                            onClick={(e) => removeFromAutoIdle(e, item)}
+                            onPress={() => removeFromAutoIdle(item)}
                             textValue='Remove from auto idle'
                         >
-                            <p className='text-xs'>Remove from auto idle</p>
+                            <p className='text-sms'>Remove from auto idle</p>
                         </DropdownItem>
                     ) : (
                         <DropdownItem
                             className='rounded'
                             key='auto-add'
                             startContent={<TiPlus />}
-                            onClick={(e) => addToAutoIdle(e, item)}
+                            onPress={() => addToAutoIdle(item)}
                             textValue='Add to auto idle'
                         >
-                            <p className='text-xs'>Add to auto idle</p>
+                            <p className='text-sms'>Add to auto idle</p>
                         </DropdownItem>
                     )}
                 </DropdownMenu>

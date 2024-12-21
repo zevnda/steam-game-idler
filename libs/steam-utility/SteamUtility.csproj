@@ -18,10 +18,10 @@
         <IntermediateOutputPath>..\..\libs\temp\</IntermediateOutputPath>
     </PropertyGroup>
     <!-- Post Build (dev) -->
-    <!-- <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
         <Copy SourceFiles="$(OutputPath)$(AssemblyName).exe" DestinationFolder="..\..\src-tauri\target\debug\libs\" />
         <Copy SourceFiles="$(OutputPath)$(AssemblyName).exe" DestinationFolder="..\..\src-tauri\target\release\libs\" />
-    </Target> -->
+    </Target>
     <!-- References -->
     <ItemGroup>
         <Reference Include="Newtonsoft.Json">
@@ -53,12 +53,12 @@
         </Compile>
         <Compile Include="Program.cs" />
         <Compile Include="Commands\ICommand.cs" />
-        <Compile Include="Commands\CheckSteamCommand.cs" />
         <Compile Include="Commands\IdleCommand.cs" />
         <Compile Include="Commands\StatsCommand.cs" />
         <Compile Include="Commands\ToggleAchievementCommand.cs" />
         <Compile Include="Commands\LockAchievementCommand.cs" />
         <Compile Include="Commands\UnlockAchievementCommand.cs" />
+        <Compile Include="Commands\GetSteamUsers.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
     </ItemGroup>
     <!-- Embedded Resources -->

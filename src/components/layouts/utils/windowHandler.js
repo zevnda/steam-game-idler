@@ -5,6 +5,7 @@ import { invoke } from '@tauri-apps/api/tauri';
 import { toast } from 'react-toastify';
 import UpdateToast from '@/src/components/updates/components/UpdateToast';
 
+// Check for updates and handle the Tauri update process
 export const checkForUpdates = async (setUpdateManifest, setInitUpdate) => {
     try {
         const { shouldUpdate, manifest } = await checkUpdate();
@@ -23,6 +24,7 @@ export const checkForUpdates = async (setUpdateManifest, setInitUpdate) => {
     }
 };
 
+// Show changelog modal if SGI was updated
 export const changelogModal = (setShowChangelogModal) => {
     try {
         const hasUpdated = localStorage.getItem('hasUpdated');
@@ -37,6 +39,7 @@ export const changelogModal = (setShowChangelogModal) => {
     }
 };
 
+// Set default settings and updates user summary
 export const defaultSettings = (setUserSummary) => {
     const defaultSettings = {
         general: {
@@ -75,6 +78,7 @@ export const defaultSettings = (setUserSummary) => {
     }
 };
 
+// Check for free games and handle notifications
 export const checkForFreeGames = async (setFreeGamesList, setShowFreeGamesTab) => {
     try {
         const lastNotifiedTimestamp = localStorage.getItem('lastNotifiedTimestamp');
@@ -104,6 +108,7 @@ export const checkForFreeGames = async (setFreeGamesList, setShowFreeGamesTab) =
     }
 };
 
+// Starts auto idling games that are not currently running
 export const startAutoIdleGames = async () => {
     try {
         const autoIdle = (localStorage.getItem('autoIdle') && JSON.parse(localStorage.getItem('autoIdle'))) || [];

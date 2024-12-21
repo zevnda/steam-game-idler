@@ -1,8 +1,11 @@
-import { useCallback } from 'react';
+import { useCallback, useContext } from 'react';
 import { logEvent, toggleAchievement } from '@/src/utils/utils';
 import { toast } from 'react-toastify';
+import { AppContext } from '../../layouts/components/AppContext';
 
-const useAchievementsList = (appId, appName) => {
+const useAchievementsList = () => {
+    const { appId, appName } = useContext(AppContext);
+
     const handleToggle = useCallback(async (achievementName, type) => {
         try {
             const status = await toggleAchievement(appId, achievementName, false);

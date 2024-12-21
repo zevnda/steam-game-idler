@@ -6,8 +6,8 @@ import { IoRefresh } from 'react-icons/io5';
 import ManualAdd from './ManualAdd';
 import { usePageHeader } from '../hooks/usePageHeader';
 
-export default function PageHeader({ steamId, setActivePage, sortStyle, setSortStyle, filteredGames, visibleGames, setFavorites, setRefreshKey }) {
-    const { handleSorting, handleRefetch } = usePageHeader({ steamId, setSortStyle, setRefreshKey });
+export default function PageHeader({ sortStyle, setSortStyle, filteredGames, visibleGames, setFavorites, setRefreshKey }) {
+    const { handleSorting, handleRefetch } = usePageHeader({ setSortStyle, setRefreshKey });
 
     const sortOptions = [
         { key: 'a-z', label: 'Title Ascending' },
@@ -43,7 +43,7 @@ export default function PageHeader({ steamId, setActivePage, sortStyle, setSortS
                 <div className='flex justify-end items-center gap-2'>
                     <ManualAdd setFavorites={setFavorites} />
 
-                    <Automate setActivePage={setActivePage} />
+                    <Automate />
 
                     <Select
                         aria-label='sort'
@@ -57,13 +57,13 @@ export default function PageHeader({ steamId, setActivePage, sortStyle, setSortS
                         onSelectionChange={(e) => { handleSorting(e); }}
                         classNames={{
                             listbox: ['p-0'],
-                            value: ['text-xs'],
+                            value: ['text-sm'],
                             trigger: ['bg-titlebar border border-border data-[hover=true]:!bg-inputborder data-[open=true]:!bg-titlebar duration-100 rounded'],
                             popoverContent: ['bg-base border border-border rounded justify-start'],
-                            listboxWrapper: ['max-h-[270px]']
+                            listboxWrapper: ['min-h-[268px]']
                         }}
                     >
-                        {(item) => <SelectItem classNames={{ title: ['text-xs'], base: ['rounded'] }}>{item.label}</SelectItem>}
+                        {(item) => <SelectItem classNames={{ title: ['text-sm'], base: ['rounded'] }}>{item.label}</SelectItem>}
                     </Select>
                 </div>
             </div>

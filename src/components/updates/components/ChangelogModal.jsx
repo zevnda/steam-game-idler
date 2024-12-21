@@ -12,7 +12,7 @@ export default function ChangelogModal({ showChangelogModal, setShowChangelogMod
 
     return (
         <React.Fragment>
-            <Modal isOpen={showChangelogModal} hideCloseButton backdrop='opaque' className='min-w-[700px] border border-border'>
+            <Modal isOpen={showChangelogModal} backdrop='opaque' className='min-w-[700px] border border-border'>
                 <ModalContent>
                     <React.Fragment>
                         <ModalHeader className='flex flex-col gap-1 bg-modalheader border-b border-border' data-tauri-drag-region>
@@ -50,7 +50,7 @@ export default function ChangelogModal({ showChangelogModal, setShowChangelogMod
                                     size='sm'
                                     color='primary'
                                     className='font-semibold rounded'
-                                    onClick={handleCloseModal}
+                                    onPress={handleCloseModal}
                                 >
                                     Continue
                                 </Button>

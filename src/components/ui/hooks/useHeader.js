@@ -1,7 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { isPermissionGranted, requestPermission, sendNotification } from '@tauri-apps/api/notification';
+import { AppContext } from '../../layouts/components/AppContext';
 
-export default function useHeader(setInputValue, setIsQuery) {
+export default function useHeader(setGameQueryValue, setAchievementQueryValue) {
+    const { setIsQuery } = useContext(AppContext);
     const [appWindow, setAppWindow] = useState();
 
     useEffect(() => {
@@ -49,8 +51,12 @@ export default function useHeader(setInputValue, setIsQuery) {
         setIsQuery(true);
     };
 
-    const handleChange = (e) => {
-        setInputValue(e.target.value);
+    const handleGameQueryChange = (e) => {
+        setGameQueryValue(e.target.value);
+    };
+
+    const handleAchievementQueryChange = (e) => {
+        setAchievementQueryValue(e.target.value);
     };
 
     const handleKeyDown = () => {
@@ -61,7 +67,8 @@ export default function useHeader(setInputValue, setIsQuery) {
         windowMinimize,
         windowToggleMaximize,
         windowClose,
-        handleChange,
+        handleGameQueryChange,
+        handleAchievementQueryChange,
         handleKeyDown
     };
 }

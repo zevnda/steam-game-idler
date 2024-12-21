@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { IoStop } from 'react-icons/io5';
 import { motion } from 'framer-motion';
 import { logEvent, stopIdler } from '@/src/utils/utils';
 import { toast } from 'react-toastify';
+import { AppContext } from '../../layouts/components/AppContext';
 
-export default function StopButton({ setActivePage, isMountedRef, abortControllerRef, gamesWithDrops, screen, currentGame }) {
+export default function StopButton({ isMountedRef, abortControllerRef, gamesWithDrops, screen, currentGame }) {
+    const { setActivePage } = useContext(AppContext);
+
     const borderWidths = [
         ...Array.from({ length: 500 }, (_, i) => 0.5 + i * 0.01),
         ...Array.from({ length: 500 }, (_, i) => 6 - i * 0.01),

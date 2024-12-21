@@ -1,22 +1,15 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Button, Checkbox, Input } from '@nextui-org/react';
 import ExtLink from '@/src/components/ui/components/ExtLink';
 import { antiAwayStatus } from '@/src/utils/utils';
 import useGeneralSettings from '../hooks/useGeneralSettings';
 import { handleCheckboxChange, handleRunAtStartupChange, handleKeyChange, handleKeySave, handleClear } from '../utils/generalSettingsHandler';
 import Image from 'next/image';
+import { AppContext } from '../../layouts/components/AppContext';
 
-export default function GeneralSettings({ userSummary, settings, setSettings }) {
-    const {
-        localSettings,
-        setLocalSettings,
-        startupState,
-        setStartupState,
-        keyValue,
-        setKeyValue,
-        hasKey,
-        setHasKey
-    } = useGeneralSettings(settings);
+export default function GeneralSettings({ settings, setSettings }) {
+    const { userSummary } = useContext(AppContext);
+    const { localSettings, setLocalSettings, startupState, setStartupState, keyValue, setKeyValue, hasKey, setHasKey } = useGeneralSettings(settings);
 
     return (
         <React.Fragment>
@@ -129,7 +122,7 @@ export default function GeneralSettings({ userSummary, settings, setSettings }) 
                             size='sm'
                             placeholder='Steam web API key'
                             className='max-w-[280px]'
-                            classNames={{ inputWrapper: ['bg-input border border-inputborder hover:!bg-titlebar rounded-md'] }}
+                            classNames={{ inputWrapper: ['bg-input border border-inputborder hover:!bg-titlebar rounded-md group-data-[focus-within=true]:!bg-titlebar'] }}
                             value={keyValue}
                             onChange={(e) => handleKeyChange(e, setKeyValue)}
                             type={'password'}
@@ -139,7 +132,7 @@ export default function GeneralSettings({ userSummary, settings, setSettings }) 
                             color='primary'
                             isDisabled={hasKey || !keyValue}
                             className='font-semibold rounded'
-                            onClick={() => handleKeySave(keyValue, setHasKey)}
+                            onPress={() => handleKeySave(keyValue, setHasKey)}
                         >
                             Save
                         </Button>
@@ -148,7 +141,7 @@ export default function GeneralSettings({ userSummary, settings, setSettings }) 
                             color='danger'
                             isDisabled={!hasKey}
                             className='font-semibold text-offwhite rounded'
-                            onClick={() => handleClear(setKeyValue, setHasKey)}
+                            onPress={() => handleClear(setKeyValue, setHasKey)}
                         >
                             Clear
                         </Button>

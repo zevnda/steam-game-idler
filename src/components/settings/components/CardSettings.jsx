@@ -50,7 +50,7 @@ export default function CardSettings({ settings, setSettings }) {
 
                 <div className='w-full'>
                     <p className='text-xs my-2'>
-                        Steam credentials are required in order to use the Card Farming feature. <ExtLink href={'https://github.com/probablyraging/steam-game-idler/wiki/steam-credentials'} className='text-blue-400'>Learn more</ExtLink>
+                        Steam credentials are required in order to use the Card Farming feature. <ExtLink href={'https://github.com/zevnda/steam-game-idler/wiki/steam-credentials'} className='text-blue-400'>Learn more</ExtLink>
                     </p>
                     <div className='flex flex-col mt-4'>
                         <div className='flex flex-col gap-2'>
@@ -60,7 +60,7 @@ export default function CardSettings({ settings, setSettings }) {
                                 labelPlacement='outside'
                                 placeholder=' '
                                 className='max-w-[300px]'
-                                classNames={{ inputWrapper: ['bg-input border border-inputborder hover:!bg-titlebar rounded-md'] }}
+                                classNames={{ inputWrapper: ['bg-input border border-inputborder hover:!bg-titlebar rounded-md group-data-[focus-within=true]:!bg-titlebar'] }}
                                 value={sidValue}
                                 onChange={handleSidChange}
                                 type={'password'}
@@ -71,7 +71,7 @@ export default function CardSettings({ settings, setSettings }) {
                                 labelPlacement='outside'
                                 placeholder=' '
                                 className='max-w-[300px]'
-                                classNames={{ inputWrapper: ['bg-input border border-inputborder hover:!bg-titlebar rounded-md'] }}
+                                classNames={{ inputWrapper: ['bg-input border border-inputborder hover:!bg-titlebar rounded-md group-data-[focus-within=true]:!bg-titlebar'] }}
                                 value={slsValue}
                                 onChange={handleSlsChange}
                                 type={'password'}
@@ -82,7 +82,7 @@ export default function CardSettings({ settings, setSettings }) {
                                 labelPlacement='outside'
                                 placeholder=' '
                                 className='max-w-[300px]'
-                                classNames={{ inputWrapper: ['bg-input border border-inputborder hover:!bg-titlebar rounded-md'] }}
+                                classNames={{ inputWrapper: ['bg-input border border-inputborder hover:!bg-titlebar rounded-md group-data-[focus-within=true]:!bg-titlebar'] }}
                                 value={smaValue}
                                 onChange={handleSmaChange}
                                 type={'password'}
@@ -93,7 +93,7 @@ export default function CardSettings({ settings, setSettings }) {
                                     color='primary'
                                     isDisabled={hasCookies || !sidValue || !slsValue}
                                     className='font-semibold rounded-md w-full'
-                                    onClick={() => handleSave(sidValue, slsValue, smaValue, setHasCookies)}
+                                    onPress={() => handleSave(sidValue, slsValue, smaValue, setHasCookies)}
                                 >
                                     Save
                                 </Button>
@@ -102,7 +102,7 @@ export default function CardSettings({ settings, setSettings }) {
                                     color='danger'
                                     isDisabled={!hasCookies}
                                     className='font-semibold rounded w-full'
-                                    onClick={() => handleClear(setHasCookies, setSidValue, setSlsValue, setSmaValue)}
+                                    onPress={() => handleClear(setHasCookies, setSidValue, setSlsValue, setSmaValue)}
                                 >
                                     Clear
                                 </Button>
