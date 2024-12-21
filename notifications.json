@@ -1,5 +1,11 @@
 [
     {
+        "id": "2",
+        "title": "Beta v1.6.0.2",
+        "message": "New beta version available",
+        "url": "https://github.com/zevnda/steam-game-idler/releases/tag/1.6.0-beta.2"
+    },
+    {
         "id": "1",
         "title": "Beta Testers Needed",
         "message": "I have released a Beta version of SGI with some major updates, and I am looking for people to test it, give feedback, and report any issues you may find before full release",
