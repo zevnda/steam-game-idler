@@ -5,7 +5,7 @@ using Steamworks;
 
 namespace SteamUtility.Commands
 {
-    public class UnlockAchievementCommand : ICommand
+    public class UnlockAchievement : ICommand
     {
         static bool statsReceived = false;
 
@@ -46,12 +46,7 @@ namespace SteamUtility.Commands
             // Initialize the Steam API
             if (!SteamAPI.Init())
             {
-                MessageBox.Show(
-                    "Failed to initialize the Steam API. Is Steam running?",
-                    "Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
+                Console.WriteLine("error");
                 return;
             }
 

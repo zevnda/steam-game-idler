@@ -3,7 +3,7 @@ import StopButton from './StopButton';
 import { Button, Spinner } from '@nextui-org/react';
 import { IoCheckmark } from 'react-icons/io5';
 import { startAchievementUnlocker, handleCancel } from '@/src/components/automation/utils/achievementUnlockerHandler';
-import { AppContext } from '../../layouts/components/AppContext';
+import { AppContext } from '../../layout/components/AppContext';
 
 export default function AchievementUnlocker() {
     const { setActivePage } = useContext(AppContext);

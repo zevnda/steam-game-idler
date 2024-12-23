@@ -11,7 +11,7 @@ export const AppProvider = ({ children }) => {
     const [showFreeGamesTab, setShowFreeGamesTab] = useState(false);
     const [freeGamesList, setFreeGamesList] = useState([]);
     const [achievementList, setAchievementList] = useState([]);
-    const [statisticsList, setStatisticsList] = useState([]);
+    const [statisticsList, setStatisticsList] = useState();
     const [showAchievements, setShowAchievements] = useState(false);
     const [isQuery, setIsQuery] = useState(false);
     const [gameQueryValue, setGameQueryValue] = useState('');
@@ -21,12 +21,12 @@ export const AppProvider = ({ children }) => {
 
     return (
         <AppContext.Provider value={{
-            activePage, setActivePage,
             userSummary, setUserSummary,
             showFreeGamesTab, setShowFreeGamesTab,
             freeGamesList, setFreeGamesList,
             appId, setAppId,
             appName, setAppName,
+            activePage, setActivePage,
             achievementList, setAchievementList,
             statisticsList, setStatisticsList,
             showAchievements, setShowAchievements,

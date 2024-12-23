@@ -5,12 +5,32 @@ import { Time } from '@internationalized/date';
 import { isPermissionGranted, requestPermission, sendNotification } from '@tauri-apps/api/notification';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import ErrorToast from '../components/ui/components/ErrorToast';
 
 // eslint-disable-next-line no-unused-vars
 let idleCounter = 0;
 // eslint-disable-next-line no-unused-vars
 let achievementCounter = 0;
 let antiAwayInterval = null;
+let filePath = null;
+
+// Get the file path of the SteamUtility executable
+export async function getFilePath() {
+    try {
+        if (!filePath) {
+            const path = await invoke('get_file_path');
+            const fullPath = path.replace('Steam Game Idler.exe', 'libs\\SteamUtility.exe');
+            filePath = fullPath;
+            return fullPath;
+        } else {
+            return filePath;
+        }
+    } catch (error) {
+        toast.error(`Error in (getFilePath) util: ${error?.message || error}`);
+        console.error('Error in getFilePath util: ', error);
+        logEvent(`[Error] in (getFilePath) util: ${error}`);
+    }
+}
 
 // Start idling a game
 export async function startIdler(appId, appName, quiet = false) {
@@ -19,15 +39,29 @@ export async function startIdler(appId, appName, quiet = false) {
         const stealthIdle = settings?.general?.stealthIdle;
         const steamRunning = await invoke('check_status');
         if (steamRunning) {
-            const path = await invoke('get_file_path');
-            const fullPath = path.replace('Steam Game Idler.exe', 'libs\\SteamUtility.exe');
-            await invoke('start_idle', { filePath: fullPath, appId: appId.toString(), quiet: stealthIdle ? stealthIdle.toString() : quiet.toString() });
-            idleCounter++;
-            updateMongoStats('idle');
-            logEvent(`[Idle] Started ${appName} (${appId})`);
-            return true;
+            const response = await invoke('start_idle', {
+                filePath: await getFilePath(),
+                appId: appId.toString(),
+                quiet: stealthIdle ? stealthIdle.toString() : quiet.toString()
+            });
+            const status = JSON.parse(response);
+            if (!status.error) {
+                idleCounter++;
+                toast.success(`Started idling ${appName} (${appId})`);
+                updateMongoStats('idle');
+                logEvent(`[Idle] Started ${appName} (${appId})`);
+            } else {
+                toast.error(
+                    <ErrorToast
+                        message={'Is Steam running? Are you logged in to the correct account?'}
+                        href={'https://github.com/zevnda/steam-game-idler/wiki/faq#:~:text=Why%20am%20I%20seeing%20an%20%22Are%20you%20logged%20in%20to%20the%20correct%20account%3F%22%20error%20message%3F'}
+                    />,
+                    { autoClose: 5000 }
+                );
+                logEvent(`[Error] [Idle] Failed to idle ${appName} (${appId}) - account mismatch`);
+            }
         } else {
-            return false;
+            toast.error('Steam is not running');
         }
     } catch (error) {
         toast.error(`Error in (startIdler) util: ${error?.message || error}`);
@@ -42,56 +76,72 @@ export async function stopIdler(appId, appName) {
         await invoke('stop_idle', { appId: appId.toString() });
         logEvent(`[Idling] Stopped ${appName} (${appId})`);
     } catch (error) {
+        toast.error(`Error in (stopIdler) util: ${error?.message || error}`);
         console.error('Error in stopIdler util: ', error);
         logEvent(`[Error] in (stopIdler) util: ${error}`);
     }
 };
 
 // Toggle an achievement for a game
-export async function toggleAchievement(appId, achievementId) {
+export async function toggleAchievement(appId, appName, achievementName, type) {
     try {
         const steamRunning = await invoke('check_status');
         if (steamRunning) {
-            const path = await invoke('get_file_path');
-            const fullPath = path.replace('Steam Game Idler.exe', 'libs\\SteamUtility.exe');
-            await invoke('toggle_achievement', {
-                filePath: fullPath,
+            const response = await invoke('toggle_achievement', {
+                filePath: await getFilePath(),
                 appId: appId.toString(),
-                achievementId: achievementId
+                achievementId: achievementName
             });
-            achievementCounter++;
-            updateMongoStats('achievement');
-            logEvent(`[Achievement Unlocker] Unlocked/locked ${achievementId} (${appId})`);
+            const status = JSON.parse(response);
+            if (!status.error) {
+                achievementCounter++;
+                toast.success(`${type} ${achievementName} for ${appName} (${appId})`);
+                updateMongoStats('achievement');
+                logEvent(`[Achievement Unlocker] ${type} ${achievementName} for ${appName} (${appId})`);
+            } else {
+                toast.error(
+                    <ErrorToast
+                        message={'Is Steam running? Are you logged in to the correct account?'}
+                        href={'https://github.com/zevnda/steam-game-idler/wiki/faq#:~:text=Why%20am%20I%20seeing%20an%20%22Are%20you%20logged%20in%20to%20the%20correct%20account%3F%22%20error%20message%3F'}
+                    />,
+                    { autoClose: 5000 }
+                );
+                logEvent(
+                    `[Error] [Achievement Unlocker] Failed to ${type.replace('ed', '').toLowerCase()} ${achievementName} for ${appName} (${appId}) - account mismatch`
+                );
+            }
             return true;
         } else {
-            logEvent('[Error] [Achievement Unlocker] Steam is not running');
-            return { error: 'Steam is not running' };
+            toast.error('Steam is not running');
         }
     } catch (error) {
         toast.error(`Error in (toggleAchievement) util: ${error?.message || error}`);
         console.error('Error in toggleAchievement util: ', error);
         logEvent(`[Error] in (toggleAchievement) util: ${error}`);
-        return { error: error };
     }
 }
 
 // Unlock an achievement for a game
-export async function unlockAchievement(appId, achievementId) {
+export async function unlockAchievement(appId, achievementName, appName) {
     try {
         const steamRunning = await invoke('check_status');
         if (steamRunning) {
-            const path = await invoke('get_file_path');
-            const fullPath = path.replace('Steam Game Idler.exe', 'libs\\SteamUtility.exe');
-            await invoke('unlock_achievement', {
-                filePath: fullPath,
+            const response = await invoke('unlock_achievement', {
+                filePath: await getFilePath(),
                 appId: appId.toString(),
-                achievementId: achievementId
+                achievementId: achievementName
             });
-            achievementCounter++;
-            updateMongoStats('achievement');
-            logEvent(`[Achievement Unlocker] Unlocked ${achievementId} (${appId})`);
+            const status = JSON.parse(response);
+            if (status.error) {
+                logEvent(`[Achievement Unlocker] Failed to unlock ${achievementName} for ${appName} (${appId})`);
+                return true;
+            } else {
+                logEvent(`[Achievement Unlocker] Unlocked ${achievementName} for ${appName} (${appId})`);
+                return false;
+            }
         } else {
             logEvent('[Error] [Achievement Unlocker] Steam is not running');
+            return { error: 'Steam is not running' };
         }
     } catch (error) {
         toast.error(`Error in (unlockAchievement) util: ${error?.message || error}`);
@@ -101,20 +151,26 @@ export async function unlockAchievement(appId, achievementId) {
 }
 
 // Lock an achievement for a game
-export async function lockAchievement(appId, achievementId) {
+export async function lockAchievement(appId, achievementName, appName) {
     try {
         const steamRunning = await invoke('check_status');
         if (steamRunning) {
-            const path = await invoke('get_file_path');
-            const fullPath = path.replace('Steam Game Idler.exe', 'libs\\SteamUtility.exe');
-            await invoke('lock_achievement', {
-                filePath: fullPath,
+            const response = await invoke('lock_achievement', {
+                filePath: await getFilePath(),
                 appId: appId.toString(),
-                achievementId: achievementId
+                achievementId: achievementName
             });
-            logEvent(`[Achievement Unlocker] Locked ${achievementId} (${appId})`);
+            const status = JSON.parse(response);
+            if (status.error) {
+                logEvent(`[Achievement Unlocker] Failed to lock ${achievementName} for ${appName} (${appId})`);
+                return true;
+            } else {
+                logEvent(`[Achievement Unlocker] Locked ${achievementName} for ${appName} (${appId})`);
+                return false;
+            }
         } else {
             logEvent('[Error] [Achievement Unlocker] Steam is not running');
+            return { error: 'Steam is not running' };
         }
     } catch (error) {
         toast.error(`Error in (lockAchievement) util: ${error?.message || error}`);
@@ -124,22 +180,26 @@ export async function lockAchievement(appId, achievementId) {
 }
 
 // Update a statistic for a game
-export async function updateStat(appId, statName, newValue) {
+export async function updateStat(appId, statName, newValue, appName) {
     try {
         const steamRunning = await invoke('check_status');
         if (steamRunning) {
-            const path = await invoke('get_file_path');
-            const fullPath = path.replace('Steam Game Idler.exe', 'libs\\SteamUtility.exe');
-            await invoke('update_stat', {
-                filePath: fullPath,
+            const response = await invoke('update_stats', {
+                filePath: await getFilePath(),
                 appId: appId.toString(),
                 statName: statName,
                 newValue: newValue
             });
-            logEvent(`[Achievement Unlocker] Statistic updated ${statName} (${appId}) with value ${newValue}`);
-            return true;
+            const status = JSON.parse(response);
+            if (status.error) {
+                logEvent(`[Statistic Update] Failed to update ${statName} to ${newValue} for ${appName}`);
+                return true;
+            } else {
+                logEvent(`[Statistic Update] Updated ${statName} to ${newValue} for ${appName}`);
+                return false;
+            }
         } else {
-            logEvent('[Error] [Achievement Unlocker] Steam is not running');
+            logEvent('[Error] [Statistic Update] Steam is not running');
             return { error: 'Steam is not running' };
         }
     } catch (error) {

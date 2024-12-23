@@ -59,7 +59,7 @@ const fetchAchievements = async (gameData, settings, setCurrentGame, setHasPriva
         setCurrentGame({ appId: game.appid, name: game.name });
 
         const apiKey = localStorage.getItem('apiKey');
-        const res = await invoke('get_achievement_unlocker_data', { steamId: userSummary.steamId, appId: game.appid.toString(), apiKey });
+        const res = await invoke('get_achievement_data', { steamId: userSummary.steamId, appId: game.appid.toString(), apiKey });
 
         const userAchievements = res?.userAchievements?.playerstats;
         const gameAchievements = res?.percentages?.achievementpercentages?.achievements;
@@ -138,7 +138,7 @@ const unlockAchievements = async (achievements, settings, game, isMountedRef, se
                 }
 
                 // Unlock the achievement
-                unlockAchievement(achievement.appId, achievement.name);
+                await unlockAchievement(achievement.appId, achievement.name, achievement.gameName);
                 achievementsRemaining--;
                 logEvent(`[Achievement Unlocker - Auto] Unlocked ${achievement.name} for ${achievement.gameName}`);
                 setAchievementCount(prevCount => Math.max(prevCount - 1, 0));
@@ -260,6 +260,7 @@ export const handleCancel = ({ isMountedRef, abortControllerRef, setActivePage, 
 
 // Handle errors
 const handleError = (functionName, error) => {
+    if (!error) return;
     console.error(`Error in (${functionName}):`, error);
     logEvent(`[Error] in (${functionName}) ${error}`);
 };

@@ -6,7 +6,7 @@ using Steamworks;
 
 namespace SteamUtility.Commands
 {
-    public class IdleCommand : ICommand
+    public class Idle : ICommand
     {
         public void Execute(string[] args)
         {
@@ -39,12 +39,6 @@ namespace SteamUtility.Commands
             // Initialize the Steam API
             if (!SteamAPI.Init())
             {
-                MessageBox.Show(
-                    "Failed to initialize the Steam API. Is Steam running?",
-                    "Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
                 return;
             }
 

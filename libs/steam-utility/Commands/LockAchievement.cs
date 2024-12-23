@@ -5,11 +5,9 @@ using Steamworks;
 
 namespace SteamUtility.Commands
 {
-    public class ToggleAchievementCommand : ICommand
+    public class LockAchievement : ICommand
     {
         static bool statsReceived = false;
-
-        // Callback for when user stats are received
         static Callback<UserStatsReceived_t> statsReceivedCallback;
 
         public void Execute(string[] args)
@@ -17,7 +15,7 @@ namespace SteamUtility.Commands
             if (args.Length < 2)
             {
                 MessageBox.Show(
-                    "Usage: SteamUtility.exe toggle_achievement <AppID> <AchievementID>",
+                    "Usage: SteamUtility.exe lock_achievement <AppID> <true|false>",
                     "Error",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
@@ -32,7 +30,7 @@ namespace SteamUtility.Commands
             if (!uint.TryParse(args[1], out appId))
             {
                 MessageBox.Show(
-                    "Invalid AppID. Please provide a valid numeric AppID.",
+                    "Invalid AppID. Please provide a valid Steam App ID (e.g. 221100).",
                     "Error",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
@@ -46,12 +44,7 @@ namespace SteamUtility.Commands
             // Initialize the Steam API
             if (!SteamAPI.Init())
             {
-                MessageBox.Show(
-                    "Failed to initialize the Steam API. Is Steam running?",
-                    "Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
+                Console.WriteLine("error");
                 return;
             }
 
@@ -63,7 +56,7 @@ namespace SteamUtility.Commands
                 // Request user stats from Steam
                 SteamAPICall_t apiCall = SteamUserStats.RequestUserStats(steamId);
 
-                // Check if the API call is valid
+                // Check if the API call was successful
                 if (apiCall == SteamAPICall_t.Invalid)
                 {
                     MessageBox.Show(
@@ -75,7 +68,7 @@ namespace SteamUtility.Commands
                     return;
                 }
 
-                // Wait for stats to be received
+                // Wait for the stats to be received
                 DateTime startTime = DateTime.Now;
                 while (!statsReceived)
                 {
@@ -93,41 +86,22 @@ namespace SteamUtility.Commands
                     Thread.Sleep(100);
                 }
 
-                // Check if the achievement's state and lock or unlock it
-                bool isAchieved;
-                if (SteamUserStats.GetAchievement(achievementId, out isAchieved))
+                // Check if the achievement exists and lock it
+                if (SteamUserStats.GetAchievement(achievementId, out _))
                 {
-                    if (isAchieved)
+                    if (SteamUserStats.ClearAchievement(achievementId))
                     {
-                        if (SteamUserStats.ClearAchievement(achievementId))
-                        {
-                            SteamUserStats.StoreStats();
-                        }
-                        else
-                        {
-                            MessageBox.Show(
-                                "Failed to lock achievement.",
-                                "Error",
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Error
-                            );
-                        }
+                        SteamUserStats.StoreStats();
+                        Console.WriteLine("Achievement locked successfully.");
                     }
                     else
                     {
-                        if (SteamUserStats.SetAchievement(achievementId))
-                        {
-                            SteamUserStats.StoreStats();
-                        }
-                        else
-                        {
-                            MessageBox.Show(
-                                "Failed to unlock achievement.",
-                                "Error",
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Error
-                            );
-                        }
+                        MessageBox.Show(
+                            "Failed to lock achievement",
+                            "Error",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error
+                        );
                     }
                 }
                 else

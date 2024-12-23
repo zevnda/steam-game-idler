@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from 'react';
 import { toast } from 'react-toastify';
 import { logEvent } from '@/src/utils/utils';
 import moment from 'moment';
-import { AppContext } from '../../layouts/components/AppContext';
+import { AppContext } from '../../layout/components/AppContext';
 
 export const usePageHeader = ({ setSortStyle, setRefreshKey }) => {
     const { userSummary } = useContext(AppContext);

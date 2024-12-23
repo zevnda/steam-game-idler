@@ -1,63 +1,102 @@
-use std::os::windows::process::CommandExt;
+use regex::Regex;
+use reqwest::Client;
+use serde_json::Value;
 use std::os::windows::io::AsRawHandle;
-use std::fs::{OpenOptions, create_dir_all};
-use std::io::{BufRead, BufReader, Write, Seek, SeekFrom};
-use std::sync::{Arc, Mutex};
-use std::process::{Stdio, Child};
+use std::os::windows::process::CommandExt;
 use std::path::PathBuf;
+use std::process::{Child, Stdio};
+use std::sync::{Arc, Mutex};
 use winapi::um::processthreadsapi::TerminateProcess;
 use winapi::um::winnt::HANDLE;
-use chrono::Local;
-
-const APP_FOLDER_NAME: &str = "steam-game-idler";
-const MAX_LINES: usize = 500;
 
 #[tauri::command]
 pub async fn check_status() -> bool {
+    // Execute the tasklist command to check if steam.exe is running
     let output = std::process::Command::new("tasklist")
         .args(&["/FI", "IMAGENAME eq steam.exe"])
         .stdout(Stdio::piped())
         .stderr(Stdio::null())
-        .creation_flags(0x08000000) 
+        .creation_flags(0x08000000)
         .output()
         .expect("Failed to execute tasklist command");
     let output_str = String::from_utf8_lossy(&output.stdout);
+    // Check if the output contains "steam.exe"
     output_str.contains("steam.exe")
 }
 
 #[tauri::command]
 pub async fn check_process_by_game_id(ids: Vec<String>) -> Result<Vec<String>, String> {
+    // Execute the tasklist command to get details of SteamUtility.exe processes
     let output = std::process::Command::new("tasklist")
-    .args(&["/V", "/FO", "CSV", "/NH", "/FI", "IMAGENAME eq SteamUtility.exe"])
-    .stdout(Stdio::piped())
-    .stderr(Stdio::null())
-    .creation_flags(0x08000000)
-    .output()
-    .map_err(|e| e.to_string())?;
+        .args(&[
+            "/V",
+            "/FO",
+            "CSV",
+            "/NH",
+            "/FI",
+            "IMAGENAME eq SteamUtility.exe",
+        ])
+        .stdout(Stdio::piped())
+        .stderr(Stdio::null())
+        .creation_flags(0x08000000)
+        .output()
+        .map_err(|e| e.to_string())?;
 
     let output_str = String::from_utf8_lossy(&output.stdout);
-    Ok(ids.into_iter()
+    // Filter out game IDs that are not found in the output
+    Ok(ids
+        .into_iter()
         .filter(|id| !output_str.contains(&format!("[{}]", id)))
         .collect())
 }
 
 #[tauri::command]
-pub async fn get_steam_users(file_path: String) -> Result<String, String> {
-    let output = std::process::Command::new(file_path)
-        .arg("get_steam_users")
-        .creation_flags(0x08000000)
-        .output()
-        .map_err(|e| format!("{{\"error\": \"{}\"}}", e.to_string()))?;
-    let output_str = String::from_utf8_lossy(&output.stdout);
-    if let Some(users) = output_str.split("steamUsers ").nth(1) {
-        Ok(users.trim().to_string())
+pub async fn validate_session(
+    sid: String,
+    sls: String,
+    sma: Option<String>,
+    steamid: String,
+) -> Result<Value, String> {
+    let client = Client::new();
+
+    // Construct the cookie value based on the provided parameters
+    let cookie_value = match sma {
+        Some(sma_val) => format!(
+            "sessionid={}; steamLoginSecure={}; steamparental={}; steamMachineAuth{}={}",
+            sid, sls, sma_val, steamid, sma_val
+        ),
+        None => format!("sessionid={}; steamLoginSecure={}", sid, sls),
+    };
+
+    // Send the request and handle the response
+    let response = client
+        .get("https://steamcommunity.com/")
+        .header("Content-Type", "application/json")
+        .header("Cookie", cookie_value)
+        .send()
+        .await
+        .map_err(|e| e.to_string())?;
+
+    let html = response.text().await.map_err(|e| e.to_string())?;
+    let regex = Regex::new(r"Sign out").map_err(|e| e.to_string())?;
+    let regex_two = Regex::new(r#"<a\s+href="https://steamcommunity\.com/(id|profiles)/[^"]*"\s+data-miniprofile="\d+">([^<]+)</a>"#)
+        .map_err(|e| e.to_string())?;
+
+    // Check if the user is logged in based on the response HTML
+    if let Some(_m) = regex.find(&html) {
+        if let Some(captures) = regex_two.captures(&html) {
+            Ok(serde_json::json!({ "user": captures[2].to_string() }))
+        } else {
+            Ok(serde_json::json!({ "error": "Not logged in" }))
+        }
     } else {
-        Ok("{\"error\": \"Failed to get Steam users\"}".to_string())
+        Ok(serde_json::json!({ "error": "Not logged in" }))
     }
 }
 
 #[tauri::command]
 pub async fn anti_away() -> Result<(), String> {
+    // Execute a command to set Steam status to online
     std::process::Command::new("cmd")
         .args(&["/C", "start steam://friends/status/online"])
         .creation_flags(0x08000000)
@@ -68,109 +107,24 @@ pub async fn anti_away() -> Result<(), String> {
 
 #[tauri::command]
 pub async fn get_file_path() -> Result<PathBuf, String> {
+    // Get the current executable path
     match std::env::current_exe() {
         Ok(path) => return Ok(path),
         Err(error) => return Err(format!("{error}")),
     }
 }
 
-#[tauri::command]
-pub fn log_event(message: String, app_handle: tauri::AppHandle) -> Result<(), String> {
-    let app_data_dir = app_handle.path_resolver().app_data_dir()
-        .ok_or("Failed to get app data directory")?;
-    let app_specific_dir = app_data_dir.parent().unwrap_or(&app_data_dir).join(APP_FOLDER_NAME);
-    create_dir_all(&app_specific_dir)
-        .map_err(|e| format!("Failed to create app directory: {}", e))?;
-    let log_file_path = app_specific_dir.join("log.txt");
-    let mut file = OpenOptions::new()
-        .read(true)
-        .write(true)
-        .create(true)
-        .open(&log_file_path)
-        .map_err(|e| format!("Failed to open log file: {}", e))?;
-    let reader = BufReader::new(&file);
-    let mut lines: Vec<String> = reader.lines()
-        .map(|line| line.unwrap_or_default())
-        .collect();
-    let timestamp = Local::now().format("%b %d %H:%M:%S%.3f").to_string();
-    let mask_one = mask_sensitive_data(&message, "711B8063");
-    let mask_two = mask_sensitive_data(&mask_one, "3DnyBUX");
-    let mask_three = mask_sensitive_data(&mask_two, "5e2699aef2301b283");
-    let new_log = format!("{} + {}", timestamp, mask_three);
-    lines.insert(0, new_log);
-    if lines.len() > MAX_LINES {
-        lines.truncate(MAX_LINES);
-    }
-    file.seek(SeekFrom::Start(0))
-        .map_err(|e| format!("Failed to seek to start of file: {}", e))?;
-    file.set_len(0)
-        .map_err(|e| format!("Failed to truncate file: {}", e))?;
-    for line in lines {
-        writeln!(file, "{}", line)
-            .map_err(|e| format!("Failed to write to log file: {}", e))?;
-    }
-    Ok(())
-}
-
-#[tauri::command]
-pub fn clear_log_file(app_handle: tauri::AppHandle) -> Result<(), String> {
-    let app_data_dir = app_handle.path_resolver().app_data_dir()
-        .ok_or("Failed to get app data directory")?;
-    let app_specific_dir = app_data_dir.parent().unwrap_or(&app_data_dir).join(APP_FOLDER_NAME);
-    let log_file_path = app_specific_dir.join("log.txt");
-    let file = OpenOptions::new()
-        .write(true)
-        .open(&log_file_path)
-        .map_err(|e| format!("Failed to open log file: {}", e))?;
-    file.set_len(0)
-        .map_err(|e| format!("Failed to truncate file: {}", e))?;
-    Ok(())
-}
-
-#[tauri::command]
-pub fn get_app_log_dir(app_handle: tauri::AppHandle) -> Result<String, String> {
-    let app_data_dir = app_handle.path_resolver().app_data_dir()
-        .ok_or("Failed to get app data directory")?;
-    let app_specific_dir = app_data_dir.parent().unwrap_or(&app_data_dir).join(APP_FOLDER_NAME);
-    app_specific_dir.to_str()
-        .ok_or("Failed to convert path to string".to_string())
-        .map(|s| s.to_string())
-}
-
-#[tauri::command]
-pub fn open_file_explorer(path: String) -> Result<(), String> {
-    std::process::Command::new("explorer")
-        .args(["/select,", &path])
-        .creation_flags(0x08000000)
-        .spawn()
-        .map_err(|e| e.to_string())?;
-    Ok(())
-}
-
 pub fn kill_processes(spawned_processes: &Arc<Mutex<Vec<Child>>>) {
     let mut processes = spawned_processes.lock().unwrap();
     for child in processes.iter_mut() {
         unsafe {
+            // Terminate each process
             let handle = child.as_raw_handle() as HANDLE;
             TerminateProcess(handle, 1);
         }
         let _ = child.wait();
     }
     processes.clear();
+    // Exit the application
     std::process::exit(0);
-}
-
-pub fn mask_sensitive_data(message: &str, sensitive_data: &str) -> String {
-    if let Some(start_index) = message.find(sensitive_data) {
-        let end_index = start_index + sensitive_data.len();
-        let mask_start = start_index.saturating_sub(5);
-        let mask_end = (end_index + 5).min(message.len());
-        let mask_length = mask_end - mask_start;
-        
-        let mut masked_message = message.to_string();
-        masked_message.replace_range(mask_start..mask_end, &"*".repeat(mask_length));
-        masked_message
-    } else {
-        message.to_string()
-    }
 }

@@ -3,7 +3,7 @@ import useStatisticsList from '../hooks/useStatisticsList';
 import { Input } from '@nextui-org/react';
 import { handleInputChange } from '../utils/statisticsListHandler';
 import { FixedSizeList as List } from 'react-window';
-import { AppContext } from '../../layouts/components/AppContext';
+import { AppContext } from '../../layout/components/AppContext';
 
 const Row = React.memo(({ index, style, data }) => {
     const { statisticsList, newStatValues, setNewStatValues } = data;
@@ -20,11 +20,11 @@ const Row = React.memo(({ index, style, data }) => {
                         </p>
                         <Input
                             size='sm'
-                            value={newStatValues[item1.name]}
+                            value={newStatValues[item1.name] || '0'}
                             onChange={(e) => handleInputChange(item1.name, e.target.value, setNewStatValues)}
                             className='w-[120px]'
                             classNames={{
-                                inputWrapper: ['bg-input border border-inputborder hover:!bg-titlebar rounded group-data-[focus-visible=true]:ring-transparent group-data-[focus-visible=true]:ring-offset-transparent group-data-[focus-within=true]:!bg-titlebar'],
+                                inputWrapper: ['bg-titlebar border border-inputborder hover:!bg-input rounded group-data-[focus-visible=true]:ring-transparent group-data-[focus-visible=true]:ring-offset-transparent group-data-[focus-within=true]:!bg-titlebar'],
                                 input: ['text-sm']
                             }}
                         />
@@ -39,11 +39,11 @@ const Row = React.memo(({ index, style, data }) => {
                         </p>
                         <Input
                             size='sm'
-                            value={newStatValues[item2.name]}
+                            value={newStatValues[item2.name] || '0'}
                             onChange={(e) => handleInputChange(item2.name, e.target.value, setNewStatValues)}
                             className='w-[120px]'
                             classNames={{
-                                inputWrapper: ['bg-input border border-inputborder hover:!bg-titlebar rounded group-data-[focus-visible=true]:ring-transparent group-data-[focus-visible=true]:ring-offset-transparent group-data-[focus-within=true]:!bg-titlebar'],
+                                inputWrapper: ['bg-titlebar border border-inputborder hover:!bg-input rounded group-data-[focus-visible=true]:ring-transparent group-data-[focus-visible=true]:ring-offset-transparent group-data-[focus-within=true]:!bg-titlebar'],
                                 input: ['text-sm']
                             }}
                         />
@@ -56,9 +56,9 @@ const Row = React.memo(({ index, style, data }) => {
 
 Row.displayName = 'Row';
 
-export default function StatisticsList({ userGameStatsMap, setInitialStatValues, newStatValues, setNewStatValues }) {
+export default function StatisticsList({ setInitialStatValues, newStatValues, setNewStatValues }) {
     const { statisticsList, statisticsUnavailable } = useContext(AppContext);
-    useStatisticsList(statisticsList, userGameStatsMap, setInitialStatValues, setNewStatValues);
+    useStatisticsList(statisticsList, setInitialStatValues, setNewStatValues);
 
     const itemData = { statisticsList, newStatValues, setNewStatValues };
 

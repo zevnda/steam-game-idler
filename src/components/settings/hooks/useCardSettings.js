@@ -7,6 +7,7 @@ export default function useCardSettings(settings) {
     const [smaValue, setSmaValue] = useState('');
     const [hasCookies, setHasCookies] = useState(false);
     const [localSettings, setLocalSettings] = useState(null);
+    const [cardFarmingUser, setCardFarmingUser] = useState(null);
 
     useEffect(() => {
         if (settings && settings.cardFarming) {
@@ -15,7 +16,7 @@ export default function useCardSettings(settings) {
     }, [settings]);
 
     useEffect(() => {
-        getStoredCookies(setHasCookies, setSidValue, setSlsValue, setSmaValue);
+        getStoredCookies(setHasCookies, setSidValue, setSlsValue, setSmaValue, setCardFarmingUser);
     }, []);
 
     const handleSidChange = (e) => {
@@ -44,5 +45,7 @@ export default function useCardSettings(settings) {
         handleSidChange,
         handleSlsChange,
         handleSmaChange,
+        cardFarmingUser,
+        setCardFarmingUser,
     };
 }

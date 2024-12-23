@@ -44,11 +44,11 @@ export default function Layout({ children }) {
                 position='bottom-right'
                 theme={theme}
                 transition={Slide}
+                pauseOnHover
                 pauseOnFocusLoss={false}
                 limit={2}
-                pauseOnHover={false}
                 newestOnTop
-                autoClose={2000}
+                autoClose={3000}
             />
         </React.Fragment>
     );

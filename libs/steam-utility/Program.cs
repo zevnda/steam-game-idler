@@ -10,11 +10,12 @@ namespace SteamUtility
         static Dictionary<string, ICommand> commands = new Dictionary<string, ICommand>
         {
             { "get_steam_users", new GetSteamUsers() },
-            { "idle", new IdleCommand() },
-            { "update_stat", new StatsCommand() },
-            { "toggle_achievement", new ToggleAchievementCommand() },
-            { "unlock_achievement", new UnlockAchievementCommand() },
-            { "lock_achievement", new LockAchievementCommand() },
+            { "idle", new Idle() },
+            { "update_stats", new UpdateStats() },
+            { "reset_stats", new ResetStats() },
+            { "toggle_achievement", new ToggleAchievement() },
+            { "unlock_achievement", new UnlockAchievement() },
+            { "lock_achievement", new LockAchievement() },
         };
 
         static void Main(string[] args)
@@ -44,7 +45,7 @@ namespace SteamUtility
                 + "Commands:\n"
                 + "     check_steam\n"
                 + "     idle <AppID> <true|false>\n"
-                + "     update_stat <AppID> <StatName> <NewValue>\n"
+                + "     update_stats <AppID> <StatName> <NewValue>\n"
                 + "     toggle_achievement <AppID> <AchievementID>\n"
                 + "     lock_achievement <AppID> <AchievementID>\n"
                 + "     unlock_achievement <AppID> <AchievementID>";

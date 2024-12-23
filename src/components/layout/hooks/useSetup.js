@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { invoke } from '@tauri-apps/api/tauri';
 import { toast } from 'react-toastify';
-import { logEvent } from '@/src/utils/utils';
+import { getFilePath, logEvent } from '@/src/utils/utils';
 import { AppContext } from '../components/AppContext';
 
 export default function useSetup() {
@@ -22,9 +22,7 @@ export default function useSetup() {
     useEffect(() => {
         const getSteamUsers = async () => {
             setIsLoading(true);
-            const path = await invoke('get_file_path');
-            const fullPath = path.replace('Steam Game Idler.exe', 'libs\\SteamUtility.exe');
-            const result = await invoke('get_steam_users', { filePath: fullPath });
+            const result = await invoke('get_steam_users', { filePath: await getFilePath(), });
             const data = JSON.parse(result);
 
             if (!data.error) {
@@ -45,7 +43,9 @@ export default function useSetup() {
             localStorage.setItem('userSummary', JSON.stringify(userSummary));
             setUserSummary(userSummary);
             setIsLoading(false);
+            logEvent(`[System] Logged in as ${userSummary.personaName}`);
         } catch (error) {
+            setIsLoading(false);
             toast.error(`Error in (getUserSummary): ${error?.message || error}`);
             console.error('Error in (getUserSummary):', error);
             logEvent(`[Error] in (getUserSummary): ${error}`);

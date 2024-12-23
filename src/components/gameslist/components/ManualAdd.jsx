@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Modal, ModalContent, ModalBody, useDisclosure, Input, ModalFooter, Alert, ModalHeader } from '@nextui-org/react';
-import { IoAdd } from 'react-icons/io5';
+import { IoMdAdd } from 'react-icons/io';
 import useManualAdd from '../hooks/useManualAdd';
 
 export default function ManualAdd({ setFavorites }) {
@@ -14,7 +14,7 @@ export default function ManualAdd({ setFavorites }) {
                 color='primary'
                 isIconOnly
                 className='rounded-full'
-                startContent={<IoAdd fontSize={18} />}
+                startContent={<IoMdAdd fontSize={18} />}
                 onPress={onOpen}
             />
 

@@ -38,7 +38,6 @@ export const checkGamesForDrops = async () => {
                     logEvent(`[Card Farming] ${dropsRemaining} drops remaining for ${gameData.name} - starting`);
                 } else {
                     // Remove game from farming list if no drops remaining
-                    console.log('should remove');
                     logEvent(`[Card Farming] ${dropsRemaining} drops remaining for ${gameData.name} - removed from list`);
                     removeGameFromFarmingList(gameData.appid);
                 }
@@ -82,9 +81,9 @@ const farmGame = async (game, setCountdownTimer, isMountedRef, abortControllerRe
 const startAndStopIdler = async (appId, name, duration, setCountdownTimer, isMountedRef, abortControllerRef) => {
     try {
         startCountdown(duration / 60000, setCountdownTimer);
-        startIdler(appId, name, true);
+        await startIdler(appId, name, true);
         await delay(duration, isMountedRef, abortControllerRef);
-        stopIdler(appId, name);
+        await stopIdler(appId, name);
     } catch (error) {
         handleError('startAndStopIdler', error);
     }
@@ -138,7 +137,6 @@ const startCountdown = (durationInMinutes, setCountdownTimer) => {
 
 // Remove game from farming list
 const removeGameFromFarmingList = (gameId) => {
-    console.log(gameId);
     try {
         const cardFarming = JSON.parse(localStorage.getItem('cardFarming')) || [];
         const updatedCardFarming = cardFarming.filter(arr => JSON.parse(arr).appid !== gameId);
@@ -164,6 +162,7 @@ export const handleCancel = async (setActivePage, gamesWithDrops, isMountedRef, 
 
 // Handle errors
 const handleError = (functionName, error) => {
+    if (!error) return;
     console.error(`Error in (${functionName}):`, error);
     logEvent(`[Error] in (${functionName}) ${error}`);
 };

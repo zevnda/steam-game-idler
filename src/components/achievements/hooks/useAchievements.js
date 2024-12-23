@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { fetchAchievementData, sortAchievements, filterAchievements } from '../utils/achievementsHandler';
-import { AppContext } from '../../layouts/components/AppContext';
+import { AppContext } from '../../layout/components/AppContext';
 
 export default function useAchievements() {
     const {

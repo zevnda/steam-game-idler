@@ -9,7 +9,7 @@ export default function Logs() {
     return (
         <React.Fragment>
             <div className='p-2'>
-                <div className='flex gap-2 w-full mb-4'>
+                <div className='flex justify-between gap-2 w-full mb-4'>
                     <Button
                         size='sm'
                         color='primary'
@@ -26,8 +26,8 @@ export default function Logs() {
                     >
                         Clear logs
                     </Button>
-
                 </div>
+
                 <div className='bg-container border border-border font-mono text-xs rounded min-h-[200px] max-h-[calc(100vh-285px)] overflow-y-auto'>
                     <table className='w-full border-collapse'>
                         <thead className='sticky top-0 z-10'>

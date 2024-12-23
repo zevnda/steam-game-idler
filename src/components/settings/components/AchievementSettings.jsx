@@ -18,7 +18,7 @@ export default function AchievementSettings({ settings, setSettings }) {
                     <div className='flex items-center gap-2'>
                         <Checkbox
                             name='schedule'
-                            isSelected={localSettings.achievementUnlocker.schedule}
+                            isSelected={localSettings.achievementUnlocker.schedule || false}
                             onChange={(e) => handleCheckboxChange(e, localSettings, setLocalSettings, setSettings)}
                         >
                             <div className='flex items-center gap-1'>
@@ -58,7 +58,7 @@ export default function AchievementSettings({ settings, setSettings }) {
 
                     <Checkbox
                         name='idle'
-                        isSelected={localSettings.achievementUnlocker.idle}
+                        isSelected={localSettings.achievementUnlocker.idle || false}
                         onChange={(e) => handleCheckboxChange(e, localSettings, setLocalSettings, setSettings)}
                     >
                         <div className='flex items-center gap-1'>
@@ -70,7 +70,7 @@ export default function AchievementSettings({ settings, setSettings }) {
 
                     <Checkbox
                         name='hidden'
-                        isSelected={localSettings.achievementUnlocker.hidden}
+                        isSelected={localSettings.achievementUnlocker.hidden || false}
                         onChange={(e) => handleCheckboxChange(e, localSettings, setLocalSettings, setSettings)}
                     >
                         <div className='flex items-center gap-1'>

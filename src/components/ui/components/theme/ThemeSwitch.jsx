@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useTheme } from 'next-themes';
 import { LuMoonStar } from 'react-icons/lu';
 import { LuSun } from 'react-icons/lu';
-import { HiMiniComputerDesktop } from 'react-icons/hi2';
 
 export default function ThemeSwitch() {
     const { theme, setTheme } = useTheme();
@@ -11,8 +10,6 @@ export default function ThemeSwitch() {
     const handleClick = () => {
         if (theme === 'dark') {
             setTheme('light');
-        } else if (theme === 'light') {
-            setTheme('system');
         } else {
             setTheme('dark');
         }
@@ -27,10 +24,8 @@ export default function ThemeSwitch() {
     const renderIcon = () => {
         if (theme === 'dark') {
             return <LuMoonStar fontSize={18} />;
-        } else if (theme === 'light') {
-            return <LuSun fontSize={18} />;
         } else {
-            return <HiMiniComputerDesktop fontSize={18} />;
+            return <LuSun fontSize={18} />;
         }
     };
 

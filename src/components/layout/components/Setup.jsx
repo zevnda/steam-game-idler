@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Spinner } from '@nextui-org/react';
@@ -9,12 +9,20 @@ import 'react-toastify/dist/ReactToastify.css';
 
 export default function Setup() {
     const { isLoading, handleLogin, steamUsers } = useSetup();
+    const videoRef = useRef(null);
+
+    useEffect(() => {
+        if (videoRef.current) {
+            videoRef.current.playbackRate = 0.5;
+        }
+    }, []);
 
     return (
         <React.Fragment>
             <TitleBar />
             <div className='relative w-full bg-[#101010] text-white'>
                 <video
+                    ref={videoRef}
                     className='absolute top-0 left-0 w-full h-full object-cover blur-lg brightness-[.4]'
                     src='/setup_bg.mp4'
                     autoPlay
@@ -32,13 +40,11 @@ export default function Setup() {
                             damping: 23,
                         }}
                     >
-                        <div className='flex items-center flex-col gap-2 p-6'>
-                            <Image src={'/logo.webp'} width={32} height={32} alt='logo' priority={true} />
-                            <p className='text-4xl'>
+                        <div className='p-6'>
+                            <p className='text-2xl '>
                                 Welcome
                             </p>
                         </div>
-
                         <div className='flex justify-center items-center flex-col'>
                             {isLoading ? (
                                 <Spinner />
@@ -60,6 +66,7 @@ export default function Setup() {
                                                         height={40}
                                                         width={40}
                                                         alt='user avatar'
+                                                        priority
                                                         className='w-[40px] h-[40px] rounded-full group-hover:scale-110 duration-200'
                                                     />
                                                     <div className='w-[140px]'>

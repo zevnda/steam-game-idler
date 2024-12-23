@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import Image from 'next/image';
 import { Button, Tooltip } from '@nextui-org/react';
 import useAchievementsList from '../hooks/useAchievementsList';
-import { AppContext } from '../../layouts/components/AppContext';
+import { AppContext } from '../../layout/components/AppContext';
 
 export default function AchievementsList({ userGameAchievementsMap, percentageMap }) {
     const { achievementList, achievementsUnavailable } = useContext(AppContext);

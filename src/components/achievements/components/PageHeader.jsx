@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
 import { Button, Tooltip } from '@nextui-org/react';
-import { IoMdArrowRoundBack } from 'react-icons/io';
+import { IoMdArrowBack } from 'react-icons/io';
 import usePageHeader from '../hooks/usePageHeader';
-import { AppContext } from '../../layouts/components/AppContext';
+import { AppContext } from '../../layout/components/AppContext';
 import ExtLink from '../../ui/components/ExtLink';
 import { SiSteamdb } from 'react-icons/si';
 
@@ -19,7 +19,7 @@ export default function PageHeader() {
                         color='primary'
                         isIconOnly
                         className='w-fit rounded-full duration-50'
-                        startContent={<IoMdArrowRoundBack fontSize={18} />}
+                        startContent={<IoMdArrowBack fontSize={18} />}
                         onPress={handleClick}
                     />
                     <div className='flex items-center gap-2 w-full'>

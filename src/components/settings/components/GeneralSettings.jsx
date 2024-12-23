@@ -5,7 +5,7 @@ import { antiAwayStatus } from '@/src/utils/utils';
 import useGeneralSettings from '../hooks/useGeneralSettings';
 import { handleCheckboxChange, handleRunAtStartupChange, handleKeyChange, handleKeySave, handleClear } from '../utils/generalSettingsHandler';
 import Image from 'next/image';
-import { AppContext } from '../../layouts/components/AppContext';
+import { AppContext } from '../../layout/components/AppContext';
 
 export default function GeneralSettings({ settings, setSettings }) {
     const { userSummary } = useContext(AppContext);
@@ -20,8 +20,15 @@ export default function GeneralSettings({ settings, setSettings }) {
                     </p>
                     <div className='border border-border rounded bg-input hover:bg-titlebar dark:bg-[#131313] dark:hover:bg-[#171717]'>
                         <ExtLink href={`https://steamcommunity.com/profiles/${userSummary.steamId}`}>
-                            <div className='flex items-center gap-2 h-full p-2'>
-                                <Image src={userSummary.avatar} height={40} width={40} alt='user avatar' className='w-[40px] h-[40px] rounded-full' />
+                            <div className='flex items-center gap-2 h-full p-2 group'>
+                                <Image
+                                    src={userSummary.avatar}
+                                    height={40}
+                                    width={40}
+                                    alt='user avatar'
+                                    className='w-[40px] h-[40px] rounded-full group-hover:scale-110 duration-200'
+                                    priority
+                                />
                                 <div className='w-[140px]'>
                                     <p className='font-medium truncate'>
                                         {userSummary.personaName}
@@ -37,7 +44,7 @@ export default function GeneralSettings({ settings, setSettings }) {
 
                 <Checkbox
                     name='stealthIdle'
-                    isSelected={localSettings?.general?.stealthIdle}
+                    isSelected={localSettings?.general?.stealthIdle || false}
                     onChange={(e) => handleCheckboxChange(e, localSettings, setLocalSettings, setSettings)}
                 >
                     <div className='flex items-center gap-1'>
@@ -49,7 +56,7 @@ export default function GeneralSettings({ settings, setSettings }) {
 
                 <Checkbox
                     name='antiAway'
-                    isSelected={localSettings?.general?.antiAway}
+                    isSelected={localSettings?.general?.antiAway || false}
                     onChange={(e) => {
                         handleCheckboxChange(e, localSettings, setLocalSettings, setSettings);
                         antiAwayStatus(!localSettings?.general?.antiAway);
@@ -64,7 +71,7 @@ export default function GeneralSettings({ settings, setSettings }) {
 
                 <Checkbox
                     name='freeGameNotifications'
-                    isSelected={localSettings?.general?.freeGameNotifications}
+                    isSelected={localSettings?.general?.freeGameNotifications || false}
                     onChange={(e) => handleCheckboxChange(e, localSettings, setLocalSettings, setSettings)}
                 >
                     <div className='flex items-center gap-1'>
@@ -76,7 +83,7 @@ export default function GeneralSettings({ settings, setSettings }) {
 
                 <Checkbox
                     name='clearData'
-                    isSelected={localSettings?.general?.clearData}
+                    isSelected={localSettings?.general?.clearData || false}
                     onChange={(e) => handleCheckboxChange(e, localSettings, setLocalSettings, setSettings)}
                 >
                     <div className='flex items-center gap-1'>
@@ -87,7 +94,7 @@ export default function GeneralSettings({ settings, setSettings }) {
                 </Checkbox>
 
                 <Checkbox
-                    isSelected={startupState}
+                    isSelected={startupState || false}
                     onChange={() => handleRunAtStartupChange(startupState, setStartupState)}
                 >
                     <div className='flex items-center gap-1'>
@@ -99,7 +106,7 @@ export default function GeneralSettings({ settings, setSettings }) {
 
                 <Checkbox
                     name='minimizeToTray'
-                    isSelected={localSettings?.general?.minimizeToTray}
+                    isSelected={localSettings?.general?.minimizeToTray || false}
                     onChange={(e) => handleCheckboxChange(e, localSettings, setLocalSettings, setSettings)}
                 >
                     <div className='flex items-center gap-1'>
@@ -112,7 +119,7 @@ export default function GeneralSettings({ settings, setSettings }) {
                 <div className='flex flex-col'>
                     <p className='text-xs my-2' >
                         Use your own
-                        <ExtLink href={'https://steamcommunity.com/dev/apikey'} className={'mx-1 text-blue-400'}>
+                        <ExtLink href={'https://steamcommunity.com/dev/apikey'} className={'mx-1 text-link hover:text-linkhover'}>
                             Steam web API key
                         </ExtLink>
                         instead of the default one <span className='italic'>(optional)</span>

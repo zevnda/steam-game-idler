@@ -1,6 +1,7 @@
 import { invoke } from '@tauri-apps/api/tauri';
-import { logEvent, unlockAchievement, lockAchievement, updateStat } from '@/src/utils/utils';
+import { logEvent, unlockAchievement, lockAchievement, updateStat, getFilePath } from '@/src/utils/utils';
 import { toast } from 'react-toastify';
+import ErrorToast from '../../ui/components/ErrorToast';
 
 // Handle unlocking all achievements
 export const handleUnlockAll = async (appId, appName, achievementList, setBtnLoading, onClose) => {
@@ -18,25 +19,35 @@ export const handleUnlockAll = async (appId, appName, achievementList, setBtnLoa
                 closeButton: false
             });
             // Loop through each achievement and unlock it
-            for (const ach of achievementList) {
-                try {
-                    await unlockAchievement(appId, ach.name);
+            let failed;
+            for (const achievement of achievementList) {
+                const error = await unlockAchievement(appId, achievement.name, appName);
+                if (!error) {
                     unlocked++;
                     toast.update(toastId, {
                         render: `Unlocking ${unlocked} of ${total} achievements for ${appName}.`,
                     });
-                } catch (error) {
-                    console.error(`Failed to unlock achievement ${ach.name}:`, error);
+                } else {
+                    failed = true;
+                    toast.update(toastId, {
+                        render: 'Is Steam running? Are you logged in to the correct account?',
+                        isLoading: false,
+                        autoClose: 5000,
+                        type: 'error'
+                    });
+                    break;
                 }
             }
             setBtnLoading(false);
-            toast.update(toastId, {
-                render: `Successfully unlocked ${unlocked} of ${total} achievements for ${appName}.`,
-                autoClose: true,
-                isLoading: false,
-                closeButton: true,
-                type: 'success'
-            });
+            if (!failed) {
+                toast.update(toastId, {
+                    render: `Successfully unlocked ${unlocked} of ${total} achievements for ${appName}.`,
+                    autoClose: true,
+                    isLoading: false,
+                    closeButton: true,
+                    type: 'success'
+                });
+            }
         } else {
             onClose();
             toast.error('Steam is not running');
@@ -64,25 +75,35 @@ export const handleLockAll = async (appId, appName, achievementList, setBtnLoadi
                 closeButton: false
             });
             // Loop through each achievement and lock it
-            for (const ach of achievementList) {
-                try {
-                    await lockAchievement(appId, ach.name);
+            let failed;
+            for (const achievement of achievementList) {
+                const error = await lockAchievement(appId, achievement.name, appName);
+                if (!error) {
                     locked++;
                     toast.update(toastId, {
                         render: `Locking ${locked} of ${total} achievements for ${appName}.`,
                     });
-                } catch (error) {
-                    console.error(`Failed to lock achievement ${ach.name}:`, error);
+                } else {
+                    failed = true;
+                    toast.update(toastId, {
+                        render: 'Is Steam running? Are you logged in to the correct account?',
+                        autoClose: 5000,
+                        isLoading: false,
+                        type: 'error'
+                    });
+                    break;
                 }
             }
             setBtnLoading(false);
-            toast.update(toastId, {
-                render: `Successfully locked ${locked} of ${total} achievements for ${appName}.`,
-                autoClose: true,
-                isLoading: false,
-                closeButton: true,
-                type: 'success'
-            });
+            if (!failed) {
+                toast.update(toastId, {
+                    render: `Successfully locked ${locked} of ${total} achievements for ${appName}.`,
+                    autoClose: true,
+                    isLoading: false,
+                    closeButton: true,
+                    type: 'success'
+                });
+            }
         } else {
             onClose();
             toast.error('Steam is not running');
@@ -95,24 +116,43 @@ export const handleLockAll = async (appId, appName, achievementList, setBtnLoadi
 };
 
 // Handle updating all statistics
-export const handleUpdateAll = async (appId, appName, initialStatValues, newStatValues) => {
+export const handleUpdateAll = async (appId, appName, initialStatValues, newStatValues, setBtnLoading) => {
     // Filter only values that have changed
     const changedValues = Object.entries(newStatValues).filter(([key, value]) => {
         return value !== initialStatValues[key];
     });
 
     if (changedValues.length < 1) {
-        toast.info('No changes to save.');
+        return toast.info('No changes to save.');
     }
 
+    setBtnLoading(true);
+
+    const toastId = toast.info('Updating statistics', {
+        autoClose: false,
+        isLoading: true,
+        closeButton: false
+    });
+
     // Loop through each changed value and update it
+
+    let failed;
     for (const [statName, newValue] of changedValues) {
         try {
-            const status = await updateStat(appId, statName, newValue.toString() || '0');
-            if (!status.error) {
-                toast.success(`Updated ${statName} to ${newValue} for ${appName}`);
+            const error = await updateStat(appId, statName, newValue.toString() || '0', appName);
+            if (!error) {
+                toast.update(toastId, {
+                    render: `Updated ${statName} to ${newValue} for ${appName}`,
+                });
             } else {
-                toast.error(`Error: ${status.error}`);
+                failed = true;
+                toast.update(toastId, {
+                    render: 'Is Steam running? Are you logged in to the correct account?',
+                    autoClose: 5000,
+                    isLoading: false,
+                    type: 'error'
+                });
+                break;
             }
         } catch (error) {
             toast.error(`Error in (handleUpdate): ${error?.message || error}`);
@@ -120,4 +160,43 @@ export const handleUpdateAll = async (appId, appName, initialStatValues, newStat
             logEvent(`[Error] in (handleUpdate): ${error}`);
         }
     }
+
+    setBtnLoading(false);
+
+    if (!failed) {
+        toast.update(toastId, {
+            render: `Completed updating statistics for ${appName}`,
+            autoClose: true,
+            isLoading: false,
+            closeButton: true,
+            type: 'success'
+        });
+    }
+};
+
+// Handle resetting all statistics
+export const handleResetAll = async (appId, setBtnLoading, setNewStatValues, onClose) => {
+    onClose();
+    setBtnLoading(true);
+    const response = await invoke('reset_stats', { filePath: await getFilePath(), appId: appId.toString() });
+    const status = JSON.parse(response);
+    if (!status.error) {
+        setNewStatValues(prevValues => {
+            const resetValues = {};
+            for (const key in prevValues) {
+                resetValues[key] = 0;
+            }
+            return resetValues;
+        });
+        toast.success('All stats successfully reset');
+    } else {
+        toast.error(
+            <ErrorToast
+                message={'Is Steam running? Are you logged in to the correct account?'}
+                href={'https://github.com/zevnda/steam-game-idler/wiki/faq#:~:text=Why%20am%20I%20seeing%20an%20%22Are%20you%20logged%20in%20to%20the%20correct%20account%3F%22%20error%20message%3F'}
+            />,
+            { autoClose: 5000 }
+        );
+    }
+    setBtnLoading(false);
 };

@@ -5,7 +5,7 @@ import { FaSignOutAlt } from 'react-icons/fa';
 import { IoGameController, IoGift, IoSettings } from 'react-icons/io5';
 import Sparkles from './Sparkles';
 import useSideBar from '../hooks/useSideBar';
-import { AppContext } from '../../layouts/components/AppContext';
+import { AppContext } from '../../layout/components/AppContext';
 
 export default function SideBar() {
     const { showFreeGamesTab, activePage, setActivePage } = useContext(AppContext);

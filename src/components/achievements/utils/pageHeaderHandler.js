@@ -6,6 +6,7 @@ export const sortOptions = [
 
 // Handle change in sorting option
 export const handleChange = (e, achievementList, setAchievementList, percentageMap, userGameAchievementsMap, setIsSorted) => {
+    console.log(achievementList);
     if (e.currentKey === 'title') {
         // Sort achievements alphabetically
         const sortedList = [...achievementList].sort((a, b) => {

@@ -5,7 +5,7 @@ import { IoPlay } from 'react-icons/io5';
 import { FaAward } from 'react-icons/fa';
 import 'react-toastify/dist/ReactToastify.css';
 import Loader from '@/src/components/ui/components/Loader';
-import { AppContext } from '../../layouts/components/AppContext';
+import { AppContext } from '../../layout/components/AppContext';
 import { handleIdle, viewAchievments, viewStorePage, addToFavorites, removeFromFavorites, addToCardFarming, removeFromCardFarming, addToAchievementUnlocker, removeFromAchievementUnlocker, addToAutoIdle, removeFromAutoIdle } from '@/src/components/gameslist/utils/gameCardHandler';
 
 export default function GameCard({ gameList, favorites, cardFarming, achievementUnlocker, autoIdle, setFavorites, setAchievementUnlocker, setCardFarming, setAutoIdle }) {

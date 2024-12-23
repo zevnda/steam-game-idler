@@ -1,11 +1,11 @@
 import { useDisclosure } from '@nextui-org/react';
 import { toast } from 'react-toastify';
 import { logEvent } from '@/src/utils/utils';
-import { AppContext } from '../../layouts/components/AppContext';
+import { AppContext } from '../../layout/components/AppContext';
 import { useContext } from 'react';
 
 export default function useSideBar(activePage, setActivePage) {
-    const { setUserSummary } = useContext(AppContext);
+    const { userSummary, setUserSummary, setCurrentTab, setGameQueryValue, setAchievementQueryValue } = useContext(AppContext);
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     const openConfirmation = () => {
@@ -21,7 +21,7 @@ export default function useSideBar(activePage, setActivePage) {
             sessionStorage.removeItem('gamesListCache');
             sessionStorage.removeItem('recentGamesCache');
             clearLocalStorageData(clearData);
-            logEvent('[System] Logged out');
+            logEvent(`[System] Logged out of ${userSummary.personaName}`);
         } catch (error) {
             toast.error(`Error in (handleLogout): ${error?.message || error}`);
             console.error('Error in (handleLogout):', error);
@@ -30,10 +30,16 @@ export default function useSideBar(activePage, setActivePage) {
     };
 
     const clearLocalStorageData = (clearData) => {
+        setActivePage('games');
+        setCurrentTab(null);
+        setGameQueryValue('');
+        setAchievementQueryValue('');
+
         localStorage.removeItem('userSummary');
         localStorage.removeItem('apiKey');
         if (clearData) {
             localStorage.removeItem('steamCookies');
+            localStorage.removeItem('cardFarmingUser');
             localStorage.removeItem('favorites');
             localStorage.removeItem('cardFarming');
             localStorage.removeItem('achievementUnlocker');

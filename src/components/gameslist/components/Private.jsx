@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { Button } from '@nextui-org/react';
 import ExtLink from '@/src/components/ui/components/ExtLink';
-import { AppContext } from '../../layouts/components/AppContext';
+import { AppContext } from '../../layout/components/AppContext';
 
 export default function Private({ setRefreshKey }) {
     const { userSummary } = useContext(AppContext);

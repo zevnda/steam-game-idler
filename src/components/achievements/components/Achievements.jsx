@@ -6,7 +6,7 @@ import { Tab, Tabs } from '@nextui-org/react';
 import StatisticsList from './StatisticsList';
 import PageHeader from './PageHeader';
 import useAchievements from '../hooks/useAchievements';
-import { AppContext } from '../../layouts/components/AppContext';
+import { AppContext } from '../../layout/components/AppContext';
 
 export default function Achievements() {
     const { setCurrentTab } = useContext(AppContext);
@@ -20,7 +20,6 @@ export default function Achievements() {
         newStatValues,
         setNewStatValues,
         userGameAchievementsMap,
-        userGameStatsMap,
         percentageMap
     } = useAchievements();
 
@@ -42,6 +41,7 @@ export default function Achievements() {
                                 setIsSorted={setIsSorted}
                                 userGameAchievementsMap={userGameAchievementsMap}
                                 percentageMap={percentageMap}
+                                setNewStatValues={setNewStatValues}
                             />
                         </div>
 
@@ -70,7 +70,6 @@ export default function Achievements() {
                                 </Tab>
                                 <Tab key='statistics' title='Statistics'>
                                     <StatisticsList
-                                        userGameStatsMap={userGameStatsMap}
                                         setInitialStatValues={setInitialStatValues}
                                         newStatValues={newStatValues}
                                         setNewStatValues={setNewStatValues}

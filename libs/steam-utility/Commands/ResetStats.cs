@@ -5,17 +5,17 @@ using Steamworks;
 
 namespace SteamUtility.Commands
 {
-    public class StatsCommand : ICommand
+    public class ResetStats : ICommand
     {
         static bool statsReceived = false;
         static Callback<UserStatsReceived_t> statsReceivedCallback;
 
         public void Execute(string[] args)
         {
-            if (args.Length < 3)
+            if (args.Length < 2)
             {
                 MessageBox.Show(
-                    "Usage: SteamUtility.exe update_stat <AppID> <StatName> <NewValue>",
+                    "Usage: SteamUtility.exe reset_stats <AppID>",
                     "Error",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
@@ -36,21 +36,13 @@ namespace SteamUtility.Commands
                 return;
             }
 
-            string statName = args[2];
-            string newValue = args[3];
-
             // Set the Steam App ID environment variable
             Environment.SetEnvironmentVariable("SteamAppId", appId.ToString());
 
             // Initialize the Steam API
             if (!SteamAPI.Init())
             {
-                MessageBox.Show(
-                    "Failed to initialize the Steam API. Is Steam running?",
-                    "Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
+                Console.WriteLine("error");
                 return;
             }
 
@@ -92,38 +84,17 @@ namespace SteamUtility.Commands
                     Thread.Sleep(100);
                 }
 
-                // Update the stat with the new value
-                bool success = false;
-                if (int.TryParse(newValue, out int intValue))
-                {
-                    success = SteamUserStats.SetStat(statName, intValue);
-                }
-                else if (float.TryParse(newValue, out float floatValue))
-                {
-                    success = SteamUserStats.SetStat(statName, floatValue);
-                }
-                else
-                {
-                    MessageBox.Show(
-                        "Invalid new value. Please provide a valid integer or float.",
-                        "Error",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error
-                    );
-                    return;
-                }
-
-                // Store the updated stats
-                if (success)
+                // Reset all stats
+                if (SteamUserStats.ResetAllStats(true))
                 {
                     if (SteamUserStats.StoreStats())
                     {
-                        Console.WriteLine($"Stat '{statName}' updated successfully to {newValue}.");
+                        Console.WriteLine("All stats reset successfully.");
                     }
                     else
                     {
                         MessageBox.Show(
-                            "Failed to store updated stats.",
+                            "Failed to store reset stats.",
                             "Error",
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Error
@@ -132,7 +103,12 @@ namespace SteamUtility.Commands
                 }
                 else
                 {
-                    Console.WriteLine($"Failed to update stat '{statName}'. It might not exist.");
+                    MessageBox.Show(
+                        "Failed to reset stats.",
+                        "Error",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
                 }
             }
             catch (Exception ex)

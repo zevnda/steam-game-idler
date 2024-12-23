@@ -2,7 +2,7 @@ import { useEffect, useState, useRef, useContext } from 'react';
 import { fetchGamesList, sortAndFilterGames, fetchLocalStorageLists } from '../utils/gamesListHandler';
 import { logEvent } from '@/src/utils/utils';
 import { toast } from 'react-toastify';
-import { AppContext } from '../../layouts/components/AppContext';
+import { AppContext } from '../../layout/components/AppContext';
 
 export default function useGamesList() {
     const { userSummary, isQuery, gameQueryValue } = useContext(AppContext);

@@ -5,7 +5,7 @@ import StopButton from './StopButton';
 import { Button, Skeleton, Spinner } from '@nextui-org/react';
 import { IoCheckmark } from 'react-icons/io5';
 import { toast } from 'react-toastify';
-import { AppContext } from '../../layouts/components/AppContext';
+import { AppContext } from '../../layout/components/AppContext';
 
 export default function CardFarming() {
     const { setActivePage } = useContext(AppContext);
@@ -54,7 +54,7 @@ export default function CardFarming() {
                     <p className='text-3xl font-semibold mb-0'>
                         Card Farming
                     </p>
-                    {!gamesWithDrops.size > 0 && !totalDropsRemaining ? (
+                    {gamesWithDrops.size > 0 && totalDropsRemaining ? (
                         <React.Fragment>
                             <p className='text-sm'>
                                 Idling <span className='font-bold text-sgi'>{gamesWithDrops.size}</span> game(s) with <span className='font-bold text-sgi '>{totalDropsRemaining}</span> total card drop(s) remaining

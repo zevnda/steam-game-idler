@@ -2,18 +2,7 @@ import { toast } from 'react-toastify';
 import { startIdler, logEvent } from '@/src/utils/utils';
 
 export const handleIdle = async (item) => {
-    try {
-        const idleStatus = await startIdler(item.appid, item.name);
-        if (idleStatus) {
-            toast.success(`Started idling ${item.name}`);
-        } else {
-            toast.error('Steam is not running');
-        }
-    } catch (error) {
-        toast.error(`Error in (handleIdle): ${error?.message || error}`);
-        console.error('Error in (handleIdle):', error);
-        logEvent(`[Error] in (handleIdle): ${error}`);
-    }
+    await startIdler(item.appid, item.name);
 };
 
 export const viewAchievments = (item, setAppId, setAppName, setShowAchievements, showAchievements) => {
@@ -69,7 +58,6 @@ export const removeFromFavorites = (item, setFavorites) => {
 };
 
 export const addToCardFarming = (item, setCardFarming) => {
-    console.log(item);
     setTimeout(() => {
         try {
             let cardFarming = JSON.parse(localStorage.getItem('cardFarming')) || [];

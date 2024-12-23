@@ -8,7 +8,7 @@ import { IoClose } from 'react-icons/io5';
 import { RiSearchLine } from 'react-icons/ri';
 import useHeader from '../hooks/useHeader';
 import Notifications from '../../notifications/components/Notifications';
-import { AppContext } from '../../layouts/components/AppContext';
+import { AppContext } from '../../layout/components/AppContext';
 
 export default function Header() {
     const { activePage, showAchievements, gameQueryValue, setGameQueryValue, achievementQueryValue, setAchievementQueryValue, achievementsUnavailable, currentTab } = useContext(AppContext);

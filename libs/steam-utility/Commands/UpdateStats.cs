@@ -5,17 +5,17 @@ using Steamworks;
 
 namespace SteamUtility.Commands
 {
-    public class LockAchievementCommand : ICommand
+    public class UpdateStats : ICommand
     {
         static bool statsReceived = false;
         static Callback<UserStatsReceived_t> statsReceivedCallback;
 
         public void Execute(string[] args)
         {
-            if (args.Length < 2)
+            if (args.Length < 3)
             {
                 MessageBox.Show(
-                    "Usage: SteamUtility.exe lock_achievement <AppID> <true|false>",
+                    "Usage: SteamUtility.exe s <AppID> <StatName> <NewValue>",
                     "Error",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
@@ -23,10 +23,8 @@ namespace SteamUtility.Commands
                 return;
             }
 
-            uint appId;
-            string achievementId = args[2];
-
             // Validate the AppID
+            uint appId;
             if (!uint.TryParse(args[1], out appId))
             {
                 MessageBox.Show(
@@ -38,18 +36,16 @@ namespace SteamUtility.Commands
                 return;
             }
 
+            string statName = args[2];
+            string newValue = args[3];
+
             // Set the Steam App ID environment variable
             Environment.SetEnvironmentVariable("SteamAppId", appId.ToString());
 
             // Initialize the Steam API
             if (!SteamAPI.Init())
             {
-                MessageBox.Show(
-                    "Failed to initialize the Steam API. Is Steam running?",
-                    "Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
+                Console.WriteLine("error");
                 return;
             }
 
@@ -61,7 +57,7 @@ namespace SteamUtility.Commands
                 // Request user stats from Steam
                 SteamAPICall_t apiCall = SteamUserStats.RequestUserStats(steamId);
 
-                // Check if the API call was successful
+                // Check if the API call is valid
                 if (apiCall == SteamAPICall_t.Invalid)
                 {
                     MessageBox.Show(
@@ -91,18 +87,38 @@ namespace SteamUtility.Commands
                     Thread.Sleep(100);
                 }
 
-                // Check if the achievement exists and lock it
-                if (SteamUserStats.GetAchievement(achievementId, out _))
+                // Update the stat with the new value
+                bool success = false;
+                if (int.TryParse(newValue, out int intValue))
                 {
-                    if (SteamUserStats.ClearAchievement(achievementId))
+                    success = SteamUserStats.SetStat(statName, intValue);
+                }
+                else if (float.TryParse(newValue, out float floatValue))
+                {
+                    success = SteamUserStats.SetStat(statName, floatValue);
+                }
+                else
+                {
+                    MessageBox.Show(
+                        "Invalid new value. Please provide a valid integer or float.",
+                        "Error",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
+                    return;
+                }
+
+                // Store the updated stats
+                if (success)
+                {
+                    if (SteamUserStats.StoreStats())
                     {
-                        SteamUserStats.StoreStats();
-                        Console.WriteLine("Achievement locked successfully.");
+                        Console.WriteLine($"Stat '{statName}' updated successfully to {newValue}.");
                     }
                     else
                     {
                         MessageBox.Show(
-                            "Failed to lock achievement",
+                            "Failed to store updated stats.",
                             "Error",
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Error
@@ -111,12 +127,7 @@ namespace SteamUtility.Commands
                 }
                 else
                 {
-                    MessageBox.Show(
-                        "Failed to get achievement data. It might not exist.",
-                        "Error",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error
-                    );
+                    Console.WriteLine($"Failed to update stat '{statName}'. It might not exist.");
                 }
             }
             catch (Exception ex)

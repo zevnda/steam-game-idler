@@ -2,15 +2,28 @@ import { invoke } from '@tauri-apps/api/tauri';
 import { toast } from 'react-toastify';
 import { logEvent } from '@/src/utils/utils';
 
-export const getStoredCookies = async (setHasCookies, setSidValue, setSlsValue, setSmaValue) => {
+const fetchUserSummary = async (steamId, apiKey) => {
+    const res = await invoke('get_user_summary', { steamId, apiKey });
+    return {
+        steamId: res.response.players[0].steamid,
+        personaName: res.response.players[0].personaname,
+        avatar: res.response.players[0].avatar.replace('.jpg', '_full.jpg')
+    };
+};
+
+export const getStoredCookies = async (setHasCookies, setSidValue, setSlsValue, setSmaValue, setCardFarmingUser) => {
     try {
         const steamCookies = JSON.parse(localStorage.getItem('steamCookies'));
+        const cardFarmingUser = JSON.parse(localStorage.getItem('cardFarmingUser'));
 
         if (steamCookies && steamCookies?.sid && steamCookies?.sls) {
             setHasCookies(true);
             setSidValue(steamCookies?.sid);
             setSlsValue(steamCookies?.sls);
             setSmaValue(steamCookies?.sma);
+        }
+        if (cardFarmingUser) {
+            setCardFarmingUser(cardFarmingUser);
         }
     } catch (error) {
         toast.error(`Error in (validateSession): ${error?.message || error}`);
@@ -19,7 +32,7 @@ export const getStoredCookies = async (setHasCookies, setSidValue, setSlsValue, 
     }
 };
 
-export const handleSave = async (sidValue, slsValue, smaValue, setHasCookies) => {
+export const handleSave = async (sidValue, slsValue, smaValue, setHasCookies, userSummary, setCardFarmingUser) => {
     try {
         if (sidValue.length > 0 && slsValue.length > 0) {
             const userSummary = JSON.parse(localStorage.getItem('userSummary')) || {};
@@ -27,8 +40,20 @@ export const handleSave = async (sidValue, slsValue, smaValue, setHasCookies) =>
             const res = await invoke('validate_session', { sid: sidValue, sls: slsValue, sma: smaValue, steamid: userSummary.steamId });
 
             if (res.user) {
+                const steamId = slsValue.slice(0, 17);
+                const apiKey = localStorage.getItem('apiKey');
+                const cardFarmingUser = await fetchUserSummary(steamId, apiKey);
+
+                if (cardFarmingUser.steamId !== userSummary.steamId) {
+                    return toast.error('[Card Farming] Account mismatch');
+                }
+
                 localStorage.setItem('steamCookies', JSON.stringify({ sid: sidValue, sls: slsValue, sma: smaValue }));
                 setHasCookies(true);
+
+                setCardFarmingUser(cardFarmingUser);
+                localStorage.setItem('cardFarmingUser', JSON.stringify(cardFarmingUser));
+
                 toast.success(`[Card Farming] Logged in as ${res.user}`);
                 logEvent(`[Settings - Card Farming] Logged in as ${res.user}`);
             } else {
@@ -43,13 +68,15 @@ export const handleSave = async (sidValue, slsValue, smaValue, setHasCookies) =>
     }
 };
 
-export const handleClear = async (setHasCookies, setSidValue, setSlsValue, setSmaValue) => {
+export const handleClear = async (setHasCookies, setSidValue, setSlsValue, setSmaValue, setCardFarmingUser) => {
     try {
         localStorage.removeItem('steamCookies');
+        localStorage.removeItem('cardFarmingUser');
         setSidValue('');
         setSlsValue('');
         setSmaValue('');
         setHasCookies(false);
+        setCardFarmingUser(null);
         toast.success('[Card Farming] Logged out');
         logEvent('[Settings - Card Farming] Logged out');
     } catch (error) {

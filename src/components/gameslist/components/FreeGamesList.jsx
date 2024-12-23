@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import Image from 'next/image';
 import { FaSteam } from 'react-icons/fa';
 import ExtLink from '@/src/components/ui/components/ExtLink';
-import { AppContext } from '../../layouts/components/AppContext';
+import { AppContext } from '../../layout/components/AppContext';
 
 export default function FreeGamesList() {
     const { freeGamesList } = useContext(AppContext);

@@ -1,10 +1,10 @@
 import React from 'react';
 import { Select, SelectItem } from '@nextui-org/react';
 import { MdSort } from 'react-icons/md';
-import Automate from './Automate';
 import { IoRefresh } from 'react-icons/io5';
 import ManualAdd from './ManualAdd';
 import { usePageHeader } from '../hooks/usePageHeader';
+import AutomateButtons from '../../automation/components/AutomateButtons';
 
 export default function PageHeader({ sortStyle, setSortStyle, filteredGames, visibleGames, setFavorites, setRefreshKey }) {
     const { handleSorting, handleRefetch } = usePageHeader({ setSortStyle, setRefreshKey });
@@ -43,7 +43,7 @@ export default function PageHeader({ sortStyle, setSortStyle, filteredGames, vis
                 <div className='flex justify-end items-center gap-2'>
                     <ManualAdd setFavorites={setFavorites} />
 
-                    <Automate />
+                    <AutomateButtons />
 
                     <Select
                         aria-label='sort'

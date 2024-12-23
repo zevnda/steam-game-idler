@@ -3,7 +3,7 @@ import { IoStop } from 'react-icons/io5';
 import { motion } from 'framer-motion';
 import { logEvent, stopIdler } from '@/src/utils/utils';
 import { toast } from 'react-toastify';
-import { AppContext } from '../../layouts/components/AppContext';
+import { AppContext } from '../../layout/components/AppContext';
 
 export default function StopButton({ isMountedRef, abortControllerRef, gamesWithDrops, screen, currentGame }) {
     const { setActivePage } = useContext(AppContext);

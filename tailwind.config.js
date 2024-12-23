@@ -34,6 +34,7 @@ module.exports = {
                 colors: {
                     'sgi': '#137eb5',
                     'offwhite': '#ffffff',
+                    'altwhite': '#5c6674',
                     'sidebar': '#1a8fcb',
                     'titlebar': '#ffffff',
                     'titletext': '#0a0a0a',
@@ -55,6 +56,10 @@ module.exports = {
                     'modalheader': '#ffffff',
                     'modalbody': '#fafafa',
                     'modalfooter': '#ffffff',
+                    'notibase': '#ffffff',
+                    'notihead': '#fafafa',
+                    'notiunread': '#ebebeb',
+                    'notihover': '#f5f5f5',
                     primary: {
                         DEFAULT: '#1a8fcb',
                         foreground: '#fff'
@@ -72,6 +77,7 @@ module.exports = {
                 colors: {
                     'sgi': '#137eb5',
                     'offwhite': '#ebebeb',
+                    'altwhite': '#a9a9a9',
                     'sidebar': '#141414',
                     'titlebar': '#141414',
                     'titletext': '#efefef',
@@ -93,6 +99,10 @@ module.exports = {
                     'modalheader': '#121212',
                     'modalbody': '#171717',
                     'modalfooter': '#121212',
+                    'notibase': '#101010',
+                    'notihead': '#181818',
+                    'notiunread': '#212121',
+                    'notihover': '#1e1e1e',
                     primary: {
                         DEFAULT: '#ebebeb',
                         foreground: '#000'

@@ -4,7 +4,7 @@ import GameCard from './GameCard';
 import Private from './Private';
 import Loader from '@/src/components/ui/components/Loader';
 import useGamesList from '../hooks/useGamesList';
-import { AppContext } from '../../layouts/components/AppContext';
+import { AppContext } from '../../layout/components/AppContext';
 
 export default function GamesList() {
     const { showAchievements } = useContext(AppContext);

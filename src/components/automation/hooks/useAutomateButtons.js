@@ -1,8 +1,9 @@
 import { toast } from 'react-toastify';
 import { invoke } from '@tauri-apps/api/tauri';
 import { logEvent } from '@/src/utils/utils';
-import { AppContext } from '../../layouts/components/AppContext';
+import { AppContext } from '../../layout/components/AppContext';
 import { useContext } from 'react';
+import ErrorToast from '../../ui/components/ErrorToast';
 
 // Automate card farming and achievement unlocking
 export const useAutomate = () => {
@@ -22,13 +23,24 @@ export const useAutomate = () => {
                 return toast.error('Steam is not running');
             }
             if (!steamCookies?.sid || !steamCookies?.sls) {
-                return toast.error('Missing credentials in Settings');
+                return toast.error(
+                    <ErrorToast
+                        message={'Missing credentials in Settings'}
+                        href={'https://github.com/zevnda/steam-game-idler/wiki/FAQ#:~:text=%22Missing%20credentials%20in%20setting%22'}
+                    />
+                );
             }
             // Validate Steam session
             const res = await invoke('validate_session', { sid: steamCookies?.sid, sls: steamCookies?.sls, sma: steamCookies?.sma, steamid: userSummary.steamId });
             if (!res.user) {
                 localStorage.removeItem('steamCookies');
-                return toast.error('Steam credentials need to be updated');
+                localStorage.removeItem('cardFarmingUser');
+                return toast.error(
+                    <ErrorToast
+                        message={'Steam credentials need to be updated'}
+                        href={'https://github.com/zevnda/steam-game-idler/wiki/FAQ#:~:text=%22Steam%20credentials%20need%20to%20be%20updated%22'}
+                    />
+                );
             }
             // Retrieve card farming list from local storage
             const cardFarming = JSON.parse(localStorage.getItem('cardFarming')) || [];

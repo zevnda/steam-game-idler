@@ -30,7 +30,22 @@
 
 ::-webkit-scrollbar-thumb {
     background: var(--sb-thumb);
-    border-radius: 4px;
+}
+
+.notifications::-webkit-scrollbar {
+    width: 10px;
+}
+
+.notifications::-webkit-scrollbar-track {
+    background: var(--sb-track);
+    border-bottom-right-radius: 12px;
+    border-top-right-radius: 12px;
+}
+
+.notifications::-webkit-scrollbar-thumb {
+    background: var(--sb-thumb);
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
 }
 
 html {
@@ -39,8 +54,4 @@ html {
 
 body {
     overflow: hidden;
-}
-
-.filter-blur {
-    filter: blur(10px);
 }

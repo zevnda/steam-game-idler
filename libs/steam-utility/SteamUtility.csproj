@@ -53,12 +53,13 @@
         </Compile>
         <Compile Include="Program.cs" />
         <Compile Include="Commands\ICommand.cs" />
-        <Compile Include="Commands\IdleCommand.cs" />
-        <Compile Include="Commands\StatsCommand.cs" />
-        <Compile Include="Commands\ToggleAchievementCommand.cs" />
-        <Compile Include="Commands\LockAchievementCommand.cs" />
-        <Compile Include="Commands\UnlockAchievementCommand.cs" />
         <Compile Include="Commands\GetSteamUsers.cs" />
+        <Compile Include="Commands\Idle.cs" />
+        <Compile Include="Commands\UpdateStats.cs" />
+        <Compile Include="Commands\ResetStats.cs" />
+        <Compile Include="Commands\ToggleAchievement.cs" />
+        <Compile Include="Commands\LockAchievement.cs" />
+        <Compile Include="Commands\UnlockAchievement.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
     </ItemGroup>
     <!-- Embedded Resources -->
