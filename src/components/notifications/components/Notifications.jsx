@@ -34,7 +34,7 @@ export default function Notifications() {
     return (
         <React.Fragment>
             <div className='relative'>
-                <div className='flex items-center p-1.5 hover:bg-notibase rounded-full cursor-pointer relative mr-1' onClick={() => {
+                <div className='flex items-center p-1.5 hover:bg-titlehover rounded-full cursor-pointer relative mr-1' onClick={() => {
                     setShowNotifications(!showNotifications);
                 }}>
                     <IoMdNotificationsOutline fontSize={20} />
@@ -80,7 +80,7 @@ export default function Notifications() {
                                     <div className='flex items-center h-8 rounded-none py-4 px-6 border-b border-border sticky top-0 bg-notihead z-[999] cursor-default'>
                                         <div className='flex justify-end w-full'>
                                             <p
-                                                className='text-xs text-altwhite hover:text-black dark:hover:text-offwhite font-semibold my-0.5 cursor-pointer duration-150'
+                                                className='text-xs text-altwhite hover:text-black dark:hover:text-offwhite font-semibold my-0.5 cursor-pointer duration-100'
                                                 onClick={() => markAllAsSeen(notifications, setUnseenNotifications)}
                                             >
                                                 Mark all as read
@@ -91,7 +91,7 @@ export default function Notifications() {
                                 {notifications.map((notification, index) => (
                                     <div
                                         key={index}
-                                        className={`rounded-none m-0 border-b last:border-none border-border cursor-pointer px-6 py-3 duration-150 hover:bg-notihover ${unseenNotifications.some(unseen => unseen.id === notification.id) ? 'bg-notiunread font-semibold' : 'bg-notibase'}`}
+                                        className={`rounded-none m-0 border-b last:border-none border-border cursor-pointer px-6 py-3 hover:bg-notihover ${unseenNotifications.some(unseen => unseen.id === notification.id) ? 'bg-notiunread font-semibold' : 'bg-notibase'}`}
                                         onClick={() => handleOpenUrl(notification.url, notification.id, markAsSeen, unseenNotifications, setUnseenNotifications)}
                                     >
                                         <div className='flex items-center gap-4 py-0.5'>

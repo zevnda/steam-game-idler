@@ -2,7 +2,7 @@ import { toast } from 'react-toastify';
 import { startIdler, logEvent } from '@/src/utils/utils';
 
 export const handleIdle = async (item) => {
-    await startIdler(item.appid, item.name);
+    await startIdler(item.appid, item.name, false, true);
 };
 
 export const viewAchievments = (item, setAppId, setAppName, setShowAchievements, showAchievements) => {
@@ -19,6 +19,12 @@ export const viewStorePage = async (item) => {
             console.error('Failed to open link:', error);
         }
     }
+};
+
+export const viewGameSettings = (item, setAppId, setAppName, onOpen) => {
+    setAppId(item.appid);
+    setAppName(item.name);
+    onOpen();
 };
 
 export const addToFavorites = (item, setFavorites) => {

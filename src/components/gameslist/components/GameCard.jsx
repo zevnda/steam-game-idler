@@ -6,10 +6,13 @@ import { FaAward } from 'react-icons/fa';
 import 'react-toastify/dist/ReactToastify.css';
 import Loader from '@/src/components/ui/components/Loader';
 import { AppContext } from '../../layout/components/AppContext';
-import { handleIdle, viewAchievments, viewStorePage, addToFavorites, removeFromFavorites, addToCardFarming, removeFromCardFarming, addToAchievementUnlocker, removeFromAchievementUnlocker, addToAutoIdle, removeFromAutoIdle } from '@/src/components/gameslist/utils/gameCardHandler';
+import { handleIdle, viewAchievments, viewStorePage, addToFavorites, removeFromFavorites, addToCardFarming, removeFromCardFarming, addToAchievementUnlocker, removeFromAchievementUnlocker, addToAutoIdle, removeFromAutoIdle, viewGameSettings } from '@/src/components/gameslist/utils/gameCardHandler';
+import GameSettings from './GameSettings';
+import { useDisclosure } from '@nextui-org/react';
 
 export default function GameCard({ gameList, favorites, cardFarming, achievementUnlocker, autoIdle, setFavorites, setAchievementUnlocker, setCardFarming, setAutoIdle }) {
     const { setAppId, setAppName, showAchievements, setShowAchievements } = useContext(AppContext);
+    const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const [isLoading, setIsLoading] = useState(true);
 
     setTimeout(() => {
@@ -61,6 +64,7 @@ export default function GameCard({ gameList, favorites, cardFarming, achievement
                                 handleIdle={handleIdle}
                                 viewAchievments={(item) => viewAchievments(item, setAppId, setAppName, setShowAchievements, showAchievements)}
                                 viewStorePage={viewStorePage}
+                                viewGameSettings={(item) => viewGameSettings(item, setAppId, setAppName, onOpen)}
                                 addToFavorites={(item) => addToFavorites(item, setFavorites)}
                                 removeFromFavorites={(item) => removeFromFavorites(item, setFavorites)}
                                 addToCardFarming={(item) => addToCardFarming(item, setCardFarming)}
@@ -73,6 +77,12 @@ export default function GameCard({ gameList, favorites, cardFarming, achievement
                         </div>
                     </div>
                 ))}
+
+                <GameSettings
+
+                    isOpen={isOpen}
+                    onOpenChange={onOpenChange}
+                />
             </div>
         </React.Fragment>
     );

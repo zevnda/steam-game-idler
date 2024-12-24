@@ -7,6 +7,8 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import ErrorToast from '../components/ui/components/ErrorToast';
 
+const idleTimeouts = {};
+const idleIntervals = {};
 // eslint-disable-next-line no-unused-vars
 let idleCounter = 0;
 // eslint-disable-next-line no-unused-vars
@@ -26,46 +28,77 @@ export async function getFilePath() {
             return filePath;
         }
     } catch (error) {
-        toast.error(`Error in (getFilePath) util: ${error?.message || error}`);
         console.error('Error in getFilePath util: ', error);
         logEvent(`[Error] in (getFilePath) util: ${error}`);
     }
 }
 
 // Start idling a game
-export async function startIdler(appId, appName, quiet = false) {
+export async function startIdler(appId, appName, quiet = false, manual = true) {
     try {
         const settings = JSON.parse(localStorage.getItem('settings')) || {};
+        const gameSettings = JSON.parse(localStorage.getItem('gameSettings')) || {};
+        const maxIdleTime = gameSettings[appId]?.maxIdleTime || 0;
         const stealthIdle = settings?.general?.stealthIdle;
+
         const steamRunning = await invoke('check_status');
+
         if (steamRunning) {
+            // Make sure the idler is not already running
+            const notRunningIds = await invoke('check_process_by_game_id', { ids: [appId.toString()] });
+            if (!notRunningIds.includes(appId.toString())) {
+                return toast.error(`${appName} (${appId}) is already being idled`);
+            }
+
             const response = await invoke('start_idle', {
                 filePath: await getFilePath(),
                 appId: appId.toString(),
                 quiet: stealthIdle ? stealthIdle.toString() : quiet.toString()
             });
+
             const status = JSON.parse(response);
             if (!status.error) {
+                if (manual && maxIdleTime > 0) {
+                    idleTimeouts[appId] = setTimeout(() => {
+                        stopIdler(appId, appName);
+                    }, maxIdleTime * 60000);
+
+                    // Start polling to check if the idler process is still running
+                    idleIntervals[appId] = setInterval(async () => {
+                        const notRunningIds = await invoke('check_process_by_game_id', { ids: Object.keys(idleTimeouts) });
+                        if (notRunningIds.includes(appId.toString())) {
+                            clearTimeout(idleTimeouts[appId]);
+                            clearInterval(idleIntervals[appId]);
+                            delete idleTimeouts[appId];
+                            delete idleIntervals[appId];
+                        }
+                    }, 5000);
+                }
                 idleCounter++;
-                toast.success(`Started idling ${appName} (${appId})`);
                 updateMongoStats('idle');
                 logEvent(`[Idle] Started ${appName} (${appId})`);
             } else {
+                console.error(`Error starting idler for ${appName} (${appId}): ${status.error}`);
                 toast.error(
                     <ErrorToast
-                        message={'Is Steam running? Are you logged in to the correct account?'}
-                        href={'https://github.com/zevnda/steam-game-idler/wiki/faq#:~:text=Why%20am%20I%20seeing%20an%20%22Are%20you%20logged%20in%20to%20the%20correct%20account%3F%22%20error%20message%3F'}
+                        message={'Are you logged in to the correct account?'}
+                        href={'https://github.com/zevnda/steam-game-idler/wiki/faq#error-messages:~:text=Are%20you%20logged%20in%20to%20the%20correct%20account%3F'}
                     />,
                     { autoClose: 5000 }
                 );
                 logEvent(`[Error] [Idle] Failed to idle ${appName} (${appId}) - account mismatch`);
             }
         } else {
-            toast.error('Steam is not running');
+            console.error('Steam is not running');
+            toast.error(
+                <ErrorToast
+                    message={'Steam is not running'}
+                    href={'https://github.com/zevnda/steam-game-idler/wiki/faq#error-messages:~:text=Steam%20is%20not%20running'}
+                />
+            );
         }
     } catch (error) {
-        toast.error(`Error in (startIdler) util: ${error?.message || error}`);
-        console.error('Error in startIdler util', error);
+        console.error(`Error in startIdler util: ${error}`);
         logEvent(`[Error] in (startIdler) util: ${error}`);
     }
 };
@@ -73,10 +106,17 @@ export async function startIdler(appId, appName, quiet = false) {
 // Stop idling a game
 export async function stopIdler(appId, appName) {
     try {
+        if (idleTimeouts[appId]) {
+            clearTimeout(idleTimeouts[appId]);
+            delete idleTimeouts[appId];
+        }
+        if (idleIntervals[appId]) {
+            clearInterval(idleIntervals[appId]);
+            delete idleIntervals[appId];
+        }
         await invoke('stop_idle', { appId: appId.toString() });
         logEvent(`[Idling] Stopped ${appName} (${appId})`);
     } catch (error) {
-        toast.error(`Error in (stopIdler) util: ${error?.message || error}`);
         console.error('Error in stopIdler util: ', error);
         logEvent(`[Error] in (stopIdler) util: ${error}`);
     }
@@ -101,8 +141,8 @@ export async function toggleAchievement(appId, appName, achievementName, type) {
             } else {
                 toast.error(
                     <ErrorToast
-                        message={'Is Steam running? Are you logged in to the correct account?'}
-                        href={'https://github.com/zevnda/steam-game-idler/wiki/faq#:~:text=Why%20am%20I%20seeing%20an%20%22Are%20you%20logged%20in%20to%20the%20correct%20account%3F%22%20error%20message%3F'}
+                        message={'Are you logged in to the correct account?'}
+                        href={'https://github.com/zevnda/steam-game-idler/wiki/faq#error-messages:~:text=Are%20you%20logged%20in%20to%20the%20correct%20account%3F'}
                     />,
                     { autoClose: 5000 }
                 );
@@ -112,10 +152,14 @@ export async function toggleAchievement(appId, appName, achievementName, type) {
             }
             return true;
         } else {
-            toast.error('Steam is not running');
+            toast.error(
+                <ErrorToast
+                    message={'Steam is not running'}
+                    href={'https://github.com/zevnda/steam-game-idler/wiki/faq#error-messages:~:text=Steam%20is%20not%20running'}
+                />
+            );
         }
     } catch (error) {
-        toast.error(`Error in (toggleAchievement) util: ${error?.message || error}`);
         console.error('Error in toggleAchievement util: ', error);
         logEvent(`[Error] in (toggleAchievement) util: ${error}`);
     }
@@ -144,7 +188,6 @@ export async function unlockAchievement(appId, achievementName, appName) {
             return { error: 'Steam is not running' };
         }
     } catch (error) {
-        toast.error(`Error in (unlockAchievement) util: ${error?.message || error}`);
         console.error('Error in unlockAchievement util: ', error);
         logEvent(`[Error] in (unlockAchievement) util: ${error}`);
     }
@@ -173,7 +216,6 @@ export async function lockAchievement(appId, achievementName, appName) {
             return { error: 'Steam is not running' };
         }
     } catch (error) {
-        toast.error(`Error in (lockAchievement) util: ${error?.message || error}`);
         console.error('Error in lockAchievement util: ', error);
         logEvent(`[Error] in (lockAchievement) util: ${error}`);
     }
@@ -203,7 +245,6 @@ export async function updateStat(appId, statName, newValue, appName) {
             return { error: 'Steam is not running' };
         }
     } catch (error) {
-        toast.error(`Error in (updateStat) util: ${error?.message || error}`);
         console.error('Error in updateStat util: ', error);
         logEvent(`[Error] in (updateStat) util: ${error}`);
         return { error: error };
@@ -220,7 +261,6 @@ export async function checkDrops(steamId, appId, sid, sls) {
             return 0;
         }
     } catch (error) {
-        toast.error(`Error in (checkDrops) util: ${error?.message || error}`);
         console.error('Error in checkDrops util: ', error);
         logEvent(`[Error] in (checkDrops) util: ${error}`);
     }
@@ -236,7 +276,6 @@ export async function getAllGamesWithDrops(steamId, sid, sls) {
             return false;
         }
     } catch (error) {
-        toast.error(`Error in (getAllGamesWithDrops) util: ${error?.message || error}`);
         console.error('Error in getAllGamesWithDrops util: ', error);
         logEvent(`[Error] in (getAllGamesWithDrops) util: ${error}`);
     }
@@ -248,7 +287,6 @@ export async function logEvent(message) {
         const version = await getVersion();
         await invoke('log_event', { message: `[v${version}] ${message}` });
     } catch (error) {
-        toast.error(`Error in (logEvent) util: ${error?.message || error}`);
         console.error('Error in logEvent util: ', error);
     }
 };
@@ -278,7 +316,6 @@ export const updateMongoStats = debounce(async (stat) => {
             achievementCounter = 0;
         }
     } catch (error) {
-        toast.error(`Error in (updateMongoStats) util: ${error?.message || error}`);
         console.error('Error in updateMongoStats util: ', error);
         logEvent(`[Error] in (updateMongoStats) util: ${error}`);
     }
@@ -304,7 +341,6 @@ export async function fetchLatest() {
         const data = await res.json();
         return data;
     } catch (error) {
-        toast.error(`Error in (fetchLatest) util: ${error?.message || error}`);
         console.error('Error in (fetchLatest):', error);
         logEvent(`[Error] in (fetchLatest): ${error}`);
         return null;
@@ -320,7 +356,6 @@ export async function fetchFreeGames() {
         }
         return [];
     } catch (error) {
-        toast.error(`Error in (fetchFreeGames) util: ${error?.message || error}`);
         console.error('Error in (fetchFreeGames):', error);
         logEvent(`[Error] in (fetchFreeGames): ${error}`);
         return false;
@@ -349,7 +384,6 @@ export async function antiAwayStatus(active = null) {
             }
         }
     } catch (error) {
-        toast.error(`Error in (antiAwayStatus) util: ${error?.message || error}`);
         console.error('Error in (antiAwayStatus):', error);
         logEvent(`[Error] in (antiAwayStatus): ${error}`);
     }
@@ -372,7 +406,6 @@ export async function sendNativeNotification(title, body) {
             });
         }
     } catch (error) {
-        toast.error(`Error in (sendNativeNotification) util: ${error?.message || error}`);
         console.error('Error in (sendNativeNotification):', error);
         logEvent(`[Error] in (sendNativeNotification): ${error}`);
     }

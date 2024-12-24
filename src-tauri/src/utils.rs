@@ -1,6 +1,8 @@
+use lazy_static::lazy_static;
 use regex::Regex;
 use reqwest::Client;
 use serde_json::Value;
+use std::collections::HashMap;
 use std::os::windows::io::AsRawHandle;
 use std::os::windows::process::CommandExt;
 use std::path::PathBuf;
@@ -8,6 +10,10 @@ use std::process::{Child, Stdio};
 use std::sync::{Arc, Mutex};
 use winapi::um::processthreadsapi::TerminateProcess;
 use winapi::um::winnt::HANDLE;
+
+lazy_static! {
+    static ref LAST_KNOWN_TITLES: Mutex<HashMap<String, String>> = Mutex::new(HashMap::new());
+}
 
 #[tauri::command]
 pub async fn check_status() -> bool {
@@ -26,7 +32,6 @@ pub async fn check_status() -> bool {
 
 #[tauri::command]
 pub async fn check_process_by_game_id(ids: Vec<String>) -> Result<Vec<String>, String> {
-    // Execute the tasklist command to get details of SteamUtility.exe processes
     let output = std::process::Command::new("tasklist")
         .args(&[
             "/V",
@@ -43,10 +48,53 @@ pub async fn check_process_by_game_id(ids: Vec<String>) -> Result<Vec<String>, S
         .map_err(|e| e.to_string())?;
 
     let output_str = String::from_utf8_lossy(&output.stdout);
-    // Filter out game IDs that are not found in the output
+
+    let mut last_known_titles = LAST_KNOWN_TITLES.lock().unwrap();
+    let mut current_pids = Vec::new();
+    let mut found_ids = Vec::new();
+
+    for line in output_str.lines() {
+        if line.is_empty() {
+            continue;
+        }
+
+        let parts: Vec<&str> = line.split(',').collect();
+        if parts.len() >= 2 {
+            let pid = parts[1].trim_matches('"').to_string();
+            let title = parts.last().unwrap_or(&"").trim_matches('"');
+            current_pids.push(pid.clone());
+
+            // If we have a valid title, update our stored title
+            if title != "N/A" {
+                last_known_titles.insert(pid.clone(), title.to_string());
+            }
+
+            // Use either current title or last known title
+            let check_title = if title != "N/A" {
+                title
+            } else {
+                last_known_titles
+                    .get(&pid)
+                    .map(|s| s.as_str())
+                    .unwrap_or("N/A")
+            };
+
+            // Check if any of our IDs are in the title
+            for id in &ids {
+                if check_title.contains(&format!("[{}]", id)) {
+                    found_ids.push(id.clone());
+                }
+            }
+        }
+    }
+
+    // Clean up any PIDs that are no longer running
+    last_known_titles.retain(|pid, _| current_pids.contains(pid));
+
+    // Return IDs that weren't found
     Ok(ids
         .into_iter()
-        .filter(|id| !output_str.contains(&format!("[{}]", id)))
+        .filter(|id| !found_ids.contains(id))
         .collect())
 }
 

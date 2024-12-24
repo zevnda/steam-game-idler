@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Modal, ModalContent, ModalBody, ModalFooter, ModalHeader } from '@nextui-org/react';
-import { handleResetSettings } from '../utils/resetSettingsHandler';
 import useResetSettings from '../hooks/useResetSettings';
+import { handleResetSettings } from '../utils/settingsHandler';
 
 export default function ResetSettings({ setSettings, setRefreshKey }) {
     const { isOpen, onOpen, onOpenChange } = useResetSettings();

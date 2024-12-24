@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Spinner } from '@nextui-org/react';
@@ -6,32 +6,35 @@ import ExtLink from '../../ui/components/ExtLink';
 import TitleBar from '../../ui/components/TitleBar';
 import useSetup from '../hooks/useSetup';
 import 'react-toastify/dist/ReactToastify.css';
+import { useTheme } from 'next-themes';
 
 export default function Setup() {
+    const { theme } = useTheme();
     const { isLoading, handleLogin, steamUsers } = useSetup();
-    const videoRef = useRef(null);
+    const [videoSrc, setVideoSrc] = useState('');
 
     useEffect(() => {
-        if (videoRef.current) {
-            videoRef.current.playbackRate = 0.5;
-        }
-    }, []);
+        setVideoSrc(
+            theme === 'dark'
+                ? '/automation_bg_dark.mp4'
+                : '/automation_bg_light.mp4'
+        );
+    }, [theme]);
 
     return (
         <React.Fragment>
             <TitleBar />
-            <div className='relative w-full bg-[#101010] text-white'>
+            <div className='relative w-full bg-base'>
                 <video
-                    ref={videoRef}
-                    className='absolute top-0 left-0 w-full h-full object-cover blur-lg brightness-[.4]'
-                    src='/setup_bg.mp4'
+                    className='absolute top-0 left-0 w-full h-full object-cover blur-2xl'
+                    src={videoSrc}
                     autoPlay
                     loop
                     muted
                 />
                 <div className='relative flex justify-center items-center flex-col gap-5 w-full h-svh'>
                     <motion.div
-                        className='flex bg-[#101010] bg-opacity-70 justify-center items-center flex-col border border-border min-w-[400px] max-w-[400px] rounded-lg shadow-soft-lg dark:shadow-none'
+                        className='flex bg-base bg-opacity-70 justify-center items-center flex-col border border-border min-w-[400px] max-w-[400px] rounded-lg shadow-soft-lg dark:shadow-none'
                         initial={{ y: 500 }}
                         animate={{ y: 0 }}
                         transition={{
@@ -53,11 +56,11 @@ export default function Setup() {
                                     <p className='text-sm mb-2'>
                                         Choose an account
                                     </p>
-                                    <div className='flex flex-col border border-[#ffffff15] max-h-[200px] min-w-[300px] overflow-y-auto rounded '>
+                                    <div className='flex flex-col border border-border max-h-[200px] min-w-[300px] overflow-y-auto rounded '>
                                         {steamUsers.map((item, index) => (
                                             <div
                                                 key={index}
-                                                className='last:border-none border-b border-[#ffffff15] hover:bg-[#101010] hover:bg-opacity-30'
+                                                className='last:border-none border-b border-border hover:bg-containerhover hover:bg-opacity-30'
                                                 onClick={() => handleLogin(index)}
                                             >
                                                 <div className='flex gap-2 h-full p-2 w-full cursor-pointer group'>
@@ -73,7 +76,7 @@ export default function Setup() {
                                                         <p className='font-medium truncate'>
                                                             {item.personaName}
                                                         </p>
-                                                        <p className='text-xs text-neutral-400 truncate'>
+                                                        <p className='text-xs text-altwhite truncate'>
                                                             {item.steamId}
                                                         </p>
                                                     </div>
@@ -87,7 +90,7 @@ export default function Setup() {
                                     <p className='text-xs'>
                                         No Steam users found
                                     </p>
-                                    <ExtLink href={'https://github.com/zevnda/steam-game-idler/wiki/FAQ#:~:text=Why am I seeing "No Steam users found" on the login screen?'}>
+                                    <ExtLink href={'https://github.com/zevnda/steam-game-idler/wiki/FAQ#error-messages:~:text=Why am I seeing "No Steam users found" on the login screen?'}>
                                         <p className='text-xs text-link hover:text-linkhover'>
                                             Learn why
                                         </p>

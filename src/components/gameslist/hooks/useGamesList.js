@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import { AppContext } from '../../layout/components/AppContext';
 
 export default function useGamesList() {
-    const { userSummary, isQuery, gameQueryValue } = useContext(AppContext);
+    const { userSummary, isQuery, gameQueryValue, setGameQueryValue } = useContext(AppContext);
     const scrollContainerRef = useRef(null);
     const [isLoading, setIsLoading] = useState(true);
     const [gameList, setGameList] = useState(null);
@@ -50,6 +50,10 @@ export default function useGamesList() {
             setCurrentPage(1);
         }
     }, [gameList, recentGames, favorites, cardFarming, achievementUnlocker, autoIdle, sortStyle, isQuery, gameQueryValue]);
+
+    useEffect(() => {
+        setGameQueryValue('');
+    }, [sortStyle]);
 
     useEffect(() => {
         try {

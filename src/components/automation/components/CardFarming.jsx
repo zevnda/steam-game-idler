@@ -6,8 +6,10 @@ import { Button, Skeleton, Spinner } from '@nextui-org/react';
 import { IoCheckmark } from 'react-icons/io5';
 import { toast } from 'react-toastify';
 import { AppContext } from '../../layout/components/AppContext';
+import { useTheme } from 'next-themes';
 
 export default function CardFarming() {
+    const { theme } = useTheme();
     const { setActivePage } = useContext(AppContext);
     const isMountedRef = useRef(true);
     const abortControllerRef = useRef(new AbortController());
@@ -15,6 +17,15 @@ export default function CardFarming() {
     const [gamesWithDrops, setGamesWithDrops] = useState(new Set());
     const [isComplete, setIsComplete] = useState(false);
     const [countdownTimer, setCountdownTimer] = useState('');
+    const [videoSrc, setVideoSrc] = useState('');
+
+    useEffect(() => {
+        setVideoSrc(
+            theme === 'dark'
+                ? '/automation_bg_dark.mp4'
+                : '/automation_bg_light.mp4'
+        );
+    }, [theme]);
 
     useEffect(() => {
         const startCardFarming = async () => {
@@ -49,7 +60,14 @@ export default function CardFarming() {
 
     return (
         <React.Fragment>
-            <div className='flex justify-center items-center flex-col gap-10 p-4 w-full h-calc'>
+            <div className='relative flex justify-center items-center flex-col gap-10 p-4 w-full h-calc'>
+                <video
+                    className='absolute top-0 left-0 w-full h-full object-cover blur-2xl'
+                    src={videoSrc}
+                    autoPlay
+                    loop
+                    muted
+                />
                 <div className='flex items-center flex-col'>
                     <p className='text-3xl font-semibold mb-0'>
                         Card Farming

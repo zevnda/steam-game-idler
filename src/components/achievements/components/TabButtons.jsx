@@ -5,7 +5,7 @@ import { sortOptions, handleChange } from '../utils/pageHeaderHandler';
 import { AppContext } from '../../layout/components/AppContext';
 import { MdSort } from 'react-icons/md';
 
-export default function TabButtons({ initialStatValues, newStatValues, btnLoading, setBtnLoading, setIsSorted, userGameAchievementsMap, percentageMap, setNewStatValues }) {
+export default function TabButtons({ initialStatValues, newStatValues, setNewStatValues, btnLoading, setBtnLoading, setIsSorted, userGameAchievementsMap, percentageMap }) {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const [state, setState] = useState('');
     const [type, setType] = useState('');
@@ -130,7 +130,6 @@ export default function TabButtons({ initialStatValues, newStatValues, btnLoadin
                                     size='sm'
                                     color='primary'
                                     className='font-semibold rounded'
-
                                     onPress={
                                         type === 'statistics' ?
                                             () => handleResetAll(appId, setBtnLoading, setNewStatValues, onClose) :

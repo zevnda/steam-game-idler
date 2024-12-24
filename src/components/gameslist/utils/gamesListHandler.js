@@ -39,7 +39,7 @@ export const sortAndFilterGames = (gameList, recentGames, sortStyle, isQuery, ga
         case 'recent':
             sortedAndFilteredGames = recentGames.filter(a => a.name !== 'Spacewar');
             break;
-        case 'favorite':
+        case 'favorites':
             sortedAndFilteredGames = favorites;
             break;
         case 'cardFarming':

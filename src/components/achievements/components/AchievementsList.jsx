@@ -31,6 +31,7 @@ export default function AchievementsList({ userGameAchievementsMap, percentageMa
                                     width={40}
                                     height={40}
                                     alt={`${item.name} image`}
+                                    priority
                                 />
                                 <div className='flex flex-col w-full'>
                                     <Tooltip size='sm' closeDelay={0} placement='right' content={<p className='font-semibold'>{item.name}</p>}>
@@ -65,9 +66,11 @@ export default function AchievementsList({ userGameAchievementsMap, percentageMa
                             <div className='p-1 bg-container dark:bg-[#1a1a1a] select-none'>
                                 <div className='w-full bg-titlehover rounded-full h-3.5 relative'>
                                     <div className='bg-sgi h-3.5 rounded-full flex items-center' style={{ width: `${percentage}%`, position: 'relative' }}></div>
-                                    <p className='text-[11px] text-black dark:text-offwhite absolute inset-0 flex items-center justify-center'>
-                                        {percentage.toFixed(1)}%
-                                    </p>
+                                    {percentage !== undefined && (
+                                        <p className='text-[11px] text-black dark:text-offwhite absolute inset-0 flex items-center justify-center'>
+                                            {percentage.toFixed(1)}%
+                                        </p>
+                                    )}
                                 </div>
                             </div>
                         </div>

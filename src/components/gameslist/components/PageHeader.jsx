@@ -1,13 +1,13 @@
 import React from 'react';
-import { Select, SelectItem } from '@nextui-org/react';
+import { Button, Select, SelectItem } from '@nextui-org/react';
 import { MdSort } from 'react-icons/md';
 import { IoRefresh } from 'react-icons/io5';
 import ManualAdd from './ManualAdd';
 import { usePageHeader } from '../hooks/usePageHeader';
-import AutomateButtons from '../../automation/components/AutomateButtons';
+import AutomateButtons from './AutomateButtons';
 
-export default function PageHeader({ sortStyle, setSortStyle, filteredGames, visibleGames, setFavorites, setRefreshKey }) {
-    const { handleSorting, handleRefetch } = usePageHeader({ setSortStyle, setRefreshKey });
+export default function PageHeader({ sortStyle, setSortStyle, filteredGames, visibleGames, setFavorites, setCardFarming, setAchievementUnlocker, setAutoIdle, setRefreshKey }) {
+    const { handleSorting, handleRefetch, removeAllFromList } = usePageHeader({ setSortStyle, setRefreshKey });
 
     const sortOptions = [
         { key: 'a-z', label: 'Title Ascending' },
@@ -15,7 +15,7 @@ export default function PageHeader({ sortStyle, setSortStyle, filteredGames, vis
         { key: '1-0', label: 'Playtime High-Low' },
         { key: '0-1', label: 'Playtime Low-High' },
         { key: 'recent', label: 'Recently Played' },
-        { key: 'favorite', label: 'Favorited Games' },
+        { key: 'favorites', label: 'Favorited Games' },
         { key: 'cardFarming', label: 'Card Farming Games' },
         { key: 'achievementUnlocker', label: 'Achievement Unlocker Games' },
         { key: 'autoIdle', label: 'Auto Idle Games' },
@@ -44,6 +44,20 @@ export default function PageHeader({ sortStyle, setSortStyle, filteredGames, vis
                     <ManualAdd setFavorites={setFavorites} />
 
                     <AutomateButtons />
+
+                    {(sortStyle === 'favorites' || sortStyle === 'cardFarming' || sortStyle === 'achievementUnlocker' || sortStyle === 'autoIdle') && (
+                        <Button
+                            size='sm'
+                            color='danger'
+                            className='rounded-full font-semibold'
+                            isDisabled={visibleGames.length <= 0}
+                            onPress={() =>
+                                removeAllFromList(sortStyle, setSortStyle, setFavorites, setCardFarming, setAchievementUnlocker, setAutoIdle)
+                            }
+                        >
+                            Remove all
+                        </Button>
+                    )}
 
                     <Select
                         aria-label='sort'

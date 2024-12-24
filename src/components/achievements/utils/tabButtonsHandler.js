@@ -8,49 +8,58 @@ export const handleUnlockAll = async (appId, appName, achievementList, setBtnLoa
     try {
         // Check if Steam is running
         const steamRunning = await invoke('check_status');
-        if (steamRunning) {
-            setBtnLoading(true);
+        if (!steamRunning) {
             onClose();
-            let unlocked = 0;
-            const total = achievementList.length;
-            const toastId = toast.info(`Unlocking 0 of ${total} achievements for ${appName}.`, {
-                autoClose: false,
-                isLoading: true,
-                closeButton: false
-            });
-            // Loop through each achievement and unlock it
-            let failed;
-            for (const achievement of achievementList) {
-                const error = await unlockAchievement(appId, achievement.name, appName);
-                if (!error) {
-                    unlocked++;
-                    toast.update(toastId, {
-                        render: `Unlocking ${unlocked} of ${total} achievements for ${appName}.`,
-                    });
-                } else {
-                    failed = true;
-                    toast.update(toastId, {
-                        render: 'Is Steam running? Are you logged in to the correct account?',
-                        isLoading: false,
-                        autoClose: 5000,
-                        type: 'error'
-                    });
-                    break;
-                }
-            }
-            setBtnLoading(false);
-            if (!failed) {
+            return toast.error(
+                <ErrorToast
+                    message={'Steam is not running'}
+                    href={'https://github.com/zevnda/steam-game-idler/wiki/faq#error-messages:~:text=Steam%20is%20not%20running'}
+                />
+            );
+        }
+
+        setBtnLoading(true);
+        onClose();
+
+        let unlocked = 0;
+        const total = achievementList.length;
+        const toastId = toast.info(`Unlocking 0 of ${total} achievements for ${appName}.`, {
+            autoClose: false,
+            isLoading: true,
+            closeButton: false
+        });
+        // Loop through each achievement and unlock it
+        let failed;
+        for (const achievement of achievementList) {
+            const error = await unlockAchievement(appId, achievement.name, appName);
+            if (!error) {
+                unlocked++;
                 toast.update(toastId, {
-                    render: `Successfully unlocked ${unlocked} of ${total} achievements for ${appName}.`,
-                    autoClose: true,
-                    isLoading: false,
-                    closeButton: true,
-                    type: 'success'
+                    render: `Unlocking ${unlocked} of ${total} achievements for ${appName}.`,
                 });
+            } else {
+                failed = true;
+                toast.update(toastId, {
+                    render: <ErrorToast
+                        message={'Are you logged in to the correct account?'}
+                        href={'https://github.com/zevnda/steam-game-idler/wiki/faq#error-messages:~:text=Are%20you%20logged%20in%20to%20the%20correct%20account%3F'}
+                    />,
+                    isLoading: false,
+                    autoClose: 5000,
+                    type: 'error'
+                });
+                break;
             }
-        } else {
-            onClose();
-            toast.error('Steam is not running');
+        }
+        setBtnLoading(false);
+        if (!failed) {
+            toast.update(toastId, {
+                render: `Successfully unlocked ${unlocked} of ${total} achievements for ${appName}.`,
+                autoClose: true,
+                isLoading: false,
+                closeButton: true,
+                type: 'success'
+            });
         }
     } catch (error) {
         toast.error(`Error in (handleUnlockAll): ${error?.message || error}`);
@@ -64,49 +73,58 @@ export const handleLockAll = async (appId, appName, achievementList, setBtnLoadi
     try {
         // Check if Steam is running
         const steamRunning = await invoke('check_status');
-        if (steamRunning) {
-            setBtnLoading(true);
+        if (!steamRunning) {
             onClose();
-            let locked = 0;
-            const total = achievementList.length;
-            const toastId = toast.info(`Locking 0 of ${total} achievements for ${appName}.`, {
-                autoClose: false,
-                isLoading: true,
-                closeButton: false
-            });
-            // Loop through each achievement and lock it
-            let failed;
-            for (const achievement of achievementList) {
-                const error = await lockAchievement(appId, achievement.name, appName);
-                if (!error) {
-                    locked++;
-                    toast.update(toastId, {
-                        render: `Locking ${locked} of ${total} achievements for ${appName}.`,
-                    });
-                } else {
-                    failed = true;
-                    toast.update(toastId, {
-                        render: 'Is Steam running? Are you logged in to the correct account?',
-                        autoClose: 5000,
-                        isLoading: false,
-                        type: 'error'
-                    });
-                    break;
-                }
-            }
-            setBtnLoading(false);
-            if (!failed) {
+            return toast.error(
+                <ErrorToast
+                    message={'Steam is not running'}
+                    href={'https://github.com/zevnda/steam-game-idler/wiki/faq#error-messages:~:text=Steam%20is%20not%20running'}
+                />
+            );
+        }
+
+        setBtnLoading(true);
+        onClose();
+
+        let locked = 0;
+        const total = achievementList.length;
+        const toastId = toast.info(`Locking 0 of ${total} achievements for ${appName}.`, {
+            autoClose: false,
+            isLoading: true,
+            closeButton: false
+        });
+        // Loop through each achievement and lock it
+        let failed;
+        for (const achievement of achievementList) {
+            const error = await lockAchievement(appId, achievement.name, appName);
+            if (!error) {
+                locked++;
                 toast.update(toastId, {
-                    render: `Successfully locked ${locked} of ${total} achievements for ${appName}.`,
-                    autoClose: true,
-                    isLoading: false,
-                    closeButton: true,
-                    type: 'success'
+                    render: `Locking ${locked} of ${total} achievements for ${appName}.`,
                 });
+            } else {
+                failed = true;
+                toast.update(toastId, {
+                    render: <ErrorToast
+                        message={'Are you logged in to the correct account?'}
+                        href={'https://github.com/zevnda/steam-game-idler/wiki/faq#error-messages:~:text=Are%20you%20logged%20in%20to%20the%20correct%20account%3F'}
+                    />,
+                    autoClose: 5000,
+                    isLoading: false,
+                    type: 'error'
+                });
+                break;
             }
-        } else {
-            onClose();
-            toast.error('Steam is not running');
+        }
+        setBtnLoading(false);
+        if (!failed) {
+            toast.update(toastId, {
+                render: `Successfully locked ${locked} of ${total} achievements for ${appName}.`,
+                autoClose: true,
+                isLoading: false,
+                closeButton: true,
+                type: 'success'
+            });
         }
     } catch (error) {
         toast.error(`Error in (handleLockAll): ${error?.message || error}`);
@@ -124,6 +142,17 @@ export const handleUpdateAll = async (appId, appName, initialStatValues, newStat
 
     if (changedValues.length < 1) {
         return toast.info('No changes to save.');
+    }
+
+    // Check if Steam is running
+    const steamRunning = await invoke('check_status');
+    if (!steamRunning) {
+        return toast.error(
+            <ErrorToast
+                message={'Steam is not running'}
+                href={'https://github.com/zevnda/steam-game-idler/wiki/faq#error-messages:~:text=Steam%20is%20not%20running'}
+            />
+        );
     }
 
     setBtnLoading(true);
@@ -147,7 +176,10 @@ export const handleUpdateAll = async (appId, appName, initialStatValues, newStat
             } else {
                 failed = true;
                 toast.update(toastId, {
-                    render: 'Is Steam running? Are you logged in to the correct account?',
+                    render: <ErrorToast
+                        message={'Are you logged in to the correct account?'}
+                        href={'https://github.com/zevnda/steam-game-idler/wiki/faq#error-messages:~:text=Are%20you%20logged%20in%20to%20the%20correct%20account%3F'}
+                    />,
                     autoClose: 5000,
                     isLoading: false,
                     type: 'error'
@@ -192,8 +224,8 @@ export const handleResetAll = async (appId, setBtnLoading, setNewStatValues, onC
     } else {
         toast.error(
             <ErrorToast
-                message={'Is Steam running? Are you logged in to the correct account?'}
-                href={'https://github.com/zevnda/steam-game-idler/wiki/faq#:~:text=Why%20am%20I%20seeing%20an%20%22Are%20you%20logged%20in%20to%20the%20correct%20account%3F%22%20error%20message%3F'}
+                message={'Are you logged in to the correct account?'}
+                href={'https://github.com/zevnda/steam-game-idler/wiki/faq#error-messages:~:text=Are%20you%20logged%20in%20to%20the%20correct%20account%3F'}
             />,
             { autoClose: 5000 }
         );

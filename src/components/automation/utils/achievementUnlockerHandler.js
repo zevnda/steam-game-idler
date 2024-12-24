@@ -54,6 +54,7 @@ export const startAchievementUnlocker = async ({
 const fetchAchievements = async (gameData, settings, setCurrentGame, setHasPrivateGames, setAchievementCount, setGamesWithAchievements) => {
     const game = JSON.parse(gameData);
     const userSummary = JSON.parse(localStorage.getItem('userSummary')) || {};
+    const maxAchievementUnlocks = getMaxAchievementUnlocks(game.appid);
 
     try {
         setCurrentGame({ appId: game.appid, name: game.name });
@@ -91,7 +92,7 @@ const fetchAchievements = async (gameData, settings, setCurrentGame, setHasPriva
             })
             .sort((a, b) => b.percentage - a.percentage);
 
-        setAchievementCount(achievements.length);
+        setAchievementCount(maxAchievementUnlocks || achievements.length);
         setGamesWithAchievements(achievements.length);
 
         return { achievements, game };
@@ -108,11 +109,17 @@ const unlockAchievements = async (achievements, settings, game, isMountedRef, se
 
         // Start idling if necessary
         if (idle && schedule && isWithinSchedule(scheduleFrom, scheduleTo)) {
-            await startIdler(achievements[0].appId, achievements[0].gameName, false);
+            await startIdler(achievements[0].appId, achievements[0].gameName, false, false);
             isGameIdling = true;
         }
 
         let achievementsRemaining = achievements.length;
+        const maxAchievementUnlocks = getMaxAchievementUnlocks(game.appid);
+
+        // Delay before unlocking the first achievement
+        const initialDelay = 15000;
+        startCountdown(initialDelay / 60000, setCountdownTimer);
+        await delay(initialDelay, isMountedRef, abortControllerRef);
 
         for (const achievement of achievements) {
             if (isMountedRef.current) {
@@ -124,7 +131,7 @@ const unlockAchievements = async (achievements, settings, game, isMountedRef, se
                     }
                     await waitUntilInSchedule(scheduleFrom, scheduleTo, isMountedRef, setIsWaitingForSchedule, abortControllerRef);
                 } else if (!isGameIdling && idle) {
-                    await startIdler(achievements[0].appId, achievements[0].gameName, false);
+                    await startIdler(achievements[0].appId, achievements[0].gameName, false, false);
                     isGameIdling = true;
                 }
 
@@ -143,6 +150,14 @@ const unlockAchievements = async (achievements, settings, game, isMountedRef, se
                 logEvent(`[Achievement Unlocker - Auto] Unlocked ${achievement.name} for ${achievement.gameName}`);
                 setAchievementCount(prevCount => Math.max(prevCount - 1, 0));
 
+                // Stop idling and remove game from list if max achievement unlocks is reached
+                if (achievementsRemaining === 0 || (maxAchievementUnlocks && achievementsRemaining <= achievements.length - maxAchievementUnlocks)) {
+                    await stopIdler(game.appid, game.name);
+                    removeGameFromUnlockerList(game.appid);
+                    logEvent(`[Achievement Unlocker - Auto - maxAchievementUnlocks] Unlocked ${achievements.length - maxAchievementUnlocks}/${achievements.length} achievements for ${game.name} - removed from list`);
+                    break;
+                }
+
                 // Stop idling and remove game from list if all achievements are unlocked
                 if (achievementsRemaining === 0) {
                     await stopIdler(game.appid, game.name);
@@ -159,6 +174,11 @@ const unlockAchievements = async (achievements, settings, game, isMountedRef, se
     } catch (error) {
         handleError('unlockAchievements', error);
     }
+};
+
+const getMaxAchievementUnlocks = (appId) => {
+    const gameSettings = JSON.parse(localStorage.getItem('gameSettings')) || {};
+    return gameSettings[appId]?.maxAchievementUnlocks || null;
 };
 
 // Wait until within the specified schedule

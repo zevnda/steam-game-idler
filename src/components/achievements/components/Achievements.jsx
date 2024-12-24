@@ -36,12 +36,12 @@ export default function Achievements() {
                             <TabButtons
                                 initialStatValues={initialStatValues}
                                 newStatValues={newStatValues}
+                                setNewStatValues={setNewStatValues}
                                 btnLoading={btnLoading}
                                 setBtnLoading={setBtnLoading}
                                 setIsSorted={setIsSorted}
                                 userGameAchievementsMap={userGameAchievementsMap}
                                 percentageMap={percentageMap}
-                                setNewStatValues={setNewStatValues}
                             />
                         </div>
 

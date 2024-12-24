@@ -1,6 +1,7 @@
 import { invoke } from '@tauri-apps/api/tauri';
 import { toast } from 'react-toastify';
 import { logEvent } from '@/src/utils/utils';
+import ErrorToast from '../../ui/components/ErrorToast';
 
 const fetchUserSummary = async (steamId, apiKey) => {
     const res = await invoke('get_user_summary', { steamId, apiKey });
@@ -45,7 +46,12 @@ export const handleSave = async (sidValue, slsValue, smaValue, setHasCookies, us
                 const cardFarmingUser = await fetchUserSummary(steamId, apiKey);
 
                 if (cardFarmingUser.steamId !== userSummary.steamId) {
-                    return toast.error('[Card Farming] Account mismatch');
+                    return toast.error(
+                        <ErrorToast
+                            message={'[Card Farming] Account mismatch between Steam and SGI'}
+                            href={'https://github.com/zevnda/steam-game-idler/wiki/FAQ#error-messages:~:text=%22-,Account%20mismatch,-%22'}
+                        />
+                    );
                 }
 
                 localStorage.setItem('steamCookies', JSON.stringify({ sid: sidValue, sls: slsValue, sma: smaValue }));
@@ -57,7 +63,12 @@ export const handleSave = async (sidValue, slsValue, smaValue, setHasCookies, us
                 toast.success(`[Card Farming] Logged in as ${res.user}`);
                 logEvent(`[Settings - Card Farming] Logged in as ${res.user}`);
             } else {
-                toast.error('[Card Farming] Incorrect card farming credentials');
+                toast.error(
+                    <ErrorToast
+                        message={'[Card Farming] Incorrect card farming credentials'}
+                        href={'https://github.com/zevnda/steam-game-idler/wiki/FAQ#error-messages:~:text=Incorrect%20card%20farming%20credentials'}
+                    />
+                );
                 logEvent('[Error] [Settings - Card Farming] Incorrect card farming credentials');
             }
         }

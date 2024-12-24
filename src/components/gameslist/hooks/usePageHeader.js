@@ -28,7 +28,7 @@ export const usePageHeader = ({ setSortStyle, setRefreshKey }) => {
             if (userSummary.steamId !== '76561198158912649' && userSummary.steamId !== '76561198999797359') {
                 const cooldown = sessionStorage.getItem('cooldown');
                 if (cooldown && moment().unix() < cooldown) {
-                    return toast.error(`Games can be refreshed again at ${moment.unix(cooldown).format('h:mm A')}`);
+                    return toast.info(`Games can be refreshed again at ${moment.unix(cooldown).format('h:mm A')}`);
                 }
             }
             sessionStorage.removeItem('gamesListCache');
@@ -41,5 +41,23 @@ export const usePageHeader = ({ setSortStyle, setRefreshKey }) => {
         }
     };
 
-    return { sortStyle, handleSorting, handleRefetch };
+
+    const removeAllFromList = (sortStyle, setSortStyle, setFavorites, setCardFarming, setAchievementUnlocker, setAutoIdle) => {
+        if (sortStyle === 'favorites') {
+            localStorage.removeItem(sortStyle);
+            setFavorites([]);
+        } else if (sortStyle === 'cardFarming') {
+            localStorage.removeItem(sortStyle);
+            setCardFarming([]);
+        } else if (sortStyle === 'achievementUnlocker') {
+            localStorage.removeItem(sortStyle);
+            setAchievementUnlocker([]);
+        } else if (sortStyle === 'autoIdle') {
+            localStorage.removeItem(sortStyle);
+            setAutoIdle([]);
+        }
+        setRefreshKey(prevKey => prevKey + 1);
+    };
+
+    return { sortStyle, handleSorting, handleRefetch, removeAllFromList };
 };

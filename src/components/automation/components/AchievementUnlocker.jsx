@@ -4,8 +4,10 @@ import { Button, Spinner } from '@nextui-org/react';
 import { IoCheckmark } from 'react-icons/io5';
 import { startAchievementUnlocker, handleCancel } from '@/src/components/automation/utils/achievementUnlockerHandler';
 import { AppContext } from '../../layout/components/AppContext';
+import { useTheme } from 'next-themes';
 
 export default function AchievementUnlocker() {
+    const { theme } = useTheme();
     const { setActivePage } = useContext(AppContext);
     const isMountedRef = useRef(true);
     const abortControllerRef = useRef(new AbortController());
@@ -16,6 +18,16 @@ export default function AchievementUnlocker() {
     const [isComplete, setIsComplete] = useState(false);
     const [countdownTimer, setCountdownTimer] = useState('');
     const [isWaitingForSchedule, setIsWaitingForSchedule] = useState(false);
+    const [videoSrc, setVideoSrc] = useState('');
+    const [isInitialDelay, setIsInitialDelay] = useState(true);
+
+    useEffect(() => {
+        setVideoSrc(
+            theme === 'dark'
+                ? '/automation_bg_dark.mp4'
+                : '/automation_bg_light.mp4'
+        );
+    }, [theme]);
 
     useEffect(() => {
         startAchievementUnlocker({
@@ -30,6 +42,10 @@ export default function AchievementUnlocker() {
             setIsWaitingForSchedule,
         });
 
+        setTimeout(() => {
+            setIsInitialDelay(false);
+        }, 15000);
+
         return () => {
             isMountedRef.current = false;
             abortControllerRef.current.abort();
@@ -38,8 +54,15 @@ export default function AchievementUnlocker() {
 
     return (
         <React.Fragment>
-            <div className='flex justify-evenly items-center flex-col p-4 w-full h-calc'>
-                <div className='flex items-center flex-col'>
+            <div className='relative flex justify-evenly items-center flex-col p-4 w-full h-calc'>
+                <video
+                    className='absolute top-0 left-0 w-full h-full object-cover blur-2xl'
+                    src={videoSrc}
+                    autoPlay
+                    loop
+                    muted
+                />
+                <div className='flex items-center flex-col z-10 bg-base bg-opacity-70 p-8 border border-border rounded-md '>
                     <p className='text-3xl font-semibold mb-2'>
                         Achievement Unlocker
                     </p>
@@ -113,9 +136,19 @@ export default function AchievementUnlocker() {
                             ) : (
                                 <React.Fragment>
                                     {!isComplete && (
-                                        <p className='text-sm'>
-                                            Next unlock in <span className='font-bold text-sgi'>{countdownTimer}</span>
-                                        </p>
+                                        <div className='flex items-center gap-1'>
+                                            {isInitialDelay && (
+                                                <p className='text-sm'>
+                                                    Starting in
+                                                </p>
+                                            )}
+                                            {!isInitialDelay && (
+                                                <p className='text-sm'>
+                                                    Next unlock in
+                                                </p>
+                                            )}
+                                            <span className='font-bold text-sm text-sgi'>{countdownTimer}</span>
+                                        </div>
                                     )}
                                 </React.Fragment>
                             )}

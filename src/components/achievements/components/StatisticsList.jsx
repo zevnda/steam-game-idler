@@ -20,7 +20,7 @@ const Row = React.memo(({ index, style, data }) => {
                         </p>
                         <Input
                             size='sm'
-                            value={newStatValues[item1.name] || '0'}
+                            value={newStatValues[item1.name]}
                             onChange={(e) => handleInputChange(item1.name, e.target.value, setNewStatValues)}
                             className='w-[120px]'
                             classNames={{
@@ -39,7 +39,7 @@ const Row = React.memo(({ index, style, data }) => {
                         </p>
                         <Input
                             size='sm'
-                            value={newStatValues[item2.name] || '0'}
+                            value={newStatValues[item2.name]}
                             onChange={(e) => handleInputChange(item2.name, e.target.value, setNewStatValues)}
                             className='w-[120px]'
                             classNames={{

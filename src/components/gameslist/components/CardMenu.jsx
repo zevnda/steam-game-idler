@@ -2,10 +2,10 @@ import React from 'react';
 import { TiMinus, TiPlus } from 'react-icons/ti';
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@nextui-org/react';
 import { BsThreeDotsVertical } from 'react-icons/bs';
-import { IoPlay } from 'react-icons/io5';
+import { IoPlay, IoSettings } from 'react-icons/io5';
 import { FaAward, FaSteam } from 'react-icons/fa';
 
-export default function CardMenu({ item, favorites, cardFarming, achievementUnlocker, autoIdle, handleIdle, viewAchievments, viewStorePage, addToFavorites, removeFromFavorites, addToCardFarming, removeFromCardFarming, addToAchievementUnlocker, removeFromAchievementUnlocker, addToAutoIdle, removeFromAutoIdle }) {
+export default function CardMenu({ item, favorites, cardFarming, achievementUnlocker, autoIdle, handleIdle, viewAchievments, viewStorePage, viewGameSettings, addToFavorites, removeFromFavorites, addToCardFarming, removeFromCardFarming, addToAchievementUnlocker, removeFromAchievementUnlocker, addToAutoIdle, removeFromAutoIdle }) {
     return (
         <React.Fragment>
             <Dropdown classNames={{ content: ['rounded p-0 bg-base border border-border'] }}>
@@ -41,6 +41,15 @@ export default function CardMenu({ item, favorites, cardFarming, achievementUnlo
                         textValue='View store page'
                     >
                         <p className='text-sms'>View store page</p>
+                    </DropdownItem>
+                    <DropdownItem
+                        className='rounded'
+                        key='settings'
+                        startContent={<IoSettings fontSize={13} />}
+                        onPress={() => viewGameSettings(item)}
+                        textValue='Game settings'
+                    >
+                        <p className='text-sms'>Game settings</p>
                     </DropdownItem>
                     {favorites.some(arr => arr.appid === item.appid) ? (
                         <DropdownItem

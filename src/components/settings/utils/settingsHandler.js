@@ -1,6 +1,7 @@
 import { getVersion } from '@tauri-apps/api/app';
 import { Time } from '@internationalized/date';
 import { logEvent } from '@/src/utils/utils';
+import { toast } from 'react-toastify';
 
 // Get the application version and set it in the state
 export const getAppVersion = async (setVersion, toast) => {
@@ -52,3 +53,20 @@ export const getUpdatedSettings = (defaultSettings, currentSettings) => ({
         ...currentSettings.achievementUnlocker
     }
 });
+
+export const handleResetSettings = (onClose, setSettings, setRefreshKey) => {
+    try {
+        localStorage.removeItem('settings');
+        localStorage.removeItem('gameSettings');
+        localStorage.removeItem('steamCookies');
+        setSettings(null);
+        setRefreshKey(prevKey => prevKey + 1);
+        toast.success('[Settings] Reset to default');
+        logEvent('[Settings] Reset to default');
+        onClose();
+    } catch (error) {
+        toast.error(`Error in (handleResetSettings): ${error?.message || error}`);
+        console.error('Error in (handleResetSettings):', error);
+        logEvent(`[Error] in (handleResetSettings): ${error}`);
+    }
+};

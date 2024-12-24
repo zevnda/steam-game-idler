@@ -24,7 +24,7 @@ export default function Header() {
 
     return (
         <React.Fragment>
-            <div className='relative w-full h-[62px] bg-titlebar select-none'>
+            <div className='relative w-full h-[62px] bg-titlebar select-none z-[999]'>
                 <div className='flex justify-between items-center h-full text-titletext'>
                     <div className='flex justify-center items-center gap-1 px-2 bg-sidebar h-full w-[62px] dark:border-r border-b border-border'>
                         <BiSolidLeaf className='text-offwhite' fontSize={40} />

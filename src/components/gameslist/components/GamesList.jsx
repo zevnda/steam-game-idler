@@ -44,6 +44,9 @@ export default function GamesList() {
                             filteredGames={filteredGames}
                             visibleGames={visibleGames}
                             setFavorites={setFavorites}
+                            setCardFarming={setCardFarming}
+                            setAchievementUnlocker={setAchievementUnlocker}
+                            setAutoIdle={setAutoIdle}
                             setRefreshKey={setRefreshKey}
                         />
                     </div>
@@ -59,8 +62,8 @@ export default function GamesList() {
                             autoIdle={autoIdle}
                             setFavorites={setFavorites}
                             setCardFarming={setCardFarming}
-                            setAutoIdle={setAutoIdle}
                             setAchievementUnlocker={setAchievementUnlocker}
+                            setAutoIdle={setAutoIdle}
                         />
                     </div>
                 </div>

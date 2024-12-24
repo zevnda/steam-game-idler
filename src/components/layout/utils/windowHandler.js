@@ -118,7 +118,7 @@ export const startAutoIdleGames = async () => {
         for (const id of notRunningIds) {
             const game = games.find(g => g.appid.toString() === id);
             if (game) {
-                await startIdler(game.appid, game.name);
+                await startIdler(game.appid, game.name, false, true);
             }
         }
     } catch (error) {
