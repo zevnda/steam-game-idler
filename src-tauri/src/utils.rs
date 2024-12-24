@@ -118,7 +118,7 @@ pub async fn validate_session(
 
     // Send the request and handle the response
     let response = client
-        .get("https://steamcommunity.com/")
+        .get("https://steamcommunity.com/?l=english")
         .header("Content-Type", "application/json")
         .header("Cookie", cookie_value)
         .send()
@@ -126,7 +126,11 @@ pub async fn validate_session(
         .map_err(|e| e.to_string())?;
 
     let html = response.text().await.map_err(|e| e.to_string())?;
-    let regex = Regex::new(r"Sign out").map_err(|e| e.to_string())?;
+
+    let regex = Regex::new(
+        r#"<div\s+class="popup_block_new"\s+id="account_dropdown"\s+style="display:\s*none;"#,
+    )
+    .map_err(|e| e.to_string())?;
     let regex_two = Regex::new(r#"<a\s+href="https://steamcommunity\.com/(id|profiles)/[^"]*"\s+data-miniprofile="\d+">([^<]+)</a>"#)
         .map_err(|e| e.to_string())?;
 

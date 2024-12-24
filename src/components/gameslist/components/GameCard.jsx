@@ -28,7 +28,7 @@ export default function GameCard({ gameList, favorites, cardFarming, achievement
                     <div key={item.appid} className='relative group'>
                         <div className='aspect-[460/215] rounded-lg overflow-hidden transition-transform duration-200 ease-in-out transform group-hover:scale-105'>
                             <Image
-                                src={`https://cdn.cloudflare.steamstatic.com/steam/apps/${item.appid || item?.game?.id}/header.jpg`}
+                                src={`https://cdn.cloudflare.steamstatic.com/steam/apps/${item.appid}/header.jpg`}
                                 width={460}
                                 height={215}
                                 alt={`${item.name} image`}

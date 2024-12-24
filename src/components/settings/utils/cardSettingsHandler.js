@@ -49,7 +49,7 @@ export const handleSave = async (sidValue, slsValue, smaValue, setHasCookies, us
                     return toast.error(
                         <ErrorToast
                             message={'[Card Farming] Account mismatch between Steam and SGI'}
-                            href={'https://github.com/zevnda/steam-game-idler/wiki/FAQ#error-messages:~:text=%22-,Account%20mismatch,-%22'}
+                            href={'https://github.com/zevnda/steam-game-idler/wiki/FAQ#error-messages:~:text=Account%20mismatch%20between%20Steam%20and%20SGI'}
                         />
                     );
                 }

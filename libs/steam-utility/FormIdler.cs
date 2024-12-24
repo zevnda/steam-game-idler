@@ -49,7 +49,7 @@ namespace SteamUtility
                 using (var client = new HttpClient())
                 {
                     var response = await client.GetAsync(
-                        $"https://store.steampowered.com/api/appdetails?appids={appid}"
+                        $"https://store.steampowered.com/api/appdetails?l=english&appids={appid}"
                     );
                     response.EnsureSuccessStatusCode();
                     var responseBody = await response.Content.ReadAsStringAsync();

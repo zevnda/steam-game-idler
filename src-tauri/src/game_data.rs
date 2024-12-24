@@ -54,7 +54,7 @@ pub async fn get_recent_games(steam_id: String, api_key: Option<String>) -> Resu
 #[tauri::command]
 pub async fn get_game_details(app_id: String) -> Result<Value, String> {
     let url = format!(
-        "https://store.steampowered.com/api/appdetails/?appids={}&l=english",
+        "https://store.steampowered.com/api/appdetails/?l=english&appids={}",
         app_id
     );
 
@@ -73,7 +73,7 @@ pub async fn get_game_details(app_id: String) -> Result<Value, String> {
 #[tauri::command]
 pub async fn get_free_games() -> Result<serde_json::Value, String> {
     let client = Client::new();
-    let url = "https://store.steampowered.com/search/?maxprice=free&specials=1";
+    let url = "https://store.steampowered.com/search/?l=english&maxprice=free&specials=1";
 
     let response = client.get(url).send().await.map_err(|e| e.to_string())?;
 

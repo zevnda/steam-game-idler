@@ -23,7 +23,7 @@ pub async fn get_achievement_data(
     // Get the API key from the environment or use the provided one
     let key = api_key.unwrap_or_else(|| std::env::var("KEY").unwrap());
     let url_one = format!(
-        "https://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/?key={}&appid={}",
+        "https://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/?l=english&key={}&appid={}",
         key, app_id
     );
     let url_two = format!(
@@ -35,7 +35,7 @@ pub async fn get_achievement_data(
         app_id
     );
     let url_four = format!(
-        "https://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v1/?key={}&appid={}&steamid={}",
+        "https://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v1/?l=english&key={}&appid={}&steamid={}",
         key, app_id, steam_id
     );
 
@@ -77,7 +77,7 @@ pub async fn get_drops_remaining(
     let client = Client::new();
     let response = client
         .get(&format!(
-            "https://steamcommunity.com/profiles/{}/gamecards/{}",
+            "https://steamcommunity.com/profiles/{}/gamecards/{}/?l=english",
             steam_id, app_id
         ))
         .header("Content-Type", "application/json")
@@ -126,7 +126,7 @@ pub async fn get_games_with_drops(
     // Loop through the badge pages to find games with card drops remaining
     loop {
         let url = format!(
-            "https://steamcommunity.com/profiles/{}/badges/?sort=p&p={}",
+            "https://steamcommunity.com/profiles/{}/badges/?l=english&sort=p&p={}",
             steam_id, page
         );
         let response = client
