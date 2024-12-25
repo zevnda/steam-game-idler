@@ -1,4 +1,4 @@
-[![Downloads](https://img.shields.io/github/downloads/zevnda/steam-game-idler/1.5.32/total?style=for-the-badge&logo=github&color=137eb5)](https://github.com/zevnda/steam-game-idler/releases/download/1.5.32/Steam.Game.Idler_1.5.32_x64_en-US.msi)
+[![Downloads](https://img.shields.io/github/downloads/zevnda/steam-game-idler/1.6.0/total?style=for-the-badge&logo=github&color=137eb5)](https://github.com/zevnda/steam-game-idler/releases/download/1.6.0/Steam.Game.Idler_1.6.0_x64_en-US.msi)
 
 ### Merry Christmas to anyone who is celebrating 🎄🎅🎁
 
