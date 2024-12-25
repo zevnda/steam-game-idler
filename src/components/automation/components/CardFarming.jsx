@@ -68,91 +68,93 @@ export default function CardFarming() {
                     loop
                     muted
                 />
-                <div className='flex items-center flex-col'>
-                    <p className='text-3xl font-semibold mb-0'>
-                        Card Farming
-                    </p>
-                    {gamesWithDrops.size > 0 && totalDropsRemaining ? (
+                <div className='flex items-center flex-col gap-4 z-10 bg-base bg-opacity-70 p-8 border border-border rounded-md '>
+                    <div className='flex items-center flex-col z-10'>
+                        <p className='text-3xl font-semibold mb-0'>
+                            Card Farming
+                        </p>
+                        {gamesWithDrops.size > 0 && totalDropsRemaining ? (
+                            <React.Fragment>
+                                <p className='text-sm'>
+                                    Idling <span className='font-bold text-sgi'>{gamesWithDrops.size}</span> game(s) with <span className='font-bold text-sgi '>{totalDropsRemaining}</span> total card drop(s) remaining
+                                </p>
+                            </React.Fragment>
+                        ) : (
+                            <React.Fragment>
+                                {!isComplete ? (
+                                    <div className='flex py-1 h-[16px]'>
+                                        <Skeleton className='w-[250px] h-[8px] rounded' />
+                                    </div>
+                                ) : (
+                                    <p className='text-sm'>
+                                        Finished
+                                    </p>
+                                )}
+                            </React.Fragment>
+                        )}
+                    </div>
+
+                    {gamesWithDrops.size > 0 ? (
                         <React.Fragment>
+                            <StopButton gamesWithDrops={gamesWithDrops} isMountedRef={isMountedRef} abortControllerRef={abortControllerRef} screen={'card-farming'} />
+
                             <p className='text-sm'>
-                                Idling <span className='font-bold text-sgi'>{gamesWithDrops.size}</span> game(s) with <span className='font-bold text-sgi '>{totalDropsRemaining}</span> total card drop(s) remaining
+                                Next action in <span className='font-bold text-sgi'>{countdownTimer}</span>
                             </p>
                         </React.Fragment>
                     ) : (
                         <React.Fragment>
                             {!isComplete ? (
-                                <div className='flex py-1 h-[16px]'>
-                                    <Skeleton className='w-[250px] h-[8px] rounded' />
+                                <div className='flex justify-center flex-col items-center h-[100px] gap-4'>
+                                    <Spinner label={<p className='text-xs'>This may take a minute</p>} />
+                                    <Button
+                                        size='sm'
+                                        color='danger'
+                                        className='min-h-[30px] font-semibold rounded'
+                                        onPress={() => handleCancel(setActivePage, gamesWithDrops, isMountedRef, abortControllerRef)}
+                                    >
+                                        Cancel
+                                    </Button>
                                 </div>
                             ) : (
-                                <p className='text-sm'>
-                                    Finished
-                                </p>
+                                <div className='flex justify-center flex-col items-center h-[100px] gap-4'>
+                                    <div className='border border-border rounded-full inline-block p-2 w-fit'>
+                                        <IoCheckmark className='text-green-400' fontSize={50} />
+                                    </div>
+                                    <Button
+                                        size='sm'
+                                        color='danger'
+                                        className='min-h-[30px] font-semibold rounded'
+                                        onPress={() => handleCancel(setActivePage, gamesWithDrops, isMountedRef, abortControllerRef)}
+                                    >
+                                        Back
+                                    </Button>
+                                </div>
                             )}
                         </React.Fragment>
                     )}
+
+                    {gamesWithDrops.size > 0 ? (
+                        <div className='grid grid-cols-3 gap-2 max-h-[170px] border border-border rounded p-2 overflow-y-auto'>
+                            {[...Array.from(gamesWithDrops)].map((item) => (
+                                <div key={item.appId} className='flex gap-1 border border-border rounded p-1'>
+                                    <div className='flex flex-col px-2'>
+                                        <p className='text-sm font-semibold'>{item.name}</p>
+                                        <p className='text-xs'>{item.appId}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <React.Fragment>
+                            {!isComplete && (<Skeleton className='w-[250px] h-[38px] rounded' />)}
+                        </React.Fragment>
+                    )}
+
+                    <p className='text-xs text-[#797979] dark:text-[#4f4f4f]'>
+                        A max of 32 games can be idled simultaneously
+                    </p>
                 </div>
-
-                {gamesWithDrops.size > 0 ? (
-                    <React.Fragment>
-                        <StopButton gamesWithDrops={gamesWithDrops} isMountedRef={isMountedRef} abortControllerRef={abortControllerRef} screen={'card-farming'} />
-
-                        <p className='text-sm'>
-                            Next action in <span className='font-bold text-sgi'>{countdownTimer}</span>
-                        </p>
-                    </React.Fragment>
-                ) : (
-                    <React.Fragment>
-                        {!isComplete ? (
-                            <div className='flex justify-center flex-col items-center h-[100px] gap-4'>
-                                <Spinner label={<p className='text-xs'>This may take a minute</p>} />
-                                <Button
-                                    size='sm'
-                                    color='danger'
-                                    className='min-h-[30px] font-semibold rounded'
-                                    onPress={() => handleCancel(setActivePage, gamesWithDrops, isMountedRef, abortControllerRef)}
-                                >
-                                    Cancel
-                                </Button>
-                            </div>
-                        ) : (
-                            <div className='flex justify-center flex-col items-center h-[100px] gap-4'>
-                                <div className='border border-border rounded-full inline-block p-2 w-fit'>
-                                    <IoCheckmark className='text-green-400' fontSize={50} />
-                                </div>
-                                <Button
-                                    size='sm'
-                                    color='danger'
-                                    className='min-h-[30px] font-semibold rounded'
-                                    onPress={() => handleCancel(setActivePage, gamesWithDrops, isMountedRef, abortControllerRef)}
-                                >
-                                    Back
-                                </Button>
-                            </div>
-                        )}
-                    </React.Fragment>
-                )}
-
-                {gamesWithDrops.size > 0 ? (
-                    <div className='grid grid-cols-3 gap-2 max-h-[170px] border border-border rounded p-2 overflow-y-auto'>
-                        {[...Array.from(gamesWithDrops)].map((item) => (
-                            <div key={item.appId} className='flex gap-1 border border-border rounded p-1'>
-                                <div className='flex flex-col px-2'>
-                                    <p className='text-sm font-semibold'>{item.name}</p>
-                                    <p className='text-xs'>{item.appId}</p>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                ) : (
-                    <React.Fragment>
-                        {!isComplete && (<Skeleton className='w-[250px] h-[38px] rounded' />)}
-                    </React.Fragment>
-                )}
-
-                <p className='text-xs text-[#797979] dark:text-[#4f4f4f]'>
-                    A max of 32 games can be idled simultaneously
-                </p>
             </div>
         </React.Fragment >
     );
