@@ -1,68 +1,154 @@
-use std::os::windows::process::CommandExt;
+use lazy_static::lazy_static;
+use regex::Regex;
+use reqwest::Client;
+use serde_json::Value;
+use std::collections::HashMap;
 use std::os::windows::io::AsRawHandle;
-use std::fs::{OpenOptions, create_dir_all};
-use std::io::{BufRead, BufReader, Write, Seek, SeekFrom};
-use std::sync::{Arc, Mutex};
-use std::process::{Stdio, Child};
+use std::os::windows::process::CommandExt;
 use std::path::PathBuf;
+use std::process::{Child, Stdio};
+use std::sync::{Arc, Mutex};
 use winapi::um::processthreadsapi::TerminateProcess;
 use winapi::um::winnt::HANDLE;
-use chrono::Local;
 
-const APP_FOLDER_NAME: &str = "steam-game-idler";
-const MAX_LINES: usize = 500;
+lazy_static! {
+    static ref LAST_KNOWN_TITLES: Mutex<HashMap<String, String>> = Mutex::new(HashMap::new());
+}
 
 #[tauri::command]
 pub async fn check_status() -> bool {
+    // Execute the tasklist command to check if steam.exe is running
     let output = std::process::Command::new("tasklist")
         .args(&["/FI", "IMAGENAME eq steam.exe"])
         .stdout(Stdio::piped())
         .stderr(Stdio::null())
-        .creation_flags(0x08000000) 
+        .creation_flags(0x08000000)
         .output()
         .expect("Failed to execute tasklist command");
     let output_str = String::from_utf8_lossy(&output.stdout);
+    // Check if the output contains "steam.exe"
     output_str.contains("steam.exe")
 }
 
 #[tauri::command]
 pub async fn check_process_by_game_id(ids: Vec<String>) -> Result<Vec<String>, String> {
     let output = std::process::Command::new("tasklist")
-    .args(&["/V", "/FO", "CSV", "/NH", "/FI", "IMAGENAME eq SteamUtility.exe"])
-    .stdout(Stdio::piped())
-    .stderr(Stdio::null())
-    .creation_flags(0x08000000)
-    .output()
-    .map_err(|e| e.to_string())?;
+        .args(&[
+            "/V",
+            "/FO",
+            "CSV",
+            "/NH",
+            "/FI",
+            "IMAGENAME eq SteamUtility.exe",
+        ])
+        .stdout(Stdio::piped())
+        .stderr(Stdio::null())
+        .creation_flags(0x08000000)
+        .output()
+        .map_err(|e| e.to_string())?;
 
     let output_str = String::from_utf8_lossy(&output.stdout);
-    Ok(ids.into_iter()
-        .filter(|id| !output_str.contains(&format!("[{}]", id)))
+
+    let mut last_known_titles = LAST_KNOWN_TITLES.lock().unwrap();
+    let mut current_pids = Vec::new();
+    let mut found_ids = Vec::new();
+
+    for line in output_str.lines() {
+        if line.is_empty() {
+            continue;
+        }
+
+        let parts: Vec<&str> = line.split(',').collect();
+        if parts.len() >= 2 {
+            let pid = parts[1].trim_matches('"').to_string();
+            let title = parts.last().unwrap_or(&"").trim_matches('"');
+            current_pids.push(pid.clone());
+
+            // If we have a valid title, update our stored title
+            if title != "N/A" {
+                last_known_titles.insert(pid.clone(), title.to_string());
+            }
+
+            // Use either current title or last known title
+            let check_title = if title != "N/A" {
+                title
+            } else {
+                last_known_titles
+                    .get(&pid)
+                    .map(|s| s.as_str())
+                    .unwrap_or("N/A")
+            };
+
+            // Check if any of our IDs are in the title
+            for id in &ids {
+                if check_title.contains(&format!("[{}]", id)) {
+                    found_ids.push(id.clone());
+                }
+            }
+        }
+    }
+
+    // Clean up any PIDs that are no longer running
+    last_known_titles.retain(|pid, _| current_pids.contains(pid));
+
+    // Return IDs that weren't found
+    Ok(ids
+        .into_iter()
+        .filter(|id| !found_ids.contains(id))
         .collect())
 }
 
 #[tauri::command]
-pub async fn check_steam_status(file_path: String) -> Result<String, String> {
-    let output = std::process::Command::new(file_path)
-        .arg("check_steam")
-        .creation_flags(0x08000000)
-        .output()
+pub async fn validate_session(
+    sid: String,
+    sls: String,
+    sma: Option<String>,
+    steamid: String,
+) -> Result<Value, String> {
+    let client = Client::new();
+
+    // Construct the cookie value based on the provided parameters
+    let cookie_value = match sma {
+        Some(sma_val) => format!(
+            "sessionid={}; steamLoginSecure={}; steamparental={}; steamMachineAuth{}={}",
+            sid, sls, sma_val, steamid, sma_val
+        ),
+        None => format!("sessionid={}; steamLoginSecure={}", sid, sls),
+    };
+
+    // Send the request and handle the response
+    let response = client
+        .get("https://steamcommunity.com/?l=english")
+        .header("Content-Type", "application/json")
+        .header("Cookie", cookie_value)
+        .send()
+        .await
         .map_err(|e| e.to_string())?;
-    let output_str = String::from_utf8_lossy(&output.stdout);
-    if output_str.contains("Steam is not running") {
-        Ok("not_running".to_string())
+
+    let html = response.text().await.map_err(|e| e.to_string())?;
+
+    let regex = Regex::new(
+        r#"<div\s+class="popup_block_new"\s+id="account_dropdown"\s+style="display:\s*none;"#,
+    )
+    .map_err(|e| e.to_string())?;
+    let regex_two = Regex::new(r#"<a\s+href="https://steamcommunity\.com/(id|profiles)/[^"]*"\s+data-miniprofile="\d+">([^<]+)</a>"#)
+        .map_err(|e| e.to_string())?;
+
+    // Check if the user is logged in based on the response HTML
+    if let Some(_m) = regex.find(&html) {
+        if let Some(captures) = regex_two.captures(&html) {
+            Ok(serde_json::json!({ "user": captures[2].to_string() }))
+        } else {
+            Ok(serde_json::json!({ "error": "Not logged in" }))
+        }
     } else {
-        let steam_id = output_str
-            .split("steamId ")
-            .nth(1)
-            .ok_or("Failed to parse Steam ID")?
-            .trim();
-        Ok(steam_id.to_string())
+        Ok(serde_json::json!({ "error": "Not logged in" }))
     }
 }
 
 #[tauri::command]
 pub async fn anti_away() -> Result<(), String> {
+    // Execute a command to set Steam status to online
     std::process::Command::new("cmd")
         .args(&["/C", "start steam://friends/status/online"])
         .creation_flags(0x08000000)
@@ -73,109 +159,24 @@ pub async fn anti_away() -> Result<(), String> {
 
 #[tauri::command]
 pub async fn get_file_path() -> Result<PathBuf, String> {
+    // Get the current executable path
     match std::env::current_exe() {
         Ok(path) => return Ok(path),
         Err(error) => return Err(format!("{error}")),
     }
 }
 
-#[tauri::command]
-pub fn log_event(message: String, app_handle: tauri::AppHandle) -> Result<(), String> {
-    let app_data_dir = app_handle.path_resolver().app_data_dir()
-        .ok_or("Failed to get app data directory")?;
-    let app_specific_dir = app_data_dir.parent().unwrap_or(&app_data_dir).join(APP_FOLDER_NAME);
-    create_dir_all(&app_specific_dir)
-        .map_err(|e| format!("Failed to create app directory: {}", e))?;
-    let log_file_path = app_specific_dir.join("log.txt");
-    let mut file = OpenOptions::new()
-        .read(true)
-        .write(true)
-        .create(true)
-        .open(&log_file_path)
-        .map_err(|e| format!("Failed to open log file: {}", e))?;
-    let reader = BufReader::new(&file);
-    let mut lines: Vec<String> = reader.lines()
-        .map(|line| line.unwrap_or_default())
-        .collect();
-    let timestamp = Local::now().format("%b %d %H:%M:%S%.3f").to_string();
-    let mask_one = mask_sensitive_data(&message, "711B8063");
-    let mask_two = mask_sensitive_data(&mask_one, "3DnyBUX");
-    let mask_three = mask_sensitive_data(&mask_two, "5e2699aef2301b283");
-    let new_log = format!("{} + {}", timestamp, mask_three);
-    lines.insert(0, new_log);
-    if lines.len() > MAX_LINES {
-        lines.truncate(MAX_LINES);
-    }
-    file.seek(SeekFrom::Start(0))
-        .map_err(|e| format!("Failed to seek to start of file: {}", e))?;
-    file.set_len(0)
-        .map_err(|e| format!("Failed to truncate file: {}", e))?;
-    for line in lines {
-        writeln!(file, "{}", line)
-            .map_err(|e| format!("Failed to write to log file: {}", e))?;
-    }
-    Ok(())
-}
-
-#[tauri::command]
-pub fn clear_log_file(app_handle: tauri::AppHandle) -> Result<(), String> {
-    let app_data_dir = app_handle.path_resolver().app_data_dir()
-        .ok_or("Failed to get app data directory")?;
-    let app_specific_dir = app_data_dir.parent().unwrap_or(&app_data_dir).join(APP_FOLDER_NAME);
-    let log_file_path = app_specific_dir.join("log.txt");
-    let file = OpenOptions::new()
-        .write(true)
-        .open(&log_file_path)
-        .map_err(|e| format!("Failed to open log file: {}", e))?;
-    file.set_len(0)
-        .map_err(|e| format!("Failed to truncate file: {}", e))?;
-    Ok(())
-}
-
-#[tauri::command]
-pub fn get_app_log_dir(app_handle: tauri::AppHandle) -> Result<String, String> {
-    let app_data_dir = app_handle.path_resolver().app_data_dir()
-        .ok_or("Failed to get app data directory")?;
-    let app_specific_dir = app_data_dir.parent().unwrap_or(&app_data_dir).join(APP_FOLDER_NAME);
-    app_specific_dir.to_str()
-        .ok_or("Failed to convert path to string".to_string())
-        .map(|s| s.to_string())
-}
-
-#[tauri::command]
-pub fn open_file_explorer(path: String) -> Result<(), String> {
-    std::process::Command::new("explorer")
-        .args(["/select,", &path])
-        .creation_flags(0x08000000)
-        .spawn()
-        .map_err(|e| e.to_string())?;
-    Ok(())
-}
-
 pub fn kill_processes(spawned_processes: &Arc<Mutex<Vec<Child>>>) {
     let mut processes = spawned_processes.lock().unwrap();
     for child in processes.iter_mut() {
         unsafe {
+            // Terminate each process
             let handle = child.as_raw_handle() as HANDLE;
             TerminateProcess(handle, 1);
         }
         let _ = child.wait();
     }
     processes.clear();
+    // Exit the application
     std::process::exit(0);
-}
-
-pub fn mask_sensitive_data(message: &str, sensitive_data: &str) -> String {
-    if let Some(start_index) = message.find(sensitive_data) {
-        let end_index = start_index + sensitive_data.len();
-        let mask_start = start_index.saturating_sub(5);
-        let mask_end = (end_index + 5).min(message.len());
-        let mask_length = mask_end - mask_start;
-        
-        let mut masked_message = message.to_string();
-        masked_message.replace_range(mask_start..mask_end, &"*".repeat(mask_length));
-        masked_message
-    } else {
-        message.to_string()
-    }
 }

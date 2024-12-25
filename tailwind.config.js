@@ -3,8 +3,8 @@ import { nextui } from "@nextui-org/react";
 /** @type {import('tailwindcss').Config} */
 module.exports = {
     content: [
-        './pages/**/*.{js,ts,jsx,tsx,mdx}',
-        './components/**/*.{js,ts,jsx,tsx,mdx}',
+        './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
+        './src/components/**/*.{js,ts,jsx,tsx,mdx}',
         './node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}'
     ],
     theme: {
@@ -34,8 +34,9 @@ module.exports = {
                 colors: {
                     'sgi': '#137eb5',
                     'offwhite': '#ffffff',
+                    'altwhite': '#5c6674',
                     'sidebar': '#1a8fcb',
-                    'titlebar': '#efefef',
+                    'titlebar': '#ffffff',
                     'titletext': '#0a0a0a',
                     'titlehover': '#dddddd',
                     'titleborder': '#00000015',
@@ -55,12 +56,20 @@ module.exports = {
                     'modalheader': '#ffffff',
                     'modalbody': '#fafafa',
                     'modalfooter': '#ffffff',
+                    'notibase': '#ffffff',
+                    'notihead': '#fafafa',
+                    'notiunread': '#ebebeb',
+                    'notihover': '#f5f5f5',
                     primary: {
-                        DEFAULT: '#000',
+                        DEFAULT: '#1a8fcb',
                         foreground: '#fff'
                     },
                     secondary: {
                         DEFAULT: '#137eb5',
+                    },
+                    danger: {
+                        DEFAULT: '#ef4444',
+                        foreground: '#fff'
                     }
                 }
             },
@@ -68,12 +77,13 @@ module.exports = {
                 colors: {
                     'sgi': '#137eb5',
                     'offwhite': '#ebebeb',
-                    'sidebar': '#1a8fcb',
-                    'titlebar': '#1c1c1c',
+                    'altwhite': '#a9a9a9',
+                    'sidebar': '#141414',
+                    'titlebar': '#141414',
                     'titletext': '#efefef',
                     'titlehover': '#2b2b2b',
                     'titleborder': '#ffffff15',
-                    'base': '#141414',
+                    'base': '#101010',
                     'container': '#161616',
                     'containerhover': '#252525',
                     'footer': '#0f0f0f',
@@ -89,12 +99,20 @@ module.exports = {
                     'modalheader': '#121212',
                     'modalbody': '#171717',
                     'modalfooter': '#121212',
+                    'notibase': '#101010',
+                    'notihead': '#181818',
+                    'notiunread': '#212121',
+                    'notihover': '#1e1e1e',
                     primary: {
-                        DEFAULT: '#fff',
+                        DEFAULT: '#ebebeb',
                         foreground: '#000'
                     },
                     secondary: {
                         DEFAULT: '#137eb5',
+                    },
+                    danger: {
+                        DEFAULT: '#ef4444',
+                        foreground: '#fff'
                     }
                 }
             },
