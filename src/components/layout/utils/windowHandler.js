@@ -60,6 +60,12 @@ export const defaultSettings = (setUserSummary) => {
             scheduleFrom: new Time(8, 30),
             scheduleTo: new Time(23, 0),
             interval: [30, 130],
+        },
+        serverSettings: {
+            enabled: false,
+            local: true,
+            public: false,
+            port: ''
         }
     };
     try {
@@ -126,4 +132,106 @@ export const startAutoIdleGames = async () => {
         console.error('Error in (startAutoIdleGames):', error);
         logEvent(`[Error] in (startAutoIdleGames): ${error}`);
     }
+};
+
+let websocket;
+let clientId = null;
+
+// Start mobile ws server if enabled
+export const connectToWebSocketServer = async () => {
+    try {
+        const settings = JSON.parse(localStorage.getItem('settings')) || {};
+        const { serverSettings } = settings;
+        const portValue = serverSettings.port;
+
+        if (!serverSettings.enabled) return;
+
+        if (!portValue) {
+            toast.error('Mobile server enabled but no port has been set');
+            return;
+        }
+
+        const response = await invoke('start_ws_server', {
+            port: parseInt(portValue),
+            serverType: serverSettings.local ? 'local' : 'public'
+        });
+        const data = JSON.parse(response);
+
+        if (data.error) {
+            toast.error(`Error starting WebSocket server. Do you need to forward port ${portValue}?`);
+            return;
+        }
+
+        const host = data.host;
+
+        websocket = new WebSocket(`ws://${host}:${portValue}`);
+
+        websocket.onopen = () => {
+            console.log('Connected to WebSocket server');
+            clientId = uuidv4();
+            sendMessage({ message: 'Hello from desktop client' });
+        };
+
+        websocket.onmessage = (event) => {
+            handleMessage(event.data);
+        };
+
+        websocket.onerror = (error) => {
+            console.error('WebSocket error:', error);
+        };
+
+        websocket.onclose = () => {
+            console.log('WebSocket connection closed');
+        };
+    } catch (error) {
+        toast.error(`Error in (startWebSocketServer): ${error?.message || error}`);
+        console.error('Error in (startWebSocketServer):', error);
+        logEvent(`[Error] in (startWebSocketServer): ${error}`);
+    }
+};
+
+// Function to handle incoming WebSocket messages
+const handleMessage = async (message) => {
+    // Ignore messages tagged with the client's own identifier
+    if (message.startsWith(`${clientId}:`)) {
+        return;
+    }
+
+    console.log('Received message:', message);
+    // Remove the client ID prefix before parsing the message
+    const messageWithoutId = message.substring(message.indexOf(':') + 1);
+
+    // Add your message handling logic here
+    // For example, parse the message and take action based on its content
+    try {
+        const parsedMessage = JSON.parse(messageWithoutId);
+        if (parsedMessage.getGames) {
+            const gamesList = sessionStorage.getItem('gamesListCache');
+            sendMessage({ gamesList: gamesList });
+        }
+        if (parsedMessage.startIdle) {
+            await startIdler(parsedMessage.appId, parsedMessage.name, false, true);
+        }
+    } catch (error) {
+        console.error('Error handling message:', error);
+    }
+};
+
+// Function to send a message through the WebSocket connection
+export const sendMessage = (message) => {
+    if (websocket && websocket.readyState === WebSocket.OPEN) {
+        websocket.send(`${clientId}:${JSON.stringify(message)}`);
+        console.log('Sent message:', message);
+    } else {
+        console.error('WebSocket is not connected');
+    }
+};
+
+// Function to generate a unique identifier (UUID v4)
+const uuidv4 = () => {
+    return 'xxxxxxxx-xxxx-xxxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        const r = (Math.random() * 16) | 0,
+            v = c === 'x' ? r : (r & 0x3) | 0x8;
+        return v.toString(16);
+    });
 };

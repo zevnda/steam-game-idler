@@ -22,6 +22,11 @@ chrono = "0.4"
 reqwest = { version = "0.11", features = ["json"] }
 dotenvs = "0.1.0"
 tokio = { version = "1", features = ["full"] }
+tokio-tungstenite = "0.15"
+tungstenite = "0.17"
+futures-util = "0.3.31"
+local-ip-address = "0.6.3"
+uuid = "1.11.0"
 regex = "1.7.1"
 scraper = "0.20.0"
 select = "0.6.0"

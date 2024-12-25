@@ -6,12 +6,14 @@ pub mod logging;
 pub mod tasks;
 pub mod user_data;
 pub mod utils;
+pub mod websocket;
 use automation::*;
 use game_data::*;
 use logging::*;
 use tasks::*;
 use user_data::*;
 use utils::*;
+use websocket::*;
 
 use std::env;
 use std::sync::atomic::{AtomicBool, Ordering};
@@ -61,13 +63,6 @@ fn main() {
                     break;
                 }
                 thread::sleep(Duration::from_millis(100));
-            });
-
-            // Handle window close event
-            window.on_window_event(move |event| {
-                if let tauri::WindowEvent::CloseRequested { .. } = event {
-                    SHUTTING_DOWN.store(true, Ordering::SeqCst);
-                }
             });
 
             Ok(())
@@ -129,6 +124,8 @@ fn main() {
             get_free_games,
             anti_away,
             check_process_by_game_id,
+            start_ws_server,
+            stop_ws_server
         ])
         .build(tauri::generate_context!())
         .expect("error while building tauri application")

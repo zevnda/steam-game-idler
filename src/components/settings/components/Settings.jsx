@@ -8,6 +8,7 @@ import SettingsMenu from './SettingsMenu';
 import ResetSettings from './ResetSettings';
 import { getAppVersion, getDefaultSettings, getUpdatedSettings } from '@/src/components/settings/utils/settingsHandler';
 import { toast } from 'react-toastify';
+import ServerSettings from './ServerSettings';
 
 export default function Settings({ setInitUpdate, setUpdateManifest }) {
     const [settings, setSettings] = useState(null);
@@ -73,6 +74,9 @@ export default function Settings({ setInitUpdate, setUpdateManifest }) {
                         </Tab>
                         <Tab key='achievement-unlocker' title='Achievement Unlocker'>
                             <AchievementSettings settings={settings} setSettings={setSettings} />
+                        </Tab>
+                        <Tab key='mobile server' title='Mobile Server'>
+                            <ServerSettings settings={settings} setSettings={setSettings} />
                         </Tab>
                         <Tab key='logs' title='Logs'>
                             <Logs />

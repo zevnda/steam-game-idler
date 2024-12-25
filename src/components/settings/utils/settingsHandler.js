@@ -35,6 +35,12 @@ export const getDefaultSettings = () => ({
         scheduleFrom: new Time(8, 30),
         scheduleTo: new Time(23, 0),
         interval: [30, 130],
+    },
+    serverSettings: {
+        enabled: false,
+        local: true,
+        public: false,
+        port: ''
     }
 });
 
@@ -51,6 +57,10 @@ export const getUpdatedSettings = (defaultSettings, currentSettings) => ({
     achievementUnlocker: {
         ...defaultSettings.achievementUnlocker,
         ...currentSettings.achievementUnlocker
+    },
+    serverSettings: {
+        ...defaultSettings.serverSettings,
+        ...currentSettings.serverSettings
     }
 });
 

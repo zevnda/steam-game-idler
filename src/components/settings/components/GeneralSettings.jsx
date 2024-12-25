@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Button, Checkbox, Input } from '@nextui-org/react';
 import ExtLink from '@/src/components/ui/components/ExtLink';
 import { antiAwayStatus } from '@/src/utils/utils';
@@ -9,7 +9,12 @@ import { AppContext } from '../../layout/components/AppContext';
 
 export default function GeneralSettings({ settings, setSettings }) {
     const { userSummary } = useContext(AppContext);
-    const { localSettings, setLocalSettings, startupState, setStartupState, keyValue, setKeyValue, hasKey, setHasKey } = useGeneralSettings(settings);
+    const {
+        localSettings, setLocalSettings,
+        startupState, setStartupState,
+        keyValue, setKeyValue,
+        hasKey, setHasKey
+    } = useGeneralSettings(settings);
 
     return (
         <React.Fragment>
@@ -95,7 +100,7 @@ export default function GeneralSettings({ settings, setSettings }) {
 
                 <Checkbox
                     isSelected={startupState || false}
-                    onChange={() => handleRunAtStartupChange(startupState, setStartupState)}
+                    onChange={() => handleRunAtStartupChange(setStartupState)}
                 >
                     <div className='flex items-center gap-1'>
                         <p className='text-xs'>
@@ -155,6 +160,6 @@ export default function GeneralSettings({ settings, setSettings }) {
                     </div>
                 </div>
             </div>
-        </React.Fragment>
+        </React.Fragment >
     );
 }

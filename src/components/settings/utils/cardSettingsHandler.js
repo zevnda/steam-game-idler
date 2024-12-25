@@ -27,13 +27,13 @@ export const getStoredCookies = async (setHasCookies, setSidValue, setSlsValue, 
             setCardFarmingUser(cardFarmingUser);
         }
     } catch (error) {
-        toast.error(`Error in (validateSession): ${error?.message || error}`);
-        console.error('Error in (validateSession):', error);
-        logEvent(`[Error] in (validateSession): ${error}`);
+        toast.error(`Error in (getStoredCookies): ${error?.message || error}`);
+        console.error('Error in (getStoredCookies):', error);
+        logEvent(`[Error] in (getStoredCookies): ${error}`);
     }
 };
 
-export const handleSave = async (sidValue, slsValue, smaValue, setHasCookies, userSummary, setCardFarmingUser) => {
+export const handleSave = async (sidValue, slsValue, smaValue, setHasCookies, setCardFarmingUser) => {
     try {
         if (sidValue.length > 0 && slsValue.length > 0) {
             const userSummary = JSON.parse(localStorage.getItem('userSummary')) || {};
@@ -102,9 +102,6 @@ export const handleCheckboxChange = (e, localSettings, setLocalSettings, setSett
         const { name, checked } = e.target;
         const updatedSettings = {
             ...localSettings,
-            achievementUnlocker: {
-                ...localSettings.achievementUnlocker
-            },
             cardFarming: {
                 ...localSettings.cardFarming,
                 [name]: checked

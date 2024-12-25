@@ -1,5 +1,5 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
-import { checkForUpdates, changelogModal, defaultSettings, checkForFreeGames, startAutoIdleGames } from '../utils/windowHandler';
+import { checkForUpdates, changelogModal, defaultSettings, checkForFreeGames, startAutoIdleGames, connectToWebSocketServer } from '../utils/windowHandler';
 import { AppContext } from '../components/AppContext';
 
 export default function useWindow() {
@@ -21,6 +21,7 @@ export default function useWindow() {
         changelogModal(setShowChangelogModal);
         defaultSettings(setUserSummary);
         startAutoIdleGames();
+        connectToWebSocketServer();
 
         const intervalId = setInterval(freeGamesCheck, 60000 * 60);
         freeGamesCheck();

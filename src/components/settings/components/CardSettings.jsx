@@ -1,13 +1,11 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import ExtLink from '@/src/components/ui/components/ExtLink';
 import { Button, Checkbox, Input } from '@nextui-org/react';
 import { handleSave, handleClear, handleCheckboxChange } from '@/src/components/settings/utils/cardSettingsHandler';
 import useCardSettings from '@/src/components/settings/hooks/useCardSettings';
-import { AppContext } from '../../layout/components/AppContext';
 import Image from 'next/image';
 
 export default function CardSettings({ settings, setSettings }) {
-    const { userSummary } = useContext(AppContext);
     const {
         sidValue,
         slsValue,
@@ -127,7 +125,7 @@ export default function CardSettings({ settings, setSettings }) {
                                     color='primary'
                                     isDisabled={hasCookies || !sidValue || !slsValue}
                                     className='font-semibold rounded-md w-full'
-                                    onPress={() => handleSave(sidValue, slsValue, smaValue, setHasCookies, userSummary, setCardFarmingUser)}
+                                    onPress={() => handleSave(sidValue, slsValue, smaValue, setHasCookies, setCardFarmingUser)}
                                 >
                                     Save
                                 </Button>

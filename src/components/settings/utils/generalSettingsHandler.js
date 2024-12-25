@@ -54,7 +54,7 @@ const updateSettings = (newSettings, setLocalSettings, setSettings) => {
     }
 };
 
-export const handleRunAtStartupChange = async (startupState, setStartupState) => {
+export const handleRunAtStartupChange = async (setStartupState) => {
     const isEnabledState = await isEnabled();
     if (isEnabledState) {
         await disable();
