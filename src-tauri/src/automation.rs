@@ -20,7 +20,7 @@ pub async fn get_achievement_data(
     app_id: String,
     api_key: Option<String>,
 ) -> Result<Value, String> {
-    // Get the API key from the environment or use the provided one
+    // Get the API key from env or use the provided one
     let key = api_key.unwrap_or_else(|| std::env::var("KEY").unwrap());
     let url_one = format!(
         "https://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/?l=english&key={}&appid={}",
@@ -41,7 +41,6 @@ pub async fn get_achievement_data(
 
     let client = Client::new();
 
-    // Send multiple requests concurrently
     let (res_one, res_two, res_three, res_four) = try_join!(
         client.get(&url_one).send(),
         client.get(&url_two).send(),

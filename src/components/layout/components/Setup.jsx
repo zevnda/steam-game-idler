@@ -90,7 +90,7 @@ export default function Setup() {
                                     <p className='text-xs'>
                                         No Steam users found
                                     </p>
-                                    <ExtLink href={'https://github.com/zevnda/steam-game-idler/wiki/FAQ#error-messages:~:text=Why am I seeing "No Steam users found" on the login screen?'}>
+                                    <ExtLink href={'https://github.com/zevnda/steam-game-idler/wiki/FAQ#error-messages:~:text=No%20Steam%20users%20found'}>
                                         <p className='text-xs text-link hover:text-linkhover'>
                                             Learn why
                                         </p>
