@@ -19,19 +19,26 @@
 - npm 10.5.1+
 - Should run on most versions of linux, macos and windows
 
-# Build It Yourself
+# Build it yourself
 1. **Clone**: `git clone -b cli-webui https://github.com/ProbablyRaging/steam-game-idler.git`
 2. **Install deps for CLI**: `cd ./steam-game-idler` & `npm install`
 3. **Install deps for web server**: `cd ./steam-game-idler/src` & `npm install`
 4. **Run the CLI**: `node ./index.js`
 5. Follow the steps in the terminal to choose between either running the CLI or web UI
 
+# Run on Android devices with Termux
+1. **Download Termux**: [termux-v0.118.1-arm64-v8a,apk](https://github.com/termux/termux-app/releases/tag/v0.118.1)
+2. **Install Nodejs and Git**: `pkg update` & `pkg install nodejs` & `pkg install git`
+3. **Build SGI**: Follow the steps in [Build it yourself](https://github.com/zevnda/steam-game-idler/edit/cli-webui/README.md#build-it-yourself)
+
+*To prevent the SGI process from being put to sleep by Android's low-power mode, you will need to enable wake lock in Termux*
+
 # Using Steam Guard
 If your account is protected by Steam Guard, a 5-digit Steam Guard code will be required
 ### Web UI
 - On the login page of the Web UI when logging in
 - In the command/terminal window when attempting to idle games *(if you don't see the `started idling [game name]` message after entering your code you will need to stop and start idling your game(s) again)*
-### SLI
+### CLI
 - In the command/terminal window when logging in
 
 # Updates
