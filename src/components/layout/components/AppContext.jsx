@@ -1,4 +1,4 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState, useRef } from 'react';
 
 export const AppContext = createContext();
 
@@ -8,6 +8,10 @@ export const AppProvider = ({ children }) => {
     const [appName, setAppName] = useState(null);
     const [activePage, setActivePage] = useState('games');
     const [currentTab, setCurrentTab] = useState(null);
+    const [favorites, setFavorites] = useState([]);
+    const [cardFarming, setCardFarming] = useState([]);
+    const [achievementUnlocker, setAchievementUnlocker] = useState([]);
+    const [autoIdle, setAutoIdle] = useState([]);
     const [showFreeGamesTab, setShowFreeGamesTab] = useState(false);
     const [freeGamesList, setFreeGamesList] = useState([]);
     const [achievementList, setAchievementList] = useState([]);
@@ -18,6 +22,10 @@ export const AppProvider = ({ children }) => {
     const [achievementQueryValue, setAchievementQueryValue] = useState('');
     const [achievementsUnavailable, setAchievementsUnavailable] = useState(false);
     const [statisticsUnavailable, setStatisticsUnavailable] = useState(false);
+    const [gamesWithDrops, setGamesWithDrops] = useState(new Set());
+    const [currentGame, setCurrentGame] = useState('');
+    const isMountedRef = useRef(true);
+    const abortControllerRef = useRef(new AbortController());
 
     return (
         <AppContext.Provider value={{
@@ -35,7 +43,14 @@ export const AppProvider = ({ children }) => {
             achievementQueryValue, setAchievementQueryValue,
             achievementsUnavailable, setAchievementsUnavailable,
             statisticsUnavailable, setStatisticsUnavailable,
-            currentTab, setCurrentTab
+            currentTab, setCurrentTab,
+            favorites, setFavorites,
+            cardFarming, setCardFarming,
+            achievementUnlocker, setAchievementUnlocker,
+            autoIdle, setAutoIdle,
+            gamesWithDrops, setGamesWithDrops,
+            currentGame, setCurrentGame,
+            isMountedRef, abortControllerRef,
         }}>
             {children}
         </AppContext.Provider>

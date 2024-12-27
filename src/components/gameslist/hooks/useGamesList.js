@@ -5,16 +5,21 @@ import { toast } from 'react-toastify';
 import { AppContext } from '../../layout/components/AppContext';
 
 export default function useGamesList() {
-    const { userSummary, isQuery, gameQueryValue, setGameQueryValue } = useContext(AppContext);
+    const {
+        userSummary,
+        isQuery,
+        gameQueryValue, setGameQueryValue,
+        favorites, setFavorites,
+        cardFarming, setCardFarming,
+        achievementUnlocker, setAchievementUnlocker,
+        autoIdle, setAutoIdle,
+    } = useContext(AppContext);
     const scrollContainerRef = useRef(null);
     const [isLoading, setIsLoading] = useState(true);
     const [gameList, setGameList] = useState(null);
     const [recentGames, setRecentGames] = useState(null);
     const [sortStyle, setSortStyle] = useState(localStorage.getItem('sortStyle') || 'a-z');
-    const [favorites, setFavorites] = useState([]);
-    const [cardFarming, setCardFarming] = useState([]);
-    const [autoIdle, setAutoIdle] = useState([]);
-    const [achievementUnlocker, setAchievementUnlocker] = useState([]);
+
     const [filteredGames, setFilteredGames] = useState([]);
     const [visibleGames, setVisibleGames] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);

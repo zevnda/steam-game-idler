@@ -43,41 +43,46 @@ pub async fn start_websocket_server(port: u16, server_type: &str) {
             while let Ok((stream, _)) = listener.accept().await {
                 let tx = tx.clone();
                 tokio::spawn(async move {
-                    let ws_stream = accept_async(stream)
-                        .await
-                        .expect("Error during the websocket handshake occurred");
-                    let (mut write, mut read) = ws_stream.split();
+                    let ws_stream = accept_async(stream).await;
+                    match ws_stream {
+                        Ok(ws_stream) => {
+                            let (mut write, mut read) = ws_stream.split();
 
-                    // Generate a unique identifier for the client
-                    let client_id = Uuid::new_v4().to_string();
-                    let client_id_clone = client_id.clone();
+                            // Generate a unique identifier for the client
+                            let client_id = Uuid::new_v4().to_string();
+                            let client_id_clone = client_id.clone();
 
-                    // Subscribe to the broadcast channel to receive messages
-                    let mut rx = MESSAGE_CHANNEL.1.resubscribe();
+                            // Subscribe to the broadcast channel to receive messages
+                            let mut rx = MESSAGE_CHANNEL.1.resubscribe();
 
-                    // Spawn a task to forward broadcast messages to the client
-                    tokio::spawn(async move {
-                        while let Ok((sender_id, msg)) = rx.recv().await {
-                            // Ensure the message is not sent back to the sender
-                            if sender_id != client_id_clone {
-                                if let Err(e) = write.send(Message::Text(msg)).await {
-                                    println!("Failed to send message: {:?}", e);
-                                    break;
+                            // Spawn a task to forward broadcast messages to the client
+                            tokio::spawn(async move {
+                                while let Ok((sender_id, msg)) = rx.recv().await {
+                                    // Ensure the message is not sent back to the sender
+                                    if sender_id != client_id_clone {
+                                        if let Err(e) = write.send(Message::Text(msg)).await {
+                                            println!("Failed to send message: {:?}", e);
+                                            break;
+                                        }
+                                    }
+                                }
+                            });
+
+                            // Read messages from the client and broadcast them
+                            while let Some(msg) = read.next().await {
+                                let msg = msg.expect("Failed to read message");
+                                if msg.is_text() || msg.is_binary() {
+                                    let text = msg.into_text().expect("Failed to parse text message");
+                                    // Broadcast the message with the sender's identifier
+                                    if let Err(e) = tx.send((client_id.clone(), text)) {
+                                        println!("Failed to broadcast message: {:?}", e);
+                                        break;
+                                    }
                                 }
                             }
                         }
-                    });
-
-                    // Read messages from the client and broadcast them
-                    while let Some(msg) = read.next().await {
-                        let msg = msg.expect("Failed to read message");
-                        if msg.is_text() || msg.is_binary() {
-                            let text = msg.into_text().expect("Failed to parse text message");
-                            // Broadcast the message with the sender's identifier
-                            if let Err(e) = tx.send((client_id.clone(), text)) {
-                                println!("Failed to broadcast message: {:?}", e);
-                                break;
-                            }
+                        Err(e) => {
+                            println!("Error during the websocket handshake occurred: {:?}", e);
                         }
                     }
                 });

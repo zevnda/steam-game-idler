@@ -1,9 +1,12 @@
 import { checkUpdate } from '@tauri-apps/api/updater';
-import { fetchFreeGames, fetchLatest, logEvent, sendNativeNotification, startIdler, updateMongoStats } from '@/src/utils/utils';
+import { fetchFreeGames, fetchLatest, logEvent, sendNativeNotification, startIdler, stopIdler, updateMongoStats } from '@/src/utils/utils';
 import { Time } from '@internationalized/date';
 import { invoke } from '@tauri-apps/api/tauri';
 import { toast } from 'react-toastify';
 import UpdateToast from '@/src/components/updates/components/UpdateToast';
+import { addToAchievementUnlocker, addToAutoIdle, addToCardFarming, addToFavorites } from '../../gameslist/utils/gameCardHandler';
+import { achievementUnlocker, cardFarming } from '../../gameslist/hooks/useAutomateButtons';
+import { handleStop } from '../../automation/hooks/useStopButton';
 
 // Check for updates and handle the Tauri update process
 export const checkForUpdates = async (setUpdateManifest, setInitUpdate) => {
@@ -136,15 +139,28 @@ export const startAutoIdleGames = async () => {
 
 let websocket;
 let clientId = null;
+let reconnectInterval = 5000;
 
 // Start mobile ws server if enabled
-export const connectToWebSocketServer = async () => {
+export const connectToWebSocketServer = async (
+    setFavorites,
+    setCardFarming,
+    setAchievementUnlocker,
+    setAutoIdle,
+    activePage,
+    setActivePage,
+    gamesWithDrops,
+    currentGame,
+    isMountedRef,
+    abortControllerRef
+) => {
     try {
         const settings = JSON.parse(localStorage.getItem('settings')) || {};
         const { serverSettings } = settings;
-        const portValue = serverSettings.port;
 
-        if (!serverSettings.enabled) return;
+        if (!serverSettings || !serverSettings.enabled) return;
+
+        const portValue = serverSettings.port;
 
         if (!portValue) {
             toast.error('Mobile server enabled but no port has been set');
@@ -173,7 +189,19 @@ export const connectToWebSocketServer = async () => {
         };
 
         websocket.onmessage = (event) => {
-            handleMessage(event.data);
+            handleMessage(
+                event.data,
+                setFavorites,
+                setCardFarming,
+                setAchievementUnlocker,
+                setAutoIdle,
+                activePage,
+                setActivePage,
+                gamesWithDrops,
+                currentGame,
+                isMountedRef,
+                abortControllerRef
+            );
         };
 
         websocket.onerror = (error) => {
@@ -181,7 +209,19 @@ export const connectToWebSocketServer = async () => {
         };
 
         websocket.onclose = () => {
-            console.log('WebSocket connection closed');
+            console.log('WebSocket connection closed, attempting to reconnect...');
+            setTimeout(() => connectToWebSocketServer(
+                setFavorites,
+                setCardFarming,
+                setAchievementUnlocker,
+                setAutoIdle,
+                activePage,
+                setActivePage,
+                gamesWithDrops,
+                currentGame,
+                isMountedRef,
+                abortControllerRef
+            ), reconnectInterval);
         };
     } catch (error) {
         toast.error(`Error in (startWebSocketServer): ${error?.message || error}`);
@@ -191,7 +231,19 @@ export const connectToWebSocketServer = async () => {
 };
 
 // Function to handle incoming WebSocket messages
-const handleMessage = async (message) => {
+const handleMessage = async (
+    message,
+    setFavorites,
+    setCardFarming,
+    setAchievementUnlocker,
+    setAutoIdle,
+    activePage,
+    setActivePage,
+    gamesWithDrops,
+    currentGame,
+    isMountedRef,
+    abortControllerRef // Ensure abortControllerRef is passed here
+) => {
     // Ignore messages tagged with the client's own identifier
     if (message.startsWith(`${clientId}:`)) {
         return;
@@ -201,20 +253,51 @@ const handleMessage = async (message) => {
     // Remove the client ID prefix before parsing the message
     const messageWithoutId = message.substring(message.indexOf(':') + 1);
 
-    // Add your message handling logic here
-    // For example, parse the message and take action based on its content
+    // Parse the message and handle it accordingly
     try {
         const parsedMessage = JSON.parse(messageWithoutId);
         if (parsedMessage.getGames) {
-            const gamesList = sessionStorage.getItem('gamesListCache');
-            sendMessage({ gamesList: gamesList });
+            getGames();
         }
         if (parsedMessage.startIdle) {
             await startIdler(parsedMessage.appId, parsedMessage.name, false, true);
         }
+        if (parsedMessage.stopIdle) {
+            await stopIdler(parsedMessage.appId, parsedMessage.name);
+        }
+        if (parsedMessage.addToFavorites) {
+            addToFavorites(parsedMessage.item, setFavorites);
+        }
+        if (parsedMessage.addToCardFarming) {
+            addToCardFarming(parsedMessage.item, setCardFarming);
+        }
+        if (parsedMessage.addToAchievementUnlocker) {
+            addToAchievementUnlocker(parsedMessage.item, setAchievementUnlocker);
+        }
+        if (parsedMessage.addToAutoIdle) {
+            addToAutoIdle(parsedMessage.item, setAutoIdle);
+        }
+        if (parsedMessage.startCardFarming) {
+            cardFarming(setActivePage);
+        }
+        if (parsedMessage.startAchievementUnlocker) {
+            achievementUnlocker(setActivePage);
+        }
+        if (parsedMessage.stopAutomation) {
+            handleStop(isMountedRef, abortControllerRef, gamesWithDrops, activePage, setActivePage, currentGame);
+        }
     } catch (error) {
         console.error('Error handling message:', error);
     }
+};
+
+const getGames = () => {
+    const gamesList = sessionStorage.getItem('gamesListCache');
+    const favorites = localStorage.getItem('favorites');
+    const cardFarming = localStorage.getItem('cardFarming');
+    const achievementUnlocker = localStorage.getItem('achievementUnlocker');
+    const autoIdle = localStorage.getItem('autoIdle');
+    sendMessage({ gamesList, favorites, cardFarming, achievementUnlocker, autoIdle });
 };
 
 // Function to send a message through the WebSocket connection

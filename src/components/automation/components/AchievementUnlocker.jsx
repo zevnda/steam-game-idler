@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import StopButton from './StopButton';
 import { Button, Spinner } from '@nextui-org/react';
 import { IoCheckmark } from 'react-icons/io5';
@@ -8,12 +8,9 @@ import { useTheme } from 'next-themes';
 
 export default function AchievementUnlocker() {
     const { theme } = useTheme();
-    const { setActivePage } = useContext(AppContext);
-    const isMountedRef = useRef(true);
-    const abortControllerRef = useRef(new AbortController());
+    const { setActivePage, currentGame, setCurrentGame, isMountedRef, abortControllerRef } = useContext(AppContext);
     const [hasPrivateGames, setHasPrivateGames] = useState(false);
     const [achievementCount, setAchievementCount] = useState(0);
-    const [currentGame, setCurrentGame] = useState('');
     const [gamesWithAchievements, setGamesWithAchievements] = useState(0);
     const [isComplete, setIsComplete] = useState(false);
     const [countdownTimer, setCountdownTimer] = useState('');
@@ -96,7 +93,7 @@ export default function AchievementUnlocker() {
                             )}
 
                             {gamesWithAchievements > 0 ? (
-                                <StopButton isMountedRef={isMountedRef} abortControllerRef={abortControllerRef} screen={'achievement-unlocker'} currentGame={currentGame} />
+                                <StopButton activePage={'achievement-unlocker'} currentGame={currentGame} />
                             ) : (
                                 <React.Fragment>
                                     {!isComplete ? (
