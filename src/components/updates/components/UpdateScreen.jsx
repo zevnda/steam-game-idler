@@ -1,10 +1,11 @@
 import React from 'react';
 import { Progress, Spinner } from '@nextui-org/react';
 import { HiMiniMinus } from 'react-icons/hi2';
-import { BiSolidLeaf, BiWindows } from 'react-icons/bi';
+import { BiWindows } from 'react-icons/bi';
 import { IoClose } from 'react-icons/io5';
 import useUpdateScreen from '../hooks/useUpdateScreen';
 import { windowMinimize, windowToggleMaximize, windowClose } from '../utils/windowHandler';
+import Image from 'next/image';
 
 export default function UpdateScreen({ updateManifest }) {
     const { appWindow, progress, checkForUpdate } = useUpdateScreen(updateManifest);
@@ -13,7 +14,12 @@ export default function UpdateScreen({ updateManifest }) {
         <React.Fragment>
             <div className='flex justify-between items-center w-screen h-[62px] bg-titlebar' data-tauri-drag-region>
                 <div className='flex items-center gap-1 px-2 bg-titlebar h-full w-[62px]'>
-                    <BiSolidLeaf className='text-offwhite' fontSize={40} />
+                    <Image
+                        src={'/logo.png'}
+                        width={40}
+                        height={40}
+                        alt='logo'
+                    />
                 </div>
                 <div className='flex justify-center items-center h-full ml-2'>
                     <div className='flex justify-center items-center hover:bg-titlehover w-[32px] h-full cursor-pointer' onClick={() => windowMinimize(appWindow)}>

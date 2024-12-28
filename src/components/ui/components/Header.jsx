@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 import ThemeSwitch from './theme/ThemeSwitch';
 import { Divider, Input } from '@nextui-org/react';
-import { BiSolidLeaf } from 'react-icons/bi';
 import { HiMiniMinus } from 'react-icons/hi2';
 import { BiWindows } from 'react-icons/bi';
 import { IoClose } from 'react-icons/io5';
@@ -9,6 +8,7 @@ import { RiSearchLine } from 'react-icons/ri';
 import useHeader from '../hooks/useHeader';
 import Notifications from '../../notifications/components/Notifications';
 import { AppContext } from '../../layout/components/AppContext';
+import Image from 'next/image';
 
 export default function Header() {
     const { activePage, showAchievements, gameQueryValue, setGameQueryValue, achievementQueryValue, setAchievementQueryValue, achievementsUnavailable, currentTab } = useContext(AppContext);
@@ -24,14 +24,19 @@ export default function Header() {
 
     return (
         <React.Fragment>
-            <div className='relative w-full h-[62px] bg-titlebar select-none z-[999]'>
+            <div className='relative w-full h-[62px] bg-titlebar select-none z-10'>
                 <div className='flex justify-between items-center h-full text-titletext'>
                     <div className='flex justify-center items-center gap-1 px-2 bg-sidebar h-full w-[62px] dark:border-r border-b border-border'>
-                        <BiSolidLeaf className='text-offwhite' fontSize={40} />
+                        <Image
+                            src={'/logo.png'}
+                            width={40}
+                            height={40}
+                            alt='logo'
+                        />
                     </div>
 
                     <div className='flex justify-center items-center flex-grow h-full border-b border-border'>
-                        <div className='flex flex-grow p-4' data-tauri-drag-region>
+                        <div className='flex items-center flex-grow p-4 h-full' data-tauri-drag-region>
                             {activePage === 'games' && !showAchievements && (
                                 <Input
                                     isClearable

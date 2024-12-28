@@ -1,4 +1,6 @@
-﻿namespace SteamUtility
+﻿using System;
+
+namespace SteamUtility
 {
     partial class FormIdler
     {
@@ -38,7 +40,7 @@
             this.ClientSize = new System.Drawing.Size(291, 136);
             this.Controls.Add(this.appHeader);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = new System.Drawing.Icon(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "icon.ico"));
             this.MaximizeBox = false;
             this.Name = "FormIdler";
             this.Load += new System.EventHandler(this.FormIdler_Load);
