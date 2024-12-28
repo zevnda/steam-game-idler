@@ -10,7 +10,9 @@
 </p>
 </div>
 <div align="center" style="margin-top: 10px;">
-  <img src="./public/example.png" width='700' alt='Click for larger image' />
+  <img src="./public/example_one.png" width='700' alt='Click for larger image' />
+  <br>
+  <sub><a href="https://github.com/zevnda/steam-game-idler/tree/main/public">view more examples</a></sub>
 </div>
 
 # Download
