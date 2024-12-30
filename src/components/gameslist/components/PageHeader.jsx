@@ -74,7 +74,7 @@ export default function PageHeader({ sortStyle, setSortStyle, filteredGames, vis
                             value: ['text-sm'],
                             trigger: ['bg-titlebar border border-border data-[hover=true]:!bg-inputborder data-[open=true]:!bg-titlebar duration-100 rounded'],
                             popoverContent: ['bg-base border border-border rounded justify-start'],
-                            listboxWrapper: ['min-h-[268px]']
+                            listboxWrapper: ['min-h-[305px]']
                         }}
                     >
                         {(item) => <SelectItem classNames={{ title: ['text-sm'], base: ['rounded'] }}>{item.label}</SelectItem>}

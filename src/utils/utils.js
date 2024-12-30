@@ -118,7 +118,6 @@ export async function stopIdler(appId, appName) {
         logEvent(`[Idling] Stopped ${appName} (${appId})`);
     } catch (error) {
         console.error('Error in stopIdler util: ', error);
-        logEvent(`[Error] in (stopIdler) util: ${error}`);
     }
 };
 

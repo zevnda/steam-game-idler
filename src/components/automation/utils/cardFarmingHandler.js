@@ -31,10 +31,15 @@ export const farmCards = async (gamesSet, setCountdownTimer, isMountedRef, abort
 
 // Function for farming a game's cards
 const farmGame = async (game, setCountdownTimer, isMountedRef, abortControllerRef) => {
-    const farmingInterval = 60000 * 30;
-    const shortDelay = 15000;
-    const mediumDelay = 60000;
-    const longDelay = 60000 * 5;
+    // const farmingInterval = 60000 * 30;
+    // const shortDelay = 15000;
+    // const mediumDelay = 60000;
+    // const longDelay = 60000 * 5;
+
+    const farmingInterval = 20000;
+    const shortDelay = 5000;
+    const mediumDelay = 10000;
+    const longDelay = 15000;
 
     try {
         await startAndStopIdler(game.appId, game.name, longDelay, setCountdownTimer, isMountedRef, abortControllerRef);
@@ -92,21 +97,26 @@ const delayAndCountdown = async (ms, setCountdownTimer, isMountedRef, abortContr
 };
 
 // Start countdown timer
+let isTimerSet = false;
 const startCountdown = (durationInMinutes, setCountdownTimer) => {
-    const durationInMilliseconds = durationInMinutes * 60000;
-    let remainingTime = durationInMilliseconds;
+    if (!isTimerSet) {
+        console.log('fuckkyyy');
+        const durationInMilliseconds = durationInMinutes * 60000;
+        let remainingTime = durationInMilliseconds;
 
-    const intervalId = setInterval(() => {
-        if (remainingTime <= 0) {
-            clearInterval(intervalId);
-            return;
-        }
+        const intervalId = setInterval(() => {
+            if (remainingTime <= 0) {
+                clearInterval(intervalId);
+                isTimerSet = false;
+                return;
+            }
 
-        setCountdownTimer(formatTime(remainingTime));
-        remainingTime -= 1000;
-    }, 1000);
+            isTimerSet = true;
+            setCountdownTimer(formatTime(remainingTime));
+            remainingTime -= 1000;
+        }, 1000);
+    }
 };
-
 // Remove game from farming list
 const removeGameFromFarmingList = (gameId) => {
     try {
