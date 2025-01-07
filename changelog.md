@@ -1,4 +1,4 @@
-[![Downloads](https://img.shields.io/github/downloads/zevnda/steam-game-idler/1.6.3/total?style=for-the-badge&logo=github&color=137eb5)](https://github.com/zevnda/steam-game-idler/releases/download/1.6.3/Steam.Game.Idler_1.6.3_x64_en-US.msi)
+[![Downloads](https://img.shields.io/github/downloads/zevnda/steam-game-idler/1.6.4/total?style=for-the-badge&logo=github&color=137eb5)](https://github.com/zevnda/steam-game-idler/releases/download/1.6.4/Steam.Game.Idler_1.6.4_x64_en-US.msi)
 
 ## Changelog
 - Fixed an issue causing the `notifications` panel to be hidden by the `games list` page header
