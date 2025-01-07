@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '@nextui-org/react';
-import { FaBackwardStep, FaForwardStep } from "react-icons/fa6";
+import { FaBackwardStep, FaForwardStep } from 'react-icons/fa6';
 import ExtLink from './ExtLink';
 
 export default function TutorialOverlay({ onClose }) {
