@@ -1,7 +1,7 @@
 <div align="center">
   <img src="./public/logo.png" width='80' alt='Click for larger image' />
   <h1>Steam Game Idler</h1>
-  <p>A lightweight, user-friendly Steam tool for farming trading cards, unlocking achievements and boosting your playtime.</p>
+  <p>A lightweight, user-friendly tool for farming trading cards, unlocking achievements and boosting playtime for all games in your Steam library.</p>
 <p>
   <img src="https://img.shields.io/github/downloads/zevnda/steam-game-idler/total?style=for-the-badge&color=137eb5" alt="Downloads" />
   <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapibase.vercel.app%2Fapi%2FgetStatistics&query=%24.launched&style=for-the-badge&label=app launches&color=137eb5" alt="launched" />
