@@ -24,8 +24,8 @@ export default function AchievementUnlocker() {
     useEffect(() => {
         setVideoSrc(
             theme === 'dark'
-                ? '/automation_bg_dark.mp4'
-                : '/automation_bg_light.mp4'
+                ? 'https://cdn.pixabay.com/video/2017/12/20/13495-248644905_large.mp4'
+                : 'https://cdn.pixabay.com/video/2020/07/30/45961-447087612_large.mp4'
         );
     }, [theme]);
 
@@ -56,13 +56,14 @@ export default function AchievementUnlocker() {
         <React.Fragment>
             <div className='relative flex justify-evenly items-center flex-col p-4 w-full h-calc'>
                 <video
-                    className='absolute top-0 left-0 w-full h-full object-cover blur-2xl'
+                    className='absolute top-0 left-0 w-full h-full object-cover'
                     src={videoSrc}
                     autoPlay
                     loop
                     muted
                 />
-                <div className='flex items-center flex-col z-10 bg-base bg-opacity-70 p-8 border border-border rounded-md '>
+                <div className='absolute bg-base/10 backdrop-blur-[3px] w-full h-full'></div>
+                <div className='flex items-center flex-col z-10 backdrop-blur-md bg-base/20 p-8 border border-border rounded-md '>
                     <p className='text-3xl font-semibold mb-2'>
                         Achievement Unlocker
                     </p>

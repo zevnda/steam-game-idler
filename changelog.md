@@ -3,3 +3,4 @@
 ## Changelog
 - Reverted changes made in `1.6.4` to the `card farming` and `achievement unlocker` as they proved not to be the issue
 - Updated existing wiki links to point to the new docs site at https://steamgameidler.vercel.app/
+- Updated background videos

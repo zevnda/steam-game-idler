@@ -16,8 +16,8 @@ export default function Setup() {
     useEffect(() => {
         setVideoSrc(
             theme === 'dark'
-                ? '/automation_bg_dark.mp4'
-                : '/automation_bg_light.mp4'
+                ? 'https://cdn.pixabay.com/video/2017/12/20/13495-248644905_large.mp4'
+                : 'https://cdn.pixabay.com/video/2020/07/30/45961-447087612_large.mp4'
         );
     }, [theme]);
 
@@ -26,17 +26,18 @@ export default function Setup() {
             <TitleBar />
             <div className='relative w-full bg-base'>
                 <video
-                    className='absolute top-0 left-0 w-full h-full object-cover blur-2xl'
+                    className='absolute top-0 left-0 w-full h-full object-cover'
                     src={videoSrc}
                     autoPlay
                     loop
                     muted
                 />
+                <div className='absolute bg-base/10 backdrop-blur-[3px] w-full h-full'></div>
                 <div className='relative flex justify-center items-center flex-col gap-5 w-full h-svh'>
                     <motion.div
-                        className='flex bg-base bg-opacity-70 justify-center items-center flex-col border border-border min-w-[400px] max-w-[400px] rounded-lg shadow-soft-lg dark:shadow-none'
+                        className='flex backdrop-blur-md bg-base/20 justify-center items-center flex-col border border-border min-w-[400px] max-w-[400px] rounded-lg shadow-soft-lg dark:shadow-none'
                         initial={{ y: 500 }}
-                        animate={{ y: 0 }}
+                        animate={{ y: 15 }}
                         transition={{
                             type: 'spring',
                             stiffness: 260,
