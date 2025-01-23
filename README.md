@@ -1,7 +1,7 @@
 <div align="center">
   <img src="./public/logo.png" width='80' alt='Click for larger image' />
   <h1>Steam Game Idler</h1>
-  <p>Farm trading cards, unlock achievements, and boost playtime for any game in your Steam library, effortlessly.</p>
+  <p>A lightweight, user-friendly Steam tool for farming trading cards, unlocking achievements and boosting your playtime.</p>
 <p>
   <img src="https://img.shields.io/github/downloads/zevnda/steam-game-idler/total?style=for-the-badge&color=137eb5" alt="Downloads" />
   <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapibase.vercel.app%2Fapi%2FgetStatistics&query=%24.launched&style=for-the-badge&label=app launches&color=137eb5" alt="launched" />
@@ -15,23 +15,22 @@
   <sub><a href="https://github.com/zevnda/steam-game-idler/tree/main/public">view more examples</a></sub>
 </div>
 
-# Download
-### Windows
-Download the `.msi` installer from the [releases page](https://github.com/zevnda/steam-game-idler/releases)<br/>
-
-### Cross-platform
-A less feature-packed cross-platform version that supports `windows`, `linux`, and `macos` can be downloaded from the [cli + web ui branch](https://github.com/zevnda/steam-game-idler/tree/cli-webui)
+# Installation
+1. Download the `.msi` installer from the [latest release](https://github.com/zevnda/steam-game-idler/releases/latest) page
+2. Run the `.msi` installer and follow the steps of the installation guide
+3. Run the installed `.exe`
 
 # Build It Yourself
-Check the [build it yourself](https://steamgameidler.vercel.app/build-it-yourself) docs for a step-by-step guide
+Follow the steps at [build it yourself](https://steamgameidler.vercel.app/build-it-yourself)
 
 # Features
-- **Achievement Manager**: Manually unlock and lock any achievement for any game
-- **Card Farming**: Farm trading cards that can be sold for a profit, or to craft badges
-- **Auto Achievement Unlocker**: Unlock achievements automatically with human-like settings
-- **Playtime Booster**: Boost any game's total playtime by manually idling them
-- **Fully Open Source**: So you know exactly what you are downloading and running on your system is safe to use
-- **Actively Maintained**: This means bug fixes and new features are being rolled out frequently
+* **Card Farming**: Farm trading cards that can be sold for a profit, or to craft badges
+* **Achievement Unlocker**: Automatically unlock achievements with human-like settings
+* **Playtime Booster**: Boost any game's total playtime by manually idling them
+* **Achievement Manager**: Manually unlock and lock any achievement for any game
+* **Auto Game Idler**: Automatically idle chosen games when SGI launches
+* **Fully Open Source**: So you know what you are downloading and running is safe to use
+* **Actively Maintained**: New features and bug fixes are being rolled out frequently
 
 # Usage
 Check the [official docs](https://steamgameidler.vercel.app/) for an in-depth guide
