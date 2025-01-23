@@ -84,7 +84,7 @@ export default function CardSettings({ settings, setSettings }) {
 
                 <div className='w-full'>
                     <p className='text-xs my-2'>
-                        Steam credentials are required in order to use the Card Farming feature. <ExtLink href={'https://github.com/zevnda/steam-game-idler/wiki/steam-credentials'} className='text-link hover:text-linkhover'>Learn more</ExtLink>
+                        Steam credentials are required in order to use the Card Farming feature. <ExtLink href={'https://steamgameidler.vercel.app/steam-credentials'} className='text-link hover:text-linkhover'>Learn more</ExtLink>
                     </p>
                     <div className='flex flex-col mt-4'>
                         <div className='flex flex-col gap-2'>

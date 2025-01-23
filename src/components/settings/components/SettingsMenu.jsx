@@ -21,7 +21,7 @@ export default function SettingsMenu({ setInitUpdate, setUpdateManifest }) {
                 </DropdownTrigger>
                 <DropdownMenu aria-label='Settings actions'>
                     <DropdownItem key='help' className='rounded p-0 m-0' textValue='Help'>
-                        <ExtLink href={'https://github.com/zevnda/steam-game-idler/wiki'} className='flex text-sm w-full px-2 py-1'>
+                        <ExtLink href={'https://steamgameidler.vercel.app/'} className='flex text-sm w-full px-2 py-1'>
                             Help
                         </ExtLink>
                     </DropdownItem>

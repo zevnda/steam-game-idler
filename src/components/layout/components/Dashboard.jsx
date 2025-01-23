@@ -9,32 +9,17 @@ import { antiAwayStatus } from '@/src/utils/utils';
 import FreeGamesList from '../../gameslist/components/FreeGamesList';
 import GamesList from '../../gameslist/components/GamesList';
 import Settings from '../../settings/components/Settings';
-// import TutorialOverlay from '../../ui/components/TutorialOverlay';
 
 export default function Dashboard({ setInitUpdate, setUpdateManifest }) {
     const { activePage, showAchievements } = useContext(AppContext);
-    // const [showTutorial, setShowTutorial] = useState(false);
-
-    // useEffect(() => {
-    //     const tutorialShown = localStorage.getItem('tutorialShown');
-    //     if (!tutorialShown) {
-    //         setShowTutorial(true);
-    //         localStorage.setItem('tutorialShown', 'true');
-    //     }
-    // }, []);
 
     useEffect(() => {
         antiAwayStatus();
     }, []);
 
-    // const handleCloseTutorial = () => {
-    //     setShowTutorial(false);
-    // };
-
     return (
         <React.Fragment>
             <Header />
-            {/* {showTutorial && <TutorialOverlay onClose={handleCloseTutorial} />} */}
             <div className='flex w-full'>
                 {showAchievements ? (
                     <Achievements />

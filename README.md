@@ -23,7 +23,7 @@ Download the `.msi` installer from the [releases page](https://github.com/zevnda
 A less feature-packed cross-platform version that supports `windows`, `linux`, and `macos` can be downloaded from the [cli + web ui branch](https://github.com/zevnda/steam-game-idler/tree/cli-webui)
 
 # Build It Yourself
-Check the [build it yourself](https://github.com/zevnda/steam-game-idler/wiki/Build-it-yourself) wiki section for a step-by-step guide
+Check the [build it yourself](https://steamgameidler.vercel.app/build-it-yourself) docs for a step-by-step guide
 
 # Features
 - **Achievement Manager**: Manually unlock and lock any achievement for any game
@@ -34,7 +34,7 @@ Check the [build it yourself](https://github.com/zevnda/steam-game-idler/wiki/Bu
 - **Actively Maintained**: This means bug fixes and new features are being rolled out frequently
 
 # Usage
-Check the [Wiki page](https://github.com/zevnda/steam-game-idler/wiki) for an in-depth guide
+Check the [official docs](https://steamgameidler.vercel.app/) for an in-depth guide
 
 # License
 All versions of SGI are licensed under the **[GPL-3.0 License](./LICENSE)**

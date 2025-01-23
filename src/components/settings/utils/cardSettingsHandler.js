@@ -49,7 +49,7 @@ export const handleSave = async (sidValue, slsValue, smaValue, setHasCookies, us
                     return toast.error(
                         <ErrorToast
                             message={'[Card Farming] Account mismatch between Steam and SGI'}
-                            href={'https://github.com/zevnda/steam-game-idler/wiki/FAQ#error-messages:~:text=Account%20mismatch%20between%20Steam%20and%20SGI'}
+                            href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Account%20mismatch%20between%20Steam%20and%20SGI'}
                         />
                     );
                 }
@@ -66,7 +66,7 @@ export const handleSave = async (sidValue, slsValue, smaValue, setHasCookies, us
                 toast.error(
                     <ErrorToast
                         message={'[Card Farming] Incorrect card farming credentials'}
-                        href={'https://github.com/zevnda/steam-game-idler/wiki/FAQ#error-messages:~:text=Incorrect%20card%20farming%20credentials'}
+                        href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Incorrect%20card%20farming%20credentials'}
                     />
                 );
                 logEvent('[Error] [Settings - Card Farming] Incorrect card farming credentials');

@@ -82,7 +82,7 @@ export async function startIdler(appId, appName, quiet = false, manual = true) {
                 toast.error(
                     <ErrorToast
                         message={'Are you logged in to the correct account?'}
-                        href={'https://github.com/zevnda/steam-game-idler/wiki/faq#error-messages:~:text=Are%20you%20logged%20in%20to%20the%20correct%20account%3F'}
+                        href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Are%20you%20logged%20in%20to%20the%20correct%20account%3F'}
                     />,
                     { autoClose: 5000 }
                 );
@@ -93,7 +93,7 @@ export async function startIdler(appId, appName, quiet = false, manual = true) {
             toast.error(
                 <ErrorToast
                     message={'Steam is not running'}
-                    href={'https://github.com/zevnda/steam-game-idler/wiki/faq#error-messages:~:text=Steam%20is%20not%20running'}
+                    href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Steam%20is%20not%20running'}
                 />
             );
         }
@@ -141,7 +141,7 @@ export async function toggleAchievement(appId, appName, achievementName, type) {
                 toast.error(
                     <ErrorToast
                         message={'Are you logged in to the correct account?'}
-                        href={'https://github.com/zevnda/steam-game-idler/wiki/faq#error-messages:~:text=Are%20you%20logged%20in%20to%20the%20correct%20account%3F'}
+                        href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Are%20you%20logged%20in%20to%20the%20correct%20account%3F'}
                     />,
                     { autoClose: 5000 }
                 );
@@ -154,7 +154,7 @@ export async function toggleAchievement(appId, appName, achievementName, type) {
             toast.error(
                 <ErrorToast
                     message={'Steam is not running'}
-                    href={'https://github.com/zevnda/steam-game-idler/wiki/faq#error-messages:~:text=Steam%20is%20not%20running'}
+                    href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Steam%20is%20not%20running'}
                 />
             );
         }

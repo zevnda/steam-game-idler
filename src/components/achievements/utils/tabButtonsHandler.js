@@ -13,7 +13,7 @@ export const handleUnlockAll = async (appId, appName, achievementList, setBtnLoa
             return toast.error(
                 <ErrorToast
                     message={'Steam is not running'}
-                    href={'https://github.com/zevnda/steam-game-idler/wiki/faq#error-messages:~:text=Steam%20is%20not%20running'}
+                    href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Steam%20is%20not%20running'}
                 />
             );
         }
@@ -42,7 +42,7 @@ export const handleUnlockAll = async (appId, appName, achievementList, setBtnLoa
                 toast.update(toastId, {
                     render: <ErrorToast
                         message={'Are you logged in to the correct account?'}
-                        href={'https://github.com/zevnda/steam-game-idler/wiki/faq#error-messages:~:text=Are%20you%20logged%20in%20to%20the%20correct%20account%3F'}
+                        href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Are%20you%20logged%20in%20to%20the%20correct%20account%3F'}
                     />,
                     isLoading: false,
                     autoClose: 5000,
@@ -78,7 +78,7 @@ export const handleLockAll = async (appId, appName, achievementList, setBtnLoadi
             return toast.error(
                 <ErrorToast
                     message={'Steam is not running'}
-                    href={'https://github.com/zevnda/steam-game-idler/wiki/faq#error-messages:~:text=Steam%20is%20not%20running'}
+                    href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Steam%20is%20not%20running'}
                 />
             );
         }
@@ -107,7 +107,7 @@ export const handleLockAll = async (appId, appName, achievementList, setBtnLoadi
                 toast.update(toastId, {
                     render: <ErrorToast
                         message={'Are you logged in to the correct account?'}
-                        href={'https://github.com/zevnda/steam-game-idler/wiki/faq#error-messages:~:text=Are%20you%20logged%20in%20to%20the%20correct%20account%3F'}
+                        href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Are%20you%20logged%20in%20to%20the%20correct%20account%3F'}
                     />,
                     autoClose: 5000,
                     isLoading: false,
@@ -150,7 +150,7 @@ export const handleUpdateAll = async (appId, appName, initialStatValues, newStat
         return toast.error(
             <ErrorToast
                 message={'Steam is not running'}
-                href={'https://github.com/zevnda/steam-game-idler/wiki/faq#error-messages:~:text=Steam%20is%20not%20running'}
+                href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Steam%20is%20not%20running'}
             />
         );
     }
@@ -178,7 +178,7 @@ export const handleUpdateAll = async (appId, appName, initialStatValues, newStat
                 toast.update(toastId, {
                     render: <ErrorToast
                         message={'Are you logged in to the correct account?'}
-                        href={'https://github.com/zevnda/steam-game-idler/wiki/faq#error-messages:~:text=Are%20you%20logged%20in%20to%20the%20correct%20account%3F'}
+                        href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Are%20you%20logged%20in%20to%20the%20correct%20account%3F'}
                     />,
                     autoClose: 5000,
                     isLoading: false,
@@ -225,7 +225,7 @@ export const handleResetAll = async (appId, setBtnLoading, setNewStatValues, onC
         toast.error(
             <ErrorToast
                 message={'Are you logged in to the correct account?'}
-                href={'https://github.com/zevnda/steam-game-idler/wiki/faq#error-messages:~:text=Are%20you%20logged%20in%20to%20the%20correct%20account%3F'}
+                href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Are%20you%20logged%20in%20to%20the%20correct%20account%3F'}
             />,
             { autoClose: 5000 }
         );

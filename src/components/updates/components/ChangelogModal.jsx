@@ -41,7 +41,7 @@ export default function ChangelogModal({ showChangelogModal, setShowChangelogMod
                         </ModalBody>
                         <ModalFooter className='bg-modalfooter border-t border-border'>
                             <div className='flex justify-center items-center gap-4'>
-                                <ExtLink href={`https://github.com/zevnda/steam-game-idler/releases/tag/${version}`}>
+                                <ExtLink href='https://github.com/zevnda/steam-game-idler/releases/latest'>
                                     <p className='text-xs cursor-pointer'>
                                         View on GitHub
                                     </p>

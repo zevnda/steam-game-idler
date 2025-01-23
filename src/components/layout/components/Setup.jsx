@@ -90,7 +90,7 @@ export default function Setup() {
                                     <p className='text-xs'>
                                         No Steam users found
                                     </p>
-                                    <ExtLink href={'https://github.com/zevnda/steam-game-idler/wiki/FAQ#error-messages:~:text=No%20Steam%20users%20found'}>
+                                    <ExtLink href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=No%20Steam%20users%20found'}>
                                         <p className='text-xs text-link hover:text-linkhover'>
                                             Learn why
                                         </p>
@@ -100,7 +100,7 @@ export default function Setup() {
                         </div>
 
                         <div className='flex justify-center items-center p-6 w-full border-t border-border rounded-br-lg rounded-bl-lg mt-8'>
-                            <ExtLink href={'https://github.com/zevnda/steam-game-idler/wiki/User-interface#welcome-screen'}>
+                            <ExtLink href={'https://steamgameidler.vercel.app/how-to-sign-in'}>
                                 <p className='text-xs text-link hover:text-linkhover cursor-pointer'>
                                     Need help?
                                 </p>
