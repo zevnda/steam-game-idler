@@ -31,15 +31,10 @@ export const farmCards = async (gamesSet, setCountdownTimer, isMountedRef, abort
 
 // Function for farming a game's cards
 const farmGame = async (game, setCountdownTimer, isMountedRef, abortControllerRef) => {
-    // const farmingInterval = 60000 * 30;
-    // const shortDelay = 15000;
-    // const mediumDelay = 60000;
-    // const longDelay = 60000 * 5;
-
-    const farmingInterval = 20000;
-    const shortDelay = 5000;
-    const mediumDelay = 10000;
-    const longDelay = 15000;
+    const farmingInterval = 60000 * 30;
+    const shortDelay = 15000;
+    const mediumDelay = 60000;
+    const longDelay = 60000 * 5;
 
     try {
         await startAndStopIdler(game.appId, game.name, longDelay, setCountdownTimer, isMountedRef, abortControllerRef);
