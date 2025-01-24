@@ -5,6 +5,7 @@ import { IoCheckmark } from 'react-icons/io5';
 import { startAchievementUnlocker, handleCancel } from '@/src/components/automation/utils/achievementUnlockerHandler';
 import { AppContext } from '../../layout/components/AppContext';
 import { useTheme } from 'next-themes';
+import ExtLink from '../../ui/components/ExtLink';
 
 export default function AchievementUnlocker() {
     const { theme } = useTheme();
@@ -69,9 +70,10 @@ export default function AchievementUnlocker() {
                     </p>
                     {hasPrivateGames ? (
                         <div className='flex flex-col items-center gap-2 text-sm'>
-                            <p>Your games list must be set to <span className='font-bold'>public</span> in order for Achievement Unlocker to work</p>
-                            <p>To change your privacy settings go to <span className='font-bold'>Steam &gt; Profile &gt; Edit Profile &gt; Privacy Settings &gt; Game Details &gt; Public</span></p>
-                            <p>It may take up to 5 minutes for the changes to be applied</p>
+                            <div className='flex flex-col items-center gap-2 text-sm my-6'>
+                                <p>Change your privacy settings for <strong>my profile</strong> and <strong>game details</strong> to <strong>public</strong></p>
+                                <ExtLink href={'https://steamcommunity.com/id/undefined/edit/settings'} className='text-link hover:text-linkhover'>Change your privacy settings</ExtLink>
+                            </div>
 
                             <Button
                                 size='sm'

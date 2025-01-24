@@ -66,8 +66,10 @@ const fetchAchievements = async (gameData, settings, setCurrentGame, setHasPriva
         const gameAchievements = res?.percentages?.achievementpercentages?.achievements;
         const gameSchema = res?.schema?.game;
 
+        console.log(userAchievements);
+
         // Handle private games
-        if (!userAchievements) {
+        if (userAchievements.error) {
             setHasPrivateGames(true);
             return { achievements: [], game };
         }
