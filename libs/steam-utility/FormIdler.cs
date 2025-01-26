@@ -14,11 +14,20 @@ namespace SteamUtility
         private DateTime startTime;
         private Timer timer;
         private string appName;
+        private bool quiet;
 
-        public FormIdler(long appid)
+        public FormIdler(long appid, bool quiet)
         {
             this.appid = appid;
+            this.quiet = quiet;
             InitializeComponent();
+
+            if (quiet)
+            {
+                this.WindowState = FormWindowState.Minimized;
+                this.Opacity = 0;
+            }
+
             appHeader.Load(
                 $"https://cdn.akamai.steamstatic.com/steam/apps/{appid}/header_292x136.jpg"
             );
@@ -33,6 +42,11 @@ namespace SteamUtility
         private async void FormIdler_Load(object sender, EventArgs e)
         {
             await GetAppName(appid);
+            if (quiet)
+            {
+                await Task.Delay(2000);
+                this.ShowInTaskbar = false;
+            }
         }
 
         private void Timer_Tick(object sender, EventArgs e)

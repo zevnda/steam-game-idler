@@ -9,6 +9,8 @@
     --a-hover: #000;
     --percent: #eeeeee;
     --code: #e9e9e9;
+    --borderMax: #1899da;
+    --borderMin: #137eb560;
 }
 
 .dark {
@@ -18,6 +20,8 @@
     --a-hover: #fff;
     --percent: #1c1c1c;
     --code: #2d2d2d;
+    --borderMax: #fff;
+    --borderMin: #ffffff60;
 }
 
 ::-webkit-scrollbar {
@@ -55,3 +59,19 @@ html {
 body {
     overflow: hidden;
 }
+
+@keyframes pulse-border {
+    0% {
+      border-color: var(--borderMin);
+    }
+    50% {
+      border-color: var(--borderMax);
+    }
+    100% {
+      border-color: var(--borderMin);
+    }
+  }
+  
+  .pulse-border {
+    animation: pulse-border 1.5s infinite;
+  }

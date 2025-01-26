@@ -45,29 +45,10 @@ namespace SteamUtility.Commands
             // Determine if quiet mode is enabled
             bool quietMode = args[2].ToLower() == "true";
 
-            if (!quietMode)
-            {
-                // Run the FormIdler if not in quiet mode
-                Application.EnableVisualStyles();
-                Application.SetCompatibleTextRenderingDefault(false);
-                Application.Run(new FormIdler(appId));
-            }
-            else
-            {
-                // Run in quiet mode, periodically checking if the process is still running
-                while (true)
-                {
-                    SteamAPI.RunCallbacks();
-
-                    if (!IsProcessRunning("Steam Game Idler"))
-                    {
-                        Console.WriteLine("Steam Game Idler.exe process not found. Exiting.");
-                        break;
-                    }
-
-                    Thread.Sleep(5000);
-                }
-            }
+            // Run the FormIdler if not in quiet mode
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new FormIdler(appId, quietMode));
 
             // Shutdown the Steam API
             SteamAPI.Shutdown();

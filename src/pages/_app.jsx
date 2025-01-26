@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import { ThemeProvider } from '@/src/components/ui/components/theme/theme-provider';
-import { NextUIProvider } from '@nextui-org/react';
+import { ThemeProvider } from '@/src/components/ui/theme/theme-provider';
+import { HeroUIProvider } from '@heroui/react';
 import { setupAppWindow } from '@/src/utils/myAppHandler';
 import '../styles/globals.css';
 
@@ -17,9 +17,9 @@ export default function MyApp({ Component, pageProps }) {
             defaultTheme='system'
             disableTransitionOnChange
         >
-            <NextUIProvider>
+            <HeroUIProvider>
                 <Component {...pageProps} />
-            </NextUIProvider>
+            </HeroUIProvider>
         </ThemeProvider>
     );
 }

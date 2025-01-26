@@ -1,11 +1,12 @@
-import moment from 'moment';
+import axios from 'axios';
+import { Time } from '@internationalized/date';
+import { toast } from 'react-toastify';
+
+import { isPermissionGranted, requestPermission, sendNotification } from '@tauri-apps/api/notification';
 import { invoke } from '@tauri-apps/api/tauri';
 import { getVersion } from '@tauri-apps/api/app';
-import { Time } from '@internationalized/date';
-import { isPermissionGranted, requestPermission, sendNotification } from '@tauri-apps/api/notification';
-import axios from 'axios';
-import { toast } from 'react-toastify';
-import ErrorToast from '../components/ui/components/ErrorToast';
+
+import ErrorToast from '@/src/components/ui/ErrorToast';
 
 const idleTimeouts = {};
 const idleIntervals = {};
@@ -34,7 +35,7 @@ export async function getFilePath() {
 }
 
 // Start idling a game
-export async function startIdler(appId, appName, quiet = false, manual = true) {
+export async function startIdler(appId, appName, quiet = false, manual = true, setCurrentIdleList) {
     try {
         const settings = JSON.parse(localStorage.getItem('settings')) || {};
         const gameSettings = JSON.parse(localStorage.getItem('gameSettings')) || {};
@@ -55,6 +56,13 @@ export async function startIdler(appId, appName, quiet = false, manual = true) {
                 appId: appId.toString(),
                 quiet: stealthIdle ? stealthIdle.toString() : quiet.toString()
             });
+
+            setCurrentIdleList((prev) => [...prev, appId.toString()]);
+
+            // Wait for the idler to start before checking the process, used for quiet mode
+            setTimeout(async () => {
+                await invoke('check_process_by_game_id', { ids: [appId.toString()] });
+            }, 1000);
 
             const status = JSON.parse(response);
             if (!status.error) {
@@ -117,7 +125,7 @@ export async function stopIdler(appId, appName) {
         await invoke('stop_idle', { appId: appId.toString() });
         logEvent(`[Idling] Stopped ${appName} (${appId})`);
     } catch (error) {
-        console.error('Error in stopIdler util: ', error);
+        console.error('Error in stopIdler util (these errors can often be ignored): ', error);
     }
 };
 
@@ -426,14 +434,6 @@ export function debounce(func, wait) {
         clearTimeout(timeout);
         timeout = setTimeout(later, wait);
     };
-}
-
-// Convert minutes to hours in a compact format
-export function minutesToHoursCompact(number) {
-    const durationInMinutes = number;
-    const duration = moment.duration(durationInMinutes, 'minutes');
-    const hours = Math.floor(duration.asHours());
-    return hours;
 }
 
 // Format time in HH:MM:SS format
