@@ -20,7 +20,7 @@ export default function AutoIdleList() {
 
     const handleDragEnd = (event) => {
         const { active, over } = event;
-        if (active.id !== over.id) {
+        if (over && active.id !== over.id) {
             setList((items) => {
                 const oldIndex = items.findIndex(item => item.appid === active.id);
                 const newIndex = items.findIndex(item => item.appid === over.id);
@@ -49,16 +49,6 @@ export default function AutoIdleList() {
                             size='sm'
                             color='primary'
                             className='rounded-full font-semibold'
-                            startContent={<FaAward fontSize={18} />}
-                            isDisabled={autoIdleList.length < 1}
-                            onPress={startAchievementUnlocker}
-                        >
-                            Start Achievement Unlocker
-                        </Button>
-                        <Button
-                            size='sm'
-                            color='primary'
-                            className='rounded-full font-semibold'
                             startContent={<MdEdit fontSize={20} />}
                             onPress={onOpen}
                         >
@@ -69,7 +59,7 @@ export default function AutoIdleList() {
 
                 <DndContext onDragEnd={handleDragEnd}>
                     <SortableContext items={autoIdleList.map(item => item.appid)}>
-                        <div className='flex flex-wrap justify-start w-full gap-4 p-4 mt-[52px]'>
+                        <div className='grid grid-cols-5 2xl:grid-cols-7 gap-4 p-4 mt-[52px]'>
                             {autoIdleList && autoIdleList.slice(0, visibleGames).map((item) => (
                                 <SortableGameCard
                                     key={item.appid}

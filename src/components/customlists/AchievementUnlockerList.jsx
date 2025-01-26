@@ -20,7 +20,7 @@ export default function AchievementUnlockerList() {
 
     const handleDragEnd = (event) => {
         const { active, over } = event;
-        if (active.id !== over.id) {
+        if (over && active.id !== over.id) {
             setList((items) => {
                 const oldIndex = items.findIndex(item => item.appid === active.id);
                 const newIndex = items.findIndex(item => item.appid === over.id);
@@ -69,7 +69,7 @@ export default function AchievementUnlockerList() {
 
                 <DndContext onDragEnd={handleDragEnd}>
                     <SortableContext items={achievementUnlockerList.map(item => item.appid)}>
-                        <div className='flex flex-wrap justify-start w-full gap-4 p-4 mt-[52px]'>
+                        <div className='grid grid-cols-5 2xl:grid-cols-7 gap-4 p-4 mt-[52px]'>
                             {achievementUnlockerList && achievementUnlockerList.slice(0, visibleGames).map((item) => (
                                 <SortableGameCard
                                     key={item.appid}

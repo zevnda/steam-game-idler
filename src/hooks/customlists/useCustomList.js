@@ -2,7 +2,7 @@ import { useContext, useState, useRef, useEffect } from 'react';
 import { AppContext } from '@/src/components/layout/AppContext';
 
 export default function useCustomList(listName) {
-    const { gameList } = useContext(AppContext);
+    const { gameList, isAchievementUnlocker, isCardFarming } = useContext(AppContext);
     const [list, setList] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [visibleGames, setVisibleGames] = useState(50);
@@ -48,7 +48,7 @@ export default function useCustomList(listName) {
     useEffect(() => {
         const cachedList = JSON.parse(localStorage.getItem(`${listName}Cache`)) || [];
         setList(cachedList);
-    }, []);
+    }, [isAchievementUnlocker, isCardFarming]);
 
     useEffect(() => {
         setVisibleGames(50);

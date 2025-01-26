@@ -26,7 +26,7 @@ export const useCardFarming = async (
             // Rerun if component is still mounted - needed check if user stops feature during loop
             if (isMountedRef.current) startCardFarming();
         } catch (error) {
-            console.log(error);
+            handleError('startCardFarming', error);
         }
     };
 
@@ -49,7 +49,7 @@ const checkGamesForDrops = async () => {
             totalDrops = await processIndividualGames(cardFarming, gamesSet, gameSettings, userSummary, steamCookies);
         }
     } catch (error) {
-        console.log(error);
+        handleError('checkGamesForDrops', error);
     }
 
     return { totalDrops, gamesSet };
@@ -119,7 +119,7 @@ export const farmCards = async (gamesSet, setCountdownTimer, setCurrentIdleList,
 
         await Promise.all(farmingPromises);
     } catch (error) {
-        console.log(error);
+        handleError('farmCards', error);
     }
 };
 

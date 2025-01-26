@@ -37,8 +37,9 @@ export default function useSideBar(activePage, setActivePage) {
         setGameQueryValue('');
         setAchievementQueryValue('');
 
-        localStorage.removeItem('userSummary');
         localStorage.removeItem('apiKey');
+        localStorage.removeItem('sortStyle');
+        localStorage.removeItem('userSummary');
         if (clearData) {
             localStorage.removeItem('steamCookies');
             localStorage.removeItem('cardFarmingUser');

@@ -7,7 +7,9 @@
 > This release will not receive automatic updates. If a newer beta version becomes available you will need to install it manually.
 
 ## Changelog
-- Fixed `custom list` page titles and descriptions
+- Rerender custom list components to reflect changes made to their lists during automation
+- Fixed incorrect button on `custom list` screens
+- Fixed a error when a `game card` was dragged outside of its parent element
 
 ## Issues
 If you have any issues while using this beta version, please [open a new issue](https://github.com/zevnda/steam-game-idler/issues/new?template=issue_report.yml)

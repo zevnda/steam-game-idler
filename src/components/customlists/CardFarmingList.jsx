@@ -11,16 +11,16 @@ import useCustomList from '@/src/hooks/customlists/useCustomList';
 import GameCard from '@/src/components/customlists/GameCard';
 
 import { MdCheck, MdEdit } from 'react-icons/md';
-import { FaAward } from 'react-icons/fa';
+import { TbCardsFilled } from 'react-icons/tb';
 
 export default function CardFarmingList() {
     const { list: cardFarmingList, setList, visibleGames, filteredGamesList, containerRef, setSearchTerm, handleAddGame, handleRemoveGame, updateListOrder } = useCustomList('cardFarmingList');
-    const { startAchievementUnlocker } = useAutomate();
+    const { startCardFarming } = useAutomate();
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     const handleDragEnd = (event) => {
         const { active, over } = event;
-        if (active.id !== over.id) {
+        if (over && active.id !== over.id) {
             setList((items) => {
                 const oldIndex = items.findIndex(item => item.appid === active.id);
                 const newIndex = items.findIndex(item => item.appid === over.id);
@@ -49,11 +49,11 @@ export default function CardFarmingList() {
                             size='sm'
                             color='primary'
                             className='rounded-full font-semibold'
-                            startContent={<FaAward fontSize={18} />}
+                            startContent={<TbCardsFilled fontSize={20} />}
                             isDisabled={cardFarmingList.length < 1}
-                            onPress={startAchievementUnlocker}
+                            onPress={startCardFarming}
                         >
-                            Start Achievement Unlocker
+                            Start Card Farming
                         </Button>
                         <Button
                             size='sm'
@@ -69,7 +69,7 @@ export default function CardFarmingList() {
 
                 <DndContext onDragEnd={handleDragEnd}>
                     <SortableContext items={cardFarmingList.map(item => item.appid)}>
-                        <div className='flex flex-wrap justify-start w-full gap-4 p-4 mt-[52px]'>
+                        <div className='grid grid-cols-5 2xl:grid-cols-7 gap-4 p-4 mt-[52px]'>
                             {cardFarmingList && cardFarmingList.slice(0, visibleGames).map((item) => (
                                 <SortableGameCard
                                     key={item.appid}
