@@ -6,16 +6,13 @@ import { DndContext } from '@dnd-kit/core';
 import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
-import { useAutomate } from '@/src/hooks/automation/useAutomateButtons';
 import useCustomList from '@/src/hooks/customlists/useCustomList';
 import GameCard from '@/src/components/customlists/GameCard';
 
 import { MdCheck, MdEdit } from 'react-icons/md';
-import { FaAward } from 'react-icons/fa';
 
 export default function AutoIdleList() {
     const { list: autoIdleList, setList, visibleGames, filteredGamesList, containerRef, setSearchTerm, handleAddGame, handleRemoveGame, updateListOrder } = useCustomList('autoIdleList');
-    const { startAchievementUnlocker } = useAutomate();
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     const handleDragEnd = (event) => {
