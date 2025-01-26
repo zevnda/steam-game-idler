@@ -37,10 +37,10 @@ export default function CardFarmingList() {
                 <div className={`fixed flex justify-between items-center w-[calc(100svw-66px)] py-2 pl-4 bg-base bg-opacity-90 backdrop-blur-md z-10 ${cardFarmingList.slice(0, visibleGames).length >= 21 ? 'pr-4' : 'pr-2'}`}>
                     <div className='flex flex-col'>
                         <p className='text-lg font-semibold'>
-                            Achievement Unlocker
+                            Card Farming
                         </p>
                         <p className='text-xs text-gray-400'>
-                            Add games to this list to unlock their achievements
+                            Add games to this list to farm their trading cards
                         </p>
                     </div>
 
