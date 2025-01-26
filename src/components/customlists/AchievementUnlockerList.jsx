@@ -2,6 +2,9 @@ import { Fragment } from 'react';
 import Image from 'next/image';
 
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Input } from '@heroui/react';
+import { DndContext } from '@dnd-kit/core';
+import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 import { useAutomate } from '@/src/hooks/automation/useAutomateButtons';
 import useCustomList from '@/src/hooks/customlists/useCustomList';
@@ -11,9 +14,22 @@ import { MdCheck, MdEdit } from 'react-icons/md';
 import { FaAward } from 'react-icons/fa';
 
 export default function AchievementUnlockerList() {
-    const { list: achievementUnlockerList, setList, visibleGames, filteredGamesList, containerRef, setSearchTerm, handleAddGame, handleRemoveGame } = useCustomList('achievementUnlockerList');
+    const { list: achievementUnlockerList, setList, visibleGames, filteredGamesList, containerRef, setSearchTerm, handleAddGame, handleRemoveGame, updateListOrder } = useCustomList('achievementUnlockerList');
     const { startAchievementUnlocker } = useAutomate();
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+    const handleDragEnd = (event) => {
+        const { active, over } = event;
+        if (active.id !== over.id) {
+            setList((items) => {
+                const oldIndex = items.findIndex(item => item.appid === active.id);
+                const newIndex = items.findIndex(item => item.appid === over.id);
+                const newList = arrayMove(items, oldIndex, newIndex);
+                updateListOrder(newList);
+                return newList;
+            });
+        }
+    };
 
     return (
         <Fragment>
@@ -51,16 +67,20 @@ export default function AchievementUnlockerList() {
                     </div>
                 </div>
 
-                <div className='flex flex-wrap justify-start w-full gap-4 p-4 mt-[52px]'>
-                    {achievementUnlockerList && achievementUnlockerList.slice(0, visibleGames).map((item) => (
-                        <GameCard
-                            key={item.appid}
-                            item={item}
-                            sortedGamesList={achievementUnlockerList}
-                            visibleGames={visibleGames}
-                        />
-                    ))}
-                </div>
+                <DndContext onDragEnd={handleDragEnd}>
+                    <SortableContext items={achievementUnlockerList.map(item => item.appid)}>
+                        <div className='flex flex-wrap justify-start w-full gap-4 p-4 mt-[52px]'>
+                            {achievementUnlockerList && achievementUnlockerList.slice(0, visibleGames).map((item) => (
+                                <SortableGameCard
+                                    key={item.appid}
+                                    item={item}
+                                    sortedGamesList={achievementUnlockerList}
+                                    visibleGames={visibleGames}
+                                />
+                            ))}
+                        </div>
+                    </SortableContext>
+                </DndContext>
             </div>
 
             <Modal isOpen={isOpen} onOpenChange={onOpenChange} onClose={() => setSearchTerm('')} hideCloseButton className='bg-container min-h-[75%] max-h-[75%]'>
@@ -132,5 +152,23 @@ export default function AchievementUnlockerList() {
                 </ModalContent>
             </Modal>
         </Fragment>
+    );
+}
+
+function SortableGameCard({ item, sortedGamesList, visibleGames }) {
+    const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: item.appid });
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+    };
+
+    return (
+        <div className='cursor-grab' ref={setNodeRef} style={style} {...attributes} {...listeners}>
+            <GameCard
+                item={item}
+                sortedGamesList={sortedGamesList}
+                visibleGames={visibleGames}
+            />
+        </div>
     );
 }

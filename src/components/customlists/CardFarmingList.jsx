@@ -2,18 +2,34 @@ import { Fragment } from 'react';
 import Image from 'next/image';
 
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Input } from '@heroui/react';
+import { DndContext } from '@dnd-kit/core';
+import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 import { useAutomate } from '@/src/hooks/automation/useAutomateButtons';
 import useCustomList from '@/src/hooks/customlists/useCustomList';
 import GameCard from '@/src/components/customlists/GameCard';
 
 import { MdCheck, MdEdit } from 'react-icons/md';
-import { TbCardsFilled } from 'react-icons/tb';
+import { FaAward } from 'react-icons/fa';
 
 export default function CardFarmingList() {
-    const { list: cardFarmingList, setList, visibleGames, filteredGamesList, containerRef, setSearchTerm, handleAddGame, handleRemoveGame } = useCustomList('cardFarmingList');
-    const { startCardFarming } = useAutomate();
+    const { list: cardFarmingList, setList, visibleGames, filteredGamesList, containerRef, setSearchTerm, handleAddGame, handleRemoveGame, updateListOrder } = useCustomList('cardFarmingList');
+    const { startAchievementUnlocker } = useAutomate();
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+    const handleDragEnd = (event) => {
+        const { active, over } = event;
+        if (active.id !== over.id) {
+            setList((items) => {
+                const oldIndex = items.findIndex(item => item.appid === active.id);
+                const newIndex = items.findIndex(item => item.appid === over.id);
+                const newList = arrayMove(items, oldIndex, newIndex);
+                updateListOrder(newList);
+                return newList;
+            });
+        }
+    };
 
     return (
         <Fragment>
@@ -21,10 +37,10 @@ export default function CardFarmingList() {
                 <div className={`fixed flex justify-between items-center w-[calc(100svw-66px)] py-2 pl-4 bg-base bg-opacity-90 backdrop-blur-md z-10 ${cardFarmingList.slice(0, visibleGames).length >= 21 ? 'pr-4' : 'pr-2'}`}>
                     <div className='flex flex-col'>
                         <p className='text-lg font-semibold'>
-                            Card Farming
+                            Achievement Unlocker
                         </p>
                         <p className='text-xs text-gray-400'>
-                            Add games to this list to farm their trading cards
+                            Add games to this list to unlock their achievements
                         </p>
                     </div>
 
@@ -33,11 +49,11 @@ export default function CardFarmingList() {
                             size='sm'
                             color='primary'
                             className='rounded-full font-semibold'
-                            startContent={<TbCardsFilled fontSize={20} />}
+                            startContent={<FaAward fontSize={18} />}
                             isDisabled={cardFarmingList.length < 1}
-                            onPress={startCardFarming}
+                            onPress={startAchievementUnlocker}
                         >
-                            Start Card Farming
+                            Start Achievement Unlocker
                         </Button>
                         <Button
                             size='sm'
@@ -51,16 +67,20 @@ export default function CardFarmingList() {
                     </div>
                 </div>
 
-                <div className='flex flex-wrap justify-start w-full gap-4 p-4 mt-[52px]'>
-                    {cardFarmingList && cardFarmingList.slice(0, visibleGames).map((item) => (
-                        <GameCard
-                            key={item.appid}
-                            item={item}
-                            sortedGamesList={cardFarmingList}
-                            visibleGames={visibleGames}
-                        />
-                    ))}
-                </div>
+                <DndContext onDragEnd={handleDragEnd}>
+                    <SortableContext items={cardFarmingList.map(item => item.appid)}>
+                        <div className='flex flex-wrap justify-start w-full gap-4 p-4 mt-[52px]'>
+                            {cardFarmingList && cardFarmingList.slice(0, visibleGames).map((item) => (
+                                <SortableGameCard
+                                    key={item.appid}
+                                    item={item}
+                                    sortedGamesList={cardFarmingList}
+                                    visibleGames={visibleGames}
+                                />
+                            ))}
+                        </div>
+                    </SortableContext>
+                </DndContext>
             </div>
 
             <Modal isOpen={isOpen} onOpenChange={onOpenChange} onClose={() => setSearchTerm('')} hideCloseButton className='bg-container min-h-[75%] max-h-[75%]'>
@@ -132,5 +152,23 @@ export default function CardFarmingList() {
                 </ModalContent>
             </Modal>
         </Fragment>
+    );
+}
+
+function SortableGameCard({ item, sortedGamesList, visibleGames }) {
+    const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: item.appid });
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+    };
+
+    return (
+        <div className='cursor-grab' ref={setNodeRef} style={style} {...attributes} {...listeners}>
+            <GameCard
+                item={item}
+                sortedGamesList={sortedGamesList}
+                visibleGames={visibleGames}
+            />
+        </div>
     );
 }

@@ -40,6 +40,11 @@ export default function useCustomList(listName) {
         }
     };
 
+    const updateListOrder = (newList) => {
+        localStorage.setItem(`${listName}Cache`, JSON.stringify(newList));
+        setList(newList);
+    };
+
     useEffect(() => {
         const cachedList = JSON.parse(localStorage.getItem(`${listName}Cache`)) || [];
         setList(cachedList);
@@ -68,6 +73,7 @@ export default function useCustomList(listName) {
         searchTerm,
         setSearchTerm,
         handleAddGame,
-        handleRemoveGame
+        handleRemoveGame,
+        updateListOrder
     };
 }
