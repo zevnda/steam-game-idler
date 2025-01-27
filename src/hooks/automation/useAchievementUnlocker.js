@@ -124,12 +124,6 @@ const unlockAchievements = async (
         const { hidden, interval, idle, schedule, scheduleFrom, scheduleTo } = settings;
         let isGameIdling = false;
 
-        // Start idling if within scheduled time
-        if (idle && schedule && isWithinSchedule(scheduleFrom, scheduleTo)) {
-            await startIdler(achievements[0].appId, achievements[0].gameName, false, false);
-            isGameIdling = true;
-        }
-
         let achievementsRemaining = achievements.length;
         const maxAchievementUnlocks = getMaxAchievementUnlocks(game.appid);
 

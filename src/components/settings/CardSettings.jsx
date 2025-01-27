@@ -67,7 +67,7 @@ export default function CardSettings({ settings, setSettings }) {
                 >
                     <div className='flex items-center gap-1'>
                         <p className='text-xs'>
-                            Card farming list
+                            Farm cards for games in the Card Farming list
                         </p>
                     </div>
                 </Checkbox>
@@ -79,7 +79,7 @@ export default function CardSettings({ settings, setSettings }) {
                 >
                     <div className='flex items-center gap-1'>
                         <p className='text-xs'>
-                            All games with drops
+                            Farm cards for all games with card drops remaining
                         </p>
                     </div>
                 </Checkbox>

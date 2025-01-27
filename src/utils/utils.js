@@ -417,6 +417,25 @@ export async function sendNativeNotification(title, body) {
     }
 }
 
+// Clear local/session storage but preserving important keys
+export const preserveKeysAndClear = () => {
+    const keysToPreserve = ['theme', 'minToTrayNotified', 'seenNotifications', 'lastNotifiedTimestamp'];
+
+    // Get all keys you want to preserve
+    const preservedData = keysToPreserve.reduce((acc, key) => {
+        const value = localStorage.getItem(key);
+        if (value) acc[key] = value;
+        return acc;
+    }, {});
+
+    localStorage.clear();
+    sessionStorage.clear();
+
+    Object.entries(preservedData).forEach(([key, value]) => {
+        localStorage.setItem(key, value);
+    });
+};
+
 // Delay execution for a specified amount of time
 export function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));

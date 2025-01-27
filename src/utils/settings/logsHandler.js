@@ -12,11 +12,13 @@ export const handleOpenLogFile = async (logPath) => {
     }
 };
 
-export const handleClearLogs = async () => {
+export const handleClearLogs = async (log = true) => {
     try {
         await invoke('clear_log_file');
-        toast.success('[Logs] Logs cleared successfully');
-        logEvent('[Settings - Logs] Logs cleared successfully');
+        if (log) {
+            toast.success('[Logs] Logs cleared successfully');
+            logEvent('[Settings - Logs] Logs cleared successfully');
+        }
     } catch (error) {
         toast.error(`Error in (handleClearLogs): ${error?.message || error}`);
         console.error('Error in (handleClearLogs):', error);

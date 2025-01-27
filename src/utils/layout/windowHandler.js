@@ -4,7 +4,7 @@ import { invoke } from '@tauri-apps/api/tauri';
 import { Time } from '@internationalized/date';
 import { toast } from 'react-toastify';
 
-import { fetchFreeGames, fetchLatest, logEvent, sendNativeNotification, startIdler, updateMongoStats } from '@/src/utils/utils';
+import { fetchFreeGames, fetchLatest, logEvent, preserveKeysAndClear, sendNativeNotification, startIdler, updateMongoStats } from '@/src/utils/utils';
 import UpdateToast from '@/src/components/updates/UpdateToast';
 
 // Check for updates and handle the Tauri update process
@@ -15,7 +15,7 @@ export const checkForUpdates = async (setUpdateManifest, setInitUpdate) => {
         if (shouldUpdate) {
             setUpdateManifest(manifest);
             if (latest?.major) {
-                preserveLocalStorageKeys();
+                preserveKeysAndClear();
                 return setInitUpdate(true);
             }
             toast(<UpdateToast updateManifest={manifest} setInitUpdate={setInitUpdate} />, { autoClose: false });
@@ -25,24 +25,6 @@ export const checkForUpdates = async (setUpdateManifest, setInitUpdate) => {
         console.error('Error in (checkForUpdates):', error);
         logEvent(`[Error] in (checkForUpdates): ${error}`);
     }
-};
-
-const preserveLocalStorageKeys = () => {
-    const keysToPreserve = ['theme', 'minToTrayNotified', 'seenNotifications', 'lastNotifiedTimestamp'];
-
-    // Get all keys you want to preserve
-    const preservedData = keysToPreserve.reduce((acc, key) => {
-        const value = localStorage.getItem(key);
-        if (value) acc[key] = value;
-        return acc;
-    }, {});
-
-    localStorage.clear();
-    sessionStorage.clear();
-
-    Object.entries(preservedData).forEach(([key, value]) => {
-        localStorage.setItem(key, value);
-    });
 };
 
 // Show changelog modal if SGI was updated

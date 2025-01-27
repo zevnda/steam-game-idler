@@ -66,6 +66,7 @@ export default function Header() {
                             )}
                             {showAchievements && (
                                 <Input
+                                    size='sm'
                                     isClearable
                                     isDisabled={achievementsUnavailable || currentTab === 'statistics'}
                                     placeholder='Search for an achievement'

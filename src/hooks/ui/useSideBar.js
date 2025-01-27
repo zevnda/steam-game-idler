@@ -47,6 +47,7 @@ export default function useSideBar(activePage, setActivePage) {
             localStorage.removeItem('cardFarmingListCache');
             localStorage.removeItem('achievementUnlockerListCache');
             localStorage.removeItem('autoIdleListCache');
+            localStorage.removeItem('gameSettings');
         }
     };
 

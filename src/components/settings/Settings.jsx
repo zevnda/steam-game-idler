@@ -10,6 +10,7 @@ import ResetSettings from '@/src/components/settings/ResetSettings';
 import CardSettings from '@/src/components/settings/CardSettings';
 import SettingsMenu from '@/src/components/settings/SettingsMenu';
 import Logs from '@/src/components/settings/Logs';
+import ClearData from './ClearData';
 
 export default function Settings({ setInitUpdate, setUpdateManifest }) {
     const [settings, setSettings] = useState(null);
@@ -47,7 +48,7 @@ export default function Settings({ setInitUpdate, setUpdateManifest }) {
 
                         <div className='flex items-center gap-2'>
                             <ResetSettings setSettings={setSettings} setRefreshKey={setRefreshKey} />
-
+                            <ClearData />
                             <SettingsMenu setInitUpdate={setInitUpdate} setUpdateManifest={setUpdateManifest} />
                         </div>
                     </div>

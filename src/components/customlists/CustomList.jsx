@@ -1,7 +1,6 @@
 import { Fragment, useState } from 'react';
-import Image from 'next/image';
 
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input } from '@heroui/react';
+import { Button } from '@heroui/react';
 import { DndContext } from '@dnd-kit/core';
 import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -10,8 +9,9 @@ import { useAutomate } from '@/src/hooks/automation/useAutomateButtons';
 import useCustomList from '@/src/hooks/customlists/useCustomList';
 import GameCard from '@/src/components/ui/GameCard';
 import GameSettings from '@/src/components/gameslist/GameSettings';
+import EditListModal from './EditListModal';
 
-import { MdCheck, MdEdit } from 'react-icons/md';
+import { MdEdit } from 'react-icons/md';
 import { TbCardsFilled } from 'react-icons/tb';
 import { FaAward } from 'react-icons/fa';
 
@@ -90,7 +90,7 @@ export default function CustomList({ type }) {
                                 isDisabled={list.length === 0}
                                 onPress={listType.startButton === 'startCardFarming' ? startCardFarming : startAchievementUnlocker}
                             >
-                                {listType.title}
+                                Start {listType.title}
                             </Button>
                         )}
                         <Button
@@ -124,72 +124,18 @@ export default function CustomList({ type }) {
 
             <GameSettings isOpen={isSettingsModalOpen} onOpenChange={setSettingsModalOpen} />
 
-            <Modal isOpen={isEditModalOpen} onOpenChange={setEditModalOpen} onClose={() => setSearchTerm('')} hideCloseButton className='bg-container min-h-[75%] max-h-[75%]'>
-                <ModalContent>
-                    {(onClose) => (
-                        <Fragment>
-                            <ModalHeader className='flex bg-modalheader border-b border-border p-3' data-tauri-drag-region>
-                                <Input
-                                    clearable
-                                    placeholder='Search for a game..'
-                                    classNames={{ inputWrapper: ['bg-input border border-inputborder hover:!bg-titlebar rounded group-data-[focus-within=true]:!bg-titlebar'] }}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                />
-                            </ModalHeader>
-                            <ModalBody className='relative p-0 gap-0 overflow-y-auto'>
-                                {filteredGamesList && filteredGamesList.map((item) => (
-                                    <div
-                                        key={item.appid}
-                                        className={`flex justify-between items-center gap-2 hover:bg-containerhover cursor-pointer px-3 py-1 duration-150 select-none ${list.some(game => game.appid === item.appid) && 'opacity-30'}`}
-                                        onClick={() => list.some(game => game.appid === item.appid) ? handleRemoveGame(item) : handleAddGame(item)}
-                                    >
-                                        <div className='flex items-center gap-2 max-w-[350px]'>
-                                            <Image
-                                                src={`https://cdn.cloudflare.steamstatic.com/steam/apps/${item.appid}/header.jpg`}
-                                                className='aspect-[62/29]'
-                                                width={62}
-                                                height={29}
-                                                alt={`${item.name} image`}
-                                                priority={true}
-                                            />
-                                            <p className='text-sm truncate mr-8'>
-                                                {item.name}
-                                            </p>
-                                        </div>
-                                        <div className='flex justify-center items-center'>
-                                            {list.some(game => game.appid === item.appid) && (
-                                                <MdCheck fontSize={20} className='text-green-500' />
-                                            )}
-                                        </div>
-                                    </div>
-                                ))}
-                            </ModalBody>
-                            <ModalFooter className='border-t border-border bg-footer p-3'>
-                                <Button
-                                    size='sm'
-                                    color='danger'
-                                    variant='light'
-                                    className='rounded-md font-semibold'
-                                    onPress={() => {
-                                        localStorage.removeItem(`${type}Cache`);
-                                        setList([]);
-                                    }}
-                                >
-                                    Clear
-                                </Button>
-                                <Button
-                                    size='sm'
-                                    color='primary'
-                                    className='rounded-md font-semibold'
-                                    onPress={onClose}
-                                >
-                                    Done
-                                </Button>
-                            </ModalFooter>
-                        </Fragment>
-                    )}
-                </ModalContent>
-            </Modal>
+            <EditListModal
+                isOpen={isEditModalOpen}
+                onOpenChange={setEditModalOpen}
+                onClose={() => setSearchTerm('')}
+                filteredGamesList={filteredGamesList}
+                list={list}
+                setSearchTerm={setSearchTerm}
+                handleAddGame={handleAddGame}
+                handleRemoveGame={handleRemoveGame}
+                setList={setList}
+                type={type}
+            />
         </Fragment>
     );
 }

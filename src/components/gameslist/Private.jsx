@@ -48,7 +48,7 @@ export default function Private({ setRefreshKey }) {
                             className='font-semibold rounded mt-5'
                             onPress={handleRefresh}
                         >
-                            Try again
+                            Try Again
                         </Button>
                     </div>
                 </div>

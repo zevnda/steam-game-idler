@@ -88,7 +88,7 @@ export default function AchievementUnlocker({ activePage }) {
 
                         {isWaitingForSchedule && (
                             <p className='text-sm text-yellow-400'>
-                                Achievement unlocking paused due to being outside of the scheduled time and will resume again once inside of scheduled time
+                                Achievement unlocking paused due to being outside of the scheduled time and will resume again once inside the scheduled time
                             </p>
                         )}
 

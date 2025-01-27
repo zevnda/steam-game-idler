@@ -2,11 +2,10 @@ import { Fragment } from 'react';
 
 import { Button, Modal, ModalContent, ModalBody, ModalFooter, ModalHeader } from '@heroui/react';
 
-import { handleResetSettings } from '@/src/utils/settings/settingsHandler';
-import useResetSettings from '@/src/hooks/settings/useResetSettings';
+import useClearData from '@/src/hooks/settings/useClearData';
 
-export default function ResetSettings({ setSettings, setRefreshKey }) {
-    const { isOpen, onOpen, onOpenChange } = useResetSettings();
+export default function ClearData() {
+    const { isOpen, onOpen, onOpenChange, handleClearData } = useClearData();
 
     return (
         <Fragment>
@@ -16,7 +15,7 @@ export default function ResetSettings({ setSettings, setRefreshKey }) {
                 className='font-semibold rounded'
                 onPress={onOpen}
             >
-                Reset Settings
+                Clear Data
             </Button>
 
             <Modal isOpen={isOpen} onOpenChange={onOpenChange} className='bg-container'>
@@ -28,7 +27,7 @@ export default function ResetSettings({ setSettings, setRefreshKey }) {
                             </ModalHeader >
                             <ModalBody className='my-4'>
                                 <p className='text-sm'>
-                                    Are you sure you want to reset settings to default?
+                                    Are you sure you want to clear all data?
                                 </p>
                             </ModalBody>
                             <ModalFooter className='border-t border-border bg-footer px-4 py-3'>
@@ -45,7 +44,7 @@ export default function ResetSettings({ setSettings, setRefreshKey }) {
                                     size='sm'
                                     color='primary'
                                     className='font-semibold rounded'
-                                    onPress={() => handleResetSettings(onClose, setSettings, setRefreshKey)}
+                                    onPress={() => handleClearData(onClose)}
                                 >
                                     Confirm
                                 </Button>

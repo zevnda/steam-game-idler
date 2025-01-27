@@ -26,7 +26,7 @@ export default function Logs() {
                         className='font-semibold rounded'
                         onPress={handleClearLogs}
                     >
-                        Clear logs
+                        Clear Logs
                     </Button>
                 </div>
 

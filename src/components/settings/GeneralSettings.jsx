@@ -51,7 +51,7 @@ export default function GeneralSettings({ settings, setSettings }) {
                 >
                     <div className='flex items-center gap-1'>
                         <p className='text-xs'>
-                            Stealth idle windows
+                            Hide idle windows <span className='italic'>(not recommended)</span>
                         </p>
                     </div>
                 </Checkbox>
@@ -66,7 +66,7 @@ export default function GeneralSettings({ settings, setSettings }) {
                 >
                     <div className='flex items-center gap-1'>
                         <p className='text-xs'>
-                            Anti-away status
+                            Prevent away status on Steam
                         </p>
                     </div>
                 </Checkbox>
@@ -78,7 +78,7 @@ export default function GeneralSettings({ settings, setSettings }) {
                 >
                     <div className='flex items-center gap-1'>
                         <p className='text-xs'>
-                            Free game notifications
+                            Get notifications about free games
                         </p>
                     </div>
                 </Checkbox>
@@ -90,7 +90,7 @@ export default function GeneralSettings({ settings, setSettings }) {
                 >
                     <div className='flex items-center gap-1'>
                         <p className='text-xs'>
-                            Delete saved data on logout
+                            Delete saved data when logging out
                         </p>
                     </div>
                 </Checkbox>
@@ -112,7 +112,10 @@ export default function GeneralSettings({ settings, setSettings }) {
                         <ExtLink href={'https://steamcommunity.com/dev/apikey'} className={'mx-1 text-link hover:text-linkhover'}>
                             Steam web API key
                         </ExtLink>
-                        instead of the default one <span className='italic'>(optional)</span>
+                        <span className='italic'>(optional)</span>.
+                        <ExtLink href={'https://steamgameidler.vercel.app/settings/general#steam-web-api-key'} className={'mx-1 text-link hover:text-linkhover'}>
+                            Learn more
+                        </ExtLink>
                     </p>
                     <div className='flex gap-4'>
                         <Input

@@ -43,7 +43,7 @@ export default function TabButtons({ initialStatValues, newStatValues, setNewSta
                                 className='font-semibold rounded'
                                 onPress={() => handleSetState('unlock', 'achievements')}
                             >
-                                Unlock all
+                                Unlock All
                             </Button>
                             <Button
                                 size='sm'
@@ -53,7 +53,7 @@ export default function TabButtons({ initialStatValues, newStatValues, setNewSta
                                 className='font-semibold rounded'
                                 onPress={() => handleSetState('lock', 'achievements')}
                             >
-                                Lock all
+                                Lock All
                             </Button>
                         </div>
                     )}
@@ -67,7 +67,7 @@ export default function TabButtons({ initialStatValues, newStatValues, setNewSta
                                 className='font-semibold rounded'
                                 onPress={() => handleUpdateAll(appId, appName, initialStatValues, newStatValues, setBtnLoading)}
                             >
-                                Save changes
+                                Save Changes
                             </Button>
                             <Button
                                 size='sm'
@@ -77,7 +77,7 @@ export default function TabButtons({ initialStatValues, newStatValues, setNewSta
                                 className='font-semibold rounded'
                                 onPress={() => handleSetState('reset', 'statistics')}
                             >
-                                Reset all
+                                Reset All
                             </Button>
                         </div>
                     )}
