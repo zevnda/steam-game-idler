@@ -35,7 +35,7 @@ export async function getFilePath() {
 }
 
 // Start idling a game
-export async function startIdler(appId, appName, quiet = false, manual = true, setCurrentIdleList) {
+export async function startIdler(appId, appName, quiet = false, manual = true) {
     try {
         const settings = JSON.parse(localStorage.getItem('settings')) || {};
         const gameSettings = JSON.parse(localStorage.getItem('gameSettings')) || {};
@@ -56,8 +56,6 @@ export async function startIdler(appId, appName, quiet = false, manual = true, s
                 appId: appId.toString(),
                 quiet: stealthIdle ? stealthIdle.toString() : quiet.toString()
             });
-
-            setCurrentIdleList((prev) => [...prev, appId.toString()]);
 
             // Wait for the idler to start before checking the process, used for quiet mode
             setTimeout(async () => {
@@ -85,6 +83,7 @@ export async function startIdler(appId, appName, quiet = false, manual = true, s
                 idleCounter++;
                 updateMongoStats('idle');
                 logEvent(`[Idle] Started ${appName} (${appId})`);
+                return true;
             } else {
                 console.error(`Error starting idler for ${appName} (${appId}): ${status.error}`);
                 toast.error(
@@ -382,7 +381,7 @@ export async function antiAwayStatus(active = null) {
             if (!antiAwayInterval) {
                 antiAwayInterval = setInterval(async () => {
                     await invoke('anti_away');
-                }, 60000 * 3);
+                }, 3 * 60 * 1000);
             }
         } else {
             if (antiAwayInterval) {

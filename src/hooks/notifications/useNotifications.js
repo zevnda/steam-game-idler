@@ -9,7 +9,7 @@ export const useNotifications = () => {
 
     useEffect(() => {
         fetchNotifications(setNotifications, setUnseenNotifications);
-        const interval = setInterval(() => fetchNotifications(setNotifications, setUnseenNotifications), 3600000);
+        const interval = setInterval(() => fetchNotifications(setNotifications, setUnseenNotifications), 60 * 60 * 1000);
         return () => clearInterval(interval);
     }, []);
 

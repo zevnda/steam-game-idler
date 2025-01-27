@@ -52,7 +52,7 @@ export default function SideBar() {
                                 }}
                             />
                         )}
-                        <TbCardsFilled className='text-offwhite' fontSize={24} />
+                        <TbCardsFilled className={`text-offwhite ${isCardFarming && 'animate-pulse'}`} fontSize={24} />
                     </div>
 
                     <div
@@ -71,7 +71,7 @@ export default function SideBar() {
                                 }}
                             />
                         )}
-                        <FaAward className='text-offwhite' fontSize={22} />
+                        <FaAward className={`text-offwhite ${isAchievementUnlocker && 'animate-pulse'}`} fontSize={22} />
                     </div>
 
                     <div

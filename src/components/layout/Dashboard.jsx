@@ -10,10 +10,7 @@ import Achievements from '@/src/components/achievements/Achievements';
 import FreeGamesList from '@/src/components/gameslist/FreeGamesList';
 import GamesList from '@/src/components/gameslist/GamesList';
 import Settings from '@/src/components/settings/Settings';
-import AchievementUnlockerList from '@/src/components/customlists/AchievementUnlockerList';
-import CardFarmingList from '@/src/components/customlists/CardFarmingList';
-import AutoIdleList from '@/src/components/customlists/AutoIdleList';
-import FavoritesList from '@/src/components/customlists/FavoritesList';
+import CustomList from '@/src/components/customlists/CustomList';
 
 export default function Dashboard({ setInitUpdate, setUpdateManifest }) {
     const { activePage, setActivePage, showAchievements, isCardFarming, isAchievementUnlocker } = useContext(AppContext);
@@ -23,56 +20,58 @@ export default function Dashboard({ setInitUpdate, setUpdateManifest }) {
         antiAwayStatus();
     }, []);
 
-    return (
-        <Fragment>
-            <Header />
-            <div className='flex w-full'>
-                {showAchievements ? (
-                    <Achievements />
-                ) : activePage === 'customlists/card-farming' ? (
-                    <Fragment>
-                        <SideBar />
-                        <CardFarmingList />
-                    </Fragment>
-                ) : activePage === 'customlists/achievement-unlocker' ? (
-                    <Fragment>
-                        <SideBar />
-                        <AchievementUnlockerList />
-                    </Fragment>
-                ) : activePage === 'customlists/auto-idle' ? (
-                    <Fragment>
-                        <SideBar />
-                        <AutoIdleList />
-                    </Fragment>
-                ) : activePage === 'customlists/favorites' ? (
-                    <Fragment>
-                        <SideBar />
-                        <FavoritesList />
-                    </Fragment>
-                ) : activePage === 'freeGames' ? (
+    const renderContent = () => {
+        if (showAchievements) return <Achievements />;
+
+        const customListMap = {
+            'customlists/card-farming': 'cardFarmingList',
+            'customlists/achievement-unlocker': 'achievementUnlockerList',
+            'customlists/auto-idle': 'autoIdleList',
+            'customlists/favorites': 'favoritesList'
+        };
+
+        if (customListMap[activePage]) {
+            return (
+                <Fragment>
+                    <SideBar />
+                    <CustomList key={activePage} type={customListMap[activePage]} />
+                </Fragment>
+            );
+        }
+
+        switch (activePage) {
+            case 'freeGames':
+                return (
                     <Fragment>
                         <SideBar />
                         <FreeGamesList />
                     </Fragment>
-                ) : activePage === 'settings' ? (
+                );
+            case 'settings':
+                return (
                     <Fragment>
                         <SideBar />
                         <Settings setInitUpdate={setInitUpdate} setUpdateManifest={setUpdateManifest} />
                     </Fragment>
-                ) : (
+                );
+            default:
+                return (
                     <Fragment>
                         <SideBar />
                         <GamesList />
                     </Fragment>
-                )}
-            </div>
+                );
+        }
+    };
 
-            {isCardFarming && (
-                <CardFarming activePage={activePage} />
-            )}
-            {isAchievementUnlocker && (
-                <AchievementUnlocker activePage={activePage} />
-            )}
+    return (
+        <Fragment>
+            <Header />
+            <div className='flex w-full'>
+                {renderContent()}
+            </div>
+            {isCardFarming && <CardFarming activePage={activePage} />}
+            {isAchievementUnlocker && <AchievementUnlocker activePage={activePage} />}
         </Fragment>
     );
 }

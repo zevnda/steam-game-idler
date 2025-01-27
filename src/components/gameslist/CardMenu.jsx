@@ -6,7 +6,7 @@ import { BsThreeDotsVertical } from 'react-icons/bs';
 import { IoPlay, IoSettings } from 'react-icons/io5';
 import { FaAward, FaSteam } from 'react-icons/fa';
 
-export default function CardMenu({ item, handleIdle, setCurrentIdleList, viewAchievments, viewStorePage, viewGameSettings }) {
+export default function CardMenu({ item, handleIdle, viewAchievments, viewStorePage, viewGameSettings }) {
     return (
         <Fragment>
             <Dropdown classNames={{ content: ['rounded p-0 bg-base border border-border'] }}>
@@ -20,7 +20,7 @@ export default function CardMenu({ item, handleIdle, setCurrentIdleList, viewAch
                         className='rounded'
                         key='idle'
                         startContent={<IoPlay />}
-                        onPress={() => handleIdle(item, setCurrentIdleList)}
+                        onPress={() => handleIdle(item)}
                         textValue='Idle game'
                     >
                         <p className='text-sms'>Idle game</p>

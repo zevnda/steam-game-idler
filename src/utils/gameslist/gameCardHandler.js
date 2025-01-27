@@ -1,7 +1,7 @@
 import { startIdler } from '@/src/utils/utils';
 
-export const handleIdle = async (item, setCurrentIdleList) => {
-    await startIdler(item.appid, item.name, false, true, setCurrentIdleList);
+export const handleIdle = async (item) => {
+    await startIdler(item.appid, item.name, false, true);
 };
 
 export const viewAchievments = (item, setAppId, setAppName, setShowAchievements, showAchievements) => {
@@ -20,8 +20,8 @@ export const viewStorePage = async (item) => {
     }
 };
 
-export const viewGameSettings = (item, setAppId, setAppName, onOpen) => {
+export const viewGameSettings = (item, setAppId, setAppName, setSettingsModalOpen) => {
     setAppId(item.appid);
     setAppName(item.name);
-    onOpen();
+    setSettingsModalOpen(true);
 };

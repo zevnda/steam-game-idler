@@ -91,6 +91,7 @@ dependencies = [
  "tauri",
  "tauri-build",
  "tauri-plugin-autostart",
+ "tauri-plugin-window-state",
  "tokio",
  "winapi",
  "window-shadows",
@@ -318,6 +319,15 @@ name = "base64"
 version = "0.22.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "72b3254f16251a8381aa12e40e3c4d2f0199f8c6508fbecb9d91f575e0fbb8c6"
+
+[[package]]
+name = "bincode"
+version = "1.3.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b1f45e9417d87227c7a56d22e471c6206462cba514c7590c09aff4cf6d1ddcad"
+dependencies = [
+ "serde",
+]
 
 [[package]]
 name = "bit-set"
@@ -3966,6 +3976,20 @@ version = "0.0.0"
 source = "git+https://github.com/tauri-apps/plugins-workspace?branch=v1#8df17e2192a62471cad35bb2035426d83d77b81f"
 dependencies = [
  "auto-launch",
+ "log",
+ "serde",
+ "serde_json",
+ "tauri",
+ "thiserror",
+]
+
+[[package]]
+name = "tauri-plugin-window-state"
+version = "0.1.1"
+source = "git+https://github.com/tauri-apps/plugins-workspace?branch=v1#8df17e2192a62471cad35bb2035426d83d77b81f"
+dependencies = [
+ "bincode",
+ "bitflags 2.8.0",
  "log",
  "serde",
  "serde_json",

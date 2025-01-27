@@ -44,7 +44,7 @@ export default function Setup() {
                 <div className='absolute bg-base/10 backdrop-blur-[3px] w-full h-full'></div>
                 <div className='relative flex justify-center items-center flex-col gap-5 w-full h-svh'>
                     <motion.div
-                        className='flex backdrop-blur-md bg-base/20 justify-center items-center flex-col border border-border min-w-[400px] max-w-[400px] rounded-lg shadow-soft-lg dark:shadow-none'
+                        className='flex backdrop-blur-md bg-base/20 justify-center items-center flex-col border border-border min-w-[400px] max-w-[400px] rounded-lg shadow-lg dark:shadow-none'
                         initial={{ y: 500 }}
                         animate={{ y: -30 }}
                         transition={{

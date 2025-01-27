@@ -3,7 +3,7 @@ import { invoke } from '@tauri-apps/api/tauri';
 import { logEvent } from '@/src/utils/utils';
 import { useContext } from 'react';
 import { AppContext } from '@/src/components/layout/AppContext';
-import ErrorToast from '../../components/ui/ErrorToast';
+import ErrorToast from '@/src/components/ui/ErrorToast';
 
 // Automate card farming and achievement unlocking
 export const useAutomate = () => {

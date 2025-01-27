@@ -37,9 +37,12 @@ export default function Notifications() {
     return (
         <Fragment>
             <div className='relative'>
-                <div className='flex items-center p-1.5 hover:bg-titlehover rounded-full cursor-pointer relative mr-1' onClick={() => {
-                    setShowNotifications(!showNotifications);
-                }}>
+                <div
+                    className='flex items-center p-1.5 hover:bg-titlehover rounded-full cursor-pointer relative mr-1'
+                    onClick={() => {
+                        setShowNotifications(!showNotifications);
+                    }}
+                >
                     <IoMdNotificationsOutline fontSize={20} />
                     {unseenNotifications.length > 0 && (
                         <div className='absolute top-0 right-0'>

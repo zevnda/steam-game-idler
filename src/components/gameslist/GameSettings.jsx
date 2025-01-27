@@ -64,7 +64,7 @@ export default function GameSettings({ isOpen, onOpenChange }) {
 
     return (
         <Fragment>
-            <Modal isOpen={isOpen} onOpenChange={onOpenChange} className='bg-container '>
+            <Modal isOpen={isOpen} onOpenChange={onOpenChange} className='bg-container'>
                 <ModalContent>
                     {(onClose) => (
                         <Fragment>

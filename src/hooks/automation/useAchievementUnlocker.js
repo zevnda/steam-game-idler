@@ -7,7 +7,6 @@ export const useAchievementUnlocker = async (
     setIsComplete,
     setAchievementCount,
     setCountdownTimer,
-    setCurrentIdleList,
     setIsWaitingForSchedule,
     isMountedRef,
     abortControllerRef
@@ -39,7 +38,6 @@ export const useAchievementUnlocker = async (
                     game,
                     setAchievementCount,
                     setCountdownTimer,
-                    setCurrentIdleList,
                     setIsWaitingForSchedule,
                     isMountedRef,
                     abortControllerRef
@@ -114,7 +112,6 @@ const unlockAchievements = async (
     game,
     setAchievementCount,
     setCountdownTimer,
-    setCurrentIdleList,
     setIsWaitingForSchedule,
     isMountedRef,
     abortControllerRef
@@ -143,12 +140,12 @@ const unlockAchievements = async (
                 // Wait until within schedule if necessary
                 if (schedule && !isWithinSchedule(scheduleFrom, scheduleTo)) {
                     if (game && isGameIdling) {
-                        await stopIdler(game.appid, game.name, setCurrentIdleList);
+                        await stopIdler(game.appid, game.name);
                         isGameIdling = false;
                     }
                     await waitUntilInSchedule(scheduleFrom, scheduleTo, isMountedRef, setIsWaitingForSchedule, abortControllerRef);
                 } else if (!isGameIdling && idle) {
-                    await startIdler(achievements[0].appId, achievements[0].gameName, false, false, setCurrentIdleList);
+                    await startIdler(achievements[0].appId, achievements[0].gameName, false, false);
                     isGameIdling = true;
                 }
 

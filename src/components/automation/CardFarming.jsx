@@ -11,7 +11,7 @@ import { IoCheckmark } from 'react-icons/io5';
 
 export default function CardFarming({ activePage }) {
     const { theme } = useTheme();
-    const { setIsCardFarming, setCurrentIdleList } = useContext(AppContext);
+    const { setIsCardFarming } = useContext(AppContext);
 
     const isMountedRef = useRef(true);
     const abortControllerRef = useRef(new AbortController());
@@ -37,7 +37,6 @@ export default function CardFarming({ activePage }) {
             setTotalDropsRemaining,
             setGamesWithDrops,
             setCountdownTimer,
-            setCurrentIdleList,
             isMountedRef,
             abortControllerRef
         );

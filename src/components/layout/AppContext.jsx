@@ -19,7 +19,6 @@ export const AppProvider = ({ children }) => {
     const [achievementQueryValue, setAchievementQueryValue] = useState('');
     const [achievementsUnavailable, setAchievementsUnavailable] = useState(false);
     const [statisticsUnavailable, setStatisticsUnavailable] = useState(false);
-    const [currentIdleList, setCurrentIdleList] = useState([]);
     const [isCardFarming, setIsCardFarming] = useState(false);
     const [isAchievementUnlocker, setIsAchievementUnlocker] = useState(false);
 
@@ -41,7 +40,6 @@ export const AppProvider = ({ children }) => {
             achievementsUnavailable, setAchievementsUnavailable,
             statisticsUnavailable, setStatisticsUnavailable,
             currentTab, setCurrentTab,
-            currentIdleList, setCurrentIdleList,
             isCardFarming, setIsCardFarming,
             isAchievementUnlocker, setIsAchievementUnlocker
         }}>

@@ -26,6 +26,7 @@ namespace SteamUtility
             {
                 this.WindowState = FormWindowState.Minimized;
                 this.Opacity = 0;
+                this.ShowInTaskbar = false;
             }
 
             appHeader.Load(
@@ -42,11 +43,6 @@ namespace SteamUtility
         private async void FormIdler_Load(object sender, EventArgs e)
         {
             await GetAppName(appid);
-            if (quiet)
-            {
-                await Task.Delay(2000);
-                this.ShowInTaskbar = false;
-            }
         }
 
         private void Timer_Tick(object sender, EventArgs e)

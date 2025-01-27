@@ -6,13 +6,13 @@ import { Button } from '@heroui/react';
 import { AppContext } from '@/src/components/layout/AppContext';
 import { useAchievementUnlocker } from '@/src/hooks/automation/useAchievementUnlocker';
 import { stopIdler } from '@/src/utils/utils';
-import ExtLink from '../ui/ExtLink';
+import ExtLink from '@/src/components/ui/ExtLink';
 
 import { IoCheckmark } from 'react-icons/io5';
 
 export default function AchievementUnlocker({ activePage }) {
     const { theme } = useTheme();
-    const { setIsAchievementUnlocker, setCurrentIdleList } = useContext(AppContext);
+    const { setIsAchievementUnlocker } = useContext(AppContext);
 
     const isMountedRef = useRef(true);
     const abortControllerRef = useRef(new AbortController());
@@ -41,7 +41,6 @@ export default function AchievementUnlocker({ activePage }) {
             setIsComplete,
             setAchievementCount,
             setCountdownTimer,
-            setCurrentIdleList,
             setIsWaitingForSchedule,
             isMountedRef,
             abortControllerRef

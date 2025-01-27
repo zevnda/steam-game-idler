@@ -1,11 +1,12 @@
-import { Fragment, useContext } from 'react';
+import { Fragment, useContext, useState } from 'react';
 
 import { AppContext } from '@/src/components/layout/AppContext';
 import PageHeader from '@/src/components/gameslist/PageHeader';
-import GameCard from '@/src/components/gameslist/GameCard';
 import Private from '@/src/components/gameslist/Private';
 import useGamesList from '@/src/hooks/gameslist/useGamesList';
 import Loader from '@/src/components/ui/Loader';
+import GameCard from '@/src/components/ui/GameCard';
+import GameSettings from './GameSettings';
 
 export default function GamesList() {
     const { showAchievements } = useContext(AppContext);
@@ -20,6 +21,7 @@ export default function GamesList() {
         refreshKey,
         setRefreshKey,
     } = useGamesList();
+    const [isSettingsModalOpen, setSettingsModalOpen] = useState(false);
 
     if (isLoading) return <Loader />;
 
@@ -40,11 +42,19 @@ export default function GamesList() {
                     </div>
                 )}
 
-                <div className='p-4 pt-2'>
-                    <div className='mt-[60px]'>
-                        <GameCard gameList={visibleGames} />
-                    </div>
+                <div className='grid grid-cols-5 2xl:grid-cols-7 gap-4 p-4 mt-[52px]'>
+                    {filteredGames && filteredGames.slice(0, visibleGames.length).map((item) => (
+                        <GameCard
+                            key={item.appid}
+                            item={item}
+                            sortedGamesList={filteredGames}
+                            visibleGames={gameList}
+                            setSettingsModalOpen={setSettingsModalOpen}
+                        />
+                    ))}
                 </div>
+
+                <GameSettings isOpen={isSettingsModalOpen} onOpenChange={setSettingsModalOpen} />
             </div>
         </Fragment>
     );

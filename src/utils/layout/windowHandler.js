@@ -28,7 +28,7 @@ export const checkForUpdates = async (setUpdateManifest, setInitUpdate) => {
 };
 
 const preserveLocalStorageKeys = () => {
-    const keysToPreserve = ['theme', 'windowState', 'minToTrayNotified', 'seenNotifications', 'lastNotifiedTimestamp'];
+    const keysToPreserve = ['theme', 'minToTrayNotified', 'seenNotifications', 'lastNotifiedTimestamp'];
 
     // Get all keys you want to preserve
     const preservedData = keysToPreserve.reduce((acc, key) => {
@@ -129,7 +129,7 @@ export const checkForFreeGames = async (setFreeGamesList, setShowFreeGamesTab) =
 };
 
 // Starts auto idling games that are not currently running
-export const startAutoIdleGames = async (setCurrentIdleList) => {
+export const startAutoIdleGames = async () => {
     try {
         const autoIdleGames = (localStorage.getItem('autoIdleListCache') && JSON.parse(localStorage.getItem('autoIdleListCache'))) || [];
         const gameIds = autoIdleGames.map(game => game.appid.toString());
@@ -137,7 +137,7 @@ export const startAutoIdleGames = async (setCurrentIdleList) => {
         for (const id of notRunningIds) {
             const game = autoIdleGames.find(g => g.appid.toString() === id);
             if (game) {
-                await startIdler(game.appid, game.name, false, true, setCurrentIdleList);
+                await startIdler(game.appid, game.name, false, true);
             }
         }
     } catch (error) {
