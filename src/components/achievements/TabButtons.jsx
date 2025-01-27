@@ -63,7 +63,7 @@ export default function TabButtons({ initialStatValues, newStatValues, setNewSta
                                 size='sm'
                                 color='primary'
                                 isLoading={btnLoading}
-                                isDisabled={Object.keys(initialStatValues).length < 1}
+                                isDisabled={Object.keys(initialStatValues).length === 0}
                                 className='font-semibold rounded'
                                 onPress={() => handleUpdateAll(appId, appName, initialStatValues, newStatValues, setBtnLoading)}
                             >
@@ -73,7 +73,7 @@ export default function TabButtons({ initialStatValues, newStatValues, setNewSta
                                 size='sm'
                                 color='danger'
                                 isLoading={btnLoading}
-                                isDisabled={Object.keys(initialStatValues).length < 1}
+                                isDisabled={Object.keys(initialStatValues).length === 0}
                                 className='font-semibold rounded'
                                 onPress={() => handleSetState('reset', 'statistics')}
                             >

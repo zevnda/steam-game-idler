@@ -140,7 +140,7 @@ export const handleUpdateAll = async (appId, appName, initialStatValues, newStat
         return value !== initialStatValues[key];
     });
 
-    if (changedValues.length < 1) {
+    if (changedValues.length === 0) {
         return toast.info('No changes to save.');
     }
 

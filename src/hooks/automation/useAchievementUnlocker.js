@@ -18,7 +18,7 @@ export const useAchievementUnlocker = async (
             let currentGame = null;
 
             // Check if there are no games left to unlock achievements for
-            if (achievementUnlockerGame.length < 1) {
+            if (achievementUnlockerGame.length === 0) {
                 logEvent('[Achievement Unlocker - Auto] No games left - stopping');
                 if (currentGame) await stopIdler(currentGame.appId, currentGame.name);
                 setIsComplete(true);
@@ -71,14 +71,17 @@ const fetchAchievements = async (game, setIsPrivate, setAchievementCount) => {
         const gameAchievements = res?.percentages?.achievementpercentages?.achievements;
         const gameSchema = res?.schema?.game;
 
-        // Handle private games or games with no achievements
+        // Handle private games and games with no achievements
         if (userAchievements.error === 'Profile is not public') {
             setIsPrivate(true);
             return { achievements: [], game, error: true };
         }
 
         if (userAchievements.error === 'Requested app has no stats') {
-            removeGameFromUnlockerList(game.appid);
+            return { achievements: [], game };
+        }
+
+        if (!userAchievements || !userAchievements.achievements || userAchievements.achievements === 0) {
             return { achievements: [], game };
         }
 

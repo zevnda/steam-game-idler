@@ -51,7 +51,7 @@ export const useAutomate = () => {
             }
             // Retrieve card farming list from local storage
             const cardFarming = JSON.parse(localStorage.getItem('cardFarmingListCache')) || [];
-            if (!settings.cardFarming.allGames && cardFarming.length < 1) {
+            if (!settings.cardFarming.allGames && cardFarming.length === 0) {
                 return toast.error(
                     <ErrorToast
                         message={'Enable the "All games" setting or add some games to your card farming list'}
@@ -82,12 +82,12 @@ export const useAutomate = () => {
                     />
                 );
             }
-            if (!settings || Object.keys(settings).length < 1) {
+            if (!settings || Object.keys(settings).length === 0) {
                 return toast.error('Please configure the settings first');
             }
             // Retrieve achievement unlocker list from local storage
             const achievementUnlocker = JSON.parse(localStorage.getItem('achievementUnlockerListCache')) || [];
-            if (achievementUnlocker.length < 1) {
+            if (achievementUnlocker.length === 0) {
                 return toast.error(
                     <ErrorToast
                         message={'There are no games in your achievement unlocker list'}
