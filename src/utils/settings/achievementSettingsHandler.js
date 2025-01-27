@@ -5,7 +5,7 @@ import { logEvent } from '@/src/utils/utils';
 export const initializeSettings = (settings, setLocalSettings, setLabelInterval) => {
     if (settings && settings.achievementUnlocker) {
         setLocalSettings(settings);
-        setLabelInterval(`${settings.achievementUnlocker.interval[0]} and ${settings.achievementUnlocker.interval[1]}`);
+        setLabelInterval(`${settings.achievementUnlocker.interval[0]} to ${settings.achievementUnlocker.interval[1]}`);
     }
 };
 
