@@ -81,7 +81,7 @@ export default function AchievementSettings({ settings, setSettings }) {
                         <Slider
                             label={
                                 <p className='text-xs'>
-                                    Unlock achievements randomly between {labelInterval} minutes
+                                    Unlock achievements randomly every {labelInterval} minutes
                                 </p>
                             }
                             size='sm'
