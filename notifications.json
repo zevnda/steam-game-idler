@@ -1,5 +1,12 @@
 [
     {
+        "id": "12",
+        "title": "Beta v1.7.0-7",
+        "message": "New beta version available",
+        "url": "https://github.com/zevnda/steam-game-idler/releases/tag/1.7.0-beta.7",
+        "timestamp": "1738001994"
+    },
+    {
         "id": "11",
         "title": "Beta v1.7.0-6",
         "message": "New beta version available",
