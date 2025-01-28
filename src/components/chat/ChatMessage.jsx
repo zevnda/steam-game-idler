@@ -4,7 +4,6 @@ import Image from 'next/image';
 import { useMessageContext, useDeleteHandler, useChatContext, useEditHandler } from 'stream-chat-react';
 
 import { FaTrash, FaEdit } from 'react-icons/fa';
-import { MdOutlineVerified } from 'react-icons/md';
 
 export const ChatMessage = () => {
     const { message, isMyMessage } = useMessageContext();
@@ -107,7 +106,7 @@ export const ChatMessage = () => {
                             ) : (
                                 <Fragment>
                                     {message.text && (
-                                        <div className={`text-xs break-words`}>
+                                        <div className='text-xs break-words'>
                                             {trimTrailingNewLines(message.text).split('\n').map((line, index) => (
                                                 <Fragment key={index}>
                                                     {line}
