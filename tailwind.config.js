@@ -14,13 +14,18 @@ module.exports = {
             },
             height: {
                 'calc': 'calc(100vh - 56px)',
-                'loader': 'calc(100vh - 154px)' //todo
             },
             maxHeight: {
                 'calc': 'calc(100vh - 56px)',
             },
             minHeight: {
                 'calc': 'calc(100vh - 56px)',
+            },
+            maxWidth: {
+                'calc': 'calc(100vw - 56px)',
+            },
+            minWidth: {
+                'calc': 'calc(100vw - 56px)',
             }
         }
     },

@@ -40,6 +40,8 @@ export default function useSideBar(activePage, setActivePage) {
         localStorage.removeItem('apiKey');
         localStorage.removeItem('sortStyle');
         localStorage.removeItem('userSummary');
+        localStorage.removeItem('chatUsername');
+        localStorage.removeItem('chatToken');
         if (clearData) {
             localStorage.removeItem('steamCookies');
             localStorage.removeItem('cardFarmingUser');

@@ -32,6 +32,8 @@
         "react-toastify": "^10.0.5",
         "react-window": "^1.8.11",
         "rehype-raw": "^7.0.0",
+        "stream-chat": "^8.53.0",
+        "stream-chat-react": "^12.10.0",
         "tauri-plugin-autostart-api": "github:tauri-apps/tauri-plugin-autostart#v1"
     },
     "devDependencies": {

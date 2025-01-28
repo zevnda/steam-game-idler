@@ -8,7 +8,7 @@ import useSideBar from '@/src/hooks/ui/useSideBar';
 import Sparkles from '@/src/components/ui/Sparkles';
 
 import { FaAward, FaHourglassEnd, FaSignOutAlt } from 'react-icons/fa';
-import { IoGameController, IoGift, IoSettings } from 'react-icons/io5';
+import { IoChatbox, IoGameController, IoGift, IoSettings } from 'react-icons/io5';
 import { TbCardsFilled } from 'react-icons/tb';
 import { MdFavorite } from 'react-icons/md';
 
@@ -110,6 +110,25 @@ export default function SideBar() {
                             />
                         )}
                         <MdFavorite className='text-offwhite' fontSize={20} />
+                    </div>
+
+                    <div
+                        className='relative flex justify-center items-center w-full h-11 hover:bg-sgi dark:hover:bg-titlehover cursor-pointer duration-200'
+                        onClick={() => setActivePage('chat')}
+                    >
+                        {activePage === 'chat' && (
+                            <motion.div
+                                className='absolute w-full border-r-4 border-white'
+                                initial={{ height: 0 }}
+                                whileInView={{ height: 30 }}
+                                transition={{
+                                    type: 'spring',
+                                    stiffness: 350,
+                                    damping: 18,
+                                }}
+                            />
+                        )}
+                        <IoChatbox className='text-offwhite' fontSize={20} />
                     </div>
 
                     {showFreeGamesTab && (

@@ -54,7 +54,7 @@ export default function Setup() {
                         }}
                     >
                         <div className='p-6'>
-                            <p className='text-2xl '>
+                            <p className='text-2xl'>
                                 Welcome
                             </p>
                         </div>
