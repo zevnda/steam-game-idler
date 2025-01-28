@@ -110,7 +110,7 @@ export default function Setup() {
                         </div>
 
                         <div className='flex justify-center items-center p-6 w-full border-t border-border rounded-br-lg rounded-bl-lg mt-8'>
-                            <ExtLink href={'https://steamgameidler.vercel.app/how-to-sign-in'}>
+                            <ExtLink href={'https://steamgameidler.vercel.app/get-started/how-to-sign-in'}>
                                 <p className='text-xs text-link hover:text-linkhover cursor-pointer'>
                                     Need help?
                                 </p>
