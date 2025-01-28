@@ -115,7 +115,7 @@ jobs:
           working-directory: ${{ github.workspace }}
 
         - name: Build library files
-          run: MSBuild.exe .\libs\steam-utility\SteamUtility.csproj
+          run: MSBuild.exe .\libs\SteamUtility.csproj
           shell: pwsh
 
         - name: Build Tauri release bundle

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { fetchNotifications, markAsSeen, markAllAsSeen, handleOpenUrl } from '@/src/utils/notifications/notificationsHandler';
+import { fetchNotifications } from '@/src/utils/notifications/notificationsHandler';
 
 export const useNotifications = () => {
     const [notifications, setNotifications] = useState([]);
@@ -33,8 +33,5 @@ export const useNotifications = () => {
         unseenNotifications,
         setUnseenNotifications,
         dropdownRef,
-        markAsSeen,
-        markAllAsSeen,
-        handleOpenUrl
     };
 };
