@@ -59,19 +59,3 @@ html {
 body {
     overflow: hidden;
 }
-
-@keyframes pulse-border {
-    0% {
-      border-color: var(--borderMin);
-    }
-    50% {
-      border-color: var(--borderMax);
-    }
-    100% {
-      border-color: var(--borderMin);
-    }
-  }
-  
-  .pulse-border {
-    animation: pulse-border 1.5s infinite;
-  }

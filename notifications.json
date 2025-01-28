@@ -1,5 +1,54 @@
 [
     {
+        "id": "12",
+        "title": "Beta v1.7.0-7",
+        "message": "New beta version available",
+        "url": "https://github.com/zevnda/steam-game-idler/releases/tag/1.7.0-beta.7",
+        "timestamp": "1738001994"
+    },
+    {
+        "id": "11",
+        "title": "Beta v1.7.0-6",
+        "message": "New beta version available",
+        "url": "https://github.com/zevnda/steam-game-idler/releases/tag/1.7.0-beta.6",
+        "timestamp": "1737982055"
+    },
+    {
+        "id": "10",
+        "title": "Beta v1.7.0-5",
+        "message": "New beta version available",
+        "url": "https://github.com/zevnda/steam-game-idler/releases/tag/1.7.0-beta.5",
+        "timestamp": "1737980309"
+    },
+    {
+        "id": "9",
+        "title": "Beta v1.7.0-4",
+        "message": "New beta version available",
+        "url": "https://github.com/zevnda/steam-game-idler/releases/tag/1.7.0-beta.4",
+        "timestamp": "1737923379"
+    },
+    {
+        "id": "8",
+        "title": "Beta v1.7.0-3",
+        "message": "New beta version available",
+        "url": "https://github.com/zevnda/steam-game-idler/releases/tag/1.7.0-beta.3",
+        "timestamp": "1737917746"
+    },
+    {
+        "id": "7",
+        "title": "Beta v1.7.0-2",
+        "message": "New beta version available",
+        "url": "https://github.com/zevnda/steam-game-idler/releases/tag/1.7.0-beta.2",
+        "timestamp": "1737916038"
+    },
+    {
+        "id": "6",
+        "title": "Beta v1.7.0-1",
+        "message": "New beta version available",
+        "url": "https://github.com/zevnda/steam-game-idler/releases/tag/1.7.0-beta.1",
+        "timestamp": "1737911611"
+    },
+    {
         "id": "5",
         "title": "User feedback wanted",
         "message": "[FINISHED] Vote on this poll to decide how v1.7.0 handles achievement functionality!",
@@ -19,19 +68,5 @@
         "message": "New beta version available",
         "url": "https://github.com/zevnda/steam-game-idler/releases/tag/1.6.0-beta.3",
         "timestamp": "1734958788"
-    },
-    {
-        "id": "2",
-        "title": "Beta v1.6.0.2",
-        "message": "New beta version available",
-        "url": "https://github.com/zevnda/steam-game-idler/releases/tag/1.6.0-beta.2",
-        "timestamp": "1734764011"
-    },
-    {
-        "id": "1",
-        "title": "Beta Testers Needed",
-        "message": "I have released a Beta version of SGI with some major updates, and I am looking for people to test it, give feedback, and report any issues you may find before full release",
-        "url": "https://gist.github.com/zevnda/a972cf08c25d4dfff5f923a259e1aaec",
-        "timestamp": "1734590626"
     }
 ]
