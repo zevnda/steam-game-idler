@@ -12,6 +12,10 @@ export default function ChatBox() {
     const { theme } = useTheme();
     const { client, channel, isLoading, error, cleanup } = useStreamChat();
     const [chatTheme, setChatTheme] = useState('str-chat__theme-light');
+    const [memberCount, setMemberCount] = useState(0);
+    const [watcherCount, setWatcherCount] = useState(0);
+
+    console.log(channel);
 
     useEffect(() => {
         return () => {
@@ -22,6 +26,13 @@ export default function ChatBox() {
     useEffect(() => {
         setChatTheme(theme === 'dark' ? 'str-chat__theme-dark' : 'str-chat__theme-light');
     }, [theme]);
+
+    useEffect(() => {
+        if (channel) {
+            setMemberCount(channel.data.member_count || 0);
+            setWatcherCount(channel.state.watcher_count || 0);
+        }
+    }, [channel]);
 
     if (error) {
         return (
@@ -40,7 +51,20 @@ export default function ChatBox() {
     }
 
     return (
-        <div className={`min-w-calc max-h-calc ${styles.chatContainer}`}>
+        <div className={`w-calc h-[calc(100vh-98px)] ${styles.chatContainer}`}>
+            <div className='flex justify-between items-center p-3 pb-0'>
+                <p className='text-xs'>
+                    Steam Game Idler Chat
+                </p>
+                <div>
+                    <p className='text-[10px]'>
+                        {watcherCount} online
+                    </p>
+                    <p className='text-[10px]'>
+                        {memberCount - watcherCount} offline
+                    </p>
+                </div>
+            </div>
             <Chat client={client} theme={chatTheme}>
                 <Channel channel={channel}>
                     <Window>

@@ -40,16 +40,16 @@ export default function useSideBar(activePage, setActivePage) {
         localStorage.removeItem('apiKey');
         localStorage.removeItem('sortStyle');
         localStorage.removeItem('userSummary');
+        localStorage.removeItem('gameSettings');
+        localStorage.removeItem('steamCookies');
+        localStorage.removeItem('cardFarmingUser');
         localStorage.removeItem('chatUsername');
         localStorage.removeItem('chatToken');
         if (clearData) {
-            localStorage.removeItem('steamCookies');
-            localStorage.removeItem('cardFarmingUser');
             localStorage.removeItem('favoritesListCache');
             localStorage.removeItem('cardFarmingListCache');
             localStorage.removeItem('achievementUnlockerListCache');
             localStorage.removeItem('autoIdleListCache');
-            localStorage.removeItem('gameSettings');
         }
     };
 

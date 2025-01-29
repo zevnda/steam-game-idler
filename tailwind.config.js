@@ -49,7 +49,7 @@ module.exports = {
                     'border': '#00000015',
                     'input': '#f7f7f7',
                     'inputborder': '#00000015',
-                    'link': '#5a95d3',
+                    'link': '#3c93f1',
                     'linkhover': '#4b82bb',
                     'modalheader': '#ffffff',
                     'modalbody': '#fafafa',

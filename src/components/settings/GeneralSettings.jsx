@@ -90,7 +90,7 @@ export default function GeneralSettings({ settings, setSettings }) {
                 >
                     <div className='flex items-center gap-1'>
                         <p className='text-xs'>
-                            Delete saved data when logging out
+                            Clear custom list when logging out
                         </p>
                     </div>
                 </Checkbox>

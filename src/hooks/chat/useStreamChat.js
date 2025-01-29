@@ -9,6 +9,7 @@ export function useStreamChat() {
     const [username, setUsername] = useState(null);
     const [channel, setChannel] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     const connectUser = async () => {
         const userSummary = localStorage.getItem('userSummary');
@@ -51,6 +52,7 @@ export function useStreamChat() {
             setUsername(personaName);
         } catch (error) {
             console.error('Chat connection error:', error);
+            setError(error);
             localStorage.removeItem('chatUsername');
             localStorage.removeItem('chatToken');
         } finally {
@@ -65,6 +67,12 @@ export function useStreamChat() {
         } else {
             setIsLoading(false);
         }
+
+        return () => {
+            if (client) {
+                client.disconnectUser();
+            }
+        };
     }, []);
 
     const cleanup = () => {
@@ -76,5 +84,5 @@ export function useStreamChat() {
         }
     };
 
-    return { client, username, channel, connectUser, isLoading, cleanup };
+    return { client, username, channel, connectUser, isLoading, error, cleanup };
 }

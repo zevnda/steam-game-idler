@@ -59,3 +59,12 @@ html {
 body {
     overflow: hidden;
 }
+
+.mention {
+    background-color: #5589dc8f;
+    color: white;
+    width: fit-content;
+    padding: 0 2px;
+    border-radius: 2px;
+    opacity: 85%;
+}
