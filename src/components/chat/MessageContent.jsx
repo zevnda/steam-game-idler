@@ -1,9 +1,7 @@
 import { Fragment } from 'react';
 import { isToday, isYesterday } from 'date-fns';
-import { MdOutlineVerified } from 'react-icons/md';
-import { FaBug, FaEarlybirds, FaGithubAlt } from 'react-icons/fa';
-import { RiPoliceBadgeFill, RiVerifiedBadgeFill } from 'react-icons/ri';
-import { IoMdBug } from 'react-icons/io';
+import { FaGithubAlt } from 'react-icons/fa';
+import { RiPoliceBadgeFill } from 'react-icons/ri';
 import { Tooltip } from '@heroui/react';
 
 const MessageContent = ({ message, editing, editedText, setEditedText, handleKeyDown, handleSaveEdit, clearEdit, trimTrailingNewLines, getLineCount }) => {
