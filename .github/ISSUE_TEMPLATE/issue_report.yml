@@ -1,6 +1,6 @@
 name: Issue/Bug Report
 description: Create an issue or bug report
-labels: ["bug", "investigating"]
+labels: ["bug"]
 assignees:
   - "zevnda"
 body:
