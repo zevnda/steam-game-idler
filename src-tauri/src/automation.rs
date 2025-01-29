@@ -70,20 +70,28 @@ pub async fn get_achievement_data(
 pub async fn get_drops_remaining(
     sid: String,
     sls: String,
-    steam_id: String,
+    sma: Option<String>,
+    steamid: String,
     app_id: String,
 ) -> Result<Value, String> {
     let client = Client::new();
+
+    // Construct the cookie value based on the provided parameters
+    let cookie_value = match sma {
+        Some(sma_val) => format!(
+            "sessionid={}; steamLoginSecure={}; steamparental={}; steamMachineAuth{}={}",
+            sid, sls, sma_val, steamid, sma_val
+        ),
+        None => format!("sessionid={}; steamLoginSecure={}", sid, sls),
+    };
+
     let response = client
         .get(&format!(
             "https://steamcommunity.com/profiles/{}/gamecards/{}/?l=english",
-            steam_id, app_id
+            steamid, app_id
         ))
         .header("Content-Type", "application/json")
-        .header(
-            "Cookie",
-            format!("sessionid={}; steamLoginSecure={}", sid, sls),
-        )
+        .header("Cookie", cookie_value)
         .send()
         .await
         .map_err(|e| e.to_string())?;
@@ -116,24 +124,31 @@ pub async fn get_drops_remaining(
 pub async fn get_games_with_drops(
     sid: String,
     sls: String,
-    steam_id: String,
+    sma: Option<String>,
+    steamid: String,
 ) -> Result<Value, String> {
     let client = Client::new();
     let mut page = 1;
     let mut games_with_drops = Vec::new();
 
+    // Construct the cookie value based on the provided parameters
+    let cookie_value = match sma {
+        Some(sma_val) => format!(
+            "sessionid={}; steamLoginSecure={}; steamparental={}; steamMachineAuth{}={}",
+            sid, sls, sma_val, steamid, sma_val
+        ),
+        None => format!("sessionid={}; steamLoginSecure={}", sid, sls),
+    };
+
     // Loop through the badge pages to find games with card drops remaining
     loop {
         let url = format!(
             "https://steamcommunity.com/profiles/{}/badges/?l=english&sort=p&p={}",
-            steam_id, page
+            steamid, page
         );
         let response = client
             .get(&url)
-            .header(
-                "Cookie",
-                format!("sessionid={}; steamLoginSecure={}", sid, sls),
-            )
+            .header("Cookie", cookie_value.clone())
             .send()
             .await
             .map_err(|e| e.to_string())?;

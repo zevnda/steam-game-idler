@@ -15,11 +15,11 @@ export const useCardFarming = async (
             setTotalDropsRemaining(totalDrops);
             setGamesWithDrops(gamesSet);
 
-            if (gamesSet.size > 0) {
+            if (isMountedRef.current && gamesSet.size > 0) {
                 await farmCards(gamesSet, setCountdownTimer, isMountedRef, abortControllerRef);
             } else {
                 logEvent('[Card Farming] No games left - stopping');
-                setIsComplete(true);
+                return setIsComplete(true);
             }
 
             // Rerun if component is still mounted - needed check if user stops feature during loop
@@ -29,7 +29,7 @@ export const useCardFarming = async (
         }
     };
 
-    startCardFarming();
+    if (isMountedRef.current) startCardFarming();
 };
 
 // Check games for drops and return total drops and games set
@@ -42,7 +42,7 @@ const checkGamesForDrops = async () => {
 
     try {
         if (allGames) {
-            const gamesWithDrops = await getAllGamesWithDrops(userSummary.steamId, steamCookies.sid, steamCookies.sls);
+            const gamesWithDrops = await getAllGamesWithDrops(userSummary.steamId, steamCookies.sid, steamCookies.sls, steamCookies?.sma);
             totalDrops = processGamesWithDrops(gamesWithDrops, gamesSet, gameSettings);
         } else {
             totalDrops = await processIndividualGames(cardFarming, gamesSet, gameSettings, userSummary, steamCookies);
@@ -77,7 +77,7 @@ const processIndividualGames = async (gameDataArr, gamesSet, gameSettings, userS
     let totalDrops = 0;
     const dropCheckPromises = gameDataArr.map(async (gameData) => {
         if (gamesSet.size >= 32) return;
-        const dropsRemaining = await checkDrops(userSummary.steamId, gameData.appid, steamCookies.sid, steamCookies.sls);
+        const dropsRemaining = await checkDrops(userSummary.steamId, gameData.appid, steamCookies.sid, steamCookies.sls, steamCookies?.sma);
         if (dropsRemaining > 0) {
             const gameSetting = gameSettings[gameData.appid] || {};
             const maxCardDrops = gameSetting?.maxCardDrops || dropsRemaining;

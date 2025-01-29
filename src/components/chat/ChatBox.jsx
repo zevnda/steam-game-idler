@@ -15,8 +15,6 @@ export default function ChatBox() {
     const [memberCount, setMemberCount] = useState(0);
     const [watcherCount, setWatcherCount] = useState(0);
 
-    console.log(channel);
-
     useEffect(() => {
         return () => {
             cleanup();

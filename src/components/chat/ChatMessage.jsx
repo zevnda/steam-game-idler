@@ -17,7 +17,6 @@ export const ChatMessage = () => {
     const handleSaveEdit = async () => {
         try {
             const trimmedText = trimTrailingNewLines(editedText);
-            console.log(trimmedText);
             await client.updateMessage({
                 ...message,
                 text: trimmedText,

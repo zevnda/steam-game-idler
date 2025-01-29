@@ -258,9 +258,9 @@ export async function updateStat(appId, statName, newValue, appName) {
 }
 
 // Check remaining card drops for a game
-export async function checkDrops(steamId, appId, sid, sls) {
+export async function checkDrops(steamId, appId, sid, sls, sma) {
     try {
-        const res = await invoke('get_drops_remaining', { sid: sid, sls: sls, steamId: steamId, appId: appId.toString() });
+        const res = await invoke('get_drops_remaining', { sid: sid, sls: sls, sma: sma, steamid: steamId, appId: appId.toString() });
         if (res && res.remaining) {
             return res.remaining;
         } else {
@@ -273,9 +273,9 @@ export async function checkDrops(steamId, appId, sid, sls) {
 }
 
 // Get all games with remaining card drops
-export async function getAllGamesWithDrops(steamId, sid, sls) {
+export async function getAllGamesWithDrops(steamId, sid, sls, sma) {
     try {
-        const res = await invoke('get_games_with_drops', { sid: sid, sls: sls, steamId: steamId });
+        const res = await invoke('get_games_with_drops', { sid: sid, sls: sls, sma: sma, steamid: steamId });
         if (res.gamesWithDrops && res.gamesWithDrops.length > 0) {
             return res.gamesWithDrops;
         } else {

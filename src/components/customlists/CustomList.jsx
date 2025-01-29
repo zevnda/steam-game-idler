@@ -87,7 +87,6 @@ export default function CustomList({ type }) {
                                 color='primary'
                                 className='rounded-full font-semibold'
                                 startContent={listType.icon}
-                                isDisabled={list.length === 0}
                                 onPress={listType.startButton === 'startCardFarming' ? startCardFarming : startAchievementUnlocker}
                             >
                                 Start {listType.title}

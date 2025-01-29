@@ -1,7 +1,7 @@
 import { Fragment, useContext, useState, useEffect, useRef } from 'react';
 import { useTheme } from 'next-themes';
 
-import { Button } from '@heroui/react';
+import { Button, Spinner } from '@heroui/react';
 
 import { AppContext } from '@/src/components/layout/AppContext';
 import { handleCancel, useCardFarming } from '@/src/hooks/automation/useCardFarming';
@@ -65,45 +65,51 @@ export default function CardFarming({ activePage }) {
                             Card Farming
                         </p>
 
-                        {isComplete && (
+                        {!isComplete ? (
+                            <Fragment>
+                                {gamesWithDrops.size > 0 ? (
+                                    <Fragment>
+                                        {!isComplete && (
+                                            <Fragment>
+                                                <p>
+                                                    Idling <span className='font-bold text-sgi'>{gamesWithDrops.size}</span> game(s) with <span className='font-bold text-sgi '>{totalDropsRemaining}</span> total card drop(s) remaining
+                                                </p>
+
+                                                <p className='text-sm'>
+                                                    Next action in <span className='font-bold text-sm text-sgi'>{countdownTimer}</span>
+                                                </p>
+                                            </Fragment>
+                                        )}
+
+                                        <div className='grid grid-cols-3 gap-2 max-h-[170px] border border-border rounded p-2 overflow-y-auto'>
+                                            {[...Array.from(gamesWithDrops)].map((item) => (
+                                                <div key={item.appId} className='flex gap-1 border border-border rounded p-1'>
+                                                    <Image
+                                                        src={`https://cdn.cloudflare.steamstatic.com/steam/apps/${item.appId}/header.jpg`}
+                                                        className='aspect-[62/36]'
+                                                        width={62}
+                                                        height={36}
+                                                        alt={`${item.name} image`}
+                                                        priority={true}
+                                                    />
+                                                    <div className='flex flex-col px-2'>
+                                                        <p className='text-sm font-semibold'>{item.name}</p>
+                                                        <p className='text-xs'>{item.appId}</p>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </Fragment>
+                                ) : (
+                                    <Spinner label={<p className='text-sm'>This might take a second..</p>} />
+                                )}
+                            </Fragment>
+                        ) : (
                             <Fragment>
                                 <div className='border border-border rounded-full inline-block p-2 w-fit'>
                                     <IoCheckmark className='text-green-400' fontSize={50} />
                                 </div>
                             </Fragment>
-                        )}
-
-                        {!isComplete && (
-                            <Fragment>
-                                <p>
-                                    Idling <span className='font-bold text-sgi'>{gamesWithDrops.size}</span> game(s) with <span className='font-bold text-sgi '>{totalDropsRemaining}</span> total card drop(s) remaining
-                                </p>
-
-                                <p className='text-sm'>
-                                    Next action in <span className='font-bold text-sm text-sgi'>{countdownTimer}</span>
-                                </p>
-                            </Fragment>
-                        )}
-
-                        {gamesWithDrops.size > 0 && (
-                            <div className='grid grid-cols-3 gap-2 max-h-[170px] border border-border rounded p-2 overflow-y-auto'>
-                                {[...Array.from(gamesWithDrops)].map((item) => (
-                                    <div key={item.appId} className='flex gap-1 border border-border rounded p-1'>
-                                        <Image
-                                            src={`https://cdn.cloudflare.steamstatic.com/steam/apps/${item.appId}/header.jpg`}
-                                            className='aspect-[62/36]'
-                                            width={62}
-                                            height={36}
-                                            alt={`${item.name} image`}
-                                            priority={true}
-                                        />
-                                        <div className='flex flex-col px-2'>
-                                            <p className='text-sm font-semibold'>{item.name}</p>
-                                            <p className='text-xs'>{item.appId}</p>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
                         )}
 
                         <Button
