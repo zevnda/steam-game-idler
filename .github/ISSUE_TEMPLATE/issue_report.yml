@@ -25,7 +25,7 @@ body:
     attributes:
       label: Provide your log file
       description: Useful for debugging issue
-      placeholder: Use the attachment button below. Your log file can be found in "C:\\Users\\your_username\\AppData\\Roaming\\steam-game-idler"
+      placeholder: Use the attachment button below. Your log file can be found in "C:\Users\<user>\AppData\Roaming\steam-game-idler"
 
   - type: textarea
     id: export-data
@@ -55,5 +55,5 @@ body:
           required: true
         - label: I have checked the [FAQ wiki](https://steamgameidler.vercel.app/faq) for my issue
           required: true
-        - label: I have included my log.txt file
+        - label: I have included my log file
         - label: I have included my exported data
