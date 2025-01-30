@@ -21,7 +21,7 @@
 3. Run the installed `.exe`
 
 # Build It Yourself
-Follow the **[build it yourself](https://steamgameidler.vercel.app/build-it-yourself)** guide
+Follow the **[build it yourself](https://steamgameidler.vercel.app/get-started/build-it-yourself)** guide
 
 # Features
 Check the **[documentation](https://steamgameidler.vercel.app/)** for an in-depth guide for each feature
