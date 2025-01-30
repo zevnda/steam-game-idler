@@ -33,6 +33,8 @@
 - Added a `clear data` button to `settings`
   - Clears practically all data that SGI stores and logs the current user out
   - Useful for debugging issues
+- Removed unused env var from release workflow
+- Updated url for changelog modal
 - Removed the `minimize to tray` option in `settings > general`
   - SGI will now always be minimized to the system tray when clicking `x` in the `titlebar`
 - Removed the option to filter the `games list` by `custom lists` in the `dropdown sort menu`
