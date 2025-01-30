@@ -9,9 +9,9 @@ A lightweight, user-friendly tool for farming trading cards, unlocking achieveme
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/github/downloads/zevnda/steam-game-idler/total?style=for-the-badge&color=349dad" alt="Downloads">
-  <img src="https://img.shields.io/github/v/release/zevnda/steam-game-idler?style=for-the-badge&label=Version&color=a160bf" alt="Release">
-  <img src="https://img.shields.io/github/actions/workflow/status/zevnda/steam-game-idler/release.yml?style=for-the-badge&color=32ba7b" alt="Build">
+  <img src="https://img.shields.io/github/downloads/zevnda/steam-game-idler/total?style=for-the-badge" alt="Downloads">
+  <img src="https://img.shields.io/github/v/release/zevnda/steam-game-idler?style=for-the-badge&label=Version" alt="Release">
+  <img src="https://img.shields.io/github/actions/workflow/status/zevnda/steam-game-idler/release.yml?style=for-the-badge" alt="Build">
 </p>
 
 <p align="center">
