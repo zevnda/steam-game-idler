@@ -1,6 +1,5 @@
 import { getAppVersion } from '@/src/utils/settings/settingsHandler';
 import { Button } from '@heroui/react';
-import { invoke } from '@tauri-apps/api/tauri';
 import { Fragment } from 'react';
 import { toast } from 'react-toastify';
 
