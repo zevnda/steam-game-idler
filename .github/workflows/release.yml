@@ -14,8 +14,8 @@ on:
           required: false
           type: boolean
           default: false
-        force_npm_install:
-          description: 'Force fresh npm install'
+        force_pnpm_install:
+          description: 'Force fresh pnpm install'
           required: false
           type: boolean
           default: false
@@ -32,6 +32,11 @@ jobs:
           with:
             node-version: '20'
 
+        - name: Install pnpm
+          uses: pnpm/action-setup@v3
+          with:
+            version: latest
+
         - name: Set up Python
           uses: actions/setup-python@v5
           with:
@@ -45,21 +50,23 @@ jobs:
 
         - name: Checkout repository
           uses: actions/checkout@v4
+          with:
+            submodules: recursive
 
-        - name: Cache npm dependencies
-          id: cache-npm
+        - name: Cache pnpm dependencies
+          id: cache-pnpm
           uses: actions/cache@v4
           with:
             path: |
-              ~\.npm
+              ~/.pnpm-store
               node_modules
-            key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+            key: ${{ runner.OS }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
             restore-keys: |
-              ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}-
+              ${{ runner.OS }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}-
 
-        - name: Install dependencies (npm)
-          if: steps.cache-npm.outputs.cache-hit != 'true' || inputs.force_npm_install == 'true'
-          run: npm ci
+        - name: Install dependencies (pnpm)
+          if: steps.cache-pnpm.outputs.cache-hit != 'true' || inputs.force_pnpm_install == 'true'
+          run: pnpm install --frozen-lockfile
 
         - name: Cache nextjs build
           uses: actions/cache@v4
@@ -104,17 +111,18 @@ jobs:
             echo "MONGO_SRV=${{ secrets.MONGO_SRV }}" >> .env.prod
             echo "NEXT_PUBLIC_API_BASE=${{ secrets.API_BASE }}" >> .env.local
             echo "NEXT_PUBLIC_API_KEY=${{ secrets.API_KEY }}" >> .env.local
+            echo "NEXT_PUBLIC_STREAM_API_KEY=${{ secrets.STREAM_API_KEY }}" >> .env.local
           shell: pwsh
           working-directory: ${{ github.workspace }}
 
         - name: Build library files
-          run: MSBuild.exe .\libs\steam-utility\SteamUtility.csproj
+          run: MSBuild.exe .\libs\SteamUtility.csproj
           shell: pwsh
 
         - name: Build Tauri release bundle
           if: steps.update-versions.outcome == 'success'
           run: |
-            npm run tauri build
+            pnpm run tauri build
           env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
@@ -127,7 +135,7 @@ jobs:
             import base64
             import json
             
-            msi_signature_path = './src-tauri/target/release/bundle/msi/Steam Game Idler_${{ github.event.inputs.version }}_x64_en-US.msi.zip.sig'
+            msi_signature_path = './src-tauri/target/release/bundle/msi/Steam Game Idler${{ github.event.inputs.version }}_x64_en-US.msi.zip.sig'
             latest_json_path = './latest.json'
             
             with open(msi_signature_path, 'r') as sig_file:
@@ -164,6 +172,6 @@ jobs:
             name: Steam Game Idler v${{ github.event.inputs.version }}
             body_path: ./changelog.md
             files: |
-              ./src-tauri/target/release/bundle/msi/Steam Game Idler_${{ github.event.inputs.version }}_x64_en-US.msi
-              ./src-tauri/target/release/bundle/msi/Steam Game Idler_${{ github.event.inputs.version }}_x64_en-US.msi.zip
-              ./src-tauri/target/release/bundle/msi/Steam Game Idler_${{ github.event.inputs.version }}_x64_en-US.msi.zip.sig
+              ./src-tauri/target/release/bundle/msi/Steam Game Idler${{ github.event.inputs.version }}_x64_en-US.msi
+              ./src-tauri/target/release/bundle/msi/Steam Game Idler${{ github.event.inputs.version }}_x64_en-US.msi.zip
+              ./src-tauri/target/release/bundle/msi/Steam Game Idler${{ github.event.inputs.version }}_x64_en-US.msi.zip.sig

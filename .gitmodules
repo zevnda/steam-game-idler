@@ -1,0 +1,4 @@
+[submodule "libs"]
+	path = libs
+	url = https://github.com/zevnda/steam-utility.git
+	branch = main

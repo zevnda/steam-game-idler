@@ -1,11 +1,12 @@
-import moment from 'moment';
+import axios from 'axios';
+import { Time } from '@internationalized/date';
+import { toast } from 'react-toastify';
+
+import { isPermissionGranted, requestPermission, sendNotification } from '@tauri-apps/api/notification';
 import { invoke } from '@tauri-apps/api/tauri';
 import { getVersion } from '@tauri-apps/api/app';
-import { Time } from '@internationalized/date';
-import { isPermissionGranted, requestPermission, sendNotification } from '@tauri-apps/api/notification';
-import axios from 'axios';
-import { toast } from 'react-toastify';
-import ErrorToast from '../components/ui/components/ErrorToast';
+
+import ErrorToast from '@/src/components/ui/ErrorToast';
 
 const idleTimeouts = {};
 const idleIntervals = {};
@@ -56,6 +57,11 @@ export async function startIdler(appId, appName, quiet = false, manual = true) {
                 quiet: stealthIdle ? stealthIdle.toString() : quiet.toString()
             });
 
+            // Wait for the idler to start before checking the process, used for quiet mode
+            setTimeout(async () => {
+                await invoke('check_process_by_game_id', { ids: [appId.toString()] });
+            }, 1000);
+
             const status = JSON.parse(response);
             if (!status.error) {
                 if (manual && maxIdleTime > 0) {
@@ -77,6 +83,7 @@ export async function startIdler(appId, appName, quiet = false, manual = true) {
                 idleCounter++;
                 updateMongoStats('idle');
                 logEvent(`[Idle] Started ${appName} (${appId})`);
+                return true;
             } else {
                 console.error(`Error starting idler for ${appName} (${appId}): ${status.error}`);
                 toast.error(
@@ -117,7 +124,7 @@ export async function stopIdler(appId, appName) {
         await invoke('stop_idle', { appId: appId.toString() });
         logEvent(`[Idling] Stopped ${appName} (${appId})`);
     } catch (error) {
-        console.error('Error in stopIdler util: ', error);
+        console.error('Error in stopIdler util (these errors can often be ignored): ', error);
     }
 };
 
@@ -251,9 +258,9 @@ export async function updateStat(appId, statName, newValue, appName) {
 }
 
 // Check remaining card drops for a game
-export async function checkDrops(steamId, appId, sid, sls) {
+export async function checkDrops(steamId, appId, sid, sls, sma) {
     try {
-        const res = await invoke('get_drops_remaining', { sid: sid, sls: sls, steamId: steamId, appId: appId.toString() });
+        const res = await invoke('get_drops_remaining', { sid: sid, sls: sls, sma: sma, steamid: steamId, appId: appId.toString() });
         if (res && res.remaining) {
             return res.remaining;
         } else {
@@ -266,9 +273,9 @@ export async function checkDrops(steamId, appId, sid, sls) {
 }
 
 // Get all games with remaining card drops
-export async function getAllGamesWithDrops(steamId, sid, sls) {
+export async function getAllGamesWithDrops(steamId, sid, sls, sma) {
     try {
-        const res = await invoke('get_games_with_drops', { sid: sid, sls: sls, steamId: steamId });
+        const res = await invoke('get_games_with_drops', { sid: sid, sls: sls, sma: sma, steamid: steamId });
         if (res.gamesWithDrops && res.gamesWithDrops.length > 0) {
             return res.gamesWithDrops;
         } else {
@@ -374,7 +381,7 @@ export async function antiAwayStatus(active = null) {
             if (!antiAwayInterval) {
                 antiAwayInterval = setInterval(async () => {
                     await invoke('anti_away');
-                }, 60000 * 3);
+                }, 3 * 60 * 1000);
             }
         } else {
             if (antiAwayInterval) {
@@ -410,6 +417,25 @@ export async function sendNativeNotification(title, body) {
     }
 }
 
+// Clear local/session storage but preserving important keys
+export const preserveKeysAndClear = () => {
+    const keysToPreserve = ['theme', 'minToTrayNotified', 'seenNotifications', 'lastNotifiedTimestamp'];
+
+    // Get all keys you want to preserve
+    const preservedData = keysToPreserve.reduce((acc, key) => {
+        const value = localStorage.getItem(key);
+        if (value) acc[key] = value;
+        return acc;
+    }, {});
+
+    localStorage.clear();
+    sessionStorage.clear();
+
+    Object.entries(preservedData).forEach(([key, value]) => {
+        localStorage.setItem(key, value);
+    });
+};
+
 // Delay execution for a specified amount of time
 export function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -426,14 +452,6 @@ export function debounce(func, wait) {
         clearTimeout(timeout);
         timeout = setTimeout(later, wait);
     };
-}
-
-// Convert minutes to hours in a compact format
-export function minutesToHoursCompact(number) {
-    const durationInMinutes = number;
-    const duration = moment.duration(durationInMinutes, 'minutes');
-    const hours = Math.floor(duration.asHours());
-    return hours;
 }
 
 // Format time in HH:MM:SS format

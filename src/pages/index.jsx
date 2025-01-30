@@ -1,7 +1,8 @@
 import React from 'react';
-import { AppProvider } from '../components/layout/components/AppContext';
-import Layout from '@/src/components/layout/components/Layout';
-import Window from '@/src/components/layout/components/Window';
+
+import { AppProvider } from '@/src/components/layout/AppContext';
+import Layout from '@/src/components/layout/Layout';
+import Window from '@/src/components/layout/Window';
 
 export default function index() {
     return (

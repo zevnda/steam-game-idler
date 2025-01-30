@@ -1,34 +1,36 @@
-import { nextui } from "@nextui-org/react";
+const { heroui } = require("@heroui/react");
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
     content: [
         './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
         './src/components/**/*.{js,ts,jsx,tsx,mdx}',
-        './node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}'
+        './node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}'
     ],
     theme: {
         extend: {
             width: {
-                'calc': 'calc(100vw - 62px)'
+                'calc': 'calc(100vw - 56px)'
             },
             height: {
-                'calc': 'calc(100vh - 62px)',
-                'loader': 'calc(100vh - 154px)'
+                'calc': 'calc(100vh - 56px)',
             },
             maxHeight: {
-                'calc': 'calc(100vh - 62px)',
+                'calc': 'calc(100vh - 56px)',
             },
             minHeight: {
-                'calc': 'calc(100vh - 62px)',
+                'calc': 'calc(100vh - 56px)',
             },
-            boxShadow: {
-                'soft-lg': '0 30px 60px 0 #00000020',
+            maxWidth: {
+                'calc': 'calc(100vw - 56px)',
             },
+            minWidth: {
+                'calc': 'calc(100vw - 56px)',
+            }
         }
     },
     darkMode: 'class',
-    plugins: [nextui({
+    plugins: [heroui({
         themes: {
             light: {
                 colors: {
@@ -45,14 +47,10 @@ module.exports = {
                     'containerhover': '#efefef',
                     'footer': '#efefef',
                     'border': '#00000015',
-                    'borderhover': '#00000025',
                     'input': '#f7f7f7',
                     'inputborder': '#00000015',
-                    'link': '#5a95d3',
+                    'link': '#3c93f1',
                     'linkhover': '#4b82bb',
-                    'favorite': '#e9e9e9',
-                    'favoriteicon': '#56c6ff',
-                    'favoritehover': '#d1d1d1',
                     'modalheader': '#ffffff',
                     'modalbody': '#fafafa',
                     'modalfooter': '#ffffff',
@@ -88,14 +86,10 @@ module.exports = {
                     'containerhover': '#252525',
                     'footer': '#0f0f0f',
                     'border': '#ffffff15',
-                    'borderhover': '#ffffff25',
                     'input': '#181818',
                     'inputborder': '#ffffff15',
                     'link': '#5a95d3',
                     'linkhover': '#4b82bb',
-                    'favorite': '#333',
-                    'favoriteicon': '#56c6ff',
-                    'favoritehover': '#414141',
                     'modalheader': '#121212',
                     'modalbody': '#171717',
                     'modalfooter': '#121212',

@@ -20,6 +20,7 @@ use std::thread;
 use std::time::Duration;
 use tauri::{CustomMenuItem, Manager, SystemTray, SystemTrayEvent, SystemTrayMenu};
 use tauri_plugin_autostart::MacosLauncher;
+use tauri_plugin_window_state::{AppHandleExt, StateFlags};
 use window_shadows::set_shadow;
 
 static SHUTTING_DOWN: AtomicBool = AtomicBool::new(false);
@@ -52,11 +53,13 @@ fn main() {
             set_shadow(&window, true).unwrap();
             let spawned_processes = SPAWNED_PROCESSES.clone();
             let tx_clone = tx.clone();
+            let app_handle = app.handle();
 
             // Spawn a thread to monitor the shutdown flag
             std::thread::spawn(move || loop {
                 if SHUTTING_DOWN.load(Ordering::SeqCst) {
                     kill_processes(&spawned_processes);
+                    app_handle.save_window_state(StateFlags::all()).unwrap();
                     tx_clone.send(()).unwrap();
                     break;
                 }
@@ -64,8 +67,12 @@ fn main() {
             });
 
             // Handle window close event
+            let app_handle_clone = app.handle();
             window.on_window_event(move |event| {
                 if let tauri::WindowEvent::CloseRequested { .. } = event {
+                    app_handle_clone
+                        .save_window_state(StateFlags::all())
+                        .unwrap();
                     SHUTTING_DOWN.store(true, Ordering::SeqCst);
                 }
             });
@@ -76,6 +83,7 @@ fn main() {
             MacosLauncher::LaunchAgent,
             None,
         ))
+        .plugin(tauri_plugin_window_state::Builder::default().build())
         .system_tray(system_tray)
         .on_system_tray_event(|app, event| match event {
             // Handle system tray left click event
@@ -88,8 +96,10 @@ fn main() {
             // Handle system tray menu item click events
             SystemTrayEvent::MenuItemClick { id, .. } => match id.as_str() {
                 "quit" => {
+                    app.save_window_state(StateFlags::all()).unwrap();
                     SHUTTING_DOWN.store(true, Ordering::SeqCst);
                     let window = app.get_window("main").unwrap();
+                    app.save_window_state(StateFlags::all()).unwrap();
                     window.close().unwrap();
                     thread::sleep(Duration::from_millis(1000));
                 }
@@ -133,12 +143,14 @@ fn main() {
         .build(tauri::generate_context!())
         .expect("error while building tauri application")
         // Handle tray menu events
-        .run(move |_app_handle, event| match event {
+        .run(move |app_handle, event| match event {
             tauri::RunEvent::ExitRequested { api, .. } => {
                 api.prevent_exit();
+                app_handle.save_window_state(StateFlags::all()).unwrap();
             }
             tauri::RunEvent::Exit => {
                 SHUTTING_DOWN.store(true, Ordering::SeqCst);
+                app_handle.save_window_state(StateFlags::all()).unwrap();
                 rx.recv().unwrap();
                 thread::sleep(Duration::from_secs(2));
             }

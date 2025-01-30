@@ -38,6 +38,11 @@ jobs:
                   repo: context.repo.repo,
                   issue_number: issueNumber
                 });
+
+                if (issue.data.state === 'closed') {
+                  console.log(`Issue #${issueNumber} is already closed. Skipping.`);
+                  continue;
+                }
                 
                 const labels = issue.data.labels.map(label => label.name);
                 let newLabel = null;
@@ -92,4 +97,3 @@ jobs:
               } catch (error) {
                 console.error(`Error processing issue #${issueNumber}: ${error}`);
               }
-            }

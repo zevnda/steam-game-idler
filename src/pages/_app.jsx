@@ -1,14 +1,8 @@
-import { useEffect } from 'react';
-import { ThemeProvider } from '@/src/components/ui/components/theme/theme-provider';
-import { NextUIProvider } from '@nextui-org/react';
-import { setupAppWindow } from '@/src/utils/myAppHandler';
-import '../styles/globals.css';
+import { ThemeProvider } from '@/src/components/ui/theme/theme-provider';
+import { HeroUIProvider } from '@heroui/react';
+import '@/src/styles/globals.css';
 
 export default function MyApp({ Component, pageProps }) {
-    useEffect(() => {
-        setupAppWindow();
-    }, []);
-
     return (
         <ThemeProvider
             attribute='class'
@@ -17,9 +11,9 @@ export default function MyApp({ Component, pageProps }) {
             defaultTheme='system'
             disableTransitionOnChange
         >
-            <NextUIProvider>
+            <HeroUIProvider>
                 <Component {...pageProps} />
-            </NextUIProvider>
+            </HeroUIProvider>
         </ThemeProvider>
     );
 }
