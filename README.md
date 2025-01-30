@@ -30,7 +30,7 @@ Check the **[documentation](https://steamgameidler.vercel.app/)** for an in-dept
 * **[Achievement Unlocker](https://steamgameidler.vercel.app/features/achievement-unlocker)**: Automatically unlock achievements with human-like settings
 * **[Playtime Booster](https://steamgameidler.vercel.app/features/playtime-booster)**: Boost any game's total playtime by manually idling them
 * **[Achievement Manager](https://steamgameidler.vercel.app/features/achievement-manager)**: Manually unlock and lock any achievement for any game
-* **[Auto Game Idler](https://steamgameidler.vercel.app/features/auto-game-idler)**: Automatically idle chosen games when SGI launches
+* **[Auto Game Idler](https://steamgameidler.vercel.app/features/auto-idler)**: Automatically idle chosen games when SGI launches
 * **Fully Open Source**: So you know what you are downloading and running is safe to use
 * **Actively Maintained**: New features and bug fixes are being rolled out frequently
 
