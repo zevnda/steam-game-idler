@@ -135,7 +135,7 @@ jobs:
             import base64
             import json
             
-            msi_signature_path = './src-tauri/target/release/bundle/msi/Steam Game Idler${{ github.event.inputs.version }}_x64_en-US.msi.zip.sig'
+            msi_signature_path = './src-tauri/target/release/bundle/msi/Steam Game Idler_${{ github.event.inputs.version }}_x64_en-US.msi.zip.sig'
             latest_json_path = './latest.json'
             
             with open(msi_signature_path, 'r') as sig_file:
@@ -172,6 +172,6 @@ jobs:
             name: Steam Game Idler v${{ github.event.inputs.version }}
             body_path: ./changelog.md
             files: |
-              ./src-tauri/target/release/bundle/msi/Steam Game Idler${{ github.event.inputs.version }}_x64_en-US.msi
-              ./src-tauri/target/release/bundle/msi/Steam Game Idler${{ github.event.inputs.version }}_x64_en-US.msi.zip
-              ./src-tauri/target/release/bundle/msi/Steam Game Idler${{ github.event.inputs.version }}_x64_en-US.msi.zip.sig
+              ./src-tauri/target/release/bundle/msi/Steam Game Idler_${{ github.event.inputs.version }}_x64_en-US.msi
+              ./src-tauri/target/release/bundle/msi/Steam Game Idler_${{ github.event.inputs.version }}_x64_en-US.msi.zip
+              ./src-tauri/target/release/bundle/msi/Steam Game Idler_${{ github.event.inputs.version }}_x64_en-US.msi.zip.sig
