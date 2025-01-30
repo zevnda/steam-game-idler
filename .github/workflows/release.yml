@@ -111,7 +111,6 @@ jobs:
             echo "MONGO_SRV=${{ secrets.MONGO_SRV }}" >> .env.prod
             echo "NEXT_PUBLIC_API_BASE=${{ secrets.API_BASE }}" >> .env.local
             echo "NEXT_PUBLIC_API_KEY=${{ secrets.API_KEY }}" >> .env.local
-            echo "NEXT_PUBLIC_STREAM_API_KEY=${{ secrets.STREAM_API_KEY }}" >> .env.local
           shell: pwsh
           working-directory: ${{ github.workspace }}
 

@@ -9,7 +9,7 @@ export default function useChangelog(setShowChangelogModal) {
         const fetchData = async () => {
             const currentVersion = await getVersion();
             setVersion(currentVersion);
-            const res = await fetch('https://raw.githubusercontent.com/zevnda/steam-game-idler/refs/heads/main/changelog.md');
+            const res = await fetch('https://raw.githubusercontent.com/zevnda/steam-game-idler/refs/heads/main/CHANGELOG.md');
             const data = await res.text();
             setChangelog(data.split('## Changelog')[1]);
         };
