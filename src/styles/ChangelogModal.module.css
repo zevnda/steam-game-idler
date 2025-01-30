@@ -1,5 +1,9 @@
 .list a {
-    color: #137eb5;
+    color: #3c93f1;
+}
+
+.list a:hover {
+    color: #4b82bb;
 }
 
 .list ul {
@@ -9,8 +13,28 @@
     list-style-type: disc;
 }
 
+.list ol {
+    display: flex;
+    flex-direction: column;
+    line-height: 30px;
+    list-style-type: decimal;
+}
+
 .list li {
     margin-left: 20px;
+}
+
+.list li li {
+    margin-left: 30px;
+}
+
+.list li ul {
+    list-style-type: circle;
+}
+
+.list li ul ul,
+.list li ol ul {
+    list-style-type: square;
 }
 
 .list code {

@@ -4,7 +4,7 @@ import { invoke } from '@tauri-apps/api/tauri';
 import { Time } from '@internationalized/date';
 import { toast } from 'react-toastify';
 
-import { fetchFreeGames, fetchLatest, logEvent, preserveKeysAndClear, sendNativeNotification, startIdler, updateMongoStats } from '@/src/utils/utils';
+import { fetchFreeGames, fetchLatest, logEvent, preserveKeysAndClear, sendNativeNotification, startIdler } from '@/src/utils/utils';
 import UpdateToast from '@/src/components/updates/UpdateToast';
 
 // Check for updates and handle the Tauri update process
@@ -65,7 +65,6 @@ export const defaultSettings = (setUserSummary) => {
         }
     };
     try {
-        updateMongoStats('launched');
         const userSummaryData = localStorage.getItem('userSummary');
         setUserSummary(JSON.parse(userSummaryData));
         let currentSettings = JSON.parse(localStorage.getItem('settings'));

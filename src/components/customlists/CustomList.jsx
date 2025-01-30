@@ -9,7 +9,7 @@ import { useAutomate } from '@/src/hooks/automation/useAutomateButtons';
 import useCustomList from '@/src/hooks/customlists/useCustomList';
 import GameCard from '@/src/components/ui/GameCard';
 import GameSettings from '@/src/components/gameslist/GameSettings';
-import EditListModal from './EditListModal';
+import EditListModal from '@/src/components/customlists/EditListModal';
 
 import { MdEdit } from 'react-icons/md';
 import { TbCardsFilled } from 'react-icons/tb';

@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { Time } from '@internationalized/date';
 import { toast } from 'react-toastify';
 
@@ -81,7 +80,6 @@ export async function startIdler(appId, appName, quiet = false, manual = true) {
                     }, 5000);
                 }
                 idleCounter++;
-                updateMongoStats('idle');
                 logEvent(`[Idle] Started ${appName} (${appId})`);
                 return true;
             } else {
@@ -142,7 +140,6 @@ export async function toggleAchievement(appId, appName, achievementName, type) {
             if (!status.error) {
                 achievementCounter++;
                 toast.success(`${type} ${achievementName} for ${appName} (${appId})`);
-                updateMongoStats('achievement');
                 logEvent(`[Achievement Unlocker] ${type} ${achievementName} for ${appName} (${appId})`);
             } else {
                 toast.error(
@@ -296,36 +293,6 @@ export async function logEvent(message) {
         console.error('Error in logEvent util: ', error);
     }
 };
-
-// Update MongoDB statistics with debounce
-export const updateMongoStats = debounce(async (stat) => {
-    try {
-        if (stat === 'launched') {
-            await axios.post(
-                process.env.NEXT_PUBLIC_API_BASE + 'statistics',
-                { type: 'launched' },
-                { headers: { 'Authorization': 'Bearer ' + process.env.NEXT_PUBLIC_API_KEY, }, }
-            );
-        } else if (stat === 'idle') {
-            await axios.post(
-                process.env.NEXT_PUBLIC_API_BASE + 'statistics',
-                { type: 'idle' },
-                { headers: { 'Authorization': 'Bearer ' + process.env.NEXT_PUBLIC_API_KEY, }, }
-            );
-            idleCounter = 0;
-        } else if (stat === 'achievement') {
-            await axios.post(
-                process.env.NEXT_PUBLIC_API_BASE + 'statistics',
-                { type: 'achievement' },
-                { headers: { 'Authorization': 'Bearer ' + process.env.NEXT_PUBLIC_API_KEY, }, }
-            );
-            achievementCounter = 0;
-        }
-    } catch (error) {
-        console.error('Error in updateMongoStats util: ', error);
-        logEvent(`[Error] in (updateMongoStats) util: ${error}`);
-    }
-}, 5000);
 
 // Check if the current time is within the specified schedule
 export function isWithinSchedule(scheduleFrom, scheduleTo) {

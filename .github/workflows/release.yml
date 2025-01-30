@@ -101,16 +101,13 @@ jobs:
             $latest = Get-Content latest.json
             $updatedLatest = $latest -replace "${{ github.event.inputs.previous_version }}", "${{ github.event.inputs.version }}"
             $updatedLatest | Set-Content latest.json
-            $changelog = Get-Content changelog.md
+            $changelog = Get-Content CHANGELOG.md
             $updatedChangelog = $changelog -replace "${{ github.event.inputs.previous_version }}", "${{ github.event.inputs.version }}"
-            $updatedChangelog | Set-Content changelog.md
+            $updatedChangelog | Set-Content CHANGELOG.md
 
         - name: Create environment file
           run: |
             echo "KEY=${{ secrets.KEY }}" > .env.prod
-            echo "MONGO_SRV=${{ secrets.MONGO_SRV }}" >> .env.prod
-            echo "NEXT_PUBLIC_API_BASE=${{ secrets.API_BASE }}" >> .env.local
-            echo "NEXT_PUBLIC_API_KEY=${{ secrets.API_KEY }}" >> .env.local
           shell: pwsh
           working-directory: ${{ github.workspace }}
 

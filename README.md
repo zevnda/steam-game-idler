@@ -4,9 +4,6 @@
   <p>A lightweight, user-friendly tool for farming trading cards, unlocking achievements and boosting playtime for all games in your Steam library.</p>
 <p>
   <img src="https://img.shields.io/github/downloads/zevnda/steam-game-idler/total?style=for-the-badge&color=137eb5" alt="Downloads" />
-  <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapibase.vercel.app%2Fapi%2FgetStatistics&query=%24.launched&style=for-the-badge&label=app launches&color=137eb5" alt="launched" />
-  <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapibase.vercel.app%2Fapi%2FgetStatistics&query=%24.idle&style=for-the-badge&label=games idled&color=137eb5" alt="" />
-  <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapibase.vercel.app%2Fapi%2FgetStatistics&query=%24.achievement&style=for-the-badge&label=achievements unlocked&color=137eb5" 
 </p>
 </div>
 <div align="center" style="margin-top: 10px;">

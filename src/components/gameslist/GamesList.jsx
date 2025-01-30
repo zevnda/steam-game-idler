@@ -6,7 +6,7 @@ import Private from '@/src/components/gameslist/Private';
 import useGamesList from '@/src/hooks/gameslist/useGamesList';
 import Loader from '@/src/components/ui/Loader';
 import GameCard from '@/src/components/ui/GameCard';
-import GameSettings from './GameSettings';
+import GameSettings from '@/src/components/gameslist/GameSettings';
 
 export default function GamesList() {
     const { showAchievements } = useContext(AppContext);

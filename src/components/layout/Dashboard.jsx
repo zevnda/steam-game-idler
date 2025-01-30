@@ -1,6 +1,6 @@
 import { Fragment, useContext, useEffect } from 'react';
 
-import { AppContext } from './AppContext';
+import { AppContext } from '@/src/components/layout/AppContext';
 import { antiAwayStatus } from '@/src/utils/utils';
 import Header from '@/src/components/ui/Header';
 import SideBar from '@/src/components/ui/SideBar';

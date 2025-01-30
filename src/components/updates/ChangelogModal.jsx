@@ -15,7 +15,7 @@ export default function ChangelogModal({ showChangelogModal, setShowChangelogMod
 
     return (
         <Fragment>
-            <Modal isOpen={showChangelogModal} backdrop='opaque' className='min-w-[700px] border border-border'>
+            <Modal isOpen={showChangelogModal} className='min-w-[830px] max-h-[490px] border border-border'>
                 <ModalContent>
                     <Fragment>
                         <ModalHeader className='flex flex-col gap-1 bg-modalheader border-b border-border' data-tauri-drag-region>
@@ -30,11 +30,6 @@ export default function ChangelogModal({ showChangelogModal, setShowChangelogMod
                                     >
                                         {transformLinks(transformIssueReferences(transformMentions(changelog)))}
                                     </ReactMarkdown>
-                                    <ExtLink href={'https://github.com/zevnda/steam-game-idler/issues/new/choose'}>
-                                        <p className='text-sm text-sgi'>
-                                            Report any issues on GitHub
-                                        </p>
-                                    </ExtLink>
                                 </Fragment>
                             ) : (
                                 <div className='flex justify-center items-center min-h-[100px]'>
@@ -44,8 +39,13 @@ export default function ChangelogModal({ showChangelogModal, setShowChangelogMod
                         </ModalBody>
                         <ModalFooter className='bg-modalfooter border-t border-border'>
                             <div className='flex justify-center items-center gap-4'>
+                                <ExtLink href={'https://github.com/zevnda/steam-game-idler/issues/new/choose'}>
+                                    <p className='text-xs cursor-pointer hover:text-altwhite duration-150 p-2 rounded'>
+                                        Report issue on GitHub
+                                    </p>
+                                </ExtLink>
                                 <ExtLink href='https://github.com/zevnda/steam-game-idler/releases/latest'>
-                                    <p className='text-xs cursor-pointer'>
+                                    <p className='text-xs cursor-pointer hover:text-altwhite duration-150 p-2 rounded'>
                                         View on GitHub
                                     </p>
                                 </ExtLink>

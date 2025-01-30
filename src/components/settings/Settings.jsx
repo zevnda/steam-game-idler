@@ -10,7 +10,7 @@ import ResetSettings from '@/src/components/settings/ResetSettings';
 import CardSettings from '@/src/components/settings/CardSettings';
 import SettingsMenu from '@/src/components/settings/SettingsMenu';
 import Logs from '@/src/components/settings/Logs';
-import ClearData from './ClearData';
+import ClearData from '@/src/components/settings/ClearData';
 
 export default function Settings({ setInitUpdate, setUpdateManifest }) {
     const [settings, setSettings] = useState(null);

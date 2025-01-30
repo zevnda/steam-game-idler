@@ -32,9 +32,6 @@ importers:
       '@tsparticles/slim':
         specifier: ^3.7.1
         version: 3.8.0
-      axios:
-        specifier: ^1.7.9
-        version: 1.7.9
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
