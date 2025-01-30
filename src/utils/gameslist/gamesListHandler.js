@@ -49,21 +49,3 @@ export const sortAndFilterGames = (gameList, recentGames, sortStyle, isQuery, ga
     }
     return sortedAndFilteredGames;
 };
-
-export const saveCurrentPage = (page) => {
-    sessionStorage.setItem('currentPage', page);
-};
-
-export const loadCurrentPage = () => {
-    const page = sessionStorage.getItem('currentPage');
-    return page ? parseInt(page, 10) : 1;
-};
-
-export const saveScrollPosition = (position) => {
-    sessionStorage.setItem('scrollPosition', position);
-};
-
-export const loadScrollPosition = () => {
-    const position = sessionStorage.getItem('scrollPosition');
-    return position ? parseInt(position, 10) : 0;
-};

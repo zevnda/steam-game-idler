@@ -20,25 +20,28 @@ body:
       description: Provide detailed steps to reproduce your issue
       placeholder: Leave this blank if you are unsure
 
-  - type: dropdown
-    id: sgi-branch
+  - type: textarea
+    id: log-file
     attributes:
-      label: Which branch of SGI?
-      options:
-        - "Base"
-        - "Beta"
-        - "CLI + WebUI"
-    validations:
-      required: true
+      label: Provide your log file
+      description: Useful for debugging issue
+      placeholder: Use the attachment button below. Your log file can be found in "C:\\Users\\your_username\\AppData\\Roaming\\steam-game-idler"
+
+  - type: textarea
+    id: export-data
+    attributes:
+      label: Provide your exported data
+      description: Useful for debugging issue
+      placeholder: You can export your data by going to Settings and clicking the Export Data button then pasting it here
 
   - type: dropdown
-    id: version
+    id: sgi-version
     attributes:
-      label: What version of SGI are you using?
-      description: If using an older version, specify which version in your issue
+      label: Steam Game Idler Version
       options:
-        - Latest version
-        - Older version
+        - "Latest release"
+        - "Older release"
+        - "Beta release"
     validations:
       required: true
 
@@ -48,9 +51,9 @@ body:
       label: Pre-report checklist
       description: Please try to fulfull all of the following
       options:
-        - label: I have checked for similar [open/closed issues](https://github.com/zevnda/steam-game-idler/issues?q=)
+        - label: I have checked for similar [open/closed issues](https://github.com/zevnda/steam-game-idler/issues)
           required: true
-        - label: I have checked the [FAQ wiki](https://github.com/zevnda/steam-game-idler/wiki/faq) for my issue
+        - label: I have checked the [FAQ wiki](https://steamgameidler.vercel.app/faq) for my issue
           required: true
-        - label: I have included my "log.txt" file located in "C:\\Users\\your_username\\AppData\\Roaming\\steam-game-idler"
-          required: true
+        - label: I have included my log.txt file
+        - label: I have included my exported data

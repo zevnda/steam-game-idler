@@ -41,10 +41,6 @@ export default function useHeader(setGameQueryValue, setAchievementQueryValue) {
         localStorage.setItem('minToTrayNotified', 'true');
     };
 
-    const handleQuery = () => {
-        setIsQuery(true);
-    };
-
     const handleGameQueryChange = (e) => {
         setGameQueryValue(e.target.value);
     };
@@ -54,7 +50,7 @@ export default function useHeader(setGameQueryValue, setAchievementQueryValue) {
     };
 
     const handleKeyDown = () => {
-        handleQuery('query');
+        setIsQuery(true);
     };
 
     return {

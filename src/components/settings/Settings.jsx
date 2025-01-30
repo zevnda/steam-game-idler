@@ -11,6 +11,7 @@ import CardSettings from '@/src/components/settings/CardSettings';
 import SettingsMenu from '@/src/components/settings/SettingsMenu';
 import Logs from '@/src/components/settings/Logs';
 import ClearData from '@/src/components/settings/ClearData';
+import ExportSettings from './ExportSettings';
 
 export default function Settings({ setInitUpdate, setUpdateManifest }) {
     const [settings, setSettings] = useState(null);
@@ -18,7 +19,11 @@ export default function Settings({ setInitUpdate, setUpdateManifest }) {
     const [refreshKey, setRefreshKey] = useState(0);
 
     useEffect(() => {
-        getAppVersion(setVersion, toast);
+        const getAndSetVersion = async () => {
+            const version = await getAppVersion(toast);
+            setVersion(version);
+        };
+        getAndSetVersion();
     }, []);
 
     useEffect(() => {
@@ -49,6 +54,7 @@ export default function Settings({ setInitUpdate, setUpdateManifest }) {
                         <div className='flex items-center gap-2'>
                             <ResetSettings setSettings={setSettings} setRefreshKey={setRefreshKey} />
                             <ClearData />
+                            <ExportSettings />
                             <SettingsMenu setInitUpdate={setInitUpdate} setUpdateManifest={setUpdateManifest} />
                         </div>
                     </div>

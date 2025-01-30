@@ -15,7 +15,7 @@ A lightweight, user-friendly tool for farming trading cards, unlocking achieveme
 </p>
 
 <p align="center">
-  <img src="./public/example_one.png" width="700" alt="Click for larger image">
+  <img src="./public/example.png" width="700" alt="Click for larger image">
   <br>
   <a href="https://steamgameidler.vercel.app/gallery"><sub>view more examples</sub></a>
 </p>

@@ -4,10 +4,10 @@ import { logEvent } from '@/src/utils/utils';
 import { toast } from 'react-toastify';
 
 // Get the application version and set it in the state
-export const getAppVersion = async (setVersion, toast) => {
+export const getAppVersion = async (toast) => {
     try {
         const appVersion = await getVersion();
-        setVersion(appVersion);
+        return appVersion;
     } catch (error) {
         toast.error(`Error in (getAppVersion): ${error?.message || error}`);
         console.error('Error in (getAppVersion):', error);

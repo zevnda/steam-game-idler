@@ -1,4 +1,4 @@
-import { Fragment } from 'react';
+import { Fragment, useContext } from 'react';
 
 import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@heroui/react';
 
@@ -6,8 +6,10 @@ import { useSettingsMenu } from '@/src/hooks/settings/useSettingsMenu';
 import ExtLink from '@/src/components/ui/ExtLink';
 
 import { BiDotsVerticalRounded } from 'react-icons/bi';
+import { AppContext } from '../layout/AppContext';
 
 export default function SettingsMenu({ setInitUpdate, setUpdateManifest }) {
+    const { setShowChangelogModal } = useContext(AppContext);
     const { checkForUpdates } = useSettingsMenu(setInitUpdate, setUpdateManifest);
 
     return (
@@ -28,10 +30,8 @@ export default function SettingsMenu({ setInitUpdate, setUpdateManifest }) {
                             Help
                         </ExtLink>
                     </DropdownItem>
-                    <DropdownItem key='changelog' className='rounded p-0 m-0' textValue='Changelog'>
-                        <ExtLink href={'https://github.com/zevnda/steam-game-idler/releases'} className='flex text-sm w-full px-2 py-1'>
-                            Changelog
-                        </ExtLink>
+                    <DropdownItem key='changelog' className='rounded px-2 py-1' textValue='Changelog' onPress={() => setShowChangelogModal(true)}>
+                        Changelog
                     </DropdownItem>
                     <DropdownItem key='report' className='rounded p-0 m-0' textValue='Report an issue'>
                         <ExtLink href={'https://github.com/zevnda/steam-game-idler/issues/new?assignees=zevnda&labels=bug%2Cinvestigating&projects=&template=issue_report.yml&title=Title'} className='flex text-sm w-full px-2 py-1'>

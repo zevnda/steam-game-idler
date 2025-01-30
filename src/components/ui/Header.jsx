@@ -1,5 +1,4 @@
 import { Fragment, useContext } from 'react';
-import Image from 'next/image';
 
 import { Divider, Input } from '@heroui/react';
 
@@ -12,6 +11,7 @@ import { HiMiniMinus } from 'react-icons/hi2';
 import { RiSearchLine } from 'react-icons/ri';
 import { BiWindows } from 'react-icons/bi';
 import { IoClose } from 'react-icons/io5';
+import { GoGrabber } from 'react-icons/go';
 
 export default function Header() {
     const {
@@ -38,13 +38,10 @@ export default function Header() {
         <Fragment>
             <div className='relative w-full h-14 bg-titlebar select-none'>
                 <div className='flex justify-between items-center h-full text-titletext'>
-                    <div className='flex justify-center items-center gap-1 px-2 bg-sidebar h-full w-14 dark:border-r border-b border-border'>
-                        <Image
-                            src={'/logo.png'}
-                            width={32}
-                            height={32}
-                            alt='logo'
-                        />
+                    <div
+                        className='flex justify-center items-center gap-1 px-2 bg-sidebar h-full w-14 dark:border-r border-b border-border' data-tauri-drag-region
+                    >
+                        <GoGrabber className='text-offwhite' fontSize={28} data-tauri-drag-region />
                     </div>
 
                     <div className='flex justify-center items-center flex-grow h-full border-b border-border'>

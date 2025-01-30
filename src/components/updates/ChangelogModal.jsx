@@ -15,7 +15,7 @@ export default function ChangelogModal({ showChangelogModal, setShowChangelogMod
 
     return (
         <Fragment>
-            <Modal isOpen={showChangelogModal} className='min-w-[830px] max-h-[490px] border border-border'>
+            <Modal isOpen={showChangelogModal} hideCloseButton className='min-w-[830px] max-h-[490px] border border-border'>
                 <ModalContent>
                     <Fragment>
                         <ModalHeader className='flex flex-col gap-1 bg-modalheader border-b border-border' data-tauri-drag-region>

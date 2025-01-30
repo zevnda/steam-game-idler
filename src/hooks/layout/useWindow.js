@@ -3,10 +3,9 @@ import { AppContext } from '@/src/components/layout/AppContext';
 import { checkForUpdates, changelogModal, defaultSettings, checkForFreeGames, startAutoIdleGames } from '@/src/utils/layout/windowHandler';
 
 export default function useWindow() {
-    const { setUserSummary, setShowFreeGamesTab, setFreeGamesList } = useContext(AppContext);
+    const { setUserSummary, setShowFreeGamesTab, setFreeGamesList, showChangelogModal, setShowChangelogModal } = useContext(AppContext);
     const [updateManifest, setUpdateManifest] = useState(null);
     const [initUpdate, setInitUpdate] = useState(false);
-    const [showChangelogModal, setShowChangelogModal] = useState(false);
 
     const freeGamesCheck = useCallback(() => {
         checkForFreeGames(setFreeGamesList, setShowFreeGamesTab);

@@ -86,7 +86,7 @@ fn main() {
         .plugin(tauri_plugin_window_state::Builder::default().build())
         .system_tray(system_tray)
         .on_system_tray_event(|app, event| match event {
-            // Handle system tray click event
+            // Handle system tray left click event
             SystemTrayEvent::LeftClick { .. } => {
                 let window = app.get_window("main").unwrap();
                 window.show().unwrap();
