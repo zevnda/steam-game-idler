@@ -1,16 +1,24 @@
-<div align="center">
-  <img src="./public/logo.png" width='80' alt='Click for larger image' />
-  <h1>Steam Game Idler</h1>
-  <p>A lightweight, user-friendly tool for farming trading cards, unlocking achievements and boosting playtime for all games in your Steam library.</p>
-<p>
-  <img src="https://img.shields.io/github/downloads/zevnda/steam-game-idler/total?style=for-the-badge&color=137eb5" alt="Downloads" />
+<p align="center">
+  <img src="./public/logo.png" width="80" alt="Click for larger image">
 </p>
-</div>
-<div align="center" style="margin-top: 10px;">
-  <img src="./public/example_one.png" width='700' alt='Click for larger image' />
+
+<h1 align="center">Steam Game Idler</h1>
+
+<p align="center">
+A lightweight, user-friendly tool for farming trading cards, unlocking achievements and boosting playtime for all games in your Steam library.
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/github/downloads/zevnda/steam-game-idler/total?style=for-the-badge&color=349dad" alt="Downloads">
+  <img src="https://img.shields.io/github/v/release/zevnda/steam-game-idler?style=for-the-badge&label=Version&color=a160bf" alt="Release">
+  <img src="https://img.shields.io/github/actions/workflow/status/zevnda/steam-game-idler/release.yml?style=for-the-badge&color=32ba7b" alt="Build">
+</p>
+
+<p align="center">
+  <img src="./public/example_one.png" width="700" alt="Click for larger image">
   <br>
-  <sub><a href="https://steamgameidler.vercel.app/gallery">view more examples</a></sub>
-</div>
+  <a href="https://steamgameidler.vercel.app/gallery"><sub>view more examples</sub></a>
+</p>
 
 # Installation
 1. Download the `.msi` installer from the **[releases page](https://github.com/zevnda/steam-game-idler/releases/latest)**
