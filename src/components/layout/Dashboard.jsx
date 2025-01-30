@@ -11,7 +11,6 @@ import FreeGamesList from '@/src/components/gameslist/FreeGamesList';
 import GamesList from '@/src/components/gameslist/GamesList';
 import Settings from '@/src/components/settings/Settings';
 import CustomList from '@/src/components/customlists/CustomList';
-import ChatBox from '@/src/components/chat/ChatBox';
 
 export default function Dashboard({ setInitUpdate, setUpdateManifest }) {
     const { activePage, setActivePage, showAchievements, isCardFarming, isAchievementUnlocker } = useContext(AppContext);
@@ -41,13 +40,6 @@ export default function Dashboard({ setInitUpdate, setUpdateManifest }) {
         }
 
         switch (activePage) {
-            case 'chat':
-                return (
-                    <Fragment>
-                        <SideBar />
-                        <ChatBox />
-                    </Fragment>
-                );
             case 'freeGames':
                 return (
                     <Fragment>

@@ -85,44 +85,46 @@ export default function CardSettings({ settings, setSettings }) {
                 </Checkbox>
 
                 <div className='w-full'>
-                    <p className='text-xs my-2'>
+                    <p className='text-xs mt-2'>
                         Steam credentials are required in order to use the Card Farming feature. <ExtLink href={'https://steamgameidler.vercel.app/steam-credentials'} className='text-link hover:text-linkhover'>Learn more</ExtLink>
                     </p>
                     <div className='flex flex-col mt-4'>
                         <div className='flex flex-col gap-2'>
-                            <Input
-                                size='sm'
-                                label='sessionid'
-                                labelPlacement='outside'
-                                placeholder=' '
-                                className='max-w-[300px]'
-                                classNames={{ inputWrapper: ['bg-input border border-inputborder hover:!bg-titlebar rounded-md group-data-[focus-within=true]:!bg-titlebar'] }}
-                                value={sidValue}
-                                onChange={handleSidChange}
-                                type={'password'}
-                            />
-                            <Input
-                                size='sm'
-                                label='steamLoginSecure'
-                                labelPlacement='outside'
-                                placeholder=' '
-                                className='max-w-[300px]'
-                                classNames={{ inputWrapper: ['bg-input border border-inputborder hover:!bg-titlebar rounded-md group-data-[focus-within=true]:!bg-titlebar'] }}
-                                value={slsValue}
-                                onChange={handleSlsChange}
-                                type={'password'}
-                            />
-                            <Input
-                                size='sm'
-                                label={<p>steamParental/steamMachineAuth <span className='italic'>(optional)</span></p>}
-                                labelPlacement='outside'
-                                placeholder=' '
-                                className='max-w-[300px]'
-                                classNames={{ inputWrapper: ['bg-input border border-inputborder hover:!bg-titlebar rounded-md group-data-[focus-within=true]:!bg-titlebar'] }}
-                                value={smaValue}
-                                onChange={handleSmaChange}
-                                type={'password'}
-                            />
+                            <div className='flex gap-6'>
+                                <Input
+                                    size='sm'
+                                    label='sessionid'
+                                    labelPlacement='outside'
+                                    placeholder=' '
+                                    className='max-w-[300px]'
+                                    classNames={{ inputWrapper: ['bg-input border border-inputborder hover:!bg-titlebar rounded-md group-data-[focus-within=true]:!bg-titlebar'] }}
+                                    value={sidValue}
+                                    onChange={handleSidChange}
+                                    type={'password'}
+                                />
+                                <Input
+                                    size='sm'
+                                    label='steamLoginSecure'
+                                    labelPlacement='outside'
+                                    placeholder=' '
+                                    className='max-w-[300px]'
+                                    classNames={{ inputWrapper: ['bg-input border border-inputborder hover:!bg-titlebar rounded-md group-data-[focus-within=true]:!bg-titlebar'] }}
+                                    value={slsValue}
+                                    onChange={handleSlsChange}
+                                    type={'password'}
+                                />
+                                <Input
+                                    size='sm'
+                                    label={<p>steamParental/steamMachineAuth <span className='italic'>(optional)</span></p>}
+                                    labelPlacement='outside'
+                                    placeholder=' '
+                                    className='max-w-[300px]'
+                                    classNames={{ inputWrapper: ['bg-input border border-inputborder hover:!bg-titlebar rounded-md group-data-[focus-within=true]:!bg-titlebar'] }}
+                                    value={smaValue}
+                                    onChange={handleSmaChange}
+                                    type={'password'}
+                                />
+                            </div>
                             <div className='flex w-[200px] gap-2 mt-2'>
                                 <Button
                                     size='sm'

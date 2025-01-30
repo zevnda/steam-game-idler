@@ -11,8 +11,32 @@ export default function AchievementSettings({ settings, setSettings }) {
     return (
         <Fragment>
             {localSettings && localSettings.achievementUnlocker && (
-                <div className='flex flex-col gap-6 p-2'>
+                <div className='flex flex-col gap-4 p-2'>
                     <div className='flex flex-col gap-4'>
+                        <Checkbox
+                            name='idle'
+                            isSelected={localSettings?.achievementUnlocker?.idle || false}
+                            onChange={(e) => handleCheckboxChange(e, localSettings, setLocalSettings, setSettings)}
+                        >
+                            <div className='flex items-center gap-1'>
+                                <p className='text-xs'>
+                                    Idle games while Achievement Unlocker is active
+                                </p>
+                            </div>
+                        </Checkbox>
+
+                        <Checkbox
+                            name='hidden'
+                            isSelected={localSettings?.achievementUnlocker?.hidden || false}
+                            onChange={(e) => handleCheckboxChange(e, localSettings, setLocalSettings, setSettings)}
+                        >
+                            <div className='flex items-center gap-1'>
+                                <p className='text-xs'>
+                                    Skip hidden achievements
+                                </p>
+                            </div>
+                        </Checkbox>
+
                         <div className='flex items-center gap-2'>
                             <Checkbox
                                 name='schedule'
@@ -54,30 +78,6 @@ export default function AchievementSettings({ settings, setSettings }) {
                             />
                         </div>
 
-                        <Checkbox
-                            name='idle'
-                            isSelected={localSettings?.achievementUnlocker?.idle || false}
-                            onChange={(e) => handleCheckboxChange(e, localSettings, setLocalSettings, setSettings)}
-                        >
-                            <div className='flex items-center gap-1'>
-                                <p className='text-xs'>
-                                    Idle games while Achievement Unlocker is active
-                                </p>
-                            </div>
-                        </Checkbox>
-
-                        <Checkbox
-                            name='hidden'
-                            isSelected={localSettings?.achievementUnlocker?.hidden || false}
-                            onChange={(e) => handleCheckboxChange(e, localSettings, setLocalSettings, setSettings)}
-                        >
-                            <div className='flex items-center gap-1'>
-                                <p className='text-xs'>
-                                    Skip hidden achievements
-                                </p>
-                            </div>
-                        </Checkbox>
-
                         <Slider
                             label={
                                 <p className='text-xs'>
@@ -91,7 +91,7 @@ export default function AchievementSettings({ settings, setSettings }) {
                             defaultValue={localSettings?.achievementUnlocker?.interval}
                             formatOptions={{ style: 'currency', currency: 'USD' }}
                             hideValue
-                            className='w-[500px]'
+                            className='w-[500px] mt-2'
                             classNames={{ value: ['text-xs'] }}
                             onChangeEnd={(e) => handleSliderChange(e, localSettings, setLocalSettings, setSettings)}
                             onChange={(e) => updateLabel(e, setLabelInterval)}

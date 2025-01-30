@@ -34,7 +34,7 @@ export default function Logs() {
                     <table className='w-full border-collapse'>
                         <thead className='sticky top-0 z-10'>
                             <tr className='border-b border-border bg-[#dedede] dark:bg-[#131313]'>
-                                <th className='text-left p-1.5 w-[200px]'>Time</th>
+                                <th className='text-left p-1.5 w-[150px]'>Time</th>
                                 <th className='text-left p-1.5'>Message</th>
                             </tr>
                         </thead>

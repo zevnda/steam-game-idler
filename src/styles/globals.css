@@ -5,23 +5,11 @@
 .light {
     --sb-thumb: #c8c8c8;
     --sb-track: #efefef;
-    --a: #666;
-    --a-hover: #000;
-    --percent: #eeeeee;
-    --code: #e9e9e9;
-    --borderMax: #1899da;
-    --borderMin: #137eb560;
 }
 
 .dark {
     --sb-thumb: #303030;
     --sb-track: #1c1c1c;
-    --a: #888;
-    --a-hover: #fff;
-    --percent: #1c1c1c;
-    --code: #2d2d2d;
-    --borderMax: #fff;
-    --borderMin: #ffffff60;
 }
 
 ::-webkit-scrollbar {
@@ -36,35 +24,10 @@
     background: var(--sb-thumb);
 }
 
-.notifications::-webkit-scrollbar {
-    width: 10px;
-}
-
-.notifications::-webkit-scrollbar-track {
-    background: var(--sb-track);
-    border-bottom-right-radius: 12px;
-    border-top-right-radius: 12px;
-}
-
-.notifications::-webkit-scrollbar-thumb {
-    background: var(--sb-thumb);
-    border-top-right-radius: 12px;
-    border-bottom-right-radius: 12px;
-}
-
 html {
     background-color: transparent !important;
 }
 
 body {
     overflow: hidden;
-}
-
-.mention {
-    background-color: #5589dc8f;
-    color: white;
-    width: fit-content;
-    padding: 0 2px;
-    border-radius: 2px;
-    opacity: 85%;
 }
