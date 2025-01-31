@@ -9,7 +9,7 @@
     },
     "package": {
         "productName": "Steam Game Idler",
-        "version": "1.7.3"
+        "version": "1.7.4"
     },
     "tauri": {
         "allowlist": {
