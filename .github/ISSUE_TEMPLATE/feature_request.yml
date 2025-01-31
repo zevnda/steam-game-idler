@@ -1,30 +1,27 @@
 name: Feature Request
 description: Suggest an idea for this project
-title: "Title"
 labels: ["feature request"]
 assignees:
   - "zevnda"
 body:
   - type: textarea
-    id: idea
+    id: feature-details
     attributes:
-      label: Describe the feature
-      placeholder: Include as much information as possible, how could it be implemented, what will it do, how would it benefit you and other users, etc
+      label: Feature Description and Purpose
+      description: Provide a detailed overview of the feature. Explain what it will do, the problem it solves, potential use cases, and how it benefits you or others. Include examples if possible
     validations:
       required: true
-  - type: dropdown
-    id: sgi-branch
-    attributes:
-      label: Which branch of SGI?
-      options:
-        - "Base"
-        - "CLI + WebUI"
-    validations:
-      required: true
-  - type: input
+      
+  - type: textarea
     id: issue
     attributes:
-      label: Is your feature request related to an issue?
-      placeholder: "Yes, this should fix issue #7"
-    validations:
-      required: false
+      label: Related Issues
+      description: If your request addresses an open issue, link to it here and explain how it resolves the issue
+      placeholder: "This is related to #7 and will fix it by..."
+
+  - type: checkboxes
+    id: contributions
+    attributes:
+      label: Contribution
+      options:
+        - label: I would like to work on this myself and will submit a pull request
