@@ -37,7 +37,7 @@ export default function ThemeSwitch() {
 
     return (
         <Fragment>
-            <div className='flex justify-center items-center cursor-pointer w-[42px]' onClick={handleClick}>
+            <div className='flex justify-center items-center cursor-pointer w-[55px]' onClick={handleClick}>
                 <div className='flex items-center p-2 hover:bg-titlehover rounded-full'>
                     {renderIcon()}
                 </div>

@@ -20,7 +20,7 @@ export default function SideBar() {
         <Fragment>
             <div className='flex justify-between flex-col w-14 min-h-calc max-h-calc bg-sidebar dark:border-r border-border'>
                 <div className='flex justify-center items-center flex-col'>
-                    <div className='relative flex justify-center items-center w-full h-11 hover:bg-sgi dark:hover:bg-titlehover cursor-pointer duration-200' onClick={() => setActivePage('games')}>
+                    <div className='relative flex justify-center items-center w-full h-[55px] hover:bg-sgi dark:hover:bg-titlehover cursor-pointer duration-200' onClick={() => setActivePage('games')}>
                         {activePage === 'games' && (
                             <motion.div
                                 className='absolute w-full border-r-4 border-white'
@@ -37,7 +37,7 @@ export default function SideBar() {
                     </div>
 
                     <div
-                        className='relative flex justify-center items-center w-full h-11 hover:bg-sgi dark:hover:bg-titlehover cursor-pointer duration-200'
+                        className='relative flex justify-center items-center w-full h-[55px] hover:bg-sgi dark:hover:bg-titlehover cursor-pointer duration-200'
                         onClick={() => setActivePage('customlists/card-farming')}
                     >
                         {activePage === 'customlists/card-farming' && (
@@ -56,7 +56,7 @@ export default function SideBar() {
                     </div>
 
                     <div
-                        className='relative flex justify-center items-center w-full h-11 hover:bg-sgi dark:hover:bg-titlehover cursor-pointer duration-200'
+                        className='relative flex justify-center items-center w-full h-[55px] hover:bg-sgi dark:hover:bg-titlehover cursor-pointer duration-200'
                         onClick={() => setActivePage('customlists/achievement-unlocker')}
                     >
                         {activePage === 'customlists/achievement-unlocker' && (
@@ -75,7 +75,7 @@ export default function SideBar() {
                     </div>
 
                     <div
-                        className='relative flex justify-center items-center w-full h-11 hover:bg-sgi dark:hover:bg-titlehover cursor-pointer duration-200'
+                        className='relative flex justify-center items-center w-full h-[55px] hover:bg-sgi dark:hover:bg-titlehover cursor-pointer duration-200'
                         onClick={() => setActivePage('customlists/auto-idle')}
                     >
                         {activePage === 'customlists/auto-idle' && (
@@ -94,7 +94,7 @@ export default function SideBar() {
                     </div>
 
                     <div
-                        className='relative flex justify-center items-center w-full h-11 hover:bg-sgi dark:hover:bg-titlehover cursor-pointer duration-200'
+                        className='relative flex justify-center items-center w-full h-[55px] hover:bg-sgi dark:hover:bg-titlehover cursor-pointer duration-200'
                         onClick={() => setActivePage('customlists/favorites')}
                     >
                         {activePage === 'customlists/favorites' && (
@@ -113,7 +113,7 @@ export default function SideBar() {
                     </div>
 
                     {showFreeGamesTab && (
-                        <div className='relative flex justify-center items-center w-full h-11 hover:bg-sgi dark:hover:bg-titlehover cursor-pointer duration-200' onClick={() => setActivePage('freeGames')}>
+                        <div className='relative flex justify-center items-center w-full h-[55px] hover:bg-sgi dark:hover:bg-titlehover cursor-pointer duration-200' onClick={() => setActivePage('freeGames')}>
                             {activePage === 'freeGames' && (
                                 <motion.div
                                     className='absolute w-full border-r-4 border-white'
@@ -134,7 +134,7 @@ export default function SideBar() {
 
                 {!isCardFarming && !isAchievementUnlocker && (
                     <div className='flex flex-col justify-end items-center h-full'>
-                        <div className='relative flex justify-center items-center w-full h-11 hover:bg-sgi dark:hover:bg-titlehover cursor-pointer duration-200' onClick={() => setActivePage('settings')}>
+                        <div className='relative flex justify-center items-center w-full h-[55px] hover:bg-sgi dark:hover:bg-titlehover cursor-pointer duration-200' onClick={() => setActivePage('settings')}>
                             {activePage === 'settings' && (
                                 <motion.div
                                     className='absolute w-full border-r-4 border-white'
@@ -149,7 +149,7 @@ export default function SideBar() {
                             )}
                             <IoSettings className='text-offwhite' fontSize={24} />
                         </div>
-                        <div className='flex justify-center items-center w-full h-11 hover:bg-red-500 cursor-pointer duration-200' onClick={openConfirmation}>
+                        <div className='flex justify-center items-center w-full h-[55px] hover:bg-red-500 cursor-pointer duration-200' onClick={openConfirmation}>
                             <FaSignOutAlt className='text-offwhite rotate-180' fontSize={24} />
                         </div>
                     </div>

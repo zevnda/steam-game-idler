@@ -17,10 +17,10 @@ export default function PageHeader() {
             <div className='flex justify-between items-center mb-4'>
                 <div className='flex gap-3'>
                     <Button
-                        size='sm'
-                        color='primary'
                         isIconOnly
-                        className='w-fit rounded-full duration-50'
+                        size='sm'
+                        color='default'
+                        className='rounded-full'
                         startContent={<IoMdArrowBack fontSize={18} />}
                         onPress={handleClick}
                     />

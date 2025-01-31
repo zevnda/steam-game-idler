@@ -28,7 +28,7 @@ export default function ExportSettings() {
             }
         }
         const allSettingsString = JSON.stringify(allSettings, null, 2);
-        navigator.clipboard.writeText(`\`\`\`json\n${allSettingsString}\n\`\`\``).then(() => {
+        navigator.clipboard.writeText(allSettingsString).then(() => {
             toast.success('Data copied to clipboard');
         }).catch(() => {
             toast.error('Error exporting data');

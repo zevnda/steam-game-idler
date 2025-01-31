@@ -10,6 +10,8 @@ import useChangelog from '@/src/hooks/updates/useChangelog';
 import styles from '@/src/styles/ChangelogModal.module.css';
 import ExtLink from '@/src/components/ui/ExtLink';
 
+import { FaStar } from 'react-icons/fa';
+
 export default function ChangelogModal({ showChangelogModal, setShowChangelogModal }) {
     const { changelog, version, handleCloseModal } = useChangelog(setShowChangelogModal);
 
@@ -18,8 +20,16 @@ export default function ChangelogModal({ showChangelogModal, setShowChangelogMod
             <Modal isOpen={showChangelogModal} hideCloseButton className='min-w-[830px] max-h-[490px] border border-border'>
                 <ModalContent>
                     <Fragment>
-                        <ModalHeader className='flex flex-col gap-1 bg-modalheader border-b border-border' data-tauri-drag-region>
-                            Changelog for v{version}
+                        <ModalHeader className='flex justify-between items-center w-full bg-modalheader border-b border-border' data-tauri-drag-region>
+                            <p>Changelog for v{version}</p>
+                            <ExtLink href={'https://github.com/zevnda/steam-game-idler'}>
+                                <div className='flex items-center gap-2 text-yellow-400 hover:text-yellow-500'>
+                                    <FaStar />
+                                    <p>
+                                        Star on GitHub
+                                    </p>
+                                </div>
+                            </ExtLink>
                         </ModalHeader>
                         <ModalBody className='max-h-[380px] overflow-y-auto'>
                             {changelog ? (
@@ -44,7 +54,7 @@ export default function ChangelogModal({ showChangelogModal, setShowChangelogMod
                                         Report issue on GitHub
                                     </p>
                                 </ExtLink>
-                                <ExtLink href='https://github.com/zevnda/steam-game-idler/releases/latest'>
+                                <ExtLink href={'https://github.com/zevnda/steam-game-idler/releases/latest'}>
                                     <p className='text-xs cursor-pointer hover:text-altwhite duration-150 p-2 rounded'>
                                         View on GitHub
                                     </p>
