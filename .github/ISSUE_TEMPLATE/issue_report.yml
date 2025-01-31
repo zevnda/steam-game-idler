@@ -1,59 +1,48 @@
 name: Issue/Bug Report
-description: Create an issue or bug report
+description: Report a bug or issue
 labels: ["bug"]
 assignees:
   - "zevnda"
 body:
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Pre-report Checklist
+      options:
+        - label: I have searched for similar [open/closed issues](https://github.com/zevnda/steam-game-idler/issues)
+          required: true
+        - label: I have checked the [FAQ page](https://steamgameidler.vercel.app/faq) for my issue
+          required: true
+
   - type: textarea
     id: description
     attributes:
-      label: Describe the issue
-      description: A clear and descriptive overview of your issue
-      placeholder: Feel free to include any screenshots or videos that demonstrate your issue
+      label: Issue Description
+      description: Provide a clear and detailed description of the issue. Include any relevant screenshots, videos, or error messages
     validations:
       required: true
 
   - type: textarea
     id: steps-to-reproduce
     attributes:
-      label: Steps to reproduce the issue
-      description: Provide detailed steps to reproduce your issue
-      placeholder: Leave this blank if you are unsure
-
+      label: Steps to Reproduce
+      description: Provide the exact steps to reproduce this issue. If unsure, describe what you were doing when the issue occurred
+    validations:
+      required: true
+      
   - type: textarea
     id: log-file
     attributes:
-      label: Provide your log file
-      description: Useful for debugging issue
-      placeholder: Use the attachment button below. Your log file can be found in "C:\Users\<user>\AppData\Roaming\steam-game-idler"
+      label: Log File
+      description: Attach your log file from `C:\Users\<user>\AppData\Roaming\steam-game-idler`
+    validations:
+      required: true
 
   - type: textarea
     id: export-data
     attributes:
-      label: Provide your exported data
-      description: Useful for debugging issue
-      placeholder: You can export your data by going to Settings and clicking the Export Data button then pasting it here
-
-  - type: dropdown
-    id: sgi-version
-    attributes:
-      label: Steam Game Idler Version
-      options:
-        - "Latest release"
-        - "Older release"
-        - "Beta release"
+      label: Exported Data
+      description: Export your data by going to Settings > Export Data and then pasting it here
+      render: json
     validations:
       required: true
-
-  - type: checkboxes
-    id: terms
-    attributes:
-      label: Pre-report checklist
-      description: Please try to fulfull all of the following
-      options:
-        - label: I have checked for similar [open/closed issues](https://github.com/zevnda/steam-game-idler/issues)
-          required: true
-        - label: I have checked the [FAQ wiki](https://steamgameidler.vercel.app/faq) for my issue
-          required: true
-        - label: I have included my log file
-        - label: I have included my exported data
