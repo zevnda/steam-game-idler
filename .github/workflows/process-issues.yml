@@ -69,6 +69,17 @@ jobs:
                     commentBody += ". This is a pre-release version and is subject to changes.";
                   }
                 }
+
+                for (const label of labels) {
+                  if (label !== 'bug' && label !== 'feature request') {
+                    await github.rest.issues.removeLabel({
+                      owner: context.repo.owner,
+                      repo: context.repo.repo,
+                      issue_number: issueNumber,
+                      name: label
+                    });
+                  }
+                }
                 
                 if (newLabel) {
                   await github.rest.issues.addLabels({
