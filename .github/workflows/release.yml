@@ -73,9 +73,9 @@ jobs:
           with:
             path: |
               .next/cache
-            key: ${{ runner.OS }}-nextjs-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
+            key: ${{ runner.OS }}-nextjs-${{ hashFiles('**.[jt]s', '**.[jt]s') }}
             restore-keys: |
-              ${{ runner.OS }}-nextjs-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
+              ${{ runner.OS }}-nextjs-${{ hashFiles('**.[jt]s', '**.[jt]s') }}
 
         - name: Cache Cargo dependencies
           uses: actions/cache@v4
@@ -155,7 +155,7 @@ jobs:
           run: |
             git config --local user.name "github-actions[bot]"
             git config --local user.email "github-actions[bot]@users.noreply.github.com"
-            git add src-tauri/tauri.conf.json latest.json changelog.md
+            git add src-tauri/tauri.conf.json latest.json CHANGELOG.md
             git commit -m "Bump version to ${{ github.event.inputs.version }}"
             git push
 
