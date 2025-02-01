@@ -43,7 +43,19 @@ const listTypes = {
 };
 
 export default function CustomList({ type }) {
-    const { list, setList, visibleGames, filteredGamesList, containerRef, setSearchTerm, handleAddGame, handleRemoveGame, updateListOrder } = useCustomList(type);
+    const {
+        list,
+        setList,
+        visibleGames,
+        filteredGamesList,
+        containerRef,
+        setSearchTerm,
+        showInList,
+        setShowInList,
+        handleAddGame,
+        handleRemoveGame,
+        updateListOrder
+    } = useCustomList(type);
     const { startCardFarming, startAchievementUnlocker } = useAutomate();
     const [isEditModalOpen, setEditModalOpen] = useState(false);
     const [isSettingsModalOpen, setSettingsModalOpen] = useState(false);
@@ -126,10 +138,15 @@ export default function CustomList({ type }) {
             <EditListModal
                 isOpen={isEditModalOpen}
                 onOpenChange={setEditModalOpen}
-                onClose={() => setSearchTerm('')}
+                onClose={() => {
+                    setSearchTerm('');
+                    setShowInList(false);
+                }}
                 filteredGamesList={filteredGamesList}
                 list={list}
                 setSearchTerm={setSearchTerm}
+                showInList={showInList}
+                setShowInList={setShowInList}
                 handleAddGame={handleAddGame}
                 handleRemoveGame={handleRemoveGame}
                 setList={setList}

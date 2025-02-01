@@ -8,10 +8,14 @@ const Row = memo(({ index, style, data }) => {
     const { filteredGamesList, list, handleAddGame, handleRemoveGame } = data;
     const item = filteredGamesList[index];
 
+    const handleImageError = (event) => {
+        event.target.src = '/fallback.jpg';
+    };
+
     return (
         <div
             style={style}
-            className={`flex justify-between items-center gap-2 hover:bg-containerhover cursor-pointer px-3 py-1 duration-150 select-none ${list.some(game => game.appid === item.appid) && 'opacity-30'}`}
+            className={`flex justify-between items-center gap-2 hover:bg-containerhover cursor-pointer px-3 py-1 duration-150 select-none ${list.some(game => game.appid === item.appid) && 'opacity-50 dark:opacity-30'}`}
             onClick={() => list.some(game => game.appid === item.appid) ? handleRemoveGame(item) : handleAddGame(item)}
         >
             <div className='flex items-center gap-3 max-w-[350px]'>
@@ -22,6 +26,7 @@ const Row = memo(({ index, style, data }) => {
                     height={29}
                     alt={`${item.name} image`}
                     priority={true}
+                    onError={handleImageError}
                 />
                 <p className='text-sm truncate mr-8'>
                     {item.name}
@@ -29,7 +34,7 @@ const Row = memo(({ index, style, data }) => {
             </div>
             <div className='flex justify-center items-center'>
                 {list.some(game => game.appid === item.appid) && (
-                    <MdCheck fontSize={20} className='text-green-500' />
+                    <MdCheck fontSize={20} className='text-success' />
                 )}
             </div>
         </div>
@@ -38,7 +43,7 @@ const Row = memo(({ index, style, data }) => {
 
 Row.displayName = 'Row';
 
-export default function EditListModal({ isOpen, onOpenChange, onClose, filteredGamesList, list, setSearchTerm, handleAddGame, handleRemoveGame, setList, type }) {
+export default function EditListModal({ isOpen, onOpenChange, onClose, filteredGamesList, list, setSearchTerm, showInList, setShowInList, handleAddGame, handleRemoveGame, setList, type }) {
     const itemData = { filteredGamesList, list, handleAddGame, handleRemoveGame };
 
     return (
@@ -47,22 +52,32 @@ export default function EditListModal({ isOpen, onOpenChange, onClose, filteredG
                 <ModalContent>
                     {(onClose) => (
                         <Fragment>
-                            <ModalHeader className='flex bg-modalheader border-b border-border p-3' data-tauri-drag-region>
+                            <ModalHeader className='flex gap-2 bg-modalheader border-b border-border p-3'>
                                 <Input
+                                    isClearable
                                     size='sm'
-                                    clearable
                                     placeholder='Search for a game..'
                                     classNames={{ inputWrapper: ['bg-input border border-inputborder hover:!bg-titlebar rounded group-data-[focus-within=true]:!bg-titlebar'] }}
+                                    isDisabled={showInList}
                                     onChange={(e) => setSearchTerm(e.target.value)}
+                                    onClear={() => setSearchTerm('')}
                                 />
+                                <Button
+                                    size='sm'
+                                    color='default'
+                                    className='rounded-full'
+                                    isDisabled={list.length === 0}
+                                    startContent={<MdCheck fontSize={34} className={showInList ? 'text-green-500' : 'text-altwhite'} />}
+                                    onPress={() => setShowInList(!showInList)}
+                                >In List</Button>
                             </ModalHeader>
                             <ModalBody className='relative p-0 gap-0 overflow-y-auto'>
                                 <List
                                     height={window.innerHeight - 225}
-                                    itemCount={filteredGamesList.length}
+                                    itemCount={showInList ? list.length : filteredGamesList.length}
                                     itemSize={37}
                                     width={'100%'}
-                                    itemData={itemData}
+                                    itemData={showInList ? { ...itemData, filteredGamesList: list } : itemData}
                                 >
                                     {Row}
                                 </List>
@@ -75,6 +90,7 @@ export default function EditListModal({ isOpen, onOpenChange, onClose, filteredG
                                     className='rounded-md font-semibold'
                                     onPress={() => {
                                         localStorage.removeItem(`${type}Cache`);
+                                        setShowInList(false);
                                         setList([]);
                                     }}
                                 >
