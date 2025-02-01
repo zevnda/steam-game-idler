@@ -3,12 +3,14 @@
 pub mod automation;
 pub mod game_data;
 pub mod logging;
+pub mod steam_api;
 pub mod tasks;
 pub mod user_data;
 pub mod utils;
 use automation::*;
 use game_data::*;
 use logging::*;
+use steam_api::*;
 use tasks::*;
 use user_data::*;
 use utils::*;
@@ -34,6 +36,8 @@ fn main() {
         let result = dotenv::from_read(prod_env.as_bytes()).unwrap();
         result.load();
     }
+
+    init_api();
 
     // Create system tray menu items
     let show = CustomMenuItem::new("show".to_string(), "Show");

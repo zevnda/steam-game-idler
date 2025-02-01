@@ -28,6 +28,7 @@ select = "0.6.0"
 lazy_static = "1.5.0"
 window-shadows = "0.2.2"
 winapi = { version = "0.3", features = ["processthreadsapi", "handleapi", "winnt"] }
+steamworks = "0.11.0"
 tauri-plugin-autostart = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v1" }
 tauri-plugin-window-state = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v1" }
 
