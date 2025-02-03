@@ -1,8 +1,6 @@
 use regex::Regex;
 use reqwest::Client;
 use scraper::{Html, Selector};
-use select::document::Document;
-use select::predicate::Class;
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 use tokio::try_join;
@@ -154,26 +152,32 @@ pub async fn get_games_with_drops(
             .map_err(|e| e.to_string())?;
 
         let html = response.text().await.map_err(|e| e.to_string())?;
-        let document = Document::from(html.as_str());
+        let document = Html::parse_document(&html);
+
+        let badge_row_selector = Selector::parse(".badge_row").unwrap();
+        let progress_info_bold_selector = Selector::parse(".progress_info_bold").unwrap();
+        let badge_title_selector = Selector::parse(".badge_title").unwrap();
+        let btn_green_white_innerfade_selector =
+            Selector::parse(".btn_green_white_innerfade").unwrap();
 
         // Parse the HTML to find games with card drops remaining
-        for badge_row in document.find(Class("badge_row")) {
-            if let Some(progress_info) = badge_row.find(Class("progress_info_bold")).next() {
-                let text = progress_info.text();
+        for badge_row in document.select(&badge_row_selector) {
+            if let Some(progress_info) = badge_row.select(&progress_info_bold_selector).next() {
+                let text = progress_info.text().collect::<Vec<_>>().join("");
                 if let Some(captures) = Regex::new(r"(\d+)\s+card\s+drop(?:s)?\s+remaining")
                     .unwrap()
                     .captures(&text)
                 {
                     let game_name = badge_row
-                        .find(Class("badge_title"))
+                        .select(&badge_title_selector)
                         .next()
-                        .map(|e| e.text().trim().to_string())
+                        .map(|e| e.text().collect::<Vec<_>>().join("").trim().to_string())
                         .unwrap_or_default();
 
                     let app_id = badge_row
-                        .find(Class("btn_green_white_innerfade"))
+                        .select(&btn_green_white_innerfade_selector)
                         .next()
-                        .and_then(|e| e.attr("href"))
+                        .and_then(|e| e.value().attr("href"))
                         .and_then(|href| href.strip_prefix("steam://run/"))
                         .unwrap_or_default();
 
@@ -191,8 +195,9 @@ pub async fn get_games_with_drops(
         }
 
         // Check if there are more pages to process
-        if let Some(paging_info) = document.find(Class("profile_paging")).next() {
-            let paging_text = paging_info.text();
+        let profile_paging_selector = Selector::parse(".profile_paging").unwrap();
+        if let Some(paging_info) = document.select(&profile_paging_selector).next() {
+            let paging_text = paging_info.text().collect::<Vec<_>>().join("");
             if let Some(captures) = Regex::new(r"Showing (\d+)-(\d+) of (\d+)")
                 .unwrap()
                 .captures(&paging_text)

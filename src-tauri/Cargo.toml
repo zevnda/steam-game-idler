@@ -12,22 +12,40 @@ rust-version = "1.60"
 tauri-build = { version = "1.5.2", features = [] }
 
 [dependencies]
-chrono = "0.4"
-regex = "1.7.1"
-select = "0.6.0"
 dotenvs = "0.1.0"
-scraper = "0.20.0"
-serde_json = "1.0"
+scraper = "0.22.0"
 lazy_static = "1.5.0"
 steamlocate = "2.0.1"
 window-shadows = "0.2.2"
 tokio = { version = "1", features = ["full"] }
-serde = { version = "1.0", features = ["derive"] }
-reqwest = { version = "0.11", features = ["json"] }
-winapi = { version = "0.3", features = ["processthreadsapi", "handleapi", "winnt"] }
+chrono = { version = "0.4.39", features = ["clock"] }
+serde = { version = "1.0.217", features = ["derive"] }
+reqwest = { version = "0.12.12", features = ["json"] }
+serde_json = { version = "1.0.138", features = ["std"] }
+regex = { version = "1.11.1", default-features = false, features = ["std"] }
+winapi = { version = "0.3.9", features = ["processthreadsapi", "handleapi", "winnt"] }
 tauri-plugin-autostart = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v1" }
 tauri-plugin-window-state = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v1" }
-tauri = { version = "1.6.5", features = [ "notification-all", "system-tray", "window-set-position", "window-set-size", "process-relaunch", "shell-open", "fs-all", "path-all", "dialog-ask", "updater", "window-start-dragging", "window-show", "window-hide", "window-close", "window-maximize", "window-minimize", "window-unmaximize", "window-unminimize"] }
+tauri = { version = "1.6.5", features = [
+    "fs-all",
+    "updater",
+    "path-all",
+    "shell-open",
+    "dialog-ask",
+    "system-tray",
+    "notification-all",
+    "process-relaunch",
+    "window-show",
+    "window-hide",
+    "window-close",
+    "window-maximize",
+    "window-minimize",
+    "window-set-size",
+    "window-unmaximize", 
+    "window-unminimize",
+    "window-set-position",
+    "window-start-dragging"
+] }
 
 [profile.release]
 opt-level = 'z'
@@ -35,6 +53,7 @@ lto = true
 codegen-units = 1
 strip = true
 panic = "abort"
+overflow-checks = false
 
 [features]
-custom-protocol = [ "tauri/custom-protocol" ]
+custom-protocol = ["tauri/custom-protocol"]

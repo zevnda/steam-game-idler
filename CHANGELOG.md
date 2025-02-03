@@ -10,3 +10,4 @@
 - Fixed an issue in the `edit list modal` where if `in list` was active and you removed the last game from the list you could not disable `in list`
 - Added an `in list` button to the `edit list modal` to filter by games already in the list
 - Made the search bar in `edit list modal` clearable
+- Optimized rust dependencies and and build profile to reduce built binary size
