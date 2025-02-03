@@ -4,7 +4,7 @@ import { invoke } from '@tauri-apps/api/tauri';
 import { toast } from 'react-toastify';
 
 import { AppContext } from '@/src/components/layout/AppContext';
-import { getFilePath, logEvent } from '@/src/utils/utils';
+import { logEvent } from '@/src/utils/utils';
 
 export default function useSetup() {
     const { setUserSummary } = useContext(AppContext);
@@ -24,7 +24,7 @@ export default function useSetup() {
     useEffect(() => {
         const getSteamUsers = async () => {
             setIsLoading(true);
-            const result = await invoke('get_steam_users', { filePath: await getFilePath(), });
+            const result = await invoke('get_users');
             const data = JSON.parse(result);
 
             if (!data.error) {

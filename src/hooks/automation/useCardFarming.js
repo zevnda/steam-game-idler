@@ -1,4 +1,4 @@
-import { checkDrops, getAllGamesWithDrops, logEvent, startIdler, stopIdler, formatTime } from '@/src/utils/utils';
+import { checkDrops, getAllGamesWithDrops, logEvent, startIdle, stopIdle, formatTime } from '@/src/utils/utils';
 
 export const useCardFarming = async (
     setIsComplete,
@@ -103,17 +103,17 @@ export const farmCards = async (gamesSet, setCountdownTimer, isMountedRef, abort
             const mediumDelay = 60000;
             const longDelay = 60000 * 5;
 
-            await startAndStopIdler(game.appId, game.name, longDelay, setCountdownTimer, isMountedRef, abortControllerRef);
+            await startAndstopIdle(game.appId, game.name, longDelay, setCountdownTimer, isMountedRef, abortControllerRef);
             await delayAndCountdown(mediumDelay, setCountdownTimer, isMountedRef, abortControllerRef);
             if (await checkDropsRemaining(game)) return;
-            await startAndStopIdler(game.appId, game.name, shortDelay, setCountdownTimer, isMountedRef, abortControllerRef);
+            await startAndstopIdle(game.appId, game.name, shortDelay, setCountdownTimer, isMountedRef, abortControllerRef);
             if (await checkDropsRemaining(game)) return;
             await delayAndCountdown(mediumDelay, setCountdownTimer, isMountedRef, abortControllerRef);
             if (await checkDropsRemaining(game)) return;
-            await startAndStopIdler(game.appId, game.name, farmingInterval, setCountdownTimer, isMountedRef, abortControllerRef);
+            await startAndstopIdle(game.appId, game.name, farmingInterval, setCountdownTimer, isMountedRef, abortControllerRef);
             await delayAndCountdown(mediumDelay, setCountdownTimer, isMountedRef, abortControllerRef);
             if (await checkDropsRemaining(game)) return;
-            await startAndStopIdler(game.appId, game.name, shortDelay, setCountdownTimer, isMountedRef, abortControllerRef);
+            await startAndstopIdle(game.appId, game.name, shortDelay, setCountdownTimer, isMountedRef, abortControllerRef);
         });
 
         await Promise.all(farmingPromises);
@@ -123,14 +123,14 @@ export const farmCards = async (gamesSet, setCountdownTimer, isMountedRef, abort
 };
 
 // Start and stop idler for a game
-const startAndStopIdler = async (appId, name, duration, setCountdownTimer, isMountedRef, abortControllerRef) => {
+const startAndstopIdle = async (appId, name, duration, setCountdownTimer, isMountedRef, abortControllerRef) => {
     try {
         startCountdown(duration / 60000, setCountdownTimer);
-        await startIdler(appId, name, true, false);
+        await startIdle(appId, name, true, false);
         await delay(duration, isMountedRef, abortControllerRef);
-        await stopIdler(appId, name);
+        await stopIdle(appId, name);
     } catch (error) {
-        handleError('startAndStopIdler', error);
+        handleError('startAndstopIdle', error);
     }
 };
 
@@ -218,7 +218,7 @@ const delay = (ms, isMountedRef, abortControllerRef) => {
 // Handle cancel action
 export const handleCancel = async (gamesWithDrops, isMountedRef, abortControllerRef) => {
     try {
-        const stopPromises = Array.from(gamesWithDrops).map(game => stopIdler(game.appId, game.name));
+        const stopPromises = Array.from(gamesWithDrops).map(game => stopIdle(game.appId, game.name));
         await Promise.all(stopPromises);
     } catch (error) {
         handleError('handleCancel', error);

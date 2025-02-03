@@ -2,13 +2,13 @@ import { Fragment, useContext, useState } from 'react';
 
 import { Modal, ModalContent, ModalBody, Button, useDisclosure, ModalFooter, ModalHeader, Select, SelectItem } from '@heroui/react';
 
-import { handleUnlockAll, handleLockAll, handleUpdateAll, handleResetAll } from '@/src/utils/achievements/tabButtonsHandler';
+import { handleUnlockAll, handleLockAll, handleUpdateAllStats, handleResetAll } from '@/src/utils/achievements/tabButtonsHandler';
 import { sortOptions, handleChange } from '@/src/utils/achievements/pageHeaderHandler';
 import { AppContext } from '@/src/components/layout/AppContext';
 
 import { MdSort } from 'react-icons/md';
 
-export default function TabButtons({ initialStatValues, newStatValues, setNewStatValues, btnLoading, setBtnLoading, setIsSorted, userGameAchievementsMap, percentageMap }) {
+export default function TabButtons({ initialStatValues, newStatValues, setNewStatValues, setIsSorted, userGameAchievementsMap, percentageMap }) {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const [state, setState] = useState('');
     const [type, setType] = useState('');
@@ -38,7 +38,6 @@ export default function TabButtons({ initialStatValues, newStatValues, setNewSta
                             <Button
                                 size='sm'
                                 color='primary'
-                                isLoading={btnLoading}
                                 isDisabled={!achievementList || achievementQueryValue.length > 0 || currentTab === 'statistics'}
                                 className='font-semibold rounded'
                                 onPress={() => handleSetState('unlock', 'achievements')}
@@ -48,7 +47,6 @@ export default function TabButtons({ initialStatValues, newStatValues, setNewSta
                             <Button
                                 size='sm'
                                 color='danger'
-                                isLoading={btnLoading}
                                 isDisabled={!achievementList || achievementQueryValue.length > 0}
                                 className='font-semibold rounded'
                                 onPress={() => handleSetState('lock', 'achievements')}
@@ -62,17 +60,15 @@ export default function TabButtons({ initialStatValues, newStatValues, setNewSta
                             <Button
                                 size='sm'
                                 color='primary'
-                                isLoading={btnLoading}
                                 isDisabled={Object.keys(initialStatValues).length === 0}
                                 className='font-semibold rounded'
-                                onPress={() => handleUpdateAll(appId, appName, initialStatValues, newStatValues, setBtnLoading)}
+                                onPress={() => handleUpdateAllStats(appId, appName, initialStatValues, newStatValues)}
                             >
                                 Save Changes
                             </Button>
                             <Button
                                 size='sm'
                                 color='danger'
-                                isLoading={btnLoading}
                                 isDisabled={Object.keys(initialStatValues).length === 0}
                                 className='font-semibold rounded'
                                 onPress={() => handleSetState('reset', 'statistics')}
@@ -135,10 +131,10 @@ export default function TabButtons({ initialStatValues, newStatValues, setNewSta
                                     className='font-semibold rounded'
                                     onPress={
                                         type === 'statistics' ?
-                                            () => handleResetAll(appId, setBtnLoading, setNewStatValues, onClose) :
+                                            () => handleResetAll(appId, appName, setNewStatValues, onClose) :
                                             state === 'unlock' ?
-                                                () => handleUnlockAll(appId, appName, achievementList, setBtnLoading, onClose) :
-                                                () => handleLockAll(appId, appName, achievementList, setBtnLoading, onClose)
+                                                () => handleUnlockAll(appId, appName, achievementList, onClose) :
+                                                () => handleLockAll(appId, appName, achievementList, onClose)
                                     }
                                 >
                                     Confirm

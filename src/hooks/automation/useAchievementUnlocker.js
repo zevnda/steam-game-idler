@@ -1,4 +1,4 @@
-import { formatTime, getRandomDelay, isWithinSchedule, logEvent, startIdler, stopIdler, unlockAchievement } from '@/src/utils/utils';
+import { formatTime, getRandomDelay, isWithinSchedule, logEvent, startIdle, stopIdle, unlockAchievement } from '@/src/utils/utils';
 import { invoke } from '@tauri-apps/api/tauri';
 
 export const useAchievementUnlocker = async (
@@ -20,7 +20,7 @@ export const useAchievementUnlocker = async (
             // Check if there are no games left to unlock achievements for
             if (achievementUnlockerGame.length === 0) {
                 logEvent('[Achievement Unlocker - Auto] No games left - stopping');
-                if (currentGame) await stopIdler(currentGame.appId, currentGame.name);
+                if (currentGame) await stopIdle(currentGame.appId, currentGame.name);
                 setIsComplete(true);
                 return;
             }
@@ -137,12 +137,12 @@ const unlockAchievements = async (
                 // Wait until within schedule if necessary
                 if (schedule && !isWithinSchedule(scheduleFrom, scheduleTo)) {
                     if (game && isGameIdling) {
-                        await stopIdler(game.appid, game.name);
+                        await stopIdle(game.appid, game.name);
                         isGameIdling = false;
                     }
                     await waitUntilInSchedule(scheduleFrom, scheduleTo, isMountedRef, setIsWaitingForSchedule, abortControllerRef);
                 } else if (!isGameIdling && idle) {
-                    await startIdler(achievements[0].appId, achievements[0].gameName, false, false);
+                    await startIdle(achievements[0].appId, achievements[0].gameName, false, false);
                     isGameIdling = true;
                 }
 
@@ -163,7 +163,7 @@ const unlockAchievements = async (
 
                 // Stop idling and remove game from list if max achievement unlocks is reached
                 if (achievementsRemaining === 0 || (maxAchievementUnlocks && achievementsRemaining <= achievements.length - maxAchievementUnlocks)) {
-                    await stopIdler(game.appid, game.name);
+                    await stopIdle(game.appid, game.name);
                     removeGameFromUnlockerList(game.appid);
                     logEvent(`[Achievement Unlocker - Auto - maxAchievementUnlocks] Unlocked ${achievements.length - maxAchievementUnlocks}/${achievements.length} achievements for ${game.name} - removed from list`);
                     break;
@@ -171,7 +171,7 @@ const unlockAchievements = async (
 
                 // Stop idling and remove game from list if all achievements are unlocked
                 if (achievementsRemaining === 0) {
-                    await stopIdler(game.appid, game.name);
+                    await stopIdle(game.appid, game.name);
                     removeGameFromUnlockerList(game.appid);
                     break;
                 }

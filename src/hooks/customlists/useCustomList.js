@@ -38,6 +38,9 @@ export default function useCustomList(listName) {
             const updatedList = list.filter(item => item.appid !== game.appid);
             localStorage.setItem(`${listName}Cache`, JSON.stringify(updatedList));
             setList(updatedList);
+            if (updatedList.length === 0) {
+                setShowInList(false);
+            }
         }
     };
 

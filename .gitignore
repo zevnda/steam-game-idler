@@ -38,10 +38,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# tauri signing
-*.ps1
-
-# Idler
+# tauri
+src-tauri/target
 /src-tauri/libs
-/idler-csharp/bin
-/idler-csharp/obj
+*.ps1

@@ -3,11 +3,13 @@ use regex::Regex;
 use reqwest::Client;
 use serde_json::Value;
 use std::collections::HashMap;
+use std::fs;
 use std::os::windows::io::AsRawHandle;
 use std::os::windows::process::CommandExt;
 use std::path::PathBuf;
 use std::process::{Child, Stdio};
 use std::sync::{Arc, Mutex};
+use steamlocate::SteamDir;
 use winapi::um::processthreadsapi::TerminateProcess;
 use winapi::um::winnt::HANDLE;
 
@@ -157,13 +159,13 @@ pub async fn anti_away() -> Result<(), String> {
     Ok(())
 }
 
-#[tauri::command]
-pub async fn get_file_path() -> Result<PathBuf, String> {
+pub fn get_lib_path() -> Result<String, String> {
     // Get the current executable path
-    match std::env::current_exe() {
-        Ok(path) => return Ok(path),
-        Err(error) => return Err(format!("{error}")),
-    }
+    let mut path = std::env::current_exe().map_err(|e| e.to_string())?;
+    path.pop();
+    path.push("libs");
+    path.push("SteamUtility.exe");
+    Ok(path.to_str().unwrap().to_string())
 }
 
 pub fn kill_processes(spawned_processes: &Arc<Mutex<Vec<Child>>>) {
@@ -179,4 +181,25 @@ pub fn kill_processes(spawned_processes: &Arc<Mutex<Vec<Child>>>) {
     processes.clear();
     // Exit the application
     std::process::exit(0);
+}
+
+pub async fn get_steam_loc() -> Result<String, steamlocate::Error> {
+    let steam_dir = SteamDir::locate()?;
+    let config_path = steam_dir.path().join("config").join("loginusers.vdf");
+    Ok(config_path.display().to_string())
+}
+
+pub fn parse_login_users(config_path: &PathBuf) -> Result<HashMap<String, String>, String> {
+    let content = fs::read_to_string(config_path).map_err(|e| e.to_string())?;
+    let user_regex = Regex::new(r#""(\d{17})"\s*\{[^}]*"PersonaName"\s*"([^"]*)""#)
+        .map_err(|e| e.to_string())?;
+    let mut users = HashMap::new();
+
+    for cap in user_regex.captures_iter(&content) {
+        let steam_id = cap[1].to_string();
+        let persona_name = cap[2].to_string();
+        users.insert(steam_id, persona_name);
+    }
+
+    Ok(users)
 }

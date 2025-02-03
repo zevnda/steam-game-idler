@@ -14,8 +14,6 @@ export default function Achievements() {
     const {
         isLoading,
         setIsSorted,
-        btnLoading,
-        setBtnLoading,
         initialStatValues,
         setInitialStatValues,
         newStatValues,
@@ -38,8 +36,6 @@ export default function Achievements() {
                                 initialStatValues={initialStatValues}
                                 newStatValues={newStatValues}
                                 setNewStatValues={setNewStatValues}
-                                btnLoading={btnLoading}
-                                setBtnLoading={setBtnLoading}
                                 setIsSorted={setIsSorted}
                                 userGameAchievementsMap={userGameAchievementsMap}
                                 percentageMap={percentageMap}
