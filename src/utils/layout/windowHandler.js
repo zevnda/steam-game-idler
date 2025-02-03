@@ -4,7 +4,7 @@ import { invoke } from '@tauri-apps/api/tauri';
 import { Time } from '@internationalized/date';
 import { toast } from 'react-toastify';
 
-import { fetchFreeGames, fetchLatest, logEvent, preserveKeysAndClear, sendNativeNotification, startIdler } from '@/src/utils/utils';
+import { fetchFreeGames, fetchLatest, logEvent, preserveKeysAndClear, sendNativeNotification, startIdle } from '@/src/utils/utils';
 import UpdateToast from '@/src/components/updates/UpdateToast';
 
 // Check for updates and handle the Tauri update process
@@ -118,7 +118,7 @@ export const startAutoIdleGames = async () => {
         for (const id of notRunningIds) {
             const game = autoIdleGames.find(g => g.appid.toString() === id);
             if (game) {
-                await startIdler(game.appid, game.name, false, true);
+                await startIdle(game.appid, game.name, false, true);
             }
         }
     } catch (error) {

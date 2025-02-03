@@ -1,7 +1,7 @@
-import { startIdler } from '@/src/utils/utils';
+import { startIdle } from '@/src/utils/utils';
 
 export const handleIdle = async (item) => {
-    await startIdler(item.appid, item.name, false, true);
+    await startIdle(item.appid, item.name, false, true);
 };
 
 export const viewAchievments = (item, setAppId, setAppName, setShowAchievements, showAchievements) => {

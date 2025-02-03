@@ -1,20 +1,41 @@
-import { Fragment, useContext, memo } from 'react';
+import { Fragment, useContext, memo, useState } from 'react';
 import { FixedSizeList as List } from 'react-window';
 import Image from 'next/image';
 
+import { invoke } from '@tauri-apps/api/tauri';
+import { toast } from 'react-toastify';
 import { Button, Tooltip } from '@heroui/react';
 
 import { AppContext } from '@/src/components/layout/AppContext';
-import useAchievementsList from '@/src/hooks/achievements/useAchievementsList';
+import { toggleAchievement } from '@/src/utils/utils';
+import ErrorToast from '@/src/components/ui/ErrorToast';
 
 const Row = memo(({ index, style, data }) => {
-    const { achievementList, userGameAchievementsMap, percentageMap, handleToggle } = data;
+    const { appId, appName, achievementList, userGameAchievementsMap, percentageMap } = data;
     const item = achievementList[index];
+
+    const isUnlockedInitial = item ? userGameAchievementsMap.get(item.name) || false : false;
+    const [isUnlocked, setIsUnlocked] = useState(isUnlockedInitial);
+    const percentage = item ? percentageMap.get(item.name) : undefined;
 
     if (!item) return null;
 
-    const isUnlocked = userGameAchievementsMap.get(item.name) || false;
-    const percentage = percentageMap.get(item.name);
+    const handleToggle = async () => {
+        // Check if Steam is running
+        const steamRunning = await invoke('check_status');
+        if (!steamRunning) {
+            return toast.error(
+                <ErrorToast
+                    message={'Steam is not running'}
+                    href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Steam%20is%20not%20running'}
+                />
+            );
+        }
+
+        toggleAchievement(appId, item.name, appName, isUnlocked ? 'Locked' : 'Unlocked');
+        userGameAchievementsMap.set(item.name, !isUnlocked);
+        setIsUnlocked(!isUnlocked);
+    };
 
     return (
         <div style={style} className='grid grid-cols-1 p-2'>
@@ -43,7 +64,7 @@ const Row = memo(({ index, style, data }) => {
                             size='sm'
                             color='danger'
                             className='font-semibold rounded'
-                            onPress={() => handleToggle(item.name, 'Locked')}
+                            onPress={handleToggle}
                         >
                             Lock
                         </Button>
@@ -52,7 +73,7 @@ const Row = memo(({ index, style, data }) => {
                             size='sm'
                             color='primary'
                             className='font-semibold rounded'
-                            onPress={() => handleToggle(item.name, 'Unlocked')}
+                            onPress={handleToggle}
                         >
                             Unlock
                         </Button>
@@ -76,10 +97,9 @@ const Row = memo(({ index, style, data }) => {
 Row.displayName = 'Row';
 
 export default function AchievementsList({ userGameAchievementsMap, percentageMap }) {
-    const { achievementList, achievementsUnavailable } = useContext(AppContext);
-    const { handleToggle } = useAchievementsList();
+    const { appId, appName, achievementList, achievementsUnavailable } = useContext(AppContext);
 
-    const itemData = { achievementList, userGameAchievementsMap, percentageMap, handleToggle };
+    const itemData = { appId, appName, achievementList, userGameAchievementsMap, percentageMap };
 
     return (
         <Fragment>

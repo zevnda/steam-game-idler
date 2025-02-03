@@ -3,14 +3,12 @@
 pub mod automation;
 pub mod game_data;
 pub mod logging;
-pub mod steam_api;
 pub mod tasks;
 pub mod user_data;
 pub mod utils;
 use automation::*;
 use game_data::*;
 use logging::*;
-use steam_api::*;
 use tasks::*;
 use user_data::*;
 use utils::*;
@@ -36,8 +34,6 @@ fn main() {
         let result = dotenv::from_read(prod_env.as_bytes()).unwrap();
         result.load();
     }
-
-    init_api();
 
     // Create system tray menu items
     let show = CustomMenuItem::new("show".to_string(), "Show");
@@ -118,16 +114,17 @@ fn main() {
         })
         // Register commands
         .invoke_handler(tauri::generate_handler![
-            get_file_path,
             check_status,
-            get_steam_users,
+            get_users,
             start_idle,
             stop_idle,
-            toggle_achievement,
             unlock_achievement,
             lock_achievement,
+            toggle_achievement,
+            unlock_all_achievements,
+            lock_all_achievements,
             update_stats,
-            reset_stats,
+            reset_all_stats,
             log_event,
             clear_log_file,
             get_app_log_dir,
@@ -138,7 +135,6 @@ fn main() {
             validate_session,
             get_drops_remaining,
             get_games_with_drops,
-            get_game_details,
             open_file_explorer,
             get_free_games,
             anti_away,

@@ -5,7 +5,7 @@ import { Button } from '@heroui/react';
 
 import { AppContext } from '@/src/components/layout/AppContext';
 import { useAchievementUnlocker } from '@/src/hooks/automation/useAchievementUnlocker';
-import { stopIdler } from '@/src/utils/utils';
+import { stopIdle } from '@/src/utils/utils';
 import ExtLink from '@/src/components/ui/ExtLink';
 
 import { IoCheckmark } from 'react-icons/io5';
@@ -118,7 +118,7 @@ export default function AchievementUnlocker({ activePage }) {
                             className='min-h-[30px] font-semibold rounded'
                             onPress={() => {
                                 setIsAchievementUnlocker(false);
-                                stopIdler(currentGame.appid, currentGame.name);
+                                stopIdle(currentGame.appid, currentGame.name);
                             }}
                         >
                             {isComplete ? <p>Close</p> : <p>Stop</p>}

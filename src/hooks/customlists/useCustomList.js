@@ -5,6 +5,7 @@ export default function useCustomList(listName) {
     const { gameList, isAchievementUnlocker, isCardFarming } = useContext(AppContext);
     const [list, setList] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
+    const [showInList, setShowInList] = useState(false);
     const [visibleGames, setVisibleGames] = useState(50);
     const containerRef = useRef(null);
 
@@ -37,6 +38,9 @@ export default function useCustomList(listName) {
             const updatedList = list.filter(item => item.appid !== game.appid);
             localStorage.setItem(`${listName}Cache`, JSON.stringify(updatedList));
             setList(updatedList);
+            if (updatedList.length === 0) {
+                setShowInList(false);
+            }
         }
     };
 
@@ -72,6 +76,8 @@ export default function useCustomList(listName) {
         containerRef,
         searchTerm,
         setSearchTerm,
+        showInList,
+        setShowInList,
         handleAddGame,
         handleRemoveGame,
         updateListOrder

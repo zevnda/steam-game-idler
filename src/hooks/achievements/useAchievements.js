@@ -21,7 +21,6 @@ export default function useAchievements() {
     const [originalAchievementList, setOriginalAchievementList] = useState([]);
     const [userGameStats, setUserGameStats] = useState({});
     const [gameAchievementsPercentages, setGameAchievementsPercentages] = useState([]);
-    const [btnLoading, setBtnLoading] = useState(false);
     const [initialStatValues, setInitialStatValues] = useState({});
     const [newStatValues, setNewStatValues] = useState({});
 
@@ -93,8 +92,6 @@ export default function useAchievements() {
         setIsSorted,
         userGameStats,
         gameAchievementsPercentages,
-        btnLoading,
-        setBtnLoading,
         initialStatValues,
         setInitialStatValues,
         newStatValues,

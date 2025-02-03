@@ -1,11 +1,12 @@
 import { invoke } from '@tauri-apps/api/tauri';
-import { logEvent, unlockAchievement, lockAchievement, updateStat, getFilePath } from '@/src/utils/utils';
+import { lockAllAchievements, logEvent, unlockAllAchievements, updateStats } from '@/src/utils/utils';
 import { toast } from 'react-toastify';
 import ErrorToast from '@/src/components/ui/ErrorToast';
 
 // Handle unlocking all achievements
-export const handleUnlockAll = async (appId, appName, achievementList, setBtnLoading, onClose) => {
+export const handleUnlockAll = async (appId, appName, achievementList, onClose) => {
     try {
+        onClose();
         // Check if Steam is running
         const steamRunning = await invoke('check_status');
         if (!steamRunning) {
@@ -18,48 +19,18 @@ export const handleUnlockAll = async (appId, appName, achievementList, setBtnLoa
             );
         }
 
-        setBtnLoading(true);
-        onClose();
+        const achievementsArr = achievementList.map(achievement => achievement.name);
+        const success = await unlockAllAchievements(appId, achievementsArr, appName);
 
-        let unlocked = 0;
-        const total = achievementList.length;
-        const toastId = toast.info(`Unlocking 0 of ${total} achievements for ${appName}.`, {
-            autoClose: false,
-            isLoading: true,
-            closeButton: false
-        });
-        // Loop through each achievement and unlock it
-        let failed;
-        for (const achievement of achievementList) {
-            const error = await unlockAchievement(appId, achievement.name, appName);
-            if (!error) {
-                unlocked++;
-                toast.update(toastId, {
-                    render: `Unlocking ${unlocked} of ${total} achievements for ${appName}.`,
-                });
-            } else {
-                failed = true;
-                toast.update(toastId, {
-                    render: <ErrorToast
-                        message={'Are you logged in to the correct account?'}
-                        href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Are%20you%20logged%20in%20to%20the%20correct%20account%3F'}
-                    />,
-                    isLoading: false,
-                    autoClose: 5000,
-                    type: 'error'
-                });
-                break;
-            }
-        }
-        setBtnLoading(false);
-        if (!failed) {
-            toast.update(toastId, {
-                render: `Successfully unlocked ${unlocked} of ${total} achievements for ${appName}.`,
-                autoClose: true,
-                isLoading: false,
-                closeButton: true,
-                type: 'success'
-            });
+        if (success) {
+            toast.success(`Successfully unlocked ${achievementList.length} achievements for ${appName}`);
+        } else {
+            toast.error(
+                <ErrorToast
+                    message={'Are you logged in to the correct account?'}
+                    href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Are%20you%20logged%20in%20to%20the%20correct%20account%3F'}
+                />
+            );
         }
     } catch (error) {
         toast.error(`Error in (handleUnlockAll): ${error?.message || error}`);
@@ -69,8 +40,9 @@ export const handleUnlockAll = async (appId, appName, achievementList, setBtnLoa
 };
 
 // Handle locking all achievements
-export const handleLockAll = async (appId, appName, achievementList, setBtnLoading, onClose) => {
+export const handleLockAll = async (appId, appName, achievementList, onClose) => {
     try {
+        onClose();
         // Check if Steam is running
         const steamRunning = await invoke('check_status');
         if (!steamRunning) {
@@ -83,48 +55,17 @@ export const handleLockAll = async (appId, appName, achievementList, setBtnLoadi
             );
         }
 
-        setBtnLoading(true);
-        onClose();
+        const success = await lockAllAchievements(appId, achievementList, appName);
 
-        let locked = 0;
-        const total = achievementList.length;
-        const toastId = toast.info(`Locking 0 of ${total} achievements for ${appName}.`, {
-            autoClose: false,
-            isLoading: true,
-            closeButton: false
-        });
-        // Loop through each achievement and lock it
-        let failed;
-        for (const achievement of achievementList) {
-            const error = await lockAchievement(appId, achievement.name, appName);
-            if (!error) {
-                locked++;
-                toast.update(toastId, {
-                    render: `Locking ${locked} of ${total} achievements for ${appName}.`,
-                });
-            } else {
-                failed = true;
-                toast.update(toastId, {
-                    render: <ErrorToast
-                        message={'Are you logged in to the correct account?'}
-                        href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Are%20you%20logged%20in%20to%20the%20correct%20account%3F'}
-                    />,
-                    autoClose: 5000,
-                    isLoading: false,
-                    type: 'error'
-                });
-                break;
-            }
-        }
-        setBtnLoading(false);
-        if (!failed) {
-            toast.update(toastId, {
-                render: `Successfully locked ${locked} of ${total} achievements for ${appName}.`,
-                autoClose: true,
-                isLoading: false,
-                closeButton: true,
-                type: 'success'
-            });
+        if (success) {
+            toast.success(`Successfully locked ${achievementList.length} achievements for ${appName}`);
+        } else {
+            toast.error(
+                <ErrorToast
+                    message={'Are you logged in to the correct account?'}
+                    href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Are%20you%20logged%20in%20to%20the%20correct%20account%3F'}
+                />
+            );
         }
     } catch (error) {
         toast.error(`Error in (handleLockAll): ${error?.message || error}`);
@@ -134,11 +75,11 @@ export const handleLockAll = async (appId, appName, achievementList, setBtnLoadi
 };
 
 // Handle updating all statistics
-export const handleUpdateAll = async (appId, appName, initialStatValues, newStatValues, setBtnLoading) => {
+export const handleUpdateAllStats = async (appId, appName, initialStatValues, newStatValues) => {
     // Filter only values that have changed
-    const changedValues = Object.entries(newStatValues).filter(([key, value]) => {
-        return value !== initialStatValues[key];
-    });
+    const changedValues = Object.entries(newStatValues)
+        .filter(([key, value]) => value !== initialStatValues[key])
+        .map(([key, value]) => ({ statName: key, newValue: value }));
 
     if (changedValues.length === 0) {
         return toast.info('No changes to save.');
@@ -155,64 +96,38 @@ export const handleUpdateAll = async (appId, appName, initialStatValues, newStat
         );
     }
 
-    setBtnLoading(true);
+    const success = await updateStats(appId, changedValues, appName);
 
-    const toastId = toast.info('Updating statistics', {
-        autoClose: false,
-        isLoading: true,
-        closeButton: false
-    });
-
-    // Loop through each changed value and update it
-
-    let failed;
-    for (const [statName, newValue] of changedValues) {
-        try {
-            const error = await updateStat(appId, statName, newValue.toString() || '0', appName);
-            if (!error) {
-                toast.update(toastId, {
-                    render: `Updated ${statName} to ${newValue} for ${appName}`,
-                });
-            } else {
-                failed = true;
-                toast.update(toastId, {
-                    render: <ErrorToast
-                        message={'Are you logged in to the correct account?'}
-                        href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Are%20you%20logged%20in%20to%20the%20correct%20account%3F'}
-                    />,
-                    autoClose: 5000,
-                    isLoading: false,
-                    type: 'error'
-                });
-                break;
-            }
-        } catch (error) {
-            toast.error(`Error in (handleUpdate): ${error?.message || error}`);
-            console.error('Error in (handleUpdate):', error);
-            logEvent(`[Error] in (handleUpdate): ${error}`);
-        }
-    }
-
-    setBtnLoading(false);
-
-    if (!failed) {
-        toast.update(toastId, {
-            render: `Completed updating statistics for ${appName}`,
-            autoClose: true,
-            isLoading: false,
-            closeButton: true,
-            type: 'success'
-        });
+    if (success) {
+        toast.success(`Successfully updated ${changedValues.length} stats for ${appName}`);
+    } else {
+        toast.error(
+            <ErrorToast
+                message={'Are you logged in to the correct account?'}
+                href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Are%20you%20logged%20in%20to%20the%20correct%20account%3F'}
+            />
+        );
     }
 };
 
 // Handle resetting all statistics
-export const handleResetAll = async (appId, setBtnLoading, setNewStatValues, onClose) => {
+export const handleResetAll = async (appId, appName, setNewStatValues, onClose) => {
     onClose();
-    setBtnLoading(true);
-    const response = await invoke('reset_stats', { filePath: await getFilePath(), appId: appId.toString() });
+
+    // Check if Steam is running
+    const steamRunning = await invoke('check_status');
+    if (!steamRunning) {
+        return toast.error(
+            <ErrorToast
+                message={'Steam is not running'}
+                href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Steam%20is%20not%20running'}
+            />
+        );
+    }
+
+    const response = await invoke('reset_all_stats', { appId: appId });
     const status = JSON.parse(response);
-    if (!status.error) {
+    if (status.success) {
         setNewStatValues(prevValues => {
             const resetValues = {};
             for (const key in prevValues) {
@@ -220,7 +135,7 @@ export const handleResetAll = async (appId, setBtnLoading, setNewStatValues, onC
             }
             return resetValues;
         });
-        toast.success('All stats successfully reset');
+        toast.success(`Successfully reset all stats for ${appName}`);
     } else {
         toast.error(
             <ErrorToast
@@ -230,5 +145,4 @@ export const handleResetAll = async (appId, setBtnLoading, setNewStatValues, onC
             { autoClose: 5000 }
         );
     }
-    setBtnLoading(false);
 };
