@@ -36,7 +36,7 @@ export default function SearchBar() {
                         value={gameQueryValue}
                         onChange={handleGameQueryChange}
                         onKeyDown={handleKeyDown}
-                        onClear={() => { setGameQueryValue(''); }}
+                        onClear={() => setGameQueryValue('')}
                     />
                 )}
                 {showAchievements && (
@@ -50,7 +50,7 @@ export default function SearchBar() {
                         classNames={{ inputWrapper: ['bg-input border border-inputborder hover:!bg-titlebar rounded group-data-[focus-within=true]:!bg-titlebar'] }}
                         value={achievementQueryValue}
                         onChange={handleAchievementQueryChange}
-                        onClear={() => { setAchievementQueryValue(''); }}
+                        onClear={() => setAchievementQueryValue('')}
                     />
                 )}
             </div>
