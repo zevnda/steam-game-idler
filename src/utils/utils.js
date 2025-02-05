@@ -29,7 +29,7 @@ export async function startIdle(appId, appName, quiet = false, manual = true) {
             }
 
             const response = await invoke('start_idle', {
-                appId: appId,
+                appId: parseInt(appId),
                 quiet: stealthIdle ? stealthIdle : quiet
             });
 
