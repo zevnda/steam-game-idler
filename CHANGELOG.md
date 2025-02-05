@@ -1,4 +1,4 @@
-[![Downloads](https://img.shields.io/github/downloads/zevnda/steam-game-idler/1.7.7/total?style=for-the-badge&logo=github&color=137eb5)](https://github.com/zevnda/steam-game-idler/releases/download/1.7.7/Steam.Game.Idler_1.7.7_x64_en-US.msi)
+[![Downloads](https://img.shields.io/github/downloads/zevnda/steam-game-idler/1.7.8/total?style=for-the-badge&logo=github&color=137eb5)](https://github.com/zevnda/steam-game-idler/releases/download/1.7.8/Steam.Game.Idler_1.7.8_x64_en-US.msi)
 
 ## Changelog
 - #71: Added a check to see if a game has server-side achievements and display an alert on the `achievements manager` screen if it does
