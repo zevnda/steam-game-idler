@@ -6,7 +6,7 @@ import { useSettingsMenu } from '@/src/hooks/settings/useSettingsMenu';
 import ExtLink from '@/src/components/ui/ExtLink';
 
 import { BiDotsVerticalRounded } from 'react-icons/bi';
-import { AppContext } from '../layout/AppContext';
+import { AppContext } from '@/src/components/layout/AppContext';
 
 export default function SettingsMenu({ setInitUpdate, setUpdateManifest }) {
     const { setShowChangelogModal } = useContext(AppContext);

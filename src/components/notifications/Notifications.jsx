@@ -33,7 +33,7 @@ export default function Notifications() {
 
     return (
         <Fragment>
-            <div className='relative mr-2'>
+            <div className='relative mx-2'>
                 <div
                     className='flex items-center p-1.5 hover:bg-titlehover rounded-full cursor-pointer relative mr-1'
                     onClick={() => {

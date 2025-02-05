@@ -5,6 +5,7 @@ import { Divider } from '@heroui/react';
 import { AppContext } from '@/src/components/layout/AppContext';
 import ThemeSwitch from '@/src/components/ui/theme/ThemeSwitch';
 import useHeader from '@/src/hooks/ui/useHeader';
+import UpdateButton from '@/src/components/updates/UpdateButton';
 import Notifications from '@/src/components/notifications/Notifications';
 import SearchBar from '@/src/components/ui/SearchBar';
 
@@ -14,7 +15,7 @@ import { IoClose } from 'react-icons/io5';
 import { GoGrabber } from 'react-icons/go';
 
 export default function Header() {
-    const { setGameQueryValue, setAchievementQueryValue } = useContext(AppContext);
+    const { setGameQueryValue, setAchievementQueryValue, canUpdate } = useContext(AppContext);
     const { windowMinimize, windowToggleMaximize, windowClose } = useHeader(setGameQueryValue, setAchievementQueryValue);
 
     return (
@@ -29,6 +30,8 @@ export default function Header() {
 
                     <div className='flex justify-center items-center flex-grow h-full border-b border-border'>
                         <SearchBar />
+
+                        {canUpdate && <UpdateButton />}
 
                         <Notifications />
 

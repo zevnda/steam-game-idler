@@ -167,10 +167,7 @@ export async function toggleAchievement(appId, achievementName, appName, type) {
 // Unlock all achievements for a game
 export async function unlockAllAchievements(appId, achievementsArr, appName) {
     try {
-        const response = await invoke('unlock_all_achievements', {
-            appId: appId,
-            achievementsArr: JSON.stringify(achievementsArr)
-        });
+        const response = await invoke('unlock_all_achievements', { appId: appId });
         const status = JSON.parse(response);
         if (status.success) {
             logEvent(`[Achievement Manager] Unlocked ${achievementsArr.length} achievements for ${appName} (${appId})`);
@@ -214,10 +211,10 @@ export async function updateStats(appId, changedValues, appName) {
         });
         const status = JSON.parse(response);
         if (status.success) {
-            logEvent(`[Statistics Manager] Updated ${changedValues.length} for ${appName} (${appId})`);
+            logEvent(`[Statistics Manager] Updated ${changedValues.length} stats for ${appName} (${appId})`);
             return true;
         } else {
-            logEvent(`[Statistics Manager] Failed to update stats for ${appName} (${appId})`);
+            logEvent(`[Error] [Statistics Manager] Failed to update stats for ${appName} (${appId})`);
             return false;
         }
     } catch (error) {

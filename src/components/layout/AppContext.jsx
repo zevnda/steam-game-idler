@@ -22,6 +22,8 @@ export const AppProvider = ({ children }) => {
     const [isCardFarming, setIsCardFarming] = useState(false);
     const [isAchievementUnlocker, setIsAchievementUnlocker] = useState(false);
     const [showChangelogModal, setShowChangelogModal] = useState(false);
+    const [canUpdate, setCanUpdate] = useState(false);
+    const [initUpdate, setInitUpdate] = useState(false);
 
     return (
         <AppContext.Provider value={{
@@ -43,7 +45,9 @@ export const AppProvider = ({ children }) => {
             currentTab, setCurrentTab,
             isCardFarming, setIsCardFarming,
             isAchievementUnlocker, setIsAchievementUnlocker,
-            showChangelogModal, setShowChangelogModal
+            showChangelogModal, setShowChangelogModal,
+            canUpdate, setCanUpdate,
+            initUpdate, setInitUpdate
         }}>
             {children}
         </AppContext.Provider>

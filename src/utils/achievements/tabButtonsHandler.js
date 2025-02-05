@@ -79,7 +79,7 @@ export const handleUpdateAllStats = async (appId, appName, initialStatValues, ne
     // Filter only values that have changed
     const changedValues = Object.entries(newStatValues)
         .filter(([key, value]) => value !== initialStatValues[key])
-        .map(([key, value]) => ({ statName: key, newValue: value }));
+        .map(([key, value]) => ({ name: key, value: value }));
 
     if (changedValues.length === 0) {
         return toast.info('No changes to save.');

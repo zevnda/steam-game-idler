@@ -134,17 +134,10 @@ pub async fn toggle_achievement(app_id: u32, achievement_id: &str) -> Result<Str
 
 #[tauri::command]
 // Unlock all achievements
-pub async fn unlock_all_achievements(
-    app_id: u32,
-    achievements_arr: &str,
-) -> Result<String, String> {
+pub async fn unlock_all_achievements(app_id: u32) -> Result<String, String> {
     let exe_path = get_lib_path()?;
     let output = std::process::Command::new(exe_path)
-        .args(&[
-            "unlock_all_achievements",
-            &app_id.to_string(),
-            achievements_arr,
-        ])
+        .args(&["unlock_all_achievements", &app_id.to_string()])
         .creation_flags(0x08000000)
         .output()
         .expect("failed to execute unlocker");

@@ -34,7 +34,7 @@ export default function Logs() {
                     <table className='w-full border-collapse'>
                         <thead className='sticky top-0 z-10'>
                             <tr className='border-b border-border bg-[#dedede] dark:bg-[#131313]'>
-                                <th className='text-left p-1.5 w-[150px]'>Time</th>
+                                <th className='text-left p-1.5 w-[160px]'>Time</th>
                                 <th className='text-left p-1.5'>Message</th>
                             </tr>
                         </thead>
@@ -43,7 +43,7 @@ export default function Logs() {
                                 <Fragment>
                                     {logs.map((log, index) => (
                                         <tr key={index} className={index % 2 === 0 ? 'bg-container' : 'bg-[#f1f1f1] dark:bg-[#1a1a1a]'}>
-                                            <td className='p-1.5 text-sgi uppercase'>{log.timestamp}</td>
+                                            <td className='p-1.5 text-altwhite uppercase'>{log.timestamp}</td>
                                             <td className={`p-1.5 ${log.message?.includes('Error') && 'text-red-400'}`}>
                                                 {log.message}
                                             </td>

@@ -5,7 +5,7 @@ import { AppContext } from '@/src/components/layout/AppContext';
 import usePageHeader from '@/src/hooks/achievements/usePageHeader';
 import ExtLink from '@/src/components/ui/ExtLink';
 
-import { SiSteamdb } from 'react-icons/si';
+import { SiSteam, SiSteamdb } from 'react-icons/si';
 import { IoMdArrowBack } from 'react-icons/io';
 
 export default function PageHeader() {
@@ -28,10 +28,21 @@ export default function PageHeader() {
                         <p className='text-lg font-semibold m-0 p-0'>
                             {appName}
                         </p>
-                        <Tooltip content='View achievement details on SteamDB' placement='right' closeDelay={0} size='sm'>
+                        <Tooltip content='View achievement details on Steam' placement='top' closeDelay={0} size='sm'>
+                            <div>
+                                <ExtLink href={`https://steamcommunity.com/stats/${appId}/achievements/`}>
+                                    <div className='bg-default hover:brightness-90 rounded-full p-1.5 cursor-pointer duration-150'>
+                                        <SiSteam fontSize={14} />
+                                    </div>
+                                </ExtLink>
+                            </div>
+                        </Tooltip>
+                        <Tooltip content='View achievement details on SteamDB' placement='top' closeDelay={0} size='sm'>
                             <div>
                                 <ExtLink href={`https://steamdb.info/app/${appId}/stats/`}>
-                                    <SiSteamdb fontSize={14} className='text-sgi' />
+                                    <div className='bg-default hover:brightness-90 rounded-full p-1.5 cursor-pointer duration-150'>
+                                        <SiSteamdb fontSize={14} />
+                                    </div>
                                 </ExtLink>
                             </div>
                         </Tooltip>

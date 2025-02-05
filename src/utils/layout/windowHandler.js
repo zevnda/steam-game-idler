@@ -5,10 +5,9 @@ import { Time } from '@internationalized/date';
 import { toast } from 'react-toastify';
 
 import { fetchFreeGames, fetchLatest, logEvent, preserveKeysAndClear, sendNativeNotification, startIdle } from '@/src/utils/utils';
-import UpdateToast from '@/src/components/updates/UpdateToast';
 
 // Check for updates and handle the Tauri update process
-export const checkForUpdates = async (setUpdateManifest, setInitUpdate) => {
+export const checkForUpdates = async (setUpdateManifest, setCanUpdate, setInitUpdate) => {
     try {
         const { shouldUpdate, manifest } = await checkUpdate();
         const latest = await fetchLatest();
@@ -18,7 +17,7 @@ export const checkForUpdates = async (setUpdateManifest, setInitUpdate) => {
                 preserveKeysAndClear();
                 return setInitUpdate(true);
             }
-            toast(<UpdateToast updateManifest={manifest} setInitUpdate={setInitUpdate} />, { autoClose: false });
+            setCanUpdate(true);
         }
     } catch (error) {
         toast.error(`Error in (checkForUpdates): ${error?.message || error}`);

@@ -8,8 +8,8 @@ import ChangelogModal from '@/src/components/updates/ChangelogModal';
 import useWindow from '@/src/hooks/layout/useWindow';
 
 export default function Window() {
-    const { userSummary } = useContext(AppContext);
-    const { updateManifest, initUpdate, setInitUpdate, setUpdateManifest, showChangelogModal, setShowChangelogModal } = useWindow();
+    const { userSummary, initUpdate, setInitUpdate } = useContext(AppContext);
+    const { updateManifest, setUpdateManifest, showChangelogModal, setShowChangelogModal } = useWindow();
 
     if (initUpdate) return (
         <UpdateScreen updateManifest={updateManifest} />

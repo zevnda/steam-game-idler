@@ -45,7 +45,7 @@ export default function AchievementSettings({ settings, setSettings }) {
                             >
                                 <div className='flex items-center gap-1'>
                                     <p className='text-xs'>
-                                        Only unlock achievements between the hours of
+                                        Only unlock achievements between
                                     </p>
                                 </div>
                             </Checkbox>
@@ -62,7 +62,7 @@ export default function AchievementSettings({ settings, setSettings }) {
                                 onChange={(value) => handleScheduleChange(value, 'scheduleFrom', localSettings, setLocalSettings, setSettings)}
                             />
                             <p className='text-xs'>
-                                to
+                                and
                             </p>
                             <TimeInput
                                 aria-label='schedule-to'
