@@ -1,5 +1,5 @@
-import { Fragment, useContext } from 'react';
-import { Button, Tooltip } from '@heroui/react';
+import { Fragment, useContext, useState, useEffect } from 'react';
+import { Alert, Button, Tooltip } from '@heroui/react';
 
 import { AppContext } from '@/src/components/layout/AppContext';
 import usePageHeader from '@/src/hooks/achievements/usePageHeader';
@@ -12,9 +12,39 @@ export default function PageHeader() {
     const { appId, appName } = useContext(AppContext);
     const { handleClick } = usePageHeader();
 
+    const [protectedAchievements, setProtectedAchievements] = useState(false);
+
+    useEffect(() => {
+        const protectedAchievements = async () => {
+            const response = await fetch('https://gist.githubusercontent.com/zevnda/c7ebc4de0fb3e9ff6caac4df0a3fd06c/raw/36a30c123183158b7f2e72277f87f20061fab632/steam-games-with-server-side-achievements.json');
+            const data = await response.json();
+            console.log(data);
+            console.log(appId);
+            if (data.some(game => game.appid === appId.toString())) {
+                console.log('Protected achievements found');
+                setProtectedAchievements(true);
+            }
+        };
+        protectedAchievements();
+    }, []);
+
     return (
         <Fragment>
-            <div className='flex justify-between items-center mb-4'>
+            <div className='relative flex justify-between items-center mb-4'>
+                {protectedAchievements && (
+                    <div className='absolute top-0 right-0'>
+                        <Alert
+                            color='warning'
+                            title='This game has server-side achievements that can&apos;t be modified from here.'
+                            classNames={{
+                                base: ['h-10 py-1 flex justify-center items-center gap-0 rounded'],
+                                title: ['text-xs'],
+                                iconWrapper: ['h-6 w-6'],
+                                alertIcon: ['h-5 w-5']
+                            }}
+                        />
+                    </div>
+                )}
                 <div className='flex gap-3'>
                     <Button
                         isIconOnly
