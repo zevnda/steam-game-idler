@@ -3,11 +3,11 @@ name: Build release bundle
 on:
   workflow_dispatch:
     inputs:
-        version:
-          description: 'New Version'
-          required: true
         previous_version:
           description: 'Previous Version'
+          required: true
+        version:
+          description: 'New Version'
           required: true
         is_major:
           description: 'Major update'
