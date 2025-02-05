@@ -3,6 +3,7 @@ name: Release Issue Processor
 on:
   release:
     types: [published]
+  workflow_dispatch:
 
 jobs:
   process-issues:
