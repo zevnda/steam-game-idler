@@ -1,5 +1,6 @@
 import { toast } from 'react-toastify';
 import { checkUpdate } from '@tauri-apps/api/updater';
+import { logEvent } from '@/src/utils/utils';
 
 export const useSettingsMenu = (setInitUpdate, setUpdateManifest) => {
     const checkForUpdates = async () => {

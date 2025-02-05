@@ -1,8 +1,9 @@
 import { Divider, Tooltip } from '@heroui/react';
 import { Fragment, useContext } from 'react';
 
-import { FiDownload } from "react-icons/fi";
 import { AppContext } from '@/src/components/layout/AppContext';
+
+import { FiDownload } from 'react-icons/fi';
 
 export default function UpdateButton() {
     const { setInitUpdate } = useContext(AppContext);
