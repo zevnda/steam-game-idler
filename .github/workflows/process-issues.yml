@@ -4,6 +4,10 @@ on:
   release:
     types: [published]
   workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Release tag to process (e.g. v1.7.8)'
+        required: true
 
 jobs:
   process-issues:
@@ -17,7 +21,27 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const releaseBody = context.payload.release.body || '';
+            let releaseInfo;
+            
+            if (context.eventName === 'release') {
+              releaseInfo = context.payload.release;
+            } else {
+              // For manual workflow runs, fetch the release info
+              const tag = context.payload.inputs.release_tag;
+              try {
+                const release = await github.rest.repos.getReleaseByTag({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  tag: tag
+                });
+                releaseInfo = release.data;
+              } catch (error) {
+                console.error(`Failed to fetch release info for tag ${tag}: ${error}`);
+                return;
+              }
+            }
+
+            const releaseBody = releaseInfo.body || '';
             const issueRegex = /#(\d+)/g;
             const matches = [...releaseBody.matchAll(issueRegex)];
 
@@ -26,10 +50,11 @@ jobs:
               return;
             }
 
-            const releaseTag = context.payload.release.tag_name;
-            const releaseUrl = context.payload.release.html_url;
-            const isPrerelease = context.payload.release.prerelease;
+            const releaseTag = releaseInfo.tag_name;
+            const releaseUrl = releaseInfo.html_url;
+            const isPrerelease = releaseInfo.prerelease;
 
+            // Rest of your existing code remains the same
             for (const match of matches) {
               const issueNumber = parseInt(match[1]);
               
@@ -109,3 +134,4 @@ jobs:
               } catch (error) {
                 console.error(`Error processing issue #${issueNumber}: ${error}`);
               }
+            }
