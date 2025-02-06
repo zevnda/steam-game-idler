@@ -18,10 +18,7 @@ export default function PageHeader() {
         const protectedAchievements = async () => {
             const response = await fetch('https://gist.githubusercontent.com/zevnda/c7ebc4de0fb3e9ff6caac4df0a3fd06c/raw/36a30c123183158b7f2e72277f87f20061fab632/steam-games-with-server-side-achievements.json');
             const data = await response.json();
-            console.log(data);
-            console.log(appId);
             if (data.some(game => game.appid === appId.toString())) {
-                console.log('Protected achievements found');
                 setProtectedAchievements(true);
             }
         };
