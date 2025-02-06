@@ -20,6 +20,8 @@ on:
           type: boolean
           default: false
 
+run-name: Build release v${{ github.event.inputs.version }}
+
 permissions:
   contents: write
   
