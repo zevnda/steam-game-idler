@@ -3,3 +3,4 @@
 ## Changelog
 #76: Truncate long statistic name
 #77: Prevent layout shift when loading images in achievements list
+#78: Fix percentage toFixed error when viewing some game achievements
