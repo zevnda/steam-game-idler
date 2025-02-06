@@ -2,21 +2,18 @@ import { invoke } from '@tauri-apps/api/tauri';
 
 // Fetches the games list and recent games from cache or API
 export const fetchGamesList = async (steamId, refreshKey, prevRefreshKey) => {
-    const cachedGameList = sessionStorage.getItem('gamesListCache');
-    const cachedRecentGames = sessionStorage.getItem('recentGamesCache');
+    const cachedGameListFiles = await invoke('get_games_list_cache');
+    const cachedGameList = cachedGameListFiles?.games_list?.response?.games;
+    const cachedRecentGames = cachedGameListFiles?.recent_games?.response?.games;
     if (cachedGameList && refreshKey === prevRefreshKey) {
-        const parsedGameList = JSON.parse(cachedGameList);
-        const parsedRecentGames = JSON.parse(cachedRecentGames);
-        return { gameList: parsedGameList, recentGames: parsedRecentGames };
+        return { gameList: cachedGameList || [], recentGames: cachedRecentGames || [] };
     } else {
         const apiKey = localStorage.getItem('apiKey');
         const res = await invoke('get_games_list', { steamId, apiKey });
         const resTwo = await invoke('get_recent_games', { steamId });
-        const gameList = res.response.games || [];
-        const recentGames = resTwo.response.games || [];
-        sessionStorage.setItem('gamesListCache', JSON.stringify(gameList));
-        sessionStorage.setItem('recentGamesCache', JSON.stringify(recentGames));
-        return { gameList, recentGames };
+        const gameList = res.response.games;
+        const recentGames = resTwo.response.games;
+        return { gameList: gameList || [], recentGames: recentGames || [] };
     }
 };
 

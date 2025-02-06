@@ -1,6 +1,7 @@
 import { useContext } from 'react';
 import { useDisclosure } from '@heroui/react';
 
+import { invoke } from '@tauri-apps/api/tauri';
 import { toast } from 'react-toastify';
 
 import { AppContext } from '@/src/components/layout/AppContext';
@@ -14,14 +15,13 @@ export default function useSideBar(activePage, setActivePage) {
         onOpen();
     };
 
-    const handleLogout = (onClose) => {
+    const handleLogout = async (onClose) => {
         try {
             onClose();
             const settings = JSON.parse(localStorage.getItem('settings')) || {};
             const { clearData } = settings?.general || {};
             setUserSummary(null);
-            sessionStorage.removeItem('gamesListCache');
-            sessionStorage.removeItem('recentGamesCache');
+            await invoke('delete_games_list_files');
             clearLocalStorageData(clearData);
             logEvent(`[System] Logged out of ${userSummary.personaName}`);
         } catch (error) {

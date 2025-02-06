@@ -1,5 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 
+import { invoke } from '@tauri-apps/api/tauri';
 import { toast } from 'react-toastify';
 import moment from 'moment';
 
@@ -25,7 +26,7 @@ export const usePageHeader = ({ setSortStyle, setRefreshKey }) => {
         }
     };
 
-    const handleRefetch = () => {
+    const handleRefetch = async () => {
         try {
             if (userSummary.steamId !== '76561198158912649' && userSummary.steamId !== '76561198999797359') {
                 const cooldown = sessionStorage.getItem('cooldown');
@@ -33,7 +34,7 @@ export const usePageHeader = ({ setSortStyle, setRefreshKey }) => {
                     return toast.info(`Games can be refreshed again at ${moment.unix(cooldown).format('h:mm A')}`);
                 }
             }
-            sessionStorage.removeItem('gamesListCache');
+            await invoke('delete_games_list_files');
             sessionStorage.setItem('cooldown', moment().add(3, 'minutes').unix());
             setRefreshKey(prevKey => prevKey + 1);
         } catch (error) {
