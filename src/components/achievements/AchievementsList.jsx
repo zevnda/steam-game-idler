@@ -41,14 +41,16 @@ const Row = memo(({ index, style, data }) => {
         <div style={style} className='grid grid-cols-1 p-2'>
             <div className='border border-border rounded shadow-sm'>
                 <div className='flex items-center p-3 bg-container dark:bg-[#1a1a1a]'>
-                    <Image
-                        className='rounded-full mr-3'
-                        src={isUnlocked ? item.icon : item.icongray}
-                        width={40}
-                        height={40}
-                        alt={`${item.name} image`}
-                        priority
-                    />
+                    <div className='w-10 h-10 flex items-center justify-center'>
+                        <Image
+                            className='rounded-full mr-3'
+                            src={isUnlocked ? item.icon : item.icongray}
+                            width={40}
+                            height={40}
+                            alt={`${item.name} image`}
+                            priority
+                        />
+                    </div>
                     <div className='flex flex-col w-full'>
                         <Tooltip size='sm' closeDelay={0} placement='right' content={<p className='font-semibold'>{item.name}</p>}>
                             <p className='font-bold text-sm w-fit'>
