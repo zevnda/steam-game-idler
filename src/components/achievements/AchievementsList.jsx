@@ -56,7 +56,9 @@ const Row = memo(({ index, style, data }) => {
                             </p>
                         </Tooltip>
                         <div className='w-full'>
-                            <p className='text-sm text-gray-600 dark:text-gray-400'>{item.description || 'Hidden achievement'}</p>
+                            <p className='text-sm text-gray-600 dark:text-gray-400'>
+                                {item.description || 'Hidden achievement'}
+                            </p>
                         </div>
                     </div>
                     {isUnlocked ? (
