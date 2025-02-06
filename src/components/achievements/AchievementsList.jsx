@@ -16,7 +16,7 @@ const Row = memo(({ index, style, data }) => {
 
     const isUnlockedInitial = item ? userGameAchievementsMap.get(item.name) || false : false;
     const [isUnlocked, setIsUnlocked] = useState(isUnlockedInitial);
-    const percentage = item ? percentageMap.get(item.name) : undefined;
+    const percentage = item ? parseInt(percentageMap.get(item.name)) : undefined;
 
     if (!item) return null;
 
