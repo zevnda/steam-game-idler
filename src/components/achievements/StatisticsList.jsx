@@ -17,7 +17,7 @@ const Row = memo(({ index, style, data }) => {
             {item1 && (
                 <div key={item1.name} className='flex flex-col gap-4'>
                     <div className='flex justify-between items-center max-h-12 border border-border bg-container dark:bg-[#1a1a1a] p-2 rounded'>
-                        <p className='text-sm'>
+                        <p className='text-sm w-full truncate'>
                             {item1.name}
                         </p>
                         <Input
@@ -36,7 +36,7 @@ const Row = memo(({ index, style, data }) => {
             {item2 && (
                 <div key={item2.name} className='flex flex-col gap-4'>
                     <div className='flex justify-between items-center max-h-12 border border-border bg-container dark:bg-[#1a1a1a] p-2 rounded'>
-                        <p className='text-sm'>
+                        <p className='text-sm w-full truncate'>
                             {item2.name}
                         </p>
                         <Input
