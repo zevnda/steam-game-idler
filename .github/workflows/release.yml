@@ -172,8 +172,12 @@ jobs:
               ./src-tauri/target/release/bundle/msi/Steam Game Idler_${{ github.event.inputs.version }}_x64_en-US.msi.zip
               ./src-tauri/target/release/bundle/msi/Steam Game Idler_${{ github.event.inputs.version }}_x64_en-US.msi.zip.sig
 
+        - name: Set version environment variable
+          run: echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_ENV
+
   process-issues:
     runs-on: ubuntu-latest
+    needs: build_release_bundle
     permissions:
       issues: write
       contents: read
@@ -185,7 +189,7 @@ jobs:
           script: |
             let releaseInfo;
             
-            const tag = github.event.inputs.version;
+            const tag = process.env.VERSION;
             try {
               const release = await github.rest.repos.getReleaseByTag({
                 owner: context.repo.owner,
