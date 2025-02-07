@@ -355,10 +355,9 @@ export async function sendNativeNotification(title, body) {
 }
 
 // Clear local/session storage but preserving important keys
-export const preserveKeysAndClear = () => {
+export const preserveKeysAndClearData = async () => {
     const keysToPreserve = ['theme', 'minToTrayNotified', 'seenNotifications', 'lastNotifiedTimestamp'];
 
-    // Get all keys you want to preserve
     const preservedData = keysToPreserve.reduce((acc, key) => {
         const value = localStorage.getItem(key);
         if (value) acc[key] = value;
@@ -367,6 +366,8 @@ export const preserveKeysAndClear = () => {
 
     localStorage.clear();
     sessionStorage.clear();
+
+    await invoke('delete_games_list_files');
 
     Object.entries(preservedData).forEach(([key, value]) => {
         localStorage.setItem(key, value);
