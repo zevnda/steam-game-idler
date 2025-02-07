@@ -133,6 +133,7 @@ fn main() {
             get_recent_games,
             get_games_list_cache,
             delete_games_list_files,
+            get_game_details,
             get_achievement_data,
             validate_session,
             get_drops_remaining,
