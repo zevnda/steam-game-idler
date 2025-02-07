@@ -19,7 +19,7 @@ export const useAchievementUnlocker = async (
 
             // Check if there are no games left to unlock achievements for
             if (achievementUnlockerGame.length === 0) {
-                logEvent('[Achievement Unlocker - Auto] No games left - stopping');
+                logEvent('[Achievement Unlocker] No games left - stopping');
                 if (currentGame) await stopIdle(currentGame.appId, currentGame.name);
                 setIsComplete(true);
                 return;
@@ -44,7 +44,7 @@ export const useAchievementUnlocker = async (
                 );
             } else {
                 if (!error) removeGameFromUnlockerList(game.appid);
-                logEvent(`[Achievement Unlocker - Auto] ${game.name} [${game.appid}] has no achievements remaining - removed`);
+                logEvent(`[Achievement Unlocker] ${game.name} (${game.appid}) has no achievements remaining - removed`);
             }
 
             // Rerun if component is still mounted - needed check if user stops feature during loop
@@ -82,6 +82,14 @@ const fetchAchievements = async (game, setIsPrivate, setAchievementCount) => {
         }
 
         if (!userAchievements || !userAchievements.achievements || userAchievements.achievements === 0) {
+            return { achievements: [], game };
+        }
+
+        // Handle games with server-side achievements
+        const response = await fetch('/server-side-games.json');
+        const data = await response.json();
+        if (data.some(list => list.appid === game.appid.toString())) {
+            logEvent(`[Error] [Achievement Unlocker] ${game.name} (${game.appid}) contains server-side achievements that can't be unlocked`);
             return { achievements: [], game };
         }
 
@@ -158,14 +166,14 @@ const unlockAchievements = async (
                 // Unlock the achievement
                 await unlockAchievement(achievement.appId, achievement.name, achievement.gameName);
                 achievementsRemaining--;
-                logEvent(`[Achievement Unlocker - Auto] Unlocked ${achievement.name} for ${achievement.gameName}`);
+                logEvent(`[Achievement Unlocker] Unlocked ${achievement.name} for ${achievement.gameName}`);
                 setAchievementCount(prevCount => Math.max(prevCount - 1, 0));
 
                 // Stop idling and remove game from list if max achievement unlocks is reached
                 if (achievementsRemaining === 0 || (maxAchievementUnlocks && achievementsRemaining <= achievements.length - maxAchievementUnlocks)) {
                     await stopIdle(game.appid, game.name);
                     removeGameFromUnlockerList(game.appid);
-                    logEvent(`[Achievement Unlocker - Auto - maxAchievementUnlocks] Unlocked ${achievements.length - maxAchievementUnlocks}/${achievements.length} achievements for ${game.name} - removed from list`);
+                    logEvent(`[Achievement Unlocker - maxAchievementUnlocks] Unlocked ${achievements.length - maxAchievementUnlocks}/${achievements.length} achievements for ${game.name} - removed`);
                     break;
                 }
 

@@ -100,7 +100,6 @@ pub async fn unlock_achievement(app_id: u32, achievement_id: &str) -> Result<Str
         .expect("failed to execute unlocker");
 
     let output_str = String::from_utf8_lossy(&output.stdout);
-    println!("{}", output_str);
     Ok(output_str.to_string())
 }
 
