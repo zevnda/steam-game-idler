@@ -225,3 +225,22 @@ pub fn delete_games_list_files(app_handle: tauri::AppHandle) -> Result<(), Strin
 
     Ok(())
 }
+
+#[tauri::command]
+pub async fn get_game_details(app_id: String) -> Result<Value, String> {
+    let url = format!(
+        "https://store.steampowered.com/api/appdetails/?l=english&appids={}",
+        app_id
+    );
+
+    let client = Client::new();
+
+    // Send the request and handle the response
+    match client.get(&url).send().await {
+        Ok(response) => {
+            let body: Value = response.json().await.map_err(|e| e.to_string())?;
+            Ok(body)
+        }
+        Err(err) => Err(err.to_string()),
+    }
+}

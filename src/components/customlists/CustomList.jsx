@@ -14,6 +14,7 @@ import EditListModal from '@/src/components/customlists/EditListModal';
 import { MdEdit } from 'react-icons/md';
 import { TbCardsFilled } from 'react-icons/tb';
 import { FaAward } from 'react-icons/fa';
+import ManualAdd from './ManualAdd';
 
 const listTypes = {
     favoritesList: {
@@ -21,6 +22,7 @@ const listTypes = {
         description: 'Your favorite games',
         icon: <MdEdit fontSize={20} />,
         startButton: null,
+        manualAdd: true,
     },
     cardFarmingList: {
         title: 'Card Farming',
@@ -103,6 +105,9 @@ export default function CustomList({ type }) {
                             >
                                 Start {listType.title}
                             </Button>
+                        )}
+                        {listType.manualAdd && (
+                            <ManualAdd setList={setList} />
                         )}
                         <Button
                             size='sm'
