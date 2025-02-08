@@ -3,7 +3,7 @@ import { useContext } from 'react';
 import { useDisclosure } from '@heroui/react';
 
 import { AppContext } from '@/src/components/layout/AppContext';
-import { logEvent, preserveKeysAndClear } from '@/src/utils/utils';
+import { logEvent, preserveKeysAndClearData } from '@/src/utils/utils';
 import { handleClearLogs } from '@/src/utils/settings/logsHandler';
 
 const useClearData = () => {
@@ -14,7 +14,7 @@ const useClearData = () => {
     const handleClearData = (onClose) => {
         onClose();
         handleClearLogs(false);
-        preserveKeysAndClear();
+        preserveKeysAndClearData();
         setUserSummary(null);
         logEvent('[Settings] Cleared all data successfully');
     };
