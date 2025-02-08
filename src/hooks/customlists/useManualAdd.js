@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 import { invoke } from '@tauri-apps/api/tauri';
 import { logEvent } from '@/src/utils/utils';
 
-export default function useManualAdd(setList) {
+export default function useManualAdd(listName, setList) {
     const [inputValue, setInputValue] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
@@ -21,13 +21,12 @@ export default function useManualAdd(setList) {
             const data = res[inputValue].data;
             const game = { appid: data.steam_appid, name: data.name };
 
-            const cachedList = JSON.parse(localStorage.getItem('favoritesListCache')) || [];
+            const cachedList = JSON.parse(localStorage.getItem(`${listName}Cache`)) || [];
             const gameExists = cachedList.find(item => item.appid === game.appid);
             if (!gameExists) {
                 const updatedList = [...cachedList, game];
-                localStorage.setItem('favoritesListCache', JSON.stringify(updatedList));
+                localStorage.setItem(`${listName}Cache`, JSON.stringify(updatedList));
                 setList(updatedList);
-                logEvent(`[Favorites] Added ${game.name} (${game.appid})`);
                 setIsLoading(false);
                 onClose();
             } else {

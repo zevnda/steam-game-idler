@@ -22,7 +22,6 @@ const listTypes = {
         description: 'Your favorite games',
         icon: <MdEdit fontSize={20} />,
         startButton: null,
-        manualAdd: true,
     },
     cardFarmingList: {
         title: 'Card Farming',
@@ -106,9 +105,9 @@ export default function CustomList({ type }) {
                                 Start {listType.title}
                             </Button>
                         )}
-                        {listType.manualAdd && (
-                            <ManualAdd setList={setList} />
-                        )}
+
+                        <ManualAdd listName={type} setList={setList} />
+
                         <Button
                             size='sm'
                             color='primary'

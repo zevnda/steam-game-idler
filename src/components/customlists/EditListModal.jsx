@@ -54,10 +54,11 @@ export default function EditListModal({ isOpen, onOpenChange, onClose, filteredG
                         <Fragment>
                             <ModalHeader className='flex gap-2 bg-modalheader border-b border-border p-3'>
                                 <Input
+                                    autoFocus
                                     isClearable
                                     size='sm'
                                     placeholder='Search for a game..'
-                                    classNames={{ inputWrapper: ['bg-input border border-inputborder hover:!bg-titlebar rounded group-data-[focus-within=true]:!bg-titlebar'] }}
+                                    classNames={{ inputWrapper: ['bg-input border border-inputborder hover:!bg-titlebar rounded group-data-[focus-within=true]:!bg-titlebar group-data-[focus-visible=true]:ring-transparent group-data-[focus-visible=true]:ring-offset-transparent'] }}
                                     isDisabled={showInList}
                                     onChange={(e) => setSearchTerm(e.target.value)}
                                     onClear={() => setSearchTerm('')}
