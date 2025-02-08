@@ -6,9 +6,11 @@ import useManualAdd from '@/src/hooks/customlists/useManualAdd';
 
 import { IoMdAdd } from 'react-icons/io';
 
-export default function ManualAdd({ setList }) {
+export default function ManualAdd({ listName, setList }) {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
-    const { inputValue, isLoading, setInputValue, handleAdd, handleChange } = useManualAdd(setList);
+    const { inputValue, isLoading, setInputValue, handleAdd, handleChange } = useManualAdd(listName, setList);
+
+    console.log(listName);
 
     return (
         <React.Fragment>
