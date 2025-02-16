@@ -40,7 +40,7 @@ export default function ExportSettings() {
             <Button
                 size='sm'
                 color='primary'
-                className='font-semibold rounded'
+                className='font-semibold rounded-lg'
                 onPress={exportSettings}
             >
                 Export Data

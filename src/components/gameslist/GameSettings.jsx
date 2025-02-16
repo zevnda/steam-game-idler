@@ -84,7 +84,7 @@ export default function GameSettings({ isOpen, onOpenChange }) {
                                             aria-label='max idle time'
                                             placeholder=' '
                                             className='max-w-[80px]'
-                                            classNames={{ inputWrapper: ['bg-input border border-inputborder hover:!bg-titlebar rounded-md group-data-[focus-within=true]:!bg-titlebar'] }}
+                                            classNames={{ inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'] }}
                                             value={maxIdleTime}
                                             onChange={handleMaxIdleTimeChange}
                                         />
@@ -99,7 +99,7 @@ export default function GameSettings({ isOpen, onOpenChange }) {
                                             aria-label='max card drops'
                                             placeholder=' '
                                             className='max-w-[80px]'
-                                            classNames={{ inputWrapper: ['bg-input border border-inputborder hover:!bg-titlebar rounded-md group-data-[focus-within=true]:!bg-titlebar'] }}
+                                            classNames={{ inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'] }}
                                             value={maxCardDrops}
                                             onChange={handleMaxCardDropsChange}
                                         />
@@ -114,7 +114,7 @@ export default function GameSettings({ isOpen, onOpenChange }) {
                                             aria-label='max achievement unlocks'
                                             placeholder=' '
                                             className='max-w-[80px]'
-                                            classNames={{ inputWrapper: ['bg-input border border-inputborder hover:!bg-titlebar rounded-md group-data-[focus-within=true]:!bg-titlebar'] }}
+                                            classNames={{ inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'] }}
                                             value={maxAchievementUnlocks}
                                             onChange={handleMaxAchievementUnlocksChange}
                                         />
@@ -126,7 +126,7 @@ export default function GameSettings({ isOpen, onOpenChange }) {
                                     size='sm'
                                     color='danger'
                                     variant='light'
-                                    className='font-semibold rounded'
+                                    className='font-semibold rounded-lg'
                                     onPress={() => {
                                         onClose();
                                     }}
@@ -136,7 +136,7 @@ export default function GameSettings({ isOpen, onOpenChange }) {
                                 <Button
                                     size='sm'
                                     color='primary'
-                                    className='font-semibold rounded'
+                                    className='font-semibold rounded-lg'
                                     isDisabled={isSaveDisabled()}
                                     onPress={() => {
                                         handleSave();

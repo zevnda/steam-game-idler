@@ -11,34 +11,32 @@ import GameCard from '@/src/components/ui/GameCard';
 import GameSettings from '@/src/components/gameslist/GameSettings';
 import EditListModal from '@/src/components/customlists/EditListModal';
 
-import { MdEdit } from 'react-icons/md';
-import { TbCardsFilled } from 'react-icons/tb';
-import { FaAward } from 'react-icons/fa';
+import { TbAward, TbCards, TbEdit } from 'react-icons/tb';
 import ManualAdd from './ManualAdd';
 
 const listTypes = {
     favoritesList: {
         title: 'Favorites',
         description: 'Your favorite games',
-        icon: <MdEdit fontSize={20} />,
+        icon: <TbEdit fontSize={20} />,
         startButton: null,
     },
     cardFarmingList: {
         title: 'Card Farming',
         description: 'Add games to this list to farm their trading cards',
-        icon: <TbCardsFilled fontSize={20} />,
+        icon: <TbCards fontSize={20} />,
         startButton: 'startCardFarming',
     },
     autoIdleList: {
         title: 'Auto Idle',
         description: 'Add games to this list to automatically idle them on launch',
-        icon: <MdEdit fontSize={20} />,
+        icon: <TbEdit fontSize={20} />,
         startButton: null,
     },
     achievementUnlockerList: {
         title: 'Achievement Unlocker',
         description: 'Add games to this list to unlock their achievements',
-        icon: <FaAward fontSize={18} />,
+        icon: <TbAward fontSize={20} />,
         startButton: 'startAchievementUnlocker',
     },
 };
@@ -82,8 +80,8 @@ export default function CustomList({ type }) {
 
     return (
         <Fragment>
-            <div className='w-calc min-h-calc max-h-calc overflow-y-auto overflow-x-hidden' ref={containerRef}>
-                <div className={`fixed flex justify-between items-center w-[calc(100svw-66px)] py-2 pl-4 bg-base bg-opacity-90 backdrop-blur-md z-10 ${list.slice(0, visibleGames).length >= 21 ? 'pr-4' : 'pr-2'}`}>
+            <div className='w-calc min-h-calc max-h-calc bg-base overflow-y-auto overflow-x-hidden rounded-tl-xl border-t border-l border-border' ref={containerRef}>
+                <div className={`fixed flex justify-between items-center w-[calc(100svw-68px)] py-2 pl-4 bg-base bg-opacity-90 backdrop-blur-md z-10 rounded-tl-xl ${list.slice(0, visibleGames).length >= 21 ? 'pr-4' : 'pr-2'}`}>
                     <div className='flex flex-col'>
                         <p className='text-lg font-semibold'>
                             {listType.title}
@@ -112,7 +110,7 @@ export default function CustomList({ type }) {
                             size='sm'
                             color='primary'
                             className='rounded-full font-semibold'
-                            startContent={<MdEdit fontSize={20} />}
+                            startContent={<TbEdit fontSize={20} />}
                             onPress={() => setEditModalOpen(true)}
                         >
                             Edit List

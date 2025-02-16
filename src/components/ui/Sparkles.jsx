@@ -419,7 +419,7 @@ export default function Sparkles({ children }) {
             {isReady && (
                 <div className='relative inset-0 pointer-events-none z-10 overflow-hidden' style={{
                     width: '100%',
-                    height: '62px',
+                    height: '55px',
                 }}>
                     <Particles
                         className='w-full h-full'

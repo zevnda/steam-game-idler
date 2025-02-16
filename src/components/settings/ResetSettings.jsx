@@ -13,7 +13,7 @@ export default function ResetSettings({ setSettings, setRefreshKey }) {
             <Button
                 size='sm'
                 color='danger'
-                className='font-semibold rounded'
+                className='font-semibold rounded-lg'
                 onPress={onOpen}
             >
                 Reset Settings
@@ -36,7 +36,7 @@ export default function ResetSettings({ setSettings, setRefreshKey }) {
                                     size='sm'
                                     color='danger'
                                     variant='light'
-                                    className='font-semibold rounded'
+                                    className='font-semibold rounded-lg'
                                     onPress={onClose}
                                 >
                                     Cancel
@@ -44,7 +44,7 @@ export default function ResetSettings({ setSettings, setRefreshKey }) {
                                 <Button
                                     size='sm'
                                     color='primary'
-                                    className='font-semibold rounded'
+                                    className='font-semibold rounded-lg'
                                     onPress={() => handleResetSettings(onClose, setSettings, setRefreshKey)}
                                 >
                                     Confirm

@@ -23,13 +23,21 @@ export default function GamesList() {
     } = useGamesList();
     const [isSettingsModalOpen, setSettingsModalOpen] = useState(false);
 
-    if (isLoading) return <Loader />;
+    if (isLoading) return (
+        <div className='bg-base overflow-y-auto overflow-x-hidden rounded-tl-xl border-t border-l border-border'>
+            <Loader />
+        </div>
+    );
 
-    if (gameList.length === 0) return <Private setRefreshKey={setRefreshKey} />;
+    if (gameList.length === 0) return (
+        <div className='w-calc min-h-calc max-h-calc bg-base overflow-y-auto overflow-x-hidden rounded-tl-xl border-t border-l border-border'>
+            <Private setRefreshKey={setRefreshKey} />
+        </div>
+    );
 
     return (
         <Fragment key={refreshKey}>
-            <div className='w-calc min-h-calc max-h-calc overflow-y-auto overflow-x-hidden rounded-tl-lg border-t border-l border-border' ref={scrollContainerRef}>
+            <div className='w-calc min-h-calc max-h-calc bg-base overflow-y-auto overflow-x-hidden rounded-tl-xl border-t border-l border-border' ref={scrollContainerRef}>
                 {!showAchievements && (
                     <PageHeader
                         sortStyle={sortStyle}

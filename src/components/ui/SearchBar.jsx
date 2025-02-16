@@ -23,7 +23,7 @@ export default function SearchBar() {
 
     return (
         <Fragment>
-            <div className='flex items-center flex-grow p-4 h-full' data-tauri-drag-region>
+            <div className='flex items-center flex-grow py-4 h-full' data-tauri-drag-region>
                 {activePage === 'games' && !showAchievements && (
                     <Input
                         size='sm'
@@ -31,8 +31,8 @@ export default function SearchBar() {
                         isDisabled={activePage !== 'games' || showAchievements}
                         placeholder='Search for a game'
                         startContent={<RiSearchLine />}
-                        className='max-w-[400px]'
-                        classNames={{ inputWrapper: ['bg-input border border-inputborder hover:!bg-titlebar rounded group-data-[focus-within=true]:!bg-titlebar'] }}
+                        className='w-[300px]'
+                        classNames={{ inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'] }}
                         value={gameQueryValue}
                         onChange={handleGameQueryChange}
                         onKeyDown={handleKeyDown}
@@ -46,8 +46,8 @@ export default function SearchBar() {
                         isDisabled={achievementsUnavailable || currentTab === 'statistics'}
                         placeholder='Search for an achievement'
                         startContent={<RiSearchLine />}
-                        className='max-w-[400px]'
-                        classNames={{ inputWrapper: ['bg-input border border-inputborder hover:!bg-titlebar rounded group-data-[focus-within=true]:!bg-titlebar'] }}
+                        className='max-w-[300px]'
+                        classNames={{ inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'] }}
                         value={achievementQueryValue}
                         onChange={handleAchievementQueryChange}
                         onClear={() => setAchievementQueryValue('')}

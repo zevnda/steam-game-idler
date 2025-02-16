@@ -56,7 +56,7 @@ export default function AchievementSettings({ settings, setSettings }) {
                                 size='sm'
                                 className='w-[80px]'
                                 classNames={{
-                                    inputWrapper: ['rounded min-h-[25px] max-h-[25px] border border-border'],
+                                    inputWrapper: ['rounded-lg min-h-[25px] max-h-[25px]'],
                                     input: ['text-xs'],
                                 }}
                                 onChange={(value) => handleScheduleChange(value, 'scheduleFrom', localSettings, setLocalSettings, setSettings)}
@@ -71,7 +71,7 @@ export default function AchievementSettings({ settings, setSettings }) {
                                 size='sm'
                                 className='w-[80px]'
                                 classNames={{
-                                    inputWrapper: ['rounded min-h-[25px] max-h-[25px] border border-border'],
+                                    inputWrapper: ['rounded-lg min-h-[25px] max-h-[25px]'],
                                     input: ['text-xs'],
                                 }}
                                 onChange={(value) => handleScheduleChange(value, 'scheduleTo', localSettings, setLocalSettings, setSettings)}

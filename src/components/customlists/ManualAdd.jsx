@@ -4,13 +4,11 @@ import { Button, Modal, ModalContent, ModalBody, Input, ModalFooter, ModalHeader
 
 import useManualAdd from '@/src/hooks/customlists/useManualAdd';
 
-import { IoMdAdd } from 'react-icons/io';
+import { TbPlus } from 'react-icons/tb';
 
 export default function ManualAdd({ listName, setList }) {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const { inputValue, isLoading, setInputValue, handleAdd, handleChange } = useManualAdd(listName, setList);
-
-    console.log(listName);
 
     return (
         <React.Fragment>
@@ -19,7 +17,7 @@ export default function ManualAdd({ listName, setList }) {
                 color='primary'
                 isIconOnly
                 className='rounded-full'
-                startContent={<IoMdAdd fontSize={18} />}
+                startContent={<TbPlus fontSize={18} />}
                 onPress={onOpen}
             />
 
@@ -39,7 +37,7 @@ export default function ManualAdd({ listName, setList }) {
                                     isClearable
                                     placeholder='Enter a game ID'
                                     classNames={{
-                                        inputWrapper: ['bg-input border border-inputborder hover:!bg-titlebar rounded group-data-[focus-within=true]:!bg-titlebar group-data-[focus-visible=true]:ring-transparent group-data-[focus-visible=true]:ring-offset-transparent'],
+                                        inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar group-data-[focus-visible=true]:ring-transparent group-data-[focus-visible=true]:ring-offset-transparent'],
                                         input: ['text-sm']
                                     }}
                                     value={inputValue}
@@ -53,7 +51,7 @@ export default function ManualAdd({ listName, setList }) {
                                     size='sm'
                                     color='danger'
                                     variant='light'
-                                    className='font-semibold rounded'
+                                    className='font-semibold rounded-lg'
                                     onPress={onClose}
                                 >
                                     Cancel
@@ -63,7 +61,7 @@ export default function ManualAdd({ listName, setList }) {
                                     color='primary'
                                     isLoading={isLoading}
                                     isDisabled={inputValue.length === 0}
-                                    className='font-semibold rounded'
+                                    className='font-semibold rounded-lg'
                                     onPress={() => handleAdd(onClose)}
                                 >
                                     Add

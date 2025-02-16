@@ -4,8 +4,7 @@ import { Select, SelectItem } from '@heroui/react';
 
 import { usePageHeader } from '@/src/hooks/gameslist/usePageHeader';
 
-import { MdSort } from 'react-icons/md';
-import { IoRefresh } from 'react-icons/io5';
+import { TbRefresh, TbSortDescending2 } from 'react-icons/tb';
 
 export default function PageHeader({ sortStyle, setSortStyle, filteredGames, visibleGames, setRefreshKey }) {
     const { handleSorting, handleRefetch } = usePageHeader({ setSortStyle, setRefreshKey });
@@ -20,7 +19,7 @@ export default function PageHeader({ sortStyle, setSortStyle, filteredGames, vis
 
     return (
         <Fragment>
-            <div className={`fixed w-[calc(100vw-66px)] z-[50] bg-opacity-90 backdrop-blur-md bg-base pl-4 pt-2 rounded-tl-lg ${filteredGames?.length > 25 ? 'pr-4' : 'pr-2'}`}>
+            <div className={`fixed w-[calc(100vw-68px)] z-[50] bg-opacity-90 backdrop-blur-md bg-base pl-4 pt-2 rounded-tl-xl ${filteredGames?.length > 25 ? 'pr-4' : 'pr-2'}`}>
                 <div className='flex justify-between items-center pb-3'>
                     <div className='flex items-center gap-1'>
                         <div className='flex flex-col justify-center'>
@@ -32,7 +31,7 @@ export default function PageHeader({ sortStyle, setSortStyle, filteredGames, vis
                                     Showing {visibleGames.length} of {filteredGames.length} games
                                 </p>
                                 <div className='flex justify-center items-center cursor-pointer' onClick={handleRefetch}>
-                                    <IoRefresh className='text-gray-400' fontSize={16} />
+                                    <TbRefresh className='text-gray-400' fontSize={16} />
                                 </div>
                             </div>
                         </div>
@@ -44,7 +43,7 @@ export default function PageHeader({ sortStyle, setSortStyle, filteredGames, vis
                             disallowEmptySelection
                             radius='none'
                             size='sm'
-                            startContent={<MdSort fontSize={26} />}
+                            startContent={<TbSortDescending2 fontSize={26} />}
                             items={sortOptions}
                             className='w-[240px]'
                             defaultSelectedKeys={[sortStyle]}
@@ -52,12 +51,12 @@ export default function PageHeader({ sortStyle, setSortStyle, filteredGames, vis
                             classNames={{
                                 listbox: ['p-0'],
                                 value: ['text-sm'],
-                                trigger: ['bg-titlebar border border-border data-[hover=true]:!bg-inputborder data-[open=true]:!bg-titlebar duration-100 rounded'],
-                                popoverContent: ['bg-base border border-border rounded justify-start'],
+                                trigger: ['bg-titlebar border border-border data-[hover=true]:!bg-input data-[open=true]:!bg-input duration-100 rounded-lg'],
+                                popoverContent: ['bg-titlebar border border-border rounded-lg justify-start'],
                                 listboxWrapper: ['min-h-[168px]']
                             }}
                         >
-                            {(item) => <SelectItem classNames={{ title: ['text-sm'], base: ['rounded'] }}>{item.label}</SelectItem>}
+                            {(item) => <SelectItem classNames={{ title: ['text-sm'], base: ['rounded data-[hover=true]:!bg-titlehover'] }}>{item.label}</SelectItem>}
                         </Select>
                     </div>
                 </div>

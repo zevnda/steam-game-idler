@@ -9,10 +9,8 @@ import UpdateButton from '@/src/components/updates/UpdateButton';
 import Notifications from '@/src/components/notifications/Notifications';
 import SearchBar from '@/src/components/ui/SearchBar';
 
-import { HiMiniMinus } from 'react-icons/hi2';
-import { BiWindows } from 'react-icons/bi';
-import { IoClose } from 'react-icons/io5';
 import { GoGrabber } from 'react-icons/go';
+import { TbMinus, TbSquare, TbX } from 'react-icons/tb';
 
 export default function Header() {
     const { setGameQueryValue, setAchievementQueryValue, canUpdate } = useContext(AppContext);
@@ -20,36 +18,42 @@ export default function Header() {
 
     return (
         <Fragment>
-            <div className='relative w-full h-14 bg-titlebar select-none'>
-                <div className='flex justify-between items-center h-full text-titletext'>
-                    <div
-                        className='flex justify-center items-center gap-1 px-2 bg-sidebar h-full w-14' data-tauri-drag-region
-                    >
-                        <GoGrabber className='text-offwhite' fontSize={28} data-tauri-drag-region />
+            <div className='relative w-full h-12 bg-titlebar select-none' data-tauri-drag-region>
+                <div className='flex justify-between items-center h-full'>
+                    <div className='flex justify-center items-center gap-1 px-2 h-full w-14' data-tauri-drag-region>
+                        <GoGrabber fontSize={28} data-tauri-drag-region />
                     </div>
 
-                    <div className='flex justify-center items-center flex-grow h-full'>
+                    <div className='flex justify-center items-center flex-grow gap-2 h-11' data-tauri-drag-region>
                         <SearchBar />
 
                         {canUpdate && <UpdateButton />}
 
                         <Notifications />
 
-                        <Divider className='w-[1px] h-full bg-titleborder' />
+                        <Divider className='w-[1px] h-6 bg-border' />
 
                         <ThemeSwitch />
 
-                        <Divider className='w-[1px] h-full bg-titleborder' />
+                        <Divider className='w-[1px] h-6 bg-border' />
 
-                        <div className='flex justify-center items-center h-full'>
-                            <div className='flex justify-center items-center hover:bg-titlehover w-[55px] h-full cursor-pointer' onClick={windowMinimize}>
-                                <HiMiniMinus fontSize={20} />
+                        <div className='flex justify-center items-center gap-2 h-full mr-3'>
+                            <div className='flex justify-center items-center'>
+                                <div className='hover:bg-titlehover p-2 rounded-full duration-200 cursor-pointer active:scale-90' onClick={windowMinimize}>
+                                    <TbMinus fontSize={20} />
+                                </div>
                             </div>
-                            <div className='flex justify-center items-center hover:bg-titlehover w-[55px] h-full cursor-pointer' onClick={windowToggleMaximize}>
-                                <BiWindows fontSize={16} />
+
+                            <div className='flex justify-center items-center'>
+                                <div className='hover:bg-titlehover p-2.5 rounded-full duration-200 cursor-pointer active:scale-90' onClick={windowToggleMaximize}>
+                                    <TbSquare fontSize={16} />
+                                </div>
                             </div>
-                            <div className='flex justify-center items-center hover:bg-red-500 w-[55px] h-full cursor-pointer' onClick={windowClose}>
-                                <IoClose fontSize={20} />
+
+                            <div className='flex justify-center items-center'>
+                                <div className='hover:bg-danger p-2 rounded-full duration-200 cursor-pointer active:scale-90' onClick={windowClose}>
+                                    <TbX fontSize={20} />
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -39,7 +39,7 @@ export default function Settings({ setInitUpdate, setUpdateManifest }) {
 
     return (
         <Fragment key={refreshKey}>
-            <div className='w-calc min-h-calc max-h-calc overflow-y-auto'>
+            <div className='w-calc min-h-calc max-h-calc bg-base overflow-y-auto rounded-tl-xl border-t border-l border-border'>
                 <div className='p-4 pt-2'>
                     <div className='flex justify-between items-center'>
                         <div className='flex flex-col'>
@@ -66,12 +66,12 @@ export default function Settings({ setInitUpdate, setUpdateManifest }) {
                         variant='solid'
                         className='mt-6'
                         classNames={{
-                            base: 'bg-titlebar rounded-t p-0 border-t border-l border-r border-border',
+                            base: 'bg-titlebar rounded-t-lg p-0 border-t border-l border-r border-border',
                             tabList: 'gap-0 w-full bg-transparent',
                             tab: 'px-6 py-3 rounded-none bg-transparent px-4 data-[hover-unselected=true]:bg-gray-500 data-[hover-unselected=true]:bg-opacity-5 data-[hover-unselected=true]:opacity-100',
                             tabContent: 'text-sm',
                             cursor: 'bg-base w-full rounded',
-                            panel: 'bg-titlebar rounded rounded-tl-none border border-border',
+                            panel: 'bg-titlebar rounded-lg rounded-tl-none border border-border',
                         }}
                     >
                         <Tab key='general' title='General'>

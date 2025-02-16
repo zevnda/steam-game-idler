@@ -3,21 +3,21 @@ import { Fragment, useContext } from 'react';
 
 import { AppContext } from '@/src/components/layout/AppContext';
 
-import { FiDownload } from 'react-icons/fi';
+import { TbDownload } from 'react-icons/tb';
 
 export default function UpdateButton() {
     const { setInitUpdate } = useContext(AppContext);
 
     return (
         <Fragment>
-            <Tooltip content='Update available' closeDelay={0} size='sm'>
-                <div className='flex justify-center items-center cursor-pointer w-[55px]' onClick={() => setInitUpdate(true)}>
+            <Tooltip content='Update Ready!' placement='left' closeDelay={0} size='sm'>
+                <div className='flex justify-center items-center cursor-pointer' onClick={() => setInitUpdate(true)}>
                     <div className='flex items-center p-2 hover:bg-titlehover rounded-full'>
-                        <FiDownload fontSize={18} className='text-success' />
+                        <TbDownload fontSize={18} className='text-success' />
                     </div>
                 </div>
             </Tooltip>
-            <Divider className='w-[1px] h-full bg-titleborder' />
+            <Divider className='w-[1px] h-6 bg-border' />
         </Fragment>
     );
 }

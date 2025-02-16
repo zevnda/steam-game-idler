@@ -10,22 +10,22 @@ module.exports = {
     theme: {
         extend: {
             width: {
-                'calc': 'calc(100vw - 56px)'
+                'calc': 'calc(100vw - 57px)'
             },
             height: {
-                'calc': 'calc(100vh - 56px)',
+                'calc': 'calc(100vh - 45px)',
             },
             maxHeight: {
-                'calc': 'calc(100vh - 56px)',
+                'calc': 'calc(100vh - 45px)',
             },
             minHeight: {
-                'calc': 'calc(100vh - 56px)',
+                'calc': 'calc(100vh - 45px)',
             },
             maxWidth: {
-                'calc': 'calc(100vw - 56px)',
+                'calc': 'calc(100vw - 57px)',
             },
             minWidth: {
-                'calc': 'calc(100vw - 56px)',
+                'calc': 'calc(100vw - 57px)',
             }
         }
     },
@@ -34,22 +34,17 @@ module.exports = {
         themes: {
             light: {
                 colors: {
-                    'sgi': '#137eb5',
                     'offwhite': '#ffffff',
                     'altwhite': '#5c6674',
-                    'sidebar': '#1a8fcb',
                     'titlebar': '#ffffff',
-                    'titletext': '#0a0a0a',
-                    'titlehover': '#dddddd',
-                    'titleborder': '#00000015',
+                    'titlehover': '#f5f5f5',
                     'base': '#fafafa',
                     'container': '#f7f7f7',
-                    'containerhover': '#efefef',
+                    'containerhover': '#f5f5f5',
                     'footer': '#efefef',
-                    'border': '#00000015',
+                    'border': '#e3e3e3',
                     'input': '#f7f7f7',
-                    'inputborder': '#00000015',
-                    'link': '#3c93f1',
+                    'link': '#006fee',
                     'linkhover': '#4b82bb',
                     'modalheader': '#ffffff',
                     'modalbody': '#fafafa',
@@ -59,8 +54,7 @@ module.exports = {
                     'notiunread': '#ebebeb',
                     'notihover': '#f5f5f5',
                     primary: {
-                        DEFAULT: '#1a8fcb',
-                        foreground: '#fff'
+                        DEFAULT: '#60a5fa',
                     },
                     secondary: {
                         DEFAULT: '#137eb5',
@@ -73,21 +67,16 @@ module.exports = {
             },
             dark: {
                 colors: {
-                    'sgi': '#137eb5',
                     'offwhite': '#ebebeb',
                     'altwhite': '#a9a9a9',
-                    'sidebar': '#141414',
                     'titlebar': '#141414',
-                    'titletext': '#efefef',
                     'titlehover': '#2b2b2b',
-                    'titleborder': '#ffffff15',
                     'base': '#101010',
                     'container': '#161616',
                     'containerhover': '#252525',
                     'footer': '#0f0f0f',
-                    'border': '#ffffff15',
+                    'border': '#272727',
                     'input': '#181818',
-                    'inputborder': '#ffffff15',
                     'link': '#5a95d3',
                     'linkhover': '#4b82bb',
                     'modalheader': '#121212',

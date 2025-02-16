@@ -7,7 +7,7 @@ import { AppContext } from '@/src/components/layout/AppContext';
 import { handleCancel, useCardFarming } from '@/src/hooks/automation/useCardFarming';
 import Image from 'next/image';
 
-import { IoCheckmark } from 'react-icons/io5';
+import { TbCheck } from 'react-icons/tb';
 
 export default function CardFarming({ activePage }) {
     const { theme } = useTheme();
@@ -49,18 +49,18 @@ export default function CardFarming({ activePage }) {
 
     return (
         <Fragment>
-            <div className={`${activePage !== 'customlists/card-farming' && 'hidden'} absolute top-14 left-14 bg-base z-50`}>
+            <div className={`${activePage !== 'customlists/card-farming' && 'hidden'} absolute top-12 left-14 bg-base z-50 rounded-tl-xl border-t border-l border-border`}>
                 <div className='relative flex justify-evenly items-center flex-col p-4 w-calc h-calc'>
                     <video
-                        className='absolute top-0 left-0 w-full h-full object-cover'
+                        className='absolute top-0 left-0 w-full h-full object-cover rounded-tl-xl'
                         src={videoSrc}
                         autoPlay
                         loop
                         muted
                     />
-                    <div className='absolute bg-base/10 backdrop-blur-[3px] w-full h-full'></div>
+                    <div className='absolute bg-base/10 backdrop-blur-[3px] w-full h-full rounded-tl-xl'></div>
 
-                    <div className='flex items-center flex-col gap-6 z-10 backdrop-blur-md bg-base/20 p-8 border border-border rounded-md'>
+                    <div className='flex items-center flex-col gap-6 z-10 backdrop-blur-md bg-base/20 p-8 border border-border rounded-lg'>
                         <p className='text-3xl font-semibold'>
                             Card Farming
                         </p>
@@ -72,18 +72,18 @@ export default function CardFarming({ activePage }) {
                                         {!isComplete && (
                                             <Fragment>
                                                 <p>
-                                                    Idling <span className='font-bold text-sgi'>{gamesWithDrops.size}</span> game(s) with <span className='font-bold text-sgi '>{totalDropsRemaining}</span> total card drop(s) remaining
+                                                    Idling <span className='font-bold text-blue-500'>{gamesWithDrops.size}</span> game(s) with <span className='font-bold text-blue-500 '>{totalDropsRemaining}</span> total card drop(s) remaining
                                                 </p>
 
                                                 <p className='text-sm'>
-                                                    Next action in <span className='font-bold text-sm text-sgi'>{countdownTimer}</span>
+                                                    Next action in <span className='font-bold text-sm text-blue-500'>{countdownTimer}</span>
                                                 </p>
                                             </Fragment>
                                         )}
 
-                                        <div className='grid grid-cols-3 gap-2 max-h-[170px] border border-border rounded p-2 overflow-y-auto'>
+                                        <div className='grid grid-cols-3 gap-2 max-h-[170px] border border-border rounded-lg p-2 overflow-y-auto'>
                                             {[...Array.from(gamesWithDrops)].map((item) => (
-                                                <div key={item.appId} className='flex gap-1 border border-border rounded p-1'>
+                                                <div key={item.appId} className='flex gap-1 border border-border rounded-lg p-1'>
                                                     <Image
                                                         src={`https://cdn.cloudflare.steamstatic.com/steam/apps/${item.appId}/header.jpg`}
                                                         className='aspect-[62/36]'
@@ -107,7 +107,7 @@ export default function CardFarming({ activePage }) {
                         ) : (
                             <Fragment>
                                 <div className='border border-border rounded-full inline-block p-2 w-fit'>
-                                    <IoCheckmark className='text-green-400' fontSize={50} />
+                                    <TbCheck className='text-green-400' fontSize={50} />
                                 </div>
                             </Fragment>
                         )}
@@ -115,7 +115,7 @@ export default function CardFarming({ activePage }) {
                         <Button
                             size='sm'
                             color={isComplete ? 'primary' : 'danger'}
-                            className='min-h-[30px] font-semibold rounded'
+                            className='min-h-[30px] font-semibold rounded-lg'
                             onPress={() => {
                                 handleCancel(gamesWithDrops, isMountedRef, abortControllerRef);
                                 setIsCardFarming(false);
