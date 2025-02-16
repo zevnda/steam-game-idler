@@ -18,7 +18,7 @@ export default function SideBar() {
 
     return (
         <Fragment>
-            <div className='flex justify-between flex-col w-14 min-h-calc max-h-calc bg-sidebar dark:border-r border-border'>
+            <div className='flex justify-between flex-col w-14 min-h-calc max-h-calc bg-sidebar'>
                 <div className='flex justify-center items-center flex-col'>
                     <div className='relative flex justify-center items-center w-full h-[55px] hover:bg-sgi dark:hover:bg-titlehover cursor-pointer duration-200' onClick={() => setActivePage('games')}>
                         {activePage === 'games' && (

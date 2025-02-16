@@ -23,12 +23,12 @@ export default function Header() {
             <div className='relative w-full h-14 bg-titlebar select-none'>
                 <div className='flex justify-between items-center h-full text-titletext'>
                     <div
-                        className='flex justify-center items-center gap-1 px-2 bg-sidebar h-full w-14 dark:border-r border-b border-border' data-tauri-drag-region
+                        className='flex justify-center items-center gap-1 px-2 bg-sidebar h-full w-14' data-tauri-drag-region
                     >
                         <GoGrabber className='text-offwhite' fontSize={28} data-tauri-drag-region />
                     </div>
 
-                    <div className='flex justify-center items-center flex-grow h-full border-b border-border'>
+                    <div className='flex justify-center items-center flex-grow h-full'>
                         <SearchBar />
 
                         {canUpdate && <UpdateButton />}
