@@ -33,7 +33,7 @@ export default function Setup() {
     return (
         <Fragment>
             <Header />
-            <div className='relative w-full bg-base'>
+            <div className='relative w-full bg-base border-t border-border'>
                 <video
                     className='absolute top-0 left-0 w-full h-full object-cover'
                     src={videoSrc}
@@ -66,7 +66,7 @@ export default function Setup() {
                                     <p className='text-sm mb-2'>
                                         Choose an account
                                     </p>
-                                    <div className='flex flex-col border border-border max-h-[200px] min-w-[300px] overflow-y-auto rounded '>
+                                    <div className='flex flex-col border border-border max-h-[200px] min-w-[300px] overflow-y-auto rounded-lg'>
                                         {steamUsers.map((item, index) => (
                                             <div
                                                 key={index}
@@ -96,7 +96,7 @@ export default function Setup() {
                                     </div>
                                 </Fragment>
                             ) : (
-                                <div className='flex flex-col items-center border border-border w-full rounded p-4'>
+                                <div className='flex flex-col items-center border border-border w-full rounded-lg p-4'>
                                     <p className='text-xs'>
                                         No Steam users found
                                     </p>

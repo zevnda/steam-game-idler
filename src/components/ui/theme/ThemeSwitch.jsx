@@ -1,8 +1,7 @@
 import { Fragment, useEffect, useState } from 'react';
 import { useTheme } from 'next-themes';
 
-import { LuMoonStar } from 'react-icons/lu';
-import { LuSun } from 'react-icons/lu';
+import { TbMoon, TbSun } from 'react-icons/tb';
 
 export default function ThemeSwitch() {
     const { theme, setTheme } = useTheme();
@@ -29,16 +28,16 @@ export default function ThemeSwitch() {
 
     const renderIcon = () => {
         if (theme === 'dark') {
-            return <LuMoonStar fontSize={18} />;
+            return <TbMoon fontSize={20} />;
         } else {
-            return <LuSun fontSize={18} />;
+            return <TbSun fontSize={20} />;
         }
     };
 
     return (
         <Fragment>
-            <div className='flex justify-center items-center cursor-pointer w-[55px]' onClick={handleClick}>
-                <div className='flex items-center p-2 hover:bg-titlehover rounded-full'>
+            <div className='flex justify-center items-center'>
+                <div className='flex items-center p-2 hover:bg-titlehover rounded-full duration-200 active:scale-90 cursor-pointer' onClick={handleClick}>
                     {renderIcon()}
                 </div>
             </div>

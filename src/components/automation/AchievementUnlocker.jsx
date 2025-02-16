@@ -8,7 +8,7 @@ import { useAchievementUnlocker } from '@/src/hooks/automation/useAchievementUnl
 import { stopIdle } from '@/src/utils/utils';
 import ExtLink from '@/src/components/ui/ExtLink';
 
-import { IoCheckmark } from 'react-icons/io5';
+import { TbCheck } from 'react-icons/tb';
 
 export default function AchievementUnlocker({ activePage }) {
     const { theme } = useTheme();
@@ -54,18 +54,18 @@ export default function AchievementUnlocker({ activePage }) {
 
     return (
         <Fragment>
-            <div className={`${activePage !== 'customlists/achievement-unlocker' && 'hidden'} absolute top-14 left-14 bg-base z-50`}>
+            <div className={`${activePage !== 'customlists/achievement-unlocker' && 'hidden'} absolute top-12 left-14 bg-base z-50 rounded-tl-xl border-t border-l border-border`}>
                 <div className='relative flex justify-evenly items-center flex-col p-4 w-calc h-calc'>
                     <video
-                        className='absolute top-0 left-0 w-full h-full object-cover'
+                        className='absolute top-0 left-0 w-full h-full object-cover rounded-tl-xl'
                         src={videoSrc}
                         autoPlay
                         loop
                         muted
                     />
-                    <div className='absolute bg-base/10 backdrop-blur-[3px] w-full h-full'></div>
+                    <div className='absolute bg-base/10 backdrop-blur-[3px] w-full h-full rounded-tl-xl'></div>
 
-                    <div className='flex items-center flex-col gap-6 z-10 backdrop-blur-md bg-base/20 p-8 border border-border rounded-md'>
+                    <div className='flex items-center flex-col gap-6 z-10 backdrop-blur-md bg-base/20 p-8 border border-border rounded-lg'>
                         <p className='text-3xl font-semibold'>
                             Achievement Unlocker
                         </p>
@@ -95,7 +95,7 @@ export default function AchievementUnlocker({ activePage }) {
                         {isComplete && (
                             <Fragment>
                                 <div className='border border-border rounded-full inline-block p-2 w-fit'>
-                                    <IoCheckmark className='text-green-400' fontSize={50} />
+                                    <TbCheck className='text-green-400' fontSize={50} />
                                 </div>
                             </Fragment>
                         )}
@@ -103,11 +103,11 @@ export default function AchievementUnlocker({ activePage }) {
                         {!isComplete && !isPrivate && !isWaitingForSchedule && (
                             <Fragment>
                                 <p>
-                                    Unlocking <span className='font-bold text-sgi'>{achievementCount}</span> achievement(s) for <span className='font-bold text-sgi '>{currentGame.name}</span>
+                                    Unlocking <span className='font-bold text-blue-500'>{achievementCount}</span> achievement(s) for <span className='font-bold text-blue-500 '>{currentGame.name}</span>
                                 </p>
 
                                 <p className='text-sm'>
-                                    Next unlock in <span className='font-bold text-sm text-sgi'>{countdownTimer}</span>
+                                    Next unlock in <span className='font-bold text-sm text-blue-500'>{countdownTimer}</span>
                                 </p>
                             </Fragment>
                         )}
@@ -115,7 +115,7 @@ export default function AchievementUnlocker({ activePage }) {
                         <Button
                             size='sm'
                             color={isComplete ? 'primary' : 'danger'}
-                            className='min-h-[30px] font-semibold rounded'
+                            className='min-h-[30px] font-semibold rounded-lg'
                             onPress={() => {
                                 setIsAchievementUnlocker(false);
                                 stopIdle(currentGame.appid, currentGame.name);

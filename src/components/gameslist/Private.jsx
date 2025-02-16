@@ -45,7 +45,7 @@ export default function Private({ setRefreshKey }) {
                         <Button
                             size='sm'
                             color='primary'
-                            className='font-semibold rounded mt-5'
+                            className='font-semibold rounded-lg mt-5'
                             onPress={handleRefresh}
                         >
                             Try Again

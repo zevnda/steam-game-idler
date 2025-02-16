@@ -5,8 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNotifications } from '@/src/hooks/notifications/useNotifications';
 import { markAsSeen, markAllAsSeen, handleOpenUrl, timeAgo } from '@/src/utils/notifications/notificationsHandler';
 
-import { IoMdNotificationsOutline } from 'react-icons/io';
 import { GoDotFill } from 'react-icons/go';
+import { TbBell } from 'react-icons/tb';
 
 export default function Notifications() {
     const {
@@ -33,14 +33,14 @@ export default function Notifications() {
 
     return (
         <Fragment>
-            <div className='relative mx-2'>
+            <div className='relative'>
                 <div
-                    className='flex items-center p-1.5 hover:bg-titlehover rounded-full cursor-pointer relative mr-1'
+                    className={`flex items-center p-2 hover:bg-titlehover rounded-full cursor-pointer active:scale-90 relative duration-200 ${showNotifications && 'bg-titlehover'}`}
                     onClick={() => {
                         setShowNotifications(!showNotifications);
                     }}
                 >
-                    <IoMdNotificationsOutline fontSize={20} />
+                    <TbBell fontSize={20} />
                     {unseenNotifications.length > 0 && (
                         <div className='absolute top-0 right-0'>
                             <GoDotFill className='text-danger' />

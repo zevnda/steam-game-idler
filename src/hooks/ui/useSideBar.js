@@ -32,7 +32,7 @@ export default function useSideBar(activePage, setActivePage) {
     };
 
     const clearLocalStorageData = (clearData) => {
-        setActivePage('games');
+        setActivePage('');
         setCurrentTab(null);
         setGameQueryValue('');
         setAchievementQueryValue('');

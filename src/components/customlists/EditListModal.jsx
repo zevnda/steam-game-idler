@@ -2,7 +2,7 @@ import { Fragment, memo } from 'react';
 import { FixedSizeList as List } from 'react-window';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input } from '@heroui/react';
 import Image from 'next/image';
-import { MdCheck } from 'react-icons/md';
+import { TbCheck } from 'react-icons/tb';
 
 const Row = memo(({ index, style, data }) => {
     const { filteredGamesList, list, handleAddGame, handleRemoveGame } = data;
@@ -34,7 +34,7 @@ const Row = memo(({ index, style, data }) => {
             </div>
             <div className='flex justify-center items-center'>
                 {list.some(game => game.appid === item.appid) && (
-                    <MdCheck fontSize={20} className='text-success' />
+                    <TbCheck fontSize={20} className='text-success' />
                 )}
             </div>
         </div>
@@ -58,7 +58,7 @@ export default function EditListModal({ isOpen, onOpenChange, onClose, filteredG
                                     isClearable
                                     size='sm'
                                     placeholder='Search for a game..'
-                                    classNames={{ inputWrapper: ['bg-input border border-inputborder hover:!bg-titlebar rounded group-data-[focus-within=true]:!bg-titlebar group-data-[focus-visible=true]:ring-transparent group-data-[focus-visible=true]:ring-offset-transparent'] }}
+                                    classNames={{ inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded group-data-[focus-within=true]:!bg-titlebar group-data-[focus-visible=true]:ring-transparent group-data-[focus-visible=true]:ring-offset-transparent'] }}
                                     isDisabled={showInList}
                                     onChange={(e) => setSearchTerm(e.target.value)}
                                     onClear={() => setSearchTerm('')}
@@ -68,7 +68,7 @@ export default function EditListModal({ isOpen, onOpenChange, onClose, filteredG
                                     color='default'
                                     className='rounded-full'
                                     isDisabled={list.length === 0}
-                                    startContent={<MdCheck fontSize={34} className={showInList ? 'text-green-500' : 'text-altwhite'} />}
+                                    startContent={<TbCheck fontSize={34} className={showInList ? 'text-green-500' : 'text-altwhite'} />}
                                     onPress={() => setShowInList(!showInList)}
                                 >In List</Button>
                             </ModalHeader>
@@ -88,7 +88,7 @@ export default function EditListModal({ isOpen, onOpenChange, onClose, filteredG
                                     size='sm'
                                     color='danger'
                                     variant='light'
-                                    className='rounded-md font-semibold'
+                                    className='rounded-lg font-semibold'
                                     onPress={() => {
                                         localStorage.removeItem(`${type}Cache`);
                                         setShowInList(false);
@@ -100,7 +100,7 @@ export default function EditListModal({ isOpen, onOpenChange, onClose, filteredG
                                 <Button
                                     size='sm'
                                     color='primary'
-                                    className='rounded-md font-semibold'
+                                    className='rounded-lg font-semibold'
                                     onPress={onClose}
                                 >
                                     Done

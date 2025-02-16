@@ -6,7 +6,7 @@ import { handleUnlockAll, handleLockAll, handleUpdateAllStats, handleResetAll } 
 import { sortOptions, handleChange } from '@/src/utils/achievements/pageHeaderHandler';
 import { AppContext } from '@/src/components/layout/AppContext';
 
-import { MdSort } from 'react-icons/md';
+import { TbSortDescending2 } from 'react-icons/tb';
 
 export default function TabButtons({ initialStatValues, newStatValues, setNewStatValues, setIsSorted, userGameAchievementsMap, percentageMap }) {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -39,7 +39,7 @@ export default function TabButtons({ initialStatValues, newStatValues, setNewSta
                                 size='sm'
                                 color='primary'
                                 isDisabled={!achievementList || achievementQueryValue.length > 0 || currentTab === 'statistics'}
-                                className='font-semibold rounded'
+                                className='font-semibold rounded-lg'
                                 onPress={() => handleSetState('unlock', 'achievements')}
                             >
                                 Unlock All
@@ -48,7 +48,7 @@ export default function TabButtons({ initialStatValues, newStatValues, setNewSta
                                 size='sm'
                                 color='danger'
                                 isDisabled={!achievementList || achievementQueryValue.length > 0}
-                                className='font-semibold rounded'
+                                className='font-semibold rounded-lg'
                                 onPress={() => handleSetState('lock', 'achievements')}
                             >
                                 Lock All
@@ -61,7 +61,7 @@ export default function TabButtons({ initialStatValues, newStatValues, setNewSta
                                 size='sm'
                                 color='primary'
                                 isDisabled={Object.keys(initialStatValues).length === 0}
-                                className='font-semibold rounded'
+                                className='font-semibold rounded-lg'
                                 onPress={() => handleUpdateAllStats(appId, appName, initialStatValues, newStatValues)}
                             >
                                 Save Changes
@@ -70,7 +70,7 @@ export default function TabButtons({ initialStatValues, newStatValues, setNewSta
                                 size='sm'
                                 color='danger'
                                 isDisabled={Object.keys(initialStatValues).length === 0}
-                                className='font-semibold rounded'
+                                className='font-semibold rounded-lg'
                                 onPress={() => handleSetState('reset', 'statistics')}
                             >
                                 Reset All
@@ -87,19 +87,19 @@ export default function TabButtons({ initialStatValues, newStatValues, setNewSta
                     isDisabled={achievementQueryValue.length > 0 || achievementsUnavailable || currentTab === 'statistics'}
                     disallowEmptySelection
                     radius='none'
-                    startContent={<MdSort fontSize={26} />}
+                    startContent={<TbSortDescending2 fontSize={26} />}
                     items={sortOptions}
                     className='w-[230px]'
                     classNames={{
                         listbox: ['p-0'],
                         value: ['text-sm'],
-                        trigger: ['bg-input border border-inputborder data-[hover=true]:!bg-titlebar data-[open=true]:!bg-titlebar duration-100 rounded'],
-                        popoverContent: ['bg-base border border-border rounded']
+                        trigger: ['bg-titlebar border border-border data-[hover=true]:!bg-input data-[open=true]:!bg-input duration-100 rounded-lg'],
+                        popoverContent: ['bg-titlebar border border-border rounded-lg justify-start'],
                     }}
                     defaultSelectedKeys={['percent']}
                     onSelectionChange={(e) => { handleChange(e, achievementList, setAchievementList, percentageMap, userGameAchievementsMap, setIsSorted); }}
                 >
-                    {(item) => <SelectItem classNames={{ title: ['text-sm'], base: ['rounded'] }}>{item.label}</SelectItem>}
+                    {(item) => <SelectItem classNames={{ title: ['text-sm'], base: ['rounded data-[hover=true]:!bg-titlehover'] }}>{item.label}</SelectItem>}
                 </Select>
             )}
 
@@ -120,7 +120,7 @@ export default function TabButtons({ initialStatValues, newStatValues, setNewSta
                                     size='sm'
                                     color='danger'
                                     variant='light'
-                                    className='font-semibold rounded'
+                                    className='font-semibold rounded-lg'
                                     onPress={onClose}
                                 >
                                     Cancel
@@ -128,7 +128,7 @@ export default function TabButtons({ initialStatValues, newStatValues, setNewSta
                                 <Button
                                     size='sm'
                                     color='primary'
-                                    className='font-semibold rounded'
+                                    className='font-semibold rounded-lg'
                                     onPress={
                                         type === 'statistics' ?
                                             () => handleResetAll(appId, appName, setNewStatValues, onClose) :

@@ -15,7 +15,7 @@ export default function Logs() {
                     <Button
                         size='sm'
                         color='primary'
-                        className='font-semibold rounded'
+                        className='font-semibold rounded-lg'
                         onPress={() => handleOpenLogFile(logPath)}
                     >
                         Open in File Explorer
@@ -23,7 +23,7 @@ export default function Logs() {
                     <Button
                         size='sm'
                         color='danger'
-                        className='font-semibold rounded'
+                        className='font-semibold rounded-lg'
                         onPress={handleClearLogs}
                     >
                         Clear Logs
@@ -52,7 +52,7 @@ export default function Logs() {
                                 </Fragment>
                             ) : (
                                 <tr className='bg-container'>
-                                    <td className='p-1.5 text-sgi uppercase'>-</td>
+                                    <td className='p-1.5 text-altwhite'>-</td>
                                     <td className='p-1.5'>No logs created yet</td>
                                 </tr>
                             )}

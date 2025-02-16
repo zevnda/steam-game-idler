@@ -22,11 +22,15 @@ export default function Achievements() {
         percentageMap
     } = useAchievements();
 
-    if (isLoading) return <Loader />;
+    if (isLoading) return (
+        <div className='overflow-y-auto overflow-x-hidden border-t border-border'>
+            <Loader />
+        </div>
+    );
 
     return (
         <Fragment>
-            <div className='min-h-calc max-h-calc w-full overflow-y-auto overflow-x-hidden'>
+            <div className='min-h-calc max-h-calc w-full bg-base overflow-y-auto overflow-x-hidden border-t border-border'>
                 <div className='p-4'>
                     <PageHeader />
 
@@ -50,12 +54,12 @@ export default function Achievements() {
                                 variant='solid'
                                 className='max-w-[300px]'
                                 classNames={{
-                                    base: 'bg-titlebar rounded-t p-0 border-t border-l border-r border-border',
+                                    base: 'bg-titlebar rounded-t-lg p-0 border-t border-l border-r border-border',
                                     tabList: 'gap-0 w-full bg-transparent',
-                                    tab: 'px-6 py-3 rounded-none bg-transparent px-4',
+                                    tab: 'rounded-none bg-transparent data-[hover-unselected=true]:bg-gray-500 data-[hover-unselected=true]:bg-opacity-5 data-[hover-unselected=true]:opacity-100',
                                     tabContent: 'text-sm',
                                     cursor: 'bg-base w-full rounded',
-                                    panel: 'bg-titlebar rounded rounded-tl-none border border-border',
+                                    panel: 'bg-titlebar rounded-lg rounded-tl-none border border-border',
                                 }}
                                 onSelectionChange={(e) => setCurrentTab(e)}
                             >

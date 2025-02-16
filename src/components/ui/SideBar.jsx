@@ -1,16 +1,13 @@
 import { Fragment, useContext } from 'react';
 
 import { Modal, ModalContent, ModalBody, Button, ModalFooter, ModalHeader } from '@heroui/react';
-import { motion } from 'framer-motion';
 
 import { AppContext } from '@/src/components/layout/AppContext';
 import useSideBar from '@/src/hooks/ui/useSideBar';
 import Sparkles from '@/src/components/ui/Sparkles';
 
-import { FaAward, FaHourglassEnd, FaSignOutAlt } from 'react-icons/fa';
-import { IoGameController, IoGift, IoSettings } from 'react-icons/io5';
-import { TbCardsFilled } from 'react-icons/tb';
-import { MdFavorite } from 'react-icons/md';
+import { TbAward, TbCards, TbDeviceGamepad2, TbGift, TbHeart, TbHourglassLow, TbSettings } from 'react-icons/tb';
+import { FiLogOut } from 'react-icons/fi';
 
 export default function SideBar() {
     const { showFreeGamesTab, activePage, setActivePage, isCardFarming, isAchievementUnlocker } = useContext(AppContext);
@@ -18,139 +15,90 @@ export default function SideBar() {
 
     return (
         <Fragment>
-            <div className='flex justify-between flex-col w-14 min-h-calc max-h-calc bg-sidebar dark:border-r border-border'>
-                <div className='flex justify-center items-center flex-col'>
-                    <div className='relative flex justify-center items-center w-full h-[55px] hover:bg-sgi dark:hover:bg-titlehover cursor-pointer duration-200' onClick={() => setActivePage('games')}>
-                        {activePage === 'games' && (
-                            <motion.div
-                                className='absolute w-full border-r-4 border-white'
-                                initial={{ height: 0 }}
-                                whileInView={{ height: 30 }}
-                                transition={{
-                                    type: 'spring',
-                                    stiffness: 350,
-                                    damping: 18,
-                                }}
-                            />
-                        )}
-                        <IoGameController className='text-offwhite' fontSize={24} />
+            <div className='flex justify-between flex-col w-14 min-h-calc max-h-calc bg-titlebar'>
+                <div className='flex justify-center items-center flex-col gap-2'>
+
+                    <div className='flex justify-center items-center w-14'>
+                        <div
+                            className={`p-2 rounded-full duration-200 cursor-pointer active:scale-90 ${activePage === 'games' ? 'bg-blue-400/20 text-blue-400' : 'hover:bg-titlehover'}`}
+                            onClick={() => setActivePage('games')}
+                        >
+                            <TbDeviceGamepad2 fontSize={22} />
+                        </div>
                     </div>
 
-                    <div
-                        className='relative flex justify-center items-center w-full h-[55px] hover:bg-sgi dark:hover:bg-titlehover cursor-pointer duration-200'
-                        onClick={() => setActivePage('customlists/card-farming')}
-                    >
-                        {activePage === 'customlists/card-farming' && (
-                            <motion.div
-                                className='absolute w-full border-r-4 border-white'
-                                initial={{ height: 0 }}
-                                whileInView={{ height: 30 }}
-                                transition={{
-                                    type: 'spring',
-                                    stiffness: 350,
-                                    damping: 18,
-                                }}
-                            />
-                        )}
-                        <TbCardsFilled className={`text-offwhite ${isCardFarming && 'animate-pulse'}`} fontSize={24} />
+                    <div className='flex justify-center items-center w-14'>
+                        <div
+                            className={`
+                                p-2 rounded-full duration-200 cursor-pointer active:scale-90 
+                                ${isCardFarming && 'text-blue-400 animate-pulse'} 
+                                ${activePage === 'customlists/card-farming' ? 'bg-blue-400/20 text-blue-400' : 'hover:bg-titlehover'}
+                                `}
+                            onClick={() => setActivePage('customlists/card-farming')}
+                        >
+                            <TbCards fontSize={22} />
+                        </div>
                     </div>
 
-                    <div
-                        className='relative flex justify-center items-center w-full h-[55px] hover:bg-sgi dark:hover:bg-titlehover cursor-pointer duration-200'
-                        onClick={() => setActivePage('customlists/achievement-unlocker')}
-                    >
-                        {activePage === 'customlists/achievement-unlocker' && (
-                            <motion.div
-                                className='absolute w-full border-r-4 border-white'
-                                initial={{ height: 0 }}
-                                whileInView={{ height: 30 }}
-                                transition={{
-                                    type: 'spring',
-                                    stiffness: 350,
-                                    damping: 18,
-                                }}
-                            />
-                        )}
-                        <FaAward className={`text-offwhite ${isAchievementUnlocker && 'animate-pulse'}`} fontSize={22} />
+                    <div className='flex justify-center items-center w-14'>
+                        <div
+                            className={`
+                                p-2 rounded-full duration-200 cursor-pointer active:scale-90 
+                                ${isAchievementUnlocker && 'text-blue-400 animate-pulse'} 
+                                ${activePage === 'customlists/achievement-unlocker' ? 'bg-blue-400/20 text-blue-400' : 'hover:bg-titlehover'}
+                                `}
+                            onClick={() => setActivePage('customlists/achievement-unlocker')}
+                        >
+                            <TbAward fontSize={22} />
+                        </div>
                     </div>
 
-                    <div
-                        className='relative flex justify-center items-center w-full h-[55px] hover:bg-sgi dark:hover:bg-titlehover cursor-pointer duration-200'
-                        onClick={() => setActivePage('customlists/auto-idle')}
-                    >
-                        {activePage === 'customlists/auto-idle' && (
-                            <motion.div
-                                className='absolute w-full border-r-4 border-white'
-                                initial={{ height: 0 }}
-                                whileInView={{ height: 30 }}
-                                transition={{
-                                    type: 'spring',
-                                    stiffness: 350,
-                                    damping: 18,
-                                }}
-                            />
-                        )}
-                        <FaHourglassEnd className='text-offwhite' fontSize={20} />
+                    <div className='flex justify-center items-center w-14'>
+                        <div
+                            className={`p-2 rounded-full duration-200 cursor-pointer active:scale-90 ${activePage === 'customlists/auto-idle' ? 'bg-blue-400/20 text-blue-400' : 'hover:bg-titlehover'}`}
+                            onClick={() => setActivePage('customlists/auto-idle')}
+                        >
+                            <TbHourglassLow fontSize={22} />
+                        </div>
                     </div>
 
-                    <div
-                        className='relative flex justify-center items-center w-full h-[55px] hover:bg-sgi dark:hover:bg-titlehover cursor-pointer duration-200'
-                        onClick={() => setActivePage('customlists/favorites')}
-                    >
-                        {activePage === 'customlists/favorites' && (
-                            <motion.div
-                                className='absolute w-full border-r-4 border-white'
-                                initial={{ height: 0 }}
-                                whileInView={{ height: 30 }}
-                                transition={{
-                                    type: 'spring',
-                                    stiffness: 350,
-                                    damping: 18,
-                                }}
-                            />
-                        )}
-                        <MdFavorite className='text-offwhite' fontSize={20} />
+                    <div className='flex justify-center items-center w-14'>
+                        <div
+                            className={`p-2 rounded-full duration-200 cursor-pointer active:scale-90 ${activePage === 'customlists/favorites' ? 'bg-blue-400/20 text-blue-400' : 'hover:bg-titlehover'}`}
+                            onClick={() => setActivePage('customlists/favorites')}
+                        >
+                            <TbHeart fontSize={22} />
+                        </div>
                     </div>
 
                     {showFreeGamesTab && (
-                        <div className='relative flex justify-center items-center w-full h-[55px] hover:bg-sgi dark:hover:bg-titlehover cursor-pointer duration-200' onClick={() => setActivePage('freeGames')}>
-                            {activePage === 'freeGames' && (
-                                <motion.div
-                                    className='absolute w-full border-r-4 border-white'
-                                    initial={{ height: 0 }}
-                                    whileInView={{ height: 30 }}
-                                    transition={{
-                                        type: 'spring',
-                                        stiffness: 350,
-                                        damping: 18,
-                                    }}
-                                />
-                            )}
-                            <Sparkles />
-                            <IoGift className='text-[#ffc700]' fontSize={24} />
+                        <div className='flex justify-center items-center w-14'>
+                            <div
+                                className={`relative flex justify-center items-center p-2 rounded-full duration-200 cursor-pointer active:scale-90 ${activePage === 'freeGames' ? 'bg-yellow-400/20' : 'hover:bg-titlehover'}`}
+                                onClick={() => setActivePage('freeGames')}
+                            >
+                                <Sparkles />
+                                <TbGift className='text-[#ffc700]' fontSize={22} />
+                            </div>
                         </div>
                     )}
                 </div>
 
                 {!isCardFarming && !isAchievementUnlocker && (
-                    <div className='flex flex-col justify-end items-center h-full'>
-                        <div className='relative flex justify-center items-center w-full h-[55px] hover:bg-sgi dark:hover:bg-titlehover cursor-pointer duration-200' onClick={() => setActivePage('settings')}>
-                            {activePage === 'settings' && (
-                                <motion.div
-                                    className='absolute w-full border-r-4 border-white'
-                                    initial={{ height: 0 }}
-                                    whileInView={{ height: 30 }}
-                                    transition={{
-                                        type: 'spring',
-                                        stiffness: 350,
-                                        damping: 18,
-                                    }}
-                                />
-                            )}
-                            <IoSettings className='text-offwhite' fontSize={24} />
+                    <div className='flex justify-center items-center flex-col gap-2 mb-3'>
+                        <div className='flex justify-center items-center w-14'>
+                            <div
+                                className={`p-2 rounded-full duration-200 cursor-pointer active:scale-90 ${activePage === 'settings' ? 'bg-blue-400/20 text-blue-400' : 'hover:bg-titlehover'}`}
+                                onClick={() => setActivePage('settings')}
+                            >
+                                <TbSettings fontSize={22} />
+                            </div>
                         </div>
-                        <div className='flex justify-center items-center w-full h-[55px] hover:bg-red-500 cursor-pointer duration-200' onClick={openConfirmation}>
-                            <FaSignOutAlt className='text-offwhite rotate-180' fontSize={24} />
+
+                        <div className='flex justify-center items-center w-14'>
+                            <div className='hover:bg-danger p-2 rounded-full duration-200 cursor-pointer active:scale-90' onClick={openConfirmation}>
+                                <FiLogOut fontSize={20} />
+                            </div>
                         </div>
                     </div>
                 )}
@@ -173,7 +121,7 @@ export default function SideBar() {
                                     size='sm'
                                     color='danger'
                                     variant='light'
-                                    className='font-semibold rounded'
+                                    className='font-semibold rounded-lg'
                                     onPress={onClose}
                                 >
                                     Cancel
@@ -181,7 +129,7 @@ export default function SideBar() {
                                 <Button
                                     size='sm'
                                     color='primary'
-                                    className='font-semibold rounded'
+                                    className='font-semibold rounded-lg'
                                     onPress={() => handleLogout(onClose)}
                                 >
                                     Confirm

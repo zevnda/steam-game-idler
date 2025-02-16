@@ -5,9 +5,9 @@ import { AppContext } from '@/src/components/layout/AppContext';
 import { handleIdle, viewAchievments, viewGameSettings, viewStorePage } from '@/src/utils/gameslist/gameCardHandler';
 import CardMenu from '@/src/components/gameslist/CardMenu';
 
-import { IoPlay } from 'react-icons/io5';
-import { FaAward } from 'react-icons/fa';
 import { Button } from '@heroui/react';
+
+import { TbAwardFilled, TbPlayerPlayFilled } from 'react-icons/tb';
 
 export default function GameCard({ item, sortedGamesList, visibleGames, setSettingsModalOpen }) {
     const { setAppId, setAppName, showAchievements, setShowAchievements } = useContext(AppContext);
@@ -21,7 +21,7 @@ export default function GameCard({ item, sortedGamesList, visibleGames, setSetti
     return (
         <Fragment>
             <div className={`relative group select-none ${sortedGamesList.slice(0, visibleGames).length >= 21 ? 'w-[221px]' : 'w-[222px]'}`}>
-                <div className='aspect-[460/215] rounded-lg overflow-hidden transition-transform duration-200 ease-in-out transform group-hover:scale-105'>
+                <div className='aspect-[460/215] rounded-xl overflow-hidden transition-transform duration-200 ease-in-out transform group-hover:scale-105'>
                     <Image
                         src={`https://cdn.cloudflare.steamstatic.com/steam/apps/${item.appid}/header.jpg`}
                         width={460}
@@ -41,10 +41,10 @@ export default function GameCard({ item, sortedGamesList, visibleGames, setSetti
                         <Button
                             isIconOnly
                             size='lg'
-                            className='flex flex-col justify-center items-center opacity-0 group-hover:opacity-100 hover:scale-105  active:scale-95 duration-200 rounded bg-opacity-50 bg-black'
+                            className='flex flex-col justify-center items-center opacity-0 group-hover:opacity-100 hover:scale-105  active:scale-95 duration-200 rounded-lg bg-opacity-50 bg-black'
                             startContent={
-                                <div className='p-2 bg-black text-offwhite bg-opacity-10 hover:bg-black hover:bg-opacity-40 cursor-pointer rounded duration-200'>
-                                    <IoPlay className='text-offwhite opacity-0 group-hover:opacity-100 duration-200' fontSize={36} />
+                                <div className='p-2 bg-black text-offwhite bg-opacity-10 hover:bg-black hover:bg-opacity-40 cursor-pointer rounded-lg duration-200'>
+                                    <TbPlayerPlayFilled className='text-offwhite opacity-0 group-hover:opacity-100 duration-200' fontSize={36} />
                                 </div>
                             }
                             onPress={() => handleIdle(item)}
@@ -53,10 +53,10 @@ export default function GameCard({ item, sortedGamesList, visibleGames, setSetti
                         <Button
                             isIconOnly
                             size='lg'
-                            className='flex flex-col justify-center items-center opacity-0 group-hover:opacity-100 hover:scale-105  active:scale-95 duration-200 rounded bg-opacity-50 bg-black'
+                            className='flex flex-col justify-center items-center opacity-0 group-hover:opacity-100 hover:scale-105  active:scale-95 duration-200 rounded-lg bg-opacity-50 bg-black'
                             startContent={
-                                <div className='p-2 bg-black text-offwhite bg-opacity-10 hover:bg-black hover:bg-opacity-40 cursor-pointer rounded duration-200'>
-                                    <FaAward className='text-offwhite opacity-0 group-hover:opacity-100 duration-200' fontSize={36} />
+                                <div className='p-2 bg-black text-offwhite bg-opacity-10 hover:bg-black hover:bg-opacity-40 cursor-pointer rounded-lg duration-200'>
+                                    <TbAwardFilled className='text-offwhite opacity-0 group-hover:opacity-100 duration-200' fontSize={36} />
                                 </div>
                             }
                             onPress={() => viewAchievments(item, setAppId, setAppName, setShowAchievements, showAchievements)}

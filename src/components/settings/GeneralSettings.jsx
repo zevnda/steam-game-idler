@@ -20,7 +20,7 @@ export default function GeneralSettings({ settings, setSettings }) {
                     <p className='text-xs text-neutral-400 mb-0.5'>
                         Logged in as
                     </p>
-                    <div className='border border-border rounded bg-input hover:bg-titlebar dark:bg-[#131313] dark:hover:bg-[#171717]'>
+                    <div className='border border-border rounded-lg bg-input hover:bg-titlebar dark:bg-[#131313] dark:hover:bg-[#171717]'>
                         <ExtLink href={`https://steamcommunity.com/profiles/${userSummary.steamId}`}>
                             <div className='flex items-center gap-2 h-full p-2 group'>
                                 <Image
@@ -117,12 +117,12 @@ export default function GeneralSettings({ settings, setSettings }) {
                             Learn more
                         </ExtLink>
                     </p>
-                    <div className='flex gap-4'>
+                    <div className='flex gap-2'>
                         <Input
                             size='sm'
                             placeholder='Steam web API key'
                             className='max-w-[280px]'
-                            classNames={{ inputWrapper: ['bg-input border border-inputborder hover:!bg-titlebar rounded-md group-data-[focus-within=true]:!bg-titlebar'] }}
+                            classNames={{ inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'] }}
                             value={keyValue}
                             onChange={(e) => handleKeyChange(e, setKeyValue)}
                             type={'password'}
@@ -131,7 +131,7 @@ export default function GeneralSettings({ settings, setSettings }) {
                             size='sm'
                             color='primary'
                             isDisabled={hasKey || !keyValue}
-                            className='font-semibold rounded'
+                            className='font-semibold rounded-lg'
                             onPress={() => handleKeySave(keyValue, setHasKey)}
                         >
                             Save
@@ -140,7 +140,7 @@ export default function GeneralSettings({ settings, setSettings }) {
                             size='sm'
                             color='danger'
                             isDisabled={!hasKey}
-                            className='font-semibold text-offwhite rounded'
+                            className='font-semibold text-offwhite rounded-lg'
                             onPress={() => handleClear(setKeyValue, setHasKey)}
                         >
                             Clear

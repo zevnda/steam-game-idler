@@ -41,6 +41,7 @@ export default function Layout({ children }) {
             <main className={`${GeistSans.className} h-full min-h-screen bg-base`}>
                 {children}
             </main>
+
             <ToastContainer
                 toastStyle={getToastStyles()}
                 position='bottom-right'

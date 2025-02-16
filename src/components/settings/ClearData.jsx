@@ -12,7 +12,7 @@ export default function ClearData() {
             <Button
                 size='sm'
                 color='danger'
-                className='font-semibold rounded'
+                className='font-semibold rounded-lg'
                 onPress={onOpen}
             >
                 Clear Data
@@ -35,7 +35,7 @@ export default function ClearData() {
                                     size='sm'
                                     color='danger'
                                     variant='light'
-                                    className='font-semibold rounded'
+                                    className='font-semibold rounded-lg'
                                     onPress={onClose}
                                 >
                                     Cancel
@@ -43,7 +43,7 @@ export default function ClearData() {
                                 <Button
                                     size='sm'
                                     color='primary'
-                                    className='font-semibold rounded'
+                                    className='font-semibold rounded-lg'
                                     onPress={() => handleClearData(onClose)}
                                 >
                                     Confirm

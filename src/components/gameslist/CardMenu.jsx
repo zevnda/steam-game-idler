@@ -2,24 +2,23 @@ import { Fragment } from 'react';
 
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@heroui/react';
 
-import { BsThreeDotsVertical } from 'react-icons/bs';
-import { IoPlay, IoSettings } from 'react-icons/io5';
-import { FaAward, FaSteam } from 'react-icons/fa';
+import { FaSteam } from 'react-icons/fa';
+import { TbAwardFilled, TbDotsVertical, TbPlayerPlayFilled, TbSettingsFilled } from 'react-icons/tb';
 
 export default function CardMenu({ item, handleIdle, viewAchievments, viewStorePage, viewGameSettings }) {
     return (
         <Fragment>
-            <Dropdown classNames={{ content: ['rounded p-0 bg-base border border-border'] }}>
+            <Dropdown classNames={{ content: ['rounded-lg p-0 bg-base border border-border'] }}>
                 <DropdownTrigger>
-                    <div className='p-1 bg-black text-offwhite bg-opacity-50 hover:bg-black hover:bg-opacity-70 hover:scale-105 cursor-pointer rounded duration-200'>
-                        <BsThreeDotsVertical />
+                    <div className='p-1 bg-black text-offwhite bg-opacity-50 hover:bg-black hover:bg-opacity-70 hover:scale-105 cursor-pointer rounded-lg duration-200'>
+                        <TbDotsVertical />
                     </div>
                 </DropdownTrigger>
                 <DropdownMenu aria-label='actions'>
                     <DropdownItem
                         className='rounded'
                         key='idle'
-                        startContent={<IoPlay />}
+                        startContent={<TbPlayerPlayFilled size={16} />}
                         onPress={() => handleIdle(item)}
                         textValue='Idle game'
                     >
@@ -28,7 +27,7 @@ export default function CardMenu({ item, handleIdle, viewAchievments, viewStoreP
                     <DropdownItem
                         className='rounded'
                         key='achievements'
-                        startContent={<FaAward />}
+                        startContent={<TbAwardFilled size={16} />}
                         onPress={() => viewAchievments(item)}
                         textValue='View achievements'
                     >
@@ -37,7 +36,7 @@ export default function CardMenu({ item, handleIdle, viewAchievments, viewStoreP
                     <DropdownItem
                         className='rounded'
                         key='store'
-                        startContent={<FaSteam fontSize={13} />}
+                        startContent={<FaSteam fontSize={16} />}
                         onPress={() => viewStorePage(item)}
                         textValue='View store page'
                     >
@@ -46,7 +45,7 @@ export default function CardMenu({ item, handleIdle, viewAchievments, viewStoreP
                     <DropdownItem
                         className='rounded'
                         key='settings'
-                        startContent={<IoSettings fontSize={13} />}
+                        startContent={<TbSettingsFilled fontSize={16} />}
                         onPress={() => viewGameSettings(item)}
                         textValue='Game settings'
                     >

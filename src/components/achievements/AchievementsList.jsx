@@ -39,8 +39,8 @@ const Row = memo(({ index, style, data }) => {
 
     return (
         <div style={style} className='grid grid-cols-1 p-2'>
-            <div className='border border-border rounded shadow-sm'>
-                <div className='flex items-center p-3 bg-container dark:bg-[#1a1a1a]'>
+            <div className='border border-border rounded-lg shadow-sm'>
+                <div className='flex items-center p-3 bg-container dark:bg-[#1a1a1a] rounded-t-lg'>
                     <div className='w-10 h-10 flex items-center justify-center'>
                         <Image
                             className='rounded-full mr-3'
@@ -67,7 +67,7 @@ const Row = memo(({ index, style, data }) => {
                         <Button
                             size='sm'
                             color='danger'
-                            className='font-semibold rounded'
+                            className='font-semibold rounded-lg'
                             onPress={handleToggle}
                         >
                             Lock
@@ -76,16 +76,16 @@ const Row = memo(({ index, style, data }) => {
                         <Button
                             size='sm'
                             color='primary'
-                            className='font-semibold rounded'
+                            className='font-semibold rounded-lg'
                             onPress={handleToggle}
                         >
                             Unlock
                         </Button>
                     )}
                 </div>
-                <div className='p-1 bg-container dark:bg-[#1a1a1a] select-none'>
+                <div className='p-1 bg-container dark:bg-[#1a1a1a] select-none rounded-b-lg'>
                     <div className='w-full bg-titlehover rounded-full h-3.5 relative'>
-                        <div className='bg-sgi h-3.5 rounded-full flex items-center' style={{ width: `${percentage}%`, position: 'relative' }}></div>
+                        <div className='bg-blue-400 h-3.5 rounded-full flex items-center' style={{ width: `${percentage}%`, position: 'relative' }}></div>
                         {percentage !== undefined && (
                             <p className='text-[11px] text-black dark:text-offwhite absolute inset-0 flex items-center justify-center'>
                                 {percentage.toFixed(1)}%
@@ -107,7 +107,7 @@ export default function AchievementsList({ userGameAchievementsMap, percentageMa
 
     return (
         <Fragment>
-            <div className='flex flex-col gap-2 w-full max-h-[calc(100vh-225px)] overflow-y-auto scroll-smooth'>
+            <div className='flex flex-col gap-2 w-full max-h-[calc(100vh-210px)] overflow-y-auto scroll-smooth'>
                 {achievementsUnavailable ? (
                     <div className='flex flex-col gap-2 justify-center items-center my-2 w-full'>
                         <p className='text-sm'>
@@ -116,7 +116,7 @@ export default function AchievementsList({ userGameAchievementsMap, percentageMa
                     </div>
                 ) : (
                     <List
-                        height={window.innerHeight - 225}
+                        height={window.innerHeight - 210}
                         itemCount={achievementList.length}
                         itemSize={100}
                         width={'100%'}

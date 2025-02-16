@@ -21,7 +21,7 @@ export default function Window() {
 
     return (
         <Fragment>
-            <div className='bg-base min-h-screen max-h-[calc(100vh-62px)]'>
+            <div className='bg-titlebar min-h-calc'>
                 <Dashboard setInitUpdate={setInitUpdate} setUpdateManifest={setUpdateManifest} />
                 <ChangelogModal showChangelogModal={showChangelogModal} setShowChangelogModal={setShowChangelogModal} />
             </div>
