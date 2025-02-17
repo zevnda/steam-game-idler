@@ -20,7 +20,6 @@ export default function CardFarming({ activePage }) {
     const [isComplete, setIsComplete] = useState(false);
     const [totalDropsRemaining, setTotalDropsRemaining] = useState(0);
     const [gamesWithDrops, setGamesWithDrops] = useState(0);
-    const [countdownTimer, setCountdownTimer] = useState('');
 
     useEffect(() => {
         setVideoSrc(
@@ -36,7 +35,6 @@ export default function CardFarming({ activePage }) {
             setIsComplete,
             setTotalDropsRemaining,
             setGamesWithDrops,
-            setCountdownTimer,
             isMountedRef,
             abortControllerRef
         );
@@ -73,10 +71,6 @@ export default function CardFarming({ activePage }) {
                                             <Fragment>
                                                 <p>
                                                     Idling <span className='font-bold text-dynamic'>{gamesWithDrops.size}</span> game(s) with <span className='font-bold text-dynamic'>{totalDropsRemaining}</span> total card drop(s) remaining
-                                                </p>
-
-                                                <p className='text-sm'>
-                                                    Next action in <span className='font-bold text-sm text-dynamic'>{countdownTimer}</span>
                                                 </p>
                                             </Fragment>
                                         )}

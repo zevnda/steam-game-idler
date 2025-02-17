@@ -4,7 +4,6 @@ export const useCardFarming = async (
     setIsComplete,
     setTotalDropsRemaining,
     setGamesWithDrops,
-    setCountdownTimer,
     isMountedRef,
     abortControllerRef
 ) => {
@@ -16,7 +15,7 @@ export const useCardFarming = async (
             setGamesWithDrops(gamesSet);
 
             if (isMountedRef.current && gamesSet.size > 0) {
-                await farmCards(gamesSet, setCountdownTimer, isMountedRef, abortControllerRef);
+                await farmCards(gamesSet, isMountedRef, abortControllerRef);
             } else {
                 logEvent('[Card Farming] No games left - stopping');
                 return setIsComplete(true);
@@ -95,7 +94,7 @@ const processIndividualGames = async (gameDataArr, gamesSet, gameSettings, userS
 };
 
 // Farm cards for the games in the set
-export const farmCards = async (gamesSet, setCountdownTimer, isMountedRef, abortControllerRef) => {
+export const farmCards = async (gamesSet, isMountedRef, abortControllerRef) => {
     try {
         const farmingPromises = Array.from(gamesSet).map(async (game) => {
             const farmingInterval = 60000 * 30;
@@ -103,17 +102,17 @@ export const farmCards = async (gamesSet, setCountdownTimer, isMountedRef, abort
             const mediumDelay = 60000;
             const longDelay = 60000 * 5;
 
-            await startAndstopIdle(game.appId, game.name, longDelay, setCountdownTimer, isMountedRef, abortControllerRef);
-            await delayAndCountdown(mediumDelay, setCountdownTimer, isMountedRef, abortControllerRef);
+            await startAndstopIdle(game.appId, game.name, longDelay, isMountedRef, abortControllerRef);
+            await delay(mediumDelay, isMountedRef, abortControllerRef);
             if (await checkDropsRemaining(game)) return;
-            await startAndstopIdle(game.appId, game.name, shortDelay, setCountdownTimer, isMountedRef, abortControllerRef);
+            await startAndstopIdle(game.appId, game.name, shortDelay, isMountedRef, abortControllerRef);
             if (await checkDropsRemaining(game)) return;
-            await delayAndCountdown(mediumDelay, setCountdownTimer, isMountedRef, abortControllerRef);
+            await delay(mediumDelay, isMountedRef, abortControllerRef);
             if (await checkDropsRemaining(game)) return;
-            await startAndstopIdle(game.appId, game.name, farmingInterval, setCountdownTimer, isMountedRef, abortControllerRef);
-            await delayAndCountdown(mediumDelay, setCountdownTimer, isMountedRef, abortControllerRef);
+            await startAndstopIdle(game.appId, game.name, farmingInterval, isMountedRef, abortControllerRef);
+            await delay(mediumDelay, isMountedRef, abortControllerRef);
             if (await checkDropsRemaining(game)) return;
-            await startAndstopIdle(game.appId, game.name, shortDelay, setCountdownTimer, isMountedRef, abortControllerRef);
+            await startAndstopIdle(game.appId, game.name, shortDelay, isMountedRef, abortControllerRef);
         });
 
         await Promise.all(farmingPromises);
@@ -123,21 +122,14 @@ export const farmCards = async (gamesSet, setCountdownTimer, isMountedRef, abort
 };
 
 // Start and stop idler for a game
-const startAndstopIdle = async (appId, name, duration, setCountdownTimer, isMountedRef, abortControllerRef) => {
+const startAndstopIdle = async (appId, name, duration, isMountedRef, abortControllerRef) => {
     try {
-        startCountdown(duration / 60000, setCountdownTimer);
         await startIdle(appId, name, true, false);
         await delay(duration, isMountedRef, abortControllerRef);
         await stopIdle(appId, name);
     } catch (error) {
         handleError('startAndstopIdle', error);
     }
-};
-
-// Delay and update countdown timer
-const delayAndCountdown = async (ms, setCountdownTimer, isMountedRef, abortControllerRef) => {
-    startCountdown(ms / 60000, setCountdownTimer);
-    await delay(ms, isMountedRef, abortControllerRef);
 };
 
 // Check if there are still drops remaining for the game
@@ -158,26 +150,6 @@ const checkDropsRemaining = async (game) => {
     }
 
     return false;
-};
-
-// Start the countdown timer
-const startCountdown = (durationInMinutes, setCountdownTimer) => {
-    try {
-        const durationInMilliseconds = durationInMinutes * 60000;
-        let remainingTime = durationInMilliseconds;
-
-        const intervalId = setInterval(() => {
-            if (remainingTime <= 0) {
-                clearInterval(intervalId);
-                return;
-            }
-
-            setCountdownTimer(formatTime(remainingTime));
-            remainingTime -= 1000;
-        }, 1000);
-    } catch (error) {
-        handleError('startCountdown', error);
-    }
 };
 
 // Remove game from farming list
@@ -217,6 +189,7 @@ const delay = (ms, isMountedRef, abortControllerRef) => {
 
 // Handle cancel action
 export const handleCancel = async (gamesWithDrops, isMountedRef, abortControllerRef) => {
+    console.log(gamesWithDrops);
     try {
         const stopPromises = Array.from(gamesWithDrops).map(game => stopIdle(game.appId, game.name));
         await Promise.all(stopPromises);
