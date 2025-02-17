@@ -103,19 +103,18 @@ export default function AchievementUnlocker({ activePage }) {
                         {!isComplete && !isPrivate && !isWaitingForSchedule && (
                             <Fragment>
                                 <p>
-                                    Unlocking <span className='font-bold text-primary'>{achievementCount}</span> achievement(s) for <span className='font-bold text-primary'>{currentGame.name}</span>
+                                    Unlocking <span className='font-bold text-dynamic'>{achievementCount}</span> achievement(s) for <span className='font-bold text-dynamic'>{currentGame.name}</span>
                                 </p>
 
                                 <p className='text-sm'>
-                                    Next unlock in <span className='font-bold text-sm text-primary'>{countdownTimer}</span>
+                                    Next unlock in <span className='font-bold text-sm text-dynamic'>{countdownTimer}</span>
                                 </p>
                             </Fragment>
                         )}
 
                         <Button
                             size='sm'
-                            color={isComplete ? 'primary' : 'danger'}
-                            className='min-h-[30px] font-semibold rounded-lg'
+                            className={`min-h-[30px] font-semibold rounded-lg ${isComplete ? 'bg-dynamic text-dynamic-text' : 'danger'}`}
                             onPress={() => {
                                 setIsAchievementUnlocker(false);
                                 stopIdle(currentGame.appid, currentGame.name);

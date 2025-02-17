@@ -26,6 +26,10 @@ module.exports = {
             },
             minWidth: {
                 'calc': 'calc(100vw - 57px)',
+            },
+            colors: {
+                'dynamic': 'rgb(var(--dynamic-r) var(--dynamic-g) var(--dynamic-b) / <alpha-value>)',
+                'dynamic-text': 'var(--dynamic-text)'
             }
         }
     },
@@ -34,6 +38,7 @@ module.exports = {
         themes: {
             light: {
                 colors: {
+                    'content': '#000000',
                     'offwhite': '#ffffff',
                     'altwhite': '#5c6674',
                     'titlebar': '#ffffff',
@@ -67,6 +72,7 @@ module.exports = {
             },
             dark: {
                 colors: {
+                    'content': '#ffffff',
                     'offwhite': '#ebebeb',
                     'altwhite': '#a9a9a9',
                     'titlebar': '#141414',

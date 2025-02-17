@@ -14,9 +14,8 @@ export default function ManualAdd({ listName, setList }) {
         <React.Fragment>
             <Button
                 size='sm'
-                color='primary'
                 isIconOnly
-                className='rounded-full'
+                className='rounded-full bg-dynamic text-dynamic-text'
                 startContent={<TbPlus fontSize={18} />}
                 onPress={onOpen}
             />
@@ -58,10 +57,9 @@ export default function ManualAdd({ listName, setList }) {
                                 </Button>
                                 <Button
                                     size='sm'
-                                    color='primary'
                                     isLoading={isLoading}
                                     isDisabled={inputValue.length === 0}
-                                    className='font-semibold rounded-lg'
+                                    className='font-semibold rounded-lg bg-dynamic text-dynamic-text'
                                     onPress={() => handleAdd(onClose)}
                                 >
                                     Add

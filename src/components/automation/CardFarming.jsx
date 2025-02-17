@@ -72,11 +72,11 @@ export default function CardFarming({ activePage }) {
                                         {!isComplete && (
                                             <Fragment>
                                                 <p>
-                                                    Idling <span className='font-bold text-primary'>{gamesWithDrops.size}</span> game(s) with <span className='font-bold text-primary'>{totalDropsRemaining}</span> total card drop(s) remaining
+                                                    Idling <span className='font-bold text-dynamic'>{gamesWithDrops.size}</span> game(s) with <span className='font-bold text-dynamic'>{totalDropsRemaining}</span> total card drop(s) remaining
                                                 </p>
 
                                                 <p className='text-sm'>
-                                                    Next action in <span className='font-bold text-sm text-primary'>{countdownTimer}</span>
+                                                    Next action in <span className='font-bold text-sm text-dynamic'>{countdownTimer}</span>
                                                 </p>
                                             </Fragment>
                                         )}
@@ -115,7 +115,7 @@ export default function CardFarming({ activePage }) {
                         <Button
                             size='sm'
                             color={isComplete ? 'primary' : 'danger'}
-                            className='min-h-[30px] font-semibold rounded-lg'
+                            className={`min-h-[30px] font-semibold rounded-lg ${isComplete ? 'bg-dynamic text-dynamic-text' : 'danger'}`}
                             onPress={() => {
                                 handleCancel(gamesWithDrops, isMountedRef, abortControllerRef);
                                 setIsCardFarming(false);

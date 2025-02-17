@@ -1,46 +1,49 @@
 import { Fragment, useEffect, useState } from 'react';
 import { useTheme } from 'next-themes';
+import { Select, SelectItem } from '@heroui/react';
+import { TbBrush } from 'react-icons/tb';
 
-import { TbMoon, TbSun } from 'react-icons/tb';
+const themes = [
+    { key: 'light', label: 'Light' },
+    { key: 'dark', label: 'Dark' },
+];
 
 export default function ThemeSwitch() {
     const { theme, setTheme } = useTheme();
     const [mounted, setMounted] = useState(false);
 
-    const handleClick = () => {
-        if (theme === 'dark') {
-            setTheme('light');
-        } else {
-            setTheme('dark');
-        }
-    };
-
     useEffect(() => {
         const localTheme = localStorage.getItem('theme');
         if (!localTheme) {
-            localStorage.setItem('theme', 'light');
-            setTheme('light');
+            localStorage.setItem('theme', 'dark');
+            setTheme('dark');
         }
         setMounted(true);
     }, []);
 
     if (!mounted) return null;
 
-    const renderIcon = () => {
-        if (theme === 'dark') {
-            return <TbMoon fontSize={20} />;
-        } else {
-            return <TbSun fontSize={20} />;
-        }
-    };
-
     return (
         <Fragment>
-            <div className='flex justify-center items-center'>
-                <div className='flex items-center p-2 hover:bg-titlehover rounded-full duration-200 active:scale-90 cursor-pointer' onClick={handleClick}>
-                    {renderIcon()}
-                </div>
-            </div>
+            <Select
+                size='sm'
+                aria-label='theme'
+                disallowEmptySelection
+                radius='none'
+                startContent={<TbBrush />}
+                items={themes}
+                className='w-[203px]'
+                classNames={{
+                    listbox: ['p-0'],
+                    value: ['text-sm'],
+                    trigger: ['bg-titlebar border border-border data-[hover=true]:!bg-input data-[open=true]:!bg-input duration-100 rounded-lg'],
+                    popoverContent: ['bg-titlebar border border-border rounded-lg justify-start'],
+                }}
+                defaultSelectedKeys={[theme]}
+                onSelectionChange={(e) => setTheme(e.currentKey)}
+            >
+                {(theme) => <SelectItem>{theme.label}</SelectItem>}
+            </Select>
         </Fragment>
     );
 }
