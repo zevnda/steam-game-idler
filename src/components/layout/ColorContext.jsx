@@ -3,7 +3,7 @@ import { createContext, useContext, useState, useEffect } from 'react';
 export const ColorContext = createContext();
 
 export const ColorProvider = ({ children }) => {
-    const [themeColor, setThemeColor] = useState("#2c7adb");
+    const [themeColor, setThemeColor] = useState('#2c7adb');
 
     useEffect(() => {
         const storedColor = localStorage.getItem('themeColor');
@@ -43,6 +43,6 @@ export const ColorProvider = ({ children }) => {
             {children}
         </ColorContext.Provider>
     );
-}
+};
 
 export const useColor = () => useContext(ColorContext);

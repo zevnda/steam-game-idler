@@ -123,8 +123,6 @@ export default function CustomList({ type }) {
                                 <SortableGameCard
                                     key={item.appid}
                                     item={item}
-                                    sortedGamesList={list}
-                                    visibleGames={visibleGames}
                                     setSettingsModalOpen={setSettingsModalOpen}
                                 />
                             ))}
@@ -156,7 +154,7 @@ export default function CustomList({ type }) {
     );
 }
 
-function SortableGameCard({ item, sortedGamesList, visibleGames, setSettingsModalOpen }) {
+function SortableGameCard({ item, setSettingsModalOpen }) {
     const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: item.appid });
     const style = {
         transform: CSS.Transform.toString(transform),
@@ -167,8 +165,6 @@ function SortableGameCard({ item, sortedGamesList, visibleGames, setSettingsModa
         <div className='cursor-grab' ref={setNodeRef} style={style} {...attributes} {...listeners}>
             <GameCard
                 item={item}
-                sortedGamesList={sortedGamesList}
-                visibleGames={visibleGames}
                 setSettingsModalOpen={setSettingsModalOpen}
             />
         </div>

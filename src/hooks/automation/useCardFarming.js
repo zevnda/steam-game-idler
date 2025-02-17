@@ -1,4 +1,4 @@
-import { checkDrops, getAllGamesWithDrops, logEvent, startIdle, stopIdle, formatTime } from '@/src/utils/utils';
+import { checkDrops, getAllGamesWithDrops, logEvent, startIdle, stopIdle } from '@/src/utils/utils';
 
 export const useCardFarming = async (
     setIsComplete,

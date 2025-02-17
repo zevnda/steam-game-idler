@@ -3,7 +3,6 @@ import { Fragment, useContext } from 'react';
 import { Divider } from '@heroui/react';
 
 import { AppContext } from '@/src/components/layout/AppContext';
-import ThemeSwitch from '@/src/components/ui/theme/ThemeSwitch';
 import useHeader from '@/src/hooks/ui/useHeader';
 import UpdateButton from '@/src/components/updates/UpdateButton';
 import Notifications from '@/src/components/notifications/Notifications';

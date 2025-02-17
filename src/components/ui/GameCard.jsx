@@ -9,7 +9,7 @@ import { Button } from '@heroui/react';
 
 import { TbAwardFilled, TbPlayerPlayFilled } from 'react-icons/tb';
 
-export default function GameCard({ item, sortedGamesList, visibleGames, setSettingsModalOpen }) {
+export default function GameCard({ item, setSettingsModalOpen }) {
     const { setAppId, setAppName, showAchievements, setShowAchievements } = useContext(AppContext);
     const [isBlurred, setIsBlurred] = useState(false);
 

@@ -53,8 +53,6 @@ export default function GamesList() {
                         <GameCard
                             key={item.appid}
                             item={item}
-                            sortedGamesList={filteredGames}
-                            visibleGames={gameList}
                             setSettingsModalOpen={setSettingsModalOpen}
                         />
                     ))}
