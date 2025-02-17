@@ -121,7 +121,7 @@ export default function GameSettings({ isOpen, onOpenChange }) {
                                     </div>
                                 </div>
                             </ModalBody>
-                            <ModalFooter className='border-t border-border bg-footer px-4 py-3'>
+                            <ModalFooter className='border-t border-border bg-modalfooter px-4 py-3'>
                                 <Button
                                     size='sm'
                                     color='danger'

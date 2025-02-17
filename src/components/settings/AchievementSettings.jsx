@@ -22,7 +22,7 @@ export default function AchievementSettings({ settings, setSettings }) {
                             }}
                         >
                             <div className='flex items-center gap-1'>
-                                <p className='text-xs'>
+                                <p className='text-xs text-content'>
                                     Idle games while Achievement Unlocker is active
                                 </p>
                             </div>
@@ -37,7 +37,7 @@ export default function AchievementSettings({ settings, setSettings }) {
                             }}
                         >
                             <div className='flex items-center gap-1'>
-                                <p className='text-xs'>
+                                <p className='text-xs text-content'>
                                     Skip hidden achievements
                                 </p>
                             </div>
@@ -53,7 +53,7 @@ export default function AchievementSettings({ settings, setSettings }) {
                                 }}
                             >
                                 <div className='flex items-center gap-1'>
-                                    <p className='text-xs'>
+                                    <p className='text-xs text-content'>
                                         Only unlock achievements between
                                     </p>
                                 </div>

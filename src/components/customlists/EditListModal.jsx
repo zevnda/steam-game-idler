@@ -85,7 +85,7 @@ export default function EditListModal({ isOpen, onOpenChange, onClose, filteredG
                                     {Row}
                                 </List>
                             </ModalBody>
-                            <ModalFooter className='border-t border-border bg-footer p-3'>
+                            <ModalFooter className='border-t border-border bg-modalfooter p-3'>
                                 <Button
                                     size='sm'
                                     color='danger'

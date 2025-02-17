@@ -90,9 +90,9 @@ export default function TabButtons({ initialStatValues, newStatValues, setNewSta
                     className='w-[230px]'
                     classNames={{
                         listbox: ['p-0'],
-                        value: ['text-sm'],
+                        value: ['text-sm !text-content'],
                         trigger: ['bg-titlebar border border-border data-[hover=true]:!bg-input data-[open=true]:!bg-input duration-100 rounded-lg'],
-                        popoverContent: ['bg-titlebar border border-border rounded-lg justify-start'],
+                        popoverContent: ['bg-titlebar border border-border rounded-lg justify-start text-content'],
                     }}
                     defaultSelectedKeys={['percent']}
                     onSelectionChange={(e) => { handleChange(e, achievementList, setAchievementList, percentageMap, userGameAchievementsMap, setIsSorted); }}
@@ -113,7 +113,7 @@ export default function TabButtons({ initialStatValues, newStatValues, setNewSta
                                     Are you sure you want to <strong>{state}</strong> all {type}?
                                 </p>
                             </ModalBody>
-                            <ModalFooter className='border-t border-border bg-footer px-4 py-3'>
+                            <ModalFooter className='border-t border-border bg-modalfooter px-4 py-3'>
                                 <Button
                                     size='sm'
                                     color='danger'

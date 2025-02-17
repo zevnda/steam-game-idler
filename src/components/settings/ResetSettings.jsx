@@ -33,7 +33,7 @@ export default function ResetSettings({ setSettings, setRefreshKey }) {
                                     Are you sure you want to reset settings to default?
                                 </p>
                             </ModalBody>
-                            <ModalFooter className='border-t border-border bg-footer px-4 py-3'>
+                            <ModalFooter className='border-t border-border bg-modalfooter px-4 py-3'>
                                 <Button
                                     size='sm'
                                     color='danger'

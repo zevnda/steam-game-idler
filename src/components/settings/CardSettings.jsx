@@ -69,7 +69,7 @@ export default function CardSettings({ settings, setSettings }) {
                     }}
                 >
                     <div className='flex items-center gap-1'>
-                        <p className='text-xs'>
+                        <p className='text-xs text-content'>
                             Farm cards for games in the Card Farming list
                         </p>
                     </div>
@@ -84,7 +84,7 @@ export default function CardSettings({ settings, setSettings }) {
                     }}
                 >
                     <div className='flex items-center gap-1'>
-                        <p className='text-xs'>
+                        <p className='text-xs text-content'>
                             Farm cards for all games with card drops remaining
                         </p>
                     </div>
@@ -103,7 +103,10 @@ export default function CardSettings({ settings, setSettings }) {
                                     labelPlacement='outside'
                                     placeholder=' '
                                     className='max-w-[300px]'
-                                    classNames={{ inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'] }}
+                                    classNames={{
+                                        inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'],
+                                        label: ['!text-content']
+                                    }}
                                     value={sidValue}
                                     onChange={handleSidChange}
                                     type={'password'}
@@ -114,7 +117,10 @@ export default function CardSettings({ settings, setSettings }) {
                                     labelPlacement='outside'
                                     placeholder=' '
                                     className='max-w-[300px]'
-                                    classNames={{ inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'] }}
+                                    classNames={{
+                                        inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'],
+                                        label: ['!text-content']
+                                    }}
                                     value={slsValue}
                                     onChange={handleSlsChange}
                                     type={'password'}
@@ -125,7 +131,10 @@ export default function CardSettings({ settings, setSettings }) {
                                     labelPlacement='outside'
                                     placeholder=' '
                                     className='max-w-[300px]'
-                                    classNames={{ inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'] }}
+                                    classNames={{
+                                        inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'],
+                                        label: ['!text-content']
+                                    }}
                                     value={smaValue}
                                     onChange={handleSmaChange}
                                     type={'password'}

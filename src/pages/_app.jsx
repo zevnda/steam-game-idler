@@ -6,7 +6,7 @@ export default function MyApp({ Component, pageProps }) {
     return (
         <ThemeProvider
             attribute='class'
-            themes={['light', 'dark']}
+            themes={['light', 'dark', 'nordic', 'coffee', 'forest', 'high-contrast']}
             enableSystem={true}
             defaultTheme='system'
             disableTransitionOnChange

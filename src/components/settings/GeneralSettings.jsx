@@ -55,7 +55,7 @@ export default function GeneralSettings({ settings, setSettings }) {
                     }}
                 >
                     <div className='flex items-center gap-1'>
-                        <p className='text-xs'>
+                        <p className='text-xs text-content'>
                             Hide idle windows <span className='italic'>(not recommended)</span>
                         </p>
                     </div>
@@ -73,7 +73,7 @@ export default function GeneralSettings({ settings, setSettings }) {
                     }}
                 >
                     <div className='flex items-center gap-1'>
-                        <p className='text-xs'>
+                        <p className='text-xs text-content'>
                             Prevent away status on Steam
                         </p>
                     </div>
@@ -88,7 +88,7 @@ export default function GeneralSettings({ settings, setSettings }) {
                     }}
                 >
                     <div className='flex items-center gap-1'>
-                        <p className='text-xs'>
+                        <p className='text-xs text-content'>
                             Get notifications about free games
                         </p>
                     </div>
@@ -103,7 +103,7 @@ export default function GeneralSettings({ settings, setSettings }) {
                     }}
                 >
                     <div className='flex items-center gap-1'>
-                        <p className='text-xs'>
+                        <p className='text-xs text-content'>
                             Clear custom list when logging out
                         </p>
                     </div>
@@ -114,7 +114,7 @@ export default function GeneralSettings({ settings, setSettings }) {
                     onChange={() => handleRunAtStartupChange(startupState, setStartupState)}
                 >
                     <div className='flex items-center gap-1'>
-                        <p className='text-xs'>
+                        <p className='text-xs text-content'>
                             Run at startup
                         </p>
                     </div>
