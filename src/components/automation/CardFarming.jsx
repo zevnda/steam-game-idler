@@ -72,11 +72,11 @@ export default function CardFarming({ activePage }) {
                                         {!isComplete && (
                                             <Fragment>
                                                 <p>
-                                                    Idling <span className='font-bold text-blue-500'>{gamesWithDrops.size}</span> game(s) with <span className='font-bold text-blue-500 '>{totalDropsRemaining}</span> total card drop(s) remaining
+                                                    Idling <span className='font-bold text-primary'>{gamesWithDrops.size}</span> game(s) with <span className='font-bold text-primary'>{totalDropsRemaining}</span> total card drop(s) remaining
                                                 </p>
 
                                                 <p className='text-sm'>
-                                                    Next action in <span className='font-bold text-sm text-blue-500'>{countdownTimer}</span>
+                                                    Next action in <span className='font-bold text-sm text-primary'>{countdownTimer}</span>
                                                 </p>
                                             </Fragment>
                                         )}

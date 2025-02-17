@@ -39,7 +39,7 @@ export default function Private({ setRefreshKey }) {
                                 </li>
                             </ul>
                         </div>
-                        <ExtLink href={`https://steamcommunity.com/profiles/${userSummary.steamId}/edit/settings`} className={'text-xs text-blue-400 mt-4'}>
+                        <ExtLink href={`https://steamcommunity.com/profiles/${userSummary.steamId}/edit/settings`} className={'text-xs text-link hover:text-linkhover mt-4'}>
                             Change account privacy
                         </ExtLink>
                         <Button
