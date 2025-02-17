@@ -113,7 +113,7 @@ export default function GeneralSettings({ settings, setSettings }) {
                             Steam web API key
                         </ExtLink>
                         <span className='italic'>(optional)</span>.
-                        <ExtLink href={'https://steamgameidler.vercel.app/settings/general#steam-web-api-key'} className={'mx-1 text-link hover:text-linkhover'}>
+                        <ExtLink href={'https://steamgameidler.vercel.app/settings/general#use-your-own-steam-web-api-key'} className={'mx-1 text-link hover:text-linkhover'}>
                             Learn more
                         </ExtLink>
                     </p>

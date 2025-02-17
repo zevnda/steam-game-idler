@@ -54,7 +54,7 @@ module.exports = {
                     'notiunread': '#ebebeb',
                     'notihover': '#f5f5f5',
                     primary: {
-                        DEFAULT: '#60a5fa',
+                        DEFAULT: '#2c7adb',
                     },
                     secondary: {
                         DEFAULT: '#137eb5',
@@ -87,8 +87,7 @@ module.exports = {
                     'notiunread': '#212121',
                     'notihover': '#1e1e1e',
                     primary: {
-                        DEFAULT: '#ebebeb',
-                        foreground: '#000'
+                        DEFAULT: '#2c7adb',
                     },
                     secondary: {
                         DEFAULT: '#137eb5',

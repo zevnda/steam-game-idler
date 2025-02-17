@@ -103,11 +103,11 @@ export default function AchievementUnlocker({ activePage }) {
                         {!isComplete && !isPrivate && !isWaitingForSchedule && (
                             <Fragment>
                                 <p>
-                                    Unlocking <span className='font-bold text-blue-500'>{achievementCount}</span> achievement(s) for <span className='font-bold text-blue-500 '>{currentGame.name}</span>
+                                    Unlocking <span className='font-bold text-primary'>{achievementCount}</span> achievement(s) for <span className='font-bold text-primary'>{currentGame.name}</span>
                                 </p>
 
                                 <p className='text-sm'>
-                                    Next unlock in <span className='font-bold text-sm text-blue-500'>{countdownTimer}</span>
+                                    Next unlock in <span className='font-bold text-sm text-primary'>{countdownTimer}</span>
                                 </p>
                             </Fragment>
                         )}

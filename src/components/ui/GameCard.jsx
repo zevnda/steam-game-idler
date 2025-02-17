@@ -20,7 +20,7 @@ export default function GameCard({ item, sortedGamesList, visibleGames, setSetti
 
     return (
         <Fragment>
-            <div className={`relative group select-none ${sortedGamesList.slice(0, visibleGames).length >= 21 ? 'w-[221px]' : 'w-[222px]'}`}>
+            <div className='relative group select-none'>
                 <div className='aspect-[460/215] rounded-xl overflow-hidden transition-transform duration-200 ease-in-out transform group-hover:scale-105'>
                     <Image
                         src={`https://cdn.cloudflare.steamstatic.com/steam/apps/${item.appid}/header.jpg`}

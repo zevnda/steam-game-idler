@@ -85,7 +85,7 @@ const Row = memo(({ index, style, data }) => {
                 </div>
                 <div className='p-1 bg-container dark:bg-[#1a1a1a] select-none rounded-b-lg'>
                     <div className='w-full bg-titlehover rounded-full h-3.5 relative'>
-                        <div className='bg-blue-400 h-3.5 rounded-full flex items-center' style={{ width: `${percentage}%`, position: 'relative' }}></div>
+                        <div className='bg-primary h-3.5 rounded-full flex items-center' style={{ width: `${percentage}%`, position: 'relative' }}></div>
                         {percentage !== undefined && (
                             <p className='text-[11px] text-black dark:text-offwhite absolute inset-0 flex items-center justify-center'>
                                 {percentage.toFixed(1)}%
