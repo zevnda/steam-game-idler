@@ -95,7 +95,7 @@ export async function stopIdle(appId, appName) {
             clearInterval(idleIntervals[appId]);
             delete idleIntervals[appId];
         }
-        await invoke('stop_idle', { appId: appId });
+        await invoke('stop_idle', { appId: parseInt(appId) });
         logEvent(`[Idle] Stopped idling ${appName} (${appId})`);
     } catch (error) {
         console.error('Error in stopIdle util (these errors can often be ignored): ', error);
