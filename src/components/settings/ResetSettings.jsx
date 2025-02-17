@@ -1,11 +1,13 @@
-import { Fragment } from 'react';
+import { Fragment, useContext } from 'react';
 
 import { Button, Modal, ModalContent, ModalBody, ModalFooter, ModalHeader } from '@heroui/react';
 
 import { handleResetSettings } from '@/src/utils/settings/settingsHandler';
 import useResetSettings from '@/src/hooks/settings/useResetSettings';
+import { ColorContext } from '@/src/components/layout/ColorContext';
 
 export default function ResetSettings({ setSettings, setRefreshKey }) {
+    const { updateColor } = useContext(ColorContext);
     const { isOpen, onOpen, onOpenChange } = useResetSettings();
 
     return (
@@ -43,9 +45,8 @@ export default function ResetSettings({ setSettings, setRefreshKey }) {
                                 </Button>
                                 <Button
                                     size='sm'
-                                    color='primary'
-                                    className='font-semibold rounded-lg'
-                                    onPress={() => handleResetSettings(onClose, setSettings, setRefreshKey)}
+                                    className='font-semibold rounded-lg bg-dynamic text-dynamic-text'
+                                    onPress={() => handleResetSettings(onClose, setSettings, setRefreshKey, updateColor)}
                                 >
                                     Confirm
                                 </Button>

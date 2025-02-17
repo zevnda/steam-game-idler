@@ -17,6 +17,9 @@ export default function AchievementSettings({ settings, setSettings }) {
                             name='idle'
                             isSelected={localSettings?.achievementUnlocker?.idle || false}
                             onChange={(e) => handleCheckboxChange(e, localSettings, setLocalSettings, setSettings)}
+                            classNames={{
+                                wrapper: ['after:bg-dynamic text-dynamic-text']
+                            }}
                         >
                             <div className='flex items-center gap-1'>
                                 <p className='text-xs'>
@@ -29,6 +32,9 @@ export default function AchievementSettings({ settings, setSettings }) {
                             name='hidden'
                             isSelected={localSettings?.achievementUnlocker?.hidden || false}
                             onChange={(e) => handleCheckboxChange(e, localSettings, setLocalSettings, setSettings)}
+                            classNames={{
+                                wrapper: ['after:bg-dynamic text-dynamic-text']
+                            }}
                         >
                             <div className='flex items-center gap-1'>
                                 <p className='text-xs'>
@@ -42,6 +48,9 @@ export default function AchievementSettings({ settings, setSettings }) {
                                 name='schedule'
                                 isSelected={localSettings?.achievementUnlocker?.schedule || false}
                                 onChange={(e) => handleCheckboxChange(e, localSettings, setLocalSettings, setSettings)}
+                                classNames={{
+                                    wrapper: ['after:bg-dynamic text-dynamic-text']
+                                }}
                             >
                                 <div className='flex items-center gap-1'>
                                     <p className='text-xs'>

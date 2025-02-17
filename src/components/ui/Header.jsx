@@ -33,10 +33,6 @@ export default function Header() {
 
                         <Divider className='w-[1px] h-6 bg-border' />
 
-                        <ThemeSwitch />
-
-                        <Divider className='w-[1px] h-6 bg-border' />
-
                         <div className='flex justify-center items-center gap-2 h-full mr-3'>
                             <div className='flex justify-center items-center'>
                                 <div className='hover:bg-titlehover p-2 rounded-full duration-200 cursor-pointer active:scale-90' onClick={windowMinimize}>

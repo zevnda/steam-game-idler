@@ -38,7 +38,7 @@ export default function Layout({ children }) {
                 <title>Steam Game Idler</title>
             </Head>
 
-            <main className={`${GeistSans.className} h-full min-h-screen bg-base`}>
+            <main className={`${GeistSans.className} h-full min-h-screen bg-base text-content`}>
                 {children}
             </main>
 

@@ -39,8 +39,7 @@ export default function ExportSettings() {
         <Fragment>
             <Button
                 size='sm'
-                color='primary'
-                className='font-semibold rounded-lg'
+                className='font-semibold rounded-lg bg-dynamic text-dynamic-text'
                 onPress={exportSettings}
             >
                 Export Data

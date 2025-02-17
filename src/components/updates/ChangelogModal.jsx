@@ -61,8 +61,7 @@ export default function ChangelogModal({ showChangelogModal, setShowChangelogMod
                                 </ExtLink>
                                 <Button
                                     size='sm'
-                                    color='primary'
-                                    className='font-semibold rounded-lg'
+                                    className='font-semibold rounded-lg bg-dynamic text-dynamic-text'
                                     onPress={handleCloseModal}
                                 >
                                     Continue

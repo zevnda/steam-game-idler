@@ -37,9 +37,8 @@ export default function TabButtons({ initialStatValues, newStatValues, setNewSta
                         <div className='flex items-center gap-2'>
                             <Button
                                 size='sm'
-                                color='primary'
                                 isDisabled={!achievementList || achievementQueryValue.length > 0 || currentTab === 'statistics'}
-                                className='font-semibold rounded-lg'
+                                className='font-semibold rounded-lg bg-dynamic text-dynamic-text'
                                 onPress={() => handleSetState('unlock', 'achievements')}
                             >
                                 Unlock All
@@ -59,9 +58,8 @@ export default function TabButtons({ initialStatValues, newStatValues, setNewSta
                         <div className='flex items-center gap-2'>
                             <Button
                                 size='sm'
-                                color='primary'
                                 isDisabled={Object.keys(initialStatValues).length === 0}
-                                className='font-semibold rounded-lg'
+                                className='font-semibold rounded-lg bg-dynamic text-dynamic-text'
                                 onPress={() => handleUpdateAllStats(appId, appName, initialStatValues, newStatValues)}
                             >
                                 Save Changes
@@ -127,8 +125,7 @@ export default function TabButtons({ initialStatValues, newStatValues, setNewSta
                                 </Button>
                                 <Button
                                     size='sm'
-                                    color='primary'
-                                    className='font-semibold rounded-lg'
+                                    className='font-semibold rounded-lg bg-dynamic text-dynamic-text'
                                     onPress={
                                         type === 'statistics' ?
                                             () => handleResetAll(appId, appName, setNewStatValues, onClose) :

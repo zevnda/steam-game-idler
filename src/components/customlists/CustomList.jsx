@@ -95,8 +95,7 @@ export default function CustomList({ type }) {
                         {listType.startButton && (
                             <Button
                                 size='sm'
-                                color='primary'
-                                className='rounded-full font-semibold'
+                                className='rounded-full font-semibold bg-dynamic text-dynamic-text'
                                 startContent={listType.icon}
                                 onPress={listType.startButton === 'startCardFarming' ? startCardFarming : startAchievementUnlocker}
                             >
@@ -108,8 +107,7 @@ export default function CustomList({ type }) {
 
                         <Button
                             size='sm'
-                            color='primary'
-                            className='rounded-full font-semibold'
+                            className='rounded-full font-semibold bg-dynamic text-dynamic-text'
                             startContent={<TbEdit fontSize={20} />}
                             onPress={() => setEditModalOpen(true)}
                         >

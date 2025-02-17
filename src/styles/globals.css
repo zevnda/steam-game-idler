@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+    --dynamic-r: 44;
+    --dynamic-g: 122;
+    --dynamic-b: 219;
+    --dynamic-text: #fff;
+}
+
 .light {
     --sb-thumb: #c8c8c8;
     --sb-track: #efefef;

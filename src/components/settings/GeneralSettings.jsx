@@ -8,6 +8,8 @@ import { handleCheckboxChange, handleRunAtStartupChange, handleKeyChange, handle
 import { antiAwayStatus } from '@/src/utils/utils';
 import useGeneralSettings from '@/src/hooks/settings/useGeneralSettings';
 import ExtLink from '@/src/components/ui/ExtLink';
+import ColorPicker from '../ui/theme/ColorPicker';
+import ThemeSwitch from '../ui/theme/ThemeSwitch';
 
 export default function GeneralSettings({ settings, setSettings }) {
     const { userSummary } = useContext(AppContext);
@@ -15,7 +17,7 @@ export default function GeneralSettings({ settings, setSettings }) {
 
     return (
         <Fragment>
-            <div className='relative flex flex-col gap-4 p-2'>
+            <div className='relative flex flex-col gap-4 p-2 overflow-y-auto max-h-[410px]'>
                 <div className='absolute top-0 right-2'>
                     <p className='text-xs text-neutral-400 mb-0.5'>
                         Logged in as
@@ -48,6 +50,9 @@ export default function GeneralSettings({ settings, setSettings }) {
                     name='stealthIdle'
                     isSelected={localSettings?.general?.stealthIdle || false}
                     onChange={(e) => handleCheckboxChange(e, localSettings, setLocalSettings, setSettings)}
+                    classNames={{
+                        wrapper: ['after:bg-dynamic text-dynamic-text']
+                    }}
                 >
                     <div className='flex items-center gap-1'>
                         <p className='text-xs'>
@@ -63,6 +68,9 @@ export default function GeneralSettings({ settings, setSettings }) {
                         handleCheckboxChange(e, localSettings, setLocalSettings, setSettings);
                         antiAwayStatus(!localSettings?.general?.antiAway);
                     }}
+                    classNames={{
+                        wrapper: ['after:bg-dynamic text-dynamic-text']
+                    }}
                 >
                     <div className='flex items-center gap-1'>
                         <p className='text-xs'>
@@ -75,6 +83,9 @@ export default function GeneralSettings({ settings, setSettings }) {
                     name='freeGameNotifications'
                     isSelected={localSettings?.general?.freeGameNotifications || false}
                     onChange={(e) => handleCheckboxChange(e, localSettings, setLocalSettings, setSettings)}
+                    classNames={{
+                        wrapper: ['after:bg-dynamic text-dynamic-text']
+                    }}
                 >
                     <div className='flex items-center gap-1'>
                         <p className='text-xs'>
@@ -87,6 +98,9 @@ export default function GeneralSettings({ settings, setSettings }) {
                     name='clearData'
                     isSelected={localSettings?.general?.clearData || false}
                     onChange={(e) => handleCheckboxChange(e, localSettings, setLocalSettings, setSettings)}
+                    classNames={{
+                        wrapper: ['after:bg-dynamic text-dynamic-text']
+                    }}
                 >
                     <div className='flex items-center gap-1'>
                         <p className='text-xs'>
@@ -105,6 +119,14 @@ export default function GeneralSettings({ settings, setSettings }) {
                         </p>
                     </div>
                 </Checkbox>
+
+                <div className='flex flex-col gap-2'>
+                    <p className='text-xs mt-2'>
+                        Theme
+                    </p>
+                    <ThemeSwitch />
+                    <ColorPicker />
+                </div>
 
                 <div className='flex flex-col'>
                     <p className='text-xs my-2' >
@@ -129,9 +151,8 @@ export default function GeneralSettings({ settings, setSettings }) {
                         />
                         <Button
                             size='sm'
-                            color='primary'
                             isDisabled={hasKey || !keyValue}
-                            className='font-semibold rounded-lg'
+                            className='font-semibold rounded-lg bg-dynamic text-dynamic-text'
                             onPress={() => handleKeySave(keyValue, setHasKey)}
                         >
                             Save

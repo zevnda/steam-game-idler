@@ -1,10 +1,12 @@
-import { Fragment } from 'react';
+import { Fragment, useContext } from 'react';
 
 import { Button, Modal, ModalContent, ModalBody, ModalFooter, ModalHeader } from '@heroui/react';
 
+import { ColorContext } from '@/src/components/layout/ColorContext';
 import useClearData from '@/src/hooks/settings/useClearData';
 
 export default function ClearData() {
+    const { updateColor } = useContext(ColorContext);
     const { isOpen, onOpen, onOpenChange, handleClearData } = useClearData();
 
     return (
@@ -42,9 +44,8 @@ export default function ClearData() {
                                 </Button>
                                 <Button
                                     size='sm'
-                                    color='primary'
-                                    className='font-semibold rounded-lg'
-                                    onPress={() => handleClearData(onClose)}
+                                    className='font-semibold rounded-lg bg-dynamic text-dynamic-text'
+                                    onPress={() => handleClearData(onClose, updateColor)}
                                 >
                                     Confirm
                                 </Button>

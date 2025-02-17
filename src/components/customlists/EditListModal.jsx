@@ -70,7 +70,9 @@ export default function EditListModal({ isOpen, onOpenChange, onClose, filteredG
                                     isDisabled={list.length === 0}
                                     startContent={<TbCheck fontSize={34} className={showInList ? 'text-green-500' : 'text-altwhite'} />}
                                     onPress={() => setShowInList(!showInList)}
-                                >In List</Button>
+                                >
+                                    In List
+                                </Button>
                             </ModalHeader>
                             <ModalBody className='relative p-0 gap-0 overflow-y-auto'>
                                 <List
@@ -99,8 +101,7 @@ export default function EditListModal({ isOpen, onOpenChange, onClose, filteredG
                                 </Button>
                                 <Button
                                     size='sm'
-                                    color='primary'
-                                    className='rounded-lg font-semibold'
+                                    className='rounded-lg font-semibold bg-dynamic text-dynamic-text'
                                     onPress={onClose}
                                 >
                                     Done
