@@ -112,6 +112,9 @@ export default function GeneralSettings({ settings, setSettings }) {
                 <Checkbox
                     isSelected={startupState || false}
                     onChange={() => handleRunAtStartupChange(startupState, setStartupState)}
+                    classNames={{
+                        wrapper: ['after:bg-dynamic text-dynamic-text']
+                    }}
                 >
                     <div className='flex items-center gap-1'>
                         <p className='text-xs'>
