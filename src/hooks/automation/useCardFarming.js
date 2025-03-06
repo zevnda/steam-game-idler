@@ -7,9 +7,20 @@ export const useCardFarming = async (
     isMountedRef,
     abortControllerRef
 ) => {
+    const cleanup = () => {
+        isMountedRef.current = false;
+        if (abortControllerRef.current) {
+            abortControllerRef.current.abort();
+        }
+    };
+
     const startCardFarming = async () => {
         try {
+            if (!isMountedRef.current) return;
+
             const { totalDrops, gamesSet } = await checkGamesForDrops();
+
+            if (!isMountedRef.current) return;
 
             setTotalDropsRemaining(totalDrops);
             setGamesWithDrops(gamesSet);
@@ -21,14 +32,19 @@ export const useCardFarming = async (
                 return setIsComplete(true);
             }
 
-            // Rerun if component is still mounted - needed check if user stops feature during loop
-            if (isMountedRef.current) startCardFarming();
+            if (isMountedRef.current) {
+                await startCardFarming();
+            }
         } catch (error) {
             handleError('startCardFarming', error);
         }
     };
 
-    if (isMountedRef.current) startCardFarming();
+    if (isMountedRef.current) {
+        startCardFarming().catch(error => handleError('useCardFarming', error));
+    }
+
+    return cleanup;
 };
 
 // Check games for drops and return total drops and games set
@@ -74,48 +90,111 @@ const processGamesWithDrops = (gamesWithDrops, gamesSet, gameSettings) => {
 
 const processIndividualGames = async (gameDataArr, gamesSet, gameSettings, userSummary, steamCookies) => {
     let totalDrops = 0;
-    const dropCheckPromises = gameDataArr.map(async (gameData) => {
+    const TIMEOUT = 30000; // 30 second timeout for each game check
+
+    const checkGame = async (gameData) => {
         if (gamesSet.size >= 32) return;
-        const dropsRemaining = await checkDrops(userSummary.steamId, gameData.appid, steamCookies.sid, steamCookies.sls, steamCookies?.sma);
-        if (dropsRemaining > 0) {
-            const gameSetting = gameSettings[gameData.appid] || {};
-            const maxCardDrops = gameSetting?.maxCardDrops || dropsRemaining;
-            const dropsToCount = Math.min(dropsRemaining, maxCardDrops);
-            gamesSet.add({ appId: gameData.appid, name: gameData.name, dropsToCount, initialDrops: dropsRemaining });
-            totalDrops += dropsToCount;
-            logEvent(`[Card Farming] ${dropsToCount} drops remaining for ${gameData.name} - starting`);
-        } else {
-            logEvent(`[Card Farming] ${dropsRemaining} drops remaining for ${gameData.name} - removed from list`);
-            removeGameFromFarmingList(gameData.appid);
+
+        const timeoutPromise = new Promise((_, reject) =>
+            setTimeout(() => reject(new Error('Timeout')), TIMEOUT));
+
+        try {
+            const dropsRemaining = await Promise.race([
+                checkDrops(userSummary.steamId, gameData.appid, steamCookies.sid, steamCookies.sls, steamCookies?.sma),
+                timeoutPromise
+            ]);
+
+            if (dropsRemaining > 0) {
+                const gameSetting = gameSettings[gameData.appid] || {};
+                const maxCardDrops = gameSetting?.maxCardDrops || dropsRemaining;
+                const dropsToCount = Math.min(dropsRemaining, maxCardDrops);
+                gamesSet.add({
+                    appId: gameData.appid,
+                    name: gameData.name,
+                    dropsToCount,
+                    initialDrops: dropsRemaining
+                });
+                totalDrops += dropsToCount;
+                logEvent(`[Card Farming] ${dropsToCount} drops remaining for ${gameData.name} - starting`);
+            } else {
+                logEvent(`[Card Farming] ${dropsRemaining} drops remaining for ${gameData.name} - removed from list`);
+                await removeGameFromFarmingList(gameData.appid);
+            }
+        } catch (error) {
+            handleError('checkGame', error);
         }
-    });
-    await Promise.all(dropCheckPromises);
+    };
+
+    await Promise.all(gameDataArr.map(checkGame));
     return totalDrops;
 };
 
 // Farm cards for the games in the set
 export const farmCards = async (gamesSet, isMountedRef, abortControllerRef) => {
+    const farmingPromises = new Map();
+
     try {
-        const farmingPromises = Array.from(gamesSet).map(async (game) => {
-            const farmingInterval = 60000 * 30;
-            const shortDelay = 15000;
-            const mediumDelay = 60000;
-            const longDelay = 60000 * 5;
+        for (const game of gamesSet) {
+            // Check if cancelled before starting each game
+            if (!isMountedRef.current) {
+                // Stop any running games before breaking
+                const runningPromises = Array.from(farmingPromises.values());
+                await Promise.all(runningPromises);
+                break;
+            }
 
-            await startAndstopIdle(game.appId, game.name, longDelay, isMountedRef, abortControllerRef);
-            await delay(mediumDelay, isMountedRef, abortControllerRef);
-            if (await checkDropsRemaining(game)) return;
-            await startAndstopIdle(game.appId, game.name, shortDelay, isMountedRef, abortControllerRef);
-            if (await checkDropsRemaining(game)) return;
-            await delay(mediumDelay, isMountedRef, abortControllerRef);
-            if (await checkDropsRemaining(game)) return;
-            await startAndstopIdle(game.appId, game.name, farmingInterval, isMountedRef, abortControllerRef);
-            await delay(mediumDelay, isMountedRef, abortControllerRef);
-            if (await checkDropsRemaining(game)) return;
-            await startAndstopIdle(game.appId, game.name, shortDelay, isMountedRef, abortControllerRef);
-        });
+            const farmingPromise = (async () => {
+                const delays = {
+                    farming: 60000 * 30,
+                    short: 15000,
+                    medium: 60000,
+                    long: 60000 * 5
+                };
 
-        await Promise.all(farmingPromises);
+                try {
+                    // Check mounted state before each operation
+                    if (!isMountedRef.current) return;
+                    await startAndstopIdle(game.appId, game.name, delays.long, isMountedRef, abortControllerRef);
+
+                    if (!isMountedRef.current) return;
+                    await delay(delays.medium, isMountedRef, abortControllerRef);
+                    if (!isMountedRef.current || await checkDropsRemaining(game)) return;
+
+                    if (!isMountedRef.current) return;
+                    await startAndstopIdle(game.appId, game.name, delays.short, isMountedRef, abortControllerRef);
+                    if (!isMountedRef.current || await checkDropsRemaining(game)) return;
+
+                    if (!isMountedRef.current) return;
+                    await delay(delays.medium, isMountedRef, abortControllerRef);
+                    if (!isMountedRef.current || await checkDropsRemaining(game)) return;
+
+                    if (!isMountedRef.current) return;
+                    await startAndstopIdle(game.appId, game.name, delays.farming, isMountedRef, abortControllerRef);
+                    if (!isMountedRef.current) return;
+
+                    if (!isMountedRef.current) return;
+                    await delay(delays.medium, isMountedRef, abortControllerRef);
+                    if (!isMountedRef.current || await checkDropsRemaining(game)) return;
+
+                    if (!isMountedRef.current) return;
+                    await startAndstopIdle(game.appId, game.name, delays.short, isMountedRef, abortControllerRef);
+                } catch (error) {
+                    handleError(`farmCards-${game.name}`, error);
+                } finally {
+                    // Make sure to stop the game if we're cancelled
+                    if (!isMountedRef.current) {
+                        await stopIdle(game.appId, game.name).catch(error =>
+                            handleError(`farmCards-cleanup-${game.name}`, error)
+                        );
+                    }
+                    farmingPromises.delete(game.appId);
+                }
+            })();
+
+            farmingPromises.set(game.appId, farmingPromise);
+        }
+
+        await Promise.all(farmingPromises.values());
     } catch (error) {
         handleError('farmCards', error);
     }
@@ -124,11 +203,22 @@ export const farmCards = async (gamesSet, isMountedRef, abortControllerRef) => {
 // Start and stop idler for a game
 const startAndstopIdle = async (appId, name, duration, isMountedRef, abortControllerRef) => {
     try {
+        if (!isMountedRef.current) return;
+
         await startIdle(appId, name, true, false);
-        await delay(duration, isMountedRef, abortControllerRef);
-        await stopIdle(appId, name);
+
+        try {
+            await delay(duration, isMountedRef, abortControllerRef);
+        } finally {
+            if (!isMountedRef.current || duration > 0) {
+                await stopIdle(appId, name);
+            }
+        }
     } catch (error) {
         handleError('startAndstopIdle', error);
+        await stopIdle(appId, name).catch(err =>
+            handleError('startAndstopIdle-cleanup', err)
+        );
     }
 };
 
@@ -166,13 +256,16 @@ const removeGameFromFarmingList = (gameId) => {
 // Delay function
 const delay = (ms, isMountedRef, abortControllerRef) => {
     return new Promise((resolve, reject) => {
+        if (!isMountedRef.current) {
+            return reject(new Error('Component unmounted'));
+        }
+
         const checkInterval = 1000;
         let elapsedTime = 0;
-
         const intervalId = setInterval(() => {
             if (!isMountedRef.current) {
                 clearInterval(intervalId);
-                reject();
+                reject(new Error('Component unmounted'));
             } else if (elapsedTime >= ms) {
                 clearInterval(intervalId);
                 resolve();
@@ -180,16 +273,28 @@ const delay = (ms, isMountedRef, abortControllerRef) => {
             elapsedTime += checkInterval;
         }, checkInterval);
 
-        abortControllerRef.current.signal.addEventListener('abort', () => {
+        const abortHandler = () => {
             clearInterval(intervalId);
-            reject();
-        });
+            reject(new Error('Operation aborted'));
+        };
+
+        const timeoutId = setTimeout(() => {
+            clearInterval(intervalId);
+            resolve();
+        }, ms);
+
+        abortControllerRef.current.signal.addEventListener('abort', abortHandler);
+
+        return () => {
+            clearInterval(intervalId);
+            clearTimeout(timeoutId);
+            abortControllerRef.current.signal.removeEventListener('abort', abortHandler);
+        };
     });
 };
 
 // Handle cancel action
 export const handleCancel = async (gamesWithDrops, isMountedRef, abortControllerRef) => {
-    console.log(gamesWithDrops);
     try {
         const stopPromises = Array.from(gamesWithDrops).map(game => stopIdle(game.appId, game.name));
         await Promise.all(stopPromises);

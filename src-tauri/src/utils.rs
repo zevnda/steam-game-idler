@@ -1,3 +1,4 @@
+use crate::tasks::ProcessInfo;
 use lazy_static::lazy_static;
 use regex::Regex;
 use reqwest::Client;
@@ -7,7 +8,7 @@ use std::fs;
 use std::os::windows::io::AsRawHandle;
 use std::os::windows::process::CommandExt;
 use std::path::PathBuf;
-use std::process::{Child, Stdio};
+use std::process::Stdio;
 use std::sync::{Arc, Mutex};
 use steamlocate::SteamDir;
 use winapi::um::processthreadsapi::TerminateProcess;
@@ -168,18 +169,16 @@ pub fn get_lib_path() -> Result<String, String> {
     Ok(path.to_str().unwrap().to_string())
 }
 
-pub fn kill_processes(spawned_processes: &Arc<Mutex<Vec<Child>>>) {
-    let mut processes = spawned_processes.lock().unwrap();
-    for child in processes.iter_mut() {
-        unsafe {
-            // Terminate each process
-            let handle = child.as_raw_handle() as HANDLE;
-            TerminateProcess(handle, 1);
+pub fn kill_processes(spawned_processes: &Arc<Mutex<Vec<ProcessInfo>>>) {
+    if let Ok(mut processes) = spawned_processes.lock() {
+        for process in processes.iter_mut() {
+            unsafe {
+                let handle = process.child.as_raw_handle() as HANDLE;
+                TerminateProcess(handle, 1);
+            }
         }
-        let _ = child.wait();
+        processes.clear();
     }
-    processes.clear();
-    // Exit the application
     std::process::exit(0);
 }
 

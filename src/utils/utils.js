@@ -236,6 +236,7 @@ export async function checkDrops(steamId, appId, sid, sls, sma) {
     } catch (error) {
         console.error('Error in checkDrops util: ', error);
         logEvent(`[Error] in (checkDrops) util: ${error}`);
+        return 0;
     }
 }
 
@@ -251,6 +252,7 @@ export async function getAllGamesWithDrops(steamId, sid, sls, sma) {
     } catch (error) {
         console.error('Error in getAllGamesWithDrops util: ', error);
         logEvent(`[Error] in (getAllGamesWithDrops) util: ${error}`);
+        return false;
     }
 }
 
