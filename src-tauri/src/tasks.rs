@@ -3,11 +3,18 @@ use serde_json;
 use std::collections::HashMap;
 use std::os::windows::process::CommandExt;
 use std::path::PathBuf;
-use std::process::Child;
+use std::process::{Child, Command};
 use std::sync::{Arc, Mutex};
+use std::time::Duration;
+
+#[derive(Debug)]
+pub struct ProcessInfo {
+    pub child: Child,
+    pub app_id: u32,
+}
 
 lazy_static::lazy_static! {
-    pub static ref SPAWNED_PROCESSES: Arc<Mutex<Vec<Child>>> = Arc::new(Mutex::new(Vec::new()));
+    pub static ref SPAWNED_PROCESSES: Arc<Mutex<Vec<ProcessInfo>>> = Arc::new(Mutex::new(Vec::new()));
 }
 
 #[tauri::command]
@@ -45,22 +52,28 @@ pub async fn get_users() -> Result<String, String> {
 // Start idling a game
 pub async fn start_idle(app_id: u32, quiet: bool) -> Result<String, String> {
     let exe_path = get_lib_path()?;
-    let child = std::process::Command::new(exe_path)
+
+    cleanup_dead_processes().map_err(|e| e.to_string())?;
+
+    let child = Command::new(exe_path)
         .args(&["idle", &app_id.to_string(), &quiet.to_string()])
         .creation_flags(0x08000000)
         .spawn()
         .map_err(|e| e.to_string())?;
 
-    SPAWNED_PROCESSES.lock().unwrap().push(child);
+    {
+        let mut processes = SPAWNED_PROCESSES.lock().map_err(|e| e.to_string())?;
+        processes.push(ProcessInfo { child, app_id });
+    }
 
-    std::thread::sleep(std::time::Duration::from_millis(1000));
+    tokio::time::sleep(Duration::from_millis(1000)).await;
 
-    let mut processes = SPAWNED_PROCESSES.lock().unwrap();
-    if let Some(last_child) = processes.last_mut() {
-        match last_child.try_wait() {
-            Ok(Some(_)) => return Ok("{\"error\": \"Failed to idle game\"}".to_string()),
+    let mut processes = SPAWNED_PROCESSES.lock().map_err(|e| e.to_string())?;
+    if let Some(process) = processes.last_mut() {
+        match process.child.try_wait() {
+            Ok(Some(_)) => Ok("{\"error\": \"Failed to idle game\"}".to_string()),
             Ok(None) => Ok("{\"success\": \"Successfully idled game\"}".to_string()),
-            Err(e) => return Err(e.to_string()),
+            Err(e) => Err(e.to_string()),
         }
     } else {
         Ok("{\"error\": \"No process found\"}".to_string())
@@ -86,6 +99,11 @@ pub async fn stop_idle(app_id: u32) -> Result<(), String> {
         .creation_flags(0x08000000)
         .output()
         .expect("failed to kill process");
+
+    if let Ok(mut processes) = SPAWNED_PROCESSES.lock() {
+        processes.retain(|p| p.app_id != app_id);
+    }
+
     Ok(())
 }
 
@@ -185,4 +203,22 @@ pub async fn reset_all_stats(app_id: u32) -> Result<String, String> {
 
     let output_str = String::from_utf8_lossy(&output.stdout);
     Ok(output_str.to_string())
+}
+
+// Helper function to clean up dead processes
+fn cleanup_dead_processes() -> Result<(), String> {
+    let mut processes = SPAWNED_PROCESSES.lock().map_err(|e| e.to_string())?;
+    let mut i = 0;
+    while i < processes.len() {
+        if let Ok(status) = processes[i].child.try_wait() {
+            if status.is_some() {
+                processes.remove(i);
+            } else {
+                i += 1;
+            }
+        } else {
+            processes.remove(i);
+        }
+    }
+    Ok(())
 }

@@ -20,6 +20,7 @@ export default function CardFarming({ activePage }) {
     const [isComplete, setIsComplete] = useState(false);
     const [totalDropsRemaining, setTotalDropsRemaining] = useState(0);
     const [gamesWithDrops, setGamesWithDrops] = useState(0);
+    const [disableStopButton, setDisableStopButton] = useState(true);
 
     useEffect(() => {
         setVideoSrc(
@@ -43,6 +44,12 @@ export default function CardFarming({ activePage }) {
             isMountedRef.current = false;
             abortControllerRef.current.abort();
         };
+    }, []);
+
+    useEffect(() => {
+        setTimeout(() => {
+            setDisableStopButton(false);
+        }, 5000);
     }, []);
 
     return (
@@ -108,6 +115,7 @@ export default function CardFarming({ activePage }) {
 
                         <Button
                             size='sm'
+                            isDisabled={!isComplete && disableStopButton}
                             color={isComplete ? 'primary' : 'danger'}
                             className={`min-h-[30px] font-semibold rounded-lg ${isComplete ? 'bg-dynamic text-dynamic-text' : 'danger'}`}
                             onPress={() => {
