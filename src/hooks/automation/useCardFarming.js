@@ -137,7 +137,6 @@ export const farmCards = async (gamesSet, isMountedRef, abortControllerRef) => {
         for (const game of gamesSet) {
             // Check if cancelled before starting each game
             if (!isMountedRef.current) {
-                // Stop any running games before breaking
                 const runningPromises = Array.from(farmingPromises.values());
                 await Promise.all(runningPromises);
                 break;
@@ -183,9 +182,12 @@ export const farmCards = async (gamesSet, isMountedRef, abortControllerRef) => {
                 } finally {
                     // Make sure to stop the game if we're cancelled
                     if (!isMountedRef.current) {
-                        await stopIdle(game.appId, game.name).catch(error =>
-                            handleError(`farmCards-cleanup-${game.name}`, error)
-                        );
+                        try {
+                            await stopIdle(game.appId, game.name);
+                        } catch (error) {
+                            handleError('farmCards-stopIdle', error);
+
+                        }
                     }
                     farmingPromises.delete(game.appId);
                 }
