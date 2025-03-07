@@ -1,5 +1,12 @@
 [
     {
+        "id": "15",
+        "title": "Feedback Poll",
+        "message": "Click to view the feedback poll and cast your vote",
+        "url": "http://poll-maker.com/poll5426682x60fe4B28-161",
+        "timestamp": "1741306313"
+    },
+    {
         "id": "14",
         "title": "Beta v1.7.0-9",
         "message": "New beta version available",
@@ -75,12 +82,5 @@
         "message": "New beta version available",
         "url": "https://github.com/zevnda/steam-game-idler/releases/tag/1.6.0-beta.4",
         "timestamp": "1735041679"
-    },
-    {
-        "id": "3",
-        "title": "Beta v1.6.0.3",
-        "message": "New beta version available",
-        "url": "https://github.com/zevnda/steam-game-idler/releases/tag/1.6.0-beta.3",
-        "timestamp": "1734958788"
     }
 ]
