@@ -1,7 +1,6 @@
 use crate::utils::{get_lib_path, get_steam_loc, parse_login_users};
 use serde_json;
 use std::collections::HashMap;
-use std::io::{BufRead, BufReader};
 use std::os::windows::process::CommandExt;
 use std::path::PathBuf;
 use std::process::{Child, Command};
@@ -12,6 +11,7 @@ use std::time::Duration;
 pub struct ProcessInfo {
     pub child: Child,
     pub app_id: u32,
+    pub pid: u32,
 }
 
 lazy_static::lazy_static! {
@@ -62,9 +62,11 @@ pub async fn start_idle(app_id: u32, quiet: bool) -> Result<String, String> {
         .spawn()
         .map_err(|e| e.to_string())?;
 
+    let pid = child.id();
+
     {
         let mut processes = SPAWNED_PROCESSES.lock().map_err(|e| e.to_string())?;
-        processes.push(ProcessInfo { child, app_id });
+        processes.push(ProcessInfo { child, app_id, pid });
     }
 
     tokio::time::sleep(Duration::from_millis(1000)).await;
@@ -84,38 +86,19 @@ pub async fn start_idle(app_id: u32, quiet: bool) -> Result<String, String> {
 #[tauri::command]
 // Stop idling a game by killing its process
 pub async fn stop_idle(app_id: u32) -> Result<(), String> {
-    let mut child = std::process::Command::new("wmic")
-        .args(&["process", "get", "processid,commandline"])
+    let pid = {
+        let processes = SPAWNED_PROCESSES.lock().map_err(|e| e.to_string())?;
+        processes.iter().find(|p| p.app_id == app_id).map(|p| p.pid)
+    }
+    .ok_or_else(|| "No matching process found".to_string())?;
+
+    let mut child = std::process::Command::new("taskkill")
+        .args(&["/F", "/PID", &pid.to_string()])
         .creation_flags(0x08000000)
-        .stdout(std::process::Stdio::piped())
         .spawn()
         .map_err(|e| e.to_string())?;
 
-    let stdout = child
-        .stdout
-        .take()
-        .ok_or_else(|| "Could not capture standard output".to_string())?;
-
-    let reader = BufReader::new(stdout);
-    let mut pid = None;
-
-    for line in reader.lines() {
-        let line = line.map_err(|e| e.to_string())?;
-        if line.contains(&app_id.to_string()) {
-            pid = line.split_whitespace().last().map(String::from);
-            break;
-        }
-    }
-
     child.wait().map_err(|e| e.to_string())?;
-
-    let pid = pid.ok_or_else(|| "No matching process found".to_string())?;
-
-    std::process::Command::new("taskkill")
-        .args(&["/F", "/PID", &pid])
-        .creation_flags(0x08000000)
-        .output()
-        .map_err(|e| e.to_string())?;
 
     if let Ok(mut processes) = SPAWNED_PROCESSES.lock() {
         processes.retain(|p| p.app_id != app_id);
