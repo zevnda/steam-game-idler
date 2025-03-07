@@ -90,7 +90,7 @@ const processGamesWithDrops = (gamesWithDrops, gamesSet, gameSettings) => {
 
 const processIndividualGames = async (gameDataArr, gamesSet, gameSettings, userSummary, steamCookies) => {
     let totalDrops = 0;
-    const TIMEOUT = 30000; // 30 second timeout for each game check
+    const TIMEOUT = 30000;
 
     const checkGame = async (gameData) => {
         if (gamesSet.size >= 32) return;
@@ -179,7 +179,7 @@ export const farmCards = async (gamesSet, isMountedRef, abortControllerRef) => {
                     if (!isMountedRef.current) return;
                     await startAndstopIdle(game.appId, game.name, delays.short, isMountedRef, abortControllerRef);
                 } catch (error) {
-                    handleError(`farmCards-${game.name}`, error);
+                    console.error(`farmCards-${game.name}`, error)
                 } finally {
                     // Make sure to stop the game if we're cancelled
                     if (!isMountedRef.current) {
@@ -216,9 +216,7 @@ const startAndstopIdle = async (appId, name, duration, isMountedRef, abortContro
         }
     } catch (error) {
         handleError('startAndstopIdle', error);
-        await stopIdle(appId, name).catch(err =>
-            handleError('startAndstopIdle-cleanup', err)
-        );
+        await stopIdle(appId, name);
     }
 };
 

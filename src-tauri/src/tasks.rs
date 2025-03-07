@@ -107,7 +107,6 @@ pub async fn stop_idle(app_id: u32) -> Result<(), String> {
         }
     }
 
-    // Ensure the child process is finished
     child.wait().map_err(|e| e.to_string())?;
 
     let pid = pid.ok_or_else(|| "No matching process found".to_string())?;

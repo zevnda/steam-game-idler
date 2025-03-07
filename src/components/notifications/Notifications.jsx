@@ -91,7 +91,7 @@ export default function Notifications() {
                                         </div>
                                     </div>
                                 )}
-                                <div className='max-h-[450px] overflow-y-auto rounded-xl'>
+                                <div className='max-h-[450px] overflow-y-auto'>
                                     {notifications.map((notification, index) => (
                                         <div
                                             key={index}
