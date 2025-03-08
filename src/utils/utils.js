@@ -79,7 +79,7 @@ export async function startIdle(appId, appName, quiet = false, manual = true) {
             );
         }
     } catch (error) {
-        console.error(`Error in startIdle util: ${error}`);
+        console.error('Error in startIdle util: ', error);
         logEvent(`[Error] in (startIdle) util: ${error}`);
     }
 };
@@ -101,6 +101,39 @@ export async function stopIdle(appId, appName) {
         console.error('Error in stopIdle util (these errors can often be ignored): ', error);
     }
 };
+
+// Start farming idle
+export async function startFarmIdle(appIds) {
+    try {
+        const steamRunning = await invoke('check_status');
+
+        if (steamRunning) {
+            await invoke('start_farm_idle', { appIds: appIds });
+            logEvent(`[Card Farming] Started idling ${appIds.length} games`);
+        } else {
+            console.error('Steam is not running');
+            toast.error(
+                <ErrorToast
+                    message={'Steam is not running'}
+                    href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Steam%20is%20not%20running'}
+                />
+            );
+        }
+    } catch (error) {
+        console.error('Error in startFarmIdle util: ', error);
+        logEvent(`[Error] in (startFarmIdle) util: ${error}`);
+    }
+}
+
+// Stop farming idle
+export async function stopFarmIdle(appIds) {
+    try {
+        await invoke('stop_farm_idle');
+        logEvent(`[Card Farming] Stopped idling ${appIds.length} games`);
+    } catch (error) {
+        console.error('Error in stopFarmIdle util (these errors can often be ignored): ', error);
+    }
+}
 
 // Unlock a single achievement for a game
 export async function unlockAchievement(appId, achievementName, appName) {

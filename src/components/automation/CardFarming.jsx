@@ -82,23 +82,25 @@ export default function CardFarming({ activePage }) {
                                             </Fragment>
                                         )}
 
-                                        <div className='grid grid-cols-3 gap-2 max-h-[170px] border border-border rounded-lg p-2 overflow-y-auto'>
-                                            {[...Array.from(gamesWithDrops)].map((item) => (
-                                                <div key={item.appId} className='flex gap-1 border border-border rounded-lg p-1'>
-                                                    <Image
-                                                        src={`https://cdn.cloudflare.steamstatic.com/steam/apps/${item.appId}/header.jpg`}
-                                                        className='aspect-[62/36]'
-                                                        width={62}
-                                                        height={36}
-                                                        alt={`${item.name} image`}
-                                                        priority={true}
-                                                    />
-                                                    <div className='flex flex-col px-2'>
-                                                        <p className='text-sm font-semibold'>{item.name}</p>
-                                                        <p className='text-xs'>{item.appId}</p>
+                                        <div className='p-2 border border-border rounded-lg'>
+                                            <div className='grid grid-cols-2 gap-2 max-h-[170px] p-2 overflow-y-auto'>
+                                                {[...Array.from(gamesWithDrops)].map((item) => (
+                                                    <div key={item.appId} className='flex gap-1 border border-border rounded-lg p-1'>
+                                                        <Image
+                                                            src={`https://cdn.cloudflare.steamstatic.com/steam/apps/${item.appId}/header.jpg`}
+                                                            className='aspect-[62/36] rounded'
+                                                            width={62}
+                                                            height={36}
+                                                            alt={`${item.name} image`}
+                                                            priority={true}
+                                                        />
+                                                        <div className='flex flex-col px-2 max-w-[80%]'>
+                                                            <p className='text-sm font-semibold truncate'>{item.name}</p>
+                                                            <p className='text-xs text-altwhite'>{item.appId}</p>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            ))}
+                                                ))}
+                                            </div>
                                         </div>
                                     </Fragment>
                                 ) : (

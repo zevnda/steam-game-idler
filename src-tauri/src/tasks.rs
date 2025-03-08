@@ -108,6 +108,56 @@ pub async fn stop_idle(app_id: u32) -> Result<(), String> {
 }
 
 #[tauri::command]
+// Start idling multiple games
+pub async fn start_farm_idle(app_ids: Vec<u32>) -> Result<String, String> {
+    let exe_path = get_lib_path()?;
+
+    cleanup_dead_processes().map_err(|e| e.to_string())?;
+
+    for app_id in app_ids {
+        let child = Command::new(&exe_path)
+            .args(&["idle", &app_id.to_string(), true.to_string().as_str()])
+            .creation_flags(0x08000000)
+            .spawn()
+            .map_err(|e| e.to_string())?;
+
+        let pid = child.id();
+
+        {
+            let mut processes = SPAWNED_PROCESSES.lock().map_err(|e| e.to_string())?;
+            processes.push(ProcessInfo { child, app_id, pid });
+        }
+    }
+
+    Ok("{\"success\": \"Successfully started idling games\"}".to_string())
+}
+
+#[tauri::command]
+// Stop idling all games by killing their processes
+pub async fn stop_farm_idle() -> Result<(), String> {
+    let pids: Vec<u32> = {
+        let processes = SPAWNED_PROCESSES.lock().map_err(|e| e.to_string())?;
+        processes.iter().map(|p| p.pid).collect()
+    };
+
+    for pid in pids {
+        let mut child = std::process::Command::new("taskkill")
+            .args(&["/F", "/PID", &pid.to_string()])
+            .creation_flags(0x08000000)
+            .spawn()
+            .map_err(|e| e.to_string())?;
+
+        child.wait().map_err(|e| e.to_string())?;
+    }
+
+    if let Ok(mut processes) = SPAWNED_PROCESSES.lock() {
+        processes.clear();
+    }
+
+    Ok(())
+}
+
+#[tauri::command]
 // Unlock an achievement
 pub async fn unlock_achievement(app_id: u32, achievement_id: &str) -> Result<String, String> {
     let exe_path = get_lib_path()?;
