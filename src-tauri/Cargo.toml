@@ -48,10 +48,10 @@ tauri = { version = "1.6.5", features = [
 ] }
 
 [profile.release]
-opt-level = 'z'
-lto = true
+opt-level = 3
+lto = "fat"
 codegen-units = 1
-strip = true
+strip = false
 panic = "abort"
 overflow-checks = false
 

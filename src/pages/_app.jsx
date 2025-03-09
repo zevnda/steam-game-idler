@@ -8,7 +8,7 @@ export default function MyApp({ Component, pageProps }) {
             attribute='class'
             themes={['light', 'dark']}
             enableSystem={true}
-            defaultTheme='system'
+            defaultTheme='dark'
             disableTransitionOnChange
         >
             <HeroUIProvider>

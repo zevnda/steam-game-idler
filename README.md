@@ -14,9 +14,8 @@ A lightweight, user-friendly tool for farming trading cards, unlocking achieveme
 </div>
 
 # Installation
-1. Download the `.msi` installer from the **[releases page](https://github.com/zevnda/steam-game-idler/releases/latest)**
-2. Run the `.msi` installer and follow the steps of the installation guide
-3. Run the installed `.exe`
+1. Download the `setup.exe` installer from the **[releases page](https://github.com/zevnda/steam-game-idler/releases/latest)**
+2. Run the installer and follow the steps of the installation guide
 
 # Build It Yourself
 Follow the **[build it yourself](https://steamgameidler.vercel.app/get-started/build-it-yourself)** guide

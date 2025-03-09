@@ -133,10 +133,10 @@ jobs:
             import base64
             import json
             
-            msi_signature_path = './src-tauri/target/release/bundle/msi/Steam Game Idler_${{ github.event.inputs.version }}_x64_en-US.msi.zip.sig'
+            nsis_signature_path = './src-tauri/target/release/bundle/nsis/Steam Game Idler_${{ github.event.inputs.version }}_x64-setup.nsis.zip.sig'
             latest_json_path = './latest.json'
             
-            with open(msi_signature_path, 'r') as sig_file:
+            with open(nsis_signature_path, 'r') as sig_file:
                 new_signature = sig_file.read().strip()
             
             with open(latest_json_path, 'r') as json_file:
@@ -170,6 +170,6 @@ jobs:
             name: Steam Game Idler v${{ github.event.inputs.version }}
             body_path: ./changelog.md
             files: |
-              ./src-tauri/target/release/bundle/msi/Steam Game Idler_${{ github.event.inputs.version }}_x64_en-US.msi
-              ./src-tauri/target/release/bundle/msi/Steam Game Idler_${{ github.event.inputs.version }}_x64_en-US.msi.zip
-              ./src-tauri/target/release/bundle/msi/Steam Game Idler_${{ github.event.inputs.version }}_x64_en-US.msi.zip.sig
+              ./src-tauri/target/release/bundle/nsis/Steam Game Idler_${{ github.event.inputs.version }}_x64-setup.exe
+              ./src-tauri/target/release/bundle/nsis/Steam Game Idler_${{ github.event.inputs.version }}_x64-setup.nsis.zip
+              ./src-tauri/target/release/bundle/nsis/Steam Game Idler_${{ github.event.inputs.version }}_x64-setup.nsis.zip.sig
