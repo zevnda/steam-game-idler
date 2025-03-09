@@ -71,7 +71,8 @@
                 "signingIdentity": null
             },
             "resources": [
-                "libs/*"
+                "libs/*",
+                "LICENSE"
             ],
             "targets": "all",
             "windows": {

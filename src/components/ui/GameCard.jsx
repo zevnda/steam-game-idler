@@ -1,4 +1,4 @@
-import { Fragment, useContext, useState } from 'react';
+import { Fragment, useContext } from 'react';
 import Image from 'next/image';
 
 import { AppContext } from '@/src/components/layout/AppContext';
@@ -11,11 +11,9 @@ import { TbAwardFilled, TbPlayerPlayFilled } from 'react-icons/tb';
 
 export default function GameCard({ item, setSettingsModalOpen }) {
     const { setAppId, setAppName, showAchievements, setShowAchievements } = useContext(AppContext);
-    const [isBlurred, setIsBlurred] = useState(false);
 
     const handleImageError = (event) => {
         event.target.src = '/fallback.jpg';
-        setIsBlurred(true);
     };
 
     return (
@@ -29,7 +27,6 @@ export default function GameCard({ item, setSettingsModalOpen }) {
                         alt={`${item.name} image`}
                         priority={true}
                         onError={handleImageError}
-                        className={isBlurred ? 'blur-sm' : ''}
                     />
                     <div className='absolute flex items-center justify-evenly inset-0 bg-black bg-opacity-0 dark:bg-opacity-20 group-hover:bg-opacity-40 dark:group-hover:bg-opacity-50 transition-opacity duration-200'>
                         <div className='absolute flex justify-center w-full bottom-0 left-0 px-2 pb-0.5 opacity-0 group-hover:opacity-100 duration-200'>
