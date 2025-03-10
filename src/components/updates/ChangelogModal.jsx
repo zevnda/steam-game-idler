@@ -17,7 +17,7 @@ export default function ChangelogModal({ showChangelogModal, setShowChangelogMod
 
     return (
         <Fragment>
-            <Modal isOpen={showChangelogModal} hideCloseButton className='min-w-[830px] max-h-[490px] border border-border'>
+            <Modal isOpen={showChangelogModal} hideCloseButton className='min-w-[830px] max-h-[490px] bg-modalbody text-content'>
                 <ModalContent>
                     <Fragment>
                         <ModalHeader className='flex justify-between items-center w-full bg-modalheader border-b border-border' data-tauri-drag-region>
@@ -31,7 +31,7 @@ export default function ChangelogModal({ showChangelogModal, setShowChangelogMod
                                 </div>
                             </ExtLink>
                         </ModalHeader>
-                        <ModalBody className='max-h-[380px] overflow-y-auto'>
+                        <ModalBody className='max-h-[380px] overflow-y-auto bg-modalbody'>
                             {changelog ? (
                                 <Fragment>
                                     <ReactMarkdown
@@ -61,7 +61,7 @@ export default function ChangelogModal({ showChangelogModal, setShowChangelogMod
                                 </ExtLink>
                                 <Button
                                     size='sm'
-                                    className='font-semibold rounded-lg bg-dynamic text-dynamic-text'
+                                    className='font-semibold rounded-lg bg-dynamic text-content'
                                     onPress={handleCloseModal}
                                 >
                                     Continue

@@ -83,7 +83,7 @@ export default function Notifications() {
                                     <div className='flex items-center h-8 rounded-t-xl py-4 px-6 border-b border-border sticky top-0 bg-notihead z-[999] cursor-default'>
                                         <div className='flex justify-end w-full'>
                                             <p
-                                                className='text-xs text-altwhite hover:text-black dark:hover:text-offwhite font-semibold my-0.5 cursor-pointer duration-100'
+                                                className='text-xs text-altwhite hover:text-content dark:hover:text-offwhite font-semibold my-0.5 cursor-pointer duration-100'
                                                 onClick={() => markAllAsSeen(notifications, setUnseenNotifications)}
                                             >
                                                 Mark all as read

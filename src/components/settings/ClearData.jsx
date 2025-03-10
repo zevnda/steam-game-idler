@@ -1,12 +1,10 @@
-import { Fragment, useContext } from 'react';
+import { Fragment } from 'react';
 
 import { Button, Modal, ModalContent, ModalBody, ModalFooter, ModalHeader } from '@heroui/react';
 
-import { ColorContext } from '@/src/components/layout/ColorContext';
 import useClearData from '@/src/hooks/settings/useClearData';
 
 export default function ClearData() {
-    const { updateColor } = useContext(ColorContext);
     const { isOpen, onOpen, onOpenChange, handleClearData } = useClearData();
 
     return (
@@ -20,7 +18,7 @@ export default function ClearData() {
                 Clear Data
             </Button>
 
-            <Modal isOpen={isOpen} onOpenChange={onOpenChange} className='bg-container'>
+            <Modal isOpen={isOpen} onOpenChange={onOpenChange} className='bg-modalbody text-content'>
                 <ModalContent>
                     {(onClose) => (
                         <Fragment>
@@ -32,7 +30,7 @@ export default function ClearData() {
                                     Are you sure you want to clear all data?
                                 </p>
                             </ModalBody>
-                            <ModalFooter className='border-t border-border bg-footer px-4 py-3'>
+                            <ModalFooter className='border-t border-border bg-modalfooter px-4 py-3'>
                                 <Button
                                     size='sm'
                                     color='danger'
@@ -44,8 +42,8 @@ export default function ClearData() {
                                 </Button>
                                 <Button
                                     size='sm'
-                                    className='font-semibold rounded-lg bg-dynamic text-dynamic-text'
-                                    onPress={() => handleClearData(onClose, updateColor)}
+                                    className='font-semibold rounded-lg bg-dynamic text-content'
+                                    onPress={() => handleClearData(onClose)}
                                 >
                                     Confirm
                                 </Button>

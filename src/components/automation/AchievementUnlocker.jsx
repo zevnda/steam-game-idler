@@ -1,5 +1,6 @@
 import { Fragment, useContext, useState, useEffect, useRef } from 'react';
 import { useTheme } from 'next-themes';
+import Image from 'next/image';
 
 import { Button } from '@heroui/react';
 
@@ -17,7 +18,7 @@ export default function AchievementUnlocker({ activePage }) {
     const isMountedRef = useRef(true);
     const abortControllerRef = useRef(new AbortController());
 
-    const [videoSrc, setVideoSrc] = useState('');
+    const [imageSrc, setImageSrc] = useState('');
     const [isPrivate, setIsPrivate] = useState(false);
     const [currentGame, setCurrentGame] = useState({});
     const [isComplete, setIsComplete] = useState(false);
@@ -26,11 +27,8 @@ export default function AchievementUnlocker({ activePage }) {
     const [isWaitingForSchedule, setIsWaitingForSchedule] = useState('');
 
     useEffect(() => {
-        setVideoSrc(
-            theme === 'dark'
-                ? 'https://cdn.pixabay.com/video/2017/12/20/13495-248644905_large.mp4'
-                : 'https://cdn.pixabay.com/video/2020/07/30/45961-447087612_large.mp4'
-        );
+        const darkThemes = ['dark', 'midnight', 'amethyst', 'emerald', 'cherry', 'cosmic', 'mint', 'arctic', 'nightshade'];
+        setImageSrc(darkThemes.includes(theme) ? `/dbg.webp` : `/lbg.webp`);
     }, [theme]);
 
     useEffect(() => {
@@ -56,16 +54,17 @@ export default function AchievementUnlocker({ activePage }) {
         <Fragment>
             <div className={`${activePage !== 'customlists/achievement-unlocker' && 'hidden'} absolute top-12 left-14 bg-base z-50 rounded-tl-xl border-t border-l border-border`}>
                 <div className='relative flex justify-evenly items-center flex-col p-4 w-calc h-calc'>
-                    <video
+                    <Image
+                        src={imageSrc}
                         className='absolute top-0 left-0 w-full h-full object-cover rounded-tl-xl'
-                        src={videoSrc}
-                        autoPlay
-                        loop
-                        muted
+                        alt='background'
+                        width={1920}
+                        height={1080}
+                        priority
                     />
-                    <div className='absolute bg-base/10 backdrop-blur-[3px] w-full h-full rounded-tl-xl'></div>
+                    <div className='absolute bg-base/10 backdrop-blur-[10px] w-full h-full rounded-tl-xl'></div>
 
-                    <div className='flex items-center flex-col gap-6 z-10 backdrop-blur-md bg-base/20 p-8 border border-border rounded-lg'>
+                    <div className='flex items-center flex-col gap-6 z-10 backdrop-blur-md bg-base/20 p-8 border border-border/40 rounded-lg'>
                         <p className='text-3xl font-semibold'>
                             Achievement Unlocker
                         </p>
@@ -114,7 +113,7 @@ export default function AchievementUnlocker({ activePage }) {
 
                         <Button
                             size='sm'
-                            className={`min-h-[30px] font-semibold rounded-lg ${isComplete ? 'bg-dynamic text-dynamic-text' : 'danger'}`}
+                            className={`min-h-[30px] font-semibold rounded-lg ${isComplete ? 'bg-dynamic text-content' : 'danger'}`}
                             onPress={() => {
                                 setIsAchievementUnlocker(false);
                                 stopIdle(currentGame.appid, currentGame.name);

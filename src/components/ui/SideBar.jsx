@@ -20,7 +20,7 @@ export default function SideBar() {
 
                     <div className='flex justify-center items-center w-14'>
                         <div
-                            className={`p-2 rounded-full duration-200 cursor-pointer active:scale-90 ${activePage === 'games' ? 'bg-dynamic/20 text-dynamic' : 'hover:bg-titlehover'}`}
+                            className={`p-2 rounded-full duration-200 cursor-pointer active:scale-90 ${activePage === 'games' ? 'bg-dynamic/30 text-dynamic' : 'hover:bg-titlehover'}`}
                             onClick={() => setActivePage('games')}
                         >
                             <TbDeviceGamepad2 fontSize={22} />
@@ -32,7 +32,7 @@ export default function SideBar() {
                             className={`
                                 p-2 rounded-full duration-200 cursor-pointer active:scale-90 
                                 ${isCardFarming && 'text-dynamic animate-pulse'} 
-                                ${activePage === 'customlists/card-farming' ? 'bg-dynamic/20 text-dynamic' : 'hover:bg-titlehover'}
+                                ${activePage === 'customlists/card-farming' ? 'bg-dynamic/30 text-dynamic' : 'hover:bg-titlehover'}
                                 `}
                             onClick={() => setActivePage('customlists/card-farming')}
                         >
@@ -45,7 +45,7 @@ export default function SideBar() {
                             className={`
                                 p-2 rounded-full duration-200 cursor-pointer active:scale-90 
                                 ${isAchievementUnlocker && 'text-dynamic animate-pulse'} 
-                                ${activePage === 'customlists/achievement-unlocker' ? 'bg-dynamic/20 text-dynamic' : 'hover:bg-titlehover'}
+                                ${activePage === 'customlists/achievement-unlocker' ? 'bg-dynamic/30 text-dynamic' : 'hover:bg-titlehover'}
                                 `}
                             onClick={() => setActivePage('customlists/achievement-unlocker')}
                         >
@@ -55,7 +55,7 @@ export default function SideBar() {
 
                     <div className='flex justify-center items-center w-14'>
                         <div
-                            className={`p-2 rounded-full duration-200 cursor-pointer active:scale-90 ${activePage === 'customlists/auto-idle' ? 'bg-dynamic/20 text-dynamic' : 'hover:bg-titlehover'}`}
+                            className={`p-2 rounded-full duration-200 cursor-pointer active:scale-90 ${activePage === 'customlists/auto-idle' ? 'bg-dynamic/30 text-dynamic' : 'hover:bg-titlehover'}`}
                             onClick={() => setActivePage('customlists/auto-idle')}
                         >
                             <TbHourglassLow fontSize={22} />
@@ -64,7 +64,7 @@ export default function SideBar() {
 
                     <div className='flex justify-center items-center w-14'>
                         <div
-                            className={`p-2 rounded-full duration-200 cursor-pointer active:scale-90 ${activePage === 'customlists/favorites' ? 'bg-dynamic/20 text-dynamic' : 'hover:bg-titlehover'}`}
+                            className={`p-2 rounded-full duration-200 cursor-pointer active:scale-90 ${activePage === 'customlists/favorites' ? 'bg-dynamic/30 text-dynamic' : 'hover:bg-titlehover'}`}
                             onClick={() => setActivePage('customlists/favorites')}
                         >
                             <TbHeart fontSize={22} />
@@ -88,7 +88,7 @@ export default function SideBar() {
                     <div className='flex justify-center items-center flex-col gap-2 mb-3'>
                         <div className='flex justify-center items-center w-14'>
                             <div
-                                className={`p-2 rounded-full duration-200 cursor-pointer active:scale-90 ${activePage === 'settings' ? 'bg-dynamic/20 text-dynamic' : 'hover:bg-titlehover'}`}
+                                className={`p-2 rounded-full duration-200 cursor-pointer active:scale-90 ${activePage === 'settings' ? 'bg-dynamic/30 text-dynamic' : 'hover:bg-titlehover'}`}
                                 onClick={() => setActivePage('settings')}
                             >
                                 <TbSettings fontSize={22} />
@@ -104,7 +104,7 @@ export default function SideBar() {
                 )}
             </div>
 
-            <Modal isOpen={isOpen} onOpenChange={onOpenChange} className='bg-container'>
+            <Modal isOpen={isOpen} onOpenChange={onOpenChange} className='bg-modalbody text-content'>
                 <ModalContent>
                     {(onClose) => (
                         <Fragment>
@@ -116,7 +116,7 @@ export default function SideBar() {
                                     Are you sure you want to log out?
                                 </p>
                             </ModalBody>
-                            <ModalFooter className='border-t border-border bg-footer px-4 py-3'>
+                            <ModalFooter className='border-t border-border bg-modalfooter px-4 py-3'>
                                 <Button
                                     size='sm'
                                     color='danger'
@@ -128,7 +128,7 @@ export default function SideBar() {
                                 </Button>
                                 <Button
                                     size='sm'
-                                    className='font-semibold rounded-lg bg-dynamic text-dynamic-text'
+                                    className='font-semibold rounded-lg bg-dynamic text-content'
                                     onPress={() => handleLogout(onClose)}
                                 >
                                     Confirm

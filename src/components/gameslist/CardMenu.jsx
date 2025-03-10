@@ -18,38 +18,38 @@ export default function CardMenu({ item, handleIdle, viewAchievments, viewStoreP
                     <DropdownItem
                         className='rounded'
                         key='idle'
-                        startContent={<TbPlayerPlayFilled size={16} />}
+                        startContent={<TbPlayerPlayFilled size={16} className='text-content' />}
                         onPress={() => handleIdle(item)}
                         textValue='Idle game'
                     >
-                        <p className='text-sms'>Idle game</p>
+                        <p className='text-sm text-content'>Idle game</p>
                     </DropdownItem>
                     <DropdownItem
                         className='rounded'
                         key='achievements'
-                        startContent={<TbAwardFilled size={16} />}
+                        startContent={<TbAwardFilled size={16} className='text-content' />}
                         onPress={() => viewAchievments(item)}
                         textValue='View achievements'
                     >
-                        <p className='text-sms'>View achievements</p>
+                        <p className='text-sm text-content'>View achievements</p>
                     </DropdownItem>
                     <DropdownItem
                         className='rounded'
                         key='store'
-                        startContent={<FaSteam fontSize={16} />}
+                        startContent={<FaSteam fontSize={16} className='text-content' />}
                         onPress={() => viewStorePage(item)}
                         textValue='View store page'
                     >
-                        <p className='text-sms'>View store page</p>
+                        <p className='text-sm text-content'>View store page</p>
                     </DropdownItem>
                     <DropdownItem
                         className='rounded'
                         key='settings'
-                        startContent={<TbSettingsFilled fontSize={16} />}
+                        startContent={<TbSettingsFilled fontSize={16} className='text-content' />}
                         onPress={() => viewGameSettings(item)}
                         textValue='Game settings'
                     >
-                        <p className='text-sms'>Game settings</p>
+                        <p className='text-sm text-content'>Game settings</p>
                     </DropdownItem>
                 </DropdownMenu>
             </Dropdown>

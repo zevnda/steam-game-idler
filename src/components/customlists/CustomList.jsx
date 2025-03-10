@@ -95,7 +95,7 @@ export default function CustomList({ type }) {
                         {listType.startButton && (
                             <Button
                                 size='sm'
-                                className='rounded-full font-semibold bg-dynamic text-dynamic-text'
+                                className='rounded-full font-semibold bg-dynamic text-content'
                                 startContent={listType.icon}
                                 onPress={listType.startButton === 'startCardFarming' ? startCardFarming : startAchievementUnlocker}
                             >
@@ -107,7 +107,7 @@ export default function CustomList({ type }) {
 
                         <Button
                             size='sm'
-                            className='rounded-full font-semibold bg-dynamic text-dynamic-text'
+                            className='rounded-full font-semibold bg-dynamic text-content'
                             startContent={<TbEdit fontSize={20} />}
                             onPress={() => setEditModalOpen(true)}
                         >

@@ -64,7 +64,7 @@ export default function GameSettings({ isOpen, onOpenChange }) {
 
     return (
         <Fragment>
-            <Modal isOpen={isOpen} onOpenChange={onOpenChange} className='bg-container'>
+            <Modal isOpen={isOpen} onOpenChange={onOpenChange} className='bg-modalbody text-content'>
                 <ModalContent>
                     {(onClose) => (
                         <Fragment>
@@ -84,7 +84,10 @@ export default function GameSettings({ isOpen, onOpenChange }) {
                                             aria-label='max idle time'
                                             placeholder=' '
                                             className='max-w-[80px]'
-                                            classNames={{ inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'] }}
+                                            classNames={{
+                                                inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'],
+                                                input: ['!text-content']
+                                            }}
                                             value={maxIdleTime}
                                             onChange={handleMaxIdleTimeChange}
                                         />
@@ -99,7 +102,10 @@ export default function GameSettings({ isOpen, onOpenChange }) {
                                             aria-label='max card drops'
                                             placeholder=' '
                                             className='max-w-[80px]'
-                                            classNames={{ inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'] }}
+                                            classNames={{
+                                                inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'],
+                                                input: ['!text-content']
+                                            }}
                                             value={maxCardDrops}
                                             onChange={handleMaxCardDropsChange}
                                         />
@@ -114,14 +120,17 @@ export default function GameSettings({ isOpen, onOpenChange }) {
                                             aria-label='max achievement unlocks'
                                             placeholder=' '
                                             className='max-w-[80px]'
-                                            classNames={{ inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'] }}
+                                            classNames={{
+                                                inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'],
+                                                input: ['!text-content']
+                                            }}
                                             value={maxAchievementUnlocks}
                                             onChange={handleMaxAchievementUnlocksChange}
                                         />
                                     </div>
                                 </div>
                             </ModalBody>
-                            <ModalFooter className='border-t border-border bg-footer px-4 py-3'>
+                            <ModalFooter className='border-t border-border bg-modalfooter px-4 py-3'>
                                 <Button
                                     size='sm'
                                     color='danger'
@@ -135,7 +144,7 @@ export default function GameSettings({ isOpen, onOpenChange }) {
                                 </Button>
                                 <Button
                                     size='sm'
-                                    className='font-semibold rounded-lg bg-dynamic text-dynamic-text'
+                                    className='font-semibold rounded-lg bg-dynamic text-content'
                                     isDisabled={isSaveDisabled()}
                                     onPress={() => {
                                         handleSave();

@@ -75,7 +75,7 @@ const Row = memo(({ index, style, data }) => {
                     ) : (
                         <Button
                             size='sm'
-                            className='font-semibold rounded-lg bg-dynamic text-dynamic-text'
+                            className='font-semibold rounded-lg bg-dynamic text-content'
                             onPress={handleToggle}
                         >
                             Unlock
@@ -86,7 +86,7 @@ const Row = memo(({ index, style, data }) => {
                     <div className='w-full bg-titlehover rounded-full h-3.5 relative'>
                         <div className='bg-dynamic h-3.5 rounded-full flex items-center' style={{ width: `${percentage}%`, position: 'relative' }}></div>
                         {percentage !== undefined && (
-                            <p className='text-[11px] text-black dark:text-offwhite absolute inset-0 flex items-center justify-center'>
+                            <p className='text-[11px] text-content dark:text-offwhite absolute inset-0 flex items-center justify-center'>
                                 {percentage.toFixed(1)}%
                             </p>
                         )}

@@ -47,7 +47,7 @@ export default function PageHeader() {
                         isIconOnly
                         size='sm'
                         className='rounded-full bg-border'
-                        startContent={<TbArrowBack fontSize={18} />}
+                        startContent={<TbArrowBack fontSize={18} className='text-content' />}
                         onPress={handleClick}
                     />
                     <div className='flex items-center gap-1 w-full'>

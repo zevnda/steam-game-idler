@@ -27,7 +27,7 @@ const Row = memo(({ index, style, data }) => {
                             className='w-[120px]'
                             classNames={{
                                 inputWrapper: ['bg-titlebar border border-border hover:!bg-input rounded-lg group-data-[focus-visible=true]:ring-transparent group-data-[focus-visible=true]:ring-offset-transparent group-data-[focus-within=true]:!bg-titlebar'],
-                                input: ['text-sm']
+                                input: ['text-sm !text-content']
                             }}
                         />
                     </div>
@@ -46,7 +46,7 @@ const Row = memo(({ index, style, data }) => {
                             className='w-[120px]'
                             classNames={{
                                 inputWrapper: ['bg-titlebar border border-border hover:!bg-input rounded-lg group-data-[focus-visible=true]:ring-transparent group-data-[focus-visible=true]:ring-offset-transparent group-data-[focus-within=true]:!bg-titlebar'],
-                                input: ['text-sm']
+                                input: ['text-sm !text-content']
                             }}
                         />
                     </div>

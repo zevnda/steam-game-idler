@@ -8,7 +8,6 @@ import { handleCheckboxChange, handleRunAtStartupChange, handleKeyChange, handle
 import { antiAwayStatus } from '@/src/utils/utils';
 import useGeneralSettings from '@/src/hooks/settings/useGeneralSettings';
 import ExtLink from '@/src/components/ui/ExtLink';
-import ColorPicker from '../ui/theme/ColorPicker';
 import ThemeSwitch from '../ui/theme/ThemeSwitch';
 
 export default function GeneralSettings({ settings, setSettings }) {
@@ -51,11 +50,11 @@ export default function GeneralSettings({ settings, setSettings }) {
                     isSelected={localSettings?.general?.stealthIdle || false}
                     onChange={(e) => handleCheckboxChange(e, localSettings, setLocalSettings, setSettings)}
                     classNames={{
-                        wrapper: ['after:bg-dynamic text-dynamic-text']
+                        wrapper: ['before:group-data-[selected=true]:!border-dynamic after:bg-dynamic border-red-500 text-content']
                     }}
                 >
                     <div className='flex items-center gap-1'>
-                        <p className='text-xs'>
+                        <p className='text-xs text-content'>
                             Hide idle windows <span className='italic'>(not recommended)</span>
                         </p>
                     </div>
@@ -69,11 +68,11 @@ export default function GeneralSettings({ settings, setSettings }) {
                         antiAwayStatus(!localSettings?.general?.antiAway);
                     }}
                     classNames={{
-                        wrapper: ['after:bg-dynamic text-dynamic-text']
+                        wrapper: ['before:group-data-[selected=true]:!border-dynamic after:bg-dynamic text-content']
                     }}
                 >
                     <div className='flex items-center gap-1'>
-                        <p className='text-xs'>
+                        <p className='text-xs text-content'>
                             Prevent away status on Steam
                         </p>
                     </div>
@@ -84,11 +83,11 @@ export default function GeneralSettings({ settings, setSettings }) {
                     isSelected={localSettings?.general?.freeGameNotifications || false}
                     onChange={(e) => handleCheckboxChange(e, localSettings, setLocalSettings, setSettings)}
                     classNames={{
-                        wrapper: ['after:bg-dynamic text-dynamic-text']
+                        wrapper: ['before:group-data-[selected=true]:!border-dynamic after:bg-dynamic text-content']
                     }}
                 >
                     <div className='flex items-center gap-1'>
-                        <p className='text-xs'>
+                        <p className='text-xs text-content'>
                             Get notifications about free games
                         </p>
                     </div>
@@ -99,11 +98,11 @@ export default function GeneralSettings({ settings, setSettings }) {
                     isSelected={localSettings?.general?.clearData || false}
                     onChange={(e) => handleCheckboxChange(e, localSettings, setLocalSettings, setSettings)}
                     classNames={{
-                        wrapper: ['after:bg-dynamic text-dynamic-text']
+                        wrapper: ['before:group-data-[selected=true]:!border-dynamic after:bg-dynamic text-content']
                     }}
                 >
                     <div className='flex items-center gap-1'>
-                        <p className='text-xs'>
+                        <p className='text-xs text-content'>
                             Clear custom list when logging out
                         </p>
                     </div>
@@ -113,11 +112,11 @@ export default function GeneralSettings({ settings, setSettings }) {
                     isSelected={startupState || false}
                     onChange={() => handleRunAtStartupChange(startupState, setStartupState)}
                     classNames={{
-                        wrapper: ['after:bg-dynamic text-dynamic-text']
+                        wrapper: ['before:group-data-[selected=true]:!border-dynamic after:bg-dynamic text-content']
                     }}
                 >
                     <div className='flex items-center gap-1'>
-                        <p className='text-xs'>
+                        <p className='text-xs text-content'>
                             Run at startup
                         </p>
                     </div>
@@ -128,7 +127,6 @@ export default function GeneralSettings({ settings, setSettings }) {
                         Theme
                     </p>
                     <ThemeSwitch />
-                    <ColorPicker />
                 </div>
 
                 <div className='flex flex-col'>
@@ -147,7 +145,10 @@ export default function GeneralSettings({ settings, setSettings }) {
                             size='sm'
                             placeholder='Steam web API key'
                             className='max-w-[280px]'
-                            classNames={{ inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'] }}
+                            classNames={{
+                                inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'],
+                                input: ['!text-content']
+                            }}
                             value={keyValue}
                             onChange={(e) => handleKeyChange(e, setKeyValue)}
                             type={'password'}
@@ -155,7 +156,7 @@ export default function GeneralSettings({ settings, setSettings }) {
                         <Button
                             size='sm'
                             isDisabled={hasKey || !keyValue}
-                            className='font-semibold rounded-lg bg-dynamic text-dynamic-text'
+                            className='font-semibold rounded-lg bg-dynamic text-content'
                             onPress={() => handleKeySave(keyValue, setHasKey)}
                         >
                             Save

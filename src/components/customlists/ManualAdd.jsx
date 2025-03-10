@@ -15,12 +15,12 @@ export default function ManualAdd({ listName, setList }) {
             <Button
                 size='sm'
                 isIconOnly
-                className='rounded-full bg-dynamic text-dynamic-text'
+                className='rounded-full bg-dynamic text-content'
                 startContent={<TbPlus fontSize={18} />}
                 onPress={onOpen}
             />
 
-            <Modal isOpen={isOpen} onOpenChange={onOpenChange} onClose={() => setInputValue('')} className='bg-container'>
+            <Modal isOpen={isOpen} onOpenChange={onOpenChange} onClose={() => setInputValue('')} className='bg-modalbody text-content'>
                 <ModalContent>
                     {(onClose) => (
                         <React.Fragment>
@@ -37,7 +37,7 @@ export default function ManualAdd({ listName, setList }) {
                                     placeholder='Enter a game ID'
                                     classNames={{
                                         inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar group-data-[focus-visible=true]:ring-transparent group-data-[focus-visible=true]:ring-offset-transparent'],
-                                        input: ['text-sm']
+                                        input: ['text-sm !text-content'],
                                     }}
                                     value={inputValue}
                                     onChange={handleChange}
@@ -45,7 +45,7 @@ export default function ManualAdd({ listName, setList }) {
                                     autoFocus
                                 />
                             </ModalBody>
-                            <ModalFooter className='border-t border-border bg-footer px-4 py-3'>
+                            <ModalFooter className='border-t border-border bg-modalfooter px-4 py-3'>
                                 <Button
                                     size='sm'
                                     color='danger'
@@ -59,7 +59,7 @@ export default function ManualAdd({ listName, setList }) {
                                     size='sm'
                                     isLoading={isLoading}
                                     isDisabled={inputValue.length === 0}
-                                    className='font-semibold rounded-lg bg-dynamic text-dynamic-text'
+                                    className='font-semibold rounded-lg bg-dynamic text-content'
                                     onPress={() => handleAdd(onClose)}
                                 >
                                     Add

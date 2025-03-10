@@ -44,7 +44,7 @@ export default function Private({ setRefreshKey }) {
                         </ExtLink>
                         <Button
                             size='sm'
-                            className='font-semibold rounded-lg mt-5 bg-dynamic text-dynamic-text'
+                            className='font-semibold rounded-lg mt-5 bg-dynamic text-content'
                             onPress={handleRefresh}
                         >
                             Try Again
