@@ -22,10 +22,10 @@ export default function SettingsMenu({ setInitUpdate, setUpdateManifest }) {
                         size='sm'
                         className='bg-base hover:bg-titlebar border border-border rounded-lg'
                     >
-                        <TbDotsVertical size={24} />
+                        <TbDotsVertical size={24} className='text-content' />
                     </Button>
                 </DropdownTrigger>
-                <DropdownMenu aria-label='Settings actions'>
+                <DropdownMenu aria-label='Settings actions' className='text-content'>
                     <DropdownItem key='help' className='rounded p-0 m-0' textValue='Help' classNames={{ base: ['data-[hover=true]:!bg-titlehover'] }}>
                         <ExtLink href={'https://steamgameidler.vercel.app/'} className='flex text-sm w-full px-2 py-1'>
                             Help

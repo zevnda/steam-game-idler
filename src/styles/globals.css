@@ -21,6 +21,102 @@
     --code: #2d2d2d;
 }
 
+.nordic {
+    --sb-thumb: #c0cadc;
+    --sb-track: #dfe6f1;
+    --code: #e9e9e9;
+}
+
+.pastel {
+    --sb-thumb: #efd7f8;
+    --sb-track: #f7e6fd;
+    --code: #e9e9e9;
+}
+
+.sunshine {
+    --sb-thumb: #f6eacc;
+    --sb-track: #fff5db;
+    --code: #e9e9e9;
+}
+
+.seafoam {
+    --sb-thumb: #c9e8e4;
+    --sb-track: #ddf3f0;
+    --code: #e9e9e9;
+}
+
+.blossom {
+    --sb-thumb: #efd0da;
+    --sb-track: #fee3ec;
+    --code: #e9e9e9;
+}
+
+.meadow {
+    --sb-thumb: #ccefd9;
+    --sb-track: #dffcea;
+    --code: #e9e9e9;
+}
+
+.sandstone {
+    --sb-thumb: #f3dace;
+    --sb-track: #ffede4;
+    --code: #e9e9e9;
+}
+
+.icicle {
+    --sb-thumb: #cfe5f1;
+    --sb-track: #e3f5fe;
+    --code: #e9e9e9;
+}
+
+.midnight {
+    --sb-thumb: #1a1d2a;
+    --sb-track: #131621;
+    --code: #2d2d2d;
+}
+
+.amethyst {
+    --sb-thumb: #463464;
+    --sb-track: #3b2b57;
+    --code: #2d2d2d;
+}
+
+.emerald {
+    --sb-thumb: #205240;
+    --sb-track: #1a4536;
+    --code: #2d2d2d;
+}
+
+.cherry {
+    --sb-thumb: #6a3442;
+    --sb-track: #51232f;
+    --code: #2d2d2d;
+}
+
+.cosmic {
+    --sb-thumb: #30285c;
+    --sb-track: #231d47;
+    --code: #2d2d2d;
+}
+
+.mint {
+    --sb-thumb: #2d665a;
+    --sb-track: #205146;
+    --code: #2d2d2d;
+}
+
+.arctic {
+    --sb-thumb: #355c6e;
+    --sb-track: #284b5b;
+    --code: #2d2d2d;
+}
+
+.nightshade {
+    --sb-thumb: #3c3370;
+    --sb-track: #2c245b;
+    --code: #2d2d2d;
+}
+
 ::-webkit-scrollbar {
     width: 10px;
 }

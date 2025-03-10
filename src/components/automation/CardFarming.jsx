@@ -1,11 +1,11 @@
 import { Fragment, useContext, useState, useEffect, useRef } from 'react';
 import { useTheme } from 'next-themes';
+import Image from 'next/image';
 
 import { Button, Spinner } from '@heroui/react';
 
 import { AppContext } from '@/src/components/layout/AppContext';
 import { handleCancel, useCardFarming } from '@/src/hooks/automation/useCardFarming';
-import Image from 'next/image';
 
 import { TbCheck } from 'react-icons/tb';
 
@@ -16,18 +16,15 @@ export default function CardFarming({ activePage }) {
     const isMountedRef = useRef(true);
     const abortControllerRef = useRef(new AbortController());
 
-    const [videoSrc, setVideoSrc] = useState('');
+    const [imageSrc, setImageSrc] = useState('');
     const [isComplete, setIsComplete] = useState(false);
     const [totalDropsRemaining, setTotalDropsRemaining] = useState(0);
     const [gamesWithDrops, setGamesWithDrops] = useState(0);
     const [disableStopButton, setDisableStopButton] = useState(true);
 
     useEffect(() => {
-        setVideoSrc(
-            theme === 'dark'
-                ? 'https://cdn.pixabay.com/video/2017/12/20/13495-248644905_large.mp4'
-                : 'https://cdn.pixabay.com/video/2020/07/30/45961-447087612_large.mp4'
-        );
+        const darkThemes = ['dark', 'midnight', 'amethyst', 'emerald', 'cherry', 'cosmic', 'mint', 'arctic', 'nightshade'];
+        setImageSrc(darkThemes.includes(theme) ? `/dbg.webp` : `/lbg.webp`);
     }, [theme]);
 
     useEffect(() => {
@@ -56,16 +53,17 @@ export default function CardFarming({ activePage }) {
         <Fragment>
             <div className={`${activePage !== 'customlists/card-farming' && 'hidden'} absolute top-12 left-14 bg-base z-50 rounded-tl-xl border-t border-l border-border`}>
                 <div className='relative flex justify-evenly items-center flex-col p-4 w-calc h-calc'>
-                    <video
+                    <Image
+                        src={imageSrc}
                         className='absolute top-0 left-0 w-full h-full object-cover rounded-tl-xl'
-                        src={videoSrc}
-                        autoPlay
-                        loop
-                        muted
+                        alt='background'
+                        width={1920}
+                        height={1080}
+                        priority
                     />
-                    <div className='absolute bg-base/10 backdrop-blur-[3px] w-full h-full rounded-tl-xl'></div>
+                    <div className='absolute bg-base/10 backdrop-blur-[10px] w-full h-full rounded-tl-xl'></div>
 
-                    <div className='flex items-center flex-col gap-6 z-10 backdrop-blur-md bg-base/20 p-8 border border-border rounded-lg'>
+                    <div className='flex items-center flex-col gap-6 z-10 backdrop-blur-md bg-base/20 p-8 border border-border/40 rounded-lg'>
                         <p className='text-3xl font-semibold'>
                             Card Farming
                         </p>
@@ -104,7 +102,7 @@ export default function CardFarming({ activePage }) {
                                         </div>
                                     </Fragment>
                                 ) : (
-                                    <Spinner label={<p className='text-sm'>This might take a second..</p>} />
+                                    <Spinner label={<p className='text-sm text-content'>This might take a second..</p>} />
                                 )}
                             </Fragment>
                         ) : (
@@ -119,7 +117,7 @@ export default function CardFarming({ activePage }) {
                             size='sm'
                             isDisabled={!isComplete && disableStopButton}
                             color={isComplete ? 'primary' : 'danger'}
-                            className={`min-h-[30px] font-semibold rounded-lg ${isComplete ? 'bg-dynamic text-dynamic-text' : 'danger'}`}
+                            className={`min-h-[30px] font-semibold rounded-lg ${isComplete ? 'bg-dynamic text-content' : 'danger'}`}
                             onPress={() => {
                                 handleCancel(gamesWithDrops, isMountedRef, abortControllerRef);
                                 setIsCardFarming(false);

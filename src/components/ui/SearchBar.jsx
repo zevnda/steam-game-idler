@@ -32,7 +32,10 @@ export default function SearchBar() {
                         placeholder='Search for a game'
                         startContent={<RiSearchLine />}
                         className='w-[300px]'
-                        classNames={{ inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'] }}
+                        classNames={{
+                            inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'],
+                            input: ['!text-content']
+                        }}
                         value={gameQueryValue}
                         onChange={handleGameQueryChange}
                         onKeyDown={handleKeyDown}

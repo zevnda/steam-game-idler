@@ -69,7 +69,7 @@ export default function Settings({ setInitUpdate, setUpdateManifest }) {
                             base: 'bg-titlebar rounded-t-lg p-0 border-t border-l border-r border-border',
                             tabList: 'gap-0 w-full bg-transparent',
                             tab: 'px-6 py-3 rounded-none bg-transparent px-4 data-[hover-unselected=true]:bg-gray-500 data-[hover-unselected=true]:bg-opacity-5 data-[hover-unselected=true]:opacity-100',
-                            tabContent: 'text-sm',
+                            tabContent: 'text-sm group-data-[selected=true]:text-content',
                             cursor: 'bg-base w-full rounded',
                             panel: 'bg-titlebar rounded-lg rounded-tl-none border border-border',
                         }}

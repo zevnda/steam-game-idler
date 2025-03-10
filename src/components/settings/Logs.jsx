@@ -14,7 +14,7 @@ export default function Logs() {
                 <div className='flex justify-between gap-2 w-full mb-4'>
                     <Button
                         size='sm'
-                        className='font-semibold rounded-lg bg-dynamic text-dynamic-text'
+                        className='font-semibold rounded-lg bg-dynamic text-content'
                         onPress={() => handleOpenLogFile(logPath)}
                     >
                         Open in File Explorer
@@ -32,7 +32,7 @@ export default function Logs() {
                 <div className='bg-container border border-border font-mono text-xs rounded min-h-[200px] max-h-[calc(100vh-285px)] overflow-y-auto'>
                     <table className='w-full border-collapse'>
                         <thead className='sticky top-0 z-10'>
-                            <tr className='border-b border-border bg-[#dedede] dark:bg-[#131313]'>
+                            <tr className='border-b border-border bg-tablehead'>
                                 <th className='text-left p-1.5 w-[160px]'>Time</th>
                                 <th className='text-left p-1.5'>Message</th>
                             </tr>
@@ -41,7 +41,7 @@ export default function Logs() {
                             {logs.length > 0 ? (
                                 <Fragment>
                                     {logs.map((log, index) => (
-                                        <tr key={index} className={index % 2 === 0 ? 'bg-container' : 'bg-[#f1f1f1] dark:bg-[#1a1a1a]'}>
+                                        <tr key={index} className={index % 2 === 0 ? 'bg-tablerowalt' : 'bg-tablerow'}>
                                             <td className='p-1.5 text-altwhite uppercase'>{log.timestamp}</td>
                                             <td className={`p-1.5 ${log.message?.includes('Error') && 'text-red-400'}`}>
                                                 {log.message}

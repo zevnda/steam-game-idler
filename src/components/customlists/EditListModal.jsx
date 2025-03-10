@@ -48,7 +48,7 @@ export default function EditListModal({ isOpen, onOpenChange, onClose, filteredG
 
     return (
         <Fragment>
-            <Modal isOpen={isOpen} onOpenChange={onOpenChange} onClose={onClose} hideCloseButton className='bg-container min-h-[75%] max-h-[75%]'>
+            <Modal isOpen={isOpen} onOpenChange={onOpenChange} onClose={onClose} hideCloseButton className='bg-modalbody min-h-[75%] max-h-[75%] text-content'>
                 <ModalContent>
                     {(onClose) => (
                         <Fragment>
@@ -58,7 +58,10 @@ export default function EditListModal({ isOpen, onOpenChange, onClose, filteredG
                                     isClearable
                                     size='sm'
                                     placeholder='Search for a game..'
-                                    classNames={{ inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded group-data-[focus-within=true]:!bg-titlebar group-data-[focus-visible=true]:ring-transparent group-data-[focus-visible=true]:ring-offset-transparent'] }}
+                                    classNames={{
+                                        inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded group-data-[focus-within=true]:!bg-titlebar group-data-[focus-visible=true]:ring-transparent group-data-[focus-visible=true]:ring-offset-transparent'],
+                                        input: ['!text-content'],
+                                    }}
                                     isDisabled={showInList}
                                     onChange={(e) => setSearchTerm(e.target.value)}
                                     onClear={() => setSearchTerm('')}
@@ -85,7 +88,7 @@ export default function EditListModal({ isOpen, onOpenChange, onClose, filteredG
                                     {Row}
                                 </List>
                             </ModalBody>
-                            <ModalFooter className='border-t border-border bg-footer p-3'>
+                            <ModalFooter className='border-t border-border bg-modalfooter p-3'>
                                 <Button
                                     size='sm'
                                     color='danger'
@@ -101,7 +104,7 @@ export default function EditListModal({ isOpen, onOpenChange, onClose, filteredG
                                 </Button>
                                 <Button
                                     size='sm'
-                                    className='rounded-lg font-semibold bg-dynamic text-dynamic-text'
+                                    className='rounded-lg font-semibold bg-dynamic text-content'
                                     onPress={onClose}
                                 >
                                     Done

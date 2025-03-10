@@ -18,11 +18,11 @@ export default function AchievementSettings({ settings, setSettings }) {
                             isSelected={localSettings?.achievementUnlocker?.idle || false}
                             onChange={(e) => handleCheckboxChange(e, localSettings, setLocalSettings, setSettings)}
                             classNames={{
-                                wrapper: ['after:bg-dynamic text-dynamic-text']
+                                wrapper: ['before:group-data-[selected=true]:!border-dynamic after:bg-dynamic text-content']
                             }}
                         >
                             <div className='flex items-center gap-1'>
-                                <p className='text-xs'>
+                                <p className='text-xs text-content'>
                                     Idle games while Achievement Unlocker is active
                                 </p>
                             </div>
@@ -33,11 +33,11 @@ export default function AchievementSettings({ settings, setSettings }) {
                             isSelected={localSettings?.achievementUnlocker?.hidden || false}
                             onChange={(e) => handleCheckboxChange(e, localSettings, setLocalSettings, setSettings)}
                             classNames={{
-                                wrapper: ['after:bg-dynamic text-dynamic-text']
+                                wrapper: ['before:group-data-[selected=true]:!border-dynamic after:bg-dynamic text-content']
                             }}
                         >
                             <div className='flex items-center gap-1'>
-                                <p className='text-xs'>
+                                <p className='text-xs text-content'>
                                     Skip hidden achievements
                                 </p>
                             </div>
@@ -49,11 +49,11 @@ export default function AchievementSettings({ settings, setSettings }) {
                                 isSelected={localSettings?.achievementUnlocker?.schedule || false}
                                 onChange={(e) => handleCheckboxChange(e, localSettings, setLocalSettings, setSettings)}
                                 classNames={{
-                                    wrapper: ['after:bg-dynamic text-dynamic-text']
+                                    wrapper: ['before:group-data-[selected=true]:!border-dynamic after:bg-dynamic text-content']
                                 }}
                             >
                                 <div className='flex items-center gap-1'>
-                                    <p className='text-xs'>
+                                    <p className='text-xs text-content'>
                                         Only unlock achievements between
                                     </p>
                                 </div>

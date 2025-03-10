@@ -65,11 +65,11 @@ export default function CardSettings({ settings, setSettings }) {
                     isSelected={localSettings?.cardFarming?.listGames || false}
                     onChange={(e) => handleCheckboxChange(e, localSettings, setLocalSettings, setSettings)}
                     classNames={{
-                        wrapper: ['after:bg-dynamic text-dynamic-text']
+                        wrapper: ['before:group-data-[selected=true]:!border-dynamic after:bg-dynamic text-content']
                     }}
                 >
                     <div className='flex items-center gap-1'>
-                        <p className='text-xs'>
+                        <p className='text-xs text-content'>
                             Farm cards for games in the Card Farming list
                         </p>
                     </div>
@@ -80,11 +80,11 @@ export default function CardSettings({ settings, setSettings }) {
                     isSelected={localSettings?.cardFarming?.allGames || false}
                     onChange={(e) => handleCheckboxChange(e, localSettings, setLocalSettings, setSettings)}
                     classNames={{
-                        wrapper: ['after:bg-dynamic text-dynamic-text']
+                        wrapper: ['before:group-data-[selected=true]:!border-dynamic after:bg-dynamic text-content']
                     }}
                 >
                     <div className='flex items-center gap-1'>
-                        <p className='text-xs'>
+                        <p className='text-xs text-content'>
                             Farm cards for all games with card drops remaining
                         </p>
                     </div>
@@ -103,7 +103,11 @@ export default function CardSettings({ settings, setSettings }) {
                                     labelPlacement='outside'
                                     placeholder=' '
                                     className='max-w-[300px]'
-                                    classNames={{ inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'] }}
+                                    classNames={{
+                                        inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'],
+                                        label: ['!text-content'],
+                                        input: ['!text-content']
+                                    }}
                                     value={sidValue}
                                     onChange={handleSidChange}
                                     type={'password'}
@@ -114,7 +118,11 @@ export default function CardSettings({ settings, setSettings }) {
                                     labelPlacement='outside'
                                     placeholder=' '
                                     className='max-w-[300px]'
-                                    classNames={{ inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'] }}
+                                    classNames={{
+                                        inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'],
+                                        label: ['!text-content'],
+                                        input: ['!text-content']
+                                    }}
                                     value={slsValue}
                                     onChange={handleSlsChange}
                                     type={'password'}
@@ -125,7 +133,11 @@ export default function CardSettings({ settings, setSettings }) {
                                     labelPlacement='outside'
                                     placeholder=' '
                                     className='max-w-[300px]'
-                                    classNames={{ inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'] }}
+                                    classNames={{
+                                        inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'],
+                                        label: ['!text-content'],
+                                        input: ['!text-content']
+                                    }}
                                     value={smaValue}
                                     onChange={handleSmaChange}
                                     type={'password'}
@@ -135,7 +147,7 @@ export default function CardSettings({ settings, setSettings }) {
                                 <Button
                                     size='sm'
                                     isDisabled={hasCookies || !sidValue || !slsValue}
-                                    className='font-semibold rounded-lg w-full bg-dynamic text-dynamic-text'
+                                    className='font-semibold rounded-lg w-full bg-dynamic text-content'
                                     onPress={() => handleSave(sidValue, slsValue, smaValue, setHasCookies, userSummary, setCardFarmingUser)}
                                 >
                                     Save
