@@ -2,4 +2,5 @@
 
 ## Changelog
 - Fixed an issue where the `blossom` theme was not being removed correctly
+- Fixed an error with `reset settings` and `clear data` functions
 - Add styling to `in list` toggle button

@@ -53,12 +53,11 @@ export const getUpdatedSettings = (defaultSettings, currentSettings) => ({
     }
 });
 
-export const handleResetSettings = (onClose, setSettings, setRefreshKey, updateColor) => {
+export const handleResetSettings = (onClose, setSettings, setRefreshKey) => {
     try {
         localStorage.removeItem('settings');
         localStorage.removeItem('gameSettings');
         localStorage.removeItem('steamCookies');
-        updateColor('#2c7adb');
         setSettings(null);
         setRefreshKey(prevKey => prevKey + 1);
         toast.success('[Settings] Reset to default');

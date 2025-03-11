@@ -11,9 +11,8 @@ const useClearData = () => {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
 
-    const handleClearData = (onClose, updateColor) => {
+    const handleClearData = (onClose) => {
         onClose();
-        updateColor('#2c7adb');
         handleClearLogs(false);
         preserveKeysAndClearData();
         setUserSummary(null);
