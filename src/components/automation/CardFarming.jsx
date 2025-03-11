@@ -25,8 +25,8 @@ export default function CardFarming({ activePage }) {
     useEffect(() => {
         const darkThemes = ['dark', 'midnight', 'amethyst', 'emerald', 'cherry', 'cosmic', 'mint', 'arctic', 'nightshade'];
         setImageSrc(darkThemes.includes(theme) ?
-            `https://raw.githubusercontent.com/zevnda/steam-game-idler/refs/heads/main/public/dbg.webp`
-            : `https://raw.githubusercontent.com/zevnda/steam-game-idler/refs/heads/main/public/lbg.webp`);
+            'https://raw.githubusercontent.com/zevnda/steam-game-idler/refs/heads/main/public/dbg.webp'
+            : 'https://raw.githubusercontent.com/zevnda/steam-game-idler/refs/heads/main/public/lbg.webp');
     }, [theme]);
 
     useEffect(() => {
