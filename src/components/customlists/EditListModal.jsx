@@ -69,7 +69,7 @@ export default function EditListModal({ isOpen, onOpenChange, onClose, filteredG
                                 <Button
                                     size='sm'
                                     color='default'
-                                    className='rounded-full'
+                                    className={`rounded-full text-content ${showInList ? 'bg-green-400/40' : 'bg-dynamic'}`}
                                     isDisabled={list.length === 0}
                                     startContent={<TbCheck fontSize={34} className={showInList ? 'text-green-500' : 'text-altwhite'} />}
                                     onPress={() => setShowInList(!showInList)}

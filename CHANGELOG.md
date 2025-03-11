@@ -2,3 +2,4 @@
 
 ## Changelog
 - Fixed an issue where the `blossom` theme was not being removed correctly
+- Add styling to `in list` toggle button
