@@ -13,6 +13,7 @@ export default function MyApp({ Component, pageProps }) {
                 'pastel',
                 'sunshine',
                 'seafoam',
+                'blossom',
                 'meadow',
                 'sandstone',
                 'icicle',
