@@ -36,12 +36,12 @@ export default function App({ Component, pageProps }) {
                     toastProps={{
                         radius: 'sm',
                         variant: 'flat',
-                        timeout: 3000,
+                        timeout: 300000,
                         shouldShowTimeoutProgress: true,
-                        closeIcon: (<TbX size={24} className='text-content' />),
+                        closeIcon: (<TbX size={16} className='text-content' />),
                         classNames: {
                             base: ['bg-titlebar border-border cursor-default'],
-                            description: ['text-content'],
+                            description: ['text-content text-xs'],
                             closeButton: ['opacity-100 absolute right-1 top-1 hover:bg-titlehover']
                         }
                     }}
