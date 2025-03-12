@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 
-import { invoke } from '@tauri-apps/api/tauri';
+import { invoke } from '@tauri-apps/api/core';
 import { toast } from 'react-toastify';
 import moment from 'moment';
 

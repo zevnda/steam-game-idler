@@ -4,15 +4,15 @@ import { Divider } from '@heroui/react';
 
 import { AppContext } from '@/components/layout/AppContext';
 import useHeader from '@/hooks/ui/useHeader';
-import UpdateButton from '@/components/updates/UpdateButton';
 import Notifications from '@/components/notifications/Notifications';
 import SearchBar from '@/components/ui/SearchBar';
 
 import { GoGrabber } from 'react-icons/go';
 import { TbMinus, TbSquare, TbX } from 'react-icons/tb';
+import UpdateButton from './UpdateButton';
 
 export default function Header() {
-    const { setGameQueryValue, setAchievementQueryValue, canUpdate } = useContext(AppContext);
+    const { updateAvailable, setGameQueryValue, setAchievementQueryValue } = useContext(AppContext);
     const { windowMinimize, windowToggleMaximize, windowClose } = useHeader(setGameQueryValue, setAchievementQueryValue);
 
     return (
@@ -26,7 +26,7 @@ export default function Header() {
                     <div className='flex justify-center items-center flex-grow gap-2 h-11' data-tauri-drag-region>
                         <SearchBar />
 
-                        {canUpdate && <UpdateButton />}
+                        {updateAvailable && (<UpdateButton />)}
 
                         <Notifications />
 

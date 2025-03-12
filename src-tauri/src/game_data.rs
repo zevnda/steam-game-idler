@@ -6,6 +6,7 @@ use std::fs::File;
 use std::fs::{create_dir_all, remove_file, OpenOptions};
 use std::io::Read;
 use std::io::Write;
+use tauri::Manager;
 
 const APP_FOLDER_NAME: &str = "steam-game-idler";
 
@@ -36,9 +37,9 @@ pub async fn get_games_list(
             let body: Value = response.json().await.map_err(|e| e.to_string())?;
             // Get the application data directory
             let app_data_dir = app_handle
-                .path_resolver()
+                .path()
                 .app_data_dir()
-                .ok_or("Failed to get app data directory")?;
+                .map_err(|e| e.to_string())?;
             // Create the application-specific directory
             let app_specific_dir = app_data_dir
                 .parent()
@@ -87,9 +88,9 @@ pub async fn get_recent_games(
             let body: Value = response.json().await.map_err(|e| e.to_string())?;
             // Get the application data directory
             let app_data_dir = app_handle
-                .path_resolver()
+                .path()
                 .app_data_dir()
-                .ok_or("Failed to get app data directory")?;
+                .map_err(|e| e.to_string())?;
             // Create the application-specific directory
             let app_specific_dir = app_data_dir
                 .parent()
@@ -121,9 +122,9 @@ pub async fn get_recent_games(
 pub fn get_games_list_cache(app_handle: tauri::AppHandle) -> Result<Value, String> {
     // Get the application data directory
     let app_data_dir = app_handle
-        .path_resolver()
+        .path()
         .app_data_dir()
-        .ok_or("Failed to get app data directory")?;
+        .map_err(|e| e.to_string())?;
     // Get the application-specific directory
     let app_specific_dir = app_data_dir
         .parent()
@@ -202,9 +203,9 @@ pub async fn get_free_games() -> Result<serde_json::Value, String> {
 pub fn delete_games_list_files(app_handle: tauri::AppHandle) -> Result<(), String> {
     // Get the application data directory
     let app_data_dir = app_handle
-        .path_resolver()
+        .path()
         .app_data_dir()
-        .ok_or("Failed to get app data directory")?;
+        .map_err(|e| e.to_string())?;
     // Get the application-specific directory
     let app_specific_dir = app_data_dir
         .parent()

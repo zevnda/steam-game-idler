@@ -1,4 +1,4 @@
-import { invoke } from '@tauri-apps/api/tauri';
+import { invoke } from '@tauri-apps/api/core';
 import { lockAllAchievements, logEvent, unlockAllAchievements, updateStats } from '@/utils/utils';
 import { toast } from 'react-toastify';
 import ErrorToast from '@/components/ui/ErrorToast';

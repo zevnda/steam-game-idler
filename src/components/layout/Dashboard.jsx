@@ -12,7 +12,7 @@ import GamesList from '@/components/gameslist/GamesList';
 import Settings from '@/components/settings/Settings';
 import CustomList from '@/components/customlists/CustomList';
 
-export default function Dashboard({ setInitUpdate, setUpdateManifest }) {
+export default function Dashboard() {
     const { activePage, setActivePage, showAchievements, isCardFarming, isAchievementUnlocker } = useContext(AppContext);
 
     useEffect(() => {
@@ -51,7 +51,7 @@ export default function Dashboard({ setInitUpdate, setUpdateManifest }) {
                 return (
                     <Fragment>
                         <SideBar />
-                        <Settings setInitUpdate={setInitUpdate} setUpdateManifest={setUpdateManifest} />
+                        <Settings />
                     </Fragment>
                 );
             default:

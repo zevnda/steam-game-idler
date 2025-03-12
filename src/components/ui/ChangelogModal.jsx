@@ -1,23 +1,25 @@
-import { Fragment } from 'react';
+import { Fragment, useContext } from 'react';
 
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Spinner } from '@heroui/react';
 
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 
+import { AppContext } from '../layout/AppContext';
 import { transformIssueReferences, transformLinks, transformMentions } from '@/utils/updates/changelogHandler';
-import useChangelog from '@/hooks/updates/useChangelog';
+import useChangelog from '@/hooks/ui/useChangelog';
 import styles from '@/styles/ChangelogModal.module.css';
 import ExtLink from '@/components/ui/ExtLink';
 
 import { TbStarFilled } from 'react-icons/tb';
 
-export default function ChangelogModal({ showChangelogModal, setShowChangelogModal }) {
-    const { changelog, version, handleCloseModal } = useChangelog(setShowChangelogModal);
+export default function ChangelogModal() {
+    const { showChangelog, setShowChangelog } = useContext(AppContext);
+    const { changelog, version } = useChangelog();
 
     return (
         <Fragment>
-            <Modal isOpen={showChangelogModal} hideCloseButton className='min-w-[830px] max-h-[490px] bg-modalbody text-content'>
+            <Modal isOpen={showChangelog} hideCloseButton className='min-w-[830px] max-h-[490px] bg-modalbody text-content'>
                 <ModalContent>
                     <Fragment>
                         <ModalHeader className='flex justify-between items-center w-full bg-modalheader border-b border-border' data-tauri-drag-region>
@@ -62,7 +64,7 @@ export default function ChangelogModal({ showChangelogModal, setShowChangelogMod
                                 <Button
                                     size='sm'
                                     className='font-semibold rounded-lg bg-dynamic text-content'
-                                    onPress={handleCloseModal}
+                                    onPress={() => setShowChangelog(false)}
                                 >
                                     Continue
                                 </Button>

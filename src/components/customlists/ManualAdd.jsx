@@ -10,6 +10,12 @@ export default function ManualAdd({ listName, setList }) {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const { inputValue, isLoading, setInputValue, handleAdd, handleChange } = useManualAdd(listName, setList);
 
+    const handleKeyPress = (e, onClose) => {
+        if (e.key === 'Enter') {
+            handleAdd(onClose);
+        }
+    }
+
     return (
         <React.Fragment>
             <Button
@@ -42,6 +48,7 @@ export default function ManualAdd({ listName, setList }) {
                                     value={inputValue}
                                     onChange={handleChange}
                                     onClear={() => { setInputValue(''); }}
+                                    onKeyDown={(e) => handleKeyPress(e, onClose)}
                                     autoFocus
                                 />
                             </ModalBody>

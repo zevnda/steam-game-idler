@@ -96,7 +96,7 @@ const processIndividualGames = async (gameDataArr, gamesSet, gameSettings, userS
         if (gamesSet.size >= 32) return;
 
         const timeoutPromise = new Promise((_, reject) =>
-            setTimeout(() => reject(new Error('Timeout')), TIMEOUT));
+            setTimeout(() => reject(), TIMEOUT));
 
         try {
             const dropsRemaining = await Promise.race([
@@ -164,7 +164,7 @@ export const beginFarmingCycle = async (gamesSet, isMountedRef, abortControllerR
             }
         }
     } catch (error) {
-        console.error('beginFarmingCycle', error);
+        console.error('Error in (beginFarmingCycle) - \'undefined\' can be ignored', error);
         await stopFarmIdle(appIds);
     }
 };
@@ -216,7 +216,7 @@ const removeGameFromFarmingList = (gameId) => {
 const delay = (ms, isMountedRef, abortControllerRef) => {
     return new Promise((resolve, reject) => {
         if (!isMountedRef.current) {
-            return reject(new Error('Component unmounted'));
+            return reject();
         }
 
         const checkInterval = 1000;
@@ -224,7 +224,7 @@ const delay = (ms, isMountedRef, abortControllerRef) => {
         const intervalId = setInterval(() => {
             if (!isMountedRef.current) {
                 clearInterval(intervalId);
-                reject(new Error('Component unmounted'));
+                reject();
             } else if (elapsedTime >= ms) {
                 clearInterval(intervalId);
                 resolve();
@@ -234,7 +234,7 @@ const delay = (ms, isMountedRef, abortControllerRef) => {
 
         const abortHandler = () => {
             clearInterval(intervalId);
-            reject(new Error('Operation aborted'));
+            reject();
         };
 
         const timeoutId = setTimeout(() => {

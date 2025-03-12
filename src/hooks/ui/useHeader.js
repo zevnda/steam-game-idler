@@ -1,30 +1,24 @@
-import { useState, useEffect, useContext } from 'react';
-import { isPermissionGranted, requestPermission, sendNotification } from '@tauri-apps/api/notification';
+import { useContext } from 'react';
+import { isPermissionGranted, requestPermission, sendNotification } from '@tauri-apps/plugin-notification';
 import { AppContext } from '@/components/layout/AppContext';
+import { getCurrentWindow } from '@tauri-apps/api/window';
 
 export default function useHeader(setGameQueryValue, setAchievementQueryValue) {
     const { setIsQuery } = useContext(AppContext);
-    const [appWindow, setAppWindow] = useState();
 
-    useEffect(() => {
-        async function setupAppWindow() {
-            const appWindow = (await import('@tauri-apps/api/window')).appWindow;
-            setAppWindow(appWindow);
-        }
-        setupAppWindow();
-    }, []);
+    const windowMinimize = async () => {
+        await getCurrentWindow().minimize();
 
-    const windowMinimize = () => {
-        appWindow?.minimize();
     };
 
-    const windowToggleMaximize = () => {
-        appWindow?.toggleMaximize();
+    const windowToggleMaximize = async () => {
+        await getCurrentWindow().toggleMaximize();
     };
 
     const windowClose = async () => {
+        await getCurrentWindow().hide();
+
         const minToTrayNotified = localStorage.getItem('minToTrayNotified') || 'false';
-        appWindow?.hide();
         let permissionGranted = await isPermissionGranted();
         if (minToTrayNotified !== 'true') {
             if (!permissionGranted) {

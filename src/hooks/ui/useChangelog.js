@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { getVersion } from '@tauri-apps/api/app';
 
-export default function useChangelog(setShowChangelogModal) {
+export default function useChangelog() {
     const [changelog, setChangelog] = useState('');
     const [version, setVersion] = useState('');
 
@@ -16,9 +16,5 @@ export default function useChangelog(setShowChangelogModal) {
         fetchData();
     }, []);
 
-    const handleCloseModal = () => {
-        setShowChangelogModal(false);
-    };
-
-    return { changelog, version, handleCloseModal };
+    return { changelog, version };
 }

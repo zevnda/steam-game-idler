@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 import { toast } from 'react-toastify';
-import { invoke } from '@tauri-apps/api/tauri';
+import { invoke } from '@tauri-apps/api/core';
 
 import { logEvent } from '@/utils/utils';
 

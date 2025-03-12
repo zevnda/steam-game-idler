@@ -1,45 +1,9 @@
-import { checkUpdate } from '@tauri-apps/api/updater';
-import { invoke } from '@tauri-apps/api/tauri';
+import { invoke } from '@tauri-apps/api/core';
 
 import { Time } from '@internationalized/date';
 import { toast } from 'react-toastify';
 
-import { fetchFreeGames, fetchLatest, logEvent, preserveKeysAndClearData, sendNativeNotification, startIdle } from '@/utils/utils';
-
-// Check for updates and handle the Tauri update process
-export const checkForUpdates = async (setUpdateManifest, setCanUpdate, setInitUpdate) => {
-    try {
-        const { shouldUpdate, manifest } = await checkUpdate();
-        const latest = await fetchLatest();
-        if (shouldUpdate) {
-            setUpdateManifest(manifest);
-            if (latest?.major) {
-                preserveKeysAndClearData();
-                return setInitUpdate(true);
-            }
-            setCanUpdate(true);
-        }
-    } catch (error) {
-        toast.error(`Error in (checkForUpdates): ${error?.message || error}`);
-        console.error('Error in (checkForUpdates):', error);
-        logEvent(`[Error] in (checkForUpdates): ${error}`);
-    }
-};
-
-// Show changelog modal if SGI was updated
-export const changelogModal = (setShowChangelogModal) => {
-    try {
-        const hasUpdated = localStorage.getItem('hasUpdated');
-        if (hasUpdated === 'true') {
-            setShowChangelogModal(true);
-            localStorage.setItem('hasUpdated', false);
-        }
-    } catch (error) {
-        toast.error(`Error in (changelogModal): ${error?.message || error}`);
-        console.error('Error in (changelogModal):', error);
-        logEvent(`[Error] in (changelogModal): ${error}`);
-    }
-};
+import { fetchFreeGames, logEvent, sendNativeNotification, startIdle } from '@/utils/utils';
 
 // Set default settings and updates user summary
 export const defaultSettings = (setUserSummary) => {
