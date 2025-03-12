@@ -5,14 +5,14 @@ import Image from 'next/image';
 import { Spinner } from '@heroui/react';
 import { motion } from 'framer-motion';
 
-import { AppContext } from '@/components/layout/AppContext';
+import { NavigationContext } from '@/components/contexts/NavigationContext';
 import Header from '@/components/ui/Header';
 import ExtLink from '@/components/ui/ExtLink';
 import useSetup from '@/hooks/layout/useSetup';
 
 export default function Setup() {
     const { theme } = useTheme();
-    const { setActivePage } = useContext(AppContext);
+    const { setActivePage } = useContext(NavigationContext);
     const { isLoading, handleLogin, steamUsers } = useSetup();
     const [imageSrc, setImageSrc] = useState('');
 

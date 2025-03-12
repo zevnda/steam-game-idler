@@ -1,7 +1,7 @@
 import { invoke } from '@tauri-apps/api/core';
 import { logEvent } from '@/utils/utils';
 import { useContext } from 'react';
-import { AppContext } from '@/components/layout/AppContext';
+import { AppContext } from '@/components/contexts/AppContext';
 import ErrorToast from '@/components/ui/ErrorToast';
 import { addToast } from '@heroui/react';
 

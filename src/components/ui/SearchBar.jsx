@@ -2,22 +2,19 @@ import { Fragment, useContext } from 'react';
 
 import { Input } from '@heroui/react';
 
-import { AppContext } from '@/components/layout/AppContext';
+import { AppContext } from '@/components/contexts/AppContext';
+import { SearchContext } from '@/components/contexts/SearchContext';
+import { NavigationContext } from '@/components/contexts/NavigationContext';
+import { UserContext } from '@/components/contexts/UserContext';
 import useHeader from '@/hooks/ui/useHeader';
 
 import { RiSearchLine } from 'react-icons/ri';
 
 export default function SearchBar() {
-    const {
-        activePage,
-        showAchievements,
-        gameQueryValue,
-        setGameQueryValue,
-        achievementQueryValue,
-        setAchievementQueryValue,
-        achievementsUnavailable,
-        currentTab
-    } = useContext(AppContext);
+    const { showAchievements } = useContext(AppContext);
+    const { gameQueryValue, setGameQueryValue, achievementQueryValue, setAchievementQueryValue } = useContext(SearchContext);
+    const { activePage, currentTab } = useContext(NavigationContext);
+    const { achievementsUnavailable } = useContext(UserContext);
 
     const { handleGameQueryChange, handleAchievementQueryChange, handleKeyDown } = useHeader(setGameQueryValue, setAchievementQueryValue);
 
@@ -50,7 +47,10 @@ export default function SearchBar() {
                         placeholder='Search for an achievement'
                         startContent={<RiSearchLine />}
                         className='max-w-[300px]'
-                        classNames={{ inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'] }}
+                        classNames={{
+                            inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'],
+                            input: ['!text-content']
+                        }}
                         value={achievementQueryValue}
                         onChange={handleAchievementQueryChange}
                         onClear={() => setAchievementQueryValue('')}

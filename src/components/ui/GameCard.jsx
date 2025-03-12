@@ -2,7 +2,7 @@ import { Fragment, useContext, useEffect, useState } from 'react';
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
 
-import { AppContext } from '@/components/layout/AppContext';
+import { AppContext } from '@/components/contexts/AppContext';
 import { handleIdle, viewAchievments, viewGameSettings, viewStorePage } from '@/utils/gameslist/gameCardHandler';
 import CardMenu from '@/components/gameslist/CardMenu';
 

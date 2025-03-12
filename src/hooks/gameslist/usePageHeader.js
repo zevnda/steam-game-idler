@@ -3,12 +3,12 @@ import { useState, useEffect, useContext } from 'react';
 import { invoke } from '@tauri-apps/api/core';
 import moment from 'moment';
 
-import { AppContext } from '@/components/layout/AppContext';
+import { UserContext } from '@/components/contexts/UserContext';
 import { logEvent } from '@/utils/utils';
 import { addToast } from '@heroui/react';
 
 export const usePageHeader = ({ setSortStyle, setRefreshKey }) => {
-    const { userSummary } = useContext(AppContext);
+    const { userSummary } = useContext(UserContext);
     const [sortStyle, setSortStyleState] = useState(localStorage.getItem('sortStyle') || 'a-z');
 
     useEffect(() => {

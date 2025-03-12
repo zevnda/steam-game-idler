@@ -5,7 +5,7 @@ import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Spinn
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 
-import { AppContext } from '../layout/AppContext';
+import { AppContext } from '../contexts/AppContext';
 import { transformIssueReferences, transformLinks, transformMentions } from '@/utils/updates/changelogHandler';
 import useChangelog from '@/hooks/ui/useChangelog';
 import styles from '@/styles/ChangelogModal.module.css';

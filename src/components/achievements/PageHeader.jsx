@@ -1,7 +1,7 @@
 import { Fragment, useContext, useState, useEffect } from 'react';
 import { Alert, Button, Tooltip } from '@heroui/react';
 
-import { AppContext } from '@/components/layout/AppContext';
+import { AppContext } from '@/components/contexts/AppContext';
 import usePageHeader from '@/hooks/achievements/usePageHeader';
 import ExtLink from '@/components/ui/ExtLink';
 

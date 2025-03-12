@@ -1,13 +1,13 @@
 import { Fragment, useContext } from 'react';
 import Image from 'next/image';
 
-import { AppContext } from '@/components/layout/AppContext';
+import { UserContext } from '@/components/contexts/UserContext';
 import ExtLink from '@/components/ui/ExtLink';
 
 import { FaSteam } from 'react-icons/fa';
 
 export default function FreeGamesList() {
-    const { freeGamesList } = useContext(AppContext);
+    const { freeGamesList } = useContext(UserContext);
 
     return (
         <Fragment>

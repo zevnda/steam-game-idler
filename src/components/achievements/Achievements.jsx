@@ -1,7 +1,7 @@
 import { Fragment, useContext } from 'react';
 import { Tab, Tabs } from '@heroui/react';
 
-import { AppContext } from '@/components/layout/AppContext';
+import { NavigationContext } from '@/components/contexts/NavigationContext';
 import Loader from '@/components/ui/Loader';
 import TabButtons from '@/components/achievements/TabButtons';
 import AchievementsList from '@/components/achievements/AchievementsList';
@@ -10,7 +10,7 @@ import PageHeader from '@/components/achievements/PageHeader';
 import useAchievements from '@/hooks/achievements/useAchievements';
 
 export default function Achievements() {
-    const { setCurrentTab } = useContext(AppContext);
+    const { setCurrentTab } = useContext(NavigationContext);
     const {
         isLoading,
         setIsSorted,

@@ -1,20 +1,15 @@
 import { useContext, useEffect, useState, useMemo } from 'react';
 
-import { AppContext } from '@/components/layout/AppContext';
+import { AppContext } from '@/components/contexts/AppContext';
+import { SearchContext } from '@/components/contexts/SearchContext';
+import { UserContext } from '@/components/contexts/UserContext';
 import { fetchAchievementData, sortAchievements, filterAchievements } from '@/utils/achievements/achievementsHandler';
 import { addToast } from '@heroui/react';
 
 export default function useAchievements() {
-    const {
-        userSummary,
-        appId,
-        achievementQueryValue,
-        achievementList,
-        setAchievementList,
-        setStatisticsList,
-        setAchievementsUnavailable,
-        setStatisticsUnavailable
-    } = useContext(AppContext);
+    const { appId } = useContext(AppContext);
+    const { achievementQueryValue } = useContext(SearchContext);
+    const { userSummary, achievementList, setAchievementList, setStatisticsList, setAchievementsUnavailable, setStatisticsUnavailable } = useContext(UserContext);
     const [isLoading, setIsLoading] = useState(true);
     const [isSorted, setIsSorted] = useState(false);
     const [originalAchievementList, setOriginalAchievementList] = useState([]);

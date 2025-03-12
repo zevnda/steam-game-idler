@@ -2,11 +2,11 @@ import { Fragment, useContext } from 'react';
 
 import { Button } from '@heroui/react';
 
-import { AppContext } from '@/components/layout/AppContext';
+import { UserContext } from '@/components/contexts/UserContext';
 import ExtLink from '@/components/ui/ExtLink';
 
 export default function Private({ setRefreshKey }) {
-    const { userSummary } = useContext(AppContext);
+    const { userSummary } = useContext(UserContext);
 
     const handleRefresh = () => {
         setRefreshKey(prevKey => prevKey + 1);

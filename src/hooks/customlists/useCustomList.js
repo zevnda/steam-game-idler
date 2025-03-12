@@ -1,8 +1,10 @@
 import { useContext, useState, useRef, useEffect } from 'react';
-import { AppContext } from '@/components/layout/AppContext';
+import { AppContext } from '@/components/contexts/AppContext';
+import { UserContext } from '@/components/contexts/UserContext';
 
 export default function useCustomList(listName) {
-    const { gameList, isAchievementUnlocker, isCardFarming } = useContext(AppContext);
+    const { isAchievementUnlocker, isCardFarming } = useContext(AppContext);
+    const { gameList } = useContext(UserContext);
     const [list, setList] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [showInList, setShowInList] = useState(false);

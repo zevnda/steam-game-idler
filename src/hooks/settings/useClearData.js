@@ -2,14 +2,13 @@ import { useContext } from 'react';
 
 import { useDisclosure } from '@heroui/react';
 
-import { AppContext } from '@/components/layout/AppContext';
+import { UserContext } from '@/components/contexts/UserContext';
 import { logEvent, preserveKeysAndClearData } from '@/utils/utils';
 import { handleClearLogs } from '@/utils/settings/logsHandler';
 
 const useClearData = () => {
-    const { setUserSummary } = useContext(AppContext);
+    const { setUserSummary } = useContext(UserContext);
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
-
 
     const handleClearData = (onClose) => {
         onClose();

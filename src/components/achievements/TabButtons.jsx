@@ -2,26 +2,23 @@ import { Fragment, useContext, useState } from 'react';
 
 import { Modal, ModalContent, ModalBody, Button, useDisclosure, ModalFooter, ModalHeader, Select, SelectItem } from '@heroui/react';
 
+import { AppContext } from '@/components/contexts/AppContext';
+import { SearchContext } from '@/components/contexts/SearchContext';
+import { NavigationContext } from '@/components/contexts/NavigationContext';
+import { UserContext } from '@/components/contexts/UserContext';
 import { handleUnlockAll, handleLockAll, handleUpdateAllStats, handleResetAll } from '@/utils/achievements/tabButtonsHandler';
 import { sortOptions, handleChange } from '@/utils/achievements/pageHeaderHandler';
-import { AppContext } from '@/components/layout/AppContext';
 
 import { TbSortDescending2 } from 'react-icons/tb';
 
 export default function TabButtons({ initialStatValues, newStatValues, setNewStatValues, setIsSorted, userGameAchievementsMap, percentageMap }) {
+    const { appId, appName } = useContext(AppContext);
+    const { achievementQueryValue } = useContext(SearchContext);
+    const { achievementList, setAchievementList, achievementsUnavailable, statisticsUnavailable } = useContext(UserContext);
+    const { currentTab } = useContext(NavigationContext);
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const [state, setState] = useState('');
     const [type, setType] = useState('');
-    const {
-        appId,
-        appName,
-        achievementQueryValue,
-        achievementList,
-        setAchievementList,
-        achievementsUnavailable,
-        statisticsUnavailable,
-        currentTab
-    } = useContext(AppContext);
 
     const handleSetState = (state, type) => {
         setState(state);
