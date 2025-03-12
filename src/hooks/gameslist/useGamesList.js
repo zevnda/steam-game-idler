@@ -1,10 +1,9 @@
 import { useEffect, useState, useRef, useContext } from 'react';
 
-import { toast } from 'react-toastify';
-
 import { AppContext } from '@/components/layout/AppContext';
 import { fetchGamesList, sortAndFilterGames } from '@/utils/gameslist/gamesListHandler';
 import { logEvent } from '@/utils/utils';
+import { addToast } from '@heroui/react';
 
 export default function useGamesList() {
     const { userSummary, gameList, setGameList, isQuery, gameQueryValue, setGameQueryValue } = useContext(AppContext);
@@ -33,7 +32,7 @@ export default function useGamesList() {
                 previousRefreshKeyRef.current = refreshKey;
             } catch (error) {
                 setIsLoading(false);
-                toast.error(`Error in (getGamesList): ${error?.message || error}`);
+                addToast({ description: `Error in (getGamesList): ${error?.message || error}`, color: 'danger' });
                 console.error('Error in (getGamesList):', error);
                 logEvent(`[Error] in (getGamesList): ${error}`);
             }
@@ -69,7 +68,7 @@ export default function useGamesList() {
                     }
                 }
             } catch (error) {
-                toast.error(`Error in (handleScroll): ${error?.message || error}`);
+                addToast({ description: `Error in (handleScroll): ${error?.message || error}`, color: 'danger' });
                 console.error('Error in (handleScroll):', error);
                 logEvent(`[Error] in (handleScroll): ${error}`);
             }

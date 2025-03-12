@@ -1,7 +1,7 @@
 import { invoke } from '@tauri-apps/api/core';
 import { lockAllAchievements, logEvent, unlockAllAchievements, updateStats } from '@/utils/utils';
-import { toast } from 'react-toastify';
 import ErrorToast from '@/components/ui/ErrorToast';
+import { addToast } from '@heroui/react';
 
 // Handle unlocking all achievements
 export const handleUnlockAll = async (appId, appName, achievementList, onClose) => {
@@ -11,29 +11,31 @@ export const handleUnlockAll = async (appId, appName, achievementList, onClose) 
         const steamRunning = await invoke('check_status');
         if (!steamRunning) {
             onClose();
-            return toast.error(
-                <ErrorToast
+            return addToast({
+                description: <ErrorToast
                     message={'Steam is not running'}
                     href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Steam%20is%20not%20running'}
-                />
-            );
+                />,
+                color: 'danger'
+            });
         }
 
         const achievementsArr = achievementList.map(achievement => achievement.name);
         const success = await unlockAllAchievements(appId, achievementsArr, appName);
 
         if (success) {
-            toast.success(`Successfully unlocked ${achievementList.length} achievements for ${appName}`);
+            addToast({ description: `Successfully unlocked ${achievementList.length} achievements for ${appName}`, color: 'success' });
         } else {
-            toast.error(
-                <ErrorToast
+            addToast({
+                description: <ErrorToast
                     message={'Are you logged in to the correct account?'}
                     href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Are%20you%20logged%20in%20to%20the%20correct%20account%3F'}
-                />
-            );
+                />,
+                color: 'danger'
+            });
         }
     } catch (error) {
-        toast.error(`Error in (handleUnlockAll): ${error?.message || error}`);
+        addToast({ description: `Error in (handleUnlockAll): ${error?.message || error}`, color: 'danger' });
         console.error('Error in handleUnlockAll:', error);
         logEvent(`[Error] in (handleUnlockAll): ${error}`);
     }
@@ -47,28 +49,30 @@ export const handleLockAll = async (appId, appName, achievementList, onClose) =>
         const steamRunning = await invoke('check_status');
         if (!steamRunning) {
             onClose();
-            return toast.error(
-                <ErrorToast
+            return addToast({
+                description: <ErrorToast
                     message={'Steam is not running'}
                     href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Steam%20is%20not%20running'}
-                />
-            );
+                />,
+                color: 'danger'
+            });
         }
 
         const success = await lockAllAchievements(appId, achievementList, appName);
 
         if (success) {
-            toast.success(`Successfully locked ${achievementList.length} achievements for ${appName}`);
+            addToast({ description: `Successfully locked ${achievementList.length} achievements for ${appName}`, color: 'success' });
         } else {
-            toast.error(
-                <ErrorToast
+            addToast({
+                description: <ErrorToast
                     message={'Are you logged in to the correct account?'}
                     href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Are%20you%20logged%20in%20to%20the%20correct%20account%3F'}
-                />
-            );
+                />,
+                color: 'danger'
+            });
         }
     } catch (error) {
-        toast.error(`Error in (handleLockAll): ${error?.message || error}`);
+        addToast({ description: `Error in (handleLockAll): ${error?.message || error}`, color: 'danger' });
         console.error('Error in handleLockAll:', error);
         logEvent(`[Error] in handleLockAll: ${error}`);
     }
@@ -82,31 +86,33 @@ export const handleUpdateAllStats = async (appId, appName, initialStatValues, ne
         .map(([key, value]) => ({ name: key, value: value }));
 
     if (changedValues.length === 0) {
-        return toast.info('No changes to save.');
+        return addToast({ description: 'No changes to save.', color: 'info' });
     }
 
     // Check if Steam is running
     const steamRunning = await invoke('check_status');
     if (!steamRunning) {
-        return toast.error(
-            <ErrorToast
+        return addToast({
+            description: <ErrorToast
                 message={'Steam is not running'}
                 href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Steam%20is%20not%20running'}
-            />
-        );
+            />,
+            color: 'danger'
+        });
     }
 
     const success = await updateStats(appId, changedValues, appName);
 
     if (success) {
-        toast.success(`Successfully updated ${changedValues.length} stats for ${appName}`);
+        addToast({ description: `Successfully updated ${changedValues.length} stats for ${appName}`, color: 'success' });
     } else {
-        toast.error(
-            <ErrorToast
+        addToast({
+            description: <ErrorToast
                 message={'Are you logged in to the correct account?'}
                 href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Are%20you%20logged%20in%20to%20the%20correct%20account%3F'}
-            />
-        );
+            />,
+            color: 'danger'
+        });
     }
 };
 
@@ -117,12 +123,13 @@ export const handleResetAll = async (appId, appName, setNewStatValues, onClose) 
     // Check if Steam is running
     const steamRunning = await invoke('check_status');
     if (!steamRunning) {
-        return toast.error(
-            <ErrorToast
+        return addToast({
+            description: <ErrorToast
                 message={'Steam is not running'}
                 href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Steam%20is%20not%20running'}
-            />
-        );
+            />,
+            color: 'danger'
+        });
     }
 
     const response = await invoke('reset_all_stats', { appId: appId });
@@ -135,14 +142,14 @@ export const handleResetAll = async (appId, appName, setNewStatValues, onClose) 
             }
             return resetValues;
         });
-        toast.success(`Successfully reset all stats for ${appName}`);
+        addToast({ description: `Successfully reset all stats for ${appName}`, color: 'success' });
     } else {
-        toast.error(
-            <ErrorToast
+        addToast({
+            description: <ErrorToast
                 message={'Are you logged in to the correct account?'}
                 href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Are%20you%20logged%20in%20to%20the%20correct%20account%3F'}
             />,
-            { autoClose: 5000 }
-        );
+            color: 'danger'
+        });
     }
 };

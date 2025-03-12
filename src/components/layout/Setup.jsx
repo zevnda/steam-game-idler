@@ -10,8 +10,6 @@ import Header from '@/components/ui/Header';
 import ExtLink from '@/components/ui/ExtLink';
 import useSetup from '@/hooks/layout/useSetup';
 
-import 'react-toastify/dist/ReactToastify.css';
-
 export default function Setup() {
     const { theme } = useTheme();
     const { setActivePage } = useContext(AppContext);

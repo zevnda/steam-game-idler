@@ -1,9 +1,9 @@
 import { invoke } from '@tauri-apps/api/core';
 
 import { Time } from '@internationalized/date';
-import { toast } from 'react-toastify';
 
 import { fetchFreeGames, logEvent, sendNativeNotification, startIdle } from '@/utils/utils';
+import { addToast } from '@heroui/react';
 
 // Set default settings and updates user summary
 export const defaultSettings = (setUserSummary) => {
@@ -36,7 +36,7 @@ export const defaultSettings = (setUserSummary) => {
             currentSettings = JSON.parse(localStorage.getItem('settings'));
         }
     } catch (error) {
-        toast.error(`Error creating default settings: ${error?.message || error}`);
+        addToast({ description: `Error creating default settings: ${error?.message || error}`, color: 'danger' });
         console.error('Error creating default settings:', error);
         logEvent(`[Error] creating default settings: ${error}`);
     }
@@ -66,7 +66,7 @@ export const checkForFreeGames = async (setFreeGamesList, setShowFreeGamesTab) =
             setShowFreeGamesTab(false);
         }
     } catch (error) {
-        toast.error(`Error in (checkForFreeGames): ${error?.message || error}`);
+        addToast({ description: `Error in (checkForFreeGames): ${error?.message || error}`, color: 'danger' });
         console.error('Error in (checkForFreeGames):', error);
         logEvent(`[Error] in (checkForFreeGames): ${error}`);
     }
@@ -85,7 +85,7 @@ export const startAutoIdleGames = async () => {
             }
         }
     } catch (error) {
-        toast.error(`Error in (startAutoIdleGames): ${error?.message || error}`);
+        addToast({ description: `Error in (startAutoIdleGames): ${error?.message || error}`, color: 'danger' });
         console.error('Error in (startAutoIdleGames):', error);
         logEvent(`[Error] in (startAutoIdleGames): ${error}`);
     }

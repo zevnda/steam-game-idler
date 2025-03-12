@@ -1,8 +1,7 @@
 import { useContext } from 'react';
-import { useDisclosure } from '@heroui/react';
+import { addToast, useDisclosure } from '@heroui/react';
 
 import { invoke } from '@tauri-apps/api/core';
-import { toast } from 'react-toastify';
 
 import { AppContext } from '@/components/layout/AppContext';
 import { logEvent } from '@/utils/utils';
@@ -25,7 +24,7 @@ export default function useSideBar(activePage, setActivePage) {
             clearLocalStorageData(clearData);
             logEvent(`[System] Logged out of ${userSummary.personaName}`);
         } catch (error) {
-            toast.error(`Error in (handleLogout): ${error?.message || error}`);
+            addToast({ description: `Error in (handleLogout): ${error?.message || error}`, color: 'danger' });
             console.error('Error in (handleLogout):', error);
             logEvent(`[Error] in (handleLogout): ${error}`);
         }

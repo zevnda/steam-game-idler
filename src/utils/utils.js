@@ -1,11 +1,11 @@
 import { Time } from '@internationalized/date';
-import { toast } from 'react-toastify';
 
 import { isPermissionGranted, requestPermission, sendNotification } from '@tauri-apps/plugin-notification';
 import { invoke } from '@tauri-apps/api/core';
 import { getVersion } from '@tauri-apps/api/app';
 
 import ErrorToast from '@/components/ui/ErrorToast';
+import { addToast } from '@heroui/react';
 
 const idleTimeouts = {};
 const idleIntervals = {};
@@ -25,7 +25,7 @@ export async function startIdle(appId, appName, quiet = false, manual = true) {
             // Make sure the idler is not already running
             const notRunningIds = await invoke('check_process_by_game_id', { ids: [appId.toString()] });
             if (!notRunningIds.includes(appId.toString())) {
-                return toast.error(`${appName} (${appId}) is already being idled`);
+                return addToast({ description: `${appName} (${appId}) is already being idled`, color: 'info' });
             }
 
             const response = await invoke('start_idle', {
@@ -60,23 +60,24 @@ export async function startIdle(appId, appName, quiet = false, manual = true) {
                 return true;
             } else {
                 console.error(`Error starting idler for ${appName} (${appId}): ${status.error}`);
-                toast.error(
-                    <ErrorToast
+                addToast({
+                    description: <ErrorToast
                         message={'Are you logged in to the correct account?'}
                         href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Are%20you%20logged%20in%20to%20the%20correct%20account%3F'}
                     />,
-                    { autoClose: 5000 }
-                );
+                    color: 'danger'
+                });
                 logEvent(`[Error] [Idle] Failed to idle ${appName} (${appId}) - account mismatch`);
             }
         } else {
             console.error('Steam is not running');
-            toast.error(
-                <ErrorToast
+            addToast({
+                description: <ErrorToast
                     message={'Steam is not running'}
                     href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Steam%20is%20not%20running'}
-                />
-            );
+                />,
+                color: 'danger'
+            });
         }
     } catch (error) {
         console.error('Error in startIdle util: ', error);
@@ -112,12 +113,13 @@ export async function startFarmIdle(appIds) {
             logEvent(`[Card Farming] Started idling ${appIds.length} games`);
         } else {
             console.error('Steam is not running');
-            toast.error(
-                <ErrorToast
+            addToast({
+                description: <ErrorToast
                     message={'Steam is not running'}
                     href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Steam%20is%20not%20running'}
-                />
-            );
+                />,
+                color: 'danger'
+            });
         }
     } catch (error) {
         console.error('Error in startFarmIdle util: ', error);
@@ -185,10 +187,10 @@ export async function toggleAchievement(appId, achievementName, appName, type) {
         });
         const status = JSON.parse(response);
         if (status.success) {
-            toast.success(`${type} ${achievementName} for ${appName}`);
+            addToast({ description: `${type} ${achievementName} for ${appName}`, color: 'success' });
             logEvent(`[Achievement Manager] ${type} ${achievementName} for ${appName} (${appId})`);
         } else {
-            toast.error(`Failed to ${type.replace('ed', '').toLowerCase()} ${achievementName} for ${appName}`);
+            addToast({ description: `Failed to ${type.replace('ed', '').toLowerCase()} ${achievementName} for ${appName}`, color: 'danger' });
             logEvent(`[Error] [Achievement Manager] Failed to ${type.replace('ed', '').toLowerCase()} ${achievementName} for ${appName} (${appId})`);
         }
     } catch (error) {

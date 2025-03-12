@@ -1,6 +1,6 @@
 import { Fragment, useContext } from 'react';
 
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@heroui/react';
+import { addToast, Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@heroui/react';
 
 import { check } from '@tauri-apps/plugin-updater';
 import { relaunch } from '@tauri-apps/plugin-process';
@@ -10,7 +10,6 @@ import ExtLink from '@/components/ui/ExtLink';
 import { AppContext } from '@/components/layout/AppContext';
 
 import { TbDotsVertical } from 'react-icons/tb';
-import { toast } from 'react-toastify';
 
 export default function SettingsMenu() {
     const { setShowChangelog } = useContext(AppContext);
@@ -23,7 +22,7 @@ export default function SettingsMenu() {
                 await update.downloadAndInstall();
                 await relaunch();
             } else {
-                toast.info('No updates available!');
+                addToast({ description: 'No updates available', color: 'primary' });
             }
         } catch (error) {
             console.error('Error in (handleUpdate):', error);
