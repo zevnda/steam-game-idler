@@ -1,5 +1,5 @@
 import { Fragment } from 'react';
-import ExtLink from '@/src/components/ui/ExtLink';
+import ExtLink from '@/components/ui/ExtLink';
 
 export default function ErrorToast({ message, href }) {
     return (

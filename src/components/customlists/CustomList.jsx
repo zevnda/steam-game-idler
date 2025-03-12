@@ -5,11 +5,11 @@ import { DndContext } from '@dnd-kit/core';
 import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
-import { useAutomate } from '@/src/hooks/automation/useAutomateButtons';
-import useCustomList from '@/src/hooks/customlists/useCustomList';
-import GameCard from '@/src/components/ui/GameCard';
-import GameSettings from '@/src/components/gameslist/GameSettings';
-import EditListModal from '@/src/components/customlists/EditListModal';
+import { useAutomate } from '@/hooks/automation/useAutomateButtons';
+import useCustomList from '@/hooks/customlists/useCustomList';
+import GameCard from '@/components/ui/GameCard';
+import GameSettings from '@/components/gameslist/GameSettings';
+import EditListModal from '@/components/customlists/EditListModal';
 
 import { TbAward, TbCards, TbEdit } from 'react-icons/tb';
 import ManualAdd from './ManualAdd';

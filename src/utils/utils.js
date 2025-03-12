@@ -5,7 +5,7 @@ import { isPermissionGranted, requestPermission, sendNotification } from '@tauri
 import { invoke } from '@tauri-apps/api/tauri';
 import { getVersion } from '@tauri-apps/api/app';
 
-import ErrorToast from '@/src/components/ui/ErrorToast';
+import ErrorToast from '@/components/ui/ErrorToast';
 
 const idleTimeouts = {};
 const idleIntervals = {};

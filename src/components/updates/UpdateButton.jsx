@@ -1,7 +1,7 @@
 import { Divider, Tooltip } from '@heroui/react';
 import { Fragment, useContext } from 'react';
 
-import { AppContext } from '@/src/components/layout/AppContext';
+import { AppContext } from '@/components/layout/AppContext';
 
 import { TbDownload } from 'react-icons/tb';
 

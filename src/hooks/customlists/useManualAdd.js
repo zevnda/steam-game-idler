@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { invoke } from '@tauri-apps/api/tauri';
-import { logEvent } from '@/src/utils/utils';
+import { logEvent } from '@/utils/utils';
 
 export default function useManualAdd(listName, setList) {
     const [inputValue, setInputValue] = useState('');

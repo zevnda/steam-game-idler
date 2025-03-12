@@ -4,10 +4,10 @@ import Image from 'next/image';
 
 import { Button } from '@heroui/react';
 
-import { AppContext } from '@/src/components/layout/AppContext';
-import { useAchievementUnlocker } from '@/src/hooks/automation/useAchievementUnlocker';
-import { stopIdle } from '@/src/utils/utils';
-import ExtLink from '@/src/components/ui/ExtLink';
+import { AppContext } from '@/components/layout/AppContext';
+import { useAchievementUnlocker } from '@/hooks/automation/useAchievementUnlocker';
+import { stopIdle } from '@/utils/utils';
+import ExtLink from '@/components/ui/ExtLink';
 
 import { TbCheck } from 'react-icons/tb';
 
@@ -56,14 +56,16 @@ export default function AchievementUnlocker({ activePage }) {
         <Fragment>
             <div className={`${activePage !== 'customlists/achievement-unlocker' && 'hidden'} absolute top-12 left-14 bg-base z-50 rounded-tl-xl border-t border-l border-border`}>
                 <div className='relative flex justify-evenly items-center flex-col p-4 w-calc h-calc'>
-                    <Image
-                        src={imageSrc}
-                        className='absolute top-0 left-0 w-full h-full object-cover rounded-tl-xl'
-                        alt='background'
-                        width={1920}
-                        height={1080}
-                        priority
-                    />
+                    {imageSrc && (
+                        <Image
+                            src={imageSrc}
+                            className='absolute top-0 left-0 w-full h-full object-cover rounded-tl-xl'
+                            alt='background'
+                            width={1920}
+                            height={1080}
+                            priority
+                        />
+                    )}
                     <div className='absolute bg-base/10 backdrop-blur-[10px] w-full h-full rounded-tl-xl'></div>
 
                     <div className='flex items-center flex-col gap-6 z-10 backdrop-blur-md bg-base/20 p-8 border border-border/40 rounded-lg'>

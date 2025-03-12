@@ -1,8 +1,8 @@
 import { invoke } from '@tauri-apps/api/tauri';
 import { toast } from 'react-toastify';
 
-import { logEvent } from '@/src/utils/utils';
-import ErrorToast from '@/src/components/ui/ErrorToast';
+import { logEvent } from '@/utils/utils';
+import ErrorToast from '@/components/ui/ErrorToast';
 
 const fetchUserSummary = async (steamId, apiKey) => {
     const res = await invoke('get_user_summary', { steamId, apiKey });

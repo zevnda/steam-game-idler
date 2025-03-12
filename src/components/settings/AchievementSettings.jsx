@@ -2,8 +2,8 @@ import { Fragment } from 'react';
 
 import { Checkbox, Slider, TimeInput } from '@heroui/react';
 
-import { handleCheckboxChange, handleSliderChange, handleScheduleChange, updateLabel } from '@/src/utils/settings/achievementSettingsHandler';
-import useAchievementSettings from '@/src/hooks/settings/useAchievementSettings';
+import { handleCheckboxChange, handleSliderChange, handleScheduleChange, updateLabel } from '@/utils/settings/achievementSettingsHandler';
+import useAchievementSettings from '@/hooks/settings/useAchievementSettings';
 
 export default function AchievementSettings({ settings, setSettings }) {
     const { labelInterval, localSettings, setLocalSettings, setLabelInterval } = useAchievementSettings(settings);

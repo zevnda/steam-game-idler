@@ -2,9 +2,9 @@ import { Fragment, useContext } from 'react';
 
 import { Modal, ModalContent, ModalBody, Button, ModalFooter, ModalHeader } from '@heroui/react';
 
-import { AppContext } from '@/src/components/layout/AppContext';
-import useSideBar from '@/src/hooks/ui/useSideBar';
-import Sparkles from '@/src/components/ui/Sparkles';
+import { AppContext } from '@/components/layout/AppContext';
+import useSideBar from '@/hooks/ui/useSideBar';
+import Sparkles from '@/components/ui/Sparkles';
 
 import { TbAward, TbCards, TbDeviceGamepad2, TbGift, TbHeart, TbHourglassLow, TbSettings } from 'react-icons/tb';
 import { FiLogOut } from 'react-icons/fi';

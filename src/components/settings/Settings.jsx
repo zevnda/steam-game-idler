@@ -3,14 +3,14 @@ import { Fragment, useEffect, useState } from 'react';
 import { Tab, Tabs } from '@heroui/react';
 import { toast } from 'react-toastify';
 
-import { getAppVersion, getDefaultSettings, getUpdatedSettings } from '@/src/utils/settings/settingsHandler';
-import AchievementSettings from '@/src/components/settings/AchievementSettings';
-import GeneralSettings from '@/src/components/settings/GeneralSettings';
-import ResetSettings from '@/src/components/settings/ResetSettings';
-import CardSettings from '@/src/components/settings/CardSettings';
-import SettingsMenu from '@/src/components/settings/SettingsMenu';
-import Logs from '@/src/components/settings/Logs';
-import ClearData from '@/src/components/settings/ClearData';
+import { getAppVersion, getDefaultSettings, getUpdatedSettings } from '@/utils/settings/settingsHandler';
+import AchievementSettings from '@/components/settings/AchievementSettings';
+import GeneralSettings from '@/components/settings/GeneralSettings';
+import ResetSettings from '@/components/settings/ResetSettings';
+import CardSettings from '@/components/settings/CardSettings';
+import SettingsMenu from '@/components/settings/SettingsMenu';
+import Logs from '@/components/settings/Logs';
+import ClearData from '@/components/settings/ClearData';
 import ExportSettings from './ExportSettings';
 
 export default function Settings({ setInitUpdate, setUpdateManifest }) {

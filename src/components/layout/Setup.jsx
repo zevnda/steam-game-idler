@@ -5,10 +5,10 @@ import Image from 'next/image';
 import { Spinner } from '@heroui/react';
 import { motion } from 'framer-motion';
 
-import { AppContext } from '@/src/components/layout/AppContext';
-import Header from '@/src/components/ui/Header';
-import ExtLink from '@/src/components/ui/ExtLink';
-import useSetup from '@/src/hooks/layout/useSetup';
+import { AppContext } from '@/components/layout/AppContext';
+import Header from '@/components/ui/Header';
+import ExtLink from '@/components/ui/ExtLink';
+import useSetup from '@/hooks/layout/useSetup';
 
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -33,14 +33,16 @@ export default function Setup() {
         <Fragment>
             <Header />
             <div className='relative w-full bg-base border-t border-border/40'>
-                <Image
-                    src={imageSrc}
-                    className='absolute top-0 left-0 w-full h-full object-cover'
-                    alt='background'
-                    width={1920}
-                    height={1080}
-                    priority
-                />
+                {imageSrc && (
+                    <Image
+                        src={imageSrc}
+                        className='absolute top-0 left-0 w-full h-full object-cover'
+                        alt='background'
+                        width={1920}
+                        height={1080}
+                        priority
+                    />
+                )}
                 <div className='absolute bg-base/10 backdrop-blur-[10px] w-full h-full'></div>
                 <div className='relative flex justify-center items-center flex-col gap-5 w-full h-svh'>
                     <motion.div

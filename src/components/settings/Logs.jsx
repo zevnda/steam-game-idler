@@ -2,8 +2,8 @@ import { Fragment } from 'react';
 
 import { Button } from '@heroui/react';
 
-import { handleOpenLogFile, handleClearLogs } from '@/src/utils/settings/logsHandler';
-import useLogs from '@/src/hooks/settings/useLogs';
+import { handleOpenLogFile, handleClearLogs } from '@/utils/settings/logsHandler';
+import useLogs from '@/hooks/settings/useLogs';
 
 export default function Logs() {
     const { logs, logPath } = useLogs();

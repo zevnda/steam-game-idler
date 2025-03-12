@@ -2,9 +2,9 @@ import { Fragment, useContext, useEffect, useState } from 'react';
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
 
-import { AppContext } from '@/src/components/layout/AppContext';
-import { handleIdle, viewAchievments, viewGameSettings, viewStorePage } from '@/src/utils/gameslist/gameCardHandler';
-import CardMenu from '@/src/components/gameslist/CardMenu';
+import { AppContext } from '@/components/layout/AppContext';
+import { handleIdle, viewAchievments, viewGameSettings, viewStorePage } from '@/utils/gameslist/gameCardHandler';
+import CardMenu from '@/components/gameslist/CardMenu';
 
 import { Button } from '@heroui/react';
 

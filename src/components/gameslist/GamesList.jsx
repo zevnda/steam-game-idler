@@ -1,12 +1,12 @@
 import { Fragment, useContext, useState } from 'react';
 
-import { AppContext } from '@/src/components/layout/AppContext';
-import PageHeader from '@/src/components/gameslist/PageHeader';
-import Private from '@/src/components/gameslist/Private';
-import useGamesList from '@/src/hooks/gameslist/useGamesList';
-import Loader from '@/src/components/ui/Loader';
-import GameCard from '@/src/components/ui/GameCard';
-import GameSettings from '@/src/components/gameslist/GameSettings';
+import { AppContext } from '@/components/layout/AppContext';
+import PageHeader from '@/components/gameslist/PageHeader';
+import Private from '@/components/gameslist/Private';
+import useGamesList from '@/hooks/gameslist/useGamesList';
+import Loader from '@/components/ui/Loader';
+import GameCard from '@/components/ui/GameCard';
+import GameSettings from '@/components/gameslist/GameSettings';
 
 export default function GamesList() {
     const { showAchievements } = useContext(AppContext);

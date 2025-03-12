@@ -1,11 +1,11 @@
 import { Fragment, useContext } from 'react';
 
-import { AppContext } from '@/src/components/layout/AppContext';
-import Dashboard from '@/src/components/layout/Dashboard';
-import Setup from '@/src/components/layout/Setup';
-import UpdateScreen from '@/src/components/updates/UpdateScreen';
-import ChangelogModal from '@/src/components/updates/ChangelogModal';
-import useWindow from '@/src/hooks/layout/useWindow';
+import { AppContext } from '@/components/layout/AppContext';
+import Dashboard from '@/components/layout/Dashboard';
+import Setup from '@/components/layout/Setup';
+import UpdateScreen from '@/components/updates/UpdateScreen';
+import ChangelogModal from '@/components/updates/ChangelogModal';
+import useWindow from '@/hooks/layout/useWindow';
 
 export default function Window() {
     const { userSummary, initUpdate, setInitUpdate } = useContext(AppContext);

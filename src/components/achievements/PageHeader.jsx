@@ -1,9 +1,9 @@
 import { Fragment, useContext, useState, useEffect } from 'react';
 import { Alert, Button, Tooltip } from '@heroui/react';
 
-import { AppContext } from '@/src/components/layout/AppContext';
-import usePageHeader from '@/src/hooks/achievements/usePageHeader';
-import ExtLink from '@/src/components/ui/ExtLink';
+import { AppContext } from '@/components/layout/AppContext';
+import usePageHeader from '@/hooks/achievements/usePageHeader';
+import ExtLink from '@/components/ui/ExtLink';
 
 import { SiSteam, SiSteamdb } from 'react-icons/si';
 import { TbArrowBack } from 'react-icons/tb';

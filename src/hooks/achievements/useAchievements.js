@@ -1,9 +1,9 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState, useMemo } from 'react';
 
 import { toast } from 'react-toastify';
 
-import { AppContext } from '@/src/components/layout/AppContext';
-import { fetchAchievementData, sortAchievements, filterAchievements } from '@/src/utils/achievements/achievementsHandler';
+import { AppContext } from '@/components/layout/AppContext';
+import { fetchAchievementData, sortAchievements, filterAchievements } from '@/utils/achievements/achievementsHandler';
 
 export default function useAchievements() {
     const {
@@ -41,8 +41,11 @@ export default function useAchievements() {
     }
 
     // Map game achievements percentages
-    const percentageMap = new Map();
-    gameAchievementsPercentages.forEach(item => percentageMap.set(item.name, item.percent));
+    const percentageMap = useMemo(() => {
+        const map = new Map();
+        gameAchievementsPercentages.forEach(item => map.set(item.name, item.percent));
+        return map;
+    }, [gameAchievementsPercentages]);
 
     useEffect(() => {
         // Fetch achievement data
@@ -67,7 +70,7 @@ export default function useAchievements() {
             }
         };
         getAchievementData();
-    }, [userSummary.steamId, appId]);
+    }, [userSummary.steamId, appId, setAchievementList, setAchievementsUnavailable, setStatisticsList, setStatisticsUnavailable]);
 
     useEffect(() => {
         // Sort achievements if not sorted
@@ -75,7 +78,7 @@ export default function useAchievements() {
             setAchievementList(sortAchievements(achievementList, percentageMap));
             setIsSorted(true);
         }
-    }, [isSorted, achievementList, percentageMap]);
+    }, [isSorted, achievementList, percentageMap, setAchievementList]);
 
     useEffect(() => {
         // Filter achievements based on input value
@@ -84,7 +87,7 @@ export default function useAchievements() {
         } else {
             setAchievementList(originalAchievementList);
         }
-    }, [achievementQueryValue, originalAchievementList]);
+    }, [achievementQueryValue, originalAchievementList, setAchievementList]);
 
     return {
         isLoading,

@@ -12,5 +12,5 @@ export default function useStatisticsList(statisticsList, setInitialStatValues, 
         setNewStatValues(prevValues => {
             return Object.keys(prevValues).length === 0 ? initialValues : prevValues;
         });
-    }, []);
+    }, [setInitialStatValues, setNewStatValues, statisticsList]);
 }

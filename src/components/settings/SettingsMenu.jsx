@@ -2,10 +2,10 @@ import { Fragment, useContext } from 'react';
 
 import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@heroui/react';
 
-import { useSettingsMenu } from '@/src/hooks/settings/useSettingsMenu';
-import ExtLink from '@/src/components/ui/ExtLink';
+import { useSettingsMenu } from '@/hooks/settings/useSettingsMenu';
+import ExtLink from '@/components/ui/ExtLink';
 
-import { AppContext } from '@/src/components/layout/AppContext';
+import { AppContext } from '@/components/layout/AppContext';
 
 import { TbDotsVertical } from 'react-icons/tb';
 

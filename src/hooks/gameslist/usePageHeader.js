@@ -4,8 +4,8 @@ import { invoke } from '@tauri-apps/api/tauri';
 import { toast } from 'react-toastify';
 import moment from 'moment';
 
-import { AppContext } from '@/src/components/layout/AppContext';
-import { logEvent } from '@/src/utils/utils';
+import { AppContext } from '@/components/layout/AppContext';
+import { logEvent } from '@/utils/utils';
 
 export const usePageHeader = ({ setSortStyle, setRefreshKey }) => {
     const { userSummary } = useContext(AppContext);

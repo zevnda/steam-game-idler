@@ -1,6 +1,6 @@
 import { enable, isEnabled, disable } from 'tauri-plugin-autostart-api';
 import { toast } from 'react-toastify';
-import { logEvent } from '@/src/utils/utils';
+import { logEvent } from '@/utils/utils';
 
 export const initializeSettings = (settings, setLocalSettings) => {
     if (settings && settings.general) {

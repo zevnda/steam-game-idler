@@ -3,11 +3,11 @@ import Image from 'next/image';
 
 import { Button, Checkbox, Input } from '@heroui/react';
 
-import { AppContext } from '@/src/components/layout/AppContext';
-import { handleCheckboxChange, handleRunAtStartupChange, handleKeyChange, handleKeySave, handleClear } from '@/src/utils/settings/generalSettingsHandler';
-import { antiAwayStatus } from '@/src/utils/utils';
-import useGeneralSettings from '@/src/hooks/settings/useGeneralSettings';
-import ExtLink from '@/src/components/ui/ExtLink';
+import { AppContext } from '@/components/layout/AppContext';
+import { handleCheckboxChange, handleRunAtStartupChange, handleKeyChange, handleKeySave, handleClear } from '@/utils/settings/generalSettingsHandler';
+import { antiAwayStatus } from '@/utils/utils';
+import useGeneralSettings from '@/hooks/settings/useGeneralSettings';
+import ExtLink from '@/components/ui/ExtLink';
 import ThemeSwitch from '../ui/theme/ThemeSwitch';
 
 export default function GeneralSettings({ settings, setSettings }) {

@@ -2,9 +2,9 @@ import { useEffect, useState, useRef, useContext } from 'react';
 
 import { toast } from 'react-toastify';
 
-import { AppContext } from '@/src/components/layout/AppContext';
-import { fetchGamesList, sortAndFilterGames } from '@/src/utils/gameslist/gamesListHandler';
-import { logEvent } from '@/src/utils/utils';
+import { AppContext } from '@/components/layout/AppContext';
+import { fetchGamesList, sortAndFilterGames } from '@/utils/gameslist/gamesListHandler';
+import { logEvent } from '@/utils/utils';
 
 export default function useGamesList() {
     const { userSummary, gameList, setGameList, isQuery, gameQueryValue, setGameQueryValue } = useContext(AppContext);
@@ -39,7 +39,7 @@ export default function useGamesList() {
             }
         };
         getGamesList();
-    }, [userSummary.steamId, refreshKey]);
+    }, [userSummary.steamId, refreshKey, setGameList]);
 
     useEffect(() => {
         if (gameList && recentGames) {
@@ -52,7 +52,7 @@ export default function useGamesList() {
 
     useEffect(() => {
         setGameQueryValue('');
-    }, [sortStyle]);
+    }, [sortStyle, setGameQueryValue]);
 
     useEffect(() => {
         const handleScroll = (event) => {

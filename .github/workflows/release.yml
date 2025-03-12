@@ -19,6 +19,11 @@ on:
           required: false
           type: boolean
           default: false
+        force_cargo_clean:
+          description: 'Force cargo clean'
+          required: false
+          type: boolean
+          default: false
 
 run-name: Build release v${{ github.event.inputs.version }}
 
@@ -93,6 +98,11 @@ jobs:
             path: |
               src-tauri\target
             key: ${{ runner.OS }}-cargo-build-tauri-target-${{ hashFiles('**/Cargo.lock') }}
+
+        - name: Clean Cargo build
+          if: inputs.force_cargo_clean == 'true'
+          run: cargo clean
+          working-directory: ./src-tauri
 
         - name: Update versions
           id: update-versions

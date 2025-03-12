@@ -2,11 +2,11 @@ import { Fragment, useContext } from 'react';
 
 import { Divider } from '@heroui/react';
 
-import { AppContext } from '@/src/components/layout/AppContext';
-import useHeader from '@/src/hooks/ui/useHeader';
-import UpdateButton from '@/src/components/updates/UpdateButton';
-import Notifications from '@/src/components/notifications/Notifications';
-import SearchBar from '@/src/components/ui/SearchBar';
+import { AppContext } from '@/components/layout/AppContext';
+import useHeader from '@/hooks/ui/useHeader';
+import UpdateButton from '@/components/updates/UpdateButton';
+import Notifications from '@/components/notifications/Notifications';
+import SearchBar from '@/components/ui/SearchBar';
 
 import { GoGrabber } from 'react-icons/go';
 import { TbMinus, TbSquare, TbX } from 'react-icons/tb';

@@ -1,6 +1,6 @@
 import { invoke } from '@tauri-apps/api/tauri';
 import { toast } from 'react-toastify';
-import { logEvent } from '@/src/utils/utils';
+import { logEvent } from '@/utils/utils';
 
 export const handleOpenLogFile = async (logPath) => {
     try {

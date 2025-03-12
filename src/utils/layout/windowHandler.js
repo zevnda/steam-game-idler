@@ -4,7 +4,7 @@ import { invoke } from '@tauri-apps/api/tauri';
 import { Time } from '@internationalized/date';
 import { toast } from 'react-toastify';
 
-import { fetchFreeGames, fetchLatest, logEvent, preserveKeysAndClearData, sendNativeNotification, startIdle } from '@/src/utils/utils';
+import { fetchFreeGames, fetchLatest, logEvent, preserveKeysAndClearData, sendNativeNotification, startIdle } from '@/utils/utils';
 
 // Check for updates and handle the Tauri update process
 export const checkForUpdates = async (setUpdateManifest, setCanUpdate, setInitUpdate) => {
