@@ -7,12 +7,12 @@ import { relaunch } from '@tauri-apps/plugin-process';
 
 import ExtLink from '@/components/ui/ExtLink';
 
-import { StateContext } from '@/components/contexts/StateContext';
+import { UpdateContext } from '@/components/contexts/UpdateContext';
 
 import { TbDotsVertical } from 'react-icons/tb';
 
 export default function SettingsMenu() {
-    const { setShowChangelog } = useContext(StateContext);
+    const { setShowChangelog } = useContext(UpdateContext);
 
     const handleUpdate = async () => {
         try {
