@@ -2,12 +2,12 @@ import { useContext, useEffect, useState } from 'react';
 
 import { invoke } from '@tauri-apps/api/core';
 
-import { AppContext } from '@/components/layout/AppContext';
+import { UserContext } from '@/components/contexts/UserContext';
 import { logEvent } from '@/utils/utils';
 import { addToast } from '@heroui/react';
 
 export default function useSetup() {
-    const { setUserSummary } = useContext(AppContext);
+    const { setUserSummary } = useContext(UserContext);
     const [isLoading, setIsLoading] = useState(false);
     const [steamUsers, setSteamUsers] = useState([]);
     const [userSummaries, setUserSummaries] = useState([]);

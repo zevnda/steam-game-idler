@@ -4,7 +4,7 @@ import Image from 'next/image';
 
 import { Button, Spinner } from '@heroui/react';
 
-import { AppContext } from '@/components/layout/AppContext';
+import { AppContext } from '@/components/contexts/AppContext';
 import { handleCancel, useCardFarming } from '@/hooks/automation/useCardFarming';
 
 import { TbCheck } from 'react-icons/tb';

@@ -2,7 +2,8 @@ import { Fragment, useContext } from 'react';
 
 import { Divider } from '@heroui/react';
 
-import { AppContext } from '@/components/layout/AppContext';
+import { SearchContext } from '@/components/contexts/SearchContext';
+import { UpdateContext } from '@/components/contexts/UpdateContext';
 import useHeader from '@/hooks/ui/useHeader';
 import Notifications from '@/components/notifications/Notifications';
 import SearchBar from '@/components/ui/SearchBar';
@@ -12,7 +13,8 @@ import { TbMinus, TbSquare, TbX } from 'react-icons/tb';
 import UpdateButton from './UpdateButton';
 
 export default function Header() {
-    const { updateAvailable, setGameQueryValue, setAchievementQueryValue } = useContext(AppContext);
+    const { setGameQueryValue, setAchievementQueryValue } = useContext(SearchContext);
+    const { updateAvailable } = useContext(UpdateContext);
     const { windowMinimize, windowToggleMaximize, windowClose } = useHeader(setGameQueryValue, setAchievementQueryValue);
 
     return (

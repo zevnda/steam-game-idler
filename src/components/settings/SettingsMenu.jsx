@@ -7,7 +7,7 @@ import { relaunch } from '@tauri-apps/plugin-process';
 
 import ExtLink from '@/components/ui/ExtLink';
 
-import { AppContext } from '@/components/layout/AppContext';
+import { AppContext } from '@/components/contexts/AppContext';
 
 import { TbDotsVertical } from 'react-icons/tb';
 

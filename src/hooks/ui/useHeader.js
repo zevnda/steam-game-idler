@@ -1,10 +1,10 @@
 import { useContext } from 'react';
 import { isPermissionGranted, requestPermission, sendNotification } from '@tauri-apps/plugin-notification';
-import { AppContext } from '@/components/layout/AppContext';
+import { SearchContext } from '@/components/contexts/SearchContext';
 import { getCurrentWindow } from '@tauri-apps/api/window';
 
 export default function useHeader(setGameQueryValue, setAchievementQueryValue) {
-    const { setIsQuery } = useContext(AppContext);
+    const { setIsQuery } = useContext(SearchContext);
 
     const windowMinimize = async () => {
         await getCurrentWindow().minimize();

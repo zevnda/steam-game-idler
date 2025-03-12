@@ -3,13 +3,13 @@ import Image from 'next/image';
 
 import { Button, Checkbox, Input } from '@heroui/react';
 
-import { AppContext } from '@/components/layout/AppContext';
+import { UserContext } from '@/components/contexts/UserContext';
 import { handleSave, handleClear, handleCheckboxChange } from '@/utils/settings/cardSettingsHandler';
 import useCardSettings from '@/hooks/settings/useCardSettings';
 import ExtLink from '@/components/ui/ExtLink';
 
 export default function CardSettings({ settings, setSettings }) {
-    const { userSummary } = useContext(AppContext);
+    const { userSummary } = useContext(UserContext);
     const {
         sidValue,
         slsValue,

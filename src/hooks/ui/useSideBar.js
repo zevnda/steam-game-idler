@@ -3,11 +3,15 @@ import { addToast, useDisclosure } from '@heroui/react';
 
 import { invoke } from '@tauri-apps/api/core';
 
-import { AppContext } from '@/components/layout/AppContext';
+import { SearchContext } from '@/components/contexts/SearchContext';
+import { NavigationContext } from '@/components/contexts/NavigationContext';
+import { UserContext } from '@/components/contexts/UserContext';
 import { logEvent } from '@/utils/utils';
 
 export default function useSideBar(activePage, setActivePage) {
-    const { userSummary, setUserSummary, setCurrentTab, setGameQueryValue, setAchievementQueryValue } = useContext(AppContext);
+    const { setGameQueryValue, setAchievementQueryValue } = useContext(SearchContext);
+    const { setCurrentTab } = useContext(NavigationContext);
+    const { userSummary, setUserSummary } = useContext(UserContext);
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     const openConfirmation = () => {

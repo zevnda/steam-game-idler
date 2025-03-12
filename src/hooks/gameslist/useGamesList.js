@@ -1,12 +1,15 @@
 import { useEffect, useState, useRef, useContext } from 'react';
 
-import { AppContext } from '@/components/layout/AppContext';
+import { AppContext } from '@/components/contexts/AppContext';
+import { UserContext } from '@/components/contexts/UserContext';
+import { SearchContext } from '@/components/contexts/SearchContext';
 import { fetchGamesList, sortAndFilterGames } from '@/utils/gameslist/gamesListHandler';
 import { logEvent } from '@/utils/utils';
 import { addToast } from '@heroui/react';
 
 export default function useGamesList() {
-    const { userSummary, gameList, setGameList, isQuery, gameQueryValue, setGameQueryValue } = useContext(AppContext);
+    const { userSummary, gameList, setGameList } = useContext(UserContext);
+    const { isQuery, gameQueryValue, setGameQueryValue } = useContext(SearchContext);
     const scrollContainerRef = useRef(null);
     const [isLoading, setIsLoading] = useState(true);
     const [recentGames, setRecentGames] = useState(null);

@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 import { Button, Checkbox, Input } from '@heroui/react';
 
-import { AppContext } from '@/components/layout/AppContext';
+import { UserContext } from '../contexts/UserContext';
 import { handleCheckboxChange, handleRunAtStartupChange, handleKeyChange, handleKeySave, handleClear } from '@/utils/settings/generalSettingsHandler';
 import { antiAwayStatus } from '@/utils/utils';
 import useGeneralSettings from '@/hooks/settings/useGeneralSettings';
@@ -11,7 +11,7 @@ import ExtLink from '@/components/ui/ExtLink';
 import ThemeSwitch from '../ui/theme/ThemeSwitch';
 
 export default function GeneralSettings({ settings, setSettings }) {
-    const { userSummary } = useContext(AppContext);
+    const { userSummary } = useContext(UserContext);
     const { localSettings, setLocalSettings, startupState, setStartupState, keyValue, setKeyValue, hasKey, setHasKey } = useGeneralSettings(settings);
 
     return (

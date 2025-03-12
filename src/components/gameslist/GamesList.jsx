@@ -1,6 +1,6 @@
 import { Fragment, useContext, useState } from 'react';
 
-import { AppContext } from '@/components/layout/AppContext';
+import { AppContext } from '@/components/contexts/AppContext';
 import PageHeader from '@/components/gameslist/PageHeader';
 import Private from '@/components/gameslist/Private';
 import useGamesList from '@/hooks/gameslist/useGamesList';

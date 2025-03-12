@@ -4,7 +4,7 @@ import Image from 'next/image';
 
 import { Button } from '@heroui/react';
 
-import { AppContext } from '@/components/layout/AppContext';
+import { AppContext } from '@/components/contexts/AppContext';
 import { useAchievementUnlocker } from '@/hooks/automation/useAchievementUnlocker';
 import { stopIdle } from '@/utils/utils';
 import ExtLink from '@/components/ui/ExtLink';

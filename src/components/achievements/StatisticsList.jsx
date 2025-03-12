@@ -4,7 +4,7 @@ import { FixedSizeList as List } from 'react-window';
 import { Input } from '@heroui/react';
 
 import { handleInputChange } from '@/utils/achievements/statisticsListHandler';
-import { AppContext } from '@/components/layout/AppContext';
+import { UserContext } from '@/components/contexts/UserContext';
 import useStatisticsList from '@/hooks/achievements/useStatisticsList';
 
 const Row = memo(({ index, style, data }) => {
@@ -59,7 +59,7 @@ const Row = memo(({ index, style, data }) => {
 Row.displayName = 'Row';
 
 export default function StatisticsList({ setInitialStatValues, newStatValues, setNewStatValues }) {
-    const { statisticsList, statisticsUnavailable } = useContext(AppContext);
+    const { statisticsList, statisticsUnavailable } = useContext(UserContext);
     useStatisticsList(statisticsList, setInitialStatValues, setNewStatValues);
 
     const itemData = { statisticsList, newStatValues, setNewStatValues };

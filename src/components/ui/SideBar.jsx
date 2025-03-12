@@ -2,7 +2,8 @@ import { Fragment, useContext } from 'react';
 
 import { Modal, ModalContent, ModalBody, Button, ModalFooter, ModalHeader } from '@heroui/react';
 
-import { AppContext } from '@/components/layout/AppContext';
+import { AppContext } from '@/components/contexts/AppContext';
+import { NavigationContext } from '@/components/contexts/NavigationContext';
 import useSideBar from '@/hooks/ui/useSideBar';
 import Sparkles from '@/components/ui/Sparkles';
 
@@ -10,7 +11,8 @@ import { TbAward, TbCards, TbDeviceGamepad2, TbGift, TbHeart, TbHourglassLow, Tb
 import { FiLogOut } from 'react-icons/fi';
 
 export default function SideBar() {
-    const { showFreeGamesTab, activePage, setActivePage, isCardFarming, isAchievementUnlocker } = useContext(AppContext);
+    const { showFreeGamesTab, isCardFarming, isAchievementUnlocker } = useContext(AppContext);
+    const { activePage, setActivePage } = useContext(NavigationContext);
     const { isOpen, onOpenChange, openConfirmation, handleLogout } = useSideBar(activePage, setActivePage);
 
     return (
