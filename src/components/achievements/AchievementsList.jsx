@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { invoke } from '@tauri-apps/api/core';
 import { addToast, Button, Tooltip } from '@heroui/react';
 
-import { AppContext } from '@/components/contexts/AppContext';
+import { StateContext } from '@/components/contexts/StateContext';
 import { UserContext } from '@/components/contexts/UserContext';
 import { toggleAchievement } from '@/utils/utils';
 import ErrorToast from '@/components/ui/ErrorToast';
@@ -101,7 +101,7 @@ const Row = memo(({ index, style, data }) => {
 Row.displayName = 'Row';
 
 export default function AchievementsList({ userGameAchievementsMap, percentageMap }) {
-    const { appId, appName } = useContext(AppContext);
+    const { appId, appName } = useContext(StateContext);
     const { achievementList, achievementsUnavailable } = useContext(UserContext);
 
     const itemData = { appId, appName, achievementList, userGameAchievementsMap, percentageMap };

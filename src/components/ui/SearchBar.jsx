@@ -2,7 +2,7 @@ import { Fragment, useContext } from 'react';
 
 import { Input } from '@heroui/react';
 
-import { AppContext } from '@/components/contexts/AppContext';
+import { StateContext } from '@/components/contexts/StateContext';
 import { SearchContext } from '@/components/contexts/SearchContext';
 import { NavigationContext } from '@/components/contexts/NavigationContext';
 import { UserContext } from '@/components/contexts/UserContext';
@@ -11,7 +11,7 @@ import useHeader from '@/hooks/ui/useHeader';
 import { RiSearchLine } from 'react-icons/ri';
 
 export default function SearchBar() {
-    const { showAchievements } = useContext(AppContext);
+    const { showAchievements } = useContext(StateContext);
     const { gameQueryValue, setGameQueryValue, achievementQueryValue, setAchievementQueryValue } = useContext(SearchContext);
     const { activePage, currentTab } = useContext(NavigationContext);
     const { achievementsUnavailable } = useContext(UserContext);

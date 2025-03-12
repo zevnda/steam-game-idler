@@ -5,7 +5,7 @@ import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Spinn
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 
-import { AppContext } from '../contexts/AppContext';
+import { StateContext } from '@/components/contexts/StateContext';
 import { transformIssueReferences, transformLinks, transformMentions } from '@/utils/updates/changelogHandler';
 import useChangelog from '@/hooks/ui/useChangelog';
 import styles from '@/styles/ChangelogModal.module.css';
@@ -14,7 +14,7 @@ import ExtLink from '@/components/ui/ExtLink';
 import { TbStarFilled } from 'react-icons/tb';
 
 export default function ChangelogModal() {
-    const { showChangelog, setShowChangelog } = useContext(AppContext);
+    const { showChangelog, setShowChangelog } = useContext(StateContext);
     const { changelog, version } = useChangelog();
 
     return (

@@ -4,7 +4,7 @@ import Image from 'next/image';
 
 import { Button } from '@heroui/react';
 
-import { AppContext } from '@/components/contexts/AppContext';
+import { StateContext } from '@/components/contexts/StateContext';
 import { useAchievementUnlocker } from '@/hooks/automation/useAchievementUnlocker';
 import { stopIdle } from '@/utils/utils';
 import ExtLink from '@/components/ui/ExtLink';
@@ -13,7 +13,7 @@ import { TbCheck } from 'react-icons/tb';
 
 export default function AchievementUnlocker({ activePage }) {
     const { theme } = useTheme();
-    const { setIsAchievementUnlocker } = useContext(AppContext);
+    const { setIsAchievementUnlocker } = useContext(StateContext);
 
     const isMountedRef = useRef(true);
     const abortControllerRef = useRef(new AbortController());

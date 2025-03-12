@@ -2,10 +2,10 @@ import { Fragment, useContext, useState, useEffect } from 'react';
 
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input } from '@heroui/react';
 
-import { AppContext } from '@/components/contexts/AppContext';
+import { StateContext } from '@/components/contexts/StateContext';
 
 export default function GameSettings({ isOpen, onOpenChange }) {
-    const { appId, appName } = useContext(AppContext);
+    const { appId, appName } = useContext(StateContext);
     const [maxIdleTime, setMaxIdleTime] = useState('');
     const [maxCardDrops, setMaxCardDrops] = useState('');
     const [maxAchievementUnlocks, setMaxAchievementUnlocks] = useState('');

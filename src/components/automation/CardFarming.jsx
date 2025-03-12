@@ -4,14 +4,14 @@ import Image from 'next/image';
 
 import { Button, Spinner } from '@heroui/react';
 
-import { AppContext } from '@/components/contexts/AppContext';
+import { StateContext } from '@/components/contexts/StateContext';
 import { handleCancel, useCardFarming } from '@/hooks/automation/useCardFarming';
 
 import { TbCheck } from 'react-icons/tb';
 
 export default function CardFarming({ activePage }) {
     const { theme } = useTheme();
-    const { setIsCardFarming } = useContext(AppContext);
+    const { setIsCardFarming } = useContext(StateContext);
 
     const isMountedRef = useRef(true);
     const abortControllerRef = useRef(new AbortController());

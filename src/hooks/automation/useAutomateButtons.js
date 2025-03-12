@@ -1,13 +1,13 @@
 import { invoke } from '@tauri-apps/api/core';
 import { logEvent } from '@/utils/utils';
 import { useContext } from 'react';
-import { AppContext } from '@/components/contexts/AppContext';
+import { StateContext } from '@/components/contexts/StateContext';
 import ErrorToast from '@/components/ui/ErrorToast';
 import { addToast } from '@heroui/react';
 
 // Automate card farming and achievement unlocking
 export const useAutomate = () => {
-    const { setIsCardFarming, setIsAchievementUnlocker } = useContext(AppContext);
+    const { setIsCardFarming, setIsAchievementUnlocker } = useContext(StateContext);
     // Start card farming
     const startCardFarming = async () => {
         try {

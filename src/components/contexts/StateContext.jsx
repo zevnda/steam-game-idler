@@ -1,8 +1,8 @@
 import { createContext, useState } from 'react';
 
-export const AppContext = createContext();
+export const StateContext = createContext();
 
-export const AppProvider = ({ children }) => {
+export const StateProvider = ({ children }) => {
     const [appId, setAppId] = useState(null);
     const [appName, setAppName] = useState(null);
     const [showFreeGamesTab, setShowFreeGamesTab] = useState(false);
@@ -11,7 +11,7 @@ export const AppProvider = ({ children }) => {
     const [isAchievementUnlocker, setIsAchievementUnlocker] = useState(false);
 
     return (
-        <AppContext.Provider value={{
+        <StateContext.Provider value={{
             showFreeGamesTab, setShowFreeGamesTab,
             appId, setAppId,
             appName, setAppName,
@@ -20,6 +20,6 @@ export const AppProvider = ({ children }) => {
             isAchievementUnlocker, setIsAchievementUnlocker,
         }}>
             {children}
-        </AppContext.Provider>
+        </StateContext.Provider>
     );
 };

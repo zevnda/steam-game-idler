@@ -1,9 +1,9 @@
 import { ThemeProvider } from '@/components/ui/theme/theme-provider';
 import { HeroUIProvider, ToastProvider } from '@heroui/react';
-import '@/styles/globals.css';
 import { TbX } from 'react-icons/tb';
+import '@/styles/globals.css';
 
-export default function MyApp({ Component, pageProps }) {
+export default function App({ Component, pageProps }) {
     return (
         <ThemeProvider
             attribute='class'

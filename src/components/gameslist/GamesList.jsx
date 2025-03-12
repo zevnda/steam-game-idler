@@ -1,6 +1,6 @@
 import { Fragment, useContext, useState } from 'react';
 
-import { AppContext } from '@/components/contexts/AppContext';
+import { StateContext } from '@/components/contexts/StateContext';
 import PageHeader from '@/components/gameslist/PageHeader';
 import Private from '@/components/gameslist/Private';
 import useGamesList from '@/hooks/gameslist/useGamesList';
@@ -9,7 +9,7 @@ import GameCard from '@/components/ui/GameCard';
 import GameSettings from '@/components/gameslist/GameSettings';
 
 export default function GamesList() {
-    const { showAchievements } = useContext(AppContext);
+    const { showAchievements } = useContext(StateContext);
     const {
         scrollContainerRef,
         isLoading,

@@ -1,7 +1,7 @@
 import { Fragment, useContext, useState, useEffect } from 'react';
 import { Alert, Button, Tooltip } from '@heroui/react';
 
-import { AppContext } from '@/components/contexts/AppContext';
+import { StateContext } from '@/components/contexts/StateContext';
 import usePageHeader from '@/hooks/achievements/usePageHeader';
 import ExtLink from '@/components/ui/ExtLink';
 
@@ -9,7 +9,7 @@ import { SiSteam, SiSteamdb } from 'react-icons/si';
 import { TbArrowBack } from 'react-icons/tb';
 
 export default function PageHeader() {
-    const { appId, appName } = useContext(AppContext);
+    const { appId, appName } = useContext(StateContext);
     const { handleClick } = usePageHeader();
 
     const [protectedAchievements, setProtectedAchievements] = useState(false);

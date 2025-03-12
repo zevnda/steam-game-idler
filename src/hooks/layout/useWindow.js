@@ -1,14 +1,14 @@
 import { useCallback, useContext, useEffect } from 'react';
 
+import { StateContext } from '@/components/contexts/StateContext';
 import { UserContext } from '@/components/contexts/UserContext';
 import { UpdateContext } from '@/components/contexts/UpdateContext';
-import { AppContext } from '@/components/contexts/AppContext';
 import { defaultSettings, checkForFreeGames, startAutoIdleGames } from '@/utils/layout/windowHandler';
 
 import { check } from '@tauri-apps/plugin-updater';
 
 export default function useWindow() {
-    const { setShowFreeGamesTab } = useContext(AppContext);
+    const { setShowFreeGamesTab } = useContext(StateContext);
     const { setUpdateAvailable, setShowChangelog } = useContext(UpdateContext);
     const { setUserSummary, setFreeGamesList } = useContext(UserContext);
 

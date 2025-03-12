@@ -1,7 +1,6 @@
 import { Fragment, useContext } from 'react';
 
-import { AppContext } from '@/components/contexts/AppContext';
-import { UserContext } from '../contexts/UserContext';
+import { UserContext } from '@/components/contexts/UserContext';
 import Dashboard from '@/components/layout/Dashboard';
 import Setup from '@/components/layout/Setup';
 import useWindow from '@/hooks/layout/useWindow';
@@ -9,7 +8,6 @@ import ChangelogModal from '../ui/ChangelogModal';
 
 export default function Window() {
     const { userSummary } = useContext(UserContext);
-    const { showChangelog } = useContext(AppContext);
     useWindow();
 
     if (!userSummary) return (

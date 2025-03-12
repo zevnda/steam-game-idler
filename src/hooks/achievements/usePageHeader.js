@@ -1,8 +1,8 @@
 import { useContext, useState } from 'react';
-import { AppContext } from '@/components/contexts/AppContext';
+import { StateContext } from '@/components/contexts/StateContext';
 
 export default function usePageHeader() {
-    const { setShowAchievements } = useContext(AppContext);
+    const { setShowAchievements } = useContext(StateContext);
     const [isSorted, setIsSorted] = useState(false);
 
     const handleClick = () => {

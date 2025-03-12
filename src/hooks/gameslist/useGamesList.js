@@ -1,6 +1,5 @@
 import { useEffect, useState, useRef, useContext } from 'react';
 
-import { AppContext } from '@/components/contexts/AppContext';
 import { UserContext } from '@/components/contexts/UserContext';
 import { SearchContext } from '@/components/contexts/SearchContext';
 import { fetchGamesList, sortAndFilterGames } from '@/utils/gameslist/gamesListHandler';

@@ -1,6 +1,6 @@
 import { Fragment, useContext, useEffect } from 'react';
 
-import { AppContext } from '@/components/contexts/AppContext';
+import { StateContext } from '@/components/contexts/StateContext';
 import { NavigationContext } from '@/components/contexts/NavigationContext';
 import { antiAwayStatus } from '@/utils/utils';
 import Header from '@/components/ui/Header';
@@ -14,7 +14,7 @@ import Settings from '@/components/settings/Settings';
 import CustomList from '@/components/customlists/CustomList';
 
 export default function Dashboard() {
-    const { showAchievements, isCardFarming, isAchievementUnlocker } = useContext(AppContext);
+    const { showAchievements, isCardFarming, isAchievementUnlocker } = useContext(StateContext);
     const { activePage, setActivePage } = useContext(NavigationContext);
 
     useEffect(() => {
