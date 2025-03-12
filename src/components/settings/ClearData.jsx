@@ -2,7 +2,7 @@ import { Fragment } from 'react';
 
 import { Button, Modal, ModalContent, ModalBody, ModalFooter, ModalHeader } from '@heroui/react';
 
-import useClearData from '@/src/hooks/settings/useClearData';
+import useClearData from '@/hooks/settings/useClearData';
 
 export default function ClearData() {
     const { isOpen, onOpen, onOpenChange, handleClearData } = useClearData();

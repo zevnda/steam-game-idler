@@ -1,8 +1,8 @@
 import { Fragment, useContext } from 'react';
 import Image from 'next/image';
 
-import { AppContext } from '@/src/components/layout/AppContext';
-import ExtLink from '@/src/components/ui/ExtLink';
+import { AppContext } from '@/components/layout/AppContext';
+import ExtLink from '@/components/ui/ExtLink';
 
 import { FaSteam } from 'react-icons/fa';
 

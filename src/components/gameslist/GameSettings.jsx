@@ -2,7 +2,7 @@ import { Fragment, useContext, useState, useEffect } from 'react';
 
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input } from '@heroui/react';
 
-import { AppContext } from '@/src/components/layout/AppContext';
+import { AppContext } from '@/components/layout/AppContext';
 
 export default function GameSettings({ isOpen, onOpenChange }) {
     const { appId, appName } = useContext(AppContext);

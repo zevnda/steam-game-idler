@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { initializeSettings, checkStartupState, loadApiKey } from '@/src/utils/settings/generalSettingsHandler';
+import { initializeSettings, checkStartupState, loadApiKey } from '@/utils/settings/generalSettingsHandler';
 
 export default function useGeneralSettings(settings) {
     const [localSettings, setLocalSettings] = useState(null);

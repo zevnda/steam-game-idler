@@ -2,9 +2,9 @@ import { Fragment, useContext, useState } from 'react';
 
 import { Modal, ModalContent, ModalBody, Button, useDisclosure, ModalFooter, ModalHeader, Select, SelectItem } from '@heroui/react';
 
-import { handleUnlockAll, handleLockAll, handleUpdateAllStats, handleResetAll } from '@/src/utils/achievements/tabButtonsHandler';
-import { sortOptions, handleChange } from '@/src/utils/achievements/pageHeaderHandler';
-import { AppContext } from '@/src/components/layout/AppContext';
+import { handleUnlockAll, handleLockAll, handleUpdateAllStats, handleResetAll } from '@/utils/achievements/tabButtonsHandler';
+import { sortOptions, handleChange } from '@/utils/achievements/pageHeaderHandler';
+import { AppContext } from '@/components/layout/AppContext';
 
 import { TbSortDescending2 } from 'react-icons/tb';
 

@@ -1,4 +1,4 @@
-import { startIdle } from '@/src/utils/utils';
+import { startIdle } from '@/utils/utils';
 
 export const handleIdle = async (item) => {
     await startIdle(item.appid, item.name, false, true);

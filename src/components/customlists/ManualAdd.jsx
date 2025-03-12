@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Button, Modal, ModalContent, ModalBody, Input, ModalFooter, ModalHeader, useDisclosure } from '@heroui/react';
 
-import useManualAdd from '@/src/hooks/customlists/useManualAdd';
+import useManualAdd from '@/hooks/customlists/useManualAdd';
 
 import { TbPlus } from 'react-icons/tb';
 

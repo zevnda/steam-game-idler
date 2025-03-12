@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { isPermissionGranted, requestPermission, sendNotification } from '@tauri-apps/api/notification';
-import { AppContext } from '@/src/components/layout/AppContext';
+import { AppContext } from '@/components/layout/AppContext';
 
 export default function useHeader(setGameQueryValue, setAchievementQueryValue) {
     const { setIsQuery } = useContext(AppContext);

@@ -6,9 +6,9 @@ import { invoke } from '@tauri-apps/api/tauri';
 import { toast } from 'react-toastify';
 import { Button, Tooltip } from '@heroui/react';
 
-import { AppContext } from '@/src/components/layout/AppContext';
-import { toggleAchievement } from '@/src/utils/utils';
-import ErrorToast from '@/src/components/ui/ErrorToast';
+import { AppContext } from '@/components/layout/AppContext';
+import { toggleAchievement } from '@/utils/utils';
+import ErrorToast from '@/components/ui/ErrorToast';
 
 const Row = memo(({ index, style, data }) => {
     const { appId, appName, achievementList, userGameAchievementsMap, percentageMap } = data;

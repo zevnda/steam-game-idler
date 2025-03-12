@@ -1,6 +1,6 @@
 import { getVersion } from '@tauri-apps/api/app';
 import { Time } from '@internationalized/date';
-import { logEvent } from '@/src/utils/utils';
+import { logEvent } from '@/utils/utils';
 import { toast } from 'react-toastify';
 
 // Get the application version and set it in the state

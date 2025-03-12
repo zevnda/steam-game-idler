@@ -6,7 +6,7 @@ import { relaunch } from '@tauri-apps/api/process';
 
 import { toast } from 'react-toastify';
 
-import { logEvent } from '@/src/utils/utils';
+import { logEvent } from '@/utils/utils';
 
 export default function useUpdateScreen(updateManifest) {
     const [appWindow, setAppWindow] = useState();

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { fetchNotifications } from '@/src/utils/notifications/notificationsHandler';
+import { fetchNotifications } from '@/utils/notifications/notificationsHandler';
 
 export const useNotifications = () => {
     const [notifications, setNotifications] = useState([]);

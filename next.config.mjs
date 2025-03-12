@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     output: 'export',
+    devIndicators: false,
     transpilePackages: ["geist"],
     images: {
         unoptimized: true,

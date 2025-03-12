@@ -1,7 +1,7 @@
 import { invoke } from '@tauri-apps/api/tauri';
-import { lockAllAchievements, logEvent, unlockAllAchievements, updateStats } from '@/src/utils/utils';
+import { lockAllAchievements, logEvent, unlockAllAchievements, updateStats } from '@/utils/utils';
 import { toast } from 'react-toastify';
-import ErrorToast from '@/src/components/ui/ErrorToast';
+import ErrorToast from '@/components/ui/ErrorToast';
 
 // Handle unlocking all achievements
 export const handleUnlockAll = async (appId, appName, achievementList, onClose) => {

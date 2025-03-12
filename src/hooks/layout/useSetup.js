@@ -3,8 +3,8 @@ import { useContext, useEffect, useState } from 'react';
 import { invoke } from '@tauri-apps/api/tauri';
 import { toast } from 'react-toastify';
 
-import { AppContext } from '@/src/components/layout/AppContext';
-import { logEvent } from '@/src/utils/utils';
+import { AppContext } from '@/components/layout/AppContext';
+import { logEvent } from '@/utils/utils';
 
 export default function useSetup() {
     const { setUserSummary } = useContext(AppContext);

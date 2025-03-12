@@ -1,4 +1,4 @@
-import { getAppVersion } from '@/src/utils/settings/settingsHandler';
+import { getAppVersion } from '@/utils/settings/settingsHandler';
 import { Button } from '@heroui/react';
 import { Fragment } from 'react';
 import { toast } from 'react-toastify';

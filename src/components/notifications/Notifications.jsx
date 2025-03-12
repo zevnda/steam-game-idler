@@ -2,8 +2,8 @@ import { Fragment, useEffect } from 'react';
 
 import { motion, AnimatePresence } from 'framer-motion';
 
-import { useNotifications } from '@/src/hooks/notifications/useNotifications';
-import { markAsSeen, markAllAsSeen, handleOpenUrl, timeAgo } from '@/src/utils/notifications/notificationsHandler';
+import { useNotifications } from '@/hooks/notifications/useNotifications';
+import { markAsSeen, markAllAsSeen, handleOpenUrl, timeAgo } from '@/utils/notifications/notificationsHandler';
 
 import { GoDotFill } from 'react-icons/go';
 import { TbBell } from 'react-icons/tb';

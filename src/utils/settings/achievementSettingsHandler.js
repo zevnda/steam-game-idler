@@ -1,5 +1,5 @@
 import { toast } from 'react-toastify';
-import { logEvent } from '@/src/utils/utils';
+import { logEvent } from '@/utils/utils';
 
 // Initialize settings and set local state and label interval
 export const initializeSettings = (settings, setLocalSettings, setLabelInterval) => {

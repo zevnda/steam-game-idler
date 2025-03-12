@@ -1,5 +1,5 @@
 import { invoke } from '@tauri-apps/api/tauri';
-import { logEvent } from '@/src/utils/utils';
+import { logEvent } from '@/utils/utils';
 
 // Fetch achievement data from the Steam API
 export const fetchAchievementData = async (steamId, appId) => {

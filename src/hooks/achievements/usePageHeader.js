@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react';
-import { AppContext } from '@/src/components/layout/AppContext';
+import { AppContext } from '@/components/layout/AppContext';
 
 export default function usePageHeader() {
     const { setShowAchievements } = useContext(AppContext);

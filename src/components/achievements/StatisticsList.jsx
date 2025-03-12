@@ -3,9 +3,9 @@ import { FixedSizeList as List } from 'react-window';
 
 import { Input } from '@heroui/react';
 
-import { handleInputChange } from '@/src/utils/achievements/statisticsListHandler';
-import { AppContext } from '@/src/components/layout/AppContext';
-import useStatisticsList from '@/src/hooks/achievements/useStatisticsList';
+import { handleInputChange } from '@/utils/achievements/statisticsListHandler';
+import { AppContext } from '@/components/layout/AppContext';
+import useStatisticsList from '@/hooks/achievements/useStatisticsList';
 
 const Row = memo(({ index, style, data }) => {
     const { statisticsList, newStatValues, setNewStatValues } = data;

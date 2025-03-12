@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { initializeSettings } from '@/src/utils/settings/achievementSettingsHandler';
+import { initializeSettings } from '@/utils/settings/achievementSettingsHandler';
 
 export default function useAchievementSettings(settings) {
     const [labelInterval, setLabelInterval] = useState(null);

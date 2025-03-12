@@ -2,8 +2,8 @@ import { Fragment } from 'react';
 
 import { Button, Modal, ModalContent, ModalBody, ModalFooter, ModalHeader } from '@heroui/react';
 
-import { handleResetSettings } from '@/src/utils/settings/settingsHandler';
-import useResetSettings from '@/src/hooks/settings/useResetSettings';
+import { handleResetSettings } from '@/utils/settings/settingsHandler';
+import useResetSettings from '@/hooks/settings/useResetSettings';
 
 export default function ResetSettings({ setSettings, setRefreshKey }) {
     const { isOpen, onOpen, onOpenChange } = useResetSettings();

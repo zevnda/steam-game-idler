@@ -2,7 +2,7 @@ import { Fragment } from 'react';
 
 import { Select, SelectItem } from '@heroui/react';
 
-import { usePageHeader } from '@/src/hooks/gameslist/usePageHeader';
+import { usePageHeader } from '@/hooks/gameslist/usePageHeader';
 
 import { TbRefresh, TbSortDescending2 } from 'react-icons/tb';
 

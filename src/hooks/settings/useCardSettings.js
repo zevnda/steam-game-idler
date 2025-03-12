@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getStoredCookies } from '@/src/utils/settings/cardSettingsHandler';
+import { getStoredCookies } from '@/utils/settings/cardSettingsHandler';
 
 export default function useCardSettings(settings) {
     const [sidValue, setSidValue] = useState('');

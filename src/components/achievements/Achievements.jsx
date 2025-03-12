@@ -1,13 +1,13 @@
 import { Fragment, useContext } from 'react';
 import { Tab, Tabs } from '@heroui/react';
 
-import { AppContext } from '@/src/components/layout/AppContext';
-import Loader from '@/src/components/ui/Loader';
-import TabButtons from '@/src/components/achievements/TabButtons';
-import AchievementsList from '@/src/components/achievements/AchievementsList';
-import StatisticsList from '@/src/components/achievements/StatisticsList';
-import PageHeader from '@/src/components/achievements/PageHeader';
-import useAchievements from '@/src/hooks/achievements/useAchievements';
+import { AppContext } from '@/components/layout/AppContext';
+import Loader from '@/components/ui/Loader';
+import TabButtons from '@/components/achievements/TabButtons';
+import AchievementsList from '@/components/achievements/AchievementsList';
+import StatisticsList from '@/components/achievements/StatisticsList';
+import PageHeader from '@/components/achievements/PageHeader';
+import useAchievements from '@/hooks/achievements/useAchievements';
 
 export default function Achievements() {
     const { setCurrentTab } = useContext(AppContext);

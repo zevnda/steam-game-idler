@@ -2,8 +2,8 @@ import { Fragment, useContext } from 'react';
 
 import { Input } from '@heroui/react';
 
-import { AppContext } from '@/src/components/layout/AppContext';
-import useHeader from '@/src/hooks/ui/useHeader';
+import { AppContext } from '@/components/layout/AppContext';
+import useHeader from '@/hooks/ui/useHeader';
 
 import { RiSearchLine } from 'react-icons/ri';
 

@@ -2,9 +2,9 @@ import { Fragment, useContext, useEffect } from 'react';
 
 import { Progress, Spinner } from '@heroui/react';
 
-import { AppContext } from '@/src/components/layout/AppContext';
-import Header from '@/src/components/ui/Header';
-import useUpdateScreen from '@/src/hooks/updates/useUpdateScreen';
+import { AppContext } from '@/components/layout/AppContext';
+import Header from '@/components/ui/Header';
+import useUpdateScreen from '@/hooks/updates/useUpdateScreen';
 
 
 export default function UpdateScreen({ updateManifest }) {

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { setupAppWindow } from '@/src/utils/ui/titleBarHandler';
+import { setupAppWindow } from '@/utils/ui/titleBarHandler';
 
 export default function useTitleBar() {
     const [appWindow, setAppWindow] = useState();
