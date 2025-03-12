@@ -33,7 +33,7 @@ export default function useWindow() {
             localStorage.removeItem('hasUpdated');
             setShowChangelog(true);
         }
-    }, []);
+    }, [setShowChangelog]);
 
     const freeGamesCheck = useCallback(() => {
         checkForFreeGames(setFreeGamesList, setShowFreeGamesTab);

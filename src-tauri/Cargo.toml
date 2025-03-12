@@ -47,6 +47,9 @@ custom-protocol = ["tauri/custom-protocol"]
 tauri-plugin-autostart = "2"
 tauri-plugin-updater = "2"
 
+[profile.dev]
+incremental = true
+
 [profile.release]
 opt-level = 3
 lto = "fat"

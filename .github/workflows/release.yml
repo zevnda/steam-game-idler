@@ -14,6 +14,11 @@ on:
           required: false
           type: boolean
           default: false
+        force_dotnet_build:
+          description: 'Force .NET rebuild'
+          required: false
+          type: boolean
+          default: false
         force_pnpm_install:
           description: 'Force fresh pnpm install'
           required: false
@@ -24,17 +29,80 @@ on:
           required: false
           type: boolean
           default: false
+        force_nextjs_build:
+          description: 'Force Next.js rebuild'
+          required: false
+          type: boolean
+          default: false
 
 run-name: Build release v${{ github.event.inputs.version }}
 
 permissions:
   contents: write
   
-jobs:        
+jobs:
+  build_dotnet_libs:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Prepare NuGet cache directory
+        run: |
+          # Create directory if it doesn't exist
+          mkdir -Force "C:\Users\runneradmin\.nuget\packages"
+          # Get and report actual NuGet packages location
+          dotnet nuget locals global-packages --list
+        shell: pwsh
+        
+      - name: Setup NuGet cache
+        id: cache-msbuild
+        uses: actions/cache@v4
+        with:
+          path: |
+            C:\Users\runneradmin\.nuget\packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+        
+      - name: Setup .NET cache
+        id: cache-dotnet
+        uses: actions/cache@v4
+        with:
+          path: src-tauri/libs/
+          key: ${{ runner.os }}-dotnet-${{ hashFiles('libs/**/*.cs', 'libs/**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-dotnet-
+
+      - name: Build .NET libraries
+        if: steps.cache-dotnet.outputs.cache-hit != 'true' || inputs.force_dotnet_build == 'true'
+        run: MSBuild.exe .\libs\SteamUtility.csproj
+        shell: pwsh
+          
+      - name: Upload built .NET libraries
+        uses: actions/upload-artifact@v4
+        with:
+          name: dotnet-libs
+          path: src-tauri/libs/
+          retention-days: 1
+
   build_release_bundle:
+    needs: build_dotnet_libs
+    timeout-minutes: 30
     runs-on: windows-latest
     steps:
-        - name: Set up Node.js
+        - name: Checkout repository
+          uses: actions/checkout@v4
+          with:
+            submodules: recursive
+
+        - name: Setup Node.js
           uses: actions/setup-node@v4
           with:
             node-version: '20'
@@ -44,23 +112,18 @@ jobs:
           with:
             version: latest
 
-        - name: Set up Python
+        - name: Setup Python
           uses: actions/setup-python@v5
           with:
             python-version: '3.x'
   
-        - name: Set up Rust
+        - name: Setup Rust
           uses: dtolnay/rust-toolchain@stable
 
-        - name: Set up MSBuild
+        - name: Setup MSBuild
           uses: microsoft/setup-msbuild@v2
 
-        - name: Checkout repository
-          uses: actions/checkout@v4
-          with:
-            submodules: recursive
-
-        - name: Cache pnpm dependencies
+        - name: Setup pnpm cache
           id: cache-pnpm
           uses: actions/cache@v4
           with:
@@ -75,36 +138,37 @@ jobs:
           if: steps.cache-pnpm.outputs.cache-hit != 'true' || inputs.force_pnpm_install == 'true'
           run: pnpm install --frozen-lockfile
 
-        - name: Cache nextjs build
+        - name: Setup Next.js cache
+          id: cache-nextjs
           uses: actions/cache@v4
           with:
-            path: |
-              .next/cache
-            key: ${{ runner.OS }}-nextjs-${{ hashFiles('**.[jt]s', '**.[jt]s') }}
+            path: .next/cache
+            key: ${{ runner.OS }}-nextjs-${{ hashFiles('**.[jt]sx', '**.[jt]s', 'package.json') }}
             restore-keys: |
-              ${{ runner.OS }}-nextjs-${{ hashFiles('**.[jt]s', '**.[jt]s') }}
+              ${{ runner.OS }}-nextjs-
 
-        - name: Cache Cargo dependencies
-          uses: actions/cache@v4
-          with:
-            path: |
-              ~\.cargo\registry
-              ~\.cargo\git
-            key: ${{ runner.OS }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
-        
-        - name: Cache Cargo target directory
-          uses: actions/cache@v4
-          with:
-            path: |
-              src-tauri\target
-            key: ${{ runner.OS }}-cargo-build-tauri-target-${{ hashFiles('**/Cargo.lock') }}
+        - name: Clean Next.js cache
+          if: inputs.force_nextjs_build == 'true'
+          run: |
+            if (Test-Path ".next") {
+              Remove-Item -Recurse -Force .next
+              Write-Host "Next.js cache cleared"
+            } else {
+              Write-Host "No Next.js cache found"
+            }
+          shell: pwsh
 
-        - name: Clean Cargo build
+        - name: Setup Rust cache
+          uses: swatinem/rust-cache@v2
+          with:
+            workspaces: './src-tauri -> target'
+
+        - name: Clean Cargo artifacts
           if: inputs.force_cargo_clean == 'true'
           run: cargo clean
           working-directory: ./src-tauri
 
-        - name: Update versions
+        - name: Update version numbers
           id: update-versions
           run: |
             $tauriConf = Get-Content src-tauri/tauri.conf.json
@@ -117,27 +181,31 @@ jobs:
             $updatedChangelog = $changelog -replace "${{ github.event.inputs.previous_version }}", "${{ github.event.inputs.version }}"
             $updatedChangelog | Set-Content CHANGELOG.md
 
-        - name: Create environment file
+        - name: Create .env.prod file
           run: |
             echo "KEY=${{ secrets.KEY }}" > .env.prod
           shell: pwsh
           working-directory: ${{ github.workspace }}
 
-        - name: Build library files
-          run: MSBuild.exe .\libs\SteamUtility.csproj
-          shell: pwsh
+        - name: Download built .NET libraries
+          uses: actions/download-artifact@v4
+          with:
+            name: dotnet-libs
+            path: src-tauri/libs/
 
-        - name: Build Tauri release bundle
+        - name: Build and package Tauri app
           if: steps.update-versions.outcome == 'success'
           run: |
-            pnpm run tauri build
+            $env:NEXT_TELEMETRY_DISABLED = "1"
+            $env:TAURI_CI = "1"
+            pnpm tauri build
           env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
-            TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
+            TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+            TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
           shell: pwsh
 
-        - name: Update latest.json
+        - name: Update latest.json with signature
           run: |
             python -c "
             import base64
@@ -163,7 +231,7 @@ jobs:
             print('Updated latest.json with new signature')
             "
 
-        - name: Commit changes
+        - name: Commit version changes
           run: |
             git config --local user.name "github-actions[bot]"
             git config --local user.email "github-actions[bot]@users.noreply.github.com"
@@ -183,3 +251,9 @@ jobs:
               ./src-tauri/target/release/bundle/nsis/Steam Game Idler_${{ github.event.inputs.version }}_x64-setup.exe
               ./src-tauri/target/release/bundle/nsis/Steam Game Idler_${{ github.event.inputs.version }}_x64-setup.nsis.zip
               ./src-tauri/target/release/bundle/nsis/Steam Game Idler_${{ github.event.inputs.version }}_x64-setup.nsis.zip.sig
+
+        - name: Cleanup artifacts
+          if: always()
+          uses: geekyeggo/delete-artifact@v5
+          with:
+            name: dotnet-libs
