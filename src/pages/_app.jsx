@@ -36,7 +36,7 @@ export default function App({ Component, pageProps }) {
                     toastProps={{
                         radius: 'sm',
                         variant: 'flat',
-                        timeout: 300000,
+                        timeout: 3000,
                         shouldShowTimeoutProgress: true,
                         closeIcon: (<TbX size={16} className='text-content' />),
                         classNames: {
