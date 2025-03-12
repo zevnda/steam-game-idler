@@ -78,26 +78,15 @@ jobs:
         - name: Cache nextjs build
           uses: actions/cache@v4
           with:
-            path: |
-              .next/cache
-            key: ${{ runner.OS }}-nextjs-${{ hashFiles('**.[jt]s', '**.[jt]s') }}
+            path: .next/cache
+            key: ${{ runner.OS }}-nextjs-${{ hashFiles('**.[jt]sx', '**.[jt]s') }}
             restore-keys: |
-              ${{ runner.OS }}-nextjs-${{ hashFiles('**.[jt]s', '**.[jt]s') }}
+              ${{ runner.OS }}-nextjs-
 
-        - name: Cache Cargo dependencies
-          uses: actions/cache@v4
+        - name: Rust cache
+          uses: swatinem/rust-cache@v2
           with:
-            path: |
-              ~\.cargo\registry
-              ~\.cargo\git
-            key: ${{ runner.OS }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
-        
-        - name: Cache Cargo target directory
-          uses: actions/cache@v4
-          with:
-            path: |
-              src-tauri\target
-            key: ${{ runner.OS }}-cargo-build-tauri-target-${{ hashFiles('**/Cargo.lock') }}
+            workspaces: './src-tauri -> target'
 
         - name: Clean Cargo build
           if: inputs.force_cargo_clean == 'true'
