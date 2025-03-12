@@ -54,13 +54,12 @@ export default function GameCard({ item, setSettingsModalOpen }) {
                             }
                             onPress={() => handleIdle(item)}
                         />
-
                         <Button
                             isIconOnly
                             size='lg'
                             className='flex flex-col justify-center items-center opacity-0 group-hover:opacity-100 hover:scale-105  active:scale-95 duration-200 rounded-lg bg-opacity-50 bg-black'
                             startContent={
-                                <div className='p-2 bg-black text-offwhite bg-opacity-10 hover:bg-black hover:bg-opacity-40 cursor-pointer rounded-lg duration-200'>
+                                <div className='p-2 bg-black text-offwhite bg-opacity-10 hover:bg-black hover:bg-opacity-40 cursor-pointer rounded-lg duration-200' inert>
                                     <TbAwardFilled className='text-offwhite opacity-0 group-hover:opacity-100 duration-200' fontSize={36} />
                                 </div>
                             }

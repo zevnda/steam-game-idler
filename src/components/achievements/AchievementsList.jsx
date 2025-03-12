@@ -2,7 +2,7 @@ import { Fragment, useContext, memo, useState } from 'react';
 import { FixedSizeList as List } from 'react-window';
 import Image from 'next/image';
 
-import { invoke } from '@tauri-apps/api/tauri';
+import { invoke } from '@tauri-apps/api/core';
 import { toast } from 'react-toastify';
 import { Button, Tooltip } from '@heroui/react';
 

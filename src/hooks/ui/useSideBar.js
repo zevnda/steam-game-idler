@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { useDisclosure } from '@heroui/react';
 
-import { invoke } from '@tauri-apps/api/tauri';
+import { invoke } from '@tauri-apps/api/core';
 import { toast } from 'react-toastify';
 
 import { AppContext } from '@/components/layout/AppContext';

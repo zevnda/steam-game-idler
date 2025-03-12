@@ -2,6 +2,7 @@ use chrono::Local;
 use std::fs::{create_dir_all, OpenOptions};
 use std::io::{BufRead, BufReader, Seek, SeekFrom, Write};
 use std::os::windows::process::CommandExt;
+use tauri::Manager;
 
 const APP_FOLDER_NAME: &str = "steam-game-idler";
 const MAX_LINES: usize = 500;
@@ -10,9 +11,9 @@ const MAX_LINES: usize = 500;
 pub fn log_event(message: String, app_handle: tauri::AppHandle) -> Result<(), String> {
     // Get the application data directory
     let app_data_dir = app_handle
-        .path_resolver()
+        .path()
         .app_data_dir()
-        .ok_or("Failed to get app data directory")?;
+        .map_err(|e| e.to_string())?;
     // Create the application-specific directory
     let app_specific_dir = app_data_dir
         .parent()
@@ -61,9 +62,9 @@ pub fn log_event(message: String, app_handle: tauri::AppHandle) -> Result<(), St
 pub fn clear_log_file(app_handle: tauri::AppHandle) -> Result<(), String> {
     // Get the application data directory
     let app_data_dir = app_handle
-        .path_resolver()
+        .path()
         .app_data_dir()
-        .ok_or("Failed to get app data directory")?;
+        .map_err(|e| e.to_string())?;
     // Create the application-specific directory
     let app_specific_dir = app_data_dir
         .parent()
@@ -85,9 +86,9 @@ pub fn clear_log_file(app_handle: tauri::AppHandle) -> Result<(), String> {
 pub fn get_app_log_dir(app_handle: tauri::AppHandle) -> Result<String, String> {
     // Get the application data directory
     let app_data_dir = app_handle
-        .path_resolver()
+        .path()
         .app_data_dir()
-        .ok_or("Failed to get app data directory")?;
+        .map_err(|e| e.to_string())?;
     // Create the application-specific directory
     let app_specific_dir = app_data_dir
         .parent()

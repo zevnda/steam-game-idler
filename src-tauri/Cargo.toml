@@ -4,12 +4,19 @@ version = "0.1.0"
 authors = ["zevnda"]
 license = "GPL-3.0"
 repository = "https://github.com/zevnda/steam-game-idler"
-default-run = "steam-game-idler"
 edition = "2021"
-rust-version = "1.60"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+# The `_lib` suffix may seem redundant but it is necessary
+# to make the lib name unique and wouldn't conflict with the bin name.
+# This seems to be only an issue on Windows, see https://github.com/rust-lang/cargo/issues/8519
+name = "steam_game_idler_lib_v2"
+crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]
-tauri-build = { version = "1.5.2", features = [] }
+tauri-build = { version = "2", features = [] }
 
 [dependencies]
 dotenvs = "0.1.0"
@@ -24,28 +31,21 @@ reqwest = { version = "0.12.12", features = ["json"] }
 serde_json = { version = "1.0.138", features = ["std"] }
 regex = { version = "1.11.1", default-features = false, features = ["std"] }
 winapi = { version = "0.3.9", features = ["processthreadsapi", "handleapi", "winnt"] }
-tauri-plugin-autostart = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v1" }
-tauri-plugin-window-state = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v1" }
-tauri = { version = "1.6.5", features = [
-    "fs-all",
-    "updater",
-    "path-all",
-    "shell-open",
-    "dialog-ask",
-    "system-tray",
-    "notification-all",
-    "process-relaunch",
-    "window-show",
-    "window-hide",
-    "window-close",
-    "window-maximize",
-    "window-minimize",
-    "window-set-size",
-    "window-unmaximize", 
-    "window-unminimize",
-    "window-set-position",
-    "window-start-dragging"
-] }
+tauri-plugin-autostart = { version = "2" }
+tauri-plugin-window-state = { version = "2" }
+tauri = { version = "2", features = ["tray-icon"] }
+tauri-plugin-shell = "2"
+tauri-plugin-notification = "2"
+tauri-plugin-process = "2"
+tauri-plugin-dialog = "2"
+tauri-plugin-fs = "2"
+
+[features]
+custom-protocol = ["tauri/custom-protocol"]
+
+[target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
+tauri-plugin-autostart = "2"
+tauri-plugin-updater = "2"
 
 [profile.release]
 opt-level = 3
@@ -54,6 +54,3 @@ codegen-units = 1
 strip = false
 panic = "abort"
 overflow-checks = false
-
-[features]
-custom-protocol = ["tauri/custom-protocol"]

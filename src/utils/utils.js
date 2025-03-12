@@ -1,8 +1,8 @@
 import { Time } from '@internationalized/date';
 import { toast } from 'react-toastify';
 
-import { isPermissionGranted, requestPermission, sendNotification } from '@tauri-apps/api/notification';
-import { invoke } from '@tauri-apps/api/tauri';
+import { isPermissionGranted, requestPermission, sendNotification } from '@tauri-apps/plugin-notification';
+import { invoke } from '@tauri-apps/api/core';
 import { getVersion } from '@tauri-apps/api/app';
 
 import ErrorToast from '@/components/ui/ErrorToast';

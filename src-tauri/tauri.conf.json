@@ -1,105 +1,67 @@
 {
-    "$schema": "../node_modules/@tauri-apps/cli/schema.json",
+    "$schema": "https://schema.tauri.app/config/2",
+    "productName": "Steam Game Idler",
+    "mainBinaryName": "Steam Game Idler",
+    "version": "1.7.25",
+    "identifier": "com.zevnda.steam-game-idler",
     "build": {
-        "beforeBuildCommand": "pnpm run build",
         "beforeDevCommand": "pnpm run dev --turbopack",
-        "devPath": "http://localhost:3000",
-        "distDir": "../out",
-        "withGlobalTauri": true
+        "beforeBuildCommand": "pnpm run build",
+        "devUrl": "http://localhost:3000",
+        "frontendDist": "../out"
     },
-    "package": {
-        "productName": "Steam Game Idler",
-        "version": "1.7.25"
-    },
-    "tauri": {
-        "allowlist": {
-            "all": false,
-            "window": {
-                "all": false,
-                "close": true,
-                "hide": true,
-                "show": true,
-                "maximize": true,
-                "minimize": true,
-                "unmaximize": true,
-                "unminimize": true,
-                "startDragging": true,
-                "setSize": true,
-                "setPosition": true
-            },
-            "fs": {
-                "all": true,
-                "scope": [
-                    "**"
-                ]
-            },
-            "dialog": {
-                "ask": true
-            },
-            "shell": {
-                "open": true
-            },
-            "path": {
-                "all": true
-            },
-            "process": {
-                "relaunch": true
-            },
-            "notification": {
-                "all": true
+    "bundle": {
+        "active": true,
+        "category": "Utility",
+        "copyright": "Copyright © 2025 zevnda",
+        "targets": "all",
+        "externalBin": [],
+        "icon": [
+            "icons/icon.ico"
+        ],
+        "windows": {
+            "certificateThumbprint": null,
+            "digestAlgorithm": "sha256",
+            "timestampUrl": "",
+            "nsis": {
+                "installerIcon": "icons/icon.ico",
+                "installMode": "perMachine"
             }
         },
-        "bundle": {
-            "active": true,
-            "category": "Utility",
-            "copyright": "Copyright © 2025 zevnda",
+        "longDescription": "Idle any game in your Steam library",
+        "shortDescription": "Steam Game Idler",
+        "macOS": {
+            "entitlements": null,
+            "exceptionDomain": "",
+            "frameworks": [],
+            "providerShortName": null,
+            "signingIdentity": null
+        },
+        "resources": [
+            "libs/*",
+            "LICENSE"
+        ],
+        "linux": {
             "deb": {
                 "depends": []
-            },
-            "externalBin": [],
-            "icon": [
-                "icons/icon.ico"
-            ],
-            "identifier": "com.zevnda.steam-game-idler",
-            "longDescription": "Idle any game in your Steam library",
-            "shortDescription": "Steam Game Idler",
-            "macOS": {
-                "entitlements": null,
-                "exceptionDomain": "",
-                "frameworks": [],
-                "providerShortName": null,
-                "signingIdentity": null
-            },
-            "resources": [
-                "libs/*",
-                "LICENSE"
-            ],
-            "targets": "all",
-            "windows": {
-                "certificateThumbprint": null,
-                "digestAlgorithm": "sha256",
-                "timestampUrl": "",
-                "nsis": {
-                    "installerIcon": "icons/icon.ico",
-                    "license": "LICENSE",
-                    "installMode": "perMachine"
-                }
             }
         },
-        "security": {
-            "csp": null
-        },
+        "licenseFile": "LICENSE",
+        "createUpdaterArtifacts": "v1Compatible"
+    },
+    "plugins": {
         "updater": {
-            "active": true,
+            "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEQyMTE5REMyMUFGRUYyQzcKUldUSDh2NGF3cDBSMGh6UVk2a1NKNFV0d1BBcnZsRnFFdDkvTTR0KzJQN0hjOTJzSWFpMFhGaysK",
             "endpoints": [
                 "https://raw.githubusercontent.com/zevnda/steam-game-idler/main/latest.json"
             ],
-            "dialog": false,
-            "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEQyMTE5REMyMUFGRUYyQzcKUldUSDh2NGF3cDBSMGh6UVk2a1NKNFV0d1BBcnZsRnFFdDkvTTR0KzJQN0hjOTJzSWFpMFhGaysK",
             "windows": {
                 "installMode": "passive"
             }
-        },
+        }
+    },
+    "app": {
+        "withGlobalTauri": true,
         "windows": [
             {
                 "fullscreen": false,
@@ -111,12 +73,12 @@
                 "title": "Steam Game Idler",
                 "decorations": false,
                 "transparent": true,
-                "focus": true
+                "focus": true,
+                "useHttpsScheme": true
             }
         ],
-        "systemTray": {
-            "iconPath": "icons/32x32.png",
-            "iconAsTemplate": true
+        "security": {
+            "csp": null
         }
     }
 }

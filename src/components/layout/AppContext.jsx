@@ -3,6 +3,8 @@ import { createContext, useState } from 'react';
 export const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
+    const [updateAvailable, setUpdateAvailable] = useState(false);
+    const [showChangelog, setShowChangelog] = useState(false);
     const [userSummary, setUserSummary] = useState(null);
     const [gameList, setGameList] = useState(null);
     const [appId, setAppId] = useState(null);
@@ -21,12 +23,11 @@ export const AppProvider = ({ children }) => {
     const [statisticsUnavailable, setStatisticsUnavailable] = useState(false);
     const [isCardFarming, setIsCardFarming] = useState(false);
     const [isAchievementUnlocker, setIsAchievementUnlocker] = useState(false);
-    const [showChangelogModal, setShowChangelogModal] = useState(false);
-    const [canUpdate, setCanUpdate] = useState(false);
-    const [initUpdate, setInitUpdate] = useState(false);
 
     return (
         <AppContext.Provider value={{
+            updateAvailable, setUpdateAvailable,
+            showChangelog, setShowChangelog,
             userSummary, setUserSummary,
             gameList, setGameList,
             showFreeGamesTab, setShowFreeGamesTab,
@@ -45,9 +46,6 @@ export const AppProvider = ({ children }) => {
             currentTab, setCurrentTab,
             isCardFarming, setIsCardFarming,
             isAchievementUnlocker, setIsAchievementUnlocker,
-            showChangelogModal, setShowChangelogModal,
-            canUpdate, setCanUpdate,
-            initUpdate, setInitUpdate
         }}>
             {children}
         </AppContext.Provider>

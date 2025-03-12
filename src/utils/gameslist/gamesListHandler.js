@@ -1,4 +1,4 @@
-import { invoke } from '@tauri-apps/api/tauri';
+import { invoke } from '@tauri-apps/api/core';
 
 // Fetches the games list and recent games from cache or API
 export const fetchGamesList = async (steamId, refreshKey, prevRefreshKey) => {

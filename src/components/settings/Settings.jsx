@@ -13,7 +13,7 @@ import Logs from '@/components/settings/Logs';
 import ClearData from '@/components/settings/ClearData';
 import ExportSettings from './ExportSettings';
 
-export default function Settings({ setInitUpdate, setUpdateManifest }) {
+export default function Settings() {
     const [settings, setSettings] = useState(null);
     const [version, setVersion] = useState('v0.0.0');
     const [refreshKey, setRefreshKey] = useState(0);
@@ -55,7 +55,7 @@ export default function Settings({ setInitUpdate, setUpdateManifest }) {
                             <ResetSettings setSettings={setSettings} setRefreshKey={setRefreshKey} />
                             <ClearData />
                             <ExportSettings />
-                            <SettingsMenu setInitUpdate={setInitUpdate} setUpdateManifest={setUpdateManifest} />
+                            <SettingsMenu />
                         </div>
                     </div>
 

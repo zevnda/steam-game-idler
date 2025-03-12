@@ -1,4 +1,4 @@
-import { enable, isEnabled, disable } from 'tauri-plugin-autostart-api';
+import { enable, isEnabled, disable } from '@tauri-apps/plugin-autostart';
 import { toast } from 'react-toastify';
 import { logEvent } from '@/utils/utils';
 
