@@ -531,7 +531,7 @@ module.exports = {
                     'content': '#ffedf0',
                     'offwhite': '#fff3f5',
                     'altwhite': '#e7c0c7',
-                    'dynamic': '#ff6b89',
+                    'dynamic': '#ea3f62',
                     'titlebar': '#4a1723',
                     'titlehover': '#5e1f2d',
                     'base': '#38111b',
