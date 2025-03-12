@@ -3,8 +3,7 @@ import { FixedSizeList as List } from 'react-window';
 import Image from 'next/image';
 
 import { invoke } from '@tauri-apps/api/core';
-import { toast } from 'react-toastify';
-import { Button, Tooltip } from '@heroui/react';
+import { addToast, Button, Tooltip } from '@heroui/react';
 
 import { AppContext } from '@/components/layout/AppContext';
 import { toggleAchievement } from '@/utils/utils';
@@ -24,12 +23,13 @@ const Row = memo(({ index, style, data }) => {
         // Check if Steam is running
         const steamRunning = await invoke('check_status');
         if (!steamRunning) {
-            return toast.error(
-                <ErrorToast
+            return addToast({
+                description: <ErrorToast
                     message={'Steam is not running'}
                     href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Steam%20is%20not%20running'}
-                />
-            );
+                />,
+                color: 'danger'
+            });
         }
 
         toggleAchievement(appId, item.name, appName, isUnlocked ? 'Locked' : 'Unlocked');

@@ -117,7 +117,7 @@ export default function AchievementUnlocker({ activePage }) {
 
                         <Button
                             size='sm'
-                            className={`min-h-[30px] font-semibold rounded-lg ${isComplete ? 'bg-dynamic text-content' : 'danger'}`}
+                            className='min-h-[30px] font-semibold rounded-lg bg-danger text-content'
                             onPress={() => {
                                 setIsAchievementUnlocker(false);
                                 stopIdle(currentGame.appid, currentGame.name);

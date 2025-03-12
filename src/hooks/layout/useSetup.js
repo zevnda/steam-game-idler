@@ -1,10 +1,10 @@
 import { useContext, useEffect, useState } from 'react';
 
 import { invoke } from '@tauri-apps/api/core';
-import { toast } from 'react-toastify';
 
 import { AppContext } from '@/components/layout/AppContext';
 import { logEvent } from '@/utils/utils';
+import { addToast } from '@heroui/react';
 
 export default function useSetup() {
     const { setUserSummary } = useContext(AppContext);
@@ -48,9 +48,9 @@ export default function useSetup() {
             logEvent(`[System] Logged in as ${userSummary.personaName}`);
         } catch (error) {
             setIsLoading(false);
-            toast.error(`Error in (getUserSummary): ${error?.message || error}`);
-            console.error('Error in (getUserSummary):', error);
-            logEvent(`[Error] in (getUserSummary): ${error}`);
+            addToast({ description: `Error in (handleLogin): ${error?.message || error}`, color: 'danger' });
+            console.error('Error in (handleLogin):', error);
+            logEvent(`[Error] in (handleLogin): ${error}`);
         }
     };
 

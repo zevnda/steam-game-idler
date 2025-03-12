@@ -1,9 +1,9 @@
-import { toast } from 'react-toastify';
 import { invoke } from '@tauri-apps/api/core';
 import { logEvent } from '@/utils/utils';
 import { useContext } from 'react';
 import { AppContext } from '@/components/layout/AppContext';
 import ErrorToast from '@/components/ui/ErrorToast';
+import { addToast } from '@heroui/react';
 
 // Automate card farming and achievement unlocking
 export const useAutomate = () => {
@@ -20,20 +20,22 @@ export const useAutomate = () => {
             // Retrieve settings from local storage
             const settings = JSON.parse(localStorage.getItem('settings')) || {};
             if (!steamRunning) {
-                return toast.error(
-                    <ErrorToast
+                return addToast({
+                    description: <ErrorToast
                         message={'Steam is not running'}
                         href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Steam%20is%20not%20running'}
-                    />
-                );
+                    />,
+                    color: 'danger'
+                });
             }
             if (!steamCookies?.sid || !steamCookies?.sls) {
-                return toast.error(
-                    <ErrorToast
+                return addToast({
+                    description: <ErrorToast
                         message={'Missing credentials in Settings'}
                         href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=%22Missing%20credentials%20in%20setting%22'}
-                    />
-                );
+                    />,
+                    color: 'danger'
+                });
             }
             // Validate Steam session
             const res = await invoke('validate_session', {
@@ -42,26 +44,28 @@ export const useAutomate = () => {
             if (!res.user) {
                 localStorage.removeItem('steamCookies');
                 localStorage.removeItem('cardFarmingUser');
-                return toast.error(
-                    <ErrorToast
+                return addToast({
+                    description: <ErrorToast
                         message={'Steam credentials need to be updated'}
                         href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=%22Steam%20credentials%20need%20to%20be%20updated%22'}
-                    />
-                );
+                    />,
+                    color: 'danger'
+                });
             }
             // Retrieve card farming list from local storage
             const cardFarming = JSON.parse(localStorage.getItem('cardFarmingListCache')) || [];
             if (!settings.cardFarming.allGames && cardFarming.length === 0) {
-                return toast.error(
-                    <ErrorToast
+                return addToast({
+                    description: <ErrorToast
                         message={'Enable the "All games" setting or add some games to your card farming list'}
                         href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Enable%20the%20%22All%20games%22%20setting%20or%20add%20some%20games%20to%20your%20card%20farming%20list'}
-                    />
-                );
+                    />,
+                    color: 'danger'
+                });
             }
             setIsCardFarming(true);
         } catch (error) {
-            toast.error(`Error in (startCardFarming): ${error?.message || error}`);
+            addToast({ description: `Error in (startCardFarming): ${error?.message || error}`, color: 'danger' });
             console.error('Error in (startCardFarming):', error);
             logEvent(`[Error] in (startCardFarming): ${error}`);
         }
@@ -75,29 +79,31 @@ export const useAutomate = () => {
             // Retrieve settings from local storage
             const settings = JSON.parse(localStorage.getItem('settings')) || {};
             if (!steamRunning) {
-                return toast.error(
-                    <ErrorToast
+                return addToast({
+                    description: <ErrorToast
                         message={'Steam is not running'}
                         href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Steam%20is%20not%20running'}
-                    />
-                );
+                    />,
+                    color: 'danger'
+                });
             }
             if (!settings || Object.keys(settings).length === 0) {
-                return toast.error('Please configure the settings first');
+                return addToast({ description: 'Please configure the settings first', color: 'danger' });
             }
             // Retrieve achievement unlocker list from local storage
             const achievementUnlocker = JSON.parse(localStorage.getItem('achievementUnlockerListCache')) || [];
             if (achievementUnlocker.length === 0) {
-                return toast.error(
-                    <ErrorToast
+                return addToast({
+                    description: <ErrorToast
                         message={'There are no games in your achievement unlocker list'}
                         href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Steam%20is%20not%20running'}
-                    />
-                );
+                    />,
+                    color: 'danger'
+                });
             }
             setIsAchievementUnlocker(true);
         } catch (error) {
-            toast.error(`Error in (startAchievementUnlocker): ${error?.message || error}`);
+            addToast({ description: `Error in (startAchievementUnlocker): ${error?.message || error}`, color: 'danger' });
             console.error('Error in (startAchievementUnlocker):', error);
             logEvent(`[Error] in (startAchievementUnlocker): ${error}`);
         }

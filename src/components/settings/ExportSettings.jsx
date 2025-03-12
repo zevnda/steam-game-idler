@@ -1,13 +1,12 @@
 import { getAppVersion } from '@/utils/settings/settingsHandler';
-import { Button } from '@heroui/react';
+import { addToast, Button } from '@heroui/react';
 import { Fragment } from 'react';
-import { toast } from 'react-toastify';
 
 export default function ExportSettings() {
     const exportSettings = async () => {
         const allSettings = {};
 
-        const version = await getAppVersion(toast);
+        const version = await getAppVersion();
         allSettings['version'] = version;
 
         for (let i = 0; i < localStorage.length; i++) {
@@ -29,9 +28,9 @@ export default function ExportSettings() {
         }
         const allSettingsString = JSON.stringify(allSettings, null, 2);
         navigator.clipboard.writeText(allSettingsString).then(() => {
-            toast.success('Data copied to clipboard');
+            addToast({ description: 'Data copied to clipboard', color: 'success' });
         }).catch(() => {
-            toast.error('Error exporting data');
+            addToast({ description: 'Error exporting data', color: 'danger' });
         });
     };
 

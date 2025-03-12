@@ -1,6 +1,6 @@
 import { enable, isEnabled, disable } from '@tauri-apps/plugin-autostart';
-import { toast } from 'react-toastify';
 import { logEvent } from '@/utils/utils';
+import { addToast } from '@heroui/react';
 
 export const initializeSettings = (settings, setLocalSettings) => {
     if (settings && settings.general) {
@@ -36,7 +36,7 @@ export const handleCheckboxChange = (e, localSettings, setLocalSettings, setSett
             logEvent(`[Settings - General] Changed '${name}' to '${checked}'`);
         }
     } catch (error) {
-        toast.error(`Error in (handleCheckboxChange): ${error?.message || error}`);
+        addToast({ description: `Error in (handleCheckboxChange): ${error?.message || error}`, color: 'danger' });
         console.error('Error in (handleCheckboxChange):', error);
         logEvent(`[Error] in (handleCheckboxChange): ${error}`);
     }
@@ -48,7 +48,7 @@ const updateSettings = (newSettings, setLocalSettings, setSettings) => {
     try {
         localStorage.setItem('settings', JSON.stringify(newSettings));
     } catch (error) {
-        toast.error(`Error in (updateSettings): ${error?.message || error}`);
+        addToast({ description: `Error in (updateSettings): ${error?.message || error}`, color: 'danger' });
         console.error('Error in (updateSettings):', error);
         logEvent(`[Error] in (updateSettings): ${error}`);
     }
@@ -73,11 +73,11 @@ export const handleKeySave = async (keyValue, setHasKey) => {
         if (keyValue.length > 0) {
             localStorage.setItem('apiKey', keyValue);
             setHasKey(true);
-            toast.success('[General] Steam web API key added');
+            addToast({ description: '[General] Steam web API key added', color: 'success' });
             logEvent('[Settings - General] Steam web API key added');
         }
     } catch (error) {
-        toast.error(`Error in (handleKeySave): ${error?.message || error}`);
+        addToast({ description: `Error in (handleKeySave): ${error?.message || error}`, color: 'danger' });
         console.error('Error in (handleKeySave):', error);
         logEvent(`[Error] in (handleKeySave): ${error}`);
     }
@@ -88,10 +88,10 @@ export const handleClear = async (setKeyValue, setHasKey) => {
         localStorage.removeItem('apiKey');
         setKeyValue('');
         setHasKey(false);
-        toast.success('[General] Steam web API key cleared');
+        addToast({ description: '[General] Steam web API key cleared', color: 'success' });
         logEvent('[Settings - General] Steam web API key cleared');
     } catch (error) {
-        toast.error(`Error in (handleClear): ${error?.message || error}`);
+        addToast({ description: `Error in (handleClear): ${error?.message || error}`, color: 'danger' });
         console.error('Error in (handleClear):', error);
         logEvent(`[Error] in (handleClear): ${error}`);
     }

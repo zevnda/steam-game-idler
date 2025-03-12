@@ -1,7 +1,6 @@
 import { Fragment, useEffect, useState } from 'react';
 
 import { Tab, Tabs } from '@heroui/react';
-import { toast } from 'react-toastify';
 
 import { getAppVersion, getDefaultSettings, getUpdatedSettings } from '@/utils/settings/settingsHandler';
 import AchievementSettings from '@/components/settings/AchievementSettings';
@@ -20,7 +19,7 @@ export default function Settings() {
 
     useEffect(() => {
         const getAndSetVersion = async () => {
-            const version = await getAppVersion(toast);
+            const version = await getAppVersion();
             setVersion(version);
         };
         getAndSetVersion();

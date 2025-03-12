@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { toast } from 'react-toastify';
 import { invoke } from '@tauri-apps/api/core';
 import { logEvent } from '@/utils/utils';
+import { addToast } from '@heroui/react';
 
 export default function useManualAdd(listName, setList) {
     const [inputValue, setInputValue] = useState('');
@@ -14,7 +14,7 @@ export default function useManualAdd(listName, setList) {
 
             if (res[inputValue].success === false) {
                 setIsLoading(false);
-                toast.error('A game with that ID does not exist');
+                addToast({ description: 'A game with that ID does not exist', color: 'danger' });
                 return;
             }
 
@@ -31,11 +31,11 @@ export default function useManualAdd(listName, setList) {
                 onClose();
             } else {
                 setIsLoading(false);
-                toast.error('Game already exists in the list');
+                addToast({ description: 'Game already exists in the list', color: 'warning' });
             }
         } catch (error) {
             setIsLoading(false);
-            toast.error(`Error in (handleAdd): ${error?.message || error}`);
+            addToast({ description: `Error in (handleAdd): ${error?.message || error}`, color: 'danger' });
             console.error('Error in (handleAdd):', error);
             logEvent(`[Error] in (handleAdd): ${error}`);
         }
@@ -47,7 +47,7 @@ export default function useManualAdd(listName, setList) {
             const numericValue = value.replace(/[^0-9]/g, '');
             setInputValue(numericValue);
         } catch (error) {
-            toast.error(`Error in (handleChange): ${error?.message || error}`);
+            addToast({ description: `Error in (handleChange): ${error?.message || error}`, color: 'danger' });
             console.error('Error in (handleChange):', error);
             logEvent(`[Error] in (handleChange): ${error}`);
         }

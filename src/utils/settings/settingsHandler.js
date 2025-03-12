@@ -1,15 +1,15 @@
 import { getVersion } from '@tauri-apps/api/app';
 import { Time } from '@internationalized/date';
 import { logEvent } from '@/utils/utils';
-import { toast } from 'react-toastify';
+import { addToast } from '@heroui/react';
 
 // Get the application version and set it in the state
-export const getAppVersion = async (toast) => {
+export const getAppVersion = async () => {
     try {
         const appVersion = await getVersion();
         return appVersion;
     } catch (error) {
-        toast.error(`Error in (getAppVersion): ${error?.message || error}`);
+        addToast({ description: `Error in (getAppVersion): ${error?.message || error}`, color: 'danger' });
         console.error('Error in (getAppVersion):', error);
         logEvent(`[Error] in (getAppVersion): ${error}`);
     }
@@ -60,11 +60,11 @@ export const handleResetSettings = (onClose, setSettings, setRefreshKey) => {
         localStorage.removeItem('steamCookies');
         setSettings(null);
         setRefreshKey(prevKey => prevKey + 1);
-        toast.success('[Settings] Reset to default');
+        addToast({ description: 'Settings have been reset to default', color: 'success' });
         logEvent('[Settings] Reset to default');
         onClose();
     } catch (error) {
-        toast.error(`Error in (handleResetSettings): ${error?.message || error}`);
+        addToast({ description: `Error in (handleResetSettings): ${error?.message || error}`, color: 'danger' });
         console.error('Error in (handleResetSettings):', error);
         logEvent(`[Error] in (handleResetSettings): ${error}`);
     }

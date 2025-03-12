@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 
-import { toast } from 'react-toastify';
 import { invoke } from '@tauri-apps/api/core';
 
 import { logEvent } from '@/utils/utils';
+import { addToast } from '@heroui/react';
 
 export default function useLogs() {
     const [logs, setLogs] = useState([]);
@@ -22,7 +22,7 @@ export default function useLogs() {
                     setLogs(logEntries);
                     setLogPath(`${fullLogPath}\\log.txt`);
                 } catch (error) {
-                    toast.error(`Error in (fetchLogs): ${error?.message || error}`);
+                    addToast({ description: `Error in (fetchLogs): ${error?.message || error}`, color: 'danger' });
                     console.error('Error in (fetchLogs):', error);
                     logEvent(`[Error] in (fetchLogs): ${error}`);
                 }

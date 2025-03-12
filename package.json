@@ -13,7 +13,7 @@
         "@dnd-kit/core": "^6.3.1",
         "@dnd-kit/sortable": "^10.0.0",
         "@dnd-kit/utilities": "^3.2.2",
-        "@heroui/react": "^2.6.14",
+        "@heroui/react": "^2.7.5",
         "@internationalized/date": "^3.5.5",
         "@tauri-apps/api": "^2.0.0",
         "@tauri-apps/plugin-autostart": "~2",
@@ -35,7 +35,6 @@
         "react-dom": "^19.0.0",
         "react-icons": "^5.1.0",
         "react-markdown": "^9.0.1",
-        "react-toastify": "^10.0.5",
         "react-window": "^1.8.11",
         "rehype-raw": "^7.0.0"
     },

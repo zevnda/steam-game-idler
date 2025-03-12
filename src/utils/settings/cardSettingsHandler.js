@@ -1,8 +1,8 @@
 import { invoke } from '@tauri-apps/api/core';
-import { toast } from 'react-toastify';
 
 import { logEvent } from '@/utils/utils';
 import ErrorToast from '@/components/ui/ErrorToast';
+import { addToast } from '@heroui/react';
 
 const fetchUserSummary = async (steamId, apiKey) => {
     const res = await invoke('get_user_summary', { steamId, apiKey });
@@ -28,9 +28,9 @@ export const getStoredCookies = async (setHasCookies, setSidValue, setSlsValue, 
             setCardFarmingUser(cardFarmingUser);
         }
     } catch (error) {
-        toast.error(`Error in (validateSession): ${error?.message || error}`);
-        console.error('Error in (validateSession):', error);
-        logEvent(`[Error] in (validateSession): ${error}`);
+        addToast({ description: `Error in (getStoredCookies): ${error?.message || error}`, color: 'danger' });
+        console.error('Error in (getStoredCookies):', error);
+        logEvent(`[Error] in (getStoredCookies): ${error}`);
     }
 };
 
@@ -47,12 +47,13 @@ export const handleSave = async (sidValue, slsValue, smaValue, setHasCookies, us
                 const cardFarmingUser = await fetchUserSummary(steamId, apiKey);
 
                 if (cardFarmingUser.steamId !== userSummary.steamId) {
-                    return toast.error(
-                        <ErrorToast
+                    return addToast({
+                        description: <ErrorToast
                             message={'[Card Farming] Account mismatch between Steam and SGI'}
                             href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Account%20mismatch%20between%20Steam%20and%20SGI'}
-                        />
-                    );
+                        />,
+                        color: 'danger'
+                    })
                 }
 
                 localStorage.setItem('steamCookies', JSON.stringify({ sid: sidValue, sls: slsValue, sma: smaValue }));
@@ -61,20 +62,21 @@ export const handleSave = async (sidValue, slsValue, smaValue, setHasCookies, us
                 setCardFarmingUser(cardFarmingUser);
                 localStorage.setItem('cardFarmingUser', JSON.stringify(cardFarmingUser));
 
-                toast.success(`[Card Farming] Logged in as ${res.user}`);
+                addToast({ description: `[Card Farming] Logged in as ${res.user}`, color: 'success' });
                 logEvent(`[Settings - Card Farming] Logged in as ${res.user}`);
             } else {
-                toast.error(
-                    <ErrorToast
+                addToast({
+                    description: <ErrorToast
                         message={'[Card Farming] Incorrect card farming credentials'}
                         href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Incorrect%20card%20farming%20credentials'}
-                    />
-                );
+                    />,
+                    color: 'danger'
+                })
                 logEvent('[Error] [Settings - Card Farming] Incorrect card farming credentials');
             }
         }
     } catch (error) {
-        toast.error(`Error in (handleSave): ${error?.message || error}`);
+        addToast({ description: `Error in (handleSave): ${error?.message || error}`, color: 'danger' });
         console.error('Error in (handleSave):', error);
         logEvent(`[Error] in (handleSave): ${error}`);
     }
@@ -89,10 +91,10 @@ export const handleClear = async (setHasCookies, setSidValue, setSlsValue, setSm
         setSmaValue('');
         setHasCookies(false);
         setCardFarmingUser(null);
-        toast.success('[Card Farming] Logged out');
+        addToast({ description: '[Card Farming] Logged out', color: 'success' });
         logEvent('[Settings - Card Farming] Logged out');
     } catch (error) {
-        toast.error(`Error in (handleClear): ${error?.message || error}`);
+        addToast({ description: `Error in (handleClear): ${error?.message || error}`, color: 'danger' });
         console.error('Error in (handleClear):', error);
         logEvent(`[Error] in (handleClear): ${error}`);
     }
@@ -125,7 +127,7 @@ export const handleCheckboxChange = (e, localSettings, setLocalSettings, setSett
         updateSettings(updatedSettings, setLocalSettings, setSettings);
         logEvent(`[Settings - Card Farming] Changed '${name}' to '${updatedSettings.cardFarming[name]}'`);
     } catch (error) {
-        toast.error(`Error in (handleCheckboxChange): ${error?.message || error}`);
+        addToast({ description: `Error in (handleCheckboxChange): ${error?.message || error}`, color: 'danger' });
         console.error('Error in (handleCheckboxChange):', error);
         logEvent(`[Error] in (handleCheckboxChange): ${error}`);
     }
@@ -137,7 +139,7 @@ export const updateSettings = (newSettings, setLocalSettings, setSettings) => {
     try {
         localStorage.setItem('settings', JSON.stringify(newSettings));
     } catch (error) {
-        toast.error(`Error in (updateSettings): ${error?.message || error}`);
+        addToast({ description: `Error in (updateSettings): ${error?.message || error}`, color: 'danger' });
         console.error('Error in (updateSettings):', error);
         logEvent(`[Error] in (updateSettings): ${error}`);
     }

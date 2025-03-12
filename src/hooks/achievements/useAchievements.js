@@ -1,9 +1,8 @@
 import { useContext, useEffect, useState, useMemo } from 'react';
 
-import { toast } from 'react-toastify';
-
 import { AppContext } from '@/components/layout/AppContext';
 import { fetchAchievementData, sortAchievements, filterAchievements } from '@/utils/achievements/achievementsHandler';
+import { addToast } from '@heroui/react';
 
 export default function useAchievements() {
     const {
@@ -65,7 +64,7 @@ export default function useAchievements() {
                 setIsLoading(false);
                 setIsSorted(true);
             } catch (error) {
-                toast.error(`Error in (getAchievementData): ${error?.message}`);
+                addToast({ description: `Error in (getAchievementData): ${error?.message}`, color: 'danger' });
                 console.error('Error in (getAchievementData):', error);
             }
         };
