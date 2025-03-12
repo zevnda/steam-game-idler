@@ -40,5 +40,6 @@ next-env.d.ts
 
 # tauri
 src-tauri/target
-/src-tauri/libs
+src-tauri/libs
+src-tauri/gen
 *.ps1
