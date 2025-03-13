@@ -1,10 +1,10 @@
+import { addToast } from '@heroui/react';
 import { useEffect, useState, useRef, useContext } from 'react';
 
-import { UserContext } from '@/components/contexts/UserContext';
 import { SearchContext } from '@/components/contexts/SearchContext';
+import { UserContext } from '@/components/contexts/UserContext';
 import { fetchGamesList, sortAndFilterGames } from '@/utils/gameslist/gamesListHandler';
 import { logEvent } from '@/utils/utils';
-import { addToast } from '@heroui/react';
 
 export default function useGamesList() {
     const { userSummary, gameList, setGameList } = useContext(UserContext);

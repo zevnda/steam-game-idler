@@ -1,9 +1,10 @@
+import { addToast } from '@heroui/react';
 import { invoke } from '@tauri-apps/api/core';
-import { logEvent } from '@/utils/utils';
 import { useContext } from 'react';
+
 import { StateContext } from '@/components/contexts/StateContext';
 import ErrorToast from '@/components/ui/ErrorToast';
-import { addToast } from '@heroui/react';
+import { logEvent } from '@/utils/utils';
 
 // Automate card farming and achievement unlocking
 export const useAutomate = () => {
@@ -22,8 +23,8 @@ export const useAutomate = () => {
             if (!steamRunning) {
                 return addToast({
                     description: <ErrorToast
-                        message={'Steam is not running'}
-                        href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Steam%20is%20not%20running'}
+                        message='Steam is not running'
+                        href='https://steamgameidler.vercel.app/faq#error-messages:~:text=Steam%20is%20not%20running'
                     />,
                     color: 'danger'
                 });
@@ -31,8 +32,8 @@ export const useAutomate = () => {
             if (!steamCookies?.sid || !steamCookies?.sls) {
                 return addToast({
                     description: <ErrorToast
-                        message={'Missing credentials in Settings'}
-                        href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=%22Missing%20credentials%20in%20setting%22'}
+                        message='Missing credentials in Settings'
+                        href='https://steamgameidler.vercel.app/faq#error-messages:~:text=%22Missing%20credentials%20in%20setting%22'
                     />,
                     color: 'danger'
                 });
@@ -46,8 +47,8 @@ export const useAutomate = () => {
                 localStorage.removeItem('cardFarmingUser');
                 return addToast({
                     description: <ErrorToast
-                        message={'Steam credentials need to be updated'}
-                        href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=%22Steam%20credentials%20need%20to%20be%20updated%22'}
+                        message='Steam credentials need to be updated'
+                        href='https://steamgameidler.vercel.app/faq#error-messages:~:text=%22Steam%20credentials%20need%20to%20be%20updated%22'
                     />,
                     color: 'danger'
                 });
@@ -57,8 +58,8 @@ export const useAutomate = () => {
             if (!settings.cardFarming.allGames && cardFarming.length === 0) {
                 return addToast({
                     description: <ErrorToast
-                        message={'Enable the "All games" setting or add some games to your card farming list'}
-                        href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Enable%20the%20%22All%20games%22%20setting%20or%20add%20some%20games%20to%20your%20card%20farming%20list'}
+                        message='Enable the "All games" setting or add some games to your card farming list'
+                        href='https://steamgameidler.vercel.app/faq#error-messages:~:text=Enable%20the%20%22All%20games%22%20setting%20or%20add%20some%20games%20to%20your%20card%20farming%20list'
                     />,
                     color: 'danger'
                 });
@@ -81,8 +82,8 @@ export const useAutomate = () => {
             if (!steamRunning) {
                 return addToast({
                     description: <ErrorToast
-                        message={'Steam is not running'}
-                        href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Steam%20is%20not%20running'}
+                        message='Steam is not running'
+                        href='https://steamgameidler.vercel.app/faq#error-messages:~:text=Steam%20is%20not%20running'
                     />,
                     color: 'danger'
                 });
@@ -95,8 +96,8 @@ export const useAutomate = () => {
             if (achievementUnlocker.length === 0) {
                 return addToast({
                     description: <ErrorToast
-                        message={'There are no games in your achievement unlocker list'}
-                        href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Steam%20is%20not%20running'}
+                        message='There are no games in your achievement unlocker list'
+                        href='https://steamgameidler.vercel.app/faq#error-messages:~:text=Steam%20is%20not%20running'
                     />,
                     color: 'danger'
                 });

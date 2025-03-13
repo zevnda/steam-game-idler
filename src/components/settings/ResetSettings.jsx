@@ -1,15 +1,13 @@
-import { Fragment } from 'react';
-
 import { Button, Modal, ModalContent, ModalBody, ModalFooter, ModalHeader } from '@heroui/react';
 
-import { handleResetSettings } from '@/utils/settings/settingsHandler';
 import useResetSettings from '@/hooks/settings/useResetSettings';
+import { handleResetSettings } from '@/utils/settings/settingsHandler';
 
 export default function ResetSettings({ setSettings, setRefreshKey }) {
     const { isOpen, onOpen, onOpenChange } = useResetSettings();
 
     return (
-        <Fragment>
+        <>
             <Button
                 size='sm'
                 color='danger'
@@ -22,7 +20,7 @@ export default function ResetSettings({ setSettings, setRefreshKey }) {
             <Modal isOpen={isOpen} onOpenChange={onOpenChange} className='bg-modalbody text-content' classNames={{ closeButton: ['text-altwhite hover:bg-titlehover duration-200'] }}>
                 <ModalContent>
                     {(onClose) => (
-                        <Fragment>
+                        <>
                             <ModalHeader className='flex flex-col gap-1 bg-modalheader border-b border-border' data-tauri-drag-region>
                                 Confirm
                             </ModalHeader >
@@ -49,10 +47,10 @@ export default function ResetSettings({ setSettings, setRefreshKey }) {
                                     Confirm
                                 </Button>
                             </ModalFooter>
-                        </Fragment>
+                        </>
                     )}
                 </ModalContent>
             </Modal>
-        </Fragment>
+        </>
     );
 }

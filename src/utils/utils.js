@@ -1,11 +1,10 @@
+import { addToast } from '@heroui/react';
 import { Time } from '@internationalized/date';
-
-import { isPermissionGranted, requestPermission, sendNotification } from '@tauri-apps/plugin-notification';
-import { invoke } from '@tauri-apps/api/core';
 import { getVersion } from '@tauri-apps/api/app';
+import { invoke } from '@tauri-apps/api/core';
+import { isPermissionGranted, requestPermission, sendNotification } from '@tauri-apps/plugin-notification';
 
 import ErrorToast from '@/components/ui/ErrorToast';
-import { addToast } from '@heroui/react';
 
 const idleTimeouts = {};
 const idleIntervals = {};
@@ -62,8 +61,8 @@ export async function startIdle(appId, appName, quiet = false, manual = true) {
                 console.error(`Error starting idler for ${appName} (${appId}): ${status.error}`);
                 addToast({
                     description: <ErrorToast
-                        message={'Are you logged in to the correct account?'}
-                        href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Are%20you%20logged%20in%20to%20the%20correct%20account%3F'}
+                        message='Are you logged in to the correct account?'
+                        href='https://steamgameidler.vercel.app/faq#error-messages:~:text=Are%20you%20logged%20in%20to%20the%20correct%20account%3F'
                     />,
                     color: 'danger'
                 });
@@ -73,8 +72,8 @@ export async function startIdle(appId, appName, quiet = false, manual = true) {
             console.error('Steam is not running');
             addToast({
                 description: <ErrorToast
-                    message={'Steam is not running'}
-                    href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Steam%20is%20not%20running'}
+                    message='Steam is not running'
+                    href='https://steamgameidler.vercel.app/faq#error-messages:~:text=Steam%20is%20not%20running'
                 />,
                 color: 'danger'
             });
@@ -109,14 +108,14 @@ export async function startFarmIdle(appIds) {
         const steamRunning = await invoke('check_status');
 
         if (steamRunning) {
-            await invoke('start_farm_idle', { appIds: appIds });
+            await invoke('start_farm_idle', { appIds });
             logEvent(`[Card Farming] Started idling ${appIds.length} games`);
         } else {
             console.error('Steam is not running');
             addToast({
                 description: <ErrorToast
-                    message={'Steam is not running'}
-                    href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Steam%20is%20not%20running'}
+                    message='Steam is not running'
+                    href='https://steamgameidler.vercel.app/faq#error-messages:~:text=Steam%20is%20not%20running'
                 />,
                 color: 'danger'
             });
@@ -141,7 +140,7 @@ export async function stopFarmIdle(appIds) {
 export async function unlockAchievement(appId, achievementName, appName) {
     try {
         const response = await invoke('unlock_achievement', {
-            appId: appId,
+            appId,
             achievementId: achievementName
         });
         const status = JSON.parse(response);
@@ -163,7 +162,7 @@ export async function unlockAchievement(appId, achievementName, appName) {
 export async function lockAchievement(appId, achievementName, appName) {
     try {
         const response = await invoke('lock_achievement', {
-            appId: appId,
+            appId,
             achievementId: achievementName
         });
         const status = JSON.parse(response);
@@ -182,7 +181,7 @@ export async function lockAchievement(appId, achievementName, appName) {
 export async function toggleAchievement(appId, achievementName, appName, type) {
     try {
         const response = await invoke('toggle_achievement', {
-            appId: appId,
+            appId,
             achievementId: achievementName
         });
         const status = JSON.parse(response);
@@ -202,7 +201,7 @@ export async function toggleAchievement(appId, achievementName, appName, type) {
 // Unlock all achievements for a game
 export async function unlockAllAchievements(appId, achievementsArr, appName) {
     try {
-        const response = await invoke('unlock_all_achievements', { appId: appId });
+        const response = await invoke('unlock_all_achievements', { appId });
         const status = JSON.parse(response);
         if (status.success) {
             logEvent(`[Achievement Manager] Unlocked ${achievementsArr.length} achievements for ${appName} (${appId})`);
@@ -221,7 +220,7 @@ export async function unlockAllAchievements(appId, achievementsArr, appName) {
 // Lock all achievements for a game
 export async function lockAllAchievements(appId, achievementsArr, appName) {
     try {
-        const response = await invoke('lock_all_achievements', { appId: appId });
+        const response = await invoke('lock_all_achievements', { appId });
         const status = JSON.parse(response);
         if (status.success) {
             logEvent(`[Achievement Manager] Locked ${achievementsArr.length} achievements for ${appName} (${appId})`);
@@ -241,7 +240,7 @@ export async function lockAllAchievements(appId, achievementsArr, appName) {
 export async function updateStats(appId, changedValues, appName) {
     try {
         const response = await invoke('update_stats', {
-            appId: appId,
+            appId,
             statsArr: JSON.stringify(changedValues)
         });
         const status = JSON.parse(response);
@@ -262,7 +261,7 @@ export async function updateStats(appId, changedValues, appName) {
 // Check remaining card drops for a game
 export async function checkDrops(steamId, appId, sid, sls, sma) {
     try {
-        const res = await invoke('get_drops_remaining', { sid: sid, sls: sls, sma: sma, steamid: steamId, appId: appId.toString() });
+        const res = await invoke('get_drops_remaining', { sid, sls, sma, steamid: steamId, appId: appId.toString() });
         if (res && res.remaining) {
             return res.remaining;
         } else {
@@ -278,7 +277,7 @@ export async function checkDrops(steamId, appId, sid, sls, sma) {
 // Get all games with remaining card drops
 export async function getAllGamesWithDrops(steamId, sid, sls, sma) {
     try {
-        const res = await invoke('get_games_with_drops', { sid: sid, sls: sls, sma: sma, steamid: steamId });
+        const res = await invoke('get_games_with_drops', { sid, sls, sma, steamid: steamId });
         if (res.gamesWithDrops && res.gamesWithDrops.length > 0) {
             return res.gamesWithDrops;
         } else {
@@ -380,10 +379,7 @@ export async function sendNativeNotification(title, body) {
         }
 
         if (permissionGranted) {
-            sendNotification({
-                title: title,
-                body: body,
-            });
+            sendNotification({ title, body, });
         }
     } catch (error) {
         console.error('Error in (sendNativeNotification):', error);

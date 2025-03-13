@@ -1,13 +1,12 @@
-import { Fragment, useContext, useEffect, useState } from 'react';
-import Image from 'next/image';
-
 import { Spinner } from '@heroui/react';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
+import { useContext, useEffect, useState } from 'react';
 
 import { NavigationContext } from '@/components/contexts/NavigationContext';
 import { StateContext } from '@/components/contexts/StateContext';
-import Header from '@/components/ui/Header';
 import ExtLink from '@/components/ui/ExtLink';
+import Header from '@/components/ui/Header';
 import useSetup from '@/hooks/layout/useSetup';
 
 export default function Setup() {
@@ -18,16 +17,16 @@ export default function Setup() {
 
     useEffect(() => {
         setActivePage('setup');
-    }, []);
+    }, [setActivePage]);
 
     useEffect(() => {
         setImageSrc(isDarkMode ?
             'https://raw.githubusercontent.com/zevnda/steam-game-idler/refs/heads/main/public/dbg.webp'
             : 'https://raw.githubusercontent.com/zevnda/steam-game-idler/refs/heads/main/public/lbg.webp');
-    }, []);
+    }, [isDarkMode]);
 
     return (
-        <Fragment>
+        <>
             <Header />
             <div className='relative w-full bg-base border-t border-border/40'>
                 {imageSrc && (
@@ -40,7 +39,7 @@ export default function Setup() {
                         priority
                     />
                 )}
-                <div className='absolute bg-base/10 backdrop-blur-[10px] w-full h-full'></div>
+                <div className='absolute bg-base/10 backdrop-blur-[10px] w-full h-full' />
                 <div className='relative flex justify-center items-center flex-col gap-5 w-full h-svh'>
                     <motion.div
                         className='flex backdrop-blur-md bg-base/20 justify-center items-center flex-col border border-border/40 min-w-[400px] max-w-[400px] rounded-lg shadow-lg dark:shadow-none'
@@ -61,14 +60,14 @@ export default function Setup() {
                             {isLoading ? (
                                 <Spinner />
                             ) : steamUsers.length > 0 ? (
-                                <Fragment>
+                                <>
                                     <p className='text-sm mb-2'>
                                         Choose an account
                                     </p>
                                     <div className='flex flex-col border border-border/40 max-h-[200px] min-w-[300px] overflow-y-auto rounded-lg'>
                                         {steamUsers.map((item, index) => (
                                             <div
-                                                key={index}
+                                                key={item.steamId}
                                                 className='last:border-none border-b border-border/40 hover:bg-containerhover hover:bg-opacity-30'
                                                 onClick={() => handleLogin(index)}
                                             >
@@ -93,13 +92,13 @@ export default function Setup() {
                                             </div>
                                         ))}
                                     </div>
-                                </Fragment>
+                                </>
                             ) : (
                                 <div className='flex flex-col items-center border border-border/40 w-full rounded-lg p-4'>
                                     <p className='text-xs'>
                                         No Steam users found
                                     </p>
-                                    <ExtLink href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=No%20Steam%20users%20found'}>
+                                    <ExtLink href='https://steamgameidler.vercel.app/faq#error-messages:~:text=No%20Steam%20users%20found'>
                                         <p className='text-xs text-link hover:text-linkhover'>
                                             Learn why
                                         </p>
@@ -109,7 +108,7 @@ export default function Setup() {
                         </div>
 
                         <div className='flex justify-center items-center p-6 w-full border-t border-border/40 rounded-br-lg rounded-bl-lg mt-8'>
-                            <ExtLink href={'https://steamgameidler.vercel.app/get-started/how-to-sign-in'}>
+                            <ExtLink href='https://steamgameidler.vercel.app/get-started/how-to-sign-in'>
                                 <p className='text-xs text-content font-semibold cursor-pointer'>
                                     Need help?
                                 </p>
@@ -118,6 +117,6 @@ export default function Setup() {
                     </motion.div>
                 </div>
             </div>
-        </Fragment>
+        </>
     );
 }

@@ -1,8 +1,8 @@
-import { StateProvider } from '@/components/contexts/StateContext';
-import { SearchProvider } from '@/components/contexts/SearchContext';
 import { NavigationProvider } from '@/components/contexts/NavigationContext';
-import { UserProvider } from '@/components/contexts/UserContext';
+import { SearchProvider } from '@/components/contexts/SearchContext';
+import { StateProvider } from '@/components/contexts/StateContext';
 import { UpdateProvider } from '@/components/contexts/UpdateContext';
+import { UserProvider } from '@/components/contexts/UserContext';
 
 export default function AppProvider({ children }) {
     return (

@@ -1,9 +1,8 @@
+import { addToast } from '@heroui/react';
+import { invoke } from '@tauri-apps/api/core';
 import { useState, useEffect } from 'react';
 
-import { invoke } from '@tauri-apps/api/core';
-
 import { logEvent } from '@/utils/utils';
-import { addToast } from '@heroui/react';
 
 export const useLogs = () => {
     const [logs, setLogs] = useState([]);

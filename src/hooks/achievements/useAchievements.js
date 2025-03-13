@@ -1,10 +1,10 @@
+import { addToast } from '@heroui/react';
 import { useContext, useEffect, useState, useMemo } from 'react';
 
-import { StateContext } from '@/components/contexts/StateContext';
 import { SearchContext } from '@/components/contexts/SearchContext';
+import { StateContext } from '@/components/contexts/StateContext';
 import { UserContext } from '@/components/contexts/UserContext';
 import { fetchAchievementData, sortAchievements, filterAchievements } from '@/utils/achievements/achievementsHandler';
-import { addToast } from '@heroui/react';
 
 export default function useAchievements() {
     const { appId } = useContext(StateContext);

@@ -1,12 +1,12 @@
-import { useCallback, useContext, useEffect } from 'react';
+import { check } from '@tauri-apps/plugin-updater';
 import { useTheme } from 'next-themes';
+import { useCallback, useContext, useEffect } from 'react';
 
 import { StateContext } from '@/components/contexts/StateContext';
-import { UserContext } from '@/components/contexts/UserContext';
 import { UpdateContext } from '@/components/contexts/UpdateContext';
+import { UserContext } from '@/components/contexts/UserContext';
 import { defaultSettings, checkForFreeGames, startAutoIdleGames } from '@/utils/layout/windowHandler';
 
-import { check } from '@tauri-apps/plugin-updater';
 
 export default function useWindow() {
     const { theme } = useTheme();

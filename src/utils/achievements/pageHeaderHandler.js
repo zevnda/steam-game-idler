@@ -8,9 +8,9 @@ export const sortOptions = [
 export const handleChange = (e, achievementList, setAchievementList, percentageMap, userGameAchievementsMap, setIsSorted) => {
     if (e.currentKey === 'title') {
         // Sort achievements alphabetically
-        const sortedList = [...achievementList].sort((a, b) => {
-            return a.displayName.localeCompare(b.displayName);
-        });
+        const sortedList = [...achievementList].sort((a, b) =>
+            a.displayName.localeCompare(b.displayName)
+        );
         setAchievementList(sortedList);
     }
     if (e.currentKey === 'percent') {

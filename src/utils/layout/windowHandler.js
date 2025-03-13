@@ -1,9 +1,8 @@
+import { addToast } from '@heroui/react';
+import { Time } from '@internationalized/date';
 import { invoke } from '@tauri-apps/api/core';
 
-import { Time } from '@internationalized/date';
-
 import { fetchFreeGames, logEvent, sendNativeNotification, startIdle } from '@/utils/utils';
-import { addToast } from '@heroui/react';
 
 // Set default settings and updates user summary
 export const defaultSettings = (setUserSummary) => {

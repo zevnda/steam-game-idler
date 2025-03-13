@@ -1,5 +1,3 @@
-import { Fragment } from 'react';
-
 export default function ExtLink({ children, href, className }) {
     const handleClick = async (e) => {
         e.preventDefault();
@@ -13,16 +11,14 @@ export default function ExtLink({ children, href, className }) {
     };
 
     return (
-        <Fragment>
-            <a
-                className={`w-fit h-fit cursor-pointer ${className}`}
-                href={href}
-                onClick={(e) => {
-                    handleClick(e);
-                }}
-            >
-                {children}
-            </a>
-        </Fragment>
+        <a
+            className={`w-fit h-fit cursor-pointer ${className}`}
+            href={href}
+            onClick={(e) => {
+                handleClick(e);
+            }}
+        >
+            {children}
+        </a>
     );
 }

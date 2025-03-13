@@ -1,17 +1,17 @@
-import { Fragment, useContext, useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 
-import { StateContext } from '@/components/contexts/StateContext';
-import { NavigationContext } from '@/components/contexts/NavigationContext';
-import { antiAwayStatus } from '@/utils/utils';
-import Header from '@/components/ui/Header';
-import SideBar from '@/components/ui/SideBar';
-import CardFarming from '@/components/automation/CardFarming';
-import AchievementUnlocker from '@/components/automation/AchievementUnlocker';
 import Achievements from '@/components/achievements/Achievements';
+import AchievementUnlocker from '@/components/automation/AchievementUnlocker';
+import CardFarming from '@/components/automation/CardFarming';
+import { NavigationContext } from '@/components/contexts/NavigationContext';
+import { StateContext } from '@/components/contexts/StateContext';
+import CustomList from '@/components/customlists/CustomList';
 import FreeGamesList from '@/components/gameslist/FreeGamesList';
 import GamesList from '@/components/gameslist/GamesList';
 import Settings from '@/components/settings/Settings';
-import CustomList from '@/components/customlists/CustomList';
+import Header from '@/components/ui/Header';
+import SideBar from '@/components/ui/SideBar';
+import { antiAwayStatus } from '@/utils/utils';
 
 export default function Dashboard() {
     const { showAchievements, isCardFarming, isAchievementUnlocker } = useContext(StateContext);
@@ -20,7 +20,7 @@ export default function Dashboard() {
     useEffect(() => {
         setActivePage('games');
         antiAwayStatus();
-    }, []);
+    }, [setActivePage]);
 
     const renderContent = () => {
         if (showAchievements) return <Achievements />;
@@ -34,46 +34,46 @@ export default function Dashboard() {
 
         if (customListMap[activePage]) {
             return (
-                <Fragment>
+                <>
                     <SideBar />
                     <CustomList key={activePage} type={customListMap[activePage]} />
-                </Fragment>
+                </>
             );
         }
 
         switch (activePage) {
             case 'freeGames':
                 return (
-                    <Fragment>
+                    <>
                         <SideBar />
                         <FreeGamesList />
-                    </Fragment>
+                    </>
                 );
             case 'settings':
                 return (
-                    <Fragment>
+                    <>
                         <SideBar />
                         <Settings />
-                    </Fragment>
+                    </>
                 );
             default:
                 return (
-                    <Fragment>
+                    <>
                         <SideBar />
                         <GamesList />
-                    </Fragment>
+                    </>
                 );
         }
     };
 
     return (
-        <Fragment>
+        <>
             <Header />
             <div className='flex w-full'>
                 {renderContent()}
             </div>
             {isCardFarming && <CardFarming activePage={activePage} />}
             {isAchievementUnlocker && <AchievementUnlocker activePage={activePage} />}
-        </Fragment>
+        </>
     );
 }

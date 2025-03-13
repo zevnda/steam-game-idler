@@ -34,7 +34,7 @@ export const checkUnseenNotifications = (notifications, setUnseenNotifications) 
 
 // Mark a notification as seen
 export const markAsSeen = (id, unseenNotifications, setUnseenNotifications) => {
-    let seenNotifications = JSON.parse(localStorage.getItem('seenNotifications')) || [];
+    const seenNotifications = JSON.parse(localStorage.getItem('seenNotifications')) || [];
     if (!seenNotifications.includes(id)) {
         seenNotifications.push(id);
         localStorage.setItem('seenNotifications', JSON.stringify(seenNotifications));
@@ -44,7 +44,7 @@ export const markAsSeen = (id, unseenNotifications, setUnseenNotifications) => {
 
 // Mark all notifications as seen
 export const markAllAsSeen = (notifications, setUnseenNotifications) => {
-    let seenNotifications = JSON.parse(localStorage.getItem('seenNotifications')) || [];
+    const seenNotifications = JSON.parse(localStorage.getItem('seenNotifications')) || [];
     notifications.forEach(notification => {
         if (!seenNotifications.includes(notification.id)) {
             if (seenNotifications.length >= 10) {

@@ -1,11 +1,9 @@
+import { addToast } from '@heroui/react';
+import { invoke } from '@tauri-apps/api/core';
 import { useEffect, useState } from 'react';
 
-import { invoke } from '@tauri-apps/api/core';
-
-import { addToast } from '@heroui/react';
-
-import { logEvent } from '@/utils/utils';
 import ErrorToast from '@/components/ui/ErrorToast';
+import { logEvent } from '@/utils/utils';
 
 export const useCardSettings = (settings, setLocalSettings) => {
     const [sidValue, setSidValue] = useState('');
@@ -98,8 +96,8 @@ export const handleSave = async (sidValue, slsValue, smaValue, setHasCookies, us
                 if (cardFarmingUser.steamId !== userSummary.steamId) {
                     return addToast({
                         description: <ErrorToast
-                            message={'[Card Farming] Account mismatch between Steam and SGI'}
-                            href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Account%20mismatch%20between%20Steam%20and%20SGI'}
+                            message='[Card Farming] Account mismatch between Steam and SGI'
+                            href='https://steamgameidler.vercel.app/faq#error-messages:~:text=Account%20mismatch%20between%20Steam%20and%20SGI'
                         />,
                         color: 'danger'
                     });
@@ -116,8 +114,8 @@ export const handleSave = async (sidValue, slsValue, smaValue, setHasCookies, us
             } else {
                 addToast({
                     description: <ErrorToast
-                        message={'[Card Farming] Incorrect card farming credentials'}
-                        href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Incorrect%20card%20farming%20credentials'}
+                        message='[Card Farming] Incorrect card farming credentials'
+                        href='https://steamgameidler.vercel.app/faq#error-messages:~:text=Incorrect%20card%20farming%20credentials'
                     />,
                     color: 'danger'
                 });

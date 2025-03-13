@@ -1,14 +1,12 @@
-import { Fragment, useContext } from 'react';
-
 import { Modal, ModalContent, ModalBody, Button, ModalFooter, ModalHeader } from '@heroui/react';
-
-import { StateContext } from '@/components/contexts/StateContext';
-import { NavigationContext } from '@/components/contexts/NavigationContext';
-import useSideBar from '@/hooks/ui/useSideBar';
-import Sparkles from '@/components/ui/Sparkles';
-
-import { TbAward, TbCards, TbDeviceGamepad2, TbGift, TbHeart, TbHourglassLow, TbSettings } from 'react-icons/tb';
+import { useContext } from 'react';
 import { FiLogOut } from 'react-icons/fi';
+import { TbAward, TbCards, TbDeviceGamepad2, TbGift, TbHeart, TbHourglassLow, TbSettings } from 'react-icons/tb';
+
+import { NavigationContext } from '@/components/contexts/NavigationContext';
+import { StateContext } from '@/components/contexts/StateContext';
+import Sparkles from '@/components/ui/Sparkles';
+import useSideBar from '@/hooks/ui/useSideBar';
 
 export default function SideBar() {
     const { isDarkMode, showFreeGamesTab, isCardFarming, isAchievementUnlocker } = useContext(StateContext);
@@ -16,7 +14,7 @@ export default function SideBar() {
     const { isOpen, onOpenChange, openConfirmation, handleLogout } = useSideBar(activePage, setActivePage);
 
     return (
-        <Fragment>
+        <>
             <div className='flex justify-between flex-col w-14 min-h-calc max-h-calc bg-titlebar'>
                 <div className='flex justify-center items-center flex-col gap-2'>
 
@@ -109,7 +107,7 @@ export default function SideBar() {
             <Modal isOpen={isOpen} onOpenChange={onOpenChange} className='bg-modalbody text-content' classNames={{ closeButton: ['text-altwhite hover:bg-titlehover duration-200'] }}>
                 <ModalContent>
                     {(onClose) => (
-                        <Fragment>
+                        <>
                             <ModalHeader className='flex flex-col gap-1 bg-modalheader border-b border-border' data-tauri-drag-region>
                                 Confirm
                             </ModalHeader>
@@ -136,10 +134,10 @@ export default function SideBar() {
                                     Confirm
                                 </Button>
                             </ModalFooter>
-                        </Fragment>
+                        </>
                     )}
                 </ModalContent>
             </Modal>
-        </Fragment>
+        </>
     );
 }

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+
 import { fetchNotifications } from '@/utils/notifications/notificationsHandler';
 
 export const useNotifications = () => {

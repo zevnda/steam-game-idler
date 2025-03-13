@@ -1,10 +1,9 @@
-import { useContext } from 'react';
 import { addToast, useDisclosure } from '@heroui/react';
-
 import { invoke } from '@tauri-apps/api/core';
+import { useContext } from 'react';
 
-import { SearchContext } from '@/components/contexts/SearchContext';
 import { NavigationContext } from '@/components/contexts/NavigationContext';
+import { SearchContext } from '@/components/contexts/SearchContext';
 import { UserContext } from '@/components/contexts/UserContext';
 import { logEvent } from '@/utils/utils';
 

@@ -1,11 +1,12 @@
 import { invoke } from '@tauri-apps/api/core';
+
 import { logEvent } from '@/utils/utils';
 
 // Fetch achievement data from the Steam API
 export const fetchAchievementData = async (steamId, appId) => {
     try {
         const apiKey = localStorage.getItem('apiKey');
-        const res = await invoke('get_achievement_data', { steamId: steamId, appId: appId.toString(), apiKey: apiKey });
+        const res = await invoke('get_achievement_data', { steamId, appId: appId.toString(), apiKey });
         const achievementList = res.schema.game?.availableGameStats?.achievements || [];
         const statisticsList = res.schema.game?.availableGameStats?.stats || [];
         const userGameStats = res.userStats?.playerstats;

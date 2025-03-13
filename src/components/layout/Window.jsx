@@ -1,10 +1,10 @@
-import { Fragment, useContext } from 'react';
+import { useContext } from 'react';
 
 import { UserContext } from '@/components/contexts/UserContext';
 import Dashboard from '@/components/layout/Dashboard';
 import Setup from '@/components/layout/Setup';
+import ChangelogModal from '@/components/ui/ChangelogModal';
 import useWindow from '@/hooks/layout/useWindow';
-import ChangelogModal from '../ui/ChangelogModal';
 
 export default function Window() {
     const { userSummary } = useContext(UserContext);
@@ -15,11 +15,9 @@ export default function Window() {
     );
 
     return (
-        <Fragment>
-            <div className='bg-titlebar min-h-calc'>
-                <Dashboard />
-                <ChangelogModal />
-            </div>
-        </Fragment>
+        <div className='bg-titlebar min-h-calc'>
+            <Dashboard />
+            <ChangelogModal />
+        </div>
     );
 }

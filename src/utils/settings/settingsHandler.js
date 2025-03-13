@@ -1,7 +1,8 @@
-import { getVersion } from '@tauri-apps/api/app';
-import { Time } from '@internationalized/date';
-import { logEvent } from '@/utils/utils';
 import { addToast } from '@heroui/react';
+import { Time } from '@internationalized/date';
+import { getVersion } from '@tauri-apps/api/app';
+
+import { logEvent } from '@/utils/utils';
 
 // Get the application version and set it in the state
 export const getAppVersion = async () => {

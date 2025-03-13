@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
 import { getVersion } from '@tauri-apps/api/app';
+import { useEffect, useState } from 'react';
 
 export default function useChangelog() {
     const [changelog, setChangelog] = useState('');

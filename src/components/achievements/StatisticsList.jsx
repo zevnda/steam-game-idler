@@ -1,11 +1,10 @@
-import { Fragment, useContext, memo } from 'react';
+import { Input } from '@heroui/react';
+import { useContext, memo } from 'react';
 import { FixedSizeList as List } from 'react-window';
 
-import { Input } from '@heroui/react';
-
-import { handleInputChange } from '@/utils/achievements/statisticsListHandler';
 import { UserContext } from '@/components/contexts/UserContext';
 import useStatisticsList from '@/hooks/achievements/useStatisticsList';
+import { handleInputChange } from '@/utils/achievements/statisticsListHandler';
 
 const Row = memo(({ index, style, data }) => {
     const { statisticsList, newStatValues, setNewStatValues } = data;
@@ -65,26 +64,24 @@ export default function StatisticsList({ setInitialStatValues, newStatValues, se
     const itemData = { statisticsList, newStatValues, setNewStatValues };
 
     return (
-        <Fragment>
-            <div className='flex flex-col gap-2 w-full max-h-[calc(100vh-210px)] overflow-y-auto scroll-smooth'>
-                {statisticsUnavailable ? (
-                    <div className='flex flex-col gap-2 justify-center items-center my-2 w-full'>
-                        <p className='text-sm'>
-                            No statistics found
-                        </p>
-                    </div>
-                ) : (
-                    <List
-                        height={window.innerHeight - 210}
-                        itemCount={Math.ceil(statisticsList.length / 2)}
-                        itemSize={58}
-                        width={'100%'}
-                        itemData={itemData}
-                    >
-                        {Row}
-                    </List>
-                )}
-            </div>
-        </Fragment>
+        <div className='flex flex-col gap-2 w-full max-h-[calc(100vh-210px)] overflow-y-auto scroll-smooth'>
+            {statisticsUnavailable ? (
+                <div className='flex flex-col gap-2 justify-center items-center my-2 w-full'>
+                    <p className='text-sm'>
+                        No statistics found
+                    </p>
+                </div>
+            ) : (
+                <List
+                    height={window.innerHeight - 210}
+                    itemCount={Math.ceil(statisticsList.length / 2)}
+                    itemSize={58}
+                    width='100%'
+                    itemData={itemData}
+                >
+                    {Row}
+                </List>
+            )}
+        </div>
     );
 }

@@ -1,4 +1,5 @@
 import { useContext, useState } from 'react';
+
 import { StateContext } from '@/components/contexts/StateContext';
 
 export default function usePageHeader() {

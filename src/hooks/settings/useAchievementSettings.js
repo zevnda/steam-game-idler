@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react';
-
 import { addToast } from '@heroui/react';
+import { useState, useEffect } from 'react';
 
 import { logEvent } from '@/utils/utils';
 
@@ -12,7 +11,7 @@ export const useAchievementSettings = (settings, setLocalSettings) => {
             setLocalSettings(settings);
             setLabelInterval(`${settings.achievementUnlocker.interval[0]} to ${settings.achievementUnlocker.interval[1]}`);
         }
-    }, [settings]);
+    }, [settings, setLocalSettings]);
 
     return { labelInterval, setLabelInterval };
 };

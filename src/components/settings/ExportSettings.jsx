@@ -1,6 +1,6 @@
-import { getAppVersion } from '@/utils/settings/settingsHandler';
 import { addToast, Button } from '@heroui/react';
-import { Fragment } from 'react';
+
+import { getAppVersion } from '@/utils/settings/settingsHandler';
 
 export default function ExportSettings() {
     const exportSettings = async () => {
@@ -22,7 +22,8 @@ export default function ExportSettings() {
             const value = localStorage.getItem(key);
             try {
                 allSettings[key] = JSON.parse(value);
-            } catch (e) {
+            } catch (error) {
+                console.error(error);
                 allSettings[key] = value;
             }
         }
@@ -35,14 +36,12 @@ export default function ExportSettings() {
     };
 
     return (
-        <Fragment>
-            <Button
-                size='sm'
-                className='font-semibold rounded-lg bg-dynamic text-button'
-                onPress={exportSettings}
-            >
-                Export Data
-            </Button>
-        </Fragment>
+        <Button
+            size='sm'
+            className='font-semibold rounded-lg bg-dynamic text-button'
+            onPress={exportSettings}
+        >
+            Export Data
+        </Button>
     );
 }

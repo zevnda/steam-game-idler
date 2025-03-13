@@ -1,5 +1,3 @@
-import { Fragment } from 'react';
-
 import { Button, Modal, ModalContent, ModalBody, ModalFooter, ModalHeader } from '@heroui/react';
 
 import useClearData from '@/hooks/settings/useClearData';
@@ -8,7 +6,7 @@ export default function ClearData() {
     const { isOpen, onOpen, onOpenChange, handleClearData } = useClearData();
 
     return (
-        <Fragment>
+        <>
             <Button
                 size='sm'
                 color='danger'
@@ -21,7 +19,7 @@ export default function ClearData() {
             <Modal isOpen={isOpen} onOpenChange={onOpenChange} className='bg-modalbody text-content' classNames={{ closeButton: ['text-altwhite hover:bg-titlehover duration-200'] }}>
                 <ModalContent>
                     {(onClose) => (
-                        <Fragment>
+                        <>
                             <ModalHeader className='flex flex-col gap-1 bg-modalheader border-b border-border' data-tauri-drag-region>
                                 Confirm
                             </ModalHeader >
@@ -48,10 +46,10 @@ export default function ClearData() {
                                     Confirm
                                 </Button>
                             </ModalFooter>
-                        </Fragment>
+                        </>
                     )}
                 </ModalContent>
             </Modal>
-        </Fragment>
+        </>
     );
 }

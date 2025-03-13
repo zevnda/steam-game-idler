@@ -1,10 +1,9 @@
-import { useContext, useEffect, useState } from 'react';
-
+import { addToast } from '@heroui/react';
 import { invoke } from '@tauri-apps/api/core';
+import { useContext, useEffect, useState } from 'react';
 
 import { UserContext } from '@/components/contexts/UserContext';
 import { logEvent } from '@/utils/utils';
-import { addToast } from '@heroui/react';
 
 export default function useSetup() {
     const { setUserSummary } = useContext(UserContext);

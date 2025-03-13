@@ -1,11 +1,10 @@
-import { useState, useEffect, useContext } from 'react';
-
+import { addToast } from '@heroui/react';
 import { invoke } from '@tauri-apps/api/core';
 import moment from 'moment';
+import { useState, useEffect, useContext } from 'react';
 
 import { UserContext } from '@/components/contexts/UserContext';
 import { logEvent } from '@/utils/utils';
-import { addToast } from '@heroui/react';
 
 export const usePageHeader = ({ setSortStyle, setRefreshKey }) => {
     const { userSummary } = useContext(UserContext);

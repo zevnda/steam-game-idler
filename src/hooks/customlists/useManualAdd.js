@@ -1,7 +1,8 @@
-import { useState } from 'react';
-import { invoke } from '@tauri-apps/api/core';
-import { logEvent } from '@/utils/utils';
 import { addToast } from '@heroui/react';
+import { invoke } from '@tauri-apps/api/core';
+import { useState } from 'react';
+
+import { logEvent } from '@/utils/utils';
 
 export default function useManualAdd(listName, setList) {
     const [inputValue, setInputValue] = useState('');

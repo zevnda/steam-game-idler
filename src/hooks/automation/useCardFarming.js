@@ -256,7 +256,7 @@ const delay = (ms, isMountedRef, abortControllerRef) => {
 export const handleCancel = async (gamesWithDrops, isMountedRef, abortControllerRef) => {
     try {
         const gamesArray = Array.from(gamesWithDrops);
-        let appIds = gamesArray.map(item => parseInt(item.appId));
+        const appIds = gamesArray.map(item => parseInt(item.appId));
         await stopFarmIdle(appIds);
     } catch (error) {
         handleError('handleCancel', error);

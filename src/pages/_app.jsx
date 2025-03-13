@@ -1,6 +1,8 @@
-import { ThemeProvider } from '@/components/ui/theme/theme-provider';
 import { HeroUIProvider, ToastProvider } from '@heroui/react';
 import { TbX } from 'react-icons/tb';
+
+import { ThemeProvider } from '@/components/ui/theme/theme-provider';
+
 import '@/styles/globals.css';
 
 export default function App({ Component, pageProps }) {

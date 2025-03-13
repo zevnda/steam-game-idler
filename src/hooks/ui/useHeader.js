@@ -1,7 +1,8 @@
-import { useContext } from 'react';
-import { isPermissionGranted, requestPermission, sendNotification } from '@tauri-apps/plugin-notification';
-import { SearchContext } from '@/components/contexts/SearchContext';
 import { getCurrentWindow } from '@tauri-apps/api/window';
+import { isPermissionGranted, requestPermission, sendNotification } from '@tauri-apps/plugin-notification';
+import { useContext } from 'react';
+
+import { SearchContext } from '@/components/contexts/SearchContext';
 
 export default function useHeader(setGameQueryValue, setAchievementQueryValue) {
     const { setIsQuery } = useContext(SearchContext);

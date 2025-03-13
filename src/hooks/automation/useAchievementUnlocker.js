@@ -1,5 +1,6 @@
-import { formatTime, getRandomDelay, isWithinSchedule, logEvent, startIdle, stopIdle, unlockAchievement } from '@/utils/utils';
 import { invoke } from '@tauri-apps/api/core';
+
+import { formatTime, getRandomDelay, isWithinSchedule, logEvent, startIdle, stopIdle, unlockAchievement } from '@/utils/utils';
 
 export const useAchievementUnlocker = async (
     setIsPrivate,

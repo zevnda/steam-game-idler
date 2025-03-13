@@ -1,15 +1,14 @@
-import { Fragment, useContext, useState } from 'react';
-
 import { Modal, ModalContent, ModalBody, Button, useDisclosure, ModalFooter, ModalHeader, Select, SelectItem } from '@heroui/react';
-
-import { StateContext } from '@/components/contexts/StateContext';
-import { SearchContext } from '@/components/contexts/SearchContext';
-import { NavigationContext } from '@/components/contexts/NavigationContext';
-import { UserContext } from '@/components/contexts/UserContext';
-import { handleUnlockAll, handleLockAll, handleUpdateAllStats, handleResetAll } from '@/utils/achievements/tabButtonsHandler';
-import { sortOptions, handleChange } from '@/utils/achievements/pageHeaderHandler';
-
+import { useContext, useState } from 'react';
 import { TbSortDescending2 } from 'react-icons/tb';
+
+import { NavigationContext } from '@/components/contexts/NavigationContext';
+import { SearchContext } from '@/components/contexts/SearchContext';
+import { StateContext } from '@/components/contexts/StateContext';
+import { UserContext } from '@/components/contexts/UserContext';
+import { sortOptions, handleChange } from '@/utils/achievements/pageHeaderHandler';
+import { handleUnlockAll, handleLockAll, handleUpdateAllStats, handleResetAll } from '@/utils/achievements/tabButtonsHandler';
+
 
 export default function TabButtons({ initialStatValues, newStatValues, setNewStatValues, setIsSorted, userGameAchievementsMap, percentageMap }) {
     const { appId, appName } = useContext(StateContext);
@@ -27,7 +26,7 @@ export default function TabButtons({ initialStatValues, newStatValues, setNewSta
     };
 
     return (
-        <Fragment>
+        <>
             <div className='flex justify-center items-center w-full min-h-8'>
                 <div className='flex justify-end w-full'>
                     {!achievementsUnavailable && currentTab === 'achievements' && (
@@ -101,7 +100,7 @@ export default function TabButtons({ initialStatValues, newStatValues, setNewSta
             <Modal isOpen={isOpen} onOpenChange={onOpenChange} className='bg-modalbody text-content' classNames={{ closeButton: ['text-altwhite hover:bg-titlehover duration-200'] }}>
                 <ModalContent>
                     {(onClose) => (
-                        <Fragment>
+                        <>
                             <ModalHeader className='flex flex-col gap-1 bg-modalheader border-b border-border' data-tauri-drag-region>
                                 Confirm
                             </ModalHeader>
@@ -134,10 +133,10 @@ export default function TabButtons({ initialStatValues, newStatValues, setNewSta
                                     Confirm
                                 </Button>
                             </ModalFooter>
-                        </Fragment>
+                        </>
                     )}
                 </ModalContent>
             </Modal>
-        </Fragment>
+        </>
     );
 }

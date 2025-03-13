@@ -1,17 +1,16 @@
-import { Fragment, useContext, memo, useState } from 'react';
-import { FixedSizeList as List } from 'react-window';
-import Image from 'next/image';
-
-import { invoke } from '@tauri-apps/api/core';
 import { addToast, Button, Tooltip } from '@heroui/react';
+import { invoke } from '@tauri-apps/api/core';
+import Image from 'next/image';
+import { useContext, memo, useState } from 'react';
+import { FixedSizeList as List } from 'react-window';
 
 import { StateContext } from '@/components/contexts/StateContext';
 import { UserContext } from '@/components/contexts/UserContext';
-import { toggleAchievement } from '@/utils/utils';
 import ErrorToast from '@/components/ui/ErrorToast';
+import { toggleAchievement } from '@/utils/utils';
 
 const Row = memo(({ index, style, data }) => {
-    const { appId, appName, isDarkMode, achievementList, userGameAchievementsMap, percentageMap } = data;
+    const { appId, appName, achievementList, userGameAchievementsMap, percentageMap } = data;
     const item = achievementList[index];
 
     const isUnlockedInitial = item ? userGameAchievementsMap.get(item.name) || false : false;
@@ -26,8 +25,8 @@ const Row = memo(({ index, style, data }) => {
         if (!steamRunning) {
             return addToast({
                 description: <ErrorToast
-                    message={'Steam is not running'}
-                    href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Steam%20is%20not%20running'}
+                    message='Steam is not running'
+                    href='https://steamgameidler.vercel.app/faq#error-messages:~:text=Steam%20is%20not%20running'
                 />,
                 color: 'danger'
             });
@@ -85,7 +84,7 @@ const Row = memo(({ index, style, data }) => {
                 </div>
                 <div className='p-1 bg-container dark:bg-[#1a1a1a] select-none rounded-b-lg'>
                     <div className='w-full bg-titlehover rounded-full h-3.5 relative'>
-                        <div className='bg-dynamic/40 h-3.5 rounded-full flex items-center' style={{ width: `${percentage}%`, position: 'relative' }}></div>
+                        <div className='bg-dynamic/40 h-3.5 rounded-full flex items-center' style={{ width: `${percentage}%`, position: 'relative' }} />
                         {percentage !== undefined && (
                             <p className='text-[11px] text-button dark:text-offwhite absolute inset-0 flex items-center justify-center mix-blend-difference'>
                                 {percentage.toFixed(1)}%
@@ -101,33 +100,31 @@ const Row = memo(({ index, style, data }) => {
 Row.displayName = 'Row';
 
 export default function AchievementsList({ userGameAchievementsMap, percentageMap }) {
-    const { appId, appName, isDarkMode } = useContext(StateContext);
+    const { appId, appName } = useContext(StateContext);
     const { achievementList, achievementsUnavailable } = useContext(UserContext);
 
-    const itemData = { appId, appName, isDarkMode, achievementList, userGameAchievementsMap, percentageMap };
+    const itemData = { appId, appName, achievementList, userGameAchievementsMap, percentageMap };
 
     return (
-        <Fragment>
-            <div className='flex flex-col gap-2 w-full max-h-[calc(100vh-210px)] overflow-y-auto scroll-smooth'>
-                {achievementsUnavailable ? (
-                    <div className='flex flex-col gap-2 justify-center items-center my-2 w-full'>
-                        <p className='text-sm'>
-                            No achievements found
-                        </p>
-                    </div>
-                ) : (
-                    <List
-                        height={window.innerHeight - 210}
-                        itemCount={achievementList.length}
-                        itemSize={100}
-                        width={'100%'}
-                        itemData={itemData}
-                        marginBottom={'10px'}
-                    >
-                        {Row}
-                    </List>
-                )}
-            </div>
-        </Fragment>
+        <div className='flex flex-col gap-2 w-full max-h-[calc(100vh-210px)] overflow-y-auto scroll-smooth'>
+            {achievementsUnavailable ? (
+                <div className='flex flex-col gap-2 justify-center items-center my-2 w-full'>
+                    <p className='text-sm'>
+                        No achievements found
+                    </p>
+                </div>
+            ) : (
+                <List
+                    height={window.innerHeight - 210}
+                    itemCount={achievementList.length}
+                    itemSize={100}
+                    width='100%'
+                    itemData={itemData}
+                    marginBottom='10px'
+                >
+                    {Row}
+                </List>
+            )}
+        </div>
     );
 }

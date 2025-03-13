@@ -1,0 +1,84 @@
+{
+    "extends": "next/core-web-vitals",
+    "env": {
+        "es6": true
+    },
+    "rules": {
+        "strict": "error",
+        "@next/next/no-img-element": "warn",
+        "@next/next/no-html-link-for-pages": "error",
+        "react/no-unescaped-entities": "error",
+        "react/jsx-key": "error",
+        "react/jsx-no-duplicate-props": "error",
+        "react-hooks/rules-of-hooks": "error",
+        "react-hooks/exhaustive-deps": "warn",
+        "react/jsx-uses-react": "error",
+        "react/jsx-uses-vars": "error",
+        "react/self-closing-comp": "warn",
+        "react/no-array-index-key": "warn",
+        "react/jsx-no-useless-fragment": "warn",
+        "react/jsx-pascal-case": "warn",
+        "react/jsx-curly-brace-presence": [
+            "warn",
+            {
+                "props": "never",
+                "children": "never"
+            }
+        ],
+        "react/jsx-fragments": [
+            "warn",
+            "syntax"
+        ],
+        "import/no-unresolved": "off",
+        "import/order": [
+            "warn",
+            {
+                "groups": [
+                    "builtin",
+                    "external",
+                    "internal",
+                    "parent",
+                    "sibling",
+                    "index"
+                ],
+                "newlines-between": "always",
+                "alphabetize": {
+                    "order": "asc",
+                    "caseInsensitive": true
+                }
+            }
+        ],
+        "no-undef": "error",
+        "no-unused-expressions": "warn",
+        "no-multiple-empty-lines": "warn",
+        "no-unreachable": "error",
+        "no-sync": "warn",
+        "no-unused-vars": "warn",
+        "prefer-const": "warn",
+        "eqeqeq": [
+            "error",
+            "always"
+        ],
+        "no-console": [
+            "warn",
+            {
+                "allow": [
+                    "warn",
+                    "error"
+                ]
+            }
+        ],
+        "quotes": [
+            "warn",
+            "single"
+        ],
+        "semi": [
+            "warn",
+            "always"
+        ],
+        "object-shorthand": [
+            "warn",
+            "always"
+        ]
+    }
+}

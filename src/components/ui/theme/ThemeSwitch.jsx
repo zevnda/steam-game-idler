@@ -1,6 +1,6 @@
-import { Fragment, useEffect, useState } from 'react';
-import { useTheme } from 'next-themes';
 import { Select, SelectItem } from '@heroui/react';
+import { useTheme } from 'next-themes';
+import { useEffect, useState } from 'react';
 import { TbBrush } from 'react-icons/tb';
 
 export default function ThemeSwitch() {
@@ -42,30 +42,28 @@ export default function ThemeSwitch() {
     if (!mounted) return null;
 
     return (
-        <Fragment>
-            <Select
-                size='sm'
-                aria-label='theme'
-                disallowEmptySelection
-                radius='none'
-                startContent={<TbBrush />}
-                items={themes}
-                className='w-[203px]'
-                classNames={{
-                    listbox: ['p-0'],
-                    value: ['text-sm !text-content'],
-                    trigger: ['bg-titlebar border border-border data-[hover=true]:!bg-input data-[open=true]:!bg-input duration-100 rounded-lg'],
-                    popoverContent: ['bg-titlebar border border-border rounded-lg justify-start !text-content'],
-                }}
-                defaultSelectedKeys={[resolvedTheme]}
-                onSelectionChange={(e) => {
-                    const selectedTheme = e.currentKey;
-                    localStorage.setItem('theme', selectedTheme);
-                    setTheme(selectedTheme);
-                }}
-            >
-                {(theme) => <SelectItem classNames={{ base: ['data-[hover=true]:!bg-titlehover data-[hover=true]:!text-content'] }}>{theme.label}</SelectItem>}
-            </Select>
-        </Fragment>
+        <Select
+            size='sm'
+            aria-label='theme'
+            disallowEmptySelection
+            radius='none'
+            startContent={<TbBrush />}
+            items={themes}
+            className='w-[203px]'
+            classNames={{
+                listbox: ['p-0'],
+                value: ['text-sm !text-content'],
+                trigger: ['bg-titlebar border border-border data-[hover=true]:!bg-input data-[open=true]:!bg-input duration-100 rounded-lg'],
+                popoverContent: ['bg-titlebar border border-border rounded-lg justify-start !text-content'],
+            }}
+            defaultSelectedKeys={[resolvedTheme]}
+            onSelectionChange={(e) => {
+                const selectedTheme = e.currentKey;
+                localStorage.setItem('theme', selectedTheme);
+                setTheme(selectedTheme);
+            }}
+        >
+            {(theme) => <SelectItem classNames={{ base: ['data-[hover=true]:!bg-titlehover data-[hover=true]:!text-content'] }}>{theme.label}</SelectItem>}
+        </Select>
     );
 }

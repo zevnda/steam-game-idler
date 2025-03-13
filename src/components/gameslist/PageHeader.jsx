@@ -1,10 +1,7 @@
-import { Fragment } from 'react';
-
 import { Select, SelectItem } from '@heroui/react';
+import { TbRefresh, TbSortDescending2 } from 'react-icons/tb';
 
 import { usePageHeader } from '@/hooks/gameslist/usePageHeader';
-
-import { TbRefresh, TbSortDescending2 } from 'react-icons/tb';
 
 export default function PageHeader({ sortStyle, setSortStyle, filteredGames, visibleGames, setRefreshKey }) {
     const { handleSorting, handleRefetch } = usePageHeader({ setSortStyle, setRefreshKey });
@@ -18,49 +15,47 @@ export default function PageHeader({ sortStyle, setSortStyle, filteredGames, vis
     ];
 
     return (
-        <Fragment>
-            <div className={`fixed w-[calc(100vw-68px)] z-[50] bg-opacity-90 backdrop-blur-md bg-base pl-4 pt-2 rounded-tl-xl ${filteredGames?.length > 25 ? 'pr-4' : 'pr-2'}`}>
-                <div className='flex justify-between items-center pb-3'>
-                    <div className='flex items-center gap-1'>
-                        <div className='flex flex-col justify-center'>
-                            <p className='text-lg font-semibold'>
-                                Your Games
+        <div className={`fixed w-[calc(100vw-68px)] z-[50] bg-opacity-90 backdrop-blur-md bg-base pl-4 pt-2 rounded-tl-xl ${filteredGames?.length > 25 ? 'pr-4' : 'pr-2'}`}>
+            <div className='flex justify-between items-center pb-3'>
+                <div className='flex items-center gap-1'>
+                    <div className='flex flex-col justify-center'>
+                        <p className='text-lg font-semibold'>
+                            Your Games
+                        </p>
+                        <div className='flex gap-1'>
+                            <p className='text-xs text-altwhite'>
+                                Showing {visibleGames.length} of {filteredGames.length} games
                             </p>
-                            <div className='flex gap-1'>
-                                <p className='text-xs text-altwhite'>
-                                    Showing {visibleGames.length} of {filteredGames.length} games
-                                </p>
-                                <div className='flex justify-center items-center cursor-pointer' onClick={handleRefetch}>
-                                    <TbRefresh className='text-altwhite' fontSize={16} />
-                                </div>
+                            <div className='flex justify-center items-center cursor-pointer' onClick={handleRefetch}>
+                                <TbRefresh className='text-altwhite' fontSize={16} />
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <div className='flex justify-end items-center gap-2'>
-                        <Select
-                            size='sm'
-                            aria-label='sort'
-                            disallowEmptySelection
-                            radius='none'
-                            startContent={<TbSortDescending2 fontSize={26} />}
-                            items={sortOptions}
-                            className='w-[240px]'
-                            classNames={{
-                                listbox: ['p-0'],
-                                value: ['text-sm !text-content'],
-                                trigger: ['bg-titlebar border border-border data-[hover=true]:!bg-input data-[open=true]:!bg-input duration-100 rounded-lg'],
-                                popoverContent: ['bg-titlebar border border-border rounded-lg justify-start !text-content'],
-                                listboxWrapper: ['min-h-[168px]']
-                            }}
-                            defaultSelectedKeys={[sortStyle]}
-                            onSelectionChange={(e) => { handleSorting(e); }}
-                        >
-                            {(item) => <SelectItem classNames={{ base: ['data-[hover=true]:!bg-titlehover data-[hover=true]:!text-content'] }}>{item.label}</SelectItem>}
-                        </Select>
-                    </div>
+                <div className='flex justify-end items-center gap-2'>
+                    <Select
+                        size='sm'
+                        aria-label='sort'
+                        disallowEmptySelection
+                        radius='none'
+                        startContent={<TbSortDescending2 fontSize={26} />}
+                        items={sortOptions}
+                        className='w-[240px]'
+                        classNames={{
+                            listbox: ['p-0'],
+                            value: ['text-sm !text-content'],
+                            trigger: ['bg-titlebar border border-border data-[hover=true]:!bg-input data-[open=true]:!bg-input duration-100 rounded-lg'],
+                            popoverContent: ['bg-titlebar border border-border rounded-lg justify-start !text-content'],
+                            listboxWrapper: ['min-h-[168px]']
+                        }}
+                        defaultSelectedKeys={[sortStyle]}
+                        onSelectionChange={(e) => { handleSorting(e); }}
+                    >
+                        {(item) => <SelectItem classNames={{ base: ['data-[hover=true]:!bg-titlehover data-[hover=true]:!text-content'] }}>{item.label}</SelectItem>}
+                    </Select>
                 </div>
             </div>
-        </Fragment>
+        </div>
     );
 }

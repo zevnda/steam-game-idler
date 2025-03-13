@@ -1,8 +1,7 @@
-import { useEffect, useState, useRef, useMemo } from 'react';
-
 import Particles, { initParticlesEngine } from '@tsparticles/react';
 import { loadSlim } from '@tsparticles/slim';
 import { useAnimation } from 'framer-motion';
+import { useEffect, useState, useRef, useMemo } from 'react';
 
 class ParticleEngineManager {
     static instance;

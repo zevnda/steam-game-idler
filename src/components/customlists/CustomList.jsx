@@ -1,18 +1,17 @@
-import { Fragment, useState } from 'react';
 
-import { Button } from '@heroui/react';
 import { DndContext } from '@dnd-kit/core';
 import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { Button } from '@heroui/react';
+import { useState } from 'react';
+import { TbAward, TbCards, TbEdit } from 'react-icons/tb';
 
+import EditListModal from '@/components/customlists/EditListModal';
+import ManualAdd from '@/components/customlists/ManualAdd';
+import GameSettings from '@/components/gameslist/GameSettings';
+import GameCard from '@/components/ui/GameCard';
 import { useAutomate } from '@/hooks/automation/useAutomateButtons';
 import useCustomList from '@/hooks/customlists/useCustomList';
-import GameCard from '@/components/ui/GameCard';
-import GameSettings from '@/components/gameslist/GameSettings';
-import EditListModal from '@/components/customlists/EditListModal';
-
-import { TbAward, TbCards, TbEdit } from 'react-icons/tb';
-import ManualAdd from './ManualAdd';
 
 const listTypes = {
     favoritesList: {
@@ -79,7 +78,7 @@ export default function CustomList({ type }) {
     };
 
     return (
-        <Fragment>
+        <>
             <div className='w-calc min-h-calc max-h-calc bg-base overflow-y-auto overflow-x-hidden rounded-tl-xl border-t border-l border-border' ref={containerRef}>
                 <div className={`fixed flex justify-between items-center w-[calc(100svw-68px)] py-2 pl-4 bg-base bg-opacity-90 backdrop-blur-md z-10 rounded-tl-xl ${list.slice(0, visibleGames).length >= 21 ? 'pr-4' : 'pr-2'}`}>
                     <div className='flex flex-col'>
@@ -150,7 +149,7 @@ export default function CustomList({ type }) {
                 setList={setList}
                 type={type}
             />
-        </Fragment>
+        </>
     );
 }
 

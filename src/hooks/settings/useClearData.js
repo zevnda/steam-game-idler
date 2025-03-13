@@ -1,10 +1,9 @@
+import { useDisclosure } from '@heroui/react';
 import { useContext } from 'react';
 
-import { useDisclosure } from '@heroui/react';
-
 import { UserContext } from '@/components/contexts/UserContext';
-import { logEvent, preserveKeysAndClearData } from '@/utils/utils';
 import { handleClearLogs } from '@/hooks/settings/useLogs';
+import { logEvent, preserveKeysAndClearData } from '@/utils/utils';
 
 const useClearData = () => {
     const { setUserSummary } = useContext(UserContext);

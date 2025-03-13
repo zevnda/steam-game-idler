@@ -1,10 +1,7 @@
-import React from 'react';
-
 import { Button, Modal, ModalContent, ModalBody, Input, ModalFooter, ModalHeader, useDisclosure } from '@heroui/react';
+import { TbPlus } from 'react-icons/tb';
 
 import useManualAdd from '@/hooks/customlists/useManualAdd';
-
-import { TbPlus } from 'react-icons/tb';
 
 export default function ManualAdd({ listName, setList }) {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -14,10 +11,10 @@ export default function ManualAdd({ listName, setList }) {
         if (e.key === 'Enter') {
             handleAdd(onClose);
         }
-    }
+    };
 
     return (
-        <React.Fragment>
+        <>
             <Button
                 size='sm'
                 isIconOnly
@@ -29,7 +26,7 @@ export default function ManualAdd({ listName, setList }) {
             <Modal isOpen={isOpen} onOpenChange={onOpenChange} onClose={() => setInputValue('')} className='bg-modalbody text-content' classNames={{ closeButton: ['text-altwhite hover:bg-titlehover duration-200'] }}>
                 <ModalContent>
                     {(onClose) => (
-                        <React.Fragment>
+                        <>
                             <ModalHeader className='flex flex-col gap-1 bg-modalheader border-b border-border' data-tauri-drag-region>
                                 Add A Game
                             </ModalHeader>
@@ -72,10 +69,10 @@ export default function ManualAdd({ listName, setList }) {
                                     Add
                                 </Button>
                             </ModalFooter>
-                        </React.Fragment>
+                        </>
                     )}
                 </ModalContent>
             </Modal>
-        </React.Fragment>
+        </>
     );
 }
