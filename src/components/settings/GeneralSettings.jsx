@@ -1,20 +1,17 @@
 import { Fragment, useContext } from 'react';
 import Image from 'next/image';
 
-import { Button, Checkbox, Input } from '@heroui/react';
+import { Button, Input } from '@heroui/react';
 
-import { StateContext } from '@/components/contexts/StateContext';
 import { UserContext } from '@/components/contexts/UserContext';
-import { handleCheckboxChange, handleRunAtStartupChange, handleKeyChange, handleKeySave, handleClear } from '@/utils/settings/generalSettingsHandler';
-import { antiAwayStatus } from '@/utils/utils';
-import useGeneralSettings from '@/hooks/settings/useGeneralSettings';
+import { useGeneralSettings, handleKeyChange, handleKeySave, handleClear } from '@/hooks/settings/useGeneralSettings';
+import SettingsCheckbox from '@/components/settings/SettingsCheckbox';
+import ThemeSwitch from '@/components/ui/theme/ThemeSwitch';
 import ExtLink from '@/components/ui/ExtLink';
-import ThemeSwitch from '../ui/theme/ThemeSwitch';
 
-export default function GeneralSettings({ settings, setSettings }) {
-    const { isDarkMode } = useContext(StateContext);
+export default function GeneralSettings({ settings, setSettings, localSettings, setLocalSettings }) {
     const { userSummary } = useContext(UserContext);
-    const { localSettings, setLocalSettings, startupState, setStartupState, keyValue, setKeyValue, hasKey, setHasKey } = useGeneralSettings(settings);
+    const { keyValue, setKeyValue, hasKey, setHasKey } = useGeneralSettings(settings);
 
     return (
         <Fragment>
@@ -47,82 +44,55 @@ export default function GeneralSettings({ settings, setSettings }) {
                     </div>
                 </div>
 
-                <Checkbox
+                <SettingsCheckbox
+                    type='general'
                     name='stealthIdle'
-                    isSelected={localSettings?.general?.stealthIdle || false}
-                    onChange={(e) => handleCheckboxChange(e, localSettings, setLocalSettings, setSettings)}
-                    classNames={{
-                        wrapper: [`before:group-data-[selected=true]:!border-dynamic after:bg-dynamic border-red-500 text-button group-data-[hover=true]:before:${isDarkMode ? 'bg-white/20' : 'bg-black/20'}`]
-                    }}
-                >
-                    <div className='flex items-center gap-1'>
-                        <p className='text-xs text-content'>
-                            Hide idle windows <span className='italic'>(not recommended)</span>
-                        </p>
-                    </div>
-                </Checkbox>
+                    content='Hide idle windows (not recommended)'
+                    settings={settings}
+                    setSettings={setSettings}
+                    localSettings={localSettings}
+                    setLocalSettings={setLocalSettings}
+                />
 
-                <Checkbox
+                <SettingsCheckbox
+                    type='general'
                     name='antiAway'
-                    isSelected={localSettings?.general?.antiAway || false}
-                    onChange={(e) => {
-                        handleCheckboxChange(e, localSettings, setLocalSettings, setSettings);
-                        antiAwayStatus(!localSettings?.general?.antiAway);
-                    }}
-                    classNames={{
-                        wrapper: [`before:group-data-[selected=true]:!border-dynamic after:bg-dynamic border-red-500 text-button group-data-[hover=true]:before:${isDarkMode ? 'bg-white/20' : 'bg-black/20'}`]
-                    }}
-                >
-                    <div className='flex items-center gap-1'>
-                        <p className='text-xs text-content'>
-                            Prevent away status on Steam
-                        </p>
-                    </div>
-                </Checkbox>
+                    content='Prevent away status on Steam'
+                    settings={settings}
+                    setSettings={setSettings}
+                    localSettings={localSettings}
+                    setLocalSettings={setLocalSettings}
+                />
 
-                <Checkbox
+                <SettingsCheckbox
+                    type='general'
                     name='freeGameNotifications'
-                    isSelected={localSettings?.general?.freeGameNotifications || false}
-                    onChange={(e) => handleCheckboxChange(e, localSettings, setLocalSettings, setSettings)}
-                    classNames={{
-                        wrapper: [`before:group-data-[selected=true]:!border-dynamic after:bg-dynamic border-red-500 text-button group-data-[hover=true]:before:${isDarkMode ? 'bg-white/20' : 'bg-black/20'}`]
-                    }}
-                >
-                    <div className='flex items-center gap-1'>
-                        <p className='text-xs text-content'>
-                            Get notifications about free games
-                        </p>
-                    </div>
-                </Checkbox>
+                    content='Get notifications about free games'
+                    settings={settings}
+                    setSettings={setSettings}
+                    localSettings={localSettings}
+                    setLocalSettings={setLocalSettings}
+                />
 
-                <Checkbox
+                <SettingsCheckbox
+                    type='general'
                     name='clearData'
-                    isSelected={localSettings?.general?.clearData || false}
-                    onChange={(e) => handleCheckboxChange(e, localSettings, setLocalSettings, setSettings)}
-                    classNames={{
-                        wrapper: [`before:group-data-[selected=true]:!border-dynamic after:bg-dynamic border-red-500 text-button group-data-[hover=true]:before:${isDarkMode ? 'bg-white/20' : 'bg-black/20'}`]
-                    }}
-                >
-                    <div className='flex items-center gap-1'>
-                        <p className='text-xs text-content'>
-                            Clear custom list when logging out
-                        </p>
-                    </div>
-                </Checkbox>
+                    content='Clear custom list when logging out'
+                    settings={settings}
+                    setSettings={setSettings}
+                    localSettings={localSettings}
+                    setLocalSettings={setLocalSettings}
+                />
 
-                <Checkbox
-                    isSelected={startupState || false}
-                    onChange={() => handleRunAtStartupChange(startupState, setStartupState)}
-                    classNames={{
-                        wrapper: [`before:group-data-[selected=true]:!border-dynamic after:bg-dynamic border-red-500 text-button group-data-[hover=true]:before:${isDarkMode ? 'bg-white/20' : 'bg-black/20'}`]
-                    }}
-                >
-                    <div className='flex items-center gap-1'>
-                        <p className='text-xs text-content'>
-                            Run at startup
-                        </p>
-                    </div>
-                </Checkbox>
+                <SettingsCheckbox
+                    type='general'
+                    name='runAtStartup'
+                    content='Run at startup'
+                    settings={settings}
+                    setSettings={setSettings}
+                    localSettings={localSettings}
+                    setLocalSettings={setLocalSettings}
+                />
 
                 <div className='flex flex-col gap-2'>
                     <p className='text-xs mt-2'>

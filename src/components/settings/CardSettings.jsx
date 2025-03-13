@@ -1,14 +1,14 @@
 import { Fragment, useContext } from 'react';
 import Image from 'next/image';
 
-import { Button, Checkbox, Input } from '@heroui/react';
+import { Button, Input } from '@heroui/react';
 
 import { UserContext } from '@/components/contexts/UserContext';
-import { handleSave, handleClear, handleCheckboxChange } from '@/utils/settings/cardSettingsHandler';
-import useCardSettings from '@/hooks/settings/useCardSettings';
+import { useCardSettings, handleSave, handleClear } from '@/hooks/settings/useCardSettings';
+import SettingsCheckbox from '@/components/settings/SettingsCheckbox';
 import ExtLink from '@/components/ui/ExtLink';
 
-export default function CardSettings({ settings, setSettings }) {
+export default function CardSettings({ settings, setSettings, localSettings, setLocalSettings }) {
     const { userSummary } = useContext(UserContext);
     const {
         sidValue,
@@ -19,8 +19,6 @@ export default function CardSettings({ settings, setSettings }) {
         setSlsValue,
         setSmaValue,
         setHasCookies,
-        localSettings,
-        setLocalSettings,
         handleSidChange,
         handleSlsChange,
         handleSmaChange,
@@ -61,39 +59,30 @@ export default function CardSettings({ settings, setSettings }) {
                     </div>
                 )}
 
-                <Checkbox
+                <SettingsCheckbox
+                    type='cardFarming'
                     name='listGames'
-                    isSelected={localSettings?.cardFarming?.listGames || false}
-                    onChange={(e) => handleCheckboxChange(e, localSettings, setLocalSettings, setSettings)}
-                    classNames={{
-                        wrapper: ['before:group-data-[selected=true]:!border-dynamic after:bg-dynamic text-button']
-                    }}
-                >
-                    <div className='flex items-center gap-1'>
-                        <p className='text-xs text-content'>
-                            Farm cards for games in the Card Farming list
-                        </p>
-                    </div>
-                </Checkbox>
+                    content='Farm cards for games in the Card Farming list'
+                    settings={settings}
+                    setSettings={setSettings}
+                    localSettings={localSettings}
+                    setLocalSettings={setLocalSettings}
+                />
 
-                <Checkbox
+                <SettingsCheckbox
+                    type='cardFarming'
                     name='allGames'
-                    isSelected={localSettings?.cardFarming?.allGames || false}
-                    onChange={(e) => handleCheckboxChange(e, localSettings, setLocalSettings, setSettings)}
-                    classNames={{
-                        wrapper: ['before:group-data-[selected=true]:!border-dynamic after:bg-dynamic text-button']
-                    }}
-                >
-                    <div className='flex items-center gap-1'>
-                        <p className='text-xs text-content'>
-                            Farm cards for all games with card drops remaining
-                        </p>
-                    </div>
-                </Checkbox>
+                    content='Farm cards for all games with card drops remaining'
+                    settings={settings}
+                    setSettings={setSettings}
+                    localSettings={localSettings}
+                    setLocalSettings={setLocalSettings}
+                />
 
                 <div className='w-full'>
                     <p className='text-xs mt-2'>
-                        Steam credentials are required in order to use the Card Farming feature. <ExtLink href={'https://steamgameidler.vercel.app/steam-credentials'} className='text-link hover:text-linkhover'>Learn more</ExtLink>
+                        Steam credentials are required in order to use the Card Farming feature.&nbsp;
+                        <ExtLink href={'https://steamgameidler.vercel.app/steam-credentials'} className='text-link hover:text-linkhover'>Learn more</ExtLink>
                     </p>
                     <div className='flex flex-col mt-4'>
                         <div className='flex flex-col gap-2'>
