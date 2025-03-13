@@ -35,7 +35,7 @@ pub fn run() {
     }
 
     // Create a channel for communication between threads
-    let (tx, _rx) = mpsc::channel();
+    let (tx, rx) = mpsc::channel();
 
     tauri::Builder::default()
         .plugin(tauri_plugin_window_state::Builder::default().build())
@@ -139,6 +139,14 @@ pub fn run() {
             anti_away,
             check_process_by_game_id,
         ])
-        .run(tauri::generate_context!())
+        .build(tauri::generate_context!())
         .expect("error while building tauri application")
+        .run(move |_, event| match event {
+            tauri::RunEvent::Exit => {
+                SHUTTING_DOWN.store(true, Ordering::SeqCst);
+                rx.recv().unwrap();
+                thread::sleep(Duration::from_secs(2));
+            }
+            _ => {}
+        });
 }
