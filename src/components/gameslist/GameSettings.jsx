@@ -144,7 +144,7 @@ export default function GameSettings({ isOpen, onOpenChange }) {
                                 </Button>
                                 <Button
                                     size='sm'
-                                    className='font-semibold rounded-lg bg-dynamic text-content'
+                                    className='font-semibold rounded-lg bg-dynamic text-button'
                                     isDisabled={isSaveDisabled()}
                                     onPress={() => {
                                         handleSave();

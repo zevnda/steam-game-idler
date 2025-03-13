@@ -41,7 +41,7 @@ export default function App({ Component, pageProps }) {
                         closeIcon: (<TbX size={16} className='text-content' />),
                         classNames: {
                             base: ['bg-titlebar border-border cursor-default'],
-                            description: ['text-content text-xs'],
+                            description: ['text-content text-xs font-medium'],
                             closeButton: ['opacity-100 absolute right-1 top-1 hover:bg-titlehover']
                         }
                     }}

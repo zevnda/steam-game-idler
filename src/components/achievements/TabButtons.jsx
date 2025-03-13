@@ -35,7 +35,7 @@ export default function TabButtons({ initialStatValues, newStatValues, setNewSta
                             <Button
                                 size='sm'
                                 isDisabled={!achievementList || achievementQueryValue.length > 0 || currentTab === 'statistics'}
-                                className='font-semibold rounded-lg bg-dynamic text-content'
+                                className='font-semibold rounded-lg bg-dynamic text-button'
                                 onPress={() => handleSetState('unlock', 'achievements')}
                             >
                                 Unlock All
@@ -56,7 +56,7 @@ export default function TabButtons({ initialStatValues, newStatValues, setNewSta
                             <Button
                                 size='sm'
                                 isDisabled={Object.keys(initialStatValues).length === 0}
-                                className='font-semibold rounded-lg bg-dynamic text-content'
+                                className='font-semibold rounded-lg bg-dynamic text-button'
                                 onPress={() => handleUpdateAllStats(appId, appName, initialStatValues, newStatValues)}
                             >
                                 Save Changes
@@ -122,7 +122,7 @@ export default function TabButtons({ initialStatValues, newStatValues, setNewSta
                                 </Button>
                                 <Button
                                     size='sm'
-                                    className='font-semibold rounded-lg bg-dynamic text-content'
+                                    className='font-semibold rounded-lg bg-dynamic text-button'
                                     onPress={
                                         type === 'statistics' ?
                                             () => handleResetAll(appId, appName, setNewStatValues, onClose) :

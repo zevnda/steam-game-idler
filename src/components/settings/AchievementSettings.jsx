@@ -18,7 +18,7 @@ export default function AchievementSettings({ settings, setSettings }) {
                             isSelected={localSettings?.achievementUnlocker?.idle || false}
                             onChange={(e) => handleCheckboxChange(e, localSettings, setLocalSettings, setSettings)}
                             classNames={{
-                                wrapper: ['before:group-data-[selected=true]:!border-dynamic after:bg-dynamic text-content']
+                                wrapper: ['before:group-data-[selected=true]:!border-dynamic after:bg-dynamic text-button'],
                             }}
                         >
                             <div className='flex items-center gap-1'>
@@ -33,7 +33,7 @@ export default function AchievementSettings({ settings, setSettings }) {
                             isSelected={localSettings?.achievementUnlocker?.hidden || false}
                             onChange={(e) => handleCheckboxChange(e, localSettings, setLocalSettings, setSettings)}
                             classNames={{
-                                wrapper: ['before:group-data-[selected=true]:!border-dynamic after:bg-dynamic text-content']
+                                wrapper: ['before:group-data-[selected=true]:!border-dynamic after:bg-dynamic text-button']
                             }}
                         >
                             <div className='flex items-center gap-1'>
@@ -49,7 +49,7 @@ export default function AchievementSettings({ settings, setSettings }) {
                                 isSelected={localSettings?.achievementUnlocker?.schedule || false}
                                 onChange={(e) => handleCheckboxChange(e, localSettings, setLocalSettings, setSettings)}
                                 classNames={{
-                                    wrapper: ['before:group-data-[selected=true]:!border-dynamic after:bg-dynamic text-content']
+                                    wrapper: ['before:group-data-[selected=true]:!border-dynamic after:bg-dynamic text-button']
                                 }}
                             >
                                 <div className='flex items-center gap-1'>

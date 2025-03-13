@@ -50,7 +50,7 @@ export default function GeneralSettings({ settings, setSettings }) {
                     isSelected={localSettings?.general?.stealthIdle || false}
                     onChange={(e) => handleCheckboxChange(e, localSettings, setLocalSettings, setSettings)}
                     classNames={{
-                        wrapper: ['before:group-data-[selected=true]:!border-dynamic after:bg-dynamic border-red-500 text-content']
+                        wrapper: ['before:group-data-[selected=true]:!border-dynamic after:bg-dynamic border-red-500 text-button']
                     }}
                 >
                     <div className='flex items-center gap-1'>
@@ -68,7 +68,7 @@ export default function GeneralSettings({ settings, setSettings }) {
                         antiAwayStatus(!localSettings?.general?.antiAway);
                     }}
                     classNames={{
-                        wrapper: ['before:group-data-[selected=true]:!border-dynamic after:bg-dynamic text-content']
+                        wrapper: ['before:group-data-[selected=true]:!border-dynamic after:bg-dynamic text-button']
                     }}
                 >
                     <div className='flex items-center gap-1'>
@@ -83,7 +83,7 @@ export default function GeneralSettings({ settings, setSettings }) {
                     isSelected={localSettings?.general?.freeGameNotifications || false}
                     onChange={(e) => handleCheckboxChange(e, localSettings, setLocalSettings, setSettings)}
                     classNames={{
-                        wrapper: ['before:group-data-[selected=true]:!border-dynamic after:bg-dynamic text-content']
+                        wrapper: ['before:group-data-[selected=true]:!border-dynamic after:bg-dynamic text-button']
                     }}
                 >
                     <div className='flex items-center gap-1'>
@@ -98,7 +98,7 @@ export default function GeneralSettings({ settings, setSettings }) {
                     isSelected={localSettings?.general?.clearData || false}
                     onChange={(e) => handleCheckboxChange(e, localSettings, setLocalSettings, setSettings)}
                     classNames={{
-                        wrapper: ['before:group-data-[selected=true]:!border-dynamic after:bg-dynamic text-content']
+                        wrapper: ['before:group-data-[selected=true]:!border-dynamic after:bg-dynamic text-button']
                     }}
                 >
                     <div className='flex items-center gap-1'>
@@ -112,7 +112,7 @@ export default function GeneralSettings({ settings, setSettings }) {
                     isSelected={startupState || false}
                     onChange={() => handleRunAtStartupChange(startupState, setStartupState)}
                     classNames={{
-                        wrapper: ['before:group-data-[selected=true]:!border-dynamic after:bg-dynamic text-content']
+                        wrapper: ['before:group-data-[selected=true]:!border-dynamic after:bg-dynamic text-button']
                     }}
                 >
                     <div className='flex items-center gap-1'>
@@ -156,7 +156,7 @@ export default function GeneralSettings({ settings, setSettings }) {
                         <Button
                             size='sm'
                             isDisabled={hasKey || !keyValue}
-                            className='font-semibold rounded-lg bg-dynamic text-content'
+                            className='font-semibold rounded-lg bg-dynamic text-button'
                             onPress={() => handleKeySave(keyValue, setHasKey)}
                         >
                             Save

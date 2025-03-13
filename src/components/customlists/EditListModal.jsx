@@ -69,9 +69,9 @@ export default function EditListModal({ isOpen, onOpenChange, onClose, filteredG
                                 <Button
                                     size='sm'
                                     color='default'
-                                    className={`rounded-full text-content ${showInList ? 'bg-green-400/40' : 'bg-dynamic'}`}
+                                    className={`rounded-full font-semibold ${showInList ? 'bg-green-400/40 text-green-600' : 'bg-dynamic text-button'}`}
                                     isDisabled={list.length === 0}
-                                    startContent={<TbCheck fontSize={34} className={showInList ? 'text-green-500' : 'text-altwhite'} />}
+                                    startContent={<TbCheck fontSize={34} className={showInList ? 'text-green-600' : 'text-button'} />}
                                     onPress={() => setShowInList(!showInList)}
                                 >
                                     In List
@@ -104,7 +104,7 @@ export default function EditListModal({ isOpen, onOpenChange, onClose, filteredG
                                 </Button>
                                 <Button
                                     size='sm'
-                                    className='rounded-lg font-semibold bg-dynamic text-content'
+                                    className='rounded-lg font-semibold bg-dynamic text-button'
                                     onPress={onClose}
                                 >
                                     Done

@@ -130,7 +130,7 @@ export default function SideBar() {
                                 </Button>
                                 <Button
                                     size='sm'
-                                    className='font-semibold rounded-lg bg-dynamic text-content'
+                                    className='font-semibold rounded-lg bg-dynamic text-button'
                                     onPress={() => handleLogout(onClose)}
                                 >
                                     Confirm

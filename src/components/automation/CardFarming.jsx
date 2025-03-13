@@ -120,8 +120,8 @@ export default function CardFarming({ activePage }) {
                         <Button
                             size='sm'
                             isDisabled={!isComplete && disableStopButton}
-                            color={isComplete ? 'primary' : 'danger'}
-                            className='min-h-[30px] font-semibold rounded-lg bg-danger text-content'
+                            color='danger'
+                            className='min-h-[30px] font-semibold rounded-lg'
                             onPress={() => {
                                 handleCancel(gamesWithDrops, isMountedRef, abortControllerRef);
                                 setIsCardFarming(false);

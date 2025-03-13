@@ -42,7 +42,7 @@ export default function ClearData() {
                                 </Button>
                                 <Button
                                     size='sm'
-                                    className='font-semibold rounded-lg bg-dynamic text-content'
+                                    className='font-semibold rounded-lg bg-dynamic text-button'
                                     onPress={() => handleClearData(onClose)}
                                 >
                                     Confirm

@@ -65,7 +65,7 @@ export default function CardSettings({ settings, setSettings }) {
                     isSelected={localSettings?.cardFarming?.listGames || false}
                     onChange={(e) => handleCheckboxChange(e, localSettings, setLocalSettings, setSettings)}
                     classNames={{
-                        wrapper: ['before:group-data-[selected=true]:!border-dynamic after:bg-dynamic text-content']
+                        wrapper: ['before:group-data-[selected=true]:!border-dynamic after:bg-dynamic text-button']
                     }}
                 >
                     <div className='flex items-center gap-1'>
@@ -80,7 +80,7 @@ export default function CardSettings({ settings, setSettings }) {
                     isSelected={localSettings?.cardFarming?.allGames || false}
                     onChange={(e) => handleCheckboxChange(e, localSettings, setLocalSettings, setSettings)}
                     classNames={{
-                        wrapper: ['before:group-data-[selected=true]:!border-dynamic after:bg-dynamic text-content']
+                        wrapper: ['before:group-data-[selected=true]:!border-dynamic after:bg-dynamic text-button']
                     }}
                 >
                     <div className='flex items-center gap-1'>
@@ -147,7 +147,7 @@ export default function CardSettings({ settings, setSettings }) {
                                 <Button
                                     size='sm'
                                     isDisabled={hasCookies || !sidValue || !slsValue}
-                                    className='font-semibold rounded-lg w-full bg-dynamic text-content'
+                                    className='font-semibold rounded-lg w-full bg-dynamic text-button'
                                     onPress={() => handleSave(sidValue, slsValue, smaValue, setHasCookies, userSummary, setCardFarmingUser)}
                                 >
                                     Save

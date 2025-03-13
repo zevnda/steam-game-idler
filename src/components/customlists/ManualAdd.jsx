@@ -21,7 +21,7 @@ export default function ManualAdd({ listName, setList }) {
             <Button
                 size='sm'
                 isIconOnly
-                className='rounded-full bg-dynamic text-content'
+                className='rounded-full bg-dynamic text-button'
                 startContent={<TbPlus fontSize={18} />}
                 onPress={onOpen}
             />
@@ -66,7 +66,7 @@ export default function ManualAdd({ listName, setList }) {
                                     size='sm'
                                     isLoading={isLoading}
                                     isDisabled={inputValue.length === 0}
-                                    className='font-semibold rounded-lg bg-dynamic text-content'
+                                    className='font-semibold rounded-lg bg-dynamic text-button'
                                     onPress={() => handleAdd(onClose)}
                                 >
                                     Add

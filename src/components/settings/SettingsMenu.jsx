@@ -37,9 +37,8 @@ export default function SettingsMenu() {
                         isIconOnly
                         size='sm'
                         className='bg-base hover:bg-titlebar border border-border rounded-lg'
-                    >
-                        <TbDotsVertical size={24} className='text-content' />
-                    </Button>
+                        startContent={<TbDotsVertical fontSize={18} className='text-content' />}
+                    />
                 </DropdownTrigger>
                 <DropdownMenu aria-label='Settings actions' className='text-content'>
                     <DropdownItem key='help' className='rounded p-0 m-0' textValue='Help' classNames={{ base: ['data-[hover=true]:!bg-titlehover data-[hover=true]:!text-content'] }}>

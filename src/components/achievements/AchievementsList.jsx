@@ -76,7 +76,7 @@ const Row = memo(({ index, style, data }) => {
                     ) : (
                         <Button
                             size='sm'
-                            className='font-semibold rounded-lg bg-dynamic text-content'
+                            className='font-semibold rounded-lg bg-dynamic text-button'
                             onPress={handleToggle}
                         >
                             Unlock
