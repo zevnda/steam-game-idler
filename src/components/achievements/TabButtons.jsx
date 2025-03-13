@@ -79,11 +79,11 @@ export default function TabButtons({ initialStatValues, newStatValues, setNewSta
                 <Select
                     size='sm'
                     aria-label='sort'
-                    isDisabled={achievementQueryValue.length > 0 || achievementsUnavailable || currentTab === 'statistics'}
                     disallowEmptySelection
                     radius='none'
                     startContent={<TbSortDescending2 fontSize={26} />}
                     items={sortOptions}
+                    isDisabled={achievementQueryValue.length > 0 || achievementsUnavailable || currentTab === 'statistics'}
                     className='w-[230px]'
                     classNames={{
                         listbox: ['p-0'],
@@ -94,7 +94,7 @@ export default function TabButtons({ initialStatValues, newStatValues, setNewSta
                     defaultSelectedKeys={['percent']}
                     onSelectionChange={(e) => { handleChange(e, achievementList, setAchievementList, percentageMap, userGameAchievementsMap, setIsSorted); }}
                 >
-                    {(item) => <SelectItem>{item.label}</SelectItem>}
+                    {(item) => <SelectItem classNames={{ base: ['data-[hover=true]:!bg-titlehover data-[hover=true]:!text-content'] }}>{item.label}</SelectItem>}
                 </Select>
             )}
 

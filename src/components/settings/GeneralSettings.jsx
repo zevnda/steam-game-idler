@@ -3,7 +3,8 @@ import Image from 'next/image';
 
 import { Button, Checkbox, Input } from '@heroui/react';
 
-import { UserContext } from '../contexts/UserContext';
+import { StateContext } from '@/components/contexts/StateContext';
+import { UserContext } from '@/components/contexts/UserContext';
 import { handleCheckboxChange, handleRunAtStartupChange, handleKeyChange, handleKeySave, handleClear } from '@/utils/settings/generalSettingsHandler';
 import { antiAwayStatus } from '@/utils/utils';
 import useGeneralSettings from '@/hooks/settings/useGeneralSettings';
@@ -11,6 +12,7 @@ import ExtLink from '@/components/ui/ExtLink';
 import ThemeSwitch from '../ui/theme/ThemeSwitch';
 
 export default function GeneralSettings({ settings, setSettings }) {
+    const { isDarkMode } = useContext(StateContext);
     const { userSummary } = useContext(UserContext);
     const { localSettings, setLocalSettings, startupState, setStartupState, keyValue, setKeyValue, hasKey, setHasKey } = useGeneralSettings(settings);
 
@@ -50,7 +52,7 @@ export default function GeneralSettings({ settings, setSettings }) {
                     isSelected={localSettings?.general?.stealthIdle || false}
                     onChange={(e) => handleCheckboxChange(e, localSettings, setLocalSettings, setSettings)}
                     classNames={{
-                        wrapper: ['before:group-data-[selected=true]:!border-dynamic after:bg-dynamic border-red-500 text-button']
+                        wrapper: [`before:group-data-[selected=true]:!border-dynamic after:bg-dynamic border-red-500 text-button group-data-[hover=true]:before:${isDarkMode ? 'bg-white/20' : 'bg-black/20'}`]
                     }}
                 >
                     <div className='flex items-center gap-1'>
@@ -68,7 +70,7 @@ export default function GeneralSettings({ settings, setSettings }) {
                         antiAwayStatus(!localSettings?.general?.antiAway);
                     }}
                     classNames={{
-                        wrapper: ['before:group-data-[selected=true]:!border-dynamic after:bg-dynamic text-button']
+                        wrapper: [`before:group-data-[selected=true]:!border-dynamic after:bg-dynamic border-red-500 text-button group-data-[hover=true]:before:${isDarkMode ? 'bg-white/20' : 'bg-black/20'}`]
                     }}
                 >
                     <div className='flex items-center gap-1'>
@@ -83,7 +85,7 @@ export default function GeneralSettings({ settings, setSettings }) {
                     isSelected={localSettings?.general?.freeGameNotifications || false}
                     onChange={(e) => handleCheckboxChange(e, localSettings, setLocalSettings, setSettings)}
                     classNames={{
-                        wrapper: ['before:group-data-[selected=true]:!border-dynamic after:bg-dynamic text-button']
+                        wrapper: [`before:group-data-[selected=true]:!border-dynamic after:bg-dynamic border-red-500 text-button group-data-[hover=true]:before:${isDarkMode ? 'bg-white/20' : 'bg-black/20'}`]
                     }}
                 >
                     <div className='flex items-center gap-1'>
@@ -98,7 +100,7 @@ export default function GeneralSettings({ settings, setSettings }) {
                     isSelected={localSettings?.general?.clearData || false}
                     onChange={(e) => handleCheckboxChange(e, localSettings, setLocalSettings, setSettings)}
                     classNames={{
-                        wrapper: ['before:group-data-[selected=true]:!border-dynamic after:bg-dynamic text-button']
+                        wrapper: [`before:group-data-[selected=true]:!border-dynamic after:bg-dynamic border-red-500 text-button group-data-[hover=true]:before:${isDarkMode ? 'bg-white/20' : 'bg-black/20'}`]
                     }}
                 >
                     <div className='flex items-center gap-1'>
@@ -112,7 +114,7 @@ export default function GeneralSettings({ settings, setSettings }) {
                     isSelected={startupState || false}
                     onChange={() => handleRunAtStartupChange(startupState, setStartupState)}
                     classNames={{
-                        wrapper: ['before:group-data-[selected=true]:!border-dynamic after:bg-dynamic text-button']
+                        wrapper: [`before:group-data-[selected=true]:!border-dynamic after:bg-dynamic border-red-500 text-button group-data-[hover=true]:before:${isDarkMode ? 'bg-white/20' : 'bg-black/20'}`]
                     }}
                 >
                     <div className='flex items-center gap-1'>

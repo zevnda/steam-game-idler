@@ -2,4 +2,4 @@
 
 ## Changelog
 - Fix an issue where SteamUtility *(idle)* processes were not being closed when exiting SGI
-- Improve readability of primary buttons on light themes
+- Improve theme styles

@@ -39,15 +39,13 @@ export default function PageHeader({ sortStyle, setSortStyle, filteredGames, vis
 
                     <div className='flex justify-end items-center gap-2'>
                         <Select
+                            size='sm'
                             aria-label='sort'
                             disallowEmptySelection
                             radius='none'
-                            size='sm'
                             startContent={<TbSortDescending2 fontSize={26} />}
                             items={sortOptions}
                             className='w-[240px]'
-                            defaultSelectedKeys={[sortStyle]}
-                            onSelectionChange={(e) => { handleSorting(e); }}
                             classNames={{
                                 listbox: ['p-0'],
                                 value: ['text-sm !text-content'],
@@ -55,8 +53,10 @@ export default function PageHeader({ sortStyle, setSortStyle, filteredGames, vis
                                 popoverContent: ['bg-titlebar border border-border rounded-lg justify-start !text-content'],
                                 listboxWrapper: ['min-h-[168px]']
                             }}
+                            defaultSelectedKeys={[sortStyle]}
+                            onSelectionChange={(e) => { handleSorting(e); }}
                         >
-                            {(item) => <SelectItem>{item.label}</SelectItem>}
+                            {(item) => <SelectItem classNames={{ base: ['data-[hover=true]:!bg-titlehover data-[hover=true]:!text-content'] }}>{item.label}</SelectItem>}
                         </Select>
                     </div>
                 </div>

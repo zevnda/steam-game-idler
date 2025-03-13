@@ -10,7 +10,6 @@ export default function ThemeSwitch() {
     const themes = [
         { key: 'light', label: 'Light' },
         { key: 'dark', label: 'Dark' },
-        // Light
         { key: 'nordic', label: 'Nordic (Light)' },
         { key: 'pastel', label: 'Pastel (Light)' },
         { key: 'sunshine', label: 'Sunshine (Light)' },
@@ -19,7 +18,6 @@ export default function ThemeSwitch() {
         { key: 'meadow', label: 'Meadow (Light)' },
         { key: 'sandstone', label: 'Sandstone (Light)' },
         { key: 'icicle', label: 'Icicle (Light)' },
-        // Dark
         { key: 'midnight', label: 'Midnight (Dark)' },
         { key: 'amethyst', label: 'Amethyst (Dark)' },
         { key: 'emerald', label: 'Emerald (Dark)' },
@@ -66,7 +64,7 @@ export default function ThemeSwitch() {
                     setTheme(selectedTheme);
                 }}
             >
-                {(theme) => <SelectItem>{theme.label}</SelectItem>}
+                {(theme) => <SelectItem classNames={{ base: ['data-[hover=true]:!bg-titlehover data-[hover=true]:!text-content'] }}>{theme.label}</SelectItem>}
             </Select>
         </Fragment>
     );
