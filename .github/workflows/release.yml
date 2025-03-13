@@ -3,9 +3,6 @@ name: Build release bundle
 on:
   workflow_dispatch:
     inputs:
-        previous_version:
-          description: 'Previous Version'
-          required: true
         version:
           description: 'New Version'
           required: true
@@ -41,8 +38,21 @@ permissions:
   contents: write
   
 jobs:
+  fetch_previous_version:
+    runs-on: ubuntu-latest
+    outputs:
+      previous_version: ${{ steps.get_version.outputs.previous_version }}
+    steps:
+      - name: Get latest release version
+        id: get_version
+        run: |
+          PREVIOUS_VERSION=$(curl -s https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r .tag_name)
+          echo "Found previous version: $PREVIOUS_VERSION"
+          echo "previous_version=$PREVIOUS_VERSION" >> $GITHUB_OUTPUT
+
   build_dotnet_libs:
     runs-on: windows-latest
+    needs: fetch_previous_version
     timeout-minutes: 15
     steps:
       - name: Checkout repository
@@ -93,7 +103,7 @@ jobs:
           retention-days: 1
 
   build_release_bundle:
-    needs: build_dotnet_libs
+    needs: [build_dotnet_libs, fetch_previous_version]
     timeout-minutes: 30
     runs-on: windows-latest
     steps:
@@ -171,14 +181,19 @@ jobs:
         - name: Update version numbers
           id: update-versions
           run: |
+            $previousVersion = "${{ needs.fetch_previous_version.outputs.previous_version }}"
+            $newVersion = "${{ github.event.inputs.version }}"
+            
             $tauriConf = Get-Content src-tauri/tauri.conf.json
-            $updatedTauriConf = $tauriConf -replace "${{ github.event.inputs.previous_version }}", "${{ github.event.inputs.version }}"
+            $updatedTauriConf = $tauriConf -replace $previousVersion, $newVersion
             $updatedTauriConf | Set-Content src-tauri/tauri.conf.json
+            
             $latest = Get-Content latest.json
-            $updatedLatest = $latest -replace "${{ github.event.inputs.previous_version }}", "${{ github.event.inputs.version }}"
+            $updatedLatest = $latest -replace $previousVersion, $newVersion
             $updatedLatest | Set-Content latest.json
+            
             $changelog = Get-Content CHANGELOG.md
-            $updatedChangelog = $changelog -replace "${{ github.event.inputs.previous_version }}", "${{ github.event.inputs.version }}"
+            $updatedChangelog = $changelog -replace $previousVersion, $newVersion
             $updatedChangelog | Set-Content CHANGELOG.md
 
         - name: Create .env.prod file
