@@ -3,8 +3,7 @@ import { GeistMono } from 'geist/font/mono';
 
 import { Button } from '@heroui/react';
 
-import { handleOpenLogFile, handleClearLogs } from '@/utils/settings/logsHandler';
-import useLogs from '@/hooks/settings/useLogs';
+import { useLogs, handleClearLogs, handleOpenLogFile } from '@/hooks/settings/useLogs';
 
 export default function Logs() {
     const { logs, logPath } = useLogs();

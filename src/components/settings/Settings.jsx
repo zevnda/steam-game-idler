@@ -14,6 +14,7 @@ import ExportSettings from './ExportSettings';
 
 export default function Settings() {
     const [settings, setSettings] = useState(null);
+    const [localSettings, setLocalSettings] = useState(null);
     const [version, setVersion] = useState('v0.0.0');
     const [refreshKey, setRefreshKey] = useState(0);
 
@@ -35,6 +36,13 @@ export default function Settings() {
         }
         setSettings(updatedSettings);
     }, [refreshKey]);
+
+    useEffect(() => {
+        const currentSettings = JSON.parse(localStorage.getItem('settings')) || {};
+        if (currentSettings) {
+            setLocalSettings(currentSettings);
+        }
+    }, [settings, setLocalSettings]);
 
     return (
         <Fragment key={refreshKey}>
@@ -74,13 +82,28 @@ export default function Settings() {
                         }}
                     >
                         <Tab key='general' title='General'>
-                            <GeneralSettings settings={settings} setSettings={setSettings} />
+                            <GeneralSettings
+                                settings={settings}
+                                setSettings={setSettings}
+                                localSettings={localSettings}
+                                setLocalSettings={setLocalSettings}
+                            />
                         </Tab>
                         <Tab key='card-farming' title='Card Farming'>
-                            <CardSettings settings={settings} setSettings={setSettings} />
+                            <CardSettings
+                                settings={settings}
+                                setSettings={setSettings}
+                                localSettings={localSettings}
+                                setLocalSettings={setLocalSettings}
+                            />
                         </Tab>
                         <Tab key='achievement-unlocker' title='Achievement Unlocker'>
-                            <AchievementSettings settings={settings} setSettings={setSettings} />
+                            <AchievementSettings
+                                settings={settings}
+                                setSettings={setSettings}
+                                localSettings={localSettings}
+                                setLocalSettings={setLocalSettings}
+                            />
                         </Tab>
                         <Tab key='logs' title='Logs'>
                             <Logs />
