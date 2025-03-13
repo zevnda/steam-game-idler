@@ -61,7 +61,7 @@ jobs:
           dotnet nuget locals global-packages --list
         shell: pwsh
         
-      - name: Cache MSBuild packages
+      - name: Setup NuGet cache
         id: cache-msbuild
         uses: actions/cache@v4
         with:
@@ -71,7 +71,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget-
         
-      - name: Cache .NET build
+      - name: Setup .NET cache
         id: cache-dotnet
         uses: actions/cache@v4
         with:
@@ -80,12 +80,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-dotnet-
 
-      - name: Build library files
+      - name: Build .NET libraries
         if: steps.cache-dotnet.outputs.cache-hit != 'true' || inputs.force_dotnet_build == 'true'
         run: MSBuild.exe .\libs\SteamUtility.csproj
         shell: pwsh
           
-      - name: Upload built libraries
+      - name: Upload built .NET libraries
         uses: actions/upload-artifact@v4
         with:
           name: dotnet-libs
@@ -163,7 +163,7 @@ jobs:
           with:
             workspaces: './src-tauri -> target'
 
-        - name: Clean Cargo build
+        - name: Clean Cargo artifacts
           if: inputs.force_cargo_clean == 'true'
           run: cargo clean
           working-directory: ./src-tauri
@@ -187,7 +187,7 @@ jobs:
           shell: pwsh
           working-directory: ${{ github.workspace }}
 
-        - name: Download .NET libraries
+        - name: Download built .NET libraries
           uses: actions/download-artifact@v4
           with:
             name: dotnet-libs
