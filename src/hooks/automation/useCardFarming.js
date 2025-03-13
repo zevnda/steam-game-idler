@@ -50,7 +50,7 @@ export const useCardFarming = async (
 // Check games for drops and return total drops and games set
 const checkGamesForDrops = async () => {
     const { cardFarming, steamCookies, userSummary, settings, gameSettings } = getLocalStorageData();
-    const { allGames } = settings?.cardFarming;
+    const allGames = settings?.cardFarming?.allGames;
 
     const gamesSet = new Set();
     let totalDrops = 0;

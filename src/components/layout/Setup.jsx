@@ -1,17 +1,17 @@
 import { Fragment, useContext, useEffect, useState } from 'react';
-import { useTheme } from 'next-themes';
 import Image from 'next/image';
 
 import { Spinner } from '@heroui/react';
 import { motion } from 'framer-motion';
 
 import { NavigationContext } from '@/components/contexts/NavigationContext';
+import { StateContext } from '@/components/contexts/StateContext';
 import Header from '@/components/ui/Header';
 import ExtLink from '@/components/ui/ExtLink';
 import useSetup from '@/hooks/layout/useSetup';
 
 export default function Setup() {
-    const { theme } = useTheme();
+    const { isDarkMode } = useContext(StateContext);
     const { setActivePage } = useContext(NavigationContext);
     const { isLoading, handleLogin, steamUsers } = useSetup();
     const [imageSrc, setImageSrc] = useState('');
@@ -21,11 +21,10 @@ export default function Setup() {
     }, []);
 
     useEffect(() => {
-        const darkThemes = ['dark', 'midnight', 'amethyst', 'emerald', 'cherry', 'cosmic', 'mint', 'arctic', 'nightshade'];
-        setImageSrc(darkThemes.includes(theme) ?
+        setImageSrc(isDarkMode ?
             'https://raw.githubusercontent.com/zevnda/steam-game-idler/refs/heads/main/public/dbg.webp'
             : 'https://raw.githubusercontent.com/zevnda/steam-game-idler/refs/heads/main/public/lbg.webp');
-    }, [theme]);
+    }, []);
 
     return (
         <Fragment>

@@ -3,6 +3,7 @@ import { createContext, useState } from 'react';
 export const StateContext = createContext();
 
 export const StateProvider = ({ children }) => {
+    const [isDarkMode, setIsDarkMode] = useState(true);
     const [appId, setAppId] = useState(null);
     const [appName, setAppName] = useState(null);
     const [showFreeGamesTab, setShowFreeGamesTab] = useState(false);
@@ -12,6 +13,7 @@ export const StateProvider = ({ children }) => {
 
     return (
         <StateContext.Provider value={{
+            isDarkMode, setIsDarkMode,
             showFreeGamesTab, setShowFreeGamesTab,
             appId, setAppId,
             appName, setAppName,

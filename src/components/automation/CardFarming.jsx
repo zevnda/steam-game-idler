@@ -1,5 +1,4 @@
 import { Fragment, useContext, useState, useEffect, useRef } from 'react';
-import { useTheme } from 'next-themes';
 import Image from 'next/image';
 
 import { Button, Spinner } from '@heroui/react';
@@ -10,8 +9,7 @@ import { handleCancel, useCardFarming } from '@/hooks/automation/useCardFarming'
 import { TbCheck } from 'react-icons/tb';
 
 export default function CardFarming({ activePage }) {
-    const { theme } = useTheme();
-    const { setIsCardFarming } = useContext(StateContext);
+    const { isDarkMode, setIsCardFarming } = useContext(StateContext);
 
     const isMountedRef = useRef(true);
     const abortControllerRef = useRef(new AbortController());
@@ -23,11 +21,10 @@ export default function CardFarming({ activePage }) {
     const [disableStopButton, setDisableStopButton] = useState(true);
 
     useEffect(() => {
-        const darkThemes = ['dark', 'midnight', 'amethyst', 'emerald', 'cherry', 'cosmic', 'mint', 'arctic', 'nightshade'];
-        setImageSrc(darkThemes.includes(theme) ?
+        setImageSrc(isDarkMode ?
             'https://raw.githubusercontent.com/zevnda/steam-game-idler/refs/heads/main/public/dbg.webp'
             : 'https://raw.githubusercontent.com/zevnda/steam-game-idler/refs/heads/main/public/lbg.webp');
-    }, [theme]);
+    }, []);
 
     useEffect(() => {
         // eslint-disable-next-line react-hooks/rules-of-hooks

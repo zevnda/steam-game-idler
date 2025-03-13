@@ -53,7 +53,7 @@ export const handleSave = async (sidValue, slsValue, smaValue, setHasCookies, us
                             href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Account%20mismatch%20between%20Steam%20and%20SGI'}
                         />,
                         color: 'danger'
-                    })
+                    });
                 }
 
                 localStorage.setItem('steamCookies', JSON.stringify({ sid: sidValue, sls: slsValue, sma: smaValue }));
@@ -71,7 +71,7 @@ export const handleSave = async (sidValue, slsValue, smaValue, setHasCookies, us
                         href={'https://steamgameidler.vercel.app/faq#error-messages:~:text=Incorrect%20card%20farming%20credentials'}
                     />,
                     color: 'danger'
-                })
+                });
                 logEvent('[Error] [Settings - Card Farming] Incorrect card farming credentials');
             }
         }

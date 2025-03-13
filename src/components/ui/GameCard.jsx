@@ -1,5 +1,4 @@
-import { Fragment, useContext, useEffect, useState } from 'react';
-import { useTheme } from 'next-themes';
+import { Fragment, useContext } from 'react';
 import Image from 'next/image';
 
 import { StateContext } from '@/components/contexts/StateContext';
@@ -11,14 +10,7 @@ import { Button } from '@heroui/react';
 import { TbAwardFilled, TbPlayerPlayFilled } from 'react-icons/tb';
 
 export default function GameCard({ item, setSettingsModalOpen }) {
-    const { theme } = useTheme();
-    const { setAppId, setAppName, showAchievements, setShowAchievements } = useContext(StateContext);
-    const [isDarkMode, setIsDarkMode] = useState(true);
-
-    useEffect(() => {
-        const darkThemes = ['dark', 'midnight', 'amethyst', 'emerald', 'cherry', 'cosmic', 'mint', 'arctic', 'nightshade'];
-        setIsDarkMode(darkThemes.includes(theme));
-    }, []);
+    const { isDarkMode, setAppId, setAppName, showAchievements, setShowAchievements } = useContext(StateContext);
 
     const handleImageError = (event) => {
         event.target.src = '/fallback.jpg';
