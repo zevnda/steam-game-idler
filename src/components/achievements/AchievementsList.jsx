@@ -11,7 +11,7 @@ import { toggleAchievement } from '@/utils/utils';
 import ErrorToast from '@/components/ui/ErrorToast';
 
 const Row = memo(({ index, style, data }) => {
-    const { appId, appName, achievementList, userGameAchievementsMap, percentageMap } = data;
+    const { appId, appName, isDarkMode, achievementList, userGameAchievementsMap, percentageMap } = data;
     const item = achievementList[index];
 
     const isUnlockedInitial = item ? userGameAchievementsMap.get(item.name) || false : false;
@@ -53,13 +53,13 @@ const Row = memo(({ index, style, data }) => {
                         />
                     </div>
                     <div className='flex flex-col w-full'>
-                        <Tooltip size='sm' closeDelay={0} placement='right' content={<p className='font-semibold'>{item.name}</p>}>
+                        <Tooltip size='sm' closeDelay={0} placement='right' content={item.name} className='bg-titlehover text-content'>
                             <p className='font-bold text-sm w-fit'>
                                 {item.displayName}
                             </p>
                         </Tooltip>
                         <div className='w-full'>
-                            <p className='text-sm text-gray-600 dark:text-gray-400'>
+                            <p className='text-sm text-altwhite'>
                                 {item.description || 'Hidden achievement'}
                             </p>
                         </div>
@@ -85,9 +85,9 @@ const Row = memo(({ index, style, data }) => {
                 </div>
                 <div className='p-1 bg-container dark:bg-[#1a1a1a] select-none rounded-b-lg'>
                     <div className='w-full bg-titlehover rounded-full h-3.5 relative'>
-                        <div className='bg-dynamic h-3.5 rounded-full flex items-center' style={{ width: `${percentage}%`, position: 'relative' }}></div>
+                        <div className='bg-dynamic/40 h-3.5 rounded-full flex items-center' style={{ width: `${percentage}%`, position: 'relative' }}></div>
                         {percentage !== undefined && (
-                            <p className='text-[11px] text-content dark:text-offwhite absolute inset-0 flex items-center justify-center'>
+                            <p className='text-[11px] text-button dark:text-offwhite absolute inset-0 flex items-center justify-center mix-blend-difference'>
                                 {percentage.toFixed(1)}%
                             </p>
                         )}
@@ -101,10 +101,10 @@ const Row = memo(({ index, style, data }) => {
 Row.displayName = 'Row';
 
 export default function AchievementsList({ userGameAchievementsMap, percentageMap }) {
-    const { appId, appName } = useContext(StateContext);
+    const { appId, appName, isDarkMode } = useContext(StateContext);
     const { achievementList, achievementsUnavailable } = useContext(UserContext);
 
-    const itemData = { appId, appName, achievementList, userGameAchievementsMap, percentageMap };
+    const itemData = { appId, appName, isDarkMode, achievementList, userGameAchievementsMap, percentageMap };
 
     return (
         <Fragment>

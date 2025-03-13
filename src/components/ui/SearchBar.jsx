@@ -31,7 +31,7 @@ export default function SearchBar() {
                         className='w-[300px]'
                         classNames={{
                             inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'],
-                            input: ['!text-content']
+                            input: ['!text-content placeholder:text-altwhite/50'],
                         }}
                         value={gameQueryValue}
                         onChange={handleGameQueryChange}
@@ -49,7 +49,7 @@ export default function SearchBar() {
                         className='max-w-[300px]'
                         classNames={{
                             inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'],
-                            input: ['!text-content']
+                            input: ['!text-content placeholder:text-altwhite/50']
                         }}
                         value={achievementQueryValue}
                         onChange={handleAchievementQueryChange}

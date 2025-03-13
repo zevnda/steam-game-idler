@@ -26,7 +26,7 @@ export default function ManualAdd({ listName, setList }) {
                 onPress={onOpen}
             />
 
-            <Modal isOpen={isOpen} onOpenChange={onOpenChange} onClose={() => setInputValue('')} className='bg-modalbody text-content'>
+            <Modal isOpen={isOpen} onOpenChange={onOpenChange} onClose={() => setInputValue('')} className='bg-modalbody text-content' classNames={{ closeButton: ['text-altwhite hover:bg-titlehover duration-200'] }}>
                 <ModalContent>
                     {(onClose) => (
                         <React.Fragment>
@@ -43,7 +43,7 @@ export default function ManualAdd({ listName, setList }) {
                                     placeholder='Enter a game ID'
                                     classNames={{
                                         inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar group-data-[focus-visible=true]:ring-transparent group-data-[focus-visible=true]:ring-offset-transparent'],
-                                        input: ['text-sm !text-content'],
+                                        input: ['text-sm !text-content placeholder:text-altwhite/50'],
                                     }}
                                     value={inputValue}
                                     onChange={handleChange}

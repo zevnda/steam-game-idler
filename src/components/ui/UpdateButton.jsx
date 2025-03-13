@@ -24,7 +24,7 @@ export default function UpdateButton() {
 
     return (
         <Fragment>
-            <Tooltip content='Update Ready!' placement='left' closeDelay={0} size='sm'>
+            <Tooltip content='Update Ready!' placement='left' closeDelay={0} size='sm' className='bg-titlehover text-content'>
                 <div className='flex justify-center items-center cursor-pointer' onClick={handleUpdate}>
                     <div className='flex items-center p-2 hover:bg-titlehover rounded-full'>
                         <TbDownload fontSize={18} className='text-success' />

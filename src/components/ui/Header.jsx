@@ -2,17 +2,19 @@ import { Fragment, useContext } from 'react';
 
 import { Divider } from '@heroui/react';
 
+import { StateContext } from '@/components/contexts/StateContext';
 import { SearchContext } from '@/components/contexts/SearchContext';
 import { UpdateContext } from '@/components/contexts/UpdateContext';
 import useHeader from '@/hooks/ui/useHeader';
 import Notifications from '@/components/notifications/Notifications';
 import SearchBar from '@/components/ui/SearchBar';
+import UpdateButton from '@/components/ui/UpdateButton';
 
 import { GoGrabber } from 'react-icons/go';
 import { TbMinus, TbSquare, TbX } from 'react-icons/tb';
-import UpdateButton from './UpdateButton';
 
 export default function Header() {
+    const { isDarkMode } = useContext(StateContext);
     const { setGameQueryValue, setAchievementQueryValue } = useContext(SearchContext);
     const { updateAvailable } = useContext(UpdateContext);
     const { windowMinimize, windowToggleMaximize, windowClose } = useHeader(setGameQueryValue, setAchievementQueryValue);
@@ -48,7 +50,7 @@ export default function Header() {
                             </div>
 
                             <div className='flex justify-center items-center'>
-                                <div className='hover:bg-danger p-2 rounded-full duration-200 cursor-pointer active:scale-90' onClick={windowClose}>
+                                <div className={`hover:bg-danger p-2 rounded-full duration-200 cursor-pointer active:scale-90 ${!isDarkMode && 'hover:text-button'}`} onClick={windowClose}>
                                     <TbX fontSize={20} />
                                 </div>
                             </div>

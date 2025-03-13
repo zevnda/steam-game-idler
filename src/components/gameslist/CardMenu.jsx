@@ -17,6 +17,7 @@ export default function CardMenu({ item, handleIdle, viewAchievments, viewStoreP
                 <DropdownMenu aria-label='actions'>
                     <DropdownItem
                         className='rounded'
+                        classNames={{ base: ['data-[hover=true]:bg-titlehover'] }}
                         key='idle'
                         startContent={<TbPlayerPlayFilled size={16} className='text-content' />}
                         onPress={() => handleIdle(item)}
@@ -26,6 +27,7 @@ export default function CardMenu({ item, handleIdle, viewAchievments, viewStoreP
                     </DropdownItem>
                     <DropdownItem
                         className='rounded'
+                        classNames={{ base: ['data-[hover=true]:bg-titlehover'] }}
                         key='achievements'
                         startContent={<TbAwardFilled size={16} className='text-content' />}
                         onPress={() => viewAchievments(item)}
@@ -35,6 +37,7 @@ export default function CardMenu({ item, handleIdle, viewAchievments, viewStoreP
                     </DropdownItem>
                     <DropdownItem
                         className='rounded'
+                        classNames={{ base: ['data-[hover=true]:bg-titlehover'] }}
                         key='store'
                         startContent={<FaSteam fontSize={16} className='text-content' />}
                         onPress={() => viewStorePage(item)}
@@ -44,6 +47,7 @@ export default function CardMenu({ item, handleIdle, viewAchievments, viewStoreP
                     </DropdownItem>
                     <DropdownItem
                         className='rounded'
+                        classNames={{ base: ['data-[hover=true]:bg-titlehover'] }}
                         key='settings'
                         startContent={<TbSettingsFilled fontSize={16} className='text-content' />}
                         onPress={() => viewGameSettings(item)}

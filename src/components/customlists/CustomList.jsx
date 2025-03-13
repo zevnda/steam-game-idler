@@ -86,7 +86,7 @@ export default function CustomList({ type }) {
                         <p className='text-lg font-semibold'>
                             {listType.title}
                         </p>
-                        <p className='text-xs text-gray-400'>
+                        <p className='text-xs text-altwhite'>
                             {listType.description}
                         </p>
                     </div>

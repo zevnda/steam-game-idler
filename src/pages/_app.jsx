@@ -8,24 +8,9 @@ export default function App({ Component, pageProps }) {
         <ThemeProvider
             attribute='class'
             themes={[
-                'light',
-                'dark',
-                'nordic',
-                'pastel',
-                'sunshine',
-                'seafoam',
-                'blossom',
-                'meadow',
-                'sandstone',
-                'icicle',
-                'midnight',
-                'amethyst',
-                'emerald',
-                'cherry',
-                'cosmic',
-                'mint',
-                'arctic',
-                'nightshade'
+                'light', 'dark', 'nordic', 'pastel', 'sunshine', 'seafoam', 'blossom',
+                'meadow', 'sandstone', 'icicle', 'midnight', 'amethyst', 'emerald',
+                'cherry', 'cosmic', 'mint', 'arctic', 'nightshade'
             ]}
             enableSystem={true}
             defaultTheme='dark'

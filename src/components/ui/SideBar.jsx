@@ -11,7 +11,7 @@ import { TbAward, TbCards, TbDeviceGamepad2, TbGift, TbHeart, TbHourglassLow, Tb
 import { FiLogOut } from 'react-icons/fi';
 
 export default function SideBar() {
-    const { showFreeGamesTab, isCardFarming, isAchievementUnlocker } = useContext(StateContext);
+    const { isDarkMode, showFreeGamesTab, isCardFarming, isAchievementUnlocker } = useContext(StateContext);
     const { activePage, setActivePage } = useContext(NavigationContext);
     const { isOpen, onOpenChange, openConfirmation, handleLogout } = useSideBar(activePage, setActivePage);
 
@@ -98,15 +98,15 @@ export default function SideBar() {
                         </div>
 
                         <div className='flex justify-center items-center w-14'>
-                            <div className='hover:bg-danger p-2 rounded-full duration-200 cursor-pointer active:scale-90' onClick={openConfirmation}>
-                                <FiLogOut className='rotate-180' fontSize={20} />
+                            <div className='hover:bg-danger p-2 rounded-full duration-200 cursor-pointer active:scale-90 group' onClick={openConfirmation}>
+                                <FiLogOut className={`rotate-180 ${!isDarkMode && 'group-hover:text-button'} duration-200`} fontSize={20} />
                             </div>
                         </div>
                     </div>
                 )}
             </div>
 
-            <Modal isOpen={isOpen} onOpenChange={onOpenChange} className='bg-modalbody text-content'>
+            <Modal isOpen={isOpen} onOpenChange={onOpenChange} className='bg-modalbody text-content' classNames={{ closeButton: ['text-altwhite hover:bg-titlehover duration-200'] }}>
                 <ModalContent>
                     {(onClose) => (
                         <Fragment>

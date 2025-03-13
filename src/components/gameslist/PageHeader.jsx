@@ -27,11 +27,11 @@ export default function PageHeader({ sortStyle, setSortStyle, filteredGames, vis
                                 Your Games
                             </p>
                             <div className='flex gap-1'>
-                                <p className='text-xs text-gray-400'>
+                                <p className='text-xs text-altwhite'>
                                     Showing {visibleGames.length} of {filteredGames.length} games
                                 </p>
                                 <div className='flex justify-center items-center cursor-pointer' onClick={handleRefetch}>
-                                    <TbRefresh className='text-gray-400' fontSize={16} />
+                                    <TbRefresh className='text-altwhite' fontSize={16} />
                                 </div>
                             </div>
                         </div>

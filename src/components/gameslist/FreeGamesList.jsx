@@ -20,7 +20,7 @@ export default function FreeGamesList() {
                                     Free Games
                                 </p>
                                 <div className='flex gap-1'>
-                                    <p className='text-xs text-gray-400'>
+                                    <p className='text-xs text-altwhite'>
                                         Showing {freeGamesList.length} of {freeGamesList.length} games
                                     </p>
                                 </div>

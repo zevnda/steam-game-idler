@@ -48,7 +48,7 @@ export default function EditListModal({ isOpen, onOpenChange, onClose, filteredG
 
     return (
         <Fragment>
-            <Modal isOpen={isOpen} onOpenChange={onOpenChange} onClose={onClose} hideCloseButton className='bg-modalbody min-h-[75%] max-h-[75%] text-content'>
+            <Modal isOpen={isOpen} onOpenChange={onOpenChange} onClose={onClose} hideCloseButton className='bg-modalbody min-h-[75%] max-h-[75%] text-content' classNames={{ closeButton: ['text-altwhite hover:bg-titlehover duration-200'] }}>
                 <ModalContent>
                     {(onClose) => (
                         <Fragment>
@@ -60,7 +60,7 @@ export default function EditListModal({ isOpen, onOpenChange, onClose, filteredG
                                     placeholder='Search for a game..'
                                     classNames={{
                                         inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded group-data-[focus-within=true]:!bg-titlebar group-data-[focus-visible=true]:ring-transparent group-data-[focus-visible=true]:ring-offset-transparent'],
-                                        input: ['!text-content'],
+                                        input: ['!text-content placeholder:text-altwhite/50'],
                                     }}
                                     isDisabled={showInList}
                                     onChange={(e) => setSearchTerm(e.target.value)}

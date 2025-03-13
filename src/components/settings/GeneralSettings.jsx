@@ -20,7 +20,7 @@ export default function GeneralSettings({ settings, setSettings }) {
         <Fragment>
             <div className='relative flex flex-col gap-4 p-2 overflow-y-auto max-h-[410px]'>
                 <div className='absolute top-0 right-2'>
-                    <p className='text-xs text-neutral-400 mb-0.5'>
+                    <p className='text-xs text-altwhite mb-0.5'>
                         Logged in as
                     </p>
                     <div className='border border-border rounded-lg bg-input hover:bg-titlebar dark:bg-[#131313] dark:hover:bg-[#171717]'>
@@ -38,7 +38,7 @@ export default function GeneralSettings({ settings, setSettings }) {
                                     <p className='font-medium truncate'>
                                         {userSummary.personaName}
                                     </p>
-                                    <p className='text-xs text-neutral-400 truncate'>
+                                    <p className='text-xs text-altwhite truncate'>
                                         {userSummary.steamId}
                                     </p>
                                 </div>
@@ -149,7 +149,7 @@ export default function GeneralSettings({ settings, setSettings }) {
                             className='max-w-[280px]'
                             classNames={{
                                 inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'],
-                                input: ['!text-content']
+                                input: ['!text-content placeholder:text-altwhite/50']
                             }}
                             value={keyValue}
                             onChange={(e) => handleKeyChange(e, setKeyValue)}

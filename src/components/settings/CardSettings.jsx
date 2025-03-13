@@ -33,7 +33,7 @@ export default function CardSettings({ settings, setSettings }) {
             <div className='relative flex flex-col gap-4 p-2'>
                 {cardFarmingUser && (
                     <div className='absolute top-0 right-2'>
-                        <p className='text-xs text-neutral-400 mb-0.5'>
+                        <p className='text-xs text-altwhite mb-0.5'>
                             Farming cards as
                         </p>
                         <div className='border border-border rounded-lg bg-input hover:bg-titlebar dark:bg-[#131313] dark:hover:bg-[#171717]'>
@@ -51,7 +51,7 @@ export default function CardSettings({ settings, setSettings }) {
                                         <p className='font-medium truncate'>
                                             {cardFarmingUser.personaName}
                                         </p>
-                                        <p className='text-xs text-neutral-400 truncate'>
+                                        <p className='text-xs text-altwhite truncate'>
                                             {cardFarmingUser.steamId}
                                         </p>
                                     </div>
@@ -60,6 +60,7 @@ export default function CardSettings({ settings, setSettings }) {
                         </div>
                     </div>
                 )}
+
                 <Checkbox
                     name='listGames'
                     isSelected={localSettings?.cardFarming?.listGames || false}
@@ -101,12 +102,12 @@ export default function CardSettings({ settings, setSettings }) {
                                     size='sm'
                                     label='sessionid'
                                     labelPlacement='outside'
-                                    placeholder=' '
+                                    placeholder='sessionid'
                                     className='max-w-[300px]'
                                     classNames={{
                                         inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'],
                                         label: ['!text-content'],
-                                        input: ['!text-content']
+                                        input: ['!text-content placeholder:text-altwhite/50']
                                     }}
                                     value={sidValue}
                                     onChange={handleSidChange}
@@ -116,12 +117,12 @@ export default function CardSettings({ settings, setSettings }) {
                                     size='sm'
                                     label='steamLoginSecure'
                                     labelPlacement='outside'
-                                    placeholder=' '
+                                    placeholder='steamLoginSecure'
                                     className='max-w-[300px]'
                                     classNames={{
                                         inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'],
                                         label: ['!text-content'],
-                                        input: ['!text-content']
+                                        input: ['!text-content placeholder:text-altwhite/50']
                                     }}
                                     value={slsValue}
                                     onChange={handleSlsChange}
@@ -131,12 +132,12 @@ export default function CardSettings({ settings, setSettings }) {
                                     size='sm'
                                     label={<p>steamParental/steamMachineAuth <span className='italic'>(optional)</span></p>}
                                     labelPlacement='outside'
-                                    placeholder=' '
+                                    placeholder='steamParental/steamMachineAuth'
                                     className='max-w-[300px]'
                                     classNames={{
                                         inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'],
                                         label: ['!text-content'],
-                                        input: ['!text-content']
+                                        input: ['!text-content placeholder:text-altwhite/50']
                                     }}
                                     value={smaValue}
                                     onChange={handleSmaChange}

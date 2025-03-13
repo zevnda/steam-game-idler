@@ -54,19 +54,19 @@ export default function PageHeader() {
                         <p className='text-lg font-semibold m-0 p-0'>
                             {appName}
                         </p>
-                        <Tooltip content='View on Steam' placement='top' closeDelay={0} size='sm'>
+                        <Tooltip content='View on Steam' placement='top' closeDelay={0} size='sm' className='bg-titlehover text-content'>
                             <div>
                                 <ExtLink href={`https://steamcommunity.com/stats/${appId}/achievements/`}>
-                                    <div className='hover:bg-border rounded-full p-1.5 cursor-pointer duration-200'>
+                                    <div className='hover:bg-titlehover rounded-full p-1.5 cursor-pointer duration-200'>
                                         <SiSteam fontSize={14} />
                                     </div>
                                 </ExtLink>
                             </div>
                         </Tooltip>
-                        <Tooltip content='View on SteamDB' placement='top' closeDelay={0} size='sm'>
+                        <Tooltip content='View on SteamDB' placement='top' closeDelay={0} size='sm' className='bg-titlehover text-content'>
                             <div>
                                 <ExtLink href={`https://steamdb.info/app/${appId}/stats/`}>
-                                    <div className='hover:bg-border rounded-full p-1.5 cursor-pointer duration-200'>
+                                    <div className='hover:bg-titlehover rounded-full p-1.5 cursor-pointer duration-200'>
                                         <SiSteamdb fontSize={14} />
                                     </div>
                                 </ExtLink>

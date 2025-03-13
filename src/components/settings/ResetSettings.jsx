@@ -19,7 +19,7 @@ export default function ResetSettings({ setSettings, setRefreshKey }) {
                 Reset Settings
             </Button>
 
-            <Modal isOpen={isOpen} onOpenChange={onOpenChange} className='bg-modalbody text-content'>
+            <Modal isOpen={isOpen} onOpenChange={onOpenChange} className='bg-modalbody text-content' classNames={{ closeButton: ['text-altwhite hover:bg-titlehover duration-200'] }}>
                 <ModalContent>
                     {(onClose) => (
                         <Fragment>

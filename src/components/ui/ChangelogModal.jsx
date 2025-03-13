@@ -19,7 +19,7 @@ export default function ChangelogModal() {
 
     return (
         <Fragment>
-            <Modal isOpen={showChangelog} hideCloseButton className='min-w-[830px] max-h-[490px] bg-modalbody text-content'>
+            <Modal isOpen={showChangelog} hideCloseButton className='min-w-[830px] max-h-[490px] bg-modalbody text-content' classNames={{ closeButton: ['text-altwhite hover:bg-titlehover duration-200'] }}>
                 <ModalContent>
                     <Fragment>
                         <ModalHeader className='flex justify-between items-center w-full bg-modalheader border-b border-border' data-tauri-drag-region>

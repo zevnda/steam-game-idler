@@ -57,7 +57,7 @@ export default function Achievements() {
                                     base: 'bg-titlebar rounded-t-lg p-0 border-t border-l border-r border-border',
                                     tabList: 'gap-0 w-full bg-transparent',
                                     tab: 'rounded-none bg-transparent data-[hover-unselected=true]:bg-gray-500 data-[hover-unselected=true]:bg-opacity-5 data-[hover-unselected=true]:opacity-100',
-                                    tabContent: 'text-sm group-data-[selected=true]:text-content',
+                                    tabContent: 'text-sm group-data-[selected=true]:text-content text-altwhite',
                                     cursor: 'bg-base w-full rounded',
                                     panel: 'bg-titlebar rounded-lg rounded-tl-none border border-border',
                                 }}
@@ -78,7 +78,7 @@ export default function Achievements() {
                                 </Tab>
                             </Tabs>
 
-                            <p className='text-xs text-gray-400 mt-1'>
+                            <p className='text-xs text-altwhite mt-1'>
                                 Please note that changes are instant but may take up to 5 minutes to be reflected on this page. Check your game&apos;s achievements page on Steam for real-time changes.
                             </p>
                         </div>
