@@ -29,7 +29,6 @@
             "warn",
             "syntax"
         ],
-        "import/no-unresolved": "off",
         "import/order": [
             "warn",
             {
