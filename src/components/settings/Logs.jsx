@@ -1,4 +1,5 @@
 import { Fragment } from 'react';
+import { GeistMono } from 'geist/font/mono';
 
 import { Button } from '@heroui/react';
 
@@ -29,7 +30,7 @@ export default function Logs() {
                     </Button>
                 </div>
 
-                <div className='bg-container border border-border font-mono text-xs rounded min-h-[200px] max-h-[calc(100vh-285px)] overflow-y-auto'>
+                <div className={`${GeistMono.className} bg-container border border-border text-xs rounded min-h-[200px] max-h-[calc(100vh-285px)] overflow-y-auto`}>
                     <table className='w-full border-collapse'>
                         <thead className='sticky top-0 z-10'>
                             <tr className='border-b border-border bg-tablehead'>
