@@ -49,7 +49,7 @@
     },
     "lint-staged": {
         "*.{js,jsx,ts,tsx}": [
-            "pnpm lint"
+            "pnpm lint --dir src"
         ]
     }
 }

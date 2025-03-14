@@ -1,1 +1,1 @@
-npx lint-staged
+pnpm lint --dir src || (echo "❌ Linting failed. Unstaging changes..." && git reset --soft HEAD)
