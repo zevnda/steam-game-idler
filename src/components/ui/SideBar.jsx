@@ -5,7 +5,6 @@ import { TbAward, TbCards, TbDeviceGamepad2, TbGift, TbHeart, TbHourglassLow, Tb
 
 import { NavigationContext } from '@/components/contexts/NavigationContext';
 import { StateContext } from '@/components/contexts/StateContext';
-import Sparkles from '@/components/ui/Sparkles';
 import useSideBar from '@/hooks/ui/useSideBar';
 
 export default function SideBar() {
@@ -77,7 +76,6 @@ export default function SideBar() {
                                 className={`relative flex justify-center items-center p-2 rounded-full duration-200 cursor-pointer active:scale-90 ${activePage === 'freeGames' ? 'bg-yellow-400/20' : 'hover:bg-titlehover'}`}
                                 onClick={() => setActivePage('freeGames')}
                             >
-                                <Sparkles />
                                 <TbGift className='text-[#ffc700]' fontSize={22} />
                             </div>
                         </div>
