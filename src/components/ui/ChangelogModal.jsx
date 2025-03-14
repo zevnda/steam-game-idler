@@ -16,7 +16,7 @@ export default function ChangelogModal() {
     const { changelog, version } = useChangelog();
 
     return (
-        <Modal isOpen={showChangelog} hideCloseButton className='min-w-[830px] max-h-[490px] bg-modalbody text-content' classNames={{ closeButton: ['text-altwhite hover:bg-titlehover duration-200'] }}>
+        <Modal isOpen={showChangelog} hideCloseButton className='min-w-[830px] max-h-[480px] bg-modalbody text-content' classNames={{ closeButton: ['text-altwhite hover:bg-titlehover duration-200'] }}>
             <ModalContent>
                 <>
                     <ModalHeader className='flex justify-between items-center w-full bg-modalheader border-b border-border' data-tauri-drag-region>

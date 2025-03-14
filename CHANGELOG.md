@@ -15,3 +15,4 @@
 - Improved the logic for free games notifications
   - Previously, users would be notified once every 24 hours if there were any free games available. Free games often don't change for days or even weeks so this would result in receiving multiple notifications for the same free games every day
   - Notifications will now only be sent if the games are different to when the user was previously notified
+- Fix changelog modal height
