@@ -23,15 +23,13 @@ dotenvs = "0.1.0"
 scraper = "0.22.0"
 lazy_static = "1.5.0"
 steamlocate = "2.0.1"
-window-shadows = "0.2.2"
-tokio = { version = "1", features = ["full"] }
+tokio = { version = "1.44.1", features = ["macros", "time"] }
 chrono = { version = "0.4.39", features = ["clock"] }
 serde = { version = "1.0.217", features = ["derive"] }
 reqwest = { version = "0.12.12", features = ["json"] }
 serde_json = { version = "1.0.138", features = ["std"] }
 regex = { version = "1.11.1", default-features = false, features = ["std"] }
 winapi = { version = "0.3.9", features = ["processthreadsapi", "handleapi", "winnt"] }
-tauri-plugin-autostart = { version = "2" }
 tauri-plugin-window-state = { version = "2" }
 tauri = { version = "2", features = ["tray-icon"] }
 tauri-plugin-shell = "2"
@@ -54,6 +52,6 @@ incremental = true
 opt-level = 3
 lto = "fat"
 codegen-units = 1
-strip = false
+strip = true
 panic = "abort"
 overflow-checks = false
