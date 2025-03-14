@@ -1,7 +1,14 @@
 [
     {
+        "id": "16",
+        "title": "Feedback Poll - Game Settings",
+        "message": "Click to view the feedback poll and cast your vote",
+        "url": "https://github.com/zevnda/steam-game-idler/discussions/116",
+        "timestamp": "1741980154"
+    },
+    {
         "id": "15",
-        "title": "Feedback Poll",
+        "title": "Feedback Poll - API Key",
         "message": "Click to view the feedback poll and cast your vote",
         "url": "http://poll-maker.com/poll5426682x60fe4B28-161",
         "timestamp": "1741306313"
@@ -62,25 +69,4 @@
         "url": "https://github.com/zevnda/steam-game-idler/releases/tag/1.7.0-beta.2",
         "timestamp": "1737916038"
     },
-    {
-        "id": "6",
-        "title": "Beta v1.7.0-1",
-        "message": "New beta version available",
-        "url": "https://github.com/zevnda/steam-game-idler/releases/tag/1.7.0-beta.1",
-        "timestamp": "1737911611"
-    },
-    {
-        "id": "5",
-        "title": "User feedback wanted",
-        "message": "[FINISHED] Vote on this poll to decide how v1.7.0 handles achievement functionality!",
-        "url": "https://github.com/zevnda/steam-game-idler/issues/61",
-        "timestamp": "1736686548"
-    },
-    {
-        "id": "4",
-        "title": "Beta v1.6.0.4",
-        "message": "New beta version available",
-        "url": "https://github.com/zevnda/steam-game-idler/releases/tag/1.6.0-beta.4",
-        "timestamp": "1735041679"
-    }
 ]
