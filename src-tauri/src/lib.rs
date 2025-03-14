@@ -14,7 +14,7 @@ use utils::*;
 
 use std::env;
 use std::sync::atomic::{AtomicBool, Ordering};
-use std::sync::mpsc;
+use std::sync::{mpsc, Arc, Mutex};
 use std::thread;
 use std::time::Duration;
 use tauri::menu::{Menu, MenuItem};
@@ -52,92 +52,7 @@ pub fn run() {
             MacosLauncher::LaunchAgent,
             None,
         ))
-        .setup(move |app| {
-            // Get the main window
-            let app_handle = app.handle();
-            let window = app_handle.get_webview_window("main").unwrap();
-
-            // Listen for ready event from frontend
-            let window_clone = window.clone();
-            window.listen("ready", move |_| {
-                window_clone.show().unwrap();
-                window_clone.set_focus().unwrap();
-            });
-
-            let spawned_processes = SPAWNED_PROCESSES.clone();
-            let tx_clone = tx.clone();
-
-            // TODO: Delete once all users are migrated to the new format
-            // Delete the old app-specific directory
-            let app_data_dir = app_handle
-                .path()
-                .app_data_dir()
-                .map_err(|e| e.to_string())?;
-            let app_specific_dir = app_data_dir
-                .parent()
-                .unwrap_or(&app_data_dir)
-                .join("steam-game-idler");
-            match remove_dir_all(&app_specific_dir) {
-                Ok(_) => println!("Successfully deleted directory: {:?}", app_specific_dir),
-                Err(e) => println!(
-                    "Failed to delete directory: {:?}, Error: {}",
-                    app_specific_dir, e
-                ),
-            }
-
-            // Tray menu
-            let show = MenuItem::with_id(app, "show", "Show", true, None::<&str>)?;
-            let quit = MenuItem::with_id(app, "quit", "Quit Steam Game Idler", true, None::<&str>)?;
-            let menu = Menu::with_items(app, &[&show, &quit])?;
-
-            TrayIconBuilder::new()
-                .icon(app.default_window_icon().unwrap().clone())
-                .tooltip("Steam Game Idler")
-                .menu(&menu)
-                .show_menu_on_left_click(false)
-                .on_tray_icon_event(|tray, event| match event {
-                    TrayIconEvent::Click {
-                        button: MouseButton::Left,
-                        button_state: MouseButtonState::Up,
-                        ..
-                    } => {
-                        let app = tray.app_handle();
-                        if let Some(window) = app.get_webview_window("main") {
-                            window.show().unwrap();
-                            window.set_focus().unwrap();
-                        }
-                    }
-                    _ => {}
-                })
-                .on_menu_event(|app, event| match event.id.as_ref() {
-                    "quit" => {
-                        app.exit(0);
-                    }
-                    "show" => {
-                        if let Some(window) = app.get_webview_window("main") {
-                            window.show().unwrap();
-                            window.set_focus().unwrap();
-                        }
-                    }
-                    _ => {
-                        println!("menu item {:?} not handled", event.id);
-                    }
-                })
-                .build(app)?;
-
-            // Spawn a thread to monitor the shutdown flag
-            std::thread::spawn(move || loop {
-                if SHUTTING_DOWN.load(Ordering::SeqCst) {
-                    kill_processes(&spawned_processes);
-                    tx_clone.send(()).unwrap();
-                    break;
-                }
-                thread::sleep(Duration::from_millis(100));
-            });
-
-            Ok(())
-        })
-        // Register commands
+        .setup(move |app| setup_app(app, tx.clone()))
         .invoke_handler(tauri::generate_handler![
             check_status,
             get_users,
@@ -181,4 +96,104 @@ pub fn run() {
             }
             _ => {}
         });
+}
+
+fn setup_app(app: &mut tauri::App, tx: mpsc::Sender<()>) -> Result<(), Box<dyn std::error::Error>> {
+    let app_handle = app.handle();
+    setup_window(&app_handle)?;
+    migrate_old_data(&app_handle)?;
+    setup_tray_icon(app)?;
+    setup_process_monitor(tx, SPAWNED_PROCESSES.clone());
+
+    Ok(())
+}
+
+fn setup_window(app_handle: &tauri::AppHandle) -> Result<(), Box<dyn std::error::Error>> {
+    let window = app_handle.get_webview_window("main").unwrap();
+
+    // Listen for ready event from frontend
+    let window_clone = window.clone();
+    window.listen("ready", move |_| {
+        window_clone.show().unwrap();
+        window_clone.set_focus().unwrap();
+    });
+
+    Ok(())
+}
+
+// TODO: Delete once all users are migrated to the new format
+fn migrate_old_data(app_handle: &tauri::AppHandle) -> Result<(), Box<dyn std::error::Error>> {
+    // Delete the old app-specific directory
+    let app_data_dir = app_handle
+        .path()
+        .app_data_dir()
+        .map_err(|e| e.to_string())?;
+    let app_specific_dir = app_data_dir
+        .parent()
+        .unwrap_or(&app_data_dir)
+        .join("steam-game-idler");
+    match remove_dir_all(&app_specific_dir) {
+        Ok(_) => println!("Successfully deleted directory: {:?}", app_specific_dir),
+        Err(e) => println!(
+            "Failed to delete directory: {:?}, Error: {}",
+            app_specific_dir, e
+        ),
+    }
+
+    Ok(())
+}
+
+fn setup_tray_icon(app: &mut tauri::App) -> Result<(), Box<dyn std::error::Error>> {
+    let show = MenuItem::with_id(app, "show", "Show", true, None::<&str>)?;
+    let quit = MenuItem::with_id(app, "quit", "Quit Steam Game Idler", true, None::<&str>)?;
+    let menu = Menu::with_items(app, &[&show, &quit])?;
+
+    TrayIconBuilder::new()
+        .icon(app.default_window_icon().unwrap().clone())
+        .tooltip("Steam Game Idler")
+        .menu(&menu)
+        .show_menu_on_left_click(false)
+        .on_tray_icon_event(|tray, event| match event {
+            TrayIconEvent::Click {
+                button: MouseButton::Left,
+                button_state: MouseButtonState::Up,
+                ..
+            } => {
+                let app = tray.app_handle();
+                if let Some(window) = app.get_webview_window("main") {
+                    window.show().unwrap();
+                    window.set_focus().unwrap();
+                }
+            }
+            _ => {}
+        })
+        .on_menu_event(|app, event| match event.id.as_ref() {
+            "quit" => {
+                app.exit(0);
+            }
+            "show" => {
+                if let Some(window) = app.get_webview_window("main") {
+                    window.show().unwrap();
+                    window.set_focus().unwrap();
+                }
+            }
+            _ => {
+                println!("menu item {:?} not handled", event.id);
+            }
+        })
+        .build(app)?;
+
+    Ok(())
+}
+
+fn setup_process_monitor(tx: mpsc::Sender<()>, spawned_processes: Arc<Mutex<Vec<ProcessInfo>>>) {
+    // Spawn a thread to monitor the shutdown flag
+    std::thread::spawn(move || loop {
+        if SHUTTING_DOWN.load(Ordering::SeqCst) {
+            kill_processes(&spawned_processes);
+            tx.send(()).unwrap();
+            break;
+        }
+        thread::sleep(Duration::from_millis(100));
+    });
 }
