@@ -57,8 +57,6 @@ export const checkForFreeGames = async (setFreeGamesList, setShowFreeGamesTab) =
             setFreeGamesList(freeGamesList.games);
             setShowFreeGamesTab(true);
 
-            console.log(JSON.stringify(oldFreeGameIds) !== JSON.stringify(newFreeGameIds));
-
             // If there are new free games, notify the user
             if (JSON.stringify(oldFreeGameIds) !== JSON.stringify(newFreeGameIds)) {
                 localStorage.setItem('freeGamesIds', JSON.stringify(newFreeGameIds));
