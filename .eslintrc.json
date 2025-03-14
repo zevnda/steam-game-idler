@@ -14,10 +14,10 @@
         "react-hooks/exhaustive-deps": "warn",
         "react/jsx-uses-react": "error",
         "react/jsx-uses-vars": "error",
-        "react/self-closing-comp": "warn",
+        "react/self-closing-comp": "error",
         "react/no-array-index-key": "warn",
         "react/jsx-no-useless-fragment": "warn",
-        "react/jsx-pascal-case": "warn",
+        "react/jsx-pascal-case": "error",
         "react/jsx-curly-brace-presence": [
             "warn",
             {
@@ -48,12 +48,12 @@
             }
         ],
         "no-undef": "error",
-        "no-unused-expressions": "warn",
+        "no-unused-vars": "error",
+        "no-unused-expressions": "error",
         "no-multiple-empty-lines": "warn",
         "no-unreachable": "error",
-        "no-sync": "warn",
-        "no-unused-vars": "error",
-        "prefer-const": "warn",
+        "no-sync": "error",
+        "prefer-const": "error",
         "eqeqeq": [
             "error",
             "always"
