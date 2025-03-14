@@ -1,4 +1,4 @@
-import { Button, Modal, ModalContent, ModalBody, Input, ModalFooter, ModalHeader, useDisclosure } from '@heroui/react';
+import { Button, Modal, ModalContent, ModalBody, ModalFooter, ModalHeader, useDisclosure, NumberInput } from '@heroui/react';
 import { TbPlus } from 'react-icons/tb';
 
 import useManualAdd from '@/hooks/customlists/useManualAdd';
@@ -35,18 +35,19 @@ export default function ManualAdd({ listName, setList }) {
                                     Add games that you do not own, but have in your library, such as family shared games.
                                 </p>
 
-                                <Input
-                                    isClearable
-                                    placeholder='Enter a game ID'
+                                <NumberInput
+                                    hideStepper
+                                    autoFocus
+                                    value={inputValue || 0}
+                                    label='Enter a game ID'
+                                    formatOptions={{ useGrouping: false }}
+                                    aria-label='manual add'
                                     classNames={{
                                         inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar group-data-[focus-visible=true]:ring-transparent group-data-[focus-visible=true]:ring-offset-transparent'],
                                         input: ['text-sm !text-content placeholder:text-altwhite/50'],
                                     }}
-                                    value={inputValue}
                                     onChange={handleChange}
-                                    onClear={() => { setInputValue(''); }}
                                     onKeyDown={(e) => handleKeyPress(e, onClose)}
-                                    autoFocus
                                 />
                             </ModalBody>
                             <ModalFooter className='border-t border-border bg-modalfooter px-4 py-3'>

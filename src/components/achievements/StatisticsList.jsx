@@ -1,15 +1,21 @@
-import { Input } from '@heroui/react';
+import { NumberInput } from '@heroui/react';
 import { useContext, memo } from 'react';
 import { FixedSizeList as List } from 'react-window';
 
 import { UserContext } from '@/components/contexts/UserContext';
 import useStatisticsList from '@/hooks/achievements/useStatisticsList';
-import { handleInputChange } from '@/utils/achievements/statisticsListHandler';
 
 const Row = memo(({ index, style, data }) => {
     const { statisticsList, newStatValues, setNewStatValues } = data;
     const item1 = statisticsList[index * 2];
     const item2 = statisticsList[index * 2 + 1];
+
+    const handleInputChange = (name, value, setNewStatValues) => {
+        setNewStatValues(prevValues => ({
+            ...prevValues,
+            [name]: value
+        }));
+    };
 
     return (
         <div style={style} className='grid grid-cols-2 gap-2 p-2'>
@@ -19,13 +25,17 @@ const Row = memo(({ index, style, data }) => {
                         <p className='text-sm w-full truncate'>
                             {item1.name}
                         </p>
-                        <Input
+                        <NumberInput
+                            hideStepper
                             size='sm'
                             value={newStatValues[item1.name]}
+                            maxValue={99999}
+                            formatOptions={{ useGrouping: false }}
                             onChange={(e) => handleInputChange(item1.name, e.target.value, setNewStatValues)}
+                            aria-label='statistic value'
                             className='w-[120px]'
                             classNames={{
-                                inputWrapper: ['bg-titlebar border border-border hover:!bg-input rounded-lg group-data-[focus-visible=true]:ring-transparent group-data-[focus-visible=true]:ring-offset-transparent group-data-[focus-within=true]:!bg-titlebar'],
+                                inputWrapper: ['bg-titlebar border border-border hover:!bg-input rounded-lg group-data-[focus-visible=true]:ring-transparent group-data-[focus-visible=true]:ring-offset-transparent group-data-[focus-within=true]:!bg-titlebar h-8'],
                                 input: ['text-sm !text-content']
                             }}
                         />
@@ -38,13 +48,17 @@ const Row = memo(({ index, style, data }) => {
                         <p className='text-sm w-full truncate'>
                             {item2.name}
                         </p>
-                        <Input
+                        <NumberInput
+                            hideStepper
                             size='sm'
                             value={newStatValues[item2.name]}
+                            maxValue={99999}
+                            formatOptions={{ useGrouping: false }}
                             onChange={(e) => handleInputChange(item2.name, e.target.value, setNewStatValues)}
+                            aria-label='statistic value'
                             className='w-[120px]'
                             classNames={{
-                                inputWrapper: ['bg-titlebar border border-border hover:!bg-input rounded-lg group-data-[focus-visible=true]:ring-transparent group-data-[focus-visible=true]:ring-offset-transparent group-data-[focus-within=true]:!bg-titlebar'],
+                                inputWrapper: ['bg-titlebar border border-border hover:!bg-input rounded-lg group-data-[focus-visible=true]:ring-transparent group-data-[focus-visible=true]:ring-offset-transparent group-data-[focus-within=true]:!bg-titlebar h-8'],
                                 input: ['text-sm !text-content']
                             }}
                         />

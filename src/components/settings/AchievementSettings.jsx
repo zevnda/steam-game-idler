@@ -4,7 +4,7 @@ import SettingsCheckbox from '@/components/settings/SettingsCheckbox';
 import { useAchievementSettings, handleSliderChange, handleScheduleChange, updateLabel } from '@/hooks/settings/useAchievementSettings';
 
 export default function AchievementSettings({ settings, setSettings, localSettings, setLocalSettings }) {
-    const { labelInterval, setLabelInterval } = useAchievementSettings(settings);
+    const { labelInterval, setLabelInterval } = useAchievementSettings(settings, setLocalSettings);
 
     return (
         <div className='flex flex-col gap-4 p-2'>

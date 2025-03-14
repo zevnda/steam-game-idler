@@ -435,7 +435,7 @@ module.exports = {
                     'container': '#0e1018',
                     'containerhover': '#161c2c',
                     'footer': '#070a0f',
-                    'border': '#15171e',
+                    'border': '#1b1e28',
                     'input': '#0f1219',
                     'link': '#4d8ad3',
                     'linkhover': '#6ba1e9',

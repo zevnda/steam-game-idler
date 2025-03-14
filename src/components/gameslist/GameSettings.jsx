@@ -1,4 +1,4 @@
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input } from '@heroui/react';
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input, NumberInput } from '@heroui/react';
 import { useContext, useState, useEffect } from 'react';
 
 import { StateContext } from '@/components/contexts/StateContext';
@@ -33,24 +33,15 @@ export default function GameSettings({ isOpen, onOpenChange }) {
     };
 
     const handleMaxIdleTimeChange = (e) => {
-        const value = e.target.value;
-        if (/^\d*$/.test(value)) {
-            setMaxIdleTime(value);
-        }
+        setMaxIdleTime(e.target?.value || 0);
     };
 
     const handleMaxAchievementUnlocksChange = (e) => {
-        const value = e.target.value;
-        if (/^\d*$/.test(value)) {
-            setMaxAchievementUnlocks(value);
-        }
+        setMaxAchievementUnlocks(e.target?.value || 0);
     };
 
     const handleMaxCardDropsChange = (e) => {
-        const value = e.target.value;
-        if (/^\d*$/.test(value)) {
-            setMaxCardDrops(value);
-        }
+        setMaxCardDrops(e.target?.value || 0);
     };
 
     const isSaveDisabled = () => {
@@ -77,16 +68,18 @@ export default function GameSettings({ isOpen, onOpenChange }) {
                                     <p className='text-xs'>
                                         Max idle time (minutes)
                                     </p>
-                                    <Input
+                                    <NumberInput
+                                        hideStepper
                                         size='sm'
-                                        aria-label='max idle time'
-                                        placeholder=' '
+                                        value={maxIdleTime || 0}
+                                        maxValue={99999}
+                                        formatOptions={{ useGrouping: false }}
+                                        aria-label='max idle'
                                         className='max-w-[80px]'
                                         classNames={{
-                                            inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'],
+                                            inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar h-8'],
                                             input: ['!text-content']
                                         }}
-                                        value={maxIdleTime}
                                         onChange={handleMaxIdleTimeChange}
                                     />
                                 </div>
@@ -95,16 +88,18 @@ export default function GameSettings({ isOpen, onOpenChange }) {
                                     <p className='text-xs'>
                                         Max card drops
                                     </p>
-                                    <Input
+                                    <NumberInput
+                                        hideStepper
                                         size='sm'
-                                        aria-label='max card drops'
-                                        placeholder=' '
+                                        value={maxCardDrops || 0}
+                                        maxValue={99999}
+                                        formatOptions={{ useGrouping: false }}
+                                        aria-label='max drops'
                                         className='max-w-[80px]'
                                         classNames={{
-                                            inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'],
+                                            inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar h-8'],
                                             input: ['!text-content']
                                         }}
-                                        value={maxCardDrops}
                                         onChange={handleMaxCardDropsChange}
                                     />
                                 </div>
@@ -113,16 +108,18 @@ export default function GameSettings({ isOpen, onOpenChange }) {
                                     <p className='text-xs'>
                                         Max achievement unlocks
                                     </p>
-                                    <Input
+                                    <NumberInput
+                                        hideStepper
                                         size='sm'
-                                        aria-label='max achievement unlocks'
-                                        placeholder=' '
+                                        value={maxAchievementUnlocks || 0}
+                                        maxValue={99999}
+                                        formatOptions={{ useGrouping: false }}
+                                        aria-label='max unlocks'
                                         className='max-w-[80px]'
                                         classNames={{
-                                            inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'],
+                                            inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar h-8'],
                                             input: ['!text-content']
                                         }}
-                                        value={maxAchievementUnlocks}
                                         onChange={handleMaxAchievementUnlocksChange}
                                     />
                                 </div>

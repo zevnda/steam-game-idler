@@ -9,9 +9,10 @@ export default function useManualAdd(listName, setList) {
     const [isLoading, setIsLoading] = useState(false);
 
     const handleAdd = async (onClose) => {
+        console.log(inputValue);
         setIsLoading(true);
         try {
-            const res = await invoke('get_game_details', { appId: inputValue });
+            const res = await invoke('get_game_details', { appId: inputValue.toString() });
 
             if (res[inputValue].success === false) {
                 setIsLoading(false);
@@ -44,9 +45,7 @@ export default function useManualAdd(listName, setList) {
 
     const handleChange = (e) => {
         try {
-            const value = e.target.value;
-            const numericValue = value.replace(/[^0-9]/g, '');
-            setInputValue(numericValue);
+            setInputValue(e.target?.value || 0);
         } catch (error) {
             addToast({ description: `Error in (handleChange): ${error?.message || error}`, color: 'danger' });
             console.error('Error in (handleChange):', error);
