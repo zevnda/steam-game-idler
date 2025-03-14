@@ -9,7 +9,6 @@ export default function useManualAdd(listName, setList) {
     const [isLoading, setIsLoading] = useState(false);
 
     const handleAdd = async (onClose) => {
-        console.log(inputValue);
         setIsLoading(true);
         try {
             const res = await invoke('get_game_details', { appId: inputValue.toString() });

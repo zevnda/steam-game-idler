@@ -1,4 +1,4 @@
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input, NumberInput } from '@heroui/react';
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, NumberInput } from '@heroui/react';
 import { useContext, useState, useEffect } from 'react';
 
 import { StateContext } from '@/components/contexts/StateContext';
