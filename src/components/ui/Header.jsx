@@ -11,7 +11,6 @@ import SearchBar from '@/components/ui/SearchBar';
 import UpdateButton from '@/components/ui/UpdateButton';
 import useHeader from '@/hooks/ui/useHeader';
 
-
 export default function Header() {
     const { isDarkMode } = useContext(StateContext);
     const { setGameQueryValue, setAchievementQueryValue } = useContext(SearchContext);
