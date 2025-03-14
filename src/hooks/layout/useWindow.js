@@ -1,5 +1,5 @@
-import { check } from '@tauri-apps/plugin-updater';
 import { emit } from '@tauri-apps/api/event';
+import { check } from '@tauri-apps/plugin-updater';
 import { useTheme } from 'next-themes';
 import { useCallback, useContext, useEffect } from 'react';
 
