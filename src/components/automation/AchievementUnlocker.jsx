@@ -12,6 +12,8 @@ import { stopIdle } from '@/utils/utils';
 export default function AchievementUnlocker({ activePage }) {
     const { isDarkMode, setIsAchievementUnlocker } = useContext(StateContext);
 
+    const stuff = 0;
+
     const isMountedRef = useRef(true);
     const abortControllerRef = useRef(new AbortController());
 
