@@ -13,13 +13,33 @@ export const useLogs = () => {
             if (typeof window !== 'undefined' && window.__TAURI__) {
                 try {
                     const fullLogPath = await invoke('get_app_log_dir');
-                    const logContents = await window.__TAURI__.fs.readTextFile(`${fullLogPath}\\log.txt`);
+                    const logFilePath = `${fullLogPath}\\log.txt`;
+
+                    // Check if log file exists
+                    let logContents = '';
+                    try {
+                        logContents = await window.__TAURI__.fs.readTextFile(logFilePath);
+                    } catch (fileError) {
+                        // Create log file if not exists
+                        await logEvent('No log file found so one was created');
+                        // Try to read again
+                        try {
+                            logContents = await window.__TAURI__.fs.readTextFile(logFilePath);
+                        } catch (retryError) {
+                            // Still failed, set empty logs
+                            setLogs([]);
+                            setLogPath(logFilePath);
+                            return;
+                        }
+                    }
+
+                    // Process log contents
                     const logEntries = logContents.split('\n').filter(entry => entry.trim() !== '').map(entry => {
                         const [timestamp, message] = entry.split(' + ');
                         return { timestamp, message };
                     });
                     setLogs(logEntries);
-                    setLogPath(`${fullLogPath}\\log.txt`);
+                    setLogPath(logFilePath);
                 } catch (error) {
                     addToast({ description: `Error in (fetchLogs): ${error?.message || error}`, color: 'danger' });
                     console.error('Error in (fetchLogs):', error);

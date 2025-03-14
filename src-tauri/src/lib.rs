@@ -22,6 +22,9 @@ use tauri::tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent}
 use tauri::Manager;
 use tauri_plugin_autostart::MacosLauncher;
 
+// TODO: Delete once all users are migrated to the new format
+use std::fs::remove_dir_all;
+
 static SHUTTING_DOWN: AtomicBool = AtomicBool::new(false);
 
 pub fn run() {
@@ -53,6 +56,25 @@ pub fn run() {
             // Get the main window
             let spawned_processes = SPAWNED_PROCESSES.clone();
             let tx_clone = tx.clone();
+
+            // TODO: Delete once all users are migrated to the new format
+            // Delete the old app-specific directory
+            let app_handle = app.handle();
+            let app_data_dir = app_handle
+                .path()
+                .app_data_dir()
+                .map_err(|e| e.to_string())?;
+            let app_specific_dir = app_data_dir
+                .parent()
+                .unwrap_or(&app_data_dir)
+                .join("steam-game-idler");
+            match remove_dir_all(&app_specific_dir) {
+                Ok(_) => println!("Successfully deleted directory: {:?}", app_specific_dir),
+                Err(e) => println!(
+                    "Failed to delete directory: {:?}, Error: {}",
+                    app_specific_dir, e
+                ),
+            }
 
             // Tray menu
             let show = MenuItem::with_id(app, "show", "Show", true, None::<&str>)?;
