@@ -64,16 +64,17 @@
         "withGlobalTauri": true,
         "windows": [
             {
-                "fullscreen": false,
+                "title": "Steam Game Idler",
                 "width": 1268,
                 "height": 620,
                 "minWidth": 1268,
                 "minHeight": 620,
+                "fullscreen": false,
                 "resizable": true,
-                "title": "Steam Game Idler",
                 "decorations": false,
                 "transparent": true,
                 "focus": true,
+                "visible": false,
                 "useHttpsScheme": true
             }
         ],
