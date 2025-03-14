@@ -1,9 +1,12 @@
 import { Select, SelectItem } from '@heroui/react';
+import { useContext } from 'react';
 import { TbRefresh, TbSortDescending2 } from 'react-icons/tb';
 
+import { UserContext } from '@/components/contexts/UserContext';
 import { usePageHeader } from '@/hooks/gameslist/usePageHeader';
 
 export default function PageHeader({ sortStyle, setSortStyle, filteredGames, visibleGames, setRefreshKey }) {
+    const { userSummary } = useContext(UserContext);
     const { handleSorting, handleRefetch } = usePageHeader({ setSortStyle, setRefreshKey });
 
     const sortOptions = [
@@ -26,7 +29,7 @@ export default function PageHeader({ sortStyle, setSortStyle, filteredGames, vis
                             <p className='text-xs text-altwhite'>
                                 Showing {visibleGames.length} of {filteredGames.length} games
                             </p>
-                            <div className='flex justify-center items-center cursor-pointer' onClick={handleRefetch}>
+                            <div className='flex justify-center items-center cursor-pointer' onClick={() => handleRefetch(userSummary.steamId)}>
                                 <TbRefresh className='text-altwhite' fontSize={16} />
                             </div>
                         </div>

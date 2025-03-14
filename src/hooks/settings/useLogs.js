@@ -21,12 +21,14 @@ export const useLogs = () => {
                         logContents = await window.__TAURI__.fs.readTextFile(logFilePath);
                     } catch (fileError) {
                         // Create log file if not exists
+                        console.error('Error in (fetchLogs) - file had to be created:', fileError);
                         await logEvent('No log file found so one was created');
                         // Try to read again
                         try {
                             logContents = await window.__TAURI__.fs.readTextFile(logFilePath);
                         } catch (retryError) {
                             // Still failed, set empty logs
+                            console.error('Error in (fetchLogs) - unable to create file:', retryError);
                             setLogs([]);
                             setLogPath(logFilePath);
                             return;

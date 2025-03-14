@@ -2,9 +2,10 @@ import { invoke } from '@tauri-apps/api/core';
 
 // Fetches the games list and recent games from cache or API
 export const fetchGamesList = async (steamId, refreshKey, prevRefreshKey) => {
-    const cachedGameListFiles = await invoke('get_games_list_cache');
+    const cachedGameListFiles = await invoke('get_games_list_cache', { steamId });
     const cachedGameList = cachedGameListFiles?.games_list?.response?.games;
     const cachedRecentGames = cachedGameListFiles?.recent_games?.response?.games;
+
     if (cachedGameList && refreshKey === prevRefreshKey) {
         return { gameList: cachedGameList || [], recentGames: cachedRecentGames || [] };
     } else {
