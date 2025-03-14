@@ -2,9 +2,9 @@
 
 ## Changelog
 - Migrated the app data directory to be inline with Tauri's v2 format
-- The new data directory is `C:\Users\<user>\AppData\Roaming\com.zevnda.steam-game-idler`
-- The old data directory was `C:\Users\<user>\AppData\Roaming\steam-game-idler` and should be automatically deleted when launching this version
-- The install directory remains the same `C:\Program Files\Steam Game Idler`
+  - The old data directory was `C:\Users\<user>\AppData\Roaming\steam-game-idler` and should be automatically deleted when launching this version
+  - The new data directory is `C:\Users\<user>\AppData\Roaming\com.zevnda.steam-game-idler`
+  - The install directory remains the same `C:\Program Files\Steam Game Idler`
 - Improved the handling of games lists caches
   - Previously, SGI used a single `games_list.json` file to store games lists caches. The file was deleted when switching between users via the `account selection` screen, causing the games lists to be refetched more than necessary.
   - Games lists caches are now user specific `<steam_id>_games_list.json` and are now preserved until manually deleted via `settings > clear data`
