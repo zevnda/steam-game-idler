@@ -3,7 +3,7 @@
   "major": false,
   "platforms": {
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUSDh2NGF3cDBSMG9WaXcxMjBzczc2c1pDRUFFUGh5QlEyenliaGh4ZFhQd0l4bTFKcTVJaFA3ejdtTHRnSG54eEZ5RzFlY1FodjNWSUgvK1Zna0loUElqSXg4L21kaXdnPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzQxOTY2Mjc1CWZpbGU6U3RlYW0gR2FtZSBJZGxlcl8xLjguMl94NjQtc2V0dXAubnNpcy56aXAKZGY1ZXhQWTljbHRmUW5XU2pYMnVTR3JIY3c5VXo0RGNzbnI0aUFOMnlnemZXc3VtOTNCaDFBR000eDdoZjJmNklWeG9lS01Md3BLd2xWVXZFbXg4RGc9PQo=",
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUSDh2NGF3cDBSMGlraDR1eExFLzFxYWNMRVU0RTdLaVp5VXVSQXRzVTNINHowVjRSMGRrUWZ2bnpud0JaTzBmVGhVV1BHUG9sUmh4Zzc0WjZoMnZ1emlMR0NDbzdmdWdvPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzQxOTY4NjI3CWZpbGU6U3RlYW0gR2FtZSBJZGxlcl8xLjguMl94NjQtc2V0dXAubnNpcy56aXAKb1QvdGI0OHF2a0d5aUw3aWdaRGZWZlFVWTNEc2JaTGJoSjI3OFlmSThESDY3bmlzRjRlVWFNWVorRGdnaGxubHRqU2h3OGdqWDdSR2lHMmp0ZE9sQ1E9PQo=",
       "url": "https://github.com/zevnda/steam-game-idler/releases/download/1.8.2/Steam.Game.Idler_1.8.2_x64-setup.nsis.zip"
     }
   }
