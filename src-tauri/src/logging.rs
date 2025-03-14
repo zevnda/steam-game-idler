@@ -4,7 +4,6 @@ use std::io::{BufRead, BufReader, Seek, SeekFrom, Write};
 use std::os::windows::process::CommandExt;
 use tauri::Manager;
 
-const APP_FOLDER_NAME: &str = "steam-game-idler";
 const MAX_LINES: usize = 500;
 
 #[tauri::command]
@@ -14,15 +13,9 @@ pub fn log_event(message: String, app_handle: tauri::AppHandle) -> Result<(), St
         .path()
         .app_data_dir()
         .map_err(|e| e.to_string())?;
-    // Create the application-specific directory
-    let app_specific_dir = app_data_dir
-        .parent()
-        .unwrap_or(&app_data_dir)
-        .join(APP_FOLDER_NAME);
-    create_dir_all(&app_specific_dir)
-        .map_err(|e| format!("Failed to create app directory: {}", e))?;
+    create_dir_all(&app_data_dir).map_err(|e| format!("Failed to create app directory: {}", e))?;
     // Open the log file
-    let log_file_path = app_specific_dir.join("log.txt");
+    let log_file_path = app_data_dir.join("log.txt");
     let mut file = OpenOptions::new()
         .read(true)
         .write(true)
@@ -59,19 +52,28 @@ pub fn log_event(message: String, app_handle: tauri::AppHandle) -> Result<(), St
 }
 
 #[tauri::command]
+pub fn get_app_log_dir(app_handle: tauri::AppHandle) -> Result<String, String> {
+    // Get the application data directory
+    let app_data_dir = app_handle
+        .path()
+        .app_data_dir()
+        .map_err(|e| e.to_string())?;
+    // Convert the path to a string and return it
+    app_data_dir
+        .to_str()
+        .ok_or("Failed to convert path to string".to_string())
+        .map(|s| s.to_string())
+}
+
+#[tauri::command]
 pub fn clear_log_file(app_handle: tauri::AppHandle) -> Result<(), String> {
     // Get the application data directory
     let app_data_dir = app_handle
         .path()
         .app_data_dir()
         .map_err(|e| e.to_string())?;
-    // Create the application-specific directory
-    let app_specific_dir = app_data_dir
-        .parent()
-        .unwrap_or(&app_data_dir)
-        .join(APP_FOLDER_NAME);
     // Open the log file
-    let log_file_path = app_specific_dir.join("log.txt");
+    let log_file_path = app_data_dir.join("log.txt");
     let file = OpenOptions::new()
         .write(true)
         .open(&log_file_path)
@@ -80,25 +82,6 @@ pub fn clear_log_file(app_handle: tauri::AppHandle) -> Result<(), String> {
     file.set_len(0)
         .map_err(|e| format!("Failed to truncate file: {}", e))?;
     Ok(())
-}
-
-#[tauri::command]
-pub fn get_app_log_dir(app_handle: tauri::AppHandle) -> Result<String, String> {
-    // Get the application data directory
-    let app_data_dir = app_handle
-        .path()
-        .app_data_dir()
-        .map_err(|e| e.to_string())?;
-    // Create the application-specific directory
-    let app_specific_dir = app_data_dir
-        .parent()
-        .unwrap_or(&app_data_dir)
-        .join(APP_FOLDER_NAME);
-    // Convert the path to a string and return it
-    app_specific_dir
-        .to_str()
-        .ok_or("Failed to convert path to string".to_string())
-        .map(|s| s.to_string())
 }
 
 #[tauri::command]

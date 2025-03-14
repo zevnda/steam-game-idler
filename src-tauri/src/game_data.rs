@@ -8,8 +8,6 @@ use std::io::Read;
 use std::io::Write;
 use tauri::Manager;
 
-const APP_FOLDER_NAME: &str = "steam-game-idler";
-
 #[derive(Serialize, Deserialize)]
 struct GameInfo {
     appid: String,
@@ -40,15 +38,11 @@ pub async fn get_games_list(
                 .path()
                 .app_data_dir()
                 .map_err(|e| e.to_string())?;
-            // Create the application-specific directory
-            let app_specific_dir = app_data_dir
-                .parent()
-                .unwrap_or(&app_data_dir)
-                .join(APP_FOLDER_NAME);
-            create_dir_all(&app_specific_dir)
+            create_dir_all(&app_data_dir)
                 .map_err(|e| format!("Failed to create app directory: {}", e))?;
+
             // Save the response to games_list.json
-            let games_file_path = app_specific_dir.join("games_list.json");
+            let games_file_path = app_data_dir.join("games_list.json");
             let mut file = OpenOptions::new()
                 .write(true)
                 .create(true)
@@ -91,15 +85,10 @@ pub async fn get_recent_games(
                 .path()
                 .app_data_dir()
                 .map_err(|e| e.to_string())?;
-            // Create the application-specific directory
-            let app_specific_dir = app_data_dir
-                .parent()
-                .unwrap_or(&app_data_dir)
-                .join(APP_FOLDER_NAME);
-            create_dir_all(&app_specific_dir)
+            create_dir_all(&app_data_dir)
                 .map_err(|e| format!("Failed to create app directory: {}", e))?;
             // Save the response to recent_games.json
-            let recent_games_file_path = app_specific_dir.join("recent_games.json");
+            let recent_games_file_path = app_data_dir.join("recent_games.json");
             let mut file = OpenOptions::new()
                 .write(true)
                 .create(true)
@@ -125,14 +114,9 @@ pub fn get_games_list_cache(app_handle: tauri::AppHandle) -> Result<Value, Strin
         .path()
         .app_data_dir()
         .map_err(|e| e.to_string())?;
-    // Get the application-specific directory
-    let app_specific_dir = app_data_dir
-        .parent()
-        .unwrap_or(&app_data_dir)
-        .join(APP_FOLDER_NAME);
     // Read games list file
     let games_list = {
-        let games_file_path = app_specific_dir.join("games_list.json");
+        let games_file_path = app_data_dir.join("games_list.json");
         if games_file_path.exists() {
             let mut file = File::open(&games_file_path)
                 .map_err(|e| format!("Failed to open games list file: {}", e))?;
@@ -148,7 +132,7 @@ pub fn get_games_list_cache(app_handle: tauri::AppHandle) -> Result<Value, Strin
 
     // Read recent games file
     let recent_games = {
-        let recent_games_file_path = app_specific_dir.join("recent_games.json");
+        let recent_games_file_path = app_data_dir.join("recent_games.json");
         if recent_games_file_path.exists() {
             let mut file = File::open(&recent_games_file_path)
                 .map_err(|e| format!("Failed to open recent games file: {}", e))?;
@@ -206,19 +190,14 @@ pub fn delete_games_list_files(app_handle: tauri::AppHandle) -> Result<(), Strin
         .path()
         .app_data_dir()
         .map_err(|e| e.to_string())?;
-    // Get the application-specific directory
-    let app_specific_dir = app_data_dir
-        .parent()
-        .unwrap_or(&app_data_dir)
-        .join(APP_FOLDER_NAME);
     // Delete the games list file
-    let games_file_path = app_specific_dir.join("games_list.json");
+    let games_file_path = app_data_dir.join("games_list.json");
     if games_file_path.exists() {
         remove_file(&games_file_path)
             .map_err(|e| format!("Failed to delete games list file: {}", e))?;
     }
     // Delete the recent games file
-    let recent_games_file_path = app_specific_dir.join("recent_games.json");
+    let recent_games_file_path = app_data_dir.join("recent_games.json");
     if recent_games_file_path.exists() {
         remove_file(&recent_games_file_path)
             .map_err(|e| format!("Failed to delete recent games file: {}", e))?;
