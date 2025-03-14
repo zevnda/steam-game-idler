@@ -91,7 +91,7 @@ jobs:
             ${{ runner.os }}-dotnet-
 
       - name: Build .NET libraries
-        if: steps.cache-dotnet.outputs.cache-hit != 'true' || inputs.force_dotnet_build == 'true'
+        if: steps.cache-dotnet.outputs.cache-hit != 'true' || github.event.inputs.force_dotnet_build == 'true'
         run: MSBuild.exe .\libs\SteamUtility.csproj
         shell: pwsh
           
@@ -145,7 +145,7 @@ jobs:
               ${{ runner.OS }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}-
 
         - name: Install dependencies (pnpm)
-          if: steps.cache-pnpm.outputs.cache-hit != 'true' || inputs.force_pnpm_install == 'true'
+          if: steps.cache-pnpm.outputs.cache-hit != 'true' || github.event.inputs.force_pnpm_install == 'true'
           run: pnpm install --frozen-lockfile
 
         - name: Setup Next.js cache
@@ -158,7 +158,7 @@ jobs:
               ${{ runner.OS }}-nextjs-
 
         - name: Clean Next.js cache
-          if: inputs.force_nextjs_build == 'true'
+          if: steps.cache-nextjs.outputs.cache-hit != 'true' || github.event.inputs.force_nextjs_build == 'true'
           run: |
             if (Test-Path ".next") {
               Remove-Item -Recurse -Force .next
@@ -169,12 +169,13 @@ jobs:
           shell: pwsh
 
         - name: Setup Rust cache
+          id: cache-rust
           uses: swatinem/rust-cache@v2
           with:
             workspaces: './src-tauri -> target'
 
         - name: Clean Cargo artifacts
-          if: inputs.force_cargo_clean == 'true'
+          if: steps.cache-rust.outputs.cache-hit != 'true' || github.event.inputs.force_cargo_clean == 'true'
           run: cargo clean
           working-directory: ./src-tauri
 
