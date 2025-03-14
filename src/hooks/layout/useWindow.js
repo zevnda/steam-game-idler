@@ -1,4 +1,5 @@
 import { check } from '@tauri-apps/plugin-updater';
+import { emit } from '@tauri-apps/api/event';
 import { useTheme } from 'next-themes';
 import { useCallback, useContext, useEffect } from 'react';
 
@@ -13,6 +14,10 @@ export default function useWindow() {
     const { setIsDarkMode, setShowFreeGamesTab } = useContext(StateContext);
     const { setUpdateAvailable, setShowChangelog } = useContext(UpdateContext);
     const { setUserSummary, setFreeGamesList } = useContext(UserContext);
+
+    useEffect(() => {
+        emit('ready');
+    }, []);
 
     useEffect(() => {
         const darkThemes = ['dark', 'midnight', 'amethyst', 'emerald', 'cherry', 'cosmic', 'mint', 'arctic', 'nightshade'];

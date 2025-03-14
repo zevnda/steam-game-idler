@@ -19,7 +19,7 @@ use std::thread;
 use std::time::Duration;
 use tauri::menu::{Menu, MenuItem};
 use tauri::tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent};
-use tauri::Manager;
+use tauri::{Listener, Manager};
 use tauri_plugin_autostart::MacosLauncher;
 
 // TODO: Delete once all users are migrated to the new format
@@ -54,12 +54,21 @@ pub fn run() {
         ))
         .setup(move |app| {
             // Get the main window
+            let app_handle = app.handle();
+            let window = app_handle.get_webview_window("main").unwrap();
+
+            // Listen for ready event from frontend
+            let window_clone = window.clone();
+            window.listen("ready", move |_| {
+                window_clone.show().unwrap();
+                window_clone.set_focus().unwrap();
+            });
+
             let spawned_processes = SPAWNED_PROCESSES.clone();
             let tx_clone = tx.clone();
 
             // TODO: Delete once all users are migrated to the new format
             // Delete the old app-specific directory
-            let app_handle = app.handle();
             let app_data_dir = app_handle
                 .path()
                 .app_data_dir()
@@ -94,8 +103,8 @@ pub fn run() {
                     } => {
                         let app = tray.app_handle();
                         if let Some(window) = app.get_webview_window("main") {
-                            let _ = window.show();
-                            let _ = window.set_focus();
+                            window.show().unwrap();
+                            window.set_focus().unwrap();
                         }
                     }
                     _ => {}
@@ -106,8 +115,8 @@ pub fn run() {
                     }
                     "show" => {
                         if let Some(window) = app.get_webview_window("main") {
-                            let _ = window.show();
-                            let _ = window.set_focus();
+                            window.show().unwrap();
+                            window.set_focus().unwrap();
                         }
                     }
                     _ => {
