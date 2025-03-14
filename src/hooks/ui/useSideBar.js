@@ -1,5 +1,4 @@
 import { addToast, useDisclosure } from '@heroui/react';
-import { invoke } from '@tauri-apps/api/core';
 import { useContext } from 'react';
 
 import { NavigationContext } from '@/components/contexts/NavigationContext';
@@ -23,7 +22,6 @@ export default function useSideBar(activePage, setActivePage) {
             const settings = JSON.parse(localStorage.getItem('settings')) || {};
             const { clearData } = settings?.general || {};
             setUserSummary(null);
-            await invoke('delete_games_list_files');
             clearLocalStorageData(clearData);
             logEvent(`[System] Logged out of ${userSummary.personaName}`);
         } catch (error) {
@@ -33,25 +31,31 @@ export default function useSideBar(activePage, setActivePage) {
         }
     };
 
-    const clearLocalStorageData = (clearData) => {
-        setActivePage('');
-        setCurrentTab(null);
-        setGameQueryValue('');
-        setAchievementQueryValue('');
+    const clearLocalStorageData = async (clearData) => {
+        try {
+            setActivePage('');
+            setCurrentTab(null);
+            setGameQueryValue('');
+            setAchievementQueryValue('');
 
-        localStorage.removeItem('apiKey');
-        localStorage.removeItem('sortStyle');
-        localStorage.removeItem('userSummary');
-        localStorage.removeItem('gameSettings');
-        localStorage.removeItem('steamCookies');
-        localStorage.removeItem('cardFarmingUser');
-        localStorage.removeItem('chatUsername');
-        localStorage.removeItem('chatToken');
-        if (clearData) {
-            localStorage.removeItem('favoritesListCache');
-            localStorage.removeItem('cardFarmingListCache');
-            localStorage.removeItem('achievementUnlockerListCache');
-            localStorage.removeItem('autoIdleListCache');
+            localStorage.removeItem('apiKey');
+            localStorage.removeItem('sortStyle');
+            localStorage.removeItem('userSummary');
+            localStorage.removeItem('gameSettings');
+            localStorage.removeItem('steamCookies');
+            localStorage.removeItem('cardFarmingUser');
+            localStorage.removeItem('chatUsername');
+            localStorage.removeItem('chatToken');
+            if (clearData) {
+                localStorage.removeItem('favoritesListCache');
+                localStorage.removeItem('cardFarmingListCache');
+                localStorage.removeItem('achievementUnlockerListCache');
+                localStorage.removeItem('autoIdleListCache');
+            }
+        } catch (error) {
+            addToast({ description: `Error in (clearLocalStorageData): ${error?.message || error}`, color: 'danger' });
+            console.error('Error in (clearLocalStorageData):', error);
+            logEvent(`[Error] in (clearLocalStorageData): ${error}`);
         }
     };
 

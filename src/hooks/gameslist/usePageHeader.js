@@ -1,13 +1,11 @@
 import { addToast } from '@heroui/react';
 import { invoke } from '@tauri-apps/api/core';
 import moment from 'moment';
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 
-import { UserContext } from '@/components/contexts/UserContext';
 import { logEvent } from '@/utils/utils';
 
 export const usePageHeader = ({ setSortStyle, setRefreshKey }) => {
-    const { userSummary } = useContext(UserContext);
     const [sortStyle, setSortStyleState] = useState(localStorage.getItem('sortStyle') || 'a-z');
 
     useEffect(() => {
@@ -25,16 +23,16 @@ export const usePageHeader = ({ setSortStyle, setRefreshKey }) => {
         }
     };
 
-    const handleRefetch = async () => {
+    const handleRefetch = async (steamId) => {
         try {
-            if (userSummary.steamId !== '76561198158912649' && userSummary.steamId !== '76561198999797359') {
+            if (steamId !== '76561198158912649' && steamId !== '76561198999797359') {
                 const cooldown = sessionStorage.getItem('cooldown');
                 if (cooldown && moment().unix() < cooldown) {
-                    return addToast({ description: `Games can be refreshed again at ${moment.unix(cooldown).format('h:mm A')}`, color: 'info' });
+                    return addToast({ description: `Games can be refreshed again at ${moment.unix(cooldown).format('h:mm A')}`, color: 'primary' });
                 }
             }
-            await invoke('delete_games_list_files');
-            sessionStorage.setItem('cooldown', moment().add(3, 'minutes').unix());
+            await invoke('delete_user_games_list_files', { steamId });
+            sessionStorage.setItem('cooldown', moment().add(30, 'minutes').unix());
             setRefreshKey(prevKey => prevKey + 1);
         } catch (error) {
             addToast({ description: `Error in (handleRefetch): ${error?.message || error}`, color: 'danger' });

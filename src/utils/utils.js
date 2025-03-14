@@ -389,22 +389,28 @@ export async function sendNativeNotification(title, body) {
 
 // Clear local/session storage but preserving important keys
 export const preserveKeysAndClearData = async () => {
-    const keysToPreserve = ['theme', 'minToTrayNotified', 'seenNotifications', 'lastNotifiedTimestamp'];
+    try {
+        const keysToPreserve = ['theme', 'minToTrayNotified', 'seenNotifications', 'lastNotifiedTimestamp'];
 
-    const preservedData = keysToPreserve.reduce((acc, key) => {
-        const value = localStorage.getItem(key);
-        if (value) acc[key] = value;
-        return acc;
-    }, {});
+        const preservedData = keysToPreserve.reduce((acc, key) => {
+            const value = localStorage.getItem(key);
+            if (value) acc[key] = value;
+            return acc;
+        }, {});
 
-    localStorage.clear();
-    sessionStorage.clear();
+        localStorage.clear();
+        sessionStorage.clear();
 
-    await invoke('delete_games_list_files');
+        await invoke('delete_all_games_list_files');
 
-    Object.entries(preservedData).forEach(([key, value]) => {
-        localStorage.setItem(key, value);
-    });
+        Object.entries(preservedData).forEach(([key, value]) => {
+            localStorage.setItem(key, value);
+        });
+    } catch (error) {
+        addToast({ description: `Error in (preserveKeysAndClearData): ${error?.message || error}`, color: 'danger' });
+        console.error('Error in (preserveKeysAndClearData):', error);
+        logEvent(`[Error] in (preserveKeysAndClearData): ${error}`);
+    }
 };
 
 // Delay execution for a specified amount of time

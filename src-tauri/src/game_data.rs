@@ -3,7 +3,7 @@ use scraper::{Html, Selector};
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 use std::fs::File;
-use std::fs::{create_dir_all, remove_file, OpenOptions};
+use std::fs::{create_dir_all, remove_dir_all, remove_file, OpenOptions};
 use std::io::Read;
 use std::io::Write;
 use tauri::Manager;
@@ -37,12 +37,14 @@ pub async fn get_games_list(
             let app_data_dir = app_handle
                 .path()
                 .app_data_dir()
-                .map_err(|e| e.to_string())?;
+                .map_err(|e| e.to_string())?
+                .join("cache");
             create_dir_all(&app_data_dir)
                 .map_err(|e| format!("Failed to create app directory: {}", e))?;
 
             // Save the response to games_list.json
-            let games_file_path = app_data_dir.join("games_list.json");
+            let file_name = format!("{}_games_list.json", steam_id);
+            let games_file_path = app_data_dir.join(file_name);
             let mut file = OpenOptions::new()
                 .write(true)
                 .create(true)
@@ -84,11 +86,13 @@ pub async fn get_recent_games(
             let app_data_dir = app_handle
                 .path()
                 .app_data_dir()
-                .map_err(|e| e.to_string())?;
+                .map_err(|e| e.to_string())?
+                .join("cache");
             create_dir_all(&app_data_dir)
                 .map_err(|e| format!("Failed to create app directory: {}", e))?;
             // Save the response to recent_games.json
-            let recent_games_file_path = app_data_dir.join("recent_games.json");
+            let file_name = format!("{}_recent_games.json", steam_id);
+            let recent_games_file_path = app_data_dir.join(file_name);
             let mut file = OpenOptions::new()
                 .write(true)
                 .create(true)
@@ -108,15 +112,20 @@ pub async fn get_recent_games(
 }
 
 #[tauri::command]
-pub fn get_games_list_cache(app_handle: tauri::AppHandle) -> Result<Value, String> {
+pub fn get_games_list_cache(
+    steam_id: String,
+    app_handle: tauri::AppHandle,
+) -> Result<Value, String> {
     // Get the application data directory
     let app_data_dir = app_handle
         .path()
         .app_data_dir()
-        .map_err(|e| e.to_string())?;
+        .map_err(|e| e.to_string())?
+        .join("cache");
     // Read games list file
     let games_list = {
-        let games_file_path = app_data_dir.join("games_list.json");
+        let file_name = format!("{}_games_list.json", steam_id);
+        let games_file_path = app_data_dir.join(file_name);
         if games_file_path.exists() {
             let mut file = File::open(&games_file_path)
                 .map_err(|e| format!("Failed to open games list file: {}", e))?;
@@ -132,7 +141,8 @@ pub fn get_games_list_cache(app_handle: tauri::AppHandle) -> Result<Value, Strin
 
     // Read recent games file
     let recent_games = {
-        let recent_games_file_path = app_data_dir.join("recent_games.json");
+        let file_name = format!("{}_recent_games.json", steam_id);
+        let recent_games_file_path = app_data_dir.join(file_name);
         if recent_games_file_path.exists() {
             let mut file = File::open(&recent_games_file_path)
                 .map_err(|e| format!("Failed to open recent games file: {}", e))?;
@@ -150,6 +160,55 @@ pub fn get_games_list_cache(app_handle: tauri::AppHandle) -> Result<Value, Strin
         "games_list": games_list,
         "recent_games": recent_games
     }))
+}
+
+#[tauri::command]
+pub fn delete_user_games_list_files(
+    steam_id: String,
+    app_handle: tauri::AppHandle,
+) -> Result<(), String> {
+    let games_list_file_name = format!("{}_games_list.json", steam_id);
+    let recent_games_file_name = format!("{}_recent_games.json", steam_id);
+    // Get the application data directory
+    let app_data_dir = app_handle
+        .path()
+        .app_data_dir()
+        .map_err(|e| e.to_string())?
+        .join("cache");
+    // Delete the games list file
+    let games_file_path = app_data_dir.join(games_list_file_name);
+    if games_file_path.exists() {
+        remove_file(&games_file_path)
+            .map_err(|e| format!("Failed to delete games list file: {}", e))?;
+    }
+    // Delete the recent games file
+    let recent_games_file_path = app_data_dir.join(recent_games_file_name);
+    if recent_games_file_path.exists() {
+        remove_file(&recent_games_file_path)
+            .map_err(|e| format!("Failed to delete recent games file: {}", e))?;
+    }
+
+    Ok(())
+}
+
+#[tauri::command]
+pub fn delete_all_games_list_files(app_handle: tauri::AppHandle) -> Result<(), String> {
+    // Get the application data directory
+    let app_data_dir = app_handle
+        .path()
+        .app_data_dir()
+        .map_err(|e| e.to_string())?
+        .join("cache");
+    // Delete the cache directory
+    match remove_dir_all(&app_data_dir) {
+        Ok(_) => println!("Successfully deleted directory: {:?}", app_data_dir),
+        Err(e) => println!(
+            "Failed to delete directory: {:?}, Error: {}",
+            app_data_dir, e
+        ),
+    }
+
+    Ok(())
 }
 
 #[tauri::command]
@@ -181,29 +240,6 @@ pub async fn get_free_games() -> Result<serde_json::Value, String> {
     }
 
     Ok(json!({ "games": free_games }))
-}
-
-#[tauri::command]
-pub fn delete_games_list_files(app_handle: tauri::AppHandle) -> Result<(), String> {
-    // Get the application data directory
-    let app_data_dir = app_handle
-        .path()
-        .app_data_dir()
-        .map_err(|e| e.to_string())?;
-    // Delete the games list file
-    let games_file_path = app_data_dir.join("games_list.json");
-    if games_file_path.exists() {
-        remove_file(&games_file_path)
-            .map_err(|e| format!("Failed to delete games list file: {}", e))?;
-    }
-    // Delete the recent games file
-    let recent_games_file_path = app_data_dir.join("recent_games.json");
-    if recent_games_file_path.exists() {
-        remove_file(&recent_games_file_path)
-            .map_err(|e| format!("Failed to delete recent games file: {}", e))?;
-    }
-
-    Ok(())
 }
 
 #[tauri::command]

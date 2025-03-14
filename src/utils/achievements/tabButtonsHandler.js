@@ -87,7 +87,7 @@ export const handleUpdateAllStats = async (appId, appName, initialStatValues, ne
         .map(([key, value]) => ({ name: key, value }));
 
     if (changedValues.length === 0) {
-        return addToast({ description: 'No changes to save.', color: 'info' });
+        return addToast({ description: 'No changes to save.', color: 'primary' });
     }
 
     // Check if Steam is running
