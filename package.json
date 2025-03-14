@@ -14,7 +14,7 @@
         "@dnd-kit/sortable": "^10.0.0",
         "@dnd-kit/utilities": "^3.2.2",
         "@heroui/react": "^2.7.5",
-        "@internationalized/date": "^3.5.5",
+        "@internationalized/date": "^3.7.0",
         "@tauri-apps/api": "^2.0.0",
         "@tauri-apps/plugin-autostart": "~2",
         "@tauri-apps/plugin-dialog": "~2",
