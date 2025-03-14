@@ -44,23 +44,30 @@ export const defaultSettings = (setUserSummary) => {
 // Check for free games and handle notifications
 export const checkForFreeGames = async (setFreeGamesList, setShowFreeGamesTab) => {
     try {
-        const lastNotifiedTimestamp = localStorage.getItem('lastNotifiedTimestamp');
         const settings = JSON.parse(localStorage.getItem('settings')) || {};
-        const { freeGameNotifications } = settings?.general || {};
+        const freeGameNotifications = settings?.general?.freeGameNotifications;
         const freeGamesList = await fetchFreeGames();
 
-        const inOneDay = new Date();
-        inOneDay.setHours(inOneDay.getHours() + 24);
+        // Compare the new free games with the old ones
+        const oldFreeGameIds = JSON.parse(localStorage.getItem('freeGamesIds')) || [];
+        const newFreeGameIds = freeGamesList.games.map(game => game.appid);
 
+        // Show free games tab if there are any
         if (freeGamesList.games.length > 0) {
             setFreeGamesList(freeGamesList.games);
             setShowFreeGamesTab(true);
 
-            if (freeGameNotifications && (!lastNotifiedTimestamp || Date.now() > parseInt(lastNotifiedTimestamp))) {
-                sendNativeNotification('Free Games Available!', 'Check the sidebar for the 🎁 icon to get your free games');
-                localStorage.setItem('lastNotifiedTimestamp', inOneDay.valueOf());
+            console.log(JSON.stringify(oldFreeGameIds) !== JSON.stringify(newFreeGameIds));
+
+            // If there are new free games, notify the user
+            if (JSON.stringify(oldFreeGameIds) !== JSON.stringify(newFreeGameIds)) {
+                localStorage.setItem('freeGamesIds', JSON.stringify(newFreeGameIds));
+                if (freeGameNotifications) {
+                    sendNativeNotification('Free Games Available!', 'Check the sidebar for the 🎁 icon to get your free games');
+                }
             }
         } else {
+            localStorage.setItem('freeGamesIds', JSON.stringify([]));
             setFreeGamesList([]);
             setShowFreeGamesTab(false);
         }
