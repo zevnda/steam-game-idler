@@ -40,7 +40,7 @@ export default function ChangelogModal() {
                             </ReactMarkdown>
                         ) : (
                             <div className='flex justify-center items-center min-h-[100px]'>
-                                <Spinner />
+                                <Spinner variant='simple' />
                             </div>
                         )}
                     </ModalBody>

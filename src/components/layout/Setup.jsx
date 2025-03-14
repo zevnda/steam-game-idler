@@ -58,7 +58,7 @@ export default function Setup() {
                         </div>
                         <div className='flex justify-center items-center flex-col'>
                             {isLoading ? (
-                                <Spinner />
+                                <Spinner variant='simple' />
                             ) : steamUsers.length > 0 ? (
                                 <>
                                     <p className='text-sm mb-2'>

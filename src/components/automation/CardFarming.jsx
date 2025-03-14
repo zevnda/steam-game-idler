@@ -50,7 +50,7 @@ export default function CardFarming({ activePage }) {
 
     const renderGamesList = () => {
         if (!gamesWithDrops.size) {
-            return <Spinner label={<p className='text-sm text-content'>This might take a second..</p>} />;
+            return <Spinner variant='simple' label={<p className='text-sm text-content'>This might take a second..</p>} />;
         }
 
         return (
