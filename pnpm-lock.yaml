@@ -47,6 +47,9 @@ importers:
       '@tauri-apps/plugin-updater':
         specifier: ~2
         version: 2.6.0
+      '@tauri-apps/plugin-window-state':
+        specifier: ~2
+        version: 2.2.1
       framer-motion:
         specifier: ^11.2.2
         version: 11.18.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -1611,6 +1614,9 @@ packages:
 
   '@tauri-apps/plugin-updater@2.6.0':
     resolution: {integrity: sha512-j74RUolLIhQDQwrff6R28xIewYVXME1gFU+d+4LYN1dLRzLD+ySa7VHqzyWYxWEvm+TPZ7lkUxa5a9uH9Ist3A==}
+
+  '@tauri-apps/plugin-window-state@2.2.1':
+    resolution: {integrity: sha512-L7FhG/ocQNt8t+TMBkvl8eLhCU6I19t848unKMUgNHuvwHPaurzZr4knulNyKzqz7zVYSz9AdvgWy4915eq+AA==}
 
   '@types/debug@4.1.12':
     resolution: {integrity: sha512-vIChWdVG3LG1SMxEvI/AK+FWJthlrqlTu7fbrlywTkkaONwk/UAGaULXRlf8vkzFBLVm0zkMdCquhL5aOjhXPQ==}
@@ -5933,6 +5939,10 @@ snapshots:
       '@tauri-apps/api': 2.3.0
 
   '@tauri-apps/plugin-updater@2.6.0':
+    dependencies:
+      '@tauri-apps/api': 2.3.0
+
+  '@tauri-apps/plugin-window-state@2.2.1':
     dependencies:
       '@tauri-apps/api': 2.3.0
 

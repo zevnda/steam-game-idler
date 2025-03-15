@@ -39,6 +39,7 @@
         "dialog:allow-ask",
         "notification:default",
         "process:allow-restart",
-        "shell:default"
+        "shell:default",
+        "window-state:default"
     ]
 }
