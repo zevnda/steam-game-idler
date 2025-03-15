@@ -30,7 +30,6 @@ reqwest = { version = "0.12.12", features = ["json"] }
 serde_json = { version = "1.0.138", features = ["std"] }
 regex = { version = "1.11.1", default-features = false, features = ["std"] }
 winapi = { version = "0.3.9", features = ["processthreadsapi", "handleapi", "winnt"] }
-tauri-plugin-window-state = { version = "2" }
 tauri = { version = "2", features = ["tray-icon"] }
 tauri-plugin-shell = "2"
 tauri-plugin-notification = "2"
@@ -44,6 +43,7 @@ custom-protocol = ["tauri/custom-protocol"]
 [target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
 tauri-plugin-autostart = "2"
 tauri-plugin-updater = "2"
+tauri-plugin-window-state = "2"
 
 [profile.dev]
 incremental = true
