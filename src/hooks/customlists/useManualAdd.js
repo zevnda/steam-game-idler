@@ -1,10 +1,12 @@
 import { addToast } from '@heroui/react';
 import { invoke } from '@tauri-apps/api/core';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 
+import { UserContext } from '@/components/contexts/UserContext';
 import { logEvent } from '@/utils/utils';
 
 export default function useManualAdd(listName, setList) {
+    const { userSummary } = useContext(UserContext);
     const [inputValue, setInputValue] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
@@ -22,17 +24,19 @@ export default function useManualAdd(listName, setList) {
             const data = res[inputValue].data;
             const game = { appid: data.steam_appid, name: data.name };
 
-            const cachedList = JSON.parse(localStorage.getItem(`${listName}Cache`)) || [];
-            const gameExists = cachedList.find(item => item.appid === game.appid);
-            if (!gameExists) {
-                const updatedList = [...cachedList, game];
-                localStorage.setItem(`${listName}Cache`, JSON.stringify(updatedList));
-                setList(updatedList);
+            const response = await invoke('add_game_to_custom_list', {
+                steamId: userSummary.steamId,
+                game: { appid: game.appid, name: game.name },
+                list: listName
+            });
+            if (response.error) {
+                setIsLoading(false);
+                addToast({ description: response.error, color: 'warning' });
+                return;
+            } else {
+                setList(response.list_data);
                 setIsLoading(false);
                 onClose();
-            } else {
-                setIsLoading(false);
-                addToast({ description: 'Game already exists in the list', color: 'warning' });
             }
         } catch (error) {
             setIsLoading(false);

@@ -74,16 +74,6 @@ export default function GeneralSettings({ settings, setSettings, localSettings, 
 
             <SettingsCheckbox
                 type='general'
-                name='clearData'
-                content='Clear custom list when logging out'
-                settings={settings}
-                setSettings={setSettings}
-                localSettings={localSettings}
-                setLocalSettings={setLocalSettings}
-            />
-
-            <SettingsCheckbox
-                type='general'
                 name='runAtStartup'
                 content='Run at startup'
                 settings={settings}

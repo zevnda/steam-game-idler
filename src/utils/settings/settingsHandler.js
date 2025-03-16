@@ -21,7 +21,6 @@ export const getDefaultSettings = () => ({
     general: {
         stealthIdle: false,
         antiAway: false,
-        clearData: true,
         freeGameNotifications: true,
     },
     cardFarming: {

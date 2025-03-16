@@ -43,7 +43,7 @@ const Row = memo(({ index, style, data }) => {
 
 Row.displayName = 'Row';
 
-export default function EditListModal({ isOpen, onOpenChange, onClose, filteredGamesList, list, setSearchTerm, showInList, setShowInList, handleAddGame, handleRemoveGame, setList, type }) {
+export default function EditListModal({ isOpen, onOpenChange, onClose, filteredGamesList, list, setSearchTerm, showInList, setShowInList, handleAddGame, handleRemoveGame, handleClearList }) {
     const itemData = { filteredGamesList, list, handleAddGame, handleRemoveGame };
 
     return (
@@ -93,11 +93,7 @@ export default function EditListModal({ isOpen, onOpenChange, onClose, filteredG
                                 color='danger'
                                 variant='light'
                                 className='rounded-lg font-semibold'
-                                onPress={() => {
-                                    localStorage.removeItem(`${type}Cache`);
-                                    setShowInList(false);
-                                    setList([]);
-                                }}
+                                onPress={handleClearList}
                             >
                                 Clear
                             </Button>

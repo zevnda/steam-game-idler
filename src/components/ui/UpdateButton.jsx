@@ -4,6 +4,8 @@ import { check } from '@tauri-apps/plugin-updater';
 import { useState } from 'react';
 import { TbDownload } from 'react-icons/tb';
 
+import { fetchLatest, preserveKeysAndClearData } from '@/utils/utils';
+
 export default function UpdateButton() {
     const [isLoading, setIsLoading] = useState(false);
 
@@ -12,8 +14,12 @@ export default function UpdateButton() {
             setIsLoading(true);
             const update = await check();
             if (update?.available) {
-                await update.downloadAndInstall();
+                const latest = await fetchLatest();
                 localStorage.setItem('hasUpdated', 'true');
+                await update.downloadAndInstall();
+                if (latest?.major) {
+                    await preserveKeysAndClearData();
+                }
                 await relaunch();
             } else {
                 setIsLoading(false);

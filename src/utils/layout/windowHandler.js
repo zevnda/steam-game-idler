@@ -10,7 +10,6 @@ export const defaultSettings = (setUserSummary) => {
         general: {
             stealthIdle: false,
             antiAway: false,
-            clearData: true,
             freeGameNotifications: true,
         },
         cardFarming: {
@@ -79,13 +78,19 @@ export const checkForFreeGames = async (setFreeGamesList, setShowFreeGamesTab) =
 // Starts auto idling games that are not currently running
 export const startAutoIdleGames = async () => {
     try {
-        const autoIdleGames = (localStorage.getItem('autoIdleListCache') && JSON.parse(localStorage.getItem('autoIdleListCache'))) || [];
-        const gameIds = autoIdleGames.map(game => game.appid.toString());
-        const notRunningIds = await invoke('check_process_by_game_id', { ids: gameIds });
-        for (const id of notRunningIds) {
-            const game = autoIdleGames.find(g => g.appid.toString() === id);
-            if (game) {
-                await startIdle(game.appid, game.name, false, true);
+        const userSummary = JSON.parse(localStorage.getItem('userSummary'));
+        if (userSummary && userSummary?.steamId) {
+            const response = await invoke('get_custom_lists', { steamId: userSummary.steamId, list: 'autoIdleList' });
+            if (!response.error && response.list_data.length > 0) {
+                const autoIdleGames = response.list_data;
+                const gameIds = autoIdleGames.map(game => game.appid.toString());
+                const notRunningIds = await invoke('check_process_by_game_id', { ids: gameIds });
+                for (const id of notRunningIds) {
+                    const game = autoIdleGames.find(g => g.appid.toString() === id);
+                    if (game) {
+                        await startIdle(game.appid, game.name, false, true);
+                    }
+                }
             }
         }
     } catch (error) {

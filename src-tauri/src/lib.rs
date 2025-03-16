@@ -1,11 +1,13 @@
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub mod automation;
+pub mod custom_lists;
 pub mod game_data;
 pub mod logging;
 pub mod tasks;
 pub mod user_data;
 pub mod utils;
 use automation::*;
+use custom_lists::*;
 use game_data::*;
 use logging::*;
 use tasks::*;
@@ -87,6 +89,10 @@ pub fn run() {
             get_games_list_cache,
             delete_user_games_list_files,
             delete_all_games_list_files,
+            get_custom_lists,
+            add_game_to_custom_list,
+            remove_game_from_custom_list,
+            update_custom_list,
             get_game_details,
             get_achievement_data,
             validate_session,

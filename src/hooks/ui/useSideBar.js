@@ -19,10 +19,8 @@ export default function useSideBar(activePage, setActivePage) {
     const handleLogout = async (onClose) => {
         try {
             onClose();
-            const settings = JSON.parse(localStorage.getItem('settings')) || {};
-            const { clearData } = settings?.general || {};
             setUserSummary(null);
-            clearLocalStorageData(clearData);
+            clearLocalStorageData();
             logEvent(`[System] Logged out of ${userSummary.personaName}`);
         } catch (error) {
             addToast({ description: `Error in (handleLogout): ${error?.message || error}`, color: 'danger' });
@@ -31,7 +29,7 @@ export default function useSideBar(activePage, setActivePage) {
         }
     };
 
-    const clearLocalStorageData = async (clearData) => {
+    const clearLocalStorageData = async () => {
         try {
             setActivePage('');
             setCurrentTab(null);
@@ -46,12 +44,6 @@ export default function useSideBar(activePage, setActivePage) {
             localStorage.removeItem('cardFarmingUser');
             localStorage.removeItem('chatUsername');
             localStorage.removeItem('chatToken');
-            if (clearData) {
-                localStorage.removeItem('favoritesListCache');
-                localStorage.removeItem('cardFarmingListCache');
-                localStorage.removeItem('achievementUnlockerListCache');
-                localStorage.removeItem('autoIdleListCache');
-            }
         } catch (error) {
             addToast({ description: `Error in (clearLocalStorageData): ${error?.message || error}`, color: 'danger' });
             console.error('Error in (clearLocalStorageData):', error);

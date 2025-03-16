@@ -1,3 +1,5 @@
+import { invoke } from '@tauri-apps/api/core';
+
 import { checkDrops, getAllGamesWithDrops, logEvent, startFarmIdle, stopFarmIdle } from '@/utils/utils';
 
 export const useCardFarming = async (
@@ -49,8 +51,10 @@ export const useCardFarming = async (
 
 // Check games for drops and return total drops and games set
 const checkGamesForDrops = async () => {
-    const { cardFarming, steamCookies, userSummary, settings, gameSettings } = getLocalStorageData();
+    const { steamCookies, userSummary, settings, gameSettings } = getLocalStorageData();
     const allGames = settings?.cardFarming?.allGames;
+
+    const cardFarmingList = await invoke('get_custom_lists', { steamId: userSummary.steamId, list: 'cardFarmingList' });
 
     const gamesSet = new Set();
     let totalDrops = 0;
@@ -60,7 +64,7 @@ const checkGamesForDrops = async () => {
             const gamesWithDrops = await getAllGamesWithDrops(userSummary.steamId, steamCookies.sid, steamCookies.sls, steamCookies?.sma);
             totalDrops = processGamesWithDrops(gamesWithDrops, gamesSet, gameSettings);
         } else {
-            totalDrops = await processIndividualGames(cardFarming, gamesSet, gameSettings, userSummary, steamCookies);
+            totalDrops = await processIndividualGames(cardFarmingList.list_data, gamesSet, gameSettings, userSummary, steamCookies);
         }
     } catch (error) {
         handleError('checkGamesForDrops', error);
@@ -88,7 +92,7 @@ const processGamesWithDrops = (gamesWithDrops, gamesSet, gameSettings) => {
     return totalDrops;
 };
 
-const processIndividualGames = async (gameDataArr, gamesSet, gameSettings, userSummary, steamCookies) => {
+const processIndividualGames = async (cardFarmingList, gamesSet, gameSettings, userSummary, steamCookies) => {
     let totalDrops = 0;
     const TIMEOUT = 30000;
 
@@ -125,7 +129,7 @@ const processIndividualGames = async (gameDataArr, gamesSet, gameSettings, userS
         }
     };
 
-    await Promise.all(gameDataArr.map(checkGame));
+    await Promise.all(cardFarmingList.map(checkGame));
     return totalDrops;
 };
 
@@ -202,11 +206,19 @@ const checkDropsRemaining = async (gameSet, appIds) => {
 };
 
 // Remove game from farming list
-const removeGameFromFarmingList = (gameId) => {
+const removeGameFromFarmingList = async (gameId) => {
     try {
-        const cardFarming = JSON.parse(localStorage.getItem('cardFarmingListCache')) || [];
-        const updatedCardFarming = cardFarming.filter(arr => arr.appid !== gameId);
-        localStorage.setItem('cardFarmingListCache', JSON.stringify(updatedCardFarming));
+        const { userSummary } = getLocalStorageData();
+        const cardFarmingList = await invoke('get_custom_lists', {
+            steamId: userSummary.steamId,
+            list: 'cardFarmingList'
+        });
+        const updatedCardFarming = cardFarmingList.list_data.filter(arr => arr.appid !== gameId);
+        await invoke('update_custom_list', {
+            steamId: userSummary.steamId,
+            list: 'cardFarmingList',
+            newList: updatedCardFarming
+        });
     } catch (error) {
         handleError('removeGameFromFarmingList', error);
     }
@@ -268,7 +280,6 @@ export const handleCancel = async (gamesWithDrops, isMountedRef, abortController
 
 const getLocalStorageData = () => {
     return {
-        cardFarming: JSON.parse(localStorage.getItem('cardFarmingListCache')) || [],
         steamCookies: JSON.parse(localStorage.getItem('steamCookies')) || {},
         userSummary: JSON.parse(localStorage.getItem('userSummary')) || {},
         settings: JSON.parse(localStorage.getItem('settings')) || {},

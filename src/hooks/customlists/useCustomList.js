@@ -1,3 +1,4 @@
+import { invoke } from '@tauri-apps/api/core';
 import { useContext, useState, useRef, useEffect } from 'react';
 
 import { StateContext } from '@/components/contexts/StateContext';
@@ -5,57 +6,24 @@ import { UserContext } from '@/components/contexts/UserContext';
 
 export default function useCustomList(listName) {
     const { isAchievementUnlocker, isCardFarming } = useContext(StateContext);
-    const { gameList } = useContext(UserContext);
+    const { userSummary, gameList } = useContext(UserContext);
     const [list, setList] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [showInList, setShowInList] = useState(false);
     const [visibleGames, setVisibleGames] = useState(50);
     const containerRef = useRef(null);
 
-    const handleScroll = () => {
-        if (containerRef.current) {
-            if (containerRef.current.scrollTop + containerRef.current.clientHeight >= containerRef.current.scrollHeight - 10) {
-                setVisibleGames((prevVisibleGames) => prevVisibleGames + 50);
-            }
-        }
-    };
-
     const filteredGamesList = gameList.filter(game =>
         game.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    const handleAddGame = (game) => {
-        const cachedList = JSON.parse(localStorage.getItem(`${listName}Cache`)) || [];
-        const gameExists = cachedList.find(item => item.appid === game.appid);
-        if (!gameExists) {
-            const updatedList = [...cachedList, game];
-            localStorage.setItem(`${listName}Cache`, JSON.stringify(updatedList));
-            setList(updatedList);
-        }
-    };
-
-    const handleRemoveGame = (game) => {
-        const cachedList = JSON.parse(localStorage.getItem(`${listName}Cache`)) || [];
-        const gameExists = cachedList.find(item => item.appid === game.appid);
-        if (gameExists) {
-            const updatedList = list.filter(item => item.appid !== game.appid);
-            localStorage.setItem(`${listName}Cache`, JSON.stringify(updatedList));
-            setList(updatedList);
-            if (updatedList.length === 0) {
-                setShowInList(false);
-            }
-        }
-    };
-
-    const updateListOrder = (newList) => {
-        localStorage.setItem(`${listName}Cache`, JSON.stringify(newList));
-        setList(newList);
-    };
-
     useEffect(() => {
-        const cachedList = JSON.parse(localStorage.getItem(`${listName}Cache`)) || [];
-        setList(cachedList);
-    }, [isAchievementUnlocker, isCardFarming, listName]);
+        const getCustomLists = async () => {
+            const response = await invoke('get_custom_lists', { steamId: userSummary.steamId, list: listName });
+            setList(response.list_data);
+        };
+        getCustomLists();
+    }, [userSummary.steamId, isAchievementUnlocker, isCardFarming, listName]);
 
     useEffect(() => {
         setVisibleGames(50);
@@ -71,6 +39,62 @@ export default function useCustomList(listName) {
         }
     }, [filteredGamesList, visibleGames]);
 
+    const handleScroll = () => {
+        if (containerRef.current) {
+            if (containerRef.current.scrollTop + containerRef.current.clientHeight >= containerRef.current.scrollHeight - 10) {
+                setVisibleGames((prevVisibleGames) => prevVisibleGames + 50);
+            }
+        }
+    };
+
+    const handleAddGame = async (game) => {
+        const response = await invoke('add_game_to_custom_list', {
+            steamId: userSummary.steamId,
+            game: { appid: game.appid, name: game.name },
+            list: listName
+        });
+        if (!response.error) {
+            setList(response.list_data);
+        }
+    };
+
+    const handleRemoveGame = async (game) => {
+        const response = await invoke('remove_game_from_custom_list', {
+            steamId: userSummary.steamId,
+            game: { appid: game.appid, name: game.name },
+            list: listName
+        });
+        if (!response.error) {
+            setList(response.list_data);
+            if (response.list_data.length === 0) {
+                setShowInList(false);
+            }
+        }
+    };
+
+    const handleUpdateListOrder = async (newList) => {
+        const response = await invoke('update_custom_list', {
+            steamId: userSummary.steamId,
+            list: listName,
+            newList
+        });
+        if (!response.error) {
+            setList(response.list_data);
+        }
+    };
+
+    const handleClearList = async () => {
+        const response = await invoke('update_custom_list', {
+            steamId: userSummary.steamId,
+            list: listName,
+            newList: []
+        });
+        if (!response.error) {
+            setList([]);
+            setShowInList(false);
+        }
+    };
+
     return {
         list,
         setList,
@@ -83,6 +107,7 @@ export default function useCustomList(listName) {
         setShowInList,
         handleAddGame,
         handleRemoveGame,
-        updateListOrder
+        handleUpdateListOrder,
+        handleClearList
     };
 }

@@ -122,6 +122,7 @@ pub fn get_games_list_cache(
         .app_data_dir()
         .map_err(|e| e.to_string())?
         .join("cache");
+
     // Read games list file
     let games_list = {
         let file_name = format!("{}_games_list.json", steam_id);
