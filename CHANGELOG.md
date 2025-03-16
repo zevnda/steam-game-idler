@@ -4,4 +4,6 @@
 - Custom lists *(card farming, achievement unlocker, etc.)* are now stored in `C:\Users\<user>\AppData\Roaming\com.zevnda.steam-game-idler` along with other games list caches
   - This allows custom lists to be preserved when switching between accounts as they are now stored in user specific files *(`<steam_id>_card_farming_list.json`)*
   - They were previously stored in `localStorage` which could cause issues with large lists, and were deleted when logging out
-  - All cached data can still be deleted via `settings > clear data`.
+  - All cached data can still be deleted via `settings > clear data`
+- Games list caches now only store required information *(`appid`, `name`, `playtime_forever`)* to reduce the overall file size of caches
+- I recommended clearing your data via `settings > clear data` to remove any old data stores
