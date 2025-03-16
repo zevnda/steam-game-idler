@@ -2,4 +2,5 @@
 
 ## Changelog
 - Added a `check for updates` menu item to the system tray icon
+- Fixed an issue in `achievements manager` where the lock/unlock buttons would display the incorrect state when searching or reordering the list
 - Clear the search query when leaving the `achievements manager` screen
