@@ -13,11 +13,10 @@ const Row = memo(({ index, style, data }) => {
     const { appId, appName, achievementList, userGameAchievementsMap, percentageMap } = data;
     const item = achievementList[index];
 
-    const isUnlockedInitial = item ? userGameAchievementsMap.get(item.name) || false : false;
-    const [isUnlocked, setIsUnlocked] = useState(isUnlockedInitial);
-    const percentage = item ? parseInt(percentageMap.get(item.name)) : undefined;
-
     if (!item) return null;
+
+    const isUnlocked = userGameAchievementsMap.get(item.name) || false;
+    const percentage = parseInt(percentageMap.get(item.name));
 
     const handleToggle = async () => {
         // Check if Steam is running
@@ -34,7 +33,10 @@ const Row = memo(({ index, style, data }) => {
 
         toggleAchievement(appId, item.name, appName, isUnlocked ? 'Locked' : 'Unlocked');
         userGameAchievementsMap.set(item.name, !isUnlocked);
-        setIsUnlocked(!isUnlocked);
+
+        if (data.forceUpdate) {
+            data.forceUpdate();
+        }
     };
 
     return (
@@ -102,8 +104,11 @@ Row.displayName = 'Row';
 export default function AchievementsList({ userGameAchievementsMap, percentageMap }) {
     const { appId, appName } = useContext(StateContext);
     const { achievementList, achievementsUnavailable } = useContext(UserContext);
+    const [refreshKey, setRefreshKey] = useState(0);
 
-    const itemData = { appId, appName, achievementList, userGameAchievementsMap, percentageMap };
+    const forceUpdate = () => setRefreshKey(prevKey => prevKey + 1);
+
+    const itemData = { appId, appName, achievementList, userGameAchievementsMap, percentageMap, forceUpdate };
 
     return (
         <div className='flex flex-col gap-2 w-full max-h-[calc(100vh-210px)] overflow-y-auto scroll-smooth'>
@@ -115,6 +120,7 @@ export default function AchievementsList({ userGameAchievementsMap, percentageMa
                 </div>
             ) : (
                 <List
+                    key={refreshKey}
                     height={window.innerHeight - 210}
                     itemCount={achievementList.length}
                     itemSize={100}
