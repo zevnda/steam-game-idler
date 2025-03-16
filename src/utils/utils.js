@@ -390,7 +390,7 @@ export async function sendNativeNotification(title, body) {
 // Clear local/session storage but preserving important keys
 export const preserveKeysAndClearData = async () => {
     try {
-        const keysToPreserve = ['theme', 'minToTrayNotified', 'seenNotifications'];
+        const keysToPreserve = ['theme', 'minToTrayNotified', 'seenNotifications', 'hasUpdated'];
 
         const preservedData = keysToPreserve.reduce((acc, key) => {
             const value = localStorage.getItem(key);

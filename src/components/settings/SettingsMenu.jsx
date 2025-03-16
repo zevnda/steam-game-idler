@@ -15,8 +15,8 @@ export default function SettingsMenu() {
         try {
             const update = await check();
             if (update?.available) {
-                const latest = await fetchLatest();
                 localStorage.setItem('hasUpdated', 'true');
+                const latest = await fetchLatest();
                 await update.downloadAndInstall();
                 if (latest?.major) {
                     await preserveKeysAndClearData();
