@@ -1,4 +1,6 @@
+import { addToast } from '@heroui/react';
 import { emit } from '@tauri-apps/api/event';
+import { relaunch } from '@tauri-apps/plugin-process';
 import { check } from '@tauri-apps/plugin-updater';
 import { useTheme } from 'next-themes';
 import { useCallback, useContext, useEffect } from 'react';
@@ -7,7 +9,7 @@ import { StateContext } from '@/components/contexts/StateContext';
 import { UpdateContext } from '@/components/contexts/UpdateContext';
 import { UserContext } from '@/components/contexts/UserContext';
 import { defaultSettings, checkForFreeGames, startAutoIdleGames } from '@/utils/layout/windowHandler';
-
+import { fetchLatest, logEvent, preserveKeysAndClearData } from '@/utils/utils';
 
 export default function useWindow() {
     const { theme } = useTheme();
@@ -29,10 +31,20 @@ export default function useWindow() {
             try {
                 const update = await check();
                 if (update?.available) {
-                    setUpdateAvailable(true);
+                    const latest = await fetchLatest();
+                    if (latest?.major) {
+                        localStorage.setItem('hasUpdated', 'true');
+                        await update.downloadAndInstall();
+                        await preserveKeysAndClearData();
+                        await relaunch();
+                    } else {
+                        setUpdateAvailable(true);
+                    }
                 }
             } catch (error) {
+                addToast({ description: 'Error checking for updates', color: 'danger' });
                 console.error('Error in (checkForUpdates):', error);
+                logEvent(`Error in (checkForUpdates): ${error}`);
             }
         };
 

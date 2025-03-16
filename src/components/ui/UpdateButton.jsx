@@ -1,10 +1,10 @@
-import { Divider, Spinner, Tooltip } from '@heroui/react';
+import { addToast, Divider, Spinner, Tooltip } from '@heroui/react';
 import { relaunch } from '@tauri-apps/plugin-process';
 import { check } from '@tauri-apps/plugin-updater';
 import { useState } from 'react';
 import { TbDownload } from 'react-icons/tb';
 
-import { fetchLatest, preserveKeysAndClearData } from '@/utils/utils';
+import { fetchLatest, logEvent, preserveKeysAndClearData } from '@/utils/utils';
 
 export default function UpdateButton() {
     const [isLoading, setIsLoading] = useState(false);
@@ -25,8 +25,10 @@ export default function UpdateButton() {
                 setIsLoading(false);
             }
         } catch (error) {
-            console.error('Error in (handleUpdate):', error);
             setIsLoading(false);
+            addToast({ description: 'Error checking for updates', color: 'danger' });
+            console.error('Error in (handleUpdate):', error);
+            logEvent(`Error in (handleUpdate): ${error}`);
         }
     };
 

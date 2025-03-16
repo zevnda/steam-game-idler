@@ -6,7 +6,7 @@ import { TbDotsVertical } from 'react-icons/tb';
 
 import { UpdateContext } from '@/components/contexts/UpdateContext';
 import ExtLink from '@/components/ui/ExtLink';
-import { fetchLatest, preserveKeysAndClearData } from '@/utils/utils';
+import { fetchLatest, logEvent, preserveKeysAndClearData } from '@/utils/utils';
 
 export default function SettingsMenu() {
     const { setShowChangelog } = useContext(UpdateContext);
@@ -26,7 +26,9 @@ export default function SettingsMenu() {
                 addToast({ description: 'No updates available', color: 'primary' });
             }
         } catch (error) {
+            addToast({ description: 'Error checking for updates', color: 'danger' });
             console.error('Error in (handleUpdate):', error);
+            logEvent(`Error in (handleUpdate): ${error}`);
         }
     };
 
