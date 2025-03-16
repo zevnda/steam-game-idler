@@ -6,7 +6,7 @@ import { TbDotsVertical } from 'react-icons/tb';
 
 import { UpdateContext } from '@/components/contexts/UpdateContext';
 import ExtLink from '@/components/ui/ExtLink';
-
+import { fetchLatest, preserveKeysAndClearData } from '@/utils/utils';
 
 export default function SettingsMenu() {
     const { setShowChangelog } = useContext(UpdateContext);
@@ -15,8 +15,12 @@ export default function SettingsMenu() {
         try {
             const update = await check();
             if (update?.available) {
-                localStorage.setItem('hasUpdated', true);
+                const latest = await fetchLatest();
+                localStorage.setItem('hasUpdated', 'true');
                 await update.downloadAndInstall();
+                if (latest?.major) {
+                    await preserveKeysAndClearData();
+                }
                 await relaunch();
             } else {
                 addToast({ description: 'No updates available', color: 'primary' });

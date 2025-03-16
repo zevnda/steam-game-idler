@@ -3,17 +3,18 @@ import { invoke } from '@tauri-apps/api/core';
 import { useContext } from 'react';
 
 import { StateContext } from '@/components/contexts/StateContext';
+import { UserContext } from '@/components/contexts/UserContext';
 import ErrorToast from '@/components/ui/ErrorToast';
 import { logEvent } from '@/utils/utils';
 
 // Automate card farming and achievement unlocking
 export const useAutomate = () => {
+    const { userSummary } = useContext(UserContext);
     const { setIsCardFarming, setIsAchievementUnlocker } = useContext(StateContext);
     // Start card farming
     const startCardFarming = async () => {
         try {
             // Retrieve user summary from local storage
-            const userSummary = JSON.parse(localStorage.getItem('userSummary')) || {};
             // Check if Steam is running
             const steamRunning = await invoke('check_status');
             // Retrieve Steam cookies from local storage
@@ -53,9 +54,9 @@ export const useAutomate = () => {
                     color: 'danger'
                 });
             }
-            // Retrieve card farming list from local storage
-            const cardFarming = JSON.parse(localStorage.getItem('cardFarmingListCache')) || [];
-            if (!settings.cardFarming.allGames && cardFarming.length === 0) {
+            // Retrieve card farming list
+            const cardFarmingList = await invoke('get_custom_lists', { steamId: userSummary.steamId, list: 'cardFarmingList' });
+            if (!settings.cardFarming.allGames && cardFarmingList.list_data.length === 0) {
                 return addToast({
                     description: <ErrorToast
                         message='Enable the "All games" setting or add some games to your card farming list'
@@ -91,9 +92,9 @@ export const useAutomate = () => {
             if (!settings || Object.keys(settings).length === 0) {
                 return addToast({ description: 'Please configure the settings first', color: 'danger' });
             }
-            // Retrieve achievement unlocker list from local storage
-            const achievementUnlocker = JSON.parse(localStorage.getItem('achievementUnlockerListCache')) || [];
-            if (achievementUnlocker.length === 0) {
+            // Retrieve achievement unlocker list
+            const achievementUnlockerList = await invoke('get_custom_lists', { steamId: userSummary.steamId, list: 'achievementUnlockerList' });
+            if (achievementUnlockerList.list_data.length === 0) {
                 return addToast({
                     description: <ErrorToast
                         message='There are no games in your achievement unlocker list'

@@ -14,12 +14,18 @@ export const useAchievementUnlocker = async (
 ) => {
     const startAchievementUnlocker = async () => {
         try {
-            // Retrieve achievement unlocker and settings from local storage
-            const achievementUnlockerGame = JSON.parse(localStorage.getItem('achievementUnlockerListCache')) || [];
             let currentGame = null;
 
+            const userSummary = JSON.parse(localStorage.getItem('userSummary')) || {};
+
+            // Retrieve achievement unlocker games
+            const achievementUnlockerList = await invoke('get_custom_lists', {
+                steamId: userSummary.steamId,
+                list: 'achievementUnlockerList'
+            });
+
             // Check if there are no games left to unlock achievements for
-            if (achievementUnlockerGame.length === 0) {
+            if (achievementUnlockerList.list_data.length === 0) {
                 logEvent('[Achievement Unlocker] No games left - stopping');
                 if (currentGame) await stopIdle(currentGame.appId, currentGame.name);
                 setIsComplete(true);
@@ -27,7 +33,8 @@ export const useAchievementUnlocker = async (
             }
 
             // Fetch achievements for the current game
-            const { achievements, game, error } = await fetchAchievements(achievementUnlockerGame[0], setIsPrivate, setAchievementCount);
+            const achievementUnlockerGame = achievementUnlockerList.list_data[0];
+            const { achievements, game, error } = await fetchAchievements(achievementUnlockerGame, setIsPrivate, setAchievementCount);
 
             currentGame = game;
             setCurrentGame(game);
@@ -206,11 +213,19 @@ const getMaxAchievementUnlocks = (appId) => {
 };
 
 // Remove a game from the unlocker list
-const removeGameFromUnlockerList = (gameId) => {
+const removeGameFromUnlockerList = async (gameId) => {
     try {
-        const achievementUnlocker = JSON.parse(localStorage.getItem('achievementUnlockerListCache')) || [];
-        const updatedAchievementUnlocker = achievementUnlocker.filter(arr => arr.appid !== gameId);
-        localStorage.setItem('achievementUnlockerListCache', JSON.stringify(updatedAchievementUnlocker));
+        const userSummary = JSON.parse(localStorage.getItem('userSummary')) || {};
+        const achievementUnlockerList = await invoke('get_custom_lists', {
+            steamId: userSummary.steamId,
+            list: 'achievementUnlockerList'
+        });
+        const updatedAchievementUnlocker = achievementUnlockerList.list_data.filter(arr => arr.appid !== gameId);
+        await invoke('update_custom_list', {
+            steamId: userSummary.steamId,
+            list: 'achievementUnlockerList',
+            newList: updatedAchievementUnlocker
+        });
     } catch (error) {
         handleError('removeGameFromUnlockerList', error);
     }

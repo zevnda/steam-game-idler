@@ -52,7 +52,8 @@ export default function CustomList({ type }) {
         setShowInList,
         handleAddGame,
         handleRemoveGame,
-        updateListOrder
+        handleUpdateListOrder,
+        handleClearList
     } = useCustomList(type);
     const { startCardFarming, startAchievementUnlocker } = useAutomate();
     const [isEditModalOpen, setEditModalOpen] = useState(false);
@@ -65,7 +66,7 @@ export default function CustomList({ type }) {
                 const oldIndex = items.findIndex(item => item.appid === active.id);
                 const newIndex = items.findIndex(item => item.appid === over.id);
                 const newList = arrayMove(items, oldIndex, newIndex);
-                updateListOrder(newList);
+                handleUpdateListOrder(newList);
                 return newList;
             });
         }
@@ -146,6 +147,7 @@ export default function CustomList({ type }) {
                 setShowInList={setShowInList}
                 handleAddGame={handleAddGame}
                 handleRemoveGame={handleRemoveGame}
+                handleClearList={handleClearList}
                 setList={setList}
                 type={type}
             />
