@@ -1,3 +1,4 @@
+import { addToast } from '@heroui/react';
 import { invoke } from '@tauri-apps/api/core';
 import { useContext, useState, useRef, useEffect } from 'react';
 
@@ -20,7 +21,12 @@ export default function useCustomList(listName) {
     useEffect(() => {
         const getCustomLists = async () => {
             const response = await invoke('get_custom_lists', { steamId: userSummary.steamId, list: listName });
-            setList(response.list_data);
+            if (!response.error) {
+                setList(response.list_data);
+            } else {
+                addToast({ description: response.error, color: 'danger' });
+                setList([]);
+            }
         };
         getCustomLists();
     }, [userSummary.steamId, isAchievementUnlocker, isCardFarming, listName]);
@@ -55,6 +61,30 @@ export default function useCustomList(listName) {
         });
         if (!response.error) {
             setList(response.list_data);
+        } else {
+            addToast({ description: response.error, color: 'danger' });
+        }
+    };
+
+    const handleAddAllGames = async (games) => {
+        const clearResponse = await invoke('update_custom_list', {
+            steamId: userSummary.steamId,
+            list: listName,
+            newList: []
+        });
+        if (!clearResponse.error) {
+            const addResponse = await invoke('update_custom_list', {
+                steamId: userSummary.steamId,
+                list: listName,
+                newList: games
+            });
+            if (!addResponse.error) {
+                setList(addResponse.list_data);
+            } else {
+                addToast({ description: addResponse.error, color: 'danger' });
+            }
+        } else {
+            addToast({ description: clearResponse.error, color: 'danger' });
         }
     };
 
@@ -69,6 +99,8 @@ export default function useCustomList(listName) {
             if (response.list_data.length === 0) {
                 setShowInList(false);
             }
+        } else {
+            addToast({ description: response.error, color: 'danger' });
         }
     };
 
@@ -80,6 +112,8 @@ export default function useCustomList(listName) {
         });
         if (!response.error) {
             setList(response.list_data);
+        } else {
+            addToast({ description: response.error, color: 'danger' });
         }
     };
 
@@ -92,6 +126,8 @@ export default function useCustomList(listName) {
         if (!response.error) {
             setList([]);
             setShowInList(false);
+        } else {
+            addToast({ description: response.error, color: 'danger' });
         }
     };
 
@@ -106,6 +142,7 @@ export default function useCustomList(listName) {
         showInList,
         setShowInList,
         handleAddGame,
+        handleAddAllGames,
         handleRemoveGame,
         handleUpdateListOrder,
         handleClearList

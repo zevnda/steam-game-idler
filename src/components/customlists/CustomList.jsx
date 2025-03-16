@@ -51,6 +51,7 @@ export default function CustomList({ type }) {
         showInList,
         setShowInList,
         handleAddGame,
+        handleAddAllGames,
         handleRemoveGame,
         handleUpdateListOrder,
         handleClearList
@@ -146,9 +147,9 @@ export default function CustomList({ type }) {
                 showInList={showInList}
                 setShowInList={setShowInList}
                 handleAddGame={handleAddGame}
+                handleAddAllGames={handleAddAllGames}
                 handleRemoveGame={handleRemoveGame}
                 handleClearList={handleClearList}
-                setList={setList}
                 type={type}
             />
         </>

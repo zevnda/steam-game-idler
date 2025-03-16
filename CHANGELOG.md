@@ -6,4 +6,6 @@
   - They were previously stored in `localStorage` which could cause issues with large lists, and were deleted when logging out
   - All cached data can still be deleted via `settings > clear data`
 - Games list caches now only store required information *(`appid`, `name`, `playtime_forever`)* to reduce the overall file size of caches
-- I recommended clearing your data via `settings > clear data` to remove any old data stores
+- Added an `add all` button to the `edit list modal` for `achievement unlocker` to easily add all of your games to the list
+
+**Note**: I recommended clearing your data via `settings > clear data` to remove any old data stores
