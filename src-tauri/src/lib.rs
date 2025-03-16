@@ -23,6 +23,7 @@ use tauri::menu::{Menu, MenuItem};
 use tauri::tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent};
 use tauri::{Listener, Manager};
 use tauri_plugin_autostart::MacosLauncher;
+use tauri_plugin_updater::UpdaterExt;
 use tauri_plugin_window_state::StateFlags;
 
 // TODO: Delete once all users are migrated to the new format
@@ -44,6 +45,12 @@ pub fn run() {
     let (tx, rx) = mpsc::channel();
 
     tauri::Builder::default()
+        .plugin(tauri_plugin_updater::Builder::new().build())
+        .plugin(tauri_plugin_fs::init())
+        .plugin(tauri_plugin_shell::init())
+        .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_process::init())
+        .plugin(tauri_plugin_notification::init())
         .plugin(
             tauri_plugin_window_state::Builder::new()
                 .with_state_flags(
@@ -55,12 +62,6 @@ pub fn run() {
                 )
                 .build(),
         )
-        .plugin(tauri_plugin_updater::Builder::new().build())
-        .plugin(tauri_plugin_fs::init())
-        .plugin(tauri_plugin_shell::init())
-        .plugin(tauri_plugin_dialog::init())
-        .plugin(tauri_plugin_process::init())
-        .plugin(tauri_plugin_notification::init())
         .plugin(tauri_plugin_autostart::init(
             MacosLauncher::LaunchAgent,
             None,
@@ -104,7 +105,7 @@ pub fn run() {
             check_process_by_game_id,
         ])
         .build(tauri::generate_context!())
-        .expect("error while building tauri application")
+        .expect("Error while building tauri application")
         .run(move |_, event| match event {
             tauri::RunEvent::Exit => {
                 SHUTTING_DOWN.store(true, Ordering::SeqCst);
@@ -161,9 +162,12 @@ fn migrate_old_data(app_handle: &tauri::AppHandle) -> Result<(), Box<dyn std::er
 }
 
 fn setup_tray_icon(app: &mut tauri::App) -> Result<(), Box<dyn std::error::Error>> {
+    let app_handle = app.handle().clone();
+
     let show = MenuItem::with_id(app, "show", "Show", true, None::<&str>)?;
-    let quit = MenuItem::with_id(app, "quit", "Quit Steam Game Idler", true, None::<&str>)?;
-    let menu = Menu::with_items(app, &[&show, &quit])?;
+    let update = MenuItem::with_id(app, "update", "Check for updates..", true, None::<&str>)?;
+    let quit = MenuItem::with_id(app, "quit", "Quit", true, None::<&str>)?;
+    let menu = Menu::with_items(app, &[&show, &update, &quit])?;
 
     TrayIconBuilder::new()
         .icon(app.default_window_icon().unwrap().clone())
@@ -184,21 +188,43 @@ fn setup_tray_icon(app: &mut tauri::App) -> Result<(), Box<dyn std::error::Error
             }
             _ => {}
         })
-        .on_menu_event(|app, event| match event.id.as_ref() {
-            "quit" => {
-                app.exit(0);
-            }
+        .on_menu_event(move |app, event| match event.id.as_ref() {
             "show" => {
                 if let Some(window) = app.get_webview_window("main") {
                     window.show().unwrap();
                     window.set_focus().unwrap();
                 }
             }
+            "update" => {
+                let app_handle_for_update = app_handle.clone();
+                tauri::async_runtime::spawn(async move {
+                    match check_for_updates(app_handle_for_update.clone()).await {
+                        Ok(_) => println!("Update check complete"),
+                        Err(e) => println!("Update check failed: {}", e),
+                    }
+                });
+            }
+            "quit" => {
+                app.exit(0);
+            }
             _ => {
-                println!("menu item {:?} not handled", event.id);
+                println!("Menu item {:?} not handled", event.id);
             }
         })
         .build(app)?;
+
+    Ok(())
+}
+
+async fn check_for_updates(app_handle: tauri::AppHandle) -> tauri_plugin_updater::Result<()> {
+    if let Some(update) = app_handle.updater()?.check().await? {
+        update
+            .download_and_install(|_downloaded, _total| {}, || {})
+            .await?;
+        app_handle.restart();
+    } else {
+        println!("No update available");
+    }
 
     Ok(())
 }
