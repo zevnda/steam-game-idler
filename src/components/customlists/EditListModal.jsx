@@ -18,7 +18,7 @@ const Row = memo(({ index, style, data }) => {
             className={`flex justify-between items-center gap-2 hover:bg-containerhover cursor-pointer px-3 py-1 duration-150 select-none ${list.some(game => game.appid === item.appid) && 'opacity-50 dark:opacity-30'}`}
             onClick={() => list.some(game => game.appid === item.appid) ? handleRemoveGame(item) : handleAddGame(item)}
         >
-            <div className='flex items-center gap-3 max-w-[350px]'>
+            <div className='flex items-center gap-3 max-w-[90%]'>
                 <Image
                     src={`https://cdn.cloudflare.steamstatic.com/steam/apps/${item.appid}/header.jpg`}
                     className='aspect-[62/29] rounded-sm'
@@ -43,11 +43,11 @@ const Row = memo(({ index, style, data }) => {
 
 Row.displayName = 'Row';
 
-export default function EditListModal({ isOpen, onOpenChange, onClose, filteredGamesList, list, setSearchTerm, showInList, setShowInList, handleAddGame, handleRemoveGame, handleClearList }) {
+export default function EditListModal({ isOpen, onOpenChange, onClose, filteredGamesList, list, setSearchTerm, showInList, setShowInList, handleAddGame, handleAddAllGames, handleRemoveGame, handleClearList, type }) {
     const itemData = { filteredGamesList, list, handleAddGame, handleRemoveGame };
 
     return (
-        <Modal isOpen={isOpen} onOpenChange={onOpenChange} onClose={onClose} hideCloseButton className='bg-modalbody min-h-[75%] max-h-[75%] text-content' classNames={{ closeButton: ['text-altwhite hover:bg-titlehover duration-200'] }}>
+        <Modal isOpen={isOpen} onOpenChange={onOpenChange} onClose={onClose} hideCloseButton className='bg-modalbody min-h-[75%] max-h-[75%] text-content min-w-[40%]' classNames={{ closeButton: ['text-altwhite hover:bg-titlehover duration-200'] }}>
             <ModalContent>
                 {(onClose) => (
                     <>
@@ -65,16 +65,27 @@ export default function EditListModal({ isOpen, onOpenChange, onClose, filteredG
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 onClear={() => setSearchTerm('')}
                             />
-                            <Button
-                                size='sm'
-                                color='default'
-                                className={`rounded-full font-semibold ${showInList ? 'bg-green-400/40 text-green-600' : 'bg-dynamic text-button'}`}
-                                isDisabled={list.length === 0}
-                                startContent={<TbCheck fontSize={34} className={showInList ? 'text-green-600' : 'text-button'} />}
-                                onPress={() => setShowInList(!showInList)}
-                            >
-                                In List
-                            </Button>
+                            <div className='flex items-center gap-2'>
+                                <Button
+                                    size='sm'
+                                    className={`rounded-full font-semibold ${showInList ? 'bg-green-400/40 text-green-600' : 'bg-gray-500/40 text-button'}`}
+                                    isDisabled={list.length === 0}
+                                    startContent={<TbCheck fontSize={18} className={showInList ? 'text-green-600' : 'text-button'} />}
+                                    onPress={() => setShowInList(!showInList)}
+                                >
+                                    In List
+                                </Button>
+                                {type === 'achievementUnlockerList' && (
+                                    <Button
+                                        size='sm'
+                                        className='rounded-full font-semibold bg-dynamic text-button'
+                                        isDisabled={filteredGamesList.length === 0 || list.length === filteredGamesList.length}
+                                        onPress={() => handleAddAllGames(filteredGamesList)}
+                                    >
+                                        Add All
+                                    </Button>
+                                )}
+                            </div>
                         </ModalHeader>
                         <ModalBody className='relative p-0 gap-0 overflow-y-auto'>
                             <List
