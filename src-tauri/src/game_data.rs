@@ -14,6 +14,13 @@ struct GameInfo {
     name: String,
 }
 
+#[derive(Serialize, Deserialize)]
+struct GameData {
+    appid: u64,
+    name: String,
+    playtime_forever: u64,
+}
+
 #[tauri::command]
 pub async fn get_games_list(
     steam_id: String,
@@ -23,7 +30,7 @@ pub async fn get_games_list(
     // Get the API key from the environment or use the provided one
     let key = api_key.unwrap_or_else(|| std::env::var("KEY").unwrap());
     let url = format!(
-        "https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key={}&steamid={}&include_appinfo=true&include_played_free_games=true&include_free_sub=true&skip_unvetted_apps=false&include_extended_appinfo=true",
+        "https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key={}&steamid={}&include_appinfo=true&include_played_free_games=true&include_free_sub=true&skip_unvetted_apps=false&include_extended_appinfo=false",
         key, steam_id
     );
 
@@ -33,6 +40,10 @@ pub async fn get_games_list(
     match client.get(&url).send().await {
         Ok(response) => {
             let body: Value = response.json().await.map_err(|e| e.to_string())?;
+
+            // Process the response to extract only needed fields
+            let filtered_data = filter_game_data(&body)?;
+
             // Get the application data directory
             let app_data_dir = app_handle
                 .path()
@@ -42,7 +53,7 @@ pub async fn get_games_list(
             create_dir_all(&app_data_dir)
                 .map_err(|e| format!("Failed to create app directory: {}", e))?;
 
-            // Save the response to games_list.json
+            // Save the filtered response to games_list.json
             let file_name = format!("{}_games_list.json", steam_id);
             let games_file_path = app_data_dir.join(file_name);
             let mut file = OpenOptions::new()
@@ -52,12 +63,12 @@ pub async fn get_games_list(
                 .open(&games_file_path)
                 .map_err(|e| format!("Failed to open games list file: {}", e))?;
 
-            let json_string = serde_json::to_string_pretty(&body)
+            let json_string = serde_json::to_string_pretty(&filtered_data)
                 .map_err(|e| format!("Failed to serialize games list: {}", e))?;
             file.write_all(json_string.as_bytes())
                 .map_err(|e| format!("Failed to write games list to file: {}", e))?;
 
-            Ok(body)
+            Ok(filtered_data)
         }
         Err(err) => Err(err.to_string()),
     }
@@ -82,6 +93,10 @@ pub async fn get_recent_games(
     match client.get(&url).send().await {
         Ok(response) => {
             let body: Value = response.json().await.map_err(|e| e.to_string())?;
+
+            // Process the response to extract only needed fields
+            let filtered_data = filter_game_data(&body)?;
+
             // Get the application data directory
             let app_data_dir = app_handle
                 .path()
@@ -90,7 +105,8 @@ pub async fn get_recent_games(
                 .join("cache");
             create_dir_all(&app_data_dir)
                 .map_err(|e| format!("Failed to create app directory: {}", e))?;
-            // Save the response to recent_games.json
+
+            // Save the filtered response to recent_games.json
             let file_name = format!("{}_recent_games.json", steam_id);
             let recent_games_file_path = app_data_dir.join(file_name);
             let mut file = OpenOptions::new()
@@ -100,15 +116,50 @@ pub async fn get_recent_games(
                 .open(&recent_games_file_path)
                 .map_err(|e| format!("Failed to open recent games file: {}", e))?;
 
-            let json_string = serde_json::to_string_pretty(&body)
+            let json_string = serde_json::to_string_pretty(&filtered_data)
                 .map_err(|e| format!("Failed to serialize recent games: {}", e))?;
             file.write_all(json_string.as_bytes())
                 .map_err(|e| format!("Failed to write recent games to file: {}", e))?;
 
-            Ok(body)
+            Ok(filtered_data)
         }
         Err(err) => Err(err.to_string()),
     }
+}
+
+// Helper function to filter game data
+fn filter_game_data(data: &Value) -> Result<Value, String> {
+    let games = match &data["response"]["games"] {
+        Value::Array(games) => games,
+        _ => return Ok(json!({"response": {"game_count": 0, "games": []}})),
+    };
+
+    let game_count = match &data["response"]["game_count"] {
+        Value::Number(count) => count.clone(),
+        _ => serde_json::Number::from(games.len()),
+    };
+
+    let filtered_games: Vec<GameData> = games
+        .iter()
+        .filter_map(|game| {
+            let appid = game["appid"].as_u64()?;
+            let name = game["name"].as_str()?.to_string();
+            let playtime_forever = game["playtime_forever"].as_u64().unwrap_or(0);
+
+            Some(GameData {
+                appid,
+                name,
+                playtime_forever,
+            })
+        })
+        .collect();
+
+    Ok(json!({
+        "response": {
+            "game_count": game_count,
+            "games": filtered_games
+        }
+    }))
 }
 
 #[tauri::command]
