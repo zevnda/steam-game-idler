@@ -2,3 +2,4 @@
 
 ## Changelog
 - Added a `check for updates` menu item to the system tray icon
+- Clear the search query when leaving the `achievements manager` screen
