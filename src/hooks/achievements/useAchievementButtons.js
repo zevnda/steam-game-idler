@@ -28,10 +28,20 @@ export default function useAchievementButtons(achievements, setAchievements) {
             case 'title':
                 sortedAchievements.sort((a, b) => a.name.localeCompare(b.name));
                 break;
-            case 'state':
+            case 'unlocked':
                 sortedAchievements.sort((b, a) => (a.achieved === b.achieved) ? 0 : a.achieved ? 1 : -1);
                 break;
+            case 'locked':
+                sortedAchievements.sort((a, b) => (a.achieved === b.achieved) ? 0 : a.achieved ? 1 : -1);
+                break;
             case 'protected':
+                sortedAchievements.sort((b, a) => {
+                    if (a.protected_achievement && !b.protected_achievement) return 1;
+                    if (!a.protected_achievement && b.protected_achievement) return -1;
+                    return 0;
+                });
+                break;
+            case 'unprotected':
                 sortedAchievements.sort((a, b) => {
                     if (a.protected_achievement && !b.protected_achievement) return 1;
                     if (!a.protected_achievement && b.protected_achievement) return -1;

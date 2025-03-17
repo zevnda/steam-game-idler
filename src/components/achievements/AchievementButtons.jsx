@@ -8,8 +8,10 @@ import useAchievementButtons from '@/hooks/achievements/useAchievementButtons';
 const sortOptions = [
     { key: 'percent', label: 'Percentage' },
     { key: 'title', label: 'Alphabetically' },
-    { key: 'state', label: 'Locked/Unlocked' },
-    { key: 'protected', label: 'Unprotected' },
+    { key: 'unlocked', label: 'Unlocked' },
+    { key: 'locked', label: 'Locked' },
+    { key: 'unprotected', label: 'Unprotected' },
+    { key: 'protected', label: 'Protected' },
 ];
 
 export default function AchievementButtons({ achievements, setAchievements, protectedAchievements }) {
