@@ -247,18 +247,33 @@ pub fn delete_user_games_list_files(
 
 #[tauri::command]
 pub fn delete_all_games_list_files(app_handle: tauri::AppHandle) -> Result<(), String> {
-    // Get the application data directory
-    let app_data_dir = app_handle
+    // Get the cache data directory
+    let cache_data_dir = app_handle
         .path()
         .app_data_dir()
         .map_err(|e| e.to_string())?
         .join("cache");
     // Delete the cache directory
-    match remove_dir_all(&app_data_dir) {
-        Ok(_) => println!("Successfully deleted directory: {:?}", app_data_dir),
+    match remove_dir_all(&cache_data_dir) {
+        Ok(_) => println!("Successfully deleted directory: {:?}", cache_data_dir),
         Err(e) => println!(
             "Failed to delete directory: {:?}, Error: {}",
-            app_data_dir, e
+            cache_data_dir, e
+        ),
+    }
+
+    // Get the achievement data directory
+    let achievement_data_dir = app_handle
+        .path()
+        .app_data_dir()
+        .map_err(|e| e.to_string())?
+        .join("achievement_data");
+    // Delete the achievement data directory
+    match remove_dir_all(&achievement_data_dir) {
+        Ok(_) => println!("Successfully deleted directory: {:?}", achievement_data_dir),
+        Err(e) => println!(
+            "Failed to delete directory: {:?}, Error: {}",
+            achievement_data_dir, e
         ),
     }
 
