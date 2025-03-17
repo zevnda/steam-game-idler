@@ -38,7 +38,7 @@ const Row = memo(({ index, style, data }) => {
         }
         const success = await toggleAchievement(appId, item.id, appName, achieved ? 'Locked' : 'Unlocked');
         if (success) {
-            updateAchievement(index, { ...item, achieved: !achieved });
+            updateAchievement(item.id, !achieved);
         }
     };
 
@@ -98,11 +98,13 @@ export default function AchievementsList({ achievements, setAchievements, steamN
     const { achievementQueryValue } = useContext(SearchContext);
     const { appId, appName } = useContext(StateContext);
 
-    const updateAchievement = (index, updatedAchievement) => {
+    const updateAchievement = (achievementId, newAchievedState) => {
         setAchievements(prevAchievements => {
-            const newAchievements = [...prevAchievements];
-            newAchievements[index] = updatedAchievement;
-            return newAchievements;
+            return prevAchievements.map(achievement =>
+                achievement.id === achievementId
+                    ? { ...achievement, achieved: newAchievedState }
+                    : achievement
+            );
         });
     };
 

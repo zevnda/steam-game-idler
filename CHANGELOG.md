@@ -2,3 +2,4 @@
 
 ## Changelog
 - The `settings > clear data` now deletes achievement data files
+- Fixed an issue in `achievement manager` causing a duplicate achievement to appear in the list when toggling its lock state
