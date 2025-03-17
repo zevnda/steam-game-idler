@@ -7,6 +7,6 @@ body:
   - type: textarea
     id: question
     attributes:
-      label: What Is Your Question?
+      label: Ask your question
     validations:
       required: true
