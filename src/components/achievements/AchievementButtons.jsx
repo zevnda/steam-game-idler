@@ -18,6 +18,9 @@ export default function AchievementButtons({ achievements, setAchievements, prot
     const { handleChange, handleUnlockAll, handleLockAll } = useAchievementButtons(achievements, setAchievements);
     const [state, setState] = useState('');
 
+    const unAchieved = achievements.filter(achievement => !achievement.achieved);
+    const achieved = achievements.filter(achievement => achievement.achieved);
+
     const handleShowModal = (onOpen, state) => {
         setState(state);
         onOpen();
@@ -26,7 +29,7 @@ export default function AchievementButtons({ achievements, setAchievements, prot
     return (
         <div className='absolute top-0 right-0 flex gap-2'>
             <Button
-                isDisabled={protectedAchievements}
+                isDisabled={protectedAchievements || unAchieved.length === 0}
                 size='sm'
                 className='font-semibold rounded-lg bg-dynamic text-button'
                 onPress={() => handleShowModal(onOpen, 'unlock')}
@@ -35,7 +38,7 @@ export default function AchievementButtons({ achievements, setAchievements, prot
             </Button>
 
             <Button
-                isDisabled={protectedAchievements}
+                isDisabled={protectedAchievements || achieved.length === 0}
                 size='sm'
                 color='danger'
                 className='font-semibold rounded-lg'
