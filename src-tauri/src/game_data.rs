@@ -329,6 +329,10 @@ pub async fn get_achievement_manager_data(
 
     let output_str = String::from_utf8_lossy(&output.stdout);
 
+    if output_str.contains("error") {
+        return Ok(output_str.to_string().into());
+    }
+
     if output_str.contains("success") {
         // Get the application data directory
         let app_data_dir = app_handle

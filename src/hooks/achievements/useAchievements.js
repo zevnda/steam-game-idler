@@ -36,6 +36,21 @@ export default function useAchievements(setIsLoading,
 
                 const response = await invoke('get_achievement_manager_data', { appId });
 
+                if (!response?.achievement_data && response.includes('Failed to initialize Steam API')) {
+                    setIsLoading(false);
+                    setAchievementsUnavailable(true);
+                    setStatisticsUnavailable(true);
+                    addToast({
+                        description: <ErrorToast
+                            message='Account mismatch between Steam and SGI'
+                            href='https://steamgameidler.vercel.app/faq#error-messages:~:text=Account%20mismatch%20between%20Steam%20and%20SGI'
+                        />,
+                        color: 'danger'
+                    });
+                    logEvent(`Error in (getAchievementData): ${response.error}`);
+                    return;
+                }
+
                 if (response?.achievement_data?.achievements) {
                     const hasProtectedAchievements = response.achievement_data.achievements.some(
                         achievement => achievement.protected_achievement === true

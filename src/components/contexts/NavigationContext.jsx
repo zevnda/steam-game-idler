@@ -4,7 +4,7 @@ export const NavigationContext = createContext();
 
 export const NavigationProvider = ({ children }) => {
     const [activePage, setActivePage] = useState('games');
-    const [currentTab, setCurrentTab] = useState(null);
+    const [currentTab, setCurrentTab] = useState('achievements');
 
     return (
         <NavigationContext.Provider value={{
