@@ -1,0 +1,12 @@
+name: Question
+description: Ask a question about Steam Game Idler
+labels: ["question"]
+assignees:
+  - "zevnda"
+body:
+  - type: textarea
+    id: question
+    attributes:
+      label: What Is Your Question?
+    validations:
+      required: true
