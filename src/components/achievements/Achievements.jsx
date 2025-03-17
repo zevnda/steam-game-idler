@@ -1,29 +1,25 @@
 import { Tab, Tabs } from '@heroui/react';
-import { useContext } from 'react';
+import { useState, useContext } from 'react';
 
 import AchievementsList from '@/components/achievements/AchievementsList';
 import PageHeader from '@/components/achievements/PageHeader';
 import StatisticsList from '@/components/achievements/StatisticsList';
-import TabButtons from '@/components/achievements/TabButtons';
 import { NavigationContext } from '@/components/contexts/NavigationContext';
 import Loader from '@/components/ui/Loader';
 import useAchievements from '@/hooks/achievements/useAchievements';
 
 export default function Achievements() {
     const { setCurrentTab } = useContext(NavigationContext);
-    const {
-        isLoading,
-        setIsSorted,
-        initialStatValues,
-        setInitialStatValues,
-        newStatValues,
-        setNewStatValues,
-        userGameAchievementsMap,
-        percentageMap
-    } = useAchievements();
+    const [isLoading, setIsLoading] = useState(true);
+    const [achievements, setAchievements] = useState([]);
+    const [statistics, setStatistics] = useState([]);
+    const [protectedAchievements, setProtectedAchievements] = useState(false);
+    const [protectedStatistics, setProtectedStatistics] = useState(false);
+    const [steamNotRunning, setSteamNotRunning] = useState(false);
+    useAchievements(setIsLoading, setAchievements, setStatistics, setProtectedAchievements, setProtectedStatistics, setSteamNotRunning);
 
     if (isLoading) return (
-        <div className='overflow-y-auto overflow-x-hidden border-t border-border'>
+        <div className='overflow-y-auto overflow-x-hidden bg-base border-t border-border w-screen'>
             <Loader />
         </div>
     );
@@ -31,20 +27,12 @@ export default function Achievements() {
     return (
         <div className='min-h-calc max-h-calc w-full bg-base overflow-y-auto overflow-x-hidden border-t border-border'>
             <div className='p-4'>
-                <PageHeader />
+                <PageHeader
+                    protectedAchievements={protectedAchievements}
+                    protectedStatistics={protectedStatistics}
+                />
 
                 <div className='relative flex flex-wrap gap-4 mt-2'>
-                    <div className='absolute flex justify-end w-full gap-2'>
-                        <TabButtons
-                            initialStatValues={initialStatValues}
-                            newStatValues={newStatValues}
-                            setNewStatValues={setNewStatValues}
-                            setIsSorted={setIsSorted}
-                            userGameAchievementsMap={userGameAchievementsMap}
-                            percentageMap={percentageMap}
-                        />
-                    </div>
-
                     <div className='flex flex-col w-full'>
                         <Tabs
                             size='sm'
@@ -64,22 +52,20 @@ export default function Achievements() {
                         >
                             <Tab key='achievements' title='Achievements'>
                                 <AchievementsList
-                                    userGameAchievementsMap={userGameAchievementsMap}
-                                    percentageMap={percentageMap}
+                                    achievements={achievements}
+                                    setAchievements={setAchievements}
+                                    steamNotRunning={steamNotRunning}
+                                    protectedAchievements={protectedAchievements}
                                 />
                             </Tab>
                             <Tab key='statistics' title='Statistics'>
                                 <StatisticsList
-                                    setInitialStatValues={setInitialStatValues}
-                                    newStatValues={newStatValues}
-                                    setNewStatValues={setNewStatValues}
+                                    statistics={statistics}
+                                    setStatistics={setStatistics}
+                                    steamNotRunning={steamNotRunning}
                                 />
                             </Tab>
                         </Tabs>
-
-                        <p className='text-xs text-altwhite mt-1'>
-                            Please note that changes are instant but may take up to 5 minutes to be reflected on this page. Check your game&apos;s achievements page on Steam for real-time changes.
-                        </p>
                     </div>
                 </div>
             </div>

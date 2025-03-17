@@ -1,3 +1,4 @@
+use crate::utils::get_lib_path;
 use reqwest::Client;
 use scraper::{Html, Selector};
 use serde::{Deserialize, Serialize};
@@ -6,6 +7,7 @@ use std::fs::File;
 use std::fs::{create_dir_all, remove_dir_all, remove_file, OpenOptions};
 use std::io::Read;
 use std::io::Write;
+use std::os::windows::process::CommandExt;
 use tauri::Manager;
 
 #[derive(Serialize, Deserialize)]
@@ -310,5 +312,50 @@ pub async fn get_game_details(app_id: String) -> Result<Value, String> {
             Ok(body)
         }
         Err(err) => Err(err.to_string()),
+    }
+}
+
+#[tauri::command]
+pub async fn get_achievement_manager_data(
+    app_id: u32,
+    app_handle: tauri::AppHandle,
+) -> Result<Value, String> {
+    let exe_path = get_lib_path()?;
+    let output = std::process::Command::new(exe_path)
+        .args(&["get_achievement_data", &app_id.to_string()])
+        .creation_flags(0x08000000)
+        .output()
+        .expect("failed to execute unlocker");
+
+    let output_str = String::from_utf8_lossy(&output.stdout);
+
+    if output_str.contains("success") {
+        // Get the application data directory
+        let app_data_dir = app_handle
+            .path()
+            .app_data_dir()
+            .map_err(|e| e.to_string())?
+            .join("achievement_data");
+
+        // Read achievemnets list file
+        let achievement_data = {
+            let file_name = format!("{}_achievement_data.json", app_id);
+            let achievement_file_path = app_data_dir.join(file_name);
+            if achievement_file_path.exists() {
+                let mut file = File::open(&achievement_file_path)
+                    .map_err(|e| format!("Failed to open games list file: {}", e))?;
+                let mut contents = String::new();
+                file.read_to_string(&mut contents)
+                    .map_err(|e| format!("Failed to read games list file: {}", e))?;
+                serde_json::from_str(&contents)
+                    .map_err(|e| format!("Failed to parse games list JSON: {}", e))?
+            } else {
+                json!({})
+            }
+        };
+
+        Ok(json!({"achievement_data": achievement_data}))
+    } else {
+        Ok(json!({"achievement_data": {}}))
     }
 }

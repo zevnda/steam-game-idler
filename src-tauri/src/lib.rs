@@ -96,6 +96,7 @@ pub fn run() {
             update_custom_list,
             get_game_details,
             get_achievement_data,
+            get_achievement_manager_data,
             validate_session,
             get_drops_remaining,
             get_games_with_drops,

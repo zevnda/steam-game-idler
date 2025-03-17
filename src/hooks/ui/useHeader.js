@@ -1,15 +1,10 @@
 import { getCurrentWindow } from '@tauri-apps/api/window';
 import { isPermissionGranted, requestPermission, sendNotification } from '@tauri-apps/plugin-notification';
-import { useContext } from 'react';
 
-import { SearchContext } from '@/components/contexts/SearchContext';
-
-export default function useHeader(setGameQueryValue, setAchievementQueryValue) {
-    const { setIsQuery } = useContext(SearchContext);
+export default function useHeader() {
 
     const windowMinimize = async () => {
         await getCurrentWindow().minimize();
-
     };
 
     const windowToggleMaximize = async () => {
@@ -36,24 +31,9 @@ export default function useHeader(setGameQueryValue, setAchievementQueryValue) {
         localStorage.setItem('minToTrayNotified', 'true');
     };
 
-    const handleGameQueryChange = (e) => {
-        setGameQueryValue(e.target.value);
-    };
-
-    const handleAchievementQueryChange = (e) => {
-        setAchievementQueryValue(e.target.value);
-    };
-
-    const handleKeyDown = () => {
-        setIsQuery(true);
-    };
-
     return {
         windowMinimize,
         windowToggleMaximize,
         windowClose,
-        handleGameQueryChange,
-        handleAchievementQueryChange,
-        handleKeyDown
     };
 }
