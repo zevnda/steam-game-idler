@@ -1,4 +1,4 @@
-[![Downloads](https://img.shields.io/github/downloads/zevnda/steam-game-idler/1.8.6/total?style=for-the-badge&logo=github&color=137eb5)](https://github.com/zevnda/steam-game-idler/releases/download/1.8.6/Steam.Game.Idler_1.8.6_x64-setup.exe)
+[![Downloads](https://img.shields.io/github/downloads/zevnda/steam-game-idler/1.8.7/total?style=for-the-badge&logo=github&color=137eb5)](https://github.com/zevnda/steam-game-idler/releases/download/1.8.7/Steam.Game.Idler_1.8.7_x64-setup.exe)
 
 ## Changelog
 - Refactored the `achievement manager` feature that comes with significant changes
