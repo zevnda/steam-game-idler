@@ -6,14 +6,20 @@ import { StateContext } from '@/components/contexts/StateContext';
 import ErrorToast from '@/components/ui/ErrorToast';
 import { updateStats } from '@/utils/utils';
 
-export default function useStatisticButtons(statistics, setStatistics) {
+export default function useStatisticButtons(statistics, setStatistics, changedStats, setChangedStats) {
     const { appId, appName } = useContext(StateContext);
 
-    // Handle updating all statistics
+    // Handle updating only changed statistics
     const handleUpdateAllStats = async () => {
-        const valuesArr = statistics.map(stat => ({
-            name: stat.id,
-            value: stat.value
+        const changedKeys = Object.keys(changedStats);
+
+        if (changedKeys.length === 0) {
+            return addToast({ description: 'No statistics have been modified', color: 'warning' });
+        }
+
+        const valuesArr = changedKeys.map(name => ({
+            name,
+            value: changedStats[name]
         }));
 
         // Check if Steam is running
@@ -31,7 +37,8 @@ export default function useStatisticButtons(statistics, setStatistics) {
         const success = await updateStats(appId, appName, valuesArr);
 
         if (success) {
-            addToast({ description: `Successfully updated ${statistics.length} stats for ${appName}`, color: 'success' });
+            addToast({ description: `Successfully updated ${changedKeys.length} stats for ${appName}`, color: 'success' });
+            setChangedStats({});
         } else {
             addToast({
                 description: <ErrorToast
@@ -68,6 +75,7 @@ export default function useStatisticButtons(statistics, setStatistics) {
                     value: 0
                 }));
             });
+            setChangedStats({});
             addToast({ description: `Successfully reset ${statistics.length} stats for ${appName}`, color: 'success' });
         } else {
             addToast({

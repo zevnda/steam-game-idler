@@ -1,5 +1,5 @@
 import { NumberInput } from '@heroui/react';
-import { memo, useContext } from 'react';
+import { memo, useContext, useState, useMemo } from 'react';
 import { FixedSizeList as List } from 'react-window';
 
 import StatisticButtons from '@/components/achievements/StatisticButtons';
@@ -24,7 +24,7 @@ const Row = memo(({ index, style, data }) => {
                             <p className='text-sm w-full truncate'>
                                 {item1.id}
                             </p>
-                            <p className='text-xs text-altwhite'>
+                            <p className={`text-[10px] ${protectedStatisticOne ? 'text-warning' : 'text-altwhite'}`}>
                                 Flags: {item1.flags}
                             </p>
                         </div>
@@ -53,7 +53,7 @@ const Row = memo(({ index, style, data }) => {
                             <p className='text-sm w-full truncate'>
                                 {item2.id}
                             </p>
-                            <p className='text-xs text-altwhite'>
+                            <p className={`text-[10px] ${protectedStatisticTwo ? 'text-warning' : 'text-altwhite'}`}>
                                 Flags: {item2.flags}
                             </p>
                         </div>
@@ -83,17 +83,37 @@ Row.displayName = 'Row';
 
 export default function StatisticsList({ statistics, setStatistics, steamNotRunning }) {
     const { statisticQueryValue } = useContext(SearchContext);
+    const [changedStats, setChangedStats] = useState({});
 
     const updateStatistic = (id, newValue) => {
         setStatistics(prevStatistics => {
+            const stat = prevStatistics.find(s => s.id === id);
+            const originalValue = stat ? stat.value : 0;
+
+            if (originalValue !== newValue) {
+                setChangedStats(prev => ({
+                    ...prev,
+                    [id]: newValue || 0
+                }));
+            } else {
+                setChangedStats(prev => {
+                    const updated = { ...prev };
+                    delete updated[id];
+                    return updated;
+                });
+            }
+
             return prevStatistics.map(stat =>
                 stat.id === id ? { ...stat, value: newValue || 0 } : stat
             );
         });
     };
 
-    const filteredStatistics = statistics.filter(achievement =>
-        achievement.id.toLowerCase().includes(statisticQueryValue.toLowerCase())
+    const filteredStatistics = useMemo(() =>
+        statistics.filter(statistic =>
+            statistic.id.toLowerCase().includes(statisticQueryValue.toLowerCase())
+        ),
+        [statistics, statisticQueryValue]
     );
 
     const itemData = { filteredStatistics, updateStatistic };
@@ -113,6 +133,8 @@ export default function StatisticsList({ statistics, setStatistics, steamNotRunn
                     <StatisticButtons
                         statistics={statistics}
                         setStatistics={setStatistics}
+                        changedStats={changedStats}
+                        setChangedStats={setChangedStats}
                     />
 
                     <List

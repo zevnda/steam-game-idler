@@ -1,11 +1,13 @@
-
 import { Modal, ModalContent, ModalBody, Button, useDisclosure, ModalFooter, ModalHeader } from '@heroui/react';
 
 import useStatisticButtons from '@/hooks/achievements/useStatisticButtons';
 
-export default function StatisticButtons({ statistics, setStatistics }) {
+export default function StatisticButtons({ statistics, setStatistics, changedStats, setChangedStats }) {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
-    const { handleUpdateAllStats, handleResetAll } = useStatisticButtons(statistics, setStatistics);
+    const { handleUpdateAllStats, handleResetAll } = useStatisticButtons(statistics, setStatistics, changedStats, setChangedStats);
+
+    const changedCount = Object.keys(changedStats).length;
+    const hasChanges = changedCount > 0;
 
     return (
         <div className='absolute top-0 right-0 flex gap-2'>
@@ -13,8 +15,9 @@ export default function StatisticButtons({ statistics, setStatistics }) {
                 size='sm'
                 className='font-semibold rounded-lg bg-dynamic text-button'
                 onPress={handleUpdateAllStats}
+                isDisabled={!hasChanges}
             >
-                Save Changes
+                Save Changes {hasChanges && `(${changedCount})`}
             </Button>
             <Button
                 size='sm'

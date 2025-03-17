@@ -1,7 +1,7 @@
 import { addToast, Button, Tooltip } from '@heroui/react';
 import { invoke } from '@tauri-apps/api/core';
 import Image from 'next/image';
-import { useContext, memo } from 'react';
+import { useContext, memo, useMemo } from 'react';
 import { FixedSizeList as List } from 'react-window';
 
 import AchievementButtons from '@/components/achievements/AchievementButtons';
@@ -106,8 +106,11 @@ export default function AchievementsList({ achievements, setAchievements, steamN
         });
     };
 
-    const filteredAchievements = achievements.filter(achievement =>
-        achievement.name.toLowerCase().includes(achievementQueryValue.toLowerCase())
+    const filteredAchievements = useMemo(() =>
+        achievements.filter(achievement =>
+            achievement.name.toLowerCase().includes(achievementQueryValue.toLowerCase())
+        ),
+        [achievements, achievementQueryValue]
     );
 
     const itemData = { appId, appName, filteredAchievements, updateAchievement };
