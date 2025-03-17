@@ -1,41 +1,44 @@
 import { Alert, Button, Tooltip } from '@heroui/react';
-import { useContext, useState, useEffect } from 'react';
+import { useContext } from 'react';
 import { SiSteam, SiSteamdb } from 'react-icons/si';
-import { TbArrowBack } from 'react-icons/tb';
+import { TbAlertHexagonFilled, TbArrowBack } from 'react-icons/tb';
 
+import { SearchContext } from '@/components/contexts/SearchContext';
 import { StateContext } from '@/components/contexts/StateContext';
+import { UserContext } from '@/components/contexts/UserContext';
 import ExtLink from '@/components/ui/ExtLink';
-import usePageHeader from '@/hooks/achievements/usePageHeader';
 
-export default function PageHeader() {
+export default function PageHeader({ protectedAchievements, protectedStatistics }) {
     const { appId, appName } = useContext(StateContext);
-    const { handleClick } = usePageHeader();
+    const { setAchievementQueryValue } = useContext(SearchContext);
+    const { setShowAchievements } = useContext(StateContext);
+    const { setAchievementsUnavailable, setStatisticsUnavailable } = useContext(UserContext);
 
-    const [protectedAchievements, setProtectedAchievements] = useState(false);
-
-    useEffect(() => {
-        const protectedAchievements = async () => {
-            const response = await fetch('/server-side-games.json');
-            const data = await response.json();
-            if (data.some(game => game.appid === appId.toString())) {
-                setProtectedAchievements(true);
-            }
-        };
-        protectedAchievements();
-    }, [appId]);
+    const handleClick = () => {
+        setShowAchievements(false);
+        setAchievementQueryValue('');
+        setAchievementsUnavailable(true);
+        setStatisticsUnavailable(true);
+    };
 
     return (
         <div className='relative flex justify-between items-center mb-4'>
-            {protectedAchievements && (
+            {(protectedAchievements || protectedStatistics) && (
                 <div className='absolute top-0 right-0'>
                     <Alert
-                        color='warning'
-                        title='This game has server-side achievements that can&apos;t be modified from here.'
+                        hideIcon
+                        title={
+                            <p>
+                                Some protected achievements or statistics have been disabled.
+                                <ExtLink className='text-link' href='https://partner.steamgames.com/doc/features/achievements#game_server_stats:~:text=Stats%20and%20achievements%20that%20are%20settable%20by%20game%20servers%20cannot%20be%20set%20by%20clients.'>
+                                    <span> Learn more</span>
+                                </ExtLink>
+                            </p>
+                        }
+                        startContent={<TbAlertHexagonFilled fontSize={22} className='text-content' />}
                         classNames={{
-                            base: ['h-10 py-1 flex justify-center items-center gap-0 rounded-lg'],
+                            base: ['h-10 py-1 flex justify-center items-center gap-0 rounded-lg bg-dynamic/50 text-content border border-border'],
                             title: ['text-xs'],
-                            iconWrapper: ['h-6 w-6'],
-                            alertIcon: ['h-5 w-5']
                         }}
                     />
                 </div>

@@ -1,100 +1,71 @@
 import { addToast } from '@heroui/react';
-import { useContext, useEffect, useState, useMemo } from 'react';
+import { invoke } from '@tauri-apps/api/core';
+import { useContext, useEffect } from 'react';
 
-import { SearchContext } from '@/components/contexts/SearchContext';
 import { StateContext } from '@/components/contexts/StateContext';
 import { UserContext } from '@/components/contexts/UserContext';
-import { fetchAchievementData, sortAchievements, filterAchievements } from '@/utils/achievements/achievementsHandler';
+import ErrorToast from '@/components/ui/ErrorToast';
+import { logEvent } from '@/utils/utils';
 
-export default function useAchievements() {
+export default function useAchievements(setIsLoading,
+    setAchievements,
+    setStatistics,
+    setProtectedAchievements,
+    setProtectedStatistics,
+    setSteamNotRunning
+) {
     const { appId } = useContext(StateContext);
-    const { achievementQueryValue } = useContext(SearchContext);
-    const { userSummary, achievementList, setAchievementList, setStatisticsList, setAchievementsUnavailable, setStatisticsUnavailable } = useContext(UserContext);
-    const [isLoading, setIsLoading] = useState(true);
-    const [isSorted, setIsSorted] = useState(false);
-    const [originalAchievementList, setOriginalAchievementList] = useState([]);
-    const [userGameStats, setUserGameStats] = useState({});
-    const [gameAchievementsPercentages, setGameAchievementsPercentages] = useState([]);
-    const [initialStatValues, setInitialStatValues] = useState({});
-    const [newStatValues, setNewStatValues] = useState({});
-
-    // Map user game achievements
-    const userGameAchievementsMap = new Map();
-    if (userGameStats?.achievements) {
-        userGameStats.achievements.forEach(item => {
-            userGameAchievementsMap.set(item.name, item.achieved);
-        });
-    }
-
-    // Map user game stats
-    const userGameStatsMap = new Map();
-    if (userGameStats?.stats) {
-        userGameStats.stats.forEach(item => {
-            userGameStatsMap.set(item.name, item.value);
-        });
-    }
-
-    // Map game achievements percentages
-    const percentageMap = useMemo(() => {
-        const map = new Map();
-        gameAchievementsPercentages.forEach(item => map.set(item.name, item.percent));
-        return map;
-    }, [gameAchievementsPercentages]);
+    const { setAchievementsUnavailable, setStatisticsUnavailable } = useContext(UserContext);
 
     useEffect(() => {
-        // Fetch achievement data
         const getAchievementData = async () => {
             try {
-                const data = await fetchAchievementData(userSummary.steamId, appId);
-                setGameAchievementsPercentages(data.gameAchievementsPercentages);
-                const percentageMap = new Map();
-                data.gameAchievementsPercentages.forEach(item => percentageMap.set(item.name, item.percent));
-                const sortedAchievements = sortAchievements(data.achievementList, percentageMap);
-                setAchievementList(sortedAchievements);
-                setOriginalAchievementList(sortedAchievements);
-                setStatisticsList(data.statisticsList);
-                setUserGameStats(data.userGameStats);
-                setAchievementsUnavailable(data.achievementsUnavailable);
-                setStatisticsUnavailable(data.statisticsUnavailable);
+                // Check if Steam is running
+                const steamRunning = await invoke('check_status');
+                if (!steamRunning) {
+                    setIsLoading(false);
+                    addToast({
+                        description: <ErrorToast
+                            message='Steam is not running'
+                            href='https://steamgameidler.vercel.app/faq#error-messages:~:text=Steam%20is%20not%20running'
+                        />,
+                        color: 'danger'
+                    });
+                    return setSteamNotRunning(true);
+                }
+
+                const response = await invoke('get_achievement_manager_data', { appId });
+
+                if (response?.achievement_data?.achievements) {
+                    const hasProtectedAchievements = response.achievement_data.achievements.some(
+                        achievement => achievement.protected_achievement === true
+                    );
+                    if (hasProtectedAchievements) setProtectedAchievements(true);
+
+                    setAchievements(response.achievement_data.achievements);
+                    setAchievementsUnavailable(false);
+                }
+
+                if (response?.achievement_data?.stats) {
+                    const hasProtectedStatistics = response.achievement_data.stats.some(
+                        achievement => achievement.protected_stat === true
+                    );
+                    if (hasProtectedStatistics) setProtectedStatistics(true);
+
+                    setStatistics(response.achievement_data.stats);
+                    setStatisticsUnavailable(false);
+                }
+
                 setIsLoading(false);
-                setIsSorted(true);
             } catch (error) {
-                addToast({ description: `Error in (getAchievementData): ${error?.message}`, color: 'danger' });
+                setIsLoading(false);
+                setAchievementsUnavailable(true);
+                setStatisticsUnavailable(true);
+                addToast({ description: 'Error fetching achievement data', color: 'danger' });
                 console.error('Error in (getAchievementData):', error);
+                logEvent(`Error in (getAchievementData): ${error}`);
             }
         };
         getAchievementData();
-    }, [userSummary.steamId, appId, setAchievementList, setAchievementsUnavailable, setStatisticsList, setStatisticsUnavailable]);
-
-    useEffect(() => {
-        // Sort achievements if not sorted
-        if (!isSorted && achievementList.length > 0) {
-            setAchievementList(sortAchievements(achievementList, percentageMap));
-            setIsSorted(true);
-        }
-    }, [isSorted, achievementList, percentageMap, setAchievementList]);
-
-    useEffect(() => {
-        // Filter achievements based on input value
-        if (achievementQueryValue.length > 0) {
-            setAchievementList(filterAchievements(originalAchievementList, achievementQueryValue));
-        } else {
-            setAchievementList(originalAchievementList);
-        }
-    }, [achievementQueryValue, originalAchievementList, setAchievementList]);
-
-    return {
-        isLoading,
-        isSorted,
-        setIsSorted,
-        userGameStats,
-        gameAchievementsPercentages,
-        initialStatValues,
-        setInitialStatValues,
-        newStatValues,
-        setNewStatValues,
-        userGameAchievementsMap,
-        userGameStatsMap,
-        percentageMap
-    };
+    }, [appId, setAchievements, setIsLoading, setProtectedAchievements, setProtectedStatistics, setStatistics, setSteamNotRunning, setAchievementsUnavailable, setStatisticsUnavailable]);
 }

@@ -188,13 +188,16 @@ export async function toggleAchievement(appId, achievementName, appName, type) {
         if (status.success) {
             addToast({ description: `${type} ${achievementName} for ${appName}`, color: 'success' });
             logEvent(`[Achievement Manager] ${type} ${achievementName} for ${appName} (${appId})`);
+            return true;
         } else {
             addToast({ description: `Failed to ${type.replace('ed', '').toLowerCase()} ${achievementName} for ${appName}`, color: 'danger' });
             logEvent(`[Error] [Achievement Manager] Failed to ${type.replace('ed', '').toLowerCase()} ${achievementName} for ${appName} (${appId})`);
+            return false;
         }
     } catch (error) {
         console.error('Error in toggleAchievement util: ', error);
         logEvent(`[Error] in (toggleAchievement) util: ${error}`);
+        return false;
     }
 }
 
@@ -237,15 +240,15 @@ export async function lockAllAchievements(appId, achievementsArr, appName) {
 }
 
 // Update statistics for a game
-export async function updateStats(appId, changedValues, appName) {
+export async function updateStats(appId, appName, valuesArr) {
     try {
         const response = await invoke('update_stats', {
             appId,
-            statsArr: JSON.stringify(changedValues)
+            statsArr: JSON.stringify(valuesArr)
         });
         const status = JSON.parse(response);
         if (status.success) {
-            logEvent(`[Statistics Manager] Updated ${changedValues.length} stats for ${appName} (${appId})`);
+            logEvent(`[Statistics Manager] Updated ${valuesArr.length} stats for ${appName} (${appId})`);
             return true;
         } else {
             logEvent(`[Error] [Statistics Manager] Failed to update stats for ${appName} (${appId})`);

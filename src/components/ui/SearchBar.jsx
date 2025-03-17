@@ -11,11 +11,34 @@ import useHeader from '@/hooks/ui/useHeader';
 
 export default function SearchBar() {
     const { showAchievements } = useContext(StateContext);
-    const { gameQueryValue, setGameQueryValue, achievementQueryValue, setAchievementQueryValue } = useContext(SearchContext);
+    const {
+        setIsQuery,
+        gameQueryValue,
+        setGameQueryValue,
+        achievementQueryValue,
+        setAchievementQueryValue,
+        statisticQueryValue,
+        setStatisticQueryValue
+    } = useContext(SearchContext);
     const { activePage, currentTab } = useContext(NavigationContext);
-    const { achievementsUnavailable } = useContext(UserContext);
+    const { achievementsUnavailable, statisticsUnavailable } = useContext(UserContext);
+    useHeader();
 
-    const { handleGameQueryChange, handleAchievementQueryChange, handleKeyDown } = useHeader(setGameQueryValue, setAchievementQueryValue);
+    const handleGameQueryChange = (e) => {
+        setGameQueryValue(e.target.value);
+    };
+
+    const handleAchievementQueryChange = (e) => {
+        setAchievementQueryValue(e.target.value);
+    };
+
+    const handleStatisticQueryChange = (e) => {
+        setStatisticQueryValue(e.target.value);
+    };
+
+    const handleKeyDown = () => {
+        setIsQuery(true);
+    };
 
     return (
         <div className='flex items-center flex-grow py-4 h-full' data-tauri-drag-region>
@@ -37,11 +60,11 @@ export default function SearchBar() {
                     onClear={() => setGameQueryValue('')}
                 />
             )}
-            {showAchievements && (
+            {(showAchievements && currentTab === 'achievements') && (
                 <Input
                     size='sm'
                     isClearable
-                    isDisabled={achievementsUnavailable || currentTab === 'statistics'}
+                    isDisabled={achievementsUnavailable}
                     placeholder='Search for an achievement'
                     startContent={<RiSearchLine />}
                     className='max-w-[300px]'
@@ -52,6 +75,23 @@ export default function SearchBar() {
                     value={achievementQueryValue}
                     onChange={handleAchievementQueryChange}
                     onClear={() => setAchievementQueryValue('')}
+                />
+            )}
+            {(showAchievements && currentTab === 'statistics') && (
+                <Input
+                    size='sm'
+                    isClearable
+                    isDisabled={statisticsUnavailable}
+                    placeholder='Search for a statistic'
+                    startContent={<RiSearchLine />}
+                    className='max-w-[300px]'
+                    classNames={{
+                        inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'],
+                        input: ['!text-content placeholder:text-altwhite/50']
+                    }}
+                    value={statisticQueryValue}
+                    onChange={handleStatisticQueryChange}
+                    onClear={() => setStatisticQueryValue('')}
                 />
             )}
         </div>

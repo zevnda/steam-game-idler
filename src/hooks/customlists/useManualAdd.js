@@ -48,7 +48,13 @@ export default function useManualAdd(listName, setList) {
 
     const handleChange = (e) => {
         try {
-            setInputValue(e.target?.value || 0);
+            // If input value starts with 0, remove it
+            // Happens when user copy-pastes the appid into the input
+            if (e.target?.value.startsWith('0')) {
+                setInputValue(e.target?.value.slice(1) || 0);
+            } else {
+                setInputValue(e.target?.value || 0);
+            }
         } catch (error) {
             addToast({ description: `Error in (handleChange): ${error?.message || error}`, color: 'danger' });
             console.error('Error in (handleChange):', error);

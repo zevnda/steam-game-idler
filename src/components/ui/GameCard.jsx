@@ -8,7 +8,7 @@ import CardMenu from '@/components/gameslist/CardMenu';
 import { handleIdle, viewAchievments, viewGameSettings, viewStorePage } from '@/utils/gameslist/gameCardHandler';
 
 export default function GameCard({ item, setSettingsModalOpen }) {
-    const { isDarkMode, setAppId, setAppName, showAchievements, setShowAchievements } = useContext(StateContext);
+    const { isDarkMode, setAppId, setAppName, setShowAchievements } = useContext(StateContext);
 
     const handleImageError = (event) => {
         event.target.src = '/fallback.jpg';
@@ -52,7 +52,7 @@ export default function GameCard({ item, setSettingsModalOpen }) {
                                 <TbAwardFilled className='text-offwhite opacity-0 group-hover:opacity-100 duration-200' fontSize={36} />
                             </div>
                         }
-                        onPress={() => viewAchievments(item, setAppId, setAppName, setShowAchievements, showAchievements)}
+                        onPress={() => viewAchievments(item, setAppId, setAppName, setShowAchievements)}
                     />
                 </div>
             </div>
@@ -61,7 +61,7 @@ export default function GameCard({ item, setSettingsModalOpen }) {
                 <CardMenu
                     item={item}
                     handleIdle={handleIdle}
-                    viewAchievments={(item) => viewAchievments(item, setAppId, setAppName, setShowAchievements, showAchievements)}
+                    viewAchievments={(item) => viewAchievments(item, setAppId, setAppName, setShowAchievements)}
                     viewStorePage={viewStorePage}
                     viewGameSettings={(item) => viewGameSettings(item, setAppId, setAppName, setSettingsModalOpen)}
                 />
