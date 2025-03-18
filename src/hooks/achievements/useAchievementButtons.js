@@ -1,21 +1,10 @@
 import { addToast } from '@heroui/react';
 import { invoke } from '@tauri-apps/api/core';
-import { useEffect } from 'react';
 
 import ErrorToast from '@/components/ui/ErrorToast';
 import { lockAllAchievements, logEvent, unlockAllAchievements } from '@/utils/utils';
 
 export default function useAchievementButtons(achievements, setAchievements) {
-    useEffect(() => {
-        if (achievements?.length) {
-            const sortedList = [...achievements].sort((a, b) =>
-                b.percent - a.percent
-            );
-            setAchievements(sortedList);
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
     // Handle change in sorting option
     const handleChange = (e, achievements, setAchievements) => {
         const selectedKey = Array.from(e)[0];

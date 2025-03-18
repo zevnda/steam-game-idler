@@ -1,7 +1,8 @@
-import { invoke } from '@tauri-apps/api/core';
-import { startIdle } from '@/utils/utils';
 import { addToast } from '@heroui/react';
+import { invoke } from '@tauri-apps/api/core';
+
 import ErrorToast from '@/components/ui/ErrorToast';
+import { startIdle } from '@/utils/utils';
 
 export const handleIdle = async (item) => {
     await startIdle(item.appid, item.name, false, true);

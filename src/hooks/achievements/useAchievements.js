@@ -56,6 +56,8 @@ export default function useAchievements(setIsLoading,
                     if (hasProtectedAchievements) setProtectedAchievements(true);
 
                     if (response.achievement_data.achievements.length > 0) {
+                        // Sort achievements by percent initially - prevents button state flickering
+                        response.achievement_data.achievements.sort((a, b) => b.percent - a.percent);
                         setAchievements(response.achievement_data.achievements);
                         setAchievementsUnavailable(false);
                     }
@@ -84,5 +86,5 @@ export default function useAchievements(setIsLoading,
             }
         };
         getAchievementData();
-    }, [appId, setAchievements, setIsLoading, setProtectedAchievements, setProtectedStatistics, setStatistics, setAchievementsUnavailable, setStatisticsUnavailable]);
+    }, [userSummary.steamId, appId, setAchievements, setIsLoading, setProtectedAchievements, setProtectedStatistics, setStatistics, setAchievementsUnavailable, setStatisticsUnavailable]);
 }

@@ -3,10 +3,10 @@ import { useContext } from 'react';
 import { SiSteam, SiSteamdb } from 'react-icons/si';
 import { TbAlertHexagonFilled, TbArrowBack } from 'react-icons/tb';
 
+import { NavigationContext } from '@/components/contexts/NavigationContext';
 import { SearchContext } from '@/components/contexts/SearchContext';
 import { StateContext } from '@/components/contexts/StateContext';
 import { UserContext } from '@/components/contexts/UserContext';
-import { NavigationContext } from '@/components/contexts/NavigationContext';
 import ExtLink from '@/components/ui/ExtLink';
 
 export default function PageHeader({ protectedAchievements, protectedStatistics }) {
