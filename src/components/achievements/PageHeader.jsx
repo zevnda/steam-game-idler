@@ -6,6 +6,7 @@ import { TbAlertHexagonFilled, TbArrowBack } from 'react-icons/tb';
 import { SearchContext } from '@/components/contexts/SearchContext';
 import { StateContext } from '@/components/contexts/StateContext';
 import { UserContext } from '@/components/contexts/UserContext';
+import { NavigationContext } from '@/components/contexts/NavigationContext';
 import ExtLink from '@/components/ui/ExtLink';
 
 export default function PageHeader({ protectedAchievements, protectedStatistics }) {
@@ -13,9 +14,11 @@ export default function PageHeader({ protectedAchievements, protectedStatistics 
     const { setAchievementQueryValue } = useContext(SearchContext);
     const { setShowAchievements } = useContext(StateContext);
     const { setAchievementsUnavailable, setStatisticsUnavailable } = useContext(UserContext);
+    const { setCurrentTab } = useContext(NavigationContext);
 
     const handleClick = () => {
         setShowAchievements(false);
+        setCurrentTab('achievements');
         setAchievementQueryValue('');
         setAchievementsUnavailable(true);
         setStatisticsUnavailable(true);
