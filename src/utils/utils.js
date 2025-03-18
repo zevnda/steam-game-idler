@@ -404,7 +404,7 @@ export const preserveKeysAndClearData = async () => {
         localStorage.clear();
         sessionStorage.clear();
 
-        await invoke('delete_all_games_list_files');
+        await invoke('delete_all_cache_files');
 
         Object.entries(preservedData).forEach(([key, value]) => {
             localStorage.setItem(key, value);
