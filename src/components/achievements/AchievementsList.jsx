@@ -94,7 +94,7 @@ const Row = memo(({ index, style, data }) => {
 
 Row.displayName = 'Row';
 
-export default function AchievementsList({ achievements, setAchievements, steamNotRunning, protectedAchievements }) {
+export default function AchievementsList({ achievements, setAchievements, protectedAchievements }) {
     const { achievementQueryValue } = useContext(SearchContext);
     const { appId, appName } = useContext(StateContext);
 
@@ -116,14 +116,6 @@ export default function AchievementsList({ achievements, setAchievements, steamN
     );
 
     const itemData = { appId, appName, filteredAchievements, updateAchievement };
-
-    if (steamNotRunning) return (
-        <div className='flex flex-col gap-2 justify-center items-center my-2 w-full'>
-            <p className='text-sm'>
-                The Steam client must be running in order to view game achievements
-            </p>
-        </div>
-    );
 
     return (
         <div className='flex flex-col gap-2 w-full max-h-[calc(100vh-195px)] overflow-y-auto scroll-smooth'>

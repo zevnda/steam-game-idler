@@ -15,8 +15,7 @@ export default function Achievements() {
     const [statistics, setStatistics] = useState([]);
     const [protectedAchievements, setProtectedAchievements] = useState(false);
     const [protectedStatistics, setProtectedStatistics] = useState(false);
-    const [steamNotRunning, setSteamNotRunning] = useState(false);
-    useAchievements(setIsLoading, setAchievements, setStatistics, setProtectedAchievements, setProtectedStatistics, setSteamNotRunning);
+    useAchievements(setIsLoading, setAchievements, setStatistics, setProtectedAchievements, setProtectedStatistics);
 
     if (isLoading) return (
         <div className='overflow-y-auto overflow-x-hidden bg-base border-t border-border w-screen'>
@@ -54,7 +53,6 @@ export default function Achievements() {
                                 <AchievementsList
                                     achievements={achievements}
                                     setAchievements={setAchievements}
-                                    steamNotRunning={steamNotRunning}
                                     protectedAchievements={protectedAchievements}
                                 />
                             </Tab>
@@ -62,7 +60,6 @@ export default function Achievements() {
                                 <StatisticsList
                                     statistics={statistics}
                                     setStatistics={setStatistics}
-                                    steamNotRunning={steamNotRunning}
                                 />
                             </Tab>
                         </Tabs>

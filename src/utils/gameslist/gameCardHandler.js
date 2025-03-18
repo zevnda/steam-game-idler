@@ -1,10 +1,25 @@
+import { invoke } from '@tauri-apps/api/core';
 import { startIdle } from '@/utils/utils';
+import { addToast } from '@heroui/react';
+import ErrorToast from '@/components/ui/ErrorToast';
 
 export const handleIdle = async (item) => {
     await startIdle(item.appid, item.name, false, true);
 };
 
-export const viewAchievments = (item, setAppId, setAppName, setShowAchievements) => {
+export const viewAchievments = async (item, setAppId, setAppName, setShowAchievements) => {
+    // Check if Steam is running
+    const steamRunning = await invoke('check_status');
+    if (!steamRunning) {
+        return addToast({
+            description: <ErrorToast
+                message='Steam is not running'
+                href='https://steamgameidler.vercel.app/faq#error-messages:~:text=Steam%20is%20not%20running'
+            />,
+            color: 'danger'
+        });
+    }
+
     setAppId(item.appid);
     setAppName(item.name);
     setShowAchievements(true);
