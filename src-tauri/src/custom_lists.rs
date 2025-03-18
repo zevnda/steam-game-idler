@@ -16,7 +16,9 @@ pub async fn get_custom_lists(
         .path()
         .app_data_dir()
         .map_err(|e| e.to_string())?
-        .join("cache");
+        .join("cache")
+        .join(steam_id.clone())
+        .join("custom_lists");
 
     // Create cache directory if it doesn't exist
     if !app_data_dir.exists() {
@@ -26,10 +28,10 @@ pub async fn get_custom_lists(
 
     // Determine file name based on list type
     let file_name = match list.as_str() {
-        "cardFarmingList" => format!("{}_card_farming_list.json", steam_id),
-        "achievementUnlockerList" => format!("{}_achievement_unlocker_list.json", steam_id),
-        "autoIdleList" => format!("{}_auto_idle_list.json", steam_id),
-        "favoritesList" => format!("{}_favorites_list.json", steam_id),
+        "cardFarmingList" => format!("card_farming.json"),
+        "achievementUnlockerList" => format!("achievement_unlocker.json"),
+        "autoIdleList" => format!("auto_idle.json"),
+        "favoritesList" => format!("favorites.json"),
         _ => return Err(format!("Unknown list type: {}", list)),
     };
 
@@ -72,14 +74,16 @@ pub async fn add_game_to_custom_list(
         .path()
         .app_data_dir()
         .map_err(|e| e.to_string())?
-        .join("cache");
+        .join("cache")
+        .join(steam_id.clone())
+        .join("custom_lists");
 
     // Determine file name based on list type
     let file_name = match list.as_str() {
-        "cardFarmingList" => format!("{}_card_farming_list.json", steam_id),
-        "achievementUnlockerList" => format!("{}_achievement_unlocker_list.json", steam_id),
-        "autoIdleList" => format!("{}_auto_idle_list.json", steam_id),
-        "favoritesList" => format!("{}_favorites_list.json", steam_id),
+        "cardFarmingList" => format!("card_farming.json"),
+        "achievementUnlockerList" => format!("achievement_unlocker.json"),
+        "autoIdleList" => format!("auto_idle.json"),
+        "favoritesList" => format!("favorites.json"),
         _ => return Err(format!("Unknown list type: {}", list)),
     };
 
@@ -151,14 +155,16 @@ pub async fn remove_game_from_custom_list(
         .path()
         .app_data_dir()
         .map_err(|e| e.to_string())?
-        .join("cache");
+        .join("cache")
+        .join(steam_id.clone())
+        .join("custom_lists");
 
     // Determine file name based on list type
     let file_name = match list.as_str() {
-        "cardFarmingList" => format!("{}_card_farming_list.json", steam_id),
-        "achievementUnlockerList" => format!("{}_achievement_unlocker_list.json", steam_id),
-        "autoIdleList" => format!("{}_auto_idle_list.json", steam_id),
-        "favoritesList" => format!("{}_favorites_list.json", steam_id),
+        "cardFarmingList" => format!("card_farming.json"),
+        "achievementUnlockerList" => format!("achievement_unlocker.json"),
+        "autoIdleList" => format!("auto_idle.json"),
+        "favoritesList" => format!("favorites.json"),
         _ => return Err(format!("Unknown list type: {}", list)),
     };
 
@@ -237,14 +243,16 @@ pub async fn update_custom_list(
         .path()
         .app_data_dir()
         .map_err(|e| e.to_string())?
-        .join("cache");
+        .join("cache")
+        .join(steam_id.clone())
+        .join("custom_lists");
 
     // Determine file name based on list type
     let file_name = match list.as_str() {
-        "cardFarmingList" => format!("{}_card_farming_list.json", steam_id),
-        "achievementUnlockerList" => format!("{}_achievement_unlocker_list.json", steam_id),
-        "autoIdleList" => format!("{}_auto_idle_list.json", steam_id),
-        "favoritesList" => format!("{}_favorites_list.json", steam_id),
+        "cardFarmingList" => format!("card_farming.json"),
+        "achievementUnlockerList" => format!("achievement_unlocker.json"),
+        "autoIdleList" => format!("auto_idle.json"),
+        "favoritesList" => format!("favorites.json"),
         _ => return Err(format!("Unknown list type: {}", list)),
     };
 

@@ -14,7 +14,7 @@ export default function useAchievements(setIsLoading,
     setProtectedStatistics,
 ) {
     const { appId } = useContext(StateContext);
-    const { setAchievementsUnavailable, setStatisticsUnavailable } = useContext(UserContext);
+    const { userSummary, setAchievementsUnavailable, setStatisticsUnavailable } = useContext(UserContext);
 
     useEffect(() => {
         const getAchievementData = async () => {
@@ -32,7 +32,7 @@ export default function useAchievements(setIsLoading,
                     });
                 }
 
-                const response = await invoke('get_achievement_manager_data', { appId });
+                const response = await invoke('get_achievement_manager_data', { steamId: userSummary.steamId, appId });
 
                 if (!response?.achievement_data && response.includes('Failed to initialize Steam API')) {
                     setIsLoading(false);

@@ -51,12 +51,13 @@ pub async fn get_games_list(
                 .path()
                 .app_data_dir()
                 .map_err(|e| e.to_string())?
-                .join("cache");
+                .join("cache")
+                .join(steam_id.clone());
             create_dir_all(&app_data_dir)
                 .map_err(|e| format!("Failed to create app directory: {}", e))?;
 
             // Save the filtered response to games_list.json
-            let file_name = format!("{}_games_list.json", steam_id);
+            let file_name = format!("games_list.json");
             let games_file_path = app_data_dir.join(file_name);
             let mut file = OpenOptions::new()
                 .write(true)
@@ -104,12 +105,13 @@ pub async fn get_recent_games(
                 .path()
                 .app_data_dir()
                 .map_err(|e| e.to_string())?
-                .join("cache");
+                .join("cache")
+                .join(steam_id.clone());
             create_dir_all(&app_data_dir)
                 .map_err(|e| format!("Failed to create app directory: {}", e))?;
 
             // Save the filtered response to recent_games.json
-            let file_name = format!("{}_recent_games.json", steam_id);
+            let file_name = format!("recent_games.json");
             let recent_games_file_path = app_data_dir.join(file_name);
             let mut file = OpenOptions::new()
                 .write(true)
@@ -174,11 +176,12 @@ pub fn get_games_list_cache(
         .path()
         .app_data_dir()
         .map_err(|e| e.to_string())?
-        .join("cache");
+        .join("cache")
+        .join(steam_id.clone());
 
     // Read games list file
     let games_list = {
-        let file_name = format!("{}_games_list.json", steam_id);
+        let file_name = format!("games_list.json");
         let games_file_path = app_data_dir.join(file_name);
         if games_file_path.exists() {
             let mut file = File::open(&games_file_path)
@@ -195,7 +198,7 @@ pub fn get_games_list_cache(
 
     // Read recent games file
     let recent_games = {
-        let file_name = format!("{}_recent_games.json", steam_id);
+        let file_name = format!("recent_games.json");
         let recent_games_file_path = app_data_dir.join(file_name);
         if recent_games_file_path.exists() {
             let mut file = File::open(&recent_games_file_path)
@@ -221,14 +224,15 @@ pub fn delete_user_games_list_files(
     steam_id: String,
     app_handle: tauri::AppHandle,
 ) -> Result<(), String> {
-    let games_list_file_name = format!("{}_games_list.json", steam_id);
-    let recent_games_file_name = format!("{}_recent_games.json", steam_id);
+    let games_list_file_name = format!("games_list.json");
+    let recent_games_file_name = format!("recent_games.json");
     // Get the application data directory
     let app_data_dir = app_handle
         .path()
         .app_data_dir()
         .map_err(|e| e.to_string())?
-        .join("cache");
+        .join("cache")
+        .join(steam_id.clone());
     // Delete the games list file
     let games_file_path = app_data_dir.join(games_list_file_name);
     if games_file_path.exists() {
@@ -246,7 +250,59 @@ pub fn delete_user_games_list_files(
 }
 
 #[tauri::command]
-pub fn delete_all_games_list_files(app_handle: tauri::AppHandle) -> Result<(), String> {
+pub async fn get_achievement_manager_data(
+    steam_id: String,
+    app_id: u32,
+    app_handle: tauri::AppHandle,
+) -> Result<Value, String> {
+    let exe_path = get_lib_path()?;
+    let output = std::process::Command::new(exe_path)
+        .args(&["get_achievement_data", &app_id.to_string()])
+        .creation_flags(0x08000000)
+        .output()
+        .expect("failed to execute unlocker");
+
+    let output_str = String::from_utf8_lossy(&output.stdout);
+
+    if output_str.contains("error") {
+        return Ok(output_str.to_string().into());
+    }
+
+    if output_str.contains("success") {
+        // Get the application data directory
+        let app_data_dir = app_handle
+            .path()
+            .app_data_dir()
+            .map_err(|e| e.to_string())?
+            .join("cache")
+            .join(steam_id.clone())
+            .join("achievement_data");
+
+        // Read achievemnets list file
+        let achievement_data = {
+            let file_name = format!("{}.json", app_id);
+            let achievement_file_path = app_data_dir.join(file_name);
+            if achievement_file_path.exists() {
+                let mut file = File::open(&achievement_file_path)
+                    .map_err(|e| format!("Failed to open games list file: {}", e))?;
+                let mut contents = String::new();
+                file.read_to_string(&mut contents)
+                    .map_err(|e| format!("Failed to read games list file: {}", e))?;
+                serde_json::from_str(&contents)
+                    .map_err(|e| format!("Failed to parse games list JSON: {}", e))?
+            } else {
+                json!({})
+            }
+        };
+
+        Ok(json!({"achievement_data": achievement_data}))
+    } else {
+        Ok(json!({"achievement_data": {}}))
+    }
+}
+
+#[tauri::command]
+pub fn delete_all_cache_files(app_handle: tauri::AppHandle) -> Result<(), String> {
     // Get the cache data directory
     let cache_data_dir = app_handle
         .path()
@@ -262,6 +318,7 @@ pub fn delete_all_games_list_files(app_handle: tauri::AppHandle) -> Result<(), S
         ),
     }
 
+    // TODO: Delete once all users are migrated to the new format
     // Get the achievement data directory
     let achievement_data_dir = app_handle
         .path()
@@ -327,54 +384,5 @@ pub async fn get_game_details(app_id: String) -> Result<Value, String> {
             Ok(body)
         }
         Err(err) => Err(err.to_string()),
-    }
-}
-
-#[tauri::command]
-pub async fn get_achievement_manager_data(
-    app_id: u32,
-    app_handle: tauri::AppHandle,
-) -> Result<Value, String> {
-    let exe_path = get_lib_path()?;
-    let output = std::process::Command::new(exe_path)
-        .args(&["get_achievement_data", &app_id.to_string()])
-        .creation_flags(0x08000000)
-        .output()
-        .expect("failed to execute unlocker");
-
-    let output_str = String::from_utf8_lossy(&output.stdout);
-
-    if output_str.contains("error") {
-        return Ok(output_str.to_string().into());
-    }
-
-    if output_str.contains("success") {
-        // Get the application data directory
-        let app_data_dir = app_handle
-            .path()
-            .app_data_dir()
-            .map_err(|e| e.to_string())?
-            .join("achievement_data");
-
-        // Read achievemnets list file
-        let achievement_data = {
-            let file_name = format!("{}_achievement_data.json", app_id);
-            let achievement_file_path = app_data_dir.join(file_name);
-            if achievement_file_path.exists() {
-                let mut file = File::open(&achievement_file_path)
-                    .map_err(|e| format!("Failed to open games list file: {}", e))?;
-                let mut contents = String::new();
-                file.read_to_string(&mut contents)
-                    .map_err(|e| format!("Failed to read games list file: {}", e))?;
-                serde_json::from_str(&contents)
-                    .map_err(|e| format!("Failed to parse games list JSON: {}", e))?
-            } else {
-                json!({})
-            }
-        };
-
-        Ok(json!({"achievement_data": achievement_data}))
-    } else {
-        Ok(json!({"achievement_data": {}}))
     }
 }

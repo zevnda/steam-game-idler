@@ -89,7 +89,7 @@ pub fn run() {
             get_recent_games,
             get_games_list_cache,
             delete_user_games_list_files,
-            delete_all_games_list_files,
+            delete_all_cache_files,
             get_custom_lists,
             add_game_to_custom_list,
             remove_game_from_custom_list,
