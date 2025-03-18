@@ -85,10 +85,16 @@ pub fn clear_log_file(app_handle: tauri::AppHandle) -> Result<(), String> {
 }
 
 #[tauri::command]
-pub fn open_file_explorer(path: String) -> Result<(), String> {
+pub fn open_file_explorer(path: String, app_handle: tauri::AppHandle) -> Result<(), String> {
+    // Get the application data directory
+    let app_data_dir = app_handle
+        .path()
+        .app_data_dir()
+        .map_err(|e| e.to_string())?;
+
     // Open the file explorer and select the specified path
     std::process::Command::new("explorer")
-        .args(["/select,", &path])
+        .args(["/select,", app_data_dir.join(path).to_str().unwrap()])
         .creation_flags(0x08000000)
         .spawn()
         .map_err(|e| e.to_string())?;

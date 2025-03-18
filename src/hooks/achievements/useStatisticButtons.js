@@ -3,10 +3,12 @@ import { invoke } from '@tauri-apps/api/core';
 import { useContext } from 'react';
 
 import { StateContext } from '@/components/contexts/StateContext';
+import { UserContext } from '@/components/contexts/UserContext';
 import ErrorToast from '@/components/ui/ErrorToast';
 import { updateStats } from '@/utils/utils';
 
-export default function useStatisticButtons(statistics, setStatistics, changedStats, setChangedStats) {
+export default function useStatisticButtons(statistics, setStatistics, changedStats, setChangedStats, setAchievements) {
+    const { userSummary } = useContext(UserContext);
     const { appId, appName } = useContext(StateContext);
 
     // Handle updating only changed statistics
@@ -34,17 +36,14 @@ export default function useStatisticButtons(statistics, setStatistics, changedSt
             });
         }
 
-        const success = await updateStats(appId, appName, valuesArr);
+        const success = await updateStats(userSummary.steamId, appId, appName, valuesArr, setAchievements);
 
         if (success) {
             addToast({ description: `Successfully updated ${changedKeys.length} stats for ${appName}`, color: 'success' });
             setChangedStats({});
         } else {
             addToast({
-                description: <ErrorToast
-                    message='Are you logged in to the correct account?'
-                    href='https://steamgameidler.vercel.app/faq#error-messages:~:text=Are%20you%20logged%20in%20to%20the%20correct%20account%3F'
-                />,
+                description: 'Unavailable to update statistics',
                 color: 'danger'
             });
         }
@@ -79,10 +78,7 @@ export default function useStatisticButtons(statistics, setStatistics, changedSt
             addToast({ description: `Successfully reset ${statistics.length} stats for ${appName}`, color: 'success' });
         } else {
             addToast({
-                description: <ErrorToast
-                    message='Are you logged in to the correct account?'
-                    href='https://steamgameidler.vercel.app/faq#error-messages:~:text=Are%20you%20logged%20in%20to%20the%20correct%20account%3F'
-                />,
+                description: 'Unavailable to reset statistics',
                 color: 'danger'
             });
         }

@@ -6,7 +6,6 @@ import { logEvent } from '@/utils/utils';
 
 export const useLogs = () => {
     const [logs, setLogs] = useState([]);
-    const [logPath, setLogPath] = useState('');
 
     useEffect(() => {
         const fetchLogs = async () => {
@@ -30,7 +29,6 @@ export const useLogs = () => {
                             // Still failed, set empty logs
                             console.error('Error in (fetchLogs) - unable to create file:', retryError);
                             setLogs([]);
-                            setLogPath(logFilePath);
                             return;
                         }
                     }
@@ -41,7 +39,6 @@ export const useLogs = () => {
                         return { timestamp, message };
                     });
                     setLogs(logEntries);
-                    setLogPath(logFilePath);
                 } catch (error) {
                     addToast({ description: `Error in (fetchLogs): ${error?.message || error}`, color: 'danger' });
                     console.error('Error in (fetchLogs):', error);
@@ -54,12 +51,12 @@ export const useLogs = () => {
         return () => clearInterval(intervalId);
     }, []);
 
-    return { logs, logPath };
+    return { logs };
 };
 
-export const handleOpenLogFile = async (logPath) => {
+export const handleOpenLogFile = async () => {
     try {
-        await invoke('open_file_explorer', { path: logPath });
+        await invoke('open_file_explorer', { path: 'log.txt' });
     } catch (error) {
         addToast({ description: `Error in (handleOpenLogFile): ${error?.message || error}`, color: 'danger' });
         console.error('Error in (handleOpenLogFile):', error);

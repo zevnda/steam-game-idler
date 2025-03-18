@@ -4,7 +4,7 @@ import { GeistMono } from 'geist/font/mono';
 import { useLogs, handleClearLogs, handleOpenLogFile } from '@/hooks/settings/useLogs';
 
 export default function Logs() {
-    const { logs, logPath } = useLogs();
+    const { logs } = useLogs();
 
     return (
         <div className='p-2'>
@@ -12,7 +12,7 @@ export default function Logs() {
                 <Button
                     size='sm'
                     className='font-semibold rounded-lg bg-dynamic text-button'
-                    onPress={() => handleOpenLogFile(logPath)}
+                    onPress={() => handleOpenLogFile()}
                 >
                     Open in File Explorer
                 </Button>

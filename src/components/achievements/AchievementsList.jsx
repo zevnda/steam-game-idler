@@ -7,11 +7,12 @@ import { FixedSizeList as List } from 'react-window';
 import AchievementButtons from '@/components/achievements/AchievementButtons';
 import { SearchContext } from '@/components/contexts/SearchContext';
 import { StateContext } from '@/components/contexts/StateContext';
+import { UserContext } from '@/components/contexts/UserContext';
 import ErrorToast from '@/components/ui/ErrorToast';
 import { toggleAchievement } from '@/utils/utils';
 
 const Row = memo(({ index, style, data }) => {
-    const { appId, appName, filteredAchievements, updateAchievement } = data;
+    const { userSummary, appId, appName, filteredAchievements, updateAchievement } = data;
     const item = filteredAchievements[index];
 
     if (!item) return null;
@@ -36,7 +37,13 @@ const Row = memo(({ index, style, data }) => {
                 color: 'danger'
             });
         }
-        const success = await toggleAchievement(appId, item.id, appName, achieved ? 'Locked' : 'Unlocked');
+        const success = await toggleAchievement(
+            userSummary.steamId,
+            appId,
+            item.id,
+            appName,
+            achieved ? 'Locked' : 'Unlocked'
+        );
         if (success) {
             updateAchievement(item.id, !achieved);
         }
@@ -95,6 +102,7 @@ const Row = memo(({ index, style, data }) => {
 Row.displayName = 'Row';
 
 export default function AchievementsList({ achievements, setAchievements, protectedAchievements }) {
+    const { userSummary } = useContext(UserContext);
     const { achievementQueryValue } = useContext(SearchContext);
     const { appId, appName } = useContext(StateContext);
 
@@ -115,7 +123,7 @@ export default function AchievementsList({ achievements, setAchievements, protec
         [achievements, achievementQueryValue]
     );
 
-    const itemData = { appId, appName, filteredAchievements, updateAchievement };
+    const itemData = { userSummary, appId, appName, filteredAchievements, updateAchievement };
 
     return (
         <div className='flex flex-col gap-2 w-full max-h-[calc(100vh-195px)] overflow-y-auto scroll-smooth'>

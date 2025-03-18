@@ -2,9 +2,9 @@ import { Modal, ModalContent, ModalBody, Button, useDisclosure, ModalFooter, Mod
 
 import useStatisticButtons from '@/hooks/achievements/useStatisticButtons';
 
-export default function StatisticButtons({ statistics, setStatistics, changedStats, setChangedStats }) {
+export default function StatisticButtons({ statistics, setStatistics, changedStats, setChangedStats, setAchievements }) {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
-    const { handleUpdateAllStats, handleResetAll } = useStatisticButtons(statistics, setStatistics, changedStats, setChangedStats);
+    const { handleUpdateAllStats, handleResetAll } = useStatisticButtons(statistics, setStatistics, changedStats, setChangedStats, setAchievements);
 
     const changedCount = Object.keys(changedStats).length;
     const hasChanges = changedCount > 0;
