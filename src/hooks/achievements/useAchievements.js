@@ -12,7 +12,6 @@ export default function useAchievements(setIsLoading,
     setStatistics,
     setProtectedAchievements,
     setProtectedStatistics,
-    setSteamNotRunning
 ) {
     const { appId } = useContext(StateContext);
     const { setAchievementsUnavailable, setStatisticsUnavailable } = useContext(UserContext);
@@ -31,7 +30,6 @@ export default function useAchievements(setIsLoading,
                         />,
                         color: 'danger'
                     });
-                    return setSteamNotRunning(true);
                 }
 
                 const response = await invoke('get_achievement_manager_data', { appId });
@@ -82,5 +80,5 @@ export default function useAchievements(setIsLoading,
             }
         };
         getAchievementData();
-    }, [appId, setAchievements, setIsLoading, setProtectedAchievements, setProtectedStatistics, setStatistics, setSteamNotRunning, setAchievementsUnavailable, setStatisticsUnavailable]);
+    }, [appId, setAchievements, setIsLoading, setProtectedAchievements, setProtectedStatistics, setStatistics, setAchievementsUnavailable, setStatisticsUnavailable]);
 }

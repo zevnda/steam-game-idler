@@ -81,7 +81,7 @@ const Row = memo(({ index, style, data }) => {
 
 Row.displayName = 'Row';
 
-export default function StatisticsList({ statistics, setStatistics, steamNotRunning }) {
+export default function StatisticsList({ statistics, setStatistics }) {
     const { statisticQueryValue } = useContext(SearchContext);
     const [changedStats, setChangedStats] = useState({});
 
@@ -117,14 +117,6 @@ export default function StatisticsList({ statistics, setStatistics, steamNotRunn
     );
 
     const itemData = { filteredStatistics, updateStatistic };
-
-    if (steamNotRunning) return (
-        <div className='flex flex-col gap-2 justify-center items-center my-2 w-full'>
-            <p className='text-sm'>
-                The Steam client must be running in order to view game statistics
-            </p>
-        </div>
-    );
 
     return (
         <div className='flex flex-col gap-2 w-full max-h-[calc(100vh-195px)] overflow-y-auto scroll-smooth'>
