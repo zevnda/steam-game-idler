@@ -55,8 +55,10 @@ export default function useAchievements(setIsLoading,
                     );
                     if (hasProtectedAchievements) setProtectedAchievements(true);
 
-                    setAchievements(response.achievement_data.achievements);
-                    setAchievementsUnavailable(false);
+                    if (response.achievement_data.achievements.length > 0) {
+                        setAchievements(response.achievement_data.achievements);
+                        setAchievementsUnavailable(false);
+                    }
                 }
 
                 if (response?.achievement_data?.stats) {
@@ -65,8 +67,10 @@ export default function useAchievements(setIsLoading,
                     );
                     if (hasProtectedStatistics) setProtectedStatistics(true);
 
-                    setStatistics(response.achievement_data.stats);
-                    setStatisticsUnavailable(false);
+                    if (response.achievement_data.stats.length > 0) {
+                        setStatistics(response.achievement_data.stats);
+                        setStatisticsUnavailable(false);
+                    }
                 }
 
                 setIsLoading(false);
