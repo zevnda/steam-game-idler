@@ -4,7 +4,7 @@ import { invoke } from '@tauri-apps/api/core';
 import ErrorToast from '@/components/ui/ErrorToast';
 import { lockAllAchievements, logEvent, unlockAllAchievements } from '@/utils/utils';
 
-export default function useAchievementButtons(achievements, setAchievements) {
+export default function useAchievementButtons(userSummary, setAchievements) {
     // Handle change in sorting option
     const handleChange = (e, achievements, setAchievements) => {
         const selectedKey = Array.from(e)[0];
@@ -61,7 +61,7 @@ export default function useAchievementButtons(achievements, setAchievements) {
                 });
             }
 
-            const success = await unlockAllAchievements(appId, achievements, appName);
+            const success = await unlockAllAchievements(userSummary.steamId, appId, achievements, appName);
 
             if (success) {
                 // Update all achievements at once in the UI
@@ -105,7 +105,7 @@ export default function useAchievementButtons(achievements, setAchievements) {
                 });
             }
 
-            const success = await lockAllAchievements(appId, achievements, appName);
+            const success = await lockAllAchievements(userSummary.steamId, appId, achievements, appName);
 
             if (success) {
                 // Update all achievements at once in the UI

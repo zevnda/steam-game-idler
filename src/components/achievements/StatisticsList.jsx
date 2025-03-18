@@ -81,7 +81,7 @@ const Row = memo(({ index, style, data }) => {
 
 Row.displayName = 'Row';
 
-export default function StatisticsList({ statistics, setStatistics }) {
+export default function StatisticsList({ statistics, setStatistics, setAchievements }) {
     const { statisticQueryValue } = useContext(SearchContext);
     const [changedStats, setChangedStats] = useState({});
 
@@ -127,6 +127,7 @@ export default function StatisticsList({ statistics, setStatistics }) {
                         setStatistics={setStatistics}
                         changedStats={changedStats}
                         setChangedStats={setChangedStats}
+                        setAchievements={setAchievements}
                     />
 
                     <List

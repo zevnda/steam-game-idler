@@ -3,6 +3,7 @@ import { useState, useContext } from 'react';
 import { TbSortDescending2 } from 'react-icons/tb';
 
 import { StateContext } from '@/components/contexts/StateContext';
+import { UserContext } from '@/components/contexts/UserContext';
 import useAchievementButtons from '@/hooks/achievements/useAchievementButtons';
 
 const sortOptions = [
@@ -15,9 +16,10 @@ const sortOptions = [
 ];
 
 export default function AchievementButtons({ achievements, setAchievements, protectedAchievements }) {
+    const { userSummary } = useContext(UserContext);
     const { appId, appName } = useContext(StateContext);
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
-    const { handleChange, handleUnlockAll, handleLockAll } = useAchievementButtons(achievements, setAchievements);
+    const { handleChange, handleUnlockAll, handleLockAll } = useAchievementButtons(userSummary, setAchievements);
     const [state, setState] = useState('');
 
     const unAchieved = achievements.filter(achievement => !achievement.achieved);
@@ -56,7 +58,6 @@ export default function AchievementButtons({ achievements, setAchievements, prot
                 radius='none'
                 startContent={<TbSortDescending2 fontSize={26} />}
                 items={sortOptions}
-                // isDisabled={achievementQueryValue.length > 0 || currentTab === 'statistics'}
                 className='w-[230px]'
                 classNames={{
                     listbox: ['p-0'],

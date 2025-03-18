@@ -253,52 +253,66 @@ pub fn delete_user_games_list_files(
 pub async fn get_achievement_manager_data(
     steam_id: String,
     app_id: u32,
+    refetch: Option<bool>,
     app_handle: tauri::AppHandle,
 ) -> Result<Value, String> {
-    let exe_path = get_lib_path()?;
-    let output = std::process::Command::new(exe_path)
-        .args(&["get_achievement_data", &app_id.to_string()])
-        .creation_flags(0x08000000)
-        .output()
-        .expect("failed to execute unlocker");
+    // Get the application data directory
+    let app_data_dir = app_handle
+        .path()
+        .app_data_dir()
+        .map_err(|e| e.to_string())?
+        .join("cache")
+        .join(steam_id.clone())
+        .join("achievement_data");
 
-    let output_str = String::from_utf8_lossy(&output.stdout);
+    let file_name = format!("{}.json", app_id);
+    let achievement_file_path = app_data_dir.join(&file_name);
 
-    if output_str.contains("error") {
-        return Ok(output_str.to_string().into());
-    }
+    // Check if file already exists and whether we should use it
+    let should_fetch_new = refetch.unwrap_or(false) || !achievement_file_path.exists();
 
-    if output_str.contains("success") {
-        // Get the application data directory
-        let app_data_dir = app_handle
-            .path()
-            .app_data_dir()
-            .map_err(|e| e.to_string())?
-            .join("cache")
-            .join(steam_id.clone())
-            .join("achievement_data");
+    let achievement_data = if should_fetch_new {
+        // Fetch new data
+        let exe_path = get_lib_path()?;
+        let output = std::process::Command::new(exe_path)
+            .args(&["get_achievement_data", &app_id.to_string()])
+            .creation_flags(0x08000000)
+            .output()
+            .map_err(|e| format!("Failed to execute unlocker: {}", e))?;
 
-        // Read achievemnets list file
-        let achievement_data = {
-            let file_name = format!("{}.json", app_id);
-            let achievement_file_path = app_data_dir.join(file_name);
+        let output_str = String::from_utf8_lossy(&output.stdout);
+
+        if output_str.contains("error") {
+            return Ok(output_str.to_string().into());
+        }
+
+        if output_str.contains("success") {
             if achievement_file_path.exists() {
                 let mut file = File::open(&achievement_file_path)
-                    .map_err(|e| format!("Failed to open games list file: {}", e))?;
+                    .map_err(|e| format!("Failed to open achievement file: {}", e))?;
                 let mut contents = String::new();
                 file.read_to_string(&mut contents)
-                    .map_err(|e| format!("Failed to read games list file: {}", e))?;
+                    .map_err(|e| format!("Failed to read achievement file: {}", e))?;
                 serde_json::from_str(&contents)
-                    .map_err(|e| format!("Failed to parse games list JSON: {}", e))?
+                    .map_err(|e| format!("Failed to parse achievement JSON: {}", e))?
             } else {
                 json!({})
             }
-        };
-
-        Ok(json!({"achievement_data": achievement_data}))
+        } else {
+            json!({})
+        }
     } else {
-        Ok(json!({"achievement_data": {}}))
-    }
+        // Read existing file
+        let mut file = File::open(&achievement_file_path)
+            .map_err(|e| format!("Failed to open achievement file: {}", e))?;
+        let mut contents = String::new();
+        file.read_to_string(&mut contents)
+            .map_err(|e| format!("Failed to read achievement file: {}", e))?;
+        serde_json::from_str(&contents)
+            .map_err(|e| format!("Failed to parse achievement JSON: {}", e))?
+    };
+
+    Ok(json!({"achievement_data": achievement_data}))
 }
 
 #[tauri::command]

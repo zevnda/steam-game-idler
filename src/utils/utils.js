@@ -178,12 +178,13 @@ export async function lockAchievement(appId, achievementName, appName) {
 }
 
 // Toggle the state of a single achievement for a game
-export async function toggleAchievement(appId, achievementName, appName, type) {
+export async function toggleAchievement(steamId, appId, achievementName, appName, type) {
     try {
         const response = await invoke('toggle_achievement', {
             appId,
             achievementId: achievementName
         });
+        await invoke('get_achievement_manager_data', { steamId, appId, refetch: true });
         const status = JSON.parse(response);
         if (status.success) {
             addToast({ description: `${type} ${achievementName} for ${appName}`, color: 'success' });
@@ -202,9 +203,10 @@ export async function toggleAchievement(appId, achievementName, appName, type) {
 }
 
 // Unlock all achievements for a game
-export async function unlockAllAchievements(appId, achievementsArr, appName) {
+export async function unlockAllAchievements(steamId, appId, achievementsArr, appName) {
     try {
         const response = await invoke('unlock_all_achievements', { appId });
+        await invoke('get_achievement_manager_data', { steamId, appId, refetch: true });
         const status = JSON.parse(response);
         if (status.success) {
             logEvent(`[Achievement Manager] Unlocked ${achievementsArr.length} achievements for ${appName} (${appId})`);
@@ -221,9 +223,10 @@ export async function unlockAllAchievements(appId, achievementsArr, appName) {
 }
 
 // Lock all achievements for a game
-export async function lockAllAchievements(appId, achievementsArr, appName) {
+export async function lockAllAchievements(steamId, appId, achievementsArr, appName) {
     try {
         const response = await invoke('lock_all_achievements', { appId });
+        await invoke('get_achievement_manager_data', { steamId, appId, refetch: true });
         const status = JSON.parse(response);
         if (status.success) {
             logEvent(`[Achievement Manager] Locked ${achievementsArr.length} achievements for ${appName} (${appId})`);
@@ -240,14 +243,15 @@ export async function lockAllAchievements(appId, achievementsArr, appName) {
 }
 
 // Update statistics for a game
-export async function updateStats(appId, appName, valuesArr) {
+export async function updateStats(steamId, appId, appName, valuesArr, setAchievements) {
     try {
         const response = await invoke('update_stats', {
             appId,
             statsArr: JSON.stringify(valuesArr)
         });
-        const status = JSON.parse(response);
-        if (status.success) {
+        const newData = await invoke('get_achievement_manager_data', { steamId, appId, refetch: true });
+        setAchievements(newData?.achievement_data?.achievements);
+        if (response.includes('success')) {
             logEvent(`[Statistics Manager] Updated ${valuesArr.length} stats for ${appName} (${appId})`);
             return true;
         } else {

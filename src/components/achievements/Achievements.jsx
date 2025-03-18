@@ -60,6 +60,7 @@ export default function Achievements() {
                                 <StatisticsList
                                     statistics={statistics}
                                     setStatistics={setStatistics}
+                                    setAchievements={setAchievements}
                                 />
                             </Tab>
                         </Tabs>

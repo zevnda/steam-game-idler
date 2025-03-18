@@ -1,19 +1,21 @@
-import { Alert, Button, Tooltip } from '@heroui/react';
+import { addToast, Alert, Button, Tooltip } from '@heroui/react';
+import { invoke } from '@tauri-apps/api/core';
 import { useContext } from 'react';
 import { SiSteam, SiSteamdb } from 'react-icons/si';
-import { TbAlertHexagonFilled, TbArrowBack } from 'react-icons/tb';
+import { TbAlertHexagonFilled, TbArrowBack, TbFoldersFilled } from 'react-icons/tb';
 
 import { NavigationContext } from '@/components/contexts/NavigationContext';
 import { SearchContext } from '@/components/contexts/SearchContext';
 import { StateContext } from '@/components/contexts/StateContext';
 import { UserContext } from '@/components/contexts/UserContext';
 import ExtLink from '@/components/ui/ExtLink';
+import { logEvent } from '@/utils/utils';
 
 export default function PageHeader({ protectedAchievements, protectedStatistics }) {
+    const { userSummary, setAchievementsUnavailable, setStatisticsUnavailable } = useContext(UserContext);
     const { appId, appName } = useContext(StateContext);
     const { setAchievementQueryValue } = useContext(SearchContext);
     const { setShowAchievements } = useContext(StateContext);
-    const { setAchievementsUnavailable, setStatisticsUnavailable } = useContext(UserContext);
     const { setCurrentTab } = useContext(NavigationContext);
 
     const handleClick = () => {
@@ -22,6 +24,17 @@ export default function PageHeader({ protectedAchievements, protectedStatistics 
         setAchievementQueryValue('');
         setAchievementsUnavailable(true);
         setStatisticsUnavailable(true);
+    };
+
+    const handleOpenAchievementFile = async () => {
+        try {
+            const filePath = `cache\\${userSummary.steamId}\\achievement_data\\${appId}.json`;
+            await invoke('open_file_explorer', { path: filePath });
+        } catch (error) {
+            addToast({ description: `Error in (handleOpenLogFile): ${error?.message || error}`, color: 'danger' });
+            console.error('Error in (handleOpenLogFile):', error);
+            logEvent(`[Error] in (handleOpenLogFile): ${error}`);
+        }
     };
 
     return (
@@ -74,6 +87,13 @@ export default function PageHeader({ protectedAchievements, protectedStatistics 
                                     <SiSteamdb fontSize={14} />
                                 </div>
                             </ExtLink>
+                        </div>
+                    </Tooltip>
+                    <Tooltip content='Open In File Explorer' placement='top' closeDelay={0} size='sm' className='bg-titlehover text-content'>
+                        <div>
+                            <div className='hover:bg-titlehover rounded-full p-1 cursor-pointer duration-200' onClick={handleOpenAchievementFile}>
+                                <TbFoldersFilled fontSize={18} />
+                            </div>
                         </div>
                     </Tooltip>
                 </div>
