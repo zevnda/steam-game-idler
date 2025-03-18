@@ -14,7 +14,7 @@ import { logEvent } from '@/utils/utils';
 export default function PageHeader({ protectedAchievements, protectedStatistics }) {
     const { userSummary, setAchievementsUnavailable, setStatisticsUnavailable } = useContext(UserContext);
     const { appId, appName } = useContext(StateContext);
-    const { setAchievementQueryValue } = useContext(SearchContext);
+    const { setAchievementQueryValue, setStatisticQueryValue } = useContext(SearchContext);
     const { setShowAchievements } = useContext(StateContext);
     const { setCurrentTab } = useContext(NavigationContext);
 
@@ -22,6 +22,7 @@ export default function PageHeader({ protectedAchievements, protectedStatistics 
         setShowAchievements(false);
         setCurrentTab('achievements');
         setAchievementQueryValue('');
+        setStatisticQueryValue('');
         setAchievementsUnavailable(true);
         setStatisticsUnavailable(true);
     };
