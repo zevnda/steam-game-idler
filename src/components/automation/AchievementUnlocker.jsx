@@ -4,7 +4,6 @@ import { useContext, useState, useEffect, useRef } from 'react';
 import { TbCheck } from 'react-icons/tb';
 
 import { StateContext } from '@/components/contexts/StateContext';
-import ExtLink from '@/components/ui/ExtLink';
 import { useAchievementUnlocker } from '@/hooks/automation/useAchievementUnlocker';
 import { stopIdle } from '@/utils/utils';
 
@@ -16,7 +15,7 @@ export default function AchievementUnlocker({ activePage }) {
     const abortControllerRef = useRef(new AbortController());
 
     const [imageSrc, setImageSrc] = useState('');
-    const [isPrivate, setIsPrivate] = useState(false);
+    const [isInitialDelay, setIsInitialDelay] = useState(true);
     const [currentGame, setCurrentGame] = useState({});
     const [isComplete, setIsComplete] = useState(false);
     const [achievementCount, setAchievementCount] = useState(0);
@@ -32,7 +31,8 @@ export default function AchievementUnlocker({ activePage }) {
     useEffect(() => {
         // eslint-disable-next-line react-hooks/rules-of-hooks
         useAchievementUnlocker(
-            setIsPrivate,
+            isInitialDelay,
+            setIsInitialDelay,
             setCurrentGame,
             setIsComplete,
             setAchievementCount,
@@ -48,7 +48,7 @@ export default function AchievementUnlocker({ activePage }) {
             isMountedRef.current = false;
             abortController.abort();
         };
-    }, []);
+    }, [isInitialDelay]);
 
     return (
         <div className={`${activePage !== 'customlists/achievement-unlocker' && 'hidden'} absolute top-12 left-14 bg-base z-50 rounded-tl-xl border-t border-l border-border`}>
@@ -70,22 +70,6 @@ export default function AchievementUnlocker({ activePage }) {
                         Achievement Unlocker
                     </p>
 
-                    {isPrivate && (
-                        <div className='flex flex-col items-center gap-1 mb-2'>
-                            <p className='text-lg font-semibold'>
-                                Uh-oh!
-                            </p>
-                            <p className='text-sm'>
-                                Your profile or game details are set to private
-                            </p>
-                            <p className='text-sm'>
-                                <ExtLink href='https://steamcommunity.com/id/undefined/edit/settings' className='text-link hover:text-linkhover'>
-                                    Update privacy settings
-                                </ExtLink>
-                            </p>
-                        </div>
-                    )}
-
                     {isWaitingForSchedule && (
                         <p className='text-sm text-yellow-400'>
                             Achievement unlocking paused due to being outside of the scheduled time and will resume again once inside the scheduled time
@@ -98,7 +82,13 @@ export default function AchievementUnlocker({ activePage }) {
                         </div>
                     )}
 
-                    {!isComplete && !isPrivate && !isWaitingForSchedule && (
+                    {isInitialDelay && (
+                        <p className='text-sm'>
+                            Starting in <span className='font-bold text-sm text-dynamic'>{countdownTimer}</span>
+                        </p>
+                    )}
+
+                    {!isInitialDelay && !isComplete && !isWaitingForSchedule && (
                         <>
                             <p>
                                 Unlocking <span className='font-bold text-dynamic'>{achievementCount}</span> achievement(s) for <span className='font-bold text-dynamic'>{currentGame.name}</span>

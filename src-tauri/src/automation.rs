@@ -2,66 +2,13 @@ use regex::Regex;
 use reqwest::Client;
 use scraper::{Html, Selector};
 use serde::{Deserialize, Serialize};
-use serde_json::{json, Value};
-use tokio::try_join;
+use serde_json::Value;
 
 #[derive(Debug, Serialize, Deserialize)]
 struct Game {
     name: String,
     id: String,
     remaining: u32,
-}
-
-#[tauri::command]
-pub async fn get_achievement_data(
-    steam_id: String,
-    app_id: String,
-    api_key: Option<String>,
-) -> Result<Value, String> {
-    // Get the API key from env or use the provided one
-    let key = api_key.unwrap_or_else(|| std::env::var("KEY").unwrap());
-    let url_one = format!(
-        "https://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/?l=english&key={}&appid={}",
-        key, app_id
-    );
-    let url_two = format!(
-        "https://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v2/?key={}&appid={}&steamid={}",
-        key, app_id, steam_id
-    );
-    let url_three = format!(
-        "https://api.steampowered.com/ISteamUserStats/GetGlobalAchievementPercentagesForApp/v2/?gameid={}",
-        app_id
-    );
-    let url_four = format!(
-        "https://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v1/?l=english&key={}&appid={}&steamid={}",
-        key, app_id, steam_id
-    );
-
-    let client = Client::new();
-
-    let (res_one, res_two, res_three, res_four) = try_join!(
-        client.get(&url_one).send(),
-        client.get(&url_two).send(),
-        client.get(&url_three).send(),
-        client.get(&url_four).send()
-    )
-    .map_err(|err| err.to_string())?;
-
-    // Parse the responses
-    let body_one: Value = res_one.json().await.map_err(|e| e.to_string())?;
-    let body_two: Value = res_two.json().await.map_err(|e| e.to_string())?;
-    let body_three: Value = res_three.json().await.map_err(|e| e.to_string())?;
-    let body_four: Value = res_four.json().await.map_err(|e| e.to_string())?;
-
-    // Combine the responses into a single JSON object
-    let combined_response = json!({
-        "schema": body_one,
-        "userStats": body_two,
-        "percentages": body_three,
-        "userAchievements": body_four,
-    });
-
-    Ok(combined_response)
 }
 
 #[tauri::command]
