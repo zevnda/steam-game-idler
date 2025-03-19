@@ -1,5 +1,12 @@
 [
     {
+        "id": "17",
+        "title": "Account Mismatch Error",
+        "message": "The Steam Client Beta Participation feature is causing this error. Click here to see how to fix it",
+        "url": "https://github.com/zevnda/steam-game-idler/discussions/132",
+        "timestamp": "1742406742"
+    },
+    {
         "id": "16",
         "title": "Feedback Poll - Game Settings",
         "message": "Click to view the feedback poll and cast your vote",
@@ -61,12 +68,5 @@
         "message": "New beta version available",
         "url": "https://github.com/zevnda/steam-game-idler/releases/tag/1.7.0-beta.3",
         "timestamp": "1737917746"
-    },
-    {
-        "id": "7",
-        "title": "Beta v1.7.0-2",
-        "message": "New beta version available",
-        "url": "https://github.com/zevnda/steam-game-idler/releases/tag/1.7.0-beta.2",
-        "timestamp": "1737916038"
     }
 ]
