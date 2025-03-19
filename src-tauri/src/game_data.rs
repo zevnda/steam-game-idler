@@ -250,7 +250,7 @@ pub fn delete_user_games_list_files(
 }
 
 #[tauri::command]
-pub async fn get_achievement_manager_data(
+pub async fn get_achievement_data(
     steam_id: String,
     app_id: u32,
     refetch: Option<bool>,

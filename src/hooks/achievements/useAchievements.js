@@ -32,7 +32,7 @@ export default function useAchievements(setIsLoading,
                     });
                 }
 
-                const response = await invoke('get_achievement_manager_data', { steamId: userSummary.steamId, appId });
+                const response = await invoke('get_achievement_data', { steamId: userSummary.steamId, appId });
 
                 if (!response?.achievement_data && response.includes('Failed to initialize Steam API')) {
                     setIsLoading(false);
@@ -45,7 +45,7 @@ export default function useAchievements(setIsLoading,
                         />,
                         color: 'danger'
                     });
-                    logEvent(`Error in (getAchievementData): ${response.error}`);
+                    logEvent(`Error in (getAchievementData): ${response}`);
                     return;
                 }
 

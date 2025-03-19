@@ -1,9 +1,12 @@
+import { addToast } from '@heroui/react';
 import { invoke } from '@tauri-apps/api/core';
 
+import ErrorToast from '@/components/ui/ErrorToast';
 import { formatTime, getRandomDelay, isWithinSchedule, logEvent, startIdle, stopIdle, unlockAchievement } from '@/utils/utils';
 
 export const useAchievementUnlocker = async (
-    setIsPrivate,
+    isInitialDelay,
+    setIsInitialDelay,
     setCurrentGame,
     setIsComplete,
     setAchievementCount,
@@ -24,6 +27,13 @@ export const useAchievementUnlocker = async (
                 list: 'achievementUnlockerList'
             });
 
+            // Delay for 10 seconds before starting
+            if (isInitialDelay) {
+                startCountdown(10000 / 60000, setCountdownTimer);
+                await delay(10000, isMountedRef, abortControllerRef);
+                setIsInitialDelay(false);
+            }
+
             // Check if there are no games left to unlock achievements for
             if (achievementUnlockerList.list_data.length === 0) {
                 logEvent('[Achievement Unlocker] No games left - stopping');
@@ -34,7 +44,7 @@ export const useAchievementUnlocker = async (
 
             // Fetch achievements for the current game
             const achievementUnlockerGame = achievementUnlockerList.list_data[0];
-            const { achievements, game, error } = await fetchAchievements(achievementUnlockerGame, setIsPrivate, setAchievementCount);
+            const { achievements, game, error } = await fetchAchievements(achievementUnlockerGame, setAchievementCount);
 
             currentGame = game;
             setCurrentGame(game);
@@ -66,54 +76,49 @@ export const useAchievementUnlocker = async (
 };
 
 // Fetch achievements for the current game
-const fetchAchievements = async (game, setIsPrivate, setAchievementCount) => {
+const fetchAchievements = async (game, setAchievementCount) => {
     const userSummary = JSON.parse(localStorage.getItem('userSummary')) || {};
     const { hidden } = JSON.parse(localStorage.getItem('settings'))?.achievementUnlocker || {};
     const maxAchievementUnlocks = getMaxAchievementUnlocks(game.appid);
 
     try {
-        const apiKey = localStorage.getItem('apiKey');
-        const res = await invoke('get_achievement_data', { steamId: userSummary.steamId, appId: game.appid.toString(), apiKey });
+        const response = await invoke('get_achievement_data', { steamId: userSummary.steamId, appId: game.appid, refetch: true });
 
-        const userAchievements = res?.userAchievements?.playerstats;
-        const gameAchievements = res?.percentages?.achievementpercentages?.achievements;
-        const gameSchema = res?.schema?.game;
+        const rawAchievements = response?.achievement_data?.achievements;
 
-        // Handle private games and games with no achievements
-        if (userAchievements.error === 'Profile is not public') {
-            setIsPrivate(true);
-            return { achievements: [], game, error: true };
-        }
-
-        if (userAchievements.error === 'Requested app has no stats') {
+        if (!response?.achievement_data && response.includes('Failed to initialize Steam API')) {
+            addToast({
+                description: <ErrorToast
+                    message='Account mismatch between Steam and SGI'
+                    href='https://steamgameidler.vercel.app/faq#error-messages:~:text=Account%20mismatch%20between%20Steam%20and%20SGI'
+                />,
+                color: 'danger'
+            });
+            handleError('fetchAchievements', 'Account mismatch between Steam and SGI');
             return { achievements: [], game };
         }
 
-        if (!userAchievements || !userAchievements.achievements || userAchievements.achievements === 0) {
+        if (!rawAchievements) {
             return { achievements: [], game };
         }
 
-        // Handle games with server-side achievements
-        const response = await fetch('/server-side-games.json');
-        const data = await response.json();
-        if (data.some(list => list.appid === game.appid.toString())) {
-            logEvent(`[Error] [Achievement Unlocker] ${game.name} (${game.appid}) contains server-side achievements that can't be unlocked`);
+        // Handle games with protected achievements
+        if (rawAchievements.some(achievement => achievement.protected_achievement === true)) {
+            logEvent(`[Error] [Achievement Unlocker] ${game.name} (${game.appid}) contains protected achievements`);
             return { achievements: [], game };
         }
 
-        // Filter achievements
-        const achievements = userAchievements.achievements
+        // Filter out hidden achievements
+        const achievements = rawAchievements
             .filter(achievement => {
-                const schemaAchievement = gameSchema.availableGameStats.achievements.find(a => a.name === achievement.apiname);
-                return !achievement.achieved && (!hidden || schemaAchievement.hidden === 0);
+                return !achievement.achieved && (!hidden || achievement.hidden === false);
             })
             .map(achievement => {
-                const percentageData = gameAchievements.find(a => a.name === achievement.apiname);
                 return {
                     appId: game.appid,
-                    name: achievement.apiname,
-                    gameName: userAchievements.gameName,
-                    percentage: percentageData ? percentageData.percent : null
+                    id: achievement.id,
+                    gameName: game.name,
+                    percentage: achievement.percent || 0
                 };
             })
             .sort((a, b) => b.percentage - a.percentage);
@@ -136,17 +141,13 @@ const unlockAchievements = async (
     abortControllerRef
 ) => {
     try {
+        const userSummary = JSON.parse(localStorage.getItem('userSummary')) || {};
         const settings = JSON.parse(localStorage.getItem('settings'))?.achievementUnlocker || {};
         const { hidden, interval, idle, schedule, scheduleFrom, scheduleTo } = settings;
         let isGameIdling = false;
 
         let achievementsRemaining = achievements.length;
         const maxAchievementUnlocks = getMaxAchievementUnlocks(game.appid);
-
-        // Delay before unlocking the first achievement
-        const initialDelay = 10000;
-        startCountdown(initialDelay / 60000, setCountdownTimer);
-        await delay(initialDelay, isMountedRef, abortControllerRef);
 
         for (const achievement of achievements) {
             if (isMountedRef.current) {
@@ -158,7 +159,7 @@ const unlockAchievements = async (
                     }
                     await waitUntilInSchedule(scheduleFrom, scheduleTo, isMountedRef, setIsWaitingForSchedule, abortControllerRef);
                 } else if (!isGameIdling && idle) {
-                    await startIdle(achievements[0].appId, achievements[0].gameName, false, false);
+                    await startIdle(game.appid, game.name, false, false);
                     isGameIdling = true;
                 }
 
@@ -172,16 +173,16 @@ const unlockAchievements = async (
                 }
 
                 // Unlock the achievement
-                await unlockAchievement(achievement.appId, achievement.name, achievement.gameName);
+                await unlockAchievement(userSummary.steamId, game.appid, achievement.id, game.name);
                 achievementsRemaining--;
-                logEvent(`[Achievement Unlocker] Unlocked ${achievement.name} for ${achievement.gameName}`);
+                logEvent(`[Achievement Unlocker] Unlocked ${achievement.name} for ${game.name}`);
                 setAchievementCount(prevCount => Math.max(prevCount - 1, 0));
 
                 // Stop idling and remove game from list if max achievement unlocks is reached
                 if (achievementsRemaining === 0 || (maxAchievementUnlocks && achievementsRemaining <= achievements.length - maxAchievementUnlocks)) {
                     await stopIdle(game.appid, game.name);
                     removeGameFromUnlockerList(game.appid);
-                    logEvent(`[Achievement Unlocker - maxAchievementUnlocks] Unlocked ${achievements.length - maxAchievementUnlocks}/${achievements.length} achievements for ${game.name} - removed`);
+                    logEvent(`[Achievement Unlocker] Unlocked ${achievements.length - maxAchievementUnlocks}/${achievements.length} achievements for ${game.name} - removed`);
                     break;
                 }
 
