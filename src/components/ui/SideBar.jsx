@@ -1,7 +1,7 @@
 import { Modal, ModalContent, ModalBody, Button, ModalFooter, ModalHeader } from '@heroui/react';
 import { useContext } from 'react';
 import { FiLogOut } from 'react-icons/fi';
-import { TbAward, TbCards, TbDeviceGamepad2, TbGift, TbHeart, TbHourglassLow, TbSettings } from 'react-icons/tb';
+import { TbAward, TbCards, TbDeviceGamepad2, TbGift, TbHeart, TbHourglassLow, TbPlayerPlay, TbSettings } from 'react-icons/tb';
 
 import { NavigationContext } from '@/components/contexts/NavigationContext';
 import { StateContext } from '@/components/contexts/StateContext';
@@ -23,6 +23,15 @@ export default function SideBar() {
                             onClick={() => setActivePage('games')}
                         >
                             <TbDeviceGamepad2 fontSize={22} />
+                        </div>
+                    </div>
+
+                    <div className='flex justify-center items-center w-14'>
+                        <div
+                            className={`p-2 rounded-full duration-200 cursor-pointer active:scale-90 ${activePage === 'idling' ? 'bg-dynamic/30 text-dynamic' : 'hover:bg-titlehover'}`}
+                            onClick={() => setActivePage('idling')}
+                        >
+                            <TbPlayerPlay fontSize={22} />
                         </div>
                     </div>
 
