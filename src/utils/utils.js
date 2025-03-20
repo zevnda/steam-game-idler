@@ -24,7 +24,7 @@ export async function startIdle(appId, appName, quiet = false, manual = true) {
             // Make sure the idler is not already running
             const notRunningIds = await invoke('check_process_by_game_id', { ids: [appId.toString()] });
             if (!notRunningIds.includes(appId.toString())) {
-                return addToast({ description: `${appName} (${appId}) is already being idled`, color: 'info' });
+                return addToast({ description: `${appName} (${appId}) is already being idled`, color: 'warning' });
             }
 
             const response = await invoke('start_idle', {

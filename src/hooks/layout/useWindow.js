@@ -70,11 +70,32 @@ export default function useWindow() {
             try {
                 const response = await invoke('get_running_processes');
                 const parsed = JSON.parse(response);
-                setIdleGamesList(parsed);
+
+                // Only update state if the list has actually changed
+                setIdleGamesList(prevList => {
+                    // Compare previous and current processes
+                    if (prevList.length !== parsed.length) {
+                        return parsed;
+                    }
+
+                    // Create maps for quick lookup using appid as key
+                    const prevMap = new Map(prevList.map(item => [item.appid, item]));
+                    const newMap = new Map(parsed.map(item => [item.appid, item]));
+
+                    // Check if any items were added or removed
+                    if (prevList.some(item => !newMap.has(item.appid)) ||
+                        parsed.some(item => !prevMap.has(item.appid))) {
+                        return parsed;
+                    }
+
+                    // No change, keep previous reference to prevent re-renders
+                    return prevList;
+                });
             } catch (error) {
                 console.error('Error fetching running processes:', error);
             }
         };
+
         fetchRunningProcesses();
         const intervalId = setInterval(fetchRunningProcesses, 1000);
         return () => {
