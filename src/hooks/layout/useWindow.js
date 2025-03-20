@@ -50,8 +50,11 @@ export default function useWindow() {
                 logEvent(`Error in (checkForUpdates): ${error}`);
             }
         };
-
         checkForUpdates();
+        const intervalId = setInterval(checkForUpdates, 5000 * 60);
+        return () => {
+            clearInterval(intervalId);
+        };
     }, [setUpdateAvailable]);
 
     useEffect(() => {
