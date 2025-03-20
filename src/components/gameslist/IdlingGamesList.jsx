@@ -12,8 +12,7 @@ export default function IdlingGamesList() {
 
     const handleStopIdleAll = async () => {
         try {
-            const pids = idleGamesList.map((item) => item.pid);
-            const response = await invoke('kill_all_process_by_pid', { pids });
+            const response = await invoke('kill_all_steamutil_processes');
             if (response.includes('success')) {
                 setIdleGamesList([]);
             } else {
@@ -44,18 +43,20 @@ export default function IdlingGamesList() {
                                 </p>
                             </div>
                         </div>
-                        <div>
-                            <Button
-                                size='sm'
-                                color='danger'
-                                isDisabled={idleGamesList?.length === 0}
-                                className='rounded-full font-semibold'
-                                startContent={<TbPlayerStopFilled fontSize={20} />}
-                                onPress={handleStopIdleAll}
-                            >
-                                Stop All
-                            </Button>
-                        </div>
+                        {idleGamesList?.length > 0 && (
+                            <div>
+                                <Button
+                                    size='sm'
+                                    color='danger'
+                                    isDisabled={idleGamesList?.length === 0}
+                                    className='rounded-full font-semibold'
+                                    startContent={<TbPlayerStopFilled fontSize={20} />}
+                                    onPress={handleStopIdleAll}
+                                >
+                                    Stop All
+                                </Button>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

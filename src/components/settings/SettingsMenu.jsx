@@ -1,3 +1,4 @@
+import { invoke } from '@tauri-apps/api/core';
 import { addToast, Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@heroui/react';
 import { relaunch } from '@tauri-apps/plugin-process';
 import { check } from '@tauri-apps/plugin-updater';
@@ -21,6 +22,7 @@ export default function SettingsMenu() {
                 if (latest?.major) {
                     await preserveKeysAndClearData();
                 }
+                await invoke('kill_all_steamutil_processes');
                 await relaunch();
             } else {
                 addToast({ description: 'No updates available', color: 'primary' });

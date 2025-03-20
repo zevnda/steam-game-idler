@@ -15,10 +15,6 @@ use user_data::*;
 use utils::*;
 
 use std::env;
-use std::sync::atomic::{AtomicBool, Ordering};
-use std::sync::{mpsc, Arc, Mutex};
-use std::thread;
-use std::time::Duration;
 use tauri::menu::{Menu, MenuItem};
 use tauri::tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent};
 use tauri::{Listener, Manager};
@@ -29,8 +25,6 @@ use tauri_plugin_window_state::StateFlags;
 // TODO: Delete once all users are migrated to the new format
 use std::fs::remove_dir_all;
 
-static SHUTTING_DOWN: AtomicBool = AtomicBool::new(false);
-
 pub fn run() {
     // Load environment variables based on the build configuration
     if cfg!(debug_assertions) {
@@ -40,9 +34,6 @@ pub fn run() {
         let result = dotenv::from_read(prod_env.as_bytes()).unwrap();
         result.load();
     }
-
-    // Create a channel for communication between threads
-    let (tx, rx) = mpsc::channel();
 
     tauri::Builder::default()
         .plugin(tauri_plugin_updater::Builder::new().build())
@@ -66,7 +57,7 @@ pub fn run() {
             MacosLauncher::LaunchAgent,
             None,
         ))
-        .setup(move |app| setup_app(app, tx.clone()))
+        .setup(move |app| setup_app(app))
         .invoke_handler(tauri::generate_handler![
             check_status,
             get_users,
@@ -105,26 +96,25 @@ pub fn run() {
             check_process_by_game_id,
             get_running_processes,
             kill_process_by_pid,
-            kill_all_process_by_pid
+            kill_all_steamutil_processes
         ])
         .build(tauri::generate_context!())
         .expect("Error while building tauri application")
         .run(move |_, event| match event {
             tauri::RunEvent::Exit => {
-                SHUTTING_DOWN.store(true, Ordering::SeqCst);
-                rx.recv().unwrap();
-                thread::sleep(Duration::from_secs(2));
+                tauri::async_runtime::block_on(async {
+                    let _ = kill_all_steamutil_processes().await;
+                });
             }
             _ => {}
         });
 }
 
-fn setup_app(app: &mut tauri::App, tx: mpsc::Sender<()>) -> Result<(), Box<dyn std::error::Error>> {
+fn setup_app(app: &mut tauri::App) -> Result<(), Box<dyn std::error::Error>> {
     let app_handle = app.handle();
     setup_window(&app_handle)?;
     migrate_old_data(&app_handle)?;
     setup_tray_icon(app)?;
-    setup_process_monitor(tx, SPAWNED_PROCESSES.clone());
 
     Ok(())
 }
@@ -230,16 +220,4 @@ async fn check_for_updates(app_handle: tauri::AppHandle) -> tauri_plugin_updater
     }
 
     Ok(())
-}
-
-fn setup_process_monitor(tx: mpsc::Sender<()>, spawned_processes: Arc<Mutex<Vec<ProcessInfo>>>) {
-    // Spawn a thread to monitor the shutdown flag
-    std::thread::spawn(move || loop {
-        if SHUTTING_DOWN.load(Ordering::SeqCst) {
-            kill_processes(&spawned_processes);
-            tx.send(()).unwrap();
-            break;
-        }
-        thread::sleep(Duration::from_millis(100));
-    });
 }
