@@ -255,6 +255,107 @@ pub async fn reset_all_stats(app_id: u32) -> Result<String, String> {
     Ok(output_str.to_string())
 }
 
+#[tauri::command]
+// Get all running processes
+pub fn get_running_processes() -> Result<String, String> {
+    let output = std::process::Command::new("tasklist")
+        .args(&[
+            "/V",
+            "/FO",
+            "CSV",
+            "/NH",
+            "/FI",
+            "IMAGENAME eq SteamUtility.exe",
+        ])
+        .creation_flags(0x08000000)
+        .output()
+        .map_err(|e| e.to_string())?;
+
+    let output_str = String::from_utf8(output.stdout).map_err(|e| e.to_string())?;
+
+    let mut processes = Vec::new();
+
+    for line in output_str.lines() {
+        if line.is_empty() {
+            continue;
+        }
+
+        let mut fields = Vec::new();
+        let mut current_field = String::new();
+        let mut in_quotes = false;
+
+        for c in line.chars() {
+            match c {
+                '"' => in_quotes = !in_quotes,
+                ',' if !in_quotes => {
+                    fields.push(current_field.clone());
+                    current_field.clear();
+                }
+                _ => current_field.push(c),
+            }
+        }
+
+        if !current_field.is_empty() {
+            fields.push(current_field);
+        }
+
+        if fields.len() < 9 {
+            continue;
+        }
+
+        let pid_str = fields[1].trim_matches('"');
+
+        let window_title = fields[fields.len() - 1].trim_matches('"');
+
+        let (game_name, app_id) = if let Some(start) = window_title.find('[') {
+            if let Some(end) = window_title[start..].find(']') {
+                let app_id_str = &window_title[start + 1..start + end];
+                let name = window_title[..start].trim().trim_end_matches(" -");
+                (name.to_string(), app_id_str.parse::<u32>().unwrap_or(0))
+            } else {
+                ("".to_string(), 0)
+            }
+        } else {
+            ("".to_string(), 0)
+        };
+
+        if app_id > 0 {
+            if let Ok(pid) = pid_str.parse::<u32>() {
+                processes.push(serde_json::json!({
+                    "appid": app_id,
+                    "pid": pid,
+                    "name": game_name,
+                }));
+            }
+        }
+    }
+
+    let result = serde_json::to_string(&processes).map_err(|e| e.to_string())?;
+    Ok(result)
+}
+
+#[tauri::command]
+// Kill a process by its PID
+pub fn kill_process_by_pid(pid: u32) -> Result<String, String> {
+    cleanup_dead_processes().map_err(|e| e.to_string())?;
+
+    let output = std::process::Command::new("taskkill")
+        .args(&["/F", "/PID", &pid.to_string()])
+        .creation_flags(0x08000000)
+        .output()
+        .map_err(|e| e.to_string())?;
+
+    if output.status.success() {
+        Ok(format!(
+            "{{\"success\": \"Successfully killed process with PID {}\"}}",
+            pid
+        ))
+    } else {
+        let error_message = String::from_utf8_lossy(&output.stderr);
+        Err(format!("Failed to kill process: {}", error_message))
+    }
+}
+
 // Helper function to clean up dead processes
 fn cleanup_dead_processes() -> Result<(), String> {
     let mut processes = SPAWNED_PROCESSES.lock().map_err(|e| e.to_string())?;

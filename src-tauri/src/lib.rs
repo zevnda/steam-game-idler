@@ -103,6 +103,8 @@ pub fn run() {
             get_free_games,
             anti_away,
             check_process_by_game_id,
+            get_running_processes,
+            kill_process_by_pid
         ])
         .build(tauri::generate_context!())
         .expect("Error while building tauri application")

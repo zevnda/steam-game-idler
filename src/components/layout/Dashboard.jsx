@@ -8,6 +8,7 @@ import { StateContext } from '@/components/contexts/StateContext';
 import CustomList from '@/components/customlists/CustomList';
 import FreeGamesList from '@/components/gameslist/FreeGamesList';
 import GamesList from '@/components/gameslist/GamesList';
+import IdlingGamesList from '@/components/gameslist/IdlingGamesList';
 import Settings from '@/components/settings/Settings';
 import Header from '@/components/ui/Header';
 import SideBar from '@/components/ui/SideBar';
@@ -42,6 +43,13 @@ export default function Dashboard() {
         }
 
         switch (activePage) {
+            case 'idling':
+                return (
+                    <>
+                        <SideBar />
+                        <IdlingGamesList />
+                    </>
+                );
             case 'freeGames':
                 return (
                     <>

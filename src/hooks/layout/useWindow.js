@@ -1,10 +1,12 @@
 import { addToast } from '@heroui/react';
+import { invoke } from '@tauri-apps/api/core';
 import { emit } from '@tauri-apps/api/event';
 import { relaunch } from '@tauri-apps/plugin-process';
 import { check } from '@tauri-apps/plugin-updater';
 import { useTheme } from 'next-themes';
 import { useCallback, useContext, useEffect } from 'react';
 
+import { IdleContext } from '@/components/contexts/IdleContext';
 import { StateContext } from '@/components/contexts/StateContext';
 import { UpdateContext } from '@/components/contexts/UpdateContext';
 import { UserContext } from '@/components/contexts/UserContext';
@@ -13,6 +15,7 @@ import { fetchLatest, logEvent, preserveKeysAndClearData } from '@/utils/utils';
 
 export default function useWindow() {
     const { theme } = useTheme();
+    const { setIdleGamesList } = useContext(IdleContext);
     const { setIsDarkMode, setShowFreeGamesTab } = useContext(StateContext);
     const { setUpdateAvailable, setShowChangelog } = useContext(UpdateContext);
     const { setUserSummary, setFreeGamesList } = useContext(UserContext);
@@ -58,6 +61,23 @@ export default function useWindow() {
             setShowChangelog(true);
         }
     }, [setShowChangelog]);
+
+    useEffect(() => {
+        const fetchRunningProcesses = async () => {
+            try {
+                const response = await invoke('get_running_processes');
+                const parsed = JSON.parse(response);
+                setIdleGamesList(parsed);
+            } catch (error) {
+                console.error('Error fetching running processes:', error);
+            }
+        };
+        fetchRunningProcesses();
+        const intervalId = setInterval(fetchRunningProcesses, 1000);
+        return () => {
+            clearInterval(intervalId);
+        };
+    }, [setIdleGamesList]);
 
     const freeGamesCheck = useCallback(() => {
         checkForFreeGames(setFreeGamesList, setShowFreeGamesTab);
