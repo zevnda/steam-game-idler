@@ -48,7 +48,8 @@ export default function AchievementUnlocker({ activePage }) {
             isMountedRef.current = false;
             abortController.abort();
         };
-    }, [isInitialDelay]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return (
         <div className={`${activePage !== 'customlists/achievement-unlocker' && 'hidden'} absolute top-12 left-14 bg-base z-50 rounded-tl-xl border-t border-l border-border`}>
