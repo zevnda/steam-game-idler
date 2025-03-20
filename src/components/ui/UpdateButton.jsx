@@ -1,3 +1,4 @@
+import { invoke } from '@tauri-apps/api/core';
 import { addToast, Divider, Spinner, Tooltip } from '@heroui/react';
 import { relaunch } from '@tauri-apps/plugin-process';
 import { check } from '@tauri-apps/plugin-updater';
@@ -16,6 +17,7 @@ export default function UpdateButton() {
             if (update?.available) {
                 localStorage.setItem('hasUpdated', 'true');
                 await update.downloadAndInstall();
+                await invoke('kill_all_steamutil_processes');
                 await relaunch();
             } else {
                 setIsLoading(false);

@@ -39,6 +39,7 @@ export default function useWindow() {
                         localStorage.setItem('hasUpdated', 'true');
                         await update.downloadAndInstall();
                         await preserveKeysAndClearData();
+                        await invoke('kill_all_steamutil_processes');
                         await relaunch();
                     } else {
                         setUpdateAvailable(true);

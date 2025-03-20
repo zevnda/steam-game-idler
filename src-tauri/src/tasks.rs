@@ -140,14 +140,24 @@ pub async fn stop_farm_idle() -> Result<(), String> {
         processes.iter().map(|p| p.pid).collect()
     };
 
-    for pid in pids {
-        let mut child = std::process::Command::new("taskkill")
-            .args(&["/F", "/PID", &pid.to_string()])
+    if !pids.is_empty() {
+        let mut command = std::process::Command::new("taskkill");
+        command.arg("/F");
+
+        for pid in &pids {
+            command.arg("/PID");
+            command.arg(pid.to_string());
+        }
+
+        let output = command
             .creation_flags(0x08000000)
-            .spawn()
+            .output()
             .map_err(|e| e.to_string())?;
 
-        child.wait().map_err(|e| e.to_string())?;
+        if !output.status.success() {
+            let error_message = String::from_utf8_lossy(&output.stderr);
+            return Err(format!("Failed to kill processes: {}", error_message));
+        }
     }
 
     if let Ok(mut processes) = SPAWNED_PROCESSES.lock() {
@@ -357,34 +367,65 @@ pub async fn kill_process_by_pid(pid: u32) -> Result<String, String> {
 }
 
 #[tauri::command]
-// Kill all processes by their PID
-pub async fn kill_all_process_by_pid(pids: Vec<u32>) -> Result<String, String> {
+// Kill all SteamUtility.exe processes
+pub async fn kill_all_steamutil_processes() -> Result<String, String> {
     cleanup_dead_processes().map_err(|e| e.to_string())?;
 
-    let mut command = std::process::Command::new("taskkill");
-    command.arg("/F");
-
-    for pid in &pids {
-        command.arg("/PID");
-        command.arg(pid.to_string());
-    }
-
-    let output = command
+    let output = std::process::Command::new("tasklist")
+        .args(&[
+            "/V",
+            "/FO",
+            "CSV",
+            "/NH",
+            "/FI",
+            "IMAGENAME eq SteamUtility.exe",
+        ])
         .creation_flags(0x08000000)
         .output()
         .map_err(|e| e.to_string())?;
 
-    if output.status.success() {
-        Ok(format!(
-            "{{\"success\": \"Successfully killed processes with PIDs: {}\"}}",
-            pids.iter()
-                .map(|pid| pid.to_string())
-                .collect::<Vec<String>>()
-                .join(", ")
-        ))
+    let output_str = String::from_utf8_lossy(&output.stdout);
+    let mut killed_count = 0;
+    let mut failed_pids = Vec::new();
+
+    for line in output_str.lines() {
+        let parts: Vec<&str> = line.split(',').collect();
+        if parts.len() >= 2 {
+            let pid_str = parts[1].trim_matches('"');
+            if let Ok(pid) = pid_str.parse::<u32>() {
+                let kill_output = std::process::Command::new("taskkill")
+                    .args(&["/F", "/PID", &pid.to_string()])
+                    .creation_flags(0x08000000)
+                    .output();
+
+                match kill_output {
+                    Ok(output) if output.status.success() => {
+                        killed_count += 1;
+                    }
+                    _ => {
+                        failed_pids.push(pid);
+                    }
+                }
+            }
+        }
+    }
+
+    if failed_pids.is_empty() {
+        if killed_count > 0 {
+            Ok(format!(
+                "{{\"success\": \"Successfully killed {} SteamUtility.exe processes\"}}",
+                killed_count
+            ))
+        } else {
+            Ok(format!(
+                "{{\"success\": \"No SteamUtility.exe processes found to kill\"}}"
+            ))
+        }
     } else {
-        let error_message = String::from_utf8_lossy(&output.stderr);
-        Err(format!("Failed to kill processes: {}", error_message))
+        Err(format!(
+            "{{\"error\": \"Killed {} processes, but failed to kill PIDs: {:?}\"}}",
+            killed_count, failed_pids
+        ))
     }
 }
 
