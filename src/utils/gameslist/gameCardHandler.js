@@ -2,10 +2,32 @@ import { addToast } from '@heroui/react';
 import { invoke } from '@tauri-apps/api/core';
 
 import ErrorToast from '@/components/ui/ErrorToast';
-import { startIdle } from '@/utils/utils';
+import { logEvent, startIdle } from '@/utils/utils';
 
 export const handleIdle = async (item) => {
-    await startIdle(item.appid, item.name, false, true);
+    const success = await startIdle(item.appid, item.name, false, true);
+    if (success) {
+        addToast({ description: `Started idling ${item.name} (${item.appid})`, color: 'success' });
+    } else {
+        addToast({ description: `Failed to start idling ${item.name} (${item.appid})`, color: 'danger' });
+    }
+};
+
+export const handleStopIdle = async (item, idleGamesList, setIdleGamesList) => {
+    const game = idleGamesList.find((game) => game.appid === item.appid);
+    try {
+        const response = await invoke('kill_process_by_pid', { pid: game.pid });
+        if (response.includes('success')) {
+            setIdleGamesList(idleGamesList.filter((i) => i.pid !== item.pid));
+            addToast({ description: `Stopped idling ${item.name}`, color: 'success' });
+        } else {
+            addToast({ description: `Failed to stop idling ${item.name}`, color: 'danger' });
+        }
+    } catch (error) {
+        addToast({ description: `Failed to stop idling ${item.name}`, color: 'danger' });
+        console.error('Error in handleStopIdle:', error);
+        logEvent(`Error in (handleStopIdle): ${error}`);
+    }
 };
 
 export const viewAchievments = async (item, setAppId, setAppName, setShowAchievements) => {

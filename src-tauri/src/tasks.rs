@@ -257,7 +257,7 @@ pub async fn reset_all_stats(app_id: u32) -> Result<String, String> {
 
 #[tauri::command]
 // Get all running processes
-pub fn get_running_processes() -> Result<String, String> {
+pub async fn get_running_processes() -> Result<String, String> {
     let output = std::process::Command::new("tasklist")
         .args(&[
             "/V",
@@ -336,7 +336,7 @@ pub fn get_running_processes() -> Result<String, String> {
 
 #[tauri::command]
 // Kill a process by its PID
-pub fn kill_process_by_pid(pid: u32) -> Result<String, String> {
+pub async fn kill_process_by_pid(pid: u32) -> Result<String, String> {
     cleanup_dead_processes().map_err(|e| e.to_string())?;
 
     let output = std::process::Command::new("taskkill")
@@ -353,6 +353,38 @@ pub fn kill_process_by_pid(pid: u32) -> Result<String, String> {
     } else {
         let error_message = String::from_utf8_lossy(&output.stderr);
         Err(format!("Failed to kill process: {}", error_message))
+    }
+}
+
+#[tauri::command]
+// Kill all processes by their PID
+pub async fn kill_all_process_by_pid(pids: Vec<u32>) -> Result<String, String> {
+    cleanup_dead_processes().map_err(|e| e.to_string())?;
+
+    let mut command = std::process::Command::new("taskkill");
+    command.arg("/F");
+
+    for pid in &pids {
+        command.arg("/PID");
+        command.arg(pid.to_string());
+    }
+
+    let output = command
+        .creation_flags(0x08000000)
+        .output()
+        .map_err(|e| e.to_string())?;
+
+    if output.status.success() {
+        Ok(format!(
+            "{{\"success\": \"Successfully killed processes with PIDs: {}\"}}",
+            pids.iter()
+                .map(|pid| pid.to_string())
+                .collect::<Vec<String>>()
+                .join(", ")
+        ))
+    } else {
+        let error_message = String::from_utf8_lossy(&output.stderr);
+        Err(format!("Failed to kill processes: {}", error_message))
     }
 }
 
