@@ -8,6 +8,10 @@ import ExtLink from '@/components/ui/ExtLink';
 export default function FreeGamesList() {
     const { freeGamesList } = useContext(UserContext);
 
+    const handleImageError = (event) => {
+        event.target.src = '/fallback.jpg';
+    };
+
     return (
         <div className='w-calc min-h-calc max-h-calc bg-base overflow-y-auto overflow-x-hidden rounded-tl-xl border-t border-l border-border select-none'>
             <div className='fixed w-[calc(100vw-68px)] z-[50] bg-opacity-90 backdrop-blur-md bg-base pl-4 pt-2 pr-2 rounded-tl-xl'>
@@ -37,6 +41,7 @@ export default function FreeGamesList() {
                                 height={215}
                                 alt={`${item.name} image`}
                                 priority={true}
+                                onError={handleImageError}
                             />
                             <div className='absolute flex items-center justify-evenly inset-0 bg-black bg-opacity-0 dark:bg-opacity-20 group-hover:bg-opacity-40 dark:group-hover:bg-opacity-50 transition-opacity duration-200'>
                                 <div className='absolute flex justify-center w-full bottom-0 left-0 px-2 pb-0.5 opacity-0 group-hover:opacity-100 duration-200'>
