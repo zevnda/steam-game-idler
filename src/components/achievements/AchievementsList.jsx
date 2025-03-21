@@ -9,7 +9,7 @@ import { SearchContext } from '@/components/contexts/SearchContext';
 import { StateContext } from '@/components/contexts/StateContext';
 import { UserContext } from '@/components/contexts/UserContext';
 import ErrorToast from '@/components/ui/ErrorToast';
-import { toggleAchievement } from '@/utils/utils';
+import { toggleAchievement } from '@/utils/global/achievements';
 
 const Row = memo(({ index, style, data }) => {
     const { userSummary, appId, appName, filteredAchievements, updateAchievement } = data;
@@ -27,7 +27,7 @@ const Row = memo(({ index, style, data }) => {
 
     const handleToggle = async () => {
         // Check if Steam is running
-        const steamRunning = await invoke('check_status');
+        const steamRunning = await invoke('is_steam_running');
         if (!steamRunning) {
             return addToast({
                 description: <ErrorToast

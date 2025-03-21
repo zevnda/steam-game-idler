@@ -3,7 +3,7 @@ import { invoke } from '@tauri-apps/api/core';
 import moment from 'moment';
 import { useState, useEffect } from 'react';
 
-import { logEvent } from '@/utils/utils';
+import { logEvent } from '@/utils/global/tasks';
 
 export const usePageHeader = ({ setSortStyle, setRefreshKey }) => {
     const [sortStyle, setSortStyleState] = useState(localStorage.getItem('sortStyle') || 'a-z');

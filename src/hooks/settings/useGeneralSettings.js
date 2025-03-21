@@ -2,7 +2,7 @@ import { addToast } from '@heroui/react';
 import { enable, isEnabled, disable } from '@tauri-apps/plugin-autostart';
 import { useEffect, useState } from 'react';
 
-import { logEvent } from '@/utils/utils';
+import { logEvent } from '@/utils/global/tasks';
 
 export const useGeneralSettings = (settings, setLocalSettings) => {
     const [startupState, setStartupState] = useState(null);

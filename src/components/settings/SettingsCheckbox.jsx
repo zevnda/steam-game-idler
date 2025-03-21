@@ -5,7 +5,7 @@ import { StateContext } from '@/components/contexts/StateContext';
 import { useAchievementSettings, achievementCheckboxChange } from '@/hooks/settings/useAchievementSettings';
 import { useCardSettings, cardCheckboxChange } from '@/hooks/settings/useCardSettings';
 import { useGeneralSettings, generalCheckboxChange, handleRunAtStartupChange } from '@/hooks/settings/useGeneralSettings';
-import { antiAwayStatus } from '@/utils/utils';
+import { antiAwayStatus } from '@/utils/global/tasks';
 
 export default function SettingsCheckbox({ type, name, content, settings, setSettings, localSettings, setLocalSettings }) {
     const { isDarkMode } = useContext(StateContext);

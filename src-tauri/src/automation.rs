@@ -2,7 +2,7 @@ use regex::Regex;
 use reqwest::Client;
 use scraper::{Html, Selector};
 use serde::{Deserialize, Serialize};
-use serde_json::Value;
+use serde_json::{json, Value};
 
 #[derive(Debug, Serialize, Deserialize)]
 struct Game {
@@ -49,19 +49,19 @@ pub async fn get_drops_remaining(
     if let Some(element) = document.select(&progress_info_bold).next() {
         let text = element.text().collect::<Vec<_>>().join("");
         if text.contains("No card drops remaining") {
-            return Ok(serde_json::json!({ "remaining": 0 }));
+            return Ok(json!({ "remaining": 0 }));
         }
 
         let regex =
             Regex::new(r"(\d+)\s+card\s+drop(?:s)?\s+remaining").map_err(|e| e.to_string())?;
         if let Some(captures) = regex.captures(&text) {
             let card_drops_remaining = captures[1].parse::<i32>().map_err(|e| e.to_string())?;
-            return Ok(serde_json::json!({ "remaining": card_drops_remaining }));
+            return Ok(json!({"remaining": card_drops_remaining}));
         } else {
-            return Ok(serde_json::json!({ "error": "Card drops data not found" }));
+            return Ok(json!({"error": "Card drops data not found"}));
         }
     } else {
-        return Ok(serde_json::json!({ "error": "Card drops data not found" }));
+        return Ok(json!({"error": "Card drops data not found"}));
     }
 }
 
@@ -162,5 +162,5 @@ pub async fn get_games_with_drops(
         page += 1;
     }
 
-    Ok(serde_json::json!({ "gamesWithDrops": games_with_drops }))
+    Ok(json!({"gamesWithDrops": games_with_drops}))
 }

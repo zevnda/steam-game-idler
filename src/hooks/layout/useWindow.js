@@ -10,8 +10,9 @@ import { IdleContext } from '@/components/contexts/IdleContext';
 import { StateContext } from '@/components/contexts/StateContext';
 import { UpdateContext } from '@/components/contexts/UpdateContext';
 import { UserContext } from '@/components/contexts/UserContext';
+import { logEvent } from '@/utils/global/tasks';
+import { fetchLatest, preserveKeysAndClearData } from '@/utils/global/tasks';
 import { defaultSettings, checkForFreeGames, startAutoIdleGames } from '@/utils/layout/windowHandler';
-import { fetchLatest, logEvent, preserveKeysAndClearData } from '@/utils/utils';
 
 export default function useWindow() {
     const { theme } = useTheme();
@@ -70,23 +71,23 @@ export default function useWindow() {
         const fetchRunningProcesses = async () => {
             try {
                 const response = await invoke('get_running_processes');
-                const parsed = JSON.parse(response);
+                const processes = response?.processes;
 
                 // Only update state if the list has actually changed
                 setIdleGamesList(prevList => {
                     // Compare previous and current processes
-                    if (prevList.length !== parsed.length) {
-                        return parsed;
+                    if (prevList.length !== processes.length) {
+                        return processes;
                     }
 
                     // Create maps for quick lookup using appid as key
                     const prevMap = new Map(prevList.map(item => [item.appid, item]));
-                    const newMap = new Map(parsed.map(item => [item.appid, item]));
+                    const newMap = new Map(processes.map(item => [item.appid, item]));
 
                     // Check if any items were added or removed
                     if (prevList.some(item => !newMap.has(item.appid)) ||
-                        parsed.some(item => !prevMap.has(item.appid))) {
-                        return parsed;
+                        processes.some(item => !prevMap.has(item.appid))) {
+                        return processes;
                     }
 
                     // No change, keep previous reference to prevent re-renders

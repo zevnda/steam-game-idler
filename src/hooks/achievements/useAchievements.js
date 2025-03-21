@@ -5,7 +5,7 @@ import { useContext, useEffect } from 'react';
 import { StateContext } from '@/components/contexts/StateContext';
 import { UserContext } from '@/components/contexts/UserContext';
 import ErrorToast from '@/components/ui/ErrorToast';
-import { logEvent } from '@/utils/utils';
+import { logEvent } from '@/utils/global/tasks';
 
 export default function useAchievements(setIsLoading,
     setAchievements,
@@ -20,7 +20,7 @@ export default function useAchievements(setIsLoading,
         const getAchievementData = async () => {
             try {
                 // Check if Steam is running
-                const steamRunning = await invoke('check_status');
+                const steamRunning = await invoke('is_steam_running');
                 if (!steamRunning) {
                     setIsLoading(false);
                     addToast({

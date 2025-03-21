@@ -3,11 +3,13 @@ import { useContext } from 'react';
 import { FiLogOut } from 'react-icons/fi';
 import { TbAward, TbCards, TbDeviceGamepad2, TbGift, TbHeart, TbHourglassLow, TbPlayerPlay, TbSettings } from 'react-icons/tb';
 
+import { IdleContext } from '@/components/contexts/IdleContext';
 import { NavigationContext } from '@/components/contexts/NavigationContext';
 import { StateContext } from '@/components/contexts/StateContext';
 import useSideBar from '@/hooks/ui/useSideBar';
 
 export default function SideBar() {
+    const { idleGamesList } = useContext(IdleContext);
     const { isDarkMode, showFreeGamesTab, isCardFarming, isAchievementUnlocker } = useContext(StateContext);
     const { activePage, setActivePage } = useContext(NavigationContext);
     const { isOpen, onOpenChange, openConfirmation, handleLogout } = useSideBar(activePage, setActivePage);
@@ -28,7 +30,11 @@ export default function SideBar() {
 
                     <div className='flex justify-center items-center w-14'>
                         <div
-                            className={`p-2 rounded-full duration-200 cursor-pointer active:scale-90 ${activePage === 'idling' ? 'bg-dynamic/30 text-dynamic' : 'hover:bg-titlehover'}`}
+                            className={`
+                                p-2 rounded-full duration-200 cursor-pointer active:scale-90 
+                                ${idleGamesList.length > 0 && 'text-dynamic animate-pulse'}
+                                ${activePage === 'idling' ? 'bg-dynamic/30 text-dynamic' : 'hover:bg-titlehover'}
+                                `}
                             onClick={() => setActivePage('idling')}
                         >
                             <TbPlayerPlay fontSize={22} />

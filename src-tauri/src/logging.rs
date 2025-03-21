@@ -1,7 +1,6 @@
 use chrono::Local;
 use std::fs::{create_dir_all, OpenOptions};
 use std::io::{BufRead, BufReader, Seek, SeekFrom, Write};
-use std::os::windows::process::CommandExt;
 use tauri::Manager;
 
 const MAX_LINES: usize = 500;
@@ -52,20 +51,6 @@ pub fn log_event(message: String, app_handle: tauri::AppHandle) -> Result<(), St
 }
 
 #[tauri::command]
-pub fn get_app_log_dir(app_handle: tauri::AppHandle) -> Result<String, String> {
-    // Get the application data directory
-    let app_data_dir = app_handle
-        .path()
-        .app_data_dir()
-        .map_err(|e| e.to_string())?;
-    // Convert the path to a string and return it
-    app_data_dir
-        .to_str()
-        .ok_or("Failed to convert path to string".to_string())
-        .map(|s| s.to_string())
-}
-
-#[tauri::command]
 pub fn clear_log_file(app_handle: tauri::AppHandle) -> Result<(), String> {
     // Get the application data directory
     let app_data_dir = app_handle
@@ -81,23 +66,6 @@ pub fn clear_log_file(app_handle: tauri::AppHandle) -> Result<(), String> {
     // Truncate the log file
     file.set_len(0)
         .map_err(|e| format!("Failed to truncate file: {}", e))?;
-    Ok(())
-}
-
-#[tauri::command]
-pub fn open_file_explorer(path: String, app_handle: tauri::AppHandle) -> Result<(), String> {
-    // Get the application data directory
-    let app_data_dir = app_handle
-        .path()
-        .app_data_dir()
-        .map_err(|e| e.to_string())?;
-
-    // Open the file explorer and select the specified path
-    std::process::Command::new("explorer")
-        .args(["/select,", app_data_dir.join(path).to_str().unwrap()])
-        .creation_flags(0x08000000)
-        .spawn()
-        .map_err(|e| e.to_string())?;
     Ok(())
 }
 

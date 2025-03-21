@@ -1,7 +1,7 @@
 import { addToast } from '@heroui/react';
 import { useState, useEffect } from 'react';
 
-import { logEvent } from '@/utils/utils';
+import { logEvent } from '@/utils/global/tasks';
 
 export const useAchievementSettings = (settings, setLocalSettings) => {
     const [labelInterval, setLabelInterval] = useState(null);

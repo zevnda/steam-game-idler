@@ -5,7 +5,7 @@ import { useContext } from 'react';
 import { StateContext } from '@/components/contexts/StateContext';
 import { UserContext } from '@/components/contexts/UserContext';
 import ErrorToast from '@/components/ui/ErrorToast';
-import { updateStats } from '@/utils/utils';
+import { updateStats } from '@/utils/global/achievements';
 
 export default function useStatisticButtons(statistics, setStatistics, changedStats, setChangedStats, setAchievements) {
     const { userSummary } = useContext(UserContext);
@@ -25,7 +25,7 @@ export default function useStatisticButtons(statistics, setStatistics, changedSt
         }));
 
         // Check if Steam is running
-        const steamRunning = await invoke('check_status');
+        const steamRunning = await invoke('is_steam_running');
         if (!steamRunning) {
             return addToast({
                 description: <ErrorToast
@@ -54,7 +54,7 @@ export default function useStatisticButtons(statistics, setStatistics, changedSt
         onClose();
 
         // Check if Steam is running
-        const steamRunning = await invoke('check_status');
+        const steamRunning = await invoke('is_steam_running');
         if (!steamRunning) {
             return addToast({
                 description: <ErrorToast

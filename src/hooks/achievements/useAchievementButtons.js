@@ -2,7 +2,8 @@ import { addToast } from '@heroui/react';
 import { invoke } from '@tauri-apps/api/core';
 
 import ErrorToast from '@/components/ui/ErrorToast';
-import { lockAllAchievements, logEvent, unlockAllAchievements } from '@/utils/utils';
+import { lockAllAchievements, unlockAllAchievements } from '@/utils/global/achievements';
+import { logEvent } from '@/utils/global/tasks';
 
 export default function useAchievementButtons(userSummary, setAchievements) {
     // Handle change in sorting option
@@ -49,7 +50,7 @@ export default function useAchievementButtons(userSummary, setAchievements) {
         try {
             onClose();
             // Check if Steam is running
-            const steamRunning = await invoke('check_status');
+            const steamRunning = await invoke('is_steam_running');
             if (!steamRunning) {
                 onClose();
                 return addToast({
@@ -93,7 +94,7 @@ export default function useAchievementButtons(userSummary, setAchievements) {
         try {
             onClose();
             // Check if Steam is running
-            const steamRunning = await invoke('check_status');
+            const steamRunning = await invoke('is_steam_running');
             if (!steamRunning) {
                 onClose();
                 return addToast({

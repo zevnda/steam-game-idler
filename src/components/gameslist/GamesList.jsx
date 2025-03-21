@@ -13,7 +13,7 @@ export default function GamesList() {
     const {
         scrollContainerRef,
         isLoading,
-        gameList,
+        gamesList,
         filteredGames,
         visibleGames,
         sortStyle,
@@ -29,7 +29,7 @@ export default function GamesList() {
         </div>
     );
 
-    if (gameList.length === 0) return (
+    if (gamesList.length === 0) return (
         <div className='w-calc min-h-calc max-h-calc bg-base overflow-y-auto overflow-x-hidden rounded-tl-xl border-t border-l border-border'>
             <Private setRefreshKey={setRefreshKey} />
         </div>

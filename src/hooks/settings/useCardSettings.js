@@ -3,7 +3,7 @@ import { invoke } from '@tauri-apps/api/core';
 import { useEffect, useState } from 'react';
 
 import ErrorToast from '@/components/ui/ErrorToast';
-import { logEvent } from '@/utils/utils';
+import { logEvent } from '@/utils/global/tasks';
 
 export const useCardSettings = (settings, setLocalSettings) => {
     const [sidValue, setSidValue] = useState('');

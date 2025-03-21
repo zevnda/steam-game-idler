@@ -5,8 +5,7 @@ import { TbCheck } from 'react-icons/tb';
 
 import { StateContext } from '@/components/contexts/StateContext';
 import { useAchievementUnlocker } from '@/hooks/automation/useAchievementUnlocker';
-import { stopIdle } from '@/utils/utils';
-
+import { stopIdle } from '@/utils/global/idle';
 
 export default function AchievementUnlocker({ activePage }) {
     const { isDarkMode, setIsAchievementUnlocker } = useContext(StateContext);
@@ -19,7 +18,7 @@ export default function AchievementUnlocker({ activePage }) {
     const [currentGame, setCurrentGame] = useState({});
     const [isComplete, setIsComplete] = useState(false);
     const [achievementCount, setAchievementCount] = useState(0);
-    const [countdownTimer, setCountdownTimer] = useState('');
+    const [countdownTimer, setCountdownTimer] = useState('00:00:10');
     const [isWaitingForSchedule, setIsWaitingForSchedule] = useState('');
 
     useEffect(() => {

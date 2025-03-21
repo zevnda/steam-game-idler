@@ -7,14 +7,14 @@ import { UserContext } from '@/components/contexts/UserContext';
 
 export default function useCustomList(listName) {
     const { isAchievementUnlocker, isCardFarming } = useContext(StateContext);
-    const { userSummary, gameList } = useContext(UserContext);
+    const { userSummary, gamesList } = useContext(UserContext);
     const [list, setList] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [showInList, setShowInList] = useState(false);
     const [visibleGames, setVisibleGames] = useState(50);
     const containerRef = useRef(null);
 
-    const filteredGamesList = gameList.filter(game =>
+    const filteredGamesList = gamesList.filter(game =>
         game.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
