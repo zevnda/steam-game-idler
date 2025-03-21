@@ -2,25 +2,27 @@ import { invoke } from '@tauri-apps/api/core';
 
 // Fetches the games list and recent games from cache or API
 export const fetchGamesList = async (steamId, refreshKey, prevRefreshKey) => {
-    const cachedGameListFiles = await invoke('get_games_list_cache', { steamId });
-    const cachedGameList = cachedGameListFiles?.games_list?.response?.games;
-    const cachedRecentGames = cachedGameListFiles?.recent_games?.response?.games;
+    const cachedGamesListFiles = await invoke('get_games_list_cache', { steamId });
+    const cachedGamesList = cachedGamesListFiles?.games_list?.games;
+    const cachedRecentGamesList = cachedGamesListFiles?.recent_games?.games;
 
-    if (cachedGameList && refreshKey === prevRefreshKey) {
-        return { gameList: cachedGameList || [], recentGames: cachedRecentGames || [] };
+    // TODO: remove `!cachedGamesListFiles.games_list.response` from condition
+    // once all users have migrated to the new format
+    if (cachedGamesList && !cachedGamesListFiles.games_list.response && refreshKey === prevRefreshKey) {
+        return { gamesList: cachedGamesList || [], recentGamesList: cachedRecentGamesList || [] };
     } else {
         const apiKey = localStorage.getItem('apiKey');
-        const res = await invoke('get_games_list', { steamId, apiKey });
-        const resTwo = await invoke('get_recent_games', { steamId });
-        const gameList = res.response.games;
-        const recentGames = resTwo.response.games;
-        return { gameList: gameList || [], recentGames: recentGames || [] };
+        const gamesListResponse = await invoke('get_games_list', { steamId, apiKey });
+        const recentGamesListResponse = await invoke('get_recent_games', { steamId });
+        const gamesList = gamesListResponse.games;
+        const recentGamesList = recentGamesListResponse.games;
+        return { gamesList: gamesList || [], recentGamesList: recentGamesList || [] };
     }
 };
 
 // Sort and filter the games list based on sortStyle
-export const sortAndFilterGames = (gameList, recentGames, sortStyle, isQuery, gameQueryValue) => {
-    let sortedAndFilteredGames = [...gameList];
+export const sortAndFilterGames = (gamesList, recentGames, sortStyle, isQuery, gameQueryValue) => {
+    let sortedAndFilteredGames = [...gamesList];
     switch (sortStyle) {
         case 'a-z':
             sortedAndFilteredGames.sort((a, b) => a.name.localeCompare(b.name));

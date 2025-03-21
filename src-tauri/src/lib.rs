@@ -1,16 +1,20 @@
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
+pub mod achievement_manager;
 pub mod automation;
 pub mod custom_lists;
 pub mod game_data;
+pub mod idling;
 pub mod logging;
-pub mod tasks;
+pub mod process_handler;
 pub mod user_data;
 pub mod utils;
+use achievement_manager::*;
 use automation::*;
 use custom_lists::*;
 use game_data::*;
+use idling::*;
 use logging::*;
-use tasks::*;
+use process_handler::*;
 use user_data::*;
 use utils::*;
 
@@ -59,7 +63,7 @@ pub fn run() {
         ))
         .setup(move |app| setup_app(app))
         .invoke_handler(tauri::generate_handler![
-            check_status,
+            is_steam_running,
             get_users,
             start_idle,
             stop_idle,
@@ -74,7 +78,6 @@ pub fn run() {
             reset_all_stats,
             log_event,
             clear_log_file,
-            get_app_log_dir,
             get_user_summary,
             get_games_list,
             get_recent_games,
@@ -85,7 +88,6 @@ pub fn run() {
             add_game_to_custom_list,
             remove_game_from_custom_list,
             update_custom_list,
-            get_game_details,
             get_achievement_data,
             validate_session,
             get_drops_remaining,
@@ -93,7 +95,6 @@ pub fn run() {
             open_file_explorer,
             get_free_games,
             anti_away,
-            check_process_by_game_id,
             get_running_processes,
             kill_process_by_pid,
             kill_all_steamutil_processes

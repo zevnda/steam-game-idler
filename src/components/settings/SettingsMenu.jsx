@@ -1,5 +1,5 @@
-import { invoke } from '@tauri-apps/api/core';
 import { addToast, Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@heroui/react';
+import { invoke } from '@tauri-apps/api/core';
 import { relaunch } from '@tauri-apps/plugin-process';
 import { check } from '@tauri-apps/plugin-updater';
 import { useContext } from 'react';
@@ -7,7 +7,8 @@ import { TbDotsVertical } from 'react-icons/tb';
 
 import { UpdateContext } from '@/components/contexts/UpdateContext';
 import ExtLink from '@/components/ui/ExtLink';
-import { fetchLatest, logEvent, preserveKeysAndClearData } from '@/utils/utils';
+import { logEvent } from '@/utils/global/tasks';
+import { fetchLatest, preserveKeysAndClearData } from '@/utils/global/tasks';
 
 export default function SettingsMenu() {
     const { setShowChangelog } = useContext(UpdateContext);

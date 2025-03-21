@@ -4,7 +4,7 @@ import { useContext } from 'react';
 import { NavigationContext } from '@/components/contexts/NavigationContext';
 import { SearchContext } from '@/components/contexts/SearchContext';
 import { UserContext } from '@/components/contexts/UserContext';
-import { logEvent } from '@/utils/utils';
+import { logEvent } from '@/utils/global/tasks';
 
 export default function useSideBar(activePage, setActivePage) {
     const { setGameQueryValue, setAchievementQueryValue } = useContext(SearchContext);

@@ -2,7 +2,7 @@ import { addToast } from '@heroui/react';
 import { Time } from '@internationalized/date';
 import { getVersion } from '@tauri-apps/api/app';
 
-import { logEvent } from '@/utils/utils';
+import { logEvent } from '@/utils/global/tasks';
 
 // Get the application version and set it in the state
 export const getAppVersion = async () => {
@@ -19,7 +19,6 @@ export const getAppVersion = async () => {
 // Get the default settings for the application
 export const getDefaultSettings = () => ({
     general: {
-        stealthIdle: false,
         antiAway: false,
         freeGameNotifications: true,
     },

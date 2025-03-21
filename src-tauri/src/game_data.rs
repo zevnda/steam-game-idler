@@ -1,4 +1,3 @@
-use crate::utils::get_lib_path;
 use reqwest::Client;
 use scraper::{Html, Selector};
 use serde::{Deserialize, Serialize};
@@ -7,7 +6,6 @@ use std::fs::File;
 use std::fs::{create_dir_all, remove_dir_all, remove_file, OpenOptions};
 use std::io::Read;
 use std::io::Write;
-use std::os::windows::process::CommandExt;
 use tauri::Manager;
 
 #[derive(Serialize, Deserialize)]
@@ -46,6 +44,10 @@ pub async fn get_games_list(
             // Process the response to extract only needed fields
             let filtered_data = filter_game_data(&body)?;
 
+            let game_data = json!({
+                "games": filtered_data
+            });
+
             // Get the application data directory
             let app_data_dir = app_handle
                 .path()
@@ -56,7 +58,7 @@ pub async fn get_games_list(
             create_dir_all(&app_data_dir)
                 .map_err(|e| format!("Failed to create app directory: {}", e))?;
 
-            // Save the filtered response to games_list.json
+            // Save the response to games_list.json
             let file_name = format!("games_list.json");
             let games_file_path = app_data_dir.join(file_name);
             let mut file = OpenOptions::new()
@@ -66,12 +68,12 @@ pub async fn get_games_list(
                 .open(&games_file_path)
                 .map_err(|e| format!("Failed to open games list file: {}", e))?;
 
-            let json_string = serde_json::to_string_pretty(&filtered_data)
+            let json_string = serde_json::to_string_pretty(&game_data)
                 .map_err(|e| format!("Failed to serialize games list: {}", e))?;
             file.write_all(json_string.as_bytes())
                 .map_err(|e| format!("Failed to write games list to file: {}", e))?;
 
-            Ok(filtered_data)
+            Ok(game_data)
         }
         Err(err) => Err(err.to_string()),
     }
@@ -100,6 +102,10 @@ pub async fn get_recent_games(
             // Process the response to extract only needed fields
             let filtered_data = filter_game_data(&body)?;
 
+            let game_data = json!({
+                "games": filtered_data
+            });
+
             // Get the application data directory
             let app_data_dir = app_handle
                 .path()
@@ -120,12 +126,12 @@ pub async fn get_recent_games(
                 .open(&recent_games_file_path)
                 .map_err(|e| format!("Failed to open recent games file: {}", e))?;
 
-            let json_string = serde_json::to_string_pretty(&filtered_data)
+            let json_string = serde_json::to_string_pretty(&game_data)
                 .map_err(|e| format!("Failed to serialize recent games: {}", e))?;
             file.write_all(json_string.as_bytes())
                 .map_err(|e| format!("Failed to write recent games to file: {}", e))?;
 
-            Ok(filtered_data)
+            Ok(game_data)
         }
         Err(err) => Err(err.to_string()),
     }
@@ -135,12 +141,7 @@ pub async fn get_recent_games(
 fn filter_game_data(data: &Value) -> Result<Value, String> {
     let games = match &data["response"]["games"] {
         Value::Array(games) => games,
-        _ => return Ok(json!({"response": {"game_count": 0, "games": []}})),
-    };
-
-    let game_count = match &data["response"]["game_count"] {
-        Value::Number(count) => count.clone(),
-        _ => serde_json::Number::from(games.len()),
+        _ => return Ok(json!([])),
     };
 
     let filtered_games: Vec<GameData> = games
@@ -158,12 +159,7 @@ fn filter_game_data(data: &Value) -> Result<Value, String> {
         })
         .collect();
 
-    Ok(json!({
-        "response": {
-            "game_count": game_count,
-            "games": filtered_games
-        }
-    }))
+    Ok(json!(filtered_games))
 }
 
 #[tauri::command]
@@ -250,72 +246,6 @@ pub fn delete_user_games_list_files(
 }
 
 #[tauri::command]
-pub async fn get_achievement_data(
-    steam_id: String,
-    app_id: u32,
-    refetch: Option<bool>,
-    app_handle: tauri::AppHandle,
-) -> Result<Value, String> {
-    // Get the application data directory
-    let app_data_dir = app_handle
-        .path()
-        .app_data_dir()
-        .map_err(|e| e.to_string())?
-        .join("cache")
-        .join(steam_id.clone())
-        .join("achievement_data");
-
-    let file_name = format!("{}.json", app_id);
-    let achievement_file_path = app_data_dir.join(&file_name);
-
-    // Check if file already exists and whether we should use it
-    let should_fetch_new = refetch.unwrap_or(false) || !achievement_file_path.exists();
-
-    let achievement_data = if should_fetch_new {
-        // Fetch new data
-        let exe_path = get_lib_path()?;
-        let output = std::process::Command::new(exe_path)
-            .args(&["get_achievement_data", &app_id.to_string()])
-            .creation_flags(0x08000000)
-            .output()
-            .map_err(|e| format!("Failed to execute unlocker: {}", e))?;
-
-        let output_str = String::from_utf8_lossy(&output.stdout);
-
-        if output_str.contains("error") {
-            return Ok(output_str.to_string().into());
-        }
-
-        if output_str.contains("success") {
-            if achievement_file_path.exists() {
-                let mut file = File::open(&achievement_file_path)
-                    .map_err(|e| format!("Failed to open achievement file: {}", e))?;
-                let mut contents = String::new();
-                file.read_to_string(&mut contents)
-                    .map_err(|e| format!("Failed to read achievement file: {}", e))?;
-                serde_json::from_str(&contents)
-                    .map_err(|e| format!("Failed to parse achievement JSON: {}", e))?
-            } else {
-                json!({})
-            }
-        } else {
-            json!({})
-        }
-    } else {
-        // Read existing file
-        let mut file = File::open(&achievement_file_path)
-            .map_err(|e| format!("Failed to open achievement file: {}", e))?;
-        let mut contents = String::new();
-        file.read_to_string(&mut contents)
-            .map_err(|e| format!("Failed to read achievement file: {}", e))?;
-        serde_json::from_str(&contents)
-            .map_err(|e| format!("Failed to parse achievement JSON: {}", e))?
-    };
-
-    Ok(json!({"achievement_data": achievement_data}))
-}
-
-#[tauri::command]
 pub fn delete_all_cache_files(app_handle: tauri::AppHandle) -> Result<(), String> {
     // Get the cache data directory
     let cache_data_dir = app_handle
@@ -380,23 +310,4 @@ pub async fn get_free_games() -> Result<serde_json::Value, String> {
     }
 
     Ok(json!({ "games": free_games }))
-}
-
-#[tauri::command]
-pub async fn get_game_details(app_id: String) -> Result<Value, String> {
-    let url = format!(
-        "https://store.steampowered.com/api/appdetails/?l=english&appids={}",
-        app_id
-    );
-
-    let client = Client::new();
-
-    // Send the request and handle the response
-    match client.get(&url).send().await {
-        Ok(response) => {
-            let body: Value = response.json().await.map_err(|e| e.to_string())?;
-            Ok(body)
-        }
-        Err(err) => Err(err.to_string()),
-    }
 }

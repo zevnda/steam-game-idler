@@ -44,16 +44,6 @@ export default function GeneralSettings({ settings, setSettings, localSettings, 
 
             <SettingsCheckbox
                 type='general'
-                name='stealthIdle'
-                content='Hide idle windows (not recommended)'
-                settings={settings}
-                setSettings={setSettings}
-                localSettings={localSettings}
-                setLocalSettings={setLocalSettings}
-            />
-
-            <SettingsCheckbox
-                type='general'
                 name='antiAway'
                 content='Prevent away status on Steam'
                 settings={settings}

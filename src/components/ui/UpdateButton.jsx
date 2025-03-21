@@ -1,11 +1,11 @@
-import { invoke } from '@tauri-apps/api/core';
 import { addToast, Divider, Spinner, Tooltip } from '@heroui/react';
+import { invoke } from '@tauri-apps/api/core';
 import { relaunch } from '@tauri-apps/plugin-process';
 import { check } from '@tauri-apps/plugin-updater';
 import { useState } from 'react';
 import { TbDownload } from 'react-icons/tb';
 
-import { logEvent } from '@/utils/utils';
+import { logEvent } from '@/utils/global/tasks';
 
 export default function UpdateButton() {
     const [isLoading, setIsLoading] = useState(false);

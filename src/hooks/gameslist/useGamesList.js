@@ -4,10 +4,10 @@ import { useEffect, useState, useRef, useContext } from 'react';
 import { SearchContext } from '@/components/contexts/SearchContext';
 import { UserContext } from '@/components/contexts/UserContext';
 import { fetchGamesList, sortAndFilterGames } from '@/utils/gameslist/gamesListHandler';
-import { logEvent } from '@/utils/utils';
+import { logEvent } from '@/utils/global/tasks';
 
 export default function useGamesList() {
-    const { userSummary, gameList, setGameList } = useContext(UserContext);
+    const { userSummary, gamesList, setGamesList } = useContext(UserContext);
     const { isQuery, gameQueryValue, setGameQueryValue } = useContext(SearchContext);
     const scrollContainerRef = useRef(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -26,10 +26,10 @@ export default function useGamesList() {
                 setIsLoading(true);
                 const sortStyle = localStorage.getItem('sortStyle');
                 if (sortStyle) setSortStyle(sortStyle);
-                const { gameList, recentGames } = await fetchGamesList(userSummary.steamId, refreshKey, previousRefreshKeyRef.current);
-                setGameList(gameList);
-                setRecentGames(recentGames);
-                setVisibleGames(gameList.slice(0, gamesPerPage));
+                const { gamesList, recentGamesList } = await fetchGamesList(userSummary.steamId, refreshKey, previousRefreshKeyRef.current);
+                setGamesList(gamesList);
+                setRecentGames(recentGamesList);
+                setVisibleGames(gamesList.slice(0, gamesPerPage));
                 setIsLoading(false);
                 previousRefreshKeyRef.current = refreshKey;
             } catch (error) {
@@ -40,16 +40,16 @@ export default function useGamesList() {
             }
         };
         getGamesList();
-    }, [userSummary.steamId, refreshKey, setGameList]);
+    }, [userSummary.steamId, refreshKey, setGamesList]);
 
     useEffect(() => {
-        if (gameList && recentGames) {
-            const sortedAndFilteredGames = sortAndFilterGames(gameList, recentGames, sortStyle, isQuery, gameQueryValue);
+        if (gamesList && recentGames) {
+            const sortedAndFilteredGames = sortAndFilterGames(gamesList, recentGames, sortStyle, isQuery, gameQueryValue);
             setFilteredGames(sortedAndFilteredGames);
             setVisibleGames(sortedAndFilteredGames.slice(0, gamesPerPage));
             setCurrentPage(1);
         }
-    }, [gameList, recentGames, sortStyle, isQuery, gameQueryValue]);
+    }, [gamesList, recentGames, sortStyle, isQuery, gameQueryValue]);
 
     useEffect(() => {
         setGameQueryValue('');
@@ -86,7 +86,7 @@ export default function useGamesList() {
     return {
         scrollContainerRef,
         isLoading,
-        gameList,
+        gamesList,
         filteredGames,
         visibleGames,
         sortStyle,

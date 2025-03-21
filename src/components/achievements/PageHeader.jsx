@@ -9,7 +9,7 @@ import { SearchContext } from '@/components/contexts/SearchContext';
 import { StateContext } from '@/components/contexts/StateContext';
 import { UserContext } from '@/components/contexts/UserContext';
 import ExtLink from '@/components/ui/ExtLink';
-import { logEvent } from '@/utils/utils';
+import { logEvent } from '@/utils/global/tasks';
 
 export default function PageHeader({ protectedAchievements, protectedStatistics }) {
     const { userSummary, setAchievementsUnavailable, setStatisticsUnavailable } = useContext(UserContext);

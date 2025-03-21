@@ -5,7 +5,7 @@ import { TbPlayerStopFilled } from 'react-icons/tb';
 
 import { IdleContext } from '@/components/contexts/IdleContext';
 import GameCard from '@/components/ui/GameCard';
-import { logEvent } from '@/utils/utils';
+import { logEvent } from '@/utils/global/tasks';
 
 export default function IdlingGamesList() {
     const { idleGamesList, setIdleGamesList } = useContext(IdleContext);
@@ -13,7 +13,8 @@ export default function IdlingGamesList() {
     const handleStopIdleAll = async () => {
         try {
             const response = await invoke('kill_all_steamutil_processes');
-            if (response.includes('success')) {
+            if (response.success) {
+                addToast({ description: `Stopped idling ${response?.killed_count || 'all'} game(s)`, color: 'success' });
                 setIdleGamesList([]);
             } else {
                 addToast({ description: 'Failed to stop idling all games', color: 'danger' });
@@ -33,9 +34,6 @@ export default function IdlingGamesList() {
                         <div className='flex flex-col justify-center'>
                             <p className='text-lg font-semibold'>
                                 Idling Games
-                                <span className='text-[9px] text-altwhite border border-altwhite rounded-full px-1 ml-1 align-top select-none'>
-                                    beta
-                                </span>
                             </p>
                             <div className='flex gap-1'>
                                 <p className='text-xs text-altwhite'>

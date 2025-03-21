@@ -3,7 +3,7 @@ import { invoke } from '@tauri-apps/api/core';
 import { useContext, useEffect, useState } from 'react';
 
 import { UserContext } from '@/components/contexts/UserContext';
-import { logEvent } from '@/utils/utils';
+import { logEvent } from '@/utils/global/tasks';
 
 export default function useSetup() {
     const { setUserSummary } = useContext(UserContext);

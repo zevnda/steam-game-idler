@@ -1,14 +1,15 @@
 import { addToast } from '@heroui/react';
 import { Time } from '@internationalized/date';
 import { invoke } from '@tauri-apps/api/core';
+import { isPermissionGranted, requestPermission, sendNotification } from '@tauri-apps/plugin-notification';
 
-import { fetchFreeGames, logEvent, sendNativeNotification, startIdle } from '@/utils/utils';
+import { startIdle } from '@/utils/global/idle';
+import { logEvent } from '@/utils/global/tasks';
 
 // Set default settings and updates user summary
 export const defaultSettings = (setUserSummary) => {
     const defaultSettings = {
         general: {
-            stealthIdle: false,
             antiAway: false,
             freeGameNotifications: true,
         },
@@ -45,7 +46,7 @@ export const checkForFreeGames = async (setFreeGamesList, setShowFreeGamesTab) =
     try {
         const settings = JSON.parse(localStorage.getItem('settings')) || {};
         const freeGameNotifications = settings?.general?.freeGameNotifications;
-        const freeGamesList = await fetchFreeGames();
+        const freeGamesList = await getFreeGames();
 
         // Compare the new free games with the old ones
         const oldFreeGameIds = JSON.parse(localStorage.getItem('freeGamesIds')) || [];
@@ -80,15 +81,21 @@ export const startAutoIdleGames = async () => {
     try {
         const userSummary = JSON.parse(localStorage.getItem('userSummary'));
         if (userSummary && userSummary?.steamId) {
-            const response = await invoke('get_custom_lists', { steamId: userSummary.steamId, list: 'autoIdleList' });
-            if (!response.error && response.list_data.length > 0) {
-                const autoIdleGames = response.list_data;
-                const gameIds = autoIdleGames.map(game => game.appid.toString());
-                const notRunningIds = await invoke('check_process_by_game_id', { ids: gameIds });
-                for (const id of notRunningIds) {
-                    const game = autoIdleGames.find(g => g.appid.toString() === id);
-                    if (game) {
-                        await startIdle(game.appid, game.name, false, true);
+            const customLists = await invoke('get_custom_lists', { steamId: userSummary.steamId, list: 'autoIdleList' });
+            if (!customLists.error && customLists.list_data.length > 0) {
+                const autoIdleGames = customLists.list_data;
+                const gameIds = autoIdleGames.map(game => game.appid);
+
+                const response = await invoke('get_running_processes');
+                const processes = response?.processes;
+                const runningIdlers = processes.map(p => p.appid);
+
+                // Start idling games that are not running
+                const gamesToIdle = gameIds.filter(id => !runningIdlers.includes(id));
+                for (const appid of gamesToIdle) {
+                    const game = autoIdleGames.find(g => g.appid === appid);
+                    if (!runningIdlers.includes(appid)) {
+                        await startIdle(game.appid, game.name, true);
                     }
                 }
             }
@@ -99,3 +106,37 @@ export const startAutoIdleGames = async () => {
         logEvent(`[Error] in (startAutoIdleGames): ${error}`);
     }
 };
+
+// Get free games
+async function getFreeGames() {
+    try {
+        const res = await invoke('get_free_games');
+        if (res) {
+            return res;
+        }
+        return [];
+    } catch (error) {
+        console.error('Error in (getFreeGames):', error);
+        logEvent(`[Error] in (getFreeGames): ${error}`);
+        return false;
+    }
+}
+
+// Send a native notification
+async function sendNativeNotification(title, body) {
+    try {
+        let permissionGranted = await isPermissionGranted();
+
+        if (!permissionGranted) {
+            const permission = await requestPermission();
+            permissionGranted = permission === 'granted';
+        }
+
+        if (permissionGranted) {
+            sendNotification({ title, body, });
+        }
+    } catch (error) {
+        console.error('Error in (sendNativeNotification):', error);
+        logEvent(`[Error] in (sendNativeNotification): ${error}`);
+    }
+}

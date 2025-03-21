@@ -2,7 +2,10 @@ import { addToast } from '@heroui/react';
 import { invoke } from '@tauri-apps/api/core';
 
 import ErrorToast from '@/components/ui/ErrorToast';
-import { formatTime, getRandomDelay, isWithinSchedule, logEvent, startIdle, stopIdle, unlockAchievement } from '@/utils/utils';
+import { unlockAchievement } from '@/utils/global/achievements';
+import { isWithinSchedule } from '@/utils/global/automation';
+import { startIdle, stopIdle } from '@/utils/global/idle';
+import { logEvent } from '@/utils/global/tasks';
 
 export const useAchievementUnlocker = async (
     isInitialDelay,
@@ -15,6 +18,8 @@ export const useAchievementUnlocker = async (
     isMountedRef,
     abortControllerRef
 ) => {
+    let hasInitialDelayOccurred = !isInitialDelay;
+
     const startAchievementUnlocker = async () => {
         try {
             let currentGame = null;
@@ -28,10 +33,11 @@ export const useAchievementUnlocker = async (
             });
 
             // Delay for 10 seconds before starting
-            if (isInitialDelay) {
+            if (!hasInitialDelayOccurred) {
                 startCountdown(10000 / 60000, setCountdownTimer);
                 await delay(10000, isMountedRef, abortControllerRef);
                 setIsInitialDelay(false);
+                hasInitialDelayOccurred = true;
             }
 
             // Check if there are no games left to unlock achievements for
@@ -44,7 +50,7 @@ export const useAchievementUnlocker = async (
 
             // Fetch achievements for the current game
             const achievementUnlockerGame = achievementUnlockerList.list_data[0];
-            const { achievements, game, error } = await fetchAchievements(achievementUnlockerGame, setAchievementCount);
+            const { achievements, game } = await fetchAchievements(achievementUnlockerGame, setAchievementCount);
 
             currentGame = game;
             setCurrentGame(game);
@@ -61,12 +67,12 @@ export const useAchievementUnlocker = async (
                     abortControllerRef
                 );
             } else {
-                if (!error) removeGameFromUnlockerList(game.appid);
+                await removeGameFromUnlockerList(game.appid);
                 logEvent(`[Achievement Unlocker] ${game.name} (${game.appid}) has no achievements remaining - removed`);
             }
 
             // Rerun if component is still mounted - needed check if user stops feature during loop
-            if (isMountedRef.current && !error) startAchievementUnlocker();
+            if (isMountedRef.current) startAchievementUnlocker();
         } catch (error) {
             handleError('startAchievementUnlocker', error);
         }
@@ -159,7 +165,7 @@ const unlockAchievements = async (
                     }
                     await waitUntilInSchedule(scheduleFrom, scheduleTo, isMountedRef, setIsWaitingForSchedule, abortControllerRef);
                 } else if (!isGameIdling && idle) {
-                    await startIdle(game.appid, game.name, false, false);
+                    await startIdle(game.appid, game.name, false);
                     isGameIdling = true;
                 }
 
@@ -181,7 +187,7 @@ const unlockAchievements = async (
                 // Stop idling and remove game from list if max achievement unlocks is reached
                 if (achievementsRemaining === 0 || (maxAchievementUnlocks && achievementsRemaining <= achievements.length - maxAchievementUnlocks)) {
                     await stopIdle(game.appid, game.name);
-                    removeGameFromUnlockerList(game.appid);
+                    await removeGameFromUnlockerList(game.appid);
                     logEvent(`[Achievement Unlocker] Unlocked ${achievements.length - maxAchievementUnlocks}/${achievements.length} achievements for ${game.name} - removed`);
                     break;
                 }
@@ -189,7 +195,7 @@ const unlockAchievements = async (
                 // Stop idling and remove game from list if all achievements are unlocked
                 if (achievementsRemaining === 0) {
                     await stopIdle(game.appid, game.name);
-                    removeGameFromUnlockerList(game.appid);
+                    await removeGameFromUnlockerList(game.appid);
                     break;
                 }
 
@@ -308,6 +314,19 @@ const delay = (ms, isMountedRef, abortControllerRef) => {
     } catch (error) {
         handleError('delay', error);
     }
+};
+
+// Get a random delay between a minimum and maximum value
+export function getRandomDelay(min, max) {
+    return Math.floor(Math.random() * ((max - min) * 60 * 1000 + 1)) + min * 60 * 1000;
+};
+
+// Format time in HH:MM:SS format
+export function formatTime(ms) {
+    const hours = Math.floor(ms / 3600000);
+    const minutes = Math.floor((ms % 3600000) / 60000);
+    const seconds = Math.floor((ms % 60000) / 1000);
+    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 };
 
 // Handle errors

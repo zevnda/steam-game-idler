@@ -1,6 +1,8 @@
 import { invoke } from '@tauri-apps/api/core';
 
-import { checkDrops, getAllGamesWithDrops, logEvent, startFarmIdle, stopFarmIdle } from '@/utils/utils';
+import { checkDrops, getAllGamesWithDrops } from '@/utils/global/automation';
+import { startFarmIdle, stopFarmIdle } from '@/utils/global/idle';
+import { logEvent } from '@/utils/global/tasks';
 
 export const useCardFarming = async (
     setIsComplete,

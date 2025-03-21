@@ -5,7 +5,7 @@ import { useContext } from 'react';
 import { StateContext } from '@/components/contexts/StateContext';
 import { UserContext } from '@/components/contexts/UserContext';
 import ErrorToast from '@/components/ui/ErrorToast';
-import { logEvent } from '@/utils/utils';
+import { logEvent } from '@/utils/global/tasks';
 
 // Automate card farming and achievement unlocking
 export const useAutomate = () => {
@@ -16,7 +16,7 @@ export const useAutomate = () => {
         try {
             // Retrieve user summary from local storage
             // Check if Steam is running
-            const steamRunning = await invoke('check_status');
+            const steamRunning = await invoke('is_steam_running');
             // Retrieve Steam cookies from local storage
             const steamCookies = JSON.parse(localStorage.getItem('steamCookies')) || {};
             // Retrieve settings from local storage
@@ -77,7 +77,7 @@ export const useAutomate = () => {
     const startAchievementUnlocker = async () => {
         try {
             // Check if Steam is running
-            const steamRunning = await invoke('check_status');
+            const steamRunning = await invoke('is_steam_running');
             // Retrieve settings from local storage
             const settings = JSON.parse(localStorage.getItem('settings')) || {};
             if (!steamRunning) {
