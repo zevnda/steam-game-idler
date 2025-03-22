@@ -3,7 +3,7 @@ import { invoke } from '@tauri-apps/api/core';
 import { relaunch } from '@tauri-apps/plugin-process';
 import { check } from '@tauri-apps/plugin-updater';
 import { useContext, useState } from 'react';
-import { TbLayoutNavbarExpand } from 'react-icons/tb';
+import { TbBookFilled, TbBugFilled, TbBulbFilled, TbDownload, TbLayoutNavbarExpand, TbListCheck, TbStarFilled } from 'react-icons/tb';
 
 import { UpdateContext } from '@/components/contexts/UpdateContext';
 import ExtLink from '@/components/ui/ExtLink';
@@ -44,31 +44,31 @@ export default function HeaderMenu() {
                     <TbLayoutNavbarExpand fontSize={20} />
                 </DropdownTrigger>
                 <DropdownMenu aria-label='Settings actions' className='text-content'>
-                    <DropdownItem key='help' className='rounded p-0 m-0' textValue='Help' classNames={{ base: ['data-[hover=true]:!bg-titlehover data-[hover=true]:!text-content'] }}>
-                        <ExtLink href='https://steamgameidler.vercel.app/' className='flex text-sm w-full px-2 py-1'>
-                            Help Getting Started
+                    <DropdownItem showDivider key='help' startContent={<TbBookFilled size={18} />} className='rounded p-1' textValue='Help' classNames={{ base: ['data-[hover=true]:!bg-titlehover data-[hover=true]:!text-content'] }}>
+                        <ExtLink href='https://steamgameidler.vercel.app/' className='flex text-sm w-full'>
+                            User Guide
                         </ExtLink>
                     </DropdownItem>
-                    <DropdownItem key='report' className='rounded p-0 m-0' textValue='Report an issue' classNames={{ base: ['data-[hover=true]:!bg-titlehover data-[hover=true]:!text-content'] }}>
-                        <ExtLink href='https://github.com/zevnda/steam-game-idler/issues/new?assignees=zevnda&labels=bug%2Cinvestigating&projects=&template=issue_report.yml&title=Title' className='flex text-sm w-full px-2 py-1'>
+                    <DropdownItem key='report' startContent={<TbBugFilled size={18} />} className='rounded p-1' textValue='Report an issue' classNames={{ base: ['data-[hover=true]:!bg-titlehover data-[hover=true]:!text-content'] }}>
+                        <ExtLink href='https://github.com/zevnda/steam-game-idler/issues/new?assignees=zevnda&labels=bug%2Cinvestigating&projects=&template=issue_report.yml&title=Title' className='flex text-sm w-full'>
                             Report an Issue
                         </ExtLink>
                     </DropdownItem>
-                    <DropdownItem key='feature' className='rounded p-0 m-0' textValue='Feature request' classNames={{ base: ['data-[hover=true]:!bg-titlehover data-[hover=true]:!text-content'] }}>
-                        <ExtLink href='https://github.com/zevnda/steam-game-idler/issues/new?assignees=zevnda&labels=feature+request&projects=&template=feature_request.yml&title=Title' className='flex text-sm w-full px-2 py-1'>
-                            Feature Request
+                    <DropdownItem showDivider key='feature' startContent={<TbBulbFilled size={18} />} className='rounded p-1' textValue='Feature request' classNames={{ base: ['data-[hover=true]:!bg-titlehover data-[hover=true]:!text-content'] }}>
+                        <ExtLink href='https://github.com/zevnda/steam-game-idler/issues/new?assignees=zevnda&labels=feature+request&projects=&template=feature_request.yml&title=Title' className='flex text-sm w-full'>
+                            Request a Feature
                         </ExtLink>
                     </DropdownItem>
-                    <DropdownItem key='support-me' className='rounded p-0 m-0' textValue='Support me' classNames={{ base: ['data-[hover=true]:!bg-titlehover data-[hover=true]:!text-content'] }}>
-                        <ExtLink href='https://github.com/sponsors/zevnda' className='flex text-sm w-full px-2 py-1'>
-                            Support Me
+                    <DropdownItem showDivider key='support-me' startContent={<TbStarFilled size={18} />} className='rounded p-1' textValue='Support me' classNames={{ base: ['data-[hover=true]:!bg-titlehover data-[hover=true]:!text-content'] }}>
+                        <ExtLink href='https://github.com/sponsors/zevnda' className='flex text-sm w-full'>
+                            Support the Project
                         </ExtLink>
                     </DropdownItem>
-                    <DropdownItem key='changelog' className='rounded px-2 py-1' textValue='Changelog' onPress={() => setShowChangelog(true)} classNames={{ base: ['data-[hover=true]:!bg-titlehover data-[hover=true]:!text-content'] }}>
+                    <DropdownItem key='changelog' startContent={<TbListCheck size={18} />} className='rounded p-1' textValue='Changelog' onPress={() => setShowChangelog(true)} classNames={{ base: ['data-[hover=true]:!bg-titlehover data-[hover=true]:!text-content'] }}>
                         View Changelog
                     </DropdownItem>
-                    <DropdownItem key='updates' className='rounded p-0 m-0' textValue='Check for updates' onPress={handleUpdate} classNames={{ base: ['data-[hover=true]:!bg-titlehover data-[hover=true]:!text-content'] }}>
-                        <p className='flex  w-full px-2 py-1'>
+                    <DropdownItem key='updates' startContent={<TbDownload size={18} />} className='rounded p-1' textValue='Check for updates' onPress={handleUpdate} classNames={{ base: ['data-[hover=true]:!bg-titlehover data-[hover=true]:!text-content'] }}>
+                        <p className='flex  w-full'>
                             Check for Updates..
                         </p>
                     </DropdownItem>
