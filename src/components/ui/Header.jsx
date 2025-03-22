@@ -7,6 +7,7 @@ import { SearchContext } from '@/components/contexts/SearchContext';
 import { StateContext } from '@/components/contexts/StateContext';
 import { UpdateContext } from '@/components/contexts/UpdateContext';
 import Notifications from '@/components/notifications/Notifications';
+import HeaderMenu from '@/components/ui/HeaderMenu';
 import SearchBar from '@/components/ui/SearchBar';
 import UpdateButton from '@/components/ui/UpdateButton';
 import useHeader from '@/hooks/ui/useHeader';
@@ -30,6 +31,10 @@ export default function Header() {
                     {updateAvailable && (<UpdateButton />)}
 
                     <Notifications />
+
+                    <Divider className='w-[1px] h-6 bg-border' />
+
+                    <HeaderMenu />
 
                     <Divider className='w-[1px] h-6 bg-border' />
 

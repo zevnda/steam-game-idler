@@ -3,3 +3,4 @@
 ## Changelog
 - Fixed an issue where idling games were not being stopped before installing updates
 - Logging out of the current user via the `sidebar` will now cause all idling games to be stopped
+- Moved the dropdown menu that was previously in `settings` to the header
