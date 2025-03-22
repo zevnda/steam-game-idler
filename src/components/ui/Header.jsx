@@ -10,6 +10,7 @@ import Notifications from '@/components/notifications/Notifications';
 import SearchBar from '@/components/ui/SearchBar';
 import UpdateButton from '@/components/ui/UpdateButton';
 import useHeader from '@/hooks/ui/useHeader';
+import HeaderMenu from './HeaderMenu';
 
 export default function Header() {
     const { isDarkMode } = useContext(StateContext);
@@ -30,6 +31,10 @@ export default function Header() {
                     {updateAvailable && (<UpdateButton />)}
 
                     <Notifications />
+
+                    <Divider className='w-[1px] h-6 bg-border' />
+
+                    <HeaderMenu />
 
                     <Divider className='w-[1px] h-6 bg-border' />
 

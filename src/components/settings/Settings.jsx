@@ -8,7 +8,6 @@ import ExportSettings from '@/components/settings/ExportSettings';
 import GeneralSettings from '@/components/settings/GeneralSettings';
 import Logs from '@/components/settings/Logs';
 import ResetSettings from '@/components/settings/ResetSettings';
-import SettingsMenu from '@/components/settings/SettingsMenu';
 import { getAppVersion, getDefaultSettings, getUpdatedSettings } from '@/utils/settings/settingsHandler';
 
 export default function Settings() {
@@ -60,7 +59,6 @@ export default function Settings() {
                         <ResetSettings setSettings={setSettings} setRefreshKey={setRefreshKey} />
                         <ClearData />
                         <ExportSettings />
-                        <SettingsMenu />
                     </div>
                 </div>
 
