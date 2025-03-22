@@ -7,10 +7,10 @@ import { SearchContext } from '@/components/contexts/SearchContext';
 import { StateContext } from '@/components/contexts/StateContext';
 import { UpdateContext } from '@/components/contexts/UpdateContext';
 import Notifications from '@/components/notifications/Notifications';
+import HeaderMenu from '@/components/ui/HeaderMenu';
 import SearchBar from '@/components/ui/SearchBar';
 import UpdateButton from '@/components/ui/UpdateButton';
 import useHeader from '@/hooks/ui/useHeader';
-import HeaderMenu from './HeaderMenu';
 
 export default function Header() {
     const { isDarkMode } = useContext(StateContext);

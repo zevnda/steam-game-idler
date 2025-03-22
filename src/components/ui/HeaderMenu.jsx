@@ -1,11 +1,9 @@
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@heroui/react';
-
-import { TbLayoutNavbarExpand } from 'react-icons/tb';
-
 import { invoke } from '@tauri-apps/api/core';
 import { relaunch } from '@tauri-apps/plugin-process';
 import { check } from '@tauri-apps/plugin-updater';
 import { useContext, useState } from 'react';
+import { TbLayoutNavbarExpand } from 'react-icons/tb';
 
 import { UpdateContext } from '@/components/contexts/UpdateContext';
 import ExtLink from '@/components/ui/ExtLink';
