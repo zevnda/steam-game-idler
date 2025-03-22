@@ -1,5 +1,4 @@
-import { addToast, Button, Tooltip } from '@heroui/react';
-import { invoke } from '@tauri-apps/api/core';
+import { Button, Tooltip } from '@heroui/react';
 import Image from 'next/image';
 import { useContext, memo, useMemo } from 'react';
 import { FixedSizeList as List } from 'react-window';
@@ -8,8 +7,8 @@ import AchievementButtons from '@/components/achievements/AchievementButtons';
 import { SearchContext } from '@/components/contexts/SearchContext';
 import { StateContext } from '@/components/contexts/StateContext';
 import { UserContext } from '@/components/contexts/UserContext';
-import ErrorToast from '@/components/ui/ErrorToast';
 import { toggleAchievement } from '@/utils/global/achievements';
+import { checkSteamStatus } from '@/utils/global/tasks';
 
 const Row = memo(({ index, style, data }) => {
     const { userSummary, appId, appName, filteredAchievements, updateAchievement } = data;
@@ -27,16 +26,8 @@ const Row = memo(({ index, style, data }) => {
 
     const handleToggle = async () => {
         // Check if Steam is running
-        const steamRunning = await invoke('is_steam_running');
-        if (!steamRunning) {
-            return addToast({
-                description: <ErrorToast
-                    message='Steam is not running'
-                    href='https://steamgameidler.vercel.app/faq#error-messages:~:text=Steam%20is%20not%20running'
-                />,
-                color: 'danger'
-            });
-        }
+        const isSteamRunning = await checkSteamStatus(true);
+        if (!isSteamRunning) return;
         const success = await toggleAchievement(
             userSummary.steamId,
             appId,

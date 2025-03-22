@@ -1,11 +1,10 @@
-import { addToast } from '@heroui/react';
 import { invoke } from '@tauri-apps/api/core';
 import { useContext, useEffect } from 'react';
 
 import { StateContext } from '@/components/contexts/StateContext';
 import { UserContext } from '@/components/contexts/UserContext';
-import ErrorToast from '@/components/ui/ErrorToast';
-import { logEvent } from '@/utils/global/tasks';
+import { checkSteamStatus, logEvent } from '@/utils/global/tasks';
+import { showAccountMismatchToast, showDangerToast } from '@/utils/global/toasts';
 
 export default function useAchievements(setIsLoading,
     setAchievements,
@@ -20,17 +19,8 @@ export default function useAchievements(setIsLoading,
         const getAchievementData = async () => {
             try {
                 // Check if Steam is running
-                const steamRunning = await invoke('is_steam_running');
-                if (!steamRunning) {
-                    setIsLoading(false);
-                    addToast({
-                        description: <ErrorToast
-                            message='Steam is not running'
-                            href='https://steamgameidler.vercel.app/faq#error-messages:~:text=Steam%20is%20not%20running'
-                        />,
-                        color: 'danger'
-                    });
-                }
+                const isSteamRunning = checkSteamStatus(true);
+                if (!isSteamRunning) return setIsLoading(false);
 
                 const response = await invoke('get_achievement_data', { steamId: userSummary.steamId, appId });
 
@@ -38,13 +28,7 @@ export default function useAchievements(setIsLoading,
                     setIsLoading(false);
                     setAchievementsUnavailable(true);
                     setStatisticsUnavailable(true);
-                    addToast({
-                        description: <ErrorToast
-                            message='Account mismatch between Steam and SGI'
-                            href='https://steamgameidler.vercel.app/faq#error-messages:~:text=Account%20mismatch%20between%20Steam%20and%20SGI'
-                        />,
-                        color: 'danger'
-                    });
+                    showAccountMismatchToast('danger');
                     logEvent(`Error in (getAchievementData): ${response}`);
                     return;
                 }
@@ -80,7 +64,7 @@ export default function useAchievements(setIsLoading,
                 setIsLoading(false);
                 setAchievementsUnavailable(true);
                 setStatisticsUnavailable(true);
-                addToast({ description: 'Error fetching achievement data', color: 'danger' });
+                showDangerToast('Error fetching achievement data');
                 console.error('Error in (getAchievementData):', error);
                 logEvent(`Error in (getAchievementData): ${error}`);
             }

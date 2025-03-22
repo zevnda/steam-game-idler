@@ -1,16 +1,15 @@
-import { addToast } from '@heroui/react';
 import { invoke } from '@tauri-apps/api/core';
 
-import ErrorToast from '@/components/ui/ErrorToast';
 import { startIdle } from '@/utils/global/idle';
-import { logEvent } from '@/utils/global/tasks';
+import { checkSteamStatus, logEvent } from '@/utils/global/tasks';
+import { showDangerToast, showSuccessToast } from '@/utils/global/toasts';
 
 export const handleIdle = async (item) => {
     const success = await startIdle(item.appid, item.name, true);
     if (success) {
-        addToast({ description: `Started idling ${item.name} (${item.appid})`, color: 'success' });
+        showSuccessToast(`Started idling ${item.name} (${item.appid})`);
     } else {
-        addToast({ description: `Failed to start idling ${item.name} (${item.appid})`, color: 'danger' });
+        showDangerToast(`Failed to start idling ${item.name} (${item.appid})`);
     }
 };
 
@@ -20,12 +19,12 @@ export const handleStopIdle = async (item, idleGamesList, setIdleGamesList) => {
         const response = await invoke('kill_process_by_pid', { pid: game.pid });
         if (response.success) {
             setIdleGamesList(idleGamesList.filter((i) => i.pid !== item.pid));
-            addToast({ description: `Stopped idling ${item.name}`, color: 'success' });
+            showSuccessToast(`Stopped idling ${item.name}`);
         } else {
-            addToast({ description: `Failed to stop idling ${item.name}`, color: 'danger' });
+            showDangerToast(`Failed to stop idling ${item.name}`);
         }
     } catch (error) {
-        addToast({ description: `Failed to stop idling ${item.name}`, color: 'danger' });
+        showDangerToast('An error occurred. Check the logs for more information');
         console.error('Error in handleStopIdle:', error);
         logEvent(`Error in (handleStopIdle): ${error}`);
     }
@@ -33,16 +32,8 @@ export const handleStopIdle = async (item, idleGamesList, setIdleGamesList) => {
 
 export const viewAchievments = async (item, setAppId, setAppName, setShowAchievements) => {
     // Check if Steam is running
-    const steamRunning = await invoke('is_steam_running');
-    if (!steamRunning) {
-        return addToast({
-            description: <ErrorToast
-                message='Steam is not running'
-                href='https://steamgameidler.vercel.app/faq#error-messages:~:text=Steam%20is%20not%20running'
-            />,
-            color: 'danger'
-        });
-    }
+    const isSteamRunning = checkSteamStatus(true);
+    if (!isSteamRunning) return;
 
     setAppId(item.appid);
     setAppName(item.name);

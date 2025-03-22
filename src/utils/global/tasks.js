@@ -1,6 +1,19 @@
-import { addToast } from '@heroui/react';
 import { getVersion } from '@tauri-apps/api/app';
 import { invoke } from '@tauri-apps/api/core';
+
+import { showDangerToast, showSteamNotRunningToast } from '@/utils/global/toasts';
+
+export async function checkSteamStatus(showToast = false) {
+    try {
+        const isSteamRunning = await invoke('is_steam_running');
+        if (!isSteamRunning && showToast) showSteamNotRunningToast();
+        return isSteamRunning;
+    } catch (error) {
+        console.error('Error in (isSteamRunning):', error);
+        logEvent(`[Error] in (isSteamRunning): ${error}`);
+        return false;
+    }
+}
 
 // Fetch the latest.json for tauri updater
 export async function fetchLatest() {
@@ -63,7 +76,7 @@ export const preserveKeysAndClearData = async () => {
             localStorage.setItem(key, value);
         });
     } catch (error) {
-        addToast({ description: `Error in (preserveKeysAndClearData): ${error?.message || error}`, color: 'danger' });
+        showDangerToast('An error occurred. Check the logs for more information');
         console.error('Error in (preserveKeysAndClearData):', error);
         logEvent(`[Error] in (preserveKeysAndClearData): ${error}`);
     }

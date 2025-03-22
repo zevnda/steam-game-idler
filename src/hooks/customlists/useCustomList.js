@@ -1,9 +1,9 @@
-import { addToast } from '@heroui/react';
 import { invoke } from '@tauri-apps/api/core';
 import { useContext, useState, useRef, useEffect } from 'react';
 
 import { StateContext } from '@/components/contexts/StateContext';
 import { UserContext } from '@/components/contexts/UserContext';
+import { showDangerToast } from '@/utils/global/toasts';
 
 export default function useCustomList(listName) {
     const { isAchievementUnlocker, isCardFarming } = useContext(StateContext);
@@ -24,7 +24,7 @@ export default function useCustomList(listName) {
             if (!response.error) {
                 setList(response.list_data);
             } else {
-                addToast({ description: response.error, color: 'danger' });
+                showDangerToast(response.error);
                 setList([]);
             }
         };
@@ -62,7 +62,7 @@ export default function useCustomList(listName) {
         if (!response.error) {
             setList(response.list_data);
         } else {
-            addToast({ description: response.error, color: 'danger' });
+            showDangerToast(response.error);
         }
     };
 
@@ -81,10 +81,10 @@ export default function useCustomList(listName) {
             if (!addResponse.error) {
                 setList(addResponse.list_data);
             } else {
-                addToast({ description: addResponse.error, color: 'danger' });
+                showDangerToast(addResponse.error);
             }
         } else {
-            addToast({ description: clearResponse.error, color: 'danger' });
+            showDangerToast(clearResponse.error);
         }
     };
 
@@ -100,7 +100,7 @@ export default function useCustomList(listName) {
                 setShowInList(false);
             }
         } else {
-            addToast({ description: response.error, color: 'danger' });
+            showDangerToast(response.error);
         }
     };
 
@@ -113,7 +113,7 @@ export default function useCustomList(listName) {
         if (!response.error) {
             setList(response.list_data);
         } else {
-            addToast({ description: response.error, color: 'danger' });
+            showDangerToast(response.error);
         }
     };
 
@@ -127,7 +127,7 @@ export default function useCustomList(listName) {
             setList([]);
             setShowInList(false);
         } else {
-            addToast({ description: response.error, color: 'danger' });
+            showDangerToast(response.error);
         }
     };
 

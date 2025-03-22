@@ -1,4 +1,4 @@
-import { addToast, Alert, Button, Tooltip } from '@heroui/react';
+import { Alert, Button, Tooltip } from '@heroui/react';
 import { invoke } from '@tauri-apps/api/core';
 import { useContext } from 'react';
 import { SiSteam, SiSteamdb } from 'react-icons/si';
@@ -10,6 +10,7 @@ import { StateContext } from '@/components/contexts/StateContext';
 import { UserContext } from '@/components/contexts/UserContext';
 import ExtLink from '@/components/ui/ExtLink';
 import { logEvent } from '@/utils/global/tasks';
+import { showDangerToast } from '@/utils/global/toasts';
 
 export default function PageHeader({ protectedAchievements, protectedStatistics }) {
     const { userSummary, setAchievementsUnavailable, setStatisticsUnavailable } = useContext(UserContext);
@@ -32,7 +33,7 @@ export default function PageHeader({ protectedAchievements, protectedStatistics 
             const filePath = `cache\\${userSummary.steamId}\\achievement_data\\${appId}.json`;
             await invoke('open_file_explorer', { path: filePath });
         } catch (error) {
-            addToast({ description: `Error in (handleOpenLogFile): ${error?.message || error}`, color: 'danger' });
+            showDangerToast('An error occurred. Check the logs for more information');
             console.error('Error in (handleOpenLogFile):', error);
             logEvent(`[Error] in (handleOpenLogFile): ${error}`);
         }

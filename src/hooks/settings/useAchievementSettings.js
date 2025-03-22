@@ -1,7 +1,7 @@
-import { addToast } from '@heroui/react';
 import { useState, useEffect } from 'react';
 
 import { logEvent } from '@/utils/global/tasks';
+import { showDangerToast } from '@/utils/global/toasts';
 
 export const useAchievementSettings = (settings, setLocalSettings) => {
     const [labelInterval, setLabelInterval] = useState(null);
@@ -32,7 +32,7 @@ export const achievementCheckboxChange = (e, localSettings, setLocalSettings, se
             logEvent(`[Settings - Achievement Unlocker] Changed '${name}' to '${checked}'`);
         }
     } catch (error) {
-        addToast({ description: `Error in (handleCheckboxChange): ${error?.message || error}`, color: 'danger' });
+        showDangerToast('An error occurred. Check the logs for more information');
         console.error('Error in (handleCheckboxChange):', error);
         logEvent(`[Error] in (handleCheckboxChange): ${error}`);
     }
@@ -53,7 +53,7 @@ export const handleSliderChange = (e, localSettings, setLocalSettings, setSettin
             logEvent(`[Settings - Achievement Unlocker] Changed 'interval' to '${e}'`);
         }
     } catch (error) {
-        addToast({ description: `Error in (handleSliderChange): ${error?.message || error}`, color: 'danger' });
+        showDangerToast('An error occurred. Check the logs for more information');
         console.error('Error in (handleSliderChange):', error);
         logEvent(`[Error] in (handleSliderChange): ${error}`);
     }
@@ -74,7 +74,7 @@ export const handleScheduleChange = (value, type, localSettings, setLocalSetting
             logEvent(`[Settings - Achievement Unlocker] Changed '${type}' to '${value.toString()}'`);
         }
     } catch (error) {
-        addToast({ description: `Error in (handleScheduleChange): ${error?.message || error}`, color: 'danger' });
+        showDangerToast('An error occurred. Check the logs for more information');
         console.error('Error in (handleScheduleChange):', error);
         logEvent(`[Error] in (handleScheduleChange): ${error}`);
     }
@@ -92,7 +92,7 @@ const updateSettings = (newSettings, setLocalSettings, setSettings) => {
     try {
         localStorage.setItem('settings', JSON.stringify(newSettings));
     } catch (error) {
-        addToast({ description: `Error in (updateSettings): ${error?.message || error}`, color: 'danger' });
+        showDangerToast('An error occurred. Check the logs for more information');
         console.error('Error in (updateSettings):', error);
         logEvent(`[Error] in (updateSettings): ${error}`);
     }

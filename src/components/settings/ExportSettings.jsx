@@ -1,5 +1,6 @@
-import { addToast, Button } from '@heroui/react';
+import { Button } from '@heroui/react';
 
+import { showDangerToast, showSuccessToast } from '@/utils/global/toasts';
 import { getAppVersion } from '@/utils/settings/settingsHandler';
 
 export default function ExportSettings() {
@@ -29,9 +30,9 @@ export default function ExportSettings() {
         }
         const allSettingsString = JSON.stringify(allSettings, null, 2);
         navigator.clipboard.writeText(allSettingsString).then(() => {
-            addToast({ description: 'Data copied to clipboard', color: 'success' });
+            showSuccessToast('Data copied to clipboard');
         }).catch(() => {
-            addToast({ description: 'Error exporting data', color: 'danger' });
+            showDangerToast('Error exporting data');
         });
     };
 

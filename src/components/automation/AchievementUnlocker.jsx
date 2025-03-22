@@ -105,8 +105,8 @@ export default function AchievementUnlocker({ activePage }) {
                         color='danger'
                         className='min-h-[30px] font-semibold rounded-lg'
                         onPress={() => {
-                            setIsAchievementUnlocker(false);
                             stopIdle(currentGame.appid, currentGame.name);
+                            setIsAchievementUnlocker(false);
                         }}
                     >
                         {isComplete ? <p>Close</p> : <p>Stop</p>}
