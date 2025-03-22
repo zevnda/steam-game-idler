@@ -1,4 +1,3 @@
-import { addToast } from '@heroui/react';
 import { invoke } from '@tauri-apps/api/core';
 import { emit } from '@tauri-apps/api/event';
 import { relaunch } from '@tauri-apps/plugin-process';
@@ -10,16 +9,17 @@ import { IdleContext } from '@/components/contexts/IdleContext';
 import { StateContext } from '@/components/contexts/StateContext';
 import { UpdateContext } from '@/components/contexts/UpdateContext';
 import { UserContext } from '@/components/contexts/UserContext';
-import { logEvent } from '@/utils/global/tasks';
+import { checkSteamStatus, logEvent } from '@/utils/global/tasks';
 import { fetchLatest, preserveKeysAndClearData } from '@/utils/global/tasks';
+import { showDangerToast } from '@/utils/global/toasts';
 import { defaultSettings, checkForFreeGames, startAutoIdleGames } from '@/utils/layout/windowHandler';
 
 export default function useWindow() {
     const { theme } = useTheme();
     const { setIdleGamesList } = useContext(IdleContext);
-    const { setIsDarkMode, setShowFreeGamesTab } = useContext(StateContext);
+    const { setIsDarkMode, setShowFreeGamesTab, setIsCardFarming, setIsAchievementUnlocker, setShowSteamWarning } = useContext(StateContext);
     const { setUpdateAvailable, setShowChangelog } = useContext(UpdateContext);
-    const { setUserSummary, setFreeGamesList } = useContext(UserContext);
+    const { userSummary, setUserSummary, setFreeGamesList } = useContext(UserContext);
 
     useEffect(() => {
         emit('ready');
@@ -47,7 +47,7 @@ export default function useWindow() {
                     }
                 }
             } catch (error) {
-                addToast({ description: 'Error checking for updates', color: 'danger' });
+                showDangerToast('Error checking for updates');
                 console.error('Error in (checkForUpdates):', error);
                 logEvent(`Error in (checkForUpdates): ${error}`);
             }
@@ -58,6 +58,28 @@ export default function useWindow() {
             clearInterval(intervalId);
         };
     }, [setUpdateAvailable]);
+
+    useEffect(() => {
+        const checkSteamStatusInt = async () => {
+            try {
+                const isSteamRunning = await checkSteamStatus();
+                if (!isSteamRunning && userSummary) {
+                    await invoke('kill_all_steamutil_processes');
+                    setIsCardFarming(false);
+                    setIsAchievementUnlocker(false);
+                    setShowSteamWarning(true);
+                }
+            } catch (error) {
+                console.error('Error in (checkSteamStatusInt):', error);
+                logEvent(`Error in (checkSteamStatusInt): ${error}`);
+            }
+        };
+        checkSteamStatusInt();
+        const intervalId = setInterval(checkSteamStatusInt, 1000);
+        return () => {
+            clearInterval(intervalId);
+        };
+    }, [userSummary, setIsAchievementUnlocker, setIsCardFarming, setShowSteamWarning]);
 
     useEffect(() => {
         const hasUpdated = localStorage.getItem('hasUpdated');

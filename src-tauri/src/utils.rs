@@ -3,9 +3,7 @@ use regex::Regex;
 use reqwest::Client;
 use serde_json::{json, Value};
 use std::collections::HashMap;
-use std::fs;
 use std::os::windows::process::CommandExt;
-use std::path::PathBuf;
 use std::process::Stdio;
 use std::sync::Mutex;
 use steamlocate::SteamDir;
@@ -119,19 +117,4 @@ pub async fn get_steam_location() -> Result<String, steamlocate::Error> {
     let steam_dir = SteamDir::locate()?;
     let config_path = steam_dir.path().join("config").join("loginusers.vdf");
     Ok(config_path.display().to_string())
-}
-
-pub fn parse_login_users(config_path: &PathBuf) -> Result<HashMap<String, String>, String> {
-    let content = fs::read_to_string(config_path).map_err(|e| e.to_string())?;
-    let user_regex = Regex::new(r#""(\d{17})"\s*\{[^}]*"PersonaName"\s*"([^"]*)""#)
-        .map_err(|e| e.to_string())?;
-    let mut users = HashMap::new();
-
-    for cap in user_regex.captures_iter(&content) {
-        let steam_id = cap[1].to_string();
-        let persona_name = cap[2].to_string();
-        users.insert(steam_id, persona_name);
-    }
-
-    Ok(users)
 }

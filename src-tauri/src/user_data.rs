@@ -1,8 +1,10 @@
-use crate::utils::{get_steam_location, parse_login_users};
+use crate::utils::get_steam_location;
+use regex::Regex;
 use reqwest::Client;
 use serde_json;
 use serde_json::Value;
 use std::collections::HashMap;
+use std::fs;
 use std::path::PathBuf;
 
 #[tauri::command]
@@ -15,13 +17,14 @@ pub async fn get_users() -> Result<String, String> {
     match parse_login_users(&steam_loc_path) {
         Ok(users) => {
             if !users.is_empty() {
-                // Create a list of users with personaName and steamId
-                let user_list: Vec<HashMap<&str, &str>> = users
+                // Create a list of users with personaName, steamId, and mostRecent
+                let user_list: Vec<HashMap<&str, Value>> = users
                     .iter()
-                    .map(|(key, value)| {
+                    .map(|(key, (name, most_recent))| {
                         let mut user = HashMap::new();
-                        user.insert("personaName", value.as_str());
-                        user.insert("steamId", key.as_str());
+                        user.insert("personaName", Value::String(name.clone()));
+                        user.insert("steamId", Value::String(key.clone()));
+                        user.insert("mostRecent", Value::Number((*most_recent).into()));
                         user
                     })
                     .collect();
@@ -55,4 +58,30 @@ pub async fn get_user_summary(steam_id: String, api_key: Option<String>) -> Resu
         }
         Err(err) => Err(err.to_string()),
     }
+}
+
+pub fn parse_login_users(config_path: &PathBuf) -> Result<HashMap<String, (String, i32)>, String> {
+    let content = fs::read_to_string(config_path).map_err(|e| e.to_string())?;
+    let user_regex =
+        Regex::new(r#""(\d{17})"\s*\{[^}]*"PersonaName"\s*"([^"]*)"|"MostRecent"\s*"(\d+)""#)
+            .map_err(|e| e.to_string())?;
+    let mut users = HashMap::new();
+
+    let mut current_steam_id = String::new();
+    let mut current_persona_name = String::new();
+
+    for cap in user_regex.captures_iter(&content) {
+        if let Some(steam_id) = cap.get(1) {
+            current_steam_id = steam_id.as_str().to_string();
+            current_persona_name = cap.get(2).unwrap().as_str().to_string();
+        } else if let Some(most_recent) = cap.get(3) {
+            let most_recent_value = most_recent.as_str().parse::<i32>().unwrap_or(0);
+            users.insert(
+                current_steam_id.clone(),
+                (current_persona_name.clone(), most_recent_value),
+            );
+        }
+    }
+
+    Ok(users)
 }

@@ -8,7 +8,7 @@ export default function Private({ setRefreshKey }) {
     };
 
     return (
-        <div className='flex justify-center items-center w-calc min-h-calc max-h-calc'>
+        <div className='flex justify-center items-center w-calc h-full'>
             <div className='flex justify-center items-center flex-col border border-border min-w-[400px] max-w-[400px] rounded-lg shadow-lg dark:shadow-none'>
                 <div className='flex items-center flex-col gap-2 p-6'>
                     <p className='text-4xl'>

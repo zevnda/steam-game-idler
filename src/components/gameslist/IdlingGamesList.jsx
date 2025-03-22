@@ -1,4 +1,4 @@
-import { addToast, Button } from '@heroui/react';
+import { Button } from '@heroui/react';
 import { invoke } from '@tauri-apps/api/core';
 import { useContext } from 'react';
 import { TbPlayerStopFilled } from 'react-icons/tb';
@@ -6,6 +6,7 @@ import { TbPlayerStopFilled } from 'react-icons/tb';
 import { IdleContext } from '@/components/contexts/IdleContext';
 import GameCard from '@/components/ui/GameCard';
 import { logEvent } from '@/utils/global/tasks';
+import { showDangerToast, showSuccessToast } from '@/utils/global/toasts';
 
 export default function IdlingGamesList() {
     const { idleGamesList, setIdleGamesList } = useContext(IdleContext);
@@ -14,13 +15,13 @@ export default function IdlingGamesList() {
         try {
             const response = await invoke('kill_all_steamutil_processes');
             if (response.success) {
-                addToast({ description: `Stopped idling ${response?.killed_count || 'all'} game(s)`, color: 'success' });
+                showSuccessToast(`Stopped idling ${response?.killed_count || 'all'} game(s)`);
                 setIdleGamesList([]);
             } else {
-                addToast({ description: 'Failed to stop idling all games', color: 'danger' });
+                showDangerToast('Failed to stop idling all games');
             }
         } catch (error) {
-            addToast({ description: 'Failed to stop idling all games', color: 'danger' });
+            showDangerToast('Failed to stop idling all games');
             console.error('Error in handleStopIdleAll:', error);
             logEvent(`Error in (handleStopIdleAll): ${error}`);
         }

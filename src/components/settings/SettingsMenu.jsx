@@ -1,4 +1,4 @@
-import { addToast, Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@heroui/react';
+import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@heroui/react';
 import { invoke } from '@tauri-apps/api/core';
 import { relaunch } from '@tauri-apps/plugin-process';
 import { check } from '@tauri-apps/plugin-updater';
@@ -9,6 +9,7 @@ import { UpdateContext } from '@/components/contexts/UpdateContext';
 import ExtLink from '@/components/ui/ExtLink';
 import { logEvent } from '@/utils/global/tasks';
 import { fetchLatest, preserveKeysAndClearData } from '@/utils/global/tasks';
+import { showDangerToast, showPrimaryToast } from '@/utils/global/toasts';
 
 export default function SettingsMenu() {
     const { setShowChangelog } = useContext(UpdateContext);
@@ -26,10 +27,10 @@ export default function SettingsMenu() {
                 await invoke('kill_all_steamutil_processes');
                 await relaunch();
             } else {
-                addToast({ description: 'No updates available', color: 'primary' });
+                showPrimaryToast('No updates available');
             }
         } catch (error) {
-            addToast({ description: 'Error checking for updates', color: 'danger' });
+            showDangerToast('Error checking for updates');
             console.error('Error in (handleUpdate):', error);
             logEvent(`Error in (handleUpdate): ${error}`);
         }

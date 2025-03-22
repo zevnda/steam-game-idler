@@ -1,11 +1,10 @@
-import { addToast } from '@heroui/react';
 import { invoke } from '@tauri-apps/api/core';
 
-import ErrorToast from '@/components/ui/ErrorToast';
 import { unlockAchievement } from '@/utils/global/achievements';
 import { isWithinSchedule } from '@/utils/global/automation';
 import { startIdle, stopIdle } from '@/utils/global/idle';
 import { logEvent } from '@/utils/global/tasks';
+import { showAccountMismatchToast } from '@/utils/global/toasts';
 
 export const useAchievementUnlocker = async (
     isInitialDelay,
@@ -93,13 +92,7 @@ const fetchAchievements = async (game, setAchievementCount) => {
         const rawAchievements = response?.achievement_data?.achievements;
 
         if (!response?.achievement_data && response.includes('Failed to initialize Steam API')) {
-            addToast({
-                description: <ErrorToast
-                    message='Account mismatch between Steam and SGI'
-                    href='https://steamgameidler.vercel.app/faq#error-messages:~:text=Account%20mismatch%20between%20Steam%20and%20SGI'
-                />,
-                color: 'danger'
-            });
+            showAccountMismatchToast('danger');
             handleError('fetchAchievements', 'Account mismatch between Steam and SGI');
             return { achievements: [], game };
         }

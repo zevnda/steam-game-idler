@@ -1,10 +1,10 @@
-import { addToast } from '@heroui/react';
 import { invoke } from '@tauri-apps/api/core';
 import { appDataDir } from '@tauri-apps/api/path';
 import { readTextFile } from '@tauri-apps/plugin-fs';
 import { useState, useEffect } from 'react';
 
 import { logEvent } from '@/utils/global/tasks';
+import { showDangerToast, showSuccessToast } from '@/utils/global/toasts';
 
 export const useLogs = () => {
     const [logs, setLogs] = useState([]);
@@ -41,7 +41,7 @@ export const useLogs = () => {
                 });
                 setLogs(logEntries);
             } catch (error) {
-                addToast({ description: `Error in (fetchLogs): ${error?.message || error}`, color: 'danger' });
+                showDangerToast('An error occurred. Check the logs for more information');
                 console.error('Error in (fetchLogs):', error);
                 logEvent(`[Error] in (fetchLogs): ${error}`);
             }
@@ -58,7 +58,7 @@ export const handleOpenLogFile = async () => {
     try {
         await invoke('open_file_explorer', { path: 'log.txt' });
     } catch (error) {
-        addToast({ description: `Error in (handleOpenLogFile): ${error?.message || error}`, color: 'danger' });
+        showDangerToast('An error occurred. Check the logs for more information');
         console.error('Error in (handleOpenLogFile):', error);
         logEvent(`[Error] in (handleOpenLogFile): ${error}`);
     }
@@ -68,11 +68,11 @@ export const handleClearLogs = async (log = true) => {
     try {
         await invoke('clear_log_file');
         if (log) {
-            addToast({ description: 'Logs cleared successfully', color: 'success' });
+            showSuccessToast('Logs cleared successfully');
             logEvent('[Settings - Logs] Logs cleared successfully');
         }
     } catch (error) {
-        addToast({ description: `Error in (handleClearLogs): ${error?.message || error}`, color: 'danger' });
+        showDangerToast('An error occurred. Check the logs for more information');
         console.error('Error in (handleClearLogs):', error);
         logEvent(`[Error] in (handleClearLogs): ${error}`);
     }

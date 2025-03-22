@@ -1,7 +1,7 @@
-import { addToast } from '@heroui/react';
 import { invoke } from '@tauri-apps/api/core';
 
 import { logEvent } from '@/utils/global/tasks';
+import { showDangerToast, showSuccessToast } from '@/utils/global/toasts';
 
 // Unlock a single achievement for a game
 export async function unlockAchievement(steamId, appId, achievementName, appName) {
@@ -36,11 +36,11 @@ export async function toggleAchievement(steamId, appId, achievementName, appName
         await invoke('get_achievement_data', { steamId, appId, refetch: true });
         const status = JSON.parse(response);
         if (status.success) {
-            addToast({ description: `${type} ${achievementName} for ${appName}`, color: 'success' });
+            showSuccessToast(`${type} ${achievementName} for ${appName}`);
             logEvent(`[Achievement Manager] ${type} ${achievementName} for ${appName} (${appId})`);
             return true;
         } else {
-            addToast({ description: `Failed to ${type.replace('ed', '').toLowerCase()} ${achievementName} for ${appName}`, color: 'danger' });
+            showDangerToast(`Failed to ${type.replace('ed', '').toLowerCase()} ${achievementName} for ${appName}`);
             logEvent(`[Error] [Achievement Manager] Failed to ${type.replace('ed', '').toLowerCase()} ${achievementName} for ${appName} (${appId})`);
             return false;
         }

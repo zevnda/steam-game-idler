@@ -1,11 +1,11 @@
-import { addToast } from '@heroui/react';
 import { invoke } from '@tauri-apps/api/core';
 import { useContext } from 'react';
 
 import { StateContext } from '@/components/contexts/StateContext';
 import { UserContext } from '@/components/contexts/UserContext';
-import ErrorToast from '@/components/ui/ErrorToast';
 import { updateStats } from '@/utils/global/achievements';
+import { checkSteamStatus } from '@/utils/global/tasks';
+import { showDangerToast, showSuccessToast, showWarningToast } from '@/utils/global/toasts';
 
 export default function useStatisticButtons(statistics, setStatistics, changedStats, setChangedStats, setAchievements) {
     const { userSummary } = useContext(UserContext);
@@ -16,7 +16,7 @@ export default function useStatisticButtons(statistics, setStatistics, changedSt
         const changedKeys = Object.keys(changedStats);
 
         if (changedKeys.length === 0) {
-            return addToast({ description: 'No statistics have been modified', color: 'warning' });
+            return showWarningToast('No statistics have been modified');
         }
 
         const valuesArr = changedKeys.map(name => ({
@@ -25,27 +25,16 @@ export default function useStatisticButtons(statistics, setStatistics, changedSt
         }));
 
         // Check if Steam is running
-        const steamRunning = await invoke('is_steam_running');
-        if (!steamRunning) {
-            return addToast({
-                description: <ErrorToast
-                    message='Steam is not running'
-                    href='https://steamgameidler.vercel.app/faq#error-messages:~:text=Steam%20is%20not%20running'
-                />,
-                color: 'danger'
-            });
-        }
+        const isSteamRunning = checkSteamStatus(true);
+        if (!isSteamRunning) return;
 
         const success = await updateStats(userSummary.steamId, appId, appName, valuesArr, setAchievements);
 
         if (success) {
-            addToast({ description: `Successfully updated ${changedKeys.length} stats for ${appName}`, color: 'success' });
+            showSuccessToast(`Successfully updated ${changedKeys.length} stats for ${appName}`);
             setChangedStats({});
         } else {
-            addToast({
-                description: 'Unavailable to update statistics',
-                color: 'danger'
-            });
+            showDangerToast('Unable to update statistics');
         }
     };
 
@@ -54,16 +43,8 @@ export default function useStatisticButtons(statistics, setStatistics, changedSt
         onClose();
 
         // Check if Steam is running
-        const steamRunning = await invoke('is_steam_running');
-        if (!steamRunning) {
-            return addToast({
-                description: <ErrorToast
-                    message='Steam is not running'
-                    href='https://steamgameidler.vercel.app/faq#error-messages:~:text=Steam%20is%20not%20running'
-                />,
-                color: 'danger'
-            });
-        }
+        const isSteamRunning = checkSteamStatus(true);
+        if (!isSteamRunning) return;
 
         const response = await invoke('reset_all_stats', { appId });
         const status = JSON.parse(response);
@@ -75,12 +56,9 @@ export default function useStatisticButtons(statistics, setStatistics, changedSt
                 }));
             });
             setChangedStats({});
-            addToast({ description: `Successfully reset ${statistics.length} stats for ${appName}`, color: 'success' });
+            showSuccessToast(`Successfully reset ${statistics.length} stats for ${appName}`);
         } else {
-            addToast({
-                description: 'Unavailable to reset statistics',
-                color: 'danger'
-            });
+            showDangerToast('Unable to reset statistics');
         }
     };
 

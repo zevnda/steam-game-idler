@@ -1,9 +1,9 @@
-import { addToast } from '@heroui/react';
 import { invoke } from '@tauri-apps/api/core';
 import moment from 'moment';
 import { useState, useEffect } from 'react';
 
 import { logEvent } from '@/utils/global/tasks';
+import { showDangerToast, showPrimaryToast } from '@/utils/global/toasts';
 
 export const usePageHeader = ({ setSortStyle, setRefreshKey }) => {
     const [sortStyle, setSortStyleState] = useState(localStorage.getItem('sortStyle') || 'a-z');
@@ -17,7 +17,7 @@ export const usePageHeader = ({ setSortStyle, setRefreshKey }) => {
             localStorage.setItem('sortStyle', e.currentKey);
             setSortStyleState(e.currentKey);
         } catch (error) {
-            addToast({ description: `Error in (handleSorting): ${error?.message || error}`, color: 'danger' });
+            showDangerToast('An error occurred. Check the logs for more information');
             console.error('Error in (handleSorting):', error);
             logEvent(`[Error] in (handleSorting): ${error}`);
         }
@@ -27,15 +27,14 @@ export const usePageHeader = ({ setSortStyle, setRefreshKey }) => {
         try {
             if (steamId !== '76561198158912649' && steamId !== '76561198999797359') {
                 const cooldown = sessionStorage.getItem('cooldown');
-                if (cooldown && moment().unix() < cooldown) {
-                    return addToast({ description: `Games can be refreshed again at ${moment.unix(cooldown).format('h:mm A')}`, color: 'primary' });
-                }
+                if (cooldown && moment().unix() < cooldown)
+                    return showPrimaryToast(`Games can be refreshed again at ${moment.unix(cooldown).format('h:mm A')}`);
             }
             await invoke('delete_user_games_list_files', { steamId });
             sessionStorage.setItem('cooldown', moment().add(30, 'minutes').unix());
             setRefreshKey(prevKey => prevKey + 1);
         } catch (error) {
-            addToast({ description: `Error in (handleRefetch): ${error?.message || error}`, color: 'danger' });
+            showDangerToast('An error occurred. Check the logs for more information');
             console.error('Error in (handleRefetch):', error);
             logEvent(`[Error] in (handleRefetch): ${error}`);
         }

@@ -1,9 +1,9 @@
-import { addToast } from '@heroui/react';
 import { invoke } from '@tauri-apps/api/core';
 import { useState, useContext } from 'react';
 
 import { UserContext } from '@/components/contexts/UserContext';
 import { logEvent } from '@/utils/global/tasks';
+import { showDangerToast, showWarningToast } from '@/utils/global/toasts';
 
 export default function useManualAdd(listName, setList) {
     const { userSummary } = useContext(UserContext);
@@ -22,7 +22,7 @@ export default function useManualAdd(listName, setList) {
             });
             if (response.error) {
                 setIsLoading(false);
-                addToast({ description: response.error, color: 'warning' });
+                showWarningToast(response.error);
                 return;
             } else {
                 setList(response.list_data);
@@ -31,7 +31,7 @@ export default function useManualAdd(listName, setList) {
             }
         } catch (error) {
             setIsLoading(false);
-            addToast({ description: `Error in (handleAdd): ${error?.message || error}`, color: 'danger' });
+            showDangerToast('An error occurred. Check the logs for more information');
             console.error('Error in (handleAdd):', error);
             logEvent(`[Error] in (handleAdd): ${error}`);
         }
@@ -41,9 +41,9 @@ export default function useManualAdd(listName, setList) {
         try {
             setAppNameValue(e.target.value || '');
         } catch (error) {
-            addToast({ description: `Error in (handleChange): ${error?.message || error}`, color: 'danger' });
-            console.error('Error in (handleChange):', error);
-            logEvent(`[Error] in (handleChange): ${error}`);
+            showDangerToast('An error occurred. Check the logs for more information');
+            console.error('Error in (handleNameChange):', error);
+            logEvent(`[Error] in (handleNameChange): ${error}`);
         }
     };
 
@@ -57,9 +57,9 @@ export default function useManualAdd(listName, setList) {
                 setAppIdValue(e.target?.value || 0);
             }
         } catch (error) {
-            addToast({ description: `Error in (handleChange): ${error?.message || error}`, color: 'danger' });
-            console.error('Error in (handleChange):', error);
-            logEvent(`[Error] in (handleChange): ${error}`);
+            showDangerToast('An error occurred. Check the logs for more information');
+            console.error('Error in (handleIdChange):', error);
+            logEvent(`[Error] in (handleIdChange): ${error}`);
         }
     };
 

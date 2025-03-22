@@ -1,10 +1,11 @@
-import { addToast, useDisclosure } from '@heroui/react';
+import { useDisclosure } from '@heroui/react';
 import { useContext } from 'react';
 
 import { NavigationContext } from '@/components/contexts/NavigationContext';
 import { SearchContext } from '@/components/contexts/SearchContext';
 import { UserContext } from '@/components/contexts/UserContext';
 import { logEvent } from '@/utils/global/tasks';
+import { showDangerToast } from '@/utils/global/toasts';
 
 export default function useSideBar(activePage, setActivePage) {
     const { setGameQueryValue, setAchievementQueryValue } = useContext(SearchContext);
@@ -23,7 +24,7 @@ export default function useSideBar(activePage, setActivePage) {
             clearLocalStorageData();
             logEvent(`[System] Logged out of ${userSummary.personaName}`);
         } catch (error) {
-            addToast({ description: `Error in (handleLogout): ${error?.message || error}`, color: 'danger' });
+            showDangerToast('An error occurred. Check the logs for more information');
             console.error('Error in (handleLogout):', error);
             logEvent(`[Error] in (handleLogout): ${error}`);
         }
@@ -36,16 +37,13 @@ export default function useSideBar(activePage, setActivePage) {
             setGameQueryValue('');
             setAchievementQueryValue('');
 
-            localStorage.removeItem('apiKey');
             localStorage.removeItem('sortStyle');
             localStorage.removeItem('userSummary');
             localStorage.removeItem('gameSettings');
             localStorage.removeItem('steamCookies');
             localStorage.removeItem('cardFarmingUser');
-            localStorage.removeItem('chatUsername');
-            localStorage.removeItem('chatToken');
         } catch (error) {
-            addToast({ description: `Error in (clearLocalStorageData): ${error?.message || error}`, color: 'danger' });
+            showDangerToast('An error occurred. Check the logs for more information');
             console.error('Error in (clearLocalStorageData):', error);
             logEvent(`[Error] in (clearLocalStorageData): ${error}`);
         }

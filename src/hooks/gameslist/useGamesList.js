@@ -1,10 +1,10 @@
-import { addToast } from '@heroui/react';
 import { useEffect, useState, useRef, useContext } from 'react';
 
 import { SearchContext } from '@/components/contexts/SearchContext';
 import { UserContext } from '@/components/contexts/UserContext';
 import { fetchGamesList, sortAndFilterGames } from '@/utils/gameslist/gamesListHandler';
 import { logEvent } from '@/utils/global/tasks';
+import { showDangerToast } from '@/utils/global/toasts';
 
 export default function useGamesList() {
     const { userSummary, gamesList, setGamesList } = useContext(UserContext);
@@ -34,7 +34,7 @@ export default function useGamesList() {
                 previousRefreshKeyRef.current = refreshKey;
             } catch (error) {
                 setIsLoading(false);
-                addToast({ description: `Error in (getGamesList): ${error?.message || error}`, color: 'danger' });
+                showDangerToast('An error occurred. Check the logs for more information');
                 console.error('Error in (getGamesList):', error);
                 logEvent(`[Error] in (getGamesList): ${error}`);
             }
@@ -70,7 +70,7 @@ export default function useGamesList() {
                     }
                 }
             } catch (error) {
-                addToast({ description: `Error in (handleScroll): ${error?.message || error}`, color: 'danger' });
+                showDangerToast('An error occurred. Check the logs for more information');
                 console.error('Error in (handleScroll):', error);
                 logEvent(`[Error] in (handleScroll): ${error}`);
             }

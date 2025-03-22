@@ -1,7 +1,8 @@
-import { Spinner } from '@heroui/react';
+import { Spinner, Tooltip } from '@heroui/react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { useContext, useEffect, useState } from 'react';
+import { TbRefresh, TbUserFilled } from 'react-icons/tb';
 
 import { NavigationContext } from '@/components/contexts/NavigationContext';
 import { StateContext } from '@/components/contexts/StateContext';
@@ -12,8 +13,9 @@ import useSetup from '@/hooks/layout/useSetup';
 export default function Setup() {
     const { isDarkMode } = useContext(StateContext);
     const { setActivePage } = useContext(NavigationContext);
-    const { isLoading, handleLogin, steamUsers } = useSetup();
     const [imageSrc, setImageSrc] = useState('');
+    const [refreshKey, setRefreshKey] = useState(0);
+    const { isLoading, handleLogin, steamUsers } = useSetup(refreshKey);
 
     useEffect(() => {
         setActivePage('setup');
@@ -24,6 +26,10 @@ export default function Setup() {
             'https://raw.githubusercontent.com/zevnda/steam-game-idler/refs/heads/main/public/dbg.webp'
             : 'https://raw.githubusercontent.com/zevnda/steam-game-idler/refs/heads/main/public/lbg.webp');
     }, [isDarkMode]);
+
+    const handleRefresh = () => {
+        setRefreshKey((prev) => prev + 1);
+    };
 
     return (
         <>
@@ -88,9 +94,24 @@ export default function Setup() {
                                                             {item.steamId}
                                                         </p>
                                                     </div>
+                                                    {item.mostRecent === 1 && (
+                                                        <div className='flex justify-end items-center w-full'>
+                                                            <Tooltip size='sm' closeDelay={0} content='Signed in to Steam' className='bg-titlehover text-content'>
+                                                                <TbUserFilled size={20} className='text-dynamic' />
+                                                            </Tooltip>
+                                                        </div>
+                                                    )}
                                                 </div>
                                             </div>
                                         ))}
+                                    </div>
+                                    <div className='flex gap-1 mt-4  cursor-pointer' onClick={handleRefresh}>
+                                        <p className='text-xs text-altwhite'>
+                                            Refresh
+                                        </p>
+                                        <div className='flex justify-center items-center'>
+                                            <TbRefresh className='text-altwhite' fontSize={14} />
+                                        </div>
                                     </div>
                                 </>
                             ) : (
@@ -107,7 +128,7 @@ export default function Setup() {
                             )}
                         </div>
 
-                        <div className='flex justify-center items-center p-6 w-full border-t border-border/40 rounded-br-lg rounded-bl-lg mt-8'>
+                        <div className='flex justify-center items-center p-6 w-full border-t border-border/40 rounded-br-lg rounded-bl-lg mt-4'>
                             <ExtLink href='https://steamgameidler.vercel.app/get-started/how-to-sign-in'>
                                 <p className='text-xs text-content font-semibold cursor-pointer'>
                                     Need help?

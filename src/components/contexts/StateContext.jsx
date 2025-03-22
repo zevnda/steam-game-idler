@@ -10,6 +10,7 @@ export const StateProvider = ({ children }) => {
     const [showAchievements, setShowAchievements] = useState(false);
     const [isCardFarming, setIsCardFarming] = useState(false);
     const [isAchievementUnlocker, setIsAchievementUnlocker] = useState(false);
+    const [showSteamWarning, setShowSteamWarning] = useState(false);
 
     return (
         <StateContext.Provider value={{
@@ -20,6 +21,7 @@ export const StateProvider = ({ children }) => {
             showAchievements, setShowAchievements,
             isCardFarming, setIsCardFarming,
             isAchievementUnlocker, setIsAchievementUnlocker,
+            showSteamWarning, setShowSteamWarning
         }}>
             {children}
         </StateContext.Provider>

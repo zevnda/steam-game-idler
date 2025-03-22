@@ -1,10 +1,10 @@
-import { addToast } from '@heroui/react';
 import { Time } from '@internationalized/date';
 import { invoke } from '@tauri-apps/api/core';
 import { isPermissionGranted, requestPermission, sendNotification } from '@tauri-apps/plugin-notification';
 
 import { startIdle } from '@/utils/global/idle';
 import { logEvent } from '@/utils/global/tasks';
+import { showDangerToast } from '@/utils/global/toasts';
 
 // Set default settings and updates user summary
 export const defaultSettings = (setUserSummary) => {
@@ -35,7 +35,7 @@ export const defaultSettings = (setUserSummary) => {
             currentSettings = JSON.parse(localStorage.getItem('settings'));
         }
     } catch (error) {
-        addToast({ description: `Error creating default settings: ${error?.message || error}`, color: 'danger' });
+        showDangerToast('An error occurred. Check the logs for more information');
         console.error('Error creating default settings:', error);
         logEvent(`[Error] creating default settings: ${error}`);
     }
@@ -70,7 +70,7 @@ export const checkForFreeGames = async (setFreeGamesList, setShowFreeGamesTab) =
             setShowFreeGamesTab(false);
         }
     } catch (error) {
-        addToast({ description: `Error in (checkForFreeGames): ${error?.message || error}`, color: 'danger' });
+        showDangerToast('An error occurred. Check the logs for more information');
         console.error('Error in (checkForFreeGames):', error);
         logEvent(`[Error] in (checkForFreeGames): ${error}`);
     }
@@ -101,7 +101,7 @@ export const startAutoIdleGames = async () => {
             }
         }
     } catch (error) {
-        addToast({ description: `Error in (startAutoIdleGames): ${error?.message || error}`, color: 'danger' });
+        showDangerToast('An error occurred. Check the logs for more information');
         console.error('Error in (startAutoIdleGames):', error);
         logEvent(`[Error] in (startAutoIdleGames): ${error}`);
     }
