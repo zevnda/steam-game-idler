@@ -52,7 +52,7 @@ export default function FreeGamesList() {
                                 <ExtLink href={`https://store.steampowered.com/app/${item.appid}`}>
                                     <div className='flex flex-col justify-center items-center opacity-0 group-hover:opacity-100 hover:scale-105 duration-200'>
                                         <div className='p-2 bg-black text-offwhite bg-opacity-50 hover:bg-black hover:bg-opacity-70 cursor-pointer rounded-lg duration-200'>
-                                            <FaSteam className='text-offwhite opacity-0 group-hover:opacity-100 duration-200' fontSize={36} />
+                                            <FaSteam className='text-offwhite opacity-0 group-hover:opacity-100 duration-200' fontSize={32} />
                                         </div>
                                     </div>
                                 </ExtLink>
