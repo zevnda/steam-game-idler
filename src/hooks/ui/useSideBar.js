@@ -1,4 +1,5 @@
 import { useDisclosure } from '@heroui/react';
+import { invoke } from '@tauri-apps/api/core';
 import { useContext } from 'react';
 
 import { NavigationContext } from '@/components/contexts/NavigationContext';
@@ -22,6 +23,7 @@ export default function useSideBar(activePage, setActivePage) {
             onClose();
             setUserSummary(null);
             clearLocalStorageData();
+            await invoke('kill_all_steamutil_processes');
             logEvent(`[System] Logged out of ${userSummary.personaName}`);
         } catch (error) {
             showDangerToast('An error occurred. Check the logs for more information');

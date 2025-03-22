@@ -17,8 +17,8 @@ export default function UpdateButton() {
             const update = await check();
             if (update?.available) {
                 localStorage.setItem('hasUpdated', 'true');
-                await update.downloadAndInstall();
                 await invoke('kill_all_steamutil_processes');
+                await update.downloadAndInstall();
                 await relaunch();
             } else {
                 setIsLoading(false);
