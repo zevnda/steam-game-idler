@@ -31,7 +31,7 @@ export default function SteamWarning() {
                     </ModalHeader>
                     <ModalBody className='my-4'>
                         <p className='text-sm'>
-                            Steam is not running. Open the Steam desktop app to continue
+                            Steam is not running. Open the Steam client to continue
                         </p>
                     </ModalBody>
                     <ModalFooter className='border-t border-border bg-modalfooter px-4 py-3'>

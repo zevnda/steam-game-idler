@@ -38,9 +38,9 @@ export default function useWindow() {
                     const latest = await fetchLatest();
                     if (latest?.major) {
                         localStorage.setItem('hasUpdated', 'true');
+                        await invoke('kill_all_steamutil_processes');
                         await update.downloadAndInstall();
                         await preserveKeysAndClearData();
-                        await invoke('kill_all_steamutil_processes');
                         await relaunch();
                     } else {
                         setUpdateAvailable(true);

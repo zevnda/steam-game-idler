@@ -19,12 +19,12 @@ export default function SettingsMenu() {
             const update = await check();
             if (update?.available) {
                 localStorage.setItem('hasUpdated', 'true');
+                await invoke('kill_all_steamutil_processes');
                 const latest = await fetchLatest();
                 await update.downloadAndInstall();
                 if (latest?.major) {
                     await preserveKeysAndClearData();
                 }
-                await invoke('kill_all_steamutil_processes');
                 await relaunch();
             } else {
                 showPrimaryToast('No updates available');
