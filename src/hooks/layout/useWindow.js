@@ -73,24 +73,25 @@ export default function useWindow() {
                 const response = await invoke('get_running_processes');
                 const processes = response?.processes;
 
-                // Only update state if the list has actually changed
                 setIdleGamesList(prevList => {
-                    // Compare previous and current processes
                     if (prevList.length !== processes.length) {
-                        return processes;
+                        return processes.map(process => {
+                            const existingGame = prevList.find(game => game.appid === process.appid);
+                            return {
+                                ...process,
+                                startTime: existingGame?.startTime || Date.now()
+                            };
+                        });
                     }
 
-                    // Create maps for quick lookup using appid as key
                     const prevMap = new Map(prevList.map(item => [item.appid, item]));
                     const newMap = new Map(processes.map(item => [item.appid, item]));
 
-                    // Check if any items were added or removed
                     if (prevList.some(item => !newMap.has(item.appid)) ||
                         processes.some(item => !prevMap.has(item.appid))) {
                         return processes;
                     }
 
-                    // No change, keep previous reference to prevent re-renders
                     return prevList;
                 });
             } catch (error) {
