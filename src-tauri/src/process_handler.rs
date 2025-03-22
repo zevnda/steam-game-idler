@@ -18,7 +18,7 @@ pub async fn get_running_processes() -> Result<Value, String> {
         .output()
         .map_err(|e| e.to_string())?;
 
-    let output_str = String::from_utf8(output.stdout).map_err(|e| e.to_string())?;
+    let output_str = String::from_utf8_lossy(&output.stdout).to_string();
 
     let mut processes = Vec::new();
 
