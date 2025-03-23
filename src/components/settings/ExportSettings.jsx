@@ -1,7 +1,7 @@
 import { Button } from '@heroui/react';
 
-import { showDangerToast, showSuccessToast } from '@/utils/global/toasts';
-import { getAppVersion } from '@/utils/settings/settingsHandler';
+import { getAppVersion } from '@/utils/tasks';
+import { showDangerToast, showSuccessToast } from '@/utils/toasts';
 
 export default function ExportSettings() {
     const exportSettings = async () => {
@@ -21,10 +21,15 @@ export default function ExportSettings() {
                 key === 'ally-supports-cache'
             ) continue;
             const value = localStorage.getItem(key);
-            try {
-                allSettings[key] = JSON.parse(value);
-            } catch (error) {
-                console.error(error);
+
+            if (value && (value.startsWith('{') || value.startsWith('['))) {
+                try {
+                    allSettings[key] = JSON.parse(value);
+                } catch (error) {
+                    console.error(`Error parsing JSON for key "${key}":`, error);
+                    allSettings[key] = value;
+                }
+            } else {
                 allSettings[key] = value;
             }
         }

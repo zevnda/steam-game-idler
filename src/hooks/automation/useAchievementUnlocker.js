@@ -1,10 +1,10 @@
 import { invoke } from '@tauri-apps/api/core';
 
-import { unlockAchievement } from '@/utils/global/achievements';
-import { isWithinSchedule } from '@/utils/global/automation';
-import { startIdle, stopIdle } from '@/utils/global/idle';
-import { logEvent } from '@/utils/global/tasks';
-import { showAccountMismatchToast } from '@/utils/global/toasts';
+import { unlockAchievement } from '@/utils/achievements';
+import { isWithinSchedule } from '@/utils/automation';
+import { startIdle, stopIdle } from '@/utils/idle';
+import { logEvent } from '@/utils/tasks';
+import { showAccountMismatchToast } from '@/utils/toasts';
 
 export const useAchievementUnlocker = async (
     isInitialDelay,

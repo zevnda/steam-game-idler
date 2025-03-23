@@ -5,7 +5,7 @@ import { TbCheck } from 'react-icons/tb';
 
 import { StateContext } from '@/components/contexts/StateContext';
 import { useAchievementUnlocker } from '@/hooks/automation/useAchievementUnlocker';
-import { stopIdle } from '@/utils/global/idle';
+import { stopIdle } from '@/utils/idle';
 
 export default function AchievementUnlocker({ activePage }) {
     const { isDarkMode, setIsAchievementUnlocker } = useContext(StateContext);

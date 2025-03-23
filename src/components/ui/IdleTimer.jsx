@@ -8,14 +8,24 @@ export default function IdleTimer({ startTime }) {
         const seconds = Math.floor((elapsed % (1000 * 60)) / 1000);
 
         if (hours > 0) {
-            return `${hours.toString().padStart(3, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            // When hours reach 10-99 show 2 digits
+            if (hours >= 10 && hours < 100) {
+                return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+            // When hours reach 100+ show 3 digits
+            else if (hours >= 100) {
+                return `${hours.toString().padStart(3, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+            // For 1-9 hours show 1 digit
+            return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
         }
+        // Less than 1 hour
         return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     };
 
-    // Use RAF for smoother updates and better battery life
     const [, forceUpdate] = useState({});
 
+    // Update time every frame
     useEffect(() => {
         let frameId;
 

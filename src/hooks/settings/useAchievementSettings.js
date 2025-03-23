@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 
-import { logEvent } from '@/utils/global/tasks';
-import { showDangerToast } from '@/utils/global/toasts';
+import { logEvent } from '@/utils/tasks';
+import { showDangerToast } from '@/utils/toasts';
 
 export const useAchievementSettings = (settings, setLocalSettings) => {
     const [labelInterval, setLabelInterval] = useState(null);
 
+    // Sync local settings with global settings when they change
     useEffect(() => {
         if (setLocalSettings && settings && settings.achievementUnlocker) {
             setLocalSettings(settings);
@@ -80,7 +81,7 @@ export const handleScheduleChange = (value, type, localSettings, setLocalSetting
     }
 };
 
-// Update the label interval based on the slider values
+// Update the interval label based on the slider values
 export const updateLabel = (e, setLabelInterval) => {
     setLabelInterval(`${e[0]} and ${e[1]}`);
 };

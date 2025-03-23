@@ -2,8 +2,8 @@ import { invoke } from '@tauri-apps/api/core';
 import { useState, useContext } from 'react';
 
 import { UserContext } from '@/components/contexts/UserContext';
-import { logEvent } from '@/utils/global/tasks';
-import { showDangerToast, showWarningToast } from '@/utils/global/toasts';
+import { logEvent } from '@/utils/tasks';
+import { showDangerToast, showWarningToast } from '@/utils/toasts';
 
 export default function useManualAdd(listName, setList) {
     const { userSummary } = useContext(UserContext);
@@ -14,7 +14,7 @@ export default function useManualAdd(listName, setList) {
     const handleAdd = async (onClose) => {
         setIsLoading(true);
         try {
-
+            // Add game to custom list
             const response = await invoke('add_game_to_custom_list', {
                 steamId: userSummary.steamId,
                 game: { appid: parseInt(appIdValue), name: appNameValue },

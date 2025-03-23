@@ -35,6 +35,7 @@ pub fn run() {
     if cfg!(debug_assertions) {
         dotenv::from_filename(".env.dev").unwrap().load();
     } else {
+        // In production, embed the env vars directly in the binary for portability
         let prod_env = include_str!("../../.env.prod");
         let result = dotenv::from_read(prod_env.as_bytes()).unwrap();
         result.load();
@@ -104,6 +105,7 @@ pub fn run() {
         .expect("Error while building tauri application")
         .run(move |_, event| match event {
             tauri::RunEvent::Exit => {
+                // Kill all SteamUtil processes on app exit
                 tauri::async_runtime::block_on(async {
                     let _ = kill_all_steamutil_processes().await;
                 });
@@ -125,6 +127,8 @@ fn setup_window(app_handle: &tauri::AppHandle) -> Result<(), Box<dyn std::error:
     let window = app_handle.get_webview_window("main").unwrap();
 
     // Listen for ready event from frontend
+    // Hide the window initially and only show it once the frontend is ready
+    // This prevents a blank window from showing during load
     let window_clone = window.clone();
     window.listen("ready", move |_| {
         window_clone.show().unwrap();
@@ -137,6 +141,7 @@ fn setup_window(app_handle: &tauri::AppHandle) -> Result<(), Box<dyn std::error:
 // TODO: Delete once all users are migrated to the new format
 fn migrate_old_data(app_handle: &tauri::AppHandle) -> Result<(), Box<dyn std::error::Error>> {
     // Delete the old app-specific directory
+    // Handles migration from previous app version that used a different storage location
     let app_data_dir = app_handle
         .path()
         .app_data_dir()
@@ -159,11 +164,13 @@ fn migrate_old_data(app_handle: &tauri::AppHandle) -> Result<(), Box<dyn std::er
 fn setup_tray_icon(app: &mut tauri::App) -> Result<(), Box<dyn std::error::Error>> {
     let app_handle = app.handle().clone();
 
+    // Create system tray menu
     let show = MenuItem::with_id(app, "show", "Show", true, None::<&str>)?;
     let update = MenuItem::with_id(app, "update", "Check for updates..", true, None::<&str>)?;
     let quit = MenuItem::with_id(app, "quit", "Quit", true, None::<&str>)?;
     let menu = Menu::with_items(app, &[&show, &update, &quit])?;
 
+    // Load icon directly from binary resources
     let icon_bytes = include_bytes!("../icons/32x32.png");
     let icon = Image::from_bytes(icon_bytes)?;
 
@@ -173,6 +180,7 @@ fn setup_tray_icon(app: &mut tauri::App) -> Result<(), Box<dyn std::error::Error
         .menu(&menu)
         .show_menu_on_left_click(false)
         .on_tray_icon_event(|tray, event| match event {
+            // Show app window when user left-clicks on the tray icon
             TrayIconEvent::Click {
                 button: MouseButton::Left,
                 button_state: MouseButtonState::Up,
@@ -194,6 +202,7 @@ fn setup_tray_icon(app: &mut tauri::App) -> Result<(), Box<dyn std::error::Error
                 }
             }
             "update" => {
+                // Run update check in background to avoid blocking UI
                 let app_handle_for_update = app_handle.clone();
                 tauri::async_runtime::spawn(async move {
                     match check_for_updates(app_handle_for_update.clone()).await {
@@ -215,6 +224,7 @@ fn setup_tray_icon(app: &mut tauri::App) -> Result<(), Box<dyn std::error::Error
 }
 
 async fn check_for_updates(app_handle: tauri::AppHandle) -> tauri_plugin_updater::Result<()> {
+    // Check for updates and install if available
     if let Some(update) = app_handle.updater()?.check().await? {
         update
             .download_and_install(|_downloaded, _total| {}, || {})

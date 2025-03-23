@@ -1,7 +1,7 @@
 import { Time } from '@internationalized/date';
 import { invoke } from '@tauri-apps/api/core';
 
-import { logEvent } from '@/utils/global/tasks';
+import { logEvent } from '@/utils/tasks';
 
 // Check remaining card drops for a game
 export async function checkDrops(steamId, appId, sid, sls, sma) {

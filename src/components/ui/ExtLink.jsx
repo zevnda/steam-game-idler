@@ -1,12 +1,12 @@
+import { open } from '@tauri-apps/plugin-shell';
+
 export default function ExtLink({ children, href, className }) {
     const handleClick = async (e) => {
         e.preventDefault();
-        if (typeof window !== 'undefined' && window.__TAURI__) {
-            try {
-                await window.__TAURI__.shell.open(href);
-            } catch (error) {
-                console.error('Failed to open link:', error);
-            }
+        try {
+            await open(href);
+        } catch (error) {
+            console.error('Failed to open link:', error);
         }
     };
 

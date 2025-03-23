@@ -9,8 +9,8 @@ import { SearchContext } from '@/components/contexts/SearchContext';
 import { StateContext } from '@/components/contexts/StateContext';
 import { UserContext } from '@/components/contexts/UserContext';
 import ExtLink from '@/components/ui/ExtLink';
-import { logEvent } from '@/utils/global/tasks';
-import { showDangerToast } from '@/utils/global/toasts';
+import { logEvent } from '@/utils/tasks';
+import { showDangerToast } from '@/utils/toasts';
 
 export default function PageHeader({ protectedAchievements, protectedStatistics }) {
     const { userSummary, setAchievementsUnavailable, setStatisticsUnavailable } = useContext(UserContext);

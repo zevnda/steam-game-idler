@@ -1,5 +1,4 @@
 import { Tab, Tabs } from '@heroui/react';
-import { useEffect, useState } from 'react';
 
 import AchievementSettings from '@/components/settings/AchievementSettings';
 import CardSettings from '@/components/settings/CardSettings';
@@ -8,39 +7,10 @@ import ExportSettings from '@/components/settings/ExportSettings';
 import GeneralSettings from '@/components/settings/GeneralSettings';
 import Logs from '@/components/settings/Logs';
 import ResetSettings from '@/components/settings/ResetSettings';
-import { getAppVersion, getDefaultSettings, getUpdatedSettings } from '@/utils/settings/settingsHandler';
+import useSettings from '@/hooks/settings/useSettings';
 
 export default function Settings() {
-    const [settings, setSettings] = useState(null);
-    const [localSettings, setLocalSettings] = useState(null);
-    const [version, setVersion] = useState('v0.0.0');
-    const [refreshKey, setRefreshKey] = useState(0);
-
-    useEffect(() => {
-        const getAndSetVersion = async () => {
-            const version = await getAppVersion();
-            setVersion(version);
-        };
-        getAndSetVersion();
-    }, []);
-
-    useEffect(() => {
-        const defaultSettings = getDefaultSettings();
-        const currentSettings = JSON.parse(localStorage.getItem('settings')) || {};
-        const updatedSettings = getUpdatedSettings(defaultSettings, currentSettings);
-
-        if (JSON.stringify(currentSettings) !== JSON.stringify(updatedSettings)) {
-            localStorage.setItem('settings', JSON.stringify(updatedSettings));
-        }
-        setSettings(updatedSettings);
-    }, [refreshKey]);
-
-    useEffect(() => {
-        const currentSettings = JSON.parse(localStorage.getItem('settings')) || {};
-        if (currentSettings) {
-            setLocalSettings(currentSettings);
-        }
-    }, [settings, setLocalSettings]);
+    const { settings, setSettings, localSettings, setLocalSettings, version, refreshKey, setRefreshKey } = useSettings();
 
     return (
         <div key={refreshKey} className='w-calc min-h-calc max-h-calc bg-base overflow-y-auto rounded-tl-xl border-t border-l border-border'>

@@ -3,8 +3,8 @@ import { appDataDir } from '@tauri-apps/api/path';
 import { readTextFile } from '@tauri-apps/plugin-fs';
 import { useState, useEffect } from 'react';
 
-import { logEvent } from '@/utils/global/tasks';
-import { showDangerToast, showSuccessToast } from '@/utils/global/toasts';
+import { logEvent } from '@/utils/tasks';
+import { showDangerToast, showSuccessToast } from '@/utils/toasts';
 
 export const useLogs = () => {
     const [logs, setLogs] = useState([]);
@@ -47,13 +47,16 @@ export const useLogs = () => {
             }
         };
         fetchLogs();
+
         const intervalId = setInterval(fetchLogs, 1000);
+
         return () => clearInterval(intervalId);
     }, []);
 
     return { logs };
 };
 
+// Open the log file in file explorer
 export const handleOpenLogFile = async () => {
     try {
         await invoke('open_file_explorer', { path: 'log.txt' });
@@ -64,9 +67,11 @@ export const handleOpenLogFile = async () => {
     }
 };
 
+// Clear the log file
 export const handleClearLogs = async (log = true) => {
     try {
         await invoke('clear_log_file');
+        // Only show toast if log was manually cleared
         if (log) {
             showSuccessToast('Logs cleared successfully');
             logEvent('[Settings - Logs] Logs cleared successfully');
