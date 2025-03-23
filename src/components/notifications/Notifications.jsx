@@ -3,8 +3,7 @@ import { useEffect } from 'react';
 import { GoDotFill } from 'react-icons/go';
 import { TbBell } from 'react-icons/tb';
 
-import { useNotifications } from '@/hooks/notifications/useNotifications';
-import { markAsSeen, markAllAsSeen, handleOpenUrl, timeAgo } from '@/utils/notifications/notificationsHandler';
+import { handleOpenUrl, markAllAsSeen, timeAgo, useNotifications } from '@/hooks/notifications/useNotifications';
 
 export default function Notifications() {
     const {
@@ -39,7 +38,7 @@ export default function Notifications() {
             >
                 <TbBell fontSize={20} />
                 {unseenNotifications.length > 0 && (
-                    <div className='absolute top-0 right-0'>
+                    <div className='absolute top-1 right-1'>
                         <GoDotFill className='text-danger' />
                     </div>
                 )}
@@ -93,7 +92,7 @@ export default function Notifications() {
                                     <div
                                         key={notification.id}
                                         className={`rounded-none m-0 border-b last:border-none border-border cursor-pointer px-6 py-3 hover:bg-notihover ${unseenNotifications.some(unseen => unseen.id === notification.id) ? 'bg-notiunread font-semibold' : 'bg-notibase'}`}
-                                        onClick={() => handleOpenUrl(notification.url, notification.id, markAsSeen, unseenNotifications, setUnseenNotifications)}
+                                        onClick={() => handleOpenUrl(notification.url, notification.id, unseenNotifications, setUnseenNotifications)}
                                     >
                                         <div className='flex items-center gap-4 py-0.5'>
                                             <div className='flex flex-col gap-0.5 max-w-[300px]'>

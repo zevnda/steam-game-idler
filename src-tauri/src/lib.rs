@@ -19,6 +19,7 @@ use user_data::*;
 use utils::*;
 
 use std::env;
+use tauri::image::Image;
 use tauri::menu::{Menu, MenuItem};
 use tauri::tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent};
 use tauri::{Listener, Manager};
@@ -163,8 +164,11 @@ fn setup_tray_icon(app: &mut tauri::App) -> Result<(), Box<dyn std::error::Error
     let quit = MenuItem::with_id(app, "quit", "Quit", true, None::<&str>)?;
     let menu = Menu::with_items(app, &[&show, &update, &quit])?;
 
+    let icon_bytes = include_bytes!("../icons/32x32.png");
+    let icon = Image::from_bytes(icon_bytes)?;
+
     TrayIconBuilder::new()
-        .icon(app.default_window_icon().unwrap().clone())
+        .icon(icon)
         .tooltip("Steam Game Idler")
         .menu(&menu)
         .show_menu_on_left_click(false)

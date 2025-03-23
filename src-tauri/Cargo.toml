@@ -30,7 +30,7 @@ reqwest = { version = "0.12.12", features = ["json"] }
 serde_json = { version = "1.0.138", features = ["std"] }
 regex = { version = "1.11.1", default-features = false, features = ["std"] }
 winapi = { version = "0.3.9", features = ["processthreadsapi", "handleapi", "winnt"] }
-tauri = { version = "2", features = ["tray-icon"] }
+tauri = { version = "2", features = ["tray-icon", "image-png"] }
 tauri-plugin-shell = "2"
 tauri-plugin-notification = "2"
 tauri-plugin-process = "2"
