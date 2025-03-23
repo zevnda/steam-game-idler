@@ -7,8 +7,8 @@ import AchievementButtons from '@/components/achievements/AchievementButtons';
 import { SearchContext } from '@/components/contexts/SearchContext';
 import { StateContext } from '@/components/contexts/StateContext';
 import { UserContext } from '@/components/contexts/UserContext';
-import { toggleAchievement } from '@/utils/global/achievements';
-import { checkSteamStatus } from '@/utils/global/tasks';
+import { toggleAchievement } from '@/utils/achievements';
+import { checkSteamStatus } from '@/utils/tasks';
 
 const Row = memo(({ index, style, data }) => {
     const { userSummary, appId, appName, filteredAchievements, updateAchievement } = data;
@@ -25,7 +25,7 @@ const Row = memo(({ index, style, data }) => {
     const icon = achieved ? `${iconUrl}${appId}/${item.iconNormal}` : `${iconUrl}${appId}/${item.iconLocked}`;
 
     const handleToggle = async () => {
-        // Check if Steam is running
+        // Make sure Steam client is running
         const isSteamRunning = await checkSteamStatus(true);
         if (!isSteamRunning) return;
         const success = await toggleAchievement(

@@ -6,9 +6,8 @@ import rehypeRaw from 'rehype-raw';
 
 import { UpdateContext } from '@/components/contexts/UpdateContext';
 import ExtLink from '@/components/ui/ExtLink';
-import useChangelog from '@/hooks/ui/useChangelog';
+import useChangelog, { transformIssueReferences, transformLinks, transformMentions } from '@/hooks/ui/useChangelog';
 import styles from '@/styles/ChangelogModal.module.css';
-import { transformIssueReferences, transformLinks, transformMentions } from '@/utils/updates/changelogHandler';
 
 export default function ChangelogModal() {
     const { showChangelog, setShowChangelog } = useContext(UpdateContext);

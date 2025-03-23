@@ -3,8 +3,8 @@ import { useContext, useEffect } from 'react';
 
 import { StateContext } from '@/components/contexts/StateContext';
 import { UserContext } from '@/components/contexts/UserContext';
-import { checkSteamStatus, logEvent } from '@/utils/global/tasks';
-import { showAccountMismatchToast, showDangerToast } from '@/utils/global/toasts';
+import { checkSteamStatus, logEvent } from '@/utils/tasks';
+import { showAccountMismatchToast, showDangerToast } from '@/utils/toasts';
 
 export default function useAchievements(setIsLoading,
     setAchievements,
@@ -18,12 +18,15 @@ export default function useAchievements(setIsLoading,
     useEffect(() => {
         const getAchievementData = async () => {
             try {
-                // Check if Steam is running
+                // Make sure Steam client is running
                 const isSteamRunning = checkSteamStatus(true);
                 if (!isSteamRunning) return setIsLoading(false);
 
+                // Fetch achievement data
                 const response = await invoke('get_achievement_data', { steamId: userSummary.steamId, appId });
 
+                // Handle case where Steam API initialization failed
+                // We already check if Steam client is running so usually account mismatch
                 if (!response?.achievement_data && response.includes('Failed to initialize Steam API')) {
                     setIsLoading(false);
                     setAchievementsUnavailable(true);
@@ -34,6 +37,7 @@ export default function useAchievements(setIsLoading,
                 }
 
                 if (response?.achievement_data?.achievements) {
+                    // Check if any achievements are marked as protected
                     const hasProtectedAchievements = response.achievement_data.achievements.some(
                         achievement => achievement.protected_achievement === true
                     );
@@ -48,6 +52,7 @@ export default function useAchievements(setIsLoading,
                 }
 
                 if (response?.achievement_data?.stats) {
+                    // Check if any statistics are marked as protected
                     const hasProtectedStatistics = response.achievement_data.stats.some(
                         achievement => achievement.protected_stat === true
                     );

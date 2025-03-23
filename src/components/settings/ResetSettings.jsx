@@ -1,10 +1,9 @@
 import { Button, Modal, ModalContent, ModalBody, ModalFooter, ModalHeader } from '@heroui/react';
 
 import useResetSettings from '@/hooks/settings/useResetSettings';
-import { handleResetSettings } from '@/utils/settings/settingsHandler';
 
 export default function ResetSettings({ setSettings, setRefreshKey }) {
-    const { isOpen, onOpen, onOpenChange } = useResetSettings();
+    const { handleResetSettings, isOpen, onOpen, onOpenChange } = useResetSettings();
 
     return (
         <>

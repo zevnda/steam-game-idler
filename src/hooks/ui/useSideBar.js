@@ -5,8 +5,8 @@ import { useContext } from 'react';
 import { NavigationContext } from '@/components/contexts/NavigationContext';
 import { SearchContext } from '@/components/contexts/SearchContext';
 import { UserContext } from '@/components/contexts/UserContext';
-import { logEvent } from '@/utils/global/tasks';
-import { showDangerToast } from '@/utils/global/toasts';
+import { logEvent } from '@/utils/tasks';
+import { showDangerToast } from '@/utils/toasts';
 
 export default function useSideBar(activePage, setActivePage) {
     const { setGameQueryValue, setAchievementQueryValue } = useContext(SearchContext);
@@ -18,6 +18,7 @@ export default function useSideBar(activePage, setActivePage) {
         onOpen();
     };
 
+    // Handle logging out
     const handleLogout = async (onClose) => {
         try {
             onClose();
@@ -32,6 +33,7 @@ export default function useSideBar(activePage, setActivePage) {
         }
     };
 
+    // Clear local storage data and reset states on logout
     const clearLocalStorageData = async () => {
         try {
             setActivePage('');

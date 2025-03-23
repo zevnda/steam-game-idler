@@ -4,12 +4,14 @@ import { useContext } from 'react';
 import { TbPlayerStopFilled } from 'react-icons/tb';
 
 import { IdleContext } from '@/components/contexts/IdleContext';
+import { StateContext } from '@/components/contexts/StateContext';
 import GameCard from '@/components/ui/GameCard';
-import { logEvent } from '@/utils/global/tasks';
-import { showDangerToast, showSuccessToast } from '@/utils/global/toasts';
+import { logEvent } from '@/utils/tasks';
+import { showDangerToast, showSuccessToast } from '@/utils/toasts';
 
 export default function IdlingGamesList() {
     const { idleGamesList, setIdleGamesList } = useContext(IdleContext);
+    const { setIsCardFarming, setIsAchievementUnlocker } = useContext(StateContext);
 
     const handleStopIdleAll = async () => {
         try {
@@ -17,6 +19,8 @@ export default function IdlingGamesList() {
             if (response.success) {
                 showSuccessToast(`Stopped idling ${response?.killed_count || 'all'} game(s)`);
                 setIdleGamesList([]);
+                setIsCardFarming(false);
+                setIsAchievementUnlocker(false);
             } else {
                 showDangerToast('Failed to stop idling all games');
             }

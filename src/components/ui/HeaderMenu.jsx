@@ -7,9 +7,9 @@ import { TbBookFilled, TbBugFilled, TbBulbFilled, TbDownload, TbLayoutNavbarExpa
 
 import { UpdateContext } from '@/components/contexts/UpdateContext';
 import ExtLink from '@/components/ui/ExtLink';
-import { logEvent } from '@/utils/global/tasks';
-import { fetchLatest, preserveKeysAndClearData } from '@/utils/global/tasks';
-import { showDangerToast, showPrimaryToast } from '@/utils/global/toasts';
+import { logEvent } from '@/utils/tasks';
+import { fetchLatest, preserveKeysAndClearData } from '@/utils/tasks';
+import { showDangerToast, showPrimaryToast } from '@/utils/toasts';
 
 export default function HeaderMenu() {
     const { setShowChangelog } = useContext(UpdateContext);

@@ -1,22 +1,24 @@
 import { invoke } from '@tauri-apps/api/core';
 import { useEffect, useState } from 'react';
 
-import { logEvent } from '@/utils/global/tasks';
-import { showAccountMismatchToast, showDangerToast, showIncorrectCredentialsToast, showSuccessToast } from '@/utils/global/toasts';
+import { logEvent } from '@/utils/tasks';
+import { showAccountMismatchToast, showDangerToast, showIncorrectCredentialsToast, showSuccessToast } from '@/utils/toasts';
 
 export const useCardSettings = (settings, setLocalSettings) => {
-    const [sidValue, setSidValue] = useState('');
-    const [slsValue, setSlsValue] = useState('');
-    const [smaValue, setSmaValue] = useState('');
+    const [sidValue, setSidValue] = useState(''); // sessionid
+    const [slsValue, setSlsValue] = useState(''); // steamLoginSecure
+    const [smaValue, setSmaValue] = useState(''); // steamMachineAuth
     const [hasCookies, setHasCookies] = useState(false);
     const [cardFarmingUser, setCardFarmingUser] = useState(null);
 
+    // Sync local settings with global settings when they change
     useEffect(() => {
         if (setLocalSettings && settings && settings.cardFarming) {
             setLocalSettings(settings);
         }
     }, [settings, setLocalSettings]);
 
+    // Get stored cookies to set their input values
     useEffect(() => {
         getStoredCookies(setHasCookies, setSidValue, setSlsValue, setSmaValue, setCardFarmingUser);
     }, []);
@@ -50,6 +52,7 @@ export const useCardSettings = (settings, setLocalSettings) => {
     };
 };
 
+// Gets user summary
 const fetchUserSummary = async (steamId, apiKey) => {
     const res = await invoke('get_user_summary', { steamId, apiKey });
     return {
@@ -61,6 +64,7 @@ const fetchUserSummary = async (steamId, apiKey) => {
 
 export const getStoredCookies = async (setHasCookies, setSidValue, setSlsValue, setSmaValue, setCardFarmingUser) => {
     try {
+        // Get previously saved Steam cookies and cardFarming user from localStorage
         const steamCookies = JSON.parse(localStorage.getItem('steamCookies'));
         const cardFarmingUser = JSON.parse(localStorage.getItem('cardFarmingUser'));
 
@@ -85,21 +89,26 @@ export const handleSave = async (sidValue, slsValue, smaValue, setHasCookies, us
         if (sidValue.length > 0 && slsValue.length > 0) {
             const userSummary = JSON.parse(localStorage.getItem('userSummary')) || {};
 
+            // Verify steam cookies are valid 
             const res = await invoke('validate_session', { sid: sidValue, sls: slsValue, sma: smaValue, steamid: userSummary.steamId });
 
             if (res.user) {
+                // Extract steamID from the steamLoginSecure cookie (first 17 chars)
                 const steamId = slsValue.slice(0, 17);
                 const apiKey = localStorage.getItem('apiKey');
                 const cardFarmingUser = await fetchUserSummary(steamId, apiKey);
 
+                // Make sure user isn't trying to farm cards with different account than they're logged in with
                 if (cardFarmingUser.steamId !== userSummary.steamId) {
                     showAccountMismatchToast('danger');
                     return logEvent('[Error] in (handleSave) Account mismatch between Steam and SGI');
                 }
 
+                // Save valid cookies and update UI state
                 localStorage.setItem('steamCookies', JSON.stringify({ sid: sidValue, sls: slsValue, sma: smaValue }));
                 setHasCookies(true);
 
+                // Save card farming user and update UI state
                 setCardFarmingUser(cardFarmingUser);
                 localStorage.setItem('cardFarmingUser', JSON.stringify(cardFarmingUser));
 
@@ -119,6 +128,7 @@ export const handleSave = async (sidValue, slsValue, smaValue, setHasCookies, us
 
 export const handleClear = async (setHasCookies, setSidValue, setSlsValue, setSmaValue, setCardFarmingUser) => {
     try {
+        // Clear all saved credentials and reset UI states
         localStorage.removeItem('steamCookies');
         localStorage.removeItem('cardFarmingUser');
         setSidValue('');
@@ -148,16 +158,22 @@ export const cardCheckboxChange = (e, localSettings, setLocalSettings, setSettin
                 [name]: checked
             }
         };
+
+        // Add radio-button-like behavior for mutually exclusive options
+        // Only one of the card farming options can be active at a time
         const checkboxNames = Object.keys(updatedSettings.cardFarming);
         if (checked) {
+            // If this checkbox is checked, uncheck the other one
             const otherCheckboxName = checkboxNames.find(checkbox => checkbox !== name);
             updatedSettings.cardFarming[otherCheckboxName] = false;
         } else {
+            // Don't allow both checkboxes to be unchecked - keep one enabled
             const otherCheckboxName = checkboxNames.find(checkbox => checkbox !== name);
             if (!updatedSettings.cardFarming[otherCheckboxName]) {
                 updatedSettings.cardFarming[name] = true;
             }
         }
+
         localStorage.setItem('settings', JSON.stringify(updatedSettings));
         updateSettings(updatedSettings, setLocalSettings, setSettings);
         logEvent(`[Settings - Card Farming] Changed '${name}' to '${updatedSettings.cardFarming[name]}'`);
@@ -168,6 +184,7 @@ export const cardCheckboxChange = (e, localSettings, setLocalSettings, setSettin
     }
 };
 
+// Helper function to update both local component state and global app settings
 export const updateSettings = (newSettings, setLocalSettings, setSettings) => {
     setLocalSettings(newSettings);
     setSettings(newSettings);

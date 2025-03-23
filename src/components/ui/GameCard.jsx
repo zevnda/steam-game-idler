@@ -7,7 +7,7 @@ import { IdleContext } from '@/components/contexts/IdleContext';
 import { StateContext } from '@/components/contexts/StateContext';
 import CardMenu from '@/components/gameslist/CardMenu';
 import IdleTimer from '@/components/ui/IdleTimer';
-import { handleIdle, handleStopIdle, viewAchievments, viewGameSettings, viewStorePage } from '@/utils/gameslist/gameCardHandler';
+import { handleIdle, handleStopIdle, viewAchievments, viewGameSettings } from '@/hooks/ui/useGameCard';
 
 export default function GameCard({ item, setSettingsModalOpen }) {
     const { idleGamesList, setIdleGamesList } = useContext(IdleContext);
@@ -83,7 +83,6 @@ export default function GameCard({ item, setSettingsModalOpen }) {
                         item={item}
                         handleIdle={handleIdle}
                         viewAchievments={(item) => viewAchievments(item, setAppId, setAppName, setShowAchievements)}
-                        viewStorePage={viewStorePage}
                         viewGameSettings={(item) => viewGameSettings(item, setAppId, setAppName, setSettingsModalOpen)}
                     />
                 </div>

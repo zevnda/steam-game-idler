@@ -3,8 +3,8 @@ import { useContext } from 'react';
 
 import { StateContext } from '@/components/contexts/StateContext';
 import { UserContext } from '@/components/contexts/UserContext';
-import { checkSteamStatus, logEvent } from '@/utils/global/tasks';
-import { showDangerToast, showEnableAllGamesToast, showMissingCredentialsToast, showNoGamesToast, showOutdatedCredentialsToast } from '@/utils/global/toasts';
+import { checkSteamStatus, logEvent } from '@/utils/tasks';
+import { showDangerToast, showEnableAllGamesToast, showMissingCredentialsToast, showNoGamesToast, showOutdatedCredentialsToast } from '@/utils/toasts';
 
 // Automate card farming and achievement unlocking
 export const useAutomate = () => {
@@ -13,11 +13,13 @@ export const useAutomate = () => {
     // Start card farming
     const startCardFarming = async () => {
         try {
-            // Check if Steam is running
+            // Make sure Steam client is running
             const isSteamRunning = checkSteamStatus(true);
             if (!isSteamRunning) return;
+
             // Retrieve Steam cookies from local storage
             const steamCookies = JSON.parse(localStorage.getItem('steamCookies')) || {};
+
             // Retrieve settings from local storage
             const settings = JSON.parse(localStorage.getItem('settings')) || {};
 
@@ -47,7 +49,7 @@ export const useAutomate = () => {
     // Start achievement unlocker
     const startAchievementUnlocker = async () => {
         try {
-            // Check if Steam is running
+            // Make sure Steam client is running
             const isSteamRunning = checkSteamStatus(true);
             if (!isSteamRunning) return;
 

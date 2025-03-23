@@ -12,7 +12,7 @@ import IdlingGamesList from '@/components/gameslist/IdlingGamesList';
 import Settings from '@/components/settings/Settings';
 import Header from '@/components/ui/Header';
 import SideBar from '@/components/ui/SideBar';
-import { antiAwayStatus } from '@/utils/global/tasks';
+import { antiAwayStatus } from '@/utils/tasks';
 
 export default function Dashboard() {
     const { showAchievements, isCardFarming, isAchievementUnlocker } = useContext(StateContext);

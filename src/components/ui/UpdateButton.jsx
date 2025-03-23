@@ -5,8 +5,8 @@ import { check } from '@tauri-apps/plugin-updater';
 import { useState } from 'react';
 import { TbDownload } from 'react-icons/tb';
 
-import { logEvent } from '@/utils/global/tasks';
-import { showDangerToast } from '@/utils/global/toasts';
+import { logEvent } from '@/utils/tasks';
+import { showDangerToast } from '@/utils/toasts';
 
 export default function UpdateButton() {
     const [isLoading, setIsLoading] = useState(false);

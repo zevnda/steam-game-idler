@@ -3,13 +3,14 @@ import { useContext } from 'react';
 
 import { UserContext } from '@/components/contexts/UserContext';
 import { handleClearLogs } from '@/hooks/settings/useLogs';
-import { logEvent } from '@/utils/global/tasks';
-import { preserveKeysAndClearData } from '@/utils/global/tasks';
+import { logEvent } from '@/utils/tasks';
+import { preserveKeysAndClearData } from '@/utils/tasks';
 
 const useClearData = () => {
     const { setUserSummary } = useContext(UserContext);
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
+    // Clear all data
     const handleClearData = (onClose) => {
         onClose();
         handleClearLogs(false);

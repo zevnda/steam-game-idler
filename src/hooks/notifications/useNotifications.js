@@ -1,3 +1,4 @@
+import { open } from '@tauri-apps/plugin-shell';
 import { useState, useEffect, useRef } from 'react';
 
 export const useNotifications = () => {
@@ -7,12 +8,14 @@ export const useNotifications = () => {
     const dropdownRef = useRef(null);
 
     useEffect(() => {
+        // Fetch notifications
         fetchNotifications(setNotifications, setUnseenNotifications);
         const interval = setInterval(() => fetchNotifications(setNotifications, setUnseenNotifications), 60 * 60 * 1000);
         return () => clearInterval(interval);
     }, []);
 
     useEffect(() => {
+        // Close notification pabnel when clicking outside
         const handleClickOutside = (event) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
                 setShowNotifications(false);
@@ -97,12 +100,10 @@ export const markAllAsSeen = (notifications, setUnseenNotifications) => {
 // Handle opening a URL and marking the notification as seen
 export const handleOpenUrl = async (url, id, unseenNotifications, setUnseenNotifications) => {
     markAsSeen(id, unseenNotifications, setUnseenNotifications);
-    if (url && typeof window !== 'undefined' && window.__TAURI__) {
-        try {
-            await window.__TAURI__.shell.open(url);
-        } catch (error) {
-            console.error('Failed to open link:', error);
-        }
+    try {
+        await open(url);
+    } catch (error) {
+        console.error('Failed to open link:', error);
     }
 };
 

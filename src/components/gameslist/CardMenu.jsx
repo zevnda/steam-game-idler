@@ -1,8 +1,17 @@
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@heroui/react';
+import { open } from '@tauri-apps/plugin-shell';
 import { FaSteam } from 'react-icons/fa';
 import { TbAwardFilled, TbDotsVertical, TbPlayerPlayFilled, TbSettingsFilled } from 'react-icons/tb';
 
-export default function CardMenu({ item, handleIdle, viewAchievments, viewStorePage, viewGameSettings }) {
+export default function CardMenu({ item, handleIdle, viewAchievments, viewGameSettings }) {
+    const viewStorePage = async (item) => {
+        try {
+            await open(`https://store.steampowered.com/app/${item.appid}`);
+        } catch (error) {
+            console.error('Failed to open link:', error);
+        }
+    };
+
     return (
         <Dropdown classNames={{ content: ['rounded-lg p-0 bg-base border border-border'] }}>
             <DropdownTrigger>

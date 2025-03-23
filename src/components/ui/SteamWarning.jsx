@@ -2,7 +2,7 @@ import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDi
 import { useContext, useEffect } from 'react';
 
 import { StateContext } from '@/components/contexts/StateContext';
-import { checkSteamStatus } from '@/utils/global/tasks';
+import { checkSteamStatus } from '@/utils/tasks';
 
 export default function SteamWarning() {
     const { showSteamWarning, setShowSteamWarning } = useContext(StateContext);

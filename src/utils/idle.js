@@ -1,7 +1,7 @@
 import { invoke } from '@tauri-apps/api/core';
 
-import { checkSteamStatus, logEvent } from '@/utils/global/tasks';
-import { showAccountMismatchToast, showWarningToast } from '@/utils/global/toasts';
+import { checkSteamStatus, logEvent } from '@/utils/tasks';
+import { showAccountMismatchToast, showWarningToast } from '@/utils/toasts';
 
 const idleTimeouts = {};
 const idleIntervals = {};
@@ -9,6 +9,7 @@ const idleIntervals = {};
 // Start idling a game
 export async function startIdle(appId, appName, manual = true) {
     try {
+        // Make sure Steam client is running
         const isSteamRunning = checkSteamStatus(true);
         if (!isSteamRunning) return;
 
@@ -85,6 +86,7 @@ export async function stopIdle(appId, appName) {
 // Start farming idle
 export async function startFarmIdle(appIds) {
     try {
+        // Make sure Steam client is running
         const isSteamRunning = checkSteamStatus(true);
         if (!isSteamRunning) return;
         await invoke('start_farm_idle', { appIds });

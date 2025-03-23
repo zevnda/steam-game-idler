@@ -1,9 +1,14 @@
 import { invoke } from '@tauri-apps/api/core';
 
-import { startIdle } from '@/utils/global/idle';
-import { checkSteamStatus, logEvent } from '@/utils/global/tasks';
-import { showDangerToast, showSuccessToast } from '@/utils/global/toasts';
+import { startIdle } from '@/utils/idle';
+import { checkSteamStatus, logEvent } from '@/utils/tasks';
+import { showDangerToast, showSuccessToast } from '@/utils/toasts';
 
+export default function useGameCard() {
+    return {};
+}
+
+// Handle starting idling for a game
 export const handleIdle = async (item) => {
     const success = await startIdle(item.appid, item.name, true);
     if (success) {
@@ -13,6 +18,7 @@ export const handleIdle = async (item) => {
     }
 };
 
+// Handle stopping idling for a game
 export const handleStopIdle = async (item, idleGamesList, setIdleGamesList) => {
     const game = idleGamesList.find((game) => game.appid === item.appid);
     try {
@@ -30,8 +36,9 @@ export const handleStopIdle = async (item, idleGamesList, setIdleGamesList) => {
     }
 };
 
+// Handle viewing achievements for a game
 export const viewAchievments = async (item, setAppId, setAppName, setShowAchievements) => {
-    // Check if Steam is running
+    // Make sure Steam client is running
     const isSteamRunning = checkSteamStatus(true);
     if (!isSteamRunning) return;
 
@@ -40,16 +47,7 @@ export const viewAchievments = async (item, setAppId, setAppName, setShowAchieve
     setShowAchievements(true);
 };
 
-export const viewStorePage = async (item) => {
-    if (typeof window !== 'undefined' && window.__TAURI__) {
-        try {
-            await window.__TAURI__.shell.open(`https://store.steampowered.com/app/${item.appid}`);
-        } catch (error) {
-            console.error('Failed to open link:', error);
-        }
-    }
-};
-
+// Handle viewing game settings for a game
 export const viewGameSettings = (item, setAppId, setAppName, setSettingsModalOpen) => {
     setAppId(item.appid);
     setAppName(item.name);

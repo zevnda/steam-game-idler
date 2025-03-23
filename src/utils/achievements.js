@@ -1,7 +1,7 @@
 import { invoke } from '@tauri-apps/api/core';
 
-import { logEvent } from '@/utils/global/tasks';
-import { showDangerToast, showSuccessToast } from '@/utils/global/toasts';
+import { logEvent } from '@/utils/tasks';
+import { showDangerToast, showSuccessToast } from '@/utils/toasts';
 
 // Unlock a single achievement for a game
 export async function unlockAchievement(steamId, appId, achievementName, appName) {
