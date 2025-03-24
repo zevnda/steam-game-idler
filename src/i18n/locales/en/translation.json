@@ -1,0 +1,243 @@
+{
+    "setup": {
+        "welcome": "Welcome",
+        "chooseAccount": "Choose an account",
+        "refresh": "Refresh",
+        "help": "Need help?",
+        "noUsers": "No Steam users found",
+        "learn": "Learn why"
+    },
+    "search": {
+        "games": "Search for a game",
+        "achievements": "Search for an achievement",
+        "statistics": "Search for a statistic"
+    },
+    "notifications": {
+        "empty": "No notifications",
+        "markAllRead": "Mark all as read"
+    },
+    "menu": {
+        "guide": "User Guide",
+        "issue": "Report an Issue",
+        "feature": "Request a Feature",
+        "support": "Support the Project",
+        "changelog": "View Changelog",
+        "update": "Check for Updates.."
+    },
+    "gamesList": {
+        "title": "Your Games",
+        "sort": {
+            "titleAsc": "Title Ascending",
+            "titleDesc": "Title Descending",
+            "playtimeDesc": "Playtime High-Low",
+            "playtimeAsc": "Playtime Low-High",
+            "recent": "Recently Played"
+        },
+        "private": {
+            "message": "Unable to retrieve games list. This is usually because:",
+            "change": "Change your privacy settings",
+            "tryAgain": "Try Again",
+            "reason": {
+                "1": "Your profile is set to private",
+                "2": "Your game details are set to private",
+                "3": "You have no games in your library",
+                "4": "You are using an invalid Steam web API key"
+            }
+        }
+    },
+    "idlingGames": {
+        "title": "Idling Games",
+        "subtitle": "Games that you are currently idling will appear here",
+        "stopAll": "Stop All"
+    },
+    "customLists": {
+        "cardFarming": {
+            "subtitle": "Add games to this list to farm their trading cards",
+            "buttonLabel": "Start Card Farming"
+        },
+        "achievementUnlocker": {
+            "subtitle": "Add games to this list to unlock their achievements",
+            "buttonLabel": "Start Achievement Unlocker"
+        },
+        "autoIdle": {
+            "title": "Auto-Idle",
+            "subtitle": "Add games to this list to automatically idle them on launch"
+        },
+        "favorites": {
+            "title": "Favorites",
+            "subtitle": "Your favorite games"
+        },
+        "manualAdd": {
+            "title": "Add a Game",
+            "gameName": "Game Name",
+            "gameId": "Game ID"
+        },
+        "edit": "Edit List",
+        "inList": "In List",
+        "addAll": "Add All",
+        "invalid": "Invalid list type"
+    },
+    "automation": {
+        "cardFarming": {
+            "initialDelay": "This might take a second..",
+            "progress": "Idling <1>{{count}}</1> game(s) with <3>{{total}}</3> total card drop(s) remaining"
+        },
+        "achievementUnlocker": {
+            "initialDelay": "Starting in <1>{{timer}}</1>",
+            "delay": "Next unlock in <1>{{timer}}</1>",
+            "progress": "Unlocking <1>{{count}}</1> achievement(s) for <3>{{appName}}</3>",
+            "scheduleWait": "Achievement unlocking paused due to being outside of the scheduled time and will resume again once inside the scheduled time"
+        }
+    },
+    "freeGames.title": "Free Games",
+    "cardMenu": {
+        "idle": "Start idling",
+        "achievements": "View achievements",
+        "store": "View store page",
+        "settings": "Game settings"
+    },
+    "gameSettings": {
+        "idle": "Max idle time (minutes)",
+        "drops": "Max card drops",
+        "achievements": "Max achievement unlocks"
+    },
+    "achievementManager": {
+        "steam": "View on Steam",
+        "steamDB": "View on SteamDB",
+        "file": "View in File Explorer",
+        "alert": "Some protected achievements or statistics have been disabled. <1>Learn more</1>",
+        "achievements": {
+            "title": "Achievements",
+            "empty": "No achievements found",
+            "unlockAll": "Unlock All",
+            "lockAll": "Lock All",
+            "unlock": "Unlock",
+            "lock": "Lock",
+            "protected": "Protected",
+            "modal": "Are you sure you want to <1>{{state}}</1> all achievements?",
+            "sort": {
+                "percent": "Percentage",
+                "title": "Alphabetically",
+                "unlocked": "Unlocked",
+                "locked": "Locked",
+                "unprotected": "Unprotected",
+                "protected": "Protected"
+            }
+        },
+        "statistics": {
+            "title": "Statistics",
+            "empty": "No statistics found",
+            "saveChanges": "Save Changes",
+            "resetAll": "Reset All",
+            "flags": "Flags"
+        }
+    },
+    "settings": {
+        "title": "Settings",
+        "general": {
+            "title": "General",
+            "antiAway": "Prevent away status on Steam",
+            "freeGameNotifications": "Get notifications about free games",
+            "runAtStartup": "Run at startup",
+            "language": "Language",
+            "theme": "Theme",
+            "webApi": "Use your own <1>Steam web API key</1>(optional). <3>Learn more</3>",
+            "webApi.placeholder": "Steam web API key",
+            "userSummary": "Logged in as",
+            "helpTranslate": "Help translate SGI",
+            "languages": {
+                "english": "English",
+                "german": "German (Deutsch)"
+            }
+        },
+        "cardFarming": {
+            "listGames": "Farm cards for games in the Card Farming list",
+            "allGames": "Farm cards for all games with card drops remaining",
+            "steamCredentials": "Steam credentials are required in order to use the Card Farming feature. <1>Learn more</1>",
+            "userSummary": "Farming cards as"
+        },
+        "achievementUnlocker": {
+            "idle": "Idle games while Achievement Unlocker is active",
+            "hidden": "Skip hidden achievements",
+            "scheduleLabel": "Only unlock achievements between",
+            "scheduleAnd": "and",
+            "interval": "Unlock achievements randomly every {{min}} to {{max}} minutes"
+        },
+        "logs": {
+            "title": "Logs",
+            "openLogFile": "Open in File Explorer",
+            "clearLogs": "Clear Logs",
+            "time": "Time",
+            "message": "Message"
+        },
+        "resetSettings": {
+            "button": "Reset Settings"
+        },
+        "clearData": {
+            "button": "Clear Data"
+        },
+        "exportData": "Export Data"
+    },
+    "confirmation": {
+        "logout": "Are you sure you want to logout?",
+        "resetStatistics": "Are you sure you want to <1>reset</1> all statistics?",
+        "resetSettings": "Are you sure you want to reset settings to default?",
+        "clearData": "Are you sure you want to clear all data?",
+        "steamClosed": "Steam is not running. Open the Steam client to continue"
+    },
+    "toast": {
+        "steam": "Steam is not running",
+        "mismatch": "Account mismatch between Steam and SGI",
+        "missingCredentials": "Missing card farming credentials in \"settings > card farming\"",
+        "outdatedCredentials": "Card farming credentials need to be updated in \"settings > card farming\"",
+        "incorrectCredentials": "Incorrect card farming credentials",
+        "enableAllGames": "Add some games to your card farming list or enable \"all games\" in \"settings > card farming\"",
+        "noGames": "There are no games in your achievement unlocker list",
+        "configSettings": "Please configure the settings first",
+        "refetch.cooldown": "Games can be refreshed again at {{time}}",
+        "achievementData.error": "Error fetching achievement data",
+        "startIdle.success": "Started idling {{appName}} ({{appId}})",
+        "startIdle.alreadyIdling": "{{appName}} ({{appId}}) is already being idled",
+        "startIdle.error": "Failed to start idling {{appName}} ({{appId}})",
+        "stopIdle.success": "Stopped idling {{appName}} ({{appId}})",
+        "stopIdle.error": "Failed to stop idling {{appName}} ({{appId}})",
+        "stopIdleAll.success": "Stopped idling {{count}} game(s)",
+        "stopIdleAll.error": "Failed to stop idling all game(s)",
+        "exportData.success": "Data copied to clipboard",
+        "exportData.error": "Error exporting data",
+        "toggle.success": "{{type}} {{achievementName}} for {{appName}}",
+        "toggle.error": "Failed to {{type}} {{achievementName}} for {{appName}}",
+        "unlockAll.success": "Successfully unlocked {{count}} achievement(s) for {{appName}}",
+        "lockAll.success": "Successfully locked {{count}} achievement(s) for {{appName}}",
+        "updateAll.success": "Successfully updated {{count}} statistic(s) for {{appName}}",
+        "updateAll.noChanges": "No statistics have been modified",
+        "updateAll.error": "Unable to update statistics",
+        "resetAll.success": "Successfully reset {{count}} statistic(s) for {{appName}}",
+        "resetAll.error": "Unable to reset statistics",
+        "cardFarming.logIn": "Credentials validated for {{user}}",
+        "cardFarming.logOut": "Successfully cleared credentials",
+        "apiKey.save": "Steam web API key saved successfully",
+        "apiKey.clear": "Steam web API key cleared successfully",
+        "clearLogs.success": "Logs cleared successfully",
+        "resetSettings.success": "Settings have been reset to default",
+        "checkUpdate.none": "No updates available",
+        "checkUpdate.error": "Error checking for updates"
+    },
+    "common": {
+        "cardFarming": "Card Farming",
+        "achievementUnlocker": "Achievement Unlocker",
+        "showing": "Showing {{count}} of {{total}} games",
+        "learnMore": "Learn More",
+        "error": "An error occurred. Check the logs for more information",
+        "start": "Start",
+        "stop": "Stop",
+        "notice": "Notice",
+        "confirm": "Confirm",
+        "done": "Done",
+        "add": "Add",
+        "save": "Save",
+        "close": "Close",
+        "cancel": "Cancel",
+        "clear": "Clear"
+    }
+}

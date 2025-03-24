@@ -1,6 +1,7 @@
 import { Button } from '@heroui/react';
 import Image from 'next/image';
 import { useContext, useState, useEffect, useRef } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { TbCheck } from 'react-icons/tb';
 
 import { StateContext } from '@/components/contexts/StateContext';
@@ -8,6 +9,7 @@ import { useAchievementUnlocker } from '@/hooks/automation/useAchievementUnlocke
 import { stopIdle } from '@/utils/idle';
 
 export default function AchievementUnlocker({ activePage }) {
+    const { t } = useTranslation();
     const { isDarkMode, setIsAchievementUnlocker } = useContext(StateContext);
 
     const isMountedRef = useRef(true);
@@ -67,12 +69,12 @@ export default function AchievementUnlocker({ activePage }) {
 
                 <div className='flex items-center flex-col gap-6 z-10 backdrop-blur-md bg-base/20 p-8 border border-border/40 rounded-lg'>
                     <p className='text-3xl font-semibold'>
-                        Achievement Unlocker
+                        {t('common.achievementUnlocker')}
                     </p>
 
                     {isWaitingForSchedule && (
                         <p className='text-sm text-yellow-400'>
-                            Achievement unlocking paused due to being outside of the scheduled time and will resume again once inside the scheduled time
+                            {t('automation.achievementUnlocker.scheduleWait')}
                         </p>
                     )}
 
@@ -84,18 +86,24 @@ export default function AchievementUnlocker({ activePage }) {
 
                     {isInitialDelay && (
                         <p className='text-sm'>
-                            Starting in <span className='font-bold text-sm text-dynamic'>{countdownTimer}</span>
+                            <Trans i18nKey='automation.achievementUnlocker.initialDelay' values={{ timer: countdownTimer }}>
+                                Starting in <span className='font-bold text-sm text-dynamic'>{countdownTimer}</span>
+                            </Trans>
                         </p>
                     )}
 
                     {!isInitialDelay && !isComplete && !isWaitingForSchedule && (
                         <>
                             <p>
-                                Unlocking <span className='font-bold text-dynamic'>{achievementCount}</span> achievement(s) for <span className='font-bold text-dynamic'>{currentGame.name}</span>
+                                <Trans i18nKey='automation.achievementUnlocker.progress' values={{ count: achievementCount, appName: currentGame.name }}>
+                                    Unlocking <span className='font-bold text-dynamic'>{achievementCount}</span> achievement(s) for <span className='font-bold text-dynamic'>{currentGame.name}</span>
+                                </Trans>
                             </p>
 
                             <p className='text-sm'>
-                                Next unlock in <span className='font-bold text-sm text-dynamic'>{countdownTimer}</span>
+                                <Trans i18nKey='automation.achievementUnlocker.delay' values={{ timer: countdownTimer }}>
+                                    Next unlock in <span className='font-bold text-sm text-dynamic'>{countdownTimer}</span>
+                                </Trans>
                             </p>
                         </>
                     )}
@@ -109,7 +117,7 @@ export default function AchievementUnlocker({ activePage }) {
                             setIsAchievementUnlocker(false);
                         }}
                     >
-                        {isComplete ? <p>Close</p> : <p>Stop</p>}
+                        {isComplete ? <p>{t('common.close')}</p> : <p>{t('common.stop')}</p>}
                     </Button>
                 </div>
             </div>

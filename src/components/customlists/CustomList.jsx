@@ -4,6 +4,7 @@ import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Button } from '@heroui/react';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { TbAward, TbCards, TbEdit } from 'react-icons/tb';
 
 import EditListModal from '@/components/customlists/EditListModal';
@@ -13,34 +14,8 @@ import GameCard from '@/components/ui/GameCard';
 import { useAutomate } from '@/hooks/automation/useAutomateButtons';
 import useCustomList from '@/hooks/customlists/useCustomList';
 
-const listTypes = {
-    favoritesList: {
-        title: 'Favorites',
-        description: 'Your favorite games',
-        icon: <TbEdit fontSize={20} />,
-        startButton: null,
-    },
-    cardFarmingList: {
-        title: 'Card Farming',
-        description: 'Add games to this list to farm their trading cards',
-        icon: <TbCards fontSize={20} />,
-        startButton: 'startCardFarming',
-    },
-    autoIdleList: {
-        title: 'Auto Idle',
-        description: 'Add games to this list to automatically idle them on launch',
-        icon: <TbEdit fontSize={20} />,
-        startButton: null,
-    },
-    achievementUnlockerList: {
-        title: 'Achievement Unlocker',
-        description: 'Add games to this list to unlock their achievements',
-        icon: <TbAward fontSize={20} />,
-        startButton: 'startAchievementUnlocker',
-    },
-};
-
 export default function CustomList({ type }) {
+    const { t } = useTranslation();
     const {
         list,
         setList,
@@ -73,10 +48,41 @@ export default function CustomList({ type }) {
         }
     };
 
+    const listTypes = {
+        cardFarmingList: {
+            title: t('common.cardFarming'),
+            description: t('customLists.cardFarming.subtitle'),
+            icon: <TbCards fontSize={20} />,
+            startButton: 'startCardFarming',
+            buttonLabel: t('customLists.cardFarming.buttonLabel'),
+        },
+        achievementUnlockerList: {
+            title: t('common.achievementUnlocker'),
+            description: t('customLists.achievementUnlocker.subtitle'),
+            icon: <TbAward fontSize={20} />,
+            startButton: 'startAchievementUnlocker',
+            buttonLabel: t('customLists.achievementUnlocker.buttonLabel'),
+        },
+        autoIdleList: {
+            title: t('customLists.autoIdle.title'),
+            description: t('customLists.autoIdle.subtitle'),
+            icon: <TbEdit fontSize={20} />,
+            startButton: null,
+            buttonLabel: null,
+        },
+        favoritesList: {
+            title: t('customLists.favorites.title'),
+            description: t('customLists.favorites.subtitle'),
+            icon: <TbEdit fontSize={20} />,
+            startButton: null,
+            buttonLabel: null,
+        },
+    };
+
     const listType = listTypes[type];
 
     if (!listType) {
-        return <p>Invalid list type</p>;
+        return <p>{t('customLists.invalid')}</p>;
     };
 
     return (
@@ -100,7 +106,7 @@ export default function CustomList({ type }) {
                                 startContent={listType.icon}
                                 onPress={listType.startButton === 'startCardFarming' ? startCardFarming : startAchievementUnlocker}
                             >
-                                Start {listType.title}
+                                {listType.buttonLabel}
                             </Button>
                         )}
 
@@ -112,7 +118,7 @@ export default function CustomList({ type }) {
                             startContent={<TbEdit fontSize={20} />}
                             onPress={() => setEditModalOpen(true)}
                         >
-                            Edit List
+                            {t('customLists.edit')}
                         </Button>
                     </div>
                 </div>

@@ -1,5 +1,6 @@
 import { invoke } from '@tauri-apps/api/core';
 import { useContext, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { StateContext } from '@/components/contexts/StateContext';
 import { UserContext } from '@/components/contexts/UserContext';
@@ -12,6 +13,7 @@ export default function useAchievements(setIsLoading,
     setProtectedAchievements,
     setProtectedStatistics,
 ) {
+    const { t } = useTranslation();
     const { appId } = useContext(StateContext);
     const { userSummary, setAchievementsUnavailable, setStatisticsUnavailable } = useContext(UserContext);
 
@@ -69,11 +71,11 @@ export default function useAchievements(setIsLoading,
                 setIsLoading(false);
                 setAchievementsUnavailable(true);
                 setStatisticsUnavailable(true);
-                showDangerToast('Error fetching achievement data');
+                showDangerToast(t('toast.achievementData.error'));
                 console.error('Error in (getAchievementData):', error);
                 logEvent(`Error in (getAchievementData): ${error}`);
             }
         };
         getAchievementData();
-    }, [userSummary.steamId, appId, setAchievements, setIsLoading, setProtectedAchievements, setProtectedStatistics, setStatistics, setAchievementsUnavailable, setStatisticsUnavailable]);
+    }, [userSummary.steamId, appId, setAchievements, setIsLoading, setProtectedAchievements, setProtectedStatistics, setStatistics, setAchievementsUnavailable, setStatisticsUnavailable, t]);
 }

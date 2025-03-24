@@ -1,5 +1,6 @@
 import { invoke } from '@tauri-apps/api/core';
 import { useContext } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { StateContext } from '@/components/contexts/StateContext';
 import { UserContext } from '@/components/contexts/UserContext';
@@ -8,6 +9,7 @@ import { showDangerToast, showEnableAllGamesToast, showMissingCredentialsToast, 
 
 // Automate card farming and achievement unlocking
 export const useAutomate = () => {
+    const { t } = useTranslation();
     const { userSummary } = useContext(UserContext);
     const { setIsCardFarming, setIsAchievementUnlocker } = useContext(StateContext);
     // Start card farming
@@ -40,7 +42,7 @@ export const useAutomate = () => {
                 return showEnableAllGamesToast();
             setIsCardFarming(true);
         } catch (error) {
-            showDangerToast('An error occurred. Check the logs for more information');
+            showDangerToast(t('common.error'));
             console.error('Error in (startCardFarming):', error);
             logEvent(`[Error] in (startCardFarming): ${error}`);
         }
@@ -57,7 +59,7 @@ export const useAutomate = () => {
             const settings = JSON.parse(localStorage.getItem('settings')) || {};
 
             if (!settings || Object.keys(settings).length === 0) {
-                return showDangerToast('Please configure the settings first');
+                return showDangerToast(t('toast.configSettings'));
             }
 
             // Retrieve achievement unlocker list
@@ -67,7 +69,7 @@ export const useAutomate = () => {
 
             setIsAchievementUnlocker(true);
         } catch (error) {
-            showDangerToast('An error occurred. Check the logs for more information');
+            showDangerToast(t('common.error'));
             console.error('Error in (startAchievementUnlocker):', error);
             logEvent(`[Error] in (startAchievementUnlocker): ${error}`);
         }

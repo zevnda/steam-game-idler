@@ -13,6 +13,9 @@ A lightweight, user-friendly tool for farming trading cards, unlocking achieveme
 <a href="https://steamgameidler.vercel.app/gallery"><sub>view more examples</sub></a>
 </div>
 
+# Help Translate SGI
+Contribute to SGI by helping with translations! **[Read more here](https://github.com/zevnda/steam-game-idler/discussions/148)**
+
 # Installation
 1. Download the `setup.exe` installer from the **[releases page](https://github.com/zevnda/steam-game-idler/releases/latest)**
 2. Run the installer and follow the steps

@@ -1,11 +1,13 @@
 import { invoke } from '@tauri-apps/api/core';
 import { useState, useContext } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { UserContext } from '@/components/contexts/UserContext';
 import { logEvent } from '@/utils/tasks';
 import { showDangerToast, showWarningToast } from '@/utils/toasts';
 
 export default function useManualAdd(listName, setList) {
+    const { t } = useTranslation();
     const { userSummary } = useContext(UserContext);
     const [appNameValue, setAppNameValue] = useState('');
     const [appIdValue, setAppIdValue] = useState('');
@@ -31,7 +33,7 @@ export default function useManualAdd(listName, setList) {
             }
         } catch (error) {
             setIsLoading(false);
-            showDangerToast('An error occurred. Check the logs for more information');
+            showDangerToast(t('common.error'));
             console.error('Error in (handleAdd):', error);
             logEvent(`[Error] in (handleAdd): ${error}`);
         }
@@ -41,7 +43,7 @@ export default function useManualAdd(listName, setList) {
         try {
             setAppNameValue(e.target.value || '');
         } catch (error) {
-            showDangerToast('An error occurred. Check the logs for more information');
+            showDangerToast(t('common.error'));
             console.error('Error in (handleNameChange):', error);
             logEvent(`[Error] in (handleNameChange): ${error}`);
         }
@@ -57,7 +59,7 @@ export default function useManualAdd(listName, setList) {
                 setAppIdValue(e.target?.value || 0);
             }
         } catch (error) {
-            showDangerToast('An error occurred. Check the logs for more information');
+            showDangerToast(t('common.error'));
             console.error('Error in (handleIdChange):', error);
             logEvent(`[Error] in (handleIdChange): ${error}`);
         }

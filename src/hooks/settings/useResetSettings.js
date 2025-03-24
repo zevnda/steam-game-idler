@@ -1,9 +1,11 @@
 import { useDisclosure } from '@heroui/react';
+import { useTranslation } from 'react-i18next';
 
 import { logEvent } from '@/utils/tasks';
 import { showDangerToast, showSuccessToast } from '@/utils/toasts';
 
 export default function useResetSettings() {
+    const { t } = useTranslation();
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     // Reset settings to default
@@ -14,11 +16,11 @@ export default function useResetSettings() {
             localStorage.removeItem('steamCookies');
             setSettings(null);
             setRefreshKey(prevKey => prevKey + 1);
-            showSuccessToast('Settings have been reset to default');
+            showSuccessToast(t('toast.resetSettings.success'));
             logEvent('[Settings] Reset to default');
             onClose();
         } catch (error) {
-            showDangerToast('An error occurred. Check the logs for more information');
+            showDangerToast(t('common.error'));
             console.error('Error in (handleResetSettings):', error);
             logEvent(`[Error] in (handleResetSettings): ${error}`);
         }

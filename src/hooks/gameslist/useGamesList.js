@@ -1,5 +1,6 @@
 import { invoke } from '@tauri-apps/api/core';
 import { useEffect, useState, useRef, useContext } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { SearchContext } from '@/components/contexts/SearchContext';
 import { UserContext } from '@/components/contexts/UserContext';
@@ -7,6 +8,7 @@ import { logEvent } from '@/utils/tasks';
 import { showDangerToast } from '@/utils/toasts';
 
 export default function useGamesList() {
+    const { t } = useTranslation();
     const { userSummary, gamesList, setGamesList } = useContext(UserContext);
     const { isQuery, gameQueryValue, setGameQueryValue } = useContext(SearchContext);
     const scrollContainerRef = useRef(null);
@@ -39,13 +41,13 @@ export default function useGamesList() {
                 previousRefreshKeyRef.current = refreshKey;
             } catch (error) {
                 setIsLoading(false);
-                showDangerToast('An error occurred. Check the logs for more information');
+                showDangerToast(t('common.error'));
                 console.error('Error in (getGamesList):', error);
                 logEvent(`[Error] in (getGamesList): ${error}`);
             }
         };
         getGamesList();
-    }, [userSummary.steamId, refreshKey, setGamesList]);
+    }, [userSummary.steamId, refreshKey, setGamesList, t]);
 
     useEffect(() => {
         if (gamesList && recentGames) {
@@ -82,7 +84,7 @@ export default function useGamesList() {
                     }
                 }
             } catch (error) {
-                showDangerToast('An error occurred. Check the logs for more information');
+                showDangerToast(t('common.error'));
                 console.error('Error in (handleScroll):', error);
                 logEvent(`[Error] in (handleScroll): ${error}`);
             }
@@ -93,7 +95,7 @@ export default function useGamesList() {
             scrollContainer.addEventListener('scroll', handleScroll);
             return () => scrollContainer.removeEventListener('scroll', handleScroll);
         }
-    }, [currentPage, visibleGames, filteredGames]);
+    }, [currentPage, visibleGames, filteredGames, t]);
 
     return {
         scrollContainerRef,

@@ -1,8 +1,10 @@
 import { Modal, ModalContent, ModalBody, Button, useDisclosure, ModalFooter, ModalHeader } from '@heroui/react';
+import { Trans, useTranslation } from 'react-i18next';
 
 import useStatisticButtons from '@/hooks/achievements/useStatisticButtons';
 
 export default function StatisticButtons({ statistics, setStatistics, changedStats, setChangedStats, setAchievements }) {
+    const { t } = useTranslation();
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const { handleUpdateAllStats, handleResetAll } = useStatisticButtons(statistics, setStatistics, changedStats, setChangedStats, setAchievements);
 
@@ -17,7 +19,7 @@ export default function StatisticButtons({ statistics, setStatistics, changedSta
                 onPress={handleUpdateAllStats}
                 isDisabled={!hasChanges}
             >
-                Save Changes {hasChanges && `(${changedCount})`}
+                {t('achievementManager.statistics.saveChanges')} {hasChanges && `(${changedCount})`}
             </Button>
             <Button
                 size='sm'
@@ -25,7 +27,7 @@ export default function StatisticButtons({ statistics, setStatistics, changedSta
                 className='font-semibold rounded-lg'
                 onPress={onOpen}
             >
-                Reset All
+                {t('achievementManager.statistics.resetAll')}
             </Button>
 
             <Modal isOpen={isOpen} onOpenChange={onOpenChange} className='bg-modalbody text-content' classNames={{ closeButton: ['text-altwhite hover:bg-titlehover duration-200'] }}>
@@ -33,11 +35,13 @@ export default function StatisticButtons({ statistics, setStatistics, changedSta
                     {(onClose) => (
                         <>
                             <ModalHeader className='flex flex-col gap-1 bg-modalheader border-b border-border' data-tauri-drag-region>
-                                Confirm
+                                {t('common.confirm')}
                             </ModalHeader>
                             <ModalBody className='my-4'>
                                 <p className='text-sm'>
-                                    Are you sure you want to <strong>reset</strong> all statistics?
+                                    <Trans i18nKey='confirmation.resetStatistics'>
+                                        Are you sure you want to <strong>reset</strong> all statistics?
+                                    </Trans>
                                 </p>
                             </ModalBody>
                             <ModalFooter className='border-t border-border bg-modalfooter px-4 py-3'>
@@ -48,14 +52,14 @@ export default function StatisticButtons({ statistics, setStatistics, changedSta
                                     className='font-semibold rounded-lg'
                                     onPress={onClose}
                                 >
-                                    Cancel
+                                    {t('common.cancel')}
                                 </Button>
                                 <Button
                                     size='sm'
                                     className='font-semibold rounded-lg bg-dynamic text-button'
                                     onPress={() => handleResetAll(onClose)}
                                 >
-                                    Confirm
+                                    {t('common.confirm')}
                                 </Button>
                             </ModalFooter>
                         </>

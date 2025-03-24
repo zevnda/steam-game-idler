@@ -1,11 +1,13 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { GoDotFill } from 'react-icons/go';
 import { TbBell } from 'react-icons/tb';
 
 import { handleOpenUrl, markAllAsSeen, timeAgo, useNotifications } from '@/hooks/notifications/useNotifications';
 
 export default function Notifications() {
+    const { t } = useTranslation();
     const {
         notifications,
         showNotifications,
@@ -70,9 +72,9 @@ export default function Notifications() {
                             }}
                         >
                             {notifications.length === 0 ? (
-                                <div className='flex items-center h-8 rounded-none p-8 border-b border-border sticky top-0 bg-notihead z-[999] cursor-default'>
+                                <div className='flex items-center h-8 rounded-xl p-8 border-b border-border sticky top-0 bg-notihead z-[999] cursor-default'>
                                     <p className='w-full text-sm text-center'>
-                                        No notifications
+                                        {t('notifications.empty')}
                                     </p>
                                 </div>
                             ) : (
@@ -82,7 +84,7 @@ export default function Notifications() {
                                             className='text-xs text-altwhite hover:text-content dark:hover:text-offwhite font-semibold my-0.5 cursor-pointer duration-100'
                                             onClick={() => markAllAsSeen(notifications, setUnseenNotifications)}
                                         >
-                                            Mark all as read
+                                            {t('notifications.markAllRead')}
                                         </p>
                                     </div>
                                 </div>

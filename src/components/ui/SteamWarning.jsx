@@ -1,10 +1,12 @@
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure } from '@heroui/react';
 import { useContext, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { StateContext } from '@/components/contexts/StateContext';
 import { checkSteamStatus } from '@/utils/tasks';
 
 export default function SteamWarning() {
+    const { t } = useTranslation();
     const { showSteamWarning, setShowSteamWarning } = useContext(StateContext);
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
@@ -27,11 +29,11 @@ export default function SteamWarning() {
             <ModalContent>
                 <>
                     <ModalHeader className='flex flex-col gap-1 bg-modalheader border-b border-border' data-tauri-drag-region>
-                        Notice
+                        {t('common.notice')}
                     </ModalHeader>
                     <ModalBody className='my-4'>
                         <p className='text-sm'>
-                            Steam is not running. Open the Steam client to continue
+                            {t('confirmation.steamClosed')}
                         </p>
                     </ModalBody>
                     <ModalFooter className='border-t border-border bg-modalfooter px-4 py-3'>
@@ -40,7 +42,7 @@ export default function SteamWarning() {
                             className='font-semibold rounded-lg bg-dynamic text-button'
                             onPress={verifySteamStatus}
                         >
-                            Confirm
+                            {t('common.confirm')}
                         </Button>
                     </ModalFooter>
                 </>

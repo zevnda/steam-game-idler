@@ -1,11 +1,13 @@
 import Image from 'next/image';
 import { useContext } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FaSteam } from 'react-icons/fa';
 
 import { UserContext } from '@/components/contexts/UserContext';
 import ExtLink from '@/components/ui/ExtLink';
 
 export default function FreeGamesList() {
+    const { t } = useTranslation();
     const { freeGamesList } = useContext(UserContext);
 
     const handleImageError = (event) => {
@@ -19,11 +21,11 @@ export default function FreeGamesList() {
                     <div className='flex items-center gap-1'>
                         <div className='flex flex-col justify-center'>
                             <p className='text-lg font-semibold'>
-                                Free Games
+                                {t('freeGames.title')}
                             </p>
                             <div className='flex gap-1'>
                                 <p className='text-xs text-altwhite'>
-                                    Showing {freeGamesList.length} of {freeGamesList.length} games
+                                    {t('common.showing', { count: freeGamesList.length, total: freeGamesList.length })}
                                 </p>
                             </div>
                         </div>

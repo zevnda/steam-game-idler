@@ -1,0 +1,244 @@
+{
+    "setup": {
+        "welcome": "Willkommen",
+        "chooseAccount": "Wähle ein Konto",
+        "refresh": "Aktualisieren",
+        "help": "Brauchst du Hilfe?",
+        "noUsers": "Keine Steam-Benutzer gefunden",
+        "learn": "Erfahre warum"
+    },
+    "search": {
+        "games": "Nach einem Spiel suchen",
+        "achievements": "Nach einer Errungenschaft suchen",
+        "statistics": "Nach einer Statistik suchen"
+    },
+    "notifications": {
+        "empty": "Keine Benachrichtigungen",
+        "markAllRead": "Alle als gelesen markieren"
+    },
+    "menu": {
+        "guide": "Benutzerhandbuch",
+        "issue": "Problem melden",
+        "feature": "Funktion vorschlagen",
+        "support": "Projekt unterstützen",
+        "changelog": "Änderungsprotokoll anzeigen",
+        "update": "Nach Updates suchen.."
+    },
+    "gamesList": {
+        "title": "Deine Spiele",
+        "sort": {
+            "titleAsc": "Titel aufsteigend",
+            "titleDesc": "Titel absteigend",
+            "playtimeDesc": "Spielzeit Hoch-Niedrig",
+            "playtimeAsc": "Spielzeit Niedrig-Hoch",
+            "recent": "Zuletzt gespielt"
+        },
+        "private": {
+            "message": "Spieleliste konnte nicht abgerufen werden. Dies liegt in der Regel daran, dass:",
+            "change": "Datenschutzeinstellungen ändern",
+            "tryAgain": "Erneut versuchen",
+            "reason": {
+                "1": "Dein Profil auf privat eingestellt ist",
+                "2": "Deine Spieldetails auf privat eingestellt sind",
+                "3": "Du keine Spiele in deiner Bibliothek hast",
+                "4": "Du einen ungültigen Steam Web-API-Schlüssel verwendest"
+            }
+        }
+    },
+    "idlingGames": {
+        "title": "Laufende Spiele",
+        "subtitle": "Spiele, die du derzeit laufen lässt, werden hier angezeigt",
+        "stopAll": "Alle beenden"
+    },
+    "customLists": {
+        "cardFarming": {
+            "subtitle": "Füge Spiele zu dieser Liste hinzu, um deren Sammelkarten zu farmen",
+            "buttonLabel": "Karten-Farming starten"
+        },
+        "achievementUnlocker": {
+            "subtitle": "Füge Spiele zu dieser Liste hinzu, um deren Errungenschaften freizuschalten",
+            "buttonLabel": "Errungenschafts-Freischaltung starten"
+        },
+        "autoIdle": {
+            "title": "Auto-Idle",
+            "subtitle": "Füge Spiele zu dieser Liste hinzu, um sie beim Start automatisch laufen zu lassen"
+        },
+        "favorites": {
+            "title": "Favoriten",
+            "subtitle": "Deine Lieblingsspiele"
+        },
+        "manualAdd": {
+            "title": "Spiel hinzufügen",
+            "gameName": "Spielname",
+            "gameId": "Spiel-ID"
+        },
+        "edit": "Liste bearbeiten",
+        "inList": "In Liste",
+        "addAll": "Alle hinzufügen",
+        "invalid": "Ungültiger Listentyp"
+    },
+    "automation": {
+        "cardFarming": {
+            "initialDelay": "Dies könnte einen Moment dauern..",
+            "progress": "<1>{{count}}</1> Spiel(e) mit insgesamt <3>{{total}}</3> verbleibenden Kartendrops werden ausgeführt"
+        },
+        "achievementUnlocker": {
+            "initialDelay": "Start in <1>{{timer}}</1>",
+            "delay": "Nächste Freischaltung in <1>{{timer}}</1>",
+            "progress": "<1>{{count}}</1> Errungenschaft(en) für <3>{{appName}}</3> werden freigeschaltet",
+            "scheduleWait": "Errungenschafts-Freischaltung pausiert, da es außerhalb der geplanten Zeit liegt, und wird fortgesetzt, sobald die geplante Zeit erreicht ist"
+        }
+    },
+    "freeGames.title": "Kostenlose Spiele",
+    "cardMenu": {
+        "idle": "Laufen lassen",
+        "achievements": "Errungenschaften anzeigen",
+        "store": "Shop-Seite anzeigen",
+        "settings": "Spieleinstellungen"
+    },
+    "gameSettings": {
+        "idle": "Maximale Leerlaufzeit (Minuten)",
+        "drops": "Maximale Kartendrops",
+        "achievements": "Maximale Errungenschafts-Freischaltungen"
+    },
+    "achievementManager": {
+        "steam": "Auf Steam anzeigen",
+        "steamDB": "Auf SteamDB anzeigen",
+        "file": "Im Datei-Explorer anzeigen",
+        "alert": "Einige geschützte Errungenschaften oder Statistiken wurden deaktiviert. <1>Mehr erfahren</1>",
+        "achievements": {
+            "title": "Errungenschaften",
+            "empty": "Keine Errungenschaften gefunden",
+            "unlockAll": "Alle freischalten",
+            "lockAll": "Alle sperren",
+            "unlock": "Freischalten",
+            "lock": "Sperren",
+            "protected": "Geschützt",
+            "modal": "Bist du sicher, dass du alle Errungenschaften <1>{{state}}</1> möchtest?",
+            "sort": {
+                "percent": "Prozentsatz",
+                "title": "Alphabetisch",
+                "unlocked": "Freigeschaltet",
+                "locked": "Gesperrt",
+                "unprotected": "Ungeschützt",
+                "protected": "Geschützt"
+            }
+        },
+        "statistics": {
+            "title": "Statistiken",
+            "empty": "Keine Statistiken gefunden",
+            "saveChanges": "Änderungen speichern",
+            "resetAll": "Alle zurücksetzen",
+            "flags": "Flags"
+        }
+    },
+    "settings": {
+        "title": "Einstellungen",
+        "general": {
+            "title": "Allgemein",
+            "antiAway": "Abwesenheitsstatus auf Steam verhindern",
+            "freeGameNotifications": "Benachrichtigungen über kostenlose Spiele erhalten",
+            "runAtStartup": "Beim Systemstart ausführen",
+            "language": "Sprache",
+            "theme": "Design",
+            "webApi": "Verwende deinen eigenen <1>Steam Web-API-Schlüssel</1> (optional). <3>Mehr erfahren</3>",
+            "webApi.placeholder": "Steam Web-API-Schlüssel",
+            "userSummary": "Angemeldet als",
+            "helpTranslate": "Hilf bei der Übersetzung von SGI",
+            "languages": {
+                "english": "Englisch (English)",
+                "german": "Deutsch"
+            }
+        },
+        "cardFarming": {
+            "listGames": "Karten für Spiele in der Karten-Farming-Liste farmen",
+            "allGames": "Karten für alle Spiele mit verbleibenden Kartendrops farmen",
+            "steamCredentials": "Steam-Anmeldedaten sind erforderlich, um die Karten-Farming-Funktion zu nutzen. <1>Mehr erfahren</1>",
+            "userSummary": "Karten werden gefarmt als"
+        },
+        "achievementUnlocker": {
+            "idle": "Spiele laufen lassen, während der Errungenschafts-Freischalter aktiv ist",
+            "hidden": "Versteckte Errungenschaften überspringen",
+            "scheduleLabel": "Errungenschaften nur zwischen",
+            "scheduleAnd": "und",
+            "intervalLabel": "Errungenschaften zufällig alle {{interval}} Minuten freischalten",
+            "intervalTo": "bis"
+        },
+        "logs": {
+            "title": "Protokolle",
+            "openLogFile": "Im Datei-Explorer öffnen",
+            "clearLogs": "Protokolle löschen",
+            "time": "Zeit",
+            "message": "Nachricht"
+        },
+        "resetSettings": {
+            "button": "Einstellungen zurücksetzen"
+        },
+        "clearData": {
+            "button": "Daten löschen"
+        },
+        "exportData": "Daten exportieren"
+    },
+    "confirmation": {
+        "logout": "Bist du sicher, dass du dich abmelden möchtest?",
+        "resetStatistics": "Bist du sicher, dass du alle Statistiken <1>zurücksetzen</1> möchtest?",
+        "resetSettings": "Bist du sicher, dass du die Einstellungen auf Standardwerte zurücksetzen möchtest?",
+        "clearData": "Bist du sicher, dass du alle Daten löschen möchtest?",
+        "steamClosed": "Steam ist nicht gestartet. Öffne den Steam-Client, um fortzufahren"
+    },
+    "toast": {
+        "steam": "Steam ist nicht gestartet",
+        "mismatch": "Kontomismatch zwischen Steam und SGI",
+        "missingCredentials": "Fehlende Karten-Farming-Anmeldedaten unter \"Einstellungen > Karten-Farming\"",
+        "outdatedCredentials": "Karten-Farming-Anmeldedaten müssen unter \"Einstellungen > Karten-Farming\" aktualisiert werden",
+        "incorrectCredentials": "Falsche Karten-Farming-Anmeldedaten",
+        "enableAllGames": "Füge einige Spiele zu deiner Karten-Farming-Liste hinzu oder aktiviere \"alle Spiele\" unter \"Einstellungen > Karten-Farming\"",
+        "noGames": "Es gibt keine Spiele in deiner Errungenschafts-Freischalter-Liste",
+        "configSettings": "Bitte konfiguriere zuerst die Einstellungen",
+        "refetch.cooldown": "Spiele können ab {{time}} wieder aktualisiert werden",
+        "achievementData.error": "Fehler beim Abrufen der Errungenschaftsdaten",
+        "startIdle.success": "{{appName}} ({{appId}}) wird jetzt ausgeführt",
+        "startIdle.alreadyIdling": "{{appName}} ({{appId}}) wird bereits ausgeführt",
+        "startIdle.error": "Fehler beim Starten von {{appName}} ({{appId}})",
+        "stopIdle.success": "{{appName}} ({{appId}}) wurde beendet",
+        "stopIdle.error": "Fehler beim Beenden von {{appName}} ({{appId}})",
+        "stopIdleAll.success": "{{count}} Spiel(e) wurden beendet",
+        "stopIdleAll.error": "Fehler beim Beenden aller Spiele",
+        "exportData.success": "Daten in die Zwischenablage kopiert",
+        "exportData.error": "Fehler beim Exportieren der Daten",
+        "toggle.success": "{{achievementName}} für {{appName}} {{type}}",
+        "toggle.error": "Fehler beim {{type}} von {{achievementName}} für {{appName}}",
+        "unlockAll.success": "Erfolgreich {{count}} Errungenschaft(en) für {{appName}} freigeschaltet",
+        "lockAll.success": "Erfolgreich {{count}} Errungenschaft(en) für {{appName}} gesperrt",
+        "updateAll.success": "Erfolgreich {{count}} Statistik(en) für {{appName}} aktualisiert",
+        "updateAll.noChanges": "Keine Statistiken wurden geändert",
+        "updateAll.error": "Statistiken konnten nicht aktualisiert werden",
+        "resetAll.success": "Erfolgreich {{count}} Statistik(en) für {{appName}} zurückgesetzt",
+        "resetAll.error": "Statistiken konnten nicht zurückgesetzt werden",
+        "cardFarming.logIn": "Anmeldedaten validiert für {{user}}",
+        "cardFarming.logOut": "Anmeldedaten erfolgreich gelöscht",
+        "apiKey.save": "Steam Web-API-Schlüssel erfolgreich gespeichert",
+        "apiKey.clear": "Steam Web-API-Schlüssel erfolgreich gelöscht",
+        "clearLogs.success": "Protokolle erfolgreich gelöscht",
+        "resetSettings.success": "Einstellungen wurden auf Standardwerte zurückgesetzt",
+        "checkUpdate.none": "Keine Updates verfügbar",
+        "checkUpdate.error": "Fehler beim Prüfen auf Updates"
+    },
+    "common": {
+        "cardFarming": "Karten-Farming",
+        "achievementUnlocker": "Errungenschafts-Freischalter",
+        "showing": "Zeige {{count}} von {{total}} Spielen",
+        "learnMore": "Mehr erfahren",
+        "error": "Ein Fehler ist aufgetreten. Prüfe die Protokolle für weitere Informationen",
+        "start": "Starten",
+        "stop": "Stoppen",
+        "notice": "Hinweis",
+        "confirm": "Bestätigen",
+        "done": "Fertig",
+        "add": "Hinzufügen",
+        "save": "Speichern",
+        "close": "Schließen",
+        "cancel": "Abbrechen",
+        "clear": "Löschen"
+    }
+}

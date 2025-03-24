@@ -1,7 +1,7 @@
 import { invoke } from '@tauri-apps/api/core';
 
 import { checkSteamStatus, logEvent } from '@/utils/tasks';
-import { showAccountMismatchToast, showWarningToast } from '@/utils/toasts';
+import { showAccountMismatchToast, showWarningToast, t } from '@/utils/toasts';
 
 const idleTimeouts = {};
 const idleIntervals = {};
@@ -22,7 +22,7 @@ export async function startIdle(appId, appName, manual = true) {
         const runningIdlers = processes.map(p => p.appid);
 
         if (runningIdlers.includes(appId)) {
-            return showWarningToast(`${appName} (${appId}) is already being idled`);
+            return showWarningToast(t('toast.startIdle.alreadyIdling', { appName, appId }));
         }
 
         const idleResponse = await invoke('start_idle', {

@@ -1,6 +1,7 @@
 import { Button, Input } from '@heroui/react';
 import Image from 'next/image';
 import { useContext } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 
 import { UserContext } from '@/components/contexts/UserContext';
 import SettingsCheckbox from '@/components/settings/SettingsCheckbox';
@@ -8,6 +9,7 @@ import ExtLink from '@/components/ui/ExtLink';
 import { useCardSettings, handleSave, handleClear } from '@/hooks/settings/useCardSettings';
 
 export default function CardSettings({ settings, setSettings, localSettings, setLocalSettings }) {
+    const { t } = useTranslation();
     const { userSummary } = useContext(UserContext);
     const {
         sidValue,
@@ -30,7 +32,7 @@ export default function CardSettings({ settings, setSettings, localSettings, set
             {cardFarmingUser && (
                 <div className='absolute top-0 right-2'>
                     <p className='text-xs text-altwhite mb-0.5'>
-                        Farming cards as
+                        {t('settings.cardFarming.userSummary')}
                     </p>
                     <div className='border border-border rounded-lg bg-input hover:bg-titlebar dark:bg-[#131313] dark:hover:bg-[#171717]'>
                         <ExtLink href={`https://steamcommunity.com/profiles/${cardFarmingUser.steamId}`}>
@@ -60,7 +62,7 @@ export default function CardSettings({ settings, setSettings, localSettings, set
             <SettingsCheckbox
                 type='cardFarming'
                 name='listGames'
-                content='Farm cards for games in the Card Farming list'
+                content={t('settings.cardFarming.listGames')}
                 settings={settings}
                 setSettings={setSettings}
                 localSettings={localSettings}
@@ -70,7 +72,7 @@ export default function CardSettings({ settings, setSettings, localSettings, set
             <SettingsCheckbox
                 type='cardFarming'
                 name='allGames'
-                content='Farm cards for all games with card drops remaining'
+                content={t('settings.cardFarming.allGames')}
                 settings={settings}
                 setSettings={setSettings}
                 localSettings={localSettings}
@@ -79,8 +81,10 @@ export default function CardSettings({ settings, setSettings, localSettings, set
 
             <div className='w-full'>
                 <p className='text-xs mt-2'>
-                    Steam credentials are required in order to use the Card Farming feature.&nbsp;
-                    <ExtLink href='https://steamgameidler.vercel.app/steam-credentials' className='text-link hover:text-linkhover'>Learn more</ExtLink>
+                    <Trans i18nKey='settings.cardFarming.steamCredentials'>
+                        Steam credentials are required in order to use the Card Farming feature.&nbsp;
+                        <ExtLink href='https://steamgameidler.vercel.app/steam-credentials' className='text-link hover:text-linkhover'>Learn more</ExtLink>
+                    </Trans>
                 </p>
                 <div className='flex flex-col mt-4'>
                     <div className='flex flex-col gap-2'>
@@ -138,7 +142,7 @@ export default function CardSettings({ settings, setSettings, localSettings, set
                                 className='font-semibold rounded-lg w-full bg-dynamic text-button'
                                 onPress={() => handleSave(sidValue, slsValue, smaValue, setHasCookies, userSummary, setCardFarmingUser)}
                             >
-                                Save
+                                {t('common.save')}
                             </Button>
                             <Button
                                 size='sm'
@@ -147,7 +151,7 @@ export default function CardSettings({ settings, setSettings, localSettings, set
                                 className='font-semibold rounded-lg w-full'
                                 onPress={() => handleClear(setHasCookies, setSidValue, setSlsValue, setSmaValue, setCardFarmingUser)}
                             >
-                                Clear
+                                {t('common.clear')}
                             </Button>
                         </div>
                     </div>

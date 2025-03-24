@@ -1,9 +1,11 @@
 import { Button } from '@heroui/react';
 import { GeistMono } from 'geist/font/mono';
+import { useTranslation } from 'react-i18next';
 
 import { useLogs, handleClearLogs, handleOpenLogFile } from '@/hooks/settings/useLogs';
 
 export default function Logs() {
+    const { t } = useTranslation();
     const { logs } = useLogs();
 
     return (
@@ -14,7 +16,7 @@ export default function Logs() {
                     className='font-semibold rounded-lg bg-dynamic text-button'
                     onPress={() => handleOpenLogFile()}
                 >
-                    Open in File Explorer
+                    {t('settings.logs.openLogFile')}
                 </Button>
                 <Button
                     size='sm'
@@ -22,7 +24,7 @@ export default function Logs() {
                     className='font-semibold rounded-lg'
                     onPress={handleClearLogs}
                 >
-                    Clear Logs
+                    {t('settings.logs.clearLogs')}
                 </Button>
             </div>
 
@@ -30,8 +32,12 @@ export default function Logs() {
                 <table className='w-full border-collapse'>
                     <thead className='sticky top-0 z-10'>
                         <tr className='border-b border-border bg-tablehead'>
-                            <th className='text-left p-1.5 w-[160px]'>Time</th>
-                            <th className='text-left p-1.5'>Message</th>
+                            <th className='text-left p-1.5 w-[160px]'>
+                                {t('settings.logs.time')}
+                            </th>
+                            <th className='text-left p-1.5'>
+                                {t('settings.logs.message')}
+                            </th>
                         </tr>
                     </thead>
                     <tbody>

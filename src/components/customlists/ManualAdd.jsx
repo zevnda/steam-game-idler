@@ -1,9 +1,11 @@
 import { Button, Modal, ModalContent, ModalBody, ModalFooter, ModalHeader, useDisclosure, NumberInput, Input } from '@heroui/react';
+import { useTranslation } from 'react-i18next';
 import { TbPlus } from 'react-icons/tb';
 
 import useManualAdd from '@/hooks/customlists/useManualAdd';
 
 export default function ManualAdd({ listName, setList }) {
+    const { t } = useTranslation();
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const {
         isLoading,
@@ -42,17 +44,13 @@ export default function ManualAdd({ listName, setList }) {
                     {(onClose) => (
                         <>
                             <ModalHeader className='flex flex-col gap-1 bg-modalheader border-b border-border' data-tauri-drag-region>
-                                Add A Game
+                                {t('customLists.manualAdd.title')}
                             </ModalHeader>
                             <ModalBody className='my-4'>
-                                <p className='text-sm mb-2'>
-                                    Manually add a game to your list by entering the game&apos;s name and appid
-                                </p>
-
                                 <Input
                                     autoFocus
                                     size='sm'
-                                    placeholder='Game Name'
+                                    placeholder={t('customLists.manualAdd.gameName')}
                                     value={appNameValue || ''}
                                     classNames={{
                                         inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar group-data-[focus-visible=true]:ring-transparent group-data-[focus-visible=true]:ring-offset-transparent'],
@@ -63,7 +61,7 @@ export default function ManualAdd({ listName, setList }) {
 
                                 <NumberInput
                                     hideStepper
-                                    label='Game ID'
+                                    label={t('customLists.manualAdd.gameId')}
                                     value={appIdValue || 0}
                                     formatOptions={{ useGrouping: false }}
                                     aria-label='manual add'
@@ -83,7 +81,7 @@ export default function ManualAdd({ listName, setList }) {
                                     className='font-semibold rounded-lg'
                                     onPress={onClose}
                                 >
-                                    Cancel
+                                    {t('common.cancel')}
                                 </Button>
                                 <Button
                                     size='sm'
@@ -92,7 +90,7 @@ export default function ManualAdd({ listName, setList }) {
                                     className='font-semibold rounded-lg bg-dynamic text-button'
                                     onPress={() => handleAdd(onClose)}
                                 >
-                                    Add
+                                    {t('common.add')}
                                 </Button>
                             </ModalFooter>
                         </>

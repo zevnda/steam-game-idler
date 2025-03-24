@@ -4,7 +4,7 @@ import { readTextFile } from '@tauri-apps/plugin-fs';
 import { useState, useEffect } from 'react';
 
 import { logEvent } from '@/utils/tasks';
-import { showDangerToast, showSuccessToast } from '@/utils/toasts';
+import { showDangerToast, showSuccessToast, t } from '@/utils/toasts';
 
 export const useLogs = () => {
     const [logs, setLogs] = useState([]);
@@ -41,7 +41,7 @@ export const useLogs = () => {
                 });
                 setLogs(logEntries);
             } catch (error) {
-                showDangerToast('An error occurred. Check the logs for more information');
+                showDangerToast(t('common.error'));
                 console.error('Error in (fetchLogs):', error);
                 logEvent(`[Error] in (fetchLogs): ${error}`);
             }
@@ -61,7 +61,7 @@ export const handleOpenLogFile = async () => {
     try {
         await invoke('open_file_explorer', { path: 'log.txt' });
     } catch (error) {
-        showDangerToast('An error occurred. Check the logs for more information');
+        showDangerToast(t('common.error'));
         console.error('Error in (handleOpenLogFile):', error);
         logEvent(`[Error] in (handleOpenLogFile): ${error}`);
     }
@@ -73,11 +73,11 @@ export const handleClearLogs = async (log = true) => {
         await invoke('clear_log_file');
         // Only show toast if log was manually cleared
         if (log) {
-            showSuccessToast('Logs cleared successfully');
+            showSuccessToast(t('toast.clearLogs.success'));
             logEvent('[Settings - Logs] Logs cleared successfully');
         }
     } catch (error) {
-        showDangerToast('An error occurred. Check the logs for more information');
+        showDangerToast(t('common.error'));
         console.error('Error in (handleClearLogs):', error);
         logEvent(`[Error] in (handleClearLogs): ${error}`);
     }

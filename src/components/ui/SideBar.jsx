@@ -1,5 +1,6 @@
 import { Modal, ModalContent, ModalBody, Button, ModalFooter, ModalHeader } from '@heroui/react';
 import { useContext } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FiLogOut } from 'react-icons/fi';
 import { TbAward, TbCards, TbDeviceGamepad2, TbGift, TbHeart, TbHourglassLow, TbPlayerPlay, TbSettings } from 'react-icons/tb';
 
@@ -9,6 +10,7 @@ import { StateContext } from '@/components/contexts/StateContext';
 import useSideBar from '@/hooks/ui/useSideBar';
 
 export default function SideBar() {
+    const { t } = useTranslation();
     const { idleGamesList } = useContext(IdleContext);
     const { isDarkMode, showFreeGamesTab, isCardFarming, isAchievementUnlocker } = useContext(StateContext);
     const { activePage, setActivePage } = useContext(NavigationContext);
@@ -122,11 +124,11 @@ export default function SideBar() {
                     {(onClose) => (
                         <>
                             <ModalHeader className='flex flex-col gap-1 bg-modalheader border-b border-border' data-tauri-drag-region>
-                                Confirm
+                                {t('common.confirm')}
                             </ModalHeader>
                             <ModalBody className='my-4'>
                                 <p className='text-sm'>
-                                    Are you sure you want to log out?
+                                    {t('confirmation.logout')}
                                 </p>
                             </ModalBody>
                             <ModalFooter className='border-t border-border bg-modalfooter px-4 py-3'>
@@ -137,14 +139,14 @@ export default function SideBar() {
                                     className='font-semibold rounded-lg'
                                     onPress={onClose}
                                 >
-                                    Cancel
+                                    {t('common.cancel')}
                                 </Button>
                                 <Button
                                     size='sm'
                                     className='font-semibold rounded-lg bg-dynamic text-button'
                                     onPress={() => handleLogout(onClose)}
                                 >
-                                    Confirm
+                                    {t('common.confirm')}
                                 </Button>
                             </ModalFooter>
                         </>

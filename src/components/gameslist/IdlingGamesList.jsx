@@ -1,6 +1,7 @@
 import { Button } from '@heroui/react';
 import { invoke } from '@tauri-apps/api/core';
 import { useContext } from 'react';
+import { useTranslation } from 'react-i18next';
 import { TbPlayerStopFilled } from 'react-icons/tb';
 
 import { IdleContext } from '@/components/contexts/IdleContext';
@@ -10,6 +11,7 @@ import { logEvent } from '@/utils/tasks';
 import { showDangerToast, showSuccessToast } from '@/utils/toasts';
 
 export default function IdlingGamesList() {
+    const { t } = useTranslation();
     const { idleGamesList, setIdleGamesList } = useContext(IdleContext);
     const { setIsCardFarming, setIsAchievementUnlocker } = useContext(StateContext);
 
@@ -17,15 +19,15 @@ export default function IdlingGamesList() {
         try {
             const response = await invoke('kill_all_steamutil_processes');
             if (response.success) {
-                showSuccessToast(`Stopped idling ${response?.killed_count || 'all'} game(s)`);
+                showSuccessToast(t('toast.stopIdleAll.success', { count: response?.killed_count || 'all' }));
                 setIdleGamesList([]);
                 setIsCardFarming(false);
                 setIsAchievementUnlocker(false);
             } else {
-                showDangerToast('Failed to stop idling all games');
+                showDangerToast(t('toast.stopIdleAll.error'));
             }
         } catch (error) {
-            showDangerToast('Failed to stop idling all games');
+            showDangerToast(t('common.error'));
             console.error('Error in handleStopIdleAll:', error);
             logEvent(`Error in (handleStopIdleAll): ${error}`);
         }
@@ -38,11 +40,11 @@ export default function IdlingGamesList() {
                     <div className='flex items-center justify-between w-full gap-1'>
                         <div className='flex flex-col justify-center'>
                             <p className='text-lg font-semibold'>
-                                Idling Games
+                                {t('idlingGames.title')}
                             </p>
                             <div className='flex gap-1'>
                                 <p className='text-xs text-altwhite'>
-                                    Games that you are currently idling will appear here
+                                    {t('idlingGames.subtitle')}
                                 </p>
                             </div>
                         </div>
@@ -56,7 +58,7 @@ export default function IdlingGamesList() {
                                     startContent={<TbPlayerStopFilled fontSize={20} />}
                                     onPress={handleStopIdleAll}
                                 >
-                                    Stop All
+                                    {t('idlingGames.stopAll')}
                                 </Button>
                             </div>
                         )}

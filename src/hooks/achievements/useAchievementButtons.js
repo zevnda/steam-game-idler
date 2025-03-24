@@ -1,8 +1,12 @@
+import { useTranslation } from 'react-i18next';
+
 import { lockAllAchievements, unlockAllAchievements } from '@/utils/achievements';
 import { checkSteamStatus, logEvent } from '@/utils/tasks';
 import { showAccountMismatchToast, showDangerToast, showSuccessToast } from '@/utils/toasts';
 
 export default function useAchievementButtons(userSummary, setAchievements) {
+    const { t } = useTranslation();
+
     // Handle change in sorting option
     const handleChange = (e, achievements, setAchievements) => {
         // Convert event selection to array and get first value
@@ -71,13 +75,13 @@ export default function useAchievementButtons(userSummary, setAchievements) {
                     });
                 });
 
-                showSuccessToast(`Successfully unlocked ${achievements.length} achievements for ${appName}`);
+                showSuccessToast(t('toast.unlockAll.success', { count: achievements.length, appName }));
             } else {
                 // Shows toast when Steam account doesn't match current user
                 showAccountMismatchToast('danger');
             }
         } catch (error) {
-            showDangerToast('An error occurred. Check the logs for more information');
+            showDangerToast(t('common.error'));
             console.error('Error in handleUnlockAll:', error);
             logEvent(`[Error] in (handleUnlockAll): ${error}`);
         }
@@ -104,12 +108,12 @@ export default function useAchievementButtons(userSummary, setAchievements) {
                     });
                 });
 
-                showSuccessToast(`Successfully locked ${achievements.length} achievements for ${appName}`);
+                showSuccessToast(t('toast.lockAll.success', { count: achievements.length, appName }));
             } else {
                 showAccountMismatchToast('danger');
             }
         } catch (error) {
-            showDangerToast('An error occurred. Check the logs for more information');
+            showDangerToast(t('common.error'));
             console.error('Error in handleLockAll:', error);
             logEvent(`[Error] in handleLockAll: ${error}`);
         }

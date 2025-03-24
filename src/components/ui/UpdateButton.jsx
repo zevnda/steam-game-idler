@@ -3,12 +3,14 @@ import { invoke } from '@tauri-apps/api/core';
 import { relaunch } from '@tauri-apps/plugin-process';
 import { check } from '@tauri-apps/plugin-updater';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { TbDownload } from 'react-icons/tb';
 
 import { logEvent } from '@/utils/tasks';
 import { showDangerToast } from '@/utils/toasts';
 
 export default function UpdateButton() {
+    const { t } = useTranslation();
     const [isLoading, setIsLoading] = useState(false);
 
     const handleUpdate = async () => {
@@ -25,7 +27,7 @@ export default function UpdateButton() {
             }
         } catch (error) {
             setIsLoading(false);
-            showDangerToast('Error checking for updates');
+            showDangerToast(t('toast.checkUpdate.error'));
             console.error('Error in (handleUpdate):', error);
             logEvent(`Error in (handleUpdate): ${error}`);
         }

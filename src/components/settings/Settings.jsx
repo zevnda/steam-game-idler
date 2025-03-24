@@ -1,4 +1,5 @@
 import { Tab, Tabs } from '@heroui/react';
+import { useTranslation } from 'react-i18next';
 
 import AchievementSettings from '@/components/settings/AchievementSettings';
 import CardSettings from '@/components/settings/CardSettings';
@@ -10,6 +11,7 @@ import ResetSettings from '@/components/settings/ResetSettings';
 import useSettings from '@/hooks/settings/useSettings';
 
 export default function Settings() {
+    const { t } = useTranslation();
     const { settings, setSettings, localSettings, setLocalSettings, version, refreshKey, setRefreshKey } = useSettings();
 
     return (
@@ -18,7 +20,7 @@ export default function Settings() {
                 <div className='flex justify-between items-center'>
                     <div className='flex flex-col'>
                         <p className='text-lg font-semibold'>
-                            Settings
+                            {t('settings.title')}
                         </p>
                         <p className='text-xs text-altwhite'>
                             v{version}
@@ -47,7 +49,7 @@ export default function Settings() {
                         panel: 'bg-titlebar rounded-lg rounded-tl-none border border-border',
                     }}
                 >
-                    <Tab key='general' title='General'>
+                    <Tab key='general' title={t('settings.general.title')}>
                         <GeneralSettings
                             settings={settings}
                             setSettings={setSettings}
@@ -55,7 +57,7 @@ export default function Settings() {
                             setLocalSettings={setLocalSettings}
                         />
                     </Tab>
-                    <Tab key='card-farming' title='Card Farming'>
+                    <Tab key='card-farming' title={t('common.cardFarming')}>
                         <CardSettings
                             settings={settings}
                             setSettings={setSettings}
@@ -63,7 +65,7 @@ export default function Settings() {
                             setLocalSettings={setLocalSettings}
                         />
                     </Tab>
-                    <Tab key='achievement-unlocker' title='Achievement Unlocker'>
+                    <Tab key='achievement-unlocker' title={t('common.achievementUnlocker')}>
                         <AchievementSettings
                             settings={settings}
                             setSettings={setSettings}
@@ -71,7 +73,7 @@ export default function Settings() {
                             setLocalSettings={setLocalSettings}
                         />
                     </Tab>
-                    <Tab key='logs' title='Logs'>
+                    <Tab key='logs' title={t('settings.logs.title')}>
                         <Logs />
                     </Tab>
                 </Tabs>

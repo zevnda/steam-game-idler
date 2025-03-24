@@ -1,6 +1,7 @@
 import { Button, Tooltip } from '@heroui/react';
 import Image from 'next/image';
 import { useContext, memo, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FixedSizeList as List } from 'react-window';
 
 import AchievementButtons from '@/components/achievements/AchievementButtons';
@@ -11,7 +12,7 @@ import { toggleAchievement } from '@/utils/achievements';
 import { checkSteamStatus } from '@/utils/tasks';
 
 const Row = memo(({ index, style, data }) => {
-    const { userSummary, appId, appName, filteredAchievements, updateAchievement } = data;
+    const { userSummary, appId, appName, filteredAchievements, updateAchievement, t } = data;
     const item = filteredAchievements[index];
 
     if (!item) return null;
@@ -62,7 +63,7 @@ const Row = memo(({ index, style, data }) => {
                         </Tooltip>
                         <div className='w-fit'>
                             <p className={`text-sm text-altwhite ${hidden && 'blur-[3px] hover:blur-none transition-all duration-200'}`}>
-                                {item.description || 'Hidden achievement'}
+                                {item.description || ''}
                             </p>
                         </div>
                     </div>
@@ -72,7 +73,8 @@ const Row = memo(({ index, style, data }) => {
                         className={`font-semibold rounded-lg text-button ${protectedAchievement ? 'bg-warning' : achieved ? 'bg-danger' : 'bg-dynamic'}`}
                         onPress={handleToggle}
                     >
-                        {protectedAchievement ? 'Protected' : achieved ? 'Lock' : 'Unlock'}
+                        {protectedAchievement ? t('achievementManager.achievements.protected') :
+                            achieved ? t('achievementManager.achievements.lock') : t('achievementManager.achievements.unlock')}
                     </Button>
                 </div>
                 <div className='p-1 bg-container dark:bg-[#1a1a1a] select-none rounded-b-lg'>
@@ -93,6 +95,7 @@ const Row = memo(({ index, style, data }) => {
 Row.displayName = 'Row';
 
 export default function AchievementsList({ achievements, setAchievements, protectedAchievements }) {
+    const { t } = useTranslation();
     const { userSummary } = useContext(UserContext);
     const { achievementQueryValue } = useContext(SearchContext);
     const { appId, appName } = useContext(StateContext);
@@ -114,7 +117,7 @@ export default function AchievementsList({ achievements, setAchievements, protec
         [achievements, achievementQueryValue]
     );
 
-    const itemData = { userSummary, appId, appName, filteredAchievements, updateAchievement };
+    const itemData = { userSummary, appId, appName, filteredAchievements, updateAchievement, t };
 
     return (
         <div className='flex flex-col gap-2 w-full max-h-[calc(100vh-195px)] overflow-y-auto scroll-smooth'>
@@ -139,7 +142,7 @@ export default function AchievementsList({ achievements, setAchievements, protec
             ) : (
                 <div className='flex flex-col gap-2 justify-center items-center my-2 w-full'>
                     <p className='text-sm'>
-                        No achievements found
+                        {t('achievementManager.achievements.empty')}
                     </p>
                 </div>
             )}

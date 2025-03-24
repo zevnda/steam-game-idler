@@ -1,8 +1,11 @@
 import { Button } from '@heroui/react';
+import { useTranslation } from 'react-i18next';
 
 import ExtLink from '@/components/ui/ExtLink';
 
 export default function Private({ setRefreshKey }) {
+    const { t } = useTranslation();
+
     const handleRefresh = () => {
         setRefreshKey(prevKey => prevKey + 1);
     };
@@ -17,19 +20,21 @@ export default function Private({ setRefreshKey }) {
                 </div>
                 <div className='flex justify-center items-center flex-col pb-6'>
                     <div className='flex justify-center items-center flex-col'>
-                        <p className='text-center text-sm px-3'>Unable to retrieve games list. This is usually because:</p>
-                        <ul className='text-xs list-disc mt-4'>
+                        <p className='text-center text-sm px-3'>
+                            {t('gamesList.private.message')}
+                        </p>
+                        <ul className='text-center text-xs mt-4'>
                             <li>
-                                Your profile is set to private
+                                {t('gamesList.private.reason.1')}
                             </li>
                             <li>
-                                Your game details are set to private
+                                {t('gamesList.private.reason.2')}
                             </li>
                             <li>
-                                You have no games in your library
+                                {t('gamesList.private.reason.3')}
                             </li>
                             <li>
-                                You are using an invalid Steam web API key
+                                {t('gamesList.private.reason.4')}
                             </li>
                         </ul>
                     </div>
@@ -37,14 +42,14 @@ export default function Private({ setRefreshKey }) {
                         href='https://steamcommunity.com/my/edit/settings'
                         className='text-xs text-link hover:text-linkhover mt-4'
                     >
-                        Change account privacy
+                        {t('gamesList.private.change')}
                     </ExtLink>
                     <Button
                         size='sm'
                         className='font-semibold rounded-lg mt-5 bg-dynamic text-button'
                         onPress={handleRefresh}
                     >
-                        Try Again
+                        {t('gamesList.private.tryAgain')}
                     </Button>
                 </div>
             </div>

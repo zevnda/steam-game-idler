@@ -1,5 +1,6 @@
 import { Input } from '@heroui/react';
 import { useContext } from 'react';
+import { useTranslation } from 'react-i18next';
 import { RiSearchLine } from 'react-icons/ri';
 
 import { NavigationContext } from '@/components/contexts/NavigationContext';
@@ -10,6 +11,7 @@ import useHeader from '@/hooks/ui/useHeader';
 
 
 export default function SearchBar() {
+    const { t } = useTranslation();
     const { showAchievements } = useContext(StateContext);
     const {
         setIsQuery,
@@ -47,7 +49,7 @@ export default function SearchBar() {
                     size='sm'
                     isClearable
                     isDisabled={activePage !== 'games' || showAchievements}
-                    placeholder='Search for a game'
+                    placeholder={t('search.games')}
                     startContent={<RiSearchLine />}
                     className='w-[300px]'
                     classNames={{
@@ -65,7 +67,7 @@ export default function SearchBar() {
                     size='sm'
                     isClearable
                     isDisabled={achievementsUnavailable}
-                    placeholder='Search for an achievement'
+                    placeholder={t('search.achievements')}
                     startContent={<RiSearchLine />}
                     className='max-w-[300px]'
                     classNames={{
@@ -82,7 +84,7 @@ export default function SearchBar() {
                     size='sm'
                     isClearable
                     isDisabled={statisticsUnavailable}
-                    placeholder='Search for a statistic'
+                    placeholder={t('search.statistics')}
                     startContent={<RiSearchLine />}
                     className='max-w-[300px]'
                     classNames={{

@@ -1,8 +1,10 @@
 import { Button, Modal, ModalContent, ModalBody, ModalFooter, ModalHeader } from '@heroui/react';
+import { useTranslation } from 'react-i18next';
 
 import useClearData from '@/hooks/settings/useClearData';
 
 export default function ClearData() {
+    const { t } = useTranslation();
     const { isOpen, onOpen, onOpenChange, handleClearData } = useClearData();
 
     return (
@@ -13,7 +15,7 @@ export default function ClearData() {
                 className='font-semibold rounded-lg'
                 onPress={onOpen}
             >
-                Clear Data
+                {t('settings.clearData.button')}
             </Button>
 
             <Modal isOpen={isOpen} onOpenChange={onOpenChange} className='bg-modalbody text-content' classNames={{ closeButton: ['text-altwhite hover:bg-titlehover duration-200'] }}>
@@ -21,11 +23,11 @@ export default function ClearData() {
                     {(onClose) => (
                         <>
                             <ModalHeader className='flex flex-col gap-1 bg-modalheader border-b border-border' data-tauri-drag-region>
-                                Confirm
+                                {t('common.confirm')}
                             </ModalHeader >
                             <ModalBody className='my-4'>
                                 <p className='text-sm'>
-                                    Are you sure you want to clear all data?
+                                    {t('confirmation.clearData')}
                                 </p>
                             </ModalBody>
                             <ModalFooter className='border-t border-border bg-modalfooter px-4 py-3'>
@@ -36,14 +38,14 @@ export default function ClearData() {
                                     className='font-semibold rounded-lg'
                                     onPress={onClose}
                                 >
-                                    Cancel
+                                    {t('common.cancel')}
                                 </Button>
                                 <Button
                                     size='sm'
                                     className='font-semibold rounded-lg bg-dynamic text-button'
                                     onPress={() => handleClearData(onClose)}
                                 >
-                                    Confirm
+                                    {t('common.confirm')}
                                 </Button>
                             </ModalFooter>
                         </>
