@@ -1,5 +1,12 @@
 [
     {
+        "id": "19",
+        "title": "Help Translate SGI",
+        "message": "Help translate Steam Game Idler into your language. Click to learn more",
+        "url": "https://github.com/zevnda/steam-game-idler/discussions/148",
+        "timestamp": "1742823066"
+    },
+    {
         "id": "18",
         "title": "[UPDATE] Account Mismatch Error",
         "message": "You can enable Steam Client Beta Participation again. Click to read more",
@@ -61,12 +68,5 @@
         "message": "New beta version available",
         "url": "https://github.com/zevnda/steam-game-idler/releases/tag/1.7.0-beta.5",
         "timestamp": "1737980309"
-    },
-    {
-        "id": "9",
-        "title": "Beta v1.7.0-4",
-        "message": "New beta version available",
-        "url": "https://github.com/zevnda/steam-game-idler/releases/tag/1.7.0-beta.4",
-        "timestamp": "1737923379"
     }
 ]
