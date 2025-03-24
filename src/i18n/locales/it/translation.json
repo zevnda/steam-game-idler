@@ -1,0 +1,243 @@
+{
+    "setup": {
+        "welcome": "Benvenuto",
+        "chooseAccount": "Scegli un account",
+        "refresh": "Ricarica",
+        "help": "Serve Aiuto?",
+        "noUsers": "Nessun utente Steam trovato",
+        "learn": "Scopri perchè"
+    },
+    "search": {
+        "games": "Cerca un Gioco",
+        "achievements": "Cerca un obietivo",
+        "statistics": "Cerca una statistica"
+    },
+    "notifications": {
+        "empty": "Nessuna Notifica",
+        "markAllRead": "Segna tutte come lette"
+    },
+    "menu": {
+        "guide": "Guida Utente",
+        "issue": "Segnala un problema",
+        "feature": "Richiedi una funzionalità",
+        "support": "Supporta il Progetto",
+        "changelog": "Visualizza Changelog",
+        "update": "Controllo degli Aggiornamenti.."
+    },
+    "gamesList": {
+        "title": "I Tuoi Giochi",
+        "sort": {
+            "titleAsc": "Titoli Cresente",
+            "titleDesc": "Titoli Decrescente",
+            "playtimeDesc": "Tempo di Gioco Alto-Basso",
+            "playtimeAsc": "Tempo di Gioco Basso-Alto",
+            "recent": "Giocati Recentemente"
+        },
+        "private": {
+            "message": "Impossibile trovare la lista dei giochi. Questo di solito è a causa di:",
+            "change": "Cambia le Tue impostazioni di Privacy",
+            "tryAgain": "Riprova",
+            "reason": {
+                "1": "Il tuo profilo è privato",
+                "2": "I dettagli dei tuoi giochi sono privati",
+                "3": "Non hai giochi nella tua libreria",
+                "4": "Stai usando una chiave Steam web API non valida"
+            }
+        }
+    },
+    "idlingGames": {
+        "title": "Giochi in Idle",
+        "subtitle": "I giochi che stai attualmente idlando appariranno qui",
+        "stopAll": "Ferma Tutto"
+    },
+    "customLists": {
+        "cardFarming": {
+            "subtitle": "Aggiungi giochi alla tua lista per farmare le loro carte collezionabili",
+            "buttonLabel": "Inizia a Farmare Carte"
+        },
+        "achievementUnlocker": {
+            "subtitle": "Aggiungi giochi alla tua lista per sbloccare i loro obiettivi",
+            "buttonLabel": "Inizia a sbloccare Obiettivi"
+        },
+        "autoIdle": {
+            "title": "Auto-Idle",
+            "subtitle": "Aggiungi giochi a questa lista per farli entrare automaticamente in modalità idle all'avvio"
+        },
+        "favorites": {
+            "title": "Preferiti",
+            "subtitle": "I tuoi giochi preferiti"
+        },
+        "manualAdd": {
+            "title": "Aggiungi un gioco",
+            "gameName": "Nome del Gioco",
+            "gameId": "ID del gioco"
+        },
+        "edit": "Modifica Lista",
+        "inList": "Nella Lista",
+        "addAll": "Aggiungi Tutti",
+        "invalid": "Tipo di lista non valido"
+    },
+    "automation": {
+        "cardFarming": {
+            "initialDelay": "Potrebbe volerci un attimo..",
+            "progress": "Idling <1>{{count}}</1> gioco(i) con <3>{{total}}</3> Carta(e) rimanenti da ottenere"
+        },
+        "achievementUnlocker": {
+            "initialDelay": "Iniziando tra <1>{{timer}}</1>",
+            "delay": "Prossimo sblocco tra <1>{{timer}}</1>",
+            "progress": "Sbloccando <1>{{count}}</1> obiettivo(i) per <3>{{appName}}</3>",
+            "scheduleWait": "Sblocco degli obiettivi in pausa perché al di fuori dell'orario programmato e riprenderà non appena rientrerà nell'orario previsto"
+        }
+    },
+    "freeGames.title": "Giochi Gratuiti",
+    "cardMenu": {
+        "idle": "Inizia Idle",
+        "achievements": "Guarda Achievements",
+        "store": "Guarda Pagina del negozio",
+        "settings": "Impostazioni Gioco"
+    },
+    "gameSettings": {
+        "idle": "Tempo idle massimo (minuti)",
+        "drops": "Carte ottenute massime",
+        "achievements": "Sblocco obiettivi massimi"
+    },
+    "achievementManager": {
+        "steam": "Visualizza su Steam",
+        "steamDB": "Visualizza su SteamDB",
+        "file": "Visualizza in Esplora Risorse",
+        "alert": "Alcuni obiettivi o statitiche sono state disabilitati. <1>Scopri di più</1>",
+        "achievements": {
+            "title": "Obiettivi",
+            "empty": "Nessun obiettivo trovato",
+            "unlockAll": "Sblocca Tutto",
+            "lockAll": "Blocca Tutto",
+            "unlock": "Sblocca",
+            "lock": "Blocca",
+            "protected": "Protetto",
+            "modal": "Sei sicuro di voler <1>{{state}}</1> tutti gli obiettivi?",
+            "sort": {
+                "percent": "Percentuale",
+                "title": "In Ordine Alfabetico",
+                "unlocked": "Sbloccato",
+                "locked": "Bloccato",
+                "unprotected": "Non Protetto",
+                "protected": "Protetto"
+            }
+        },
+        "statistics": {
+            "title": "Statistiche",
+            "empty": "Nessuna Statistica Trovata",
+            "saveChanges": "Salva Modifiche",
+            "resetAll": "Ripristina Tutto",
+            "flags": "Segnali"
+        }
+    },
+    "settings": {
+        "title": "Impostazioni",
+        "general": {
+            "title": "Generali",
+            "antiAway": "Prevenire lo stato 'Assente' su Steam",
+            "freeGameNotifications": "Ricevi notifiche sui giochi gratuiti",
+            "runAtStartup": "Esegui all'avvio",
+            "language": "Lingua",
+            "theme": "Tema",
+            "webApi": "Utilizza le tue <1>Steam web API key</1>(opzionale). <3>Scopri di più</3>",
+            "webApi.placeholder": "Chiave Steam web API",
+            "userSummary": "Accesso effettuato come",
+            "helpTranslate": "Aiuta a tradurre SGI",
+            "languages": {
+                "english": "Inglese",
+                "german": "Tedesco (Deutsch)"
+            }
+        },
+        "cardFarming": {
+            "listGames": "Farma carte per i giochi nella tua lista",
+            "allGames": "Farma carte for per tutti i giochi con carte rimanenti",
+            "steamCredentials": "Credenziali di Steam sono richieste per utilizzare funzione di farm delle carte. <1>Scopri di più</1>",
+            "userSummary": "Farma carte come"
+        },
+        "achievementUnlocker": {
+            "idle": "Sblocca obiettivi mentre i giochi sono in idle",
+            "hidden": "Salta obiettivi nascosti",
+            "scheduleLabel": "Sblocca obiettivi tra",
+            "scheduleAnd": "e",
+            "interval": "Sblocca obiettivi randomicamente ogni {{min}} fino {{max}} minuti"
+        },
+        "logs": {
+            "title": "Logs",
+            "openLogFile": "Apri in Esplora File",
+            "clearLogs": "Pulisci Logs",
+            "time": "Tempo",
+            "message": "Messaggio"
+        },
+        "resetSettings": {
+            "button": "Ripritina Impostazioni"
+        },
+        "clearData": {
+            "button": "Pulisici Dati"
+        },
+        "exportData": "Esporta Dati"
+    },
+    "confirmation": {
+        "logout": "Sei sicuro di voler uscire?",
+        "resetStatistics": "Sei sicuro di voler <1>ripristinare</1> tutte le statitiche?",
+        "resetSettings": "Sei sicuro di voler ripristinare le impostazioni allo stato predefinito?",
+        "clearData": "Sei sicuro di volere pulire tutti i dati?",
+        "steamClosed": "Steam non è in esecuzione. Apri il client di Steam per continuare"
+    },
+    "toast": {
+        "steam": "Steam non è in esecuzione",
+        "mismatch": "Account non corrispondente tra Steam e SGI",
+        "missingCredentials": "Credenziali per il farming delle carte mancanti in \"Impostazioni > Farming carte\"",
+        "outdatedCredentials": "Le credenziali per il farming delle carte vanno aggiornate in \"Impostazioni > Farming carte\"",
+        "incorrectCredentials": "Credenziali incorrette per il famring delle carte",
+        "enableAllGames": "Aggiungi qualche gioco alla lista o abilta \"Tutti i giochi\" nelle \"impostazioni > Farming carte\"",
+        "noGames": "Non ci sono giochi nella lista per lo sblocco degli obiettivi",
+        "configSettings": "Perfavore configura le impostazioni prima di continuare",
+        "refetch.cooldown": "I Giochi possono essere ricaricati alle {{time}}",
+        "achievementData.error": "Errore nella ricerca dei dati degli obiettivi",
+        "startIdle.success": "Inizio Idle {{appName}} ({{appId}})",
+        "startIdle.alreadyIdling": "{{appName}} ({{appId}}) è già in idle",
+        "startIdle.error": "Impossibile avviare idle {{appName}} ({{appId}})",
+        "stopIdle.success": "Fermato lo stato di idle {{appName}} ({{appId}})",
+        "stopIdle.error": "Impossibile fermare idle {{appName}} ({{appId}})",
+        "stopIdleAll.success": "idle interrotto per {{count}} gioco(i)",
+        "stopIdleAll.error": "Impossibile fermare idle per tutti i gioco(i)",
+        "exportData.success": "Dati copiati negli appunti",
+        "exportData.error": "Errore nell'esportazione dei dati",
+        "toggle.success": "{{type}} {{achievementName}} per {{appName}}",
+        "toggle.error": "Fallito il {{type}} {{achievementName}} per {{appName}}",
+        "unlockAll.success": "Sbloccato con successo {{count}} obiettivo(i) per {{appName}}",
+        "lockAll.success": "Bloccato con successo {{count}} obiettivo(i) per {{appName}}",
+        "updateAll.success": "Aggiornato con successo {{count}} statistica(e) per {{appName}}",
+        "updateAll.noChanges": "Nessuna statistica modficata",
+        "updateAll.error": "Impossibile aggiornare le statistiche",
+        "resetAll.success": "Ripristinato con successo {{count}} statistica(e) per {{appName}}",
+        "resetAll.error": "Impossibile ripristinare le statistiche",
+        "cardFarming.logIn": "Credenziali convalidate per {{user}}",
+        "cardFarming.logOut": "Credenziali rimosse con successo",
+        "apiKey.save": "Chiave Steam web API salvate con successo",
+        "apiKey.clear": "Chiave Steam web API rimossa con successo",
+        "clearLogs.success": "Logs rimossi con successo",
+        "resetSettings.success": "le impostazioni sono state ripristinate",
+        "checkUpdate.none": "Nessun aggiornamento disponibile",
+        "checkUpdate.error": "Errore nel controllo degli aggiornamenti"
+    },
+    "common": {
+        "cardFarming": "Farming Carte",
+        "achievementUnlocker": "Sblocco Obiettivi",
+        "showing": "Mostrando {{count}} di {{total}} giochi",
+        "learnMore": "Scopri di più",
+        "error": "è stato riscontrato un errore. Controlla i logs per maggiori informazioni",
+        "start": "Inizio",
+        "stop": "Ferma",
+        "notice": "Avviso",
+        "confirm": "Conferma",
+        "done": "Fatto",
+        "add": "Aggiungi",
+        "save": "Salva",
+        "close": "Chiudi",
+        "cancel": "Cancella",
+        "clear": "Pulisci"
+    }
+}
