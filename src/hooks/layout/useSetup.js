@@ -1,11 +1,13 @@
 import { invoke } from '@tauri-apps/api/core';
 import { useContext, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { UserContext } from '@/components/contexts/UserContext';
 import { checkSteamStatus, logEvent } from '@/utils/tasks';
 import { showAccountMismatchToast, showDangerToast } from '@/utils/toasts';
 
 export default function useSetup(refreshKey) {
+    const { t } = useTranslation();
     const { setUserSummary } = useContext(UserContext);
     const [isLoading, setIsLoading] = useState(false);
     const [steamUsers, setSteamUsers] = useState([]);
@@ -62,7 +64,7 @@ export default function useSetup(refreshKey) {
             logEvent(`[System] Logged in as ${userSummary.personaName}`);
         } catch (error) {
             setIsLoading(false);
-            showDangerToast('An error occurred. Check the logs for more information');
+            showDangerToast(t('common.error'));
             console.error('Error in (handleLogin):', error);
             logEvent(`[Error] in (handleLogin): ${error}`);
         }

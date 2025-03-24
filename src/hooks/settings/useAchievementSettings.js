@@ -1,20 +1,22 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { logEvent } from '@/utils/tasks';
-import { showDangerToast } from '@/utils/toasts';
+import { showDangerToast, t } from '@/utils/toasts';
 
-export const useAchievementSettings = (settings, setLocalSettings) => {
-    const [labelInterval, setLabelInterval] = useState(null);
+export const useAchievementSettings = (settings, setLocalSettings, setSliderLabel) => {
+    const { t } = useTranslation();
 
     // Sync local settings with global settings when they change
     useEffect(() => {
         if (setLocalSettings && settings && settings.achievementUnlocker) {
             setLocalSettings(settings);
-            setLabelInterval(`${settings.achievementUnlocker.interval[0]} to ${settings.achievementUnlocker.interval[1]}`);
+            if (setSliderLabel) {
+                const interval = settings.achievementUnlocker?.interval;
+                setSliderLabel(t('settings.achievementUnlocker.interval', { min: interval[0], max: interval[1] }));
+            }
         }
-    }, [settings, setLocalSettings]);
-
-    return { labelInterval, setLabelInterval };
+    }, [settings, setLocalSettings, setSliderLabel, t]);
 };
 
 // Handle changes to checkboxes in the settings
@@ -33,7 +35,7 @@ export const achievementCheckboxChange = (e, localSettings, setLocalSettings, se
             logEvent(`[Settings - Achievement Unlocker] Changed '${name}' to '${checked}'`);
         }
     } catch (error) {
-        showDangerToast('An error occurred. Check the logs for more information');
+        showDangerToast(t('common.error'));
         console.error('Error in (handleCheckboxChange):', error);
         logEvent(`[Error] in (handleCheckboxChange): ${error}`);
     }
@@ -54,7 +56,7 @@ export const handleSliderChange = (e, localSettings, setLocalSettings, setSettin
             logEvent(`[Settings - Achievement Unlocker] Changed 'interval' to '${e}'`);
         }
     } catch (error) {
-        showDangerToast('An error occurred. Check the logs for more information');
+        showDangerToast(t('common.error'));
         console.error('Error in (handleSliderChange):', error);
         logEvent(`[Error] in (handleSliderChange): ${error}`);
     }
@@ -75,15 +77,10 @@ export const handleScheduleChange = (value, type, localSettings, setLocalSetting
             logEvent(`[Settings - Achievement Unlocker] Changed '${type}' to '${value.toString()}'`);
         }
     } catch (error) {
-        showDangerToast('An error occurred. Check the logs for more information');
+        showDangerToast(t('common.error'));
         console.error('Error in (handleScheduleChange):', error);
         logEvent(`[Error] in (handleScheduleChange): ${error}`);
     }
-};
-
-// Update the interval label based on the slider values
-export const updateLabel = (e, setLabelInterval) => {
-    setLabelInterval(`${e[0]} and ${e[1]}`);
 };
 
 // Update settings in local state and save to local storage
@@ -93,7 +90,7 @@ const updateSettings = (newSettings, setLocalSettings, setSettings) => {
     try {
         localStorage.setItem('settings', JSON.stringify(newSettings));
     } catch (error) {
-        showDangerToast('An error occurred. Check the logs for more information');
+        showDangerToast(t('common.error'));
         console.error('Error in (updateSettings):', error);
         logEvent(`[Error] in (updateSettings): ${error}`);
     }

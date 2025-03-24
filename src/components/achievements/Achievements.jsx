@@ -1,5 +1,6 @@
 import { Tab, Tabs } from '@heroui/react';
 import { useState, useContext } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import AchievementsList from '@/components/achievements/AchievementsList';
 import PageHeader from '@/components/achievements/PageHeader';
@@ -9,6 +10,7 @@ import Loader from '@/components/ui/Loader';
 import useAchievements from '@/hooks/achievements/useAchievements';
 
 export default function Achievements() {
+    const { t } = useTranslation();
     const { setCurrentTab } = useContext(NavigationContext);
     const [isLoading, setIsLoading] = useState(true);
     const [achievements, setAchievements] = useState([]);
@@ -49,14 +51,14 @@ export default function Achievements() {
                             }}
                             onSelectionChange={(e) => setCurrentTab(e)}
                         >
-                            <Tab key='achievements' title='Achievements'>
+                            <Tab key='achievements' title={t('achievementManager.achievements.title')}>
                                 <AchievementsList
                                     achievements={achievements}
                                     setAchievements={setAchievements}
                                     protectedAchievements={protectedAchievements}
                                 />
                             </Tab>
-                            <Tab key='statistics' title='Statistics'>
+                            <Tab key='statistics' title={t('achievementManager.statistics.title')}>
                                 <StatisticsList
                                     statistics={statistics}
                                     setStatistics={setStatistics}

@@ -1,20 +1,22 @@
 import { Select, SelectItem } from '@heroui/react';
 import { useContext } from 'react';
+import { useTranslation } from 'react-i18next';
 import { TbRefresh, TbSortDescending2 } from 'react-icons/tb';
 
 import { UserContext } from '@/components/contexts/UserContext';
 import { usePageHeader } from '@/hooks/gameslist/usePageHeader';
 
 export default function PageHeader({ sortStyle, setSortStyle, filteredGames, visibleGames, setRefreshKey }) {
+    const { t } = useTranslation();
     const { userSummary } = useContext(UserContext);
     const { handleSorting, handleRefetch } = usePageHeader({ setSortStyle, setRefreshKey });
 
     const sortOptions = [
-        { key: 'a-z', label: 'Title Ascending' },
-        { key: 'z-a', label: 'Title Descending' },
-        { key: '1-0', label: 'Playtime High-Low' },
-        { key: '0-1', label: 'Playtime Low-High' },
-        { key: 'recent', label: 'Recently Played' },
+        { key: 'a-z', label: t('gamesList.sort.titleAsc') },
+        { key: 'z-a', label: t('gamesList.sort.titleDesc') },
+        { key: '1-0', label: t('gamesList.sort.playtimeDesc') },
+        { key: '0-1', label: t('gamesList.sort.playtimeAsc') },
+        { key: 'recent', label: t('gamesList.sort.recent') },
     ];
 
     return (
@@ -23,11 +25,11 @@ export default function PageHeader({ sortStyle, setSortStyle, filteredGames, vis
                 <div className='flex items-center gap-1'>
                     <div className='flex flex-col justify-center'>
                         <p className='text-lg font-semibold'>
-                            Your Games
+                            {t('gamesList.title')}
                         </p>
                         <div className='flex gap-1'>
                             <p className='text-xs text-altwhite'>
-                                Showing {visibleGames.length} of {filteredGames.length} games
+                                {t('common.showing', { count: visibleGames.length, total: filteredGames.length })}
                             </p>
                             <div className='flex justify-center items-center cursor-pointer' onClick={() => handleRefetch(userSummary.steamId)}>
                                 <TbRefresh className='text-altwhite' fontSize={16} />

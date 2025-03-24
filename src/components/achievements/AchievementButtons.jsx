@@ -1,29 +1,37 @@
 import { Modal, ModalContent, ModalBody, Button, useDisclosure, ModalFooter, ModalHeader, Select, SelectItem } from '@heroui/react';
 import { useState, useContext } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { TbSortDescending2 } from 'react-icons/tb';
 
 import { StateContext } from '@/components/contexts/StateContext';
 import { UserContext } from '@/components/contexts/UserContext';
 import useAchievementButtons from '@/hooks/achievements/useAchievementButtons';
 
-const sortOptions = [
-    { key: 'percent', label: 'Percentage' },
-    { key: 'title', label: 'Alphabetically' },
-    { key: 'unlocked', label: 'Unlocked' },
-    { key: 'locked', label: 'Locked' },
-    { key: 'unprotected', label: 'Unprotected' },
-    { key: 'protected', label: 'Protected' },
-];
-
 export default function AchievementButtons({ achievements, setAchievements, protectedAchievements }) {
+    const { t } = useTranslation();
     const { userSummary } = useContext(UserContext);
     const { appId, appName } = useContext(StateContext);
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const { handleChange, handleUnlockAll, handleLockAll } = useAchievementButtons(userSummary, setAchievements);
     const [state, setState] = useState('');
 
+    const sortOptions = [
+        { key: 'percent', label: t('achievementManager.achievements.sort.percent') },
+        { key: 'title', label: t('achievementManager.achievements.sort.title') },
+        { key: 'unlocked', label: t('achievementManager.achievements.sort.unlocked') },
+        { key: 'locked', label: t('achievementManager.achievements.sort.locked') },
+        { key: 'unprotected', label: t('achievementManager.achievements.sort.unprotected') },
+        { key: 'protected', label: t('achievementManager.achievements.sort.protected') },
+    ];
+
     const unAchieved = achievements.filter(achievement => !achievement.achieved);
     const achieved = achievements.filter(achievement => achievement.achieved);
+
+    const getTranslatedState = (state) => {
+        if (state === 'unlock') return t('achievementManager.achievements.unlock');
+        if (state === 'lock') return t('achievementManager.achievements.lock');
+        return state;
+    };
 
     const handleShowModal = (onOpen, state) => {
         setState(state);
@@ -38,7 +46,7 @@ export default function AchievementButtons({ achievements, setAchievements, prot
                 className='font-semibold rounded-lg bg-dynamic text-button'
                 onPress={() => handleShowModal(onOpen, 'unlock')}
             >
-                Unlock All
+                {t('achievementManager.achievements.unlockAll')}
             </Button>
 
             <Button
@@ -48,7 +56,7 @@ export default function AchievementButtons({ achievements, setAchievements, prot
                 className='font-semibold rounded-lg'
                 onPress={() => handleShowModal(onOpen, 'lock')}
             >
-                Lock All
+                {t('achievementManager.achievements.lockAll')}
             </Button>
 
             <Select
@@ -76,11 +84,13 @@ export default function AchievementButtons({ achievements, setAchievements, prot
                     {(onClose) => (
                         <>
                             <ModalHeader className='flex flex-col gap-1 bg-modalheader border-b border-border' data-tauri-drag-region>
-                                Confirm
+                                {t('common.confirm')}
                             </ModalHeader>
                             <ModalBody className='my-4'>
                                 <p className='text-sm'>
-                                    Are you sure you want to <strong>{state}</strong> all achievements?
+                                    <Trans i18nKey='achievementManager.achievements.modal' values={{ state: getTranslatedState(state) }}>
+                                        Are you sure you want to <strong>{state}</strong> all achievements?
+                                    </Trans>
                                 </p>
                             </ModalBody>
                             <ModalFooter className='border-t border-border bg-modalfooter px-4 py-3'>
@@ -91,7 +101,7 @@ export default function AchievementButtons({ achievements, setAchievements, prot
                                     className='font-semibold rounded-lg'
                                     onPress={onClose}
                                 >
-                                    Cancel
+                                    {t('common.cancel')}
                                 </Button>
                                 <Button
                                     size='sm'
@@ -104,7 +114,7 @@ export default function AchievementButtons({ achievements, setAchievements, prot
                                         }
                                     }}
                                 >
-                                    Confirm
+                                    {t('common.confirm')}
                                 </Button>
                             </ModalFooter>
                         </>

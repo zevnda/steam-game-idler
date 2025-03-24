@@ -1,10 +1,14 @@
 import { Slider, TimeInput } from '@heroui/react';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import SettingsCheckbox from '@/components/settings/SettingsCheckbox';
-import { useAchievementSettings, handleSliderChange, handleScheduleChange, updateLabel } from '@/hooks/settings/useAchievementSettings';
+import { useAchievementSettings, handleSliderChange, handleScheduleChange } from '@/hooks/settings/useAchievementSettings';
 
 export default function AchievementSettings({ settings, setSettings, localSettings, setLocalSettings }) {
-    const { labelInterval, setLabelInterval } = useAchievementSettings(settings, setLocalSettings);
+    const { t } = useTranslation();
+    const [sliderLabel, setSliderLabel] = useState('');
+    useAchievementSettings(settings, setLocalSettings, setSliderLabel);
 
     return (
         <div className='flex flex-col gap-4 p-2'>
@@ -13,7 +17,7 @@ export default function AchievementSettings({ settings, setSettings, localSettin
                 <SettingsCheckbox
                     type='achievementUnlocker'
                     name='idle'
-                    content='Idle games while Achievement Unlocker is active'
+                    content={t('settings.achievementUnlocker.idle')}
                     settings={settings}
                     setSettings={setSettings}
                     localSettings={localSettings}
@@ -23,7 +27,7 @@ export default function AchievementSettings({ settings, setSettings, localSettin
                 <SettingsCheckbox
                     type='achievementUnlocker'
                     name='hidden'
-                    content='Skip hidden achievements'
+                    content={t('settings.achievementUnlocker.hidden')}
                     settings={settings}
                     setSettings={setSettings}
                     localSettings={localSettings}
@@ -34,7 +38,7 @@ export default function AchievementSettings({ settings, setSettings, localSettin
                     <SettingsCheckbox
                         type='achievementUnlocker'
                         name='schedule'
-                        content='Only unlock achievements between'
+                        content={t('settings.achievementUnlocker.scheduleLabel')}
                         settings={settings}
                         setSettings={setSettings}
                         localSettings={localSettings}
@@ -54,7 +58,9 @@ export default function AchievementSettings({ settings, setSettings, localSettin
                         onChange={(value) => handleScheduleChange(value, 'scheduleFrom', localSettings, setLocalSettings, setSettings)}
                     />
 
-                    <p className='text-xs'>and</p>
+                    <p className='text-xs'>
+                        {t('settings.achievementUnlocker.scheduleAnd')}
+                    </p>
 
                     <TimeInput
                         aria-label='schedule-to'
@@ -71,7 +77,11 @@ export default function AchievementSettings({ settings, setSettings, localSettin
                 </div>
 
                 <Slider
-                    label={<p className='text-xs'>Unlock achievements randomly every {labelInterval} minutes</p>}
+                    label={
+                        <p className='text-xs'>
+                            {sliderLabel}
+                        </p>
+                    }
                     size='sm'
                     step={5}
                     minValue={5}
@@ -82,7 +92,7 @@ export default function AchievementSettings({ settings, setSettings, localSettin
                     className='w-[500px] mt-2'
                     classNames={{ value: ['text-xs'] }}
                     onChangeEnd={(e) => handleSliderChange(e, localSettings, setLocalSettings, setSettings)}
-                    onChange={(e) => updateLabel(e, setLabelInterval)}
+                    onChange={(e) => setSliderLabel(t('settings.achievementUnlocker.interval', { min: e[0], max: e[1] }))}
                 />
             </div>
         </div>

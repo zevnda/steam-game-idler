@@ -1,6 +1,7 @@
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input } from '@heroui/react';
 import Image from 'next/image';
 import { memo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { TbCheck } from 'react-icons/tb';
 import { FixedSizeList as List } from 'react-window';
 
@@ -44,6 +45,7 @@ const Row = memo(({ index, style, data }) => {
 Row.displayName = 'Row';
 
 export default function EditListModal({ isOpen, onOpenChange, onClose, filteredGamesList, list, setSearchTerm, showInList, setShowInList, handleAddGame, handleAddAllGames, handleRemoveGame, handleClearList, type }) {
+    const { t } = useTranslation();
     const itemData = { filteredGamesList, list, handleAddGame, handleRemoveGame };
 
     return (
@@ -56,9 +58,9 @@ export default function EditListModal({ isOpen, onOpenChange, onClose, filteredG
                                 autoFocus
                                 isClearable
                                 size='sm'
-                                placeholder='Search for a game..'
+                                placeholder={t('search.games')}
                                 classNames={{
-                                    inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded group-data-[focus-within=true]:!bg-titlebar group-data-[focus-visible=true]:ring-transparent group-data-[focus-visible=true]:ring-offset-transparent'],
+                                    inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar group-data-[focus-visible=true]:ring-transparent group-data-[focus-visible=true]:ring-offset-transparent'],
                                     input: ['!text-content placeholder:text-altwhite/50'],
                                 }}
                                 isDisabled={showInList}
@@ -73,7 +75,7 @@ export default function EditListModal({ isOpen, onOpenChange, onClose, filteredG
                                     startContent={<TbCheck fontSize={18} className={showInList ? 'text-green-600' : 'text-button'} />}
                                     onPress={() => setShowInList(!showInList)}
                                 >
-                                    In List
+                                    {t('customLists.inList')}
                                 </Button>
                                 {type === 'achievementUnlockerList' && (
                                     <Button
@@ -82,7 +84,7 @@ export default function EditListModal({ isOpen, onOpenChange, onClose, filteredG
                                         isDisabled={filteredGamesList.length === 0 || list.length === filteredGamesList.length}
                                         onPress={() => handleAddAllGames(filteredGamesList)}
                                     >
-                                        Add All
+                                        {t('customLists.addAll')}
                                     </Button>
                                 )}
                             </div>
@@ -106,14 +108,14 @@ export default function EditListModal({ isOpen, onOpenChange, onClose, filteredG
                                 className='rounded-lg font-semibold'
                                 onPress={handleClearList}
                             >
-                                Clear
+                                {t('common.clear')}
                             </Button>
                             <Button
                                 size='sm'
                                 className='rounded-lg font-semibold bg-dynamic text-button'
                                 onPress={onClose}
                             >
-                                Done
+                                {t('common.done')}
                             </Button>
                         </ModalFooter>
                     </>

@@ -1,9 +1,11 @@
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, NumberInput } from '@heroui/react';
 import { useContext, useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { StateContext } from '@/components/contexts/StateContext';
 
 export default function GameSettings({ isOpen, onOpenChange }) {
+    const { t } = useTranslation();
     const { appId, appName } = useContext(StateContext);
     const [maxIdleTime, setMaxIdleTime] = useState('');
     const [maxCardDrops, setMaxCardDrops] = useState('');
@@ -59,14 +61,14 @@ export default function GameSettings({ isOpen, onOpenChange }) {
                     <>
                         <ModalHeader className='flex flex-col gap-1 bg-modalheader border-b border-border' data-tauri-drag-region>
                             <p className='truncate'>
-                                Settings - {appName}
+                                {t('settings.title')} - {appName}
                             </p>
                         </ModalHeader>
                         <ModalBody className='max-h-[300px] overflow-y-auto'>
                             <div className='grid grid-cols-2 gap-4 w-full my-4'>
                                 <div className='flex flex-col gap-2 w-full'>
                                     <p className='text-xs'>
-                                        Max idle time (minutes)
+                                        {t('gameSettings.idle')}
                                     </p>
                                     <NumberInput
                                         hideStepper
@@ -86,7 +88,7 @@ export default function GameSettings({ isOpen, onOpenChange }) {
 
                                 <div className='flex flex-col gap-2 w-full'>
                                     <p className='text-xs'>
-                                        Max card drops
+                                        {t('gameSettings.drops')}
                                     </p>
                                     <NumberInput
                                         hideStepper
@@ -106,7 +108,7 @@ export default function GameSettings({ isOpen, onOpenChange }) {
 
                                 <div className='flex flex-col gap-2 w-full'>
                                     <p className='text-xs'>
-                                        Max achievement unlocks
+                                        {t('gameSettings.achievements')}
                                     </p>
                                     <NumberInput
                                         hideStepper
@@ -135,7 +137,7 @@ export default function GameSettings({ isOpen, onOpenChange }) {
                                     onClose();
                                 }}
                             >
-                                Cancel
+                                {t('common.cancel')}
                             </Button>
                             <Button
                                 size='sm'
@@ -146,7 +148,7 @@ export default function GameSettings({ isOpen, onOpenChange }) {
                                     onClose();
                                 }}
                             >
-                                Save
+                                {t('common.save')}
                             </Button>
                         </ModalFooter>
                     </>

@@ -6,6 +6,7 @@ import { relaunch } from '@tauri-apps/plugin-process';
 import { check } from '@tauri-apps/plugin-updater';
 import { useTheme } from 'next-themes';
 import { useCallback, useContext, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { IdleContext } from '@/components/contexts/IdleContext';
 import { StateContext } from '@/components/contexts/StateContext';
@@ -13,9 +14,10 @@ import { UpdateContext } from '@/components/contexts/UpdateContext';
 import { UserContext } from '@/components/contexts/UserContext';
 import { startIdle } from '@/utils/idle';
 import { checkSteamStatus, logEvent, fetchLatest, preserveKeysAndClearData } from '@/utils/tasks';
-import { showDangerToast } from '@/utils/toasts';
+import { showDangerToast, t } from '@/utils/toasts';
 
 export default function useWindow() {
+    const { t } = useTranslation();
     const { theme } = useTheme();
     const { setIdleGamesList } = useContext(IdleContext);
     const { setIsDarkMode, setShowFreeGamesTab, setIsCardFarming, setIsAchievementUnlocker, setShowSteamWarning } = useContext(StateContext);
@@ -50,7 +52,7 @@ export default function useWindow() {
                     }
                 }
             } catch (error) {
-                showDangerToast('Error checking for updates');
+                showDangerToast(t('toast.checkUpdate.error'));
                 console.error('Error in (checkForUpdates):', error);
                 logEvent(`Error in (checkForUpdates): ${error}`);
             }
@@ -60,7 +62,7 @@ export default function useWindow() {
         return () => {
             clearInterval(intervalId);
         };
-    }, [setUpdateAvailable]);
+    }, [setUpdateAvailable, t]);
 
     useEffect(() => {
         // Monitor if Steam client is running - stop features if Steam closes
@@ -184,7 +186,7 @@ export const defaultSettings = (setUserSummary) => {
             currentSettings = JSON.parse(localStorage.getItem('settings'));
         }
     } catch (error) {
-        showDangerToast('An error occurred. Check the logs for more information');
+        showDangerToast(t('common.error'));
         console.error('Error creating default settings:', error);
         logEvent(`[Error] creating default settings: ${error}`);
     }
@@ -219,7 +221,7 @@ export const checkForFreeGames = async (setFreeGamesList, setShowFreeGamesTab) =
             setShowFreeGamesTab(false);
         }
     } catch (error) {
-        showDangerToast('An error occurred. Check the logs for more information');
+        showDangerToast(t('common.error'));
         console.error('Error in (checkForFreeGames):', error);
         logEvent(`[Error] in (checkForFreeGames): ${error}`);
     }
@@ -251,7 +253,7 @@ export const startAutoIdleGames = async () => {
             }
         }
     } catch (error) {
-        showDangerToast('An error occurred. Check the logs for more information');
+        showDangerToast(t('common.error'));
         console.error('Error in (startAutoIdleGames):', error);
         logEvent(`[Error] in (startAutoIdleGames): ${error}`);
     }
@@ -287,6 +289,7 @@ async function sendNativeNotification(title, body) {
             sendNotification({ title, body, });
         }
     } catch (error) {
+        showDangerToast(t('common.error'));
         console.error('Error in (sendNativeNotification):', error);
         logEvent(`[Error] in (sendNativeNotification): ${error}`);
     }

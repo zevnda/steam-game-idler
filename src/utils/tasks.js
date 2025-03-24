@@ -1,7 +1,7 @@
 import { getVersion } from '@tauri-apps/api/app';
 import { invoke } from '@tauri-apps/api/core';
 
-import { showDangerToast, showSteamNotRunningToast } from '@/utils/toasts';
+import { showDangerToast, showSteamNotRunningToast, t } from '@/utils/toasts';
 
 export async function checkSteamStatus(showToast = false) {
     try {
@@ -76,7 +76,7 @@ export const preserveKeysAndClearData = async () => {
             localStorage.setItem(key, value);
         });
     } catch (error) {
-        showDangerToast('An error occurred. Check the logs for more information');
+        showDangerToast(t('common.error'));
         console.error('Error in (preserveKeysAndClearData):', error);
         logEvent(`[Error] in (preserveKeysAndClearData): ${error}`);
     }
@@ -88,7 +88,7 @@ export const getAppVersion = async () => {
         const appVersion = await getVersion();
         return appVersion;
     } catch (error) {
-        showDangerToast('An error occurred. Check the logs for more information');
+        showDangerToast(t('common.error'));
         console.error('Error in (getAppVersion):', error);
         logEvent(`[Error] in (getAppVersion): ${error}`);
     }

@@ -1,9 +1,12 @@
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@heroui/react';
 import { open } from '@tauri-apps/plugin-shell';
+import { useTranslation } from 'react-i18next';
 import { FaSteam } from 'react-icons/fa';
 import { TbAwardFilled, TbDotsVertical, TbPlayerPlayFilled, TbSettingsFilled } from 'react-icons/tb';
 
 export default function CardMenu({ item, handleIdle, viewAchievments, viewGameSettings }) {
+    const { t } = useTranslation();
+
     const viewStorePage = async (item) => {
         try {
             await open(`https://store.steampowered.com/app/${item.appid}`);
@@ -28,7 +31,9 @@ export default function CardMenu({ item, handleIdle, viewAchievments, viewGameSe
                     onPress={() => handleIdle(item)}
                     textValue='Idle game'
                 >
-                    <p className='text-sm text-content'>Idle game</p>
+                    <p className='text-sm text-content'>
+                        {t('cardMenu.idle')}
+                    </p>
                 </DropdownItem>
                 <DropdownItem
                     className='rounded'
@@ -38,7 +43,9 @@ export default function CardMenu({ item, handleIdle, viewAchievments, viewGameSe
                     onPress={() => viewAchievments(item)}
                     textValue='View achievements'
                 >
-                    <p className='text-sm text-content'>View achievements</p>
+                    <p className='text-sm text-content'>
+                        {t('cardMenu.achievements')}
+                    </p>
                 </DropdownItem>
                 <DropdownItem
                     className='rounded'
@@ -48,7 +55,9 @@ export default function CardMenu({ item, handleIdle, viewAchievments, viewGameSe
                     onPress={() => viewStorePage(item)}
                     textValue='View store page'
                 >
-                    <p className='text-sm text-content'>View store page</p>
+                    <p className='text-sm text-content'>
+                        {t('cardMenu.store')}
+                    </p>
                 </DropdownItem>
                 <DropdownItem
                     className='rounded'
@@ -58,7 +67,9 @@ export default function CardMenu({ item, handleIdle, viewAchievments, viewGameSe
                     onPress={() => viewGameSettings(item)}
                     textValue='Game settings'
                 >
-                    <p className='text-sm text-content'>Game settings</p>
+                    <p className='text-sm text-content'>
+                        {t('cardMenu.settings')}
+                    </p>
                 </DropdownItem>
             </DropdownMenu>
         </Dropdown>

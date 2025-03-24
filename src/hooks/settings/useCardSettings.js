@@ -2,7 +2,7 @@ import { invoke } from '@tauri-apps/api/core';
 import { useEffect, useState } from 'react';
 
 import { logEvent } from '@/utils/tasks';
-import { showAccountMismatchToast, showDangerToast, showIncorrectCredentialsToast, showSuccessToast } from '@/utils/toasts';
+import { showAccountMismatchToast, showDangerToast, showIncorrectCredentialsToast, showSuccessToast, t } from '@/utils/toasts';
 
 export const useCardSettings = (settings, setLocalSettings) => {
     const [sidValue, setSidValue] = useState(''); // sessionid
@@ -78,7 +78,7 @@ export const getStoredCookies = async (setHasCookies, setSidValue, setSlsValue, 
             setCardFarmingUser(cardFarmingUser);
         }
     } catch (error) {
-        showDangerToast('An error occurred. Check the logs for more information');
+        showDangerToast(t('common.error'));
         console.error('Error in (getStoredCookies):', error);
         logEvent(`[Error] in (getStoredCookies): ${error}`);
     }
@@ -112,7 +112,7 @@ export const handleSave = async (sidValue, slsValue, smaValue, setHasCookies, us
                 setCardFarmingUser(cardFarmingUser);
                 localStorage.setItem('cardFarmingUser', JSON.stringify(cardFarmingUser));
 
-                showSuccessToast(`[Card Farming] Logged in as ${res.user}`);
+                showSuccessToast(t('toast.cardFarming.logIn', { user: res.user }));
                 logEvent(`[Settings - Card Farming] Logged in as ${res.user}`);
             } else {
                 showIncorrectCredentialsToast();
@@ -120,7 +120,7 @@ export const handleSave = async (sidValue, slsValue, smaValue, setHasCookies, us
             }
         }
     } catch (error) {
-        showDangerToast('An error occurred. Check the logs for more information');
+        showDangerToast(t('common.error'));
         console.error('Error in (handleSave):', error);
         logEvent(`[Error] in (handleSave): ${error}`);
     }
@@ -136,10 +136,12 @@ export const handleClear = async (setHasCookies, setSidValue, setSlsValue, setSm
         setSmaValue('');
         setHasCookies(false);
         setCardFarmingUser(null);
-        showSuccessToast('[Card Farming] Logged out');
+
+        showSuccessToast(t('toast.cardFarming.logOut'));
+
         logEvent('[Settings - Card Farming] Logged out');
     } catch (error) {
-        showDangerToast('An error occurred. Check the logs for more information');
+        showDangerToast(t('common.error'));
         console.error('Error in (handleClear):', error);
         logEvent(`[Error] in (handleClear): ${error}`);
     }
@@ -178,7 +180,7 @@ export const cardCheckboxChange = (e, localSettings, setLocalSettings, setSettin
         updateSettings(updatedSettings, setLocalSettings, setSettings);
         logEvent(`[Settings - Card Farming] Changed '${name}' to '${updatedSettings.cardFarming[name]}'`);
     } catch (error) {
-        showDangerToast('An error occurred. Check the logs for more information');
+        showDangerToast(t('common.error'));
         console.error('Error in (handleCheckboxChange):', error);
         logEvent(`[Error] in (handleCheckboxChange): ${error}`);
     }
@@ -191,7 +193,7 @@ export const updateSettings = (newSettings, setLocalSettings, setSettings) => {
     try {
         localStorage.setItem('settings', JSON.stringify(newSettings));
     } catch (error) {
-        showDangerToast('An error occurred. Check the logs for more information');
+        showDangerToast(t('common.error'));
         console.error('Error in (updateSettings):', error);
         logEvent(`[Error] in (updateSettings): ${error}`);
     }

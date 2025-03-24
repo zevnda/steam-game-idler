@@ -1,12 +1,13 @@
 import { NumberInput } from '@heroui/react';
 import { memo, useContext, useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FixedSizeList as List } from 'react-window';
 
 import StatisticButtons from '@/components/achievements/StatisticButtons';
 import { SearchContext } from '@/components/contexts/SearchContext';
 
 const Row = memo(({ index, style, data }) => {
-    const { filteredStatistics, updateStatistic } = data;
+    const { filteredStatistics, updateStatistic, t } = data;
     const item1 = filteredStatistics[index * 2];
     const item2 = filteredStatistics[index * 2 + 1];
 
@@ -25,7 +26,7 @@ const Row = memo(({ index, style, data }) => {
                                 {item1.id}
                             </p>
                             <p className={`text-[10px] ${protectedStatisticOne ? 'text-warning' : 'text-altwhite'}`}>
-                                Flags: {item1.flags}
+                                {t('achievementManager.statistics.flags')}: {item1.flags}
                             </p>
                         </div>
                         <NumberInput
@@ -54,7 +55,7 @@ const Row = memo(({ index, style, data }) => {
                                 {item2.id}
                             </p>
                             <p className={`text-[10px] ${protectedStatisticTwo ? 'text-warning' : 'text-altwhite'}`}>
-                                Flags: {item2.flags}
+                                {t('achievementManager.statistics.flags')}: {item2.flags}
                             </p>
                         </div>
                         <NumberInput
@@ -82,6 +83,7 @@ const Row = memo(({ index, style, data }) => {
 Row.displayName = 'Row';
 
 export default function StatisticsList({ statistics, setStatistics, setAchievements }) {
+    const { t } = useTranslation();
     const { statisticQueryValue } = useContext(SearchContext);
     const [changedStats, setChangedStats] = useState({});
 
@@ -116,7 +118,7 @@ export default function StatisticsList({ statistics, setStatistics, setAchieveme
         [statistics, statisticQueryValue]
     );
 
-    const itemData = { filteredStatistics, updateStatistic };
+    const itemData = { filteredStatistics, updateStatistic, t };
 
     return (
         <div className='flex flex-col gap-2 w-full max-h-[calc(100vh-195px)] overflow-y-auto scroll-smooth'>
@@ -143,7 +145,7 @@ export default function StatisticsList({ statistics, setStatistics, setAchieveme
             ) : (
                 <div className='flex flex-col gap-2 justify-center items-center my-2 w-full'>
                     <p className='text-sm'>
-                        No statistics found
+                        {t('achievementManager.statistics.empty')}
                     </p>
                 </div>
             )}

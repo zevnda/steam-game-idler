@@ -1,5 +1,6 @@
 import { invoke } from '@tauri-apps/api/core';
 import { useContext } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { StateContext } from '@/components/contexts/StateContext';
 import { UserContext } from '@/components/contexts/UserContext';
@@ -8,6 +9,7 @@ import { checkSteamStatus } from '@/utils/tasks';
 import { showDangerToast, showSuccessToast, showWarningToast } from '@/utils/toasts';
 
 export default function useStatisticButtons(statistics, setStatistics, changedStats, setChangedStats, setAchievements) {
+    const { t } = useTranslation();
     const { userSummary } = useContext(UserContext);
     const { appId, appName } = useContext(StateContext);
 
@@ -21,7 +23,7 @@ export default function useStatisticButtons(statistics, setStatistics, changedSt
         const changedKeys = Object.keys(changedStats);
 
         if (changedKeys.length === 0) {
-            return showWarningToast('No statistics have been modified');
+            return showWarningToast(t('toast.updateAll.noChanges'));
         }
 
         // Format stats into array of objects with name/value pairs
@@ -35,11 +37,11 @@ export default function useStatisticButtons(statistics, setStatistics, changedSt
         const success = await updateStats(userSummary.steamId, appId, appName, valuesArr, setAchievements);
 
         if (success) {
-            showSuccessToast(`Successfully updated ${changedKeys.length} stats for ${appName}`);
+            showSuccessToast(t('toast.updateAll.success', { count: changedKeys.length, appName }));
             // Clear the tracked changes after successful update
             setChangedStats({});
         } else {
-            showDangerToast('Unable to update statistics');
+            showDangerToast(t('toast.updateAll.error'));
         }
     };
 
@@ -63,11 +65,13 @@ export default function useStatisticButtons(statistics, setStatistics, changedSt
                     value: 0
                 }));
             });
-            showSuccessToast(`Successfully reset ${statistics.length} stats for ${appName}`);
+
+            showSuccessToast(t('toast.resetAll.success', { count: statistics.length, appName }));
+
             // Clear the tracked changes after successful update
             setChangedStats({});
         } else {
-            showDangerToast('Unable to reset statistics');
+            showDangerToast(t('toast.resetAll.error'));
         }
     };
 

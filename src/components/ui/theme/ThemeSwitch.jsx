@@ -49,7 +49,7 @@ export default function ThemeSwitch() {
             radius='none'
             startContent={<TbBrush />}
             items={themes}
-            className='w-[203px]'
+            className='w-[205px]'
             classNames={{
                 listbox: ['p-0'],
                 value: ['text-sm !text-content'],

@@ -1,12 +1,13 @@
 import { invoke } from '@tauri-apps/api/core';
 import moment from 'moment';
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { logEvent } from '@/utils/tasks';
 import { showDangerToast, showPrimaryToast } from '@/utils/toasts';
 
 export const usePageHeader = ({ setSortStyle, setRefreshKey }) => {
-    // Get saved sort style from localStorage or default to 'a-z'
+    const { t } = useTranslation();
     const [sortStyle, setSortStyleState] = useState(localStorage.getItem('sortStyle') || 'a-z');
 
     // Update sort style when state changes
@@ -20,7 +21,7 @@ export const usePageHeader = ({ setSortStyle, setRefreshKey }) => {
             localStorage.setItem('sortStyle', e.currentKey);
             setSortStyleState(e.currentKey);
         } catch (error) {
-            showDangerToast('An error occurred. Check the logs for more information');
+            showDangerToast(t('common.error'));
             console.error('Error in (handleSorting):', error);
             logEvent(`[Error] in (handleSorting): ${error}`);
         }
@@ -31,8 +32,9 @@ export const usePageHeader = ({ setSortStyle, setRefreshKey }) => {
             if (steamId !== '76561198158912649' && steamId !== '76561198999797359') {
                 // Check if user is on cooldown for refreshing games
                 const cooldown = sessionStorage.getItem('cooldown');
-                if (cooldown && moment().unix() < cooldown)
-                    return showPrimaryToast(`Games can be refreshed again at ${moment.unix(cooldown).format('h:mm A')}`);
+                if (cooldown && moment().unix() < cooldown) {
+                    return showPrimaryToast(t('toast.refetch.cooldown', { time: moment.unix(cooldown).format('h:mm A') }));
+                }
             }
 
             // Delete cached games list files from backend
@@ -44,7 +46,7 @@ export const usePageHeader = ({ setSortStyle, setRefreshKey }) => {
             // Trigger a refresh by incrementing the refresh key
             setRefreshKey(prevKey => prevKey + 1);
         } catch (error) {
-            showDangerToast('An error occurred. Check the logs for more information');
+            showDangerToast(t('common.error'));
             console.error('Error in (handleRefetch):', error);
             logEvent(`[Error] in (handleRefetch): ${error}`);
         }

@@ -1,9 +1,12 @@
 import { Button } from '@heroui/react';
+import { useTranslation } from 'react-i18next';
 
 import { getAppVersion } from '@/utils/tasks';
 import { showDangerToast, showSuccessToast } from '@/utils/toasts';
 
 export default function ExportSettings() {
+    const { t } = useTranslation();
+
     const exportSettings = async () => {
         const allSettings = {};
 
@@ -35,9 +38,9 @@ export default function ExportSettings() {
         }
         const allSettingsString = JSON.stringify(allSettings, null, 2);
         navigator.clipboard.writeText(allSettingsString).then(() => {
-            showSuccessToast('Data copied to clipboard');
+            showSuccessToast(t('toast.exportData.success'));
         }).catch(() => {
-            showDangerToast('Error exporting data');
+            showDangerToast(t('toast.exportData.error'));
         });
     };
 
@@ -47,7 +50,7 @@ export default function ExportSettings() {
             className='font-semibold rounded-lg bg-dynamic text-button'
             onPress={exportSettings}
         >
-            Export Data
+            {t('settings.exportData')}
         </Button>
     );
 }

@@ -1,7 +1,7 @@
 [![Downloads](https://img.shields.io/github/downloads/zevnda/steam-game-idler/1.9.3/total?style=for-the-badge&logo=github&color=137eb5)](https://github.com/zevnda/steam-game-idler/releases/download/1.9.3/Steam.Game.Idler_1.9.3_x64-setup.exe)
 
 ## Changelog
-- #141 #142: Fixed an issue causing an `invalid utf-8 sequence` error on systems using non-English locales
-- Fixed an issue where idling games were not being stopped before installing updates
-- Logging out of the current user via the `sidebar` will now cause all idling games to be stopped
-- Moved the dropdown menu that was previously in `settings` to the header
+- Added support for multiple languages
+  - Change the app's language via `settings > general > language`
+  - [Contribute to SGI by helping with translations](https://github.com/zevnda/steam-game-idler/discussions/148)
+- Fixed incorrect system tray icon

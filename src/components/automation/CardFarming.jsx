@@ -1,12 +1,14 @@
 import { Button, Spinner } from '@heroui/react';
 import Image from 'next/image';
 import { useContext, useState, useEffect, useRef } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { TbCheck } from 'react-icons/tb';
 
 import { StateContext } from '@/components/contexts/StateContext';
 import { handleCancel, useCardFarming } from '@/hooks/automation/useCardFarming';
 
 export default function CardFarming({ activePage }) {
+    const { t } = useTranslation();
     const { isDarkMode, setIsCardFarming } = useContext(StateContext);
 
     const isMountedRef = useRef(true);
@@ -50,14 +52,16 @@ export default function CardFarming({ activePage }) {
 
     const renderGamesList = () => {
         if (!gamesWithDrops.size) {
-            return <Spinner variant='simple' label={<p className='text-sm text-content'>This might take a second..</p>} />;
+            return <Spinner variant='simple' label={<p className='text-sm text-content'>{t('automation.cardFarming.initialDelay')}</p>} />;
         }
 
         return (
             <>
                 {!isComplete && (
                     <p>
-                        Idling <span className='font-bold text-dynamic'>{gamesWithDrops.size}</span> game(s) with <span className='font-bold text-dynamic'>{totalDropsRemaining}</span> total card drop(s) remaining
+                        <Trans i18nKey='automation.cardFarming.progress' values={{ count: gamesWithDrops.size, total: totalDropsRemaining }}>
+                            Idling <span className='font-bold text-dynamic'>{gamesWithDrops.size}</span> game(s) with <span className='font-bold text-dynamic'>{totalDropsRemaining}</span> total card drop(s) remaining
+                        </Trans>
                     </p>
                 )}
 
@@ -114,7 +118,7 @@ export default function CardFarming({ activePage }) {
 
                 <div className='flex items-center flex-col gap-6 z-10 backdrop-blur-md bg-base/20 p-8 border border-border/40 rounded-lg'>
                     <p className='text-3xl font-semibold'>
-                        Card Farming
+                        {t('common.cardFarming')}
                     </p>
 
                     {renderContent()}
@@ -129,7 +133,7 @@ export default function CardFarming({ activePage }) {
                             setIsCardFarming(false);
                         }}
                     >
-                        {isComplete ? <p>Close</p> : <p>Stop</p>}
+                        {isComplete ? <p>{t('common.close')}</p> : <p>{t('common.stop')}</p>}
                     </Button>
                 </div>
             </div>
