@@ -14,7 +14,7 @@ A lightweight, user-friendly tool for farming trading cards, unlocking achieveme
 </div>
 
 # Help Translate SGI
-I’m looking for contributors to help translate SGI for more languages! **[Read more here](https://github.com/zevnda/steam-game-idler/discussions/148)**
+Contribute to SGI by helping with translations! **[Read more here](https://github.com/zevnda/steam-game-idler/discussions/148)**
 
 # Installation
 1. Download the `setup.exe` installer from the **[releases page](https://github.com/zevnda/steam-game-idler/releases/latest)**
