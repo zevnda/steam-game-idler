@@ -18,7 +18,7 @@ body:
     id: description
     attributes:
       label: Issue Description
-      description: Provide a clear and detailed description of the issue. Include any relevant screenshots, videos, or error messages
+      description: Provide a clear and detailed description of the issue. Include any relevant screenshots, error messages, system information
     validations:
       required: true
 
@@ -34,7 +34,7 @@ body:
     id: log-file
     attributes:
       label: Log File
-      description: Attach your log file from `C:\Users\<user>\AppData\Roaming\com.zenvda.steam-game-idler`
+      description: Attach your log file by going to `Settings → Logs → Open in File Explorer`
     validations:
       required: true
 
@@ -42,7 +42,7 @@ body:
     id: export-data
     attributes:
       label: Exported Data
-      description: Export your data by going to Settings > Export Data and then pasting it here
+      description: Export your data by going to `Settings → Export Data` and then pasting it here
       render: json
     validations:
       required: true
