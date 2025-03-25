@@ -30,7 +30,11 @@ export const useCardFarming = async (
             setGamesWithDrops(gamesSet);
 
             if (isMountedRef.current && gamesSet.size > 0) {
-                await beginFarmingCycle(gamesSet, isMountedRef, abortControllerRef);
+                const success = await beginFarmingCycle(gamesSet, isMountedRef, abortControllerRef);
+                if (!success) {
+                    logEvent('[Card Farming] An error occurred - stopping');
+                    return setIsComplete(true);
+                }
             } else {
                 logEvent('[Card Farming] No games left - stopping');
                 return setIsComplete(true);
@@ -163,15 +167,21 @@ export const beginFarmingCycle = async (gamesSet, isMountedRef, abortControllerR
     try {
         for (const step of cycleSteps) {
             if (!isMountedRef.current) return;
-            await step.action(appIds);
-            await delay(step.delay, isMountedRef, abortControllerRef);
-            if (step.action === stopFarmIdle) {
-                appIds = await checkDropsRemaining(gamesSet, appIds);
+            const success = await step.action(appIds);
+            if (success) {
+                await delay(step.delay, isMountedRef, abortControllerRef);
+                if (step.action === stopFarmIdle) {
+                    appIds = await checkDropsRemaining(gamesSet, appIds);
+                }
+            } else {
+                return false;
             }
         }
+        return true;
     } catch (error) {
         console.error('Error in (beginFarmingCycle) - \'undefined\' can be ignored', error);
         await stopFarmIdle(appIds);
+        return false;
     }
 };
 

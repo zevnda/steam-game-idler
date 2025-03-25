@@ -59,8 +59,14 @@ export default function CardFarming({ activePage }) {
             <>
                 {!isComplete && (
                     <p>
-                        <Trans i18nKey='automation.cardFarming.progress' values={{ count: gamesWithDrops.size, total: totalDropsRemaining }}>
-                            Idling <span className='font-bold text-dynamic'>{gamesWithDrops.size}</span> game(s) with <span className='font-bold text-dynamic'>{totalDropsRemaining}</span> total card drop(s) remaining
+                        <Trans
+                            i18nKey='automation.cardFarming.progress'
+                            values={{
+                                count: gamesWithDrops.size,
+                                total: totalDropsRemaining
+                            }}
+                        >
+                            Idling <span className='font-bold text-dynamic'>{{ count: gamesWithDrops.size }}</span> game(s) with <span className='font-bold text-dynamic'>{{ total: totalDropsRemaining }}</span> total card drop(s) remaining
                         </Trans>
                     </p>
                 )}
