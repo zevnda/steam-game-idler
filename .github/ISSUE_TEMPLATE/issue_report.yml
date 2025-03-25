@@ -34,7 +34,7 @@ body:
     id: log-file
     attributes:
       label: Log File
-      description: Attach your log file from `C:\Users\<user>\AppData\Roaming\steam-game-idler`
+      description: Attach your log file from `C:\Users\<user>\AppData\Roaming\com.zenvda.steam-game-idler`
     validations:
       required: true
 
