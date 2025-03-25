@@ -147,7 +147,10 @@
             "helpTranslate": "Hilf bei der Übersetzung von SGI",
             "languages": {
                 "english": "Englisch (English)",
-                "german": "Deutsch"
+                "german": "Deutsch",
+                "russian": "Russisch (Русский)",
+                "italian": "Italienisch (Italiano)",
+                "ukrainian": "Ukrainisch (Українська)"
             }
         },
         "cardFarming": {

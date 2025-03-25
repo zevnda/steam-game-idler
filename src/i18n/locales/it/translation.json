@@ -146,8 +146,11 @@
             "userSummary": "Accesso effettuato come",
             "helpTranslate": "Aiuta a tradurre SGI",
             "languages": {
-                "english": "Inglese",
-                "german": "Tedesco (Deutsch)"
+                "english": "Inglese (English)",
+                "german": "Tedesco (Deutsch)",
+                "russian": "Russo (Русский)",
+                "italian": "Italiano",
+                "ukrainian": "Ucraino (Українська)"
             }
         },
         "cardFarming": {
