@@ -147,7 +147,10 @@
             "helpTranslate": "Help translate SGI",
             "languages": {
                 "english": "English",
-                "german": "German (Deutsch)"
+                "german": "German (Deutsch)",
+                "russian": "Russian (Русский)",
+                "italian": "Italian (Italiano)",
+                "ukrainian": "Ukrainian (Українська)"
             }
         },
         "cardFarming": {

@@ -10,6 +10,9 @@ export default function LanguageSwitch() {
     const languages = [
         { key: 'en', label: t('settings.general.languages.english') },
         { key: 'de', label: t('settings.general.languages.german') },
+        { key: 'it', label: t('settings.general.languages.italian') },
+        { key: 'ru', label: t('settings.general.languages.russian') },
+        { key: 'uk', label: t('settings.general.languages.ukrainian') },
     ];
 
     useEffect(() => {
