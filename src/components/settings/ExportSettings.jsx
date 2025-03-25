@@ -1,5 +1,5 @@
-import { arch, version, locale } from '@tauri-apps/plugin-os';
 import { Button } from '@heroui/react';
+import { arch, version, locale } from '@tauri-apps/plugin-os';
 import { useTranslation } from 'react-i18next';
 
 import { getAppVersion } from '@/utils/tasks';
@@ -10,7 +10,7 @@ export default function ExportSettings() {
 
     const exportSettings = async () => {
         const allSettings = {};
-        const system = {}
+        const system = {};
 
         // System
         const appVersion = await getAppVersion();
@@ -19,7 +19,7 @@ export default function ExportSettings() {
         const osVersion = version();
         const cpuArch = arch();
 
-        let winVersion = "Windows";
+        let winVersion = 'Windows';
 
         const buildMatch = osVersion.match(/^10\.0\.(\d+)$/);
         if (buildMatch && buildMatch[1]) {
