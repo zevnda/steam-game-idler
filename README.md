@@ -34,14 +34,14 @@ Check the **[documentation](https://steamgameidler.vercel.app/)** for an in-dept
 # Help Translate SGI
 Contribute to SGI by translating the app into your language or improving existing translations. **[Read more here](https://github.com/zevnda/steam-game-idler/discussions/148)**
 
-| Complete | Language            | Contributors                             | File                                                                                                         |
-| -------- | ------------------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| 100%     | English             | [@zevnda](https://github.com/zevnda)     | [en](https://raw.githubusercontent.com/zevnda/steam-game-idler/main/src/i18n/locales/en/translation.json)    |
-| 100%     | German              | ~                                        | [de](https://raw.githubusercontent.com/zevnda/steam-game-idler/main/src/i18n/locales/de/translation.json)    |
-| 100%     | Italian             | [@Maniots](https://github.com/Maniots)   | [it](https://raw.githubusercontent.com/zevnda/steam-game-idler/main/src/i18n/locales/it/translation.json)    |
-| 100%     | Portuguese (Brazil) | [@Qjeh](https://github.com/Qjeh)         | [uk](https://raw.githubusercontent.com/zevnda/steam-game-idler/main/src/i18n/locales/pt-BR/translation.json) |
-| 100%     | Russian             | [@Jesewe](https://github.com/Jesewe)     | [ru](https://raw.githubusercontent.com/zevnda/steam-game-idler/main/src/i18n/locales/ru/translation.json)    |
-| 100%     | Ukrainian           | [@Bl0ck154](https://github.com/Bl0ck154) | [uk](https://raw.githubusercontent.com/zevnda/steam-game-idler/main/src/i18n/locales/uk/translation.json)    |
+| Complete | Language            | Contributors                             | File                                                                                                            |
+| -------- | ------------------- | ---------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| 100%     | English             | [@zevnda](https://github.com/zevnda)     | [en](https://raw.githubusercontent.com/zevnda/steam-game-idler/main/src/i18n/locales/en/translation.json)       |
+| 100%     | German              | ~                                        | [de](https://raw.githubusercontent.com/zevnda/steam-game-idler/main/src/i18n/locales/de/translation.json)       |
+| 100%     | Italian             | [@Maniots](https://github.com/Maniots)   | [it](https://raw.githubusercontent.com/zevnda/steam-game-idler/main/src/i18n/locales/it/translation.json)       |
+| 100%     | Portuguese (Brazil) | [@Qjeh](https://github.com/Qjeh)         | [pt-BR](https://raw.githubusercontent.com/zevnda/steam-game-idler/main/src/i18n/locales/pt-BR/translation.json) |
+| 100%     | Russian             | [@Jesewe](https://github.com/Jesewe)     | [ru](https://raw.githubusercontent.com/zevnda/steam-game-idler/main/src/i18n/locales/ru/translation.json)       |
+| 100%     | Ukrainian           | [@Bl0ck154](https://github.com/Bl0ck154) | [uk](https://raw.githubusercontent.com/zevnda/steam-game-idler/main/src/i18n/locales/uk/translation.json)       |
 
 # License
 All versions of SGI are licensed under the **[GPL-3.0 License](./LICENSE)**
