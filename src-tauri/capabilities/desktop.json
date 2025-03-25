@@ -40,6 +40,10 @@
         "notification:default",
         "process:allow-restart",
         "shell:default",
-        "window-state:default"
+        "window-state:default",
+        "os:allow-arch",
+        "os:allow-locale",
+        "os:allow-platform",
+        "os:allow-version"
     ]
 }
