@@ -11,6 +11,7 @@ export default function LanguageSwitch() {
         { key: 'en', label: t('settings.general.languages.english') },
         { key: 'de', label: t('settings.general.languages.german') },
         { key: 'it', label: t('settings.general.languages.italian') },
+        { key: 'pt-BR', label: t('settings.general.languages.portuguese_brazil') },
         { key: 'ru', label: t('settings.general.languages.russian') },
         { key: 'uk', label: t('settings.general.languages.ukrainian') },
     ];
@@ -21,12 +22,8 @@ export default function LanguageSwitch() {
 
     if (!mounted) return null;
 
-    // Get the language code
-    const baseLanguage = i18n.language?.split('-')[0] || 'en';
-
-    // Find matching language in supported list or default to 'en'
-    const currentLanguage = languages.some(lang => lang.key === baseLanguage)
-        ? baseLanguage
+    const currentLanguage = languages.find(lang => lang.key === i18n.language)
+        ? i18n.language
         : 'en';
 
     return (
@@ -37,12 +34,12 @@ export default function LanguageSwitch() {
             radius='none'
             startContent={<TbLanguage />}
             items={languages}
-            className='w-[235px]'
+            className='w-[205px]'
             classNames={{
                 listbox: ['p-0'],
                 value: ['text-sm !text-content'],
                 trigger: ['bg-titlebar border border-border data-[hover=true]:!bg-input data-[open=true]:!bg-input duration-100 rounded-lg'],
-                popoverContent: ['bg-titlebar border border-border rounded-lg justify-start !text-content w-[235px]'],
+                popoverContent: ['bg-titlebar border border-border rounded-lg justify-start !text-content w-[300px]'],
             }}
             defaultSelectedKeys={[currentLanguage]}
             onSelectionChange={(e) => {
