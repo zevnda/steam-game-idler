@@ -89,8 +89,16 @@ export async function startFarmIdle(appIds) {
         // Make sure Steam client is running
         const isSteamRunning = checkSteamStatus(true);
         if (!isSteamRunning) return;
-        await invoke('start_farm_idle', { appIds });
-        logEvent(`[Card Farming] Started idling ${appIds.length} games`);
+
+        const response = await invoke('start_farm_idle', { appIds });
+        if (response.success) {
+            logEvent(`[Card Farming] Started idling ${appIds.length} games`);
+            return true;
+        } else {
+            showAccountMismatchToast('danger');
+            console.error('Error starting farm idle: ', response.error);
+            logEvent('[Error] [Card Farming] Failed to idle one or more games - possible account mismatch');
+        }
     } catch (error) {
         console.error('Error in startFarmIdle util: ', error);
         logEvent(`[Error] in (startFarmIdle) util: ${error}`);
@@ -102,6 +110,7 @@ export async function stopFarmIdle(appIds) {
     try {
         await invoke('stop_farm_idle');
         logEvent(`[Card Farming] Stopped idling ${appIds.length} games`);
+        return true;
     } catch (error) {
         console.error('Error in stopFarmIdle util (these errors can often be ignored): ', error);
     }

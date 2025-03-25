@@ -1,4 +1,4 @@
-use crate::process_handler::cleanup_dead_processes;
+use crate::process_handler::{cleanup_dead_processes, kill_all_steamutil_processes};
 use crate::utils::get_lib_path;
 use serde_json::{json, Value};
 use std::os::windows::process::CommandExt;
@@ -83,6 +83,9 @@ pub async fn start_farm_idle(app_ids: Vec<u32>) -> Result<Value, String> {
 
     cleanup_dead_processes().map_err(|e| e.to_string())?;
 
+    let mut failed = false;
+    let apps_to_check = app_ids.clone(); // Clone to use later
+
     for app_id in app_ids {
         let child = Command::new(&exe_path)
             .args(&["idle", &app_id.to_string(), true.to_string().as_str()])
@@ -98,7 +101,36 @@ pub async fn start_farm_idle(app_ids: Vec<u32>) -> Result<Value, String> {
         }
     }
 
-    Ok(json!({"success": "Successfully started idling games"}))
+    tokio::time::sleep(Duration::from_millis(1000)).await;
+
+    // Check if all processes are still running
+    {
+        let mut processes = SPAWNED_PROCESSES.lock().map_err(|e| e.to_string())?;
+        for process in processes.iter_mut() {
+            if apps_to_check.contains(&process.app_id) {
+                match process.child.try_wait() {
+                    Ok(Some(_)) => {
+                        failed = true;
+                        break;
+                    }
+                    Err(_) => {
+                        failed = true;
+                        break;
+                    }
+                    Ok(None) => {}
+                }
+            }
+        }
+    }
+
+    if failed {
+        // Kill all SteamUtility processes if any failed
+        let _ = kill_all_steamutil_processes().await;
+
+        Ok(json!({"error": "Failed to start one or more idle processes"}))
+    } else {
+        Ok(json!({"success": "Successfully started idling games"}))
+    }
 }
 
 #[tauri::command]
