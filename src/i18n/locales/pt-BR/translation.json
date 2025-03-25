@@ -1,0 +1,247 @@
+{
+    "setup": {
+        "welcome": "Bem-vindo(a)",
+        "chooseAccount": "Escolha uma conta",
+        "refresh": "Atualizar",
+        "help": "Precisa de ajuda?",
+        "noUsers": "Nenhum usuário do Steam encontrado",
+        "learn": "Saiba o motivo"
+    },
+    "search": {
+        "games": "Buscar um jogo",
+        "achievements": "Buscar uma conquista",
+        "statistics": "Buscar uma estatística"
+    },
+    "notifications": {
+        "empty": "Nenhuma notificação",
+        "markAllRead": "Marcar tudo como lido"
+    },
+    "menu": {
+        "guide": "Manual do Usuário",
+        "issue": "Relatar um Problema",
+        "feature": "Solicitar um Recurso",
+        "support": "Apoiar o Projeto",
+        "changelog": "Ver Histórico de Alterações",
+        "update": "Verificar Atualizações.."
+    },
+    "gamesList": {
+        "title": "Seus Jogos",
+        "sort": {
+            "titleAsc": "Título de A-Z",
+            "titleDesc": "Título de Z-A",
+            "playtimeDesc": "Tempo de jogo: Decrescente",
+            "playtimeAsc": "Tempo de jogo: Crescente",
+            "recent": "Jogados Recentemente"
+        },
+        "private": {
+            "message": "Não foi possível recuperar a lista de jogos. Isso geralmente acontece por:",
+            "change": "Altere suas configurações de privacidade",
+            "tryAgain": "Tente Novamente",
+            "reason": {
+                "1": "Seu perfil está definido como privado",
+                "2": "Os detalhes dos seus jogos estão definidos como privados",
+                "3": "Você não possui jogos em sua biblioteca",
+                "4": "Você está usando uma chave inválida da API web do Steam"
+            }
+        }
+    },
+    "idlingGames": {
+        "title": "Jogos em Repouso",
+        "subtitle": "Os jogos em que você está em repouso aparecerão aqui",
+        "stopAll": "Parar Todos"
+    },
+    "customLists": {
+        "cardFarming": {
+            "subtitle": "Adicione jogos a esta lista para coletar suas cartas de troca",
+            "buttonLabel": "Iniciar Coleta de Cartas"
+        },
+        "achievementUnlocker": {
+            "subtitle": "Adicione jogos a esta lista para desbloquear suas conquistas",
+            "buttonLabel": "Iniciar Desbloqueador de Conquistas"
+        },
+        "autoIdle": {
+            "title": "Auto-Idle",
+            "subtitle": "Adicione jogos a esta lista para deixá-los em repouso automaticamente ao iniciar"
+        },
+        "favorites": {
+            "title": "Favoritos",
+            "subtitle": "Seus jogos favoritos"
+        },
+        "manualAdd": {
+            "title": "Adicionar um Jogo",
+            "gameName": "Nome do Jogo",
+            "gameId": "ID do Jogo"
+        },
+        "edit": "Editar Lista",
+        "inList": "Na Lista",
+        "addAll": "Adicionar Todos",
+        "invalid": "Tipo de lista inválido"
+    },
+    "automation": {
+        "cardFarming": {
+            "initialDelay": "Isso pode levar um segundo..",
+            "progress": "Repousando <1>{{count}}</1> jogo(s), com <3>{{total}}</3> drop(s) de carta(s) restantes."
+        },
+        "achievementUnlocker": {
+            "initialDelay": "Iniciando em <1>{{timer}}</1>",
+            "delay": "Próximo desbloqueio em <1>{{timer}}</1>",
+            "progress": "Desbloqueando <1>{{count}}</1> conquista(s) para <3>{{appName}}</3>",
+            "scheduleWait": "Desbloqueio de conquistas pausado, pois está fora do horário programado. O processo será retomado assim que entrar no horário estipulado"
+        }
+    },
+    "freeGames.title": "Jogos Grátis",
+    "cardMenu": {
+        "idle": "Iniciar repouso",
+        "achievements": "Ver conquistas",
+        "store": "Ver página da loja",
+        "settings": "Configurações do jogo"
+    },
+    "gameSettings": {
+        "idle": "Tempo máximo de repouso (minutos)",
+        "drops": "Máximo de drops de cartas",
+        "achievements": "Máximo de conquistas desbloqueadas"
+    },
+    "achievementManager": {
+        "steam": "Ver no Steam",
+        "steamDB": "Ver no SteamDB",
+        "file": "Ver no Explorador de Arquivos",
+        "alert": "Algumas conquistas ou estatísticas protegidas foram desativadas. <1>Saiba mais</1>",
+        "achievements": {
+            "title": "Conquistas",
+            "empty": "Nenhuma conquista encontrada",
+            "unlockAll": "Desbloquear Todas",
+            "lockAll": "Bloquear Todas",
+            "unlock": "Desbloquear",
+            "lock": "Bloquear",
+            "protected": "Protegida",
+            "modal": "Tem certeza de que deseja <1>{{state}}</1> todas as conquistas?",
+            "sort": {
+                "percent": "Porcentagem",
+                "title": "Por título",
+                "unlocked": "Desbloqueadas",
+                "locked": "Bloqueadas",
+                "unprotected": "Desprotegidas",
+                "protected": "Protegidas"
+            }
+        },
+        "statistics": {
+            "title": "Estatísticas",
+            "empty": "Nenhuma estatística encontrada",
+            "saveChanges": "Salvar Alterações",
+            "resetAll": "Redefinir Tudo",
+            "flags": "Sinalizações"
+        }
+    },
+    "settings": {
+        "title": "Configurações",
+        "general": {
+            "title": "Geral",
+            "antiAway": "Evitar status de ausente no Steam",
+            "freeGameNotifications": "Receber notificações sobre jogos grátis",
+            "runAtStartup": "Iniciar ao ligar o computador",
+            "language": "Idioma",
+            "theme": "Tema",
+            "webApi": "Use sua própria <1>chave da API web da Steam</1>(opcional). <3>Saiba mais</3>",
+            "webApi.placeholder": "Chave da API web da Steam",
+            "userSummary": "Logado como",
+            "helpTranslate": "Ajude a traduzir o SGI",
+            "languages": {
+                "english": "Inglês (English)",
+                "german": "Alemão (Deutsch)",
+                "russian": "Russo (Русский)",
+                "italian": "Italiano (Italiano)",
+                "portuguese_brazil": "Português",
+                "ukrainian": "Ucraniano (Українська)"
+            }
+        },
+        "cardFarming": {
+            "listGames": "Coletar cartas dos jogos na lista de Coleta de Cartas",
+            "allGames": "Coletar cartas de todos os jogos com quedas de cartas restantes",
+            "steamCredentials": "Credenciais do Steam são necessárias para usar a função de Coleta de Cartas. <1>Saiba mais</1>",
+            "userSummary": "Coletando cartas como"
+        },
+        "achievementUnlocker": {
+            "idle": "Deixar jogos em repouso enquanto o Desbloqueador de Conquistas estiver ativo",
+            "hidden": "Ignorar conquistas ocultas",
+            "scheduleLabel": "Desbloquear conquistas apenas entre",
+            "scheduleAnd": "e",
+            "interval": "Desbloquear conquistas aleatoriamente a cada {{min}} a {{max}} minutos"
+        },
+        "logs": {
+            "title": "Logs",
+            "openLogFile": "Abrir no Explorador de Arquivos",
+            "clearLogs": "Limpar Logs",
+            "time": "Hora",
+            "message": "Mensagem"
+        },
+        "resetSettings": {
+            "button": "Redefinir Configurações"
+        },
+        "clearData": {
+            "button": "Limpar Dados"
+        },
+        "exportData": "Exportar Dados"
+    },
+    "confirmation": {
+        "logout": "Você tem certeza de que deseja sair?",
+        "resetStatistics": "Você tem certeza de que deseja <1>redefinir</1> todas as estatísticas?",
+        "resetSettings": "Você tem certeza de que deseja redefinir as configurações para o padrão?",
+        "clearData": "Você tem certeza de que deseja limpar todos os dados?",
+        "steamClosed": " Steam não está em execução. Abra o cliente Steam para continuar"
+    },
+    "toast": {
+        "steam": "O Steam não está em execução",
+        "mismatch": "Descompasso de conta entre Steam e SGI",
+        "missingCredentials": "Credenciais para coleta de cartas ausentes em \"configurações > coleta de cartas\"",
+        "outdatedCredentials": "Credenciais de coleta de cartas precisam ser atualizadas em \"configurações > coleta de cartas\"",
+        "incorrectCredentials": "Credenciais de coleta de cartas incorretas",
+        "enableAllGames": "Adicione alguns jogos à sua lista de coleta de cartas ou ative \"todos os jogos\" em \"configurações > coleta de cartas\"",
+        "noGames": "Não há jogos na sua lista de desbloqueio de conquistas",
+        "configSettings": "Por favor, configure as preferências primeiro",
+        "refetch.cooldown": "Os jogos podem ser atualizados novamente em {{time}}",
+        "achievementData.error": "Erro ao buscar dados de conquistas",
+        "startIdle.success": "Iniciado repouso de {{appName}} ({{appId}})",
+        "startIdle.alreadyIdling": "{{appName}} ({{appId}}) já está em repouso",
+        "startIdle.error": "Falha ao iniciar repouso de {{appName}} ({{appId}})",
+        "stopIdle.success": "Repouso de {{appName}} ({{appId}}) interrompido",
+        "stopIdle.error": "Falha ao interromper repouso de {{appName}} ({{appId}})",
+        "stopIdleAll.success": "Repouso de {{count}} jogo(s) interrompido(s)",
+        "stopIdleAll.error": "Falha ao interromper repouso de todos os jogos",
+        "exportData.success": "Dados copiados para a área de transferência",
+        "exportData.error": "Erro ao exportar dados",
+        "toggle.success": "{{type}} {{achievementName}} para {{appName}}",
+        "toggle.error": "Falha ao {{type}} {{achievementName}} para {{appName}}",
+        "unlockAll.success": "Desbloqueadas com sucesso {{count}} conquista(s) para {{appName}}",
+        "lockAll.success": "Bloqueadas com sucesso {{count}} conquista(s) para {{appName}}",
+        "updateAll.success": "Atualizada(s) com sucesso {{count}} estatística(s) para {{appName}}",
+        "updateAll.noChanges": "Nenhuma estatística foi modificada",
+        "updateAll.error": "Não foi possível atualizar as estatísticas",
+        "resetAll.success": "Estatísticas de {{appName}} redefinidas com sucesso: {{count}}",
+        "resetAll.error": "Não foi possível redefinir as estatísticas",
+        "cardFarming.logIn": "Credenciais validadas para {{user}}",
+        "cardFarming.logOut": "Credenciais apagadas com sucesso",
+        "apiKey.save": "Chave da API web da Steam salva com sucesso",
+        "apiKey.clear": "Chave da API web da Steam apagada com sucesso",
+        "clearLogs.success": "Logs apagados com sucesso",
+        "resetSettings.success": "Configurações foram redefinidas para o padrão",
+        "checkUpdate.none": "Nenhuma atualização disponível",
+        "checkUpdate.error": "Erro ao verificar atualizações"
+    },
+    "common": {
+        "cardFarming": "Coleta de Cartas",
+        "achievementUnlocker": "Desbloqueador de Conquistas",
+        "showing": "Exibindo {{count}} de {{total}} jogos",
+        "learnMore": "Saiba Mais",
+        "error": "Ocorreu um erro. Verifique os logs para mais informações",
+        "start": "Iniciar",
+        "stop": "Parar",
+        "notice": "Aviso",
+        "confirm": "Confirmar",
+        "done": "Concluído",
+        "add": "Adicionar",
+        "save": "Salvar",
+        "close": "Fechar",
+        "cancel": "Cancelar",
+        "clear": "Limpar"
+    }
+}
