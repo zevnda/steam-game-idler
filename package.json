@@ -42,8 +42,6 @@
         "rehype-raw": "^7.0.0"
     },
     "devDependencies": {
-        "@eslint/eslintrc": "^3",
-        "@eslint/js": "^9.22.0",
         "@tauri-apps/cli": "^2.3.1",
         "eslint": "9",
         "eslint-config-next": "15.2.2",
