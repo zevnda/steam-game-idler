@@ -39,12 +39,11 @@ export default function ChangelogModal() {
                         </ModalHeader>
                         <ModalBody className='max-h-[380px] overflow-y-auto bg-modalbody'>
                             {changelog ? (
-                                <ReactMarkdown
-                                    className={`${styles.list} text-sm`}
-                                    rehypePlugins={[rehypeRaw]}
-                                >
-                                    {transformLinks(transformIssueReferences(transformMentions(changelog)))}
-                                </ReactMarkdown>
+                                <div className={`${styles.list} text-sm`}>
+                                    <ReactMarkdown rehypePlugins={[rehypeRaw]}>
+                                        {transformLinks(transformIssueReferences(transformMentions(changelog)))}
+                                    </ReactMarkdown>
+                                </div>
                             ) : (
                                 <div className='flex justify-center items-center min-h-[100px]'>
                                     <Spinner variant='simple' />
