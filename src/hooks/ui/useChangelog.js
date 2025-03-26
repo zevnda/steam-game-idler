@@ -1,20 +1,33 @@
 import { getVersion } from '@tauri-apps/api/app';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
+
+import { UpdateContext } from '@/components/contexts/UpdateContext';
 
 export default function useChangelog() {
+    const { showChangelog } = useContext(UpdateContext);
     const [changelog, setChangelog] = useState('');
     const [version, setVersion] = useState('');
 
     useEffect(() => {
         const fetchData = async () => {
+            if (!showChangelog) return;
             const currentVersion = await getVersion();
             setVersion(currentVersion);
             const res = await fetch('https://raw.githubusercontent.com/zevnda/steam-game-idler/refs/heads/main/CHANGELOG.md');
             const data = await res.text();
-            setChangelog(data.split('## Changelog')[1]);
+
+            // Find the current versions changelog
+            const versionPattern = new RegExp(`<!-- ${currentVersion} -->([\\s\\S]*?)(?=<!--|$)`, 'i');
+            const versionMatch = versionPattern.exec(data);
+
+            if (versionMatch && versionMatch[1]) {
+                setChangelog(versionMatch[1].trim());
+            } else {
+                setChangelog('No changelog available for this version.');
+            }
         };
         fetchData();
-    }, []);
+    }, [showChangelog]);
 
     return { changelog, version };
 }

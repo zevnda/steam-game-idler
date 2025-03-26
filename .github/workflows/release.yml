@@ -192,10 +192,6 @@ jobs:
             $latest = Get-Content latest.json
             $updatedLatest = $latest -replace $previousVersion, $newVersion
             $updatedLatest | Set-Content latest.json
-            
-            $changelog = Get-Content CHANGELOG.md
-            $updatedChangelog = $changelog -replace $previousVersion, $newVersion
-            $updatedChangelog | Set-Content CHANGELOG.md
 
         - name: Create .env.prod file
           run: |
@@ -251,9 +247,44 @@ jobs:
           run: |
             git config --local user.name "github-actions[bot]"
             git config --local user.email "github-actions[bot]@users.noreply.github.com"
-            git add src-tauri/tauri.conf.json latest.json CHANGELOG.md
+            git add src-tauri/tauri.conf.json latest.json
             git commit -m "Bump version to ${{ github.event.inputs.version }}"
             git push
+
+        - name: Extract current version changelog
+          run: |
+            $newVersion = "${{ github.event.inputs.version }}"
+            $changelog = Get-Content CHANGELOG.md -Raw
+            
+            Write-Host "Looking for version: $newVersion in changelog"
+            
+            $pattern = "(?ms)<!-- $newVersion -->(.*?)(?=<!--|\z)"
+            $match = [regex]::Match($changelog, $pattern)
+            
+            if ($match.Success) {
+              $versionChangelog = $match.Groups[1].Value.Trim()
+              
+              if ($versionChangelog.Length -gt 0) {
+                $releaseContent = "### Changes in v$newVersion`n`n$versionChangelog"
+                $releaseContent | Out-File -FilePath "./release_notes.md" -Encoding utf8
+                
+                if (Test-Path "./release_notes.md") {
+                  $fileContent = Get-Content "./release_notes.md" -Raw
+                  Write-Host "File created with $($fileContent.Length) characters"
+                } else {
+                  Write-Error "Failed to create release_notes.md file"
+                }
+              } else {
+                Write-Host "Warning: Extracted changelog was empty after trimming"
+                "### Changes in v$newVersion`n`nNo detailed changelog available for this version." | Out-File -FilePath "./release_notes.md" -Encoding utf8
+              }
+            } else {
+              Write-Host "No changelog found for version $newVersion"
+              "### Changes in v$newVersion`n`nNo detailed changelog available for this version." | Out-File -FilePath "./release_notes.md" -Encoding utf8
+            }
+            
+            Get-ChildItem "./release_notes.md" | Select-Object FullName, Length
+          shell: pwsh
 
         - name: Create release
           uses: softprops/action-gh-release@v1
@@ -262,7 +293,7 @@ jobs:
           with:
             tag_name: ${{ github.event.inputs.version }}
             name: Steam Game Idler v${{ github.event.inputs.version }}
-            body_path: ./changelog.md
+            body_path: ./release_notes.md
             files: |
               ./src-tauri/target/release/bundle/nsis/Steam Game Idler_${{ github.event.inputs.version }}_x64-setup.exe
               ./src-tauri/target/release/bundle/nsis/Steam Game Idler_${{ github.event.inputs.version }}_x64-setup.nsis.zip

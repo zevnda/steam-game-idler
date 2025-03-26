@@ -27,7 +27,7 @@ export default function ChangelogModal() {
                 {(onClose) => (
                     <>
                         <ModalHeader className='flex justify-between items-center w-full bg-modalheader border-b border-border' data-tauri-drag-region>
-                            <p>Changelog for v{version}</p>
+                            <p>Changes in v{version}</p>
                             <ExtLink href='https://github.com/zevnda/steam-game-idler'>
                                 <div className='flex items-center gap-2 text-yellow-400 hover:text-yellow-500'>
                                     <TbStarFilled />
