@@ -3,7 +3,7 @@ import { Head } from 'nextra/components';
 import { getPageMap } from 'nextra/page-map';
 import { Layout, Navbar } from 'nextra-theme-docs';
 
-import Logo from '../src/components/Logo';
+import Logo from '@docs/components/Logo';
 import 'nextra-theme-docs/style.css';
 import './globals.css';
 
