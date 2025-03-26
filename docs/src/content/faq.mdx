@@ -1,0 +1,130 @@
+# FAQ
+
+## General
+
+<details>
+    <summary>Can I get banned for using SGI?</summary>
+    > No, SGI uses Steam's official API and interacts with Steam just like normal gaming activity
+</details>
+
+<details>
+    <summary>Do I need to make my Steam profile and game details public for SGI to work?</summary>
+    > Yes. For some features to function correctly SGI requires your Steam profile and game details to be set to public in your [privacy settings](https://steamcommunity.com/id/undefined/edit/settings)
+</details>
+
+<details>
+    <summary>What is the "Do you want to allow public/private networks to access this app" message when I first launched SGI?</summary>
+    > SGI needs to handle multiple inbound/outbound HTTP requests to fetch data from Steam. For SGI to function correctly you will need to accept this prompt
+    >
+    > If you declined the prompt already, you will need to add SGI as an allowed app in Windows Defender Firewall:
+    >
+    > 1. Open the Windows Control Panel
+    > 2. Go to System and Security > Windows Defender Firewall
+    > 3. Click on "Allow an app or feature through Windows Defender Firewall"
+    > 4. Click "Change settings" then "Add another app..." and then "Browse"
+    > 5. Navigate to the install directory of the app you want to add, select it, and click "Open"
+    > 6. Check the boxes for "Private" and/or "Public" networks as needed
+    > 7. Click "OK" to save the changes
+</details>
+
+## Error messages
+
+<details>
+    <summary>"Steam is not running"</summary>
+    > Most features of SGI require the Steam client to be running, and you must be signed in to the same account you are currently logged in to SGI with
+</details>
+
+<details>
+    <summary>"No Steam users found"</summary>
+    > * The Steam client needs to be installed
+    > * You need to be signed in to at least one Steam account in the Steam client
+    > * SGI failed to find the install directory for Steam. Try reinstalling Steam in its default location `C:\Program Files (x86)\Steam`
+</details>
+
+<details>
+    <summary>"Add some games to your card farming list or enable "all games" in "settings > card farming""</summary>
+    > Your `card farming list` is empty. You either need to add games to the list by following [these steps](/features/card-farming), or enable the `all games` setting in [Settings > Card Farming](/settings/card-farming)
+</details>
+
+<details>
+    <summary>"There are no games in your achievement unlocker list"</summary>
+    > Your `achievement unlocker list` is empty. You can add games to your list by following [these steps](/features/achievement-unlocker)
+</details>
+
+<details>
+    <summary>"Account mismatch between Steam and SGI"</summary>
+    > You are logged in to the Steam client with a different account than you are using in SGI. Most features in SGI require you to be logged in to the same account in both the Steam client and SGI
+</details>
+
+<details>
+    <summary>"Incorrect card farming credentials"</summary>
+    > * You have entered the incorrect cookies. Follow the steps found in the [Steam Credentials](/steam-credentials) section
+    > * Steam accounts with [Family View](https://store.steampowered.com/parental/) _(parental restrictions)_ enabled will also have a `steamParental` cookie that needs to be saved in SGI's settings
+    > * In some cases, Steam accounts might have a `steamMachineAuth` cookie that needs to be saved in SGI's settings
+</details>
+
+<details>
+    <summary>"Missing card farming credentials in "settings > card farming""</summary>
+    > SGI requires your Steam community credentials for the account that you plan to farm cards on to see if games in your library have card drops remaining or not. Read the [Steam Credentials](/steam-credentials) section for more information
+</details>
+
+<details>
+    <summary>"Card farming credentials need to be updated in "settings > card farming""</summary>
+    > From time to time the cookies you supply to SGI will expire for several reasons and they will need to be updated. Follow the [Steam Credentials](/steam-credentials) steps to get the updated cookies
+</details>
+
+## Idling games (auto & manual)
+
+<details>
+    <summary>Can I idle in-game items?</summary>
+    > No. SGI cannot idle in-game items as it doesn't run an instance of the game. A feature like this could also be seen as exploiting in most game's ToS
+</details>
+
+<details>
+    <summary>How many games can I idle simultaneously?</summary>
+    > You can idle a max of 32 games simultaneously. This is the same limit used when farming cards
+</details>
+
+## Farming cards
+
+<details>
+    <summary>What are trading cards and how do they work?</summary>
+    > This is covered in great detail in [Steam's Trading Cards FAQ](https://steamcommunity.com/tradingcards/faq)
+</details>
+
+<details>
+    <summary>Why am I not getting any card drops?</summary>
+    > * You can only receive a limited amount of card drops per game, check "How do I know if my games have card drops remaining?" below for more information
+    > * New accounts, accounts with recently refunded games, or accounts with [other restrictions](https://help.steampowered.com/en/faqs/view/71D3-35C2-AD96-AA3A) might experience a delay of up to 3 hours before receiving their first card drop, or even no card drops at all
+    > * You must be connected to the internet and signed in to the Steam client
+    > * Free-to-play (F2P) games typically require in-game purchases to drop cards
+    > * You need to own the game on your account. It can't be a family-shared game
+    > * Games must not be [marked as private](https://help.steampowered.com/en/faqs/view/1150-C06F-4D62-4966)
+    > * Paid games earned from promotions typically won't drop cards
+</details>
+
+<details>
+    <summary>How do I know if my games have card drops remaining?</summary>
+    > 1. Go to your Steam profile
+    > 2. Click on `Badges`
+    > 3. Scroll down, or press `CTRL+F` to search for the game's title
+    > 4. In the top-right of the game card, you will see either `X card drops remaining` or `no card drops remaining`
+</details>
+
+<details>
+    <summary>How long does it take for cards to drop?</summary>
+    > Card drop timers can be different for every game. The developer sets them and they can vary from 15 minutes to 1 hour
+</details>
+
+## Unlocking & locking achievements (auto & manual)
+
+<details>
+    <summary>Why can't I unlock achievements for a specific game?</summary>
+    > While most achievements for most games can be unlocked with SGI, some can't be. Some achievements are tied to in-game statistics, and simply unlocking the achievement through SGI might not work. In some cases, you can manually edit the achievement's statistics in the [Achievement Manager > Statistics](features/achievement-manager#statistics) tab, and in other cases, you have to physically complete an in-game activity for the achievement to be unlocked
+</details>
+
+<details>
+    <summary>Why do I see "No achievements found" and "No statistics found" on the game's achievement manager screen?</summary>
+    > * The game you are trying to view achievements for does not have any achievements
+    > * Your 'Game Details' are set to private in your Steam profile settings
+</details>

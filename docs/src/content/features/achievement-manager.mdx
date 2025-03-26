@@ -1,0 +1,57 @@
+import { Steps } from 'nextra/components';
+
+import Callout from '../../components/Callout';
+import Icon from '../../components/Icon';
+import MockButton from '../../components/MockButton';
+
+# Achievement Manager
+
+The Achievement Manager feature allows you to manually unlock and lock a game's achievements, as well as modify an achievement's statistics.
+
+<Callout type="info">
+    You can use the search bar at the top of the achievement manager screen to
+    search for an achievement by its title
+</Callout>
+
+## Steps
+
+### Achievements
+
+<Steps>
+    {<h3 />}
+    Click <Icon type='game' /> in the `sidebar`
+
+    {<h3 />}
+    Hover over the game you wish to view the achievements for, and click <Icon type='award' /> to view the `achievement manager` screen
+
+    {<h3 />}
+    On the `achievement manager` screen you will see a list of achievements if any are available for that game
+
+    {<h3 />}
+    Click <MockButton type='unlock' /> or <MockButton type='lock' /> next to an achievement to unlock or lock that specific achievement
+
+    Click <MockButton type='unlock-all' /> or <MockButton type='lock-all' /> at the top of the achievements list to unlock or lock all achievements for that game
+</Steps>
+
+### Statistics
+
+<Steps>
+    {<h3 />}
+    Click <Icon type='game' /> in the `sidebar`
+
+    {<h3 />}
+    Hover over the game you wish to view the statistics for, and click <Icon type='award' /> to view to the `achievement manager` screen
+
+    {<h3 />}
+    On the `achievement manager` screen click the `statistics` tab
+
+    {<h3 />}
+    Change the `value` of any statistics you want to modify and click <MockButton type='save-changes' />
+</Steps>
+
+## Additional Information
+
+Some game developers set specific flags for their achievements and statistics, such as `Protected`, `IncrementOnly`, and `Hidden`. SGI will display these flags next to the achievement or statistic.
+- `Protected` achievements and statistics can only be modified by official game servers
+- `IncrementOnly` statistics means the value can only be increased, not decreased *(i.e. 5 -> 6, not 5 -> 4)*
+- `Hidden` achievements hide their description making it harder to know how to unlock them

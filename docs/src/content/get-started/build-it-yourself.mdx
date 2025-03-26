@@ -1,0 +1,74 @@
+import { Steps } from 'nextra/components';
+import { FileTree } from 'nextra/components';
+
+# Build It Yourself
+
+## Prerequisites
+* [Node.js](https://nodejs.org/en/download/prebuilt-installer) >= 18.0
+* [Rustup](https://www.rust-lang.org/tools/install)
+* [Visual Studio Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/) with .NET SDK and MSBuild >= 14.0
+
+## Steps
+
+<Steps>
+### Clone Repo And Submodules
+```shell copy
+git clone --recursive https://github.com/zevnda/steam-game-idler.git
+```
+
+### Install Dependencies
+
+```shell copy
+cd ./steam-game-idler
+pnpm install
+```
+
+### Build Libraries
+
+```shell copy
+MSBuild ./libs//SteamUtility.csproj # Outputs to `/src-tauri/libs/`
+```
+
+### Create Environment Files
+
+1. Create a `.env.dev` and `.env.prod` file in the root of `steam-game-idler`
+2. Add a `KEY` variable containing your [Steam Web API Key](https://steamcommunity.com/dev/apikey) to both `.env.dev` and `.env.prod`
+
+<FileTree>
+    <FileTree.Folder name="steam-game-idler" defaultOpen>
+        <FileTree.Folder name="public" />
+        <FileTree.Folder name="libs" />
+        <FileTree.Folder name="src" defaultOpen>
+            <FileTree.Folder name="pages" />
+            <FileTree.Folder name="components" />
+        </FileTree.Folder>
+        <FileTree.Folder name="src-tauri" defaultOpen>
+            <FileTree.Folder name="tauri.conf.json" />
+        </FileTree.Folder>
+        <FileTree.File name=".env.dev" />
+        <FileTree.File name=".env.prod" />
+        <FileTree.File name="package-lock.json" />
+        <FileTree.File name="package.json" />
+    </FileTree.Folder>
+</FileTree>
+
+```ini filename=".env.dev" copy
+KEY="C48E0*********7855Q"
+```
+
+```ini filename=".env.prod" copy
+KEY="C48E0*********7855Q"
+```
+
+## Run Dev Build
+
+```shell copy
+pnpm tauri dev
+```
+
+### Build App
+
+```shell copy
+pnpm tauri build # Outputs to `/src-tauri/target/release/bundle/`
+```
+</Steps>

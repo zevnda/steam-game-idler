@@ -1,0 +1,30 @@
+import { Steps } from 'nextra/components';
+import { Image } from 'nextra/components';
+
+import { Screenshot } from '../../components/Screenshot';
+import Callout from '../../components/Callout';
+
+import { IoInformationCircle } from 'react-icons/io5';
+
+# Sign In
+
+<Callout type='info'>
+    If you sign in to multiple accounts in the Steam client, all signed in accounts will be available on the account selection screen in SGI
+</Callout>
+
+## Steps
+
+<Steps>
+    ### Install Steam
+    Download and install the [Steam client](https://store.steampowered.com/about)
+
+    ### Sign In
+    Sign in to your Steam account via the Steam client
+
+    ### Select Your Account
+    Open SGI and choose your account from the `account selection` screen to proceed to the `dashboard`
+
+    <Screenshot>
+        <Image src="/examples/signin-1.png" />
+    </Screenshot>
+</Steps>

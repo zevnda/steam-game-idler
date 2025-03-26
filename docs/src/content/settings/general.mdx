@@ -1,0 +1,32 @@
+import { Image } from 'nextra/components';
+
+import { Screenshot } from '../../components/Screenshot';
+import Icon from '../../components/Icon';
+
+# General
+
+## Prevent away status on Steam
+
+- **Purpose:** Prevents your Steam status from automatically switching to `away` while SGI is running
+
+## Get notified about free games
+
+- **Purpose:** Receive native Windows notifications when free Steam games are available to add to your account
+
+## Run at startup
+
+- **Purpose:** SGI will be added to your startup programs and will run when Windows starts
+
+## Theme
+
+- **Purpose:** Choose between light, dark and preset themes for SGI
+
+## Use your own Steam web API key
+
+- **Purpose:** Allows users to supply their own Steam web API key for fetching user summary and game data
+- **Considerations:** - Useful if users want to keep their Steam profile and game details set to private, but still use SGI as normal
+    - This works only when using an API key that is attached to the account you are logged in to SGI as
+    - Some features still won't work if your profile or game details are private, such as;
+        - Displaying recently played games
+        - Displaying lock/unlock state of achievements
+    - API keys are free for all users with a Steam account, you can [get your API key here](https://steamcommunity.com/dev/apikey)

@@ -1,0 +1,27 @@
+import { Steps } from 'nextra/components';
+
+import Callout from '../../components/Callout';
+import Icon from '../../components/Icon';
+
+# Playtime Booster
+
+The Playtime Booster feature allows you to idle one or more games manually to boost their total playtime.
+
+When idling games with Playtime Booster, external `SteamUtility` *(idle)* processes will be opened to interact with the Steam client and imitate game processes. These processes will be closed when the game is no longer being idled.
+
+<Callout type="info">
+    You can idle a maximum of 32 games at once. This is a Steam limitation
+</Callout>
+
+## Steps
+
+<Steps>
+    {<h3 />}
+    Click <Icon type='game' /> in the `sidebar`
+
+    {<h3 />}
+    Hover over the game you wish to boost playtime for and click <Icon type='playalt' />
+
+    {<h3 />}
+    Click <Icon type='play' /> in the `sidebar` to view the games you are currently idling
+</Steps>

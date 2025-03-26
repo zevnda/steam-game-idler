@@ -1,0 +1,40 @@
+import { Cards } from 'nextra/components';
+
+import { FaSteam, FaImages, FaAward, FaTools, FaSignInAlt, FaQuoteRight } from 'react-icons/fa';
+import { GrInstallOption } from 'react-icons/gr';
+import { TbCardsFilled } from 'react-icons/tb';
+import { IoPlay } from 'react-icons/io5';
+import { RiRobot3Fill } from 'react-icons/ri';
+ 
+# Introduction
+
+Steam Game Idler (SGI) is a lightweight, user-friendly application designed to help you farm trading cards, unlock achievements, and boost playtime for any game in your Steam library.
+
+This project was born out of frustration with alternatives like SAM and ASF, which often lacked key features, were overly complex to set up, had ugly outdated interfaces, or suffered from bugs and infrequent updates.
+
+SGI combines the best aspects of these tools into a single, modern, free, and easy-to-use application.
+
+### Get Started
+
+<Cards>
+    <Cards.Card icon={<GrInstallOption />} title='Install' href='/get-started/install' arrow />
+    <Cards.Card icon={<FaSignInAlt />} title='Sign In' href='/get-started/how-to-sign-in' arrow />
+    <Cards.Card icon={<FaTools />} title='Build It Yourself' href='/get-started/build-it-yourself' arrow />
+</Cards>
+
+### Features
+
+<Cards>
+    <Cards.Card icon={<TbCardsFilled />} title='Card Farming' href='/features/card-farming' arrow />
+    <Cards.Card icon={<FaAward />} title='Achievement Unlocker' href='/features/achievement-unlocker' arrow />
+    <Cards.Card icon={<IoPlay />} title='Playtime Booster' href='/features/playtime-booster' arrow />
+    <Cards.Card icon={<FaAward />} title='Achievement Manager' href='/features/achievement-manager' arrow />
+    <Cards.Card icon={<RiRobot3Fill />} title='Auto Idler' href='/features/auto-idler' arrow />
+</Cards>
+
+### Miscellaneous
+
+<Cards>
+    <Cards.Card icon={<FaSteam />} title='Steam Credentials' href='/steam-credentials' arrow />
+    <Cards.Card icon={<FaQuoteRight />} title='FAQ' href='/faq' arrow />
+</Cards>

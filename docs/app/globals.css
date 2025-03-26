@@ -1,0 +1,17 @@
+@import 'tailwindcss';
+
+a {
+    text-decoration: none;
+}
+
+ul {
+    margin-top: 0;
+}
+
+ol {
+    margin-top: 0;
+}
+
+sub {
+    bottom: 0.5em;
+}
