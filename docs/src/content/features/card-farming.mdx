@@ -1,0 +1,76 @@
+import { Steps } from 'nextra/components';
+
+import Callout from '../../components/Callout';
+import Icon from '../../components/Icon';
+import MockButton from '../../components/MockButton';
+
+# Card Farming
+
+The Card Farming feature simulates playing games to earn trading cards that can be used to craft badges or can be sold on the Steam marketplace for real currency. Read the [Steam Trading Card FAQ](https://steamcommunity.com/tradingcards/faq) for more information.
+
+You have two options for farming cards: 
+* **[Farm cards for games in the Card Farming list](/features/card-farming#card-farming-list)**
+* **[Farm cards for all games with card drops remaining](/features/card-farming#all-games-with-drops)**
+
+<Callout type="info">
+    You must add your [Steam Credentials](/steam-credentials) in [Settings > Card Farming](/settings/card-farming) before you can use the Card Farming feature
+</Callout>
+
+<Callout type="info">
+    You can add multiple games to the card farming list
+</Callout>
+
+## Steps
+
+### Card Farming List
+
+<Steps>
+    {<h3 />}
+    Select `Farm cards for games in the Card Farming list` in <Icon type='cog' /> [Settings > Card Farming](/settings/card-farming)
+
+    {<h3 />}
+    Click <Icon type='cards' /> in the `sidebar`
+
+    {<h3 />}
+    Click <MockButton type='edit' /> to open the `edit list modal` and click on games to add and remove them
+
+    {<h3 />}
+    Click <MockButton type='done' /> and then <MockButton type='card-farming' />
+</Steps>
+
+### All Games With Drops
+
+<Steps>
+    {<h3 />}
+    Select `Farm cards for all games with card drops remaining` in <Icon type='cog' /> [Settings > Card Farming](/settings/card-farming)
+
+    {<h3 />}
+    Click <Icon type='cards' /> in the `sidebar`
+
+    {<h3 />}
+    Click <MockButton type='card-farming' />
+</Steps>
+
+## Additional Information
+
+There is a three-hour wait before the first card drop for newer accounts, and accounts that have refunded a game recently.
+
+Some games drop a card every half hour, but some only drop after 60, 90 or 120 minutes.
+
+You can add as many games to your `card farming list` as you like, though SGI can only farm cards for a maximum of 32 games simultaneously as Steam imposes this limit.
+
+Once a game has no card drops remaining it will be removed from the list and another game will start being farmed if there is one available.
+
+While Card Farming is active, you may notice `SteamUtility` *(idle)* processes starting and stopping occasionally. This is because SGI uses the following method to farm cards as fast as possible:
+
+```
+Start idling each game for 5 minutes
+Stop idling each games for 1 minute
+Start idling each game for 15 seconds (this is where the first set of cards should drop)
+Stop idling each games for 1 minute
+Start idling each game for 30 minutes
+Stop idling each games for 1 minute
+Start idling each game for 15 seconds (this is where the next set of cards should drop)
+Stop idling each game
+-- REPEAT --
+```

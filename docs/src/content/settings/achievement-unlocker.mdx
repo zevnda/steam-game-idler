@@ -1,0 +1,27 @@
+# Achievement Unlocker
+
+### Idle games while Achievement Unlocker is active
+
+* **Purpose:** While the [Achievement Unlocker](/features/achievement-unlocker)
+  is running, the current game will be idled for the duration of time it takes
+  to unlock all the available achievements, or until it is manually stopped. By
+  default, games are not idled when unlocking achievements
+
+### Skip hidden achievements
+
+* **Purpose:** Achievements that are listed as `hidden` by the game developer
+  will be skipped
+
+### Only unlock achievements between X and Y hours
+
+* **Purpose:** Choose a time range for when SGI should unlock achievements. The [Achievement Unlocker](/features/achievement-unlocker) feature will continue to run, but SGI will not unlock achievements outside of that time range. SGI will automatically continue again once inside the selected time range
+
+### Unlock achievements randomly every X minutes
+
+* **Purpose:** This will determine how often SGI will unlock a new achievement
+  _(in minutes)_.
+* **Considerations:** Each time a new achievement is unlocked, SGI will randomly
+  select a time interval between the two values you set. For example, if you set
+  the slider to `between 60 and 180 minutes`, SGI will start a random countdown
+  timer that lasts between 1 and 3 hours. When the timer reaches `0`, an
+  achievement will be unlocked and a new random countdown timer will begin

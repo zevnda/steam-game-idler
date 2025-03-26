@@ -1,0 +1,28 @@
+import { Steps } from 'nextra/components';
+
+import Callout from '../../components/Callout';
+import Icon from '../../components/Icon';
+import MockButton from '../../components/MockButton';
+
+# Auto Idler
+
+Games added to the `auto idle list` will be automatically idled when SGI is launched.
+
+This makes for a hassle-free playtime boosting experience when paired with the `run at startup` option in [Settings > General](/settings/general).
+
+<Callout type="info">
+    You can idle a maximum of 32 games at once. This is a Steam limitation
+</Callout>
+
+## Steps
+
+<Steps>
+    {<h3 />}
+    Click <Icon type='hourglass' /> in the `sidebar`
+
+    {<h3 />}
+    Click <MockButton type='edit' /> to open the `edit list modal` and click on games to add and remove them
+
+    {<h3 />}
+    The next time you launch SGI, the games in this list will be automatically idled
+</Steps>
