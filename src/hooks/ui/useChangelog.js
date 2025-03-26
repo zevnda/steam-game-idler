@@ -1,6 +1,7 @@
-import { UpdateContext } from '@/components/contexts/UpdateContext';
 import { getVersion } from '@tauri-apps/api/app';
 import { useEffect, useState, useContext } from 'react';
+
+import { UpdateContext } from '@/components/contexts/UpdateContext';
 
 export default function useChangelog() {
     const { showChangelog } = useContext(UpdateContext);
