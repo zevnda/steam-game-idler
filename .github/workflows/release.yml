@@ -248,7 +248,7 @@ jobs:
           id: create-pr
           uses: peter-evans/create-pull-request@v7
           with:
-            token: ${{ secrets.GITHUB_TOKEN }}
+            token: ${{ secrets.PAT }}
             commit-message: "chore(version): bump to ${{ github.event.inputs.version }}"
             title: "chore(version): bump to ${{ github.event.inputs.version }}"
             body: "Automated version bump for release v${{ github.event.inputs.version }} by workflow run #${{ github.run_id }}"
