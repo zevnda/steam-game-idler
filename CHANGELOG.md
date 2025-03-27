@@ -1,3 +1,10 @@
+<!-- 1.9.7 -->
+
+- `settings` and `game settings` are now stored in `AppData\Roaming\com.zevnda.steam-game-idler`
+  - This allows users to configure different settings for each account, and allows settings such as `custom Steam API key` and `card farming credentials` to persists when switching accounts
+- Fixed an issue where `card farming` wasn't checking for potential account mismatch before starting
+- BREAKING CHANGE: previous version of SGI will no longer be able to display changelogs due to the new structure of CHANGELOG.md
+
 <!-- 1.9.6 -->
 
 - Added Portuguese (Brazil) language

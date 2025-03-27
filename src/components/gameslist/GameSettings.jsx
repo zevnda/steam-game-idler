@@ -1,37 +1,47 @@
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, NumberInput } from '@heroui/react';
+import { invoke } from '@tauri-apps/api/core';
 import { useContext, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { StateContext } from '@/components/contexts/StateContext';
+import { UserContext } from '@/components/contexts/UserContext';
 
 export default function GameSettings({ isOpen, onOpenChange }) {
     const { t } = useTranslation();
+    const { userSummary, userSettings, setUserSettings } = useContext(UserContext);
     const { appId, appName } = useContext(StateContext);
     const [maxIdleTime, setMaxIdleTime] = useState('');
     const [maxCardDrops, setMaxCardDrops] = useState('');
     const [maxAchievementUnlocks, setMaxAchievementUnlocks] = useState('');
-    const [initialSettings, setInitialSettings] = useState({});
 
     useEffect(() => {
-        if (isOpen) {
-            const gameSettings = JSON.parse(localStorage.getItem('gameSettings')) || {};
-            const settings = gameSettings[appId] || {};
-            setMaxIdleTime(settings.maxIdleTime || '');
-            setMaxCardDrops(settings.maxCardDrops || '');
-            setMaxAchievementUnlocks(settings.maxAchievementUnlocks || '');
-            setInitialSettings(settings);
-        }
-    }, [appId, isOpen]);
+        const fetchGameSettings = async () => {
+            if (isOpen) {
+                const gameSettings = userSettings.gameSettings[appId] || {};
+                setMaxIdleTime(gameSettings.maxIdleTime || '');
+                setMaxCardDrops(gameSettings.maxCardDrops || '');
+                setMaxAchievementUnlocks(gameSettings.maxAchievementUnlocks || '');
+            }
+        };
+        fetchGameSettings();
+    }, [appId, isOpen, userSettings.gameSettings]);
 
-    const handleSave = () => {
-        const gameSettings = JSON.parse(localStorage.getItem('gameSettings')) || {};
+    const handleSave = async () => {
+        const gameSettings = userSettings.gameSettings;
+
         gameSettings[appId] = {
             ...gameSettings[appId],
             maxIdleTime: parseInt(maxIdleTime, 10) || 0,
             maxCardDrops: parseInt(maxCardDrops, 10) || 0,
             maxAchievementUnlocks: parseInt(maxAchievementUnlocks, 10) || 0
         };
-        localStorage.setItem('gameSettings', JSON.stringify(gameSettings));
+
+        const updateResponse = await invoke('update_user_settings', {
+            steamId: userSummary.steamId,
+            key: 'gameSettings',
+            value: gameSettings
+        });
+        setUserSettings(updateResponse.settings);
     };
 
     const handleMaxIdleTimeChange = (e) => {
@@ -48,9 +58,9 @@ export default function GameSettings({ isOpen, onOpenChange }) {
 
     const isSaveDisabled = () => {
         return (
-            maxIdleTime === (initialSettings.maxIdleTime || '') &&
-            maxCardDrops === (initialSettings.maxCardDrops || '') &&
-            maxAchievementUnlocks === (initialSettings.maxAchievementUnlocks || '')
+            maxIdleTime === (userSettings.gameSettings.maxIdleTime || '') &&
+            maxCardDrops === (userSettings.gameSettings.maxCardDrops || '') &&
+            maxAchievementUnlocks === (userSettings.gameSettings.maxAchievementUnlocks || '')
         );
     };
 

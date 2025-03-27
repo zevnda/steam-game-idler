@@ -13,7 +13,10 @@ export async function startIdle(appId, appName, manual = true) {
         const isSteamRunning = checkSteamStatus(true);
         if (!isSteamRunning) return;
 
-        const gameSettings = JSON.parse(localStorage.getItem('gameSettings')) || {};
+        const userSummary = JSON.parse(localStorage.getItem('userSummary')) || {};
+
+        const settingsResponse = await invoke('get_user_settings', { steamId: userSummary.steamId });
+        const gameSettings = settingsResponse.settings.gameSettings;
         const maxIdleTime = gameSettings[appId]?.maxIdleTime || 0;
 
         // Make sure the game is not already being idled

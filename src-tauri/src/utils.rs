@@ -77,6 +77,40 @@ pub async fn validate_session(
 }
 
 #[tauri::command]
+pub async fn validate_steam_api_key(
+    steam_id: String,
+    api_key: Option<String>,
+) -> Result<Value, String> {
+    // Check if the API key exists
+    let api_key = match api_key {
+        Some(key) if !key.trim().is_empty() => key,
+        _ => return Ok(json!({ "error": "Invalid or missing API key" })),
+    };
+
+    let url = format!(
+        "https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key={}&steamids={}",
+        api_key, steam_id
+    );
+
+    let client = Client::new();
+
+    // Send the request and handle the response
+    match client.get(&url).send().await {
+        Ok(response) => {
+            if response.status().is_success() {
+                match response.json::<Value>().await {
+                    Ok(body) => Ok(body),
+                    Err(_) => Ok(json!({ "error": "Failed to decode API response" })),
+                }
+            } else {
+                Ok(json!({ "error": "Invalid API key or unauthorized request" }))
+            }
+        }
+        Err(_) => Ok(json!({ "error": "Failed to connect to Steam API" })),
+    }
+}
+
+#[tauri::command]
 pub async fn anti_away() -> Result<(), String> {
     // Execute a command to set Steam status to online
     std::process::Command::new("cmd")

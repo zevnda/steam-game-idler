@@ -1,4 +1,3 @@
-import { Time } from '@internationalized/date';
 import { invoke } from '@tauri-apps/api/core';
 import { emit } from '@tauri-apps/api/event';
 import { isPermissionGranted, requestPermission, sendNotification } from '@tauri-apps/plugin-notification';
@@ -22,11 +21,21 @@ export default function useWindow() {
     const { setIdleGamesList } = useContext(IdleContext);
     const { setIsDarkMode, setShowFreeGamesTab, setIsCardFarming, setIsAchievementUnlocker, setShowSteamWarning } = useContext(StateContext);
     const { setUpdateAvailable, setShowChangelog } = useContext(UpdateContext);
-    const { userSummary, setUserSummary, setFreeGamesList } = useContext(UserContext);
+    const { userSummary, setUserSummary, userSettings, setUserSettings, setFreeGamesList } = useContext(UserContext);
 
     useEffect(() => {
         emit('ready');
     }, []);
+
+    useEffect(() => {
+        const getAndSetUserSettings = async () => {
+            if (userSummary) {
+                const response = await invoke('get_user_settings', { steamId: userSummary.steamId });
+                setUserSettings(response.settings);
+            }
+        };
+        getAndSetUserSettings();
+    }, [userSummary, userSettings, setUserSettings]);
 
     useEffect(() => {
         // Set dark mode based on the current theme
@@ -144,59 +153,33 @@ export default function useWindow() {
     }, [setFreeGamesList, setShowFreeGamesTab]);
 
     useEffect(() => {
-        // Set userSummary in defaultSettings
-        defaultSettings(setUserSummary);
-        // Start idling games in auto idle list
-        startAutoIdleGames();
         // Check for free games
         freeGamesCheck();
 
         const intervalId = setInterval(freeGamesCheck, 60000 * 60);
         return () => clearInterval(intervalId);
-    }, [freeGamesCheck, setUserSummary]);
-}
+    }, [userSummary?.steamId, freeGamesCheck]);
 
-// Set default settings and updates user summary
-export const defaultSettings = (setUserSummary) => {
-    // Default app settings if none exist in local storage
-    const defaultSettings = {
-        general: {
-            antiAway: false,
-            freeGameNotifications: true,
-        },
-        cardFarming: {
-            listGames: true,
-            allGames: false
-        },
-        achievementUnlocker: {
-            idle: true,
-            hidden: false,
-            schedule: false,
-            scheduleFrom: new Time(8, 30),
-            scheduleTo: new Time(23, 0),
-            interval: [30, 130],
-        }
-    };
-    try {
+    useEffect(() => {
+        // Set user summary data
         const userSummaryData = localStorage.getItem('userSummary');
         setUserSummary(JSON.parse(userSummaryData));
-        let currentSettings = JSON.parse(localStorage.getItem('settings'));
-        if (!currentSettings) {
-            localStorage.setItem('settings', JSON.stringify(defaultSettings));
-            currentSettings = JSON.parse(localStorage.getItem('settings'));
-        }
-    } catch (error) {
-        showDangerToast(t('common.error'));
-        console.error('Error creating default settings:', error);
-        logEvent(`[Error] creating default settings: ${error}`);
-    }
-};
+
+        // Start idling games in auto idle list
+        startAutoIdleGames();
+    }, [setUserSummary]);
+}
 
 // Check for free games
 export const checkForFreeGames = async (setFreeGamesList, setShowFreeGamesTab) => {
     try {
-        const settings = JSON.parse(localStorage.getItem('settings')) || {};
-        const freeGameNotifications = settings?.general?.freeGameNotifications;
+        const userSummary = JSON.parse(localStorage.getItem('userSummary'));
+        if (!userSummary) return;
+
+        const response = await invoke('get_user_settings', { steamId: userSummary.steamId });
+        const settings = response.settings;
+
+        const freeGameNotifications = settings.general.freeGameNotifications;
         const freeGamesList = await getFreeGames();
 
         // Compare the new free games with the old ones

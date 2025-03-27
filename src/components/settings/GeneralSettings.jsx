@@ -8,12 +8,12 @@ import SettingsCheckbox from '@/components/settings/SettingsCheckbox';
 import ExtLink from '@/components/ui/ExtLink';
 import LanguageSwitch from '@/components/ui/i18n/LanguageSwitch';
 import ThemeSwitch from '@/components/ui/theme/ThemeSwitch';
-import { useGeneralSettings, handleKeyChange, handleKeySave, handleClear } from '@/hooks/settings/useGeneralSettings';
+import { useGeneralSettings, handleKeySave, handleClear } from '@/hooks/settings/useGeneralSettings';
 
-export default function GeneralSettings({ settings, setSettings, localSettings, setLocalSettings }) {
+export default function GeneralSettings() {
     const { t } = useTranslation();
-    const { userSummary } = useContext(UserContext);
-    const { keyValue, setKeyValue, hasKey, setHasKey } = useGeneralSettings(settings);
+    const { userSummary, setUserSettings } = useContext(UserContext);
+    const { keyValue, setKeyValue, hasKey, setHasKey } = useGeneralSettings();
 
     return (
         <div className='relative flex flex-col gap-4 p-2 overflow-y-auto max-h-[410px]'>
@@ -49,30 +49,18 @@ export default function GeneralSettings({ settings, setSettings, localSettings, 
                 type='general'
                 name='antiAway'
                 content={t('settings.general.antiAway')}
-                settings={settings}
-                setSettings={setSettings}
-                localSettings={localSettings}
-                setLocalSettings={setLocalSettings}
             />
 
             <SettingsCheckbox
                 type='general'
                 name='freeGameNotifications'
                 content={t('settings.general.freeGameNotifications')}
-                settings={settings}
-                setSettings={setSettings}
-                localSettings={localSettings}
-                setLocalSettings={setLocalSettings}
             />
 
             <SettingsCheckbox
                 type='general'
                 name='runAtStartup'
                 content={t('settings.general.runAtStartup')}
-                settings={settings}
-                setSettings={setSettings}
-                localSettings={localSettings}
-                setLocalSettings={setLocalSettings}
             />
 
             <div className='flex gap-6'>
@@ -125,14 +113,14 @@ export default function GeneralSettings({ settings, setSettings, localSettings, 
                             input: ['!text-content placeholder:text-altwhite/50']
                         }}
                         value={keyValue}
-                        onChange={(e) => handleKeyChange(e, setKeyValue)}
+                        onChange={(e) => setKeyValue(e.target.value)}
                         type='password'
                     />
                     <Button
                         size='sm'
                         isDisabled={hasKey || !keyValue}
                         className='font-semibold rounded-lg bg-dynamic text-button'
-                        onPress={() => handleKeySave(keyValue, setHasKey)}
+                        onPress={() => handleKeySave(userSummary.steamId, keyValue, setHasKey, setUserSettings)}
                     >
                         {t('common.save')}
                     </Button>
@@ -141,7 +129,7 @@ export default function GeneralSettings({ settings, setSettings, localSettings, 
                         color='danger'
                         isDisabled={!hasKey}
                         className='font-semibold text-offwhite rounded-lg'
-                        onPress={() => handleClear(setKeyValue, setHasKey)}
+                        onPress={() => handleClear(userSummary.steamId, setKeyValue, setHasKey, setUserSettings)}
                     >
                         {t('common.clear')}
                     </Button>

@@ -222,6 +222,7 @@
         "cardFarming.logIn": "Anmeldedaten validiert für {{user}}",
         "cardFarming.logOut": "Anmeldedaten erfolgreich gelöscht",
         "apiKey.save": "Steam Web-API-Schlüssel erfolgreich gespeichert",
+        "apiKey.error": "Steam Web-API-Schlüssel konnte nicht validiert werden",
         "apiKey.clear": "Steam Web-API-Schlüssel erfolgreich gelöscht",
         "clearLogs.success": "Protokolle erfolgreich gelöscht",
         "resetSettings.success": "Einstellungen wurden auf Standardwerte zurückgesetzt",

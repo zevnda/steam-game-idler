@@ -6,6 +6,7 @@ pub mod game_data;
 pub mod idling;
 pub mod logging;
 pub mod process_handler;
+pub mod settings;
 pub mod user_data;
 pub mod utils;
 use achievement_manager::*;
@@ -15,6 +16,7 @@ use game_data::*;
 use idling::*;
 use logging::*;
 use process_handler::*;
+use settings::*;
 use user_data::*;
 use utils::*;
 
@@ -93,6 +95,7 @@ pub fn run() {
             update_custom_list,
             get_achievement_data,
             validate_session,
+            validate_steam_api_key,
             get_drops_remaining,
             get_games_with_drops,
             open_file_explorer,
@@ -100,7 +103,10 @@ pub fn run() {
             anti_away,
             get_running_processes,
             kill_process_by_pid,
-            kill_all_steamutil_processes
+            kill_all_steamutil_processes,
+            get_user_settings,
+            update_user_settings,
+            reset_user_settings,
         ])
         .build(tauri::generate_context!())
         .expect("Error while building tauri application")

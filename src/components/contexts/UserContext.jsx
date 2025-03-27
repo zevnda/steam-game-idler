@@ -4,6 +4,7 @@ export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
     const [userSummary, setUserSummary] = useState(null);
+    const [userSettings, setUserSettings] = useState({});
     const [gamesList, setGamesList] = useState(null);
     const [achievementsUnavailable, setAchievementsUnavailable] = useState(true);
     const [statisticsUnavailable, setStatisticsUnavailable] = useState(true);
@@ -12,6 +13,7 @@ export const UserProvider = ({ children }) => {
     return (
         <UserContext.Provider value={{
             userSummary, setUserSummary,
+            userSettings, setUserSettings,
             gamesList, setGamesList,
             achievementsUnavailable, setAchievementsUnavailable,
             statisticsUnavailable, setStatisticsUnavailable,

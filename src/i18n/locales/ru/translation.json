@@ -221,6 +221,7 @@
         "cardFarming.logIn": "Учетные данные подтверждены для {{user}}",
         "cardFarming.logOut": "Учетные данные успешно удалены",
         "apiKey.save": "Steam web API ключ успешно сохранен",
+        "apiKey.error": "Невозможно проверить ключ Steam web API",
         "apiKey.clear": "Steam web API ключ успешно удален",
         "clearLogs.success": "Логи успешно очищены",
         "resetSettings.success": "Настройки сброшены до значений по умолчанию",

@@ -34,9 +34,16 @@ export async function antiAwayStatus(active = null) {
     try {
         const steamRunning = await invoke('is_steam_running');
         if (!steamRunning) return;
-        const settings = JSON.parse(localStorage.getItem('settings')) || {};
+
+        const userSummary = JSON.parse(localStorage.getItem('userSummary')) || {};
+
+        const response = await invoke('get_user_settings', { steamId: userSummary.steamId });
+        const settings = response.settings;
+
         const { antiAway } = settings?.general || {};
+
         const shouldRun = active !== null ? active : antiAway;
+
         if (shouldRun) {
             await invoke('anti_away');
             if (!antiAwayInterval) {

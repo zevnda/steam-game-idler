@@ -1,11 +1,10 @@
-import { Time } from '@internationalized/date';
+import { invoke } from '@tauri-apps/api/core';
 import { useEffect, useState } from 'react';
 
-import { getAppVersion } from '@/utils/tasks';
+import { getAppVersion, logEvent } from '@/utils/tasks';
+import { showDangerToast, t } from '@/utils/toasts';
 
 export default function useSettings() {
-    const [settings, setSettings] = useState(null);
-    const [localSettings, setLocalSettings] = useState(null);
     const [version, setVersion] = useState('v0.0.0');
     const [refreshKey, setRefreshKey] = useState(0);
 
@@ -18,63 +17,42 @@ export default function useSettings() {
         getAndSetVersion();
     }, []);
 
-    // Merge default and local settings
-    useEffect(() => {
-        const defaultSettings = getDefaultSettings();
-        const currentSettings = JSON.parse(localStorage.getItem('settings')) || {};
-        const updatedSettings = getUpdatedSettings(defaultSettings, currentSettings);
-
-        // Only update localStorage if settings actually changed
-        if (JSON.stringify(currentSettings) !== JSON.stringify(updatedSettings)) {
-            localStorage.setItem('settings', JSON.stringify(updatedSettings));
-        }
-        setSettings(updatedSettings);
-    }, [refreshKey]);
-
-    // Keep a separate local copy of settings for the UI to modify
-    // before committing changes to actual settings
-    useEffect(() => {
-        const currentSettings = JSON.parse(localStorage.getItem('settings')) || {};
-        if (currentSettings) {
-            setLocalSettings(currentSettings);
-        }
-    }, [settings, setLocalSettings]);
-
-    return { settings, setSettings, localSettings, setLocalSettings, version, refreshKey, setRefreshKey };
+    return { version, refreshKey, setRefreshKey };
 }
 
-// Get the default settings
-export const getDefaultSettings = () => ({
-    general: {
-        antiAway: false,
-        freeGameNotifications: true,
-    },
-    cardFarming: {
-        listGames: true,
-        allGames: false
-    },
-    achievementUnlocker: {
-        idle: true,
-        hidden: false,
-        schedule: false,
-        scheduleFrom: new Time(8, 30),
-        scheduleTo: new Time(23, 0),
-        interval: [30, 130],
-    }
-});
+export const handleCheckboxChange = async (e, key, steamId, setUserSettings) => {
+    try {
+        const { name, checked } = e.target;
 
-// Merge default and current settings
-export const getUpdatedSettings = (defaultSettings, currentSettings) => ({
-    general: {
-        ...defaultSettings.general,
-        ...currentSettings.general
-    },
-    cardFarming: {
-        ...defaultSettings.cardFarming,
-        ...currentSettings.cardFarming
-    },
-    achievementUnlocker: {
-        ...defaultSettings.achievementUnlocker,
-        ...currentSettings.achievementUnlocker
+        const response = await invoke('update_user_settings', { steamId, key: `${key}.${name}`, value: checked });
+        const updatedSettings = response.settings;
+
+        if (key === 'cardFarming') {
+            // Add radio-button-like behavior for mutually exclusive options
+            // Only one of the card farming options can be active at a time
+            const checkboxNames = Object.keys(updatedSettings.cardFarming);
+            if (checked) {
+                // If this checkbox is checked, uncheck the other one
+                const otherCheckboxName = checkboxNames.filter(c => c !== 'credentials').find(c => c !== name);
+
+                const response = await invoke('update_user_settings', { steamId, key: `cardFarming.${otherCheckboxName}`, value: false });
+                setUserSettings(response.settings);
+            } else {
+                // Don't allow both checkboxes to be unchecked - keep one enabled
+                const otherCheckboxName = checkboxNames.filter(c => c !== 'credentials').find(c => c !== name);
+                if (!response.settings.cardFarming[otherCheckboxName]) {
+                    const response = await invoke('update_user_settings', { steamId, key: `cardFarming.${otherCheckboxName}`, value: true });
+                    setUserSettings(response.settings);
+                }
+            }
+        } else {
+            setUserSettings(response.settings);
+        }
+
+        logEvent(`[Settings - ${key}] Changed '${name}' to '${checked}'`);
+    } catch (error) {
+        showDangerToast(t('common.error'));
+        console.error('Error in (handleCheckboxChange):', error);
+        logEvent(`[Error] in (handleCheckboxChange): ${error}`);
     }
-});
+};

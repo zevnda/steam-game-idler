@@ -221,6 +221,7 @@
         "cardFarming.logIn": "Credentials validated for {{user}}",
         "cardFarming.logOut": "Successfully cleared credentials",
         "apiKey.save": "Steam web API key saved successfully",
+        "apiKey.error": "Unable to validate Steam web API key",
         "apiKey.clear": "Steam web API key cleared successfully",
         "clearLogs.success": "Logs cleared successfully",
         "resetSettings.success": "Settings have been reset to default",

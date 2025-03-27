@@ -221,6 +221,7 @@
         "cardFarming.logIn": "Облікові дані перевірено для {{user}}",
         "cardFarming.logOut": "Облікові дані успішно очищено",
         "apiKey.save": "Ключ Steam web API успішно збережено",
+        "apiKey.error": "Неможливо перевірити ключ Steam web API",
         "apiKey.clear": "Ключ Steam web API успішно очищено",
         "clearLogs.success": "Журнали успішно очищено",
         "resetSettings.success": "Налаштування скинуто до стандартних",

@@ -221,6 +221,7 @@
         "cardFarming.logIn": "Credenziali convalidate per {{user}}",
         "cardFarming.logOut": "Credenziali rimosse con successo",
         "apiKey.save": "Chiave Steam web API salvate con successo",
+        "apiKey.error": "Impossibile convalidare la chiave Steam web API",
         "apiKey.clear": "Chiave Steam web API rimossa con successo",
         "clearLogs.success": "Logs rimossi con successo",
         "resetSettings.success": "le impostazioni sono state ripristinate",

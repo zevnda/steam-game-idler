@@ -83,8 +83,10 @@ export const useAchievementUnlocker = async (
 // Fetch achievements for the current game
 const fetchAchievements = async (game, setAchievementCount) => {
     const userSummary = JSON.parse(localStorage.getItem('userSummary')) || {};
-    const { hidden } = JSON.parse(localStorage.getItem('settings'))?.achievementUnlocker || {};
-    const maxAchievementUnlocks = getMaxAchievementUnlocks(game.appid);
+    const maxAchievementUnlocks = await getMaxAchievementUnlocks(userSummary.steamId, game.appid);
+
+    const response = await invoke('get_user_settings', { steamId: userSummary.steamId });
+    const hidden = response.settings.achievementUnlocker.hidden;
 
     try {
         const response = await invoke('get_achievement_data', { steamId: userSummary.steamId, appId: game.appid, refetch: true });
@@ -141,12 +143,13 @@ const unlockAchievements = async (
 ) => {
     try {
         const userSummary = JSON.parse(localStorage.getItem('userSummary')) || {};
-        const settings = JSON.parse(localStorage.getItem('settings'))?.achievementUnlocker || {};
+        const response = await invoke('get_user_settings', { steamId: userSummary.steamId });
+        const settings = response.settings.achievementUnlocker;
         const { hidden, interval, idle, schedule, scheduleFrom, scheduleTo } = settings;
         let isGameIdling = false;
 
         let achievementsRemaining = achievements.length;
-        const maxAchievementUnlocks = getMaxAchievementUnlocks(game.appid);
+        const maxAchievementUnlocks = await getMaxAchievementUnlocks(userSummary.steamId, game.appid);
 
         for (const achievement of achievements) {
             if (isMountedRef.current) {
@@ -203,9 +206,10 @@ const unlockAchievements = async (
     }
 };
 
-const getMaxAchievementUnlocks = (appId) => {
+const getMaxAchievementUnlocks = async (steamId, appId) => {
     try {
-        const gameSettings = JSON.parse(localStorage.getItem('gameSettings')) || {};
+        const response = await invoke('get_user_settings', { steamId });
+        const gameSettings = response.settings.gameSettings;
         return gameSettings[appId]?.maxAchievementUnlocks || null;
     } catch (error) {
         handleError('getMaxAchievementUnlocks', error);
