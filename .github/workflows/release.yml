@@ -272,7 +272,7 @@ jobs:
               $versionChangelog = $match.Groups[1].Value.Trim()
               
               if ($versionChangelog.Length -gt 0) {
-                $releaseContent = "### Changes in v$newVersion`n`n$versionChangelog"
+                $releaseContent = "$versionChangelog"
                 $releaseContent | Out-File -FilePath "./release_notes.md" -Encoding utf8
                 
                 if (Test-Path "./release_notes.md") {
@@ -283,11 +283,11 @@ jobs:
                 }
               } else {
                 Write-Host "Warning: Extracted changelog was empty after trimming"
-                "### Changes in v$newVersion`n`nNo detailed changelog available for this version." | Out-File -FilePath "./release_notes.md" -Encoding utf8
+                "No detailed changelog available for this version." | Out-File -FilePath "./release_notes.md" -Encoding utf8
               }
             } else {
               Write-Host "No changelog found for version $newVersion"
-              "### Changes in v$newVersion`n`nNo detailed changelog available for this version." | Out-File -FilePath "./release_notes.md" -Encoding utf8
+              "No detailed changelog available for this version." | Out-File -FilePath "./release_notes.md" -Encoding utf8
             }
             
             Get-ChildItem "./release_notes.md" | Select-Object FullName, Length
