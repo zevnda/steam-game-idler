@@ -12,7 +12,7 @@ import useSettings from '@/hooks/settings/useSettings';
 
 export default function Settings() {
     const { t } = useTranslation();
-    const { settings, setSettings, localSettings, setLocalSettings, version, refreshKey, setRefreshKey } = useSettings();
+    const { version, refreshKey, setRefreshKey } = useSettings();
 
     return (
         <div key={refreshKey} className='w-calc min-h-calc max-h-calc bg-base overflow-y-auto rounded-tl-xl border-t border-l border-border'>
@@ -28,7 +28,7 @@ export default function Settings() {
                     </div>
 
                     <div className='flex items-center gap-2'>
-                        <ResetSettings setSettings={setSettings} setRefreshKey={setRefreshKey} />
+                        <ResetSettings setRefreshKey={setRefreshKey} />
                         <ClearData />
                         <ExportSettings />
                     </div>
@@ -50,28 +50,13 @@ export default function Settings() {
                     }}
                 >
                     <Tab key='general' title={t('settings.general.title')}>
-                        <GeneralSettings
-                            settings={settings}
-                            setSettings={setSettings}
-                            localSettings={localSettings}
-                            setLocalSettings={setLocalSettings}
-                        />
+                        <GeneralSettings />
                     </Tab>
                     <Tab key='card-farming' title={t('common.cardFarming')}>
-                        <CardSettings
-                            settings={settings}
-                            setSettings={setSettings}
-                            localSettings={localSettings}
-                            setLocalSettings={setLocalSettings}
-                        />
+                        <CardSettings />
                     </Tab>
                     <Tab key='achievement-unlocker' title={t('common.achievementUnlocker')}>
-                        <AchievementSettings
-                            settings={settings}
-                            setSettings={setSettings}
-                            localSettings={localSettings}
-                            setLocalSettings={setLocalSettings}
-                        />
+                        <AchievementSettings />
                     </Tab>
                     <Tab key='logs' title={t('settings.logs.title')}>
                         <Logs />

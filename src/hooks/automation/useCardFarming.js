@@ -57,8 +57,12 @@ export const useCardFarming = async (
 
 // Check games for drops and return total drops and games set
 const checkGamesForDrops = async () => {
-    const { steamCookies, userSummary, settings, gameSettings } = getLocalStorageData();
-    const allGames = settings?.cardFarming?.allGames;
+    const userSummary = JSON.parse(localStorage.getItem('userSummary')) || {};
+
+    const response = await invoke('get_user_settings', { steamId: userSummary.steamId });
+    const gameSettings = response.settings.gameSettings;
+    const credentials = response.settings.cardFarming.credentials;
+    const allGames = response.settings.cardFarming.allGames;
 
     const cardFarmingList = await invoke('get_custom_lists', { steamId: userSummary.steamId, list: 'cardFarmingList' });
 
@@ -67,10 +71,10 @@ const checkGamesForDrops = async () => {
 
     try {
         if (allGames) {
-            const gamesWithDrops = await getAllGamesWithDrops(userSummary.steamId, steamCookies.sid, steamCookies.sls, steamCookies?.sma);
+            const gamesWithDrops = await getAllGamesWithDrops(userSummary.steamId, credentials.sid, credentials.sls, credentials?.sma);
             totalDrops = processGamesWithDrops(gamesWithDrops, gamesSet, gameSettings);
         } else {
-            totalDrops = await processIndividualGames(cardFarmingList.list_data, gamesSet, gameSettings, userSummary, steamCookies);
+            totalDrops = await processIndividualGames(cardFarmingList.list_data, gamesSet, gameSettings, userSummary, credentials);
         }
     } catch (error) {
         handleError('checkGamesForDrops', error);
@@ -98,7 +102,7 @@ const processGamesWithDrops = (gamesWithDrops, gamesSet, gameSettings) => {
     return totalDrops;
 };
 
-const processIndividualGames = async (cardFarmingList, gamesSet, gameSettings, userSummary, steamCookies) => {
+const processIndividualGames = async (cardFarmingList, gamesSet, gameSettings, userSummary, credentials) => {
     let totalDrops = 0;
     const TIMEOUT = 30000;
 
@@ -110,7 +114,7 @@ const processIndividualGames = async (cardFarmingList, gamesSet, gameSettings, u
 
         try {
             const dropsRemaining = await Promise.race([
-                checkDrops(userSummary.steamId, gameData.appid, steamCookies.sid, steamCookies.sls, steamCookies?.sma),
+                checkDrops(userSummary.steamId, gameData.appid, credentials.sid, credentials.sls, credentials?.sma),
                 timeoutPromise
             ]);
 
@@ -187,14 +191,17 @@ export const beginFarmingCycle = async (gamesSet, isMountedRef, abortControllerR
 
 // Periodically check if there are still drops remaining for each game
 const checkDropsRemaining = async (gameSet, appIds) => {
-    const { steamCookies, userSummary } = getLocalStorageData();
+    const userSummary = JSON.parse(localStorage.getItem('userSummary')) || {};
 
     let filteredAppIds = [...appIds];
     const gameArray = Array.from(gameSet);
 
     const checkDropsPromises = gameArray.map(async (game) => {
         try {
-            const dropsRemaining = await checkDrops(userSummary.steamId, game.appId, steamCookies.sid, steamCookies.sls);
+            const response = await invoke('get_user_settings', { steamId: userSummary.steamId });
+            const credentials = response.settings.cardFarming.credentials;
+
+            const dropsRemaining = await checkDrops(userSummary.steamId, game.appId, credentials.sid, credentials.sls, credentials?.sma);
 
             if (dropsRemaining <= 0) {
                 removeGameFromFarmingList(game.appId);
@@ -220,7 +227,8 @@ const checkDropsRemaining = async (gameSet, appIds) => {
 // Remove game from farming list
 const removeGameFromFarmingList = async (gameId) => {
     try {
-        const { userSummary } = getLocalStorageData();
+        const userSummary = JSON.parse(localStorage.getItem('userSummary')) || {};
+
         const cardFarmingList = await invoke('get_custom_lists', {
             steamId: userSummary.steamId,
             list: 'cardFarmingList'
@@ -288,15 +296,6 @@ export const handleCancel = async (gamesWithDrops, isMountedRef, abortController
         isMountedRef.current = false;
         abortControllerRef.current.abort();
     }
-};
-
-const getLocalStorageData = () => {
-    return {
-        steamCookies: JSON.parse(localStorage.getItem('steamCookies')) || {},
-        userSummary: JSON.parse(localStorage.getItem('userSummary')) || {},
-        settings: JSON.parse(localStorage.getItem('settings')) || {},
-        gameSettings: JSON.parse(localStorage.getItem('gameSettings')) || {}
-    };
 };
 
 // Handle errors

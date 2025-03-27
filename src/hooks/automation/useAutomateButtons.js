@@ -10,8 +10,9 @@ import { showDangerToast, showEnableAllGamesToast, showMissingCredentialsToast, 
 // Automate card farming and achievement unlocking
 export const useAutomate = () => {
     const { t } = useTranslation();
-    const { userSummary } = useContext(UserContext);
+    const { userSummary, userSettings, setUserSettings } = useContext(UserContext);
     const { setIsCardFarming, setIsAchievementUnlocker } = useContext(StateContext);
+
     // Start card farming
     const startCardFarming = async () => {
         try {
@@ -20,25 +21,32 @@ export const useAutomate = () => {
             if (!isSteamRunning) return;
 
             // Retrieve Steam cookies from local storage
-            const steamCookies = JSON.parse(localStorage.getItem('steamCookies')) || {};
+            const credentials = userSettings.cardFarming.credentials;
 
-            // Retrieve settings from local storage
-            const settings = JSON.parse(localStorage.getItem('settings')) || {};
-
-            if (!steamCookies?.sid || !steamCookies?.sls) return showMissingCredentialsToast();
+            if (!credentials?.sid || !credentials?.sls) return showMissingCredentialsToast();
 
             // Validate Steam session
             const res = await invoke('validate_session', {
-                sid: steamCookies?.sid, sls: steamCookies?.sls, sma: steamCookies?.sma, steamid: userSummary.steamId
+                sid: credentials?.sid, sls: credentials?.sls, sma: credentials?.sma, steamid: userSummary.steamId
             });
+
             if (!res.user) {
-                localStorage.removeItem('steamCookies');
-                localStorage.removeItem('cardFarmingUser');
+                await invoke('update_user_settings', {
+                    steamId: userSummary.steamId,
+                    key: 'cardFarming.credentials',
+                    value: null
+                });
+                const response = await invoke('update_user_settings', {
+                    steamId: userSummary.steamId,
+                    key: 'cardFarming.userSummary',
+                    value: null
+                });
+                setUserSettings(response.settings);
                 return showOutdatedCredentialsToast();
             }
             // Retrieve card farming list
             const cardFarmingList = await invoke('get_custom_lists', { steamId: userSummary.steamId, list: 'cardFarmingList' });
-            if (!settings.cardFarming.allGames && cardFarmingList.list_data.length === 0)
+            if (!userSettings.cardFarming.allGames && cardFarmingList.list_data.length === 0)
                 return showEnableAllGamesToast();
             setIsCardFarming(true);
         } catch (error) {
@@ -54,13 +62,6 @@ export const useAutomate = () => {
             // Make sure Steam client is running
             const isSteamRunning = checkSteamStatus(true);
             if (!isSteamRunning) return;
-
-            // Retrieve settings from local storage
-            const settings = JSON.parse(localStorage.getItem('settings')) || {};
-
-            if (!settings || Object.keys(settings).length === 0) {
-                return showDangerToast(t('toast.configSettings'));
-            }
 
             // Retrieve achievement unlocker list
             const achievementUnlockerList = await invoke('get_custom_lists', { steamId: userSummary.steamId, list: 'achievementUnlockerList' });

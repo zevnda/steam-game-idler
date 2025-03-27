@@ -10,7 +10,7 @@ import { useCardSettings, handleSave, handleClear } from '@/hooks/settings/useCa
 
 export default function CardSettings({ settings, setSettings, localSettings, setLocalSettings }) {
     const { t } = useTranslation();
-    const { userSummary } = useContext(UserContext);
+    const { userSummary, userSettings, setUserSettings } = useContext(UserContext);
     const {
         sidValue,
         slsValue,
@@ -20,12 +20,9 @@ export default function CardSettings({ settings, setSettings, localSettings, set
         setSlsValue,
         setSmaValue,
         setHasCookies,
-        handleSidChange,
-        handleSlsChange,
-        handleSmaChange,
         cardFarmingUser,
         setCardFarmingUser,
-    } = useCardSettings(settings);
+    } = useCardSettings();
 
     return (
         <div className='relative flex flex-col gap-4 p-2'>
@@ -101,7 +98,7 @@ export default function CardSettings({ settings, setSettings, localSettings, set
                                     input: ['!text-content placeholder:text-altwhite/50']
                                 }}
                                 value={sidValue}
-                                onChange={handleSidChange}
+                                onChange={(e) => setSidValue(e.target.value)}
                                 type='password'
                             />
                             <Input
@@ -116,7 +113,7 @@ export default function CardSettings({ settings, setSettings, localSettings, set
                                     input: ['!text-content placeholder:text-altwhite/50']
                                 }}
                                 value={slsValue}
-                                onChange={handleSlsChange}
+                                onChange={(e) => setSlsValue(e.target.value)}
                                 type='password'
                             />
                             <Input
@@ -131,7 +128,7 @@ export default function CardSettings({ settings, setSettings, localSettings, set
                                     input: ['!text-content placeholder:text-altwhite/50']
                                 }}
                                 value={smaValue}
-                                onChange={handleSmaChange}
+                                onChange={(e) => setSmaValue(e.target.value)}
                                 type='password'
                             />
                         </div>
@@ -140,7 +137,7 @@ export default function CardSettings({ settings, setSettings, localSettings, set
                                 size='sm'
                                 isDisabled={hasCookies || !sidValue || !slsValue}
                                 className='font-semibold rounded-lg w-full bg-dynamic text-button'
-                                onPress={() => handleSave(sidValue, slsValue, smaValue, setHasCookies, userSummary, setCardFarmingUser)}
+                                onPress={() => handleSave(sidValue, slsValue, smaValue, setHasCookies, userSummary, setCardFarmingUser, userSettings, setUserSettings)}
                             >
                                 {t('common.save')}
                             </Button>
@@ -149,7 +146,7 @@ export default function CardSettings({ settings, setSettings, localSettings, set
                                 color='danger'
                                 isDisabled={!hasCookies}
                                 className='font-semibold rounded-lg w-full'
-                                onPress={() => handleClear(setHasCookies, setSidValue, setSlsValue, setSmaValue, setCardFarmingUser)}
+                                onPress={() => handleClear(setHasCookies, setSidValue, setSlsValue, setSmaValue, userSummary, setCardFarmingUser, setUserSettings)}
                             >
                                 {t('common.clear')}
                             </Button>

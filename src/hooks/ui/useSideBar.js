@@ -45,9 +45,6 @@ export default function useSideBar(activePage, setActivePage) {
 
             localStorage.removeItem('sortStyle');
             localStorage.removeItem('userSummary');
-            localStorage.removeItem('gameSettings');
-            localStorage.removeItem('steamCookies');
-            localStorage.removeItem('cardFarmingUser');
         } catch (error) {
             showDangerToast(t('common.error'));
             console.error('Error in (clearLocalStorageData):', error);

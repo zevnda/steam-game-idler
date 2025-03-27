@@ -8,7 +8,7 @@ import { showAccountMismatchToast, showDangerToast } from '@/utils/toasts';
 
 export default function useSetup(refreshKey) {
     const { t } = useTranslation();
-    const { setUserSummary } = useContext(UserContext);
+    const { userSettings, setUserSummary } = useContext(UserContext);
     const [isLoading, setIsLoading] = useState(false);
     const [steamUsers, setSteamUsers] = useState([]);
     const [userSummaries, setUserSummaries] = useState([]);
@@ -32,7 +32,7 @@ export default function useSetup(refreshKey) {
             const data = JSON.parse(result);
 
             if (!data.error) {
-                const apiKey = localStorage.getItem('apiKey');
+                const apiKey = userSettings.general?.apiKey;
                 const steamUsers = await Promise.all(data.map(user => fetchUserSummary(user.steamId, user.mostRecent, apiKey)));
                 // Sort users by last logged in to Steam client - most recent first
                 steamUsers.sort((b, a) => a.mostRecent - b.mostRecent);
@@ -42,7 +42,7 @@ export default function useSetup(refreshKey) {
             setIsLoading(false);
         };
         getSteamUsers();
-    }, [refreshKey]);
+    }, [userSettings.general?.apiKey, refreshKey]);
 
     const handleLogin = async (index) => {
         try {
@@ -59,6 +59,7 @@ export default function useSetup(refreshKey) {
 
             // Save selected user to localStorage and context for app-wide access
             localStorage.setItem('userSummary', JSON.stringify(userSummary));
+
             setUserSummary(userSummary);
             setIsLoading(false);
             logEvent(`[System] Logged in as ${userSummary.personaName}`);

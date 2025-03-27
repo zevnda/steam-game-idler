@@ -1,14 +1,15 @@
 import { Slider, TimeInput } from '@heroui/react';
-import { useState } from 'react';
+import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { UserContext } from '@/components/contexts/UserContext';
 import SettingsCheckbox from '@/components/settings/SettingsCheckbox';
 import { useAchievementSettings, handleSliderChange, handleScheduleChange } from '@/hooks/settings/useAchievementSettings';
 
 export default function AchievementSettings({ settings, setSettings, localSettings, setLocalSettings }) {
     const { t } = useTranslation();
-    const [sliderLabel, setSliderLabel] = useState('');
-    useAchievementSettings(settings, setLocalSettings, setSliderLabel);
+    const { userSummary, userSettings, setUserSettings } = useContext(UserContext);
+    const { sliderLabel, setSliderLabel } = useAchievementSettings();
 
     return (
         <div className='flex flex-col gap-4 p-2'>
@@ -47,15 +48,15 @@ export default function AchievementSettings({ settings, setSettings, localSettin
 
                     <TimeInput
                         aria-label='schedule-from'
-                        isDisabled={!localSettings?.achievementUnlocker?.schedule}
-                        value={localSettings?.achievementUnlocker?.scheduleFrom}
+                        isDisabled={!userSettings?.achievementUnlocker?.schedule}
+                        value={userSettings?.achievementUnlocker?.scheduleFrom}
                         size='sm'
                         className='w-[80px]'
                         classNames={{
                             inputWrapper: ['rounded-lg min-h-[25px] max-h-[25px]'],
                             input: ['text-xs'],
                         }}
-                        onChange={(value) => handleScheduleChange(value, 'scheduleFrom', localSettings, setLocalSettings, setSettings)}
+                        onChange={(value) => handleScheduleChange(value, 'scheduleFrom', userSummary, setUserSettings)}
                     />
 
                     <p className='text-xs'>
@@ -64,15 +65,15 @@ export default function AchievementSettings({ settings, setSettings, localSettin
 
                     <TimeInput
                         aria-label='schedule-to'
-                        isDisabled={!localSettings?.achievementUnlocker?.schedule}
-                        value={localSettings?.achievementUnlocker?.scheduleTo}
+                        isDisabled={!userSettings?.achievementUnlocker?.schedule}
+                        value={userSettings?.achievementUnlocker?.scheduleTo}
                         size='sm'
                         className='w-[80px]'
                         classNames={{
                             inputWrapper: ['rounded-lg min-h-[25px] max-h-[25px]'],
                             input: ['text-xs'],
                         }}
-                        onChange={(value) => handleScheduleChange(value, 'scheduleTo', localSettings, setLocalSettings, setSettings)}
+                        onChange={(value) => handleScheduleChange(value, 'scheduleTo', userSummary, setUserSettings)}
                     />
                 </div>
 
@@ -86,12 +87,12 @@ export default function AchievementSettings({ settings, setSettings, localSettin
                     step={5}
                     minValue={5}
                     maxValue={720}
-                    defaultValue={localSettings?.achievementUnlocker?.interval}
+                    defaultValue={userSettings?.achievementUnlocker?.interval}
                     formatOptions={{ style: 'currency', currency: 'USD' }}
                     hideValue
                     className='w-[500px] mt-2'
                     classNames={{ value: ['text-xs'] }}
-                    onChangeEnd={(e) => handleSliderChange(e, localSettings, setLocalSettings, setSettings)}
+                    onChangeEnd={(e) => handleSliderChange(e, userSummary, setUserSettings)}
                     onChange={(e) => setSliderLabel(t('settings.achievementUnlocker.interval', { min: e[0], max: e[1] }))}
                 />
             </div>

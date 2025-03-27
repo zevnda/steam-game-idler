@@ -1,60 +1,36 @@
-import { useEffect } from 'react';
+import { invoke } from '@tauri-apps/api/core';
+import { useEffect, useState, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { UserContext } from '@/components/contexts/UserContext';
 import { logEvent } from '@/utils/tasks';
 import { showDangerToast, t } from '@/utils/toasts';
 
-export const useAchievementSettings = (settings, setLocalSettings, setSliderLabel) => {
+export const useAchievementSettings = () => {
     const { t } = useTranslation();
+    const { userSettings } = useContext(UserContext);
+    const [sliderLabel, setSliderLabel] = useState('');
 
     // Sync local settings with global settings when they change
     useEffect(() => {
-        if (setLocalSettings && settings && settings.achievementUnlocker) {
-            setLocalSettings(settings);
-            if (setSliderLabel) {
-                const interval = settings.achievementUnlocker?.interval;
-                setSliderLabel(t('settings.achievementUnlocker.interval', { min: interval[0], max: interval[1] }));
-            }
-        }
-    }, [settings, setLocalSettings, setSliderLabel, t]);
-};
+        const interval = userSettings.achievementUnlocker?.interval;
+        setSliderLabel(t('settings.achievementUnlocker.interval', { min: interval[0], max: interval[1] }));
+    }, [userSettings.achievementUnlocker?.interval, setSliderLabel, t]);
 
-// Handle changes to checkboxes in the settings
-export const achievementCheckboxChange = (e, localSettings, setLocalSettings, setSettings) => {
-    try {
-        const { name, checked } = e.target;
-        if (localSettings && localSettings.achievementUnlocker) {
-            const updatedSettings = {
-                ...localSettings,
-                achievementUnlocker: {
-                    ...localSettings.achievementUnlocker,
-                    [name]: checked
-                }
-            };
-            updateSettings(updatedSettings, setLocalSettings, setSettings);
-            logEvent(`[Settings - Achievement Unlocker] Changed '${name}' to '${checked}'`);
-        }
-    } catch (error) {
-        showDangerToast(t('common.error'));
-        console.error('Error in (handleCheckboxChange):', error);
-        logEvent(`[Error] in (handleCheckboxChange): ${error}`);
-    }
+    return { sliderLabel, setSliderLabel };
 };
 
 // Handle changes to the slider in the settings
-export const handleSliderChange = (e, localSettings, setLocalSettings, setSettings) => {
+export const handleSliderChange = async (e, userSummary, setUserSettings) => {
     try {
-        if (localSettings && localSettings.achievementUnlocker) {
-            const updatedSettings = {
-                ...localSettings,
-                achievementUnlocker: {
-                    ...localSettings.achievementUnlocker,
-                    interval: e
-                }
-            };
-            updateSettings(updatedSettings, setLocalSettings, setSettings);
-            logEvent(`[Settings - Achievement Unlocker] Changed 'interval' to '${e}'`);
-        }
+        const newInterval = e;
+        const response = await invoke('update_user_settings', {
+            steamId: userSummary.steamId,
+            key: 'achievementUnlocker.interval',
+            value: newInterval
+        });
+        setUserSettings(response.settings);
+        logEvent(`[Settings - Achievement Unlocker] Changed 'interval' to '${e}'`);
     } catch (error) {
         showDangerToast(t('common.error'));
         console.error('Error in (handleSliderChange):', error);
@@ -63,35 +39,18 @@ export const handleSliderChange = (e, localSettings, setLocalSettings, setSettin
 };
 
 // Handle changes to the schedule in the settings
-export const handleScheduleChange = (value, type, localSettings, setLocalSettings, setSettings) => {
+export const handleScheduleChange = async (value, type, userSummary, setUserSettings) => {
     try {
-        if (localSettings && localSettings.achievementUnlocker) {
-            const updatedSettings = {
-                ...localSettings,
-                achievementUnlocker: {
-                    ...localSettings.achievementUnlocker,
-                    [type]: value
-                }
-            };
-            updateSettings(updatedSettings, setLocalSettings, setSettings);
-            logEvent(`[Settings - Achievement Unlocker] Changed '${type}' to '${value.toString()}'`);
-        }
+        const response = await invoke('update_user_settings', {
+            steamId: userSummary.steamId,
+            key: `achievementUnlocker.${type}`,
+            value
+        });
+        setUserSettings(response.settings);
+        logEvent(`[Settings - Achievement Unlocker] Changed '${type}' to '${value.toString()}'`);
     } catch (error) {
         showDangerToast(t('common.error'));
         console.error('Error in (handleScheduleChange):', error);
         logEvent(`[Error] in (handleScheduleChange): ${error}`);
-    }
-};
-
-// Update settings in local state and save to local storage
-const updateSettings = (newSettings, setLocalSettings, setSettings) => {
-    setLocalSettings(newSettings);
-    setSettings(newSettings);
-    try {
-        localStorage.setItem('settings', JSON.stringify(newSettings));
-    } catch (error) {
-        showDangerToast(t('common.error'));
-        console.error('Error in (updateSettings):', error);
-        logEvent(`[Error] in (updateSettings): ${error}`);
     }
 };

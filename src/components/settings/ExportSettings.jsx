@@ -1,18 +1,20 @@
 import { Button } from '@heroui/react';
 import { arch, version, locale } from '@tauri-apps/plugin-os';
+import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { UserContext } from '@/components/contexts/UserContext';
 import { getAppVersion } from '@/utils/tasks';
 import { showDangerToast, showSuccessToast } from '@/utils/toasts';
 
 export default function ExportSettings() {
     const { t } = useTranslation();
+    const { userSettings } = useContext(UserContext);
 
     const exportSettings = async () => {
         const allSettings = {};
         const system = {};
 
-        // System
         const appVersion = await getAppVersion();
         allSettings['version'] = appVersion;
 
@@ -32,6 +34,7 @@ export default function ExportSettings() {
         system['locale'] = await locale();
 
         allSettings['system'] = system;
+        allSettings['settings'] = userSettings;
 
         for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);

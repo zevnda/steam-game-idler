@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import useResetSettings from '@/hooks/settings/useResetSettings';
 
-export default function ResetSettings({ setSettings, setRefreshKey }) {
+export default function ResetSettings({ setRefreshKey }) {
     const { t } = useTranslation();
     const { handleResetSettings, isOpen, onOpen, onOpenChange } = useResetSettings();
 
@@ -43,7 +43,7 @@ export default function ResetSettings({ setSettings, setRefreshKey }) {
                                 <Button
                                     size='sm'
                                     className='font-semibold rounded-lg bg-dynamic text-button'
-                                    onPress={() => handleResetSettings(onClose, setSettings, setRefreshKey)}
+                                    onPress={() => handleResetSettings(onClose, setRefreshKey)}
                                 >
                                     {t('common.confirm')}
                                 </Button>

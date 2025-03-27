@@ -86,8 +86,11 @@ export default function AchievementUnlocker({ activePage }) {
 
                     {isInitialDelay && (
                         <p className='text-sm'>
-                            <Trans i18nKey='automation.achievementUnlocker.initialDelay' values={{ timer: countdownTimer }}>
-                                Starting in <span className='font-bold text-sm text-dynamic'>{countdownTimer}</span>
+                            <Trans
+                                i18nKey='automation.achievementUnlocker.initialDelay'
+                                values={{ timer: countdownTimer }}
+                            >
+                                Starting in <span className='font-bold text-sm text-dynamic'>{{ timer: countdownTimer }}</span>
                             </Trans>
                         </p>
                     )}
@@ -95,14 +98,23 @@ export default function AchievementUnlocker({ activePage }) {
                     {!isInitialDelay && !isComplete && !isWaitingForSchedule && (
                         <>
                             <p>
-                                <Trans i18nKey='automation.achievementUnlocker.progress' values={{ count: achievementCount, appName: currentGame.name }}>
-                                    Unlocking <span className='font-bold text-dynamic'>{achievementCount}</span> achievement(s) for <span className='font-bold text-dynamic'>{currentGame.name}</span>
+                                <Trans
+                                    i18nKey='automation.achievementUnlocker.progress'
+                                    values={{
+                                        count: achievementCount,
+                                        appName: currentGame.name
+                                    }}
+                                >
+                                    Unlocking <span className='font-bold text-dynamic'>{{ cont: achievementCount }}</span> achievement(s) for <span className='font-bold text-dynamic'>{{ appName: currentGame.name }}</span>
                                 </Trans>
                             </p>
 
                             <p className='text-sm'>
-                                <Trans i18nKey='automation.achievementUnlocker.delay' values={{ timer: countdownTimer }}>
-                                    Next unlock in <span className='font-bold text-sm text-dynamic'>{countdownTimer}</span>
+                                <Trans
+                                    i18nKey='automation.achievementUnlocker.delay'
+                                    values={{ timer: countdownTimer }}
+                                >
+                                    Next unlock in <span className='font-bold text-sm text-dynamic'>{{ timer: countdownTimer }}</span>
                                 </Trans>
                             </p>
                         </>

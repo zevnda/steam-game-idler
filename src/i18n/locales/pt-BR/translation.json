@@ -221,6 +221,7 @@
         "cardFarming.logIn": "Credenciais validadas para {{user}}",
         "cardFarming.logOut": "Credenciais apagadas com sucesso",
         "apiKey.save": "Chave da API web da Steam salva com sucesso",
+        "apiKey.error": "Não foi possível validar a chave da API web da Steam",
         "apiKey.clear": "Chave da API web da Steam apagada com sucesso",
         "clearLogs.success": "Logs apagados com sucesso",
         "resetSettings.success": "Configurações foram redefinidas para o padrão",
