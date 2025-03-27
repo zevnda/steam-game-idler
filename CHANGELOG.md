@@ -1,3 +1,9 @@
+<!-- 1.9.8 -->
+
+### Changes in v1.9.8
+
+- Remove sensitive data when using `settings > export data`
+
 <!-- 1.9.7 -->
 
 ### Changes in v1.9.7
