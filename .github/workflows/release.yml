@@ -36,6 +36,7 @@ run-name: Build release v${{ github.event.inputs.version }}
 
 permissions:
   contents: write
+  pull-requests: write
   
 jobs:
   fetch_previous_version:
@@ -245,30 +246,17 @@ jobs:
 
         - name: Create PR for version changes
           id: create-pr
-          run: |
-            # Configure git
-            git config --local user.name "github-actions[bot]"
-            git config --local user.email "github-actions[bot]@users.noreply.github.com"
-            
-            # Create a new branch
-            $branchName = "version-bump-${{ github.event.inputs.version }}-${{ github.run_id }}"
-            git checkout -b $branchName
-            
-            # Add and commit changes
-            git add src-tauri/tauri.conf.json latest.json
-            git commit -m "chore(version): bump to ${{ github.event.inputs.version }}"
-            
-            # Push to the remote branch
-            git push origin $branchName
-            
-            # Create PR using GitHub CLI
-            gh pr create --title "chore(version): bump to ${{ github.event.inputs.version }}" `
-                          --body "Automated version bump for release v${{ github.event.inputs.version }} by workflow run #${{ github.run_id }}" `
-                          --base main `
-                          --head $branchName
-          shell: pwsh
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          uses: peter-evans/create-pull-request@v7
+          with:
+            token: ${{ secrets.GITHUB_TOKEN }}
+            commit-message: "chore(version): bump to ${{ github.event.inputs.version }}"
+            title: "chore(version): bump to ${{ github.event.inputs.version }}"
+            body: "Automated version bump for release v${{ github.event.inputs.version }} by workflow run #${{ github.run_id }}"
+            branch: "version-bump-${{ github.event.inputs.version }}-${{ github.run_id }}"
+            base: "main"
+            add-paths: |
+              src-tauri/tauri.conf.json
+              latest.json
 
         - name: Extract current version changelog
           run: |
