@@ -1,0 +1,249 @@
+{
+    "setup": {
+        "welcome": "Bienvenue",
+        "chooseAccount": "Choisir un compte",
+        "refresh": "Rafraîchir",
+        "help": "Besoin d'aide ?",
+        "noUsers": "Aucun utilisateur Steam trouvé",
+        "learn": "Découvrir pourquoi"
+    },
+    "search": {
+        "games": "Rechercher un jeu",
+        "achievements": "Rechercher un succès",
+        "statistics": "Rechercher une statistique"
+    },
+    "notifications": {
+        "empty": "Aucune notification",
+        "markAllRead": "Tout marquer comme lu"
+    },
+    "menu": {
+        "guide": "Guide de l'utilisateur",
+        "issue": "Signaler un problème",
+        "feature": "Demander une fonctionnalité",
+        "support": "Soutenir le projet",
+        "changelog": "Voir le journal des modifications",
+        "update": "Vérifier les mises à jour.."
+    },
+    "gamesList": {
+        "title": "Vos jeux",
+        "sort": {
+            "titleAsc": "Titre croissant",
+            "titleDesc": "Titre décroissant",
+            "playtimeDesc": "Temps de jeu décroissant",
+            "playtimeAsc": "Temps de jeu croissant",
+            "recent": "Joué récemment"
+        },
+        "private": {
+            "message": "Impossible de récupérer la liste des jeux. Cela est généralement dû à :",
+            "change": "Modifier vos paramètres de confidentialité",
+            "tryAgain": "Réessayer",
+            "reason": {
+                "1": "Votre profil est défini comme privé",
+                "2": "Les détails de vos jeux sont définis comme privés",
+                "3": "Vous n'avez aucun jeu dans votre bibliothèque",
+                "4": "Vous utilisez une clé API web Steam invalide"
+            }
+        }
+    },
+    "idlingGames": {
+        "title": "Jeux en mode idle",
+        "subtitle": "Les jeux actuellement en mode idle apparaîtront ici",
+        "stopAll": "Tout arrêter"
+    },
+    "customLists": {
+        "cardFarming": {
+            "subtitle": "Ajoutez des jeux à cette liste pour farmer leurs cartes de trading",
+            "buttonLabel": "Démarrer le farming de cartes"
+        },
+        "achievementUnlocker": {
+            "subtitle": "Ajoutez des jeux à cette liste pour débloquer leurs succès",
+            "buttonLabel": "Démarrer le déblocage de succès"
+        },
+        "autoIdle": {
+            "title": "Mode idle automatique",
+            "subtitle": "Ajoutez des jeux à cette liste pour les lancer automatiquement en mode idle"
+        },
+        "favorites": {
+            "title": "Favoris",
+            "subtitle": "Vos jeux favoris"
+        },
+        "manualAdd": {
+            "title": "Ajouter un jeu",
+            "gameName": "Nom du jeu",
+            "gameId": "ID du jeu"
+        },
+        "edit": "Modifier la liste",
+        "inList": "Dans la liste",
+        "addAll": "Tout ajouter",
+        "invalid": "Type de liste invalide"
+    },
+    "automation": {
+        "cardFarming": {
+            "initialDelay": "Cela peut prendre une seconde..",
+            "progress": "Mode idle actif pour <1>{{count}}</1> jeu(x) avec <3>{{total}}</3> drop(s) de cartes restant(s)"
+        },
+        "achievementUnlocker": {
+            "initialDelay": "Démarrage dans <1>{{timer}}</1>",
+            "delay": "Prochain déblocage dans <1>{{timer}}</1>",
+            "progress": "Déblocage de <1>{{count}}</1> succès pour <3>{{appName}}</3>",
+            "scheduleWait": "Le déblocage des succès est en pause car il est en dehors de l'horaire prévu et reprendra une fois dans l'horaire prévu"
+        }
+    },
+    "freeGames.title": "Jeux gratuits",
+    "cardMenu": {
+        "idle": "Démarrer le mode idle",
+        "achievements": "Voir les succès",
+        "store": "Voir la page du magasin",
+        "settings": "Paramètres du jeu"
+    },
+    "gameSettings": {
+        "idle": "Temps maximum en mode idle (minutes)",
+        "drops": "Nombre maximum de drops de cartes",
+        "achievements": "Nombre maximum de déblocages de succès"
+    },
+    "achievementManager": {
+        "steam": "Voir sur Steam",
+        "steamDB": "Voir sur SteamDB",
+        "file": "Voir dans l'explorateur de fichiers",
+        "alert": "Certains succès ou statistiques protégés ont été désactivés. <1>En savoir plus</1>",
+        "achievements": {
+            "title": "Succès",
+            "empty": "Aucun succès trouvé",
+            "unlockAll": "Tout débloquer",
+            "lockAll": "Tout verrouiller",
+            "unlock": "Débloquer",
+            "lock": "Verrouiller",
+            "protected": "Protégé",
+            "modal": "Êtes-vous sûr de vouloir <1>{{state}}</1> tous les succès ?",
+            "sort": {
+                "percent": "Pourcentage",
+                "title": "Alphabétiquement",
+                "unlocked": "Débloqué",
+                "locked": "Verrouillé",
+                "unprotected": "Non protégé",
+                "protected": "Protégé"
+            }
+        },
+        "statistics": {
+            "title": "Statistiques",
+            "empty": "Aucune statistique trouvée",
+            "saveChanges": "Enregistrer les modifications",
+            "resetAll": "Tout réinitialiser",
+            "flags": "Drapeaux"
+        }
+    },
+    "settings": {
+        "title": "Paramètres",
+        "general": {
+            "title": "Général",
+            "antiAway": "Empêcher le statut absent sur Steam",
+            "freeGameNotifications": "Recevoir des notifications sur les jeux gratuits",
+            "runAtStartup": "Lancer au démarrage",
+            "language": "Langue",
+            "theme": "Thème",
+            "webApi": "Utiliser votre propre <1>clé API web Steam</1> (optionnel). <3>En savoir plus</3>",
+            "webApi.placeholder": "Clé API web Steam",
+            "userSummary": "Connecté en tant que",
+            "helpTranslate": "Aider à traduire SGI",
+            "languages": {
+                "english": "Anglais",
+                "german": "Allemand (Deutsch)",
+                "russian": "Russe (Русский)",
+                "italian": "Italien (Italiano)",
+                "portuguese_brazil": "Portugais - Brésil (Português)",
+                "ukrainian": "Ukrainien (Українська)",
+                "french": "Français"
+            }
+        },
+        "cardFarming": {
+            "listGames": "Farmer des cartes pour les jeux dans la liste de farming de cartes",
+            "allGames": "Farmer des cartes pour tous les jeux avec des drops de cartes restants",
+            "steamCredentials": "Les identifiants Steam sont requis pour utiliser la fonctionnalité de farming de cartes. <1>En savoir plus</1>",
+            "userSummary": "Farming de cartes en tant que"
+        },
+        "achievementUnlocker": {
+            "idle": "Lancer les jeux en mode idle pendant que le déblocage de succès est actif",
+            "hidden": "Ignorer les succès cachés",
+            "scheduleLabel": "Débloquer les succès uniquement entre",
+            "scheduleAnd": "et",
+            "interval": "Débloquer les succès aléatoirement toutes les {{min}} à {{max}} minutes"
+        },
+        "logs": {
+            "title": "Journaux",
+            "openLogFile": "Ouvrir dans l'explorateur de fichiers",
+            "clearLogs": "Effacer les journaux",
+            "time": "Heure",
+            "message": "Message"
+        },
+        "resetSettings": {
+            "button": "Réinitialiser les paramètres"
+        },
+        "clearData": {
+            "button": "Effacer les données"
+        },
+        "exportData": "Exporter les données"
+    },
+    "confirmation": {
+        "logout": "Êtes-vous sûr de vouloir vous déconnecter ?",
+        "resetStatistics": "Êtes-vous sûr de vouloir <1>réinitialiser</1> toutes les statistiques ?",
+        "resetSettings": "Êtes-vous sûr de vouloir réinitialiser les paramètres par défaut ?",
+        "clearData": "Êtes-vous sûr de vouloir effacer toutes les données ?",
+        "steamClosed": "Steam n'est pas en cours d'exécution. Ouvre le client Steam pour continuer"
+    },
+    "toast": {
+        "steam": "Steam n'est pas en cours d'exécution",
+        "mismatch": "Incohérence de compte entre Steam et SGI",
+        "missingCredentials": "Identifiants de farming de cartes manquants dans \"paramètres > farming de cartes\"",
+        "outdatedCredentials": "Les identifiants de farming de cartes doivent être mis à jour dans \"paramètres > farming de cartes\"",
+        "incorrectCredentials": "Identifiants de farming de cartes incorrects",
+        "enableAllGames": "Ajoutez des jeux à votre liste de farming de cartes ou activez \"tous les jeux\" dans \"paramètres > farming de cartes\"",
+        "noGames": "Il n'y a aucun jeu dans votre liste de déblocage de succès",
+        "configSettings": "Veuillez d'abord configurer les paramètres",
+        "refetch.cooldown": "Les jeux peuvent être rafraîchis à nouveau à {{time}}",
+        "achievementData.error": "Erreur lors de la récupération des données de succès",
+        "startIdle.success": "Mode idle démarré pour {{appName}} ({{appId}})",
+        "startIdle.alreadyIdling": "{{appName}} ({{appId}}) est déjà en mode idle",
+        "startIdle.error": "Échec du démarrage du mode idle pour {{appName}} ({{appId}})",
+        "stopIdle.success": "Mode idle arrêté pour {{appName}} ({{appId}})",
+        "stopIdle.error": "Échec de l'arrêt du mode idle pour {{appName}} ({{appId}})",
+        "stopIdleAll.success": "Mode idle arrêté pour {{count}} jeu(x)",
+        "stopIdleAll.error": "Échec de l'arrêt du mode idle pour tous les jeux",
+        "exportData.success": "Données copiées dans le presse-papiers",
+        "exportData.error": "Erreur lors de l'exportation des données",
+        "toggle.success": "{{type}} {{achievementName}} pour {{appName}}",
+        "toggle.error": "Échec de {{type}} {{achievementName}} pour {{appName}}",
+        "unlockAll.success": "Déblocage réussi de {{count}} succès pour {{appName}}",
+        "lockAll.success": "Verrouillage réussi de {{count}} succès pour {{appName}}",
+        "updateAll.success": "Mise à jour réussie de {{count}} statistique(s) pour {{appName}}",
+        "updateAll.noChanges": "Aucune statistique n'a été modifiée",
+        "updateAll.error": "Impossible de mettre à jour les statistiques",
+        "resetAll.success": "Réinitialisation réussie de {{count}} statistique(s) pour {{appName}}",
+        "resetAll.error": "Impossible de réinitialiser les statistiques",
+        "cardFarming.logIn": "Identifiants validés pour {{user}}",
+        "cardFarming.logOut": "Identifiants effacés avec succès",
+        "apiKey.save": "Clé API web Steam enregistrée avec succès",
+        "apiKey.error": "Impossible de valider la clé API web Steam",
+        "apiKey.clear": "Clé API web Steam effacée avec succès",
+        "clearLogs.success": "Journaux effacés avec succès",
+        "resetSettings.success": "Les paramètres ont été réinitialisés par défaut",
+        "checkUpdate.none": "Aucune mise à jour disponible",
+        "checkUpdate.error": "Erreur lors de la vérification des mises à jour"
+    },
+    "common": {
+        "cardFarming": "Farming de cartes",
+        "achievementUnlocker": "Déblocage de succès",
+        "showing": "Affichage de {{count}} sur {{total}} jeux",
+        "learnMore": "En savoir plus",
+        "error": "Une erreur s'est produite. Consultez les journaux pour plus d'informations",
+        "start": "Démarrer",
+        "stop": "Arrêter",
+        "notice": "Avis",
+        "confirm": "Confirmer",
+        "done": "Terminé",
+        "add": "Ajouter",
+        "save": "Enregistrer",
+        "close": "Fermer",
+        "cancel": "Annuler",
+        "clear": "Effacer"
+    }
+}

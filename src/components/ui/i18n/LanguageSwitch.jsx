@@ -10,6 +10,7 @@ export default function LanguageSwitch() {
     const languages = [
         { key: 'en', label: t('settings.general.languages.english') },
         { key: 'de', label: t('settings.general.languages.german') },
+        { key: 'fr', label: t('settings.general.languages.french') },
         { key: 'it', label: t('settings.general.languages.italian') },
         { key: 'pt-BR', label: t('settings.general.languages.portuguese_brazil') },
         { key: 'ru', label: t('settings.general.languages.russian') },
