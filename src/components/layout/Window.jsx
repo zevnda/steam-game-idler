@@ -12,7 +12,10 @@ export default function Window() {
     useWindow();
 
     if (!userSummary) return (
-        <Setup />
+        <>
+            <Setup />
+            <ChangelogModal />
+        </>
     );
 
     return (
