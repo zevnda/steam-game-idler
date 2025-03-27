@@ -1,5 +1,7 @@
 <!-- 1.9.7 -->
 
+### Changes in v1.9.7
+
 - `settings` and `game settings` are now stored in `AppData\Roaming\com.zevnda.steam-game-idler`
   - This allows users to configure different settings for each account, and allows settings such as `custom Steam API key` and `card farming credentials` to persists when switching accounts
 - Fixed an issue where `card farming` wasn't checking for potential account mismatch before starting
@@ -12,12 +14,16 @@
 
 <!-- 1.9.6 -->
 
+### Changes in v1.9.6
+
 - Added Portuguese (Brazil) language
   - [Contribute to SGI by helping with translations](https://github.com/zevnda/steam-game-idler/discussions/148)
   - Credit:
     - @Qjeh for the Portuguese (Brazil) translation
 
 <!-- 1.9.5 -->
+
+### Changes in v1.9.5
 
 - Added Italian, Russian and Ukrainian languages
   - [Contribute to SGI by helping with translations](https://github.com/zevnda/steam-game-idler/discussions/148)
@@ -28,12 +34,16 @@
 
 <!-- 1.9.4 -->
 
+### Changes in v1.9.4
+
 - Added support for multiple languages
   - Change the app's language via `settings > general > language`
   - [Contribute to SGI by helping with translations](https://github.com/zevnda/steam-game-idler/discussions/148)
 - Fixed incorrect system tray icon
 
 <!-- 1.9.3 -->
+
+### Changes in v1.9.3
 
 - #141 #142: Fixed an issue causing an `invalid utf-8 sequence` error on systems using non-English locales
 - Fixed an issue where idling games were not being stopped before installing updates
@@ -42,9 +52,13 @@
 
 <!-- 1.9.2 -->
 
+### Changes in v1.9.2
+
 - #141 #142: Fixed an issue causing an `invalid utf-8 sequence` error on systems using non-English locales
 
 <!-- 1.9.1 -->
+
+### Changes in v1.9.1
 
 - Added an idling timer to `game cards` to track how long each game has been idling
   - Removed the pulsing border animation from `game cards`
@@ -60,6 +74,8 @@
 
 <!-- 1.9.0 -->
 
+### Changes in v1.9.0
+
 - #100: Reworked the `manual add` feature to allow users to add games, programs, or tools that aren't publicly available on the Steam store
   - Previously, this feature would check if the `appid` had a Steam store page and would fail if it didn't
   - For example, you can now add `Source SDK Base 2007 (218)`, which is used by FiveM *(GTA V multiplayer mod)*, even though it doesn't have a Steam store page and doesn't show up in `Steam profile > games`
@@ -71,6 +87,8 @@
 - Fixed an issue where some SteamUtility *(idle)* processes weren't being closed before initiating an update
 
 <!-- 1.8.13 -->
+
+### Changes in v1.8.13
 
 - Added `idling games` to the `sidebar` *(beta)*
   - This will hopefully replace the need for showing external SteamUtility *(idle)* windows for every game you idle
@@ -84,17 +102,25 @@
 
 <!-- 1.8.12 -->
 
+### Changes in v1.8.12
+
 This release contains the [v1.8.13 changes](https://github.com/zevnda/steam-game-idler/releases/tag/1.8.13) minus a few additions
 
 <!-- 1.8.11 -->
+
+### Changes in v1.8.11
 
 - Fixed an issue were achievement percentages were sometimes `0`
 
 <!-- 1.8.10 -->
 
+### Changes in v1.8.10
+
 - `achievement unlocker` now uses the same method as `achievement manager` when fetching achievement data
 
 <!-- 1.8.9 -->
+
+### Changes in v1.8.9
 
 - Improvements to yesterday's changes for fetching achievement data for `achievement manager`
   - Yesterday's changes made it so that every single time the user viewed a game's achievements it would show the user as `playing` that game on Steam
@@ -111,6 +137,8 @@ This release contains the [v1.8.13 changes](https://github.com/zevnda/steam-game
 **Note:** I recommended clearing your data via `settings > clear data` to remove any old data stores
 
 <!-- 1.8.8 -->
+
+### Changes in v1.8.8
 
 - Refactored the `achievement manager` feature that comes with significant changes
   - Achievement data was previously fetched from the Steam web API, this came with some issue
@@ -137,9 +165,13 @@ This release contains the [v1.8.13 changes](https://github.com/zevnda/steam-game
 
 <!-- 1.8.7 -->
 
+### Changes in v1.8.7
+
 This release contains the [v1.8.8 changes](https://github.com/zevnda/steam-game-idler/releases/tag/1.8.8) minus a few additional fixes
 
 <!-- 1.8.6 -->
+
+### Changes in v1.8.6
 
 - Custom lists *(card farming, achievement unlocker, etc.)* are now stored in `AppData\Roaming\com.zevnda.steam-game-idler` along with other games list caches
   - This allows custom lists to be preserved when switching between accounts as they are now stored in user specific files *(`<steam_id>_card_farming_list.json`)*
@@ -153,17 +185,25 @@ This release contains the [v1.8.8 changes](https://github.com/zevnda/steam-game-
 
 <!-- 1.8.5 -->
 
+### Changes in v1.8.5
+
 - More robust fix for the "flash of unstyled content" issue when launching SGI
 
 <!-- 1.8.4 -->
+
+### Changes in v1.8.4
 
 - Fixed a "flash of unstyled content" issue during launch by hiding the Tauri window until the frontend is ready
 
 <!-- 1.8.3 -->
 
+### Changes in v1.8.3
+
 - Fixed an issue where the slider intervals were not being displayed in `settings > achievement unlocker`
 
 <!-- 1.8.2 -->
+
+### Changes in v1.8.2
 
 - Migrated the app data directory to be inline with Tauri's v2 format
   - The old data directory was `C:\Users\<user>\AppData\Roaming\steam-game-idler` and should be automatically deleted when launching this version
@@ -183,10 +223,14 @@ This release contains the [v1.8.8 changes](https://github.com/zevnda/steam-game-
 
 <!-- 1.8.1 -->
 
+### Changes in v1.8.1
+
 - #109: Fix an issue where SteamUtility *(idle)* processes were not being closed when exiting SGI
 - Improve theme styles
 
 <!-- 1.8.0 -->
+
+### Changes in v1.8.0
 
 - Updated Tauri from v1 to v2
 - Updated project deps
@@ -196,12 +240,16 @@ This release contains the [v1.8.8 changes](https://github.com/zevnda/steam-game-
 
 <!-- 1.7.25 -->
 
+### Changes in v1.7.25
+
 - Fixed an issue where the `blossom` theme was not being removed correctly
 - Fixed an error with `reset settings` and `clear data` functions
 - Add styling to `in list` toggle button in `edit list modal`
 - Dim `game card` images for all dark themes
 
 <!-- 1.7.24 -->
+
+### Changes in v1.7.24
 
 - Added 8 new light themes and 8 new dark themes
   - Light
@@ -227,6 +275,8 @@ This release contains the [v1.8.8 changes](https://github.com/zevnda/steam-game-
 
 <!-- 1.7.23 -->
 
+### Changes in v1.7.23
+
 - Replaced the msi installer (.msi) with the nsis installer (.exe)
   - Smaller portable installer file
   - Faster initial installation and automatic updates
@@ -236,29 +286,41 @@ Note: The transition between installers should be seamless, but in some cases us
 
 <!-- 1.7.22 -->
 
+### Changes in v1.7.22
+
 - SteamUtility (idle) windows now display a fallback image if the game's banner image was not found
 - Include LICENCE in release
 
 <!-- 1.7.21 -->
+
+### Changes in v1.7.21
 
 - Improve card farming logic
   - Games are now idled and stopped in bulk rather than iterating through each game and idling/stopping them individually. This eliminates UI blocking issues, reduces system lag on lower-end systems and improves overall efficiency
 
 <!-- 1.7.20 -->
 
+### Changes in v1.7.20
+
 - #97: Refactor `start_idle` and `stop_idle` commands to use a more robust method to work across different Windows systems and versions
 
 <!-- 1.7.19 -->
 
+### Changes in v1.7.19
+
 - #90: Improve the `stop_idle` function to prevent buffer overflow
 
 <!-- 1.7.18 -->
+
+### Changes in v1.7.18
 
 - #90: Potential fix for buffer overflow exception causing crashes during `card farming`
 - Fix `run at startup` checkbox missing dynamic color
 - Improve `card farming` logic to prevent orphaned/zombie idle processes and better cleanup of listeners and intervals
 
 <!-- 1.7.17 -->
+
+### Changes in v1.7.17
 
 - #86: Fixed the spacing and layout of `game cards` when changing the window size
 - #87: Added a color picker to `settings > general` to allow users to choose their own UI color
@@ -267,26 +329,38 @@ Note: The transition between installers should be seamless, but in some cases us
 
 <!-- 1.7.16 -->
 
+### Changes in v1.7.16
+
 - #85: Miscellaneous UI changes
 
 <!-- 1.7.15 -->
+
+### Changes in v1.7.15
 
 - #81: Make the `manual add` button available for all custom list
 
 <!-- 1.7.14 -->
 
+### Changes in v1.7.14
+
 - #83: Delete games list json files when clearing data
 
 <!-- 1.7.13 -->
+
+### Changes in v1.7.13
 
 - #81: Re-added the `manual add` button for adding games that you do not own but have access to, such as family shared games
   - Games can be manually added by going to the Favorites List, clicking the `+` button and entering the game's ID
 
 <!-- 1.7.12 -->
 
+### Changes in v1.7.12
+
 - #79: remove games with server-side achievements from achievement unlocker
 
 <!-- 1.7.11 -->
+
+### Changes in v1.7.11
 
 - #76: Truncate long statistic name
 - #77: Prevent layout shift when loading images in achievements list
@@ -294,15 +368,21 @@ Note: The transition between installers should be seamless, but in some cases us
 
 <!-- 1.7.10 -->
 
+### Changes in v1.7.10
+
 - #73: Fixed an issue when storing a cached version of the user's games list
   - Attempting to store large games lists in `sessionStorage` would throw a storage quota exceeded error
   - The users games list and recent games are now stored locally in `.json` files in `C:\Users\<user>\AppData\Roaming\steam-game-idler`
 
 <!-- 1.7.9 -->
 
+### Changes in v1.7.9
+
 - #72: Fixed an issue in `card farming` where `start_idle` was being passed an `appId` string instead of u32 when `Farm cards for all games with card drops remaining` was enabled
 
 <!-- 1.7.8 -->
+
+### Changes in v1.7.8
 
 - #71: Added a check to see if a game has server-side achievements and display an alert on the `achievements manager` screen if it does
   - Even if only 1/50 achievements are server-side, this message will still appear but other achievements can still be modified
@@ -310,6 +390,8 @@ Note: The transition between installers should be seamless, but in some cases us
     - Feel free to leave a comment on the gist if any games need to be added/removed
 
 <!-- 1.7.7 -->
+
+### Changes in v1.7.7
 
 - Added an `install update` button to the `header` which will be visible when an update is available
   - Removed the toast notification for updates
@@ -321,6 +403,8 @@ Note: The transition between installers should be seamless, but in some cases us
 - Fixed some typos in log events
 
 <!-- 1.7.6 -->
+
+### Changes in v1.7.6
 
 - Improved the method for unlocking/locking all achievements, and updating multiple statistics in `achievements manager`
   - SGI no longer iterates through each achievement or statistic and unlocks or updates them. Instead they are now unlocked or updated in bulk
@@ -335,14 +419,20 @@ Note: The transition between installers should be seamless, but in some cases us
 
 <!-- 1.7.5 -->
 
+### Changes in v1.7.5
+
 - Added an `in list` button to the `edit list modal` to filter by games already in the list
 - Made the search bar in `edit list modal` clearable
 
 <!-- 1.7.4 -->
 
+### Changes in v1.7.4
+
 - Miscellaneous UI styling changes
 
 <!-- 1.7.3 -->
+
+### Changes in v1.7.3
 
 - New icons, again 😬
 - Replaced the icon in the `header` for a drag region
@@ -351,11 +441,15 @@ Note: The transition between installers should be seamless, but in some cases us
 
 <!-- 1.7.2 -->
 
+### Changes in v1.7.2
+
 - Fixed some changelog modal styles
 - Update system icon to match UI
   - Idle windows have a blue variant of the icon
 
 <!-- 1.7.1 -->
+
+### Changes in v1.7.1
 
 - Reworked the way `custom lists` are handled (`favorites`, `card farming`, `achievement unlocker`, `auto idle`)
   - Custom lists can now be viewed and managed via the `sidebar`. Each list has its own `sidebar` icon
@@ -400,6 +494,8 @@ Note: The transition between installers should be seamless, but in some cases us
 
 <!-- 1.7.0 -->
 
+### Changes in v1.7.0
+
 - Reworked the way `custom lists` are handled (`favorites`, `card farming`, `achievement unlocker`, `auto idle`)
   - Custom lists can now be viewed and managed via the `sidebar`. Each list has its own `sidebar` icon
   - To manage a list, click the appropriate icon in the `sidebar` and click `edit list`. Add and remove games to the list by clicking them in the `edit list modal`
@@ -441,29 +537,34 @@ Note: The transition between installers should be seamless, but in some cases us
 
 <!-- 1.7.0-beta.9 -->
 
+### Changes in v1.7.0-beta.9
+
 - All beta users who use the chat feature between now and the release of stable version `1.7.0` will get an `early supporter` role with an exclusive badge next to their username
 - Improved the styling of the chat
 
-## Issues
 If you have any issues while using this beta version, please [open a new issue](https://github.com/zevnda/steam-game-idler/issues/new?template=issue_report.yml)
 
 <!-- 1.7.0-beta.10 -->
 
+### Changes in v1.7.0-beta.10
+
 - Fixed an issue with `card farming` where games with drops weren't being fetched if the user had a `steamparental` cookie saved
   - #66 by @Orangecoat42
 
-## Issues
 If you have any issues while using this beta version, please [open a new issue](https://github.com/zevnda/steam-game-idler/issues/new?template=issue_report.yml)
 
 <!-- 1.7.0-beta.8 -->
 
+### Changes in v1.7.0-beta.8
+
 - Added a chat feature which can be accessed via the sidebar
   - Jury is still out on whether this makes it to the stable release of `1.7.0`. I guess you can let me know in the chat if it should stay or go 😅
 
-## Issues
 If you have any issues while using this beta version, please [open a new issue](https://github.com/zevnda/steam-game-idler/issues/new?template=issue_report.yml)
 
 <!-- 1.7.0-beta.7 -->
+
+### Changes in v1.7.0-beta.7
 
 - Added a `clear data` button to `settings`
   - Clears practically all data that SGI stores and logs the current user out
@@ -474,17 +575,19 @@ If you have any issues while using this beta version, please [open a new issue](
 - Improved the rendering of achievements on the `achievement manager` screen
   - Significantly increases loading times when the game has a lot of achievements
 
-## Issues
 If you have any issues while using this beta version, please [open a new issue](https://github.com/zevnda/steam-game-idler/issues/new?template=issue_report.yml)
 
 <!-- 1.7.0-beta.6 -->
 
+### Changes in v1.7.0-beta.6
+
 - Improved checks for games with no achievements in `achievement unlocker`
 
-## Issues
 If you have any issues while using this beta version, please [open a new issue](https://github.com/zevnda/steam-game-idler/issues/new?template=issue_report.yml)
 
 <!-- 1.7.0-beta.5 -->
+
+### Changes in v1.7.0-beta.5
 
 - Removed the feature for tracking currently idling games as it was causing a significant memory leak
 - The `card farming` and `achievement unlocker` icons in the `sidebar` will now pulse to indicate that that feature is running
@@ -494,26 +597,29 @@ If you have any issues while using this beta version, please [open a new issue](
   - #64 by @Jesewe
 - Switched the `header` logo to a black/white variant
 
-## Issues
 If you have any issues while using this beta version, please [open a new issue](https://github.com/zevnda/steam-game-idler/issues/new?template=issue_report.yml)
 
 <!-- 1.7.0-beta.4 -->
+
+### Changes in v1.7.0-beta.4
 
 - Rerender custom list components to reflect changes made to their lists during automation
 - Fixed incorrect buttons on `custom list` screens
 - Fixed a error when a `game card` was dragged outside of its parent element
 
-## Issues
 If you have any issues while using this beta version, please [open a new issue](https://github.com/zevnda/steam-game-idler/issues/new?template=issue_report.yml)
 
 <!-- 1.7.0-beta.3 -->
 
+### Changes in v1.7.0-beta.3
+
 - Fixed incorrect `custom list` page titles and descriptions
 
-## Issues
 If you have any issues while using this beta version, please [open a new issue](https://github.com/zevnda/steam-game-idler/issues/new?template=issue_report.yml)
 
 <!-- 1.7.0-beta.2 -->
+
+### Changes in v1.7.0-beta.2
 
 - Reworked the way `custom lists` are handled (`favorites`, `card farming`, `achievement unlocker`, `auto idle`)
   - Custom lists can now be viewed and managed via the `sidebar`. Each list has its own `sidebar` icon
@@ -543,10 +649,11 @@ If you have any issues while using this beta version, please [open a new issue](
   - SGI will now always be minimized to the system tray when clicking `x` in the `titlebar`
 - Other miscellaneous UI improvements
 
-## Issues
 If you have any issues while using this beta version, please [open a new issue](https://github.com/zevnda/steam-game-idler/issues/new?template=issue_report.yml)
 
 <!-- 1.7.0-beta.1 -->
+
+### Changes in v1.7.0-beta.1
 
 - Reworked the way `custom lists` are handled (`favorites`, `card farming`, `achievement unlocker`, `auto idle`)
   - Custom lists can now be viewed and managed via the `sidebar`. Each list has its own `sidebar` icon
@@ -568,25 +675,32 @@ If you have any issues while using this beta version, please [open a new issue](
   - SGI will now always be minimized to the system tray when clicking `x` in the `titlebar`
 - Other miscellaneous UI improvements
 
-## Issues
 If you have any issues while using this beta version, please [open a new issue](https://github.com/zevnda/steam-game-idler/issues/new?template=issue_report.yml)
 
 <!-- 1.6.7 -->
+
+### Changes in v1.6.7
 
 - Fixed an issue where `achievement unlocker` wasn't correctly checking for private games or profile
   - #63 by @s0uthbound
 
 <!-- 1.6.6 -->
 
+### Changes in v1.6.6
+
 - Fixed intervals for `card farming`
 
 <!-- 1.6.5 -->
+
+### Changes in v1.6.5
 
 - Reverted changes made in `1.6.4` to the `card farming` and `achievement unlocker` as they proved not to be the issue
 - Updated existing wiki links to point to the new docs site at https://steamgameidler.vercel.app/
 - Updated background videos
 
 <!-- 1.6.4 -->
+
+### Changes in v1.6.4
 
 - Fixed an issue causing the `notifications` panel to be hidden by the `games list` page header
 - Reverted changes made in `1.6.0` to the `card farming` and `achievement unlocker` components that were causing the timer to get stuck at `00:01/00:00`
@@ -595,9 +709,13 @@ If you have any issues while using this beta version, please [open a new issue](
 
 <!-- 1.6.3 -->
 
+### Changes in v1.6.3
+
 - Fixed an issue causing the timer on the `card farming` screen to be set multiple times when farming more than one game
 
 <!-- 1.6.2 -->
+
+### Changes in v1.6.2
 
 - New logo/icon for both the SGI and SteamUtility windows
   - If anyone is good at making custom logos/icons, let me know
@@ -605,9 +723,13 @@ If you have any issues while using this beta version, please [open a new issue](
 
 <!-- 1.6.1 -->
 
+### Changes in v1.6.1
+
 - Fixed an issue where the video div was hiding the information for the `card farming` screen
 
 <!-- 1.6.0 -->
+
+### Changes in v1.6.0
 
 - Major refactor of all components
 - Some backend improvements to speed things up
@@ -632,6 +754,8 @@ If you have any issues while using this beta version, please [open a new issue](
 
 <!-- 1.6.0-beta.4 -->
 
+### Changes in v1.6.0-beta.4
+
 - Added `game settings` to the `game card menu` which allows you to set game-specific limits that SGI will follow
    - Hover over a `game card` in the `games list` and click the 3 vertical dots to show the `game card menu`, then click `game settings`
    - **Max idle time (minutes)**: Set the max amount of time (in minutes) this game should be idled for. SGI will stop idling this game when the time limit is reached
@@ -646,6 +770,8 @@ If you have any issues while using this beta version, please [open a new issue](
 
 <!-- 1.6.0-beta.3 -->
 
+### Changes in v1.6.0-beta.3
+
 - Replaced the `automate` button with individual buttons for `card farming` and `achievement unlocker`
 - Ensure the current SGI user and current Steam user match in certain situations to prevent errors and confusion
 - Now shows details about the account used for `card farming` in `settings > card farming` when credentials are validated
@@ -654,6 +780,8 @@ If you have any issues while using this beta version, please [open a new issue](
 - Fixed an issue with the login background video
 
 <!-- 1.6.0-beta.2 -->
+
+### Changes in v1.6.0-beta.2
 
 - New login screen and login method for getting account information
   - If you have multiple accounts saved on the Steam desktop app, the login screen will now display each account for you to choose from
@@ -668,6 +796,8 @@ If you have any issues while using this beta version, please [open a new issue](
 
 <!-- 1.6.0-beta.1 -->
 
+### Changes in v1.6.0-beta.1
+
 - Major refactor of all components
   - Main concern here is making sure `card farming` and `achievement unlocker` function as intended as these are the hardest things to test on my own
 - Some backend improvements to speed things up
@@ -675,12 +805,16 @@ If you have any issues while using this beta version, please [open a new issue](
 
 <!-- 1.5.32 -->
 
+### Changes in v1.5.32
+
 - Added `notifications` to the window header
   - Any important information regarding SGI such as known bugs, breaking changes, etc will be shown here
 - Fixed an issue with `logs` being malformed
 - Added a `clear logs` button to `settings > logs`
 
 <!-- 1.5.31 -->
+
+### Changes in v1.5.31
 
 - This time I actually fixed the missing `steamid` param in `startCardFarming` 🙃
   - (#51) by @FireLostBoy-Tech
@@ -690,10 +824,14 @@ If you have any issues while using this beta version, please [open a new issue](
 
 <!-- 1.5.30 -->
 
+### Changes in v1.5.30
+
 - Fixes missing `steamid` param in `startCardFarming`
   - (#50) by @Dr4gOnsFuRy
 
 <!-- 1.5.29 -->
+
+### Changes in v1.5.29
 
 - Added an `auto idle games` feature.
   - This works similar to the `card farming` and `achievement unlocker` lists
@@ -707,10 +845,14 @@ If you have any issues while using this beta version, please [open a new issue](
 
 <!-- 1.5.28 -->
 
+### Changes in v1.5.28
+
 - Replaced the individual `Update` buttons with a single `Save changes` button on the `Achievement > Statistics` tab
   - (#36) by @Jesewe
 
 <!-- 1.5.27 -->
+
+### Changes in v1.5.27
 
 - Fixed some UI blocking issues when running specific Tauri commands
 - Improved handling for unlocking/locking achievements, especially when done in bulk
@@ -718,10 +860,14 @@ If you have any issues while using this beta version, please [open a new issue](
 
 <!-- 1.5.26 -->
 
+### Changes in v1.5.26
+
 - Added `Free game notifications` to `settings > general`
   - Receive native Windows notifications when free Steam games are available to add to your account
 
 <!-- 1.5.25 -->
+
+### Changes in v1.5.25
 
 - Added a `steam web api key` option to `settings > general`
   - Allows users to supply their own Steam web API key for fetching user summary and game data
@@ -735,9 +881,13 @@ If you have any issues while using this beta version, please [open a new issue](
 
 <!-- 1.5.23 -->
 
+### Changes in v1.5.23
+
 - Made the `anti-away status` setting `false` by default
 
 <!-- 1.5.22 -->
+
+### Changes in v1.5.22
 
 - Show an error screen when the games list is unable to be retrieved
   - This usually occurs when:
@@ -747,14 +897,20 @@ If you have any issues while using this beta version, please [open a new issue](
 
 <!-- 1.5.21 -->
 
+### Changes in v1.5.21
+
 - Fixed an issue caused by the recent Steam client update, which prevented achievements from being unlocked
 
 <!-- 1.5.19 -->
+
+### Changes in v1.5.19
 
 - Added a `run at startup` option to `settings > general`
 - Fixed an issue where the Steam desktop client would be forced to open if the `anti-away status` setting was enabled
 
 <!-- 1.5.18 -->
+
+### Changes in v1.5.18
 
 - Further improvements of the `free games` features
   - Now, if there are any free Steam games available, there will be a `gift` icon below the `games list` icon in the sidebar. Clicking on it will display a list of the currently free games
@@ -763,17 +919,23 @@ If you have any issues while using this beta version, please [open a new issue](
 
 <!-- 1.5.17 -->
 
+### Changes in v1.5.17
+
 - Improved the method for checking for free games
   - SGI will now check for free games - once on launch, and again every hour while SGI is running
   - Notifications about free games being available will only be shown once every 24 hours
 
 <!-- 1.5.16 -->
 
+### Changes in v1.5.16
+
 - Close all external processes _(idle windows)_ opened by the main window when exiting the app
 - Added a tooltip to the system tray icon when hovered
 - Fixed an issue where logs would show an `unknown` version when updating SGI
 
 <!-- 1.5.15 -->
+
+### Changes in v1.5.15
 
 - Added an `anti-away status` option to `settings > general`
   - Prevents your Steam status from automatically switching to `away` while SGI is running
@@ -783,6 +945,8 @@ If you have any issues while using this beta version, please [open a new issue](
   - You can disable this feature by unchecking `minimize to tray` in `settings > general`
 
 <!-- 1.5.14 -->
+
+### Changes in v1.5.14
 
 - Added a `get notified about free games` option to `settings > general`
   - When active, SGI will check if there are any Steam games with a discount of `100%` _(making them free)_
@@ -795,19 +959,27 @@ If you have any issues while using this beta version, please [open a new issue](
 
 <!-- 1.5.13 -->
 
+### Changes in v1.5.13
+
 - Added Windows 11 window styling (rounded edges, shadow, etc..)
 
 <!-- 1.5.12 -->
 
+### Changes in v1.5.12
+
 - Changed the update modal to a toast
 
 <!-- 1.5.11 -->
+
+### Changes in v1.5.11
 
 - Fixed an issue causing the `check for updates` button to not install updates
 - Increased the max lines for `logs.txt` from `150` to `500`
 - Miscellaneous element styling
 
 <!-- 1.5.10 -->
+
+### Changes in v1.5.10
 
 - Improved the flow for inline updates
   - Users will now see an `update modal` when a new version of SGI is released. They can either choose to `install update` or `not now` to postpone the update
@@ -816,16 +988,22 @@ If you have any issues while using this beta version, please [open a new issue](
 
 <!-- 1.5.9 -->
 
+### Changes in v1.5.9
+
 - Re-added statistics tracking for shield.io badges
 - Include an update manifest when updating via `check for updates` in the `settings menu`
 
 <!-- 1.5.8 -->
+
+### Changes in v1.5.8
 
 - Decreased the `autoClose` delay of toast messages and moved their position to `top-center`
 - The `log.txt` file location can now be directly opened via `settings > logs`
 - Fixed some miscellaneous element styles
 
 <!-- 1.5.7 -->
+
+### Changes in v1.5.7
 
 - Fixed an issue where after the `1.4.5` window state update, sometimes the main window would open off screen
   - (#25) by @the-infinite-moon
@@ -840,9 +1018,13 @@ If you have any issues while using this beta version, please [open a new issue](
 
 <!-- 1.5.6 -->
 
+### Changes in v1.5.6
+
 - Fixed an error that prevented the `card farming` feature from working
 
 <!-- 1.5.5 -->
+
+### Changes in v1.5.5
 
 - Fixed an issue in `achievement unlocker` where game achievements was always `0` when the `skip hidden achievements` options was selected
 - Added a confirmation modal when logging out
@@ -850,15 +1032,21 @@ If you have any issues while using this beta version, please [open a new issue](
 
 <!-- 1.5.4 -->
 
+### Changes in v1.5.4
+
 - Fixed an issue caused by the previous update to `achievement unlocker`
   - (#21) by @jesewe
 
 <!-- 1.5.3 -->
 
+### Changes in v1.5.3
+
 - Fixed an issue that caused an infinite loading screen when a game with no achievements was in the `achievement unlocker` list
   - (https://github.com/probablyraging/steam-game-idler/issues/20) by @Jesewe
 
 <!-- 1.5.2 -->
+
+### Changes in v1.5.2
 
 - Fixed an issue where already unlocked achievements were not being filtered when running the `achievement unlocker`
 - Idler windows now have a different icon color to easily distinguish it from the main SGI window in the task bar
@@ -866,19 +1054,27 @@ If you have any issues while using this beta version, please [open a new issue](
 
 <!-- 1.5.1 -->
 
+### Changes in v1.5.1
+
 - Fixed an issue causing some games list sorting filters to not work
 - Fixed an issue causing some `game banner images` to not load
 
 <!-- 1.5.0 -->
+
+### Changes in v1.5.0
 
 - Moved all http requests to Tauri's rust backend so that SGI no longer relies on a proxy endpoint to make its http requests
   - This means that the API endpoint used in previous version of SGI will likely be retired, breaking previous versions of SGI completely, so updating to `v1.5.0` or later is mandatory
 
 <!-- 1.4.6 -->
 
+### Changes in v1.4.6
+
 - Fixed an issue that caused a temp directory to be included in the release bundle
 
 <!-- 1.4.5 -->
+
+### Changes in v1.4.5
 
 - Added a `general` tab to the `settings` screen
 - Added an option to `disable automatic updates` in `settings > general`
@@ -891,9 +1087,13 @@ If you have any issues while using this beta version, please [open a new issue](
 
 <!-- 1.4.4 -->
 
+### Changes in v1.4.4
+
 - Fixed an issue that caused duplicate idler windows to be opened while the `achievement unlocker` feature was running
 
 <!-- 1.4.3 -->
+
+### Changes in v1.4.3
 
 - Added a `schedule` setting to `settings > achievement unlocker` called `between the hours of`
    - Allows users to choose a time frame for when the `achievement unlocker` feature should actively unlock achievements. When outside of the set time frame, SGI will sleep, only resuming again once within the set time frame
@@ -901,10 +1101,14 @@ If you have any issues while using this beta version, please [open a new issue](
 
 <!-- 1.4.2 -->
 
+### Changes in v1.4.2
+
 - Added a `statistics` tab to the `achievement manager` screen which allows users to edit game achievement statistics
 - Fixed an issue that prevented some elements from filling the screen if the window was resized
 
 <!-- 1.3.18 -->
+
+### Changes in v1.3.18
 
 - Fixed an issue where SGI wasn't checking if Steam was running when bulk unlocking/locking achievements from the `achievement manager` screen
 - Added a timer to the title of the external idling windows
@@ -912,11 +1116,15 @@ If you have any issues while using this beta version, please [open a new issue](
 
 <!-- 1.3.17 -->
 
+### Changes in v1.3.17
+
 - Simplified the UI by merging the `game idler list` and `achievement unlocker list` into a single component/tab called `games list`
   - `game cards` now have both a `start idling` and `achievement manager` button when hovered
 - Fixed an issue where trying to idle a game from within the `game card` `drop down menu` would result in an error
 
 <!-- 1.3.16 -->
+
+### Changes in v1.3.16
 
 - Added a `manually add games` button to the `games list` screen which allows users to add games that they do not own, but have in their Steam library, such as family shared games
   - Manually added games will appear in the `favorites` list
@@ -924,10 +1132,14 @@ If you have any issues while using this beta version, please [open a new issue](
 
 <!-- 1.3.14 -->
 
+### Changes in v1.3.14
+
 - Fixed the background colors when hovering titlebar buttons on the `update` screen
 - Fixed the div width of achievement descriptions on the `achievements manager` screen
 
 <!-- 1.3.13 -->
+
+### Changes in v1.3.13
 
 - Added a `refresh` button to the `games list` to allow users to manually pull game library changes and update the cached games list
   - Refreshing the games list is on a 3 minute cooldown
@@ -937,10 +1149,14 @@ If you have any issues while using this beta version, please [open a new issue](
 
 <!-- 1.3.11 -->
 
+### Changes in v1.3.11
+
 - Added a `skip hidden achievements` button to the `achievement unlocker` settings
 - Improved event logging
 
 <!-- 1.3.10 -->
+
+### Changes in v1.3.10
 
 - Fixed incorrect theme colors for toast popups and `card menu` buttons
 - Fixed text sizing for `card menu`, `automate menu`, and `settings menu` buttons
@@ -950,6 +1166,8 @@ If you have any issues while using this beta version, please [open a new issue](
 
 <!-- 1.3.9 -->
 
+### Changes in v1.3.9
+
 - Removed the need to constantly recheck if Steam is running
   - This caused a `Spacewar` game to be added to the user's recently played list on Steam. Now it should only happen once when signing in
 - Reworked some UI components such as the `game cards`, `sort drop down`, and more, to match the style of other UI components
@@ -957,10 +1175,14 @@ If you have any issues while using this beta version, please [open a new issue](
 
 <!-- 1.3.8 -->
 
+### Changes in v1.3.8
+
 - Fixed an issue where some default settings were being set incorrectly causing the interval slider to break
 - Added a `reset settings` button to the `settings` screen, this will reset all settings to default
 
 <!-- 1.3.7 -->
+
+### Changes in v1.3.7
 
 - SGI no longer requires users to enter their `Steam profile name` or `Steam ID64`. It will now get the Steam profile and games list of the user currently logged in to the Steam desktop app
   - The Steam desktop app must be running and signed in to your account in order to proceed to the `dashboard` screen
@@ -970,9 +1192,13 @@ If you have any issues while using this beta version, please [open a new issue](
 
 <!-- 1.3.6 -->
 
+### Changes in v1.3.6
+
 - Fixed an issue where the `Unlock all` achievements buttons would lock already unlocked achievements
 
 <!-- 1.3.5 -->
+
+### Changes in v1.3.5
 
 - Replaced the `add all games with drops remaining` button with two new options in the `settings` screen
    - **Games in list**: when active only games you manually add to the `card farming list` will be farmed
@@ -981,9 +1207,13 @@ If you have any issues while using this beta version, please [open a new issue](
 
 <!-- 1.3.4 -->
 
+### Changes in v1.3.4
+
 - Fixed an issue where a command terminal window would flash open and close every time a game started or stopped idling
 
 <!-- 1.3.3 -->
+
+### Changes in v1.3.3
 
 - Added an `Add All Games With Drops` when your `sort` filter is set to `Card Farming Games`
    - This will find all games in your Steam library that have 1 or more card drops remaining and add them all to your `Card Farming List`
@@ -993,6 +1223,8 @@ If you have any issues while using this beta version, please [open a new issue](
 
 <!-- 1.3.2 -->
 
+### Changes in v1.3.2
+
 - Updated all API routes to use a standalone API
    - This change may break older versions of SGI in the future, as I intend to remove the current API endpoints at some point
 - Added internal version checks to notify users of breaking changes *(like this one)* in the future and direct them on how to update
@@ -1000,10 +1232,14 @@ If you have any issues while using this beta version, please [open a new issue](
 
 <!-- 1.3.1 -->
 
+### Changes in v1.3.1
+
 - Fixed an error where idled games were being logged by their ID instead of their name
 - Added simple statistic logging
 
 <!-- 1.3.0 -->
+
+### Changes in v1.3.0
 
 - Added automatic card farmer
   - Check the [Card Farming Wiki Page](https://github.com/probablyraging/steam-game-idler/wiki/Automated-features#card-farming) for more information about how the feature works and how to use it
@@ -1023,29 +1259,41 @@ If you have any issues while using this beta version, please [open a new issue](
 
 <!-- 1.2.2 -->
 
+### Changes in v1.2.2
+
 - Added an unlock all button to the achievements menu
 - Deprecated SGI lite version as of v1.2.2
 
 <!-- 1.2.1 -->
+
+### Changes in v1.2.1
 
 - Fixed an issue where an error occurred if the game had no achievements
 - Added a warning message about private game details
 
 <!-- 1.2.0 -->
 
+### Changes in v1.2.0
+
 - Added the ability to unlock game achievements from within the SGI user interface
 - Added an achievements button to game cards *(click the trophy button on any game card to bring up the achievements menu)*
 
 <!-- 1.1.6 -->
+
+### Changes in v1.1.6
 
 - Removed 'list view' and 'grid view' buttons
 - Added 'game information' button
 
 <!-- 1.1.5 -->
 
+### Changes in v1.1.5
+
 - Added tooltips to the sidebar *(sort bar)* to show what each button does
 
 <!-- 1.1.4 -->
+
+### Changes in v1.1.4
 
 - Updated icon for idler window
 - Idler window now shows game names
@@ -1053,11 +1301,15 @@ If you have any issues while using this beta version, please [open a new issue](
 
 <!-- 1.1.3 -->
 
+### Changes in v1.1.3
+
 - Removed unused modules, imports, and tailwind utils
 - Optimized assets
 - Other minor fixes
 
 <!-- 1.1.2 -->
+
+### Changes in v1.1.2
 
 - New icon
 - Updated UI to feel more modern and less "Windows"
@@ -1065,14 +1317,20 @@ If you have any issues while using this beta version, please [open a new issue](
 
 <!-- 1.1.0 -->
 
+### Changes in v1.1.0
+
 - Opted to use Tauri over Electron to reduce file size of the bundled app. Bringing the total bundle size down from 133MB > ~8.7MB *(~3.8MB when zipped)*
 - Added both a portable `.exe` and an `.msi` installer *(use of the `.msi` installer recommended as it comes bundled with dependencies, check [README](https://github.com/ProbablyRaging/steam-game-idler/blob/main/README.md#notes) for more information)*
 - Added `Lite` bundles
 
 <!-- 1.0.1 -->
 
+### Changes in v1.0.1
+
 - Spawn child processes *(idling game windows)* as detached processes to prevent them closing when the main window is closed
 
 <!-- 1.0.0 -->
+
+### Changes in v1.0.0
 
 - Reduce build package size
