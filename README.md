@@ -37,6 +37,7 @@ Contribute to this project by adding new translations or improving existing ones
 | Completion | Language            | Contributors                             | File                                                                                                            |
 | ---------- | ------------------- | ---------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
 | 100%       | English             | [@zevnda](https://github.com/zevnda)     | [en](https://raw.githubusercontent.com/zevnda/steam-game-idler/main/src/i18n/locales/en/translation.json)       |
+| 100%       | French              | [@Logiinx](https://github.com/Logiinx)   | [fr](https://raw.githubusercontent.com/zevnda/steam-game-idler/main/src/i18n/locales/fr/translation.json)       |
 | 100%       | German              | ~                                        | [de](https://raw.githubusercontent.com/zevnda/steam-game-idler/main/src/i18n/locales/de/translation.json)       |
 | 100%       | Italian             | [@Maniots](https://github.com/Maniots)   | [it](https://raw.githubusercontent.com/zevnda/steam-game-idler/main/src/i18n/locales/it/translation.json)       |
 | 100%       | Portuguese (Brazil) | [@Qjeh](https://github.com/Qjeh)         | [pt-BR](https://raw.githubusercontent.com/zevnda/steam-game-idler/main/src/i18n/locales/pt-BR/translation.json) |
