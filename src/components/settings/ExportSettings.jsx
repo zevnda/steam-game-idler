@@ -11,18 +11,12 @@ export default function ExportSettings() {
     const { t } = useTranslation();
     const { userSettings } = useContext(UserContext);
 
-    const exportSettings = async () => {
-        const allSettings = {};
+    const collectSystemInfo = async () => {
         const system = {};
-
-        const appVersion = await getAppVersion();
-        allSettings['version'] = appVersion;
-
         const osVersion = version();
         const cpuArch = arch();
 
         let winVersion = 'Windows';
-
         const buildMatch = osVersion.match(/^10\.0\.(\d+)$/);
         if (buildMatch && buildMatch[1]) {
             const buildNumber = parseInt(buildMatch[1], 10);
@@ -30,41 +24,109 @@ export default function ExportSettings() {
         }
 
         const is64Bit = cpuArch === 'x86_64';
-        system['version'] = `${winVersion} ${is64Bit ? '64-bit' : '32-bit'} (${osVersion})`;
-        system['locale'] = await locale();
+        system.version = `${winVersion} ${is64Bit ? '64-bit' : '32-bit'} (${osVersion})`;
+        system.locale = await locale();
 
-        allSettings['system'] = system;
-        allSettings['settings'] = userSettings;
+        return system;
+    };
+
+    const sanitizeUserSettings = (settings) => {
+        const sanitizedSettings = JSON.parse(JSON.stringify(settings));
+
+        // Remove sensitive data before exporting
+        if (sanitizedSettings.cardFarming) {
+            if (sanitizedSettings.cardFarming.credentials) {
+                delete sanitizedSettings.cardFarming.credentials;
+            }
+            if (sanitizedSettings.cardFarming.userSummary && sanitizedSettings.cardFarming.userSummary.steamId) {
+                delete sanitizedSettings.cardFarming.userSummary.steamId;
+            }
+        }
+
+        if (sanitizedSettings.general) {
+            delete sanitizedSettings.general.apiKey;
+        }
+
+        return sanitizedSettings;
+    };
+
+    const processLocalStorageItem = (key, value) => {
+        // Skip specific keys
+        if (['cachedNotifications', 'seenNotifications', 'ally-supports-cache'].includes(key)) {
+            return null;
+        }
+
+        if (value && (value.startsWith('{') || value.startsWith('['))) {
+            try {
+                const parsedValue = JSON.parse(value);
+
+                // Sanitize sensitive data
+                if (key === 'userSummary' && parsedValue && parsedValue.steamId) {
+                    const sanitizedValue = JSON.parse(JSON.stringify(parsedValue));
+                    delete sanitizedValue.steamId;
+                    return sanitizedValue;
+                } else if (key === 'cardFarming' && parsedValue) {
+                    const sanitizedValue = JSON.parse(JSON.stringify(parsedValue));
+                    if (sanitizedValue.credentials) {
+                        delete sanitizedValue.credentials;
+                    }
+                    if (sanitizedValue.userSummary && sanitizedValue.userSummary.steamId) {
+                        delete sanitizedValue.userSummary.steamId;
+                    }
+                    return sanitizedValue;
+                } else {
+                    return parsedValue;
+                }
+            } catch (error) {
+                console.error(`Error parsing JSON for key "${key}":`, error);
+                return value;
+            }
+        } else {
+            return value;
+        }
+    };
+
+    const collectLocalStorageData = () => {
+        const storageData = {};
 
         for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
-            if (
-                key === 'userSummary' ||
-                key === 'steamCookies' ||
-                key === 'apiKey' ||
-                key === 'cachedNotifications' ||
-                key === 'seenNotifications' ||
-                key === 'ally-supports-cache'
-            ) continue;
             const value = localStorage.getItem(key);
+            const processedValue = processLocalStorageItem(key, value);
 
-            if (value && (value.startsWith('{') || value.startsWith('['))) {
-                try {
-                    allSettings[key] = JSON.parse(value);
-                } catch (error) {
-                    console.error(`Error parsing JSON for key "${key}":`, error);
-                    allSettings[key] = value;
-                }
-            } else {
-                allSettings[key] = value;
+            if (processedValue !== null) {
+                storageData[key] = processedValue;
             }
         }
-        const allSettingsString = JSON.stringify(allSettings, null, 2);
-        navigator.clipboard.writeText(allSettingsString).then(() => {
+
+        return storageData;
+    };
+
+    const exportSettings = async () => {
+        try {
+            const allSettings = {};
+
+            // Add app version
+            allSettings.version = await getAppVersion();
+
+            // Collect system information
+            allSettings.system = await collectSystemInfo();
+
+            // Process user settings
+            allSettings.settings = sanitizeUserSettings(userSettings);
+
+            // Process localStorage data
+            const localStorageData = collectLocalStorageData();
+            Object.assign(allSettings, localStorageData);
+
+            // Copy to clipboard
+            const allSettingsString = JSON.stringify(allSettings, null, 2);
+            await navigator.clipboard.writeText(allSettingsString);
             showSuccessToast(t('toast.exportData.success'));
-        }).catch(() => {
+        } catch (error) {
             showDangerToast(t('toast.exportData.error'));
-        });
+            console.error('Export settings error:', error);
+        }
     };
 
     return (
