@@ -1,111 +1,100 @@
 # Infra labels
-github:
+github/workflows:
   - changed-files:
-      - any-glob-to-any-file: ".github/**/*"
-      - ignore-paths: ".github/workflows/**/*"
-      - ignore-paths: ".github/ISSUE_TEMPLATE/**/*"
-
-github/workflow:
-  - changed-files:
-      - any-glob-to-any-file: ".github/workflows/**/*"
+    - any-glob-to-any-file: ".github/workflows/**/*"
 
 github/templates:
   - changed-files:
-      - any-glob-to-any-file: ".github/ISSUE_TEMPLATE/**/*"
+    - any-glob-to-any-file: ".github/ISSUE_TEMPLATE/**/*"
 
 release:
   - changed-files:
-      - any-glob-to-any-file:
-          - "CHANGELOG.md"
-          - "latest.json"
+    - any-glob-to-any-file:
+      - "CHANGELOG.md"
+      - "latest.json"
 
 # Documentation labels
-docs:
-  - head-branch: ["^docs", "docs/"]
+docs/site:
   - changed-files:
-      - any-glob-to-any-file:
-          - "docs/**/*"
-          - "*.md"
+    - any-glob-to-any-file: "docs/**/*"
 
 # React specific labels
 react:
   - changed-files:
-      - any-glob-to-any-file: "src/**/*"
+    - any-glob-to-any-file: "src/**/*"
 
 react/components:
   - changed-files:
-      - any-glob-to-any-file: "src/components/**/*"
+    - any-glob-to-any-file: "src/components/**/*"
 
 react/states:
   - changed-files:
-      - any-glob-to-any-file: "src/components/contexts/**/*"
+    - any-glob-to-any-file: "src/components/contexts/**/*"
 
 react/ui:
   - changed-files:
-      - any-glob-to-any-file: "src/components/ui/**/*"
+    - any-glob-to-any-file: "src/components/ui/**/*"
 
 react/hooks:
   - changed-files:
-      - any-glob-to-any-file: "src/hooks/**/*"
+    - any-glob-to-any-file: "src/hooks/**/*"
 
 react/i18n:
   - changed-files:
-      - any-glob-to-any-file: "src/i18n/**/*"
+    - any-glob-to-any-file: "src/i18n/**/*"
 
 react/pages:
   - changed-files:
-      - any-glob-to-any-file: "src/pages/**/*"
+    - any-glob-to-any-file: "src/pages/**/*"
 
 react/styles:
   - changed-files:
-      - any-glob-to-any-file: "src/styles/**/*"
+    - any-glob-to-any-file: "src/styles/**/*"
 
 react/utils:
   - changed-files:
-      - any-glob-to-any-file: "src/utils/**/*"
+    - any-glob-to-any-file: "src/utils/**/*"
 
 react/assets:
   - changed-files:
-      - any-glob-to-any-file:
-          - "src/assets/**/*"
-          - "public/**/*"
+    - any-glob-to-any-file:
+      - "src/assets/**/*"
+      - "public/**/*"
 
 # Tauri specific labels
 tauri:
   - changed-files:
-      - any-glob-to-any-file: "src-tauri/**/*"
+    - any-glob-to-any-file: "src-tauri/**/*"
 
 tauri/core:
   - changed-files:
-      - any-glob-to-any-file:
-          - "src-tauri/build.rs"
-          - "src-tauri/src/main.rs"
-          - "src-tauri/src/lib.rs"
+    - any-glob-to-any-file:
+      - "src-tauri/build.rs"
+      - "src-tauri/src/main.rs"
+      - "src-tauri/src/lib.rs"
 
 tauri/deps:
   - changed-files:
-      - any-glob-to-any-file:
-          - "src-tauri/Cargo.lock"
-          - "src-tauri/Cargo.toml"
+    - any-glob-to-any-file:
+      - "src-tauri/Cargo.lock"
+      - "src-tauri/Cargo.toml"
 
 tauri/config:
   - changed-files:
-      - any-glob-to-any-file: "src-tauri/*.json"
+    - any-glob-to-any-file: "src-tauri/*.json"
 
 tauri/src:
   - changed-files:
-      - any-glob-to-any-file:
-          - "src-tauri/src/commands/*"
+    - any-glob-to-any-file:
+      - "src-tauri/src/commands/*"
 
 # Dependencies labels
 dependencies:
   - changed-files:
-      - any-glob-to-any-file:
-          - "package.json"
-          - "pnpm-lock.yaml"
-          - "yarn.lock"
-          - "package-lock.json"
-          - "src-tauri/Cargo.lock"
+    - any-glob-to-any-file:
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "src-tauri/Cargo.lock"
 
 # Types of changes labels
 bugfix:
@@ -125,6 +114,9 @@ ci:
 
 config:
   - head-branch: ["^config", "config/"]
+
+docs:
+  - head-branch: ["^docs", "docs/"]
 
 build:
   - head-branch: ["^build", "build/"]
