@@ -1,4 +1,9 @@
 # Infra labels
+github:
+- all:
+  - changed-files:
+    - any-glob-to-any-file: ".github/**/*"
+
 github/workflows:
 - all:
   - changed-files:
@@ -17,58 +22,90 @@ release:
       - "latest.json"
 
 # Documentation labels
+docs/config:
+- all:
+  - changed-files:
+    - any-glob-to-any-file:
+      - ".gitignore"
+      - "*.config.*"
+      - "jsconfig.*"
+
+docs/deps:
+- all:
+  - changed-files:
+    - any-glob-to-any-file:
+      - "package.json"
+      - "pnpm-lock.yaml"
+
 docs/site:
 - all:
   - changed-files:
     - any-glob-to-any-file: "docs/**/*"
 
+docs/components:
+- all:
+  - changed-files:
+    - any-glob-to-any-file: 
+      - "docs/src/components/**/*"
+      - "docs/app/**/*"
+
+docs/content:
+- all:
+  - changed-files:
+    - any-glob-to-any-file: "docs/src/content/**/*"
+
+docs/assets:
+- all:
+  - changed-files:
+    - any-glob-to-any-file: "docs/public/**/*"
+
 # React specific labels
-react:
+frontend:
 - all:
   - changed-files:
     - any-glob-to-any-file: "src/**/*"
 
-react/components:
+frontend/components:
 - all:
   - changed-files:
     - any-glob-to-any-file: "src/components/**/*"
 
-react/states:
+frontend/states:
 - all:
   - changed-files:
     - any-glob-to-any-file: "src/components/contexts/**/*"
 
-react/ui:
+frontend/ui:
 - all:
   - changed-files:
     - any-glob-to-any-file: "src/components/ui/**/*"
 
-react/hooks:
+frontend/hooks:
 - all:
   - changed-files:
     - any-glob-to-any-file: "src/hooks/**/*"
 
-react/i18n:
+frontend/i18n:
 - all:
   - changed-files:
     - any-glob-to-any-file: "src/i18n/**/*"
 
-react/pages:
+frontend/pages:
 - all:
   - changed-files:
     - any-glob-to-any-file: "src/pages/**/*"
 
-react/styles:
+frontend/styles:
 - all:
   - changed-files:
     - any-glob-to-any-file: "src/styles/**/*"
 
-react/utils:
+frontend/utils:
 - all:
   - changed-files:
     - any-glob-to-any-file: "src/utils/**/*"
 
-react/assets:
+frontend/assets:
 - all:
   - changed-files:
     - any-glob-to-any-file:
@@ -107,14 +144,42 @@ tauri/src:
     - any-glob-to-any-file:
       - "src-tauri/src/commands/*"
 
-# Dependencies labels
-dependencies:
+# Core labels
+core/deps:
 - all:
   - changed-files:
     - any-glob-to-any-file:
       - "package.json"
       - "pnpm-lock.yaml"
       - "src-tauri/Cargo.lock"
+
+core/config:
+- all:
+  - changed-files:
+    - any-glob-to-any-file:
+      - ".eslintrc.*"
+      - ".gitignore"
+      - ".gitmodules"
+      - ".npmrc"
+      - "*.config.*"
+      - "jsconfig.*"
+      - ".husky/*"
+
+core/readme:
+- all:
+  - changed-files:
+    - any-glob-to-any-file: "README.md"
+
+core/assets:
+- all:
+  - changed-files:
+    - any-glob-to-any-file: "public/**/*"
+
+# Library specific labels
+libs:
+- all:
+  - changed-files:
+    - any-glob-to-any-file: "libs/**/*"
 
 # Types of changes labels
 bugfix:
