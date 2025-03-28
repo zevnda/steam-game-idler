@@ -1,3 +1,9 @@
+<!-- 1.9.11 -->
+
+### Changes in v1.9.11
+
+- Remove old `localStorage` data stores to prevent it being included/duplicated via `export data`
+
 <!-- 1.9.10 -->
 
 ### Changes in v1.9.10
