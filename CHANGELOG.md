@@ -1,3 +1,10 @@
+<!-- 1.9.9 -->
+
+### Changes in v1.9.9
+
+- Fixed a issue where `game settings` values were unable to be changes (#183)
+- Fixed a memory leak
+
 <!-- 1.9.8 -->
 
 ### Changes in v1.9.8
