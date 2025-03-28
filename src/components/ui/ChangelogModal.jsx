@@ -31,7 +31,7 @@ export default function ChangelogModal() {
                             <ExtLink href='https://github.com/zevnda/steam-game-idler'>
                                 <div className='flex items-center gap-2 text-yellow-400 hover:text-yellow-500'>
                                     <TbStarFilled />
-                                    <p>
+                                    <p className='text-sm'>
                                         Star on GitHub
                                     </p>
                                 </div>
