@@ -29,6 +29,19 @@ export default function useWindow() {
         emit('ready');
     }, []);
 
+    // TODO: remove once users are migrated to the new settings
+    // Temp fix to remove old data stores from localStorage
+    useEffect(() => {
+        localStorage.removeItem('settings');
+        localStorage.removeItem('steamCookies');
+        localStorage.removeItem('cardFarmingListCache');
+        localStorage.removeItem('achievementUnlockerListCache');
+        localStorage.removeItem('autoIdleListCache');
+        localStorage.removeItem('favoritesListCache');
+        localStorage.removeItem('gameSettings');
+        localStorage.removeItem('cardFarmingUser');
+    }, []);
+
     useEffect(() => {
         const getAndSetUserSettings = async () => {
             if (userSummary) {

@@ -52,7 +52,13 @@ export default function ExportSettings() {
 
     const processLocalStorageItem = (key, value) => {
         // Skip specific keys
-        if (['cachedNotifications', 'seenNotifications', 'ally-supports-cache'].includes(key)) {
+        if ([
+            'cachedNotifications',
+            'seenNotifications',
+            'ally-supports-cache',
+            'steamCookies',
+            'apiKey'
+        ].includes(key)) {
             return null;
         }
 
