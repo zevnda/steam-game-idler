@@ -21,7 +21,7 @@ You must have the **[Steam client](https://store.steampowered.com/about)** insta
 Or if you prefer, you can **[build it yourself](https://steamgameidler.vercel.app/get-started/build-it-yourself)**
 
 # Features
-Check the **[documentation](https://steamgameidler.vercel.app/)** for an in-depth guide for each feature
+Refer to the **[documentation](https://steamgameidler.vercel.app/)** for a detailed guide on each feature
 
 * **[Card Farming](https://steamgameidler.vercel.app/features/card-farming)**: Farm trading cards to sell for a profit or use in badge crafting
 * **[Achievement Unlocker](https://steamgameidler.vercel.app/features/achievement-unlocker)**: Unlock achievements automatically with human-like behavior
@@ -38,7 +38,7 @@ Contribute to this project by adding new translations or improving existing ones
 | ---------- | ------------------- | ---------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
 | 100%       | English             | [@zevnda](https://github.com/zevnda)     | [en](https://raw.githubusercontent.com/zevnda/steam-game-idler/main/src/i18n/locales/en/translation.json)       |
 | 100%       | French              | [@Logiinx](https://github.com/Logiinx)   | [fr](https://raw.githubusercontent.com/zevnda/steam-game-idler/main/src/i18n/locales/fr/translation.json)       |
-| 100%       | German              | ~                                        | [de](https://raw.githubusercontent.com/zevnda/steam-game-idler/main/src/i18n/locales/de/translation.json)       |
+| 100%       | German              | [@zevnda](https://github.com/zevnda)     | [de](https://raw.githubusercontent.com/zevnda/steam-game-idler/main/src/i18n/locales/de/translation.json)       |
 | 100%       | Italian             | [@Maniots](https://github.com/Maniots)   | [it](https://raw.githubusercontent.com/zevnda/steam-game-idler/main/src/i18n/locales/it/translation.json)       |
 | 100%       | Portuguese (Brazil) | [@Qjeh](https://github.com/Qjeh)         | [pt-BR](https://raw.githubusercontent.com/zevnda/steam-game-idler/main/src/i18n/locales/pt-BR/translation.json) |
 | 100%       | Russian             | [@Jesewe](https://github.com/Jesewe)     | [ru](https://raw.githubusercontent.com/zevnda/steam-game-idler/main/src/i18n/locales/ru/translation.json)       |
