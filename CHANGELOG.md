@@ -1,3 +1,9 @@
+<!-- 1.9.10 -->
+
+### Changes in v1.9.10
+
+- Improve error handling of client-side errors
+
 <!-- 1.9.9 -->
 
 ### Changes in v1.9.9
