@@ -1,3 +1,12 @@
+<!-- 1.9.12 -->
+
+### Changes in v1.9.12
+
+- Added Turkish language
+  - [Contribute to SGI by helping with translations](https://github.com/zevnda/steam-game-idler/discussions/148)
+  - Credit:
+    - @61netpa for the Turkish translation
+
 <!-- 1.9.11 -->
 
 ### Changes in v1.9.11

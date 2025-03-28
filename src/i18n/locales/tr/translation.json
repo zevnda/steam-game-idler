@@ -1,0 +1,250 @@
+{
+    "setup": {
+        "welcome": "Hoşgeldiniz",
+        "chooseAccount": "Bir hesap seçin",
+        "refresh": "Yenile",
+        "help": "Yardım mı lazım?",
+        "noUsers": "Hiçbir Steam hesabı bulunamadı",
+        "learn": "Nedenini öğren"
+    },
+    "search": {
+        "games": "Bir oyun ara",
+        "achievements": "Bir başarı ara",
+        "statistics": "Bir istatistik ara"
+    },
+    "notifications": {
+        "empty": "Hiçbir bildirim yok",
+        "markAllRead": "Hepsini okundu olarak işaretle"
+    },
+    "menu": {
+        "guide": "Kullanıcı kılavuzu",
+        "issue": "Bir sorun bildir",
+        "feature": "Bir özellik iste",
+        "support": "Bu projeyi destekle",
+        "changelog": "Güncelleme betiğini görüntüle",
+        "update": "Güncelleme için kontrol et"
+    },
+    "gamesList": {
+        "title": "Oyunlarınız",
+        "sort": {
+            "titleAsc": "Alfabetik A-Z",
+            "titleDesc": "Alfabetik Z-A",
+            "playtimeDesc": "Oynanma Vakti Yüksekten Düşüğe",
+            "playtimeAsc": "Oynanma Vakti Düşükten Yükseğe",
+            "recent": "Son Zamanlarda Oynanmış"
+        },
+        "private": {
+            "message": "Oyun listesi alınamamaktadır. Bunun sebebi genellikle:",
+            "change": "Gizlilik ayarlarınızı değiştirin",
+            "tryAgain": "Yeniden Dene",
+            "reason": {
+                "1": "Profiliniz gizlidir",
+                "2": "Oyun detaylarınız gizlidir",
+                "3": "Kütüphanenizde oyun bulunmamaktadır",
+                "4": "Geçersiz bir Steam web API anahtarı kullanıyorsunuz"
+            }
+        }
+    },
+    "idlingGames": {
+        "title": "Boşta Bırakılan Oyunlar",
+        "subtitle": "Şu anda boşta bırakılan oyunlar burada görünür",
+        "stopAll": "Hepsini Durdur"
+    },
+    "customLists": {
+        "cardFarming": {
+            "subtitle": "Bu listeye kartını kasmak istediğiniz oyunları ekleyin",
+            "buttonLabel": "Kart kasmaya başla"
+        },
+        "achievementUnlocker": {
+            "subtitle": "Bu listeye başarımlarını açmak istediğiniz oyunları ekleyin",
+            "buttonLabel": "Başarım açıcısını başlat"
+        },
+        "autoIdle": {
+            "title": "Otomatik Boşta bırakıcı",
+            "subtitle": "Bu listeye SGI açılınca otomatik olarak boşta bırakmasını istediğniz oyunları ekleyin"
+        },
+        "favorites": {
+            "title": "Favorileriniz",
+            "subtitle": "Favori oyunlarınız"
+        },
+        "manualAdd": {
+            "title": "Bir Oyun Ekle",
+            "gameName": "Oyun Adı",
+            "gameId": "Oyun ID"
+        },
+        "edit": "Listeyi Düzenle",
+        "inList": "Listede",
+        "addAll": "Hepsini Ekle",
+        "invalid": "Geçersiz liste türü"
+    },
+    "automation": {
+        "cardFarming": {
+            "initialDelay": "Bu birkaç saniye sürebilir..",
+            "progress": "<1>{{count}}</1> adet oyunu <3>{{total}}</3> adet kart düşürme hakkı ile boşta bırakılıyor"
+        },
+        "achievementUnlocker": {
+            "initialDelay": "<1>{{timer}}</1> içinde başlatılıyor",
+            "delay": "Sonraki başarım açma <1>{{timer}}</1> sonra olucaktır",
+            "progress": "<3>{{appName}}</3> oyunu için <1>{{count}}</1> adet başarım açılıyor",
+            "scheduleWait": "Başarım açıcı belirlenen vakitler dışına geldiği için durduruldu ve bu vakite geri döndüğünde tekrar çalışmaya başlıyacaktır"
+        }
+    },
+    "freeGames.title": "Bedava oyunlar",
+    "cardMenu": {
+        "idle": "Boşta çalışmaya başlat",
+        "achievements": "Başarımları görüntüle",
+        "store": "Mağaza sayfasını görüntüle",
+        "settings": "Oyun ayarları"
+    },
+    "gameSettings": {
+        "idle": "Maksimum boşta kalma süresi (dakika)",
+        "drops": "Maksimum kart düşürme",
+        "achievements": "Maksimum açılan başarımlar"
+    },
+    "achievementManager": {
+        "steam": "Steam'de görüntüle",
+        "steamDB": "SteamDB'de görüntüle",
+        "file": "Dosya gezgininde görüntüle",
+        "alert": "Bazı korunmuş başarımlar ve istatistikler kapatılmıştır. <1>Daha fazlasını öğren</1>",
+        "achievements": {
+            "title": "Başarımlar",
+            "empty": "Hiçbir başarım yok",
+            "unlockAll": "Hepsini Aç",
+            "lockAll": "Hepsini Kilitle",
+            "unlock": "Aç",
+            "lock": "Kilitle",
+            "protected": "Korunmuş",
+            "modal": "Tüm başarımlarınıza <1>{{state}}</1> eylemini uygulamak istediğinize emin misiniz?",
+            "sort": {
+                "percent": "Yüzde",
+                "title": "Alfabetik",
+                "unlocked": "Açık",
+                "locked": "Kilitli",
+                "unprotected": "Korunmamış",
+                "protected": "Korunmuş"
+            }
+        },
+        "statistics": {
+            "title": "İstatistikler",
+            "empty": "İstatistikler bulunamadı",
+            "saveChanges": "Değişiklikleri Kaydet",
+            "resetAll": "Hepsini Sıfırla",
+            "flags": "Etiketler"
+        }
+    },
+    "settings": {
+        "title": "Ayarlar",
+        "general": {
+            "title": "Genel",
+            "antiAway": "Steam'de olan \"uzakta\" durumunu engelle",
+            "freeGameNotifications": "Bedava oyunlar hakkında bildirimler al",
+            "runAtStartup": "Başlangıçta çalıştır",
+            "language": "Dil",
+            "theme": "Tema",
+            "webApi": "Kendi <1>Steam web API anahtarını</1> kullan (isteğe bağlı). <3>Daha fazlasını öğren</3>",
+            "webApi.placeholder": "Steam web API anahtarı",
+            "userSummary": "Giriş yapılmış olan hesap:",
+            "helpTranslate": "SGI'nin çevirilmesinde yardım et",
+            "languages": {
+                "english": "İngilizce",
+                "german": "Almanca (Deutsch)",
+                "russian": "Rusça (Русский)",
+                "italian": "İtalyanca (Italiano)",
+                "portuguese_brazil": "Portekizce - Brezilya (Português)",
+                "ukrainian": "Ukraynaca (Українська)",
+                "french": "Fransızca (Français)",
+                "turkish": "Türkçe"
+            }
+        },
+        "cardFarming": {
+            "listGames": "Kart kasma listesinde bulunan oyunlar için kart kas",
+            "allGames": "Kart düşürme hakkı bulunan tüm oyunlar için kart kas",
+            "steamCredentials": "Kart kasıcısını kullanmak için Steam bilgileriniz gerekmektedir. <1>Daha fazlasını öğren</1>",
+            "userSummary": "Kart kasılan hesap:"
+        },
+        "achievementUnlocker": {
+            "idle": "Başarım açıcı açıkken oyunları boşta bırak",
+            "hidden": "Gizli başarımları atla",
+            "scheduleLabel": "Başarımları bu saatler arasında aç:",
+            "scheduleAnd": "ve",
+            "interval": "Başarımları her {{min}} ve {{max}} dakikalar arası rastgele aç"
+        },
+        "logs": {
+            "title": "Betikler",
+            "openLogFile": "Dosya Gezgininde Aç",
+            "clearLogs": "Betikleri Temizle",
+            "time": "Zaman",
+            "message": "Mesaj"
+        },
+        "resetSettings": {
+            "button": "Ayarları Sıfırla"
+        },
+        "clearData": {
+            "button": "Veriyi Temizle"
+        },
+        "exportData": "Veriyi Dışa Aktar"
+    },
+    "confirmation": {
+        "logout": "Çıkış yapmak istediğinden emin misin?",
+        "resetStatistics": "Tüm istatistikleri <1>sıfırlamak</1> istediğinden emin misin?",
+        "resetSettings": "Ayarları varsayılanlara sıfırlamaya emin misin?",
+        "clearData": "Tüm veriyi temizlemek istediğinden emin misin?",
+        "steamClosed": "Steam çalışmıyor. Devam etmek için Steam uygulamasını açınız"
+    },
+    "toast": {
+        "steam": "Steam çalışmıyor",
+        "mismatch": "Steam ile SGI arasındaki hesaplar uyuşmamaktadır",
+        "missingCredentials": "Kart kasma bilgileri \"Ayarlar > Kart kasma\" ayarlarında bulunmamaktadır",
+        "outdatedCredentials": "Kart kasma bilgilerinin \"Ayarlar > Kart kasma\" ayarlarında güncellenmesi gerekmektedir",
+        "incorrectCredentials": "Kart kasma bilgileri yanlıştır",
+        "enableAllGames": "Kart kasma listenize birkaç oyun ekleyin ya da \"tüm oyunlar\" ayarını \"Ayarlar > Kart kasma\" ayarlarından açın",
+        "noGames": "Başarım açıcı listenizde hiçbir oyun bulunmamaktadır",
+        "configSettings": "Lütfen ilk olarak ayarlarınızı ayarlayın",
+        "refetch.cooldown": "Oyunlar {{time}} vaktinde tekrar yenilenebilir",
+        "achievementData.error": "Başarım verisini alırken bir sorun yaşandı",
+        "startIdle.success": "{{appName}} ({{appId}}) üstünde boşta bırakılmaya başlatıldı",
+        "startIdle.alreadyIdling": "{{appName}} ({{appId}}) üstünde zaten boşta bırakılmaktadır",
+        "startIdle.error": "{{appName}} ({{appId}}) üstünde boşta bırakılamadı",
+        "stopIdle.success": "{{appName}} ({{appId}}) üstünde boşta bırakma durduruldu",
+        "stopIdle.error": "{{appName}} ({{appId}}) üstünde boşta bırakma durdurulamadı",
+        "stopIdleAll.success": "{{count}} adet oyun artık boşta bırakılmamaktadır",
+        "stopIdleAll.error": "Tüm oyunlarda boşta bırakma durdurulamadı",
+        "exportData.success": "Veri panoya kopyalandı",
+        "exportData.error": "Veriyi dışa aktarırken bir sorun yaşandı",
+        "toggle.success": "{{appName}} oyununda bulunan {{achievementName}} başarımı  için {{type}} uygulandı",
+        "toggle.error": "{{appName}} oyununda bulunan {{achievementName}} başarımı için {{type}} uygulanamadı",
+        "unlockAll.success": "{{appName}} için {{count}} adet başarım başarılı bir şekilde açıldı",
+        "lockAll.success": "{{appName}} için {{count}} adet başarım başarılı bir şekilde kilitlendi",
+        "updateAll.success": "{{appName}} için {{count}} adet istatistik güncellendi",
+        "updateAll.noChanges": "Hiçbir istatistik modifiye edilmedi",
+        "updateAll.error": "İstatistikler güncellenemiyor",
+        "resetAll.success": "{{appName}} için {{count}} adet istatistik sıfırlandı",
+        "resetAll.error": "İstatistikler sıfırlanamıyor",
+        "cardFarming.logIn": "Bilgiler {{user}} için doğrulandı",
+        "cardFarming.logOut": "Bilgiler başarılı bir şekilde temizlendi",
+        "apiKey.save": "Steam web API anahtarı başarılı bir şekilde kaydedildi",
+        "apiKey.error": "Steam web API anahtarını doğrulanamıyor",
+        "apiKey.clear": "Steam web API anahtarı başarılı bir şekilde temizlendi",
+        "clearLogs.success": "Betikler başarılı bir şekilde temizlendi",
+        "resetSettings.success": "Ayarlar varsayılanlara sıfırlandı",
+        "checkUpdate.none": "Güncelleme bulunmamaktadır",
+        "checkUpdate.error": "Güncellemeleri kontrol ederken bir sorun yaşandı"
+    },
+    "common": {
+        "cardFarming": "Kart Kasma",
+        "achievementUnlocker": "Başarım Açıcısı",
+        "showing": "{{total}} oyunundan {{count}} tanesi gösteriliyor",
+        "learnMore": "Daha Fazlasını Öğren",
+        "error": "Bir hata ile karşılaşıldı. Daha fazla bilgi için betiği kontrol et",
+        "start": "Başlat",
+        "stop": "Durdur",
+        "notice": "Bildir",
+        "confirm": "Onayla",
+        "done": "Bitti",
+        "add": "Ekle",
+        "save": "Kaydet",
+        "close": "Kapat",
+        "cancel": "İptal",
+        "clear": "Temizle"
+    }
+}
