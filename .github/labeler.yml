@@ -1,0 +1,133 @@
+# Infra labels
+github:
+  - changed-files:
+      - any-glob-to-any-file: ".github/**/*"
+      - ignore-paths: ".github/workflows/**/*"
+      - ignore-paths: ".github/ISSUE_TEMPLATE/**/*"
+
+github/workflow:
+  - changed-files:
+      - any-glob-to-any-file: ".github/workflows/**/*"
+
+github/templates:
+  - changed-files:
+      - any-glob-to-any-file: ".github/ISSUE_TEMPLATE/**/*"
+
+release:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "CHANGELOG.md"
+          - "latest.json"
+
+# Documentation labels
+docs:
+  - head-branch: ["^docs", "docs/"]
+  - changed-files:
+      - any-glob-to-any-file:
+          - "docs/**/*"
+          - "*.md"
+
+# React specific labels
+react:
+  - changed-files:
+      - any-glob-to-any-file: "src/**/*"
+
+react/components:
+  - changed-files:
+      - any-glob-to-any-file: "src/components/**/*"
+
+react/states:
+  - changed-files:
+      - any-glob-to-any-file: "src/components/contexts/**/*"
+
+react/ui:
+  - changed-files:
+      - any-glob-to-any-file: "src/components/ui/**/*"
+
+react/hooks:
+  - changed-files:
+      - any-glob-to-any-file: "src/hooks/**/*"
+
+react/i18n:
+  - changed-files:
+      - any-glob-to-any-file: "src/i18n/**/*"
+
+react/pages:
+  - changed-files:
+      - any-glob-to-any-file: "src/pages/**/*"
+
+react/styles:
+  - changed-files:
+      - any-glob-to-any-file: "src/styles/**/*"
+
+react/utils:
+  - changed-files:
+      - any-glob-to-any-file: "src/utils/**/*"
+
+react/assets:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "src/assets/**/*"
+          - "public/**/*"
+
+# Tauri specific labels
+tauri:
+  - changed-files:
+      - any-glob-to-any-file: "src-tauri/**/*"
+
+tauri/core:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "src-tauri/build.rs"
+          - "src-tauri/src/main.rs"
+          - "src-tauri/src/lib.rs"
+
+tauri/deps:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "src-tauri/Cargo.lock"
+          - "src-tauri/Cargo.toml"
+
+tauri/config:
+  - changed-files:
+      - any-glob-to-any-file: "src-tauri/*.json"
+
+tauri/src:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "src-tauri/src/commands/*"
+
+# Dependencies labels
+dependencies:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "package.json"
+          - "pnpm-lock.yaml"
+          - "yarn.lock"
+          - "package-lock.json"
+          - "src-tauri/Cargo.lock"
+
+# Types of changes labels
+bugfix:
+  - head-branch: ["^fix", "fix/"]
+
+feature:
+  - head-branch: ["^feat", "feat/"]
+
+chore:
+  - head-branch: ["^chore", "chore/"]
+
+refactor:
+  - head-branch: ["^refactor", "refactor/"]
+
+ci:
+  - head-branch: ["^ci", "ci/"]
+
+config:
+  - head-branch: ["^config", "config/"]
+
+build:
+  - head-branch: ["^build", "build/"]
+
+performance:
+  - head-branch: ["^perf", "perf/"]
