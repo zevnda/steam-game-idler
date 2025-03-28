@@ -5,18 +5,18 @@
     },
     "rules": {
         "strict": "error",
-        "@next/next/no-img-element": "warn",
+        "@next/next/no-img-element": "error",
         "@next/next/no-html-link-for-pages": "error",
         "react/no-unescaped-entities": "error",
         "react/jsx-key": "error",
         "react/jsx-no-duplicate-props": "error",
         "react-hooks/rules-of-hooks": "error",
-        "react-hooks/exhaustive-deps": "warn",
+        "react-hooks/exhaustive-deps": "error",
         "react/jsx-uses-react": "error",
         "react/jsx-uses-vars": "error",
         "react/self-closing-comp": "error",
-        "react/no-array-index-key": "warn",
-        "react/jsx-no-useless-fragment": "warn",
+        "react/no-array-index-key": "error",
+        "react/jsx-no-useless-fragment": "error",
         "react/jsx-pascal-case": "error",
         "react/jsx-curly-brace-presence": [
             "warn",
@@ -26,11 +26,11 @@
             }
         ],
         "react/jsx-fragments": [
-            "warn",
+            "error",
             "syntax"
         ],
         "import/order": [
-            "warn",
+            "error",
             {
                 "groups": [
                     "builtin",
@@ -59,10 +59,9 @@
             "always"
         ],
         "no-console": [
-            "warn",
+            "error",
             {
                 "allow": [
-                    "warn",
                     "error"
                 ]
             }
