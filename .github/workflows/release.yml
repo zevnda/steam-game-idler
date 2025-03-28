@@ -254,6 +254,7 @@ jobs:
             body: "Automated version bump for release v${{ github.event.inputs.version }} by workflow run #${{ github.run_id }}"
             branch: "version-bump-${{ github.event.inputs.version }}-${{ github.run_id }}"
             author: "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
+            committer: "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
             base: "main"
             add-paths: |
               src-tauri/tauri.conf.json
