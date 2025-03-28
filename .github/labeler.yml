@@ -1,4 +1,9 @@
 # Infra labels
+github:
+- all:
+  - changed-files:
+    - any-glob-to-any-file: ".github/**/*"
+
 github/workflows:
 - all:
   - changed-files:
