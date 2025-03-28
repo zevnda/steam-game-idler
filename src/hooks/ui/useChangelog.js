@@ -18,7 +18,7 @@ export default function useChangelog() {
 
             // Find the current versions changelog
             const versionPattern = new RegExp(`<!-- ${currentVersion} -->([\\s\\S]*?)(?=<!--|$)`, 'i');
-            const versionMatch = versionPattern.exec(data)
+            const versionMatch = versionPattern.exec(data);
 
             if (versionMatch && versionMatch[1]) {
                 setChangelog(versionMatch[1].trim().replace(`### Changes in v${currentVersion}`, ''));
