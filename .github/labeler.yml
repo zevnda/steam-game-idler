@@ -108,9 +108,7 @@ frontend/utils:
 frontend/assets:
 - all:
   - changed-files:
-    - any-glob-to-any-file:
-      - "src/assets/**/*"
-      - "public/**/*"
+    - any-glob-to-any-file: "public/**/*"
 
 # Tauri specific labels
 tauri:
@@ -169,11 +167,6 @@ core/readme:
 - all:
   - changed-files:
     - any-glob-to-any-file: "README.md"
-
-core/assets:
-- all:
-  - changed-files:
-    - any-glob-to-any-file: "public/**/*"
 
 # Library specific labels
 libs:
