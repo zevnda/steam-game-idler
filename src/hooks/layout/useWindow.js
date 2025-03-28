@@ -21,7 +21,9 @@ export default function useWindow() {
     const { setIdleGamesList } = useContext(IdleContext);
     const { setIsDarkMode, setShowFreeGamesTab, setIsCardFarming, setIsAchievementUnlocker, setShowSteamWarning } = useContext(StateContext);
     const { setUpdateAvailable, setShowChangelog } = useContext(UpdateContext);
-    const { userSummary, setUserSummary, userSettings, setUserSettings, setFreeGamesList } = useContext(UserContext);
+    const { userSummary, setUserSummary, setUserSettings, setFreeGamesList } = useContext(UserContext);
+
+    console.error('Monitor for rerenders');
 
     useEffect(() => {
         emit('ready');
@@ -35,7 +37,7 @@ export default function useWindow() {
             }
         };
         getAndSetUserSettings();
-    }, [userSummary, userSettings, setUserSettings]);
+    }, [userSummary, setUserSettings]);
 
     useEffect(() => {
         // Set dark mode based on the current theme
