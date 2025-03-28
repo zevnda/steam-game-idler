@@ -8,6 +8,7 @@ import translationFR from '@/i18n/locales/fr/translation.json';
 import translationIT from '@/i18n/locales/it/translation.json';
 import translationPTBR from '@/i18n/locales/pt-BR/translation.json';
 import translationRU from '@/i18n/locales/ru/translation.json';
+import translationTR from '@/i18n/locales/tr/translation.json';
 import translationUK from '@/i18n/locales/uk/translation.json';
 
 const resources = {
@@ -17,6 +18,7 @@ const resources = {
     'it': { translation: translationIT },
     'pt-BR': { translation: translationPTBR },
     'ru': { translation: translationRU },
+    'tr': { translation: translationTR },
     'uk': { translation: translationUK },
 };
 

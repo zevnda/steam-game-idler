@@ -14,6 +14,7 @@ export default function LanguageSwitch() {
         { key: 'it', label: t('settings.general.languages.italian') },
         { key: 'pt-BR', label: t('settings.general.languages.portuguese_brazil') },
         { key: 'ru', label: t('settings.general.languages.russian') },
+        { key: 'tr', label: t('settings.general.languages.turkish') },
         { key: 'uk', label: t('settings.general.languages.ukrainian') },
     ];
 
