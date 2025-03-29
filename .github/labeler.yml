@@ -168,6 +168,7 @@ core:config:
       - "*.config.*"
       - "jsconfig.*"
       - ".husky/*"
+      - "*.yml"
 
 core:docs:
 - all:
