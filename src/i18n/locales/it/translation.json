@@ -53,7 +53,7 @@
     "automation.achievementUnlocker.delay": "Prossimo sblocco tra <1>{{timer}}</1>",
     "automation.achievementUnlocker.progress": "Sbloccando <1>{{count}}</1> obiettivo(i) per <3>{{appName}}</3>",
     "automation.achievementUnlocker.scheduleWait": "Sblocco degli obiettivi in pausa perché al di fuori dell'orario programmato e riprenderà non appena rientrerà nell'orario previsto",
-    "freeGames.title": "Giochi Gratuiti",
+    "\"freeGames.title": "Giochi Gratuiti",
     "cardMenu.idle": "Inizia Idle",
     "cardMenu.achievements": "Guarda Achievements",
     "cardMenu.store": "Guarda Pagina del negozio",
@@ -112,7 +112,7 @@
     "settings.achievementUnlocker.scheduleLabel": "Sblocca obiettivi tra",
     "settings.achievementUnlocker.scheduleAnd": "e",
     "settings.achievementUnlocker.interval": "Sblocca obiettivi randomicamente ogni {{min}} fino {{max}} minuti",
-    "settings.logs.title": "Logs",
+    "settings.logs.title": "Registri",
     "settings.logs.openLogFile": "Apri in Esplora File",
     "settings.logs.clearLogs": "Pulisci Logs",
     "settings.logs.time": "Tempo",
@@ -176,5 +176,10 @@
     "common.save": "Salva",
     "common.close": "Chiudi",
     "common.cancel": "Cancella",
-    "common.clear": "Pulisci"
+    "common.clear": "Pulisci",
+    "changelog.title": "Cambiamenti in {{version}}",
+    "changelog.star": "Star on GitHub",
+    "changelog.report": "Segnala un problema su GitHub",
+    "changelog.release": "Visualizza su GitHub",
+    "common.continue": "Continua"
 }

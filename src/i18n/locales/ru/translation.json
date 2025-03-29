@@ -53,7 +53,7 @@
     "automation.achievementUnlocker.delay": "Следующая разблокировка через <1>{{timer}}</1>",
     "automation.achievementUnlocker.progress": "Разблокировка <1>{{count}}</1> достижения(ий) для <3>{{appName}}</3>",
     "automation.achievementUnlocker.scheduleWait": "Разблокировка достижений приостановлена, так как текущее время не входит в расписание, и возобновится, как только попадет в указанное время",
-    "freeGames.title": "Бесплатные игры",
+    "\"freeGames.title": "Бесплатные игры",
     "cardMenu.idle": "Начать бездействие",
     "cardMenu.achievements": "Посмотреть достижения",
     "cardMenu.store": "Посмотреть страницу магазина",
@@ -176,5 +176,10 @@
     "common.save": "Сохранить",
     "common.close": "Закрыть",
     "common.cancel": "Отмена",
-    "common.clear": "Очистить"
+    "common.clear": "Очистить",
+    "changelog.title": "Изменения в {{version}}",
+    "changelog.star": "Star on GitHub",
+    "changelog.report": "Сообщить о проблеме на GitHub",
+    "changelog.release": "Посмотреть на GitHub",
+    "common.continue": "Продолжить"
 }

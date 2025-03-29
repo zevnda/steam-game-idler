@@ -53,7 +53,7 @@
     "automation.achievementUnlocker.delay": "Nächste Freischaltung in <1>{{timer}}</1>",
     "automation.achievementUnlocker.progress": "<1>{{count}}</1> Errungenschaft(en) für <3>{{appName}}</3> werden freigeschaltet",
     "automation.achievementUnlocker.scheduleWait": "Errungenschafts-Freischaltung pausiert, da es außerhalb der geplanten Zeit liegt, und wird fortgesetzt, sobald die geplante Zeit erreicht ist",
-    "freeGames.title": "Kostenlose Spiele",
+    "\"freeGames.title": "Kostenlose Spiele",
     "cardMenu.idle": "Laufen lassen",
     "cardMenu.achievements": "Errungenschaften anzeigen",
     "cardMenu.store": "Shop-Seite anzeigen",
@@ -111,7 +111,7 @@
     "settings.achievementUnlocker.hidden": "Versteckte Errungenschaften überspringen",
     "settings.achievementUnlocker.scheduleLabel": "Errungenschaften nur zwischen",
     "settings.achievementUnlocker.scheduleAnd": "und",
-    "settings.achievementUnlocker.interval": "Unlock achievements randomly every {{min}} to {{max}} minutes",
+    "settings.achievementUnlocker.interval": "Errungenschaften zufällig alle {{min}} zu {{max}} Minuten freischalten",
     "settings.logs.title": "Protokolle",
     "settings.logs.openLogFile": "Im Datei-Explorer öffnen",
     "settings.logs.clearLogs": "Protokolle löschen",
@@ -176,5 +176,10 @@
     "common.save": "Speichern",
     "common.close": "Schließen",
     "common.cancel": "Abbrechen",
-    "common.clear": "Löschen"
+    "common.clear": "Löschen",
+    "changelog.title": "Änderungen in {{version}}",
+    "changelog.star": "Star on GitHub",
+    "changelog.report": "Problem auf GitHub melden",
+    "changelog.release": "Auf GitHub anzeigen",
+    "common.continue": "Weiter"
 }

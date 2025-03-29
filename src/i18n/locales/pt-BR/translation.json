@@ -53,7 +53,7 @@
     "automation.achievementUnlocker.delay": "Próximo desbloqueio em <1>{{timer}}</1>",
     "automation.achievementUnlocker.progress": "Desbloqueando <1>{{count}}</1> conquista(s) para <3>{{appName}}</3>",
     "automation.achievementUnlocker.scheduleWait": "Desbloqueio de conquistas pausado, pois está fora do horário programado. O processo será retomado assim que entrar no horário estipulado",
-    "freeGames.title": "Jogos Grátis",
+    "\"freeGames.title": "Jogos Grátis",
     "cardMenu.idle": "Iniciar repouso",
     "cardMenu.achievements": "Ver conquistas",
     "cardMenu.store": "Ver página da loja",
@@ -112,7 +112,7 @@
     "settings.achievementUnlocker.scheduleLabel": "Desbloquear conquistas apenas entre",
     "settings.achievementUnlocker.scheduleAnd": "e",
     "settings.achievementUnlocker.interval": "Desbloquear conquistas aleatoriamente a cada {{min}} a {{max}} minutos",
-    "settings.logs.title": "Logs",
+    "settings.logs.title": "Registros",
     "settings.logs.openLogFile": "Abrir no Explorador de Arquivos",
     "settings.logs.clearLogs": "Limpar Logs",
     "settings.logs.time": "Hora",
@@ -176,5 +176,10 @@
     "common.save": "Salvar",
     "common.close": "Fechar",
     "common.cancel": "Cancelar",
-    "common.clear": "Limpar"
+    "common.clear": "Limpar",
+    "changelog.title": "Alterações no {{version}}",
+    "changelog.star": "Star on GitHub",
+    "changelog.report": "Reportar problema no GitHub",
+    "changelog.release": "Ver no GitHub",
+    "common.continue": "Continuar"
 }

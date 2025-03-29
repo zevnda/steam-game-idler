@@ -53,7 +53,7 @@
     "automation.achievementUnlocker.delay": "Prochain déblocage dans <1>{{timer}}</1>",
     "automation.achievementUnlocker.progress": "Déblocage de <1>{{count}}</1> succès pour <3>{{appName}}</3>",
     "automation.achievementUnlocker.scheduleWait": "Le déblocage des succès est en pause car il est en dehors de l'horaire prévu et reprendra une fois dans l'horaire prévu",
-    "freeGames.title": "Jeux gratuits",
+    "\"freeGames.title": "Jeux Gratuits",
     "cardMenu.idle": "Démarrer le mode idle",
     "cardMenu.achievements": "Voir les succès",
     "cardMenu.store": "Voir la page du magasin",
@@ -176,5 +176,10 @@
     "common.save": "Enregistrer",
     "common.close": "Fermer",
     "common.cancel": "Annuler",
-    "common.clear": "Effacer"
+    "common.clear": "Effacer",
+    "changelog.title": "Changements dans {{version}}",
+    "changelog.star": "Star on GitHub",
+    "changelog.report": "Signaler un problème sur GitHub",
+    "changelog.release": "Voir sur GitHub",
+    "common.continue": "Continuer"
 }
