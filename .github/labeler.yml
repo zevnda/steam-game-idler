@@ -23,6 +23,11 @@ versioning:
       - "CHANGELOG.md"
       - "latest.json"
 
+notifications:
+- all:
+  - changed-files:
+    - any-glob-to-any-file: "notifications.json"
+
 # Documentation labels
 docs:config:
 - all:
