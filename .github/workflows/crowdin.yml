@@ -19,8 +19,10 @@ jobs:
           upload_sources: true
           download_translations: true
           
-          # skip_untranslated_strings: true
-          skip_untranslated_files: true
+          config: crowdin.yml
+          crowdin_branch_name: main
+
+          export_only_approved: true
           
           localization_branch_name: i18n/crowdin
           create_pull_request: true
