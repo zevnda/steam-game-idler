@@ -53,7 +53,7 @@
     "automation.achievementUnlocker.delay": "Sonraki başarım açma <1>{{timer}}</1> sonra olucaktır",
     "automation.achievementUnlocker.progress": "<3>{{appName}}</3> oyunu için <1>{{count}}</1> adet başarım açılıyor",
     "automation.achievementUnlocker.scheduleWait": "Başarım açıcı belirlenen vakitler dışına geldiği için durduruldu ve bu vakite geri döndüğünde tekrar çalışmaya başlıyacaktır",
-    "freeGames.title": "Bedava oyunlar",
+    "\"freeGames.title": "Bedava oyunlar",
     "cardMenu.idle": "Boşta çalışmaya başlat",
     "cardMenu.achievements": "Başarımları görüntüle",
     "cardMenu.store": "Mağaza sayfasını görüntüle",
@@ -176,5 +176,10 @@
     "common.save": "Kaydet",
     "common.close": "Kapat",
     "common.cancel": "İptal",
-    "common.clear": "Temizle"
+    "common.clear": "Temizle",
+    "changelog.title": "{{version}}'daki değişiklikler",
+    "changelog.star": "Star on GitHub",
+    "changelog.report": "GitHub'da sorun bildirin",
+    "changelog.release": "View on GitHub",
+    "common.continue": "GitHub'da görüntüle"
 }
