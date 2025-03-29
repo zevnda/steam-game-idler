@@ -1,0 +1,37 @@
+name: Pull Crowdin Translations
+
+on:
+  # schedule:
+    # - cron: "0 * * * *" # Uncomment this line to run every hour
+  workflow_dispatch:
+
+jobs:
+  download-translations:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download Crowdin Translations
+        uses: crowdin/github-action@v2
+        with:
+          upload_sources: true
+          download_translations: true
+          
+          skip_untranslated_strings: true
+          skip_untranslated_files: true
+          
+          localization_branch_name: i18n/crowdin
+          create_pull_request: true
+          pull_request_title: "chore(i18n): pull translations from crowdin"
+          pull_request_base_branch_name: "main"
+          
+          commit_message: "chore(i18n): pull translations from crowdin"
+          
+          github_user_name: "crowdin-action"
+          github_user_email: "crowdin-action@users.noreply.github.com"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
+          CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
