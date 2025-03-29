@@ -33,9 +33,9 @@ docs:config:
 - all:
   - changed-files:
     - any-glob-to-any-file:
-      - ".gitignore"
-      - "*.config.*"
-      - "jsconfig.*"
+      - "docs/.gitignore"
+      - "docs/*.config.*"
+      - "docs/jsconfig.*"
 
 docs:deps:
 - all:
