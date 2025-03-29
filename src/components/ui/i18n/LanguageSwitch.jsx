@@ -41,7 +41,7 @@ export default function LanguageSwitch() {
                 listbox: ['p-0'],
                 value: ['text-sm !text-content'],
                 trigger: ['bg-titlebar border border-border data-[hover=true]:!bg-input data-[open=true]:!bg-input duration-100 rounded-lg'],
-                popoverContent: ['bg-titlebar border border-border rounded-lg justify-start !text-content w-[300px]'],
+                popoverContent: ['bg-titlebar border border-border rounded-lg justify-start !text-content'],
             }}
             defaultSelectedKeys={[currentLanguage]}
             onSelectionChange={(e) => {
