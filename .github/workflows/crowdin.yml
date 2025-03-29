@@ -1,4 +1,4 @@
-name: Pull Crowdin Translations
+name: Crowdin
 
 on:
   # schedule:
@@ -8,6 +8,10 @@ on:
 jobs:
   download-translations:
     runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write
+      pull-requests: write
 
     steps:
       - name: Checkout
@@ -19,10 +23,10 @@ jobs:
           upload_sources: true
           download_translations: true
           
-          config: crowdin.yml
           crowdin_branch_name: main
-
+          
           export_only_approved: true
+          download_language: all
           
           localization_branch_name: i18n/crowdin
           create_pull_request: true
