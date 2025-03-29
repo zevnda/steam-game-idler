@@ -1,10 +1,10 @@
 [
     {
-        "id": "19",
-        "title": "Help Translate SGI",
-        "message": "Help translate Steam Game Idler into your language. Click to learn more",
+        "id": "20",
+        "title": "Help Translate SGI with Crowdin",
+        "message": "Steam Game Idler is now available for translation on Crowdin. Click to help translate SGI into your language",
         "url": "https://github.com/zevnda/steam-game-idler/discussions/148",
-        "timestamp": "1742823066"
+        "timestamp": "1743270423"
     },
     {
         "id": "18",
