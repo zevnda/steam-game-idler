@@ -53,7 +53,7 @@
     "automation.achievementUnlocker.delay": "Prossimo sblocco tra <1>{{timer}}</1>",
     "automation.achievementUnlocker.progress": "Sbloccando <1>{{count}}</1> obiettivo(i) per <3>{{appName}}</3>",
     "automation.achievementUnlocker.scheduleWait": "Sblocco degli obiettivi in pausa perché al di fuori dell'orario programmato e riprenderà non appena rientrerà nell'orario previsto",
-    "\"freeGames.title": "Giochi Gratuiti",
+    "freeGames.title": "Giochi Gratuiti",
     "cardMenu.idle": "Inizia Idle",
     "cardMenu.achievements": "Guarda Achievements",
     "cardMenu.store": "Guarda Pagina del negozio",

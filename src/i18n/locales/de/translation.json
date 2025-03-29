@@ -53,7 +53,7 @@
     "automation.achievementUnlocker.delay": "Nächste Freischaltung in <1>{{timer}}</1>",
     "automation.achievementUnlocker.progress": "<1>{{count}}</1> Errungenschaft(en) für <3>{{appName}}</3> werden freigeschaltet",
     "automation.achievementUnlocker.scheduleWait": "Errungenschafts-Freischaltung pausiert, da es außerhalb der geplanten Zeit liegt, und wird fortgesetzt, sobald die geplante Zeit erreicht ist",
-    "\"freeGames.title": "Kostenlose Spiele",
+    "freeGames.title": "Kostenlose Spiele",
     "cardMenu.idle": "Laufen lassen",
     "cardMenu.achievements": "Errungenschaften anzeigen",
     "cardMenu.store": "Shop-Seite anzeigen",
