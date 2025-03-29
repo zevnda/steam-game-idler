@@ -3,6 +3,8 @@ github:
 - all:
   - changed-files:
     - any-glob-to-any-file: ".github/**/*"
+    - all-globs-to-all-files: '!**/workflows/*'
+    - all-globs-to-all-files: '!**/ISSUE_TEMPLATE/*'
 
 github/workflows:
 - all:
