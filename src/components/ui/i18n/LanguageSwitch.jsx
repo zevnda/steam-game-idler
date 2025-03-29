@@ -8,14 +8,14 @@ export default function LanguageSwitch() {
     const [mounted, setMounted] = useState(false);
 
     const languages = [
-        { key: 'en', label: t('settings.general.languages.english') },
-        { key: 'de', label: t('settings.general.languages.german') },
-        { key: 'fr', label: t('settings.general.languages.french') },
-        { key: 'it', label: t('settings.general.languages.italian') },
+        { key: 'en-US', label: t('settings.general.languages.english') },
+        { key: 'de-DE', label: t('settings.general.languages.german') },
+        { key: 'fr-FR', label: t('settings.general.languages.french') },
+        { key: 'it-IT', label: t('settings.general.languages.italian') },
         { key: 'pt-BR', label: t('settings.general.languages.portuguese_brazil') },
-        { key: 'ru', label: t('settings.general.languages.russian') },
-        { key: 'tr', label: t('settings.general.languages.turkish') },
-        { key: 'uk', label: t('settings.general.languages.ukrainian') },
+        { key: 'ru-RU', label: t('settings.general.languages.russian') },
+        { key: 'tr-TR', label: t('settings.general.languages.turkish') },
+        { key: 'uk-UA', label: t('settings.general.languages.ukrainian') },
     ];
 
     useEffect(() => {
@@ -26,7 +26,7 @@ export default function LanguageSwitch() {
 
     const currentLanguage = languages.find(lang => lang.key === i18n.language)
         ? i18n.language
-        : 'en';
+        : 'en-US';
 
     return (
         <Select
