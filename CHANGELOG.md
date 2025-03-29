@@ -1,3 +1,10 @@
+<!-- 1.9.13 -->
+
+### Changes in v1.9.13
+
+- Add missing translations for the changelog modal 
+- Simplified the language names in the language select menu
+
 <!-- 1.9.12 -->
 
 ### Changes in v1.9.12
