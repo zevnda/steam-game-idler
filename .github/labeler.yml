@@ -1,22 +1,22 @@
 # Infra labels
-github:
+ci:core:
 - all:
   - changed-files:
     - any-glob-to-any-file: ".github/**/*"
     - all-globs-to-all-files: '!**/workflows/*'
     - all-globs-to-all-files: '!**/ISSUE_TEMPLATE/*'
 
-github/workflows:
+ci:workflows:
 - all:
   - changed-files:
     - any-glob-to-any-file: ".github/workflows/**/*"
 
-github/templates:
+ci:templates:
 - all:
   - changed-files:
     - any-glob-to-any-file: ".github/ISSUE_TEMPLATE/**/*"
 
-release:
+versioning:
 - all:
   - changed-files:
     - any-glob-to-any-file:
@@ -24,7 +24,7 @@ release:
       - "latest.json"
 
 # Documentation labels
-docs/config:
+docs:config:
 - all:
   - changed-files:
     - any-glob-to-any-file:
@@ -32,77 +32,77 @@ docs/config:
       - "*.config.*"
       - "jsconfig.*"
 
-docs/deps:
+docs:deps:
 - all:
   - changed-files:
     - any-glob-to-any-file:
-      - "package.json"
-      - "pnpm-lock.yaml"
+      - "docs/package.json"
+      - "docs/pnpm-lock.yaml"
 
-docs/site:
+docs:site:
 - all:
   - changed-files:
     - any-glob-to-any-file: "docs/**/*"
 
-docs/components:
+docs:components:
 - all:
   - changed-files:
     - any-glob-to-any-file: 
       - "docs/src/components/**/*"
       - "docs/app/**/*"
 
-docs/content:
+docs:content:
 - all:
   - changed-files:
     - any-glob-to-any-file: "docs/src/content/**/*"
 
-docs/assets:
+docs:assets:
 - all:
   - changed-files:
     - any-glob-to-any-file: "docs/public/**/*"
 
 # React specific labels
-ui/components:
+ui:components:
 - all:
   - changed-files:
     - any-glob-to-any-file: "src/components/**/*"
 
-ui/states:
+ui:states:
 - all:
   - changed-files:
     - any-glob-to-any-file: "src/components/contexts/**/*"
 
-ui/ui:
+ui:ui:
 - all:
   - changed-files:
     - any-glob-to-any-file: "src/components/ui/**/*"
 
-ui/hooks:
+ui:hooks:
 - all:
   - changed-files:
     - any-glob-to-any-file: "src/hooks/**/*"
 
-ui/i18n:
+ui:i18n:
 - all:
   - changed-files:
     - any-glob-to-any-file: "src/i18n/**/*"
 
-ui/pages:
+ui:pages:
 - all:
   - changed-files:
     - any-glob-to-any-file: "src/pages/**/*"
 
-ui/styles:
+ui:styles:
 - all:
   - changed-files:
     - any-glob-to-any-file: "src/styles/**/*"
 
-ui/utils:
+ui:utils:
 - all:
   - changed-files:
     - any-glob-to-any-file: "src/utils/**/*"
 
-ui/assets:
+ui:assets:
 - all:
   - changed-files:
     - any-glob-to-any-file: "public/**/*"
@@ -118,7 +118,7 @@ tauri:
     - all-globs-to-all-files: '!src-tauri/Cargo.toml'
     - all-globs-to-all-files: '!src-tauri/*.json'
 
-tauri/core:
+tauri:core:
 - all:
   - changed-files:
     - any-glob-to-any-file:
@@ -126,34 +126,33 @@ tauri/core:
       - "src-tauri/src/main.rs"
       - "src-tauri/src/lib.rs"
 
-tauri/deps:
+tauri:deps:
 - all:
   - changed-files:
     - any-glob-to-any-file:
       - "src-tauri/Cargo.lock"
       - "src-tauri/Cargo.toml"
 
-tauri/config:
+tauri:config:
 - all:
   - changed-files:
     - any-glob-to-any-file: "src-tauri/*.json"
 
-tauri/src:
+tauri:src:
 - all:
   - changed-files:
     - any-glob-to-any-file:
       - "src-tauri/src/commands/*"
 
 # Core labels
-core/deps:
+core:deps:
 - all:
   - changed-files:
     - any-glob-to-any-file:
       - "package.json"
       - "pnpm-lock.yaml"
-      - "src-tauri/Cargo.lock"
 
-core/config:
+core:config:
 - all:
   - changed-files:
     - any-glob-to-any-file:
@@ -165,7 +164,7 @@ core/config:
       - "jsconfig.*"
       - ".husky/*"
 
-core/docs:
+core:docs:
 - all:
   - changed-files:
     - any-glob-to-any-file: "README.md"
