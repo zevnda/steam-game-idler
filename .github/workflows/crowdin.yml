@@ -8,10 +8,6 @@ on:
 jobs:
   download-translations:
     runs-on: ubuntu-latest
-    
-    permissions:
-      contents: write
-      pull-requests: write
 
     steps:
       - name: Checkout
@@ -24,9 +20,7 @@ jobs:
           download_translations: true
           
           crowdin_branch_name: main
-          
           export_only_approved: true
-          download_language: all
           
           localization_branch_name: i18n/crowdin
           create_pull_request: true
