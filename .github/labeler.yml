@@ -60,52 +60,47 @@ docs/assets:
     - any-glob-to-any-file: "docs/public/**/*"
 
 # React specific labels
-frontend:
-- all:
-  - changed-files:
-    - any-glob-to-any-file: "src/**/*"
-
-frontend/components:
+ui/components:
 - all:
   - changed-files:
     - any-glob-to-any-file: "src/components/**/*"
 
-frontend/states:
+ui/states:
 - all:
   - changed-files:
     - any-glob-to-any-file: "src/components/contexts/**/*"
 
-frontend/ui:
+ui/ui:
 - all:
   - changed-files:
     - any-glob-to-any-file: "src/components/ui/**/*"
 
-frontend/hooks:
+ui/hooks:
 - all:
   - changed-files:
     - any-glob-to-any-file: "src/hooks/**/*"
 
-frontend/i18n:
+ui/i18n:
 - all:
   - changed-files:
     - any-glob-to-any-file: "src/i18n/**/*"
 
-frontend/pages:
+ui/pages:
 - all:
   - changed-files:
     - any-glob-to-any-file: "src/pages/**/*"
 
-frontend/styles:
+ui/styles:
 - all:
   - changed-files:
     - any-glob-to-any-file: "src/styles/**/*"
 
-frontend/utils:
+ui/utils:
 - all:
   - changed-files:
     - any-glob-to-any-file: "src/utils/**/*"
 
-frontend/assets:
+ui/assets:
 - all:
   - changed-files:
     - any-glob-to-any-file: "public/**/*"
@@ -115,6 +110,11 @@ tauri:
 - all:
   - changed-files:
     - any-glob-to-any-file: "src-tauri/**/*"
+    - all-globs-to-all-files: '!src-tauri/src/*'
+    - all-globs-to-all-files: '!src-tauri/build.rs'
+    - all-globs-to-all-files: '!src-tauri/Cargo.lock'
+    - all-globs-to-all-files: '!src-tauri/Cargo.toml'
+    - all-globs-to-all-files: '!src-tauri/*.json'
 
 tauri/core:
 - all:
@@ -163,7 +163,7 @@ core/config:
       - "jsconfig.*"
       - ".husky/*"
 
-core/readme:
+core/docs:
 - all:
   - changed-files:
     - any-glob-to-any-file: "README.md"
