@@ -53,7 +53,7 @@
     "automation.achievementUnlocker.delay": "Наступне розблокування через <1>{{timer}}</1>",
     "automation.achievementUnlocker.progress": "Розблокування <1>{{count}}</1> досягнення(нь) для <3>{{appName}}</3>",
     "automation.achievementUnlocker.scheduleWait": "Розблокування досягнень призупинено через те, що воно відбувається поза запланованим часом і буде відновлено, коли час буде в межах запланованого",
-    "\"freeGames.title": "Безкоштовні ігри",
+    "freeGames.title": "Безкоштовні ігри",
     "cardMenu.idle": "Почати очікування",
     "cardMenu.achievements": "Переглянути досягнення",
     "cardMenu.store": "Переглянути сторінку магазину",

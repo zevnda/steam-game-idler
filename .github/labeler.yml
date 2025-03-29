@@ -168,6 +168,7 @@ core:config:
       - "*.config.*"
       - "jsconfig.*"
       - ".husky/*"
+      - "*.yml"
 
 core:docs:
 - all:
@@ -178,7 +179,9 @@ core:docs:
 libs:
 - all:
   - changed-files:
-    - any-glob-to-any-file: "libs/**/*"
+    - any-glob-to-any-file: 
+      - "libs/**/*"
+      - "libs/**"
 
 # Types of changes labels
 bugfix:
