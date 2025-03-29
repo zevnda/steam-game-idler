@@ -5,9 +5,10 @@
 
 A simple, user-friendly tool for farming trading cards, managing achievements, and boosting playtime across all games in your Steam library.
 
-<img src="https://img.shields.io/github/downloads/zevnda/steam-game-idler/total?style=for-the-badge" alt="Downloads">
-<img src="https://img.shields.io/github/v/release/zevnda/steam-game-idler?style=for-the-badge&label=Version" alt="Release">
-<img src="https://img.shields.io/github/actions/workflow/status/zevnda/steam-game-idler/release.yml?style=for-the-badge" alt="Build">
+[![Downloads][downloads]](https://github.com/zevnda/steam-game-idler/releases)
+[![Release][release]](https://github.com/zevnda/steam-game-idler/releases/latest)
+![Build][build]
+[![Localized][localized]](https://github.com/zevnda/steam-game-idler/discussions/148)
 
 <img src="./public/example.png" width="700" alt="example image"><br />
 </div>
@@ -34,16 +35,27 @@ Refer to the **[documentation](https://steamgameidler.vercel.app/)** for a detai
 # Supported Languages
 Contribute to this project by adding new translations or improving existing ones. **[Read more here](https://github.com/zevnda/steam-game-idler/discussions/148)**
 
-| Completion | Language            | Contributors                             | File                                                                                                            |
-| ---------- | ------------------- | ---------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| 100%       | English             | [@zevnda](https://github.com/zevnda)     | [en](https://raw.githubusercontent.com/zevnda/steam-game-idler/main/src/i18n/locales/en/translation.json)       |
-| 100%       | French              | [@Logiinx](https://github.com/Logiinx)   | [fr](https://raw.githubusercontent.com/zevnda/steam-game-idler/main/src/i18n/locales/fr/translation.json)       |
-| 100%       | German              | [@zevnda](https://github.com/zevnda)     | [de](https://raw.githubusercontent.com/zevnda/steam-game-idler/main/src/i18n/locales/de/translation.json)       |
-| 100%       | Italian             | [@Maniots](https://github.com/Maniots)   | [it](https://raw.githubusercontent.com/zevnda/steam-game-idler/main/src/i18n/locales/it/translation.json)       |
-| 100%       | Portuguese (Brazil) | [@Qjeh](https://github.com/Qjeh)         | [pt-BR](https://raw.githubusercontent.com/zevnda/steam-game-idler/main/src/i18n/locales/pt-BR/translation.json) |
-| 100%       | Russian             | [@Jesewe](https://github.com/Jesewe)     | [ru](https://raw.githubusercontent.com/zevnda/steam-game-idler/main/src/i18n/locales/ru/translation.json)       |
-| 100%       | Turkish             | [@61netpa](https://github.com/61netpa)   | [tr](https://raw.githubusercontent.com/zevnda/steam-game-idler/main/src/i18n/locales/tr/translation.json)       |
-| 100%       | Ukrainian           | [@Bl0ck154](https://github.com/Bl0ck154) | [uk](https://raw.githubusercontent.com/zevnda/steam-game-idler/main/src/i18n/locales/uk/translation.json)       |
+| Completion      | Language            | Contributors                             |
+| --------------- | ------------------- | ---------------------------------------- |
+| ![fr][fr]       | French              | [@Logiinx](https://github.com/Logiinx)   |
+| ![de][de]       | German              | [@zevnda](https://github.com/zevnda)     |
+| ![it][it]       | Italian             | [@Maniots](https://github.com/Maniots)   |
+| ![pt-BR][pt-BR] | Portuguese (Brazil) | [@Qjeh](https://github.com/Qjeh)         |
+| ![ru][ru]       | Russian             | [@Jesewe](https://github.com/Jesewe)     |
+| ![tr][tr]       | Turkish             | [@61netpa](https://github.com/61netpa)   |
+| ![uk][uk]       | Ukrainian           | [@Bl0ck154](https://github.com/Bl0ck154) |
 
 # License
-All versions of SGI are licensed under the **[GPL-3.0 License](./LICENSE)**
+Copyright © 2024 zevnda — **[GPL-3.0 License](./LICENSE)**
+
+[downloads]: https://img.shields.io/github/downloads/zevnda/steam-game-idler/total?style=for-the-badge&color=%23e86827
+[release]: https://img.shields.io/github/v/release/zevnda/steam-game-idler?style=for-the-badge&color=%232d6acc&label=Version
+[build]: https://img.shields.io/github/actions/workflow/status/zevnda/steam-game-idler/release.yml?style=for-the-badge&color=%2338ba56
+[localized]: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapibase.vercel.app%2Fapi%2Fcrowdin&query=%24.totalProgress&suffix=%25&style=for-the-badge&label=Localized&color=%23985FCC
+[fr]: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapibase.vercel.app%2Fapi%2Fcrowdin%3FlanguageId%3Dfr&query=%24.progress&suffix=%25&style=for-the-badge&label=&color=%23985FCC
+[de]: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapibase.vercel.app%2Fapi%2Fcrowdin%3FlanguageId%3Dde&query=%24.progress&suffix=%25&style=for-the-badge&label=&color=%23985FCC
+[it]: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapibase.vercel.app%2Fapi%2Fcrowdin%3FlanguageId%3Dit&query=%24.progress&suffix=%25&style=for-the-badge&label=&color=%23985FCC
+[pt-BR]: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapibase.vercel.app%2Fapi%2Fcrowdin%3FlanguageId%3Dpt-BR&query=%24.progress&suffix=%25&style=for-the-badge&label=&color=%23985FCC
+[ru]: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapibase.vercel.app%2Fapi%2Fcrowdin%3FlanguageId%3Dru&query=%24.progress&suffix=%25&style=for-the-badge&label=&color=%23985FCC
+[tr]: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapibase.vercel.app%2Fapi%2Fcrowdin%3FlanguageId%3Dtr&query=%24.progress&suffix=%25&style=for-the-badge&label=&color=%23985FCC
+[uk]: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapibase.vercel.app%2Fapi%2Fcrowdin%3FlanguageId%3Duk&query=%24.progress&suffix=%25&style=for-the-badge&label=&color=%23985FCC
