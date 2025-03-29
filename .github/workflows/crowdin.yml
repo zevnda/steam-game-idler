@@ -26,10 +26,12 @@ jobs:
         uses: crowdin/github-action@v2
         with:
           upload_sources: true
+          download_sources: true
           download_translations: true
           
           crowdin_branch_name: main
           export_only_approved: true
+          skip_untranslated_files: true
           
           localization_branch_name: i18n/crowdin
           create_pull_request: true
