@@ -31,7 +31,7 @@ jobs:
           
           export_only_approved: true
           
-          localization_branch_name: core/i18n-crowdin
+          localization_branch_name: chore/i18n-crowdin
           create_pull_request: true
           pull_request_title: "chore(i18n): pull translations from crowdin"
           pull_request_base_branch_name: "main"
