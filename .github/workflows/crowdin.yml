@@ -29,7 +29,6 @@ jobs:
           download_sources: true
           download_translations: true
           
-          crowdin_branch_name: main
           export_only_approved: true
           skip_untranslated_files: true
           
