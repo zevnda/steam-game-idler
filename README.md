@@ -3,7 +3,7 @@
 
 <h1>Steam Game Idler</h1>
 
-A simple, user-friendly tool for farming trading cards, unlocking achievements, and boosting playtime across all games in your Steam library.
+A simple, user-friendly tool for farming trading cards, managing achievements, and boosting playtime across all games in your Steam library.
 
 <img src="https://img.shields.io/github/downloads/zevnda/steam-game-idler/total?style=for-the-badge" alt="Downloads">
 <img src="https://img.shields.io/github/v/release/zevnda/steam-game-idler?style=for-the-badge&label=Version" alt="Release">
