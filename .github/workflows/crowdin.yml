@@ -39,8 +39,8 @@ jobs:
           pull_request_title: "chore(i18n): pull translations from crowdin"
           commit_message: "chore(i18n): pull translations from crowdin"
 
-          github_user_name: "sgi-actions"
-          github_user_email: "sgi-actions@users.noreply.github.com"
+          github_user_name: "sgi-actions[bot]"
+          github_user_email: "205271180+sgi-actions[bot]@users.noreply.github.com"
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
           CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
