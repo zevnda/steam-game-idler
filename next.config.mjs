@@ -13,7 +13,7 @@ const nextConfig = {
             {
                 protocol: 'https',
                 hostname: 'cdn.cloudflare.steamstatic.com',
-            }
+            },
         ]
     }
 };
