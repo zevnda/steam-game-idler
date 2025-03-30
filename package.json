@@ -52,7 +52,7 @@
         "husky": "^9.1.7",
         "lint-staged": "^15.5.0",
         "postcss": "^8",
-        "tailwindcss": "^3.4.1",
+        "tailwindcss": "^4.0.17",
         "typescript": "^5.8.2"
     },
     "lint-staged": {
