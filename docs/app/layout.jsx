@@ -17,11 +17,11 @@ export const metadata = {
         'Steam Idler',
         'Steam Tools',
         'Steam Trading Cards',
-        'Steam Achyiement Unlocker',
+        'Steam Achiement Unlocker',
         'Steam Achievements',
     ],
     authors: [{ name: 'zevnda', url: 'https://github.com/zevnda' }],
-    creator: 'zenvda',
+    creator: 'zevnda',
     generator: 'Next.js',
     applicationName: 'Steam Game Idler',
     appleWebApp: {
@@ -66,7 +66,7 @@ export default async function RootLayout({ children }) {
                 <Layout
                     navbar={navbar}
                     pageMap={await getPageMap()}
-                    docsRepositoryBase='https://github.com/zevnda/steam-game-idler-docs/tree/main'
+                    docsRepositoryBase='https://github.com/zevnda/steam-game-idler-docs/tree/main/docs'
                     editLink='Edit on GitHub'
                     sidebar={{ defaultMenuCollapseLevel: 1, toggleButton: false }}
                     footer={<div />}
