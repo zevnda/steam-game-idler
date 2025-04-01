@@ -2,6 +2,7 @@ import { GeistSans } from 'geist/font/sans';
 import { Head } from 'nextra/components';
 import { getPageMap } from 'nextra/page-map';
 import { Layout, Navbar } from 'nextra-theme-docs';
+import type { ReactElement, ReactNode } from 'react';
 
 import Logo from '@docs/components/Logo';
 import 'nextra-theme-docs/style.css';
@@ -17,11 +18,11 @@ export const metadata = {
         'Steam Idler',
         'Steam Tools',
         'Steam Trading Cards',
-        'Steam Achyiement Unlocker',
+        'Steam Achiement Unlocker',
         'Steam Achievements',
     ],
     authors: [{ name: 'zevnda', url: 'https://github.com/zevnda' }],
-    creator: 'zenvda',
+    creator: 'zevnda',
     generator: 'Next.js',
     applicationName: 'Steam Game Idler',
     appleWebApp: {
@@ -53,7 +54,11 @@ const navbar = (
     <Navbar logo={<Logo />} projectLink='https://github.com/zevnda/steam-game-idler' />
 );
 
-export default async function RootLayout({ children }) {
+export default async function RootLayout({
+    children
+}: {
+    children: ReactNode
+}): Promise<ReactElement> {
     return (
         <html lang='en' dir='ltr' suppressHydrationWarning>
             <Head
@@ -66,7 +71,7 @@ export default async function RootLayout({ children }) {
                 <Layout
                     navbar={navbar}
                     pageMap={await getPageMap()}
-                    docsRepositoryBase='https://github.com/zevnda/steam-game-idler-docs/tree/main'
+                    docsRepositoryBase='https://github.com/zevnda/steam-game-idler/tree/main/docs'
                     editLink='Edit on GitHub'
                     sidebar={{ defaultMenuCollapseLevel: 1, toggleButton: false }}
                     footer={<div />}

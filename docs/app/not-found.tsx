@@ -2,8 +2,9 @@
 import Link from 'next/link';
 import { useTheme } from 'next-themes';
 import { NotFoundPage } from 'nextra-theme-docs';
+import type { ReactElement } from 'react';
 
-export default function NotFound() {
+export default function NotFound(): ReactElement {
     const { resolvedTheme } = useTheme();
 
     const styles = {
@@ -12,7 +13,7 @@ export default function NotFound() {
     };
 
     return (
-        <NotFoundPage content='Report this issue on GitHub' labels='broken-link' >
+        <NotFoundPage content='Report this issue on GitHub' labels='broken-link'>
             <p className='text-2xl font-semibold'>Uh-oh!</p>
             <p>The page you&apos;re looking for doesn&apos;t exist</p>
             <Link

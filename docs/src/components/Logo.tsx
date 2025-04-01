@@ -1,6 +1,7 @@
 import Image from 'next/image';
+import type { ReactElement } from 'react';
 
-export default function Logo() {
+export default function Logo(): ReactElement {
     return (
         <div className='flex items-center gap-2'>
             <Image

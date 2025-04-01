@@ -1,6 +1,26 @@
+import type { ReactElement } from 'react';
 import { TbAward, TbCards, TbEdit, TbPlus, TbSettings } from 'react-icons/tb';
 
-export default function MockButton({ type, content }) {
+type ButtonType =
+    | 'unlock'
+    | 'lock'
+    | 'unlock-all'
+    | 'lock-all'
+    | 'edit'
+    | 'card-farming'
+    | 'achievement-unlocker'
+    | 'done'
+    | 'save'
+    | 'save-changes'
+    | 'context-add'
+    | 'context-cog';
+
+interface MockButtonProps {
+    type: ButtonType;
+    content?: string;
+}
+
+export default function MockButton({ type, content }: MockButtonProps): ReactElement | null {
     if (type === 'unlock') {
         return (
             <span className="inline bg-[#eff4f7] text-black text-[10px] font-semibold px-1 py-1.5 rounded-sm shadow-sm select-none mx-1">
@@ -75,4 +95,6 @@ export default function MockButton({ type, content }) {
             </span>
         );
     }
+
+    return null;
 }
