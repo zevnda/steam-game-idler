@@ -1,3 +1,9 @@
+<!-- 1.9.15 -->
+
+### Changes in v1.9.15
+
+- Fixed an issue where old free games and new free games weren't being compared correctly, causing a notification to be shown multiple times
+
 <!-- 1.9.14 -->
 
 ### Changes in v1.9.14
