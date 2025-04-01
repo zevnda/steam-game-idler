@@ -1,12 +1,13 @@
 import { HeroUIProvider, ToastProvider } from '@heroui/react';
 import type { AppProps } from 'next/app';
+import type { JSX } from 'react';
 import { TbX } from 'react-icons/tb';
 
 import { ThemeProvider } from '@/components/ui/theme/ThemeProvider';
 
 import '@/styles/globals.css';
 
-export default function App({ Component, pageProps }: AppProps) {
+export default function App({ Component, pageProps }: AppProps): JSX.Element {
     return (
         <ThemeProvider
             attribute='class'

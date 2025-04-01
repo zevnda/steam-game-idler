@@ -1,10 +1,34 @@
 {
-    "extends": "next/core-web-vitals",
+    "extends": [
+        "next/core-web-vitals",
+        "plugin:@typescript-eslint/recommended"
+    ],
+    "parser": "@typescript-eslint/parser",
     "env": {
         "es6": true
     },
     "rules": {
         "strict": "error",
+        "@typescript-eslint/no-unused-vars": [
+            "error",
+            {
+                "varsIgnorePattern": "^_",
+                "argsIgnorePattern": "^_",
+                "ignoreRestSiblings": true,
+                "args": "none"
+            }
+        ],
+        "@typescript-eslint/consistent-type-imports": [
+            "error",
+            {
+                "prefer": "type-imports"
+            }
+        ],
+        "@typescript-eslint/explicit-module-boundary-types": "error",
+        "@typescript-eslint/consistent-type-definitions": [
+            "error",
+            "interface"
+        ],
         "@next/next/no-img-element": "error",
         "@next/next/no-html-link-for-pages": "error",
         "react/no-unescaped-entities": "error",
@@ -47,9 +71,6 @@
                 }
             }
         ],
-        "no-undef": "error",
-        "no-unused-vars": "error",
-        "no-unused-expressions": "error",
         "no-multiple-empty-lines": "warn",
         "no-unreachable": "error",
         "no-sync": "error",

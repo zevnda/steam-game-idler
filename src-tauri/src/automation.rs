@@ -16,8 +16,8 @@ pub async fn get_drops_remaining(
     sid: String,
     sls: String,
     sma: Option<String>,
-    steamid: String,
-    app_id: String,
+    steam_id: String,
+    app_id: u32,
 ) -> Result<Value, String> {
     let client = Client::new();
 
@@ -25,7 +25,7 @@ pub async fn get_drops_remaining(
     let cookie_value = match sma {
         Some(sma_val) => format!(
             "sessionid={}; steamLoginSecure={}; steamparental={}; steamMachineAuth{}={}",
-            sid, sls, sma_val, steamid, sma_val
+            sid, sls, sma_val, steam_id, sma_val
         ),
         None => format!("sessionid={}; steamLoginSecure={}", sid, sls),
     };
@@ -33,7 +33,7 @@ pub async fn get_drops_remaining(
     let response = client
         .get(&format!(
             "https://steamcommunity.com/profiles/{}/gamecards/{}/?l=english",
-            steamid, app_id
+            steam_id, app_id
         ))
         .header("Content-Type", "application/json")
         .header("Cookie", cookie_value)

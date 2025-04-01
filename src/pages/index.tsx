@@ -1,4 +1,4 @@
-import React from 'react';
+import type { JSX } from 'react';
 
 import AppProvider from '@/components/contexts/AppProvider';
 import ErrorBoundary from '@/components/layout/ErrorBoundary';
@@ -6,7 +6,7 @@ import Layout from '@/components/layout/Layout';
 import Window from '@/components/layout/Window';
 import I18nProvider from '@/components/ui/i18n/I18nProvider';
 
-export default function Index() {
+export default function Index(): JSX.Element {
     return (
         <ErrorBoundary>
             <AppProvider>
