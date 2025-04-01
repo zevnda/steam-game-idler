@@ -1,4 +1,4 @@
-import type { JSX, ReactNode } from 'react';
+import type { ReactElement, ReactNode } from 'react';
 
 import { IdleProvider } from '@/components/contexts/IdleContext';
 import { NavigationProvider } from '@/components/contexts/NavigationContext';
@@ -7,7 +7,7 @@ import { StateProvider } from '@/components/contexts/StateContext';
 import { UpdateProvider } from '@/components/contexts/UpdateContext';
 import { UserProvider } from '@/components/contexts/UserContext';
 
-export default function AppProvider({ children }: { children: ReactNode }): JSX.Element {
+export default function AppProvider({ children }: { children: ReactNode }): ReactElement {
     return (
         <StateProvider>
             <IdleProvider>

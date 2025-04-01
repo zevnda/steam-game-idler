@@ -36,7 +36,7 @@ export default function useGamesList(): GamesListHook {
     const [isLoading, setIsLoading] = useState(true);
     const [recentGames, setRecentGames] = useState<Game[] | null>(null);
     const [sortStyle, setSortStyle] = useState<SortStyleValue>(
-        (localStorage.getItem('sortStyle') as SortStyleValue) || 'a-z'
+        (localStorage.getItem('sortStyle') as SortStyleValue) || '1-0'
     );
     const [filteredGames, setFilteredGames] = useState<Game[]>([]);
     const [visibleGames, setVisibleGames] = useState<Game[]>([]);

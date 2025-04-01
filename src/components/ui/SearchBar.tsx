@@ -1,5 +1,5 @@
 import { Input } from '@heroui/react';
-import type { ChangeEvent, JSX } from 'react';
+import type { ChangeEvent, ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RiSearchLine } from 'react-icons/ri';
 
@@ -9,7 +9,7 @@ import { useStateContext } from '@/components/contexts/StateContext';
 import { useUserContext } from '@/components/contexts/UserContext';
 import useHeader from '@/hooks/ui/useHeader';
 
-export default function SearchBar(): JSX.Element {
+export default function SearchBar(): ReactElement {
     const { t } = useTranslation();
     const searchContext = useSearchContext();
     const { showAchievements } = useStateContext();

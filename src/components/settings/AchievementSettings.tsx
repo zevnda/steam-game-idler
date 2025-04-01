@@ -1,12 +1,12 @@
 import { Slider, TimeInput } from '@heroui/react';
-import type { JSX } from 'react';
+import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useUserContext } from '@/components/contexts/UserContext';
 import SettingsCheckbox from '@/components/settings/SettingsCheckbox';
 import { useAchievementSettings, handleSliderChange, handleScheduleChange } from '@/hooks/settings/useAchievementSettings';
 
-export default function AchievementSettings(): JSX.Element {
+export default function AchievementSettings(): ReactElement {
     const { t } = useTranslation();
     const { userSummary, userSettings, setUserSettings } = useUserContext();
     const { sliderLabel, setSliderLabel } = useAchievementSettings();

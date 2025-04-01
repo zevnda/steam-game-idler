@@ -1,5 +1,5 @@
 import { open } from '@tauri-apps/plugin-shell';
-import type { JSX, MouseEvent, ReactNode } from 'react';
+import type { MouseEvent, ReactElement, ReactNode } from 'react';
 
 interface ExtLinkProps {
     children: ReactNode;
@@ -11,7 +11,7 @@ export default function ExtLink({
     children,
     href,
     className = ''
-}: ExtLinkProps): JSX.Element {
+}: ExtLinkProps): ReactElement {
     const handleClick = async (e: MouseEvent<HTMLAnchorElement>): Promise<void> => {
         e.preventDefault();
         try {

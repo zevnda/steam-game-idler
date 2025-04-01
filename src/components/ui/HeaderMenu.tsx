@@ -4,7 +4,7 @@ import { relaunch } from '@tauri-apps/plugin-process';
 import { check } from '@tauri-apps/plugin-updater';
 import clsx from 'clsx';
 import { useState } from 'react';
-import type { JSX } from 'react';
+import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TbBookFilled, TbBugFilled, TbBulbFilled, TbDownload, TbLayoutNavbarExpand, TbListCheck, TbStarFilled } from 'react-icons/tb';
 
@@ -14,7 +14,7 @@ import { logEvent } from '@/utils/tasks';
 import { fetchLatest, preserveKeysAndClearData } from '@/utils/tasks';
 import { showDangerToast, showPrimaryToast } from '@/utils/toasts';
 
-export default function HeaderMenu(): JSX.Element {
+export default function HeaderMenu(): ReactElement {
     const { t } = useTranslation();
     const { setShowChangelog } = useUpdateContext();
     const [showMenu, setShowMenu] = useState(false);

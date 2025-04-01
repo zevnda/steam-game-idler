@@ -1,5 +1,5 @@
 import { Button, Modal, ModalContent, ModalBody, ModalFooter, ModalHeader } from '@heroui/react';
-import type { Dispatch, JSX, SetStateAction } from 'react';
+import type { Dispatch, ReactElement, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import useResetSettings from '@/hooks/settings/useResetSettings';
@@ -8,7 +8,7 @@ interface ResetSettingsProps {
     setRefreshKey: Dispatch<SetStateAction<number>>;
 }
 
-export default function ResetSettings({ setRefreshKey }: ResetSettingsProps): JSX.Element {
+export default function ResetSettings({ setRefreshKey }: ResetSettingsProps): ReactElement {
     const { t } = useTranslation();
     const { handleResetSettings, isOpen, onOpen, onOpenChange } = useResetSettings();
 

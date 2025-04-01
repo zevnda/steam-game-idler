@@ -1,6 +1,6 @@
 import { Time } from '@internationalized/date';
 import { createContext, useContext, useState } from 'react';
-import type { Dispatch, JSX, ReactNode, SetStateAction } from 'react';
+import type { Dispatch, ReactElement, ReactNode, SetStateAction } from 'react';
 
 import type { Game } from '@/types/game';
 import type { UserSettings } from '@/types/settings';
@@ -23,7 +23,7 @@ interface UserContextType {
 
 export const UserContext = createContext<UserContextType | undefined>(undefined);
 
-export const UserProvider = ({ children }: { children: ReactNode }): JSX.Element => {
+export const UserProvider = ({ children }: { children: ReactNode }): ReactElement => {
     const [userSummary, setUserSummary] = useState<UserSummary>(null);
     const [achievementsUnavailable, setAchievementsUnavailable] = useState(true);
     const [statisticsUnavailable, setStatisticsUnavailable] = useState(true);

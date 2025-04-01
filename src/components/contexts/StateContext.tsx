@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from 'react';
-import type { Dispatch, JSX, ReactNode, SetStateAction } from 'react';
+import type { Dispatch, ReactElement, ReactNode, SetStateAction } from 'react';
 
 interface StateContextType {
     isDarkMode: boolean;
@@ -24,7 +24,7 @@ interface StateContextType {
 
 export const StateContext = createContext<StateContextType | undefined>(undefined);
 
-export const StateProvider = ({ children }: { children: ReactNode }): JSX.Element => {
+export const StateProvider = ({ children }: { children: ReactNode }): ReactElement => {
     const [isDarkMode, setIsDarkMode] = useState(false);
     const [appId, setAppId] = useState<number | null>(null);
     const [appName, setAppName] = useState<string | null>(null);

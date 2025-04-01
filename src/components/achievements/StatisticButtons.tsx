@@ -1,5 +1,5 @@
 import { Modal, ModalContent, ModalBody, Button, useDisclosure, ModalFooter, ModalHeader } from '@heroui/react';
-import type { Dispatch, SetStateAction, JSX } from 'react';
+import type { Dispatch, SetStateAction, ReactElement } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import useStatisticButtons from '@/hooks/achievements/useStatisticButtons';
@@ -19,7 +19,7 @@ export default function StatisticButtons({
     changedStats,
     setChangedStats,
     setAchievements
-}: StatisticButtonsProps): JSX.Element {
+}: StatisticButtonsProps): ReactElement {
     const { t } = useTranslation();
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const {

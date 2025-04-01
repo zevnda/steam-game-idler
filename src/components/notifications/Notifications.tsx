@@ -1,13 +1,13 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect } from 'react';
-import type { JSX } from 'react';
+import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import { GoDotFill } from 'react-icons/go';
 import { TbBell } from 'react-icons/tb';
 
 import { handleOpenUrl, markAllAsSeen, timeAgo, useNotifications } from '@/hooks/notifications/useNotifications';
 
-export default function Notifications(): JSX.Element {
+export default function Notifications(): ReactElement {
     const { t } = useTranslation();
     const {
         notifications,

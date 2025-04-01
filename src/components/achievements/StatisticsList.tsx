@@ -1,6 +1,6 @@
 import { NumberInput } from '@heroui/react';
 import { memo, useState, useMemo } from 'react';
-import type { ChangeEvent, CSSProperties, Dispatch, JSX, SetStateAction } from 'react';
+import type { ChangeEvent, CSSProperties, Dispatch, ReactElement, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FixedSizeList as List } from 'react-window';
 
@@ -20,7 +20,7 @@ interface RowProps {
     data: RowData;
 }
 
-const Row = memo(({ index, style, data }: RowProps): JSX.Element | null => {
+const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
     const { filteredStatistics, updateStatistic, t } = data;
     const item1 = filteredStatistics[index * 2];
     const item2 = filteredStatistics[index * 2 + 1];
@@ -102,7 +102,7 @@ interface StatisticsListProps {
     setAchievements: Dispatch<SetStateAction<Achievement[]>>;
 }
 
-export default function StatisticsList({ statistics, setStatistics, setAchievements }: StatisticsListProps): JSX.Element {
+export default function StatisticsList({ statistics, setStatistics, setAchievements }: StatisticsListProps): ReactElement {
     const { t } = useTranslation();
     const { statisticQueryValue } = useSearchContext();
     const [changedStats, setChangedStats] = useState<ChangedStats>({});

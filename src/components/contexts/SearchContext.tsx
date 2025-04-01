@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from 'react';
-import type { Dispatch, JSX, ReactNode, SetStateAction } from 'react';
+import type { Dispatch, ReactElement, ReactNode, SetStateAction } from 'react';
 
 interface SearchContextType {
     isQuery: boolean;
@@ -14,7 +14,7 @@ interface SearchContextType {
 
 export const SearchContext = createContext<SearchContextType | undefined>(undefined);
 
-export const SearchProvider = ({ children }: { children: ReactNode }): JSX.Element => {
+export const SearchProvider = ({ children }: { children: ReactNode }): ReactElement => {
     const [isQuery, setIsQuery] = useState(false);
     const [gameQueryValue, setGameQueryValue] = useState('');
     const [achievementQueryValue, setAchievementQueryValue] = useState('');

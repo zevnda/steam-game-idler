@@ -1,6 +1,6 @@
 import { Tab, Tabs } from '@heroui/react';
 import { useState } from 'react';
-import type { JSX } from 'react';
+import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import AchievementsList from '@/components/achievements/AchievementsList';
@@ -12,7 +12,7 @@ import useAchievements from '@/hooks/achievements/useAchievements';
 import type { Achievement, Statistic } from '@/types/achievment';
 import type { CurrentTabType } from '@/types/navigation';
 
-export default function Achievements(): JSX.Element {
+export default function Achievements(): ReactElement {
     const { t } = useTranslation();
     const { setCurrentTab } = useNavigationContext();
     const [isLoading, setIsLoading] = useState(true);

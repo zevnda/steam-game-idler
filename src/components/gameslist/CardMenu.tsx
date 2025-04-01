@@ -1,6 +1,6 @@
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@heroui/react';
 import { open } from '@tauri-apps/plugin-shell';
-import type { JSX } from 'react';
+import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaSteam } from 'react-icons/fa';
 import { TbAwardFilled, TbDotsVertical, TbPlayerPlayFilled, TbSettingsFilled } from 'react-icons/tb';
@@ -14,7 +14,7 @@ interface CardMenuProps {
     onOpen: () => void;
 }
 
-export default function CardMenu({ item, onOpen }: CardMenuProps): JSX.Element {
+export default function CardMenu({ item, onOpen }: CardMenuProps): ReactElement {
     const { t } = useTranslation();
     const { setAppId, setAppName, setShowAchievements, setIsGameSettingsOpen } = useStateContext();
 

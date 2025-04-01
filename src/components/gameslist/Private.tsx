@@ -1,5 +1,5 @@
 import { Button } from '@heroui/react';
-import type { Dispatch, JSX, SetStateAction } from 'react';
+import type { Dispatch, ReactElement, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import ExtLink from '@/components/ui/ExtLink';
@@ -8,7 +8,7 @@ interface PrivateProps {
     setRefreshKey: Dispatch<SetStateAction<number>>;
 }
 
-export default function Private({ setRefreshKey }: PrivateProps): JSX.Element {
+export default function Private({ setRefreshKey }: PrivateProps): ReactElement {
     const { t } = useTranslation();
 
     const handleRefresh = (): void => {

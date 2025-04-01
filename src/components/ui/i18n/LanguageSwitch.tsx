@@ -1,10 +1,10 @@
 import { Select, SelectItem } from '@heroui/react';
 import { useEffect, useState } from 'react';
-import type { JSX } from 'react';
+import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TbLanguage } from 'react-icons/tb';
 
-export default function LanguageSwitch(): JSX.Element | null {
+export default function LanguageSwitch(): ReactElement | null {
     const { t, i18n } = useTranslation();
     const [mounted, setMounted] = useState(false);
 

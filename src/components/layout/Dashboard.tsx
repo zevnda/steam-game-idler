@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import type { JSX } from 'react';
+import type { ReactElement } from 'react';
 
 import Achievements from '@/components/achievements/Achievements';
 import AchievementUnlocker from '@/components/automation/AchievementUnlocker';
@@ -16,7 +16,7 @@ import SideBar from '@/components/ui/SideBar';
 import type { ActivePageType, CustomListType } from '@/types/navigation';
 import { antiAwayStatus } from '@/utils/tasks';
 
-export default function Dashboard(): JSX.Element {
+export default function Dashboard(): ReactElement {
     const { showAchievements, isCardFarming, isAchievementUnlocker } = useStateContext();
     const { activePage, setActivePage } = useNavigationContext();
 

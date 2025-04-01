@@ -1,7 +1,7 @@
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, NumberInput } from '@heroui/react';
 import { invoke } from '@tauri-apps/api/core';
 import { useState, useEffect } from 'react';
-import type { JSX } from 'react';
+import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useStateContext } from '@/components/contexts/StateContext';
@@ -14,7 +14,7 @@ interface GameSettingsProps {
     onOpenChange: () => void;
 }
 
-export default function GameSettings({ isOpen, onOpenChange }: GameSettingsProps): JSX.Element {
+export default function GameSettings({ isOpen, onOpenChange }: GameSettingsProps): ReactElement {
     const { t } = useTranslation();
     const { userSummary, userSettings, setUserSettings } = useUserContext();
     const { appId, appName, setIsGameSettingsOpen } = useStateContext();

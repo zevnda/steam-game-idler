@@ -20,7 +20,7 @@ export const usePageHeader = (
 ): PageHeaderHook => {
     const { t } = useTranslation();
     const [sortStyle, setSortStyleState] = useState<SortStyleValue>(
-        localStorage.getItem('sortStyle') as SortStyleValue || 'a-z'
+        localStorage.getItem('sortStyle') as SortStyleValue || '1-0'
     );
 
     // Update sort style when state changes

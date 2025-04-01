@@ -1,6 +1,6 @@
 import { Modal, ModalContent, ModalBody, Button, useDisclosure, ModalFooter, ModalHeader, Select, SelectItem } from '@heroui/react';
 import { useState } from 'react';
-import type { Dispatch, JSX, SetStateAction } from 'react';
+import type { Dispatch, ReactElement, SetStateAction } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { TbSortDescending2 } from 'react-icons/tb';
 
@@ -16,7 +16,11 @@ interface AchievementButtonsProps {
     protectedAchievements: boolean;
 }
 
-export default function AchievementButtons({ achievements, setAchievements, protectedAchievements }: AchievementButtonsProps): JSX.Element {
+export default function AchievementButtons({
+    achievements,
+    setAchievements,
+    protectedAchievements
+}: AchievementButtonsProps): ReactElement {
     const { t } = useTranslation();
     const { userSummary } = useUserContext();
     const { appId, appName } = useStateContext();

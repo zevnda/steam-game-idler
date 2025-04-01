@@ -1,7 +1,7 @@
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input } from '@heroui/react';
 import Image from 'next/image';
 import { memo } from 'react';
-import type { CSSProperties, Dispatch, JSX, SetStateAction, SyntheticEvent } from 'react';
+import type { CSSProperties, Dispatch, ReactElement, SetStateAction, SyntheticEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TbCheck } from 'react-icons/tb';
 import { FixedSizeList as List } from 'react-window';
@@ -21,7 +21,7 @@ interface RowProps {
     data: RowData;
 }
 
-const Row = memo(({ index, style, data }: RowProps): JSX.Element => {
+const Row = memo(({ index, style, data }: RowProps): ReactElement => {
     const { filteredGamesList, list, handleAddGame, handleRemoveGame } = data;
     const item = filteredGamesList[index];
 
@@ -90,7 +90,7 @@ export default function EditListModal({
     handleAddAllGames,
     handleRemoveGame,
     handleClearList
-}: EditListModalProps): JSX.Element {
+}: EditListModalProps): ReactElement {
     const { t } = useTranslation();
     const itemData = { filteredGamesList, list, handleAddGame, handleRemoveGame };
 

@@ -1,5 +1,5 @@
 import { Button, Modal, ModalContent, ModalBody, ModalFooter, ModalHeader, useDisclosure, NumberInput, Input } from '@heroui/react';
-import type { Dispatch, JSX, KeyboardEvent, SetStateAction } from 'react';
+import type { Dispatch, KeyboardEvent, ReactElement, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TbPlus } from 'react-icons/tb';
 
@@ -11,7 +11,7 @@ interface ManualAddProps {
     setList: Dispatch<SetStateAction<Game[]>>;
 }
 
-export default function ManualAdd({ listName, setList }: ManualAddProps): JSX.Element {
+export default function ManualAdd({ listName, setList }: ManualAddProps): ReactElement {
     const { t } = useTranslation();
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const manualAdd = useManualAdd(listName, setList);

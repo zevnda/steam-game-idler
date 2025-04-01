@@ -1,12 +1,12 @@
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure } from '@heroui/react';
 import { useEffect } from 'react';
-import type { JSX } from 'react';
+import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useStateContext } from '@/components/contexts/StateContext';
 import { checkSteamStatus } from '@/utils/tasks';
 
-export default function SteamWarning(): JSX.Element {
+export default function SteamWarning(): ReactElement {
     const { t } = useTranslation();
     const { showSteamWarning, setShowSteamWarning } = useStateContext();
     const { isOpen, onOpen, onOpenChange } = useDisclosure();

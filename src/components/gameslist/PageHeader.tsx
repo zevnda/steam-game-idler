@@ -1,5 +1,5 @@
 import { Select, SelectItem } from '@heroui/react';
-import type { Dispatch, JSX, SetStateAction } from 'react';
+import type { Dispatch, ReactElement, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TbRefresh, TbSortDescending2 } from 'react-icons/tb';
 
@@ -22,16 +22,16 @@ export default function PageHeader({
     filteredGames,
     visibleGames,
     setRefreshKey
-}: PageHeaderProps): JSX.Element {
+}: PageHeaderProps): ReactElement {
     const { t } = useTranslation();
     const { userSummary } = useUserContext();
     const { handleSorting, handleRefetch } = usePageHeader(setSortStyle, setRefreshKey);
 
     const sortOptions: SortOption[] = [
-        { key: 'a-z', label: t('gamesList.sort.titleAsc') },
-        { key: 'z-a', label: t('gamesList.sort.titleDesc') },
         { key: '1-0', label: t('gamesList.sort.playtimeDesc') },
         { key: '0-1', label: t('gamesList.sort.playtimeAsc') },
+        { key: 'a-z', label: t('gamesList.sort.titleAsc') },
+        { key: 'z-a', label: t('gamesList.sort.titleDesc') },
         { key: 'recent', label: t('gamesList.sort.recent') },
     ];
 

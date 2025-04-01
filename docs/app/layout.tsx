@@ -18,7 +18,7 @@ export const metadata = {
         'Steam Idler',
         'Steam Tools',
         'Steam Trading Cards',
-        'Steam Achiement Unlocker',
+        'Steam Achievement Unlocker',
         'Steam Achievements',
     ],
     authors: [{ name: 'zevnda', url: 'https://github.com/zevnda' }],
