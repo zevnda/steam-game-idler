@@ -221,8 +221,12 @@ export const checkForFreeGames = async (
             setFreeGamesList(freeGamesList.games);
             setShowFreeGamesTab(true);
 
+            // Sort the arrays before comparing to ignore order differences
+            const sortedOldIds = [...oldFreeGameIds].sort((a, b) => a - b);
+            const sortedNewIds = [...newFreeGameIds].sort((a, b) => a - b);
+
             // Only notify if the list of free games has changed
-            if (JSON.stringify(oldFreeGameIds) !== JSON.stringify(newFreeGameIds)) {
+            if (JSON.stringify(sortedOldIds) !== JSON.stringify(sortedNewIds)) {
                 localStorage.setItem('freeGamesIds', JSON.stringify(newFreeGameIds));
                 if (freeGameNotifications) {
                     sendNativeNotification('Free Games Available!', 'Check the sidebar for the 🎁 icon to get your free games');
