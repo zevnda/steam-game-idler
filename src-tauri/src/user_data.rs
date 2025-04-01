@@ -2,14 +2,14 @@ use crate::utils::get_steam_location;
 use regex::Regex;
 use reqwest::Client;
 use serde_json;
-use serde_json::Value;
+use serde_json::{json, Value};
 use std::collections::HashMap;
 use std::fs;
 use std::path::PathBuf;
 
 #[tauri::command]
 // Get Steam users
-pub async fn get_users() -> Result<String, String> {
+pub async fn get_users() -> Result<Value, String> {
     let steam_loc = get_steam_location().await.map_err(|e| e.to_string())?;
     let steam_loc_path = PathBuf::from(steam_loc);
 
@@ -29,13 +29,23 @@ pub async fn get_users() -> Result<String, String> {
                     })
                     .collect();
 
-                // Convert the user list to JSON and return it
-                let users_json = serde_json::to_string(&user_list).map_err(|e| e.to_string())?;
-                return Ok(users_json);
+                // Return the user list directly as JSON
+                return Ok(json!({
+                    "users": user_list,
+                }));
             }
-            Err("No users found".to_string())
+            // If no users are found, return an empty list
+            Ok(json!({
+                "error": "No users found",
+                "users": [],
+            }))
         }
-        Err(e) => Err(format!("Error parsing loginusers file: {}", e)),
+        Err(err) => {
+            return Ok(json!({
+                "error": err,
+                "users": [],
+            }));
+        }
     }
 }
 

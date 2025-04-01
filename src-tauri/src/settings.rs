@@ -8,7 +8,7 @@ use tauri::Manager;
 // Default settings
 fn get_default_settings() -> Value {
     json!({
-        "gameSettings": {},
+        "gameSettings": null,
         "general": {
             "antiAway": false,
             "freeGameNotifications": true,
@@ -17,8 +17,8 @@ fn get_default_settings() -> Value {
         "cardFarming": {
             "listGames": true,
             "allGames": false,
-            "credentials": {},
-            "userSummary": {}
+            "credentials": null,
+            "userSummary": null
         },
         "achievementUnlocker": {
             "idle": true,

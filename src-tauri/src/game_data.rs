@@ -45,7 +45,7 @@ pub async fn get_games_list(
             let filtered_data = filter_game_data(&body)?;
 
             let game_data = json!({
-                "games": filtered_data
+                "games_list": filtered_data
             });
 
             // Get the application data directory
@@ -103,7 +103,7 @@ pub async fn get_recent_games(
             let filtered_data = filter_game_data(&body)?;
 
             let game_data = json!({
-                "games": filtered_data
+                "games_list": filtered_data
             });
 
             // Get the application data directory
@@ -185,8 +185,11 @@ pub fn get_games_list_cache(
             let mut contents = String::new();
             file.read_to_string(&mut contents)
                 .map_err(|e| format!("Failed to read games list file: {}", e))?;
-            serde_json::from_str(&contents)
-                .map_err(|e| format!("Failed to parse games list JSON: {}", e))?
+            let parsed: Value = serde_json::from_str(&contents)
+                .map_err(|e| format!("Failed to parse games list JSON: {}", e))?;
+
+            // Extract the games_list array from the parsed object
+            parsed.get("games_list").cloned().unwrap_or(json!({}))
         } else {
             json!({})
         }
@@ -202,8 +205,11 @@ pub fn get_games_list_cache(
             let mut contents = String::new();
             file.read_to_string(&mut contents)
                 .map_err(|e| format!("Failed to read recent games file: {}", e))?;
-            serde_json::from_str(&contents)
-                .map_err(|e| format!("Failed to parse recent games JSON: {}", e))?
+            let parsed: Value = serde_json::from_str(&contents)
+                .map_err(|e| format!("Failed to parse recent games JSON: {}", e))?;
+
+            // Extract the games_list array from the parsed object
+            parsed.get("games_list").cloned().unwrap_or(json!({}))
         } else {
             json!({})
         }
