@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { FiLogOut } from 'react-icons/fi';
 import {
     TbAward,
@@ -12,7 +13,14 @@ import {
     TbSettings
 } from 'react-icons/tb';
 
-export default function Icon({ type }) {
+type IconType = 'game' | 'play' | 'cards' | 'award' | 'hourglass' |
+    'heart' | 'gift' | 'playalt' | 'cog' | 'dots' | 'signout';
+
+interface IconProps {
+    type: IconType;
+}
+
+export default function Icon({ type }: IconProps): ReactElement {
     const iconStyles = {
         display: 'inline',
         marginInline: 4,
