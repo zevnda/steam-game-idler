@@ -1,10 +1,10 @@
 import { Button, Modal, ModalContent, ModalBody, ModalFooter, ModalHeader } from '@heroui/react';
-import type { JSX } from 'react';
+import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import useClearData from '@/hooks/settings/useClearData';
 
-export default function ClearData(): JSX.Element {
+export default function ClearData(): ReactElement {
     const { t } = useTranslation();
     const { isOpen, onOpen, onOpenChange, handleClearData } = useClearData();
 

@@ -1,6 +1,6 @@
 import { Button, useDisclosure } from '@heroui/react';
 import Image from 'next/image';
-import type { JSX, SyntheticEvent } from 'react';
+import type { ReactElement, SyntheticEvent } from 'react';
 import { TbAwardFilled, TbPlayerPlayFilled, TbPlayerStopFilled } from 'react-icons/tb';
 
 import { useIdleContext } from '@/components/contexts/IdleContext';
@@ -11,7 +11,7 @@ import IdleTimer from '@/components/ui/IdleTimer';
 import { handleIdle, handleStopIdle, viewAchievments } from '@/hooks/ui/useGameCard';
 import type { Game } from '@/types/game';
 
-export default function GameCard({ item }: { item: Game }): JSX.Element {
+export default function GameCard({ item }: { item: Game }): ReactElement {
     const { idleGamesList, setIdleGamesList } = useIdleContext();
     const { isDarkMode, setAppId, setAppName, setShowAchievements } = useStateContext();
     const { isOpen, onOpen, onOpenChange } = useDisclosure();

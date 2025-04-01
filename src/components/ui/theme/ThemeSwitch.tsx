@@ -1,7 +1,7 @@
 import { Select, SelectItem } from '@heroui/react';
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
-import type { JSX } from 'react';
+import type { ReactElement } from 'react';
 import { TbBrush } from 'react-icons/tb';
 
 interface Theme {
@@ -9,7 +9,7 @@ interface Theme {
     label: string;
 }
 
-export default function ThemeSwitch(): JSX.Element | null {
+export default function ThemeSwitch(): ReactElement | null {
     const { setTheme, resolvedTheme } = useTheme();
     const [mounted, setMounted] = useState(false);
 

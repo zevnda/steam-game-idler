@@ -1,4 +1,4 @@
-import type { JSX } from 'react';
+import type { ReactElement } from 'react';
 
 import { useStateContext } from '@/components/contexts/StateContext';
 import PageHeader from '@/components/gameslist/PageHeader';
@@ -7,7 +7,7 @@ import GameCard from '@/components/ui/GameCard';
 import Loader from '@/components/ui/Loader';
 import useGamesList from '@/hooks/gameslist/useGamesList';
 
-export default function GamesList(): JSX.Element {
+export default function GamesList(): ReactElement {
     const { showAchievements } = useStateContext();
     const gamesContext = useGamesList();
 

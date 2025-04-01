@@ -1,6 +1,6 @@
 import { Button, Input } from '@heroui/react';
 import Image from 'next/image';
-import type { JSX } from 'react';
+import type { ReactElement } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { useUserContext } from '@/components/contexts/UserContext';
@@ -8,7 +8,7 @@ import SettingsCheckbox from '@/components/settings/SettingsCheckbox';
 import ExtLink from '@/components/ui/ExtLink';
 import { useCardSettings, handleSave, handleClear } from '@/hooks/settings/useCardSettings';
 
-export default function CardSettings(): JSX.Element {
+export default function CardSettings(): ReactElement {
     const { t } = useTranslation();
     const { userSummary, userSettings, setUserSettings } = useUserContext();
     const cardSettings = useCardSettings();

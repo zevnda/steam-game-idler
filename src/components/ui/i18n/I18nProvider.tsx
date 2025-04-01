@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import type { JSX, ReactNode } from 'react';
+import type { ReactElement, ReactNode } from 'react';
 import { I18nextProvider } from 'react-i18next';
 
 import i18n from '@/i18n/i18n';
 
-export default function I18nProvider({ children }: { children: ReactNode }): JSX.Element | null {
+export default function I18nProvider({ children }: { children: ReactNode }): ReactElement | null {
     const [isClient, setIsClient] = useState(false);
 
     useEffect(() => {

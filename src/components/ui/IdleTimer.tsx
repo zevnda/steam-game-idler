@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import type { JSX } from 'react';
+import type { ReactElement } from 'react';
 import { TbPlayerPlayFilled } from 'react-icons/tb';
 
-export default function IdleTimer({ startTime }: { startTime: number }): JSX.Element {
+export default function IdleTimer({ startTime }: { startTime: number }): ReactElement {
     const formatTime = (elapsed: number): string => {
         const hours = Math.floor(elapsed / (1000 * 60 * 60));
         const minutes = Math.floor((elapsed % (1000 * 60 * 60)) / (1000 * 60));

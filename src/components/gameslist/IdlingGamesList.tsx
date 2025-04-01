@@ -1,6 +1,6 @@
 import { Button } from '@heroui/react';
 import { invoke } from '@tauri-apps/api/core';
-import type { JSX } from 'react';
+import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TbPlayerStopFilled } from 'react-icons/tb';
 
@@ -11,7 +11,7 @@ import type { InvokeKillProcess } from '@/types/invoke';
 import { logEvent } from '@/utils/tasks';
 import { showDangerToast, showSuccessToast } from '@/utils/toasts';
 
-export default function IdlingGamesList(): JSX.Element {
+export default function IdlingGamesList(): ReactElement {
     const { t } = useTranslation();
     const { idleGamesList, setIdleGamesList } = useIdleContext();
     const { setIsCardFarming, setIsAchievementUnlocker } = useStateContext();

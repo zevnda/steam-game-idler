@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from 'react';
-import type { Dispatch, JSX, ReactNode, SetStateAction } from 'react';
+import type { Dispatch, ReactElement, ReactNode, SetStateAction } from 'react';
 
 import type { Game } from '@/types/game';
 
@@ -10,7 +10,7 @@ interface IdleContextType {
 
 export const IdleContext = createContext<IdleContextType | undefined>(undefined);
 
-export const IdleProvider = ({ children }: { children: ReactNode }): JSX.Element => {
+export const IdleProvider = ({ children }: { children: ReactNode }): ReactElement => {
     const [idleGamesList, setIdleGamesList] = useState<Game[]>([]);
 
     return (

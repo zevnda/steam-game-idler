@@ -1,11 +1,11 @@
 import { createContext, useContext, useState } from 'react';
-import type { JSX, ReactNode } from 'react';
+import type { ReactElement, ReactNode } from 'react';
 
 import type { NavigationContextType, ActivePageType, CurrentTabType } from '@/types/navigation';
 
 export const NavigationContext = createContext<NavigationContextType | undefined>(undefined);
 
-export const NavigationProvider = ({ children }: { children: ReactNode }): JSX.Element => {
+export const NavigationProvider = ({ children }: { children: ReactNode }): ReactElement => {
     const [activePage, setActivePage] = useState<ActivePageType>('games');
     const [currentTab, setCurrentTab] = useState<CurrentTabType>('achievements');
 

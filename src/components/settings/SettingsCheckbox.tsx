@@ -1,6 +1,6 @@
 import { Checkbox } from '@heroui/react';
 import { useEffect, useState } from 'react';
-import type { ChangeEvent, JSX } from 'react';
+import type { ChangeEvent, ReactElement } from 'react';
 
 import { useStateContext } from '@/components/contexts/StateContext';
 import { useUserContext } from '@/components/contexts/UserContext';
@@ -17,7 +17,7 @@ interface SettingsCheckboxProps {
     content: string;
 }
 
-export default function SettingsCheckbox({ type, name, content }: SettingsCheckboxProps): JSX.Element {
+export default function SettingsCheckbox({ type, name, content }: SettingsCheckboxProps): ReactElement {
     const { isDarkMode } = useStateContext();
     const { userSummary, userSettings, setUserSettings } = useUserContext();
     const [styles, setStyles] = useState({});

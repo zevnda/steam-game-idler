@@ -1,6 +1,6 @@
 import { Button } from '@heroui/react';
 import { arch, version, locale } from '@tauri-apps/plugin-os';
-import type { JSX } from 'react';
+import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useUserContext } from '@/components/contexts/UserContext';
@@ -20,7 +20,7 @@ interface ExportedData {
     [key: string]: unknown;
 }
 
-export default function ExportSettings(): JSX.Element {
+export default function ExportSettings(): ReactElement {
     const { t } = useTranslation();
     const { userSettings } = useUserContext();
 

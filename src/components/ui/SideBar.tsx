@@ -1,5 +1,5 @@
 import { Modal, ModalContent, ModalBody, Button, ModalFooter, ModalHeader } from '@heroui/react';
-import type { JSX } from 'react';
+import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FiLogOut } from 'react-icons/fi';
 import { TbAward, TbCards, TbDeviceGamepad2, TbGift, TbHeart, TbHourglassLow, TbPlayerPlay, TbSettings } from 'react-icons/tb';
@@ -9,7 +9,7 @@ import { useNavigationContext } from '@/components/contexts/NavigationContext';
 import { useStateContext } from '@/components/contexts/StateContext';
 import useSideBar from '@/hooks/ui/useSideBar';
 
-export default function SideBar(): JSX.Element {
+export default function SideBar(): ReactElement {
     const { t } = useTranslation();
     const { idleGamesList } = useIdleContext();
     const { isDarkMode, showFreeGamesTab, isCardFarming, isAchievementUnlocker } = useStateContext();

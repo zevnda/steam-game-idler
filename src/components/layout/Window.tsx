@@ -1,4 +1,4 @@
-import type { JSX } from 'react';
+import type { ReactElement } from 'react';
 
 import { useUserContext } from '@/components/contexts/UserContext';
 import Dashboard from '@/components/layout/Dashboard';
@@ -7,7 +7,7 @@ import ChangelogModal from '@/components/ui/ChangelogModal';
 import SteamWarning from '@/components/ui/SteamWarning';
 import useWindow from '@/hooks/layout/useWindow';
 
-export default function Window(): JSX.Element {
+export default function Window(): ReactElement {
     const { userSummary } = useUserContext();
     useWindow();
 

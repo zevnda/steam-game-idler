@@ -1,12 +1,12 @@
 import { Button } from '@heroui/react';
 import { GeistMono } from 'geist/font/mono';
-import type { JSX } from 'react';
+import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useLogs, handleClearLogs, handleOpenLogFile } from '@/hooks/settings/useLogs';
 import type { LogEntry } from '@/types/log';
 
-export default function Logs(): JSX.Element {
+export default function Logs(): ReactElement {
     const { t } = useTranslation();
     const { logs }: { logs: LogEntry[] } = useLogs();
 

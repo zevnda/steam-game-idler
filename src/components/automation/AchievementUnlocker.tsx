@@ -1,7 +1,7 @@
 import { Button } from '@heroui/react';
 import Image from 'next/image';
 import { useState, useEffect, useRef } from 'react';
-import type { JSX } from 'react';
+import type { ReactElement } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { TbCheck } from 'react-icons/tb';
 
@@ -11,7 +11,7 @@ import type { Game } from '@/types/game';
 import type { ActivePageType } from '@/types/navigation';
 import { stopIdle } from '@/utils/idle';
 
-export default function AchievementUnlocker({ activePage }: { activePage: ActivePageType }): JSX.Element {
+export default function AchievementUnlocker({ activePage }: { activePage: ActivePageType }): ReactElement {
     const { t } = useTranslation();
     const { isDarkMode, setIsAchievementUnlocker } = useStateContext();
 

@@ -1,7 +1,7 @@
 import { Button, Spinner } from '@heroui/react';
 import Image from 'next/image';
 import { useState, useEffect, useRef } from 'react';
-import type { JSX } from 'react';
+import type { ReactElement } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { TbCheck } from 'react-icons/tb';
 
@@ -9,7 +9,7 @@ import { useStateContext } from '@/components/contexts/StateContext';
 import { handleCancel, useCardFarming, type GameWithDrops } from '@/hooks/automation/useCardFarming';
 import type { ActivePageType } from '@/types/navigation';
 
-export default function CardFarming({ activePage }: { activePage: ActivePageType }): JSX.Element {
+export default function CardFarming({ activePage }: { activePage: ActivePageType }): ReactElement {
     const { t } = useTranslation();
     const { isDarkMode, setIsCardFarming } = useStateContext();
 

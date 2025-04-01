@@ -1,5 +1,5 @@
 import { Tab, Tabs } from '@heroui/react';
-import type { JSX } from 'react';
+import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import AchievementSettings from '@/components/settings/AchievementSettings';
@@ -11,7 +11,7 @@ import Logs from '@/components/settings/Logs';
 import ResetSettings from '@/components/settings/ResetSettings';
 import useSettings from '@/hooks/settings/useSettings';
 
-export default function Settings(): JSX.Element {
+export default function Settings(): ReactElement {
     const { t } = useTranslation();
     const { version, refreshKey, setRefreshKey } = useSettings();
 

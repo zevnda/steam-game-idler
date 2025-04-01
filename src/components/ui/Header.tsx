@@ -1,5 +1,5 @@
 import { Divider } from '@heroui/react';
-import type { JSX } from 'react';
+import type { ReactElement } from 'react';
 import { GoGrabber } from 'react-icons/go';
 import { TbMinus, TbSquare, TbX } from 'react-icons/tb';
 
@@ -11,7 +11,7 @@ import SearchBar from '@/components/ui/SearchBar';
 import UpdateButton from '@/components/ui/UpdateButton';
 import useHeader from '@/hooks/ui/useHeader';
 
-export default function Header(): JSX.Element {
+export default function Header(): ReactElement {
     const { isDarkMode } = useStateContext();
     const { updateAvailable } = useUpdateContext();
     const { windowMinimize, windowToggleMaximize, windowClose } = useHeader();

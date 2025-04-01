@@ -1,3 +1,9 @@
+<!-- 1.9.14 -->
+
+### Changes in v1.9.14
+
+- The games list is now sorted by playtime high to low by default
+
 <!-- 1.9.13 -->
 
 ### Changes in v1.9.13

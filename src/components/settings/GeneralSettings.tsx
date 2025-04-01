@@ -1,6 +1,6 @@
 import { Button, Input } from '@heroui/react';
 import Image from 'next/image';
-import type { JSX } from 'react';
+import type { ReactElement } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 
 import { useUserContext } from '@/components/contexts/UserContext';
@@ -10,7 +10,7 @@ import LanguageSwitch from '@/components/ui/i18n/LanguageSwitch';
 import ThemeSwitch from '@/components/ui/theme/ThemeSwitch';
 import { useGeneralSettings, handleKeySave, handleClear } from '@/hooks/settings/useGeneralSettings';
 
-export default function GeneralSettings(): JSX.Element {
+export default function GeneralSettings(): ReactElement {
     const { t } = useTranslation();
     const { userSummary, setUserSettings } = useUserContext();
     const { keyValue, setKeyValue, hasKey, setHasKey } = useGeneralSettings();

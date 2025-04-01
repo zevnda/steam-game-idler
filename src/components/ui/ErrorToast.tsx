@@ -1,4 +1,4 @@
-import type { JSX } from 'react';
+import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import ExtLink from '@/components/ui/ExtLink';
@@ -8,7 +8,7 @@ interface ErrorToastProps {
     href: string;
 }
 
-export default function ErrorToast({ message, href }: ErrorToastProps): JSX.Element {
+export default function ErrorToast({ message, href }: ErrorToastProps): ReactElement {
     const { t } = useTranslation();
 
     return (

@@ -1,6 +1,6 @@
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Spinner, useDisclosure } from '@heroui/react';
 import { useEffect } from 'react';
-import type { JSX } from 'react';
+import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TbStarFilled } from 'react-icons/tb';
 import ReactMarkdown from 'react-markdown';
@@ -11,7 +11,7 @@ import ExtLink from '@/components/ui/ExtLink';
 import useChangelog, { transformIssueReferences, transformLinks, transformMentions } from '@/hooks/ui/useChangelog';
 import styles from '@/styles/ChangelogModal.module.css';
 
-export default function ChangelogModal(): JSX.Element {
+export default function ChangelogModal(): ReactElement {
     const { t } = useTranslation();
     const { showChangelog, setShowChangelog } = useUpdateContext();
     const { isOpen, onOpen, onOpenChange } = useDisclosure();

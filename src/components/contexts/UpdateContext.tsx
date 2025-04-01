@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from 'react';
-import type { Dispatch, JSX, ReactNode, SetStateAction } from 'react';
+import type { Dispatch, ReactElement, ReactNode, SetStateAction } from 'react';
 
 interface UpdateContextType {
     updateAvailable: boolean;
@@ -10,7 +10,7 @@ interface UpdateContextType {
 
 export const UpdateContext = createContext<UpdateContextType | undefined>(undefined);
 
-export const UpdateProvider = ({ children }: { children: ReactNode }): JSX.Element => {
+export const UpdateProvider = ({ children }: { children: ReactNode }): ReactElement => {
     const [updateAvailable, setUpdateAvailable] = useState(false);
     const [showChangelog, setShowChangelog] = useState(false);
 

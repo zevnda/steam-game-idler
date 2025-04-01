@@ -3,14 +3,14 @@ import { invoke } from '@tauri-apps/api/core';
 import { relaunch } from '@tauri-apps/plugin-process';
 import { check } from '@tauri-apps/plugin-updater';
 import { useState } from 'react';
-import type { JSX } from 'react';
+import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TbDownload } from 'react-icons/tb';
 
 import { logEvent } from '@/utils/tasks';
 import { showDangerToast } from '@/utils/toasts';
 
-export default function UpdateButton(): JSX.Element {
+export default function UpdateButton(): ReactElement {
     const { t } = useTranslation();
     const [isLoading, setIsLoading] = useState(false);
 

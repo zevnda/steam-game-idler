@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import type { JSX, SyntheticEvent } from 'react';
+import type { ReactElement, SyntheticEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaSteam } from 'react-icons/fa';
 
@@ -7,7 +7,7 @@ import { useUserContext } from '@/components/contexts/UserContext';
 import ExtLink from '@/components/ui/ExtLink';
 import type { Game } from '@/types/game';
 
-export default function FreeGamesList(): JSX.Element {
+export default function FreeGamesList(): ReactElement {
     const { t } = useTranslation();
     const { freeGamesList } = useUserContext();
 

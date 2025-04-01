@@ -1,7 +1,7 @@
 import { Button, Tooltip } from '@heroui/react';
 import Image from 'next/image';
 import { memo, useMemo } from 'react';
-import type { JSX } from 'react';
+import type { ReactElement } from 'react';
 import type { CSSProperties, Dispatch, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FixedSizeList as List } from 'react-window';
@@ -30,7 +30,7 @@ interface RowProps {
     data: RowData;
 }
 
-const Row = memo(({ index, style, data }: RowProps): JSX.Element | null => {
+const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
     const { userSummary, appId, appName, filteredAchievements, updateAchievement, t } = data;
     const item = filteredAchievements[index];
 
@@ -123,7 +123,7 @@ export default function AchievementsList({
     achievements,
     setAchievements,
     protectedAchievements
-}: AchievementsListProps): JSX.Element {
+}: AchievementsListProps): ReactElement {
     const { t } = useTranslation();
     const { userSummary } = useUserContext();
     const { achievementQueryValue } = useSearchContext();

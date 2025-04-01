@@ -1,6 +1,6 @@
 import { Alert, Button, Tooltip } from '@heroui/react';
 import { invoke } from '@tauri-apps/api/core';
-import type { JSX } from 'react';
+import type { ReactElement } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { SiSteam, SiSteamdb } from 'react-icons/si';
 import { TbAlertHexagonFilled, TbArrowBack, TbFoldersFilled } from 'react-icons/tb';
@@ -18,7 +18,7 @@ interface PageHeaderProps {
     protectedStatistics: boolean;
 }
 
-export default function PageHeader({ protectedAchievements, protectedStatistics }: PageHeaderProps): JSX.Element {
+export default function PageHeader({ protectedAchievements, protectedStatistics }: PageHeaderProps): ReactElement {
     const { t } = useTranslation();
     const { userSummary, setAchievementsUnavailable, setStatisticsUnavailable } = useUserContext();
     const { appId, appName, setShowAchievements } = useStateContext();

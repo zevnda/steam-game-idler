@@ -4,7 +4,7 @@ import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Button } from '@heroui/react';
 import { useState } from 'react';
-import type { JSX, ReactNode } from 'react';
+import type { ReactElement, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TbAward, TbCards, TbEdit } from 'react-icons/tb';
 
@@ -30,7 +30,7 @@ interface ListTypeConfig {
     buttonLabel: string | null;
 }
 
-export default function CustomList({ type }: CustomListProps): JSX.Element {
+export default function CustomList({ type }: CustomListProps): ReactElement {
     const { t } = useTranslation();
     const {
         list,

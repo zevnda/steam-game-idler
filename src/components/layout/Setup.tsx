@@ -2,7 +2,7 @@ import { Spinner, Tooltip } from '@heroui/react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import type { JSX } from 'react';
+import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TbRefresh, TbUserFilled } from 'react-icons/tb';
 
@@ -12,7 +12,7 @@ import ExtLink from '@/components/ui/ExtLink';
 import Header from '@/components/ui/Header';
 import useSetup from '@/hooks/layout/useSetup';
 
-export default function Setup(): JSX.Element {
+export default function Setup(): ReactElement {
     const { t } = useTranslation();
     const { isDarkMode } = useStateContext();
     const { setActivePage } = useNavigationContext();
