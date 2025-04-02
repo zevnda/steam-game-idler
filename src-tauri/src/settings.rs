@@ -18,7 +18,9 @@ fn get_default_settings() -> Value {
             "listGames": true,
             "allGames": false,
             "credentials": null,
-            "userSummary": null
+            "userSummary": null,
+            "gamesWithDrops": 0,
+            "totalDropsRemaining": 0
         },
         "achievementUnlocker": {
             "idle": true,

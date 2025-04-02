@@ -24,6 +24,8 @@ export interface CardFarmingSettings {
     } | null;
     listGames: boolean;
     userSummary: CardFarmingUser | null;
+    totalDropsRemaining: number;
+    gamesWithDrops: number;
 }
 
 export interface GameSpecificSettings {

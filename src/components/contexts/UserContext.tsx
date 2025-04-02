@@ -40,7 +40,9 @@ export const UserProvider = ({ children }: { children: ReactNode }): ReactElemen
             listGames: true,
             allGames: false,
             credentials: null,
-            userSummary: null
+            userSummary: null,
+            gamesWithDrops: 0,
+            totalDropsRemaining: 0
         },
         achievementUnlocker: {
             idle: true,

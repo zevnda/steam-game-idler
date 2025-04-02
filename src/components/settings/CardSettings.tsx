@@ -1,12 +1,13 @@
-import { Button, Input } from '@heroui/react';
+import { Button, Input, Spinner } from '@heroui/react';
 import Image from 'next/image';
 import type { ReactElement } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import { TbRefresh } from 'react-icons/tb';
 
 import { useUserContext } from '@/components/contexts/UserContext';
 import SettingsCheckbox from '@/components/settings/SettingsCheckbox';
 import ExtLink from '@/components/ui/ExtLink';
-import { useCardSettings, handleSave, handleClear } from '@/hooks/settings/useCardSettings';
+import { useCardSettings, handleSave, handleClear, fetchGamesWithDropsData } from '@/hooks/settings/useCardSettings';
 
 export default function CardSettings(): ReactElement {
     const { t } = useTranslation();
@@ -21,26 +22,67 @@ export default function CardSettings(): ReactElement {
                         {t('settings.cardFarming.userSummary')}
                     </p>
                     <div className='border border-border rounded-lg bg-input hover:bg-titlebar dark:bg-[#131313] dark:hover:bg-[#171717]'>
-                        <ExtLink href={`https://steamcommunity.com/profiles/${cardSettings.cardFarmingUser.steamId}`}>
-                            <div className='flex items-center gap-2 h-full p-2 group'>
-                                <Image
-                                    src={cardSettings.cardFarmingUser.avatar}
-                                    height={40}
-                                    width={40}
-                                    alt='user avatar'
-                                    className='w-[40px] h-[40px] rounded-full group-hover:scale-110 duration-200'
-                                    priority
-                                />
-                                <div className='w-[140px]'>
-                                    <p className='font-medium truncate'>
-                                        {cardSettings.cardFarmingUser.personaName}
-                                    </p>
-                                    <p className='text-xs text-altwhite truncate'>
-                                        {cardSettings.cardFarmingUser.steamId}
-                                    </p>
+                        <div className='flex flex-col items-start gap-2 h-full p-2 group'>
+                            <ExtLink href={`https://steamcommunity.com/profiles/${cardSettings.cardFarmingUser.steamId}/badges`}>
+                                <div className='flex gap-2 items-center'>
+                                    <Image
+                                        src={cardSettings.cardFarmingUser.avatar}
+                                        height={40}
+                                        width={40}
+                                        alt='user avatar'
+                                        className='w-[40px] h-[40px] rounded-full group-hover:scale-110 duration-200'
+                                        priority
+                                    />
+                                    <div className='w-[140px]'>
+                                        <p className='font-medium truncate'>
+                                            {cardSettings.cardFarmingUser.personaName}
+                                        </p>
+                                        <p className='text-xs text-altwhite truncate'>
+                                            {cardSettings.cardFarmingUser.steamId}
+                                        </p>
+                                    </div>
                                 </div>
+                            </ExtLink>
+                            <div className='flex flex-col bg-container w-full border border-border rounded-lg p-2'>
+                                {!cardSettings.isCFDataLoading ? (
+                                    <>
+                                        <p className='text-xs truncate'>
+                                            Games With Drops: <span className='text-altwhite'>
+                                                {userSettings.cardFarming.gamesWithDrops || 0}
+                                            </span>
+                                        </p>
+                                        <p className='text-xs truncate'>
+                                            Total Drops Remaining: <span className='text-altwhite'>
+                                                {userSettings.cardFarming.totalDropsRemaining || 0}
+                                            </span>
+                                        </p>
+                                        <div className='flex justify-center items-center mt-2'>
+                                            <div
+                                                className='flex justify-center items-center gap-1 cursor-pointer w-fit text-altwhite hover:text-content'
+                                                onClick={() => fetchGamesWithDropsData(
+                                                    userSummary,
+                                                    cardSettings.sidValue,
+                                                    cardSettings.slsValue,
+                                                    cardSettings?.smaValue,
+                                                    cardSettings.setIsCFDataLoading,
+                                                    setUserSettings
+                                                )}
+                                            >
+                                                <p className='text-xs'>
+                                                    Refresh
+                                                </p>
+                                                <TbRefresh size={14} />
+                                            </div>
+                                        </div>
+                                    </>
+                                ) : (
+                                    <div className='flex items-center justify-center gap-2'>
+                                        <Spinner size='sm' />
+                                        <p className='text-xs text-altwhite'>Loading data..</p>
+                                    </div>
+                                )}
                             </div>
-                        </ExtLink>
+                        </div>
                     </div>
                 </div>
             )}
@@ -72,7 +114,7 @@ export default function CardSettings(): ReactElement {
                                 label='sessionid'
                                 labelPlacement='outside'
                                 placeholder='sessionid'
-                                className='max-w-[300px]'
+                                className='max-w-[290px]'
                                 classNames={{
                                     inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'],
                                     label: ['!text-content'],
@@ -87,7 +129,7 @@ export default function CardSettings(): ReactElement {
                                 label='steamLoginSecure'
                                 labelPlacement='outside'
                                 placeholder='steamLoginSecure'
-                                className='max-w-[300px]'
+                                className='max-w-[290px]'
                                 classNames={{
                                     inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'],
                                     label: ['!text-content'],
@@ -102,7 +144,7 @@ export default function CardSettings(): ReactElement {
                                 label={<p>steamParental/steamMachineAuth <span className='italic'>(optional)</span></p>}
                                 labelPlacement='outside'
                                 placeholder='steamParental/steamMachineAuth'
-                                className='max-w-[300px]'
+                                className='max-w-[290px]'
                                 classNames={{
                                     inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'],
                                     label: ['!text-content'],
@@ -126,7 +168,8 @@ export default function CardSettings(): ReactElement {
                                     cardSettings.setCardFarmingUser,
                                     userSummary,
                                     userSettings,
-                                    setUserSettings
+                                    setUserSettings,
+                                    cardSettings.setIsCFDataLoading,
                                 )}
                             >
                                 {t('common.save')}
@@ -143,7 +186,9 @@ export default function CardSettings(): ReactElement {
                                     cardSettings.setSmaValue,
                                     cardSettings.setCardFarmingUser,
                                     userSummary,
-                                    setUserSettings
+                                    setUserSettings,
+                                    cardSettings.setGamesWithDrops,
+                                    cardSettings.setTotalDropsRemaining,
                                 )}
                             >
                                 {t('common.clear')}

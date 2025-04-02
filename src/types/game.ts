@@ -4,4 +4,5 @@ export interface Game {
     startTime?: number;
     pid?: number;
     playtime_forever?: number;
+    remaining?: number;
 }
