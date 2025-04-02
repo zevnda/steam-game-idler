@@ -48,29 +48,29 @@ Contribute to this project by adding new translations or improving existing ones
 # License
 Copyright © 2024-2025 zevnda — **[GPL-3.0 License](./LICENSE)**
 
-[downloads]: https://img.shields.io/github/downloads/zevnda/steam-game-idler/total?style=for-the-badge&color=%23e86827
-[release]: https://img.shields.io/github/v/release/zevnda/steam-game-idler?style=for-the-badge&color=%232d6acc&label=Version
-[build]: https://img.shields.io/github/actions/workflow/status/zevnda/steam-game-idler/release.yml?style=for-the-badge&color=%2338ba56
+[downloads]: https://img.shields.io/github/downloads/zevnda/steam-game-idler/total?style=flat-square&color=%23e86827
+[release]: https://img.shields.io/github/v/release/zevnda/steam-game-idler?style=flat-square&color=%232d6acc&label=Version
+[build]: https://img.shields.io/github/actions/workflow/status/zevnda/steam-game-idler/release.yml?style=flat-square&color=%2338ba56
 
-[localized]: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapibase.vercel.app%2Fapi%2Fcrowdin&query=%24.totalProgress&suffix=%25&style=for-the-badge&label=Translated&color=%23985FCC
+[localized]: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapibase.vercel.app%2Fapi%2Fcrowdin&query=%24.totalProgress&suffix=%25&style=flat-square&label=Translated&color=%23985FCC
 
-[fr-FR]: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapibase.vercel.app%2Fapi%2Fcrowdin%3FlanguageId%3Dfr&query=%24.progress&suffix=%25&style=for-the-badge&label=French&color=%23985FCC
+[fr-FR]: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapibase.vercel.app%2Fapi%2Fcrowdin%3FlanguageId%3Dfr&query=%24.progress&suffix=%25&style=flat-square&label=French&color=%23985FCC
 [fr-FR-source]: https://crowdin.com/editor/steam-game-idler/all/en-fr
 
-[de-DE]: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapibase.vercel.app%2Fapi%2Fcrowdin%3FlanguageId%3Dde&query=%24.progress&suffix=%25&style=for-the-badge&label=German&color=%23985FCC
+[de-DE]: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapibase.vercel.app%2Fapi%2Fcrowdin%3FlanguageId%3Dde&query=%24.progress&suffix=%25&style=flat-square&label=German&color=%23985FCC
 [de-DE-source]: https://crowdin.com/editor/steam-game-idler/all/en-de
 
-[it-IT]: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapibase.vercel.app%2Fapi%2Fcrowdin%3FlanguageId%3Dit&query=%24.progress&suffix=%25&style=for-the-badge&label=Italian&color=%23985FCC
+[it-IT]: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapibase.vercel.app%2Fapi%2Fcrowdin%3FlanguageId%3Dit&query=%24.progress&suffix=%25&style=flat-square&label=Italian&color=%23985FCC
 [it-IT-source]: https://crowdin.com/editor/steam-game-idler/all/en-it
 
-[pt-BR]: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapibase.vercel.app%2Fapi%2Fcrowdin%3FlanguageId%3Dpt-BR&query=%24.progress&suffix=%25&style=for-the-badge&label=Portuguese%20%28BR%29&color=%23985FCC
+[pt-BR]: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapibase.vercel.app%2Fapi%2Fcrowdin%3FlanguageId%3Dpt-BR&query=%24.progress&suffix=%25&style=flat-square&label=Portuguese%20%28BR%29&color=%23985FCC
 [pt-BR-source]: https://crowdin.com/editor/steam-game-idler/all/en-ptbr
 
-[ru-TU]: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapibase.vercel.app%2Fapi%2Fcrowdin%3FlanguageId%3Dru&query=%24.progress&suffix=%25&style=for-the-badge&label=Russian&color=%23985FCC
+[ru-TU]: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapibase.vercel.app%2Fapi%2Fcrowdin%3FlanguageId%3Dru&query=%24.progress&suffix=%25&style=flat-square&label=Russian&color=%23985FCC
 [ru-TU-source]: https://crowdin.com/editor/steam-game-idler/all/en-ru
 
-[tr-TR]: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapibase.vercel.app%2Fapi%2Fcrowdin%3FlanguageId%3Dtr&query=%24.progress&suffix=%25&style=for-the-badge&label=Turkish&color=%23985FCC
+[tr-TR]: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapibase.vercel.app%2Fapi%2Fcrowdin%3FlanguageId%3Dtr&query=%24.progress&suffix=%25&style=flat-square&label=Turkish&color=%23985FCC
 [tr-TR-source]: https://crowdin.com/editor/steam-game-idler/all/en-tr
 
-[uk-UA]: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapibase.vercel.app%2Fapi%2Fcrowdin%3FlanguageId%3Duk&query=%24.progress&suffix=%25&style=for-the-badge&label=Ukrainian&color=%23985FCC
+[uk-UA]: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapibase.vercel.app%2Fapi%2Fcrowdin%3FlanguageId%3Duk&query=%24.progress&suffix=%25&style=flat-square&label=Ukrainian&color=%23985FCC
 [uk-UA-source]: https://crowdin.com/editor/steam-game-idler/all/en-uk
