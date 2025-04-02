@@ -6,6 +6,7 @@ import { useUserContext } from '@/components/contexts/UserContext';
 import type { InvokeValidateSession, InvokeUserSummary, InvokeSettings } from '@/types/invoke';
 import type { CardFarmingUser, UserSettings } from '@/types/settings';
 import type { UserSummary } from '@/types/user';
+import { getAllGamesWithDrops } from '@/utils/automation';
 import { logEvent } from '@/utils/tasks';
 import { showAccountMismatchToast, showDangerToast, showIncorrectCredentialsToast, showSuccessToast, t } from '@/utils/toasts';
 
@@ -13,6 +14,8 @@ interface CardSettingsHook {
     sidValue: string;
     slsValue: string;
     smaValue: string;
+    gamesWithDrops: number;
+    totalDropsRemaining: number;
     hasCookies: boolean;
     cardFarmingUser: CardFarmingUser | null;
     setCardFarmingUser: Dispatch<SetStateAction<CardFarmingUser | null>>;
@@ -20,7 +23,10 @@ interface CardSettingsHook {
     setSlsValue: Dispatch<SetStateAction<string>>;
     setSmaValue: Dispatch<SetStateAction<string>>;
     setHasCookies: Dispatch<SetStateAction<boolean>>;
-
+    setGamesWithDrops: Dispatch<SetStateAction<number>>;
+    setTotalDropsRemaining: Dispatch<SetStateAction<number>>;
+    isCFDataLoading: boolean;
+    setIsCFDataLoading: Dispatch<SetStateAction<boolean>>;
 }
 
 export const useCardSettings = (): CardSettingsHook => {
@@ -28,18 +34,32 @@ export const useCardSettings = (): CardSettingsHook => {
     const [sidValue, setSidValue] = useState(''); // sessionid
     const [slsValue, setSlsValue] = useState(''); // steamLoginSecure
     const [smaValue, setSmaValue] = useState(''); // steamMachineAuth
+    const [gamesWithDrops, setGamesWithDrops] = useState(0);
+    const [totalDropsRemaining, setTotalDropsRemaining] = useState(0);
     const [hasCookies, setHasCookies] = useState(false);
     const [cardFarmingUser, setCardFarmingUser] = useState<CardFarmingUser | null>(null);
+    const [isCFDataLoading, setIsCFDataLoading] = useState(false);
 
     // Get stored cookies to set their input values
     useEffect(() => {
-        getStoredCookies(userSettings, setHasCookies, setSidValue, setSlsValue, setSmaValue, setCardFarmingUser);
+        getStoredSettings(
+            userSettings,
+            setHasCookies,
+            setSidValue,
+            setSlsValue,
+            setSmaValue,
+            setGamesWithDrops,
+            setTotalDropsRemaining,
+            setCardFarmingUser
+        );
     }, [userSettings]);
 
     return {
         sidValue,
         slsValue,
         smaValue,
+        gamesWithDrops,
+        totalDropsRemaining,
         hasCookies,
         setSidValue,
         setSlsValue,
@@ -47,6 +67,10 @@ export const useCardSettings = (): CardSettingsHook => {
         setHasCookies,
         cardFarmingUser,
         setCardFarmingUser,
+        setGamesWithDrops,
+        setTotalDropsRemaining,
+        isCFDataLoading,
+        setIsCFDataLoading
     };
 };
 
@@ -60,17 +84,21 @@ const fetchUserSummary = async (steamId: string, apiKey: string | null): Promise
     };
 };
 
-const getStoredCookies = async (
+const getStoredSettings = async (
     userSettings: UserSettings,
     setHasCookies: Dispatch<SetStateAction<boolean>>,
     setSidValue: Dispatch<SetStateAction<string>>,
     setSlsValue: Dispatch<SetStateAction<string>>,
     setSmaValue: Dispatch<SetStateAction<string>>,
+    setGamesWithDrops: Dispatch<SetStateAction<number>>,
+    setTotalDropsRemaining: Dispatch<SetStateAction<number>>,
     setCardFarmingUser: Dispatch<SetStateAction<CardFarmingUser | null>>
 ): Promise<void> => {
     try {
         const credentials = userSettings.cardFarming.credentials;
         const cardFarmingUser = userSettings.cardFarming.userSummary;
+        const gamesWithDrops = userSettings.cardFarming.gamesWithDrops;
+        const totalDropsRemaining = userSettings.cardFarming.totalDropsRemaining;
 
         if (credentials && credentials.sid && credentials.sls) {
             setHasCookies(true);
@@ -81,22 +109,67 @@ const getStoredCookies = async (
         if (cardFarmingUser?.steamId) {
             setCardFarmingUser(cardFarmingUser);
         }
+        if (gamesWithDrops > 0 && totalDropsRemaining > 0) {
+            setGamesWithDrops(gamesWithDrops);
+            setTotalDropsRemaining(totalDropsRemaining);
+        }
     } catch (error) {
         showDangerToast(t('common.error'));
-        console.error('Error in (getStoredCookies):', error);
-        logEvent(`[Error] in (getStoredCookies): ${error}`);
+        console.error('Error in (getStoredSettings):', error);
+        logEvent(`[Error] in (getStoredSettings): ${error}`);
+    }
+};
+
+export const fetchGamesWithDropsData = async (
+    userSummary: UserSummary,
+    sidValue: string,
+    slsValue: string,
+    smaValue: string | undefined,
+    setIsCFDataLoading: Dispatch<SetStateAction<boolean>>,
+    setUserSettings: Dispatch<SetStateAction<UserSettings>>,
+): Promise<void> => {
+    try {
+        setIsCFDataLoading(true);
+
+        const getGamesWithDrops = await getAllGamesWithDrops(userSummary?.steamId, sidValue, slsValue, smaValue);
+
+        const gamesWithDrops = getGamesWithDrops.length;
+        const totalDropsRemaining = getGamesWithDrops.reduce((total, game) => total + (game.remaining || 0), 0);
+
+        // Save games with drops and total drops remaining
+        await invoke<InvokeSettings>('update_user_settings', {
+            steamId: userSummary?.steamId,
+            key: 'cardFarming.gamesWithDrops',
+            value: gamesWithDrops
+        });
+
+        // Save total drops remaining
+        const response = await invoke<InvokeSettings>('update_user_settings', {
+            steamId: userSummary?.steamId,
+            key: 'cardFarming.totalDropsRemaining',
+            value: totalDropsRemaining
+        });
+
+        setUserSettings(response.settings);
+        setIsCFDataLoading(false);
+    } catch (error) {
+        setIsCFDataLoading(false);
+        showDangerToast(t('common.error'));
+        console.error('Error in (fetchGamesWithDropsData):', error);
+        logEvent(`[Error] in (fetchGamesWithDropsData): ${error}`);
     }
 };
 
 export const handleSave = async (
     sidValue: string,
     slsValue: string,
-    smaValue: string,
+    smaValue: string | undefined,
     setHasCookies: Dispatch<SetStateAction<boolean>>,
     setCardFarmingUser: Dispatch<SetStateAction<CardFarmingUser | null>>,
     userSummary: UserSummary,
     userSettings: UserSettings,
-    setUserSettings: Dispatch<SetStateAction<UserSettings>>
+    setUserSettings: Dispatch<SetStateAction<UserSettings>>,
+    setIsCFDataLoading: Dispatch<SetStateAction<boolean>>
 ): Promise<void> => {
     try {
         if (sidValue.length > 0 && slsValue.length > 0) {
@@ -111,9 +184,9 @@ export const handleSave = async (
             if (validate.user) {
                 // Extract steamID from the steamLoginSecure cookie (first 17 chars)
                 const steamId = slsValue.slice(0, 17);
-
                 const apiKey = userSettings.general.apiKey;
 
+                // Wait for user info first, which should be faster
                 const cardFarmingUser = await fetchUserSummary(steamId, apiKey);
 
                 // Make sure user isn't trying to farm cards with different account than they're logged in with
@@ -123,25 +196,33 @@ export const handleSave = async (
                 }
 
                 // Save valid cookies and update UI state
-                await invoke('update_user_settings', {
-                    steamId: userSummary.steamId,
+                await invoke<InvokeSettings>('update_user_settings', {
+                    steamId: userSummary?.steamId,
                     key: 'cardFarming.credentials',
                     value: { sid: sidValue, sls: slsValue, sma: smaValue }
                 });
 
                 // Save card farming user and update UI state
-                const response = await invoke<InvokeSettings>('update_user_settings', {
-                    steamId: userSummary.steamId,
+                await invoke<InvokeSettings>('update_user_settings', {
+                    steamId: userSummary?.steamId,
                     key: 'cardFarming.userSummary',
                     value: cardFarmingUser
                 });
 
-                setUserSettings(response.settings);
                 setCardFarmingUser(cardFarmingUser);
                 setHasCookies(true);
 
                 showSuccessToast(t('toast.cardFarming.logIn', { user: validate.user }));
                 logEvent(`[Settings - Card Farming] Logged in as ${validate.user}`);
+
+                fetchGamesWithDropsData(
+                    userSummary,
+                    sidValue,
+                    slsValue,
+                    smaValue,
+                    setIsCFDataLoading,
+                    setUserSettings
+                );
             } else {
                 showIncorrectCredentialsToast();
                 logEvent('[Error] [Settings - Card Farming] Incorrect card farming credentials');
@@ -161,7 +242,9 @@ export const handleClear = async (
     setSmaValue: Dispatch<SetStateAction<string>>,
     setCardFarmingUser: Dispatch<SetStateAction<CardFarmingUser | null>>,
     userSummary: UserSummary,
-    setUserSettings: Dispatch<SetStateAction<UserSettings>>
+    setUserSettings: Dispatch<SetStateAction<UserSettings>>,
+    setGamesWithDrops: Dispatch<SetStateAction<number>>,
+    setTotalDropsRemaining: Dispatch<SetStateAction<number>>,
 ): Promise<void> => {
     try {
         // Clear all saved credentials and reset UI states
@@ -170,6 +253,19 @@ export const handleClear = async (
             key: 'cardFarming.credentials',
             value: null
         });
+
+        await invoke('update_user_settings', {
+            steamId: userSummary?.steamId,
+            key: 'cardFarming.gamesWithDrops',
+            value: 0
+        });
+
+        await invoke('update_user_settings', {
+            steamId: userSummary?.steamId,
+            key: 'cardFarming.totalDropsRemaining',
+            value: 0
+        });
+
         const response = await invoke<InvokeSettings>('update_user_settings', {
             steamId: userSummary?.steamId,
             key: 'cardFarming.userSummary',
@@ -181,6 +277,8 @@ export const handleClear = async (
         setSmaValue('');
         setHasCookies(false);
         setCardFarmingUser(null);
+        setGamesWithDrops(0);
+        setTotalDropsRemaining(0);
         setUserSettings(response.settings);
 
         showSuccessToast(t('toast.cardFarming.logOut'));

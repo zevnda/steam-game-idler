@@ -1,3 +1,11 @@
+<!-- 1.9.16 -->
+
+### Changes in v1.9.16
+
+- When you have succesfully validated your credentials in `settings > card farming` you will now be able to see how many `games with drops` and the `total drops remaining` for those games
+  - If you were already validated before this update, click `refresh` to fetch your data
+  - Currently, this data does not update automatically when you farm cards, you will need to click `refresh` to view the most recent data
+
 <!-- 1.9.15 -->
 
 ### Changes in v1.9.15
