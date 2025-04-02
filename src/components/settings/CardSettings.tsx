@@ -47,12 +47,14 @@ export default function CardSettings(): ReactElement {
                                 {!cardSettings.isCFDataLoading ? (
                                     <>
                                         <p className='text-xs truncate'>
-                                            Games With Drops: <span className='text-altwhite'>
+                                            {t('settings.cardFarming.gamesWithDrops')}
+                                            <span className='text-altwhite ml-1'>
                                                 {userSettings.cardFarming.gamesWithDrops || 0}
                                             </span>
                                         </p>
                                         <p className='text-xs truncate'>
-                                            Total Drops Remaining: <span className='text-altwhite'>
+                                            {t('settings.cardFarming.totalDrops')}
+                                            <span className='text-altwhite ml-1'>
                                                 {userSettings.cardFarming.totalDropsRemaining || 0}
                                             </span>
                                         </p>
