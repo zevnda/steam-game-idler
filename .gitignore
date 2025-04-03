@@ -44,4 +44,3 @@ src-tauri/libs
 src-tauri/gen
 
 *.ps1
-guidelines.md
