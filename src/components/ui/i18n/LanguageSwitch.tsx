@@ -5,19 +5,36 @@ import { useTranslation } from 'react-i18next';
 import { TbLanguage } from 'react-icons/tb';
 
 export default function LanguageSwitch(): ReactElement | null {
-    const { t, i18n } = useTranslation();
+    const { i18n } = useTranslation();
     const [mounted, setMounted] = useState(false);
 
     const languages = [
-        { key: 'en-US', label: t('settings.general.languages.english') },
-        { key: 'cs-CZ', label: t('settings.general.languages.czech') },
-        { key: 'de-DE', label: t('settings.general.languages.german') },
-        { key: 'fr-FR', label: t('settings.general.languages.french') },
-        { key: 'it-IT', label: t('settings.general.languages.italian') },
-        { key: 'pt-BR', label: t('settings.general.languages.portuguese_brazil') },
-        { key: 'ru-RU', label: t('settings.general.languages.russian') },
-        { key: 'tr-TR', label: t('settings.general.languages.turkish') },
-        { key: 'uk-UA', label: t('settings.general.languages.ukrainian') },
+        { key: 'en-US', label: 'English' },
+        { key: 'cs-CZ', label: 'Čeština' },
+        { key: 'de-DE', label: 'Deutsch' },
+        { key: 'fr-FR', label: 'Français' },
+        { key: 'it-IT', label: 'Italiano' },
+        { key: 'pt-BR', label: 'Português' },
+        { key: 'ru-RU', label: 'Русский' },
+        { key: 'tr-TR', label: 'Türkçe' },
+        { key: 'uk-UA', label: 'Українська' },
+        // { key: 'ar-SA', label: 'العربية' },
+        // { key: 'zh-CN', label: '简体中文' },
+        // { key: 'zh-TW', label: '繁體中文' },
+        // { key: 'da-DK', label: 'Dansk' },
+        // { key: 'nl-NL', label: 'Nederlands' },
+        // { key: 'fi-FI', label: 'Suomi' },
+        // { key: 'el-GR', label: 'Ελληνικά' },
+        // { key: 'hu-HU', label: 'Magyar' },
+        // { key: 'ja-JP', label: '日本語' },
+        // { key: 'ko-KR', label: '한국어' },
+        // { key: 'no-NO', label: 'Norsk' },
+        // { key: 'pl-PL', label: 'Polski' },
+        // { key: 'pt-PT', label: 'Português' },
+        // { key: 'ro-RO', label: 'Română' },
+        // { key: 'es-ES', label: 'Español' },
+        // { key: 'sv-SE', label: 'Svenska' },
+        // { key: 'vi-VN', label: 'Tiếng Việt' },
     ];
 
     useEffect(() => {
