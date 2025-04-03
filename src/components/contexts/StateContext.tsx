@@ -20,6 +20,8 @@ interface StateContextType {
     setShowSteamWarning: Dispatch<SetStateAction<boolean>>;
     isGameSettingsOpen: boolean;
     setIsGameSettingsOpen: Dispatch<SetStateAction<boolean>>;
+    useBeta: boolean;
+    setUseBeta: Dispatch<SetStateAction<boolean>>;
 }
 
 export const StateContext = createContext<StateContextType | undefined>(undefined);
@@ -34,6 +36,7 @@ export const StateProvider = ({ children }: { children: ReactNode }): ReactEleme
     const [isAchievementUnlocker, setIsAchievementUnlocker] = useState(false);
     const [showSteamWarning, setShowSteamWarning] = useState(false);
     const [isGameSettingsOpen, setIsGameSettingsOpen] = useState(false);
+    const [useBeta, setUseBeta] = useState(false);
 
     return (
         <StateContext.Provider value={{
@@ -45,7 +48,8 @@ export const StateProvider = ({ children }: { children: ReactNode }): ReactEleme
             isCardFarming, setIsCardFarming,
             isAchievementUnlocker, setIsAchievementUnlocker,
             showSteamWarning, setShowSteamWarning,
-            isGameSettingsOpen, setIsGameSettingsOpen
+            isGameSettingsOpen, setIsGameSettingsOpen,
+            useBeta, setUseBeta,
         }}>
             {children}
         </StateContext.Provider>

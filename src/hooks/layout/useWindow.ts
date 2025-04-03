@@ -28,15 +28,19 @@ export default function useWindow(): void {
     const { t } = useTranslation();
     const { theme } = useTheme();
     const { setIdleGamesList } = useIdleContext();
-    const { setIsDarkMode, setShowFreeGamesTab, setIsCardFarming, setIsAchievementUnlocker, setShowSteamWarning } = useStateContext();
+    const { setIsDarkMode, setShowFreeGamesTab, setIsCardFarming, setIsAchievementUnlocker, setShowSteamWarning, setUseBeta } = useStateContext();
     const { setUpdateAvailable, setShowChangelog } = useUpdateContext();
-    const { userSummary, setUserSummary, setUserSettings, setFreeGamesList } = useUserContext();
+    const { userSummary, setUserSummary, userSettings, setUserSettings, setFreeGamesList } = useUserContext();
 
     console.error('Monitor for rerenders');
 
     useEffect(() => {
         emit('ready');
     }, []);
+
+    useEffect(() => {
+        setUseBeta(userSettings.general.useBeta);
+    }, [userSettings.general.useBeta, setUseBeta]);
 
     // TODO: remove once users are migrated to the new settings
     // Temp fix to remove old data stores from localStorage

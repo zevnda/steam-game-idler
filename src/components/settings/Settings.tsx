@@ -8,6 +8,7 @@ import ClearData from '@/components/settings/ClearData';
 import ExportSettings from '@/components/settings/ExportSettings';
 import GeneralSettings from '@/components/settings/GeneralSettings';
 import Logs from '@/components/settings/Logs';
+import OpenSettings from '@/components/settings/OpenSettings';
 import ResetSettings from '@/components/settings/ResetSettings';
 import useSettings from '@/hooks/settings/useSettings';
 
@@ -31,6 +32,7 @@ export default function Settings(): ReactElement {
                     <div className='flex items-center gap-2'>
                         <ResetSettings setRefreshKey={setRefreshKey} />
                         <ClearData />
+                        <OpenSettings />
                         <ExportSettings />
                     </div>
                 </div>

@@ -1,3 +1,12 @@
+<!-- 1.9.17 -->
+
+### Changes in v1.9.17
+
+- Added an `enable beta features` setting to `settings > general`
+  - New features and potentially breaking changes will now be rolled out under the beta flag *(where possible)* for testing before they are fully implemented
+  - If a beta feature causes a critical error preventing you from disabling the setting in the UI, you can force `useBeta: false` in `cache\<user_id>\settings.json`
+  - If you experience issues with any beta features, please report them on GitHub
+
 <!-- 1.9.16 -->
 
 ### Changes in v1.9.16

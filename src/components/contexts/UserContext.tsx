@@ -32,7 +32,8 @@ export const UserProvider = ({ children }: { children: ReactNode }): ReactElemen
         general: {
             antiAway: false,
             freeGameNotifications: true,
-            apiKey: null
+            apiKey: null,
+            useBeta: false
         },
         cardFarming: {
             listGames: true,

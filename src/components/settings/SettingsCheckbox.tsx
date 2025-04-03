@@ -55,6 +55,7 @@ export default function SettingsCheckbox({ type, name, content }: SettingsCheckb
                     antiAwayStatus(isSettingEnabled() ? null : undefined);
                 }}
                 classNames={{
+                    hiddenInput: 'w-fit',
                     wrapper: [`before:group-data-[selected=true]:!border-dynamic after:bg-dynamic border-red-500 text-button ${styles}`]
                 }}
             >
@@ -74,6 +75,7 @@ export default function SettingsCheckbox({ type, name, content }: SettingsCheckb
                 isSelected={startupState || false}
                 onChange={() => handleRunAtStartupChange(setStartupState)}
                 classNames={{
+                    hiddenInput: 'w-fit',
                     wrapper: [`before:group-data-[selected=true]:!border-dynamic after:bg-dynamic border-red-500 text-button ${styles}`]
                 }}
             >
@@ -100,6 +102,7 @@ export default function SettingsCheckbox({ type, name, content }: SettingsCheckb
                 }
             }}
             classNames={{
+                hiddenInput: 'w-fit',
                 wrapper: [`before:group-data-[selected=true]:!border-dynamic after:bg-dynamic border-red-500 text-button ${styles}`]
             }}
         >
