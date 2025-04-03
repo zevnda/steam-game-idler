@@ -2,6 +2,7 @@ import i18n from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
 
+import translationCSCZ from '@/i18n/locales/cs-CZ/translation.json';
 import translationDEDE from '@/i18n/locales/de-DE/translation.json';
 import translationENUS from '@/i18n/locales/en-US/translation.json';
 import translationFRFR from '@/i18n/locales/fr-FR/translation.json';
@@ -12,6 +13,7 @@ import translationTRTR from '@/i18n/locales/tr-TR/translation.json';
 import translationUKUA from '@/i18n/locales/uk-UA/translation.json';
 
 const resources = {
+    'cs-CZ': { translation: translationCSCZ },
     'de-DE': { translation: translationDEDE },
     'en-US': { translation: translationENUS },
     'fr-FR': { translation: translationFRFR },

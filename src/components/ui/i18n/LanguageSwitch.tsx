@@ -10,6 +10,7 @@ export default function LanguageSwitch(): ReactElement | null {
 
     const languages = [
         { key: 'en-US', label: t('settings.general.languages.english') },
+        { key: 'cs-CZ', label: t('settings.general.languages.czech') },
         { key: 'de-DE', label: t('settings.general.languages.german') },
         { key: 'fr-FR', label: t('settings.general.languages.french') },
         { key: 'it-IT', label: t('settings.general.languages.italian') },

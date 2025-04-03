@@ -35,15 +35,16 @@ Refer to the **[documentation](https://steamgameidler.vercel.app/)** for a detai
 # Supported Languages
 Contribute to this project by adding new translations or improving existing ones. **[Read more here](https://github.com/zevnda/steam-game-idler/discussions/148)**
 
-| Language/Completion             | Contributors                             | Crowdin                |
-| ------------------------------- | ---------------------------------------- | ---------------------- |
-| [![fr-FR][fr-FR]][fr-FR-source] | [@Logiinx](https://github.com/Logiinx)   | [source][fr-FR-source] |
-| [![de-DE][de-DE]][de-DE-source] | [@zevnda](https://github.com/zevnda)     | [source][de-DE-source] |
-| [![it-IT][it-IT]][it-IT-source] | [@Maniots](https://github.com/Maniots)   | [source][it-IT-source] |
-| [![pt-BR][pt-BR]][pt-BR-source] | [@Qjeh](https://github.com/Qjeh)         | [source][pt-BR-source] |
-| [![ru-TU][ru-TU]][ru-TU-source] | [@Jesewe](https://github.com/Jesewe)     | [source][ru-TU-source] |
-| [![tr-TR][tr-TR]][tr-TR-source] | [@61netpa](https://github.com/61netpa)   | [source][tr-TR-source] |
-| [![uk-UA][uk-UA]][uk-UA-source] | [@Bl0ck154](https://github.com/Bl0ck154) | [source][uk-UA-source] |
+| Language/Completion             | Contributors                                           | Crowdin                |
+| ------------------------------- | ------------------------------------------------------ | ---------------------- |
+| [![cs-CZ][cs-CZ]][cs-CZ-source] | [@RussianAirplane](https://github.com/RussianAirplane) | [source][cs-CZ-source] |
+| [![fr-FR][fr-FR]][fr-FR-source] | [@Logiinx](https://github.com/Logiinx)                 | [source][fr-FR-source] |
+| [![de-DE][de-DE]][de-DE-source] | [@zevnda](https://github.com/zevnda)                   | [source][de-DE-source] |
+| [![it-IT][it-IT]][it-IT-source] | [@Maniots](https://github.com/Maniots)                 | [source][it-IT-source] |
+| [![pt-BR][pt-BR]][pt-BR-source] | [@Qjeh](https://github.com/Qjeh)                       | [source][pt-BR-source] |
+| [![ru-TU][ru-TU]][ru-TU-source] | [@Jesewe](https://github.com/Jesewe)                   | [source][ru-TU-source] |
+| [![tr-TR][tr-TR]][tr-TR-source] | [@61netpa](https://github.com/61netpa)                 | [source][tr-TR-source] |
+| [![uk-UA][uk-UA]][uk-UA-source] | [@Bl0ck154](https://github.com/Bl0ck154)               | [source][uk-UA-source] |
 
 # License
 Copyright © 2024-2025 zevnda — **[GPL-3.0 License](./LICENSE)**
@@ -54,11 +55,14 @@ Copyright © 2024-2025 zevnda — **[GPL-3.0 License](./LICENSE)**
 
 [localized]: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapibase.vercel.app%2Fapi%2Fcrowdin&query=%24.totalProgress&suffix=%25&style=flat-square&label=Translated&color=%23985FCC
 
-[fr-FR]: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapibase.vercel.app%2Fapi%2Fcrowdin%3FlanguageId%3Dfr&query=%24.progress&suffix=%25&style=flat-square&label=French&color=%23985FCC
-[fr-FR-source]: https://crowdin.com/editor/steam-game-idler/all/en-fr
+[cs-CZ]: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapibase.vercel.app%2Fapi%2Fcrowdin%3FlanguageId%3Dcs&query=%24.progress&suffix=%25&style=flat-square&label=Czech&color=%23985FCC
+[cs-CZ-source]: https://crowdin.com/editor/steam-game-idler/all/en-cs
 
 [de-DE]: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapibase.vercel.app%2Fapi%2Fcrowdin%3FlanguageId%3Dde&query=%24.progress&suffix=%25&style=flat-square&label=German&color=%23985FCC
 [de-DE-source]: https://crowdin.com/editor/steam-game-idler/all/en-de
+
+[fr-FR]: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapibase.vercel.app%2Fapi%2Fcrowdin%3FlanguageId%3Dfr&query=%24.progress&suffix=%25&style=flat-square&label=French&color=%23985FCC
+[fr-FR-source]: https://crowdin.com/editor/steam-game-idler/all/en-fr
 
 [it-IT]: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapibase.vercel.app%2Fapi%2Fcrowdin%3FlanguageId%3Dit&query=%24.progress&suffix=%25&style=flat-square&label=Italian&color=%23985FCC
 [it-IT-source]: https://crowdin.com/editor/steam-game-idler/all/en-it
