@@ -181,7 +181,7 @@ interface SortableGameCardProps {
     isGameSettingsOpen: boolean;
 }
 
-function SortableGameCard({ item, isGameSettingsOpen }: SortableGameCardProps) {
+function SortableGameCard({ item, isGameSettingsOpen }: SortableGameCardProps): ReactElement {
     const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: item.appid });
     const style = {
         transform: CSS.Transform.toString(transform),

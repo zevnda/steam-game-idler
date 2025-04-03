@@ -52,7 +52,7 @@ export default function CardFarming({ activePage }: { activePage: ActivePageType
         }, 5000);
     }, []);
 
-    const renderGamesList = () => {
+    const renderGamesList = (): ReactElement => {
         if (!gamesWithDrops.size) {
             return <Spinner variant='simple' label={t('automation.cardFarming.initialDelay')} />;
         }
@@ -99,7 +99,7 @@ export default function CardFarming({ activePage }: { activePage: ActivePageType
         );
     };
 
-    const renderContent = () => {
+    const renderContent = (): ReactElement => {
         if (isComplete) {
             return (
                 <div className='border border-border rounded-full inline-block p-2 w-fit'>

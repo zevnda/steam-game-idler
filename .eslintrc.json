@@ -21,13 +21,19 @@
                 "args": "none"
             }
         ],
+        "@typescript-eslint/explicit-function-return-type": [
+            "error",
+            {
+                "allowExpressions": true,
+                "allowHigherOrderFunctions": true
+            }
+        ],
         "@typescript-eslint/consistent-type-imports": [
             "error",
             {
                 "prefer": "type-imports"
             }
         ],
-        "@typescript-eslint/explicit-module-boundary-types": "error",
         "@typescript-eslint/consistent-type-definitions": [
             "error",
             "interface"

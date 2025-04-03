@@ -348,7 +348,7 @@ const delay = (
     ms: number,
     isMountedRef: RefObject<boolean>,
     abortControllerRef: RefObject<AbortController>
-) => {
+): Promise<void> => {
     try {
         return new Promise<void>((resolve, reject) => {
             const checkInterval = 1000;

@@ -2,11 +2,7 @@ import { GeistSans } from 'geist/font/sans';
 import Head from 'next/head';
 import type { ReactElement, ReactNode } from 'react';
 
-export default function Layout({
-    children
-}: {
-    children: ReactNode
-}): ReactElement {
+export default function Layout({ children }: { children: ReactNode }): ReactElement {
     return (
         <>
             <Head>
