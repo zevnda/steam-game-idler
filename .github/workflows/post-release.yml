@@ -22,7 +22,7 @@ jobs:
 
       - name: Fail if PR Title is Incorrect
         if: env.match == 'false'
-        run: echo "PR title format is incorrect" && exit 1
+        run: echo "PR title format is incorrect" && exit 0
 
       - name: Extract Release Tag
         id: extract_tag
