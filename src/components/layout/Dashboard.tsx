@@ -25,7 +25,7 @@ export default function Dashboard(): ReactElement {
         antiAwayStatus();
     }, [setActivePage]);
 
-    const renderContent = () => {
+    const renderContent = (): ReactElement => {
         if (showAchievements) return <Achievements />;
 
         const customListMap: Record<string, CustomListType> = {
