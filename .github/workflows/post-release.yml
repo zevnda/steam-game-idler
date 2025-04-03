@@ -22,14 +22,16 @@ jobs:
 
       - name: Fail if PR Title is Incorrect
         if: env.match == 'false'
-        run: echo "PR title format is incorrect" && exit 0
+        run: echo "PR title doesn't match the required format for release updates. Skipping release update."
 
       - name: Extract Release Tag
+        if: env.match == 'true'
         id: extract_tag
         run: |
           echo "tag=$(echo '${{ github.event.pull_request.title }}' | sed -E 's/^chore\(version\): bump to ([0-9]+\.[0-9]+\.[0-9]+)$/\1/')" >> $GITHUB_ENV
 
       - name: Get Release ID
+        if: env.match == 'true'
         id: get_release
         uses: softprops/action-gh-release@v1
         env:
