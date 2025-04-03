@@ -3,7 +3,7 @@ import { appDataDir } from '@tauri-apps/api/path';
 import { readTextFile } from '@tauri-apps/plugin-fs';
 import { useState, useEffect } from 'react';
 
-import type { LogEntry } from '@/types/log';
+import type { LogEntry } from '@/types';
 import { logEvent } from '@/utils/tasks';
 import { showDangerToast, showSuccessToast, t } from '@/utils/toasts';
 

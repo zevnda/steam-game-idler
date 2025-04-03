@@ -5,7 +5,7 @@ import { FaSteam } from 'react-icons/fa';
 
 import { useUserContext } from '@/components/contexts/UserContext';
 import ExtLink from '@/components/ui/ExtLink';
-import type { Game } from '@/types/game';
+import type { Game } from '@/types';
 
 export default function FreeGamesList(): ReactElement {
     const { t } = useTranslation();

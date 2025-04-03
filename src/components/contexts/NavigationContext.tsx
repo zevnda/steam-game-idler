@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from 'react';
 import type { ReactElement, ReactNode } from 'react';
 
-import type { NavigationContextType, ActivePageType, CurrentTabType } from '@/types/navigation';
+import type { NavigationContextType, ActivePageType, CurrentTabType } from '@/types';
 
 export const NavigationContext = createContext<NavigationContextType | undefined>(undefined);
 

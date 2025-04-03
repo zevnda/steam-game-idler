@@ -4,7 +4,7 @@ import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useUserContext } from '@/components/contexts/UserContext';
-import type { UserSettings } from '@/types/settings';
+import type { UserSettings } from '@/types';
 import { getAppVersion } from '@/utils/tasks';
 import { showDangerToast, showSuccessToast } from '@/utils/toasts';
 

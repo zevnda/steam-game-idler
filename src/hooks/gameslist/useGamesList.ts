@@ -5,9 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useSearchContext } from '@/components/contexts/SearchContext';
 import { useUserContext } from '@/components/contexts/UserContext';
-import type { Game } from '@/types/game';
-import type { InvokeGamesList } from '@/types/invoke';
-import type { SortStyleValue } from '@/types/sort';
+import type { Game, InvokeGamesList, SortStyleValue } from '@/types';
 import { logEvent } from '@/utils/tasks';
 import { showDangerToast } from '@/utils/toasts';
 

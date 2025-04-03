@@ -7,7 +7,7 @@ import { TbAwardFilled, TbDotsVertical, TbPlayerPlayFilled, TbSettingsFilled } f
 
 import { useStateContext } from '@/components/contexts/StateContext';
 import { handleIdle, viewAchievments, viewGameSettings } from '@/hooks/ui/useGameCard';
-import type { Game } from '@/types/game';
+import type { Game } from '@/types';
 
 interface CardMenuProps {
     item: Game;

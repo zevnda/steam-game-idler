@@ -1,8 +1,7 @@
 import { invoke } from '@tauri-apps/api/core';
 import type { Dispatch, SetStateAction } from 'react';
 
-import type { Game } from '@/types/game';
-import type { InvokeKillProcess } from '@/types/invoke';
+import type { Game, InvokeKillProcess } from '@/types';
 import { startIdle } from '@/utils/idle';
 import { checkSteamStatus, logEvent } from '@/utils/tasks';
 import { showDangerToast, showSuccessToast, t } from '@/utils/toasts';

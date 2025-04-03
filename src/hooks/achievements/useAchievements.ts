@@ -5,8 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useStateContext } from '@/components/contexts/StateContext';
 import { useUserContext } from '@/components/contexts/UserContext';
-import type { Achievement, Statistic } from '@/types/achievment';
-import type { InvokeAchievementData } from '@/types/invoke';
+import type { Achievement, Statistic, InvokeAchievementData } from '@/types';
 import { checkSteamStatus, logEvent } from '@/utils/tasks';
 import { showAccountMismatchToast, showDangerToast } from '@/utils/toasts';
 

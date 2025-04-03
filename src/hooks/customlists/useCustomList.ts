@@ -4,8 +4,7 @@ import type { Dispatch, RefObject, SetStateAction } from 'react';
 
 import { useStateContext } from '@/components/contexts/StateContext';
 import { useUserContext } from '@/components/contexts/UserContext';
-import type { Game } from '@/types/game';
-import type { InvokeCustomList } from '@/types/invoke';
+import type { Game, InvokeCustomList } from '@/types';
 import { showDangerToast } from '@/utils/toasts';
 
 interface CustomListHook {

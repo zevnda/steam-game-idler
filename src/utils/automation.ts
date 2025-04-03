@@ -1,8 +1,7 @@
 import { Time } from '@internationalized/date';
 import { invoke } from '@tauri-apps/api/core';
 
-import type { Game } from '@/types/game';
-import type { InvokeDropsRemaining, InvokeGamesWithDrops } from '@/types/invoke';
+import type { Game, InvokeDropsRemaining, InvokeGamesWithDrops } from '@/types';
 import { logEvent } from '@/utils/tasks';
 
 // Check remaining card drops for a game

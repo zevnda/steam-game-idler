@@ -4,7 +4,7 @@ import type { Dispatch, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useUserContext } from '@/components/contexts/UserContext';
-import type { InvokeSettings } from '@/types/invoke';
+import type { InvokeSettings } from '@/types';
 import { logEvent } from '@/utils/tasks';
 import { showDangerToast, showSuccessToast } from '@/utils/toasts';
 

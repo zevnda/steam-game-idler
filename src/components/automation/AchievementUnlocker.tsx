@@ -7,8 +7,7 @@ import { TbCheck } from 'react-icons/tb';
 
 import { useStateContext } from '@/components/contexts/StateContext';
 import { useAchievementUnlocker } from '@/hooks/automation/useAchievementUnlocker';
-import type { Game } from '@/types/game';
-import type { ActivePageType } from '@/types/navigation';
+import type { ActivePageType, Game } from '@/types';
 import { stopIdle } from '@/utils/idle';
 
 export default function AchievementUnlocker({ activePage }: { activePage: ActivePageType }): ReactElement {

@@ -9,7 +9,7 @@ import CardMenu from '@/components/gameslist/CardMenu';
 import GameSettings from '@/components/gameslist/GameSettings';
 import IdleTimer from '@/components/ui/IdleTimer';
 import { handleIdle, handleStopIdle, viewAchievments } from '@/hooks/ui/useGameCard';
-import type { Game } from '@/types/game';
+import type { Game } from '@/types';
 
 export default function GameCard({ item }: { item: Game }): ReactElement {
     const { idleGamesList, setIdleGamesList } = useIdleContext();

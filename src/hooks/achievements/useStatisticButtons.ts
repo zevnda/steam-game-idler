@@ -4,8 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useStateContext } from '@/components/contexts/StateContext';
 import { useUserContext } from '@/components/contexts/UserContext';
-import type { Achievement, ChangedStats, Statistic, StatValue } from '@/types/achievment';
-import type { InvokeResetStats } from '@/types/invoke';
+import type { Achievement, ChangedStats, Statistic, StatValue, InvokeResetStats } from '@/types';
 import { updateStats } from '@/utils/achievements';
 import { checkSteamStatus } from '@/utils/tasks';
 import { showDangerToast, showSuccessToast, showWarningToast } from '@/utils/toasts';

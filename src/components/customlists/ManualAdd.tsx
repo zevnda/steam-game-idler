@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { TbPlus } from 'react-icons/tb';
 
 import useManualAdd from '@/hooks/customlists/useManualAdd';
-import type { Game } from '@/types/game';
+import type { Game } from '@/types';
 
 interface ManualAddProps {
     listName: string;

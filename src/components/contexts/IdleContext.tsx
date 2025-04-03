@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from 'react';
 import type { Dispatch, ReactElement, ReactNode, SetStateAction } from 'react';
 
-import type { Game } from '@/types/game';
+import type { Game } from '@/types';
 
 interface IdleContextType {
     idleGamesList: Game[];

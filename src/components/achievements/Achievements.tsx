@@ -9,8 +9,7 @@ import StatisticsList from '@/components/achievements/StatisticsList';
 import { useNavigationContext } from '@/components/contexts/NavigationContext';
 import Loader from '@/components/ui/Loader';
 import useAchievements from '@/hooks/achievements/useAchievements';
-import type { Achievement, Statistic } from '@/types/achievment';
-import type { CurrentTabType } from '@/types/navigation';
+import type { Achievement, Statistic, CurrentTabType } from '@/types';
 
 export default function Achievements(): ReactElement {
     const { t } = useTranslation();

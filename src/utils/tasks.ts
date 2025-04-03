@@ -1,9 +1,7 @@
 import { getVersion } from '@tauri-apps/api/app';
 import { invoke } from '@tauri-apps/api/core';
 
-import type { InvokeSettings } from '@/types/invoke';
-import type { LatestData } from '@/types/update';
-import type { UserSummary } from '@/types/user';
+import type { InvokeSettings, LatestData, UserSummary } from '@/types';
 import { showDangerToast, showSteamNotRunningToast, t } from '@/utils/toasts';
 
 export async function checkSteamStatus(showToast: boolean = false): Promise<boolean> {

@@ -4,8 +4,7 @@ import type { ChangeEvent, Dispatch, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useUserContext } from '@/components/contexts/UserContext';
-import type { Game } from '@/types/game';
-import type { InvokeCustomList } from '@/types/invoke';
+import type { Game, InvokeCustomList } from '@/types';
 import { logEvent } from '@/utils/tasks';
 import { showDangerToast, showWarningToast } from '@/utils/toasts';
 

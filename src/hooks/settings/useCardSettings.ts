@@ -3,9 +3,14 @@ import { useEffect, useState } from 'react';
 import type { Dispatch, SetStateAction } from 'react';
 
 import { useUserContext } from '@/components/contexts/UserContext';
-import type { InvokeValidateSession, InvokeUserSummary, InvokeSettings } from '@/types/invoke';
-import type { CardFarmingUser, UserSettings } from '@/types/settings';
-import type { UserSummary } from '@/types/user';
+import type {
+    InvokeValidateSession,
+    InvokeUserSummary,
+    InvokeSettings,
+    CardFarmingUser,
+    UserSettings,
+    UserSummary
+} from '@/types';
 import { getAllGamesWithDrops } from '@/utils/automation';
 import { logEvent } from '@/utils/tasks';
 import { showAccountMismatchToast, showDangerToast, showIncorrectCredentialsToast, showSuccessToast, t } from '@/utils/toasts';

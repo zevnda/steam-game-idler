@@ -4,8 +4,7 @@ import { useEffect, useState } from 'react';
 import type { Dispatch, SetStateAction } from 'react';
 
 import { useUserContext } from '@/components/contexts/UserContext';
-import type { InvokeSettings, InvokeValidateKey } from '@/types/invoke';
-import type { UserSettings } from '@/types/settings';
+import type { InvokeSettings, InvokeValidateKey, UserSettings } from '@/types';
 import { logEvent } from '@/utils/tasks';
 import { showDangerToast, showSuccessToast, t } from '@/utils/toasts';
 

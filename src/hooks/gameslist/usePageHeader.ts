@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import type { Dispatch, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import type { SortStyleValue } from '@/types/sort';
+import type { SortStyleValue } from '@/types';
 import { logEvent } from '@/utils/tasks';
 import { showDangerToast, showPrimaryToast } from '@/utils/toasts';
 
