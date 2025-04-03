@@ -42,6 +42,7 @@ export interface GeneralSettings {
     antiAway: boolean;
     apiKey: string | null;
     freeGameNotifications: boolean;
+    useBeta: boolean;
 }
 
 export interface UserSettings {

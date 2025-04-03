@@ -1,7 +1,8 @@
-import { Button, Input } from '@heroui/react';
+import { Button, Input, Tooltip } from '@heroui/react';
 import Image from 'next/image';
 import type { ReactElement } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
+import { TbHelpCircle } from 'react-icons/tb';
 
 import { useUserContext } from '@/components/contexts/UserContext';
 import SettingsCheckbox from '@/components/settings/SettingsCheckbox';
@@ -56,6 +57,23 @@ export default function GeneralSettings(): ReactElement {
                 name='freeGameNotifications'
                 content={t('settings.general.freeGameNotifications')}
             />
+
+            <div className='flex items-center gap-2'>
+                <SettingsCheckbox
+                    type='general'
+                    name='useBeta'
+                    content={t('settings.general.useBeta')}
+                />
+                <Tooltip
+                    size='sm'
+                    content='Beta features may be unstable or change unexpectedly. If you experience any issues when using a beta feature, please report it on GitHub'
+                    placement='right'
+                    closeDelay={0}
+                    className='w-[320px]'
+                >
+                    <TbHelpCircle className='text-altwhite' strokeWidth={1} />
+                </Tooltip>
+            </div>
 
             <SettingsCheckbox
                 type='general'

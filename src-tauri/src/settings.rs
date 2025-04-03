@@ -12,7 +12,8 @@ fn get_default_settings() -> Value {
         "general": {
             "antiAway": false,
             "freeGameNotifications": true,
-            "apiKey": null
+            "apiKey": null,
+            "useBeta": false
         },
         "cardFarming": {
             "listGames": true,
