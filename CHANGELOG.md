@@ -1,3 +1,12 @@
+<!-- 1.9.18 -->
+
+### Changes in v1.9.18
+
+- Added partial translations for Czech
+  - [Contribute to SGI by helping with translations](https://github.com/zevnda/steam-game-idler/discussions/148)
+  - Credit:
+    - @RussianAirplane for the Czech translation
+
 <!-- 1.9.17 -->
 
 ### Changes in v1.9.17

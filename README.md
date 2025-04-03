@@ -35,16 +35,16 @@ Refer to the **[documentation](https://steamgameidler.vercel.app/)** for a detai
 # Supported Languages
 Contribute to this project by adding new translations or improving existing ones. **[Read more here](https://github.com/zevnda/steam-game-idler/discussions/148)**
 
-| Language/Completion             | Contributors                             | Crowdin                |
-| ------------------------------- | ---------------------------------------- | ---------------------- |
-| [![cs-CZ][cs-CZ]][cs-CZ-source] | [@RussianAirplane](https://github.com/RussianAirplane)   | [source][cs-CZ-source] |
-| [![fr-FR][fr-FR]][fr-FR-source] | [@Logiinx](https://github.com/Logiinx)   | [source][fr-FR-source] |
-| [![de-DE][de-DE]][de-DE-source] | [@zevnda](https://github.com/zevnda)     | [source][de-DE-source] |
-| [![it-IT][it-IT]][it-IT-source] | [@Maniots](https://github.com/Maniots)   | [source][it-IT-source] |
-| [![pt-BR][pt-BR]][pt-BR-source] | [@Qjeh](https://github.com/Qjeh)         | [source][pt-BR-source] |
-| [![ru-TU][ru-TU]][ru-TU-source] | [@Jesewe](https://github.com/Jesewe)     | [source][ru-TU-source] |
-| [![tr-TR][tr-TR]][tr-TR-source] | [@61netpa](https://github.com/61netpa)   | [source][tr-TR-source] |
-| [![uk-UA][uk-UA]][uk-UA-source] | [@Bl0ck154](https://github.com/Bl0ck154) | [source][uk-UA-source] |
+| Language/Completion             | Contributors                                           | Crowdin                |
+| ------------------------------- | ------------------------------------------------------ | ---------------------- |
+| [![cs-CZ][cs-CZ]][cs-CZ-source] | [@RussianAirplane](https://github.com/RussianAirplane) | [source][cs-CZ-source] |
+| [![fr-FR][fr-FR]][fr-FR-source] | [@Logiinx](https://github.com/Logiinx)                 | [source][fr-FR-source] |
+| [![de-DE][de-DE]][de-DE-source] | [@zevnda](https://github.com/zevnda)                   | [source][de-DE-source] |
+| [![it-IT][it-IT]][it-IT-source] | [@Maniots](https://github.com/Maniots)                 | [source][it-IT-source] |
+| [![pt-BR][pt-BR]][pt-BR-source] | [@Qjeh](https://github.com/Qjeh)                       | [source][pt-BR-source] |
+| [![ru-TU][ru-TU]][ru-TU-source] | [@Jesewe](https://github.com/Jesewe)                   | [source][ru-TU-source] |
+| [![tr-TR][tr-TR]][tr-TR-source] | [@61netpa](https://github.com/61netpa)                 | [source][tr-TR-source] |
+| [![uk-UA][uk-UA]][uk-UA-source] | [@Bl0ck154](https://github.com/Bl0ck154)               | [source][uk-UA-source] |
 
 # License
 Copyright © 2024-2025 zevnda — **[GPL-3.0 License](./LICENSE)**
