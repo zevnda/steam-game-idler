@@ -3,7 +3,7 @@ import type { Dispatch, SetStateAction, ReactElement } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import useStatisticButtons from '@/hooks/achievements/useStatisticButtons';
-import type { Achievement, ChangedStats, Statistic } from '@/types/achievment';
+import type { Achievement, ChangedStats, Statistic } from '@/types';
 
 interface StatisticButtonsProps {
     statistics: Statistic[];

@@ -5,8 +5,7 @@ import { TbRefresh, TbSortDescending2 } from 'react-icons/tb';
 
 import { useUserContext } from '@/components/contexts/UserContext';
 import { usePageHeader } from '@/hooks/gameslist/usePageHeader';
-import type { Game } from '@/types/game';
-import type { SortOption } from '@/types/sort';
+import type { Game, SortOption } from '@/types';
 
 interface PageHeaderProps {
     sortStyle: string;

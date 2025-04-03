@@ -10,8 +10,7 @@ import AchievementButtons from '@/components/achievements/AchievementButtons';
 import { useSearchContext } from '@/components/contexts/SearchContext';
 import { useStateContext } from '@/components/contexts/StateContext';
 import { useUserContext } from '@/components/contexts/UserContext';
-import type { Achievement } from '@/types/achievment';
-import type { UserSummary } from '@/types/user';
+import type { Achievement, UserSummary } from '@/types';
 import { toggleAchievement } from '@/utils/achievements';
 import { checkSteamStatus } from '@/utils/tasks';
 

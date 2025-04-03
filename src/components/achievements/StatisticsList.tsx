@@ -6,7 +6,7 @@ import { FixedSizeList as List } from 'react-window';
 
 import StatisticButtons from '@/components/achievements/StatisticButtons';
 import { useSearchContext } from '@/components/contexts/SearchContext';
-import type { Achievement, ChangedStats, Statistic } from '@/types/achievment';
+import type { Achievement, ChangedStats, Statistic } from '@/types';
 
 interface RowData {
     filteredStatistics: Statistic[];

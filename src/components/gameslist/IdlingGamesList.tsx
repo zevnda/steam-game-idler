@@ -7,7 +7,7 @@ import { TbPlayerStopFilled } from 'react-icons/tb';
 import { useIdleContext } from '@/components/contexts/IdleContext';
 import { useStateContext } from '@/components/contexts/StateContext';
 import GameCard from '@/components/ui/GameCard';
-import type { InvokeKillProcess } from '@/types/invoke';
+import type { InvokeKillProcess } from '@/types';
 import { logEvent } from '@/utils/tasks';
 import { showDangerToast, showSuccessToast } from '@/utils/toasts';
 

@@ -7,8 +7,7 @@ import { TbSortDescending2 } from 'react-icons/tb';
 import { useStateContext } from '@/components/contexts/StateContext';
 import { useUserContext } from '@/components/contexts/UserContext';
 import useAchievementButtons from '@/hooks/achievements/useAchievementButtons';
-import type { Achievement } from '@/types/achievment';
-import type { SortOption } from '@/types/sort';
+import type { Achievement, SortOption } from '@/types';
 
 interface AchievementButtonsProps {
     achievements: Achievement[];

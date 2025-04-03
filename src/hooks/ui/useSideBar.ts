@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigationContext } from '@/components/contexts/NavigationContext';
 import { useSearchContext } from '@/components/contexts/SearchContext';
 import { useUserContext } from '@/components/contexts/UserContext';
-import type { ActivePageType, CurrentTabType } from '@/types/navigation';
+import type { ActivePageType, CurrentTabType } from '@/types';
 import { logEvent } from '@/utils/tasks';
 import { showDangerToast } from '@/utils/toasts';
 

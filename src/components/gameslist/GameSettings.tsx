@@ -6,8 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useStateContext } from '@/components/contexts/StateContext';
 import { useUserContext } from '@/components/contexts/UserContext';
-import type { InvokeSettings } from '@/types/invoke';
-import type { GameSpecificSettings } from '@/types/settings';
+import type { InvokeSettings, GameSpecificSettings } from '@/types';
 
 interface GameSettingsProps {
     isOpen: boolean;

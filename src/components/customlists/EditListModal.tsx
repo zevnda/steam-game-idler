@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { TbCheck } from 'react-icons/tb';
 import { FixedSizeList as List } from 'react-window';
 
-import type { Game } from '@/types/game';
+import type { Game } from '@/types';
 
 interface RowData {
     filteredGamesList: Game[];

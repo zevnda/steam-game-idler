@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useStateContext } from '@/components/contexts/StateContext';
 import { useUserContext } from '@/components/contexts/UserContext';
-import type { InvokeCustomList, InvokeSettings, InvokeValidateSession } from '@/types/invoke';
+import type { InvokeCustomList, InvokeSettings, InvokeValidateSession } from '@/types';
 import { checkSteamStatus, logEvent } from '@/utils/tasks';
 import {
     showDangerToast,

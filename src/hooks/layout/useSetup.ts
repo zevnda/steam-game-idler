@@ -3,8 +3,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useUserContext } from '@/components/contexts/UserContext';
-import type { InvokeUsers, InvokeUserSummary } from '@/types/invoke';
-import type { UserSummary } from '@/types/user';
+import type { InvokeUsers, InvokeUserSummary, UserSummary } from '@/types';
 import { checkSteamStatus, logEvent } from '@/utils/tasks';
 import { showAccountMismatchToast, showDangerToast } from '@/utils/toasts';
 

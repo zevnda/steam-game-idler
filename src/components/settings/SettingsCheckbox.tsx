@@ -8,7 +8,7 @@ import { useAchievementSettings } from '@/hooks/settings/useAchievementSettings'
 import { useCardSettings } from '@/hooks/settings/useCardSettings';
 import { useGeneralSettings, handleRunAtStartupChange } from '@/hooks/settings/useGeneralSettings';
 import { handleCheckboxChange } from '@/hooks/settings/useSettings';
-import type { AchievementUnlockerSettings, CardFarmingSettings, GeneralSettings } from '@/types/settings';
+import type { AchievementUnlockerSettings, CardFarmingSettings, GeneralSettings } from '@/types';
 import { antiAwayStatus } from '@/utils/tasks';
 
 interface SettingsCheckboxProps {

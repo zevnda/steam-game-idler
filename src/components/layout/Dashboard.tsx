@@ -13,7 +13,7 @@ import IdlingGamesList from '@/components/gameslist/IdlingGamesList';
 import Settings from '@/components/settings/Settings';
 import Header from '@/components/ui/Header';
 import SideBar from '@/components/ui/SideBar';
-import type { ActivePageType, CustomListType } from '@/types/navigation';
+import type { ActivePageType, CustomListType } from '@/types';
 import { antiAwayStatus } from '@/utils/tasks';
 
 export default function Dashboard(): ReactElement {

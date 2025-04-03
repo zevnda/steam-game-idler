@@ -12,9 +12,14 @@ import { useIdleContext } from '@/components/contexts/IdleContext';
 import { useStateContext } from '@/components/contexts/StateContext';
 import { useUpdateContext } from '@/components/contexts/UpdateContext';
 import { useUserContext } from '@/components/contexts/UserContext';
-import type { Game } from '@/types/game';
-import type { InvokeCustomList, InvokeFreeGames, InvokeRunningProcess, InvokeSettings } from '@/types/invoke';
-import type { UserSummary } from '@/types/user';
+import type {
+    Game,
+    InvokeCustomList,
+    InvokeFreeGames,
+    InvokeRunningProcess,
+    InvokeSettings,
+    UserSummary
+} from '@/types';
 import { startIdle } from '@/utils/idle';
 import { checkSteamStatus, logEvent, fetchLatest, preserveKeysAndClearData } from '@/utils/tasks';
 import { showDangerToast, t } from '@/utils/toasts';

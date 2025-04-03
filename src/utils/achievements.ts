@@ -1,8 +1,7 @@
 import { invoke } from '@tauri-apps/api/core';
 import type { Dispatch, SetStateAction } from 'react';
 
-import type { Achievement, StatValue } from '@/types/achievment';
-import type { InvokeStatUpdate, InvokeAchievementData, InvokeAchievementUnlock } from '@/types/invoke';
+import type { Achievement, StatValue, InvokeStatUpdate, InvokeAchievementData, InvokeAchievementUnlock } from '@/types';
 import { logEvent } from '@/utils/tasks';
 import { showDangerToast, showSuccessToast, t } from '@/utils/toasts';
 

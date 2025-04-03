@@ -7,7 +7,7 @@ import { TbCheck } from 'react-icons/tb';
 
 import { useStateContext } from '@/components/contexts/StateContext';
 import { handleCancel, useCardFarming, type GameWithDrops } from '@/hooks/automation/useCardFarming';
-import type { ActivePageType } from '@/types/navigation';
+import type { ActivePageType } from '@/types';
 
 export default function CardFarming({ activePage }: { activePage: ActivePageType }): ReactElement {
     const { t } = useTranslation();

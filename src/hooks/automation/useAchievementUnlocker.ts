@@ -2,10 +2,14 @@ import type { Time } from '@internationalized/date';
 import { invoke } from '@tauri-apps/api/core';
 import type { Dispatch, RefObject, SetStateAction } from 'react';
 
-import type { Game } from '@/types/game';
-import type { InvokeAchievementData, InvokeSettings, InvokeCustomList } from '@/types/invoke';
-import type { AchievementUnlockerSettings } from '@/types/settings';
-import type { UserSummary } from '@/types/user';
+import type {
+    Game,
+    InvokeAchievementData,
+    InvokeSettings,
+    InvokeCustomList,
+    AchievementUnlockerSettings,
+    UserSummary
+} from '@/types';
 import { unlockAchievement } from '@/utils/achievements';
 import { isWithinSchedule } from '@/utils/automation';
 import { startIdle, stopIdle } from '@/utils/idle';

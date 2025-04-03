@@ -14,7 +14,7 @@ import ManualAdd from '@/components/customlists/ManualAdd';
 import GameCard from '@/components/ui/GameCard';
 import { useAutomate } from '@/hooks/automation/useAutomateButtons';
 import useCustomList from '@/hooks/customlists/useCustomList';
-import type { Game } from '@/types/game';
+import type { Game } from '@/types';
 
 type CustomListType = 'cardFarmingList' | 'achievementUnlockerList' | 'autoIdleList' | 'favoritesList';
 

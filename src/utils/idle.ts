@@ -1,7 +1,6 @@
 import { invoke } from '@tauri-apps/api/core';
 
-import type { InvokeRunningProcess, InvokeSettings, InvokeIdle } from '@/types/invoke';
-import type { UserSummary } from '@/types/user';
+import type { UserSummary, InvokeRunningProcess, InvokeSettings, InvokeIdle } from '@/types';
 import { checkSteamStatus, logEvent } from '@/utils/tasks';
 import { showAccountMismatchToast, showWarningToast, t } from '@/utils/toasts';
 

@@ -4,7 +4,7 @@ import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useLogs, handleClearLogs, handleOpenLogFile } from '@/hooks/settings/useLogs';
-import type { LogEntry } from '@/types/log';
+import type { LogEntry } from '@/types';
 
 export default function Logs(): ReactElement {
     const { t } = useTranslation();

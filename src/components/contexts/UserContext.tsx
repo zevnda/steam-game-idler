@@ -2,9 +2,7 @@ import { Time } from '@internationalized/date';
 import { createContext, useContext, useState } from 'react';
 import type { Dispatch, ReactElement, ReactNode, SetStateAction } from 'react';
 
-import type { Game } from '@/types/game';
-import type { UserSettings } from '@/types/settings';
-import type { UserSummary } from '@/types/user';
+import type { Game, UserSettings, UserSummary } from '@/types';
 
 interface UserContextType {
     userSummary: UserSummary;

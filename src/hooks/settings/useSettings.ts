@@ -2,8 +2,7 @@ import { invoke } from '@tauri-apps/api/core';
 import { useEffect, useState } from 'react';
 import type { Dispatch, SetStateAction } from 'react';
 
-import type { InvokeSettings } from '@/types/invoke';
-import type { UserSettings } from '@/types/settings';
+import type { InvokeSettings, UserSettings } from '@/types';
 import { getAppVersion, logEvent } from '@/utils/tasks';
 import { showDangerToast, t } from '@/utils/toasts';
 

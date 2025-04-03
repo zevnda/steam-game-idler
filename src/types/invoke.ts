@@ -1,7 +1,4 @@
-import type { Achievement, Statistic } from '@/types/achievment';
-import type { Game } from '@/types/game';
-import type { UserSettings } from '@/types/settings';
-import type { UserSummary } from '@/types/user';
+import type { Achievement, Statistic, Game, UserSettings, UserSummary } from '@/types';
 
 interface Processes {
     appid: number;
