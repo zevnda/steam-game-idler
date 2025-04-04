@@ -1,6 +1,6 @@
-<!-- 1.9.19 -->
+<!-- 1.10.0 -->
 
-### Changes in v1.9.19
+### Changes in v1.10.0
 
 - UI and theme improvements
   - Removed all of the color themes and replaced them with a couple variations of the original dark theme
