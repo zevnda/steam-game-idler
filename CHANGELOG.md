@@ -1,3 +1,10 @@
+<!-- 1.9.19 -->
+
+### Changes in v1.9.19
+
+- Theming improvements
+  - Removed all of the color themes and replaced them with a couple variants of the dark theme (Ash and OLED)
+
 <!-- 1.9.18 -->
 
 ### Changes in v1.9.18
