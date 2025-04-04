@@ -59,7 +59,7 @@ export default function LanguageSwitch(): ReactElement | null {
             classNames={{
                 listbox: ['p-0'],
                 value: ['text-sm !text-content'],
-                trigger: ['bg-titlebar border border-border data-[hover=true]:!bg-input data-[open=true]:!bg-input duration-100 rounded-lg'],
+                trigger: ['bg-input border border-border data-[hover=true]:!bg-inputhover data-[open=true]:!bg-inputhover duration-100 rounded-lg'],
                 popoverContent: ['bg-titlebar border border-border rounded-lg justify-start !text-content'],
             }}
             defaultSelectedKeys={[currentLanguage]}

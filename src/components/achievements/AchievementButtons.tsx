@@ -51,11 +51,11 @@ export default function AchievementButtons({
     };
 
     return (
-        <div className='absolute top-0 right-0 flex gap-2'>
+        <div className='absolute top-0 right-0 flex gap-2 mr-8 mt-1'>
             <Button
                 isDisabled={protectedAchievements || unAchieved.length === 0}
                 size='sm'
-                className='font-semibold rounded-lg bg-dynamic text-button'
+                className='font-semibold rounded-lg bg-dynamic text-button-text'
                 onPress={() => handleShowModal(onOpen, 'unlock')}
                 startContent={<TbLockOpen size={20} />}
             >
@@ -119,7 +119,7 @@ export default function AchievementButtons({
                                 </Button>
                                 <Button
                                     size='sm'
-                                    className='font-semibold rounded-lg bg-dynamic text-button'
+                                    className='font-semibold rounded-lg bg-dynamic text-button-text'
                                     onPress={() => {
                                         if (state === 'unlock') {
                                             if (appId && appName) {

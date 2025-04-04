@@ -51,7 +51,7 @@ export default function Private({ setRefreshKey }: PrivateProps): ReactElement {
                     </ExtLink>
                     <Button
                         size='sm'
-                        className='font-semibold rounded-lg mt-5 bg-dynamic text-button'
+                        className='font-semibold rounded-lg mt-5 bg-dynamic text-button-text'
                         onPress={handleRefresh}
                     >
                         {t('gamesList.private.tryAgain')}

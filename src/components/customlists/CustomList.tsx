@@ -118,7 +118,7 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
                         {listType.startButton && (
                             <Button
                                 size='sm'
-                                className='rounded-full font-semibold bg-dynamic text-button'
+                                className='rounded-full font-semibold bg-dynamic text-button-text'
                                 startContent={listType.icon}
                                 onPress={listType.startButton === 'startCardFarming' ? startCardFarming : startAchievementUnlocker}
                             >
@@ -130,7 +130,7 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
 
                         <Button
                             size='sm'
-                            className='rounded-full font-semibold bg-dynamic text-button'
+                            className='rounded-full font-semibold bg-dynamic text-button-text'
                             startContent={<TbEdit fontSize={20} />}
                             onPress={() => setEditModalOpen(true)}
                         >

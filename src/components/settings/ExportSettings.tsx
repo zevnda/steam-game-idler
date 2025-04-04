@@ -156,7 +156,7 @@ export default function ExportSettings(): ReactElement {
             <Button
                 isIconOnly
                 size='sm'
-                className='font-semibold rounded-lg bg-dynamic text-button'
+                className='font-semibold rounded-lg bg-dynamic text-button-text'
                 onPress={exportSettings}
                 startContent={<TbArrowBarUp size={20} />}
             />

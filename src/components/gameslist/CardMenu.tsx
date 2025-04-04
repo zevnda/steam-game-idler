@@ -27,7 +27,7 @@ export default function CardMenu({ item, onOpen }: CardMenuProps): ReactElement 
     };
 
     return (
-        <Dropdown classNames={{ content: ['rounded-lg p-0 bg-base border border-border'] }}>
+        <Dropdown classNames={{ content: ['rounded-lg p-0 bg-titlebar border border-border'] }}>
             <DropdownTrigger>
                 <div className='p-0.5 bg-black text-offwhite bg-opacity-50 hover:bg-black hover:bg-opacity-70 hover:scale-105 cursor-pointer rounded-md duration-200'>
                     <TbDotsVertical />

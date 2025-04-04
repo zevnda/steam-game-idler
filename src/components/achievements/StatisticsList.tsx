@@ -31,10 +31,10 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
     const protectedStatisticTwo = item2?.protected_stat || false;
 
     return (
-        <div style={style} className='grid grid-cols-2 gap-2 p-2'>
+        <div style={style} className='grid grid-cols-2 gap-2 px-4'>
             {item1 && (
                 <div key={item1.id} className='flex flex-col gap-4'>
-                    <div className='flex justify-between items-center max-h-12 border border-border bg-container dark:bg-[#1a1a1a] p-2 rounded-lg'>
+                    <div className='flex justify-between items-center max-h-12 border border-border bg-titlebar p-2 rounded-lg'>
                         <div className='flex flex-col'>
                             <p className='text-sm w-full truncate'>
                                 {item1.id}
@@ -54,7 +54,7 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
                             aria-label='statistic value'
                             className='w-[120px]'
                             classNames={{
-                                inputWrapper: ['bg-titlebar border border-border hover:!bg-input rounded-lg group-data-[focus-visible=true]:ring-transparent group-data-[focus-visible=true]:ring-offset-transparent group-data-[focus-within=true]:!bg-titlebar h-8'],
+                                inputWrapper: ['bg-input border border-border hover:!bg-inputhover rounded-lg group-data-[focus-visible=true]:ring-transparent group-data-[focus-visible=true]:ring-offset-transparent group-data-[focus-within=true]:!bg-inputhover h-8'],
                                 input: ['text-sm !text-content']
                             }}
                         />
@@ -63,7 +63,7 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
             )}
             {item2 && (
                 <div key={item2.id} className='flex flex-col gap-4'>
-                    <div className='flex justify-between items-center max-h-12 border border-border bg-container dark:bg-[#1a1a1a] p-2 rounded-lg'>
+                    <div className='flex justify-between items-center max-h-12 border border-border bg-titlebar p-2 rounded-lg'>
                         <div className='flex flex-col'>
                             <p className='text-sm w-full truncate'>
                                 {item2.id}
@@ -83,7 +83,7 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
                             aria-label='statistic value'
                             className='w-[120px]'
                             classNames={{
-                                inputWrapper: ['bg-titlebar border border-border hover:!bg-input rounded-lg group-data-[focus-visible=true]:ring-transparent group-data-[focus-visible=true]:ring-offset-transparent group-data-[focus-within=true]:!bg-titlebar h-8'],
+                                inputWrapper: ['bg-input border border-border hover:!bg-inputhover rounded-lg group-data-[focus-visible=true]:ring-transparent group-data-[focus-visible=true]:ring-offset-transparent group-data-[focus-within=true]:!bg-inputhover h-8'],
                                 input: ['text-sm !text-content']
                             }}
                         />
@@ -100,9 +100,15 @@ interface StatisticsListProps {
     statistics: Statistic[];
     setStatistics: Dispatch<SetStateAction<Statistic[]>>;
     setAchievements: Dispatch<SetStateAction<Achievement[]>>;
+    windowInnerHeight: number;
 }
 
-export default function StatisticsList({ statistics, setStatistics, setAchievements }: StatisticsListProps): ReactElement {
+export default function StatisticsList({
+    statistics,
+    setStatistics,
+    setAchievements,
+    windowInnerHeight
+}: StatisticsListProps): ReactElement {
     const { t } = useTranslation();
     const { statisticQueryValue } = useSearchContext();
     const [changedStats, setChangedStats] = useState<ChangedStats>({});
@@ -143,7 +149,7 @@ export default function StatisticsList({ statistics, setStatistics, setAchieveme
     const itemData: RowData = { filteredStatistics, updateStatistic, t };
 
     return (
-        <div className='flex flex-col gap-2 w-full max-h-[calc(100vh-195px)] overflow-y-auto scroll-smooth'>
+        <div className='flex flex-col gap-2 w-full scroll-smooth'>
             {statistics.length > 0 ? (
                 <>
                     <StatisticButtons
@@ -155,7 +161,7 @@ export default function StatisticsList({ statistics, setStatistics, setAchieveme
                     />
 
                     <List
-                        height={window.innerHeight - 195}
+                        height={windowInnerHeight - 172}
                         itemCount={Math.ceil(filteredStatistics.length / 2)}
                         itemSize={58}
                         width='100%'

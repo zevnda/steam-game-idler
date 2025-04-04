@@ -47,7 +47,7 @@ export default function PageHeader({ protectedAchievements, protectedStatistics 
     };
 
     return (
-        <div className='relative flex justify-between items-center mb-4'>
+        <div className='relative flex justify-between items-center'>
             {(protectedAchievements || protectedStatistics) && (
                 <div className='absolute top-0 right-0'>
                     <Alert

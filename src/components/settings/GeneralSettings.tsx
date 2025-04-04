@@ -22,7 +22,7 @@ export default function GeneralSettings(): ReactElement {
                 <p className='text-xs text-altwhite mb-0.5'>
                     {t('settings.general.userSummary')}
                 </p>
-                <div className='border border-border rounded-lg bg-input hover:bg-titlebar dark:bg-[#131313] dark:hover:bg-[#171717]'>
+                <div className='border border-border rounded-lg bg-input hover:bg-inputhover dark:bg-[#131313] dark:hover:bg-[#171717]'>
                     <ExtLink href={`https://steamcommunity.com/profiles/${userSummary?.steamId}`}>
                         <div className='flex items-center gap-2 h-full p-2 group'>
                             <Image
@@ -86,7 +86,9 @@ export default function GeneralSettings(): ReactElement {
                     <p className='text-xs mt-2'>
                         {t('settings.general.language')}
                     </p>
+
                     <LanguageSwitch />
+
                     <span className='text-xs ml-1'>
                         <ExtLink href='https://github.com/zevnda/steam-game-idler/discussions/148' className='text-link hover:text-linkhover'>
                             {t('settings.general.helpTranslate')}
@@ -127,7 +129,7 @@ export default function GeneralSettings(): ReactElement {
                         placeholder={t('settings.general.webApi.placeholder')}
                         className='max-w-[280px]'
                         classNames={{
-                            inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'],
+                            inputWrapper: ['bg-input border border-border hover:!bg-inputhover rounded-lg group-data-[focus-within=true]:!bg-inputhover'],
                             input: ['!text-content placeholder:text-altwhite/50']
                         }}
                         value={keyValue}
@@ -137,7 +139,7 @@ export default function GeneralSettings(): ReactElement {
                     <Button
                         size='sm'
                         isDisabled={hasKey || !keyValue}
-                        className='font-semibold rounded-lg bg-dynamic text-button'
+                        className='font-semibold rounded-lg bg-dynamic text-button-text'
                         onPress={() => handleKeySave(userSummary?.steamId, keyValue, setHasKey, setUserSettings)}
                         startContent={<TbUpload size={20} />}
                     >

@@ -1,5 +1,5 @@
 import { invoke } from '@tauri-apps/api/core';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import type { Dispatch, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -9,16 +9,21 @@ import type { Achievement, Statistic, InvokeAchievementData } from '@/types';
 import { checkSteamStatus, logEvent } from '@/utils/tasks';
 import { showAccountMismatchToast, showDangerToast } from '@/utils/toasts';
 
+interface UseAchievementsProps {
+    windowInnerHeight: number;
+}
+
 export default function useAchievements(
     setIsLoading: Dispatch<SetStateAction<boolean>>,
     setAchievements: Dispatch<SetStateAction<Achievement[]>>,
     setStatistics: Dispatch<SetStateAction<Statistic[]>>,
     setProtectedAchievements: Dispatch<SetStateAction<boolean>>,
     setProtectedStatistics: Dispatch<SetStateAction<boolean>>,
-): void {
+): UseAchievementsProps {
     const { t } = useTranslation();
     const { appId } = useStateContext();
     const { userSummary, setAchievementsUnavailable, setStatisticsUnavailable } = useUserContext();
+    const [windowInnerHeight, setWindowInnerHeight] = useState(window.innerHeight);
 
     useEffect(() => {
         const getAchievementData = async (): Promise<void> => {
@@ -98,4 +103,17 @@ export default function useAchievements(
         setStatisticsUnavailable,
         t
     ]);
+
+    useEffect(() => {
+        const handleResize = (): void => {
+            setWindowInnerHeight(window.innerHeight);
+        };
+        window.addEventListener('resize', handleResize);
+        handleResize();
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
+    return { windowInnerHeight };
 }

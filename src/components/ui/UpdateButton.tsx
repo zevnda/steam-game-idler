@@ -1,12 +1,13 @@
-import { Divider, Spinner, Tooltip } from '@heroui/react';
+import { Divider, Spinner } from '@heroui/react';
 import { invoke } from '@tauri-apps/api/core';
 import { relaunch } from '@tauri-apps/plugin-process';
 import { check } from '@tauri-apps/plugin-updater';
 import { useState } from 'react';
 import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
-import { TbDownload } from 'react-icons/tb';
+import { TbCircleArrowDown } from 'react-icons/tb';
 
+import CustomTooltip from '@/components/ui/CustomTooltip';
 import { logEvent } from '@/utils/tasks';
 import { showDangerToast } from '@/utils/toasts';
 
@@ -41,15 +42,15 @@ export default function UpdateButton(): ReactElement {
                     <Spinner size='sm' variant='simple' />
                 </div>
             ) : (
-                <Tooltip content='Update Ready!' placement='left' closeDelay={100} size='sm' className='bg-titlehover text-content'>
+                <CustomTooltip content='Update Ready!'>
                     <div className='flex justify-center items-center cursor-pointer' onClick={handleUpdate}>
                         <div className='flex items-center p-2 hover:bg-titlehover rounded-full'>
-                            <TbDownload fontSize={18} className='text-success' />
+                            <TbCircleArrowDown fontSize={20} className='text-success' />
                         </div>
                     </div>
-                </Tooltip>
+                </CustomTooltip>
             )}
-            <Divider className='w-[1px] h-6 bg-border' />
+            <Divider className='w-[1px] h-6 bg-header-border' />
         </>
     );
 }

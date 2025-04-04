@@ -61,7 +61,7 @@ export default function Notifications(): ReactElement {
                         />
                         <motion.div
                             ref={dropdownRef}
-                            className='absolute right-0 mx-auto mt-2 w-[350px] p-0 m-0 rounded-xl bg-notibase border-none outline-none z-[999] shadow-xl'
+                            className='absolute right-0 mx-auto mt-2 w-[350px] p-0 m-0 rounded-xl bg-modalbody border-none outline-none z-[999] shadow-xl'
                             initial={{
                                 opacity: 0, y: -5,
                                 scale: 0.9
@@ -76,13 +76,13 @@ export default function Notifications(): ReactElement {
                             }}
                         >
                             {notifications.length === 0 ? (
-                                <div className='flex items-center h-8 rounded-xl p-8 border-b border-border sticky top-0 bg-notihead z-[999] cursor-default'>
+                                <div className='flex items-center h-8 rounded-xl p-8 border-b border-border sticky top-0 bg-modalheader z-[999] cursor-default'>
                                     <p className='w-full text-sm text-center'>
                                         {t('notifications.empty')}
                                     </p>
                                 </div>
                             ) : (
-                                <div className='flex items-center h-8 rounded-t-xl py-4 px-6 border-b border-border sticky top-0 bg-notihead z-[999] cursor-default'>
+                                <div className='flex items-center h-8 rounded-t-xl py-4 px-6 border-b border-border sticky top-0 bg-modalheader z-[999] cursor-default'>
                                     <div className='flex justify-end w-full'>
                                         <p
                                             className='text-xs text-altwhite hover:text-content dark:hover:text-offwhite font-semibold my-0.5 cursor-pointer duration-100'
@@ -97,7 +97,7 @@ export default function Notifications(): ReactElement {
                                 {notifications.map((notification) => (
                                     <div
                                         key={notification.id}
-                                        className={`rounded-none m-0 border-b last:border-none border-border cursor-pointer px-6 py-3 hover:bg-notihover ${unseenNotifications.some(unseen => unseen.id === notification.id) ? 'bg-notiunread font-semibold' : 'bg-notibase'}`}
+                                        className={`rounded-none m-0 border-b last:border-none border-border cursor-pointer px-6 py-3 hover:bg-modalbody-hover ${unseenNotifications.some(unseen => unseen.id === notification.id) ? 'bg-modalbody-hover font-semibold' : 'bg-modalbody'}`}
                                         onClick={() => handleOpenUrl(notification.url, notification.id, unseenNotifications, setUnseenNotifications)}
                                     >
                                         <div className='flex items-center gap-4 py-0.5'>
@@ -117,7 +117,7 @@ export default function Notifications(): ReactElement {
                                 ))}
                             </div>
                             {notifications.length !== 0 && (
-                                <div className='flex items-center h-4 rounded-b-xl px-6 border-t border-border sticky bottom-0 bg-notihead z-[999] cursor-default' />
+                                <div className='flex items-center h-4 rounded-b-xl px-6 border-t border-border sticky bottom-0 bg-modalfooter z-[999] cursor-default' />
                             )}
                         </motion.div>
                     </>

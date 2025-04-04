@@ -32,7 +32,7 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement => {
     return (
         <div
             style={style}
-            className={`flex justify-between items-center gap-2 hover:bg-containerhover cursor-pointer px-3 py-1 duration-150 select-none ${list.some(game => game.appid === item.appid) && 'opacity-50 dark:opacity-30'}`}
+            className={`flex justify-between items-center gap-2 hover:bg-modalbody-hover cursor-pointer px-3 py-1 duration-150 select-none ${list.some(game => game.appid === item.appid) && 'opacity-50 dark:opacity-30'}`}
             onClick={() => list.some(game => game.appid === item.appid) ? handleRemoveGame(item) : handleAddGame(item)}
         >
             <div className='flex items-center gap-3 max-w-[90%]'>
@@ -106,7 +106,7 @@ export default function EditListModal({
                                 size='sm'
                                 placeholder={t('search.games')}
                                 classNames={{
-                                    inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar group-data-[focus-visible=true]:ring-transparent group-data-[focus-visible=true]:ring-offset-transparent'],
+                                    inputWrapper: ['bg-input border border-border hover:!bg-inputhover rounded-lg group-data-[focus-within=true]:!bg-inputhover group-data-[focus-visible=true]:ring-transparent group-data-[focus-visible=true]:ring-offset-transparent'],
                                     input: ['!text-content placeholder:text-altwhite/50'],
                                 }}
                                 isDisabled={showInList}
@@ -116,9 +116,9 @@ export default function EditListModal({
                             <div className='flex items-center gap-2'>
                                 <Button
                                     size='sm'
-                                    className={`rounded-full font-semibold ${showInList ? 'bg-green-400/40 text-green-600' : 'bg-gray-500/40 text-button'}`}
+                                    className={`rounded-full font-semibold ${showInList ? 'bg-green-400/40 text-green-600' : 'bg-gray-500/40 text-button-text'}`}
                                     isDisabled={list.length === 0}
-                                    startContent={<TbCheck fontSize={18} className={showInList ? 'text-green-600' : 'text-button'} />}
+                                    startContent={<TbCheck fontSize={18} className={showInList ? 'text-green-600' : 'text-button-text'} />}
                                     onPress={() => setShowInList(!showInList)}
                                 >
                                     {t('customLists.inList')}
@@ -126,7 +126,7 @@ export default function EditListModal({
                                 {type === 'achievementUnlockerList' && (
                                     <Button
                                         size='sm'
-                                        className='rounded-full font-semibold bg-dynamic text-button'
+                                        className='rounded-full font-semibold bg-dynamic text-button-text'
                                         isDisabled={filteredGamesList.length === 0 || list.length === filteredGamesList.length}
                                         onPress={() => handleAddAllGames(filteredGamesList)}
                                     >
@@ -158,7 +158,7 @@ export default function EditListModal({
                             </Button>
                             <Button
                                 size='sm'
-                                className='rounded-lg font-semibold bg-dynamic text-button'
+                                className='rounded-lg font-semibold bg-dynamic text-button-text'
                                 onPress={onClose}
                             >
                                 {t('common.done')}

@@ -40,7 +40,7 @@ export default function SteamWarning(): ReactElement {
                     <ModalFooter className='border-t border-border bg-modalfooter px-4 py-3'>
                         <Button
                             size='sm'
-                            className='font-semibold rounded-lg bg-dynamic text-button'
+                            className='font-semibold rounded-lg bg-dynamic text-button-text'
                             onPress={verifySteamStatus}
                         >
                             {t('common.confirm')}

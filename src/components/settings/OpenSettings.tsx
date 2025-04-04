@@ -30,7 +30,7 @@ export default function OpenSettings(): ReactElement {
             <Button
                 isIconOnly
                 size='sm'
-                className='font-semibold rounded-lg bg-dynamic text-button'
+                className='font-semibold rounded-lg bg-dynamic text-button-text'
                 onPress={handleOpenSettingsFile}
                 startContent={<TbFolders size={20} />}
             />

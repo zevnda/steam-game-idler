@@ -16,22 +16,8 @@ export default function ThemeSwitch(): ReactElement | null {
     const themes: Theme[] = [
         { key: 'light', label: 'Light' },
         { key: 'dark', label: 'Dark' },
-        { key: 'nordic', label: 'Nordic (Light)' },
-        { key: 'pastel', label: 'Pastel (Light)' },
-        { key: 'sunshine', label: 'Sunshine (Light)' },
-        { key: 'seafoam', label: 'Seafoam (Light)' },
-        { key: 'blossom', label: 'Blossom (Light)' },
-        { key: 'meadow', label: 'Meadow (Light)' },
-        { key: 'sandstone', label: 'Sandstone (Light)' },
-        { key: 'icicle', label: 'Icicle (Light)' },
-        { key: 'midnight', label: 'Midnight (Dark)' },
-        { key: 'amethyst', label: 'Amethyst (Dark)' },
-        { key: 'emerald', label: 'Emerald (Dark)' },
-        { key: 'cherry', label: 'Cherry (Dark)' },
-        { key: 'cosmic', label: 'Cosmic (Dark)' },
-        { key: 'mint', label: 'Mint (Dark)' },
-        { key: 'arctic', label: 'Arctic (Dark)' },
-        { key: 'nightshade', label: 'Nightshade (Dark)' }
+        { key: 'ash', label: 'Ash (Dark)' },
+        { key: 'oled', label: 'OLED (Dark)' },
     ];
 
     useEffect(() => {
@@ -60,8 +46,8 @@ export default function ThemeSwitch(): ReactElement | null {
                 listbox: ['p-0'],
                 value: ['text-sm !text-content'],
                 trigger: [
-                    'bg-titlebar border border-border duration-100 rounded-lg',
-                    'data-[hover=true]:!bg-input data-[open=true]:!bg-input'
+                    'bg-input border border-border duration-100 rounded-lg',
+                    'data-[hover=true]:!bg-inputhover data-[open=true]:!bg-inputhover'
                 ],
                 popoverContent: ['bg-titlebar border border-border rounded-lg justify-start !text-content'],
             }}

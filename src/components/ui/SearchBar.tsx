@@ -45,7 +45,7 @@ export default function SearchBar(): ReactElement {
                     startContent={<RiSearchLine />}
                     className='w-[300px] ml-14'
                     classNames={{
-                        inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'],
+                        inputWrapper: ['bg-input border border-header-border hover:!bg-inputhover rounded-lg group-data-[focus-within=true]:!bg-inputhover'],
                         input: ['!text-content placeholder:text-altwhite/50'],
                     }}
                     value={searchContext.gameQueryValue}
@@ -63,7 +63,7 @@ export default function SearchBar(): ReactElement {
                     startContent={<RiSearchLine />}
                     className='max-w-[300px] ml-4'
                     classNames={{
-                        inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'],
+                        inputWrapper: ['bg-input border border-border hover:!bg-inputhover rounded-lg group-data-[focus-within=true]:!bg-inputhover'],
                         input: ['!text-content placeholder:text-altwhite/50']
                     }}
                     value={searchContext.achievementQueryValue}
@@ -80,7 +80,7 @@ export default function SearchBar(): ReactElement {
                     startContent={<RiSearchLine />}
                     className='max-w-[300px] ml-4'
                     classNames={{
-                        inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'],
+                        inputWrapper: ['bg-input border border-border hover:!bg-inputhover rounded-lg group-data-[focus-within=true]:!bg-inputhover'],
                         input: ['!text-content placeholder:text-altwhite/50']
                     }}
                     value={searchContext.statisticQueryValue}

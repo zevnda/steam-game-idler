@@ -62,9 +62,9 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
     };
 
     return (
-        <div style={style} className='grid grid-cols-1 p-2'>
+        <div style={style} className='grid grid-cols-1 pb-4 px-4'>
             <div className='border border-border rounded-lg shadow-sm'>
-                <div className='flex items-center p-3 bg-container dark:bg-[#1a1a1a] rounded-t-lg'>
+                <div className='flex items-center p-3 bg-titlebar dark:bg-[#1a1a1a] rounded-t-lg'>
                     <div className='w-10 h-10 flex items-center justify-center'>
                         <Image
                             className='rounded-full mr-3'
@@ -90,7 +90,7 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
                     <Button
                         size='sm'
                         isDisabled={protectedAchievement}
-                        className={`font-semibold rounded-lg text-button w-24 ${protectedAchievement ? 'bg-warning' : achieved ? 'bg-danger' : 'bg-dynamic'}`}
+                        className={`font-semibold rounded-lg text-button-text w-24 ${protectedAchievement ? 'bg-warning' : achieved ? 'bg-danger' : 'bg-dynamic'}`}
                         onPress={handleToggle}
                         startContent={
                             protectedAchievement ? <TbCancel size={20} /> :
@@ -101,11 +101,11 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
                             achieved ? t('achievementManager.achievements.lock') : t('achievementManager.achievements.unlock')}
                     </Button>
                 </div>
-                <div className='p-1 bg-container dark:bg-[#1a1a1a] select-none rounded-b-lg'>
+                <div className='p-1 bg-titlebar dark:bg-[#1a1a1a] select-none rounded-b-lg'>
                     <div className='w-full bg-titlehover rounded-full h-3.5 relative'>
                         <div className='bg-dynamic/40 h-3.5 rounded-full flex items-center' style={{ width: `${percent}%`, position: 'relative' }} />
                         {percent !== undefined && (
-                            <p className='text-[11px] text-button dark:text-offwhite absolute inset-0 flex items-center justify-center mix-blend-difference'>
+                            <p className='text-[11px] text-button-text dark:text-offwhite absolute inset-0 flex items-center justify-center mix-blend-difference'>
                                 {percent.toFixed(1)}%
                             </p>
                         )}
@@ -122,12 +122,14 @@ interface AchievementsListProps {
     achievements: Achievement[];
     setAchievements: Dispatch<SetStateAction<Achievement[]>>;
     protectedAchievements: boolean;
+    windowInnerHeight: number;
 }
 
 export default function AchievementsList({
     achievements,
     setAchievements,
-    protectedAchievements
+    protectedAchievements,
+    windowInnerHeight
 }: AchievementsListProps): ReactElement {
     const { t } = useTranslation();
     const { userSummary } = useUserContext();
@@ -161,7 +163,7 @@ export default function AchievementsList({
     };
 
     return (
-        <div className='flex flex-col gap-2 w-full max-h-[calc(100vh-195px)] overflow-y-auto scroll-smooth'>
+        <div className='flex flex-col gap-2 w-full scroll-smooth'>
             {achievements.length > 0 ? (
                 <>
                     <AchievementButtons
@@ -171,7 +173,7 @@ export default function AchievementsList({
                     />
 
                     <List
-                        height={window.innerHeight - 195}
+                        height={windowInnerHeight - 172}
                         itemCount={filteredAchievements.length}
                         itemSize={100}
                         width='100%'
