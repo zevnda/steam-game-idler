@@ -1,4 +1,4 @@
-import { Button, Input, Spinner } from '@heroui/react';
+import { Button, cn, Input, Spinner } from '@heroui/react';
 import Image from 'next/image';
 import type { ReactElement } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -21,7 +21,7 @@ export default function CardSettings(): ReactElement {
                     <p className='text-xs text-altwhite mb-0.5'>
                         {t('settings.cardFarming.userSummary')}
                     </p>
-                    <div className='border border-border rounded-lg bg-input hover:bg-inputhover dark:bg-[#131313] dark:hover:bg-[#171717]'>
+                    <div className='border border-border rounded-lg bg-input hover:bg-inputhover'>
                         <div className='flex flex-col items-start gap-2 h-full p-2 group'>
                             <ExtLink href={`https://steamcommunity.com/profiles/${cardSettings.cardFarmingUser.steamId}/badges`}>
                                 <div className='flex gap-2 items-center'>
@@ -60,7 +60,10 @@ export default function CardSettings(): ReactElement {
                                         </p>
                                         <div className='flex justify-center items-center mt-2'>
                                             <div
-                                                className='flex justify-center items-center gap-1 cursor-pointer w-fit text-altwhite hover:text-content'
+                                                className={cn(
+                                                    'flex justify-center items-center gap-1 cursor-pointer',
+                                                    'w-fit text-altwhite hover:text-content'
+                                                )}
                                                 onClick={() => fetchGamesWithDropsData(
                                                     userSummary,
                                                     cardSettings.sidValue,
@@ -105,7 +108,11 @@ export default function CardSettings(): ReactElement {
                 <p className='text-xs mt-2'>
                     <Trans i18nKey='settings.cardFarming.steamCredentials'>
                         Steam credentials are required in order to use the Card Farming feature.&nbsp;
-                        <ExtLink href='https://steamgameidler.vercel.app/steam-credentials' className='text-link hover:text-linkhover'>Learn more</ExtLink>
+                        <ExtLink
+                            href='https://steamgameidler.vercel.app/steam-credentials'
+                            className='text-link hover:text-linkhover'
+                        >Learn more
+                        </ExtLink>
                     </Trans>
                 </p>
                 <div className='flex flex-col mt-4'>
@@ -118,7 +125,10 @@ export default function CardSettings(): ReactElement {
                                 placeholder='sessionid'
                                 className='max-w-[290px]'
                                 classNames={{
-                                    inputWrapper: ['bg-input border border-border hover:!bg-inputhover rounded-lg group-data-[focus-within=true]:!bg-inputhover'],
+                                    inputWrapper: cn(
+                                        'bg-input border border-border hover:!bg-inputhover',
+                                        'rounded-lg group-data-[focus-within=true]:!bg-inputhover'
+                                    ),
                                     label: ['!text-content'],
                                     input: ['!text-content placeholder:text-altwhite/50']
                                 }}
@@ -133,7 +143,10 @@ export default function CardSettings(): ReactElement {
                                 placeholder='steamLoginSecure'
                                 className='max-w-[290px]'
                                 classNames={{
-                                    inputWrapper: ['bg-input border border-border hover:!bg-inputhover rounded-lg group-data-[focus-within=true]:!bg-inputhover'],
+                                    inputWrapper: cn(
+                                        'bg-input border border-border hover:!bg-inputhover',
+                                        'rounded-lg group-data-[focus-within=true]:!bg-inputhover'
+                                    ),
                                     label: ['!text-content'],
                                     input: ['!text-content placeholder:text-altwhite/50']
                                 }}
@@ -148,7 +161,10 @@ export default function CardSettings(): ReactElement {
                                 placeholder='steamParental/steamMachineAuth'
                                 className='max-w-[290px]'
                                 classNames={{
-                                    inputWrapper: ['bg-input border border-border hover:!bg-inputhover rounded-lg group-data-[focus-within=true]:!bg-inputhover'],
+                                    inputWrapper: cn(
+                                        'bg-input border border-border hover:!bg-inputhover',
+                                        'rounded-lg group-data-[focus-within=true]:!bg-inputhover'
+                                    ),
                                     label: ['!text-content'],
                                     input: ['!text-content placeholder:text-altwhite/50']
                                 }}

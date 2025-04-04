@@ -1,4 +1,4 @@
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, NumberInput } from '@heroui/react';
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, NumberInput, cn } from '@heroui/react';
 import { invoke } from '@tauri-apps/api/core';
 import { useState, useEffect } from 'react';
 import type { ReactElement } from 'react';
@@ -77,7 +77,14 @@ export default function GameSettings({ isOpen, onOpenChange }: GameSettingsProps
     };
 
     return (
-        <Modal isOpen={isOpen} onOpenChange={handleModalClose} className='bg-modalbody text-content z-[999]' classNames={{ closeButton: ['text-altwhite hover:bg-titlehover duration-200'] }}>
+        <Modal
+            isOpen={isOpen}
+            onOpenChange={handleModalClose}
+            className='bg-modalbody text-content z-[999]'
+            classNames={{
+                closeButton: ['text-altwhite hover:bg-titlehover duration-200']
+            }}
+        >
             <ModalContent>
                 {(onClose: () => void) => (
                     <>
@@ -101,7 +108,10 @@ export default function GameSettings({ isOpen, onOpenChange }: GameSettingsProps
                                         aria-label='max idle'
                                         className='max-w-[80px]'
                                         classNames={{
-                                            inputWrapper: ['bg-input border border-border hover:!bg-inputhover rounded-lg group-data-[focus-within=true]:!bg-inputhover h-8'],
+                                            inputWrapper: cn(
+                                                'bg-input border border-border hover:!bg-inputhover rounded-lg',
+                                                'group-data-[focus-within=true]:!bg-inputhover h-8'
+                                            ),
                                             input: ['!text-content']
                                         }}
                                         onValueChange={handleMaxIdleTimeChange}
@@ -121,7 +131,10 @@ export default function GameSettings({ isOpen, onOpenChange }: GameSettingsProps
                                         aria-label='max drops'
                                         className='max-w-[80px]'
                                         classNames={{
-                                            inputWrapper: ['bg-input border border-border hover:!bg-inputhover rounded-lg group-data-[focus-within=true]:!bg-inputhover h-8'],
+                                            inputWrapper: cn(
+                                                'bg-input border border-border hover:!bg-inputhover rounded-lg',
+                                                'group-data-[focus-within=true]:!bg-inputhover h-8'
+                                            ),
                                             input: ['!text-content']
                                         }}
                                         onValueChange={handleMaxCardDropsChange}
@@ -141,7 +154,10 @@ export default function GameSettings({ isOpen, onOpenChange }: GameSettingsProps
                                         aria-label='max unlocks'
                                         className='max-w-[80px]'
                                         classNames={{
-                                            inputWrapper: ['bg-input border border-border hover:!bg-inputhover rounded-lg group-data-[focus-within=true]:!bg-inputhover h-8'],
+                                            inputWrapper: cn(
+                                                'bg-input border border-border hover:!bg-inputhover rounded-lg',
+                                                'group-data-[focus-within=true]:!bg-inputhover h-8'
+                                            ),
                                             input: ['!text-content']
                                         }}
                                         onValueChange={handleMaxAchievementUnlocksChange}

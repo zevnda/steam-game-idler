@@ -1,4 +1,4 @@
-import { Spinner } from '@heroui/react';
+import { cn, Spinner } from '@heroui/react';
 import type { ReactElement } from 'react';
 
 import { useStateContext } from '@/components/contexts/StateContext';
@@ -12,7 +12,10 @@ export default function GamesList(): ReactElement {
     const gamesContext = useGamesList();
 
     if (!gamesContext.isLoading && gamesContext.gamesList.length === 0) return (
-        <div className='w-calc min-h-calc max-h-calc bg-base overflow-y-auto overflow-x-hidden rounded-tl-xl border-t border-l border-border'>
+        <div className={cn(
+            'w-calc min-h-calc max-h-calc bg-base overflow-y-auto',
+            'overflow-x-hidden rounded-tl-xl border-t border-l border-border'
+        )}>
             <Private setRefreshKey={gamesContext.setRefreshKey} />
         </div>
     );
@@ -20,7 +23,10 @@ export default function GamesList(): ReactElement {
     return (
         <div
             key={gamesContext.refreshKey}
-            className='w-calc min-h-calc max-h-calc bg-base overflow-y-auto overflow-x-hidden rounded-tl-xl border-t border-l border-border'
+            className={cn(
+                'w-calc min-h-calc max-h-calc bg-base overflow-y-auto',
+                'overflow-x-hidden rounded-tl-xl border-t border-l border-border'
+            )}
             ref={gamesContext.scrollContainerRef}
         >
             {!showAchievements && (

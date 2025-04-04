@@ -1,3 +1,4 @@
+import { cn } from '@heroui/react';
 import { useState, useEffect } from 'react';
 import type { ReactElement } from 'react';
 import { TbPlayerPlayFilled } from 'react-icons/tb';
@@ -44,7 +45,11 @@ export default function IdleTimer({ startTime }: { startTime: number }): ReactEl
     const displayTime = formatTime(elapsed);
 
     return (
-        <div className='absolute top-1.5 left-1.5 flex items-center gap-1 bg-black bg-opacity-70 text-offwhite pl-1 pr-2 py-[1px] rounded-md text-xs'>
+        <div className={cn(
+            'absolute top-1.5 left-1.5 flex items-center gap-1',
+            'bg-black bg-opacity-70 text-offwhite pl-1 pr-2 py-[1px]',
+            'rounded-md text-xs'
+        )}>
             <TbPlayerPlayFilled size={14} />
             {displayTime}
         </div>

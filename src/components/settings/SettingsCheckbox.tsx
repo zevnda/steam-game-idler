@@ -1,4 +1,4 @@
-import { Checkbox } from '@heroui/react';
+import { Checkbox, cn } from '@heroui/react';
 import { useEffect, useState } from 'react';
 import type { ChangeEvent, ReactElement } from 'react';
 
@@ -56,7 +56,11 @@ export default function SettingsCheckbox({ type, name, content }: SettingsCheckb
                 }}
                 classNames={{
                     hiddenInput: 'w-fit',
-                    wrapper: [`before:group-data-[selected=true]:!border-dynamic after:bg-dynamic border-red-500 text-button-text ${styles}`]
+                    wrapper: cn(
+                        styles,
+                        'before:group-data-[selected=true]:!border-dynamic',
+                        'after:bg-dynamic border-red-500 text-button-text'
+                    )
                 }}
             >
                 <div className='flex items-center gap-1'>
@@ -76,7 +80,11 @@ export default function SettingsCheckbox({ type, name, content }: SettingsCheckb
                 onChange={() => handleRunAtStartupChange(setStartupState)}
                 classNames={{
                     hiddenInput: 'w-fit',
-                    wrapper: [`before:group-data-[selected=true]:!border-dynamic after:bg-dynamic border-red-500 text-button-text ${styles}`]
+                    wrapper: cn(
+                        styles,
+                        'before:group-data-[selected=true]:!border-dynamic',
+                        'after:bg-dynamic border-red-500 text-button-text'
+                    )
                 }}
             >
                 <div className='flex items-center gap-1'>
@@ -103,7 +111,11 @@ export default function SettingsCheckbox({ type, name, content }: SettingsCheckb
             }}
             classNames={{
                 hiddenInput: 'w-fit',
-                wrapper: [`before:group-data-[selected=true]:!border-dynamic after:bg-dynamic border-red-500 text-button-text ${styles}`]
+                wrapper: cn(
+                    styles,
+                    'before:group-data-[selected=true]:!border-dynamic',
+                    'after:bg-dynamic border-red-500 text-button-text'
+                )
             }}
         >
             <div className='flex items-center gap-1'>

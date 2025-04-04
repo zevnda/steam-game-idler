@@ -1,4 +1,4 @@
-import { Button } from '@heroui/react';
+import { Button, cn } from '@heroui/react';
 import Image from 'next/image';
 import { memo, useMemo } from 'react';
 import type { ReactElement } from 'react';
@@ -82,7 +82,10 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
                             </p>
                         </CustomTooltip>
                         <div className='w-fit'>
-                            <p className={`text-sm text-altwhite ${hidden && 'blur-[3px] hover:blur-none transition-all duration-200'}`}>
+                            <p className={cn(
+                                'text-sm text-altwhite',
+                                hidden && 'blur-[3px] hover:blur-none transition-all duration-200'
+                            )}>
                                 {item.description || ''}
                             </p>
                         </div>
@@ -90,7 +93,10 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
                     <Button
                         size='sm'
                         isDisabled={protectedAchievement}
-                        className={`font-semibold rounded-lg text-button-text w-24 ${protectedAchievement ? 'bg-warning' : achieved ? 'bg-danger' : 'bg-dynamic'}`}
+                        className={cn(
+                            'font-semibold rounded-lg text-button-text w-24',
+                            protectedAchievement ? 'bg-warning' : achieved ? 'bg-danger' : 'bg-dynamic'
+                        )}
                         onPress={handleToggle}
                         startContent={
                             protectedAchievement ? <TbCancel size={20} /> :
@@ -105,7 +111,10 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
                     <div className='w-full bg-titlehover rounded-full h-3.5 relative'>
                         <div className='bg-dynamic/40 h-3.5 rounded-full flex items-center' style={{ width: `${percent}%`, position: 'relative' }} />
                         {percent !== undefined && (
-                            <p className='text-[11px] text-button-text dark:text-offwhite absolute inset-0 flex items-center justify-center mix-blend-difference'>
+                            <p className={cn(
+                                'text-[11px] text-button-text dark:text-offwhite absolute',
+                                'inset-0 flex items-center justify-center mix-blend-difference'
+                            )}>
                                 {percent.toFixed(1)}%
                             </p>
                         )}

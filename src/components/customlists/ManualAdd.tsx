@@ -1,4 +1,4 @@
-import { Button, Modal, ModalContent, ModalBody, ModalFooter, ModalHeader, useDisclosure, NumberInput, Input } from '@heroui/react';
+import { Button, Modal, ModalContent, ModalBody, ModalFooter, ModalHeader, useDisclosure, NumberInput, Input, cn } from '@heroui/react';
 import type { Dispatch, KeyboardEvent, ReactElement, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TbPlus } from 'react-icons/tb';
@@ -37,7 +37,15 @@ export default function ManualAdd({ listName, setList }: ManualAddProps): ReactE
                 onPress={onOpen}
             />
 
-            <Modal isOpen={isOpen} onOpenChange={onOpenChange} onClose={handleClose} className='bg-modalbody text-content' classNames={{ closeButton: ['text-altwhite hover:bg-titlehover duration-200'] }}>
+            <Modal
+                isOpen={isOpen}
+                onOpenChange={onOpenChange}
+                onClose={handleClose}
+                className='bg-modalbody text-content'
+                classNames={{
+                    closeButton: ['text-altwhite hover:bg-titlehover duration-200']
+                }}
+            >
                 <ModalContent>
                     {(onClose: () => void) => (
                         <>
@@ -51,7 +59,12 @@ export default function ManualAdd({ listName, setList }: ManualAddProps): ReactE
                                     placeholder={t('customLists.manualAdd.gameName')}
                                     value={manualAdd.appNameValue || ''}
                                     classNames={{
-                                        inputWrapper: ['bg-input border border-border hover:!bg-inputhover rounded-lg group-data-[focus-within=true]:!bg-inputhover group-data-[focus-visible=true]:ring-transparent group-data-[focus-visible=true]:ring-offset-transparent'],
+                                        inputWrapper: cn(
+                                            'bg-input border border-border hover:!bg-inputhover rounded-lg',
+                                            'group-data-[focus-within=true]:!bg-inputhover',
+                                            'group-data-[focus-visible=true]:ring-transparent',
+                                            'group-data-[focus-visible=true]:ring-offset-transparent'
+                                        ),
                                         input: ['!text-content placeholder:text-altwhite/50'],
                                     }}
                                     onChange={manualAdd.handleNameChange}
@@ -64,7 +77,12 @@ export default function ManualAdd({ listName, setList }: ManualAddProps): ReactE
                                     formatOptions={{ useGrouping: false }}
                                     aria-label='manual add'
                                     classNames={{
-                                        inputWrapper: ['bg-input border border-border hover:!bg-inputhover rounded-lg group-data-[focus-within=true]:!bg-inputhover group-data-[focus-visible=true]:ring-transparent group-data-[focus-visible=true]:ring-offset-transparent'],
+                                        inputWrapper: cn(
+                                            'bg-input border border-border hover:!bg-inputhover rounded-lg',
+                                            'group-data-[focus-within=true]:!bg-inputhover',
+                                            'group-data-[focus-visible=true]:ring-transparent',
+                                            'group-data-[focus-visible=true]:ring-offset-transparent'
+                                        ),
                                         input: ['text-sm !text-content placeholder:text-altwhite/50'],
                                     }}
                                     onChange={(e) => manualAdd.handleIdChange(e)}

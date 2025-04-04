@@ -1,4 +1,4 @@
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input } from '@heroui/react';
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input, cn } from '@heroui/react';
 import Image from 'next/image';
 import { memo } from 'react';
 import type { CSSProperties, Dispatch, ReactElement, SetStateAction, SyntheticEvent } from 'react';
@@ -32,7 +32,12 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement => {
     return (
         <div
             style={style}
-            className={`flex justify-between items-center gap-2 hover:bg-modalbody-hover cursor-pointer px-3 py-1 duration-150 select-none ${list.some(game => game.appid === item.appid) && 'opacity-50 dark:opacity-30'}`}
+            className={cn(
+                'flex justify-between items-center gap-2',
+                'hover:bg-modalbody-hover cursor-pointer px-3 py-1',
+                'duration-150 select-none',
+                list.some(game => game.appid === item.appid) && 'opacity-50 dark:opacity-30'
+            )}
             onClick={() => list.some(game => game.appid === item.appid) ? handleRemoveGame(item) : handleAddGame(item)}
         >
             <div className='flex items-center gap-3 max-w-[90%]'>
@@ -95,7 +100,16 @@ export default function EditListModal({
     const itemData = { filteredGamesList, list, handleAddGame, handleRemoveGame };
 
     return (
-        <Modal isOpen={isOpen} onOpenChange={onOpenChange} onClose={onClose} hideCloseButton className='bg-modalbody min-h-[75%] max-h-[75%] text-content min-w-[40%]' classNames={{ closeButton: ['text-altwhite hover:bg-titlehover duration-200'] }}>
+        <Modal
+            isOpen={isOpen}
+            onOpenChange={onOpenChange}
+            onClose={onClose}
+            hideCloseButton
+            className='bg-modalbody min-h-[75%] max-h-[75%] text-content min-w-[40%]'
+            classNames={{
+                closeButton: ['text-altwhite hover:bg-titlehover duration-200']
+            }}
+        >
             <ModalContent>
                 {(onClose: () => void) => (
                     <>
@@ -106,7 +120,12 @@ export default function EditListModal({
                                 size='sm'
                                 placeholder={t('search.games')}
                                 classNames={{
-                                    inputWrapper: ['bg-input border border-border hover:!bg-inputhover rounded-lg group-data-[focus-within=true]:!bg-inputhover group-data-[focus-visible=true]:ring-transparent group-data-[focus-visible=true]:ring-offset-transparent'],
+                                    inputWrapper: cn(
+                                        'bg-input border border-border hover:!bg-inputhover rounded-lg',
+                                        'group-data-[focus-within=true]:!bg-inputhover',
+                                        'group-data-[focus-visible=true]:ring-transparent',
+                                        'group-data-[focus-visible=true]:ring-offset-transparent'
+                                    ),
                                     input: ['!text-content placeholder:text-altwhite/50'],
                                 }}
                                 isDisabled={showInList}

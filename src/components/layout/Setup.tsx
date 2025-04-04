@@ -1,4 +1,4 @@
-import { Spinner } from '@heroui/react';
+import { cn, Spinner } from '@heroui/react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
@@ -52,7 +52,11 @@ export default function Setup(): ReactElement {
                 <div className='absolute bg-base/10 backdrop-blur-[10px] w-full h-full' />
                 <div className='relative flex justify-center items-center flex-col gap-5 w-full h-svh'>
                     <motion.div
-                        className='flex backdrop-blur-md bg-base/20 justify-center items-center flex-col border border-border/40 min-w-[400px] max-w-[400px] rounded-lg shadow-lg dark:shadow-none'
+                        className={cn(
+                            'flex backdrop-blur-md bg-base/20 justify-center items-center',
+                            'flex-col border border-border/40 min-w-[400px] max-w-[400px]',
+                            'rounded-lg shadow-lg dark:shadow-none'
+                        )}
                         initial={{ y: 500 }}
                         animate={{ y: -30 }}
                         transition={{
@@ -74,7 +78,10 @@ export default function Setup(): ReactElement {
                                     <p className='text-sm mb-2'>
                                         {t('setup.chooseAccount')}
                                     </p>
-                                    <div className='flex flex-col border border-border/40 max-h-[200px] min-w-[300px] overflow-y-auto rounded-lg'>
+                                    <div className={cn(
+                                        'flex flex-col border border-border/40 max-h-[200px]',
+                                        'min-w-[300px] overflow-y-auto rounded-lg'
+                                    )}>
                                         {steamUsers.map((item, index) => (
                                             <div
                                                 key={item?.steamId}
@@ -132,7 +139,10 @@ export default function Setup(): ReactElement {
                             )}
                         </div>
 
-                        <div className='flex justify-center items-center p-6 w-full border-t border-border/40 rounded-br-lg rounded-bl-lg mt-4'>
+                        <div className={cn(
+                            'flex justify-center items-center p-6 w-full border-t',
+                            'border-border/40 rounded-br-lg rounded-bl-lg mt-4'
+                        )}>
                             <ExtLink href='https://steamgameidler.vercel.app/get-started/how-to-sign-in'>
                                 <p className='text-xs text-content font-semibold cursor-pointer'>
                                     {t('setup.help')}

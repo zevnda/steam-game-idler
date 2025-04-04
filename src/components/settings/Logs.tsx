@@ -1,4 +1,4 @@
-import { Button } from '@heroui/react';
+import { Button, cn } from '@heroui/react';
 import { GeistMono } from 'geist/font/mono';
 import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -33,7 +33,11 @@ export default function Logs(): ReactElement {
                 </Button>
             </div>
 
-            <div className={`${GeistMono.className} bg-container border border-border text-xs rounded min-h-[200px] max-h-[calc(100vh-285px)] overflow-y-auto`}>
+            <div className={cn(
+                'bg-container border border-border text-xs rounded',
+                'min-h-[200px] max-h-[calc(100vh-285px)] overflow-y-auto',
+                GeistMono.className
+            )}>
                 <table className='w-full border-collapse'>
                     <thead className='sticky top-0 z-10'>
                         <tr className='border-b border-border bg-tablehead'>
@@ -50,7 +54,9 @@ export default function Logs(): ReactElement {
                             <>
                                 {logs.map((log, index) => (
                                     <tr key={log.timestamp} className={index % 2 === 0 ? 'bg-tablerowalt' : 'bg-tablerow'}>
-                                        <td className='p-1.5 text-altwhite uppercase'>{log.timestamp}</td>
+                                        <td className='p-1.5 text-altwhite uppercase'>
+                                            {log.timestamp}
+                                        </td>
                                         <td className={`p-1.5 ${log.message?.includes('Error') && 'text-red-400'}`}>
                                             {log.message}
                                         </td>

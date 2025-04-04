@@ -1,4 +1,4 @@
-import { Tab, Tabs } from '@heroui/react';
+import { Tab, Tabs, cn } from '@heroui/react';
 import { useState } from 'react';
 import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -28,13 +28,19 @@ export default function Achievements(): ReactElement {
     );
 
     if (isLoading) return (
-        <div className='overflow-y-auto overflow-x-hidden bg-base border-t border-border w-screen'>
+        <div className={cn(
+            'overflow-y-auto overflow-x-hidden',
+            'bg-base border-t border-border w-screen'
+        )}>
             <Loader />
         </div>
     );
 
     return (
-        <div className='min-h-calc max-h-calc w-full bg-base overflow-hidden border-t border-border'>
+        <div className={cn(
+            'min-h-calc max-h-calc w-full bg-base',
+            'overflow-hidden border-t border-border'
+        )}>
             <div className='p-4'>
                 <PageHeader
                     protectedAchievements={protectedAchievements}
@@ -53,7 +59,10 @@ export default function Achievements(): ReactElement {
                         classNames={{
                             base: 'bg-titlebar rounded-lg p-0 border border-border ml-5',
                             tabList: 'gap-0 w-full bg-transparent',
-                            tab: 'rounded-none bg-transparent data-[hover-unselected=true]:bg-gray-500 data-[hover-unselected=true]:bg-opacity-5 data-[hover-unselected=true]:opacity-100',
+                            tab: cn(
+                                'rounded-none bg-transparent data-[hover-unselected=true]:bg-gray-500',
+                                'data-[hover-unselected=true]:bg-opacity-5 data-[hover-unselected=true]:opacity-100'
+                            ),
                             tabContent: 'text-sm group-data-[selected=true]:text-content text-altwhite',
                             cursor: 'bg-tab-select w-full',
                         }}

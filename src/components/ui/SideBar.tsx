@@ -1,4 +1,4 @@
-import { Modal, ModalContent, ModalBody, Button, ModalFooter, ModalHeader } from '@heroui/react';
+import { Modal, ModalContent, ModalBody, Button, ModalFooter, ModalHeader, cn } from '@heroui/react';
 import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FiLogOut } from 'react-icons/fi';
@@ -25,7 +25,10 @@ export default function SideBar(): ReactElement {
                     <div className='flex justify-center items-center w-14'>
                         <CustomTooltip content={t('gamesList.title')} placement='right'>
                             <div
-                                className={`p-2 rounded-full duration-200 cursor-pointer active:scale-90 ${activePage === 'games' ? 'bg-dynamic/30 text-dynamic' : 'hover:bg-titlehover'}`}
+                                className={cn(
+                                    'p-2 rounded-full duration-200 cursor-pointer active:scale-90',
+                                    activePage === 'games' ? 'bg-dynamic/30 text-dynamic' : 'hover:bg-titlehover'
+                                )}
                                 onClick={() => setActivePage('games')}
                             >
                                 <TbDeviceGamepad2 fontSize={22} />
@@ -51,11 +54,11 @@ export default function SideBar(): ReactElement {
                     <div className='flex justify-center items-center w-14'>
                         <CustomTooltip content={t('common.cardFarming')} placement='right'>
                             <div
-                                className={`
-                                p-2 rounded-full duration-200 cursor-pointer active:scale-90 
-                                ${isCardFarming && 'text-dynamic animate-pulse'} 
-                                ${activePage === 'customlists/card-farming' ? 'bg-dynamic/30 text-dynamic' : 'hover:bg-titlehover'}
-                                `}
+                                className={cn(
+                                    'p-2 rounded-full duration-200 cursor-pointer active:scale-90',
+                                    isCardFarming && 'text-dynamic animate-pulse',
+                                    activePage === 'customlists/card-farming' ? 'bg-dynamic/30 text-dynamic' : 'hover:bg-titlehover'
+                                )}
                                 onClick={() => setActivePage('customlists/card-farming')}
                             >
                                 <TbCards fontSize={22} />
@@ -66,11 +69,11 @@ export default function SideBar(): ReactElement {
                     <div className='flex justify-center items-center w-14'>
                         <CustomTooltip content={t('common.achievementUnlocker')} placement='right'>
                             <div
-                                className={`
-                                p-2 rounded-full duration-200 cursor-pointer active:scale-90 
-                                ${isAchievementUnlocker && 'text-dynamic animate-pulse'} 
-                                ${activePage === 'customlists/achievement-unlocker' ? 'bg-dynamic/30 text-dynamic' : 'hover:bg-titlehover'}
-                                `}
+                                className={cn(
+                                    'p-2 rounded-full duration-200 cursor-pointer active:scale-90',
+                                    isAchievementUnlocker && 'text-dynamic animate-pulse',
+                                    activePage === 'customlists/achievement-unlocker' ? 'bg-dynamic/30 text-dynamic' : 'hover:bg-titlehover'
+                                )}
                                 onClick={() => setActivePage('customlists/achievement-unlocker')}
                             >
                                 <TbAward fontSize={22} />
@@ -81,7 +84,10 @@ export default function SideBar(): ReactElement {
                     <div className='flex justify-center items-center w-14'>
                         <CustomTooltip content={t('customLists.autoIdle.title')} placement='right'>
                             <div
-                                className={`p-2 rounded-full duration-200 cursor-pointer active:scale-90 ${activePage === 'customlists/auto-idle' ? 'bg-dynamic/30 text-dynamic' : 'hover:bg-titlehover'}`}
+                                className={cn(
+                                    'p-2 rounded-full duration-200 cursor-pointer active:scale-90',
+                                    activePage === 'customlists/auto-idle' ? 'bg-dynamic/30 text-dynamic' : 'hover:bg-titlehover'
+                                )}
                                 onClick={() => setActivePage('customlists/auto-idle')}
                             >
                                 <TbHourglassLow fontSize={22} />
@@ -92,7 +98,10 @@ export default function SideBar(): ReactElement {
                     <div className='flex justify-center items-center w-14'>
                         <CustomTooltip content={t('customLists.favorites.title')} placement='right'>
                             <div
-                                className={`p-2 rounded-full duration-200 cursor-pointer active:scale-90 ${activePage === 'customlists/favorites' ? 'bg-dynamic/30 text-dynamic' : 'hover:bg-titlehover'}`}
+                                className={cn(
+                                    'p-2 rounded-full duration-200 cursor-pointer active:scale-90',
+                                    activePage === 'customlists/favorites' ? 'bg-dynamic/30 text-dynamic' : 'hover:bg-titlehover'
+                                )}
                                 onClick={() => setActivePage('customlists/favorites')}
                             >
                                 <TbHeart fontSize={22} />
@@ -104,7 +113,11 @@ export default function SideBar(): ReactElement {
                         <div className='flex justify-center items-center w-14'>
                             <CustomTooltip content={t('freeGames.title')} placement='right'>
                                 <div
-                                    className={`relative flex justify-center items-center p-2 rounded-full duration-200 cursor-pointer active:scale-90 ${activePage === 'freeGames' ? 'bg-yellow-400/20' : 'hover:bg-titlehover'}`}
+                                    className={cn(
+                                        'relative flex justify-center items-center p-2 rounded-full',
+                                        'duration-200 cursor-pointer active:scale-90',
+                                        activePage === 'freeGames' ? 'bg-yellow-400/20' : 'hover:bg-titlehover'
+                                    )}
                                     onClick={() => setActivePage('freeGames')}
                                 >
                                     <TbGift className='text-[#ffc700]' fontSize={22} />
@@ -119,7 +132,10 @@ export default function SideBar(): ReactElement {
                         <div className='flex justify-center items-center w-14'>
                             <CustomTooltip content={t('settings.title')} placement='right'>
                                 <div
-                                    className={`p-2 rounded-full duration-200 cursor-pointer active:scale-90 ${activePage === 'settings' ? 'bg-dynamic/30 text-dynamic' : 'hover:bg-titlehover'}`}
+                                    className={cn(
+                                        'p-2 rounded-full duration-200 cursor-pointer active:scale-90',
+                                        activePage === 'settings' ? 'bg-dynamic/30 text-dynamic' : 'hover:bg-titlehover'
+                                    )}
                                     onClick={() => setActivePage('settings')}
                                 >
                                     <TbSettings fontSize={22} />
@@ -129,7 +145,10 @@ export default function SideBar(): ReactElement {
 
                         <div className='flex justify-center items-center w-14'>
                             <CustomTooltip content={t('common.signOut')} placement='right'>
-                                <div className='hover:bg-danger p-2 rounded-full duration-200 cursor-pointer active:scale-90 group' onClick={openConfirmation}>
+                                <div
+                                    className='hover:bg-danger p-2 rounded-full duration-200 cursor-pointer active:scale-90 group'
+                                    onClick={openConfirmation}
+                                >
                                     <FiLogOut className={`rotate-180 ${!isDarkMode && 'group-hover:text-button-text'} duration-200`} fontSize={20} />
                                 </div>
                             </CustomTooltip>
@@ -138,7 +157,15 @@ export default function SideBar(): ReactElement {
                 )}
             </div >
 
-            <Modal isOpen={isOpen} onOpenChange={onOpenChange} className='bg-modalbody text-content' classNames={{ closeButton: ['text-altwhite hover:bg-titlehover duration-200'] }}>
+            <Modal
+                isOpen={isOpen}
+                onOpenChange={onOpenChange}
+                className='bg-modalbody text-content'
+                classNames={{
+                    closeButton:
+                        ['text-altwhite hover:bg-titlehover duration-200']
+                }}
+            >
                 <ModalContent>
                     {(onClose: () => void) => (
                         <>

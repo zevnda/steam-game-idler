@@ -1,4 +1,4 @@
-import { Button } from '@heroui/react';
+import { Button, cn } from '@heroui/react';
 import type { Dispatch, ReactElement, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -17,7 +17,11 @@ export default function Private({ setRefreshKey }: PrivateProps): ReactElement {
 
     return (
         <div className='flex justify-center items-center w-calc h-full'>
-            <div className='flex justify-center items-center flex-col border border-border min-w-[400px] max-w-[400px] rounded-lg shadow-lg dark:shadow-none'>
+            <div className={cn(
+                'flex justify-center items-center flex-col border',
+                'border-border min-w-[400px] max-w-[400px] rounded-lg',
+                'shadow-lg dark:shadow-none'
+            )}>
                 <div className='flex items-center flex-col gap-2 p-6'>
                     <p className='text-4xl'>
                         Uh-oh!

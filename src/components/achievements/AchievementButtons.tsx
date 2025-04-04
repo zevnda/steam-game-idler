@@ -1,4 +1,4 @@
-import { Modal, ModalContent, ModalBody, Button, useDisclosure, ModalFooter, ModalHeader, Select, SelectItem } from '@heroui/react';
+import { Modal, ModalContent, ModalBody, Button, useDisclosure, ModalFooter, ModalHeader, Select, SelectItem, cn } from '@heroui/react';
 import { useState } from 'react';
 import type { Dispatch, ReactElement, SetStateAction } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -84,16 +84,28 @@ export default function AchievementButtons({
                 classNames={{
                     listbox: ['p-0'],
                     value: ['text-sm !text-content'],
-                    trigger: ['bg-titlebar border border-border data-[hover=true]:!bg-input data-[open=true]:!bg-input duration-100 rounded-lg'],
+                    trigger: cn(
+                        'bg-titlebar border border-border data-[hover=true]:!bg-input',
+                        'data-[open=true]:!bg-input duration-100 rounded-lg'
+                    ),
                     popoverContent: ['bg-titlebar border border-border rounded-lg justify-start !text-content'],
                 }}
                 defaultSelectedKeys={['percent']}
                 onSelectionChange={(e) => { handleChange(e.currentKey, achievements, setAchievements); }}
             >
-                {(item) => <SelectItem classNames={{ base: ['data-[hover=true]:!bg-titlehover data-[hover=true]:!text-content'] }}>{item.label}</SelectItem>}
+                {(item) => <SelectItem classNames={{ base: ['data-[hover=true]:!bg-titlehover data-[hover=true]:!text-content'] }}>
+                    {item.label}
+                </SelectItem>}
             </Select>
 
-            <Modal isOpen={isOpen} onOpenChange={onOpenChange} className='bg-modalbody text-content' classNames={{ closeButton: ['text-altwhite hover:bg-titlehover duration-200'] }}>
+            <Modal
+                isOpen={isOpen}
+                onOpenChange={onOpenChange}
+                className='bg-modalbody text-content'
+                classNames={{
+                    closeButton: ['text-altwhite hover:bg-titlehover duration-200']
+                }}
+            >
                 <ModalContent>
                     {(onClose: () => void) => (
                         <>
