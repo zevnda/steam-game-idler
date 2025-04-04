@@ -1,15 +1,17 @@
-import { Button, Tooltip } from '@heroui/react';
+import { Button } from '@heroui/react';
 import Image from 'next/image';
 import { memo, useMemo } from 'react';
 import type { ReactElement } from 'react';
 import type { CSSProperties, Dispatch, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
+import { TbCancel, TbLock, TbLockOpen } from 'react-icons/tb';
 import { FixedSizeList as List } from 'react-window';
 
 import AchievementButtons from '@/components/achievements/AchievementButtons';
 import { useSearchContext } from '@/components/contexts/SearchContext';
 import { useStateContext } from '@/components/contexts/StateContext';
 import { useUserContext } from '@/components/contexts/UserContext';
+import CustomTooltip from '@/components/ui/CustomTooltip';
 import type { Achievement, UserSummary } from '@/types';
 import { toggleAchievement } from '@/utils/achievements';
 import { checkSteamStatus } from '@/utils/tasks';
@@ -73,12 +75,12 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
                             priority
                         />
                     </div>
-                    <div className='flex flex-col w-full'>
-                        <Tooltip size='sm' closeDelay={0} placement='right' content={item.id} className='bg-titlehover text-content'>
+                    <div className='flex flex-col flex-grow'>
+                        <CustomTooltip placement='right' content={item.id}>
                             <p className='font-bold text-sm w-fit'>
                                 {item.name}
                             </p>
-                        </Tooltip>
+                        </CustomTooltip>
                         <div className='w-fit'>
                             <p className={`text-sm text-altwhite ${hidden && 'blur-[3px] hover:blur-none transition-all duration-200'}`}>
                                 {item.description || ''}
@@ -88,8 +90,12 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
                     <Button
                         size='sm'
                         isDisabled={protectedAchievement}
-                        className={`font-semibold rounded-lg text-button ${protectedAchievement ? 'bg-warning' : achieved ? 'bg-danger' : 'bg-dynamic'}`}
+                        className={`font-semibold rounded-lg text-button w-24 ${protectedAchievement ? 'bg-warning' : achieved ? 'bg-danger' : 'bg-dynamic'}`}
                         onPress={handleToggle}
+                        startContent={
+                            protectedAchievement ? <TbCancel size={20} /> :
+                                achieved ? <TbLock size={20} /> : <TbLockOpen size={20} />
+                        }
                     >
                         {protectedAchievement ? t('achievementManager.achievements.protected') :
                             achieved ? t('achievementManager.achievements.lock') : t('achievementManager.achievements.unlock')}

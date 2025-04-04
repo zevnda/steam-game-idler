@@ -2,6 +2,7 @@ import { Button } from '@heroui/react';
 import { GeistMono } from 'geist/font/mono';
 import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
+import { TbEraser, TbFolders } from 'react-icons/tb';
 
 import { useLogs, handleClearLogs, handleOpenLogFile } from '@/hooks/settings/useLogs';
 import type { LogEntry } from '@/types';
@@ -12,11 +13,12 @@ export default function Logs(): ReactElement {
 
     return (
         <div className='p-2'>
-            <div className='flex justify-between gap-2 w-full mb-4'>
+            <div className='flex gap-2 w-full mb-4'>
                 <Button
                     size='sm'
                     className='font-semibold rounded-lg bg-dynamic text-button'
-                    onPress={() => handleOpenLogFile()}
+                    onPress={handleOpenLogFile}
+                    startContent={<TbFolders size={20} />}
                 >
                     {t('settings.logs.openLogFile')}
                 </Button>
@@ -25,6 +27,7 @@ export default function Logs(): ReactElement {
                     color='danger'
                     className='font-semibold rounded-lg'
                     onPress={() => handleClearLogs()}
+                    startContent={<TbEraser size={20} />}
                 >
                     {t('settings.logs.clearLogs')}
                 </Button>

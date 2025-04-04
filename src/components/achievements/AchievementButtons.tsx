@@ -2,7 +2,7 @@ import { Modal, ModalContent, ModalBody, Button, useDisclosure, ModalFooter, Mod
 import { useState } from 'react';
 import type { Dispatch, ReactElement, SetStateAction } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { TbSortDescending2 } from 'react-icons/tb';
+import { TbLock, TbLockOpen, TbSortDescending2 } from 'react-icons/tb';
 
 import { useStateContext } from '@/components/contexts/StateContext';
 import { useUserContext } from '@/components/contexts/UserContext';
@@ -57,6 +57,7 @@ export default function AchievementButtons({
                 size='sm'
                 className='font-semibold rounded-lg bg-dynamic text-button'
                 onPress={() => handleShowModal(onOpen, 'unlock')}
+                startContent={<TbLockOpen size={20} />}
             >
                 {t('achievementManager.achievements.unlockAll')}
             </Button>
@@ -67,6 +68,7 @@ export default function AchievementButtons({
                 color='danger'
                 className='font-semibold rounded-lg'
                 onPress={() => handleShowModal(onOpen, 'lock')}
+                startContent={<TbLock size={20} />}
             >
                 {t('achievementManager.achievements.lockAll')}
             </Button>

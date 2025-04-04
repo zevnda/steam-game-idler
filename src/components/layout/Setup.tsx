@@ -1,4 +1,4 @@
-import { Spinner, Tooltip } from '@heroui/react';
+import { Spinner } from '@heroui/react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
@@ -8,6 +8,7 @@ import { TbRefresh, TbUserFilled } from 'react-icons/tb';
 
 import { useNavigationContext } from '@/components/contexts/NavigationContext';
 import { useStateContext } from '@/components/contexts/StateContext';
+import CustomTooltip from '@/components/ui/CustomTooltip';
 import ExtLink from '@/components/ui/ExtLink';
 import Header from '@/components/ui/Header';
 import useSetup from '@/hooks/layout/useSetup';
@@ -99,9 +100,9 @@ export default function Setup(): ReactElement {
                                                     </div>
                                                     {item?.mostRecent === 1 && (
                                                         <div className='flex justify-end items-center w-full'>
-                                                            <Tooltip size='sm' closeDelay={0} content='Signed in to Steam' className='bg-titlehover text-content'>
+                                                            <CustomTooltip content='Signed in to Steam'>
                                                                 <TbUserFilled size={20} className='text-dynamic' />
-                                                            </Tooltip>
+                                                            </CustomTooltip>
                                                         </div>
                                                     )}
                                                 </div>

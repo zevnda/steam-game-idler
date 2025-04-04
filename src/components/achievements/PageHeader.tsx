@@ -1,4 +1,4 @@
-import { Alert, Button, Tooltip } from '@heroui/react';
+import { Alert, Button } from '@heroui/react';
 import { invoke } from '@tauri-apps/api/core';
 import type { ReactElement } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -9,6 +9,7 @@ import { useNavigationContext } from '@/components/contexts/NavigationContext';
 import { useSearchContext } from '@/components/contexts/SearchContext';
 import { useStateContext } from '@/components/contexts/StateContext';
 import { useUserContext } from '@/components/contexts/UserContext';
+import CustomTooltip from '@/components/ui/CustomTooltip';
 import ExtLink from '@/components/ui/ExtLink';
 import { logEvent } from '@/utils/tasks';
 import { showDangerToast } from '@/utils/toasts';
@@ -81,7 +82,7 @@ export default function PageHeader({ protectedAchievements, protectedStatistics 
                     <p className='text-lg font-semibold m-0 p-0'>
                         {appName}
                     </p>
-                    <Tooltip content={t('achievementManager.steam')} placement='top' closeDelay={0} size='sm' className='bg-titlehover text-content'>
+                    <CustomTooltip content={t('achievementManager.steam')} placement='top'>
                         <div>
                             <ExtLink href={`https://steamcommunity.com/stats/${appId}/achievements/`}>
                                 <div className='hover:bg-titlehover rounded-full p-1.5 cursor-pointer duration-200'>
@@ -89,8 +90,8 @@ export default function PageHeader({ protectedAchievements, protectedStatistics 
                                 </div>
                             </ExtLink>
                         </div>
-                    </Tooltip>
-                    <Tooltip content={t('achievementManager.steamDB')} placement='top' closeDelay={0} size='sm' className='bg-titlehover text-content'>
+                    </CustomTooltip>
+                    <CustomTooltip content={t('achievementManager.steamDB')} placement='top'>
                         <div>
                             <ExtLink href={`https://steamdb.info/app/${appId}/stats/`}>
                                 <div className='hover:bg-titlehover rounded-full p-1.5 cursor-pointer duration-200'>
@@ -98,14 +99,14 @@ export default function PageHeader({ protectedAchievements, protectedStatistics 
                                 </div>
                             </ExtLink>
                         </div>
-                    </Tooltip>
-                    <Tooltip content={t('achievementManager.file')} placement='top' closeDelay={0} size='sm' className='bg-titlehover text-content'>
+                    </CustomTooltip>
+                    <CustomTooltip content={t('achievementManager.file')} placement='top'>
                         <div>
                             <div className='hover:bg-titlehover rounded-full p-1 cursor-pointer duration-200' onClick={handleOpenAchievementFile}>
                                 <TbFoldersFilled fontSize={18} />
                             </div>
                         </div>
-                    </Tooltip>
+                    </CustomTooltip>
                 </div>
             </div>
         </div>

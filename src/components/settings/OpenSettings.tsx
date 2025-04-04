@@ -2,8 +2,10 @@ import { Button } from '@heroui/react';
 import { invoke } from '@tauri-apps/api/core';
 import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
+import { TbFolders } from 'react-icons/tb';
 
 import { useUserContext } from '@/components/contexts/UserContext';
+import CustomTooltip from '@/components/ui/CustomTooltip';
 import { logEvent } from '@/utils/tasks';
 import { showDangerToast } from '@/utils/toasts';
 
@@ -24,12 +26,14 @@ export default function OpenSettings(): ReactElement {
     };
 
     return (
-        <Button
-            size='sm'
-            className='font-semibold rounded-lg bg-dynamic text-button'
-            onPress={handleOpenSettingsFile}
-        >
-            {t('settings.openSettings')}
-        </Button>
+        <CustomTooltip content={t('settings.openSettings')}>
+            <Button
+                isIconOnly
+                size='sm'
+                className='font-semibold rounded-lg bg-dynamic text-button'
+                onPress={handleOpenSettingsFile}
+                startContent={<TbFolders size={20} />}
+            />
+        </CustomTooltip>
     );
 }

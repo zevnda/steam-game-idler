@@ -43,7 +43,7 @@ export default function SearchBar(): ReactElement {
                     isDisabled={activePage !== 'games' || showAchievements}
                     placeholder={t('search.games')}
                     startContent={<RiSearchLine />}
-                    className='w-[300px]'
+                    className='w-[300px] ml-14'
                     classNames={{
                         inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'],
                         input: ['!text-content placeholder:text-altwhite/50'],
@@ -61,7 +61,7 @@ export default function SearchBar(): ReactElement {
                     isDisabled={achievementsUnavailable}
                     placeholder={t('search.achievements')}
                     startContent={<RiSearchLine />}
-                    className='max-w-[300px]'
+                    className='max-w-[300px] ml-4'
                     classNames={{
                         inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'],
                         input: ['!text-content placeholder:text-altwhite/50']
@@ -78,7 +78,7 @@ export default function SearchBar(): ReactElement {
                     isDisabled={statisticsUnavailable}
                     placeholder={t('search.statistics')}
                     startContent={<RiSearchLine />}
-                    className='max-w-[300px]'
+                    className='max-w-[300px] ml-4'
                     classNames={{
                         inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'],
                         input: ['!text-content placeholder:text-altwhite/50']
