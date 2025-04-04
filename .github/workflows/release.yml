@@ -131,9 +131,6 @@ jobs:
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Setup MSBuild
-        uses: microsoft/setup-msbuild@v2
-
       - name: Setup pnpm cache
         id: cache-pnpm
         uses: actions/cache@v4
