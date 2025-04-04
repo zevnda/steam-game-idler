@@ -92,7 +92,7 @@ ${errorInfo && errorInfo.componentStack}
                             <ExtLink
                                 href={`https://github.com/zevnda/steam-game-idler/issues/new?title=${encodedTitle}&body=${encodedBody}`}
                             >
-                                <div className='bg-warning p-2 font-semibold rounded-lg text-button'>
+                                <div className='bg-warning p-2 font-semibold rounded-lg text-button-text'>
                                     <p className='text-xs'>
                                         Report on GitHub
                                     </p>
@@ -101,7 +101,7 @@ ${errorInfo && errorInfo.componentStack}
 
                             <Button
                                 size='sm'
-                                className='font-semibold rounded-lg bg-dynamic text-button'
+                                className='font-semibold rounded-lg bg-dynamic text-button-text'
                                 onPress={() => window.location.reload()}
                             >
                                 Reload

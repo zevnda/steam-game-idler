@@ -28,11 +28,11 @@ export default function Header(): ReactElement {
 
                     <Notifications />
 
-                    <Divider className='w-[1px] h-6 bg-border' />
+                    <Divider className='w-[1px] h-6 bg-header-border' />
 
                     <HeaderMenu />
 
-                    <Divider className='w-[1px] h-6 bg-border' />
+                    <Divider className='w-[1px] h-6 bg-header-border' />
 
                     <div className='flex justify-center items-center gap-2 h-full mr-3'>
                         <div className='flex justify-center items-center'>
@@ -48,7 +48,7 @@ export default function Header(): ReactElement {
                         </div>
 
                         <div className='flex justify-center items-center'>
-                            <div className={`hover:bg-danger p-2 rounded-full duration-200 cursor-pointer active:scale-90 ${!isDarkMode && 'hover:text-button'}`} onClick={windowClose}>
+                            <div className={`hover:bg-danger p-2 rounded-full duration-200 cursor-pointer active:scale-90 ${!isDarkMode && 'hover:text-button-text'}`} onClick={windowClose}>
                                 <TbX fontSize={20} />
                             </div>
                         </div>

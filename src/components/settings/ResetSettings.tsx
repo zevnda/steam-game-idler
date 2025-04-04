@@ -49,7 +49,7 @@ export default function ResetSettings({ setRefreshKey }: ResetSettingsProps): Re
                                 </Button>
                                 <Button
                                     size='sm'
-                                    className='font-semibold rounded-lg bg-dynamic text-button'
+                                    className='font-semibold rounded-lg bg-dynamic text-button-text'
                                     onPress={() => handleResetSettings(onClose, setRefreshKey)}
                                 >
                                     {t('common.confirm')}

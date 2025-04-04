@@ -19,11 +19,12 @@ export default function CustomTooltip({
             showArrow
             content={content}
             placement={placement}
-            className={`font-semibold bg-titlehover ${className}`}
+            className={`font-semibold bg-[#0a0a0a] ${className}`}
+            delay={250}
             closeDelay={100}
             classNames={{
-                base: 'pointer-events-none before:!bg-titlehover',
-                content: 'shadow-none'
+                base: 'pointer-events-none before:!bg-[#0a0a0a]',
+                content: 'shadow-none text-offwhite'
             }}
         >
             {children}

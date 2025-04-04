@@ -32,7 +32,7 @@ export default function ManualAdd({ listName, setList }: ManualAddProps): ReactE
             <Button
                 size='sm'
                 isIconOnly
-                className='rounded-full bg-dynamic text-button'
+                className='rounded-full bg-dynamic text-button-text'
                 startContent={<TbPlus fontSize={18} />}
                 onPress={onOpen}
             />
@@ -51,7 +51,7 @@ export default function ManualAdd({ listName, setList }: ManualAddProps): ReactE
                                     placeholder={t('customLists.manualAdd.gameName')}
                                     value={manualAdd.appNameValue || ''}
                                     classNames={{
-                                        inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar group-data-[focus-visible=true]:ring-transparent group-data-[focus-visible=true]:ring-offset-transparent'],
+                                        inputWrapper: ['bg-input border border-border hover:!bg-inputhover rounded-lg group-data-[focus-within=true]:!bg-inputhover group-data-[focus-visible=true]:ring-transparent group-data-[focus-visible=true]:ring-offset-transparent'],
                                         input: ['!text-content placeholder:text-altwhite/50'],
                                     }}
                                     onChange={manualAdd.handleNameChange}
@@ -64,7 +64,7 @@ export default function ManualAdd({ listName, setList }: ManualAddProps): ReactE
                                     formatOptions={{ useGrouping: false }}
                                     aria-label='manual add'
                                     classNames={{
-                                        inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar group-data-[focus-visible=true]:ring-transparent group-data-[focus-visible=true]:ring-offset-transparent'],
+                                        inputWrapper: ['bg-input border border-border hover:!bg-inputhover rounded-lg group-data-[focus-within=true]:!bg-inputhover group-data-[focus-visible=true]:ring-transparent group-data-[focus-visible=true]:ring-offset-transparent'],
                                         input: ['text-sm !text-content placeholder:text-altwhite/50'],
                                     }}
                                     onChange={(e) => manualAdd.handleIdChange(e)}
@@ -85,7 +85,7 @@ export default function ManualAdd({ listName, setList }: ManualAddProps): ReactE
                                     size='sm'
                                     isLoading={manualAdd.isLoading}
                                     isDisabled={!manualAdd.appNameValue || !manualAdd.appIdValue}
-                                    className='font-semibold rounded-lg bg-dynamic text-button'
+                                    className='font-semibold rounded-lg bg-dynamic text-button-text'
                                     onPress={() => manualAdd.handleAdd(onClose)}
                                 >
                                     {t('common.add')}

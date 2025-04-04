@@ -130,7 +130,7 @@ export default function SideBar(): ReactElement {
                         <div className='flex justify-center items-center w-14'>
                             <CustomTooltip content={t('common.signOut')} placement='right'>
                                 <div className='hover:bg-danger p-2 rounded-full duration-200 cursor-pointer active:scale-90 group' onClick={openConfirmation}>
-                                    <FiLogOut className={`rotate-180 ${!isDarkMode && 'group-hover:text-button'} duration-200`} fontSize={20} />
+                                    <FiLogOut className={`rotate-180 ${!isDarkMode && 'group-hover:text-button-text'} duration-200`} fontSize={20} />
                                 </div>
                             </CustomTooltip>
                         </div>
@@ -162,7 +162,7 @@ export default function SideBar(): ReactElement {
                                 </Button>
                                 <Button
                                     size='sm'
-                                    className='font-semibold rounded-lg bg-dynamic text-button'
+                                    className='font-semibold rounded-lg bg-dynamic text-button-text'
                                     onPress={() => handleLogout(onClose)}
                                 >
                                     {t('common.confirm')}

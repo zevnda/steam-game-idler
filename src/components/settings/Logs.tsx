@@ -16,7 +16,7 @@ export default function Logs(): ReactElement {
             <div className='flex gap-2 w-full mb-4'>
                 <Button
                     size='sm'
-                    className='font-semibold rounded-lg bg-dynamic text-button'
+                    className='font-semibold rounded-lg bg-dynamic text-button-text'
                     onPress={handleOpenLogFile}
                     startContent={<TbFolders size={20} />}
                 >

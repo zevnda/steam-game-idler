@@ -36,43 +36,18 @@ export default function Dashboard(): ReactElement {
         };
 
         if (customListMap[activePage]) {
-            return (
-                <>
-                    <SideBar />
-                    <CustomList key={activePage} type={customListMap[activePage]} />
-                </>
-            );
+            return <CustomList key={activePage} type={customListMap[activePage]} />;
         }
 
         switch (activePage) {
             case 'idling':
-                return (
-                    <>
-                        <SideBar />
-                        <IdlingGamesList />
-                    </>
-                );
+                return <IdlingGamesList />;
             case 'freeGames':
-                return (
-                    <>
-                        <SideBar />
-                        <FreeGamesList />
-                    </>
-                );
+                return <FreeGamesList />;
             case 'settings':
-                return (
-                    <>
-                        <SideBar />
-                        <Settings />
-                    </>
-                );
+                return <Settings />;
             default:
-                return (
-                    <>
-                        <SideBar />
-                        <GamesList />
-                    </>
-                );
+                return <GamesList />;
         }
     };
 
@@ -80,6 +55,7 @@ export default function Dashboard(): ReactElement {
         <>
             <Header />
             <div className='flex w-full'>
+                {!showAchievements && <SideBar />}
                 {renderContent()}
             </div>
             {isCardFarming && <CardFarming activePage={activePage} />}

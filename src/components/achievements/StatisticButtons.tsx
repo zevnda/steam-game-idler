@@ -38,10 +38,10 @@ export default function StatisticButtons({
     const hasChanges = changedCount > 0;
 
     return (
-        <div className='absolute top-0 right-0 flex gap-2'>
+        <div className='absolute top-0 right-0 flex gap-2 mr-8 mt-1'>
             <Button
                 size='sm'
-                className='font-semibold rounded-lg bg-dynamic text-button'
+                className='font-semibold rounded-lg bg-dynamic text-button-text'
                 onPress={handleUpdateAllStats}
                 isDisabled={!hasChanges}
                 startContent={<TbUpload size={19} />}
@@ -84,7 +84,7 @@ export default function StatisticButtons({
                                 </Button>
                                 <Button
                                     size='sm'
-                                    className='font-semibold rounded-lg bg-dynamic text-button'
+                                    className='font-semibold rounded-lg bg-dynamic text-button-text'
                                     onPress={() => handleResetAll(onClose)}
                                 >
                                     {t('common.confirm')}

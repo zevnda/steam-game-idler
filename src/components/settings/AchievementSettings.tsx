@@ -41,7 +41,8 @@ export default function AchievementSettings(): ReactElement {
                         size='sm'
                         className='w-[80px]'
                         classNames={{
-                            inputWrapper: ['rounded-lg min-h-[25px] max-h-[25px]'],
+                            inputWrapper: ['rounded-lg min-h-[25px] max-h-[25px] bg-input hover:bg-inputhover border border-header-border'],
+                            segment: ['!text-content'],
                             input: ['text-xs'],
                         }}
                         onChange={(value) => handleScheduleChange(value, 'scheduleFrom', userSummary, setUserSettings)}
@@ -58,7 +59,8 @@ export default function AchievementSettings(): ReactElement {
                         size='sm'
                         className='w-[80px]'
                         classNames={{
-                            inputWrapper: ['rounded-lg min-h-[25px] max-h-[25px]'],
+                            inputWrapper: ['rounded-lg min-h-[25px] max-h-[25px] bg-input hover:bg-inputhover border border-header-border'],
+                            segment: ['!text-content'],
                             input: ['text-xs'],
                         }}
                         onChange={(value) => handleScheduleChange(value, 'scheduleTo', userSummary, setUserSettings)}

@@ -101,7 +101,7 @@ export default function GameSettings({ isOpen, onOpenChange }: GameSettingsProps
                                         aria-label='max idle'
                                         className='max-w-[80px]'
                                         classNames={{
-                                            inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar h-8'],
+                                            inputWrapper: ['bg-input border border-border hover:!bg-inputhover rounded-lg group-data-[focus-within=true]:!bg-inputhover h-8'],
                                             input: ['!text-content']
                                         }}
                                         onValueChange={handleMaxIdleTimeChange}
@@ -121,7 +121,7 @@ export default function GameSettings({ isOpen, onOpenChange }: GameSettingsProps
                                         aria-label='max drops'
                                         className='max-w-[80px]'
                                         classNames={{
-                                            inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar h-8'],
+                                            inputWrapper: ['bg-input border border-border hover:!bg-inputhover rounded-lg group-data-[focus-within=true]:!bg-inputhover h-8'],
                                             input: ['!text-content']
                                         }}
                                         onValueChange={handleMaxCardDropsChange}
@@ -141,7 +141,7 @@ export default function GameSettings({ isOpen, onOpenChange }: GameSettingsProps
                                         aria-label='max unlocks'
                                         className='max-w-[80px]'
                                         classNames={{
-                                            inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar h-8'],
+                                            inputWrapper: ['bg-input border border-border hover:!bg-inputhover rounded-lg group-data-[focus-within=true]:!bg-inputhover h-8'],
                                             input: ['!text-content']
                                         }}
                                         onValueChange={handleMaxAchievementUnlocksChange}
@@ -163,7 +163,7 @@ export default function GameSettings({ isOpen, onOpenChange }: GameSettingsProps
                             </Button>
                             <Button
                                 size='sm'
-                                className='font-semibold rounded-lg bg-dynamic text-button'
+                                className='font-semibold rounded-lg bg-dynamic text-button-text'
                                 isDisabled={isSaveDisabled()}
                                 onPress={() => {
                                     handleSave();

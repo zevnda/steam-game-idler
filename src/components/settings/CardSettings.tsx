@@ -21,7 +21,7 @@ export default function CardSettings(): ReactElement {
                     <p className='text-xs text-altwhite mb-0.5'>
                         {t('settings.cardFarming.userSummary')}
                     </p>
-                    <div className='border border-border rounded-lg bg-input hover:bg-titlebar dark:bg-[#131313] dark:hover:bg-[#171717]'>
+                    <div className='border border-border rounded-lg bg-input hover:bg-inputhover dark:bg-[#131313] dark:hover:bg-[#171717]'>
                         <div className='flex flex-col items-start gap-2 h-full p-2 group'>
                             <ExtLink href={`https://steamcommunity.com/profiles/${cardSettings.cardFarmingUser.steamId}/badges`}>
                                 <div className='flex gap-2 items-center'>
@@ -110,7 +110,7 @@ export default function CardSettings(): ReactElement {
                 </p>
                 <div className='flex flex-col mt-4'>
                     <div className='flex flex-col gap-2'>
-                        <div className='flex gap-6'>
+                        <div className='flex gap-6 max-w-[650px] flex-wrap'>
                             <Input
                                 size='sm'
                                 label='sessionid'
@@ -118,7 +118,7 @@ export default function CardSettings(): ReactElement {
                                 placeholder='sessionid'
                                 className='max-w-[290px]'
                                 classNames={{
-                                    inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'],
+                                    inputWrapper: ['bg-input border border-border hover:!bg-inputhover rounded-lg group-data-[focus-within=true]:!bg-inputhover'],
                                     label: ['!text-content'],
                                     input: ['!text-content placeholder:text-altwhite/50']
                                 }}
@@ -133,7 +133,7 @@ export default function CardSettings(): ReactElement {
                                 placeholder='steamLoginSecure'
                                 className='max-w-[290px]'
                                 classNames={{
-                                    inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'],
+                                    inputWrapper: ['bg-input border border-border hover:!bg-inputhover rounded-lg group-data-[focus-within=true]:!bg-inputhover'],
                                     label: ['!text-content'],
                                     input: ['!text-content placeholder:text-altwhite/50']
                                 }}
@@ -148,7 +148,7 @@ export default function CardSettings(): ReactElement {
                                 placeholder='steamParental/steamMachineAuth'
                                 className='max-w-[290px]'
                                 classNames={{
-                                    inputWrapper: ['bg-input border border-border hover:!bg-titlebar rounded-lg group-data-[focus-within=true]:!bg-titlebar'],
+                                    inputWrapper: ['bg-input border border-border hover:!bg-inputhover rounded-lg group-data-[focus-within=true]:!bg-inputhover'],
                                     label: ['!text-content'],
                                     input: ['!text-content placeholder:text-altwhite/50']
                                 }}
@@ -161,7 +161,7 @@ export default function CardSettings(): ReactElement {
                             <Button
                                 size='sm'
                                 isDisabled={cardSettings.hasCookies || !cardSettings.sidValue || !cardSettings.slsValue}
-                                className='font-semibold rounded-lg w-full bg-dynamic text-button'
+                                className='font-semibold rounded-lg w-full bg-dynamic text-button-text'
                                 onPress={() => handleSave(
                                     cardSettings.sidValue,
                                     cardSettings.slsValue,

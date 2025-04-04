@@ -45,7 +45,7 @@ export default function ClearData(): ReactElement {
                                 </Button>
                                 <Button
                                     size='sm'
-                                    className='font-semibold rounded-lg bg-dynamic text-button'
+                                    className='font-semibold rounded-lg bg-dynamic text-button-text'
                                     onPress={() => handleClearData(onClose)}
                                 >
                                     {t('common.confirm')}

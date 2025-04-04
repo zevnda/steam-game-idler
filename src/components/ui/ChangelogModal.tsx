@@ -69,7 +69,7 @@ export default function ChangelogModal(): ReactElement {
                                 </ExtLink>
                                 <Button
                                     size='sm'
-                                    className='font-semibold rounded-lg bg-dynamic text-button'
+                                    className='font-semibold rounded-lg bg-dynamic text-button-text'
                                     onPress={onClose}
                                 >
                                     {t('common.continue')}
