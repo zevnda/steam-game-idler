@@ -1,12 +1,12 @@
 import { Divider } from '@heroui/react';
 import type { ReactElement } from 'react';
-import { GoGrabber } from 'react-icons/go';
 import { TbMinus, TbSquare, TbX } from 'react-icons/tb';
 
 import { useStateContext } from '@/components/contexts/StateContext';
 import { useUpdateContext } from '@/components/contexts/UpdateContext';
 import Notifications from '@/components/notifications/Notifications';
 import HeaderMenu from '@/components/ui/HeaderMenu';
+import HeaderTitle from '@/components/ui/HeaderTitle';
 import SearchBar from '@/components/ui/SearchBar';
 import UpdateButton from '@/components/ui/UpdateButton';
 import useHeader from '@/hooks/ui/useHeader';
@@ -19,11 +19,9 @@ export default function Header(): ReactElement {
     return (
         <div className='relative w-full h-12 bg-titlebar select-none' data-tauri-drag-region>
             <div className='flex justify-between items-center h-full'>
-                <div className='flex justify-center items-center gap-1 px-2 h-full w-14' data-tauri-drag-region>
-                    <GoGrabber fontSize={28} data-tauri-drag-region />
-                </div>
-
                 <div className='flex justify-center items-center flex-grow gap-2 h-11' data-tauri-drag-region>
+                    <HeaderTitle />
+
                     <SearchBar />
 
                     {updateAvailable && (<UpdateButton />)}

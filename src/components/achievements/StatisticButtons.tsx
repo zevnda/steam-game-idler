@@ -1,6 +1,7 @@
 import { Modal, ModalContent, ModalBody, Button, useDisclosure, ModalFooter, ModalHeader } from '@heroui/react';
 import type { Dispatch, SetStateAction, ReactElement } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import { TbRotateClockwise, TbUpload } from 'react-icons/tb';
 
 import useStatisticButtons from '@/hooks/achievements/useStatisticButtons';
 import type { Achievement, ChangedStats, Statistic } from '@/types';
@@ -43,6 +44,7 @@ export default function StatisticButtons({
                 className='font-semibold rounded-lg bg-dynamic text-button'
                 onPress={handleUpdateAllStats}
                 isDisabled={!hasChanges}
+                startContent={<TbUpload size={19} />}
             >
                 {t('achievementManager.statistics.saveChanges')} {hasChanges && `(${changedCount})`}
             </Button>
@@ -51,6 +53,7 @@ export default function StatisticButtons({
                 color='danger'
                 className='font-semibold rounded-lg'
                 onPress={onOpen}
+                startContent={<TbRotateClockwise className='rotate-90' size={20} />}
             >
                 {t('achievementManager.statistics.resetAll')}
             </Button>

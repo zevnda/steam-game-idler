@@ -2,7 +2,7 @@ import { Button, Input, Tooltip } from '@heroui/react';
 import Image from 'next/image';
 import type { ReactElement } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
-import { TbHelpCircle } from 'react-icons/tb';
+import { TbEraser, TbHelpCircle, TbUpload } from 'react-icons/tb';
 
 import { useUserContext } from '@/components/contexts/UserContext';
 import SettingsCheckbox from '@/components/settings/SettingsCheckbox';
@@ -68,7 +68,7 @@ export default function GeneralSettings(): ReactElement {
                     size='sm'
                     content='Beta features may be unstable or change unexpectedly. If you experience any issues when using a beta feature, please report it on GitHub'
                     placement='right'
-                    closeDelay={0}
+                    closeDelay={100}
                     className='w-[320px]'
                 >
                     <TbHelpCircle className='text-altwhite' strokeWidth={1} />
@@ -139,6 +139,7 @@ export default function GeneralSettings(): ReactElement {
                         isDisabled={hasKey || !keyValue}
                         className='font-semibold rounded-lg bg-dynamic text-button'
                         onPress={() => handleKeySave(userSummary?.steamId, keyValue, setHasKey, setUserSettings)}
+                        startContent={<TbUpload size={20} />}
                     >
                         {t('common.save')}
                     </Button>
@@ -148,6 +149,7 @@ export default function GeneralSettings(): ReactElement {
                         isDisabled={!hasKey}
                         className='font-semibold text-offwhite rounded-lg'
                         onPress={() => handleClear(userSummary?.steamId, setKeyValue, setHasKey, setUserSettings)}
+                        startContent={<TbEraser size={20} />}
                     >
                         {t('common.clear')}
                     </Button>

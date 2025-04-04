@@ -2,8 +2,10 @@ import { Button } from '@heroui/react';
 import { arch, version, locale } from '@tauri-apps/plugin-os';
 import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
+import { TbArrowBarUp } from 'react-icons/tb';
 
 import { useUserContext } from '@/components/contexts/UserContext';
+import CustomTooltip from '@/components/ui/CustomTooltip';
 import type { UserSettings } from '@/types';
 import { getAppVersion } from '@/utils/tasks';
 import { showDangerToast, showSuccessToast } from '@/utils/toasts';
@@ -150,12 +152,14 @@ export default function ExportSettings(): ReactElement {
     };
 
     return (
-        <Button
-            size='sm'
-            className='font-semibold rounded-lg bg-dynamic text-button'
-            onPress={exportSettings}
-        >
-            {t('settings.exportData')}
-        </Button>
+        <CustomTooltip content={t('settings.exportData')}>
+            <Button
+                isIconOnly
+                size='sm'
+                className='font-semibold rounded-lg bg-dynamic text-button'
+                onPress={exportSettings}
+                startContent={<TbArrowBarUp size={20} />}
+            />
+        </CustomTooltip>
     );
 }

@@ -1,6 +1,7 @@
 import { Button, Modal, ModalContent, ModalBody, ModalFooter, ModalHeader } from '@heroui/react';
 import type { Dispatch, ReactElement, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
+import { TbRotateClockwise } from 'react-icons/tb';
 
 import useResetSettings from '@/hooks/settings/useResetSettings';
 
@@ -19,6 +20,7 @@ export default function ResetSettings({ setRefreshKey }: ResetSettingsProps): Re
                 color='danger'
                 className='font-semibold rounded-lg'
                 onPress={onOpen}
+                startContent={<TbRotateClockwise className='rotate-90' size={20} />}
             >
                 {t('settings.resetSettings.button')}
             </Button>

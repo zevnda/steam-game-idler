@@ -2,7 +2,7 @@ import { Button, Input, Spinner } from '@heroui/react';
 import Image from 'next/image';
 import type { ReactElement } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { TbRefresh } from 'react-icons/tb';
+import { TbEraser, TbRefresh, TbUpload } from 'react-icons/tb';
 
 import { useUserContext } from '@/components/contexts/UserContext';
 import SettingsCheckbox from '@/components/settings/SettingsCheckbox';
@@ -173,6 +173,7 @@ export default function CardSettings(): ReactElement {
                                     setUserSettings,
                                     cardSettings.setIsCFDataLoading,
                                 )}
+                                startContent={<TbUpload size={20} />}
                             >
                                 {t('common.save')}
                             </Button>
@@ -192,6 +193,7 @@ export default function CardSettings(): ReactElement {
                                     cardSettings.setGamesWithDrops,
                                     cardSettings.setTotalDropsRemaining,
                                 )}
+                                startContent={<TbEraser size={20} />}
                             >
                                 {t('common.clear')}
                             </Button>

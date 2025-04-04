@@ -1,6 +1,7 @@
 import { Button, Modal, ModalContent, ModalBody, ModalFooter, ModalHeader } from '@heroui/react';
 import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
+import { TbEraser } from 'react-icons/tb';
 
 import useClearData from '@/hooks/settings/useClearData';
 
@@ -15,6 +16,7 @@ export default function ClearData(): ReactElement {
                 color='danger'
                 className='font-semibold rounded-lg'
                 onPress={onOpen}
+                startContent={<TbEraser size={20} />}
             >
                 {t('settings.clearData.button')}
             </Button>

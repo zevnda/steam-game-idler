@@ -30,10 +30,10 @@ export default function Settings(): ReactElement {
                     </div>
 
                     <div className='flex items-center gap-2'>
-                        <ResetSettings setRefreshKey={setRefreshKey} />
-                        <ClearData />
                         <OpenSettings />
                         <ExportSettings />
+                        <ResetSettings setRefreshKey={setRefreshKey} />
+                        <ClearData />
                     </div>
                 </div>
 

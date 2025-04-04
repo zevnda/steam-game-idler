@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { GoDotFill } from 'react-icons/go';
 import { TbBell } from 'react-icons/tb';
 
+import CustomTooltip from '@/components/ui/CustomTooltip';
 import { handleOpenUrl, markAllAsSeen, timeAgo, useNotifications } from '@/hooks/notifications/useNotifications';
 
 export default function Notifications(): ReactElement {
@@ -33,19 +34,21 @@ export default function Notifications(): ReactElement {
 
     return (
         <div className='relative'>
-            <div
-                className={`flex items-center p-2 hover:bg-titlehover rounded-full cursor-pointer active:scale-90 relative duration-200 ${showNotifications && 'bg-titlehover'}`}
-                onClick={() => {
-                    setShowNotifications(!showNotifications);
-                }}
-            >
-                <TbBell fontSize={20} />
-                {unseenNotifications.length > 0 && (
-                    <div className='absolute top-1 right-1'>
-                        <GoDotFill className='text-danger' />
-                    </div>
-                )}
-            </div>
+            <CustomTooltip content='Notifications'>
+                <div
+                    className={`flex items-center p-2 hover:bg-titlehover rounded-full cursor-pointer active:scale-90 relative duration-200 ${showNotifications && 'bg-titlehover'}`}
+                    onClick={() => {
+                        setShowNotifications(!showNotifications);
+                    }}
+                >
+                    <TbBell fontSize={20} />
+                    {unseenNotifications.length > 0 && (
+                        <div className='absolute top-1 right-1'>
+                            <GoDotFill className='text-danger' />
+                        </div>
+                    )}
+                </div>
+            </CustomTooltip>
             <AnimatePresence>
                 {showNotifications && (
                     <>
