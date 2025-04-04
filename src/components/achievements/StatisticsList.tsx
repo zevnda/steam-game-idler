@@ -1,4 +1,4 @@
-import { NumberInput } from '@heroui/react';
+import { cn, NumberInput } from '@heroui/react';
 import { memo, useState, useMemo } from 'react';
 import type { ChangeEvent, CSSProperties, Dispatch, ReactElement, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -34,7 +34,10 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
         <div style={style} className='grid grid-cols-2 gap-2 px-4'>
             {item1 && (
                 <div key={item1.id} className='flex flex-col gap-4'>
-                    <div className='flex justify-between items-center max-h-12 border border-border bg-titlebar p-2 rounded-lg'>
+                    <div className={cn(
+                        'flex justify-between items-center max-h-12',
+                        'border border-border bg-titlebar p-2 rounded-lg'
+                    )}>
                         <div className='flex flex-col'>
                             <p className='text-sm w-full truncate'>
                                 {item1.id}
@@ -54,7 +57,12 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
                             aria-label='statistic value'
                             className='w-[120px]'
                             classNames={{
-                                inputWrapper: ['bg-input border border-border hover:!bg-inputhover rounded-lg group-data-[focus-visible=true]:ring-transparent group-data-[focus-visible=true]:ring-offset-transparent group-data-[focus-within=true]:!bg-inputhover h-8'],
+                                inputWrapper: cn(
+                                    'bg-input border border-border hover:!bg-inputhover rounded-lg',
+                                    'group-data-[focus-visible=true]:ring-transparent',
+                                    'group-data-[focus-visible=true]:ring-offset-transparent',
+                                    'group-data-[focus-within=true]:!bg-inputhover h-8'
+                                ),
                                 input: ['text-sm !text-content']
                             }}
                         />
@@ -63,7 +71,10 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
             )}
             {item2 && (
                 <div key={item2.id} className='flex flex-col gap-4'>
-                    <div className='flex justify-between items-center max-h-12 border border-border bg-titlebar p-2 rounded-lg'>
+                    <div className={cn(
+                        'flex justify-between items-center max-h-12',
+                        'border border-border bg-titlebar p-2 rounded-lg'
+                    )}>
                         <div className='flex flex-col'>
                             <p className='text-sm w-full truncate'>
                                 {item2.id}
@@ -83,7 +94,12 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
                             aria-label='statistic value'
                             className='w-[120px]'
                             classNames={{
-                                inputWrapper: ['bg-input border border-border hover:!bg-inputhover rounded-lg group-data-[focus-visible=true]:ring-transparent group-data-[focus-visible=true]:ring-offset-transparent group-data-[focus-within=true]:!bg-inputhover h-8'],
+                                inputWrapper: cn(
+                                    'bg-input border border-border hover:!bg-inputhover rounded-lg h-8',
+                                    'group-data-[focus-visible=true]:ring-transparent',
+                                    'group-data-[focus-visible=true]:ring-offset-transparent',
+                                    'group-data-[focus-within=true]:!bg-inputhover'
+                                ),
                                 input: ['text-sm !text-content']
                             }}
                         />

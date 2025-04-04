@@ -1,4 +1,4 @@
-import { Slider, TimeInput } from '@heroui/react';
+import { cn, Slider, TimeInput } from '@heroui/react';
 import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -41,7 +41,10 @@ export default function AchievementSettings(): ReactElement {
                         size='sm'
                         className='w-[80px]'
                         classNames={{
-                            inputWrapper: ['rounded-lg min-h-[25px] max-h-[25px] bg-input hover:bg-inputhover border border-header-border'],
+                            inputWrapper: cn(
+                                'rounded-lg min-h-[25px] max-h-[25px] bg-input',
+                                'hover:bg-inputhover border border-header-border'
+                            ),
                             segment: ['!text-content'],
                             input: ['text-xs'],
                         }}
@@ -59,7 +62,10 @@ export default function AchievementSettings(): ReactElement {
                         size='sm'
                         className='w-[80px]'
                         classNames={{
-                            inputWrapper: ['rounded-lg min-h-[25px] max-h-[25px] bg-input hover:bg-inputhover border border-header-border'],
+                            inputWrapper: cn(
+                                'rounded-lg min-h-[25px] max-h-[25px] bg-input',
+                                'hover:bg-inputhover border border-header-border'
+                            ),
                             segment: ['!text-content'],
                             input: ['text-xs'],
                         }}

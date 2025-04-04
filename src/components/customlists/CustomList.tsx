@@ -2,7 +2,7 @@
 import { DndContext, type DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Button } from '@heroui/react';
+import { Button, cn } from '@heroui/react';
 import { useState } from 'react';
 import type { ReactElement, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -103,8 +103,15 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
 
     return (
         <>
-            <div className='w-calc min-h-calc max-h-calc bg-base overflow-y-auto overflow-x-hidden rounded-tl-xl border-t border-l border-border' ref={containerRef}>
-                <div className={`fixed flex justify-between items-center w-[calc(100svw-68px)] py-2 pl-4 bg-base bg-opacity-90 backdrop-blur-md z-10 rounded-tl-xl ${list.slice(0, visibleGames).length >= 21 ? 'pr-4' : 'pr-2'}`}>
+            <div className={cn(
+                'w-calc min-h-calc max-h-calc bg-base overflow-y-auto',
+                'overflow-x-hidden rounded-tl-xl border-t border-l border-border'
+            )} ref={containerRef}>
+                <div className={cn(
+                    'fixed flex justify-between items-center w-[calc(100svw-68px)]',
+                    'py-2 pl-4 bg-base bg-opacity-90 backdrop-blur-md z-10 rounded-tl-xl',
+                    list.slice(0, visibleGames).length >= 21 ? 'pr-4' : 'pr-2'
+                )}>
                     <div className='flex flex-col'>
                         <p className='text-lg font-semibold'>
                             {listType.title}

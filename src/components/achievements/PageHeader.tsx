@@ -1,4 +1,4 @@
-import { Alert, Button } from '@heroui/react';
+import { Alert, Button, cn } from '@heroui/react';
 import { invoke } from '@tauri-apps/api/core';
 import type { ReactElement } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -56,7 +56,10 @@ export default function PageHeader({ protectedAchievements, protectedStatistics 
                             <p>
                                 <Trans i18nKey='achievementManager.alert'>
                                     Some protected achievements or statistics have been disabled.
-                                    <ExtLink className='text-link' href='https://partner.steamgames.com/doc/features/achievements#game_server_stats:~:text=Stats%20and%20achievements%20that%20are%20settable%20by%20game%20servers%20cannot%20be%20set%20by%20clients.'>
+                                    <ExtLink
+                                        className='text-link'
+                                        href='https://partner.steamgames.com/doc/features/achievements#game_server_stats:~:text=Stats%20and%20achievements%20that%20are%20settable%20by%20game%20servers%20cannot%20be%20set%20by%20clients.'
+                                    >
                                         <span> Learn more</span>
                                     </ExtLink>
                                 </Trans>
@@ -64,7 +67,10 @@ export default function PageHeader({ protectedAchievements, protectedStatistics 
                         }
                         startContent={<TbAlertHexagonFilled fontSize={22} className='text-content' />}
                         classNames={{
-                            base: ['h-10 py-1 flex justify-center items-center gap-0 rounded-lg bg-dynamic/50 text-content border border-border'],
+                            base: cn(
+                                'h-10 py-1 flex justify-center items-center gap-0',
+                                'rounded-lg bg-dynamic/50 text-content border border-border'
+                            ),
                             title: ['text-xs'],
                         }}
                     />
@@ -102,7 +108,10 @@ export default function PageHeader({ protectedAchievements, protectedStatistics 
                     </CustomTooltip>
                     <CustomTooltip content={t('achievementManager.file')} placement='top'>
                         <div>
-                            <div className='hover:bg-titlehover rounded-full p-1 cursor-pointer duration-200' onClick={handleOpenAchievementFile}>
+                            <div
+                                className='hover:bg-titlehover rounded-full p-1 cursor-pointer duration-200'
+                                onClick={handleOpenAchievementFile}
+                            >
                                 <TbFoldersFilled fontSize={18} />
                             </div>
                         </div>

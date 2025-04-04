@@ -144,7 +144,7 @@ module.exports = {
             oled: {
                 colors: {
                     'base': '#000000',
-                    'container': '#161616',
+                    'container': '#060606',
                     'containerhover': '#252525',
                     'dynamic': '#1c79de',
                     'content': '#ffffff',

@@ -26,7 +26,15 @@ export default function SteamWarning(): ReactElement {
     };
 
     return (
-        <Modal isOpen={isOpen} onOpenChange={verifySteamStatus} className='bg-modalbody text-content' classNames={{ closeButton: ['text-altwhite hover:bg-titlehover duration-200'] }}>
+        <Modal
+            isOpen={isOpen}
+            onOpenChange={verifySteamStatus}
+            className='bg-modalbody text-content'
+            classNames={{
+                closeButton:
+                    ['text-altwhite hover:bg-titlehover duration-200']
+            }}
+        >
             <ModalContent>
                 <>
                     <ModalHeader className='flex flex-col gap-1 bg-modalheader border-b border-border' data-tauri-drag-region>

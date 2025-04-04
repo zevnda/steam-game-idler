@@ -1,8 +1,7 @@
-import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@heroui/react';
+import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, cn } from '@heroui/react';
 import { invoke } from '@tauri-apps/api/core';
 import { relaunch } from '@tauri-apps/plugin-process';
 import { check } from '@tauri-apps/plugin-updater';
-import cn from 'clsx';
 import { useState } from 'react';
 import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';

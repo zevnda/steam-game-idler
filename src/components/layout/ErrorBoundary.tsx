@@ -1,4 +1,4 @@
-import { Button } from '@heroui/react';
+import { Button, cn } from '@heroui/react';
 import { Component } from 'react';
 import type { ErrorInfo, ReactNode } from 'react';
 
@@ -57,14 +57,22 @@ ${errorInfo && errorInfo.componentStack}
 
             return (
                 <div className='bg-base h-screen w-screen'>
-                    <div className='absolute top-0 left-0 w-full h-12 flex justify-center items-center bg-titlebar select-none' data-tauri-drag-region>
+                    <div className={cn(
+                        'absolute top-0 left-0 w-full h-12 select-none',
+                        'flex justify-center items-center bg-titlebar'
+                    )}
+                        data-tauri-drag-region
+                    >
                         <p className='text-sm'>
                             Uh-oh!
                         </p>
                     </div>
 
                     <div className='flex flex-col items-center justify-center gap-2 h-full'>
-                        <div className='flex flex-col justify-center gap-4 h-[65%] w-[70%] bg-container rounded-lg border border-border p-4'>
+                        <div className={cn(
+                            'flex flex-col justify-center gap-4 h-[65%] w-[70%]',
+                            'bg-container rounded-lg border border-border p-4'
+                        )}>
                             <p className='text-sm'>
                                 An error occurred while rendering the application
                             </p>

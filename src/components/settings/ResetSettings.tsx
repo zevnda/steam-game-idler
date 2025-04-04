@@ -25,7 +25,14 @@ export default function ResetSettings({ setRefreshKey }: ResetSettingsProps): Re
                 {t('settings.resetSettings.button')}
             </Button>
 
-            <Modal isOpen={isOpen} onOpenChange={onOpenChange} className='bg-modalbody text-content' classNames={{ closeButton: ['text-altwhite hover:bg-titlehover duration-200'] }}>
+            <Modal
+                isOpen={isOpen}
+                onOpenChange={onOpenChange}
+                className='bg-modalbody text-content'
+                classNames={{
+                    closeButton: ['text-altwhite hover:bg-titlehover duration-200']
+                }}
+            >
                 <ModalContent>
                     {(onClose: () => void) => (
                         <>

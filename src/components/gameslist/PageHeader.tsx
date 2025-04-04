@@ -1,4 +1,4 @@
-import { Select, SelectItem } from '@heroui/react';
+import { cn, Select, SelectItem } from '@heroui/react';
 import type { Dispatch, ReactElement, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TbRefresh, TbSortDescending2 } from 'react-icons/tb';
@@ -35,7 +35,11 @@ export default function PageHeader({
     ];
 
     return (
-        <div className={`fixed w-[calc(100vw-68px)] z-[50] bg-opacity-90 backdrop-blur-md bg-base pl-4 pt-2 rounded-tl-xl ${filteredGames?.length >= 21 ? 'pr-4' : 'pr-2'}`}>
+        <div className={cn(
+            'fixed w-[calc(100vw-68px)] z-[50] bg-opacity-90',
+            'backdrop-blur-md bg-base pl-4 pt-2 rounded-tl-xl',
+            filteredGames?.length >= 21 ? 'pr-4' : 'pr-2'
+        )}>
             <div className='flex justify-between items-center pb-3'>
                 <div className='flex items-center gap-1'>
                     <div className='flex flex-col justify-center'>
@@ -46,7 +50,10 @@ export default function PageHeader({
                             <p className='text-xs text-altwhite'>
                                 {t('common.showing', { count: visibleGames.length, total: filteredGames.length })}
                             </p>
-                            <div className='flex justify-center items-center cursor-pointer' onClick={() => handleRefetch(userSummary?.steamId)}>
+                            <div
+                                className='flex justify-center items-center cursor-pointer'
+                                onClick={() => handleRefetch(userSummary?.steamId)}
+                            >
                                 <TbRefresh className='text-altwhite' fontSize={16} />
                             </div>
                         </div>
@@ -65,14 +72,21 @@ export default function PageHeader({
                         classNames={{
                             listbox: ['p-0'],
                             value: ['text-sm !text-content'],
-                            trigger: ['bg-titlebar border border-border data-[hover=true]:!bg-input data-[open=true]:!bg-input duration-100 rounded-lg'],
+                            trigger: cn(
+                                'bg-titlebar border border-border data-[hover=true]:!bg-input',
+                                'data-[open=true]:!bg-input duration-100 rounded-lg'
+                            ),
                             popoverContent: ['bg-titlebar border border-border rounded-lg justify-start !text-content'],
                             listboxWrapper: ['min-h-[168px]']
                         }}
                         defaultSelectedKeys={[sortStyle]}
                         onSelectionChange={(e) => { handleSorting(e.currentKey); }}
                     >
-                        {(item) => <SelectItem classNames={{ base: ['data-[hover=true]:!bg-titlehover data-[hover=true]:!text-content'] }}>{item.label}</SelectItem>}
+                        {(item) => <SelectItem classNames={{
+                            base: ['data-[hover=true]:!bg-titlehover data-[hover=true]:!text-content']
+                        }}>
+                            {item.label}
+                        </SelectItem>}
                     </Select>
                 </div>
             </div>

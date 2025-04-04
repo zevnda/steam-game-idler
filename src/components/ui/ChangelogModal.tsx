@@ -25,7 +25,15 @@ export default function ChangelogModal(): ReactElement {
     }, [onOpen, showChangelog, setShowChangelog]);
 
     return (
-        <Modal isOpen={isOpen} onOpenChange={onOpenChange} hideCloseButton className='min-w-[830px] max-h-[480px] bg-modalbody text-content' classNames={{ closeButton: ['text-altwhite hover:bg-titlehover duration-200'] }}>
+        <Modal
+            isOpen={isOpen}
+            onOpenChange={onOpenChange}
+            hideCloseButton
+            className='min-w-[830px] max-h-[480px] bg-modalbody text-content'
+            classNames={{
+                closeButton: ['text-altwhite hover:bg-titlehover duration-200']
+            }}
+        >
             <ModalContent>
                 {(onClose: () => void) => (
                     <>

@@ -1,4 +1,4 @@
-import { Button, Spinner } from '@heroui/react';
+import { Button, cn, Spinner } from '@heroui/react';
 import Image from 'next/image';
 import { useState, useEffect, useRef } from 'react';
 import type { ReactElement } from 'react';
@@ -112,7 +112,11 @@ export default function CardFarming({ activePage }: { activePage: ActivePageType
     };
 
     return (
-        <div className={`${activePage !== 'customlists/card-farming' && 'hidden'} absolute top-12 left-14 bg-base z-50 rounded-tl-xl border-t border-l border-border`}>
+        <div className={cn(
+            'absolute top-12 left-14 bg-base z-50 rounded-tl-xl',
+            'border-t border-l border-border',
+            activePage !== 'customlists/card-farming' && 'hidden'
+        )}>
             <div className='relative flex justify-evenly items-center flex-col p-4 w-calc h-calc'>
                 {imageSrc && (
                     <Image
@@ -126,7 +130,10 @@ export default function CardFarming({ activePage }: { activePage: ActivePageType
                 )}
                 <div className='absolute bg-base/10 backdrop-blur-[10px] w-full h-full rounded-tl-xl' />
 
-                <div className='flex items-center flex-col gap-6 z-10 backdrop-blur-md bg-base/20 p-8 border border-border/40 rounded-lg'>
+                <div className={cn(
+                    'flex items-center flex-col gap-6 z-10 backdrop-blur-md',
+                    'bg-base/20 p-8 border border-border/40 rounded-lg'
+                )}>
                     <p className='text-3xl font-semibold'>
                         {t('common.cardFarming')}
                     </p>

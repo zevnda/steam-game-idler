@@ -1,4 +1,4 @@
-import { Tab, Tabs } from '@heroui/react';
+import { cn, Tab, Tabs } from '@heroui/react';
 import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -17,7 +17,10 @@ export default function Settings(): ReactElement {
     const { version, refreshKey, setRefreshKey } = useSettings();
 
     return (
-        <div key={refreshKey} className='w-calc min-h-calc max-h-calc bg-base overflow-y-auto rounded-tl-xl border-t border-l border-border'>
+        <div key={refreshKey} className={cn(
+            'w-calc min-h-calc max-h-calc bg-base overflow-y-auto',
+            'rounded-tl-xl border-t border-l border-border'
+        )}>
             <div className='p-4 pt-2'>
                 <div className='flex justify-between items-center'>
                     <div className='flex flex-col'>
@@ -46,7 +49,12 @@ export default function Settings(): ReactElement {
                     classNames={{
                         base: 'bg-titlebar rounded-t-lg p-0 border-t border-l border-r border-border',
                         tabList: 'gap-0 w-full bg-transparent',
-                        tab: 'px-6 py-3 rounded-none bg-transparent px-4 data-[hover-unselected=true]:bg-gray-500 data-[hover-unselected=true]:bg-opacity-5 data-[hover-unselected=true]:opacity-100',
+                        tab: cn(
+                            'px-6 py-3 rounded-none bg-transparent px-4',
+                            'data-[hover-unselected=true]:bg-gray-500',
+                            'data-[hover-unselected=true]:bg-opacity-5',
+                            'data-[hover-unselected=true]:opacity-100'
+                        ),
                         tabContent: 'text-sm group-data-[selected=true]:text-content text-altwhite',
                         cursor: '!bg-tab-select w-full rounded',
                         panel: 'bg-titlebar rounded-lg rounded-tl-none border border-border',

@@ -1,4 +1,4 @@
-import { Button } from '@heroui/react';
+import { Button, cn } from '@heroui/react';
 import { invoke } from '@tauri-apps/api/core';
 import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -35,8 +35,16 @@ export default function IdlingGamesList(): ReactElement {
     };
 
     return (
-        <div className='w-calc min-h-calc max-h-calc bg-base overflow-y-auto overflow-x-hidden rounded-tl-xl border-t border-l border-border select-none'>
-            <div className={`fixed w-[calc(100vw-68px)] z-[50] bg-opacity-90 backdrop-blur-md bg-base pl-4 pt-2 rounded-tl-xl ${idleGamesList?.length >= 21 ? 'pr-4' : 'pr-2'}`}>
+        <div className={cn(
+            'w-calc min-h-calc max-h-calc bg-base overflow-y-auto',
+            'overflow-x-hidden rounded-tl-xl border-t border-l',
+            'border-border select-none'
+        )}>
+            <div className={cn(
+                'fixed w-[calc(100vw-68px)] z-[50] bg-opacity-90',
+                'backdrop-blur-md bg-base pl-4 pt-2 rounded-tl-xl',
+                idleGamesList?.length >= 21 ? 'pr-4' : 'pr-2'
+            )}>
                 <div className='flex justify-between items-center pb-3'>
                     <div className='flex items-center justify-between w-full gap-1'>
                         <div className='flex flex-col justify-center'>

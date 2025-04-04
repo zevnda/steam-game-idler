@@ -1,4 +1,4 @@
-import { Divider } from '@heroui/react';
+import { cn, Divider } from '@heroui/react';
 import type { ReactElement } from 'react';
 import { TbMinus, TbSquare, TbX } from 'react-icons/tb';
 
@@ -36,19 +36,31 @@ export default function Header(): ReactElement {
 
                     <div className='flex justify-center items-center gap-2 h-full mr-3'>
                         <div className='flex justify-center items-center'>
-                            <div className='hover:bg-titlehover p-2 rounded-full duration-200 cursor-pointer active:scale-90' onClick={windowMinimize}>
+                            <div
+                                className='hover:bg-titlehover p-2 rounded-full duration-200 cursor-pointer active:scale-90'
+                                onClick={windowMinimize}
+                            >
                                 <TbMinus fontSize={20} />
                             </div>
                         </div>
 
                         <div className='flex justify-center items-center'>
-                            <div className='hover:bg-titlehover p-2.5 rounded-full duration-200 cursor-pointer active:scale-90' onClick={windowToggleMaximize}>
+                            <div
+                                className='hover:bg-titlehover p-2.5 rounded-full duration-200 cursor-pointer active:scale-90'
+                                onClick={windowToggleMaximize}
+                            >
                                 <TbSquare fontSize={16} />
                             </div>
                         </div>
 
                         <div className='flex justify-center items-center'>
-                            <div className={`hover:bg-danger p-2 rounded-full duration-200 cursor-pointer active:scale-90 ${!isDarkMode && 'hover:text-button-text'}`} onClick={windowClose}>
+                            <div
+                                className={cn(
+                                    'hover:bg-danger p-2 rounded-full duration-200 cursor-pointer active:scale-90',
+                                    !isDarkMode && 'hover:text-button-text'
+                                )}
+                                onClick={windowClose}
+                            >
                                 <TbX fontSize={20} />
                             </div>
                         </div>
