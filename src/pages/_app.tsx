@@ -11,7 +11,7 @@ export default function App({ Component, pageProps }: AppProps): ReactElement {
     return (
         <ThemeProvider
             attribute='class'
-            themes={['light', 'dark', 'ash', 'oled']}
+            themes={['light', 'dark', 'slate', 'oled']}
             enableSystem={true}
             defaultTheme='dark'
             disableTransitionOnChange

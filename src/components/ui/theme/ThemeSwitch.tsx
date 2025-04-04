@@ -16,8 +16,8 @@ export default function ThemeSwitch(): ReactElement | null {
     const themes: Theme[] = [
         { key: 'light', label: 'Light' },
         { key: 'dark', label: 'Dark' },
-        { key: 'ash', label: 'Ash (Dark)' },
-        { key: 'oled', label: 'OLED (Dark)' },
+        { key: 'slate', label: 'Slate' },
+        { key: 'oled', label: 'OLED' },
     ];
 
     useEffect(() => {
