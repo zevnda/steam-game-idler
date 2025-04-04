@@ -67,7 +67,7 @@ export default function useWindow(): void {
 
     useEffect(() => {
         // Set dark mode based on the current theme
-        const darkThemes = ['dark', 'ash', 'oled'];
+        const darkThemes = ['dark', 'slate', 'oled'];
         setIsDarkMode(darkThemes.includes(theme as string));
     }, [theme, setIsDarkMode]);
 

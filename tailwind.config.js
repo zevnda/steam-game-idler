@@ -103,7 +103,7 @@ module.exports = {
                     }
                 }
             },
-            ash: {
+            slate: {
                 colors: {
                     'base': '#16181C',
                     'container': '#16181C',

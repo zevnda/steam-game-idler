@@ -2,8 +2,13 @@
 
 ### Changes in v1.9.19
 
-- Theming improvements
-  - Removed all of the color themes and replaced them with a couple variants of the dark theme (Ash and OLED)
+- UI and theme improvements
+  - Removed all of the color themes and replaced them with a couple variations of the original dark theme
+    - **Slate**: Lighter than the original dark theme with more contrast between background and foreground elements
+    - **OLED**: Very deep, almost pure blacks, easy on the eyes at night
+  - Converted some text buttons to icon buttons
+    - Icon buttons provide a tooltip when hovered
+  - Added a window title to the header
 
 <!-- 1.9.18 -->
 
