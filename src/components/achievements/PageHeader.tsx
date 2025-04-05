@@ -80,7 +80,7 @@ export default function PageHeader({ protectedAchievements, protectedStatistics 
                 <Button
                     isIconOnly
                     size='sm'
-                    className='rounded-full bg-border'
+                    className='rounded-full bg-titlehover border border-border'
                     startContent={<TbArrowBack fontSize={18} className='text-content' />}
                     onPress={handleClick}
                 />
