@@ -61,6 +61,7 @@
     "gameSettings.idle": "Max idle time (minutes)",
     "gameSettings.drops": "Max card drops",
     "gameSettings.achievements": "Max achievement unlocks",
+    "achievementManager.title": "Achievement Manager",
     "achievementManager.steam": "View on Steam",
     "achievementManager.steamDB": "View on SteamDB",
     "achievementManager.file": "View in File Explorer",

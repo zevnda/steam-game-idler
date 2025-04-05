@@ -29,7 +29,7 @@ export default function LanguageSwitch(): ReactElement | null {
         // { key: 'pl-PL', label: 'Polski' },
         { key: 'pt-BR', label: 'Português (Brazil)' },
         // { key: 'pt-PT', label: 'Português (Portugal)' },
-        // { key: 'ro-RO', label: 'Română' },
+        { key: 'ro-RO', label: 'Română' },
         { key: 'ru-RU', label: 'Русский' },
         // { key: 'sv-SE', label: 'Svenska' },
         { key: 'tr-TR', label: 'Türkçe' },

@@ -55,13 +55,13 @@ export default function Settings(): ReactElement {
                     onSelectionChange={(key: Key) => setCurrentSettingsTab(key as CurrentSettingsTabType)}
                     classNames={{
                         base: 'fixed bg-titlebar rounded-lg p-0 border border-border',
-                        tabList: 'gap-0 w-full bg-transparent ',
+                        tabList: 'gap-0 w-full bg-transparent w-[182px]',
                         tab: cn(
                             'data-[hover-unselected=true]:!bg-tab-hover',
                             'data-[hover-unselected=true]:opacity-100',
                             'rounded-lg bg-transparent justify-start',
                         ),
-                        tabContent: 'text-sm group-data-[selected=true]:text-content text-altwhite',
+                        tabContent: 'text-sm group-data-[selected=true]:text-content text-altwhite truncate',
                         cursor: '!bg-tab-select w-full',
                         panel: 'w-full ml-[184px] mr-0 pr-0',
                     }}

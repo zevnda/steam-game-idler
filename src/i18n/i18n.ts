@@ -8,6 +8,7 @@ import translationENUS from '@/i18n/locales/en-US/translation.json';
 import translationFRFR from '@/i18n/locales/fr-FR/translation.json';
 import translationITIT from '@/i18n/locales/it-IT/translation.json';
 import translationPTBR from '@/i18n/locales/pt-BR/translation.json';
+import translationRORO from '@/i18n/locales/ro-RO/translation.json';
 import translationRURU from '@/i18n/locales/ru-RU/translation.json';
 import translationTRTR from '@/i18n/locales/tr-TR/translation.json';
 import translationUKUA from '@/i18n/locales/uk-UA/translation.json';
@@ -19,6 +20,7 @@ const resources = {
     'fr-FR': { translation: translationFRFR },
     'it-IT': { translation: translationITIT },
     'pt-BR': { translation: translationPTBR },
+    'ro-RO': { translation: translationRORO },
     'ru-RU': { translation: translationRURU },
     'tr-TR': { translation: translationTRTR },
     'uk-UA': { translation: translationUKUA },
