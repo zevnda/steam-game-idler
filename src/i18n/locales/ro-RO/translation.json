@@ -61,6 +61,7 @@
     "gameSettings.idle": "Timp maxim de idle (minute)",
     "gameSettings.drops": "Număr maxim de căderi de cărți",
     "gameSettings.achievements": "Număr maxim de realizări deblocate",
+    "achievementManager.title": "Manager de realizări",
     "achievementManager.steam": "Vizualizați pe Steam",
     "achievementManager.steamDB": "Vizualizați pe SteamDB",
     "achievementManager.file": "Vizualizați în File Explorer",
