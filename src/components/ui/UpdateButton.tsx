@@ -50,7 +50,7 @@ export default function UpdateButton(): ReactElement {
                     </div>
                 </CustomTooltip>
             )}
-            <Divider className='w-[1px] h-6 bg-header-border' />
+            <Divider className='w-[1px] h-6 bg-border' />
         </>
     );
 }

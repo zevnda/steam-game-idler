@@ -28,11 +28,11 @@ export default function Header(): ReactElement {
 
                     <Notifications />
 
-                    <Divider className='w-[1px] h-6 bg-header-border' />
+                    <Divider className='w-[1px] h-6 bg-border' />
 
                     <HeaderMenu />
 
-                    <Divider className='w-[1px] h-6 bg-header-border' />
+                    <Divider className='w-[1px] h-6 bg-border' />
 
                     <div className='flex justify-center items-center gap-2 h-full mr-3'>
                         <div className='flex justify-center items-center'>

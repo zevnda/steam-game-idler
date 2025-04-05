@@ -46,7 +46,7 @@ export default function SearchBar(): ReactElement {
                     className='w-[300px] ml-14'
                     classNames={{
                         inputWrapper: cn(
-                            'bg-input border border-header-border hover:!bg-inputhover',
+                            'bg-input border border-border hover:!bg-inputhover',
                             'rounded-lg group-data-[focus-within=true]:!bg-inputhover'
                         ),
                         input: ['!text-content placeholder:text-altwhite/50'],
@@ -67,7 +67,7 @@ export default function SearchBar(): ReactElement {
                     className='max-w-[300px] ml-4'
                     classNames={{
                         inputWrapper: cn(
-                            'bg-input border border-header-border hover:!bg-inputhover',
+                            'bg-input border border-border hover:!bg-inputhover',
                             'rounded-lg group-data-[focus-within=true]:!bg-inputhover'
                         ),
                         input: ['!text-content placeholder:text-altwhite/50']
@@ -87,7 +87,7 @@ export default function SearchBar(): ReactElement {
                     className='max-w-[300px] ml-4'
                     classNames={{
                         inputWrapper: cn(
-                            'bg-input border border-header-border hover:!bg-inputhover',
+                            'bg-input border border-border hover:!bg-inputhover',
                             'rounded-lg group-data-[focus-within=true]:!bg-inputhover'
                         ),
                         input: ['!text-content placeholder:text-altwhite/50']

@@ -1,13 +1,17 @@
 <!-- 1.10.1 -->
 
+### Changes in v1.10.1
+
 - Reworked the layout of the settings page
 - The title bar now displays the current active page and tab titles
 - Improved the contrast of inputs and select menus in different areas of the UI for all themes
 - Improved the logic for getting games with card drops remaining
   - Speeds things up for users who have a lot of pages of badges by breaking early when a specific condition is met
 - Fixed a few inconsistent styles with the new themes
-
-### Changes in v1.10.1
+- Add translations for Romanian
+  - [Contribute to SGI by helping with translations](https://github.com/zevnda/steam-game-idler/discussions/148)
+  - Credit:
+    - @SirDanielFTW for the Romanian translation
 
 <!-- 1.10.0 -->
 
