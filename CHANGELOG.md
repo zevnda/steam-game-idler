@@ -1,9 +1,9 @@
 <!-- 1.10.1 -->
 
-- Added dynamic titles to the header
 - Reworked the layout of the settings page
-- Fixed a few inconsistencies with the new theme styles
-- Improved the contrast of inputs and select menus in different areas of the UI
+- The title bar now dynamically displays the current active page and tab titles
+- Fixed a few inconsistent styles with the new themes
+- Improved the contrast of inputs and select menus in different areas of the UI for all themes
 
 ### Changes in v1.10.1
 
