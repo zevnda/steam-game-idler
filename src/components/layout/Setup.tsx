@@ -10,7 +10,7 @@ import { useNavigationContext } from '@/components/contexts/NavigationContext';
 import { useStateContext } from '@/components/contexts/StateContext';
 import CustomTooltip from '@/components/ui/CustomTooltip';
 import ExtLink from '@/components/ui/ExtLink';
-import Header from '@/components/ui/Header';
+import Header from '@/components/ui/header/Header';
 import useSetup from '@/hooks/layout/useSetup';
 
 export default function Setup(): ReactElement {

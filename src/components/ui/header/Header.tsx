@@ -5,9 +5,9 @@ import { TbMinus, TbSquare, TbX } from 'react-icons/tb';
 import { useStateContext } from '@/components/contexts/StateContext';
 import { useUpdateContext } from '@/components/contexts/UpdateContext';
 import Notifications from '@/components/notifications/Notifications';
-import HeaderMenu from '@/components/ui/HeaderMenu';
-import HeaderTitle from '@/components/ui/HeaderTitle';
-import SearchBar from '@/components/ui/SearchBar';
+import HeaderMenu from '@/components/ui/header/HeaderMenu';
+import HeaderTitle from '@/components/ui/header/HeaderTitle';
+import SearchBar from '@/components/ui/header/SearchBar';
 import UpdateButton from '@/components/ui/UpdateButton';
 import useHeader from '@/hooks/ui/useHeader';
 

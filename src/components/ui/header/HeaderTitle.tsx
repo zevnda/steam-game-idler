@@ -39,31 +39,30 @@ export default function HeaderTitle(): ReactElement {
             <div className='flex justify-center items-center' data-tauri-drag-region>
                 <p className='font-semibold' data-tauri-drag-region>
                     Steam Game Idler
+                    <span className='mx-2 text-dynamic' data-tauri-drag-region>/</span>
                 </p>
 
-                <span className='mx-2 text-dynamic'>/</span>
+                <p className='font-semibold' data-tauri-drag-region>
+                    {showAchievements && (
+                        <>
+                            Achievement Manager
+                            <span className='mx-2 text-dynamic' data-tauri-drag-region>/</span>
+                            {formatTitleName[currentTab]}
+                        </>
+                    )}
 
-                {showAchievements ? (
-                    <p>
-                        Achievement Manager
-                        <span className='mx-2 text-dynamic'>/</span>
-                        {formatTitleName[currentTab]}
-                    </p>
-                ) : (
-                    <div>
-                        {activePage === 'settings' ? (
-                            <p>
-                                Settings
-                                <span className='mx-2 text-dynamic'>/</span>
-                                {formatTitleName[currentSettingsTab]}
-                            </p>
-                        ) : (
-                            <p>
-                                {formatTitleName[activePage]}
-                            </p>
-                        )}
-                    </div>
-                )}
+                    {!showAchievements && activePage === 'settings' && (
+                        <>
+                            Settings
+                            <span className='mx-2 text-dynamic' data-tauri-drag-region>/</span>
+                            {formatTitleName[currentSettingsTab]}
+                        </>
+                    )}
+
+                    {!showAchievements && activePage !== 'settings' && (
+                        formatTitleName[activePage]
+                    )}
+                </p>
             </div>
         </div>
     );
