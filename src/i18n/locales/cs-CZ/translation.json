@@ -28,5 +28,6 @@
     "gamesList.private.reason.1": "Váš profil je nastaven jako soukromý",
     "gamesList.private.reason.2": "Vaše údaje o hře jsou nastaveny na soukromé",
     "gamesList.private.reason.3": "Nemáte žádné hry ve své knihovně",
-    "gamesList.private.reason.4": "Používáte neplatný webový Steam API klíč"
+    "gamesList.private.reason.4": "Používáte neplatný webový Steam API klíč",
+    "customLists.achievementUnlocker.buttonLabel": "Začít odemykání úspěchů"
 }
