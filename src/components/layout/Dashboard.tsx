@@ -11,7 +11,7 @@ import FreeGamesList from '@/components/gameslist/FreeGamesList';
 import GamesList from '@/components/gameslist/GamesList';
 import IdlingGamesList from '@/components/gameslist/IdlingGamesList';
 import Settings from '@/components/settings/Settings';
-import Header from '@/components/ui/Header';
+import Header from '@/components/ui/header/Header';
 import SideBar from '@/components/ui/SideBar';
 import type { ActivePageType, CustomListType } from '@/types';
 import { antiAwayStatus } from '@/utils/tasks';
