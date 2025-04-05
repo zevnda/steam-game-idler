@@ -46,7 +46,7 @@ export default function useSetup(refreshKey: number): SetupHook {
                 const steamUsers = await Promise.all(
                     response.users
                         .filter(user => user?.steamId)
-                        .map(user => fetchUserSummary(user?.steamId as string, user?.mostRecent ?? 0, apiKey))
+                        .map(user => fetchUserSummary(String(user?.steamId), user?.mostRecent ?? 0, apiKey))
                 );
                 // Sort users by last logged in to Steam client - most recent first
                 steamUsers.sort((b, a) => (a?.mostRecent ?? 0) - (b?.mostRecent ?? 0));

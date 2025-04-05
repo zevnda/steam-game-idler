@@ -39,7 +39,7 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
                         'border border-border bg-titlebar p-2 rounded-lg'
                     )}>
                         <div className='flex flex-col'>
-                            <p className='text-sm w-full truncate'>
+                            <p className='text-sm font-bold w-full truncate'>
                                 {item1.id}
                             </p>
                             <p className={`text-[10px] ${protectedStatisticOne ? 'text-warning' : 'text-altwhite'}`}>
@@ -76,7 +76,7 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
                         'border border-border bg-titlebar p-2 rounded-lg'
                     )}>
                         <div className='flex flex-col'>
-                            <p className='text-sm w-full truncate'>
+                            <p className='text-sm font-bold w-full truncate'>
                                 {item2.id}
                             </p>
                             <p className={`text-[10px] ${protectedStatisticTwo ? 'text-warning' : 'text-altwhite'}`}>
