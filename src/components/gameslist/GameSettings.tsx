@@ -96,7 +96,7 @@ export default function GameSettings({ isOpen, onOpenChange }: GameSettingsProps
                         <ModalBody className='max-h-[300px] overflow-y-auto'>
                             <div className='grid grid-cols-2 gap-4 w-full my-4'>
                                 <div className='flex flex-col gap-2 w-full'>
-                                    <p className='text-xs'>
+                                    <p className='text-sm'>
                                         {t('gameSettings.idle')}
                                     </p>
                                     <NumberInput
@@ -119,7 +119,7 @@ export default function GameSettings({ isOpen, onOpenChange }: GameSettingsProps
                                 </div>
 
                                 <div className='flex flex-col gap-2 w-full'>
-                                    <p className='text-xs'>
+                                    <p className='text-sm'>
                                         {t('gameSettings.drops')}
                                     </p>
                                     <NumberInput
@@ -142,7 +142,7 @@ export default function GameSettings({ isOpen, onOpenChange }: GameSettingsProps
                                 </div>
 
                                 <div className='flex flex-col gap-2 w-full'>
-                                    <p className='text-xs'>
+                                    <p className='text-sm'>
                                         {t('gameSettings.achievements')}
                                     </p>
                                     <NumberInput

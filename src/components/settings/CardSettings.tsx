@@ -78,8 +78,10 @@ export default function CardSettings(): ReactElement {
                                 </>
                             ) : (
                                 <div className='flex items-center justify-center gap-2'>
-                                    <Spinner size='sm' />
-                                    <p className='text-xs text-altwhite'>Loading data..</p>
+                                    <Spinner size='sm' variant='simple' />
+                                    <p className='text-xs text-altwhite'>
+                                        Loading data..
+                                    </p>
                                 </div>
                             )}
                         </div>
@@ -115,7 +117,8 @@ export default function CardSettings(): ReactElement {
                         <ExtLink
                             href='https://steamgameidler.vercel.app/steam-credentials'
                             className='text-link hover:text-linkhover'
-                        >Learn more
+                        >
+                            Learn more
                         </ExtLink>
                     </Trans>
                 </p>

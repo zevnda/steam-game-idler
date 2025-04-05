@@ -55,7 +55,7 @@ export default function AchievementSettings(): ReactElement {
                         onChange={(value) => handleScheduleChange(value, 'scheduleFrom', userSummary, setUserSettings)}
                     />
 
-                    <p className='text-xs'>
+                    <p className='text-sm'>
                         {t('settings.achievementUnlocker.scheduleAnd')}
                     </p>
 
@@ -92,9 +92,6 @@ export default function AchievementSettings(): ReactElement {
                     formatOptions={{ style: 'currency', currency: 'USD' }}
                     hideValue
                     className='w-[500px] mt-2'
-                    classNames={{
-                        value: 'text-xs',
-                    }}
                     onChangeEnd={(e) => handleSliderChange(e, userSummary, setUserSettings)}
                     onChange={(e) => {
                         if (Array.isArray(e)) {

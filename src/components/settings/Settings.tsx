@@ -32,7 +32,7 @@ export default function Settings(): ReactElement {
                     <p className='text-lg font-bold'>
                         {t('settings.title')}
                     </p>
-                    <p className='text-sm text-altwhite'>
+                    <p className='text-sm text-dynamic'>
                         v{version}
                     </p>
                 </div>

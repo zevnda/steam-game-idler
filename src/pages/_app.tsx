@@ -26,7 +26,7 @@ export default function App({ Component, pageProps }: AppProps): ReactElement {
                         closeIcon: (<TbX size={16} className='text-content' />),
                         classNames: {
                             base: ['bg-titlebar border-border cursor-default'],
-                            description: ['text-content text-xs font-medium'],
+                            description: ['text-content text-sm font-medium'],
                             closeButton: ['opacity-100 absolute right-1 top-1 hover:bg-titlehover']
                         }
                     }}

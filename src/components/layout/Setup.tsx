@@ -66,7 +66,7 @@ export default function Setup(): ReactElement {
                         }}
                     >
                         <div className='p-6'>
-                            <p className='text-2xl'>
+                            <p className='text-2xl font-bold'>
                                 {t('setup.welcome')}
                             </p>
                         </div>
@@ -75,7 +75,7 @@ export default function Setup(): ReactElement {
                                 <Spinner variant='simple' />
                             ) : steamUsers.length > 0 ? (
                                 <>
-                                    <p className='text-sm mb-2'>
+                                    <p className='mb-2'>
                                         {t('setup.chooseAccount')}
                                     </p>
                                     <div className={cn(
@@ -98,10 +98,10 @@ export default function Setup(): ReactElement {
                                                         className='w-[40px] h-[40px] rounded-full group-hover:scale-110 duration-200'
                                                     />
                                                     <div className='w-[140px]'>
-                                                        <p className='font-medium truncate'>
+                                                        <p className='font-bold truncate'>
                                                             {item?.personaName}
                                                         </p>
-                                                        <p className='text-xs truncate'>
+                                                        <p className='text-sm text-altwhite truncate'>
                                                             {item?.steamId}
                                                         </p>
                                                     </div>
@@ -127,7 +127,7 @@ export default function Setup(): ReactElement {
                                 </>
                             ) : (
                                 <div className='flex flex-col items-center border border-border/40 w-full rounded-lg p-4'>
-                                    <p className='text-sm'>
+                                    <p>
                                         {t('setup.noUsers')}
                                     </p>
                                     <ExtLink href='https://steamgameidler.vercel.app/faq#error-messages:~:text=No%20Steam%20users%20found'>
@@ -144,7 +144,7 @@ export default function Setup(): ReactElement {
                             'border-border/40 rounded-br-lg rounded-bl-lg mt-4'
                         )}>
                             <ExtLink href='https://steamgameidler.vercel.app/get-started/how-to-sign-in'>
-                                <p className='text-xs text-content font-semibold cursor-pointer'>
+                                <p className='text-sm font-semibold cursor-pointer text-link hover:text-linkhover'>
                                     {t('setup.help')}
                                 </p>
                             </ExtLink>
