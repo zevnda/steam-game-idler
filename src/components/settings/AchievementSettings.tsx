@@ -12,8 +12,11 @@ export default function AchievementSettings(): ReactElement {
     const { sliderLabel, setSliderLabel } = useAchievementSettings();
 
     return (
-        <div className='flex flex-col gap-4 p-2'>
-            <div className='flex flex-col gap-4'>
+        <div className='relative flex flex-col gap-4'>
+            <div className='flex flex-col gap-4 border border-border rounded-lg p-3 bg-titlebar'>
+                <p className='font-bold'>
+                    {t('common.options')}
+                </p>
 
                 <SettingsCheckbox
                     type='achievementUnlocker'
@@ -39,14 +42,15 @@ export default function AchievementSettings(): ReactElement {
                         isDisabled={!userSettings?.achievementUnlocker?.schedule}
                         value={userSettings?.achievementUnlocker?.scheduleFrom}
                         size='sm'
-                        className='w-[80px]'
+                        className='w-[95px]'
                         classNames={{
                             inputWrapper: cn(
                                 'rounded-lg min-h-[25px] max-h-[25px] bg-input',
-                                'hover:bg-inputhover border border-header-border'
+                                'hover:bg-inputhover border border-header-border',
+                                'focus-within:!bg-inputhover'
                             ),
                             segment: ['!text-content'],
-                            input: ['text-xs'],
+                            input: ['text-sm'],
                         }}
                         onChange={(value) => handleScheduleChange(value, 'scheduleFrom', userSummary, setUserSettings)}
                     />
@@ -60,14 +64,15 @@ export default function AchievementSettings(): ReactElement {
                         isDisabled={!userSettings?.achievementUnlocker?.schedule}
                         value={userSettings?.achievementUnlocker?.scheduleTo}
                         size='sm'
-                        className='w-[80px]'
+                        className='w-[95px]'
                         classNames={{
                             inputWrapper: cn(
                                 'rounded-lg min-h-[25px] max-h-[25px] bg-input',
-                                'hover:bg-inputhover border border-header-border'
+                                'hover:bg-inputhover border border-header-border',
+                                'focus-within:!bg-inputhover'
                             ),
                             segment: ['!text-content'],
-                            input: ['text-xs'],
+                            input: ['text-sm'],
                         }}
                         onChange={(value) => handleScheduleChange(value, 'scheduleTo', userSummary, setUserSettings)}
                     />
@@ -75,19 +80,21 @@ export default function AchievementSettings(): ReactElement {
 
                 <Slider
                     label={
-                        <p className='text-xs'>
+                        <p className='text-sm'>
                             {sliderLabel}
                         </p>
                     }
-                    size='sm'
-                    step={5}
-                    minValue={5}
+                    size='md'
+                    step={1}
+                    minValue={1}
                     maxValue={720}
                     defaultValue={userSettings?.achievementUnlocker?.interval}
                     formatOptions={{ style: 'currency', currency: 'USD' }}
                     hideValue
                     className='w-[500px] mt-2'
-                    classNames={{ value: ['text-xs'] }}
+                    classNames={{
+                        value: 'text-xs',
+                    }}
                     onChangeEnd={(e) => handleSliderChange(e, userSummary, setUserSettings)}
                     onChange={(e) => {
                         if (Array.isArray(e)) {

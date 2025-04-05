@@ -113,10 +113,10 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
                     list.slice(0, visibleGames).length >= 21 ? 'pr-4' : 'pr-2'
                 )}>
                     <div className='flex flex-col'>
-                        <p className='text-lg font-semibold'>
+                        <p className='text-lg font-bold'>
                             {listType.title}
                         </p>
-                        <p className='text-xs text-altwhite'>
+                        <p className='text-sm text-altwhite'>
                             {listType.description}
                         </p>
                     </div>
@@ -148,7 +148,7 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
 
                 <DndContext onDragEnd={handleDragEnd}>
                     <SortableContext items={list.map(item => item.appid)}>
-                        <div className='grid grid-cols-5 2xl:grid-cols-7 gap-4 p-4 mt-[52px]'>
+                        <div className='grid grid-cols-5 2xl:grid-cols-7 gap-4 p-4 mt-[56px]'>
                             {list && list.slice(0, visibleGames).map((item) => (
                                 <SortableGameCard
                                     key={item.appid}

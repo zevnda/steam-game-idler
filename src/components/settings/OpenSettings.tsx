@@ -26,7 +26,7 @@ export default function OpenSettings(): ReactElement {
     };
 
     return (
-        <CustomTooltip content={t('settings.openSettings')}>
+        <CustomTooltip content={t('achievementManager.file')}>
             <Button
                 isIconOnly
                 size='sm'

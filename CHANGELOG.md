@@ -1,3 +1,11 @@
+<!-- 1.10.1 -->
+
+- Reworked the layout of the settings page
+- Fixed a few inconsistencies with the new theme styles
+- Improved the contrast of inputs and select menus in different areas of the UI
+
+### Changes in v1.10.1
+
 <!-- 1.10.0 -->
 
 ### Changes in v1.10.0

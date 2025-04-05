@@ -21,43 +21,45 @@ export default function Settings(): ReactElement {
             'w-calc min-h-calc max-h-calc bg-base overflow-y-auto',
             'rounded-tl-xl border-t border-l border-border'
         )}>
-            <div className='p-4 pt-2'>
-                <div className='flex justify-between items-center'>
-                    <div className='flex flex-col'>
-                        <p className='text-lg font-semibold'>
-                            {t('settings.title')}
-                        </p>
-                        <p className='text-xs text-altwhite'>
-                            v{version}
-                        </p>
-                    </div>
-
-                    <div className='flex items-center gap-2'>
-                        <OpenSettings />
-                        <ExportSettings />
-                        <ResetSettings setRefreshKey={setRefreshKey} />
-                        <ClearData />
-                    </div>
+            <div className={cn(
+                'fixed flex justify-between items-center w-[calc(100svw-80px)]',
+                'py-2 pl-4 bg-base bg-opacity-90 backdrop-blur-md z-10 rounded-tl-xl'
+            )}>
+                <div className='flex flex-col'>
+                    <p className='text-lg font-bold'>
+                        {t('settings.title')}
+                    </p>
+                    <p className='text-sm text-altwhite'>
+                        v{version}
+                    </p>
                 </div>
 
+                <div className='flex items-center gap-2'>
+                    <OpenSettings />
+                    <ExportSettings />
+                    <ResetSettings setRefreshKey={setRefreshKey} />
+                    <ClearData />
+                </div>
+            </div>
+
+            <div className='p-4 pt-2 mt-[60px]'>
                 <Tabs
+                    isVertical
                     size='sm'
                     aria-label='Settings tabs'
                     color='default'
                     variant='solid'
-                    className='mt-6'
                     classNames={{
-                        base: 'bg-titlebar rounded-t-lg p-0 border-t border-l border-r border-border',
-                        tabList: 'gap-0 w-full bg-transparent',
+                        base: 'fixed bg-titlebar rounded-lg p-0 border border-border',
+                        tabList: 'gap-0 w-full bg-transparent ',
                         tab: cn(
-                            'px-6 py-3 rounded-none bg-transparent px-4',
-                            'data-[hover-unselected=true]:bg-gray-500',
-                            'data-[hover-unselected=true]:bg-opacity-5',
-                            'data-[hover-unselected=true]:opacity-100'
+                            'data-[hover-unselected=true]:!bg-tab-hover',
+                            'data-[hover-unselected=true]:opacity-100',
+                            'rounded-lg bg-transparent justify-start',
                         ),
                         tabContent: 'text-sm group-data-[selected=true]:text-content text-altwhite',
-                        cursor: '!bg-tab-select w-full rounded',
-                        panel: 'bg-titlebar rounded-lg rounded-tl-none border border-border',
+                        cursor: '!bg-tab-select w-full',
+                        panel: 'w-full ml-[184px] mr-0 pr-0',
                     }}
                 >
                     <Tab key='general' title={t('settings.general.title')}>

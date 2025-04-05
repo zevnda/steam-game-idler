@@ -34,7 +34,7 @@
 }
 
 .oled {
-    --sb-thumb: #1d1d1d;
+    --sb-thumb: #0c0c0c;
     --sb-track: #080808;
     --code: #2d2d2d;
     --indicator: #2f4a9e;

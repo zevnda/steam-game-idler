@@ -36,7 +36,7 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement => {
                 'flex justify-between items-center gap-2',
                 'hover:bg-modalbody-hover cursor-pointer px-3 py-1',
                 'duration-150 select-none',
-                list.some(game => game.appid === item.appid) && 'opacity-50 dark:opacity-30'
+                list.some(game => game.appid === item.appid) && 'opacity-50'
             )}
             onClick={() => list.some(game => game.appid === item.appid) ? handleRemoveGame(item) : handleAddGame(item)}
         >
