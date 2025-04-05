@@ -13,7 +13,7 @@ export default function ErrorToast({ message, href }: ErrorToastProps): ReactEle
 
     return (
         <div className='flex flex-col gap-1'>
-            <p className='text-xs text-content'>
+            <p className='text-sm text-content'>
                 {message}
             </p>
             <ExtLink href={href}>

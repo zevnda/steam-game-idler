@@ -18,21 +18,20 @@ export default function Private({ setRefreshKey }: PrivateProps): ReactElement {
     return (
         <div className='flex justify-center items-center w-calc h-full'>
             <div className={cn(
-                'flex justify-center items-center flex-col border',
-                'border-border min-w-[400px] max-w-[400px] rounded-lg',
-                'shadow-lg'
+                'flex justify-center items-center flex-col border bg-titlebar',
+                'border-border w-[50%] rounded-lg',
             )}>
                 <div className='flex items-center flex-col gap-2 p-6'>
-                    <p className='text-4xl'>
+                    <p className='text-4xl font-bold'>
                         Uh-oh!
                     </p>
                 </div>
                 <div className='flex justify-center items-center flex-col pb-6'>
                     <div className='flex justify-center items-center flex-col'>
-                        <p className='text-center text-sm px-3'>
+                        <p className='text-center font-bold px-3'>
                             {t('gamesList.private.message')}
                         </p>
-                        <ul className='text-center text-xs mt-4'>
+                        <ul className='text-center text-sm mt-4'>
                             <li>
                                 {t('gamesList.private.reason.1')}
                             </li>

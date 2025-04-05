@@ -63,14 +63,14 @@ ${errorInfo && errorInfo.componentStack}
                     )}
                         data-tauri-drag-region
                     >
-                        <p className='text-sm'>
+                        <p className='text-content font-bold'>
                             Uh-oh!
                         </p>
                     </div>
 
-                    <div className='flex flex-col items-center justify-center gap-2 h-full'>
+                    <div className='flex flex-col items-center justify-center gap-2 h-full text-content'>
                         <div className={cn(
-                            'flex flex-col justify-center gap-4 h-[65%] w-[70%]',
+                            'flex flex-col justify-center gap-4 h-[65%] w-[80%]',
                             'bg-container rounded-lg border border-border p-4'
                         )}>
                             <p className='text-sm'>
@@ -78,17 +78,21 @@ ${errorInfo && errorInfo.componentStack}
                             </p>
 
                             <div className='flex flex-col'>
-                                <p>Error</p>
+                                <p className='font-bold'>
+                                    Error
+                                </p>
                                 <p className='text-sm font-mono text-danger font-semibold'>
                                     {error && String(error).replace('Error: ', '')}
                                 </p>
                             </div>
 
                             <div className='flex flex-col overflow-hidden'>
-                                <p>Stack</p>
+                                <p className='font-bold'>
+                                    Stack
+                                </p>
                                 <div className='bg-base border border-border rounded-lg h-full w-full p-1 overflow-hidden'>
                                     <div className='overflow-y-scroll h-full'>
-                                        <pre className='text-xs font-semibold text-left text-wrap p-1'>
+                                        <pre className='text-xs text-altwhite font-semibold text-left text-wrap p-1'>
                                             {errorInfo && errorInfo.componentStack}
                                         </pre>
                                     </div>
