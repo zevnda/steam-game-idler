@@ -40,7 +40,7 @@ export default function GamesList(): ReactElement {
             )}
 
             {!gamesContext.isLoading ? (
-                <div className='grid grid-cols-5 2xl:grid-cols-7 gap-4 p-4 mt-[52px]'>
+                <div className='grid grid-cols-5 2xl:grid-cols-7 gap-4 p-4 mt-[56px]'>
                     {gamesContext.filteredGames && gamesContext.filteredGames.slice(0, gamesContext.visibleGames.length).map((item) => (
                         <GameCard
                             key={item.appid}

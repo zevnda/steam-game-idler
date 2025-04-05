@@ -55,7 +55,7 @@ export default function Setup(): ReactElement {
                         className={cn(
                             'flex backdrop-blur-md bg-base/20 justify-center items-center',
                             'flex-col border border-border/40 min-w-[400px] max-w-[400px]',
-                            'rounded-lg shadow-lg dark:shadow-none'
+                            'rounded-lg shadow-lg'
                         )}
                         initial={{ y: 500 }}
                         animate={{ y: -30 }}

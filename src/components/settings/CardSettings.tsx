@@ -15,97 +15,101 @@ export default function CardSettings(): ReactElement {
     const cardSettings = useCardSettings();
 
     return (
-        <div className='relative flex flex-col gap-4 p-2'>
+        <div className='relative flex flex-col gap-4'>
             {cardSettings.cardFarmingUser && (
-                <div className='absolute top-0 right-2'>
-                    <p className='text-xs text-altwhite mb-0.5'>
-                        {t('settings.cardFarming.userSummary')}
-                    </p>
-                    <div className='border border-border rounded-lg bg-input hover:bg-inputhover'>
-                        <div className='flex flex-col items-start gap-2 h-full p-2 group'>
-                            <ExtLink href={`https://steamcommunity.com/profiles/${cardSettings.cardFarmingUser.steamId}/badges`}>
-                                <div className='flex gap-2 items-center'>
-                                    <Image
-                                        src={cardSettings.cardFarmingUser.avatar}
-                                        height={40}
-                                        width={40}
-                                        alt='user avatar'
-                                        className='w-[40px] h-[40px] rounded-full group-hover:scale-110 duration-200'
-                                        priority
-                                    />
-                                    <div className='w-[140px]'>
-                                        <p className='font-medium truncate'>
-                                            {cardSettings.cardFarmingUser.personaName}
-                                        </p>
-                                        <p className='text-xs text-altwhite truncate'>
-                                            {cardSettings.cardFarmingUser.steamId}
-                                        </p>
-                                    </div>
-                                </div>
-                            </ExtLink>
-                            <div className='flex flex-col bg-container w-full border border-border rounded-lg p-2'>
-                                {!cardSettings.isCFDataLoading ? (
-                                    <>
-                                        <p className='text-xs truncate'>
+                <div className='border border-border rounded-lg bg-titlebar w-fit'>
+                    <div className='flex justify-between items-start gap-2 h-full p-2'>
+                        <div className='flex gap-2 items-center'>
+                            <Image
+                                src={cardSettings.cardFarmingUser.avatar}
+                                height={40}
+                                width={40}
+                                alt='user avatar'
+                                className='w-[40px] h-[40px] rounded-full'
+                                priority
+                            />
+                            <div className='w-[150px]'>
+                                <p className='font-bold truncate'>
+                                    {cardSettings.cardFarmingUser.personaName}
+                                </p>
+                                <p className='text-sm text-altwhite truncate'>
+                                    {cardSettings.cardFarmingUser.steamId}
+                                </p>
+                            </div>
+                        </div>
+                        <div className='flex flex-col bg-input border border-border rounded-lg p-2'>
+                            {!cardSettings.isCFDataLoading ? (
+                                <>
+                                    <div className='flex justify-between items-center gap-6'>
+                                        <p className='text-sm truncate'>
                                             {t('settings.cardFarming.gamesWithDrops')}
-                                            <span className='text-altwhite ml-1'>
+                                            <span className='text-dynamic ml-1'>
                                                 {userSettings.cardFarming.gamesWithDrops || 0}
                                             </span>
                                         </p>
-                                        <p className='text-xs truncate'>
+                                        <p className='text-sm truncate'>
                                             {t('settings.cardFarming.totalDrops')}
-                                            <span className='text-altwhite ml-1'>
+                                            <span className='text-dynamic ml-1'>
                                                 {userSettings.cardFarming.totalDropsRemaining || 0}
                                             </span>
                                         </p>
-                                        <div className='flex justify-center items-center mt-2'>
-                                            <div
-                                                className={cn(
-                                                    'flex justify-center items-center gap-1 cursor-pointer',
-                                                    'w-fit text-altwhite hover:text-content'
-                                                )}
-                                                onClick={() => fetchGamesWithDropsData(
-                                                    userSummary,
-                                                    cardSettings.sidValue,
-                                                    cardSettings.slsValue,
-                                                    cardSettings?.smaValue,
-                                                    cardSettings.setIsCFDataLoading,
-                                                    setUserSettings
-                                                )}
-                                            >
-                                                <p className='text-xs'>
-                                                    Refresh
-                                                </p>
-                                                <TbRefresh size={14} />
-                                            </div>
-                                        </div>
-                                    </>
-                                ) : (
-                                    <div className='flex items-center justify-center gap-2'>
-                                        <Spinner size='sm' />
-                                        <p className='text-xs text-altwhite'>Loading data..</p>
                                     </div>
-                                )}
-                            </div>
+                                    <div className='flex justify-center items-center mt-2'>
+                                        <div
+                                            className={cn(
+                                                'flex justify-center items-center gap-1 cursor-pointer',
+                                                'w-fit text-altwhite hover:text-content'
+                                            )}
+                                            onClick={() => fetchGamesWithDropsData(
+                                                userSummary,
+                                                cardSettings.sidValue,
+                                                cardSettings.slsValue,
+                                                cardSettings?.smaValue,
+                                                cardSettings.setIsCFDataLoading,
+                                                setUserSettings
+                                            )}
+                                        >
+                                            <p className='text-xs'>
+                                                Refresh
+                                            </p>
+                                            <TbRefresh size={14} />
+                                        </div>
+                                    </div>
+                                </>
+                            ) : (
+                                <div className='flex items-center justify-center gap-2'>
+                                    <Spinner size='sm' />
+                                    <p className='text-xs text-altwhite'>Loading data..</p>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
             )}
 
-            <SettingsCheckbox
-                type='cardFarming'
-                name='listGames'
-                content={t('settings.cardFarming.listGames')}
-            />
+            <div className='flex flex-col gap-4 border border-border rounded-lg p-3 bg-titlebar'>
+                <p className='font-bold'>
+                    {t('common.options')}
+                </p>
 
-            <SettingsCheckbox
-                type='cardFarming'
-                name='allGames'
-                content={t('settings.cardFarming.allGames')}
-            />
+                <SettingsCheckbox
+                    type='cardFarming'
+                    name='listGames'
+                    content={t('settings.cardFarming.listGames')}
+                />
 
-            <div className='w-full'>
-                <p className='text-xs mt-2'>
+                <SettingsCheckbox
+                    type='cardFarming'
+                    name='allGames'
+                    content={t('settings.cardFarming.allGames')}
+                />
+            </div>
+
+            <div className='border border-border rounded-lg p-3 bg-titlebar'>
+                <p className='font-bold'>
+                    {t('settings.cardFarming.steamCredentialsTitle')}
+                </p>
+                <p className='text-xs text-altwhite'>
                     <Trans i18nKey='settings.cardFarming.steamCredentials'>
                         Steam credentials are required in order to use the Card Farming feature.&nbsp;
                         <ExtLink
@@ -117,8 +121,9 @@ export default function CardSettings(): ReactElement {
                 </p>
                 <div className='flex flex-col mt-4'>
                     <div className='flex flex-col gap-2'>
-                        <div className='flex gap-6 max-w-[650px] flex-wrap'>
+                        <div className='flex gap-6 flex-wrap'>
                             <Input
+                                isRequired
                                 size='sm'
                                 label='sessionid'
                                 labelPlacement='outside'
@@ -129,7 +134,7 @@ export default function CardSettings(): ReactElement {
                                         'bg-input border border-border hover:!bg-inputhover',
                                         'rounded-lg group-data-[focus-within=true]:!bg-inputhover'
                                     ),
-                                    label: ['!text-content'],
+                                    label: ['!text-content font-bold'],
                                     input: ['!text-content placeholder:text-altwhite/50']
                                 }}
                                 value={cardSettings.sidValue}
@@ -137,6 +142,7 @@ export default function CardSettings(): ReactElement {
                                 type='password'
                             />
                             <Input
+                                isRequired
                                 size='sm'
                                 label='steamLoginSecure'
                                 labelPlacement='outside'
@@ -147,7 +153,7 @@ export default function CardSettings(): ReactElement {
                                         'bg-input border border-border hover:!bg-inputhover',
                                         'rounded-lg group-data-[focus-within=true]:!bg-inputhover'
                                     ),
-                                    label: ['!text-content'],
+                                    label: ['!text-content font-bold'],
                                     input: ['!text-content placeholder:text-altwhite/50']
                                 }}
                                 value={cardSettings.slsValue}
@@ -165,7 +171,7 @@ export default function CardSettings(): ReactElement {
                                         'bg-input border border-border hover:!bg-inputhover',
                                         'rounded-lg group-data-[focus-within=true]:!bg-inputhover'
                                     ),
-                                    label: ['!text-content'],
+                                    label: ['!text-content font-bold'],
                                     input: ['!text-content placeholder:text-altwhite/50']
                                 }}
                                 value={cardSettings.smaValue}

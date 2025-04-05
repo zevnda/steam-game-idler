@@ -64,7 +64,7 @@ export default function SettingsCheckbox({ type, name, content }: SettingsCheckb
                 }}
             >
                 <div className='flex items-center gap-1'>
-                    <p className='text-xs text-content'>
+                    <p className='text-sm text-content'>
                         {content}
                     </p>
                 </div>
@@ -88,7 +88,7 @@ export default function SettingsCheckbox({ type, name, content }: SettingsCheckb
                 }}
             >
                 <div className='flex items-center gap-1'>
-                    <p className='text-xs text-content'>
+                    <p className='text-sm text-content'>
                         {content}
                     </p>
                 </div>
@@ -119,7 +119,7 @@ export default function SettingsCheckbox({ type, name, content }: SettingsCheckb
             }}
         >
             <div className='flex items-center gap-1'>
-                <p className='text-xs text-content'>
+                <p className='text-sm text-content'>
                     {content}
                 </p>
             </div>

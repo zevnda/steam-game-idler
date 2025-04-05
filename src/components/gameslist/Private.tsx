@@ -20,7 +20,7 @@ export default function Private({ setRefreshKey }: PrivateProps): ReactElement {
             <div className={cn(
                 'flex justify-center items-center flex-col border',
                 'border-border min-w-[400px] max-w-[400px] rounded-lg',
-                'shadow-lg dark:shadow-none'
+                'shadow-lg'
             )}>
                 <div className='flex items-center flex-col gap-2 p-6'>
                     <p className='text-4xl'>

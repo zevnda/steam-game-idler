@@ -65,13 +65,13 @@ export default function PageHeader({ protectedAchievements, protectedStatistics 
                                 </Trans>
                             </p>
                         }
-                        startContent={<TbAlertHexagonFilled fontSize={22} className='text-content' />}
+                        startContent={<TbAlertHexagonFilled fontSize={22} className='text-warning' />}
                         classNames={{
                             base: cn(
                                 'h-10 py-1 flex justify-center items-center gap-0',
-                                'rounded-lg bg-dynamic/50 text-content border border-border'
+                                'rounded-lg bg-alert text-content border border-border'
                             ),
-                            title: ['text-xs'],
+                            title: ['text-sm'],
                         }}
                     />
                 </div>

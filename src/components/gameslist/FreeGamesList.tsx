@@ -29,11 +29,11 @@ export default function FreeGamesList(): ReactElement {
                 <div className='flex justify-between items-center pb-3'>
                     <div className='flex items-center gap-1'>
                         <div className='flex flex-col justify-center'>
-                            <p className='text-lg font-semibold'>
+                            <p className='text-lg font-bold'>
                                 {t('freeGames.title')}
                             </p>
                             <div className='flex gap-1'>
-                                <p className='text-xs text-altwhite'>
+                                <p className='text-sm text-altwhite'>
                                     {t('common.showing', { count: freeGamesList.length, total: freeGamesList.length })}
                                 </p>
                             </div>
@@ -42,7 +42,7 @@ export default function FreeGamesList(): ReactElement {
                 </div>
             </div>
 
-            <div className='grid grid-cols-5 2xl:grid-cols-7 gap-4 p-4 pt-2 mt-[60px]'>
+            <div className='grid grid-cols-5 2xl:grid-cols-7 gap-4 p-4 pt-2 mt-[64px]'>
                 {freeGamesList && freeGamesList.map((item: Game) => (
                     <div key={item.appid} className='relative group'>
                         <div className={cn(

@@ -60,11 +60,12 @@ export default function Achievements(): ReactElement {
                             base: 'bg-titlebar rounded-lg p-0 border border-border ml-5',
                             tabList: 'gap-0 w-full bg-transparent',
                             tab: cn(
-                                'rounded-none bg-transparent data-[hover-unselected=true]:bg-gray-500',
-                                'data-[hover-unselected=true]:bg-opacity-5 data-[hover-unselected=true]:opacity-100'
+                                'data-[hover-unselected=true]:!bg-tab-hover',
+                                'data-[hover-unselected=true]:opacity-100',
+                                'rounded-lg bg-transparent'
                             ),
                             tabContent: 'text-sm group-data-[selected=true]:text-content text-altwhite',
-                            cursor: 'bg-tab-select w-full',
+                            cursor: '!bg-tab-select w-full',
                         }}
                         onSelectionChange={(e) => setCurrentTab(e as CurrentTabType)}
                     >

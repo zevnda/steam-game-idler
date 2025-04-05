@@ -43,11 +43,11 @@ export default function PageHeader({
             <div className='flex justify-between items-center pb-3'>
                 <div className='flex items-center gap-1'>
                     <div className='flex flex-col justify-center'>
-                        <p className='text-lg font-semibold'>
+                        <p className='text-lg font-bold'>
                             {t('gamesList.title')}
                         </p>
                         <div className='flex gap-1'>
-                            <p className='text-xs text-altwhite'>
+                            <p className='text-sm text-altwhite'>
                                 {t('common.showing', { count: visibleGames.length, total: filteredGames.length })}
                             </p>
                             <div

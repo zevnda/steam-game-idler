@@ -100,7 +100,7 @@ export default function Notifications(): ReactElement {
                                     <div className='flex justify-end w-full'>
                                         <p
                                             className={cn(
-                                                'text-xs text-altwhite hover:text-content dark:hover:text-offwhite',
+                                                'text-xs text-altwhite hover:text-content',
                                                 'font-semibold my-0.5 cursor-pointer duration-100'
                                             )}
                                             onClick={() => markAllAsSeen(notifications, setUnseenNotifications)}
@@ -140,7 +140,7 @@ export default function Notifications(): ReactElement {
                             </div>
                             {notifications.length !== 0 && (
                                 <div className={cn(
-                                    'flex items-center h-4 rounded-b-xl px-6 border-t',
+                                    'flex items-center h-8 rounded-b-xl px-6 border-t',
                                     'border-border sticky bottom-0 bg-modalfooter z-[999] cursor-default'
                                 )} />
                             )}

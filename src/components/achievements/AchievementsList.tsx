@@ -64,7 +64,7 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
     return (
         <div style={style} className='grid grid-cols-1 pb-4 px-4'>
             <div className='border border-border rounded-lg shadow-sm'>
-                <div className='flex items-center p-3 bg-titlebar dark:bg-[#1a1a1a] rounded-t-lg'>
+                <div className='flex items-center p-3 bg-titlebar rounded-t-lg'>
                     <div className='w-10 h-10 flex items-center justify-center'>
                         <Image
                             className='rounded-full mr-3'
@@ -107,12 +107,12 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
                             achieved ? t('achievementManager.achievements.lock') : t('achievementManager.achievements.unlock')}
                     </Button>
                 </div>
-                <div className='p-1 bg-titlebar dark:bg-[#1a1a1a] select-none rounded-b-lg'>
+                <div className='p-1 bg-titlebar select-none rounded-b-lg'>
                     <div className='w-full bg-titlehover rounded-full h-3.5 relative'>
                         <div className='bg-dynamic/40 h-3.5 rounded-full flex items-center' style={{ width: `${percent}%`, position: 'relative' }} />
                         {percent !== undefined && (
                             <p className={cn(
-                                'text-[11px] text-button-text dark:text-offwhite absolute',
+                                'text-[11px] text-button-text  absolute',
                                 'inset-0 flex items-center justify-center mix-blend-difference'
                             )}>
                                 {percent.toFixed(1)}%

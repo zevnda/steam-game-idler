@@ -1,6 +1,11 @@
-import { GeistSans } from 'geist/font/sans';
+import { Inter } from 'next/font/google';
 import Head from 'next/head';
 import type { ReactElement, ReactNode } from 'react';
+
+const inter = Inter({
+    subsets: ['latin'],
+    variable: '--font-inter',
+});
 
 export default function Layout({ children }: { children: ReactNode }): ReactElement {
     return (
@@ -9,7 +14,7 @@ export default function Layout({ children }: { children: ReactNode }): ReactElem
                 <title>Steam Game Idler</title>
             </Head>
 
-            <main className={`${GeistSans.className} h-full min-h-screen bg-base text-content`}>
+            <main className={`${inter.className} h-full min-h-screen bg-base text-content`}>
                 {children}
             </main>
         </>
