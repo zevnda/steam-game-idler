@@ -46,7 +46,7 @@ export default function AchievementSettings(): ReactElement {
                         classNames={{
                             inputWrapper: cn(
                                 'rounded-lg min-h-[25px] max-h-[25px] bg-input',
-                                'hover:bg-inputhover border border-header-border',
+                                'hover:bg-inputhover border border-border',
                                 'focus-within:!bg-inputhover'
                             ),
                             segment: ['!text-content'],
@@ -68,7 +68,7 @@ export default function AchievementSettings(): ReactElement {
                         classNames={{
                             inputWrapper: cn(
                                 'rounded-lg min-h-[25px] max-h-[25px] bg-input',
-                                'hover:bg-inputhover border border-header-border',
+                                'hover:bg-inputhover border border-border',
                                 'focus-within:!bg-inputhover'
                             ),
                             segment: ['!text-content'],
