@@ -90,6 +90,7 @@
     "settings.general.antiAway": "Prevent away status on Steam",
     "settings.general.freeGameNotifications": "Get notifications about free games",
     "settings.general.useBeta": "Enable beta features",
+    "settings.general.useBetaTooltip": "Beta features may be unstable, change unexpectedly, or be removed at any time. If you experience any issues when using a beta feature, please report it on GitHub",
     "settings.general.runAtStartup": "Run at startup",
     "settings.general.language": "Language",
     "settings.general.theme": "Theme",

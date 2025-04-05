@@ -91,7 +91,7 @@ export default function AchievementSettings(): ReactElement {
                     defaultValue={userSettings?.achievementUnlocker?.interval}
                     formatOptions={{ style: 'currency', currency: 'USD' }}
                     hideValue
-                    className='w-[500px] mt-2'
+                    className='mt-2'
                     onChangeEnd={(e) => handleSliderChange(e, userSummary, setUserSettings)}
                     onChange={(e) => {
                         if (Array.isArray(e)) {
