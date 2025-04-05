@@ -64,8 +64,7 @@ export default function GeneralSettings(): ReactElement {
                         content={t('settings.general.useBeta')}
                     />
                     <CustomTooltip
-                        content='Beta features may be unstable, change unexpectedly, or be removed at any time.
-                    If you experience any issues when using a beta feature, please report it on GitHub'
+                        content={t('settings.general.useBetaTooltip')}
                         placement='right'
                         className='w-[330px] text-sm'
                     >
