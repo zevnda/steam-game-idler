@@ -13,7 +13,7 @@ import type {
 } from '@/types';
 import { getAllGamesWithDrops } from '@/utils/automation';
 import { logEvent } from '@/utils/tasks';
-import { showAccountMismatchToast, showDangerToast, showIncorrectCredentialsToast, showSuccessToast, t } from '@/utils/toasts';
+import { showAccountMismatchToast, showDangerToast, showIncorrectCredentialsToast, showOutdatedCredentialsToast, showSuccessToast, t } from '@/utils/toasts';
 
 interface CardSettingsHook {
     sidValue: string;
@@ -135,6 +135,32 @@ export const fetchGamesWithDropsData = async (
 ): Promise<void> => {
     try {
         setIsCFDataLoading(true);
+
+        // Validate credentials
+        const validate = await invoke<InvokeValidateSession>('validate_session', {
+            sid: sidValue,
+            sls: slsValue,
+            sma: smaValue,
+            steamid: userSummary?.steamId
+        });
+
+        if (!validate.user) {
+            await invoke<InvokeSettings>('update_user_settings', {
+                steamId: userSummary?.steamId,
+                key: 'cardFarming.credentials',
+                value: null
+            });
+
+            const response = await invoke<InvokeSettings>('update_user_settings', {
+                steamId: userSummary?.steamId,
+                key: 'cardFarming.userSummary',
+                value: null
+            });
+
+            setUserSettings(response.settings);
+            setIsCFDataLoading(false);
+            return showOutdatedCredentialsToast();
+        }
 
         const getGamesWithDrops = await getAllGamesWithDrops(userSummary?.steamId, sidValue, slsValue, smaValue);
 
