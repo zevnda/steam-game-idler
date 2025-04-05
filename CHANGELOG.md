@@ -4,6 +4,8 @@
 - The title bar now dynamically displays the current active page and tab titles
 - Fixed a few inconsistent styles with the new themes
 - Improved the contrast of inputs and select menus in different areas of the UI for all themes
+- Improved the logic for getting games with card drops remaining
+  - Speeds things up for users who have a lot of pages of badges by breaking early when a specific condition is met
 
 ### Changes in v1.10.1
 

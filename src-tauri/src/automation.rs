@@ -141,6 +141,10 @@ pub async fn get_games_with_drops(
             }
         }
 
+        // Check if the badge 13 link is on this page - if so, we can stop after we've processed the page
+        let badge13_link = "/badges/13";
+        let should_stop = html.contains(&badge13_link);
+
         // Check if there are more pages to process
         let profile_paging_selector = Selector::parse(".profile_paging").unwrap();
         if let Some(paging_info) = document.select(&profile_paging_selector).next() {
@@ -156,6 +160,11 @@ pub async fn get_games_with_drops(
                 break;
             }
         } else {
+            break;
+        }
+
+        // If we found the badge 13 link on this page, we're done
+        if should_stop {
             break;
         }
 
