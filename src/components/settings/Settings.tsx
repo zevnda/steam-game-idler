@@ -1,7 +1,8 @@
 import { cn, Tab, Tabs } from '@heroui/react';
-import type { ReactElement } from 'react';
+import type { Key, ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { useNavigationContext } from '@/components/contexts/NavigationContext';
 import AchievementSettings from '@/components/settings/AchievementSettings';
 import CardSettings from '@/components/settings/CardSettings';
 import ClearData from '@/components/settings/ClearData';
@@ -11,10 +12,12 @@ import Logs from '@/components/settings/Logs';
 import OpenSettings from '@/components/settings/OpenSettings';
 import ResetSettings from '@/components/settings/ResetSettings';
 import useSettings from '@/hooks/settings/useSettings';
+import type { CurrentSettingsTabType } from '@/types';
 
 export default function Settings(): ReactElement {
     const { t } = useTranslation();
     const { version, refreshKey, setRefreshKey } = useSettings();
+    const { setCurrentSettingsTab } = useNavigationContext();
 
     return (
         <div key={refreshKey} className={cn(
@@ -49,6 +52,7 @@ export default function Settings(): ReactElement {
                     aria-label='Settings tabs'
                     color='default'
                     variant='solid'
+                    onSelectionChange={(key: Key) => setCurrentSettingsTab(key as CurrentSettingsTabType)}
                     classNames={{
                         base: 'fixed bg-titlebar rounded-lg p-0 border border-border',
                         tabList: 'gap-0 w-full bg-transparent ',

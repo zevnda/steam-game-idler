@@ -1,5 +1,6 @@
 <!-- 1.10.1 -->
 
+- Added dynamic titles to the header
 - Reworked the layout of the settings page
 - Fixed a few inconsistencies with the new theme styles
 - Improved the contrast of inputs and select menus in different areas of the UI
