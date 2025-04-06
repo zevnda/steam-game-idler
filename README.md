@@ -41,6 +41,7 @@ Contribute to this project by adding new translations or improving existing ones
 | [![fr-FR][fr-FR]][fr-FR-source] | [@Logiinx](https://github.com/Logiinx)                 | [source][fr-FR-source] |
 | [![de-DE][de-DE]][de-DE-source] | [@zevnda](https://github.com/zevnda)                   | [source][de-DE-source] |
 | [![it-IT][it-IT]][it-IT-source] | [@Maniots](https://github.com/Maniots)                 | [source][it-IT-source] |
+| [![pl-PL][pl-PL]][pl-PL-source] | [@danieo](https://github.com/danieo)                   | [source][pl-PL-source] |
 | [![pt-BR][pt-BR]][pt-BR-source] | [@Qjeh](https://github.com/Qjeh)                       | [source][pt-BR-source] |
 | [![ro-RO][ro-RO]][ro-RO-source] | [@SirDanielFTW](https://github.com/SirDanielFTW)       | [source][ro-RO-source] |
 | [![ru-TU][ru-RU]][ru-RU-source] | [@Jesewe](https://github.com/Jesewe)                   | [source][ru-RU-source] |
@@ -67,6 +68,9 @@ Copyright © 2024-2025 zevnda — **[GPL-3.0 License](./LICENSE)**
 
 [it-IT]: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapibase.vercel.app%2Fapi%2Fcrowdin%3FlanguageId%3Dit&query=%24.progress&suffix=%25&style=flat-square&label=Italian&color=%23985FCC
 [it-IT-source]: https://crowdin.com/editor/steam-game-idler/all/en-it
+
+[pl-PL]: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapibase.vercel.app%2Fapi%2Fcrowdin%3FlanguageId%3Dpl&query=%24.progress&suffix=%25&style=flat-square&label=Polish&color=%23985FCC
+[pl-PL-source]: https://crowdin.com/editor/steam-game-idler/all/en-pl
 
 [pt-BR]: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapibase.vercel.app%2Fapi%2Fcrowdin%3FlanguageId%3Dpt-BR&query=%24.progress&suffix=%25&style=flat-square&label=Portuguese%20%28BR%29&color=%23985FCC
 [pt-BR-source]: https://crowdin.com/editor/steam-game-idler/all/en-ptbr
