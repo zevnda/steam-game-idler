@@ -182,11 +182,11 @@ export default function CardSettings(): ReactElement {
                                 type='password'
                             />
                         </div>
-                        <div className='flex w-[200px] gap-2 mt-2'>
+                        <div className='flex gap-2 mt-2'>
                             <Button
                                 size='sm'
                                 isDisabled={cardSettings.hasCookies || !cardSettings.sidValue || !cardSettings.slsValue}
-                                className='font-semibold rounded-lg w-full bg-dynamic text-button-text'
+                                className='font-semibold rounded-lg bg-dynamic text-button-text'
                                 onPress={() => handleSave(
                                     cardSettings.sidValue,
                                     cardSettings.slsValue,
@@ -206,7 +206,7 @@ export default function CardSettings(): ReactElement {
                                 size='sm'
                                 color='danger'
                                 isDisabled={!cardSettings.hasCookies}
-                                className='font-semibold rounded-lg w-full'
+                                className='font-semibold rounded-lg'
                                 onPress={() => handleClear(
                                     cardSettings.setHasCookies,
                                     cardSettings.setSidValue,

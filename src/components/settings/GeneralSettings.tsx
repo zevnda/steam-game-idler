@@ -79,26 +79,30 @@ export default function GeneralSettings(): ReactElement {
                 />
             </div>
 
-            <div className='flex gap-6 border border-border rounded-lg p-3 bg-titlebar'>
-                <div className='flex flex-col gap-2'>
-                    <p className='font-bold'>
-                        {t('settings.general.language')}
-                    </p>
+            <div className='flex gap-4'>
+                <div className='flex gap-6 border border-border rounded-lg p-3 bg-titlebar w-full'>
+                    <div className='flex flex-col gap-2 w-full'>
+                        <p className='font-bold'>
+                            {t('settings.general.language')}
+                        </p>
 
-                    <LanguageSwitch />
+                        <LanguageSwitch />
 
-                    <span className='text-xs'>
-                        <ExtLink href='https://github.com/zevnda/steam-game-idler/discussions/148' className='text-link hover:text-linkhover'>
-                            {t('settings.general.helpTranslate')}
-                        </ExtLink>
-                    </span>
+                        <span className='text-xs'>
+                            <ExtLink href='https://github.com/zevnda/steam-game-idler/discussions/148' className='text-link hover:text-linkhover'>
+                                {t('settings.general.helpTranslate')}
+                            </ExtLink>
+                        </span>
+                    </div>
                 </div>
 
-                <div className='flex flex-col gap-2'>
-                    <p className='font-bold'>
-                        {t('settings.general.theme')}
-                    </p>
-                    <ThemeSwitch />
+                <div className='flex gap-6 border border-border rounded-lg p-3 bg-titlebar w-full'>
+                    <div className='flex flex-col gap-2 w-full'>
+                        <p className='font-bold'>
+                            {t('settings.general.theme')}
+                        </p>
+                        <ThemeSwitch />
+                    </div>
                 </div>
             </div>
 
@@ -142,7 +146,7 @@ export default function GeneralSettings(): ReactElement {
                             type='password'
                         />
                     </div>
-                    <div className='flex w-[200px] gap-2 mt-4'>
+                    <div className='flex gap-2 mt-4'>
                         <Button
                             size='sm'
                             isDisabled={hasKey || !keyValue}

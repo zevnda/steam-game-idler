@@ -104,7 +104,7 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
     return (
         <>
             <div className={cn(
-                'w-calc min-h-calc max-h-calc bg-base overflow-y-auto',
+                'w-calc min-h-calc max-h-calc bg-base overflow-y-auto select-none',
                 'overflow-x-hidden rounded-tl-xl border-t border-l border-border'
             )} ref={containerRef}>
                 <div className={cn(

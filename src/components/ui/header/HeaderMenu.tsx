@@ -140,9 +140,7 @@ export default function HeaderMenu(): ReactElement {
                             onPress={handleUpdate}
                             classNames={{ base: ['data-[hover=true]:!bg-titlehover data-[hover=true]:!text-content'] }}
                         >
-                            <p className='flex  w-full'>
-                                {t('menu.update')}
-                            </p>
+                            {t('menu.update')}
                         </DropdownItem>
                     </DropdownMenu>
                 </Dropdown>
