@@ -37,7 +37,7 @@ export default function PageHeader({
     return (
         <div className={cn(
             'fixed w-[calc(100vw-68px)] z-[50] bg-opacity-90',
-            'backdrop-blur-md bg-base pl-4 pt-2 rounded-tl-xl',
+            'backdrop-blur-md bg-base pl-4 pt-2 rounded-tl-xl select-none',
             filteredGames?.length >= 21 ? 'pr-4' : 'pr-2'
         )}>
             <div className='flex justify-between items-center pb-3'>

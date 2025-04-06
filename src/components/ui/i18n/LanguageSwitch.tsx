@@ -55,11 +55,13 @@ export default function LanguageSwitch(): ReactElement | null {
             radius='none'
             startContent={<TbLanguage />}
             items={languages}
-            className='w-[205px]'
             classNames={{
                 listbox: ['p-0'],
                 value: ['text-sm !text-content'],
-                trigger: ['bg-input border border-border data-[hover=true]:!bg-inputhover data-[open=true]:!bg-inputhover duration-100 rounded-lg'],
+                trigger: [
+                    'bg-input border border-border duration-100 rounded-lg',
+                    'data-[hover=true]:!bg-inputhover data-[open=true]:!bg-inputhover'
+                ],
                 popoverContent: ['bg-titlebar border border-border rounded-lg justify-start !text-content'],
             }}
             defaultSelectedKeys={[currentLanguage]}

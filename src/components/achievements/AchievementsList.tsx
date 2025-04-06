@@ -94,7 +94,7 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
                         size='sm'
                         isDisabled={protectedAchievement}
                         className={cn(
-                            'font-semibold rounded-lg text-button-text w-24',
+                            'font-semibold rounded-lg text-button-text',
                             protectedAchievement ? 'bg-warning' : achieved ? 'bg-danger' : 'bg-dynamic'
                         )}
                         onPress={handleToggle}
