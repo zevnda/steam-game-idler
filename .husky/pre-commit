@@ -1,7 +1,12 @@
 branch="$(git rev-parse --abbrev-ref HEAD)"
 if [ "$branch" = "main" ] || [ "$branch" = "master" ]; then
-  echo "You can't commit directly to $branch"
-  exit 1
+  if [ "$ALLOW_MAIN_COMMIT" != "1" ]; then
+    echo "You can't commit directly to $branch"
+    echo "To bypass this check, run: $env:ALLOW_MAIN_COMMIT=1; git commit -m \"your message\""
+    exit 1
+  else
+    echo "WARNING: Bypassing branch protection for $branch"
+  fi
 fi
 
 npx lint-staged
