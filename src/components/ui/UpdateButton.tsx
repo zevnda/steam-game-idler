@@ -1,56 +1,58 @@
-import { Divider, Spinner } from '@heroui/react';
-import { invoke } from '@tauri-apps/api/core';
-import { relaunch } from '@tauri-apps/plugin-process';
-import { check } from '@tauri-apps/plugin-updater';
-import { useState } from 'react';
-import type { ReactElement } from 'react';
-import { useTranslation } from 'react-i18next';
-import { TbCircleArrowDown } from 'react-icons/tb';
+import type { ReactElement } from 'react'
 
-import CustomTooltip from '@/components/ui/CustomTooltip';
-import { logEvent } from '@/utils/tasks';
-import { showDangerToast } from '@/utils/toasts';
+import { invoke } from '@tauri-apps/api/core'
+import { relaunch } from '@tauri-apps/plugin-process'
+import { check } from '@tauri-apps/plugin-updater'
+
+import { Divider, Spinner } from '@heroui/react'
+import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { TbCircleArrowDown } from 'react-icons/tb'
+
+import CustomTooltip from '@/components/ui/CustomTooltip'
+import { logEvent } from '@/utils/tasks'
+import { showDangerToast } from '@/utils/toasts'
 
 export default function UpdateButton(): ReactElement {
-    const { t } = useTranslation();
-    const [isLoading, setIsLoading] = useState(false);
+  const { t } = useTranslation()
+  const [isLoading, setIsLoading] = useState(false)
 
-    const handleUpdate = async (): Promise<void> => {
-        try {
-            setIsLoading(true);
-            const update = await check();
-            if (update?.available) {
-                localStorage.setItem('hasUpdated', 'true');
-                await invoke('kill_all_steamutil_processes');
-                await update.downloadAndInstall();
-                await relaunch();
-            } else {
-                setIsLoading(false);
-            }
-        } catch (error) {
-            setIsLoading(false);
-            showDangerToast(t('toast.checkUpdate.error'));
-            console.error('Error in (handleUpdate):', error);
-            logEvent(`Error in (handleUpdate): ${error}`);
-        }
-    };
+  const handleUpdate = async (): Promise<void> => {
+    try {
+      setIsLoading(true)
+      const update = await check()
+      if (update?.available) {
+        localStorage.setItem('hasUpdated', 'true')
+        await invoke('kill_all_steamutil_processes')
+        await update.downloadAndInstall()
+        await relaunch()
+      } else {
+        setIsLoading(false)
+      }
+    } catch (error) {
+      setIsLoading(false)
+      showDangerToast(t('toast.checkUpdate.error'))
+      console.error('Error in (handleUpdate):', error)
+      logEvent(`Error in (handleUpdate): ${error}`)
+    }
+  }
 
-    return (
-        <>
-            {isLoading ? (
-                <div className='flex items-center p-2 rounded-full'>
-                    <Spinner size='sm' variant='simple' />
-                </div>
-            ) : (
-                <CustomTooltip content='Update Ready!'>
-                    <div className='flex justify-center items-center cursor-pointer' onClick={handleUpdate}>
-                        <div className='flex items-center p-2 hover:bg-titlehover rounded-full'>
-                            <TbCircleArrowDown fontSize={20} className='text-success' />
-                        </div>
-                    </div>
-                </CustomTooltip>
-            )}
-            <Divider className='w-[1px] h-6 bg-border' />
-        </>
-    );
+  return (
+    <>
+      {isLoading ? (
+        <div className='flex items-center p-2 rounded-full'>
+          <Spinner size='sm' variant='simple' />
+        </div>
+      ) : (
+        <CustomTooltip content='Update Ready!'>
+          <div className='flex justify-center items-center cursor-pointer' onClick={handleUpdate}>
+            <div className='flex items-center p-2 hover:bg-titlehover rounded-full'>
+              <TbCircleArrowDown fontSize={20} className='text-success' />
+            </div>
+          </div>
+        </CustomTooltip>
+      )}
+      <Divider className='w-[1px] h-6 bg-border' />
+    </>
+  )
 }

@@ -1,47 +1,47 @@
 .list a {
-    color: #3c93f1;
+  color: #3c93f1;
 }
 
 .list a:hover {
-    color: #4b82bb;
+  color: #4b82bb;
 }
 
 .list ul {
-    display: flex;
-    flex-direction: column;
-    line-height: 30px;
-    list-style-type: disc;
+  display: flex;
+  flex-direction: column;
+  line-height: 30px;
+  list-style-type: disc;
 }
 
 .list ol {
-    display: flex;
-    flex-direction: column;
-    line-height: 30px;
-    list-style-type: decimal;
+  display: flex;
+  flex-direction: column;
+  line-height: 30px;
+  list-style-type: decimal;
 }
 
 .list li {
-    margin-left: 20px;
+  margin-left: 20px;
 }
 
 .list li li {
-    margin-left: 30px;
+  margin-left: 30px;
 }
 
 .list li ul {
-    list-style-type: circle;
+  list-style-type: circle;
 }
 
 .list li ul ul,
 .list li ol ul {
-    list-style-type: square;
+  list-style-type: square;
 }
 
 .list code {
-    background-color: var(--code);
-    padding-left: 4px;
-    padding-right: 4px;
-    padding-top: 1px;
-    padding-bottom: 1px;
-    border-radius: 2px;
+  background-color: var(--code);
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  border-radius: 2px;
 }

@@ -1,0 +1,10 @@
+.github
+.next
+libs
+node_modules
+out
+public
+pnpm-lock.yaml
+*.lock
+*.md
+*.mdx

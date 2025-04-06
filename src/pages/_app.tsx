@@ -1,38 +1,39 @@
-import { HeroUIProvider, ToastProvider } from '@heroui/react';
-import type { AppProps } from 'next/app';
-import type { ReactElement } from 'react';
-import { TbX } from 'react-icons/tb';
+import type { AppProps } from 'next/app'
+import type { ReactElement } from 'react'
 
-import { ThemeProvider } from '@/components/ui/theme/ThemeProvider';
+import { HeroUIProvider, ToastProvider } from '@heroui/react'
+import { TbX } from 'react-icons/tb'
 
-import '@/styles/globals.css';
+import { ThemeProvider } from '@/components/ui/theme/ThemeProvider'
+
+import '@/styles/globals.css'
 
 export default function App({ Component, pageProps }: AppProps): ReactElement {
-    return (
-        <ThemeProvider
-            attribute='class'
-            themes={['light', 'dark', 'slate', 'oled']}
-            enableSystem={true}
-            defaultTheme='dark'
-            disableTransitionOnChange
-        >
-            <HeroUIProvider>
-                <ToastProvider
-                    toastProps={{
-                        radius: 'sm',
-                        variant: 'flat',
-                        timeout: 3000,
-                        shouldShowTimeoutProgress: true,
-                        closeIcon: (<TbX size={16} className='text-content' />),
-                        classNames: {
-                            base: ['bg-titlebar border-border cursor-default'],
-                            description: ['text-content text-sm font-medium'],
-                            closeButton: ['opacity-100 absolute right-1 top-1 hover:bg-titlehover']
-                        }
-                    }}
-                />
-                <Component {...pageProps} />
-            </HeroUIProvider>
-        </ThemeProvider>
-    );
+  return (
+    <ThemeProvider
+      attribute='class'
+      themes={['light', 'dark', 'slate', 'oled']}
+      enableSystem={true}
+      defaultTheme='dark'
+      disableTransitionOnChange
+    >
+      <HeroUIProvider>
+        <ToastProvider
+          toastProps={{
+            radius: 'sm',
+            variant: 'flat',
+            timeout: 3000,
+            shouldShowTimeoutProgress: true,
+            closeIcon: <TbX size={16} className='text-content' />,
+            classNames: {
+              base: ['bg-titlebar border-border cursor-default'],
+              description: ['text-content text-sm font-medium'],
+              closeButton: ['opacity-100 absolute right-1 top-1 hover:bg-titlehover'],
+            },
+          }}
+        />
+        <Component {...pageProps} />
+      </HeroUIProvider>
+    </ThemeProvider>
+  )
 }

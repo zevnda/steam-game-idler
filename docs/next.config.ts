@@ -1,9 +1,9 @@
-import nextra from 'nextra';
+import nextra from 'nextra'
 
-const withNextra = nextra({});
+const withNextra = nextra({})
 
 export default withNextra({
-    images: {
-        remotePatterns: [],
-    },
-});
+  images: {
+    remotePatterns: [],
+  },
+})
