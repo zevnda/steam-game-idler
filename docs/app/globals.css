@@ -1,17 +1,17 @@
 @import 'tailwindcss';
 
 a {
-    text-decoration: none;
+  text-decoration: none;
 }
 
 ul {
-    margin-top: 0;
+  margin-top: 0;
 }
 
 ol {
-    margin-top: 0;
+  margin-top: 0;
 }
 
 sub {
-    bottom: 0.5em;
+  bottom: 0.5em;
 }

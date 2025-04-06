@@ -1,72 +1,72 @@
 [
-    {
-        "id": "20",
-        "title": "Help Translate SGI with Crowdin",
-        "message": "Steam Game Idler is now available for translation on Crowdin. Click to help translate SGI into your language",
-        "url": "https://github.com/zevnda/steam-game-idler/discussions/148",
-        "timestamp": "1743270423"
-    },
-    {
-        "id": "18",
-        "title": "[UPDATE] Account Mismatch Error",
-        "message": "You can enable Steam Client Beta Participation again. Click to read more",
-        "url": "https://github.com/zevnda/steam-game-idler/discussions/132",
-        "timestamp": "1742540247"
-    },
-    {
-        "id": "17",
-        "title": "Account Mismatch Error",
-        "message": "The Steam Client Beta Participation feature is causing this error. Click here to see how to fix it",
-        "url": "https://github.com/zevnda/steam-game-idler/discussions/132",
-        "timestamp": "1742406742"
-    },
-    {
-        "id": "16",
-        "title": "Feedback Poll - Game Settings",
-        "message": "Click to view the feedback poll and cast your vote",
-        "url": "https://github.com/zevnda/steam-game-idler/discussions/116",
-        "timestamp": "1741980154"
-    },
-    {
-        "id": "15",
-        "title": "Feedback Poll - API Key",
-        "message": "Click to view the feedback poll and cast your vote",
-        "url": "http://poll-maker.com/poll5426682x60fe4B28-161",
-        "timestamp": "1741306313"
-    },
-    {
-        "id": "14",
-        "title": "Beta v1.7.0-9",
-        "message": "New beta version available",
-        "url": "https://github.com/zevnda/steam-game-idler/releases/tag/1.7.0-beta.9",
-        "timestamp": "1738158677"
-    },
-    {
-        "id": "13",
-        "title": "Beta v1.7.0-8",
-        "message": "New beta version available",
-        "url": "https://github.com/zevnda/steam-game-idler/releases/tag/1.7.0-beta.8",
-        "timestamp": "1738100926"
-    },
-    {
-        "id": "12",
-        "title": "Beta v1.7.0-7",
-        "message": "New beta version available",
-        "url": "https://github.com/zevnda/steam-game-idler/releases/tag/1.7.0-beta.7",
-        "timestamp": "1738001994"
-    },
-    {
-        "id": "11",
-        "title": "Beta v1.7.0-6",
-        "message": "New beta version available",
-        "url": "https://github.com/zevnda/steam-game-idler/releases/tag/1.7.0-beta.6",
-        "timestamp": "1737982055"
-    },
-    {
-        "id": "10",
-        "title": "Beta v1.7.0-5",
-        "message": "New beta version available",
-        "url": "https://github.com/zevnda/steam-game-idler/releases/tag/1.7.0-beta.5",
-        "timestamp": "1737980309"
-    }
+  {
+    "id": "20",
+    "title": "Help Translate SGI with Crowdin",
+    "message": "Steam Game Idler is now available for translation on Crowdin. Click to help translate SGI into your language",
+    "url": "https://github.com/zevnda/steam-game-idler/discussions/148",
+    "timestamp": "1743270423"
+  },
+  {
+    "id": "18",
+    "title": "[UPDATE] Account Mismatch Error",
+    "message": "You can enable Steam Client Beta Participation again. Click to read more",
+    "url": "https://github.com/zevnda/steam-game-idler/discussions/132",
+    "timestamp": "1742540247"
+  },
+  {
+    "id": "17",
+    "title": "Account Mismatch Error",
+    "message": "The Steam Client Beta Participation feature is causing this error. Click here to see how to fix it",
+    "url": "https://github.com/zevnda/steam-game-idler/discussions/132",
+    "timestamp": "1742406742"
+  },
+  {
+    "id": "16",
+    "title": "Feedback Poll - Game Settings",
+    "message": "Click to view the feedback poll and cast your vote",
+    "url": "https://github.com/zevnda/steam-game-idler/discussions/116",
+    "timestamp": "1741980154"
+  },
+  {
+    "id": "15",
+    "title": "Feedback Poll - API Key",
+    "message": "Click to view the feedback poll and cast your vote",
+    "url": "http://poll-maker.com/poll5426682x60fe4B28-161",
+    "timestamp": "1741306313"
+  },
+  {
+    "id": "14",
+    "title": "Beta v1.7.0-9",
+    "message": "New beta version available",
+    "url": "https://github.com/zevnda/steam-game-idler/releases/tag/1.7.0-beta.9",
+    "timestamp": "1738158677"
+  },
+  {
+    "id": "13",
+    "title": "Beta v1.7.0-8",
+    "message": "New beta version available",
+    "url": "https://github.com/zevnda/steam-game-idler/releases/tag/1.7.0-beta.8",
+    "timestamp": "1738100926"
+  },
+  {
+    "id": "12",
+    "title": "Beta v1.7.0-7",
+    "message": "New beta version available",
+    "url": "https://github.com/zevnda/steam-game-idler/releases/tag/1.7.0-beta.7",
+    "timestamp": "1738001994"
+  },
+  {
+    "id": "11",
+    "title": "Beta v1.7.0-6",
+    "message": "New beta version available",
+    "url": "https://github.com/zevnda/steam-game-idler/releases/tag/1.7.0-beta.6",
+    "timestamp": "1737982055"
+  },
+  {
+    "id": "10",
+    "title": "Beta v1.7.0-5",
+    "message": "New beta version available",
+    "url": "https://github.com/zevnda/steam-game-idler/releases/tag/1.7.0-beta.5",
+    "timestamp": "1737980309"
+  }
 ]

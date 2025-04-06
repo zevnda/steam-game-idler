@@ -1,4 +1,4 @@
 export interface LogEntry {
-    timestamp: string;
-    message: string;
+  timestamp: string
+  message: string
 }

@@ -3,82 +3,82 @@
 @tailwind utilities;
 
 :root {
-    --dynamic-r: 44;
-    --dynamic-g: 122;
-    --dynamic-b: 219;
-    --dynamic-text: #fff;
+  --dynamic-r: 44;
+  --dynamic-g: 122;
+  --dynamic-b: 219;
+  --dynamic-text: #fff;
 }
 
 .light {
-    --sb-thumb: #c8c8c8;
-    --sb-track: #efefef;
-    --code: #e9e9e9;
-    --indicator: #4894e7;
-    --indicatoralt: #4895e789;
+  --sb-thumb: #c8c8c8;
+  --sb-track: #efefef;
+  --code: #e9e9e9;
+  --indicator: #4894e7;
+  --indicatoralt: #4895e789;
 }
 
 .dark {
-    --sb-thumb: #232323;
-    --sb-track: #151515;
-    --code: #2d2d2d;
-    --indicator: #1c79de;
-    --indicatoralt: #1c7ade89;
+  --sb-thumb: #232323;
+  --sb-track: #151515;
+  --code: #2d2d2d;
+  --indicator: #1c79de;
+  --indicatoralt: #1c7ade89;
 }
 
 .slate {
-    --sb-thumb: #26292F;
-    --sb-track: #1a1c20;
-    --code: #2d2d2d;
-    --indicator: #2f4a9e;
-    --indicatoralt: #2f4a9e89;
+  --sb-thumb: #26292f;
+  --sb-track: #1a1c20;
+  --code: #2d2d2d;
+  --indicator: #2f4a9e;
+  --indicatoralt: #2f4a9e89;
 }
 
 .oled {
-    --sb-thumb: #0c0c0c;
-    --sb-track: #080808;
-    --code: #2d2d2d;
-    --indicator: #2f4a9e;
-    --indicatoralt: #2f4a9e89;
+  --sb-thumb: #0c0c0c;
+  --sb-track: #080808;
+  --code: #2d2d2d;
+  --indicator: #2f4a9e;
+  --indicatoralt: #2f4a9e89;
 }
 
 ::-webkit-scrollbar {
-    width: 10px;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-    background: var(--sb-track);
+  background: var(--sb-track);
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--sb-thumb);
+  background: var(--sb-thumb);
 }
 
 html {
-    background-color: transparent !important;
+  background-color: transparent !important;
 }
 
 body {
-    overflow: hidden;
+  overflow: hidden;
 }
 
 svg {
-    outline: none;
+  outline: none;
 }
 
 @keyframes pulse-border {
-    0% {
-        border-color: var(--indicator);
-    }
+  0% {
+    border-color: var(--indicator);
+  }
 
-    50% {
-        border-color: var(--indicatoralt);
-    }
+  50% {
+    border-color: var(--indicatoralt);
+  }
 
-    100% {
-        border-color: var(--indicator);
-    }
+  100% {
+    border-color: var(--indicator);
+  }
 }
 
 .pulse-border {
-    animation: pulse-border 1.5s infinite;
+  animation: pulse-border 1.5s infinite;
 }
