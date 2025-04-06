@@ -4,5 +4,5 @@ export default {
   'achievement-unlocker': 'Achievement Unlocker',
   'achievement-manager': 'Achievement Manager',
   'playtime-booster': 'Playtime Booster',
-  'auto-idler': 'Auto Idler',
+  'auto-idler': 'Automatic Idler',
 }
