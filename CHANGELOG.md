@@ -1,3 +1,12 @@
+<!-- 1.10.2 -->
+
+### Changes in v1.10.2
+
+- Add translations for Polish
+  - [Contribute to SGI by helping with translations](https://github.com/zevnda/steam-game-idler/discussions/148)
+  - Credit:
+    - @danieo for the Polish translation
+
 <!-- 1.10.1 -->
 
 ### Changes in v1.10.1

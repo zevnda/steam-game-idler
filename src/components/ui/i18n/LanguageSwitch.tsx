@@ -26,7 +26,7 @@ export default function LanguageSwitch(): ReactElement | null {
         { key: 'it-IT', label: 'Italiano' },
         // { key: 'nl-NL', label: 'Nederlands' },
         // { key: 'no-NO', label: 'Norsk' },
-        // { key: 'pl-PL', label: 'Polski' },
+        { key: 'pl-PL', label: 'Polski' },
         { key: 'pt-BR', label: 'Português (Brazil)' },
         // { key: 'pt-PT', label: 'Português (Portugal)' },
         { key: 'ro-RO', label: 'Română' },
