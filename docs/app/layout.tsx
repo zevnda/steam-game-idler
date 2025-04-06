@@ -1,13 +1,18 @@
 import type { ReactElement, ReactNode } from 'react'
 
 import Logo from '@docs/components/Logo'
-import { GeistSans } from 'geist/font/sans'
+import { Inter } from 'next/font/google'
 import { Layout, Navbar } from 'nextra-theme-docs'
 import { Head } from 'nextra/components'
 import { getPageMap } from 'nextra/page-map'
 
 import 'nextra-theme-docs/style.css'
 import './globals.css'
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+})
 
 export const metadata = {
   description: 'An automatic Steam trading card farmer and achievement unlocker, with a modern UI',
@@ -62,7 +67,7 @@ export default async function RootLayout({ children }: { children: ReactNode }):
           dark: '#101010',
         }}
       />
-      <body className={`${GeistSans.className} text-sm`}>
+      <body className={`${inter.className} text-sm`}>
         <Layout
           navbar={navbar}
           pageMap={await getPageMap()}
