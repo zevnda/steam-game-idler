@@ -9,4 +9,4 @@ if [ "$branch" = "main" ] || [ "$branch" = "master" ]; then
   fi
 fi
 
-pnpm lint-staged
+npx lint-staged
