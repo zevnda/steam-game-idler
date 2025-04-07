@@ -7,8 +7,6 @@ import ChangelogModal from '@/components/ui/ChangelogModal'
 import SteamWarning from '@/components/ui/SteamWarning'
 import useWindow from '@/hooks/layout/useWindow'
 
-const test = 'test';
-
 export default function Window(): ReactElement {
   const { userSummary } = useUserContext()
   useWindow()

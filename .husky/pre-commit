@@ -6,4 +6,4 @@ if [ "$branch" = "main" ] || [ "$branch" = "master" ]; then
   exit 1
 fi
 
-pnpm lint-staged
+npx lint-staged
