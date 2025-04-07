@@ -39,6 +39,13 @@
     > * The Steam client needs to be installed
     > * You need to be signed in to at least one Steam account in the Steam client
     > * SGI failed to find the install directory for Steam. Try reinstalling Steam in its default location `C:\Program Files (x86)\Steam`
+    >
+    > SGI will automatically search for the Steam install directory by referencing Windows registry keys. Make sure the registry keys are correct by following these steps:
+    > 1. Press `WinKey + S` to open the search bar
+    > 2. Type `Registry Editor` and press `Enter` to open the Registry Editor
+    > 3. Navigate to `HKEY_CURRENT_USER\Software\Valve\Steam` and make sure the value of `SteamPath` is set to the correct path of your Steam installation
+    > 4. If the value is not set to the correct path of your Steam installation, you can manually set it by right-clicking on `SteamPath`, selecting `Modify`, and entering the correct path (e.g., `C:\Program Files (x86)\Steam`)
+    > 5. Close the Registry Editor and restart SGI
 </details>
 
 <details>
