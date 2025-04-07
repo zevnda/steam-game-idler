@@ -1,10 +1,11 @@
 import type { ReactElement } from 'react'
 
-import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@heroui/react'
+import { Button, useDisclosure } from '@heroui/react'
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useStateContext } from '@/components/contexts/StateContext'
+import CustomModal from '@/components/ui/CustomModal'
 import { checkSteamStatus } from '@/utils/tasks'
 
 export default function SteamWarning(): ReactElement {
@@ -27,33 +28,16 @@ export default function SteamWarning(): ReactElement {
   }
 
   return (
-    <Modal
+    <CustomModal
       isOpen={isOpen}
       onOpenChange={verifySteamStatus}
-      className='bg-modalbody text-content'
-      classNames={{
-        closeButton: ['text-altwhite hover:bg-titlehover duration-200'],
-      }}
-    >
-      <ModalContent>
-        <>
-          <ModalHeader className='flex flex-col gap-1 bg-modalheader border-b border-border' data-tauri-drag-region>
-            {t('common.notice')}
-          </ModalHeader>
-          <ModalBody className='my-4'>
-            <p className='text-sm'>{t('confirmation.steamClosed')}</p>
-          </ModalBody>
-          <ModalFooter className='border-t border-border bg-modalfooter px-4 py-3'>
-            <Button
-              size='sm'
-              className='font-semibold rounded-lg bg-dynamic text-button-text'
-              onPress={verifySteamStatus}
-            >
-              {t('common.confirm')}
-            </Button>
-          </ModalFooter>
-        </>
-      </ModalContent>
-    </Modal>
+      title={t('common.notice')}
+      body={t('confirmation.steamClosed')}
+      buttons={
+        <Button size='sm' className='font-semibold rounded-lg bg-dynamic text-button-text' onPress={verifySteamStatus}>
+          {t('common.confirm')}
+        </Button>
+      }
+    />
   )
 }

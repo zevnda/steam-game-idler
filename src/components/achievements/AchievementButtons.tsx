@@ -1,24 +1,14 @@
 import type { Achievement, SortOption } from '@/types'
 import type { Dispatch, ReactElement, SetStateAction } from 'react'
 
-import {
-  Button,
-  cn,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  Select,
-  SelectItem,
-  useDisclosure,
-} from '@heroui/react'
+import { Button, cn, Select, SelectItem, useDisclosure } from '@heroui/react'
 import { useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { TbLock, TbLockOpen, TbSortDescending2 } from 'react-icons/tb'
 
 import { useStateContext } from '@/components/contexts/StateContext'
 import { useUserContext } from '@/components/contexts/UserContext'
+import CustomModal from '@/components/ui/CustomModal'
 import useAchievementButtons from '@/hooks/achievements/useAchievementButtons'
 
 interface AchievementButtonsProps {
@@ -136,58 +126,53 @@ export default function AchievementButtons({
         )}
       </Select>
 
-      <Modal
+      <CustomModal
         isOpen={isOpen}
         onOpenChange={onOpenChange}
-        className='bg-modalbody text-content'
-        classNames={{
-          closeButton: ['text-altwhite hover:bg-titlehover duration-200'],
-        }}
-      >
-        <ModalContent>
-          {(onClose: () => void) => (
-            <>
-              <ModalHeader className='flex flex-col gap-1 bg-modalheader border-b border-border' data-tauri-drag-region>
-                {t('common.confirm')}
-              </ModalHeader>
-              <ModalBody className='my-4'>
-                <p className='text-sm'>
-                  <Trans
-                    i18nKey='achievementManager.achievements.modal'
-                    values={{
-                      state: getTranslatedState(state),
-                    }}
-                  >
-                    Are you sure you want to <strong>{state}</strong> all achievements?
-                  </Trans>
-                </p>
-              </ModalBody>
-              <ModalFooter className='border-t border-border bg-modalfooter px-4 py-3'>
-                <Button size='sm' color='danger' variant='light' className='font-semibold rounded-lg' onPress={onClose}>
-                  {t('common.cancel')}
-                </Button>
-                <Button
-                  size='sm'
-                  className='font-semibold rounded-lg bg-dynamic text-button-text'
-                  onPress={() => {
-                    if (state === 'unlock') {
-                      if (appId && appName) {
-                        handleUnlockAll(appId, appName, achievements, onClose)
-                      }
-                    } else {
-                      if (appId && appName) {
-                        handleLockAll(appId, appName, achievements, onClose)
-                      }
-                    }
-                  }}
-                >
-                  {t('common.confirm')}
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
+        title={t('common.confirm')}
+        body={
+          <p className='text-sm'>
+            <Trans
+              i18nKey='achievementManager.achievements.modal'
+              values={{
+                state: getTranslatedState(state).toLowerCase(),
+              }}
+            >
+              Are you sure you want to <strong>{state}</strong> all achievements?
+            </Trans>
+          </p>
+        }
+        buttons={
+          <>
+            <Button
+              size='sm'
+              color='danger'
+              variant='light'
+              className='font-semibold rounded-lg'
+              onPress={onOpenChange}
+            >
+              {t('common.cancel')}
+            </Button>
+            <Button
+              size='sm'
+              className='font-semibold rounded-lg bg-dynamic text-button-text'
+              onPress={() => {
+                if (state === 'unlock') {
+                  if (appId && appName) {
+                    handleUnlockAll(appId, appName, achievements, onOpenChange)
+                  }
+                } else {
+                  if (appId && appName) {
+                    handleLockAll(appId, appName, achievements, onOpenChange)
+                  }
+                }
+              }}
+            >
+              {t('common.confirm')}
+            </Button>
+          </>
+        }
+      />
     </div>
   )
 }
