@@ -1,5 +1,12 @@
 [
   {
+    "id": "21",
+    "title": "Which Feature Should Be Added to SGI",
+    "message": "I have a couple of ideas for new features to add to SGI, but I would like your feedback. Click here to vote",
+    "url": "https://github.com/zevnda/steam-game-idler/discussions/370",
+    "timestamp": "1744029169"
+  },
+  {
     "id": "20",
     "title": "Help Translate SGI with Crowdin",
     "message": "Steam Game Idler is now available for translation on Crowdin. Click to help translate SGI into your language",
@@ -61,12 +68,5 @@
     "message": "New beta version available",
     "url": "https://github.com/zevnda/steam-game-idler/releases/tag/1.7.0-beta.6",
     "timestamp": "1737982055"
-  },
-  {
-    "id": "10",
-    "title": "Beta v1.7.0-5",
-    "message": "New beta version available",
-    "url": "https://github.com/zevnda/steam-game-idler/releases/tag/1.7.0-beta.5",
-    "timestamp": "1737980309"
   }
 ]
