@@ -9,7 +9,7 @@ import Icon from '@docs/components/Icon';
 
 ### Prevent away status on Steam
 
-- **Purpose:** Prevents your Steam status from automatically switching to `away` while SGI is running
+- **Purpose:** Keeps your Steam status set to `online` while SGI is running, preventing it from automatically switching to `away` due to inactivity
 
 ### Get notifications about free games
 
@@ -17,11 +17,11 @@ import Icon from '@docs/components/Icon';
 
 ### Enable beta feature
 
-- **Purpose:** Enable beta features that are not yet available in the stable version of SGI. These features are still in development and may not work as expected. Use at your own risk
+- **Purpose:** Enable beta features that are not yet available in the stable version of SGI. These features are still in development, they may not work as expected or cause crashes
 
 ### Run at startup
 
-- **Purpose:** SGI will be added to your startup programs and will run when Windows starts
+- **Purpose:** Automatically launch SGI when Windows starts by adding it to your startup programs
 
 ## Language
 
@@ -29,14 +29,12 @@ import Icon from '@docs/components/Icon';
 
 ## Theme
 
-- **Purpose:** Choose between light, dark and preset themes for SGI
+- **Purpose:** Choose between light, dark and other preset themes for SGI
 
 ## Steam Web API Key
 
-- **Purpose:** Allows users to supply their own Steam web API key for fetching user summary and game data
-- **Considerations:** - Useful if users want to keep their Steam profile and game details set to private, but still use SGI as normal
-    - This works only when using an API key that is attached to the account you are logged in to SGI as
-    - Some features still won't work if your profile or game details are private, such as;
-        - Displaying recently played games
-        - Displaying lock/unlock state of achievements
-    - API keys are free for all users with a Steam account, you can [get your API key here](https://steamcommunity.com/dev/apikey)
+- **Purpose:** Lets users provide their own Steam Web API key to fetch profile and game data. API keys are free for all users with a Steam account, you can [get yours here](https://steamcommunity.com/dev/apikey)
+- **Considerations:**
+  - Useful if users want to keep their Steam profile and game details set to private
+  - The API key must belong to the same account you're logged into in SGI. If using multiple accounts, you must set the API key for each account separately
+  - Some features may still be limited with private profiles
