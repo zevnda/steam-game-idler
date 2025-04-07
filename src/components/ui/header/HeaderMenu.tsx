@@ -2,6 +2,7 @@ import type { ReactElement } from 'react'
 
 import { invoke } from '@tauri-apps/api/core'
 import { relaunch } from '@tauri-apps/plugin-process'
+import { open } from '@tauri-apps/plugin-shell'
 import { check } from '@tauri-apps/plugin-updater'
 
 import { cn, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@heroui/react'
@@ -19,7 +20,6 @@ import {
 
 import { useUpdateContext } from '@/components/contexts/UpdateContext'
 import CustomTooltip from '@/components/ui/CustomTooltip'
-import ExtLink from '@/components/ui/ExtLink'
 import { fetchLatest, logEvent, preserveKeysAndClearData } from '@/utils/tasks'
 import { showDangerToast, showPrimaryToast } from '@/utils/toasts'
 
@@ -49,6 +49,14 @@ export default function HeaderMenu(): ReactElement {
       showDangerToast(t('toast.checkUpdate.error'))
       console.error('Error in (handleUpdate):', error)
       logEvent(`Error in (handleUpdate): ${error}`)
+    }
+  }
+
+  const handleOpenExtLink = async (href: string): Promise<void> => {
+    try {
+      await open(href)
+    } catch (error) {
+      console.error('Failed to open link:', error)
     }
   }
 
@@ -86,10 +94,9 @@ export default function HeaderMenu(): ReactElement {
               classNames={{
                 base: ['data-[hover=true]:!bg-titlehover data-[hover=true]:!text-content'],
               }}
+              onPress={() => handleOpenExtLink('https://steamgameidler.vercel.app/')}
             >
-              <ExtLink href='https://steamgameidler.vercel.app/' className='flex text-sm w-full'>
-                {t('menu.guide')}
-              </ExtLink>
+              {t('menu.guide')}
             </DropdownItem>
 
             <DropdownItem
@@ -100,13 +107,11 @@ export default function HeaderMenu(): ReactElement {
               classNames={{
                 base: ['data-[hover=true]:!bg-titlehover data-[hover=true]:!text-content'],
               }}
+              onPress={() =>
+                handleOpenExtLink(githubIssueUrl + 'bug%2Cinvestigating&projects=&template=issue_report.yml')
+              }
             >
-              <ExtLink
-                href={githubIssueUrl + 'bug%2Cinvestigating&projects=&template=issue_report.yml'}
-                className='flex text-sm w-full'
-              >
-                {t('menu.issue')}
-              </ExtLink>
+              {t('menu.issue')}
             </DropdownItem>
 
             <DropdownItem
@@ -118,13 +123,11 @@ export default function HeaderMenu(): ReactElement {
               classNames={{
                 base: ['data-[hover=true]:!bg-titlehover data-[hover=true]:!text-content'],
               }}
+              onPress={() =>
+                handleOpenExtLink(githubIssueUrl + 'feature+request&projects=&template=feature_request.yml')
+              }
             >
-              <ExtLink
-                href={githubIssueUrl + 'feature+request&projects=&template=feature_request.yml'}
-                className='flex text-sm w-full'
-              >
-                {t('menu.feature')}
-              </ExtLink>
+              {t('menu.feature')}
             </DropdownItem>
 
             <DropdownItem
@@ -136,10 +139,9 @@ export default function HeaderMenu(): ReactElement {
               classNames={{
                 base: ['data-[hover=true]:!bg-titlehover data-[hover=true]:!text-content'],
               }}
+              onPress={() => handleOpenExtLink('https://github.com/sponsors/zevnda')}
             >
-              <ExtLink href='https://github.com/sponsors/zevnda' className='flex text-sm w-full'>
-                {t('menu.support')}
-              </ExtLink>
+              {t('menu.support')}
             </DropdownItem>
 
             <DropdownItem
@@ -147,10 +149,10 @@ export default function HeaderMenu(): ReactElement {
               startContent={<TbListCheck size={18} />}
               className='rounded p-1'
               textValue='Changelog'
-              onPress={() => setShowChangelog(true)}
               classNames={{
                 base: ['data-[hover=true]:!bg-titlehover data-[hover=true]:!text-content'],
               }}
+              onPress={() => setShowChangelog(true)}
             >
               {t('menu.changelog')}
             </DropdownItem>
@@ -160,10 +162,10 @@ export default function HeaderMenu(): ReactElement {
               startContent={<TbDownload size={18} />}
               className='rounded p-1'
               textValue='Check for updates'
-              onPress={handleUpdate}
               classNames={{
                 base: ['data-[hover=true]:!bg-titlehover data-[hover=true]:!text-content'],
               }}
+              onPress={handleUpdate}
             >
               {t('menu.update')}
             </DropdownItem>
