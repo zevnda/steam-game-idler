@@ -113,7 +113,7 @@ export default function Setup(): ReactElement {
                       </div>
                     ))}
                   </div>
-                  <div className='flex gap-1 mt-4  cursor-pointer' onClick={handleRefresh}>
+                  <div className='flex gap-1 mt-4 cursor-pointer' onClick={handleRefresh}>
                     <p className='text-xs text-altwhite'>{t('setup.refresh')}</p>
                     <div className='flex justify-center items-center'>
                       <TbRefresh className='text-altwhite' fontSize={14} />
@@ -126,6 +126,12 @@ export default function Setup(): ReactElement {
                   <ExtLink href='https://steamgameidler.vercel.app/faq#error-messages:~:text=No%20Steam%20users%20found'>
                     <p className='text-sm text-link hover:text-linkhover'>{t('setup.learn')}</p>
                   </ExtLink>
+                  <div className='flex gap-1 mt-4 cursor-pointer' onClick={handleRefresh}>
+                    <p className='text-xs text-altwhite'>{t('setup.refresh')}</p>
+                    <div className='flex justify-center items-center'>
+                      <TbRefresh className='text-altwhite' fontSize={14} />
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
