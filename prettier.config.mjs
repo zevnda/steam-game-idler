@@ -8,6 +8,7 @@ export default {
   jsxSingleQuote: true,
   trailingComma: 'all',
   arrowParens: 'avoid',
+  quoteProps: 'consistent',
   plugins: ['@ianvs/prettier-plugin-sort-imports'],
   importOrder: [
     '<TYPES>^(node:)',
