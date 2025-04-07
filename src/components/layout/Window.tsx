@@ -8,7 +8,6 @@ import SteamWarning from '@/components/ui/SteamWarning'
 import useWindow from '@/hooks/layout/useWindow'
 
 const test = 'test';
-console.log(test);
 
 export default function Window(): ReactElement {
   const { userSummary } = useUserContext()
