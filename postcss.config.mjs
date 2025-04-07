@@ -2,9 +2,6 @@
 const config = {
   plugins: {
     tailwindcss: {},
-    cssnano: {
-      preset: ['default', { discardComments: { removeAll: true } }],
-    },
   },
 }
 
