@@ -21,7 +21,8 @@
     "lint:all": "pnpm lint && pnpm lint:docs",
     "tauri": "tauri",
     "prepare": "husky",
-    "prettier": "prettier --write ."
+    "prettier": "prettier --write .",
+    "td": "tauri dev"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
