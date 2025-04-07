@@ -1,9 +1,10 @@
 import type { Dispatch, ReactElement, SetStateAction } from 'react'
 
-import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@heroui/react'
+import { Button } from '@heroui/react'
 import { useTranslation } from 'react-i18next'
 import { TbRotateClockwise } from 'react-icons/tb'
 
+import CustomModal from '@/components/ui/CustomModal'
 import useResetSettings from '@/hooks/settings/useResetSettings'
 
 interface ResetSettingsProps {
@@ -26,39 +27,32 @@ export default function ResetSettings({ setRefreshKey }: ResetSettingsProps): Re
         {t('settings.resetSettings.button')}
       </Button>
 
-      <Modal
+      <CustomModal
         isOpen={isOpen}
         onOpenChange={onOpenChange}
-        className='bg-modalbody text-content'
-        classNames={{
-          closeButton: ['text-altwhite hover:bg-titlehover duration-200'],
-        }}
-      >
-        <ModalContent>
-          {(onClose: () => void) => (
-            <>
-              <ModalHeader className='flex flex-col gap-1 bg-modalheader border-b border-border' data-tauri-drag-region>
-                {t('common.confirm')}
-              </ModalHeader>
-              <ModalBody className='my-4'>
-                <p className='text-sm'>{t('confirmation.resetSettings')}</p>
-              </ModalBody>
-              <ModalFooter className='border-t border-border bg-modalfooter px-4 py-3'>
-                <Button size='sm' color='danger' variant='light' className='font-semibold rounded-lg' onPress={onClose}>
-                  {t('common.cancel')}
-                </Button>
-                <Button
-                  size='sm'
-                  className='font-semibold rounded-lg bg-dynamic text-button-text'
-                  onPress={() => handleResetSettings(onClose, setRefreshKey)}
-                >
-                  {t('common.confirm')}
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
+        title={t('common.confirm')}
+        body={t('confirmation.resetSettings')}
+        buttons={
+          <>
+            <Button
+              size='sm'
+              color='danger'
+              variant='light'
+              className='font-semibold rounded-lg'
+              onPress={onOpenChange}
+            >
+              {t('common.cancel')}
+            </Button>
+            <Button
+              size='sm'
+              className='font-semibold rounded-lg bg-dynamic text-button-text'
+              onPress={() => handleResetSettings(onOpenChange, setRefreshKey)}
+            >
+              {t('common.confirm')}
+            </Button>
+          </>
+        }
+      />
     </>
   )
 }

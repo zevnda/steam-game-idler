@@ -3,12 +3,13 @@ import type { ReactElement } from 'react'
 
 import { invoke } from '@tauri-apps/api/core'
 
-import { Button, cn, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, NumberInput } from '@heroui/react'
+import { Button, cn, NumberInput } from '@heroui/react'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useStateContext } from '@/components/contexts/StateContext'
 import { useUserContext } from '@/components/contexts/UserContext'
+import CustomModal from '@/components/ui/CustomModal'
 
 interface GameSettingsProps {
   isOpen: boolean
@@ -80,115 +81,106 @@ export default function GameSettings({ isOpen, onOpenChange }: GameSettingsProps
   }
 
   return (
-    <Modal
+    <CustomModal
       isOpen={isOpen}
       onOpenChange={handleModalClose}
-      className='bg-modalbody text-content z-[999]'
-      classNames={{
-        closeButton: ['text-altwhite hover:bg-titlehover duration-200'],
-      }}
-    >
-      <ModalContent>
-        {(onClose: () => void) => (
-          <>
-            <ModalHeader className='flex flex-col gap-1 bg-modalheader border-b border-border' data-tauri-drag-region>
-              <p className='truncate'>
-                {t('settings.title')} - {appName}
-              </p>
-            </ModalHeader>
-            <ModalBody className='max-h-[300px] overflow-y-auto'>
-              <div className='grid grid-cols-2 gap-4 w-full my-4'>
-                <div className='flex flex-col gap-2 w-full'>
-                  <p className='text-sm'>{t('gameSettings.idle')}</p>
-                  <NumberInput
-                    hideStepper
-                    size='sm'
-                    value={maxIdleTime || 0}
-                    maxValue={99999}
-                    formatOptions={{ useGrouping: false }}
-                    aria-label='max idle'
-                    className='max-w-[80px]'
-                    classNames={{
-                      inputWrapper: cn(
-                        'bg-input border border-border hover:!bg-inputhover rounded-lg',
-                        'group-data-[focus-within=true]:!bg-inputhover h-8',
-                      ),
-                      input: ['!text-content'],
-                    }}
-                    onValueChange={handleMaxIdleTimeChange}
-                  />
-                </div>
+      title={
+        <p className='truncate'>
+          {t('settings.title')} - {appName}
+        </p>
+      }
+      body={
+        <div className='grid grid-cols-2 gap-4 w-full my-4'>
+          <div className='flex flex-col gap-2 w-full'>
+            <p className='text-sm'>{t('gameSettings.idle')}</p>
+            <NumberInput
+              hideStepper
+              size='sm'
+              value={maxIdleTime || 0}
+              maxValue={99999}
+              formatOptions={{ useGrouping: false }}
+              aria-label='max idle'
+              className='max-w-[80px]'
+              classNames={{
+                inputWrapper: cn(
+                  'bg-input border border-border hover:!bg-inputhover rounded-lg',
+                  'group-data-[focus-within=true]:!bg-inputhover h-8',
+                ),
+                input: ['!text-content'],
+              }}
+              onValueChange={handleMaxIdleTimeChange}
+            />
+          </div>
 
-                <div className='flex flex-col gap-2 w-full'>
-                  <p className='text-sm'>{t('gameSettings.drops')}</p>
-                  <NumberInput
-                    hideStepper
-                    size='sm'
-                    value={maxCardDrops || 0}
-                    maxValue={99999}
-                    formatOptions={{ useGrouping: false }}
-                    aria-label='max drops'
-                    className='max-w-[80px]'
-                    classNames={{
-                      inputWrapper: cn(
-                        'bg-input border border-border hover:!bg-inputhover rounded-lg',
-                        'group-data-[focus-within=true]:!bg-inputhover h-8',
-                      ),
-                      input: ['!text-content'],
-                    }}
-                    onValueChange={handleMaxCardDropsChange}
-                  />
-                </div>
+          <div className='flex flex-col gap-2 w-full'>
+            <p className='text-sm'>{t('gameSettings.drops')}</p>
+            <NumberInput
+              hideStepper
+              size='sm'
+              value={maxCardDrops || 0}
+              maxValue={99999}
+              formatOptions={{ useGrouping: false }}
+              aria-label='max drops'
+              className='max-w-[80px]'
+              classNames={{
+                inputWrapper: cn(
+                  'bg-input border border-border hover:!bg-inputhover rounded-lg',
+                  'group-data-[focus-within=true]:!bg-inputhover h-8',
+                ),
+                input: ['!text-content'],
+              }}
+              onValueChange={handleMaxCardDropsChange}
+            />
+          </div>
 
-                <div className='flex flex-col gap-2 w-full'>
-                  <p className='text-sm'>{t('gameSettings.achievements')}</p>
-                  <NumberInput
-                    hideStepper
-                    size='sm'
-                    value={maxAchievementUnlocks || 0}
-                    maxValue={99999}
-                    formatOptions={{ useGrouping: false }}
-                    aria-label='max unlocks'
-                    className='max-w-[80px]'
-                    classNames={{
-                      inputWrapper: cn(
-                        'bg-input border border-border hover:!bg-inputhover rounded-lg',
-                        'group-data-[focus-within=true]:!bg-inputhover h-8',
-                      ),
-                      input: ['!text-content'],
-                    }}
-                    onValueChange={handleMaxAchievementUnlocksChange}
-                  />
-                </div>
-              </div>
-            </ModalBody>
-            <ModalFooter className='border-t border-border bg-modalfooter px-4 py-3'>
-              <Button
-                size='sm'
-                color='danger'
-                variant='light'
-                className='font-semibold rounded-lg'
-                onPress={() => {
-                  onClose()
-                }}
-              >
-                {t('common.cancel')}
-              </Button>
-              <Button
-                size='sm'
-                className='font-semibold rounded-lg bg-dynamic text-button-text'
-                isDisabled={isSaveDisabled()}
-                onPress={() => {
-                  handleSave()
-                  onClose()
-                }}
-              >
-                {t('common.save')}
-              </Button>
-            </ModalFooter>
-          </>
-        )}
-      </ModalContent>
-    </Modal>
+          <div className='flex flex-col gap-2 w-full'>
+            <p className='text-sm'>{t('gameSettings.achievements')}</p>
+            <NumberInput
+              hideStepper
+              size='sm'
+              value={maxAchievementUnlocks || 0}
+              maxValue={99999}
+              formatOptions={{ useGrouping: false }}
+              aria-label='max unlocks'
+              className='max-w-[80px]'
+              classNames={{
+                inputWrapper: cn(
+                  'bg-input border border-border hover:!bg-inputhover rounded-lg',
+                  'group-data-[focus-within=true]:!bg-inputhover h-8',
+                ),
+                input: ['!text-content'],
+              }}
+              onValueChange={handleMaxAchievementUnlocksChange}
+            />
+          </div>
+        </div>
+      }
+      buttons={
+        <>
+          <Button
+            size='sm'
+            color='danger'
+            variant='light'
+            className='font-semibold rounded-lg'
+            onPress={() => {
+              onOpenChange()
+            }}
+          >
+            {t('common.cancel')}
+          </Button>
+          <Button
+            size='sm'
+            className='font-semibold rounded-lg bg-dynamic text-button-text'
+            isDisabled={isSaveDisabled()}
+            onPress={() => {
+              handleSave()
+              onOpenChange()
+            }}
+          >
+            {t('common.save')}
+          </Button>
+        </>
+      }
+    />
   )
 }

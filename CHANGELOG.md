@@ -1,3 +1,10 @@
+<!-- 1.10.3 -->
+
+### Changes in v1.10.3
+
+- Improved the method for getting Steam users for the sign in screen (#350)
+- Fixed an issue where resetting all statistics wouldn't update the cached data values
+
 <!-- 1.10.2 -->
 
 ### Changes in v1.10.2

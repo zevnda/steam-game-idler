@@ -1,4 +1,4 @@
-import type { Achievement, ChangedStats, InvokeResetStats, Statistic, StatValue } from '@/types'
+import type { Achievement, ChangedStats, InvokeAchievementData, InvokeResetStats, Statistic, StatValue } from '@/types'
 import type { Dispatch, SetStateAction } from 'react'
 
 import { invoke } from '@tauri-apps/api/core'
@@ -79,13 +79,14 @@ export default function useStatisticButtons(
     })
     const status = JSON.parse(String(response)) as InvokeResetStats
 
+    const newData = await invoke<InvokeAchievementData>('get_achievement_data', {
+      steamId: userSummary?.steamId,
+      appId,
+      refetch: true,
+    })
+
     if (status.success) {
-      setStatistics(prevValues => {
-        return prevValues.map(stat => ({
-          ...stat,
-          value: 0,
-        }))
-      })
+      setStatistics(newData.achievement_data.stats)
 
       showSuccessToast(
         t('toast.resetAll.success', {

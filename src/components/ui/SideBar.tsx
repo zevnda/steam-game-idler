@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react'
 
-import { Button, cn, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@heroui/react'
+import { Button, cn } from '@heroui/react'
 import { useTranslation } from 'react-i18next'
 import { FiLogOut } from 'react-icons/fi'
 import {
@@ -17,6 +17,7 @@ import {
 import { useIdleContext } from '@/components/contexts/IdleContext'
 import { useNavigationContext } from '@/components/contexts/NavigationContext'
 import { useStateContext } from '@/components/contexts/StateContext'
+import CustomModal from '@/components/ui/CustomModal'
 import CustomTooltip from '@/components/ui/CustomTooltip'
 import useSideBar from '@/hooks/ui/useSideBar'
 
@@ -48,11 +49,11 @@ export default function SideBar(): ReactElement {
           <div className='flex justify-center items-center w-14'>
             <CustomTooltip content={t('idlingGames.title')} placement='right'>
               <div
-                className={`
-                                p-2 rounded-full duration-200 cursor-pointer active:scale-90 
-                                ${idleGamesList.length > 0 && 'text-dynamic animate-pulse'}
-                                ${activePage === 'idling' ? 'bg-dynamic/30 text-dynamic' : 'hover:bg-titlehover'}
-                                `}
+                className={cn(
+                  'p-2 rounded-full duration-200 cursor-pointer active:scale-90',
+                  idleGamesList.length > 0 && 'text-dynamic animate-pulse',
+                  activePage === 'idling' ? 'bg-dynamic/30 text-dynamic' : 'hover:bg-titlehover',
+                )}
                 onClick={() => setActivePage('idling')}
               >
                 <TbPlayerPlay fontSize={22} />
@@ -171,39 +172,32 @@ export default function SideBar(): ReactElement {
         )}
       </div>
 
-      <Modal
+      <CustomModal
         isOpen={isOpen}
         onOpenChange={onOpenChange}
-        className='bg-modalbody text-content'
-        classNames={{
-          closeButton: ['text-altwhite hover:bg-titlehover duration-200'],
-        }}
-      >
-        <ModalContent>
-          {(onClose: () => void) => (
-            <>
-              <ModalHeader className='flex flex-col gap-1 bg-modalheader border-b border-border' data-tauri-drag-region>
-                {t('common.confirm')}
-              </ModalHeader>
-              <ModalBody className='my-4'>
-                <p className='text-sm'>{t('confirmation.logout')}</p>
-              </ModalBody>
-              <ModalFooter className='border-t border-border bg-modalfooter px-4 py-3'>
-                <Button size='sm' color='danger' variant='light' className='font-semibold rounded-lg' onPress={onClose}>
-                  {t('common.cancel')}
-                </Button>
-                <Button
-                  size='sm'
-                  className='font-semibold rounded-lg bg-dynamic text-button-text'
-                  onPress={() => handleLogout(onClose)}
-                >
-                  {t('common.confirm')}
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
+        title={t('common.confirm')}
+        body={t('confirmation.logout')}
+        buttons={
+          <>
+            <Button
+              size='sm'
+              color='danger'
+              variant='light'
+              className='font-semibold rounded-lg'
+              onPress={onOpenChange}
+            >
+              {t('common.cancel')}
+            </Button>
+            <Button
+              size='sm'
+              className='font-semibold rounded-lg bg-dynamic text-button-text'
+              onPress={() => handleLogout(onOpenChange)}
+            >
+              {t('common.confirm')}
+            </Button>
+          </>
+        }
+      />
     </>
   )
 }

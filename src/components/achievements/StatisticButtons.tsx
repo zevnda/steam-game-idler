@@ -1,10 +1,11 @@
 import type { Achievement, ChangedStats, Statistic } from '@/types'
 import type { Dispatch, ReactElement, SetStateAction } from 'react'
 
-import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@heroui/react'
+import { Button, useDisclosure } from '@heroui/react'
 import { Trans, useTranslation } from 'react-i18next'
 import { TbRotateClockwise, TbUpload } from 'react-icons/tb'
 
+import CustomModal from '@/components/ui/CustomModal'
 import useStatisticButtons from '@/hooks/achievements/useStatisticButtons'
 
 interface StatisticButtonsProps {
@@ -56,43 +57,38 @@ export default function StatisticButtons({
         {t('achievementManager.statistics.resetAll')}
       </Button>
 
-      <Modal
+      <CustomModal
         isOpen={isOpen}
         onOpenChange={onOpenChange}
-        className='bg-modalbody text-content'
-        classNames={{
-          closeButton: ['text-altwhite hover:bg-titlehover duration-200'],
-        }}
-      >
-        <ModalContent>
-          {(onClose: () => void) => (
-            <>
-              <ModalHeader className='flex flex-col gap-1 bg-modalheader border-b border-border' data-tauri-drag-region>
-                {t('common.confirm')}
-              </ModalHeader>
-              <ModalBody className='my-4'>
-                <p className='text-sm'>
-                  <Trans i18nKey='confirmation.resetStatistics'>
-                    Are you sure you want to <strong>reset</strong> all statistics?
-                  </Trans>
-                </p>
-              </ModalBody>
-              <ModalFooter className='border-t border-border bg-modalfooter px-4 py-3'>
-                <Button size='sm' color='danger' variant='light' className='font-semibold rounded-lg' onPress={onClose}>
-                  {t('common.cancel')}
-                </Button>
-                <Button
-                  size='sm'
-                  className='font-semibold rounded-lg bg-dynamic text-button-text'
-                  onPress={() => handleResetAll(onClose)}
-                >
-                  {t('common.confirm')}
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
+        title={t('common.confirm')}
+        body={
+          <p className='text-sm'>
+            <Trans i18nKey='confirmation.resetStatistics'>
+              Are you sure you want to <strong>reset</strong> all statistics?
+            </Trans>
+          </p>
+        }
+        buttons={
+          <>
+            <Button
+              size='sm'
+              color='danger'
+              variant='light'
+              className='font-semibold rounded-lg'
+              onPress={onOpenChange}
+            >
+              {t('common.cancel')}
+            </Button>
+            <Button
+              size='sm'
+              className='font-semibold rounded-lg bg-dynamic text-button-text'
+              onPress={() => handleResetAll(onOpenChange)}
+            >
+              {t('common.confirm')}
+            </Button>
+          </>
+        }
+      />
     </div>
   )
 }
