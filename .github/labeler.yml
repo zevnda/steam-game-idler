@@ -117,7 +117,7 @@ tauri:
 - all:
   - changed-files:
     - any-glob-to-any-file: "src-tauri/**/*"
-    - all-globs-to-all-files: '!src-tauri/src/*'
+    - all-globs-to-all-files: '!src-tauri/src/**/*'
     - all-globs-to-all-files: '!src-tauri/build.rs'
     - all-globs-to-all-files: '!src-tauri/Cargo.lock'
     - all-globs-to-all-files: '!src-tauri/Cargo.toml'
@@ -147,7 +147,7 @@ tauri:src:
 - all:
   - changed-files:
     - any-glob-to-any-file:
-      - "src-tauri/src/commands/*"
+      - "src-tauri/src/commands/**/*"
 
 # Core labels
 core:deps:
