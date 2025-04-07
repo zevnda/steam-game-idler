@@ -76,8 +76,11 @@
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
-      "pnpm lint --dir src"
+      "pnpm lint --dir src",
+      "prettier --write"
     ],
-    "**/*": "prettier --write --ignore-unknown"
+    "*.{json,css,md,yml,yaml}": [
+      "prettier --write"
+    ]
   }
 }
