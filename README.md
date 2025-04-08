@@ -27,6 +27,7 @@ Refer to the **[documentation](https://steamgameidler.vercel.app/)** for a detai
 * **[Card Farming](https://steamgameidler.vercel.app/features/card-farming)**: Farm trading cards to sell for a profit or use in badge crafting
 * **[Achievement Unlocker](https://steamgameidler.vercel.app/features/achievement-unlocker)**: Unlock achievements automatically with human-like behavior
 * **[Achievement Manager](https://steamgameidler.vercel.app/features/achievement-manager)**: Manually unlock or lock any achievement for any game
+* **[Trading Card Manager](https://steamgameidler.vercel.app/features/trading-card-manager)**: Easily sell your trading cards on the Steam marketplace
 * **[Playtime Booster](https://steamgameidler.vercel.app/features/playtime-booster)**: Increase a game's total playtime by idling it manually
 * **[Auto Idler](https://steamgameidler.vercel.app/features/auto-idler)**: Automatically idle chosen games when your PC boots up
 * **Fully Open Source**: Rest assured that what you're downloading and running is safe

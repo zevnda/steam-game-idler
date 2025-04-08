@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
-  index: {
+  'index': {
     title: 'Introduction',
     theme: {
       breadcrumb: false,
@@ -12,21 +12,21 @@ export default {
       collapsed: false,
     },
   },
-  features: 'Features',
-  settings: 'Settings',
+  'features': 'Features',
+  'settings': 'Settings',
   'steam-credentials': {
     title: 'Steam Credentials',
     theme: {
       breadcrumb: false,
     },
   },
-  faq: {
+  'faq': {
     title: 'FAQ',
     theme: {
       breadcrumb: false,
     },
   },
-  references: {
+  'references': {
     title: 'References',
     theme: {
       breadcrumb: false,

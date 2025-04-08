@@ -59,11 +59,7 @@ export default function SettingsCheckbox({ type, name, content }: SettingsCheckb
         }}
         classNames={{
           hiddenInput: 'w-fit',
-          wrapper: cn(
-            styles,
-            'before:group-data-[selected=true]:!border-dynamic',
-            'after:bg-dynamic border-red-500 text-button-text',
-          ),
+          wrapper: cn(styles, 'before:group-data-[selected=true]:!border-dynamic', 'after:bg-dynamic text-button-text'),
         }}
       >
         <div className='flex items-center gap-1'>
@@ -81,11 +77,7 @@ export default function SettingsCheckbox({ type, name, content }: SettingsCheckb
         onChange={() => handleRunAtStartupChange(setStartupState)}
         classNames={{
           hiddenInput: 'w-fit',
-          wrapper: cn(
-            styles,
-            'before:group-data-[selected=true]:!border-dynamic',
-            'after:bg-dynamic border-red-500 text-button-text',
-          ),
+          wrapper: cn(styles, 'before:group-data-[selected=true]:!border-dynamic', 'after:bg-dynamic text-button-text'),
         }}
       >
         <div className='flex items-center gap-1'>
@@ -110,11 +102,7 @@ export default function SettingsCheckbox({ type, name, content }: SettingsCheckb
       }}
       classNames={{
         hiddenInput: 'w-fit',
-        wrapper: cn(
-          styles,
-          'before:group-data-[selected=true]:!border-dynamic',
-          'after:bg-dynamic border-red-500 text-button-text',
-        ),
+        wrapper: cn(styles, 'before:group-data-[selected=true]:!border-dynamic', 'after:bg-dynamic text-button-text'),
       }}
     >
       <div className='flex items-center gap-1'>

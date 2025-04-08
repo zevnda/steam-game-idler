@@ -39,12 +39,12 @@ export default function PageHeader({
     <div
       className={cn(
         'fixed w-[calc(100vw-68px)] z-[50] bg-opacity-90',
-        'backdrop-blur-md bg-base pl-4 pt-2 rounded-tl-xl select-none',
+        'backdrop-blur-md bg-base pl-4 pt-2 rounded-tl-xl',
         filteredGames?.length >= 21 ? 'pr-4' : 'pr-2',
       )}
     >
       <div className='flex justify-between items-center pb-3'>
-        <div className='flex items-center gap-1'>
+        <div className='flex items-center gap-1 select-none'>
           <div className='flex flex-col justify-center'>
             <p className='text-lg font-bold'>{t('gamesList.title')}</p>
             <div className='flex gap-1'>

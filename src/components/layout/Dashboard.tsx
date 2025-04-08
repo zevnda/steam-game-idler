@@ -13,6 +13,7 @@ import FreeGamesList from '@/components/gameslist/FreeGamesList'
 import GamesList from '@/components/gameslist/GamesList'
 import IdlingGamesList from '@/components/gameslist/IdlingGamesList'
 import Settings from '@/components/settings/Settings'
+import TradingCardsList from '@/components/trading-cards/TradingCardsList'
 import Header from '@/components/ui/header/Header'
 import SideBar from '@/components/ui/SideBar'
 import { antiAwayStatus } from '@/utils/tasks'
@@ -45,6 +46,8 @@ export default function Dashboard(): ReactElement {
         return <IdlingGamesList />
       case 'freeGames':
         return <FreeGamesList />
+      case 'tradingCards':
+        return <TradingCardsList />
       case 'settings':
         return <Settings />
       default:

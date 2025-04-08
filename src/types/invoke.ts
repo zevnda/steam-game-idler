@@ -1,4 +1,4 @@
-import type { Achievement, Game, Statistic, UserSettings, UserSummary } from '@/types'
+import type { Achievement, Game, Statistic, TradingCard, UserSettings, UserSummary } from '@/types'
 
 interface Processes {
   appid: number
@@ -92,4 +92,36 @@ export interface InvokeDropsRemaining {
 export interface InvokeGamesWithDrops {
   error?: string
   gamesWithDrops: Game[]
+}
+
+export interface InvokeCardData {
+  success: boolean
+  card_data: TradingCard[]
+}
+
+export interface InvokeCardPrice {
+  success: boolean
+  price_data: {
+    lowest_price: string
+    volume: string
+    median_price: string
+    highest_price: string
+  }
+}
+
+export interface InvokeListCards {
+  results: {
+    assetid: string
+    message?: string
+    data?: {
+      email_domain: string
+      needs_email_confirmation: boolean
+      needs_mobile_confirmation: boolean
+      requires_confirmation: number
+      success: boolean
+    }
+    success: boolean
+  }[]
+  successful: number
+  total: number
 }

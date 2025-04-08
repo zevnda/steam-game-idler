@@ -11,21 +11,22 @@ export default function HeaderTitle(): ReactElement {
   const { showAchievements } = useStateContext()
 
   const formatTitleName: Record<string, string> = {
-    setup: t('setup.welcome'),
-    games: t('gamesList.title'),
-    idling: t('idlingGames.title'),
+    'setup': t('setup.welcome'),
+    'games': t('gamesList.title'),
+    'idling': t('idlingGames.title'),
     'customlists/card-farming': t('common.cardFarming'),
     'customlists/achievement-unlocker': t('common.achievementUnlocker'),
     'customlists/auto-idle': t('customLists.autoIdle.title'),
     'customlists/favorites': t('customLists.favorites.title'),
-    freeGames: t('freeGames.title'),
-    settings: t('settings.title'),
-    general: t('settings.general.title'),
+    'freeGames': t('freeGames.title'),
+    'tradingCards': t('tradingCards.title'),
+    'settings': t('settings.title'),
+    'general': t('settings.general.title'),
     'card-farming': t('common.cardFarming'),
     'achievement-unlocker': t('common.achievementUnlocker'),
-    logs: t('settings.logs.title'),
-    achievements: t('achievementManager.achievements.title'),
-    statistics: t('achievementManager.statistics.title'),
+    'logs': t('settings.logs.title'),
+    'achievements': t('achievementManager.achievements.title'),
+    'statistics': t('achievementManager.statistics.title'),
   }
 
   return (

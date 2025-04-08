@@ -1,0 +1,53 @@
+import { Steps } from 'nextra/components';
+
+import Callout from '@docs/components/Callout';
+import Icon from '@docs/components/Icon';
+import MockButton from '@docs/components/MockButton';
+
+# Trading Card Manager
+
+The Trading Card Manager feature allows you to manage your Steam trading card inventory directly within SGI, including the ability to view your card collection and sell cards on the Steam marketplace.
+
+<Callout type="info">
+    You must add your [Steam Credentials](/steam-credentials) in [Settings > Card Farming](/settings/card-farming) before you can use the Trading Card Manager
+</Callout>
+
+<Callout type="info">
+    You must [Enable Beta Features](/settings/general#enable-beta-feature) in [Settings > General](/settings/general) to use the Trading Card Manager
+</Callout>
+
+## Steps
+
+<Steps>
+    {<h3 />}
+    Click <Icon type='market' /> in the `sidebar`
+
+    {<h3 />}
+    Find a card *(or multiple cards)* that you want to sell and input a sale price
+
+    {<h3 />}
+    You can click the <Icon type='dollar' /> button to fetch the current market price for the card. This will show you the `lowest price` and `median price` for the card
+    <Callout type="info">
+      You can click the `lowest price` or `median price` to set the sale price for the card
+    </Callout>
+
+    {<h3 />}
+    Once you have set the prices for the cards you want to sell, click <MockButton type='list-cards' /> to list the cards for sale on the Steam marketplace
+
+    {<h3 />}
+    If you have Two-Factor Authentication *(2FA)* or Steam Guard enabled on your account, you will need to confirm the listing via the Steam mobile app or via email depending on which you use. SGI will usually tell you which method you need to use
+</Steps>
+
+## Additional Information
+
+Steam has rate limts in place for listing cards for sale. If you try to list too many cards at once, you may receive an error message from Steam. If this happens, you will need to wait an undiscosed amount of time before you can list more cards
+
+The checkbox for each card will be automatically checked when entering a sale price greater than `$0.00`. Setting the price to `$0.00` will uncheck the checkbox for that card, or you can manually check or uncheck the checkbox for any card
+
+If you manually check the checkbox you will need to set a price greater than `$0.00` for the card to be sold
+
+Not all cards have `lowest price` and `median price` data available. I believe market price data is only available if the card has been sold on the Steam marketplace in the last 30 days
+
+Trading cards will remain visible in your inventory until they are sold
+
+When you sell or earn a new trading card, you will need to manually refresh the Trading Card Manager to see the changes. You can do this by clicking the <Icon type='refresh' /> button in the page header
