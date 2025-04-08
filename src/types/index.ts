@@ -1,4 +1,5 @@
 export * from './achievment'
+export * from './tradingcard'
 export * from './game'
 export * from './invoke'
 export * from './log'

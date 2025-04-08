@@ -50,8 +50,12 @@ export default function Logs(): ReactElement {
                 <>
                   {logs.map((log, index) => (
                     <tr key={log.timestamp} className={index % 2 === 0 ? 'bg-tablerowalt' : 'bg-tablerow'}>
-                      <td className='p-1.5 text-altwhite uppercase'>{log.timestamp}</td>
-                      <td className={`p-1.5 ${log.message?.includes('Error') && 'text-red-400'}`}>{log.message}</td>
+                      <td className='p-1.5 text-altwhite uppercase align-top'>{log.timestamp}</td>
+                      <td
+                        className={`max-w-[100px] overflow-hidden break-words p-1.5 ${log.message?.includes('Error') && 'text-red-400'}`}
+                      >
+                        {log.message}
+                      </td>
                     </tr>
                   ))}
                 </>

@@ -4,6 +4,8 @@ import { FiLogOut } from 'react-icons/fi'
 import {
   TbAward,
   TbCards,
+  TbCashRegister,
+  TbCurrencyDollar,
   TbDeviceGamepad2,
   TbDotsVertical,
   TbGift,
@@ -11,6 +13,7 @@ import {
   TbHourglassLow,
   TbPlayerPlay,
   TbPlayerPlayFilled,
+  TbRefresh,
   TbSettings,
 } from 'react-icons/tb'
 
@@ -21,11 +24,14 @@ type IconType =
   | 'award'
   | 'hourglass'
   | 'heart'
+  | 'market'
+  | 'dollar'
   | 'gift'
   | 'playalt'
   | 'cog'
   | 'dots'
   | 'signout'
+  | 'refresh'
 
 interface IconProps {
   type: IconType
@@ -53,6 +59,12 @@ export default function Icon({ type }: IconProps): ReactElement {
         <TbHourglassLow fontSize={24} style={iconStyles} className='shadow-sm bg-[#eff4f7] text-black' />
       )}
       {type === 'heart' && <TbHeart fontSize={24} style={iconStyles} className='shadow-sm bg-[#eff4f7] text-black' />}
+      {type === 'market' && (
+        <TbCashRegister fontSize={24} style={iconStyles} className='shadow-sm bg-[#eff4f7] text-black' />
+      )}
+      {type === 'dollar' && (
+        <TbCurrencyDollar fontSize={24} style={iconStyles} className='shadow-sm bg-[#eff4f7] text-black' />
+      )}
       {type === 'gift' && <TbGift fontSize={24} style={iconStyles} className='shadow-sm bg-[#eff4f7] text-black' />}
       {type === 'playalt' && (
         <TbPlayerPlayFilled fontSize={24} style={iconStyles} className='shadow-sm bg-[#eff4f7] text-black' />
@@ -63,6 +75,9 @@ export default function Icon({ type }: IconProps): ReactElement {
       )}
       {type === 'signout' && (
         <FiLogOut fontSize={24} style={iconStyles} className='shadow-sm bg-[#eff4f7] text-black rotate-180' />
+      )}
+      {type === 'refresh' && (
+        <TbRefresh fontSize={24} style={iconStyles} className='shadow-sm bg-[#eff4f7] text-black' />
       )}
     </>
   )

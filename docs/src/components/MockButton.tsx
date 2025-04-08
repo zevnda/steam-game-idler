@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react'
 
-import { TbAward, TbCards, TbEdit, TbPlus, TbSettings } from 'react-icons/tb'
+import { TbAward, TbCards, TbEdit, TbPlus, TbSettings, TbShoppingBagCheck } from 'react-icons/tb'
 
 type ButtonType =
   | 'unlock'
@@ -10,6 +10,7 @@ type ButtonType =
   | 'edit'
   | 'card-farming'
   | 'achievement-unlocker'
+  | 'list-cards'
   | 'done'
   | 'save'
   | 'save-changes'
@@ -62,6 +63,12 @@ export default function MockButton({ type, content }: MockButtonProps): ReactEle
     return (
       <span className='inline bg-[#eff4f7] text-black text-[10px] font-semibold px-1.5 py-1.5 rounded-sm shadow-sm select-none mx-1'>
         <TbAward fontSize={14} className='inline' /> Start Achievement Unlocker
+      </span>
+    )
+  } else if (type === 'list-cards') {
+    return (
+      <span className='inline bg-[#eff4f7] text-black text-[10px] font-semibold px-1.5 py-1.5 rounded-sm shadow-sm select-none mx-1'>
+        <TbShoppingBagCheck fontSize={14} className='inline' /> List Selected Cards
       </span>
     )
   } else if (type === 'done') {

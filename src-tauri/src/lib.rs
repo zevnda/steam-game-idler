@@ -7,6 +7,7 @@ pub mod idling;
 pub mod logging;
 pub mod process_handler;
 pub mod settings;
+pub mod trading_cards;
 pub mod user_data;
 pub mod utils;
 use achievement_manager::*;
@@ -17,6 +18,7 @@ use idling::*;
 use logging::*;
 use process_handler::*;
 use settings::*;
+use trading_cards::*;
 use user_data::*;
 use utils::*;
 
@@ -107,6 +109,12 @@ pub fn run() {
             get_user_settings,
             update_user_settings,
             reset_user_settings,
+            get_trading_cards,
+            get_trading_cards_cache,
+            update_card_data,
+            delete_user_trading_card_file,
+            list_trading_cards,
+            get_card_price
         ])
         .build(tauri::generate_context!())
         .expect("Error while building tauri application")

@@ -22,13 +22,14 @@ export default function FreeGamesList(): ReactElement {
       className={cn(
         'w-calc min-h-calc max-h-calc bg-base overflow-y-auto',
         'overflow-x-hidden rounded-tl-xl border-t border-l',
-        'border-border select-none',
+        'border-border',
       )}
     >
       <div
         className={cn(
           'fixed w-[calc(100vw-68px)] z-[50] bg-opacity-90',
           'backdrop-blur-md bg-base pl-4 pt-2 pr-2 rounded-tl-xl',
+          'select-none',
         )}
       >
         <div className='flex justify-between items-center pb-3'>

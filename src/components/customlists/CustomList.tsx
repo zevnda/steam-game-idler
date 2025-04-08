@@ -106,7 +106,7 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
     <>
       <div
         className={cn(
-          'w-calc min-h-calc max-h-calc bg-base overflow-y-auto select-none',
+          'w-calc min-h-calc max-h-calc bg-base overflow-y-auto',
           'overflow-x-hidden rounded-tl-xl border-t border-l border-border',
         )}
         ref={containerRef}
@@ -118,7 +118,7 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
             list.slice(0, visibleGames).length >= 21 ? 'pr-4' : 'pr-2',
           )}
         >
-          <div className='flex flex-col'>
+          <div className='flex flex-col select-none'>
             <p className='text-lg font-bold'>{listType.title}</p>
             <p className='text-sm text-altwhite'>{listType.description}</p>
           </div>

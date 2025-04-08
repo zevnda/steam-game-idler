@@ -6,6 +6,7 @@ import { FiLogOut } from 'react-icons/fi'
 import {
   TbAward,
   TbCards,
+  TbCashRegister,
   TbDeviceGamepad2,
   TbGift,
   TbHeart,
@@ -24,7 +25,7 @@ import useSideBar from '@/hooks/ui/useSideBar'
 export default function SideBar(): ReactElement {
   const { t } = useTranslation()
   const { idleGamesList } = useIdleContext()
-  const { isDarkMode, showFreeGamesTab, isCardFarming, isAchievementUnlocker } = useStateContext()
+  const { isDarkMode, showFreeGamesTab, isCardFarming, isAchievementUnlocker, useBeta } = useStateContext()
   const { activePage, setActivePage } = useNavigationContext()
   const { isOpen, onOpenChange, openConfirmation, handleLogout } = useSideBar(activePage, setActivePage)
 
@@ -120,6 +121,22 @@ export default function SideBar(): ReactElement {
               </div>
             </CustomTooltip>
           </div>
+
+          {useBeta && (
+            <div className='flex justify-center items-center w-14'>
+              <CustomTooltip content={t('tradingCards.title')} placement='right'>
+                <div
+                  className={cn(
+                    'p-2 rounded-full duration-200 cursor-pointer active:scale-90',
+                    activePage === 'tradingCards' ? 'bg-dynamic/30 text-dynamic' : 'hover:bg-titlehover',
+                  )}
+                  onClick={() => setActivePage('tradingCards')}
+                >
+                  <TbCashRegister fontSize={22} />
+                </div>
+              </CustomTooltip>
+            </div>
+          )}
 
           {showFreeGamesTab && (
             <div className='flex justify-center items-center w-14'>
