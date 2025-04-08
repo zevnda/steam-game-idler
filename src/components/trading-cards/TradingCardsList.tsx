@@ -77,7 +77,7 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
               }
               placement='right'
             >
-              <div className='flex items-center justify-center w-[100px] bg-input border border-border p-1.5 rounded-lg'>
+              <div className='flex items-center justify-center w-full bg-input border border-border p-1.5 rounded-lg'>
                 <Image
                   className='w-[64px] h-[75px] border border-border'
                   src={item.image}
