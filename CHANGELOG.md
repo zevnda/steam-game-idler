@@ -2,7 +2,7 @@
 
 ### Changes in v1.11.0
 
-- Added a `trading card manager` **BETA FEATURE**
+- Added a `trading card manager` **<sup>BETA FEATURE</sup>**
   - Allows users to view and sell their Steam trading cards directly within SGI
   - Enabled `beta features` in `settings general` to use it
   - Read the [Trading Card Manager docs](https://steamgameidler.vercel.app/features/trading-card-manager) for a guide on how to use this feature
