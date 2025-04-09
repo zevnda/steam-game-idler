@@ -50,7 +50,6 @@
   "tradingCards.title": "Менеджер торговых карточек",
   "tradingCards.subtitle": "Продавайте свои торговые карты на рынке Steam",
   "tradingCards.list": "Список выбранных карточек",
-  "tradingCards.fetchPrice": "Узнать рыночные цены",
   "tradingCards.cardExchange": "Посмотреть на Steam Card Exchange",
   "automation.cardFarming.initialDelay": "Это может занять несколько секунд..",
   "automation.cardFarming.progress": "Выполняется бездействие для <1>{{count}}</1> игры(игр) с оставшимися <3>{{total}}</3> выпадениями карточек",

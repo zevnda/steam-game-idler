@@ -50,7 +50,6 @@
   "tradingCards.title": "Takas Kartı Yöneticisi",
   "tradingCards.subtitle": "Takas kartlarını Steam marketinde sat",
   "tradingCards.list": "Seçilmiş Kartları Listele",
-  "tradingCards.fetchPrice": "Market fiyatlarını al",
   "tradingCards.cardExchange": "Steam Card Exchange üzerinden görüntüle",
   "automation.cardFarming.initialDelay": "Bu birkaç saniye sürebilir..",
   "automation.cardFarming.progress": "<1>{{count}}</1> adet oyunu <3>{{total}}</3> adet kart düşürme hakkı ile boşta bırakılıyor",
