@@ -105,7 +105,7 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
   }
 
   return (
-    <div style={style} className='grid grid-cols-6 gap-2 px-4'>
+    <div style={style} className='grid grid-cols-6 gap-2 px-4 mt-[72px]'>
       {renderCard(item1)}
       {renderCard(item2)}
       {renderCard(item3)}
@@ -165,9 +165,9 @@ export default function TradingCardsList(): ReactElement {
       <PageHeader selectedCardsWithPrice={selectedCardsWithPrice} tradingCardContext={tradingCardContext} />
 
       {!tradingCardContext.isLoading ? (
-        <div className='flex flex-col mt-[64px]'>
+        <div className='flex flex-col'>
           <List
-            height={windowInnerHeight - 110}
+            height={windowInnerHeight - 49}
             itemCount={Math.ceil(tradingCardContext.tradingCardsList.length / 6)}
             itemSize={335}
             width='100%'
