@@ -48,7 +48,6 @@
   "customLists.addAll": "Hepsini Ekle",
   "customLists.invalid": "Geçersiz liste türü",
   "tradingCards.title": "Takas Kartı Yöneticisi",
-  "tradingCards.subtitle": "Takas kartlarını Steam marketinde sat",
   "tradingCards.list": "Seçilmiş Kartları Listele",
   "tradingCards.cardExchange": "Steam Card Exchange üzerinden görüntüle",
   "automation.cardFarming.initialDelay": "Bu birkaç saniye sürebilir..",
