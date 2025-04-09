@@ -48,7 +48,6 @@
   "customLists.addAll": "Добавить все",
   "customLists.invalid": "Неверный тип списка",
   "tradingCards.title": "Менеджер торговых карточек",
-  "tradingCards.subtitle": "Продавайте свои торговые карты на рынке Steam",
   "tradingCards.list": "Список выбранных карточек",
   "tradingCards.cardExchange": "Посмотреть на Steam Card Exchange",
   "automation.cardFarming.initialDelay": "Это может занять несколько секунд..",
