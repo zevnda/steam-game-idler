@@ -1,6 +1,6 @@
-<!-- 1.11.0 -->
+<!-- 1.11.1 -->
 
-### Changes in v1.11.0
+### Changes in v1.11.1
 
 - Improved the layout of `trading card manager`
 - Added an individual `sell` button for each card
