@@ -22,7 +22,7 @@ interface UseTradingCardsList {
   loadingListButton: boolean
   changedCardPrices: Record<string, number>
   selectedCards: Record<string, boolean>
-  fetchCardPrices: (hash: string) => Promise<void>
+  fetchCardPrices: (hash: string) => Promise<{ success: boolean; price?: number }>
   updateCardPrice: (assetId: string, value: number) => void
   toggleCardSelection: (assetId: string) => void
   handleSellSelectedCards: () => Promise<void>
@@ -30,6 +30,7 @@ interface UseTradingCardsList {
   getCardPriceValue: (assetId: string) => number
   refreshKey: number
   handleRefresh: () => void
+  handleSellAllCards: () => Promise<void>
 }
 
 export default function useTradingCardsList(): UseTradingCardsList {
@@ -95,13 +96,16 @@ export default function useTradingCardsList(): UseTradingCardsList {
     getTradingCards()
   }, [refreshKey, t, userSettings.cardFarming.credentials, userSummary?.steamId])
 
-  const fetchCardPrices = async (hash: string): Promise<void> => {
+  const fetchCardPrices = async (hash: string): Promise<{ success: boolean; price?: number }> => {
     setLoadingItemPrice(prev => ({ ...prev, [hash]: true }))
 
     try {
       const credentials = userSettings.cardFarming.credentials
 
-      if (!credentials?.sid || !credentials?.sls) return showMissingCredentialsToast()
+      if (!credentials?.sid || !credentials?.sls) {
+        showMissingCredentialsToast()
+        return { success: false }
+      }
 
       // Validate credentials
       const validate = await invoke<InvokeValidateSession>('validate_session', {
@@ -111,7 +115,10 @@ export default function useTradingCardsList(): UseTradingCardsList {
         steamid: userSummary?.steamId,
       })
 
-      if (!validate.user) return showIncorrectCredentialsToast()
+      if (!validate.user) {
+        showIncorrectCredentialsToast()
+        return { success: false }
+      }
 
       const cardPrices = await invoke<InvokeCardPrice>('get_card_price', {
         sid: credentials.sid,
@@ -120,6 +127,10 @@ export default function useTradingCardsList(): UseTradingCardsList {
         steamId: userSummary?.steamId,
         marketHashName: hash,
       })
+
+      if (!cardPrices.price_data?.success) {
+        return { success: false }
+      }
 
       const response = await invoke<InvokeCardData>('update_card_data', {
         steamId: userSummary?.steamId,
@@ -131,9 +142,21 @@ export default function useTradingCardsList(): UseTradingCardsList {
         const sortedCards = response.card_data.sort((a, b) => a.appname.localeCompare(b.appname))
         setTradingCardsList(sortedCards)
       }
+
+      const priceData = cardPrices.price_data
+      let price: number | undefined
+
+      if (priceData?.median_price) {
+        price = parseFloat(priceData.median_price.replace(/[^\d.]/g, ''))
+      } else if (priceData?.lowest_price) {
+        price = parseFloat(priceData.lowest_price.replace(/[^\d.]/g, ''))
+      }
+
+      return { success: true, price }
     } catch (error) {
       console.error('Error fetching card prices:', error)
       logEvent(`[Error] in fetchCardPrices: ${error}`)
+      return { success: false }
     } finally {
       setLoadingItemPrice(prev => ({ ...prev, [hash]: false }))
     }
@@ -284,6 +307,94 @@ export default function useTradingCardsList(): UseTradingCardsList {
     }
   }
 
+  const handleSellAllCards = async (): Promise<void> => {
+    try {
+      const credentials = userSettings.cardFarming.credentials
+
+      if (!credentials?.sid || !credentials?.sls) return showMissingCredentialsToast()
+
+      setLoadingListButton(true)
+      showPrimaryToast(t('toast.tradingCards.processing'))
+
+      const successfulCards = []
+      const failedCards = []
+      let shouldContinue = true
+
+      for (const card of tradingCardsList) {
+        if (!shouldContinue) break
+
+        if (!card.market_hash_name) {
+          logEvent(`[Error] Card ${card.assetid} doesn't have a market hash name - skipping`)
+          continue
+        }
+
+        try {
+          const priceResult = await fetchCardPrices(card.market_hash_name)
+
+          if (!priceResult.success) {
+            shouldContinue = false
+            break
+          }
+
+          if (!priceResult.price) {
+            logEvent(`[Error] Couldn't determine price for card ${card.assetid} - skipping`)
+            continue
+          }
+
+          await new Promise(resolve => setTimeout(resolve, 3000))
+
+          if (!shouldContinue) break
+
+          const cardForListing: [string, string] = [card.assetid, priceResult.price.toString()]
+          const response = await invoke<InvokeListCards>('list_trading_cards', {
+            sid: credentials.sid,
+            sls: credentials.sls,
+            sma: credentials?.sma,
+            steamId: userSummary?.steamId,
+            cards: [cardForListing],
+          })
+
+          if (response.successful && response.results && response.results.length > 0) {
+            const result = response.results[0]
+            if (result.success) {
+              successfulCards.push(card.assetid)
+            } else {
+              failedCards.push({ assetid: card.assetid, message: result.message })
+
+              if (result.message && result.message.toLowerCase().includes('rate limit')) {
+                showDangerToast(t('toast.tradingCards.rateLimit'))
+                shouldContinue = false
+                break
+              }
+            }
+          }
+
+          await new Promise(resolve => setTimeout(resolve, 3000))
+        } catch (error) {
+          failedCards.push({ assetid: card.assetid, message: String(error) })
+          console.error(`Error processing card ${card.assetid}:`, error)
+          logEvent(`[Error] processing card ${card.assetid}: ${error}`)
+        }
+      }
+
+      if (successfulCards.length > 0) {
+        showSuccessToast(t('toast.tradingCards.listed', { count: successfulCards.length }))
+      }
+
+      if (failedCards.length > 0) {
+        for (const failed of failedCards) {
+          logEvent(`[Error] Failed to list trading card ${failed.assetid}: ${failed.message}`)
+        }
+      }
+    } catch (error) {
+      showDangerToast(t('common.error'))
+      console.error('Error in handleSellAllCards:', error)
+      logEvent(`[Error] in handleSellAllCards: ${error}`)
+    } finally {
+      setLoadingListButton(false)
+    }
+  }
+
   const getCardPriceValue = (assetId: string): number => {
     return changedCardPrices[assetId] || 0
   }
@@ -317,5 +428,6 @@ export default function useTradingCardsList(): UseTradingCardsList {
     getCardPriceValue,
     refreshKey,
     handleRefresh,
+    handleSellAllCards,
   }
 }

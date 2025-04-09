@@ -40,23 +40,33 @@ The Trading Card Manager feature allows you to manage your Steam trading card in
     If you have Two-Factor Authentication *(2FA)* or Steam Guard enabled on your account, you will need to confirm the listing via the Steam mobile app or via email depending on which you use. SGI will usually tell you which method you need to use
 </Steps>
 
-## Sell Multiple Cards At Once
+### Sell Selected Cards
 
 <Steps>
     {<h3 />}
     Click <Icon type='market' /> in the `sidebar`
 
     {<h3 />}
-    Find a cards that you want to sell and input a sale price for each one
-
-    {<h3 />}
-    You can click `show market prices` to fetch the current market price for the card. This will show you the `lowest price` and `median price` for the card
-    <Callout type="info">
-      You can click the `lowest price` or `median price` to set the sale price for the card
-    </Callout>
+    Find a cards that you want to sell and input a sale price for each one. Setting the price greater than `$0.00` will automatically check the checkbox for that card. You can also manually check or uncheck the checkbox for any card
 
     {<h3 />}
     Once you have set the prices for the cards you want to sell, click <MockButton type='list-cards' /> to list the cards for sale on the Steam marketplace
+
+    {<h3 />}
+    If you have Two-Factor Authentication *(2FA)* or Steam Guard enabled on your account, you will need to confirm the listing for each card via the Steam mobile app or via email depending on which you use. SGI will usually tell you which method you need to use
+</Steps>
+
+### Sell All Cards
+
+<Steps>
+    {<h3 />}
+    Click <Icon type='market' /> in the `sidebar`
+
+    {<h3 />}
+    Click <MockButton type='sell-all' /> to list all cards for sale on the Steam marketplace
+
+    {<h3 />}
+    SGI will try to sell each card for its `median price` if available, falling back to using its `lowest price` if not. If neither are available the card will not be listed
 
     {<h3 />}
     If you have Two-Factor Authentication *(2FA)* or Steam Guard enabled on your account, you will need to confirm the listing for each card via the Steam mobile app or via email depending on which you use. SGI will usually tell you which method you need to use

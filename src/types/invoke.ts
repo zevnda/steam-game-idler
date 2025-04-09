@@ -106,6 +106,7 @@ export interface InvokeCardPrice {
     volume: string
     median_price: string
     highest_price: string
+    success: boolean
   }
 }
 

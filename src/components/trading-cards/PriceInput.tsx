@@ -59,7 +59,7 @@ export default function PriceInput({ item, tradingCardContext }: PriceInputProps
           className='font-semibold rounded-lg bg-dynamic text-button-text'
           onPress={onOpen}
         >
-          {!tradingCardContext.loadingListButton && t('common.sell')}
+          {!tradingCardContext.loadingListButton && t('common.list')}
         </Button>
       </div>
 

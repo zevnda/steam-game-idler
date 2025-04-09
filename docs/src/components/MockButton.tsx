@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react'
 
-import { TbAward, TbCards, TbEdit, TbPlus, TbSettings, TbShoppingBagCheck } from 'react-icons/tb'
+import { TbAward, TbCards, TbEdit, TbPlus, TbSettings, TbShoppingBag, TbShoppingBagCheck } from 'react-icons/tb'
 
 type ButtonType =
   | 'unlock'
@@ -12,6 +12,7 @@ type ButtonType =
   | 'achievement-unlocker'
   | 'list-cards'
   | 'sell'
+  | 'sell-all'
   | 'done'
   | 'save'
   | 'save-changes'
@@ -76,6 +77,12 @@ export default function MockButton({ type, content }: MockButtonProps): ReactEle
     return (
       <span className='inline bg-[#eff4f7] text-black text-[10px] font-semibold px-1.5 py-1.5 rounded-sm shadow-sm select-none mx-1'>
         Sell
+      </span>
+    )
+  } else if (type === 'sell-all') {
+    return (
+      <span className='inline bg-[#eff4f7] text-black text-[10px] font-semibold px-1.5 py-1.5 rounded-sm shadow-sm select-none mx-1'>
+        <TbShoppingBag fontSize={14} className='inline' /> List All Cards
       </span>
     )
   } else if (type === 'done') {
