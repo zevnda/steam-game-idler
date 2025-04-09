@@ -2,7 +2,7 @@
 
 ### Changes in v1.11.2
 
-- Added a `list all cards` button
+- Added a `list all cards` button to `trading card manager`
   - This option will attempt to list each card for its `median price` if available, falling back to using its `lowest price` if not. If neither are available the card will not be listed
 - More layout improvements for `trading card manager`
 
