@@ -11,6 +11,7 @@ type ButtonType =
   | 'card-farming'
   | 'achievement-unlocker'
   | 'list-cards'
+  | 'sell'
   | 'done'
   | 'save'
   | 'save-changes'
@@ -69,6 +70,12 @@ export default function MockButton({ type, content }: MockButtonProps): ReactEle
     return (
       <span className='inline bg-[#eff4f7] text-black text-[10px] font-semibold px-1.5 py-1.5 rounded-sm shadow-sm select-none mx-1'>
         <TbShoppingBagCheck fontSize={14} className='inline' /> List Selected Cards
+      </span>
+    )
+  } else if (type === 'sell') {
+    return (
+      <span className='inline bg-[#eff4f7] text-black text-[10px] font-semibold px-1.5 py-1.5 rounded-sm shadow-sm select-none mx-1'>
+        Sell
       </span>
     )
   } else if (type === 'done') {

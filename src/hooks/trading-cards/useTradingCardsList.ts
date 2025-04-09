@@ -1,4 +1,4 @@
-import type { InvokeCardData, InvokeCardPrice, InvokeListCards, TradingCard } from '@/types'
+import type { InvokeCardData, InvokeCardPrice, InvokeListCards, InvokeValidateSession, TradingCard } from '@/types'
 
 import { invoke } from '@tauri-apps/api/core'
 
@@ -7,18 +7,27 @@ import { useTranslation } from 'react-i18next'
 
 import { useUserContext } from '@/components/contexts/UserContext'
 import { logEvent } from '@/utils/tasks'
-import { showDangerToast, showMissingCredentialsToast, showPrimaryToast, showSuccessToast } from '@/utils/toasts'
+import {
+  showDangerToast,
+  showIncorrectCredentialsToast,
+  showMissingCredentialsToast,
+  showPrimaryToast,
+  showSuccessToast,
+} from '@/utils/toasts'
 
 interface UseTradingCardsList {
   tradingCardsList: TradingCard[]
   isLoading: boolean
   loadingItemPrice: Record<string, boolean>
+  loadingListButton: boolean
   changedCardPrices: Record<string, number>
   selectedCards: Record<string, boolean>
   fetchCardPrices: (hash: string) => Promise<void>
   updateCardPrice: (assetId: string, value: number) => void
   toggleCardSelection: (assetId: string) => void
   handleSellSelectedCards: () => Promise<void>
+  handleSellSingleCard: (assetId: string, price: number) => Promise<void>
+  getCardPriceValue: (assetId: string) => number
   refreshKey: number
   handleRefresh: () => void
 }
@@ -29,6 +38,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
   const [tradingCardsList, setTradingCardsList] = useState<TradingCard[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [loadingItemPrice, setLoadingItemPrice] = useState<Record<string, boolean>>({})
+  const [loadingListButton, setLoadingListButton] = useState(false)
   const [changedCardPrices, setChangedCardPrices] = useState<Record<string, number>>({})
   const [selectedCards, setSelectedCards] = useState<Record<string, boolean>>({})
   const [refreshKey, setRefreshKey] = useState(0)
@@ -38,12 +48,19 @@ export default function useTradingCardsList(): UseTradingCardsList {
       try {
         const credentials = userSettings.cardFarming.credentials
 
-        if (!credentials?.sid || !credentials?.sls) {
-          setIsLoading(false)
-          return showMissingCredentialsToast()
-        }
+        if (!credentials?.sid || !credentials?.sls) return showMissingCredentialsToast()
 
         setIsLoading(true)
+
+        // Validate credentials
+        const validate = await invoke<InvokeValidateSession>('validate_session', {
+          sid: credentials.sid,
+          sls: credentials.sls,
+          sma: credentials?.sma,
+          steamid: userSummary?.steamId,
+        })
+
+        if (!validate.user) return showIncorrectCredentialsToast()
 
         const cachedCards = await invoke<InvokeCardData>('get_trading_cards_cache', {
           steamId: userSummary?.steamId,
@@ -68,11 +85,10 @@ export default function useTradingCardsList(): UseTradingCardsList {
             showPrimaryToast(t('toast.tradingCards.noCards'))
           }
         }
-
-        setIsLoading(false)
       } catch (error) {
         console.error('Error in getTradingCards:', error)
         logEvent(`[Error] in getTradingCards: ${error}`)
+      } finally {
         setIsLoading(false)
       }
     }
@@ -86,6 +102,16 @@ export default function useTradingCardsList(): UseTradingCardsList {
       const credentials = userSettings.cardFarming.credentials
 
       if (!credentials?.sid || !credentials?.sls) return showMissingCredentialsToast()
+
+      // Validate credentials
+      const validate = await invoke<InvokeValidateSession>('validate_session', {
+        sid: credentials.sid,
+        sls: credentials.sls,
+        sma: credentials?.sma,
+        steamid: userSummary?.steamId,
+      })
+
+      if (!validate.user) return showIncorrectCredentialsToast()
 
       const cardPrices = await invoke<InvokeCardPrice>('get_card_price', {
         sid: credentials.sid,
@@ -140,6 +166,58 @@ export default function useTradingCardsList(): UseTradingCardsList {
     })
   }
 
+  const handleSellSingleCard = async (assetId: string, price: number): Promise<void> => {
+    try {
+      const credentials = userSettings.cardFarming.credentials
+
+      if (!credentials?.sid || !credentials?.sls) return showMissingCredentialsToast()
+
+      setLoadingListButton(true)
+
+      // Format for the API - single card as an array item
+      const cardForListing: [string, string] = [assetId, price.toString()]
+      logEvent(`Card for listing: ${JSON.stringify(cardForListing)}`)
+
+      const response = await invoke<InvokeListCards>('list_trading_cards', {
+        sid: credentials.sid,
+        sls: credentials.sls,
+        sma: credentials?.sma,
+        steamId: userSummary?.steamId,
+        cards: [cardForListing],
+      })
+
+      if (response.successful && response.results && response.results.length > 0) {
+        const result = response.results[0]
+
+        if (result.success) {
+          if (result.data?.needs_email_confirmation) {
+            showSuccessToast(t('toast.tradingCards.emailConfirm', { count: 1 }))
+          } else if (result.data?.needs_mobile_confirmation) {
+            showSuccessToast(t('toast.tradingCards.mobileConfirm', { count: 1 }))
+          } else {
+            showSuccessToast(t('toast.tradingCards.listed', { count: 1 }))
+          }
+        } else {
+          showDangerToast(t('common.error'))
+          logEvent(`[Error] Failed to list trading card ${assetId}: ${result.message}`)
+        }
+      } else {
+        showDangerToast(t('common.error'))
+        logEvent(`[Error] Failed to list trading card: ${JSON.stringify(response)}`)
+      }
+
+      logEvent(`Complete listing result: ${JSON.stringify(response)}`)
+    } catch (error) {
+      showDangerToast(t('common.error'))
+      console.error('Error in handleSellSingleCard:', error)
+      logEvent(`[Error] in handleSellSingleCard: ${error}`)
+    } finally {
+      setSelectedCards({})
+      setChangedCardPrices({})
+      setLoadingListButton(false)
+    }
+  }
+
   const handleSellSelectedCards = async (): Promise<void> => {
     try {
       const credentials = userSettings.cardFarming.credentials
@@ -158,6 +236,8 @@ export default function useTradingCardsList(): UseTradingCardsList {
         string,
       ][]
 
+      setLoadingListButton(true)
+      showPrimaryToast(t('toast.tradingCards.processing'))
       logEvent(`Cards for listing: ${JSON.stringify(cardsForBulkListing)}`)
 
       const response = await invoke<InvokeListCards>('list_trading_cards', {
@@ -200,7 +280,12 @@ export default function useTradingCardsList(): UseTradingCardsList {
     } finally {
       setSelectedCards({})
       setChangedCardPrices({})
+      setLoadingListButton(false)
     }
+  }
+
+  const getCardPriceValue = (assetId: string): number => {
+    return changedCardPrices[assetId] || 0
   }
 
   const handleRefresh = async (): Promise<void> => {
@@ -221,12 +306,15 @@ export default function useTradingCardsList(): UseTradingCardsList {
     tradingCardsList,
     isLoading,
     loadingItemPrice,
+    loadingListButton,
     changedCardPrices,
     selectedCards,
     fetchCardPrices,
     updateCardPrice,
     toggleCardSelection,
     handleSellSelectedCards,
+    handleSellSingleCard,
+    getCardPriceValue,
     refreshKey,
     handleRefresh,
   }

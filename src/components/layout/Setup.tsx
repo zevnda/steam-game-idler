@@ -113,10 +113,10 @@ export default function Setup(): ReactElement {
                       </div>
                     ))}
                   </div>
-                  <div className='flex gap-1 mt-4 cursor-pointer' onClick={handleRefresh}>
-                    <p className='text-xs text-altwhite'>{t('setup.refresh')}</p>
+                  <div className='flex gap-1 mt-4 cursor-pointer group' onClick={handleRefresh}>
+                    <p className='text-xs text-altwhite group-hover:text-altwhite/80'>{t('setup.refresh')}</p>
                     <div className='flex justify-center items-center'>
-                      <TbRefresh className='text-altwhite' fontSize={14} />
+                      <TbRefresh className='text-altwhite group-hover:text-altwhite/80' fontSize={14} />
                     </div>
                   </div>
                 </>
@@ -126,10 +126,10 @@ export default function Setup(): ReactElement {
                   <ExtLink href='https://steamgameidler.vercel.app/faq#error-messages:~:text=No%20Steam%20users%20found'>
                     <p className='text-sm text-link hover:text-linkhover'>{t('setup.learn')}</p>
                   </ExtLink>
-                  <div className='flex gap-1 mt-4 cursor-pointer' onClick={handleRefresh}>
-                    <p className='text-xs text-altwhite'>{t('setup.refresh')}</p>
+                  <div className='flex gap-1 mt-4 cursor-pointer group' onClick={handleRefresh}>
+                    <p className='text-xs text-altwhite group-hover:text-altwhite/80'>{t('setup.refresh')}</p>
                     <div className='flex justify-center items-center'>
-                      <TbRefresh className='text-altwhite' fontSize={14} />
+                      <TbRefresh className='text-altwhite group-hover:text-altwhite/80' fontSize={14} />
                     </div>
                   </div>
                 </div>
