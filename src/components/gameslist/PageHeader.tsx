@@ -58,7 +58,7 @@ export default function PageHeader({
                 className='flex justify-center items-center cursor-pointer'
                 onClick={() => handleRefetch(userSummary?.steamId)}
               >
-                <TbRefresh className='text-altwhite' fontSize={16} />
+                <TbRefresh className='text-altwhite hover:text-altwhite/80' fontSize={16} />
               </div>
             </div>
           </div>

@@ -2,6 +2,16 @@
 
 ### Changes in v1.11.0
 
+- Improved the layout of `trading card manager`
+- Added an individual `sell` button for each card
+- Added a confirmation modal before listing trading cards
+- Added toasts for different actions, successes and errors in `trading card manager`
+- The `list selected cards` button now shows a loading state while cards a being listed
+
+<!-- 1.11.0 -->
+
+### Changes in v1.11.0
+
 - Added a `trading card manager` **<sup>BETA FEATURE</sup>**
   - Allows users to view and sell their Steam trading cards directly within SGI
   - Enabled `beta features` in `settings general` to use it
