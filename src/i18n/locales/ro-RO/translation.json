@@ -50,7 +50,6 @@
   "tradingCards.title": "Manager de cărți de schimb",
   "tradingCards.subtitle": "Vinde-ți cărțile de schimb pe piața Steam",
   "tradingCards.list": "Listează cărțile selectate",
-  "tradingCards.fetchPrice": "Preia prețurile de pe piață",
   "tradingCards.cardExchange": "Vezi pe Steam Card Exchange",
   "automation.cardFarming.initialDelay": "Asta poate dura câteva secunde...",
   "automation.cardFarming.progress": "Se lasă deschis <1>{{count}}</1> joc/jocuri cu <3>{{total}}</3> căderi de cărți rămase în total",
