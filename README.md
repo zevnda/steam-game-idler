@@ -29,7 +29,7 @@ Refer to the **[documentation](https://steamgameidler.vercel.app/)** for a detai
 * **[Achievement Manager](https://steamgameidler.vercel.app/features/achievement-manager)**: Manually unlock or lock any achievement for any game
 * **[Trading Card Manager](https://steamgameidler.vercel.app/features/trading-card-manager)**: Easily sell your trading cards on the Steam marketplace
 * **[Playtime Booster](https://steamgameidler.vercel.app/features/playtime-booster)**: Increase a game's total playtime by idling it manually
-* **[Auto Idler](https://steamgameidler.vercel.app/features/auto-idler)**: Automatically idle chosen games when your PC boots up
+* **[Automatic Idler](https://steamgameidler.vercel.app/features/auto-idler)**: Automatically idle chosen games when SGI launches
 * **Fully Open Source**: Rest assured that what you're downloading and running is safe
 * **Actively Maintained**: Regular updates with new features and bug fixes
 
