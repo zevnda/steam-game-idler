@@ -46,7 +46,7 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
     return (
       <div
         key={item.assetid}
-        className='flex flex-col justify-start items-center bg-titlebar mb-2 rounded-lg border border-border p-2'
+        className='flex flex-col justify-start items-center bg-titlebar mb-4 rounded-lg border border-border p-2'
       >
         <div className='relative flex justify-between items-center w-full mb-2'>
           <div className='absolute left-1/2 transform -translate-x-1/2 flex items-center justify-center'>
@@ -105,7 +105,7 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
   }
 
   return (
-    <div style={style} className='grid grid-cols-6 gap-2 px-4 mt-[72px]'>
+    <div style={style} className='grid grid-cols-6 gap-4 px-4 mt-[72px]'>
       {renderCard(item1)}
       {renderCard(item2)}
       {renderCard(item3)}
@@ -169,7 +169,7 @@ export default function TradingCardsList(): ReactElement {
           <List
             height={windowInnerHeight - 49}
             itemCount={Math.ceil(tradingCardContext.tradingCardsList.length / 6)}
-            itemSize={335}
+            itemSize={340}
             width='100%'
             itemData={itemData}
           >
