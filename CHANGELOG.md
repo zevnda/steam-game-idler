@@ -1,3 +1,10 @@
+<!-- 1.11.4 -->
+
+### Changes in v1.11.4
+
+- Added a method to account for Steam fees when listing trading cards
+  - Previously, if you tried to list a card for `0.10` it would be listed as `0.12` _(buyer pays)_ due to Steam adding their fees on top 
+
 <!-- 1.11.3 -->
 
 ### Changes in v1.11.3
