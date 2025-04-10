@@ -353,7 +353,9 @@ export default function useTradingCardsList(): UseTradingCardsList {
 
           if (!shouldContinue) break
 
-          const cardForListing: [string, string] = [card.assetid, priceResult.price.toString()]
+          const parsedPrice = priceResult.price.replace(/[^0-9.,]/g, '').replace(',', '.')
+          const cardForListing: [string, string] = [card.assetid, parsedPrice]
+
           const response = await invoke<InvokeListCards>('list_trading_cards', {
             sid: credentials.sid,
             sls: credentials.sls,
