@@ -103,6 +103,7 @@
   "settings.general.runAtStartup": "Başlangıçta çalıştır",
   "settings.general.language": "Dil",
   "settings.general.theme": "Tema",
+  "settings.general.currency": "Para Birimi",
   "settings.general.webApi": "Kendi <1>Steam web API anahtarını</1> kullan (isteğe bağlı). <3>Daha fazlasını öğren</3>",
   "settings.general.webApi.placeholder": "Steam Web API Anahtarı",
   "settings.general.helpTranslate": "SGI'nin çevirilmesinde yardım et",
