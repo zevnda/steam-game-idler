@@ -51,15 +51,12 @@ export const handleCheckboxChange = async (
       key: `${key}.${name}`,
       value: checked,
     })
-    const updatedSettings = response.settings
-
-    if (key === 'cardFarming') {
+    if (key === 'cardFarming' && (name === 'listGames' || name === 'allGames')) {
       // Add radio-button-like behavior for mutually exclusive options
       // Only one of the card farming options can be active at a time
-      const checkboxNames = Object.keys(updatedSettings.cardFarming)
       if (checked) {
         // If this checkbox is checked, uncheck the other one
-        const otherCheckboxName = checkboxNames.filter(c => c !== 'credentials').find(c => c !== name)
+        const otherCheckboxName = name === 'listGames' ? 'allGames' : 'listGames'
 
         const response = await invoke<InvokeSettings>('update_user_settings', {
           steamId,
@@ -69,12 +66,9 @@ export const handleCheckboxChange = async (
         setUserSettings(response.settings)
       } else {
         // Don't allow both checkboxes to be unchecked - keep one enabled
-        const otherCheckboxName = checkboxNames.filter(c => c !== 'credentials').find(c => c !== name)
+        const otherCheckboxName = name === 'listGames' ? 'allGames' : 'listGames'
 
-        if (
-          otherCheckboxName &&
-          !response.settings.cardFarming[otherCheckboxName as keyof typeof response.settings.cardFarming]
-        ) {
+        if (!response.settings.cardFarming[otherCheckboxName as keyof typeof response.settings.cardFarming]) {
           const response = await invoke<InvokeSettings>('update_user_settings', {
             steamId,
             key: `cardFarming.${otherCheckboxName}`,
