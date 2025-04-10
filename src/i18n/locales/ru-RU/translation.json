@@ -103,6 +103,7 @@
   "settings.general.runAtStartup": "Запускать при старте системы",
   "settings.general.language": "Язык",
   "settings.general.theme": "Тема",
+  "settings.general.currency": "Валюта",
   "settings.general.webApi": "Используйте свой собственный <1>Steam web API ключ</1> (опционально). <3>Узнать больше</3>",
   "settings.general.webApi.placeholder": "Ключ Steam Web API",
   "settings.general.helpTranslate": "Помочь с переводом SGI",

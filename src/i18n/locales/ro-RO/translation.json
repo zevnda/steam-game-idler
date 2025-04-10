@@ -103,6 +103,7 @@
   "settings.general.runAtStartup": "Rulează la pornire",
   "settings.general.language": "Limbă",
   "settings.general.theme": "Temă",
+  "settings.general.currency": "Monedă",
   "settings.general.webApi": "Folosește propria ta <1>cheie API web Steam</1> (opțional). <3>Află mai multe</3>",
   "settings.general.webApi.placeholder": "Cheia API web Steam",
   "settings.general.helpTranslate": "Ajută la traducerea SGI",
