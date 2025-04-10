@@ -1,3 +1,9 @@
+<!-- 1.11.5 -->
+
+### Changes in v1.11.5
+
+- Fixed an incorrect price value error when try to list all cards
+
 <!-- 1.11.4 -->
 
 ### Changes in v1.11.4
