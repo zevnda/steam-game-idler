@@ -9,6 +9,7 @@ import { useUserContext } from '@/components/contexts/UserContext'
 import SettingsCheckbox from '@/components/settings/SettingsCheckbox'
 import CustomTooltip from '@/components/ui/CustomTooltip'
 import ExtLink from '@/components/ui/ExtLink'
+import CurrencySwitch from '@/components/ui/i18n/CurrencySwitch'
 import LanguageSwitch from '@/components/ui/i18n/LanguageSwitch'
 import ThemeSwitch from '@/components/ui/theme/ThemeSwitch'
 import { handleClear, handleKeySave, useGeneralSettings } from '@/hooks/settings/useGeneralSettings'
@@ -80,6 +81,13 @@ export default function GeneralSettings(): ReactElement {
           <div className='flex flex-col gap-2 w-full'>
             <p className='font-bold'>{t('settings.general.theme')}</p>
             <ThemeSwitch />
+          </div>
+        </div>
+
+        <div className='flex gap-6 border border-border rounded-lg p-3 bg-titlebar w-full'>
+          <div className='flex flex-col gap-2 w-full'>
+            <p className='font-bold'>{t('settings.general.currency')}</p>
+            <CurrencySwitch />
           </div>
         </div>
       </div>

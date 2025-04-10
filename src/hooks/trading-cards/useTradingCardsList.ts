@@ -126,30 +126,38 @@ export default function useTradingCardsList(): UseTradingCardsList {
         sma: credentials?.sma,
         steamId: userSummary?.steamId,
         marketHashName: hash,
+        currency: localStorage.getItem('currency') || '1',
       })
 
       if (!cardPrices.price_data?.success) {
         return { success: false }
       }
 
+      const priceData = cardPrices.price_data
+      let price: number | undefined
+
+      if (priceData?.median_price) {
+        price = extractNumericValue(priceData.median_price)
+      } else if (priceData?.lowest_price) {
+        price = extractNumericValue(priceData.lowest_price)
+      }
+
+      const priceDataCleaned = {
+        ...priceData,
+        median_price: extractNumericValue(priceData.median_price),
+        lowest_price: extractNumericValue(priceData.lowest_price),
+        volume: priceData.volume,
+      }
+
       const response = await invoke<InvokeCardData>('update_card_data', {
         steamId: userSummary?.steamId,
         key: hash,
-        data: cardPrices.price_data,
+        data: priceDataCleaned,
       })
 
       if (response.card_data.length > 0) {
         const sortedCards = response.card_data.sort((a, b) => a.appname.localeCompare(b.appname))
         setTradingCardsList(sortedCards)
-      }
-
-      const priceData = cardPrices.price_data
-      let price: number | undefined
-
-      if (priceData?.median_price) {
-        price = parseFloat(priceData.median_price.replace(/[^\d.]/g, ''))
-      } else if (priceData?.lowest_price) {
-        price = parseFloat(priceData.lowest_price.replace(/[^\d.]/g, ''))
       }
 
       return { success: true, price }
@@ -159,6 +167,24 @@ export default function useTradingCardsList(): UseTradingCardsList {
       return { success: false }
     } finally {
       setLoadingItemPrice(prev => ({ ...prev, [hash]: false }))
+    }
+  }
+
+  function extractNumericValue(priceString: string): number | undefined {
+    if (!priceString) return undefined
+
+    const cleanedPrice = priceString.replace(/\u00A0/g, ' ')
+
+    const periodDecimalMatch = cleanedPrice.match(/\d+\.\d+/)
+    const commaDecimalMatch = cleanedPrice.match(/\d+,\d+/)
+
+    if (periodDecimalMatch) {
+      return parseFloat(periodDecimalMatch[0])
+    } else if (commaDecimalMatch) {
+      return parseFloat(commaDecimalMatch[0].replace(',', '.'))
+    } else {
+      const integerMatch = cleanedPrice.match(/\d+/)
+      return integerMatch ? parseInt(integerMatch[0], 10) : undefined
     }
   }
 

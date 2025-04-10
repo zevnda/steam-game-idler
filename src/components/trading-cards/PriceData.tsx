@@ -31,7 +31,7 @@ export default function PriceData({ item, tradingCardContext }: PriceDataProps):
             className='flex items-center cursor-pointer hover:opacity-80'
             onClick={() => {
               if (item.price_data?.lowest_price) {
-                const price = parseFloat(item.price_data.lowest_price.replace('$', ''))
+                const price = parseFloat(item.price_data.lowest_price)
                 tradingCardContext.updateCardPrice(item.assetid, price)
               } else {
                 tradingCardContext.updateCardPrice(item.assetid, 0)
@@ -39,14 +39,14 @@ export default function PriceData({ item, tradingCardContext }: PriceDataProps):
             }}
           >
             <TbCaretDownFilled className='text-danger' />
-            <p>{item.price_data.lowest_price || '$0.00'}</p>
+            <p>{item.price_data.lowest_price || '0.00'}</p>
           </div>
 
           <div
             className='flex items-center cursor-pointer hover:opacity-80'
             onClick={() => {
               if (item.price_data?.median_price) {
-                const price = parseFloat(item.price_data.median_price.replace('$', ''))
+                const price = parseFloat(item.price_data.median_price)
                 tradingCardContext.updateCardPrice(item.assetid, price)
               } else {
                 tradingCardContext.updateCardPrice(item.assetid, 0)
@@ -54,7 +54,7 @@ export default function PriceData({ item, tradingCardContext }: PriceDataProps):
             }}
           >
             <TbArrowsHorizontal className='text-success' />
-            <p>{item.price_data.median_price || '$0.00'}</p>
+            <p>{item.price_data.median_price || '0.00'}</p>
           </div>
         </div>
       )}
