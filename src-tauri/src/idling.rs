@@ -76,19 +76,25 @@ pub async fn stop_idle(app_id: u32) -> Result<Value, String> {
     Ok(json!({"success": "Successfully stopped idling game"}))
 }
 
+#[derive(serde::Deserialize)]
+pub struct GameInfo {
+    app_id: u32,
+    name: String,
+}
+
 #[tauri::command]
 // Start idling multiple games
-pub async fn start_farm_idle(app_ids: Vec<u32>) -> Result<Value, String> {
+pub async fn start_farm_idle(games_list: Vec<GameInfo>) -> Result<Value, String> {
     let exe_path = get_lib_path()?;
 
     cleanup_dead_processes().map_err(|e| e.to_string())?;
 
     let mut failed = false;
-    let apps_to_check = app_ids.clone(); // Clone to use later
+    let app_ids: Vec<u32> = games_list.iter().map(|game| game.app_id).collect();
 
-    for app_id in app_ids {
+    for game in &games_list {
         let child = Command::new(&exe_path)
-            .args(&["idle", &app_id.to_string(), true.to_string().as_str()])
+            .args(&["idle", &game.app_id.to_string(), &game.name])
             .creation_flags(0x08000000)
             .spawn()
             .map_err(|e| e.to_string())?;
@@ -97,7 +103,11 @@ pub async fn start_farm_idle(app_ids: Vec<u32>) -> Result<Value, String> {
 
         {
             let mut processes = SPAWNED_PROCESSES.lock().map_err(|e| e.to_string())?;
-            processes.push(ProcessInfo { child, app_id, pid });
+            processes.push(ProcessInfo {
+                child,
+                app_id: game.app_id,
+                pid,
+            });
         }
     }
 
@@ -107,7 +117,7 @@ pub async fn start_farm_idle(app_ids: Vec<u32>) -> Result<Value, String> {
     {
         let mut processes = SPAWNED_PROCESSES.lock().map_err(|e| e.to_string())?;
         for process in processes.iter_mut() {
-            if apps_to_check.contains(&process.app_id) {
+            if app_ids.contains(&process.app_id) {
                 match process.child.try_wait() {
                     Ok(Some(_)) => {
                         failed = true;

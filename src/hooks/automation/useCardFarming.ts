@@ -7,7 +7,14 @@ import { checkDrops, getAllGamesWithDrops } from '@/utils/automation'
 import { startFarmIdle, stopFarmIdle } from '@/utils/idle'
 import { logEvent } from '@/utils/tasks'
 
-export interface GameWithDrops extends Game {
+export interface GameForFarming {
+  appid: number
+  name: string
+  dropsToCount?: number
+  initialDrops?: number
+}
+
+export interface GameWithDrops extends GameForFarming {
   appid: number
   name: string
   dropsToCount: number
@@ -26,7 +33,7 @@ interface GameWithRemainingDrops {
 }
 
 interface CycleStep {
-  action: (appIds: number[]) => Promise<boolean>
+  action: (gamesSet: Set<GameWithDrops>) => Promise<boolean>
   delay: number
 }
 
@@ -225,10 +232,7 @@ export const beginFarmingCycle = async (
     long: 60000 * 5,
   }
 
-  const gamesArray = Array.from(gamesSet)
-  let appIds = gamesArray.map(item => Number(item.appid))
-
-  if (!isMountedRef.current || appIds.length < 1) {
+  if (!isMountedRef.current || gamesSet.size < 1) {
     return false
   }
 
@@ -249,13 +253,13 @@ export const beginFarmingCycle = async (
         return false
       }
 
-      const success = await step.action(appIds)
+      const success = await step.action(gamesSet)
 
       if (success) {
         await delay(step.delay, isMountedRef, abortControllerRef)
 
         if (step.action === stopFarmIdle) {
-          appIds = await checkDropsRemaining(gamesSet, appIds)
+          gamesSet = await checkDropsRemaining(gamesSet)
         }
       } else {
         return false
@@ -264,16 +268,16 @@ export const beginFarmingCycle = async (
     return true
   } catch (error) {
     console.error('Error in (beginFarmingCycle) - "undefined" can be ignored', error)
-    await stopFarmIdle(appIds)
+    await stopFarmIdle(gamesSet)
     return false
   }
 }
 
 // Periodically check if there are still drops remaining for each game
-const checkDropsRemaining = async (gameSet: Set<GameWithDrops>, appIds: number[]): Promise<number[]> => {
+const checkDropsRemaining = async (gameSet: Set<GameWithDrops>): Promise<Set<GameWithDrops>> => {
   const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
 
-  let filteredAppIds = [...appIds]
+  const updatedGameSet = new Set<GameWithDrops>()
   const gameArray = Array.from(gameSet)
 
   const checkDropsPromises = gameArray.map(async game => {
@@ -293,25 +297,24 @@ const checkDropsRemaining = async (gameSet: Set<GameWithDrops>, appIds: number[]
 
       if (dropsRemaining <= 0) {
         removeGameFromFarmingList(Number(game.appid))
-        filteredAppIds = filteredAppIds.filter(id => id !== Number(game.appid))
         logEvent(`[Card Farming] Farmed all drops for ${game.name} - removed from list`)
-      }
-
-      if (game.initialDrops - dropsRemaining >= game.dropsToCount) {
+      } else if (game.initialDrops - dropsRemaining >= game.dropsToCount) {
         removeGameFromFarmingList(Number(game.appid))
-        filteredAppIds = filteredAppIds.filter(id => id !== Number(game.appid))
         logEvent(
           `[Card Farming- maxCardDrops] Farmed ${game.initialDrops - dropsRemaining}/${dropsRemaining} cards for ${game.name} - removed from list`,
         )
+      } else {
+        updatedGameSet.add(game)
       }
     } catch (error) {
       handleError('checkDropsRemaining', error)
+      updatedGameSet.add(game) // Keep the game in the set if there was an error checking
     }
   })
 
   await Promise.all(checkDropsPromises)
 
-  return filteredAppIds
+  return updatedGameSet
 }
 
 // Remove game from farming list
@@ -387,9 +390,7 @@ export const handleCancel = async (
   abortControllerRef: RefObject<AbortController>,
 ): Promise<void> => {
   try {
-    const gamesArray = Array.from(gamesWithDrops)
-    const appIds = gamesArray.map(item => Number(item.appid))
-    await stopFarmIdle(appIds)
+    await stopFarmIdle(gamesWithDrops)
   } catch (error) {
     handleError('handleCancel', error)
   } finally {

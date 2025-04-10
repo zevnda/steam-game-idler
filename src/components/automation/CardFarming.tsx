@@ -52,7 +52,13 @@ export default function CardFarming({ activePage }: { activePage: ActivePageType
 
   const renderGamesList = (): ReactElement => {
     if (!gamesWithDrops.size) {
-      return <Spinner variant='simple' label={t('automation.cardFarming.initialDelay')} />
+      return (
+        <Spinner
+          variant='simple'
+          label={t('automation.cardFarming.initialDelay')}
+          classNames={{ label: 'text-content' }}
+        />
+      )
     }
 
     return (
