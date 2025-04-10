@@ -26,12 +26,13 @@ export default function PriceData({ item, tradingCardContext }: PriceDataProps):
           {t('tradingCards.fetchPrice')}
         </p>
       ) : (
-        <div className='flex justify-center items-center gap-3 text-xs'>
+        <div className='flex flex-col justify-center items-center gap-0.5 text-xs'>
           <div
             className='flex items-center cursor-pointer hover:opacity-80'
             onClick={() => {
               if (item.price_data?.lowest_price) {
-                const price = parseFloat(item.price_data.lowest_price)
+                const numericPrice = item.price_data.lowest_price.replace(/[^0-9.,]/g, '').replace(',', '.')
+                const price = parseFloat(numericPrice)
                 tradingCardContext.updateCardPrice(item.assetid, price)
               } else {
                 tradingCardContext.updateCardPrice(item.assetid, 0)
@@ -46,7 +47,8 @@ export default function PriceData({ item, tradingCardContext }: PriceDataProps):
             className='flex items-center cursor-pointer hover:opacity-80'
             onClick={() => {
               if (item.price_data?.median_price) {
-                const price = parseFloat(item.price_data.median_price)
+                const numericPrice = item.price_data.median_price.replace(/[^0-9.,]/g, '').replace(',', '.')
+                const price = parseFloat(numericPrice)
                 tradingCardContext.updateCardPrice(item.assetid, price)
               } else {
                 tradingCardContext.updateCardPrice(item.assetid, 0)
