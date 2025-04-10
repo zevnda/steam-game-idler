@@ -2,6 +2,13 @@
 
 ### Changes in v1.11.3
 
+- Added a method to account for Steam fees when listing trading cards
+  - Previously, if you tried to list a card for `0.10` it would be listed as `0.12` _(buyer pays)_ due to Steam adding their fees on top 
+
+<!-- 1.11.3 -->
+
+### Changes in v1.11.3
+
 - Added a `currency` select menu to `settings > general` (#391)
   - Allows certain data such as trading card market prices to be returned in specific currencies
   - If you change your currency, you will need to refresh your trading cards list to clear old currency data
