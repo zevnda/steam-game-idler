@@ -1,3 +1,4 @@
+import type { GameForFarming } from '@/hooks/automation/useCardFarming'
 import type { InvokeIdle, InvokeRunningProcess, InvokeSettings, UserSummary } from '@/types'
 
 import { invoke } from '@tauri-apps/api/core'
@@ -107,15 +108,20 @@ export async function stopIdle(appId: number | undefined, appName: string | unde
 }
 
 // Start farming idle
-export async function startFarmIdle(appIds: number[]): Promise<boolean> {
+export async function startFarmIdle(gamesSet: Set<GameForFarming>): Promise<boolean> {
   try {
     // Make sure Steam client is running
     const isSteamRunning = checkSteamStatus(true)
     if (!isSteamRunning) return false
 
-    const response = await invoke<InvokeIdle>('start_farm_idle', { appIds })
+    const gamesList = Array.from(gamesSet).map(game => ({
+      app_id: Number(game.appid),
+      name: game.name,
+    }))
+
+    const response = await invoke<InvokeIdle>('start_farm_idle', { gamesList })
     if (response.success) {
-      logEvent(`[Card Farming] Started idling ${appIds.length} games`)
+      logEvent(`[Card Farming] Started idling ${gamesSet.size} games`)
       return true
     } else {
       showAccountMismatchToast('danger')
@@ -131,10 +137,10 @@ export async function startFarmIdle(appIds: number[]): Promise<boolean> {
 }
 
 // Stop farming idle
-export async function stopFarmIdle(appIds: number[]): Promise<boolean> {
+export async function stopFarmIdle(gamesSet: Set<GameForFarming>): Promise<boolean> {
   try {
     await invoke('stop_farm_idle')
-    logEvent(`[Card Farming] Stopped idling ${appIds.length} games`)
+    logEvent(`[Card Farming] Stopped idling ${gamesSet.size} games`)
     return true
   } catch (error) {
     console.error('Error in stopFarmIdle util (these errors can often be ignored): ', error)

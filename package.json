@@ -23,7 +23,7 @@
     "prepare": "husky",
     "prettier": "prettier --write .",
     "td": "tauri dev",
-    "git:main": "git checkout main && git pull && git fetch -p"
+    "main": "git checkout main && git pull && git fetch -p"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

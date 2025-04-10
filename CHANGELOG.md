@@ -2,9 +2,10 @@
 
 ### Changes in v1.11.3
 
-- Added a `currency` select menu to `settings > general`
-  - Allows certain data such as trading card market prices to be returned in different currencies
+- Added a `currency` select menu to `settings > general` (#391)
+  - Allows certain data such as trading card market prices to be returned in specific currencies
   - If you change your currency, you will need to refresh your trading cards list to clear old currency data
+- Fixed an issue where game names weren't displayed correctly when being idled by the `card farming` feature (#390)
 
 <!-- 1.11.2 -->
 
