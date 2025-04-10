@@ -103,6 +103,7 @@
   "settings.general.runAtStartup": "Run at startup",
   "settings.general.language": "Language",
   "settings.general.theme": "Theme",
+  "settings.general.currency": "Currency",
   "settings.general.webApi": "Use your own <1>Steam web API key</1>(optional). <3>Learn more</3>",
   "settings.general.webApi.placeholder": "Steam Web API Key",
   "settings.general.helpTranslate": "Help translate SGI",

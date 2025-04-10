@@ -480,6 +480,7 @@ pub async fn get_card_price(
     sma: Option<String>,
     steam_id: String,
     market_hash_name: String,
+    currency: Option<String>,
 ) -> Result<Value, String> {
     let client = Client::builder()
         .redirect(reqwest::redirect::Policy::custom(|attempt| {
@@ -504,7 +505,11 @@ pub async fn get_card_price(
     // Build the URL for the price request with proper encoding
     let price_url = reqwest::Url::parse_with_params(
         "https://steamcommunity.com/market/priceoverview/",
-        &[("appid", "753"), ("market_hash_name", &market_hash_name)],
+        &[
+            ("appid", "753"),
+            ("market_hash_name", &market_hash_name),
+            ("currency", currency.as_deref().unwrap_or("")),
+        ],
     )
     .map_err(|e| format!("Failed to build URL: {}", e))?
     .to_string();

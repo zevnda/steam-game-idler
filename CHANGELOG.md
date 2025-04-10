@@ -1,3 +1,11 @@
+<!-- 1.11.3 -->
+
+### Changes in v1.11.3
+
+- Added a `currency` select menu to `settings > general`
+  - Allows certain data such as trading card market prices to be returned in different currencies
+  - If you change your currency, you will need to refresh your trading cards list to clear old currency data
+
 <!-- 1.11.2 -->
 
 ### Changes in v1.11.2
