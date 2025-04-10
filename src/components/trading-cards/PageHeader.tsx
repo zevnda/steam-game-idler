@@ -63,17 +63,6 @@ export default function PageHeader({ selectedCardsWithPrice, tradingCardContext 
           <div className='flex items-center space-x-2'>
             <Button
               size='sm'
-              isDisabled={tradingCardContext.tradingCardsList.length === 0}
-              isLoading={tradingCardContext.loadingListButton}
-              className='font-semibold rounded-lg bg-dynamic text-button-text'
-              startContent={!tradingCardContext.loadingListButton && <TbShoppingBag fontSize={20} />}
-              onPress={onBulkOpen}
-            >
-              {t('tradingCards.bulk')}
-            </Button>
-
-            <Button
-              size='sm'
               isDisabled={selectedCardsWithPrice.length === 0}
               isLoading={tradingCardContext.loadingListButton}
               className='font-semibold rounded-lg bg-dynamic text-button-text'
@@ -81,6 +70,17 @@ export default function PageHeader({ selectedCardsWithPrice, tradingCardContext 
               onPress={onConfirmOpen}
             >
               {t('tradingCards.list')} {selectedCardsWithPrice.length > 0 && `(${selectedCardsWithPrice.length})`}
+            </Button>
+
+            <Button
+              size='sm'
+              isDisabled={tradingCardContext.tradingCardsList.length === 0}
+              isLoading={tradingCardContext.loadingListButton}
+              className='font-semibold rounded-lg bg-dynamic text-button-text'
+              startContent={!tradingCardContext.loadingListButton && <TbShoppingBag fontSize={20} />}
+              onPress={onBulkOpen}
+            >
+              {t('tradingCards.bulk')}
             </Button>
           </div>
         </div>

@@ -22,7 +22,7 @@ interface UseTradingCardsList {
   loadingListButton: boolean
   changedCardPrices: Record<string, number>
   selectedCards: Record<string, boolean>
-  fetchCardPrices: (hash: string) => Promise<{ success: boolean; price?: number }>
+  fetchCardPrices: (hash: string) => Promise<{ success: boolean; price?: string }>
   updateCardPrice: (assetId: string, value: number) => void
   toggleCardSelection: (assetId: string) => void
   handleSellSelectedCards: () => Promise<void>
@@ -53,16 +53,6 @@ export default function useTradingCardsList(): UseTradingCardsList {
 
         setIsLoading(true)
 
-        // Validate credentials
-        const validate = await invoke<InvokeValidateSession>('validate_session', {
-          sid: credentials.sid,
-          sls: credentials.sls,
-          sma: credentials?.sma,
-          steamid: userSummary?.steamId,
-        })
-
-        if (!validate.user) return showIncorrectCredentialsToast()
-
         const cachedCards = await invoke<InvokeCardData>('get_trading_cards_cache', {
           steamId: userSummary?.steamId,
         })
@@ -71,6 +61,16 @@ export default function useTradingCardsList(): UseTradingCardsList {
           const sortedCards = cachedCards.card_data.sort((a, b) => a.appname.localeCompare(b.appname))
           setTradingCardsList(sortedCards)
         } else {
+          // Validate credentials
+          const validate = await invoke<InvokeValidateSession>('validate_session', {
+            sid: credentials.sid,
+            sls: credentials.sls,
+            sma: credentials?.sma,
+            steamid: userSummary?.steamId,
+          })
+
+          if (!validate.user) return showIncorrectCredentialsToast()
+
           const response = await invoke<InvokeCardData>('get_trading_cards', {
             sid: credentials.sid,
             sls: credentials.sls,
@@ -96,7 +96,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
     getTradingCards()
   }, [refreshKey, t, userSettings.cardFarming.credentials, userSummary?.steamId])
 
-  const fetchCardPrices = async (hash: string): Promise<{ success: boolean; price?: number }> => {
+  const fetchCardPrices = async (hash: string): Promise<{ success: boolean; price?: string }> => {
     setLoadingItemPrice(prev => ({ ...prev, [hash]: true }))
 
     try {
@@ -134,18 +134,18 @@ export default function useTradingCardsList(): UseTradingCardsList {
       }
 
       const priceData = cardPrices.price_data
-      let price: number | undefined
+      let price: string | undefined
 
       if (priceData?.median_price) {
-        price = extractNumericValue(priceData.median_price)
+        price = priceData.median_price
       } else if (priceData?.lowest_price) {
-        price = extractNumericValue(priceData.lowest_price)
+        price = priceData.lowest_price
       }
 
       const priceDataCleaned = {
         ...priceData,
-        median_price: extractNumericValue(priceData.median_price),
-        lowest_price: extractNumericValue(priceData.lowest_price),
+        median_price: priceData.median_price,
+        lowest_price: priceData.lowest_price,
         volume: priceData.volume,
       }
 
@@ -167,24 +167,6 @@ export default function useTradingCardsList(): UseTradingCardsList {
       return { success: false }
     } finally {
       setLoadingItemPrice(prev => ({ ...prev, [hash]: false }))
-    }
-  }
-
-  function extractNumericValue(priceString: string): number | undefined {
-    if (!priceString) return undefined
-
-    const cleanedPrice = priceString.replace(/\u00A0/g, ' ')
-
-    const periodDecimalMatch = cleanedPrice.match(/\d+\.\d+/)
-    const commaDecimalMatch = cleanedPrice.match(/\d+,\d+/)
-
-    if (periodDecimalMatch) {
-      return parseFloat(periodDecimalMatch[0])
-    } else if (commaDecimalMatch) {
-      return parseFloat(commaDecimalMatch[0].replace(',', '.'))
-    } else {
-      const integerMatch = cleanedPrice.match(/\d+/)
-      return integerMatch ? parseInt(integerMatch[0], 10) : undefined
     }
   }
 

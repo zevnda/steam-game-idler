@@ -375,9 +375,8 @@ pub async fn list_trading_cards(
     let delay = tokio::time::Duration::from_millis(500);
 
     for (index, (assetid, price)) in cards.into_iter().enumerate() {
-        // Convert the price string to cents (probably redundant, but for safety)
-        let price_in_cents = match price.trim().parse::<f64>() {
-            Ok(p) => (p * 100.0).round() as u64,
+        let user_price = match price.trim().parse::<f64>() {
+            Ok(p) => p,
             Err(_) => {
                 results.push(json!({
                     "assetid": assetid,
@@ -388,6 +387,52 @@ pub async fn list_trading_cards(
             }
         };
 
+        // Adjust sell price for Steam fees
+        let calculate_fees = |price: f64| -> (f64, f64) {
+            let valve_fee = ((price / 11.5) * 1000.0).round() / 1000.0;
+            let valve_fee = (valve_fee * 100.0).floor() / 100.0;
+            let valve_fee = valve_fee.max(0.01);
+
+            let dev_fee = ((price / 23.0) * 1000.0).round() / 1000.0;
+            let dev_fee = (dev_fee * 100.0).floor() / 100.0;
+            let dev_fee = dev_fee.max(0.01);
+
+            (valve_fee, dev_fee)
+        };
+
+        let find_listing_price = |target_buyer_price: f64| -> f64 {
+            if target_buyer_price <= 0.10 {
+                match (target_buyer_price * 100.0).round() as u64 {
+                    1 => 0.01,
+                    2 => 0.01,
+                    3 => 0.01,
+                    4 => 0.02,
+                    5 => 0.03,
+                    6 => 0.04,
+                    7 => 0.05,
+                    8 => 0.06,
+                    9 => 0.07,
+                    10 => 0.08,
+                    _ => target_buyer_price / 1.15,
+                }
+            } else {
+                target_buyer_price / 1.15
+            }
+        };
+
+        let listing_price = find_listing_price(user_price);
+        let (valve_fee, dev_fee) = calculate_fees(user_price);
+        let seller_receives = user_price - valve_fee - dev_fee;
+        let adjusted_price = (listing_price * 100.0).round() as u64;
+
+        println!(
+            "Listing card with assetid: {}, buyer pays: ${:.2}, API price: ${:.2}, seller receives: ${:.2}",
+            assetid,
+            user_price,
+            listing_price,
+            seller_receives
+        );
+
         // Create form data for card listings
         let form_data = [
             ("sessionid", sid.clone()),
@@ -395,7 +440,7 @@ pub async fn list_trading_cards(
             ("contextid", "6".to_string()),
             ("assetid", assetid.clone()),
             ("amount", "1".to_string()),
-            ("price", price_in_cents.to_string()),
+            ("price", adjusted_price.to_string()),
         ];
 
         let market_url = "https://steamcommunity.com/market/sellitem/";
