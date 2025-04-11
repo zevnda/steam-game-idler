@@ -1,5 +1,12 @@
 [
   {
+    "id": "22",
+    "title": "Steam Market History Calculator",
+    "message": "I just released a CLI tool that calculates the total money you've earned via selling items on the Steam market. Be sure to give it a star on GitHub. Click here to check it out",
+    "url": "https://github.com/zevnda/steam-market-history",
+    "timestamp": "1744385938"
+  },
+  {
     "id": "21",
     "title": "Which Feature Should Be Added to SGI",
     "message": "I have a couple of ideas for new features to add to SGI, but I would like your feedback. Click here to vote",
