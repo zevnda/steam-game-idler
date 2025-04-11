@@ -1,3 +1,9 @@
+<!-- 1.11.6 -->
+
+### Changes in v1.11.6
+
+- Fixed an issue where the trading card manager list wasn't updated if no cards were available
+
 <!-- 1.11.5 -->
 
 ### Changes in v1.11.5

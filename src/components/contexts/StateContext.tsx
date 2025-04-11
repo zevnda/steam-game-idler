@@ -21,6 +21,10 @@ interface StateContextType {
   setShowSteamWarning: Dispatch<SetStateAction<boolean>>
   isGameSettingsOpen: boolean
   setIsGameSettingsOpen: Dispatch<SetStateAction<boolean>>
+  loadingItemPrice: Record<string, boolean>
+  setLoadingItemPrice: Dispatch<SetStateAction<Record<string, boolean>>>
+  loadingListButton: boolean
+  setLoadingListButton: Dispatch<SetStateAction<boolean>>
   useBeta: boolean
   setUseBeta: Dispatch<SetStateAction<boolean>>
 }
@@ -37,6 +41,8 @@ export const StateProvider = ({ children }: { children: ReactNode }): ReactEleme
   const [isAchievementUnlocker, setIsAchievementUnlocker] = useState(false)
   const [showSteamWarning, setShowSteamWarning] = useState(false)
   const [isGameSettingsOpen, setIsGameSettingsOpen] = useState(false)
+  const [loadingItemPrice, setLoadingItemPrice] = useState<Record<string, boolean>>({})
+  const [loadingListButton, setLoadingListButton] = useState(false)
   const [useBeta, setUseBeta] = useState(false)
 
   return (
@@ -60,6 +66,10 @@ export const StateProvider = ({ children }: { children: ReactNode }): ReactEleme
         setShowSteamWarning,
         isGameSettingsOpen,
         setIsGameSettingsOpen,
+        loadingItemPrice,
+        setLoadingItemPrice,
+        loadingListButton,
+        setLoadingListButton,
         useBeta,
         setUseBeta,
       }}

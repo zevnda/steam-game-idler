@@ -5,6 +5,7 @@ import { invoke } from '@tauri-apps/api/core'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { useStateContext } from '@/components/contexts/StateContext'
 import { useUserContext } from '@/components/contexts/UserContext'
 import { logEvent } from '@/utils/tasks'
 import {
@@ -36,10 +37,9 @@ interface UseTradingCardsList {
 export default function useTradingCardsList(): UseTradingCardsList {
   const { t } = useTranslation()
   const { userSummary, userSettings } = useUserContext()
+  const { loadingItemPrice, setLoadingItemPrice, loadingListButton, setLoadingListButton } = useStateContext()
   const [tradingCardsList, setTradingCardsList] = useState<TradingCard[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const [loadingItemPrice, setLoadingItemPrice] = useState<Record<string, boolean>>({})
-  const [loadingListButton, setLoadingListButton] = useState(false)
   const [changedCardPrices, setChangedCardPrices] = useState<Record<string, number>>({})
   const [selectedCards, setSelectedCards] = useState<Record<string, boolean>>({})
   const [refreshKey, setRefreshKey] = useState(0)
@@ -83,6 +83,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
             const sortedCards = response.card_data.sort((a, b) => a.appname.localeCompare(b.appname))
             setTradingCardsList(sortedCards)
           } else {
+            setTradingCardsList([])
             showPrimaryToast(t('toast.tradingCards.noCards'))
           }
         }
