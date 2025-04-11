@@ -51,10 +51,17 @@ export default function GeneralSettings(): ReactElement {
 
         <div className='flex items-center'>
           <SettingsCheckbox type='general' name='useBeta' content={t('settings.general.useBeta')} />
-          <CustomTooltip content={t('settings.general.useBetaTooltip')} placement='right' className='w-[330px] text-sm'>
+          <CustomTooltip
+            content={t('settings.general.useBetaTooltip')}
+            placement='right'
+            className='w-[330px] text-sm'
+            important
+          >
             <TbHelpCircle className='text-altwhite ml-1.5' size={18} />
           </CustomTooltip>
         </div>
+
+        <SettingsCheckbox type='general' name='disableTooltips' content={t('settings.general.disableTooltips')} />
 
         <SettingsCheckbox type='general' name='runAtStartup' content={t('settings.general.runAtStartup')} />
       </div>

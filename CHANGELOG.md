@@ -4,6 +4,8 @@
 
 - Added a `remove all` button to `trading card manager`
   - Allows users to remove all their active trading card listings on the Steam market
+- Added a `disable tooltips` options to `settings > general`
+  - Disable all non-important UI tooltips that you see when hovering certain UI components (e.g. icons, buttons)
 - Better icons for `trading card manager` and its buttons
 - Fixed an issue where the trading card manager list wasn't updated if no cards were available
 

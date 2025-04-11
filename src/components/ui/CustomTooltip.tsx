@@ -1,12 +1,15 @@
-import type { ReactElement, ReactNode } from 'react'
+import type { ReactNode } from 'react'
 
 import { Tooltip } from '@heroui/react'
+
+import { useUserContext } from '@/components/contexts/UserContext'
 
 interface CustomTooltipProps {
   children: ReactNode
   content: ReactNode
   placement?: 'top' | 'bottom' | 'left' | 'right' | undefined
   className?: string
+  important?: boolean
 }
 
 export default function CustomTooltip({
@@ -14,7 +17,14 @@ export default function CustomTooltip({
   content,
   placement = 'bottom',
   className,
-}: CustomTooltipProps): ReactElement {
+  important = false,
+}: CustomTooltipProps): ReactNode {
+  const { userSettings } = useUserContext()
+
+  if (!important && userSettings.general.disableTooltips) {
+    return children
+  }
+
   return (
     <Tooltip
       showArrow
