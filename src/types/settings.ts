@@ -43,6 +43,7 @@ export interface GeneralSettings {
   apiKey: string | null
   freeGameNotifications: boolean
   useBeta: boolean
+  disableTooltips: boolean
 }
 
 export interface UserSettings {
