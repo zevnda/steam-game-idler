@@ -4,7 +4,9 @@ import type { ReactElement } from 'react'
 
 import { Button, cn, NumberInput } from '@heroui/react'
 import { useTranslation } from 'react-i18next'
-import { TbCurrencyDollar } from 'react-icons/tb'
+import { TbCurrencyDollar, TbPackageExport } from 'react-icons/tb'
+
+import CustomTooltip from '@/components/ui/CustomTooltip'
 
 interface PriceInputProps {
   item: TradingCard
@@ -48,17 +50,21 @@ export default function PriceInput({ item, tradingCardContext }: PriceInputProps
         onValueChange={value => tradingCardContext.updateCardPrice(item.assetid, value)}
       />
 
-      <Button
-        size='sm'
-        isLoading={tradingCardContext.loadingListButton}
-        isDisabled={tradingCardContext.loadingListButton || tradingCardContext.getCardPriceValue(item.assetid) <= 0}
-        className='font-semibold rounded-lg bg-dynamic text-button-text'
-        onPress={() => {
-          tradingCardContext.handleSellSingleCard(item.assetid, tradingCardContext.getCardPriceValue(item.assetid))
-        }}
-      >
-        {!tradingCardContext.loadingListButton && t('common.list')}
-      </Button>
+      <CustomTooltip content={t('common.list')} placement='top'>
+        <Button
+          size='sm'
+          isIconOnly
+          isLoading={tradingCardContext.loadingListButton}
+          isDisabled={tradingCardContext.loadingListButton || tradingCardContext.getCardPriceValue(item.assetid) <= 0}
+          className='font-semibold rounded-lg bg-dynamic text-button-text'
+          startContent={
+            !tradingCardContext.loadingListButton && <TbPackageExport className='text-button-text' size={20} />
+          }
+          onPress={() => {
+            tradingCardContext.handleSellSingleCard(item.assetid, tradingCardContext.getCardPriceValue(item.assetid))
+          }}
+        />
+      </CustomTooltip>
     </div>
   )
 }

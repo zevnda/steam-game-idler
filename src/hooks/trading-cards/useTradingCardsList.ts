@@ -1,4 +1,11 @@
-import type { InvokeCardData, InvokeCardPrice, InvokeListCards, InvokeValidateSession, TradingCard } from '@/types'
+import type {
+  InvokeCardData,
+  InvokeCardPrice,
+  InvokeListCards,
+  InvokeRemoveListings,
+  InvokeValidateSession,
+  TradingCard,
+} from '@/types'
 
 import { invoke } from '@tauri-apps/api/core'
 
@@ -21,6 +28,7 @@ interface UseTradingCardsList {
   isLoading: boolean
   loadingItemPrice: Record<string, boolean>
   loadingListButton: boolean
+  loadingRemoveListings: boolean
   changedCardPrices: Record<string, number>
   selectedCards: Record<string, boolean>
   fetchCardPrices: (hash: string) => Promise<{ success: boolean; price?: string }>
@@ -32,12 +40,20 @@ interface UseTradingCardsList {
   refreshKey: number
   handleRefresh: () => void
   handleSellAllCards: () => Promise<void>
+  handleRemoveActiveListings: () => Promise<void>
 }
 
 export default function useTradingCardsList(): UseTradingCardsList {
   const { t } = useTranslation()
   const { userSummary, userSettings } = useUserContext()
-  const { loadingItemPrice, setLoadingItemPrice, loadingListButton, setLoadingListButton } = useStateContext()
+  const {
+    loadingItemPrice,
+    setLoadingItemPrice,
+    loadingListButton,
+    setLoadingListButton,
+    loadingRemoveListings,
+    setLoadingRemoveListings,
+  } = useStateContext()
   const [tradingCardsList, setTradingCardsList] = useState<TradingCard[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [changedCardPrices, setChangedCardPrices] = useState<Record<string, number>>({})
@@ -406,6 +422,58 @@ export default function useTradingCardsList(): UseTradingCardsList {
     }
   }
 
+  const handleRemoveActiveListings = async (): Promise<void> => {
+    try {
+      const credentials = userSettings.cardFarming.credentials
+
+      if (!credentials?.sid || !credentials?.sls) return showMissingCredentialsToast()
+
+      // Validate credentials
+      const validate = await invoke<InvokeValidateSession>('validate_session', {
+        sid: credentials.sid,
+        sls: credentials.sls,
+        sma: credentials?.sma,
+        steamid: userSummary?.steamId,
+      })
+
+      if (!validate.user) return showIncorrectCredentialsToast()
+
+      setLoadingRemoveListings(true)
+      showPrimaryToast(t('toast.tradingCards.processing'))
+
+      const response = await invoke<InvokeRemoveListings>('remove_market_listings', {
+        sid: credentials.sid,
+        sls: credentials.sls,
+        sma: credentials?.sma,
+        steamId: userSummary?.steamId,
+      })
+
+      if (response.successful_removals > 0) {
+        showSuccessToast(
+          t('toast.tradingCards.removedListings', {
+            count: response.successful_removals,
+            total: response.processed_listings,
+          }),
+        )
+
+        // Refresh the trading cards list after removing listings
+        await handleRefresh()
+      } else if (response.processed_listings === 0) {
+        showPrimaryToast(t('toast.tradingCards.noListings'))
+      } else {
+        showDangerToast(t('toast.tradingCards.failedRemove'))
+      }
+
+      logEvent(`Remove listings result: ${JSON.stringify(response)}`)
+    } catch (error) {
+      showDangerToast(t('common.error'))
+      console.error('Error in handleRemoveActiveListings:', error)
+      logEvent(`[Error] in handleRemoveActiveListings: ${error}`)
+    } finally {
+      setLoadingRemoveListings(false)
+    }
+  }
+
   const getCardPriceValue = (assetId: string): number => {
     return changedCardPrices[assetId] || 0
   }
@@ -429,6 +497,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
     isLoading,
     loadingItemPrice,
     loadingListButton,
+    loadingRemoveListings,
     changedCardPrices,
     selectedCards,
     fetchCardPrices,
@@ -440,5 +509,6 @@ export default function useTradingCardsList(): UseTradingCardsList {
     refreshKey,
     handleRefresh,
     handleSellAllCards,
+    handleRemoveActiveListings,
   }
 }

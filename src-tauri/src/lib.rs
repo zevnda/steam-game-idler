@@ -114,7 +114,8 @@ pub fn run() {
             update_card_data,
             delete_user_trading_card_file,
             list_trading_cards,
-            get_card_price
+            get_card_price,
+            remove_market_listings
         ])
         .build(tauri::generate_context!())
         .expect("Error while building tauri application")

@@ -25,6 +25,8 @@ interface StateContextType {
   setLoadingItemPrice: Dispatch<SetStateAction<Record<string, boolean>>>
   loadingListButton: boolean
   setLoadingListButton: Dispatch<SetStateAction<boolean>>
+  loadingRemoveListings: boolean
+  setLoadingRemoveListings: Dispatch<SetStateAction<boolean>>
   useBeta: boolean
   setUseBeta: Dispatch<SetStateAction<boolean>>
 }
@@ -43,6 +45,7 @@ export const StateProvider = ({ children }: { children: ReactNode }): ReactEleme
   const [isGameSettingsOpen, setIsGameSettingsOpen] = useState(false)
   const [loadingItemPrice, setLoadingItemPrice] = useState<Record<string, boolean>>({})
   const [loadingListButton, setLoadingListButton] = useState(false)
+  const [loadingRemoveListings, setLoadingRemoveListings] = useState(false)
   const [useBeta, setUseBeta] = useState(false)
 
   return (
@@ -70,6 +73,8 @@ export const StateProvider = ({ children }: { children: ReactNode }): ReactEleme
         setLoadingItemPrice,
         loadingListButton,
         setLoadingListButton,
+        loadingRemoveListings,
+        setLoadingRemoveListings,
         useBeta,
         setUseBeta,
       }}

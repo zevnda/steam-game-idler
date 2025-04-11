@@ -126,3 +126,14 @@ export interface InvokeListCards {
   successful: number
   total: number
 }
+
+export interface InvokeRemoveListings {
+  total_listings: number
+  processed_listings: number
+  results: {
+    listing_id: string
+    asset_id: string
+    success: boolean
+  }[]
+  successful_removals: number
+}

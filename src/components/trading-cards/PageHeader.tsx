@@ -3,7 +3,7 @@ import type { ReactElement } from 'react'
 
 import { Button, cn, useDisclosure } from '@heroui/react'
 import { useTranslation } from 'react-i18next'
-import { TbRefresh, TbShoppingBag, TbShoppingBagCheck } from 'react-icons/tb'
+import { TbChecks, TbEraser, TbPackageExport, TbRefresh } from 'react-icons/tb'
 
 import Beta from '@/components/ui/Beta'
 import CustomModal from '@/components/ui/CustomModal'
@@ -30,6 +30,7 @@ export default function PageHeader({ selectedCardsWithPrice, tradingCardContext 
   const { t } = useTranslation()
   const { isOpen: isConfirmOpen, onOpen: onConfirmOpen, onOpenChange: onConfirmOpenChange } = useDisclosure()
   const { isOpen: isBulkOpen, onOpen: onBulkOpen, onOpenChange: onBulkOpenChange } = useDisclosure()
+  const { isOpen: isRemoveOpen, onOpen: onRemoveOpen, onOpenChange: onRemoveOpenChange } = useDisclosure()
 
   return (
     <>
@@ -48,9 +49,7 @@ export default function PageHeader({ selectedCardsWithPrice, tradingCardContext 
                 <Beta />
               </p>
               <div className='flex gap-1'>
-                <p className='text-sm text-altwhite'>
-                  {t('tradingCards.subtitle', { count: tradingCardContext.tradingCardsList?.length || 0 })}
-                </p>
+                <p className='text-sm text-altwhite'>{t('tradingCards.subtitle')}</p>
                 <div
                   className='flex justify-center items-center cursor-pointer'
                   onClick={tradingCardContext.handleRefresh}
@@ -66,7 +65,7 @@ export default function PageHeader({ selectedCardsWithPrice, tradingCardContext 
               isDisabled={selectedCardsWithPrice.length === 0}
               isLoading={tradingCardContext.loadingListButton}
               className='font-semibold rounded-lg bg-dynamic text-button-text'
-              startContent={!tradingCardContext.loadingListButton && <TbShoppingBagCheck fontSize={20} />}
+              startContent={!tradingCardContext.loadingListButton && <TbChecks fontSize={20} />}
               onPress={onConfirmOpen}
             >
               {t('tradingCards.list')} {selectedCardsWithPrice.length > 0 && `(${selectedCardsWithPrice.length})`}
@@ -77,10 +76,21 @@ export default function PageHeader({ selectedCardsWithPrice, tradingCardContext 
               isDisabled={tradingCardContext.tradingCardsList.length === 0}
               isLoading={tradingCardContext.loadingListButton}
               className='font-semibold rounded-lg bg-dynamic text-button-text'
-              startContent={!tradingCardContext.loadingListButton && <TbShoppingBag fontSize={20} />}
+              startContent={!tradingCardContext.loadingListButton && <TbPackageExport fontSize={20} />}
               onPress={onBulkOpen}
             >
-              {t('tradingCards.bulk')}
+              {t('tradingCards.bulk', { count: tradingCardContext.tradingCardsList?.length || 0 })}
+            </Button>
+
+            <Button
+              size='sm'
+              color='danger'
+              isLoading={tradingCardContext.loadingRemoveListings}
+              className='font-semibold rounded-lg'
+              startContent={!tradingCardContext.loadingRemoveListings && <TbEraser fontSize={20} />}
+              onPress={onRemoveOpen}
+            >
+              {t('tradingCards.remove')}
             </Button>
           </div>
         </div>
@@ -152,6 +162,43 @@ export default function PageHeader({ selectedCardsWithPrice, tradingCardContext 
               onPress={() => {
                 tradingCardContext.handleSellAllCards()
                 onBulkOpenChange()
+              }}
+            >
+              {t('common.confirm')}
+            </Button>
+          </>
+        }
+      />
+
+      <CustomModal
+        isOpen={isRemoveOpen}
+        onOpenChange={onRemoveOpenChange}
+        title={t('common.notice')}
+        body={
+          <div className='whitespace-pre-line'>
+            {t('tradingCards.confirmRemove', {
+              time: formatTime(Number(tradingCardContext.tradingCardsList?.length) * 3),
+              count: Number(tradingCardContext.tradingCardsList?.length),
+            })}
+          </div>
+        }
+        buttons={
+          <>
+            <Button
+              size='sm'
+              color='danger'
+              variant='light'
+              className='font-semibold rounded-lg'
+              onPress={onRemoveOpenChange}
+            >
+              {t('common.cancel')}
+            </Button>
+            <Button
+              size='sm'
+              className='font-semibold rounded-lg bg-dynamic text-button-text'
+              onPress={() => {
+                tradingCardContext.handleRemoveActiveListings()
+                onRemoveOpenChange()
               }}
             >
               {t('common.confirm')}
