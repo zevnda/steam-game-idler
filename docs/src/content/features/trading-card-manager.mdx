@@ -18,68 +18,37 @@ The Trading Card Manager feature allows you to manage your Steam trading card in
 
 ## Steps
 
-### Sell Individual Cards
-
 <Steps>
     {<h3 />}
     Click <Icon type='market' /> in the `sidebar`
-
+    
     {<h3 />}
-    Find a card that you want to sell and input a sale price for it
+    Choose your selling method
+    
+    **For individual cards**
+    - Find the card you want to sell and input a sale price for that card
+    - Click <Icon type='list-card' /> to list the card at the price you set
 
+    **For selected cards**
+    - Find the cards you want to sell and input a sale price for each one
+    - Click <MockButton type='list-cards' /> to list only selected cards at the prices you set
+    
+    **For all cards**
+    - Simply click <MockButton type='sell-all' /> to list all cards at their median price (or lowest price if median is unavailable)
+    
     {<h3 />}
-    You can click `show market prices` to fetch the current market price for the card. This will show you the `lowest price` and `median price` for the card
-    <Callout type="info">
-      You can click the `lowest price` or `median price` to set the sale price for the card
-    </Callout>
-
-    {<h3 />}
-    Once you have set the price for the card you want to sell, click <MockButton type='sell' /> to list the card for sale on the Steam marketplace
-
-    {<h3 />}
-    If you have Two-Factor Authentication *(2FA)* or Steam Guard enabled on your account, you will need to confirm the listing via the Steam mobile app or via email depending on which you use. SGI will usually tell you which method you need to use
-</Steps>
-
-### Sell Selected Cards
-
-<Steps>
-    {<h3 />}
-    Click <Icon type='market' /> in the `sidebar`
-
-    {<h3 />}
-    Find a cards that you want to sell and input a sale price for each one. Setting the price greater than `$0.00` will automatically check the checkbox for that card. You can also manually check or uncheck the checkbox for any card
-
-    {<h3 />}
-    Once you have set the prices for the cards you want to sell, click <MockButton type='list-cards' /> to list the cards for sale on the Steam marketplace
-
-    {<h3 />}
-    If you have Two-Factor Authentication *(2FA)* or Steam Guard enabled on your account, you will need to confirm the listing for each card via the Steam mobile app or via email depending on which you use. SGI will usually tell you which method you need to use
-</Steps>
-
-### Sell All Cards
-
-<Steps>
-    {<h3 />}
-    Click <Icon type='market' /> in the `sidebar`
-
-    {<h3 />}
-    Click <MockButton type='sell-all' /> to list all cards for sale on the Steam marketplace
-
-    {<h3 />}
-    SGI will try to sell each card for its `median price` if available, falling back to using its `lowest price` if not. If neither are available the card will not be listed
-
-    {<h3 />}
-    If you have Two-Factor Authentication *(2FA)* or Steam Guard enabled on your account, you will need to confirm the listing for each card via the Steam mobile app or via email depending on which you use. SGI will usually tell you which method you need to use
+    Confirm your listings if you have Steam Guard or 2FA enabled
+    - You'll need to confirm each listing via the Steam mobile app or email depending on your settings
 </Steps>
 
 ## Additional Information
 
-Steam has rate limts in place for listing cards for sale. If you try to list too many cards at once, you may receive an error message from Steam. If this happens, you will need to wait an undiscosed amount of time before you can list more cards
+You can click <MockButton type='remove-all'/> to remove all of your active trading card listings from the Steam marketplace
 
-The checkbox for each card will be automatically checked when entering a sale price greater than `$0.00`. Setting the price to `$0.00` will uncheck the checkbox for that card, or you can manually check or uncheck the checkbox for any card
+SGI accounts for the 15% Steam marketplace fee when you set a sale price. For example, if you set a sale price of `$0.50` SGI will actually list the card for `$0.44`
 
-If you manually check the checkbox you will need to set a price greater than `$0.00` for the card to be sold
+Setting a price greater than `$0.00` will automatically select that card for sale, or you can manually select and deselect cards using the checkbox for each card
 
 Not all cards have `lowest price` and `median price` data available. I believe market price data is only available if the card has been sold on the Steam marketplace in the last 30 days
 
-When you list, sell or earn a new trading card, you will need to manually refresh the Trading Card Manager to see the changes. You can do this by clicking the <Icon type='refresh' /> button in the page header
+When you sell or earn trading cards you will need to manually refresh the Trading Card Manager list to see the changes. You can do this by clicking the <Icon type='refresh' /> button in the page header
