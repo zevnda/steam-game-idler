@@ -82,16 +82,32 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
           </CustomTooltip>
         </div>
 
-        <div className='flex items-center justify-between bg-input rounded-lg p-1.5 border border-border'>
-          <Image
-            className='w-[150px] h-auto border border-border'
-            src={item.image}
-            width={224}
-            height={261}
-            alt={`${item.appname} image`}
-            priority={true}
-          />
-        </div>
+        <CustomTooltip
+          placement='right'
+          content={
+            <div className='py-2'>
+              <Image
+                className='w-[150px] h-auto border border-border'
+                src={item.image}
+                width={224}
+                height={261}
+                alt={`${item.appname} image`}
+                priority={true}
+              />
+            </div>
+          }
+        >
+          <div className='flex items-center justify-between bg-input rounded-lg p-1.5 border border-border'>
+            <Image
+              className='w-[80px] h-auto border border-border'
+              src={item.image}
+              width={224}
+              height={261}
+              alt={`${item.appname} image`}
+              priority={true}
+            />
+          </div>
+        </CustomTooltip>
 
         <div className='flex flex-col items-center justify-center mt-2'>
           <p className='text-xs text-altwhite truncate max-w-[140px]'>{item.appname}</p>
@@ -169,7 +185,7 @@ export default function TradingCardsList(): ReactElement {
           <List
             height={windowInnerHeight - 49}
             itemCount={Math.ceil(tradingCardContext.tradingCardsList.length / 6)}
-            itemSize={355}
+            itemSize={275}
             width='100%'
             itemData={itemData}
           >

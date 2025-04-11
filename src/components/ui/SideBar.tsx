@@ -5,8 +5,8 @@ import { useTranslation } from 'react-i18next'
 import { FiLogOut } from 'react-icons/fi'
 import {
   TbAward,
+  TbBuildingStore,
   TbCards,
-  TbCashRegister,
   TbDeviceGamepad2,
   TbGift,
   TbHeart,
@@ -132,7 +132,7 @@ export default function SideBar(): ReactElement {
                   )}
                   onClick={() => setActivePage('tradingCards')}
                 >
-                  <TbCashRegister fontSize={22} />
+                  <TbBuildingStore fontSize={22} />
                 </div>
               </CustomTooltip>
             </div>

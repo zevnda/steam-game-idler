@@ -608,3 +608,167 @@ pub async fn get_card_price(
 
     Ok(result)
 }
+
+#[tauri::command]
+pub async fn remove_market_listings(
+    sid: String,
+    sls: String,
+    sma: Option<String>,
+    steam_id: String,
+) -> Result<Value, String> {
+    let client = Client::builder()
+        .redirect(reqwest::redirect::Policy::custom(|attempt| {
+            if attempt.previous().len() > 10 {
+                attempt.stop()
+            } else {
+                attempt.follow()
+            }
+        }))
+        .build()
+        .map_err(|e| e.to_string())?;
+
+    let cookie_value = match sma {
+        Some(sma_val) => format!(
+            "sessionid={}; steamLoginSecure={}; steamparental={}; steamMachineAuth{}={}",
+            sid, sls, sma_val, steam_id, sma_val
+        ),
+        None => format!("sessionid={}; steamLoginSecure={}", sid, sls),
+    };
+
+    let mut all_listings = Vec::new();
+    let mut processed_listings = std::collections::HashSet::new();
+    let mut start = 0;
+    const COUNT: usize = 100;
+    let mut total_listings = 0;
+    let mut first_request = true;
+
+    loop {
+        let listings_url = format!(
+            "https://steamcommunity.com/market/mylistings?start={}&count={}",
+            start, COUNT
+        );
+
+        let response = client
+            .get(&listings_url)
+            .header("Cookie", &cookie_value)
+            .send()
+            .await
+            .map_err(|e| format!("Failed to fetch listings: {}", e))?;
+
+        if !response.status().is_success() {
+            return Err(format!(
+                "Failed to fetch listings: HTTP {}",
+                response.status()
+            ));
+        }
+
+        let response_text = response
+            .text()
+            .await
+            .map_err(|e| format!("Failed to get response text: {}", e))?;
+
+        let listings_data: Value = match serde_json::from_str(&response_text) {
+            Ok(json) => json,
+            Err(e) => {
+                return Err(format!("Failed to parse listings JSON: {}", e));
+            }
+        };
+
+        if first_request {
+            total_listings = listings_data
+                .get("num_active_listings")
+                .and_then(|n| n.as_u64())
+                .unwrap_or(0) as usize;
+
+            first_request = false;
+
+            if total_listings == 0 {
+                return Ok(json!({
+                    "total_listings": 0,
+                    "processed_listings": 0,
+                    "results": [],
+                    "successful_removals": 0
+                }));
+            }
+        }
+
+        if let Some(hovers) = listings_data.get("hovers").and_then(|h| h.as_str()) {
+            for line in hovers.lines() {
+                let line = line.trim();
+
+                if line.contains("mylisting_") && line.contains("_name") {
+                    if let Some(start_idx) = line.find("mylisting_") {
+                        let start_pos = start_idx + "mylisting_".len();
+                        if let Some(end_idx) = line[start_pos..].find("_name") {
+                            let listing_id = &line[start_pos..(start_pos + end_idx)];
+
+                            let parts: Vec<&str> = line.split(',').collect();
+                            if parts.len() >= 5 {
+                                let asset_id_part = parts[4].trim();
+                                let asset_id = asset_id_part
+                                    .trim_start_matches('\'')
+                                    .trim_end_matches('\'')
+                                    .trim();
+
+                                if processed_listings.insert(listing_id.to_string()) {
+                                    all_listings
+                                        .push((listing_id.to_string(), asset_id.to_string()));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        start += COUNT;
+        if start >= total_listings {
+            break;
+        }
+
+        tokio::time::sleep(tokio::time::Duration::from_millis(500)).await;
+    }
+
+    let mut results = Vec::new();
+    for (index, (listing_id, asset_id)) in all_listings.iter().enumerate() {
+        if index > 0 {
+            tokio::time::sleep(tokio::time::Duration::from_millis(1000)).await;
+        }
+
+        let remove_url = format!(
+            "https://steamcommunity.com/market/removelisting/{}",
+            listing_id
+        );
+
+        let response = client
+            .post(&remove_url)
+            .header("Cookie", &cookie_value)
+            .header("Referer", "https://steamcommunity.com/market/")
+            .header("Origin", "https://steamcommunity.com")
+            .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+            .header("X-Requested-With", "XMLHttpRequest")
+            .header("Accept", "*/*")
+            .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+            .form(&[("sessionid", sid.as_str())])
+            .send()
+            .await;
+
+        let success = match response {
+            Ok(resp) => resp.status().is_success(),
+            Err(_) => false,
+        };
+
+        results.push(json!({
+            "listing_id": listing_id,
+            "asset_id": asset_id,
+            "success": success
+        }));
+    }
+
+    Ok(json!({
+        "total_listings": total_listings,
+        "processed_listings": all_listings.len(),
+        "results": results,
+        "successful_removals": results.iter().filter(|r| r["success"].as_bool().unwrap_or(false)).count()
+    }))
+}
