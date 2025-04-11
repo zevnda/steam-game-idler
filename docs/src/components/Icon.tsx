@@ -11,6 +11,7 @@ import {
   TbGift,
   TbHeart,
   TbHourglassLow,
+  TbPackageExport,
   TbPlayerPlay,
   TbPlayerPlayFilled,
   TbRefresh,
@@ -25,6 +26,7 @@ type IconType =
   | 'hourglass'
   | 'heart'
   | 'market'
+  | 'list-card'
   | 'dollar'
   | 'gift'
   | 'playalt'
@@ -48,36 +50,39 @@ export default function Icon({ type }: IconProps): ReactElement {
   return (
     <>
       {type === 'game' && (
-        <TbDeviceGamepad2 fontSize={24} style={iconStyles} className='shadow-sm bg-[#eff4f7] text-black' />
+        <TbDeviceGamepad2 fontSize={26} style={iconStyles} className='shadow-sm bg-[#1c79de] text-white' />
       )}
       {type === 'play' && (
-        <TbPlayerPlay fontSize={24} style={iconStyles} className='shadow-sm bg-[#eff4f7] text-black' />
+        <TbPlayerPlay fontSize={26} style={iconStyles} className='shadow-sm bg-[#1c79de] text-white' />
       )}
-      {type === 'cards' && <TbCards fontSize={24} style={iconStyles} className='shadow-sm bg-[#eff4f7] text-black' />}
-      {type === 'award' && <TbAward fontSize={24} style={iconStyles} className='shadow-sm bg-[#eff4f7] text-black' />}
+      {type === 'cards' && <TbCards fontSize={26} style={iconStyles} className='shadow-sm bg-[#1c79de] text-white' />}
+      {type === 'award' && <TbAward fontSize={26} style={iconStyles} className='shadow-sm bg-[#1c79de] text-white' />}
       {type === 'hourglass' && (
-        <TbHourglassLow fontSize={24} style={iconStyles} className='shadow-sm bg-[#eff4f7] text-black' />
+        <TbHourglassLow fontSize={26} style={iconStyles} className='shadow-sm bg-[#1c79de] text-white' />
       )}
-      {type === 'heart' && <TbHeart fontSize={24} style={iconStyles} className='shadow-sm bg-[#eff4f7] text-black' />}
+      {type === 'heart' && <TbHeart fontSize={26} style={iconStyles} className='shadow-sm bg-[#1c79de] text-white' />}
       {type === 'market' && (
-        <TbCashRegister fontSize={24} style={iconStyles} className='shadow-sm bg-[#eff4f7] text-black' />
+        <TbCashRegister fontSize={26} style={iconStyles} className='shadow-sm bg-[#1c79de] text-white' />
+      )}
+      {type === 'list-card' && (
+        <TbPackageExport fontSize={26} style={iconStyles} className='shadow-sm bg-[#1c79de] text-white' />
       )}
       {type === 'dollar' && (
-        <TbCurrencyDollar fontSize={24} style={iconStyles} className='shadow-sm bg-[#eff4f7] text-black' />
+        <TbCurrencyDollar fontSize={26} style={iconStyles} className='shadow-sm bg-[#1c79de] text-white' />
       )}
-      {type === 'gift' && <TbGift fontSize={24} style={iconStyles} className='shadow-sm bg-[#eff4f7] text-black' />}
+      {type === 'gift' && <TbGift fontSize={26} style={iconStyles} className='shadow-sm bg-[#1c79de] text-white' />}
       {type === 'playalt' && (
-        <TbPlayerPlayFilled fontSize={24} style={iconStyles} className='shadow-sm bg-[#eff4f7] text-black' />
+        <TbPlayerPlayFilled fontSize={26} style={iconStyles} className='shadow-sm bg-[#1c79de] text-white' />
       )}
-      {type === 'cog' && <TbSettings fontSize={24} style={iconStyles} className='shadow-sm bg-[#eff4f7] text-black' />}
+      {type === 'cog' && <TbSettings fontSize={26} style={iconStyles} className='shadow-sm bg-[#1c79de] text-white' />}
       {type === 'dots' && (
-        <TbDotsVertical fontSize={24} style={iconStyles} className='shadow-sm bg-[#eff4f7] text-black' />
+        <TbDotsVertical fontSize={26} style={iconStyles} className='shadow-sm bg-[#1c79de] text-white' />
       )}
       {type === 'signout' && (
-        <FiLogOut fontSize={24} style={iconStyles} className='shadow-sm bg-[#eff4f7] text-black rotate-180' />
+        <FiLogOut fontSize={26} style={iconStyles} className='shadow-sm bg-[#1c79de] text-white rotate-180' />
       )}
       {type === 'refresh' && (
-        <TbRefresh fontSize={24} style={iconStyles} className='shadow-sm bg-[#eff4f7] text-black' />
+        <TbRefresh fontSize={26} style={iconStyles} className='shadow-sm bg-[#1c79de] text-white' />
       )}
     </>
   )
