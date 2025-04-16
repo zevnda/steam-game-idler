@@ -47,6 +47,7 @@ export const metadata = {
   },
   other: {
     'msapplication-TileColor': '#fff',
+    'google-site-verification': 'gOZEIhRh4BCNzE1r4etZeuJoex3aVaUrATjMnsnyYuY',
   },
   twitter: {
     site: 'https://steamgameidler.vercel.app/',
