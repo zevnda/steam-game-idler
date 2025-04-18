@@ -1,1 +1,5 @@
-{}
+{
+  "setup.welcome": "Bienvenido",
+  "menu.guide": "Guía del usuario",
+  "achievementManager.achievements.modal": "¿Estás seguro de que quieres <1>{{state}}</1> todos los logros?"
+}
