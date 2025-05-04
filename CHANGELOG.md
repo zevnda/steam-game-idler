@@ -1,3 +1,9 @@
+<!-- 1.11.7 -->
+
+### Changes in v1.11.7
+
+- Implement better checks for if Steam is running before attempting to idle games in `automatic idler` (#431)
+
 <!-- 1.11.6 -->
 
 ### Changes in v1.11.6
