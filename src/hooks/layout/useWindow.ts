@@ -269,8 +269,41 @@ export const startAutoIdleGames = async (): Promise<void> => {
     const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
     if (!userSummary?.steamId) return
 
+    // Check if Steam is running
+    const isSteamRunning = await checkSteamStatus()
+    if (!isSteamRunning) {
+      const checkInterval = setInterval(async () => {
+        const steamRunning = await checkSteamStatus()
+        if (steamRunning) {
+          clearInterval(checkInterval)
+          setTimeout(async () => {
+            await startAutoIdleGamesImpl(userSummary.steamId)
+          }, 15000)
+        }
+      }, 10000)
+
+      setTimeout(() => {
+        if (checkInterval) {
+          clearInterval(checkInterval)
+        }
+      }, 300000)
+
+      return
+    }
+
+    // Steam is running, proceed with idling
+    await startAutoIdleGamesImpl(userSummary.steamId)
+  } catch (error) {
+    showDangerToast(t('common.error'))
+    console.error('Error in (startAutoIdleGames):', error)
+    logEvent(`[Error] in (startAutoIdleGames): ${error}`)
+  }
+}
+
+async function startAutoIdleGamesImpl(steamId: string): Promise<void> {
+  try {
     const customLists = await invoke<InvokeCustomList>('get_custom_lists', {
-      steamId: userSummary.steamId,
+      steamId,
       list: 'autoIdleList',
     })
 
@@ -294,8 +327,8 @@ export const startAutoIdleGames = async (): Promise<void> => {
     }
   } catch (error) {
     showDangerToast(t('common.error'))
-    console.error('Error in (startAutoIdleGames):', error)
-    logEvent(`[Error] in (startAutoIdleGames): ${error}`)
+    console.error('Error in (startAutoIdleGamesImpl):', error)
+    logEvent(`[Error] in (startAutoIdleGamesImpl): ${error}`)
   }
 }
 
