@@ -15,17 +15,21 @@ const inter = Inter({
 })
 
 export const metadata = {
-  description: 'An automatic Steam trading card farmer and achievement unlocker, with a modern UI',
+  title: {
+    default: 'Steam Game Idler – Unlock Achievements & Farm Trading Cards',
+    template: '%s | Steam Game Idler',
+  },
+  description: 'Effortlessly farm Steam trading cards and unlock achievements with our modern, user-friendly tool.',
   metadataBase: new URL('https://steamgameidler.vercel.app/'),
   keywords: [
     'Steam Game Idler',
-    'Steam',
-    'Automation',
     'Steam Idler',
-    'Steam Tools',
+    'Steam Card Idler',
+    'Steam Automation',
     'Steam Trading Cards',
-    'Steam Achievement Unlocker',
     'Steam Achievements',
+    'Steam Achievement Unlocker',
+    'Steam Idling Tools',
   ],
   authors: [{ name: 'zevnda', url: 'https://github.com/zevnda' }],
   creator: 'zevnda',
@@ -34,10 +38,6 @@ export const metadata = {
   appleWebApp: {
     title: 'Steam Game Idler',
   },
-  title: {
-    default: 'Steam Game Idler – An automatic Steam trading card farmer and achievement unlocker',
-    template: '%s | Steam Game Idler',
-  },
   openGraph: {
     url: 'https://steamgameidler.vercel.app',
     siteName: 'Steam Game Idler',
@@ -45,12 +45,23 @@ export const metadata = {
     locale: 'en_US',
     type: 'article',
   },
+  twitter: {
+    card: 'summary_large_image',
+    site: 'https://steamgameidler.vercel.app/',
+    title: 'Steam Game Idler',
+    description: 'Effortlessly farm Steam trading cards and unlock achievements with our modern, user-friendly tool.',
+    image: 'https://steamgameidler.vercel.app/og-image.png',
+  },
   other: {
     'msapplication-TileColor': '#fff',
     'google-site-verification': 'gOZEIhRh4BCNzE1r4etZeuJoex3aVaUrATjMnsnyYuY',
-  },
-  twitter: {
-    site: 'https://steamgameidler.vercel.app/',
+    'structured-data': JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'TechArticle',
+      name: 'Steam Game Idler',
+      url: 'https://steamgameidler.vercel.app/',
+      description: 'Effortlessly farm Steam trading cards and unlock achievements with our modern, user-friendly tool.',
+    }),
   },
   alternates: {
     canonical: './',
