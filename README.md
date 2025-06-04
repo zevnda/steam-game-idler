@@ -38,6 +38,7 @@ Contribute to this project by adding new translations or improving existing ones
 
 | Language/Completion             | Contributors                                                              | Crowdin                |
 | ------------------------------- | ------------------------------------------------------------------------- | ---------------------- |
+| [![zh-CN][zh-CN]][zh-CN-source] | [@Fwarinben](https://github.com/Fwarinben)                                | [source][zh-CN-source] |
 | [![cs-CZ][cs-CZ]][cs-CZ-source] | [@RussianAirplane](https://github.com/RussianAirplane)                    | [source][cs-CZ-source] |
 | [![fr-FR][fr-FR]][fr-FR-source] | [@Logiinx](https://github.com/Logiinx)                                    | [source][fr-FR-source] |
 | [![de-DE][de-DE]][de-DE-source] | [@zevnda](https://github.com/zevnda)                                      | [source][de-DE-source] |
@@ -87,3 +88,6 @@ Copyright © 2024-2025 zevnda — **[GPL-3.0 License](./LICENSE)**
 
 [uk-UA]: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapibase.vercel.app%2Fapi%2Fcrowdin%3FlanguageId%3Duk&query=%24.progress&suffix=%25&style=flat-square&label=Ukrainian&color=%23985FCC
 [uk-UA-source]: https://crowdin.com/editor/steam-game-idler/all/en-uk
+
+[zh-CN]: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapibase.vercel.app%2Fapi%2Fcrowdin%3FlanguageId%3Dzh-CN&query=%24.progress&suffix=%25&style=flat-square&label=Chinese%20Simplified&color=%23985FCC
+[zh-CN-source]: https://crowdin.com/editor/steam-game-idler/all/en-zhcn
