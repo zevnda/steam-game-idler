@@ -50,6 +50,9 @@ export async function getAllGamesWithDrops(
       steamid: steamId,
     })
 
+    // eslint-disable-next-line no-console
+    console.log(res)
+
     if (res.gamesWithDrops && res.gamesWithDrops.length > 0) {
       return res.gamesWithDrops
     } else {
