@@ -64,6 +64,8 @@ export default function GeneralSettings(): ReactElement {
         <SettingsCheckbox type='general' name='disableTooltips' content={t('settings.general.disableTooltips')} />
 
         <SettingsCheckbox type='general' name='runAtStartup' content={t('settings.general.runAtStartup')} />
+
+        <SettingsCheckbox type='general' name='startMinimized' content={t('settings.general.startMinimized')} />
       </div>
 
       <div className='flex gap-4'>

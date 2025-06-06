@@ -40,10 +40,12 @@ export interface GameSettings {
 
 export interface GeneralSettings {
   antiAway: boolean
-  apiKey: string | null
   freeGameNotifications: boolean
+  apiKey: string | null
   useBeta: boolean
   disableTooltips: boolean
+  runAtStartup: boolean
+  startMinimized: boolean
 }
 
 export interface UserSettings {

@@ -1,3 +1,10 @@
+<!-- 1.11.8 -->
+
+### Changes in v1.11.8
+
+- Added a `start minimized` option got `settings > general`
+  - When enabled SGI will be minimized to the system tray instead of showing the main window on startup, and will remain hidden until manually opened from the system tray
+
 <!-- 1.11.7 -->
 
 ### Changes in v1.11.7

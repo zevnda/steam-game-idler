@@ -36,6 +36,8 @@ export const UserProvider = ({ children }: { children: ReactNode }): ReactElemen
       apiKey: null,
       useBeta: false,
       disableTooltips: false,
+      runAtStartup: false,
+      startMinimized: false,
     },
     cardFarming: {
       listGames: true,
