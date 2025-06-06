@@ -268,22 +268,6 @@ pub fn delete_all_cache_files(app_handle: tauri::AppHandle) -> Result<(), String
         ),
     }
 
-    // TODO: Delete once all users are migrated to the new format
-    // Get the achievement data directory
-    let achievement_data_dir = app_handle
-        .path()
-        .app_data_dir()
-        .map_err(|e| e.to_string())?
-        .join("achievement_data");
-    // Delete the achievement data directory
-    match remove_dir_all(&achievement_data_dir) {
-        Ok(_) => println!("Successfully deleted directory: {:?}", achievement_data_dir),
-        Err(e) => println!(
-            "Failed to delete directory: {:?}, Error: {}",
-            achievement_data_dir, e
-        ),
-    }
-
     Ok(())
 }
 

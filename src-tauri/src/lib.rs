@@ -31,9 +31,6 @@ use tauri_plugin_autostart::MacosLauncher;
 use tauri_plugin_updater::UpdaterExt;
 use tauri_plugin_window_state::StateFlags;
 
-// TODO: Delete once all users are migrated to the new format
-use std::fs::remove_dir_all;
-
 pub fn run() {
     // Load environment variables based on the build configuration
     if cfg!(debug_assertions) {
@@ -133,7 +130,6 @@ pub fn run() {
 fn setup_app(app: &mut tauri::App) -> Result<(), Box<dyn std::error::Error>> {
     let app_handle = app.handle();
     setup_window(&app_handle)?;
-    migrate_old_data(&app_handle)?;
     setup_tray_icon(app)?;
 
     Ok(())
@@ -146,33 +142,28 @@ fn setup_window(app_handle: &tauri::AppHandle) -> Result<(), Box<dyn std::error:
     // Hide the window initially and only show it once the frontend is ready
     // This prevents a blank window from showing during load
     let window_clone = window.clone();
+    let app_handle_clone = app_handle.clone();
     window.listen("ready", move |_| {
-        window_clone.show().unwrap();
-        window_clone.set_focus().unwrap();
+        // Check if start minimized is enabled
+        let app_handle_for_async = app_handle_clone.clone();
+        let window_for_async = window_clone.clone();
+        tauri::async_runtime::spawn(async move {
+            match settings::check_start_minimized_setting(&app_handle_for_async).await {
+                Ok(should_start_minimized) => {
+                    // If start minimized is enabled, keep the window hidden
+                    if !should_start_minimized {
+                        window_for_async.show().unwrap();
+                        window_for_async.set_focus().unwrap();
+                    }
+                }
+                Err(_) => {
+                    // If we can't check the setting, default to showing the window
+                    window_for_async.show().unwrap();
+                    window_for_async.set_focus().unwrap();
+                }
+            }
+        });
     });
-
-    Ok(())
-}
-
-// TODO: Delete once all users are migrated to the new format
-fn migrate_old_data(app_handle: &tauri::AppHandle) -> Result<(), Box<dyn std::error::Error>> {
-    // Delete the old app-specific directory
-    // Handles migration from previous app version that used a different storage location
-    let app_data_dir = app_handle
-        .path()
-        .app_data_dir()
-        .map_err(|e| e.to_string())?;
-    let app_specific_dir = app_data_dir
-        .parent()
-        .unwrap_or(&app_data_dir)
-        .join("steam-game-idler");
-    match remove_dir_all(&app_specific_dir) {
-        Ok(_) => println!("Successfully deleted directory: {:?}", app_specific_dir),
-        Err(e) => println!(
-            "Failed to delete directory: {:?}, Error: {}",
-            app_specific_dir, e
-        ),
-    }
 
     Ok(())
 }

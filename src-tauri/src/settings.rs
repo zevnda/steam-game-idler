@@ -15,6 +15,8 @@ fn get_default_settings() -> Value {
             "apiKey": null,
             "useBeta": false,
             "disableTooltips": false,
+            "runAtStartup": false,
+            "startMinimized": false
         },
         "cardFarming": {
             "listGames": true,
@@ -219,4 +221,43 @@ pub async fn reset_user_settings(
     Ok(json!({
         "settings": default_settings
     }))
+}
+
+pub async fn check_start_minimized_setting(app_handle: &tauri::AppHandle) -> Result<bool, String> {
+    use serde_json::Value;
+    use std::fs::File;
+    use std::io::Read;
+
+    // Get the application data directory
+    let app_data_dir = app_handle
+        .path()
+        .app_data_dir()
+        .map_err(|e| e.to_string())?
+        .join("cache");
+
+    // Look for any user settings file to check the startMinimized setting
+    if let Ok(entries) = std::fs::read_dir(&app_data_dir) {
+        for entry in entries.flatten() {
+            if entry.file_type().map(|ft| ft.is_dir()).unwrap_or(false) {
+                let settings_file = entry.path().join("settings.json");
+                if settings_file.exists() {
+                    if let Ok(mut file) = File::open(&settings_file) {
+                        let mut contents = String::new();
+                        if file.read_to_string(&mut contents).is_ok() {
+                            if let Ok(settings) = serde_json::from_str::<Value>(&contents) {
+                                if let Some(general) = settings.get("general") {
+                                    if let Some(start_minimized) = general.get("startMinimized") {
+                                        return Ok(start_minimized.as_bool().unwrap_or(false));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Default to false if no setting found
+    Ok(false)
 }
