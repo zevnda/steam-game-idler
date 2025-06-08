@@ -2,13 +2,25 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "paths": {
-      "@docs/*": ["./src/*"]
+      "@docs/*": ["./app/*"]
     },
     "plugins": [
       {
         "name": "next"
       }
-    ]
+    ],
+    "target": "ES2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "noEmit": true,
+    "incremental": true,
+    "module": "esnext",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve"
   },
   "include": ["**/*.ts", "**/*.tsx", "next-env.d.ts", ".next/types/**/*.ts"],
   "exclude": ["node_modules", ".next"]
