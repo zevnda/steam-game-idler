@@ -99,6 +99,7 @@ pub async fn get_games_with_drops(
             .map_err(|e| e.to_string())?;
 
         let html = response.text().await.map_err(|e| e.to_string())?;
+
         let document = Html::parse_document(&html);
 
         let badge_row_selector = Selector::parse(".badge_row").unwrap();
@@ -149,11 +150,13 @@ pub async fn get_games_with_drops(
         let profile_paging_selector = Selector::parse(".profile_paging").unwrap();
         if let Some(paging_info) = document.select(&profile_paging_selector).next() {
             let paging_text = paging_info.text().collect::<Vec<_>>().join("");
-            if let Some(captures) = Regex::new(r"Showing (\d+)-(\d+) of (\d+)")
+            if let Some(captures) = Regex::new(r"Showing ([\d,]+)-([\d,]+) of ([\d,]+)")
                 .unwrap()
                 .captures(&paging_text)
             {
-                if captures[2] == captures[3] {
+                let end_num = captures[2].replace(",", "");
+                let total_num = captures[3].replace(",", "");
+                if end_num == total_num {
                     break;
                 }
             } else {
