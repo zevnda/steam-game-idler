@@ -100,6 +100,7 @@
   "settings.general.title": "Genel",
   "settings.general.antiAway": "Steam'de olan \"uzakta\" durumunu engelle",
   "settings.general.freeGameNotifications": "Bedava oyunlar hakkında bildirimler al",
+  "settings.general.startMinimized": "Küçültülmüş olarak başlat",
   "settings.general.useBeta": "Beta özellikleri etkinleştir",
   "settings.general.useBetaTooltip": "Beta özellikler dengesiz olabilir, beklenmedik bir şekilde değişebilir veya herhangi bir zaman kaldırılabilir. Eğer beta özellikleri kullanırken bir sorun yaşarsanız lütfen GitHub üzerinde bildirin",
   "settings.general.disableTooltips": "İpuçlarını kapat",

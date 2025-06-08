@@ -100,6 +100,7 @@
   "settings.general.title": "Общие",
   "settings.general.antiAway": "Предотвратить статус 'отсутствия' в Steam",
   "settings.general.freeGameNotifications": "Получать уведомления о бесплатных играх",
+  "settings.general.startMinimized": "Запуск в свернутом виде",
   "settings.general.useBeta": "Включить бета функции",
   "settings.general.useBetaTooltip": "Бета-функции могут быть нестабильными, неожиданно измениться или быть удалены в любое время. Если у вас возникли какие-либо проблемы при использовании бета-функции, пожалуйста, сообщите об этом на GitHub",
   "settings.general.disableTooltips": "Отключить подсказки",
