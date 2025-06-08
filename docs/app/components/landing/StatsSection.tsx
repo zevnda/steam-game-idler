@@ -5,7 +5,6 @@ import { motion, useInView } from 'framer-motion'
 import { FiDownload, FiGlobe, FiStar } from 'react-icons/fi'
 import { TbCode } from 'react-icons/tb'
 
-// Custom hook for counting animation
 function useCountUp(target: number, duration: number = 2000, inView: boolean = false) {
   const [count, setCount] = useState(0)
 
@@ -20,7 +19,6 @@ function useCountUp(target: number, duration: number = 2000, inView: boolean = f
       const elapsed = currentTime - startTime
       const progress = Math.min(elapsed / duration, 1)
 
-      // Easing function for smooth animation
       const easeOut = 1 - Math.pow(1 - progress, 3)
       setCount(Math.floor(target * easeOut))
 
