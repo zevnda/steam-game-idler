@@ -123,7 +123,7 @@ export default function Setup(): ReactElement {
               ) : (
                 <div className='flex flex-col items-center border border-border/40 w-full rounded-lg p-4'>
                   <p>{t('setup.noUsers')}</p>
-                  <ExtLink href='https://steamgameidler.vercel.app/faq#error-messages:~:text=No%20Steam%20users%20found'>
+                  <ExtLink href='https://steamgameidler.vercel.app/docs/faq#error-messages:~:text=No%20Steam%20users%20found'>
                     <p className='text-sm text-link hover:text-linkhover'>{t('setup.learn')}</p>
                   </ExtLink>
                   <div className='flex gap-1 mt-4 cursor-pointer group' onClick={handleRefresh}>
@@ -142,7 +142,7 @@ export default function Setup(): ReactElement {
                 'border-border/40 rounded-br-lg rounded-bl-lg mt-4',
               )}
             >
-              <ExtLink href='https://steamgameidler.vercel.app/get-started/how-to-sign-in'>
+              <ExtLink href='https://steamgameidler.vercel.app/docs/get-started/how-to-sign-in'>
                 <p className='text-sm font-semibold cursor-pointer text-link hover:text-linkhover'>{t('setup.help')}</p>
               </ExtLink>
             </div>

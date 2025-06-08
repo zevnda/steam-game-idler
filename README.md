@@ -19,17 +19,17 @@ You must have the **[Steam client](https://store.steampowered.com/about)** insta
 1. Download the `setup.exe` installer from the **[releases page](https://github.com/zevnda/steam-game-idler/releases/latest)**
 2. Run the installer and follow the steps
 
-Or if you prefer, you can **[build it yourself](https://steamgameidler.vercel.app/get-started/build-it-yourself)**
+Or if you prefer, you can **[build it yourself](https://steamgameidler.vercel.app/docs/get-started/build-it-yourself)**
 
 # Features
-Refer to the **[documentation](https://steamgameidler.vercel.app/)** for a detailed guide on each feature
+Refer to the **[documentation](https://steamgameidler.vercel.app/docs/)** for a detailed guide on each feature
 
-* **[Card Farming](https://steamgameidler.vercel.app/features/card-farming)**: Farm trading cards to sell for a profit or use in badge crafting
-* **[Achievement Unlocker](https://steamgameidler.vercel.app/features/achievement-unlocker)**: Unlock achievements automatically with human-like behavior
-* **[Achievement Manager](https://steamgameidler.vercel.app/features/achievement-manager)**: Manually unlock or lock any achievement for any game
-* **[Trading Card Manager](https://steamgameidler.vercel.app/features/trading-card-manager)**: Easily sell your trading cards on the Steam marketplace
-* **[Playtime Booster](https://steamgameidler.vercel.app/features/playtime-booster)**: Increase a game's total playtime by idling it manually
-* **[Automatic Idler](https://steamgameidler.vercel.app/features/auto-idler)**: Automatically idle chosen games when SGI launches
+* **[Card Farming](https://steamgameidler.vercel.app/docs/features/card-farming)**: Farm trading cards to sell for a profit or use in badge crafting
+* **[Achievement Unlocker](https://steamgameidler.vercel.app/docs/features/achievement-unlocker)**: Unlock achievements automatically with human-like behavior
+* **[Achievement Manager](https://steamgameidler.vercel.app/docs/features/achievement-manager)**: Manually unlock or lock any achievement for any game
+* **[Trading Card Manager](https://steamgameidler.vercel.app/docs/features/trading-card-manager)**: Easily sell your trading cards on the Steam marketplace
+* **[Playtime Booster](https://steamgameidler.vercel.app/docs/features/playtime-booster)**: Increase a game's total playtime by idling it manually
+* **[Automatic Idler](https://steamgameidler.vercel.app/docs/features/auto-idler)**: Automatically idle chosen games when SGI launches
 * **Fully Open Source**: Rest assured that what you're downloading and running is safe
 * **Actively Maintained**: Regular updates with new features and bug fixes
 
