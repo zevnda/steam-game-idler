@@ -100,6 +100,7 @@
   "settings.general.title": "Ogólne",
   "settings.general.antiAway": "Zablokuj status na Steam",
   "settings.general.freeGameNotifications": "Otrzymuj powiadomienia o darmowych grach",
+  "settings.general.startMinimized": "Uruchomienie w trybie zwiniętym",
   "settings.general.useBeta": "Włącz funkcje beta",
   "settings.general.useBetaTooltip": "Funkcje beta mogą być niestabilne, zmieniają się niespodziewanie lub mogą zostać usunięte w dowolnym momencie. Jeśli wystąpią jakiekolwiek problemy podczas korzystania z funkcji beta zgłoś je na GitHub",
   "settings.general.disableTooltips": "Wyłącz podpowiedzi",

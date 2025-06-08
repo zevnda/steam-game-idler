@@ -100,6 +100,7 @@
   "settings.general.title": "Geral",
   "settings.general.antiAway": "Evitar status de ausente no Steam",
   "settings.general.freeGameNotifications": "Receber notificações sobre jogos grátis",
+  "settings.general.startMinimized": "Iniciar minimizado",
   "settings.general.useBeta": "Ativar recursos beta",
   "settings.general.useBetaTooltip": "Recursos beta podem ser instáveis, alterar inesperadamente ou ser removidos a qualquer momento. Se você tiver quaisquer problemas ao usar um recurso beta, por favor reporte-o no GitHub",
   "settings.general.disableTooltips": "Desativar dicas",
