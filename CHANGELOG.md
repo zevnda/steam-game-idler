@@ -1,3 +1,9 @@
+<!-- 1.12.1 -->
+
+### Changes in v1.12.1
+
+- Gave the `settings` and `logout` buttons a disabled state if `card farming` and/or `achievement unlocker` features are running (#472)
+
 <!-- 1.12.0 -->
 
 ### Changes in v1.12.0
