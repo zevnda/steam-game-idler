@@ -156,37 +156,43 @@ export default function SideBar(): ReactElement {
           )}
         </div>
 
-        {!isCardFarming && !isAchievementUnlocker && (
-          <div className='flex justify-center items-center flex-col gap-2 mb-3'>
-            <div className='flex justify-center items-center w-14'>
-              <CustomTooltip content={t('settings.title')} placement='right'>
-                <div
-                  className={cn(
-                    'p-2 rounded-full duration-200 cursor-pointer active:scale-90',
-                    activePage === 'settings' ? 'bg-dynamic/30 text-dynamic' : 'hover:bg-titlehover',
-                  )}
-                  onClick={() => setActivePage('settings')}
-                >
-                  <TbSettings fontSize={22} />
-                </div>
-              </CustomTooltip>
-            </div>
-
-            <div className='flex justify-center items-center w-14'>
-              <CustomTooltip content={t('common.signOut')} placement='right'>
-                <div
-                  className='hover:bg-danger p-2 rounded-full duration-200 cursor-pointer active:scale-90 group'
-                  onClick={openConfirmation}
-                >
-                  <FiLogOut
-                    className={`rotate-180 ${!isDarkMode && 'group-hover:text-button-text'} duration-200`}
-                    fontSize={20}
-                  />
-                </div>
-              </CustomTooltip>
-            </div>
+        <div className='flex justify-center items-center flex-col gap-2 mb-3'>
+          <div className='flex justify-center items-center w-14'>
+            <CustomTooltip content={t('settings.title')} placement='right'>
+              <div
+                className={cn(
+                  'p-2 rounded-full duration-200',
+                  activePage === 'settings' ? 'bg-dynamic/30 text-dynamic' : 'hover:bg-titlehover',
+                  isCardFarming || isAchievementUnlocker
+                    ? 'opacity-50 hover:bg-transparent'
+                    : 'cursor-pointer active:scale-90',
+                )}
+                onClick={!(isCardFarming || isAchievementUnlocker) ? () => setActivePage('settings') : undefined}
+              >
+                <TbSettings fontSize={22} />
+              </div>
+            </CustomTooltip>
           </div>
-        )}
+
+          <div className='flex justify-center items-center w-14'>
+            <CustomTooltip content={t('common.signOut')} placement='right'>
+              <div
+                className={cn(
+                  'p-2 rounded-full duration-200',
+                  isCardFarming || isAchievementUnlocker
+                    ? 'opacity-50'
+                    : 'hover:bg-danger cursor-pointer active:scale-90 group',
+                )}
+                onClick={!(isCardFarming || isAchievementUnlocker) ? openConfirmation : undefined}
+              >
+                <FiLogOut
+                  className={`rotate-180 ${!isDarkMode && 'group-hover:text-button-text'} duration-200`}
+                  fontSize={20}
+                />
+              </div>
+            </CustomTooltip>
+          </div>
+        </div>
       </div>
 
       <CustomModal

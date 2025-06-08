@@ -35,7 +35,7 @@ export default function Settings(): ReactElement {
         )}
       >
         <div className='flex flex-col'>
-          <p className='text-lg font-bold'>{t('settings.title')}</p>
+          <p className='text-lg font-bold select-none'>{t('settings.title')}</p>
           <p className='text-sm text-dynamic'>v{version}</p>
         </div>
 
