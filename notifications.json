@@ -1,5 +1,12 @@
 [
   {
+    "id": "23",
+    "title": "Steam API Issues",
+    "message": "Steam API is currenlty experiencing issues. This may cause problems with Steam Game Idler. If you encounter any issues, please wait a few hours and try again",
+    "url": "https://github.com/zevnda/steam-game-idler",
+    "timestamp": "1749413900"
+  },
+  {
     "id": "22",
     "title": "Steam Market History Calculator",
     "message": "I just released a CLI tool that calculates the total money you've earned via selling items on the Steam market. Be sure to give it a star on GitHub. Click here to check it out",
