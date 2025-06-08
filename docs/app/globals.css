@@ -15,3 +15,47 @@ ol {
 sub {
   bottom: 0.5em;
 }
+
+@keyframes swipeIn {
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes swipeOut {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+}
+
+.download-btn .btn-text-hover {
+  transform: translateY(100%);
+  opacity: 0;
+  transition: all 0.3s ease-in-out;
+}
+
+.download-btn .btn-text-original {
+  transition: all 0.3s ease-in-out;
+}
+
+.download-btn:hover .btn-text-original {
+  transform: translateY(-100%);
+  opacity: 0;
+  transition: all 0.3s ease-in-out;
+}
+
+.download-btn:hover .btn-text-hover {
+  transform: translateY(0);
+  opacity: 1;
+  transition: all 0.3s ease-in-out;
+}

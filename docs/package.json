@@ -4,7 +4,7 @@
   "description": "Documentation for Steam Game Idler",
   "author": "zevnda",
   "scripts": {
-    "dev": "next --turbopack",
+    "dev": "next",
     "build": "next build",
     "postbuild": "next-sitemap && pagefind --site .next/server/app --output-path public/_pagefind",
     "start": "next start",
@@ -24,5 +24,9 @@
     "react-dom": "^19.0.0",
     "react-icons": "^5.4.0",
     "tailwindcss": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "22.15.30",
+    "@types/react": "19.1.6"
   }
 }

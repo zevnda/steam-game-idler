@@ -1,0 +1,54 @@
+import { Steps } from 'nextra/components';
+
+import Callout from '@docs/components/Callout';
+import Icon from '@docs/components/Icon';
+import MockButton from '@docs/components/MockButton';
+
+# Trading Card Manager
+
+The Trading Card Manager feature allows you to manage your Steam trading card inventory directly within SGI, including the ability to view your card collection and sell cards on the Steam marketplace.
+
+<Callout type="info">
+    You must add your [Steam Credentials](/steam-credentials) in [Settings > Card Farming](/settings/card-farming) before you can use the Trading Card Manager
+</Callout>
+
+<Callout type="info">
+    You must [Enable Beta Features](/settings/general#enable-beta-feature) in [Settings > General](/settings/general) to use the Trading Card Manager
+</Callout>
+
+## Steps
+
+<Steps>
+    {<h3 />}
+    Click <Icon type='market' /> in the `sidebar`
+    
+    {<h3 />}
+    Choose your selling method
+    
+    **For individual cards**
+    - Find the card you want to sell and input a sale price for that card
+    - Click <Icon type='list-card' /> to list the card at the price you set
+
+    **For selected cards**
+    - Find the cards you want to sell and input a sale price for each one
+    - Click <MockButton type='list-cards' /> to list only selected cards at the prices you set
+    
+    **For all cards**
+    - Simply click <MockButton type='sell-all' /> to list all cards at their median price (or lowest price if median is unavailable)
+    
+    {<h3 />}
+    Confirm your listings if you have Steam Guard or 2FA enabled
+    - You'll need to confirm each listing via the Steam mobile app or email depending on your settings
+</Steps>
+
+## Additional Information
+
+You can click <MockButton type='remove-all'/> to remove all of your active trading card listings from the Steam marketplace
+
+SGI accounts for the 15% Steam marketplace fee when you set a sale price. For example, if you set a sale price of `$0.50` SGI will actually list the card for `$0.44`
+
+Setting a price greater than `$0.00` will automatically select that card for sale, or you can manually select and deselect cards using the checkbox for each card
+
+Not all cards have `lowest price` and `median price` data available. I believe market price data is only available if the card has been sold on the Steam marketplace in the last 30 days
+
+When you sell or earn trading cards you will need to manually refresh the Trading Card Manager list to see the changes. You can do this by clicking the <Icon type='refresh' /> button in the page header
