@@ -305,11 +305,44 @@ async function startAutoIdleGamesImpl(steamId: string): Promise<void> {
 
       // Start idling games that are not already idling
       const gamesToIdle = gameIds.filter(id => !runningIdlers.includes(id))
-      for (const appid of gamesToIdle) {
-        const game = autoIdleGames.find(g => g.appid === appid)
-        if (game && !runningIdlers.includes(appid)) {
-          await startIdle(game.appid, game.name, true)
+
+      if (gamesToIdle.length === 0) return
+
+      // Attempt to start games with retry logic
+      let retryCount = 0
+      const maxRetries = 3
+      let remainingGames = [...gamesToIdle]
+
+      while (remainingGames.length > 0 && retryCount < maxRetries) {
+        // Start the remaining games
+        for (const appid of remainingGames) {
+          const game = autoIdleGames.find(g => g.appid === appid)
+          if (game) {
+            await startIdle(game.appid, game.name, true)
+          }
         }
+
+        // Wait a moment for games to start
+        await new Promise(resolve => setTimeout(resolve, 2000))
+
+        // Check which games actually started
+        const updatedResponse = await invoke<InvokeRunningProcess>('get_running_processes')
+        const updatedProcesses = updatedResponse?.processes || []
+        const currentlyRunning = updatedProcesses.map(p => p.appid)
+
+        // Filter out games that successfully started
+        remainingGames = remainingGames.filter(appid => !currentlyRunning.includes(appid))
+
+        if (remainingGames.length > 0) {
+          retryCount++
+          if (retryCount < maxRetries) {
+            await new Promise(resolve => setTimeout(resolve, 5000))
+          }
+        }
+      }
+
+      if (remainingGames.length > 0) {
+        logEvent(`Failed to start auto-idle games after ${maxRetries} attempts: ${remainingGames.join(', ')}`)
       }
     }
   } catch (error) {

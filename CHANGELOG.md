@@ -1,3 +1,9 @@
+<!-- 1.12.2 -->
+
+### Changes in v1.12.2
+
+- Added improved retry checks for `auto-idle` for when SGI launches and Steam is not open yet
+
 <!-- 1.12.1 -->
 
 ### Changes in v1.12.1
