@@ -1,23 +1,23 @@
 const GET_STARTED = {
-  'build-it-yourself': 'Build It Yourself',
-  'how-to-sign-in': 'How to Sign In',
   'install': 'Install',
+  'how-to-sign-in': 'Sign In',
+  'build-it-yourself': 'Build It Yourself',
 }
 
 const FEATURES = {
-  'achievement-manager': 'Achievement Manager',
-  'achievement-unlocker': 'Achievement Unlocker',
-  'auto-idler': 'Automatic Idler',
   'card-farming': 'Card Farming',
+  'achievement-unlocker': 'Achievement Unlocker',
+  'achievement-manager': 'Achievement Manager',
   'playtime-booster': 'Playtime Booster',
+  'auto-idler': 'Automatic Idler',
   'trading-card-manager': 'Trading Card Manager',
 }
 
 const SETTINGS = {
-  'achievement-unlocker': 'Achievement Unlocker',
-  'card-farming': 'Card Farming',
-  'game-settings': 'Game Settings',
   'general': 'General',
+  'card-farming': 'Card Farming',
+  'achievement-unlocker': 'Achievement Unlocker',
+  'game-settings': 'Game Settings',
   'logs': 'Logs',
 }
 
@@ -32,7 +32,16 @@ export default {
     title: 'Documentation',
     items: {
       'index': '',
-      'get-started': { items: GET_STARTED },
+      '_': {
+        type: 'separator',
+        title: 'Usage',
+      },
+      'get-started': {
+        items: GET_STARTED,
+        theme: {
+          collapsed: true,
+        },
+      },
       'features': {
         items: FEATURES,
         theme: {
@@ -45,9 +54,13 @@ export default {
           collapsed: true,
         },
       },
-      'faq': 'FAQ',
-      'references': 'References',
+      '__': {
+        type: 'separator',
+        title: 'More',
+      },
       'steam-credentials': 'Steam Credentials',
+      'references': 'References',
+      'faq': 'FAQ',
     },
   },
 }
