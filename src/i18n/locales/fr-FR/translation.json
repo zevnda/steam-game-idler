@@ -46,6 +46,7 @@
   "customLists.inList": "Dans la liste",
   "customLists.addAll": "Tout ajouter",
   "customLists.invalid": "Type de liste invalide",
+  "tradingCards.confirm": "Êtes-vous sûr de vouloir mettre en vente les cartes sélectionnées ?\n\nLe temps estimé pour mettre en vente {{count}} cartes est de {{time}}\n\nLaissez SGI ouvert jusqu'à la fin du processus",
   "automation.cardFarming.initialDelay": "Cela peut prendre une seconde..",
   "automation.cardFarming.progress": "Mode idle actif pour <1>{{count}}</1> jeu(x) avec <3>{{total}}</3> drop(s) de cartes restant(s)",
   "automation.achievementUnlocker.initialDelay": "Démarrage dans <1>{{timer}}</1>",

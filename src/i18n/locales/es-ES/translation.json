@@ -1,5 +1,16 @@
 {
   "setup.welcome": "Bienvenido",
+  "setup.chooseAccount": "Elija una cuenta",
+  "setup.refresh": "Actualizar",
+  "setup.help": "¿Necesitas ayuda?",
+  "setup.noUsers": "No se encontraron usuarios de Steam",
+  "setup.learn": "Aprende por qué",
+  "search.games": "Buscar un juego",
+  "search.achievements": "Buscar un logro",
+  "search.statistics": "Buscar estadísticas",
+  "notifications.empty": "Ninguna notificación",
+  "notifications.markAllRead": "Marcar todos como leídos",
   "menu.guide": "Guía del usuario",
+  "menu.issue": "Reportar un problema",
   "achievementManager.achievements.modal": "¿Estás seguro de que quieres <1>{{state}}</1> todos los logros?"
 }
