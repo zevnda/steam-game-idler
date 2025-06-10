@@ -16,7 +16,7 @@ const inter = Inter({
 
 export const metadata = {
   title: {
-    default: 'Steam Game Idler – Unlock Achievements & Farm Trading Cards',
+    default: 'Steam Game Idler – Trading Card Farmer & Achievement Unlocker',
     template: '%s | Steam Game Idler',
   },
   description: 'Effortlessly farm Steam trading cards and unlock achievements with our modern, user-friendly tool.',
@@ -58,9 +58,10 @@ export const metadata = {
     'structured-data': JSON.stringify({
       '@context': 'https://schema.org',
       '@type': 'TechArticle',
-      name: 'Steam Game Idler',
-      url: 'https://steamgameidler.vercel.app/',
-      description: 'Effortlessly farm Steam trading cards and unlock achievements with our modern, user-friendly tool.',
+      'name': 'Steam Game Idler',
+      'url': 'https://steamgameidler.vercel.app/',
+      'description':
+        'Effortlessly farm Steam trading cards and unlock achievements with our modern, user-friendly tool.',
     }),
   },
   alternates: {
