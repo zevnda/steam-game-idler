@@ -47,6 +47,7 @@ Contribute to this project by adding new translations or improving existing ones
 | [![pt-BR][pt-BR]][pt-BR-source] | [@Qjeh](https://github.com/Qjeh)                                          | [source][pt-BR-source] |
 | [![ro-RO][ro-RO]][ro-RO-source] | [@SirDanielFTW](https://github.com/SirDanielFTW)                          | [source][ro-RO-source] |
 | [![ru-TU][ru-RU]][ru-RU-source] | [@Jesewe](https://github.com/Jesewe)                                      | [source][ru-RU-source] |
+| [![es-ES][es-ES]][es-ES-source] | [@lazarogomezmunoz](https://crowdin.com/profile/lazarogomezmunoz)          | [source][es-ES-source] |
 | [![tr-TR][tr-TR]][tr-TR-source] | [@61netpa](https://github.com/61netpa)                                    | [source][tr-TR-source] |
 | [![uk-UA][uk-UA]][uk-UA-source] | [@Bl0ck154](https://github.com/Bl0ck154)                                  | [source][uk-UA-source] |
 
@@ -82,6 +83,9 @@ Copyright © 2024-2025 zevnda — **[GPL-3.0 License](./LICENSE)**
 
 [ru-RU]: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapibase.vercel.app%2Fapi%2Fcrowdin%3FlanguageId%3Dru&query=%24.progress&suffix=%25&style=flat-square&label=Russian&color=%23985FCC
 [ru-RU-source]: https://crowdin.com/editor/steam-game-idler/all/en-ru
+
+[es-ES]: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapibase.vercel.app%2Fapi%2Fcrowdin%3FlanguageId%3Des-ES&query=%24.progress&suffix=%25&style=flat-square&label=Spanish&color=%23985FCC
+[es-ES-source]: https://crowdin.com/editor/steam-game-idler/all/es-es
 
 [tr-TR]: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapibase.vercel.app%2Fapi%2Fcrowdin%3FlanguageId%3Dtr&query=%24.progress&suffix=%25&style=flat-square&label=Turkish&color=%23985FCC
 [tr-TR-source]: https://crowdin.com/editor/steam-game-idler/all/en-tr
