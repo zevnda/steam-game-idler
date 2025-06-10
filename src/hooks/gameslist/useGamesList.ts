@@ -30,7 +30,7 @@ interface GamesListHook {
 
 export default function useGamesList(): GamesListHook {
   const { t } = useTranslation()
-  const { userSummary, gamesList, setGamesList } = useUserContext()
+  const { userSummary, userSettings, gamesList, setGamesList } = useUserContext()
   const { isQuery, gameQueryValue, setGameQueryValue } = useSearchContext()
   const scrollContainerRef = useRef<HTMLDivElement>(null) as RefObject<HTMLDivElement>
   const [isLoading, setIsLoading] = useState(true)
@@ -57,6 +57,7 @@ export default function useGamesList(): GamesListHook {
           userSummary?.steamId,
           refreshKey,
           previousRefreshKeyRef.current,
+          userSettings.general?.apiKey || undefined,
         )
         setGamesList(gamesList)
         setRecentGames(recentGamesList)
@@ -74,7 +75,7 @@ export default function useGamesList(): GamesListHook {
       }
     }
     getGamesList()
-  }, [userSummary?.steamId, refreshKey, setGamesList, t])
+  }, [userSummary?.steamId, userSettings.general?.apiKey, refreshKey, setGamesList, t])
 
   useEffect(() => {
     if (gamesList && recentGames) {
@@ -143,6 +144,7 @@ export const fetchGamesList = async (
   steamId: string | undefined,
   refreshKey: number,
   prevRefreshKey: number,
+  apiKey?: string,
 ): Promise<GameListResult> => {
   if (!steamId) return { gamesList: [], recentGamesList: [] }
   // Try to get games from cache first
@@ -161,8 +163,6 @@ export const fetchGamesList = async (
     }
   } else {
     // Fallback to API if cache isn't available or user requested refresh
-    const apiKey = localStorage.getItem('apiKey')
-
     const gamesListResponse = await invoke<InvokeGamesList>('get_games_list', {
       steamId,
       apiKey,

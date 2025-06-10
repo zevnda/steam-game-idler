@@ -1,3 +1,10 @@
+<!-- 1.12.3 -->
+
+### Changes in v1.12.3
+
+- Fixed an issue causing SGI to not use the user's provided `steam web api key` when fetching their games list (#490)
+  - This meant that users with a `private` Steam profile could not fetch their games list
+
 <!-- 1.12.2 -->
 
 ### Changes in v1.12.2
