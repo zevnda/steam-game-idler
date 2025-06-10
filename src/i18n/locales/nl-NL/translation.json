@@ -1,1 +1,9 @@
-{}
+{
+  "setup.welcome": "Welkom",
+  "setup.chooseAccount": "Selecteer een account",
+  "setup.refresh": "Ververs",
+  "setup.help": "Hulp nodig?",
+  "setup.noUsers": "Geen Steam gebruikers gevonden",
+  "setup.learn": "Ontdek waarom",
+  "search.games": "Zoek naar een spel"
+}
