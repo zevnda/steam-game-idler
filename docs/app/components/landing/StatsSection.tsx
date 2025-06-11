@@ -19,7 +19,7 @@ function useCountUp(target: number, duration: number = 2000, inView: boolean = f
       const elapsed = currentTime - startTime
       const progress = Math.min(elapsed / duration, 1)
 
-      const easeOut = 1 - Math.pow(1 - progress, 3)
+      const easeOut = 1 - Math.pow(1 - progress, 4)
       setCount(Math.floor(target * easeOut))
 
       if (progress < 1) {
@@ -39,17 +39,31 @@ const containerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.15,
-      delayChildren: 0.2,
+      staggerChildren: 0.2,
+      delayChildren: 0.3,
     },
   },
 }
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 30 },
+  hidden: { opacity: 0, y: 60, scale: 0.9 },
   visible: {
     opacity: 1,
     y: 0,
+    scale: 1,
+    transition: {
+      duration: 1,
+      ease: [0.25, 0.1, 0.25, 1],
+    },
+  },
+}
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 50, rotateX: -15 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    rotateX: 0,
     transition: {
       duration: 0.8,
       ease: [0.25, 0.1, 0.25, 1],
@@ -58,10 +72,15 @@ const itemVariants = {
 }
 
 const stats = [
-  { number: '15K+', label: 'Downloads', icon: <FiDownload className='w-5 h-5' /> },
-  { number: '11', label: 'Languages', icon: <FiGlobe className='w-5 h-5' /> },
-  { number: '100%', label: 'Open Source', icon: <TbCode className='w-5 h-5' /> },
-  { number: '160', label: 'GitHub Stars', icon: <FiStar className='w-5 h-5' /> },
+  { number: '15K+', label: 'Downloads', icon: <FiDownload className='w-6 h-6' />, color: 'from-blue-500 to-cyan-500' },
+  { number: '11', label: 'Languages', icon: <FiGlobe className='w-6 h-6' />, color: 'from-emerald-500 to-teal-500' },
+  {
+    number: '100%',
+    label: 'Open Source',
+    icon: <TbCode className='w-6 h-6' />,
+    color: 'from-purple-500 to-violet-500',
+  },
+  { number: '160', label: 'GitHub Stars', icon: <FiStar className='w-6 h-6' />, color: 'from-orange-500 to-red-500' },
 ]
 
 function parseStatNumber(numberStr: string) {
@@ -72,51 +91,110 @@ function parseStatNumber(numberStr: string) {
 
 export default function StatsSection() {
   const ref = useRef(null)
-  const isInView = useInView(ref, { once: true })
+  const isInView = useInView(ref, { once: true, margin: '-100px' })
 
   return (
     <motion.section
       ref={ref}
-      className='relative py-16 sm:py-24 lg:py-32 px-4 sm:px-6 lg:px-8 border-t border-gray-900 overflow-hidden'
+      className='relative py-20 sm:py-28 lg:py-36 px-4 sm:px-6 lg:px-8 border-t border-gray-800/50 overflow-hidden'
       initial='hidden'
       whileInView='visible'
       viewport={{ once: true }}
       variants={containerVariants}
     >
-      {/* Background Gradients */}
-      <div className='absolute top-0 left-1/3 w-64 h-64 sm:w-96 sm:h-96 bg-cyan-500/10 rounded-full blur-3xl' />
-      <div className='absolute bottom-0 right-1/4 w-48 h-48 sm:w-80 sm:h-80 bg-violet-500/8 rounded-full blur-3xl' />
-      <div className='absolute top-1/2 left-0 w-48 h-48 sm:w-72 sm:h-72 bg-orange-500/6 rounded-full blur-3xl' />
+      {/* Enhanced Background Gradients */}
+      <motion.div
+        className='absolute top-0 left-1/3 w-[800px] h-[800px] bg-gradient-to-r from-cyan-500/8 to-blue-500/8 rounded-full blur-3xl'
+        animate={{
+          x: [0, 100, 0],
+          y: [0, -50, 0],
+        }}
+        transition={{
+          duration: 25,
+          repeat: Infinity,
+          ease: 'linear',
+        }}
+      />
+      <motion.div
+        className='absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-gradient-to-r from-violet-500/6 to-purple-500/6 rounded-full blur-3xl'
+        animate={{
+          x: [0, -80, 0],
+          y: [0, 60, 0],
+        }}
+        transition={{
+          duration: 20,
+          repeat: Infinity,
+          ease: 'linear',
+        }}
+      />
 
-      <div className='relative z-10 max-w-6xl mx-auto'>
-        <motion.div variants={itemVariants} className='text-center mb-12 sm:mb-16 lg:mb-20'>
-          <h2 className='text-3xl sm:text-4xl lg:text-5xl font-light text-white mb-4 sm:mb-6'>
-            Trusted by Steam users worldwide
-          </h2>
-          <p className='text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto px-4'>
+      <div className='relative z-10 max-w-7xl mx-auto'>
+        <motion.div variants={itemVariants} className='text-center mb-16 sm:mb-20 lg:mb-24'>
+          <motion.h2
+            className='text-4xl sm:text-5xl lg:text-6xl font-light text-white mb-6 sm:mb-8'
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
+          >
+            Trusted by Steam users{' '}
+            <span className='bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent'>
+              worldwide
+            </span>
+          </motion.h2>
+          <motion.p
+            className='text-xl sm:text-2xl text-gray-400 max-w-3xl mx-auto px-4 leading-relaxed'
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
+          >
             Join thousands of users who use our open-source tool
-          </p>
+          </motion.p>
         </motion.div>
 
-        <div className='grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8'>
+        <div className='grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-10'>
           {stats.map((stat, index) => {
             const { value, suffix } = parseStatNumber(stat.number)
-            const animatedValue = useCountUp(value, 2000 + index * 200, isInView)
+            const animatedValue = useCountUp(value, 2000 + index * 300, isInView)
 
             return (
               <motion.div
                 key={stat.label}
-                variants={itemVariants}
-                className='text-center p-4 sm:p-6 lg:p-8 bg-gray-900/30 rounded-2xl sm:rounded-3xl border border-gray-800 backdrop-blur-sm'
+                variants={cardVariants}
+                custom={index}
+                className='group relative'
+                whileHover={{
+                  scale: 1.05,
+                  y: -10,
+                  transition: { duration: 0.3 },
+                }}
               >
-                <div className='text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-light text-white mb-1 sm:mb-2'>
-                  {animatedValue}
-                  {suffix}
+                <div className='absolute inset-0 bg-gradient-to-br from-gray-800/30 to-gray-900/50 rounded-3xl backdrop-blur-xl border border-gray-700/30 shadow-2xl group-hover:shadow-3xl transition-all duration-500' />
+                <div className='relative text-center p-6 sm:p-8 lg:p-10'>
+                  <motion.div
+                    className={`inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-r ${stat.color} rounded-2xl mb-4 sm:mb-6 shadow-lg`}
+                    whileHover={{ rotate: 360, scale: 1.1 }}
+                    transition={{ duration: 0.6 }}
+                  >
+                    <div className='text-white'>{stat.icon}</div>
+                  </motion.div>
+
+                  <motion.div
+                    className='text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-light text-white mb-2 sm:mb-3'
+                    initial={{ scale: 0.5 }}
+                    whileInView={{ scale: 1 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                  >
+                    {animatedValue}
+                    {suffix}
+                  </motion.div>
+
+                  <div className='text-gray-400 text-sm sm:text-base font-medium tracking-wide'>{stat.label}</div>
                 </div>
-                <div className='flex items-center justify-center gap-1 w-full text-gray-400 text-xs sm:text-sm font-medium'>
-                  <span className='flex justify-center text-gray-400'>{stat.icon}</span>
-                  {stat.label}
-                </div>
+
+                {/* Hover glow effect */}
+                <div
+                  className={`absolute inset-0 bg-gradient-to-r ${stat.color} rounded-3xl opacity-0 group-hover:opacity-10 transition-opacity duration-500 blur-xl`}
+                />
               </motion.div>
             )
           })}
