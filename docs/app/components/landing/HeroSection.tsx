@@ -86,7 +86,8 @@ export default function HeroSection() {
           variants={fadeInUp}
           className='max-w-2xl mx-auto text-lg sm:text-xl lg:text-2xl font-light text-gray-300 mb-8 sm:mb-12 leading-relaxed px-4'
         >
-          A powerful Steam automation tool for farming trading cards, managing achievements, and boosting playtime.
+          A powerful Steam idler for farming trading cards, managing achievements, and boosting playtime. The most
+          advanced Steam card idler available.
         </motion.p>
 
         <motion.div
