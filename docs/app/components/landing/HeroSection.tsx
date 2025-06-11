@@ -64,14 +64,8 @@ export default function HeroSection() {
 
       <div className='relative z-10 max-w-6xl mx-auto text-center'>
         <motion.div variants={itemVariants} className='mb-6 sm:mb-8'>
-          <div className='inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-gray-900/30 rounded-2xl sm:rounded-3xl border border-gray-800 backdrop-blur-sm mb-6 sm:mb-8'>
-            <Image
-              src='/logo.png'
-              alt='Logo'
-              width={48}
-              height={48}
-              className='w-10 h-10 sm:w-16 sm:h-16 lg:w-16 lg:h-16'
-            />
+          <div className='inline-flex items-center justify-center w-20 h-20 lg:w-24 lg:h-24 bg-gray-900/30 rounded-2xl sm:rounded-3xl border border-gray-800 backdrop-blur-sm mb-6 sm:mb-8'>
+            <Image src='/logo.png' alt='Logo' width={48} height={48} className='w-12 h-12 lg:w-16 lg:h-16' />
           </div>
         </motion.div>
 
