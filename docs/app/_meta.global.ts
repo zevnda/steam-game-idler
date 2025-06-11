@@ -26,6 +26,9 @@ export default {
   index: {
     type: 'page',
     display: 'hidden',
+    theme: {
+      navbar: false,
+    },
   },
   docs: {
     type: 'page',
