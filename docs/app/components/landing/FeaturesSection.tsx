@@ -32,25 +32,25 @@ const features = [
     icon: <TbCards className='w-6 h-6 sm:w-8 sm:h-8' />,
     title: 'Trading Card Farming',
     description:
-      'Automatically farm Steam trading cards from your games. Maximize card drops and sell them on the marketplace for profit.',
+      'Automatically farm Steam trading cards from your games with our advanced Steam card idler. Maximize card drops and sell them on the marketplace for profit.',
   },
   {
     icon: <TbAward className='w-6 h-6 sm:w-8 sm:h-8' />,
     title: 'Achievement Manager',
     description:
-      'Unlock achievements automatically with human-like behavior, or manually manage achievements for any game in your library.',
+      'Unlock achievements automatically with human-like behavior, or manually manage achievements for any game in your library with Steam idling technology.',
   },
   {
     icon: <TbBuildingStore className='w-6 h-6 sm:w-8 sm:h-8' />,
     title: 'Trading Card Manager',
     description:
-      'View and manage your entire Steam trading card inventory. Sell cards directly on the marketplace directly in the app..',
+      'View and manage your entire Steam trading card inventory. Sell cards directly on the marketplace from within the Steam idler app.',
   },
   {
     icon: <FiTrendingUp className='w-6 h-6 sm:w-8 sm:h-8' />,
     title: 'Playtime Booster',
     description:
-      'Increase game playtime by idling games in the background. Perfect for meeting hour requirements or boosting stats.',
+      'Increase game playtime by Steam idling games in the background. Perfect for meeting hour requirements or boosting stats with our Steam idle tool.',
   },
 ]
 
@@ -73,7 +73,7 @@ export default function FeaturesSection() {
       <div className='relative z-10 max-w-6xl mx-auto'>
         <motion.div variants={itemVariants} className='text-center mb-12 sm:mb-16 lg:mb-20'>
           <h2 className='text-3xl sm:text-4xl lg:text-5xl font-light text-white mb-4 sm:mb-6'>
-            Powerful automation features
+            Powerful Steam idling features
           </h2>
           <p className='text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto px-4'>
             Everything you need to maximize your Steam library potential
