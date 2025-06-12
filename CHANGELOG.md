@@ -1,3 +1,20 @@
+<!-- 1.12.4 -->
+
+### Changes in v1.12.4
+
+- Added support for multiple new languages
+  - Arabic
+  - Chinese (Simplified)
+  - Japanese
+  - Danish
+  - Greek
+  - Spanish
+  - Finnish
+  - Dutch
+  - Norwegian
+  - Portuguese (Portugal)
+  - Swedish
+
 <!-- 1.12.3 -->
 
 ### Changes in v1.12.3
