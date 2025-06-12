@@ -100,6 +100,7 @@
   "settings.general.title": "General",
   "settings.general.antiAway": "Previne statusul „Plecat” pe Steam",
   "settings.general.freeGameNotifications": "Primește notificări despre jocuri gratuite",
+  "settings.general.startMinimized": "Pornire minimizată",
   "settings.general.useBeta": "Activează funcțiile beta",
   "settings.general.useBetaTooltip": "Funcțiile beta pot fi instabile, se pot schimba neașteptat sau pot fi eliminate în orice moment. Dacă întâmpini probleme la utilizarea unei funcții beta, te rugăm să o raportezi pe GitHub",
   "settings.general.disableTooltips": "Dezactivează descrierile explicative",
