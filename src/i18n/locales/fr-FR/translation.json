@@ -54,6 +54,7 @@
   "tradingCards.remove": "Retirer tout",
   "tradingCards.confirmSingle": "Êtes-vous sûr de vouloir lister cette carte ?",
   "tradingCards.confirm": "Êtes-vous sûr de vouloir mettre en vente les cartes sélectionnées ?\n\nLe temps estimé pour mettre en vente {{count}} cartes est de {{time}}\n\nLaissez SGI ouvert jusqu'à la fin du processus",
+  "tradingCards.confirmBulk": "Êtes-vous sûr de vouloir lister toutes les cartes ?\n\nLe temps approximatif pour lister {{count}} cartes est {{time}}\n\nLaissez SGI en cours d'exécution jusqu'à ce que le processus soit terminé",
   "tradingCards.confirmRemove": "Êtes-vous sûr de vouloir supprimer toutes les listes de cartes de trading actives du marché Steam?",
   "tradingCards.fetchPrice": "Afficher les prix du marché",
   "tradingCards.cardExchange": "Voir sur l'échange de cartes Steam",
