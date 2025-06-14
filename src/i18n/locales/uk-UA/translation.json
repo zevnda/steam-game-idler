@@ -178,6 +178,7 @@
   "toast.tradingCards.listed": "Успішно перераховано {{count}} card(s) для продажу",
   "toast.tradingCards.rateLimit": "Перевищено ліміт частоти запитів. Повторіть спробу пізніше",
   "toast.tradingCards.noListings": "Список активних торгівельних карток не знайдено",
+  "toast.tradingCards.removedListings": "Видалено {{count}} з {{total}} активних оголошень торгових карток з ринку Steam",
   "toast.tradingCards.failedRemove": "Не вдалося видалити список активних торгівельних карток з ринку Steam",
   "common.cardFarming": "Збір карток",
   "common.achievementUnlocker": "Розблокувальник досягнень",

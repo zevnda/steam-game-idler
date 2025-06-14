@@ -53,6 +53,8 @@
   "tradingCards.list": "Lista seleccionada",
   "tradingCards.remove": "Eliminar todo",
   "tradingCards.confirmSingle": "¿Estás seguro de que quieres listar esta tarjeta?",
+  "tradingCards.confirm": "¿Estás seguro de que quieres listar las tarjetas seleccionadas?\n\nEl tiempo aproximado para listar {{count}} tarjetas es {{time}}\n\nDeja SGI en ejecución hasta que se complete el proceso",
+  "tradingCards.confirmBulk": "¿Estás seguro de que deseas listar todas las tarjetas?\n\nEl tiempo aproximado para listar {{count}} tarjetas es {{time}}\n\nDeja SGI en ejecución hasta que se complete el proceso",
   "tradingCards.confirmRemove": "¿Estás seguro de que quieres eliminar todos los anuncios activos de tarjetas de trading del mercado de Steam?",
   "tradingCards.fetchPrice": "Mostrar precios del mercado",
   "tradingCards.cardExchange": "Ver en Steam Card Exchange",

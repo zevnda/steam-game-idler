@@ -178,6 +178,7 @@
   "toast.tradingCards.listed": "Vendita di carte {{count}} elencate con successo",
   "toast.tradingCards.rateLimit": "Limite di velocità superato. Riprova più tardi",
   "toast.tradingCards.noListings": "Nessun elenco di carte di trading attivo trovato",
+  "toast.tradingCards.removedListings": "Rimossi {{count}} su {{total}} elenchi di carte collezionabili attive dal mercato di Steam",
   "toast.tradingCards.failedRemove": "Impossibile rimuovere gli elenchi delle carte di trading attive dal mercato di Steam",
   "common.cardFarming": "Farming Carte",
   "common.achievementUnlocker": "Sblocco Obiettivi",
