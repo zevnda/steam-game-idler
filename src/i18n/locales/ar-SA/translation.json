@@ -53,6 +53,8 @@
   "tradingCards.list": "قائمة مختارة",
   "tradingCards.remove": "إزالة الكل",
   "tradingCards.confirmSingle": "هل أنت متأكد من أنك تريد إدراج هذه البطاقة؟",
+  "tradingCards.confirm": "أهل أنت متأكد من أنك تريد سرد البطاقات المحددة؟\n\nالوقت التقريبي لسرد {{count}} بطاقة هو {{time}}\n\nاترك SGI قيد التشغيل حتى اكتمال العملية",
+  "tradingCards.confirmBulk": "هل أنت متأكد من أنك تريد سرد جميع البطاقات؟\n\nالوقت التقريبي لسرد {{count}} بطاقة هو {{time}}\n\nاترك SGI قيد التشغيل حتى اكتمال العملية",
   "tradingCards.confirmRemove": "هل أنت متأكد من أنك تريد إزالة جميع قوائم بطاقات التداول النشطة من سوق البخار؟",
   "tradingCards.fetchPrice": "إظهار أسعار السوق",
   "tradingCards.cardExchange": "عرض في Steam Card Exchange",
