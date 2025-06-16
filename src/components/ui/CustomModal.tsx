@@ -39,7 +39,7 @@ export default function CustomModal({
           <ModalHeader className='flex flex-col gap-1 bg-modalheader border-b border-border' data-tauri-drag-region>
             {title}
           </ModalHeader>
-          <ModalBody className='my-4 text-sm max-h-80 overflow-auto'>{body}</ModalBody>
+          <ModalBody className='my-0 p-6 text-sm max-h-80 overflow-auto'>{body}</ModalBody>
           <ModalFooter className='border-t border-border bg-modalfooter px-4 py-3'>{buttons}</ModalFooter>
         </>
         {/* )} */}
