@@ -1,3 +1,4 @@
+import type { SidebarItem } from '@/types/navigation'
 import type { ReactElement } from 'react'
 
 import { Button, cn } from '@heroui/react'
@@ -29,132 +30,96 @@ export default function SideBar(): ReactElement {
   const { activePage, setActivePage } = useNavigationContext()
   const { isOpen, onOpenChange, openConfirmation, handleLogout } = useSideBar(activePage, setActivePage)
 
+  const mainSidebarItems: SidebarItem[] = [
+    {
+      id: 'games',
+      page: 'games',
+      icon: TbDeviceGamepad2,
+      tooltipKey: 'gamesList.title',
+    },
+    {
+      id: 'idling',
+      page: 'idling',
+      icon: TbPlayerPlay,
+      tooltipKey: 'idlingGames.title',
+      isActive: idleGamesList.length > 0,
+      customClassName: idleGamesList.length > 0 ? 'text-dynamic animate-pulse' : '',
+    },
+    {
+      id: 'card-farming',
+      page: 'customlists/card-farming',
+      icon: TbCards,
+      tooltipKey: 'common.cardFarming',
+      isActive: isCardFarming,
+      customClassName: isCardFarming ? 'text-dynamic animate-pulse' : '',
+    },
+    {
+      id: 'achievement-unlocker',
+      page: 'customlists/achievement-unlocker',
+      icon: TbAward,
+      tooltipKey: 'common.achievementUnlocker',
+      isActive: isAchievementUnlocker,
+      customClassName: isAchievementUnlocker ? 'text-dynamic animate-pulse' : '',
+    },
+    {
+      id: 'auto-idle',
+      page: 'customlists/auto-idle',
+      icon: TbHourglassLow,
+      tooltipKey: 'customLists.autoIdle.title',
+    },
+    {
+      id: 'favorites',
+      page: 'customlists/favorites',
+      icon: TbHeart,
+      tooltipKey: 'customLists.favorites.title',
+    },
+    {
+      id: 'trading-cards',
+      page: 'tradingCards',
+      icon: TbBuildingStore,
+      tooltipKey: 'tradingCards.title',
+      shouldShow: useBeta,
+    },
+    {
+      id: 'free-games',
+      page: 'freeGames',
+      icon: TbGift,
+      tooltipKey: 'freeGames.title',
+      shouldShow: showFreeGamesTab,
+      customClassName: 'text-[#ffc700]',
+    },
+  ]
+
+  const renderSidebarItem = (item: SidebarItem): ReactElement | null => {
+    if (item.shouldShow === false) return null
+
+    const Icon = item.icon
+    const isCurrentPage = activePage === item.page
+    const isFreeGames = item.id === 'free-games'
+
+    return (
+      <div key={item.id} className='flex justify-center items-center w-14'>
+        <CustomTooltip content={t(item.tooltipKey)} placement='right'>
+          <div
+            className={cn(
+              'p-2 rounded-full duration-200 cursor-pointer active:scale-90',
+              isFreeGames && 'relative flex justify-center items-center',
+              item.customClassName,
+              isCurrentPage ? (isFreeGames ? 'bg-yellow-400/20' : 'bg-dynamic/30 text-dynamic') : 'hover:bg-titlehover',
+            )}
+            onClick={() => setActivePage(item.page)}
+          >
+            <Icon fontSize={22} className={isFreeGames ? 'text-[#ffc700]' : undefined} />
+          </div>
+        </CustomTooltip>
+      </div>
+    )
+  }
+
   return (
     <>
       <div className='flex justify-between flex-col w-14 min-h-calc max-h-calc bg-titlebar'>
-        <div className='flex justify-center items-center flex-col gap-2'>
-          <div className='flex justify-center items-center w-14'>
-            <CustomTooltip content={t('gamesList.title')} placement='right'>
-              <div
-                className={cn(
-                  'p-2 rounded-full duration-200 cursor-pointer active:scale-90',
-                  activePage === 'games' ? 'bg-dynamic/30 text-dynamic' : 'hover:bg-titlehover',
-                )}
-                onClick={() => setActivePage('games')}
-              >
-                <TbDeviceGamepad2 fontSize={22} />
-              </div>
-            </CustomTooltip>
-          </div>
-
-          <div className='flex justify-center items-center w-14'>
-            <CustomTooltip content={t('idlingGames.title')} placement='right'>
-              <div
-                className={cn(
-                  'p-2 rounded-full duration-200 cursor-pointer active:scale-90',
-                  idleGamesList.length > 0 && 'text-dynamic animate-pulse',
-                  activePage === 'idling' ? 'bg-dynamic/30 text-dynamic' : 'hover:bg-titlehover',
-                )}
-                onClick={() => setActivePage('idling')}
-              >
-                <TbPlayerPlay fontSize={22} />
-              </div>
-            </CustomTooltip>
-          </div>
-
-          <div className='flex justify-center items-center w-14'>
-            <CustomTooltip content={t('common.cardFarming')} placement='right'>
-              <div
-                className={cn(
-                  'p-2 rounded-full duration-200 cursor-pointer active:scale-90',
-                  isCardFarming && 'text-dynamic animate-pulse',
-                  activePage === 'customlists/card-farming' ? 'bg-dynamic/30 text-dynamic' : 'hover:bg-titlehover',
-                )}
-                onClick={() => setActivePage('customlists/card-farming')}
-              >
-                <TbCards fontSize={22} />
-              </div>
-            </CustomTooltip>
-          </div>
-
-          <div className='flex justify-center items-center w-14'>
-            <CustomTooltip content={t('common.achievementUnlocker')} placement='right'>
-              <div
-                className={cn(
-                  'p-2 rounded-full duration-200 cursor-pointer active:scale-90',
-                  isAchievementUnlocker && 'text-dynamic animate-pulse',
-                  activePage === 'customlists/achievement-unlocker'
-                    ? 'bg-dynamic/30 text-dynamic'
-                    : 'hover:bg-titlehover',
-                )}
-                onClick={() => setActivePage('customlists/achievement-unlocker')}
-              >
-                <TbAward fontSize={22} />
-              </div>
-            </CustomTooltip>
-          </div>
-
-          <div className='flex justify-center items-center w-14'>
-            <CustomTooltip content={t('customLists.autoIdle.title')} placement='right'>
-              <div
-                className={cn(
-                  'p-2 rounded-full duration-200 cursor-pointer active:scale-90',
-                  activePage === 'customlists/auto-idle' ? 'bg-dynamic/30 text-dynamic' : 'hover:bg-titlehover',
-                )}
-                onClick={() => setActivePage('customlists/auto-idle')}
-              >
-                <TbHourglassLow fontSize={22} />
-              </div>
-            </CustomTooltip>
-          </div>
-
-          <div className='flex justify-center items-center w-14'>
-            <CustomTooltip content={t('customLists.favorites.title')} placement='right'>
-              <div
-                className={cn(
-                  'p-2 rounded-full duration-200 cursor-pointer active:scale-90',
-                  activePage === 'customlists/favorites' ? 'bg-dynamic/30 text-dynamic' : 'hover:bg-titlehover',
-                )}
-                onClick={() => setActivePage('customlists/favorites')}
-              >
-                <TbHeart fontSize={22} />
-              </div>
-            </CustomTooltip>
-          </div>
-
-          {useBeta && (
-            <div className='flex justify-center items-center w-14'>
-              <CustomTooltip content={t('tradingCards.title')} placement='right'>
-                <div
-                  className={cn(
-                    'p-2 rounded-full duration-200 cursor-pointer active:scale-90',
-                    activePage === 'tradingCards' ? 'bg-dynamic/30 text-dynamic' : 'hover:bg-titlehover',
-                  )}
-                  onClick={() => setActivePage('tradingCards')}
-                >
-                  <TbBuildingStore fontSize={22} />
-                </div>
-              </CustomTooltip>
-            </div>
-          )}
-
-          {showFreeGamesTab && (
-            <div className='flex justify-center items-center w-14'>
-              <CustomTooltip content={t('freeGames.title')} placement='right'>
-                <div
-                  className={cn(
-                    'relative flex justify-center items-center p-2 rounded-full',
-                    'duration-200 cursor-pointer active:scale-90',
-                    activePage === 'freeGames' ? 'bg-yellow-400/20' : 'hover:bg-titlehover',
-                  )}
-                  onClick={() => setActivePage('freeGames')}
-                >
-                  <TbGift className='text-[#ffc700]' fontSize={22} />
-                </div>
-              </CustomTooltip>
-            </div>
-          )}
-        </div>
+        <div className='flex justify-center items-center flex-col gap-2'>{mainSidebarItems.map(renderSidebarItem)}</div>
 
         <div className='flex justify-center items-center flex-col gap-2 mb-3'>
           <div className='flex justify-center items-center w-14'>
