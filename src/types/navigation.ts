@@ -20,3 +20,13 @@ export interface NavigationContextType {
   currentSettingsTab: CurrentSettingsTabType
   setCurrentSettingsTab: Dispatch<SetStateAction<CurrentSettingsTabType>>
 }
+
+export interface SidebarItem {
+  id: string
+  page: ActivePageType
+  icon: React.ComponentType<{ fontSize?: number; className?: string }>
+  tooltipKey: string
+  shouldShow?: boolean
+  isActive?: boolean
+  customClassName?: string
+}
