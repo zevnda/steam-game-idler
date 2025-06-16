@@ -1,3 +1,9 @@
+<!-- 1.12.5 -->
+
+### Changes in v1.12.5
+
+- Fixed settings checkbox icons being shown on top of page header due to incorrect zindex
+
 <!-- 1.12.4 -->
 
 ### Changes in v1.12.4
