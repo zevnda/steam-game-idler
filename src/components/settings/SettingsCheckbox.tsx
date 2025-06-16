@@ -59,6 +59,7 @@ export default function SettingsCheckbox({ type, name, content }: SettingsCheckb
         }}
         classNames={{
           hiddenInput: 'w-fit',
+          icon: 'z-9',
           wrapper: cn(
             styles,
             'before:group-data-[selected=true]:!border-dynamic',
@@ -82,6 +83,7 @@ export default function SettingsCheckbox({ type, name, content }: SettingsCheckb
         onChange={() => handleRunAtStartupChange(setStartupState)}
         classNames={{
           hiddenInput: 'w-fit',
+          icon: '!z-[9]',
           wrapper: cn(
             styles,
             'before:group-data-[selected=true]:!border-dynamic',
@@ -112,6 +114,7 @@ export default function SettingsCheckbox({ type, name, content }: SettingsCheckb
       }}
       classNames={{
         hiddenInput: 'w-fit',
+        icon: '!z-[9]',
         wrapper: cn(
           styles,
           'before:group-data-[selected=true]:!border-dynamic',
