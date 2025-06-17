@@ -39,7 +39,7 @@ export default function Notifications(): ReactElement {
       <CustomTooltip content='Notifications'>
         <div
           className={cn(
-            'flex items-center p-2 hover:bg-titlehover/60 rounded-lg',
+            'flex items-center p-2 hover:bg-titlehover rounded-lg',
             'cursor-pointer active:scale-95 relative duration-200 transition-all ease-out',
             'hover:shadow-sm',
             showNotifications && 'bg-titlehover/40',
