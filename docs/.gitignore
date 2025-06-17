@@ -43,6 +43,5 @@ next-env.d.ts
 
 # sitemap
 _pagefind/
-public/sitemap.xml
-public/sitemap_index.xml
-public/robots.txt
+# public/sitemap.xml
+# public/robots.txt
