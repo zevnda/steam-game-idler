@@ -39,18 +39,19 @@ export default function Notifications(): ReactElement {
       <CustomTooltip content='Notifications'>
         <div
           className={cn(
-            'flex items-center p-2 hover:bg-titlehover rounded-full',
-            'cursor-pointer active:scale-90 relative duration-200',
-            showNotifications && 'bg-titlehover',
+            'flex items-center p-2 hover:bg-titlehover/60 rounded-lg',
+            'cursor-pointer active:scale-95 relative duration-200 transition-all ease-out',
+            'hover:shadow-sm',
+            showNotifications && 'bg-titlehover/40',
           )}
           onClick={() => {
             setShowNotifications(!showNotifications)
           }}
         >
-          <TbBell fontSize={20} />
+          <TbBell fontSize={18} />
           {unseenNotifications.length > 0 && (
-            <div className='absolute top-1 right-1'>
-              <GoDotFill className='text-danger' />
+            <div className='absolute top-1.5 right-1.5'>
+              <GoDotFill className='text-danger animate-pulse' fontSize={12} />
             </div>
           )}
         </div>
@@ -64,17 +65,18 @@ export default function Notifications(): ReactElement {
               animate={{ opacity: 0.5 }}
               exit={{ opacity: 0 }}
               onClick={() => setShowNotifications(false)}
-            />
+            />{' '}
             <motion.div
               ref={dropdownRef}
               className={cn(
-                'absolute right-0 mx-auto mt-2 w-[350px] p-0 m-0 rounded-xl',
-                'bg-modalbody border-none outline-none z-[999] shadow-xl',
+                'absolute right-0 mx-auto mt-3 w-[380px] p-0 m-0 rounded-xl',
+                'bg-modalbody/95 backdrop-blur-md border border-border/50 outline-none z-[999]',
+                'shadow-2xl',
               )}
               initial={{
                 opacity: 0,
-                y: -5,
-                scale: 0.9,
+                y: -10,
+                scale: 0.95,
               }}
               animate={{
                 opacity: 1,
@@ -83,8 +85,13 @@ export default function Notifications(): ReactElement {
               }}
               exit={{
                 opacity: 0,
-                y: -5,
-                scale: 0.9,
+                y: -10,
+                scale: 0.95,
+              }}
+              transition={{
+                type: 'spring',
+                damping: 20,
+                stiffness: 300,
               }}
             >
               {notifications.length === 0 ? (

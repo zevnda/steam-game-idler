@@ -21,16 +21,16 @@ export default function Private({ setRefreshKey }: PrivateProps): ReactElement {
       <div
         className={cn(
           'flex justify-center items-center flex-col border bg-titlebar',
-          'border-border w-[50%] rounded-lg',
+          'border-border w-[420px] rounded-xl shadow-sm',
         )}
       >
-        <div className='flex items-center flex-col gap-2 p-6'>
-          <p className='text-4xl font-bold'>Uh-oh!</p>
+        <div className='flex items-center flex-col gap-3 pt-8 pb-2'>
+          <p className='text-3xl font-semibold text-content'>Uh-oh!</p>
         </div>
-        <div className='flex justify-center items-center flex-col pb-6'>
+        <div className='flex justify-center items-center flex-col pb-8 px-6'>
           <div className='flex justify-center items-center flex-col'>
-            <p className='text-center font-bold px-3'>{t('gamesList.private.message')}</p>
-            <ul className='text-center text-sm mt-4'>
+            <p className='text-center font-medium text-content mb-5'>{t('gamesList.private.message')}</p>
+            <ul className='text-center text-sm space-y-1 text-altwhite'>
               <li>{t('gamesList.private.reason.1')}</li>
               <li>{t('gamesList.private.reason.2')}</li>
               <li>{t('gamesList.private.reason.3')}</li>
@@ -39,13 +39,13 @@ export default function Private({ setRefreshKey }: PrivateProps): ReactElement {
           </div>
           <ExtLink
             href='https://steamcommunity.com/my/edit/settings'
-            className='text-xs text-link hover:text-linkhover mt-4'
+            className='text-sm text-link hover:text-linkhover mt-6 font-medium'
           >
             {t('gamesList.private.change')}
           </ExtLink>
           <Button
             size='sm'
-            className='font-semibold rounded-lg mt-5 bg-dynamic text-button-text'
+            className='font-medium rounded-lg mt-6 bg-dynamic text-button-text px-6 shadow-sm hover:shadow-md transition-shadow'
             onPress={handleRefresh}
           >
             {t('gamesList.private.tryAgain')}
