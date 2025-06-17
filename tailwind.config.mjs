@@ -14,13 +14,13 @@ export default {
         calc: 'calc(100vw - 57px)',
       },
       height: {
-        calc: 'calc(100vh - 45px)',
+        calc: 'calc(100vh - 40px)',
       },
       maxHeight: {
-        calc: 'calc(100vh - 45px)',
+        calc: 'calc(100vh - 40px)',
       },
       minHeight: {
-        calc: 'calc(100vh - 45px)',
+        calc: 'calc(100vh - 40px)',
       },
     },
   },
