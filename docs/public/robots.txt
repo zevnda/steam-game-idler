@@ -2,8 +2,5 @@
 User-agent: *
 Allow: /
 
-# Host
-Host: https://steamgameidler.vercel.app
-
 # Sitemaps
-Sitemap: https://steamgameidler.vercel.app/sitemap-alt.xml
+Sitemap: https://steamgameidler.vercel.app/sitemap1.xml
