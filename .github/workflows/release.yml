@@ -39,8 +39,36 @@ permissions:
   pull-requests: write
 
 jobs:
+  validate_changelog:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check if version exists in changelog
+        run: |
+          VERSION="${{ github.event.inputs.version }}"
+          
+          # Check if the version exists as a comment in the changelog
+          if ! grep -q "<!-- $VERSION -->" CHANGELOG.md; then
+            echo "❌ Error: Version $VERSION not found in CHANGELOG.md"
+            echo ""
+            echo "Please add the following section to CHANGELOG.md before creating a release:"
+            echo ""
+            echo "<!-- $VERSION -->"
+            echo ""
+            echo "### Changes in v$VERSION"
+            echo ""
+            echo "- Add your changes here"
+            echo ""
+            exit 1
+          fi
+          
+          echo "✅ Version $VERSION found in CHANGELOG.md"
+
   fetch_previous_version:
     runs-on: ubuntu-latest
+    needs: validate_changelog
     outputs:
       previous_version: ${{ steps.get_version.outputs.previous_version }}
     steps:
@@ -53,7 +81,7 @@ jobs:
 
   build_dotnet_libs:
     runs-on: windows-latest
-    needs: fetch_previous_version
+    needs: [fetch_previous_version, validate_changelog]
     timeout-minutes: 15
     steps:
       - name: Checkout repository
@@ -104,7 +132,7 @@ jobs:
           retention-days: 1
 
   build_release_bundle:
-    needs: [build_dotnet_libs, fetch_previous_version]
+    needs: [build_dotnet_libs, fetch_previous_version, validate_changelog]
     timeout-minutes: 30
     runs-on: windows-latest
     steps:
