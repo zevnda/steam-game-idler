@@ -174,7 +174,7 @@ export default function StatisticsList({
           />
 
           <List
-            height={windowInnerHeight - 172}
+            height={windowInnerHeight - 163}
             itemCount={Math.ceil(filteredStatistics.length / 2)}
             itemSize={58}
             width='100%'

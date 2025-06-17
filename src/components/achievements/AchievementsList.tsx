@@ -189,7 +189,7 @@ export default function AchievementsList({
           />
 
           <List
-            height={windowInnerHeight - 172}
+            height={windowInnerHeight - 163}
             itemCount={filteredAchievements.length}
             itemSize={100}
             width='100%'
