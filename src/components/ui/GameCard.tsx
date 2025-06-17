@@ -44,7 +44,7 @@ export default function GameCard({ item }: { item: Game }): ReactElement {
           />
           <div
             className={cn(
-              'absolute flex items-center justify-evenly inset-0 bg-black',
+              'absolute flex items-center justify-center gap-4 inset-0 bg-black',
               'bg-opacity-0 group-hover:bg-opacity-40 transition-opacity duration-200',
               isDarkMode && 'bg-opacity-20 group-hover:bg-opacity-50',
             )}

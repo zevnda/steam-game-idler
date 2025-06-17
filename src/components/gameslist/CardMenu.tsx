@@ -37,7 +37,7 @@ export default function CardMenu({ item, onOpen }: CardMenuProps): ReactElement 
       <DropdownTrigger>
         <div
           className={cn(
-            'p-0.5 bg-black text-offwhite bg-opacity-50',
+            'p-1 bg-black text-offwhite bg-opacity-50',
             'hover:bg-black hover:bg-opacity-70 hover:scale-105',
             'cursor-pointer rounded-md duration-200',
           )}

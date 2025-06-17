@@ -35,7 +35,7 @@ export default function HeaderTitle(): ReactElement {
       data-tauri-drag-region
     >
       <svg
-        className='w-7 h-7 fill-dynamic pointer-events-none'
+        className='w-5 h-5 fill-dynamic pointer-events-none flex-shrink-0'
         xmlns='http://www.w3.org/2000/svg'
         viewBox='0 0 512 512'
         data-tauri-drag-region
@@ -44,19 +44,19 @@ export default function HeaderTitle(): ReactElement {
       </svg>
 
       <div className='flex justify-center items-center max-w-[500px]' data-tauri-drag-region>
-        <p className='font-semibold whitespace-nowrap' data-tauri-drag-region>
+        <p className='font-medium text-sm whitespace-nowrap text-content' data-tauri-drag-region>
           Steam Game Idler
-          <span className='mx-2 text-dynamic' data-tauri-drag-region>
+          <span className='mx-1.5 text-dynamic/70 font-normal' data-tauri-drag-region>
             /
           </span>
         </p>
 
-        <p className='font-semibold truncate' data-tauri-drag-region>
+        <p className='font-medium text-sm truncate text-content/90' data-tauri-drag-region>
           {showAchievements && (
             <>
               <span className='whitespace-nowrap' data-tauri-drag-region>
                 {t('achievementManager.title')}
-                <span className='mx-2 text-dynamic' data-tauri-drag-region>
+                <span className='mx-1.5 text-dynamic/70 font-normal' data-tauri-drag-region>
                   /
                 </span>
               </span>
@@ -70,7 +70,7 @@ export default function HeaderTitle(): ReactElement {
             <>
               <span className='whitespace-nowrap' data-tauri-drag-region>
                 {t('settings.title')}
-                <span className='mx-2 text-dynamic' data-tauri-drag-region>
+                <span className='mx-1.5 text-dynamic/70 font-normal' data-tauri-drag-region>
                   /
                 </span>
               </span>

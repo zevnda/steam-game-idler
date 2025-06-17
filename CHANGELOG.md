@@ -4,6 +4,7 @@
 
 - Fixed settings checkbox icons being shown on top of page header due to incorrect zindex
 - Fixed changelog modal buttons being hidden if modal body was too high 
+- Minor UI improvements
 
 <!-- 1.12.4 -->
 
