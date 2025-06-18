@@ -5,7 +5,21 @@ import { motion, useInView } from 'framer-motion'
 import { FiDownload, FiGlobe, FiStar } from 'react-icons/fi'
 import { TbCode } from 'react-icons/tb'
 
-function useCountUp(target: number, duration: number = 2000, inView: boolean = false) {
+async function fetchGitHubStars(): Promise<number> {
+  try {
+    const response = await fetch('/api/github-stars')
+    if (!response.ok) {
+      throw new Error('Failed to fetch repository data')
+    }
+    const data = await response.json()
+    return data.stars
+  } catch (error) {
+    console.error('Error fetching GitHub stars:', error)
+    return 160
+  }
+}
+
+function useCountUp(target: number, duration: number = 200, inView: boolean = false) {
   const [count, setCount] = useState(0)
 
   useEffect(() => {
@@ -52,7 +66,7 @@ const itemVariants = {
     y: 0,
     scale: 1,
     transition: {
-      duration: 1,
+      duration: 0.2,
       ease: [0.25, 0.1, 0.25, 1],
     },
   },
@@ -65,33 +79,56 @@ const cardVariants = {
     y: 0,
     rotateX: 0,
     transition: {
-      duration: 0.8,
+      duration: 0.2,
       ease: [0.25, 0.1, 0.25, 1],
     },
   },
 }
 
-const stats = [
-  { number: '15K+', label: 'Downloads', icon: <FiDownload className='w-6 h-6' />, color: 'from-blue-500 to-cyan-500' },
-  { number: '11', label: 'Languages', icon: <FiGlobe className='w-6 h-6' />, color: 'from-emerald-500 to-teal-500' },
-  {
-    number: '100%',
-    label: 'Open Source',
-    icon: <TbCode className='w-6 h-6' />,
-    color: 'from-purple-500 to-violet-500',
-  },
-  { number: '160', label: 'GitHub Stars', icon: <FiStar className='w-6 h-6' />, color: 'from-orange-500 to-red-500' },
-]
-
-function parseStatNumber(numberStr: string) {
-  const match = numberStr.match(/^(\d+(?:\.\d+)?)(.*)$/)
-  if (!match) return { value: 0, suffix: '' }
-  return { value: parseFloat(match[1]), suffix: match[2] }
-}
-
 export default function StatsSection() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
+  const [githubStars, setGithubStars] = useState(160)
+  const [isLoadingStars, setIsLoadingStars] = useState(true)
+
+  useEffect(() => {
+    const loadGitHubStars = async () => {
+      setIsLoadingStars(true)
+      const stars = await fetchGitHubStars()
+      setGithubStars(stars)
+      setIsLoadingStars(false)
+    }
+
+    loadGitHubStars()
+  }, [])
+
+  const stats = [
+    {
+      number: '15K+',
+      label: 'Downloads',
+      icon: <FiDownload className='w-6 h-6' />,
+      color: 'from-blue-500 to-cyan-500',
+    },
+    { number: '22', label: 'Languages', icon: <FiGlobe className='w-6 h-6' />, color: 'from-emerald-500 to-teal-500' },
+    {
+      number: '100%',
+      label: 'Open Source',
+      icon: <TbCode className='w-6 h-6' />,
+      color: 'from-purple-500 to-violet-500',
+    },
+    {
+      number: githubStars.toString(),
+      label: 'GitHub Stars',
+      icon: <FiStar className='w-6 h-6' />,
+      color: 'from-orange-500 to-red-500',
+    },
+  ]
+
+  function parseStatNumber(numberStr: string) {
+    const match = numberStr.match(/^(\d+(?:\.\d+)?)(.*)$/)
+    if (!match) return { value: 0, suffix: '' }
+    return { value: parseFloat(match[1]), suffix: match[2] }
+  }
 
   return (
     <motion.section
@@ -110,7 +147,7 @@ export default function StatsSection() {
           y: [0, -50, 0],
         }}
         transition={{
-          duration: 25,
+          duration: 6,
           repeat: Infinity,
           ease: 'linear',
         }}
@@ -122,7 +159,7 @@ export default function StatsSection() {
           y: [0, 60, 0],
         }}
         transition={{
-          duration: 20,
+          duration: 6,
           repeat: Infinity,
           ease: 'linear',
         }}
@@ -134,7 +171,7 @@ export default function StatsSection() {
             className='text-4xl sm:text-5xl lg:text-6xl font-light text-white mb-6 sm:mb-8'
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
+            transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
           >
             Trusted by Steam users{' '}
             <span className='bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent'>
@@ -145,7 +182,7 @@ export default function StatsSection() {
             className='text-xl sm:text-2xl text-gray-400 max-w-3xl mx-auto px-4 leading-relaxed'
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
+            transition={{ duration: 0.2, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
           >
             Join thousands of users who use our open-source tool
           </motion.p>
@@ -154,7 +191,7 @@ export default function StatsSection() {
         <div className='grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-10'>
           {stats.map((stat, index) => {
             const { value, suffix } = parseStatNumber(stat.number)
-            const animatedValue = useCountUp(value, 2000 + index * 300, isInView)
+            const animatedValue = useCountUp(value, 200, isInView)
 
             return (
               <motion.div
@@ -165,7 +202,7 @@ export default function StatsSection() {
                 whileHover={{
                   scale: 1.05,
                   y: -10,
-                  transition: { duration: 0.3 },
+                  transition: { duration: 0.2 },
                 }}
               >
                 <div className='absolute inset-0 bg-gradient-to-br from-gray-800/30 to-gray-900/50 rounded-3xl backdrop-blur-xl border border-gray-700/30 shadow-2xl group-hover:shadow-3xl transition-all duration-500' />
@@ -173,7 +210,7 @@ export default function StatsSection() {
                   <motion.div
                     className={`inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-r ${stat.color} rounded-2xl mb-4 sm:mb-6 shadow-lg`}
                     whileHover={{ rotate: 360, scale: 1.1 }}
-                    transition={{ duration: 0.6 }}
+                    transition={{ duration: 0.2 }}
                   >
                     <div className='text-white'>{stat.icon}</div>
                   </motion.div>
@@ -182,10 +219,16 @@ export default function StatsSection() {
                     className='text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-light text-white mb-2 sm:mb-3'
                     initial={{ scale: 0.5 }}
                     whileInView={{ scale: 1 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                    transition={{ duration: 0.2, delay: index * 0.1 }}
                   >
-                    {animatedValue}
-                    {suffix}
+                    {stat.label === 'GitHub Stars' && isLoadingStars ? (
+                      <span className='animate-pulse'>...</span>
+                    ) : (
+                      <>
+                        {animatedValue}
+                        {suffix}
+                      </>
+                    )}
                   </motion.div>
 
                   <div className='text-gray-400 text-sm sm:text-base font-medium tracking-wide'>{stat.label}</div>
@@ -193,7 +236,7 @@ export default function StatsSection() {
 
                 {/* Hover glow effect */}
                 <div
-                  className={`absolute inset-0 bg-gradient-to-r ${stat.color} rounded-3xl opacity-0 group-hover:opacity-10 transition-opacity duration-500 blur-xl`}
+                  className={`absolute inset-0 bg-gradient-to-r ${stat.color} rounded-3xl opacity-0 group-hover:opacity-10 transition-opacity duration-200 blur-xl`}
                 />
               </motion.div>
             )

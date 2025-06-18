@@ -21,7 +21,7 @@ const itemVariants = {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 1,
+      duration: 0.2,
       ease: [0.25, 0.1, 0.25, 1],
     },
   },
@@ -34,7 +34,7 @@ const shieldVariants = {
     scale: 1,
     rotate: 0,
     transition: {
-      duration: 1.2,
+      duration: 0.2,
       ease: [0.25, 0.1, 0.25, 1],
     },
   },
@@ -45,7 +45,7 @@ const floatingVariants = {
     y: [-15, 15, -15],
     rotate: [0, 5, -5, 0],
     transition: {
-      duration: 8,
+      duration: 3,
       repeat: Infinity,
       ease: 'easeInOut',
     },
@@ -75,7 +75,7 @@ export default function SecuritySection() {
           rotate: [0, 180, 360],
         }}
         transition={{
-          duration: 30,
+          duration: 6,
           repeat: Infinity,
           ease: 'linear',
         }}
@@ -87,7 +87,7 @@ export default function SecuritySection() {
           y: [0, -80, 0],
         }}
         transition={{
-          duration: 25,
+          duration: 6,
           repeat: Infinity,
           ease: 'linear',
         }}
@@ -136,16 +136,16 @@ export default function SecuritySection() {
               key={feature.label}
               className='flex items-center space-x-4 text-gray-300 group'
               whileHover={{ scale: 1.05, y: -2 }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 0.2 }}
             >
               <motion.div
                 className={`p-3 sm:p-4 bg-gradient-to-r ${feature.color} rounded-xl shadow-lg group-hover:shadow-xl`}
                 whileHover={{ rotate: 15, scale: 1.1 }}
-                transition={{ duration: 0.6 }}
+                transition={{ duration: 0.2 }}
               >
                 <div className='text-white'>{feature.icon}</div>
               </motion.div>
-              <span className='text-base sm:text-lg font-medium group-hover:text-white transition-colors duration-300'>
+              <span className='text-base sm:text-lg font-medium group-hover:text-white transition-colors duration-200'>
                 {feature.label}
               </span>
             </motion.div>

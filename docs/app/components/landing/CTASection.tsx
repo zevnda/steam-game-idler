@@ -21,7 +21,7 @@ const itemVariants = {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 1,
+      duration: 0.2,
       ease: [0.25, 0.1, 0.25, 1],
     },
   },
@@ -45,7 +45,7 @@ export default function CTASection() {
           rotate: [0, 180, 360],
         }}
         transition={{
-          duration: 25,
+          duration: 6,
           repeat: Infinity,
           ease: 'linear',
         }}
@@ -57,7 +57,7 @@ export default function CTASection() {
           y: [0, -60, 0],
         }}
         transition={{
-          duration: 20,
+          duration: 6,
           repeat: Infinity,
           ease: 'linear',
         }}
@@ -78,13 +78,13 @@ export default function CTASection() {
           <motion.div className='flex' whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Link
               href='https://github.com/zevnda/steam-game-idler/releases/latest'
-              className='group relative w-full sm:w-auto px-8 sm:px-12 py-4 sm:py-5 bg-gradient-to-r from-white to-gray-100 text-black text-base sm:text-lg font-semibold rounded-full transition-all duration-500 transform overflow-hidden shadow-2xl hover:shadow-white/25'
+              className='group relative w-full sm:w-auto px-8 sm:px-12 py-4 sm:py-5 bg-gradient-to-r from-white to-gray-100 text-black text-base sm:text-lg font-semibold rounded-full transition-all duration-200 transform overflow-hidden shadow-2xl hover:shadow-white/25'
             >
-              <span className='relative z-10 flex items-center justify-center transition-all duration-300 group-hover:scale-110'>
+              <span className='relative z-10 flex items-center justify-center transition-all duration-200 group-hover:scale-110'>
                 <FaWindows className='w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-3' />
                 Download for Windows
               </span>
-              <div className='absolute inset-0 bg-gradient-to-r from-gray-100 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
+              <div className='absolute inset-0 bg-gradient-to-r from-gray-100 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-200' />
             </Link>
           </motion.div>
         </motion.div>
