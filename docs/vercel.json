@@ -1,0 +1,8 @@
+{
+  "git": {
+    "deploymentEnabled": {
+      "main": true
+    }
+  },
+  "ignoreCommand": "git diff HEAD^ HEAD --quiet -- docs/ || git diff --quiet HEAD^ HEAD docs/ || echo 'No previous commit or docs changes'"
+}
