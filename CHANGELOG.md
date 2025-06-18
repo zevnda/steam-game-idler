@@ -1,3 +1,10 @@
+<!-- 1.13.0 -->
+
+### Changes in v1.13.0
+
+- Trading card manager has been released from beta and is available to all users
+- Fixed some button and icon size inconsistencies 
+
 <!-- 1.12.5 -->
 
 ### Changes in v1.12.5
