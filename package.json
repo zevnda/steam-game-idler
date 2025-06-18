@@ -23,6 +23,7 @@
     "prepare": "husky",
     "prettier": "prettier --write .",
     "td": "tauri dev",
+    "tb": "tauri build",
     "main": "git checkout main && git pull && git fetch -p"
   },
   "dependencies": {
