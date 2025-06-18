@@ -67,6 +67,7 @@ pub fn run() {
         ))
         .setup(move |app| setup_app(app))
         .invoke_handler(tauri::generate_handler![
+            is_dev,
             is_steam_running,
             get_users,
             start_idle,
@@ -153,13 +154,11 @@ fn setup_window(app_handle: &tauri::AppHandle) -> Result<(), Box<dyn std::error:
                     // If start minimized is enabled, keep the window hidden
                     if !should_start_minimized {
                         window_for_async.show().unwrap();
-                        window_for_async.set_focus().unwrap();
                     }
                 }
                 Err(_) => {
                     // If we can't check the setting, default to showing the window
                     window_for_async.show().unwrap();
-                    window_for_async.set_focus().unwrap();
                 }
             }
         });

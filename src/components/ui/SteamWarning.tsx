@@ -1,10 +1,13 @@
 import type { ReactElement } from 'react'
 
+import { invoke } from '@tauri-apps/api/core'
+
 import { Button, useDisclosure } from '@heroui/react'
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useStateContext } from '@/components/contexts/StateContext'
+import { useUserContext } from '@/components/contexts/UserContext'
 import CustomModal from '@/components/ui/CustomModal'
 import { checkSteamStatus } from '@/utils/tasks'
 
@@ -12,12 +15,22 @@ export default function SteamWarning(): ReactElement {
   const { t } = useTranslation()
   const { showSteamWarning, setShowSteamWarning } = useStateContext()
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
+  const { userSummary } = useUserContext()
 
   useEffect(() => {
-    if (showSteamWarning) {
-      onOpen()
+    const shouldShowWarning = async (): Promise<void> => {
+      const devAccounts = ['76561198158912649', '76561198999797359']
+      const isDev = await invoke('is_dev')
+
+      const isUserDev = devAccounts.includes(userSummary?.steamId ?? '')
+
+      if (showSteamWarning && !isDev && !isUserDev) {
+        onOpen()
+      }
     }
-  }, [onOpen, showSteamWarning])
+
+    shouldShowWarning()
+  }, [onOpen, showSteamWarning, userSummary?.steamId])
 
   const verifySteamStatus = async (): Promise<void> => {
     const isSteamRunning = await checkSteamStatus(true)

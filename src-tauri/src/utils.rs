@@ -14,6 +14,11 @@ lazy_static! {
 }
 
 #[tauri::command]
+pub async fn is_dev() -> bool {
+    cfg!(debug_assertions)
+}
+
+#[tauri::command]
 pub async fn is_steam_running() -> bool {
     // Execute the tasklist command to check if steam.exe is running
     let output = std::process::Command::new("tasklist")

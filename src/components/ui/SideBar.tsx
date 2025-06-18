@@ -26,7 +26,7 @@ import useSideBar from '@/hooks/ui/useSideBar'
 export default function SideBar(): ReactElement {
   const { t } = useTranslation()
   const { idleGamesList } = useIdleContext()
-  const { isDarkMode, showFreeGamesTab, isCardFarming, isAchievementUnlocker, useBeta } = useStateContext()
+  const { isDarkMode, showFreeGamesTab, isCardFarming, isAchievementUnlocker } = useStateContext()
   const { activePage, setActivePage } = useNavigationContext()
   const { isOpen, onOpenChange, openConfirmation, handleLogout } = useSideBar(activePage, setActivePage)
 
@@ -78,7 +78,6 @@ export default function SideBar(): ReactElement {
       page: 'tradingCards',
       icon: TbBuildingStore,
       tooltipKey: 'tradingCards.title',
-      shouldShow: useBeta,
     },
     {
       id: 'free-games',

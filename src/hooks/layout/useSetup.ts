@@ -68,7 +68,8 @@ export default function useSetup(refreshKey: number): SetupHook {
     try {
       // Make sure Steam is running
       const isSteamRunning = await checkSteamStatus(true)
-      if (!isSteamRunning) return
+      const isDev = await invoke('is_dev')
+      if (!isSteamRunning && !isDev) return
 
       setIsLoading(true)
       const userSummary = userSummaries[index]
