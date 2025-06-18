@@ -21,7 +21,7 @@ const itemVariants = {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 1,
+      duration: 0.2,
       ease: [0.25, 0.1, 0.25, 1],
     },
   },
@@ -34,7 +34,7 @@ const cardVariants = {
     scale: 1,
     rotateY: 0,
     transition: {
-      duration: 0.8,
+      duration: 0.2,
       ease: [0.25, 0.1, 0.25, 1],
     },
   },
@@ -92,7 +92,7 @@ export default function FeaturesSection() {
           y: [0, -40, 0],
         }}
         transition={{
-          duration: 22,
+          duration: 0.2,
           repeat: Infinity,
           ease: 'linear',
         }}
@@ -104,7 +104,7 @@ export default function FeaturesSection() {
           y: [0, 50, 0],
         }}
         transition={{
-          duration: 18,
+          duration: 0.2,
           repeat: Infinity,
           ease: 'linear',
         }}
@@ -116,7 +116,7 @@ export default function FeaturesSection() {
             className='text-4xl sm:text-5xl lg:text-6xl font-light text-white mb-6 sm:mb-8'
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.2 }}
           >
             Powerful Steam idling{' '}
             <span className='bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent'>features</span>
@@ -125,7 +125,7 @@ export default function FeaturesSection() {
             className='text-xl sm:text-2xl text-gray-400 max-w-3xl mx-auto px-4 leading-relaxed'
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+            transition={{ duration: 0.2, delay: 0.2 }}
           >
             Everything you need to maximize your Steam library potential
           </motion.p>
@@ -141,7 +141,7 @@ export default function FeaturesSection() {
               whileHover={{
                 scale: 1.02,
                 y: -5,
-                transition: { duration: 0.4 },
+                transition: { duration: 0.2 },
               }}
             >
               {/* Card background with enhanced blur */}
@@ -160,7 +160,7 @@ export default function FeaturesSection() {
                       scale: 1.1,
                       boxShadow: '0 20px 40px -12px rgba(0, 0, 0, 0.4)',
                     }}
-                    transition={{ duration: 0.6 }}
+                    transition={{ duration: 0.2 }}
                   >
                     <div className='w-7 h-7 sm:w-8 sm:h-8'>{feature.icon}</div>
                   </motion.div>
@@ -170,7 +170,7 @@ export default function FeaturesSection() {
                       className='text-2xl sm:text-3xl font-light text-white mb-4 sm:mb-5'
                       initial={{ opacity: 0, x: -20 }}
                       whileInView={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.6, delay: index * 0.1 }}
+                      transition={{ duration: 0.2, delay: index * 0.1 }}
                     >
                       {feature.title}
                     </motion.h3>
@@ -178,7 +178,7 @@ export default function FeaturesSection() {
                       className='text-gray-400 leading-relaxed text-base sm:text-lg'
                       initial={{ opacity: 0, x: -20 }}
                       whileInView={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.6, delay: index * 0.1 + 0.2 }}
+                      transition={{ duration: 0.2, delay: index * 0.1 + 0.2 }}
                     >
                       {feature.description}
                     </motion.p>
