@@ -48,7 +48,7 @@ export default function Notifications(): ReactElement {
             setShowNotifications(!showNotifications)
           }}
         >
-          <TbBell fontSize={18} />
+          <TbBell fontSize={19} />
           {unseenNotifications.length > 0 && (
             <div className='absolute top-1.5 right-1.5'>
               <GoDotFill className='text-danger animate-pulse' fontSize={12} />
