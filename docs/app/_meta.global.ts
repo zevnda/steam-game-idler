@@ -8,9 +8,9 @@ const FEATURES = {
   'card-farming': 'Card Farming',
   'achievement-unlocker': 'Achievement Unlocker',
   'achievement-manager': 'Achievement Manager',
+  'trading-card-manager': 'Trading Card Manager',
   'playtime-booster': 'Playtime Booster',
   'auto-idler': 'Automatic Idler',
-  'trading-card-manager': 'Trading Card Manager',
 }
 
 const SETTINGS = {
