@@ -92,7 +92,7 @@ export default function FeaturesSection() {
           y: [0, -40, 0],
         }}
         transition={{
-          duration: 0.2,
+          duration: 6,
           repeat: Infinity,
           ease: 'linear',
         }}
@@ -104,7 +104,7 @@ export default function FeaturesSection() {
           y: [0, 50, 0],
         }}
         transition={{
-          duration: 0.2,
+          duration: 6,
           repeat: Infinity,
           ease: 'linear',
         }}
