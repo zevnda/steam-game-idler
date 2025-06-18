@@ -4,5 +4,5 @@
       "main": true
     }
   },
-  "ignoreCommand": "git diff --quiet HEAD^ HEAD -- docs/"
+  "ignoreCommand": "! git diff --quiet HEAD^ HEAD -- docs/"
 }
