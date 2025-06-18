@@ -39,7 +39,7 @@ export default function Header(): ReactElement {
                 className='hover:bg-titlehover p-1.5 rounded-md duration-150 cursor-pointer active:scale-95'
                 onClick={windowMinimize}
               >
-                <TbMinus fontSize={20} className='text-content/70' />
+                <TbMinus fontSize={20} className='text-content' />
               </div>
             </div>
 
@@ -48,7 +48,7 @@ export default function Header(): ReactElement {
                 className='hover:bg-titlehover p-[8px] rounded-md duration-150 cursor-pointer active:scale-95'
                 onClick={windowToggleMaximize}
               >
-                <TbSquare fontSize={16} className='text-content/70' />
+                <TbSquare fontSize={16} className='text-content' />
               </div>
             </div>
 
@@ -60,7 +60,7 @@ export default function Header(): ReactElement {
                 )}
                 onClick={windowClose}
               >
-                <TbX fontSize={20} className='text-content/70' />
+                <TbX fontSize={20} className='text-content' />
               </div>
             </div>
           </div>

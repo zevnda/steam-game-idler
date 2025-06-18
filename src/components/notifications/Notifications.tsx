@@ -39,7 +39,7 @@ export default function Notifications(): ReactElement {
       <CustomTooltip content='Notifications'>
         <div
           className={cn(
-            'flex items-center p-2 hover:bg-titlehover rounded-lg',
+            'flex items-center p-1.5 hover:bg-titlehover rounded-lg',
             'cursor-pointer active:scale-95 relative duration-200 transition-all ease-out',
             'hover:shadow-sm',
             showNotifications && 'bg-titlehover/40',
@@ -48,7 +48,7 @@ export default function Notifications(): ReactElement {
             setShowNotifications(!showNotifications)
           }}
         >
-          <TbBell fontSize={18} />
+          <TbBell fontSize={20} />
           {unseenNotifications.length > 0 && (
             <div className='absolute top-1.5 right-1.5'>
               <GoDotFill className='text-danger animate-pulse' fontSize={12} />
