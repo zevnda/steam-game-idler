@@ -140,3 +140,66 @@
     > * The game you are trying to view achievements for does not have any achievements
     > * Your 'Game Details' are set to private in your Steam profile settings
 </details>
+
+<details>
+    <summary>Will unlocking achievements affect my completion percentage on tracking sites?</summary>
+    > Yes, achievements unlocked with SGI will count toward your completion percentage on sites like Steam, TrueSteamAchievements, SteamHunters, and others that track Steam achievements.
+</details>
+
+<details>
+    <summary>Can I unlock achievements for games I don't own?</summary>
+    > No, you can only unlock achievements for games that are owned by your Steam account. The game must be in your library.
+</details>
+
+<details>
+    <summary>Is there a way to unlock achievements in a specific order?</summary>
+    > Currently, SGI unlocks achievements randomly within your configured time range. There's no built-in way to specify a custom order, but you can manually unlock specific achievements using the Achievement Manager.
+</details>
+
+## Performance & System
+
+<details>
+    <summary>How much system resources does SGI use?</summary>
+    > SGI is lightweight and uses minimal system resources. The main application typically uses less than 100MB of RAM. When idling games, external SteamUtility processes are created, each using around 10-20MB of RAM and minimal CPU.
+</details>
+
+<details>
+    <summary>Can I run multiple instances of SGI?</summary>
+    > Yes, you can run multiple instances of SGI to manage different Steam accounts or to unlock achievements for multiple games simultaneously. Each instance must be configured for a different Steam account.
+</details>
+
+<details>
+    <summary>Does SGI work with Steam family sharing?</summary>
+    > SGI works with your own games, but has limitations with family-shared games. You cannot idle or manage achievements for games that are shared with you from another account. You can only manage games you own directly.
+</details>
+
+<details>
+    <summary>Why does SGI create SteamUtility.exe processes?</summary>
+    > SteamUtility.exe processes are created to communicate with Steam and simulate game activity. These are external helper processes that are automatically managed by SGI - they start when needed and close when games stop being idled.
+</details>
+
+## Troubleshooting
+
+<details>
+    <summary>SGI crashes or becomes unresponsive, what should I do?</summary>
+    > 1. Check the logs in `%appdata%/roaming/com.zevnda.steam-game-idler` for error messages
+    > 2. Restart SGI and Steam
+    > 3. Make sure you're running the latest version of SGI
+    > 4. If the issue persists, report it on the GitHub issues page with your log files
+</details>
+
+<details>
+    <summary>The UI looks broken or elements are missing</summary>
+    > 1. Try restarting SGI
+    > 2. Clear your browser cache if using a web version
+    > 3. Check if you're running any screen scaling that might affect the UI
+    > 4. Try switching themes in Settings > General
+</details>
+
+<details>
+    <summary>SGI won't start or shows a blank screen</summary>
+    > 1. Make sure Steam is installed and running
+    > 2. Run SGI as administrator
+    > 3. Check Windows Defender or antivirus isn't blocking SGI
+    > 4. Reinstall SGI if the problem persists
+</details>

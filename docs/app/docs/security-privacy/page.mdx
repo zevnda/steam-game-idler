@@ -1,0 +1,98 @@
+import Callout from '@docs/components/Callout';
+import Icon from '@docs/components/Icon';
+
+# Security & Privacy
+
+Your security and privacy are important. This page explains how Steam Game Idler handles your data and what security measures are in place.
+
+## Data We Collect
+
+### Local Data Only
+SGI stores all your data locally on your computer. No personal information is sent to external servers except for direct communication with Steam's official API.
+
+### What's Stored Locally
+- **Steam account information**: Basic profile data retrieved from Steam
+- **Game library data**: Information about games you own (retrieved from Steam)
+- **Application settings**: Your preferences, lists, and configuration
+- **Steam credentials**: Encrypted cookies for card farming functionality
+- **Log files**: Debug information for troubleshooting
+
+### What We Don't Collect
+- **Personal identification**: No real names, addresses, or personal details
+- **Financial information**: No payment methods or purchasing history
+- **Private communications**: No chat logs or private messages
+- **Usage analytics**: No tracking of how you use the application
+
+## Steam API Usage
+
+### Official Steam API
+SGI only uses Steam's official, public APIs that are available to all developers. We don't use any unofficial methods or exploits.
+
+### API Calls Made
+- **Profile data**: Public profile information
+- **Game library**: Games you own and their basic information
+- **Achievement data**: Achievement information for games you own
+- **Trading card data**: Card drop information (requires Steam credentials)
+
+### Rate Limiting
+SGI respects Steam's API rate limits to avoid overwhelming their servers and ensure reliable service.
+
+## Steam Credentials
+
+### Why We Need Them
+Steam credentials (cookies) are required for certain features like card farming. These allow SGI to check which games have card drops remaining. You provide credentials manually - we never automatically capture them
+
+### What We Do With Them
+- **Card drop checking**: Verify which games have trading cards available
+- **Trading card management**: List and manage your trading cards
+- **Nothing else**: Credentials are only used for Steam-related functionality
+
+<Callout type="error">
+    Never share your Steam credentials with anyone. Only enter them in SGI's settings page.
+</Callout>
+
+## Network Communication
+
+### Steam & GitHub Servers Only
+SGI communicates only with Steam's official servers and GitHub for automatic updates. No third-party services are used.
+
+### Encrypted Connections
+All communication with Steam uses HTTPS encryption to protect your data in transit.
+
+### Firewall Permissions
+SGI requires network access to communicate with Steam. This is why Windows may prompt you to allow SGI through the firewall.
+
+## Open Source Transparency
+
+### Full Source Code
+SGI is completely open source. You can review the entire codebase on [GitHub](https://github.com/zevnda/steam-game-idler) to see exactly what the application does. The open-source nature allows security researchers and the community to audit the code for potential issues.
+
+### No Bans
+SGI uses official Steam APIs and mimics normal user behavior, making it extremely unlikely to result in any Steam account penalties.
+
+### Regular Updates
+We monitor Steam's API changes and update SGI accordingly to maintain compliance and functionality.
+
+## Data Retention
+
+### Local Storage Only
+Your data is stored only on your local computer. SGI doesn't maintain any user databases or cloud storage.
+
+### Uninstallation
+When you uninstall SGI, you can choose to delete all stored data including settings and credentials.
+
+### Code Signing
+Release builds of SGI are digitally signed to verify authenticity and prevent tampering.
+
+## Reporting Security Issues
+
+If you discover a security vulnerability in SGI:
+
+1. **Don't create a public issue** - this could put other users at risk
+2. **Contact the maintainer directly** through GitHub's private vulnerability reporting
+3. **Provide detailed information** about the issue and how to reproduce it
+4. **Allow time for a fix** before public disclosure
+
+<Callout type="info">
+    Security vulnerabilities will be prioritized and fixed as quickly as possible
+</Callout>

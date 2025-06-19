@@ -1,0 +1,64 @@
+import { Steps } from 'nextra/components';
+
+import Callout from '@docs/components/Callout';
+import Icon from '@docs/components/Icon';
+
+# Performance & Optimization
+
+Learn how to optimize Steam Game Idler for the best performance and system resource usage.
+
+## Performance Overview
+
+### System Requirements
+
+#### Minimum Requirements
+- **OS**: Windows 10 or newer
+- **RAM**: 2GB available memory
+- **Storage**: 1GB free disk space
+- **Network**: Internet connection for Steam API access
+
+#### Recommended Specifications
+- **OS**: Windows 11
+- **RAM**: 4GB+ available memory
+- **Storage**: 5GB free disk space
+- **Network**: Internet connection for Steam API access
+- **Hardware**: Modern CPU and GPU for smooth UI performance
+
+### Resource Usage
+
+#### Normal Operation
+- **RAM Usage**: 100-200MB for main application
+- **CPU Usage**: Less than 1% when idle, 2-5% during active operations
+- **Network**: Minimal bandwidth for API calls
+- **Disk**: Small log files and cache data
+
+#### When Idling Games
+- **Additional RAM**: 1-10MB per SteamUtility process
+- **Additional CPU**: Minimal overhead per game
+- **Max Games**: 32 simultaneous (Steam limitation)
+
+## Optimization Settings
+
+### General Performance Settings
+
+<Steps>
+    ### Access Performance Settings
+    1. Click <Icon type='cog' /> in the sidebar
+    2. Navigate to Settings > General
+    3. Adjust performance-related options
+
+    ### Recommended Settings
+    - **Disable tooltips**: Reduces UI overhead
+    - **Start minimized**: Keeps SGI in system tray
+    - **Prevent away status**: Disable if not needed
+    - **Free game notifications**: Disable if not needed
+    - **Enabled beta features**: Disable if not using beta features
+</Steps>
+
+### Memory Optimization
+
+#### Reduce Memory Usage
+- **Close unused features**: Don't run card farming if not needed
+- **Limit concurrent games**: Idle fewer games simultaneously
+- **Clear cache regularly**: Restart SGI periodically to clear memory
+- **Monitor background processes**: Close unnecessary applications
