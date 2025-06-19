@@ -11,6 +11,8 @@ body:
       options:
         - label: I have searched for similar [open/closed issues](https://github.com/zevnda/steam-game-idler/issues)
           required: true
+        - label: I have tried the [Troubleshooting](https://steamgameidler.vercel.app/docs/troubleshooting) steps for my issue
+          required: true
         - label: I have checked the [FAQ page](https://steamgameidler.vercel.app/docs/faq) for my issue
           required: true
 
