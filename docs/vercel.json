@@ -4,5 +4,14 @@
       "main": true
     }
   },
+  "headers": [
+    {
+      "source": "/sitemap.xml",
+      "headers": [
+        { "key": "Content-Encoding", "value": "identity" },
+        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
+      ]
+    }
+  ],
   "ignoreCommand": "bash -c 'if git diff HEAD^ HEAD --quiet -- .; then echo \"No changes in docs, skipping build\"; exit 0; else echo \"Changes detected in docs, proceeding with build\"; exit 1; fi'"
 }
