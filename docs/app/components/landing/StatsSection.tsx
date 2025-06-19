@@ -109,7 +109,7 @@ export default function StatsSection() {
       icon: <FiDownload className='w-6 h-6' />,
       color: 'from-blue-500 to-cyan-500',
     },
-    { number: '22', label: 'Languages', icon: <FiGlobe className='w-6 h-6' />, color: 'from-emerald-500 to-teal-500' },
+    { number: '25', label: 'Languages', icon: <FiGlobe className='w-6 h-6' />, color: 'from-emerald-500 to-teal-500' },
     {
       number: '100%',
       label: 'Open Source',

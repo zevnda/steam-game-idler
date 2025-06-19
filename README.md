@@ -36,16 +36,17 @@ Refer to the **[documentation](https://steamgameidler.vercel.app/docs/)** for a 
 # Supported Languages
 Contribute to this project by adding new translations or improving existing ones. **[Read more here](https://github.com/zevnda/steam-game-idler/discussions/148)**
 
-| Language              | Flag | Language              | Flag | Language   | Flag |
-| --------------------- | ---- | --------------------- | ---- | ---------- | ---- |
-| Arabic                | 🇸🇦    | Chinese (Simplified)  | 🇨🇳    | Czech      | 🇨🇿    |
-| Chinese (Traditional) | 🇹🇼    | Danish                | 🇩🇰    | Dutch      | 🇳🇱    |
-| English               | 🇺🇸    | Finnish               | 🇫🇮    | French     | 🇫🇷    |
-| German                | 🇩🇪    | Greek                 | 🇬🇷    | Italian    | 🇮🇹    |
-| Japanese              | 🇯🇵    | Norwegian             | 🇳🇴    | Polish     | 🇵🇱    |
-| Portuguese (Brazil)   | 🇧🇷    | Portuguese (Portugal) | 🇵🇹    | Romanian   | 🇷🇴    |
-| Russian               | 🇷🇺    | Spanish               | 🇪🇸    | Swedish    | 🇸🇪    |
-| Turkish               | 🇹🇷    | Ukrainian             | 🇺🇦    | Vietnamese | 🇻🇳    |
+| Language              | Flag | Language             | Flag | Language            | Flag |
+| --------------------- | ---- | -------------------- | ---- | ------------------- | ---- |
+| Arabic                | 🇸🇦    | Chinese (Simplified) | 🇨🇳    | Czech               | 🇨🇿    |
+| Chinese (Traditional) | 🇹🇼    | Danish               | 🇩🇰    | Dutch               | 🇳🇱    |
+| English               | 🇺🇸    | Finnish              | 🇫🇮    | French              | 🇫🇷    |
+| German                | 🇩🇪    | Greek                | 🇬🇷    | Hungarian           | 🇭🇺    |
+| Italian               | 🇮🇹    | Japanese             | 🇯🇵    | Korean              | 🇰🇷    |
+| Norwegian             | 🇳🇴    | Polish               | 🇵🇱    | Portuguese (Brazil) | 🇧🇷    |
+| Portuguese (Portugal) | 🇵🇹    | Romanian             | 🇷🇴    | Russian             | 🇷🇺    |
+| Spanish               | 🇪🇸    | Swedish              | 🇸🇪    | Turkish             | 🇹🇷    |
+| Ukrainian             | 🇺🇦    | Vietnamese           | 🇻🇳    |                     |      |
 
 # License
 Copyright © 2024-2025 zevnda — **[GPL-3.0 License](./LICENSE)**
