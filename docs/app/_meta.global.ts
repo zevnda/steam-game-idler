@@ -57,13 +57,21 @@ export default {
           collapsed: true,
         },
       },
-      '__': {
-        type: 'separator',
-        title: 'More',
-      },
       'steam-credentials': 'Steam Credentials',
+      '___': {
+        type: 'separator',
+        title: 'Help & Support',
+      },
+      'troubleshooting': 'Troubleshooting',
+      'performance': 'Performance & Optimization',
+      'security-privacy': 'Security & Privacy',
       'references': 'References',
       'faq': 'FAQ',
+      '____': {
+        type: 'separator',
+        title: 'Advanced',
+      },
+      'tech-stack': 'Tech Stack & Architecture',
     },
   },
 }

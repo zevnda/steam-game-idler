@@ -1,0 +1,87 @@
+import { Steps } from 'nextra/components';
+import { FileTree } from 'nextra/components';
+
+import Callout from '@docs/components/Callout';
+
+# Tech Stack & Architecture
+
+This page provides technical information for developers who want to understand SGI's architecture or contribute to the project.
+
+<Callout type="info">
+    This page is intended for developers. End users should refer to the main documentation.
+</Callout>
+
+## Architecture Overview
+
+SGI is built using a modern tech stack that combines web technologies with native desktop capabilities:
+
+### Frontend (Next.js + React)
+- **Framework**: Next.js 15+ with React 19+
+- **UI Library**: HeroUI components
+- **Styling**: Tailwind CSS
+- **Icons**: React Icons
+- **Animations**: Framer Motion
+- **Internationalization**: react-i18next
+
+### Backend (Tauri + Rust)
+- **Desktop Framework**: Tauri 2.0
+- **Language**: Rust (latest stable)
+- **Steam Integration**: Custom Rust modules
+- **File System**: Tauri's secure file system APIs
+- **Process Management**: Tauri process APIs
+
+### External Components
+- **SteamUtility**: External C# utility to simulate game processes
+- **Steam API**: Official Steam Web API integration
+- **Steamworks SDK**: For advanced Steam integration
+
+## Core APIs
+
+### Tauri Commands
+
+SGI uses Tauri's command system to communicate between the frontend and backend:
+
+#### Authentication & Steam Integration
+```rust
+// Get available Steam users
+#[tauri::command]
+async fn get_steam_users() -> Result<Vec<SteamUser>, String>
+
+// Get user's game library
+#[tauri::command]
+async fn get_user_games(steam_id: String) -> Result<Vec<Game>, String>
+
+// Validate Steam account
+#[tauri::command]
+async fn validate_steam_account(steam_id: String) -> Result<bool, String>
+```
+
+#### Game Management
+```rust
+// Start idling a game
+#[tauri::command]
+async fn start_idle_game(app_id: u32) -> Result<(), String>
+
+// Stop idling a game
+#[tauri::command]
+async fn stop_idle_game(app_id: u32) -> Result<(), String>
+
+// Get currently idling games
+#[tauri::command]
+async fn get_idling_games() -> Result<Vec<u32>, String>
+```
+
+#### Achievement Management
+```rust
+// Get achievements for a game
+#[tauri::command]
+async fn get_achievements(app_id: u32) -> Result<Vec<Achievement>, String>
+
+// Unlock achievement
+#[tauri::command]
+async fn unlock_achievement(app_id: u32, achievement_id: String) -> Result<(), String>
+
+// Lock achievement
+#[tauri::command]
+async fn lock_achievement(app_id: u32, achievement_id: String) -> Result<(), String>
+```
