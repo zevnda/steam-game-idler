@@ -19,12 +19,13 @@ async function fetchGitHubStars(): Promise<number> {
   }
 }
 
-function useCountUp(target: number, duration: number = 200, inView: boolean = false) {
+function useCountUp(target: number, duration: number = 2000, inView: boolean = false) {
   const [count, setCount] = useState(0)
 
   useEffect(() => {
-    if (!inView) return
+    if (!inView || target === 0) return
 
+    setCount(0) // Reset count when starting new animation
     let startTime: number
     let animationFrame: number
 
@@ -33,7 +34,7 @@ function useCountUp(target: number, duration: number = 200, inView: boolean = fa
       const elapsed = currentTime - startTime
       const progress = Math.min(elapsed / duration, 1)
 
-      const easeOut = 1 - Math.pow(1 - progress, 4)
+      const easeOut = 1 - Math.pow(1 - progress, 3)
       setCount(Math.floor(target * easeOut))
 
       if (progress < 1) {
@@ -88,7 +89,7 @@ const cardVariants = {
 export default function StatsSection() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
-  const [githubStars, setGithubStars] = useState(160)
+  const [githubStars, setGithubStars] = useState(0) // Start with 0 instead of 160
   const [isLoadingStars, setIsLoadingStars] = useState(true)
 
   useEffect(() => {
@@ -104,23 +105,32 @@ export default function StatsSection() {
 
   const stats = [
     {
-      number: '15K+',
+      number: '15000',
       label: 'Downloads',
       icon: <FiDownload className='w-6 h-6' />,
       color: 'from-blue-500 to-cyan-500',
+      link: 'https://github.com/zevnda/steam-game-idler/releases',
     },
-    { number: '25', label: 'Languages', icon: <FiGlobe className='w-6 h-6' />, color: 'from-emerald-500 to-teal-500' },
     {
-      number: '100%',
+      number: '42',
+      label: 'Languages',
+      icon: <FiGlobe className='w-6 h-6' />,
+      color: 'from-emerald-500 to-teal-500',
+      link: 'https://crowdin.com/project/steam-game-idler',
+    },
+    {
+      number: '100',
       label: 'Open Source',
       icon: <TbCode className='w-6 h-6' />,
       color: 'from-purple-500 to-violet-500',
+      link: 'https://github.com/zevnda/steam-game-idler',
     },
     {
       number: githubStars.toString(),
       label: 'GitHub Stars',
       icon: <FiStar className='w-6 h-6' />,
       color: 'from-orange-500 to-red-500',
+      link: 'https://github.com/zevnda/steam-game-idler/stargazers',
     },
   ]
 
@@ -191,14 +201,17 @@ export default function StatsSection() {
         <div className='grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-10'>
           {stats.map((stat, index) => {
             const { value, suffix } = parseStatNumber(stat.number)
-            const animatedValue = useCountUp(value, 200, isInView)
+            const animatedValue = useCountUp(value, 2000, isInView && !isLoadingStars)
 
             return (
-              <motion.div
+              <motion.a
                 key={stat.label}
+                href={stat.link}
+                target='_blank'
+                rel='noopener'
                 variants={cardVariants}
                 custom={index}
-                className='group relative'
+                className='group relative block cursor-pointer'
                 whileHover={{
                   scale: 1.05,
                   y: -10,
@@ -225,8 +238,12 @@ export default function StatsSection() {
                       <span className='animate-pulse'>...</span>
                     ) : (
                       <>
-                        {animatedValue}
-                        {suffix}
+                        {stat.number === '15000'
+                          ? `${Math.floor(animatedValue / 1000)}K`
+                          : stat.number === '100'
+                            ? `${animatedValue}%`
+                            : `${animatedValue}`}
+                        {stat.number !== '15000' && stat.number !== '100' && suffix}
                       </>
                     )}
                   </motion.div>
@@ -238,7 +255,7 @@ export default function StatsSection() {
                 <div
                   className={`absolute inset-0 bg-gradient-to-r ${stat.color} rounded-3xl opacity-0 group-hover:opacity-10 transition-opacity duration-200 blur-xl`}
                 />
-              </motion.div>
+              </motion.a>
             )
           })}
         </div>
