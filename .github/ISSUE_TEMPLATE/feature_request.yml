@@ -25,3 +25,6 @@ body:
       label: Contribution
       options:
         - label: I would like to work on this myself and will submit a pull request
+          required: false
+        - label: I understand that this project does not implement features that are specific to individual use cases. My feature request would benefit the majority of users, not just myself.
+          required: true
