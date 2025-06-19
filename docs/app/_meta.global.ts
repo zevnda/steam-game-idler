@@ -64,7 +64,6 @@ export default {
       },
       'troubleshooting': 'Troubleshooting',
       'performance': 'Performance & Optimization',
-      'security-privacy': 'Security & Privacy',
       'references': 'References',
       'faq': 'FAQ',
       '____': {
@@ -73,5 +72,13 @@ export default {
       },
       'tech-stack': 'Tech Stack & Architecture',
     },
+  },
+  privacy: {
+    type: 'page',
+    title: 'Privacy Policy',
+  },
+  tos: {
+    type: 'page',
+    title: 'Terms of Service',
   },
 }
