@@ -1,3 +1,9 @@
+<!-- 1.14.1 -->
+
+### Changes in v1.14.1
+
+- Fixed an issue causing `HTTP 404 Bad Request` errors in `trading card managaer`
+
 <!-- 1.14.0 -->
 
 ### Changes in v1.14.0
