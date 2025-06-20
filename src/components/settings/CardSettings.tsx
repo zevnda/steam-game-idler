@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react'
 
-import { Button, cn, Input, Spinner } from '@heroui/react'
+import { Button, cn, Input, Select, SelectItem, Spinner } from '@heroui/react'
 import Image from 'next/image'
 import { Trans, useTranslation } from 'react-i18next'
 import { TbEraser, TbRefresh, TbUpload } from 'react-icons/tb'
@@ -8,12 +8,29 @@ import { TbEraser, TbRefresh, TbUpload } from 'react-icons/tb'
 import { useUserContext } from '@/components/contexts/UserContext'
 import SettingsCheckbox from '@/components/settings/SettingsCheckbox'
 import ExtLink from '@/components/ui/ExtLink'
-import { fetchGamesWithDropsData, handleClear, handleSave, useCardSettings } from '@/hooks/settings/useCardSettings'
+import {
+  fetchGamesWithDropsData,
+  handleClear,
+  handleNextTaskChange,
+  handleSave,
+  useCardSettings,
+} from '@/hooks/settings/useCardSettings'
 
 export default function CardSettings(): ReactElement {
   const { t } = useTranslation()
   const { userSummary, userSettings, setUserSettings } = useUserContext()
   const cardSettings = useCardSettings()
+
+  const taskOptions = [
+    {
+      key: 'achievementUnlocker',
+      label: t('common.achievementUnlocker'),
+    },
+    {
+      key: 'autoIdle',
+      label: t('customLists.autoIdle.title'),
+    },
+  ]
 
   return (
     <div className='relative flex flex-col gap-4'>
@@ -86,6 +103,46 @@ export default function CardSettings(): ReactElement {
         <SettingsCheckbox type='cardFarming' name='listGames' content={t('settings.cardFarming.listGames')} />
 
         <SettingsCheckbox type='cardFarming' name='allGames' content={t('settings.cardFarming.allGames')} />
+
+        {userSettings.general.useBeta && (
+          <div className='flex items-center gap-2'>
+            <SettingsCheckbox type='cardFarming' name='nextTaskCheckbox' content={t('common.nextTask')} />
+
+            <Select
+              size='sm'
+              aria-label='nextTask'
+              disallowEmptySelection
+              radius='none'
+              items={taskOptions}
+              className='w-[200px]'
+              placeholder='Select an option'
+              classNames={{
+                listbox: ['p-0'],
+                value: ['text-sm !text-content'],
+                trigger: cn(
+                  'bg-input border border-border data-[hover=true]:!bg-inputhover',
+                  'data-[open=true]:!bg-input duration-100 rounded-lg',
+                ),
+                popoverContent: ['bg-titlebar border border-border rounded-lg justify-start !text-content'],
+              }}
+              isDisabled={!userSettings.cardFarming.nextTaskCheckbox}
+              defaultSelectedKeys={userSettings.cardFarming.nextTask ? [userSettings.cardFarming.nextTask] : []}
+              onSelectionChange={e => {
+                handleNextTaskChange(e.currentKey!, userSummary, setUserSettings)
+              }}
+            >
+              {item => (
+                <SelectItem
+                  classNames={{
+                    base: ['data-[hover=true]:!bg-titlehover data-[hover=true]:!text-content'],
+                  }}
+                >
+                  {item.label}
+                </SelectItem>
+              )}
+            </Select>
+          </div>
+        )}
       </div>
 
       <div className='border border-border rounded-lg p-3 bg-titlebar'>

@@ -3,6 +3,8 @@ import type { Time } from '@internationalized/date'
 export interface AchievementUnlockerSettings {
   hidden: boolean
   idle: boolean
+  nextTaskCheckbox: boolean
+  nextTask: string | null
   interval: [number, number]
   schedule: boolean
   scheduleFrom: Time
@@ -17,12 +19,14 @@ export interface CardFarmingUser {
 
 export interface CardFarmingSettings {
   allGames: boolean
+  listGames: boolean
+  nextTaskCheckbox: boolean
+  nextTask: string | null
   credentials: {
     sid: string
     sls: string
     sma?: string
   } | null
-  listGames: boolean
   userSummary: CardFarmingUser | null
   totalDropsRemaining: number
   gamesWithDrops: number

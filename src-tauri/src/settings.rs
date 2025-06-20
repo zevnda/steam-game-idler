@@ -21,6 +21,8 @@ fn get_default_settings() -> Value {
         "cardFarming": {
             "listGames": true,
             "allGames": false,
+            "nextTaskCheckbox": false,
+            "nextTask": null,
             "credentials": null,
             "userSummary": null,
             "gamesWithDrops": 0,
@@ -29,6 +31,8 @@ fn get_default_settings() -> Value {
         "achievementUnlocker": {
             "idle": true,
             "hidden": false,
+            "nextTaskCheckbox": false,
+            "nextTask": null,
             "schedule": false,
             "scheduleFrom": {
                 "hour": 8,

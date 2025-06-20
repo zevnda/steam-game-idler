@@ -9,6 +9,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import { TbCheck } from 'react-icons/tb'
 
 import { useStateContext } from '@/components/contexts/StateContext'
+import { useAutomate } from '@/hooks/automation/useAutomateButtons'
 import { handleCancel, useCardFarming } from '@/hooks/automation/useCardFarming'
 
 export default function CardFarming({ activePage }: { activePage: ActivePageType }): ReactElement {
@@ -23,6 +24,7 @@ export default function CardFarming({ activePage }: { activePage: ActivePageType
   const [totalDropsRemaining, setTotalDropsRemaining] = useState(0)
   const [gamesWithDrops, setGamesWithDrops] = useState<Set<GameWithDrops>>(new Set())
   const [disableStopButton, setDisableStopButton] = useState(true)
+  const { startAchievementUnlocker } = useAutomate()
 
   useEffect(() => {
     setImageSrc(
@@ -34,7 +36,14 @@ export default function CardFarming({ activePage }: { activePage: ActivePageType
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    useCardFarming(setIsComplete, setTotalDropsRemaining, setGamesWithDrops, isMountedRef, abortControllerRef)
+    useCardFarming(
+      setIsComplete,
+      setTotalDropsRemaining,
+      setGamesWithDrops,
+      startAchievementUnlocker,
+      isMountedRef,
+      abortControllerRef,
+    )
 
     const abortController = abortControllerRef.current
 
@@ -42,7 +51,7 @@ export default function CardFarming({ activePage }: { activePage: ActivePageType
       isMountedRef.current = false
       abortController.abort()
     }
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     setTimeout(() => {

@@ -2,6 +2,12 @@
 
 ### Changes in v1.14.0
 
+- Added a `task scheduling` feature **<sup>BETA FEATURE</sup>**
+  - Enable `beta features` in `settings > general` to use it
+  - Task scheduling can be enbaled in both `settings > card farming` and `settings > achievement unlocker`
+    - Enable the option and then select which feature should be started
+  - When feature X finishes, automatically start feature Y
+  - Tasks can be chained together *(e.g. start card farming → finishes → start achievement unlocker → finishes → start auto idler)*
 - Migrated SteamUtility from `.NET 4.8` to `.NET 8.0`
 - Added missing translation strings
 

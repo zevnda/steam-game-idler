@@ -77,3 +77,17 @@ export const handleScheduleChange = async (
     logEvent(`[Error] in (handleScheduleChange): ${error}`)
   }
 }
+
+export const handleNextTaskChange = async (
+  currentKey: string,
+  userSummary: UserSummary,
+  setUserSettings: Dispatch<SetStateAction<UserSettings>>,
+): Promise<void> => {
+  const response = await invoke<InvokeSettings>('update_user_settings', {
+    steamId: userSummary?.steamId,
+    key: 'achievementUnlocker.nextTask',
+    value: currentKey,
+  })
+
+  setUserSettings(response.settings)
+}
