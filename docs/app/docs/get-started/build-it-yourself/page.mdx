@@ -6,7 +6,7 @@ import { FileTree } from 'nextra/components';
 ## Prerequisites
 * [Node.js](https://nodejs.org/en/download/prebuilt-installer) >= 18.0
 * [Rustup](https://www.rust-lang.org/tools/install)
-* [Visual Studio Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/) with .NET SDK and MSBuild >= 14.0
+* [.NET SDK](https://dotnet.microsoft.com/en-us/download) >= 8.0
 
 ## Steps
 
@@ -26,7 +26,7 @@ pnpm install
 ### Build Libraries
 
 ```shell copy
-MSBuild ./libs//SteamUtility.csproj # Outputs to `/src-tauri/libs/`
+dotnet build ./libs//SteamUtility.csproj # Outputs to `/src-tauri/libs/`
 ```
 
 ### Create Environment Files
