@@ -10,6 +10,26 @@
   - Tasks can be chained together *(e.g. start card farming → finishes → start achievement unlocker → finishes → start auto idler)*
 - Migrated SteamUtility from `.NET 4.8` to `.NET 8.0`
 - Added missing translation strings
+- Added support for multiple new languages
+  - Afrikaans
+  - Bulgarian
+  - Bengali
+  - Catalan
+  - Traditional Chinese
+  - Estonian
+  - Persian/Farsi
+  - Hebrew
+  - Hindi
+  - Hungarian
+  - Indonesian
+  - Korean
+  - Lithuanian
+  - Latvian
+  - Slovak
+  - Slovenian
+  - Serbian
+  - Thai
+  - Vietnamese
 
 <!-- 1.13.0 -->
 
