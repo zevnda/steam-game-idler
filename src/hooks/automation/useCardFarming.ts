@@ -374,6 +374,10 @@ const checkForNextTask = async (): Promise<{ shouldStartNextTask: boolean; task:
       return { shouldStartNextTask: false, task: null }
     }
 
+    if (!response.settings.cardFarming?.nextTask) {
+      return { shouldStartNextTask: false, task: null }
+    }
+
     const task = response.settings.cardFarming?.nextTask
 
     return {
