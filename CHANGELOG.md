@@ -1,3 +1,10 @@
+<!-- 1.14.0 -->
+
+### Changes in v1.14.0
+
+- Migrated SteamUtility from `.NET 4.8` to `.NET 8.0`
+- Added missing translation strings
+
 <!-- 1.13.0 -->
 
 ### Changes in v1.13.0
