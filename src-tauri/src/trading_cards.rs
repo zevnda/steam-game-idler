@@ -39,7 +39,7 @@ pub async fn get_trading_cards(
     };
 
     let inventory_url = format!(
-        "https://steamcommunity.com/inventory/{}/753/6?l=english&count=2000",
+        "https://steamcommunity.com/inventory/{}/753/6?l=english&count=2500",
         steam_id
     );
 
