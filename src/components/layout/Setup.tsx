@@ -138,13 +138,24 @@ export default function Setup(): ReactElement {
 
             <div
               className={cn(
-                'flex justify-center items-center p-6 w-full border-t',
+                'flex flex-col justify-center items-center gap-2 p-6 w-full border-t',
                 'border-border/40 rounded-br-lg rounded-bl-lg mt-4',
               )}
             >
               <ExtLink href='https://steamgameidler.vercel.app/docs/get-started/how-to-sign-in'>
-                <p className='text-sm font-semibold cursor-pointer text-link hover:text-linkhover'>{t('setup.help')}</p>
+                <p className='text-xs font-semibold cursor-pointer text-link hover:text-linkhover'>{t('setup.help')}</p>
               </ExtLink>
+
+              <div className='flex gap-4 text-xs text-altwhite'>
+                <ExtLink href='https://steamgameidler.vercel.app/privacy'>
+                  <p className='text-xs font-semibold cursor-pointer text-link hover:text-linkhover'>Privacy Policy</p>
+                </ExtLink>
+                <ExtLink href='https://steamgameidler.vercel.app/tos'>
+                  <p className='text-xs font-semibold cursor-pointer text-link hover:text-linkhover'>
+                    Terms of Service
+                  </p>
+                </ExtLink>
+              </div>
             </div>
           </motion.div>
         </div>
