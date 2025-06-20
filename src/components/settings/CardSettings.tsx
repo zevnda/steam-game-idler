@@ -105,7 +105,7 @@ export default function CardSettings(): ReactElement {
         <SettingsCheckbox type='cardFarming' name='allGames' content={t('settings.cardFarming.allGames')} />
 
         {userSettings.general.useBeta && (
-          <div className='flex items-center gap-2'>
+          <div className='flex items-center gap-2 max-h-5 mb-1.5'>
             <SettingsCheckbox type='cardFarming' name='nextTaskCheckbox' content={t('common.nextTask')} />
 
             <Select

@@ -38,7 +38,7 @@ export default function AchievementSettings(): ReactElement {
         <SettingsCheckbox type='achievementUnlocker' name='hidden' content={t('settings.achievementUnlocker.hidden')} />
 
         {userSettings.general.useBeta && (
-          <div className='flex items-center gap-2'>
+          <div className='flex items-center gap-2 max-h-5'>
             <SettingsCheckbox type='achievementUnlocker' name='nextTaskCheckbox' content={t('common.nextTask')} />
 
             <Select
