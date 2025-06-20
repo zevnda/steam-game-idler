@@ -89,8 +89,10 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Setup MSBuild
-        uses: microsoft/setup-msbuild@v2
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
 
       - name: Prepare NuGet cache directory
         run: |
@@ -101,7 +103,7 @@ jobs:
         shell: pwsh
 
       - name: Setup NuGet cache
-        id: cache-msbuild
+        id: cache-nuget
         uses: actions/cache@v4
         with:
           path: |
@@ -119,9 +121,14 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-dotnet-
 
+      - name: Restore .NET packages
+        if: steps.cache-nuget.outputs.cache-hit != 'true' || github.event.inputs.force_dotnet_build == 'true'
+        run: dotnet restore .\libs\SteamUtility.csproj
+        shell: pwsh
+
       - name: Build .NET libraries
         if: steps.cache-dotnet.outputs.cache-hit != 'true' || github.event.inputs.force_dotnet_build == 'true'
-        run: MSBuild.exe .\libs\SteamUtility.csproj
+        run: dotnet build .\libs\SteamUtility.csproj
         shell: pwsh
 
       - name: Upload built .NET libraries
