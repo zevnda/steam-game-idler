@@ -1,5 +1,12 @@
 [
   {
+    "id": "25",
+    "title": "New Task Scheduling Feature",
+    "message": "Click here to learn more about the new Task Scheduling (beta) feature released in 1.14.0",
+    "url": "https://github.com/zevnda/steam-game-idler/discussions/576",
+    "timestamp": "1750418763"
+  },
+  {
     "id": "24",
     "title": "Beta v1.14.0-1",
     "message": "New beta version available",
