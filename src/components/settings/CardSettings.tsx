@@ -64,7 +64,7 @@ export default function CardSettings(): ReactElement {
                         )
                       }
                     >
-                      <p className='text-xs'>Refresh</p>
+                      <p className='text-xs'>{t('setup.refresh')}</p>
                       <TbRefresh size={14} />
                     </div>
                   </div>
@@ -72,7 +72,7 @@ export default function CardSettings(): ReactElement {
               ) : (
                 <div className='flex items-center justify-center gap-2'>
                   <Spinner size='sm' variant='simple' />
-                  <p className='text-xs text-altwhite'>Loading data..</p>
+                  <p className='text-xs text-altwhite'>{t('settings.cardFarming.loading')}</p>
                 </div>
               )}
             </div>
