@@ -237,7 +237,13 @@ async fn check_for_updates(app_handle: tauri::AppHandle) -> tauri_plugin_updater
             .await?;
         app_handle.restart();
     } else {
-        println!("No update available");
+        use tauri_plugin_notification::NotificationExt;
+        app_handle
+            .notification()
+            .builder()
+            .title("No updates available")
+            .show()
+            .unwrap();
     }
 
     Ok(())
