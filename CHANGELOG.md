@@ -2,7 +2,9 @@
 
 ### Changes in v1.14.1
 
-- Fixed an issue causing `HTTP 400 Bad Request` errors in `trading card managaer`
+- Added privacy policy and terms of services
+- Fixed an issue causing `HTTP 400 Bad Request` errors in `trading card manager`
+- Fixed some minor UI inconsistencies
 
 <!-- 1.14.0 -->
 
