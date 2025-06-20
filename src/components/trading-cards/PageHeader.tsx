@@ -5,7 +5,6 @@ import { Button, cn, useDisclosure } from '@heroui/react'
 import { useTranslation } from 'react-i18next'
 import { TbChecks, TbEraser, TbPackageExport, TbRefresh } from 'react-icons/tb'
 
-import Beta from '@/components/ui/Beta'
 import CustomModal from '@/components/ui/CustomModal'
 
 // Helper function to format seconds to HH:MM:SS
@@ -44,10 +43,7 @@ export default function PageHeader({ selectedCardsWithPrice, tradingCardContext 
         <div className='flex justify-between items-center w-full select-none'>
           <div className='flex items-center gap-1'>
             <div className='flex flex-col justify-center'>
-              <p className='text-lg font-bold'>
-                {t('tradingCards.title')}
-                <Beta />
-              </p>
+              <p className='text-lg font-bold'>{t('tradingCards.title')}</p>
               <div className='flex gap-1'>
                 <p className='text-sm text-altwhite'>{t('tradingCards.subtitle')}</p>
                 <div

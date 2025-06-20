@@ -69,7 +69,7 @@ export default function useSetup(refreshKey: number): SetupHook {
       // Make sure Steam is running
       const isSteamRunning = await checkSteamStatus(true)
 
-      const devAccounts = ['76561198158912649']
+      const devAccounts = ['76561198158912649', '76561198999797359']
       const isDev = await invoke('is_dev')
 
       if (!isSteamRunning && !isDev && !devAccounts.includes(userSummaries[index]?.steamId ?? '')) return
