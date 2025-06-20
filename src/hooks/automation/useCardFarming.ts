@@ -3,6 +3,7 @@ import type { Dispatch, RefObject, SetStateAction } from 'react'
 
 import { invoke } from '@tauri-apps/api/core'
 
+import { startAutoIdleGames } from '@/hooks/layout/useWindow'
 import { checkDrops, getAllGamesWithDrops } from '@/utils/automation'
 import { startFarmIdle, stopFarmIdle } from '@/utils/idle'
 import { logEvent } from '@/utils/tasks'
@@ -41,6 +42,7 @@ export const useCardFarming = async (
   setIsComplete: Dispatch<SetStateAction<boolean>>,
   setTotalDropsRemaining: Dispatch<SetStateAction<number>>,
   setGamesWithDrops: Dispatch<SetStateAction<Set<GameWithDrops>>>,
+  startAchievementUnlocker: () => Promise<void>,
   isMountedRef: RefObject<boolean>,
   abortControllerRef: RefObject<AbortController>,
 ): Promise<() => void> => {
@@ -69,8 +71,24 @@ export const useCardFarming = async (
           return setIsComplete(true)
         }
       } else {
-        logEvent('[Card Farming] No games left - stopping')
-        return setIsComplete(true)
+        const nextTask = await checkForNextTask()
+
+        if (nextTask.shouldStartNextTask) {
+          if (nextTask.task || nextTask.task === 'achievementUnlocker') {
+            await startAchievementUnlocker()
+            logEvent('[Card Farming] No drops remaining - moving to next task: ' + nextTask.task)
+          }
+
+          if (nextTask.task || nextTask.task === 'autoIdle') {
+            await startAutoIdleGames()
+            logEvent('[Card Farming] No drops remaining - moving to next task: ' + nextTask.task)
+          }
+
+          return setIsComplete(true)
+        } else {
+          logEvent('[Card Farming] No games left - stopping')
+          return setIsComplete(true)
+        }
       }
 
       if (isMountedRef.current) {
@@ -336,6 +354,36 @@ const removeGameFromFarmingList = async (gameId: number): Promise<void> => {
     })
   } catch (error) {
     handleError('removeGameFromFarmingList', error)
+  }
+}
+
+// Check for next task to move on to once farming is complete
+const checkForNextTask = async (): Promise<{ shouldStartNextTask: boolean; task: string | null }> => {
+  try {
+    const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
+
+    const response = await invoke<InvokeSettings>('get_user_settings', {
+      steamId: userSummary?.steamId,
+    })
+
+    if (!response.settings.general?.useBeta) {
+      return { shouldStartNextTask: false, task: null }
+    }
+
+    if (!response.settings.cardFarming?.nextTaskCheckbox) {
+      return { shouldStartNextTask: false, task: null }
+    }
+
+    const task = response.settings.cardFarming?.nextTask
+
+    return {
+      shouldStartNextTask: Boolean(task),
+      task,
+    }
+  } catch (error) {
+    console.error('[Debug] Error in checkForNextTask:', error)
+    handleError('checkForNextTask', error)
+    return { shouldStartNextTask: false, task: null }
   }
 }
 
