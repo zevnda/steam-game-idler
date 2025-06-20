@@ -1,3 +1,9 @@
+<!-- 1.14.2 -->
+
+### Changes in v1.14.2
+
+- Reverted back to using `.NET 4.8` for SteamUtility as `.NET 8.0` is not pre-installed in Win10/Win11, requiring users to manually install it
+
 <!-- 1.14.1 -->
 
 ### Changes in v1.14.1
