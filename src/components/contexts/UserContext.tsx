@@ -42,6 +42,8 @@ export const UserProvider = ({ children }: { children: ReactNode }): ReactElemen
     cardFarming: {
       listGames: true,
       allGames: false,
+      nextTaskCheckbox: false,
+      nextTask: null,
       credentials: null,
       userSummary: null,
       gamesWithDrops: 0,

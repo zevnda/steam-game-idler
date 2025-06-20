@@ -21,6 +21,8 @@ fn get_default_settings() -> Value {
         "cardFarming": {
             "listGames": true,
             "allGames": false,
+            "nextTaskCheckbox": false,
+            "nextTask": null,
             "credentials": null,
             "userSummary": null,
             "gamesWithDrops": 0,

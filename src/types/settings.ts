@@ -17,12 +17,14 @@ export interface CardFarmingUser {
 
 export interface CardFarmingSettings {
   allGames: boolean
+  listGames: boolean
+  nextTaskCheckbox: boolean
+  nextTask: string | null
   credentials: {
     sid: string
     sls: string
     sma?: string
   } | null
-  listGames: boolean
   userSummary: CardFarmingUser | null
   totalDropsRemaining: number
   gamesWithDrops: number
