@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 
 import { useUserContext } from '@/components/contexts/UserContext'
 import SettingsCheckbox from '@/components/settings/SettingsCheckbox'
+import Beta from '@/components/ui/Beta'
 import {
   handleNextTaskChange,
   handleScheduleChange,
@@ -76,6 +77,8 @@ export default function AchievementSettings(): ReactElement {
                 </SelectItem>
               )}
             </Select>
+
+            <Beta />
           </div>
         )}
 

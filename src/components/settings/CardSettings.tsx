@@ -7,6 +7,7 @@ import { TbEraser, TbRefresh, TbUpload } from 'react-icons/tb'
 
 import { useUserContext } from '@/components/contexts/UserContext'
 import SettingsCheckbox from '@/components/settings/SettingsCheckbox'
+import Beta from '@/components/ui/Beta'
 import ExtLink from '@/components/ui/ExtLink'
 import {
   fetchGamesWithDropsData,
@@ -141,6 +142,8 @@ export default function CardSettings(): ReactElement {
                 </SelectItem>
               )}
             </Select>
+
+            <Beta />
           </div>
         )}
       </div>
