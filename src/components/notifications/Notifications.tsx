@@ -36,7 +36,7 @@ export default function Notifications(): ReactElement {
 
   return (
     <div className='relative'>
-      <CustomTooltip content='Notifications'>
+      <CustomTooltip content={t('common.notifications')}>
         <div
           className={cn(
             'flex items-center p-1.5 hover:bg-titlehover rounded-lg',

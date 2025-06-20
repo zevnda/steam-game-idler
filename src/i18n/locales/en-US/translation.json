@@ -117,6 +117,7 @@
   "settings.cardFarming.steamCredentials": "Steam credentials are required in order to use the Card Farming feature. <1>Learn more</1>",
   "settings.cardFarming.gamesWithDrops": "Games with drops:",
   "settings.cardFarming.totalDrops": "Total drops remaining:",
+  "settings.cardFarming.loading": "Loading data...",
   "settings.achievementUnlocker.idle": "Idle games while Achievement Unlocker is active",
   "settings.achievementUnlocker.hidden": "Skip hidden achievements",
   "settings.achievementUnlocker.scheduleLabel": "Only unlock achievements between",

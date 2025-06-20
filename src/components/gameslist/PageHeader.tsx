@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { TbRefresh, TbSortDescending2 } from 'react-icons/tb'
 
 import { useUserContext } from '@/components/contexts/UserContext'
+import CustomTooltip from '@/components/ui/CustomTooltip'
 import { usePageHeader } from '@/hooks/gameslist/usePageHeader'
 
 interface PageHeaderProps {
@@ -54,12 +55,14 @@ export default function PageHeader({
                   total: filteredGames.length,
                 })}
               </p>
-              <div
-                className='flex justify-center items-center cursor-pointer'
-                onClick={() => handleRefetch(userSummary?.steamId)}
-              >
-                <TbRefresh className='text-altwhite hover:text-altwhite/80' fontSize={16} />
-              </div>
+              <CustomTooltip content={t('setup.refresh')} placement='right'>
+                <div
+                  className='flex justify-center items-center cursor-pointer'
+                  onClick={() => handleRefetch(userSummary?.steamId)}
+                >
+                  <TbRefresh className='text-altwhite hover:text-altwhite/80' fontSize={16} />
+                </div>
+              </CustomTooltip>
             </div>
           </div>
         </div>
