@@ -3,6 +3,8 @@ import type { Time } from '@internationalized/date'
 export interface AchievementUnlockerSettings {
   hidden: boolean
   idle: boolean
+  nextTaskCheckbox: boolean
+  nextTask: string | null
   interval: [number, number]
   schedule: boolean
   scheduleFrom: Time

@@ -31,6 +31,8 @@ fn get_default_settings() -> Value {
         "achievementUnlocker": {
             "idle": true,
             "hidden": false,
+            "nextTaskCheckbox": false,
+            "nextTask": null,
             "schedule": false,
             "scheduleFrom": {
                 "hour": 8,

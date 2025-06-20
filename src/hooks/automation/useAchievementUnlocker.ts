@@ -11,6 +11,7 @@ import type { Dispatch, RefObject, SetStateAction } from 'react'
 
 import { invoke } from '@tauri-apps/api/core'
 
+import { startAutoIdleGames } from '@/hooks/layout/useWindow'
 import { unlockAchievement } from '@/utils/achievements'
 import { isWithinSchedule } from '@/utils/automation'
 import { startIdle, stopIdle } from '@/utils/idle'
@@ -39,6 +40,7 @@ export const useAchievementUnlocker = async (
   setAchievementCount: Dispatch<SetStateAction<number>>,
   setCountdownTimer: Dispatch<SetStateAction<string>>,
   setIsWaitingForSchedule: Dispatch<SetStateAction<boolean>>,
+  startCardFarming: () => Promise<void>,
   isMountedRef: RefObject<boolean>,
   abortControllerRef: RefObject<AbortController>,
 ): Promise<void> => {
@@ -66,14 +68,28 @@ export const useAchievementUnlocker = async (
 
       // Check if there are no games left to unlock achievements for
       if (achievementUnlockerList.list_data.length === 0) {
-        logEvent('[Achievement Unlocker] No games left - stopping')
-
         if (currentGame !== null) {
           await stopIdle(currentGame?.appid, currentGame.name)
         }
 
-        setIsComplete(true)
-        return
+        const nextTask = await checkForNextTask()
+
+        if (nextTask.shouldStartNextTask) {
+          if (nextTask.task && nextTask.task === 'cardFarming') {
+            await startCardFarming()
+            logEvent('[Achievement Unlocker] No games left - moving to next task: ' + nextTask.task)
+          }
+
+          if (nextTask.task && nextTask.task === 'autoIdle') {
+            await startAutoIdleGames()
+            logEvent('[Achievement Unlocker] No games left - moving to next task: ' + nextTask.task)
+          }
+
+          return setIsComplete(true)
+        } else {
+          logEvent('[Achievement Unlocker] No games left - stopping')
+          return setIsComplete(true)
+        }
       }
 
       // Fetch achievements for the current game
@@ -345,6 +361,39 @@ const waitUntilInSchedule = async (
     setIsWaitingForSchedule(false)
   } catch (error) {
     handleError('waitUntilInSchedule', error)
+  }
+}
+
+// Check for next task to move on to once farming is complete
+const checkForNextTask = async (): Promise<{ shouldStartNextTask: boolean; task: string | null }> => {
+  try {
+    const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
+
+    const response = await invoke<InvokeSettings>('get_user_settings', {
+      steamId: userSummary?.steamId,
+    })
+
+    if (!response.settings.general?.useBeta) {
+      return { shouldStartNextTask: false, task: null }
+    }
+
+    if (!response.settings.achievementUnlocker?.nextTaskCheckbox) {
+      return { shouldStartNextTask: false, task: null }
+    }
+
+    if (!response.settings.achievementUnlocker?.nextTask) {
+      return { shouldStartNextTask: false, task: null }
+    }
+
+    const task = response.settings.achievementUnlocker?.nextTask
+
+    return {
+      shouldStartNextTask: Boolean(task),
+      task,
+    }
+  } catch (error) {
+    handleError('checkForNextTask', error)
+    return { shouldStartNextTask: false, task: null }
   }
 }
 

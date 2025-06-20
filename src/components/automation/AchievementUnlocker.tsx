@@ -9,6 +9,7 @@ import { TbCheck } from 'react-icons/tb'
 
 import { useStateContext } from '@/components/contexts/StateContext'
 import { useAchievementUnlocker } from '@/hooks/automation/useAchievementUnlocker'
+import { useAutomate } from '@/hooks/automation/useAutomateButtons'
 import { stopIdle } from '@/utils/idle'
 
 export default function AchievementUnlocker({ activePage }: { activePage: ActivePageType }): ReactElement {
@@ -25,6 +26,7 @@ export default function AchievementUnlocker({ activePage }: { activePage: Active
   const [achievementCount, setAchievementCount] = useState(0)
   const [countdownTimer, setCountdownTimer] = useState('00:00:10')
   const [isWaitingForSchedule, setIsWaitingForSchedule] = useState(false)
+  const { startCardFarming } = useAutomate()
 
   useEffect(() => {
     setImageSrc(
@@ -44,6 +46,7 @@ export default function AchievementUnlocker({ activePage }: { activePage: Active
       setAchievementCount,
       setCountdownTimer,
       setIsWaitingForSchedule,
+      startCardFarming,
       isMountedRef,
       abortControllerRef,
     )

@@ -74,12 +74,12 @@ export const useCardFarming = async (
         const nextTask = await checkForNextTask()
 
         if (nextTask.shouldStartNextTask) {
-          if (nextTask.task || nextTask.task === 'achievementUnlocker') {
+          if (nextTask.task && nextTask.task === 'achievementUnlocker') {
             await startAchievementUnlocker()
             logEvent('[Card Farming] No drops remaining - moving to next task: ' + nextTask.task)
           }
 
-          if (nextTask.task || nextTask.task === 'autoIdle') {
+          if (nextTask.task && nextTask.task === 'autoIdle') {
             await startAutoIdleGames()
             logEvent('[Card Farming] No drops remaining - moving to next task: ' + nextTask.task)
           }
@@ -385,7 +385,6 @@ const checkForNextTask = async (): Promise<{ shouldStartNextTask: boolean; task:
       task,
     }
   } catch (error) {
-    console.error('[Debug] Error in checkForNextTask:', error)
     handleError('checkForNextTask', error)
     return { shouldStartNextTask: false, task: null }
   }

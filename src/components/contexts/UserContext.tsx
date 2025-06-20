@@ -52,6 +52,8 @@ export const UserProvider = ({ children }: { children: ReactNode }): ReactElemen
     achievementUnlocker: {
       idle: true,
       hidden: false,
+      nextTaskCheckbox: false,
+      nextTask: null,
       schedule: false,
       scheduleFrom: new Time(8, 30, 0, 0),
       scheduleTo: new Time(23, 0, 0, 0),

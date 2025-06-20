@@ -24,11 +24,11 @@ export default function CardSettings(): ReactElement {
   const taskOptions = [
     {
       key: 'achievementUnlocker',
-      label: t('settings.cardFarming.nextTask.achievementUnlocker'),
+      label: t('common.achievementUnlocker'),
     },
     {
       key: 'autoIdle',
-      label: t('settings.cardFarming.nextTask.autoIdle'),
+      label: t('customLists.autoIdle.title'),
     },
   ]
 
@@ -106,11 +106,7 @@ export default function CardSettings(): ReactElement {
 
         {userSettings.general.useBeta && (
           <div className='flex items-center gap-2'>
-            <SettingsCheckbox
-              type='cardFarming'
-              name='nextTaskCheckbox'
-              content={t('settings.cardFarming.nextTaskCheckbox')}
-            />
+            <SettingsCheckbox type='cardFarming' name='nextTaskCheckbox' content={t('common.nextTask')} />
 
             <Select
               size='sm'
