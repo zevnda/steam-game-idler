@@ -1,3 +1,9 @@
+<!-- 1.14.3 -->
+
+### Changes in v1.14.3
+
+- Fixed the amount of items returned by the API when getting trading cards
+
 <!-- 1.14.2 -->
 
 ### Changes in v1.14.2
