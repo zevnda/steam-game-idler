@@ -4,6 +4,7 @@
 
 - User summary data is now locally cached for performance improvements
   - The `user_summaries.json` file can be found in `AppData\Roaming\com.zevnda.steam-game-idler`
+- Minor UI improvements
 
 <!-- 1.14.3 -->
 
