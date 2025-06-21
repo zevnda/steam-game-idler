@@ -71,42 +71,43 @@ pub async fn get_user_summary(steam_id: String, api_key: Option<String>) -> Resu
 }
 
 pub fn parse_login_users(config_path: &PathBuf) -> Result<HashMap<String, (String, i32)>, String> {
-  let content = fs::read_to_string(config_path).map_err(|e| e.to_string())?;
-  let user_regex =
-      Regex::new(r#""(\d{17})"\s*\{[^}]*"(?i)PersonaName"\s*"([^"]*)"|"(?i)MostRecent"\s*"(\d+)""#)
-          .map_err(|e| e.to_string())?;
-  let mut users = HashMap::new();
+    let content = fs::read_to_string(config_path).map_err(|e| e.to_string())?;
+    let user_regex = Regex::new(
+        r#""(\d{17})"\s*\{[^}]*"(?i)PersonaName"\s*"([^"]*)"|"(?i)MostRecent"\s*"(\d+)""#,
+    )
+    .map_err(|e| e.to_string())?;
+    let mut users = HashMap::new();
 
-  let mut current_steam_id = String::new();
-  let mut current_persona_name = String::new();
-  let mut most_recent_value = 0;
+    let mut current_steam_id = String::new();
+    let mut current_persona_name = String::new();
+    let mut most_recent_value = 0;
 
-  for cap in user_regex.captures_iter(&content) {
-      if let Some(steam_id) = cap.get(1) {
-          // If we were processing a previous user, add them to the map
-          if !current_steam_id.is_empty() && !current_persona_name.is_empty() {
-              users.insert(
-                  current_steam_id.clone(),
-                  (current_persona_name.clone(), most_recent_value),
-              );
-          }
-          
-          // Start processing a new user
-          current_steam_id = steam_id.as_str().to_string();
-          current_persona_name = cap.get(2).unwrap().as_str().to_string();
-          most_recent_value = 0; // Reset for new user
-      } else if let Some(most_recent) = cap.get(3) {
-          most_recent_value = most_recent.as_str().parse::<i32>().unwrap_or(0);
-      }
-  }
+    for cap in user_regex.captures_iter(&content) {
+        if let Some(steam_id) = cap.get(1) {
+            // If we were processing a previous user, add them to the map
+            if !current_steam_id.is_empty() && !current_persona_name.is_empty() {
+                users.insert(
+                    current_steam_id.clone(),
+                    (current_persona_name.clone(), most_recent_value),
+                );
+            }
 
-  // Don't forget to add the last user being processed
-  if !current_steam_id.is_empty() && !current_persona_name.is_empty() {
-      users.insert(
-          current_steam_id.clone(),
-          (current_persona_name.clone(), most_recent_value),
-      );
-  }
+            // Start processing a new user
+            current_steam_id = steam_id.as_str().to_string();
+            current_persona_name = cap.get(2).unwrap().as_str().to_string();
+            most_recent_value = 0; // Reset for new user
+        } else if let Some(most_recent) = cap.get(3) {
+            most_recent_value = most_recent.as_str().parse::<i32>().unwrap_or(0);
+        }
+    }
 
-  Ok(users)
+    // Don't forget to add the last user being processed
+    if !current_steam_id.is_empty() && !current_persona_name.is_empty() {
+        users.insert(
+            current_steam_id.clone(),
+            (current_persona_name.clone(), most_recent_value),
+        );
+    }
+
+    Ok(users)
 }
