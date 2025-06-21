@@ -24,14 +24,30 @@ export default function useSetup(refreshKey: number): SetupHook {
 
   // Fetch user summary data
   const fetchUserSummary = async (steamId: string, mostRecent: number, apiKey: string | null): Promise<UserSummary> => {
-    const res = await invoke<InvokeUserSummary>('get_user_summary', {
-      steamId,
-      apiKey,
-    })
+    const cachedUserSummaries = await invoke<InvokeUserSummary[]>('get_user_summary_cache')
+
+    // Check if user summary exists in cache
+    const cachedUserSummary = cachedUserSummaries.find(
+      (summary: InvokeUserSummary) => summary?.response?.players?.[0]?.steamid === steamId,
+    )
+
+    let userSummaryData
+
+    if (cachedUserSummary) {
+      // Use cached data
+      userSummaryData = cachedUserSummary
+    } else {
+      // Fetch fresh data from API
+      userSummaryData = await invoke<InvokeUserSummary>('get_user_summary', {
+        steamId,
+        apiKey,
+      })
+    }
+
     return {
-      steamId: res.response.players[0].steamid,
-      personaName: res.response.players[0].personaname,
-      avatar: res.response.players[0].avatar.replace('.jpg', '_full.jpg'), // Get high res image
+      steamId: userSummaryData.response.players[0].steamid,
+      personaName: userSummaryData.response.players[0].personaname,
+      avatar: userSummaryData.response.players[0].avatar.replace('.jpg', '_full.jpg'), // Get high res image
       mostRecent,
     }
   }

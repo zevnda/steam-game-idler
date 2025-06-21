@@ -27,7 +27,7 @@ pub async fn get_games_list(
     api_key: Option<String>,
     app_handle: tauri::AppHandle,
 ) -> Result<Value, String> {
-    // Get the API key from the environment or use the provided one
+    // Get the API key from the envor use the provided one
     let key = api_key.unwrap_or_else(|| std::env::var("KEY").unwrap());
     let url = format!(
         "https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key={}&steamid={}&include_appinfo=true&include_played_free_games=true&include_free_sub=true&skip_unvetted_apps=false&include_extended_appinfo=false",
@@ -85,7 +85,7 @@ pub async fn get_recent_games(
     api_key: Option<String>,
     app_handle: tauri::AppHandle,
 ) -> Result<Value, String> {
-    // Get the API key from the environment or use the provided one
+    // Get the API key from the envor use the provided one
     let key = api_key.unwrap_or_else(|| std::env::var("KEY").unwrap());
     let url = format!(
         "https://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v1/?key={}&steamid={}",
