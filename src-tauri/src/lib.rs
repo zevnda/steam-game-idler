@@ -96,6 +96,8 @@ pub fn run() {
             log_event,
             clear_log_file,
             get_user_summary,
+            get_user_summary_cache,
+            delete_user_summary_file,
             get_games_list,
             get_recent_games,
             get_games_list_cache,

@@ -1,5 +1,7 @@
 import type { ReactElement } from 'react'
 
+import { invoke } from '@tauri-apps/api/core'
+
 import { cn, Spinner } from '@heroui/react'
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
@@ -34,7 +36,8 @@ export default function Setup(): ReactElement {
     )
   }, [isDarkMode])
 
-  const handleRefresh = (): void => {
+  const handleRefresh = async (): Promise<void> => {
+    await invoke('delete_user_summary_file')
     setRefreshKey(prev => prev + 1)
   }
 
