@@ -37,6 +37,7 @@ tauri-plugin-process = "2"
 tauri-plugin-dialog = "2"
 tauri-plugin-fs = "2"
 tauri-plugin-os = "2"
+aes = "0.8"
 
 [features]
 custom-protocol = ["tauri/custom-protocol"]

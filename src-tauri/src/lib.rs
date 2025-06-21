@@ -1,6 +1,7 @@
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub mod achievement_manager;
 pub mod automation;
+pub mod crypto;
 pub mod custom_lists;
 pub mod game_data;
 pub mod idling;
@@ -34,12 +35,23 @@ use tauri_plugin_window_state::StateFlags;
 pub fn run() {
     // Load environment variables based on the build configuration
     if cfg!(debug_assertions) {
-        dotenv::from_filename(".env.dev").unwrap().load();
+        match crypto::decrypt_api_key() {
+            key if !key.is_empty() => {
+                std::env::set_var("KEY", key);
+            }
+            _ => {
+                dotenv::from_filename(".env.dev").unwrap().load();
+            }
+        }
     } else {
-        // In production, embed the env vars directly in the binary for portability
-        let prod_env = include_str!("../../.env.prod");
-        let result = dotenv::from_read(prod_env.as_bytes()).unwrap();
-        result.load();
+        match crypto::decrypt_api_key() {
+            key if !key.is_empty() => {
+                std::env::set_var("KEY", key);
+            }
+            _ => {
+                panic!("No obfuscated API key available in production build");
+            }
+        }
     }
 
     tauri::Builder::default()
