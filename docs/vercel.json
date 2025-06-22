@@ -6,7 +6,7 @@
   },
   "headers": [
     {
-      "source": "/sitemap2.xml",
+      "source": "/sitemap3.xml",
       "headers": [
         { "key": "Content-Encoding", "value": "identity" },
         { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
