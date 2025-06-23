@@ -2,6 +2,7 @@ import type { SidebarItem } from '@/types/navigation'
 import type { ReactElement } from 'react'
 
 import { Button, cn } from '@heroui/react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FiLogOut } from 'react-icons/fi'
 import {
@@ -13,22 +14,35 @@ import {
   TbHeart,
   TbHourglassLow,
   TbPlayerPlay,
+  TbPlug,
   TbSettings,
 } from 'react-icons/tb'
 
 import { useIdleContext } from '@/components/contexts/IdleContext'
 import { useNavigationContext } from '@/components/contexts/NavigationContext'
+import { usePluginContext } from '@/components/contexts/PluginContext'
 import { useStateContext } from '@/components/contexts/StateContext'
 import CustomModal from '@/components/ui/CustomModal'
 import CustomTooltip from '@/components/ui/CustomTooltip'
 import useSideBar from '@/hooks/ui/useSideBar'
+import { pluginRegistry } from '@/utils/plugin-registry'
 
 export default function SideBar(): ReactElement {
   const { t } = useTranslation()
   const { idleGamesList } = useIdleContext()
   const { isDarkMode, showFreeGamesTab, isCardFarming, isAchievementUnlocker } = useStateContext()
   const { activePage, setActivePage } = useNavigationContext()
+  const { enabledPlugins } = usePluginContext()
   const { isOpen, onOpenChange, openConfirmation, handleLogout } = useSideBar(activePage, setActivePage)
+  const [pluginSidebarItems, setPluginSidebarItems] = useState<SidebarItem[]>([])
+
+  useEffect(() => {
+    const loadPluginSidebarItems = async () => {
+      await pluginRegistry.refreshRegistry(enabledPlugins)
+      setPluginSidebarItems(pluginRegistry.getSidebarItems())
+    }
+    loadPluginSidebarItems()
+  }, [enabledPlugins])
 
   const mainSidebarItems: SidebarItem[] = [
     {
@@ -95,24 +109,60 @@ export default function SideBar(): ReactElement {
     const Icon = item.icon
     const isCurrentPage = activePage === item.page
     const isFreeGames = item.id === 'free-games'
+    const isPlugin = item.page.startsWith('plugins/')
+
+    // Dynamic icon loading for plugins
+    let IconComponent = Icon
+    if (typeof Icon === 'string') {
+      // Map string icon names to actual icon components
+      const iconMap: Record<string, any> = {
+        TbPlug,
+        TbDeviceGamepad2,
+        TbPlayerPlay,
+        TbCards,
+        TbAward,
+        TbHourglassLow,
+        TbHeart,
+        TbBuildingStore,
+        TbGift,
+        TbSettings,
+      }
+      IconComponent = iconMap[Icon] || TbPlug
+    }
 
     return (
       <div key={item.id} className='flex justify-center items-center w-12'>
         <CustomTooltip content={t(item.tooltipKey)} placement='right'>
           <div
             className={cn(
-              'p-1.5 rounded-md duration-150 cursor-pointer active:scale-95 transition-all border border-transparent',
+              'p-1.5 rounded-md duration-150 cursor-pointer active:scale-95 transition-all border border-transparent relative',
               isFreeGames && 'relative flex justify-center items-center',
+              isPlugin && 'border-dashed',
               item.customClassName,
               isCurrentPage
                 ? isFreeGames
                   ? 'bg-yellow-400/20 border-yellow-400/30 shadow-sm'
-                  : 'bg-dynamic/20 text-dynamic border-dynamic/30 shadow-sm'
+                  : isPlugin
+                    ? 'bg-purple-400/20 border-purple-400/30 shadow-sm'
+                    : 'bg-dynamic/20 text-dynamic border-dynamic/30 shadow-sm'
                 : 'hover:bg-titlehover hover:border-border/50 hover:shadow-sm',
             )}
             onClick={() => setActivePage(item.page)}
           >
-            <Icon fontSize={22} className={isFreeGames ? 'text-[#ffc700]' : undefined} />
+            <IconComponent
+              fontSize={22}
+              className={isFreeGames ? 'text-[#ffc700]' : isPlugin ? 'text-purple-400' : undefined}
+            />
+            {item.badge && (
+              <div
+                className={cn(
+                  'absolute -top-1 -right-1 w-3 h-3 rounded-full text-xs flex items-center justify-center',
+                  item.badge_color || 'bg-red-500',
+                )}
+              >
+                {item.badge}
+              </div>
+            )}
           </div>
         </CustomTooltip>
       </div>
@@ -124,6 +174,12 @@ export default function SideBar(): ReactElement {
       <div className='flex justify-between flex-col w-14 min-h-calc max-h-calc bg-titlebar border-r border-border/50'>
         <div className='flex justify-center items-center flex-col gap-1.5 py-2'>
           {mainSidebarItems.map(renderSidebarItem)}
+          {pluginSidebarItems.length > 0 && (
+            <>
+              <div className='w-8 h-px bg-border/50 my-1' />
+              {pluginSidebarItems.map(renderSidebarItem)}
+            </>
+          )}
         </div>
 
         <div className='flex justify-center items-center flex-col gap-1.5 pb-2'>

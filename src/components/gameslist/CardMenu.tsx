@@ -8,8 +8,10 @@ import { useTranslation } from 'react-i18next'
 import { FaSteam } from 'react-icons/fa'
 import { TbAwardFilled, TbDotsVertical, TbPlayerPlayFilled, TbSettingsFilled } from 'react-icons/tb'
 
+import { usePluginContext } from '@/components/contexts/PluginContext'
 import { useStateContext } from '@/components/contexts/StateContext'
 import { handleIdle, viewAchievments, viewGameSettings } from '@/hooks/ui/useGameCard'
+import { pluginRegistry } from '@/utils/plugin-registry'
 
 interface CardMenuProps {
   item: Game
@@ -19,6 +21,7 @@ interface CardMenuProps {
 export default function CardMenu({ item, onOpen }: CardMenuProps): ReactElement {
   const { t } = useTranslation()
   const { setAppId, setAppName, setShowAchievements, setIsGameSettingsOpen } = useStateContext()
+  const { executePluginCommand } = usePluginContext()
 
   const viewStorePage = async (item: Game): Promise<void> => {
     try {
@@ -27,6 +30,21 @@ export default function CardMenu({ item, onOpen }: CardMenuProps): ReactElement 
       console.error('Failed to open link:', error)
     }
   }
+
+  const handlePluginContextMenu = async (pluginId: string, menuItemId: string): Promise<void> => {
+    try {
+      await executePluginCommand(pluginId, 'context_menu_action', {
+        menuItemId,
+        context: 'game-card',
+        game: item,
+      })
+    } catch (error) {
+      console.error('Failed to execute plugin context menu command:', error)
+    }
+  }
+
+  // Get plugin context menu items for the "game-card" context
+  const pluginContextMenuItems = pluginRegistry.getContextMenuItems('game-card')
 
   return (
     <Dropdown
@@ -86,6 +104,19 @@ export default function CardMenu({ item, onOpen }: CardMenuProps): ReactElement 
         >
           <p className='text-sm text-content'>{t('cardMenu.settings')}</p>
         </DropdownItem>
+
+        {/* Plugin context menu items */}
+        {pluginContextMenuItems.map(menuItem => (
+          <DropdownItem
+            key={menuItem.id}
+            className='rounded'
+            classNames={{ base: ['data-[hover=true]:bg-titlehover'] }}
+            onPress={() => handlePluginContextMenu(menuItem.pluginId!, menuItem.id)}
+            textValue={menuItem.title}
+          >
+            <p className='text-sm text-content'>{menuItem.title}</p>
+          </DropdownItem>
+        ))}
       </DropdownMenu>
     </Dropdown>
   )

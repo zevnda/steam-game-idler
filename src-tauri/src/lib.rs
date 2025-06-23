@@ -6,6 +6,7 @@ pub mod custom_lists;
 pub mod game_data;
 pub mod idling;
 pub mod logging;
+pub mod plugins;
 pub mod process_handler;
 pub mod settings;
 pub mod trading_cards;
@@ -17,6 +18,7 @@ use custom_lists::*;
 use game_data::*;
 use idling::*;
 use logging::*;
+use plugins::*;
 use process_handler::*;
 use settings::*;
 use trading_cards::*;
@@ -127,7 +129,23 @@ pub fn run() {
             delete_user_trading_card_file,
             list_trading_cards,
             get_card_price,
-            remove_market_listings
+            remove_market_listings, // Plugin commands
+            get_plugins,
+            enable_plugin_command,
+            disable_plugin_command,
+            get_plugin_sidebar_items,
+            get_plugin_context_menu_items,
+            get_plugin_settings_tabs,
+            execute_plugin_command,
+            reload_plugins,
+            get_plugins_directory,
+            create_example_plugin,
+            get_plugin_config,
+            save_plugin_config,
+            call_plugin_hook,
+            install_plugin_from_path,
+            uninstall_plugin,
+            validate_plugin_at_path
         ])
         .build(tauri::generate_context!())
         .expect("Error while building tauri application")
@@ -143,9 +161,19 @@ pub fn run() {
 }
 
 fn setup_app(app: &mut tauri::App) -> Result<(), Box<dyn std::error::Error>> {
+    // Setup tray icon first (requires mutable borrow)
+    setup_tray_icon(app)?;
+
+    // Now get app handle for other operations (immutable borrow)
     let app_handle = app.handle();
     setup_window(&app_handle)?;
-    setup_tray_icon(app)?;
+
+    // Initialize plugin system
+    let app_data_dir = app_handle.path().app_data_dir()?;
+    let plugins_dir = app_data_dir.join("plugins");
+    if let Err(e) = init_plugin_manager(plugins_dir) {
+        eprintln!("Failed to initialize plugin manager: {}", e);
+    }
 
     Ok(())
 }

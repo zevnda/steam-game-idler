@@ -4295,6 +4295,7 @@ dependencies = [
  "tauri-plugin-updater",
  "tauri-plugin-window-state",
  "tokio",
+ "walkdir",
  "winapi",
 ]
 

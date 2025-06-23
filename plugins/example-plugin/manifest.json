@@ -1,0 +1,45 @@
+{
+  "name": "Example Plugin",
+  "id": "example-plugin",
+  "version": "1.0.0",
+  "description": "A simple example plugin to demonstrate the plugin system",
+  "author": "Steam Game Idler Team",
+  "api_version": "1.0",
+  "license": "MIT",
+  "entry_points": {
+    "main": "plugin.js",
+    "frontend": "frontend.js"
+  },
+  "dependencies": [],
+  "permissions": ["steamapi", "filesystem"],
+  "sidebar_items": [
+    {
+      "id": "example-page",
+      "title": "Example",
+      "icon": "TbStar",
+      "page": "plugins/example-plugin",
+      "order": 50,
+      "badge": {
+        "text": "NEW",
+        "color": "#00ff00"
+      }
+    }
+  ],
+  "context_menus": [
+    {
+      "id": "example-context-menu",
+      "title": "Example Action",
+      "icon": "TbStar",
+      "contexts": ["game-card"]
+    }
+  ],
+  "settings_tabs": [
+    {
+      "id": "example-settings",
+      "title": "Example Settings",
+      "icon": "TbSettings",
+      "component": "settings.js",
+      "order": 100
+    }
+  ]
+}

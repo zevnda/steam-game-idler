@@ -1,6 +1,7 @@
 import type { Dispatch, SetStateAction } from 'react'
 
 export type CustomListType = 'cardFarmingList' | 'achievementUnlockerList' | 'autoIdleList' | 'favoritesList'
+export type PluginPageType = `plugins/${string}`
 export type ActivePageType =
   | 'setup'
   | 'games'
@@ -9,8 +10,15 @@ export type ActivePageType =
   | 'settings'
   | `customlists/${string}`
   | 'tradingCards'
+  | PluginPageType
 export type CurrentTabType = 'achievements' | 'statistics'
-export type CurrentSettingsTabType = 'general' | 'card-farming' | 'achievement-unlocker' | 'logs'
+export type CurrentSettingsTabType =
+  | 'general'
+  | 'card-farming'
+  | 'achievement-unlocker'
+  | 'logs'
+  | 'plugins'
+  | `plugin-${string}`
 
 export interface NavigationContextType {
   activePage: ActivePageType

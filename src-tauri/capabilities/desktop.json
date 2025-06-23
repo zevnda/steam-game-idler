@@ -38,6 +38,7 @@
     "os:allow-arch",
     "os:allow-locale",
     "os:allow-platform",
-    "os:allow-version"
+    "os:allow-version",
+    "dialog:allow-open"
   ]
 }
