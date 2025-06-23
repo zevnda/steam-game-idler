@@ -11,4 +11,12 @@ if [ "$branch" = "main" ] || [ "$branch" = "master" ]; then
   fi
 fi
 
+# Check if branch starts with "beta/" and bypass lint-staged
+case "$branch" in
+  beta/*)
+    echo "Beta branch detected ($branch) - skipping lint-staged"
+    exit 0
+    ;;
+esac
+
 npx lint-staged
