@@ -31,6 +31,7 @@
     "core:window:allow-toggle-maximize",
     "shell:allow-open",
     "dialog:allow-ask",
+    "dialog:allow-open",
     "notification:default",
     "process:allow-restart",
     "shell:default",
@@ -38,7 +39,6 @@
     "os:allow-arch",
     "os:allow-locale",
     "os:allow-platform",
-    "os:allow-version",
-    "dialog:allow-open"
+    "os:allow-version"
   ]
 }

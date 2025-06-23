@@ -7,7 +7,7 @@ import { open } from '@tauri-apps/plugin-dialog'
 import { Button, Card, CardBody, CardHeader, cn, Switch } from '@heroui/react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { TbDownload, TbExternalLink, TbPlug, TbRefresh, TbSettings, TbTrash, TbUpload } from 'react-icons/tb'
+import { TbExternalLink, TbPlug, TbRefresh, TbTrash, TbUpload } from 'react-icons/tb'
 
 import { usePluginContext } from '@/components/contexts/PluginContext'
 import { logEvent } from '@/utils/tasks'
@@ -53,21 +53,6 @@ export default function PluginManager(): ReactElement {
     }
   }
 
-  const handleCreateExamplePlugin = async (): Promise<void> => {
-    try {
-      setLoading(true)
-      await invoke('create_example_plugin')
-      await refreshPlugins()
-      showSuccessToast('Example plugin created successfully')
-      logEvent('[Plugin] Example plugin created')
-    } catch (error) {
-      showDangerToast(`Failed to create example plugin: ${error}`)
-      logEvent(`[Error] Failed to create example plugin: ${error}`)
-    } finally {
-      setLoading(false)
-    }
-  }
-
   const handleUninstallPlugin = async (pluginId: string): Promise<void> => {
     try {
       await uninstallPlugin(pluginId)
@@ -79,7 +64,6 @@ export default function PluginManager(): ReactElement {
 
   const handleOpenPluginsDirectory = async (): Promise<void> => {
     try {
-      const pluginsDir = await invoke<string>('get_plugins_directory')
       await invoke('open_file_explorer', { path: 'plugins' })
       logEvent('[Plugin] Opened plugins directory')
     } catch (error) {
@@ -150,15 +134,6 @@ export default function PluginManager(): ReactElement {
               <Button
                 size='sm'
                 variant='flat'
-                startContent={<TbDownload size={16} />}
-                onPress={handleCreateExamplePlugin}
-                isLoading={loading}
-              >
-                {t('plugins.createExample')}
-              </Button>
-              <Button
-                size='sm'
-                variant='flat'
                 startContent={<TbExternalLink size={16} />}
                 onPress={handleOpenPluginsDirectory}
               >
@@ -184,14 +159,6 @@ export default function PluginManager(): ReactElement {
                     <h4 className='font-semibold mb-2'>{t('plugins.noPlugins.title')}</h4>
                     <p className='text-altwhite text-sm'>{t('plugins.noPlugins.description')}</p>
                   </div>
-                  <Button
-                    color='primary'
-                    startContent={<TbDownload size={16} />}
-                    onPress={handleCreateExamplePlugin}
-                    isLoading={loading}
-                  >
-                    {t('plugins.createExample')}
-                  </Button>
                 </div>
               </CardBody>
             </Card>
@@ -220,7 +187,7 @@ export default function PluginManager(): ReactElement {
                             {t('plugins.author')}: {plugin.manifest.author}
                           </span>
                           <span>
-                            {t('plugins.apiVersion')}: {plugin.manifest.api_version}
+                            {t('plugins.apiVersion')}: {plugin.manifest.apiVersion}
                           </span>
                           {plugin.manifest.license && (
                             <span>
@@ -243,30 +210,6 @@ export default function PluginManager(): ReactElement {
                       </Button>
                     </div>
                   </CardHeader>
-
-                  {(plugin.manifest.sidebar_items?.length ||
-                    plugin.manifest.context_menus?.length ||
-                    plugin.manifest.settings_tabs?.length) && (
-                    <CardBody className='pt-0'>
-                      <div className='flex flex-wrap gap-2'>
-                        {plugin.manifest.sidebar_items?.map(item => (
-                          <span key={item.id} className='text-xs bg-blue-500/20 text-blue-400 px-2 py-1 rounded'>
-                            📱 {item.title}
-                          </span>
-                        ))}
-                        {plugin.manifest.context_menus?.map(item => (
-                          <span key={item.id} className='text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded'>
-                            🎯 {item.title}
-                          </span>
-                        ))}
-                        {plugin.manifest.settings_tabs?.map(item => (
-                          <span key={item.id} className='text-xs bg-purple-500/20 text-purple-400 px-2 py-1 rounded'>
-                            ⚙️ {item.title}
-                          </span>
-                        ))}
-                      </div>
-                    </CardBody>
-                  )}
                 </Card>
               ))}
             </div>

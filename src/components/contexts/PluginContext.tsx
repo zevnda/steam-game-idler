@@ -1,4 +1,11 @@
-import type { Plugin, PluginContext } from '@/types/plugin'
+import type {
+  Plugin,
+  PluginCommandArgs,
+  PluginCommandResult,
+  PluginConfig,
+  PluginContext,
+  PluginHealthStatus,
+} from '@/types/plugin'
 import type { ReactElement, ReactNode } from 'react'
 
 import { invoke } from '@tauri-apps/api/core'
@@ -53,7 +60,7 @@ export const PluginProvider = ({ children }: { children: ReactNode }): ReactElem
     try {
       // Call plugin load hook
       await invoke('call_plugin_hook', {
-        hook: 'on_load',
+        hook: 'onLoad',
         data: { pluginId },
       })
       await refreshPlugins()
@@ -68,7 +75,7 @@ export const PluginProvider = ({ children }: { children: ReactNode }): ReactElem
     try {
       // Call plugin unload hook
       await invoke('call_plugin_hook', {
-        hook: 'on_unload',
+        hook: 'onUnload',
         data: { pluginId },
       })
       await refreshPlugins()
@@ -78,19 +85,33 @@ export const PluginProvider = ({ children }: { children: ReactNode }): ReactElem
       logEvent(`[Error] Failed to unload plugin ${pluginId}: ${error}`)
     }
   }
-
-  const executePluginCommand = async (pluginId: string, command: string, args?: any): Promise<any> => {
+  const checkPluginHealth = async (pluginId: string): Promise<PluginHealthStatus> => {
     try {
-      const result = await invoke('execute_plugin_command', {
+      const health = await invoke<PluginHealthStatus>('check_plugin_health', { pluginId })
+      return health
+    } catch (error) {
+      console.error(`Failed to check plugin health for ${pluginId}:`, error)
+      logEvent(`[Error] Failed to check plugin health for ${pluginId}: ${error}`)
+      throw error
+    }
+  }
+
+  const executePluginCommand = async (
+    pluginId: string,
+    command: string,
+    args: PluginCommandArgs = {},
+  ): Promise<PluginCommandResult> => {
+    try {
+      const result = await invoke<PluginCommandResult>('execute_plugin_command', {
         pluginId,
         command,
-        args: args || {},
+        args,
       })
-      logEvent(`[Plugin] Executed command ${command} on plugin ${pluginId}`)
+      logEvent(`[Plugin] Executed command ${command} for plugin ${pluginId}`)
       return result
     } catch (error) {
-      console.error(`Failed to execute plugin command:`, error)
-      logEvent(`[Error] Failed to execute command ${command} on plugin ${pluginId}: ${error}`)
+      console.error(`Failed to execute plugin command ${command} for ${pluginId}:`, error)
+      logEvent(`[Error] Failed to execute plugin command ${command} for ${pluginId}: ${error}`)
       throw error
     }
   }
@@ -120,19 +141,18 @@ export const PluginProvider = ({ children }: { children: ReactNode }): ReactElem
       throw error
     }
   }
-
-  const getPluginConfig = async (pluginId: string): Promise<any> => {
+  const getPluginConfig = async (pluginId: string): Promise<PluginConfig> => {
     try {
-      const config = await invoke('get_plugin_config', { pluginId })
+      const config = await invoke<PluginConfig>('get_plugin_config', { pluginId })
       return config
     } catch (error) {
-      console.error(`Failed to get plugin config:`, error)
+      console.error('Failed to get plugin config:', error)
       logEvent(`[Error] Failed to get config for plugin ${pluginId}: ${error}`)
       return {}
     }
   }
 
-  const savePluginConfig = async (pluginId: string, config: any): Promise<void> => {
+  const savePluginConfig = async (pluginId: string, config: PluginConfig): Promise<void> => {
     try {
       await invoke('save_plugin_config', { pluginId, config })
       logEvent(`[Plugin] Saved config for plugin: ${pluginId}`)
@@ -146,7 +166,6 @@ export const PluginProvider = ({ children }: { children: ReactNode }): ReactElem
   useEffect(() => {
     refreshPlugins()
   }, [])
-
   const contextValue: PluginContext = {
     plugins,
     enabledPlugins,
@@ -160,6 +179,7 @@ export const PluginProvider = ({ children }: { children: ReactNode }): ReactElem
     getPluginConfig,
     savePluginConfig,
     refreshPlugins,
+    checkPluginHealth,
   }
 
   return <PluginContext.Provider value={contextValue}>{children}</PluginContext.Provider>

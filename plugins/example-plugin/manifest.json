@@ -1,45 +1,29 @@
 {
-  "name": "Example Plugin",
   "id": "example-plugin",
+  "name": "Steam User Lookup",
   "version": "1.0.0",
-  "description": "A simple example plugin to demonstrate the plugin system",
+  "description": "A simple plugin to lookup Steam user profiles by Steam ID64",
   "author": "Steam Game Idler Team",
-  "api_version": "1.0",
   "license": "MIT",
-  "entry_points": {
-    "main": "plugin.js",
-    "frontend": "frontend.js"
-  },
-  "dependencies": [],
-  "permissions": ["steamapi", "filesystem"],
-  "sidebar_items": [
+  "homepage": "https://github.com/zevnda/steam-game-idler",
+  "repository": "https://github.com/zevnda/steam-game-idler",
+  "main": "plugin.js",
+  "frontend": "frontend.tsx",
+  "permissions": ["network"],
+  "apiVersion": "1.0",
+  "dependencies": null,
+  "icon": "TbUser",
+  "sidebarItems": [
     {
-      "id": "example-page",
-      "title": "Example",
-      "icon": "TbStar",
+      "id": "steam-user-lookup",
+      "title": "User Lookup",
+      "icon": "TbUser",
       "page": "plugins/example-plugin",
-      "order": 50,
-      "badge": {
-        "text": "NEW",
-        "color": "#00ff00"
-      }
+      "tooltip": "Lookup Steam user profiles"
     }
   ],
-  "context_menus": [
-    {
-      "id": "example-context-menu",
-      "title": "Example Action",
-      "icon": "TbStar",
-      "contexts": ["game-card"]
-    }
-  ],
-  "settings_tabs": [
-    {
-      "id": "example-settings",
-      "title": "Example Settings",
-      "icon": "TbSettings",
-      "component": "settings.js",
-      "order": 100
-    }
-  ]
+  "entryPoints": {
+    "onLoad": "onLoad",
+    "onUnload": "onUnload"
+  }
 }

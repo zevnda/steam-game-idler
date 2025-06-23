@@ -1,7 +1,7 @@
+import type { PluginPageType } from '@/types/plugin'
 import type { Dispatch, SetStateAction } from 'react'
 
 export type CustomListType = 'cardFarmingList' | 'achievementUnlockerList' | 'autoIdleList' | 'favoritesList'
-export type PluginPageType = `plugins/${string}`
 export type ActivePageType =
   | 'setup'
   | 'games'
@@ -32,7 +32,7 @@ export interface NavigationContextType {
 export interface SidebarItem {
   id: string
   page: ActivePageType
-  icon: React.ComponentType<{ fontSize?: number; className?: string }>
+  icon: React.ComponentType<{ fontSize?: number; className?: string }> | string
   tooltipKey: string
   shouldShow?: boolean
   isActive?: boolean

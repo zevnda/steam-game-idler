@@ -1,5 +1,6 @@
 import type { ReactElement } from 'react'
 
+import { Spinner } from '@heroui/react'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -19,7 +20,7 @@ export default function PluginPage({ pluginId }: PluginPageProps): ReactElement 
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    const loadPlugin = async () => {
+    const loadPlugin = async (): Promise<void> => {
       try {
         setLoading(true)
         setError(null)
@@ -46,7 +47,7 @@ export default function PluginPage({ pluginId }: PluginPageProps): ReactElement 
     return (
       <div className='flex justify-center items-center w-calc h-calc'>
         <div className='flex flex-col items-center gap-4'>
-          <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-dynamic'></div>
+          <Spinner />
           <p className='text-altwhite'>{t('common.loading')}</p>
         </div>
       </div>

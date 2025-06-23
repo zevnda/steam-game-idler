@@ -39,6 +39,7 @@ tauri-plugin-fs = "2"
 tauri-plugin-os = "2"
 aes = "0.8"
 walkdir = "2.5"
+rand = "0.8"
 
 [features]
 custom-protocol = ["tauri/custom-protocol"]

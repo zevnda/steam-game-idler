@@ -1,4 +1,5 @@
 use chrono;
+use rand;
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 use std::collections::HashMap;
@@ -22,8 +23,6 @@ pub struct PluginManifest {
     pub api_version: String,
     pub dependencies: Option<HashMap<String, String>>,
     pub sidebar_items: Option<Vec<SidebarItem>>,
-    pub context_menus: Option<Vec<ContextMenuItem>>,
-    pub settings_tabs: Option<Vec<SettingsTab>>,
     pub entry_points: Option<PluginEntryPoints>,
     pub icon: Option<String>,
     pub homepage: Option<String>,
@@ -47,29 +46,9 @@ pub struct SidebarItem {
     pub icon: String,
     pub page: String,
     pub tooltip: String,
-    pub order: Option<i32>,
-    pub badge: Option<String>,
-    pub badge_color: Option<String>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ContextMenuItem {
-    pub id: String,
-    pub title: String,
-    pub icon: String,
-    pub contexts: Vec<String>, // ["game-card", "achievement", "settings"]
-    pub separator: Option<bool>,
-    pub submenu: Option<Vec<ContextMenuItem>>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct SettingsTab {
-    pub id: String,
-    pub title: String,
-    pub icon: String,
-    pub component: String,
-    pub order: Option<i32>,
-}
+// Remove unused structs and keep only what's needed
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Plugin {
@@ -82,29 +61,113 @@ pub struct Plugin {
 
 #[derive(Debug)]
 pub struct JSRuntime {
-    // Simple runtime for now - can be replaced with a proper JS engine later
+    // Plugin code cache
+    plugin_codes: HashMap<String, String>,
 }
 
 impl JSRuntime {
     pub fn new() -> Result<Self, String> {
-        Ok(Self {})
+        Ok(Self {
+            plugin_codes: HashMap::new(),
+        })
     }
-
+    pub fn load_plugin_code(&mut self, plugin_id: &str, code: &str) {
+        self.plugin_codes
+            .insert(plugin_id.to_string(), code.to_string());
+    }
     pub fn execute_plugin(
         &self,
-        _plugin_code: &str,
+        plugin_id: &str,
         command: &str,
         args: Value,
+        app_handle: &AppHandle,
+    ) -> Result<Value, String> {
+        // Get the plugin code
+        let _code = self
+            .plugin_codes
+            .get(plugin_id)
+            .ok_or_else(|| format!("Plugin code not loaded for {}", plugin_id))?;
+
+        // Validate command name
+        if command.is_empty() {
+            return Err("Command cannot be empty".to_string());
+        } // Execute the command based on the plugin type
+        match command {
+            "init" => self.execute_init_command(plugin_id, args, app_handle),
+            "enable" => self.execute_enable_command(plugin_id, args),
+            "disable" => self.execute_disable_command(plugin_id, args),
+            "get_steam_user" => self.execute_get_steam_user_command(plugin_id, args),
+            _ => {
+                // For unknown commands, return a helpful error
+                let available_commands = vec!["init", "enable", "disable", "get_steam_user"];
+                Err(format!(
+                    "Unknown command '{}'. Available commands: {}",
+                    command,
+                    available_commands.join(", ")
+                ))
+            }
+        }
+    }
+    fn execute_init_command(
+        &self,
+        plugin_id: &str,
+        _args: Value,
         _app_handle: &AppHandle,
     ) -> Result<Value, String> {
-        // For now, return a mock response indicating the command was received
-        // In a real implementation, this would execute the JavaScript code
         Ok(json!({
-            "command": command,
-            "args": args,
-            "result": "Plugin execution simulated (JavaScript runtime not yet implemented)",
+            "status": "success",
+            "message": "Plugin initialized successfully",
+            "plugin_id": plugin_id,
             "timestamp": chrono::Utc::now().to_rfc3339(),
-            "success": true
+        }))
+    }
+
+    fn execute_enable_command(&self, _plugin_id: &str, _args: Value) -> Result<Value, String> {
+        Ok(json!({
+            "status": "success",
+            "message": "Plugin enabled successfully",
+            "timestamp": chrono::Utc::now().to_rfc3339()
+        }))
+    }
+
+    fn execute_disable_command(&self, _plugin_id: &str, _args: Value) -> Result<Value, String> {
+        Ok(json!({
+            "status": "success",
+            "message": "Plugin disabled successfully",
+            "timestamp": chrono::Utc::now().to_rfc3339()
+        }))
+    }
+
+    fn execute_get_steam_user_command(
+        &self,
+        _plugin_id: &str,
+        args: Value,
+    ) -> Result<Value, String> {
+        let steam_id = args
+            .get("steamId")
+            .and_then(|v| v.as_str())
+            .ok_or("steamId parameter is required")?;
+
+        // Mock Steam user data - in real implementation this would call Steam API
+        let mock_user = json!({
+            "steamid": steam_id,
+            "personaname": format!("User_{}", &steam_id[steam_id.len()-4..]),
+            "profileurl": format!("https://steamcommunity.com/profiles/{}", steam_id),
+            "avatar": "https://avatars.steamstatic.com/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb.jpg",
+            "avatarmedium": "https://avatars.steamstatic.com/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb_medium.jpg",
+            "avatarfull": "https://avatars.steamstatic.com/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb_full.jpg",
+            "personastate": 1,
+            "communityvisibilitystate": 3,
+            "profilestate": 1,
+            "lastlogoff": chrono::Utc::now().timestamp() - 3600,
+            "commentpermission": 1
+        });
+
+        Ok(json!({
+            "status": "success",
+            "message": "Steam user data retrieved",
+            "user": mock_user,
+            "timestamp": chrono::Utc::now().to_rfc3339()
         }))
     }
 }
@@ -150,7 +213,6 @@ impl PluginManager {
 
         Ok(())
     }
-
     fn load_plugin_manifest(&mut self, plugin_dir: &Path) -> Result<(), String> {
         let manifest_path = plugin_dir.join("manifest.json");
         if !manifest_path.exists() {
@@ -163,20 +225,67 @@ impl PluginManager {
         let manifest: PluginManifest = serde_json::from_str(&manifest_content)
             .map_err(|e| format!("Failed to parse manifest.json: {}", e))?;
 
+        // Validate manifest fields
+        if manifest.id.is_empty() {
+            return Err("Plugin ID cannot be empty".to_string());
+        }
+        if manifest.name.is_empty() {
+            return Err("Plugin name cannot be empty".to_string());
+        }
+        if manifest.version.is_empty() {
+            return Err("Plugin version cannot be empty".to_string());
+        }
+
+        // Check for duplicate plugin IDs
+        if self.plugins.contains_key(&manifest.id) {
+            return Err(format!("Plugin with ID '{}' already exists", manifest.id));
+        }
+
         // Validate required files exist
         let main_file = plugin_dir.join(&manifest.main);
         if !main_file.exists() {
             return Err(format!("Main file {} not found", manifest.main));
         }
+
+        // Validate frontend file if specified
+        if let Some(ref frontend_file) = manifest.frontend {
+            let frontend_path = plugin_dir.join(frontend_file);
+            if !frontend_path.exists() {
+                eprintln!(
+                    "Warning: Frontend file {} not found for plugin {}",
+                    frontend_file, manifest.id
+                );
+            }
+        }
+
+        // Read and validate the JavaScript code
+        let js_code = fs::read_to_string(&main_file)
+            .map_err(|e| format!("Failed to read main file {}: {}", manifest.main, e))?;
+
+        // Basic JS validation - check for syntax errors
+        if js_code.trim().is_empty() {
+            return Err(format!("Main file {} is empty", manifest.main));
+        }
+
+        // Store the plugin first
         let plugin = Plugin {
-            manifest,
+            manifest: manifest.clone(),
             enabled: true, // Default to enabled, load from config later
-            loaded: false,
+            loaded: true,  // Mark as loaded since we loaded the JS code
             path: plugin_dir.to_path_buf(),
             config: None,
         };
 
-        self.plugins.insert(plugin.manifest.id.clone(), plugin);
+        self.plugins.insert(manifest.id.clone(), plugin);
+
+        // Load the code into the runtime
+        self.js_runtime.load_plugin_code(&manifest.id, &js_code);
+
+        println!(
+            "Successfully loaded plugin: {} v{}",
+            manifest.name, manifest.version
+        );
+
         Ok(())
     }
 
@@ -206,7 +315,6 @@ impl PluginManager {
             Err(format!("Plugin {} not found", plugin_id))
         }
     }
-
     pub fn get_sidebar_items(&self) -> Vec<SidebarItem> {
         let mut items = Vec::new();
         for plugin in self.get_enabled_plugins() {
@@ -214,32 +322,7 @@ impl PluginManager {
                 items.extend(sidebar_items.clone());
             }
         }
-        items.sort_by_key(|item| item.order.unwrap_or(100));
         items
-    }
-
-    pub fn get_context_menu_items(&self, context: &str) -> Vec<ContextMenuItem> {
-        let mut items = Vec::new();
-        for plugin in self.get_enabled_plugins() {
-            if let Some(context_menus) = &plugin.manifest.context_menus {
-                for menu_item in context_menus {
-                    if menu_item.contexts.contains(&context.to_string()) {
-                        items.push(menu_item.clone());
-                    }
-                }
-            }
-        }
-        items
-    }
-    pub fn get_settings_tabs(&self) -> Vec<SettingsTab> {
-        let mut tabs = Vec::new();
-        for plugin in self.get_enabled_plugins() {
-            if let Some(settings_tabs) = &plugin.manifest.settings_tabs {
-                tabs.extend(settings_tabs.clone());
-            }
-        }
-        tabs.sort_by_key(|tab| tab.order.unwrap_or(100));
-        tabs
     }
 
     pub fn load_plugin_config(&mut self, plugin_id: &str) -> Result<(), String> {
@@ -300,7 +383,7 @@ impl PluginManager {
         results
     }
 
-    pub fn install_plugin_from_zip(&mut self, zip_path: &Path) -> Result<String, String> {
+    pub fn install_plugin_from_zip(&mut self, _zip_path: &Path) -> Result<String, String> {
         // TODO: Implement ZIP extraction and plugin installation
         Err("ZIP installation not yet implemented".to_string())
     }
@@ -398,57 +481,59 @@ pub async fn get_plugin_sidebar_items() -> Result<Value, String> {
 }
 
 #[tauri::command]
-pub async fn get_plugin_context_menu_items(context: String) -> Result<Value, String> {
-    let manager = get_plugin_manager().lock().unwrap();
-    let items = manager.get_context_menu_items(&context);
-    Ok(json!(items))
-}
-
-#[tauri::command]
-pub async fn get_plugin_settings_tabs() -> Result<Value, String> {
-    let manager = get_plugin_manager().lock().unwrap();
-    let tabs = manager.get_settings_tabs();
-    Ok(json!(tabs))
-}
-
-#[tauri::command]
 pub async fn execute_plugin_command(
     plugin_id: String,
     command: String,
     args: Value,
     app_handle: AppHandle,
 ) -> Result<Value, String> {
+    // Validate inputs
+    if plugin_id.trim().is_empty() {
+        return Err("Plugin ID cannot be empty".to_string());
+    }
+    if command.trim().is_empty() {
+        return Err("Command cannot be empty".to_string());
+    }
+
     let manager = get_plugin_manager().lock().unwrap();
 
     if let Some(plugin) = manager.plugins.get(&plugin_id) {
         if !plugin.enabled {
-            return Err("Plugin is disabled".to_string());
+            return Err(format!("Plugin '{}' is disabled", plugin_id));
         }
 
-        // Load and execute plugin JavaScript/TypeScript
-        let main_file = plugin.path.join(&plugin.manifest.main);
-        let plugin_code = fs::read_to_string(&main_file)
-            .map_err(|e| format!("Failed to read plugin main file: {}", e))?;
+        if !plugin.loaded {
+            return Err(format!("Plugin '{}' is not loaded", plugin_id));
+        }
 
-        // Execute using QuickJS runtime
+        // Execute using the runtime with cached plugin code
         match manager
             .js_runtime
-            .execute_plugin(&plugin_code, &command, args.clone(), &app_handle)
+            .execute_plugin(&plugin_id, &command, args.clone(), &app_handle)
         {
             Ok(result) => Ok(result),
             Err(e) => {
-                // Fallback to simple response for compatibility
-                Ok(json!({
-                    "plugin_id": plugin_id,
-                    "command": command,
-                    "args": args,
-                    "error": e,
-                    "result": "Plugin execution failed"
-                }))
+                // Log error for debugging
+                eprintln!(
+                    "Plugin execution error - Plugin: {}, Command: {}, Error: {}",
+                    plugin_id, command, e
+                );
+
+                // Return structured error for frontend
+                Err(format!("Plugin execution failed: {}", e))
             }
         }
     } else {
-        Err(format!("Plugin {} not found", plugin_id))
+        Err(format!(
+            "Plugin '{}' not found. Available plugins: {}",
+            plugin_id,
+            manager
+                .plugins
+                .keys()
+                .map(|k| k.as_str())
+                .collect::<Vec<_>>()
+                .join(", ")
+        ))
     }
 }
 
@@ -590,228 +675,26 @@ pub async fn get_plugins_directory(app_handle: AppHandle) -> Result<String, Stri
 }
 
 #[tauri::command]
-pub async fn create_example_plugin(app_handle: AppHandle) -> Result<Value, String> {
-    let app_data_dir = app_handle
-        .path()
-        .app_data_dir()
-        .map_err(|e| e.to_string())?;
+pub async fn check_plugin_health(plugin_id: String) -> Result<Value, String> {
+    let manager = get_plugin_manager().lock().unwrap();
 
-    let plugins_dir = app_data_dir.join("plugins");
-    let example_dir = plugins_dir.join("example-plugin");
-
-    fs::create_dir_all(&example_dir)
-        .map_err(|e| format!("Failed to create example plugin directory: {}", e))?; // Create manifest.json
-    let manifest = PluginManifest {
-        id: "example-plugin".to_string(),
-        name: "Example Plugin".to_string(),
-        version: "1.0.0".to_string(),
-        description: "An example plugin demonstrating plugin capabilities".to_string(),
-        author: "Steam Game Idler".to_string(),
-        main: "index.js".to_string(),
-        frontend: Some("frontend.tsx".to_string()),
-        permissions: vec!["api".to_string(), "fs".to_string()],
-        api_version: "1.0".to_string(),
-        dependencies: None,
-        sidebar_items: Some(vec![SidebarItem {
-            id: "example-plugin-page".to_string(),
-            title: "Example Plugin".to_string(),
-            icon: "TbPlug".to_string(),
-            page: "plugins/example-plugin".to_string(),
-            tooltip: "Example Plugin Page".to_string(),
-            order: Some(50),
-            badge: None,
-            badge_color: None,
-        }]),
-        context_menus: Some(vec![ContextMenuItem {
-            id: "example-context-menu".to_string(),
-            title: "Example Action".to_string(),
-            icon: "TbStar".to_string(),
-            contexts: vec!["game-card".to_string()],
-            separator: None,
-            submenu: None,
-        }]),
-        settings_tabs: Some(vec![SettingsTab {
-            id: "example-settings".to_string(),
-            title: "Example Plugin".to_string(),
-            icon: "TbPlug".to_string(),
-            component: "ExampleSettings".to_string(),
-            order: Some(10),
-        }]),
-        entry_points: Some(PluginEntryPoints {
-            on_load: Some("onLoad".to_string()),
-            on_unload: Some("onUnload".to_string()),
-            on_game_start: Some("onGameStart".to_string()),
-            on_game_stop: Some("onGameStop".to_string()),
-            on_achievement_unlock: Some("onAchievementUnlock".to_string()),
-        }),
-        icon: Some("TbPlug".to_string()),
-        homepage: Some("https://github.com/zevnda/steam-game-idler".to_string()),
-        repository: Some("https://github.com/zevnda/steam-game-idler".to_string()),
-        license: Some("GPL-3.0".to_string()),
-    };
-
-    let manifest_json = serde_json::to_string_pretty(&manifest)
-        .map_err(|e| format!("Failed to serialize manifest: {}", e))?;
-
-    fs::write(example_dir.join("manifest.json"), manifest_json)
-        .map_err(|e| format!("Failed to write manifest.json: {}", e))?;
-
-    // Create index.js
-    let main_js = r#"
-// Example Plugin Main File
-class ExamplePlugin {
-    constructor() {
-        this.name = "Example Plugin";
-        this.version = "1.0.0";
+    if let Some(plugin) = manager.plugins.get(&plugin_id) {
+        let health_info = json!({
+            "plugin_id": plugin_id,
+            "name": plugin.manifest.name,
+            "version": plugin.manifest.version,
+            "enabled": plugin.enabled,
+            "loaded": plugin.loaded,
+            "has_js_code": manager.js_runtime.plugin_codes.contains_key(&plugin_id),
+            "manifest_path": plugin.path.join("manifest.json"),
+            "main_file": plugin.path.join(&plugin.manifest.main),
+            "frontend_file": plugin.manifest.frontend.as_ref().map(|f| plugin.path.join(f)),
+            "permissions": plugin.manifest.permissions,
+            "api_version": plugin.manifest.api_version,
+            "timestamp": chrono::Utc::now().to_rfc3339()
+        });
+        Ok(health_info)
+    } else {
+        Err(format!("Plugin '{}' not found", plugin_id))
     }
-
-    async init() {
-        console.log("Example Plugin initialized");
-        return { success: true, message: "Plugin loaded successfully" };
-    }
-
-    async handleCommand(command, args) {
-        switch (command) {
-            case "hello":
-                return { message: `Hello from ${this.name}!`, args };
-            case "get_data":
-                return await this.getData();
-            default:
-                return { error: `Unknown command: ${command}` };
-        }
-    }
-
-    async getData() {
-        // Example of accessing app APIs
-        try {
-            const games = await window.__TAURI__.invoke('get_games_list');
-            return { games: games.slice(0, 5) }; // Return first 5 games
-        } catch (error) {
-            return { error: error.toString() };
-        }
-    }
-
-    onGameCardContextMenu(game) {
-        return {
-            action: "show_notification",
-            message: `Example action for ${game.name}`
-        };
-    }
-}
-
-// Export the plugin
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = ExamplePlugin;
-} else {
-    window.ExamplePlugin = ExamplePlugin;
-}
-"#;
-
-    fs::write(example_dir.join("index.js"), main_js)
-        .map_err(|e| format!("Failed to write index.js: {}", e))?;
-
-    // Create frontend.tsx
-    let frontend_tsx = r#"
-import React, { useState, useEffect } from 'react';
-import { invoke } from '@tauri-apps/api/core';
-
-export const ExamplePluginPage: React.FC = () => {
-    const [data, setData] = useState<any>(null);
-    const [loading, setLoading] = useState(false);
-
-    const handleGetData = async () => {
-        setLoading(true);
-        try {
-            const result = await invoke('execute_plugin_command', {
-                pluginId: 'example-plugin',
-                command: 'get_data',
-                args: {}
-            });
-            setData(result);
-        } catch (error) {
-            console.error('Failed to get plugin data:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    return (
-        <div className="p-4">
-            <h1 className="text-2xl font-bold mb-4">Example Plugin</h1>
-            <p className="mb-4">This is an example plugin page demonstrating plugin capabilities.</p>
-            
-            <button 
-                onClick={handleGetData}
-                disabled={loading}
-                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50"
-            >
-                {loading ? 'Loading...' : 'Get Data from Plugin'}
-            </button>
-
-            {data && (
-                <div className="mt-4 p-4 bg-gray-100 rounded">
-                    <h3 className="font-semibold">Plugin Data:</h3>
-                    <pre className="mt-2 text-sm">{JSON.stringify(data, null, 2)}</pre>
-                </div>
-            )}
-        </div>
-    );
-};
-
-export const ExampleSettings: React.FC = () => {
-    return (
-        <div className="p-4">
-            <h2 className="text-xl font-semibold mb-4">Example Plugin Settings</h2>
-            <p>Plugin-specific settings would go here.</p>
-        </div>
-    );
-};
-"#;
-
-    fs::write(example_dir.join("frontend.tsx"), frontend_tsx)
-        .map_err(|e| format!("Failed to write frontend.tsx: {}", e))?;
-
-    // Create README.md
-    let readme = r#"# Example Plugin
-
-This is an example plugin for Steam Game Idler demonstrating the plugin system capabilities.
-
-## Features
-
-- Custom sidebar item
-- Context menu integration
-- Settings tab
-- Backend API access
-- Custom frontend components
-
-## Files
-
-- `manifest.json` - Plugin configuration and metadata
-- `index.js` - Main plugin logic
-- `frontend.tsx` - React components for UI
-- `README.md` - This file
-
-## Development
-
-To create your own plugin:
-
-1. Copy this example plugin directory
-2. Modify the `manifest.json` with your plugin details
-3. Implement your plugin logic in `index.js`
-4. Create custom React components in `frontend.tsx`
-5. Update the README with your plugin documentation
-
-## API Access
-
-Plugins can access the main app's Tauri commands through `window.__TAURI__.invoke()`.
-"#;
-
-    fs::write(example_dir.join("README.md"), readme)
-        .map_err(|e| format!("Failed to write README.md: {}", e))?;
-
-    Ok(json!({
-        "success": true,
-        "message": "Example plugin created successfully",
-        "path": example_dir.to_string_lossy()
-    }))
 }

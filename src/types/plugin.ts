@@ -1,3 +1,5 @@
+import type { SidebarItem } from '@/types/navigation'
+
 export interface PluginManifest {
   id: string
   name: string
@@ -7,52 +9,42 @@ export interface PluginManifest {
   main: string
   frontend?: string
   permissions: string[]
-  api_version: string
+  apiVersion: string
   dependencies?: Record<string, string>
-  sidebar_items?: SidebarItem[]
-  context_menus?: ContextMenuItem[]
-  settings_tabs?: SettingsTab[]
-  entry_points?: PluginEntryPoints
+  sidebarItems?: SidebarItem[]
+  entryPoints?: PluginEntryPoints
   icon?: string
   homepage?: string
   repository?: string
   license?: string
 }
 
+export interface PluginConfig {
+  [key: string]: string | number | boolean | object | null
+}
+
+export interface PluginHealthStatus {
+  status: 'healthy' | 'warning' | 'error'
+  message?: string
+  lastChecked: string
+}
+
+export interface PluginCommandArgs {
+  [key: string]: string | number | boolean | object | null
+}
+
+export interface PluginCommandResult {
+  success: boolean
+  data?: unknown
+  error?: string
+}
+
 export interface PluginEntryPoints {
-  on_load?: string
-  on_unload?: string
-  on_game_start?: string
-  on_game_stop?: string
-  on_achievement_unlock?: string
-}
-
-export interface SidebarItem {
-  id: string
-  title: string
-  icon: string
-  page: string
-  tooltip: string
-  order?: number
-  badge?: string
-  badge_color?: string
-}
-
-export interface ContextMenuItem {
-  id: string
-  title: string
-  icon: string
-  contexts: string[]
-  separator?: boolean
-  submenu?: ContextMenuItem[]
-}
-
-export interface SettingsTab {
-  id: string
-  title: string
-  icon: string
-  component: string
-  order?: number
+  onLoad?: string
+  onUnload?: string
+  onGameStartup?: string
+  onGameStop?: string
+  onAchievementUnlock?: string
 }
 
 export interface Plugin {
@@ -60,16 +52,22 @@ export interface Plugin {
   enabled: boolean
   loaded: boolean
   path: string
-  config?: any
+  config?: PluginConfig
+}
+
+export interface PluginAPIContext {
+  currentUser?: object
+  gamesList?: object[]
+  [key: string]: unknown
 }
 
 export interface PluginAPI {
   // Core app functionality exposed to plugins
-  invoke: (command: string, args?: any) => Promise<any>
+  invoke: (command: string, args?: PluginCommandArgs) => Promise<PluginCommandResult>
   showNotification: (message: string, type?: 'success' | 'error' | 'info') => void
-  getCurrentUser: () => any
-  getGamesList: () => Promise<any[]>
-  getAchievements: (appId: string) => Promise<any[]>
+  getCurrentUser: () => PluginAPIContext
+  getGamesList: () => Promise<object[]>
+  getAchievements: (appId: string) => Promise<object[]>
   // Add more APIs as needed
 }
 
@@ -80,18 +78,19 @@ export interface PluginContext {
   unloadPlugin: (pluginId: string) => Promise<void>
   enablePlugin: (pluginId: string) => Promise<void>
   disablePlugin: (pluginId: string) => Promise<void>
-  executePluginCommand: (pluginId: string, command: string, args?: any) => Promise<any>
+  executePluginCommand: (pluginId: string, command: string, args?: PluginCommandArgs) => Promise<PluginCommandResult>
   installPlugin: (pluginPath: string) => Promise<void>
   uninstallPlugin: (pluginId: string) => Promise<void>
-  getPluginConfig: (pluginId: string) => Promise<any>
-  savePluginConfig: (pluginId: string, config: any) => Promise<void>
+  getPluginConfig: (pluginId: string) => Promise<PluginConfig>
+  savePluginConfig: (pluginId: string, config: PluginConfig) => Promise<void>
   refreshPlugins: () => Promise<void>
+  checkPluginHealth: (pluginId: string) => Promise<PluginHealthStatus>
 }
 
 export interface PluginComponentProps {
   plugin: Plugin
-  config?: any
-  onConfigChange?: (config: any) => void
+  config?: PluginConfig
+  onConfigChange?: (config: PluginConfig) => void
 }
 
 export interface PluginPageComponent {
@@ -103,8 +102,6 @@ export interface PluginRegistry {
   pages: Map<string, PluginPageComponent>
   settingsComponents: Map<string, React.ComponentType<PluginComponentProps>>
   sidebarItems: SidebarItem[]
-  contextMenuItems: ContextMenuItem[]
-  settingsTabs: SettingsTab[]
 }
 
 export type PluginPageType = `plugins/${string}`
@@ -120,13 +117,5 @@ export type ExtendedActivePageType =
   | PluginPageType
 
 export interface PluginSidebarItem extends SidebarItem {
-  pluginId: string
-}
-
-export interface PluginContextMenuItem extends ContextMenuItem {
-  pluginId: string
-}
-
-export interface PluginSettingsTab extends SettingsTab {
   pluginId: string
 }

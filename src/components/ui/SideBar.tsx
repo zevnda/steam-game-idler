@@ -16,6 +16,7 @@ import {
   TbPlayerPlay,
   TbPlug,
   TbSettings,
+  TbUser,
 } from 'react-icons/tb'
 
 import { useIdleContext } from '@/components/contexts/IdleContext'
@@ -37,9 +38,10 @@ export default function SideBar(): ReactElement {
   const [pluginSidebarItems, setPluginSidebarItems] = useState<SidebarItem[]>([])
 
   useEffect(() => {
-    const loadPluginSidebarItems = async () => {
+    const loadPluginSidebarItems = async (): Promise<void> => {
       await pluginRegistry.refreshRegistry(enabledPlugins)
-      setPluginSidebarItems(pluginRegistry.getSidebarItems())
+      const sidebarItems = pluginRegistry.getSidebarItems()
+      setPluginSidebarItems(sidebarItems)
     }
     loadPluginSidebarItems()
   }, [enabledPlugins])
@@ -115,7 +117,8 @@ export default function SideBar(): ReactElement {
     let IconComponent = Icon
     if (typeof Icon === 'string') {
       // Map string icon names to actual icon components
-      const iconMap: Record<string, any> = {
+      const iconMap: Record<string, React.ComponentType<{ fontSize?: number; className?: string }>> = {
+        TbUser,
         TbPlug,
         TbDeviceGamepad2,
         TbPlayerPlay,
@@ -132,7 +135,7 @@ export default function SideBar(): ReactElement {
 
     return (
       <div key={item.id} className='flex justify-center items-center w-12'>
-        <CustomTooltip content={t(item.tooltipKey)} placement='right'>
+        <CustomTooltip content={isPlugin ? item.tooltipKey : t(item.tooltipKey)} placement='right'>
           <div
             className={cn(
               'p-1.5 rounded-md duration-150 cursor-pointer active:scale-95 transition-all border border-transparent relative',
@@ -153,16 +156,6 @@ export default function SideBar(): ReactElement {
               fontSize={22}
               className={isFreeGames ? 'text-[#ffc700]' : isPlugin ? 'text-purple-400' : undefined}
             />
-            {item.badge && (
-              <div
-                className={cn(
-                  'absolute -top-1 -right-1 w-3 h-3 rounded-full text-xs flex items-center justify-center',
-                  item.badge_color || 'bg-red-500',
-                )}
-              >
-                {item.badge}
-              </div>
-            )}
           </div>
         </CustomTooltip>
       </div>

@@ -5,9 +5,7 @@ import { cn, Tab, Tabs } from '@heroui/react'
 import { useTranslation } from 'react-i18next'
 
 import { useNavigationContext } from '@/components/contexts/NavigationContext'
-import { usePluginContext } from '@/components/contexts/PluginContext'
 import PluginManager from '@/components/plugins/PluginManager'
-import PluginSettings from '@/components/plugins/PluginSettings'
 import AchievementSettings from '@/components/settings/AchievementSettings'
 import CardSettings from '@/components/settings/CardSettings'
 import ClearData from '@/components/settings/ClearData'
@@ -22,14 +20,8 @@ export default function Settings(): ReactElement {
   const { t } = useTranslation()
   const { version, refreshKey, setRefreshKey } = useSettings()
   const { currentSettingsTab, setCurrentSettingsTab } = useNavigationContext()
-  const { plugins } = usePluginContext()
 
   const renderTabContent = (key: string): ReactElement => {
-    if (key.startsWith('plugin-')) {
-      const pluginId = key.replace('plugin-', '')
-      return <PluginSettings pluginId={pluginId} />
-    }
-
     switch (key) {
       case 'general':
         return <GeneralSettings />
@@ -110,13 +102,6 @@ export default function Settings(): ReactElement {
           <Tab key='plugins' title={t('settings.plugins.title', 'Plugins')}>
             {renderTabContent('plugins')}
           </Tab>
-          {plugins
-            .filter(plugin => plugin.manifest.entryPoints?.settings)
-            .map(plugin => (
-              <Tab key={`plugin-${plugin.manifest.id}`} title={plugin.manifest.name}>
-                {renderTabContent(`plugin-${plugin.manifest.id}`)}
-              </Tab>
-            ))}
         </Tabs>
       </div>
     </div>
