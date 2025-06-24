@@ -1,3 +1,9 @@
+<!-- 1.14.5 -->
+
+### Changes in v1.14.5
+
+- Fixed an infinite loading issue on the `account selection` screen when attemtping to fetch multiple user summaries (#601)
+
 <!-- 1.14.4 -->
 
 ### Changes in v1.14.4

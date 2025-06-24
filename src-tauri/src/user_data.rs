@@ -54,23 +54,53 @@ pub async fn get_users() -> Result<Value, String> {
 
 #[tauri::command]
 pub async fn get_user_summary(
-    steam_id: String,
+    steam_id: String, // Can be single ID or comma-delimited list
     api_key: Option<String>,
     app_handle: tauri::AppHandle,
 ) -> Result<Value, String> {
-    // Get the API key from the envor use the provided one
+    // Get the API key from the env or use the provided one
     let key = api_key.unwrap_or_else(|| std::env::var("KEY").unwrap());
     let url = format!(
         "https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key={}&steamids={}",
         key, steam_id
     );
 
+    println!("Requesting URL: {}", url);
+
     let client = Client::new();
 
     // Send the request and handle the response
     match client.get(&url).send().await {
         Ok(response) => {
-            let body: Value = response.json().await.map_err(|e| e.to_string())?;
+            let response_text = response.text().await.map_err(|e| e.to_string())?;
+            let body: Value = serde_json::from_str(&response_text).map_err(|e| e.to_string())?;
+
+            // Validate the response structure and check for players
+            let (should_cache, valid_players) = if let Some(response_obj) = body.get("response") {
+                if let Some(players) = response_obj.get("players") {
+                    if let Some(players_array) = players.as_array() {
+                        let valid_players: Vec<&Value> = players_array
+                            .iter()
+                            .filter(|player| {
+                                player.get("steamid").is_some()
+                                    && player.get("personaname").is_some()
+                            })
+                            .collect();
+
+                        (valid_players.len() > 0, valid_players)
+                    } else {
+                        (false, Vec::new())
+                    }
+                } else {
+                    (false, Vec::new())
+                }
+            } else {
+                (false, Vec::new())
+            };
+
+            if !should_cache {
+                return Ok(body);
+            }
 
             // Get the application data directory
             let app_data_dir = app_handle
@@ -94,27 +124,37 @@ pub async fn get_user_summary(
                 if contents.trim().is_empty() {
                     Vec::new()
                 } else {
-                    serde_json::from_str(&contents)
-                        .map_err(|e| format!("Failed to parse user summaries JSON: {}", e))?
+                    serde_json::from_str(&contents).unwrap_or_else(|_| Vec::new())
                 }
             } else {
                 Vec::new()
             };
 
-            // Check if this user already exists in the cache and remove it
-            cached_summaries.retain(|summary| {
-                if let Some(players) = summary["response"]["players"].as_array() {
-                    if let Some(player) = players.first() {
-                        if let Some(cached_steam_id) = player["steamid"].as_str() {
-                            return cached_steam_id != steam_id;
+            // For multiple steam IDs, we need to process each valid player individually
+            for player in valid_players {
+                if let Some(player_steam_id) = player.get("steamid").and_then(|id| id.as_str()) {
+                    // Remove existing entry for this steam ID
+                    cached_summaries.retain(|summary| {
+                        if let Some(players) = summary["response"]["players"].as_array() {
+                            if let Some(cached_player) = players.first() {
+                                if let Some(cached_steam_id) = cached_player["steamid"].as_str() {
+                                    return cached_steam_id != player_steam_id;
+                                }
+                            }
                         }
-                    }
-                }
-                true
-            });
+                        true
+                    });
 
-            // Add the new user summary
-            cached_summaries.push(body.clone());
+                    // Create individual response structure for this player
+                    let individual_response = json!({
+                        "response": {
+                            "players": [player]
+                        }
+                    });
+
+                    cached_summaries.push(individual_response);
+                }
+            }
 
             // Write back to file
             let mut file = OpenOptions::new()
@@ -126,6 +166,7 @@ pub async fn get_user_summary(
 
             let json_string = serde_json::to_string_pretty(&cached_summaries)
                 .map_err(|e| format!("Failed to serialize user summaries: {}", e))?;
+
             file.write_all(json_string.as_bytes())
                 .map_err(|e| format!("Failed to write user summaries to file: {}", e))?;
 

@@ -22,34 +22,25 @@ export default function useSetup(refreshKey: number): SetupHook {
   const [steamUsers, setSteamUsers] = useState<UserSummary[]>([])
   const [userSummaries, setUserSummaries] = useState<UserSummary[]>([])
 
-  // Fetch user summary data
-  const fetchUserSummary = async (steamId: string, mostRecent: number, apiKey: string | null): Promise<UserSummary> => {
-    const cachedUserSummaries = await invoke<InvokeUserSummary[]>('get_user_summary_cache')
+  // Process user summary data from API response
+  const processUserSummaries = (response: InvokeUserSummary, steamUsersData: UserSummary[]): UserSummary[] => {
+    const players = response.response.players || []
 
-    // Check if user summary exists in cache
-    const cachedUserSummary = cachedUserSummaries.find(
-      (summary: InvokeUserSummary) => summary?.response?.players?.[0]?.steamid === steamId,
-    )
+    return steamUsersData.flatMap(userData => {
+      const player = players.find(p => p.steamid === userData?.steamId)
 
-    let userSummaryData
+      if (player) {
+        return {
+          steamId: player.steamid,
+          personaName: player.personaname,
+          avatar: player.avatar.replace('.jpg', '_full.jpg'),
+          mostRecent: userData?.mostRecent ?? 0,
+        }
+      }
 
-    if (cachedUserSummary) {
-      // Use cached data
-      userSummaryData = cachedUserSummary
-    } else {
-      // Fetch fresh data from API
-      userSummaryData = await invoke<InvokeUserSummary>('get_user_summary', {
-        steamId,
-        apiKey,
-      })
-    }
-
-    return {
-      steamId: userSummaryData.response.players[0].steamid,
-      personaName: userSummaryData.response.players[0].personaname,
-      avatar: userSummaryData.response.players[0].avatar.replace('.jpg', '_full.jpg'), // Get high res image
-      mostRecent,
-    }
+      // Don't include users without proper data
+      return []
+    })
   }
 
   useEffect(() => {
@@ -58,18 +49,79 @@ export default function useSetup(refreshKey: number): SetupHook {
       setIsLoading(true)
       const response = await invoke<InvokeUsers>('get_users')
 
-      if (response.users) {
+      if (response.users && response.users.length > 0) {
         const apiKey = userSettings.general?.apiKey
-        const steamUsers = await Promise.all(
-          response.users
-            .filter(user => user?.steamId)
-            .map(user => fetchUserSummary(String(user?.steamId), user?.mostRecent ?? 0, apiKey)),
-        )
-        // Sort users by last logged in to Steam client - most recent first
-        steamUsers.sort((b, a) => (a?.mostRecent ?? 0) - (b?.mostRecent ?? 0))
-        setSteamUsers(steamUsers)
-        setUserSummaries(steamUsers)
-        setIsLoading(false)
+        const validUsers = response.users.filter(user => user?.steamId)
+
+        if (validUsers.length === 0) {
+          setSteamUsers([])
+          setUserSummaries([])
+          setIsLoading(false)
+          return
+        }
+
+        try {
+          // Check for cached user summaries first
+          const cachedUserSummaries = await invoke<InvokeUserSummary[]>('get_user_summary_cache')
+
+          const steamUsers: UserSummary[] = []
+          const uncachedUsers: UserSummary[] = []
+
+          // Process each user - use cache if available, otherwise collect for API call
+          validUsers.forEach(user => {
+            const cachedUserSummary = cachedUserSummaries.find(
+              (summary: InvokeUserSummary) => summary?.response?.players?.[0]?.steamid === String(user?.steamId),
+            )
+
+            if (cachedUserSummary) {
+              // Use cached data
+              const player = cachedUserSummary.response.players[0]
+              steamUsers.push({
+                steamId: player.steamid,
+                personaName: player.personaname,
+                avatar: player.avatar.replace('.jpg', '_full.jpg'),
+                mostRecent: user?.mostRecent ?? 0,
+              })
+            } else {
+              // Collect for API call
+              uncachedUsers.push(user)
+            }
+          })
+
+          // If there are uncached users, make API call for them
+          if (uncachedUsers.length > 0) {
+            const steamIds = uncachedUsers.map(user => String(user?.steamId)).join(',')
+            const userSummaryResponse = await invoke<InvokeUserSummary>('get_user_summary', {
+              steamId: steamIds,
+              apiKey,
+            })
+
+            const freshUsers = processUserSummaries(userSummaryResponse, uncachedUsers)
+            steamUsers.push(...freshUsers)
+          }
+
+          // Sort users by last logged in to Steam client - most recent first
+          steamUsers.sort((b, a) => (a?.mostRecent ?? 0) - (b?.mostRecent ?? 0))
+
+          setSteamUsers(steamUsers)
+          setUserSummaries(steamUsers)
+          setIsLoading(false)
+        } catch (error) {
+          console.error('Error fetching user summaries:', error)
+
+          // Fallback: create basic user summaries without API data
+          const steamUsers = validUsers.map(user => ({
+            steamId: String(user?.steamId),
+            personaName: user?.personaName || 'Unknown User',
+            avatar: '',
+            mostRecent: user?.mostRecent ?? 0,
+          }))
+
+          steamUsers.sort((b, a) => (a?.mostRecent ?? 0) - (b?.mostRecent ?? 0))
+          setSteamUsers(steamUsers)
+          setUserSummaries(steamUsers)
+          setIsLoading(false)
+        }
       } else {
         // TODO: handle case when no users are found
         setSteamUsers([])
