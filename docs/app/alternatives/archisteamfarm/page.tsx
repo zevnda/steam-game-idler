@@ -1,11 +1,44 @@
-'use client'
-
 import type { ReactElement } from 'react'
 
 import Link from 'next/link'
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa'
 import { FiBook, FiCheck, FiDownload, FiX } from 'react-icons/fi'
 import { TbCards, TbShield, TbUsers } from 'react-icons/tb'
+
+export const metadata = {
+  title: 'ArchiSteamFarm Feature Comparison',
+  description:
+    'Compare Steam Game Idler with ArchiSteamFarm. See why Steam Game Idler offers a better user experience with modern GUI, card farming, achievement manager, and playtime boosting',
+  keywords: [
+    'ArchiSteamFarm comparison',
+    'ArchiSteamFarm alternative',
+    'ArchiSteamFarm features',
+    'ASF alternative',
+    'Steam automation comparison',
+    'Steam card farming comparison',
+    'Steam Game Idler features',
+    'Steam Game Idler',
+    'Steam Idler',
+    'Steam Card Idler',
+    'Steam Automation',
+    'Steam Trading Cards',
+  ],
+  openGraph: {
+    title: 'ArchiSteamFarm Feature Comparison | Steam Game Idler',
+    description:
+      'Compare Steam Game Idler with ArchiSteamFarm. See why Steam Game Idler offers a better user experience with modern GUI, card farming, achievement manager, and playtime boosting',
+    url: 'https://steamgameidler.vercel.app/alternatives/archisteamfarm',
+    type: 'article',
+  },
+  twitter: {
+    title: 'ArchiSteamFarm Feature Comparison | Steam Game Idler',
+    description:
+      'Compare Steam Game Idler with ArchiSteamFarm. See why Steam Game Idler offers a better user experience with modern GUI, card farming, achievement manager, and playtime boosting',
+  },
+  alternates: {
+    canonical: '/alternatives/archisteamfarm',
+  },
+}
 
 const comparisonData = [
   {
