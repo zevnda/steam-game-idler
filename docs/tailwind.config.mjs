@@ -32,25 +32,70 @@ export default {
           700: '#374151',
           800: '#1f2937',
           900: '#111827',
+          950: '#030712',
         },
+        brand: {
+          50: '#eff6ff',
+          100: '#dbeafe',
+          200: '#bfdbfe',
+          300: '#93c5fd',
+          400: '#60a5fa',
+          500: '#3b82f6',
+          600: '#2563eb',
+          700: '#1d4ed8',
+          800: '#1e40af',
+          900: '#1e3a8a',
+        },
+        // Unique playful colors
+        electric: {
+          400: '#00e5ff',
+          500: '#00bcd4',
+          600: '#0097a7',
+        },
+        neon: {
+          400: '#39ff14',
+          500: '#32cd32',
+          600: '#228b22',
+        },
+        cyber: {
+          400: '#ff6b35',
+          500: '#ff4500',
+          600: '#dc143c',
+        },
+        plasma: {
+          400: '#e91e63',
+          500: '#ad1457',
+          600: '#880e4f',
+        },
+      },
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+      },
+      borderWidth: {
+        3: '3px',
+      },
+      backgroundImage: {
+        'grid-pattern':
+          'linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px)',
+        'cyber-gradient': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        'neon-gradient': 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+        'plasma-gradient': 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+      },
+      backgroundSize: {
+        grid: '40px 40px',
       },
       animation: {
-        'fade-in-up': 'fadeInUp 0.8s ease-out',
-        'fade-in': 'fadeIn 0.6s ease-out',
-        'float': 'float 6s ease-in-out infinite',
+        'fade-in': 'fadeIn 0.3s ease-out',
+        'slide-up': 'slideUp 0.4s ease-out',
       },
       keyframes: {
-        fadeInUp: {
-          '0%': { opacity: '0', transform: 'translateY(20px)' },
-          '100%': { opacity: '1', transform: 'translateY(0)' },
-        },
         fadeIn: {
           '0%': { opacity: '0' },
           '100%': { opacity: '1' },
         },
-        float: {
-          '0%, 100%': { transform: 'translateY(0px)' },
-          '50%': { transform: 'translateY(-20px)' },
+        slideUp: {
+          '0%': { opacity: '0', transform: 'translateY(10px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
         },
       },
     },

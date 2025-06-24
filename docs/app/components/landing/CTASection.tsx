@@ -1,114 +1,66 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { FaWindows } from 'react-icons/fa'
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.2,
-      delayChildren: 0.3,
-    },
-  },
-}
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 50 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.2,
-      ease: [0.25, 0.1, 0.25, 1],
-    },
-  },
-}
+import { FaArrowRight, FaWindows } from 'react-icons/fa'
+import { FiBook, FiDownload } from 'react-icons/fi'
 
 export default function CTASection() {
   return (
-    <motion.section
-      className='relative py-20 sm:py-28 lg:py-36 px-4 sm:px-6 lg:px-8 border-t border-gray-800/50 overflow-hidden'
-      initial='hidden'
-      whileInView='visible'
-      viewport={{ once: true }}
-      variants={containerVariants}
-    >
-      {/* Enhanced Background Gradients */}
-      <div className='absolute inset-0 bg-gradient-to-t from-gray-900/30 via-transparent to-transparent' />
-      <motion.div
-        className='absolute top-1/2 left-1/4 w-[800px] h-[800px] bg-gradient-to-r from-sky-500/8 to-blue-500/8 rounded-full blur-3xl transform -translate-y-1/2'
-        animate={{
-          scale: [1, 1.3, 1],
-          rotate: [0, 180, 360],
-        }}
-        transition={{
-          duration: 6,
-          repeat: Infinity,
-          ease: 'linear',
-        }}
-      />
-      <motion.div
-        className='absolute bottom-1/4 right-1/3 w-[600px] h-[600px] bg-gradient-to-r from-purple-500/6 to-violet-500/6 rounded-full blur-3xl'
-        animate={{
-          x: [0, 80, 0],
-          y: [0, -60, 0],
-        }}
-        transition={{
-          duration: 6,
-          repeat: Infinity,
-          ease: 'linear',
-        }}
-      />
+    <section className='py-16 sm:py-20 md:py-24 lg:py-32 relative overflow-hidden'>
+      {/* Transition from previous section */}
+      <div className='absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-purple-100/50 to-transparent' />
 
-      <div className='relative z-10 max-w-5xl mx-auto text-center'>
-        <motion.h2
-          variants={itemVariants}
-          className='text-4xl sm:text-5xl lg:text-6xl font-light text-white mb-8 sm:mb-10 px-4'
-        >
-          Ready to automate your{' '}
-          <span className='bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent'>
-            Steam experience?
-          </span>
-        </motion.h2>
+      {/* Strong overlay for CTA distinction */}
+      <div className='absolute inset-0 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600' />
+      <div className='absolute inset-0 bg-grid-white/[0.08] bg-grid-pattern' />
 
-        <motion.div variants={itemVariants} className='flex justify-center items-center px-4 mb-8 sm:mb-10'>
-          <motion.div className='flex' whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+      {/* Bottom transition to footer */}
+      <div className='absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-b from-transparent to-gray-100/20' />
+
+      <div className='container relative z-10 px-4 sm:px-6 md:px-8'>
+        <div className='text-center max-w-4xl mx-auto'>
+          <h2 className='text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-black text-white mb-6 sm:mb-8 leading-none'>
+            START
+            <span className='block text-transparent bg-clip-text bg-gradient-to-r from-cyan-200 via-white to-blue-200'>
+              AUTOMATING
+            </span>
+          </h2>
+
+          <p className='text-lg sm:text-xl md:text-2xl text-white/90 mb-8 sm:mb-12 leading-relaxed px-4 sm:px-0'>
+            Download Steam Game Idler and transform your Steam experience today. No registration, no subscriptions,
+            completely free.
+          </p>
+
+          {/* Action buttons */}
+          <div className='flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center mb-12 sm:mb-16 px-4 sm:px-0'>
             <Link
               href='https://github.com/zevnda/steam-game-idler/releases/latest'
-              className='group relative w-full sm:w-auto px-8 sm:px-12 py-4 sm:py-5 bg-gradient-to-r from-white to-gray-100 text-black text-base sm:text-lg font-semibold rounded-full transition-all duration-200 transform overflow-hidden shadow-2xl hover:shadow-white/25'
+              className='group inline-flex items-center justify-center px-8 sm:px-10 py-4 sm:py-5 bg-white text-indigo-700 font-black text-base sm:text-lg rounded-xl hover:bg-cyan-100 transform hover:scale-105 transition-all duration-200 shadow-2xl'
             >
-              <span className='relative z-10 flex items-center justify-center transition-all duration-200 group-hover:scale-110'>
-                <FaWindows className='w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-3' />
-                Download for Windows
-              </span>
-              <div className='absolute inset-0 bg-gradient-to-r from-gray-100 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-200' />
+              <FiDownload className='w-5 h-5 sm:w-6 sm:h-6 mr-3 sm:mr-4' />
+              <span className='hidden sm:inline'>DOWNLOAD FOR WINDOWS</span>
+              <span className='sm:hidden'>DOWNLOAD NOW</span>
+              <FaArrowRight className='w-4 h-4 sm:w-5 sm:h-5 ml-3 sm:ml-4 group-hover:translate-x-2 transition-transform duration-200' />
             </Link>
-          </motion.div>
-        </motion.div>
+          </div>
 
-        <motion.div
-          variants={itemVariants}
-          className='text-gray-500 text-sm sm:text-base px-4 flex flex-wrap justify-center items-center gap-2 sm:gap-4'
-        >
-          <span className='flex items-center'>
-            <div className='w-2 h-2 bg-emerald-500 rounded-full mr-2' />
-            Always free
-          </span>
-          <span className='text-gray-700'>•</span>
-          <span className='flex items-center'>
-            <div className='w-2 h-2 bg-blue-500 rounded-full mr-2' />
-            No sign-up required
-          </span>
-          <span className='text-gray-700'>•</span>
-          <span className='flex items-center'>
-            <div className='w-2 h-2 bg-purple-500 rounded-full mr-2' />
-            Windows 10/11 compatible
-          </span>
-        </motion.div>
+          {/* System requirements */}
+          <div className='grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-8 max-w-3xl mx-auto text-white/90 px-4 sm:px-0'>
+            <div className='text-center bg-white/10 rounded-xl p-3 sm:p-4 backdrop-blur-sm'>
+              <div className='text-base sm:text-lg font-bold mb-1 sm:mb-2'>SYSTEM</div>
+              <div className='text-xs sm:text-sm opacity-90'>Windows 10/11</div>
+            </div>
+            <div className='text-center bg-white/10 rounded-xl p-3 sm:p-4 backdrop-blur-sm'>
+              <div className='text-base sm:text-lg font-bold mb-1 sm:mb-2'>SIZE</div>
+              <div className='text-xs sm:text-sm opacity-90'>~6MB Download</div>
+            </div>
+            <div className='text-center bg-white/10 rounded-xl p-3 sm:p-4 backdrop-blur-sm'>
+              <div className='text-base sm:text-lg font-bold mb-1 sm:mb-2'>MIT LICENSE</div>
+              <div className='text-xs sm:text-sm opacity-90'>100% Free & Open</div>
+            </div>
+          </div>
+        </div>
       </div>
-    </motion.section>
+    </section>
   )
 }

@@ -11,13 +11,15 @@ import StatsSection from '@docs/components/landing/StatsSection'
 
 export default function Home(): ReactElement {
   return (
-    <div className='min-h-screen bg-black text-white overflow-hidden'>
-      <HeroSection />
-      <StatsSection />
-      <FeaturesSection />
-      <SecuritySection />
-      <CTASection />
-      <FooterSection />
+    <div className='min-h-screen bg-gradient-to-b from-white to-gray-100 overflow-x-hidden'>
+      <div className='relative'>
+        <HeroSection />
+        <FeaturesSection />
+        <SecuritySection />
+        <StatsSection />
+        <CTASection />
+        <FooterSection />
+      </div>
     </div>
   )
 }
