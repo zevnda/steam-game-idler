@@ -5,7 +5,7 @@
 
 Steam Game Idler is a Steam automation tool for farming trading cards, managing achievements, and boosting playtime across all games in your Steam library. Perfect for Steam users looking to maximize their trading card collection and game completion rates.
 
-See how it stacks up against other software, such as [ArchiSteamFarm](steamgameidler.vercel.app/alternatives/archisteamfarm), [Steam Achievement Manager](steamgameidler.vercel.app/alternatives/steam-achievement-manager), and [Idle Master](steamgameidler.vercel.app/alternatives/idle-master).
+See how it stacks up against other software, such as [ArchiSteamFarm](https://steamgameidler.vercel.app/alternatives/archisteamfarm), [Steam Achievement Manager](https://steamgameidler.vercel.app/alternatives/steam-achievement-manager), and [Idle Master](https://steamgameidler.vercel.app/alternatives/idle-master).
 
 [![Downloads][downloads]](https://github.com/zevnda/steam-game-idler/releases)
 [![Release][release]](https://github.com/zevnda/steam-game-idler/releases/latest)
