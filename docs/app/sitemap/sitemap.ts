@@ -7,7 +7,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: 'https://steamgameidler.vercel.app',
       lastModified: new Date(),
       changeFrequency: 'daily',
-      priority: 1,
+      priority: 1.0,
     },
     // Legal pages
     {
