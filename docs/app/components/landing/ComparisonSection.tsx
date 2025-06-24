@@ -134,11 +134,6 @@ export default function ComparisonSection(): ReactElement {
               href={competitor.link}
               className={`group block bg-white border-2 ${competitor.borderColor} rounded-2xl p-6 hover:shadow-lg transition-all duration-200 transform hover:-translate-y-1`}
             >
-              {/* Background gradient */}
-              <div
-                className={`absolute inset-0 bg-gradient-to-br ${competitor.bgGradient} opacity-0 group-hover:opacity-50 transition-opacity duration-200 rounded-2xl`}
-              />
-
               {/* Content */}
               <div className='relative z-10'>
                 {/* Header */}
