@@ -30,6 +30,31 @@ export default {
       navbar: false,
     },
   },
+  alternatives: {
+    items: {
+      'archisteamfarm': {
+        type: 'page',
+        title: 'Steam Game Idler vs ArchiSteamFarm',
+        theme: {
+          navbar: false,
+        },
+      },
+      'idle-master': {
+        type: 'page',
+        title: 'Steam Game Idler vs Idle Master',
+        theme: {
+          navbar: false,
+        },
+      },
+      'steam-achievement-manager': {
+        type: 'page',
+        title: 'Steam Game Idler vs Steam Achievement Manager',
+        theme: {
+          navbar: false,
+        },
+      },
+    },
+  },
   docs: {
     type: 'page',
     title: 'Documentation',

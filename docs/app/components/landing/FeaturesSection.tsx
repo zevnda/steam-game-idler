@@ -9,7 +9,7 @@ const features = [
     icon: <TbCards className='w-8 h-8' />,
     title: 'Trading Card Farming',
     description:
-      'Automatically farm Steam trading cards from your games with our advanced Steam card idler. Maximize card drops and sell them on the marketplace for profit.',
+      'Automatically farm Steam trading cards from your games with our advanced card idler. A more user-friendly alternative to ArchiSteamFarm, maximizing card drops for marketplace profit.',
     link: '/docs/features/card-farming',
     gradient: 'from-blue-500 to-indigo-600',
     bgGradient: 'from-blue-50 to-indigo-50',
@@ -19,7 +19,7 @@ const features = [
     icon: <TbAward className='w-8 h-8' />,
     title: 'Achievement Manager',
     description:
-      'Unlock achievements automatically with human-like behavior, or manually manage achievements for any game in your library with Steam idling technology.',
+      'Unlock achievements automatically with human-like behavior, or manually manage achievements for any game. A streamlined alternative to Steam Achievement Manager with enhanced safety features.',
     link: '/docs/features/achievement-manager',
     gradient: 'from-purple-500 to-pink-600',
     bgGradient: 'from-purple-50 to-pink-50',
@@ -29,7 +29,7 @@ const features = [
     icon: <TbBuildingStore className='w-8 h-8' />,
     title: 'Trading Card Manager',
     description:
-      'View and manage your entire Steam trading card inventory. Sell cards directly on the marketplace from within the Steam idler app.',
+      'View and manage your entire Steam trading card inventory. Sell cards directly on the marketplace from within the app, offering better integration than traditional Steam idling tools.',
     link: '/docs/features/trading-card-manager',
     gradient: 'from-emerald-500 to-teal-600',
     bgGradient: 'from-emerald-50 to-teal-50',
@@ -39,7 +39,7 @@ const features = [
     icon: <FiTrendingUp className='w-8 h-8' />,
     title: 'Playtime Booster',
     description:
-      'Increase game playtime by Steam idling games in the background. Perfect for meeting hour requirements or boosting stats with our Steam idle tool.',
+      'Increase game playtime by idling games in the background. A modern evolution of Idle Master with improved efficiency and Steam detection avoidance for meeting hour requirements.',
     link: '/docs/features/playtime-booster',
     gradient: 'from-orange-500 to-red-600',
     bgGradient: 'from-orange-50 to-red-50',
@@ -58,7 +58,7 @@ export default function FeaturesSection() {
 
       <div className='container relative z-10 px-4 sm:px-6 md:px-8'>
         {/* Header */}
-        <div className='max-w-3xl mb-12 sm:mb-16 lg:mb-20'>
+        <div className='max-w-3xl mx-auto text-center mb-12 sm:mb-16 lg:mb-20'>
           <h2 className='text-3xl sm:text-4xl md:text-5xl font-black text-gray-800 mb-6 sm:mb-8 leading-tight'>
             POWERFUL AUTOMATION
             <span className='block text-transparent bg-clip-text bg-gradient-to-r from-sky-500 to-fuchsia-500'>
