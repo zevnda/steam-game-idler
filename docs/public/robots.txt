@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /sitemap.xml
+Sitemap: https://steamgameidler.vercel.app/sitemap.xml
