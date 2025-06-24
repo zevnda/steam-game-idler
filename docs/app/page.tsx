@@ -2,6 +2,7 @@
 
 import type { ReactElement } from 'react'
 
+import ComparisonSection from '@docs/components/landing/ComparisonSection'
 import CTASection from '@docs/components/landing/CTASection'
 import FeaturesSection from '@docs/components/landing/FeaturesSection'
 import FooterSection from '@docs/components/landing/FooterSection'
@@ -15,6 +16,7 @@ export default function Home(): ReactElement {
       <div className='relative'>
         <HeroSection />
         <FeaturesSection />
+        <ComparisonSection />
         <SecuritySection />
         <StatsSection />
         <CTASection />

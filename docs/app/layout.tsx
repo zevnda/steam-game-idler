@@ -19,7 +19,8 @@ export const metadata = {
     default: 'Steam Game Idler – Trading Card Farmer & Achievement Unlocker',
     template: '%s | Steam Game Idler',
   },
-  description: 'Effortlessly farm Steam trading cards and unlock achievements with our modern Steam idler tool.',
+  description:
+    'Farm Steam trading cards, manage achievements, and idle games automatically — an all-in-one alternative to ArchiSteamFarm, Steam Achievement Manager, and Idle Master',
   metadataBase: new URL('https://steamgameidler.vercel.app/'),
   keywords: [
     'Steam Game Idler',
@@ -36,6 +37,9 @@ export const metadata = {
     'Steam Idling',
     'SteamIdler',
     'SteamIdle',
+    'ArchiSteamFarm',
+    'Steam Achievement Manager',
+    'Idle Master',
   ],
   authors: [{ name: 'zevnda', url: 'https://github.com/zevnda' }],
   creator: 'zevnda',
@@ -55,7 +59,8 @@ export const metadata = {
     card: 'summary_large_image',
     site: 'https://steamgameidler.vercel.app/',
     title: 'Steam Game Idler',
-    description: 'Effortlessly farm Steam trading cards and unlock achievements with our modern Steam idler tool.',
+    description:
+      'Farm Steam trading cards, manage achievements, and idle games automatically — an all-in-one alternative to ArchiSteamFarm, Steam Achievement Manager, and Idle Master',
     image: 'https://steamgameidler.vercel.app/og-image.png',
   },
   other: {
@@ -66,7 +71,8 @@ export const metadata = {
       '@type': 'TechArticle',
       'name': 'Steam Game Idler',
       'url': 'https://steamgameidler.vercel.app/',
-      'description': 'Effortlessly farm Steam trading cards and unlock achievements with our modern Steam idler tool.',
+      'description':
+        'Farm Steam trading cards, manage achievements, and idle games automatically — an all-in-one alternative to ArchiSteamFarm, Steam Achievement Manager, and Idle Master',
     }),
   },
   alternates: {
