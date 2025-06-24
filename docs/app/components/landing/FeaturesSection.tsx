@@ -1,200 +1,125 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import { FiTrendingUp } from 'react-icons/fi'
+import Link from 'next/link'
+import { FiArrowUpRight, FiTrendingUp } from 'react-icons/fi'
 import { TbAward, TbBuildingStore, TbCards } from 'react-icons/tb'
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.2,
-      delayChildren: 0.2,
-    },
-  },
-}
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 60 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.2,
-      ease: [0.25, 0.1, 0.25, 1],
-    },
-  },
-}
-
-const cardVariants = {
-  hidden: { opacity: 0, scale: 0.8, rotateY: -15 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    rotateY: 0,
-    transition: {
-      duration: 0.2,
-      ease: [0.25, 0.1, 0.25, 1],
-    },
-  },
-}
 
 const features = [
   {
-    icon: <TbCards className='w-7 h-7 sm:w-8 sm:h-8' />,
+    icon: <TbCards className='w-8 h-8' />,
     title: 'Trading Card Farming',
     description:
       'Automatically farm Steam trading cards from your games with our advanced Steam card idler. Maximize card drops and sell them on the marketplace for profit.',
-    gradient: 'from-blue-500 to-cyan-500',
-    bgGradient: 'from-blue-500/10 to-cyan-500/10',
     link: '/docs/features/card-farming',
+    gradient: 'from-blue-500 to-indigo-600',
+    bgGradient: 'from-blue-50 to-indigo-50',
+    borderColor: 'border-blue-200 hover:border-blue-300',
   },
   {
-    icon: <TbAward className='w-7 h-7 sm:w-8 sm:h-8' />,
+    icon: <TbAward className='w-8 h-8' />,
     title: 'Achievement Manager',
     description:
       'Unlock achievements automatically with human-like behavior, or manually manage achievements for any game in your library with Steam idling technology.',
-    gradient: 'from-emerald-500 to-teal-500',
-    bgGradient: 'from-emerald-500/10 to-teal-500/10',
-    link: 'docs/features/achievement-manager',
+    link: '/docs/features/achievement-manager',
+    gradient: 'from-purple-500 to-pink-600',
+    bgGradient: 'from-purple-50 to-pink-50',
+    borderColor: 'border-purple-200 hover:border-purple-300',
   },
   {
-    icon: <TbBuildingStore className='w-7 h-7 sm:w-8 sm:h-8' />,
+    icon: <TbBuildingStore className='w-8 h-8' />,
     title: 'Trading Card Manager',
     description:
       'View and manage your entire Steam trading card inventory. Sell cards directly on the marketplace from within the Steam idler app.',
-    gradient: 'from-purple-500 to-violet-500',
-    bgGradient: 'from-purple-500/10 to-violet-500/10',
     link: '/docs/features/trading-card-manager',
+    gradient: 'from-emerald-500 to-teal-600',
+    bgGradient: 'from-emerald-50 to-teal-50',
+    borderColor: 'border-emerald-200 hover:border-emerald-300',
   },
   {
-    icon: <FiTrendingUp className='w-7 h-7 sm:w-8 sm:h-8' />,
+    icon: <FiTrendingUp className='w-8 h-8' />,
     title: 'Playtime Booster',
     description:
       'Increase game playtime by Steam idling games in the background. Perfect for meeting hour requirements or boosting stats with our Steam idle tool.',
-    gradient: 'from-orange-500 to-red-500',
-    bgGradient: 'from-orange-500/10 to-red-500/10',
     link: '/docs/features/playtime-booster',
+    gradient: 'from-orange-500 to-red-600',
+    bgGradient: 'from-orange-50 to-red-50',
+    borderColor: 'border-orange-200 hover:border-orange-300',
   },
 ]
 
 export default function FeaturesSection() {
   return (
-    <motion.section
-      className='relative py-20 sm:py-28 lg:py-36 px-4 sm:px-6 lg:px-8 border-t border-gray-800/50 overflow-hidden'
-      initial='hidden'
-      whileInView='visible'
-      viewport={{ once: true }}
-      variants={containerVariants}
-    >
-      {/* Enhanced Background Gradients */}
-      <motion.div
-        className='absolute top-1/4 right-1/3 w-[700px] h-[700px] bg-gradient-to-r from-emerald-500/6 to-cyan-500/6 rounded-full blur-3xl'
-        animate={{
-          x: [0, 80, 0],
-          y: [0, -40, 0],
-        }}
-        transition={{
-          duration: 6,
-          repeat: Infinity,
-          ease: 'linear',
-        }}
-      />
-      <motion.div
-        className='absolute bottom-1/3 left-1/4 w-[600px] h-[600px] bg-gradient-to-r from-pink-500/4 to-rose-500/4 rounded-full blur-3xl'
-        animate={{
-          x: [0, -60, 0],
-          y: [0, 50, 0],
-        }}
-        transition={{
-          duration: 6,
-          repeat: Infinity,
-          ease: 'linear',
-        }}
-      />
+    <section className='py-12 sm:py-16 md:py-20 lg:py-24 relative'>
+      {/* Top transition border */}
+      <div className='absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-300 to-transparent' />
 
-      <div className='relative z-10 max-w-7xl mx-auto'>
-        <motion.div variants={itemVariants} className='text-center mb-16 sm:mb-20 lg:mb-24'>
-          <motion.h2
-            className='text-4xl sm:text-5xl lg:text-6xl font-light text-white mb-6 sm:mb-8'
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            Powerful Steam idling{' '}
-            <span className='bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent'>features</span>
-          </motion.h2>
-          <motion.p
-            className='text-xl sm:text-2xl text-gray-400 max-w-3xl mx-auto px-4 leading-relaxed'
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.2, delay: 0.2 }}
-          >
-            Everything you need to maximize your Steam library potential
-          </motion.p>
-        </motion.div>
+      {/* Bottom transition overlay */}
+      <div className='absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent to-emerald-50/50' />
 
-        <div className='grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-12'>
+      <div className='container relative z-10 px-4 sm:px-6 md:px-8'>
+        {/* Header */}
+        <div className='max-w-3xl mb-12 sm:mb-16 lg:mb-20'>
+          <h2 className='text-3xl sm:text-4xl md:text-5xl font-black text-gray-800 mb-6 sm:mb-8 leading-tight'>
+            POWERFUL AUTOMATION
+            <span className='block text-transparent bg-clip-text bg-gradient-to-r from-sky-500 to-fuchsia-500'>
+              FEATURES
+            </span>
+          </h2>
+          <p className='text-base sm:text-lg md:text-xl text-gray-700 leading-relaxed'>
+            Our advanced automation tools are designed to enhance your Steam gaming experience, from farming trading
+            cards to managing achievements and boosting playtime.
+          </p>
+        </div>
+
+        {/* Features grid */}
+        <div className='grid md:grid-cols-2 gap-8 max-w-6xl mx-auto'>
           {features.map((feature, index) => (
-            <motion.a
+            <Link
               key={feature.title}
               href={feature.link}
-              rel='noopener'
-              variants={cardVariants}
-              custom={index}
-              className='group relative block cursor-pointer'
-              whileHover={{
-                scale: 1.02,
-                y: -5,
-                transition: { duration: 0.2 },
-              }}
+              className={`group block relative overflow-hidden bg-white border-2 ${feature.borderColor} rounded-3xl p-8 hover:shadow-lg transition-all duration-200 transform hover:-translate-y-1 hover:scale-[1.01]`}
             >
-              {/* Card background with enhanced blur */}
-              <div className='absolute inset-0 bg-gradient-to-br from-gray-800/40 to-gray-900/60 rounded-3xl backdrop-blur-xl border border-gray-700/40 shadow-2xl group-hover:shadow-3xl transition-all duration-500' />
-
-              {/* Hover glow effect */}
+              {/* Background gradient */}
               <div
-                className={`absolute inset-0 bg-gradient-to-br ${feature.bgGradient} rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl`}
+                className={`absolute inset-0 bg-gradient-to-br ${feature.bgGradient} opacity-0 group-hover:opacity-50 transition-opacity duration-200`}
               />
 
-              <div className='relative p-8 sm:p-10 lg:p-12'>
-                <div className='flex flex-col sm:flex-row items-center sm:items-start space-y-6 sm:space-y-0 sm:space-x-8'>
-                  <motion.div
-                    className={`flex-shrink-0 p-4 sm:p-5 bg-gradient-to-br ${feature.gradient} rounded-2xl text-white shadow-lg`}
-                    whileHover={{
-                      scale: 1.1,
-                      boxShadow: '0 20px 40px -12px rgba(0, 0, 0, 0.4)',
-                    }}
-                    transition={{ duration: 0.2 }}
+              {/* Content */}
+              <div className='relative z-10'>
+                {/* Icon and arrow */}
+                <div className='flex items-start justify-between mb-6'>
+                  <div
+                    className={`relative p-4 rounded-2xl bg-gradient-to-r ${feature.gradient} text-white shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-200`}
                   >
-                    <div className='w-7 h-7 sm:w-8 sm:h-8'>{feature.icon}</div>
-                  </motion.div>
-
-                  <div className='flex-grow text-center sm:text-left'>
-                    <motion.h3
-                      className='text-2xl sm:text-3xl font-light text-white mb-4 sm:mb-5'
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.2, delay: index * 0.1 }}
-                    >
-                      {feature.title}
-                    </motion.h3>
-                    <motion.p
-                      className='text-gray-400 leading-relaxed text-base sm:text-lg'
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.2, delay: index * 0.1 + 0.2 }}
-                    >
-                      {feature.description}
-                    </motion.p>
+                    {feature.icon}
                   </div>
+                  <FiArrowUpRight className='w-6 h-6 text-gray-400 group-hover:text-gray-700 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all duration-200' />
                 </div>
+
+                {/* Title */}
+                <h3 className='text-2xl font-bold text-gray-900 mb-4 group-hover:text-gray-800 transition-colors duration-200'>
+                  {feature.title}
+                </h3>
+
+                {/* Description */}
+                <p className='text-gray-600 leading-relaxed group-hover:text-gray-700 transition-colors duration-200 pb-4'>
+                  {feature.description}
+                </p>
+
+                {/* Hover decoration */}
+                <div
+                  className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${feature.gradient} transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200 origin-left rounded-b-3xl`}
+                />
               </div>
-            </motion.a>
+
+              {/* Corner decoration */}
+              <div
+                className={`absolute top-0 right-0 w-20 h-20 bg-gradient-to-br ${feature.gradient} opacity-10 transform rotate-45 translate-x-10 -translate-y-10 group-hover:translate-x-10 group-hover:-translate-y-10 transition-transform duration-200`}
+              />
+            </Link>
           ))}
         </div>
       </div>
-    </motion.section>
+    </section>
   )
 }

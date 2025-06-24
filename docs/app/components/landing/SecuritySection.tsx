@@ -1,157 +1,115 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import { FiEye, FiRefreshCw, FiShield } from 'react-icons/fi'
-import { TbCode } from 'react-icons/tb'
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.2,
-      delayChildren: 0.3,
-    },
-  },
-}
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 50 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.2,
-      ease: [0.25, 0.1, 0.25, 1],
-    },
-  },
-}
-
-const shieldVariants = {
-  hidden: { opacity: 0, scale: 0.5, rotate: -180 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    rotate: 0,
-    transition: {
-      duration: 0.2,
-      ease: [0.25, 0.1, 0.25, 1],
-    },
-  },
-}
-
-const floatingVariants = {
-  animate: {
-    y: [-15, 15, -15],
-    rotate: [0, 5, -5, 0],
-    transition: {
-      duration: 3,
-      repeat: Infinity,
-      ease: 'easeInOut',
-    },
-  },
-}
-
-const securityFeatures = [
-  { icon: <TbCode className='w-5 h-5' />, label: 'Fully Open Source', color: 'from-emerald-500 to-teal-500' },
-  { icon: <FiEye className='w-5 h-5' />, label: 'No Data Collection', color: 'from-blue-500 to-cyan-500' },
-  { icon: <FiRefreshCw className='w-5 h-5' />, label: 'Regular Updates', color: 'from-purple-500 to-violet-500' },
-]
+import { FiCode, FiEye, FiRefreshCw, FiShield } from 'react-icons/fi'
+import { TbBrandGithub } from 'react-icons/tb'
 
 export default function SecuritySection() {
   return (
-    <motion.section
-      className='relative py-20 sm:py-28 lg:py-36 px-4 sm:px-6 lg:px-8 border-t border-gray-800/50 overflow-hidden'
-      initial='hidden'
-      whileInView='visible'
-      viewport={{ once: true }}
-      variants={containerVariants}
-    >
-      {/* Enhanced Background Gradients */}
-      <motion.div
-        className='absolute top-1/3 left-1/2 w-[800px] h-[800px] bg-gradient-to-r from-teal-500/6 to-emerald-500/6 rounded-full blur-3xl transform -translate-x-1/2'
-        animate={{
-          scale: [1, 1.2, 1],
-          rotate: [0, 180, 360],
-        }}
-        transition={{
-          duration: 6,
-          repeat: Infinity,
-          ease: 'linear',
-        }}
-      />
-      <motion.div
-        className='absolute bottom-1/4 left-1/6 w-[600px] h-[600px] bg-gradient-to-r from-indigo-500/4 to-blue-500/4 rounded-full blur-3xl'
-        animate={{
-          x: [0, 100, 0],
-          y: [0, -80, 0],
-        }}
-        transition={{
-          duration: 6,
-          repeat: Infinity,
-          ease: 'linear',
-        }}
-      />
+    <section className='py-12 sm:py-16 md:py-20 lg:py-24 relative overflow-hidden'>
+      {/* Top transition border */}
+      <div className='absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-emerald-300 to-transparent' />
 
-      <div className='relative z-10 max-w-5xl mx-auto text-center'>
-        <motion.div variants={shieldVariants} className='mb-10 sm:mb-12'>
-          <motion.div
-            className='inline-flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 lg:w-32 lg:h-32 bg-gradient-to-br from-gray-800/50 to-gray-900/80 rounded-3xl border border-gray-700/50 backdrop-blur-xl mb-8 sm:mb-10 shadow-2xl'
-            variants={floatingVariants}
-            animate='animate'
-            whileHover={{
-              scale: 1.1,
-              rotate: 10,
-              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
-            }}
-          >
-            <FiShield className='w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16 text-emerald-400' />
-          </motion.div>
-        </motion.div>
+      {/* Bottom transition overlay */}
+      <div className='absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent to-blue-50/50' />
 
-        <motion.h2
-          variants={itemVariants}
-          className='text-4xl sm:text-5xl lg:text-6xl font-light text-white mb-8 sm:mb-10 px-4'
-        >
-          Open source and{' '}
-          <span className='bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent'>secure</span>
-        </motion.h2>
-
-        <motion.div variants={itemVariants} className='max-w-4xl mx-auto mb-10 sm:mb-12'>
-          <p className='text-xl sm:text-2xl text-gray-400 mb-6 sm:mb-8 leading-relaxed px-4'>
-            Steam Game Idler is completely open source and built with Tauri using modern security practices. Your Steam
-            credentials stay safe on your computer.
-          </p>
-          <p className='text-lg sm:text-xl text-gray-500 leading-relaxed px-4'>
-            We will never collect or store any of your personal data.
-          </p>
-        </motion.div>
-
-        <motion.div
-          variants={itemVariants}
-          className='flex flex-col sm:flex-row gap-6 sm:gap-8 justify-center items-center px-4'
-        >
-          {securityFeatures.map((feature, index) => (
-            <motion.div
-              key={feature.label}
-              className='flex items-center space-x-4 text-gray-300 group'
-              whileHover={{ scale: 1.05, y: -2 }}
-              transition={{ duration: 0.2 }}
-            >
-              <motion.div
-                className={`p-3 sm:p-4 bg-gradient-to-r ${feature.color} rounded-xl shadow-lg group-hover:shadow-xl`}
-                whileHover={{ rotate: 15, scale: 1.1 }}
-                transition={{ duration: 0.2 }}
-              >
-                <div className='text-white'>{feature.icon}</div>
-              </motion.div>
-              <span className='text-base sm:text-lg font-medium group-hover:text-white transition-colors duration-200'>
-                {feature.label}
+      <div className='container relative z-10 px-4 sm:px-6 md:px-8'>
+        <div className='grid lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center'>
+          {/* Left side - Content */}
+          <div>
+            <h2 className='text-3xl sm:text-4xl md:text-5xl font-black text-gray-800 mb-6 sm:mb-8 leading-tight'>
+              BUILT WITH
+              <span className='block text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-lime-500'>
+                TRANSPARENCY
               </span>
-            </motion.div>
-          ))}
-        </motion.div>
+            </h2>
+
+            <p className='text-base sm:text-lg md:text-xl text-gray-700 mb-8 sm:mb-12 leading-relaxed'>
+              Every line of code is open for inspection. No hidden telemetry, no data collection, no backdoors. Your
+              Steam credentials never leave your machine.
+            </p>
+
+            <div className='space-y-4 sm:space-y-6'>
+              <div className='flex items-start gap-3 sm:gap-4'>
+                <div className='bg-gradient-to-r from-emerald-200 to-emerald-300 p-2 sm:p-3 rounded-xl border border-emerald-300 flex-shrink-0'>
+                  <TbBrandGithub className='w-5 h-5 sm:w-6 sm:h-6 text-emerald-700' />
+                </div>
+                <div>
+                  <h3 className='text-base sm:text-lg font-bold text-gray-800 mb-1 sm:mb-2'>Open Source Repository</h3>
+                  <p className='text-sm sm:text-base text-gray-600'>
+                    Complete source code available on GitHub with full commit history.
+                  </p>
+                </div>
+              </div>
+
+              <div className='flex items-start gap-3 sm:gap-4'>
+                <div className='bg-gradient-to-r from-teal-200 to-teal-300 p-2 sm:p-3 rounded-xl border border-teal-300 flex-shrink-0'>
+                  <FiEye className='w-5 h-5 sm:w-6 sm:h-6 text-teal-700' />
+                </div>
+                <div>
+                  <h3 className='text-base sm:text-lg font-bold text-gray-800 mb-1 sm:mb-2'>Zero Data Collection</h3>
+                  <p className='text-sm sm:text-base text-gray-600'>
+                    No analytics, tracking, or personal data harvesting of any kind.
+                  </p>
+                </div>
+              </div>
+
+              <div className='flex items-start gap-3 sm:gap-4'>
+                <div className='bg-gradient-to-r from-cyan-200 to-cyan-300 p-2 sm:p-3 rounded-xl border border-cyan-300 flex-shrink-0'>
+                  <FiRefreshCw className='w-5 h-5 sm:w-6 sm:h-6 text-cyan-700' />
+                </div>
+                <div>
+                  <h3 className='text-base sm:text-lg font-bold text-gray-800 mb-1 sm:mb-2'>Continuous Updates</h3>
+                  <p className='text-sm sm:text-base text-gray-600'>
+                    Regular security patches and feature improvements from the community.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right side - Visual */}
+          <div className='relative mt-8 lg:mt-0'>
+            <div className='bg-white/80 border-2 border-emerald-200 rounded-2xl p-4 sm:p-6 backdrop-blur-sm shadow-xl'>
+              <div className='flex items-center gap-2 mb-4 sm:mb-6'>
+                <FiCode className='w-4 h-4 sm:w-5 sm:h-5 text-emerald-600' />
+                <span className='text-emerald-700 font-mono text-xs sm:text-sm'>security-audit.log</span>
+              </div>
+
+              <div className='space-y-2 sm:space-y-3 font-mono text-xs sm:text-sm'>
+                <div className='flex items-center gap-2 sm:gap-3'>
+                  <span className='text-emerald-600'>✓</span>
+                  <span className='text-gray-700'>No suspicious network calls detected</span>
+                </div>
+                <div className='flex items-center gap-2 sm:gap-3'>
+                  <span className='text-emerald-600'>✓</span>
+                  <span className='text-gray-700'>Zero telemetry endpoints found</span>
+                </div>
+                <div className='flex items-center gap-2 sm:gap-3'>
+                  <span className='text-emerald-600'>✓</span>
+                  <span className='text-gray-700'>Credentials stored locally only</span>
+                </div>
+                <div className='flex items-center gap-2 sm:gap-3'>
+                  <span className='text-emerald-600'>✓</span>
+                  <span className='text-gray-700'>Open source verification passed</span>
+                </div>
+                <div className='flex items-center gap-2 sm:gap-3'>
+                  <span className='text-emerald-600'>✓</span>
+                  <span className='text-gray-700'>Code security validated</span>
+                </div>
+              </div>
+
+              <div className='mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-emerald-200'>
+                <div className='text-emerald-700 font-mono text-xs font-bold'>SECURITY SCORE: A+</div>
+              </div>
+            </div>
+
+            {/* Floating security badge */}
+            <div className='absolute -top-2 sm:-top-4 -right-2 sm:-right-4 bg-gradient-to-r from-emerald-400 to-teal-500 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl font-bold text-xs sm:text-sm shadow-lg'>
+              VERIFIED SECURE
+            </div>
+          </div>
+        </div>
       </div>
-    </motion.section>
+    </section>
   )
 }

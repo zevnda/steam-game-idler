@@ -1,135 +1,108 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
-import { FiBookOpen, FiFileText, FiGithub, FiShield } from 'react-icons/fi'
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.2,
-    },
-  },
-}
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.6,
-      ease: [0.25, 0.1, 0.25, 1],
-    },
-  },
-}
+import { FiBook, FiFileText, FiGithub, FiShield } from 'react-icons/fi'
 
 export default function FooterSection() {
   return (
-    <motion.footer
-      className='relative py-16 px-4 sm:px-6 lg:px-8 border-t border-gray-800/50 overflow-hidden'
-      initial='hidden'
-      whileInView='visible'
-      viewport={{ once: true }}
-      variants={containerVariants}
-    >
-      {/* Background Gradients */}
-      <div className='absolute inset-0 bg-gradient-to-t from-black via-gray-900/20 to-transparent' />
-      <motion.div
-        className='absolute bottom-0 left-1/3 w-[600px] h-[600px] bg-gradient-to-r from-blue-500/5 to-sky-500/5 rounded-full blur-3xl'
-        animate={{
-          scale: [1, 1.2, 1],
-          x: [0, 50, 0],
-        }}
-        transition={{
-          duration: 8,
-          repeat: Infinity,
-          ease: 'linear',
-        }}
-      />
+    <footer className='py-12 sm:py-16 md:py-20 relative'>
+      {/* Top transition overlay */}
+      <div className='absolute top-0 left-0 right-0 h-8 bg-gradient-to-b from-purple-600/10 to-transparent' />
 
-      <div className='relative max-w-7xl mx-auto'>
-        <div className='grid grid-cols-1 md:grid-cols-4 gap-8 lg:gap-12'>
-          {/* Logo and Description */}
-          <motion.div className='md:col-span-2' variants={itemVariants}>
-            <div className='flex items-center gap-3 mb-4'>
-              <Image src='/logo.png' alt='Logo' width={24} height={24} className='w-12 h-12 lg:w-6 lg:h-6' />
-              <h3 className='text-xl font-bold'>Steam Game Idler</h3>
+      <div className='container px-4 sm:px-6 md:px-8 relative z-10'>
+        {/* Main footer content */}
+        <div className='grid lg:grid-cols-3 gap-8 sm:gap-12 mb-12 sm:mb-16'>
+          {/* Brand section */}
+          <div className='lg:col-span-1'>
+            <div className='flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6'>
+              <Image src='/logo.png' alt='Steam Game Idler' width={28} height={28} className='sm:w-8 sm:h-8' />
+              <span className='text-lg sm:text-xl font-black text-gray-800'>STEAM GAME IDLER</span>
             </div>
-            <p className='text-gray-400 text-sm leading-relaxed max-w-md'>
+            <p className='text-sm sm:text-base text-gray-600 leading-relaxed mb-4 sm:mb-6'>
               The ultimate desktop application for managing your Steam gaming activities. Idle games, farm trading
               cards, unlock achievements, and optimize your Steam experience.
             </p>
-          </motion.div>
+            <div className='flex gap-4'>
+              <a
+                href='https://github.com/zevnda/steam-game-idler'
+                target='_blank'
+                rel='noopener noreferrer'
+                className='w-9 h-9 sm:w-10 sm:h-10 bg-white border-2 border-indigo-200 flex items-center justify-center rounded-lg hover:border-indigo-400 hover:bg-indigo-50 transition-colors duration-200 shadow-sm'
+              >
+                <FiGithub className='w-4 h-4 sm:w-5 sm:h-5 text-gray-600 hover:text-indigo-700' />
+              </a>
+            </div>
+          </div>
 
-          {/* Quick Links */}
-          <motion.div variants={itemVariants}>
-            <h4 className='text-white font-semibold mb-4 text-sm uppercase tracking-wider'>Quick Links</h4>
-            <ul className='space-y-3'>
-              <li>
-                <Link
-                  href='/docs'
-                  className='text-gray-400 hover:text-white transition-colors duration-200 text-sm flex items-center gap-2 group'
-                >
-                  <FiBookOpen className='w-4 h-4 group-hover:text-blue-400 transition-colors' />
-                  Documentation
-                </Link>
-              </li>
-              <li>
-                <a
-                  href='https://github.com/ProbablyRaging/steam-game-idler'
-                  target='_blank'
-                  rel='noopener noreferrer'
-                  className='text-gray-400 hover:text-white transition-colors duration-200 text-sm flex items-center gap-2 group'
-                >
-                  <FiGithub className='w-4 h-4 group-hover:text-blue-400 transition-colors' />
-                  GitHub Repository
-                </a>
-              </li>
-            </ul>
-          </motion.div>
+          {/* Links sections */}
+          <div className='lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12'>
+            <div>
+              <h3 className='text-gray-800 font-black text-xs sm:text-sm uppercase tracking-wider mb-4 sm:mb-6'>
+                RESOURCES
+              </h3>
+              <ul className='space-y-3 sm:space-y-4'>
+                <li>
+                  <Link
+                    href='/docs'
+                    className='text-sm sm:text-base text-gray-600 hover:text-indigo-700 transition-colors duration-200 flex items-center gap-2 sm:gap-3'
+                  >
+                    <FiBook className='w-3 h-3 sm:w-4 sm:h-4' />
+                    Documentation
+                  </Link>
+                </li>
+                <li>
+                  <a
+                    href='https://github.com/zevnda/steam-game-idler'
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    className='text-sm sm:text-base text-gray-600 hover:text-indigo-700 transition-colors duration-200 flex items-center gap-2 sm:gap-3'
+                  >
+                    <FiGithub className='w-3 h-3 sm:w-4 sm:h-4' />
+                    Source Code
+                  </a>
+                </li>
+              </ul>
+            </div>
 
-          {/* Legal */}
-          <motion.div variants={itemVariants}>
-            <h4 className='text-white font-semibold mb-4 text-sm uppercase tracking-wider'>Legal</h4>
-            <ul className='space-y-3'>
-              <li>
-                <Link
-                  href='/privacy'
-                  className='text-gray-400 hover:text-white transition-colors duration-200 text-sm flex items-center gap-2 group'
-                >
-                  <FiShield className='w-4 h-4 group-hover:text-blue-400 transition-colors' />
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href='/tos'
-                  className='text-gray-400 hover:text-white transition-colors duration-200 text-sm flex items-center gap-2 group'
-                >
-                  <FiFileText className='w-4 h-4 group-hover:text-blue-400 transition-colors' />
-                  Terms of Service
-                </Link>
-              </li>
-            </ul>
-          </motion.div>
+            <div>
+              <h3 className='text-gray-800 font-black text-xs sm:text-sm uppercase tracking-wider mb-4 sm:mb-6'>
+                LEGAL
+              </h3>
+              <ul className='space-y-3 sm:space-y-4'>
+                <li>
+                  <Link
+                    href='/privacy'
+                    className='text-sm sm:text-base text-gray-600 hover:text-indigo-700 transition-colors duration-200 flex items-center gap-2 sm:gap-3'
+                  >
+                    <FiShield className='w-3 h-3 sm:w-4 sm:h-4' />
+                    Privacy Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href='/tos'
+                    className='text-sm sm:text-base text-gray-600 hover:text-indigo-700 transition-colors duration-200 flex items-center gap-2 sm:gap-3'
+                  >
+                    <FiFileText className='w-3 h-3 sm:w-4 sm:h-4' />
+                    Terms of Service
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
 
-        {/* Bottom Bar */}
-        <motion.div
-          className='mt-12 pt-8 border-t border-gray-800/50 flex flex-col sm:flex-row justify-between items-center gap-4'
-          variants={itemVariants}
-        >
-          <p className='text-gray-500 text-sm'>
-            © 2024 - {new Date().getFullYear()} Steam Game Idler. All rights reserved.
-          </p>
-          <p className='text-gray-500 text-xs'>Not affiliated with Valve Corporation or Steam.</p>
-        </motion.div>
+        {/* Bottom bar */}
+        <div className='pt-6 sm:pt-8 border-t-2 border-indigo-200 flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4'>
+          <div className='text-gray-600 text-xs sm:text-sm font-mono text-center sm:text-left'>
+            © 2024 STEAM GAME IDLER — ALL RIGHTS RESERVED
+          </div>
+          <div className='text-gray-500 text-xs uppercase tracking-wider text-center sm:text-right'>
+            NOT AFFILIATED WITH VALVE CORPORATION
+          </div>
+        </div>
       </div>
-    </motion.footer>
+    </footer>
   )
 }
