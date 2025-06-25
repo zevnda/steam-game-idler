@@ -135,7 +135,7 @@ export default function HeroSection() {
             {/* Main heading */}
             <div className='space-y-2 sm:space-y-3 md:space-y-4'>
               <h1 className='text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black leading-none'>
-                <span className='block text-gray-800'>STEAM</span>
+                <span className='block text-gray-800'>STEAM</span>{' '}
                 <span className='text-transparent bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500'>
                   GAME IDLER
                 </span>
