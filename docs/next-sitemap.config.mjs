@@ -1,5 +1,5 @@
 export default {
-  siteUrl: 'https://steamgameidler.vercel.app',
+  siteUrl: 'https://steamgameidler.com',
   sitemapBaseFileName: 'sitemap',
   changefreq: 'daily',
   priority: 0.5,

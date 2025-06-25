@@ -24,7 +24,7 @@ export const metadata = {
     title: 'Idle Master Feature Comparison | Steam Game Idler',
     description:
       'Compare Steam Game Idler with Idle Master. See why Steam Game Idler offers a better user experience with modern GUI, card farming, achievement manager, and playtime boosting',
-    url: 'https://steamgameidler.vercel.app/alternatives/idle-master',
+    url: 'https://steamgameidler.com/alternatives/idle-master',
     type: 'article',
   },
   twitter: {
