@@ -21,7 +21,7 @@ export const metadata = {
   },
   description:
     'The ultimate Steam idler and card farmer. Idle Steam games, farm trading cards automatically, and manage achievements. Better than ArchiSteamFarm for most users.',
-  metadataBase: new URL('https://steamgameidler.vercel.app/'),
+  metadataBase: new URL('https://steamgameidler.com/'),
   keywords: [
     'Steam Game Idler',
     'Steam Idler',
@@ -51,19 +51,19 @@ export const metadata = {
     title: 'Steam Game Idler',
   },
   openGraph: {
-    url: 'https://steamgameidler.vercel.app',
+    url: 'https://steamgameidler.com',
     siteName: 'Steam Game Idler - Best Steam Idle Tool',
-    images: 'https://steamgameidler.vercel.app/og-image.png',
+    images: 'https://steamgameidler.com/og-image.png',
     locale: 'en_US',
     type: 'article',
   },
   twitter: {
     card: 'summary_large_image',
-    site: 'https://steamgameidler.vercel.app/',
+    site: 'https://steamgameidler.com/',
     title: 'Steam Game Idler - Best Steam Idle Tool for Trading Cards',
     description:
       'The ultimate Steam idler and card farmer. Idle Steam games, farm trading cards automatically, and manage achievements. Better than ArchiSteamFarm for most users.',
-    image: 'https://steamgameidler.vercel.app/og-image.png',
+    image: 'https://steamgameidler.com/og-image.png',
   },
   other: {
     'msapplication-TileColor': '#fff',
@@ -72,7 +72,7 @@ export const metadata = {
       '@context': 'https://schema.org',
       '@type': 'TechArticle',
       'name': 'Steam Game Idler',
-      'url': 'https://steamgameidler.vercel.app/',
+      'url': 'https://steamgameidler.com/',
       'description':
         'Farm Steam trading cards, manage achievements, and idle games automatically — an all-in-one alternative to ArchiSteamFarm, Steam Achievement Manager, and Idle Master',
     }),

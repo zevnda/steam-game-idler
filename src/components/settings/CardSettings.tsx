@@ -154,7 +154,7 @@ export default function CardSettings(): ReactElement {
           <Trans i18nKey='settings.cardFarming.steamCredentials'>
             Steam credentials are required in order to use the Card Farming feature.&nbsp;
             <ExtLink
-              href='https://steamgameidler.vercel.app/docs/steam-credentials'
+              href='https://steamgameidler.com/docs/steam-credentials'
               className='text-link hover:text-linkhover'
             >
               Learn more

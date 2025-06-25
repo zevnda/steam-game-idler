@@ -94,7 +94,7 @@ export default function HeaderMenu(): ReactElement {
               classNames={{
                 base: ['data-[hover=true]:!bg-titlehover data-[hover=true]:!text-content'],
               }}
-              onPress={() => handleOpenExtLink('https://steamgameidler.vercel.app/docs/')}
+              onPress={() => handleOpenExtLink('https://steamgameidler.com/docs/')}
             >
               {t('menu.guide')}
             </DropdownItem>

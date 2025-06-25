@@ -112,7 +112,7 @@ export default function GeneralSettings(): ReactElement {
               </ExtLink>
               <span className='italic'>(optional)</span>
               <ExtLink
-                href='https://steamgameidler.vercel.app/docs/settings/general#use-your-own-steam-web-api-key'
+                href='https://steamgameidler.com/docs/settings/general#use-your-own-steam-web-api-key'
                 className='mx-1 text-link hover:text-linkhover'
               >
                 Learn more

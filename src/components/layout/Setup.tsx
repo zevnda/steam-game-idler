@@ -150,7 +150,7 @@ export default function Setup(): ReactElement {
                 <div className='w-full mb-4'>
                   <div className='flex flex-col items-center border border-border/40 w-full rounded-xl p-6 bg-base/10'>
                     <p className='text-center mb-3 text-altwhite/80 font-medium'>{t('setup.noUsers')}</p>
-                    <ExtLink href='https://steamgameidler.vercel.app/docs/faq#error-messages:~:text=No%20Steam%20users%20found'>
+                    <ExtLink href='https://steamgameidler.com/docs/faq#error-messages:~:text=No%20Steam%20users%20found'>
                       <p className='text-sm text-link hover:text-linkhover transition-colors duration-200'>
                         {t('setup.learn')}
                       </p>
@@ -177,19 +177,19 @@ export default function Setup(): ReactElement {
                 'border-border/40 rounded-br-2xl rounded-bl-2xl bg-base/10',
               )}
             >
-              <ExtLink href='https://steamgameidler.vercel.app/docs/get-started/how-to-sign-in'>
+              <ExtLink href='https://steamgameidler.com/docs/get-started/how-to-sign-in'>
                 <p className='text-xs font-medium cursor-pointer text-link hover:text-linkhover transition-colors duration-200'>
                   {t('setup.help')}
                 </p>
               </ExtLink>
 
               <div className='flex gap-6 text-xs text-altwhite/70'>
-                <ExtLink href='https://steamgameidler.vercel.app/privacy'>
+                <ExtLink href='https://steamgameidler.com/privacy'>
                   <p className='text-xs font-medium cursor-pointer text-link/80 hover:text-linkhover transition-colors duration-200'>
                     Privacy Policy
                   </p>
                 </ExtLink>
-                <ExtLink href='https://steamgameidler.vercel.app/tos'>
+                <ExtLink href='https://steamgameidler.com/tos'>
                   <p className='text-xs font-medium cursor-pointer text-link/80 hover:text-linkhover transition-colors duration-200'>
                     Terms of Service
                   </p>

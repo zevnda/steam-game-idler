@@ -188,7 +188,7 @@
 - Added a `trading card manager` **<sup>BETA FEATURE</sup>**
   - Allows users to view and sell their Steam trading cards directly within SGI
   - Enabled `beta features` in `settings general` to use it
-  - Read the [Trading Card Manager docs](https://steamgameidler.vercel.app/features/trading-card-manager) for a guide on how to use this feature
+  - Read the [Trading Card Manager docs](https://steamgameidler.com/features/trading-card-manager) for a guide on how to use this feature
   - If you run into any issues, report them on GitHub
 
 <!-- 1.10.3 -->
@@ -1010,7 +1010,7 @@ If you have any issues while using this beta version, please [open a new issue](
 ### Changes in v1.6.5
 
 - Reverted changes made in `1.6.4` to the `card farming` and `achievement unlocker` as they proved not to be the issue
-- Updated existing wiki links to point to the new docs site at https://steamgameidler.vercel.app/
+- Updated existing wiki links to point to the new docs site at https://steamgameidler.com/
 - Updated background videos
 
 <!-- 1.6.4 -->
