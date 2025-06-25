@@ -7,9 +7,9 @@ import { TbAward, TbBuildingStore, TbCards } from 'react-icons/tb'
 const features = [
   {
     icon: <TbCards className='w-8 h-8' />,
-    title: 'Trading Card Farming',
+    title: 'Steam Card Farmer & Trading Card Idler',
     description:
-      'Automatically farm Steam trading cards from your games with our advanced card idler. A more user-friendly alternative to ArchiSteamFarm, maximizing card drops for marketplace profit.',
+      'Automatically farm Steam trading cards from your games with our advanced Steam card idler. The best Steam card farmer available - a more user-friendly alternative to ArchiSteamFarm for maximizing card drops and marketplace profit.',
     link: '/docs/features/card-farming',
     gradient: 'from-blue-500 to-indigo-600',
     bgGradient: 'from-blue-50 to-indigo-50',
@@ -17,9 +17,9 @@ const features = [
   },
   {
     icon: <TbAward className='w-8 h-8' />,
-    title: 'Achievement Manager',
+    title: 'Steam Achievement Manager & Unlocker',
     description:
-      'Unlock achievements automatically with human-like behavior, or manually manage achievements for any game. A streamlined alternative to Steam Achievement Manager with enhanced safety features.',
+      'Unlock Steam achievements automatically with human-like behavior, or manually manage achievements for any game. The safest Steam achievement unlocker - a streamlined alternative to Steam Achievement Manager with enhanced safety features.',
     link: '/docs/features/achievement-manager',
     gradient: 'from-purple-500 to-pink-600',
     bgGradient: 'from-purple-50 to-pink-50',
@@ -27,9 +27,9 @@ const features = [
   },
   {
     icon: <TbBuildingStore className='w-8 h-8' />,
-    title: 'Trading Card Manager',
+    title: 'Steam Trading Card Manager & Marketplace Tool',
     description:
-      'View and manage your entire Steam trading card inventory. Sell cards directly on the marketplace from within the app, offering better integration than traditional Steam idling tools.',
+      'View and manage your entire Steam trading card inventory. Sell cards directly on the Steam marketplace from within the app, offering better integration than traditional Steam idling tools and card farmers.',
     link: '/docs/features/trading-card-manager',
     gradient: 'from-emerald-500 to-teal-600',
     bgGradient: 'from-emerald-50 to-teal-50',
@@ -37,9 +37,9 @@ const features = [
   },
   {
     icon: <FiTrendingUp className='w-8 h-8' />,
-    title: 'Playtime Booster',
+    title: 'Steam Idle & Playtime Booster',
     description:
-      'Increase game playtime by idling games in the background. A modern evolution of Idle Master with improved efficiency and Steam detection avoidance for meeting hour requirements.',
+      'Increase game playtime by idling Steam games in the background. A modern Steam idle tool evolution of Idle Master with improved efficiency and Steam detection avoidance for meeting hour requirements.',
     link: '/docs/features/playtime-booster',
     gradient: 'from-orange-500 to-red-600',
     bgGradient: 'from-orange-50 to-red-50',
@@ -49,7 +49,7 @@ const features = [
 
 export default function FeaturesSection() {
   return (
-    <section className='py-12 sm:py-16 md:py-20 lg:py-24 relative'>
+    <section className='py-12 sm:py-16 md:py-20 lg:py-24 relative' aria-labelledby='features-heading'>
       {/* Top transition border */}
       <div className='absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-300 to-transparent' />
 
@@ -58,65 +58,66 @@ export default function FeaturesSection() {
 
       <div className='container relative z-10 px-4 sm:px-6 md:px-8'>
         {/* Header */}
-        <div className='max-w-3xl mx-auto text-center mb-12 sm:mb-16 lg:mb-20'>
+        <header className='max-w-3xl mx-auto text-center mb-12 sm:mb-16 lg:mb-20'>
           <h2 className='text-3xl sm:text-4xl md:text-5xl font-black text-gray-800 mb-6 sm:mb-8 leading-tight'>
-            POWERFUL AUTOMATION
+            POWERFUL STEAM IDLE
             <span className='block text-transparent bg-clip-text bg-gradient-to-r from-sky-500 to-fuchsia-500'>
-              FEATURES
+              AUTOMATION FEATURES
             </span>
           </h2>
           <p className='text-base sm:text-lg md:text-xl text-gray-700 leading-relaxed'>
-            Our advanced automation tools are designed to enhance your Steam gaming experience, from farming trading
-            cards to managing achievements and boosting playtime.
+            Our advanced Steam automation tool is designed to enhance your Steam experience. From being the best Steam
+            card farmer to the most reliable Steam idle tool for achievements and playtime boosting.
           </p>
-        </div>
+        </header>
 
         {/* Features grid */}
         <div className='grid md:grid-cols-2 gap-8 max-w-6xl mx-auto'>
           {features.map((feature, index) => (
-            <Link
+            <article
               key={feature.title}
-              href={feature.link}
               className={`group block relative overflow-hidden bg-white border-2 ${feature.borderColor} rounded-3xl p-8 hover:shadow-lg transition-all duration-200 transform hover:-translate-y-1 hover:scale-[1.01]`}
             >
-              {/* Background gradient */}
-              <div
-                className={`absolute inset-0 bg-gradient-to-br ${feature.bgGradient} opacity-0 group-hover:opacity-50 transition-opacity duration-200`}
-              />
+              <Link href={feature.link} className='block'>
+                {/* Background gradient */}
+                <div
+                  className={`absolute inset-0 bg-gradient-to-br ${feature.bgGradient} opacity-0 group-hover:opacity-50 transition-opacity duration-200`}
+                />
 
-              {/* Content */}
-              <div className='relative z-10'>
-                {/* Icon and arrow */}
-                <div className='flex items-start justify-between mb-6'>
-                  <div
-                    className={`relative p-4 rounded-2xl bg-gradient-to-r ${feature.gradient} text-white shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-200`}
-                  >
-                    {feature.icon}
+                {/* Content */}
+                <div className='relative z-10'>
+                  {/* Icon and arrow */}
+                  <div className='flex items-start justify-between mb-6'>
+                    <div
+                      className={`relative p-4 rounded-2xl bg-gradient-to-r ${feature.gradient} text-white shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-200`}
+                    >
+                      {feature.icon}
+                    </div>
+                    <FiArrowUpRight className='w-6 h-6 text-gray-400 group-hover:text-gray-700 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all duration-200' />
                   </div>
-                  <FiArrowUpRight className='w-6 h-6 text-gray-400 group-hover:text-gray-700 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all duration-200' />
+
+                  {/* Title */}
+                  <h3 className='text-2xl font-bold text-gray-900 mb-4 group-hover:text-gray-800 transition-colors duration-200'>
+                    {feature.title}
+                  </h3>
+
+                  {/* Description */}
+                  <p className='text-gray-600 leading-relaxed group-hover:text-gray-700 transition-colors duration-200 pb-4'>
+                    {feature.description}
+                  </p>
+
+                  {/* Hover decoration */}
+                  <div
+                    className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${feature.gradient} transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200 origin-left rounded-b-3xl`}
+                  />
                 </div>
 
-                {/* Title */}
-                <h3 className='text-2xl font-bold text-gray-900 mb-4 group-hover:text-gray-800 transition-colors duration-200'>
-                  {feature.title}
-                </h3>
-
-                {/* Description */}
-                <p className='text-gray-600 leading-relaxed group-hover:text-gray-700 transition-colors duration-200 pb-4'>
-                  {feature.description}
-                </p>
-
-                {/* Hover decoration */}
+                {/* Corner decoration */}
                 <div
-                  className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${feature.gradient} transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200 origin-left rounded-b-3xl`}
+                  className={`absolute top-0 right-0 w-20 h-20 bg-gradient-to-br ${feature.gradient} opacity-10 transform rotate-45 translate-x-10 -translate-y-10 group-hover:translate-x-10 group-hover:-translate-y-10 transition-transform duration-200`}
                 />
-              </div>
-
-              {/* Corner decoration */}
-              <div
-                className={`absolute top-0 right-0 w-20 h-20 bg-gradient-to-br ${feature.gradient} opacity-10 transform rotate-45 translate-x-10 -translate-y-10 group-hover:translate-x-10 group-hover:-translate-y-10 transition-transform duration-200`}
-              />
-            </Link>
+              </Link>
+            </article>
           ))}
         </div>
       </div>

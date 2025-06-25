@@ -59,7 +59,7 @@ export default function StatsSection() {
   ]
 
   return (
-    <section className='py-12 sm:py-16 md:py-20 lg:py-24 relative overflow-hidden'>
+    <section className='py-12 sm:py-16 md:py-20 lg:py-24 relative overflow-hidden' aria-labelledby='stats-heading'>
       {/* Top transition border */}
       <div className='absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-300 to-transparent' />
 
@@ -68,40 +68,51 @@ export default function StatsSection() {
 
       <div className='container relative z-10 px-4 sm:px-6 md:px-8'>
         {/* Header with side-by-side layout */}
-        <div className='grid lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 items-center mb-12 sm:mb-16 lg:mb-20'>
+        <header className='grid lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 items-center mb-12 sm:mb-16 lg:mb-20'>
           <div>
-            <h2 className='text-3xl sm:text-4xl md:text-5xl font-black text-gray-800 mb-4 sm:mb-6 leading-tight'>
-              TRUSTED BY USERS
+            <h2
+              id='stats-heading'
+              className='text-3xl sm:text-4xl md:text-5xl font-black text-gray-800 mb-4 sm:mb-6 leading-tight'
+            >
+              THE #1 STEAM IDLE
               <span className='block text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-orange-500'>
-                WORLDWIDE
+                TOOL WORLDWIDE
               </span>
             </h2>
           </div>
           <div>
             <p className='text-base sm:text-lg text-gray-700 leading-relaxed'>
-              Steam Game Idler is the go-to choice for gamers looking to automate their Steam experience. With thousands
-              of downloads worldwide and support for 42 languages, our community continues to grow.
+              Steam Game Idler is the go-to choice for users looking to automate their Steam experience. Our Steam card
+              farmer is trusted by thousands of users worldwide, with support for 42 languages.
             </p>
           </div>
-        </div>
+        </header>
 
         {/* Stats in horizontal cards */}
         <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6'>
           {stats.map((stat, index) => (
-            <div key={stat.label} className='group'>
+            <article key={stat.label} className='group'>
               <div className='bg-white/80 border-2 border-indigo-200 p-6 sm:p-8 hover:border-indigo-400 hover:bg-white/90 transition-all duration-200 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-2'>
                 <div className='flex items-start justify-between mb-4 sm:mb-6'>
-                  <div className='text-indigo-500 group-hover:text-purple-500 transition-colors duration-200'>
+                  <div
+                    className='text-indigo-500 group-hover:text-purple-500 transition-colors duration-200'
+                    aria-hidden='true'
+                  >
                     {stat.icon}
                   </div>
                   <div className='text-right'>
-                    <div className='text-2xl sm:text-3xl font-black text-gray-800 mb-1'>{stat.value}</div>
+                    <div
+                      className='text-2xl sm:text-3xl font-black text-gray-800 mb-1'
+                      aria-label={`${stat.value} ${stat.label}`}
+                    >
+                      {stat.value}
+                    </div>
                     <div className='text-xs text-indigo-600 uppercase tracking-widest font-bold'>{stat.label}</div>
                   </div>
                 </div>
                 <p className='text-sm text-gray-600 leading-relaxed'>{stat.description}</p>
               </div>
-            </div>
+            </article>
           ))}
         </div>
       </div>
