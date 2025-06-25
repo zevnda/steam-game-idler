@@ -29,6 +29,7 @@ export default function FooterSection() {
                 target='_blank'
                 rel='noopener noreferrer'
                 className='w-9 h-9 sm:w-10 sm:h-10 bg-white border-2 border-indigo-200 flex items-center justify-center rounded-lg hover:border-indigo-400 hover:bg-indigo-50 transition-colors duration-200 shadow-sm'
+                aria-label='Visit our GitHub repository'
               >
                 <FiGithub className='w-4 h-4 sm:w-5 sm:h-5 text-gray-600 hover:text-indigo-700' />
               </a>
@@ -37,17 +38,20 @@ export default function FooterSection() {
 
           {/* Links sections */}
           <div className='lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12'>
-            <div>
-              <h3 className='text-gray-800 font-black text-xs sm:text-sm uppercase tracking-wider mb-4 sm:mb-6'>
+            <nav aria-labelledby='resources-heading'>
+              <h2
+                id='resources-heading'
+                className='text-gray-800 font-black text-xs sm:text-sm uppercase tracking-wider mb-4 sm:mb-6'
+              >
                 RESOURCES
-              </h3>
+              </h2>
               <ul className='space-y-3 sm:space-y-4'>
                 <li>
                   <Link
                     href='/docs'
                     className='text-sm sm:text-base text-gray-600 hover:text-indigo-700 transition-colors duration-200 flex items-center gap-2 sm:gap-3'
                   >
-                    <FiBook className='w-3 h-3 sm:w-4 sm:h-4' />
+                    <FiBook className='w-3 h-3 sm:w-4 sm:h-4' aria-hidden='true' />
                     Documentation
                   </Link>
                 </li>
@@ -58,24 +62,27 @@ export default function FooterSection() {
                     rel='noopener noreferrer'
                     className='text-sm sm:text-base text-gray-600 hover:text-indigo-700 transition-colors duration-200 flex items-center gap-2 sm:gap-3'
                   >
-                    <FiGithub className='w-3 h-3 sm:w-4 sm:h-4' />
+                    <FiGithub className='w-3 h-3 sm:w-4 sm:h-4' aria-hidden='true' />
                     Source Code
                   </a>
                 </li>
               </ul>
-            </div>
+            </nav>
 
-            <div>
-              <h3 className='text-gray-800 font-black text-xs sm:text-sm uppercase tracking-wider mb-4 sm:mb-6'>
+            <nav aria-labelledby='legal-heading'>
+              <h2
+                id='legal-heading'
+                className='text-gray-800 font-black text-xs sm:text-sm uppercase tracking-wider mb-4 sm:mb-6'
+              >
                 LEGAL
-              </h3>
+              </h2>
               <ul className='space-y-3 sm:space-y-4'>
                 <li>
                   <Link
                     href='/privacy'
                     className='text-sm sm:text-base text-gray-600 hover:text-indigo-700 transition-colors duration-200 flex items-center gap-2 sm:gap-3'
                   >
-                    <FiShield className='w-3 h-3 sm:w-4 sm:h-4' />
+                    <FiShield className='w-3 h-3 sm:w-4 sm:h-4' aria-hidden='true' />
                     Privacy Policy
                   </Link>
                 </li>
@@ -84,12 +91,12 @@ export default function FooterSection() {
                     href='/tos'
                     className='text-sm sm:text-base text-gray-600 hover:text-indigo-700 transition-colors duration-200 flex items-center gap-2 sm:gap-3'
                   >
-                    <FiFileText className='w-3 h-3 sm:w-4 sm:h-4' />
+                    <FiFileText className='w-3 h-3 sm:w-4 sm:h-4' aria-hidden='true' />
                     Terms of Service
                   </Link>
                 </li>
               </ul>
-            </div>
+            </nav>
           </div>
         </div>
 

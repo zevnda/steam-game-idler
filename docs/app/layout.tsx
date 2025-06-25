@@ -16,27 +16,29 @@ const inter = Inter({
 
 export const metadata = {
   title: {
-    default: 'Steam Game Idler – Trading Card Farmer & Achievement Unlocker',
+    default: 'Steam Game Idler – Best Steam Idle Tool for Trading Cards & Achievements',
     template: '%s | Steam Game Idler',
   },
   description:
-    'Farm Steam trading cards, manage achievements, and idle games automatically — an all-in-one alternative to ArchiSteamFarm, Steam Achievement Manager, and Idle Master',
+    'The ultimate Steam idler and card farmer. Idle Steam games, farm trading cards automatically, and manage achievements. Better than ArchiSteamFarm for most users.',
   metadataBase: new URL('https://steamgameidler.vercel.app/'),
   keywords: [
     'Steam Game Idler',
     'Steam Idler',
     'Steam Card Idler',
-    'Steam Automation',
+    'Steam Idle',
+    'Steam Idlers',
+    'Steam Card Farmer',
+    'Steam Idling',
+    'SteamIdler',
+    'SteamIdle',
+    'Steam Trading Card Farmer',
+    'Steam Automation Tool',
     'Steam Trading Cards',
     'Steam Achievements',
     'Steam Achievement Unlocker',
     'Steam Idling Tools',
-    'Steam Idle',
     'Steam Trading Card Idler',
-    'Steam Idlers',
-    'Steam Idling',
-    'SteamIdler',
-    'SteamIdle',
     'ArchiSteamFarm Alternative',
     'Steam Achievement Manager Alternative',
     'Idle Master Alternative',
@@ -50,7 +52,7 @@ export const metadata = {
   },
   openGraph: {
     url: 'https://steamgameidler.vercel.app',
-    siteName: 'Steam Game Idler',
+    siteName: 'Steam Game Idler - Best Steam Idle Tool',
     images: 'https://steamgameidler.vercel.app/og-image.png',
     locale: 'en_US',
     type: 'article',
@@ -58,9 +60,9 @@ export const metadata = {
   twitter: {
     card: 'summary_large_image',
     site: 'https://steamgameidler.vercel.app/',
-    title: 'Steam Game Idler',
+    title: 'Steam Game Idler - Best Steam Idle Tool for Trading Cards',
     description:
-      'Farm Steam trading cards, manage achievements, and idle games automatically — an all-in-one alternative to ArchiSteamFarm, Steam Achievement Manager, and Idle Master',
+      'The ultimate Steam idler and card farmer. Idle Steam games, farm trading cards automatically, and manage achievements. Better than ArchiSteamFarm for most users.',
     image: 'https://steamgameidler.vercel.app/og-image.png',
   },
   other: {
