@@ -8,10 +8,10 @@ import { TbCards, TbEye, TbShield } from 'react-icons/tb'
 export const metadata = {
   title: 'Idle Master Feature Comparison',
   description:
-    'Compare Steam Game Idler with Idle Master. See why Steam Game Idler offers a better user experience with modern GUI, card farming, achievement manager, and playtime boosting',
+    'See why Steam Game Idler is the best alternative to Idle Master for Steam automation. Compare features like card farming, achievement management, and user experience',
   keywords: [
-    'Idle Master comparison',
     'Idle Master alternative',
+    'Idle Master comparison',
     'Idle Master features',
     'Steam Game Idler features',
     'Steam Game Idler',
@@ -23,14 +23,14 @@ export const metadata = {
   openGraph: {
     title: 'Idle Master Feature Comparison | Steam Game Idler',
     description:
-      'Compare Steam Game Idler with Idle Master. See why Steam Game Idler offers a better user experience with modern GUI, card farming, achievement manager, and playtime boosting',
+      'See why Steam Game Idler is the best alternative to Idle Master for Steam automation. Compare features like card farming, achievement management, and user experience',
     url: 'https://steamgameidler.com/alternatives/idle-master',
     type: 'article',
   },
   twitter: {
     title: 'Idle Master Feature Comparison | Steam Game Idler',
     description:
-      'Compare Steam Game Idler with Idle Master. See why Steam Game Idler offers a better user experience with modern GUI, card farming, achievement manager, and playtime boosting',
+      'See why Steam Game Idler is the best alternative to Idle Master for Steam automation. Compare features like card farming, achievement management, and user experience',
   },
   alternates: {
     canonical: '/alternatives/idle-master',
