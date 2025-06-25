@@ -60,7 +60,7 @@ export default function FeaturesSection() {
         {/* Header */}
         <header className='max-w-3xl mx-auto text-center mb-12 sm:mb-16 lg:mb-20'>
           <h2 className='text-3xl sm:text-4xl md:text-5xl font-black text-gray-800 mb-6 sm:mb-8 leading-tight'>
-            POWERFUL STEAM IDLE
+            POWERFUL STEAM IDLE{' '}
             <span className='block text-transparent bg-clip-text bg-gradient-to-r from-sky-500 to-fuchsia-500'>
               AUTOMATION FEATURES
             </span>

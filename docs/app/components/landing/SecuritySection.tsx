@@ -20,7 +20,7 @@ export default function SecuritySection() {
               id='security-heading'
               className='text-3xl sm:text-4xl md:text-5xl font-black text-gray-800 mb-6 sm:mb-8 leading-tight'
             >
-              BUILT WITH
+              BUILT WITH{' '}
               <span className='block text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-lime-500'>
                 TRANSPARENCY
               </span>

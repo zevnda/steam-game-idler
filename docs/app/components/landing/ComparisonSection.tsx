@@ -64,7 +64,7 @@ export default function ComparisonSection(): ReactElement {
             id='comparison-heading'
             className='text-3xl sm:text-4xl md:text-5xl font-black text-gray-800 mb-6 sm:mb-8 leading-tight'
           >
-            THE BEST STEAM IDLE TOOL
+            THE BEST STEAM IDLE TOOL{' '}
             <span className='block text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-500'>
               VS THE COMPETITION
             </span>

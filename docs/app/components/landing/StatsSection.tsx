@@ -74,7 +74,7 @@ export default function StatsSection() {
               id='stats-heading'
               className='text-3xl sm:text-4xl md:text-5xl font-black text-gray-800 mb-4 sm:mb-6 leading-tight'
             >
-              THE #1 STEAM IDLE
+              THE #1 STEAM IDLE{' '}
               <span className='block text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-orange-500'>
                 TOOL WORLDWIDE
               </span>
