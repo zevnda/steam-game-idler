@@ -8,10 +8,10 @@ import { TbAward, TbCards, TbTrendingUp } from 'react-icons/tb'
 export const metadata = {
   title: 'Steam Achievement Manager Feature Comparison',
   description:
-    'Compare Steam Game Idler with Steam Achievement Manager. See why Steam Game Idler offers a better user experience with modern GUI, card farming, achievement manager, and playtime boosting',
+    'See why Steam Game Idler is the best alternative to Steam Achievement Manager for Steam automation. Compare features like card farming, achievement management, and user experience',
   keywords: [
-    'Steam Achievement Manager comparison',
     'Steam Achievement Manager alternative',
+    'Steam Achievement Manager comparison',
     'Steam Achievement Manager features',
     'Steam Game Idler features',
     'Steam Game Idler',
@@ -23,14 +23,14 @@ export const metadata = {
   openGraph: {
     title: 'Steam Achievement Manager Feature Comparison | Steam Game Idler',
     description:
-      'Compare Steam Game Idler with Steam Achievement Manager. See why Steam Game Idler offers a better user experience with modern GUI, card farming, achievement manager, and playtime boosting',
+      'See why Steam Game Idler is the best alternative to Steam Achievement Manager for Steam automation. Compare features like card farming, achievement management, and user experience',
     url: 'https://steamgameidler.com/alternatives/steam-achievement-manager',
     type: 'article',
   },
   twitter: {
     title: 'Steam Achievement Manager Feature Comparison | Steam Game Idler',
     description:
-      'Compare Steam Game Idler with Steam Achievement Manager. See why Steam Game Idler offers a better user experience with modern GUI, card farming, achievement manager, and playtime boosting',
+      'See why Steam Game Idler is the best alternative to Steam Achievement Manager for Steam automation. Compare features like card farming, achievement management, and user experience',
   },
   alternates: {
     canonical: '/alternatives/steam-achievement-manager',

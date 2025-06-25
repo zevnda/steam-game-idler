@@ -8,10 +8,10 @@ import { TbCards, TbShield, TbUsers } from 'react-icons/tb'
 export const metadata = {
   title: 'ArchiSteamFarm Feature Comparison',
   description:
-    'Compare Steam Game Idler with ArchiSteamFarm. See why Steam Game Idler offers a better user experience with modern GUI, card farming, achievement manager, and playtime boosting',
+    'See why Steam Game Idler is the best alternative to ArchiSteamFarm for Steam automation. Compare features like card farming, achievement management, and user experience',
   keywords: [
-    'ArchiSteamFarm comparison',
     'ArchiSteamFarm alternative',
+    'ArchiSteamFarm comparison',
     'ArchiSteamFarm features',
     'ASF alternative',
     'Steam automation comparison',
@@ -26,14 +26,14 @@ export const metadata = {
   openGraph: {
     title: 'ArchiSteamFarm Feature Comparison | Steam Game Idler',
     description:
-      'Compare Steam Game Idler with ArchiSteamFarm. See why Steam Game Idler offers a better user experience with modern GUI, card farming, achievement manager, and playtime boosting',
+      'See why Steam Game Idler is the best alternative to ArchiSteamFarm for Steam automation. Compare features like card farming, achievement management, and user experience',
     url: 'https://steamgameidler.com/alternatives/archisteamfarm',
     type: 'article',
   },
   twitter: {
     title: 'ArchiSteamFarm Feature Comparison | Steam Game Idler',
     description:
-      'Compare Steam Game Idler with ArchiSteamFarm. See why Steam Game Idler offers a better user experience with modern GUI, card farming, achievement manager, and playtime boosting',
+      'See why Steam Game Idler is the best alternative to ArchiSteamFarm for Steam automation. Compare features like card farming, achievement management, and user experience',
   },
   alternates: {
     canonical: '/alternatives/archisteamfarm',
@@ -74,7 +74,7 @@ const comparisonData = [
       { name: 'Playtime Boosting', steamGameIdler: true, archiSteamFarm: false },
       { name: 'Trading Card Manager', steamGameIdler: true, archiSteamFarm: false },
       { name: 'Multi-language Support', steamGameIdler: '44 languages', archiSteamFarm: 'Partial translations' },
-      { name: 'Auto-update System', steamGameIdler: true, archiSteamFarm: false },
+      { name: 'Auto-update System', steamGameIdler: true, archiSteamFarm: true },
     ],
   },
   {
