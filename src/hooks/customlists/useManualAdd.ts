@@ -43,6 +43,8 @@ export default function useManualAdd(listName: string, setList: Dispatch<SetStat
         return
       } else {
         setList(response.list_data)
+        setAppNameValue('')
+        setAppIdValue(0)
         setIsLoading(false)
         onClose()
       }
