@@ -107,7 +107,7 @@ export default function page(): ReactElement {
         {/* Go Back Button */}
         <Link
           href='/'
-          className='absolute top-6 left-6 z-20 inline-flex items-center px-4 py-2 bg-white/90 hover:bg-white border border-gray-200 rounded-lg text-gray-700 hover:text-gray-900 font-medium transition-all duration-200 shadow-sm hover:shadow-md backdrop-blur-sm'
+          className='fixed top-6 left-6 z-50 inline-flex items-center px-4 py-2 bg-white/90 hover:bg-white border border-gray-200 rounded-lg text-gray-700 hover:text-gray-900 font-medium transition-all duration-200 shadow-sm hover:shadow-md backdrop-blur-sm'
         >
           <FaArrowLeft className='w-4 h-4 mr-2' />
           Go Back
