@@ -1,5 +1,12 @@
 [
   {
+    "id": "26",
+    "title": "POLL: Do you want custom plugins for SGI?",
+    "message": "Click here to view the poll and cast your vote",
+    "url": "https://github.com/zevnda/steam-game-idler/discussions/636",
+    "timestamp": "1750951039"
+  },
+  {
     "id": "25",
     "title": "New Task Scheduling Feature",
     "message": "Click here to learn more about the new Task Scheduling (beta) feature released in 1.14.0",
