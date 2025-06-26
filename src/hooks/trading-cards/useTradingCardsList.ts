@@ -14,7 +14,7 @@ import { useTranslation } from 'react-i18next'
 
 import { useStateContext } from '@/components/contexts/StateContext'
 import { useUserContext } from '@/components/contexts/UserContext'
-import { logEvent } from '@/utils/tasks'
+import { decrypt, logEvent } from '@/utils/tasks'
 import {
   showDangerToast,
   showIncorrectCredentialsToast,
@@ -79,8 +79,8 @@ export default function useTradingCardsList(): UseTradingCardsList {
         } else {
           // Validate credentials
           const validate = await invoke<InvokeValidateSession>('validate_session', {
-            sid: credentials.sid,
-            sls: credentials.sls,
+            sid: decrypt(credentials.sid),
+            sls: decrypt(credentials.sls),
             sma: credentials?.sma,
             steamid: userSummary?.steamId,
           })
@@ -88,8 +88,8 @@ export default function useTradingCardsList(): UseTradingCardsList {
           if (!validate.user) return showIncorrectCredentialsToast()
 
           const response = await invoke<InvokeCardData>('get_trading_cards', {
-            sid: credentials.sid,
-            sls: credentials.sls,
+            sid: decrypt(credentials.sid),
+            sls: decrypt(credentials.sls),
             sma: credentials?.sma,
             steamId: userSummary?.steamId,
             includePrices: true,
@@ -126,8 +126,8 @@ export default function useTradingCardsList(): UseTradingCardsList {
 
       // Validate credentials
       const validate = await invoke<InvokeValidateSession>('validate_session', {
-        sid: credentials.sid,
-        sls: credentials.sls,
+        sid: decrypt(credentials.sid),
+        sls: decrypt(credentials.sls),
         sma: credentials?.sma,
         steamid: userSummary?.steamId,
       })
@@ -138,8 +138,8 @@ export default function useTradingCardsList(): UseTradingCardsList {
       }
 
       const cardPrices = await invoke<InvokeCardPrice>('get_card_price', {
-        sid: credentials.sid,
-        sls: credentials.sls,
+        sid: decrypt(credentials.sid),
+        sls: decrypt(credentials.sls),
         sma: credentials?.sma,
         steamId: userSummary?.steamId,
         marketHashName: hash,
@@ -227,8 +227,8 @@ export default function useTradingCardsList(): UseTradingCardsList {
       logEvent(`Card for listing: ${JSON.stringify(cardForListing)}`)
 
       const response = await invoke<InvokeListCards>('list_trading_cards', {
-        sid: credentials.sid,
-        sls: credentials.sls,
+        sid: decrypt(credentials.sid),
+        sls: decrypt(credentials.sls),
         sma: credentials?.sma,
         steamId: userSummary?.steamId,
         cards: [cardForListing],
@@ -289,8 +289,8 @@ export default function useTradingCardsList(): UseTradingCardsList {
       logEvent(`Cards for listing: ${JSON.stringify(cardsForBulkListing)}`)
 
       const response = await invoke<InvokeListCards>('list_trading_cards', {
-        sid: credentials.sid,
-        sls: credentials.sls,
+        sid: decrypt(credentials.sid),
+        sls: decrypt(credentials.sls),
         sma: credentials?.sma,
         steamId: userSummary?.steamId,
         cards: cardsForBulkListing,
@@ -374,8 +374,8 @@ export default function useTradingCardsList(): UseTradingCardsList {
           const cardForListing: [string, string] = [card.assetid, parsedPrice]
 
           const response = await invoke<InvokeListCards>('list_trading_cards', {
-            sid: credentials.sid,
-            sls: credentials.sls,
+            sid: decrypt(credentials.sid),
+            sls: decrypt(credentials.sls),
             sma: credentials?.sma,
             steamId: userSummary?.steamId,
             cards: [cardForListing],
@@ -430,8 +430,8 @@ export default function useTradingCardsList(): UseTradingCardsList {
 
       // Validate credentials
       const validate = await invoke<InvokeValidateSession>('validate_session', {
-        sid: credentials.sid,
-        sls: credentials.sls,
+        sid: decrypt(credentials.sid),
+        sls: decrypt(credentials.sls),
         sma: credentials?.sma,
         steamid: userSummary?.steamId,
       })
@@ -442,8 +442,8 @@ export default function useTradingCardsList(): UseTradingCardsList {
       showPrimaryToast(t('toast.tradingCards.processing'))
 
       const response = await invoke<InvokeRemoveListings>('remove_market_listings', {
-        sid: credentials.sid,
-        sls: credentials.sls,
+        sid: decrypt(credentials.sid),
+        sls: decrypt(credentials.sls),
         sma: credentials?.sma,
         steamId: userSummary?.steamId,
       })

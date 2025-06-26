@@ -1,3 +1,11 @@
+<!-- 1.15.0 -->
+
+### Changes in v1.15.0
+
+- Steam credentials and Steam Web API keys are now encrypted using AES-256-GCM before being stored locally
+  - This makes the sensitive values stored locally in `settings.json` unreadable to unauthorized users who might gain access to the file
+  - You will likely get an error saying your credentials need to be update
+
 <!-- 1.14.5 -->
 
 ### Changes in v1.14.5

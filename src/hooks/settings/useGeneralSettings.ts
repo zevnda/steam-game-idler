@@ -7,7 +7,7 @@ import { disable, enable, isEnabled } from '@tauri-apps/plugin-autostart'
 import { useEffect, useState } from 'react'
 
 import { useUserContext } from '@/components/contexts/UserContext'
-import { logEvent } from '@/utils/tasks'
+import { encrypt, logEvent } from '@/utils/tasks'
 import { showDangerToast, showSuccessToast, t } from '@/utils/toasts'
 
 interface GeneralSettingsHook {
@@ -90,7 +90,7 @@ export const handleKeySave = async (
         const response = await invoke<InvokeSettings>('update_user_settings', {
           steamId,
           key: 'general.apiKey',
-          value: keyValue,
+          value: encrypt(keyValue),
         })
         setUserSettings(response.settings)
 
