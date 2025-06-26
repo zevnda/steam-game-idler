@@ -121,7 +121,7 @@ export default function SideBar(): ReactElement {
 
   return (
     <>
-      <div className='flex justify-between flex-col w-14 min-h-calc max-h-calc bg-titlebar border-r border-border/50'>
+      <div className='flex justify-between flex-col w-14 min-h-calc max-h-calc bg-titlebar'>
         <div className='flex justify-center items-center flex-col gap-1.5 py-2'>
           {mainSidebarItems.map(renderSidebarItem)}
         </div>

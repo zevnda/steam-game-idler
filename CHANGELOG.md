@@ -4,7 +4,8 @@
 
 - Steam credentials and Steam Web API keys are now encrypted using AES-256-GCM before being stored locally
   - This makes the sensitive values stored locally in `settings.json` unreadable to unauthorized users who might gain access to the file
-  - You will likely get an error saying your credentials need to be update
+  - This is considered a breaking change as you will likely get an error saying your credentials need to be update
+- Fixed an issue where the input fields in the `manual add` modal weren't being cleared after successfully adding a game
 
 <!-- 1.14.5 -->
 
