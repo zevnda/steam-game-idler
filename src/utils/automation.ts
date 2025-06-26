@@ -4,7 +4,8 @@ import { Time } from '@internationalized/date'
 
 import { invoke } from '@tauri-apps/api/core'
 
-import { logEvent } from '@/utils/tasks'
+import { decrypt, logEvent } from '@/utils/tasks'
+import { showMissingCredentialsToast } from '@/utils/toasts'
 
 // Check remaining card drops for a game
 export async function checkDrops(
@@ -15,9 +16,14 @@ export async function checkDrops(
   sma: string | undefined,
 ): Promise<number> {
   try {
+    if (!sid || !sls) {
+      showMissingCredentialsToast()
+      return 0
+    }
+
     const res = await invoke<InvokeDropsRemaining>('get_drops_remaining', {
-      sid,
-      sls,
+      sid: decrypt(sid),
+      sls: decrypt(sls),
       sma,
       steamId,
       appId,
@@ -43,9 +49,14 @@ export async function getAllGamesWithDrops(
   sma: string | undefined,
 ): Promise<Game[]> {
   try {
+    if (!sid || !sls) {
+      showMissingCredentialsToast()
+      return []
+    }
+
     const res = await invoke<InvokeGamesWithDrops>('get_games_with_drops', {
-      sid,
-      sls,
+      sid: decrypt(sid),
+      sls: decrypt(sls),
       sma,
       steamid: steamId,
     })

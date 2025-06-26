@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useUserContext } from '@/components/contexts/UserContext'
-import { checkSteamStatus, logEvent } from '@/utils/tasks'
+import { checkSteamStatus, decrypt, logEvent } from '@/utils/tasks'
 import { showAccountMismatchToast, showDangerToast } from '@/utils/toasts'
 
 interface SetupHook {
@@ -93,7 +93,7 @@ export default function useSetup(refreshKey: number): SetupHook {
             const steamIds = uncachedUsers.map(user => String(user?.steamId)).join(',')
             const userSummaryResponse = await invoke<InvokeUserSummary>('get_user_summary', {
               steamId: steamIds,
-              apiKey,
+              apiKey: apiKey ? decrypt(apiKey) : null,
             })
 
             const freshUsers = processUserSummaries(userSummaryResponse, uncachedUsers)

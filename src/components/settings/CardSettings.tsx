@@ -72,14 +72,7 @@ export default function CardSettings(): ReactElement {
                         'w-fit text-altwhite hover:text-content',
                       )}
                       onClick={() =>
-                        fetchGamesWithDropsData(
-                          userSummary,
-                          cardSettings.sidValue,
-                          cardSettings.slsValue,
-                          cardSettings?.smaValue,
-                          cardSettings.setIsCFDataLoading,
-                          setUserSettings,
-                        )
+                        fetchGamesWithDropsData(userSummary, cardSettings.setIsCFDataLoading, setUserSettings)
                       }
                     >
                       <p className='text-xs'>{t('setup.refresh')}</p>

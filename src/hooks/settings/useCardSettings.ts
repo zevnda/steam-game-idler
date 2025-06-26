@@ -14,7 +14,7 @@ import { useEffect, useState } from 'react'
 
 import { useUserContext } from '@/components/contexts/UserContext'
 import { getAllGamesWithDrops } from '@/utils/automation'
-import { logEvent } from '@/utils/tasks'
+import { decrypt, encrypt, logEvent } from '@/utils/tasks'
 import {
   showAccountMismatchToast,
   showDangerToast,
@@ -92,7 +92,7 @@ export const useCardSettings = (): CardSettingsHook => {
 const fetchUserSummary = async (steamId: string, apiKey: string | null): Promise<CardFarmingUser> => {
   const res = await invoke<InvokeUserSummary>('get_user_summary', {
     steamId,
-    apiKey,
+    apiKey: apiKey ? decrypt(apiKey) : null,
   })
   return {
     steamId: res.response.players[0]?.steamid,
@@ -139,20 +139,28 @@ const getStoredSettings = async (
 
 export const fetchGamesWithDropsData = async (
   userSummary: UserSummary,
-  sidValue: string,
-  slsValue: string,
-  smaValue: string | undefined,
   setIsCFDataLoading: Dispatch<SetStateAction<boolean>>,
   setUserSettings: Dispatch<SetStateAction<UserSettings>>,
 ): Promise<void> => {
   try {
     setIsCFDataLoading(true)
 
+    const cachedUserSummary = await invoke<InvokeSettings>('get_user_settings', {
+      steamId: userSummary?.steamId,
+    })
+
+    const credentials = cachedUserSummary.settings.cardFarming.credentials
+
+    if (!credentials || !credentials.sid || !credentials.sls) {
+      setIsCFDataLoading(false)
+      return showOutdatedCredentialsToast()
+    }
+
     // Validate credentials
     const validate = await invoke<InvokeValidateSession>('validate_session', {
-      sid: sidValue,
-      sls: slsValue,
-      sma: smaValue,
+      sid: decrypt(credentials.sid),
+      sls: decrypt(credentials.sls),
+      sma: credentials?.sma,
       steamid: userSummary?.steamId,
     })
 
@@ -174,7 +182,12 @@ export const fetchGamesWithDropsData = async (
       return showOutdatedCredentialsToast()
     }
 
-    const getGamesWithDrops = await getAllGamesWithDrops(userSummary?.steamId, sidValue, slsValue, smaValue)
+    const getGamesWithDrops = await getAllGamesWithDrops(
+      userSummary?.steamId,
+      credentials.sid,
+      credentials.sls,
+      credentials?.sma,
+    )
 
     const gamesWithDrops = getGamesWithDrops.length
     const totalDropsRemaining = getGamesWithDrops.reduce((total, game) => total + (game.remaining || 0), 0)
@@ -242,7 +255,7 @@ export const handleSave = async (
         await invoke<InvokeSettings>('update_user_settings', {
           steamId: userSummary?.steamId,
           key: 'cardFarming.credentials',
-          value: { sid: sidValue, sls: slsValue, sma: smaValue },
+          value: { sid: encrypt(sidValue), sls: encrypt(slsValue), sma: smaValue },
         })
 
         // Save card farming user and update UI state
@@ -258,7 +271,7 @@ export const handleSave = async (
         showSuccessToast(t('toast.cardFarming.logIn', { user: validate.user }))
         logEvent(`[Settings - Card Farming] Logged in as ${validate.user}`)
 
-        fetchGamesWithDropsData(userSummary, sidValue, slsValue, smaValue, setIsCFDataLoading, setUserSettings)
+        fetchGamesWithDropsData(userSummary, setIsCFDataLoading, setUserSettings)
       } else {
         showIncorrectCredentialsToast()
         logEvent('[Error] [Settings - Card Farming] Incorrect card farming credentials')

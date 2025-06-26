@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 
 import { useStateContext } from '@/components/contexts/StateContext'
 import { useUserContext } from '@/components/contexts/UserContext'
-import { checkSteamStatus, logEvent } from '@/utils/tasks'
+import { checkSteamStatus, decrypt, logEvent } from '@/utils/tasks'
 import {
   showDangerToast,
   showEnableAllGamesToast,
@@ -40,8 +40,8 @@ export const useAutomate = (): AutomateButtonsHook => {
 
       // Validate Steam session
       const response = await invoke<InvokeValidateSession>('validate_session', {
-        sid: credentials?.sid,
-        sls: credentials?.sls,
+        sid: decrypt(credentials?.sid),
+        sls: decrypt(credentials?.sls),
         sma: credentials?.sma,
         steamid: userSummary?.steamId,
       })

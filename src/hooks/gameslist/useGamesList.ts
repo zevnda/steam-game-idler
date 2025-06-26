@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next'
 
 import { useSearchContext } from '@/components/contexts/SearchContext'
 import { useUserContext } from '@/components/contexts/UserContext'
-import { logEvent } from '@/utils/tasks'
+import { decrypt, logEvent } from '@/utils/tasks'
 import { showDangerToast } from '@/utils/toasts'
 
 interface GameListResult {
@@ -165,9 +165,13 @@ export const fetchGamesList = async (
     // Fallback to API if cache isn't available or user requested refresh
     const gamesListResponse = await invoke<InvokeGamesList>('get_games_list', {
       steamId,
-      apiKey,
+      apiKey: apiKey ? decrypt(apiKey) : null,
     })
-    const recentGamesListResponse = await invoke<InvokeGamesList>('get_recent_games', { steamId })
+
+    const recentGamesListResponse = await invoke<InvokeGamesList>('get_recent_games', {
+      steamId,
+      apiKey: apiKey ? decrypt(apiKey) : null,
+    })
 
     const gamesList = gamesListResponse.games_list
     const recentGamesList = recentGamesListResponse.games_list
