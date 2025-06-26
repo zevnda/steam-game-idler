@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { FiBook, FiFileText, FiGithub, FiShield } from 'react-icons/fi'
+import { FiBook, FiFileText, FiGithub, FiMail, FiShield } from 'react-icons/fi'
 
 export default function FooterSection() {
   return (
@@ -37,7 +37,7 @@ export default function FooterSection() {
           </div>
 
           {/* Links sections */}
-          <div className='lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12'>
+          <div className='lg:col-span-2 grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-12'>
             <nav aria-labelledby='resources-heading'>
               <h2
                 id='resources-heading'
@@ -94,6 +94,26 @@ export default function FooterSection() {
                     <FiFileText className='w-3 h-3 sm:w-4 sm:h-4' aria-hidden='true' />
                     Terms of Service
                   </Link>
+                </li>
+              </ul>
+            </nav>
+
+            <nav aria-labelledby='contact-heading'>
+              <h2
+                id='contact-heading'
+                className='text-gray-800 font-black text-xs sm:text-sm uppercase tracking-wider mb-4 sm:mb-6'
+              >
+                CONTACT
+              </h2>
+              <ul className='space-y-3 sm:space-y-4'>
+                <li>
+                  <a
+                    href='mailto:contact@steamgameidler.com'
+                    className='text-sm sm:text-base text-gray-600 hover:text-indigo-700 transition-colors duration-200 flex items-center gap-2 sm:gap-3'
+                  >
+                    <FiMail className='w-3 h-3 sm:w-4 sm:h-4' aria-hidden='true' />
+                    Email Support
+                  </a>
                 </li>
               </ul>
             </nav>

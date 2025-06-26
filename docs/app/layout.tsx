@@ -17,11 +17,11 @@ const inter = Inter({
 
 export const metadata = {
   title: {
-    default: 'Steam Game Idler – Best Steam Idle Tool for Trading Cards & Achievements',
+    default: 'Steam Game Idler – The best alternative to ArchiSteamFarm, Steam Achievement Manager, and Idle Master',
     template: '%s | Steam Game Idler',
   },
   description:
-    'The ultimate Steam idler and card farmer. Idle Steam games, farm trading cards automatically, and manage achievements. Better than ArchiSteamFarm for most users.',
+    'The best Steam card farmer and achievement manager in 2025. Farm trading cards, manage achievements, and idle games automatically. A great alternative to ArchiSteamFarm, Steam Achievement Manager, and Idle Master.',
   metadataBase: new URL('https://steamgameidler.com/'),
   keywords: [
     'Steam Game Idler',
@@ -53,7 +53,7 @@ export const metadata = {
   },
   openGraph: {
     url: 'https://steamgameidler.com',
-    siteName: 'Steam Game Idler - Best Steam Idle Tool',
+    siteName: 'Steam Game Idler – The best alternative to ArchiSteamFarm, Steam Achievement Manager, and Idle Master',
     images: 'https://steamgameidler.com/og-image.png',
     locale: 'en_US',
     type: 'article',
@@ -61,9 +61,9 @@ export const metadata = {
   twitter: {
     card: 'summary_large_image',
     site: 'https://steamgameidler.com/',
-    title: 'Steam Game Idler - Best Steam Idle Tool for Trading Cards',
+    title: 'Steam Game Idler – The best alternative to ArchiSteamFarm, Steam Achievement Manager, and Idle Master',
     description:
-      'The ultimate Steam idler and card farmer. Idle Steam games, farm trading cards automatically, and manage achievements. Better than ArchiSteamFarm for most users.',
+      'The best Steam card farmer and achievement manager in 2025. Farm trading cards, manage achievements, and idle games automatically. A great alternative to ArchiSteamFarm, Steam Achievement Manager, and Idle Master.',
     image: 'https://steamgameidler.com/og-image.png',
   },
   other: {
@@ -75,7 +75,7 @@ export const metadata = {
       'name': 'Steam Game Idler',
       'url': 'https://steamgameidler.com/',
       'description':
-        'Farm Steam trading cards, manage achievements, and idle games automatically — an all-in-one alternative to ArchiSteamFarm, Steam Achievement Manager, and Idle Master',
+        'Farm Steam trading cards, manage achievements, and idle games automatically — an all-in-one alternative to ArchiSteamFarm, Steam Achievement Manager, and Idle Master.',
     }),
   },
   alternates: {
