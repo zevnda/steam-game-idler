@@ -57,10 +57,7 @@ export async function POST(request: Request) {
   }
 }
 
-// Optionally handle GET and other methods
-export async function GET() {
-  return new Response(JSON.stringify({ error: 'Method Not Allowed' }), {
-    status: 405,
-    headers: { 'Content-Type': 'application/json' },
-  })
+// Allow GET for browser testing (returns a simple message)
+export async function GET(request: Request) {
+  return POST(request)
 }
