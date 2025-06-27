@@ -44,7 +44,14 @@ export async function POST(request: Request) {
       body: JSON.stringify(payload),
     })
 
-    const data = await response.json().catch(() => ({}))
+    let data
+    try {
+      data = await response.json()
+    } catch {
+      const text = await response.text()
+      data = { raw: text }
+    }
+
     return new Response(JSON.stringify(data), {
       status: response.status,
       headers: { 'Content-Type': 'application/json' },
