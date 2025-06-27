@@ -1,6 +1,4 @@
-import type { NextApiRequest, NextApiResponse } from 'next'
-
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export async function POST(request: Request) {
   const endpoint = 'https://api.indexnow.org/indexnow'
 
   const payload = {
@@ -47,8 +45,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     })
 
     const data = await response.json().catch(() => ({}))
-    res.status(response.status).json(data)
+    return new Response(JSON.stringify(data), {
+      status: response.status,
+      headers: { 'Content-Type': 'application/json' },
+    })
   } catch (error: any) {
-    res.status(500).json({ error: error.message || 'Unknown error' })
+    return new Response(JSON.stringify({ error: error.message || 'Unknown error' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    })
   }
+}
+
+// Optionally handle GET and other methods
+export async function GET() {
+  return new Response(JSON.stringify({ error: 'Method Not Allowed' }), {
+    status: 405,
+    headers: { 'Content-Type': 'application/json' },
+  })
 }
