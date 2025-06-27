@@ -11,6 +11,7 @@
     "dev": "next dev",
     "dev:docs": "pnpm --filter steam-game-idler-docs dev",
     "dev:all": "pnpm --parallel dev",
+    "pub:docs": "pnpm --filter steam-game-idler-docs pub",
     "build": "next build",
     "build:docs": "pnpm --filter steam-game-idler-docs build",
     "build:all": "pnpm build && pnpm build:docs",

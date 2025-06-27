@@ -7,7 +7,7 @@ import { FaArrowRight, FaWindows } from 'react-icons/fa'
 import { FiBook, FiGithub } from 'react-icons/fi'
 
 export default function HeroSection() {
-  const [latestVersion, setLatestVersion] = useState('v2.1.0')
+  const [latestVersion, setLatestVersion] = useState('v1.2.3')
 
   useEffect(() => {
     fetch('https://api.github.com/repos/zevnda/steam-game-idler/releases/latest')
@@ -39,9 +39,9 @@ export default function HeroSection() {
       {/* Floating feature badges - positioned across entire hero section */}
       <div className='absolute inset-0 pointer-events-none z-20'>
         {/* Top left area */}
-        <div className='absolute hidden xl:block top-14 left-4 md:left-12 lg:left-16 transform -rotate-12 animate-float'>
+        <div className='absolute hidden xl:block top-14 left-4 md:left-12 lg:left-16 transform -rotate-12'>
           <div className='relative p-[1px] bg-gradient-to-r from-purple-400 via-pink-400 to-yellow-400 rounded-xl'>
-            <div className='bg-white/95 backdrop-blur-sm rounded-xl px-4 py-3 shadow-xl max-w-xs'>
+            <div className='bg-white/95 rounded-xl px-4 py-3 shadow-xl max-w-xs'>
               <div className='flex items-start space-x-3'>
                 <div className='flex text-yellow-400 text-sm'>★★★★★</div>
                 <div className='flex-1'>
@@ -55,7 +55,7 @@ export default function HeroSection() {
         {/* Top right area */}
         <div className='absolute hidden xl:block top-12 right-4 md:right-12 lg:right-20 transform rotate-6 animate-float delay-500'>
           <div className='relative p-[1px] bg-gradient-to-r from-green-400 via-blue-400 to-purple-400 rounded-xl'>
-            <div className='bg-white/95 backdrop-blur-sm rounded-xl px-4 py-3 shadow-xl max-w-xs'>
+            <div className='bg-white/95 rounded-xl px-4 py-3 shadow-xl max-w-xs'>
               <div className='flex items-start space-x-3'>
                 <div className='flex text-yellow-400 text-sm'>★★★★★</div>
                 <div className='flex-1'>
@@ -69,7 +69,7 @@ export default function HeroSection() {
         {/* Bottom left area */}
         <div className='absolute hidden xl:block bottom-16 left-6 md:left-16 lg:left-24 transform rotate-6 animate-float delay-2000'>
           <div className='relative p-[1px] bg-gradient-to-r from-pink-400 via-rose-400 to-orange-400 rounded-xl'>
-            <div className='bg-white/95 backdrop-blur-sm rounded-xl px-4 py-3 shadow-xl max-w-xs'>
+            <div className='bg-white/95 rounded-xl px-4 py-3 shadow-xl max-w-xs'>
               <div className='flex items-start space-x-3'>
                 <div className='flex text-yellow-400 text-sm'>★★★★★</div>
                 <div className='flex-1'>
@@ -83,7 +83,7 @@ export default function HeroSection() {
         {/* Bottom right area */}
         <div className='absolute hidden xl:block bottom-20 right-6 md:right-16 lg:right-28 transform -rotate-12 animate-float delay-2500'>
           <div className='relative p-[1px] bg-gradient-to-r from-orange-400 via-amber-400 to-yellow-400 rounded-xl'>
-            <div className='bg-white/95 backdrop-blur-sm rounded-xl px-4 py-3 shadow-xl max-w-xs'>
+            <div className='bg-white/95 rounded-xl px-4 py-3 shadow-xl max-w-xs'>
               <div className='flex items-start space-x-3'>
                 <div className='flex text-yellow-400 text-sm'>★★★★★</div>
                 <div className='flex-1'>
@@ -96,7 +96,7 @@ export default function HeroSection() {
 
         <div className='hidden xl:block absolute top-24 left-1/3 transform rotate-3 animate-float delay-3000'>
           <div className='relative p-[1px] bg-gradient-to-r from-indigo-400 via-purple-400 to-blue-400 rounded-xl'>
-            <div className='bg-white/95 backdrop-blur-sm rounded-xl px-4 py-3 shadow-xl max-w-xs'>
+            <div className='bg-white/95 rounded-xl px-4 py-3 shadow-xl max-w-xs'>
               <div className='flex items-start space-x-3'>
                 <div className='flex text-yellow-400 text-sm'>★★★★★</div>
                 <div className='flex-1'>
@@ -109,7 +109,7 @@ export default function HeroSection() {
 
         <div className='hidden xl:block absolute bottom-20 left-1/2 transform -translate-x-1/2 -rotate-3 animate-float delay-3500'>
           <div className='relative p-[1px] bg-gradient-to-r from-rose-400 via-pink-400 to-purple-400 rounded-xl'>
-            <div className='bg-white/95 backdrop-blur-sm rounded-xl px-4 py-3 shadow-xl max-w-xs'>
+            <div className='bg-white/95 rounded-xl px-4 py-3 shadow-xl max-w-xs'>
               <div className='flex items-start space-x-3'>
                 <div className='flex text-yellow-400 text-sm'>★★★★★</div>
                 <div className='flex-1'>

@@ -24,16 +24,19 @@ export const metadata = {
     'Steam Trading Cards',
   ],
   openGraph: {
+    url: 'https://steamgameidler.com/alternatives/archisteamfarm',
+    siteName: 'Steam Game Idler',
     title: 'ArchiSteamFarm Feature Comparison | Steam Game Idler',
     description:
       'See why Steam Game Idler is the best alternative to ArchiSteamFarm for Steam automation. Compare features like card farming, achievement management, and user experience',
-    url: 'https://steamgameidler.com/alternatives/archisteamfarm',
+    images: 'https://steamgameidler.com/asf-og-image.png',
     type: 'article',
   },
   twitter: {
     title: 'ArchiSteamFarm Feature Comparison | Steam Game Idler',
     description:
       'See why Steam Game Idler is the best alternative to ArchiSteamFarm for Steam automation. Compare features like card farming, achievement management, and user experience',
+    image: 'https://steamgameidler.com/asf-og-image.png',
   },
   alternates: {
     canonical: '/alternatives/archisteamfarm',
@@ -107,7 +110,7 @@ export default function page(): ReactElement {
         {/* Go Back Button */}
         <Link
           href='/'
-          className='fixed top-6 left-6 z-50 inline-flex items-center px-4 py-2 bg-white/90 hover:bg-white border border-gray-200 rounded-lg text-gray-700 hover:text-gray-900 font-medium transition-all duration-200 shadow-sm hover:shadow-md backdrop-blur-sm'
+          className='fixed top-6 left-6 z-50 inline-flex items-center px-4 py-2 bg-white/90 hover:bg-white border border-gray-200 rounded-lg text-gray-700 hover:text-gray-900 font-medium transition-all duration-200 shadow-sm hover:shadow-md'
         >
           <FaArrowLeft className='w-4 h-4 mr-2' />
           Go Back
@@ -274,7 +277,7 @@ export default function page(): ReactElement {
 
               <Link
                 href='/docs'
-                className='inline-flex items-center justify-center px-8 py-4 bg-white/20 text-white font-bold rounded-xl hover:bg-white/30 transition-colors duration-200 backdrop-blur-sm'
+                className='inline-flex items-center justify-center px-8 py-4 bg-white/20 text-white font-bold rounded-xl hover:bg-white/30 transition-colors duration-200'
               >
                 <FiBook className='w-5 h-5 mr-3' />
                 VIEW DOCUMENTATION

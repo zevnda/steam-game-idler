@@ -53,10 +53,10 @@ export const metadata = {
   },
   openGraph: {
     url: 'https://steamgameidler.com',
-    siteName: 'Steam Game Idler – The best alternative to ArchiSteamFarm, Steam Achievement Manager, and Idle Master',
+    siteName: 'Steam Game Idler',
     images: 'https://steamgameidler.com/og-image.png',
     locale: 'en_US',
-    type: 'article',
+    type: 'website',
   },
   twitter: {
     card: 'summary_large_image',

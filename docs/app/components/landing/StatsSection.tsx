@@ -92,7 +92,7 @@ export default function StatsSection() {
         <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6'>
           {stats.map((stat, index) => (
             <article key={stat.label} className='group'>
-              <div className='bg-white/80 border-2 border-indigo-200 p-6 sm:p-8 hover:border-indigo-400 hover:bg-white/90 transition-all duration-200 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-2'>
+              <div className='bg-white border-2 border-indigo-200 p-6 sm:p-8 hover:border-indigo-400 hover:bg-white/90 transition-all duration-200 rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-2'>
                 <div className='flex items-start justify-between mb-4 sm:mb-6'>
                   <div
                     className='text-indigo-500 group-hover:text-purple-500 transition-colors duration-200'
