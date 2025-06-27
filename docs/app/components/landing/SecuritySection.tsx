@@ -81,7 +81,7 @@ export default function SecuritySection() {
 
           {/* Right side - Visual */}
           <div className='relative mt-8 lg:mt-0'>
-            <div className='bg-white/80 border-2 border-emerald-200 rounded-2xl p-4 sm:p-6 backdrop-blur-sm shadow-xl'>
+            <div className='bg-white border-2 border-emerald-200 rounded-2xl p-4 sm:p-6 shadow-xl'>
               <div className='flex items-center gap-2 mb-4 sm:mb-6'>
                 <FiCode className='w-4 h-4 sm:w-5 sm:h-5 text-emerald-600' />
                 <span className='text-emerald-700 font-mono text-xs sm:text-sm'>security-audit.log</span>

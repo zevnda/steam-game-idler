@@ -49,15 +49,15 @@ export default function CTASection() {
 
           {/* System requirements */}
           <div className='grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-8 max-w-3xl mx-auto text-white/90 px-4 sm:px-0'>
-            <div className='text-center bg-white/10 rounded-xl p-3 sm:p-4 backdrop-blur-sm'>
+            <div className='text-center bg-white/10 rounded-xl p-3 sm:p-4'>
               <h3 className='text-base sm:text-lg font-bold mb-1 sm:mb-2'>SYSTEM</h3>
               <div className='text-xs sm:text-sm opacity-90'>Windows 10/11</div>
             </div>
-            <div className='text-center bg-white/10 rounded-xl p-3 sm:p-4 backdrop-blur-sm'>
+            <div className='text-center bg-white/10 rounded-xl p-3 sm:p-4'>
               <h3 className='text-base sm:text-lg font-bold mb-1 sm:mb-2'>SIZE</h3>
               <div className='text-xs sm:text-sm opacity-90'>~6MB Download</div>
             </div>
-            <div className='text-center bg-white/10 rounded-xl p-3 sm:p-4 backdrop-blur-sm'>
+            <div className='text-center bg-white/10 rounded-xl p-3 sm:p-4'>
               <h3 className='text-base sm:text-lg font-bold mb-1 sm:mb-2'>MIT LICENSE</h3>
               <div className='text-xs sm:text-sm opacity-90'>100% Free & Open</div>
             </div>

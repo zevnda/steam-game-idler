@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "next",
     "build": "next build",
+    "pub": "concurrently \"next dev\" \"ngrok http 3000 --log=stdout\"",
     "postbuild": "next-sitemap --config next-sitemap.config.mjs && pagefind --site .next/server/app --output-path public/_pagefind",
     "start": "next start",
     "lint": "next lint"
@@ -28,6 +29,7 @@
   },
   "devDependencies": {
     "@types/node": "22.15.30",
-    "@types/react": "19.1.6"
+    "@types/react": "19.1.6",
+    "concurrently": "^9.2.0"
   }
 }
