@@ -64,6 +64,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
     const getTradingCards = async (): Promise<void> => {
       try {
         const credentials = userSettings.cardFarming.credentials
+        const apiKey = userSettings.general?.apiKey
 
         if (!credentials?.sid || !credentials?.sls) return showMissingCredentialsToast()
 
@@ -93,6 +94,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
             sma: credentials?.sma,
             steamId: userSummary?.steamId,
             includePrices: true,
+            apiKey: apiKey ? decrypt(apiKey) : null,
           })
 
           if (response.card_data.length > 0) {
@@ -111,7 +113,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
       }
     }
     getTradingCards()
-  }, [refreshKey, t, userSettings.cardFarming.credentials, userSummary?.steamId])
+  }, [refreshKey, t, userSettings.cardFarming.credentials, userSummary?.steamId, userSettings.general?.apiKey])
 
   const fetchCardPrices = async (hash: string): Promise<{ success: boolean; price?: string }> => {
     setLoadingItemPrice(prev => ({ ...prev, [hash]: true }))

@@ -7,6 +7,7 @@ export interface TradingCard {
   image: string
   appname: string
   market_hash_name: string
+  badge_level: number
   price_data: {
     lowest_price: string
     volume: string
