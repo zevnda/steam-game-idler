@@ -39,7 +39,7 @@ export default function useWindow(): void {
     setUseBeta,
   } = useStateContext()
   const { setUpdateAvailable, setShowChangelog } = useUpdateContext()
-  const { userSummary, setUserSummary, userSettings, setUserSettings, setFreeGamesList } = useUserContext()
+  const { userSummary, setUserSummary, userSettings, setUserSettings, gamesList, setFreeGamesList } = useUserContext()
 
   console.error('Monitor for rerenders')
 
@@ -174,8 +174,8 @@ export default function useWindow(): void {
   }, [setIdleGamesList])
 
   const freeGamesCheck = useCallback((): void => {
-    checkForFreeGames(setFreeGamesList, setShowFreeGamesTab)
-  }, [setFreeGamesList, setShowFreeGamesTab])
+    checkForFreeGames(setFreeGamesList, setShowFreeGamesTab, gamesList)
+  }, [setFreeGamesList, setShowFreeGamesTab, gamesList])
 
   useEffect(() => {
     // Check for free games
@@ -202,10 +202,12 @@ export default function useWindow(): void {
 export const checkForFreeGames = async (
   setFreeGamesList: Dispatch<SetStateAction<Game[]>>,
   setShowFreeGamesTab: Dispatch<SetStateAction<boolean>>,
+  gamesList: Game[],
 ): Promise<void> => {
   try {
+    // Wait for user summary and games list to be available
     const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
-    if (!userSummary?.steamId) return
+    if (!userSummary?.steamId || gamesList.length === 0) return
 
     const response = await invoke<InvokeSettings>('get_user_settings', {
       steamId: userSummary?.steamId,
@@ -217,14 +219,18 @@ export const checkForFreeGames = async (
 
     if (!freeGamesList) return
 
+    // Filter out games the user already owns
+    const ownedAppIds = new Set(gamesList.map(game => Number(game.appid)))
+    const filteredFreeGames = freeGamesList.games.filter(game => !ownedAppIds.has(Number(game.appid)))
+
     // Compare the new free games with the old ones
     const oldFreeGamesIdsStr = localStorage.getItem('freeGamesIds')
     const oldFreeGameIds: number[] = oldFreeGamesIdsStr ? JSON.parse(oldFreeGamesIdsStr) : []
-    const newFreeGameIds: number[] = freeGamesList.games.map(game => Number(game.appid))
+    const newFreeGameIds: number[] = filteredFreeGames.map(game => Number(game.appid))
 
     // Show free games tab if there are any
-    if (freeGamesList.games.length > 0) {
-      setFreeGamesList(freeGamesList.games)
+    if (filteredFreeGames.length > 0) {
+      setFreeGamesList(filteredFreeGames)
       setShowFreeGamesTab(true)
 
       // Sort the arrays before comparing to ignore order differences

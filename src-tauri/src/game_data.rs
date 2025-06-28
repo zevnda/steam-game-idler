@@ -274,7 +274,8 @@ pub fn delete_all_cache_files(app_handle: tauri::AppHandle) -> Result<(), String
 #[tauri::command]
 pub async fn get_free_games() -> Result<serde_json::Value, String> {
     let client = Client::new();
-    let url = "https://store.steampowered.com/search/?l=english&maxprice=free&specials=1";
+    let url =
+        "https://store.steampowered.com/search/?l=english&maxprice=free&specials=1&category1=998";
 
     let response = client.get(url).send().await.map_err(|e| e.to_string())?;
 
