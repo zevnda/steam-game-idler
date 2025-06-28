@@ -4,6 +4,7 @@
 
 - Cards in the `trading card manager` will now display a green checkmark and have a green game name if you have unlocked a badge for that game
   - Hovering the checkmark or game name will show the badge level
+  - You will need to refresh the `trading card manager` to pull the new badge level data
 
 <!-- 1.15.0 -->
 
