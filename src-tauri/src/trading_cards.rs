@@ -14,6 +14,7 @@ pub async fn get_trading_cards(
     sma: Option<String>,
     steam_id: String,
     app_handle: tauri::AppHandle,
+    api_key: Option<String>,
 ) -> Result<Value, String> {
     let client = Client::builder()
         .redirect(reqwest::redirect::Policy::custom(|attempt| {
@@ -62,6 +63,36 @@ pub async fn get_trading_cards(
         .json()
         .await
         .map_err(|e| format!("Failed to parse inventory JSON: {}", e))?;
+
+    // Get the API key from the argument or env
+    let key = api_key.unwrap_or_else(|| std::env::var("KEY").unwrap());
+    let mut badge_levels: HashMap<u64, u64> = HashMap::new();
+    {
+        let badge_url = format!(
+            "https://api.steampowered.com/IPlayerService/GetBadges/v1/?steamid={}&key={}",
+            steam_id, key
+        );
+        let badge_resp = client.get(&badge_url).send().await;
+        if let Ok(resp) = badge_resp {
+            if resp.status().is_success() {
+                if let Ok(badge_json) = resp.json::<Value>().await {
+                    if let Some(badges) = badge_json
+                        .get("response")
+                        .and_then(|r| r.get("badges"))
+                        .and_then(|b| b.as_array())
+                    {
+                        for badge in badges {
+                            let appid = badge.get("appid").and_then(|a| a.as_u64()).unwrap_or(0);
+                            let level = badge.get("level").and_then(|l| l.as_u64()).unwrap_or(0);
+                            if appid != 0 {
+                                badge_levels.insert(appid, level);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     // Create a map of classid+instanceid to assetid from assets array
     let mut asset_map: HashMap<String, String> = HashMap::new();
@@ -160,6 +191,9 @@ pub async fn get_trading_cards(
                         }
                     });
 
+                // Get badge level for this appid
+                let badge_level = badge_levels.get(&appid).cloned().unwrap_or(0);
+
                 // Get assetid from asset_map using classid+instanceid as key
                 let key = format!("{}_{}", classid, instanceid);
                 if let Some(assetid) = asset_map.get(&key) {
@@ -172,7 +206,8 @@ pub async fn get_trading_cards(
                             "href": format!("https://steamcommunity.com/profiles/{}/inventory/#753_6_{}", steam_id, assetid),
                             "appname": appname,
                             "full_name": full_name,
-                            "market_hash_name": market_hash_name
+                            "market_hash_name": market_hash_name,
+                            "badge_level": badge_level
                         }));
                     }
                 }

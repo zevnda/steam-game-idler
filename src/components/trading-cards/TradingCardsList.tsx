@@ -5,6 +5,7 @@ import { Checkbox, cn, Spinner } from '@heroui/react'
 import { memo, useEffect, useMemo, useState } from 'react'
 import Image from 'next/image'
 import { useTranslation } from 'react-i18next'
+import { FaCheckCircle } from 'react-icons/fa'
 import { SiExpertsexchange } from 'react-icons/si'
 import { FixedSizeList as List } from 'react-window'
 
@@ -83,6 +84,7 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
         </div>
 
         <CustomTooltip
+          important
           placement='right'
           content={
             <div className='py-2'>
@@ -109,9 +111,22 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
           </div>
         </CustomTooltip>
 
-        <div className='flex flex-col items-center justify-center mt-2'>
-          <p className='text-xs text-altwhite truncate max-w-[140px]'>{item.appname}</p>
-        </div>
+        <CustomTooltip
+          content={item.badge_level > 0 ? 'Badge Level: ' + item.badge_level : 'No Badge'}
+          placement='top'
+          important
+        >
+          <div className='flex items-center justify-center gap-1 mt-2'>
+            {item.badge_level > 0 && (
+              <div className='flex items-center justify-center'>
+                <FaCheckCircle size={12} className='text-green-400' />
+              </div>
+            )}
+            <p className={cn('text-xs text-altwhite truncate max-w-[140px]', item.badge_level > 0 && 'text-green-400')}>
+              {item.appname}
+            </p>
+          </div>
+        </CustomTooltip>
 
         <PriceInput item={item} tradingCardContext={tradingCardContext} />
 
