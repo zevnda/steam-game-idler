@@ -13,6 +13,7 @@ import GeneralSettings from '@/components/settings/GeneralSettings'
 import Logs from '@/components/settings/Logs'
 import OpenSettings from '@/components/settings/OpenSettings'
 import ResetSettings from '@/components/settings/ResetSettings'
+import ViewDocumentation from '@/components/settings/ViewDocumentation'
 import useSettings from '@/hooks/settings/useSettings'
 
 export default function Settings(): ReactElement {
@@ -40,6 +41,7 @@ export default function Settings(): ReactElement {
         </div>
 
         <div className='flex items-center gap-2'>
+          <ViewDocumentation />
           <OpenSettings />
           <ExportSettings />
           <ResetSettings setRefreshKey={setRefreshKey} />
