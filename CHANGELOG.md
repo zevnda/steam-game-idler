@@ -7,6 +7,8 @@
     - Enable the option and then select which feature should be started
   - When feature X finishes, automatically start feature Y
   - Tasks can be chained together *(e.g. start card farming → finishes → start achievement unlocker → finishes → start auto idler)*
+- Added proper pagination for `trading card manager` API calls, allowing all trading cards to be returned at once
+  - This is useful for users with large Steam inventories
 - Fixed and improved some misc UI inconsistencies
 
 <!-- 1.15.1 -->

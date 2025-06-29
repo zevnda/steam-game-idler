@@ -39,30 +39,83 @@ pub async fn get_trading_cards(
         None => format!("sessionid={}; steamLoginSecure={}", sid, sls),
     };
 
-    let inventory_url = format!(
-        "https://steamcommunity.com/inventory/{}/753/6?l=english&count=2500",
-        steam_id
-    );
+    // Pagination: fetch all inventory pages
+    let mut all_assets = Vec::new();
+    let mut all_descriptions = Vec::new();
+    let mut start_assetid: Option<String> = None;
+    let mut total_inventory_count = 0;
+    loop {
+        let mut inventory_url = format!(
+            "https://steamcommunity.com/inventory/{}/753/6?l=english&count=2500",
+            steam_id
+        );
+        if let Some(ref start) = start_assetid {
+            inventory_url.push_str(&format!("&start_assetid={}", start));
+        }
 
-    let response = client
-        .get(&inventory_url)
-        .header("Cookie", cookie_value)
-        .send()
-        .await
-        .map_err(|e| e.to_string())?;
+        let response = client
+            .get(&inventory_url)
+            .header("Cookie", &cookie_value)
+            .send()
+            .await
+            .map_err(|e| e.to_string())?;
 
-    if !response.status().is_success() {
-        return Err(format!(
-            "Failed to fetch inventory: HTTP {}",
-            response.status()
-        ));
+        if !response.status().is_success() {
+            return Err(format!(
+                "Failed to fetch inventory: HTTP {}",
+                response.status()
+            ));
+        }
+
+        // Parse the JSON response
+        let inventory_data: Value = response
+            .json()
+            .await
+            .map_err(|e| format!("Failed to parse inventory JSON: {}", e))?;
+
+        // On first page, get total_inventory_count
+        if total_inventory_count == 0 {
+            total_inventory_count = inventory_data
+                .get("total_inventory_count")
+                .and_then(|v| v.as_u64())
+                .unwrap_or(0) as usize;
+        }
+
+        // Merge assets and descriptions
+        if let Some(assets) = inventory_data.get("assets").and_then(|a| a.as_array()) {
+            for asset in assets {
+                all_assets.push(asset.clone());
+            }
+        }
+        if let Some(descriptions) = inventory_data
+            .get("descriptions")
+            .and_then(|d| d.as_array())
+        {
+            for desc in descriptions {
+                all_descriptions.push(desc.clone());
+            }
+        }
+
+        // Check if we need to paginate
+        let assets_len = all_assets.len();
+        let more_items = inventory_data
+            .get("more_items")
+            .and_then(|m| m.as_bool())
+            .unwrap_or(false);
+        let last_assetid = inventory_data
+            .get("last_assetid")
+            .and_then(|id| id.as_str())
+            .map(|s| s.to_string());
+
+        if more_items && last_assetid.is_some() {
+            start_assetid = last_assetid;
+        } else if assets_len < total_inventory_count && last_assetid.is_some() {
+            // Defensive: if more_items is missing but we know there are more
+            start_assetid = last_assetid;
+        } else {
+            break;
+        }
     }
-
-    // Parse the JSON response
-    let inventory_data: Value = response
-        .json()
-        .await
-        .map_err(|e| format!("Failed to parse inventory JSON: {}", e))?;
 
     // Get the API key from the argument or env
     let key = api_key.unwrap_or_else(|| std::env::var("KEY").unwrap());
@@ -96,120 +149,113 @@ pub async fn get_trading_cards(
 
     // Create a map of classid+instanceid to assetid from assets array
     let mut asset_map: HashMap<String, String> = HashMap::new();
-    if let Some(assets) = inventory_data.get("assets").and_then(|a| a.as_array()) {
-        for asset in assets {
-            if let (Some(classid), Some(instanceid), Some(assetid)) = (
-                asset.get("classid").and_then(|id| id.as_str()),
-                asset.get("instanceid").and_then(|id| id.as_str()),
-                asset.get("assetid").and_then(|id| id.as_str()),
-            ) {
-                let key = format!("{}_{}", classid, instanceid);
-                asset_map.insert(key, assetid.to_string());
-            }
+    for asset in &all_assets {
+        if let (Some(classid), Some(instanceid), Some(assetid)) = (
+            asset.get("classid").and_then(|id| id.as_str()),
+            asset.get("instanceid").and_then(|id| id.as_str()),
+            asset.get("assetid").and_then(|id| id.as_str()),
+        ) {
+            let key = format!("{}_{}", classid, instanceid);
+            asset_map.insert(key, assetid.to_string());
         }
     }
 
-    if let Some(descriptions) = inventory_data
-        .get("descriptions")
-        .and_then(|d| d.as_array())
-    {
-        for item in descriptions {
-            // Check if this is a trading card and is marketable
-            let is_trading_card = item
-                .get("tags")
-                .and_then(|tags| tags.as_array())
-                .map(|tags| {
-                    tags.iter().any(|tag| {
-                        tag.get("category")
-                            .and_then(|c| c.as_str())
-                            .map(|c| c == "item_class")
+    for item in &all_descriptions {
+        // Check if this is a trading card and is marketable
+        let is_trading_card = item
+            .get("tags")
+            .and_then(|tags| tags.as_array())
+            .map(|tags| {
+                tags.iter().any(|tag| {
+                    tag.get("category")
+                        .and_then(|c| c.as_str())
+                        .map(|c| c == "item_class")
+                        .unwrap_or(false)
+                        && tag
+                            .get("internal_name")
+                            .and_then(|n| n.as_str())
+                            .map(|n| n == "item_class_2")
                             .unwrap_or(false)
-                            && tag
-                                .get("internal_name")
-                                .and_then(|n| n.as_str())
-                                .map(|n| n == "item_class_2")
-                                .unwrap_or(false)
-                    })
                 })
-                .unwrap_or(false);
+            })
+            .unwrap_or(false);
 
-            // Only get marketable items
-            let is_marketable = item
-                .get("marketable")
-                .and_then(|m| m.as_u64())
-                .map(|m| m == 1)
-                .unwrap_or(false);
+        // Only get marketable items
+        let is_marketable = item
+            .get("marketable")
+            .and_then(|m| m.as_u64())
+            .map(|m| m == 1)
+            .unwrap_or(false);
 
-            if is_trading_card && is_marketable {
-                let classid = item.get("classid").and_then(|id| id.as_str()).unwrap_or("");
-                let instanceid = item
-                    .get("instanceid")
-                    .and_then(|id| id.as_str())
-                    .unwrap_or("");
-                let image_url = item
-                    .get("icon_url")
-                    .and_then(|url| url.as_str())
-                    .unwrap_or("");
+        if is_trading_card && is_marketable {
+            let classid = item.get("classid").and_then(|id| id.as_str()).unwrap_or("");
+            let instanceid = item
+                .get("instanceid")
+                .and_then(|id| id.as_str())
+                .unwrap_or("");
+            let image_url = item
+                .get("icon_url")
+                .and_then(|url| url.as_str())
+                .unwrap_or("");
 
-                let appid = item
-                    .get("market_fee_app")
-                    .and_then(|id| id.as_u64())
-                    .unwrap_or(0);
+            let appid = item
+                .get("market_fee_app")
+                .and_then(|id| id.as_u64())
+                .unwrap_or(0);
 
-                // Try multiple name fields in order
-                let full_name = item
-                    .get("market_name")
-                    .and_then(|name| name.as_str())
-                    .or_else(|| item.get("name").and_then(|name| name.as_str()))
-                    .unwrap_or("");
+            // Try multiple name fields in order
+            let full_name = item
+                .get("market_name")
+                .and_then(|name| name.as_str())
+                .or_else(|| item.get("name").and_then(|name| name.as_str()))
+                .unwrap_or("");
 
-                // Get hash name from market_hash_name or name field
-                let market_hash_name = item
-                    .get("market_hash_name")
-                    .and_then(|name| name.as_str())
-                    .or_else(|| item.get("name").and_then(|name| name.as_str()))
-                    .unwrap_or("");
+            // Get hash name from market_hash_name or name field
+            let market_hash_name = item
+                .get("market_hash_name")
+                .and_then(|name| name.as_str())
+                .or_else(|| item.get("name").and_then(|name| name.as_str()))
+                .unwrap_or("");
 
-                // Get the game name from type field or extract from full name
-                let appname = item
-                    .get("type")
-                    .and_then(|t| t.as_str())
-                    .and_then(|t| {
-                        if t.ends_with(" Trading Card") {
-                            Some(t.trim_end_matches(" Trading Card"))
-                        } else {
-                            None
-                        }
-                    })
-                    .unwrap_or_else(|| {
-                        if let Some(idx) = full_name.find(" - ") {
-                            &full_name[0..idx]
-                        } else if let Some(idx) = full_name.find(" Trading Card") {
-                            &full_name[0..idx]
-                        } else {
-                            full_name
-                        }
-                    });
-
-                // Get badge level for this appid
-                let badge_level = badge_levels.get(&appid).cloned().unwrap_or(0);
-
-                // Get assetid from asset_map using classid+instanceid as key
-                let key = format!("{}_{}", classid, instanceid);
-                if let Some(assetid) = asset_map.get(&key) {
-                    if !classid.is_empty() && !image_url.is_empty() {
-                        trading_cards.push(json!({
-                            "id": classid,
-                            "assetid": assetid,
-                            "appid": appid,
-                            "image": format!("https://steamcommunity-a.akamaihd.net/economy/image/{}", image_url),
-                            "href": format!("https://steamcommunity.com/profiles/{}/inventory/#753_6_{}", steam_id, assetid),
-                            "appname": appname,
-                            "full_name": full_name,
-                            "market_hash_name": market_hash_name,
-                            "badge_level": badge_level
-                        }));
+            // Get the game name from type field or extract from full name
+            let appname = item
+                .get("type")
+                .and_then(|t| t.as_str())
+                .and_then(|t| {
+                    if t.ends_with(" Trading Card") {
+                        Some(t.trim_end_matches(" Trading Card"))
+                    } else {
+                        None
                     }
+                })
+                .unwrap_or_else(|| {
+                    if let Some(idx) = full_name.find(" - ") {
+                        &full_name[0..idx]
+                    } else if let Some(idx) = full_name.find(" Trading Card") {
+                        &full_name[0..idx]
+                    } else {
+                        full_name
+                    }
+                });
+
+            // Get badge level for this appid
+            let badge_level = badge_levels.get(&appid).cloned().unwrap_or(0);
+
+            // Get assetid from asset_map using classid+instanceid as key
+            let key = format!("{}_{}", classid, instanceid);
+            if let Some(assetid) = asset_map.get(&key) {
+                if !classid.is_empty() && !image_url.is_empty() {
+                    trading_cards.push(json!({
+                        "id": classid,
+                        "assetid": assetid,
+                        "appid": appid,
+                        "image": format!("https://steamcommunity-a.akamaihd.net/economy/image/{}", image_url),
+                        "href": format!("https://steamcommunity.com/profiles/{}/inventory/#753_6_{}", steam_id, assetid),
+                        "appname": appname,
+                        "full_name": full_name,
+                        "market_hash_name": market_hash_name,
+                        "badge_level": badge_level
+                    }));
                 }
             }
         }
