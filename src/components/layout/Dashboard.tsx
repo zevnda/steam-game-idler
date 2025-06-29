@@ -12,6 +12,7 @@ import CustomList from '@/components/customlists/CustomList'
 import FreeGamesList from '@/components/gameslist/FreeGamesList'
 import GamesList from '@/components/gameslist/GamesList'
 import IdlingGamesList from '@/components/gameslist/IdlingGamesList'
+import PluginPage from '@/components/plugins/PluginPage'
 import Settings from '@/components/settings/Settings'
 import TradingCardsList from '@/components/trading-cards/TradingCardsList'
 import Header from '@/components/ui/header/Header'
@@ -29,6 +30,12 @@ export default function Dashboard(): ReactElement {
 
   const renderContent = (): ReactElement => {
     if (showAchievements) return <Achievements />
+
+    // Handle plugin pages
+    if (activePage.startsWith('plugins/')) {
+      const pluginId = activePage.replace('plugins/', '')
+      return <PluginPage pluginId={pluginId} />
+    }
 
     const customListMap: Record<string, CustomListType> = {
       'customlists/card-farming': 'cardFarmingList',

@@ -1,3 +1,4 @@
+import type { PluginPageType } from '@/types/plugin'
 import type { Dispatch, SetStateAction } from 'react'
 
 export type CustomListType = 'cardFarmingList' | 'achievementUnlockerList' | 'autoIdleList' | 'favoritesList'
@@ -9,8 +10,15 @@ export type ActivePageType =
   | 'settings'
   | `customlists/${string}`
   | 'tradingCards'
+  | PluginPageType
 export type CurrentTabType = 'achievements' | 'statistics'
-export type CurrentSettingsTabType = 'general' | 'card-farming' | 'achievement-unlocker' | 'logs'
+export type CurrentSettingsTabType =
+  | 'general'
+  | 'card-farming'
+  | 'achievement-unlocker'
+  | 'logs'
+  | 'plugins'
+  | `plugin-${string}`
 
 export interface NavigationContextType {
   activePage: ActivePageType
@@ -24,7 +32,7 @@ export interface NavigationContextType {
 export interface SidebarItem {
   id: string
   page: ActivePageType
-  icon: React.ComponentType<{ fontSize?: number; className?: string }>
+  icon: React.ComponentType<{ fontSize?: number; className?: string }> | string
   tooltipKey: string
   shouldShow?: boolean
   isActive?: boolean

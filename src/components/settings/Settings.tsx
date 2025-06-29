@@ -5,6 +5,7 @@ import { cn, Tab, Tabs } from '@heroui/react'
 import { useTranslation } from 'react-i18next'
 
 import { useNavigationContext } from '@/components/contexts/NavigationContext'
+import PluginManager from '@/components/plugins/PluginManager'
 import AchievementSettings from '@/components/settings/AchievementSettings'
 import CardSettings from '@/components/settings/CardSettings'
 import ClearData from '@/components/settings/ClearData'
@@ -19,7 +20,24 @@ import useSettings from '@/hooks/settings/useSettings'
 export default function Settings(): ReactElement {
   const { t } = useTranslation()
   const { version, refreshKey, setRefreshKey } = useSettings()
-  const { setCurrentSettingsTab } = useNavigationContext()
+  const { currentSettingsTab, setCurrentSettingsTab } = useNavigationContext()
+
+  const renderTabContent = (key: string): ReactElement => {
+    switch (key) {
+      case 'general':
+        return <GeneralSettings />
+      case 'card-farming':
+        return <CardSettings />
+      case 'achievement-unlocker':
+        return <AchievementSettings />
+      case 'logs':
+        return <Logs />
+      case 'plugins':
+        return <PluginManager />
+      default:
+        return <GeneralSettings />
+    }
+  }
 
   return (
     <div
@@ -56,6 +74,7 @@ export default function Settings(): ReactElement {
           aria-label='Settings tabs'
           color='default'
           variant='solid'
+          selectedKey={currentSettingsTab}
           onSelectionChange={(key: Key) => setCurrentSettingsTab(key as CurrentSettingsTabType)}
           classNames={{
             base: 'fixed bg-titlebar rounded-lg p-0 border border-border',
@@ -71,16 +90,19 @@ export default function Settings(): ReactElement {
           }}
         >
           <Tab key='general' title={t('settings.general.title')}>
-            <GeneralSettings />
+            {renderTabContent('general')}
           </Tab>
           <Tab key='card-farming' title={t('common.cardFarming')}>
-            <CardSettings />
+            {renderTabContent('card-farming')}
           </Tab>
           <Tab key='achievement-unlocker' title={t('common.achievementUnlocker')}>
-            <AchievementSettings />
+            {renderTabContent('achievement-unlocker')}
           </Tab>
           <Tab key='logs' title={t('settings.logs.title')}>
-            <Logs />
+            {renderTabContent('logs')}
+          </Tab>
+          <Tab key='plugins' title={t('settings.plugins.title', 'Plugins')}>
+            {renderTabContent('plugins')}
           </Tab>
         </Tabs>
       </div>

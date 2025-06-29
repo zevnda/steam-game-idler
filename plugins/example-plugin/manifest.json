@@ -1,0 +1,29 @@
+{
+  "id": "example-plugin",
+  "name": "Steam User Lookup",
+  "version": "1.0.0",
+  "description": "A simple plugin to lookup Steam user profiles by Steam ID64",
+  "author": "Steam Game Idler Team",
+  "license": "MIT",
+  "homepage": "https://github.com/zevnda/steam-game-idler",
+  "repository": "https://github.com/zevnda/steam-game-idler",
+  "main": "plugin.js",
+  "frontend": "frontend.tsx",
+  "permissions": ["network"],
+  "apiVersion": "1.0",
+  "dependencies": null,
+  "icon": "TbUser",
+  "sidebarItems": [
+    {
+      "id": "steam-user-lookup",
+      "title": "User Lookup",
+      "icon": "TbUser",
+      "page": "plugins/example-plugin",
+      "tooltip": "Lookup Steam user profiles"
+    }
+  ],
+  "entryPoints": {
+    "onLoad": "onLoad",
+    "onUnload": "onUnload"
+  }
+}

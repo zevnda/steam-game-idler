@@ -2,6 +2,7 @@ import type { ReactElement, ReactNode } from 'react'
 
 import { IdleProvider } from '@/components/contexts/IdleContext'
 import { NavigationProvider } from '@/components/contexts/NavigationContext'
+import { PluginProvider } from '@/components/contexts/PluginContext'
 import { SearchProvider } from '@/components/contexts/SearchContext'
 import { StateProvider } from '@/components/contexts/StateContext'
 import { UpdateProvider } from '@/components/contexts/UpdateContext'
@@ -14,7 +15,9 @@ export default function AppProvider({ children }: { children: ReactNode }): Reac
         <SearchProvider>
           <NavigationProvider>
             <UserProvider>
-              <UpdateProvider>{children}</UpdateProvider>
+              <UpdateProvider>
+                <PluginProvider>{children}</PluginProvider>
+              </UpdateProvider>
             </UserProvider>
           </NavigationProvider>
         </SearchProvider>
