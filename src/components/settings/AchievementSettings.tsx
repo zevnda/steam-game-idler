@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next'
 
 import { useUserContext } from '@/components/contexts/UserContext'
 import SettingsCheckbox from '@/components/settings/SettingsCheckbox'
-import Beta from '@/components/ui/Beta'
 import {
   handleNextTaskChange,
   handleScheduleChange,
@@ -38,49 +37,45 @@ export default function AchievementSettings(): ReactElement {
 
         <SettingsCheckbox type='achievementUnlocker' name='hidden' content={t('settings.achievementUnlocker.hidden')} />
 
-        {userSettings.general.useBeta && (
-          <div className='flex items-center gap-2 max-h-5'>
-            <SettingsCheckbox type='achievementUnlocker' name='nextTaskCheckbox' content={t('common.nextTask')} />
+        <div className='flex items-center gap-2 max-h-5'>
+          <SettingsCheckbox type='achievementUnlocker' name='nextTaskCheckbox' content={t('common.nextTask')} />
 
-            <Select
-              size='sm'
-              aria-label='nextTask'
-              disallowEmptySelection
-              radius='none'
-              items={taskOptions}
-              className='w-[200px]'
-              placeholder='Select an option'
-              classNames={{
-                listbox: ['p-0'],
-                value: ['text-sm !text-content'],
-                trigger: cn(
-                  'bg-input border border-border data-[hover=true]:!bg-inputhover',
-                  'data-[open=true]:!bg-input duration-100 rounded-lg',
-                ),
-                popoverContent: ['bg-titlebar border border-border rounded-lg justify-start !text-content'],
-              }}
-              isDisabled={!userSettings.achievementUnlocker.nextTaskCheckbox}
-              defaultSelectedKeys={
-                userSettings.achievementUnlocker.nextTask ? [userSettings.achievementUnlocker.nextTask] : []
-              }
-              onSelectionChange={e => {
-                handleNextTaskChange(e.currentKey!, userSummary, setUserSettings)
-              }}
-            >
-              {item => (
-                <SelectItem
-                  classNames={{
-                    base: ['data-[hover=true]:!bg-titlehover data-[hover=true]:!text-content'],
-                  }}
-                >
-                  {item.label}
-                </SelectItem>
-              )}
-            </Select>
-
-            <Beta />
-          </div>
-        )}
+          <Select
+            size='sm'
+            aria-label='nextTask'
+            disallowEmptySelection
+            radius='none'
+            items={taskOptions}
+            className='w-[200px]'
+            placeholder='Select an option'
+            classNames={{
+              listbox: ['p-0'],
+              value: ['text-sm !text-content'],
+              trigger: cn(
+                'bg-input border border-border data-[hover=true]:!bg-inputhover',
+                'data-[open=true]:!bg-input duration-100 rounded-lg',
+              ),
+              popoverContent: ['bg-titlebar border border-border rounded-lg justify-start !text-content'],
+            }}
+            isDisabled={!userSettings.achievementUnlocker.nextTaskCheckbox}
+            defaultSelectedKeys={
+              userSettings.achievementUnlocker.nextTask ? [userSettings.achievementUnlocker.nextTask] : []
+            }
+            onSelectionChange={e => {
+              handleNextTaskChange(e.currentKey!, userSummary, setUserSettings)
+            }}
+          >
+            {item => (
+              <SelectItem
+                classNames={{
+                  base: ['data-[hover=true]:!bg-titlehover data-[hover=true]:!text-content'],
+                }}
+              >
+                {item.label}
+              </SelectItem>
+            )}
+          </Select>
+        </div>
 
         <div className='flex items-center gap-2'>
           <SettingsCheckbox

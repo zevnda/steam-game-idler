@@ -366,10 +366,6 @@ const checkForNextTask = async (): Promise<{ shouldStartNextTask: boolean; task:
       steamId: userSummary?.steamId,
     })
 
-    if (!response.settings.general?.useBeta) {
-      return { shouldStartNextTask: false, task: null }
-    }
-
     if (!response.settings.cardFarming?.nextTaskCheckbox) {
       return { shouldStartNextTask: false, task: null }
     }

@@ -1,3 +1,13 @@
+<!-- 1.16.0 -->
+
+### Changes in v1.16.0
+
+- The `task scheduling` feature has been released from beta and is available to all users
+  - Task scheduling can be enbaled in both `settings > card farming` and `settings > achievement unlocker`
+    - Enable the option and then select which feature should be started
+  - When feature X finishes, automatically start feature Y
+  - Tasks can be chained together *(e.g. start card farming → finishes → start achievement unlocker → finishes → start auto idler)*
+
 <!-- 1.15.1 -->
 
 ### Changes in v1.15.1

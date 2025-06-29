@@ -4,17 +4,19 @@
 
 <details>
     <summary>Can I get banned for using a Steam idler?</summary>
-    > No, SGI uses Steam's official API and interacts with Steam just like normal gaming activity. Our Steam idling technology is completely safe and compliant.
+    > No, SGI uses Valve's official [Steamworks SDK](https://partner.steamgames.com/doc/sdk) and interacts with Steam just like normal gaming activity.
 </details>
 
 <details>
     <summary>Do I need to make my Steam profile and game details public for the Steam card idler to work?</summary>
-    > Yes. For some features to function correctly SGI requires your Steam profile and game details to be set to public in your [privacy settings](https://steamcommunity.com/id/undefined/edit/settings)
+    > In most cases, yes. For some features to function correctly SGI requires your Steam profile and game details to be set to public in your [privacy settings](https://steamcommunity.com/id/undefined/edit/settings).
+    >
+    > However, providing your own Steam Web API key in the [settings > general](/docs/settings/general) will allow you to use SGI with private profiles and game details.
 </details>
 
 <details>
-    <summary>What makes this different from other Steam idlers?</summary>
-    > SGI combines multiple Steam idling features into one modern application. Unlike other Steam idlers, it offers card farming, achievement management, and playtime boosting in a single, user-friendly interface.
+    <summary>What makes this different from other Steam tools?</summary>
+    > SGI combines multiple useful features into one modern application. Unlike other Steam tools, it offers card farming, achievement management, and playtime boosting in a single, user-friendly interface.
 </details>
 
 <details>
@@ -89,7 +91,7 @@
 
 <details>
     <summary>What are trading cards and how do they work with Steam idlers?</summary>
-    > This is covered in great detail in [Steam's Trading Cards FAQ](https://steamcommunity.com/tradingcards/faq). Our Steam trading card idler automates the process of collecting these cards through Steam idle functionality.
+    > This is covered in great detail in [Steam's Trading Cards FAQ](https://steamcommunity.com/tradingcards/faq). Our Steam trading card idler automates the process of collecting these cards.
 </details>
 
 <details>
@@ -113,19 +115,19 @@
 
 <details>
     <summary>How long does it take for cards to drop?</summary>
-    > Card drop timers can be different for every game. The developer sets them and they can vary from 15 minutes to 1 hour
+    > Card drop timers can be different for every game. The developer sets these timers, and they can vary from 15 minutes to 3 hours
 </details>
 
 ## Steam idling (auto & manual)
 
 <details>
-    <summary>Can I use the Steam idler to idle in-game items?</summary>
+    <summary>Can I use SGI to idle in-game items?</summary>
     > No. SGI cannot idle in-game items as it doesn't run an instance of the game. A feature like this could also be seen as exploiting in most game's ToS
 </details>
 
 <details>
-    <summary>How many games can the Steam idler handle simultaneously?</summary>
-    > You can idle a max of 32 games simultaneously with our Steam idling technology. This is the same limit used when farming cards
+    <summary>How many games can SGI handle simultaneously?</summary>
+    > You can idle a max of 32 games simultaneously. This is a limitation of the Steam client.
 </details>
 
 ## Unlocking & locking achievements (auto & manual)
@@ -148,58 +150,10 @@
 
 <details>
     <summary>Can I unlock achievements for games I don't own?</summary>
-    > No, you can only unlock achievements for games that are owned by your Steam account. The game must be in your library.
+    > No, you can only unlock achievements for games that are owned by your Steam account, or shared via family share. The game must be in your library.
 </details>
 
 <details>
     <summary>Is there a way to unlock achievements in a specific order?</summary>
-    > Currently, SGI unlocks achievements randomly within your configured time range. There's no built-in way to specify a custom order, but you can manually unlock specific achievements using the Achievement Manager.
-</details>
-
-## Performance & System
-
-<details>
-    <summary>How much system resources does SGI use?</summary>
-    > SGI is lightweight and uses minimal system resources. The main application typically uses less than 100MB of RAM. When idling games, external SteamUtility processes are created, each using around 10-20MB of RAM and minimal CPU.
-</details>
-
-<details>
-    <summary>Can I run multiple instances of SGI?</summary>
-    > Yes, you can run multiple instances of SGI to manage different Steam accounts or to unlock achievements for multiple games simultaneously. Each instance must be configured for a different Steam account.
-</details>
-
-<details>
-    <summary>Does SGI work with Steam family sharing?</summary>
-    > SGI works with your own games, but has limitations with family-shared games. You cannot idle or manage achievements for games that are shared with you from another account. You can only manage games you own directly.
-</details>
-
-<details>
-    <summary>Why does SGI create SteamUtility.exe processes?</summary>
-    > SteamUtility.exe processes are created to communicate with Steam and simulate game activity. These are external helper processes that are automatically managed by SGI - they start when needed and close when games stop being idled.
-</details>
-
-## Troubleshooting
-
-<details>
-    <summary>SGI crashes or becomes unresponsive, what should I do?</summary>
-    > 1. Check the logs in `%appdata%/roaming/com.zevnda.steam-game-idler` for error messages
-    > 2. Restart SGI and Steam
-    > 3. Make sure you're running the latest version of SGI
-    > 4. If the issue persists, report it on the GitHub issues page with your log files
-</details>
-
-<details>
-    <summary>The UI looks broken or elements are missing</summary>
-    > 1. Try restarting SGI
-    > 2. Clear your browser cache if using a web version
-    > 3. Check if you're running any screen scaling that might affect the UI
-    > 4. Try switching themes in Settings > General
-</details>
-
-<details>
-    <summary>SGI won't start or shows a blank screen</summary>
-    > 1. Make sure Steam is installed and running
-    > 2. Run SGI as administrator
-    > 3. Check Windows Defender or antivirus isn't blocking SGI
-    > 4. Reinstall SGI if the problem persists
+    > The automatic [achievement unlocker](/docs/features/achievement-unlocker) will unlock achievements in the order of completion percentage. If you need to unlock achievements in a specific order, you can manually unlock them in the [achievement manager](/docs/features/achievement-manager) in any order you like.
 </details>

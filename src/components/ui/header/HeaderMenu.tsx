@@ -33,7 +33,7 @@ export default function HeaderMenu(): ReactElement {
   const handleUpdate = async (): Promise<void> => {
     try {
       const update = await check()
-      if (update?.available) {
+      if (update) {
         localStorage.setItem('hasUpdated', 'true')
         await invoke('kill_all_steamutil_processes')
         const latest = await fetchLatest()
