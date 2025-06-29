@@ -130,6 +130,7 @@
   "settings.resetSettings.button": "Reset Settings",
   "settings.clearData.button": "Clear Data",
   "settings.exportData": "Export Data",
+  "settings.documentation": "View Documentation",
   "confirmation.logout": "Are you sure you want to logout?",
   "confirmation.resetStatistics": "Are you sure you want to <1>reset</1> all statistics?",
   "confirmation.resetSettings": "Are you sure you want to reset settings to default?",
