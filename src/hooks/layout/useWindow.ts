@@ -74,7 +74,7 @@ export default function useWindow(): void {
     const checkForUpdates = async (): Promise<void> => {
       try {
         const update = await check()
-        if (update?.available) {
+        if (update) {
           const latest = await fetchLatest()
           if (latest?.major) {
             localStorage.setItem('hasUpdated', 'true')

@@ -11,6 +11,8 @@ const FEATURES = {
   'trading-card-manager': 'Trading Card Manager',
   'playtime-booster': 'Playtime Booster',
   'auto-idler': 'Automatic Idler',
+  'task-scheduling': 'Task Scheduling',
+  'free-games': 'Free Games',
 }
 
 const SETTINGS = {
@@ -86,8 +88,6 @@ export default {
         title: 'Help & Support',
       },
       'troubleshooting': 'Troubleshooting',
-      'performance': 'Performance & Optimization',
-      'references': 'References',
       'faq': 'FAQ',
       '____': {
         type: 'separator',

@@ -2,17 +2,16 @@ import { Cards } from 'nextra/components';
 
 import { FaSteam, FaImages, FaAward, FaTools, FaSignInAlt, FaQuoteRight } from 'react-icons/fa';
 import { GrInstallOption } from 'react-icons/gr';
-import { TbCardsFilled } from 'react-icons/tb';
+import { TbCardsFilled, TbGift, TbClock, TbBuildingStore, TbHourglassLow } from 'react-icons/tb';
 import { IoPlay } from 'react-icons/io5';
-import { RiRobot3Fill } from 'react-icons/ri';
  
 # Introduction
 
 Steam Game Idler (SGI) is a simple, user-friendly Steam idler designed to help you farm trading cards, manage achievements, and boost playtime across all games in your Steam library.
 
-This project was born out of frustration with alternatives like SAM and ASF, which often lacked key features, were overly complex to set up, had ugly outdated interfaces, or suffered from bugs and infrequent updates.
+This project was born out of frustration with alternatives like ArchiSteamFarm and Steam Achievement Manager, which often lacked key features, were overly complex to set up, had ugly or outdated user interfaces, or suffered from bugs and infrequent updates.
 
-SGI combines the best aspects of these Steam idling tools into a single, modern, free, and easy-to-use application.
+SGI combines the best aspects of these tools into a single, modern, free, and easy-to-use application.
 
 ### Get Started
 
@@ -28,9 +27,11 @@ SGI combines the best aspects of these Steam idling tools into a single, modern,
     <Cards.Card icon={<TbCardsFilled />} title='Card Farming' href='/docs/features/card-farming' arrow />
     <Cards.Card icon={<FaAward />} title='Achievement Unlocker' href='/docs/features/achievement-unlocker' arrow />
     <Cards.Card icon={<FaAward />} title='Achievement Manager' href='/docs/features/achievement-manager' arrow />
-    <Cards.Card icon={<RiRobot3Fill />} title='Trading Card Manager' href='/docs/features/trading-card-manager' arrow />
+    <Cards.Card icon={<TbBuildingStore />} title='Trading Card Manager' href='/docs/features/trading-card-manager' arrow />
     <Cards.Card icon={<IoPlay />} title='Playtime Booster' href='/docs/features/playtime-booster' arrow />
-    <Cards.Card icon={<RiRobot3Fill />} title='Automatic Idler' href='/docs/features/auto-idler' arrow />
+    <Cards.Card icon={<TbHourglassLow />} title='Automatic Idler' href='/docs/features/auto-idler' arrow />
+    <Cards.Card icon={<TbClock />} title='Task Scheduling' href='/docs/features/task-scheduling' arrow />
+    <Cards.Card icon={<TbGift />} title='Free Games' href='/docs/features/free-games' arrow />
 </Cards>
 
 ### Miscellaneous

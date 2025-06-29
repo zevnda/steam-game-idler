@@ -32,6 +32,8 @@ Refer to the **[documentation](https://steamgameidler.com/docs/)** for a detaile
 * **[Trading Card Manager](https://steamgameidler.com/docs/features/trading-card-manager)**: Easily sell your trading cards on the Steam marketplace
 * **[Playtime Booster](https://steamgameidler.com/docs/features/playtime-booster)**: Increase a game's total playtime by idling it manually
 * **[Automatic Idler](https://steamgameidler.com/docs/features/auto-idler)**: Automatically idle chosen games when SGI launches
+* **[Task Scheduling](https://steamgameidler.com/docs/features/task-scheduling)**: When one feature finishes, automatically start the next
+* **[Free Game Alerts](https://steamgameidler.com/docs/features/free-games)**: Get notified when there are free Steam games to claim
 * **Fully Open Source**: Rest assured that what you're downloading and running is safe
 * **Actively Maintained**: Regular updates with new features and bug fixes
 

@@ -1,10 +1,11 @@
 import type { ReactElement } from 'react'
 
+import { FaSteam } from 'react-icons/fa'
 import { FiLogOut } from 'react-icons/fi'
 import {
   TbAward,
+  TbBuildingStore,
   TbCards,
-  TbCashRegister,
   TbCurrencyDollar,
   TbDeviceGamepad2,
   TbDotsVertical,
@@ -34,6 +35,7 @@ type IconType =
   | 'dots'
   | 'signout'
   | 'refresh'
+  | 'steam'
 
 interface IconProps {
   type: IconType
@@ -52,38 +54,54 @@ export default function Icon({ type }: IconProps): ReactElement {
       {type === 'game' && (
         <TbDeviceGamepad2 fontSize={26} style={iconStyles} className='shadow-sm bg-[#1c79de] text-white' />
       )}
+
       {type === 'play' && (
         <TbPlayerPlay fontSize={26} style={iconStyles} className='shadow-sm bg-[#1c79de] text-white' />
       )}
+
       {type === 'cards' && <TbCards fontSize={26} style={iconStyles} className='shadow-sm bg-[#1c79de] text-white' />}
+
       {type === 'award' && <TbAward fontSize={26} style={iconStyles} className='shadow-sm bg-[#1c79de] text-white' />}
+
       {type === 'hourglass' && (
         <TbHourglassLow fontSize={26} style={iconStyles} className='shadow-sm bg-[#1c79de] text-white' />
       )}
+
       {type === 'heart' && <TbHeart fontSize={26} style={iconStyles} className='shadow-sm bg-[#1c79de] text-white' />}
+
       {type === 'market' && (
-        <TbCashRegister fontSize={26} style={iconStyles} className='shadow-sm bg-[#1c79de] text-white' />
+        <TbBuildingStore fontSize={26} style={iconStyles} className='shadow-sm bg-[#1c79de] text-white' />
       )}
+
       {type === 'list-card' && (
         <TbPackageExport fontSize={26} style={iconStyles} className='shadow-sm bg-[#1c79de] text-white' />
       )}
+
       {type === 'dollar' && (
         <TbCurrencyDollar fontSize={26} style={iconStyles} className='shadow-sm bg-[#1c79de] text-white' />
       )}
+
       {type === 'gift' && <TbGift fontSize={26} style={iconStyles} className='shadow-sm bg-[#1c79de] text-white' />}
+
       {type === 'playalt' && (
         <TbPlayerPlayFilled fontSize={26} style={iconStyles} className='shadow-sm bg-[#1c79de] text-white' />
       )}
+
       {type === 'cog' && <TbSettings fontSize={26} style={iconStyles} className='shadow-sm bg-[#1c79de] text-white' />}
+
       {type === 'dots' && (
         <TbDotsVertical fontSize={26} style={iconStyles} className='shadow-sm bg-[#1c79de] text-white' />
       )}
+
       {type === 'signout' && (
         <FiLogOut fontSize={26} style={iconStyles} className='shadow-sm bg-[#1c79de] text-white rotate-180' />
       )}
+
       {type === 'refresh' && (
         <TbRefresh fontSize={26} style={iconStyles} className='shadow-sm bg-[#1c79de] text-white' />
       )}
+
+      {type === 'steam' && <FaSteam fontSize={26} style={iconStyles} className='shadow-sm bg-[#1c79de] text-white' />}
     </>
   )
 }
