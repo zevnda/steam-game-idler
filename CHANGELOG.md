@@ -7,6 +7,7 @@
     - Enable the option and then select which feature should be started
   - When feature X finishes, automatically start feature Y
   - Tasks can be chained together *(e.g. start card farming → finishes → start achievement unlocker → finishes → start auto idler)*
+- Fixed and improved some misc UI inconsistencies
 
 <!-- 1.15.1 -->
 

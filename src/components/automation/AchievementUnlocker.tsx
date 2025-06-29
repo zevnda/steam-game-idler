@@ -63,7 +63,7 @@ export default function AchievementUnlocker({ activePage }: { activePage: Active
   return (
     <div
       className={cn(
-        'absolute top-12 left-14 bg-base z-50 rounded-tl-xl',
+        'absolute top-10 left-14 bg-base z-50 rounded-tl-xl',
         'border-t border-l border-border',
         activePage !== 'customlists/achievement-unlocker' && 'hidden',
       )}
