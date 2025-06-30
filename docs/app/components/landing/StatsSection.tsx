@@ -1,35 +1,28 @@
 'use client'
 
-// import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FiDownload, FiGlobe, FiStar } from 'react-icons/fi'
 import { TbCode } from 'react-icons/tb'
 
-// async function fetchGitHubStars(): Promise<number> {
-//   try {
-//     const response = await fetch('/api/github-stars')
-//     if (!response.ok) {
-//       throw new Error('Failed to fetch repository data')
-//     }
-//     const data = await response.json()
-//     return data.stars
-//   } catch (error) {
-//     console.error('Error fetching GitHub stars:', error)
-//     return 160
-//   }
-// }
-
 export default function StatsSection() {
-  // const [githubStars, setGithubStars] = useState(160)
-  // const [isLoading, setIsLoading] = useState(true)
+  const [githubStars, setGithubStars] = useState(999)
+  const [isLoading, setIsLoading] = useState(true)
 
-  // useEffect(() => {
-  //   const loadGitHubStars = async () => {
-  //     const stars = await fetchGitHubStars()
-  //     setGithubStars(stars)
-  //     setIsLoading(false)
-  //   }
-  //   loadGitHubStars()
-  // }, [])
+  useEffect(() => {
+    const loadGitHubStars = async () => {
+      try {
+        const response = await fetch('https://api.github.com/repos/zevnda/steam-game-idler')
+        const data = await response.json()
+        setGithubStars(data.stargazers_count || 999)
+      } catch (error) {
+        setGithubStars(999)
+        console.error('Failed to fetch GitHub stars:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    loadGitHubStars()
+  }, [])
 
   const stats = [
     {
@@ -45,8 +38,7 @@ export default function StatsSection() {
       description: 'Localization support',
     },
     {
-      // value: isLoading ? '...' : githubStars.toString(),
-      value: '190+',
+      value: isLoading ? '...' : githubStars.toString(),
       label: 'GitHub Stars',
       icon: <FiStar className='w-6 h-6' />,
       description: 'Community recognition',
