@@ -7,7 +7,7 @@
     "dev": "next",
     "build": "next build",
     "pub": "concurrently \"next dev\" \"ngrok http 3000 --log=stdout\"",
-    "postbuild": "next-sitemap --config next-sitemap.config.mjs && pagefind --site .next/server/app --output-path public/_pagefind",
+    "postbuild": "next-sitemap --config next-sitemap.config.mjs && pagefind --site out --output-path out/_pagefind",
     "start": "next start",
     "lint": "next lint"
   },
