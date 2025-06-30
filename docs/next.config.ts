@@ -3,8 +3,9 @@ import nextra from 'nextra'
 const withNextra = nextra({})
 
 export default withNextra({
+  output: 'export',
   images: {
-    remotePatterns: [],
+    unoptimized: true,
   },
   experimental: {
     turbo: {
