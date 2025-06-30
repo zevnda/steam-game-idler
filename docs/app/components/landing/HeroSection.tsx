@@ -7,19 +7,20 @@ import { FaArrowRight, FaWindows } from 'react-icons/fa'
 import { FiBook, FiGithub } from 'react-icons/fi'
 
 export default function HeroSection() {
-  const [latestVersion, setLatestVersion] = useState('v1.2.3')
+  const [latestVersion, setLatestVersion] = useState('1.2.3')
 
   useEffect(() => {
-    fetch('https://api.github.com/repos/zevnda/steam-game-idler/releases/latest')
-      .then(response => response.json())
-      .then(data => {
-        if (data.tag_name) {
-          setLatestVersion(data.tag_name)
-        }
-      })
-      .catch(() => {
-        // Keep default version if API fails
-      })
+    try {
+      fetch('https://api.github.com/repos/zevnda/steam-game-idler/releases/latest')
+        .then(response => response.json())
+        .then(data => {
+          if (data.tag_name) {
+            setLatestVersion(data.tag_name)
+          }
+        })
+    } catch (error) {
+      console.error('Error fetching latest version:', error)
+    }
   }, [])
 
   return (
