@@ -9,7 +9,7 @@
 - Added proper pagination for `trading card manager` API calls, allowing all trading cards to be returned at once
   - This is useful for users with large Steam inventories *(>2500 items)*
 - Added a search feature to `trading card manager` that allows users to search for trading cards by card title and game name
-- Added a lock button to the top individual trading cards cards. Locked cards will not be able to be listed/sold via any method *(list all, list selected, list single)*, making sure your valuable and important collectables remain in your inventory
+- Added a lock button to the top of each individual trading card. Locked cards will not be able to be listed/sold via any method *(list all, list selected, list single)*, making sure your valuable and important collectables remain in your inventory
 - Fixed an issue in `trading card manager` where duplicate trading cards weren't being shown correctly
 - Fixed and improved some misc UI inconsistencies
 
