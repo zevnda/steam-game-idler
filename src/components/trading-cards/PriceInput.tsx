@@ -59,7 +59,11 @@ export default function PriceInput({ item, tradingCardContext }: PriceInputProps
             !tradingCardContext.loadingListButton && <TbPackageExport className='text-button-text' size={20} />
           }
           onPress={() => {
-            tradingCardContext.handleSellSingleCard(item.assetid, tradingCardContext.getCardPriceValue(item.assetid))
+            tradingCardContext.handleSellSingleCard(
+              item.assetid,
+              item.id,
+              tradingCardContext.getCardPriceValue(item.assetid),
+            )
           }}
         />
       </CustomTooltip>

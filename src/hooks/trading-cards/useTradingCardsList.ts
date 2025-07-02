@@ -35,7 +35,7 @@ interface UseTradingCardsList {
   updateCardPrice: (assetId: string, value: number) => void
   toggleCardSelection: (assetId: string) => void
   handleSellSelectedCards: () => Promise<void>
-  handleSellSingleCard: (assetId: string, price: number) => Promise<void>
+  handleSellSingleCard: (assetId: string, itemId: string, price: number) => Promise<void>
   getCardPriceValue: (assetId: string) => number
   refreshKey: number
   handleRefresh: () => void
@@ -224,8 +224,26 @@ export default function useTradingCardsList(): UseTradingCardsList {
     return finalPrice >= min && finalPrice <= max
   }
 
-  const handleSellSingleCard = async (assetId: string, price: number): Promise<void> => {
+  const isCardLocked = (cardId: string): boolean => {
+    const storedLockedCards = localStorage.getItem('lockedTradingCards')
+    if (!storedLockedCards) return false
+
     try {
+      const lockedCards: string[] = JSON.parse(storedLockedCards)
+      return lockedCards.includes(cardId)
+    } catch {
+      return false
+    }
+  }
+
+  const handleSellSingleCard = async (assetId: string, itemId: string, price: number): Promise<void> => {
+    try {
+      const card = tradingCardsList.find(c => c.assetid === assetId)
+      if (card && isCardLocked(card.id)) {
+        showDangerToast(t('toast.tradingCards.cardLocked'))
+        return
+      }
+
       const credentials = userSettings?.cardFarming.credentials
 
       if (!credentials?.sid || !credentials?.sls) return showMissingCredentialsToast()
@@ -308,10 +326,28 @@ export default function useTradingCardsList(): UseTradingCardsList {
         return
       }
 
+      // Filter out locked cards
+      const unlockedCards = cardsToSell.filter(assetId => {
+        const card = tradingCardsList.find(c => c.assetid === assetId)
+        return !card || !isCardLocked(card.id)
+      })
+
+      const lockedCardsCount = cardsToSell.length - unlockedCards.length
+
+      if (lockedCardsCount > 0) {
+        showPrimaryToast(t('toast.tradingCards.skippedLockedCards', { count: lockedCardsCount }))
+        logEvent(`[Info] Skipped ${lockedCardsCount} locked cards`)
+      }
+
+      if (unlockedCards.length === 0) {
+        showDangerToast(t('toast.tradingCards.allCardsLocked'))
+        return
+      }
+
       const priceAdjustment = userSettings?.tradingCards?.priceAdjustment || 0.0
 
       // Filter cards based on sell limits
-      const validCards = cardsToSell.filter(assetId => {
+      const validCards = unlockedCards.filter(assetId => {
         const finalPrice = changedCardPrices[assetId] + priceAdjustment
         return isWithinSellLimits(finalPrice)
       })
@@ -398,6 +434,13 @@ export default function useTradingCardsList(): UseTradingCardsList {
 
       for (const card of tradingCardsList) {
         if (!shouldContinue) break
+
+        // Skip locked cards
+        if (isCardLocked(card.id)) {
+          skippedCards.push(card.assetid)
+          logEvent(`[Info] Skipped locked card ${card.assetid}`)
+          continue
+        }
 
         if (!card.market_hash_name) {
           logEvent(`[Error] Card ${card.assetid} doesn't have a market hash name - skipping`)

@@ -7,6 +7,7 @@ import Image from 'next/image'
 import { useTranslation } from 'react-i18next'
 import { FaCheckCircle } from 'react-icons/fa'
 import { SiExpertsexchange } from 'react-icons/si'
+import { TbLock, TbLockOpen } from 'react-icons/tb'
 import { FixedSizeList as List } from 'react-window'
 
 import { useStateContext } from '@/components/contexts/StateContext'
@@ -21,6 +22,8 @@ interface RowData {
   tradingCardContext: ReturnType<typeof useTradingCardsList>
   styles: CSSProperties
   t: (key: string) => string
+  lockedCards: string[]
+  handleLockCard: (id: string) => void
 }
 
 interface RowProps {
@@ -30,7 +33,7 @@ interface RowProps {
 }
 
 const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
-  const { tradingCardContext, styles, t } = data
+  const { tradingCardContext, styles, t, lockedCards, handleLockCard } = data
 
   const item1 = tradingCardContext.tradingCardsList[index * 6]
   const item2 = tradingCardContext.tradingCardsList[index * 6 + 1]
@@ -44,18 +47,17 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
   const renderCard = (item: TradingCard): ReactElement | null => {
     if (!item) return null
 
+    const isLocked = lockedCards.includes(item.id)
+
     return (
       <div
         key={item.assetid}
-        className='flex flex-col justify-start items-center bg-titlebar mb-4 rounded-lg border border-border p-2'
+        className={cn(
+          'flex flex-col justify-start items-center bg-titlebar mb-4 rounded-lg border border-border p-2',
+          lockedCards.includes(item.id) && 'opacity-50',
+        )}
       >
         <div className='relative flex justify-between items-center w-full mb-2'>
-          <div className='absolute left-1/2 transform -translate-x-1/2 flex items-center justify-center'>
-            <p className='text-sm truncate max-w-[120px]'>
-              {item.full_name.replace('(Trading Card)', '') || 'Unknown'}
-            </p>
-          </div>
-
           <Checkbox
             size='sm'
             name={item.assetid}
@@ -72,15 +74,26 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
             }}
           />
 
-          <CustomTooltip content={t('tradingCards.cardExchange')} placement='top'>
-            <div>
-              <ExtLink href={`https://www.steamcardexchange.net/index.php?gamepage-appid-${item.appid}`}>
-                <div className='hover:bg-titlehover rounded-full p-1.5 cursor-pointer duration-200'>
-                  <SiExpertsexchange fontSize={10} />
-                </div>
-              </ExtLink>
-            </div>
-          </CustomTooltip>
+          <div className='flex items-center gap-1'>
+            <CustomTooltip content={t('tradingCards.lockCard')} placement='top'>
+              <div
+                className='hover:bg-titlehover rounded-full p-1 cursor-pointer duration-200'
+                onClick={() => handleLockCard(item.id)}
+              >
+                {isLocked ? <TbLock fontSize={14} className='text-dynamic' /> : <TbLockOpen fontSize={14} />}
+              </div>
+            </CustomTooltip>
+
+            <CustomTooltip content={t('tradingCards.cardExchange')} placement='top'>
+              <div>
+                <ExtLink href={`https://www.steamcardexchange.net/index.php?gamepage-appid-${item.appid}`}>
+                  <div className='hover:bg-titlehover rounded-full p-1.5 cursor-pointer duration-200'>
+                    <SiExpertsexchange fontSize={10} />
+                  </div>
+                </ExtLink>
+              </div>
+            </CustomTooltip>
+          </div>
         </div>
 
         <CustomTooltip
@@ -111,22 +124,28 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
           </div>
         </CustomTooltip>
 
-        <CustomTooltip
-          content={item.badge_level > 0 ? 'Badge Level: ' + item.badge_level : 'No Badge'}
-          placement='top'
-          important
-        >
-          <div className='flex items-center justify-center gap-1 mt-2'>
-            {item.badge_level > 0 && (
-              <div className='flex items-center justify-center'>
-                <FaCheckCircle size={12} className='text-green-400' />
-              </div>
-            )}
-            <p className={cn('text-xs text-altwhite truncate max-w-[140px]', item.badge_level > 0 && 'text-green-400')}>
-              {item.appname}
-            </p>
-          </div>
-        </CustomTooltip>
+        <div className='flex flex-col items-center justify-center gap-0.5 mt-2'>
+          <p className='text-xs truncate max-w-[140px]'>{item.full_name.replace('(Trading Card)', '') || 'Unknown'}</p>
+
+          <CustomTooltip
+            content={item.badge_level > 0 ? 'Badge Level: ' + item.badge_level : 'No Badge'}
+            placement='top'
+            important
+          >
+            <div className='flex items-center justify-center gap-1'>
+              {item.badge_level > 0 && (
+                <div className='flex items-center justify-center'>
+                  <FaCheckCircle size={12} className='text-green-400' />
+                </div>
+              )}
+              <p
+                className={cn('text-xs text-altwhite truncate max-w-[140px]', item.badge_level > 0 && 'text-green-400')}
+              >
+                {item.appname}
+              </p>
+            </div>
+          </CustomTooltip>
+        </div>
 
         <PriceInput item={item} tradingCardContext={tradingCardContext} />
 
@@ -154,6 +173,7 @@ export default function TradingCardsList(): ReactElement {
   const { isDarkMode } = useStateContext()
   const [styles, setStyles] = useState({})
   const [windowInnerHeight, setWindowInnerHeight] = useState(0)
+  const [lockedCards, setLockedCards] = useState<string[]>([])
   const tradingCardContext = useTradingCardsList()
 
   useEffect(() => {
@@ -171,10 +191,27 @@ export default function TradingCardsList(): ReactElement {
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
+  useEffect(() => {
+    const storedLockedCards = localStorage.getItem('lockedTradingCards')
+    if (storedLockedCards) {
+      setLockedCards(JSON.parse(storedLockedCards))
+    }
+  }, [])
+
+  const handleLockCard = (id: string): void => {
+    setLockedCards(prev => {
+      const newLockedCards = prev.includes(id) ? prev.filter(cardId => cardId !== id) : [...prev, id]
+      localStorage.setItem('lockedTradingCards', JSON.stringify(newLockedCards))
+      return newLockedCards
+    })
+  }
+
   const itemData: RowData = {
     tradingCardContext,
     styles,
     t,
+    lockedCards,
+    handleLockCard,
   }
 
   const selectedCardsWithPrice = useMemo(
@@ -198,9 +235,9 @@ export default function TradingCardsList(): ReactElement {
       {!tradingCardContext.isLoading ? (
         <div className='flex flex-col'>
           <List
-            height={windowInnerHeight - 49}
+            height={windowInnerHeight - 41}
             itemCount={Math.ceil(tradingCardContext.tradingCardsList.length / 6)}
-            itemSize={291}
+            itemSize={309}
             width='100%'
             itemData={itemData}
           >
