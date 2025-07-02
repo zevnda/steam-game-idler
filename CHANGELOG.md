@@ -2,22 +2,15 @@
 
 ### Changes in v1.16.0
 
-- The `task scheduling` feature has been released from beta and is available to all users
-  - Task scheduling can be enbaled in both `settings > card farming` and `settings > achievement unlocker`
-    - Enable the option and then select which feature should be started
-  - When feature X finishes, automatically start feature Y
-  - Tasks can be chained together *(e.g. start card farming → finishes → start achievement unlocker → finishes → start auto idler)*
-- Lots of additions and fixes for `trading card manager`
-  - Added `trading card manager` tab to `settings` **<sup>BETA FEATURE</sup>**
-    - Enable `beta features` in `settings > general` to use it
-    - Added a `price adjustment` setting that allows users to add or subtract from the sale price of all sales
-    - Added a `sell limit blacklist` settings that allows users to select a min/max range. If the cards final sale price is not within that range it will not be sold
-  - Added proper pagination for `trading card manager` API calls, allowing all trading cards to be returned at once
-    - This is useful for users with large Steam inventories (>2500 items)
-  - Added a `lock/unlock` button to the top individual cards
-    - Locked cards will not be able to be listed/sold by any method *(list all, list selected, list single)*, making sure your collectables remain in your inventory
-  - Added a search feature that allows users to search for trading cards by card title and game name
-  - Fixed an issue where duplicate cards weren't being shown correctly
+- The [`task scheduling`](https://steamgameidler.com/docs/features/task-scheduling) feature has been released from beta and is available to all users
+- Added a [`trading card manager`](https://steamgameidler.com/docs/settings/trading-card-manager) tab to `settings`
+  - Added a [`price adjustment`](https://steamgameidler.com/docs/settings/trading-card-manager#price-adjustment) setting that allows users to add or subtract a fixed amount from the sale price of all trading cards listed for sale. This can be useful to adjust prices based on market trends or personal preferences
+  - Added a [`sell limit blacklist`](https://steamgameidler.com/docs/settings/trading-card-manager#sell-limit-blacklist) settings that allows users to set minimum and maximum price limits for selling trading cards. If the final sale price is below the minimum or above the maximum, the card will not be listed for sale. This helps avoid selling cards at unfavorable prices
+- Added proper pagination for `trading card manager` API calls, allowing all trading cards to be returned at once
+  - This is useful for users with large Steam inventories *(>2500 items)*
+- Added a search feature to `trading card manager` that allows users to search for trading cards by card title and game name
+- Added a lock button to the top individual trading cards cards. Locked cards will not be able to be listed/sold via any method *(list all, list selected, list single)*, making sure your valuable and important collectables remain in your inventory
+- Fixed an issue in `trading card manager` where duplicate trading cards weren't being shown correctly
 - Fixed and improved some misc UI inconsistencies
 
 <!-- 1.15.1 -->

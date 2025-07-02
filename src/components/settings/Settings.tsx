@@ -5,7 +5,6 @@ import { cn, Tab, Tabs } from '@heroui/react'
 import { useTranslation } from 'react-i18next'
 
 import { useNavigationContext } from '@/components/contexts/NavigationContext'
-import { useStateContext } from '@/components/contexts/StateContext'
 import AchievementSettings from '@/components/settings/AchievementSettings'
 import CardSettings from '@/components/settings/CardSettings'
 import ClearData from '@/components/settings/ClearData'
@@ -22,7 +21,6 @@ export default function Settings(): ReactElement {
   const { t } = useTranslation()
   const { version, refreshKey, setRefreshKey } = useSettings()
   const { setCurrentSettingsTab } = useNavigationContext()
-  const { useBeta } = useStateContext()
 
   return (
     <div
@@ -82,11 +80,9 @@ export default function Settings(): ReactElement {
           <Tab key='achievement-unlocker' title={t('common.achievementUnlocker')}>
             <AchievementSettings />
           </Tab>
-          {useBeta && (
-            <Tab key='trading-card-manager' title={t('tradingCards.title')}>
-              <TradingCardManager />
-            </Tab>
-          )}
+          <Tab key='trading-card-manager' title={t('tradingCards.title')}>
+            <TradingCardManager />
+          </Tab>
           <Tab key='logs' title={t('settings.logs.title')}>
             <Logs />
           </Tab>

@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 
 import { useUserContext } from '@/components/contexts/UserContext'
+import Beta from '@/components/ui/Beta'
 
 export default function TradingCardManager(): ReactElement {
   const { t } = useTranslation()
@@ -68,7 +69,10 @@ export default function TradingCardManager(): ReactElement {
 
         <div className='flex flex-col gap-2 w-full'>
           <div className='flex flex-col'>
-            <p className='text-sm'>{t('tradingCards.priceAdjustment')}</p>
+            <p className='text-sm'>
+              {t('tradingCards.priceAdjustment')}
+              <Beta className='ml-1' />
+            </p>
             <p className='text-xs text-altwhite'>
               <Trans
                 i18nKey='tradingCards.priceAdjustmentSub'
@@ -105,7 +109,10 @@ export default function TradingCardManager(): ReactElement {
 
         <div className='flex flex-col gap-2 w-full'>
           <div className='flex flex-col'>
-            <p className='text-sm'>{t('tradingCards.sellLimit')}</p>
+            <p className='text-sm'>
+              {t('tradingCards.sellLimit')}
+              <Beta className='ml-1' />
+            </p>
             <p className='text-xs text-altwhite'>
               <Trans
                 i18nKey='tradingCards.sellLimitSub'
