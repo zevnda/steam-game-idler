@@ -16,6 +16,7 @@
     - This is useful for users with large Steam inventories (>2500 items)
   - Added a `lock/unlock` button to the top individual cards
     - Locked cards will not be able to be listed/sold by any method *(list all, list selected, list single)*, making sure your collectables remain in your inventory
+  - Added a search feature that allows users to search for trading cards by card title and game name
   - Fixed an issue where duplicate cards weren't being shown correctly
 - Fixed and improved some misc UI inconsistencies
 
