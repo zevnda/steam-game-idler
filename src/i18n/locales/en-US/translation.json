@@ -63,7 +63,7 @@
   "tradingCards.confirmRemove": "Are you sure you want to remove all active trading card listings from the Steam market?",
   "tradingCards.fetchPrice": "Show market prices",
   "tradingCards.cardExchange": "View on Steam Card Exchange",
-  "tradingCards.lockCard": "Lock Card",
+  "tradingCards.lockCard": "Prevent this card from being listed for sale",
   "automation.cardFarming.initialDelay": "This might take a second..",
   "automation.cardFarming.progress": "Idling <1>{{count}}</1> game(s) with <3>{{total}}</3> total card drop(s) remaining",
   "automation.achievementUnlocker.initialDelay": "Starting in <1>{{timer}}</1>",
