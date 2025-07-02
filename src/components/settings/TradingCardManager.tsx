@@ -15,7 +15,7 @@ export default function TradingCardManager(): ReactElement {
   const [priceAdjustment, setPriceAdjustment] = useState<number>(0.0)
 
   useEffect(() => {
-    setPriceAdjustment(userSettings.tradingCards.priceAdjustment || 0.0)
+    setPriceAdjustment(userSettings?.tradingCards?.priceAdjustment || 0.0)
   }, [userSettings?.tradingCards?.priceAdjustment])
 
   const handlePriceAdjustmentChange = async (value: number): Promise<void> => {
