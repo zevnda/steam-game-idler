@@ -25,6 +25,7 @@ import {
 
 interface UseTradingCardsList {
   tradingCardsList: TradingCard[]
+  filteredTradingCardsList?: TradingCard[]
   isLoading: boolean
   loadingItemPrice: Record<string, boolean>
   loadingListButton: boolean
@@ -35,7 +36,7 @@ interface UseTradingCardsList {
   updateCardPrice: (assetId: string, value: number) => void
   toggleCardSelection: (assetId: string) => void
   handleSellSelectedCards: () => Promise<void>
-  handleSellSingleCard: (assetId: string, price: number) => Promise<void>
+  handleSellSingleCard: (assetId: string, itemId: string, price: number) => Promise<void>
   getCardPriceValue: (assetId: string) => number
   refreshKey: number
   handleRefresh: () => void
@@ -216,16 +217,61 @@ export default function useTradingCardsList(): UseTradingCardsList {
     })
   }
 
-  const handleSellSingleCard = async (assetId: string, price: number): Promise<void> => {
+  const isWithinSellLimits = (finalPrice: number): boolean => {
+    const sellLimit = userSettings?.tradingCards?.sellLimit
+    if (!sellLimit) return true
+
+    const { min, max } = sellLimit
+    return finalPrice >= min && finalPrice <= max
+  }
+
+  const isCardLocked = (cardId: string): boolean => {
+    const storedLockedCards = localStorage.getItem('lockedTradingCards')
+    if (!storedLockedCards) return false
+
     try {
-      const credentials = userSettings.cardFarming.credentials
+      const lockedCards: string[] = JSON.parse(storedLockedCards)
+      return lockedCards.includes(cardId)
+    } catch {
+      return false
+    }
+  }
+
+  const handleSellSingleCard = async (assetId: string, itemId: string, price: number): Promise<void> => {
+    try {
+      const card = tradingCardsList.find(c => c.assetid === assetId)
+      if (card && isCardLocked(card.id)) {
+        showDangerToast(t('toast.tradingCards.cardLocked'))
+        return
+      }
+
+      const credentials = userSettings?.cardFarming.credentials
 
       if (!credentials?.sid || !credentials?.sls) return showMissingCredentialsToast()
+
+      const priceAdjustment = userSettings?.tradingCards?.priceAdjustment || 0.0
+      const adjustedPrice = price + priceAdjustment
+
+      // Check if price is within sell limits
+      if (!isWithinSellLimits(adjustedPrice)) {
+        const sellLimit = userSettings?.tradingCards?.sellLimit
+        showDangerToast(
+          t('toast.tradingCards.priceOutOfRange', {
+            price: adjustedPrice.toFixed(2),
+            min: sellLimit?.min?.toFixed(2) || '0.00',
+            max: sellLimit?.max?.toFixed(2) || '∞',
+          }),
+        )
+        logEvent(
+          `[Info] Card ${assetId} price ${adjustedPrice} is outside sell limits (${sellLimit?.min}-${sellLimit?.max})`,
+        )
+        return
+      }
 
       setLoadingListButton(true)
 
       // Format for the API - single card as an array item
-      const cardForListing: [string, string] = [assetId, price.toString()]
+      const cardForListing: [string, string] = [assetId, adjustedPrice.toString()]
       logEvent(`Card for listing: ${JSON.stringify(cardForListing)}`)
 
       const response = await invoke<InvokeListCards>('list_trading_cards', {
@@ -281,10 +327,48 @@ export default function useTradingCardsList(): UseTradingCardsList {
         return
       }
 
-      const cardsForBulkListing = cardsToSell.map(assetId => [assetId, changedCardPrices[assetId].toString()]) as [
-        string,
-        string,
-      ][]
+      // Filter out locked cards
+      const unlockedCards = cardsToSell.filter(assetId => {
+        const card = tradingCardsList.find(c => c.assetid === assetId)
+        return !card || !isCardLocked(card.id)
+      })
+
+      const lockedCardsCount = cardsToSell.length - unlockedCards.length
+
+      if (lockedCardsCount > 0) {
+        showPrimaryToast(t('toast.tradingCards.skippedLockedCards', { count: lockedCardsCount }))
+        logEvent(`[Info] Skipped ${lockedCardsCount} locked cards`)
+      }
+
+      if (unlockedCards.length === 0) {
+        showDangerToast(t('toast.tradingCards.allCardsLocked'))
+        return
+      }
+
+      const priceAdjustment = userSettings?.tradingCards?.priceAdjustment || 0.0
+
+      // Filter cards based on sell limits
+      const validCards = unlockedCards.filter(assetId => {
+        const finalPrice = changedCardPrices[assetId] + priceAdjustment
+        return isWithinSellLimits(finalPrice)
+      })
+
+      const skippedCards = cardsToSell.length - validCards.length
+
+      if (validCards.length === 0) {
+        showDangerToast(t('toast.tradingCards.allCardsOutOfRange'))
+        return
+      }
+
+      if (skippedCards > 0) {
+        showPrimaryToast(t('toast.tradingCards.skippedCards', { count: skippedCards }))
+        logEvent(`[Info] Skipped ${skippedCards} cards due to sell limit restrictions`)
+      }
+
+      const cardsForBulkListing = validCards.map(assetId => [
+        assetId,
+        (changedCardPrices[assetId] + priceAdjustment).toString(),
+      ]) as [string, string][]
 
       setLoadingListButton(true)
       showPrimaryToast(t('toast.tradingCards.processing'))
@@ -336,19 +420,28 @@ export default function useTradingCardsList(): UseTradingCardsList {
 
   const handleSellAllCards = async (): Promise<void> => {
     try {
-      const credentials = userSettings.cardFarming.credentials
+      const credentials = userSettings?.cardFarming.credentials
 
       if (!credentials?.sid || !credentials?.sls) return showMissingCredentialsToast()
 
       setLoadingListButton(true)
       showPrimaryToast(t('toast.tradingCards.processing'))
 
+      const priceAdjustment = userSettings?.tradingCards?.priceAdjustment || 0.0
       const successfulCards = []
       const failedCards = []
+      const skippedCards = []
       let shouldContinue = true
 
       for (const card of tradingCardsList) {
         if (!shouldContinue) break
+
+        // Skip locked cards
+        if (isCardLocked(card.id)) {
+          skippedCards.push(card.assetid)
+          logEvent(`[Info] Skipped locked card ${card.assetid}`)
+          continue
+        }
 
         if (!card.market_hash_name) {
           logEvent(`[Error] Card ${card.assetid} doesn't have a market hash name - skipping`)
@@ -373,7 +466,16 @@ export default function useTradingCardsList(): UseTradingCardsList {
           if (!shouldContinue) break
 
           const parsedPrice = priceResult.price.replace(/[^0-9.,]/g, '').replace(',', '.')
-          const cardForListing: [string, string] = [card.assetid, parsedPrice]
+          const finalPrice = parseFloat(parsedPrice) + priceAdjustment
+
+          // Check if price is within sell limits
+          if (!isWithinSellLimits(finalPrice)) {
+            skippedCards.push(card.assetid)
+            logEvent(`[Info] Skipped card ${card.assetid} - price ${finalPrice} outside sell limits`)
+            continue
+          }
+
+          const cardForListing: [string, string] = [card.assetid, finalPrice.toString()]
 
           const response = await invoke<InvokeListCards>('list_trading_cards', {
             sid: decrypt(credentials.sid),
@@ -408,6 +510,11 @@ export default function useTradingCardsList(): UseTradingCardsList {
 
       if (successfulCards.length > 0) {
         showSuccessToast(t('toast.tradingCards.listed', { count: successfulCards.length }))
+      }
+
+      if (skippedCards.length > 0) {
+        showPrimaryToast(t('toast.tradingCards.skippedCards', { count: skippedCards.length }))
+        logEvent(`[Info] Skipped ${skippedCards.length} cards due to sell limit restrictions`)
       }
 
       if (failedCards.length > 0) {

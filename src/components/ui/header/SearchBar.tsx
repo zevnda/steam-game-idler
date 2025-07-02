@@ -23,6 +23,10 @@ export default function SearchBar(): ReactElement {
     searchContext.setGameQueryValue(e.target.value)
   }
 
+  const handleTradingCardQueryChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    searchContext.setTradingCardQueryValue(e.target.value)
+  }
+
   const handleAchievementQueryChange = (e: ChangeEvent<HTMLInputElement>): void => {
     searchContext.setAchievementQueryValue(e.target.value)
   }
@@ -56,6 +60,27 @@ export default function SearchBar(): ReactElement {
           onChange={handleGameQueryChange}
           onKeyDown={handleKeyDown}
           onClear={() => searchContext.setGameQueryValue('')}
+        />
+      )}
+      {activePage === 'tradingCards' && !showAchievements && (
+        <Input
+          size='sm'
+          isClearable
+          isDisabled={activePage !== 'tradingCards' || showAchievements}
+          placeholder={t('search.tradingCards')}
+          startContent={<RiSearchLine />}
+          className='w-[300px] ml-14'
+          classNames={{
+            inputWrapper: cn(
+              'bg-input border border-border hover:!bg-inputhover',
+              'rounded-lg group-data-[focus-within=true]:!bg-inputhover',
+            ),
+            input: ['!text-content placeholder:text-altwhite/50'],
+          }}
+          value={searchContext.tradingCardQueryValue}
+          onChange={handleTradingCardQueryChange}
+          onKeyDown={handleKeyDown}
+          onClear={() => searchContext.setTradingCardQueryValue('')}
         />
       )}
       {showAchievements && currentTab === 'achievements' && (

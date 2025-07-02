@@ -147,16 +147,23 @@ pub async fn get_trading_cards(
         }
     }
 
-    // Create a map of classid+instanceid to assetid from assets array
-    let mut asset_map: HashMap<String, String> = HashMap::new();
+    // Create a map of classid+instanceid to assets (including amount) from assets array
+    let mut asset_map: HashMap<String, Vec<(String, u64)>> = HashMap::new();
     for asset in &all_assets {
-        if let (Some(classid), Some(instanceid), Some(assetid)) = (
+        if let (Some(classid), Some(instanceid), Some(assetid), amount) = (
             asset.get("classid").and_then(|id| id.as_str()),
             asset.get("instanceid").and_then(|id| id.as_str()),
             asset.get("assetid").and_then(|id| id.as_str()),
+            asset
+                .get("amount")
+                .and_then(|a| a.as_str().and_then(|s| s.parse::<u64>().ok()))
+                .unwrap_or(1),
         ) {
             let key = format!("{}_{}", classid, instanceid);
-            asset_map.insert(key, assetid.to_string());
+            asset_map
+                .entry(key)
+                .or_insert_with(Vec::new)
+                .push((assetid.to_string(), amount));
         }
     }
 
@@ -241,21 +248,26 @@ pub async fn get_trading_cards(
             // Get badge level for this appid
             let badge_level = badge_levels.get(&appid).cloned().unwrap_or(0);
 
-            // Get assetid from asset_map using classid+instanceid as key
+            // Get assets from asset_map using classid+instanceid as key
             let key = format!("{}_{}", classid, instanceid);
-            if let Some(assetid) = asset_map.get(&key) {
-                if !classid.is_empty() && !image_url.is_empty() {
-                    trading_cards.push(json!({
-                        "id": classid,
-                        "assetid": assetid,
-                        "appid": appid,
-                        "image": format!("https://steamcommunity-a.akamaihd.net/economy/image/{}", image_url),
-                        "href": format!("https://steamcommunity.com/profiles/{}/inventory/#753_6_{}", steam_id, assetid),
-                        "appname": appname,
-                        "full_name": full_name,
-                        "market_hash_name": market_hash_name,
-                        "badge_level": badge_level
-                    }));
+            if let Some(assets) = asset_map.get(&key) {
+                for (assetid, amount) in assets {
+                    // Create multiple entries for items with amount > 1
+                    for _ in 0..*amount {
+                        if !classid.is_empty() && !image_url.is_empty() {
+                            trading_cards.push(json!({
+                                "id": classid,
+                                "assetid": assetid,
+                                "appid": appid,
+                                "image": format!("https://steamcommunity-a.akamaihd.net/economy/image/{}", image_url),
+                                "href": format!("https://steamcommunity.com/profiles/{}/inventory/#753_6_{}", steam_id, assetid),
+                                "appname": appname,
+                                "full_name": full_name,
+                                "market_hash_name": market_hash_name,
+                                "badge_level": badge_level
+                            }));
+                        }
+                    }
                 }
             }
         }

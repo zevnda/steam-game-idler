@@ -19,6 +19,7 @@ const SETTINGS = {
   'general': 'General',
   'card-farming': 'Card Farming',
   'achievement-unlocker': 'Achievement Unlocker',
+  'trading-card-manager': 'Trading Card Manager',
   'game-settings': 'Game Settings',
   'logs': 'Logs',
 }

@@ -59,6 +59,13 @@ export const UserProvider = ({ children }: { children: ReactNode }): ReactElemen
       scheduleTo: new Time(23, 0, 0, 0),
       interval: [30, 130],
     },
+    tradingCards: {
+      priceAdjustment: 0.0,
+      sellLimit: {
+        min: 0.01,
+        max: 1.1,
+      },
+    },
   })
 
   return (

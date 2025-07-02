@@ -13,6 +13,7 @@ import GeneralSettings from '@/components/settings/GeneralSettings'
 import Logs from '@/components/settings/Logs'
 import OpenSettings from '@/components/settings/OpenSettings'
 import ResetSettings from '@/components/settings/ResetSettings'
+import TradingCardManager from '@/components/settings/TradingCardManager'
 import ViewDocumentation from '@/components/settings/ViewDocumentation'
 import useSettings from '@/hooks/settings/useSettings'
 
@@ -78,6 +79,9 @@ export default function Settings(): ReactElement {
           </Tab>
           <Tab key='achievement-unlocker' title={t('common.achievementUnlocker')}>
             <AchievementSettings />
+          </Tab>
+          <Tab key='trading-card-manager' title={t('tradingCards.title')}>
+            <TradingCardManager />
           </Tab>
           <Tab key='logs' title={t('settings.logs.title')}>
             <Logs />

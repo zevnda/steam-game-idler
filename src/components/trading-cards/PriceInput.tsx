@@ -4,7 +4,7 @@ import type { ReactElement } from 'react'
 
 import { Button, cn, NumberInput } from '@heroui/react'
 import { useTranslation } from 'react-i18next'
-import { TbCurrencyDollar, TbPackageExport } from 'react-icons/tb'
+import { TbPackageExport } from 'react-icons/tb'
 
 import CustomTooltip from '@/components/ui/CustomTooltip'
 
@@ -19,7 +19,6 @@ export default function PriceInput({ item, tradingCardContext }: PriceInputProps
   return (
     <div className='flex items-center justify-center gap-1 mt-2'>
       <NumberInput
-        hideStepper
         isInvalid={
           tradingCardContext.selectedCards[item.assetid] && tradingCardContext.getCardPriceValue(item.assetid) <= 0
         }
@@ -34,11 +33,10 @@ export default function PriceInput({ item, tradingCardContext }: PriceInputProps
           maximumFractionDigits: 2,
         }}
         aria-label='statistic value'
-        startContent={<TbCurrencyDollar className='text-altwhite' size={18} />}
         className='w-[85px]'
         classNames={{
           inputWrapper: cn(
-            'bg-input border border-border hover:!bg-inputhover rounded-lg h-6',
+            'bg-input border border-border hover:!bg-inputhover rounded-lg',
             'group-data-[focus-visible=true]:ring-transparent',
             'group-data-[focus-visible=true]:ring-offset-transparent',
             'group-data-[focus-within=true]:!bg-inputhover',
@@ -61,7 +59,11 @@ export default function PriceInput({ item, tradingCardContext }: PriceInputProps
             !tradingCardContext.loadingListButton && <TbPackageExport className='text-button-text' size={20} />
           }
           onPress={() => {
-            tradingCardContext.handleSellSingleCard(item.assetid, tradingCardContext.getCardPriceValue(item.assetid))
+            tradingCardContext.handleSellSingleCard(
+              item.assetid,
+              item.id,
+              tradingCardContext.getCardPriceValue(item.assetid),
+            )
           }}
         />
       </CustomTooltip>

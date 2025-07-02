@@ -24,6 +24,7 @@ export default function HeaderTitle(): ReactElement {
     'general': t('settings.general.title'),
     'card-farming': t('common.cardFarming'),
     'achievement-unlocker': t('common.achievementUnlocker'),
+    'trading-card-manager': t('tradingCards.title'),
     'logs': t('settings.logs.title'),
     'achievements': t('achievementManager.achievements.title'),
     'statistics': t('achievementManager.statistics.title'),
