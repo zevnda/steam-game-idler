@@ -7,6 +7,8 @@ interface SearchContextType {
   setIsQuery: Dispatch<SetStateAction<boolean>>
   gameQueryValue: string
   setGameQueryValue: Dispatch<SetStateAction<string>>
+  tradingCardQueryValue: string
+  setTradingCardQueryValue: Dispatch<SetStateAction<string>>
   achievementQueryValue: string
   setAchievementQueryValue: Dispatch<SetStateAction<string>>
   statisticQueryValue: string
@@ -18,6 +20,7 @@ export const SearchContext = createContext<SearchContextType | undefined>(undefi
 export const SearchProvider = ({ children }: { children: ReactNode }): ReactElement => {
   const [isQuery, setIsQuery] = useState(false)
   const [gameQueryValue, setGameQueryValue] = useState('')
+  const [tradingCardQueryValue, setTradingCardQueryValue] = useState('')
   const [achievementQueryValue, setAchievementQueryValue] = useState('')
   const [statisticQueryValue, setStatisticQueryValue] = useState('')
 
@@ -28,6 +31,8 @@ export const SearchProvider = ({ children }: { children: ReactNode }): ReactElem
         setIsQuery,
         gameQueryValue,
         setGameQueryValue,
+        tradingCardQueryValue,
+        setTradingCardQueryValue,
         achievementQueryValue,
         setAchievementQueryValue,
         statisticQueryValue,

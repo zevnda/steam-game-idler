@@ -10,6 +10,7 @@ import { SiExpertsexchange } from 'react-icons/si'
 import { TbLock, TbLockOpen } from 'react-icons/tb'
 import { FixedSizeList as List } from 'react-window'
 
+import { useSearchContext } from '@/components/contexts/SearchContext'
 import { useStateContext } from '@/components/contexts/StateContext'
 import PageHeader from '@/components/trading-cards/PageHeader'
 import PriceData from '@/components/trading-cards/PriceData'
@@ -19,7 +20,7 @@ import ExtLink from '@/components/ui/ExtLink'
 import useTradingCardsList from '@/hooks/trading-cards/useTradingCardsList'
 
 interface RowData {
-  tradingCardContext: ReturnType<typeof useTradingCardsList>
+  tradingCardContext: ReturnType<typeof useTradingCardsList> & { filteredTradingCardsList: TradingCard[] }
   styles: CSSProperties
   t: (key: string) => string
   lockedCards: string[]
@@ -35,12 +36,12 @@ interface RowProps {
 const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
   const { tradingCardContext, styles, t, lockedCards, handleLockCard } = data
 
-  const item1 = tradingCardContext.tradingCardsList[index * 6]
-  const item2 = tradingCardContext.tradingCardsList[index * 6 + 1]
-  const item3 = tradingCardContext.tradingCardsList[index * 6 + 2]
-  const item4 = tradingCardContext.tradingCardsList[index * 6 + 3]
-  const item5 = tradingCardContext.tradingCardsList[index * 6 + 4]
-  const item6 = tradingCardContext.tradingCardsList[index * 6 + 5]
+  const item1 = tradingCardContext.filteredTradingCardsList[index * 6]
+  const item2 = tradingCardContext.filteredTradingCardsList[index * 6 + 1]
+  const item3 = tradingCardContext.filteredTradingCardsList[index * 6 + 2]
+  const item4 = tradingCardContext.filteredTradingCardsList[index * 6 + 3]
+  const item5 = tradingCardContext.filteredTradingCardsList[index * 6 + 4]
+  const item6 = tradingCardContext.filteredTradingCardsList[index * 6 + 5]
 
   if (!item1 && !item2 && !item3 && !item4 && !item5 && !item6) return null
 
@@ -170,6 +171,7 @@ Row.displayName = 'Row'
 
 export default function TradingCardsList(): ReactElement {
   const { t } = useTranslation()
+  const { tradingCardQueryValue } = useSearchContext()
   const { isDarkMode } = useStateContext()
   const [styles, setStyles] = useState({})
   const [windowInnerHeight, setWindowInnerHeight] = useState(0)
@@ -206,8 +208,21 @@ export default function TradingCardsList(): ReactElement {
     })
   }
 
+  const filteredTradingCardsList = useMemo(
+    () =>
+      tradingCardContext.tradingCardsList.filter(
+        card =>
+          card.full_name.toLowerCase().includes(tradingCardQueryValue.toLowerCase()) ||
+          card.appname.toLowerCase().includes(tradingCardQueryValue.toLowerCase()),
+      ),
+    [tradingCardContext.tradingCardsList, tradingCardQueryValue],
+  )
+
   const itemData: RowData = {
-    tradingCardContext,
+    tradingCardContext: {
+      ...tradingCardContext,
+      filteredTradingCardsList,
+    },
     styles,
     t,
     lockedCards,
@@ -236,7 +251,7 @@ export default function TradingCardsList(): ReactElement {
         <div className='flex flex-col'>
           <List
             height={windowInnerHeight - 41}
-            itemCount={Math.ceil(tradingCardContext.tradingCardsList.length / 6)}
+            itemCount={Math.ceil(filteredTradingCardsList.length / 6)}
             itemSize={309}
             width='100%'
             itemData={itemData}

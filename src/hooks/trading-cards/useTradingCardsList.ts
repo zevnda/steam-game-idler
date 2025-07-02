@@ -25,6 +25,7 @@ import {
 
 interface UseTradingCardsList {
   tradingCardsList: TradingCard[]
+  filteredTradingCardsList?: TradingCard[]
   isLoading: boolean
   loadingItemPrice: Record<string, boolean>
   loadingListButton: boolean
