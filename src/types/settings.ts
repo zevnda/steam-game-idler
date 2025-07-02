@@ -54,6 +54,10 @@ export interface GeneralSettings {
 
 export interface TradingCardsSettings {
   priceAdjustment: number
+  sellLimit: {
+    min: number
+    max: number
+  }
 }
 
 export interface UserSettings {

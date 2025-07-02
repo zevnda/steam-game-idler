@@ -200,7 +200,7 @@ export default function TradingCardsList(): ReactElement {
           <List
             height={windowInnerHeight - 49}
             itemCount={Math.ceil(tradingCardContext.tradingCardsList.length / 6)}
-            itemSize={275}
+            itemSize={291}
             width='100%'
             itemData={itemData}
           >

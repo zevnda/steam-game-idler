@@ -10,7 +10,8 @@
 - Lots of additions and fixes for `trading card manager`
   - Added `trading card manager` tab to `settings` **<sup>BETA FEATURE</sup>**
     - Enable `beta features` in `settings > general` to use it
-    - Added a `price adjustment` setting that allows users to add or subtract from the sale price of all trading card sales
+    - Added a `price adjustment` setting that allows users to add or subtract from the sale price of all sales
+    - Added a `sell limit blacklist` settings that allows users to select a min/max range. If the cards final sale price is not within that range it will not be sold
   - Added proper pagination for `trading card manager` API calls, allowing all trading cards to be returned at once
     - This is useful for users with large Steam inventories (>2500 items)
   - Fixed an issue where duplicate cards weren't being shown correctly

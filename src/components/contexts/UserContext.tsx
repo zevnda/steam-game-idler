@@ -61,6 +61,10 @@ export const UserProvider = ({ children }: { children: ReactNode }): ReactElemen
     },
     tradingCards: {
       priceAdjustment: 0.0,
+      sellLimit: {
+        min: 0.01,
+        max: 1.1,
+      },
     },
   })
 
