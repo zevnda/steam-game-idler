@@ -52,9 +52,14 @@ export interface GeneralSettings {
   startMinimized: boolean
 }
 
+export interface TradingCardsSettings {
+  priceAdjustment: number
+}
+
 export interface UserSettings {
+  general: GeneralSettings
   achievementUnlocker: AchievementUnlockerSettings
   cardFarming: CardFarmingSettings
   gameSettings: GameSettings | null
-  general: GeneralSettings
+  tradingCards: TradingCardsSettings
 }

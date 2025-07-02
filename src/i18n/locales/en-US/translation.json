@@ -49,6 +49,7 @@
   "customLists.invalid": "Invalid list type",
   "tradingCards.title": "Trading Card Manager",
   "tradingCards.subtitle": "Sell your trading cards on the Steam market",
+  "tradingCards.priceAdjustment": "Price Adjustment",
   "tradingCards.bulk": "List All ({{count}})",
   "tradingCards.list": "List Selected",
   "tradingCards.remove": "Remove All",

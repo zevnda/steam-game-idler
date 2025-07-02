@@ -50,7 +50,10 @@ fn get_default_settings() -> Value {
                 30,
                 130
             ]
-        }
+        },
+        "tradingCards": {
+            "priceAdjustment": 0.0,
+        },
     })
 }
 

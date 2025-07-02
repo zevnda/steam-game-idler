@@ -224,8 +224,11 @@ export default function useTradingCardsList(): UseTradingCardsList {
 
       setLoadingListButton(true)
 
+      const priceAdjustment = userSettings.tradingCards?.priceAdjustment || 0.0
+      const adjustedPrice = price + priceAdjustment
+
       // Format for the API - single card as an array item
-      const cardForListing: [string, string] = [assetId, price.toString()]
+      const cardForListing: [string, string] = [assetId, adjustedPrice.toString()]
       logEvent(`Card for listing: ${JSON.stringify(cardForListing)}`)
 
       const response = await invoke<InvokeListCards>('list_trading_cards', {
@@ -281,10 +284,11 @@ export default function useTradingCardsList(): UseTradingCardsList {
         return
       }
 
-      const cardsForBulkListing = cardsToSell.map(assetId => [assetId, changedCardPrices[assetId].toString()]) as [
-        string,
-        string,
-      ][]
+      const priceAdjustment = userSettings.tradingCards?.priceAdjustment || 0.0
+      const cardsForBulkListing = cardsToSell.map(assetId => [
+        assetId,
+        (changedCardPrices[assetId] + priceAdjustment).toString(),
+      ]) as [string, string][]
 
       setLoadingListButton(true)
       showPrimaryToast(t('toast.tradingCards.processing'))
@@ -343,6 +347,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
       setLoadingListButton(true)
       showPrimaryToast(t('toast.tradingCards.processing'))
 
+      const priceAdjustment = userSettings.tradingCards?.priceAdjustment || 0.0
       const successfulCards = []
       const failedCards = []
       let shouldContinue = true
@@ -373,7 +378,8 @@ export default function useTradingCardsList(): UseTradingCardsList {
           if (!shouldContinue) break
 
           const parsedPrice = priceResult.price.replace(/[^0-9.,]/g, '').replace(',', '.')
-          const cardForListing: [string, string] = [card.assetid, parsedPrice]
+          const adjustedPrice = (parseFloat(parsedPrice) + priceAdjustment).toString()
+          const cardForListing: [string, string] = [card.assetid, adjustedPrice]
 
           const response = await invoke<InvokeListCards>('list_trading_cards', {
             sid: decrypt(credentials.sid),
