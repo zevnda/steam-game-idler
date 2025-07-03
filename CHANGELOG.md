@@ -1,3 +1,9 @@
+<!-- 1.16.1 -->
+
+### Changes in v1.16.1
+
+- Fixed incorrect number input stepper icon colors on dark themes
+
 <!-- 1.16.0 -->
 
 ### Changes in v1.16.0
