@@ -10,7 +10,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import { useUserContext } from '@/components/contexts/UserContext'
 import Beta from '@/components/ui/Beta'
 
-export default function TradingCardManager(): ReactElement {
+export default function TradingCardManagerSettings(): ReactElement {
   const { t } = useTranslation()
   const { userSummary, userSettings, setUserSettings } = useUserContext()
   const [priceAdjustment, setPriceAdjustment] = useState<number>(0.0)
@@ -102,6 +102,7 @@ export default function TradingCardManager(): ReactElement {
                 'border group-data-[invalid=true]:!bg-red-500/10',
               ),
               input: ['text-sm !text-content'],
+              stepperButton: ['!text-content', 'text-sm'],
             }}
             onValueChange={handlePriceAdjustmentChange}
           />
@@ -144,6 +145,7 @@ export default function TradingCardManager(): ReactElement {
                   'border group-data-[invalid=true]:!bg-red-500/10',
                 ),
                 input: ['text-sm !text-content'],
+                stepperButton: ['!text-content', 'text-sm'],
               }}
               onValueChange={handleSellLimitMinChange}
             />
@@ -168,6 +170,7 @@ export default function TradingCardManager(): ReactElement {
                   'border group-data-[invalid=true]:!bg-red-500/10',
                 ),
                 input: ['text-sm !text-content'],
+                stepperButton: ['!text-content', 'text-sm'],
               }}
               onValueChange={handleSellLimitMaxChange}
             />

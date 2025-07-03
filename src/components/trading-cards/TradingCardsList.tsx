@@ -81,7 +81,7 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
                 className='hover:bg-titlehover rounded-full p-1 cursor-pointer duration-200'
                 onClick={() => handleLockCard(item.id)}
               >
-                {isLocked ? <TbLock fontSize={14} className='text-dynamic' /> : <TbLockOpen fontSize={14} />}
+                {isLocked ? <TbLock fontSize={14} className='text-yellow-500' /> : <TbLockOpen fontSize={14} />}
               </div>
             </CustomTooltip>
 
