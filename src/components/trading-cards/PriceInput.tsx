@@ -44,6 +44,7 @@ export default function PriceInput({ item, tradingCardContext }: PriceInputProps
             'border group-data-[invalid=true]:!bg-red-500/10',
           ),
           input: ['text-sm !text-content'],
+          stepperButton: ['!text-content', 'text-sm'],
         }}
         onValueChange={value => tradingCardContext.updateCardPrice(item.assetid, value)}
       />
