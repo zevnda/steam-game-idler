@@ -201,7 +201,6 @@
   "common.clear": "Temizle",
   "common.options": "Seçenekler",
   "common.list": "Sat",
-  "common.nextTask": "Tamamlandığında bir sonraki özelliği otomatik olarak başlat",
   "changelog.title": "{{version}}'daki değişiklikler",
   "changelog.star": "GitHub üzerinden yıldızlayın",
   "changelog.report": "GitHub üzerinden sorun bildirin",

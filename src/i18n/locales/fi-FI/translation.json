@@ -201,7 +201,6 @@
   "common.clear": "Tyhjennä",
   "common.options": "Valinnat",
   "common.list": "Lista",
-  "common.nextTask": "Aloita seuraava ominaisuus automaattisesti kun valmis",
   "changelog.title": "Muutokset {{version}}",
   "changelog.star": "Star on GitHub",
   "changelog.report": "Raportoi ongelma GitHubissa",

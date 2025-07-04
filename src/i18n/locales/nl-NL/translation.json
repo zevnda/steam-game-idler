@@ -201,7 +201,6 @@
   "common.clear": "Verwijderen",
   "common.options": "Instellingen",
   "common.list": "Klantenlijst",
-  "common.nextTask": "Start de volgende functie automatisch na afloop",
   "changelog.title": "Wijzigingen in {{version}}",
   "changelog.star": "Star on GitHub",
   "changelog.report": "Probleem melden op GitHub",

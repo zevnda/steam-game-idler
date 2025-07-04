@@ -201,7 +201,6 @@
   "common.clear": "Очисти",
   "common.options": "Опције",
   "common.list": "Листа",
-  "common.nextTask": "Аутоматски започните следећу функцију када се заврши",
   "changelog.title": "Промене у {{version}}",
   "changelog.star": "Звезда на GitHub",
   "changelog.report": "Пријавите проблем на GitHub",

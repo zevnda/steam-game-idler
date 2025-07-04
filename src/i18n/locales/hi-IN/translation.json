@@ -201,7 +201,6 @@
   "common.clear": "साफ़ करें",
   "common.options": "विकल्प",
   "common.list": "सूची",
-  "common.nextTask": "स्वचालित रूप से अगली सुविधा शुरू करें जब समाप्त हो जाए",
   "changelog.title": "{{version}} में बदलाव",
   "changelog.star": "GitHub पर स्टार",
   "changelog.report": "GitHub पर समस्या रिपोर्ट करें",

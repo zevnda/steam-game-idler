@@ -201,7 +201,6 @@
   "common.clear": "ลบ",
   "common.options": "ตัวเลือก",
   "common.list": "รายการ",
-  "common.nextTask": "เริ่มคุณสมบัติถัดไปโดยอัตโนมัติเมื่อเสร็จสิ้น",
   "changelog.title": "การเปลี่ยนแปลงใน {{version}}",
   "changelog.star": "ดาวบน GitHub",
   "changelog.report": "รายงานปัญหาบน GitHub",

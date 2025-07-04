@@ -201,7 +201,6 @@
   "common.clear": "Ryd",
   "common.options": "Indstillinger",
   "common.list": "Liste",
-  "common.nextTask": "Start automatisk næste funktion når den er færdig",
   "changelog.title": "Ændringer i {{version}}",
   "changelog.star": "Star on GitHub",
   "changelog.report": "Rapporter problem på GitHub",

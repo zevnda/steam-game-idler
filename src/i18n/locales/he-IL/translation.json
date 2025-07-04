@@ -201,7 +201,6 @@
   "common.clear": "נקה,",
   "common.options": "אפשרויות,",
   "common.list": "רשימה,",
-  "common.nextTask": "התחל את התכונה הבאה באופן אוטומטי כאשר הסתיימה",
   "changelog.title": "שינויים ב-{{version}},",
   "changelog.star": "כוכב ב-GitHub,",
   "changelog.report": "דווח על בעיה ב-GitHub,",

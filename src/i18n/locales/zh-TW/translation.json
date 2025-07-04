@@ -201,7 +201,6 @@
   "common.clear": "清除",
   "common.options": "選項",
   "common.list": "清單",
-  "common.nextTask": "自動在完成後開始下一個功能",
   "changelog.title": "{{version}} 的變更",
   "changelog.star": "在 GitHub 上加星",
   "changelog.report": "在 GitHub 上報告問題",

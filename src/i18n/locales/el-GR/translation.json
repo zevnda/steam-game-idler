@@ -201,7 +201,6 @@
   "common.clear": "Εκκαθάριση",
   "common.options": "Επιλογές",
   "common.list": "Λίστα",
-  "common.nextTask": "Αυτόματη εκκίνηση της επόμενης λειτουργίας όταν τελειώσετε",
   "changelog.title": "Αλλαγές στο {{version}}",
   "changelog.star": "Star on GitHub",
   "changelog.report": "Αναφορά προβλήματος στο GitHub",

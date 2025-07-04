@@ -201,7 +201,6 @@
   "common.clear": "I-clear",
   "common.options": "Mga Opsyon",
   "common.list": "Listahan",
-  "common.nextTask": "Awtomatikong simulan ang susunod na tampok kapag natapos na",
   "changelog.title": "Mga Pagbabago sa {{version}}",
   "changelog.star": "Star sa GitHub",
   "changelog.report": "Mag-ulat ng isyu sa GitHub",

@@ -201,7 +201,6 @@
   "common.clear": "Maak skoon",
   "common.options": "Opsies",
   "common.list": "Lys",
-  "common.nextTask": "Outomaties begin met die volgende kenmerk wanneer klaar",
   "changelog.title": "Veranderinge in {{version}}",
   "changelog.star": "Ster op GitHub",
   "changelog.report": "Rapporteer probleem op GitHub",

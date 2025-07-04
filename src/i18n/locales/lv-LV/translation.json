@@ -201,7 +201,6 @@
   "common.clear": "Notīrīt",
   "common.options": "Opcijas",
   "common.list": "Saraksts",
-  "common.nextTask": "Automātiski sākt nākamo funkciju pēc pabeigšanas",
   "changelog.title": "Izmaiņas {{version}}",
   "changelog.star": "Zvaigzne GitHub",
   "changelog.report": "Ziņot par problēmu GitHub",

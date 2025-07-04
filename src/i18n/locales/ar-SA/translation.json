@@ -201,7 +201,6 @@
   "common.clear": "مسح",
   "common.options": "خيارات",
   "common.list": "قائمة",
-  "common.nextTask": "بدء الميزة التالية تلقائياً عند الانتهاء",
   "changelog.title": "التغييرات في {{version}}",
   "changelog.star": "إضافة نجمة على GitHub",
   "changelog.report": "الإبلاغ عن مشكلة في GitHub",
