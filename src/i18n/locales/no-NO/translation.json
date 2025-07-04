@@ -201,7 +201,6 @@
   "common.clear": "Tøm",
   "common.options": "Alternativer",
   "common.list": "Liste",
-  "common.nextTask": "Start automatisk neste funksjon når fullført",
   "changelog.title": "Endringer i {{version}}",
   "changelog.star": "Star on GitHub",
   "changelog.report": "Rapporter problem på GitHub",

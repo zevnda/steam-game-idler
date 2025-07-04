@@ -201,7 +201,6 @@
   "common.clear": "Törlés",
   "common.options": "Opciók",
   "common.list": "Lista",
-  "common.nextTask": "A következő funkció automatikus indítása befejezésekor",
   "changelog.title": "Változások {{version}}-ben",
   "changelog.star": "Csillag a GitHub-on",
   "changelog.report": "Hiba bejelentése a GitHub-on",

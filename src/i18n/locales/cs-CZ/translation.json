@@ -201,7 +201,6 @@
   "common.clear": "Vyčistit",
   "common.options": "Možnosti",
   "common.list": "Seznam",
-  "common.nextTask": "Automaticky spustit další funkci po dokončení",
   "changelog.title": "Změny v {{version}}",
   "changelog.star": "Star on GitHub",
   "changelog.report": "Nahlásit problém na GitHubu",

@@ -201,7 +201,6 @@
   "common.clear": "Vymazať",
   "common.options": "Možnosti",
   "common.list": "Zoznam",
-  "common.nextTask": "Automaticky spustiť ďalšiu funkciu po dokončení",
   "changelog.title": "Zmeny v {{version}}",
   "changelog.star": "Hviezdička na GitHub",
   "changelog.report": "Nahlásiť problém na GitHub",

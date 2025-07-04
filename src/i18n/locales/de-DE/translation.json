@@ -201,7 +201,6 @@
   "common.clear": "Löschen",
   "common.options": "Optionen",
   "common.list": "Liste",
-  "common.nextTask": "Nächstes Feature automatisch starten, wenn es fertig ist",
   "changelog.title": "Änderungen in {{version}}",
   "changelog.star": "Star on GitHub",
   "changelog.report": "Problem auf GitHub melden",

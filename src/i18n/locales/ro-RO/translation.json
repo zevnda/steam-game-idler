@@ -201,7 +201,6 @@
   "common.clear": "Șterge",
   "common.options": "Opțiuni",
   "common.list": "Listă",
-  "common.nextTask": "Pornește automat următoarea funcție la finalizare",
   "changelog.title": "Modificări în {{version}}",
   "changelog.star": "Dă un Star pe GitHub",
   "changelog.report": "Raportează o problemă pe GitHub",

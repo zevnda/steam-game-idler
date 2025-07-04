@@ -201,7 +201,6 @@
   "common.clear": "Wyczyść",
   "common.options": "Opcje",
   "common.list": "Lista",
-  "common.nextTask": "Automatycznie uruchom następną funkcję po zakończeniu",
   "changelog.title": "Zmiany w {{version}}",
   "changelog.star": "Gwiazdka na GitHub",
   "changelog.report": "Zgłoś problem na GitHub",

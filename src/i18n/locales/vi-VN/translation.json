@@ -201,7 +201,6 @@
   "common.clear": "Xóa",
   "common.options": "Tùy chọn",
   "common.list": "Danh sách",
-  "common.nextTask": "Tự động bắt đầu tính năng tiếp theo khi hoàn thành",
   "changelog.title": "Thay đổi trong {{version}}",
   "changelog.star": "Star trên GitHub",
   "changelog.report": "Báo cáo vấn đề trên GitHub",

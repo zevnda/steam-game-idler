@@ -201,7 +201,6 @@
   "common.clear": "Rensa",
   "common.options": "Alternativ",
   "common.list": "Lista",
-  "common.nextTask": "Starta automatiskt nästa funktion när den är klar",
   "changelog.title": "Ändringar i {{version}}",
   "changelog.star": "Star on GitHub",
   "changelog.report": "Rapportera problem på GitHub",

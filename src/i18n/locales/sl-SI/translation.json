@@ -201,7 +201,6 @@
   "common.clear": "Počisti",
   "common.options": "Možnosti",
   "common.list": "Seznam",
-  "common.nextTask": "Samodejno prični naslednjo funkcijo, ko je končano",
   "changelog.title": "Spremembe v {{version}}",
   "changelog.star": "Dodaj zvezdico na GitHubu",
   "changelog.report": "Prijavi težavo na GitHubu",

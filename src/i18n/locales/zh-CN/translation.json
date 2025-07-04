@@ -201,7 +201,6 @@
   "common.clear": "清空",
   "common.options": "设置",
   "common.list": "列表",
-  "common.nextTask": "完成后自动启动下一个功能",
   "changelog.title": "变动 {{version}}",
   "changelog.star": "在 GitHub 点亮星标",
   "changelog.report": "在 GitHub 反馈问题",

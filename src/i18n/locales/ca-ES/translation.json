@@ -201,7 +201,6 @@
   "common.clear": "Esborra,",
   "common.options": "Opcions,",
   "common.list": "Llista,",
-  "common.nextTask": "Iniciar automàticament la propera característica quan finalitzi",
   "changelog.title": "Canvis a {{version}},",
   "changelog.star": "Estrella a GitHub,",
   "changelog.report": "Informa d'un problema a GitHub,",

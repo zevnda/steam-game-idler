@@ -201,7 +201,6 @@
   "common.clear": "Puhasta",
   "common.options": "Valikud",
   "common.list": "Loetelu",
-  "common.nextTask": "Automaatselt käivita järgmine funktsioon, kui lõpetatud",
   "changelog.title": "Muudatused versioonis {{version}}",
   "changelog.star": "Täht GitHubis",
   "changelog.report": "Teata probleemist GitHubis",

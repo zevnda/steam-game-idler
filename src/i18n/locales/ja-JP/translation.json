@@ -201,7 +201,6 @@
   "common.clear": "クリア",
   "common.options": "オプション",
   "common.list": "リスト",
-  "common.nextTask": "終了時に自動的に次の機能を開始",
   "changelog.title": "{{version}} の変更",
   "changelog.star": "Star on GitHub",
   "changelog.report": "GitHub で問題を報告",

@@ -201,7 +201,6 @@
   "common.clear": "Hapus",
   "common.options": "Opsi",
   "common.list": "Daftar",
-  "common.nextTask": "Secara otomatis memulai fitur berikutnya setelah selesai",
   "changelog.title": "Perubahan dalam {{version}}",
   "changelog.star": "Bintangi di GitHub",
   "changelog.report": "Laporkan masalah di GitHub",

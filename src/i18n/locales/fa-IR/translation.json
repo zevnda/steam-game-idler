@@ -201,7 +201,6 @@
   "common.clear": "پاک کردن",
   "common.options": "گزینهها",
   "common.list": "فهرست",
-  "common.nextTask": "به طور خودکار ویژگی بعدی را پس از اتمام شروع کنید",
   "changelog.title": "تغییرات در {{version}}",
   "changelog.star": "ستاره در GitHub",
   "changelog.report": "گزارش مشکل در GitHub",

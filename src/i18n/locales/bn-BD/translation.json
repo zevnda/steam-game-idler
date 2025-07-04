@@ -201,7 +201,6 @@
   "common.clear": "পরিষ্কার করুন",
   "common.options": "অপশন",
   "common.list": "তালিকা",
-  "common.nextTask": "পরবর্তী বৈশিষ্ট্য স্বয়ংক্রিয়ভাবে শুরু করুন যখন সমাপ্ত হবে",
   "changelog.title": "{{version}} -এর পরিবর্তন",
   "changelog.star": "GitHub-এ স্টার দিন",
   "changelog.report": "GitHub-এ সমস্যা রিপোর্ট করুন",

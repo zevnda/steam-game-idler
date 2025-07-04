@@ -201,7 +201,6 @@
   "common.clear": "Išvalyti",
   "common.options": "Parinktys",
   "common.list": "Sąrašas",
-  "common.nextTask": "Automatiškai pradėti kitą funkciją baigus",
   "changelog.title": "Pakeitimai {{version}} versijoje",
   "changelog.star": "Žvaigždėkite GitHub",
   "changelog.report": "Pranešti apie problemą GitHub",
