@@ -4189,6 +4189,7 @@ dependencies = [
  "chrono",
  "dotenvs",
  "lazy_static",
+ "rand 0.8.5",
  "regex",
  "reqwest",
  "scraper",
@@ -4207,6 +4208,7 @@ dependencies = [
  "tauri-plugin-updater",
  "tauri-plugin-window-state",
  "tokio",
+ "walkdir",
  "winapi",
 ]
 
