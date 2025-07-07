@@ -188,6 +188,7 @@
   "toast.tradingCards.noListings": "Keine aktiven Handelskartenlisten gefunden",
   "toast.tradingCards.removedListings": "{{count}} von {{total}} aktive Karten-Angebote vom Steam-Markt entfernt",
   "toast.tradingCards.failedRemove": "Fehler beim Entfernen der aktiven Kartenliste vom Steam Markt",
+  "toast.tradingCards.priceOutOfRange": "Kartenpreis {{price}} liegt außerhalb der Verkaufsgrenzen ({{min}} - {{max}})",
   "toast.tradingCards.cardLocked": "Karte ist gesperrt und kann nicht zum Verkauf aufgelistet werden",
   "common.cardFarming": "Karten-Farming",
   "common.achievementUnlocker": "Errungenschafts-Freischalter",
