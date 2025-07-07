@@ -1,3 +1,9 @@
+<!-- 1.16.2 -->
+
+### Changes in v1.16.2
+
+- Fixed an issue in `trading card manager` where if there were duplicate cards, only the first one would have its price data updated instead of all duplicates (#675)
+
 <!-- 1.16.1 -->
 
 ### Changes in v1.16.1

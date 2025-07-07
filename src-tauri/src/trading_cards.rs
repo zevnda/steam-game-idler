@@ -378,8 +378,8 @@ pub async fn update_card_data(
     let mut cards_data: Value = serde_json::from_str(&contents)
         .map_err(|e| format!("Failed to parse card farming JSON: {}", e))?;
 
-    // Find and update the card with matching market_hash_name
-    let mut found = false;
+    // Find and update all cards with matching market_hash_name
+    let mut updated_count = 0;
     if let Some(cards_array) = cards_data["card_data"].as_array_mut() {
         for card in cards_array.iter_mut() {
             if let Some(hash_name) = card.get("market_hash_name").and_then(|n| n.as_str()) {
@@ -387,15 +387,14 @@ pub async fn update_card_data(
                     // Add price_data to this card
                     if let Some(obj) = card.as_object_mut() {
                         obj.insert("price_data".to_string(), data.clone());
-                        found = true;
-                        break;
+                        updated_count += 1;
                     }
                 }
             }
         }
     }
 
-    if !found {
+    if updated_count == 0 {
         return Err(format!("Card with market_hash_name '{}' not found", key));
     }
 
@@ -409,6 +408,7 @@ pub async fn update_card_data(
 
     Ok(json!({
         "success": true,
+        "updated_count": updated_count,
         "card_data": cards_data["card_data"]
     }))
 }
