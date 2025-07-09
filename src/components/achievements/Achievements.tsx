@@ -31,16 +31,9 @@ export default function Achievements(): ReactElement {
     setProtectedStatistics,
   )
 
-  console.log(appId)
-
   if (isLoading)
     return (
-      <div
-        className={cn(
-          'overflow-y-auto overflow-x-hidden rounded-tl-xl',
-          'bg-base border-t border-l border-border w-calc',
-        )}
-      >
+      <div className={cn('overflow-y-auto overflow-x-hidden bg-base w-calc')}>
         <Loader />
       </div>
     )
@@ -49,7 +42,7 @@ export default function Achievements(): ReactElement {
     <div
       className={cn(
         'bg-base overflow-y-auto overflow-x-hidden mt-9 ease-in-out',
-        sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-217px)]',
+        sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]',
       )}
       style={{
         transitionDuration,

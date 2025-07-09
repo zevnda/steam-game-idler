@@ -86,7 +86,7 @@ export default function TradingCardManagerSettings(): ReactElement {
                 iconWrapper: '!bg-dynamic/30',
                 description: 'font-bold',
               }}
-              description='To use the Trading Card Manager feature, please add your Steam Credentials in Settings → General'
+              description={t('settings.tradingCards.alert')}
             />
           </div>
         )}
@@ -96,11 +96,11 @@ export default function TradingCardManagerSettings(): ReactElement {
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2'>
             <p className='text-sm text-content font-bold'>
-              {t('tradingCards.priceAdjustment')} <Beta />
+              {t('settings.tradingCards.priceAdjustment')} <Beta />
             </p>
             <p className='text-sm text-altwhite'>
               <Trans
-                i18nKey='tradingCards.priceAdjustmentSub'
+                i18nKey='settings.tradingCards.priceAdjustmentSub'
                 values={{ priceAdjustment }}
                 components={{ 1: <strong /> }}
               />
@@ -138,11 +138,11 @@ export default function TradingCardManagerSettings(): ReactElement {
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2'>
             <p className='text-sm text-content font-bold'>
-              {t('tradingCards.sellLimit')} <Beta />
+              {t('settings.tradingCards.sellLimit')} <Beta />
             </p>
             <p className='text-sm text-altwhite'>
               <Trans
-                i18nKey='tradingCards.sellLimitSub'
+                i18nKey='settings.tradingCards.sellLimitSub'
                 values={{ sellLimitMin, sellLimitMax }}
                 components={{ 1: <strong />, 3: <strong /> }}
               />

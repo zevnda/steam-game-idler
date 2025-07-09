@@ -136,29 +136,6 @@ export default function EditListModal({
                 onChange={e => setSearchTerm(e.target.value)}
                 onClear={() => setSearchTerm('')}
               />
-              <div className='flex items-center gap-2'>
-                <Button
-                  size='sm'
-                  className={`rounded-full font-semibold ${showInList ? 'bg-green-400/40 text-green-600' : 'bg-gray-500/40 text-button-text'}`}
-                  isDisabled={list.length === 0}
-                  startContent={
-                    <TbCheck fontSize={18} className={showInList ? 'text-green-600' : 'text-button-text'} />
-                  }
-                  onPress={() => setShowInList(!showInList)}
-                >
-                  {t('customLists.inList')}
-                </Button>
-                {type === 'achievementUnlockerList' && (
-                  <Button
-                    size='sm'
-                    className='rounded-full font-semibold bg-dynamic text-button-text'
-                    isDisabled={filteredGamesList.length === 0 || list.length === filteredGamesList.length}
-                    onPress={() => handleAddAllGames(filteredGamesList)}
-                  >
-                    {t('customLists.addAll')}
-                  </Button>
-                )}
-              </div>
             </ModalHeader>
             <ModalBody className='relative p-0 gap-0 overflow-y-auto'>
               <List
@@ -183,12 +160,34 @@ export default function EditListModal({
                 size='sm'
                 color='danger'
                 variant='light'
-                className='rounded-lg font-semibold'
+                radius='full'
+                className='font-semibold'
                 onPress={handleClearList}
               >
                 {t('common.clear')}
               </Button>
-              <Button size='sm' className='rounded-lg font-semibold bg-dynamic text-button-text' onPress={onClose}>
+              <Button
+                size='sm'
+                radius='full'
+                className={`font-bold ${showInList ? 'bg-green-400/40 text-green-600' : 'bg-btn-secondary text-btn-text'}`}
+                isDisabled={list.length === 0}
+                startContent={<TbCheck fontSize={18} className={showInList ? 'text-green-600' : undefined} />}
+                onPress={() => setShowInList(!showInList)}
+              >
+                {t('customLists.inList')}
+              </Button>
+              {type === 'achievementUnlockerList' && (
+                <Button
+                  size='sm'
+                  className='bg-btn-secondary text-btn-text font-bold'
+                  radius='full'
+                  isDisabled={filteredGamesList.length === 0 || list.length === filteredGamesList.length}
+                  onPress={() => handleAddAllGames(filteredGamesList)}
+                >
+                  {t('customLists.addAll')}
+                </Button>
+              )}
+              <Button size='sm' className='bg-btn-secondary text-btn-text font-bold' radius='full' onPress={onClose}>
                 {t('common.done')}
               </Button>
             </ModalFooter>

@@ -48,10 +48,8 @@ export default function SearchBar({ isModalOpen = false, onModalClose }: SearchB
       const stored = localStorage.getItem('searchQueries')
       if (stored) {
         const queries = JSON.parse(stored)
-        // Sync localStorage with context
         queries.forEach((query: string) => searchContext.addRecentSearch(query))
       }
-      // Set input value to current search query when modal opens
       const currentQuery = getCurrentSearchQuery()
       setInputValue(currentQuery)
     }
@@ -190,27 +188,30 @@ export default function SearchBar({ isModalOpen = false, onModalClose }: SearchB
               </div>
 
               <div className='grid max-h-64 overflow-y-auto'>
-                {searchContext.recentSearches.map(query => (
-                  <div className='flex items-center justify-between gap-2' key={query}>
-                    <div
-                      key={query}
-                      className={cn(
-                        'flex justify-between items-center px-4 py-1 rounded-lg cursor-pointer transition-all duration-150',
-                        'hover:bg-searchhover/40 w-full',
-                      )}
-                      onClick={() => handleRecentSearchClick(query)}
-                    >
-                      <p className='text-lg font-medium text-content truncate'>{query}</p>
-                    </div>
+                {searchContext.recentSearches
+                  .slice()
+                  .reverse()
+                  .map(query => (
+                    <div className='flex items-center justify-between gap-2' key={query}>
+                      <div
+                        key={query}
+                        className={cn(
+                          'flex justify-between items-center px-4 py-1 rounded-lg cursor-pointer transition-all duration-150',
+                          'hover:bg-searchhover/40 w-full',
+                        )}
+                        onClick={() => handleRecentSearchClick(query)}
+                      >
+                        <p className='text-lg font-medium text-content truncate'>{query}</p>
+                      </div>
 
-                    <div
-                      className='flex items-center justify-center cursor-pointer bg-item-hover hover:bg-item-hover/80 rounded-full p-1 duration-150'
-                      onClick={() => searchContext.removeRecentSearch(query)}
-                    >
-                      <TbX />
+                      <div
+                        className='flex items-center justify-center cursor-pointer bg-item-hover hover:bg-item-hover/80 rounded-full p-1 duration-150'
+                        onClick={() => searchContext.removeRecentSearch(query)}
+                      >
+                        <TbX />
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
               </div>
             </div>
           )}

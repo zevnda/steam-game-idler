@@ -11,7 +11,7 @@ export default {
   theme: {
     extend: {
       width: {
-        calc: 'calc(100vw - 217px)',
+        calc: 'calc(100vw - 250px)',
       },
       height: {
         calc: 'calc(100vh - 36px)',
@@ -78,6 +78,7 @@ export default {
             'container': '#161616',
             'containerhover': '#252525',
             'dynamic': '#009FC2',
+            'dynamic-hover': '#0090af',
             'btn-text': '#000',
             'btn-secondary': '#ebebeb',
             'content': '#ffffff',
@@ -101,8 +102,6 @@ export default {
             'tablehead': '#131313',
             'tablerow': '#1a1a1a',
             'tablerowalt': '#161616',
-            'link': '#009FC2',
-            'linkhover': '#4b82bb',
             'alert': '#1f2125',
             'tab-panel': '#191B1E',
             'primary': {

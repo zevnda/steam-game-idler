@@ -1,10 +1,11 @@
 import type useTradingCardsList from '@/hooks/trading-cards/useTradingCardsList'
 import type { ReactElement } from 'react'
 
-import { Button, cn, useDisclosure } from '@heroui/react'
+import { Button, cn, Divider, useDisclosure } from '@heroui/react'
 import { useTranslation } from 'react-i18next'
-import { TbChecks, TbEraser, TbPackageExport, TbRefresh } from 'react-icons/tb'
+import { TbChecks, TbEraser, TbPackageExport, TbX } from 'react-icons/tb'
 
+import { useSearchContext } from '@/components/contexts/SearchContext'
 import CustomModal from '@/components/ui/CustomModal'
 
 // Helper function to format seconds to HH:MM:SS
@@ -27,6 +28,7 @@ interface PageHeaderProps {
 
 export default function PageHeader({ selectedCardsWithPrice, tradingCardContext }: PageHeaderProps): ReactElement {
   const { t } = useTranslation()
+  const { tradingCardQueryValue, setTradingCardQueryValue } = useSearchContext()
   const { isOpen: isConfirmOpen, onOpen: onConfirmOpen, onOpenChange: onConfirmOpenChange } = useDisclosure()
   const { isOpen: isBulkOpen, onOpen: onBulkOpen, onOpenChange: onBulkOpenChange } = useDisclosure()
   const { isOpen: isRemoveOpen, onOpen: onRemoveOpen, onOpenChange: onRemoveOpenChange } = useDisclosure()
@@ -86,6 +88,22 @@ export default function PageHeader({ selectedCardsWithPrice, tradingCardContext 
                 >
                   {t('tradingCards.remove')}
                 </Button>
+
+                {tradingCardQueryValue && (
+                  <div className='flex items-center gap-2'>
+                    <Divider orientation='vertical' className='mx-2 h-8 bg-border' />
+                    <p className='text-sm text-altwhite font-bold'>Search</p>
+                    <div className='flex items-center gap-2 text-sm text-altwhite p-2 bg-item-active rounded-full max-w-44'>
+                      <p className='text-content truncate'>{tradingCardQueryValue}</p>
+                      <div
+                        className='flex items-center justify-center cursor-pointer bg-item-hover hover:bg-item-hover/80 rounded-full p-1 duration-150'
+                        onClick={() => setTradingCardQueryValue('')}
+                      >
+                        <TbX />
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -110,14 +128,16 @@ export default function PageHeader({ selectedCardsWithPrice, tradingCardContext 
               size='sm'
               color='danger'
               variant='light'
-              className='font-semibold rounded-lg'
+              radius='full'
+              className='font-semibold'
               onPress={onConfirmOpenChange}
             >
               {t('common.cancel')}
             </Button>
             <Button
               size='sm'
-              className='font-semibold rounded-lg bg-dynamic text-button-text'
+              className='bg-btn-secondary text-btn-text font-bold'
+              radius='full'
               onPress={() => {
                 tradingCardContext.handleSellSelectedCards()
                 onConfirmOpenChange()
@@ -147,14 +167,16 @@ export default function PageHeader({ selectedCardsWithPrice, tradingCardContext 
               size='sm'
               color='danger'
               variant='light'
-              className='font-semibold rounded-lg'
+              radius='full'
+              className='font-semibold'
               onPress={onBulkOpenChange}
             >
               {t('common.cancel')}
             </Button>
             <Button
               size='sm'
-              className='font-semibold rounded-lg bg-dynamic text-button-text'
+              className='bg-btn-secondary text-btn-text font-bold'
+              radius='full'
               onPress={() => {
                 tradingCardContext.handleSellAllCards()
                 onBulkOpenChange()
@@ -184,14 +206,16 @@ export default function PageHeader({ selectedCardsWithPrice, tradingCardContext 
               size='sm'
               color='danger'
               variant='light'
-              className='font-semibold rounded-lg'
+              radius='full'
+              className='font-semibold'
               onPress={onRemoveOpenChange}
             >
               {t('common.cancel')}
             </Button>
             <Button
               size='sm'
-              className='font-semibold rounded-lg bg-dynamic text-button-text'
+              className='bg-btn-secondary text-btn-text font-bold'
+              radius='full'
               onPress={() => {
                 tradingCardContext.handleRemoveActiveListings()
                 onRemoveOpenChange()

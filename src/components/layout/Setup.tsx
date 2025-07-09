@@ -36,7 +36,7 @@ export default function Setup(): ReactElement {
       <Header />
       <div className='relative w-full bg-base'>
         <Image
-          src='https://raw.githubusercontent.com/zevnda/steam-game-idler/refs/heads/main/public/setup_bg.png'
+          src='https://raw.githubusercontent.com/zevnda/steam-game-idler/refs/heads/main/public/setup_bg.webp'
           className='absolute top-0 left-0 w-full h-full object-cover'
           alt='background'
           width={1920}
@@ -62,19 +62,19 @@ export default function Setup(): ReactElement {
             }}
           >
             <div className='flex justify-center items-center flex-col w-full'>
+              <div className='p-4 w-full bg-base/10'>
+                <div className='flex flex-col items-center justify-center text-center'>
+                  <Logo width='10' height='10' />
+                  <p className='text-3xl font-black text-content mb-8'>{t('setup.welcome')}</p>
+                  <p className='font-bold text-content'>{t('setup.chooseAccount')}</p>
+                </div>
+              </div>
               {isLoading ? (
-                <div className='flex flex-col items-center py-8'>
-                  <Spinner size='lg' className='mb-4' />
+                <div className='flex justify-center items-center h-full p-6'>
+                  <Spinner size='sm' label='Loading user data..' classNames={{ label: 'text-xs text-altwhite' }} />
                 </div>
               ) : steamUsers.length > 0 ? (
                 <>
-                  <div className='p-4 w-full bg-base/10'>
-                    <div className='flex flex-col items-center justify-center text-center'>
-                      <Logo width='10' height='10' />
-                      <p className='text-3xl font-black text-content mb-8'>{t('setup.welcome')}</p>
-                      <p className='font-bold text-content'>{t('setup.chooseAccount')}</p>
-                    </div>
-                  </div>
                   <div
                     className={cn(
                       'flex flex-col max-h-[390px]',
@@ -137,28 +137,30 @@ export default function Setup(): ReactElement {
                   </div>
                 </>
               ) : (
-                <div className='w-full mb-4'>
-                  <div className='flex flex-col items-center border border-border/40 w-full rounded-xl p-6 bg-base/10'>
+                <>
+                  <div className={cn('flex flex-col justify-center items-center h-32 max-h-[390px] p-4')}>
                     <p className='text-center mb-3 text-altwhite/80 font-medium'>{t('setup.noUsers')}</p>
                     <ExtLink href='https://steamgameidler.com/docs/faq#error-messages:~:text=No%20Steam%20users%20found'>
-                      <p className='text-sm text-link hover:text-linkhover transition-colors duration-200'>
+                      <p className='text-sm text-dynamic hover:text-dynamic-hover transition-colors duration-150'>
                         {t('setup.learn')}
                       </p>
                     </ExtLink>
+                  </div>
+                  <div className='flex justify-center items-center bg-base/10 w-full'>
                     <div
-                      className='flex gap-1 p-2 cursor-pointer group justify-center items-center w-fit'
+                      className='flex gap-1 p-2 cursor-pointer group justify-center items-center w-full'
                       onClick={handleRefresh}
                     >
                       <TbRefresh
-                        className='text-altwhite/70 group-hover:text-dynamic group-hover:rotate-180 transition-all duration-300'
+                        className='text-altwhite group-hover:text-dynamic group-hover:rotate-180 transition-all duration-300'
                         fontSize={16}
                       />
-                      <p className='text-sm text-altwhite/70 group-hover:text-dynamic transition-colors duration-200'>
+                      <p className='text-sm text-altwhite group-hover:text-dynamic transition-colors duration-200'>
                         {t('setup.refresh')}
                       </p>
                     </div>
                   </div>
-                </div>
+                </>
               )}
             </div>
           </motion.div>
@@ -178,12 +180,12 @@ export default function Setup(): ReactElement {
 
           <ExtLink href='https://steamgameidler.com/privacy'>
             <p className='text-xs font-medium cursor-pointer text-content hover:text-content/80 transition-colors duration-200'>
-              Privacy Policy
+              {t('setup.privacy')}
             </p>
           </ExtLink>
           <ExtLink href='https://steamgameidler.com/tos'>
             <p className='text-xs font-medium cursor-pointer text-content hover:text-content/80 transition-colors duration-200'>
-              Terms of Service
+              {t('setup.termsOfService')}
             </p>
           </ExtLink>
         </div>

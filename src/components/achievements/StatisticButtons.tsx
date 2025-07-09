@@ -74,14 +74,16 @@ export default function StatisticButtons({
               size='sm'
               color='danger'
               variant='light'
-              className='font-semibold rounded-lg'
+              radius='full'
+              className='font-semibold'
               onPress={onOpenChange}
             >
               {t('common.cancel')}
             </Button>
             <Button
               size='sm'
-              className='font-semibold rounded-lg bg-dynamic text-button-text'
+              className='bg-btn-secondary text-btn-text font-bold'
+              radius='full'
               onPress={() => handleResetAll(onOpenChange)}
             >
               {t('common.confirm')}

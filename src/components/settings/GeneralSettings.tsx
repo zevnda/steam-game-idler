@@ -6,12 +6,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import { TbChevronRight, TbEraser, TbHelpCircle, TbRefresh, TbUpload } from 'react-icons/tb'
 
 import { useUserContext } from '@/components/contexts/UserContext'
-import ClearData from '@/components/settings/ClearData'
-import ExportSettings from '@/components/settings/ExportSettings'
-import OpenSettings from '@/components/settings/OpenSettings'
-import ResetSettings from '@/components/settings/ResetSettings'
 import SettingsSwitch from '@/components/settings/SettingsSwitch'
-import ViewDocumentation from '@/components/settings/ViewDocumentation'
 import CustomTooltip from '@/components/ui/CustomTooltip'
 import ExtLink from '@/components/ui/ExtLink'
 import CurrencySwitch from '@/components/ui/i18n/CurrencySwitch'
@@ -24,11 +19,9 @@ import {
   useCardSettings,
 } from '@/hooks/settings/useCardSettings'
 import { handleClear, handleKeySave, useGeneralSettings } from '@/hooks/settings/useGeneralSettings'
-import useSettings from '@/hooks/settings/useSettings'
 
 export default function GeneralSettings(): ReactElement {
   const { t } = useTranslation()
-  const { setRefreshKey } = useSettings()
   const { userSummary, userSettings, setUserSettings } = useUserContext()
   const { keyValue, setKeyValue, hasKey, setHasKey } = useGeneralSettings()
   const cardSettings = useCardSettings()
@@ -56,13 +49,13 @@ export default function GeneralSettings(): ReactElement {
             priority
           />
           <div className='flex flex-col gap-1'>
-            <p className='text-xs text-altwhite font-bold'>Display Name</p>
+            <p className='text-xs text-altwhite font-bold'>{t('settings.general.displayName')}</p>
             <p className='py-1.5 px-2 bg-input rounded-lg text-content text-sm font-semibold w-64'>
               {userSummary?.personaName}
             </p>
           </div>
           <div className='flex flex-col gap-1'>
-            <p className='text-xs text-altwhite font-bold'>Steam ID</p>
+            <p className='text-xs text-altwhite font-bold'>{t('settings.general.steamId')}</p>
             <p className='py-1.5 px-2 bg-input rounded-lg text-content text-sm font-semibold w-64'>
               {userSummary?.steamId}
             </p>
@@ -144,14 +137,17 @@ export default function GeneralSettings(): ReactElement {
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2'>
             <p className='text-sm text-content font-bold'>{t('settings.general.language')}</p>
-            <span className='text-xs'>
-              <ExtLink
-                href='https://github.com/zevnda/steam-game-idler/discussions/148'
-                className='text-link hover:text-linkhover'
-              >
-                {t('settings.general.helpTranslate')}
-              </ExtLink>
-            </span>
+            <p className='text-sm text-altwhite'>
+              <Trans i18nKey='settings.general.helpTranslate'>
+                Help translate SGI.&nbsp;
+                <ExtLink
+                  href='https://github.com/zevnda/steam-game-idler/discussions/148'
+                  className='text-dynamic hover:text-dynamic-hover duration-150'
+                >
+                  Learn more
+                </ExtLink>
+              </Trans>
+            </p>
           </div>
           <LanguageSwitch />
         </div>
@@ -186,7 +182,7 @@ export default function GeneralSettings(): ReactElement {
                 Steam credentials are required in order to use the Card Farming feature.&nbsp;
                 <ExtLink
                   href='https://steamgameidler.com/docs/steam-credentials'
-                  className='text-link hover:text-linkhover'
+                  className='text-dynamic hover:text-dynamic-hover duration-150'
                 >
                   Learn more
                 </ExtLink>
@@ -340,28 +336,24 @@ export default function GeneralSettings(): ReactElement {
 
         <Divider className='bg-border my-4' />
 
-        <div className='flex justify-between items-center'>
+        <div className='flex justify-between items-start'>
           <div className='flex flex-col gap-2'>
-            <p className='text-sm text-content font-bold'>{t('settings.general.webApi.placeholder')}</p>
+            <p className='text-sm text-content font-bold'>{t('settings.general.webApi')}</p>
             <p className='text-sm text-altwhite'>
-              <Trans i18nKey='settings.general.webApi'>
-                Use your own
-                <ExtLink href='https://steamcommunity.com/dev/apikey' className='mx-1 text-link hover:text-linkhover'>
-                  Steam web API key
-                </ExtLink>
-                <span className='italic'>(optional)</span>
+              <Trans i18nKey='settings.general.webApi.description'>
+                Use your own Steam Web API Key.&nbsp;
                 <ExtLink
-                  href='https://steamgameidler.com/docs/settings/general#use-your-own-steam-web-api-key'
-                  className='mx-1 text-link hover:text-linkhover'
+                  href='https://steamgameidler.com/docs/settings/general#steam-web-api-key'
+                  className='text-dynamic hover:text-dynamic-hover duration-150'
                 >
                   Learn more
                 </ExtLink>
               </Trans>
             </p>
           </div>
-          <div className='flex flex-col gap-2 w-[250px]'>
+          <div className='flex flex-col gap-4 w-[250px]'>
             <Input
-              placeholder={t('settings.general.webApi.placeholder')}
+              placeholder={t('settings.general.webApi')}
               className='max-w-[250px]'
               classNames={{
                 inputWrapper: cn(

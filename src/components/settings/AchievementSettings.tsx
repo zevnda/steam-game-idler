@@ -133,7 +133,7 @@ export default function AchievementSettings(): ReactElement {
               onChange={value => handleScheduleChange(value, 'scheduleFrom', userSummary, setUserSettings)}
             />
 
-            <p className='text-sm'>{t('settings.achievementUnlocker.scheduleAnd')}</p>
+            <p className='text-sm'>{t('settings.achievementUnlocker.scheduleTo')}</p>
 
             <TimeInput
               aria-label='schedule-to'

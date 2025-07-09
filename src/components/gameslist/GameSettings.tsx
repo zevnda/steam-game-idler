@@ -158,7 +158,8 @@ export default function GameSettings({ isOpen, onOpenChange }: GameSettingsProps
             size='sm'
             color='danger'
             variant='light'
-            className='font-semibold rounded-lg'
+            radius='full'
+            className='font-semibold'
             onPress={() => {
               onOpenChange()
             }}
@@ -167,7 +168,8 @@ export default function GameSettings({ isOpen, onOpenChange }: GameSettingsProps
           </Button>
           <Button
             size='sm'
-            className='font-semibold rounded-lg bg-dynamic text-button-text'
+            className='bg-btn-secondary text-btn-text font-bold'
+            radius='full'
             isDisabled={isSaveDisabled()}
             onPress={() => {
               handleSave()

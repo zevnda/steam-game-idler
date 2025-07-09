@@ -22,7 +22,7 @@ import useTradingCardsList from '@/hooks/trading-cards/useTradingCardsList'
 interface RowData {
   tradingCardContext: ReturnType<typeof useTradingCardsList> & { filteredTradingCardsList: TradingCard[] }
   styles: CSSProperties
-  t: (key: string) => string
+  t: (key: string, options?: Record<string, any>) => string
   lockedCards: string[]
   handleLockCard: (id: string) => void
 }
@@ -129,7 +129,11 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
           <p className='text-xs truncate max-w-[140px]'>{item.full_name.replace('(Trading Card)', '') || 'Unknown'}</p>
 
           <CustomTooltip
-            content={item.badge_level > 0 ? 'Badge Level: ' + item.badge_level : 'No Badge'}
+            content={
+              item.badge_level > 0
+                ? t('tradingCards.badgeLevel', { level: item.badge_level })
+                : t('tradingCards.noBadge')
+            }
             placement='top'
             important
           >
@@ -241,7 +245,7 @@ export default function TradingCardsList(): ReactElement {
     <div
       className={cn(
         'min-h-calc max-h-calc bg-base overflow-y-auto overflow-hidden mt-9 duration-500 ease-in-out',
-        sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-217px)]',
+        sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]',
       )}
       key={tradingCardContext.refreshKey}
     >

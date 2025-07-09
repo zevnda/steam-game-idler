@@ -90,16 +90,18 @@ export default function ManualAdd({ listName, setList }: ManualAddProps): ReactE
               size='sm'
               color='danger'
               variant='light'
-              className='font-semibold rounded-lg'
+              radius='full'
+              className='font-semibold'
               onPress={onOpenChange}
             >
               {t('common.cancel')}
             </Button>
             <Button
               size='sm'
+              className='bg-btn-secondary text-btn-text font-bold'
+              radius='full'
               isLoading={manualAdd.isLoading}
               isDisabled={!manualAdd.appNameValue || !manualAdd.appIdValue}
-              className='font-semibold rounded-lg bg-dynamic text-button-text'
               onPress={() => manualAdd.handleAdd(onOpenChange)}
             >
               {t('common.add')}

@@ -24,7 +24,7 @@ export default function GamesList(): ReactElement {
       key={gamesContext.refreshKey}
       className={cn(
         'min-h-calc max-h-calc bg-base overflow-y-auto overflow-x-hidden mt-9 ease-in-out',
-        sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-217px)]',
+        sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]',
       )}
       style={{
         transitionDuration,
@@ -50,7 +50,7 @@ export default function GamesList(): ReactElement {
               .map(item => <GameCard key={item.appid} item={item} />)}
         </div>
       ) : (
-        <div className='flex justify-center items-center w-calc h-[calc(100vh-166px)]'>
+        <div className='flex justify-center items-center w-calc h-[calc(100vh-168px)]'>
           <Spinner variant='simple' />
         </div>
       )}

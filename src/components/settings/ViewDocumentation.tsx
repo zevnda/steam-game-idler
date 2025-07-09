@@ -12,7 +12,7 @@ export default function ViewDocumentation(): ReactElement {
 
   return (
     <ExtLink href={`https://steamgameidler.com/docs/settings/${currentSettingsTab}`}>
-      <p className='text-xs text-center text-link hover:text-linkhover'>{t('settings.documentation')}</p>
+      <p className='text-xs text-center text-dynamic hover:text-dynamic-hover'>{t('settings.documentation')}</p>
     </ExtLink>
   )
 }

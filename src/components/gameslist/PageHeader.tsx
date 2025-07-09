@@ -62,7 +62,7 @@ export default function PageHeader({
                 {t('setup.refresh')}
               </Button>
               <Divider orientation='vertical' className='mx-2 h-8 bg-border' />
-              <p className='text-sm text-altwhite font-bold'>Sort by</p>
+              <p className='text-sm text-altwhite font-bold'>{t('common.sortBy')}</p>
               <Tabs
                 aria-label='sort options'
                 items={sortOptions}

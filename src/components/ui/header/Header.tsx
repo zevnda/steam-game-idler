@@ -26,11 +26,11 @@ export default function Header(): ReactElement {
       data-tauri-drag-region
     >
       <div className='flex justify-between gap-1.5 h-9 w-full' data-tauri-drag-region>
-        {activePage !== 'setup' && (
+        {activePage !== 'setup' && activePage !== 'settings' && (
           <div
             className={cn(
               'p-2 transition-[margin-left] duration-500 ease-in-out cursor-pointer group text-content hover:text-altwhite',
-              sidebarCollapsed ? 'ml-[56px]' : 'ml-[217px]',
+              sidebarCollapsed ? 'ml-[56px]' : 'ml-[250px]',
             )}
             onClick={() => {
               setTransitionDuration('500ms')

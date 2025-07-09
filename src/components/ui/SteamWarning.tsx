@@ -47,7 +47,12 @@ export default function SteamWarning(): ReactElement {
       title={t('common.notice')}
       body={t('confirmation.steamClosed')}
       buttons={
-        <Button size='sm' className='font-semibold rounded-lg bg-dynamic text-button-text' onPress={verifySteamStatus}>
+        <Button
+          size='sm'
+          className='bg-btn-secondary text-btn-text font-bold'
+          radius='full'
+          onPress={verifySteamStatus}
+        >
           {t('common.confirm')}
         </Button>
       }

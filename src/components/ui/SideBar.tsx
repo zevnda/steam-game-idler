@@ -20,6 +20,7 @@ import {
 
 import { useIdleContext } from '@/components/contexts/IdleContext'
 import { useNavigationContext } from '@/components/contexts/NavigationContext'
+import { useSearchContext } from '@/components/contexts/SearchContext'
 import { useStateContext } from '@/components/contexts/StateContext'
 import CustomModal from '@/components/ui/CustomModal'
 import HeaderTitle from '@/components/ui/header/HeaderTitle'
@@ -40,6 +41,7 @@ export default function SideBar(): ReactElement {
     transitionDuration,
   } = useStateContext()
   const { activePage, setActivePage } = useNavigationContext()
+  const searchContent = useSearchContext()
   const { isOpen, onOpenChange, openConfirmation, handleLogout } = useSideBar(activePage, setActivePage)
 
   const mainSidebarItems: SidebarItem[] = [
@@ -151,8 +153,8 @@ export default function SideBar(): ReactElement {
     <>
       <div
         className={cn(
-          'relative flex flex-col h-screen z-[51] bg-sidebar select-none ease-in-out',
-          sidebarCollapsed ? 'min-w-14 max-w-14' : 'min-w-[217px] max-w-[217px]',
+          'relative flex flex-col h-screen z-[51] bg-sidebar/80 select-none ease-in-out',
+          sidebarCollapsed ? 'min-w-14 max-w-14' : 'min-w-[250px] max-w-[250px]',
         )}
         style={{
           transitionDuration,
@@ -171,13 +173,43 @@ export default function SideBar(): ReactElement {
             isIconOnly={sidebarCollapsed}
             radius='full'
             className={cn(
-              'bg-search text-altwhite border border-searchborder hover:bg-searchhover active:scale-95 w-full mt-2 duration-150',
+              'text-altwhite border hover:bg-searchhover active:scale-95 w-full mt-2 duration-150',
               sidebarCollapsed ? 'w-0 justify-center' : 'min-w-40 justify-start',
+              searchContent.gameQueryValue ||
+                searchContent.tradingCardQueryValue ||
+                searchContent.achievementQueryValue ||
+                searchContent.statisticQueryValue
+                ? 'bg-success/10 hover:bg-success/20 border-success/20'
+                : 'bg-search border-searchborder',
             )}
             onPress={() => setShowSearchModal(true)}
           >
-            <RiSearchLine fontSize={20} />
-            {!sidebarCollapsed && <p className='text-sm font-bold'>{t('common.search')}</p>}
+            <RiSearchLine
+              fontSize={20}
+              className={cn(
+                searchContent.gameQueryValue ||
+                  searchContent.tradingCardQueryValue ||
+                  searchContent.achievementQueryValue ||
+                  searchContent.statisticQueryValue
+                  ? 'text-success'
+                  : undefined,
+              )}
+            />
+            {!sidebarCollapsed && (
+              <>
+                {searchContent.gameQueryValue ? (
+                  <p className='text-sm text-success font-bold'>{searchContent.gameQueryValue}</p>
+                ) : searchContent.tradingCardQueryValue ? (
+                  <p className='text-sm text-success font-bold'>{searchContent.tradingCardQueryValue}</p>
+                ) : searchContent.achievementQueryValue ? (
+                  <p className='text-sm text-success font-bold'>{searchContent.achievementQueryValue}</p>
+                ) : searchContent.statisticQueryValue ? (
+                  <p className='text-sm text-success font-bold'>{searchContent.statisticQueryValue}</p>
+                ) : (
+                  <p className='text-sm font-bold'>{t('common.search')}</p>
+                )}
+              </>
+            )}
           </Button>
 
           <Divider className='w-full bg-border/60 my-0.5' />
@@ -278,14 +310,16 @@ export default function SideBar(): ReactElement {
               size='sm'
               color='danger'
               variant='light'
-              className='font-semibold rounded-lg'
+              radius='full'
+              className='font-semibold'
               onPress={onOpenChange}
             >
               {t('common.cancel')}
             </Button>
             <Button
               size='sm'
-              className='font-semibold rounded-lg bg-dynamic text-button-text'
+              className='bg-btn-secondary text-btn-text font-bold'
+              radius='full'
               onPress={() => {
                 setShowAchievements(false)
                 handleLogout(onOpenChange)

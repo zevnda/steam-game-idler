@@ -45,7 +45,7 @@ export default function CardSettings(): ReactElement {
                 iconWrapper: '!bg-dynamic/30',
                 description: 'font-bold',
               }}
-              description='To use the Card Farming feature, please add your Steam Credentials in Settings → General'
+              description={t('settings.cardFarming.alert')}
             />
           </div>
         )}
