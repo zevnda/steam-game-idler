@@ -50,7 +50,7 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
   } = useCustomList(type)
   const { startCardFarming, startAchievementUnlocker } = useAutomate()
   const [isEditModalOpen, setEditModalOpen] = useState(false)
-  const { isGameSettingsOpen } = useStateContext()
+  const { sidebarCollapsed, isGameSettingsOpen } = useStateContext()
 
   const handleDragEnd = (event: DragEndEvent): void => {
     const { active, over } = event
@@ -106,51 +106,51 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
     <>
       <div
         className={cn(
-          'w-calc min-h-calc max-h-calc bg-base overflow-y-auto',
-          'overflow-x-hidden rounded-tl-xl border-t border-l border-border',
+          'min-h-calc max-h-calc bg-base overflow-y-auto overflow-x-hidden mt-9 duration-500 ease-in-out',
+          sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-217px)]',
         )}
         ref={containerRef}
       >
         <div
           className={cn(
-            'fixed flex justify-between items-center w-[calc(100svw-68px)]',
+            'flex flex-col justify-center w-[calc(100svw-68px)]',
             'py-2 pl-4 bg-base bg-opacity-90 backdrop-blur-md z-10 rounded-tl-xl',
             list.slice(0, visibleGames).length >= 21 ? 'pr-4' : 'pr-2',
           )}
         >
           <div className='flex flex-col select-none'>
-            <p className='text-lg font-bold'>{listType.title}</p>
-            <p className='text-sm text-altwhite'>{listType.description}</p>
+            <p className='text-3xl font-black'>{listType.title}</p>
+            <p className='text-xs text-altwhite my-2'>{listType.description}</p>
           </div>
 
-          <div className='flex space-x-2'>
+          <div className='flex items-center gap-2 mt-1'>
+            <Button
+              className='bg-btn-secondary text-btn-text font-bold'
+              radius='full'
+              startContent={<TbEdit fontSize={20} />}
+              onPress={() => setEditModalOpen(true)}
+            >
+              {t('customLists.edit')}
+            </Button>
+
+            <ManualAdd listName={type} setList={setList} />
+
             {listType.startButton && (
               <Button
-                size='sm'
-                className='rounded-full font-semibold bg-dynamic text-button-text'
+                className='bg-gradient-to-r from-purple-800 via-purple-600 to-cyan-500 text-white font-bold transition-all duration-300 relative overflow-hidden before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent before:-translate-x-full before:animate-[shimmer_2s_ease-in-out_infinite] hover:before:animate-[shimmer_0.7s_ease-in-out] [&>*]:relative [&>*]:z-10'
+                radius='full'
                 startContent={listType.icon}
                 onPress={listType.startButton === 'startCardFarming' ? startCardFarming : startAchievementUnlocker}
               >
                 {listType.buttonLabel}
               </Button>
             )}
-
-            <ManualAdd listName={type} setList={setList} />
-
-            <Button
-              size='sm'
-              className='rounded-full font-semibold bg-dynamic text-button-text'
-              startContent={<TbEdit fontSize={20} />}
-              onPress={() => setEditModalOpen(true)}
-            >
-              {t('customLists.edit')}
-            </Button>
           </div>
         </div>
 
         <DndContext onDragEnd={handleDragEnd}>
           <SortableContext items={list.map(item => item.appid)}>
-            <div className='grid grid-cols-5 2xl:grid-cols-7 gap-4 p-4 mt-[56px]'>
+            <div className='grid grid-cols-5 2xl:grid-cols-7 gap-4 p-4'>
               {list &&
                 list
                   .slice(0, visibleGames)

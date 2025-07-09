@@ -28,19 +28,21 @@ export default function CustomModal({
       isOpen={isOpen}
       onOpenChange={onOpenChange}
       hideCloseButton={hideCloseButton}
-      className={cn('bg-modalbody text-content', className)}
+      className={cn('text-content', className)}
       classNames={{
-        closeButton: 'text-altwhite hover:bg-titlehover duration-200 active:bg-titlehover/50',
+        closeButton: 'text-altwhite hover:bg-item-hover/40 duration-200 active:bg-item-hover/50',
+        base: 'bg-base/85 backdrop-blur-sm',
+        body: 'p-0',
       }}
     >
       <ModalContent>
         {/* {(onClose: () => void) => ( */}
         <>
-          <ModalHeader className='flex flex-col gap-1 bg-modalheader border-b border-border' data-tauri-drag-region>
+          <ModalHeader className='flex flex-col gap-1 border-b border-border/40' data-tauri-drag-region>
             {title}
           </ModalHeader>
           <ModalBody className='my-0 p-6 text-sm max-h-80 overflow-auto'>{body}</ModalBody>
-          <ModalFooter className='border-t border-border bg-modalfooter px-4 py-3'>{buttons}</ModalFooter>
+          <ModalFooter className='border-t border-border/40 px-4 py-3'>{buttons}</ModalFooter>
         </>
         {/* )} */}
       </ModalContent>

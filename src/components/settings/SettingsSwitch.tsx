@@ -1,10 +1,8 @@
 import type { AchievementUnlockerSettings, CardFarmingSettings, GeneralSettings } from '@/types'
 import type { ChangeEvent, ReactElement } from 'react'
 
-import { Checkbox, cn } from '@heroui/react'
-import { useEffect, useState } from 'react'
+import { Switch } from '@heroui/react'
 
-import { useStateContext } from '@/components/contexts/StateContext'
 import { useUserContext } from '@/components/contexts/UserContext'
 import { useAchievementSettings } from '@/hooks/settings/useAchievementSettings'
 import { useCardSettings } from '@/hooks/settings/useCardSettings'
@@ -15,21 +13,14 @@ import { antiAwayStatus } from '@/utils/tasks'
 interface SettingsCheckboxProps {
   type: 'general' | 'cardFarming' | 'achievementUnlocker'
   name: string
-  content: string
 }
 
-export default function SettingsCheckbox({ type, name, content }: SettingsCheckboxProps): ReactElement {
-  const { isDarkMode } = useStateContext()
+export default function SettingsSwitch({ type, name }: SettingsCheckboxProps): ReactElement {
   const { userSummary, userSettings, setUserSettings } = useUserContext()
-  const [styles, setStyles] = useState({})
   const { startupState, setStartupState } = useGeneralSettings()
 
   useCardSettings()
   useAchievementSettings()
-
-  useEffect(() => {
-    setStyles(isDarkMode ? 'group-data-[hover=true]:before:bg-white/20' : 'group-data-[hover=true]:before:bg-black/20')
-  }, [isDarkMode])
 
   const isSettingEnabled = (): boolean => {
     if (!userSettings) return false
@@ -50,59 +41,43 @@ export default function SettingsCheckbox({ type, name, content }: SettingsCheckb
 
   if (name === 'antiAway') {
     return (
-      <Checkbox
+      <Switch
+        size='sm'
         name={name}
         isSelected={isSettingEnabled()}
+        classNames={{
+          wrapper: 'group-data-[selected=true]:!bg-dynamic',
+        }}
         onChange={(e: ChangeEvent<HTMLInputElement>) => {
           handleCheckboxChange(e, 'general', userSummary?.steamId, setUserSettings)
           antiAwayStatus(isSettingEnabled() ? null : undefined)
         }}
-        classNames={{
-          hiddenInput: 'w-fit',
-          icon: 'z-[9]',
-          wrapper: cn(
-            styles,
-            'before:group-data-[selected=true]:!border-dynamic',
-            'after:bg-dynamic text-button-text',
-            'before:border-altwhite',
-          ),
-        }}
-      >
-        <div className='flex items-center gap-1'>
-          <p className='text-sm text-content'>{content}</p>
-        </div>
-      </Checkbox>
+      />
     )
   }
 
   if (name === 'runAtStartup') {
     return (
-      <Checkbox
+      <Switch
+        size='sm'
         name={name}
         isSelected={startupState || false}
-        onChange={() => handleRunAtStartupChange(setStartupState)}
         classNames={{
-          hiddenInput: 'w-fit',
-          icon: 'z-[9]',
-          wrapper: cn(
-            styles,
-            'before:group-data-[selected=true]:!border-dynamic',
-            'after:bg-dynamic text-button-text',
-            'before:border-altwhite',
-          ),
+          wrapper: 'group-data-[selected=true]:!bg-dynamic',
         }}
-      >
-        <div className='flex items-center gap-1'>
-          <p className='text-sm text-content'>{content}</p>
-        </div>
-      </Checkbox>
+        onChange={() => handleRunAtStartupChange(setStartupState)}
+      />
     )
   }
 
   return (
-    <Checkbox
+    <Switch
+      size='sm'
       name={name}
       isSelected={isSettingEnabled()}
+      classNames={{
+        wrapper: 'group-data-[selected=true]:!bg-dynamic',
+      }}
       onChange={e => {
         if (type === 'general') {
           handleCheckboxChange(e, 'general', userSummary?.steamId, setUserSettings)
@@ -112,20 +87,6 @@ export default function SettingsCheckbox({ type, name, content }: SettingsCheckb
           handleCheckboxChange(e, 'achievementUnlocker', userSummary?.steamId, setUserSettings)
         }
       }}
-      classNames={{
-        hiddenInput: 'w-fit',
-        icon: 'z-[9]',
-        wrapper: cn(
-          styles,
-          'before:group-data-[selected=true]:!border-dynamic',
-          'after:bg-dynamic text-button-text',
-          'before:border-altwhite',
-        ),
-      }}
-    >
-      <div className='flex items-center gap-1'>
-        <p className='text-sm text-content'>{content}</p>
-      </div>
-    </Checkbox>
+    />
   )
 }

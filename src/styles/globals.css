@@ -18,8 +18,8 @@
 }
 
 .dark {
-  --sb-thumb: #232323;
-  --sb-track: #151515;
+  --sb-thumb: #515255;
+  --sb-track: #222326;
   --code: #2d2d2d;
   --indicator: #1c79de;
   --indicatoralt: #1c7ade89;
@@ -33,16 +33,8 @@
   --indicatoralt: #2f4a9e89;
 }
 
-.oled {
-  --sb-thumb: #0c0c0c;
-  --sb-track: #080808;
-  --code: #2d2d2d;
-  --indicator: #2f4a9e;
-  --indicatoralt: #2f4a9e89;
-}
-
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 4px;
 }
 
 ::-webkit-scrollbar-track {
@@ -51,6 +43,7 @@
 
 ::-webkit-scrollbar-thumb {
   background: var(--sb-thumb);
+  border-radius: 6px;
 }
 
 html {

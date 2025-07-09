@@ -48,19 +48,28 @@ export default function Dashboard(): ReactElement {
         return <FreeGamesList />
       case 'tradingCards':
         return <TradingCardsList />
-      case 'settings':
-        return <Settings />
       default:
         return <GamesList />
     }
   }
 
+  if (activePage === 'settings') {
+    return (
+      <>
+        <Header />
+        <Settings />
+      </>
+    )
+  }
+
   return (
     <>
-      <Header />
-      <div className='flex w-full'>
-        {!showAchievements && <SideBar />}
-        {renderContent()}
+      <div className='flex w-full bg-base'>
+        <SideBar />
+        <div>
+          <Header />
+          {renderContent()}
+        </div>
       </div>
       {isCardFarming && <CardFarming activePage={activePage} />}
       {isAchievementUnlocker && <AchievementUnlocker activePage={activePage} />}

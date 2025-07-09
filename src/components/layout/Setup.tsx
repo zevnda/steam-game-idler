@@ -10,31 +10,21 @@ import { useTranslation } from 'react-i18next'
 import { TbRefresh, TbUserFilled } from 'react-icons/tb'
 
 import { useNavigationContext } from '@/components/contexts/NavigationContext'
-import { useStateContext } from '@/components/contexts/StateContext'
 import CustomTooltip from '@/components/ui/CustomTooltip'
 import ExtLink from '@/components/ui/ExtLink'
 import Header from '@/components/ui/header/Header'
+import Logo from '@/components/ui/header/Logo'
 import useSetup from '@/hooks/layout/useSetup'
 
 export default function Setup(): ReactElement {
   const { t } = useTranslation()
-  const { isDarkMode } = useStateContext()
   const { setActivePage } = useNavigationContext()
-  const [imageSrc, setImageSrc] = useState('')
   const [refreshKey, setRefreshKey] = useState(0)
   const { isLoading, handleLogin, steamUsers } = useSetup(refreshKey)
 
   useEffect(() => {
     setActivePage('setup')
   }, [setActivePage])
-
-  useEffect(() => {
-    setImageSrc(
-      isDarkMode
-        ? 'https://raw.githubusercontent.com/zevnda/steam-game-idler/refs/heads/main/public/dbg.webp'
-        : 'https://raw.githubusercontent.com/zevnda/steam-game-idler/refs/heads/main/public/lbg.webp',
-    )
-  }, [isDarkMode])
 
   const handleRefresh = async (): Promise<void> => {
     await invoke('delete_user_summary_file')
@@ -44,23 +34,22 @@ export default function Setup(): ReactElement {
   return (
     <>
       <Header />
-      <div className='relative w-full bg-base border-t border-border/40'>
-        {imageSrc && (
-          <Image
-            src={imageSrc}
-            className='absolute top-0 left-0 w-full h-full object-cover'
-            alt='background'
-            width={1920}
-            height={1080}
-            priority
-          />
-        )}
-        <div className='absolute bg-base/30 backdrop-blur-[16px] w-full h-calc' />
-        <div className='relative flex justify-center items-center flex-col gap-8 w-full h-calc px-4'>
+      <div className='relative w-full bg-base'>
+        <Image
+          src='https://raw.githubusercontent.com/zevnda/steam-game-idler/refs/heads/main/public/setup_bg.png'
+          className='absolute top-0 left-0 w-full h-full object-cover'
+          alt='background'
+          width={1920}
+          height={1080}
+          priority
+        />
+        <div className='absolute bg-base/30 backdrop-blur-[16px] w-full h-screen' />
+
+        <div className='relative flex justify-center items-center flex-col gap-8 w-full h-screen px-4'>
           <motion.div
             className={cn(
               'flex backdrop-blur-xl bg-base/40 justify-center items-center',
-              'flex-col border border-border/60 min-w-[420px] max-w-[420px]',
+              'flex-col border border-border/60 min-w-[500px] max-w-[500px]',
               'rounded-2xl shadow-2xl shadow-black/20',
             )}
             initial={{ y: 80, scale: 0.9, opacity: 0 }}
@@ -72,30 +61,31 @@ export default function Setup(): ReactElement {
               opacity: { duration: 0.3 },
             }}
           >
-            <div className='p-8 pb-0'>
-              <div className='text-center'>
-                <h1 className='text-2xl font-bold mb-2 text-dynamic'>{t('setup.welcome')}</h1>
-                <p className='mb-4 text-center font-medium'>{t('setup.chooseAccount')}</p>
-              </div>
-            </div>
-            <div className='flex justify-center items-center flex-col px-8'>
+            <div className='flex justify-center items-center flex-col w-full'>
               {isLoading ? (
                 <div className='flex flex-col items-center py-8'>
                   <Spinner size='lg' className='mb-4' />
                 </div>
               ) : steamUsers.length > 0 ? (
-                <div className='w-full'>
+                <>
+                  <div className='p-4 w-full bg-base/10'>
+                    <div className='flex flex-col items-center justify-center text-center'>
+                      <Logo width='10' height='10' />
+                      <p className='text-3xl font-black text-content mb-8'>{t('setup.welcome')}</p>
+                      <p className='font-bold text-content'>{t('setup.chooseAccount')}</p>
+                    </div>
+                  </div>
                   <div
                     className={cn(
-                      'flex flex-col border border-border/40 max-h-[244px]',
-                      'min-w-[320px] overflow-y-auto rounded-xl bg-base/20',
+                      'flex flex-col max-h-[390px]',
+                      'w-full overflow-y-auto rounded-xl',
                       'scrollbar-thin scrollbar-thumb-border/50',
                     )}
                   >
                     {steamUsers.map((item, index) => (
                       <div
                         key={item?.steamId}
-                        className='last:border-none border-b border-border/30 hover:bg-containerhover/50 transition-all duration-300 cursor-pointer group'
+                        className='last:border-none border-b border-border/30 hover:bg-item-hover/30 transition-all duration-300 cursor-pointer group'
                         onClick={() => handleLogin(index)}
                       >
                         <div className='flex gap-3 h-full p-4 w-full items-center'>
@@ -131,21 +121,21 @@ export default function Setup(): ReactElement {
                       </div>
                     ))}
                   </div>
-                  <div className='flex justify-center items-center'>
+                  <div className='flex justify-center items-center bg-base/10 w-full'>
                     <div
-                      className='flex gap-1 p-2 cursor-pointer group justify-center items-center w-fit'
+                      className='flex gap-1 p-2 cursor-pointer group justify-center items-center w-full'
                       onClick={handleRefresh}
                     >
                       <TbRefresh
-                        className='text-altwhite/70 group-hover:text-dynamic group-hover:rotate-180 transition-all duration-300'
+                        className='text-altwhite group-hover:text-dynamic group-hover:rotate-180 transition-all duration-300'
                         fontSize={16}
                       />
-                      <p className='text-sm text-altwhite/70 group-hover:text-dynamic transition-colors duration-200'>
+                      <p className='text-sm text-altwhite group-hover:text-dynamic transition-colors duration-200'>
                         {t('setup.refresh')}
                       </p>
                     </div>
                   </div>
-                </div>
+                </>
               ) : (
                 <div className='w-full mb-4'>
                   <div className='flex flex-col items-center border border-border/40 w-full rounded-xl p-6 bg-base/10'>
@@ -171,32 +161,31 @@ export default function Setup(): ReactElement {
                 </div>
               )}
             </div>
-            <div
-              className={cn(
-                'flex flex-col justify-center items-center gap-2 p-4 w-full border-t',
-                'border-border/40 rounded-br-2xl rounded-bl-2xl bg-base/10',
-              )}
-            >
-              <ExtLink href='https://steamgameidler.com/docs/get-started/how-to-sign-in'>
-                <p className='text-xs font-medium cursor-pointer text-link hover:text-linkhover transition-colors duration-200'>
-                  {t('setup.help')}
-                </p>
-              </ExtLink>
-
-              <div className='flex gap-6 text-xs text-altwhite/70'>
-                <ExtLink href='https://steamgameidler.com/privacy'>
-                  <p className='text-xs font-medium cursor-pointer text-link/80 hover:text-linkhover transition-colors duration-200'>
-                    Privacy Policy
-                  </p>
-                </ExtLink>
-                <ExtLink href='https://steamgameidler.com/tos'>
-                  <p className='text-xs font-medium cursor-pointer text-link/80 hover:text-linkhover transition-colors duration-200'>
-                    Terms of Service
-                  </p>
-                </ExtLink>
-              </div>
-            </div>
           </motion.div>
+        </div>
+
+        <div
+          className={cn(
+            'absolute flex items-center justify-center bg-base/40 backdrop-blur-md w-full',
+            'gap-6 bottom-0 h-9 left-1/2 transform -translate-x-1/2',
+          )}
+        >
+          <ExtLink href='https://steamgameidler.com/docs/get-started/how-to-sign-in'>
+            <p className='text-xs font-medium cursor-pointer text-content hover:text-content/80 transition-colors duration-200'>
+              {t('setup.help')}
+            </p>
+          </ExtLink>
+
+          <ExtLink href='https://steamgameidler.com/privacy'>
+            <p className='text-xs font-medium cursor-pointer text-content hover:text-content/80 transition-colors duration-200'>
+              Privacy Policy
+            </p>
+          </ExtLink>
+          <ExtLink href='https://steamgameidler.com/tos'>
+            <p className='text-xs font-medium cursor-pointer text-content hover:text-content/80 transition-colors duration-200'>
+              Terms of Service
+            </p>
+          </ExtLink>
         </div>
       </div>
     </>

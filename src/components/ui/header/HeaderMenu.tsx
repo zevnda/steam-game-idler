@@ -68,31 +68,29 @@ export default function HeaderMenu(): ReactElement {
           backdrop='opaque'
           onOpenChange={() => setShowMenu(!showMenu)}
           classNames={{
-            content: ['rounded-lg p-0 bg-titlebar border border-border'],
+            content: ['rounded-lg p-0 bg-transparent'],
           }}
         >
           <DropdownTrigger>
             <div
               className={cn(
-                'flex items-center p-1.5',
-                'hover:bg-titlehover rounded-md',
-                'cursor-pointer active:scale-90 relative duration-200',
-                { 'bg-titlehover': showMenu },
+                'flex items-center px-1 py-1.5 hover:text-content/80',
+                'cursor-pointer active:scale-90 relative duration-150',
               )}
             >
-              <TbSquareRoundedChevronDown fontSize={20} />
+              <TbSquareRoundedChevronDown fontSize={18} />
             </div>
           </DropdownTrigger>
 
-          <DropdownMenu aria-label='Settings actions' className='text-content'>
+          <DropdownMenu aria-label='Settings actions' classNames={{ base: 'bg-base/85 backdrop-blur-sm rounded-xl' }}>
             <DropdownItem
               showDivider
               key='help'
               startContent={<TbBookFilled size={18} />}
-              className='rounded p-1'
               textValue='Help'
+              className='rounded-xl'
               classNames={{
-                base: ['data-[hover=true]:!bg-titlehover data-[hover=true]:!text-content'],
+                base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
               }}
               onPress={() => handleOpenExtLink('https://steamgameidler.com/docs/')}
             >
@@ -102,10 +100,10 @@ export default function HeaderMenu(): ReactElement {
             <DropdownItem
               key='report'
               startContent={<TbBugFilled size={18} />}
-              className='rounded p-1'
               textValue='Report an issue'
+              className='rounded-xl'
               classNames={{
-                base: ['data-[hover=true]:!bg-titlehover data-[hover=true]:!text-content'],
+                base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
               }}
               onPress={() =>
                 handleOpenExtLink(githubIssueUrl + 'bug%2Cinvestigating&projects=&template=issue_report.yml')
@@ -118,10 +116,10 @@ export default function HeaderMenu(): ReactElement {
               showDivider
               key='feature'
               startContent={<TbBulbFilled size={18} />}
-              className='rounded p-1'
               textValue='Feature request'
+              className='rounded-xl'
               classNames={{
-                base: ['data-[hover=true]:!bg-titlehover data-[hover=true]:!text-content'],
+                base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
               }}
               onPress={() =>
                 handleOpenExtLink(githubIssueUrl + 'feature+request&projects=&template=feature_request.yml')
@@ -134,10 +132,10 @@ export default function HeaderMenu(): ReactElement {
               showDivider
               key='support-me'
               startContent={<TbStarFilled size={18} />}
-              className='rounded p-1'
               textValue='Support me'
+              className='rounded-xl'
               classNames={{
-                base: ['data-[hover=true]:!bg-titlehover data-[hover=true]:!text-content'],
+                base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
               }}
               onPress={() => handleOpenExtLink('https://github.com/sponsors/zevnda')}
             >
@@ -147,10 +145,10 @@ export default function HeaderMenu(): ReactElement {
             <DropdownItem
               key='changelog'
               startContent={<TbListCheck size={18} />}
-              className='rounded p-1'
               textValue='Changelog'
+              className='rounded-xl'
               classNames={{
-                base: ['data-[hover=true]:!bg-titlehover data-[hover=true]:!text-content'],
+                base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
               }}
               onPress={() => setShowChangelog(true)}
             >
@@ -160,10 +158,10 @@ export default function HeaderMenu(): ReactElement {
             <DropdownItem
               key='updates'
               startContent={<TbDownload size={18} />}
-              className='rounded p-1'
               textValue='Check for updates'
+              className='rounded-xl'
               classNames={{
-                base: ['data-[hover=true]:!bg-titlehover data-[hover=true]:!text-content'],
+                base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
               }}
               onPress={handleUpdate}
             >

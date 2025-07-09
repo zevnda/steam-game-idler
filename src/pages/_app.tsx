@@ -12,7 +12,7 @@ export default function App({ Component, pageProps }: AppProps): ReactElement {
   return (
     <ThemeProvider
       attribute='class'
-      themes={['light', 'dark', 'slate', 'oled']}
+      themes={['light', 'dark', 'slate']}
       enableSystem={true}
       defaultTheme='dark'
       disableTransitionOnChange
@@ -26,9 +26,9 @@ export default function App({ Component, pageProps }: AppProps): ReactElement {
             shouldShowTimeoutProgress: true,
             closeIcon: <TbX size={16} className='text-content' />,
             classNames: {
-              base: ['bg-titlebar border-border cursor-default'],
+              base: ['bg-sidebar border-none cursor-default'],
               description: ['text-content text-sm font-medium'],
-              closeButton: ['opacity-100 absolute right-1 top-1 hover:bg-titlehover'],
+              closeButton: ['opacity-100 absolute right-1 top-1 hover:bg-item-hover'],
             },
           }}
         />

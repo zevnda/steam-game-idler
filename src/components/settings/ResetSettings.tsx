@@ -19,8 +19,9 @@ export default function ResetSettings({ setRefreshKey }: ResetSettingsProps): Re
     <>
       <Button
         size='sm'
+        variant='light'
+        radius='full'
         color='danger'
-        className='font-semibold rounded-lg'
         onPress={onOpen}
         startContent={<TbRotateClockwise className='rotate-90' size={20} />}
       >

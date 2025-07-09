@@ -13,6 +13,10 @@ interface SearchContextType {
   setAchievementQueryValue: Dispatch<SetStateAction<string>>
   statisticQueryValue: string
   setStatisticQueryValue: Dispatch<SetStateAction<string>>
+  recentSearches: string[]
+  addRecentSearch: (query: string) => void
+  removeRecentSearch: (query: string) => void
+  clearRecentSearches: () => void
 }
 
 export const SearchContext = createContext<SearchContextType | undefined>(undefined)
@@ -23,6 +27,26 @@ export const SearchProvider = ({ children }: { children: ReactNode }): ReactElem
   const [tradingCardQueryValue, setTradingCardQueryValue] = useState('')
   const [achievementQueryValue, setAchievementQueryValue] = useState('')
   const [statisticQueryValue, setStatisticQueryValue] = useState('')
+  const [recentSearches, setRecentSearches] = useState<string[]>([])
+
+  const addRecentSearch = (query: string): void => {
+    setRecentSearches(prev => {
+      const filtered = prev.filter(search => search !== query)
+      return [query, ...filtered].slice(0, 10)
+    })
+  }
+
+  const removeRecentSearch = (query: string): void => {
+    setRecentSearches(prev => {
+      const filtered = prev.filter(search => search !== query)
+      localStorage.setItem('searchQueries', JSON.stringify(filtered))
+      return filtered
+    })
+  }
+
+  const clearRecentSearches = (): void => {
+    setRecentSearches([])
+  }
 
   return (
     <SearchContext.Provider
@@ -37,6 +61,10 @@ export const SearchProvider = ({ children }: { children: ReactNode }): ReactElem
         setAchievementQueryValue,
         statisticQueryValue,
         setStatisticQueryValue,
+        recentSearches,
+        addRecentSearch,
+        removeRecentSearch,
+        clearRecentSearches,
       }}
     >
       {children}

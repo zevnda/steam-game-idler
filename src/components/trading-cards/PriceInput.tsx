@@ -22,7 +22,6 @@ export default function PriceInput({ item, tradingCardContext }: PriceInputProps
         isInvalid={
           tradingCardContext.selectedCards[item.assetid] && tradingCardContext.getCardPriceValue(item.assetid) <= 0
         }
-        size='sm'
         value={tradingCardContext.getCardPriceValue(item.assetid)}
         maxValue={99999}
         defaultValue={0}
@@ -36,7 +35,7 @@ export default function PriceInput({ item, tradingCardContext }: PriceInputProps
         className='w-[85px]'
         classNames={{
           inputWrapper: cn(
-            'bg-input border border-border hover:!bg-inputhover rounded-lg',
+            'bg-input data-[hover=true]:!bg-inputhover border-none',
             'group-data-[focus-visible=true]:ring-transparent',
             'group-data-[focus-visible=true]:ring-offset-transparent',
             'group-data-[focus-within=true]:!bg-inputhover',

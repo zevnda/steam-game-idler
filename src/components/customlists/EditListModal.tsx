@@ -106,28 +106,31 @@ export default function EditListModal({
       onOpenChange={onOpenChange}
       onClose={onClose}
       hideCloseButton
-      className='bg-modalbody min-h-[75%] max-h-[75%] text-content min-w-[40%]'
+      className='min-h-[75%] max-h-[75%] text-content min-w-[40%]'
       classNames={{
-        closeButton: ['text-altwhite hover:bg-titlehover duration-200'],
+        base: 'bg-base/85 backdrop-blur-sm',
+        body: 'p-0 gap-0',
       }}
     >
       <ModalContent>
         {(onClose: () => void) => (
           <>
-            <ModalHeader className='flex gap-2 bg-modalheader border-b border-border p-3'>
+            <ModalHeader className='flex gap-2 border-b border-border/40 p-3'>
               <Input
                 autoFocus
                 isClearable
-                size='sm'
-                placeholder={t('search.games')}
+                placeholder={t('common.search')}
                 classNames={{
                   inputWrapper: cn(
-                    'bg-input border border-border hover:!bg-inputhover rounded-lg',
-                    'group-data-[focus-within=true]:!bg-inputhover',
-                    'group-data-[focus-visible=true]:ring-transparent',
-                    'group-data-[focus-visible=true]:ring-offset-transparent',
+                    'bg-transparent hover:!bg-transparent h-24',
+                    'rounded-lg group-data-[focus-within=true]:!bg-transparent',
+                    'group-data-[focus-visible=true]:!ring-0 group-data-[focus-visible=true]:!ring-offset-0',
+                    'focus-visible:!ring-0 focus-visible:!ring-offset-0 focus:!ring-0 focus:!ring-offset-0',
+                    '!outline-none focus:!outline-none focus-visible:!outline-none',
+                    'border-none shadow-sm',
                   ),
-                  input: ['!text-content placeholder:text-altwhite/50'],
+                  input: ['!text-content !text-xl placeholder:text-xl placeholder:text-content/60'],
+                  clearButton: 'text-content/60 hover:text-content',
                 }}
                 isDisabled={showInList}
                 onChange={e => setSearchTerm(e.target.value)}
@@ -175,7 +178,7 @@ export default function EditListModal({
                 {Row}
               </List>
             </ModalBody>
-            <ModalFooter className='border-t border-border bg-modalfooter p-3'>
+            <ModalFooter className='border-t border-border/40 p-3'>
               <Button
                 size='sm'
                 color='danger'

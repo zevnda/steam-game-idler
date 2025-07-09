@@ -1,80 +1,149 @@
 import type { ReactElement } from 'react'
 
-import { Button, cn, Input } from '@heroui/react'
+import { Button, cn, Divider, Input, Spinner } from '@heroui/react'
 import Image from 'next/image'
 import { Trans, useTranslation } from 'react-i18next'
-import { TbEraser, TbHelpCircle, TbUpload } from 'react-icons/tb'
+import { TbChevronRight, TbEraser, TbHelpCircle, TbRefresh, TbUpload } from 'react-icons/tb'
 
 import { useUserContext } from '@/components/contexts/UserContext'
-import SettingsCheckbox from '@/components/settings/SettingsCheckbox'
+import ClearData from '@/components/settings/ClearData'
+import ExportSettings from '@/components/settings/ExportSettings'
+import OpenSettings from '@/components/settings/OpenSettings'
+import ResetSettings from '@/components/settings/ResetSettings'
+import SettingsSwitch from '@/components/settings/SettingsSwitch'
+import ViewDocumentation from '@/components/settings/ViewDocumentation'
 import CustomTooltip from '@/components/ui/CustomTooltip'
 import ExtLink from '@/components/ui/ExtLink'
 import CurrencySwitch from '@/components/ui/i18n/CurrencySwitch'
 import LanguageSwitch from '@/components/ui/i18n/LanguageSwitch'
 import ThemeSwitch from '@/components/ui/theme/ThemeSwitch'
+import {
+  fetchGamesWithDropsData,
+  handleCredentialsClear,
+  handleCredentialsSave,
+  useCardSettings,
+} from '@/hooks/settings/useCardSettings'
 import { handleClear, handleKeySave, useGeneralSettings } from '@/hooks/settings/useGeneralSettings'
+import useSettings from '@/hooks/settings/useSettings'
 
 export default function GeneralSettings(): ReactElement {
   const { t } = useTranslation()
-  const { userSummary, setUserSettings } = useUserContext()
+  const { setRefreshKey } = useSettings()
+  const { userSummary, userSettings, setUserSettings } = useUserContext()
   const { keyValue, setKeyValue, hasKey, setHasKey } = useGeneralSettings()
+  const cardSettings = useCardSettings()
 
   return (
-    <div className='relative flex flex-col gap-4'>
-      <div className='border border-border rounded-lg bg-titlebar w-fit'>
-        <div className='flex items-center gap-2 p-2'>
+    <div className='relative flex flex-col gap-4 mt-9 pb-16 w-4/5'>
+      <div className='flex flex-col gap-0 select-none'>
+        <p className='flex items-center text-xs text-altwhite font-bold'>
+          {t('settings.title')}
+          <span>
+            <TbChevronRight size={12} />
+          </span>
+        </p>
+        <p className='text-3xl font-black'>{t('settings.general.title')}</p>
+      </div>
+
+      <div className='flex flex-col gap-3 mt-4'>
+        <div className='flex items-center gap-4'>
           <Image
             src={userSummary?.avatar || ''}
-            height={40}
-            width={40}
+            height={64}
+            width={64}
             alt='user avatar'
-            className='w-[40px] h-[40px] rounded-full'
+            className='w-[64px] h-[64px] rounded-full'
             priority
           />
-          <div className='max-w-[500px] overflow-hidden'>
-            <p className='font-bold truncate'>{userSummary?.personaName}</p>
-            <p className='text-sm text-altwhite truncate'>{userSummary?.steamId}</p>
+          <div className='flex flex-col gap-1'>
+            <p className='text-xs text-altwhite font-bold'>Display Name</p>
+            <p className='py-1.5 px-2 bg-input rounded-lg text-content text-sm font-semibold w-64'>
+              {userSummary?.personaName}
+            </p>
+          </div>
+          <div className='flex flex-col gap-1'>
+            <p className='text-xs text-altwhite font-bold'>Steam ID</p>
+            <p className='py-1.5 px-2 bg-input rounded-lg text-content text-sm font-semibold w-64'>
+              {userSummary?.steamId}
+            </p>
           </div>
         </div>
-      </div>
 
-      <div className='flex flex-col gap-4 border border-border rounded-lg p-3 bg-titlebar'>
-        <p className='font-bold'>{t('common.options')}</p>
+        <Divider className='bg-border my-4' />
 
-        <SettingsCheckbox type='general' name='antiAway' content={t('settings.general.antiAway')} />
-
-        <SettingsCheckbox
-          type='general'
-          name='freeGameNotifications'
-          content={t('settings.general.freeGameNotifications')}
-        />
-
-        <div className='flex items-center'>
-          <SettingsCheckbox type='general' name='useBeta' content={t('settings.general.useBeta')} />
-          <CustomTooltip
-            content={t('settings.general.useBetaTooltip')}
-            placement='right'
-            className='w-[330px] text-sm'
-            important
-          >
-            <TbHelpCircle className='text-altwhite ml-1.5' size={18} />
-          </CustomTooltip>
+        <div className='flex justify-between items-center'>
+          <div className='flex flex-col gap-2'>
+            <p className='text-sm text-content font-bold'>{t('settings.general.antiAway')}</p>
+            <p className='text-sm text-altwhite'>{t('settings.general.antiAway.description')}</p>
+          </div>
+          <SettingsSwitch type='general' name='antiAway' />
         </div>
 
-        <SettingsCheckbox type='general' name='disableTooltips' content={t('settings.general.disableTooltips')} />
+        <Divider className='bg-border my-4' />
 
-        <SettingsCheckbox type='general' name='runAtStartup' content={t('settings.general.runAtStartup')} />
+        <div className='flex justify-between items-center'>
+          <div className='flex flex-col gap-2'>
+            <p className='text-sm text-content font-bold'>{t('settings.general.freeGameNotifications')}</p>
+            <p className='text-sm text-altwhite'>{t('settings.general.freeGameNotifications.description')}</p>
+          </div>
+          <SettingsSwitch type='general' name='freeGameNotifications' />
+        </div>
 
-        <SettingsCheckbox type='general' name='startMinimized' content={t('settings.general.startMinimized')} />
-      </div>
+        <Divider className='bg-border my-4' />
 
-      <div className='flex gap-4'>
-        <div className='flex gap-6 border border-border rounded-lg p-3 bg-titlebar w-full'>
-          <div className='flex flex-col gap-2 w-full'>
-            <p className='font-bold'>{t('settings.general.language')}</p>
+        <div className='flex justify-between items-center'>
+          <div className='flex flex-col gap-2'>
+            <div className='flex items-center gap-1'>
+              <p className='text-sm text-content font-bold'>{t('settings.general.useBeta')}</p>
+              <CustomTooltip
+                content={t('settings.general.useBetaTooltip')}
+                placement='right'
+                className='w-[330px] text-sm'
+                important
+              >
+                <TbHelpCircle className='text-dynamic' size={18} />
+              </CustomTooltip>
+            </div>
+            <p className='text-sm text-altwhite'>{t('settings.general.useBeta.description')}</p>
+          </div>
+          <SettingsSwitch type='general' name='useBeta' />
+        </div>
 
-            <LanguageSwitch />
+        <Divider className='bg-border my-4' />
 
+        <div className='flex justify-between items-center'>
+          <div className='flex flex-col gap-2'>
+            <p className='text-sm text-content font-bold'>{t('settings.general.disableTooltips')}</p>
+            <p className='text-sm text-altwhite'>{t('settings.general.disableTooltips.description')}</p>
+          </div>
+          <SettingsSwitch type='general' name='disableTooltips' />
+        </div>
+
+        <Divider className='bg-border my-4' />
+
+        <div className='flex justify-between items-center'>
+          <div className='flex flex-col gap-2'>
+            <p className='text-sm text-content font-bold'>{t('settings.general.runAtStartup')}</p>
+            <p className='text-sm text-altwhite'>{t('settings.general.runAtStartup.description')}</p>
+          </div>
+          <SettingsSwitch type='general' name='runAtStartup' />
+        </div>
+
+        <Divider className='bg-border my-4' />
+
+        <div className='flex justify-between items-center'>
+          <div className='flex flex-col gap-2'>
+            <p className='text-sm text-content font-bold'>{t('settings.general.startMinimized')}</p>
+            <p className='text-sm text-altwhite'>{t('settings.general.startMinimized.description')}</p>
+          </div>
+          <SettingsSwitch type='general' name='startMinimized' />
+        </div>
+
+        <Divider className='bg-border my-4' />
+
+        <div className='flex justify-between items-center'>
+          <div className='flex flex-col gap-2'>
+            <p className='text-sm text-content font-bold'>{t('settings.general.language')}</p>
             <span className='text-xs'>
               <ExtLink
                 href='https://github.com/zevnda/steam-game-idler/discussions/148'
@@ -84,49 +153,219 @@ export default function GeneralSettings(): ReactElement {
               </ExtLink>
             </span>
           </div>
+          <LanguageSwitch />
         </div>
 
-        <div className='flex gap-6 border border-border rounded-lg p-3 bg-titlebar w-full'>
-          <div className='flex flex-col gap-2 w-full'>
-            <p className='font-bold'>{t('settings.general.theme')}</p>
-            <ThemeSwitch />
+        <Divider className='bg-border my-4' />
+
+        <div className='flex justify-between items-center'>
+          <div className='flex flex-col gap-2'>
+            <p className='text-sm text-content font-bold'>{t('settings.general.currency')}</p>
+            <p className='text-sm text-altwhite'>{t('settings.general.currency.description')}</p>
           </div>
+          <CurrencySwitch />
         </div>
 
-        <div className='flex gap-6 border border-border rounded-lg p-3 bg-titlebar w-full'>
-          <div className='flex flex-col gap-2 w-full'>
-            <p className='font-bold'>{t('settings.general.currency')}</p>
-            <CurrencySwitch />
+        <Divider className='bg-border my-4' />
+
+        <div className='flex justify-between items-center'>
+          <div className='flex flex-col gap-2'>
+            <p className='text-sm text-content font-bold'>{t('settings.general.theme')}</p>
+            <p className='text-sm text-altwhite'>{t('settings.general.theme.description')}</p>
           </div>
+          <ThemeSwitch />
         </div>
-      </div>
 
-      <div className='flex flex-col border border-border rounded-lg p-3 bg-titlebar'>
-        <div className='flex flex-col'>
-          <p className='font-bold'>{t('settings.general.webApi.placeholder')}</p>
-          <span className='text-xs text-altwhite'>
-            <Trans i18nKey='settings.general.webApi'>
-              Use your own
-              <ExtLink href='https://steamcommunity.com/dev/apikey' className='mx-1 text-link hover:text-linkhover'>
-                Steam web API key
-              </ExtLink>
-              <span className='italic'>(optional)</span>
-              <ExtLink
-                href='https://steamgameidler.com/docs/settings/general#use-your-own-steam-web-api-key'
-                className='mx-1 text-link hover:text-linkhover'
-              >
-                Learn more
-              </ExtLink>
-            </Trans>
-          </span>
-          <div className='flex flex-col gap-2 mt-4'>
+        <Divider className='bg-border my-4' />
+
+        <div className='flex justify-between items-start'>
+          <div className='flex flex-col gap-2'>
+            <p className='text-sm text-content font-bold'>{t('settings.cardFarming.steamCredentialsTitle')}</p>
+            <p className='text-sm text-altwhite'>
+              <Trans i18nKey='settings.cardFarming.steamCredentials'>
+                Steam credentials are required in order to use the Card Farming feature.&nbsp;
+                <ExtLink
+                  href='https://steamgameidler.com/docs/steam-credentials'
+                  className='text-link hover:text-linkhover'
+                >
+                  Learn more
+                </ExtLink>
+              </Trans>
+            </p>
+            {cardSettings.cardFarmingUser && (
+              <div className='flex gap-4 bg-tab-panel p-2 rounded-lg items-center w-fit min-w-[50%] mt-3'>
+                {!cardSettings.isCFDataLoading ? (
+                  <>
+                    <Image
+                      src={userSummary?.avatar || ''}
+                      height={38}
+                      width={38}
+                      alt='user avatar'
+                      className='w-[38px] h-[38px] rounded-full'
+                      priority
+                    />
+                    <div className='flex flex-col items-end gap-1'>
+                      <div className='flex gap-1'>
+                        <p className='text-sm text-altwhite font-bold'>{t('settings.cardFarming.gamesWithDrops')}</p>
+                        <p className='text-sm text-dynamic font-bold'>{userSettings.cardFarming.gamesWithDrops || 0}</p>
+                      </div>
+                      <div className='flex gap-1'>
+                        <p className='text-sm text-altwhite font-bold'>{t('settings.cardFarming.totalDrops')}</p>
+                        <p className='text-sm text-dynamic font-bold'>
+                          {userSettings.cardFarming.totalDropsRemaining || 0}
+                        </p>
+                      </div>
+                    </div>
+                    <div
+                      className='text-altwhite hover:bg-item-hover p-1 rounded-full cursor-pointer duration-150'
+                      onClick={() =>
+                        fetchGamesWithDropsData(userSummary, cardSettings.setIsCFDataLoading, setUserSettings)
+                      }
+                    >
+                      <TbRefresh size={18} />
+                    </div>
+                  </>
+                ) : (
+                  <div className='flex items-center justify-center gap-2'>
+                    <Spinner size='sm' variant='simple' />
+                    <p className='text-xs text-altwhite'>{t('settings.cardFarming.loading')}</p>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+          <div className='flex flex-col gap-4 w-[250px]'>
             <Input
-              size='sm'
-              placeholder={t('settings.general.webApi.placeholder')}
-              className='max-w-[280px]'
+              isRequired
+              label='sessionid'
+              labelPlacement='outside'
+              placeholder='sessionid'
+              className='max-w-[290px]'
               classNames={{
                 inputWrapper: cn(
-                  'bg-input border border-border hover:!bg-inputhover',
+                  'bg-input data-[hover=true]:!bg-inputhover',
+                  'rounded-lg group-data-[focus-within=true]:!bg-inputhover',
+                ),
+                label: ['text-xs !text-altwhite font-bold'],
+                input: ['!text-content placeholder:text-altwhite/50'],
+              }}
+              value={cardSettings.sidValue}
+              onChange={e => cardSettings.setSidValue(e.target.value)}
+              type='password'
+            />
+            <Input
+              isRequired
+              label='steamLoginSecure'
+              labelPlacement='outside'
+              placeholder='steamLoginSecure'
+              className='max-w-[290px]'
+              classNames={{
+                inputWrapper: cn(
+                  'bg-input data-[hover=true]:!bg-inputhover',
+                  'rounded-lg group-data-[focus-within=true]:!bg-inputhover',
+                ),
+                label: ['text-xs !text-altwhite font-bold'],
+                input: ['!text-content placeholder:text-altwhite/50'],
+              }}
+              value={cardSettings.slsValue}
+              onChange={e => cardSettings.setSlsValue(e.target.value)}
+              type='password'
+            />
+            <Input
+              label={<p>steamParental / steamMachineAuth</p>}
+              labelPlacement='outside'
+              placeholder='steamParental / steamMachineAuth'
+              className='max-w-[290px]'
+              classNames={{
+                inputWrapper: cn(
+                  'bg-input data-[hover=true]:!bg-inputhover',
+                  'rounded-lg group-data-[focus-within=true]:!bg-inputhover',
+                ),
+                label: ['text-xs !text-altwhite font-bold'],
+                input: ['!text-content placeholder:text-altwhite/50'],
+              }}
+              value={cardSettings.smaValue}
+              onChange={e => cardSettings.setSmaValue(e.target.value)}
+              type='password'
+            />
+            <div className='flex justify-end gap-2'>
+              <Button
+                size='sm'
+                variant='light'
+                radius='full'
+                color='danger'
+                isDisabled={!cardSettings.hasCookies}
+                onPress={() =>
+                  handleCredentialsClear(
+                    cardSettings.setHasCookies,
+                    cardSettings.setSidValue,
+                    cardSettings.setSlsValue,
+                    cardSettings.setSmaValue,
+                    cardSettings.setCardFarmingUser,
+                    userSummary,
+                    setUserSettings,
+                    cardSettings.setGamesWithDrops,
+                    cardSettings.setTotalDropsRemaining,
+                  )
+                }
+                startContent={<TbEraser size={20} />}
+              >
+                {t('common.clear')}
+              </Button>
+              <Button
+                size='sm'
+                className='bg-btn-secondary text-btn-text font-bold'
+                radius='full'
+                isDisabled={cardSettings.hasCookies || !cardSettings.sidValue || !cardSettings.slsValue}
+                onPress={() =>
+                  handleCredentialsSave(
+                    cardSettings.sidValue,
+                    cardSettings.slsValue,
+                    cardSettings.smaValue,
+                    cardSettings.setHasCookies,
+                    cardSettings.setCardFarmingUser,
+                    userSummary,
+                    userSettings,
+                    setUserSettings,
+                    cardSettings.setIsCFDataLoading,
+                  )
+                }
+                startContent={<TbUpload size={20} />}
+              >
+                {t('common.save')}
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        <Divider className='bg-border my-4' />
+
+        <div className='flex justify-between items-center'>
+          <div className='flex flex-col gap-2'>
+            <p className='text-sm text-content font-bold'>{t('settings.general.webApi.placeholder')}</p>
+            <p className='text-sm text-altwhite'>
+              <Trans i18nKey='settings.general.webApi'>
+                Use your own
+                <ExtLink href='https://steamcommunity.com/dev/apikey' className='mx-1 text-link hover:text-linkhover'>
+                  Steam web API key
+                </ExtLink>
+                <span className='italic'>(optional)</span>
+                <ExtLink
+                  href='https://steamgameidler.com/docs/settings/general#use-your-own-steam-web-api-key'
+                  className='mx-1 text-link hover:text-linkhover'
+                >
+                  Learn more
+                </ExtLink>
+              </Trans>
+            </p>
+          </div>
+          <div className='flex flex-col gap-2 w-[250px]'>
+            <Input
+              placeholder={t('settings.general.webApi.placeholder')}
+              className='max-w-[250px]'
+              classNames={{
+                inputWrapper: cn(
+                  'bg-input data-[hover=true]:!bg-inputhover',
                   'rounded-lg group-data-[focus-within=true]:!bg-inputhover',
                 ),
                 input: ['!text-content placeholder:text-altwhite/50'],
@@ -135,27 +374,29 @@ export default function GeneralSettings(): ReactElement {
               onChange={e => setKeyValue(e.target.value)}
               type='password'
             />
-          </div>
-          <div className='flex gap-2 mt-4'>
-            <Button
-              size='sm'
-              isDisabled={hasKey || !keyValue}
-              className='font-semibold rounded-lg bg-dynamic text-button-text'
-              onPress={() => handleKeySave(userSummary?.steamId, keyValue, setHasKey, setUserSettings)}
-              startContent={<TbUpload size={20} />}
-            >
-              {t('common.save')}
-            </Button>
-            <Button
-              size='sm'
-              color='danger'
-              isDisabled={!hasKey}
-              className='font-semibold text-offwhite rounded-lg'
-              onPress={() => handleClear(userSummary?.steamId, setKeyValue, setHasKey, setUserSettings)}
-              startContent={<TbEraser size={20} />}
-            >
-              {t('common.clear')}
-            </Button>
+            <div className='flex justify-end gap-2'>
+              <Button
+                size='sm'
+                variant='light'
+                radius='full'
+                color='danger'
+                isDisabled={!hasKey}
+                onPress={() => handleClear(userSummary?.steamId, setKeyValue, setHasKey, setUserSettings)}
+                startContent={<TbEraser size={20} />}
+              >
+                {t('common.clear')}
+              </Button>
+              <Button
+                size='sm'
+                className='bg-btn-secondary text-btn-text font-bold'
+                radius='full'
+                isDisabled={hasKey || !keyValue}
+                onPress={() => handleKeySave(userSummary?.steamId, keyValue, setHasKey, setUserSettings)}
+                startContent={<TbUpload size={20} />}
+              >
+                {t('common.save')}
+              </Button>
+            </div>
           </div>
         </div>
       </div>

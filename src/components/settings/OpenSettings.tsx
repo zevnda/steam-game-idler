@@ -7,7 +7,6 @@ import { useTranslation } from 'react-i18next'
 import { TbFolders } from 'react-icons/tb'
 
 import { useUserContext } from '@/components/contexts/UserContext'
-import CustomTooltip from '@/components/ui/CustomTooltip'
 import { logEvent } from '@/utils/tasks'
 import { showDangerToast } from '@/utils/toasts'
 
@@ -28,14 +27,14 @@ export default function OpenSettings(): ReactElement {
   }
 
   return (
-    <CustomTooltip content={t('achievementManager.file')}>
-      <Button
-        isIconOnly
-        size='sm'
-        className='font-semibold rounded-lg bg-dynamic text-button-text'
-        onPress={handleOpenSettingsFile}
-        startContent={<TbFolders size={20} />}
-      />
-    </CustomTooltip>
+    <Button
+      size='sm'
+      className='bg-btn-secondary text-btn-text font-bold'
+      radius='full'
+      onPress={handleOpenSettingsFile}
+      startContent={<TbFolders size={20} />}
+    >
+      {t('settings.debug.viewSettingsFile')}
+    </Button>
   )
 }

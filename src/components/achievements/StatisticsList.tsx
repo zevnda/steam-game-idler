@@ -32,13 +32,13 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
   const protectedStatisticTwo = item2?.protected_stat || false
 
   return (
-    <div style={style} className='grid grid-cols-2 gap-2 px-4'>
+    <div style={style} className='grid grid-cols-2 gap-3 pr-6'>
       {item1 && (
         <div key={item1.id} className='flex flex-col gap-4'>
           <div
             className={cn(
               'flex justify-between items-center max-h-12',
-              'border border-border bg-titlebar p-2 rounded-lg',
+              'border border-border bg-sidebar p-2 rounded-lg',
             )}
           >
             <div className='flex flex-col'>
@@ -59,7 +59,7 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
               className='w-[120px]'
               classNames={{
                 inputWrapper: cn(
-                  'bg-input border border-border hover:!bg-inputhover rounded-lg',
+                  'bg-input data-[hover=true]:!bg-inputhover',
                   'group-data-[focus-visible=true]:ring-transparent',
                   'group-data-[focus-visible=true]:ring-offset-transparent',
                   'group-data-[focus-within=true]:!bg-inputhover h-8',
@@ -75,7 +75,7 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
           <div
             className={cn(
               'flex justify-between items-center max-h-12',
-              'border border-border bg-titlebar p-2 rounded-lg',
+              'border border-border bg-sidebar p-2 rounded-lg',
             )}
           >
             <div className='flex flex-col'>
@@ -96,10 +96,10 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
               className='w-[120px]'
               classNames={{
                 inputWrapper: cn(
-                  'bg-input border border-border hover:!bg-inputhover rounded-lg h-8',
+                  'bg-input data-[hover=true]:!bg-inputhover',
                   'group-data-[focus-visible=true]:ring-transparent',
                   'group-data-[focus-visible=true]:ring-offset-transparent',
-                  'group-data-[focus-within=true]:!bg-inputhover',
+                  'group-data-[focus-within=true]:!bg-inputhover h-8',
                 ),
                 input: ['text-sm !text-content'],
               }}
@@ -174,9 +174,9 @@ export default function StatisticsList({
           />
 
           <List
-            height={windowInnerHeight - 163}
+            height={windowInnerHeight - 250}
             itemCount={Math.ceil(filteredStatistics.length / 2)}
-            itemSize={58}
+            itemSize={62}
             width='100%'
             itemData={itemData}
           >
@@ -184,8 +184,8 @@ export default function StatisticsList({
           </List>
         </>
       ) : (
-        <div className='flex flex-col gap-2 justify-center items-center my-2 w-full'>
-          <p className='text-sm'>{t('achievementManager.statistics.empty')}</p>
+        <div className='flex flex-col gap-2 justify-center items-center my-2 bg-tab-panel rounded-lg p-4 mr-10'>
+          <p>{t('achievementManager.statistics.empty')}</p>
         </div>
       )}
     </div>

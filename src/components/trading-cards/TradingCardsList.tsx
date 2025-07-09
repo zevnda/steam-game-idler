@@ -54,7 +54,7 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
       <div
         key={item.assetid}
         className={cn(
-          'flex flex-col justify-start items-center bg-titlebar mb-4 rounded-lg border border-border p-2',
+          'flex flex-col justify-start items-center bg-sidebar mb-4 rounded-lg border border-border p-2',
           lockedCards.includes(item.id) && 'opacity-50',
         )}
       >
@@ -78,7 +78,7 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
           <div className='flex items-center gap-1'>
             <CustomTooltip content={t('tradingCards.lockCard')} placement='top'>
               <div
-                className='hover:bg-titlehover rounded-full p-1 cursor-pointer duration-200'
+                className='hover:bg-item-hover rounded-full p-1 cursor-pointer duration-200'
                 onClick={() => handleLockCard(item.id)}
               >
                 {isLocked ? <TbLock fontSize={14} className='text-yellow-500' /> : <TbLockOpen fontSize={14} />}
@@ -88,7 +88,7 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
             <CustomTooltip content={t('tradingCards.cardExchange')} placement='top'>
               <div>
                 <ExtLink href={`https://www.steamcardexchange.net/index.php?gamepage-appid-${item.appid}`}>
-                  <div className='hover:bg-titlehover rounded-full p-1.5 cursor-pointer duration-200'>
+                  <div className='hover:bg-item-hover rounded-full p-1.5 cursor-pointer duration-200'>
                     <SiExpertsexchange fontSize={10} />
                   </div>
                 </ExtLink>
@@ -156,7 +156,7 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
   }
 
   return (
-    <div style={style} className='grid grid-cols-6 gap-4 px-4 mt-[72px]'>
+    <div style={style} className='grid grid-cols-6 gap-4 px-4 pt-2'>
       {renderCard(item1)}
       {renderCard(item2)}
       {renderCard(item3)}
@@ -172,7 +172,7 @@ Row.displayName = 'Row'
 export default function TradingCardsList(): ReactElement {
   const { t } = useTranslation()
   const { tradingCardQueryValue } = useSearchContext()
-  const { isDarkMode } = useStateContext()
+  const { isDarkMode, sidebarCollapsed } = useStateContext()
   const [styles, setStyles] = useState({})
   const [windowInnerHeight, setWindowInnerHeight] = useState(0)
   const [lockedCards, setLockedCards] = useState<string[]>([])
@@ -240,8 +240,8 @@ export default function TradingCardsList(): ReactElement {
   return (
     <div
       className={cn(
-        'w-calc min-h-calc max-h-calc bg-base overflow-y-auto',
-        'overflow-x-hidden rounded-tl-xl border-t border-l border-border',
+        'min-h-calc max-h-calc bg-base overflow-y-auto overflow-hidden mt-9 duration-500 ease-in-out',
+        sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-217px)]',
       )}
       key={tradingCardContext.refreshKey}
     >
@@ -250,7 +250,7 @@ export default function TradingCardsList(): ReactElement {
       {!tradingCardContext.isLoading ? (
         <div className='flex flex-col'>
           <List
-            height={windowInnerHeight - 41}
+            height={windowInnerHeight - 168}
             itemCount={Math.ceil(filteredTradingCardsList.length / 6)}
             itemSize={309}
             width='100%'

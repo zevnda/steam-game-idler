@@ -37,10 +37,10 @@ export default function StatisticButtons({
   const hasChanges = changedCount > 0
 
   return (
-    <div className='absolute top-0 right-0 flex gap-2 mr-8 mt-1'>
+    <div className='absolute top-0 right-0 flex gap-2 mt-4 px-10'>
       <Button
-        size='sm'
-        className='font-semibold rounded-lg bg-dynamic text-button-text'
+        className='bg-btn-secondary text-btn-text font-bold'
+        radius='full'
         onPress={handleUpdateAllStats}
         isDisabled={!hasChanges}
         startContent={<TbUpload size={19} />}
@@ -48,9 +48,9 @@ export default function StatisticButtons({
         {t('achievementManager.statistics.saveChanges')} {hasChanges && `(${changedCount})`}
       </Button>
       <Button
-        size='sm'
+        className='font-bold'
+        radius='full'
         color='danger'
-        className='font-semibold rounded-lg'
         onPress={onOpen}
         startContent={<TbRotateClockwise className='rotate-90' size={20} />}
       >

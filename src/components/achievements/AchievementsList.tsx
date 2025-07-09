@@ -62,20 +62,13 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
   }
 
   return (
-    <div style={style} className='grid grid-cols-1 pb-4 px-4'>
+    <div style={style} className='grid grid-cols-1 pb-4 pr-6'>
       <div className='border border-border rounded-lg shadow-sm'>
-        <div className='flex items-center p-3 bg-titlebar rounded-t-lg'>
+        <div className='flex items-center py-3 px-3 bg-sidebar rounded-t-lg'>
           <div className='w-10 h-10 flex items-center justify-center'>
-            <Image
-              className='rounded-full mr-3'
-              src={icon}
-              width={40}
-              height={40}
-              alt={`${item.name} image`}
-              priority
-            />
+            <Image className='rounded-full' src={icon} width={40} height={40} alt={`${item.name} image`} priority />
           </div>
-          <div className='flex flex-col flex-grow'>
+          <div className='flex flex-col flex-grow ml-4'>
             <CustomTooltip placement='right' content={item.id}>
               <p className='font-bold text-sm w-fit'>{item.name}</p>
             </CustomTooltip>
@@ -91,11 +84,12 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
             </div>
           </div>
           <Button
-            size='sm'
             isDisabled={protectedAchievement}
+            size='sm'
+            radius='full'
             className={cn(
-              'font-semibold rounded-lg text-button-text',
-              protectedAchievement ? 'bg-warning' : achieved ? 'bg-danger' : 'bg-dynamic',
+              'font-bold',
+              protectedAchievement ? 'bg-warning' : achieved ? 'bg-danger' : 'bg-btn-secondary text-btn-text ',
             )}
             onPress={handleToggle}
             startContent={
@@ -109,8 +103,8 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
                 : t('achievementManager.achievements.unlock')}
           </Button>
         </div>
-        <div className='p-1 bg-titlebar select-none rounded-b-lg'>
-          <div className='w-full bg-titlehover rounded-full h-3.5 relative'>
+        <div className='py-2 px-3 bg-tab-panel select-none rounded-b-lg'>
+          <div className='w-full bg-item-hover rounded-full h-3.5 relative'>
             <div
               className='bg-dynamic/40 h-3.5 rounded-full flex items-center'
               style={{
@@ -189,9 +183,9 @@ export default function AchievementsList({
           />
 
           <List
-            height={windowInnerHeight - 163}
+            height={windowInnerHeight - 250}
             itemCount={filteredAchievements.length}
-            itemSize={100}
+            itemSize={110}
             width='100%'
             itemData={itemData}
           >
@@ -199,8 +193,8 @@ export default function AchievementsList({
           </List>
         </>
       ) : (
-        <div className='flex flex-col gap-2 justify-center items-center my-2 w-full'>
-          <p className='text-sm'>{t('achievementManager.achievements.empty')}</p>
+        <div className='flex flex-col gap-2 justify-center items-center my-2 bg-tab-panel rounded-lg p-4 mr-10'>
+          <p>{t('achievementManager.achievements.empty')}</p>
         </div>
       )}
     </div>

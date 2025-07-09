@@ -1,7 +1,8 @@
 import type { Game } from '@/types'
 import type { ReactElement, SyntheticEvent } from 'react'
 
-import { Button, cn, useDisclosure } from '@heroui/react'
+import { Button, useDisclosure } from '@heroui/react'
+import { memo } from 'react'
 import Image from 'next/image'
 import { TbAwardFilled, TbPlayerPlayFilled, TbPlayerStopFilled } from 'react-icons/tb'
 
@@ -12,9 +13,9 @@ import GameSettings from '@/components/gameslist/GameSettings'
 import IdleTimer from '@/components/ui/IdleTimer'
 import { handleIdle, handleStopIdle, viewAchievments } from '@/hooks/ui/useGameCard'
 
-export default function GameCard({ item }: { item: Game }): ReactElement {
+const GameCard = memo(function GameCard({ item }: { item: Game }): ReactElement {
   const { idleGamesList, setIdleGamesList } = useIdleContext()
-  const { isDarkMode, setAppId, setAppName, setShowAchievements } = useStateContext()
+  const { setAppId, setAppName, setShowAchievements } = useStateContext()
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
   const idlingGame = idleGamesList.find(game => game.appid === item.appid)
@@ -27,96 +28,49 @@ export default function GameCard({ item }: { item: Game }): ReactElement {
   return (
     <>
       <div className='relative group select-none'>
-        <div
-          className={cn(
-            'aspect-[460/215] rounded-xl overflow-hidden transition-transform',
-            'duration-200 ease-in-out transform group-hover:scale-105',
-          )}
-        >
-          {isIdling && <IdleTimer startTime={idlingGame.startTime ?? 0} />}
-          <Image
-            src={`https://cdn.cloudflare.steamstatic.com/steam/apps/${item.appid}/header.jpg`}
-            width={460}
-            height={215}
-            alt={`${item.name} image`}
-            priority={true}
-            onError={handleImageError}
-          />
-          <div
-            className={cn(
-              'absolute flex items-center justify-center gap-4 inset-0 bg-black',
-              'bg-opacity-0 group-hover:bg-opacity-40 transition-opacity duration-200',
-              isDarkMode && 'bg-opacity-20 group-hover:bg-opacity-50',
-            )}
-          >
-            <div
-              className={cn(
-                'absolute flex justify-center w-full bottom-0 left-0 px-2',
-                'pb-0.5 opacity-0 group-hover:opacity-100 duration-200',
-              )}
-            >
-              <p className='text-sm text-offwhite bg-black bg-opacity-50 rounded-sm px-1 select-none truncate'>
-                {item.name}
-              </p>
-            </div>
+        <div className='overflow-hidden will-change-transform transition-transform duration-150'>
+          <div className='aspect-[460/215] relative overflow-hidden'>
+            {isIdling && <IdleTimer startTime={idlingGame.startTime ?? 0} />}
+            <Image
+              src={`https://cdn.cloudflare.steamstatic.com/steam/apps/${item.appid}/header.jpg`}
+              width={460}
+              height={215}
+              alt={`${item.name} image`}
+              priority={true}
+              onError={handleImageError}
+              className='w-full h-full object-cover rounded-lg border-2 border-transparent group-hover:border-dynamic duration-150'
+            />
+          </div>
+          <div className='flex justify-between items-center p-1 pt-3'>
+            <h3 className='text-xs font-bold text-altwhite group-hover:text-content truncate duration-150'>
+              {item.name}
+            </h3>
 
-            <Button
-              isIconOnly
-              size='md'
-              className={cn(
-                'flex flex-col justify-center items-center opacity-0',
-                'group-hover:opacity-100 hover:scale-105 active:scale-95',
-                'duration-200 rounded-lg bg-opacity-50 bg-black',
-              )}
-              startContent={
-                <div
-                  className={cn(
-                    'p-2 bg-black text-offwhite bg-opacity-10 hover:bg-black',
-                    'hover:bg-opacity-40 cursor-pointer rounded-lg duration-200',
-                  )}
-                >
-                  {isIdling ? (
-                    <TbPlayerStopFilled
-                      className='text-offwhite opacity-0 group-hover:opacity-100 duration-200'
-                      fontSize={32}
-                    />
-                  ) : (
-                    <TbPlayerPlayFilled
-                      className='text-offwhite opacity-0 group-hover:opacity-100 duration-200'
-                      fontSize={32}
-                    />
-                  )}
-                </div>
-              }
-              onPress={() => (isIdling ? handleStopIdle(item, idleGamesList, setIdleGamesList) : handleIdle(item))}
-            />
-            <Button
-              isIconOnly
-              size='md'
-              className={cn(
-                'flex flex-col justify-center items-center opacity-0',
-                'group-hover:opacity-100 hover:scale-105 active:scale-95',
-                'duration-200 rounded-lg bg-opacity-50 bg-black',
-              )}
-              startContent={
-                <div
-                  className={cn(
-                    'p-2 bg-black text-offwhite bg-opacity-10 hover:bg-black',
-                    'hover:bg-opacity-40 cursor-pointer rounded-lg duration-200',
-                  )}
-                >
-                  <TbAwardFilled
-                    className='text-offwhite opacity-0 group-hover:opacity-100 duration-200'
-                    fontSize={32}
-                  />
-                </div>
-              }
-              onPress={() => viewAchievments(item, setAppId, setAppName, setShowAchievements)}
-            />
+            <div className='flex gap-1'>
+              <Button
+                isIconOnly
+                size='sm'
+                radius='full'
+                className='bg-transparent hover:bg-item-hover text-altwhite hover:text-content transition-colors duration-150'
+                onPress={() => (isIdling ? handleStopIdle(item, idleGamesList, setIdleGamesList) : handleIdle(item))}
+              >
+                {isIdling ? <TbPlayerStopFilled size={18} /> : <TbPlayerPlayFilled size={18} />}
+              </Button>
+
+              <Button
+                isIconOnly
+                size='sm'
+                radius='full'
+                className='bg-transparent hover:bg-item-hover text-altwhite hover:text-content transition-colors duration-150'
+                onPress={() => viewAchievments(item, setAppId, setAppName, setShowAchievements)}
+              >
+                <TbAwardFilled size={18} />
+              </Button>
+            </div>
           </div>
         </div>
 
-        <div className='absolute top-0.5 right-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200'>
+        <div className='absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-150'>
           <CardMenu item={item} onOpen={onOpen} />
         </div>
       </div>
@@ -124,4 +78,6 @@ export default function GameCard({ item }: { item: Game }): ReactElement {
       <GameSettings isOpen={isOpen} onOpenChange={onOpenChange} />
     </>
   )
-}
+})
+
+export default GameCard

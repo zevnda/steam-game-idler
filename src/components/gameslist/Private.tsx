@@ -20,7 +20,7 @@ export default function Private({ setRefreshKey }: PrivateProps): ReactElement {
     <div className='flex justify-center items-center w-calc h-full'>
       <div
         className={cn(
-          'flex justify-center items-center flex-col border bg-titlebar',
+          'flex justify-center items-center flex-col border bg-sidebar',
           'border-border w-[420px] rounded-xl shadow-sm',
         )}
       >

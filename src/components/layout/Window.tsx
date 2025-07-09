@@ -20,7 +20,7 @@ export default function Window(): ReactElement {
     )
 
   return (
-    <div className='bg-titlebar min-h-calc'>
+    <div className='bg-sidebar min-h-calc'>
       <Dashboard />
       <SteamWarning />
       <ChangelogModal />

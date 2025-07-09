@@ -3,6 +3,8 @@ import type { Dispatch, ReactElement, ReactNode, SetStateAction } from 'react'
 import { createContext, useContext, useState } from 'react'
 
 interface StateContextType {
+  sidebarCollapsed: boolean
+  setSidebarCollapsed: Dispatch<SetStateAction<boolean>>
   isDarkMode: boolean
   setIsDarkMode: Dispatch<SetStateAction<boolean>>
   appId: number | null
@@ -29,11 +31,14 @@ interface StateContextType {
   setLoadingRemoveListings: Dispatch<SetStateAction<boolean>>
   useBeta: boolean
   setUseBeta: Dispatch<SetStateAction<boolean>>
+  transitionDuration: string
+  setTransitionDuration: Dispatch<SetStateAction<string>>
 }
 
 export const StateContext = createContext<StateContextType | undefined>(undefined)
 
 export const StateProvider = ({ children }: { children: ReactNode }): ReactElement => {
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [isDarkMode, setIsDarkMode] = useState(false)
   const [appId, setAppId] = useState<number | null>(null)
   const [appName, setAppName] = useState<string | null>(null)
@@ -47,10 +52,13 @@ export const StateProvider = ({ children }: { children: ReactNode }): ReactEleme
   const [loadingListButton, setLoadingListButton] = useState(false)
   const [loadingRemoveListings, setLoadingRemoveListings] = useState(false)
   const [useBeta, setUseBeta] = useState(false)
+  const [transitionDuration, setTransitionDuration] = useState('0ms')
 
   return (
     <StateContext.Provider
       value={{
+        sidebarCollapsed,
+        setSidebarCollapsed,
         isDarkMode,
         setIsDarkMode,
         showFreeGamesTab,
@@ -77,6 +85,8 @@ export const StateProvider = ({ children }: { children: ReactNode }): ReactEleme
         setLoadingRemoveListings,
         useBeta,
         setUseBeta,
+        transitionDuration,
+        setTransitionDuration,
       }}
     >
       {children}

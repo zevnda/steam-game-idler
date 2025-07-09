@@ -39,19 +39,17 @@ export default function Notifications(): ReactElement {
       <CustomTooltip content={t('common.notifications')}>
         <div
           className={cn(
-            'flex items-center p-1.5 hover:bg-titlehover rounded-lg',
-            'cursor-pointer active:scale-95 relative duration-200 transition-all ease-out',
-            'hover:shadow-sm',
-            showNotifications && 'bg-titlehover/40',
+            'flex items-center px-1 py-1.5 hover:text-content/80',
+            'cursor-pointer active:scale-95 relative duration-150',
           )}
           onClick={() => {
             setShowNotifications(!showNotifications)
           }}
         >
-          <TbBell fontSize={20} className={cn(unseenNotifications.length > 0 && 'text-yellow-500')} />
+          <TbBell fontSize={18} className={cn(unseenNotifications.length > 0 && 'text-yellow-500')} />
           {unseenNotifications.length > 0 && (
             <div className='absolute top-0.5 right-0.5'>
-              <GoDotFill className='text-danger' fontSize={16} />
+              <GoDotFill className='text-danger' fontSize={14} />
             </div>
           )}
         </div>

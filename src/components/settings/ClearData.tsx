@@ -15,8 +15,9 @@ export default function ClearData(): ReactElement {
     <>
       <Button
         size='sm'
+        variant='light'
+        radius='full'
         color='danger'
-        className='font-semibold rounded-lg'
         onPress={onOpen}
         startContent={<TbEraser size={20} />}
       >
