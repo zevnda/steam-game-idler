@@ -25,7 +25,7 @@ export default function Settings(): ReactElement {
         <Button
           isIconOnly
           radius='full'
-          className='bg-item-hover'
+          className='bg-item-hover text-btn-text-alt'
           startContent={<TbX />}
           onPress={() => setActivePage('games')}
         />
@@ -43,12 +43,9 @@ export default function Settings(): ReactElement {
         classNames={{
           base: 'absolute top-0 bg-sidebar min-h-screen p-4 py-14 z-[55]',
           tabList: 'gap-0 w-full bg-transparent w-[218px]',
-          tab: cn(
-            'data-[hover-unselected=true]:opacity-100',
-            'rounded-lg bg-transparent justify-start py-5',
-            'data-[hover-unselected=true]:!text-red-500',
-          ),
-          tabContent: 'font-bold truncate duration-100 text-altwhite group-data-[hover-unselected=true]:text-content',
+          tab: cn('data-[hover-unselected=true]:opacity-100', 'rounded-lg bg-transparent justify-start py-5'),
+          tabContent:
+            'font-bold truncate duration-100 text-altwhite group-data-[hover-unselected=true]:text-content group-data-[selected=true]:text-content',
           cursor: '!bg-transparent shadow-none w-full',
           panel: 'w-full pb-10 pl-10 ml-[260px] mt-9 h-calc overflow-y-auto',
         }}

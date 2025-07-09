@@ -51,7 +51,13 @@ export default function PageHeader({ protectedAchievements, protectedStatistics 
   return (
     <div className='relative flex justify-between items-center px-10'>
       <div className='flex items-center gap-3'>
-        <Button isIconOnly radius='full' className='bg-item-hover' startContent={<TbX />} onPress={handleClick} />
+        <Button
+          isIconOnly
+          radius='full'
+          className='bg-item-hover text-btn-alt'
+          startContent={<TbX />}
+          onPress={handleClick}
+        />
 
         <div className='w-[400px]'>
           <p className='text-3xl font-black truncate'>{appName}</p>

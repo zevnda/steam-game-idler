@@ -88,7 +88,7 @@ export default function HeaderMenu(): ReactElement {
               key='help'
               startContent={<TbBookFilled size={18} />}
               textValue='Help'
-              className='rounded-xl'
+              className='rounded-xl text-content'
               classNames={{
                 base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
               }}
@@ -101,7 +101,7 @@ export default function HeaderMenu(): ReactElement {
               key='report'
               startContent={<TbBugFilled size={18} />}
               textValue='Report an issue'
-              className='rounded-xl'
+              className='rounded-xl text-content'
               classNames={{
                 base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
               }}
@@ -117,7 +117,7 @@ export default function HeaderMenu(): ReactElement {
               key='feature'
               startContent={<TbBulbFilled size={18} />}
               textValue='Feature request'
-              className='rounded-xl'
+              className='rounded-xl text-content'
               classNames={{
                 base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
               }}
@@ -133,7 +133,7 @@ export default function HeaderMenu(): ReactElement {
               key='support-me'
               startContent={<TbStarFilled size={18} />}
               textValue='Support me'
-              className='rounded-xl'
+              className='rounded-xl text-content'
               classNames={{
                 base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
               }}
@@ -146,7 +146,7 @@ export default function HeaderMenu(): ReactElement {
               key='changelog'
               startContent={<TbListCheck size={18} />}
               textValue='Changelog'
-              className='rounded-xl'
+              className='rounded-xl text-content'
               classNames={{
                 base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
               }}
@@ -159,7 +159,7 @@ export default function HeaderMenu(): ReactElement {
               key='updates'
               startContent={<TbDownload size={18} />}
               textValue='Check for updates'
-              className='rounded-xl'
+              className='rounded-xl text-content'
               classNames={{
                 base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
               }}

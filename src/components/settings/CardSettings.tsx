@@ -42,7 +42,7 @@ export default function CardSettings(): ReactElement {
               variant='faded'
               classNames={{
                 base: '!bg-dynamic/30 text-dynamic !border-dynamic/40',
-                iconWrapper: '!bg-dynamic/30',
+                iconWrapper: '!bg-dynamic/30 border-dynamic/40',
                 description: 'font-bold',
               }}
               description={t('settings.cardFarming.alert')}

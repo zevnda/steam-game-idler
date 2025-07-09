@@ -1,7 +1,7 @@
 import type { AchievementUnlockerSettings, CardFarmingSettings, GeneralSettings } from '@/types'
 import type { ChangeEvent, ReactElement } from 'react'
 
-import { Switch } from '@heroui/react'
+import { cn, Switch } from '@heroui/react'
 
 import { useUserContext } from '@/components/contexts/UserContext'
 import { useAchievementSettings } from '@/hooks/settings/useAchievementSettings'
@@ -46,7 +46,10 @@ export default function SettingsSwitch({ type, name }: SettingsCheckboxProps): R
         name={name}
         isSelected={isSettingEnabled()}
         classNames={{
-          wrapper: 'group-data-[selected=true]:!bg-dynamic',
+          wrapper: cn(
+            'group-data-[selected=true]:!bg-dynamic !bg-input',
+            'group-data-[selected=true]:!brightness-100 dark:brightness-125',
+          ),
         }}
         onChange={(e: ChangeEvent<HTMLInputElement>) => {
           handleCheckboxChange(e, 'general', userSummary?.steamId, setUserSettings)
@@ -63,7 +66,10 @@ export default function SettingsSwitch({ type, name }: SettingsCheckboxProps): R
         name={name}
         isSelected={startupState || false}
         classNames={{
-          wrapper: 'group-data-[selected=true]:!bg-dynamic',
+          wrapper: cn(
+            'group-data-[selected=true]:!bg-dynamic !bg-input',
+            'group-data-[selected=true]:!brightness-100 dark:brightness-125',
+          ),
         }}
         onChange={() => handleRunAtStartupChange(setStartupState)}
       />
@@ -76,7 +82,10 @@ export default function SettingsSwitch({ type, name }: SettingsCheckboxProps): R
       name={name}
       isSelected={isSettingEnabled()}
       classNames={{
-        wrapper: 'group-data-[selected=true]:!bg-dynamic',
+        wrapper: cn(
+          'group-data-[selected=true]:!bg-dynamic !bg-input',
+          'group-data-[selected=true]:!brightness-100 dark:brightness-125',
+        ),
       }}
       onChange={e => {
         if (type === 'general') {
