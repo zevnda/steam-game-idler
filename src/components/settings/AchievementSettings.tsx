@@ -173,7 +173,7 @@ export default function AchievementSettings(): ReactElement {
             hideValue
             className='mt-2 w-[350px]'
             classNames={{
-              track: 'bg-tab-panel',
+              track: 'bg-input',
               filler: 'bg-dynamic',
               thumb: 'bg-dynamic',
             }}

@@ -256,7 +256,7 @@ export default function TradingCardsList(): ReactElement {
           <List
             height={windowInnerHeight - 168}
             itemCount={Math.ceil(filteredTradingCardsList.length / 6)}
-            itemSize={309}
+            itemSize={319}
             width='100%'
             itemData={itemData}
           >
@@ -264,7 +264,7 @@ export default function TradingCardsList(): ReactElement {
           </List>
         </div>
       ) : (
-        <div className='flex justify-center items-center w-calc h-[calc(100vh-57px)]'>
+        <div className='flex justify-center items-center w-calc h-[calc(100vh-168px)]'>
           <Spinner variant='simple' />
         </div>
       )}

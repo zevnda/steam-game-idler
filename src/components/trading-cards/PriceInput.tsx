@@ -19,6 +19,7 @@ export default function PriceInput({ item, tradingCardContext }: PriceInputProps
   return (
     <div className='flex items-center justify-center gap-1 mt-2'>
       <NumberInput
+        size='sm'
         isInvalid={
           tradingCardContext.selectedCards[item.assetid] && tradingCardContext.getCardPriceValue(item.assetid) <= 0
         }
