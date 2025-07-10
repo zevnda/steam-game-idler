@@ -74,7 +74,7 @@ export default function HeaderMenu(): ReactElement {
           <DropdownTrigger>
             <div
               className={cn(
-                'flex items-center px-1 py-1.5 hover:text-content/80',
+                'flex items-center justify-center hover:text-content/80 hover:bg-header-hover/10 h-9 w-12',
                 'cursor-pointer active:scale-90 relative duration-150',
               )}
             >

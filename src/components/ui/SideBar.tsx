@@ -153,7 +153,7 @@ export default function SideBar(): ReactElement {
     <>
       <div
         className={cn(
-          'relative flex flex-col h-screen z-[50] bg-sidebar/80 select-none ease-in-out',
+          'relative flex flex-col h-screen z-[40] bg-sidebar/80 select-none ease-in-out',
           sidebarCollapsed ? 'min-w-14 max-w-14' : 'min-w-[250px] max-w-[250px]',
         )}
         style={{
@@ -172,6 +172,7 @@ export default function SideBar(): ReactElement {
           <Button
             isIconOnly={sidebarCollapsed}
             radius='full'
+            isDisabled={activePage === 'idling' || activePage === 'freeGames' || activePage.includes('customlists')}
             className={cn(
               'text-altwhite border hover:bg-searchhover active:scale-95 w-full mt-2 duration-150',
               sidebarCollapsed ? 'w-0 justify-center' : 'min-w-40 justify-start',

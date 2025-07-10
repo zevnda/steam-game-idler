@@ -1,7 +1,8 @@
 import type { ReactElement } from 'react'
 
 import { cn, Divider } from '@heroui/react'
-import { TbLayoutSidebar, TbLayoutSidebarFilled, TbMinus, TbSquare, TbX } from 'react-icons/tb'
+import { TbLayoutSidebar, TbLayoutSidebarFilled } from 'react-icons/tb'
+import { VscChromeClose, VscChromeMaximize, VscChromeMinimize } from 'react-icons/vsc'
 
 import { useNavigationContext } from '@/components/contexts/NavigationContext'
 import { useStateContext } from '@/components/contexts/StateContext'
@@ -14,24 +15,37 @@ import useHeader from '@/hooks/ui/useHeader'
 export default function Header(): ReactElement {
   const { updateAvailable } = useUpdateContext()
   const { windowMinimize, windowToggleMaximize, windowClose } = useHeader()
-  const { sidebarCollapsed, setSidebarCollapsed, setTransitionDuration } = useStateContext()
+  const { sidebarCollapsed, transitionDuration, setSidebarCollapsed, setTransitionDuration } = useStateContext()
   const { activePage } = useNavigationContext()
+
+  console.log(transitionDuration)
 
   return (
     <div
       className={cn(
-        'absolute w-full top-0 right-0 select-none pr-0 h-9 z-50',
+        'absolute top-0 right-0 select-none pr-0 h-9 z-[48] ease-in-out',
         activePage === 'setup' ? 'backdrop-blur-xl bg-base/40' : 'bg-transparent',
+        sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-calc',
       )}
+      style={{
+        transitionDuration,
+        transitionProperty: 'width',
+      }}
       data-tauri-drag-region
     >
       <div className='flex justify-between gap-1.5 h-9 w-full' data-tauri-drag-region>
         {activePage !== 'setup' && activePage !== 'settings' && (
           <div
             className={cn(
-              'p-2 transition-[margin-left] duration-500 ease-in-out cursor-pointer group text-content hover:text-altwhite',
-              sidebarCollapsed ? 'ml-[56px]' : 'ml-[250px]',
+              'flex justify-center items-center p-2 cursor-pointer group',
+              'text-content hover:bg-sidebar/80 hover:text-content/80 h-9 w-12',
+              'rounded-br-xl',
             )}
+            style={{
+              transitionProperty: 'margin-left, color, background-color',
+              transitionDuration: `${transitionDuration}, 150ms, 150ms`,
+              transitionTimingFunction: 'ease-in-out, ease, ease',
+            }}
             onClick={() => {
               setTransitionDuration('500ms')
               setSidebarCollapsed(!sidebarCollapsed)
@@ -65,7 +79,7 @@ export default function Header(): ReactElement {
                 )}
                 onClick={windowMinimize}
               >
-                <TbMinus fontSize={16} className='text-content' />
+                <VscChromeMinimize fontSize={16} className='text-content' />
               </div>
             </div>
 
@@ -78,7 +92,7 @@ export default function Header(): ReactElement {
                 )}
                 onClick={windowToggleMaximize}
               >
-                <TbSquare fontSize={12} className='text-content' />
+                <VscChromeMaximize fontSize={16} className='text-content' />
               </div>
             </div>
 
@@ -91,7 +105,7 @@ export default function Header(): ReactElement {
                 )}
                 onClick={windowClose}
               >
-                <TbX fontSize={16} className='text-content' />
+                <VscChromeClose fontSize={16} className='text-content' />
               </div>
             </div>
           </div>

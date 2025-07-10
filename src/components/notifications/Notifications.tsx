@@ -39,7 +39,7 @@ export default function Notifications(): ReactElement {
       <CustomTooltip content={t('common.notifications')}>
         <div
           className={cn(
-            'flex items-center px-1 py-1.5 hover:text-content/80',
+            'flex items-center justify-center hover:text-content/80 hover:bg-header-hover/10 h-9 w-12',
             'cursor-pointer active:scale-95 relative duration-150',
           )}
           onClick={() => {
@@ -68,8 +68,8 @@ export default function Notifications(): ReactElement {
               ref={dropdownRef}
               className={cn(
                 'absolute right-0 mx-auto mt-3 w-[380px] p-0 m-0 rounded-xl',
-                'bg-modalbody/95 backdrop-blur-md border border-border/50 outline-none z-[999]',
-                'shadow-2xl',
+                'outline-none z-[999]',
+                'shadow-xl',
               )}
               initial={{
                 opacity: 0,
@@ -94,10 +94,7 @@ export default function Notifications(): ReactElement {
             >
               {notifications.length === 0 ? (
                 <div
-                  className={cn(
-                    'flex items-center h-8 rounded-xl p-8 border-b border-border',
-                    'sticky top-0 bg-modalheader z-[999] cursor-default',
-                  )}
+                  className={cn('flex items-center h-8 rounded-xl p-8', 'sticky top-0 bg-base z-[999] cursor-default')}
                 >
                   <p className='w-full text-sm text-center'>{t('notifications.empty')}</p>
                 </div>
@@ -105,7 +102,7 @@ export default function Notifications(): ReactElement {
                 <div
                   className={cn(
                     'flex items-center h-8 rounded-t-xl py-4 px-6 border-b',
-                    'border-border sticky top-0 bg-modalheader z-[999] cursor-default',
+                    'border-border sticky top-0 bg-base backdrop-blur-md z-[999] cursor-default',
                   )}
                 >
                   <div className='flex justify-end w-full'>
@@ -127,10 +124,10 @@ export default function Notifications(): ReactElement {
                     key={notification.id}
                     className={cn(
                       'rounded-none m-0 border-b last:border-none border-border',
-                      'cursor-pointer px-6 py-3 hover:bg-modalbody-hover',
+                      'cursor-pointer px-6 py-3 hover:bg-modalbody-hover backdrop-blur-md duration-150',
                       unseenNotifications.some(unseen => unseen.id === notification.id)
-                        ? 'bg-modalbody-hover font-semibold'
-                        : 'bg-modalbody',
+                        ? 'bg-tab-panel font-semibold'
+                        : 'bg-base',
                     )}
                     onClick={() =>
                       handleOpenUrl(notification.url, notification.id, unseenNotifications, setUnseenNotifications)
@@ -154,7 +151,7 @@ export default function Notifications(): ReactElement {
                 <div
                   className={cn(
                     'flex items-center h-8 rounded-b-xl px-6 border-t',
-                    'border-border sticky bottom-0 bg-modalfooter z-[999] cursor-default',
+                    'border-border sticky bottom-0 bg-tab-panel backdrop-blur-sm z-[999] cursor-default',
                   )}
                 />
               )}

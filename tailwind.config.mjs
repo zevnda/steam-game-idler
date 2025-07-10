@@ -104,7 +104,7 @@ export default {
             'switch': '#2e3237',
             'modalheader': '#121212',
             'modalbody': '#171717',
-            'modalbody-hover': '#1e1e1e',
+            'modalbody-hover': '#212427',
             'modalfooter': '#121212',
             'tablehead': '#131313',
             'tablerow': '#1a1a1a',
