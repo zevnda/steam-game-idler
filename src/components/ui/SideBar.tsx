@@ -174,7 +174,7 @@ export default function SideBar(): ReactElement {
             radius='full'
             isDisabled={activePage === 'idling' || activePage === 'freeGames' || activePage.includes('customlists')}
             className={cn(
-              'text-altwhite border hover:bg-searchhover active:scale-95 w-full mt-2 duration-150',
+              'text-altwhite border hover:bg-searchhover active:scale-95 w-full mt-4 duration-150',
               sidebarCollapsed ? 'w-0 justify-center' : 'min-w-40 justify-start',
               searchContent.gameQueryValue ||
                 searchContent.tradingCardQueryValue ||
@@ -212,11 +212,10 @@ export default function SideBar(): ReactElement {
               </div>
             )}
           </Button>
-
-          <Divider className='w-full bg-border/60 my-0.5' />
         </div>
 
         <div className='flex flex-col gap-1.5 p-2 w-full min-w-0 overflow-hidden'>
+          <Divider className='w-full bg-border/60 my-0.5' />
           {mainSidebarItems.map(renderSidebarItem)}
         </div>
 
