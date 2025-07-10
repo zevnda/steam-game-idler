@@ -69,7 +69,11 @@ export default function AchievementUnlocker({ activePage }: { activePage: Active
     >
       <div className='relative flex justify-evenly items-center flex-col px-14 h-full'>
         <Image
-          src={`https://cdn.steamstatic.com/steam/apps/${currentGame?.appid}/library_hero.jpg`}
+          src={
+            currentGame?.appid
+              ? `https://cdn.steamstatic.com/steam/apps/${currentGame?.appid}/library_hero.jpg`
+              : '/background.webp'
+          }
           className='absolute top-0 left-0 w-full h-full object-cover'
           alt='background'
           width={1920}
