@@ -18,8 +18,6 @@ export default function Header(): ReactElement {
   const { sidebarCollapsed, transitionDuration, setSidebarCollapsed, setTransitionDuration } = useStateContext()
   const { activePage } = useNavigationContext()
 
-  console.log(transitionDuration)
-
   return (
     <div
       className={cn(

@@ -1,5 +1,5 @@
 import type { Achievement, CurrentTabType, Statistic } from '@/types'
-import type { ReactElement } from 'react'
+import type { ReactElement, SyntheticEvent } from 'react'
 
 import { cn, Tab, Tabs } from '@heroui/react'
 import { useState } from 'react'
@@ -31,12 +31,17 @@ export default function Achievements(): ReactElement {
     setProtectedStatistics,
   )
 
-  if (isLoading)
+  if (isLoading) {
     return (
       <div className={cn('overflow-y-auto overflow-x-hidden bg-base w-calc')}>
         <Loader />
       </div>
     )
+  }
+
+  const handleImageError = (event: SyntheticEvent<HTMLImageElement, Event>): void => {
+    ;(event.target as HTMLImageElement).src = 'setup_bg.webp'
+  }
 
   return (
     <div
@@ -56,11 +61,12 @@ export default function Achievements(): ReactElement {
         width={1920}
         height={1080}
         priority
+        onError={handleImageError}
         style={{
           WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 40%)',
         }}
       />
-      <div className='absolute top-0 left-0 bg-base/50 w-full h-screen' />
+      <div className='absolute top-0 left-0 bg-base/50 w-full h-screen backdrop-blur-sm' />
 
       <div className='p-4'>
         <PageHeader protectedAchievements={protectedAchievements} protectedStatistics={protectedStatistics} />

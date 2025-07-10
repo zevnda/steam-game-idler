@@ -22,7 +22,7 @@ import useTradingCardsList from '@/hooks/trading-cards/useTradingCardsList'
 interface RowData {
   tradingCardContext: ReturnType<typeof useTradingCardsList> & { filteredTradingCardsList: TradingCard[] }
   styles: CSSProperties
-  t: (key: string, options?: Record<string, any>) => string
+  t: (key: string, options?: Record<string, number>) => string
   lockedCards: string[]
   handleLockCard: (id: string) => void
 }

@@ -77,7 +77,7 @@ export default function Logs(): ReactElement {
                           'w-1 h-1 rounded-full flex-shrink-0',
                           log.message?.includes('Error') ? 'bg-red-400' : 'bg-green-400',
                         )}
-                      ></div>
+                      />
                     </div>
 
                     <div className='min-w-0 flex-1'>

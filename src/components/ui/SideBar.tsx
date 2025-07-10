@@ -197,7 +197,7 @@ export default function SideBar(): ReactElement {
               )}
             />
             {!sidebarCollapsed && (
-              <>
+              <div>
                 {searchContent.gameQueryValue ? (
                   <p className='text-sm text-success font-bold'>{searchContent.gameQueryValue}</p>
                 ) : searchContent.tradingCardQueryValue ? (
@@ -209,7 +209,7 @@ export default function SideBar(): ReactElement {
                 ) : (
                   <p className='text-sm font-bold'>{t('common.search')}</p>
                 )}
-              </>
+              </div>
             )}
           </Button>
 

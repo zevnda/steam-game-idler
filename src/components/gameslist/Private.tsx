@@ -1,9 +1,8 @@
 import type { Dispatch, ReactElement, SetStateAction } from 'react'
 
-import { Button, cn } from '@heroui/react'
+import { Button } from '@heroui/react'
 import { useTranslation } from 'react-i18next'
-import { BiSolidMessage, BiSolidMessageSquareError } from 'react-icons/bi'
-import { TbError404 } from 'react-icons/tb'
+import { BiSolidMessageSquareError } from 'react-icons/bi'
 
 import ExtLink from '@/components/ui/ExtLink'
 

@@ -1,7 +1,7 @@
 import type { ChangeEvent, ReactElement } from 'react'
 
 import { cn, Input, Modal, ModalBody, ModalContent } from '@heroui/react'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { RiSearchLine } from 'react-icons/ri'
 import { TbX } from 'react-icons/tb'
@@ -24,6 +24,7 @@ export default function SearchBar({ isModalOpen = false, onModalClose }: SearchB
   const { showAchievements } = useStateContext()
   const { activePage, currentTab } = useNavigationContext()
   const { achievementsUnavailable, statisticsUnavailable } = useUserContext()
+  const hasLoadedRecentSearches = useRef(false)
 
   useHeader()
 
@@ -43,19 +44,7 @@ export default function SearchBar({ isModalOpen = false, onModalClose }: SearchB
     }
   }
 
-  useEffect(() => {
-    if (isModalOpen) {
-      const stored = localStorage.getItem('searchQueries')
-      if (stored) {
-        const queries = JSON.parse(stored)
-        queries.forEach((query: string) => searchContext.addRecentSearch(query))
-      }
-      const currentQuery = getCurrentSearchQuery()
-      setInputValue(currentQuery)
-    }
-  }, [isModalOpen])
-
-  const getCurrentSearchQuery = (): string => {
+  const getCurrentSearchQuery = useCallback((): string => {
     if (activePage === 'games' && !showAchievements) {
       return searchContext.gameQueryValue
     }
@@ -69,7 +58,36 @@ export default function SearchBar({ isModalOpen = false, onModalClose }: SearchB
       return searchContext.statisticQueryValue
     }
     return ''
-  }
+  }, [
+    activePage,
+    showAchievements,
+    currentTab,
+    searchContext.gameQueryValue,
+    searchContext.tradingCardQueryValue,
+    searchContext.achievementQueryValue,
+    searchContext.statisticQueryValue,
+  ])
+
+  useEffect(() => {
+    if (isModalOpen) {
+      const currentQuery = getCurrentSearchQuery()
+      setInputValue(currentQuery)
+    }
+  }, [isModalOpen, getCurrentSearchQuery])
+
+  useEffect(() => {
+    if (isModalOpen && !hasLoadedRecentSearches.current) {
+      const stored = localStorage.getItem('searchQueries')
+      if (stored) {
+        const queries = JSON.parse(stored)
+        queries.forEach((query: string) => searchContext.addRecentSearch(query))
+      }
+      hasLoadedRecentSearches.current = true
+    }
+    if (!isModalOpen) {
+      hasLoadedRecentSearches.current = false
+    }
+  }, [isModalOpen, searchContext])
 
   const saveSearchQuery = (query: string): void => {
     if (query.trim()) {

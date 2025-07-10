@@ -5,7 +5,7 @@ import { invoke } from '@tauri-apps/api/core'
 import { Alert, Button, cn } from '@heroui/react'
 import { Trans, useTranslation } from 'react-i18next'
 import { SiSteam, SiSteamdb } from 'react-icons/si'
-import { TbAlertHexagonFilled, TbArrowBack, TbFoldersFilled, TbX } from 'react-icons/tb'
+import { TbAlertHexagonFilled, TbFoldersFilled, TbX } from 'react-icons/tb'
 
 import { useNavigationContext } from '@/components/contexts/NavigationContext'
 import { useSearchContext } from '@/components/contexts/SearchContext'

@@ -52,7 +52,6 @@ export default function AchievementUnlocker({ activePage }: { activePage: Active
   }, [])
 
   const handleImageError = (event: SyntheticEvent<HTMLImageElement, Event>): void => {
-    console.log('Image failed to load, using fallback image')
     ;(event.target as HTMLImageElement).src =
       'https://raw.githubusercontent.com/zevnda/steam-game-idler/refs/heads/main/public/setup_bg.webp'
   }
