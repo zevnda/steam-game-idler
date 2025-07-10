@@ -43,29 +43,29 @@ export default function AchievementSettings(): ReactElement {
 
       <div className='flex flex-col gap-3 mt-4'>
         <div className='flex justify-between items-center'>
-          <div className='flex flex-col gap-2'>
+          <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>{t('settings.achievementUnlocker.idle')}</p>
-            <p className='text-sm text-altwhite'>{t('settings.achievementUnlocker.idle.description')}</p>
+            <p className='text-xs text-altwhite'>{t('settings.achievementUnlocker.idle.description')}</p>
           </div>
           <SettingsSwitch type='achievementUnlocker' name='idle' />
         </div>
 
-        <Divider className='bg-border my-4' />
+        <Divider className='bg-border/70 my-4' />
 
         <div className='flex justify-between items-center'>
-          <div className='flex flex-col gap-2'>
+          <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>{t('settings.achievementUnlocker.hidden')}</p>
-            <p className='text-sm text-altwhite'>{t('settings.achievementUnlocker.hidden.description')}</p>
+            <p className='text-xs text-altwhite'>{t('settings.achievementUnlocker.hidden.description')}</p>
           </div>
           <SettingsSwitch type='achievementUnlocker' name='hidden' />
         </div>
 
-        <Divider className='bg-border my-4' />
+        <Divider className='bg-border/70 my-4' />
 
         <div className='flex justify-between items-center'>
-          <div className='flex flex-col gap-2'>
+          <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>{t('common.nextTask')}</p>
-            <p className='text-sm text-altwhite'>{t('settings.achievementUnlocker.nextTask.description')}</p>
+            <p className='text-xs text-altwhite'>{t('settings.achievementUnlocker.nextTask.description')}</p>
           </div>
           <div className='flex items-center gap-4'>
             <Select
@@ -107,12 +107,12 @@ export default function AchievementSettings(): ReactElement {
           </div>
         </div>
 
-        <Divider className='bg-border my-4' />
+        <Divider className='bg-border/70 my-4' />
 
         <div className='flex justify-between items-center'>
-          <div className='flex flex-col gap-2'>
+          <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>{t('settings.achievementUnlocker.scheduleLabel')}</p>
-            <p className='text-sm text-altwhite'>{t('settings.achievementUnlocker.schedule.description')}</p>
+            <p className='text-xs text-altwhite'>{t('settings.achievementUnlocker.schedule.description')}</p>
           </div>
           <div className='flex items-center gap-4'>
             <TimeInput
@@ -156,12 +156,12 @@ export default function AchievementSettings(): ReactElement {
           </div>
         </div>
 
-        <Divider className='bg-border my-4' />
+        <Divider className='bg-border/70 my-4' />
 
         <div className='flex justify-between items-center'>
-          <div className='flex flex-col gap-2'>
+          <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>{t('settings.achievementUnlocker.unlockInterval')}</p>
-            <p className='text-sm text-altwhite'>{sliderLabel}</p>
+            <p className='text-xs text-altwhite'>{sliderLabel}</p>
           </div>
           <Slider
             size='md'

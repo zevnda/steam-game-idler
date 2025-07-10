@@ -62,82 +62,72 @@ export default function GeneralSettings(): ReactElement {
           </div>
         </div>
 
-        <Divider className='bg-border my-4' />
+        <Divider className='bg-border/70 my-4' />
 
         <div className='flex justify-between items-center'>
-          <div className='flex flex-col gap-2'>
+          <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>{t('settings.general.antiAway')}</p>
-            <p className='text-sm text-altwhite'>{t('settings.general.antiAway.description')}</p>
+            <p className='text-xs text-altwhite'>{t('settings.general.antiAway.description')}</p>
           </div>
           <SettingsSwitch type='general' name='antiAway' />
         </div>
 
-        <Divider className='bg-border my-4' />
+        <Divider className='bg-border/70 my-4' />
 
         <div className='flex justify-between items-center'>
-          <div className='flex flex-col gap-2'>
+          <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>{t('settings.general.freeGameNotifications')}</p>
-            <p className='text-sm text-altwhite'>{t('settings.general.freeGameNotifications.description')}</p>
+            <p className='text-xs text-altwhite'>{t('settings.general.freeGameNotifications.description')}</p>
           </div>
           <SettingsSwitch type='general' name='freeGameNotifications' />
         </div>
 
-        <Divider className='bg-border my-4' />
+        <Divider className='bg-border/70 my-4' />
 
         <div className='flex justify-between items-center'>
-          <div className='flex flex-col gap-2'>
-            <div className='flex items-center gap-1'>
-              <p className='text-sm text-content font-bold'>{t('settings.general.useBeta')}</p>
-              <CustomTooltip
-                content={t('settings.general.useBetaTooltip')}
-                placement='right'
-                className='w-[330px] text-sm'
-                important
-              >
-                <TbHelpCircle className='text-dynamic' size={18} />
-              </CustomTooltip>
-            </div>
-            <p className='text-sm text-altwhite'>{t('settings.general.useBeta.description')}</p>
+          <div className='flex flex-col gap-2 w-1/2'>
+            <p className='text-sm text-content font-bold'>{t('settings.general.useBeta')}</p>
+            <p className='text-xs text-altwhite'>{t('settings.general.useBeta.description')}</p>
           </div>
           <SettingsSwitch type='general' name='useBeta' />
         </div>
 
-        <Divider className='bg-border my-4' />
+        <Divider className='bg-border/70 my-4' />
 
         <div className='flex justify-between items-center'>
-          <div className='flex flex-col gap-2'>
+          <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>{t('settings.general.disableTooltips')}</p>
-            <p className='text-sm text-altwhite'>{t('settings.general.disableTooltips.description')}</p>
+            <p className='text-xs text-altwhite'>{t('settings.general.disableTooltips.description')}</p>
           </div>
           <SettingsSwitch type='general' name='disableTooltips' />
         </div>
 
-        <Divider className='bg-border my-4' />
+        <Divider className='bg-border/70 my-4' />
 
         <div className='flex justify-between items-center'>
-          <div className='flex flex-col gap-2'>
+          <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>{t('settings.general.runAtStartup')}</p>
-            <p className='text-sm text-altwhite'>{t('settings.general.runAtStartup.description')}</p>
+            <p className='text-xs text-altwhite'>{t('settings.general.runAtStartup.description')}</p>
           </div>
           <SettingsSwitch type='general' name='runAtStartup' />
         </div>
 
-        <Divider className='bg-border my-4' />
+        <Divider className='bg-border/70 my-4' />
 
         <div className='flex justify-between items-center'>
-          <div className='flex flex-col gap-2'>
+          <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>{t('settings.general.startMinimized')}</p>
-            <p className='text-sm text-altwhite'>{t('settings.general.startMinimized.description')}</p>
+            <p className='text-xs text-altwhite'>{t('settings.general.startMinimized.description')}</p>
           </div>
           <SettingsSwitch type='general' name='startMinimized' />
         </div>
 
-        <Divider className='bg-border my-4' />
+        <Divider className='bg-border/70 my-4' />
 
         <div className='flex justify-between items-center'>
-          <div className='flex flex-col gap-2'>
+          <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>{t('settings.general.language')}</p>
-            <p className='text-sm text-altwhite'>
+            <p className='text-xs text-altwhite'>
               <Trans i18nKey='settings.general.helpTranslate'>
                 Help translate SGI.&nbsp;
                 <ExtLink
@@ -152,32 +142,32 @@ export default function GeneralSettings(): ReactElement {
           <LanguageSwitch />
         </div>
 
-        <Divider className='bg-border my-4' />
+        <Divider className='bg-border/70 my-4' />
 
         <div className='flex justify-between items-center'>
-          <div className='flex flex-col gap-2'>
+          <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>{t('settings.general.currency')}</p>
-            <p className='text-sm text-altwhite'>{t('settings.general.currency.description')}</p>
+            <p className='text-xs text-altwhite'>{t('settings.general.currency.description')}</p>
           </div>
           <CurrencySwitch />
         </div>
 
-        <Divider className='bg-border my-4' />
+        <Divider className='bg-border/70 my-4' />
 
         <div className='flex justify-between items-center'>
-          <div className='flex flex-col gap-2'>
+          <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>{t('settings.general.theme')}</p>
-            <p className='text-sm text-altwhite'>{t('settings.general.theme.description')}</p>
+            <p className='text-xs text-altwhite'>{t('settings.general.theme.description')}</p>
           </div>
           <ThemeSwitch />
         </div>
 
-        <Divider className='bg-border my-4' />
+        <Divider className='bg-border/70 my-4' />
 
         <div className='flex justify-between items-start'>
-          <div className='flex flex-col gap-2'>
+          <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>{t('settings.cardFarming.steamCredentialsTitle')}</p>
-            <p className='text-sm text-altwhite'>
+            <p className='text-xs text-altwhite'>
               <Trans i18nKey='settings.cardFarming.steamCredentials'>
                 Steam credentials are required in order to use the Card Farming feature.&nbsp;
                 <ExtLink
@@ -334,12 +324,12 @@ export default function GeneralSettings(): ReactElement {
           </div>
         </div>
 
-        <Divider className='bg-border my-4' />
+        <Divider className='bg-border/70 my-4' />
 
         <div className='flex justify-between items-start'>
-          <div className='flex flex-col gap-2'>
+          <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>{t('settings.general.webApi')}</p>
-            <p className='text-sm text-altwhite'>
+            <p className='text-xs text-altwhite'>
               <Trans i18nKey='settings.general.webApi.description'>
                 Use your own Steam Web API Key.&nbsp;
                 <ExtLink

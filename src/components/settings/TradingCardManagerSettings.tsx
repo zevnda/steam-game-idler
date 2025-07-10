@@ -83,8 +83,8 @@ export default function TradingCardManagerSettings(): ReactElement {
               variant='faded'
               classNames={{
                 base: '!bg-dynamic/30 text-dynamic !border-dynamic/40',
-                iconWrapper: '!bg-dynamic/30',
-                description: 'font-bold',
+                iconWrapper: '!bg-dynamic/30 border-dynamic/40',
+                description: 'font-bold text-xs',
               }}
               description={t('settings.tradingCards.alert')}
             />
@@ -94,11 +94,11 @@ export default function TradingCardManagerSettings(): ReactElement {
 
       <div className='flex flex-col gap-3 mt-4'>
         <div className='flex justify-between items-center'>
-          <div className='flex flex-col gap-2'>
+          <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>
               {t('settings.tradingCards.priceAdjustment')} <Beta />
             </p>
-            <p className='text-sm text-altwhite'>
+            <p className='text-xs text-altwhite'>
               <Trans
                 i18nKey='settings.tradingCards.priceAdjustmentSub'
                 values={{ priceAdjustment }}
@@ -133,14 +133,14 @@ export default function TradingCardManagerSettings(): ReactElement {
           />
         </div>
 
-        <Divider className='bg-border my-4' />
+        <Divider className='bg-border/70 my-4' />
 
         <div className='flex justify-between items-center'>
-          <div className='flex flex-col gap-2'>
+          <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>
               {t('settings.tradingCards.sellLimit')} <Beta />
             </p>
-            <p className='text-sm text-altwhite'>
+            <p className='text-xs text-altwhite'>
               <Trans
                 i18nKey='settings.tradingCards.sellLimitSub'
                 values={{ sellLimitMin, sellLimitMax }}

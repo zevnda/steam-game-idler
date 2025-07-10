@@ -43,7 +43,7 @@ export default function CardSettings(): ReactElement {
               classNames={{
                 base: '!bg-dynamic/30 text-dynamic !border-dynamic/40',
                 iconWrapper: '!bg-dynamic/30 border-dynamic/40',
-                description: 'font-bold',
+                description: 'font-bold text-xs',
               }}
               description={t('settings.cardFarming.alert')}
             />
@@ -53,29 +53,29 @@ export default function CardSettings(): ReactElement {
 
       <div className='flex flex-col gap-3 mt-4'>
         <div className='flex justify-between items-center'>
-          <div className='flex flex-col gap-2'>
+          <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>{t('settings.cardFarming.listGames')}</p>
-            <p className='text-sm text-altwhite'>{t('settings.cardFarming.listGames.description')}</p>
+            <p className='text-xs text-altwhite'>{t('settings.cardFarming.listGames.description')}</p>
           </div>
           <SettingsSwitch type='cardFarming' name='listGames' />
         </div>
 
-        <Divider className='bg-border my-4' />
+        <Divider className='bg-border/70 my-4' />
 
         <div className='flex justify-between items-center'>
-          <div className='flex flex-col gap-2'>
+          <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>{t('settings.cardFarming.allGames')}</p>
-            <p className='text-sm text-altwhite'>{t('settings.cardFarming.allGames.description')}</p>
+            <p className='text-xs text-altwhite'>{t('settings.cardFarming.allGames.description')}</p>
           </div>
           <SettingsSwitch type='cardFarming' name='allGames' />
         </div>
 
-        <Divider className='bg-border my-4' />
+        <Divider className='bg-border/70 my-4' />
 
         <div className='flex justify-between items-center'>
-          <div className='flex flex-col gap-2'>
+          <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>{t('common.nextTask')}</p>
-            <p className='text-sm text-altwhite'>{t('settings.cardFarming.nextTask.description')}</p>
+            <p className='text-xs text-altwhite'>{t('settings.cardFarming.nextTask.description')}</p>
           </div>
           <div className='flex items-center gap-4'>
             <Select

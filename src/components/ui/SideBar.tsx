@@ -153,7 +153,7 @@ export default function SideBar(): ReactElement {
     <>
       <div
         className={cn(
-          'relative flex flex-col h-screen z-[51] bg-sidebar/80 select-none ease-in-out',
+          'relative flex flex-col h-screen z-[50] bg-sidebar/80 select-none ease-in-out',
           sidebarCollapsed ? 'min-w-14 max-w-14' : 'min-w-[250px] max-w-[250px]',
         )}
         style={{

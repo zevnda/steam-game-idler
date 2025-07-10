@@ -46,10 +46,7 @@ export default function SettingsSwitch({ type, name }: SettingsCheckboxProps): R
         name={name}
         isSelected={isSettingEnabled()}
         classNames={{
-          wrapper: cn(
-            'group-data-[selected=true]:!bg-dynamic !bg-input',
-            'group-data-[selected=true]:!brightness-100 dark:brightness-125',
-          ),
+          wrapper: cn('group-data-[selected=true]:!bg-dynamic !bg-switch'),
         }}
         onChange={(e: ChangeEvent<HTMLInputElement>) => {
           handleCheckboxChange(e, 'general', userSummary?.steamId, setUserSettings)
@@ -66,10 +63,7 @@ export default function SettingsSwitch({ type, name }: SettingsCheckboxProps): R
         name={name}
         isSelected={startupState || false}
         classNames={{
-          wrapper: cn(
-            'group-data-[selected=true]:!bg-dynamic !bg-input',
-            'group-data-[selected=true]:!brightness-100 dark:brightness-125',
-          ),
+          wrapper: cn('group-data-[selected=true]:!bg-dynamic !bg-switch'),
         }}
         onChange={() => handleRunAtStartupChange(setStartupState)}
       />
@@ -82,10 +76,7 @@ export default function SettingsSwitch({ type, name }: SettingsCheckboxProps): R
       name={name}
       isSelected={isSettingEnabled()}
       classNames={{
-        wrapper: cn(
-          'group-data-[selected=true]:!bg-dynamic !bg-input',
-          'group-data-[selected=true]:!brightness-100 dark:brightness-125',
-        ),
+        wrapper: cn('group-data-[selected=true]:!bg-dynamic !bg-switch'),
       }}
       onChange={e => {
         if (type === 'general') {
