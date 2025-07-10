@@ -59,7 +59,7 @@ export default function PageHeader({ protectedAchievements, protectedStatistics 
           onPress={handleClick}
         />
 
-        <div className='w-[400px]'>
+        <div className='w-[320px]'>
           <p className='text-3xl font-black truncate'>{appName}</p>
         </div>
 
