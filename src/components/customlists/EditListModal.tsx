@@ -5,6 +5,7 @@ import { Button, cn, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHe
 import { memo } from 'react'
 import Image from 'next/image'
 import { useTranslation } from 'react-i18next'
+import { RiSearchLine } from 'react-icons/ri'
 import { TbCheck } from 'react-icons/tb'
 import { FixedSizeList as List } from 'react-window'
 
@@ -120,6 +121,7 @@ export default function EditListModal({
                 autoFocus
                 isClearable
                 placeholder={t('common.search')}
+                startContent={<RiSearchLine size={24} className='text-content/60' />}
                 classNames={{
                   inputWrapper: cn(
                     'bg-transparent hover:!bg-transparent h-24',

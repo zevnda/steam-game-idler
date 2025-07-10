@@ -1,5 +1,5 @@
 import type { ActivePageType, Game } from '@/types'
-import type { ReactElement } from 'react'
+import type { ReactElement, SyntheticEvent } from 'react'
 
 import { Button, cn } from '@heroui/react'
 import { useEffect, useRef, useState } from 'react'
@@ -14,12 +14,11 @@ import { stopIdle } from '@/utils/idle'
 
 export default function AchievementUnlocker({ activePage }: { activePage: ActivePageType }): ReactElement {
   const { t } = useTranslation()
-  const { isDarkMode, setIsAchievementUnlocker } = useStateContext()
+  const { setIsAchievementUnlocker, transitionDuration, sidebarCollapsed } = useStateContext()
 
   const isMountedRef = useRef(true)
   const abortControllerRef = useRef<AbortController>(new AbortController())
 
-  const [imageSrc, setImageSrc] = useState('')
   const [isInitialDelay, setIsInitialDelay] = useState(true)
   const [currentGame, setCurrentGame] = useState<Game | null>(null)
   const [isComplete, setIsComplete] = useState(false)
@@ -27,14 +26,6 @@ export default function AchievementUnlocker({ activePage }: { activePage: Active
   const [countdownTimer, setCountdownTimer] = useState('00:00:10')
   const [isWaitingForSchedule, setIsWaitingForSchedule] = useState(false)
   const { startCardFarming } = useAutomate()
-
-  useEffect(() => {
-    setImageSrc(
-      isDarkMode
-        ? 'https://raw.githubusercontent.com/zevnda/steam-game-idler/refs/heads/main/public/dbg.webp'
-        : 'https://raw.githubusercontent.com/zevnda/steam-game-idler/refs/heads/main/public/lbg.webp',
-    )
-  }, [isDarkMode])
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -60,33 +51,40 @@ export default function AchievementUnlocker({ activePage }: { activePage: Active
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  const handleImageError = (event: SyntheticEvent<HTMLImageElement, Event>): void => {
+    console.log('Image failed to load, using fallback image')
+    ;(event.target as HTMLImageElement).src =
+      'https://raw.githubusercontent.com/zevnda/steam-game-idler/refs/heads/main/public/setup_bg.webp'
+  }
+
   return (
     <div
       className={cn(
-        'absolute top-10 left-14 bg-base z-50 rounded-tl-xl',
-        'border-t border-l border-border',
+        'absolute top-0 bg-base h-screen ease-in-out',
         activePage !== 'customlists/achievement-unlocker' && 'hidden',
+        sidebarCollapsed ? 'w-[calc(100vw-56px)] left-[56px]' : 'w-[calc(100vw-250px)] left-[250px]',
       )}
+      style={{
+        transitionDuration,
+        transitionProperty: 'width, left',
+      }}
     >
-      <div className='relative flex justify-evenly items-center flex-col p-4 w-calc h-calc'>
-        {imageSrc && (
-          <Image
-            src={imageSrc}
-            className='absolute top-0 left-0 w-full h-full object-cover rounded-tl-xl'
-            alt='background'
-            width={1920}
-            height={1080}
-            priority
-          />
-        )}
-        <div className='absolute bg-base/10 backdrop-blur-[10px] w-full h-full rounded-tl-xl' />
+      <div className='relative flex justify-evenly items-center flex-col px-14 h-full'>
+        <Image
+          src={`https://cdn.steamstatic.com/steam/apps/${currentGame?.appid}/library_hero.jpg`}
+          className='absolute top-0 left-0 w-full h-full object-cover'
+          alt='background'
+          width={1920}
+          height={1080}
+          priority
+          onError={handleImageError}
+          style={{
+            WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 40%)',
+          }}
+        />
+        <div className='absolute top-0 left-0 bg-base/50 w-full h-screen backdrop-blur-sm' />
 
-        <div
-          className={cn(
-            'flex items-center flex-col gap-6 z-10 backdrop-blur-md',
-            'bg-base/20 p-8 border border-border/40 rounded-lg',
-          )}
-        >
+        <div className={cn('flex items-center flex-col gap-16 z-10 bg-base/60 p-8 rounded-lg w-full')}>
           <p className='text-3xl font-semibold'>{t('common.achievementUnlocker')}</p>
 
           {isWaitingForSchedule && (
@@ -132,9 +130,9 @@ export default function AchievementUnlocker({ activePage }: { activePage: Active
           )}
 
           <Button
-            size='sm'
             color='danger'
-            className='min-h-[30px] font-semibold rounded-lg'
+            radius='full'
+            className='font-bold w-56'
             onPress={() => {
               stopIdle(currentGame?.appid, currentGame?.name)
               setIsAchievementUnlocker(false)
