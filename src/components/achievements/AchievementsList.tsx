@@ -88,8 +88,12 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
             size='sm'
             radius='full'
             className={cn(
-              'font-bold text-white',
-              protectedAchievement ? 'bg-warning' : achieved ? 'bg-danger' : 'bg-btn-secondary',
+              'font-bold',
+              protectedAchievement
+                ? 'bg-warning'
+                : achieved
+                  ? 'bg-danger text-white'
+                  : 'bg-btn-secondary text-btn-text',
             )}
             onPress={handleToggle}
             startContent={
