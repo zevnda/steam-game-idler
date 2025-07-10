@@ -34,16 +34,29 @@ export default function Setup(): ReactElement {
   return (
     <>
       <Header />
-      <div className='relative w-full bg-base'>
-        <Image
-          src='https://raw.githubusercontent.com/zevnda/steam-game-idler/refs/heads/main/public/setup_bg.webp'
-          className='absolute top-0 left-0 w-full h-full object-cover'
-          alt='background'
-          width={1920}
-          height={1080}
-          priority
-        />
-        <div className='absolute bg-base/30 backdrop-blur-[16px] w-full h-screen' />
+      <div className='relative w-full bg-base overflow-hidden'>
+        <motion.div
+          className='absolute top-0 left-0 w-[110%] h-full'
+          animate={{
+            x: [0, -40, 0],
+          }}
+          transition={{
+            duration: 20,
+            ease: 'easeInOut',
+            repeat: Infinity,
+            repeatType: 'reverse',
+          }}
+        >
+          <Image
+            src='/background.webp'
+            className='w-full h-full object-cover'
+            alt='background'
+            width={1920}
+            height={1080}
+            priority
+          />
+        </motion.div>
+        <div className='absolute bg-base/30 backdrop-blur-[8px] w-full h-screen' />
 
         <div className='relative flex justify-center items-center flex-col gap-8 w-full h-screen px-4'>
           <motion.div
@@ -78,7 +91,7 @@ export default function Setup(): ReactElement {
                   <div
                     className={cn(
                       'flex flex-col max-h-[390px]',
-                      'w-full overflow-y-auto rounded-xl',
+                      'w-full overflow-y-auto',
                       'scrollbar-thin scrollbar-thumb-border/50',
                     )}
                   >

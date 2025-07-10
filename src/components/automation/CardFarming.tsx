@@ -129,7 +129,7 @@ export default function CardFarming({ activePage }: { activePage: ActivePageType
     >
       <div className='relative flex justify-evenly items-center flex-col p-14 h-calc'>
         <Image
-          src='https://raw.githubusercontent.com/zevnda/steam-game-idler/refs/heads/main/public/setup_bg.webp'
+          src='/background.webp'
           className='absolute top-0 left-0 w-full h-full object-cover'
           alt='background'
           width={1920}

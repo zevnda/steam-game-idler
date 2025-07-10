@@ -40,7 +40,7 @@ export default function Achievements(): ReactElement {
   }
 
   const handleImageError = (event: SyntheticEvent<HTMLImageElement, Event>): void => {
-    ;(event.target as HTMLImageElement).src = 'setup_bg.webp'
+    ;(event.target as HTMLImageElement).src = '/background.webp'
   }
 
   return (

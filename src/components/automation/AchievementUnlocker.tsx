@@ -52,8 +52,7 @@ export default function AchievementUnlocker({ activePage }: { activePage: Active
   }, [])
 
   const handleImageError = (event: SyntheticEvent<HTMLImageElement, Event>): void => {
-    ;(event.target as HTMLImageElement).src =
-      'https://raw.githubusercontent.com/zevnda/steam-game-idler/refs/heads/main/public/setup_bg.webp'
+    ;(event.target as HTMLImageElement).src = '/background.webp'
   }
 
   return (

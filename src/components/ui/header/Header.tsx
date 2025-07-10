@@ -21,9 +21,8 @@ export default function Header(): ReactElement {
   return (
     <div
       className={cn(
-        'absolute top-0 right-0 select-none pr-0 h-9 z-[48] ease-in-out',
-        activePage === 'setup' ? 'backdrop-blur-xl bg-base/40' : 'bg-transparent',
-        sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-calc',
+        'absolute top-0 right-0 select-none pr-0 h-9 z-[48] ease-in-out bg-transparent',
+        sidebarCollapsed ? 'w-[calc(100vw-56px)]' : activePage === 'setup' ? 'w-full' : 'w-calc',
       )}
       style={{
         transitionDuration,
