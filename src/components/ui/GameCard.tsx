@@ -4,16 +4,23 @@ import type { ReactElement, SyntheticEvent } from 'react'
 import { Button, useDisclosure } from '@heroui/react'
 import { memo } from 'react'
 import Image from 'next/image'
+import { FaSteam } from 'react-icons/fa'
 import { TbAwardFilled, TbPlayerPlayFilled, TbPlayerStopFilled } from 'react-icons/tb'
 
 import { useIdleContext } from '@/components/contexts/IdleContext'
 import { useStateContext } from '@/components/contexts/StateContext'
 import CardMenu from '@/components/gameslist/CardMenu'
 import GameSettings from '@/components/gameslist/GameSettings'
+import ExtLink from '@/components/ui/ExtLink'
 import IdleTimer from '@/components/ui/IdleTimer'
 import { handleIdle, handleStopIdle, viewAchievments } from '@/hooks/ui/useGameCard'
 
-const GameCard = memo(function GameCard({ item }: { item: Game }): ReactElement {
+interface GameCardProps {
+  item: Game
+  isFreeGame?: boolean
+}
+
+const GameCard = memo(function GameCard({ item, isFreeGame = false }: GameCardProps): ReactElement {
   const { idleGamesList, setIdleGamesList } = useIdleContext()
   const { setAppId, setAppName, setShowAchievements } = useStateContext()
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
@@ -23,6 +30,39 @@ const GameCard = memo(function GameCard({ item }: { item: Game }): ReactElement 
 
   const handleImageError = (event: SyntheticEvent<HTMLImageElement, Event>): void => {
     ;(event.target as HTMLImageElement).src = '/fallback.jpg'
+  }
+
+  if (isFreeGame) {
+    return (
+      <div className='relative group select-none'>
+        <div className='overflow-hidden will-change-transform transition-transform duration-150'>
+          <div className='aspect-[460/215] relative overflow-hidden'>
+            <Image
+              src={`https://cdn.cloudflare.steamstatic.com/steam/apps/${item.appid}/header.jpg`}
+              width={460}
+              height={215}
+              alt={`${item.name} image`}
+              priority={true}
+              onError={handleImageError}
+              className='w-full h-full object-cover rounded-lg border-2 border-transparent group-hover:border-dynamic duration-150'
+            />
+          </div>
+          <div className='flex justify-between items-center p-1 pt-3'>
+            <h3 className='text-xs font-bold text-altwhite group-hover:text-content truncate duration-150'>
+              {item.name}
+            </h3>
+
+            <div className='flex gap-1'>
+              <ExtLink href={`https://store.steampowered.com/app/${item.appid}`}>
+                <div className='bg-transparent hover:bg-item-hover text-altwhite hover:text-content p-2 rounded-full transition-colors duration-150'>
+                  <FaSteam size={18} />
+                </div>
+              </ExtLink>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
