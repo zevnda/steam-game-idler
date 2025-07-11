@@ -3,8 +3,19 @@
 ### Changes in v2.0.0
 
 - Complete UI overhaul
-- Added sort option to `trading card manager`
-- Foil cards in `trading card manager` now have their own style to stand out
+  - There are too many changes to list them all, but some notable changes are:
+    - Added a collapsible sidebar. View the sidebar item icons and names when expanded, or collapse it for a more content focused look
+    - Added a `recommended` carousel to `games list`. This will recommend 10 randomly picked games that you have not played yet
+    - Added a `recently played` carousel to `games list`. This will show your 10 most recently played games, replacing the previous `recents` filter option
+    - Added different backgrounds depending on what you are doing in SGI at the time. For example, if you are viewing achievements for a game, you might see that game's cover art in the background
+    - Replaced the `search bar` with a `search button` and moved it to the `sidebar`. The search button will now open the `search modal`, allowing you to search as you previously did
+    - The `settings` now have their own separate page with better hierarchy between different options
+    - New minimum window width and height to account for the UI changes
+- Added sorting/filtering options to `trading card manager`
+- Added an animated background to foil trading cards in `trading card manager`
+- The `steam credentials` setting has moved from `settings > card farming` to `settings > general` as these credentials are now used for more than just the `card farming` feature
+- Fixed an issue causing `automatic idler` to try to idle more than 32 games when more than 32 games were in the `automatic idler` list
+  - It will now only idle the first 32 games in the list
 
 <!-- 1.16.2 -->
 
