@@ -174,14 +174,14 @@ export default function SideBar(): ReactElement {
             radius='full'
             isDisabled={activePage === 'idling' || activePage === 'freeGames' || activePage.includes('customlists')}
             className={cn(
-              'text-altwhite border hover:bg-searchhover active:scale-95 w-full mt-4 duration-150',
+              'text-altwhite hover:bg-searchhover active:scale-95 w-full mt-4 duration-150',
               sidebarCollapsed ? 'w-0 justify-center' : 'min-w-40 justify-start',
               searchContent.gameQueryValue ||
                 searchContent.tradingCardQueryValue ||
                 searchContent.achievementQueryValue ||
                 searchContent.statisticQueryValue
-                ? 'bg-success/10 hover:bg-success/20 border-success/20'
-                : 'bg-search border-searchborder',
+                ? 'bg-success/10 hover:bg-success/20'
+                : 'bg-search',
             )}
             onPress={() => setShowSearchModal(true)}
           >
