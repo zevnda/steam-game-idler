@@ -44,7 +44,7 @@ export default function RecentGamesCarousel({ gamesContext }: RecentGamesCarouse
         gamesContext.sortStyle !== 'recent' ? 'h-full opacity-100 mb-6 mt-4' : 'h-0 opacity-0',
       )}
     >
-      <div className='flex items-center justify-between mb-4'>
+      <div className='flex items-center justify-between mb-3'>
         <div className='flex items-baseline gap-2'>
           <p className='font-black'>Recently Played</p>
           <p
