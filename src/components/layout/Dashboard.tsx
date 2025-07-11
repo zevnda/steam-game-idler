@@ -2,6 +2,7 @@ import type { ActivePageType, CustomListType } from '@/types'
 import type { ReactElement } from 'react'
 
 import { useEffect } from 'react'
+import Image from 'next/image'
 
 import Achievements from '@/components/achievements/Achievements'
 import AchievementUnlocker from '@/components/automation/AchievementUnlocker'
@@ -65,11 +66,23 @@ export default function Dashboard(): ReactElement {
   return (
     <>
       <div className='flex w-full bg-base'>
+        <Image
+          src='/background.webp'
+          className='absolute top-0 left-0 w-full h-full object-cover pointer-events-none'
+          alt='background'
+          width={1920}
+          height={1080}
+          priority
+          style={{
+            WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 40%)',
+            zIndex: 1,
+          }}
+        />
+        <div className='absolute top-0 left-0 bg-base/80 w-full h-screen backdrop-blur-lg pointer-events-none z-[2]' />
+
         <SideBar />
-        <div>
-          <Header />
-          {renderContent()}
-        </div>
+        <Header />
+        <div className='z-[4]'>{renderContent()}</div>
       </div>
       {isCardFarming && <CardFarming activePage={activePage} />}
       {isAchievementUnlocker && <AchievementUnlocker activePage={activePage} />}

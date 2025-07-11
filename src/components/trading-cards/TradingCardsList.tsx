@@ -245,7 +245,7 @@ export default function TradingCardsList(): ReactElement {
     <div
       key={tradingCardContext.refreshKey}
       className={cn(
-        'min-h-calc max-h-calc bg-base overflow-y-auto overflow-x-hidden mt-9 ease-in-out',
+        'min-h-calc max-h-calc overflow-y-auto overflow-x-hidden mt-9 ease-in-out',
         sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]',
       )}
       style={{

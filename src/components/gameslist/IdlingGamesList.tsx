@@ -43,14 +43,13 @@ export default function IdlingGamesList(): ReactElement {
   return (
     <div
       className={cn(
-        'min-h-calc max-h-calc bg-base overflow-y-auto overflow-x-hidden mt-9 duration-500 ease-in-out',
+        'min-h-calc max-h-calc overflow-y-auto overflow-x-hidden mt-9 duration-500 ease-in-out',
         sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]',
       )}
     >
       <div
         className={cn(
-          'w-[calc(100vw-236px)] z-[50] bg-opacity-90',
-          'backdrop-blur-md bg-base pl-4 pt-2 rounded-tl-xl',
+          'w-[calc(100vw-236px)] z-[50] pl-4 pt-2 rounded-tl-xl',
           idleGamesList?.length >= 21 ? 'pr-4' : 'pr-2',
         )}
       >

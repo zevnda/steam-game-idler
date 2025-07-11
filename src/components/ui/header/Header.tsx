@@ -35,7 +35,7 @@ export default function Header(): ReactElement {
           <div
             className={cn(
               'flex justify-center items-center p-2 cursor-pointer group',
-              'text-content hover:bg-sidebar/80 hover:text-content/80 h-9 w-12',
+              'text-content hover:bg-sidebar/40 hover:text-content/80 h-9 w-12',
               'rounded-br-xl',
             )}
             style={{

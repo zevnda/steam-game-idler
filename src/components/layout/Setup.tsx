@@ -36,9 +36,10 @@ export default function Setup(): ReactElement {
       <Header />
       <div className='relative w-full bg-base overflow-hidden'>
         <motion.div
-          className='absolute top-0 left-0 w-[110%] h-full'
+          className='absolute top-0 left-0 w-[135%] h-[135%]'
           animate={{
-            x: [0, -40, 0],
+            x: [0, -50, 0],
+            y: [0, -30, 0],
           }}
           transition={{
             duration: 20,
@@ -56,7 +57,7 @@ export default function Setup(): ReactElement {
             priority
           />
         </motion.div>
-        <div className='absolute bg-base/30 backdrop-blur-[8px] w-full h-screen' />
+        <div className='absolute bg-base/50 backdrop-blur-lg w-full h-screen' />
 
         <div className='relative flex justify-center items-center flex-col gap-8 w-full h-screen px-4'>
           <motion.div

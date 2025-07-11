@@ -109,6 +109,7 @@ export async function stopIdle(appId: number | undefined, appName: string | unde
 
 // Start farming idle
 export async function startFarmIdle(gamesSet: Set<GameForFarming>): Promise<boolean> {
+  return true
   try {
     // Make sure Steam client is running
     const isSteamRunning = checkSteamStatus(true)

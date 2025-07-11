@@ -125,7 +125,7 @@
   "settings.cardFarming.alert": "To use the Card Farming feature, please add your Steam Credentials in Settings → General → Steam Credentials",
   "settings.cardFarming.listGames": "Farm Games In List",
   "settings.cardFarming.listGames.description": "Only farm games that are in your Card Farming list",
-  "settings.cardFarming.allGames": "Farm Entire Library",
+  "settings.cardFarming.allGames": "Farm All Games",
   "settings.cardFarming.allGames.description": "Farm cards for all games in your library that have card drops remaining",
   "settings.cardFarming.steamCredentialsTitle": "Steam Credentials",
   "settings.cardFarming.steamCredentials": "Steam credentials are required in order to use the Card Farming feature. <1>Learn more</1>",

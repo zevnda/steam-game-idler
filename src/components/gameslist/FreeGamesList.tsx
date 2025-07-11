@@ -16,7 +16,7 @@ export default function FreeGamesList(): ReactElement {
   return (
     <div
       className={cn(
-        'min-h-calc max-h-calc bg-base overflow-y-auto overflow-x-hidden mt-9 ease-in-out',
+        'min-h-calc max-h-calc overflow-y-auto overflow-x-hidden mt-9 ease-in-out',
         sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]',
       )}
       style={{
@@ -24,7 +24,7 @@ export default function FreeGamesList(): ReactElement {
         transitionProperty: 'width',
       }}
     >
-      <div className={cn('w-[calc(100vw-227px)] z-[50] bg-base pl-4 pt-2')}>
+      <div className={cn('w-[calc(100vw-227px)] z-[50] pl-4 pt-2')}>
         <div className='flex justify-between items-center pb-3'>
           <div className='flex items-center gap-1 select-none'>
             <div className='flex flex-col justify-center'>

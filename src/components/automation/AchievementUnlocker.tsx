@@ -25,6 +25,7 @@ export default function AchievementUnlocker({ activePage }: { activePage: Active
   const [achievementCount, setAchievementCount] = useState(0)
   const [countdownTimer, setCountdownTimer] = useState('00:00:10')
   const [isWaitingForSchedule, setIsWaitingForSchedule] = useState(false)
+  const [imageError, setImageError] = useState(false)
   const { startCardFarming } = useAutomate()
 
   useEffect(() => {
@@ -52,13 +53,14 @@ export default function AchievementUnlocker({ activePage }: { activePage: Active
   }, [])
 
   const handleImageError = (event: SyntheticEvent<HTMLImageElement, Event>): void => {
+    setImageError(true)
     ;(event.target as HTMLImageElement).src = '/background.webp'
   }
 
   return (
     <div
       className={cn(
-        'absolute top-0 bg-base h-screen ease-in-out',
+        'absolute top-0 bg-base h-screen ease-in-out z-[4]',
         activePage !== 'customlists/achievement-unlocker' && 'hidden',
         sidebarCollapsed ? 'w-[calc(100vw-56px)] left-[56px]' : 'w-[calc(100vw-250px)] left-[250px]',
       )}
@@ -84,7 +86,7 @@ export default function AchievementUnlocker({ activePage }: { activePage: Active
             WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 40%)',
           }}
         />
-        <div className='absolute top-0 left-0 bg-base/50 w-full h-screen backdrop-blur-sm' />
+        <div className={cn('absolute top-0 left-0 w-full h-screen bg-base/50 backdrop-blur-lg')} />
 
         <div className={cn('flex items-center flex-col gap-16 z-10 bg-base/60 p-8 rounded-lg w-full')}>
           <p className='text-3xl font-semibold'>{t('common.achievementUnlocker')}</p>

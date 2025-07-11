@@ -38,9 +38,7 @@ export default function PageHeader({
   ]
 
   return (
-    <div
-      className={cn('w-[calc(100vw-227px)] z-[50] bg-base pl-4 pt-2', filteredGames?.length >= 21 ? 'pr-4' : 'pr-2')}
-    >
+    <div className={cn('relative w-[calc(100vw-227px)] pl-4 pt-2', filteredGames?.length >= 21 ? 'pr-4' : 'pr-2')}>
       <div className='flex justify-between items-center pb-3'>
         <div className='flex items-center gap-1 select-none'>
           <div className='flex flex-col justify-center'>

@@ -1,5 +1,5 @@
 import type { Achievement, CurrentTabType, Statistic } from '@/types'
-import type { ReactElement, SyntheticEvent } from 'react'
+import type { ReactElement } from 'react'
 
 import { cn, Tab, Tabs } from '@heroui/react'
 import { useState } from 'react'
@@ -23,6 +23,7 @@ export default function Achievements(): ReactElement {
   const [statistics, setStatistics] = useState<Statistic[]>([])
   const [protectedAchievements, setProtectedAchievements] = useState(false)
   const [protectedStatistics, setProtectedStatistics] = useState(false)
+  const [imageLoaded, setImageLoaded] = useState(false)
   const achievementStates = useAchievements(
     setIsLoading,
     setAchievements,
@@ -39,14 +40,14 @@ export default function Achievements(): ReactElement {
     )
   }
 
-  const handleImageError = (event: SyntheticEvent<HTMLImageElement, Event>): void => {
-    ;(event.target as HTMLImageElement).src = '/background.webp'
+  const handleImageLoad = (): void => {
+    setImageLoaded(true)
   }
 
   return (
     <div
       className={cn(
-        'bg-base overflow-y-auto overflow-x-hidden mt-9 ease-in-out',
+        'overflow-y-auto overflow-x-hidden mt-9 ease-in-out',
         sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]',
       )}
       style={{
@@ -56,17 +57,17 @@ export default function Achievements(): ReactElement {
     >
       <Image
         src={`https://cdn.steamstatic.com/steam/apps/${appId}/library_hero.jpg`}
-        className='absolute top-0 left-0 w-full h-full object-cover'
+        className={cn('absolute top-0 left-0 w-full h-full object-cover', !imageLoaded && 'hidden')}
         alt='background'
         width={1920}
         height={1080}
         priority
-        onError={handleImageError}
+        onLoad={handleImageLoad}
         style={{
           WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 40%)',
         }}
       />
-      <div className='absolute top-0 left-0 bg-base/50 w-full h-screen backdrop-blur-sm' />
+      {imageLoaded && <div className='absolute top-0 left-0 w-full h-screen bg-base/50 backdrop-blur-lg' />}
 
       <div className='p-4'>
         <PageHeader protectedAchievements={protectedAchievements} protectedStatistics={protectedStatistics} />

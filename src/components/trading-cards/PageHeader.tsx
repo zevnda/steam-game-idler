@@ -37,7 +37,7 @@ export default function PageHeader({ selectedCardsWithPrice, tradingCardContext 
     <>
       <div
         className={cn(
-          'w-[calc(100vw-227px)] z-[50] bg-base pl-4 pt-2',
+          'w-[calc(100vw-227px)] z-[50] pl-4 pt-2',
           tradingCardContext.tradingCardsList?.length >= 21 ? 'pr-4' : 'pr-2',
         )}
       >
