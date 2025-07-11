@@ -20,6 +20,8 @@ interface GamesListHook {
   scrollContainerRef: RefObject<HTMLDivElement>
   isLoading: boolean
   gamesList: Game[]
+  recentGames: Game[]
+  unplayedGames: Game[]
   filteredGames: Game[]
   visibleGames: Game[]
   sortStyle: string
@@ -35,6 +37,7 @@ export default function useGamesList(): GamesListHook {
   const scrollContainerRef = useRef<HTMLDivElement>(null) as RefObject<HTMLDivElement>
   const [isLoading, setIsLoading] = useState(true)
   const [recentGames, setRecentGames] = useState<Game[] | null>(null)
+  const [unplayedGames, setUnplayedGames] = useState<Game[]>([])
   const [sortStyle, setSortStyle] = useState<SortStyleValue>(
     (localStorage.getItem('sortStyle') as SortStyleValue) || '1-0',
   )
@@ -61,6 +64,11 @@ export default function useGamesList(): GamesListHook {
         )
         setGamesList(gamesList)
         setRecentGames(recentGamesList)
+
+        // Get random unplayed games
+        const unplayed = gamesList.filter(game => (game.playtime_forever ?? 0) === 0)
+        const randomUnplayed = getRandomGames(unplayed, 10)
+        setUnplayedGames(randomUnplayed)
 
         // Initialize with first page of games
         setVisibleGames(gamesList.slice(0, gamesPerPage))
@@ -130,6 +138,8 @@ export default function useGamesList(): GamesListHook {
     scrollContainerRef,
     isLoading,
     gamesList,
+    recentGames: recentGames || [],
+    unplayedGames,
     filteredGames,
     visibleGames,
     sortStyle,
@@ -223,4 +233,10 @@ export const sortAndFilterGames = (
     )
   }
   return sortedAndFilteredGames
+}
+
+// Helper function to get random games from an array
+const getRandomGames = (games: Game[], count: number): Game[] => {
+  const shuffled = [...games].sort(() => 0.5 - Math.random())
+  return shuffled.slice(0, count)
 }

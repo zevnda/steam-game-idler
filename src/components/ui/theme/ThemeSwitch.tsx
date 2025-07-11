@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react'
 
-import { Select, SelectItem } from '@heroui/react'
+import { cn, Select, SelectItem } from '@heroui/react'
 import { useEffect, useState } from 'react'
 import { useTheme } from 'next-themes'
 import { TbBrush } from 'react-icons/tb'
@@ -18,7 +18,6 @@ export default function ThemeSwitch(): ReactElement | null {
     { key: 'light', label: 'Light' },
     { key: 'dark', label: 'Dark' },
     { key: 'slate', label: 'Slate' },
-    { key: 'oled', label: 'OLED' },
   ]
 
   useEffect(() => {
@@ -36,20 +35,17 @@ export default function ThemeSwitch(): ReactElement | null {
 
   return (
     <Select
-      size='sm'
       aria-label='theme'
       disallowEmptySelection
       radius='none'
       startContent={<TbBrush />}
       items={themes}
+      className='w-[250px]'
       classNames={{
         listbox: ['p-0'],
         value: ['text-sm !text-content'],
-        trigger: [
-          'bg-input border border-border duration-100 rounded-lg',
-          'data-[hover=true]:!bg-inputhover data-[open=true]:!bg-inputhover',
-        ],
-        popoverContent: ['bg-titlebar border border-border rounded-lg justify-start !text-content'],
+        trigger: cn('bg-input data-[hover=true]:!bg-inputhover', 'data-[open=true]:!bg-input duration-100 rounded-lg'),
+        popoverContent: ['bg-input rounded-xl justify-start !text-content'],
       }}
       defaultSelectedKeys={[resolvedTheme ?? 'dark']}
       onSelectionChange={e => {
@@ -61,7 +57,7 @@ export default function ThemeSwitch(): ReactElement | null {
       {theme => (
         <SelectItem
           classNames={{
-            base: ['data-[hover=true]:!bg-titlehover data-[hover=true]:!text-content'],
+            base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
           }}
         >
           {theme.label}

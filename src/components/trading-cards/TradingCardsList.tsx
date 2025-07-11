@@ -22,7 +22,7 @@ import useTradingCardsList from '@/hooks/trading-cards/useTradingCardsList'
 interface RowData {
   tradingCardContext: ReturnType<typeof useTradingCardsList> & { filteredTradingCardsList: TradingCard[] }
   styles: CSSProperties
-  t: (key: string) => string
+  t: (key: string, options?: Record<string, number>) => string
   lockedCards: string[]
   handleLockCard: (id: string) => void
 }
@@ -54,7 +54,7 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
       <div
         key={item.assetid}
         className={cn(
-          'flex flex-col justify-start items-center bg-titlebar mb-4 rounded-lg border border-border p-2',
+          'flex flex-col justify-start items-center bg-sidebar mb-4 rounded-lg border border-border p-2',
           lockedCards.includes(item.id) && 'opacity-50',
         )}
       >
@@ -78,7 +78,7 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
           <div className='flex items-center gap-1'>
             <CustomTooltip content={t('tradingCards.lockCard')} placement='top'>
               <div
-                className='hover:bg-titlehover rounded-full p-1 cursor-pointer duration-200'
+                className='hover:bg-item-hover rounded-full p-1 cursor-pointer duration-200'
                 onClick={() => handleLockCard(item.id)}
               >
                 {isLocked ? <TbLock fontSize={14} className='text-yellow-500' /> : <TbLockOpen fontSize={14} />}
@@ -88,7 +88,7 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
             <CustomTooltip content={t('tradingCards.cardExchange')} placement='top'>
               <div>
                 <ExtLink href={`https://www.steamcardexchange.net/index.php?gamepage-appid-${item.appid}`}>
-                  <div className='hover:bg-titlehover rounded-full p-1.5 cursor-pointer duration-200'>
+                  <div className='hover:bg-item-hover rounded-full p-1.5 cursor-pointer duration-200'>
                     <SiExpertsexchange fontSize={10} />
                   </div>
                 </ExtLink>
@@ -129,7 +129,11 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
           <p className='text-xs truncate max-w-[140px]'>{item.full_name.replace('(Trading Card)', '') || 'Unknown'}</p>
 
           <CustomTooltip
-            content={item.badge_level > 0 ? 'Badge Level: ' + item.badge_level : 'No Badge'}
+            content={
+              item.badge_level > 0
+                ? t('tradingCards.badgeLevel', { level: item.badge_level })
+                : t('tradingCards.noBadge')
+            }
             placement='top'
             important
           >
@@ -156,7 +160,7 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
   }
 
   return (
-    <div style={style} className='grid grid-cols-6 gap-4 px-4 mt-[72px]'>
+    <div style={style} className='grid grid-cols-6 gap-4 px-4 pt-2'>
       {renderCard(item1)}
       {renderCard(item2)}
       {renderCard(item3)}
@@ -172,7 +176,7 @@ Row.displayName = 'Row'
 export default function TradingCardsList(): ReactElement {
   const { t } = useTranslation()
   const { tradingCardQueryValue } = useSearchContext()
-  const { isDarkMode } = useStateContext()
+  const { isDarkMode, sidebarCollapsed, transitionDuration } = useStateContext()
   const [styles, setStyles] = useState({})
   const [windowInnerHeight, setWindowInnerHeight] = useState(0)
   const [lockedCards, setLockedCards] = useState<string[]>([])
@@ -239,20 +243,24 @@ export default function TradingCardsList(): ReactElement {
 
   return (
     <div
-      className={cn(
-        'w-calc min-h-calc max-h-calc bg-base overflow-y-auto',
-        'overflow-x-hidden rounded-tl-xl border-t border-l border-border',
-      )}
       key={tradingCardContext.refreshKey}
+      className={cn(
+        'min-h-calc max-h-calc overflow-y-auto overflow-x-hidden mt-9 ease-in-out',
+        sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]',
+      )}
+      style={{
+        transitionDuration,
+        transitionProperty: 'width',
+      }}
     >
       <PageHeader selectedCardsWithPrice={selectedCardsWithPrice} tradingCardContext={tradingCardContext} />
 
       {!tradingCardContext.isLoading ? (
         <div className='flex flex-col'>
           <List
-            height={windowInnerHeight - 41}
+            height={windowInnerHeight - 168}
             itemCount={Math.ceil(filteredTradingCardsList.length / 6)}
-            itemSize={309}
+            itemSize={319}
             width='100%'
             itemData={itemData}
           >
@@ -260,7 +268,7 @@ export default function TradingCardsList(): ReactElement {
           </List>
         </div>
       ) : (
-        <div className='flex justify-center items-center w-calc h-[calc(100vh-57px)]'>
+        <div className='flex justify-center items-center w-calc h-[calc(100vh-168px)]'>
           <Spinner variant='simple' />
         </div>
       )}

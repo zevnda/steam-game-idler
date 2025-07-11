@@ -61,7 +61,7 @@ ${errorInfo && errorInfo.componentStack}
           <div
             className={cn(
               'absolute top-0 left-0 w-full h-12 select-none',
-              'flex justify-center items-center bg-titlebar',
+              'flex justify-center items-center bg-sidebar',
             )}
             data-tauri-drag-region
           >

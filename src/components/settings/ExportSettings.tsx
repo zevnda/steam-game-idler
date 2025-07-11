@@ -8,7 +8,6 @@ import { useTranslation } from 'react-i18next'
 import { TbArrowBarUp } from 'react-icons/tb'
 
 import { useUserContext } from '@/components/contexts/UserContext'
-import CustomTooltip from '@/components/ui/CustomTooltip'
 import { getAppVersion } from '@/utils/tasks'
 import { showDangerToast, showSuccessToast } from '@/utils/toasts'
 
@@ -148,14 +147,14 @@ export default function ExportSettings(): ReactElement {
   }
 
   return (
-    <CustomTooltip content={t('settings.exportData')}>
-      <Button
-        isIconOnly
-        size='sm'
-        className='font-semibold rounded-lg bg-dynamic text-button-text'
-        onPress={exportSettings}
-        startContent={<TbArrowBarUp size={20} />}
-      />
-    </CustomTooltip>
+    <Button
+      size='sm'
+      className='bg-btn-secondary text-btn-text font-bold'
+      radius='full'
+      onPress={exportSettings}
+      startContent={<TbArrowBarUp size={20} />}
+    >
+      {t('settings.exportData')}
+    </Button>
   )
 }

@@ -216,7 +216,7 @@ export const fetchGamesWithDropsData = async (
   }
 }
 
-export const handleSave = async (
+export const handleCredentialsSave = async (
   sidValue: string,
   slsValue: string,
   smaValue: string | undefined,
@@ -284,7 +284,7 @@ export const handleSave = async (
   }
 }
 
-export const handleClear = async (
+export const handleCredentialsClear = async (
   setHasCookies: Dispatch<SetStateAction<boolean>>,
   setSidValue: Dispatch<SetStateAction<string>>,
   setSlsValue: Dispatch<SetStateAction<string>>,
@@ -335,8 +335,8 @@ export const handleClear = async (
     logEvent('[Settings - Card Farming] Logged out')
   } catch (error) {
     showDangerToast(t('common.error'))
-    console.error('Error in (handleClear):', error)
-    logEvent(`[Error] in (handleClear): ${error}`)
+    console.error('Error in (handleCredentialsClear):', error)
+    logEvent(`[Error] in (handleCredentialsClear): ${error}`)
   }
 }
 

@@ -32,9 +32,9 @@ export default function ManualAdd({ listName, setList }: ManualAddProps): ReactE
   return (
     <>
       <Button
-        size='sm'
         isIconOnly
-        className='rounded-full bg-dynamic text-button-text'
+        className='bg-btn-secondary text-btn-text font-bold'
+        radius='full'
         startContent={<TbPlus fontSize={18} />}
         onPress={onOpen}
       />
@@ -50,12 +50,11 @@ export default function ManualAdd({ listName, setList }: ManualAddProps): ReactE
           <>
             <Input
               autoFocus
-              size='sm'
               placeholder={t('customLists.manualAdd.gameName')}
               value={manualAdd.appNameValue || ''}
               classNames={{
                 inputWrapper: cn(
-                  'bg-input border border-border hover:!bg-inputhover rounded-lg',
+                  'bg-input data-[hover=true]:!bg-inputhover',
                   'group-data-[focus-within=true]:!bg-inputhover',
                   'group-data-[focus-visible=true]:ring-transparent',
                   'group-data-[focus-visible=true]:ring-offset-transparent',
@@ -73,7 +72,7 @@ export default function ManualAdd({ listName, setList }: ManualAddProps): ReactE
               aria-label='manual add'
               classNames={{
                 inputWrapper: cn(
-                  'bg-input border border-border hover:!bg-inputhover rounded-lg',
+                  'bg-input data-[hover=true]:!bg-inputhover',
                   'group-data-[focus-within=true]:!bg-inputhover',
                   'group-data-[focus-visible=true]:ring-transparent',
                   'group-data-[focus-visible=true]:ring-offset-transparent',
@@ -91,16 +90,18 @@ export default function ManualAdd({ listName, setList }: ManualAddProps): ReactE
               size='sm'
               color='danger'
               variant='light'
-              className='font-semibold rounded-lg'
+              radius='full'
+              className='font-semibold'
               onPress={onOpenChange}
             >
               {t('common.cancel')}
             </Button>
             <Button
               size='sm'
+              className='bg-btn-secondary text-btn-text font-bold'
+              radius='full'
               isLoading={manualAdd.isLoading}
               isDisabled={!manualAdd.appNameValue || !manualAdd.appIdValue}
-              className='font-semibold rounded-lg bg-dynamic text-button-text'
               onPress={() => manualAdd.handleAdd(onOpenChange)}
             >
               {t('common.add')}

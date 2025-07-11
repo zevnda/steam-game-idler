@@ -1,9 +1,11 @@
 import type { SidebarItem } from '@/types/navigation'
 import type { ReactElement } from 'react'
 
-import { Button, cn } from '@heroui/react'
+import { Button, cn, Divider } from '@heroui/react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FiLogOut } from 'react-icons/fi'
+import { RiSearchLine } from 'react-icons/ri'
 import {
   TbAward,
   TbBuildingStore,
@@ -18,72 +20,86 @@ import {
 
 import { useIdleContext } from '@/components/contexts/IdleContext'
 import { useNavigationContext } from '@/components/contexts/NavigationContext'
+import { useSearchContext } from '@/components/contexts/SearchContext'
 import { useStateContext } from '@/components/contexts/StateContext'
 import CustomModal from '@/components/ui/CustomModal'
-import CustomTooltip from '@/components/ui/CustomTooltip'
+import HeaderTitle from '@/components/ui/header/HeaderTitle'
+import SearchBar from '@/components/ui/SearchBar'
 import useSideBar from '@/hooks/ui/useSideBar'
 
 export default function SideBar(): ReactElement {
   const { t } = useTranslation()
+  const [showSearchModal, setShowSearchModal] = useState(false)
   const { idleGamesList } = useIdleContext()
-  const { isDarkMode, showFreeGamesTab, isCardFarming, isAchievementUnlocker } = useStateContext()
+  const {
+    sidebarCollapsed,
+    isDarkMode,
+    showFreeGamesTab,
+    isCardFarming,
+    isAchievementUnlocker,
+    setShowAchievements,
+    transitionDuration,
+  } = useStateContext()
   const { activePage, setActivePage } = useNavigationContext()
+  const searchContent = useSearchContext()
   const { isOpen, onOpenChange, openConfirmation, handleLogout } = useSideBar(activePage, setActivePage)
 
   const mainSidebarItems: SidebarItem[] = [
     {
       id: 'games',
       page: 'games',
+      title: t('gamesList.title'),
       icon: TbDeviceGamepad2,
-      tooltipKey: 'gamesList.title',
     },
     {
       id: 'idling',
       page: 'idling',
+      title: t('idlingGames.title'),
       icon: TbPlayerPlay,
-      tooltipKey: 'idlingGames.title',
       isActive: idleGamesList.length > 0,
       customClassName: idleGamesList.length > 0 ? 'text-dynamic animate-pulse' : '',
+      hasDivider: true,
     },
     {
       id: 'card-farming',
       page: 'customlists/card-farming',
+      title: t('common.cardFarming'),
       icon: TbCards,
-      tooltipKey: 'common.cardFarming',
       isActive: isCardFarming,
       customClassName: isCardFarming ? 'text-dynamic animate-pulse' : '',
     },
     {
       id: 'achievement-unlocker',
       page: 'customlists/achievement-unlocker',
+      title: t('common.achievementUnlocker'),
       icon: TbAward,
-      tooltipKey: 'common.achievementUnlocker',
       isActive: isAchievementUnlocker,
       customClassName: isAchievementUnlocker ? 'text-dynamic animate-pulse' : '',
     },
     {
       id: 'auto-idle',
       page: 'customlists/auto-idle',
+      title: t('customLists.autoIdle.title'),
       icon: TbHourglassLow,
-      tooltipKey: 'customLists.autoIdle.title',
     },
     {
       id: 'favorites',
       page: 'customlists/favorites',
+      title: t('customLists.favorites.title'),
       icon: TbHeart,
-      tooltipKey: 'customLists.favorites.title',
     },
     {
       id: 'trading-cards',
       page: 'tradingCards',
+      title: t('tradingCards.title'),
       icon: TbBuildingStore,
-      tooltipKey: 'tradingCards.title',
+      hasDivider: true,
     },
     {
       id: 'free-games',
       page: 'freeGames',
+      title: t('freeGames.title'),
       icon: TbGift,
-      tooltipKey: 'freeGames.title',
       shouldShow: showFreeGamesTab,
       customClassName: 'text-[#ffc700]',
     },
@@ -97,79 +113,191 @@ export default function SideBar(): ReactElement {
     const isFreeGames = item.id === 'free-games'
 
     return (
-      <div key={item.id} className='flex justify-center items-center w-12'>
-        <CustomTooltip content={t(item.tooltipKey)} placement='right'>
+      <div className='overflow-hidden' key={item.id}>
+        {item.hasDivider && <Divider className='w-full bg-border/60 mt-0.5 mb-2' />}
+
+        <div className='flex w-full'>
           <div
             className={cn(
-              'p-1.5 rounded-md duration-150 cursor-pointer active:scale-95 transition-all border border-transparent',
-              isFreeGames && 'relative flex justify-center items-center',
+              'p-1.5 rounded-lg duration-150 cursor-pointer active:scale-95 border border-transparent w-full overflow-hidden',
+              isCurrentPage ? 'bg-item-active text-content' : 'text-altwhite hover:bg-item-hover',
               item.customClassName,
-              isCurrentPage
-                ? isFreeGames
-                  ? 'bg-yellow-400/20 border-yellow-400/30 shadow-sm'
-                  : 'bg-dynamic/20 text-dynamic border-dynamic/30 shadow-sm'
-                : 'hover:bg-titlehover hover:border-border/50 hover:shadow-sm',
             )}
-            onClick={() => setActivePage(item.page)}
+            onClick={() => {
+              setShowAchievements(false)
+              setActivePage(item.page)
+            }}
           >
-            <Icon fontSize={22} className={isFreeGames ? 'text-[#ffc700]' : undefined} />
+            <div
+              className={cn(
+                'flex items-center gap-3 transition-all duration-500 ease-in-out',
+                sidebarCollapsed ? 'justify-center' : 'justify-start',
+              )}
+            >
+              <div className='flex-shrink-0'>
+                <Icon fontSize={20} className={isFreeGames ? 'text-[#ffc700]' : undefined} />
+              </div>
+              {!sidebarCollapsed && (
+                <div className={cn('transition-all duration-500 ease-in-out overflow-hidden whitespace-nowrap')}>
+                  <p className={cn('text-sm font-bold', isFreeGames ? 'text-[#ffc700]' : undefined)}>{item.title}</p>
+                </div>
+              )}
+            </div>
           </div>
-        </CustomTooltip>
+        </div>
       </div>
     )
   }
 
   return (
     <>
-      <div className='flex justify-between flex-col w-14 min-h-calc max-h-calc bg-titlebar'>
-        <div className='flex justify-center items-center flex-col gap-1.5 py-2'>
+      <div
+        className={cn(
+          'relative flex flex-col h-screen z-[40] bg-sidebar/40 select-none ease-in-out',
+          sidebarCollapsed ? 'min-w-14 max-w-14' : 'min-w-[250px] max-w-[250px]',
+        )}
+        style={{
+          transitionDuration,
+          transitionProperty: 'min-width, max-width',
+        }}
+      >
+        <div
+          className={cn(
+            'flex flex-col gap-1.5 p-2 w-full min-w-0 overflow-hidden',
+            sidebarCollapsed ? 'items-center' : undefined,
+          )}
+        >
+          <HeaderTitle />
+
+          <Button
+            isIconOnly={sidebarCollapsed}
+            radius='full'
+            isDisabled={activePage === 'idling' || activePage === 'freeGames' || activePage.includes('customlists')}
+            className={cn(
+              'text-altwhite hover:bg-searchhover active:scale-95 w-full mt-4 duration-150',
+              sidebarCollapsed ? 'w-0 justify-center' : 'min-w-40 justify-start',
+              searchContent.gameQueryValue ||
+                searchContent.tradingCardQueryValue ||
+                searchContent.achievementQueryValue ||
+                searchContent.statisticQueryValue
+                ? 'bg-success/10 hover:bg-success/20'
+                : 'bg-search',
+            )}
+            onPress={() => setShowSearchModal(true)}
+          >
+            <RiSearchLine
+              fontSize={20}
+              className={cn(
+                searchContent.gameQueryValue ||
+                  searchContent.tradingCardQueryValue ||
+                  searchContent.achievementQueryValue ||
+                  searchContent.statisticQueryValue
+                  ? 'text-success'
+                  : undefined,
+              )}
+            />
+            {!sidebarCollapsed && (
+              <div>
+                {searchContent.gameQueryValue ? (
+                  <p className='text-sm text-success font-bold'>{searchContent.gameQueryValue}</p>
+                ) : searchContent.tradingCardQueryValue ? (
+                  <p className='text-sm text-success font-bold'>{searchContent.tradingCardQueryValue}</p>
+                ) : searchContent.achievementQueryValue ? (
+                  <p className='text-sm text-success font-bold'>{searchContent.achievementQueryValue}</p>
+                ) : searchContent.statisticQueryValue ? (
+                  <p className='text-sm text-success font-bold'>{searchContent.statisticQueryValue}</p>
+                ) : (
+                  <p className='text-sm font-bold'>{t('common.search')}</p>
+                )}
+              </div>
+            )}
+          </Button>
+        </div>
+
+        <div className='flex flex-col gap-1.5 p-2 w-full min-w-0 overflow-hidden'>
+          <Divider className='w-full bg-border/60 my-0.5' />
           {mainSidebarItems.map(renderSidebarItem)}
         </div>
 
-        <div className='flex justify-center items-center flex-col gap-1.5 pb-2'>
-          <div className='flex justify-center items-center w-12'>
-            <CustomTooltip content={t('settings.title')} placement='right'>
+        <div className='flex flex-col flex-grow justify-end items-center gap-1.5 p-2 min-w-0 overflow-hidden'>
+          <Divider className='w-full bg-border/60 my-0.5' />
+
+          <div className='flex w-full'>
+            <div
+              className={cn(
+                'p-1.5 rounded-md duration-150 transition-all w-full overflow-hidden',
+                activePage === 'settings' ? 'bg-item-active text-content' : 'text-altwhite hover:bg-item-hover',
+                isCardFarming || isAchievementUnlocker
+                  ? 'opacity-40 hover:bg-transparent hover:shadow-none'
+                  : 'cursor-pointer active:scale-95',
+              )}
+              onClick={
+                !(isCardFarming || isAchievementUnlocker)
+                  ? () => {
+                      setShowAchievements(false)
+                      setActivePage('settings')
+                    }
+                  : undefined
+              }
+            >
               <div
                 className={cn(
-                  'p-1.5 rounded-md duration-150 border border-transparent transition-all',
-                  activePage === 'settings'
-                    ? 'bg-dynamic/20 text-dynamic border-dynamic/30 shadow-sm'
-                    : 'hover:bg-titlehover hover:border-border/50 hover:shadow-sm',
-                  isCardFarming || isAchievementUnlocker
-                    ? 'opacity-40 hover:bg-transparent hover:border-transparent hover:shadow-none'
-                    : 'cursor-pointer active:scale-95',
+                  'flex items-center transition-all duration-500 ease-in-out',
+                  sidebarCollapsed ? 'justify-center' : 'gap-3',
                 )}
-                onClick={!(isCardFarming || isAchievementUnlocker) ? () => setActivePage('settings') : undefined}
               >
-                <TbSettings fontSize={22} />
+                <div className='flex-shrink-0'>
+                  <TbSettings fontSize={20} />
+                </div>
+                {!sidebarCollapsed && (
+                  <div className={cn('transition-all  ease-in-out overflow-hidden whitespace-nowrap')}>
+                    <p className='text-sm font-bold'>{t('settings.title')}</p>
+                  </div>
+                )}
               </div>
-            </CustomTooltip>
+            </div>
           </div>
 
-          <div className='flex justify-center items-center w-12'>
-            <CustomTooltip content={t('common.signOut')} placement='right'>
+          <div className='flex w-full'>
+            <div
+              className={cn(
+                'p-1.5 rounded-md duration-150 transition-all group w-full overflow-hidden',
+                isCardFarming || isAchievementUnlocker
+                  ? 'opacity-40'
+                  : 'hover:bg-danger/20 cursor-pointer active:scale-95 hover:shadow-sm',
+              )}
+              onClick={!(isCardFarming || isAchievementUnlocker) ? openConfirmation : undefined}
+            >
               <div
                 className={cn(
-                  'p-1.5 rounded-md duration-150 border border-transparent transition-all group',
-                  isCardFarming || isAchievementUnlocker
-                    ? 'opacity-40'
-                    : 'hover:bg-danger/20 hover:border-danger/30 cursor-pointer active:scale-95 hover:shadow-sm',
+                  'flex items-center min-h-5 transition-all duration-500',
+                  sidebarCollapsed ? 'justify-center' : 'gap-3',
                 )}
-                onClick={!(isCardFarming || isAchievementUnlocker) ? openConfirmation : undefined}
               >
-                <FiLogOut
-                  className={cn(
-                    'rotate-180 duration-150',
-                    !isDarkMode && 'group-hover:text-danger',
-                    isCardFarming || isAchievementUnlocker ? '' : 'group-hover:text-danger',
-                  )}
-                  fontSize={20}
-                />
+                <div className='flex-shrink-0'>
+                  <FiLogOut
+                    className={cn(
+                      'rotate-180 transition-all duration-150 text-altwhite',
+                      !isDarkMode && 'group-hover:text-danger',
+                      isCardFarming || isAchievementUnlocker ? '' : 'group-hover:text-danger',
+                    )}
+                    fontSize={18}
+                  />
+                </div>
+                {!sidebarCollapsed && (
+                  <div className={cn('transition-all duration-150 overflow-hidden whitespace-nowrap')}>
+                    <p className='text-sm text-altwhite font-bold group-hover:text-danger transition-all duration-150'>
+                      {t('common.signOut')}
+                    </p>
+                  </div>
+                )}
               </div>
-            </CustomTooltip>
+            </div>
           </div>
         </div>
       </div>
+
+      <SearchBar isModalOpen={showSearchModal} onModalClose={() => setShowSearchModal(false)} />
 
       <CustomModal
         isOpen={isOpen}
@@ -182,15 +310,20 @@ export default function SideBar(): ReactElement {
               size='sm'
               color='danger'
               variant='light'
-              className='font-semibold rounded-lg'
+              radius='full'
+              className='font-semibold'
               onPress={onOpenChange}
             >
               {t('common.cancel')}
             </Button>
             <Button
               size='sm'
-              className='font-semibold rounded-lg bg-dynamic text-button-text'
-              onPress={() => handleLogout(onOpenChange)}
+              className='bg-btn-secondary text-btn-text font-bold'
+              radius='full'
+              onPress={() => {
+                setShowAchievements(false)
+                handleLogout(onOpenChange)
+              }}
             >
               {t('common.confirm')}
             </Button>

@@ -14,25 +14,16 @@ import { handleCancel, useCardFarming } from '@/hooks/automation/useCardFarming'
 
 export default function CardFarming({ activePage }: { activePage: ActivePageType }): ReactElement {
   const { t } = useTranslation()
-  const { isDarkMode, setIsCardFarming } = useStateContext()
+  const { sidebarCollapsed, transitionDuration, setIsCardFarming } = useStateContext()
 
   const isMountedRef = useRef(true)
   const abortControllerRef = useRef(new AbortController())
 
-  const [imageSrc, setImageSrc] = useState('')
   const [isComplete, setIsComplete] = useState(false)
   const [totalDropsRemaining, setTotalDropsRemaining] = useState(0)
   const [gamesWithDrops, setGamesWithDrops] = useState<Set<GameWithDrops>>(new Set())
   const [disableStopButton, setDisableStopButton] = useState(true)
   const { startAchievementUnlocker } = useAutomate()
-
-  useEffect(() => {
-    setImageSrc(
-      isDarkMode
-        ? 'https://raw.githubusercontent.com/zevnda/steam-game-idler/refs/heads/main/public/dbg.webp'
-        : 'https://raw.githubusercontent.com/zevnda/steam-game-idler/refs/heads/main/public/lbg.webp',
-    )
-  }, [isDarkMode])
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -89,7 +80,7 @@ export default function CardFarming({ activePage }: { activePage: ActivePageType
         )}
 
         <div className='p-2 border border-border rounded-lg'>
-          <div className='grid grid-cols-2 gap-2 max-h-[170px] p-2 overflow-y-auto'>
+          <div className='grid grid-cols-2 gap-2 max-h-[250px] p-2 overflow-y-auto'>
             {[...Array.from(gamesWithDrops)].map(item => (
               <div key={item.appid} className='flex gap-1 border border-border rounded-lg p-1'>
                 <Image
@@ -127,39 +118,39 @@ export default function CardFarming({ activePage }: { activePage: ActivePageType
   return (
     <div
       className={cn(
-        'absolute top-10 left-14 bg-base z-50 rounded-tl-xl',
-        'border-t border-l border-border',
+        'absolute top-0 bg-base h-screen ease-in-out z-[4]',
         activePage !== 'customlists/card-farming' && 'hidden',
+        sidebarCollapsed ? 'w-[calc(100vw-56px)] left-[56px]' : 'w-[calc(100vw-250px)] left-[250px]',
       )}
+      style={{
+        transitionDuration,
+        transitionProperty: 'width, left',
+      }}
     >
-      <div className='relative flex justify-evenly items-center flex-col p-4 w-calc h-calc'>
-        {imageSrc && (
-          <Image
-            src={imageSrc}
-            className='absolute top-0 left-0 w-full h-full object-cover rounded-tl-xl'
-            alt='background'
-            width={1920}
-            height={1080}
-            priority
-          />
-        )}
-        <div className='absolute bg-base/10 backdrop-blur-[10px] w-full h-full rounded-tl-xl' />
+      <div className='relative flex justify-evenly items-center flex-col p-14 h-calc'>
+        <Image
+          src='/background.webp'
+          className='absolute top-0 left-0 w-full h-full object-cover'
+          alt='background'
+          width={1920}
+          height={1080}
+          priority
+          style={{
+            WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 40%)',
+          }}
+        />
+        <div className='absolute top-0 left-0 bg-base/80 w-full h-screen backdrop-blur-lg' />
 
-        <div
-          className={cn(
-            'flex items-center flex-col gap-6 z-10 backdrop-blur-md',
-            'bg-base/20 p-8 border border-border/40 rounded-lg',
-          )}
-        >
+        <div className={cn('flex items-center flex-col gap-6 z-10 bg-base/60 p-8 rounded-lg w-full')}>
           <p className='text-3xl font-semibold'>{t('common.cardFarming')}</p>
 
           {renderContent()}
 
           <Button
-            size='sm'
-            isDisabled={!isComplete && disableStopButton}
             color='danger'
-            className='min-h-[30px] font-semibold rounded-lg'
+            radius='full'
+            className='font-bold w-56'
+            isDisabled={!isComplete && disableStopButton}
             onPress={() => {
               handleCancel(gamesWithDrops, isMountedRef, abortControllerRef)
               setIsCardFarming(false)

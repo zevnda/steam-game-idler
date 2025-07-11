@@ -72,7 +72,7 @@ export default function ChangelogModal(): ReactElement {
               {t('changelog.release')}
             </p>
           </ExtLink>
-          <Button size='sm' className='font-semibold rounded-lg bg-dynamic text-button-text' onPress={onOpenChange}>
+          <Button size='sm' className='bg-btn-secondary text-btn-text font-bold' radius='full' onPress={onOpenChange}>
             {t('common.continue')}
           </Button>
         </div>

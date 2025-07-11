@@ -4,7 +4,7 @@ import { invoke } from '@tauri-apps/api/core'
 import { relaunch } from '@tauri-apps/plugin-process'
 import { check } from '@tauri-apps/plugin-updater'
 
-import { Divider, Spinner } from '@heroui/react'
+import { Spinner } from '@heroui/react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TbCircleArrowDown } from 'react-icons/tb'
@@ -38,7 +38,7 @@ export default function UpdateButton(): ReactElement {
   }
 
   return (
-    <>
+    <div>
       {isLoading ? (
         <div className='flex items-center p-2 rounded-full'>
           <Spinner size='sm' variant='simple' />
@@ -46,13 +46,12 @@ export default function UpdateButton(): ReactElement {
       ) : (
         <CustomTooltip content='Update Ready!'>
           <div className='flex justify-center items-center cursor-pointer' onClick={handleUpdate}>
-            <div className='flex items-center p-2 hover:bg-titlehover rounded-full'>
-              <TbCircleArrowDown fontSize={20} className='text-success' />
+            <div className='flex items-center px-1 py-1.5 text-success hover:text-success/80 duration-150'>
+              <TbCircleArrowDown fontSize={20} />
             </div>
           </div>
         </CustomTooltip>
       )}
-      <Divider className='w-[1px] h-6 bg-border' />
-    </>
+    </div>
   )
 }

@@ -3,16 +3,19 @@ import type { ReactElement } from 'react'
 
 import { invoke } from '@tauri-apps/api/core'
 
-import { cn, NumberInput } from '@heroui/react'
+import { Alert, cn, Divider, NumberInput } from '@heroui/react'
 import { useEffect, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
+import { TbChevronRight } from 'react-icons/tb'
 
 import { useUserContext } from '@/components/contexts/UserContext'
 import Beta from '@/components/ui/Beta'
+import { useCardSettings } from '@/hooks/settings/useCardSettings'
 
 export default function TradingCardManagerSettings(): ReactElement {
   const { t } = useTranslation()
   const { userSummary, userSettings, setUserSettings } = useUserContext()
+  const cardSettings = useCardSettings()
   const [priceAdjustment, setPriceAdjustment] = useState<number>(0.0)
   const [sellLimitMin, setSellLimitMin] = useState<number>(0.01)
   const [sellLimitMax, setSellLimitMax] = useState<number>(1.1)
@@ -63,19 +66,41 @@ export default function TradingCardManagerSettings(): ReactElement {
   }
 
   return (
-    <div className='relative flex flex-col gap-4'>
-      <div className='flex flex-col gap-4 border border-border rounded-lg p-3 bg-titlebar'>
-        <p className='font-bold'>{t('common.options')}</p>
+    <div className='relative flex flex-col gap-4 mt-9 pb-16 w-4/5'>
+      <div className='flex flex-col gap-0 select-none'>
+        <p className='flex items-center text-xs text-altwhite font-bold'>
+          {t('settings.title')}
+          <span>
+            <TbChevronRight size={12} />
+          </span>
+        </p>
+        <p className='text-3xl font-black'>{t('tradingCards.title')}</p>
 
-        <div className='flex flex-col gap-2 w-full'>
-          <div className='flex flex-col'>
-            <p className='text-sm'>
-              {t('tradingCards.priceAdjustment')}
-              <Beta className='ml-1' />
+        {!cardSettings.cardFarmingUser && (
+          <div className='mt-4'>
+            <Alert
+              color='primary'
+              variant='faded'
+              classNames={{
+                base: '!bg-dynamic/30 text-dynamic !border-dynamic/40',
+                iconWrapper: '!bg-dynamic/30 border-dynamic/40',
+                description: 'font-bold text-xs',
+              }}
+              description={t('settings.tradingCards.alert')}
+            />
+          </div>
+        )}
+      </div>
+
+      <div className='flex flex-col gap-3 mt-4'>
+        <div className='flex justify-between items-center'>
+          <div className='flex flex-col gap-2 w-1/2'>
+            <p className='text-sm text-content font-bold'>
+              {t('settings.tradingCards.priceAdjustment')} <Beta />
             </p>
             <p className='text-xs text-altwhite'>
               <Trans
-                i18nKey='tradingCards.priceAdjustmentSub'
+                i18nKey='settings.tradingCards.priceAdjustmentSub'
                 values={{ priceAdjustment }}
                 components={{ 1: <strong /> }}
               />
@@ -94,7 +119,7 @@ export default function TradingCardManagerSettings(): ReactElement {
             className='w-[90px]'
             classNames={{
               inputWrapper: cn(
-                'bg-input border border-border hover:!bg-inputhover rounded-lg',
+                'bg-input data-[hover=true]:!bg-inputhover border-none',
                 'group-data-[focus-visible=true]:ring-transparent',
                 'group-data-[focus-visible=true]:ring-offset-transparent',
                 'group-data-[focus-within=true]:!bg-inputhover',
@@ -108,21 +133,22 @@ export default function TradingCardManagerSettings(): ReactElement {
           />
         </div>
 
-        <div className='flex flex-col gap-2 w-full'>
-          <div className='flex flex-col'>
-            <p className='text-sm'>
-              {t('tradingCards.sellLimit')}
-              <Beta className='ml-1' />
+        <Divider className='bg-border/70 my-4' />
+
+        <div className='flex justify-between items-center'>
+          <div className='flex flex-col gap-2 w-1/2'>
+            <p className='text-sm text-content font-bold'>
+              {t('settings.tradingCards.sellLimit')} <Beta />
             </p>
             <p className='text-xs text-altwhite'>
               <Trans
-                i18nKey='tradingCards.sellLimitSub'
+                i18nKey='settings.tradingCards.sellLimitSub'
                 values={{ sellLimitMin, sellLimitMax }}
                 components={{ 1: <strong />, 3: <strong /> }}
               />
             </p>
           </div>
-          <div className='flex items-center gap-2'>
+          <div className='flex items-center gap-4'>
             <NumberInput
               size='sm'
               value={sellLimitMin}
@@ -137,7 +163,7 @@ export default function TradingCardManagerSettings(): ReactElement {
               className='w-[90px]'
               classNames={{
                 inputWrapper: cn(
-                  'bg-input border border-border hover:!bg-inputhover rounded-lg',
+                  'bg-input data-[hover=true]:!bg-inputhover border-none',
                   'group-data-[focus-visible=true]:ring-transparent',
                   'group-data-[focus-visible=true]:ring-offset-transparent',
                   'group-data-[focus-within=true]:!bg-inputhover',
@@ -162,7 +188,7 @@ export default function TradingCardManagerSettings(): ReactElement {
               className='w-[90px]'
               classNames={{
                 inputWrapper: cn(
-                  'bg-input border border-border hover:!bg-inputhover rounded-lg',
+                  'bg-input data-[hover=true]:!bg-inputhover border-none',
                   'group-data-[focus-visible=true]:ring-transparent',
                   'group-data-[focus-visible=true]:ring-offset-transparent',
                   'group-data-[focus-within=true]:!bg-inputhover',

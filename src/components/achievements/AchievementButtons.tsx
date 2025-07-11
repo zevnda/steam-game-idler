@@ -71,11 +71,11 @@ export default function AchievementButtons({
   }
 
   return (
-    <div className='absolute top-0 right-0 flex gap-2 mr-8 mt-1'>
+    <div className='absolute top-0 right-0 flex gap-2 mt-4 px-10'>
       <Button
+        className='bg-btn-secondary text-btn-text font-bold'
+        radius='full'
         isDisabled={protectedAchievements || unAchieved.length === 0}
-        size='sm'
-        className='font-semibold rounded-lg bg-dynamic text-button-text'
         onPress={() => handleShowModal(onOpen, 'unlock')}
         startContent={<TbLockOpen size={20} />}
       >
@@ -83,10 +83,10 @@ export default function AchievementButtons({
       </Button>
 
       <Button
-        isDisabled={protectedAchievements || achieved.length === 0}
-        size='sm'
+        className='font-bold'
+        radius='full'
         color='danger'
-        className='font-semibold rounded-lg'
+        isDisabled={protectedAchievements || achieved.length === 0}
         onPress={() => handleShowModal(onOpen, 'lock')}
         startContent={<TbLock size={20} />}
       >
@@ -94,7 +94,6 @@ export default function AchievementButtons({
       </Button>
 
       <Select
-        size='sm'
         aria-label='sort'
         disallowEmptySelection
         radius='none'
@@ -105,10 +104,10 @@ export default function AchievementButtons({
           listbox: ['p-0'],
           value: ['text-sm !text-content'],
           trigger: cn(
-            'bg-titlebar border border-border data-[hover=true]:!bg-input',
+            'bg-input data-[hover=true]:!bg-inputhover',
             'data-[open=true]:!bg-input duration-100 rounded-lg',
           ),
-          popoverContent: ['bg-titlebar border border-border rounded-lg justify-start !text-content'],
+          popoverContent: ['bg-input rounded-xl justify-start !text-content'],
         }}
         defaultSelectedKeys={['percent']}
         onSelectionChange={e => {
@@ -118,7 +117,7 @@ export default function AchievementButtons({
         {item => (
           <SelectItem
             classNames={{
-              base: ['data-[hover=true]:!bg-titlehover data-[hover=true]:!text-content'],
+              base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
             }}
           >
             {item.label}
@@ -148,14 +147,16 @@ export default function AchievementButtons({
               size='sm'
               color='danger'
               variant='light'
-              className='font-semibold rounded-lg'
+              radius='full'
+              className='font-semibold'
               onPress={onOpenChange}
             >
               {t('common.cancel')}
             </Button>
             <Button
               size='sm'
-              className='font-semibold rounded-lg bg-dynamic text-button-text'
+              className='bg-btn-secondary text-btn-text font-bold'
+              radius='full'
               onPress={() => {
                 if (state === 'unlock') {
                   if (appId && appName) {

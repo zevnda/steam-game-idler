@@ -1,10 +1,11 @@
 import type useTradingCardsList from '@/hooks/trading-cards/useTradingCardsList'
 import type { ReactElement } from 'react'
 
-import { Button, cn, useDisclosure } from '@heroui/react'
+import { Button, cn, Divider, useDisclosure } from '@heroui/react'
 import { useTranslation } from 'react-i18next'
-import { TbChecks, TbEraser, TbPackageExport, TbRefresh } from 'react-icons/tb'
+import { TbChecks, TbEraser, TbPackageExport, TbX } from 'react-icons/tb'
 
+import { useSearchContext } from '@/components/contexts/SearchContext'
 import CustomModal from '@/components/ui/CustomModal'
 
 // Helper function to format seconds to HH:MM:SS
@@ -27,6 +28,7 @@ interface PageHeaderProps {
 
 export default function PageHeader({ selectedCardsWithPrice, tradingCardContext }: PageHeaderProps): ReactElement {
   const { t } = useTranslation()
+  const { tradingCardQueryValue, setTradingCardQueryValue } = useSearchContext()
   const { isOpen: isConfirmOpen, onOpen: onConfirmOpen, onOpenChange: onConfirmOpenChange } = useDisclosure()
   const { isOpen: isBulkOpen, onOpen: onBulkOpen, onOpenChange: onBulkOpenChange } = useDisclosure()
   const { isOpen: isRemoveOpen, onOpen: onRemoveOpen, onOpenChange: onRemoveOpenChange } = useDisclosure()
@@ -35,59 +37,75 @@ export default function PageHeader({ selectedCardsWithPrice, tradingCardContext 
     <>
       <div
         className={cn(
-          'fixed flex justify-between items-center w-[calc(100svw-68px)]',
-          'py-2 pl-4 bg-base bg-opacity-90 backdrop-blur-md z-10 rounded-tl-xl',
+          'w-[calc(100vw-227px)] z-[50] pl-4 pt-2',
           tradingCardContext.tradingCardsList?.length >= 21 ? 'pr-4' : 'pr-2',
         )}
       >
-        <div className='flex justify-between items-center w-full select-none'>
-          <div className='flex items-center gap-1'>
+        <div className='flex justify-between items-center pb-3'>
+          <div className='flex items-center gap-1 select-none'>
             <div className='flex flex-col justify-center'>
-              <p className='text-lg font-bold'>{t('tradingCards.title')}</p>
-              <div className='flex gap-1'>
-                <p className='text-sm text-altwhite'>{t('tradingCards.subtitle')}</p>
-                <div
-                  className='flex justify-center items-center cursor-pointer'
-                  onClick={tradingCardContext.handleRefresh}
+              <p className='text-3xl font-black'>{t('tradingCards.title')}</p>
+              <p className='text-xs text-altwhite my-2'>{t('tradingCards.subtitle')}</p>
+
+              <div className='flex items-center gap-2 mt-1'>
+                <Button
+                  className='bg-btn-secondary text-btn-text font-bold'
+                  radius='full'
+                  onPress={() => tradingCardContext.handleRefresh()}
                 >
-                  <TbRefresh className='text-altwhite hover:text-altwhite/80' fontSize={16} />
-                </div>
+                  {t('setup.refresh')}
+                </Button>
+
+                <Button
+                  className='bg-btn-secondary text-btn-text font-bold'
+                  radius='full'
+                  isDisabled={selectedCardsWithPrice.length === 0}
+                  isLoading={tradingCardContext.loadingListButton}
+                  startContent={!tradingCardContext.loadingListButton && <TbChecks fontSize={20} />}
+                  onPress={onConfirmOpen}
+                >
+                  {t('tradingCards.list')} {selectedCardsWithPrice.length > 0 && `(${selectedCardsWithPrice.length})`}
+                </Button>
+
+                <Button
+                  className='bg-btn-secondary text-btn-text font-bold'
+                  radius='full'
+                  isDisabled={tradingCardContext.tradingCardsList.length === 0}
+                  isLoading={tradingCardContext.loadingListButton}
+                  startContent={!tradingCardContext.loadingListButton && <TbPackageExport fontSize={20} />}
+                  onPress={onBulkOpen}
+                >
+                  {t('tradingCards.bulk', { count: tradingCardContext.tradingCardsList?.length || 0 })}
+                </Button>
+
+                <Button
+                  className='font-bold'
+                  radius='full'
+                  color='danger'
+                  isLoading={tradingCardContext.loadingRemoveListings}
+                  startContent={!tradingCardContext.loadingRemoveListings && <TbEraser fontSize={20} />}
+                  onPress={onRemoveOpen}
+                >
+                  {t('tradingCards.remove')}
+                </Button>
+
+                {tradingCardQueryValue && (
+                  <div className='flex items-center gap-2'>
+                    <Divider orientation='vertical' className='mx-2 h-8 bg-border' />
+                    <p className='text-sm text-altwhite font-bold'>Search</p>
+                    <div className='flex items-center gap-2 text-sm text-altwhite p-2 bg-item-active rounded-full max-w-44'>
+                      <p className='text-content truncate'>{tradingCardQueryValue}</p>
+                      <div
+                        className='flex items-center justify-center cursor-pointer bg-item-hover hover:bg-item-hover/80 rounded-full p-1 duration-150'
+                        onClick={() => setTradingCardQueryValue('')}
+                      >
+                        <TbX />
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
-          </div>
-          <div className='flex items-center space-x-2'>
-            <Button
-              size='sm'
-              isDisabled={selectedCardsWithPrice.length === 0}
-              isLoading={tradingCardContext.loadingListButton}
-              className='font-semibold rounded-lg bg-dynamic text-button-text'
-              startContent={!tradingCardContext.loadingListButton && <TbChecks fontSize={20} />}
-              onPress={onConfirmOpen}
-            >
-              {t('tradingCards.list')} {selectedCardsWithPrice.length > 0 && `(${selectedCardsWithPrice.length})`}
-            </Button>
-
-            <Button
-              size='sm'
-              isDisabled={tradingCardContext.tradingCardsList.length === 0}
-              isLoading={tradingCardContext.loadingListButton}
-              className='font-semibold rounded-lg bg-dynamic text-button-text'
-              startContent={!tradingCardContext.loadingListButton && <TbPackageExport fontSize={20} />}
-              onPress={onBulkOpen}
-            >
-              {t('tradingCards.bulk', { count: tradingCardContext.tradingCardsList?.length || 0 })}
-            </Button>
-
-            <Button
-              size='sm'
-              color='danger'
-              isLoading={tradingCardContext.loadingRemoveListings}
-              className='font-semibold rounded-lg'
-              startContent={!tradingCardContext.loadingRemoveListings && <TbEraser fontSize={20} />}
-              onPress={onRemoveOpen}
-            >
-              {t('tradingCards.remove')}
-            </Button>
           </div>
         </div>
       </div>
@@ -110,14 +128,16 @@ export default function PageHeader({ selectedCardsWithPrice, tradingCardContext 
               size='sm'
               color='danger'
               variant='light'
-              className='font-semibold rounded-lg'
+              radius='full'
+              className='font-semibold'
               onPress={onConfirmOpenChange}
             >
               {t('common.cancel')}
             </Button>
             <Button
               size='sm'
-              className='font-semibold rounded-lg bg-dynamic text-button-text'
+              className='bg-btn-secondary text-btn-text font-bold'
+              radius='full'
               onPress={() => {
                 tradingCardContext.handleSellSelectedCards()
                 onConfirmOpenChange()
@@ -147,14 +167,16 @@ export default function PageHeader({ selectedCardsWithPrice, tradingCardContext 
               size='sm'
               color='danger'
               variant='light'
-              className='font-semibold rounded-lg'
+              radius='full'
+              className='font-semibold'
               onPress={onBulkOpenChange}
             >
               {t('common.cancel')}
             </Button>
             <Button
               size='sm'
-              className='font-semibold rounded-lg bg-dynamic text-button-text'
+              className='bg-btn-secondary text-btn-text font-bold'
+              radius='full'
               onPress={() => {
                 tradingCardContext.handleSellAllCards()
                 onBulkOpenChange()
@@ -184,14 +206,16 @@ export default function PageHeader({ selectedCardsWithPrice, tradingCardContext 
               size='sm'
               color='danger'
               variant='light'
-              className='font-semibold rounded-lg'
+              radius='full'
+              className='font-semibold'
               onPress={onRemoveOpenChange}
             >
               {t('common.cancel')}
             </Button>
             <Button
               size='sm'
-              className='font-semibold rounded-lg bg-dynamic text-button-text'
+              className='bg-btn-secondary text-btn-text font-bold'
+              radius='full'
               onPress={() => {
                 tradingCardContext.handleRemoveActiveListings()
                 onRemoveOpenChange()

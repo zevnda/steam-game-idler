@@ -24,9 +24,10 @@ export interface NavigationContextType {
 export interface SidebarItem {
   id: string
   page: ActivePageType
+  title: string
   icon: React.ComponentType<{ fontSize?: number; className?: string }>
-  tooltipKey: string
   shouldShow?: boolean
   isActive?: boolean
   customClassName?: string
+  hasDivider?: boolean
 }

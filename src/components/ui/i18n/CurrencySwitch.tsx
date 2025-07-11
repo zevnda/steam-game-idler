@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react'
 
-import { Select, SelectItem } from '@heroui/react'
+import { cn, Select, SelectItem } from '@heroui/react'
 import { useEffect, useState } from 'react'
 import { TbCurrencyDollar } from 'react-icons/tb'
 
@@ -68,20 +68,17 @@ export default function CurrencySwitch(): ReactElement | null {
 
   return (
     <Select
-      size='sm'
       aria-label='language'
       disallowEmptySelection
       radius='none'
       startContent={<TbCurrencyDollar />}
       items={currencies}
+      className='w-[250px]'
       classNames={{
         listbox: ['p-0'],
         value: ['text-sm !text-content'],
-        trigger: [
-          'bg-input border border-border duration-100 rounded-lg',
-          'data-[hover=true]:!bg-inputhover data-[open=true]:!bg-inputhover',
-        ],
-        popoverContent: ['bg-titlebar border border-border rounded-lg justify-start !text-content'],
+        trigger: cn('bg-input data-[hover=true]:!bg-inputhover', 'data-[open=true]:!bg-input duration-100 rounded-lg'),
+        popoverContent: ['bg-input rounded-xl justify-start !text-content'],
       }}
       defaultSelectedKeys={[currentCurrency]}
       onSelectionChange={e => {
@@ -94,7 +91,7 @@ export default function CurrencySwitch(): ReactElement | null {
         <SelectItem
           key={currency.key}
           classNames={{
-            base: ['data-[hover=true]:!bg-titlehover data-[hover=true]:!text-content'],
+            base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
           }}
         >
           {currency.label}

@@ -31,24 +31,24 @@ export default function CardMenu({ item, onOpen }: CardMenuProps): ReactElement 
   return (
     <Dropdown
       classNames={{
-        content: ['rounded-lg p-0 bg-titlebar border border-border'],
+        content: ['rounded-lg p-0 bg-transparent'],
       }}
     >
       <DropdownTrigger>
         <div
           className={cn(
-            'p-1 bg-black text-offwhite bg-opacity-50',
-            'hover:bg-black hover:bg-opacity-70 hover:scale-105',
+            'p-1 bg-black text-offwhite bg-opacity-70',
+            'hover:bg-black hover:bg-opacity-80',
             'cursor-pointer rounded-md duration-200',
           )}
         >
           <TbDotsVertical />
         </div>
       </DropdownTrigger>
-      <DropdownMenu aria-label='actions'>
+      <DropdownMenu aria-label='actions' classNames={{ base: 'bg-base/85 backdrop-blur-sm rounded-xl' }}>
         <DropdownItem
-          className='rounded'
-          classNames={{ base: ['data-[hover=true]:bg-titlehover'] }}
+          className='rounded-xl'
+          classNames={{ base: ['data-[hover=true]:bg-item-hover'] }}
           key='idle'
           startContent={<TbPlayerPlayFilled size={16} className='text-content' />}
           onPress={() => handleIdle(item)}
@@ -57,8 +57,8 @@ export default function CardMenu({ item, onOpen }: CardMenuProps): ReactElement 
           <p className='text-sm text-content'>{t('cardMenu.idle')}</p>
         </DropdownItem>
         <DropdownItem
-          className='rounded'
-          classNames={{ base: ['data-[hover=true]:bg-titlehover'] }}
+          className='rounded-xl'
+          classNames={{ base: ['data-[hover=true]:bg-item-hover'] }}
           key='achievements'
           startContent={<TbAwardFilled size={16} className='text-content' />}
           onPress={() => viewAchievments(item, setAppId, setAppName, setShowAchievements)}
@@ -67,8 +67,8 @@ export default function CardMenu({ item, onOpen }: CardMenuProps): ReactElement 
           <p className='text-sm text-content'>{t('cardMenu.achievements')}</p>
         </DropdownItem>
         <DropdownItem
-          className='rounded'
-          classNames={{ base: ['data-[hover=true]:bg-titlehover'] }}
+          className='rounded-xl'
+          classNames={{ base: ['data-[hover=true]:bg-item-hover'] }}
           key='store'
           startContent={<FaSteam fontSize={16} className='text-content' />}
           onPress={() => viewStorePage(item)}
@@ -77,8 +77,8 @@ export default function CardMenu({ item, onOpen }: CardMenuProps): ReactElement 
           <p className='text-sm text-content'>{t('cardMenu.store')}</p>
         </DropdownItem>
         <DropdownItem
-          className='rounded'
-          classNames={{ base: ['data-[hover=true]:bg-titlehover'] }}
+          className='rounded-xl'
+          classNames={{ base: ['data-[hover=true]:bg-item-hover'] }}
           key='settings'
           startContent={<TbSettingsFilled fontSize={16} className='text-content' />}
           onPress={() => viewGameSettings(item, setAppId, setAppName, setIsGameSettingsOpen, onOpen)}

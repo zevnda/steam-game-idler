@@ -1,3 +1,9 @@
+<!-- 2.0.0 -->
+
+### Changes in v2.0.0
+
+- Complete UI overhaul
+
 <!-- 1.16.2 -->
 
 ### Changes in v1.16.2

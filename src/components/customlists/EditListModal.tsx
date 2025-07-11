@@ -5,6 +5,7 @@ import { Button, cn, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHe
 import { memo } from 'react'
 import Image from 'next/image'
 import { useTranslation } from 'react-i18next'
+import { RiSearchLine } from 'react-icons/ri'
 import { TbCheck } from 'react-icons/tb'
 import { FixedSizeList as List } from 'react-window'
 
@@ -106,56 +107,37 @@ export default function EditListModal({
       onOpenChange={onOpenChange}
       onClose={onClose}
       hideCloseButton
-      className='bg-modalbody min-h-[75%] max-h-[75%] text-content min-w-[40%]'
+      className='min-h-[75%] max-h-[75%] text-content min-w-[40%]'
       classNames={{
-        closeButton: ['text-altwhite hover:bg-titlehover duration-200'],
+        base: 'bg-base/85 backdrop-blur-sm',
+        body: 'p-0 gap-0',
       }}
     >
       <ModalContent>
         {(onClose: () => void) => (
           <>
-            <ModalHeader className='flex gap-2 bg-modalheader border-b border-border p-3'>
+            <ModalHeader className='flex gap-2 border-b border-border/40 p-3'>
               <Input
                 autoFocus
                 isClearable
-                size='sm'
-                placeholder={t('search.games')}
+                placeholder={t('common.search')}
+                startContent={<RiSearchLine size={24} className='text-content/60' />}
                 classNames={{
                   inputWrapper: cn(
-                    'bg-input border border-border hover:!bg-inputhover rounded-lg',
-                    'group-data-[focus-within=true]:!bg-inputhover',
-                    'group-data-[focus-visible=true]:ring-transparent',
-                    'group-data-[focus-visible=true]:ring-offset-transparent',
+                    'bg-transparent hover:!bg-transparent h-24',
+                    'rounded-lg group-data-[focus-within=true]:!bg-transparent',
+                    'group-data-[focus-visible=true]:!ring-0 group-data-[focus-visible=true]:!ring-offset-0',
+                    'focus-visible:!ring-0 focus-visible:!ring-offset-0 focus:!ring-0 focus:!ring-offset-0',
+                    '!outline-none focus:!outline-none focus-visible:!outline-none',
+                    'border-none shadow-sm',
                   ),
-                  input: ['!text-content placeholder:text-altwhite/50'],
+                  input: ['!text-content !text-xl placeholder:text-xl placeholder:text-content/60'],
+                  clearButton: 'text-content/60 hover:text-content',
                 }}
                 isDisabled={showInList}
                 onChange={e => setSearchTerm(e.target.value)}
                 onClear={() => setSearchTerm('')}
               />
-              <div className='flex items-center gap-2'>
-                <Button
-                  size='sm'
-                  className={`rounded-full font-semibold ${showInList ? 'bg-green-400/40 text-green-600' : 'bg-gray-500/40 text-button-text'}`}
-                  isDisabled={list.length === 0}
-                  startContent={
-                    <TbCheck fontSize={18} className={showInList ? 'text-green-600' : 'text-button-text'} />
-                  }
-                  onPress={() => setShowInList(!showInList)}
-                >
-                  {t('customLists.inList')}
-                </Button>
-                {type === 'achievementUnlockerList' && (
-                  <Button
-                    size='sm'
-                    className='rounded-full font-semibold bg-dynamic text-button-text'
-                    isDisabled={filteredGamesList.length === 0 || list.length === filteredGamesList.length}
-                    onPress={() => handleAddAllGames(filteredGamesList)}
-                  >
-                    {t('customLists.addAll')}
-                  </Button>
-                )}
-              </div>
             </ModalHeader>
             <ModalBody className='relative p-0 gap-0 overflow-y-auto'>
               <List
@@ -175,17 +157,39 @@ export default function EditListModal({
                 {Row}
               </List>
             </ModalBody>
-            <ModalFooter className='border-t border-border bg-modalfooter p-3'>
+            <ModalFooter className='border-t border-border/40 p-3'>
               <Button
                 size='sm'
                 color='danger'
                 variant='light'
-                className='rounded-lg font-semibold'
+                radius='full'
+                className='font-semibold'
                 onPress={handleClearList}
               >
                 {t('common.clear')}
               </Button>
-              <Button size='sm' className='rounded-lg font-semibold bg-dynamic text-button-text' onPress={onClose}>
+              <Button
+                size='sm'
+                radius='full'
+                className={`font-bold ${showInList ? 'bg-green-400/40 text-green-600' : 'bg-btn-secondary text-btn-text'}`}
+                isDisabled={list.length === 0}
+                startContent={<TbCheck fontSize={18} className={showInList ? 'text-green-600' : undefined} />}
+                onPress={() => setShowInList(!showInList)}
+              >
+                {t('customLists.inList')}
+              </Button>
+              {type === 'achievementUnlockerList' && (
+                <Button
+                  size='sm'
+                  className='bg-btn-secondary text-btn-text font-bold'
+                  radius='full'
+                  isDisabled={filteredGamesList.length === 0 || list.length === filteredGamesList.length}
+                  onPress={() => handleAddAllGames(filteredGamesList)}
+                >
+                  {t('customLists.addAll')}
+                </Button>
+              )}
+              <Button size='sm' className='bg-btn-secondary text-btn-text font-bold' radius='full' onPress={onClose}>
                 {t('common.done')}
               </Button>
             </ModalFooter>

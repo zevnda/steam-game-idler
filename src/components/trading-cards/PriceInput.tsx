@@ -19,10 +19,10 @@ export default function PriceInput({ item, tradingCardContext }: PriceInputProps
   return (
     <div className='flex items-center justify-center gap-1 mt-2'>
       <NumberInput
+        size='sm'
         isInvalid={
           tradingCardContext.selectedCards[item.assetid] && tradingCardContext.getCardPriceValue(item.assetid) <= 0
         }
-        size='sm'
         value={tradingCardContext.getCardPriceValue(item.assetid)}
         maxValue={99999}
         defaultValue={0}
@@ -36,7 +36,7 @@ export default function PriceInput({ item, tradingCardContext }: PriceInputProps
         className='w-[85px]'
         classNames={{
           inputWrapper: cn(
-            'bg-input border border-border hover:!bg-inputhover rounded-lg',
+            'bg-input data-[hover=true]:!bg-inputhover border-none',
             'group-data-[focus-visible=true]:ring-transparent',
             'group-data-[focus-visible=true]:ring-offset-transparent',
             'group-data-[focus-within=true]:!bg-inputhover',
@@ -51,14 +51,12 @@ export default function PriceInput({ item, tradingCardContext }: PriceInputProps
 
       <CustomTooltip content={t('common.list')} placement='top'>
         <Button
-          size='sm'
           isIconOnly
+          className='bg-btn-secondary text-btn-text font-bold'
+          radius='full'
           isLoading={tradingCardContext.loadingListButton}
           isDisabled={tradingCardContext.loadingListButton || tradingCardContext.getCardPriceValue(item.assetid) <= 0}
-          className='font-semibold rounded-lg bg-dynamic text-button-text'
-          startContent={
-            !tradingCardContext.loadingListButton && <TbPackageExport className='text-button-text' size={20} />
-          }
+          startContent={!tradingCardContext.loadingListButton && <TbPackageExport size={20} />}
           onPress={() => {
             tradingCardContext.handleSellSingleCard(
               item.assetid,

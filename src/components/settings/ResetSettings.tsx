@@ -19,8 +19,9 @@ export default function ResetSettings({ setRefreshKey }: ResetSettingsProps): Re
     <>
       <Button
         size='sm'
+        variant='light'
+        radius='full'
         color='danger'
-        className='font-semibold rounded-lg'
         onPress={onOpen}
         startContent={<TbRotateClockwise className='rotate-90' size={20} />}
       >
@@ -38,14 +39,16 @@ export default function ResetSettings({ setRefreshKey }: ResetSettingsProps): Re
               size='sm'
               color='danger'
               variant='light'
-              className='font-semibold rounded-lg'
+              radius='full'
+              className='font-semibold'
               onPress={onOpenChange}
             >
               {t('common.cancel')}
             </Button>
             <Button
               size='sm'
-              className='font-semibold rounded-lg bg-dynamic text-button-text'
+              className='bg-btn-secondary text-btn-text font-bold'
+              radius='full'
               onPress={() => handleResetSettings(onOpenChange, setRefreshKey)}
             >
               {t('common.confirm')}

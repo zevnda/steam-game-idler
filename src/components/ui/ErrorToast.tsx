@@ -16,7 +16,7 @@ export default function ErrorToast({ message, href }: ErrorToastProps): ReactEle
     <div className='flex flex-col gap-1'>
       <p className='text-sm text-content'>{message}</p>
       <ExtLink href={href}>
-        <p className='text-xs text-link hover:text-linkhover'>{t('common.learnMore')}</p>
+        <p className='text-xs text-dynamic hover:text-dynamic-hover'>{t('common.learnMore')}</p>
       </ExtLink>
     </div>
   )

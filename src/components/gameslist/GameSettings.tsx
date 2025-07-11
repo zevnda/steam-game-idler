@@ -95,7 +95,6 @@ export default function GameSettings({ isOpen, onOpenChange }: GameSettingsProps
             <p className='text-sm'>{t('gameSettings.idle')}</p>
             <NumberInput
               hideStepper
-              size='sm'
               value={maxIdleTime || 0}
               maxValue={99999}
               formatOptions={{ useGrouping: false }}
@@ -103,7 +102,7 @@ export default function GameSettings({ isOpen, onOpenChange }: GameSettingsProps
               className='max-w-[80px]'
               classNames={{
                 inputWrapper: cn(
-                  'bg-input border border-border hover:!bg-inputhover rounded-lg',
+                  'bg-input data-[hover=true]:!bg-inputhover',
                   'group-data-[focus-within=true]:!bg-inputhover h-8',
                 ),
                 input: ['!text-content'],
@@ -116,7 +115,6 @@ export default function GameSettings({ isOpen, onOpenChange }: GameSettingsProps
             <p className='text-sm'>{t('gameSettings.drops')}</p>
             <NumberInput
               hideStepper
-              size='sm'
               value={maxCardDrops || 0}
               maxValue={99999}
               formatOptions={{ useGrouping: false }}
@@ -124,7 +122,7 @@ export default function GameSettings({ isOpen, onOpenChange }: GameSettingsProps
               className='max-w-[80px]'
               classNames={{
                 inputWrapper: cn(
-                  'bg-input border border-border hover:!bg-inputhover rounded-lg',
+                  'bg-input data-[hover=true]:!bg-inputhover',
                   'group-data-[focus-within=true]:!bg-inputhover h-8',
                 ),
                 input: ['!text-content'],
@@ -137,7 +135,6 @@ export default function GameSettings({ isOpen, onOpenChange }: GameSettingsProps
             <p className='text-sm'>{t('gameSettings.achievements')}</p>
             <NumberInput
               hideStepper
-              size='sm'
               value={maxAchievementUnlocks || 0}
               maxValue={99999}
               formatOptions={{ useGrouping: false }}
@@ -145,7 +142,7 @@ export default function GameSettings({ isOpen, onOpenChange }: GameSettingsProps
               className='max-w-[80px]'
               classNames={{
                 inputWrapper: cn(
-                  'bg-input border border-border hover:!bg-inputhover rounded-lg',
+                  'bg-input data-[hover=true]:!bg-inputhover',
                   'group-data-[focus-within=true]:!bg-inputhover h-8',
                 ),
                 input: ['!text-content'],
@@ -161,7 +158,8 @@ export default function GameSettings({ isOpen, onOpenChange }: GameSettingsProps
             size='sm'
             color='danger'
             variant='light'
-            className='font-semibold rounded-lg'
+            radius='full'
+            className='font-semibold'
             onPress={() => {
               onOpenChange()
             }}
@@ -170,7 +168,8 @@ export default function GameSettings({ isOpen, onOpenChange }: GameSettingsProps
           </Button>
           <Button
             size='sm'
-            className='font-semibold rounded-lg bg-dynamic text-button-text'
+            className='bg-btn-secondary text-btn-text font-bold'
+            radius='full'
             isDisabled={isSaveDisabled()}
             onPress={() => {
               handleSave()
