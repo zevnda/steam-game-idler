@@ -54,7 +54,7 @@ export default function PageHeader({ protectedAchievements, protectedStatistics 
         <Button
           isIconOnly
           radius='full'
-          className='bg-item-hover text-btn-alt'
+          className='bg-item-hover/80 text-btn-alt'
           startContent={<TbX />}
           onPress={handleClick}
         />
