@@ -36,7 +36,7 @@ body:
     id: log-file
     attributes:
       label: Log File
-      description: Attach your log file by going to `Settings → Logs → Open in File Explorer`
+      description: Attach your log file by going to `Settings → Debug → Open Logs in File Explorer`
     validations:
       required: true
 
@@ -44,7 +44,7 @@ body:
     id: export-data
     attributes:
       label: Exported Data
-      description: Export your data by going to `Settings → Export Data` and then pasting it here
+      description: Export your data by going to `Settings → Debug → Export Data` and then pasting it here
       render: json
     validations:
       required: true

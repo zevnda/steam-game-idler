@@ -21,7 +21,7 @@ const SETTINGS = {
   'achievement-unlocker': 'Achievement Unlocker',
   'trading-card-manager': 'Trading Card Manager',
   'game-settings': 'Game Settings',
-  'logs': 'Logs',
+  'debug': 'Debug',
 }
 
 // eslint-disable-next-line import/no-anonymous-default-export
