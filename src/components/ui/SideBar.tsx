@@ -130,7 +130,7 @@ export default function SideBar(): ReactElement {
           >
             <div
               className={cn(
-                'flex items-center gap-3 transition-all duration-500',
+                'flex items-center gap-3 transition-all duration-500 ease-in-out',
                 sidebarCollapsed ? 'justify-center' : 'justify-start',
               )}
             >
@@ -138,7 +138,7 @@ export default function SideBar(): ReactElement {
                 <Icon fontSize={20} className={isFreeGames ? 'text-[#ffc700]' : undefined} />
               </div>
               {!sidebarCollapsed && (
-                <div className={cn('transition-all duration-500 overflow-hidden whitespace-nowrap')}>
+                <div className={cn('transition-all duration-500 ease-in-out overflow-hidden whitespace-nowrap')}>
                   <p className={cn('text-sm font-bold', isFreeGames ? 'text-[#ffc700]' : undefined)}>{item.title}</p>
                 </div>
               )}
@@ -242,7 +242,7 @@ export default function SideBar(): ReactElement {
             >
               <div
                 className={cn(
-                  'flex items-center transition-all duration-500',
+                  'flex items-center transition-all duration-500 ease-in-out',
                   sidebarCollapsed ? 'justify-center' : 'gap-3',
                 )}
               >
@@ -250,7 +250,7 @@ export default function SideBar(): ReactElement {
                   <TbSettings fontSize={20} />
                 </div>
                 {!sidebarCollapsed && (
-                  <div className={cn('transition-all duration-500 overflow-hidden whitespace-nowrap')}>
+                  <div className={cn('transition-all  ease-in-out overflow-hidden whitespace-nowrap')}>
                     <p className='text-sm font-bold'>{t('settings.title')}</p>
                   </div>
                 )}

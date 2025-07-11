@@ -18,7 +18,7 @@ export default function HeaderTitle(): ReactElement {
       {!sidebarCollapsed && (
         <div
           className={cn(
-            'flex justify-between items-center duration-500 overflow-hidden whitespace-nowrap transition-all',
+            'flex justify-between items-center duration-500 ease-in-out overflow-hidden whitespace-nowrap transition-all',
           )}
           data-tauri-drag-region
         >

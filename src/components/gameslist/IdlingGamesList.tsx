@@ -16,7 +16,7 @@ import { showDangerToast, showSuccessToast } from '@/utils/toasts'
 export default function IdlingGamesList(): ReactElement {
   const { t } = useTranslation()
   const { idleGamesList, setIdleGamesList } = useIdleContext()
-  const { sidebarCollapsed, setIsCardFarming, setIsAchievementUnlocker } = useStateContext()
+  const { sidebarCollapsed, transitionDuration, setIsCardFarming, setIsAchievementUnlocker } = useStateContext()
 
   const handleStopIdleAll = async (): Promise<void> => {
     try {
@@ -43,9 +43,13 @@ export default function IdlingGamesList(): ReactElement {
   return (
     <div
       className={cn(
-        'min-h-calc max-h-calc overflow-y-auto overflow-x-hidden mt-9 duration-500 ease-in-out',
+        'min-h-calc max-h-calc overflow-y-auto overflow-x-hidden mt-9 ease-in-out',
         sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]',
       )}
+      style={{
+        transitionDuration,
+        transitionProperty: 'min-width, max-width',
+      }}
     >
       <div
         className={cn(

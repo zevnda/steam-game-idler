@@ -44,7 +44,7 @@ export default function Header(): ReactElement {
               transitionTimingFunction: 'ease-in-out, ease, ease',
             }}
             onClick={() => {
-              setTransitionDuration('500ms')
+              setTransitionDuration('300ms')
               setSidebarCollapsed(!sidebarCollapsed)
               setTimeout(() => {
                 setTransitionDuration('0ms')
