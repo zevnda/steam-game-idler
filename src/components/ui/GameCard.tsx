@@ -1,7 +1,7 @@
 import type { Game } from '@/types'
 import type { ReactElement, SyntheticEvent } from 'react'
 
-import { Button, useDisclosure } from '@heroui/react'
+import { Button, cn, useDisclosure } from '@heroui/react'
 import { memo } from 'react'
 import Image from 'next/image'
 import { FaSteam } from 'react-icons/fa'
@@ -18,9 +18,16 @@ import { handleIdle, handleStopIdle, viewAchievments } from '@/hooks/ui/useGameC
 interface GameCardProps {
   item: Game
   isFreeGame?: boolean
+  imageWidth?: number
+  imageHeight?: number
 }
 
-const GameCard = memo(function GameCard({ item, isFreeGame = false }: GameCardProps): ReactElement {
+const GameCard = memo(function GameCard({
+  item,
+  isFreeGame = false,
+  imageWidth = 460,
+  imageHeight = 215,
+}: GameCardProps): ReactElement {
   const { idleGamesList, setIdleGamesList } = useIdleContext()
   const { setAppId, setAppName, setShowAchievements } = useStateContext()
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
@@ -36,11 +43,16 @@ const GameCard = memo(function GameCard({ item, isFreeGame = false }: GameCardPr
     return (
       <div className='relative group select-none'>
         <div className='overflow-hidden will-change-transform transition-transform duration-150'>
-          <div className='aspect-[460/215] relative overflow-hidden'>
+          <div
+            className={cn(
+              'relative overflow-hidden',
+              imageWidth || imageHeight ? `aspect-[${imageWidth}/${imageHeight}]` : 'aspect-[460/215]',
+            )}
+          >
             <Image
               src={`https://cdn.cloudflare.steamstatic.com/steam/apps/${item.appid}/header.jpg`}
-              width={460}
-              height={215}
+              width={imageWidth}
+              height={imageHeight}
               alt={`${item.name} image`}
               priority={true}
               onError={handleImageError}

@@ -5,6 +5,8 @@ import { cn, Spinner } from '@heroui/react'
 import { useStateContext } from '@/components/contexts/StateContext'
 import PageHeader from '@/components/gameslist/PageHeader'
 import Private from '@/components/gameslist/Private'
+import RecentGamesCarousel from '@/components/gameslist/RecentGamesCarousel'
+import RecommendedGamesCarousel from '@/components/gameslist/RecommendedGamesCarousel'
 import GameCard from '@/components/ui/GameCard'
 import useGamesList from '@/hooks/gameslist/useGamesList'
 
@@ -33,22 +35,35 @@ export default function GamesList(): ReactElement {
       ref={gamesContext.scrollContainerRef}
     >
       {!showAchievements && (
-        <PageHeader
-          sortStyle={gamesContext.sortStyle}
-          setSortStyle={gamesContext.setSortStyle}
-          filteredGames={gamesContext.filteredGames}
-          visibleGames={gamesContext.visibleGames}
-          setRefreshKey={gamesContext.setRefreshKey}
-        />
+        <>
+          <PageHeader
+            sortStyle={gamesContext.sortStyle}
+            setSortStyle={gamesContext.setSortStyle}
+            filteredGames={gamesContext.filteredGames}
+            visibleGames={gamesContext.visibleGames}
+            setRefreshKey={gamesContext.setRefreshKey}
+          />
+        </>
+      )}
+
+      {!gamesContext.isLoading && gamesContext.unplayedGames.length > 0 && (
+        <RecommendedGamesCarousel unplayedGames={gamesContext.unplayedGames} />
+      )}
+
+      {!gamesContext.isLoading && gamesContext.recentGames.length > 0 && (
+        <RecentGamesCarousel recentGames={gamesContext.recentGames} />
       )}
 
       {!gamesContext.isLoading ? (
-        <div className='grid grid-cols-5 2xl:grid-cols-7 gap-x-4 gap-y-4 p-4'>
-          {gamesContext.filteredGames &&
-            gamesContext.filteredGames
-              .slice(0, gamesContext.visibleGames.length)
-              .map(item => <GameCard key={item.appid} item={item} />)}
-        </div>
+        <>
+          <p className='font-black px-4'>All Games</p>
+          <div className='grid grid-cols-5 2xl:grid-cols-7 gap-x-4 gap-y-4 p-4'>
+            {gamesContext.filteredGames &&
+              gamesContext.filteredGames
+                .slice(0, gamesContext.visibleGames.length)
+                .map(item => <GameCard key={item.appid} item={item} />)}
+          </div>
+        </>
       ) : (
         <div className='flex justify-center items-center w-calc h-[calc(100vh-168px)]'>
           <Spinner variant='simple' />
