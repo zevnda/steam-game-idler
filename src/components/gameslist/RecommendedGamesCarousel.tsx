@@ -91,7 +91,7 @@ export default function RecommendedGamesCarousel({ gamesContext }: RecommendedGa
   return (
     <div className='mb-6 px-4 mt-4'>
       <div className='flex items-center justify-between mb-3'>
-        <p className='font-black'>Recommended</p>
+        <p className='text-lg font-black'>Recommended</p>
         <div className='flex gap-2'>
           <Button
             isIconOnly

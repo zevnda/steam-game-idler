@@ -38,24 +38,10 @@ export default function RecentGamesCarousel({ gamesContext }: RecentGamesCarouse
   }
 
   return (
-    <div
-      className={cn(
-        'duration-250 px-4 overflow-hidden group/carousel',
-        gamesContext.sortStyle !== 'recent' ? 'h-full opacity-100 mb-6 mt-4' : 'h-0 opacity-0',
-      )}
-    >
+    <div className={cn('duration-250 px-4 overflow-hidden group/carousel')}>
       <div className='flex items-center justify-between mb-3'>
         <div className='flex items-baseline gap-2'>
-          <p className='font-black'>Recently Played</p>
-          <p
-            className='text-xs cursor-pointer text-dynamic hover:text-dynamic-hover opacity-0 group-hover/carousel:opacity-100 transition-[opacity] duration-150'
-            onClick={() => {
-              localStorage.setItem('sortStyle', 'recent')
-              gamesContext.setSortStyle('recent')
-            }}
-          >
-            View All
-          </p>
+          <p className='text-lg font-black'>Recently Played</p>
         </div>
         <div className='flex gap-2'>
           <Button

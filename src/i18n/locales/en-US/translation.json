@@ -211,7 +211,7 @@
   "toast.tradingCards.cardLocked": "Card is locked and cannot be listed for sale",
   "common.cardFarming": "Card Farming",
   "common.achievementUnlocker": "Achievement Unlocker",
-  "common.showing": "Showing {{count}} of {{total}} games",
+  "common.showing": "Showing {{total}} games",
   "common.learnMore": "Learn More",
   "common.signOut": "Sign Out",
   "common.notifications": "Notifications",

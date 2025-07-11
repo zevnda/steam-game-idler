@@ -34,7 +34,6 @@ export default function PageHeader({
     { key: '0-1', label: t('gamesList.sort.playtimeAsc') },
     { key: 'a-z', label: t('gamesList.sort.titleAsc') },
     { key: 'z-a', label: t('gamesList.sort.titleDesc') },
-    { key: 'recent', label: t('gamesList.sort.recent') },
   ]
 
   return (
@@ -46,7 +45,6 @@ export default function PageHeader({
 
             <p className='text-xs text-altwhite my-2'>
               {t('common.showing', {
-                count: visibleGames.length,
                 total: filteredGames.length,
               })}
             </p>
