@@ -50,7 +50,7 @@ export default function GamesList(): ReactElement {
         <RecommendedGamesCarousel unplayedGames={gamesContext.unplayedGames} />
       )}
 
-      {!gamesContext.isLoading && gamesContext.recentGames.length > 0 && (
+      {!gamesContext.isLoading && gamesContext.sortStyle !== 'recent' && gamesContext.recentGames.length > 0 && (
         <RecentGamesCarousel recentGames={gamesContext.recentGames} />
       )}
 

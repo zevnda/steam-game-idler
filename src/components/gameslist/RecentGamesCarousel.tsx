@@ -16,7 +16,7 @@ export default function RecentGamesCarousel({ recentGames }: RecentGamesCarousel
 
   const scroll = (direction: 'left' | 'right'): void => {
     if (scrollContainerRef.current) {
-      const scrollAmount = 415
+      const scrollAmount = 1000
       const currentScroll = scrollContainerRef.current.scrollLeft
       const newScroll = direction === 'left' ? currentScroll - scrollAmount : currentScroll + scrollAmount
 
