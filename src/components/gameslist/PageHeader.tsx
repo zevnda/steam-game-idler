@@ -21,7 +21,6 @@ export default function PageHeader({
   sortStyle,
   setSortStyle,
   filteredGames,
-  visibleGames,
   setRefreshKey,
 }: PageHeaderProps): ReactElement {
   const { t } = useTranslation()

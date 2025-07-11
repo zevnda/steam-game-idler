@@ -2,7 +2,8 @@ import type { Game } from '@/types'
 import type { ReactElement } from 'react'
 
 import { Button } from '@heroui/react'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { TbChevronLeft, TbChevronRight } from 'react-icons/tb'
 
 import GameCard from '@/components/ui/GameCard'
@@ -18,6 +19,7 @@ export default function RecommendedGamesCarousel({ gamesContext }: RecommendedGa
   const [isAutoScrolling, setIsAutoScrolling] = useState(true)
   const autoScrollIntervalRef = useRef<NodeJS.Timeout | null>(null)
   const pauseTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const { t } = useTranslation()
 
   const scroll = (direction: 'left' | 'right'): void => {
     if (scrollContainerRef.current) {
@@ -32,7 +34,7 @@ export default function RecommendedGamesCarousel({ gamesContext }: RecommendedGa
     }
   }
 
-  const autoScroll = (): void => {
+  const autoScroll = useCallback((): void => {
     if (scrollContainerRef.current) {
       const container = scrollContainerRef.current
       const maxScroll = container.scrollWidth - container.clientWidth
@@ -47,7 +49,7 @@ export default function RecommendedGamesCarousel({ gamesContext }: RecommendedGa
         scroll('right')
       }
     }
-  }
+  }, [scrollContainerRef])
 
   const handleManualScroll = (direction: 'left' | 'right'): void => {
     setIsAutoScrolling(false)
@@ -74,7 +76,7 @@ export default function RecommendedGamesCarousel({ gamesContext }: RecommendedGa
         clearInterval(autoScrollIntervalRef.current)
       }
     }
-  }, [isAutoScrolling, gamesContext.unplayedGames.length])
+  }, [isAutoScrolling, autoScroll, gamesContext.unplayedGames.length])
 
   useEffect(() => {
     return () => {
@@ -85,13 +87,13 @@ export default function RecommendedGamesCarousel({ gamesContext }: RecommendedGa
   }, [])
 
   if (gamesContext.unplayedGames.length === 0) {
-    return <></>
+    return <div />
   }
 
   return (
     <div className='mb-6 px-4 mt-4'>
       <div className='flex items-center justify-between mb-3'>
-        <p className='text-lg font-black'>Recommended</p>
+        <p className='text-lg font-black'>{t('gamesList.recommended')}</p>
         <div className='flex gap-2'>
           <Button
             isIconOnly

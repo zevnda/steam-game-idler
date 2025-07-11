@@ -25,7 +25,6 @@ export default function AchievementUnlocker({ activePage }: { activePage: Active
   const [achievementCount, setAchievementCount] = useState(0)
   const [countdownTimer, setCountdownTimer] = useState('00:00:10')
   const [isWaitingForSchedule, setIsWaitingForSchedule] = useState(false)
-  const [imageError, setImageError] = useState(false)
   const { startCardFarming } = useAutomate()
 
   useEffect(() => {
@@ -53,7 +52,6 @@ export default function AchievementUnlocker({ activePage }: { activePage: Active
   }, [])
 
   const handleImageError = (event: SyntheticEvent<HTMLImageElement, Event>): void => {
-    setImageError(true)
     ;(event.target as HTMLImageElement).src = '/background.webp'
   }
 

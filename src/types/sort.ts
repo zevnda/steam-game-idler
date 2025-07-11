@@ -4,3 +4,8 @@ export interface SortOption {
   key: string
   label: string
 }
+
+export interface cardSortOption {
+  key: SortStyleValue
+  label: string
+}
