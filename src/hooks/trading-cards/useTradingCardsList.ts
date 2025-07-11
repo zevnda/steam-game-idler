@@ -9,7 +9,7 @@ import type {
 
 import { invoke } from '@tauri-apps/api/core'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useStateContext } from '@/components/contexts/StateContext'
@@ -42,6 +42,8 @@ interface UseTradingCardsList {
   handleRefresh: () => void
   handleSellAllCards: () => Promise<void>
   handleRemoveActiveListings: () => Promise<void>
+  cardSortStyle: string
+  setCardSortStyle: (style: string) => void
 }
 
 export default function useTradingCardsList(): UseTradingCardsList {
@@ -60,6 +62,47 @@ export default function useTradingCardsList(): UseTradingCardsList {
   const [changedCardPrices, setChangedCardPrices] = useState<Record<string, number>>({})
   const [selectedCards, setSelectedCards] = useState<Record<string, boolean>>({})
   const [refreshKey, setRefreshKey] = useState(0)
+  const [cardSortStyle, setCardSortStyle] = useState('a-z')
+
+  // Sorting logic
+  const sortedTradingCardsList = useMemo(() => {
+    const list = tradingCardsList.slice()
+    switch (cardSortStyle) {
+      case 'a-z':
+        return list.sort((a, b) => a.full_name.localeCompare(b.full_name))
+      case 'z-a':
+        return list.sort((a, b) => b.full_name.localeCompare(a.full_name))
+      case 'aa-zz':
+        return list.sort((a, b) => a.appname.localeCompare(b.appname))
+      case 'zz-aa':
+        return list.sort((a, b) => b.appname.localeCompare(a.appname))
+      case 'badge':
+        return list
+          .filter(card => card.badge_level !== undefined)
+          .sort((a, b) => {
+            const levelA = a.badge_level || 0
+            const levelB = b.badge_level || 0
+            return levelB - levelA
+          })
+      case 'foil':
+        return list
+          .filter(card => card.foil === true)
+          .sort((a, b) => {
+            const levelA = a.badge_level || 0
+            const levelB = b.badge_level || 0
+            return levelB - levelA
+          })
+      case 'dupes': {
+        const countMap: Record<string, number> = {}
+        list.forEach(card => {
+          countMap[card.market_hash_name] = (countMap[card.market_hash_name] || 0) + 1
+        })
+        return list.filter(card => countMap[card.market_hash_name] > 1)
+      }
+      default:
+        return list
+    }
+  }, [tradingCardsList, cardSortStyle])
 
   useEffect(() => {
     const getTradingCards = async (): Promise<void> => {
@@ -602,7 +645,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
   }
 
   return {
-    tradingCardsList,
+    tradingCardsList: sortedTradingCardsList,
     isLoading,
     loadingItemPrice,
     loadingListButton,
@@ -619,5 +662,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
     handleRefresh,
     handleSellAllCards,
     handleRemoveActiveListings,
+    cardSortStyle,
+    setCardSortStyle,
   }
 }

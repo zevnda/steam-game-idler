@@ -18,7 +18,7 @@ export default function GamesList(): ReactElement {
 
   const [columnCount, setColumnCount] = useState(5)
   useEffect(() => {
-    const updateColumnCount = () => {
+    const updateColumnCount = (): void => {
       setColumnCount(window.innerWidth >= 1536 ? 7 : 5)
     }
     updateColumnCount()
@@ -29,7 +29,7 @@ export default function GamesList(): ReactElement {
   const recommendedHeight = 335
   const recentsHeight = 210
   const headerHeight = 40
-  const getDynamicRowHeight = () => (sidebarCollapsed ? 175 : 160)
+  const getDynamicRowHeight = (): number => (sidebarCollapsed ? 175 : 160)
 
   const games = gamesContext.filteredGames || []
   const gameRowCount = Math.ceil(games.length / columnCount)
@@ -43,7 +43,7 @@ export default function GamesList(): ReactElement {
   rows.push('header')
   for (let i = 0; i < gameRowCount; i++) rows.push(i)
 
-  const getRowHeight = (index: number) => {
+  const getRowHeight = (index: number): number => {
     const rowType = rows[index]
     if (rowType === 'recommended') return recommendedHeight
     if (rowType === 'recent') return recentsHeight
@@ -54,7 +54,7 @@ export default function GamesList(): ReactElement {
   const totalHeight = rows.reduce<number>((sum, _, idx) => sum + getRowHeight(idx), 0)
   const listHeight = Math.min(totalHeight, window.innerHeight - 168)
 
-  const Row = ({ index, style }: { index: number; style: React.CSSProperties }) => {
+  const Row = ({ index, style }: { index: number; style: React.CSSProperties }): ReactElement | null => {
     const rowType = rows[index]
     if (rowType === 'recommended') {
       return (
@@ -110,15 +110,13 @@ export default function GamesList(): ReactElement {
       ref={gamesContext.scrollContainerRef}
     >
       {!showAchievements && (
-        <>
-          <PageHeader
-            sortStyle={gamesContext.sortStyle}
-            setSortStyle={gamesContext.setSortStyle}
-            filteredGames={gamesContext.filteredGames}
-            visibleGames={gamesContext.visibleGames}
-            setRefreshKey={gamesContext.setRefreshKey}
-          />
-        </>
+        <PageHeader
+          sortStyle={gamesContext.sortStyle}
+          setSortStyle={gamesContext.setSortStyle}
+          filteredGames={gamesContext.filteredGames}
+          visibleGames={gamesContext.visibleGames}
+          setRefreshKey={gamesContext.setRefreshKey}
+        />
       )}
 
       {!gamesContext.isLoading ? (
@@ -127,7 +125,7 @@ export default function GamesList(): ReactElement {
           height={listHeight}
           itemCount={rows.length}
           itemSize={getRowHeight}
-          width={'100%'}
+          width='100%'
           style={{
             overflowX: 'hidden',
             minHeight: window.innerHeight - 168,

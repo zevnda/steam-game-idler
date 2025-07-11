@@ -1,7 +1,8 @@
 import type useTradingCardsList from '@/hooks/trading-cards/useTradingCardsList'
+import type { cardSortOption } from '@/types'
 import type { ReactElement } from 'react'
 
-import { Button, cn, Divider, useDisclosure } from '@heroui/react'
+import { Button, cn, Divider, Tab, Tabs, useDisclosure } from '@heroui/react'
 import { useTranslation } from 'react-i18next'
 import { TbChecks, TbEraser, TbPackageExport, TbX } from 'react-icons/tb'
 
@@ -33,6 +34,20 @@ export default function PageHeader({ selectedCardsWithPrice, tradingCardContext 
   const { isOpen: isBulkOpen, onOpen: onBulkOpen, onOpenChange: onBulkOpenChange } = useDisclosure()
   const { isOpen: isRemoveOpen, onOpen: onRemoveOpen, onOpenChange: onRemoveOpenChange } = useDisclosure()
 
+  const handleCardSorting = (key: string): void => {
+    tradingCardContext.setCardSortStyle?.(key)
+  }
+
+  const cardSortOptions: cardSortOption[] = [
+    { key: 'a-z', label: 'Card Name Ascending' },
+    { key: 'z-a', label: 'Card Name Descending' },
+    { key: 'aa-zz', label: 'Game Name Ascending' },
+    { key: 'zz-aa', label: 'Game Name Descending' },
+    { key: 'badge', label: 'Badge Level' },
+    { key: 'foil', label: 'Foils' },
+    { key: 'dupes', label: 'Duplicates' },
+  ]
+
   return (
     <>
       <div
@@ -47,63 +62,90 @@ export default function PageHeader({ selectedCardsWithPrice, tradingCardContext 
               <p className='text-3xl font-black'>{t('tradingCards.title')}</p>
               <p className='text-xs text-altwhite my-2'>{t('tradingCards.subtitle')}</p>
 
-              <div className='flex items-center gap-2 mt-1'>
-                <Button
-                  className='bg-btn-secondary text-btn-text font-bold'
-                  radius='full'
-                  onPress={() => tradingCardContext.handleRefresh()}
-                >
-                  {t('setup.refresh')}
-                </Button>
+              <div className='flex flex-col justify-center gap-2 mt-1'>
+                <div className='flex items-center gap-2 mt-1'>
+                  <p className='text-sm text-altwhite font-bold'>{t('common.sortBy')}</p>
 
-                <Button
-                  className='bg-btn-secondary text-btn-text font-bold'
-                  radius='full'
-                  isDisabled={selectedCardsWithPrice.length === 0}
-                  isLoading={tradingCardContext.loadingListButton}
-                  startContent={!tradingCardContext.loadingListButton && <TbChecks fontSize={20} />}
-                  onPress={onConfirmOpen}
-                >
-                  {t('tradingCards.list')} {selectedCardsWithPrice.length > 0 && `(${selectedCardsWithPrice.length})`}
-                </Button>
+                  <Tabs
+                    aria-label='sort options'
+                    items={cardSortOptions}
+                    selectedKey={tradingCardContext.cardSortStyle}
+                    radius='full'
+                    classNames={{
+                      tabList: 'gap-0 w-full bg-tab-panel',
+                      tab: cn(
+                        'data-[hover-unselected=true]:!bg-item-hover',
+                        'data-[hover-unselected=true]:opacity-100',
+                      ),
+                      tabContent: 'text-sm group-data-[selected=true]:text-content text-altwhite font-bold',
+                      cursor: '!bg-item-active w-full',
+                    }}
+                    onSelectionChange={key => {
+                      handleCardSorting(key as string)
+                    }}
+                  >
+                    {item => <Tab key={item.key} title={item.label} />}
+                  </Tabs>
+                </div>
 
-                <Button
-                  className='bg-btn-secondary text-btn-text font-bold'
-                  radius='full'
-                  isDisabled={tradingCardContext.tradingCardsList.length === 0}
-                  isLoading={tradingCardContext.loadingListButton}
-                  startContent={!tradingCardContext.loadingListButton && <TbPackageExport fontSize={20} />}
-                  onPress={onBulkOpen}
-                >
-                  {t('tradingCards.bulk', { count: tradingCardContext.tradingCardsList?.length || 0 })}
-                </Button>
+                <div className='flex items-center gap-2 mt-1'>
+                  <Button
+                    className='bg-btn-secondary text-btn-text font-bold'
+                    radius='full'
+                    onPress={() => tradingCardContext.handleRefresh()}
+                  >
+                    {t('setup.refresh')}
+                  </Button>
 
-                <Button
-                  className='font-bold'
-                  radius='full'
-                  color='danger'
-                  isLoading={tradingCardContext.loadingRemoveListings}
-                  startContent={!tradingCardContext.loadingRemoveListings && <TbEraser fontSize={20} />}
-                  onPress={onRemoveOpen}
-                >
-                  {t('tradingCards.remove')}
-                </Button>
+                  <Button
+                    className='bg-btn-secondary text-btn-text font-bold'
+                    radius='full'
+                    isDisabled={selectedCardsWithPrice.length === 0}
+                    isLoading={tradingCardContext.loadingListButton}
+                    startContent={!tradingCardContext.loadingListButton && <TbChecks fontSize={20} />}
+                    onPress={onConfirmOpen}
+                  >
+                    {t('tradingCards.list')} {selectedCardsWithPrice.length > 0 && `(${selectedCardsWithPrice.length})`}
+                  </Button>
 
-                {tradingCardQueryValue && (
-                  <div className='flex items-center gap-2'>
-                    <Divider orientation='vertical' className='mx-2 h-8 bg-border' />
-                    <p className='text-sm text-altwhite font-bold'>Search</p>
-                    <div className='flex items-center gap-2 text-sm text-altwhite p-2 bg-item-active rounded-full max-w-44'>
-                      <p className='text-content truncate'>{tradingCardQueryValue}</p>
-                      <div
-                        className='flex items-center justify-center cursor-pointer bg-item-hover hover:bg-item-hover/80 rounded-full p-1 duration-150'
-                        onClick={() => setTradingCardQueryValue('')}
-                      >
-                        <TbX />
+                  <Button
+                    className='bg-btn-secondary text-btn-text font-bold'
+                    radius='full'
+                    isDisabled={tradingCardContext.tradingCardsList.length === 0}
+                    isLoading={tradingCardContext.loadingListButton}
+                    startContent={!tradingCardContext.loadingListButton && <TbPackageExport fontSize={20} />}
+                    onPress={onBulkOpen}
+                  >
+                    {t('tradingCards.bulk', { count: tradingCardContext.tradingCardsList?.length || 0 })}
+                  </Button>
+
+                  <Button
+                    className='font-bold'
+                    radius='full'
+                    color='danger'
+                    isLoading={tradingCardContext.loadingRemoveListings}
+                    startContent={!tradingCardContext.loadingRemoveListings && <TbEraser fontSize={20} />}
+                    onPress={onRemoveOpen}
+                  >
+                    {t('tradingCards.remove')}
+                  </Button>
+
+                  {tradingCardQueryValue && (
+                    <div className='flex items-center gap-2'>
+                      <Divider orientation='vertical' className='mx-2 h-8 bg-border' />
+                      <p className='text-sm text-altwhite font-bold'>Search</p>
+                      <div className='flex items-center gap-2 text-sm text-altwhite p-2 bg-item-active rounded-full max-w-44'>
+                        <p className='text-content truncate'>{tradingCardQueryValue}</p>
+                        <div
+                          className='flex items-center justify-center cursor-pointer bg-item-hover hover:bg-item-hover/80 rounded-full p-1 duration-150'
+                          onClick={() => setTradingCardQueryValue('')}
+                        >
+                          <TbX />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
             </div>
           </div>

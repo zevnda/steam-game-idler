@@ -75,3 +75,39 @@ svg {
 .pulse-border {
   animation: pulse-border 1.5s infinite;
 }
+
+.foil-holo-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: 0.5rem;
+  pointer-events: none;
+  opacity: 0.1;
+  background: linear-gradient(120deg, #b993d6 0%, #8ca6db 20%, #f5f7fa 40%, #a1c4fd 60%, #c2e9fb 80%, #b993d6 100%);
+  background-size: 200% 200%;
+  animation: foil-holo-shimmer 3s linear infinite;
+  filter: blur(0.5px) brightness(1.05);
+}
+.foil-holo-bg::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 0.5rem;
+  pointer-events: none;
+  z-index: 1;
+  border: 2px solid #b993d6;
+  box-shadow: 0 0 12px 2px #b993d6cc;
+  opacity: 0.5;
+}
+@keyframes foil-holo-shimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}

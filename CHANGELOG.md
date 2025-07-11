@@ -3,6 +3,8 @@
 ### Changes in v2.0.0
 
 - Complete UI overhaul
+- Added sort option to `trading card manager`
+- Foil cards in `trading card manager` now have their own style to stand out
 
 <!-- 1.16.2 -->
 

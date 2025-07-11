@@ -2,7 +2,7 @@ import type { Game } from '@/types'
 import type { ReactElement } from 'react'
 
 import { Button } from '@heroui/react'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { TbChevronLeft, TbChevronRight } from 'react-icons/tb'
 
 import GameCard from '@/components/ui/GameCard'
@@ -32,7 +32,7 @@ export default function RecommendedGamesCarousel({ gamesContext }: RecommendedGa
     }
   }
 
-  const autoScroll = (): void => {
+  const autoScroll = useCallback((): void => {
     if (scrollContainerRef.current) {
       const container = scrollContainerRef.current
       const maxScroll = container.scrollWidth - container.clientWidth
@@ -47,7 +47,7 @@ export default function RecommendedGamesCarousel({ gamesContext }: RecommendedGa
         scroll('right')
       }
     }
-  }
+  }, [scrollContainerRef])
 
   const handleManualScroll = (direction: 'left' | 'right'): void => {
     setIsAutoScrolling(false)
@@ -74,7 +74,7 @@ export default function RecommendedGamesCarousel({ gamesContext }: RecommendedGa
         clearInterval(autoScrollIntervalRef.current)
       }
     }
-  }, [isAutoScrolling, gamesContext.unplayedGames.length])
+  }, [isAutoScrolling, autoScroll, gamesContext.unplayedGames.length])
 
   useEffect(() => {
     return () => {
@@ -85,7 +85,7 @@ export default function RecommendedGamesCarousel({ gamesContext }: RecommendedGa
   }, [])
 
   if (gamesContext.unplayedGames.length === 0) {
-    return <></>
+    return <div />
   }
 
   return (

@@ -248,6 +248,25 @@ pub async fn get_trading_cards(
             // Get badge level for this appid
             let badge_level = badge_levels.get(&appid).cloned().unwrap_or(0);
 
+            // Check if this card is a foil
+            let is_foil = item
+                .get("tags")
+                .and_then(|tags| tags.as_array())
+                .map(|tags| {
+                    tags.iter().any(|tag| {
+                        tag.get("category")
+                            .and_then(|c| c.as_str())
+                            .map(|c| c == "cardborder")
+                            .unwrap_or(false)
+                            && tag
+                                .get("localized_tag_name")
+                                .and_then(|n| n.as_str())
+                                .map(|n| n == "Foil")
+                                .unwrap_or(false)
+                    })
+                })
+                .unwrap_or(false);
+
             // Get assets from asset_map using classid+instanceid as key
             let key = format!("{}_{}", classid, instanceid);
             if let Some(assets) = asset_map.get(&key) {
@@ -255,7 +274,7 @@ pub async fn get_trading_cards(
                     // Create multiple entries for items with amount > 1
                     for _ in 0..*amount {
                         if !classid.is_empty() && !image_url.is_empty() {
-                            trading_cards.push(json!({
+                            let mut card_json = json!({
                                 "id": classid,
                                 "assetid": assetid,
                                 "appid": appid,
@@ -265,7 +284,11 @@ pub async fn get_trading_cards(
                                 "full_name": full_name,
                                 "market_hash_name": market_hash_name,
                                 "badge_level": badge_level
-                            }));
+                            });
+                            if is_foil {
+                                card_json["foil"] = json!(true);
+                            }
+                            trading_cards.push(card_json);
                         }
                     }
                 }

@@ -24,6 +24,7 @@ interface RowData {
   styles: CSSProperties
   t: (key: string, options?: Record<string, number>) => string
   lockedCards: string[]
+  cardsPerRow: number
   handleLockCard: (id: string) => void
 }
 
@@ -36,19 +37,20 @@ interface RowProps {
 const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
   const { tradingCardContext, styles, t, lockedCards, handleLockCard } = data
 
-  const item1 = tradingCardContext.filteredTradingCardsList[index * 6]
-  const item2 = tradingCardContext.filteredTradingCardsList[index * 6 + 1]
-  const item3 = tradingCardContext.filteredTradingCardsList[index * 6 + 2]
-  const item4 = tradingCardContext.filteredTradingCardsList[index * 6 + 3]
-  const item5 = tradingCardContext.filteredTradingCardsList[index * 6 + 4]
-  const item6 = tradingCardContext.filteredTradingCardsList[index * 6 + 5]
+  const cardsPerRow = data.cardsPerRow || 6
+  const items = []
+  for (let i = 0; i < cardsPerRow; i++) {
+    const item = tradingCardContext.filteredTradingCardsList[index * cardsPerRow + i]
+    items.push(item)
+  }
 
-  if (!item1 && !item2 && !item3 && !item4 && !item5 && !item6) return null
+  if (items.every(item => !item)) return null
 
   const renderCard = (item: TradingCard): ReactElement | null => {
     if (!item) return null
 
     const isLocked = lockedCards.includes(item.id)
+    const isFoil = item.foil
 
     return (
       <div
@@ -56,7 +58,18 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
         className={cn(
           'flex flex-col justify-start items-center bg-sidebar mb-4 rounded-lg border border-border p-2',
           lockedCards.includes(item.id) && 'opacity-50',
+          isFoil && 'foil-holo-bg',
         )}
+        style={
+          isFoil
+            ? {
+                borderColor: '#b993d6',
+                position: 'relative',
+                overflow: 'hidden',
+                background: 'rgba(185,147,214,0.10)',
+              }
+            : undefined
+        }
       >
         <div className='relative flex justify-between items-center w-full mb-2'>
           <Checkbox
@@ -160,13 +173,8 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
   }
 
   return (
-    <div style={style} className='grid grid-cols-6 gap-4 px-4 pt-2'>
-      {renderCard(item1)}
-      {renderCard(item2)}
-      {renderCard(item3)}
-      {renderCard(item4)}
-      {renderCard(item5)}
-      {renderCard(item6)}
+    <div style={style} className={`grid gap-4 px-4 pt-2 ${cardsPerRow === 9 ? 'grid-cols-9' : 'grid-cols-6'}`}>
+      {items.map((item, idx) => renderCard(item))}
     </div>
   )
 })
@@ -180,6 +188,7 @@ export default function TradingCardsList(): ReactElement {
   const [styles, setStyles] = useState({})
   const [windowInnerHeight, setWindowInnerHeight] = useState(0)
   const [lockedCards, setLockedCards] = useState<string[]>([])
+  const [cardsPerRow, setCardsPerRow] = useState(6)
   const tradingCardContext = useTradingCardsList()
 
   useEffect(() => {
@@ -204,6 +213,15 @@ export default function TradingCardsList(): ReactElement {
     }
   }, [])
 
+  useEffect(() => {
+    const updateCardsPerRow = (): void => {
+      setCardsPerRow(window.innerWidth >= 1536 ? 9 : 6)
+    }
+    updateCardsPerRow()
+    window.addEventListener('resize', updateCardsPerRow)
+    return () => window.removeEventListener('resize', updateCardsPerRow)
+  }, [])
+
   const handleLockCard = (id: string): void => {
     setLockedCards(prev => {
       const newLockedCards = prev.includes(id) ? prev.filter(cardId => cardId !== id) : [...prev, id]
@@ -222,7 +240,7 @@ export default function TradingCardsList(): ReactElement {
     [tradingCardContext.tradingCardsList, tradingCardQueryValue],
   )
 
-  const itemData: RowData = {
+  const itemData: RowData & { cardsPerRow: number } = {
     tradingCardContext: {
       ...tradingCardContext,
       filteredTradingCardsList,
@@ -231,6 +249,7 @@ export default function TradingCardsList(): ReactElement {
     t,
     lockedCards,
     handleLockCard,
+    cardsPerRow,
   }
 
   const selectedCardsWithPrice = useMemo(
@@ -258,8 +277,9 @@ export default function TradingCardsList(): ReactElement {
       {!tradingCardContext.isLoading ? (
         <div className='flex flex-col'>
           <List
-            height={windowInnerHeight - 168}
-            itemCount={Math.ceil(filteredTradingCardsList.length / 6)}
+            key={tradingCardContext.cardSortStyle + '-' + tradingCardQueryValue + '-' + cardsPerRow}
+            height={windowInnerHeight - 224}
+            itemCount={Math.ceil(filteredTradingCardsList.length / cardsPerRow)}
             itemSize={319}
             width='100%'
             itemData={itemData}

@@ -34,7 +34,7 @@ export default function RecentGamesCarousel({ gamesContext }: RecentGamesCarouse
   const topRecentGames = gamesContext.recentGames.slice(0, 10)
 
   if (topRecentGames.length === 0) {
-    return <></>
+    return <div />
   }
 
   return (
