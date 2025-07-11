@@ -29,7 +29,7 @@ export default function GamesList(): ReactElement {
   const recommendedHeight = 335
   const recentsHeight = 210
   const headerHeight = 40
-  const rowHeight = 160
+  const getDynamicRowHeight = () => (sidebarCollapsed ? 175 : 160)
 
   const games = gamesContext.filteredGames || []
   const gameRowCount = Math.ceil(games.length / columnCount)
@@ -48,7 +48,7 @@ export default function GamesList(): ReactElement {
     if (rowType === 'recommended') return recommendedHeight
     if (rowType === 'recent') return recentsHeight
     if (rowType === 'header') return headerHeight
-    return rowHeight
+    return getDynamicRowHeight()
   }
 
   const totalHeight = rows.reduce<number>((sum, _, idx) => sum + getRowHeight(idx), 0)
@@ -123,6 +123,7 @@ export default function GamesList(): ReactElement {
 
       {!gamesContext.isLoading ? (
         <List
+          key={sidebarCollapsed ? 'collapsed' : 'expanded'}
           height={listHeight}
           itemCount={rows.length}
           itemSize={getRowHeight}
