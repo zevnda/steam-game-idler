@@ -176,7 +176,7 @@ Row.displayName = 'Row'
 export default function TradingCardsList(): ReactElement {
   const { t } = useTranslation()
   const { tradingCardQueryValue } = useSearchContext()
-  const { isDarkMode, sidebarCollapsed } = useStateContext()
+  const { isDarkMode, sidebarCollapsed, transitionDuration } = useStateContext()
   const [styles, setStyles] = useState({})
   const [windowInnerHeight, setWindowInnerHeight] = useState(0)
   const [lockedCards, setLockedCards] = useState<string[]>([])
@@ -243,11 +243,15 @@ export default function TradingCardsList(): ReactElement {
 
   return (
     <div
+      key={tradingCardContext.refreshKey}
       className={cn(
-        'min-h-calc max-h-calc bg-base overflow-y-auto overflow-hidden mt-9 duration-500 ease-in-out',
+        'min-h-calc max-h-calc bg-base overflow-y-auto overflow-x-hidden mt-9 ease-in-out',
         sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]',
       )}
-      key={tradingCardContext.refreshKey}
+      style={{
+        transitionDuration,
+        transitionProperty: 'width',
+      }}
     >
       <PageHeader selectedCardsWithPrice={selectedCardsWithPrice} tradingCardContext={tradingCardContext} />
 
