@@ -39,13 +39,13 @@ export default function PageHeader({ selectedCardsWithPrice, tradingCardContext 
   }
 
   const cardSortOptions: cardSortOption[] = [
-    { key: 'a-z', label: 'Card Name Ascending' },
-    { key: 'z-a', label: 'Card Name Descending' },
-    { key: 'aa-zz', label: 'Game Name Ascending' },
-    { key: 'zz-aa', label: 'Game Name Descending' },
-    { key: 'badge', label: 'Badge Level' },
-    { key: 'foil', label: 'Foils' },
-    { key: 'dupes', label: 'Duplicates' },
+    { key: 'a-z', label: t('tradingCards.sort.cardNameAsc') },
+    { key: 'z-a', label: t('tradingCards.sort.cardNameDesc') },
+    { key: 'aa-zz', label: t('tradingCards.sort.gameNameAsc') },
+    { key: 'zz-aa', label: t('tradingCards.sort.gameNameDesc') },
+    { key: 'badge', label: t('tradingCards.sort.badge') },
+    { key: 'foil', label: t('tradingCards.sort.foils') },
+    { key: 'dupes', label: t('tradingCards.sort.duplicates') },
   ]
 
   return (

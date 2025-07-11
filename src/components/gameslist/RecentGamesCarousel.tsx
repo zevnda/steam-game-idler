@@ -3,6 +3,7 @@ import type { Dispatch, ReactElement, SetStateAction } from 'react'
 
 import { Button, cn } from '@heroui/react'
 import { useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { TbChevronLeft, TbChevronRight } from 'react-icons/tb'
 
 import GameCard from '@/components/ui/GameCard'
@@ -17,6 +18,7 @@ interface RecentGamesCarouselProps {
 
 export default function RecentGamesCarousel({ gamesContext }: RecentGamesCarouselProps): ReactElement {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
+  const { t } = useTranslation()
 
   const scroll = (direction: 'left' | 'right'): void => {
     if (scrollContainerRef.current) {
@@ -41,7 +43,7 @@ export default function RecentGamesCarousel({ gamesContext }: RecentGamesCarouse
     <div className={cn('duration-250 px-4 overflow-hidden group/carousel')}>
       <div className='flex items-center justify-between mb-3'>
         <div className='flex items-baseline gap-2'>
-          <p className='text-lg font-black'>Recently Played</p>
+          <p className='text-lg font-black'>{t('gamesList.recentlyPlayed')}</p>
         </div>
         <div className='flex gap-2'>
           <Button

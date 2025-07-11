@@ -124,7 +124,7 @@ export default function Setup(): ReactElement {
                           </div>
                           {item?.mostRecent === 1 && (
                             <div className='flex justify-end items-center'>
-                              <CustomTooltip content='Currently signed in to Steam' placement='top' important>
+                              <CustomTooltip content={t('setup.currentlySignedIn')} placement='top' important>
                                 <div className='flex items-center gap-1 px-2 py-1 bg-dynamic/20 rounded-full'>
                                   <TbUserFilled size={16} className='text-dynamic' />
                                 </div>

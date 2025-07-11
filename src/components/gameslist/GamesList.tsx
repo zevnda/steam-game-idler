@@ -2,6 +2,7 @@ import type { ReactElement } from 'react'
 
 import { cn, Spinner } from '@heroui/react'
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { VariableSizeList as List } from 'react-window'
 
 import { useStateContext } from '@/components/contexts/StateContext'
@@ -15,6 +16,7 @@ import useGamesList from '@/hooks/gameslist/useGamesList'
 export default function GamesList(): ReactElement {
   const gamesContext = useGamesList()
   const { sidebarCollapsed, showAchievements, transitionDuration } = useStateContext()
+  const { t } = useTranslation()
 
   const [columnCount, setColumnCount] = useState(5)
   useEffect(() => {
@@ -73,7 +75,7 @@ export default function GamesList(): ReactElement {
     if (rowType === 'header') {
       return (
         <div style={style}>
-          <p className='text-lg font-black px-4'>All Games</p>
+          <p className='text-lg font-black px-4'>{t('gamesList.allGames')}</p>
         </div>
       )
     }

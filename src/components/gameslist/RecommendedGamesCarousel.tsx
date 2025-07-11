@@ -3,6 +3,7 @@ import type { ReactElement } from 'react'
 
 import { Button } from '@heroui/react'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { TbChevronLeft, TbChevronRight } from 'react-icons/tb'
 
 import GameCard from '@/components/ui/GameCard'
@@ -18,6 +19,7 @@ export default function RecommendedGamesCarousel({ gamesContext }: RecommendedGa
   const [isAutoScrolling, setIsAutoScrolling] = useState(true)
   const autoScrollIntervalRef = useRef<NodeJS.Timeout | null>(null)
   const pauseTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const { t } = useTranslation()
 
   const scroll = (direction: 'left' | 'right'): void => {
     if (scrollContainerRef.current) {
@@ -91,7 +93,7 @@ export default function RecommendedGamesCarousel({ gamesContext }: RecommendedGa
   return (
     <div className='mb-6 px-4 mt-4'>
       <div className='flex items-center justify-between mb-3'>
-        <p className='text-lg font-black'>Recommended</p>
+        <p className='text-lg font-black'>{t('gamesList.recommended')}</p>
         <div className='flex gap-2'>
           <Button
             isIconOnly
