@@ -8,10 +8,12 @@ import { TbChevronLeft, TbChevronRight } from 'react-icons/tb'
 import GameCard from '@/components/ui/GameCard'
 
 interface RecommendedGamesCarouselProps {
-  unplayedGames: Game[]
+  gamesContext: {
+    unplayedGames: Game[]
+  }
 }
 
-export default function RecommendedGamesCarousel({ unplayedGames }: RecommendedGamesCarouselProps): ReactElement {
+export default function RecommendedGamesCarousel({ gamesContext }: RecommendedGamesCarouselProps): ReactElement {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const [isAutoScrolling, setIsAutoScrolling] = useState(true)
   const autoScrollIntervalRef = useRef<NodeJS.Timeout | null>(null)
@@ -61,8 +63,8 @@ export default function RecommendedGamesCarousel({ unplayedGames }: RecommendedG
   }
 
   useEffect(() => {
-    if (isAutoScrolling && unplayedGames.length > 0) {
-      autoScrollIntervalRef.current = setInterval(autoScroll, 5000)
+    if (isAutoScrolling && gamesContext.unplayedGames.length > 0) {
+      autoScrollIntervalRef.current = setInterval(autoScroll, 7000)
     } else if (autoScrollIntervalRef.current) {
       clearInterval(autoScrollIntervalRef.current)
     }
@@ -72,7 +74,7 @@ export default function RecommendedGamesCarousel({ unplayedGames }: RecommendedG
         clearInterval(autoScrollIntervalRef.current)
       }
     }
-  }, [isAutoScrolling, unplayedGames.length])
+  }, [isAutoScrolling, gamesContext.unplayedGames.length])
 
   useEffect(() => {
     return () => {
@@ -82,7 +84,7 @@ export default function RecommendedGamesCarousel({ unplayedGames }: RecommendedG
     }
   }, [])
 
-  if (unplayedGames.length === 0) {
+  if (gamesContext.unplayedGames.length === 0) {
     return <></>
   }
 
@@ -113,7 +115,7 @@ export default function RecommendedGamesCarousel({ unplayedGames }: RecommendedG
       </div>
 
       <div ref={scrollContainerRef} className='flex gap-4 pb-2 overflow-x-hidden'>
-        {unplayedGames.map(game => (
+        {gamesContext.unplayedGames.map(game => (
           <div key={game.appid} className='flex-shrink-0 w-[440px]'>
             <GameCard item={game} />
           </div>

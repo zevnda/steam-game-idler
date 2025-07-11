@@ -47,11 +47,11 @@ export default function GamesList(): ReactElement {
       )}
 
       {!gamesContext.isLoading && gamesContext.unplayedGames.length > 0 && (
-        <RecommendedGamesCarousel unplayedGames={gamesContext.unplayedGames} />
+        <RecommendedGamesCarousel gamesContext={gamesContext} />
       )}
 
-      {!gamesContext.isLoading && gamesContext.sortStyle !== 'recent' && gamesContext.recentGames.length > 0 && (
-        <RecentGamesCarousel recentGames={gamesContext.recentGames} />
+      {!gamesContext.isLoading && gamesContext.recentGames.length > 0 && (
+        <RecentGamesCarousel gamesContext={gamesContext} />
       )}
 
       {!gamesContext.isLoading ? (

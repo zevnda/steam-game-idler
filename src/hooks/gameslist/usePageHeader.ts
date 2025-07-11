@@ -3,7 +3,6 @@ import type { Dispatch, SetStateAction } from 'react'
 
 import { invoke } from '@tauri-apps/api/core'
 
-import { useEffect, useState } from 'react'
 import moment from 'moment'
 import { useTranslation } from 'react-i18next'
 
@@ -11,7 +10,6 @@ import { logEvent } from '@/utils/tasks'
 import { showDangerToast, showPrimaryToast } from '@/utils/toasts'
 
 interface PageHeaderHook {
-  sortStyle: SortStyleValue
   handleSorting: (currentKey: string | undefined) => void
   handleRefetch: (steamId: string | undefined) => Promise<void>
 }
@@ -21,21 +19,13 @@ export const usePageHeader = (
   setRefreshKey: Dispatch<SetStateAction<number>>,
 ): PageHeaderHook => {
   const { t } = useTranslation()
-  const [sortStyle, setSortStyleState] = useState<SortStyleValue>(
-    (localStorage.getItem('sortStyle') as SortStyleValue) || '1-0',
-  )
-
-  // Update sort style when state changes
-  useEffect(() => {
-    setSortStyle(sortStyle)
-  }, [sortStyle, setSortStyle])
 
   const handleSorting = (currentKey: string | undefined): void => {
     try {
       if (!currentKey) return
       // Save the selected sort style to localStorage and update state
       localStorage.setItem('sortStyle', currentKey)
-      setSortStyleState(currentKey)
+      setSortStyle(currentKey)
     } catch (error) {
       showDangerToast(t('common.error'))
       console.error('Error in (handleSorting):', error)
@@ -72,5 +62,5 @@ export const usePageHeader = (
     }
   }
 
-  return { sortStyle, handleSorting, handleRefetch }
+  return { handleSorting, handleRefetch }
 }

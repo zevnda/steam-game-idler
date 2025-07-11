@@ -37,6 +37,8 @@ export default function PageHeader({
     { key: 'recent', label: t('gamesList.sort.recent') },
   ]
 
+  console.log('sortStyle:', sortStyle)
+
   return (
     <div className={cn('relative w-[calc(100vw-227px)] pl-4 pt-2', filteredGames?.length >= 21 ? 'pr-4' : 'pr-2')}>
       <div className='flex justify-between items-center pb-3'>
@@ -59,12 +61,15 @@ export default function PageHeader({
               >
                 {t('setup.refresh')}
               </Button>
+
               <Divider orientation='vertical' className='mx-2 h-8 bg-border' />
+
               <p className='text-sm text-altwhite font-bold'>{t('common.sortBy')}</p>
+
               <Tabs
                 aria-label='sort options'
                 items={sortOptions}
-                defaultSelectedKey={sortStyle}
+                selectedKey={sortStyle}
                 radius='full'
                 classNames={{
                   tabList: 'gap-0 w-full bg-tab-panel',

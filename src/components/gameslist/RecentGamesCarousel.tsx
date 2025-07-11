@@ -1,17 +1,21 @@
 import type { Game } from '@/types'
-import type { ReactElement } from 'react'
+import type { Dispatch, ReactElement, SetStateAction } from 'react'
 
-import { Button } from '@heroui/react'
+import { Button, cn } from '@heroui/react'
 import { useRef } from 'react'
 import { TbChevronLeft, TbChevronRight } from 'react-icons/tb'
 
 import GameCard from '@/components/ui/GameCard'
 
 interface RecentGamesCarouselProps {
-  recentGames: Game[]
+  gamesContext: {
+    sortStyle: string
+    recentGames: Game[]
+    setSortStyle: Dispatch<SetStateAction<string>>
+  }
 }
 
-export default function RecentGamesCarousel({ recentGames }: RecentGamesCarouselProps): ReactElement {
+export default function RecentGamesCarousel({ gamesContext }: RecentGamesCarouselProps): ReactElement {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
 
   const scroll = (direction: 'left' | 'right'): void => {
@@ -27,16 +31,32 @@ export default function RecentGamesCarousel({ recentGames }: RecentGamesCarousel
     }
   }
 
-  const topRecentGames = recentGames.slice(0, 10)
+  const topRecentGames = gamesContext.recentGames.slice(0, 10)
 
   if (topRecentGames.length === 0) {
     return <></>
   }
 
   return (
-    <div className='mb-6 px-4 mt-4'>
+    <div
+      className={cn(
+        'duration-250 px-4 overflow-hidden group/carousel',
+        gamesContext.sortStyle !== 'recent' ? 'h-full opacity-100 mb-6 mt-4' : 'h-0 opacity-0',
+      )}
+    >
       <div className='flex items-center justify-between mb-4'>
-        <p className='font-black'>Recently Played</p>
+        <div className='flex items-baseline gap-2'>
+          <p className='font-black'>Recently Played</p>
+          <p
+            className='text-xs cursor-pointer text-dynamic hover:text-dynamic-hover opacity-0 group-hover/carousel:opacity-100 transition-[opacity] duration-150'
+            onClick={() => {
+              localStorage.setItem('sortStyle', 'recent')
+              gamesContext.setSortStyle('recent')
+            }}
+          >
+            View All
+          </p>
+        </div>
         <div className='flex gap-2'>
           <Button
             isIconOnly
@@ -60,7 +80,7 @@ export default function RecentGamesCarousel({ recentGames }: RecentGamesCarousel
       </div>
 
       <div ref={scrollContainerRef} className='flex gap-4 pb-2 overflow-x-hidden'>
-        {topRecentGames.map(game => (
+        {topRecentGames.map((game: Game) => (
           <div key={game.appid} className='flex-shrink-0 w-48'>
             <GameCard item={game} />
           </div>
