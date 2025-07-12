@@ -22,25 +22,45 @@ export default function RecentGamesCarousel({ gamesContext }: RecentGamesCarouse
 
   const scroll = (direction: 'left' | 'right'): void => {
     if (scrollContainerRef.current) {
-      const scrollAmount = 1000
-      const currentScroll = scrollContainerRef.current.scrollLeft
-      const newScroll = direction === 'left' ? currentScroll - scrollAmount : currentScroll + scrollAmount
+      const scrollAmount = 416
+      const container = scrollContainerRef.current
+      const maxScroll = container.scrollWidth - container.clientWidth
+      const currentScroll = container.scrollLeft
 
-      scrollContainerRef.current.scrollTo({
+      let newScroll
+      if (direction === 'left') {
+        if (currentScroll - scrollAmount > 0) {
+          newScroll = currentScroll - scrollAmount
+        } else if (currentScroll > 0) {
+          newScroll = 0
+        } else {
+          newScroll = maxScroll
+        }
+      } else {
+        if (currentScroll + scrollAmount < maxScroll) {
+          newScroll = currentScroll + scrollAmount
+        } else if (currentScroll < maxScroll) {
+          newScroll = maxScroll
+        } else {
+          newScroll = 0
+        }
+      }
+
+      container.scrollTo({
         left: newScroll,
         behavior: 'smooth',
       })
     }
   }
 
-  const topRecentGames = gamesContext.recentGames.slice(0, 10)
+  const topRecentGames = gamesContext.recentGames.slice(0, 15)
 
   if (topRecentGames.length === 0) {
     return <div />
   }
 
   return (
-    <div className={cn('duration-250 px-4 overflow-hidden group/carousel')}>
+    <div className={cn('duration-250 px-6 overflow-hidden group/carousel')}>
       <div className='flex items-center justify-between mb-3'>
         <div className='flex items-baseline gap-2'>
           <p className='text-lg font-black'>{t('gamesList.recentlyPlayed')}</p>

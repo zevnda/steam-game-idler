@@ -36,7 +36,7 @@ const GameCard = memo(function GameCard({
   const isIdling = idlingGame !== undefined
 
   const handleImageError = (event: SyntheticEvent<HTMLImageElement, Event>): void => {
-    ;(event.target as HTMLImageElement).src = '/fallback.jpg'
+    ;(event.target as HTMLImageElement).src = '/fallback.webp'
   }
 
   if (isFreeGame) {

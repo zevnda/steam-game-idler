@@ -36,7 +36,7 @@ export default function PageHeader({
   ]
 
   return (
-    <div className={cn('relative w-[calc(100vw-227px)] pl-4 pt-2', filteredGames?.length >= 21 ? 'pr-4' : 'pr-2')}>
+    <div className={cn('relative w-[calc(100vw-227px)] pl-6 pt-2')}>
       <div className='flex justify-between items-center pb-3'>
         <div className='flex items-center gap-1 select-none'>
           <div className='flex flex-col justify-center'>
@@ -83,7 +83,7 @@ export default function PageHeader({
                 <div className='flex items-center gap-2'>
                   <Divider orientation='vertical' className='mx-2 h-8 bg-border' />
                   <p className='text-sm text-altwhite font-bold'>Search</p>
-                  <div className='flex items-center gap-2 text-sm text-altwhite p-2 bg-item-active rounded-full max-w-44'>
+                  <div className='flex items-center gap-2 text-sm text-altwhite p-2 bg-item-active rounded-full max-wpx-64'>
                     <p className='text-content truncate'>{gameQueryValue}</p>
                     <div
                       className='flex items-center justify-center cursor-pointer bg-item-hover hover:bg-item-hover/80 rounded-full p-1 duration-150'

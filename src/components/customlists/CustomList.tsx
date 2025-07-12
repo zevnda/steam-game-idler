@@ -115,12 +115,7 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
           transitionProperty: 'width',
         }}
       >
-        <div
-          className={cn(
-            'w-[calc(100vw-227px)] z-[50] pl-4 pt-2',
-            list.slice(0, visibleGames).length >= 21 ? 'pr-4' : 'pr-2',
-          )}
-        >
+        <div className={cn('w-[calc(100vw-227px)] z-[50] pl-6 pt-2')}>
           <div className='flex justify-between items-center pb-3'>
             <div className='flex items-center gap-1 select-none'>
               <div className='flex flex-col justify-center'>
@@ -159,7 +154,7 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
 
         <DndContext onDragEnd={handleDragEnd}>
           <SortableContext items={list.map(item => item.appid)}>
-            <div className='grid grid-cols-5 2xl:grid-cols-7 gap-4 p-4'>
+            <div className='grid grid-cols-5 2xl:grid-cols-7 gap-4 p-6'>
               {list &&
                 list
                   .slice(0, visibleGames)
