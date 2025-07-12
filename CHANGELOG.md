@@ -2,7 +2,9 @@
 
 ### Changes in v2.0.1
 
-- Improve the look of foil trading cards in `trading card manager` for all themes
+- Removed the theme switch and made dark theme the default
+- Improved the look of foil trading cards in `trading card manager` for all themes
+- Other miscellaneous UI improvements
 
 <!-- 2.0.0 -->
 
