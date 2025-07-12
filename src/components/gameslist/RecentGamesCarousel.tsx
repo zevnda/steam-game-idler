@@ -22,18 +22,42 @@ export default function RecentGamesCarousel({ gamesContext }: RecentGamesCarouse
 
   const scroll = (direction: 'left' | 'right'): void => {
     if (scrollContainerRef.current) {
-      const scrollAmount = 1000
-      const currentScroll = scrollContainerRef.current.scrollLeft
-      const newScroll = direction === 'left' ? currentScroll - scrollAmount : currentScroll + scrollAmount
+      const scrollAmount = 416
+      const container = scrollContainerRef.current
+      const maxScroll = container.scrollWidth - container.clientWidth
+      const currentScroll = container.scrollLeft
 
-      scrollContainerRef.current.scrollTo({
+      let newScroll
+      if (direction === 'left') {
+        if (currentScroll - scrollAmount > 0) {
+          newScroll = currentScroll - scrollAmount
+        } else if (currentScroll > 0) {
+          // Go to the very start first
+          newScroll = 0
+        } else {
+          // Loop to end
+          newScroll = maxScroll
+        }
+      } else {
+        if (currentScroll + scrollAmount < maxScroll) {
+          newScroll = currentScroll + scrollAmount
+        } else if (currentScroll < maxScroll) {
+          // Go to the very end first
+          newScroll = maxScroll
+        } else {
+          // Loop to start
+          newScroll = 0
+        }
+      }
+
+      container.scrollTo({
         left: newScroll,
         behavior: 'smooth',
       })
     }
   }
 
-  const topRecentGames = gamesContext.recentGames.slice(0, 10)
+  const topRecentGames = gamesContext.recentGames.slice(0, 15)
 
   if (topRecentGames.length === 0) {
     return <div />
