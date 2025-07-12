@@ -27,7 +27,7 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement => {
   const item = filteredGamesList[index]
 
   const handleImageError = (event: SyntheticEvent<HTMLImageElement, Event>): void => {
-    ;(event.target as HTMLImageElement).src = '/fallback.jpg'
+    ;(event.target as HTMLImageElement).src = '/fallback.webp'
   }
 
   return (
