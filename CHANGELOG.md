@@ -1,3 +1,9 @@
+<!-- 2.0.1 -->
+
+### Changes in v2.0.1
+
+- Improve the look of foil trading cards in `trading card manager` for all themes
+
 <!-- 2.0.0 -->
 
 ### Changes in v2.0.0
