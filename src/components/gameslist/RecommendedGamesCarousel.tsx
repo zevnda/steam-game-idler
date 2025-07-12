@@ -33,20 +33,16 @@ export default function RecommendedGamesCarousel({ gamesContext }: RecommendedGa
         if (currentScroll - scrollAmount > 0) {
           newScroll = currentScroll - scrollAmount
         } else if (currentScroll > 0) {
-          // Go to the very start first
           newScroll = 0
         } else {
-          // Loop to end
           newScroll = maxScroll
         }
       } else {
         if (currentScroll + scrollAmount < maxScroll) {
           newScroll = currentScroll + scrollAmount
         } else if (currentScroll < maxScroll) {
-          // Go to the very end first
           newScroll = maxScroll
         } else {
-          // Loop to start
           newScroll = 0
         }
       }
@@ -115,7 +111,7 @@ export default function RecommendedGamesCarousel({ gamesContext }: RecommendedGa
   }
 
   return (
-    <div className='mb-6 px-4 mt-4'>
+    <div className='mb-6 px-6 mt-4'>
       <div className='flex items-center justify-between mb-3'>
         <p className='text-lg font-black'>{t('gamesList.recommended')}</p>
         <div className='flex gap-2'>

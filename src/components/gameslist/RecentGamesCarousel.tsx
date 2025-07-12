@@ -32,20 +32,16 @@ export default function RecentGamesCarousel({ gamesContext }: RecentGamesCarouse
         if (currentScroll - scrollAmount > 0) {
           newScroll = currentScroll - scrollAmount
         } else if (currentScroll > 0) {
-          // Go to the very start first
           newScroll = 0
         } else {
-          // Loop to end
           newScroll = maxScroll
         }
       } else {
         if (currentScroll + scrollAmount < maxScroll) {
           newScroll = currentScroll + scrollAmount
         } else if (currentScroll < maxScroll) {
-          // Go to the very end first
           newScroll = maxScroll
         } else {
-          // Loop to start
           newScroll = 0
         }
       }
@@ -64,7 +60,7 @@ export default function RecentGamesCarousel({ gamesContext }: RecentGamesCarouse
   }
 
   return (
-    <div className={cn('duration-250 px-4 overflow-hidden group/carousel')}>
+    <div className={cn('duration-250 px-6 overflow-hidden group/carousel')}>
       <div className='flex items-center justify-between mb-3'>
         <div className='flex items-baseline gap-2'>
           <p className='text-lg font-black'>{t('gamesList.recentlyPlayed')}</p>
