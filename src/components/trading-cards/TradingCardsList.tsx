@@ -58,7 +58,7 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
         className={cn(
           'flex flex-col justify-start items-center bg-sidebar mb-4 rounded-lg border border-border p-2',
           lockedCards.includes(item.id) && 'opacity-50',
-          isFoil && 'foil-holo-bg border-[#a96ad9]',
+          isFoil && 'holo-bg',
         )}
       >
         <div className='relative flex justify-between items-center w-full mb-2'>
