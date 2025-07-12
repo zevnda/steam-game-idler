@@ -81,7 +81,7 @@ export default function GamesList(): ReactElement {
     }
     if (typeof rowType === 'number') {
       return (
-        <div style={style} className={`grid gap-x-4 gap-y-4 px-6 ${columnCount === 7 ? 'grid-cols-7' : 'grid-cols-5'}`}>
+        <div style={style} className={`grid gap-x-5 gap-y-4 px-6 ${columnCount === 7 ? 'grid-cols-7' : 'grid-cols-5'}`}>
           {games.slice(rowType * columnCount, (rowType + 1) * columnCount).map(item => (
             <GameCard key={item.appid} item={item} />
           ))}

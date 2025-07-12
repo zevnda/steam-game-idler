@@ -139,7 +139,7 @@ export default function CardFarming({ activePage }: { activePage: ActivePageType
             WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 40%)',
           }}
         />
-        <div className='absolute top-0 left-0 bg-base/80 w-full h-screen backdrop-blur-lg' />
+        <div className='absolute top-0 left-0 bg-base/70 w-full h-screen backdrop-blur-lg' />
 
         <div className={cn('flex items-center flex-col gap-6 z-10 bg-base/60 p-8 rounded-lg w-full')}>
           <p className='text-3xl font-semibold'>{t('common.cardFarming')}</p>

@@ -84,7 +84,7 @@ export default function AchievementUnlocker({ activePage }: { activePage: Active
             WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 40%)',
           }}
         />
-        <div className={cn('absolute top-0 left-0 w-full h-screen bg-base/50 backdrop-blur-lg')} />
+        <div className={cn('absolute top-0 left-0 w-full h-screen bg-base/70 backdrop-blur-lg')} />
 
         <div className={cn('flex items-center flex-col gap-16 z-10 bg-base/60 p-8 rounded-lg w-full')}>
           <p className='text-3xl font-semibold'>{t('common.achievementUnlocker')}</p>

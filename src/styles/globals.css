@@ -45,24 +45,6 @@
   --holo-border: linear-gradient(120deg, #1d1d208f 0%, #7778868f 50%, #1d1d208f 100%);
 }
 
-.slate {
-  --sb-thumb: #26292f;
-  --sb-track: #1a1c20;
-  --code: #2d2d2d;
-  --indicator: #2f4a9e;
-  --indicatoralt: #2f4a9e89;
-  --holo-bg: linear-gradient(120deg, #383b448f 0%, #1e1e248f 50%, #383b448f 100%);
-  --holo-shine: linear-gradient(
-    115deg,
-    transparent 38%,
-    rgba(255, 255, 255, 0.33) 46%,
-    rgba(255, 255, 255, 0.66) 50%,
-    rgba(255, 255, 255, 0.33) 54%,
-    transparent 62%
-  );
-  --holo-border: linear-gradient(120deg, #3133358f 0%, #6e71808f 50%, #3133358f 100%);
-}
-
 ::-webkit-scrollbar {
   width: 4px;
 }
@@ -86,24 +68,6 @@ body {
 
 svg {
   outline: none;
-}
-
-@keyframes pulse-border {
-  0% {
-    border-color: var(--indicator);
-  }
-
-  50% {
-    border-color: var(--indicatoralt);
-  }
-
-  100% {
-    border-color: var(--indicator);
-  }
-}
-
-.pulse-border {
-  animation: pulse-border 1.5s infinite;
 }
 
 .holo-bg {

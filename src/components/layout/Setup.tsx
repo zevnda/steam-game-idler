@@ -57,13 +57,13 @@ export default function Setup(): ReactElement {
             priority
           />
         </motion.div>
-        <div className='absolute bg-base/50 backdrop-blur-lg w-full h-screen' />
+        <div className='absolute bg-base/20 backdrop-blur-lg w-full h-screen' />
 
         <div className='relative flex justify-center items-center flex-col gap-8 w-full h-screen px-4'>
           <motion.div
             className={cn(
               'flex backdrop-blur-xl bg-base/40 justify-center items-center',
-              'flex-col border border-border/60 min-w-[500px] max-w-[500px]',
+              'flex-col min-w-[500px] max-w-[500px]',
               'rounded-2xl shadow-2xl shadow-black/20',
             )}
             initial={{ y: 80, scale: 0.9, opacity: 0 }}
@@ -99,7 +99,7 @@ export default function Setup(): ReactElement {
                     {steamUsers.map((item, index) => (
                       <div
                         key={item?.steamId}
-                        className='last:border-none border-b border-border/30 hover:bg-item-hover/30 transition-all duration-300 cursor-pointer group'
+                        className='last:border-none border-b border-border/30 hover:bg-item-hover transition-all duration-300 cursor-pointer group'
                         onClick={() => handleLogin(index)}
                       >
                         <div className='flex gap-3 h-full p-4 w-full items-center'>

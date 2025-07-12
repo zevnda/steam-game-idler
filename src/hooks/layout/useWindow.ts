@@ -28,7 +28,8 @@ import { showDangerToast, t } from '@/utils/toasts'
 
 export default function useWindow(): void {
   const { t } = useTranslation()
-  const { theme } = useTheme()
+  // TODO: Remove line after update
+  const { theme, setTheme } = useTheme()
   const { setIdleGamesList } = useIdleContext()
   const {
     setIsDarkMode,
@@ -46,6 +47,11 @@ export default function useWindow(): void {
   useEffect(() => {
     emit('ready')
   }, [])
+
+  // TODO: Remove line after update
+  useEffect(() => {
+    setTheme('dark')
+  }, [setTheme])
 
   useEffect(() => {
     setUseBeta(userSettings.general.useBeta)
@@ -65,7 +71,7 @@ export default function useWindow(): void {
 
   useEffect(() => {
     // Set dark mode based on the current theme
-    const darkThemes = ['dark', 'slate']
+    const darkThemes = ['dark']
     setIsDarkMode(darkThemes.includes(String(theme)))
   }, [theme, setIsDarkMode])
 

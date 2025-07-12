@@ -15,19 +15,13 @@ export default function ThemeSwitch(): ReactElement | null {
   const [mounted, setMounted] = useState(false)
 
   const themes: Theme[] = [
-    { key: 'light', label: 'Light' },
+    // { key: 'light', label: 'Light' },
     { key: 'dark', label: 'Dark' },
-    { key: 'slate', label: 'Slate' },
+    // { key: 'slate', label: 'Slate' },
   ]
 
   useEffect(() => {
-    const localTheme = localStorage.getItem('theme')
-    if (!localTheme) {
-      localStorage.setItem('theme', 'dark')
-      setTheme('dark')
-    } else {
-      setTheme(localTheme)
-    }
+    setTheme('dark')
     setMounted(true)
   }, [setTheme])
 

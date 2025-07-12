@@ -23,7 +23,7 @@ export default function RecommendedGamesCarousel({ gamesContext }: RecommendedGa
 
   const scroll = (direction: 'left' | 'right'): void => {
     if (scrollContainerRef.current) {
-      const scrollAmount = 912
+      const scrollAmount = 440 * 2 + 20 + 20
       const container = scrollContainerRef.current
       const maxScroll = container.scrollWidth - container.clientWidth
       const currentScroll = container.scrollLeft
@@ -136,7 +136,7 @@ export default function RecommendedGamesCarousel({ gamesContext }: RecommendedGa
         </div>
       </div>
 
-      <div ref={scrollContainerRef} className='flex gap-4 pb-2 overflow-x-hidden'>
+      <div ref={scrollContainerRef} className='flex gap-5 pb-2 overflow-x-hidden'>
         {gamesContext.unplayedGames.map(game => (
           <div key={game.appid} className='flex-shrink-0 w-[440px]'>
             <GameCard item={game} />

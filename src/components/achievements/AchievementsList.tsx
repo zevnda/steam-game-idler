@@ -63,8 +63,8 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
 
   return (
     <div style={style} className='grid grid-cols-1 pb-4 pr-6'>
-      <div className='border border-border rounded-lg shadow-sm'>
-        <div className='flex items-center py-3 px-3 bg-sidebar rounded-t-lg'>
+      <div className='rounded-lg shadow-sm group'>
+        <div className='flex items-center py-3 px-3 bg-achievement-main rounded-t-lg'>
           <div className='w-10 h-10 flex items-center justify-center'>
             <Image className='rounded-full' src={icon} width={40} height={40} alt={`${item.name} image`} priority />
           </div>
@@ -76,7 +76,7 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
               <p
                 className={cn(
                   'text-sm text-altwhite',
-                  hidden && 'blur-[3px] hover:blur-none transition-all duration-200',
+                  hidden && 'blur-[3px] group-hover:blur-none transition-all duration-200',
                 )}
               >
                 {item.description || ''}
@@ -107,8 +107,8 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
                 : t('achievementManager.achievements.unlock')}
           </Button>
         </div>
-        <div className='py-2 px-3 bg-tab-panel select-none rounded-b-lg'>
-          <div className='w-full bg-item-hover rounded-full h-3.5 relative'>
+        <div className='py-2 px-3 bg-achievement-footer select-none rounded-b-lg'>
+          <div className='w-full bg-item-active rounded-full h-3.5 relative'>
             <div
               className='bg-dynamic/40 h-3.5 rounded-full flex items-center'
               style={{

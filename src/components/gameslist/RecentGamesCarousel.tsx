@@ -22,7 +22,7 @@ export default function RecentGamesCarousel({ gamesContext }: RecentGamesCarouse
 
   const scroll = (direction: 'left' | 'right'): void => {
     if (scrollContainerRef.current) {
-      const scrollAmount = 416
+      const scrollAmount = 192 * 2 + 20 + 20
       const container = scrollContainerRef.current
       const maxScroll = container.scrollWidth - container.clientWidth
       const currentScroll = container.scrollLeft
@@ -87,7 +87,7 @@ export default function RecentGamesCarousel({ gamesContext }: RecentGamesCarouse
         </div>
       </div>
 
-      <div ref={scrollContainerRef} className='flex gap-4 pb-2 overflow-x-hidden'>
+      <div ref={scrollContainerRef} className='flex gap-5 pb-2 overflow-x-hidden'>
         {topRecentGames.map((game: Game) => (
           <div key={game.appid} className='flex-shrink-0 w-48'>
             <GameCard item={game} />

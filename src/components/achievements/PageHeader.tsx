@@ -54,7 +54,7 @@ export default function PageHeader({ protectedAchievements, protectedStatistics 
         <Button
           isIconOnly
           radius='full'
-          className='bg-item-hover/80 text-btn-alt'
+          className='bg-btn-achievement-header text-btn-alt'
           startContent={<TbX />}
           onPress={handleClick}
         />
@@ -67,7 +67,7 @@ export default function PageHeader({ protectedAchievements, protectedStatistics 
           <CustomTooltip content={t('achievementManager.steam')} placement='top'>
             <div>
               <ExtLink href={`https://steamcommunity.com/stats/${appId}/achievements/`}>
-                <div className='bg-item-hover/60 hover:bg-item-active/60 rounded-full p-2 cursor-pointer duration-200'>
+                <div className='bg-btn-achievement-header hover:bg-btn-achievement-header-hover rounded-full p-2 cursor-pointer duration-200'>
                   <SiSteam fontSize={18} />
                 </div>
               </ExtLink>
@@ -77,7 +77,7 @@ export default function PageHeader({ protectedAchievements, protectedStatistics 
           <CustomTooltip content={t('achievementManager.steamDB')} placement='top'>
             <div>
               <ExtLink href={`https://steamdb.info/app/${appId}/stats/`}>
-                <div className='bg-item-hover/60 hover:bg-item-active/60 rounded-full p-2 cursor-pointer duration-200'>
+                <div className='bg-btn-achievement-header hover:bg-btn-achievement-header-hover rounded-full p-2 cursor-pointer duration-200'>
                   <SiSteamdb fontSize={18} />
                 </div>
               </ExtLink>
@@ -87,7 +87,7 @@ export default function PageHeader({ protectedAchievements, protectedStatistics 
           <CustomTooltip content={t('achievementManager.file')} placement='top'>
             <div>
               <div
-                className='bg-item-hover/60 hover:bg-item-active/60 rounded-full p-2 cursor-pointer duration-200'
+                className='bg-btn-achievement-header hover:bg-btn-achievement-header-hover rounded-full p-2 cursor-pointer duration-200'
                 onClick={handleOpenAchievementFile}
               >
                 <TbFoldersFilled fontSize={18} />

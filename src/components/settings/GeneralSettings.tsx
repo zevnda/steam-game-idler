@@ -10,7 +10,6 @@ import SettingsSwitch from '@/components/settings/SettingsSwitch'
 import ExtLink from '@/components/ui/ExtLink'
 import CurrencySwitch from '@/components/ui/i18n/CurrencySwitch'
 import LanguageSwitch from '@/components/ui/i18n/LanguageSwitch'
-import ThemeSwitch from '@/components/ui/theme/ThemeSwitch'
 import {
   fetchGamesWithDropsData,
   handleCredentialsClear,
@@ -149,16 +148,6 @@ export default function GeneralSettings(): ReactElement {
             <p className='text-xs text-altwhite'>{t('settings.general.currency.description')}</p>
           </div>
           <CurrencySwitch />
-        </div>
-
-        <Divider className='bg-border/70 my-4' />
-
-        <div className='flex justify-between items-center'>
-          <div className='flex flex-col gap-2 w-1/2'>
-            <p className='text-sm text-content font-bold'>{t('settings.general.theme')}</p>
-            <p className='text-xs text-altwhite'>{t('settings.general.theme.description')}</p>
-          </div>
-          <ThemeSwitch />
         </div>
 
         <Divider className='bg-border/70 my-4' />

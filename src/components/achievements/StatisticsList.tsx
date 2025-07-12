@@ -35,12 +35,7 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
     <div style={style} className='grid grid-cols-2 gap-3 pr-6'>
       {item1 && (
         <div key={item1.id} className='flex flex-col gap-4'>
-          <div
-            className={cn(
-              'flex justify-between items-center max-h-12',
-              'border border-border bg-sidebar p-2 rounded-lg',
-            )}
-          >
+          <div className={cn('flex justify-between items-center max-h-12', 'bg-achievement-main p-2 rounded-lg')}>
             <div className='flex flex-col'>
               <p className='text-sm font-bold w-full truncate'>{item1.id}</p>
               <p className={`text-[10px] ${protectedStatisticOne ? 'text-warning' : 'text-altwhite'}`}>
@@ -59,10 +54,10 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
               className='w-[120px]'
               classNames={{
                 inputWrapper: cn(
-                  'bg-input data-[hover=true]:!bg-inputhover',
+                  'bg-stat-input data-[hover=true]:!bg-stat-input-hover',
                   'group-data-[focus-visible=true]:ring-transparent',
                   'group-data-[focus-visible=true]:ring-offset-transparent',
-                  'group-data-[focus-within=true]:!bg-inputhover h-8',
+                  'group-data-[focus-within=true]:!bg-stat-input-hover h-8',
                 ),
                 input: ['text-sm !text-content'],
               }}
@@ -72,12 +67,7 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
       )}
       {item2 && (
         <div key={item2.id} className='flex flex-col gap-4'>
-          <div
-            className={cn(
-              'flex justify-between items-center max-h-12',
-              'border border-border bg-sidebar p-2 rounded-lg',
-            )}
-          >
+          <div className={cn('flex justify-between items-center max-h-12', 'bg-achievement-main p-2 rounded-lg')}>
             <div className='flex flex-col'>
               <p className='text-sm font-bold w-full truncate'>{item2.id}</p>
               <p className={`text-[10px] ${protectedStatisticTwo ? 'text-warning' : 'text-altwhite'}`}>
@@ -96,10 +86,10 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
               className='w-[120px]'
               classNames={{
                 inputWrapper: cn(
-                  'bg-input data-[hover=true]:!bg-inputhover',
+                  'bg-stat-input data-[hover=true]:!bg-stat-input-hover',
                   'group-data-[focus-visible=true]:ring-transparent',
                   'group-data-[focus-visible=true]:ring-offset-transparent',
-                  'group-data-[focus-within=true]:!bg-inputhover h-8',
+                  'group-data-[focus-within=true]:!bg-stat-input-hover h-8',
                 ),
                 input: ['text-sm !text-content'],
               }}
