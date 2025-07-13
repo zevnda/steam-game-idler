@@ -58,7 +58,6 @@
   "automation.cardFarming.initialDelay": "Tas var aizņemt brīdi...",
   "automation.cardFarming.progress": "Idlē <1>{{count}}</1> spēli(s) ar <3>{{total}}</3> atlikušajām kartēm",
   "automation.achievementUnlocker.initialDelay": "Sākas <1>{{timer}}</1>",
-  "automation.achievementUnlocker.delay": "Nākamais sasniegums tiks atbloķēts pēc <1>{{timer}}</1>",
   "automation.achievementUnlocker.progress": "Atbloķē <1>{{count}}</1> sasniegumus(-u) priekš <3>{{appName}}</3>",
   "automation.achievementUnlocker.scheduleWait": "Sasniegumu atbloķēšana ir pārtraukta, jo ir ārpus ieplānotā laika, un atsāksies, kad atkal būs ieplānotais laiks",
   "freeGames.title": "Bezmaksas spēles",

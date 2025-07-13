@@ -58,7 +58,6 @@
   "automation.cardFarming.initialDelay": "این ممکن است یک ثانیه طول بکشد...",
   "automation.cardFarming.progress": "بیکاری <1>{{count}}</1> بازی با <3>{{total}}</3> مجموع قطره کارت باقی مانده",
   "automation.achievementUnlocker.initialDelay": "شروع در <1>{{timer}}</1>",
-  "automation.achievementUnlocker.delay": "باز کردن بعدی در <1>{{timer}}</1>",
   "automation.achievementUnlocker.progress": "باز کردن <1>{{count}}</1> دستاورد برای <3>{{appName}}</3>",
   "automation.achievementUnlocker.scheduleWait": "باز کردن دستاورد به دلیل خارج از زمانبندی متوقف شده است و پس از ورود به زمانبندی از سر گرفته میشود",
   "freeGames.title": "بازیهای رایگان",

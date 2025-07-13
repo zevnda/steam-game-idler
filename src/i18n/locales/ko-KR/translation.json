@@ -58,7 +58,6 @@
   "automation.cardFarming.initialDelay": "잠시 기다려 주세요..",
   "automation.cardFarming.progress": "<1>{{count}}</1>개의 게임 아이들링 중, 총 <3>{{total}}</3>개의 카드 드롭 남음",
   "automation.achievementUnlocker.initialDelay": "<1>{{timer}}</1>초 후 시작",
-  "automation.achievementUnlocker.delay": "다음 해제까지 <1>{{timer}}</1>초",
   "automation.achievementUnlocker.progress": "<3>{{appName}}</3>의 <1>{{count}}</1>개 업적 해제 중",
   "automation.achievementUnlocker.scheduleWait": "예약된 시간 외에 있어 업적 해제가 일시 중지되었으며, 예약된 시간 내에 다시 재개됩니다",
   "freeGames.title": "무료 게임",

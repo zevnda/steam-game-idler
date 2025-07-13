@@ -58,7 +58,6 @@
   "automation.cardFarming.initialDelay": "這可能需要一點時間..",
   "automation.cardFarming.progress": "閒置 <1>{{count}}</1> 個遊戲，剩餘 <3>{{total}}</3> 張卡片掉落",
   "automation.achievementUnlocker.initialDelay": "開始於 <1>{{timer}}</1>",
-  "automation.achievementUnlocker.delay": "下一次解鎖在 <1>{{timer}}</1>",
   "automation.achievementUnlocker.progress": "為 <3>{{appName}}</3> 解鎖 <1>{{count}}</1> 個成就",
   "automation.achievementUnlocker.scheduleWait": "由於超出預定時間，成就解鎖暫停，待進入預定時間後將再次繼續",
   "freeGames.title": "免費遊戲",

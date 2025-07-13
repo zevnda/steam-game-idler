@@ -58,7 +58,6 @@
   "automation.cardFarming.initialDelay": "यह सेकंड ले सकता है..",
   "automation.cardFarming.progress": "<1>{{count}}</1> गेम्स को आइडल कर रहा है <3>{{total}}</3> कुल कार्ड ड्रॉप्स बचे हैं",
   "automation.achievementUnlocker.initialDelay": "<1>{{timer}}</1> में शुरू हो रहा है",
-  "automation.achievementUnlocker.delay": "<1>{{timer}}</1> में अगला अनलॉक",
   "automation.achievementUnlocker.progress": "<1>{{count}}</1> उपलब्धि(यां) को <3>{{appName}}</3> के लिए अनलॉक कर रहा है",
   "automation.achievementUnlocker.scheduleWait": "उपलब्धि अनलॉकिंग अनुसूचित समय से बाहर होने के कारण रुकी हुई है और अनुसूचित समय में फिर से शुरू होगी",
   "freeGames.title": "मुफ्त गेम्स",

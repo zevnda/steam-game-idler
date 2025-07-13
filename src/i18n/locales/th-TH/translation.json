@@ -58,7 +58,6 @@
   "automation.cardFarming.initialDelay": "อาจใช้เวลาสักครู่..",
   "automation.cardFarming.progress": "พักเกม <1>{{count}}</1> เกมที่เหลืออยู่ <3>{{total}}</3> การ์ดที่ตกอยู่",
   "automation.achievementUnlocker.initialDelay": "เริ่มใน <1>{{timer}}</1>",
-  "automation.achievementUnlocker.delay": "ปลดล็อกถัดไปใน <1>{{timer}}</1>",
   "automation.achievementUnlocker.progress": "ปลดล็อกความสำเร็จ <1>{{count}}</1> สำหรับ <3>{{appName}}</3>",
   "automation.achievementUnlocker.scheduleWait": "การปลดล็อกความสำเร็จหยุดชั่วคราวเนื่องจากอยู่นอกเวลาที่กำหนดไว้และจะดำเนินการต่อเมื่ออยู่ในเวลาที่กำหนด",
   "freeGames.title": "เกมฟรี",

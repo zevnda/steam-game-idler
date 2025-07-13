@@ -59,7 +59,6 @@
   "automation.cardFarming.initialDelay": "Dit kan 'n sekonde neem..",
   "automation.cardFarming.progress": "Idling <1>{{count}}</1> spel(le) met <3>{{total}}</3> totale kaart drup(s) oorgebly",
   "automation.achievementUnlocker.initialDelay": "Begin in <1>{{timer}}</1>",
-  "automation.achievementUnlocker.delay": "Volgende ontsluit in <1>{{timer}}</1>",
   "automation.achievementUnlocker.progress": "Ontsluit <1>{{count}}</1> prestasie(s) vir <3>{{appName}}</3>",
   "automation.achievementUnlocker.scheduleWait": "Prestasie ontsluiting gepouseer weens buite die geskeduleerde tyd en sal hervat sodra binne die geskeduleerde tyd",
   "freeGames.title": "Gratis Spele",

@@ -58,7 +58,6 @@
   "automation.cardFarming.initialDelay": "Maaaring tumagal ito ng isang segundo..",
   "automation.cardFarming.progress": "Nag-i-idle ng <1>{{count}}</1> laro na may natitirang <3>{{total}}</3> kabuuang drop(s) ng card",
   "automation.achievementUnlocker.initialDelay": "Nagsisimula sa <1>{{timer}}</1>",
-  "automation.achievementUnlocker.delay": "Susunod na pag-unlock sa <1>{{timer}}</1>",
   "automation.achievementUnlocker.progress": "Nag-u-unlock ng <1>{{count}}</1> achievement(s) para sa <3>{{appName}}</3>",
   "automation.achievementUnlocker.scheduleWait": "Ang pag-unlock ng achievement ay na-pause dahil sa pagiging nasa labas ng naka-iskedyul na oras at magpapatuloy muli kapag nasa loob na ng naka-iskedyul na oras",
   "freeGames.title": "Libreng Laro",

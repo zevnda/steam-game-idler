@@ -74,7 +74,6 @@
   "automation.cardFarming.initialDelay": "Това може да отнеме секунда..",
   "automation.cardFarming.progress": "Бездействам <1>{{count}}</1> игра(и) с <3>{{total}}</3> общо оставащи карти",
   "automation.achievementUnlocker.initialDelay": "Започва в <1>{{timer}}</1>",
-  "automation.achievementUnlocker.delay": "Следващо отключване в <1>{{timer}}</1>",
   "automation.achievementUnlocker.progress": "Отключвам <1>{{count}}</1> постижение(я) за <3>{{appName}}</3>",
   "automation.achievementUnlocker.scheduleWait": "Отключването на постижения е паузирано поради това, че е извън разписаното време и ще се възобнови, когато влезе в разписаното време",
   "freeGames.title": "Безплатни игри",

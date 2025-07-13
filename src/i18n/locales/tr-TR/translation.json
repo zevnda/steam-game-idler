@@ -59,7 +59,6 @@
   "automation.cardFarming.initialDelay": "Bu birkaç saniye sürebilir..",
   "automation.cardFarming.progress": "<1>{{count}}</1> adet oyunu <3>{{total}}</3> adet kart düşürme hakkı ile boşta bırakılıyor",
   "automation.achievementUnlocker.initialDelay": "<1>{{timer}}</1> içinde başlatılıyor",
-  "automation.achievementUnlocker.delay": "Sonraki başarım açma <1>{{timer}}</1> sonra olucaktır",
   "automation.achievementUnlocker.progress": "<3>{{appName}}</3> oyunu için <1>{{count}}</1> adet başarım açılıyor",
   "automation.achievementUnlocker.scheduleWait": "Başarım açıcı belirlenen vakitler dışına geldiği için durduruldu ve bu vakite geri döndüğünde tekrar çalışmaya başlıyacaktır",
   "freeGames.title": "Bedava Oyunlar",
