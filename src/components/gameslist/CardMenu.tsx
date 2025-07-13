@@ -3,7 +3,7 @@ import type { ReactElement } from 'react'
 
 import { open } from '@tauri-apps/plugin-shell'
 
-import { cn, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@heroui/react'
+import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@heroui/react'
 import { useTranslation } from 'react-i18next'
 import { FaSteam } from 'react-icons/fa'
 import { TbAwardFilled, TbDotsVertical, TbPlayerPlayFilled, TbSettingsFilled } from 'react-icons/tb'
@@ -35,13 +35,7 @@ export default function CardMenu({ item, onOpen }: CardMenuProps): ReactElement 
       }}
     >
       <DropdownTrigger>
-        <div
-          className={cn(
-            'p-1 bg-black text-offwhite bg-opacity-70',
-            'hover:bg-black hover:bg-opacity-80',
-            'cursor-pointer rounded-md duration-200',
-          )}
-        >
+        <div className='p-1 bg-black/50 hover:bg-black hover:bg-opacity-80 cursor-pointer rounded-md duration-200'>
           <TbDotsVertical />
         </div>
       </DropdownTrigger>

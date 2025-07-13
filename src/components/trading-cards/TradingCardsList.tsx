@@ -71,8 +71,8 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
               hiddenInput: 'w-fit',
               wrapper: cn(
                 styles,
-                'before:group-data-[selected=true]:!border-dynamic before:border-altwhite',
-                'after:bg-dynamic text-button-text m-0',
+                'before:group-data-[selected=true]:!border-dynamic',
+                'before:border-altwhite after:bg-dynamic m-0',
               ),
               label: 'hidden',
             }}
@@ -163,7 +163,7 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
   }
 
   return (
-    <div style={style} className={`grid gap-4 px-4 pt-2 ${cardsPerRow === 9 ? 'grid-cols-9' : 'grid-cols-6'}`}>
+    <div style={style} className={`grid gap-4 px-6 pt-2 ${cardsPerRow === 9 ? 'grid-cols-9' : 'grid-cols-6'}`}>
       {items.map((item, idx) => renderCard(item))}
     </div>
   )
@@ -278,7 +278,7 @@ export default function TradingCardsList(): ReactElement {
           </List>
         </div>
       ) : (
-        <div className='flex justify-center items-center w-calc h-[calc(100vh-168px)]'>
+        <div className='flex justify-center items-center w-calc h-[calc(100vh-224px)]'>
           <Spinner variant='simple' />
         </div>
       )}

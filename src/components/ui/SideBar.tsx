@@ -174,13 +174,13 @@ export default function SideBar(): ReactElement {
             radius='full'
             isDisabled={activePage === 'idling' || activePage === 'freeGames' || activePage.includes('customlists')}
             className={cn(
-              'text-altwhite hover:bg-searchhover active:scale-95 w-full mt-4 duration-150',
+              'text-altwhite active:scale-95 w-full mt-4 duration-150',
               sidebarCollapsed ? 'w-0 justify-center' : 'min-w-40 justify-start',
               searchContent.gameQueryValue ||
                 searchContent.tradingCardQueryValue ||
                 searchContent.achievementQueryValue ||
                 searchContent.statisticQueryValue
-                ? 'bg-success/10 hover:bg-success/20'
+                ? 'bg-dynamic/10 hover:bg-dynamic/20'
                 : 'bg-search',
             )}
             onPress={() => setShowSearchModal(true)}
@@ -192,20 +192,20 @@ export default function SideBar(): ReactElement {
                   searchContent.tradingCardQueryValue ||
                   searchContent.achievementQueryValue ||
                   searchContent.statisticQueryValue
-                  ? 'text-success'
+                  ? 'text-dynamic'
                   : undefined,
               )}
             />
             {!sidebarCollapsed && (
               <div>
                 {searchContent.gameQueryValue ? (
-                  <p className='text-sm text-success font-bold'>{searchContent.gameQueryValue}</p>
+                  <p className='text-sm text-dynamic font-bold'>{searchContent.gameQueryValue}</p>
                 ) : searchContent.tradingCardQueryValue ? (
-                  <p className='text-sm text-success font-bold'>{searchContent.tradingCardQueryValue}</p>
+                  <p className='text-sm text-dynamic font-bold'>{searchContent.tradingCardQueryValue}</p>
                 ) : searchContent.achievementQueryValue ? (
-                  <p className='text-sm text-success font-bold'>{searchContent.achievementQueryValue}</p>
+                  <p className='text-sm text-dynamic font-bold'>{searchContent.achievementQueryValue}</p>
                 ) : searchContent.statisticQueryValue ? (
-                  <p className='text-sm text-success font-bold'>{searchContent.statisticQueryValue}</p>
+                  <p className='text-sm text-dynamic font-bold'>{searchContent.statisticQueryValue}</p>
                 ) : (
                   <p className='text-sm font-bold'>{t('common.search')}</p>
                 )}

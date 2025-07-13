@@ -205,7 +205,7 @@ export default function SearchBar({ isModalOpen = false, onModalClose }: SearchB
                 <h3 className='text-sm font-bold text-altwhite'>Recent searches</h3>
               </div>
 
-              <div className='grid max-h-64 overflow-y-auto'>
+              <div className='grid max-h-96 overflow-y-auto'>
                 {searchContext.recentSearches
                   .slice()
                   .reverse()
@@ -214,8 +214,8 @@ export default function SearchBar({ isModalOpen = false, onModalClose }: SearchB
                       <div
                         key={query}
                         className={cn(
-                          'flex justify-between items-center px-4 py-1 rounded-lg cursor-pointer transition-all duration-150',
-                          'hover:bg-searchhover/40 w-full',
+                          'flex justify-between items-center px-4 py-1 rounded-lg cursor-pointer w-full',
+                          'hover:bg-item-hover transition-all duration-150',
                         )}
                         onClick={() => handleRecentSearchClick(query)}
                       >

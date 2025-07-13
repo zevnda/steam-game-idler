@@ -27,7 +27,7 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement => {
   const item = filteredGamesList[index]
 
   const handleImageError = (event: SyntheticEvent<HTMLImageElement, Event>): void => {
-    ;(event.target as HTMLImageElement).src = '/fallback.jpg'
+    ;(event.target as HTMLImageElement).src = '/fallback.webp'
   }
 
   return (
@@ -35,7 +35,7 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement => {
       style={style}
       className={cn(
         'flex justify-between items-center gap-2',
-        'hover:bg-modalbody-hover cursor-pointer px-3 py-1',
+        'hover:bg-item-hover cursor-pointer px-3 py-1',
         'duration-150 select-none',
         list.some(game => game.appid === item.appid) && 'opacity-50',
       )}

@@ -25,7 +25,7 @@ export default function Settings(): ReactElement {
         <Button
           isIconOnly
           radius='full'
-          className='bg-item-hover text-btn-text-alt'
+          className='bg-item-hover'
           startContent={<TbX />}
           onPress={() => setActivePage('games')}
         />

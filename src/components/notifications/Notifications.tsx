@@ -46,11 +46,12 @@ export default function Notifications(): ReactElement {
             setShowNotifications(!showNotifications)
           }}
         >
-          <TbBell fontSize={18} className={cn(unseenNotifications.length > 0 && 'text-yellow-500')} />
+          <TbBell fontSize={20} className={cn(unseenNotifications.length > 0 && 'text-yellow-500')} />
+          {/* Notification counter badge */}
           {unseenNotifications.length > 0 && (
-            <div className='absolute top-0.5 right-0.5'>
-              <GoDotFill className='text-danger' fontSize={14} />
-            </div>
+            <span className='absolute flex justify-center items-center w-4 h-4 top-1 right-2 bg-danger text-white text-[10px] font-bold rounded-full shadow'>
+              {unseenNotifications.length}
+            </span>
           )}
         </div>
       </CustomTooltip>
@@ -63,13 +64,12 @@ export default function Notifications(): ReactElement {
               animate={{ opacity: 0.5 }}
               exit={{ opacity: 0 }}
               onClick={() => setShowNotifications(false)}
-            />{' '}
+            />
             <motion.div
               ref={dropdownRef}
               className={cn(
-                'absolute right-0 mx-auto mt-3 w-[380px] p-0 m-0 rounded-xl',
-                'outline-none z-[999]',
-                'shadow-xl',
+                'absolute right-0 mx-auto mt-3 w-[480px] p-0 m-0 rounded-xl',
+                'outline-none z-[999] shadow-2xl backdrop-blur-xl',
               )}
               initial={{
                 opacity: 0,
@@ -92,69 +92,79 @@ export default function Notifications(): ReactElement {
                 stiffness: 300,
               }}
             >
-              {notifications.length === 0 ? (
-                <div
-                  className={cn('flex items-center h-8 rounded-xl p-8', 'sticky top-0 bg-base z-[999] cursor-default')}
-                >
-                  <p className='w-full text-sm text-center'>{t('notifications.empty')}</p>
-                </div>
-              ) : (
-                <div
-                  className={cn(
-                    'flex items-center h-8 rounded-t-xl py-4 px-6 border-b',
-                    'border-border sticky top-0 bg-base backdrop-blur-md z-[999] cursor-default',
-                  )}
-                >
-                  <div className='flex justify-end w-full'>
-                    <p
+              {/* Header */}
+              <div
+                className={cn(
+                  'flex items-center justify-between h-10 rounded-t-xl px-6 border-b',
+                  'border-border sticky top-0 z-[999] bg-sidebar/85 backdrop-blur-sm',
+                )}
+              >
+                <span />
+                <div className='flex gap-3'>
+                  {notifications.length > 0 && (
+                    <button
                       className={cn(
-                        'text-xs text-altwhite hover:text-content',
-                        'font-semibold my-0.5 cursor-pointer duration-100',
+                        'text-xs text-altwhite hover:text-content font-semibold cursor-pointer duration-100 py-1 rounded',
                       )}
                       onClick={() => markAllAsSeen(notifications, setUnseenNotifications)}
                     >
                       {t('notifications.markAllRead')}
-                    </p>
-                  </div>
+                    </button>
+                  )}
                 </div>
-              )}
-              <div className='max-h-[450px] overflow-y-auto'>
-                {notifications.map(notification => (
-                  <div
-                    key={notification.id}
-                    className={cn(
-                      'rounded-none m-0 border-b last:border-none border-border',
-                      'cursor-pointer px-6 py-3 hover:bg-modalbody-hover backdrop-blur-md duration-150',
-                      unseenNotifications.some(unseen => unseen.id === notification.id)
-                        ? 'bg-tab-panel font-semibold'
-                        : 'bg-base',
-                    )}
-                    onClick={() =>
-                      handleOpenUrl(notification.url, notification.id, unseenNotifications, setUnseenNotifications)
-                    }
-                  >
-                    <div className='flex items-center gap-4 py-0.5'>
-                      <div className='flex flex-col gap-0.5 max-w-[300px]'>
-                        <p className='text-xs font-semibold'>
-                          {notification.title}
-                          <span className='font-normal text-altwhite ml-1'>
+              </div>
+              {/* Notification list or empty state */}
+              <div className='max-h-[550px] overflow-y-auto'>
+                {notifications.length === 0 ? (
+                  <div className='flex flex-col items-center justify-center py-16 text-center text-altwhite/85 bg-sidebar/85'>
+                    <TbBell size={48} className='mb-2 opacity-30' />
+                    <p className='text-sm'>{t('notifications.empty')}</p>
+                  </div>
+                ) : (
+                  notifications.map(notification => (
+                    <div
+                      key={notification.id}
+                      className={cn(
+                        'flex items-start gap-3 w-full border-b last:border-none border-border px-6 py-4 cursor-pointer duration-150',
+                        unseenNotifications.some(unseen => unseen.id === notification.id)
+                          ? 'bg-notification-unseen/85 hover:bg-notification-hover font-semibold'
+                          : 'bg-notification/85 hover:bg-notification-hover',
+                      )}
+                      onClick={() =>
+                        handleOpenUrl(notification.url, notification.id, unseenNotifications, setUnseenNotifications)
+                      }
+                    >
+                      {/* Icon for notification */}
+                      <GoDotFill
+                        className={cn(
+                          unseenNotifications.some(unseen => unseen.id === notification.id)
+                            ? 'text-dynamic'
+                            : 'text-content/40',
+                        )}
+                        fontSize={16}
+                      />
+
+                      {/* Notification content */}
+                      <div className='flex flex-col gap-1 w-full'>
+                        <div className='flex items-center gap-2'>
+                          <span className='text-xs font-semibold truncate'>{notification.title}</span>
+                          <span className='font-normal text-altwhite text-[11px] ml-1'>
                             • {timeAgo(Number(notification.timestamp))}
                           </span>
-                        </p>
-                        <p className='text-xs text-wrap text-altwhite'>{notification.message}</p>
+                        </div>
+                        <span className='text-xs text-wrap text-altwhite/90'>{notification.message}</span>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
-              {notifications.length !== 0 && (
-                <div
-                  className={cn(
-                    'flex items-center h-8 rounded-b-xl px-6 border-t',
-                    'border-border sticky bottom-0 bg-tab-panel backdrop-blur-sm z-[999] cursor-default',
-                  )}
-                />
-              )}
+              {/* Footer */}
+              <div
+                className={cn(
+                  'flex items-center justify-end h-8 rounded-b-xl px-6 border-t',
+                  'border-border sticky bottom-0 bg-sidebar/85 backdrop-blur-sm z-[999]',
+                )}
+              />
             </motion.div>
           </>
         )}

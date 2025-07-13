@@ -67,7 +67,7 @@ export default function Achievements(): ReactElement {
           WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 40%)',
         }}
       />
-      {imageLoaded && <div className='absolute top-0 left-0 w-full h-screen bg-base/50 backdrop-blur-lg' />}
+      {imageLoaded && <div className='absolute top-0 left-0 w-full h-screen bg-base/70 backdrop-blur-lg' />}
 
       <div className='p-4'>
         <PageHeader protectedAchievements={protectedAchievements} protectedStatistics={protectedStatistics} />
@@ -86,7 +86,7 @@ export default function Achievements(): ReactElement {
               tab: cn('data-[hover-unselected=true]:!bg-item-hover', 'data-[hover-unselected=true]:opacity-100'),
               cursor: '!bg-item-active w-full',
               tabContent: 'text-sm group-data-[selected=true]:text-content text-altwhite font-bold',
-              panel: 'p-0 py-10 pl-8 ml-12 mr-10 mt-4 rounded-xl h-calc bg-base/60',
+              panel: 'p-0 py-10 pl-8 ml-12 mr-10 mt-4 rounded-xl h-calc bg-tab-panel/20',
             }}
             onSelectionChange={e => setCurrentTab(e as CurrentTabType)}
           >

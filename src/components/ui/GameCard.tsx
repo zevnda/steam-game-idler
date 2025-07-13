@@ -1,7 +1,7 @@
 import type { Game } from '@/types'
 import type { ReactElement, SyntheticEvent } from 'react'
 
-import { Button, cn, useDisclosure } from '@heroui/react'
+import { Button, useDisclosure } from '@heroui/react'
 import { memo } from 'react'
 import Image from 'next/image'
 import { FaSteam } from 'react-icons/fa'
@@ -22,12 +22,7 @@ interface GameCardProps {
   imageHeight?: number
 }
 
-const GameCard = memo(function GameCard({
-  item,
-  isFreeGame = false,
-  imageWidth = 460,
-  imageHeight = 215,
-}: GameCardProps): ReactElement {
+const GameCard = memo(function GameCard({ item, isFreeGame = false }: GameCardProps): ReactElement {
   const { idleGamesList, setIdleGamesList } = useIdleContext()
   const { setAppId, setAppName, setShowAchievements } = useStateContext()
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
@@ -36,30 +31,29 @@ const GameCard = memo(function GameCard({
   const isIdling = idlingGame !== undefined
 
   const handleImageError = (event: SyntheticEvent<HTMLImageElement, Event>): void => {
-    ;(event.target as HTMLImageElement).src = '/fallback.jpg'
+    ;(event.target as HTMLImageElement).src = '/fallback.webp'
   }
 
   if (isFreeGame) {
     return (
       <div className='relative group select-none'>
         <div className='overflow-hidden will-change-transform transition-transform duration-150'>
-          <div
-            className={cn(
-              'relative overflow-hidden',
-              imageWidth || imageHeight ? `aspect-[${imageWidth}/${imageHeight}]` : 'aspect-[460/215]',
-            )}
-          >
+          <div className='aspect-[460/215] relative overflow-hidden'>
             <Image
               src={`https://cdn.cloudflare.steamstatic.com/steam/apps/${item.appid}/header.jpg`}
-              width={imageWidth}
-              height={imageHeight}
+              width={460}
+              height={215}
               alt={`${item.name} image`}
               priority={true}
               onError={handleImageError}
-              className='w-full h-full object-cover rounded-lg border-2 border-transparent group-hover:border-dynamic duration-150'
+              className='w-full h-full object-cover rounded-lg duration-150'
+            />
+            <div
+              className='pointer-events-none absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-150'
+              style={{ boxShadow: 'inset 0 0 0 2px hsl(var(--heroui-dynamic))' }}
             />
           </div>
-          <div className='flex justify-between items-center p-1 pt-3'>
+          <div className='flex justify-between items-center pt-3'>
             <h3 className='text-xs font-bold text-altwhite group-hover:text-content truncate duration-150'>
               {item.name}
             </h3>
@@ -90,10 +84,14 @@ const GameCard = memo(function GameCard({
               alt={`${item.name} image`}
               priority={true}
               onError={handleImageError}
-              className='w-full h-full object-cover rounded-lg border-2 border-transparent group-hover:border-dynamic duration-150'
+              className='w-full h-full object-cover rounded-lg duration-150'
+            />
+            <div
+              className='pointer-events-none absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-150'
+              style={{ boxShadow: 'inset 0 0 0 2px hsl(var(--heroui-dynamic))' }}
             />
           </div>
-          <div className='flex justify-between items-center p-1 pt-3'>
+          <div className='flex justify-between items-center pt-3'>
             <h3 className='text-xs font-bold text-altwhite group-hover:text-content truncate duration-150'>
               {item.name}
             </h3>

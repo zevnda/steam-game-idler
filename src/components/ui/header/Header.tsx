@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react'
 
-import { cn, Divider } from '@heroui/react'
+import { cn } from '@heroui/react'
 import { TbLayoutSidebar, TbLayoutSidebarFilled } from 'react-icons/tb'
 import { VscChromeClose, VscChromeMaximize, VscChromeMinimize } from 'react-icons/vsc'
 
@@ -55,14 +55,13 @@ export default function Header(): ReactElement {
           </div>
         )}
 
-        <div className='flex justify-end items-center gap-1.5 h-full w-full' data-tauri-drag-region>
+        <div className='flex justify-end items-center h-full w-full' data-tauri-drag-region>
           {updateAvailable && <UpdateButton />}
 
           {activePage !== 'setup' && (
             <>
               <Notifications />
               <HeaderMenu />
-              <Divider className='w-[1px] h-6 bg-border/60' />
             </>
           )}
 
