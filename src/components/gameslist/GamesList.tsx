@@ -1,7 +1,7 @@
 import type { ReactElement } from 'react'
 
 import { cn, Spinner } from '@heroui/react'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { VariableSizeList as List } from 'react-window'
 
@@ -19,13 +19,20 @@ export default function GamesList(): ReactElement {
   const { t } = useTranslation()
 
   const [columnCount, setColumnCount] = useState(5)
+  const listRef = useRef<List>(null)
+  const [windowSize, setWindowSize] = useState({ width: window.innerWidth, height: window.innerHeight })
+
   useEffect(() => {
-    const updateColumnCount = (): void => {
+    const handleResize = (): void => {
+      setWindowSize({ width: window.innerWidth, height: window.innerHeight })
       setColumnCount(window.innerWidth >= 1536 ? 7 : 5)
+      if (listRef.current) {
+        listRef.current.resetAfterIndex(0, true)
+      }
     }
-    updateColumnCount()
-    window.addEventListener('resize', updateColumnCount)
-    return () => window.removeEventListener('resize', updateColumnCount)
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
   }, [])
 
   const recommendedHeight = 335
@@ -54,7 +61,7 @@ export default function GamesList(): ReactElement {
   }
 
   const totalHeight = rows.reduce<number>((sum, _, idx) => sum + getRowHeight(idx), 0)
-  const listHeight = Math.min(totalHeight, window.innerHeight - 168)
+  const listHeight = Math.min(totalHeight, windowSize.height - 168)
 
   const Row = ({ index, style }: { index: number; style: React.CSSProperties }): ReactElement | null => {
     const rowType = rows[index]
@@ -123,15 +130,20 @@ export default function GamesList(): ReactElement {
 
       {!gamesContext.isLoading ? (
         <List
-          key={sidebarCollapsed ? 'collapsed' : 'expanded'}
+          key={
+            sidebarCollapsed
+              ? `collapsed-${windowSize.width}x${windowSize.height}`
+              : `expanded-${windowSize.width}x${windowSize.height}`
+          }
           height={listHeight}
           itemCount={rows.length}
           itemSize={getRowHeight}
-          width='100%'
+          width={windowSize.width - (sidebarCollapsed ? 56 : 250)}
           style={{
             overflowX: 'hidden',
-            minHeight: window.innerHeight - 168,
+            minHeight: windowSize.height - 168,
           }}
+          ref={listRef}
         >
           {Row}
         </List>
