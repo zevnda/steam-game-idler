@@ -58,7 +58,6 @@
   "automation.cardFarming.initialDelay": "זה עשוי לקחת שנייה...,",
   "automation.cardFarming.progress": "מצב תהליך <1>{{count}}</1> משחק(ים) עם <3>{{total}}</3> סך הכל טיפות קלפים שנותרו,",
   "automation.achievementUnlocker.initialDelay": "מתחיל בעוד <1>{{timer}}</1>,",
-  "automation.achievementUnlocker.delay": "נעילה הבאה בעוד <1>{{timer}}</1>,",
   "automation.achievementUnlocker.progress": "פותח <1>{{count}}</1> הישג(ים) עבור <3>{{appName}}</3>,",
   "automation.achievementUnlocker.scheduleWait": "נעילת הישגים מושהית עקב הימצאות מחוץ לזמן המתוזמן ותתחדש שוב לאחר הכניסה לזמן המתוזמן,",
   "freeGames.title": "משחקים בחינם,",

@@ -58,7 +58,6 @@
   "automation.cardFarming.initialDelay": "Môže to chvíľu trvať..",
   "automation.cardFarming.progress": "Hry <1>{{count}}</1> v stave nečinnosti s <3>{{total}}</3> zostávajúcimi celkovými kvapkami kariet",
   "automation.achievementUnlocker.initialDelay": "Spúšťa sa za <1>{{timer}}</1>",
-  "automation.achievementUnlocker.delay": "Ďalšie odomknutie za <1>{{timer}}</1>",
   "automation.achievementUnlocker.progress": "Odomykanie <1>{{count}}</1> úspechov pre <3>{{appName}}</3>",
   "automation.achievementUnlocker.scheduleWait": "Odomykanie úspechov pozastavené z dôvodu, že je mimo naplánovaného času, a obnoví sa znova, keď bude v naplánovanom čase",
   "freeGames.title": "Hry zadarmo",

@@ -58,7 +58,6 @@
   "automation.cardFarming.initialDelay": "Gali užtrukti akimirką...",
   "automation.cardFarming.progress": "Idlinama <1>{{count}}</1> žaidimų su <3>{{total}}</3> likusių kortelių",
   "automation.achievementUnlocker.initialDelay": "Pradedama po <1>{{timer}}</1>",
-  "automation.achievementUnlocker.delay": "Kita atrakcinė po <1>{{timer}}</1>",
   "automation.achievementUnlocker.progress": "Atrakina <1>{{count}}</1> pasiekimų(-io) iš <3>{{appName}}</3>",
   "automation.achievementUnlocker.scheduleWait": "Pasiekimų atrakcinimas sustabdytas dėl to, kad yra už programos laiko ribų ir vėl bus tęsiamas, kai vėl bus laiku",
   "freeGames.title": "Nemokami žaidimai",

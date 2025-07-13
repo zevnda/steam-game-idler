@@ -58,7 +58,6 @@
   "automation.cardFarming.initialDelay": "Điều này có thể mất một lúc..",
   "automation.cardFarming.progress": "Đang cày <1>{{count}}</1> game với <3>{{total}}</3> lượt thả thẻ còn lại",
   "automation.achievementUnlocker.initialDelay": "Bắt đầu trong <1>{{timer}}</1>",
-  "automation.achievementUnlocker.delay": "Tiếp theo mở khóa trong <1>{{timer}}</1>",
   "automation.achievementUnlocker.progress": "Đang mở khóa <1>{{count}}</1> thành tựu cho <3>{{appName}}</3>",
   "automation.achievementUnlocker.scheduleWait": "Việc mở khóa thành tựu bị tạm dừng vì đang ở ngoài thời gian đã lên lịch và sẽ tiếp tục lại khi ở trong thời gian đã lên lịch",
   "freeGames.title": "Trò chơi miễn phí",

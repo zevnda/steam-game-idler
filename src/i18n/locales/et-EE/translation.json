@@ -58,7 +58,6 @@
   "automation.cardFarming.initialDelay": "See võib võtta hetke..",
   "automation.cardFarming.progress": "Idle-dan <1>{{count}}</1> mängu(s) koos <3>{{total}}</3> ülejäänud kaardi tilgaga",
   "automation.achievementUnlocker.initialDelay": "Alustamine <1>{{timer}}</1>",
-  "automation.achievementUnlocker.delay": "Järgmine avamine <1>{{timer}}</1>",
   "automation.achievementUnlocker.progress": "Avan <1>{{count}}</1> saavutust <3>{{appName}}</3> jaoks",
   "automation.achievementUnlocker.scheduleWait": "Saavutuste avamine on pausitud, kuna ollakse ajakava välisel ajal ja jätkatakse, kui ollakse ajakavas",
   "freeGames.title": "Tasuta mängud",

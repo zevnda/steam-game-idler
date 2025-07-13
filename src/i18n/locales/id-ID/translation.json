@@ -58,7 +58,6 @@
   "automation.cardFarming.initialDelay": "Ini mungkin memerlukan sedikit waktu..",
   "automation.cardFarming.progress": "Mengidlekan <1>{{count}}</1> game(s) dengan <3>{{total}}</3> total penurunan kartu yang tersisa",
   "automation.achievementUnlocker.initialDelay": "Dimulai dalam <1>{{timer}}</1>",
-  "automation.achievementUnlocker.delay": "Pembukaan berikutnya dalam <1>{{timer}}</1>",
   "automation.achievementUnlocker.progress": "Membuka <1>{{count}}</1> pencapaian(s) untuk <3>{{appName}}</3>",
   "automation.achievementUnlocker.scheduleWait": "Pembukaan pencapaian dijeda karena berada di luar waktu yang dijadwalkan dan akan dilanjutkan lagi saat masuk ke waktu yang dijadwalkan",
   "freeGames.title": "Game Gratis",

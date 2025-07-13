@@ -58,7 +58,6 @@
   "automation.cardFarming.initialDelay": "Ez egy másodpercet is igénybe vehet...",
   "automation.cardFarming.progress": "Tétlen <1>{{count}}</1> játék(ok) <3>{{total}}</3> összes kártyaesés maradt",
   "automation.achievementUnlocker.initialDelay": "Indul <1>{{timer}}</1>-ban",
-  "automation.achievementUnlocker.delay": "Következő feloldás <1>{{timer}}</1>-ban",
   "automation.achievementUnlocker.progress": "Eredmények feloldása <1>{{count}}</1> játék számára, a(z) <3>{{appName}}</3>-nál",
   "automation.achievementUnlocker.scheduleWait": "Az eredményfeloldás szünetel a tervezett időn kívül, és újraindul, amint belép a tervezett időbe",
   "freeGames.title": "Ingyen játékok",

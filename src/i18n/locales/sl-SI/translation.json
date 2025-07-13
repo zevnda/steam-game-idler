@@ -58,7 +58,6 @@
   "automation.cardFarming.initialDelay": "To lahko traja sekundo..",
   "automation.cardFarming.progress": "Mirujete <1>{{count}}</1> igro(i) z <3>{{total}}</3> preostalimi karticami",
   "automation.achievementUnlocker.initialDelay": "Začne se v <1>{{timer}}</1>",
-  "automation.achievementUnlocker.delay": "Naslednji odklep v <1>{{timer}}</1>",
   "automation.achievementUnlocker.progress": "Odklepanje <1>{{count}}</1> dosežka(i) za <3>{{appName}}</3>",
   "automation.achievementUnlocker.scheduleWait": "Odklepanje dosežkov je začasno ustavljeno zaradi izhoda iz načrtovanega časa in bo nadaljevalo, ko bo znotraj načrtovanega časa",
   "freeGames.title": "Brezplačne igre",

@@ -58,7 +58,6 @@
   "automation.cardFarming.initialDelay": "Ово може потрајати секунду..",
   "automation.cardFarming.progress": "Мировање <1>{{count}}</1> игре(а) са <3>{{total}}</3> укупно преосталих испуштања картица",
   "automation.achievementUnlocker.initialDelay": "Почетак за <1>{{timer}}</1>",
-  "automation.achievementUnlocker.delay": "Следеће откључавање за <1>{{timer}}</1>",
   "automation.achievementUnlocker.progress": "Откључавање <1>{{count}}</1> достигнућа за <3>{{appName}}</3>",
   "automation.achievementUnlocker.scheduleWait": "Откључавање достигнућа је паузирано због тога што је изван заказаног времена и наставиће се поново када буде унутар заказаног времена",
   "freeGames.title": "Бесплатне игре",

@@ -59,7 +59,6 @@
   "automation.cardFarming.initialDelay": "এতে এক সেকেন্ড লাগতে পারে...",
   "automation.cardFarming.progress": "<1>{{count}}</1> গেম(গুলি) আইডল করা হচ্ছে, <3>{{total}}</3> মোট কার্ড ড্রপ বাকি আছে",
   "automation.achievementUnlocker.initialDelay": "<1>{{timer}}</1> এ শুরু হচ্ছে",
-  "automation.achievementUnlocker.delay": "<3>{{appName}}</3>-এর জন্য <1>{{count}}</1> অ্যাচিভমেন্ট(গুলি) আনলক করা হচ্ছে",
   "automation.achievementUnlocker.progress": "ปลดล็อกความสำเร็จ <1>{{count}}</1> สำหรับ <3>{{appName}}</3>",
   "automation.achievementUnlocker.scheduleWait": "নির্ধারিত সময়ের বাইরে থাকার কারণে অ্যাচিভমেন্ট আনলকিং বন্ধ আছে এবং নির্ধারিত সময়ের মধ্যে আবার চালু হবে",
   "freeGames.title": "বিনামূল্যে গেম",

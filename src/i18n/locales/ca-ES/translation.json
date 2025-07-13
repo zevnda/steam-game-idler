@@ -59,7 +59,6 @@
   "automation.cardFarming.initialDelay": "Això pot trigar un segon...,",
   "automation.cardFarming.progress": "Inhabilitant <1>{{count}}</1> joc(s) amb <3>{{total}}</3> caiguda(es) de cartes totals restants,",
   "automation.achievementUnlocker.initialDelay": "Començant en <1>{{timer}}</1>,",
-  "automation.achievementUnlocker.delay": "Pròxim desbloqueig en <1>{{timer}}</1>,",
   "automation.achievementUnlocker.progress": "Desbloquejant <1>{{count}}</1> èxit(s) per a <3>{{appName}}</3>,",
   "automation.achievementUnlocker.scheduleWait": "El desbloqueig d'èxits s'ha posat en pausa perquè està fora de l'hora programada i es reprendrà un cop dins de l'hora programada,",
   "freeGames.title": "Jocs gratuïts,",
