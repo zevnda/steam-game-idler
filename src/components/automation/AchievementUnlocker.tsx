@@ -11,10 +11,11 @@ import { useStateContext } from '@/components/contexts/StateContext'
 import { useAchievementUnlocker } from '@/hooks/automation/useAchievementUnlocker'
 import { useAutomate } from '@/hooks/automation/useAutomateButtons'
 import { stopIdle } from '@/utils/idle'
+import { updateTrayIcon } from '@/utils/tasks'
 
 export default function AchievementUnlocker({ activePage }: { activePage: ActivePageType }): ReactElement {
   const { t } = useTranslation()
-  const { setIsAchievementUnlocker, transitionDuration, sidebarCollapsed } = useStateContext()
+  const { isAchievementUnlocker, setIsAchievementUnlocker, transitionDuration, sidebarCollapsed } = useStateContext()
 
   const isMountedRef = useRef(true)
   const abortControllerRef = useRef<AbortController>(new AbortController())
@@ -50,6 +51,18 @@ export default function AchievementUnlocker({ activePage }: { activePage: Active
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    if (isAchievementUnlocker && currentGame) {
+      updateTrayIcon(
+        t('trayIcon.achievementUnlocker', {
+          total: achievementCount,
+          appName: currentGame?.name || '',
+        }),
+        true,
+      )
+    }
+  }, [isAchievementUnlocker, currentGame, achievementCount, t])
 
   const handleImageError = (event: SyntheticEvent<HTMLImageElement, Event>): void => {
     ;(event.target as HTMLImageElement).src = '/fallback.webp'
@@ -111,6 +124,7 @@ export default function AchievementUnlocker({ activePage }: { activePage: Active
                   onPress={() => {
                     stopIdle(currentGame?.appid, currentGame?.name)
                     setIsAchievementUnlocker(false)
+                    updateTrayIcon()
                   }}
                 >
                   {isComplete ? <p>{t('common.close')}</p> : <p>{t('common.stop')}</p>}

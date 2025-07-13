@@ -1,9 +1,11 @@
-<!-- 2.0.1 -->
+<!-- 2.1.0 -->
 
-### Changes in v2.0.1
+### Changes in v2.1.0
 
+- Added a status indicator and tooltip to the system tray icon (#693)
+  - When `card farming` or `achievement manager` is running, the tray icon will turn green. Hovering the tray icon will show a brief summary of what SGI is currently doing *(i.e. Unlocking X achievement(s) for X game)*
 - Removed the theme switch and made dark theme the default
-- Improved the look of foil trading cards in `trading card manager` for all themes
+- Improved the look of foil trading cards in `trading card manager`
 - Other miscellaneous UI improvements
 
 <!-- 2.0.0 -->

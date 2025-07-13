@@ -222,6 +222,8 @@
   "toast.tradingCards.failedRemove": "Failed to remove active trading card listings from the Steam market",
   "toast.tradingCards.priceOutOfRange": "Card price {{price}} is outside of the sell limits ({{min}} - {{max}})",
   "toast.tradingCards.cardLocked": "Card is locked and cannot be listed for sale",
+  "trayIcon.achievementUnlocker": "Unlocking {{total}} achievement(s) for {{appName}}",
+  "trayIcon.cardFarming": "Farming {{count}} card(s) for {{total}} game(s)",
   "common.cardFarming": "Card Farming",
   "common.achievementUnlocker": "Achievement Unlocker",
   "common.showing": "Showing {{total}} games",

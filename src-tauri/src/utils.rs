@@ -1,3 +1,4 @@
+use base64::Engine;
 use lazy_static::lazy_static;
 use regex::Regex;
 use reqwest::Client;
@@ -141,6 +142,16 @@ pub fn open_file_explorer(path: String, app_handle: tauri::AppHandle) -> Result<
         .spawn()
         .map_err(|e| e.to_string())?;
     Ok(())
+}
+
+#[tauri::command]
+pub fn get_tray_icon(default: bool) -> String {
+    let icon_bytes: &[u8] = if default {
+        include_bytes!("../icons/32x32.png")
+    } else {
+        include_bytes!("../icons/32x32_running.png")
+    };
+    base64::engine::general_purpose::STANDARD.encode(icon_bytes)
 }
 
 pub fn get_lib_path() -> Result<String, String> {
