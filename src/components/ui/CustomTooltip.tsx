@@ -35,7 +35,7 @@ export default function CustomTooltip({
       closeDelay={100}
       classNames={{
         base: 'pointer-events-none before:!bg-[#0a0a0a]',
-        content: 'shadow-none text-offwhite',
+        content: 'shadow-none',
       }}
     >
       {children}

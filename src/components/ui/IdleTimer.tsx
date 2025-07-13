@@ -49,7 +49,7 @@ export default function IdleTimer({ startTime }: { startTime: number }): ReactEl
     <div
       className={cn(
         'absolute top-1.5 left-1.5 flex items-center gap-1',
-        'bg-black bg-opacity-70 text-offwhite pl-1 pr-2 py-[1px]',
+        'bg-black bg-opacity-70 pl-1 pr-2 py-[1px]',
         'rounded-md text-xs',
       )}
     >

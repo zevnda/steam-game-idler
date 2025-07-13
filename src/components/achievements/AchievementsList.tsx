@@ -117,12 +117,7 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
               }}
             />
             {percent !== undefined && (
-              <p
-                className={cn(
-                  'text-[11px] text-button-text  absolute',
-                  'inset-0 flex items-center justify-center mix-blend-difference',
-                )}
-              >
+              <p className='text-[11px] text-white absolute inset-0 flex items-center justify-center'>
                 {percent.toFixed(1)}%
               </p>
             )}

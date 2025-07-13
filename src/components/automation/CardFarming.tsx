@@ -6,7 +6,7 @@ import { Button, cn, Spinner } from '@heroui/react'
 import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { Trans, useTranslation } from 'react-i18next'
-import { TbCheck } from 'react-icons/tb'
+import { TbCheck, TbPlayerStopFilled } from 'react-icons/tb'
 
 import { useStateContext } from '@/components/contexts/StateContext'
 import { useAutomate } from '@/hooks/automation/useAutomateButtons'
@@ -79,8 +79,8 @@ export default function CardFarming({ activePage }: { activePage: ActivePageType
           </p>
         )}
 
-        <div className='p-2 border border-border rounded-lg'>
-          <div className='grid grid-cols-2 gap-2 max-h-[250px] p-2 overflow-y-auto'>
+        <div className='p-2 rounded-lg w-full h-[calc(100vh-320px)] overflow-y-auto'>
+          <div className='grid grid-cols-2 gap-2 px-2 overflow-y-auto'>
             {[...Array.from(gamesWithDrops)].map(item => (
               <div key={item.appid} className='flex gap-1 border border-border rounded-lg p-1'>
                 <Image
@@ -118,46 +118,75 @@ export default function CardFarming({ activePage }: { activePage: ActivePageType
   return (
     <div
       className={cn(
-        'absolute top-0 bg-base h-screen ease-in-out z-[4]',
+        'absolute top-0 z-[4] w-full h-screen bg-base',
+        'overflow-y-auto overflow-x-hidden ease-in-out',
         activePage !== 'customlists/card-farming' && 'hidden',
-        sidebarCollapsed ? 'w-[calc(100vw-56px)] left-[56px]' : 'w-[calc(100vw-250px)] left-[250px]',
       )}
       style={{
         transitionDuration,
         transitionProperty: 'width, left',
       }}
     >
-      <div className='relative flex justify-evenly items-center flex-col p-14 h-calc'>
-        <Image
-          src='/background.webp'
-          className='absolute top-0 left-0 w-full h-full object-cover'
-          alt='background'
-          width={1920}
-          height={1080}
-          priority
+      <Image
+        src='/background.webp'
+        className='absolute top-0 left-0 w-full h-full object-cover'
+        alt='background'
+        width={1920}
+        height={1080}
+        priority
+        style={{
+          WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 40%)',
+        }}
+      />
+      <div className='absolute top-0 left-0 bg-base/70 w-full h-screen backdrop-blur-lg' />
+
+      <div
+        className={cn(
+          'relative w-[calc(100vw-227px)] pl-6 pt-2 pr-12 mt-9 ease-in-out',
+          sidebarCollapsed ? 'ml-[56px]' : 'ml-[250px]',
+        )}
+        style={{
+          transitionDuration,
+          transitionProperty: 'margin-left',
+        }}
+      >
+        <div className='flex justify-between items-center pb-3'>
+          <div className='flex items-center gap-1 select-none'>
+            <div className='flex flex-col justify-center'>
+              <p className='text-3xl font-black'>{t('common.cardFarming')}</p>
+
+              <p className='text-xs text-altwhite my-2'>{t('automation.cardFarming.running')}</p>
+
+              <div className='flex items-center gap-2 mt-1'>
+                <Button
+                  color='danger'
+                  radius='full'
+                  className='font-bold'
+                  startContent={<TbPlayerStopFilled size={18} />}
+                  isDisabled={!isComplete && disableStopButton}
+                  onPress={() => {
+                    handleCancel(gamesWithDrops, isMountedRef, abortControllerRef)
+                    setIsCardFarming(false)
+                  }}
+                >
+                  {isComplete ? <p>{t('common.close')}</p> : <p>{t('common.stop')}</p>}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          className={cn(
+            'flex flex-col item max-h-[calc(100vh-92px)] ease-in-out pt-10 overflow-hidden',
+            sidebarCollapsed ? 'w-[calc(100vw-106px)]' : 'w-[calc(100vw-300px)]',
+          )}
           style={{
-            WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 40%)',
+            transitionDuration,
+            transitionProperty: 'width',
           }}
-        />
-        <div className='absolute top-0 left-0 bg-base/70 w-full h-screen backdrop-blur-lg' />
-
-        <div className={cn('flex items-center flex-col gap-6 z-10 bg-base/60 p-8 rounded-lg w-full')}>
-          <p className='text-3xl font-semibold'>{t('common.cardFarming')}</p>
-
-          {renderContent()}
-
-          <Button
-            color='danger'
-            radius='full'
-            className='font-bold w-56'
-            isDisabled={!isComplete && disableStopButton}
-            onPress={() => {
-              handleCancel(gamesWithDrops, isMountedRef, abortControllerRef)
-              setIsCardFarming(false)
-            }}
-          >
-            {isComplete ? <p>{t('common.close')}</p> : <p>{t('common.stop')}</p>}
-          </Button>
+        >
+          <div className='flex flex-col items-center gap-6 bg-base/40 rounded-xl p-8 w-full'>{renderContent()}</div>
         </div>
       </div>
     </div>

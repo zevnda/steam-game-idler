@@ -72,7 +72,7 @@ ${errorInfo && errorInfo.componentStack}
             <div
               className={cn(
                 'flex flex-col justify-center gap-4 h-[65%] w-[80%]',
-                'bg-container rounded-lg border border-border p-4',
+                'bg-tab-panel rounded-lg border border-border p-4',
               )}
             >
               <p className='text-sm'>An error occurred while rendering the application</p>
@@ -100,14 +100,14 @@ ${errorInfo && errorInfo.componentStack}
               <ExtLink
                 href={`https://github.com/zevnda/steam-game-idler/issues/new?title=${encodedTitle}&body=${encodedBody}`}
               >
-                <div className='bg-warning p-2 font-semibold rounded-lg text-button-text'>
+                <div className='bg-warning p-2 font-semibold rounded-lg'>
                   <p className='text-xs'>Report on GitHub</p>
                 </div>
               </ExtLink>
 
               <Button
                 size='sm'
-                className='font-semibold rounded-lg bg-dynamic text-button-text'
+                className='font-semibold rounded-lg bg-dynamic'
                 onPress={() => window.location.reload()}
               >
                 Reload

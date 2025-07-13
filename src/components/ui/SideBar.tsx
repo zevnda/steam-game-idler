@@ -174,7 +174,7 @@ export default function SideBar(): ReactElement {
             radius='full'
             isDisabled={activePage === 'idling' || activePage === 'freeGames' || activePage.includes('customlists')}
             className={cn(
-              'text-altwhite hover:bg-searchhover active:scale-95 w-full mt-4 duration-150',
+              'text-altwhite active:scale-95 w-full mt-4 duration-150',
               sidebarCollapsed ? 'w-0 justify-center' : 'min-w-40 justify-start',
               searchContent.gameQueryValue ||
                 searchContent.tradingCardQueryValue ||

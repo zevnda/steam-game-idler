@@ -71,8 +71,8 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
               hiddenInput: 'w-fit',
               wrapper: cn(
                 styles,
-                'before:group-data-[selected=true]:!border-dynamic before:border-altwhite',
-                'after:bg-dynamic text-button-text m-0',
+                'before:group-data-[selected=true]:!border-dynamic',
+                'before:border-altwhite after:bg-dynamic m-0',
               ),
               label: 'hidden',
             }}
@@ -278,7 +278,7 @@ export default function TradingCardsList(): ReactElement {
           </List>
         </div>
       ) : (
-        <div className='flex justify-center items-center w-calc h-[calc(100vh-168px)]'>
+        <div className='flex justify-center items-center w-calc h-[calc(100vh-224px)]'>
           <Spinner variant='simple' />
         </div>
       )}
