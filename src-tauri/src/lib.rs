@@ -127,7 +127,8 @@ pub fn run() {
             delete_user_trading_card_file,
             list_trading_cards,
             get_card_price,
-            remove_market_listings
+            remove_market_listings,
+            get_tray_icon
         ])
         .build(tauri::generate_context!())
         .expect("Error while building tauri application")
@@ -194,7 +195,7 @@ fn setup_tray_icon(app: &mut tauri::App) -> Result<(), Box<dyn std::error::Error
     let icon_bytes = include_bytes!("../icons/32x32.png");
     let icon = Image::from_bytes(icon_bytes)?;
 
-    TrayIconBuilder::new()
+    TrayIconBuilder::with_id("1")
         .icon(icon)
         .tooltip("Steam Game Idler")
         .menu(&menu)

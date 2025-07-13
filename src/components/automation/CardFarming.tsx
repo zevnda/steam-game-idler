@@ -11,10 +11,11 @@ import { TbCheck, TbPlayerStopFilled } from 'react-icons/tb'
 import { useStateContext } from '@/components/contexts/StateContext'
 import { useAutomate } from '@/hooks/automation/useAutomateButtons'
 import { handleCancel, useCardFarming } from '@/hooks/automation/useCardFarming'
+import { updateTrayIcon } from '@/utils/tasks'
 
 export default function CardFarming({ activePage }: { activePage: ActivePageType }): ReactElement {
   const { t } = useTranslation()
-  const { sidebarCollapsed, transitionDuration, setIsCardFarming } = useStateContext()
+  const { isCardFarming, sidebarCollapsed, transitionDuration, setIsCardFarming } = useStateContext()
 
   const isMountedRef = useRef(true)
   const abortControllerRef = useRef(new AbortController())
@@ -43,6 +44,18 @@ export default function CardFarming({ activePage }: { activePage: ActivePageType
       abortController.abort()
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (isCardFarming && gamesWithDrops.size > 0 && totalDropsRemaining > 0) {
+      updateTrayIcon(
+        t('trayIcon.cardFarming', {
+          count: gamesWithDrops.size,
+          total: totalDropsRemaining,
+        }),
+        true,
+      )
+    }
+  }, [isCardFarming, gamesWithDrops.size, totalDropsRemaining, t])
 
   useEffect(() => {
     setTimeout(() => {
@@ -167,6 +180,7 @@ export default function CardFarming({ activePage }: { activePage: ActivePageType
                   onPress={() => {
                     handleCancel(gamesWithDrops, isMountedRef, abortControllerRef)
                     setIsCardFarming(false)
+                    updateTrayIcon()
                   }}
                 >
                   {isComplete ? <p>{t('common.close')}</p> : <p>{t('common.stop')}</p>}

@@ -23,6 +23,7 @@ dotenvs = "0.1.0"
 scraper = "0.22.0"
 lazy_static = "1.5.0"
 steamlocate = "2.0.1"
+base64 = "0.22.1"
 tokio = { version = "1.44.2", features = ["time"] }
 chrono = { version = "0.4.39", features = ["clock"] }
 serde = { version = "1.0.217", features = ["derive"] }
