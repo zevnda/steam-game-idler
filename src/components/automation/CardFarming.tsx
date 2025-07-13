@@ -49,8 +49,8 @@ export default function CardFarming({ activePage }: { activePage: ActivePageType
     if (isCardFarming && gamesWithDrops.size > 0 && totalDropsRemaining > 0) {
       updateTrayIcon(
         t('trayIcon.cardFarming', {
-          count: gamesWithDrops.size,
-          total: totalDropsRemaining,
+          count: totalDropsRemaining,
+          total: gamesWithDrops.size,
         }),
         true,
       )
