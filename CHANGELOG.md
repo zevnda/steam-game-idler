@@ -1,3 +1,9 @@
+<!-- 2.1.1 -->
+
+### Changes in v2.1.1
+
+- Fixed the incorrect tray icon tooltip for `card farming`
+
 <!-- 2.1.0 -->
 
 ### Changes in v2.1.0
