@@ -230,6 +230,7 @@
   "toast.tradingCards.priceOutOfRange": "El precio de la tarjeta {{price}} está fuera de los límites de venta ({{min}} - {{max}})",
   "toast.tradingCards.cardLocked": "La tarjeta está bloqueada y no puede ser listada para la venta",
   "trayIcon.achievementUnlocker": "Desbloqueando {{total}} logro(s) para {{appName}}",
+  "trayIcon.cardFarming": "Cultivando {{count}} carta(s) para {{total}} juego(s)",
   "common.cardFarming": "Agricultura de tarjeta",
   "common.achievementUnlocker": "Desbloqueo de Logros",
   "common.showing": "Mostrando partidas {{total}}",

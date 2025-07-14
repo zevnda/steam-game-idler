@@ -233,6 +233,7 @@
   "trayIcon.cardFarming": "Farming {{count}} card(s) for {{total}} game(s)",
   "common.cardFarming": "Farming Carte",
   "common.achievementUnlocker": "Sblocco Obiettivi",
+  "common.showing": "Mostra {{total}} partite",
   "common.learnMore": "Scopri di più",
   "common.signOut": "Esci",
   "common.notifications": "Notifiche",
