@@ -1,3 +1,9 @@
+<!-- 2.1.2 -->
+
+### Changes in v2.1.2
+
+- Fixed an issue in `trading card manager` which caused SGI to stop selling trading cards if one card's price data couldn't be fetched
+
 <!-- 2.1.1 -->
 
 ### Changes in v2.1.1
