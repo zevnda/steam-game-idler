@@ -162,7 +162,7 @@
   "settings.achievementUnlocker.nextTask.description": "Run the next task automatically after Achievement Unlocker is complete",
   "settings.tradingCards.alert": "To use the Trading Card Manager feature, please add your Steam Credentials in Settings → General → Steam Credentials",
   "settings.tradingCards.sellOptions": "Default Sell Option",
-  "settings.tradingCards.sellOptions.description": "Choose the default sell price for trading cards",
+  "settings.tradingCards.sellOptions.description": "Choose the default sell price for trading cards when using the 'Sell All' button",
   "settings.tradingCards.sellOptions.highestBuyOrder": "Highest Buy Order",
   "settings.tradingCards.sellOptions.lowestSellOrder": "Lowest Sell Order",
   "settings.tradingCards.priceAdjustment": "Price Adjustment",
