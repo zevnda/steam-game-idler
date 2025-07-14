@@ -18,7 +18,6 @@
   "gamesList.sort.titleDesc": "Nosaukums Z-A",
   "gamesList.sort.playtimeDesc": "Spēles laiks no lielāka uz mazāku",
   "gamesList.sort.playtimeAsc": "Spēles laiks no mazāka uz lielāku",
-  "gamesList.sort.recent": "Nesen spēlētas",
   "gamesList.private.message": "Nevarēja iegūt spēļu sarakstu. Parasti tas ir tāpēc:",
   "gamesList.private.change": "Mainiet savu privātuma iestatījumu",
   "gamesList.private.tryAgain": "Mēģiniet vēlreiz",

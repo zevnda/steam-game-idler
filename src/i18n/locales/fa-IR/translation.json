@@ -18,7 +18,6 @@
   "gamesList.sort.titleDesc": "عنوان نزولی",
   "gamesList.sort.playtimeDesc": "زمان بازی زیاد به کم",
   "gamesList.sort.playtimeAsc": "زمان بازی کم به زیاد",
-  "gamesList.sort.recent": "اخیراً بازی شده",
   "gamesList.private.message": "امکان دریافت لیست بازیها وجود ندارد. این معمولاً به دلیل موارد زیر است:",
   "gamesList.private.change": "تنظیمات حریم خصوصی خود را تغییر دهید",
   "gamesList.private.tryAgain": "دوباره تلاش کنید",

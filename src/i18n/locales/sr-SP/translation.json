@@ -18,7 +18,6 @@
   "gamesList.sort.titleDesc": "Назив силазно",
   "gamesList.sort.playtimeDesc": "Време играња високо-ниско",
   "gamesList.sort.playtimeAsc": "Време играња ниско-високо",
-  "gamesList.sort.recent": "Недавно играно",
   "gamesList.private.message": "Не могу да преузмем листу игара. Ово је обично због:",
   "gamesList.private.change": "Промените поставке приватности",
   "gamesList.private.tryAgain": "Покушајте поново",

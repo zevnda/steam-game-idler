@@ -18,7 +18,6 @@
   "gamesList.sort.titleDesc": "Títol descendent,",
   "gamesList.sort.playtimeDesc": "Temps de joc alt-baix,",
   "gamesList.sort.playtimeAsc": "Temps de joc baix-alt,",
-  "gamesList.sort.recent": "Jugat recentment,",
   "gamesList.private.message": "No es pot recuperar la llista de jocs. Això sol ser degut a:,",
   "gamesList.private.change": "Canvia la configuració de privadesa,",
   "gamesList.private.tryAgain": "Torna-ho a provar,",

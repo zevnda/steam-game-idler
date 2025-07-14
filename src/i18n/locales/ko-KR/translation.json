@@ -18,7 +18,6 @@
   "gamesList.sort.titleDesc": "제목 내림차순",
   "gamesList.sort.playtimeDesc": "플레이 시간 높은 순",
   "gamesList.sort.playtimeAsc": "플레이 시간 낮은 순",
-  "gamesList.sort.recent": "최근 플레이한 게임",
   "gamesList.private.message": "게임 목록을 검색할 수 없습니다. 보통 다음과 같은 이유입니다:",
   "gamesList.private.change": "개인정보 설정 변경",
   "gamesList.private.tryAgain": "다시 시도",

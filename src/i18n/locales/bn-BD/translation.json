@@ -18,7 +18,6 @@
   "gamesList.sort.titleDesc": "শিরোনাম অনুসারে (অবরোহী)",
   "gamesList.sort.playtimeDesc": "খেলার সময় (বেশি থেকে কম)",
   "gamesList.sort.playtimeAsc": "খেলার সময় (কম থেকে বেশি)",
-  "gamesList.sort.recent": "সম্প্রতি খেলা হয়েছে",
   "gamesList.private.message": "গেমের তালিকা পুনরুদ্ধার করা যাচ্ছে না। সাধারণত এর কারণ হল:",
   "gamesList.private.change": "আপনার গোপনীয়তা সেটিংস পরিবর্তন করুন",
   "gamesList.private.tryAgain": "আবার চেষ্টা করুন",

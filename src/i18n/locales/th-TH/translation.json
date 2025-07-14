@@ -18,7 +18,6 @@
   "gamesList.sort.titleDesc": "เรียงตามชื่อจาก Z ถึง A",
   "gamesList.sort.playtimeDesc": "เล่นมากไปน้อย",
   "gamesList.sort.playtimeAsc": "เล่นน้อยไปมาก",
-  "gamesList.sort.recent": "เล่นล่าสุด",
   "gamesList.private.message": "ไม่สามารถดึงรายการเกมได้ สาเหตุโดยทั่วไปคือ:",
   "gamesList.private.change": "เปลี่ยนการตั้งค่าความเป็นส่วนตัวของคุณ",
   "gamesList.private.tryAgain": "ลองอีกครั้ง",
