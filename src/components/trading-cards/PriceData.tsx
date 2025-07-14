@@ -33,7 +33,7 @@ export default function PriceData({ item, tradingCardContext }: PriceDataProps):
   return (
     <div className='flex justify-center items-center h-full mt-2'>
       <div
-        className='flex gap-2 items-center text-xs text-content cursor-pointer hover:opacity-80 group w-36'
+        className='flex justify-center items-center gap-2 text-xs text-content cursor-pointer hover:opacity-80 group w-36'
         onClick={() => handleFetchPrice(item)}
       >
         <p className='truncate'>{t('tradingCards.fetchPrice')}</p>
