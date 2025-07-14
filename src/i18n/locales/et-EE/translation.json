@@ -18,7 +18,6 @@
   "gamesList.sort.titleDesc": "Pealkiri kahanevas järjekorras",
   "gamesList.sort.playtimeDesc": "Mänguaeg kõrgelt madalale",
   "gamesList.sort.playtimeAsc": "Mänguaeg madalalt kõrgele",
-  "gamesList.sort.recent": "Hiljuti mängitud",
   "gamesList.private.message": "Ei saa hankida mängude nimekirja. See on tavaliselt selle tõttu:",
   "gamesList.private.change": "Muuda oma privaatsusseadeid",
   "gamesList.private.tryAgain": "Proovi uuesti",

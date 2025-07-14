@@ -18,7 +18,6 @@
   "gamesList.sort.titleDesc": "Cím szerint csökkenő",
   "gamesList.sort.playtimeDesc": "Játékidő Magas-Alacsony",
   "gamesList.sort.playtimeAsc": "Játékidő Alacsony-Magas",
-  "gamesList.sort.recent": "Legutóbb játszott",
   "gamesList.private.message": "Nem lehet lekérni a játékok listáját. Ez általában azért van, mert:",
   "gamesList.private.change": "Változtasd meg a láthatósági beállításokat",
   "gamesList.private.tryAgain": "Próbáld újra",

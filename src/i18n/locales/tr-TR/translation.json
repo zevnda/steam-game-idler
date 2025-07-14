@@ -18,7 +18,6 @@
   "gamesList.sort.titleDesc": "Alfabetik Z-A",
   "gamesList.sort.playtimeDesc": "Oynanma Vakti Yüksekten Düşüğe",
   "gamesList.sort.playtimeAsc": "Oynanma Vakti Düşükten Yükseğe",
-  "gamesList.sort.recent": "Son Zamanlarda Oynanmış",
   "gamesList.private.message": "Oyun listesi alınamamaktadır. Bunun sebebi genellikle:",
   "gamesList.private.change": "Gizlilik ayarlarınızı değiştirin",
   "gamesList.private.tryAgain": "Yeniden Dene",

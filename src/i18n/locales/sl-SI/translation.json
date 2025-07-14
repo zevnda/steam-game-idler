@@ -18,7 +18,6 @@
   "gamesList.sort.titleDesc": "Po naslovu padajoče",
   "gamesList.sort.playtimeDesc": "Čas igranja od največjega do najmanjšega",
   "gamesList.sort.playtimeAsc": "Čas igranja od najmanjšega do največjega",
-  "gamesList.sort.recent": "Nedavno igrane",
   "gamesList.private.message": "Seznam iger ni mogoče pridobiti. To je običajno zato:",
   "gamesList.private.change": "Spremeni svoje nastavitve zasebnosti",
   "gamesList.private.tryAgain": "Poskusi znova",

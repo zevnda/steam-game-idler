@@ -24,7 +24,6 @@
   "gamesList.sort.titleDesc": "Заглавие низходящо",
   "gamesList.sort.playtimeDesc": "Време за игра високо-ниско",
   "gamesList.sort.playtimeAsc": "Време за игра ниско-високо",
-  "gamesList.sort.recent": "Скорошни игри",
   "gamesList.private.message": "Неуспешно извличане на списъка с игри. Това обикновено се дължи на:",
   "gamesList.private.change": "Променете настройките си за поверителност",
   "gamesList.private.tryAgain": "Опитайте отново",

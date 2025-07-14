@@ -18,7 +18,6 @@
   "gamesList.sort.titleDesc": "Názov zostupne",
   "gamesList.sort.playtimeDesc": "Čas hrania od najvyššieho po najnižší",
   "gamesList.sort.playtimeAsc": "Čas hrania od najnižšieho po najvyšší",
-  "gamesList.sort.recent": "Nedávno hrané",
   "gamesList.private.message": "Nepodarilo sa načítať zoznam hier. Zvyčajne je to z dôvodu:",
   "gamesList.private.change": "Zmeniť nastavenia súkromia",
   "gamesList.private.tryAgain": "Skúsiť znova",

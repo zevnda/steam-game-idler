@@ -18,7 +18,6 @@
   "gamesList.sort.titleDesc": "標題降序",
   "gamesList.sort.playtimeDesc": "遊玩時間 高-低",
   "gamesList.sort.playtimeAsc": "遊玩時間 低-高",
-  "gamesList.sort.recent": "最近播放",
   "gamesList.private.message": "無法擷取遊戲清單。這通常是因為：",
   "gamesList.private.change": "更改您的隱私設定",
   "gamesList.private.tryAgain": "嘗試再來",

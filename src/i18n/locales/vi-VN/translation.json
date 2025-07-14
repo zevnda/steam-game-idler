@@ -18,7 +18,6 @@
   "gamesList.sort.titleDesc": "Tiêu đề Giảm dần",
   "gamesList.sort.playtimeDesc": "Thời gian chơi cao-thấp",
   "gamesList.sort.playtimeAsc": "Thời gian chơi thấp-cao",
-  "gamesList.sort.recent": "Đã chơi gần đây",
   "gamesList.private.message": "Không thể tải danh sách trò chơi. Điều này thường là do:",
   "gamesList.private.change": "Thay đổi cài đặt quyền riêng tư của bạn",
   "gamesList.private.tryAgain": "Thử lại",

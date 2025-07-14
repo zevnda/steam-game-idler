@@ -18,7 +18,6 @@
   "gamesList.sort.titleDesc": "Judul Menurun",
   "gamesList.sort.playtimeDesc": "Waktu Bermain Tinggi-Rendah",
   "gamesList.sort.playtimeAsc": "Waktu Bermain Rendah-Tinggi",
-  "gamesList.sort.recent": "Baru Dimainkan",
   "gamesList.private.message": "Tidak dapat mengambil daftar game. Ini biasanya karena:",
   "gamesList.private.change": "Ubah pengaturan privasi Anda",
   "gamesList.private.tryAgain": "Coba Lagi",

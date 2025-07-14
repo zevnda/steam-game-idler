@@ -18,7 +18,6 @@
   "gamesList.sort.titleDesc": "Pavadinimas Z-A",
   "gamesList.sort.playtimeDesc": "Žaidimo laikas didėjimo tvarka",
   "gamesList.sort.playtimeAsc": "Žaidimo laikas mažėjimo tvarka",
-  "gamesList.sort.recent": "Neseniai žaisti",
   "gamesList.private.message": "Nepavyko gauti žaidimų sąrašo. Dažniausiai tai yra todėl:",
   "gamesList.private.change": "Pakeiskite savo privatumo nustatymus",
   "gamesList.private.tryAgain": "Bandykite dar kartą",
