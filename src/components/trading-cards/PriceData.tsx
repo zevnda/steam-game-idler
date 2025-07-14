@@ -32,13 +32,13 @@ export default function PriceData({ item, tradingCardContext }: PriceDataProps):
 
   return (
     <div className='flex justify-center items-center h-full mt-2'>
-      <p
-        className='flex gap-2 items-center text-xs text-content cursor-pointer hover:opacity-80 group'
+      <div
+        className='flex gap-2 items-center text-xs text-content cursor-pointer hover:opacity-80 group w-36'
         onClick={() => handleFetchPrice(item)}
       >
-        {t('tradingCards.fetchPrice')}
+        <p className='truncate'>{t('tradingCards.fetchPrice')}</p>
         <TbArrowRight className='group-hover:translate-x-1 duration-200' />
-      </p>
+      </div>
 
       <CustomModal
         isOpen={isOpen}

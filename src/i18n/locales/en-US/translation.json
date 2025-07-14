@@ -24,7 +24,6 @@
   "gamesList.sort.titleDesc": "Title Descending",
   "gamesList.sort.playtimeDesc": "Playtime High-Low",
   "gamesList.sort.playtimeAsc": "Playtime Low-High",
-  "gamesList.sort.recent": "Recently Played",
   "gamesList.private.message": "Unable to retrieve games list. This is usually because:",
   "gamesList.private.change": "Change your privacy settings",
   "gamesList.private.tryAgain": "Try Again",
