@@ -52,6 +52,7 @@ fn get_default_settings() -> Value {
             ]
         },
         "tradingCards": {
+            "sellOptions": "highestBuyOrder",
             "priceAdjustment": 0.0,
             "sellLimit": {
                 "min": 0.01,

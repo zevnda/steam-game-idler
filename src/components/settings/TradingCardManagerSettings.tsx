@@ -1,9 +1,9 @@
-import type { InvokeSettings } from '@/types'
-import type { ReactElement } from 'react'
+import type { InvokeSettings, UserSettings, UserSummary } from '@/types'
+import type { Dispatch, ReactElement, SetStateAction } from 'react'
 
 import { invoke } from '@tauri-apps/api/core'
 
-import { Alert, cn, Divider, NumberInput } from '@heroui/react'
+import { Alert, cn, Divider, NumberInput, Select, SelectItem } from '@heroui/react'
 import { useEffect, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { TbChevronRight } from 'react-icons/tb'
@@ -25,6 +25,31 @@ export default function TradingCardManagerSettings(): ReactElement {
     setSellLimitMin(userSettings?.tradingCards?.sellLimit?.min || 0.01)
     setSellLimitMax(userSettings?.tradingCards?.sellLimit?.max || 1.1)
   }, [userSettings?.tradingCards?.priceAdjustment, userSettings?.tradingCards?.sellLimit])
+
+  const sellOptions = [
+    {
+      key: 'highestBuyOrder',
+      label: t('settings.tradingCards.sellOptions.highestBuyOrder'),
+    },
+    {
+      key: 'lowestSellOrder',
+      label: t('settings.tradingCards.sellOptions.lowestSellOrder'),
+    },
+  ]
+
+  const handleSellOptionChange = async (
+    key: string,
+    userSummary: UserSummary,
+    setUserSettings: Dispatch<SetStateAction<UserSettings>>,
+  ): Promise<void> => {
+    const updateResponse = await invoke<InvokeSettings>('update_user_settings', {
+      steamId: userSummary?.steamId,
+      key: 'tradingCards.sellOptions',
+      value: key,
+    })
+
+    setUserSettings(updateResponse.settings)
+  }
 
   const handlePriceAdjustmentChange = async (value: number): Promise<void> => {
     setPriceAdjustment(value)
@@ -93,6 +118,52 @@ export default function TradingCardManagerSettings(): ReactElement {
       </div>
 
       <div className='flex flex-col gap-3 mt-4'>
+        <div className='flex justify-between items-center'>
+          <div className='flex flex-col gap-2 w-1/2'>
+            <p className='text-sm text-content font-bold'>
+              {t('settings.tradingCards.sellOptions')} <Beta />
+            </p>
+            <p className='text-xs text-altwhite'>{t('settings.tradingCards.sellOptions.description')}</p>
+          </div>
+          <div className='flex items-center gap-4'>
+            <Select
+              aria-label='sellOptions'
+              disallowEmptySelection
+              radius='none'
+              items={sellOptions}
+              className='w-[200px]'
+              placeholder='Select an option'
+              classNames={{
+                listbox: ['p-0'],
+                value: ['text-sm !text-content'],
+                trigger: cn(
+                  'bg-input data-[hover=true]:!bg-inputhover',
+                  'data-[open=true]:!bg-input duration-100 rounded-lg',
+                ),
+                popoverContent: ['bg-input rounded-xl justify-start !text-content'],
+              }}
+              defaultSelectedKeys={
+                userSettings.tradingCards?.sellOptions ? [userSettings.tradingCards?.sellOptions] : []
+              }
+              onSelectionChange={e => {
+                handleSellOptionChange(e.currentKey!, userSummary, setUserSettings)
+              }}
+            >
+              {item => (
+                <SelectItem
+                  classNames={{
+                    base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
+                  }}
+                >
+                  {item.label}
+                </SelectItem>
+              )}
+            </Select>
+          </div>
+        </div>
+
+        <Divider className='bg-border/70 my-4' />
+
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>

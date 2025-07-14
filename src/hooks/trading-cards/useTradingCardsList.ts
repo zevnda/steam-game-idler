@@ -192,12 +192,29 @@ export default function useTradingCardsList(): UseTradingCardsList {
         return { success: false }
       }
 
-      let price: string | undefined
+      if (!userSettings.tradingCards?.sellOptions) {
+        showDangerToast(t('toast.tradingCards.noSellOption'))
+        logEvent(`[Error] You have not set a sell option in Settings > Trading Cards > Default Sell Option`)
+        return { success: false }
+      }
 
-      if (cardPrices?.buy_order_graph?.[0]?.[0]) {
-        price = cardPrices.buy_order_graph[0][0].toString()
-      } else if (cardPrices?.sell_order_graph?.[0]?.[0]) {
-        price = cardPrices.sell_order_graph[0][0].toString()
+      let price: string | undefined
+      if (
+        userSettings.tradingCards?.sellOptions === 'highestBuyOrder' &&
+        Array.isArray(cardPrices?.buy_order_graph) &&
+        cardPrices.buy_order_graph.length > 0 &&
+        Array.isArray(cardPrices.buy_order_graph[0]) &&
+        cardPrices.buy_order_graph[0].length > 0
+      ) {
+        price = cardPrices.buy_order_graph[0][0]?.toString()
+      } else if (
+        userSettings.tradingCards?.sellOptions === 'lowestSellOrder' &&
+        Array.isArray(cardPrices?.sell_order_graph) &&
+        cardPrices.sell_order_graph.length > 0 &&
+        Array.isArray(cardPrices.sell_order_graph[0]) &&
+        cardPrices.sell_order_graph[0].length > 0
+      ) {
+        price = cardPrices.sell_order_graph[0][0]?.toString()
       }
 
       const priceDataCleaned = {
