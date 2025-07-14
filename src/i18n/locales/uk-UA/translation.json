@@ -229,6 +229,7 @@
   "toast.tradingCards.failedRemove": "Не вдалося видалити список активних торгівельних карток з ринку Steam",
   "toast.tradingCards.priceOutOfRange": "Ціна картки {{price}} поза межами продажу ({{min}} - {{max}})",
   "toast.tradingCards.cardLocked": "Карта заблокована і не може бути перерахована на продаж",
+  "trayIcon.achievementUnlocker": "Розблокування {{total}} досягнень для {{appName}}",
   "trayIcon.cardFarming": "Сільське господарство {{count}} карток(ів) для гри {{total}}",
   "common.cardFarming": "Збір карток",
   "common.achievementUnlocker": "Розблокувальник досягнень",

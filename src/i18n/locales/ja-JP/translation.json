@@ -229,6 +229,7 @@
   "toast.tradingCards.failedRemove": "Steamマーケットから有効なトレーディングカードのリストを削除できませんでした",
   "toast.tradingCards.priceOutOfRange": "カード価格 {{price}} は販売限度外です（{{min}} - {{max}}）",
   "toast.tradingCards.cardLocked": "カードはロックされているため、販売できません",
+  "trayIcon.achievementUnlocker": "{{appName}}の {{total}} 実績をアンロックしています",
   "trayIcon.cardFarming": "{{count}} の {{total}} カードを農業中",
   "common.cardFarming": "カードの栽培",
   "common.achievementUnlocker": "アチーブメントロック解除",

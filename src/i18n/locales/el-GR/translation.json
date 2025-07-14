@@ -73,6 +73,7 @@
   "tradingCards.cardExchange": "Προβολή στο Χρηματιστήριο Καρτών Steam",
   "tradingCards.lockCard": "Αποτροπή αυτής της κάρτας από τη λίστα προς πώληση",
   "tradingCards.noBadge": "Χωρίς Σήμα",
+  "tradingCards.badgeLevel": "Επίπεδο Σήματος: {{level}}",
   "automation.cardFarming.running": "Η καλλιέργεια της κάρτας εκτελείται αυτή τη στιγμή",
   "automation.cardFarming.initialDelay": "Αυτό μπορεί να διαρκέσει ένα δευτερόλεπτο..",
   "automation.cardFarming.progress": "Αδρανοποίηση <1>{{count}}</1> παιχνίδι(τα) με <3>{{total}}</3> συνολικές ρίψεις καρτών απομένουν",
