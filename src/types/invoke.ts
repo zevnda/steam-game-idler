@@ -99,15 +99,16 @@ export interface InvokeCardData {
   card_data: TradingCard[]
 }
 
+export type OrderGraphEntry = [number, number, string]
+
 export interface InvokeCardPrice {
   success: boolean
-  price_data: {
-    lowest_price: string
-    volume: string
-    median_price: string
-    highest_price: string
-    success: boolean
-  }
+  sell_order_graph?: OrderGraphEntry[]
+  buy_order_graph?: OrderGraphEntry[]
+  highest_buy_order?: string
+  lowest_sell_order?: string
+  buy_order_summary?: string
+  sell_order_summary?: string
 }
 
 export interface InvokeListCards {

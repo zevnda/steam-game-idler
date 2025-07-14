@@ -636,13 +636,11 @@ pub async fn list_trading_cards(
 // Get the current market price for a single trading card
 #[tauri::command]
 pub async fn get_card_price(
-    sid: String,
-    sls: String,
-    sma: Option<String>,
-    steam_id: String,
     market_hash_name: String,
     currency: Option<String>,
 ) -> Result<Value, String> {
+    use regex::Regex;
+
     let client = Client::builder()
         .redirect(reqwest::redirect::Policy::custom(|attempt| {
             if attempt.previous().len() > 10 {
@@ -654,75 +652,115 @@ pub async fn get_card_price(
         .build()
         .map_err(|e| e.to_string())?;
 
-    // Construct the cookie value based on the provided parameters
-    let cookie_value = match sma {
-        Some(sma_val) => format!(
-            "sessionid={}; steamLoginSecure={}; steamparental={}; steamMachineAuth{}={}",
-            sid, sls, sma_val, steam_id, sma_val
-        ),
-        None => format!("sessionid={}; steamLoginSecure={}", sid, sls),
+    // Fetch the listing page HTML
+    let url = format!(
+        "https://steamcommunity.com/market/listings/753/{}",
+        urlencoding::encode(&market_hash_name)
+    );
+    let resp = client
+        .get(&url)
+        .header("User-Agent", "Mozilla/5.0")
+        .send()
+        .await;
+
+    let resp = match resp {
+        Ok(r) => r,
+        Err(e) => {
+            return Ok(json!({
+                "success": false,
+                "error": format!("Failed to fetch listing page: {}", e)
+            }));
+        }
     };
 
-    // Build the URL for the price request with proper encoding
-    let price_url = reqwest::Url::parse_with_params(
-        "https://steamcommunity.com/market/priceoverview/",
-        &[
-            ("appid", "753"),
-            ("market_hash_name", &market_hash_name),
-            ("currency", currency.as_deref().unwrap_or("")),
-        ],
-    )
-    .map_err(|e| format!("Failed to build URL: {}", e))?
-    .to_string();
-
-    // Send request to get the price
-    let response = client
-        .get(&price_url)
-        .header("Cookie", cookie_value)
-        .send()
-        .await
-        .map_err(|e| format!("Failed to fetch price: {}", e))?;
-
-    if !response.status().is_success() {
-        return Err(format!("Failed to fetch price: HTTP {}", response.status()));
+    if !resp.status().is_success() {
+        return Ok(json!({
+            "success": false,
+            "error": format!("Failed to fetch listing page: HTTP {}", resp.status())
+        }));
     }
-
-    // Parse the JSON response
-    let price_data: Value = response
-        .json()
-        .await
-        .map_err(|e| format!("Failed to parse price data: {}", e))?;
-
-    let success = price_data
-        .get("success")
-        .and_then(|s| s.as_bool())
-        .unwrap_or(false);
-
-    if !success {
-        return Err("Price data fetch was not successful".to_string());
-    }
-
-    let mut result = json!({
-        "market_hash_name": market_hash_name,
-        "price_data": price_data,
-    });
-
-    // Extract  lowest price
-    if let Some(lowest_price) = price_data.get("lowest_price").and_then(|p| p.as_str()) {
-        result["lowest_price"] = json!(lowest_price);
-
-        // Extract numeric value
-        if let Some(price_value) = lowest_price.trim_start_matches('$').parse::<f64>().ok() {
-            result["price_value"] = json!(price_value);
+    let html = match resp.text().await {
+        Ok(t) => t,
+        Err(e) => {
+            return Ok(json!({
+                "success": false,
+                "error": format!("Failed to get HTML: {}", e)
+            }));
         }
-    }
+    };
 
-    // Include median price if available
-    if let Some(median_price) = price_data.get("median_price").and_then(|p| p.as_str()) {
-        result["median_price"] = json!(median_price);
-    }
+    // Extract item_nameid from HTML
+    let re = Regex::new(r#"Market_LoadOrderSpread\(\s*(\d+)\s*\)"#);
+    let re = match re {
+        Ok(r) => r,
+        Err(e) => {
+            return Ok(json!({
+                "success": false,
+                "error": format!("Regex error: {}", e)
+            }));
+        }
+    };
+    let item_nameid = re
+        .captures(&html)
+        .and_then(|caps| caps.get(1))
+        .map(|m| m.as_str().to_string());
 
-    Ok(result)
+    let item_nameid = match item_nameid {
+        Some(id) => id,
+        None => {
+            return Ok(json!({
+                "success": false,
+                "error": "Failed to extract item_nameid"
+            }));
+        }
+    };
+
+    // Fetch the histogram XHR
+    let histogram_url = format!(
+        "https://steamcommunity.com/market/itemordershistogram?currency={}&item_nameid={}&language=english",
+        currency.as_deref().unwrap_or(""),
+        item_nameid
+    );
+    let hist_resp = client
+        .get(&histogram_url)
+        .header("User-Agent", "Mozilla/5.0")
+        .header("Referer", &url)
+        .send()
+        .await;
+
+    let hist_resp = match hist_resp {
+        Ok(r) => r,
+        Err(e) => {
+            return Ok(json!({
+                "success": false,
+                "error": format!("Failed to fetch histogram: {}", e)
+            }));
+        }
+    };
+
+    if !hist_resp.status().is_success() {
+        return Ok(json!({
+            "success": false,
+            "error": format!("Failed to fetch histogram: HTTP {}", hist_resp.status())
+        }));
+    }
+    let json: Value = match hist_resp.json().await {
+        Ok(j) => j,
+        Err(e) => {
+            return Ok(json!({
+                "success": false,
+                "error": format!("Failed to parse histogram JSON: {}", e)
+            }));
+        }
+    };
+
+    Ok({
+        let mut result = json.clone();
+        if let Some(obj) = result.as_object_mut() {
+            obj.insert("success".to_string(), json!(true));
+        }
+        result
+    })
 }
 
 #[tauri::command]

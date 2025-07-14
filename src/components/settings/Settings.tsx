@@ -45,7 +45,7 @@ export default function Settings(): ReactElement {
           tabList: 'gap-0 w-full bg-transparent w-[218px]',
           tab: cn('data-[hover-unselected=true]:opacity-100', 'rounded-lg bg-transparent justify-start py-5'),
           tabContent:
-            'font-bold truncate duration-100 text-altwhite group-data-[hover-unselected=true]:text-content group-data-[selected=true]:text-content',
+            'font-bold truncate duration-150 text-altwhite group-data-[hover-unselected=true]:text-content group-data-[selected=true]:text-content',
           cursor: '!bg-transparent shadow-none w-full',
           panel: 'w-full pb-10 pl-10 ml-[260px] mt-9 h-calc overflow-y-auto',
         }}
