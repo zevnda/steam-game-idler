@@ -56,7 +56,7 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
       <div
         key={item.assetid}
         className={cn(
-          'flex flex-col justify-start items-center bg-sidebar mb-4 rounded-lg border border-border p-2',
+          'flex flex-col justify-start items-center bg-sidebar mb-2 rounded-lg border border-border p-2',
           lockedCards.includes(item.id) && 'opacity-50',
           isFoil && 'holo-bg',
         )}
@@ -270,7 +270,7 @@ export default function TradingCardsList(): ReactElement {
             key={tradingCardContext.cardSortStyle + '-' + tradingCardQueryValue + '-' + cardsPerRow}
             height={windowInnerHeight - 224}
             itemCount={Math.ceil(filteredTradingCardsList.length / cardsPerRow)}
-            itemSize={319}
+            itemSize={300}
             width='100%'
             itemData={itemData}
           >

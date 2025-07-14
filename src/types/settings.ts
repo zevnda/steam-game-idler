@@ -53,6 +53,7 @@ export interface GeneralSettings {
 }
 
 export interface TradingCardsSettings {
+  sellOptions: 'highestBuyOrder' | 'lowestSellOrder'
   priceAdjustment: number
   sellLimit: {
     min: number

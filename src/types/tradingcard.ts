@@ -1,3 +1,5 @@
+import type { OrderGraphEntry } from '@/types/invoke'
+
 export interface TradingCard {
   appid: number
   assetid: string
@@ -10,8 +12,11 @@ export interface TradingCard {
   badge_level: number
   foil: boolean
   price_data: {
-    lowest_price: string
-    volume: string
-    median_price: string
+    lowest_sell_order: string
+    highest_buy_order: string
+    sell_order_graph: OrderGraphEntry[]
+    buy_order_graph: OrderGraphEntry[]
+    buy_order_summary: string
+    sell_order_summary: string
   }
 }

@@ -184,32 +184,46 @@ export default function useTradingCardsList(): UseTradingCardsList {
       }
 
       const cardPrices = await invoke<InvokeCardPrice>('get_card_price', {
-        sid: decrypt(credentials.sid),
-        sls: decrypt(credentials.sls),
-        sma: credentials?.sma,
-        steamId: userSummary?.steamId,
         marketHashName: hash,
         currency: localStorage.getItem('currency') || '1',
       })
 
-      if (!cardPrices.price_data?.success) {
+      if (!cardPrices.success || !cardPrices.sell_order_graph || !cardPrices.buy_order_graph) {
         return { success: false }
       }
 
-      const priceData = cardPrices.price_data
-      let price: string | undefined
+      if (!userSettings.tradingCards?.sellOptions) {
+        showDangerToast(t('toast.tradingCards.noSellOption'))
+        logEvent(`[Error] You have not set a sell option in Settings > Trading Cards > Default Sell Option`)
+        return { success: false }
+      }
 
-      if (priceData?.median_price) {
-        price = priceData.median_price
-      } else if (priceData?.lowest_price) {
-        price = priceData.lowest_price
+      let price: string | undefined
+      if (
+        userSettings.tradingCards?.sellOptions === 'highestBuyOrder' &&
+        Array.isArray(cardPrices?.buy_order_graph) &&
+        cardPrices.buy_order_graph.length > 0 &&
+        Array.isArray(cardPrices.buy_order_graph[0]) &&
+        cardPrices.buy_order_graph[0].length > 0
+      ) {
+        price = cardPrices.buy_order_graph[0][0]?.toString()
+      } else if (
+        userSettings.tradingCards?.sellOptions === 'lowestSellOrder' &&
+        Array.isArray(cardPrices?.sell_order_graph) &&
+        cardPrices.sell_order_graph.length > 0 &&
+        Array.isArray(cardPrices.sell_order_graph[0]) &&
+        cardPrices.sell_order_graph[0].length > 0
+      ) {
+        price = cardPrices.sell_order_graph[0][0]?.toString()
       }
 
       const priceDataCleaned = {
-        ...priceData,
-        median_price: priceData.median_price,
-        lowest_price: priceData.lowest_price,
-        volume: priceData.volume,
+        sell_order_graph: cardPrices.sell_order_graph,
+        buy_order_graph: cardPrices.buy_order_graph,
+        highest_buy_order: cardPrices?.buy_order_graph?.[0]?.[0],
+        lowest_sell_order: cardPrices?.sell_order_graph?.[0]?.[0],
+        buy_order_summary: cardPrices?.buy_order_summary,
+        sell_order_summary: cardPrices?.sell_order_summary,
       }
 
       const response = await invoke<InvokeCardData>('update_card_data', {

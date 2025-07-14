@@ -2,7 +2,13 @@
 
 ### Changes in v2.1.1
 
+- Improve the trading card price data for `trading card manager`
+  - Clicking `show market prices` on the card now opens a modal displaying the price data
+  - Clicking one of the prices in the table will set the sell price as that price
+  - By default, cards will be sold at the `highest_buy_order` price if available, or the `lowest_sell_order` price if not. If neither is available, the card will not be sold. You can change which option you would prefer to use by default in `settings > trading card manager`
+  - Price data is now pulled from the card's `itemorderhistogram` API route *(i.e. https://steamcommunity.com/market/itemordershistogram?country=AU&language=english&currency=21&item_nameid=176117528)*. This is the same price data Steam displays in the tables on the card's market page *(i.e. https://steamcommunity.com/market/listings/753/960690-Saffron%20Key%20Art)*
 - Fixed the incorrect tray icon tooltip for `card farming`
+- Fixed an issue where the `your games` page did not automatically resize when the main window was resized
 
 <!-- 2.1.0 -->
 
