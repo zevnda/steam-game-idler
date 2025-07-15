@@ -138,7 +138,7 @@ export default function GamesList(): ReactElement {
           height={listHeight}
           itemCount={rows.length}
           itemSize={getRowHeight}
-          width={windowSize.width - (sidebarCollapsed ? 56 : 250)}
+          width='100%'
           style={{
             overflowX: 'hidden',
             minHeight: windowSize.height - 168,
