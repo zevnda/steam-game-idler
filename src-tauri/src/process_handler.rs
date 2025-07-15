@@ -1,74 +1,76 @@
 use crate::idling::SPAWNED_PROCESSES;
 use serde_json::{json, Value};
 use std::os::windows::process::CommandExt;
+use sysinfo::{ProcessesToUpdate, System};
+use windows::Win32::{
+    Foundation::{HWND, LPARAM},
+    UI::WindowsAndMessaging::{EnumWindows, GetWindowTextW, GetWindowThreadProcessId},
+};
+
+// Get window title for a process
+fn get_any_window_title_for_pid(pid: u32) -> Option<String> {
+    use windows::Win32::Foundation::BOOL;
+
+    struct EnumData {
+        target_pid: u32,
+        title: Option<String>,
+    }
+
+    unsafe extern "system" fn enum_windows_proc(hwnd: HWND, lparam: LPARAM) -> BOOL {
+        let data = &mut *(lparam.0 as *mut EnumData);
+        let mut pid_buf: u32 = 0;
+        GetWindowThreadProcessId(hwnd, Some(&mut pid_buf));
+        if pid_buf == data.target_pid {
+            let mut buf = [0u16; 512];
+            let len = GetWindowTextW(hwnd, &mut buf);
+            if len > 0 {
+                let title = String::from_utf16_lossy(&buf[..len as usize]);
+                data.title = Some(title);
+                return BOOL(0);
+            }
+        }
+        BOOL(1)
+    }
+
+    let mut data = EnumData {
+        target_pid: pid,
+        title: None,
+    };
+    let lparam = LPARAM(&mut data as *mut _ as isize);
+    unsafe {
+        let _ = EnumWindows(Some(enum_windows_proc), lparam);
+    }
+    data.title
+}
 
 #[tauri::command]
-// Get all running SteamUtility processes
+// Get all running SteamUtility processes with window title
 pub async fn get_running_processes() -> Result<Value, String> {
-    let output = std::process::Command::new("tasklist")
-        .args(&[
-            "/V",
-            "/FO",
-            "CSV",
-            "/NH",
-            "/FI",
-            "IMAGENAME eq SteamUtility.exe",
-        ])
-        .creation_flags(0x08000000)
-        .output()
-        .map_err(|e| e.to_string())?;
-
-    let output_str = String::from_utf8_lossy(&output.stdout).to_string();
+    let mut system = System::new_all();
+    system.refresh_processes(ProcessesToUpdate::All, true);
 
     let mut processes = Vec::new();
 
-    for line in output_str.lines() {
-        if line.is_empty() {
-            continue;
-        }
+    for (_pid, process) in system.processes() {
+        let proc_name = process.name().to_ascii_lowercase();
+        if proc_name == "steamutility" || proc_name == "steamutility.exe" {
+            let pid = process.pid().as_u32();
+            let window_title = get_any_window_title_for_pid(pid).unwrap_or_default();
 
-        let mut fields = Vec::new();
-        let mut current_field = String::new();
-        let mut in_quotes = false;
-
-        for c in line.chars() {
-            match c {
-                '"' => in_quotes = !in_quotes,
-                ',' if !in_quotes => {
-                    fields.push(current_field.clone());
-                    current_field.clear();
+            let (game_name, app_id) = if let Some(start) = window_title.find('[') {
+                if let Some(end) = window_title[start..].find(']') {
+                    let app_id_str = &window_title[start + 1..start + end];
+                    let name = window_title[..start].trim().trim_end_matches(" -");
+                    (name.to_string(), app_id_str.parse::<u32>().unwrap_or(0))
+                } else {
+                    ("".to_string(), 0)
                 }
-                _ => current_field.push(c),
-            }
-        }
-
-        if !current_field.is_empty() {
-            fields.push(current_field);
-        }
-
-        if fields.len() < 9 {
-            continue;
-        }
-
-        let pid_str = fields[1].trim_matches('"');
-
-        let window_title = fields[fields.len() - 1].trim_matches('"');
-
-        let (game_name, app_id) = if let Some(start) = window_title.find('[') {
-            if let Some(end) = window_title[start..].find(']') {
-                let app_id_str = &window_title[start + 1..start + end];
-                let name = window_title[..start].trim().trim_end_matches(" -");
-                (name.to_string(), app_id_str.parse::<u32>().unwrap_or(0))
             } else {
                 ("".to_string(), 0)
-            }
-        } else {
-            ("".to_string(), 0)
-        };
+            };
 
-        if app_id > 0 {
-            if let Ok(pid) = pid_str.parse::<u32>() {
-                processes.push(serde_json::json!({
+            if app_id > 0 {
+                processes.push(json!({
                     "appid": app_id,
                     "pid": pid,
                     "name": game_name,

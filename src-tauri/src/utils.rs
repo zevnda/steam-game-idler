@@ -5,9 +5,9 @@ use reqwest::Client;
 use serde_json::{json, Value};
 use std::collections::HashMap;
 use std::os::windows::process::CommandExt;
-use std::process::Stdio;
 use std::sync::Mutex;
 use steamlocate::SteamDir;
+use sysinfo::{ProcessesToUpdate, System};
 use tauri::Manager;
 
 lazy_static! {
@@ -21,17 +21,11 @@ pub async fn is_dev() -> bool {
 
 #[tauri::command]
 pub async fn is_steam_running() -> bool {
-    // Execute the tasklist command to check if steam.exe is running
-    let output = std::process::Command::new("tasklist")
-        .args(&["/FI", "IMAGENAME eq steam.exe"])
-        .stdout(Stdio::piped())
-        .stderr(Stdio::null())
-        .creation_flags(0x08000000)
-        .output()
-        .expect("Failed to execute tasklist command");
-    let output_str = String::from_utf8_lossy(&output.stdout);
-    // Check if the output contains "steam.exe"
-    output_str.contains("steam.exe")
+    let mut sys = System::new();
+    sys.refresh_processes(ProcessesToUpdate::All, true);
+    sys.processes()
+        .values()
+        .any(|proc| proc.name().eq_ignore_ascii_case("steam.exe"))
 }
 
 #[tauri::command]

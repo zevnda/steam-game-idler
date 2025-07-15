@@ -1,3 +1,9 @@
+<!-- 2.1.3 -->
+
+### Changes in v2.1.3
+
+- Improved the method for tracking `idling games`, which should completely eliminate frequent WMI usage (#320) (#423)
+
 <!-- 2.1.2 -->
 
 ### Changes in v2.1.2
