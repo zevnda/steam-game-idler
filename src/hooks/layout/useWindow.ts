@@ -48,6 +48,35 @@ export default function useWindow(): void {
     emit('ready')
   }, [])
 
+  // Disable context menu and refresh actions
+  useEffect(() => {
+    const disableContextMenuAndRefresh = async (): Promise<void> => {
+      const isDev = await invoke<boolean>('is_dev')
+      if (!isDev) {
+        document.addEventListener('contextmenu', event => event.preventDefault())
+
+        document.addEventListener('keydown', function (event) {
+          if (event.key === 'F5') {
+            event.preventDefault()
+          }
+
+          if (event.ctrlKey && (event.key === 'r' || event.key === 'R')) {
+            event.preventDefault()
+          }
+
+          if (event.ctrlKey && event.shiftKey && (event.key === 'R' || event.key === 'r')) {
+            event.preventDefault()
+          }
+
+          if (event.ctrlKey && event.altKey && event.shiftKey && event.key === 'F5') {
+            this.location.reload()
+          }
+        })
+      }
+    }
+    disableContextMenuAndRefresh()
+  }, [])
+
   // TODO: Remove line after update
   useEffect(() => {
     setTheme('dark')
