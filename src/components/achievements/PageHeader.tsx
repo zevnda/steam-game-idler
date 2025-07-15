@@ -43,8 +43,8 @@ export default function PageHeader({ protectedAchievements, protectedStatistics 
       await invoke('open_file_explorer', { path: filePath })
     } catch (error) {
       showDangerToast(t('common.error'))
-      console.error('Error in (handleOpenLogFile):', error)
-      logEvent(`[Error] in (handleOpenLogFile): ${error}`)
+      console.error('Error in (handleOpenAchievementFile):', error)
+      logEvent(`[Error] in (handleOpenAchievementFile): ${error}`)
     }
   }
 
