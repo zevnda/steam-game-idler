@@ -1,3 +1,10 @@
+<!-- 2.1.4 -->
+
+### Changes in v2.1.4
+
+- Fixed an issue in `card farming` where, once a game had finished being farmed, a new game wasn't being added to the list if one was available
+  - Now, `card farming` should always be farming a max of 32 games simultaneously if there are enough games with drops remaining 
+
 <!-- 2.1.3 -->
 
 ### Changes in v2.1.3

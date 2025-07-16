@@ -266,6 +266,12 @@ export const beginFarmingCycle = async (
   ]
 
   try {
+    const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
+    const settingsResponse = await invoke<InvokeSettings>('get_user_settings', {
+      steamId: userSummary?.steamId,
+    })
+    const allGames = settingsResponse.settings.cardFarming.allGames
+
     for (const step of cycleSteps) {
       if (!isMountedRef.current) {
         return false
@@ -278,6 +284,17 @@ export const beginFarmingCycle = async (
 
         if (step.action === stopFarmIdle) {
           gamesSet = await checkDropsRemaining(gamesSet)
+
+          // If allGames is true and the size of gamesSet is less than 32, check for new games to add
+          if (allGames && gamesSet.size < 32) {
+            const { gamesSet: refreshedSet } = await checkGamesForDrops()
+            for (const game of refreshedSet) {
+              if (gamesSet.size >= 32) break
+              if (![...gamesSet].some(g => g.appid === game.appid)) {
+                gamesSet.add(game)
+              }
+            }
+          }
         }
       } else {
         return false
