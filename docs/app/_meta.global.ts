@@ -68,7 +68,7 @@ export default {
       'get-started': {
         items: GET_STARTED,
         theme: {
-          collapsed: true,
+          collapsed: false,
         },
       },
       'features': {
@@ -90,11 +90,6 @@ export default {
       },
       'troubleshooting': 'Troubleshooting',
       'faq': 'FAQ',
-      '____': {
-        type: 'separator',
-        title: 'Advanced',
-      },
-      'tech-stack': 'Tech Stack & Architecture',
     },
   },
   privacy: {
