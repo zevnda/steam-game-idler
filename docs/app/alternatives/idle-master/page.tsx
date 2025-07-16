@@ -64,7 +64,6 @@ const comparisonData = [
       { name: 'Settings Configuration', steamGameIdler: true, idleMaster: 'Basic' },
       { name: 'Settings Configuration Method', steamGameIdler: 'GUI-based', idleMaster: 'GUI-based' },
       { name: 'Real-time Monitoring', steamGameIdler: true, idleMaster: true },
-      { name: 'Dark/Light Themes', steamGameIdler: true, idleMaster: false },
     ],
   },
   {
