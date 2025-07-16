@@ -66,7 +66,6 @@ const comparisonData = [
       { name: 'Settings Configuration', steamGameIdler: true, archiSteamFarm: true },
       { name: 'Settings Configuration Method', steamGameIdler: 'GUI-based', archiSteamFarm: 'JSON files' },
       { name: 'Real-time Monitoring', steamGameIdler: true, archiSteamFarm: 'Plugin required' },
-      { name: 'Dark/Light Themes', steamGameIdler: true, archiSteamFarm: false },
     ],
   },
   {
