@@ -15,12 +15,14 @@ interface AchievementButtonsProps {
   achievements: Achievement[]
   setAchievements: Dispatch<SetStateAction<Achievement[]>>
   protectedAchievements: boolean
+  setRefreshKey?: Dispatch<SetStateAction<number>>
 }
 
 export default function AchievementButtons({
   achievements,
   setAchievements,
   protectedAchievements,
+  setRefreshKey,
 }: AchievementButtonsProps): ReactElement {
   const { t } = useTranslation()
   const { userSummary } = useUserContext()
@@ -72,6 +74,16 @@ export default function AchievementButtons({
 
   return (
     <div className='absolute top-0 right-0 flex gap-2 mt-4 px-10'>
+      <Button
+        className='bg-btn-secondary text-btn-text font-bold'
+        radius='full'
+        onPress={() => {
+          if (setRefreshKey) setRefreshKey(prev => prev + 1)
+        }}
+      >
+        {t('setup.refresh')}
+      </Button>
+
       <Button
         className='bg-btn-secondary text-btn-text font-bold'
         radius='full'

@@ -14,6 +14,7 @@ interface StatisticButtonsProps {
   changedStats: ChangedStats
   setChangedStats: Dispatch<SetStateAction<ChangedStats>>
   setAchievements: Dispatch<SetStateAction<Achievement[]>>
+  setRefreshKey?: Dispatch<SetStateAction<number>>
 }
 
 export default function StatisticButtons({
@@ -22,6 +23,7 @@ export default function StatisticButtons({
   changedStats,
   setChangedStats,
   setAchievements,
+  setRefreshKey,
 }: StatisticButtonsProps): ReactElement {
   const { t } = useTranslation()
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
@@ -41,12 +43,23 @@ export default function StatisticButtons({
       <Button
         className='bg-btn-secondary text-btn-text font-bold'
         radius='full'
+        onPress={() => {
+          if (setRefreshKey) setRefreshKey(prev => prev + 1)
+        }}
+      >
+        {t('setup.refresh')}
+      </Button>
+
+      <Button
+        className='bg-btn-secondary text-btn-text font-bold'
+        radius='full'
         onPress={handleUpdateAllStats}
         isDisabled={!hasChanges}
         startContent={<TbUpload size={19} />}
       >
         {t('achievementManager.statistics.saveChanges')} {hasChanges && `(${changedCount})`}
       </Button>
+
       <Button
         className='font-bold'
         radius='full'
