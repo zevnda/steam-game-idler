@@ -96,6 +96,7 @@ export default function Achievements(): ReactElement {
                 setAchievements={setAchievements}
                 protectedAchievements={protectedAchievements}
                 windowInnerHeight={achievementStates.windowInnerHeight}
+                setRefreshKey={achievementStates.setRefreshKey}
               />
             </Tab>
             <Tab key='statistics' title={t('achievementManager.statistics.title')}>
@@ -104,6 +105,7 @@ export default function Achievements(): ReactElement {
                 setStatistics={setStatistics}
                 setAchievements={setAchievements}
                 windowInnerHeight={achievementStates.windowInnerHeight}
+                setRefreshKey={achievementStates.setRefreshKey}
               />
             </Tab>
           </Tabs>

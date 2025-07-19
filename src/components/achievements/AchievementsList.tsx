@@ -135,6 +135,7 @@ interface AchievementsListProps {
   setAchievements: Dispatch<SetStateAction<Achievement[]>>
   protectedAchievements: boolean
   windowInnerHeight: number
+  setRefreshKey: Dispatch<SetStateAction<number>>
 }
 
 export default function AchievementsList({
@@ -142,6 +143,7 @@ export default function AchievementsList({
   setAchievements,
   protectedAchievements,
   windowInnerHeight,
+  setRefreshKey,
 }: AchievementsListProps): ReactElement {
   const { t } = useTranslation()
   const { userSummary } = useUserContext()
@@ -179,6 +181,7 @@ export default function AchievementsList({
             achievements={achievements}
             setAchievements={setAchievements}
             protectedAchievements={protectedAchievements}
+            setRefreshKey={setRefreshKey}
           />
 
           <List

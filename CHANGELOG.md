@@ -1,3 +1,10 @@
+<!-- 2.1.5 -->
+
+### Changes in v2.1.5
+
+- Added a `refresh` button to `achievement manager` (#732)
+  - Allows users to manually fetch up-to-date achievement and statistic data. Useful if you run SGI on multiple machines and you need to sync changes between them
+
 <!-- 2.1.4 -->
 
 ### Changes in v2.1.4

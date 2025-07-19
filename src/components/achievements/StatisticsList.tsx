@@ -108,6 +108,7 @@ interface StatisticsListProps {
   setStatistics: Dispatch<SetStateAction<Statistic[]>>
   setAchievements: Dispatch<SetStateAction<Achievement[]>>
   windowInnerHeight: number
+  setRefreshKey?: Dispatch<SetStateAction<number>>
 }
 
 export default function StatisticsList({
@@ -115,6 +116,7 @@ export default function StatisticsList({
   setStatistics,
   setAchievements,
   windowInnerHeight,
+  setRefreshKey,
 }: StatisticsListProps): ReactElement {
   const { t } = useTranslation()
   const { statisticQueryValue } = useSearchContext()
@@ -161,6 +163,7 @@ export default function StatisticsList({
             changedStats={changedStats}
             setChangedStats={setChangedStats}
             setAchievements={setAchievements}
+            setRefreshKey={setRefreshKey}
           />
 
           <List

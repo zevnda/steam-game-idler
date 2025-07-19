@@ -13,6 +13,7 @@ import { showAccountMismatchToast, showDangerToast } from '@/utils/toasts'
 
 interface UseAchievementsProps {
   windowInnerHeight: number
+  setRefreshKey: Dispatch<SetStateAction<number>>
 }
 
 export default function useAchievements(
@@ -26,10 +27,12 @@ export default function useAchievements(
   const { appId } = useStateContext()
   const { userSummary, setAchievementsUnavailable, setStatisticsUnavailable } = useUserContext()
   const [windowInnerHeight, setWindowInnerHeight] = useState(window.innerHeight)
+  const [refreshKey, setRefreshKey] = useState(0)
 
   useEffect(() => {
     const getAchievementData = async (): Promise<void> => {
       try {
+        setIsLoading(true)
         // Make sure Steam client is running
         const isSteamRunning = checkSteamStatus(true)
         if (!isSteamRunning) return setIsLoading(false)
@@ -38,6 +41,7 @@ export default function useAchievements(
         const response = await invoke<InvokeAchievementData | string>('get_achievement_data', {
           steamId: userSummary?.steamId,
           appId,
+          refetch: refreshKey !== 0,
         })
 
         // Handle case where Steam API initialization failed
@@ -103,6 +107,7 @@ export default function useAchievements(
     setStatistics,
     setAchievementsUnavailable,
     setStatisticsUnavailable,
+    refreshKey,
     t,
   ])
 
@@ -117,5 +122,5 @@ export default function useAchievements(
     }
   }, [])
 
-  return { windowInnerHeight }
+  return { windowInnerHeight, setRefreshKey }
 }
