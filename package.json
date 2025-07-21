@@ -33,7 +33,7 @@
     "@dnd-kit/utilities": "^3.2.2",
     "@heroui/react": "^2.7.11",
     "@internationalized/date": "^3.7.0",
-    "@tauri-apps/api": "^2.5.0",
+    "@tauri-apps/api": "^2.7.0",
     "@tauri-apps/plugin-autostart": "~2.5.0",
     "@tauri-apps/plugin-dialog": "~2.3.0",
     "@tauri-apps/plugin-fs": "~2.4.0",
