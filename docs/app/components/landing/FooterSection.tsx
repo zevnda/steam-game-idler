@@ -123,7 +123,7 @@ export default function FooterSection() {
         {/* Bottom bar */}
         <div className='pt-6 sm:pt-8 border-t-2 border-indigo-200 flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4'>
           <div className='text-gray-600 text-xs sm:text-sm font-mono text-center sm:text-left'>
-            © 2024 STEAM GAME IDLER — ALL RIGHTS RESERVED
+            © 2024-{new Date().getFullYear()} STEAM GAME IDLER — ALL RIGHTS RESERVED
           </div>
           <div className='text-gray-500 text-xs uppercase tracking-wider text-center sm:text-right'>
             NOT AFFILIATED WITH VALVE CORPORATION
