@@ -125,7 +125,20 @@ export default function FooterSection() {
           <div className='text-gray-600 text-xs sm:text-sm font-mono text-center sm:text-left'>
             © 2024-{new Date().getFullYear()} STEAM GAME IDLER — ALL RIGHTS RESERVED
           </div>
-          <div className='text-gray-500 text-xs uppercase tracking-wider text-center sm:text-right'>
+          <div>
+            <p className='text-gray-400 text-xs sm:text-sm font-mono text-center sm:text-left uppercase'>
+              Website created and managed by{' '}
+              <Link
+                href='https://aswebdesign.com.au/'
+                target='_blank'
+                rel='noopener'
+                className='text-blue-400 hover:text-blue-500 duration-250'
+              >
+                AS Web Design
+              </Link>
+            </p>
+          </div>
+          <div className='text-gray-600 text-xs uppercase tracking-wider text-center sm:text-right'>
             NOT AFFILIATED WITH VALVE CORPORATION
           </div>
         </div>
