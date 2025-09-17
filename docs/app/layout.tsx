@@ -69,6 +69,7 @@ export const metadata = {
   other: {
     'msapplication-TileColor': '#fff',
     'google-site-verification': 'gOZEIhRh4BCNzE1r4etZeuJoex3aVaUrATjMnsnyYuY',
+    'google-adsense-account': 'ca-pub-8915288433444527',
     'structured-data': JSON.stringify({
       '@context': 'https://schema.org',
       '@type': 'TechArticle',
