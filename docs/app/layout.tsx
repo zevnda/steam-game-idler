@@ -94,7 +94,13 @@ export default async function RootLayout({ children }: { children: ReactNode }):
           light: '#fafafa',
           dark: '#101010',
         }}
-      />
+      >
+        <script
+          async
+          src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8915288433444527'
+          crossOrigin='anonymous'
+        />
+      </Head>
       <body className={`${inter.className} text-sm`}>
         <Layout
           navbar={navbar}
