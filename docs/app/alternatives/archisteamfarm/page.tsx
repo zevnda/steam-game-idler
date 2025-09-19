@@ -49,10 +49,11 @@ const comparisonData = [
     features: [
       { name: 'Automatic Card Farming', steamGameIdler: true, archiSteamFarm: true },
       { name: 'Queue-based Farming', steamGameIdler: true, archiSteamFarm: true },
-      { name: 'Card Drop Detection', steamGameIdler: true, archiSteamFarm: false },
-      { name: 'Multiple Account Support', steamGameIdler: false, archiSteamFarm: true },
+      { name: 'Intuitive Queue Management', steamGameIdler: true, archiSteamFarm: false },
+      { name: 'Smart Farming Algorithm', steamGameIdler: true, archiSteamFarm: false },
       { name: 'Marketplace Integration', steamGameIdler: true, archiSteamFarm: false },
       { name: 'Multi-game Simultaneous Idling', steamGameIdler: true, archiSteamFarm: true },
+      { name: 'Multiple Account Support', steamGameIdler: false, archiSteamFarm: true },
     ],
   },
   {
@@ -85,7 +86,7 @@ const comparisonData = [
       { name: 'Resource Usage', steamGameIdler: 'Low', archiSteamFarm: 'Low' },
       { name: 'Platform Support', steamGameIdler: 'Windows', archiSteamFarm: 'Cross-platform' },
       { name: 'Installation', steamGameIdler: 'Installer', archiSteamFarm: 'Complex' },
-      { name: 'Updates', steamGameIdler: 'Auto-update', archiSteamFarm: 'Manual' },
+      { name: 'Updates', steamGameIdler: 'Automatic', archiSteamFarm: 'Automatic' },
     ],
   },
 ]
