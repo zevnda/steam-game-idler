@@ -23,7 +23,7 @@ import { useStateContext } from '@/components/contexts/StateContext'
 import { useUpdateContext } from '@/components/contexts/UpdateContext'
 import { useUserContext } from '@/components/contexts/UserContext'
 import { startIdle } from '@/utils/idle'
-import { checkSteamStatus, fetchLatest, logEvent, preserveKeysAndClearData } from '@/utils/tasks'
+import { checkSteamStatus, fetchLatest, isPortableCheck, logEvent, preserveKeysAndClearData } from '@/utils/tasks'
 import { showDangerToast, t } from '@/utils/toasts'
 
 export default function useWindow(): void {
@@ -108,6 +108,9 @@ export default function useWindow(): void {
     // Check for updates - immediate update for major, or show notification
     const checkForUpdates = async (): Promise<void> => {
       try {
+        const isPortable = await isPortableCheck()
+        if (isPortable) return
+
         const update = await check()
         if (update) {
           const latest = await fetchLatest()

@@ -128,7 +128,8 @@ pub fn run() {
             list_trading_cards,
             get_card_price,
             remove_market_listings,
-            get_tray_icon
+            get_tray_icon,
+            is_portable
         ])
         .build(tauri::generate_context!())
         .expect("Error while building tauri application")
@@ -245,7 +246,20 @@ fn setup_tray_icon(app: &mut tauri::App) -> Result<(), Box<dyn std::error::Error
 }
 
 async fn check_for_updates(app_handle: tauri::AppHandle) -> tauri_plugin_updater::Result<()> {
-    // Check for updates and install if available
+    // Check for updates and install if available and not portable version
+    let is_portable = is_portable();
+    if is_portable {
+        use tauri_plugin_notification::NotificationExt;
+        app_handle
+            .notification()
+            .builder()
+            .title("Updates are disabled in portable version")
+            .show()
+            .unwrap();
+
+        return Ok(());
+    }
+
     if let Some(update) = app_handle.updater()?.check().await? {
         update
             .download_and_install(|_downloaded, _total| {}, || {})

@@ -181,3 +181,14 @@ export async function updateTrayIcon(tooltip?: string, runningStatus?: boolean):
     logEvent(`[Error] in updateTrayIcon: ${error}`)
   }
 }
+
+export async function isPortableCheck(): Promise<boolean> {
+  try {
+    const portable = await invoke<boolean>('is_portable')
+    return portable
+  } catch (error) {
+    console.error('Error in isPortable:', error)
+    logEvent(`[Error] in isPortable: ${error}`)
+    return false
+  }
+}
