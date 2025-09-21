@@ -2,9 +2,11 @@
 
 ### Changes in v2.1.6
 
-- SGI is now offered in a portable version, downloaded via the `_x64-portable.exe` asset below. The portable version:
-  - May require manually installation of [WebView2](https://developer.microsoft.com/en-us/Microsoft-edge/webview2/?form=MA13LH) on older Windows version
-  - Will not receive automatic updates. You will need to manually download new versions when they become available
+- SGI is now offered in a portable version, downloaded via the `_x64-portable.exe` asset below (#790)
+  - The portable version:
+    - May require manually installation of [WebView2](https://developer.microsoft.com/en-us/Microsoft-edge/webview2/?form=MA13LH) on older Windows version
+    - Will not receive automatic updates. You will need to manually download new versions when they become available
+- Added missing translation strings for trading card manager toast messages (#765)
 
 <!-- 2.1.5 -->
 
