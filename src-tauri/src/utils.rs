@@ -162,3 +162,15 @@ pub async fn get_steam_location() -> Result<String, steamlocate::Error> {
     let config_path = steam_dir.path().join("config").join("loginusers.vdf");
     Ok(config_path.display().to_string())
 }
+
+#[tauri::command]
+pub fn is_portable() -> bool {
+    if let Ok(current_exe) = tauri::utils::platform::current_exe() {
+        let mut uninstaller_path = current_exe;
+        uninstaller_path.pop();
+        uninstaller_path.push("uninstall.exe");
+        !uninstaller_path.exists()
+    } else {
+        true
+    }
+}

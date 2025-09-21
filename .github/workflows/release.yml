@@ -330,6 +330,11 @@ jobs:
           Get-ChildItem "./release_notes.md" | Select-Object FullName, Length
         shell: pwsh
 
+      - name: Prepare portable executable
+        run: |
+          Copy-Item "./src-tauri/target/release/Steam Game Idler.exe" -Destination "./src-tauri/target/release/Steam Game Idler_${{ github.event.inputs.version }}_x64-portable.exe"
+        shell: pwsh
+
       - name: Create release
         uses: softprops/action-gh-release@v1
         env:
@@ -342,6 +347,7 @@ jobs:
             ./src-tauri/target/release/bundle/nsis/Steam Game Idler_${{ github.event.inputs.version }}_x64-setup.exe
             ./src-tauri/target/release/bundle/nsis/Steam Game Idler_${{ github.event.inputs.version }}_x64-setup.nsis.zip
             ./src-tauri/target/release/bundle/nsis/Steam Game Idler_${{ github.event.inputs.version }}_x64-setup.nsis.zip.sig
+            ./src-tauri/target/release/Steam Game Idler_${{ github.event.inputs.version }}_x64-portable.exe
 
       - name: Cleanup artifacts
         if: always()

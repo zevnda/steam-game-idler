@@ -20,7 +20,7 @@ import {
 
 import { useUpdateContext } from '@/components/contexts/UpdateContext'
 import CustomTooltip from '@/components/ui/CustomTooltip'
-import { fetchLatest, logEvent, preserveKeysAndClearData } from '@/utils/tasks'
+import { fetchLatest, isPortableCheck, logEvent, preserveKeysAndClearData } from '@/utils/tasks'
 import { showDangerToast, showPrimaryToast } from '@/utils/toasts'
 
 export default function HeaderMenu(): ReactElement {
@@ -32,6 +32,12 @@ export default function HeaderMenu(): ReactElement {
 
   const handleUpdate = async (): Promise<void> => {
     try {
+      const isPortable = await isPortableCheck()
+      if (isPortable) {
+        showPrimaryToast(t('toast.checkUpdate.portable'))
+        return
+      }
+
       const update = await check()
       if (update) {
         localStorage.setItem('hasUpdated', 'true')
