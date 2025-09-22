@@ -230,6 +230,8 @@
   "toast.tradingCards.failedRemove": "无法从Steam市场删除活动交易卡列表",
   "toast.tradingCards.priceOutOfRange": "卡片价格 {{price}} 超出出售限额（{{min}} - {{max}}）",
   "toast.tradingCards.cardLocked": "卡已被锁定，无法上架出售。",
+  "toast.tradingCards.skippedCards": "跳过了 {{count}} 张被锁定或超出销售限额的卡",
+  "toast.tradingCards.skippedLockedCards": "跳过了 {{count}} 张已锁定的卡",
   "toast.tradingCards.allCardsLocked": "所有卡片都被锁定，无法上架出售。",
   "toast.tradingCards.allCardsOutOfRange": "所有卡片都在销售限额之外，无法上架出售。",
   "trayIcon.achievementUnlocker": "为 {{appName}}解锁 {{total}} 成就",

@@ -231,6 +231,7 @@
   "toast.tradingCards.priceOutOfRange": "El precio de la tarjeta {{price}} está fuera de los límites de venta ({{min}} - {{max}})",
   "toast.tradingCards.cardLocked": "La tarjeta está bloqueada y no puede ser listada para la venta",
   "toast.tradingCards.skippedCards": "Se omitieron las tarjetas {{count}} que están bloqueadas o fuera de los límites de venta",
+  "toast.tradingCards.skippedLockedCards": "Se omitieron {{count}} tarjetas que están bloqueadas",
   "toast.tradingCards.allCardsLocked": "Todas las tarjetas están bloqueadas y no pueden ser listadas para la venta",
   "toast.tradingCards.allCardsOutOfRange": "Todas las tarjetas están fuera de los límites de venta y no pueden ser listadas para la venta",
   "trayIcon.achievementUnlocker": "Desbloqueando {{total}} logro(s) para {{appName}}",

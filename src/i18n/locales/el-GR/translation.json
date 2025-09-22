@@ -231,6 +231,7 @@
   "toast.tradingCards.priceOutOfRange": "Η τιμή της κάρτας {{price}} είναι εκτός των ορίων πώλησης ({{min}} - {{max}})",
   "toast.tradingCards.cardLocked": "Η κάρτα είναι κλειδωμένη και δεν μπορεί να εισαχθεί προς πώληση",
   "toast.tradingCards.skippedCards": "Παράλειψη {{count}} κάρτα(ες) που είναι κλειδωμένες ή εκτός των ορίων πώλησης",
+  "toast.tradingCards.skippedLockedCards": "Παραλείφθηκαν {{count}} κάρτες που είναι κλειδωμένες",
   "toast.tradingCards.allCardsLocked": "Όλες οι κάρτες είναι κλειδωμένες και δεν μπορούν να αναφερθούν προς πώληση",
   "toast.tradingCards.allCardsOutOfRange": "Όλες οι κάρτες είναι εκτός των ορίων πώλησης και δεν μπορούν να αναφέρονται προς πώληση",
   "trayIcon.achievementUnlocker": "Ξεκλείδωμα {{total}} επίτευγμα(τα) για {{appName}}",
