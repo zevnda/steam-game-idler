@@ -230,6 +230,8 @@
   "toast.tradingCards.failedRemove": "Impossible de supprimer les listes de cartes de trading actives du marché Steam",
   "toast.tradingCards.priceOutOfRange": "Le prix de la carte {{price}} est en dehors des limites de vente ({{min}} - {{max}})",
   "toast.tradingCards.cardLocked": "La carte est verrouillée et ne peut pas être listée pour la vente",
+  "toast.tradingCards.skippedCards": "{{count}} cartes ignorées qui sont verrouillées ou en dehors des limites de vente",
+  "toast.tradingCards.skippedLockedCards": "{{count}} carte(s) verrouillée(s) ignorée(s)",
   "toast.tradingCards.allCardsLocked": "Toutes les cartes sont verrouillées et ne peuvent pas être listées pour la vente",
   "toast.tradingCards.allCardsOutOfRange": "Toutes les cartes sont en dehors des limites de vente et ne peuvent pas être listées à la vente",
   "trayIcon.achievementUnlocker": "Déverrouillage des accomplissements {{total}} pour {{appName}}",
