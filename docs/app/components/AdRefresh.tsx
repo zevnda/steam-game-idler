@@ -20,15 +20,12 @@ export default function AdRefresh() {
       return
     }
 
-    // For auto ads, we need to tell AdSense to re-scan the page
+    // For auto ads on navigation, just push an empty object
     const refreshAutoAds = () => {
       try {
         if (window.adsbygoogle) {
-          // Push an empty object to trigger auto ad refresh
-          window.adsbygoogle.push({
-            google_ad_client: 'ca-pub-8915288433444527',
-            enable_page_level_ads: true,
-          })
+          // Push empty object to trigger ad refresh without page-level config
+          window.adsbygoogle.push({})
         }
       } catch (error) {
         console.error('Error refreshing auto ads:', error)
