@@ -14,22 +14,22 @@ export default function AdRefresh() {
 
   useEffect(() => {
     const refreshAds = () => {
-      if (typeof window !== 'undefined') {
+      if (typeof window !== 'undefined' && window.adsbygoogle) {
         try {
           const ads = document.querySelectorAll('.adsbygoogle')
           ads.forEach(ad => {
-            if (ad.innerHTML.trim() !== '') {
-              ad.innerHTML = ''
-            }
+            const adElement = ad as HTMLElement
+            adElement.removeAttribute('data-adsbygoogle-status')
+            adElement.innerHTML = ''
+            ;(window.adsbygoogle = window.adsbygoogle || []).push({})
           })
-          ;(window.adsbygoogle = window.adsbygoogle || []).push({})
         } catch (e) {
           console.log('Error refreshing ads:', e)
         }
       }
     }
 
-    const timer = setTimeout(refreshAds, 100)
+    const timer = setTimeout(refreshAds, 300)
 
     return () => clearTimeout(timer)
   }, [pathname])
