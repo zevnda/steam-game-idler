@@ -20,12 +20,19 @@ export default function AdRefresh() {
       return
     }
 
-    // For auto ads on navigation, just push an empty object
     const refreshAutoAds = () => {
       try {
         if (window.adsbygoogle) {
-          // Push empty object to trigger ad refresh without page-level config
-          window.adsbygoogle.push({})
+          // Remove existing auto ads
+          const existingAds = document.querySelectorAll('.adsbygoogle[data-adsbygoogle-status]')
+          existingAds.forEach(ad => {
+            ad.remove()
+          })
+
+          // Small delay before pushing new ads
+          setTimeout(() => {
+            window.adsbygoogle.push({})
+          }, 100)
         }
       } catch (error) {
         console.error('Error refreshing auto ads:', error)
