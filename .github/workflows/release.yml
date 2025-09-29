@@ -332,7 +332,21 @@ jobs:
 
       - name: Prepare portable executable
         run: |
-          Copy-Item "./src-tauri/target/release/Steam Game Idler.exe" -Destination "./src-tauri/target/release/Steam Game Idler_${{ github.event.inputs.version }}_x64-portable.exe"
+          # Create portable package directory
+          $portableDir = "./portable-package"
+          New-Item -ItemType Directory -Force -Path $portableDir
+          
+          # Copy the executable with the correct name
+          Copy-Item "./src-tauri/target/release/Steam Game Idler.exe" -Destination "$portableDir/Steam Game Idler.exe"
+          
+          # Copy the libs folder
+          Copy-Item "./src-tauri/libs" -Destination "$portableDir/libs" -Recurse -Force
+          
+          # Create the portable zip
+          Compress-Archive -Path "$portableDir/*" -DestinationPath "./src-tauri/target/release/Steam Game Idler_${{ github.event.inputs.version }}_x64-portable.zip" -Force
+          
+          # Clean up temporary directory
+          Remove-Item -Recurse -Force $portableDir
         shell: pwsh
 
       - name: Create release
@@ -347,7 +361,7 @@ jobs:
             ./src-tauri/target/release/bundle/nsis/Steam Game Idler_${{ github.event.inputs.version }}_x64-setup.exe
             ./src-tauri/target/release/bundle/nsis/Steam Game Idler_${{ github.event.inputs.version }}_x64-setup.nsis.zip
             ./src-tauri/target/release/bundle/nsis/Steam Game Idler_${{ github.event.inputs.version }}_x64-setup.nsis.zip.sig
-            ./src-tauri/target/release/Steam Game Idler_${{ github.event.inputs.version }}_x64-portable.exe
+            ./src-tauri/target/release/Steam Game Idler_${{ github.event.inputs.version }}_x64-portable.zip
 
       - name: Cleanup artifacts
         if: always()

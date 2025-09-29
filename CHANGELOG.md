@@ -1,3 +1,9 @@
+<!-- 2.1.7 -->
+
+### Changes in v2.1.7
+
+- Fixed the portable version by packaging it with required dependencies
+
 <!-- 2.1.6 -->
 
 ### Changes in v2.1.6
