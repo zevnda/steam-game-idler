@@ -10,8 +10,6 @@ import { getPageMap } from 'nextra/page-map'
 import 'nextra-theme-docs/style.css'
 import './globals.css'
 
-import AdRefresh from '@docs/components/AdRefresh'
-
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
@@ -104,7 +102,6 @@ export default async function RootLayout({ children }: { children: ReactNode }):
         />
       </Head>
       <body className={`${inter.className} text-sm`}>
-        <AdRefresh />
         <Layout
           navbar={navbar}
           pageMap={await getPageMap()}
