@@ -1,5 +1,5 @@
 import type { TradingCard } from '@/types'
-import type { CSSProperties, ReactElement } from 'react'
+import type { ReactElement } from 'react'
 
 import { Checkbox, cn, Spinner } from '@heroui/react'
 import { memo, useEffect, useMemo, useState } from 'react'
@@ -21,7 +21,6 @@ import useTradingCardsList from '@/hooks/trading-cards/useTradingCardsList'
 
 interface RowData {
   tradingCardContext: ReturnType<typeof useTradingCardsList> & { filteredTradingCardsList: TradingCard[] }
-  styles: CSSProperties
   t: (key: string, options?: Record<string, number>) => string
   lockedCards: string[]
   cardsPerRow: number
@@ -30,12 +29,11 @@ interface RowData {
 
 interface RowProps {
   index: number
-  style: CSSProperties
   data: RowData
 }
 
-const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
-  const { tradingCardContext, styles, t, lockedCards, handleLockCard } = data
+const Row = memo(({ index, data }: RowProps): ReactElement | null => {
+  const { tradingCardContext, t, lockedCards, handleLockCard } = data
 
   const cardsPerRow = data.cardsPerRow || 6
   const items = []
@@ -70,7 +68,6 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
             classNames={{
               hiddenInput: 'w-fit',
               wrapper: cn(
-                styles,
                 'before:group-data-[selected=true]:!border-dynamic',
                 'before:border-altwhite after:bg-dynamic m-0',
               ),
@@ -163,7 +160,7 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
   }
 
   return (
-    <div style={style} className={`grid gap-4 px-6 pt-2 ${cardsPerRow === 9 ? 'grid-cols-9' : 'grid-cols-6'}`}>
+    <div className={`grid gap-4 px-6 pt-2 ${cardsPerRow === 9 ? 'grid-cols-9' : 'grid-cols-6'}`}>
       {items.map((item, idx) => renderCard(item))}
     </div>
   )
@@ -174,16 +171,11 @@ Row.displayName = 'Row'
 export default function TradingCardsList(): ReactElement {
   const { t } = useTranslation()
   const { tradingCardQueryValue } = useSearchContext()
-  const { isDarkMode, sidebarCollapsed, transitionDuration } = useStateContext()
-  const [styles, setStyles] = useState({})
+  const { sidebarCollapsed, transitionDuration } = useStateContext()
   const [windowInnerHeight, setWindowInnerHeight] = useState(0)
   const [lockedCards, setLockedCards] = useState<string[]>([])
   const [cardsPerRow, setCardsPerRow] = useState(6)
   const tradingCardContext = useTradingCardsList()
-
-  useEffect(() => {
-    setStyles(isDarkMode ? 'group-data-[hover=true]:before:bg-white/20' : 'group-data-[hover=true]:before:bg-black/20')
-  }, [isDarkMode])
 
   useEffect(() => {
     setWindowInnerHeight(window.innerHeight)
@@ -235,7 +227,6 @@ export default function TradingCardsList(): ReactElement {
       ...tradingCardContext,
       filteredTradingCardsList,
     },
-    styles,
     t,
     lockedCards,
     handleLockCard,

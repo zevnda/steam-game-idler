@@ -129,7 +129,8 @@ pub fn run() {
             get_card_price,
             remove_market_listings,
             get_tray_icon,
-            is_portable
+            is_portable,
+            get_cache_dir_path
         ])
         .build(tauri::generate_context!())
         .expect("Error while building tauri application")

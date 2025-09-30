@@ -1,9 +1,8 @@
-use crate::utils::get_lib_path;
+use crate::utils::{get_cache_dir, get_lib_path};
 use serde_json::{json, Value};
 use std::fs::File;
 use std::io::Read;
 use std::os::windows::process::CommandExt;
-use tauri::Manager;
 
 #[tauri::command]
 pub async fn get_achievement_data(
@@ -12,12 +11,7 @@ pub async fn get_achievement_data(
     refetch: Option<bool>,
     app_handle: tauri::AppHandle,
 ) -> Result<Value, String> {
-    // Get the application data directory
-    let app_data_dir = app_handle
-        .path()
-        .app_data_dir()
-        .map_err(|e| e.to_string())?
-        .join("cache")
+    let app_data_dir = get_cache_dir(&app_handle)?
         .join(steam_id.clone())
         .join("achievement_data");
 

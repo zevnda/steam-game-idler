@@ -1,3 +1,9 @@
+<!-- 2.1.8 -->
+
+### Changes in v2.1.8
+
+- In the portable version, `cache` files are now created and stored inside the same directory as the executable (#790)
+
 <!-- 2.1.7 -->
 
 ### Changes in v2.1.7

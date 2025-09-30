@@ -1,3 +1,4 @@
+use crate::utils::get_cache_dir;
 use reqwest::Client;
 use serde_json::{json, Value};
 use std::collections::HashMap;
@@ -5,7 +6,6 @@ use std::fs::File;
 use std::fs::{create_dir_all, remove_file, OpenOptions};
 use std::io::Read;
 use std::io::Write;
-use tauri::Manager;
 
 #[tauri::command]
 pub async fn get_trading_cards(
@@ -300,13 +300,7 @@ pub async fn get_trading_cards(
         "card_data": trading_cards
     });
 
-    // Get the application data directory
-    let app_data_dir = app_handle
-        .path()
-        .app_data_dir()
-        .map_err(|e| e.to_string())?
-        .join("cache")
-        .join(steam_id.clone());
+    let app_data_dir = get_cache_dir(&app_handle)?.join(steam_id.clone());
     create_dir_all(&app_data_dir).map_err(|e| format!("Failed to create app directory: {}", e))?;
 
     // Save the response to trading_cards.json
@@ -332,13 +326,7 @@ pub fn get_trading_cards_cache(
     steam_id: String,
     app_handle: tauri::AppHandle,
 ) -> Result<Value, String> {
-    // Get the application data directory
-    let app_data_dir = app_handle
-        .path()
-        .app_data_dir()
-        .map_err(|e| e.to_string())?
-        .join("cache")
-        .join(steam_id.clone());
+    let app_data_dir = get_cache_dir(&app_handle)?.join(steam_id.clone());
 
     // Read trading cards file
     let trading_cards = {
@@ -368,13 +356,7 @@ pub async fn update_card_data(
     data: Value,
     app_handle: tauri::AppHandle,
 ) -> Result<Value, String> {
-    // Get the application data directory
-    let app_data_dir = app_handle
-        .path()
-        .app_data_dir()
-        .map_err(|e| e.to_string())?
-        .join("cache")
-        .join(steam_id.clone());
+    let app_data_dir = get_cache_dir(&app_handle)?.join(steam_id.clone());
 
     // Check if directory exists
     if !app_data_dir.exists() {
@@ -442,13 +424,7 @@ pub fn delete_user_trading_card_file(
     app_handle: tauri::AppHandle,
 ) -> Result<(), String> {
     let trading_card_file_name = format!("trading_cards.json");
-    // Get the application data directory
-    let app_data_dir = app_handle
-        .path()
-        .app_data_dir()
-        .map_err(|e| e.to_string())?
-        .join("cache")
-        .join(steam_id.clone());
+    let app_data_dir = get_cache_dir(&app_handle)?.join(steam_id.clone());
     // Delete the games list file
     let trading_cards_file_path = app_data_dir.join(trading_card_file_name);
     if trading_cards_file_path.exists() {

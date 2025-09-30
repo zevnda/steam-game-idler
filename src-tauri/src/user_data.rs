@@ -1,4 +1,4 @@
-use crate::utils::get_steam_location;
+use crate::utils::{get_cache_dir, get_steam_location};
 use regex::Regex;
 use reqwest::Client;
 use serde_json;
@@ -8,7 +8,6 @@ use std::fs;
 use std::fs::{create_dir_all, File, OpenOptions};
 use std::io::{Read, Write};
 use std::path::PathBuf;
-use tauri::Manager;
 
 #[tauri::command]
 // Get Steam users
@@ -65,8 +64,6 @@ pub async fn get_user_summary(
         key, steam_id
     );
 
-    println!("Requesting URL: {}", url);
-
     let client = Client::new();
 
     // Send the request and handle the response
@@ -102,12 +99,7 @@ pub async fn get_user_summary(
                 return Ok(body);
             }
 
-            // Get the application data directory
-            let app_data_dir = app_handle
-                .path()
-                .app_data_dir()
-                .map_err(|e| e.to_string())?
-                .join("cache");
+            let app_data_dir = get_cache_dir(&app_handle)?;
             create_dir_all(&app_data_dir)
                 .map_err(|e| format!("Failed to create app directory: {}", e))?;
 
@@ -219,12 +211,7 @@ pub fn parse_login_users(config_path: &PathBuf) -> Result<HashMap<String, (Strin
 
 #[tauri::command]
 pub fn get_user_summary_cache(app_handle: tauri::AppHandle) -> Result<Value, String> {
-    // Get the application data directory
-    let app_data_dir = app_handle
-        .path()
-        .app_data_dir()
-        .map_err(|e| e.to_string())?
-        .join("cache");
+    let app_data_dir = get_cache_dir(&app_handle)?;
 
     let file_path = app_data_dir.join("user_summaries.json");
 
@@ -249,12 +236,7 @@ pub fn get_user_summary_cache(app_handle: tauri::AppHandle) -> Result<Value, Str
 
 #[tauri::command]
 pub fn delete_user_summary_file(app_handle: tauri::AppHandle) -> Result<(), String> {
-    // Get the cache data directory
-    let cache_data_dir = app_handle
-        .path()
-        .app_data_dir()
-        .map_err(|e| e.to_string())?
-        .join("cache");
+    let cache_data_dir = get_cache_dir(&app_handle)?;
 
     let file_path = cache_data_dir.join("user_summaries.json");
 

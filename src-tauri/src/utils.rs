@@ -123,15 +123,11 @@ pub async fn anti_away() -> Result<(), String> {
 
 #[tauri::command]
 pub fn open_file_explorer(path: String, app_handle: tauri::AppHandle) -> Result<(), String> {
-    // Get the application data directory
-    let app_data_dir = app_handle
-        .path()
-        .app_data_dir()
-        .map_err(|e| e.to_string())?;
+    let cache_dir = get_cache_dir(&app_handle)?;
 
     // Open the file explorer and select the specified path
     std::process::Command::new("explorer")
-        .args(["/select,", app_data_dir.join(path).to_str().unwrap()])
+        .args(["/select,", cache_dir.join(path).to_str().unwrap()])
         .creation_flags(0x08000000)
         .spawn()
         .map_err(|e| e.to_string())?;
@@ -172,5 +168,29 @@ pub fn is_portable() -> bool {
         !uninstaller_path.exists()
     } else {
         true
+    }
+}
+
+/// Get the cache directory path as a string for frontend use
+#[tauri::command]
+pub fn get_cache_dir_path(app_handle: tauri::AppHandle) -> Result<String, String> {
+    get_cache_dir(&app_handle).map(|path| path.to_string_lossy().to_string())
+}
+
+/// Get the base cache directory path based on whether the app is running in portable mode.
+/// In portable mode: returns exe_dir/cache
+/// In non-portable mode: returns app_data_dir/cache
+pub fn get_cache_dir(app_handle: &tauri::AppHandle) -> Result<std::path::PathBuf, String> {
+    if is_portable() {
+        let mut exe_path = tauri::utils::platform::current_exe()
+            .map_err(|e| format!("Failed to get current exe path: {}", e))?;
+        exe_path.pop(); // Remove the .exe file name to get the directory
+        Ok(exe_path.join("cache"))
+    } else {
+        app_handle
+            .path()
+            .app_data_dir()
+            .map_err(|e| format!("Failed to get app data dir: {}", e))
+            .map(|path| path.join("cache"))
     }
 }

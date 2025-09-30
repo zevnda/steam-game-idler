@@ -52,7 +52,10 @@ tauri-plugin-updater = "2.9.0"
 tauri-plugin-window-state = "2.3.0"
 
 [profile.dev]
+opt-level = 1
 incremental = true
+debug = 1
+split-debuginfo = "unpacked"
 
 [profile.release]
 opt-level = 3
