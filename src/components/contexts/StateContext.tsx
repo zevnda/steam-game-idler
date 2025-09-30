@@ -5,8 +5,6 @@ import { createContext, useContext, useState } from 'react'
 interface StateContextType {
   sidebarCollapsed: boolean
   setSidebarCollapsed: Dispatch<SetStateAction<boolean>>
-  isDarkMode: boolean
-  setIsDarkMode: Dispatch<SetStateAction<boolean>>
   appId: number | null
   setAppId: Dispatch<SetStateAction<number | null>>
   appName: string | null
@@ -39,7 +37,6 @@ export const StateContext = createContext<StateContextType | undefined>(undefine
 
 export const StateProvider = ({ children }: { children: ReactNode }): ReactElement => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
-  const [isDarkMode, setIsDarkMode] = useState(false)
   const [appId, setAppId] = useState<number | null>(null)
   const [appName, setAppName] = useState<string | null>(null)
   const [showFreeGamesTab, setShowFreeGamesTab] = useState(false)
@@ -59,8 +56,6 @@ export const StateProvider = ({ children }: { children: ReactNode }): ReactEleme
       value={{
         sidebarCollapsed,
         setSidebarCollapsed,
-        isDarkMode,
-        setIsDarkMode,
         showFreeGamesTab,
         setShowFreeGamesTab,
         appId,

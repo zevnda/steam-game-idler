@@ -15,7 +15,6 @@ import { relaunch } from '@tauri-apps/plugin-process'
 import { check } from '@tauri-apps/plugin-updater'
 
 import { useCallback, useEffect } from 'react'
-import { useTheme } from 'next-themes'
 import { useTranslation } from 'react-i18next'
 
 import { useIdleContext } from '@/components/contexts/IdleContext'
@@ -28,17 +27,9 @@ import { showDangerToast, t } from '@/utils/toasts'
 
 export default function useWindow(): void {
   const { t } = useTranslation()
-  // TODO: Remove line after update
-  const { theme, setTheme } = useTheme()
   const { setIdleGamesList } = useIdleContext()
-  const {
-    setIsDarkMode,
-    setShowFreeGamesTab,
-    setIsCardFarming,
-    setIsAchievementUnlocker,
-    setShowSteamWarning,
-    setUseBeta,
-  } = useStateContext()
+  const { setShowFreeGamesTab, setIsCardFarming, setIsAchievementUnlocker, setShowSteamWarning, setUseBeta } =
+    useStateContext()
   const { setUpdateAvailable, setShowChangelog } = useUpdateContext()
   const { userSummary, setUserSummary, userSettings, setUserSettings, gamesList, setFreeGamesList } = useUserContext()
 
@@ -77,11 +68,6 @@ export default function useWindow(): void {
     disableContextMenuAndRefresh()
   }, [])
 
-  // TODO: Remove line after update
-  useEffect(() => {
-    setTheme('dark')
-  }, [setTheme])
-
   useEffect(() => {
     setUseBeta(userSettings.general.useBeta)
   }, [userSettings.general.useBeta, setUseBeta])
@@ -97,12 +83,6 @@ export default function useWindow(): void {
     }
     getAndSetUserSettings()
   }, [userSummary, setUserSettings])
-
-  useEffect(() => {
-    // Set dark mode based on the current theme
-    const darkThemes = ['dark']
-    setIsDarkMode(darkThemes.includes(String(theme)))
-  }, [theme, setIsDarkMode])
 
   useEffect(() => {
     // Check for updates - immediate update for major, or show notification

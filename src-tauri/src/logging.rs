@@ -1,17 +1,13 @@
+use crate::utils::get_cache_dir;
 use chrono::Local;
 use std::fs::{create_dir_all, OpenOptions};
 use std::io::{BufRead, BufReader, Seek, SeekFrom, Write};
-use tauri::Manager;
 
 const MAX_LINES: usize = 500;
 
 #[tauri::command]
 pub fn log_event(message: String, app_handle: tauri::AppHandle) -> Result<(), String> {
-    // Get the application data directory
-    let app_data_dir = app_handle
-        .path()
-        .app_data_dir()
-        .map_err(|e| e.to_string())?;
+    let app_data_dir = get_cache_dir(&app_handle)?;
     create_dir_all(&app_data_dir).map_err(|e| format!("Failed to create app directory: {}", e))?;
     // Open the log file
     let log_file_path = app_data_dir.join("log.txt");
@@ -52,11 +48,7 @@ pub fn log_event(message: String, app_handle: tauri::AppHandle) -> Result<(), St
 
 #[tauri::command]
 pub fn clear_log_file(app_handle: tauri::AppHandle) -> Result<(), String> {
-    // Get the application data directory
-    let app_data_dir = app_handle
-        .path()
-        .app_data_dir()
-        .map_err(|e| e.to_string())?;
+    let app_data_dir = get_cache_dir(&app_handle)?;
     // Open the log file
     let log_file_path = app_data_dir.join("log.txt");
     let file = OpenOptions::new()

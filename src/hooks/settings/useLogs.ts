@@ -1,7 +1,6 @@
 import type { LogEntry } from '@/types'
 
 import { invoke } from '@tauri-apps/api/core'
-import { appDataDir } from '@tauri-apps/api/path'
 import { readTextFile } from '@tauri-apps/plugin-fs'
 
 import { useEffect, useState } from 'react'
@@ -19,7 +18,7 @@ export const useLogs = (): LogsHook => {
   useEffect(() => {
     const fetchLogs = async (): Promise<void> => {
       try {
-        const fullLogPath = await appDataDir()
+        const fullLogPath = await invoke<string>('get_cache_dir_path')
         const logFilePath = `${fullLogPath}\\log.txt`
 
         // Check if log file exists

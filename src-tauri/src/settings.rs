@@ -1,9 +1,9 @@
+use crate::utils::get_cache_dir;
 use serde_json::{json, Value};
 use std::fs;
 use std::fs::File;
 use std::io::Read;
 use std::io::Write;
-use tauri::Manager;
 
 // Default settings
 fn get_default_settings() -> Value {
@@ -67,13 +67,7 @@ pub async fn get_user_settings(
     steam_id: String,
     app_handle: tauri::AppHandle,
 ) -> Result<Value, String> {
-    // Get the application data directory
-    let app_data_dir = app_handle
-        .path()
-        .app_data_dir()
-        .map_err(|e| e.to_string())?
-        .join("cache")
-        .join(steam_id.clone());
+    let app_data_dir = get_cache_dir(&app_handle)?.join(steam_id.clone());
 
     // Create cache directory if it doesn't exist
     if !app_data_dir.exists() {
@@ -119,13 +113,7 @@ pub async fn update_user_settings(
     value: Value,
     app_handle: tauri::AppHandle,
 ) -> Result<Value, String> {
-    // Get the application data directory
-    let app_data_dir = app_handle
-        .path()
-        .app_data_dir()
-        .map_err(|e| e.to_string())?
-        .join("cache")
-        .join(steam_id.clone());
+    let app_data_dir = get_cache_dir(&app_handle)?.join(steam_id.clone());
 
     // Create cache directory if it doesn't exist
     if !app_data_dir.exists() {
@@ -202,13 +190,7 @@ pub async fn reset_user_settings(
     steam_id: String,
     app_handle: tauri::AppHandle,
 ) -> Result<Value, String> {
-    // Get the application data directory
-    let app_data_dir = app_handle
-        .path()
-        .app_data_dir()
-        .map_err(|e| e.to_string())?
-        .join("cache")
-        .join(steam_id.clone());
+    let app_data_dir = get_cache_dir(&app_handle)?.join(steam_id.clone());
 
     // Create cache directory if it doesn't exist
     if !app_data_dir.exists() {
@@ -240,12 +222,7 @@ pub async fn check_start_minimized_setting(app_handle: &tauri::AppHandle) -> Res
     use std::fs::File;
     use std::io::Read;
 
-    // Get the application data directory
-    let app_data_dir = app_handle
-        .path()
-        .app_data_dir()
-        .map_err(|e| e.to_string())?
-        .join("cache");
+    let app_data_dir = get_cache_dir(app_handle)?;
 
     // Look for any user settings file to check the startMinimized setting
     if let Ok(entries) = std::fs::read_dir(&app_data_dir) {

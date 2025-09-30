@@ -1,3 +1,4 @@
+use crate::utils::get_cache_dir;
 use reqwest::Client;
 use scraper::{Html, Selector};
 use serde::{Deserialize, Serialize};
@@ -6,7 +7,6 @@ use std::fs::File;
 use std::fs::{create_dir_all, remove_dir_all, remove_file, OpenOptions};
 use std::io::Read;
 use std::io::Write;
-use tauri::Manager;
 
 #[derive(Serialize, Deserialize)]
 struct GameInfo {
@@ -48,13 +48,7 @@ pub async fn get_games_list(
                 "games_list": filtered_data
             });
 
-            // Get the application data directory
-            let app_data_dir = app_handle
-                .path()
-                .app_data_dir()
-                .map_err(|e| e.to_string())?
-                .join("cache")
-                .join(steam_id.clone());
+            let app_data_dir = get_cache_dir(&app_handle)?.join(steam_id.clone());
             create_dir_all(&app_data_dir)
                 .map_err(|e| format!("Failed to create app directory: {}", e))?;
 
@@ -106,13 +100,7 @@ pub async fn get_recent_games(
                 "games_list": filtered_data
             });
 
-            // Get the application data directory
-            let app_data_dir = app_handle
-                .path()
-                .app_data_dir()
-                .map_err(|e| e.to_string())?
-                .join("cache")
-                .join(steam_id.clone());
+            let app_data_dir = get_cache_dir(&app_handle)?.join(steam_id.clone());
             create_dir_all(&app_data_dir)
                 .map_err(|e| format!("Failed to create app directory: {}", e))?;
 
@@ -167,13 +155,7 @@ pub fn get_games_list_cache(
     steam_id: String,
     app_handle: tauri::AppHandle,
 ) -> Result<Value, String> {
-    // Get the application data directory
-    let app_data_dir = app_handle
-        .path()
-        .app_data_dir()
-        .map_err(|e| e.to_string())?
-        .join("cache")
-        .join(steam_id.clone());
+    let app_data_dir = get_cache_dir(&app_handle)?.join(steam_id.clone());
 
     // Read games list file
     let games_list = {
@@ -228,13 +210,7 @@ pub fn delete_user_games_list_files(
 ) -> Result<(), String> {
     let games_list_file_name = format!("games_list.json");
     let recent_games_file_name = format!("recent_games.json");
-    // Get the application data directory
-    let app_data_dir = app_handle
-        .path()
-        .app_data_dir()
-        .map_err(|e| e.to_string())?
-        .join("cache")
-        .join(steam_id.clone());
+    let app_data_dir = get_cache_dir(&app_handle)?.join(steam_id.clone());
     // Delete the games list file
     let games_file_path = app_data_dir.join(games_list_file_name);
     if games_file_path.exists() {
@@ -253,12 +229,7 @@ pub fn delete_user_games_list_files(
 
 #[tauri::command]
 pub fn delete_all_cache_files(app_handle: tauri::AppHandle) -> Result<(), String> {
-    // Get the cache data directory
-    let cache_data_dir = app_handle
-        .path()
-        .app_data_dir()
-        .map_err(|e| e.to_string())?
-        .join("cache");
+    let cache_data_dir = get_cache_dir(&app_handle)?;
     // Delete the cache directory
     match remove_dir_all(&cache_data_dir) {
         Ok(_) => println!("Successfully deleted directory: {:?}", cache_data_dir),

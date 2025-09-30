@@ -17,7 +17,7 @@ export default function OpenSettings(): ReactElement {
   // Open the log file in file explorer
   const handleOpenSettingsFile = async (): Promise<void> => {
     try {
-      const filePath = `cache\\${userSummary?.steamId}\\settings.json`
+      const filePath = `${userSummary?.steamId}\\settings.json`
       await invoke('open_file_explorer', { path: filePath })
     } catch (error) {
       showDangerToast(t('common.error'))

@@ -1,9 +1,9 @@
+use crate::utils::get_cache_dir;
 use serde_json::{json, Value};
 use std::fs;
 use std::fs::File;
 use std::io::Read;
 use std::io::Write;
-use tauri::Manager;
 
 #[tauri::command]
 pub async fn get_custom_lists(
@@ -11,12 +11,7 @@ pub async fn get_custom_lists(
     list: String,
     app_handle: tauri::AppHandle,
 ) -> Result<Value, String> {
-    // Get the application data directory
-    let app_data_dir = app_handle
-        .path()
-        .app_data_dir()
-        .map_err(|e| e.to_string())?
-        .join("cache")
+    let app_data_dir = get_cache_dir(&app_handle)?
         .join(steam_id.clone())
         .join("custom_lists");
 
@@ -69,12 +64,7 @@ pub async fn add_game_to_custom_list(
     list: String,
     app_handle: tauri::AppHandle,
 ) -> Result<Value, String> {
-    // Get the application data directory
-    let app_data_dir = app_handle
-        .path()
-        .app_data_dir()
-        .map_err(|e| e.to_string())?
-        .join("cache")
+    let app_data_dir = get_cache_dir(&app_handle)?
         .join(steam_id.clone())
         .join("custom_lists");
 
@@ -150,12 +140,7 @@ pub async fn remove_game_from_custom_list(
     list: String,
     app_handle: tauri::AppHandle,
 ) -> Result<Value, String> {
-    // Get the application data directory
-    let app_data_dir = app_handle
-        .path()
-        .app_data_dir()
-        .map_err(|e| e.to_string())?
-        .join("cache")
+    let app_data_dir = get_cache_dir(&app_handle)?
         .join(steam_id.clone())
         .join("custom_lists");
 
@@ -238,12 +223,7 @@ pub async fn update_custom_list(
     list: String,
     app_handle: tauri::AppHandle,
 ) -> Result<Value, String> {
-    // Get the application data directory
-    let app_data_dir = app_handle
-        .path()
-        .app_data_dir()
-        .map_err(|e| e.to_string())?
-        .join("cache")
+    let app_data_dir = get_cache_dir(&app_handle)?
         .join(steam_id.clone())
         .join("custom_lists");
 

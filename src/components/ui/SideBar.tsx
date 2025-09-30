@@ -33,7 +33,6 @@ export default function SideBar(): ReactElement {
   const { idleGamesList } = useIdleContext()
   const {
     sidebarCollapsed,
-    isDarkMode,
     showFreeGamesTab,
     isCardFarming,
     isAchievementUnlocker,
@@ -278,7 +277,6 @@ export default function SideBar(): ReactElement {
                   <FiLogOut
                     className={cn(
                       'rotate-180 transition-all duration-150 text-altwhite',
-                      !isDarkMode && 'group-hover:text-danger',
                       isCardFarming || isAchievementUnlocker ? '' : 'group-hover:text-danger',
                     )}
                     fontSize={18}

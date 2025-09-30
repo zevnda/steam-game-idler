@@ -1,6 +1,7 @@
 import type { UserSettings } from '@/types'
 import type { ReactElement } from 'react'
 
+import { invoke } from '@tauri-apps/api/core'
 import { arch, locale, version } from '@tauri-apps/plugin-os'
 
 import { Button } from '@heroui/react'
@@ -14,6 +15,7 @@ import { showDangerToast, showSuccessToast } from '@/utils/toasts'
 interface SystemType {
   version: string
   locale: string | null
+  isPortable: boolean
 }
 
 interface ExportedData {
@@ -31,6 +33,7 @@ export default function ExportSettings(): ReactElement {
     const system = {} as SystemType
     const osVersion = version()
     const cpuArch = arch()
+    const isPortable = await invoke<boolean>('is_portable')
 
     let winVersion = 'Windows'
     const buildMatch = osVersion.match(/^10\.0\.(\d+)$/)
@@ -42,6 +45,7 @@ export default function ExportSettings(): ReactElement {
     const is64Bit = cpuArch === 'x86_64'
     system.version = `${winVersion} ${is64Bit ? '64-bit' : '32-bit'} (${osVersion})`
     system.locale = await locale()
+    system.isPortable = isPortable
 
     return system
   }
