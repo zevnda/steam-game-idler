@@ -62,17 +62,21 @@ pub fn run() {
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_notification::init())
-        .plugin(
-            tauri_plugin_window_state::Builder::new()
-                .with_state_flags(
-                    StateFlags::SIZE
-                        | StateFlags::POSITION
-                        | StateFlags::MAXIMIZED
-                        | StateFlags::DECORATIONS
-                        | StateFlags::FULLSCREEN,
-                )
-                .build(),
-        )
+        .plugin({
+            let mut builder = tauri_plugin_window_state::Builder::new().with_state_flags(
+                StateFlags::SIZE
+                    | StateFlags::POSITION
+                    | StateFlags::MAXIMIZED
+                    | StateFlags::DECORATIONS
+                    | StateFlags::FULLSCREEN,
+            );
+
+            if is_portable() {
+                builder = builder.with_dir("./");
+            }
+
+            builder.build()
+        })
         .plugin(tauri_plugin_autostart::init(
             MacosLauncher::LaunchAgent,
             None,

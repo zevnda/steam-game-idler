@@ -1,3 +1,9 @@
+<!-- 2.1.9 -->
+
+### Changes in v2.1.9
+
+- In the portable version, the `.window-state.json` file is now created and stored in the same directory as the executable (#790)
+
 <!-- 2.1.8 -->
 
 ### Changes in v2.1.8
