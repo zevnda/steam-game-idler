@@ -5,10 +5,11 @@
 - Add a `sell delay` option to `settings > trading card manager` to allow users to manually configure the delay between selling cards via Steam's API (#773)
   - This is useful as the API's rate limit may change unexpectedly, so increasing the delay can help avoid issues when selling cards in bulk
 - Added an `add all results` button to the `edit list` modal for `achievement unlocker` (#757, #756)
-  - When the user searched for a specific set of games, the `add all` button is replaced by the `add all results` button
+  - When the user searches for a specific set of games, the `add all` button is replaced by the `add all results` button
   - Unlike `add all`, the `add all results` button will append the results to the list, rather than overwriting the existing list
   - This allows users to search for multiple different groups of games and build a custom list easily
 - Fixed an issue where the Close button in Card Farming screen would stop the scheduled Automatic Idler task (#770)
+- In the portable version, achievement data files are not correctly created and stored in the same directory as the executable
 
 <!-- 2.1.9 -->
 

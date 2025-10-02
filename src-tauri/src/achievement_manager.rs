@@ -22,10 +22,13 @@ pub async fn get_achievement_data(
     let should_fetch_new = refetch.unwrap_or(false) || !achievement_file_path.exists();
 
     let achievement_data = if should_fetch_new {
+        let cache_dir = get_cache_dir(&app_handle)?;
+        let cache_dir_str = cache_dir.to_string_lossy().to_string();
+
         // Fetch new data
         let exe_path = get_lib_path()?;
         let output = std::process::Command::new(exe_path)
-            .args(&["get_achievement_data", &app_id.to_string()])
+            .args(&["get_achievement_data", &app_id.to_string(), &cache_dir_str])
             .creation_flags(0x08000000)
             .output()
             .map_err(|e| format!("Failed to execute unlocker: {}", e))?;
