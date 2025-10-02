@@ -166,6 +166,8 @@
   "settings.tradingCards.sellOptions.lowestSellOrder": "Lowest Sell Order",
   "settings.tradingCards.priceAdjustment": "Price Adjustment",
   "settings.tradingCards.priceAdjustmentSub": "Add or subtract <1>{{priceAdjustment}}</1> from the sale price of all sales",
+  "settings.tradingCards.sellDelay": "Sell Delay",
+  "settings.tradingCards.sellDelaySub": "Wait <1>{{sellDelay}}</1> seconds between listing each card to avoid rate limiting",
   "settings.tradingCards.sellLimit": "Sell Limit",
   "settings.tradingCards.sellLimitSub": "Do not sell items if the final sale price is below <1>{{sellLimitMin}}</1> or above <3>{{sellLimitMax}}</3>",
   "settings.debug.title": "Debug",

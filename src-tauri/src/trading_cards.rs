@@ -442,6 +442,7 @@ pub async fn list_trading_cards(
     sma: Option<String>,
     steam_id: String,
     cards: Vec<(String, String)>,
+    delay: Option<f64>,
 ) -> Result<Value, String> {
     let client = Client::builder()
         .redirect(reqwest::redirect::Policy::custom(|attempt| {
@@ -464,7 +465,6 @@ pub async fn list_trading_cards(
     };
 
     let mut results = Vec::new();
-    let delay = tokio::time::Duration::from_millis(500);
 
     for (index, (assetid, price)) in cards.into_iter().enumerate() {
         let user_price = match price.trim().parse::<f64>() {
@@ -539,7 +539,8 @@ pub async fn list_trading_cards(
 
         // Add delay between requests (except for the first one)
         if index > 0 {
-            tokio::time::sleep(delay).await;
+            let delay_ms = (delay.unwrap_or(3.0) * 1000.0) as u64;
+            tokio::time::sleep(tokio::time::Duration::from_millis(delay_ms)).await;
         }
 
         // Send the request to list the item

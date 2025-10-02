@@ -2,6 +2,8 @@
 
 ### Changes in v2.1.10
 
+- Add a `sell delay` option to `settings > trading card manager` to allow users to manually configure the delay between selling card via Steam's API (#773)
+  - This is useful as the API's rate limit may change unexpectedly, so increasing the delay can help avoid issues when selling cards in bulk
 - Fixed an issue where the Close button in Card Farming screen would stop the scheduled Automatic Idler task (#770)
 
 <!-- 2.1.9 -->

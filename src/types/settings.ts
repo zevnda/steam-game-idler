@@ -59,6 +59,7 @@ export interface TradingCardsSettings {
     min: number
     max: number
   }
+  sellDelay: number
 }
 
 export interface UserSettings {

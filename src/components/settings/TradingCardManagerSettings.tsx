@@ -19,12 +19,18 @@ export default function TradingCardManagerSettings(): ReactElement {
   const [priceAdjustment, setPriceAdjustment] = useState<number>(0.0)
   const [sellLimitMin, setSellLimitMin] = useState<number>(0.01)
   const [sellLimitMax, setSellLimitMax] = useState<number>(1.1)
+  const [sellDelay, setSellDelay] = useState<number>(3)
 
   useEffect(() => {
     setPriceAdjustment(userSettings?.tradingCards?.priceAdjustment || 0.0)
     setSellLimitMin(userSettings?.tradingCards?.sellLimit?.min || 0.01)
     setSellLimitMax(userSettings?.tradingCards?.sellLimit?.max || 1.1)
-  }, [userSettings?.tradingCards?.priceAdjustment, userSettings?.tradingCards?.sellLimit])
+    setSellDelay(userSettings?.tradingCards?.sellDelay || 3)
+  }, [
+    userSettings?.tradingCards?.priceAdjustment,
+    userSettings?.tradingCards?.sellLimit,
+    userSettings?.tradingCards?.sellDelay,
+  ])
 
   const sellOptions = [
     {
@@ -85,6 +91,17 @@ export default function TradingCardManagerSettings(): ReactElement {
         min: sellLimitMin,
         max: value,
       },
+    })
+
+    setUserSettings(updateResponse.settings)
+  }
+
+  const handleSellDelayChange = async (value: number): Promise<void> => {
+    setSellDelay(value)
+    const updateResponse = await invoke<InvokeSettings>('update_user_settings', {
+      steamId: userSummary?.steamId,
+      key: 'tradingCards.sellDelay',
+      value,
     })
 
     setUserSettings(updateResponse.settings)
@@ -272,6 +289,45 @@ export default function TradingCardManagerSettings(): ReactElement {
               onValueChange={handleSellLimitMaxChange}
             />
           </div>
+        </div>
+
+        <Divider className='bg-border/70 my-4' />
+
+        <div className='flex justify-between items-center'>
+          <div className='flex flex-col gap-2 w-1/2'>
+            <p className='text-sm text-content font-bold'>
+              {t('settings.tradingCards.sellDelay')} <Beta />
+            </p>
+            <p className='text-xs text-altwhite'>
+              <Trans
+                i18nKey='settings.tradingCards.sellDelaySub'
+                values={{ sellDelay }}
+                components={{ 1: <strong /> }}
+              />
+            </p>
+          </div>
+          <NumberInput
+            size='sm'
+            value={sellDelay}
+            step={1}
+            minValue={3}
+            maxValue={15}
+            aria-label='sell delay value'
+            className='w-[90px]'
+            classNames={{
+              inputWrapper: cn(
+                'bg-input data-[hover=true]:!bg-inputhover border-none',
+                'group-data-[focus-visible=true]:ring-transparent',
+                'group-data-[focus-visible=true]:ring-offset-transparent',
+                'group-data-[focus-within=true]:!bg-inputhover',
+                'border group-data-[invalid=true]:!border-red-500',
+                'border group-data-[invalid=true]:!bg-red-500/10',
+              ),
+              input: ['text-sm !text-content'],
+              stepperButton: ['!text-content', 'text-sm'],
+            }}
+            onValueChange={handleSellDelayChange}
+          />
         </div>
       </div>
     </div>
