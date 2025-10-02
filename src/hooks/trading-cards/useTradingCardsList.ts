@@ -358,6 +358,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
   const handleSellSelectedCards = async (): Promise<void> => {
     try {
       const credentials = userSettings.cardFarming.credentials
+      const sellDelay = userSettings?.tradingCards?.sellDelay || 3
 
       if (!credentials?.sid || !credentials?.sls) return showMissingCredentialsToast()
 
@@ -421,6 +422,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
         sma: credentials?.sma,
         steamId: userSummary?.steamId,
         cards: cardsForBulkListing,
+        delay: sellDelay,
       })
 
       if (response.successful && response.results && response.results.length > 0) {
@@ -469,6 +471,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
       showPrimaryToast(t('toast.tradingCards.processing'))
 
       const priceAdjustment = userSettings?.tradingCards?.priceAdjustment || 0.0
+      const sellDelay = userSettings?.tradingCards?.sellDelay || 3
       const successfulCards = []
       const failedCards = []
       const skippedCards = []
@@ -502,7 +505,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
             continue
           }
 
-          await new Promise(resolve => setTimeout(resolve, 3000))
+          await new Promise(resolve => setTimeout(resolve, sellDelay * 1000)) // Wait between listings to avoid rate limiting
 
           if (!shouldContinue) break
 
@@ -541,7 +544,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
             }
           }
 
-          await new Promise(resolve => setTimeout(resolve, 3000))
+          await new Promise(resolve => setTimeout(resolve, sellDelay * 1000)) // Wait between listings to avoid rate limiting
         } catch (error) {
           failedCards.push({ assetid: card.assetid, message: String(error) })
           console.error(`Error processing card ${card.assetid}:`, error)
