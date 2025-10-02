@@ -496,12 +496,12 @@ export default function useTradingCardsList(): UseTradingCardsList {
           const priceResult = await fetchCardPrices(card.market_hash_name)
 
           if (!priceResult.success) {
-            logEvent(`[Error] Failed to fetch price for card ${card.assetid} - skipping`)
+            logEvent(`[Error] Failed to fetch price for card ${card.assetid} (${card.market_hash_name}) - skipping`)
             continue
           }
 
           if (!priceResult.price) {
-            logEvent(`[Error] Couldn't determine price for card ${card.assetid} - skipping`)
+            logEvent(`[Error] Couldn't determine price for card ${card.assetid} (${card.market_hash_name}) - skipping`)
             continue
           }
 

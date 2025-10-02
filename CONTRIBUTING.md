@@ -75,8 +75,8 @@ build(deps): update tauri shell plugin to latest
 ## Versioning
 When to bump version numbers:
 
-| Type  | Description                                                                                                 |
-| ----- | ----------------------------------------------------------------------------------------------------------- |
-| Major | Breaking changes (steam API changes, UI overhauls, removed functionality)                                   |
-| Minor | New major features or functionality added in a backwards compatible manner                                  |
-| Patch | Backwards compatible bug fixes, performance improvements, UI adjustments, and small quality-of-life changes |
+| Type  | Description                                                                                      |
+| ----- | ------------------------------------------------------------------------------------------------ |
+| Major | Breaking changes (steam API changes, UI overhauls, removed functionality)                        |
+| Minor | New major features or functionality added in a backwards compatible manner                       |
+| Patch | Backwards compatible bug fixes, performance improvements, UI adjustments, and new minor features |
