@@ -1,9 +1,11 @@
-import type { Game } from '@/types'
+import type { Game, InvokeSettings, UserSummary } from '@/types'
 import type { DragEndEvent } from '@dnd-kit/core'
 import type { ReactElement, ReactNode } from 'react'
 
+import { invoke } from '@tauri-apps/api/core'
+
 import { Button, cn } from '@heroui/react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { DndContext } from '@dnd-kit/core'
 import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
@@ -13,14 +15,22 @@ import { TbAward, TbCards, TbEdit } from 'react-icons/tb'
 import { useStateContext } from '@/components/contexts/StateContext'
 import EditListModal from '@/components/customlists/EditListModal'
 import ManualAdd from '@/components/customlists/ManualAdd'
+import RecommendedCardDropsCarousel from '@/components/customlists/RecommendedCardDropsCarousel'
 import GameCard from '@/components/ui/GameCard'
 import { useAutomate } from '@/hooks/automation/useAutomateButtons'
 import useCustomList from '@/hooks/customlists/useCustomList'
+import { getAllGamesWithDrops } from '@/utils/automation'
 
 type CustomListType = 'cardFarmingList' | 'achievementUnlockerList' | 'autoIdleList' | 'favoritesList'
 
 interface CustomListProps {
   type: CustomListType
+}
+
+interface GameWithDropsData {
+  id: string
+  name: string
+  remaining: number
 }
 
 interface ListTypeConfig {
@@ -53,6 +63,8 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
   const { startCardFarming, startAchievementUnlocker } = useAutomate()
   const [isEditModalOpen, setEditModalOpen] = useState(false)
   const { sidebarCollapsed, transitionDuration, isGameSettingsOpen } = useStateContext()
+  const [gamesWithDrops, setGamesWithDrops] = useState<Game[]>([])
+  const [isLoadingDrops, setIsLoadingDrops] = useState(false)
 
   const handleDragEnd = (event: DragEndEvent): void => {
     const { active, over } = event
@@ -66,6 +78,49 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
       })
     }
   }
+
+  useEffect(() => {
+    const getGamesWithDrops = async (): Promise<void> => {
+      if (type === 'cardFarmingList') {
+        const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
+
+        const cachedUserSettings = await invoke<InvokeSettings>('get_user_settings', {
+          steamId: userSummary?.steamId,
+        })
+
+        setIsLoadingDrops(true)
+
+        const credentials = cachedUserSettings.settings.cardFarming.credentials
+
+        if (!credentials?.sid || !credentials?.sls) {
+          setIsLoadingDrops(false)
+          return
+        }
+
+        const gamesWithDropsData = (await getAllGamesWithDrops(
+          userSummary?.steamId,
+          credentials.sid,
+          credentials.sls,
+          credentials?.sma,
+        )) as unknown as GameWithDropsData[]
+
+        const parsedGamesData: Game[] = gamesWithDropsData.map((game: GameWithDropsData) => ({
+          appid: parseInt(game.id),
+          name: game.name,
+          playtime_forever: 0,
+          img_icon_url: '',
+          has_community_visible_stats: false,
+          remaining: game.remaining,
+        }))
+
+        const shuffledAndLimitedGames = [...parsedGamesData].sort(() => Math.random() - 0.5).slice(0, 10)
+
+        setGamesWithDrops(shuffledAndLimitedGames)
+        setIsLoadingDrops(false)
+      }
+    }
+    getGamesWithDrops()
+  }, [type])
 
   const listTypes: Record<CustomListType, ListTypeConfig> = {
     cardFarmingList: {
@@ -102,6 +157,10 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
 
   if (!listType) {
     return <p>{t('customLists.invalid')}</p>
+  }
+
+  const handleAddGameFromCarousel = (game: Game): void => {
+    handleAddGame(game)
   }
 
   return (
@@ -154,9 +213,20 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
           </div>
         </div>
 
+        <RecommendedCardDropsCarousel
+          gamesWithDrops={type === 'cardFarmingList' ? gamesWithDrops : []}
+          onAddGame={handleAddGameFromCarousel}
+          isLoading={type === 'cardFarmingList' ? isLoadingDrops : false}
+        />
+
+        {list.length > 0 && (
+          <div>
+            <p className='text-lg font-black px-6'>{t('customLists.yourList')}</p>
+          </div>
+        )}
         <DndContext onDragEnd={handleDragEnd}>
           <SortableContext items={list.map(item => item.appid)}>
-            <div className='grid grid-cols-5 2xl:grid-cols-7 gap-4 p-6'>
+            <div className='grid grid-cols-5 2xl:grid-cols-7 gap-4 p-6 pt-4'>
               {list &&
                 list
                   .slice(0, visibleGames)
