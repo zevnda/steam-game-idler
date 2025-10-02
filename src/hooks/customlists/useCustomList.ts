@@ -21,6 +21,7 @@ interface CustomListHook {
   setShowInList: Dispatch<SetStateAction<boolean>>
   handleAddGame: (game: Game) => Promise<void>
   handleAddAllGames: (games: Game[]) => Promise<void>
+  handleAddAllResults: (games: Game[]) => Promise<void>
   handleRemoveGame: (game: Game) => Promise<void>
   handleUpdateListOrder: (newList: Game[]) => Promise<void>
   handleClearList: () => Promise<void>
@@ -120,6 +121,23 @@ export default function useCustomList(listName: string): CustomListHook {
     }
   }
 
+  const handleAddAllResults = async (games: Game[]): Promise<void> => {
+    const newGames = games.filter(game => !list.some(existingGame => existingGame.appid === game.appid))
+
+    const combinedList = [...list, ...newGames]
+
+    const addResponse = await invoke<InvokeCustomList>('update_custom_list', {
+      steamId: userSummary?.steamId,
+      list: listName,
+      newList: combinedList,
+    })
+    if (!addResponse.error) {
+      setList(addResponse.list_data)
+    } else {
+      showDangerToast(addResponse.error)
+    }
+  }
+
   const handleRemoveGame = async (game: Game): Promise<void> => {
     // Remove a game from the custom list
     const response = await invoke<InvokeCustomList>('remove_game_from_custom_list', {
@@ -179,6 +197,7 @@ export default function useCustomList(listName: string): CustomListHook {
     setShowInList,
     handleAddGame,
     handleAddAllGames,
+    handleAddAllResults,
     handleRemoveGame,
     handleUpdateListOrder,
     handleClearList,

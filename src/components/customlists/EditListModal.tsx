@@ -70,10 +70,12 @@ interface EditListModalProps {
   showInList: boolean
   onOpenChange: Dispatch<SetStateAction<boolean>>
   onClose: () => void
+  searchTerm: string
   setSearchTerm: (term: string) => void
   setShowInList: (show: boolean) => void
   handleAddGame: (game: Game) => void
   handleAddAllGames: (games: Game[]) => void
+  handleAddAllResults: (games: Game[]) => void
   handleRemoveGame: (game: Game) => void
   handleClearList: () => void
 }
@@ -86,10 +88,12 @@ export default function EditListModal({
   showInList,
   onOpenChange,
   onClose,
+  searchTerm,
   setSearchTerm,
   setShowInList,
   handleAddGame,
   handleAddAllGames,
+  handleAddAllResults,
   handleRemoveGame,
   handleClearList,
 }: EditListModalProps): ReactElement {
@@ -178,7 +182,7 @@ export default function EditListModal({
               >
                 {t('customLists.inList')}
               </Button>
-              {type === 'achievementUnlockerList' && (
+              {type === 'achievementUnlockerList' && searchTerm === '' && (
                 <Button
                   size='sm'
                   className='bg-btn-secondary text-btn-text font-bold'
@@ -187,6 +191,20 @@ export default function EditListModal({
                   onPress={() => handleAddAllGames(filteredGamesList)}
                 >
                   {t('customLists.addAll')}
+                </Button>
+              )}
+              {type === 'achievementUnlockerList' && searchTerm !== '' && (
+                <Button
+                  size='sm'
+                  className='bg-btn-secondary text-btn-text font-bold'
+                  radius='full'
+                  isDisabled={
+                    filteredGamesList.length === 0 ||
+                    filteredGamesList.every(game => list.some(listGame => listGame.appid === game.appid))
+                  }
+                  onPress={() => handleAddAllResults(filteredGamesList)}
+                >
+                  {t('customLists.addAllResults')}
                 </Button>
               )}
               <Button size='sm' className='bg-btn-secondary text-btn-text font-bold' radius='full' onPress={onClose}>
