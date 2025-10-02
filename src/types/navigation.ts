@@ -10,7 +10,7 @@ export type ActivePageType =
   | `customlists/${string}`
   | 'tradingCards'
 export type CurrentTabType = 'achievements' | 'statistics'
-export type CurrentSettingsTabType = 'general' | 'card-farming' | 'achievement-unlocker' | 'logs'
+export type CurrentSettingsTabType = 'general' | 'card-farming' | 'achievement-unlocker' | 'debug'
 
 export interface NavigationContextType {
   activePage: ActivePageType

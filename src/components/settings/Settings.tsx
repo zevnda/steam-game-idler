@@ -62,7 +62,7 @@ export default function Settings(): ReactElement {
         <Tab key='trading-card-manager' title={t('tradingCards.title')}>
           <TradingCardManagerSettings />
         </Tab>
-        <Tab key='logs' title={t('settings.debug.title')}>
+        <Tab key='debug' title={t('settings.debug.title')}>
           <Logs />
         </Tab>
       </Tabs>
