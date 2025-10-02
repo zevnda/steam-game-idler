@@ -39,7 +39,7 @@ export default function PageHeader({ protectedAchievements, protectedStatistics 
 
   const handleOpenAchievementFile = async (): Promise<void> => {
     try {
-      const filePath = `cache\\${userSummary?.steamId}\\achievement_data\\${appId}.json`
+      const filePath = `${userSummary?.steamId}\\achievement_data\\${appId}.json`
       await invoke('open_file_explorer', { path: filePath })
     } catch (error) {
       showDangerToast(t('common.error'))

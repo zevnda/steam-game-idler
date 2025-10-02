@@ -161,6 +161,11 @@ pub async fn get_steam_location() -> Result<String, steamlocate::Error> {
 
 #[tauri::command]
 pub fn is_portable() -> bool {
+    // Always return false in development mode
+    if cfg!(debug_assertions) {
+        return false;
+    }
+
     if let Ok(current_exe) = tauri::utils::platform::current_exe() {
         let mut uninstaller_path = current_exe;
         uninstaller_path.pop();
