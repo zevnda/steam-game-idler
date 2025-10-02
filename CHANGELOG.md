@@ -10,7 +10,7 @@
   - This allows users to search for multiple different groups of games and build a custom list easily
 - Added a `recommended` carousel to `card farming`. This will recommend 10 randomly picked games from your library that have card drops remaining
   - You can easily add recommended games to your list by clicking the "+" button below the cover art
-- Fixed an issue where the Close button in Card Farming screen would stop the scheduled Automatic Idler task (#770)
+- Fixed an issue where the `close` button in `card farming` would stop the scheduled `automatic idler` task (#770)
 - In the portable version, achievement data files are now correctly created and stored in the same directory as the executable
 
 <!-- 2.1.9 -->
