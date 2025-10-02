@@ -30,6 +30,7 @@ export default function CardFarming({ activePage }: { activePage: ActivePageType
     // eslint-disable-next-line react-hooks/rules-of-hooks
     useCardFarming(
       setIsComplete,
+      setIsCardFarming,
       setTotalDropsRemaining,
       setGamesWithDrops,
       startAchievementUnlocker,

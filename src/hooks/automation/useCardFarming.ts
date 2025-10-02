@@ -40,6 +40,7 @@ interface CycleStep {
 
 export const useCardFarming = async (
   setIsComplete: Dispatch<SetStateAction<boolean>>,
+  setIsCardFarming: Dispatch<SetStateAction<boolean>>,
   setTotalDropsRemaining: Dispatch<SetStateAction<number>>,
   setGamesWithDrops: Dispatch<SetStateAction<Set<GameWithDrops>>>,
   startAchievementUnlocker: () => Promise<void>,
@@ -75,11 +76,15 @@ export const useCardFarming = async (
 
         if (nextTask.shouldStartNextTask) {
           if (nextTask.task && nextTask.task === 'achievementUnlocker') {
+            await stopFarmIdle(gamesSet)
+            setIsCardFarming(false)
             await startAchievementUnlocker()
             logEvent('[Card Farming] No drops remaining - moving to next task: ' + nextTask.task)
           }
 
           if (nextTask.task && nextTask.task === 'autoIdle') {
+            await stopFarmIdle(gamesSet)
+            setIsCardFarming(false)
             await startAutoIdleGames()
             logEvent('[Card Farming] No drops remaining - moving to next task: ' + nextTask.task)
           }

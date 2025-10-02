@@ -42,5 +42,6 @@ next-env.d.ts
 src-tauri/target
 src-tauri/libs
 src-tauri/gen
+.window-state.json
 
 *.ps1
