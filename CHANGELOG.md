@@ -9,7 +9,7 @@
   - Unlike `add all`, the `add all results` button will append the results to the list, rather than overwriting the existing list
   - This allows users to search for multiple different groups of games and build a custom list easily
 - Fixed an issue where the Close button in Card Farming screen would stop the scheduled Automatic Idler task (#770)
-- In the portable version, achievement data files are not correctly created and stored in the same directory as the executable
+- In the portable version, achievement data files are now correctly created and stored in the same directory as the executable
 
 <!-- 2.1.9 -->
 
