@@ -39,11 +39,13 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
     visibleGames,
     filteredGamesList,
     containerRef,
+    searchTerm,
     setSearchTerm,
     showInList,
     setShowInList,
     handleAddGame,
     handleAddAllGames,
+    handleAddAllResults,
     handleRemoveGame,
     handleUpdateListOrder,
     handleClearList,
@@ -177,10 +179,12 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
           setSearchTerm('')
           setShowInList(false)
         }}
+        searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
         setShowInList={setShowInList}
         handleAddGame={handleAddGame}
         handleAddAllGames={handleAddAllGames}
+        handleAddAllResults={handleAddAllResults}
         handleRemoveGame={handleRemoveGame}
         handleClearList={handleClearList}
       />
