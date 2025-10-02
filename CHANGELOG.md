@@ -1,3 +1,9 @@
+<!-- 2.1.10 -->
+
+### Changes in v2.1.10
+
+- Fixed an issue where the Close button in Card Farming screen would stop the scheduled Automatic Idler task (#770)
+
 <!-- 2.1.9 -->
 
 ### Changes in v2.1.9
