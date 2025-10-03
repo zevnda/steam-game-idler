@@ -232,7 +232,7 @@
   "toast.tradingCards.listed": "Успешно выставил {{count}} карту(ы) на продажу",
   "toast.tradingCards.rateLimit": "Превышен лимит запросов. Повторите попытку позже",
   "toast.tradingCards.noListings": "Не найдено ни одного списка активных торговых карт",
-  "toast.tradingCards.removedListings": "Удалён список активных торговых карт {{count}} {{total}} с рынка Steam",
+  "toast.tradingCards.removedListings": "Удалён список активных торговых карт {{count}} {{total}} с торговой площадки Steam",
   "toast.tradingCards.failedRemove": "Не удалось удалить список активных торговых карт с рынка Steam",
   "toast.tradingCards.priceOutOfRange": "Цена карты {{price}} за пределами границ продаж ({{min}} - {{max}})",
   "toast.tradingCards.cardLocked": "Карта заблокирована и не может быть указана для продажи",
