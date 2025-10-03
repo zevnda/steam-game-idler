@@ -8,6 +8,7 @@ import { TbX } from 'react-icons/tb'
 import { useNavigationContext } from '@/components/contexts/NavigationContext'
 import AchievementSettings from '@/components/settings/AchievementSettings'
 import CardSettings from '@/components/settings/CardSettings'
+import GameSettings from '@/components/settings/GameSettings'
 import GeneralSettings from '@/components/settings/GeneralSettings'
 import Logs from '@/components/settings/Logs'
 import TradingCardManagerSettings from '@/components/settings/TradingCardManagerSettings'
@@ -61,6 +62,9 @@ export default function Settings(): ReactElement {
         </Tab>
         <Tab key='trading-card-manager' title={t('tradingCards.title')}>
           <TradingCardManagerSettings />
+        </Tab>
+        <Tab key='game-settings' title={t('common.gameSettings')}>
+          <GameSettings />
         </Tab>
         <Tab key='debug' title={t('settings.debug.title')}>
           <Logs />

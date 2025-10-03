@@ -62,7 +62,7 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
   } = useCustomList(type)
   const { startCardFarming, startAchievementUnlocker } = useAutomate()
   const [isEditModalOpen, setEditModalOpen] = useState(false)
-  const { sidebarCollapsed, transitionDuration, isGameSettingsOpen } = useStateContext()
+  const { sidebarCollapsed, transitionDuration } = useStateContext()
   const [gamesWithDrops, setGamesWithDrops] = useState<Game[]>([])
   const [isLoadingDrops, setIsLoadingDrops] = useState(false)
 
@@ -227,12 +227,7 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
         <DndContext onDragEnd={handleDragEnd}>
           <SortableContext items={list.map(item => item.appid)}>
             <div className='grid grid-cols-5 2xl:grid-cols-7 gap-4 p-6 pt-4'>
-              {list &&
-                list
-                  .slice(0, visibleGames)
-                  .map(item => (
-                    <SortableGameCard key={item.appid} item={item} isGameSettingsOpen={isGameSettingsOpen} />
-                  ))}
+              {list && list.slice(0, visibleGames).map(item => <SortableGameCard key={item.appid} item={item} />)}
             </div>
           </SortableContext>
         </DndContext>
@@ -264,10 +259,9 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
 
 interface SortableGameCardProps {
   item: Game
-  isGameSettingsOpen: boolean
 }
 
-function SortableGameCard({ item, isGameSettingsOpen }: SortableGameCardProps): ReactElement {
+function SortableGameCard({ item }: SortableGameCardProps): ReactElement {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: item.appid })
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -275,7 +269,7 @@ function SortableGameCard({ item, isGameSettingsOpen }: SortableGameCardProps): 
   }
 
   return (
-    <div className='cursor-grab' ref={setNodeRef} style={style} {...attributes} {...(!isGameSettingsOpen && listeners)}>
+    <div className='cursor-grab' ref={setNodeRef} style={style} {...attributes} {...listeners}>
       <GameCard item={item} />
     </div>
   )

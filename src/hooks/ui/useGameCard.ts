@@ -7,10 +7,6 @@ import { startIdle } from '@/utils/idle'
 import { checkSteamStatus, logEvent } from '@/utils/tasks'
 import { showDangerToast, showSuccessToast, t } from '@/utils/toasts'
 
-// export default function useGameCard() {
-//     return {};
-// }
-
 // Handle starting idling for a game
 export const handleIdle = async (item: Game): Promise<void> => {
   const success = await startIdle(item.appid, item.name, true)
@@ -79,18 +75,4 @@ export const viewAchievments = async (
   setAppId(item.appid)
   setAppName(item.name)
   setShowAchievements(true)
-}
-
-// Handle viewing game settings for a game
-export const viewGameSettings = (
-  item: Game,
-  setAppId: Dispatch<SetStateAction<number | null>>,
-  setAppName: Dispatch<SetStateAction<string | null>>,
-  setIsGameSettingsOpen: Dispatch<SetStateAction<boolean>>,
-  onOpen: () => void,
-): void => {
-  setAppId(item.appid)
-  setAppName(item.name)
-  onOpen()
-  setIsGameSettingsOpen(true)
 }

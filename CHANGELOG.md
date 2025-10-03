@@ -1,3 +1,11 @@
+<!-- 2.1.11 -->
+
+### Changes in v2.1.11
+
+- The `game specific settings` now have their own settings page in `settings > game setting`
+  - Select a game from the list to edit its settings
+  - Removed the `game settings` option and `game settings` modal from individual game cards
+
 <!-- 2.1.10 -->
 
 ### Changes in v2.1.10
