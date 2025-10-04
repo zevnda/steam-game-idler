@@ -14,16 +14,17 @@ const FloatingAd = () => {
   useEffect(() => {
     try {
       ;(window.adsbygoogle = window.adsbygoogle || []).push({})
-    } catch (err) {}
+    } catch (err) {
+      console.error('AdSense error:', err)
+    }
   }, [])
 
   return (
-    <div className='flex flex-col fixed bottom-0 right-0 bg-transparent w-[400px] h-[300px] z-[1]'>
+    <div className='fixed bottom-0 right-0 z-50 bg-[#121316]'>
       <ins
-        className='adsbygoogle block w-[300px] h-[250px] bg-white'
+        className='adsbygoogle block w-[218px] h-[145px]'
         data-ad-client='ca-pub-8915288433444527'
         data-ad-slot='9100790437'
-        data-ad-format='auto'
         data-full-width-responsive='true'
       />
     </div>
@@ -32,31 +33,17 @@ const FloatingAd = () => {
 
 export default function AdPage(): ReactElement {
   useEffect(() => {
-    if (typeof window !== 'undefined' && typeof navigator !== 'undefined' && !navigator.plugins) {
-      Object.defineProperty(navigator, 'plugins', {
-        value: new Array(),
-        writable: false,
-        enumerable: true,
-        configurable: true,
-      })
-    }
-
     const originalConsoleError = console.error
-    const originalConsoleWarn = console.warn
-
     console.error = (...args) => {
-      const message = String(args[0] || '')
+      const message = args[0]?.toString() || ''
 
       if (
         message.includes('plugins') ||
-        message.includes('Cannot read properties of undefined') ||
         message.includes('Tracking Prevention') ||
         message.includes('adsbygoogle') ||
         message.includes('pagead2.googlesyndication.com') ||
-        message.includes('gtrace.mediago.io') ||
-        message.includes('show_ads_impl') ||
-        (message.includes('VM') && message.includes('TypeError')) ||
-        message.includes('Uncaught TypeError')
+        message.includes('Cannot read properties of undefined') ||
+        message.includes('gtrace.mediago.io')
       ) {
         return
       }
@@ -64,61 +51,26 @@ export default function AdPage(): ReactElement {
       originalConsoleError(...args)
     }
 
-    console.warn = (...args) => {
-      const message = String(args[0] || '')
-
-      if (
-        message.includes('plugins') ||
-        message.includes('adsbygoogle') ||
-        message.includes('pagead') ||
-        message.includes('AdSense')
-      ) {
-        return
-      }
-
-      originalConsoleWarn(...args)
+    if (typeof navigator !== 'undefined' && !navigator.plugins) {
+      Object.defineProperty(navigator, 'plugins', {
+        value: [],
+        writable: false,
+        enumerable: true,
+        configurable: true,
+      })
     }
-
-    const handleError = (event: ErrorEvent) => {
-      const message = event.message || ''
-      if (
-        message.includes('plugins') ||
-        message.includes('Cannot read properties of undefined') ||
-        message.includes('adsbygoogle')
-      ) {
-        event.preventDefault()
-        event.stopPropagation()
-        return false
-      }
-    }
-
-    const handleRejection = (event: PromiseRejectionEvent) => {
-      const reason = String(event.reason || '')
-      if (
-        reason.includes('plugins') ||
-        reason.includes('Cannot read properties of undefined') ||
-        reason.includes('adsbygoogle')
-      ) {
-        event.preventDefault()
-        return false
-      }
-    }
-
-    window.addEventListener('error', handleError, true)
-    window.addEventListener('unhandledrejection', handleRejection, true)
 
     const script = document.createElement('script')
     script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8915288433444527'
     script.async = true
     script.crossOrigin = 'anonymous'
-    script.onerror = () => {}
+    script.onerror = () => {
+      console.warn('AdSense script failed to load')
+    }
     document.head.appendChild(script)
 
     return () => {
       console.error = originalConsoleError
-      console.warn = originalConsoleWarn
-      window.removeEventListener('error', handleError, true)
-      window.removeEventListener('unhandledrejection', handleRejection, true)
       if (document.head.contains(script)) {
         document.head.removeChild(script)
       }
