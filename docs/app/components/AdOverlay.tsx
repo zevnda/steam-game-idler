@@ -17,10 +17,12 @@ export default function AdOverlay() {
     }
   }, [pathname])
 
-  console.log(pathname)
+  if (pathname.includes('/supported-games/')) {
+    return null
+  }
 
   return (
-    <div key={pathname}>
+    <div key={pathname} className='bg-red-300'>
       {/* Desktop side ads */}
       <div className='hidden lg:flex fixed top-1/2 -translate-y-1/2 left-4 flex-col gap-4 z-50 pointer-events-none'>
         <ins
