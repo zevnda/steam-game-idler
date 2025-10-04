@@ -14,17 +14,17 @@ const FloatingAd = () => {
   useEffect(() => {
     try {
       ;(window.adsbygoogle = window.adsbygoogle || []).push({})
-    } catch (err) {
-      console.error('AdSense error:', err)
-    }
+    } catch (err) {}
   }, [])
 
   return (
     <div className='fixed bottom-0 right-0 z-50 bg-[#121316]'>
       <ins
-        className='adsbygoogle block w-[218px] h-[145px]'
+        className='adsbygoogle block'
         data-ad-client='ca-pub-8915288433444527'
         data-ad-slot='9100790437'
+        data-ad-format='auto'
+        data-full-width-responsive='true'
       />
     </div>
   )
@@ -32,17 +32,31 @@ const FloatingAd = () => {
 
 export default function AdPage(): ReactElement {
   useEffect(() => {
+    if (typeof window !== 'undefined' && typeof navigator !== 'undefined' && !navigator.plugins) {
+      Object.defineProperty(navigator, 'plugins', {
+        value: new Array(),
+        writable: false,
+        enumerable: true,
+        configurable: true,
+      })
+    }
+
     const originalConsoleError = console.error
+    const originalConsoleWarn = console.warn
+
     console.error = (...args) => {
-      const message = args[0]?.toString() || ''
+      const message = String(args[0] || '')
 
       if (
         message.includes('plugins') ||
+        message.includes('Cannot read properties of undefined') ||
         message.includes('Tracking Prevention') ||
         message.includes('adsbygoogle') ||
         message.includes('pagead2.googlesyndication.com') ||
-        message.includes('Cannot read properties of undefined') ||
-        message.includes('gtrace.mediago.io')
+        message.includes('gtrace.mediago.io') ||
+        message.includes('show_ads_impl') ||
+        (message.includes('VM') && message.includes('TypeError')) ||
+        message.includes('Uncaught TypeError')
       ) {
         return
       }
@@ -50,26 +64,61 @@ export default function AdPage(): ReactElement {
       originalConsoleError(...args)
     }
 
-    if (typeof navigator !== 'undefined' && !navigator.plugins) {
-      Object.defineProperty(navigator, 'plugins', {
-        value: [],
-        writable: false,
-        enumerable: true,
-        configurable: true,
-      })
+    console.warn = (...args) => {
+      const message = String(args[0] || '')
+
+      if (
+        message.includes('plugins') ||
+        message.includes('adsbygoogle') ||
+        message.includes('pagead') ||
+        message.includes('AdSense')
+      ) {
+        return
+      }
+
+      originalConsoleWarn(...args)
     }
+
+    const handleError = (event: ErrorEvent) => {
+      const message = event.message || ''
+      if (
+        message.includes('plugins') ||
+        message.includes('Cannot read properties of undefined') ||
+        message.includes('adsbygoogle')
+      ) {
+        event.preventDefault()
+        event.stopPropagation()
+        return false
+      }
+    }
+
+    const handleRejection = (event: PromiseRejectionEvent) => {
+      const reason = String(event.reason || '')
+      if (
+        reason.includes('plugins') ||
+        reason.includes('Cannot read properties of undefined') ||
+        reason.includes('adsbygoogle')
+      ) {
+        event.preventDefault()
+        return false
+      }
+    }
+
+    window.addEventListener('error', handleError, true)
+    window.addEventListener('unhandledrejection', handleRejection, true)
 
     const script = document.createElement('script')
     script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8915288433444527'
     script.async = true
     script.crossOrigin = 'anonymous'
-    script.onerror = () => {
-      console.warn('AdSense script failed to load')
-    }
+    script.onerror = () => {}
     document.head.appendChild(script)
 
     return () => {
       console.error = originalConsoleError
+      console.warn = originalConsoleWarn
+      window.removeEventListener('error', handleError, true)
+      window.removeEventListener('unhandledrejection', handleRejection, true)
       if (document.head.contains(script)) {
         document.head.removeChild(script)
       }
