@@ -26,7 +26,7 @@ const FloatingAd = () => {
 
     const interval = setInterval(() => {
       setAdKey(prev => prev + 1)
-    }, 5000)
+    }, 30000)
 
     return () => {
       clearInterval(interval)
