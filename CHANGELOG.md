@@ -1,3 +1,9 @@
+<!-- 2.1.13 -->
+
+### Changes in v2.1.13
+
+- Improved the way ads are delivered
+
 <!-- 2.1.12 -->
 
 ### Changes in v2.1.12
