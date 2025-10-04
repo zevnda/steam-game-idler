@@ -25,7 +25,7 @@ const FloatingAd = () => {
         className='adsbygoogle'
         style={{ display: 'block', width: '300px', height: '300px' }}
         data-ad-client='ca-pub-8915288433444527'
-        data-ad-slot='1234567890'
+        data-ad-slot='9100790437'
         data-ad-format='auto'
         data-full-width-responsive='false'
       />
