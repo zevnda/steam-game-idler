@@ -21,7 +21,7 @@ export default function AdOverlay() {
         <ins
           className='adsbygoogle block bg-[#121316] rounded-lg'
           data-ad-client='ca-pub-8915288433444527'
-          data-ad-slot='9100790437'
+          data-ad-slot='9143494556'
           style={{ width: '160px', height: '600px' }}
         />
       </div>
@@ -30,7 +30,7 @@ export default function AdOverlay() {
         <ins
           className='adsbygoogle block bg-[#121316] rounded-lg'
           data-ad-client='ca-pub-8915288433444527'
-          data-ad-slot='9100790437'
+          data-ad-slot='3005445709'
           style={{ width: '160px', height: '600px' }}
         />
       </div>
@@ -40,7 +40,7 @@ export default function AdOverlay() {
         <ins
           className='adsbygoogle block bg-[#121316] rounded-lg'
           data-ad-client='ca-pub-8915288433444527'
-          data-ad-slot='9100790437'
+          data-ad-slot='1265004536'
           style={{ width: '300px', height: '50px' }}
         />
       </div>
