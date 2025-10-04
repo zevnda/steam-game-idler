@@ -20,7 +20,7 @@ const FloatingAd = () => {
   }, [])
 
   return (
-    <div className='fixed bottom-0 right-0 z-50 bg-[#121316] rounded-lg'>
+    <div className='fixed bottom-0 right-0 z-50 bg-[#121316]'>
       <ins
         className='adsbygoogle block w-[100vw] h-[100vh] sm:w-[218px] sm:h-[145px]'
         data-ad-client='ca-pub-8915288433444527'
@@ -78,7 +78,7 @@ export default function AdPage(): ReactElement {
 
   return (
     <div className='max-h-[100vh] bg-[#121316] overflow-hidden'>
-      <div className='hidden sm:block max-w-4xl mx-auto p-6'>
+      <div className='max-w-4xl mx-auto p-6'>
         <div className='bg-[#121316] rounded-lg shadow-md p-8'>
           <h1 className='text-4xl font-bold text-white mb-6'>
             Steam Game Idler - Complete Guide to Maximizing Your Steam Experience
@@ -235,7 +235,7 @@ export default function AdPage(): ReactElement {
 
       <FloatingAd />
 
-      <footer className='hidden sm:block bg-gray-800 text-white py-8 mt-12'>
+      <footer className='bg-gray-800 text-white py-8 mt-12'>
         <div className='max-w-6xl mx-auto px-6 text-center'>
           <p>&copy; 2024 Steam Game Idler. All rights reserved.</p>
           <p className='text-sm text-gray-400 mt-2'>This page contains advertisements to support our free services.</p>
