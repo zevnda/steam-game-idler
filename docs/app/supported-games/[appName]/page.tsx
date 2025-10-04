@@ -149,8 +149,9 @@ function getRandomContent() {
   }
 }
 
-export default function AdPage({ params }: PageProps): ReactElement {
-  const gameName = formatGameName(params.appName)
+export default async function AdPage({ params }: PageProps): Promise<ReactElement> {
+  const { appName } = await params
+  const gameName = formatGameName(appName)
   const randomContent = getRandomContent()
 
   return (
