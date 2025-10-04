@@ -118,7 +118,7 @@ export default async function RootLayout({ children }: { children: ReactNode }):
         >
           {children}
         </Layout>
-        <AdOverlay />
+        {/* <AdOverlay /> */}
         <Analytics />
       </body>
     </html>
