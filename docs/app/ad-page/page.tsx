@@ -12,10 +12,26 @@ declare global {
 
 const FloatingAd = () => {
   useEffect(() => {
-    try {
-      ;(window.adsbygoogle = window.adsbygoogle || []).push({})
-    } catch (err) {
-      console.error('AdSense error:', err)
+    const loadAd = () => {
+      try {
+        ;(window.adsbygoogle = window.adsbygoogle || []).push({})
+      } catch (err) {
+        console.error('AdSense error:', err)
+      }
+    }
+
+    loadAd()
+
+    const interval = setInterval(() => {
+      const adElement = document.querySelector('.adsbygoogle')
+      if (adElement) {
+        adElement.innerHTML = ''
+        loadAd()
+      }
+    }, 30000)
+
+    return () => {
+      clearInterval(interval)
     }
   }, [])
 
@@ -33,33 +49,6 @@ const FloatingAd = () => {
 
 export default function AdPage(): ReactElement {
   useEffect(() => {
-    const originalConsoleError = console.error
-    console.error = (...args) => {
-      const message = args[0]?.toString() || ''
-
-      if (
-        message.includes('plugins') ||
-        message.includes('Tracking Prevention') ||
-        message.includes('adsbygoogle') ||
-        message.includes('pagead2.googlesyndication.com') ||
-        message.includes('Cannot read properties of undefined') ||
-        message.includes('gtrace.mediago.io')
-      ) {
-        return
-      }
-
-      originalConsoleError(...args)
-    }
-
-    if (typeof navigator !== 'undefined' && !navigator.plugins) {
-      Object.defineProperty(navigator, 'plugins', {
-        value: [],
-        writable: false,
-        enumerable: true,
-        configurable: true,
-      })
-    }
-
     const script = document.createElement('script')
     script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8915288433444527'
     script.async = true
@@ -70,7 +59,6 @@ export default function AdPage(): ReactElement {
     document.head.appendChild(script)
 
     return () => {
-      console.error = originalConsoleError
       if (document.head.contains(script)) {
         document.head.removeChild(script)
       }
