@@ -22,6 +22,7 @@ import { useIdleContext } from '@/components/contexts/IdleContext'
 import { useNavigationContext } from '@/components/contexts/NavigationContext'
 import { useSearchContext } from '@/components/contexts/SearchContext'
 import { useStateContext } from '@/components/contexts/StateContext'
+import AdSlot from '@/components/layout/AdSlot'
 import CustomModal from '@/components/ui/CustomModal'
 import HeaderTitle from '@/components/ui/header/HeaderTitle'
 import SearchBar from '@/components/ui/SearchBar'
@@ -219,6 +220,8 @@ export default function SideBar(): ReactElement {
         </div>
 
         <div className='flex flex-col flex-grow justify-end items-center gap-1.5 p-2 min-w-0 overflow-hidden'>
+          <AdSlot />
+
           <Divider className='w-full bg-border/60 my-0.5' />
 
           <div className='flex w-full'>
