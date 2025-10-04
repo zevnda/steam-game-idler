@@ -22,7 +22,7 @@ const FloatingAd = () => {
   return (
     <div className='fixed bottom-0 right-0 z-50 bg-[#121316]'>
       <ins
-        className='adsbygoogle block w-[218px] h-[145px]'
+        className='adsbygoogle block w-[300px] h-[250px]'
         data-ad-client='ca-pub-8915288433444527'
         data-ad-slot='9100790437'
         data-full-width-responsive='true'
