@@ -26,14 +26,14 @@ const SETTINGS = {
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
-  index: {
+  'index': {
     type: 'page',
     display: 'hidden',
     theme: {
       navbar: false,
     },
   },
-  alternatives: {
+  'alternatives': {
     display: 'hidden',
     items: {
       'archisteamfarm': {
@@ -56,7 +56,7 @@ export default {
       },
     },
   },
-  docs: {
+  'docs': {
     type: 'page',
     title: 'Documentation',
     items: {
@@ -92,12 +92,19 @@ export default {
       'faq': 'FAQ',
     },
   },
-  privacy: {
+  'privacy': {
     type: 'page',
     title: 'Privacy Policy',
   },
-  tos: {
+  'tos': {
     type: 'page',
     title: 'Terms of Service',
+  },
+  'ad-page': {
+    type: 'page',
+    title: 'Ads',
+    theme: {
+      navbar: false,
+    },
   },
 }
