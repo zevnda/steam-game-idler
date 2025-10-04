@@ -2,7 +2,7 @@
 
 import type { ReactElement } from 'react'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 declare global {
   interface Window {
@@ -11,6 +11,8 @@ declare global {
 }
 
 const FloatingAd = () => {
+  const [adKey, setAdKey] = useState(0)
+
   useEffect(() => {
     const loadAd = () => {
       try {
@@ -23,21 +25,18 @@ const FloatingAd = () => {
     loadAd()
 
     const interval = setInterval(() => {
-      const adElement = document.querySelector('.adsbygoogle')
-      if (adElement) {
-        adElement.innerHTML = ''
-        loadAd()
-      }
-    }, 30000)
+      setAdKey(prev => prev + 1)
+    }, 5000)
 
     return () => {
       clearInterval(interval)
     }
-  }, [])
+  }, [adKey])
 
   return (
     <div className='fixed bottom-0 right-0 z-50 bg-[#121316]'>
       <ins
+        key={adKey}
         className='adsbygoogle block w-[300px] h-[250px]'
         data-ad-client='ca-pub-8915288433444527'
         data-ad-slot='9100790437'
