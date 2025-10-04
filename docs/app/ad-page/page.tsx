@@ -18,9 +18,9 @@ const FloatingAd = () => {
   }, [])
 
   return (
-    <div className='fixed bottom-0 right-0 z-50 bg-[#121316]'>
+    <div className='flex flex-col fixed bottom-0 right-0 bg-transparent w-[400px] h-[300px] z-[1]'>
       <ins
-        className='adsbygoogle block'
+        className='adsbygoogle block w-[300px] h-[250px] bg-white'
         data-ad-client='ca-pub-8915288433444527'
         data-ad-slot='9100790437'
         data-ad-format='auto'
