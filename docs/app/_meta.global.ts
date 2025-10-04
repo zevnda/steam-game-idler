@@ -59,6 +59,9 @@ export default {
   'docs': {
     type: 'page',
     title: 'Documentation',
+    theme: {
+      navbar: true,
+    },
     items: {
       'index': '',
       '_': {
@@ -95,15 +98,26 @@ export default {
   'privacy': {
     type: 'page',
     title: 'Privacy Policy',
+    theme: {
+      navbar: true,
+    },
   },
   'tos': {
     type: 'page',
     title: 'Terms of Service',
+    theme: {
+      navbar: true,
+    },
   },
   'ad-page': {
     display: 'hidden',
     type: 'page',
     title: 'Ads',
+    theme: {
+      navbar: false,
+    },
+  },
+  '*': {
     theme: {
       navbar: false,
     },
