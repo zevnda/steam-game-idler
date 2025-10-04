@@ -24,12 +24,21 @@ const FloatingAd = () => {
 
     loadAd()
 
-    const interval = setInterval(() => {
-      setAdKey(prev => prev + 1)
-    }, 30000)
+    const getRandomInterval = () => Math.floor(Math.random() * (360000 - 240000 + 1)) + 240000
+
+    const scheduleNextRefresh = () => {
+      const interval = setTimeout(() => {
+        setAdKey(prev => prev + 1)
+        scheduleNextRefresh()
+      }, getRandomInterval())
+
+      return interval
+    }
+
+    const timeoutId = scheduleNextRefresh()
 
     return () => {
-      clearInterval(interval)
+      clearTimeout(timeoutId)
     }
   }, [adKey])
 
