@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { TbX } from 'react-icons/tb'
 
 import { useNavigationContext } from '@/components/contexts/NavigationContext'
+import AdSlot from '@/components/layout/AdSlot'
 import AchievementSettings from '@/components/settings/AchievementSettings'
 import CardSettings from '@/components/settings/CardSettings'
 import GameSettings from '@/components/settings/GameSettings'
@@ -33,6 +34,7 @@ export default function Settings(): ReactElement {
       </div>
 
       <div className='absolute flex flex-col items-center gap-4 bottom-4 left-0 px-6 w-[250px] z-[40]'>
+        <AdSlot />
         <ViewDocumentation />
         <span className='text-xs text-altwhite text-center'>Steam Game Idler v{version}</span>
       </div>

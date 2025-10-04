@@ -1,3 +1,12 @@
+<!-- 2.1.12 -->
+
+### Changes in v2.1.12
+
+- Beta testing in-app ads - don't crucify me
+  - I fully understand that ads can be a little bit annoying, but the inclusion of ads will allow me to continue offering SGI as a free-to-use software by helping to cover some of the upkeep of certain things like the documentation site, translations, etc. I've also made an effort to make sure the ads are as unobtrusive as possible.
+  - SGI is currently maintained solely by myself, so any little amount of support helps a lot, even if it is just viewing a couple of ads. But if you would like to support in other ways, you can also [sponsor me on GitHub](https://github.com/sponsors/zevnda/) or [Buy Me A Coffee](https://buymeacoffee.com/zevnda)
+  - Thank you for your understanding, and for continuing to use and support SGI!
+
 <!-- 2.1.11 -->
 
 ### Changes in v2.1.11
