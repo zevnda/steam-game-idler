@@ -1,0 +1,49 @@
+'use client'
+
+import { useEffect } from 'react'
+import { usePathname } from 'next/navigation'
+
+export default function AdOverlay() {
+  const pathname = usePathname()
+
+  useEffect(() => {
+    try {
+      ;(window.adsbygoogle = window.adsbygoogle || []).push({})
+    } catch (err) {
+      console.error('AdSense error:', err)
+    }
+  }, [pathname])
+
+  return (
+    <div key={pathname}>
+      {/* Desktop side ads */}
+      <div className='hidden lg:flex fixed top-1/2 -translate-y-1/2 left-4 flex-col gap-4 z-50 pointer-events-none'>
+        <ins
+          className='adsbygoogle block bg-[#121316] rounded-lg'
+          data-ad-client='ca-pub-8915288433444527'
+          data-ad-slot='9100790437'
+          style={{ width: '160px', height: '600px' }}
+        />
+      </div>
+
+      <div className='hidden lg:flex fixed top-1/2 -translate-y-1/2 right-4 flex-col gap-4 z-50 pointer-events-none'>
+        <ins
+          className='adsbygoogle block bg-[#121316] rounded-lg'
+          data-ad-client='ca-pub-8915288433444527'
+          data-ad-slot='9100790437'
+          style={{ width: '160px', height: '600px' }}
+        />
+      </div>
+
+      {/* Mobile/Tablet banner ad */}
+      <div className='lg:hidden fixed bottom-4 left-1/2 -translate-x-1/2 z-50 pointer-events-none'>
+        <ins
+          className='adsbygoogle block bg-[#121316] rounded-lg'
+          data-ad-client='ca-pub-8915288433444527'
+          data-ad-slot='9100790437'
+          style={{ width: '300px', height: '50px' }}
+        />
+      </div>
+    </div>
+  )
+}

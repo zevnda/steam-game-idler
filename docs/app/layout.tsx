@@ -10,6 +10,8 @@ import { getPageMap } from 'nextra/page-map'
 import 'nextra-theme-docs/style.css'
 import './globals.css'
 
+import AdOverlay from '@docs/components/AdOverlay'
+
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
@@ -116,6 +118,7 @@ export default async function RootLayout({ children }: { children: ReactNode }):
         >
           {children}
         </Layout>
+        <AdOverlay />
         <Analytics />
       </body>
     </html>
