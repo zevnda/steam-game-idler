@@ -101,6 +101,7 @@ export default {
     title: 'Terms of Service',
   },
   'ad-page': {
+    display: 'hidden',
     type: 'page',
     title: 'Ads',
     theme: {
