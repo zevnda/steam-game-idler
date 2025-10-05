@@ -1,7 +1,6 @@
 import type { ReactElement, ReactNode } from 'react'
 
 import Logo from '@docs/components/Logo'
-import { Analytics } from '@vercel/analytics/next'
 import { Inter } from 'next/font/google'
 import { Layout, Navbar } from 'nextra-theme-docs'
 import { Head } from 'nextra/components'
@@ -11,6 +10,7 @@ import 'nextra-theme-docs/style.css'
 import './globals.css'
 
 import AdOverlay from '@docs/components/AdOverlay'
+import AnalyticsLoader from '@docs/components/AnalyticsLoader'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -119,7 +119,7 @@ export default async function RootLayout({ children }: { children: ReactNode }):
           {children}
         </Layout>
         <AdOverlay />
-        <Analytics />
+        <AnalyticsLoader />
       </body>
     </html>
   )
