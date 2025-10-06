@@ -1,3 +1,10 @@
+<!-- 2.1.15 -->
+
+### Changes in v2.1.15
+
+- Updated project dependencies
+- Fixed minor issues
+
 <!-- 2.1.14 -->
 
 ### Changes in v2.1.14
