@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Ad Window</title>
+    <script>
+      // const { listen } = window.__TAURI__.event;
+
+      // setInterval(() => {
+      //   emit('ad-visible', { visibility: document.visibilityState });
+      // }, 1000);
+
+      const docsSlugs = [
+        'get-started/install',
+        'get-started/how-to-sign-in',
+        'get-started/build-it-yourself',
+        'features/card-farming',
+        'features/achievement-unlocker',
+        'features/achievement-manager',
+        'features/trading-card-manager',
+        'features/playtime-booster',
+        'features/auto-idler',
+        'features/task-scheduling',
+        'features/free-games',
+        'settings/general',
+        'settings/card-farming',
+        'settings/achievement-unlocker',
+        'settings/trading-card-manager',
+        'settings/game-settings',
+        'steam-credentials',
+        'troubleshooting',
+        'faq',
+      ]
+
+      const randomSlug = docsSlugs[Math.floor(Math.random() * docsSlugs.length)]
+      
+      // const randomUrl = `http://localhost:3001/docs/${randomSlug}`
+      const randomUrl = `https://steamgameidler.com/docs/${randomSlug}`
+
+      window.location.href = randomUrl
+    </script>
+  </head>
+</html>

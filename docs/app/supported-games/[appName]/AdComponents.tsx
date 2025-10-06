@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 
 declare global {
   interface Window {
@@ -9,8 +9,6 @@ declare global {
 }
 
 const FloatingAd = () => {
-  const [adKey, setAdKey] = useState(0)
-
   useEffect(() => {
     const loadAd = () => {
       try {
@@ -21,29 +19,11 @@ const FloatingAd = () => {
     }
 
     loadAd()
-
-    const getRandomInterval = () => Math.floor(Math.random() * (360000 - 240000 + 1)) + 240000
-
-    const scheduleNextRefresh = () => {
-      const interval = setTimeout(() => {
-        setAdKey(prev => prev + 1)
-        scheduleNextRefresh()
-      }, getRandomInterval())
-
-      return interval
-    }
-
-    const timeoutId = scheduleNextRefresh()
-
-    return () => {
-      clearTimeout(timeoutId)
-    }
-  }, [adKey])
+  }, [])
 
   return (
     <div className='fixed bottom-0 right-0 z-50 bg-[#121316]'>
       <ins
-        key={adKey}
         className='adsbygoogle'
         data-ad-client='ca-pub-8915288433444527'
         data-ad-slot='9100790437'

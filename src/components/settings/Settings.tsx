@@ -34,7 +34,7 @@ export default function Settings(): ReactElement {
       </div>
 
       <div className='absolute flex flex-col items-center gap-4 bottom-4 left-0 px-6 w-[250px] z-[40]'>
-        <AdSlot />
+        {process.env.NODE_ENV === 'production' && <AdSlot />}
         <ViewDocumentation />
         <span className='text-xs text-altwhite text-center'>Steam Game Idler v{version}</span>
       </div>
