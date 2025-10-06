@@ -99,7 +99,7 @@ export default function CardFarming({ activePage }: { activePage: ActivePageType
               <div key={item.appid} className='flex gap-1 border border-border rounded-lg p-1'>
                 <Image
                   src={`https://cdn.cloudflare.steamstatic.com/steam/apps/${item.appid}/header.jpg`}
-                  className='aspect-[62/36] rounded'
+                  className='aspect-62/36 rounded'
                   width={62}
                   height={36}
                   alt={`${item.name} image`}
@@ -132,7 +132,7 @@ export default function CardFarming({ activePage }: { activePage: ActivePageType
   return (
     <div
       className={cn(
-        'absolute top-0 z-[4] w-full h-screen bg-base',
+        'absolute top-0 z-4 w-full h-screen bg-base',
         'overflow-y-auto overflow-x-hidden ease-in-out',
         activePage !== 'customlists/card-farming' && 'hidden',
       )}

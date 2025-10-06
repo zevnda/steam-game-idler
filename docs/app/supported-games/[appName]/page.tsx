@@ -155,7 +155,7 @@ export default async function AdPage({ params }: PageProps): Promise<ReactElemen
   const randomContent = getRandomContent()
 
   return (
-    <div className='max-h-[100vh] bg-[#121316] overflow-hidden relative'>
+    <div className='max-h-screen bg-[#121316] overflow-hidden relative'>
       {/* Animated gradient background */}
       <div
         className='absolute inset-0 z-0 pointer-events-none'

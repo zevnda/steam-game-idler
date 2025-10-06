@@ -59,7 +59,7 @@ export default function Notifications(): ReactElement {
         {showNotifications && (
           <>
             <motion.div
-              className='fixed inset-0 bg-black opacity-50 z-[998]'
+              className='fixed inset-0 bg-black opacity-50 z-998'
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.5 }}
               exit={{ opacity: 0 }}
@@ -69,7 +69,7 @@ export default function Notifications(): ReactElement {
               ref={dropdownRef}
               className={cn(
                 'absolute right-0 mx-auto mt-3 w-[480px] p-0 m-0 rounded-xl',
-                'outline-none z-[999] shadow-2xl backdrop-blur-xl',
+                'outline-none z-999 shadow-2xl backdrop-blur-xl',
               )}
               initial={{
                 opacity: 0,
@@ -96,7 +96,7 @@ export default function Notifications(): ReactElement {
               <div
                 className={cn(
                   'flex items-center justify-between h-10 rounded-t-xl px-6 border-b',
-                  'border-border sticky top-0 z-[999] bg-sidebar/85 backdrop-blur-sm',
+                  'border-border sticky top-0 z-999 bg-sidebar/85 backdrop-blur-sm',
                 )}
               >
                 <span />
@@ -162,7 +162,7 @@ export default function Notifications(): ReactElement {
               <div
                 className={cn(
                   'flex items-center justify-end h-8 rounded-b-xl px-6 border-t',
-                  'border-border sticky bottom-0 bg-sidebar/85 backdrop-blur-sm z-[999]',
+                  'border-border sticky bottom-0 bg-sidebar/85 backdrop-blur-sm z-999',
                 )}
               />
             </motion.div>

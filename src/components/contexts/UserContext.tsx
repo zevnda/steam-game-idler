@@ -55,8 +55,8 @@ export const UserProvider = ({ children }: { children: ReactNode }): ReactElemen
       nextTaskCheckbox: false,
       nextTask: null,
       schedule: false,
-      scheduleFrom: new Time(8, 30, 0, 0),
-      scheduleTo: new Time(23, 0, 0, 0),
+      scheduleFrom: new Time(8, 30),
+      scheduleTo: new Time(23, 0),
       interval: [30, 130],
     },
     tradingCards: {

@@ -104,7 +104,7 @@ function ComparisonIcon({ value }: { value: boolean | string }) {
 
 export default function page(): ReactElement {
   return (
-    <div className='min-h-screen bg-gradient-to-b from-white via-gray-50 to-white'>
+    <div className='min-h-screen bg-linear-to-b from-white via-gray-50 to-white'>
       {/* Hero Section */}
       <section className='py-16 sm:py-20 md:py-24 relative overflow-hidden'>
         {/* Go Back Button */}
@@ -123,11 +123,11 @@ export default function page(): ReactElement {
             backgroundSize: '24px 24px',
           }}
         />
-        <div className='absolute inset-0 bg-gradient-to-b from-white via-transparent to-white' />
+        <div className='absolute inset-0 bg-linear-to-b from-white via-transparent to-white' />
 
-        <div className='container relative z-10 px-4 !mt-10 md:!mt-0 sm:px-6 md:px-8'>
+        <div className='container relative z-10 px-4 mt-10! md:mt-0! sm:px-6 md:px-8'>
           <div className='max-w-4xl mx-auto text-center'>
-            <div className='inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-200 to-purple-200 border border-blue-300 rounded-full text-blue-800 text-sm font-medium shadow-lg mb-6'>
+            <div className='inline-flex items-center px-4 py-2 bg-linear-to-r from-blue-200 to-purple-200 border border-blue-300 rounded-full text-blue-800 text-sm font-medium shadow-lg mb-6'>
               <TbCards className='w-4 h-4 mr-2' />
               Detailed Comparison
             </div>
@@ -135,7 +135,7 @@ export default function page(): ReactElement {
             <h1 className='text-3xl sm:text-4xl md:text-5xl font-black text-gray-800 mb-6 leading-tight'>
               ARCHISTEAMFARM
               <span className='block'>VS</span>
-              <span className='block text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500'>
+              <span className='block text-transparent bg-clip-text bg-linear-to-r from-blue-500 to-purple-500'>
                 STEAM GAME IDLER
               </span>
             </h1>
@@ -154,7 +154,7 @@ export default function page(): ReactElement {
           <div className='max-w-6xl mx-auto'>
             <h2 className='text-3xl sm:text-4xl font-black text-gray-800 mb-12 text-center'>
               DETAILED FEATURE
-              <span className='block text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500'>
+              <span className='block text-transparent bg-clip-text bg-linear-to-r from-blue-500 to-purple-500'>
                 COMPARISON
               </span>
             </h2>
@@ -165,7 +165,7 @@ export default function page(): ReactElement {
                   key={section.category}
                   className='bg-white border-2 border-gray-200 rounded-2xl overflow-hidden shadow-lg'
                 >
-                  <div className='bg-gradient-to-r from-blue-500 to-purple-500 px-6 py-4'>
+                  <div className='bg-linear-to-r from-blue-500 to-purple-500 px-6 py-4'>
                     <h3 className='text-xl font-bold text-white'>{section.category}</h3>
                   </div>
 
@@ -206,12 +206,12 @@ export default function page(): ReactElement {
 
       {/* Why Choose Steam Game Idler */}
       <section className='py-16 relative'>
-        <div className='absolute inset-0 bg-gradient-to-br from-purple-50 to-blue-50' />
+        <div className='absolute inset-0 bg-linear-to-br from-purple-50 to-blue-50' />
         <div className='container relative z-10 px-4 sm:px-6 md:px-8'>
           <div className='max-w-4xl mx-auto text-center'>
             <h2 className='text-3xl sm:text-4xl font-black text-gray-800 mb-8'>
               WHY CHOOSE
-              <span className='block text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-500'>
+              <span className='block text-transparent bg-clip-text bg-linear-to-r from-purple-500 to-pink-500'>
                 STEAM GAME IDLER?
               </span>
             </h2>
@@ -249,13 +249,13 @@ export default function page(): ReactElement {
 
       {/* CTA Section */}
       <section className='py-16 relative overflow-hidden'>
-        <div className='absolute inset-0 bg-gradient-to-br from-purple-600 to-blue-600' />
+        <div className='absolute inset-0 bg-linear-to-br from-purple-600 to-blue-600' />
 
         <div className='container relative z-10 px-4 sm:px-6 md:px-8'>
           <div className='text-center max-w-3xl mx-auto'>
             <h2 className='text-3xl sm:text-4xl font-black text-white mb-6'>
               READY TO UPGRADE FROM
-              <span className='block text-transparent bg-clip-text bg-gradient-to-r from-cyan-200 to-blue-200'>
+              <span className='block text-transparent bg-clip-text bg-linear-to-r from-cyan-200 to-blue-200'>
                 ARCHISTEAMFARM?
               </span>
             </h2>

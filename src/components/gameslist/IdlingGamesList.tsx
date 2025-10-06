@@ -51,7 +51,7 @@ export default function IdlingGamesList(): ReactElement {
         transitionProperty: 'min-width, max-width',
       }}
     >
-      <div className={cn('w-[calc(100vw-236px)] z-[50] pl-6 pt-2 rounded-tl-xl')}>
+      <div className={cn('w-[calc(100vw-236px)] z-50 pl-6 pt-2 rounded-tl-xl')}>
         <div className='flex justify-between items-center pb-3'>
           <div className='flex flex-col justify-center'>
             <p className='text-3xl font-black'>{t('idlingGames.title')}</p>

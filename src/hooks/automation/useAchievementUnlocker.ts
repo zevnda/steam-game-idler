@@ -6,7 +6,7 @@ import type {
   InvokeSettings,
   UserSummary,
 } from '@/types'
-import type { Time } from '@internationalized/date'
+import type { TimeInputValue } from '@heroui/react'
 import type { Dispatch, RefObject, SetStateAction } from 'react'
 
 import { invoke } from '@tauri-apps/api/core'
@@ -330,8 +330,8 @@ const startCountdown = (durationInMinutes: number, setCountdownTimer: Dispatch<S
 
 // Wait until within the specified schedule
 const waitUntilInSchedule = async (
-  scheduleFrom: Time,
-  scheduleTo: Time,
+  scheduleFrom: TimeInputValue,
+  scheduleTo: TimeInputValue,
   isMountedRef: RefObject<boolean>,
   setIsWaitingForSchedule: Dispatch<SetStateAction<boolean>>,
   abortControllerRef: RefObject<AbortController>,

@@ -96,14 +96,14 @@ export default function AdSlot(): ReactElement {
     >
       <div className='relative flex justify-center items-center overflow-hidden rounded-lg'>
         <iframe
-          className='overflow-scroll rounded-lg -mt-[352px] -ml-[301px] z-[1]'
+          className='overflow-scroll rounded-lg -mt-[352px] -ml-[301px] z-1'
           src={gameUrl}
           width='600'
           height='600'
           title='External Website'
           sandbox='allow-scripts allow-same-origin allow-forms allow-popups allow-top-navigation-by-user-activation'
         />
-        <Spinner className='absolute inset-0 m-auto z-[0]' />
+        <Spinner className='absolute inset-0 m-auto z-0' />
       </div>
     </div>
   )

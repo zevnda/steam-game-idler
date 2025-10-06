@@ -182,14 +182,14 @@ export default function SearchBar({ isModalOpen = false, onModalClose }: SearchB
             className='w-full mb-0 pb-0'
             classNames={{
               inputWrapper: cn(
-                'bg-transparent hover:!bg-transparent h-24 ',
-                'rounded-lg group-data-[focus-within=true]:!bg-transparent',
-                'group-data-[focus-visible=true]:!ring-0 group-data-[focus-visible=true]:!ring-offset-0',
-                'focus-visible:!ring-0 focus-visible:!ring-offset-0 focus:!ring-0 focus:!ring-offset-0',
-                '!outline-none focus:!outline-none focus-visible:!outline-none',
+                'bg-transparent hover:bg-transparent! h-24 ',
+                'rounded-lg group-data-[focus-within=true]:bg-transparent!',
+                'group-data-[focus-visible=true]:ring-0! group-data-[focus-visible=true]:ring-offset-0!',
+                'focus-visible:ring-0! focus-visible:ring-offset-0! focus:ring-0! focus:ring-offset-0!',
+                'outline-none! focus:outline-none! focus-visible:outline-none!',
                 'border-none shadow-sm',
               ),
-              input: ['!text-content !text-xl placeholder:text-xl placeholder:text-content/60'],
+              input: ['!text-content text-xl! placeholder:text-xl placeholder:text-content/60'],
               clearButton: 'text-content/60 hover:text-content',
             }}
             value={inputValue}

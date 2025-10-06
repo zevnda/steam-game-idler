@@ -44,7 +44,7 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement => {
       <div className='flex items-center gap-3 max-w-[90%]'>
         <Image
           src={`https://cdn.cloudflare.steamstatic.com/steam/apps/${item.appid}/header.jpg`}
-          className='aspect-[62/29] rounded-sm'
+          className='aspect-62/29 rounded-sm'
           width={62}
           height={29}
           alt={`${item.name} image`}
@@ -128,14 +128,14 @@ export default function EditListModal({
                 startContent={<RiSearchLine size={24} className='text-content/60' />}
                 classNames={{
                   inputWrapper: cn(
-                    'bg-transparent hover:!bg-transparent h-24',
-                    'rounded-lg group-data-[focus-within=true]:!bg-transparent',
-                    'group-data-[focus-visible=true]:!ring-0 group-data-[focus-visible=true]:!ring-offset-0',
-                    'focus-visible:!ring-0 focus-visible:!ring-offset-0 focus:!ring-0 focus:!ring-offset-0',
-                    '!outline-none focus:!outline-none focus-visible:!outline-none',
+                    'bg-transparent hover:bg-transparent! h-24',
+                    'rounded-lg group-data-[focus-within=true]:bg-transparent!',
+                    'group-data-[focus-visible=true]:ring-0! group-data-[focus-visible=true]:ring-offset-0!',
+                    'focus-visible:ring-0! focus-visible:ring-offset-0! focus:ring-0! focus:ring-offset-0!',
+                    'outline-none! focus:outline-none! focus-visible:outline-none!',
                     'border-none shadow-sm',
                   ),
-                  input: ['!text-content !text-xl placeholder:text-xl placeholder:text-content/60'],
+                  input: ['!text-content text-xl! placeholder:text-xl placeholder:text-content/60'],
                   clearButton: 'text-content/60 hover:text-content',
                 }}
                 isDisabled={showInList}

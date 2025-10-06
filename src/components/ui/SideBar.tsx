@@ -134,7 +134,7 @@ export default function SideBar(): ReactElement {
                 sidebarCollapsed ? 'justify-center' : 'justify-start',
               )}
             >
-              <div className='flex-shrink-0'>
+              <div className='shrink-0'>
                 <Icon fontSize={20} className={isFreeGames ? 'text-[#ffc700]' : undefined} />
               </div>
               {!sidebarCollapsed && (
@@ -153,7 +153,7 @@ export default function SideBar(): ReactElement {
     <>
       <div
         className={cn(
-          'relative flex flex-col h-screen z-[40] bg-sidebar/40 select-none ease-in-out',
+          'relative flex flex-col h-screen z-40 bg-sidebar/40 select-none ease-in-out',
           sidebarCollapsed ? 'min-w-14 max-w-14' : 'min-w-[250px] max-w-[250px]',
         )}
         style={{
@@ -219,7 +219,7 @@ export default function SideBar(): ReactElement {
           {mainSidebarItems.map(renderSidebarItem)}
         </div>
 
-        <div className='flex flex-col flex-grow justify-end items-center gap-1.5 p-2 min-w-0 overflow-hidden'>
+        <div className='flex flex-col grow justify-end items-center gap-1.5 p-2 min-w-0 overflow-hidden'>
           {process.env.NODE_ENV === 'production' && <AdSlot />}
 
           <Divider className='w-full bg-border/60 my-0.5' />
@@ -248,7 +248,7 @@ export default function SideBar(): ReactElement {
                   sidebarCollapsed ? 'justify-center' : 'gap-3',
                 )}
               >
-                <div className='flex-shrink-0'>
+                <div className='shrink-0'>
                   <TbSettings fontSize={20} />
                 </div>
                 {!sidebarCollapsed && (
@@ -276,7 +276,7 @@ export default function SideBar(): ReactElement {
                   sidebarCollapsed ? 'justify-center' : 'gap-3',
                 )}
               >
-                <div className='flex-shrink-0'>
+                <div className='shrink-0'>
                   <FiLogOut
                     className={cn(
                       'rotate-180 transition-all duration-150 text-altwhite',

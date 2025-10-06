@@ -52,10 +52,10 @@ export default function ComparisonSection(): ReactElement {
   return (
     <section className='py-12 sm:py-16 md:py-20 lg:py-24 relative' aria-labelledby='comparison-heading'>
       {/* Top transition border */}
-      <div className='absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-rose-300 to-transparent' />
+      <div className='absolute top-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-rose-300 to-transparent' />
 
       {/* Bottom transition overlay */}
-      <div className='absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent to-emerald-50/50' />
+      <div className='absolute bottom-0 left-0 right-0 h-32 bg-linear-to-b from-transparent to-emerald-50/50' />
 
       <div className='container relative z-10 px-4 sm:px-6 md:px-8'>
         {/* Header */}
@@ -65,7 +65,7 @@ export default function ComparisonSection(): ReactElement {
             className='text-3xl sm:text-4xl md:text-5xl font-black text-gray-800 mb-6 sm:mb-8 leading-tight'
           >
             THE BEST STEAM IDLE TOOL{' '}
-            <span className='block text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-500'>
+            <span className='block text-transparent bg-clip-text bg-linear-to-r from-cyan-500 to-blue-500'>
               VS THE COMPETITION
             </span>
           </h2>
@@ -81,7 +81,7 @@ export default function ComparisonSection(): ReactElement {
           <div className='bg-white border-2 border-purple-200 rounded-3xl p-6 sm:p-8 shadow-xl ring-2 ring-purple-300/30'>
             <div className='flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 mb-6'>
               <div
-                className='w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center flex-shrink-0'
+                className='w-16 h-16 bg-linear-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shrink-0'
                 aria-hidden='true'
               >
                 <TbSettings2 className='w-8 h-8 text-white' />
@@ -151,7 +151,7 @@ export default function ComparisonSection(): ReactElement {
                   {/* Header */}
                   <div className='flex items-start justify-between mb-4'>
                     <div
-                      className={`p-3 rounded-xl bg-gradient-to-r ${competitor.gradient} text-white`}
+                      className={`p-3 rounded-xl bg-linear-to-r ${competitor.gradient} text-white`}
                       aria-hidden='true'
                     >
                       {competitor.icon}
@@ -192,7 +192,7 @@ export default function ComparisonSection(): ReactElement {
                       <ul className='space-y-1'>
                         {competitor.cons.map((con, conIndex) => (
                           <li key={conIndex} className='flex items-center gap-2 text-xs text-gray-600'>
-                            <FiX className='w-3 h-3 text-red-500 flex-shrink-0' aria-hidden='true' />
+                            <FiX className='w-3 h-3 text-red-500 shrink-0' aria-hidden='true' />
                             {con}
                           </li>
                         ))}

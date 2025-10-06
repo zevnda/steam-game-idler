@@ -7,10 +7,10 @@ export default function SecuritySection() {
   return (
     <section className='py-12 sm:py-16 md:py-20 lg:py-24 relative overflow-hidden' aria-labelledby='security-heading'>
       {/* Top transition border */}
-      <div className='absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-emerald-300 to-transparent' />
+      <div className='absolute top-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-emerald-300 to-transparent' />
 
       {/* Bottom transition overlay */}
-      <div className='absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent to-blue-50/50' />
+      <div className='absolute bottom-0 left-0 right-0 h-32 bg-linear-to-b from-transparent to-blue-50/50' />
 
       <div className='container relative z-10 px-4 sm:px-6 md:px-8'>
         <div className='grid lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center'>
@@ -21,7 +21,7 @@ export default function SecuritySection() {
               className='text-3xl sm:text-4xl md:text-5xl font-black text-gray-800 mb-6 sm:mb-8 leading-tight'
             >
               BUILT WITH{' '}
-              <span className='block text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-lime-500'>
+              <span className='block text-transparent bg-clip-text bg-linear-to-r from-emerald-500 to-lime-500'>
                 TRANSPARENCY
               </span>
             </h2>
@@ -34,7 +34,7 @@ export default function SecuritySection() {
             <div className='space-y-4 sm:space-y-6'>
               <div className='flex items-start gap-3 sm:gap-4'>
                 <div
-                  className='bg-gradient-to-r from-emerald-200 to-emerald-300 p-2 sm:p-3 rounded-xl border border-emerald-300 flex-shrink-0'
+                  className='bg-linear-to-r from-emerald-200 to-emerald-300 p-2 sm:p-3 rounded-xl border border-emerald-300 shrink-0'
                   aria-hidden='true'
                 >
                   <TbBrandGithub className='w-5 h-5 sm:w-6 sm:h-6 text-emerald-700' />
@@ -49,7 +49,7 @@ export default function SecuritySection() {
 
               <div className='flex items-start gap-3 sm:gap-4'>
                 <div
-                  className='bg-gradient-to-r from-teal-200 to-teal-300 p-2 sm:p-3 rounded-xl border border-teal-300 flex-shrink-0'
+                  className='bg-linear-to-r from-teal-200 to-teal-300 p-2 sm:p-3 rounded-xl border border-teal-300 shrink-0'
                   aria-hidden='true'
                 >
                   <FiEye className='w-5 h-5 sm:w-6 sm:h-6 text-teal-700' />
@@ -64,7 +64,7 @@ export default function SecuritySection() {
 
               <div className='flex items-start gap-3 sm:gap-4'>
                 <div
-                  className='bg-gradient-to-r from-cyan-200 to-cyan-300 p-2 sm:p-3 rounded-xl border border-cyan-300 flex-shrink-0'
+                  className='bg-linear-to-r from-cyan-200 to-cyan-300 p-2 sm:p-3 rounded-xl border border-cyan-300 shrink-0'
                   aria-hidden='true'
                 >
                   <FiRefreshCw className='w-5 h-5 sm:w-6 sm:h-6 text-cyan-700' />
@@ -116,7 +116,7 @@ export default function SecuritySection() {
             </div>
 
             {/* Floating security badge */}
-            <div className='absolute -top-2 sm:-top-4 -right-2 sm:-right-4 bg-gradient-to-r from-emerald-400 to-teal-500 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl font-bold text-xs sm:text-sm shadow-lg'>
+            <div className='absolute -top-2 sm:-top-4 -right-2 sm:-right-4 bg-linear-to-r from-emerald-400 to-teal-500 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl font-bold text-xs sm:text-sm shadow-lg'>
               VERIFIED SECURE
             </div>
           </div>

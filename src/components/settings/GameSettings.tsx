@@ -48,7 +48,7 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement => {
       <div className='flex items-center gap-3 max-w-[90%]'>
         <Image
           src={`https://cdn.cloudflare.steamstatic.com/steam/apps/${item.appid}/header.jpg`}
-          className='aspect-[62/29] rounded-sm'
+          className='aspect-62/29 rounded-sm'
           width={62}
           height={29}
           alt={`${item.name} image`}
@@ -167,8 +167,8 @@ export default function GameSettings(): ReactElement {
                 'group-data-[focus-visible=true]:ring-transparent',
                 'group-data-[focus-visible=true]:ring-offset-transparent',
                 'group-data-[focus-within=true]:!bg-inputhover',
-                'border group-data-[invalid=true]:!border-red-500',
-                'border group-data-[invalid=true]:!bg-red-500/10',
+                'border group-data-[invalid=true]:border-red-500!',
+                'border group-data-[invalid=true]:bg-red-500/10!',
                 !selectedGame && 'opacity-50',
               ),
               input: ['text-sm !text-content'],
@@ -202,8 +202,8 @@ export default function GameSettings(): ReactElement {
                 'group-data-[focus-visible=true]:ring-transparent',
                 'group-data-[focus-visible=true]:ring-offset-transparent',
                 'group-data-[focus-within=true]:!bg-inputhover',
-                'border group-data-[invalid=true]:!border-red-500',
-                'border group-data-[invalid=true]:!bg-red-500/10',
+                'border group-data-[invalid=true]:border-red-500!',
+                'border group-data-[invalid=true]:bg-red-500/10!',
                 !selectedGame && 'opacity-50',
               ),
               input: ['text-sm !text-content'],
@@ -237,8 +237,8 @@ export default function GameSettings(): ReactElement {
                 'group-data-[focus-visible=true]:ring-transparent',
                 'group-data-[focus-visible=true]:ring-offset-transparent',
                 'group-data-[focus-within=true]:!bg-inputhover',
-                'border group-data-[invalid=true]:!border-red-500',
-                'border group-data-[invalid=true]:!bg-red-500/10',
+                'border group-data-[invalid=true]:border-red-500!',
+                'border group-data-[invalid=true]:bg-red-500/10!',
                 !selectedGame && 'opacity-50',
               ),
               input: ['text-sm !text-content'],

@@ -36,7 +36,7 @@ const GameCard = memo(function GameCard({ item, isFreeGame = false }: GameCardPr
     return (
       <div className='relative group select-none'>
         <div className='overflow-hidden will-change-transform transition-transform duration-150'>
-          <div className='aspect-[460/215] relative overflow-hidden'>
+          <div className='aspect-460/215 relative overflow-hidden'>
             <Image
               src={`https://cdn.cloudflare.steamstatic.com/steam/apps/${item.appid}/header.jpg`}
               width={460}
@@ -72,7 +72,7 @@ const GameCard = memo(function GameCard({ item, isFreeGame = false }: GameCardPr
   return (
     <div className='relative group select-none'>
       <div className='overflow-hidden will-change-transform transition-transform duration-150'>
-        <div className='aspect-[460/215] relative overflow-hidden'>
+        <div className='aspect-460/215 relative overflow-hidden'>
           {isIdling && <IdleTimer startTime={idlingGame.startTime ?? 0} />}
           <Image
             src={`https://cdn.cloudflare.steamstatic.com/steam/apps/${item.appid}/header.jpg`}

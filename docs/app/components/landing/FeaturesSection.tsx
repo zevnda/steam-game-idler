@@ -51,17 +51,17 @@ export default function FeaturesSection() {
   return (
     <section className='py-12 sm:py-16 md:py-20 lg:py-24 relative' aria-labelledby='features-heading'>
       {/* Top transition border */}
-      <div className='absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-300 to-transparent' />
+      <div className='absolute top-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-purple-300 to-transparent' />
 
       {/* Bottom transition overlay */}
-      <div className='absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent to-emerald-50/50' />
+      <div className='absolute bottom-0 left-0 right-0 h-32 bg-linear-to-b from-transparent to-emerald-50/50' />
 
       <div className='container relative z-10 px-4 sm:px-6 md:px-8'>
         {/* Header */}
         <header className='max-w-3xl mx-auto text-center mb-12 sm:mb-16 lg:mb-20'>
           <h2 className='text-3xl sm:text-4xl md:text-5xl font-black text-gray-800 mb-6 sm:mb-8 leading-tight'>
             POWERFUL STEAM IDLE{' '}
-            <span className='block text-transparent bg-clip-text bg-gradient-to-r from-sky-500 to-fuchsia-500'>
+            <span className='block text-transparent bg-clip-text bg-linear-to-r from-sky-500 to-fuchsia-500'>
               AUTOMATION FEATURES
             </span>
           </h2>
@@ -81,7 +81,7 @@ export default function FeaturesSection() {
               <Link href={feature.link} className='block'>
                 {/* Background gradient */}
                 <div
-                  className={`absolute inset-0 bg-gradient-to-br ${feature.bgGradient} opacity-0 group-hover:opacity-50 transition-opacity duration-200`}
+                  className={`absolute inset-0 bg-linear-to-br ${feature.bgGradient} opacity-0 group-hover:opacity-50 transition-opacity duration-200`}
                 />
 
                 {/* Content */}
@@ -89,7 +89,7 @@ export default function FeaturesSection() {
                   {/* Icon and arrow */}
                   <div className='flex items-start justify-between mb-6'>
                     <div
-                      className={`relative p-4 rounded-2xl bg-gradient-to-r ${feature.gradient} text-white shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-200`}
+                      className={`relative p-4 rounded-2xl bg-linear-to-r ${feature.gradient} text-white shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-200`}
                     >
                       {feature.icon}
                     </div>
@@ -108,13 +108,13 @@ export default function FeaturesSection() {
 
                   {/* Hover decoration */}
                   <div
-                    className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${feature.gradient} transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200 origin-left rounded-b-3xl`}
+                    className={`absolute bottom-0 left-0 right-0 h-1 bg-linear-to-r ${feature.gradient} transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200 origin-left rounded-b-3xl`}
                   />
                 </div>
 
                 {/* Corner decoration */}
                 <div
-                  className={`absolute top-0 right-0 w-20 h-20 bg-gradient-to-br ${feature.gradient} opacity-10 transform rotate-45 translate-x-10 -translate-y-10 group-hover:translate-x-10 group-hover:-translate-y-10 transition-transform duration-200`}
+                  className={`absolute top-0 right-0 w-20 h-20 bg-linear-to-br ${feature.gradient} opacity-10 transform rotate-45 translate-x-10 -translate-y-10 group-hover:translate-x-10 group-hover:-translate-y-10 transition-transform duration-200`}
                 />
               </Link>
             </article>

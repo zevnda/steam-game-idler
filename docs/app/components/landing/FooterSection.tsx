@@ -8,7 +8,7 @@ export default function FooterSection() {
   return (
     <footer className='py-12 sm:py-16 md:py-20 relative'>
       {/* Top transition overlay */}
-      <div className='absolute top-0 left-0 right-0 h-8 bg-gradient-to-b from-purple-600/10 to-transparent' />
+      <div className='absolute top-0 left-0 right-0 h-8 bg-linear-to-b from-purple-600/10 to-transparent' />
 
       <div className='container px-4 sm:px-6 md:px-8 relative z-10'>
         {/* Main footer content */}

@@ -12,7 +12,7 @@ import StatsSection from '@docs/components/landing/StatsSection'
 
 export default function Home(): ReactElement {
   return (
-    <div className='min-h-screen bg-gradient-to-b from-white to-gray-100 overflow-x-hidden'>
+    <div className='min-h-screen bg-linear-to-b from-white to-gray-100 overflow-x-hidden'>
       <div className='relative'>
         <HeroSection />
         <FeaturesSection />

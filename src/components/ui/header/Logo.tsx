@@ -8,7 +8,7 @@ interface LogoProps {
 export default function Logo({ width = '5', height = '5' }: LogoProps): ReactElement {
   return (
     <svg
-      className={`w-${width} h-${height} fill-content pointer-events-none flex-shrink-0`}
+      className={`w-${width} h-${height} fill-content pointer-events-none shrink-0`}
       xmlns='http://www.w3.org/2000/svg'
       viewBox='0 0 512 512'
       data-tauri-drag-region

@@ -78,11 +78,11 @@ export default function Dashboard(): ReactElement {
             zIndex: 1,
           }}
         />
-        <div className='absolute top-0 left-0 bg-base/70 w-full h-screen backdrop-blur-lg pointer-events-none z-[2]' />
+        <div className='absolute top-0 left-0 bg-base/70 w-full h-screen backdrop-blur-lg pointer-events-none z-2' />
 
         <SideBar />
         <Header />
-        <div className='z-[4]'>{renderContent()}</div>
+        <div className='z-4'>{renderContent()}</div>
       </div>
       {isCardFarming && <CardFarming activePage={activePage} />}
       {isAchievementUnlocker && <AchievementUnlocker activePage={activePage} />}
