@@ -220,7 +220,7 @@ export default function SideBar(): ReactElement {
         </div>
 
         <div className='flex flex-col flex-grow justify-end items-center gap-1.5 p-2 min-w-0 overflow-hidden'>
-          <AdSlot />
+          {process.env.NODE_ENV === 'production' && <AdSlot />}
 
           <Divider className='w-full bg-border/60 my-0.5' />
 
