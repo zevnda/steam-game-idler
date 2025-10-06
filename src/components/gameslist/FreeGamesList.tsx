@@ -24,7 +24,7 @@ export default function FreeGamesList(): ReactElement {
         transitionProperty: 'width',
       }}
     >
-      <div className={cn('w-[calc(100vw-227px)] z-[50] pl-6 pt-2')}>
+      <div className={cn('w-[calc(100vw-227px)] z-50 pl-6 pt-2')}>
         <div className='flex justify-between items-center pb-3'>
           <div className='flex items-center gap-1 select-none'>
             <div className='flex flex-col justify-center'>

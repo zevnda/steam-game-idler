@@ -8,14 +8,14 @@ export default function CTASection() {
   return (
     <section className='py-16 sm:py-20 md:py-24 lg:py-32 relative overflow-hidden' aria-labelledby='cta-heading'>
       {/* Transition from previous section */}
-      <div className='absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-purple-100/50 to-transparent' />
+      <div className='absolute top-0 left-0 right-0 h-16 bg-linear-to-b from-purple-100/50 to-transparent' />
 
       {/* Strong overlay for CTA distinction */}
-      <div className='absolute inset-0 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600' />
+      <div className='absolute inset-0 bg-linear-to-br from-indigo-600 via-purple-600 to-pink-600' />
       <div className='absolute inset-0 bg-grid-white/[0.08] bg-grid-pattern' />
 
       {/* Bottom transition to footer */}
-      <div className='absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-b from-transparent to-gray-100/20' />
+      <div className='absolute bottom-0 left-0 right-0 h-16 bg-linear-to-b from-transparent to-gray-100/20' />
 
       <div className='container relative z-10 px-4 sm:px-6 md:px-8'>
         <div className='text-center max-w-4xl mx-auto'>
@@ -24,7 +24,7 @@ export default function CTASection() {
             className='text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-black text-white mb-6 sm:mb-8 leading-none'
           >
             START USING THE
-            <span className='block text-transparent bg-clip-text bg-gradient-to-r from-cyan-200 via-white to-blue-200'>
+            <span className='block text-transparent bg-clip-text bg-linear-to-r from-cyan-200 via-white to-blue-200'>
               BEST STEAM IDLER
             </span>
           </h2>

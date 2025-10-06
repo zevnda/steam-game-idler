@@ -1,5 +1,5 @@
 import type { InvokeSettings, UserSettings, UserSummary } from '@/types'
-import type { Time } from '@internationalized/date'
+import type { TimeInputValue } from '@heroui/react'
 import type { Dispatch, SetStateAction } from 'react'
 
 import { invoke } from '@tauri-apps/api/core'
@@ -58,7 +58,7 @@ export const handleSliderChange = async (
 
 // Handle changes to the schedule in the settings
 export const handleScheduleChange = async (
-  value: Time | null,
+  value: TimeInputValue | null,
   type: 'scheduleFrom' | 'scheduleTo',
   userSummary: UserSummary,
   setUserSettings: Dispatch<SetStateAction<UserSettings>>,

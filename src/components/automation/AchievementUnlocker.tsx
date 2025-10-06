@@ -71,7 +71,7 @@ export default function AchievementUnlocker({ activePage }: { activePage: Active
   return (
     <div
       className={cn(
-        'absolute top-0 z-[4] w-full h-screen bg-base',
+        'absolute top-0 z-4 w-full h-screen bg-base',
         'overflow-y-auto overflow-x-hidden ease-in-out',
         activePage !== 'customlists/achievement-unlocker' && 'hidden',
       )}

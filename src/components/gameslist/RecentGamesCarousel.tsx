@@ -89,7 +89,7 @@ export default function RecentGamesCarousel({ gamesContext }: RecentGamesCarouse
 
       <div ref={scrollContainerRef} className='flex gap-5 pb-2 overflow-x-hidden'>
         {topRecentGames.map((game: Game) => (
-          <div key={game.appid} className='flex-shrink-0 w-48'>
+          <div key={game.appid} className='shrink-0 w-48'>
             <GameCard item={game} />
           </div>
         ))}

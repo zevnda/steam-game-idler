@@ -68,13 +68,13 @@ export default function Logs(): ReactElement {
                     key={log.timestamp}
                     className='flex items-start gap-3 px-4 py-2 hover:bg-item-hover/30 transition-colors group duration-150'
                   >
-                    <div className='flex items-center gap-2 min-w-0 flex-shrink-0'>
+                    <div className='flex items-center gap-2 min-w-0 shrink-0'>
                       <span className='text-xs text-altwhite/60 font-mono tabular-nums'>
                         {String(index + 1).padStart(3, '0')}
                       </span>
                       <div
                         className={cn(
-                          'w-1 h-1 rounded-full flex-shrink-0',
+                          'w-1 h-1 rounded-full shrink-0',
                           log.message?.includes('Error') ? 'bg-red-400' : 'bg-green-400',
                         )}
                       />
@@ -82,7 +82,7 @@ export default function Logs(): ReactElement {
 
                     <div className='min-w-0 flex-1'>
                       <div className='flex items-baseline gap-3'>
-                        <span className={cn('text-xs text-altwhite font-mono flex-shrink-0', GeistMono.className)}>
+                        <span className={cn('text-xs text-altwhite font-mono shrink-0', GeistMono.className)}>
                           [{log.timestamp}]
                         </span>
                         <span

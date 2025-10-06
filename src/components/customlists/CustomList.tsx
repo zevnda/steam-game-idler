@@ -176,7 +176,7 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
           transitionProperty: 'width',
         }}
       >
-        <div className={cn('w-[calc(100vw-227px)] z-[50] pl-6 pt-2')}>
+        <div className={cn('w-[calc(100vw-227px)] z-50 pl-6 pt-2')}>
           <div className='flex justify-between items-center pb-3'>
             <div className='flex items-center gap-1 select-none'>
               <div className='flex flex-col justify-center'>
@@ -197,7 +197,7 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
 
                   {listType.startButton && (
                     <Button
-                      className='bg-gradient-to-r from-purple-800 via-purple-600 to-cyan-500 text-white font-bold transition-all duration-300 relative overflow-hidden before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent before:-translate-x-full before:animate-[shimmer_2s_ease-in-out_infinite] hover:before:animate-[shimmer_0.7s_ease-in-out] [&>*]:relative [&>*]:z-10'
+                      className='bg-linear-to-r from-purple-800 via-purple-600 to-cyan-500 text-white font-bold transition-all duration-300 relative overflow-hidden before:absolute before:inset-0 before:bg-linear-to-r before:from-transparent before:via-white/20 before:to-transparent before:-translate-x-full before:animate-[shimmer_2s_ease-in-out_infinite] hover:before:animate-[shimmer_0.7s_ease-in-out] *:relative *:z-10'
                       radius='full'
                       startContent={listType.icon}
                       onPress={

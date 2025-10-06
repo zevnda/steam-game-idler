@@ -68,7 +68,7 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
           <div className='w-10 h-10 flex items-center justify-center'>
             <Image className='rounded-full' src={icon} width={40} height={40} alt={`${item.name} image`} priority />
           </div>
-          <div className='flex flex-col flex-grow ml-4'>
+          <div className='flex flex-col grow ml-4'>
             <CustomTooltip placement='right' content={item.id}>
               <p className='font-bold text-sm w-fit'>{item.name}</p>
             </CustomTooltip>

@@ -74,7 +74,7 @@ export default function AdPage(): ReactElement {
   }, [])
 
   return (
-    <div className='max-h-[100vh] bg-[#121316] overflow-hidden'>
+    <div className='max-h-screen bg-[#121316] overflow-hidden'>
       <div className='max-w-4xl mx-auto p-6'>
         <div className='bg-[#121316] rounded-lg shadow-md p-8'>
           <h1 className='text-4xl font-bold text-white mb-6'>

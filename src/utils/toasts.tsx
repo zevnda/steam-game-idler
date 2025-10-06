@@ -27,7 +27,7 @@ export function showDangerToast(description: string): void {
 export function showSteamNotRunningToast(): void {
   addToast({
     title: (
-      <div className='flex-grow'>
+      <div className='grow'>
         <ErrorToast
           message={t('toast.steam')}
           href='https://steamgameidler.com/docs/faq#error-messages:~:text=Steam%20is%20not%20running'

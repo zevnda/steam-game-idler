@@ -1,4 +1,5 @@
 import type { Game, InvokeDropsRemaining, InvokeGamesWithDrops } from '@/types'
+import type { TimeInputValue } from '@heroui/react'
 
 import { Time } from '@internationalized/date'
 
@@ -74,7 +75,7 @@ export async function getAllGamesWithDrops(
 }
 
 // Check if the current time is within the specified schedule
-export function isWithinSchedule(scheduleFrom: Time, scheduleTo: Time): boolean {
+export function isWithinSchedule(scheduleFrom: TimeInputValue, scheduleTo: TimeInputValue): boolean {
   const now = new Date()
   const currentTime = new Time(now.getHours(), now.getMinutes())
   const scheduleFromTime = new Time(scheduleFrom.hour, scheduleFrom.minute)

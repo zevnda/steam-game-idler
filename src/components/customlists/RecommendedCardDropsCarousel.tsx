@@ -167,10 +167,10 @@ export default function RecommendedCardDropsCarousel({
 
       <div ref={scrollContainerRef} className='flex gap-5 pb-2 overflow-x-hidden'>
         {gamesWithDrops.map(game => (
-          <div key={game.appid} className='flex-shrink-0 w-[440px]'>
+          <div key={game.appid} className='shrink-0 w-[440px]'>
             <div className='relative group select-none'>
               <div className='overflow-hidden will-change-transform transition-transform duration-150'>
-                <div className='aspect-[460/215] relative overflow-hidden'>
+                <div className='aspect-460/215 relative overflow-hidden'>
                   <Image
                     src={`https://cdn.cloudflare.steamstatic.com/steam/apps/${game.appid}/header.jpg`}
                     width={460}
@@ -190,7 +190,7 @@ export default function RecommendedCardDropsCarousel({
                     {game.name}
                   </h3>
 
-                  <div className='flex items-center gap-2 flex-shrink-0'>
+                  <div className='flex items-center gap-2 shrink-0'>
                     <span className='text-xs bg-white text-black font-semibold px-2 py-1 rounded-full'>
                       {t('customLists.cardFarming.drops', { count: game.remaining || 0 })}
                     </span>

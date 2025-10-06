@@ -54,10 +54,10 @@ export default function StatsSection() {
   return (
     <section className='py-12 sm:py-16 md:py-20 lg:py-24 relative overflow-hidden' aria-labelledby='stats-heading'>
       {/* Top transition border */}
-      <div className='absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-300 to-transparent' />
+      <div className='absolute top-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-blue-300 to-transparent' />
 
       {/* Bottom transition overlay */}
-      <div className='absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent to-purple-100/50' />
+      <div className='absolute bottom-0 left-0 right-0 h-32 bg-linear-to-b from-transparent to-purple-100/50' />
 
       <div className='container relative z-10 px-4 sm:px-6 md:px-8'>
         {/* Header with side-by-side layout */}
@@ -68,7 +68,7 @@ export default function StatsSection() {
               className='text-3xl sm:text-4xl md:text-5xl font-black text-gray-800 mb-4 sm:mb-6 leading-tight'
             >
               THE #1 STEAM IDLE{' '}
-              <span className='block text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-orange-500'>
+              <span className='block text-transparent bg-clip-text bg-linear-to-r from-pink-500 to-orange-500'>
                 TOOL WORLDWIDE
               </span>
             </h2>

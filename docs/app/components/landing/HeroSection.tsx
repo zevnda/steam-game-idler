@@ -24,7 +24,7 @@ export default function HeroSection() {
   }, [])
 
   return (
-    <section className='min-h-screen flex items-center relative overflow-hidden bg-gradient-to-b from-white via-gray-50 to-white'>
+    <section className='min-h-screen flex items-center relative overflow-hidden bg-linear-to-b from-white via-gray-50 to-white'>
       {/* Subtle background pattern */}
       <div
         className='absolute inset-0 opacity-[0.4]'
@@ -35,13 +35,13 @@ export default function HeroSection() {
       />
 
       {/* Gradient overlay for smooth transition */}
-      <div className='absolute inset-0 bg-gradient-to-b from-white via-transparent to-white' />
+      <div className='absolute inset-0 bg-linear-to-b from-white via-transparent to-white' />
 
       {/* Floating feature badges - positioned across entire hero section */}
       <div className='absolute inset-0 pointer-events-none z-20'>
         {/* Top left area */}
         <div className='absolute hidden xl:block top-14 left-4 md:left-12 lg:left-16 transform -rotate-12'>
-          <div className='relative p-[1px] bg-gradient-to-r from-purple-400 via-pink-400 to-yellow-400 rounded-xl'>
+          <div className='relative p-px bg-linear-to-r from-purple-400 via-pink-400 to-yellow-400 rounded-xl'>
             <div className='bg-white/95 rounded-xl px-4 py-3 shadow-xl max-w-xs'>
               <div className='flex items-start space-x-3'>
                 <div className='flex text-yellow-400 text-sm'>★★★★★</div>
@@ -55,7 +55,7 @@ export default function HeroSection() {
 
         {/* Top right area */}
         <div className='absolute hidden xl:block top-12 right-4 md:right-12 lg:right-20 transform rotate-6 animate-float delay-500'>
-          <div className='relative p-[1px] bg-gradient-to-r from-green-400 via-blue-400 to-purple-400 rounded-xl'>
+          <div className='relative p-px bg-linear-to-r from-green-400 via-blue-400 to-purple-400 rounded-xl'>
             <div className='bg-white/95 rounded-xl px-4 py-3 shadow-xl max-w-xs'>
               <div className='flex items-start space-x-3'>
                 <div className='flex text-yellow-400 text-sm'>★★★★★</div>
@@ -69,7 +69,7 @@ export default function HeroSection() {
 
         {/* Bottom left area */}
         <div className='absolute hidden xl:block bottom-16 left-6 md:left-16 lg:left-24 transform rotate-6 animate-float delay-2000'>
-          <div className='relative p-[1px] bg-gradient-to-r from-pink-400 via-rose-400 to-orange-400 rounded-xl'>
+          <div className='relative p-px bg-linear-to-r from-pink-400 via-rose-400 to-orange-400 rounded-xl'>
             <div className='bg-white/95 rounded-xl px-4 py-3 shadow-xl max-w-xs'>
               <div className='flex items-start space-x-3'>
                 <div className='flex text-yellow-400 text-sm'>★★★★★</div>
@@ -83,7 +83,7 @@ export default function HeroSection() {
 
         {/* Bottom right area */}
         <div className='absolute hidden xl:block bottom-20 right-6 md:right-16 lg:right-28 transform -rotate-12 animate-float delay-2500'>
-          <div className='relative p-[1px] bg-gradient-to-r from-orange-400 via-amber-400 to-yellow-400 rounded-xl'>
+          <div className='relative p-px bg-linear-to-r from-orange-400 via-amber-400 to-yellow-400 rounded-xl'>
             <div className='bg-white/95 rounded-xl px-4 py-3 shadow-xl max-w-xs'>
               <div className='flex items-start space-x-3'>
                 <div className='flex text-yellow-400 text-sm'>★★★★★</div>
@@ -96,7 +96,7 @@ export default function HeroSection() {
         </div>
 
         <div className='hidden xl:block absolute top-24 left-1/3 transform rotate-3 animate-float delay-3000'>
-          <div className='relative p-[1px] bg-gradient-to-r from-indigo-400 via-purple-400 to-blue-400 rounded-xl'>
+          <div className='relative p-px bg-linear-to-r from-indigo-400 via-purple-400 to-blue-400 rounded-xl'>
             <div className='bg-white/95 rounded-xl px-4 py-3 shadow-xl max-w-xs'>
               <div className='flex items-start space-x-3'>
                 <div className='flex text-yellow-400 text-sm'>★★★★★</div>
@@ -109,7 +109,7 @@ export default function HeroSection() {
         </div>
 
         <div className='hidden xl:block absolute bottom-20 left-1/2 transform -translate-x-1/2 -rotate-3 animate-float delay-3500'>
-          <div className='relative p-[1px] bg-gradient-to-r from-rose-400 via-pink-400 to-purple-400 rounded-xl'>
+          <div className='relative p-px bg-linear-to-r from-rose-400 via-pink-400 to-purple-400 rounded-xl'>
             <div className='bg-white/95 rounded-xl px-4 py-3 shadow-xl max-w-xs'>
               <div className='flex items-start space-x-3'>
                 <div className='flex text-yellow-400 text-sm'>★★★★★</div>
@@ -128,7 +128,7 @@ export default function HeroSection() {
           {/* Left column - Text content */}
           <div className='space-y-4 sm:space-y-6 md:space-y-8 text-center lg:text-left'>
             {/* Badge */}
-            <div className='inline-flex items-center px-3 py-1.5 sm:px-4 sm:py-2 bg-gradient-to-r from-green-200 to-blue-200 border border-green-300 rounded-full text-green-800 text-xs sm:text-sm font-medium shadow-lg'>
+            <div className='inline-flex items-center px-3 py-1.5 sm:px-4 sm:py-2 bg-linear-to-r from-green-200 to-blue-200 border border-green-300 rounded-full text-green-800 text-xs sm:text-sm font-medium shadow-lg'>
               <span className='w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-500 rounded-full mr-2 animate-pulse' />v
               {latestVersion} Available
             </div>
@@ -137,11 +137,11 @@ export default function HeroSection() {
             <div className='space-y-2 sm:space-y-3 md:space-y-4'>
               <h1 className='text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black leading-none'>
                 <span className='block text-gray-800'>STEAM</span>{' '}
-                <span className='text-transparent bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500'>
+                <span className='text-transparent bg-clip-text bg-linear-to-r from-purple-500 via-pink-500 to-orange-500'>
                   GAME IDLER
                 </span>
               </h1>
-              <div className='w-40 sm:w-56 md:w-72 lg:w-80 xl:w-[24rem] h-1 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mx-auto lg:mx-0' />
+              <div className='w-40 sm:w-56 md:w-72 lg:w-80 xl:w-[24rem] h-1 bg-linear-to-r from-purple-500 to-pink-500 rounded-full mx-auto lg:mx-0' />
             </div>
 
             {/* Subtitle */}
@@ -168,7 +168,7 @@ export default function HeroSection() {
             <div className='flex flex-col sm:flex-row gap-3 md:gap-4 justify-center lg:justify-start px-4 sm:px-0'>
               <Link
                 href='https://github.com/zevnda/steam-game-idler/releases/latest'
-                className='group inline-flex items-center justify-center px-6 sm:px-6 md:px-8 py-3 sm:py-3 md:py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all duration-200 transform hover:scale-105 shadow-lg text-sm md:text-base'
+                className='group inline-flex items-center justify-center px-6 sm:px-6 md:px-8 py-3 sm:py-3 md:py-4 bg-linear-to-r from-purple-500 to-pink-500 text-white font-bold rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all duration-200 transform hover:scale-105 shadow-lg text-sm md:text-base'
               >
                 <FaWindows className='w-4 h-4 md:w-5 md:h-5 mr-2 md:mr-3' />
                 DOWNLOAD
@@ -223,9 +223,9 @@ export default function HeroSection() {
             {/* Floating decorative elements */}
             <div className='absolute inset-0 pointer-events-none'>
               {/* Gradient orbs */}
-              <div className='absolute top-10 left-4 w-32 h-32 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-xl animate-pulse' />
-              <div className='absolute bottom-20 right-8 w-24 h-24 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-lg animate-pulse delay-1000' />
-              <div className='absolute top-32 right-12 w-16 h-16 bg-gradient-to-br from-pink-400/20 to-orange-400/20 rounded-full blur-md animate-pulse delay-500' />
+              <div className='absolute top-10 left-4 w-32 h-32 bg-linear-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-xl animate-pulse' />
+              <div className='absolute bottom-20 right-8 w-24 h-24 bg-linear-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-lg animate-pulse delay-1000' />
+              <div className='absolute top-32 right-12 w-16 h-16 bg-linear-to-br from-pink-400/20 to-orange-400/20 rounded-full blur-md animate-pulse delay-500' />
 
               {/* Floating geometric shapes */}
               <div className='absolute top-8 right-4 w-3 h-3 bg-purple-400 rounded-full animate-bounce delay-300' />
@@ -235,12 +235,12 @@ export default function HeroSection() {
 
             <div className='relative'>
               {/* Background glow effect */}
-              <div className='absolute inset-0 bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-orange-500/10 rounded-3xl blur-3xl transform scale-110' />
+              <div className='absolute inset-0 bg-linear-to-br from-purple-500/10 via-pink-500/10 to-orange-500/10 rounded-3xl blur-3xl transform scale-110' />
 
               {/* Main image container */}
-              <div className='relative transform lg:-mr-64 xl:-mr-96 2xl:-mr-[32rem]'>
+              <div className='relative transform lg:-mr-64 xl:-mr-96 2xl:-mr-128'>
                 {/* Image backdrop with gradient */}
-                <div className='absolute inset-0 bg-gradient-to-br from-white via-purple-50/50 to-pink-50/50 rounded-xl sm:rounded-2xl md:rounded-3xl' />
+                <div className='absolute inset-0 bg-linear-to-br from-white via-purple-50/50 to-pink-50/50 rounded-xl sm:rounded-2xl md:rounded-3xl' />
 
                 {/* Image with enhanced shadows and effects */}
                 <div className='relative'>
@@ -254,11 +254,11 @@ export default function HeroSection() {
                   />
 
                   {/* Subtle overlay gradient on image */}
-                  <div className='absolute inset-0 bg-gradient-to-t from-purple-900/5 via-transparent to-transparent rounded-xl sm:rounded-2xl md:rounded-3xl' />
+                  <div className='absolute inset-0 bg-linear-to-t from-purple-900/5 via-transparent to-transparent rounded-xl sm:rounded-2xl md:rounded-3xl' />
                 </div>
 
                 {/* Bottom reflection effect */}
-                <div className='absolute -bottom-2 left-0 right-0 h-8 bg-gradient-to-t from-purple-100/20 to-transparent rounded-b-3xl blur-sm' />
+                <div className='absolute -bottom-2 left-0 right-0 h-8 bg-linear-to-t from-purple-100/20 to-transparent rounded-b-3xl blur-sm' />
               </div>
             </div>
           </div>
