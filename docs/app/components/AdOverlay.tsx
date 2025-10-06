@@ -22,34 +22,34 @@ export default function AdOverlay() {
   }
 
   return (
-    <div key={pathname} className='bg-red-300'>
+    <div key={pathname}>
       {/* Desktop side ads */}
-      <div className='hidden lg:flex fixed top-1/2 -translate-y-1/2 left-4 flex-col gap-4 z-50 pointer-events-none'>
+      <div className='hidden md:flex fixed top-1/2 -translate-y-1/2 left-4 flex-col gap-4 z-50 bg-black/20'>
         <ins
-          className='adsbygoogle block rounded-lg'
+          className='adsbygoogle'
           data-ad-client='ca-pub-8915288433444527'
           data-ad-slot='9143494556'
-          style={{ width: '160px', height: '600px' }}
+          style={{ display: 'block', width: '160px', height: '600px' }}
         />
       </div>
 
-      <div className='hidden lg:flex fixed top-1/2 -translate-y-1/2 right-4 flex-col gap-4 z-50 pointer-events-none'>
+      <div className='hidden md:flex fixed bottom-4 right-4 flex-col gap-4 z-50 bg-black/20'>
         <ins
-          className='adsbygoogle block rounded-lg'
+          className='adsbygoogle'
           data-ad-client='ca-pub-8915288433444527'
           data-ad-slot='3005445709'
-          style={{ width: '160px', height: '600px' }}
+          style={{ display: 'block', width: '300px', height: '250px' }}
         />
       </div>
 
       {/* Mobile/Tablet banner ad */}
       {pathname !== '/ad-page' && (
-        <div className='lg:hidden fixed bottom-4 left-1/2 -translate-x-1/2 z-50 pointer-events-none'>
+        <div className='fixed md:hidden bottom-4 left-1/2 -translate-x-1/2 z-50 bg-black/20'>
           <ins
-            className='adsbygoogle block rounded-lg'
+            className='adsbygoogle'
             data-ad-client='ca-pub-8915288433444527'
             data-ad-slot='1265004536'
-            style={{ width: '300px', height: '50px' }}
+            style={{ display: 'block', width: '300px', height: '50px' }}
           />
         </div>
       )}
