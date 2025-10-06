@@ -24,7 +24,7 @@ export default function AdOverlay() {
   return (
     <div key={pathname}>
       {/* Desktop side ads */}
-      <div className='hidden md:flex fixed top-1/2 -translate-y-1/2 left-4 flex-col gap-4 z-50 bg-black/20'>
+      <div className='hidden md:flex fixed top-1/2 -translate-y-1/2 left-4 flex-col gap-4 z-50'>
         <ins
           className='adsbygoogle'
           data-ad-client='ca-pub-8915288433444527'
@@ -33,7 +33,7 @@ export default function AdOverlay() {
         />
       </div>
 
-      <div className='hidden md:flex fixed bottom-4 right-4 flex-col gap-4 z-50 bg-black/20'>
+      <div className='hidden md:flex fixed bottom-4 right-4 flex-col gap-4 z-50'>
         <ins
           className='adsbygoogle'
           data-ad-client='ca-pub-8915288433444527'
@@ -44,7 +44,7 @@ export default function AdOverlay() {
 
       {/* Mobile/Tablet banner ad */}
       {pathname !== '/ad-page' && (
-        <div className='fixed md:hidden bottom-4 left-1/2 -translate-x-1/2 z-50 bg-black/20'>
+        <div className='fixed md:hidden bottom-4 left-1/2 -translate-x-1/2 z-50'>
           <ins
             className='adsbygoogle'
             data-ad-client='ca-pub-8915288433444527'

@@ -1,7 +1,7 @@
 {
   "identifier": "desktop-capability",
   "platforms": ["windows"],
-  "windows": ["main"],
+  "windows": ["main", "ad-window"],
   "permissions": [
     "autostart:default",
     "updater:default",
@@ -34,8 +34,9 @@
     "core:window:allow-set-skip-taskbar",
     "core:window:allow-set-decorations",
     "core:window:allow-set-always-on-bottom",
-    "core:webview:allow-webview-show",
     "core:window:allow-set-fullscreen",
+    "core:webview:allow-webview-show",
+    "core:event:allow-emit",
     "shell:allow-open",
     "dialog:allow-ask",
     "notification:default",

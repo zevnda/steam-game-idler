@@ -69,6 +69,21 @@
         "focus": false,
         "visible": false,
         "useHttpsScheme": true
+      },
+      {
+        "title": "Ad Window",
+        "label": "ad-window",
+        "url": "/ad-loader.html",
+        "width": 1440,
+        "height": 800,
+        "minWidth": 1440,
+        "minHeight": 800,
+        "fullscreen": false,
+        "resizable": false,
+        "decorations": false,
+        "transparent": true,
+        "focus": false,
+        "visible": false
       }
     ],
     "security": {
