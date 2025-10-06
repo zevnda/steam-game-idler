@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@config "../tailwind.config.mjs";
 
 a {
   text-decoration: none;

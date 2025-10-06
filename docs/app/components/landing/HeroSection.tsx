@@ -40,7 +40,7 @@ export default function HeroSection() {
       {/* Floating feature badges - positioned across entire hero section */}
       <div className='absolute inset-0 pointer-events-none z-20'>
         {/* Top left area */}
-        <div className='absolute hidden xl:block top-14 left-4 md:left-12 lg:left-16 transform -rotate-12'>
+        <div className='absolute hidden xl:block top-14 left-4 md:left-12 lg:left-16 transform -rotate-12 animate-float delay-500'>
           <div className='relative p-px bg-linear-to-r from-purple-400 via-pink-400 to-yellow-400 rounded-xl'>
             <div className='bg-white/95 rounded-xl px-4 py-3 shadow-xl max-w-xs'>
               <div className='flex items-start space-x-3'>
@@ -54,7 +54,7 @@ export default function HeroSection() {
         </div>
 
         {/* Top right area */}
-        <div className='absolute hidden xl:block top-12 right-4 md:right-12 lg:right-20 transform rotate-6 animate-float delay-500'>
+        <div className='absolute hidden xl:block top-12 right-4 md:right-12 lg:right-20 transform rotate-6 animate-float delay-200'>
           <div className='relative p-px bg-linear-to-r from-green-400 via-blue-400 to-purple-400 rounded-xl'>
             <div className='bg-white/95 rounded-xl px-4 py-3 shadow-xl max-w-xs'>
               <div className='flex items-start space-x-3'>
