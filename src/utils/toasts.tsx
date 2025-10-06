@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import type { TOptions } from 'i18next'
 
 import { addToast } from '@heroui/react'

@@ -1,5 +1,5 @@
 /** @type {import("prettier").Config} */
-export default {
+const config = {
   tabWidth: 2,
   useTabs: false,
   semi: false,
@@ -33,3 +33,5 @@ export default {
   importOrderTypeScriptVersion: '5.0.0',
   importOrderCaseSensitive: false,
 }
+
+export default config

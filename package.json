@@ -17,7 +17,7 @@
     "build:all": "pnpm build && pnpm build:docs",
     "start": "next start",
     "start:docs": "pnpm --filter steam-game-idler-docs start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "lint:docs": "pnpm --filter steam-game-idler-docs lint",
     "lint:all": "pnpm lint && pnpm lint:docs",
     "tauri": "tauri",
@@ -59,6 +59,8 @@
     "rehype-raw": "^7.0.0"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.3.1",
+    "@eslint/js": "^9.37.0",
     "@ianvs/prettier-plugin-sort-imports": "^4.5.1",
     "@tailwindcss/postcss": "^4.1.11",
     "@tauri-apps/cli": "^2.8.4",
@@ -80,7 +82,7 @@
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
-      "pnpm lint --dir src"
+      "pnpm lint ."
     ],
     "**/*": "prettier --write --ignore-unknown"
   }
