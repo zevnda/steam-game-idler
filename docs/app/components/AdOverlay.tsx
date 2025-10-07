@@ -43,16 +43,14 @@ export default function AdOverlay() {
       </div>
 
       {/* Mobile/Tablet banner ad */}
-      {pathname !== '/ad-page' && (
-        <div className='fixed md:hidden bottom-4 left-1/2 -translate-x-1/2 z-50'>
-          <ins
-            className='adsbygoogle'
-            data-ad-client='ca-pub-8915288433444527'
-            data-ad-slot='1265004536'
-            style={{ display: 'block', width: '300px', height: '50px' }}
-          />
-        </div>
-      )}
+      <div className='fixed md:hidden bottom-4 left-1/2 -translate-x-1/2 z-50'>
+        <ins
+          className='adsbygoogle'
+          data-ad-client='ca-pub-8915288433444527'
+          data-ad-slot='1265004536'
+          style={{ display: 'block', width: '300px', height: '50px' }}
+        />
+      </div>
     </div>
   )
 }

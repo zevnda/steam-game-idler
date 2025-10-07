@@ -109,14 +109,6 @@ export default {
       navbar: true,
     },
   },
-  'ad-page': {
-    display: 'hidden',
-    type: 'page',
-    title: 'Ads',
-    theme: {
-      navbar: false,
-    },
-  },
   '*': {
     theme: {
       navbar: false,
