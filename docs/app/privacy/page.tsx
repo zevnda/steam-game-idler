@@ -4,20 +4,21 @@ import type { ReactElement } from 'react'
 
 export default function PrivacyPolicy(): ReactElement {
   return (
-    <div className='min-h-screen overflow-hidden'>
+    <div className='min-h-screen overflow-hidden py-12'>
       <div className='container mx-auto px-6 py-8 max-w-4xl'>
         <h1 className='text-4xl font-bold mb-8 text-center'>Privacy Policy</h1>
 
         <div className='space-y-8'>
           <section>
             <p className='text-sm mb-6'>
-              <strong>Last Updated:</strong> June 20, 2025
+              <strong>Last Updated:</strong> September 7, 2025
             </p>
 
             <p className='mb-6'>
               Steam Game Idler ("SGI", "the Application", "we", "us", or "our") respects your privacy and is committed
               to protecting your personal information. This Privacy Policy explains how we collect, use, and safeguard
-              your information when you use our desktop application.
+              your information when you use our desktop application or visit our website. Both may display Google
+              AdSense advertisements.
             </p>
           </section>
 
@@ -136,10 +137,53 @@ export default function PrivacyPolicy(): ReactElement {
 
             <h3 className='text-xl font-medium mb-3'>4.2 No Analytics or Tracking</h3>
             <p className='mb-4'>
-              We do not use any third-party analytics, tracking, or advertising services. SGI does not collect telemetry
-              data or usage statistics from your application usage.
+              <strong>Desktop Application:</strong> We do not use any third-party analytics or tracking services in the
+              SGI desktop application. However, Google AdSense may be used for advertising, as described in section 4.3.
+              SGI does not collect telemetry data or usage statistics from your application usage.
+              <br />
+              <strong>Website:</strong> Our website uses Google AdSense for advertising (see section 4.3) and Next.js
+              Analytics to collect aggregated, non-personal usage statistics to help improve site performance and user
+              experience. No personally identifiable information is collected by Next.js Analytics. We do not use
+              additional analytics tracking services beyond what is required for ad delivery, consent management, and
+              basic site analytics.
             </p>
           </section>
+
+          <section>
+            <h2 className='text-2xl font-semibold mb-4'>4.3 Google AdSense and Consent Management</h2>
+            <p className='mb-4'>
+              Both our website and desktop application may use Google AdSense to display advertisements. As part of
+              this, Google and its partners may use cookies and collect data to personalize ads and measure ad
+              performance. You may see a consent message (Consent Management Platform, CMP) when using our site or app,
+              allowing you to manage your preferences for personalized ads and data collection.
+            </p>
+            <ul className='list-disc pl-6 space-y-2 mb-4'>
+              <li>
+                <strong>Third-Party Cookies:</strong> Google and partners may set cookies to deliver and personalize
+                ads.
+              </li>
+              <li>
+                <strong>User Consent:</strong> You can accept or manage your ad and data preferences via the CMP message
+                shown in our website or app.
+              </li>
+              <li>
+                <strong>Scope:</strong> This applies to both the Steam Game Idler website and desktop application.
+              </li>
+              <li>
+                <strong>More Information:</strong> See{' '}
+                <a
+                  href='https://policies.google.com/technologies/ads'
+                  className='text-blue-400 hover:text-blue-300 underline'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                >
+                  Google’s Advertising Privacy & Terms
+                </a>
+                .
+              </li>
+            </ul>
+          </section>
+          {/* End AdSense section */}
 
           <section>
             <h2 className='text-2xl font-semibold mb-4'>5. Data Sharing and Disclosure</h2>
@@ -246,8 +290,9 @@ export default function PrivacyPolicy(): ReactElement {
           <section>
             <h2 className='text-2xl font-semibold mb-4'>10. Consent</h2>
             <p className='mb-4'>
-              By using Steam Game Idler, you consent to the collection and use of your information as described in this
-              Privacy Policy. If you do not agree with this policy, please do not use our application.
+              By using Steam Game Idler or visiting our website, you consent to the collection and use of your
+              information as described in this Privacy Policy, including the use of Google AdSense and related cookies.
+              If you do not agree with this policy, please do not use our application or website.
             </p>
           </section>
 
