@@ -11,9 +11,9 @@ import { TbRefresh, TbUserFilled } from 'react-icons/tb'
 
 import { useNavigationContext } from '@/components/contexts/NavigationContext'
 import CustomTooltip from '@/components/ui/CustomTooltip'
-import ExtLink from '@/components/ui/ExtLink'
 import Header from '@/components/ui/header/Header'
 import Logo from '@/components/ui/header/Logo'
+import WebviewWindow from '@/components/ui/WebviewWindow'
 import useSetup from '@/hooks/layout/useSetup'
 
 export default function Setup(): ReactElement {
@@ -154,11 +154,11 @@ export default function Setup(): ReactElement {
                 <>
                   <div className={cn('flex flex-col justify-center items-center h-32 max-h-[390px] p-4')}>
                     <p className='text-center mb-3 text-altwhite/80 font-medium'>{t('setup.noUsers')}</p>
-                    <ExtLink href='https://steamgameidler.com/docs/faq#error-messages:~:text=No%20Steam%20users%20found'>
+                    <WebviewWindow href='https://steamgameidler.com/docs/faq#error-messages:~:text=No%20Steam%20users%20found'>
                       <p className='text-sm text-dynamic hover:text-dynamic-hover transition-colors duration-150'>
                         {t('setup.learn')}
                       </p>
-                    </ExtLink>
+                    </WebviewWindow>
                   </div>
                   <div className='flex justify-center items-center bg-base/10 w-full'>
                     <div
@@ -186,22 +186,22 @@ export default function Setup(): ReactElement {
             'gap-6 bottom-0 h-9 left-1/2 transform -translate-x-1/2',
           )}
         >
-          <ExtLink href='https://steamgameidler.com/docs/get-started/how-to-sign-in'>
+          <WebviewWindow href='https://steamgameidler.com/docs/get-started/how-to-sign-in'>
             <p className='text-xs font-medium cursor-pointer text-content hover:text-content/80 transition-colors duration-200'>
               {t('setup.help')}
             </p>
-          </ExtLink>
+          </WebviewWindow>
 
-          <ExtLink href='https://steamgameidler.com/privacy'>
+          <WebviewWindow href='https://steamgameidler.com/privacy'>
             <p className='text-xs font-medium cursor-pointer text-content hover:text-content/80 transition-colors duration-200'>
               {t('setup.privacy')}
             </p>
-          </ExtLink>
-          <ExtLink href='https://steamgameidler.com/tos'>
+          </WebviewWindow>
+          <WebviewWindow href='https://steamgameidler.com/tos'>
             <p className='text-xs font-medium cursor-pointer text-content hover:text-content/80 transition-colors duration-200'>
               {t('setup.termsOfService')}
             </p>
-          </ExtLink>
+          </WebviewWindow>
         </div>
       </div>
     </>

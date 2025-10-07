@@ -10,6 +10,7 @@ import SettingsSwitch from '@/components/settings/SettingsSwitch'
 import ExtLink from '@/components/ui/ExtLink'
 import CurrencySwitch from '@/components/ui/i18n/CurrencySwitch'
 import LanguageSwitch from '@/components/ui/i18n/LanguageSwitch'
+import WebviewWindow from '@/components/ui/WebviewWindow'
 import {
   fetchGamesWithDropsData,
   handleCredentialsClear,
@@ -158,12 +159,12 @@ export default function GeneralSettings(): ReactElement {
             <p className='text-xs text-altwhite'>
               <Trans i18nKey='settings.cardFarming.steamCredentials'>
                 Steam credentials are required in order to use the Card Farming feature.&nbsp;
-                <ExtLink
+                <WebviewWindow
                   href='https://steamgameidler.com/docs/steam-credentials'
                   className='text-dynamic hover:text-dynamic-hover duration-150'
                 >
                   Learn more
-                </ExtLink>
+                </WebviewWindow>
               </Trans>
             </p>
             {cardSettings.cardFarmingUser && (
@@ -320,12 +321,12 @@ export default function GeneralSettings(): ReactElement {
             <p className='text-xs text-altwhite'>
               <Trans i18nKey='settings.general.webApi.description'>
                 Use your own Steam Web API Key.&nbsp;
-                <ExtLink
+                <WebviewWindow
                   href='https://steamgameidler.com/docs/settings/general#steam-web-api-key'
                   className='text-dynamic hover:text-dynamic-hover duration-150'
                 >
                   Learn more
-                </ExtLink>
+                </WebviewWindow>
               </Trans>
             </p>
           </div>
