@@ -2,7 +2,7 @@ import type { ReactElement } from 'react'
 
 import { useTranslation } from 'react-i18next'
 
-import ExtLink from '@/components/ui/ExtLink'
+import WebviewWindow from '@/components/ui/WebviewWindow'
 
 interface ErrorToastProps {
   message: string
@@ -15,9 +15,9 @@ export default function ErrorToast({ message, href }: ErrorToastProps): ReactEle
   return (
     <div className='flex flex-col gap-1'>
       <p className='text-sm text-content'>{message}</p>
-      <ExtLink href={href}>
+      <WebviewWindow href={href}>
         <p className='text-xs text-dynamic hover:text-dynamic-hover'>{t('common.learnMore')}</p>
-      </ExtLink>
+      </WebviewWindow>
     </div>
   )
 }

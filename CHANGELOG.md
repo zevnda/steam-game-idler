@@ -1,3 +1,9 @@
+<!-- 2.1.16 -->
+
+### Changes in v2.1.16
+
+- SGI documentation links now open in a secondary window within the app, rather than in the user's default browser
+
 <!-- 2.1.15 -->
 
 ### Changes in v2.1.15
