@@ -34,7 +34,7 @@
   "idlingGames.title": "Idling Gier",
   "idlingGames.subtitle": "Tu pojawią się gry, które obecnie farmisz",
   "idlingGames.stopAll": "Zatrzymaj wszystko",
-  "customLists.cardFarming.subtitle": "Dodaj gry do tej listy, aby farmić ich kart kolekcjonerskie",
+  "customLists.cardFarming.subtitle": "Dodaj gry do tej listy, aby farmić ich karty kolekcjonerskie",
   "customLists.cardFarming.buttonLabel": "Rozpocznij farmienie kart",
   "customLists.cardFarming.drops": "Pozostała: {{count}} karta",
   "customLists.cardFarming.drops_other": "Pozostało: {{count}} kart",
