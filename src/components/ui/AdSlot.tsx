@@ -74,7 +74,9 @@ export default function AdSlot(): ReactElement {
 
   useEffect(() => {
     // const timeout = Math.floor(Math.random() * (10 * 60 * 1000 + 1)) + 5 * 60 * 1000 // 5 to 10 minutes
-    const timeout = Math.floor(Math.random() * (60 * 60 * 1000 - 30 * 60 * 1000 + 1)) + 30 * 60 * 1000 // 30 to 60 minutes
+    // const timeout = Math.floor(Math.random() * (20 * 60 * 1000 - 10 * 60 * 1000 + 1)) + 10 * 60 * 1000 // 10 to 20 minutes
+    const timeout = Math.floor(Math.random() * (30 * 60 * 1000 - 20 * 60 * 1000 + 1)) + 20 * 60 * 1000 // 20 to 30 minutes
+    // const timeout = Math.floor(Math.random() * (60 * 60 * 1000 - 30 * 60 * 1000 + 1)) + 30 * 60 * 1000 // 30 to 60 minutes
 
     const timer = setTimeout(() => {
       const randomSlug = gameSlugs[Math.floor(Math.random() * gameSlugs.length)]

@@ -15,8 +15,13 @@ export default function WebviewWindow({ children, href, className = '' }: ExtLin
     try {
       const appWindow = new Window('ext-link')
 
+      const parseHref =
+        process.env.NODE_ENV === 'development'
+          ? href.replace('https://steamgameidler.com', 'http://localhost:3001')
+          : href
+
       appWindow.once('tauri://created', async function () {
-        appWindow.setTitle(`Steam Game Idler - ${href}`)
+        appWindow.setTitle(`Steam Game Idler - ${parseHref}`)
         appWindow.setPosition(new LogicalPosition(10, 10))
         appWindow.setSize(new LogicalSize(1500, 825))
         appWindow.setResizable(false)
@@ -26,7 +31,7 @@ export default function WebviewWindow({ children, href, className = '' }: ExtLin
         appWindow.setShadow(true)
 
         new Webview(appWindow, 'ext-link', {
-          url: href.replace('https://steamgameidler.com', 'http://localhost:3001'),
+          url: parseHref,
           x: 0,
           y: 0,
           width: 1500,

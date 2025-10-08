@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next'
 import { TbX } from 'react-icons/tb'
 
 import { useNavigationContext } from '@/components/contexts/NavigationContext'
-import AdSlot from '@/components/layout/AdSlot'
 import AchievementSettings from '@/components/settings/AchievementSettings'
 import CardSettings from '@/components/settings/CardSettings'
 import GameSettings from '@/components/settings/GameSettings'
@@ -14,6 +13,7 @@ import GeneralSettings from '@/components/settings/GeneralSettings'
 import Logs from '@/components/settings/Logs'
 import TradingCardManagerSettings from '@/components/settings/TradingCardManagerSettings'
 import ViewDocumentation from '@/components/settings/ViewDocumentation'
+import AdSlot from '@/components/ui/AdSlot'
 import useSettings from '@/hooks/settings/useSettings'
 
 export default function Settings(): ReactElement {
@@ -35,6 +35,7 @@ export default function Settings(): ReactElement {
 
       <div className='absolute flex flex-col items-center gap-4 bottom-4 left-0 px-6 w-[250px] z-40'>
         {process.env.NODE_ENV === 'production' && <AdSlot />}
+
         <ViewDocumentation />
         <span className='text-xs text-altwhite text-center'>Steam Game Idler v{version}</span>
       </div>

@@ -9,7 +9,6 @@ import { Trans, useTranslation } from 'react-i18next'
 import { TbChevronRight } from 'react-icons/tb'
 
 import { useUserContext } from '@/components/contexts/UserContext'
-import Beta from '@/components/ui/Beta'
 import { useCardSettings } from '@/hooks/settings/useCardSettings'
 
 export default function TradingCardManagerSettings(): ReactElement {
@@ -137,9 +136,7 @@ export default function TradingCardManagerSettings(): ReactElement {
       <div className='flex flex-col gap-3 mt-4'>
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
-            <p className='text-sm text-content font-bold'>
-              {t('settings.tradingCards.sellOptions')} <Beta />
-            </p>
+            <p className='text-sm text-content font-bold'>{t('settings.tradingCards.sellOptions')}</p>
             <p className='text-xs text-altwhite'>{t('settings.tradingCards.sellOptions.description')}</p>
           </div>
           <div className='flex items-center gap-4'>
@@ -183,9 +180,7 @@ export default function TradingCardManagerSettings(): ReactElement {
 
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
-            <p className='text-sm text-content font-bold'>
-              {t('settings.tradingCards.priceAdjustment')} <Beta />
-            </p>
+            <p className='text-sm text-content font-bold'>{t('settings.tradingCards.priceAdjustment')}</p>
             <p className='text-xs text-altwhite'>
               <Trans
                 i18nKey='settings.tradingCards.priceAdjustmentSub'
@@ -225,9 +220,7 @@ export default function TradingCardManagerSettings(): ReactElement {
 
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
-            <p className='text-sm text-content font-bold'>
-              {t('settings.tradingCards.sellLimit')} <Beta />
-            </p>
+            <p className='text-sm text-content font-bold'>{t('settings.tradingCards.sellLimit')}</p>
             <p className='text-xs text-altwhite'>
               <Trans
                 i18nKey='settings.tradingCards.sellLimitSub'
@@ -295,9 +288,7 @@ export default function TradingCardManagerSettings(): ReactElement {
 
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
-            <p className='text-sm text-content font-bold'>
-              {t('settings.tradingCards.sellDelay')} <Beta />
-            </p>
+            <p className='text-sm text-content font-bold'>{t('settings.tradingCards.sellDelay')}</p>
             <p className='text-xs text-altwhite'>
               <Trans
                 i18nKey='settings.tradingCards.sellDelaySub'
