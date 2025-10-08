@@ -2,7 +2,10 @@
 
 ### Changes in v2.1.16
 
+- The settings for `trading card manager` have been unmark as beta
+  - If you do have any issues using any of these settings, please open a new issue
 - SGI documentation links now open in a secondary window within the app, rather than in the user's default browser
+  - Allows users to easily view SGI documentation without forcing the system to open the default browser
 
 <!-- 2.1.15 -->
 
