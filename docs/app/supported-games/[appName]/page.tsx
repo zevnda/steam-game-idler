@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react'
 
-import AdComponents from './AdComponents'
+import AdComponent from './AdComponent'
 
 interface PageProps {
   params: {
@@ -353,7 +353,7 @@ export default async function AdPage({ params }: PageProps): Promise<ReactElemen
           </div>
         </footer>
       </div>
-      <AdComponents />
+      <AdComponent />
     </div>
   )
 }

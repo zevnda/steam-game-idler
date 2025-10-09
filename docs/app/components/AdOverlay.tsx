@@ -24,7 +24,7 @@ export default function AdOverlay() {
   return (
     <div key={pathname}>
       {/* Desktop side ads */}
-      <div className='hidden 2xl:flex fixed top-1/2 -translate-y-1/2 left-4 flex-col gap-4 z-50 bg-red-500/20'>
+      <div className='hidden 2xl:flex fixed top-1/2 -translate-y-1/2 left-4 flex-col gap-4 z-50'>
         <ins
           className='adsbygoogle'
           data-ad-client='ca-pub-8915288433444527'
