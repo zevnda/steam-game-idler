@@ -22,7 +22,7 @@ export default function AdComponent() {
   }, [])
 
   return (
-    <div className='fixed bottom-0 right-0 z-50'>
+    <div className='fixed bottom-0 right-0 z-50 bg-[#121316]'>
       <ins
         className='adsbygoogle'
         data-ad-client='ca-pub-8915288433444527'
