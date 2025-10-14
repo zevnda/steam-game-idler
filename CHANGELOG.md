@@ -1,3 +1,9 @@
+<!-- 2.1.17 -->
+
+### Changes in v2.1.17
+
+- Updated project dependencies
+
 <!-- 2.1.16 -->
 
 ### Changes in v2.1.16
