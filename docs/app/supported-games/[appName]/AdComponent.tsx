@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 declare global {
   interface Window {
@@ -9,6 +9,8 @@ declare global {
 }
 
 export default function AdComponent() {
+  const [adKey, setAdKey] = useState(0)
+
   useEffect(() => {
     const loadAd = () => {
       try {
@@ -20,16 +22,28 @@ export default function AdComponent() {
 
     loadAd()
 
-    const timer = setTimeout(() => {
-      loadAd()
-    }, 60000)
+    const getRandomInterval = () => Math.floor(Math.random() * (600000 - 360000 + 1)) + 360000 // 6 to 10 minutes
 
-    return () => clearTimeout(timer)
-  }, [])
+    const scheduleNextRefresh = () => {
+      const interval = setTimeout(() => {
+        setAdKey(prev => prev + 1)
+        scheduleNextRefresh()
+      }, getRandomInterval())
+
+      return interval
+    }
+
+    const timeoutId = scheduleNextRefresh()
+
+    return () => {
+      clearTimeout(timeoutId)
+    }
+  }, [adKey])
 
   return (
     <div className='fixed bottom-0 right-0 z-50 bg-[#121316]'>
       <ins
+        key={adKey}
         className='adsbygoogle'
         data-ad-client='ca-pub-8915288433444527'
         data-ad-slot='9100790437'
