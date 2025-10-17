@@ -19,6 +19,12 @@ export default function AdComponent() {
     }
 
     loadAd()
+
+    const timer = setTimeout(() => {
+      loadAd()
+    }, 60000)
+
+    return () => clearTimeout(timer)
   }, [])
 
   return (
