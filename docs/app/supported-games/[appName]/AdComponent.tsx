@@ -22,13 +22,14 @@ export default function AdComponent() {
 
     loadAd()
 
-    const getRandomInterval = () => Math.floor(Math.random() * (600000 - 360000 + 1)) + 360000 // 6 to 10 minutes
-
     const scheduleNextRefresh = () => {
-      const interval = setTimeout(() => {
-        setAdKey(prev => prev + 1)
-        scheduleNextRefresh()
-      }, getRandomInterval())
+      const interval = setTimeout(
+        () => {
+          setAdKey(prev => prev + 1)
+          scheduleNextRefresh()
+        },
+        2 * 60 * 1000,
+      )
 
       return interval
     }

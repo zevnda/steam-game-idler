@@ -1,3 +1,9 @@
+<!-- 2.1.18 -->
+
+### Changes in v2.1.18
+
+- Minor tweaks to ad component
+
 <!-- 2.1.17 -->
 
 ### Changes in v2.1.17
