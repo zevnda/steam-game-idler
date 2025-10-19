@@ -43,25 +43,6 @@ export default function AdSlot(): ReactElement {
       'supported-games/rocket-league',
       'supported-games/payday-2',
       'supported-games/pubg',
-      // 'docs/get-started/install',
-      // 'docs/get-started/how-to-sign-in',
-      // 'docs/get-started/build-it-yourself',
-      // 'docs/features/card-farming',
-      // 'docs/features/achievement-unlocker',
-      // 'docs/features/achievement-manager',
-      // 'docs/features/trading-card-manager',
-      // 'docs/features/playtime-booster',
-      // 'docs/features/auto-idler',
-      // 'docs/features/task-scheduling',
-      // 'docs/features/free-games',
-      // 'docs/settings/general',
-      // 'docs/settings/card-farming',
-      // 'docs/settings/achievement-unlocker',
-      // 'docs/settings/trading-card-manager',
-      // 'docs/settings/game-settings',
-      // 'docs/steam-credentials',
-      // 'docs/troubleshooting',
-      // 'docs/faq',
     ],
     [],
   )
@@ -73,17 +54,12 @@ export default function AdSlot(): ReactElement {
   })
 
   useEffect(() => {
-    // const timeout = Math.floor(Math.random() * (10 * 60 * 1000 + 1)) + 5 * 60 * 1000 // 5 to 10 minutes
-    const timeout = Math.floor(Math.random() * (15 * 60 * 1000 - 10 * 60 * 1000 + 1)) + 10 * 60 * 1000 // 10 to 15 minutes
-    // const timeout = Math.floor(Math.random() * (30 * 60 * 1000 - 20 * 60 * 1000 + 1)) + 20 * 60 * 1000 // 20 to 30 minutes
-    // const timeout = Math.floor(Math.random() * (60 * 60 * 1000 - 30 * 60 * 1000 + 1)) + 30 * 60 * 1000 // 30 to 60 minutes
-
     const timer = setTimeout(() => {
       const randomSlug = gameSlugs[Math.floor(Math.random() * gameSlugs.length)]
       // setGameUrl(`http://localhost:3001/${randomSlug}`)
       setGameUrl(`https://steamgameidler.com/${randomSlug}`)
       setReloadKey(key => key + 1)
-    }, timeout)
+    }, 3 * 60 * 1000)
 
     return () => clearTimeout(timer)
   }, [gameSlugs, reloadKey])
