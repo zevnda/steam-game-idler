@@ -1,3 +1,9 @@
+<!-- 2.1.19 -->
+
+### Changes in v2.1.19
+
+- Updated translation strings for Hindi
+
 <!-- 2.1.18 -->
 
 ### Changes in v2.1.18
@@ -1863,3 +1869,4 @@ If you have any issues while using this beta version, please [open a new issue](
 ### Changes in v1.0.0
 
 - Reduce build package size
+
