@@ -36,7 +36,7 @@ export default function AdComponent() {
     return () => {
       clearTimeout(timeoutId)
     }
-  }, [])
+  }, [adKey])
 
   return (
     <div className='fixed bottom-0 right-0 z-50 bg-[#121316]'>
