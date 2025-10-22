@@ -112,7 +112,7 @@ export default function AdSlot(): ReactElement {
         setGameUrl(`https://steamgameidler.com/${randomSlug}`)
         setReloadKey(key => key + 1)
       },
-      10 * 60 * 1000,
+      30 * 60 * 1000,
     )
 
     return () => clearTimeout(timer)
