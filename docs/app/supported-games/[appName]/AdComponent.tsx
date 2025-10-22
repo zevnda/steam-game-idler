@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 declare global {
   interface Window {
@@ -9,7 +9,7 @@ declare global {
 }
 
 export default function AdComponent() {
-  // const [adKey, setAdKey] = useState(0)
+  const [adKey, setAdKey] = useState(0)
 
   useEffect(() => {
     const loadAd = () => {
@@ -22,29 +22,26 @@ export default function AdComponent() {
 
     loadAd()
 
-    // const scheduleNextRefresh = () => {
-    //   const interval = setTimeout(
-    //     () => {
-    //       setAdKey(prev => prev + 1)
-    //       scheduleNextRefresh()
-    //     },
-    //     2 * 60 * 1000,
-    //   )
+    const scheduleNextRefresh = () => {
+      const interval = setTimeout(() => {
+        setAdKey(prev => prev + 1)
+        scheduleNextRefresh()
+      }, 30 * 1000)
 
-    //   return interval
-    // }
+      return interval
+    }
 
-    // const timeoutId = scheduleNextRefresh()
+    const timeoutId = scheduleNextRefresh()
 
-    // return () => {
-    //   clearTimeout(timeoutId)
-    // }
+    return () => {
+      clearTimeout(timeoutId)
+    }
   }, [])
 
   return (
     <div className='fixed bottom-0 right-0 z-50 bg-[#121316]'>
       <ins
-        // key={adKey}
+        key={adKey}
         className='adsbygoogle'
         data-ad-client='ca-pub-8915288433444527'
         data-ad-slot='9100790437'
