@@ -66,7 +66,7 @@
     "@tauri-apps/cli": "^2.8.4",
     "@types/node": "^24.9.1",
     "@types/react": "^19.2.2",
-    "@types/react-dom": "^19.1.6",
+    "@types/react-dom": "^19.2.2",
     "@types/react-window": "^1.8.8",
     "@typescript-eslint/eslint-plugin": "^8.36.0",
     "@typescript-eslint/parser": "^8.46.2",
