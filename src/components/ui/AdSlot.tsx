@@ -43,6 +43,57 @@ export default function AdSlot(): ReactElement {
       'supported-games/rocket-league',
       'supported-games/payday-2',
       'supported-games/pubg',
+      'supported-games/subnautica',
+      'supported-games/no-mans-sky',
+      'supported-games/borderlands-3',
+      'supported-games/the-forest',
+      'supported-games/phasmophobia',
+      'supported-games/satisfactory',
+      'supported-games/factorio',
+      'supported-games/rimworld',
+      'supported-games/hades',
+      'supported-games/slay-the-spire',
+      'supported-games/celeste',
+      'supported-games/hollow-knight',
+      'supported-games/dark-souls-3',
+      'supported-games/elden-ring',
+      'supported-games/monster-hunter-world',
+      'supported-games/deep-rock-galactic',
+      'supported-games/payday-3',
+      'supported-games/forza-horizon-5',
+      'supported-games/fifa-23',
+      'supported-games/nba-2k23',
+      'supported-games/madden-nfl-23',
+      'supported-games/football-manager-2024',
+      'supported-games/civilization-vi',
+      'supported-games/total-war-warhammer-3',
+      'supported-games/crusader-kings-3',
+      'supported-games/euro-truck-simulator-2',
+      'supported-games/american-truck-simulator',
+      'supported-games/flight-simulator',
+      'supported-games/planet-coaster',
+      'supported-games/cities-skylines',
+      'supported-games/planet-zoo',
+      'supported-games/the-sims-4',
+      'supported-games/simcity',
+      'supported-games/lego-star-wars',
+      'supported-games/star-wars-jedi-survivor',
+      'supported-games/lego-harry-potter',
+      'supported-games/hogwarts-legacy',
+      'supported-games/marvels-spider-man',
+      'supported-games/batman-arkham-knight',
+      'supported-games/red-dead-redemption-2',
+      'supported-games/far-cry-6',
+      'supported-games/assassins-creed-valhalla',
+      'supported-games/watch-dogs-legion',
+      'supported-games/ghostrunner',
+      'supported-games/doom-eternal',
+      'supported-games/quake-champions',
+      'supported-games/overwatch-2',
+      'supported-games/paladins',
+      'supported-games/smite',
+      'supported-games/league-of-legends',
+      'supported-games/valorant',
     ],
     [],
   )
@@ -54,12 +105,15 @@ export default function AdSlot(): ReactElement {
   })
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      const randomSlug = gameSlugs[Math.floor(Math.random() * gameSlugs.length)]
-      // setGameUrl(`http://localhost:3001/${randomSlug}`)
-      setGameUrl(`https://steamgameidler.com/${randomSlug}`)
-      setReloadKey(key => key + 1)
-    }, 10 * 60 * 1000)
+    const timer = setTimeout(
+      () => {
+        const randomSlug = gameSlugs[Math.floor(Math.random() * gameSlugs.length)]
+        // setGameUrl(`http://localhost:3001/${randomSlug}`)
+        setGameUrl(`https://steamgameidler.com/${randomSlug}`)
+        setReloadKey(key => key + 1)
+      },
+      10 * 60 * 1000,
+    )
 
     return () => clearTimeout(timer)
   }, [gameSlugs, reloadKey])

@@ -1,3 +1,9 @@
+<!-- 2.1.20 -->
+
+### Changes in v2.1.20
+
+- Updated project dependencies
+
 <!-- 2.1.19 -->
 
 ### Changes in v2.1.19
