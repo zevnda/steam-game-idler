@@ -23,10 +23,13 @@ export default function AdComponent() {
     loadAd()
 
     const scheduleNextRefresh = () => {
-      const interval = setTimeout(() => {
-        setAdKey(prev => prev + 1)
-        scheduleNextRefresh()
-      }, 30 * 1000)
+      const interval = setTimeout(
+        () => {
+          setAdKey(prev => prev + 1)
+          scheduleNextRefresh()
+        },
+        2 * 60 * 1000,
+      )
 
       return interval
     }
