@@ -54,7 +54,7 @@ export default function FeaturesSection() {
       <div className='absolute top-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-purple-300 to-transparent' />
 
       {/* Bottom transition overlay */}
-      <div className='absolute bottom-0 left-0 right-0 h-32 bg-linear-to-b from-transparent to-emerald-50/50' />
+      <div className='absolute bottom-0 left-0 right-0 h-32 bg-linear-to-b from-transparent to-rose-50/50' />
 
       <div className='container relative z-10 px-4 sm:px-6 md:px-8'>
         {/* Header */}
