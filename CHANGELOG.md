@@ -1,3 +1,9 @@
+<!-- 2.1.21 -->
+
+### Changes in v2.1.21
+
+- Steam account settings in `settings > general` are now blurred until you hover over them
+
 <!-- 2.1.20 -->
 
 ### Changes in v2.1.20

@@ -38,25 +38,29 @@ export default function GeneralSettings(): ReactElement {
       </div>
 
       <div className='flex flex-col gap-3 mt-4'>
-        <div className='flex items-center gap-4'>
+        <div className='flex items-center gap-4 w-fit group'>
           <Image
             src={userSummary?.avatar || ''}
             height={64}
             width={64}
             alt='user avatar'
-            className='w-[64px] h-[64px] rounded-full'
+            className='w-[64px] h-[64px] rounded-full blur-[3px] group-hover:blur-none transition-all duration-200'
             priority
           />
           <div className='flex flex-col gap-1'>
             <p className='text-xs text-altwhite font-bold'>{t('settings.general.displayName')}</p>
             <p className='py-1.5 px-2 bg-input rounded-lg text-content text-sm font-semibold w-64'>
-              {userSummary?.personaName}
+              <span className='blur-[3px] group-hover:blur-none transition-all duration-200'>
+                {userSummary?.personaName}
+              </span>
             </p>
           </div>
           <div className='flex flex-col gap-1'>
             <p className='text-xs text-altwhite font-bold'>{t('settings.general.steamId')}</p>
             <p className='py-1.5 px-2 bg-input rounded-lg text-content text-sm font-semibold w-64'>
-              {userSummary?.steamId}
+              <span className='blur-[3px] group-hover:blur-none transition-all duration-200'>
+                {userSummary?.steamId}
+              </span>
             </p>
           </div>
         </div>
