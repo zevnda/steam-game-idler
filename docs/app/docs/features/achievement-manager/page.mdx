@@ -12,6 +12,8 @@ import MockButton from '@docs/components/MockButton';
 
 The Steam Achievement Manager feature allows you to manage your Steam game's achievements, including manually unlocking and locking achievements, as well as modifying an achievement's statistics.
 
+If you have previously used Steam Achievement Manager (SAM) by Gibbed in the past, then SGI's Achievement Manager should feel familiar.
+
 <Callout type="info">
     You can use the search bar at the top of the achievement manager screen to
     search for an achievement by its title
@@ -23,7 +25,7 @@ The Steam Achievement Manager feature allows you to manage your Steam game's ach
 
 <Steps>
     {<h3 />}
-    Click <Icon type='game' /> in the `sidebar`
+    Click <MockButton type='your-games' /> in the sidebar
 
     {<h3 />}
     Click <Icon type='award' /> beneath the game image to view the `achievement manager` screen
@@ -41,13 +43,13 @@ The Steam Achievement Manager feature allows you to manage your Steam game's ach
 
 <Steps>
     {<h3 />}
-    Click <Icon type='game' /> in the `sidebar`
+    Click <MockButton type='your-games' /> in the sidebar
 
     {<h3 />}
     Click <Icon type='award' /> beneath the game image to view the `achievement manager` screen
 
     {<h3 />}
-    On the `achievement manager` screen click the `statistics` tab. You will see a list of statistics for that game, if any are available
+    On the `achievement manager` screen click the <MockButton type='statistics-tab' /> tab. You will see a list of statistics for that game, if any are available
 
     {<h3 />}
     Change the `value` of any statistics you want to modify and click <MockButton type='save-changes' />
@@ -59,5 +61,3 @@ Some game developers set specific flags for their achievements and statistics, s
 - `Protected` achievements and statistics can only be modified by official game servers
 - `IncrementOnly` statistics means the value can only be increased, not decreased *(i.e. 5 -> 6, not 5 -> 4)*
 - `Hidden` achievements hide their description making it harder to know how to unlock them
-
-If you have previously used Steam Achievement Manager (SAM) by Gibbed in the past, the Steam Achievement Manager is a great alternative, as it does not require any additional setup or configuration. Simply select the games you want to manage and start unlocking achievements and modifying statistics.

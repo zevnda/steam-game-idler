@@ -6,12 +6,11 @@ import { Steps } from 'nextra/components';
 
 import Callout from '@docs/components/Callout';
 import Icon from '@docs/components/Icon';
+import MockButton from '@docs/components/MockButton';
 
 # Playtime Booster
 
 The Steam Playtime Booster feature is similar to Idle Master Extended and allows you to idle one or more games manually to boost their total playtime.
-
-When idling games with Playtime Booster, external `SteamUtility` *(idle)* processes will be opened to interact with the Steam client and imitate game processes. These processes will be closed when the game is no longer being idled.
 
 <Callout type="info">
     You can idle a maximum of 32 games at once. This is a Steam limitation
@@ -21,15 +20,17 @@ When idling games with Playtime Booster, external `SteamUtility` *(idle)* proces
 
 <Steps>
     {<h3 />}
-    Click <Icon type='game' /> in the `sidebar`
+    Click <MockButton type='your-games' /> in the sidebar
 
     {<h3 />}
     Click <Icon type='playalt' /> beneath the game image to begin idling the game
 
     {<h3 />}
-    Click <Icon type='play' /> in the `sidebar` to view the games you are currently idling
+    Click <MockButton type='idling-games' /> in the sidebar to view the games you are currently idling
 </Steps>
 
 ## Additional Information
+
+When idling games with Playtime Booster, external `SteamUtility` *(idle)* processes will be opened to interact with the Steam client and imitate game processes. These processes will be closed when the game is no longer being idled.
 
 If you have previously used Idle Master Extended by Jonas Nilson in the past, the Steam Playtime Booster is a great alternative, as it does not require any additional setup or configuration. Simply select the games you want to idle and start boosting your playtime!

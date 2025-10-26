@@ -8,6 +8,14 @@ module.exports = {
   ],
   theme: {
     extend: {
+      backgroundColor: {
+        'icon-light': '#e3e3e3ff',
+        'icon-dark': '#2f2f2fff',
+      },
+      textColor: {
+        'icon-light': '#000000ff',
+        'icon-dark': '#ffffffff',
+      },
       animation: {
         float: 'float 3s ease-in-out infinite',
       },
@@ -19,5 +27,6 @@ module.exports = {
       },
     },
   },
+  darkMode: 'class',
   plugins: [],
 }
