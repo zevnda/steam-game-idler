@@ -6,20 +6,21 @@ import { Steps } from 'nextra/components';
 
 import Callout from '@docs/components/Callout';
 import Icon from '@docs/components/Icon';
+import MockButton from '@docs/components/MockButton';
 
 # Free Games
 
 SGI will periodically check the Steam store for free games and notify you when new ones are available. This feature helps you discover and claim free games that you might otherwise miss.
 
 <Callout type="info">
-  Games that you already own and DLC are filtered out, so you only see new free games that you can claim.
+  Games that you already own, and DLC, are filtered out so you only see new free games that you can claim.
 </Callout>
 
 ## Steps
 
 <Steps>
   {<h3 />}
-  Click <Icon type='gift' /> in the `sidebar`
+  Click <MockButton type='free-games' /> in the sidebar
 
   {<h3 />}
   Click <Icon type='steam' /> beneath the game image and you will be redirected to the Steam store page where you can add the game to your library
