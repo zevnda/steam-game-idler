@@ -57,6 +57,7 @@ pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_os::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
+        .plugin(tauri_plugin_store::Builder::default().build())
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_dialog::init())
@@ -134,7 +135,8 @@ pub fn run() {
             remove_market_listings,
             get_tray_icon,
             is_portable,
-            get_cache_dir_path
+            get_cache_dir_path,
+            store_and_save
         ])
         .build(tauri::generate_context!())
         .expect("Error while building tauri application")

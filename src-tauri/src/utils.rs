@@ -9,6 +9,7 @@ use std::sync::Mutex;
 use steamlocate::SteamDir;
 use sysinfo::{ProcessesToUpdate, System};
 use tauri::Manager;
+use tauri_plugin_store::StoreExt;
 
 lazy_static! {
     static ref LAST_KNOWN_TITLES: Mutex<HashMap<String, String>> = Mutex::new(HashMap::new());
@@ -198,4 +199,17 @@ pub fn get_cache_dir(app_handle: &tauri::AppHandle) -> Result<std::path::PathBuf
             .map_err(|e| format!("Failed to get app data dir: {}", e))
             .map(|path| path.join("cache"))
     }
+}
+
+#[tauri::command]
+pub fn store_and_save(
+    username: String,
+    is_pro: bool,
+    app_handle: tauri::AppHandle,
+) -> Result<String, String> {
+    let store = app_handle.store("store.json").map_err(|e| e.to_string())?;
+    store.set("githubUsername", username);
+    store.set("isPro", is_pro);
+    store.save().map_err(|e| e.to_string())?;
+    Ok("Data stored successfully".into())
 }

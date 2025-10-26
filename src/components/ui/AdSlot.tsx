@@ -2,9 +2,11 @@ import type { ReactElement } from 'react'
 
 import { cn, Spinner } from '@heroui/react'
 import { useEffect, useMemo, useState } from 'react'
+import Image from 'next/image'
 
 import { useNavigationContext } from '@/components/contexts/NavigationContext'
 import { useStateContext } from '@/components/contexts/StateContext'
+import WebviewWindow from '@/components/ui/WebviewWindow'
 
 export default function AdSlot(): ReactElement {
   const { sidebarCollapsed } = useStateContext()
@@ -136,6 +138,23 @@ export default function AdSlot(): ReactElement {
           sandbox='allow-scripts allow-same-origin allow-forms allow-popups allow-top-navigation-by-user-activation'
         />
         <Spinner className='absolute inset-0 m-auto z-0' />
+      </div>
+
+      <div className='mt-2 flex justify-center items-center'>
+        <p className='text-sm'>
+          Remove ads with Steam Game Idler{' '}
+          <WebviewWindow href='http://localhost:3001/pro' size={{ width: 500, height: 600 }}>
+            <span
+              className='p-1 rounded-lg font-bold'
+              style={{
+                background:
+                  'linear-gradient(300deg, #1fbaf8 0%, #2a9bf9 10.94%, #3874fb 23.43%, #8a1299ff 69.51%, #6c0b79ff 93.6%, #4a0840ff 109.47%),linear-gradient(86deg, #320057 4.13%, #530de7 35.93%, #3874fb 64.42%, #0bf2f6 104.88%)',
+              }}
+            >
+              PRO
+            </span>
+          </WebviewWindow>
+        </p>
       </div>
     </div>
   )

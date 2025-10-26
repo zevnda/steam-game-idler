@@ -41,6 +41,7 @@
     "@tauri-apps/plugin-os": "~2.3.0",
     "@tauri-apps/plugin-process": "~2.3.0",
     "@tauri-apps/plugin-shell": "~2.3.0",
+    "@tauri-apps/plugin-store": "~2.4.0",
     "@tauri-apps/plugin-updater": "~2.9.0",
     "@tauri-apps/plugin-window-state": "~2.4.0",
     "framer-motion": "12.23.24",

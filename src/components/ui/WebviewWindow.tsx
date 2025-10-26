@@ -6,10 +6,16 @@ import { LogicalPosition, LogicalSize, Window } from '@tauri-apps/api/window'
 interface ExtLinkProps {
   children: ReactNode
   href: string
+  size?: { width: number; height: number }
   className?: string
 }
 
-export default function WebviewWindow({ children, href, className = '' }: ExtLinkProps): ReactElement {
+export default function WebviewWindow({
+  children,
+  href,
+  size = { width: 1500, height: 825 },
+  className = '',
+}: ExtLinkProps): ReactElement {
   const handleClick = async (e: MouseEvent<HTMLAnchorElement>): Promise<void> => {
     e.preventDefault()
     try {
@@ -23,7 +29,7 @@ export default function WebviewWindow({ children, href, className = '' }: ExtLin
       appWindow.once('tauri://created', async function () {
         appWindow.setTitle(`Steam Game Idler - ${parseHref}`)
         appWindow.setPosition(new LogicalPosition(10, 10))
-        appWindow.setSize(new LogicalSize(1500, 825))
+        appWindow.setSize(new LogicalSize(size.width, size.height))
         appWindow.setResizable(false)
         appWindow.setFullscreen(false)
         appWindow.setMaximizable(false)
@@ -34,8 +40,8 @@ export default function WebviewWindow({ children, href, className = '' }: ExtLin
           url: parseHref,
           x: 0,
           y: 0,
-          width: 1500,
-          height: 825,
+          width: size.width,
+          height: size.height,
           acceptFirstMouse: true,
           devtools: true,
           focus: true,

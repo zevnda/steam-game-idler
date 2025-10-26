@@ -8,6 +8,7 @@ import { useNavigationContext } from '@/components/contexts/NavigationContext'
 import { useStateContext } from '@/components/contexts/StateContext'
 import { useUpdateContext } from '@/components/contexts/UpdateContext'
 import Notifications from '@/components/notifications/Notifications'
+import GoPro from '@/components/ui/header/GoPro'
 import HeaderMenu from '@/components/ui/header/HeaderMenu'
 import UpdateButton from '@/components/ui/UpdateButton'
 import useHeader from '@/hooks/ui/useHeader'
@@ -54,6 +55,8 @@ export default function Header(): ReactElement {
             {sidebarCollapsed ? <TbLayoutSidebarFilled fontSize={18} /> : <TbLayoutSidebar fontSize={18} />}
           </div>
         )}
+
+        <GoPro />
 
         <div className='flex justify-end items-center h-full w-full' data-tauri-drag-region>
           {updateAvailable && <UpdateButton />}
