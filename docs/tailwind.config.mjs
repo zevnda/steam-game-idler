@@ -9,7 +9,7 @@ module.exports = {
   theme: {
     extend: {
       backgroundColor: {
-        'icon-light': '#e3e3e3ff',
+        'icon-light': '#ecececff',
         'icon-dark': '#2f2f2fff',
       },
       textColor: {
