@@ -23,7 +23,7 @@ export const metadata = {
     template: '%s | Steam Game Idler',
   },
   description:
-    'An all-in-one Steam automation tool featuring a trading card farmer, achievement unlocker, and game idler. The best alternative to ArchiSteamFarm, Steam Achievement Manager, and Idle Master.',
+    'The best Steam idle tool featuring a trading card farmer, achievement unlocker, and game idler. Free alternative to ArchiSteamFarm, Steam Achievement Manager, Idle Master.',
   metadataBase: new URL('https://steamgameidler.com/'),
   keywords: [
     'Steam Game Idler',
@@ -66,19 +66,62 @@ export const metadata = {
     'msapplication-TileColor': '#fff',
     'google-site-verification': 'gOZEIhRh4BCNzE1r4etZeuJoex3aVaUrATjMnsnyYuY',
     'google-adsense-account': 'ca-pub-8915288433444527',
-    'structured-data': JSON.stringify({
-      '@context': 'https://schema.org',
-      '@type': 'TechArticle',
-      'name': 'Steam Game Idler',
-      'url': 'https://steamgameidler.com/',
-      'description':
-        'Farm Steam trading cards, manage achievements, and idle games automatically — an all-in-one alternative to ArchiSteamFarm, Steam Achievement Manager, and Idle Master.',
-    }),
   },
   alternates: {
     canonical: './',
   },
 }
+
+const schemaData = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    'name': 'Steam Game Idler',
+    'url': 'https://steamgameidler.com/',
+    'description':
+      'Farm Steam trading cards, manage achievements, and idle games automatically — an all-in-one alternative to ArchiSteamFarm, Steam Achievement Manager, and Idle Master.',
+    'applicationCategory': 'UtilitiesApplication',
+    'operatingSystem': 'Windows',
+    'offers': {
+      '@type': 'Offer',
+      'price': '0',
+      'priceCurrency': 'USD',
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    'mainEntity': [
+      {
+        '@type': 'Question',
+        'name': 'What is a Steam achievement manager?',
+        'acceptedAnswer': {
+          '@type': 'Answer',
+          'text':
+            "A Steam achievement manager is a tool that allows you to unlock, lock, and manage achievements for Steam games. SGI's Steam achievement manager provides a safe, intuitive interface for achievement management.",
+        },
+      },
+      {
+        '@type': 'Question',
+        'name': 'What is a Steam achievement unlocker?',
+        'acceptedAnswer': {
+          '@type': 'Answer',
+          'text':
+            "A Steam achievement unlocker is a tool that lets you automatically unlock Steam achievements for your games. SGI's Steam achievement unlocker uses human-like timing and methods for safety.",
+        },
+      },
+      {
+        '@type': 'Question',
+        'name': 'What is a Steam idle tool?',
+        'acceptedAnswer': {
+          '@type': 'Answer',
+          'text':
+            "A Steam idle tool lets you simulate playing games to boost playtime and earn trading cards. SGI's Steam idle feature is fast, safe, and easy to use.",
+        },
+      },
+    ],
+  },
+]
 
 const navbar = <Navbar logo={<Logo />} projectLink='https://github.com/zevnda/steam-game-idler' />
 
@@ -96,6 +139,7 @@ export default async function RootLayout({ children }: { children: ReactNode }):
           src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8915288433444527'
           crossOrigin='anonymous'
         />
+        <script type='application/ld+json' dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }} />
       </Head>
       <body className={`${inter.className} text-sm`}>
         <Layout
