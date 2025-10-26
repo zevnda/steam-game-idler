@@ -53,7 +53,7 @@ export default function IdlingGamesList(): ReactElement {
     >
       <div className={cn('w-[calc(100vw-236px)] z-50 pl-6 pt-2 rounded-tl-xl')}>
         <div className='flex justify-between items-center pb-3'>
-          <div className='flex flex-col justify-center'>
+          <div className='flex flex-col justify-center select-none'>
             <p className='text-3xl font-black'>{t('idlingGames.title')}</p>
             <div className='flex gap-1'>
               <p className='text-xs text-altwhite my-2'>{t('idlingGames.subtitle')}</p>
