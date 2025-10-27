@@ -44,4 +44,7 @@ src-tauri/libs
 src-tauri/gen
 .window-state.json
 
+# rust-analyzer
+target
+
 *.ps1

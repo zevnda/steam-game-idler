@@ -13,15 +13,11 @@ import MockButton from '@docs/components/MockButton';
 The Card Farming feature turns SGI into a powerful Steam trading card idler, automatically idling games in your library that still have trading card drops available. This Steam card idler functionality allows you to maximize your card collection efficiently.
 
 You have two options for farming cards: 
-* **[Farm cards for games in the Card Farming list](/docs/features/card-farming#card-farming-list)**
-* **[Farm cards for all games with card drops remaining](/docs/features/card-farming#all-games-with-drops)**
+* [Farm cards for games in the Card Farming list](/docs/features/card-farming#farm-specific-games-card-farming-list)
+* [Farm cards for all games with card drops remaining](/docs/features/card-farming#farm-all-games-all-games-with-drops-remaining)
 
 <Callout type="info">
     You must add your [Steam Credentials](/docs/steam-credentials) in [Settings → General → Steam Credentials](/docs/settings/general) before you can use the Card Farming feature
-</Callout>
-
-<Callout type="info">
-    You can add multiple games to the card farming list
 </Callout>
 
 ## Steps
@@ -30,7 +26,7 @@ You have two options for farming cards:
 
 <Steps>
     {<h3 />}
-    Enable [`Farm Games In List`](/docs/settings/card-farming#farm-games-in-list) in <MockButton type='context-cog' content='Settings > Card Farming' />
+    Enable [`Farm Games In List`](/docs/settings/card-farming#farm-games-in-list) in <MockButton type='context-cog' content='Settings → Card Farming' />
 
     {<h3 />}
     Click <MockButton type='card-farming' /> in the sidebar
@@ -47,7 +43,7 @@ You have two options for farming cards:
 
 <Steps>
     {<h3 />}
-    Enable [`Farm All Games`](/docs/settings/card-farming#farm-games-in-list) in <MockButton type='context-cog' content='Settings > Card Farming' />
+    Enable [`Farm All Games`](/docs/settings/card-farming#farm-games-in-list) in <MockButton type='context-cog' content='Settings → Card Farming' />
 
     {<h3 />}
     Click <MockButton type='card-farming' /> in the sidebar
@@ -58,24 +54,20 @@ You have two options for farming cards:
 
 ## Additional Information
 
-There is a three-hour wait before the first card drop for newer accounts, and accounts that have refunded a game recently.
+- **New Steam accounts** and accounts that have **recently refunded a game** may sometimes have to wait three hours before the first card will drop.
+- **Card drop times vary:** Some games drop a card every 30 minutes, while others may take 60, 90, or 120 minutes.
+- You can add **as many games as you want** to your card farming list, but Steam only allows farming cards from **up to 32 games at the same time**.
+- When a game has **no card drops left**, it will be removed from the list and SGI will start farming the next available game.
+- While farming cards, you may see `SteamUtility (idle)` processes start and stop. This is normal — SGI uses the following method to farm cards as quickly as possible:
 
-Some games drop a card every half hour, but some only drop after 60, 90 or 120 minutes.
-
-You can add as many games to your `card farming list` as you like, though SGI can only farm cards for a maximum of 32 games simultaneously as Steam imposes this limit.
-
-Once a game has no card drops remaining it will be removed from the list and another game will start being farmed if there is one available.
-
-While Card Farming is active, you may notice `SteamUtility` *(idle)* processes starting and stopping occasionally. This is because SGI uses the following method to farm cards as fast as possible:
-
-```
-Start idling each game for 5 minutes
-Stop idling each games for 1 minute
-Start idling each game for 15 seconds (this is where the first set of cards should drop)
-Stop idling each games for 1 minute
-Start idling each game for 30 minutes
-Stop idling each games for 1 minute
-Start idling each game for 15 seconds (this is where the next set of cards should drop)
-Stop idling each game
--- REPEAT --
-```
+    ```
+    1. Idle each game for 5 minutes
+    2. Stop idling for 1 minute
+    3. Idle each game for 15 seconds (first card drop should happen here)
+    4. Stop idling for 1 minute
+    5. Idle each game for 30 minutes
+    6. Stop idling for 1 minute
+    7. Idle each game for 15 seconds (next card drop should happen here)
+    8. Stop idling for 1 minute
+    9. Repeat the process
+    ```
