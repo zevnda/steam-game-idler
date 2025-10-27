@@ -52,7 +52,7 @@ dotnet build ./libs/SteamUtility.csproj # Outputs to `/src-tauri/libs/`
         </FileTree.Folder>
         <FileTree.File name=".env.dev" />
         <FileTree.File name=".env.prod" />
-        <FileTree.File name="package-lock.json" />
+        <FileTree.File name="pnpm-lock.yaml" />
         <FileTree.File name="package.json" />
     </FileTree.Folder>
 </FileTree>
@@ -65,15 +65,13 @@ KEY="C48E0*********7855Q"
 KEY="C48E0*********7855Q"
 ```
 
-### Run Dev Build
+### Start in Dev Mode or Build App
 
 ```shell copy
+# Start Steam Game Idler in dev mode, or
 pnpm tauri dev
-```
 
-### Build App
-
-```shell copy
+# Build the Steam Game Idler bundle
 pnpm tauri build # Outputs to `/src-tauri/target/release/bundle/`
 ```
 </Steps>

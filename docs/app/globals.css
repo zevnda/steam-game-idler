@@ -17,6 +17,10 @@ sub {
   bottom: 0.5em;
 }
 
+main a {
+  font-weight: 700;
+}
+
 .container {
   max-width: 1200px;
   margin: 0 auto;
