@@ -3,6 +3,7 @@
 ### Changes in v2.1.21
 
 - Steam account settings in `settings > general` are now blurred until you hover over them
+- Updated translation strings for Spanish
 
 <!-- 2.1.20 -->
 
@@ -1881,4 +1882,5 @@ If you have any issues while using this beta version, please [open a new issue](
 ### Changes in v1.0.0
 
 - Reduce build package size
+
 
