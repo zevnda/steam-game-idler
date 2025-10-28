@@ -1,7 +1,7 @@
 {
   "identifier": "desktop-capability",
   "platforms": ["windows"],
-  "windows": ["main", "ad-window"],
+  "windows": ["main"],
   "permissions": [
     "autostart:default",
     "updater:default",
