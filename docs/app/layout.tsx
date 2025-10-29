@@ -10,7 +10,7 @@ import 'nextra-theme-docs/style.css'
 import './globals.css'
 
 import AdOverlay from '@docs/components/AdOverlay'
-import AnalyticsLoader from '@docs/components/AnalyticsLoader'
+import TelemetryLoader from '@docs/components/TelemetryLoader'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -151,13 +151,12 @@ export default async function RootLayout({ children }: { children: ReactNode }):
             defaultMenuCollapseLevel: 1,
             toggleButton: false,
           }}
-          footer={<div />}
           feedback={{ content: 'Give us feedback' }}
         >
           {children}
         </Layout>
         <AdOverlay />
-        <AnalyticsLoader />
+        <TelemetryLoader />
       </body>
     </html>
   )
