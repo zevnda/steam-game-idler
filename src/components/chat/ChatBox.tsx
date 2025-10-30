@@ -27,6 +27,60 @@ interface NewMessagePayload {
 }
 
 export default function ChatBox(): ReactElement {
+  const [shouldScrollToBottom, setShouldScrollToBottom] = useState(true)
+  const { sidebarCollapsed, transitionDuration } = useStateContext()
+  const [motd, setMotd] = useState<string>('')
+  const [messages, setMessages] = useState<Message[]>([])
+  const [newMessage, setNewMessage] = useState('')
+  const [loading, setLoading] = useState(true)
+  const [hasMore, setHasMore] = useState(true)
+  const [pagination, setPagination] = useState({ limit: 50, offset: 0 })
+  const messagesEndRef = useRef<HTMLDivElement>(null as unknown as HTMLDivElement)
+  const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
+  const username = userSummary?.personaName || 'Unknown'
+  const messagesContainerRef = useRef<HTMLDivElement>(null as unknown as HTMLDivElement)
+  const [userRoles, setUserRoles] = useState<{ [steamId: string]: string }>({})
+
+  useEffect(() => {
+    const container = messagesContainerRef.current
+    if (!container) return
+
+    const handleScroll = async (): Promise<void> => {
+      if (container.scrollTop === 0 && hasMore && !loading) {
+        // Record scroll height before fetching
+        const prevScrollHeight = container.scrollHeight
+        // Fetch older messages
+        const newOffset = pagination.offset + pagination.limit
+        const { data, error } = await supabase
+          .from('messages')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .range(newOffset, newOffset + pagination.limit - 1)
+        if (!error && data && data.length > 0) {
+          // Reverse to ascending order for display
+          const olderMessages = data.reverse()
+          setMessages(current => {
+            // Avoid duplicates: filter out messages already present
+            const currentIds = new Set(current.map(m => m.id))
+            const uniqueOlder = olderMessages.filter(m => !currentIds.has(m.id))
+            return [...uniqueOlder, ...current]
+          })
+          setPagination(prev => ({ ...prev, offset: newOffset }))
+          setHasMore(data.length === pagination.limit)
+          // Wait for DOM update, then restore scroll position
+          setTimeout(() => {
+            const newScrollHeight = container.scrollHeight
+            container.scrollTop = newScrollHeight - prevScrollHeight
+          }, 0)
+          setShouldScrollToBottom(false)
+        }
+      }
+    }
+    container.addEventListener('scroll', handleScroll)
+    return () => {
+      container.removeEventListener('scroll', handleScroll)
+    }
+  }, [hasMore, loading, pagination])
   // Edit message handler
   const handleEditMessage = async (msgId: string, newContent: string): Promise<void> => {
     // Find message
@@ -50,16 +104,6 @@ export default function ChatBox(): ReactElement {
       setMessages(current => current.map(m => (m.id === msgId ? { ...m, message: newContent } : m)))
     }
   }
-  const { sidebarCollapsed, transitionDuration } = useStateContext()
-  const [motd, setMotd] = useState<string>('')
-  const [messages, setMessages] = useState<Message[]>([])
-  const [newMessage, setNewMessage] = useState('')
-  const [loading, setLoading] = useState(true)
-  const messagesEndRef = useRef<HTMLDivElement>(null as unknown as HTMLDivElement)
-  const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
-  const username = userSummary?.personaName || 'Unknown'
-  const messagesContainerRef = useRef<HTMLDivElement>(null as unknown as HTMLDivElement)
-  const [userRoles, setUserRoles] = useState<{ [steamId: string]: string }>({})
 
   useEffect(() => {
     // Fetch all user roles from chat_users table
@@ -92,12 +136,13 @@ export default function ChatBox(): ReactElement {
     messagesEndRef.current?.scrollIntoView({ behavior: 'auto' })
   }
 
-  // Scroll to bottom after initial load (when loading becomes false)
+  // Scroll to bottom only if shouldScrollToBottom is true
   useEffect(() => {
-    if (!loading && messages.length > 0) {
+    if (!loading && messages.length > 0 && shouldScrollToBottom) {
       scrollToBottom()
+      setShouldScrollToBottom(false)
     }
-  }, [loading, messages])
+  }, [loading, messages, shouldScrollToBottom])
 
   useEffect(() => {
     // Fetch MOTD from chat_settings table
@@ -110,18 +155,32 @@ export default function ChatBox(): ReactElement {
 
   // Load initial messages and subscribe to new ones
   useEffect(() => {
-    // Fetch existing messages
+    // Fetch latest messages with pagination
     const fetchMessages = async (): Promise<void> => {
-      const { data, error } = await supabase.from('messages').select('*').order('created_at', { ascending: true })
+      setLoading(true)
+      const { data, error, count } = await supabase
+        .from('messages')
+        .select('*', { count: 'exact' })
+        .order('created_at', { ascending: false })
+        .range(pagination.offset, pagination.offset + pagination.limit - 1)
 
       if (error) {
         console.error('Error fetching messages:', error)
       } else {
-        setMessages(data || [])
-        // Force scroll to bottom after initial load
-        setTimeout(() => {
-          scrollToBottom()
-        }, 0)
+        // Reverse to ascending order for display
+        const newMessages = (data || []).reverse()
+        setMessages(current => {
+          // On first load, overwrite. On pagination, append older messages.
+          if (pagination.offset === 0) {
+            setShouldScrollToBottom(true)
+            return newMessages
+          } else {
+            const currentIds = new Set(current.map(m => m.id))
+            const uniqueOlder = newMessages.filter(m => !currentIds.has(m.id))
+            return [...uniqueOlder, ...current]
+          }
+        })
+        setHasMore((count ?? 0) > pagination.offset + pagination.limit)
       }
       setLoading(false)
     }
@@ -139,7 +198,7 @@ export default function ChatBox(): ReactElement {
     return () => {
       supabase.removeChannel(channel)
     }
-  }, [])
+  }, [pagination])
 
   const handleSendMessage = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     if (!newMessage.trim()) return
@@ -230,7 +289,7 @@ export default function ChatBox(): ReactElement {
     >
       <ChatHeader motd={motd} />
       <ChatMessages
-        loading={loading}
+        loading={pagination.offset === 0 ? loading : false}
         groupedMessages={groupedMessages}
         userSummary={userSummary}
         messagesEndRef={messagesEndRef}
