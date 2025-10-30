@@ -127,6 +127,8 @@ export default function ChatBox(): ReactElement {
         return '#e91e63'
       case 'mod':
         return '#43b581'
+      case 'early_supporter':
+        return '#a1d8f8ff'
       default:
         return '#dbdee1'
     }
@@ -191,14 +193,26 @@ export default function ChatBox(): ReactElement {
     const channel = supabase
       .channel('messages')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
-        setMessages(current => [...current, payload.new as Message])
+        const newMsg = payload.new as Message
+        const isOwnMessage = newMsg.user_id === (userSummary?.steamId || '')
+        const container = messagesContainerRef.current
+        if (container && !isOwnMessage) {
+          const threshold = 100
+          const isAtBottom = container.scrollTop + container.clientHeight >= container.scrollHeight - threshold
+          setMessages(current => [...current, newMsg])
+          if (isAtBottom) {
+            setShouldScrollToBottom(true)
+          }
+        } else {
+          setMessages(current => [...current, newMsg])
+        }
       })
       .subscribe()
 
     return () => {
       supabase.removeChannel(channel)
     }
-  }, [pagination])
+  }, [userSummary?.steamId, pagination])
 
   const handleSendMessage = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     if (!newMessage.trim()) return
@@ -216,6 +230,7 @@ export default function ChatBox(): ReactElement {
       console.error('Error sending message:', error)
     } else {
       setNewMessage('')
+      setShouldScrollToBottom(true)
     }
   }
 

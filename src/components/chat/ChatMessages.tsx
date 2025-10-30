@@ -7,7 +7,7 @@ import { Button, cn, Spinner, Textarea, Tooltip } from '@heroui/react'
 import React, { useState } from 'react'
 import Image from 'next/image'
 import { FaCrown, FaPencilAlt, FaTrashAlt } from 'react-icons/fa'
-import { FaShield } from 'react-icons/fa6'
+import { FaEarlybirds, FaShield } from 'react-icons/fa6'
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
 import remarkBreaks from 'remark-breaks'
@@ -64,6 +64,16 @@ export default function ChatMessages({
     )
   }
 
+  // Preprocess message to inject highlight span for @username mentions
+  const preprocessMentions = (text: string): string => {
+    const username = userSummary?.personaName
+    if (!username) return text
+
+    const regex = new RegExp(`(@${username})\\b`, 'gi')
+    // eslint-disable-next-line quotes
+    return text.replace(regex, `<span class='mention-highlight'>$1</span>`)
+  }
+
   return (
     <div ref={messagesContainerRef} className='flex-1 overflow-y-auto flex flex-col overflow-x-hidden p-4 pb-1'>
       {loading ? (
@@ -97,6 +107,7 @@ export default function ChatMessages({
 
                 const isAdmin = userRoles[msg.user_id] === 'admin'
                 const isModerator = userRoles[msg.user_id] === 'moderator'
+                const isEarlySupporter = userRoles[msg.user_id] === 'early_supporter'
 
                 return (
                   <div
@@ -156,16 +167,31 @@ export default function ChatMessages({
                                 }}
                               >
                                 {msg.username}
-
                                 {isAdmin ? (
-                                  <FaCrown className='inline ml-1 -translate-y-0.5' size={14} />
+                                  <Tooltip content='Admin' className='text-xs' delay={500} closeDelay={0} showArrow>
+                                    <FaCrown className='inline ml-1 -translate-y-0.5' size={14} />
+                                  </Tooltip>
                                 ) : isModerator ? (
-                                  <FaShield className='inline ml-1 -translate-y-0.5' size={14} />
+                                  <Tooltip content='Moderator' className='text-xs' delay={500} closeDelay={0} showArrow>
+                                    <FaShield className='inline ml-1 -translate-y-0.5' size={14} />
+                                  </Tooltip>
+                                ) : isEarlySupporter ? (
+                                  <Tooltip
+                                    content='Early Supporter'
+                                    className='text-xs'
+                                    delay={500}
+                                    closeDelay={0}
+                                    showArrow
+                                  >
+                                    <FaEarlybirds className='inline ml-1 -translate-y-0.5' size={14} />
+                                  </Tooltip>
                                 ) : (
                                   ''
                                 )}
                               </span>
                             </ExtLink>
+
+                            {canEditOrDeleteAny && <span className='text-[10px] text-[#949ba4]'>{msg.user_id}</span>}
 
                             <Tooltip
                               content={new Date(msg.created_at).toUTCString()}
@@ -241,9 +267,10 @@ export default function ChatMessages({
                               remarkPlugins={[remarkGfm, remarkBreaks]}
                               components={{
                                 a: MarkdownLink,
+                                // No need for text override, highlight is done in preprocess
                               }}
                             >
-                              {msg.message.trim().replace(/\n{2,}/g, '\n')}
+                              {preprocessMentions(msg.message.trim().replace(/\n{2,}/g, '\n'))}
                             </ReactMarkdown>
                           )}
                         </div>

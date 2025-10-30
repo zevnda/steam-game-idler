@@ -200,7 +200,6 @@ svg {
   font-size: 0.95em;
 }
 
-/* Code blocks */
 .chat-message pre code {
   background: #23272a;
   padding: 0.3rem 0.35rem;
@@ -214,4 +213,11 @@ svg {
 .chat-message pre {
   margin: 8px 0;
   overflow-x: auto;
+}
+
+.chat-message .mention-highlight {
+  background: rgba(77, 112, 252, 0.36);
+  color: #f1f8ffff;
+  padding: 2px;
+  border-radius: 2px;
 }
