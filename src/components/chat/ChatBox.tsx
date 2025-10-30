@@ -89,17 +89,15 @@ export default function ChatBox(): ReactElement {
   }
   // Auto-scroll to bottom
   const scrollToBottom = (): void => {
-    if (!messagesContainerRef.current) return
-    const { scrollTop, scrollHeight, clientHeight } = messagesContainerRef.current
-    // Only auto-scroll if user is near the bottom (within 100px)
-    if (scrollHeight - scrollTop - clientHeight < 100) {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-    }
+    messagesEndRef.current?.scrollIntoView({ behavior: 'auto' })
   }
 
+  // Scroll to bottom after initial load (when loading becomes false)
   useEffect(() => {
-    scrollToBottom()
-  }, [messages])
+    if (!loading && messages.length > 0) {
+      scrollToBottom()
+    }
+  }, [loading, messages])
 
   useEffect(() => {
     // Fetch MOTD from chat_settings table
@@ -120,6 +118,10 @@ export default function ChatBox(): ReactElement {
         console.error('Error fetching messages:', error)
       } else {
         setMessages(data || [])
+        // Force scroll to bottom after initial load
+        setTimeout(() => {
+          scrollToBottom()
+        }, 0)
       }
       setLoading(false)
     }
