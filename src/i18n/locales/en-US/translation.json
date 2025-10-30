@@ -119,6 +119,8 @@
   "achievementManager.statistics.saveChanges": "Save Changes",
   "achievementManager.statistics.resetAll": "Reset All",
   "achievementManager.statistics.flags": "Flags",
+  "chat.title": "Chatbox",
+  "chat.inputPlaceholder": "Send a message...",
   "settings.title": "Settings",
   "settings.general.title": "General",
   "settings.general.displayName": "Display Name",

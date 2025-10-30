@@ -7,6 +7,7 @@ import Image from 'next/image'
 import Achievements from '@/components/achievements/Achievements'
 import AchievementUnlocker from '@/components/automation/AchievementUnlocker'
 import CardFarming from '@/components/automation/CardFarming'
+import ChatBox from '@/components/chat/ChatBox'
 import { useNavigationContext } from '@/components/contexts/NavigationContext'
 import { useStateContext } from '@/components/contexts/StateContext'
 import CustomList from '@/components/customlists/CustomList'
@@ -49,6 +50,8 @@ export default function Dashboard(): ReactElement {
         return <FreeGamesList />
       case 'tradingCards':
         return <TradingCardsList />
+      case 'chat':
+        return <ChatBox />
       default:
         return <GamesList />
     }

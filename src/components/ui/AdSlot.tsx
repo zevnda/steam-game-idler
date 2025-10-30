@@ -1,7 +1,7 @@
 import type { ReactElement } from 'react'
 
 import { cn, Spinner } from '@heroui/react'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 
 import { useNavigationContext } from '@/components/contexts/NavigationContext'
 import { useStateContext } from '@/components/contexts/StateContext'
@@ -98,15 +98,15 @@ export default function AdSlot(): ReactElement {
     [],
   )
 
-  const randomSlug = gameSlugs[Math.floor(Math.random() * gameSlugs.length)]
-  // const gameUrl = `http://localhost:3001/${randomSlug}`
-  const gameUrl = `https://steamgameidler.com/${randomSlug}`
+  // const randomSlug = gameSlugs[Math.floor(Math.random() * gameSlugs.length)]
+  // // const gameUrl = `http://localhost:3001/${randomSlug}`
+  // const gameUrl = `https://steamgameidler.com/${randomSlug}`
 
-  // const [gameUrl, setGameUrl] = useState(() => {
-  //   const randomSlug = gameSlugs[Math.floor(Math.random() * gameSlugs.length)]
-  //   // return `http://localhost:3001/${randomSlug}`
-  //   return `https://steamgameidler.com/${randomSlug}`
-  // })
+  const [gameUrl] = useState(() => {
+    const randomSlug = gameSlugs[Math.floor(Math.random() * gameSlugs.length)]
+    // return `http://localhost:3001/${randomSlug}`
+    return `https://steamgameidler.com/${randomSlug}`
+  })
 
   // useEffect(() => {
   //   const timer = setTimeout(

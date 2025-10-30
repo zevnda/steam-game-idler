@@ -5,7 +5,7 @@ import { Button, cn, Divider } from '@heroui/react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FiLogOut } from 'react-icons/fi'
-import { RiSearchLine } from 'react-icons/ri'
+import { RiChatSmile2Line, RiSearchLine } from 'react-icons/ri'
 import {
   TbAward,
   TbBuildingStore,
@@ -23,6 +23,7 @@ import { useNavigationContext } from '@/components/contexts/NavigationContext'
 import { useSearchContext } from '@/components/contexts/SearchContext'
 import { useStateContext } from '@/components/contexts/StateContext'
 import AdSlot from '@/components/ui/AdSlot'
+import Beta from '@/components/ui/Beta'
 import CustomModal from '@/components/ui/CustomModal'
 import HeaderTitle from '@/components/ui/header/HeaderTitle'
 import SearchBar from '@/components/ui/SearchBar'
@@ -96,12 +97,20 @@ export default function SideBar(): ReactElement {
       hasDivider: true,
     },
     {
+      id: 'chat',
+      page: 'chat',
+      title: t('chat.title'),
+      icon: RiChatSmile2Line,
+      isBeta: true,
+    },
+    {
       id: 'free-games',
       page: 'freeGames',
       title: t('freeGames.title'),
       icon: TbGift,
       shouldShow: showFreeGamesTab,
       customClassName: 'text-[#ffc700]',
+      hasDivider: true,
     },
   ]
 
@@ -111,6 +120,7 @@ export default function SideBar(): ReactElement {
     const Icon = item.icon
     const isCurrentPage = activePage === item.page
     const isFreeGames = item.id === 'free-games'
+    const isBeta = item.isBeta
 
     return (
       <div className='overflow-hidden' key={item.id}>
@@ -139,7 +149,10 @@ export default function SideBar(): ReactElement {
               </div>
               {!sidebarCollapsed && (
                 <div className={cn('transition-all duration-500 ease-in-out overflow-hidden whitespace-nowrap')}>
-                  <p className={cn('text-sm font-bold', isFreeGames ? 'text-[#ffc700]' : undefined)}>{item.title}</p>
+                  <p className={cn('text-sm font-bold', isFreeGames ? 'text-[#ffc700]' : undefined)}>
+                    {item.title}
+                    {isBeta && <Beta />}
+                  </p>
                 </div>
               )}
             </div>

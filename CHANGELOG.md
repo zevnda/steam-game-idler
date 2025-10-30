@@ -1,3 +1,13 @@
+<!-- 2.2.0 -->
+
+### Changes in v2.2.0
+
+- Added a chat feature within the app
+  - Access it via `chatbox` in the `sidebar`
+  - Not really sure how much use this will get, but figured it would be fun and useful at the same time
+  - Will allow new users of SGI to ask the community for help getting started, or for other users to submit issue or feature requests, share images, tips, etc..
+- Fixed an issue causing the ad components to rerender unintentionally
+
 <!-- 2.1.21 -->
 
 ### Changes in v2.1.21

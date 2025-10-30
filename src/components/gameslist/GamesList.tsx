@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react'
+import type { CSSProperties, ReactElement } from 'react'
 
 import { cn, Spinner } from '@heroui/react'
 import { useEffect, useRef, useState } from 'react'
@@ -63,7 +63,7 @@ export default function GamesList(): ReactElement {
   const totalHeight = rows.reduce<number>((sum, _, idx) => sum + getRowHeight(idx), 0)
   const listHeight = Math.min(totalHeight, windowSize.height - 168)
 
-  const Row = ({ index, style }: { index: number; style: React.CSSProperties }): ReactElement | null => {
+  const Row = ({ index, style }: { index: number; style: CSSProperties }): ReactElement | null => {
     const rowType = rows[index]
     if (rowType === 'recommended') {
       return (
