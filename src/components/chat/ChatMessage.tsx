@@ -34,6 +34,10 @@ interface ChatMessageProps {
   handleEditMessage: (msgId: string, newContent: string) => void
   handleDeleteMessage: (msgId: string, msgUserId: string) => void
   inputRef: React.RefObject<HTMLTextAreaElement>
+  isPinned?: boolean
+  onPin?: () => void
+  onUnpin?: () => void
+  isAdmin?: boolean
 }
 
 const ChatMessage: React.FC<ChatMessageProps> = ({
@@ -53,6 +57,10 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
   handleEditMessage,
   handleDeleteMessage,
   inputRef,
+  isPinned,
+  onPin,
+  onUnpin,
+  isAdmin,
 }) => {
   const avatarColor = getColorFromUsername(msg.username)
   const showAvatar = idx === 0 || msgs[idx - 1].user_id !== msg.user_id
@@ -127,17 +135,28 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
                 textareaRef={inputRef}
               />
             ) : (
-              <ChatMessageContent message={msg.message} userSummary={userSummary} />
+              <ChatMessageContent
+                message={msg.message}
+                userSummary={userSummary}
+                isPinned={isPinned}
+                onPin={onPin}
+                onUnpin={onUnpin}
+                isAdmin={isAdmin}
+              />
             )}
           </div>
         </div>
-        {(isOwnMessage || canEditOrDeleteAny) && (
+        {(isOwnMessage || canEditOrDeleteAny || isAdmin) && (
           <ChatMessageActions
             onEdit={() => {
               setEditingMessageId(msg.id)
               setEditedMessage(msg.message)
             }}
             onDelete={() => handleDeleteMessage(msg.id, msg.user_id)}
+            onPin={!isPinned ? onPin : undefined}
+            onUnpin={isPinned ? onUnpin : undefined}
+            isPinned={isPinned}
+            isAdmin={isAdmin}
           />
         )}
       </div>

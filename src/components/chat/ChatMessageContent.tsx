@@ -12,6 +12,10 @@ import remarkGfm from 'remark-gfm'
 interface ChatMessageContentProps {
   message: string
   userSummary: UserSummary
+  isAdmin?: boolean
+  isPinned?: boolean
+  onPin?: (message: string) => void
+  onUnpin?: () => void
 }
 
 function MarkdownLink(props: AnchorHTMLAttributes<HTMLAnchorElement>): ReactElement {
@@ -37,9 +41,15 @@ const preprocessMessage = (text: string, username?: string): string => {
 }
 
 const ChatMessageContent: React.FC<ChatMessageContentProps> = ({ message, userSummary }: ChatMessageContentProps) => (
-  <ReactMarkdown rehypePlugins={[rehypeRaw]} remarkPlugins={[remarkGfm, remarkBreaks]} components={{ a: MarkdownLink }}>
-    {preprocessMessage(message.trim(), userSummary?.personaName)}
-  </ReactMarkdown>
+  <div>
+    <ReactMarkdown
+      rehypePlugins={[rehypeRaw]}
+      remarkPlugins={[remarkGfm, remarkBreaks]}
+      components={{ a: MarkdownLink }}
+    >
+      {preprocessMessage(message.trim(), userSummary?.personaName)}
+    </ReactMarkdown>
+  </div>
 )
 
 export default ChatMessageContent
