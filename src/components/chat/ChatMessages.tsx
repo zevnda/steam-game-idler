@@ -27,6 +27,10 @@ interface ChatMessagesProps {
   userRoles: { [userId: string]: string }
   getRoleColor: (role: string) => string
   inputRef: RefObject<HTMLTextAreaElement>
+  pinnedMessageId?: string | null
+  handlePinMessage?: (msgId: string) => void
+  handleUnpinMessage?: () => void
+  isAdmin?: boolean
 }
 
 export default function ChatMessages({
@@ -45,11 +49,19 @@ export default function ChatMessages({
   editedMessage,
   setEditedMessage,
   inputRef,
+  pinnedMessageId,
+  handlePinMessage,
+  handleUnpinMessage,
+  isAdmin,
 }: ChatMessagesProps & {
   editingMessageId: string | null
   setEditingMessageId: (id: string | null) => void
   editedMessage: string
   setEditedMessage: (msg: string) => void
+  pinnedMessageId?: string | null
+  handlePinMessage?: (msgId: string) => void
+  handleUnpinMessage?: () => void
+  isAdmin?: boolean
 }): ReactElement {
   const editTextareaRef = React.useRef<HTMLTextAreaElement>(null)
 
@@ -72,8 +84,6 @@ export default function ChatMessages({
     }
   }, [inputRef, editingMessageId, setEditingMessageId])
 
-  // ...existing code...
-
   return (
     <div ref={messagesContainerRef} className='flex-1 overflow-y-auto flex flex-col overflow-x-hidden p-4 pb-1'>
       {loading ? (
@@ -95,6 +105,8 @@ export default function ChatMessages({
                 const currentUserRole = userRoles[userSummary?.steamId || ''] || 'user'
                 const canEditOrDeleteAny = currentUserRole === 'admin' || currentUserRole === 'mod'
 
+                // If this is the pinned message group, always set isPinned true
+                const isPinnedMessage = date === 'Pinned' || pinnedMessageId === msg.id
                 return (
                   <ChatMessage
                     key={msg.id}
@@ -114,6 +126,10 @@ export default function ChatMessages({
                     handleEditMessage={handleEditMessage}
                     handleDeleteMessage={handleDeleteMessage}
                     inputRef={inputRef}
+                    isPinned={isPinnedMessage}
+                    onPin={() => handlePinMessage && handlePinMessage(msg.id)}
+                    onUnpin={handleUnpinMessage}
+                    isAdmin={isAdmin}
                   />
                 )
               })}

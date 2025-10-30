@@ -37,6 +37,52 @@ export default function ChatBox(): ReactElement {
   const [hasMore, setHasMore] = useState(true)
   const [userRoles, setUserRoles] = useState<{ [steamId: string]: string }>({})
   const [pagination, setPagination] = useState({ limit: 50, offset: 0 })
+  const [pinnedMessageId, setPinnedMessageId] = useState<string | null>(null)
+
+  // Fetch pin from Supabase on mount and subscribe to changes
+  useEffect(() => {
+    const fetchPin = async (): Promise<void> => {
+      const { data, error } = await supabase.from('pins').select('message_id').maybeSingle()
+      if (!error && data?.message_id) setPinnedMessageId(data.message_id)
+      else setPinnedMessageId(null)
+    }
+    fetchPin()
+
+    // Subscribe to pin changes
+    const pinChannel = supabase
+      .channel('pins')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'pins' }, payload => {
+        if (payload.eventType === 'INSERT' || payload.eventType === 'UPDATE') {
+          setPinnedMessageId(payload.new.message_id)
+        } else if (payload.eventType === 'DELETE') {
+          setPinnedMessageId(null)
+        }
+      })
+      .subscribe()
+    return () => {
+      supabase.removeChannel(pinChannel)
+    }
+  }, [])
+
+  // Pin message handler (admins only)
+  const handlePinMessage = async (msgId: string): Promise<void> => {
+    // Remove any existing pin first
+    await supabase.from('pins').delete().not('message_id', 'is', null)
+    // Insert new pin
+    const { error } = await supabase.from('pins').insert({ message_id: msgId })
+    if (!error) setPinnedMessageId(msgId)
+    else addToast({ title: 'Failed to pin message', color: 'danger' })
+  }
+
+  // Unpin message handler
+  const handleUnpinMessage = async (): Promise<void> => {
+    // Optimistically clear pin state for instant UI update
+    setPinnedMessageId(null)
+    setPinnedMessage(null)
+    // Remove pin from Supabase
+    const { error } = await supabase.from('pins').delete().not('message_id', 'is', null)
+    if (error) addToast({ title: 'Failed to unpin message', color: 'danger' })
+  }
 
   const messagesEndRef = useRef<HTMLDivElement>(null as unknown as HTMLDivElement)
   const messagesContainerRef = useRef<HTMLDivElement>(null as unknown as HTMLDivElement)
@@ -328,6 +374,30 @@ export default function ChatBox(): ReactElement {
     return groups
   }
   const groupedMessages = groupMessagesByDate(messages)
+  const [pinnedMessage, setPinnedMessage] = useState<Message | null>(null)
+
+  // Whenever pinnedMessageId changes, ensure we have the message
+  useEffect(() => {
+    if (!pinnedMessageId) {
+      setPinnedMessage(null)
+      return
+    }
+    const localMsg = messages.find(m => m.id === pinnedMessageId)
+    if (localMsg) {
+      setPinnedMessage(localMsg)
+    } else {
+      // Fetch from Supabase if not in local messages
+      supabase
+        .from('messages')
+        .select('*')
+        .eq('id', pinnedMessageId)
+        .maybeSingle()
+        .then(({ data, error }) => {
+          if (!error && data) setPinnedMessage(data)
+          else setPinnedMessage(null)
+        })
+    }
+  }, [pinnedMessageId, messages])
 
   return (
     <div
@@ -341,6 +411,32 @@ export default function ChatBox(): ReactElement {
       }}
     >
       <ChatHeader motd={motd} />
+      {/* Pinned message at top */}
+      {pinnedMessage && (
+        <div className='mb-2 border-b border-border'>
+          <ChatMessages
+            loading={false}
+            groupedMessages={{ Pinned: [pinnedMessage] }}
+            userSummary={userSummary}
+            messagesEndRef={messagesEndRef}
+            messagesContainerRef={messagesContainerRef}
+            handleDeleteMessage={handleDeleteMessage}
+            handleEditMessage={handleEditMessage}
+            getColorFromUsername={getColorFromUsername}
+            userRoles={userRoles}
+            getRoleColor={getRoleColor}
+            editingMessageId={editingMessageId}
+            setEditingMessageId={setEditingMessageId}
+            editedMessage={editedMessage}
+            setEditedMessage={setEditedMessage}
+            inputRef={inputRef}
+            pinnedMessageId={pinnedMessageId}
+            handlePinMessage={handlePinMessage}
+            handleUnpinMessage={handleUnpinMessage}
+            isAdmin={userRoles[String(userSummary?.steamId)] === 'admin'}
+          />
+        </div>
+      )}
       <ChatMessages
         loading={pagination.offset === 0 ? loading : false}
         groupedMessages={groupedMessages}
@@ -357,6 +453,10 @@ export default function ChatBox(): ReactElement {
         editedMessage={editedMessage}
         setEditedMessage={setEditedMessage}
         inputRef={inputRef}
+        pinnedMessageId={pinnedMessageId}
+        handlePinMessage={handlePinMessage}
+        handleUnpinMessage={handleUnpinMessage}
+        isAdmin={userRoles[String(userSummary?.steamId)] === 'admin'}
       />
       <ChatInput
         inputRef={inputRef}
