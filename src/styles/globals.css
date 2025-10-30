@@ -130,7 +130,7 @@ svg {
 
 .chat-message {
   white-space: pre-line;
-  line-height: 1.3;
+  line-height: 2;
 }
 
 .chat-message br {
@@ -186,14 +186,14 @@ svg {
 
 .chat-message code:not(pre code) {
   background: #23272a;
-  padding: 0.3rem 0.35rem;
+  padding: 0.2rem 0.25rem;
   border-radius: 0.2rem;
   font-size: 0.95em;
 }
 
 .chat-message pre code {
   background: #23272a;
-  padding: 0.3rem 0.35rem;
+  padding: 0.2rem 0.25rem;
   border: 1px solid #444448;
   border-radius: 0.2rem;
   display: block;

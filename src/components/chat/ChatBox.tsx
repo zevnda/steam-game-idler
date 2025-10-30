@@ -11,6 +11,7 @@ import ChatInput from './ChatInput'
 import ChatMessages from './ChatMessages'
 import { createClient } from '@supabase/supabase-js'
 
+import ChatMaintenance from '@/components/chat/ChatMaintenance'
 import { useStateContext } from '@/components/contexts/StateContext'
 
 // Initialize Supabase client
@@ -30,6 +31,7 @@ export default function ChatBox(): ReactElement {
   const [shouldScrollToBottom, setShouldScrollToBottom] = useState(true)
   const { sidebarCollapsed, transitionDuration } = useStateContext()
 
+  const [chatMaintenanceMode, setChatMaintenanceMode] = useState<boolean>(false)
   const [motd, setMotd] = useState<string>('')
   const [messages, setMessages] = useState<Message[]>([])
   const [newMessage, setNewMessage] = useState('')
@@ -38,6 +40,64 @@ export default function ChatBox(): ReactElement {
   const [userRoles, setUserRoles] = useState<{ [steamId: string]: string }>({})
   const [pagination, setPagination] = useState({ limit: 50, offset: 0 })
   const [pinnedMessageId, setPinnedMessageId] = useState<string | null>(null)
+
+  // Chat maintenance mode state
+  useEffect(() => {
+    // Skip in development mode to allow testing
+    if (process.env.NODE_ENV === 'development') return
+
+    // Fetch initial value on mount
+    const fetchMaintenanceMode = async (): Promise<void> => {
+      const { data, error } = await supabase.from('chat_settings').select('maintenance').maybeSingle()
+      if (!error && typeof data?.maintenance === 'boolean') {
+        setChatMaintenanceMode(data.maintenance)
+      }
+    }
+    fetchMaintenanceMode()
+
+    // Subscribe to chat settings changes
+    const chatSettings = supabase
+      .channel('chat_settings')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'chat_settings' }, payload => {
+        if (payload.eventType === 'INSERT' || payload.eventType === 'UPDATE') {
+          setChatMaintenanceMode(payload.new?.maintenance ?? false)
+        } else if (payload.eventType === 'DELETE') {
+          setChatMaintenanceMode(false)
+        }
+      })
+      .subscribe()
+    return () => {
+      supabase.removeChannel(chatSettings)
+    }
+  }, [setChatMaintenanceMode])
+
+  // Subscribe to users table changes for roles
+  useEffect(() => {
+    // Fetch all user roles from users table
+    const fetchUserRoles = async (): Promise<void> => {
+      const { data, error } = await supabase.from('users').select('user_id,role')
+      if (!error && data) {
+        const roles: { [userId: string]: string } = {}
+        data.forEach((user: { user_id: string; role: string }) => {
+          roles[user.user_id] = user.role
+        })
+        setUserRoles(roles)
+      }
+    }
+    fetchUserRoles()
+
+    // Subscribe to users table changes
+    const usersChannel = supabase
+      .channel('users')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'users' }, fetchUserRoles)
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'users' }, fetchUserRoles)
+      .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'users' }, fetchUserRoles)
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(usersChannel)
+    }
+  }, [])
 
   // Fetch pin from Supabase on mount and subscribe to changes
   useEffect(() => {
@@ -266,14 +326,13 @@ export default function ChatBox(): ReactElement {
       // New message
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
         const newMsg = payload.new as Message
-        const isOwnMessage = newMsg.user_id === (userSummary?.steamId || '')
         const container = messagesContainerRef.current
-        if (container && !isOwnMessage) {
-          const threshold = 100
+        if (container) {
+          const threshold = 10
           const isAtBottom = container.scrollTop + container.clientHeight >= container.scrollHeight - threshold
           setMessages(current => [...current, newMsg])
           if (isAtBottom) {
-            setShouldScrollToBottom(true)
+            setTimeout(() => setShouldScrollToBottom(true), 0)
           }
         } else {
           setMessages(current => [...current, newMsg])
@@ -399,72 +458,94 @@ export default function ChatBox(): ReactElement {
     }
   }, [pinnedMessageId, messages])
 
-  return (
-    <div
-      className={cn(
-        'flex flex-col h-screen ease-in-out',
-        sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]',
-      )}
-      style={{
-        transitionDuration,
-        transitionProperty: 'width',
-      }}
-    >
-      <ChatHeader motd={motd} />
-      {/* Pinned message at top */}
-      {pinnedMessage && (
-        <div className='mb-2 border-b border-border'>
-          <ChatMessages
-            loading={false}
-            groupedMessages={{ Pinned: [pinnedMessage] }}
-            userSummary={userSummary}
-            messagesEndRef={messagesEndRef}
-            messagesContainerRef={messagesContainerRef}
-            handleDeleteMessage={handleDeleteMessage}
-            handleEditMessage={handleEditMessage}
-            getColorFromUsername={getColorFromUsername}
-            userRoles={userRoles}
-            getRoleColor={getRoleColor}
-            editingMessageId={editingMessageId}
-            setEditingMessageId={setEditingMessageId}
-            editedMessage={editedMessage}
-            setEditedMessage={setEditedMessage}
-            inputRef={inputRef}
-            pinnedMessageId={pinnedMessageId}
-            handlePinMessage={handlePinMessage}
-            handleUnpinMessage={handleUnpinMessage}
-            isAdmin={userRoles[String(userSummary?.steamId)] === 'admin'}
-          />
-        </div>
-      )}
-      <ChatMessages
-        loading={pagination.offset === 0 ? loading : false}
-        groupedMessages={groupedMessages}
-        userSummary={userSummary}
-        messagesEndRef={messagesEndRef}
-        messagesContainerRef={messagesContainerRef}
-        handleDeleteMessage={handleDeleteMessage}
-        handleEditMessage={handleEditMessage}
-        getColorFromUsername={getColorFromUsername}
-        userRoles={userRoles}
-        getRoleColor={getRoleColor}
-        editingMessageId={editingMessageId}
-        setEditingMessageId={setEditingMessageId}
-        editedMessage={editedMessage}
-        setEditedMessage={setEditedMessage}
-        inputRef={inputRef}
-        pinnedMessageId={pinnedMessageId}
-        handlePinMessage={handlePinMessage}
-        handleUnpinMessage={handleUnpinMessage}
-        isAdmin={userRoles[String(userSummary?.steamId)] === 'admin'}
-      />
-      <ChatInput
-        inputRef={inputRef}
-        newMessage={newMessage}
-        setNewMessage={setNewMessage}
-        handleSendMessage={handleSendMessage}
-        handleEditLastMessage={handleEditLastMessage}
-      />
-    </div>
-  )
+  if (chatMaintenanceMode) {
+    return (
+      <div
+        className={cn(
+          'flex flex-col h-screen ease-in-out',
+          sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]',
+        )}
+        style={{
+          transitionDuration,
+          transitionProperty: 'width',
+        }}
+      >
+        <ChatHeader motd={motd} />
+        <ChatMaintenance />
+      </div>
+    )
+  }
+
+  if (!chatMaintenanceMode) {
+    return (
+      <div
+        className={cn(
+          'flex flex-col h-screen ease-in-out',
+          sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]',
+        )}
+        style={{
+          transitionDuration,
+          transitionProperty: 'width',
+        }}
+      >
+        <ChatHeader motd={motd} />
+        {/* Pinned message at top */}
+        {pinnedMessage && (
+          <div className='mb-2 border-b border-border'>
+            <ChatMessages
+              loading={false}
+              groupedMessages={{ Pinned: [pinnedMessage] }}
+              userSummary={userSummary}
+              messagesEndRef={messagesEndRef}
+              messagesContainerRef={messagesContainerRef}
+              handleDeleteMessage={handleDeleteMessage}
+              handleEditMessage={handleEditMessage}
+              getColorFromUsername={getColorFromUsername}
+              userRoles={userRoles}
+              getRoleColor={getRoleColor}
+              editingMessageId={editingMessageId}
+              setEditingMessageId={setEditingMessageId}
+              editedMessage={editedMessage}
+              setEditedMessage={setEditedMessage}
+              inputRef={inputRef}
+              pinnedMessageId={pinnedMessageId}
+              handlePinMessage={handlePinMessage}
+              handleUnpinMessage={handleUnpinMessage}
+              isAdmin={userRoles[String(userSummary?.steamId)] === 'admin'}
+            />
+          </div>
+        )}
+        <ChatMessages
+          loading={pagination.offset === 0 ? loading : false}
+          groupedMessages={groupedMessages}
+          userSummary={userSummary}
+          messagesEndRef={messagesEndRef}
+          messagesContainerRef={messagesContainerRef}
+          handleDeleteMessage={handleDeleteMessage}
+          handleEditMessage={handleEditMessage}
+          getColorFromUsername={getColorFromUsername}
+          userRoles={userRoles}
+          getRoleColor={getRoleColor}
+          editingMessageId={editingMessageId}
+          setEditingMessageId={setEditingMessageId}
+          editedMessage={editedMessage}
+          setEditedMessage={setEditedMessage}
+          inputRef={inputRef}
+          pinnedMessageId={pinnedMessageId}
+          handlePinMessage={handlePinMessage}
+          handleUnpinMessage={handleUnpinMessage}
+          isAdmin={userRoles[String(userSummary?.steamId)] === 'admin'}
+        />
+        <ChatInput
+          inputRef={inputRef}
+          newMessage={newMessage}
+          setNewMessage={setNewMessage}
+          handleSendMessage={handleSendMessage}
+          handleEditLastMessage={handleEditLastMessage}
+        />
+      </div>
+    )
+  }
+
+  return <div />
 }

@@ -8,6 +8,8 @@ import ChatMessageActions from './ChatMessageActions'
 import ChatMessageContent from './ChatMessageContent'
 import ChatRoleBadge from './ChatRoleBadge'
 
+import ExtLink from '@/components/ui/ExtLink'
+
 export interface Message {
   id: string
   user_id: string
@@ -72,7 +74,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
       key={msg.id}
       className={cn(
         'group hover:bg-white/3 px-4 py-0 -mx-4 transition-colors duration-75 flex relative',
-        isLastFromUser && 'mb-4',
+        isLastFromUser && 'mb-3',
       )}
     >
       <div className='flex gap-4 flex-1'>
@@ -86,20 +88,25 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
         ) : (
           <div className='w-8' />
         )}
+
         <div className='flex-1 min-w-0'>
           {showAvatar && (
             <div className='flex items-baseline gap-2'>
-              <span
-                style={{
-                  color: getRoleColor(currentRole),
-                  fontWeight: userRoles[msg.user_id] ? 'bold' : 'normal',
-                }}
-                className='mr-1 text-xs'
-              >
-                {msg.username}
-                <ChatRoleBadge role={currentRole} />
-              </span>
+              <ExtLink href={`https://steamcommunity.com/profiles/${msg.user_id}`}>
+                <span
+                  style={{
+                    color: getRoleColor(currentRole),
+                    fontWeight: userRoles[msg.user_id] ? 'bold' : 'normal',
+                  }}
+                  className='mr-1 text-xs'
+                >
+                  {msg.username}
+                  <ChatRoleBadge role={currentRole} />
+                </span>
+              </ExtLink>
+
               {canEditOrDeleteAny && <span className='text-[10px] text-[#949ba4]'>{msg.user_id}</span>}
+
               <Tooltip
                 content={new Date(msg.created_at).toUTCString()}
                 className='text-xs'
@@ -116,12 +123,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
               </Tooltip>
             </div>
           )}
-          <div
-            className={cn(
-              'chat-message text-[#dbdee1] break-words text-xs w-fit',
-              showAvatar ? 'leading-[1.375rem]' : 'leading-[1.375rem]',
-            )}
-          >
+          <div className='chat-message text-[#dbdee1] break-words text-xs w-fit leading-[1.375rem]'>
             {editingMessageId === msg.id ? (
               <ChatEditControls
                 isEditing={true}
