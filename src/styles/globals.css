@@ -128,12 +128,9 @@ svg {
   width: auto;
 }
 
-.chat-message a {
-  color: #009fc2;
-}
-
-.chat-message a:hover {
-  color: #0090af;
+.chat-message {
+  white-space: pre-line;
+  line-height: 1.3;
 }
 
 .chat-message br {
@@ -159,22 +156,16 @@ svg {
 .chat-message h1 {
   font-size: 1.4rem;
   font-weight: 700;
-  margin-top: 0.4rem;
-  margin-bottom: 0.3rem;
 }
 
 .chat-message h2 {
   font-size: 1.2rem;
   font-weight: 700;
-  margin-top: 0.4rem;
-  margin-bottom: 0.3rem;
 }
 
 .chat-message h3 {
   font-size: 1rem;
   font-weight: 700;
-  margin-top: 0.4rem;
-  margin-bottom: 0.2rem;
 }
 
 .chat-message blockquote {

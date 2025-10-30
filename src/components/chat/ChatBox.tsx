@@ -151,9 +151,9 @@ export default function ChatBox(): ReactElement {
       case 'admin':
         return '#e91e63'
       case 'mod':
-        return '#43b581'
+        return '#1eb6e9ff'
       case 'early_supporter':
-        return '#a1d8f8ff'
+        return '#43b581'
       default:
         return '#dbdee1'
     }
