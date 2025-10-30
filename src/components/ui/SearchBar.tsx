@@ -1,4 +1,4 @@
-import type { ChangeEvent, ReactElement } from 'react'
+import type { ChangeEvent, KeyboardEvent, ReactElement } from 'react'
 
 import { cn, Input, Modal, ModalBody, ModalContent } from '@heroui/react'
 import { useCallback, useEffect, useRef, useState } from 'react'
@@ -103,7 +103,7 @@ export default function SearchBar({ isModalOpen = false, onModalClose }: SearchB
     }
   }
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>): void => {
     if (e.key === 'Enter') {
       const target = e.target as HTMLInputElement
       applySearchQuery(target.value)

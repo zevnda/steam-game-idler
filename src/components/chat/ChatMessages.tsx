@@ -1,10 +1,10 @@
 import type { UserSummary } from '@/types'
-import type { ReactElement } from 'react'
+import type { AnchorHTMLAttributes, MouseEvent, ReactElement, RefObject } from 'react'
 
 import { open } from '@tauri-apps/plugin-shell'
 
 import { Button, cn, Spinner, Textarea, Tooltip } from '@heroui/react'
-import React, { useState } from 'react'
+import React, { useEffect } from 'react'
 import Image from 'next/image'
 import { FaCrown, FaPencilAlt, FaTrashAlt } from 'react-icons/fa'
 import { FaEarlybirds, FaShield } from 'react-icons/fa6'
@@ -28,13 +28,14 @@ interface ChatMessagesProps {
   loading: boolean
   groupedMessages: { [key: string]: Message[] }
   userSummary: UserSummary
-  messagesEndRef: React.RefObject<HTMLDivElement>
-  messagesContainerRef: React.RefObject<HTMLDivElement>
+  messagesEndRef: RefObject<HTMLDivElement>
+  messagesContainerRef: RefObject<HTMLDivElement>
   handleDeleteMessage: (msgId: string, msgUserId: string) => void
   handleEditMessage: (msgId: string, newContent: string) => void
   getColorFromUsername: (name: string) => string
   userRoles: { [userId: string]: string }
   getRoleColor: (role: string) => string
+  inputRef: RefObject<HTMLTextAreaElement>
 }
 
 export default function ChatMessages({
@@ -48,12 +49,41 @@ export default function ChatMessages({
   getColorFromUsername,
   userRoles,
   getRoleColor,
-}: ChatMessagesProps): ReactElement {
-  const [editingMessageId, setEditingMessageId] = useState<string | null>(null)
-  const [editedMessage, setEditedMessage] = useState('')
+  editingMessageId,
+  setEditingMessageId,
+  editedMessage,
+  setEditedMessage,
+  inputRef,
+}: ChatMessagesProps & {
+  editingMessageId: string | null
+  setEditingMessageId: (id: string | null) => void
+  editedMessage: string
+  setEditedMessage: (msg: string) => void
+}): ReactElement {
+  const editTextareaRef = React.useRef<HTMLTextAreaElement>(null)
 
-  function MarkdownLink(props: React.AnchorHTMLAttributes<HTMLAnchorElement>): ReactElement {
-    const handleClick = (e: React.MouseEvent<HTMLAnchorElement>): void => {
+  useEffect(() => {
+    if (!editingMessageId) return
+    const handleEsc = (e: KeyboardEvent): void => {
+      if (e.key === 'Escape') {
+        setEditingMessageId(null)
+        inputRef.current?.focus()
+      }
+    }
+    window.addEventListener('keydown', handleEsc)
+    // Focus and move cursor to end when editing starts
+    if (editTextareaRef.current) {
+      const len = editTextareaRef.current.value.length
+      editTextareaRef.current.focus()
+      editTextareaRef.current.setSelectionRange(len, len)
+    }
+    return () => {
+      window.removeEventListener('keydown', handleEsc)
+    }
+  }, [inputRef, editingMessageId, setEditingMessageId])
+
+  function MarkdownLink(props: AnchorHTMLAttributes<HTMLAnchorElement>): ReactElement {
+    const handleClick = (e: MouseEvent<HTMLAnchorElement>): void => {
       e.preventDefault()
       open(props.href || '')
     }
@@ -64,14 +94,19 @@ export default function ChatMessages({
     )
   }
 
-  // Preprocess message to inject highlight span for @username mentions
-  const preprocessMentions = (text: string): string => {
+  // Preprocess message to inject highlight span for @username mentions and preserve all newlines
+  const preprocessMessage = (text: string): string => {
     const username = userSummary?.personaName
-    if (!username) return text
-
-    const regex = new RegExp(`(@${username})\\b`, 'gi')
-    // eslint-disable-next-line quotes
-    return text.replace(regex, `<span class='mention-highlight'>$1</span>`)
+    let processed = text
+    // Highlight mentions
+    if (username) {
+      const regex = new RegExp(`(@${username})\\b`, 'gi')
+      // eslint-disable-next-line quotes
+      processed = processed.replace(regex, `<span class='mention-highlight'>$1</span>`)
+    }
+    // Replace every newline with <br>
+    processed = processed.replace(/\n/g, '<br>')
+    return processed
   }
 
   return (
@@ -227,6 +262,7 @@ export default function ChatMessages({
                               className='flex flex-col gap-2'
                             >
                               <Textarea
+                                ref={editTextareaRef}
                                 value={editedMessage}
                                 className='min-w-[700px]'
                                 classNames={{
@@ -243,6 +279,17 @@ export default function ChatMessages({
                                 minRows={1}
                                 maxRows={15}
                                 onChange={e => setEditedMessage(e.target.value)}
+                                onKeyDown={e => {
+                                  if (e.key === 'Escape') {
+                                    e.preventDefault()
+                                    setEditingMessageId(null)
+                                  } else if (e.key === 'Enter' && !e.shiftKey) {
+                                    e.preventDefault()
+                                    handleEditMessage(msg.id, editedMessage)
+                                    setEditingMessageId(null)
+                                  }
+                                  // SHIFT+ENTER is default (new line)
+                                }}
                                 autoFocus
                               />
                               <div className='flex gap-2'>
@@ -270,7 +317,7 @@ export default function ChatMessages({
                                 // No need for text override, highlight is done in preprocess
                               }}
                             >
-                              {preprocessMentions(msg.message.trim().replace(/\n{2,}/g, '\n'))}
+                              {preprocessMessage(msg.message.trim())}
                             </ReactMarkdown>
                           )}
                         </div>

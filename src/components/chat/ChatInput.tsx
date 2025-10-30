@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react'
+import type { FormEvent, ReactElement, RefObject } from 'react'
 
 import { Button, cn, Textarea } from '@heroui/react'
 import React from 'react'
@@ -8,12 +8,20 @@ import { IoSend } from 'react-icons/io5'
 import ExtLink from '@/components/ui/ExtLink'
 
 interface ChatInputProps {
+  inputRef: RefObject<HTMLTextAreaElement>
   newMessage: string
   setNewMessage: (msg: string) => void
-  handleSendMessage: (e: React.FormEvent<HTMLFormElement>) => void
+  handleSendMessage: (e: FormEvent<HTMLFormElement>) => void
+  handleEditLastMessage: () => void
 }
 
-export default function ChatInput({ newMessage, setNewMessage, handleSendMessage }: ChatInputProps): ReactElement {
+export default function ChatInput({
+  inputRef,
+  newMessage,
+  setNewMessage,
+  handleSendMessage,
+  handleEditLastMessage,
+}: ChatInputProps): ReactElement {
   const { t } = useTranslation()
   return (
     <div className='p-2 pt-0'>
@@ -29,6 +37,7 @@ export default function ChatInput({ newMessage, setNewMessage, handleSendMessage
 
       <form onSubmit={handleSendMessage}>
         <Textarea
+          ref={inputRef}
           size='sm'
           placeholder={t('chat.inputPlaceholder')}
           className='w-full mb-0 pb-0 resize-y'
@@ -59,10 +68,14 @@ export default function ChatInput({ newMessage, setNewMessage, handleSendMessage
           value={newMessage}
           onChange={e => setNewMessage(e.target.value)}
           onKeyDown={e => {
-            if (e.key === 'Enter' && !e.shiftKey) {
+            if (e.key === 'ArrowUp' && !newMessage) {
               e.preventDefault()
-              handleSendMessage(undefined as unknown as React.FormEvent<HTMLFormElement>)
+              handleEditLastMessage()
+            } else if (e.key === 'Enter' && !e.shiftKey) {
+              e.preventDefault()
+              handleSendMessage(undefined as unknown as FormEvent<HTMLFormElement>)
             }
+            // SHIFT+ENTER is default (new line)
           }}
           autoFocus
         />

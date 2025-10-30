@@ -1,4 +1,4 @@
-import type { Dispatch, SetStateAction } from 'react'
+import type { ComponentType, Dispatch, SetStateAction } from 'react'
 
 export type CustomListType = 'cardFarmingList' | 'achievementUnlockerList' | 'autoIdleList' | 'favoritesList'
 export type ActivePageType =
@@ -26,7 +26,7 @@ export interface SidebarItem {
   id: string
   page: ActivePageType
   title: string
-  icon: React.ComponentType<{ fontSize?: number; className?: string }>
+  icon: ComponentType<{ fontSize?: number; className?: string }>
   shouldShow?: boolean
   isActive?: boolean
   customClassName?: string

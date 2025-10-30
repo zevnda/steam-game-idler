@@ -1,7 +1,7 @@
 'use client'
 
 import type { UserSummary } from '@/types'
-import type { ReactElement } from 'react'
+import type { FormEvent, ReactElement } from 'react'
 import type { Message } from './ChatMessages'
 
 import { addToast, cn } from '@heroui/react'
@@ -29,17 +29,21 @@ interface NewMessagePayload {
 export default function ChatBox(): ReactElement {
   const [shouldScrollToBottom, setShouldScrollToBottom] = useState(true)
   const { sidebarCollapsed, transitionDuration } = useStateContext()
+
   const [motd, setMotd] = useState<string>('')
   const [messages, setMessages] = useState<Message[]>([])
   const [newMessage, setNewMessage] = useState('')
   const [loading, setLoading] = useState(true)
   const [hasMore, setHasMore] = useState(true)
+  const [userRoles, setUserRoles] = useState<{ [steamId: string]: string }>({})
   const [pagination, setPagination] = useState({ limit: 50, offset: 0 })
+
   const messagesEndRef = useRef<HTMLDivElement>(null as unknown as HTMLDivElement)
+  const messagesContainerRef = useRef<HTMLDivElement>(null as unknown as HTMLDivElement)
+  const inputRef = useRef<HTMLTextAreaElement>(null as unknown as HTMLTextAreaElement)
+
   const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
   const username = userSummary?.personaName || 'Unknown'
-  const messagesContainerRef = useRef<HTMLDivElement>(null as unknown as HTMLDivElement)
-  const [userRoles, setUserRoles] = useState<{ [steamId: string]: string }>({})
 
   useEffect(() => {
     const container = messagesContainerRef.current
@@ -81,6 +85,7 @@ export default function ChatBox(): ReactElement {
       container.removeEventListener('scroll', handleScroll)
     }
   }, [hasMore, loading, pagination])
+
   // Edit message handler
   const handleEditMessage = async (msgId: string, newContent: string): Promise<void> => {
     // Find message
@@ -104,6 +109,26 @@ export default function ChatBox(): ReactElement {
       setMessages(current => current.map(m => (m.id === msgId ? { ...m, message: newContent } : m)))
     }
   }
+
+  // Handler to start editing last message from input
+  const [editingMessageId, setEditingMessageId] = useState<string | null>(null)
+  const [editedMessage, setEditedMessage] = useState('')
+  const handleEditLastMessage = (): void => {
+    const steamId = userSummary?.steamId ?? ''
+    // Find last message sent by this user
+    const lastMsg = [...messages].reverse().find(m => m.user_id === steamId)
+    if (lastMsg) {
+      setEditingMessageId(lastMsg.id)
+      setEditedMessage(lastMsg.message)
+    }
+  }
+
+  // Focus ChatInput Textarea after editing is cancelled
+  useEffect(() => {
+    if (editingMessageId === null) {
+      inputRef.current?.focus()
+    }
+  }, [editingMessageId])
 
   useEffect(() => {
     // Fetch all user roles from chat_users table
@@ -189,9 +214,10 @@ export default function ChatBox(): ReactElement {
 
     fetchMessages()
 
-    // Subscribe to new messages
+    // Subscribe to new, updated, and deleted messages
     const channel = supabase
       .channel('messages')
+      // New message
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
         const newMsg = payload.new as Message
         const isOwnMessage = newMsg.user_id === (userSummary?.steamId || '')
@@ -207,6 +233,18 @@ export default function ChatBox(): ReactElement {
           setMessages(current => [...current, newMsg])
         }
       })
+
+      // Edited message
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'messages' }, payload => {
+        const updatedMsg = payload.new as Message
+        setMessages(current => current.map(m => (m.id === updatedMsg.id ? { ...m, ...updatedMsg } : m)))
+      })
+
+      // Deleted message
+      .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'messages' }, payload => {
+        const deletedMsg = payload.old as Message
+        setMessages(current => current.filter(m => m.id !== deletedMsg.id))
+      })
       .subscribe()
 
     return () => {
@@ -214,7 +252,7 @@ export default function ChatBox(): ReactElement {
     }
   }, [userSummary?.steamId, pagination])
 
-  const handleSendMessage = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
+  const handleSendMessage = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     if (!newMessage.trim()) return
 
     const payload: NewMessagePayload = {
@@ -314,8 +352,19 @@ export default function ChatBox(): ReactElement {
         getColorFromUsername={getColorFromUsername}
         userRoles={userRoles}
         getRoleColor={getRoleColor}
+        editingMessageId={editingMessageId}
+        setEditingMessageId={setEditingMessageId}
+        editedMessage={editedMessage}
+        setEditedMessage={setEditedMessage}
+        inputRef={inputRef}
       />
-      <ChatInput newMessage={newMessage} setNewMessage={setNewMessage} handleSendMessage={handleSendMessage} />
+      <ChatInput
+        inputRef={inputRef}
+        newMessage={newMessage}
+        setNewMessage={setNewMessage}
+        handleSendMessage={handleSendMessage}
+        handleEditLastMessage={handleEditLastMessage}
+      />
     </div>
   )
 }
