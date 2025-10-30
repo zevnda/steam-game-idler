@@ -5,7 +5,7 @@ import { Button, cn, Divider } from '@heroui/react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FiLogOut } from 'react-icons/fi'
-import { RiSearchLine } from 'react-icons/ri'
+import { RiChatSmile2Line, RiSearchLine } from 'react-icons/ri'
 import {
   TbAward,
   TbBuildingStore,
@@ -96,12 +96,19 @@ export default function SideBar(): ReactElement {
       hasDivider: true,
     },
     {
+      id: 'chat',
+      page: 'chat',
+      title: t('chat.title'),
+      icon: RiChatSmile2Line,
+    },
+    {
       id: 'free-games',
       page: 'freeGames',
       title: t('freeGames.title'),
       icon: TbGift,
       shouldShow: showFreeGamesTab,
       customClassName: 'text-[#ffc700]',
+      hasDivider: true,
     },
   ]
 
