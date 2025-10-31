@@ -2,6 +2,8 @@ import type { ChangeEvent, ReactElement, RefObject } from 'react'
 
 import { Button, cn, Textarea } from '@heroui/react'
 import { useEffect, useState } from 'react'
+import emojiData from '@emoji-mart/data'
+import Picker from '@emoji-mart/react'
 import { createClient } from '@supabase/supabase-js'
 import Image from 'next/image'
 import { useTranslation } from 'react-i18next'
@@ -38,6 +40,7 @@ export default function ChatInput({
     Array<{ user_id: string; username: string; avatar_url?: string }>
   >([])
   const [mentionSelectedIdx, setMentionSelectedIdx] = useState<number>(0)
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false)
   const { t } = useTranslation()
   const { userSummary } = useUserContext()
 
@@ -124,6 +127,23 @@ export default function ChatInput({
         inputRef.current!.setSelectionRange((before + mentionText).length, (before + mentionText).length)
       }, 0)
     }
+  }
+
+  // Insert emoji at cursor position
+  const insertEmoji = (emoji: { native: string }): void => {
+    if (!inputRef.current) return
+    const textarea = inputRef.current
+    const start = textarea.selectionStart
+    const end = textarea.selectionEnd
+    const before = newMessage.slice(0, start)
+    const after = newMessage.slice(end)
+    const updated = before + emoji.native + after
+    setNewMessage(updated)
+    setTimeout(() => {
+      textarea.focus()
+      textarea.setSelectionRange(start + emoji.native.length, start + emoji.native.length)
+    }, 0)
+    setShowEmojiPicker(false)
   }
 
   // Prefill textarea with quoted message when replying, and clear after sending.
@@ -215,17 +235,44 @@ export default function ChatInput({
               input: ['!min-h-8 !text-content text-xs placeholder:text-xs placeholder:text-altwhite/50 pt-2'],
             }}
             endContent={
-              <Button
-                size='sm'
-                isIconOnly
-                isDisabled={!newMessage.trim()}
-                startContent={<IoSend size={16} />}
-                type='submit'
-                className={cn(
-                  'bg-transparent hover:bg-white/10 hover:text-dynamic/80 transition-colors',
-                  newMessage.trim() ? 'text-dynamic' : 'text-white/10',
+              <div className='relative flex justify-center items-center'>
+                {/* Emoji picker button */}
+                <Button
+                  isIconOnly
+                  size='sm'
+                  className='bg-transparent hover:bg-white/10 text-md'
+                  type='button'
+                  onPress={() => setShowEmojiPicker(v => !v)}
+                  aria-label='Insert emoji'
+                >
+                  😊
+                </Button>
+
+                {showEmojiPicker && (
+                  <div className='absolute -right-2 bottom-9 mb-2 z-50'>
+                    <Picker
+                      data={emojiData}
+                      onEmojiSelect={insertEmoji}
+                      theme='dark'
+                      previewPosition='none'
+                      perLine={8}
+                      navPosition='top'
+                    />
+                  </div>
                 )}
-              />
+
+                <Button
+                  size='sm'
+                  isIconOnly
+                  isDisabled={!newMessage.trim()}
+                  startContent={<IoSend size={16} />}
+                  type='submit'
+                  className={cn(
+                    'bg-transparent hover:bg-white/10 hover:text-dynamic/80 transition-colors',
+                    newMessage.trim() ? 'text-dynamic' : 'text-white/10',
+                  )}
+                />
+              </div>
             }
             minRows={1}
             maxRows={15}
