@@ -50,7 +50,7 @@ export interface GeneralSettings {
   disableTooltips: boolean
   runAtStartup: boolean
   startMinimized: boolean
-  chatSounds: boolean
+  chatSounds: number[]
 }
 
 export interface TradingCardsSettings {

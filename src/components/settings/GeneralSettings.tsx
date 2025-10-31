@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react'
 
-import { Button, cn, Divider, Input, Spinner } from '@heroui/react'
+import { Button, cn, Divider, Input, Slider, Spinner } from '@heroui/react'
 import Image from 'next/image'
 import { Trans, useTranslation } from 'react-i18next'
 import { TbChevronRight, TbEraser, TbRefresh, TbUpload } from 'react-icons/tb'
@@ -17,12 +17,12 @@ import {
   handleCredentialsSave,
   useCardSettings,
 } from '@/hooks/settings/useCardSettings'
-import { handleClear, handleKeySave, useGeneralSettings } from '@/hooks/settings/useGeneralSettings'
+import { handleClear, handleKeySave, handleSliderChange, useGeneralSettings } from '@/hooks/settings/useGeneralSettings'
 
 export default function GeneralSettings(): ReactElement {
   const { t } = useTranslation()
   const { userSummary, userSettings, setUserSettings } = useUserContext()
-  const { keyValue, setKeyValue, hasKey, setHasKey } = useGeneralSettings()
+  const { keyValue, setKeyValue, hasKey, setHasKey, sliderLabel, setSliderLabel } = useGeneralSettings()
   const cardSettings = useCardSettings()
 
   return (
@@ -130,9 +130,33 @@ export default function GeneralSettings(): ReactElement {
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>{t('settings.general.chatSounds')}</p>
-            <p className='text-xs text-altwhite'>{t('settings.general.chatSounds.description')}</p>
+            <p className='text-xs text-altwhite'>{sliderLabel}</p>
           </div>
-          <SettingsSwitch type='general' name='chatSounds' />
+          <Slider
+            size='md'
+            step={0.1}
+            minValue={0}
+            maxValue={2}
+            defaultValue={userSettings?.general?.chatSounds || 1}
+            hideValue
+            className='mt-2 w-[350px]'
+            classNames={{
+              track: 'bg-input',
+              filler: 'bg-dynamic',
+              thumb: 'bg-dynamic',
+            }}
+            onChangeEnd={e => handleSliderChange(e, userSummary, setUserSettings)}
+            onChange={e => {
+              const getPercent = (val: number): number => Math.round((val / 2) * 100)
+              if (Array.isArray(e)) {
+                setSliderLabel(
+                  t('settings.general.chatSounds.description', {
+                    value: `${getPercent(e[0])}%`,
+                  }),
+                )
+              }
+            }}
+          />
         </div>
 
         <Divider className='bg-border/70 my-4' />

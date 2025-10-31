@@ -205,8 +205,6 @@ export async function playMentionBeep(): Promise<void> {
 
     const { chatSounds } = settings?.general || {}
 
-    if (!chatSounds) return
-
     const AudioCtx =
       window.AudioContext || (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext
     const ctx = new AudioCtx()
@@ -214,7 +212,7 @@ export async function playMentionBeep(): Promise<void> {
     const gain = ctx.createGain()
     oscillator.type = 'sine'
     oscillator.frequency.value = 1500
-    gain.gain.setValueAtTime(0.1, ctx.currentTime)
+    gain.gain.setValueAtTime(chatSounds[0], ctx.currentTime)
     gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.2)
     oscillator.connect(gain)
     gain.connect(ctx.destination)

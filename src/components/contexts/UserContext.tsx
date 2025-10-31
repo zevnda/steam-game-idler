@@ -38,7 +38,7 @@ export const UserProvider = ({ children }: { children: ReactNode }): ReactElemen
       disableTooltips: false,
       runAtStartup: false,
       startMinimized: false,
-      chatSounds: true,
+      chatSounds: [0.2],
     },
     cardFarming: {
       listGames: true,

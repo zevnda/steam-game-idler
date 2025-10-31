@@ -1,10 +1,11 @@
-import type { InvokeSettings, InvokeValidateKey, UserSettings } from '@/types'
+import type { InvokeSettings, InvokeValidateKey, UserSettings, UserSummary } from '@/types'
 import type { Dispatch, SetStateAction } from 'react'
 
 import { invoke } from '@tauri-apps/api/core'
 import { disable, enable, isEnabled } from '@tauri-apps/plugin-autostart'
 
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 import { useUserContext } from '@/components/contexts/UserContext'
 import { encrypt, logEvent } from '@/utils/tasks'
@@ -17,13 +18,28 @@ interface GeneralSettingsHook {
   setKeyValue: Dispatch<SetStateAction<string>>
   hasKey: boolean
   setHasKey: Dispatch<SetStateAction<boolean>>
+  sliderLabel: string
+  setSliderLabel: Dispatch<SetStateAction<string>>
 }
 
 export const useGeneralSettings = (): GeneralSettingsHook => {
+  const { t } = useTranslation()
   const { userSettings } = useUserContext()
   const [startupState, setStartupState] = useState<boolean | null>(null)
   const [keyValue, setKeyValue] = useState('')
   const [hasKey, setHasKey] = useState(false)
+  const [sliderLabel, setSliderLabel] = useState('')
+
+  // Sync local settings with global settings when they change
+  useEffect(() => {
+    const value = userSettings.general?.chatSounds
+    const getPercent = (val: number): number => Math.round((val / 2) * 100)
+    setSliderLabel(
+      t('settings.general.chatSounds.description', {
+        value: `${getPercent(value[0])}%`,
+      }),
+    )
+  }, [userSettings.general?.chatSounds, setSliderLabel, t])
 
   useEffect(() => {
     // Check the current state of auto start
@@ -50,6 +66,8 @@ export const useGeneralSettings = (): GeneralSettingsHook => {
     setKeyValue,
     hasKey,
     setHasKey,
+    sliderLabel,
+    setSliderLabel,
   }
 }
 
@@ -131,5 +149,26 @@ export const handleClear = async (
     showDangerToast(t('common.error'))
     console.error('Error in (handleClear):', error)
     logEvent(`[Error] in (handleClear): ${error}`)
+  }
+}
+
+// Handle changes to the slider in the settings
+export const handleSliderChange = async (
+  newInterval: [number, number] | number[] | number,
+  userSummary: UserSummary,
+  setUserSettings: Dispatch<SetStateAction<UserSettings>>,
+): Promise<void> => {
+  try {
+    const response = await invoke<InvokeSettings>('update_user_settings', {
+      steamId: userSummary?.steamId,
+      key: 'general.chatSounds',
+      value: newInterval,
+    })
+    setUserSettings(response.settings)
+    logEvent(`[Settings - General] Changed 'chatSounds' to '${String(newInterval)}'`)
+  } catch (error) {
+    showDangerToast(t('common.error'))
+    console.error('Error in (handleSliderChange - General):', error)
+    logEvent(`[Error] in (handleSliderChange - General): ${error}`)
   }
 }

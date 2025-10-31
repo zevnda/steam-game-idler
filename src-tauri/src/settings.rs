@@ -17,7 +17,7 @@ fn get_default_settings() -> Value {
             "disableTooltips": false,
             "runAtStartup": false,
             "startMinimized": false,
-            "chatSounds": true,
+            "chatSounds": [0.2],
         },
         "cardFarming": {
             "listGames": true,
