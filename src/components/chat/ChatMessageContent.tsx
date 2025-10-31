@@ -51,12 +51,11 @@ const preprocessMessage = (text: string, validMentions: string[]): string => {
   let processed = text
   if (validMentions && validMentions.length > 0) {
     validMentions.forEach(username => {
-      // Updated regex: allow any username, including hyphens and numbers
       // Escape username for regex safety
       const escapedUsername = username.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-      const regex = new RegExp(`(@${escapedUsername})(?![\\w-])`, 'gi')
-      // eslint-disable-next-line quotes
-      processed = processed.replace(regex, `<span class='mention-highlight'>$1</span>`)
+      // Match @username with word boundaries before and after
+      const regex = new RegExp(`@${escapedUsername}\\b`, 'g')
+      processed = processed.replace(regex, `<span class='mention-highlight'>@${username}</span>`)
     })
   }
   return processed
@@ -162,16 +161,29 @@ export default function ChatMessageContent({ message, userSummary }: ChatMessage
 
   // Extract all @username patterns from the message and check Supabase
   useEffect(() => {
-    // Updated regex: match @ followed by any sequence of non-whitespace, non-punctuation characters
-    const mentionRegex = /@([^\s.,!?;:]+)/g
-    const found = Array.from(message.matchAll(mentionRegex)).map(m => m[1])
-    if (found.length === 0) {
+    // Split message into words and try to match all possible @mentions
+    const words = message.split(/\s+/)
+    const candidates: string[] = []
+    for (let i = 0; i < words.length; i++) {
+      if (words[i].startsWith('@')) {
+        // Try to build multi-word usernames up to 5 words (adjust as needed)
+        for (let len = 1; len <= 5 && i + len - 1 < words.length; len++) {
+          const candidate = words
+            .slice(i, i + len)
+            .join(' ')
+            .replace(/^@/, '')
+            .trim()
+          if (candidate.length > 0) candidates.push(candidate)
+        }
+      }
+    }
+    if (candidates.length === 0) {
       setValidMentions([])
       return
     }
     // Query Supabase for these usernames
     const fetchMentions = async (): Promise<void> => {
-      const { data, error } = await supabase.from('users').select('username').in('username', found)
+      const { data, error } = await supabase.from('users').select('username').in('username', candidates)
       if (!error && Array.isArray(data)) {
         setValidMentions(data.map(u => u.username))
       } else {
