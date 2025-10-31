@@ -7,7 +7,9 @@ import Image from 'next/image'
 import { useTranslation } from 'react-i18next'
 import { IoSend } from 'react-icons/io5'
 
+import { useUserContext } from '@/components/contexts/UserContext'
 import ExtLink from '@/components/ui/ExtLink'
+import { useTypingUsers } from '@/hooks/chat/useTypingUsers'
 
 const supabase = createClient(
   'https://inbxfhxkrhwiybnephlq.supabase.co',
@@ -37,6 +39,13 @@ export default function ChatInput({
   >([])
   const [mentionSelectedIdx, setMentionSelectedIdx] = useState<number>(0)
   const { t } = useTranslation()
+  const { userSummary } = useUserContext()
+
+  const currentUser = {
+    user_id: userSummary?.steamId ?? '',
+    username: userSummary?.personaName ?? '',
+  }
+  const { typingUsers, broadcastTyping, broadcastStopTyping } = useTypingUsers(currentUser)
 
   // Fetch matching users from Supabase when mentionQuery changes
   useEffect(() => {
@@ -95,6 +104,8 @@ export default function ChatInput({
       setMentionQuery('')
       setMentionStart(null)
     }
+
+    broadcastTyping()
   }
 
   const handleMentionSelect = (userIdx: number): void => {
@@ -139,22 +150,47 @@ export default function ChatInput({
     }
   }, [replyToMessage, inputRef])
 
+  // Broadcast stop_typing on submit
+  const handleSend = (): void => {
+    broadcastStopTyping()
+  }
+
   return (
     <div className='p-2 pt-0'>
-      <p className='text-[10px] py-1'>
-        GitHub Flavored Markdown is supported.{' '}
-        <ExtLink
-          className='text-dynamic hover:text-dynamic-hover duration-150'
-          href='https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax'
-        >
-          Learn more
-        </ExtLink>
-      </p>
+      <div className='flex justify-between items-end w-full'>
+        {/* Typing indicator */}
+        {typingUsers.filter(u => u.user_id !== currentUser.user_id).length > 0 ? (
+          <p className='text-[10px] py-1'>
+            {typingUsers
+              .filter(u => u.user_id !== currentUser.user_id)
+              .map(u => u.username)
+              .join(', ')}
+            <span className='font-thin'>
+              {typingUsers.filter(u => u.user_id !== currentUser.user_id).length === 1
+                ? ' is typing...'
+                : ' are typing'}
+            </span>
+          </p>
+        ) : (
+          <span />
+        )}
+
+        <p className='text-[10px] py-1'>
+          GitHub Flavored Markdown is supported.{' '}
+          <ExtLink
+            className='text-dynamic hover:text-dynamic-hover duration-150'
+            href='https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax'
+          >
+            Learn more
+          </ExtLink>
+        </p>
+      </div>
 
       <form
         onSubmit={e => {
           e.preventDefault()
           if (newMessage.trim()) {
+            handleSend()
             onSendMessage(newMessage)
             setNewMessage('')
             setMentionQuery('')
@@ -226,6 +262,7 @@ export default function ChatInput({
               } else if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault()
                 if (newMessage.trim()) {
+                  handleSend()
                   onSendMessage(newMessage)
                   setNewMessage('')
                   setMentionQuery('')
