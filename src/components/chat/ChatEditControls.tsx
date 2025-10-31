@@ -1,13 +1,13 @@
 import type { ReactElement, RefObject } from 'react'
 
 import { cn, Textarea } from '@heroui/react'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 interface ChatEditControlsProps {
   isEditing: boolean
   editedMessage: string
   setEditedMessage: (msg: string) => void
-  onSave: () => void
+  onSave: (msg: string) => void // <-- change signature
   onCancel: () => void
   textareaRef: RefObject<HTMLTextAreaElement>
 }
@@ -23,20 +23,24 @@ export default function ChatEditControls({
   // Local ref for the actual textarea DOM node
   const innerTextareaRef = useRef<HTMLTextAreaElement | null>(null)
 
+  // Local state for textarea value to avoid laggy typing
+  const [localEditedMessage, setLocalEditedMessage] = useState(editedMessage)
+
+  // Sync local state when editedMessage prop changes
+  useEffect(() => {
+    setLocalEditedMessage(editedMessage)
+  }, [editedMessage])
+
   // Callback ref to get the actual textarea element
   const setTextareaNode = (node: HTMLTextAreaElement | null): void => {
     innerTextareaRef.current = node
-    if (isEditing && node) {
-      const len = node.value.length
-      node.focus()
-      node.setSelectionRange(len, len)
-    }
     // Also update the parent ref if provided
     if (textareaRef && typeof textareaRef !== 'function') {
       textareaRef.current = node as HTMLTextAreaElement
     }
   }
 
+  // Only set cursor position when editing starts (not on every change)
   useEffect(() => {
     if (isEditing && innerTextareaRef.current) {
       const len = innerTextareaRef.current.value.length
@@ -49,13 +53,13 @@ export default function ChatEditControls({
     <form
       onSubmit={e => {
         e.preventDefault()
-        onSave()
+        onSave(localEditedMessage)
       }}
       className='flex flex-col gap-2'
     >
       <Textarea
         ref={setTextareaNode}
-        value={editedMessage}
+        value={localEditedMessage}
         className='min-w-[700px]'
         classNames={{
           inputWrapper: cn(
@@ -68,14 +72,16 @@ export default function ChatEditControls({
         }}
         minRows={1}
         maxRows={15}
-        onChange={e => setEditedMessage(e.target.value)}
+        onChange={e => setLocalEditedMessage(e.target.value)}
+        onBlur={() => setEditedMessage(localEditedMessage)}
         onKeyDown={e => {
           if (e.key === 'Escape') {
             e.preventDefault()
+            setLocalEditedMessage(editedMessage)
             onCancel()
           } else if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault()
-            onSave()
+            onSave(localEditedMessage) // <-- pass value directly
           }
         }}
         autoFocus
@@ -87,7 +93,10 @@ export default function ChatEditControls({
         <button
           type='button'
           className='text-dynamic hover:text-dynamic-hover rounded text-[10px] cursor-pointer'
-          onClick={onCancel}
+          onClick={() => {
+            setLocalEditedMessage(editedMessage)
+            onCancel()
+          }}
         >
           Cancel
         </button>

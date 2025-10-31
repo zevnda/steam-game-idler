@@ -1,7 +1,7 @@
 import type { ReactElement } from 'react'
 
 import { cn, Spinner } from '@heroui/react'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { useNavigationContext } from '@/components/contexts/NavigationContext'
 import { useStateContext } from '@/components/contexts/StateContext'
@@ -9,7 +9,7 @@ import { useStateContext } from '@/components/contexts/StateContext'
 export default function AdSlot(): ReactElement {
   const { sidebarCollapsed } = useStateContext()
   const { activePage } = useNavigationContext()
-  // const [reloadKey, setReloadKey] = useState(0)
+  const [reloadKey, setReloadKey] = useState(0)
 
   const gameSlugs = useMemo(
     () => [
@@ -102,25 +102,25 @@ export default function AdSlot(): ReactElement {
   // // const gameUrl = `http://localhost:3001/${randomSlug}`
   // const gameUrl = `https://steamgameidler.com/${randomSlug}`
 
-  const [gameUrl] = useState(() => {
+  const [gameUrl, setGameUrl] = useState(() => {
     const randomSlug = gameSlugs[Math.floor(Math.random() * gameSlugs.length)]
     // return `http://localhost:3001/${randomSlug}`
     return `https://steamgameidler.com/${randomSlug}`
   })
 
-  // useEffect(() => {
-  //   const timer = setTimeout(
-  //     () => {
-  //       const randomSlug = gameSlugs[Math.floor(Math.random() * gameSlugs.length)]
-  //       // setGameUrl(`http://localhost:3001/${randomSlug}`)
-  //       setGameUrl(`https://steamgameidler.com/${randomSlug}`)
-  //       setReloadKey(key => key + 1)
-  //     },
-  //     30 * 60 * 1000,
-  //   )
+  useEffect(() => {
+    const timer = setTimeout(
+      () => {
+        const randomSlug = gameSlugs[Math.floor(Math.random() * gameSlugs.length)]
+        // setGameUrl(`http://localhost:3001/${randomSlug}`)
+        setGameUrl(`https://steamgameidler.com/${randomSlug}`)
+        setReloadKey(key => key + 1)
+      },
+      30 * 60 * 1000,
+    )
 
-  //   return () => clearTimeout(timer)
-  // }, [gameSlugs, reloadKey])
+    return () => clearTimeout(timer)
+  }, [gameSlugs, reloadKey])
 
   return (
     <div

@@ -1,3 +1,23 @@
+<!-- 2.2.2 -->
+
+### Changes in v2.2.2
+
+- Multiple improvements, new features, and fixes for the chat feature
+  - Added a `chat notification volume` slider to `settings > general`
+    - Allows users to select a volume for chat notifications
+    - Setting the slider to 0% will mute notification sounds
+  - Added support for uploading and pasting images into the chat
+  - Added a typing indicator
+  - Added an emoji picker
+  - Added an online user count to the chat header
+  - Fixed an issue preventing users from replying to messages other than their own
+  - Fixed an issue causing "lag" while typing in the edit message input
+  - Fixed an issue where the cursor would be sent to the end of the edit message input while typing
+  - Fixed an issue where mentions weren't rendering for some usernames
+  - When editing a message, clearing the input and saving will delete the message
+  - Improved the image lightbox when clicking on images sent in the chat
+  - Messages that mention the user are now highlighted
+
 <!-- 2.2.1 -->
 
 ### Changes in v2.2.1

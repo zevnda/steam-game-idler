@@ -11,10 +11,11 @@ export function useUserRoles(): { userRoles: { [steamId: string]: string } } {
 
   useEffect(() => {
     const fetchUserRoles = async (): Promise<void> => {
-      const { data, error } = await supabase.from('users').select('user_id,role')
+      const { data, error } = await supabase.from('users').select('user_id,role,is_banned')
       if (!error && data) {
         const roles: { [userId: string]: string } = {}
-        data.forEach((user: { user_id: string; role: string }) => {
+        // Optionally, you can also track banned status here if needed
+        data.forEach((user: { user_id: string; role: string; is_banned?: boolean }) => {
           roles[user.user_id] = user.role
         })
         setUserRoles(roles)

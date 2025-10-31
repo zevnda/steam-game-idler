@@ -7,6 +7,7 @@ import ChatEditControls from './ChatEditControls'
 import ChatMessageActions from './ChatMessageActions'
 import ChatMessageContent from './ChatMessageContent'
 import ChatRoleBadge from './ChatRoleBadge'
+import { createClient } from '@supabase/supabase-js'
 
 import ExtLink from '@/components/ui/ExtLink'
 
@@ -42,6 +43,11 @@ export interface Message {
   created_at: string
   avatar_url?: string
 }
+
+const supabase = createClient(
+  'https://inbxfhxkrhwiybnephlq.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImluYnhmaHhrcmh3aXlibmVwaGxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3Njc5NjgsImV4cCI6MjA3NzM0Mzk2OH0.xUbDMdMUk7S2FgRZu8itWr4WsIV41TX-sNgilXiZg_Y',
+)
 
 export default function ChatMessage({
   msg,
@@ -86,15 +92,32 @@ export default function ChatMessage({
   const isLastFromUser =
     idx === msgs.length - 1 ||
     msgs[idx + 1]?.user_id !== msg.user_id ||
-    (msgs[idx + 1] && new Date(msgs[idx + 1].created_at).getTime() - new Date(msg.created_at).getTime() > 60000)
+    (msgs[idx + 1] && new Date(msgs[idx + 1].created_at).getTime() - new Date(msg.created_at).getTime() > 3 * 60 * 1000)
   const currentRole = userRoles[msg.user_id] || 'user'
+
+  // Ban user handler
+  const handleBanUser = async (): Promise<void> => {
+    await supabase.from('users').update({ is_banned: true }).eq('user_id', msg.user_id)
+    // Optionally, show a toast or feedback here
+  }
+
+  // Highlight if message mentions us (username or steamId)
+  const mentionRegex = userSummary
+    ? new RegExp(
+        `@(${userSummary.personaName.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')}|${userSummary.steamId})\\b`,
+        'i',
+      )
+    : null
+  const isMentioned = mentionRegex ? mentionRegex.test(msg.message) : false
 
   return (
     <div
       key={msg.id}
+      data-message-id={msg.id}
       className={cn(
-        'group hover:bg-white/3 px-4 py-0 -mx-4 transition-colors duration-75 flex relative',
+        'group px-4 py-0 -mx-4 transition-colors duration-75 flex relative',
         isLastFromUser && 'mb-3',
+        isMentioned ? 'bg-blue-900/30 border-l-2 border-blue-400 hover:bg-blue-900/40' : 'hover:bg-white/3',
       )}
     >
       <div className='flex gap-4 flex-1'>
@@ -149,8 +172,8 @@ export default function ChatMessage({
                 isEditing={true}
                 editedMessage={editedMessage}
                 setEditedMessage={setEditedMessage}
-                onSave={() => {
-                  handleEditMessage(msg.id, editedMessage)
+                onSave={newContent => {
+                  handleEditMessage(msg.id, newContent)
                   setEditingMessageId(null)
                 }}
                 onCancel={() => setEditingMessageId(null)}
@@ -168,20 +191,25 @@ export default function ChatMessage({
             )}
           </div>
         </div>
-        {(isOwnMessage || canEditOrDeleteAny || isAdmin) && (
-          <ChatMessageActions
-            onEdit={() => {
-              setEditingMessageId(msg.id)
-              setEditedMessage(msg.message)
-            }}
-            onDelete={() => handleDeleteMessage(msg.id, msg.user_id)}
-            onPin={!isPinned ? onPin : undefined}
-            onUnpin={isPinned ? onUnpin : undefined}
-            isPinned={isPinned}
-            isAdmin={isAdmin}
-            onReply={onReply}
-          />
-        )}
+        <ChatMessageActions
+          onEdit={
+            isOwnMessage || canEditOrDeleteAny || isAdmin
+              ? () => {
+                  setEditingMessageId(msg.id)
+                  setEditedMessage(msg.message)
+                }
+              : undefined
+          }
+          onDelete={
+            isOwnMessage || canEditOrDeleteAny || isAdmin ? () => handleDeleteMessage(msg.id, msg.user_id) : undefined
+          }
+          onPin={!isPinned ? onPin : undefined}
+          onUnpin={isPinned ? onUnpin : undefined}
+          isPinned={isPinned}
+          isAdmin={isAdmin}
+          onReply={onReply}
+          onBan={isAdmin ? handleBanUser : undefined}
+        />
       </div>
     </div>
   )

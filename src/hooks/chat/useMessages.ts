@@ -19,7 +19,6 @@ export interface ChatMessageType {
   message: string
   created_at: string
   avatar_url?: string
-  // Add other fields if needed
 }
 
 interface UseMessagesParams {
@@ -59,6 +58,7 @@ export function useMessages({
   handleEditLastMessage: () => void
   groupMessagesByDate: (msgs: ChatMessageType[]) => { [key: string]: ChatMessageType[] }
   scrollToBottom: () => void
+  isBanned: boolean
 } {
   const [shouldScrollToBottom, setShouldScrollToBottom] = useState(true)
   const [messages, setMessages] = useState<ChatMessageType[]>([])
@@ -67,6 +67,33 @@ export function useMessages({
   const [pagination, setPagination] = useState({ limit: 25, offset: 0 })
   const [editingMessageId, setEditingMessageId] = useState<string | null>(null)
   const [editedMessage, setEditedMessage] = useState('')
+  const [isBanned, setIsBanned] = useState(false)
+
+  useEffect(() => {
+    const fetchBannedStatus = async (): Promise<void> => {
+      if (!userSummary?.steamId) return
+      const { data, error } = await supabase
+        .from('users')
+        .select('is_banned')
+        .eq('user_id', userSummary.steamId)
+        .single()
+      if (!error && data?.is_banned === true) setIsBanned(true)
+      else setIsBanned(false)
+    }
+    fetchBannedStatus()
+    // Listen for changes to banned status
+    const channel = supabase
+      .channel('users_ban_status')
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'users' }, payload => {
+        if (payload.new?.user_id === userSummary?.steamId) {
+          setIsBanned(payload.new?.is_banned === true)
+        }
+      })
+      .subscribe()
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [userSummary?.steamId])
 
   useEffect(() => {
     const container = messagesContainerRef.current
@@ -74,7 +101,13 @@ export function useMessages({
 
     const handleScroll = async (): Promise<void> => {
       if (container.scrollTop === 0 && hasMore && !loading) {
-        const prevScrollHeight = container.scrollHeight
+        // Find the oldest message of the current batch before loading more
+        const messageElements = container.querySelectorAll('[data-message-id]')
+        let oldestMessageId: string | null = null
+        if (messageElements.length > 0) {
+          oldestMessageId = messageElements[0].getAttribute('data-message-id')
+        }
+
         const newOffset = pagination.offset + pagination.limit
         const { data, error } = await supabase
           .from('messages')
@@ -91,8 +124,15 @@ export function useMessages({
           setPagination(prev => ({ ...prev, offset: newOffset }))
           setHasMore(data.length === pagination.limit)
           setTimeout(() => {
-            const newScrollHeight = container.scrollHeight
-            container.scrollTop = newScrollHeight - prevScrollHeight
+            // After new messages are loaded, scroll to the previous oldest message
+            if (oldestMessageId) {
+              const oldestMsgElem = container.querySelector(`[data-message-id="${oldestMessageId}"]`)
+              if (oldestMsgElem && oldestMsgElem instanceof HTMLElement) {
+                const top = oldestMsgElem.offsetTop
+                const offset = 50 // px, adjust as needed for header/margin
+                container.scrollTop = top - offset
+              }
+            }
           }, 0)
           setShouldScrollToBottom(false)
         }
@@ -115,6 +155,11 @@ export function useMessages({
         title: 'You can only edit your own messages.',
         color: 'danger',
       })
+      return
+    }
+    if (!newContent.trim()) {
+      // If the new content is empty or whitespace, delete the message
+      await handleDeleteMessage(msgId, msg.user_id)
       return
     }
     const { error } = await supabase.from('messages').update({ message: newContent }).eq('id', msgId)
@@ -140,10 +185,6 @@ export function useMessages({
     }
   }, [editingMessageId, inputRef])
 
-  useEffect(() => {
-    // ...existing code for user roles fetch, not needed here...
-  }, [])
-
   const scrollToBottom = useCallback((): void => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'auto' })
   }, [messagesEndRef])
@@ -156,10 +197,6 @@ export function useMessages({
   }, [loading, messages, scrollToBottom, shouldScrollToBottom])
 
   useEffect(() => {
-    // ...existing code for MOTD fetch, not needed here...
-  }, [])
-
-  useEffect(() => {
     const fetchMessages = async (): Promise<void> => {
       setLoading(true)
       const { data, error, count } = await supabase
@@ -168,7 +205,8 @@ export function useMessages({
         .order('created_at', { ascending: false })
         .range(pagination.offset, pagination.offset + pagination.limit - 1)
       if (error) {
-        // ...existing code...
+        setLoading(false)
+        return
       } else {
         const newMessages = ((data || []) as ChatMessageType[]).reverse()
         setMessages(current => {
@@ -201,7 +239,9 @@ export function useMessages({
                 m.message === newMsg.message
               ),
           )
-          return [...filtered, newMsg]
+          // Add new message, then trim to latest pagination.limit messages
+          const updated = [...filtered, newMsg]
+          return updated.length > pagination.limit ? updated.slice(updated.length - pagination.limit) : updated
         })
         // Play mention beep only if the new message mentions the current user
         if (userSummary?.personaName && newMsg.message.includes(`@${userSummary.personaName}`)) {
@@ -276,7 +316,11 @@ export function useMessages({
       created_at: new Date().toISOString(),
       avatar_url: userSummary?.avatar || undefined,
     }
-    setMessages(prev => [...prev, tempMessage])
+    setMessages(prev => {
+      // Add new message, then trim to latest pagination.limit messages
+      const updated = [...prev, tempMessage]
+      return updated.length > pagination.limit ? updated.slice(updated.length - pagination.limit) : updated
+    })
     setShouldScrollToBottom(true)
     const payload = {
       user_id: steamId,
@@ -331,6 +375,24 @@ export function useMessages({
     }
   }, [pinnedMessageId, messages, setPinnedMessage])
 
+  useEffect(() => {
+    // Update last_active timestamp for current user every 30 seconds
+    let interval: NodeJS.Timeout | undefined
+    if (userSummary?.steamId) {
+      const updateLastActive = async (): Promise<void> => {
+        await supabase
+          .from('users')
+          .update({ last_active: new Date().toISOString() })
+          .eq('user_id', userSummary.steamId)
+      }
+      updateLastActive()
+      interval = setInterval(updateLastActive, 30000)
+    }
+    return () => {
+      if (interval) clearInterval(interval)
+    }
+  }, [userSummary?.steamId])
+
   return {
     messages,
     setMessages,
@@ -350,5 +412,6 @@ export function useMessages({
     handleEditLastMessage,
     groupMessagesByDate,
     scrollToBottom,
+    isBanned,
   }
 }

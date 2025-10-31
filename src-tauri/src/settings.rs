@@ -16,7 +16,8 @@ fn get_default_settings() -> Value {
             "useBeta": false,
             "disableTooltips": false,
             "runAtStartup": false,
-            "startMinimized": false
+            "startMinimized": false,
+            "chatSounds": [0.2],
         },
         "cardFarming": {
             "listGames": true,
@@ -63,6 +64,23 @@ fn get_default_settings() -> Value {
     })
 }
 
+// Recursively merge missing keys from default into user settings
+fn merge_defaults(user: &mut Value, default: &Value) {
+    match (user, default) {
+        (Value::Object(user_map), Value::Object(default_map)) => {
+            for (k, v) in default_map {
+                if !user_map.contains_key(k) {
+                    user_map.insert(k.clone(), v.clone());
+                } else {
+                    merge_defaults(user_map.get_mut(k).unwrap(), v);
+                }
+            }
+        }
+        // For arrays and other types, do nothing (or could handle arrays if needed)
+        _ => {}
+    }
+}
+
 #[tauri::command]
 pub async fn get_user_settings(
     steam_id: String,
@@ -83,7 +101,7 @@ pub async fn get_user_settings(
     let default_settings = get_default_settings();
 
     // Read the settings file or create with default settings if it doesn't exist
-    let settings = if settings_file_path.exists() {
+    let mut settings = if settings_file_path.exists() {
         let mut file = File::open(&settings_file_path)
             .map_err(|e| format!("Failed to open settings file: {}", e))?;
         let mut contents = String::new();
@@ -99,8 +117,21 @@ pub async fn get_user_settings(
             .map_err(|e| format!("Failed to create settings file: {}", e))?;
         file.write_all(json_string.as_bytes())
             .map_err(|e| format!("Failed to write to settings file: {}", e))?;
-        default_settings
+        default_settings.clone()
     };
+
+    // Merge missing keys from default settings
+    let before = settings.clone();
+    merge_defaults(&mut settings, &default_settings);
+    if settings != before {
+        // Write back if any changes
+        let json_string = serde_json::to_string_pretty(&settings)
+            .map_err(|e| format!("Failed to serialize settings JSON: {}", e))?;
+        let mut file = File::create(&settings_file_path)
+            .map_err(|e| format!("Failed to create settings file: {}", e))?;
+        file.write_all(json_string.as_bytes())
+            .map_err(|e| format!("Failed to write to settings file: {}", e))?;
+    }
 
     Ok(json!({
         "settings": settings

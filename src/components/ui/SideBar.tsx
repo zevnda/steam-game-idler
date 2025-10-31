@@ -213,7 +213,12 @@ export default function SideBar(): ReactElement {
           <Button
             isIconOnly={sidebarCollapsed}
             radius='full'
-            isDisabled={activePage === 'idling' || activePage === 'freeGames' || activePage.includes('customlists')}
+            isDisabled={
+              activePage === 'idling' ||
+              activePage === 'freeGames' ||
+              activePage === 'chat' ||
+              activePage.includes('customlists')
+            }
             className={cn(
               'text-altwhite active:scale-95 w-full mt-4 duration-150',
               sidebarCollapsed ? 'w-0 justify-center' : 'min-w-40 justify-start',

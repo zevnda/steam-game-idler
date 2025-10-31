@@ -193,8 +193,18 @@ export async function isPortableCheck(): Promise<boolean> {
   }
 }
 
-export function playMentionBeep(): void {
+export async function playMentionBeep(): Promise<void> {
   try {
+    const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
+
+    const response = await invoke<InvokeSettings>('get_user_settings', {
+      steamId: userSummary?.steamId,
+    })
+
+    const settings = response.settings
+
+    const { chatSounds } = settings?.general || {}
+
     const AudioCtx =
       window.AudioContext || (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext
     const ctx = new AudioCtx()
@@ -202,7 +212,7 @@ export function playMentionBeep(): void {
     const gain = ctx.createGain()
     oscillator.type = 'sine'
     oscillator.frequency.value = 1500
-    gain.gain.setValueAtTime(0.4, ctx.currentTime)
+    gain.gain.setValueAtTime(chatSounds[0], ctx.currentTime)
     gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.2)
     oscillator.connect(gain)
     gain.connect(ctx.destination)

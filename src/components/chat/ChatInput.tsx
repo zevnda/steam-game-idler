@@ -1,13 +1,21 @@
-import type { ChangeEvent, ReactElement, RefObject } from 'react'
+import type { ReactElement, RefObject } from 'react'
 
 import { Button, cn, Textarea } from '@heroui/react'
-import { useEffect, useState } from 'react'
+import { useRef, useState } from 'react'
+import emojiData from '@emoji-mart/data'
+import Picker from '@emoji-mart/react'
 import { createClient } from '@supabase/supabase-js'
 import Image from 'next/image'
 import { useTranslation } from 'react-i18next'
+import { FaImage } from 'react-icons/fa6'
 import { IoSend } from 'react-icons/io5'
 
+import { useUserContext } from '@/components/contexts/UserContext'
 import ExtLink from '@/components/ui/ExtLink'
+import { useEmojiPicker } from '@/hooks/chat/useEmojiPicker'
+import { useMentionUsers } from '@/hooks/chat/useMentionUsers'
+import { useReplyPrefill } from '@/hooks/chat/useReplyPrefill'
+import { useTypingUsers } from '@/hooks/chat/useTypingUsers'
 
 const supabase = createClient(
   'https://inbxfhxkrhwiybnephlq.supabase.co',
@@ -30,132 +38,156 @@ export default function ChatInput({
   clearReplyToMessage,
 }: ChatInputProps): ReactElement {
   const [newMessage, setNewMessage] = useState('')
-  const [mentionQuery, setMentionQuery] = useState<string>('')
-  const [mentionStart, setMentionStart] = useState<number | null>(null)
-  const [mentionResults, setMentionResults] = useState<
-    Array<{ user_id: string; username: string; avatar_url?: string }>
-  >([])
-  const [mentionSelectedIdx, setMentionSelectedIdx] = useState<number>(0)
   const { t } = useTranslation()
+  const { userSummary } = useUserContext()
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
-  // Fetch matching users from Supabase when mentionQuery changes
-  useEffect(() => {
-    const fetchUsers = async (): Promise<void> => {
-      if (mentionQuery === '') {
-        // Just '@' typed: fetch 10 users alphabetically
-        const { data, error } = await supabase
-          .from('users')
-          .select('user_id,username,avatar_url')
-          .order('username', { ascending: true })
-          .limit(10)
-        if (!error && Array.isArray(data)) {
-          setMentionResults(data)
-        } else {
-          setMentionResults([])
+  const currentUser = {
+    user_id: userSummary?.steamId ?? '',
+    username: userSummary?.personaName ?? '',
+  }
+  const { typingUsers, broadcastTyping, broadcastStopTyping } = useTypingUsers(currentUser)
+
+  const {
+    mentionStart,
+    mentionResults,
+    mentionSelectedIdx,
+    setMentionSelectedIdx,
+    handleInputChange: handleMentionInputChange,
+    handleMentionSelect,
+    setMentionQuery,
+    setMentionStart,
+    setMentionResults,
+  } = useMentionUsers(inputRef, newMessage)
+
+  const { showEmojiPicker, setShowEmojiPicker, insertEmoji } = useEmojiPicker(inputRef, newMessage, setNewMessage)
+
+  useReplyPrefill(replyToMessage ?? null, inputRef, setNewMessage)
+
+  // Broadcast stop_typing on submit
+  const handleSend = (): void => {
+    broadcastStopTyping()
+  }
+
+  const uploadImageToSupabase = async (file: File): Promise<string | null> => {
+    try {
+      // Generate a unique filename
+      const fileExt = file.name.split('.').pop()
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
+      const filePath = `${fileName}`
+
+      // Upload to Supabase Storage
+      const { data, error } = await supabase.storage
+        .from('sgi-chat') // your bucket name
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false,
+        })
+
+      if (error) {
+        console.error('Error uploading image:', error)
+        return null
+      }
+
+      // Get the public URL
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from('sgi-chat').getPublicUrl(data.path)
+
+      return publicUrl
+    } catch (error) {
+      console.error('Error uploading image:', error)
+      return null
+    }
+  }
+
+  // Handle paste event for images
+  const handleImageUpload = async (e: React.ClipboardEvent<HTMLInputElement>): Promise<void> => {
+    const items = e.clipboardData.items
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i]
+      if (item.type.startsWith('image/')) {
+        const file = item.getAsFile()
+        if (file) {
+          e.preventDefault()
+
+          // Show loading state (optional)
+          // setIsUploading(true)
+
+          const imageUrl = await uploadImageToSupabase(file)
+
+          if (imageUrl) {
+            // Send the message with the image URL
+            onSendMessage(imageUrl)
+            setNewMessage('')
+            setMentionQuery('')
+            setMentionStart(null)
+            if (clearReplyToMessage) clearReplyToMessage()
+          }
+
+          // setIsUploading(false)
+          break
         }
-        return
       }
-      if (!mentionQuery || mentionQuery.length < 1) {
-        setMentionResults([])
-        return
-      }
-      const { data, error } = await supabase
-        .from('users')
-        .select('user_id,username,avatar_url')
-        .ilike('username', `${mentionQuery}%`)
-        .limit(5)
-      if (!error && Array.isArray(data)) {
-        setMentionResults(data)
-      } else {
-        setMentionResults([])
-      }
-    }
-    fetchUsers()
-  }, [mentionQuery])
-
-  // Reset selected index when mention results change
-  useEffect(() => {
-    setMentionSelectedIdx(0)
-  }, [mentionResults])
-
-  // Detect @mention in input and track query
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
-    const value = e.target.value
-    setNewMessage(value)
-
-    // Find last @mention in the text before cursor
-    const cursorPos = (e.target as HTMLTextAreaElement).selectionStart || value.length
-    const textBeforeCursor = value.slice(0, cursorPos)
-    // Changed regex to allow usernames starting with '-' and other non-whitespace chars
-    const mentionMatch = /@([^\s@]*)$/.exec(textBeforeCursor)
-    if (mentionMatch) {
-      setMentionQuery(mentionMatch[1])
-      setMentionStart(cursorPos - mentionMatch[0].length)
-    } else {
-      setMentionQuery('')
-      setMentionStart(null)
     }
   }
 
-  const handleMentionSelect = (userIdx: number): void => {
-    const user = mentionResults[userIdx]
-    if (mentionStart !== null && inputRef.current && user) {
-      const before = newMessage.slice(0, mentionStart)
-      const after = newMessage.slice(inputRef.current.selectionStart)
-      const mentionText = `@${user.username} `
-      const updated = before + mentionText + after
-      setNewMessage(updated)
-      setMentionQuery('')
-      setMentionStart(null)
-      setMentionResults([])
-      setTimeout(() => {
-        inputRef.current!.focus()
-        inputRef.current!.setSelectionRange((before + mentionText).length, (before + mentionText).length)
-      }, 0)
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
+    const file = e.target.files?.[0]
+    if (file) {
+      // Wrap file in a ClipboardEvent-like object for handleImageUpload
+      const fakeClipboardEvent = {
+        clipboardData: {
+          items: [
+            {
+              type: file.type,
+              getAsFile: () => file,
+            },
+          ],
+        },
+        preventDefault: () => {},
+      } as unknown as React.ClipboardEvent<HTMLInputElement>
+      await handleImageUpload(fakeClipboardEvent)
+      e.target.value = ''
     }
   }
-
-  // Prefill textarea with quoted message when replying, and clear after sending.
-  useEffect(() => {
-    if (replyToMessage && inputRef.current) {
-      // Extract only the first line of the message, skipping any nested reply markers
-      let messageContent = replyToMessage.message
-      // If the message starts with "> Replying to:", skip that line
-      if (messageContent.startsWith('> Replying to:')) {
-        // Find the first line break and use the rest
-        const lines = messageContent.split('\n')
-        // If there is more than one line, use the second line as the actual message
-        messageContent = lines.length > 1 ? lines[1] : ''
-      }
-      // Otherwise, use only the first line of the message
-      else {
-        messageContent = messageContent.split('\n')[0]
-      }
-      const quoted = `> :arrow: @${replyToMessage.username} ${messageContent}\n`
-      setNewMessage(quoted)
-      setTimeout(() => {
-        inputRef.current!.focus()
-        inputRef.current!.setSelectionRange(quoted.length, quoted.length)
-      }, 0)
-    }
-  }, [replyToMessage, inputRef])
 
   return (
     <div className='p-2 pt-0'>
-      <p className='text-[10px] py-1'>
-        GitHub Flavored Markdown is supported.{' '}
-        <ExtLink
-          className='text-dynamic hover:text-dynamic-hover duration-150'
-          href='https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax'
-        >
-          Learn more
-        </ExtLink>
-      </p>
+      <div className='flex justify-between items-end w-full'>
+        {/* Typing indicator */}
+        {typingUsers.filter(u => u.user_id !== currentUser.user_id).length > 0 ? (
+          <p className='text-[10px] py-1'>
+            {typingUsers
+              .filter(u => u.user_id !== currentUser.user_id)
+              .map(u => u.username)
+              .join(', ')}
+            <span className='font-thin'>
+              {typingUsers.filter(u => u.user_id !== currentUser.user_id).length === 1
+                ? ' is typing...'
+                : ' are typing'}
+            </span>
+          </p>
+        ) : (
+          <span />
+        )}
+
+        <p className='text-[10px] py-1'>
+          GitHub Flavored Markdown is supported.{' '}
+          <ExtLink
+            className='text-dynamic hover:text-dynamic-hover duration-150'
+            href='https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax'
+          >
+            Learn more
+          </ExtLink>
+        </p>
+      </div>
 
       <form
         onSubmit={e => {
           e.preventDefault()
           if (newMessage.trim()) {
+            handleSend()
             onSendMessage(newMessage)
             setNewMessage('')
             setMentionQuery('')
@@ -179,44 +211,96 @@ export default function ChatInput({
               ),
               input: ['!min-h-8 !text-content text-xs placeholder:text-xs placeholder:text-altwhite/50 pt-2'],
             }}
+            startContent={
+              <div className='flex items-center'>
+                <Button
+                  size='sm'
+                  isIconOnly
+                  startContent={<FaImage size={16} />}
+                  type='button'
+                  className='text-white/50 bg-transparent hover:bg-white/10 transition-colors'
+                  onPress={() => fileInputRef.current?.click()}
+                  aria-label='Upload image'
+                />
+                <input
+                  ref={fileInputRef}
+                  type='file'
+                  accept='image/png,image/jpeg,image/jpg,image/webp'
+                  style={{ display: 'none' }}
+                  onChange={handleFileSelect}
+                />
+              </div>
+            }
             endContent={
-              <Button
-                size='sm'
-                isIconOnly
-                isDisabled={!newMessage.trim()}
-                startContent={<IoSend size={16} />}
-                type='submit'
-                className={cn(
-                  'bg-transparent hover:bg-white/10 hover:text-dynamic/80 transition-colors',
-                  newMessage.trim() ? 'text-dynamic' : 'text-white/10',
+              <div className='relative flex justify-center items-center'>
+                {/* Emoji picker button */}
+                <Button
+                  isIconOnly
+                  size='sm'
+                  className='bg-transparent hover:bg-white/10 text-md'
+                  type='button'
+                  onPress={() => setShowEmojiPicker(!showEmojiPicker)}
+                  aria-label='Insert emoji'
+                >
+                  😊
+                </Button>
+
+                {showEmojiPicker && (
+                  <div className='absolute -right-2 bottom-9 mb-2 z-50'>
+                    <Picker
+                      data={emojiData}
+                      onEmojiSelect={insertEmoji}
+                      theme='dark'
+                      previewPosition='none'
+                      perLine={8}
+                      navPosition='top'
+                    />
+                  </div>
                 )}
-              />
+
+                <Button
+                  size='sm'
+                  isIconOnly
+                  isDisabled={!newMessage.trim()}
+                  startContent={<IoSend size={16} />}
+                  type='submit'
+                  className={cn(
+                    'bg-transparent hover:bg-white/10 hover:text-dynamic/80 transition-colors',
+                    newMessage.trim() ? 'text-dynamic' : 'text-white/10',
+                  )}
+                />
+              </div>
             }
             minRows={1}
             maxRows={15}
             value={newMessage}
-            onChange={handleInputChange}
+            onChange={e => {
+              setNewMessage(e.target.value)
+              const textarea = e.target as unknown as HTMLTextAreaElement
+              handleMentionInputChange(e.target.value, textarea.selectionStart || e.target.value.length)
+              broadcastTyping()
+            }}
             onKeyDown={e => {
               // Mention navigation
               if (mentionResults.length > 0 && mentionStart !== null) {
                 if (e.key === 'ArrowDown') {
                   e.preventDefault()
-                  setMentionSelectedIdx(idx => Math.min(idx + 1, mentionResults.length - 1))
+                  setMentionSelectedIdx(Math.min(mentionSelectedIdx + 1, mentionResults.length - 1))
                   return
                 }
                 if (e.key === 'ArrowUp') {
                   e.preventDefault()
-                  setMentionSelectedIdx(idx => Math.max(idx - 1, 0))
+                  setMentionSelectedIdx(Math.max(mentionSelectedIdx - 1, 0))
                   return
                 }
                 if (e.key === 'Enter' && !e.shiftKey) {
                   e.preventDefault()
-                  handleMentionSelect(mentionSelectedIdx)
+                  handleMentionSelect(mentionSelectedIdx, setNewMessage)
                   return
                 }
                 if (e.key === 'Tab') {
                   e.preventDefault()
-                  handleMentionSelect(mentionSelectedIdx)
+                  handleMentionSelect(mentionSelectedIdx, setNewMessage)
                   return
                 }
                 // Allow typing and other keys
@@ -227,15 +311,18 @@ export default function ChatInput({
               } else if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault()
                 if (newMessage.trim()) {
+                  handleSend()
                   onSendMessage(newMessage)
                   setNewMessage('')
                   setMentionQuery('')
                   setMentionStart(null)
+                  setMentionResults([])
                   if (clearReplyToMessage) clearReplyToMessage()
                 }
               }
               // SHIFT+ENTER is default (new line)
             }}
+            onPaste={handleImageUpload}
             autoFocus
           />
           {/* Floating mention preview */}
@@ -250,7 +337,7 @@ export default function ChatInput({
                     'flex justify-between items-center cursor-pointer p-2 hover:bg-white/5 text-xs',
                     idx === mentionSelectedIdx ? 'bg-white/10' : '',
                   )}
-                  onClick={() => handleMentionSelect(idx)}
+                  onClick={() => handleMentionSelect(idx, setNewMessage)}
                   tabIndex={-1}
                   aria-selected={idx === mentionSelectedIdx}
                 >

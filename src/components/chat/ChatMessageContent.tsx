@@ -10,16 +10,18 @@ import type {
 
 import { open } from '@tauri-apps/plugin-shell'
 
-import { cn } from '@heroui/react'
+import 'react-image-lightbox/style.css'
+
 import { Children, isValidElement, useEffect, useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import Image from 'next/image'
 import { BsArrow90DegRight } from 'react-icons/bs'
+import Lightbox from 'react-image-lightbox'
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
 
-import { useStateContext } from '@/components/contexts/StateContext'
+import ExtLink from '@/components/ui/ExtLink'
 
 interface ChatMessageContentProps {
   message: string
@@ -49,41 +51,20 @@ const supabase = createClient(
 
 const preprocessMessage = (text: string, validMentions: string[]): string => {
   let processed = text
+  // Replace image URLs with Markdown image syntax
+  const imageUrlRegex = /(https?:\/\/(?:[\w.-]+)\/(?:[\w\-./%]+)\.(?:jpg|jpeg|png|gif|webp|svg))(?![^\s])/gi
+  processed = processed.replace(imageUrlRegex, url => `![](${url})`)
+
   if (validMentions && validMentions.length > 0) {
     validMentions.forEach(username => {
-      // Updated regex: allow any username, including hyphens and numbers
       // Escape username for regex safety
       const escapedUsername = username.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-      const regex = new RegExp(`(@${escapedUsername})(?![\\w-])`, 'gi')
-      // eslint-disable-next-line quotes
-      processed = processed.replace(regex, `<span class='mention-highlight'>$1</span>`)
+      // Match @username with robust boundaries (start, end, whitespace, punctuation, blockquote)
+      const regex = new RegExp(`(?<=^|\\s|[>])@${escapedUsername}(?=$|\\s|[.,!?;:])`, 'g')
+      processed = processed.replace(regex, `<span class='mention-highlight'>@${username}</span>`)
     })
   }
   return processed
-}
-
-const preprocessBlockquotes = (text: string): string => {
-  // Split into lines, wrap lines starting with '>' in blockquote, others as-is
-  const lines = text.split('\n')
-  let result = ''
-  let inBlockquote = false
-  lines.forEach((line, idx) => {
-    if (/^\s*>/.test(line)) {
-      if (!inBlockquote) {
-        result += '<blockquote>'
-        inBlockquote = true
-      }
-      result += `<p>${line.replace(/^\s*> ?/, '')}</p>`
-      // If next line is not a blockquote, close
-      if (idx === lines.length - 1 || !/^\s*>/.test(lines[idx + 1])) {
-        result += '</blockquote>'
-        inBlockquote = false
-      }
-    } else {
-      result += `<p>${line}</p>`
-    }
-  })
-  return result
 }
 
 const FIXED_IMG_SIZE = 200
@@ -181,21 +162,34 @@ const MarkdownBlockquote = (
 
 export default function ChatMessageContent({ message, userSummary }: ChatMessageContentProps): ReactElement {
   const [modalImg, setModalImg] = useState<string | null>(null)
-  const { sidebarCollapsed, transitionDuration } = useStateContext()
+  const [lightboxOpen, setLightboxOpen] = useState(false)
   const [validMentions, setValidMentions] = useState<string[]>([])
 
   // Extract all @username patterns from the message and check Supabase
   useEffect(() => {
-    // Updated regex: match @ followed by any sequence of non-whitespace, non-punctuation characters
-    const mentionRegex = /@([^\s.,!?;:]+)/g
-    const found = Array.from(message.matchAll(mentionRegex)).map(m => m[1])
-    if (found.length === 0) {
+    // Split message into words and try to match all possible @mentions
+    const words = message.split(/\s+/)
+    const candidates: string[] = []
+    for (let i = 0; i < words.length; i++) {
+      if (words[i].startsWith('@')) {
+        // Try to build multi-word usernames up to 5 words (adjust as needed)
+        for (let len = 1; len <= 5 && i + len - 1 < words.length; len++) {
+          const candidate = words
+            .slice(i, i + len)
+            .join(' ')
+            .replace(/^@/, '')
+            .trim()
+          if (candidate.length > 0) candidates.push(candidate)
+        }
+      }
+    }
+    if (candidates.length === 0) {
       setValidMentions([])
       return
     }
     // Query Supabase for these usernames
     const fetchMentions = async (): Promise<void> => {
-      const { data, error } = await supabase.from('users').select('username').in('username', found)
+      const { data, error } = await supabase.from('users').select('username').in('username', candidates)
       if (!error && Array.isArray(data)) {
         setValidMentions(data.map(u => u.username))
       } else {
@@ -208,41 +202,19 @@ export default function ChatMessageContent({ message, userSummary }: ChatMessage
   // Custom image renderer for markdown
   const MarkdownImage = (props: ImgHTMLAttributes<HTMLImageElement>): ReactElement => {
     return (
-      <>
-        <Image
-          src={typeof props.src === 'string' ? props.src : ''}
-          alt={props.alt || 'image'}
-          width={FIXED_IMG_SIZE}
-          height={FIXED_IMG_SIZE}
-          className='max-w-[200px] h-[200px] object-cover cursor-pointer rounded-lg my-2'
-          onClick={() => {
-            if (typeof props.src === 'string') setModalImg(props.src)
-          }}
-        />
-
-        {modalImg === props.src && (
-          <div
-            className={cn(
-              'fixed top-0 bg-[rgba(0,0,0,0.7)] flex justify-center items-center z-[9999]',
-              'flex flex-col h-screen ease-in-out',
-              sidebarCollapsed ? 'w-[calc(100vw-56px)] left-[56px]' : 'w-[calc(100vw-250px)] left-[250px]',
-            )}
-            style={{
-              transitionDuration,
-              transitionProperty: 'width, left',
-            }}
-            onClick={() => setModalImg(null)}
-          >
-            <Image
-              src={modalImg}
-              alt='enlarged'
-              width={800}
-              height={800}
-              className='min-w-[500px] min-h-[500px] rounded-lg'
-            />
-          </div>
-        )}
-      </>
+      <Image
+        src={typeof props.src === 'string' ? props.src : ''}
+        alt={props.alt || 'image'}
+        width={FIXED_IMG_SIZE}
+        height={FIXED_IMG_SIZE}
+        className='max-w-[200px] h-[200px] object-cover cursor-pointer rounded-lg my-2'
+        onClick={() => {
+          if (typeof props.src === 'string') {
+            setModalImg(props.src)
+            setLightboxOpen(true)
+          }
+        }}
+      />
     )
   }
 
@@ -257,8 +229,20 @@ export default function ChatMessageContent({ message, userSummary }: ChatMessage
           blockquote: MarkdownBlockquote,
         }}
       >
-        {preprocessBlockquotes(preprocessMessage(message.trim(), validMentions))}
+        {preprocessMessage(message.trim(), validMentions)}
       </ReactMarkdown>
+      {lightboxOpen && modalImg && (
+        <Lightbox
+          mainSrc={modalImg}
+          onCloseRequest={() => setLightboxOpen(false)}
+          imagePadding={100}
+          imageTitle={
+            <ExtLink href={modalImg} className='text-sm p-4'>
+              {modalImg}
+            </ExtLink>
+          }
+        />
+      )}
     </div>
   )
 }
