@@ -65,8 +65,23 @@ export default function ChatMessage({
   isAdmin,
 }: ChatMessageProps): ReactElement {
   const avatarColor = getColorFromUsername(msg.username)
-  const showAvatar = idx === 0 || msgs[idx - 1].user_id !== msg.user_id
-  const isLastFromUser = idx === msgs.length - 1 || msgs[idx + 1]?.user_id !== msg.user_id
+  // Show avatar if first message, or previous message is from a different user, or more than 1 minute has passed since previous message
+  let showAvatar = true
+  if (idx > 0) {
+    const prevMsg = msgs[idx - 1]
+    const prevTime = new Date(prevMsg.created_at).getTime()
+    const currTime = new Date(msg.created_at).getTime()
+    const timeDiff = currTime - prevTime
+    // 1 minute = 60,000 ms
+    if (prevMsg.user_id === msg.user_id && timeDiff <= 60000) {
+      showAvatar = false
+    }
+  }
+  // End group if next message is from a different user or more than 1 minute apart
+  const isLastFromUser =
+    idx === msgs.length - 1 ||
+    msgs[idx + 1]?.user_id !== msg.user_id ||
+    (msgs[idx + 1] && new Date(msgs[idx + 1].created_at).getTime() - new Date(msg.created_at).getTime() > 60000)
   const currentRole = userRoles[msg.user_id] || 'user'
 
   return (

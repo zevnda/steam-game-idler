@@ -35,7 +35,7 @@ export default function ChatBox(): ReactElement {
   const [loading, setLoading] = useState(true)
   const [hasMore, setHasMore] = useState(true)
   const [userRoles, setUserRoles] = useState<{ [steamId: string]: string }>({})
-  const [pagination, setPagination] = useState({ limit: 75, offset: 0 })
+  const [pagination, setPagination] = useState({ limit: 25, offset: 0 })
   const [pinnedMessageId, setPinnedMessageId] = useState<string | null>(null)
 
   // Chat maintenance mode state
@@ -324,15 +324,26 @@ export default function ChatBox(): ReactElement {
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
         const newMsg = payload.new as Message
         const container = messagesContainerRef.current
+        // Remove any temp message that matches this real message
+        setMessages(current => {
+          // Find temp message with same user_id, message, and temp id
+          const filtered = current.filter(
+            m =>
+              !(
+                typeof m.id === 'string' &&
+                m.id.startsWith('temp-') &&
+                m.user_id === newMsg.user_id &&
+                m.message === newMsg.message
+              ),
+          )
+          return [...filtered, newMsg]
+        })
         if (container) {
           const threshold = 10
           const isAtBottom = container.scrollTop + container.clientHeight >= container.scrollHeight - threshold
-          setMessages(current => [...current, newMsg])
           if (isAtBottom) {
             setTimeout(() => setShouldScrollToBottom(true), 0)
           }
-        } else {
-          setMessages(current => [...current, newMsg])
         }
       })
 
@@ -357,19 +368,34 @@ export default function ChatBox(): ReactElement {
   const handleSendMessage = async (message: string): Promise<void> => {
     if (!message.trim()) return
 
+    // Create a temporary message object
+    const tempId = `temp-${Date.now()}`
+    const tempMessage = {
+      id: tempId,
+      user_id: userSummary?.steamId || crypto.randomUUID(),
+      username,
+      message,
+      created_at: new Date().toISOString(),
+      avatar_url: userSummary?.avatar || undefined,
+    }
+
+    // Instantly append to messages view
+    setMessages(prev => [...prev, tempMessage])
+    setShouldScrollToBottom(true)
+
+    // Send to Supabase
     const payload: NewMessagePayload = {
       user_id: userSummary?.steamId || crypto.randomUUID(),
       username,
       message,
       avatar_url: userSummary?.avatar || undefined,
     }
-
     const { error } = await supabase.from('messages').insert([payload])
 
     if (error) {
       console.error('Error sending message:', error)
-    } else {
-      setShouldScrollToBottom(true)
+      // Remove temp message on error
+      setMessages(prev => prev.filter(m => m.id !== tempId))
     }
   }
 
