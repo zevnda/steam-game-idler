@@ -168,20 +168,24 @@ export default function ChatMessage({
             )}
           </div>
         </div>
-        {(isOwnMessage || canEditOrDeleteAny || isAdmin) && (
-          <ChatMessageActions
-            onEdit={() => {
-              setEditingMessageId(msg.id)
-              setEditedMessage(msg.message)
-            }}
-            onDelete={() => handleDeleteMessage(msg.id, msg.user_id)}
-            onPin={!isPinned ? onPin : undefined}
-            onUnpin={isPinned ? onUnpin : undefined}
-            isPinned={isPinned}
-            isAdmin={isAdmin}
-            onReply={onReply}
-          />
-        )}
+        <ChatMessageActions
+          onEdit={
+            isOwnMessage || canEditOrDeleteAny || isAdmin
+              ? () => {
+                  setEditingMessageId(msg.id)
+                  setEditedMessage(msg.message)
+                }
+              : undefined
+          }
+          onDelete={
+            isOwnMessage || canEditOrDeleteAny || isAdmin ? () => handleDeleteMessage(msg.id, msg.user_id) : undefined
+          }
+          onPin={!isPinned ? onPin : undefined}
+          onUnpin={isPinned ? onUnpin : undefined}
+          isPinned={isPinned}
+          isAdmin={isAdmin}
+          onReply={onReply}
+        />
       </div>
     </div>
   )

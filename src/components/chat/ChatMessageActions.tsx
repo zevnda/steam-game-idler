@@ -4,8 +4,8 @@ import { Button, cn } from '@heroui/react'
 import { FaPencilAlt, FaReply, FaThumbtack, FaTrashAlt } from 'react-icons/fa'
 
 interface ChatMessageActionsProps {
-  onEdit: () => void
-  onDelete: () => void
+  onEdit?: () => void
+  onDelete?: () => void
   onPin?: () => void
   onUnpin?: () => void
   isPinned?: boolean
@@ -48,26 +48,30 @@ export default function ChatMessageActions({
         onPress={onReply}
         aria-label='Reply to message'
       />
-      <Button
-        isIconOnly
-        radius='none'
-        className={cn(
-          'bg-transparent h-6 w-5 flex items-center justify-center',
-          'focus:outline-none duration-75 hover:scale-[1.2] transition-all',
-        )}
-        startContent={<FaPencilAlt size={12} className='text-altwhite' />}
-        onPress={onEdit}
-      />
-      <Button
-        isIconOnly
-        radius='none'
-        className={cn(
-          'bg-transparent h-6 w-5 flex items-center justify-center',
-          'focus:outline-none duration-75 hover:scale-[1.2] transition-all',
-        )}
-        startContent={<FaTrashAlt size={12} className='text-[#f23f43]' />}
-        onPress={onDelete}
-      />
+      {onEdit && (
+        <Button
+          isIconOnly
+          radius='none'
+          className={cn(
+            'bg-transparent h-6 w-5 flex items-center justify-center',
+            'focus:outline-none duration-75 hover:scale-[1.2] transition-all',
+          )}
+          startContent={<FaPencilAlt size={12} className='text-altwhite' />}
+          onPress={onEdit}
+        />
+      )}
+      {onDelete && (
+        <Button
+          isIconOnly
+          radius='none'
+          className={cn(
+            'bg-transparent h-6 w-5 flex items-center justify-center',
+            'focus:outline-none duration-75 hover:scale-[1.2] transition-all',
+          )}
+          startContent={<FaTrashAlt size={12} className='text-[#f23f43]' />}
+          onPress={onDelete}
+        />
+      )}
     </div>
   )
 }
