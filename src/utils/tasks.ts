@@ -202,7 +202,7 @@ export function playMentionBeep(): void {
     const gain = ctx.createGain()
     oscillator.type = 'sine'
     oscillator.frequency.value = 1500
-    gain.gain.setValueAtTime(0.4, ctx.currentTime)
+    gain.gain.setValueAtTime(0.1, ctx.currentTime)
     gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.2)
     oscillator.connect(gain)
     gain.connect(ctx.destination)
