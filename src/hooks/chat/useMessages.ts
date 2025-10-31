@@ -225,10 +225,40 @@ export function useMessages({
 
   const handleSendMessage = async (message: string): Promise<void> => {
     if (!message.trim()) return
+    const steamId = userSummary?.steamId || crypto.randomUUID()
+
+    // Upsert user to 'users' table before sending message
+    const { data: existingUser } = await supabase
+      .from('users')
+      .select('user_id,username')
+      .eq('user_id', steamId)
+      .single()
+
+    const currentUsername = userSummary?.personaName || 'Unknown'
+
+    if (!existingUser) {
+      // User does not exist, insert new
+      await supabase.from('users').insert([
+        {
+          user_id: steamId,
+          username: currentUsername,
+          role: null,
+        },
+      ])
+    } else if (!existingUser.username || existingUser.username !== currentUsername) {
+      // User exists but username is missing or changed, update
+      await supabase
+        .from('users')
+        .update({
+          username: currentUsername,
+        })
+        .eq('user_id', steamId)
+    }
+
     const tempId = `temp-${Date.now()}`
     const tempMessage = {
       id: tempId,
-      user_id: userSummary?.steamId || crypto.randomUUID(),
+      user_id: steamId,
       username: userSummary?.personaName || 'Unknown',
       message,
       created_at: new Date().toISOString(),
@@ -237,7 +267,7 @@ export function useMessages({
     setMessages(prev => [...prev, tempMessage])
     setShouldScrollToBottom(true)
     const payload = {
-      user_id: userSummary?.steamId || crypto.randomUUID(),
+      user_id: steamId,
       username: userSummary?.personaName || 'Unknown',
       message,
       avatar_url: userSummary?.avatar || undefined,

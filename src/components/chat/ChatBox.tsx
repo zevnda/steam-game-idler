@@ -9,11 +9,11 @@ import ChatInput from './ChatInput'
 import ChatMessages from './ChatMessages'
 
 import ChatMaintenance from '@/components/chat/ChatMaintenance'
-import { usePinnedMessage } from '@/components/chat/usePinnedMessage'
 import { useStateContext } from '@/components/contexts/StateContext'
 import { useChatMaintenanceMode } from '@/hooks/chat/useChatMaintenanceMode'
 import { useMessages } from '@/hooks/chat/useMessages'
 import { useMotd } from '@/hooks/chat/useMotd'
+import { usePinnedMessage } from '@/hooks/chat/usePinnedMessage'
 import { useUserRoles } from '@/hooks/chat/useUserRoles'
 
 export default function ChatBox(): ReactElement {

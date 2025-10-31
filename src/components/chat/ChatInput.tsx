@@ -16,8 +16,8 @@ interface ChatInputProps {
 export default function ChatInput(props: ChatInputProps): ReactElement {
   const { inputRef, onSendMessage, handleEditLastMessage } = props
   const [newMessage, setNewMessage] = useState('')
-  // Removed leftover destructuring above function signature
   const { t } = useTranslation()
+
   return (
     <div className='p-2 pt-0'>
       <p className='text-[10px] py-1'>
