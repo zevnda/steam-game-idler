@@ -1,3 +1,4 @@
+import type { ChatMessageType } from '@/hooks/chat/useMessages'
 import type { UserSummary } from '@/types'
 import type { ReactElement, RefObject } from 'react'
 
@@ -28,7 +29,7 @@ interface ChatMessagesProps {
   getRoleColor: (role: string) => string
   inputRef: RefObject<HTMLTextAreaElement>
   pinnedMessageId?: string | null
-  handlePinMessage?: (msgId: string) => void
+  handlePinMessage?: (message: ChatMessageType) => void
   handleUnpinMessage?: () => void
   isAdmin?: boolean
 }
@@ -59,7 +60,7 @@ const ChatMessages = ({
   editedMessage: string
   setEditedMessage: (msg: string) => void
   pinnedMessageId?: string | null
-  handlePinMessage?: (msgId: string) => void
+  handlePinMessage?: (message: ChatMessageType) => void
   handleUnpinMessage?: () => void
   isAdmin?: boolean
 }): ReactElement => {
@@ -127,7 +128,7 @@ const ChatMessages = ({
                     handleDeleteMessage={handleDeleteMessage}
                     inputRef={inputRef}
                     isPinned={isPinnedMessage}
-                    onPin={() => handlePinMessage && handlePinMessage(msg.id)}
+                    onPin={() => handlePinMessage && handlePinMessage(msg)}
                     onUnpin={handleUnpinMessage}
                     isAdmin={isAdmin}
                   />

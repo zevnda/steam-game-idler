@@ -123,6 +123,15 @@ svg {
   }
 }
 
+.chat-message a {
+  color: #4d70fc;
+  text-decoration: underline;
+}
+
+.chat-message a:hover {
+  color: #476bf8ff;
+}
+
 .chat-message img {
   max-height: 200px;
   width: auto;
