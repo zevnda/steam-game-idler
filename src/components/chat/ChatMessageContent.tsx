@@ -4,7 +4,8 @@ import type { AnchorHTMLAttributes, MouseEvent, ReactElement } from 'react'
 import { open } from '@tauri-apps/plugin-shell'
 
 import { cn } from '@heroui/react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { createClient } from '@supabase/supabase-js'
 import Image from 'next/image'
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
@@ -33,12 +34,22 @@ function MarkdownLink(props: AnchorHTMLAttributes<HTMLAnchorElement>): ReactElem
   )
 }
 
-const preprocessMessage = (text: string, username?: string): string => {
+const supabase = createClient(
+  'https://inbxfhxkrhwiybnephlq.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImluYnhmaHhrcmh3aXlibmVwaGxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3Njc5NjgsImV4cCI6MjA3NzM0Mzk2OH0.xUbDMdMUk7S2FgRZu8itWr4WsIV41TX-sNgilXiZg_Y',
+)
+
+const preprocessMessage = (text: string, validMentions: string[]): string => {
   let processed = text
-  if (username) {
-    const regex = new RegExp(`(@${username})\\b`, 'gi')
-    // eslint-disable-next-line quotes
-    processed = processed.replace(regex, `<span class='mention-highlight'>$1</span>`)
+  if (validMentions && validMentions.length > 0) {
+    validMentions.forEach(username => {
+      // Updated regex: allow any username, including hyphens and numbers
+      // Escape username for regex safety
+      const escapedUsername = username.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+      const regex = new RegExp(`(@${escapedUsername})(?![\\w-])`, 'gi')
+      // eslint-disable-next-line quotes
+      processed = processed.replace(regex, `<span class='mention-highlight'>$1</span>`)
+    })
   }
   return processed
 }
@@ -48,6 +59,28 @@ const FIXED_IMG_SIZE = 200
 export default function ChatMessageContent({ message, userSummary }: ChatMessageContentProps): ReactElement {
   const [modalImg, setModalImg] = useState<string | null>(null)
   const { sidebarCollapsed, transitionDuration } = useStateContext()
+  const [validMentions, setValidMentions] = useState<string[]>([])
+
+  // Extract all @username patterns from the message and check Supabase
+  useEffect(() => {
+    // Updated regex: match @ followed by any sequence of non-whitespace, non-punctuation characters
+    const mentionRegex = /@([^\s.,!?;:]+)/g
+    const found = Array.from(message.matchAll(mentionRegex)).map(m => m[1])
+    if (found.length === 0) {
+      setValidMentions([])
+      return
+    }
+    // Query Supabase for these usernames
+    const fetchMentions = async (): Promise<void> => {
+      const { data, error } = await supabase.from('users').select('username').in('username', found)
+      if (!error && Array.isArray(data)) {
+        setValidMentions(data.map(u => u.username))
+      } else {
+        setValidMentions([])
+      }
+    }
+    fetchMentions()
+  }, [message])
 
   // Custom image renderer for markdown
   const MarkdownImage = (props: React.ImgHTMLAttributes<HTMLImageElement>): ReactElement => {
@@ -97,7 +130,7 @@ export default function ChatMessageContent({ message, userSummary }: ChatMessage
         remarkPlugins={[remarkGfm]}
         components={{ a: MarkdownLink, img: MarkdownImage }}
       >
-        {preprocessMessage(message.trim(), userSummary?.personaName)}
+        {preprocessMessage(message.trim(), validMentions)}
       </ReactMarkdown>
     </div>
   )

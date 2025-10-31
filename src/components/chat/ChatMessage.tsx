@@ -10,15 +10,6 @@ import ChatRoleBadge from './ChatRoleBadge'
 
 import ExtLink from '@/components/ui/ExtLink'
 
-export interface Message {
-  id: string
-  user_id: string
-  username: string
-  message: string
-  created_at: string
-  avatar_url?: string
-}
-
 interface ChatMessageProps {
   msg: Message
   idx: number
@@ -40,6 +31,15 @@ interface ChatMessageProps {
   onPin?: () => void
   onUnpin?: () => void
   isAdmin?: boolean
+}
+
+export interface Message {
+  id: string
+  user_id: string
+  username: string
+  message: string
+  created_at: string
+  avatar_url?: string
 }
 
 export default function ChatMessage({
@@ -64,6 +64,7 @@ export default function ChatMessage({
   onUnpin,
   isAdmin,
 }: ChatMessageProps): ReactElement {
+  // Collect all usernames from msgs for mention highlighting
   const avatarColor = getColorFromUsername(msg.username)
 
   // Show avatar if first message, or previous message is from a different user, or more than 1 minute has passed since previous message

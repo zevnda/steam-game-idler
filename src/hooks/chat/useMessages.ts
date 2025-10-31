@@ -201,6 +201,10 @@ export function useMessages({
           )
           return [...filtered, newMsg]
         })
+        // Play mention beep only if the new message mentions the current user
+        if (userSummary?.personaName && newMsg.message.includes(`@${userSummary.personaName}`)) {
+          playMentionBeep()
+        }
         if (container) {
           const threshold = 10
           const isAtBottom = container.scrollTop + container.clientHeight >= container.scrollHeight - threshold
@@ -221,7 +225,7 @@ export function useMessages({
     return () => {
       supabase.removeChannel(channel)
     }
-  }, [userSummary?.steamId, pagination, messagesContainerRef])
+  }, [userSummary?.steamId, userSummary?.personaName, pagination, messagesContainerRef])
 
   const handleSendMessage = async (message: string): Promise<void> => {
     if (!message.trim()) return
@@ -230,7 +234,7 @@ export function useMessages({
     // Upsert user to 'users' table before sending message
     const { data: existingUser } = await supabase
       .from('users')
-      .select('user_id,username')
+      .select('user_id,username,avatar_url')
       .eq('user_id', steamId)
       .single()
 
@@ -242,15 +246,21 @@ export function useMessages({
         {
           user_id: steamId,
           username: currentUsername,
+          avatar_url: userSummary?.avatar || null,
           role: null,
         },
       ])
-    } else if (!existingUser.username || existingUser.username !== currentUsername) {
-      // User exists but username is missing or changed, update
+    } else if (
+      !existingUser.username ||
+      existingUser.username !== currentUsername ||
+      existingUser.avatar_url !== (userSummary?.avatar || null)
+    ) {
+      // User exists but username or avatar is missing or changed, update
       await supabase
         .from('users')
         .update({
           username: currentUsername,
+          avatar_url: userSummary?.avatar || null,
         })
         .eq('user_id', steamId)
     }
@@ -318,6 +328,25 @@ export function useMessages({
       setPinnedMessage(localMsg)
     }
   }, [pinnedMessageId, messages, setPinnedMessage])
+
+  function playMentionBeep(): void {
+    try {
+      const AudioCtx =
+        window.AudioContext || (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext
+      const ctx = new AudioCtx()
+      const oscillator = ctx.createOscillator()
+      const gain = ctx.createGain()
+      oscillator.type = 'sine'
+      oscillator.frequency.value = 1500
+      gain.gain.setValueAtTime(0.4, ctx.currentTime)
+      gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.2)
+      oscillator.connect(gain)
+      gain.connect(ctx.destination)
+      oscillator.start()
+      oscillator.stop(ctx.currentTime + 0.3)
+      oscillator.onended = () => ctx.close()
+    } catch {}
+  }
 
   return {
     messages,
