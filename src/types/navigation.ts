@@ -32,4 +32,5 @@ export interface SidebarItem {
   customClassName?: string
   hasDivider?: boolean
   isBeta?: boolean
+  hasUnread?: boolean
 }

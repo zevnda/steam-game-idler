@@ -1,7 +1,6 @@
 import type { ReactElement } from 'react'
 
 import { Skeleton } from '@heroui/react'
-import React from 'react'
 
 interface ChatHeaderProps {
   motd: string

@@ -1,3 +1,26 @@
+<!-- 2.2.1 -->
+
+### Changes in v2.2.1
+
+- Multiple improvements, new features, and fixes for the chat feature
+  - Improved the user mentioning system
+    - Discord style: Type `@` in chat followed by the user you want to mention
+    - Now has auto-complete when pressing `TAB` as well as a list to display mentionable users
+  - Added notification sounds and dots on the `chatbox` icon in the `sidebar`
+    - If there are any unread messages, the dot will be red
+    - If you have been mentioned, the dot will be yellow
+    - Notification dots are only visible when not actively viewing the chat
+    - Notification sounds are played when you are mentioned, even when that chat isn't open
+      - I will add a setting to allow users to disable chat sounds in the next update
+  - Added image lightbox to allow images to be opened and viewed in a larger format
+  - Added reply functionality
+    - Hover over a message and click the reply button to reply to that user's message with a quote
+    - The user you are replying to will be mentioned and receive a notification sound
+  - Fixed an issue causing the chat to become "laggy" while typing
+  - Fixed an issue causing the chat to not scroll to the bottom when new messages were received
+  - Changes to user roles are immediate and no longer require the user to refresh the chat to see the changes
+  - Other miscellaneous style improvements
+
 <!-- 2.2.0 -->
 
 ### Changes in v2.2.0

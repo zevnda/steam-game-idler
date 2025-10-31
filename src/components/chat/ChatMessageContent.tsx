@@ -1,13 +1,25 @@
 import type { UserSummary } from '@/types'
-import type { AnchorHTMLAttributes, MouseEvent, ReactElement } from 'react'
+import type {
+  AnchorHTMLAttributes,
+  BlockquoteHTMLAttributes,
+  ImgHTMLAttributes,
+  MouseEvent,
+  ReactElement,
+  ReactNode,
+} from 'react'
 
 import { open } from '@tauri-apps/plugin-shell'
 
-import React from 'react'
+import { cn } from '@heroui/react'
+import { Children, isValidElement, useEffect, useState } from 'react'
+import { createClient } from '@supabase/supabase-js'
+import Image from 'next/image'
+import { BsArrow90DegRight } from 'react-icons/bs'
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
-import remarkBreaks from 'remark-breaks'
 import remarkGfm from 'remark-gfm'
+
+import { useStateContext } from '@/components/contexts/StateContext'
 
 interface ChatMessageContentProps {
   message: string
@@ -30,26 +42,223 @@ function MarkdownLink(props: AnchorHTMLAttributes<HTMLAnchorElement>): ReactElem
   )
 }
 
-const preprocessMessage = (text: string, username?: string): string => {
+const supabase = createClient(
+  'https://inbxfhxkrhwiybnephlq.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImluYnhmaHhrcmh3aXlibmVwaGxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3Njc5NjgsImV4cCI6MjA3NzM0Mzk2OH0.xUbDMdMUk7S2FgRZu8itWr4WsIV41TX-sNgilXiZg_Y',
+)
+
+const preprocessMessage = (text: string, validMentions: string[]): string => {
   let processed = text
-  if (username) {
-    const regex = new RegExp(`(@${username})\\b`, 'gi')
-    // eslint-disable-next-line quotes
-    processed = processed.replace(regex, `<span class='mention-highlight'>$1</span>`)
+  if (validMentions && validMentions.length > 0) {
+    validMentions.forEach(username => {
+      // Updated regex: allow any username, including hyphens and numbers
+      // Escape username for regex safety
+      const escapedUsername = username.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+      const regex = new RegExp(`(@${escapedUsername})(?![\\w-])`, 'gi')
+      // eslint-disable-next-line quotes
+      processed = processed.replace(regex, `<span class='mention-highlight'>$1</span>`)
+    })
   }
   return processed
 }
 
-const ChatMessageContent: React.FC<ChatMessageContentProps> = ({ message, userSummary }: ChatMessageContentProps) => (
-  <div>
-    <ReactMarkdown
-      rehypePlugins={[rehypeRaw]}
-      remarkPlugins={[remarkGfm, remarkBreaks]}
-      components={{ a: MarkdownLink }}
-    >
-      {preprocessMessage(message.trim(), userSummary?.personaName)}
-    </ReactMarkdown>
-  </div>
-)
+const preprocessBlockquotes = (text: string): string => {
+  // Split into lines, wrap lines starting with '>' in blockquote, others as-is
+  const lines = text.split('\n')
+  let result = ''
+  let inBlockquote = false
+  lines.forEach((line, idx) => {
+    if (/^\s*>/.test(line)) {
+      if (!inBlockquote) {
+        result += '<blockquote>'
+        inBlockquote = true
+      }
+      result += `<p>${line.replace(/^\s*> ?/, '')}</p>`
+      // If next line is not a blockquote, close
+      if (idx === lines.length - 1 || !/^\s*>/.test(lines[idx + 1])) {
+        result += '</blockquote>'
+        inBlockquote = false
+      }
+    } else {
+      result += `<p>${line}</p>`
+    }
+  })
+  return result
+}
 
-export default ChatMessageContent
+const FIXED_IMG_SIZE = 200
+
+// Custom blockquote renderer to inject the arrow icon
+const MarkdownBlockquote = (
+  props: BlockquoteHTMLAttributes<HTMLQuoteElement> & { children?: ReactNode },
+): ReactElement => {
+  // Check if any child contains ':arrow:'
+  let hasArrow = false
+  Children.forEach(props.children, child => {
+    if (typeof child === 'string' && child.includes(':arrow:')) {
+      hasArrow = true
+    }
+    if (
+      isValidElement(child) &&
+      (child.props as { children?: ReactNode }) &&
+      typeof (child.props as { children?: ReactNode }).children === 'string'
+    ) {
+      if (((child.props as { children?: ReactNode }).children as string).includes(':arrow:')) {
+        hasArrow = true
+      }
+    }
+    if (
+      isValidElement(child) &&
+      (child.props as { children?: ReactNode }) &&
+      Array.isArray((child.props as { children?: ReactNode }).children)
+    ) {
+      const childrenArr = (child.props as { children?: ReactNode }).children as unknown[]
+      if (
+        childrenArr.length > 0 &&
+        typeof childrenArr[0] === 'string' &&
+        (childrenArr[0] as string).includes(':arrow:')
+      ) {
+        hasArrow = true
+      }
+    }
+  })
+
+  // Replace ':arrow:' with the icon
+  const replaced = Children.map(props.children, child => {
+    if (typeof child === 'string') {
+      return child.replace(':arrow:', '') // Remove the placeholder if present
+    }
+
+    if (
+      isValidElement(child) &&
+      (child.props as { children?: ReactNode }) &&
+      typeof (child.props as { children?: ReactNode }).children === 'string'
+    ) {
+      const text = (child.props as { children?: ReactNode }).children as string
+      if (text.startsWith(':arrow:')) {
+        return (
+          <p>
+            <BsArrow90DegRight className='inline mr-1' />
+            {text.replace(':arrow:', '')}
+          </p>
+        )
+      }
+    }
+
+    if (
+      isValidElement(child) &&
+      (child.props as { children?: ReactNode }) &&
+      Array.isArray((child.props as { children?: ReactNode }).children)
+    ) {
+      const childrenArr = (child.props as { children?: ReactNode }).children as ReactNode[]
+      if (
+        childrenArr.length > 0 &&
+        typeof childrenArr[0] === 'string' &&
+        (childrenArr[0] as string).startsWith(':arrow:')
+      ) {
+        return (
+          <p>
+            <BsArrow90DegRight className='inline mr-1' />
+            {(childrenArr[0] as string).replace(':arrow:', '')}
+            {childrenArr.slice(1) as ReactNode[]}
+          </p>
+        )
+      }
+    }
+    return child
+  })
+
+  return (
+    <blockquote
+      style={
+        hasArrow ? { paddingLeft: '2px', userSelect: 'none' } : { borderLeft: '4px solid #555559', paddingLeft: '6px' }
+      }
+    >
+      {replaced}
+    </blockquote>
+  )
+}
+
+export default function ChatMessageContent({ message, userSummary }: ChatMessageContentProps): ReactElement {
+  const [modalImg, setModalImg] = useState<string | null>(null)
+  const { sidebarCollapsed, transitionDuration } = useStateContext()
+  const [validMentions, setValidMentions] = useState<string[]>([])
+
+  // Extract all @username patterns from the message and check Supabase
+  useEffect(() => {
+    // Updated regex: match @ followed by any sequence of non-whitespace, non-punctuation characters
+    const mentionRegex = /@([^\s.,!?;:]+)/g
+    const found = Array.from(message.matchAll(mentionRegex)).map(m => m[1])
+    if (found.length === 0) {
+      setValidMentions([])
+      return
+    }
+    // Query Supabase for these usernames
+    const fetchMentions = async (): Promise<void> => {
+      const { data, error } = await supabase.from('users').select('username').in('username', found)
+      if (!error && Array.isArray(data)) {
+        setValidMentions(data.map(u => u.username))
+      } else {
+        setValidMentions([])
+      }
+    }
+    fetchMentions()
+  }, [message])
+
+  // Custom image renderer for markdown
+  const MarkdownImage = (props: ImgHTMLAttributes<HTMLImageElement>): ReactElement => {
+    return (
+      <>
+        <Image
+          src={typeof props.src === 'string' ? props.src : ''}
+          alt={props.alt || 'image'}
+          width={FIXED_IMG_SIZE}
+          height={FIXED_IMG_SIZE}
+          className='max-w-[200px] h-[200px] object-cover cursor-pointer rounded-lg my-2'
+          onClick={() => {
+            if (typeof props.src === 'string') setModalImg(props.src)
+          }}
+        />
+
+        {modalImg === props.src && (
+          <div
+            className={cn(
+              'fixed top-0 bg-[rgba(0,0,0,0.7)] flex justify-center items-center z-[9999]',
+              'flex flex-col h-screen ease-in-out',
+              sidebarCollapsed ? 'w-[calc(100vw-56px)] left-[56px]' : 'w-[calc(100vw-250px)] left-[250px]',
+            )}
+            style={{
+              transitionDuration,
+              transitionProperty: 'width, left',
+            }}
+            onClick={() => setModalImg(null)}
+          >
+            <Image
+              src={modalImg}
+              alt='enlarged'
+              width={800}
+              height={800}
+              className='min-w-[500px] min-h-[500px] rounded-lg'
+            />
+          </div>
+        )}
+      </>
+    )
+  }
+
+  return (
+    <div>
+      <ReactMarkdown
+        rehypePlugins={[rehypeRaw]}
+        remarkPlugins={[remarkGfm]}
+        components={{
+          a: MarkdownLink,
+          img: MarkdownImage,
+          blockquote: MarkdownBlockquote,
+        }}
+      >
+        {preprocessBlockquotes(preprocessMessage(message.trim(), validMentions))}
+      </ReactMarkdown>
+    </div>
+  )
+}

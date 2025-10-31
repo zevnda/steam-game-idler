@@ -2,7 +2,7 @@ import type { SidebarItem } from '@/types/navigation'
 import type { ReactElement } from 'react'
 
 import { Button, cn, Divider } from '@heroui/react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FiLogOut } from 'react-icons/fi'
 import { RiChatSmile2Line, RiSearchLine } from 'react-icons/ri'
@@ -30,6 +30,8 @@ import SearchBar from '@/components/ui/SearchBar'
 import useSideBar from '@/hooks/ui/useSideBar'
 
 export default function SideBar(): ReactElement {
+  // (All context and state hooks are declared below, only once)
+
   const { t } = useTranslation()
   const [showSearchModal, setShowSearchModal] = useState(false)
   const { idleGamesList } = useIdleContext()
@@ -43,7 +45,23 @@ export default function SideBar(): ReactElement {
   } = useStateContext()
   const { activePage, setActivePage } = useNavigationContext()
   const searchContent = useSearchContext()
-  const { isOpen, onOpenChange, openConfirmation, handleLogout } = useSideBar(activePage, setActivePage)
+  const {
+    isOpen,
+    onOpenChange,
+    openConfirmation,
+    handleLogout,
+    hasUnreadChat,
+    setHasUnreadChat,
+    hasBeenMentionedSinceLastRead,
+  } = useSideBar(activePage, setActivePage)
+
+  // When user navigates to chat, update last read and reset unread
+  useEffect(() => {
+    if (activePage === 'chat') {
+      localStorage.setItem('chatLastRead', new Date().toISOString())
+      setHasUnreadChat(false)
+    }
+  }, [activePage, setHasUnreadChat])
 
   const mainSidebarItems: SidebarItem[] = [
     {
@@ -102,6 +120,7 @@ export default function SideBar(): ReactElement {
       title: t('chat.title'),
       icon: RiChatSmile2Line,
       isBeta: true,
+      hasUnread: hasUnreadChat,
     },
     {
       id: 'free-games',
@@ -121,6 +140,7 @@ export default function SideBar(): ReactElement {
     const isCurrentPage = activePage === item.page
     const isFreeGames = item.id === 'free-games'
     const isBeta = item.isBeta
+    const isChat = item.id === 'chat'
 
     return (
       <div className='overflow-hidden' key={item.id}>
@@ -144,8 +164,16 @@ export default function SideBar(): ReactElement {
                 sidebarCollapsed ? 'justify-center' : 'justify-start',
               )}
             >
-              <div className='shrink-0'>
+              <div className='relative shrink-0'>
                 <Icon fontSize={20} className={isFreeGames ? 'text-[#ffc700]' : undefined} />
+                {isChat && item.hasUnread && (
+                  <span
+                    className={cn(
+                      'absolute flex justify-center items-center w-2 h-2 top-0 right-0 text-white text-[10px] font-bold rounded-full shadow',
+                      hasBeenMentionedSinceLastRead ? 'bg-[#ffc700]' : 'bg-danger',
+                    )}
+                  />
+                )}
               </div>
               {!sidebarCollapsed && (
                 <div className={cn('transition-all duration-500 ease-in-out overflow-hidden whitespace-nowrap')}>

@@ -1,5 +1,6 @@
+import type { ReactElement } from 'react'
+
 import { Tooltip } from '@heroui/react'
-import React from 'react'
 import { FaCrown } from 'react-icons/fa'
 import { FaRocket, FaShield } from 'react-icons/fa6'
 
@@ -7,7 +8,7 @@ interface ChatRoleBadgeProps {
   role: string
 }
 
-const ChatRoleBadge: React.FC<ChatRoleBadgeProps> = ({ role }) => {
+export default function ChatRoleBadge({ role }: ChatRoleBadgeProps): ReactElement | null {
   if (role === 'admin') {
     return (
       <Tooltip content='Admin' className='text-xs' delay={500} closeDelay={0} showArrow>
@@ -29,7 +30,6 @@ const ChatRoleBadge: React.FC<ChatRoleBadgeProps> = ({ role }) => {
       </Tooltip>
     )
   }
+
   return null
 }
-
-export default ChatRoleBadge

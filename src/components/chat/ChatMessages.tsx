@@ -1,8 +1,9 @@
+import type { ChatMessageType } from '@/hooks/chat/useMessages'
 import type { UserSummary } from '@/types'
 import type { ReactElement, RefObject } from 'react'
 
 import { Spinner } from '@heroui/react'
-import React, { useEffect } from 'react'
+import { memo, useEffect, useRef } from 'react'
 import ChatDateDivider from './ChatDateDivider'
 import ChatMessage from './ChatMessage'
 
@@ -28,12 +29,13 @@ interface ChatMessagesProps {
   getRoleColor: (role: string) => string
   inputRef: RefObject<HTMLTextAreaElement>
   pinnedMessageId?: string | null
-  handlePinMessage?: (msgId: string) => void
+  handlePinMessage?: (message: ChatMessageType) => void
   handleUnpinMessage?: () => void
   isAdmin?: boolean
+  onReply?: (msg: Message) => void // Add this
 }
 
-export default function ChatMessages({
+const ChatMessages = ({
   loading,
   groupedMessages,
   userSummary,
@@ -53,17 +55,19 @@ export default function ChatMessages({
   handlePinMessage,
   handleUnpinMessage,
   isAdmin,
+  onReply,
 }: ChatMessagesProps & {
   editingMessageId: string | null
   setEditingMessageId: (id: string | null) => void
   editedMessage: string
   setEditedMessage: (msg: string) => void
   pinnedMessageId?: string | null
-  handlePinMessage?: (msgId: string) => void
+  handlePinMessage?: (message: ChatMessageType) => void
   handleUnpinMessage?: () => void
   isAdmin?: boolean
-}): ReactElement {
-  const editTextareaRef = React.useRef<HTMLTextAreaElement>(null)
+  onReply?: (msg: Message) => void
+}): ReactElement => {
+  const editTextareaRef = useRef<HTMLTextAreaElement>(null)
 
   useEffect(() => {
     if (!editingMessageId) return
@@ -127,9 +131,10 @@ export default function ChatMessages({
                     handleDeleteMessage={handleDeleteMessage}
                     inputRef={inputRef}
                     isPinned={isPinnedMessage}
-                    onPin={() => handlePinMessage && handlePinMessage(msg.id)}
+                    onPin={() => handlePinMessage && handlePinMessage(msg)}
                     onUnpin={handleUnpinMessage}
                     isAdmin={isAdmin}
+                    onReply={onReply ? () => onReply(msg) : undefined}
                   />
                 )
               })}
@@ -141,3 +146,5 @@ export default function ChatMessages({
     </div>
   )
 }
+
+export default memo(ChatMessages)
