@@ -226,7 +226,9 @@ export function useMessages({
                 m.message === newMsg.message
               ),
           )
-          return [...filtered, newMsg]
+          // Add new message, then trim to latest pagination.limit messages
+          const updated = [...filtered, newMsg]
+          return updated.length > pagination.limit ? updated.slice(updated.length - pagination.limit) : updated
         })
         // Play mention beep only if the new message mentions the current user
         if (userSummary?.personaName && newMsg.message.includes(`@${userSummary.personaName}`)) {
@@ -301,7 +303,11 @@ export function useMessages({
       created_at: new Date().toISOString(),
       avatar_url: userSummary?.avatar || undefined,
     }
-    setMessages(prev => [...prev, tempMessage])
+    setMessages(prev => {
+      // Add new message, then trim to latest pagination.limit messages
+      const updated = [...prev, tempMessage]
+      return updated.length > pagination.limit ? updated.slice(updated.length - pagination.limit) : updated
+    })
     setShouldScrollToBottom(true)
     const payload = {
       user_id: steamId,
