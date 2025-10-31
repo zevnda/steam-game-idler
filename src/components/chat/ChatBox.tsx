@@ -515,6 +515,7 @@ export default function ChatBox(): ReactElement {
             />
           </div>
         )}
+
         <ChatMessages
           loading={pagination.offset === 0 ? loading : false}
           groupedMessages={groupedMessages}
@@ -536,6 +537,7 @@ export default function ChatBox(): ReactElement {
           handleUnpinMessage={handleUnpinMessage}
           isAdmin={userRoles[String(userSummary?.steamId)] === 'admin'}
         />
+
         <ChatInput
           inputRef={inputRef}
           newMessage={newMessage}
