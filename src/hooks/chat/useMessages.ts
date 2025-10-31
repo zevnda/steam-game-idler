@@ -356,6 +356,24 @@ export function useMessages({
     }
   }, [pinnedMessageId, messages, setPinnedMessage])
 
+  useEffect(() => {
+    // Update last_active timestamp for current user every 30 seconds
+    let interval: NodeJS.Timeout | undefined
+    if (userSummary?.steamId) {
+      const updateLastActive = async (): Promise<void> => {
+        await supabase
+          .from('users')
+          .update({ last_active: new Date().toISOString() })
+          .eq('user_id', userSummary.steamId)
+      }
+      updateLastActive()
+      interval = setInterval(updateLastActive, 30000)
+    }
+    return () => {
+      if (interval) clearInterval(interval)
+    }
+  }, [userSummary?.steamId])
+
   return {
     messages,
     setMessages,

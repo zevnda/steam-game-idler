@@ -14,6 +14,7 @@ import { useStateContext } from '@/components/contexts/StateContext'
 import { useChatMaintenanceMode } from '@/hooks/chat/useChatMaintenanceMode'
 import { useMessages } from '@/hooks/chat/useMessages'
 import { useMotd } from '@/hooks/chat/useMotd'
+import { useOnlineUsers } from '@/hooks/chat/useOnlineUsers'
 import { usePinnedMessage } from '@/hooks/chat/usePinnedMessage'
 import { useUserRoles } from '@/hooks/chat/useUserRoles'
 
@@ -59,6 +60,7 @@ export default function ChatBox(): ReactElement {
     setPinnedMessage,
   })
   const motd = useMotd()
+  const onlineCount = useOnlineUsers()
 
   const [replyToMessage, setReplyToMessage] = useState<ChatMessageType | null>(null)
 
@@ -108,7 +110,7 @@ export default function ChatBox(): ReactElement {
           transitionProperty: 'width',
         }}
       >
-        <ChatHeader motd={motd} />
+        <ChatHeader motd={motd} onlineCount={onlineCount} />
         <ChatMaintenance />
       </div>
     )
@@ -126,7 +128,7 @@ export default function ChatBox(): ReactElement {
           transitionProperty: 'width',
         }}
       >
-        <ChatHeader motd={motd} />
+        <ChatHeader motd={motd} onlineCount={onlineCount} />
         <ChatBanned />
       </div>
     )
@@ -144,7 +146,7 @@ export default function ChatBox(): ReactElement {
           transitionProperty: 'width',
         }}
       >
-        <ChatHeader motd={motd} />
+        <ChatHeader motd={motd} onlineCount={onlineCount} />
         {/* Pinned message at top */}
         {pinnedMessage && (
           <div className='mb-2 border-b border-border'>

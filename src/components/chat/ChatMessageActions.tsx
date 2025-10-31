@@ -84,7 +84,6 @@ export default function ChatMessageActions({
           )}
           startContent={<FaUserAltSlash size={14} className='text-[#f23f43]' />}
           onPress={onBan}
-          aria-label='Ban user'
         />
       )}
     </div>
