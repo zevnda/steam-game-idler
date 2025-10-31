@@ -8,7 +8,6 @@ import { useState } from 'react'
 import Image from 'next/image'
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
-import remarkBreaks from 'remark-breaks'
 import remarkGfm from 'remark-gfm'
 
 import { useStateContext } from '@/components/contexts/StateContext'
@@ -95,7 +94,7 @@ export default function ChatMessageContent({ message, userSummary }: ChatMessage
     <div>
       <ReactMarkdown
         rehypePlugins={[rehypeRaw]}
-        remarkPlugins={[remarkGfm, remarkBreaks]}
+        remarkPlugins={[remarkGfm]}
         components={{ a: MarkdownLink, img: MarkdownImage }}
       >
         {preprocessMessage(message.trim(), userSummary?.personaName)}
