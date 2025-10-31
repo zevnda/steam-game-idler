@@ -92,10 +92,10 @@ export default function ChatMessage({
   const isLastFromUser =
     idx === msgs.length - 1 ||
     msgs[idx + 1]?.user_id !== msg.user_id ||
-    (msgs[idx + 1] && new Date(msgs[idx + 1].created_at).getTime() - new Date(msg.created_at).getTime() > 60000)
+    (msgs[idx + 1] && new Date(msgs[idx + 1].created_at).getTime() - new Date(msg.created_at).getTime() > 3 * 60 * 1000)
   const currentRole = userRoles[msg.user_id] || 'user'
 
-  // Ban user handler (only for admins)
+  // Ban user handler
   const handleBanUser = async (): Promise<void> => {
     await supabase.from('users').update({ is_banned: true }).eq('user_id', msg.user_id)
     // Optionally, show a toast or feedback here
