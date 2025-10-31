@@ -51,6 +51,10 @@ const supabase = createClient(
 
 const preprocessMessage = (text: string, validMentions: string[]): string => {
   let processed = text
+  // Replace image URLs with Markdown image syntax
+  const imageUrlRegex = /(https?:\/\/(?:[\w.-]+)\/(?:[\w\-./%]+)\.(?:jpg|jpeg|png|gif|webp|svg))(?![^\s])/gi
+  processed = processed.replace(imageUrlRegex, url => `![](${url})`)
+
   if (validMentions && validMentions.length > 0) {
     validMentions.forEach(username => {
       // Escape username for regex safety

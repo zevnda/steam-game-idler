@@ -1,11 +1,13 @@
 import type { ReactElement, RefObject } from 'react'
 
 import { Button, cn, Textarea } from '@heroui/react'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import emojiData from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
+import { createClient } from '@supabase/supabase-js'
 import Image from 'next/image'
 import { useTranslation } from 'react-i18next'
+import { FaImage } from 'react-icons/fa6'
 import { IoSend } from 'react-icons/io5'
 
 import { useUserContext } from '@/components/contexts/UserContext'
@@ -14,6 +16,11 @@ import { useEmojiPicker } from '@/hooks/chat/useEmojiPicker'
 import { useMentionUsers } from '@/hooks/chat/useMentionUsers'
 import { useReplyPrefill } from '@/hooks/chat/useReplyPrefill'
 import { useTypingUsers } from '@/hooks/chat/useTypingUsers'
+
+const supabase = createClient(
+  'https://inbxfhxkrhwiybnephlq.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImluYnhmaHhrcmh3aXlibmVwaGxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3Njc5NjgsImV4cCI6MjA3NzM0Mzk2OH0.xUbDMdMUk7S2FgRZu8itWr4WsIV41TX-sNgilXiZg_Y',
+)
 
 interface ChatInputProps {
   inputRef: RefObject<HTMLTextAreaElement>
@@ -33,6 +40,7 @@ export default function ChatInput({
   const [newMessage, setNewMessage] = useState('')
   const { t } = useTranslation()
   const { userSummary } = useUserContext()
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const currentUser = {
     user_id: userSummary?.steamId ?? '',
@@ -59,6 +67,89 @@ export default function ChatInput({
   // Broadcast stop_typing on submit
   const handleSend = (): void => {
     broadcastStopTyping()
+  }
+
+  const uploadImageToSupabase = async (file: File): Promise<string | null> => {
+    try {
+      // Generate a unique filename
+      const fileExt = file.name.split('.').pop()
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
+      const filePath = `${fileName}`
+
+      // Upload to Supabase Storage
+      const { data, error } = await supabase.storage
+        .from('sgi-chat') // your bucket name
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false,
+        })
+
+      if (error) {
+        console.error('Error uploading image:', error)
+        return null
+      }
+
+      // Get the public URL
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from('sgi-chat').getPublicUrl(data.path)
+
+      return publicUrl
+    } catch (error) {
+      console.error('Error uploading image:', error)
+      return null
+    }
+  }
+
+  // Handle paste event for images
+  const handleImageUpload = async (e: React.ClipboardEvent<HTMLInputElement>): Promise<void> => {
+    const items = e.clipboardData.items
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i]
+      if (item.type.startsWith('image/')) {
+        const file = item.getAsFile()
+        if (file) {
+          e.preventDefault()
+
+          // Show loading state (optional)
+          // setIsUploading(true)
+
+          const imageUrl = await uploadImageToSupabase(file)
+
+          if (imageUrl) {
+            // Send the message with the image URL
+            onSendMessage(imageUrl)
+            setNewMessage('')
+            setMentionQuery('')
+            setMentionStart(null)
+            if (clearReplyToMessage) clearReplyToMessage()
+          }
+
+          // setIsUploading(false)
+          break
+        }
+      }
+    }
+  }
+
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
+    const file = e.target.files?.[0]
+    if (file) {
+      // Wrap file in a ClipboardEvent-like object for handleImageUpload
+      const fakeClipboardEvent = {
+        clipboardData: {
+          items: [
+            {
+              type: file.type,
+              getAsFile: () => file,
+            },
+          ],
+        },
+        preventDefault: () => {},
+      } as unknown as React.ClipboardEvent<HTMLInputElement>
+      await handleImageUpload(fakeClipboardEvent)
+      e.target.value = ''
+    }
   }
 
   return (
@@ -120,6 +211,26 @@ export default function ChatInput({
               ),
               input: ['!min-h-8 !text-content text-xs placeholder:text-xs placeholder:text-altwhite/50 pt-2'],
             }}
+            startContent={
+              <div className='flex items-center'>
+                <Button
+                  size='sm'
+                  isIconOnly
+                  startContent={<FaImage size={16} />}
+                  type='button'
+                  className='text-white/50 bg-transparent hover:bg-white/10 transition-colors'
+                  onPress={() => fileInputRef.current?.click()}
+                  aria-label='Upload image'
+                />
+                <input
+                  ref={fileInputRef}
+                  type='file'
+                  accept='image/png,image/jpeg,image/jpg,image/webp'
+                  style={{ display: 'none' }}
+                  onChange={handleFileSelect}
+                />
+              </div>
+            }
             endContent={
               <div className='relative flex justify-center items-center'>
                 {/* Emoji picker button */}
@@ -211,6 +322,7 @@ export default function ChatInput({
               }
               // SHIFT+ENTER is default (new line)
             }}
+            onPaste={handleImageUpload}
             autoFocus
           />
           {/* Floating mention preview */}
