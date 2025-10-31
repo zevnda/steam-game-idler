@@ -193,8 +193,20 @@ export async function isPortableCheck(): Promise<boolean> {
   }
 }
 
-export function playMentionBeep(): void {
+export async function playMentionBeep(): Promise<void> {
   try {
+    const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
+
+    const response = await invoke<InvokeSettings>('get_user_settings', {
+      steamId: userSummary?.steamId,
+    })
+
+    const settings = response.settings
+
+    const { chatSounds } = settings?.general || {}
+
+    if (!chatSounds) return
+
     const AudioCtx =
       window.AudioContext || (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext
     const ctx = new AudioCtx()
