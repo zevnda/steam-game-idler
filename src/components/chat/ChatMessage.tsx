@@ -101,13 +101,23 @@ export default function ChatMessage({
     // Optionally, show a toast or feedback here
   }
 
+  // Highlight if message mentions us (username or steamId)
+  const mentionRegex = userSummary
+    ? new RegExp(
+        `@(${userSummary.personaName.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')}|${userSummary.steamId})\\b`,
+        'i',
+      )
+    : null
+  const isMentioned = mentionRegex ? mentionRegex.test(msg.message) : false
+
   return (
     <div
       key={msg.id}
       data-message-id={msg.id}
       className={cn(
-        'group hover:bg-white/3 px-4 py-0 -mx-4 transition-colors duration-75 flex relative',
+        'group px-4 py-0 -mx-4 transition-colors duration-75 flex relative',
         isLastFromUser && 'mb-3',
+        isMentioned ? 'bg-blue-900/30 border-l-2 border-blue-400 hover:bg-blue-900/40' : 'hover:bg-white/3',
       )}
     >
       <div className='flex gap-4 flex-1'>
