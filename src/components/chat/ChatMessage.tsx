@@ -7,6 +7,7 @@ import ChatEditControls from './ChatEditControls'
 import ChatMessageActions from './ChatMessageActions'
 import ChatMessageContent from './ChatMessageContent'
 import ChatRoleBadge from './ChatRoleBadge'
+import { createClient } from '@supabase/supabase-js'
 
 import ExtLink from '@/components/ui/ExtLink'
 
@@ -42,6 +43,11 @@ export interface Message {
   created_at: string
   avatar_url?: string
 }
+
+const supabase = createClient(
+  'https://inbxfhxkrhwiybnephlq.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImluYnhmaHhrcmh3aXlibmVwaGxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3Njc5NjgsImV4cCI6MjA3NzM0Mzk2OH0.xUbDMdMUk7S2FgRZu8itWr4WsIV41TX-sNgilXiZg_Y',
+)
 
 export default function ChatMessage({
   msg,
@@ -88,6 +94,12 @@ export default function ChatMessage({
     msgs[idx + 1]?.user_id !== msg.user_id ||
     (msgs[idx + 1] && new Date(msgs[idx + 1].created_at).getTime() - new Date(msg.created_at).getTime() > 60000)
   const currentRole = userRoles[msg.user_id] || 'user'
+
+  // Ban user handler (only for admins)
+  const handleBanUser = async (): Promise<void> => {
+    await supabase.from('users').update({ is_banned: true }).eq('user_id', msg.user_id)
+    // Optionally, show a toast or feedback here
+  }
 
   return (
     <div
@@ -185,6 +197,7 @@ export default function ChatMessage({
           isPinned={isPinned}
           isAdmin={isAdmin}
           onReply={onReply}
+          onBan={isAdmin ? handleBanUser : undefined}
         />
       </div>
     </div>

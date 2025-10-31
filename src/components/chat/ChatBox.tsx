@@ -8,6 +8,7 @@ import ChatHeader from './ChatHeader'
 import ChatInput from './ChatInput'
 import ChatMessages from './ChatMessages'
 
+import ChatBanned from '@/components/chat/ChatBanned'
 import ChatMaintenance from '@/components/chat/ChatMaintenance'
 import { useStateContext } from '@/components/contexts/StateContext'
 import { useChatMaintenanceMode } from '@/hooks/chat/useChatMaintenanceMode'
@@ -24,6 +25,7 @@ export default function ChatBox(): ReactElement {
   const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
 
   const chatMaintenanceMode = useChatMaintenanceMode()
+
   const { userRoles } = useUserRoles()
   const { pinnedMessageId, pinnedMessage, handlePinMessage, handleUnpinMessage, setPinnedMessage } =
     usePinnedMessage() as {
@@ -46,6 +48,7 @@ export default function ChatBox(): ReactElement {
     setEditedMessage,
     handleEditLastMessage,
     groupMessagesByDate,
+    isBanned,
   } = useMessages({
     userSummary,
     userRoles,
@@ -107,6 +110,24 @@ export default function ChatBox(): ReactElement {
       >
         <ChatHeader motd={motd} />
         <ChatMaintenance />
+      </div>
+    )
+  }
+
+  if (isBanned) {
+    return (
+      <div
+        className={cn(
+          'flex flex-col h-screen ease-in-out',
+          sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]',
+        )}
+        style={{
+          transitionDuration,
+          transitionProperty: 'width',
+        }}
+      >
+        <ChatHeader motd={motd} />
+        <ChatBanned />
       </div>
     )
   }

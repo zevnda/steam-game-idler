@@ -19,7 +19,6 @@ export interface ChatMessageType {
   message: string
   created_at: string
   avatar_url?: string
-  // Add other fields if needed
 }
 
 interface UseMessagesParams {
@@ -59,6 +58,7 @@ export function useMessages({
   handleEditLastMessage: () => void
   groupMessagesByDate: (msgs: ChatMessageType[]) => { [key: string]: ChatMessageType[] }
   scrollToBottom: () => void
+  isBanned: boolean
 } {
   const [shouldScrollToBottom, setShouldScrollToBottom] = useState(true)
   const [messages, setMessages] = useState<ChatMessageType[]>([])
@@ -67,6 +67,33 @@ export function useMessages({
   const [pagination, setPagination] = useState({ limit: 25, offset: 0 })
   const [editingMessageId, setEditingMessageId] = useState<string | null>(null)
   const [editedMessage, setEditedMessage] = useState('')
+  const [isBanned, setIsBanned] = useState(false)
+
+  useEffect(() => {
+    const fetchBannedStatus = async (): Promise<void> => {
+      if (!userSummary?.steamId) return
+      const { data, error } = await supabase
+        .from('users')
+        .select('is_banned')
+        .eq('user_id', userSummary.steamId)
+        .single()
+      if (!error && data?.is_banned === true) setIsBanned(true)
+      else setIsBanned(false)
+    }
+    fetchBannedStatus()
+    // Listen for changes to banned status
+    const channel = supabase
+      .channel('users_ban_status')
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'users' }, payload => {
+        if (payload.new?.user_id === userSummary?.steamId) {
+          setIsBanned(payload.new?.is_banned === true)
+        }
+      })
+      .subscribe()
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [userSummary?.steamId])
 
   useEffect(() => {
     const container = messagesContainerRef.current
@@ -145,10 +172,6 @@ export function useMessages({
     }
   }, [editingMessageId, inputRef])
 
-  useEffect(() => {
-    // ...existing code for user roles fetch, not needed here...
-  }, [])
-
   const scrollToBottom = useCallback((): void => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'auto' })
   }, [messagesEndRef])
@@ -161,10 +184,6 @@ export function useMessages({
   }, [loading, messages, scrollToBottom, shouldScrollToBottom])
 
   useEffect(() => {
-    // ...existing code for MOTD fetch, not needed here...
-  }, [])
-
-  useEffect(() => {
     const fetchMessages = async (): Promise<void> => {
       setLoading(true)
       const { data, error, count } = await supabase
@@ -173,7 +192,8 @@ export function useMessages({
         .order('created_at', { ascending: false })
         .range(pagination.offset, pagination.offset + pagination.limit - 1)
       if (error) {
-        // ...existing code...
+        setLoading(false)
+        return
       } else {
         const newMessages = ((data || []) as ChatMessageType[]).reverse()
         setMessages(current => {
@@ -355,5 +375,6 @@ export function useMessages({
     handleEditLastMessage,
     groupMessagesByDate,
     scrollToBottom,
+    isBanned,
   }
 }
