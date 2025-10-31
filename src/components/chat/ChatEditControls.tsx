@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react'
+import type { ReactElement, RefObject } from 'react'
 
 import { cn, Textarea } from '@heroui/react'
 import { useEffect, useRef } from 'react'
@@ -9,7 +9,7 @@ interface ChatEditControlsProps {
   setEditedMessage: (msg: string) => void
   onSave: () => void
   onCancel: () => void
-  textareaRef: React.RefObject<HTMLTextAreaElement>
+  textareaRef: RefObject<HTMLTextAreaElement>
 }
 
 export default function ChatEditControls({

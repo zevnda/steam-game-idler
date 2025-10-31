@@ -1,12 +1,20 @@
 import type { UserSummary } from '@/types'
-import type { AnchorHTMLAttributes, MouseEvent, ReactElement } from 'react'
+import type {
+  AnchorHTMLAttributes,
+  BlockquoteHTMLAttributes,
+  ImgHTMLAttributes,
+  MouseEvent,
+  ReactElement,
+  ReactNode,
+} from 'react'
 
 import { open } from '@tauri-apps/plugin-shell'
 
 import { cn } from '@heroui/react'
-import { useEffect, useState } from 'react'
+import { Children, isValidElement, useEffect, useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import Image from 'next/image'
+import { BsArrow90DegRight } from 'react-icons/bs'
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
@@ -54,7 +62,122 @@ const preprocessMessage = (text: string, validMentions: string[]): string => {
   return processed
 }
 
+const preprocessBlockquotes = (text: string): string => {
+  // Split into lines, wrap lines starting with '>' in blockquote, others as-is
+  const lines = text.split('\n')
+  let result = ''
+  let inBlockquote = false
+  lines.forEach((line, idx) => {
+    if (/^\s*>/.test(line)) {
+      if (!inBlockquote) {
+        result += '<blockquote>'
+        inBlockquote = true
+      }
+      result += `<p>${line.replace(/^\s*> ?/, '')}</p>`
+      // If next line is not a blockquote, close
+      if (idx === lines.length - 1 || !/^\s*>/.test(lines[idx + 1])) {
+        result += '</blockquote>'
+        inBlockquote = false
+      }
+    } else {
+      result += `<p>${line}</p>`
+    }
+  })
+  return result
+}
+
 const FIXED_IMG_SIZE = 200
+
+// Custom blockquote renderer to inject the arrow icon
+const MarkdownBlockquote = (
+  props: BlockquoteHTMLAttributes<HTMLQuoteElement> & { children?: ReactNode },
+): ReactElement => {
+  // Check if any child contains ':arrow:'
+  let hasArrow = false
+  Children.forEach(props.children, child => {
+    if (typeof child === 'string' && child.includes(':arrow:')) {
+      hasArrow = true
+    }
+    if (
+      isValidElement(child) &&
+      (child.props as { children?: ReactNode }) &&
+      typeof (child.props as { children?: ReactNode }).children === 'string'
+    ) {
+      if (((child.props as { children?: ReactNode }).children as string).includes(':arrow:')) {
+        hasArrow = true
+      }
+    }
+    if (
+      isValidElement(child) &&
+      (child.props as { children?: ReactNode }) &&
+      Array.isArray((child.props as { children?: ReactNode }).children)
+    ) {
+      const childrenArr = (child.props as { children?: ReactNode }).children as unknown[]
+      if (
+        childrenArr.length > 0 &&
+        typeof childrenArr[0] === 'string' &&
+        (childrenArr[0] as string).includes(':arrow:')
+      ) {
+        hasArrow = true
+      }
+    }
+  })
+
+  // Replace ':arrow:' with the icon
+  const replaced = Children.map(props.children, child => {
+    if (typeof child === 'string') {
+      return child.replace(':arrow:', '') // Remove the placeholder if present
+    }
+
+    if (
+      isValidElement(child) &&
+      (child.props as { children?: ReactNode }) &&
+      typeof (child.props as { children?: ReactNode }).children === 'string'
+    ) {
+      const text = (child.props as { children?: ReactNode }).children as string
+      if (text.startsWith(':arrow:')) {
+        return (
+          <p>
+            <BsArrow90DegRight className='inline mr-1' />
+            {text.replace(':arrow:', '')}
+          </p>
+        )
+      }
+    }
+
+    if (
+      isValidElement(child) &&
+      (child.props as { children?: ReactNode }) &&
+      Array.isArray((child.props as { children?: ReactNode }).children)
+    ) {
+      const childrenArr = (child.props as { children?: ReactNode }).children as ReactNode[]
+      if (
+        childrenArr.length > 0 &&
+        typeof childrenArr[0] === 'string' &&
+        (childrenArr[0] as string).startsWith(':arrow:')
+      ) {
+        return (
+          <p>
+            <BsArrow90DegRight className='inline mr-1' />
+            {(childrenArr[0] as string).replace(':arrow:', '')}
+            {childrenArr.slice(1) as ReactNode[]}
+          </p>
+        )
+      }
+    }
+    return child
+  })
+
+  return (
+    <blockquote
+      style={
+        hasArrow ? { paddingLeft: '2px', userSelect: 'none' } : { borderLeft: '4px solid #555559', paddingLeft: '6px' }
+      }
+    >
+      {replaced}
+    </blockquote>
+  )
+}
 
 export default function ChatMessageContent({ message, userSummary }: ChatMessageContentProps): ReactElement {
   const [modalImg, setModalImg] = useState<string | null>(null)
@@ -83,7 +206,7 @@ export default function ChatMessageContent({ message, userSummary }: ChatMessage
   }, [message])
 
   // Custom image renderer for markdown
-  const MarkdownImage = (props: React.ImgHTMLAttributes<HTMLImageElement>): ReactElement => {
+  const MarkdownImage = (props: ImgHTMLAttributes<HTMLImageElement>): ReactElement => {
     return (
       <>
         <Image
@@ -128,9 +251,13 @@ export default function ChatMessageContent({ message, userSummary }: ChatMessage
       <ReactMarkdown
         rehypePlugins={[rehypeRaw]}
         remarkPlugins={[remarkGfm]}
-        components={{ a: MarkdownLink, img: MarkdownImage }}
+        components={{
+          a: MarkdownLink,
+          img: MarkdownImage,
+          blockquote: MarkdownBlockquote,
+        }}
       >
-        {preprocessMessage(message.trim(), validMentions)}
+        {preprocessBlockquotes(preprocessMessage(message.trim(), validMentions))}
       </ReactMarkdown>
     </div>
   )

@@ -177,9 +177,9 @@ svg {
 }
 
 .chat-message blockquote {
-  border-left: 3px solid #555559;
-  padding-left: 0.75rem;
-  margin-left: 0;
+  line-height: 14px;
+  font-size: 10px;
+  padding-left: 0.5rem;
   color: #aaaaaa;
 }
 

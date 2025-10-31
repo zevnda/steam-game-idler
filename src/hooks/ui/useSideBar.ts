@@ -52,7 +52,7 @@ export default function useSideBar(
       'https://inbxfhxkrhwiybnephlq.supabase.co',
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImluYnhmaHhrcmh3aXlibmVwaGxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3Njc5NjgsImV4cCI6MjA3NzM0Mzk2OH0.xUbDMdMUk7S2FgRZu8itWr4WsIV41TX-sNgilXiZg_Y',
     )
-    supabaseRef.current = supabase // store client in ref
+    supabaseRef.current = supabase
 
     channel = supabase
       .channel('messages-sidebar')

@@ -18,9 +18,17 @@ interface ChatInputProps {
   inputRef: RefObject<HTMLTextAreaElement>
   onSendMessage: (msg: string) => void
   handleEditLastMessage: () => void
+  replyToMessage?: { username: string; message: string } | null // Add this
+  clearReplyToMessage?: () => void // Add this
 }
 
-export default function ChatInput({ inputRef, onSendMessage, handleEditLastMessage }: ChatInputProps): ReactElement {
+export default function ChatInput({
+  inputRef,
+  onSendMessage,
+  handleEditLastMessage,
+  replyToMessage,
+  clearReplyToMessage,
+}: ChatInputProps): ReactElement {
   const [newMessage, setNewMessage] = useState('')
   const [mentionQuery, setMentionQuery] = useState<string>('')
   const [mentionStart, setMentionStart] = useState<number | null>(null)
@@ -107,6 +115,31 @@ export default function ChatInput({ inputRef, onSendMessage, handleEditLastMessa
     }
   }
 
+  // Prefill textarea with quoted message when replying, and clear after sending.
+  useEffect(() => {
+    if (replyToMessage && inputRef.current) {
+      // Extract only the first line of the message, skipping any nested reply markers
+      let messageContent = replyToMessage.message
+      // If the message starts with "> Replying to:", skip that line
+      if (messageContent.startsWith('> Replying to:')) {
+        // Find the first line break and use the rest
+        const lines = messageContent.split('\n')
+        // If there is more than one line, use the second line as the actual message
+        messageContent = lines.length > 1 ? lines[1] : ''
+      }
+      // Otherwise, use only the first line of the message
+      else {
+        messageContent = messageContent.split('\n')[0]
+      }
+      const quoted = `> :arrow: @${replyToMessage.username} ${messageContent}\n`
+      setNewMessage(quoted)
+      setTimeout(() => {
+        inputRef.current!.focus()
+        inputRef.current!.setSelectionRange(quoted.length, quoted.length)
+      }, 0)
+    }
+  }, [replyToMessage, inputRef])
+
   return (
     <div className='p-2 pt-0'>
       <p className='text-[10px] py-1'>
@@ -127,6 +160,7 @@ export default function ChatInput({ inputRef, onSendMessage, handleEditLastMessa
             setNewMessage('')
             setMentionQuery('')
             setMentionStart(null)
+            if (clearReplyToMessage) clearReplyToMessage()
           }
         }}
       >
@@ -197,6 +231,7 @@ export default function ChatInput({ inputRef, onSendMessage, handleEditLastMessa
                   setNewMessage('')
                   setMentionQuery('')
                   setMentionStart(null)
+                  if (clearReplyToMessage) clearReplyToMessage()
                 }
               }
               // SHIFT+ENTER is default (new line)

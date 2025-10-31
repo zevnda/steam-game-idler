@@ -1,5 +1,5 @@
 import type { UserSummary } from '@/types'
-import type { ReactElement } from 'react'
+import type { ReactElement, RefObject } from 'react'
 
 import { cn, Tooltip } from '@heroui/react'
 import ChatAvatar from './ChatAvatar'
@@ -26,11 +26,12 @@ interface ChatMessageProps {
   setEditedMessage: (msg: string) => void
   handleEditMessage: (msgId: string, newContent: string) => void
   handleDeleteMessage: (msgId: string, msgUserId: string) => void
-  inputRef: React.RefObject<HTMLTextAreaElement>
+  inputRef: RefObject<HTMLTextAreaElement>
   isPinned?: boolean
   onPin?: () => void
   onUnpin?: () => void
   isAdmin?: boolean
+  onReply?: () => void // Add this
 }
 
 export interface Message {
@@ -63,6 +64,7 @@ export default function ChatMessage({
   onPin,
   onUnpin,
   isAdmin,
+  onReply,
 }: ChatMessageProps): ReactElement {
   // Collect all usernames from msgs for mention highlighting
   const avatarColor = getColorFromUsername(msg.username)
@@ -177,6 +179,7 @@ export default function ChatMessage({
             onUnpin={isPinned ? onUnpin : undefined}
             isPinned={isPinned}
             isAdmin={isAdmin}
+            onReply={onReply}
           />
         )}
       </div>

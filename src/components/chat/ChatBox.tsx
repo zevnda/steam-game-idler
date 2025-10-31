@@ -1,9 +1,9 @@
 import type { ChatMessageType } from '@/hooks/chat/useMessages'
 import type { UserSummary } from '@/types'
-import type { ReactElement } from 'react'
+import type { Dispatch, ReactElement, SetStateAction } from 'react'
 
 import { cn } from '@heroui/react'
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import ChatHeader from './ChatHeader'
 import ChatInput from './ChatInput'
 import ChatMessages from './ChatMessages'
@@ -31,7 +31,7 @@ export default function ChatBox(): ReactElement {
       pinnedMessage: ChatMessageType | null
       handlePinMessage: (message: ChatMessageType) => void
       handleUnpinMessage: () => void
-      setPinnedMessage: React.Dispatch<React.SetStateAction<ChatMessageType | null>>
+      setPinnedMessage: Dispatch<SetStateAction<ChatMessageType | null>>
     }
   const {
     messages,
@@ -56,6 +56,8 @@ export default function ChatBox(): ReactElement {
     setPinnedMessage,
   })
   const motd = useMotd()
+
+  const [replyToMessage, setReplyToMessage] = useState<ChatMessageType | null>(null)
 
   const getRoleColor = (role: string): string => {
     switch (role) {
@@ -145,6 +147,7 @@ export default function ChatBox(): ReactElement {
               handlePinMessage={handlePinMessage}
               handleUnpinMessage={handleUnpinMessage}
               isAdmin={userRoles[String(userSummary?.steamId)] === 'admin'}
+              onReply={setReplyToMessage}
             />
           </div>
         )}
@@ -169,12 +172,15 @@ export default function ChatBox(): ReactElement {
           handlePinMessage={handlePinMessage}
           handleUnpinMessage={handleUnpinMessage}
           isAdmin={userRoles[String(userSummary?.steamId)] === 'admin'}
+          onReply={setReplyToMessage}
         />
 
         <ChatInput
           inputRef={inputRef}
           onSendMessage={handleSendMessage}
           handleEditLastMessage={handleEditLastMessage}
+          replyToMessage={replyToMessage}
+          clearReplyToMessage={() => setReplyToMessage(null)}
         />
       </div>
     )

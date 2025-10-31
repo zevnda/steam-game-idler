@@ -32,6 +32,7 @@ interface ChatMessagesProps {
   handlePinMessage?: (message: ChatMessageType) => void
   handleUnpinMessage?: () => void
   isAdmin?: boolean
+  onReply?: (msg: Message) => void // Add this
 }
 
 const ChatMessages = ({
@@ -54,6 +55,7 @@ const ChatMessages = ({
   handlePinMessage,
   handleUnpinMessage,
   isAdmin,
+  onReply,
 }: ChatMessagesProps & {
   editingMessageId: string | null
   setEditingMessageId: (id: string | null) => void
@@ -63,6 +65,7 @@ const ChatMessages = ({
   handlePinMessage?: (message: ChatMessageType) => void
   handleUnpinMessage?: () => void
   isAdmin?: boolean
+  onReply?: (msg: Message) => void
 }): ReactElement => {
   const editTextareaRef = useRef<HTMLTextAreaElement>(null)
 
@@ -131,6 +134,7 @@ const ChatMessages = ({
                     onPin={() => handlePinMessage && handlePinMessage(msg)}
                     onUnpin={handleUnpinMessage}
                     isAdmin={isAdmin}
+                    onReply={onReply ? () => onReply(msg) : undefined}
                   />
                 )
               })}

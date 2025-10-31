@@ -1,4 +1,5 @@
 import type { ChatMessageType } from '@/hooks/chat/useMessages'
+import type { Dispatch, SetStateAction } from 'react'
 
 import { useState } from 'react'
 
@@ -7,7 +8,7 @@ export function usePinnedMessage(): {
   pinnedMessage: ChatMessageType | null
   handlePinMessage: (message: ChatMessageType) => void
   handleUnpinMessage: () => void
-  setPinnedMessage: React.Dispatch<React.SetStateAction<ChatMessageType | null>>
+  setPinnedMessage: Dispatch<SetStateAction<ChatMessageType | null>>
 } {
   const [pinnedMessageId, setPinnedMessageId] = useState<string | null>(null)
   const [pinnedMessage, setPinnedMessage] = useState<ChatMessageType | null>(null)
