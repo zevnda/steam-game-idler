@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next'
 import { useNavigationContext } from '@/components/contexts/NavigationContext'
 import { useSearchContext } from '@/components/contexts/SearchContext'
 import { useUserContext } from '@/components/contexts/UserContext'
-import { logEvent } from '@/utils/tasks'
+import { logEvent, playMentionBeep } from '@/utils/tasks'
 import { showDangerToast } from '@/utils/toasts'
 
 interface SideBarHook {
@@ -70,6 +70,7 @@ export default function useSideBar(
               !!payload.new?.message &&
               payload.new.message.includes(`@${userSummary.personaName}`)
             ) {
+              playMentionBeep()
               setHasBeenMentionedSinceLastRead(true)
             }
           }
@@ -77,7 +78,7 @@ export default function useSideBar(
       )
       .subscribe()
 
-    const supabaseClient = supabaseRef.current // capture ref value for cleanup
+    const supabaseClient = supabaseRef.current
 
     return () => {
       if (supabaseClient && channel) {

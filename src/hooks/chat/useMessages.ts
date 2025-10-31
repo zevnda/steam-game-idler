@@ -5,6 +5,8 @@ import { addToast } from '@heroui/react'
 import { useCallback, useEffect, useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
 
+import { playMentionBeep } from '@/utils/tasks'
+
 const supabase = createClient(
   'https://inbxfhxkrhwiybnephlq.supabase.co',
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImluYnhmaHhrcmh3aXlibmVwaGxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3Njc5NjgsImV4cCI6MjA3NzM0Mzk2OH0.xUbDMdMUk7S2FgRZu8itWr4WsIV41TX-sNgilXiZg_Y',
@@ -328,25 +330,6 @@ export function useMessages({
       setPinnedMessage(localMsg)
     }
   }, [pinnedMessageId, messages, setPinnedMessage])
-
-  function playMentionBeep(): void {
-    try {
-      const AudioCtx =
-        window.AudioContext || (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext
-      const ctx = new AudioCtx()
-      const oscillator = ctx.createOscillator()
-      const gain = ctx.createGain()
-      oscillator.type = 'sine'
-      oscillator.frequency.value = 1500
-      gain.gain.setValueAtTime(0.4, ctx.currentTime)
-      gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.2)
-      oscillator.connect(gain)
-      gain.connect(ctx.destination)
-      oscillator.start()
-      oscillator.stop(ctx.currentTime + 0.3)
-      oscillator.onended = () => ctx.close()
-    } catch {}
-  }
 
   return {
     messages,

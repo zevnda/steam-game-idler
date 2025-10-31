@@ -192,3 +192,22 @@ export async function isPortableCheck(): Promise<boolean> {
     return false
   }
 }
+
+export function playMentionBeep(): void {
+  try {
+    const AudioCtx =
+      window.AudioContext || (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext
+    const ctx = new AudioCtx()
+    const oscillator = ctx.createOscillator()
+    const gain = ctx.createGain()
+    oscillator.type = 'sine'
+    oscillator.frequency.value = 1500
+    gain.gain.setValueAtTime(0.4, ctx.currentTime)
+    gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.2)
+    oscillator.connect(gain)
+    gain.connect(ctx.destination)
+    oscillator.start()
+    oscillator.stop(ctx.currentTime + 0.3)
+    oscillator.onended = () => ctx.close()
+  } catch {}
+}
