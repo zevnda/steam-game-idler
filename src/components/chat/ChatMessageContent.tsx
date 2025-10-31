@@ -55,8 +55,8 @@ const preprocessMessage = (text: string, validMentions: string[]): string => {
     validMentions.forEach(username => {
       // Escape username for regex safety
       const escapedUsername = username.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-      // Match @username with word boundaries before and after
-      const regex = new RegExp(`@${escapedUsername}\\b`, 'g')
+      // Match @username with robust boundaries (start, end, whitespace, punctuation, blockquote)
+      const regex = new RegExp(`(?<=^|\s|[>])@${escapedUsername}(?=$|\s|[.,!?;:])`, 'g')
       processed = processed.replace(regex, `<span class='mention-highlight'>@${username}</span>`)
     })
   }
