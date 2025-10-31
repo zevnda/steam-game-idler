@@ -1,22 +1,19 @@
-import type { ChangeEvent, ReactElement, RefObject } from 'react'
+import type { ReactElement, RefObject } from 'react'
 
 import { Button, cn, Textarea } from '@heroui/react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import emojiData from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
-import { createClient } from '@supabase/supabase-js'
 import Image from 'next/image'
 import { useTranslation } from 'react-i18next'
 import { IoSend } from 'react-icons/io5'
 
 import { useUserContext } from '@/components/contexts/UserContext'
 import ExtLink from '@/components/ui/ExtLink'
+import { useEmojiPicker } from '@/hooks/chat/useEmojiPicker'
+import { useMentionUsers } from '@/hooks/chat/useMentionUsers'
+import { useReplyPrefill } from '@/hooks/chat/useReplyPrefill'
 import { useTypingUsers } from '@/hooks/chat/useTypingUsers'
-
-const supabase = createClient(
-  'https://inbxfhxkrhwiybnephlq.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImluYnhmaHhrcmh3aXlibmVwaGxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3Njc5NjgsImV4cCI6MjA3NzM0Mzk2OH0.xUbDMdMUk7S2FgRZu8itWr4WsIV41TX-sNgilXiZg_Y',
-)
 
 interface ChatInputProps {
   inputRef: RefObject<HTMLTextAreaElement>
@@ -34,13 +31,6 @@ export default function ChatInput({
   clearReplyToMessage,
 }: ChatInputProps): ReactElement {
   const [newMessage, setNewMessage] = useState('')
-  const [mentionQuery, setMentionQuery] = useState<string>('')
-  const [mentionStart, setMentionStart] = useState<number | null>(null)
-  const [mentionResults, setMentionResults] = useState<
-    Array<{ user_id: string; username: string; avatar_url?: string }>
-  >([])
-  const [mentionSelectedIdx, setMentionSelectedIdx] = useState<number>(0)
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false)
   const { t } = useTranslation()
   const { userSummary } = useUserContext()
 
@@ -50,125 +40,21 @@ export default function ChatInput({
   }
   const { typingUsers, broadcastTyping, broadcastStopTyping } = useTypingUsers(currentUser)
 
-  // Fetch matching users from Supabase when mentionQuery changes
-  useEffect(() => {
-    const fetchUsers = async (): Promise<void> => {
-      if (mentionQuery === '') {
-        // Just '@' typed: fetch 10 users alphabetically
-        const { data, error } = await supabase
-          .from('users')
-          .select('user_id,username,avatar_url')
-          .order('username', { ascending: true })
-          .limit(10)
-        if (!error && Array.isArray(data)) {
-          setMentionResults(data)
-        } else {
-          setMentionResults([])
-        }
-        return
-      }
-      if (!mentionQuery || mentionQuery.length < 1) {
-        setMentionResults([])
-        return
-      }
-      const { data, error } = await supabase
-        .from('users')
-        .select('user_id,username,avatar_url')
-        .ilike('username', `${mentionQuery}%`)
-        .limit(5)
-      if (!error && Array.isArray(data)) {
-        setMentionResults(data)
-      } else {
-        setMentionResults([])
-      }
-    }
-    fetchUsers()
-  }, [mentionQuery])
+  const {
+    mentionStart,
+    mentionResults,
+    mentionSelectedIdx,
+    setMentionSelectedIdx,
+    handleInputChange: handleMentionInputChange,
+    handleMentionSelect,
+    setMentionQuery,
+    setMentionStart,
+    setMentionResults,
+  } = useMentionUsers(inputRef, newMessage)
 
-  // Reset selected index when mention results change
-  useEffect(() => {
-    setMentionSelectedIdx(0)
-  }, [mentionResults])
+  const { showEmojiPicker, setShowEmojiPicker, insertEmoji } = useEmojiPicker(inputRef, newMessage, setNewMessage)
 
-  // Detect @mention in input and track query
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
-    const value = e.target.value
-    setNewMessage(value)
-
-    // Find last @mention in the text before cursor
-    const cursorPos = (e.target as HTMLTextAreaElement).selectionStart || value.length
-    const textBeforeCursor = value.slice(0, cursorPos)
-    // Changed regex to allow usernames starting with '-' and other non-whitespace chars
-    const mentionMatch = /@([^\s@]*)$/.exec(textBeforeCursor)
-    if (mentionMatch) {
-      setMentionQuery(mentionMatch[1])
-      setMentionStart(cursorPos - mentionMatch[0].length)
-    } else {
-      setMentionQuery('')
-      setMentionStart(null)
-    }
-
-    broadcastTyping()
-  }
-
-  const handleMentionSelect = (userIdx: number): void => {
-    const user = mentionResults[userIdx]
-    if (mentionStart !== null && inputRef.current && user) {
-      const before = newMessage.slice(0, mentionStart)
-      const after = newMessage.slice(inputRef.current.selectionStart)
-      const mentionText = `@${user.username} `
-      const updated = before + mentionText + after
-      setNewMessage(updated)
-      setMentionQuery('')
-      setMentionStart(null)
-      setMentionResults([])
-      setTimeout(() => {
-        inputRef.current!.focus()
-        inputRef.current!.setSelectionRange((before + mentionText).length, (before + mentionText).length)
-      }, 0)
-    }
-  }
-
-  // Insert emoji at cursor position
-  const insertEmoji = (emoji: { native: string }): void => {
-    if (!inputRef.current) return
-    const textarea = inputRef.current
-    const start = textarea.selectionStart
-    const end = textarea.selectionEnd
-    const before = newMessage.slice(0, start)
-    const after = newMessage.slice(end)
-    const updated = before + emoji.native + after
-    setNewMessage(updated)
-    setTimeout(() => {
-      textarea.focus()
-      textarea.setSelectionRange(start + emoji.native.length, start + emoji.native.length)
-    }, 0)
-    setShowEmojiPicker(false)
-  }
-
-  // Prefill textarea with quoted message when replying, and clear after sending.
-  useEffect(() => {
-    if (replyToMessage && inputRef.current) {
-      let messageContent = replyToMessage.message
-      // If the message contains a quoted reply (starts with '> :arrow:'), skip the quoted part
-      if (messageContent.startsWith('> :arrow:')) {
-        // Split by two line breaks to separate the quoted part from the actual message
-        const parts = messageContent.split('\n\n')
-        // Use the part after the quote if it exists, otherwise fallback to empty string
-        messageContent = parts.length > 1 ? parts[1] : ''
-      }
-      // Otherwise, use only the first line of the message
-      else {
-        messageContent = messageContent.split('\n')[0]
-      }
-      const quoted = `> :arrow: @${replyToMessage.username} ${messageContent}\n\n`
-      setNewMessage(quoted)
-      setTimeout(() => {
-        inputRef.current!.focus()
-        inputRef.current!.setSelectionRange(quoted.length, quoted.length)
-      }, 0)
-    }
-  }, [replyToMessage, inputRef])
+  useReplyPrefill(replyToMessage ?? null, inputRef, setNewMessage)
 
   // Broadcast stop_typing on submit
   const handleSend = (): void => {
@@ -242,7 +128,7 @@ export default function ChatInput({
                   size='sm'
                   className='bg-transparent hover:bg-white/10 text-md'
                   type='button'
-                  onPress={() => setShowEmojiPicker(v => !v)}
+                  onPress={() => setShowEmojiPicker(!showEmojiPicker)}
                   aria-label='Insert emoji'
                 >
                   😊
@@ -277,28 +163,33 @@ export default function ChatInput({
             minRows={1}
             maxRows={15}
             value={newMessage}
-            onChange={handleInputChange}
+            onChange={e => {
+              setNewMessage(e.target.value)
+              const textarea = e.target as unknown as HTMLTextAreaElement
+              handleMentionInputChange(e.target.value, textarea.selectionStart || e.target.value.length)
+              broadcastTyping()
+            }}
             onKeyDown={e => {
               // Mention navigation
               if (mentionResults.length > 0 && mentionStart !== null) {
                 if (e.key === 'ArrowDown') {
                   e.preventDefault()
-                  setMentionSelectedIdx(idx => Math.min(idx + 1, mentionResults.length - 1))
+                  setMentionSelectedIdx(Math.min(mentionSelectedIdx + 1, mentionResults.length - 1))
                   return
                 }
                 if (e.key === 'ArrowUp') {
                   e.preventDefault()
-                  setMentionSelectedIdx(idx => Math.max(idx - 1, 0))
+                  setMentionSelectedIdx(Math.max(mentionSelectedIdx - 1, 0))
                   return
                 }
                 if (e.key === 'Enter' && !e.shiftKey) {
                   e.preventDefault()
-                  handleMentionSelect(mentionSelectedIdx)
+                  handleMentionSelect(mentionSelectedIdx, setNewMessage)
                   return
                 }
                 if (e.key === 'Tab') {
                   e.preventDefault()
-                  handleMentionSelect(mentionSelectedIdx)
+                  handleMentionSelect(mentionSelectedIdx, setNewMessage)
                   return
                 }
                 // Allow typing and other keys
@@ -314,6 +205,7 @@ export default function ChatInput({
                   setNewMessage('')
                   setMentionQuery('')
                   setMentionStart(null)
+                  setMentionResults([])
                   if (clearReplyToMessage) clearReplyToMessage()
                 }
               }
@@ -333,7 +225,7 @@ export default function ChatInput({
                     'flex justify-between items-center cursor-pointer p-2 hover:bg-white/5 text-xs',
                     idx === mentionSelectedIdx ? 'bg-white/10' : '',
                   )}
-                  onClick={() => handleMentionSelect(idx)}
+                  onClick={() => handleMentionSelect(idx, setNewMessage)}
                   tabIndex={-1}
                   aria-selected={idx === mentionSelectedIdx}
                 >
