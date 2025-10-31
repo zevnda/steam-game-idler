@@ -57,6 +57,7 @@
     "react-dom": "19.2.0",
     "react-i18next": "^15.6.0",
     "react-icons": "^5.1.0",
+    "react-image-lightbox": "^5.1.4",
     "react-markdown": "^10.1.0",
     "react-window": "^1.8.11",
     "rehype-raw": "^7.0.0",

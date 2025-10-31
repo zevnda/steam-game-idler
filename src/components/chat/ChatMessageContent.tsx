@@ -10,16 +10,18 @@ import type {
 
 import { open } from '@tauri-apps/plugin-shell'
 
-import { cn } from '@heroui/react'
+import 'react-image-lightbox/style.css'
+
 import { Children, isValidElement, useEffect, useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import Image from 'next/image'
 import { BsArrow90DegRight } from 'react-icons/bs'
+import Lightbox from 'react-image-lightbox'
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
 
-import { useStateContext } from '@/components/contexts/StateContext'
+import ExtLink from '@/components/ui/ExtLink'
 
 interface ChatMessageContentProps {
   message: string
@@ -156,7 +158,7 @@ const MarkdownBlockquote = (
 
 export default function ChatMessageContent({ message, userSummary }: ChatMessageContentProps): ReactElement {
   const [modalImg, setModalImg] = useState<string | null>(null)
-  const { sidebarCollapsed, transitionDuration } = useStateContext()
+  const [lightboxOpen, setLightboxOpen] = useState(false)
   const [validMentions, setValidMentions] = useState<string[]>([])
 
   // Extract all @username patterns from the message and check Supabase
@@ -196,41 +198,19 @@ export default function ChatMessageContent({ message, userSummary }: ChatMessage
   // Custom image renderer for markdown
   const MarkdownImage = (props: ImgHTMLAttributes<HTMLImageElement>): ReactElement => {
     return (
-      <>
-        <Image
-          src={typeof props.src === 'string' ? props.src : ''}
-          alt={props.alt || 'image'}
-          width={FIXED_IMG_SIZE}
-          height={FIXED_IMG_SIZE}
-          className='max-w-[200px] h-[200px] object-cover cursor-pointer rounded-lg my-2'
-          onClick={() => {
-            if (typeof props.src === 'string') setModalImg(props.src)
-          }}
-        />
-
-        {modalImg === props.src && (
-          <div
-            className={cn(
-              'fixed top-0 bg-[rgba(0,0,0,0.7)] flex justify-center items-center z-[9999]',
-              'flex flex-col h-screen ease-in-out',
-              sidebarCollapsed ? 'w-[calc(100vw-56px)] left-[56px]' : 'w-[calc(100vw-250px)] left-[250px]',
-            )}
-            style={{
-              transitionDuration,
-              transitionProperty: 'width, left',
-            }}
-            onClick={() => setModalImg(null)}
-          >
-            <Image
-              src={modalImg}
-              alt='enlarged'
-              width={800}
-              height={800}
-              className='min-w-[500px] min-h-[500px] rounded-lg'
-            />
-          </div>
-        )}
-      </>
+      <Image
+        src={typeof props.src === 'string' ? props.src : ''}
+        alt={props.alt || 'image'}
+        width={FIXED_IMG_SIZE}
+        height={FIXED_IMG_SIZE}
+        className='max-w-[200px] h-[200px] object-cover cursor-pointer rounded-lg my-2'
+        onClick={() => {
+          if (typeof props.src === 'string') {
+            setModalImg(props.src)
+            setLightboxOpen(true)
+          }
+        }}
+      />
     )
   }
 
@@ -247,6 +227,18 @@ export default function ChatMessageContent({ message, userSummary }: ChatMessage
       >
         {preprocessMessage(message.trim(), validMentions)}
       </ReactMarkdown>
+      {lightboxOpen && modalImg && (
+        <Lightbox
+          mainSrc={modalImg}
+          onCloseRequest={() => setLightboxOpen(false)}
+          imagePadding={100}
+          imageTitle={
+            <ExtLink href={modalImg} className='text-sm p-4'>
+              {modalImg}
+            </ExtLink>
+          }
+        />
+      )}
     </div>
   )
 }
