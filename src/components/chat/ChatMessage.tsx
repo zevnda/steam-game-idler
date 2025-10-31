@@ -149,8 +149,8 @@ export default function ChatMessage({
                 isEditing={true}
                 editedMessage={editedMessage}
                 setEditedMessage={setEditedMessage}
-                onSave={() => {
-                  handleEditMessage(msg.id, editedMessage)
+                onSave={newContent => {
+                  handleEditMessage(msg.id, newContent)
                   setEditingMessageId(null)
                 }}
                 onCancel={() => setEditingMessageId(null)}

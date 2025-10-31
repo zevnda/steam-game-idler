@@ -117,6 +117,11 @@ export function useMessages({
       })
       return
     }
+    if (!newContent.trim()) {
+      // If the new content is empty or whitespace, delete the message
+      await handleDeleteMessage(msgId, msg.user_id)
+      return
+    }
     const { error } = await supabase.from('messages').update({ message: newContent }).eq('id', msgId)
     if (error) {
       addToast({ title: 'Error editing message', color: 'danger' })

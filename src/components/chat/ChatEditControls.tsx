@@ -7,7 +7,7 @@ interface ChatEditControlsProps {
   isEditing: boolean
   editedMessage: string
   setEditedMessage: (msg: string) => void
-  onSave: () => void
+  onSave: (msg: string) => void // <-- change signature
   onCancel: () => void
   textareaRef: RefObject<HTMLTextAreaElement>
 }
@@ -53,8 +53,7 @@ export default function ChatEditControls({
     <form
       onSubmit={e => {
         e.preventDefault()
-        setEditedMessage(localEditedMessage)
-        onSave()
+        onSave(localEditedMessage)
       }}
       className='flex flex-col gap-2'
     >
@@ -82,8 +81,7 @@ export default function ChatEditControls({
             onCancel()
           } else if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault()
-            setEditedMessage(localEditedMessage)
-            onSave()
+            onSave(localEditedMessage) // <-- pass value directly
           }
         }}
         autoFocus
