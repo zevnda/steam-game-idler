@@ -76,7 +76,7 @@
     "@typescript-eslint/eslint-plugin": "^8.36.0",
     "@typescript-eslint/parser": "^8.46.2",
     "eslint": "9",
-    "eslint-config-next": "15.3.5",
+    "eslint-config-next": "16.0.1",
     "eslint-config-prettier": "^10.1.1",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.4",
