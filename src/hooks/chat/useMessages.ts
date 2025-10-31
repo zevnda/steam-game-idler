@@ -101,7 +101,13 @@ export function useMessages({
 
     const handleScroll = async (): Promise<void> => {
       if (container.scrollTop === 0 && hasMore && !loading) {
-        const prevScrollHeight = container.scrollHeight
+        // Find the oldest message of the current batch before loading more
+        const messageElements = container.querySelectorAll('[data-message-id]')
+        let oldestMessageId: string | null = null
+        if (messageElements.length > 0) {
+          oldestMessageId = messageElements[0].getAttribute('data-message-id')
+        }
+
         const newOffset = pagination.offset + pagination.limit
         const { data, error } = await supabase
           .from('messages')
@@ -118,8 +124,15 @@ export function useMessages({
           setPagination(prev => ({ ...prev, offset: newOffset }))
           setHasMore(data.length === pagination.limit)
           setTimeout(() => {
-            const newScrollHeight = container.scrollHeight
-            container.scrollTop = newScrollHeight - prevScrollHeight
+            // After new messages are loaded, scroll to the previous oldest message
+            if (oldestMessageId) {
+              const oldestMsgElem = container.querySelector(`[data-message-id="${oldestMessageId}"]`)
+              if (oldestMsgElem && oldestMsgElem instanceof HTMLElement) {
+                const top = oldestMsgElem.offsetTop
+                const offset = 50 // px, adjust as needed for header/margin
+                container.scrollTop = top - offset
+              }
+            }
           }, 0)
           setShouldScrollToBottom(false)
         }

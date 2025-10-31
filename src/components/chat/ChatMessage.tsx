@@ -104,6 +104,7 @@ export default function ChatMessage({
   return (
     <div
       key={msg.id}
+      data-message-id={msg.id}
       className={cn(
         'group hover:bg-white/3 px-4 py-0 -mx-4 transition-colors duration-75 flex relative',
         isLastFromUser && 'mb-3',
