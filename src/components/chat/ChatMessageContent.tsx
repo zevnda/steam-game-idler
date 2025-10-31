@@ -62,30 +62,6 @@ const preprocessMessage = (text: string, validMentions: string[]): string => {
   return processed
 }
 
-const preprocessBlockquotes = (text: string): string => {
-  // Split into lines, wrap lines starting with '>' in blockquote, others as-is
-  const lines = text.split('\n')
-  let result = ''
-  let inBlockquote = false
-  lines.forEach((line, idx) => {
-    if (/^\s*>/.test(line)) {
-      if (!inBlockquote) {
-        result += '<blockquote>'
-        inBlockquote = true
-      }
-      result += `<p>${line.replace(/^\s*> ?/, '')}</p>`
-      // If next line is not a blockquote, close
-      if (idx === lines.length - 1 || !/^\s*>/.test(lines[idx + 1])) {
-        result += '</blockquote>'
-        inBlockquote = false
-      }
-    } else {
-      result += `<p>${line}</p>`
-    }
-  })
-  return result
-}
-
 const FIXED_IMG_SIZE = 200
 
 // Custom blockquote renderer to inject the arrow icon
@@ -257,7 +233,7 @@ export default function ChatMessageContent({ message, userSummary }: ChatMessage
           blockquote: MarkdownBlockquote,
         }}
       >
-        {preprocessBlockquotes(preprocessMessage(message.trim(), validMentions))}
+        {preprocessMessage(message.trim(), validMentions)}
       </ReactMarkdown>
     </div>
   )

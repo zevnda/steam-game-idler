@@ -26,17 +26,13 @@ export default function ChatEditControls({
   // Callback ref to get the actual textarea element
   const setTextareaNode = (node: HTMLTextAreaElement | null): void => {
     innerTextareaRef.current = node
-    if (isEditing && node) {
-      const len = node.value.length
-      node.focus()
-      node.setSelectionRange(len, len)
-    }
     // Also update the parent ref if provided
     if (textareaRef && typeof textareaRef !== 'function') {
       textareaRef.current = node as HTMLTextAreaElement
     }
   }
 
+  // Only set cursor position when editing starts (not on every change)
   useEffect(() => {
     if (isEditing && innerTextareaRef.current) {
       const len = innerTextareaRef.current.value.length

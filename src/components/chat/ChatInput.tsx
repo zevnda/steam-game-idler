@@ -118,20 +118,19 @@ export default function ChatInput({
   // Prefill textarea with quoted message when replying, and clear after sending.
   useEffect(() => {
     if (replyToMessage && inputRef.current) {
-      // Extract only the first line of the message, skipping any nested reply markers
       let messageContent = replyToMessage.message
-      // If the message starts with "> Replying to:", skip that line
-      if (messageContent.startsWith('> Replying to:')) {
-        // Find the first line break and use the rest
-        const lines = messageContent.split('\n')
-        // If there is more than one line, use the second line as the actual message
-        messageContent = lines.length > 1 ? lines[1] : ''
+      // If the message contains a quoted reply (starts with '> :arrow:'), skip the quoted part
+      if (messageContent.startsWith('> :arrow:')) {
+        // Split by two line breaks to separate the quoted part from the actual message
+        const parts = messageContent.split('\n\n')
+        // Use the part after the quote if it exists, otherwise fallback to empty string
+        messageContent = parts.length > 1 ? parts[1] : ''
       }
       // Otherwise, use only the first line of the message
       else {
         messageContent = messageContent.split('\n')[0]
       }
-      const quoted = `> :arrow: @${replyToMessage.username} ${messageContent}\n`
+      const quoted = `> :arrow: @${replyToMessage.username} ${messageContent}\n\n`
       setNewMessage(quoted)
       setTimeout(() => {
         inputRef.current!.focus()
