@@ -1,7 +1,7 @@
-import type { FormEvent, ReactElement, RefObject } from 'react'
+import type { ReactElement, RefObject } from 'react'
 
 import { Button, cn, Textarea } from '@heroui/react'
-import React from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { IoSend } from 'react-icons/io5'
 
@@ -9,19 +9,14 @@ import ExtLink from '@/components/ui/ExtLink'
 
 interface ChatInputProps {
   inputRef: RefObject<HTMLTextAreaElement>
-  newMessage: string
-  setNewMessage: (msg: string) => void
-  handleSendMessage: (e: FormEvent<HTMLFormElement>) => void
+  onSendMessage: (msg: string) => void
   handleEditLastMessage: () => void
 }
 
-export default function ChatInput({
-  inputRef,
-  newMessage,
-  setNewMessage,
-  handleSendMessage,
-  handleEditLastMessage,
-}: ChatInputProps): ReactElement {
+export default function ChatInput(props: ChatInputProps): ReactElement {
+  const { inputRef, onSendMessage, handleEditLastMessage } = props
+  const [newMessage, setNewMessage] = useState('')
+  // Removed leftover destructuring above function signature
   const { t } = useTranslation()
   return (
     <div className='p-2 pt-0'>
@@ -35,7 +30,15 @@ export default function ChatInput({
         </ExtLink>
       </p>
 
-      <form onSubmit={handleSendMessage}>
+      <form
+        onSubmit={e => {
+          e.preventDefault()
+          if (newMessage.trim()) {
+            onSendMessage(newMessage)
+            setNewMessage('')
+          }
+        }}
+      >
         <Textarea
           ref={inputRef}
           size='sm'
@@ -73,7 +76,10 @@ export default function ChatInput({
               handleEditLastMessage()
             } else if (e.key === 'Enter' && !e.shiftKey) {
               e.preventDefault()
-              handleSendMessage(undefined as unknown as FormEvent<HTMLFormElement>)
+              if (newMessage.trim()) {
+                onSendMessage(newMessage)
+                setNewMessage('')
+              }
             }
             // SHIFT+ENTER is default (new line)
           }}

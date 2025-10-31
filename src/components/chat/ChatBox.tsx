@@ -1,11 +1,9 @@
-'use client'
-
 import type { UserSummary } from '@/types'
-import type { FormEvent, ReactElement } from 'react'
+import type { ReactElement } from 'react'
 import type { Message } from './ChatMessages'
 
 import { addToast, cn } from '@heroui/react'
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import ChatHeader from './ChatHeader'
 import ChatInput from './ChatInput'
 import ChatMessages from './ChatMessages'
@@ -34,11 +32,10 @@ export default function ChatBox(): ReactElement {
   const [chatMaintenanceMode, setChatMaintenanceMode] = useState<boolean>(false)
   const [motd, setMotd] = useState<string>('')
   const [messages, setMessages] = useState<Message[]>([])
-  const [newMessage, setNewMessage] = useState('')
   const [loading, setLoading] = useState(true)
   const [hasMore, setHasMore] = useState(true)
   const [userRoles, setUserRoles] = useState<{ [steamId: string]: string }>({})
-  const [pagination, setPagination] = useState({ limit: 50, offset: 0 })
+  const [pagination, setPagination] = useState({ limit: 75, offset: 0 })
   const [pinnedMessageId, setPinnedMessageId] = useState<string | null>(null)
 
   // Chat maintenance mode state
@@ -357,13 +354,13 @@ export default function ChatBox(): ReactElement {
     }
   }, [userSummary?.steamId, pagination])
 
-  const handleSendMessage = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
-    if (!newMessage.trim()) return
+  const handleSendMessage = async (message: string): Promise<void> => {
+    if (!message.trim()) return
 
     const payload: NewMessagePayload = {
       user_id: userSummary?.steamId || crypto.randomUUID(),
       username,
-      message: newMessage, // <-- do NOT trim, preserve newlines
+      message,
       avatar_url: userSummary?.avatar || undefined,
     }
 
@@ -372,7 +369,6 @@ export default function ChatBox(): ReactElement {
     if (error) {
       console.error('Error sending message:', error)
     } else {
-      setNewMessage('')
       setShouldScrollToBottom(true)
     }
   }
@@ -540,9 +536,7 @@ export default function ChatBox(): ReactElement {
 
         <ChatInput
           inputRef={inputRef}
-          newMessage={newMessage}
-          setNewMessage={setNewMessage}
-          handleSendMessage={handleSendMessage}
+          onSendMessage={handleSendMessage}
           handleEditLastMessage={handleEditLastMessage}
         />
       </div>

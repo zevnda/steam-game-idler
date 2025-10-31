@@ -1,7 +1,7 @@
 import type { UserSummary } from '@/types'
+import type { ReactElement } from 'react'
 
 import { cn, Tooltip } from '@heroui/react'
-import React from 'react'
 import ChatAvatar from './ChatAvatar'
 import ChatEditControls from './ChatEditControls'
 import ChatMessageActions from './ChatMessageActions'
@@ -42,7 +42,7 @@ interface ChatMessageProps {
   isAdmin?: boolean
 }
 
-const ChatMessage: React.FC<ChatMessageProps> = ({
+export default function ChatMessage({
   msg,
   idx,
   msgs,
@@ -63,7 +63,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
   onPin,
   onUnpin,
   isAdmin,
-}) => {
+}: ChatMessageProps): ReactElement {
   const avatarColor = getColorFromUsername(msg.username)
   const showAvatar = idx === 0 || msgs[idx - 1].user_id !== msg.user_id
   const isLastFromUser = idx === msgs.length - 1 || msgs[idx + 1]?.user_id !== msg.user_id
@@ -165,5 +165,3 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
     </div>
   )
 }
-
-export default ChatMessage

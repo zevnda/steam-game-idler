@@ -2,7 +2,7 @@ import type { UserSummary } from '@/types'
 import type { ReactElement, RefObject } from 'react'
 
 import { Spinner } from '@heroui/react'
-import React, { useEffect } from 'react'
+import { memo, useEffect, useRef } from 'react'
 import ChatDateDivider from './ChatDateDivider'
 import ChatMessage from './ChatMessage'
 
@@ -33,7 +33,7 @@ interface ChatMessagesProps {
   isAdmin?: boolean
 }
 
-export default function ChatMessages({
+const ChatMessages = ({
   loading,
   groupedMessages,
   userSummary,
@@ -62,8 +62,8 @@ export default function ChatMessages({
   handlePinMessage?: (msgId: string) => void
   handleUnpinMessage?: () => void
   isAdmin?: boolean
-}): ReactElement {
-  const editTextareaRef = React.useRef<HTMLTextAreaElement>(null)
+}): ReactElement => {
+  const editTextareaRef = useRef<HTMLTextAreaElement>(null)
 
   useEffect(() => {
     if (!editingMessageId) return
@@ -141,3 +141,5 @@ export default function ChatMessages({
     </div>
   )
 }
+
+export default memo(ChatMessages)

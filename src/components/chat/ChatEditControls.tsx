@@ -1,5 +1,7 @@
+import type { ReactElement } from 'react'
+
 import { cn, Textarea } from '@heroui/react'
-import React from 'react'
+import { useEffect, useRef } from 'react'
 
 interface ChatEditControlsProps {
   isEditing: boolean
@@ -10,16 +12,16 @@ interface ChatEditControlsProps {
   textareaRef: React.RefObject<HTMLTextAreaElement>
 }
 
-const ChatEditControls: React.FC<ChatEditControlsProps> = ({
+export default function ChatEditControls({
   isEditing,
   editedMessage,
   setEditedMessage,
   onSave,
   onCancel,
   textareaRef,
-}) => {
+}: ChatEditControlsProps): ReactElement {
   // Local ref for the actual textarea DOM node
-  const innerTextareaRef = React.useRef<HTMLTextAreaElement | null>(null)
+  const innerTextareaRef = useRef<HTMLTextAreaElement | null>(null)
 
   // Callback ref to get the actual textarea element
   const setTextareaNode = (node: HTMLTextAreaElement | null): void => {
@@ -35,7 +37,7 @@ const ChatEditControls: React.FC<ChatEditControlsProps> = ({
     }
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isEditing && innerTextareaRef.current) {
       const len = innerTextareaRef.current.value.length
       innerTextareaRef.current.focus()
@@ -93,5 +95,3 @@ const ChatEditControls: React.FC<ChatEditControlsProps> = ({
     </form>
   )
 }
-
-export default ChatEditControls

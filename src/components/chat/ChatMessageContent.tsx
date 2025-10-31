@@ -4,7 +4,7 @@ import type { AnchorHTMLAttributes, MouseEvent, ReactElement } from 'react'
 import { open } from '@tauri-apps/plugin-shell'
 
 import { cn } from '@heroui/react'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import Image from 'next/image'
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
@@ -46,7 +46,7 @@ const preprocessMessage = (text: string, username?: string): string => {
 
 const FIXED_IMG_SIZE = 200
 
-const ChatMessageContent: React.FC<ChatMessageContentProps> = ({ message, userSummary }: ChatMessageContentProps) => {
+export default function ChatMessageContent({ message, userSummary }: ChatMessageContentProps): ReactElement {
   const [modalImg, setModalImg] = useState<string | null>(null)
   const { sidebarCollapsed, transitionDuration } = useStateContext()
 
@@ -103,5 +103,3 @@ const ChatMessageContent: React.FC<ChatMessageContentProps> = ({ message, userSu
     </div>
   )
 }
-
-export default ChatMessageContent
