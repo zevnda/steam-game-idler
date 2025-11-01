@@ -4,8 +4,9 @@ import type { ReactElement, RefObject } from 'react'
 
 import { Spinner } from '@heroui/react'
 import { memo, useEffect, useRef } from 'react'
-import ChatDateDivider from './ChatDateDivider'
-import ChatMessage from './ChatMessage'
+
+import ChatDateDivider from '@/components/chat/ChatDateDivider'
+import ChatMessage from '@/components/chat/ChatMessage'
 
 export interface Message {
   id: string

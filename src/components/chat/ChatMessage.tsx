@@ -2,13 +2,13 @@ import type { UserSummary } from '@/types'
 import type { ReactElement, RefObject } from 'react'
 
 import { cn, Tooltip } from '@heroui/react'
-import ChatAvatar from './ChatAvatar'
-import ChatEditControls from './ChatEditControls'
-import ChatMessageActions from './ChatMessageActions'
-import ChatMessageContent from './ChatMessageContent'
-import ChatRoleBadge from './ChatRoleBadge'
 import { createClient } from '@supabase/supabase-js'
 
+import ChatAvatar from '@/components/chat/ChatAvatar'
+import ChatEditControls from '@/components/chat/ChatEditControls'
+import ChatMessageActions from '@/components/chat/ChatMessageActions'
+import ChatMessageContent from '@/components/chat/ChatMessageContent'
+import ChatRoleBadge from '@/components/chat/ChatRoleBadge'
 import ExtLink from '@/components/ui/ExtLink'
 
 interface ChatMessageProps {
