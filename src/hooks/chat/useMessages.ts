@@ -52,14 +52,14 @@ export function useMessages({
   scrollToBottom: () => void
   isBanned: boolean
 } {
-  const { messages, setMessages, isBanned, supabase } = useSupabase()
+  const { messages, setMessages, isBanned } = useSupabase()
 
   const { shouldScrollToBottom, setShouldScrollToBottom, scrollToBottom } = useMessageScroll({
     messages,
     messagesEndRef,
     messagesContainerRef,
     userSummary,
-    loading: false, // will be updated from pagination hook
+    loading: false,
   })
 
   const { loading, hasMore, pagination, setPagination } = useMessagePagination({
@@ -104,6 +104,22 @@ export function useMessages({
     }
   }
 
+  // Scroll to bottom and focus main input if ESC key press if not editing a message
+  useEffect(() => {
+    const handleEscapeKey = (e: KeyboardEvent): void => {
+      // Only handle ESC if we're not editing a message
+      if (e.key === 'Escape' && !editingMessageId) {
+        scrollToBottom()
+        inputRef.current?.focus()
+      }
+    }
+
+    window.addEventListener('keydown', handleEscapeKey)
+    return () => {
+      window.removeEventListener('keydown', handleEscapeKey)
+    }
+  }, [editingMessageId, scrollToBottom, inputRef])
+
   useEffect(() => {
     if (!pinnedMessageId) {
       setPinnedMessage(null)
@@ -114,33 +130,6 @@ export function useMessages({
       setPinnedMessage(localMsg)
     }
   }, [pinnedMessageId, messages, setPinnedMessage])
-
-  useEffect(() => {
-    // Update last_active timestamp for current user every 30 seconds
-    let interval: NodeJS.Timeout | undefined
-    if (userSummary?.steamId) {
-      const updateLastActive = async (): Promise<void> => {
-        try {
-          const { error } = await supabase
-            .from('users')
-            .update({ last_active: new Date().toISOString() })
-            .eq('user_id', userSummary.steamId)
-          if (error) {
-            console.error('Error updating last_active:', error)
-            logEvent(`[Error] in updateLastActive: ${error.message}`)
-          }
-        } catch (error) {
-          console.error('Error in updateLastActive:', error)
-          logEvent(`[Error] in updateLastActive: ${error}`)
-        }
-      }
-      updateLastActive()
-      interval = setInterval(updateLastActive, 30000)
-    }
-    return () => {
-      if (interval) clearInterval(interval)
-    }
-  }, [userSummary?.steamId, supabase])
 
   return {
     messages,

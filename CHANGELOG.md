@@ -1,3 +1,11 @@
+<!-- 2.2.4 -->
+
+### Changes in v2.2.4
+
+- Multiple improvements, new features, and fixes for the chat feature
+  - Added a user list sidebar
+  - Pressing `ESCAPE` while scrolled up or editing a message now scrolls to bottom and focuses the main input
+
 <!-- 2.2.3 -->
 
 ### Changes in v2.2.3

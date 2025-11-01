@@ -160,7 +160,7 @@ export default function ChatBox(): ReactElement {
         <ChatHeader />
         {/* Pinned message at top */}
         {pinnedMessage && (
-          <div className='mb-2 border-b border-border'>
+          <div className='mb-0'>
             <ChatMessages
               loading={false}
               groupedMessages={{ Pinned: [pinnedMessage] }}

@@ -1,7 +1,7 @@
 import type { ReactElement, RefObject } from 'react'
 
 import { Button, cn, Textarea } from '@heroui/react'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import emojiData from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
 import { createClient } from '@supabase/supabase-js'
@@ -64,6 +64,41 @@ export default function ChatInput({
   const { showEmojiPicker, setShowEmojiPicker, insertEmoji } = useEmojiPicker(inputRef, newMessage, setNewMessage)
 
   useReplyPrefill(replyToMessage ?? null, inputRef, setNewMessage)
+
+  // Auto-focus input when typing anywhere
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent): void => {
+      // Don't focus if already focused on an input/textarea
+      const activeElement = document.activeElement
+      if (
+        activeElement instanceof HTMLInputElement ||
+        activeElement instanceof HTMLTextAreaElement ||
+        activeElement instanceof HTMLSelectElement
+      ) {
+        return
+      }
+
+      // Don't focus for modifier keys, special keys, or shortcuts
+      if (
+        e.ctrlKey ||
+        e.metaKey ||
+        e.altKey ||
+        e.key.length > 1 || // Special keys like Enter, Escape, Arrow keys, etc.
+        e.key === ' '
+      ) {
+        // Space might be used for other actions
+        return
+      }
+
+      // Focus the input for printable characters
+      if (inputRef.current && !inputRef.current.contains(document.activeElement)) {
+        inputRef.current.focus()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [inputRef])
 
   // Broadcast stop_typing on submit
   const handleSend = (): void => {

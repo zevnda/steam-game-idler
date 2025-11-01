@@ -17,12 +17,26 @@ export interface ChatMessageType {
   reply_to_id?: string | null
 }
 
-interface TypingUser {
-  user_id: string
+export interface ChatUser {
+  created_at?: string
+  id?: number
+  user_id?: string
+  role?: string
   username: string
+  avatar_url?: string
+  is_banned?: boolean
+}
+
+interface PresenceState {
+  user_id?: string
+  username?: string
+  online_at?: string
+  presence_ref: string
 }
 
 interface SupabaseContextType {
+  // All users
+  allUsers: ChatUser[]
   // Messages state
   messages: ChatMessageType[]
   setMessages: Dispatch<SetStateAction<ChatMessageType[]>>
@@ -36,8 +50,10 @@ interface SupabaseContextType {
   motd: string
   // Online users count (via presence)
   onlineCount: number
+  // Online users
+  onlineUsers: ChatUser[]
   // Typing users
-  typingUsers: TypingUser[]
+  typingUsers: ChatUser[]
   // Typing indicators
   broadcastTyping: () => void
   broadcastStopTyping: () => void
@@ -53,12 +69,14 @@ interface SupabaseProviderProps {
 }
 
 export function SupabaseProvider({ children, userSummary }: SupabaseProviderProps): ReactNode {
+  const [allUsers, setAllUsers] = useState<ChatUser[]>([])
   const [messages, setMessages] = useState<ChatMessageType[]>([])
   const [isBanned, setIsBanned] = useState(false)
   const [userRoles, setUserRoles] = useState<{ [steamId: string]: string }>({})
   const [chatMaintenanceMode, setChatMaintenanceMode] = useState(false)
   const [onlineCount, setOnlineCount] = useState(0)
-  const [typingUsers, setTypingUsers] = useState<TypingUser[]>([])
+  const [onlineUsers, setOnlineUsers] = useState<ChatUser[]>([])
+  const [typingUsers, setTypingUsers] = useState<ChatUser[]>([])
   const [motd, setMotd] = useState<string>('')
 
   const supabaseRef = useRef(
@@ -131,13 +149,73 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
     }
   }
 
+  // Ensure current user exists in Supabase 'users' table; create if missing
+  useEffect(() => {
+    const supabase = supabaseRef.current
+
+    const ensureUserExists = async (): Promise<void> => {
+      try {
+        if (!userSummary?.steamId) return
+
+        const { data, error } = await supabase
+          .from('users')
+          .select('user_id')
+          .eq('user_id', userSummary.steamId)
+          .maybeSingle()
+
+        if (error) {
+          console.error('Error checking user existence:', error)
+          logEvent(`[Error] in ensureUserExists (select): ${error.message || error}`)
+        }
+
+        if (!data) {
+          const insertPayload = {
+            user_id: userSummary.steamId,
+            username: userSummary.personaName || 'Unknown',
+            avatar_url: userSummary.avatar || null,
+            role: 'user',
+            is_banned: false,
+          }
+          const { error: insertError } = await supabase.from('users').insert([insertPayload])
+          if (insertError) {
+            console.error('Error inserting new user:', insertError)
+            logEvent(`[Error] in ensureUserExists (insert): ${insertError.message || insertError}`)
+          }
+        }
+      } catch (err) {
+        console.error('Error in ensureUserExists:', err)
+        logEvent(`[Error] in ensureUserExists: ${err}`)
+      }
+    }
+
+    ensureUserExists()
+  }, [userSummary?.steamId, userSummary?.personaName, userSummary?.avatar])
+
   useEffect(() => {
     const supabase = supabaseRef.current
     const steamId = userSummary?.steamId
 
     // Skip in development for maintenance mode
-    // const isDevelopment = process.env.NODE_ENV === 'development'
-    const isDevelopment = false
+    const isDevelopment = process.env.NODE_ENV === 'development'
+    // const isDevelopment = false
+
+    // Fetch all users
+    const fetchAllUsers = async (): Promise<void> => {
+      try {
+        const { data, error } = await supabase.from('users').select('user_id,username,avatar_url,role')
+        if (error) {
+          console.error('Error fetching all users:', error)
+          logEvent(`[Error] in fetchAllUsers: ${error.message}`)
+          return
+        }
+        if (data) {
+          setAllUsers(data as ChatUser[])
+        }
+      } catch (error) {
+        console.error('Error in fetchAllUsers:', error)
+        logEvent(`[Error] in fetchAllUsers: ${error}`)
+      }
+    }
 
     // Fetch initial user roles
     const fetchUserRoles = async (): Promise<void> => {
@@ -215,6 +293,7 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
       }
     }
 
+    fetchAllUsers()
     fetchUserRoles()
     fetchBannedStatus()
     fetchMaintenanceMode()
@@ -234,9 +313,11 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
     channel
       // 1. Listen for user role changes (from useUserRoles)
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'users' }, () => {
+        fetchAllUsers()
         fetchUserRoles()
       })
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'users' }, payload => {
+        fetchAllUsers()
         fetchUserRoles()
         // Also check if current user's ban status changed (from useMessages)
         if (payload.new?.user_id === steamId) {
@@ -244,6 +325,7 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
         }
       })
       .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'users' }, () => {
+        fetchAllUsers()
         fetchUserRoles()
       })
       // 2. Listen for message changes (from useMessages)
@@ -332,8 +414,22 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
       .on('presence', { event: 'sync' }, () => {
         try {
           const state = channel.presenceState()
-          const count = Object.keys(state).length
-          setOnlineCount(count)
+          setOnlineCount(Object.keys(state).length)
+
+          // Extract online users from presence state (deduplicated by user_id)
+          const onlineMap = new Map<string, ChatUser>()
+          Object.values(state).forEach((presences: unknown) => {
+            const presenceArray = presences as PresenceState[]
+            presenceArray.forEach((presence: PresenceState) => {
+              if (presence.user_id && presence.username) {
+                onlineMap.set(presence.user_id, {
+                  user_id: presence.user_id,
+                  username: presence.username,
+                })
+              }
+            })
+          })
+          setOnlineUsers(Array.from(onlineMap.values()))
         } catch (error) {
           console.error('Error handling presence sync:', error)
           logEvent(`[Error] in presence sync handler: ${error}`)
@@ -366,6 +462,7 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
   return (
     <SupabaseContext.Provider
       value={{
+        allUsers,
         messages,
         setMessages,
         isBanned,
@@ -373,6 +470,7 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
         chatMaintenanceMode,
         motd,
         onlineCount,
+        onlineUsers,
         typingUsers,
         broadcastTyping,
         broadcastStopTyping,

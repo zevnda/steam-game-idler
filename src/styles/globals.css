@@ -125,6 +125,14 @@ svg {
 
 /* Chat feature styles */
 
+.message-render::-webkit-scrollbar-track {
+  background: none;
+}
+
+.user-render::-webkit-scrollbar-track {
+  background: none;
+}
+
 .chat-message a {
   color: #4d70fc;
   text-decoration: underline;
@@ -161,6 +169,15 @@ svg {
   list-style-position: inside;
   counter-reset: list-counter;
   list-style: decimal;
+}
+
+.chat-message li ul {
+  list-style-type: circle;
+}
+
+.chat-message li ul ul,
+.chat-message li ol ul {
+  list-style-type: square;
 }
 
 .chat-message h1 {
