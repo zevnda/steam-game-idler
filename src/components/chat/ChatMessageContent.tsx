@@ -12,10 +12,9 @@ import { open } from '@tauri-apps/plugin-shell'
 
 import 'react-image-lightbox/style.css'
 
-import { Children, isValidElement, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import Image from 'next/image'
-import { BsArrow90DegRight } from 'react-icons/bs'
 import Lightbox from 'react-image-lightbox'
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
@@ -78,114 +77,14 @@ const isEmojiOnly = (text: string): boolean => {
   return emojiRegex.test(trimmed)
 }
 
-// Custom blockquote renderer to inject the arrow icon and make it clickable
+// Custom blockquote renderer
 const MarkdownBlockquote = (
   props: BlockquoteHTMLAttributes<HTMLQuoteElement> & { children?: ReactNode },
-  replyToId?: string | null,
-  scrollToMessage?: (messageId: string) => Promise<void>,
 ): ReactElement => {
-  // Check if any child contains ':arrow:'
-  let hasArrow = false
-  Children.forEach(props.children, child => {
-    if (typeof child === 'string' && child.includes(':arrow:')) {
-      hasArrow = true
-    }
-    if (
-      isValidElement(child) &&
-      (child.props as { children?: ReactNode }) &&
-      typeof (child.props as { children?: ReactNode }).children === 'string'
-    ) {
-      if (((child.props as { children?: ReactNode }).children as string).includes(':arrow:')) {
-        hasArrow = true
-      }
-    }
-    if (
-      isValidElement(child) &&
-      (child.props as { children?: ReactNode }) &&
-      Array.isArray((child.props as { children?: ReactNode }).children)
-    ) {
-      const childrenArr = (child.props as { children?: ReactNode }).children as unknown[]
-      if (
-        childrenArr.length > 0 &&
-        typeof childrenArr[0] === 'string' &&
-        (childrenArr[0] as string).includes(':arrow:')
-      ) {
-        hasArrow = true
-      }
-    }
-  })
-
-  // Replace ':arrow:' with the icon
-  const replaced = Children.map(props.children, child => {
-    if (typeof child === 'string') {
-      return child.replace(':arrow:', '')
-    }
-
-    if (
-      isValidElement(child) &&
-      (child.props as { children?: ReactNode }) &&
-      typeof (child.props as { children?: ReactNode }).children === 'string'
-    ) {
-      const text = (child.props as { children?: ReactNode }).children as string
-
-      if (text.startsWith(':arrow:')) {
-        return (
-          <p>
-            <BsArrow90DegRight className='inline mr-1' />
-            {text.replace(':arrow:', '')}
-          </p>
-        )
-      }
-    }
-
-    if (
-      isValidElement(child) &&
-      (child.props as { children?: ReactNode }) &&
-      Array.isArray((child.props as { children?: ReactNode }).children)
-    ) {
-      const childrenArr = (child.props as { children?: ReactNode }).children as ReactNode[]
-      if (
-        childrenArr.length > 0 &&
-        typeof childrenArr[0] === 'string' &&
-        (childrenArr[0] as string).startsWith(':arrow:')
-      ) {
-        return (
-          <p>
-            <BsArrow90DegRight className='inline mr-1' />
-            {(childrenArr[0] as string).replace(':arrow:', '')}
-            {childrenArr.slice(1) as ReactNode[]}
-          </p>
-        )
-      }
-    }
-    return child
-  })
-
-  return (
-    <blockquote
-      style={
-        hasArrow
-          ? { paddingLeft: '2px', userSelect: 'none', width: 'fit-content' }
-          : { borderLeft: '4px solid #555559', paddingLeft: '6px' }
-      }
-      className={hasArrow && replyToId && scrollToMessage ? 'cursor-pointer hover:bg-white/5 rounded' : ''}
-      onClick={() => {
-        if (hasArrow && replyToId && scrollToMessage) {
-          scrollToMessage(replyToId)
-        }
-      }}
-    >
-      {replaced}
-    </blockquote>
-  )
+  return <blockquote style={{ borderLeft: '4px solid #555559', paddingLeft: '6px' }}>{props.children}</blockquote>
 }
 
-export default function ChatMessageContent({
-  message,
-  userSummary,
-  replyToId,
-  scrollToMessage,
-}: ChatMessageContentProps): ReactElement {
+export default function ChatMessageContent({ message }: ChatMessageContentProps): ReactElement {
   const [modalImg, setModalImg] = useState<string | null>(null)
   const [lightboxOpen, setLightboxOpen] = useState(false)
   const [validMentions, setValidMentions] = useState<string[]>([])
@@ -251,7 +150,7 @@ export default function ChatMessageContent({
         components={{
           a: MarkdownLink,
           img: MarkdownImage,
-          blockquote: props => MarkdownBlockquote(props, replyToId, scrollToMessage),
+          blockquote: props => MarkdownBlockquote(props),
         }}
       >
         {preprocessMessage(message.trim(), validMentions)}

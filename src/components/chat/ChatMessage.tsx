@@ -2,6 +2,7 @@ import type { UserSummary } from '@/types'
 import type { ReactElement, RefObject } from 'react'
 
 import { cn, Tooltip } from '@heroui/react'
+import { useEffect, useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
 
 import ChatAvatar from '@/components/chat/ChatAvatar'
@@ -76,11 +77,36 @@ export default function ChatMessage({
   onReply,
   scrollToMessage,
 }: ChatMessageProps): ReactElement {
+  const [replyToMessage, setReplyToMessage] = useState<Message | null>(null)
+
   const avatarColor = getColorFromUsername(msg.username)
 
-  // Show avatar if first message, or previous message is from a different user, or more than 3 minute has passed since previous message
+  // Fetch reply-to message if exists
+  useEffect(() => {
+    if (msg.reply_to_id) {
+      // First check if message is in current msgs array
+      const localMsg = msgs.find(m => m.id === msg.reply_to_id)
+      if (localMsg) {
+        setReplyToMessage(localMsg)
+      } else {
+        // Fetch from database if not in current view
+        const fetchReply = async (): Promise<void> => {
+          try {
+            const { data } = await supabase.from('messages').select('*').eq('id', msg.reply_to_id).single()
+            if (data) setReplyToMessage(data as Message)
+          } finally {
+          }
+        }
+        fetchReply()
+      }
+    } else {
+      setReplyToMessage(null)
+    }
+  }, [msg.reply_to_id, msgs])
+
+  // Show avatar if first message, or previous message is from a different user, or more than 3 minute has passed since previous message, or if message is a reply
   let showAvatar = true
-  if (idx > 0) {
+  if (idx > 0 && !msg.reply_to_id) {
     const prevMsg = msgs[idx - 1]
     const prevTime = new Date(prevMsg.created_at).getTime()
     const currTime = new Date(msg.created_at).getTime()
@@ -90,12 +116,14 @@ export default function ChatMessage({
     }
   }
 
-  // End group if next message is from a different user or more than 3 minute apart
+  // End group if next message is from a different user or more than 3 minute apart or if next message is a reply
   const isLastFromUser =
     idx < msgs.length - 1 &&
     (msgs[idx + 1]?.user_id !== msg.user_id ||
+      msgs[idx + 1]?.reply_to_id ||
       (msgs[idx + 1] &&
         new Date(msgs[idx + 1].created_at).getTime() - new Date(msg.created_at).getTime() > 3 * 60 * 1000))
+
   const currentRole = userRoles[msg.user_id] || 'user'
 
   // Ban/Unban user handler
@@ -134,6 +162,10 @@ export default function ChatMessage({
     : null
   const isMentioned = mentionRegex ? mentionRegex.test(msg.message) : false
 
+  // Check if message is replying to us
+  const isReplyingToUs =
+    userSummary && msg.reply_to_id ? msgs.find(m => m.id === msg.reply_to_id)?.user_id === userSummary.steamId : false
+
   return (
     <div
       key={msg.id}
@@ -141,7 +173,9 @@ export default function ChatMessage({
       className={cn(
         'group px-4 py-0 -mx-4 transition-colors duration-75 flex relative',
         isLastFromUser && 'mb-3',
-        isMentioned ? 'bg-blue-900/30 border-l-2 border-blue-400 hover:bg-blue-900/40' : 'hover:bg-white/3',
+        isMentioned || isReplyingToUs
+          ? 'bg-blue-900/15 border-l-2 border-blue-400 hover:bg-blue-900/25'
+          : 'hover:bg-white/3',
       )}
     >
       <div className='flex gap-4 flex-1'>
@@ -157,6 +191,21 @@ export default function ChatMessage({
         )}
 
         <div className='flex-1 min-w-0'>
+          {/* Reply preview */}
+          {replyToMessage && (
+            <div
+              className='flex items-center gap-1 -mb-1.5 cursor-pointer hover:opacity-80 transition-opacity'
+              onClick={() => scrollToMessage?.(msg.reply_to_id!)}
+            >
+              <div className='w-6 h-2 border-l-1 border-t-1 border-[#4e5058] rounded-tl-md -mb-2' />
+              <span className='text-[10px] text-[#b5bac1] font-medium'>{replyToMessage.username}</span>
+              <span className='text-[10px] text-[#949ba4] truncate'>
+                {replyToMessage.message.substring(0, 50)}
+                {replyToMessage.message.length > 50 ? '...' : ''}
+              </span>
+            </div>
+          )}
+
           {showAvatar && (
             <div className='flex items-baseline gap-2'>
               <ExtLink href={`https://steamcommunity.com/profiles/${msg.user_id}`}>

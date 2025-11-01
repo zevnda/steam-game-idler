@@ -3,7 +3,7 @@ import type { UserSummary } from '@/types'
 import type { Dispatch, ReactElement, SetStateAction } from 'react'
 
 import { cn } from '@heroui/react'
-import { useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 
 import ChatBanned from '@/components/chat/ChatBanned'
 import ChatHeader from '@/components/chat/ChatHeader'
@@ -68,8 +68,15 @@ export default function ChatBox(): ReactElement {
 
   const [replyToMessage, setReplyToMessage] = useState<ChatMessageType | null>(null)
 
+  const scrollToBottom = useCallback((): void => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'auto' })
+  }, [messagesEndRef])
+
   const handleReplyToMessage = (msg: ChatMessageType): void => {
     setReplyToMessage(msg)
+    setTimeout(() => {
+      scrollToBottom()
+    }, 0)
   }
 
   const getRoleStyles = (role: string): string => {

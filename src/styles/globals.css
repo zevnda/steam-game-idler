@@ -148,11 +148,14 @@ svg {
 }
 
 .chat-message {
-  line-height: 2;
+  line-height: 0.8rem;
+  white-space: break-spaces;
+  word-wrap: break-word;
 }
 
-.chat-message br {
-  line-height: 0.5rem;
+.chat-message p {
+  margin: 0rem 0;
+  line-height: 1.375rem;
 }
 
 .chat-message ul {
@@ -196,8 +199,8 @@ svg {
 }
 
 .chat-message blockquote {
-  line-height: 14px;
-  font-size: 10px;
+  line-height: 0rem;
+  font-size: 12px;
   padding-left: 0.5rem;
   color: #aaaaaa;
 }
@@ -246,7 +249,7 @@ svg {
 }
 
 .emoji-only-message p {
-  margin: 0;
+  margin: 10px 0;
 }
 
 .donator-role {

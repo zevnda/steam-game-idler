@@ -329,7 +329,7 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
         fetchUserRoles()
       })
       // 2. Listen for message changes (from useMessages)
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, async payload => {
         try {
           const newMsg = payload.new as ChatMessageType
           setMessages(current => {
@@ -345,9 +345,30 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
             )
             return [...filtered, newMsg]
           })
-          // Play mention beep only if the new message mentions the current user
+
+          // Play mention beep if:
+          // 1. The new message mentions the current user by username
           if (userSummary?.personaName && newMsg.message.includes(`@${userSummary.personaName}`)) {
             playMentionBeep()
+            return
+          }
+
+          // 2. The new message is a reply to one of the current user's messages
+          if (newMsg.reply_to_id && steamId) {
+            try {
+              const { data: repliedToMessage, error } = await supabase
+                .from('messages')
+                .select('user_id')
+                .eq('id', newMsg.reply_to_id)
+                .single()
+
+              if (!error && repliedToMessage?.user_id === steamId) {
+                playMentionBeep()
+              }
+            } catch (error) {
+              console.error('Error checking reply notification:', error)
+              logEvent(`[Error] in reply notification check: ${error}`)
+            }
           }
         } catch (error) {
           console.error('Error handling INSERT message:', error)
