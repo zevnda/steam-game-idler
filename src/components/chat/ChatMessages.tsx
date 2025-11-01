@@ -7,7 +7,7 @@ import { memo, useEffect, useRef } from 'react'
 
 import ChatDateDivider from '@/components/chat/ChatDateDivider'
 import ChatMessage from '@/components/chat/ChatMessage'
-import ChatUsers from '@/components/chat/ChatUsers'
+import ChatUserList from '@/components/chat/ChatUserList'
 
 export interface Message {
   id: string
@@ -161,7 +161,7 @@ const ChatMessages = ({
         )}
       </div>
 
-      <ChatUsers />
+      <ChatUserList />
     </div>
   )
 }

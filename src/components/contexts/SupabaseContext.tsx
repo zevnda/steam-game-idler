@@ -17,12 +17,12 @@ export interface ChatMessageType {
   reply_to_id?: string | null
 }
 
-interface ChatUser {
+export interface ChatUser {
   created_at?: string
   id?: number
   user_id?: string
   role?: string
-  username?: string
+  username: string
   avatar_url?: string
   is_banned?: boolean
 }
