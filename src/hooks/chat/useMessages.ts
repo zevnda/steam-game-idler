@@ -104,6 +104,22 @@ export function useMessages({
     }
   }
 
+  // Scroll to bottom and focus main input if ESC key press if not editing a message
+  useEffect(() => {
+    const handleEscapeKey = (e: KeyboardEvent): void => {
+      // Only handle ESC if we're not editing a message
+      if (e.key === 'Escape' && !editingMessageId) {
+        scrollToBottom()
+        inputRef.current?.focus()
+      }
+    }
+
+    window.addEventListener('keydown', handleEscapeKey)
+    return () => {
+      window.removeEventListener('keydown', handleEscapeKey)
+    }
+  }, [editingMessageId, scrollToBottom, inputRef])
+
   useEffect(() => {
     if (!pinnedMessageId) {
       setPinnedMessage(null)

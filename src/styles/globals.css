@@ -171,6 +171,15 @@ svg {
   list-style: decimal;
 }
 
+.chat-message li ul {
+  list-style-type: circle;
+}
+
+.chat-message li ul ul,
+.chat-message li ol ul {
+  list-style-type: square;
+}
+
 .chat-message h1 {
   font-size: 1.4rem;
   font-weight: 700;
