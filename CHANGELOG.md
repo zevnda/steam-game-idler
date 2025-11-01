@@ -1,6 +1,6 @@
-<!-- 2.2.2 -->
+<!-- 2.2.3 -->
 
-### Changes in v2.2.2
+### Changes in v2.2.3
 
 - Multiple improvements, new features, and fixes for the chat feature
   - Added a confirmation modal when deleting messages
