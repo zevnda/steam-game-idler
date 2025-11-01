@@ -107,18 +107,8 @@ export default function ChatUserList(): ReactElement {
       group.online.sort((a, b) => a.username.localeCompare(b.username))
     })
 
-    // Sort offline users by role priority, then alphabetically
-    offline.sort((a, b) => {
-      const roleA = (a.user_id && userRoles[a.user_id]) ?? 'user'
-      const roleB = (b.user_id && userRoles[b.user_id]) ?? 'user'
-      const priorityA = getRolePriority(roleA)
-      const priorityB = getRolePriority(roleB)
-
-      if (priorityA !== priorityB) {
-        return priorityA - priorityB
-      }
-      return a.username.localeCompare(b.username)
-    })
+    // Sort offline users alphabetically by username
+    offline.sort((a, b) => a.username.localeCompare(b.username))
 
     // Convert to array and sort by role priority
     const sortedGroups = Array.from(groups.values()).sort((a, b) => getRolePriority(a.role) - getRolePriority(b.role))
