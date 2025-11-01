@@ -177,7 +177,12 @@ export default function SideBar(): ReactElement {
               </div>
               {!sidebarCollapsed && (
                 <div className={cn('transition-all duration-500 ease-in-out overflow-hidden whitespace-nowrap')}>
-                  <p className={cn('text-sm font-bold', isFreeGames ? 'text-[#ffc700]' : undefined)}>
+                  <p
+                    className={cn(
+                      'flex justify-center items-center text-sm font-bold',
+                      isFreeGames ? 'text-[#ffc700]' : undefined,
+                    )}
+                  >
                     {item.title}
                     {isBeta && <Beta />}
                   </p>
