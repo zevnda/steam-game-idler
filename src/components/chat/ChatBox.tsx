@@ -60,7 +60,11 @@ export default function ChatBox(): ReactElement {
     setPinnedMessage,
   })
   const motd = useMotd()
-  const onlineCount = useOnlineUsers()
+
+  const onlineCount = useOnlineUsers({
+    user_id: userSummary?.steamId ?? '',
+    username: userSummary?.personaName ?? '',
+  })
 
   const [replyToMessage, setReplyToMessage] = useState<ChatMessageType | null>(null)
 
@@ -110,7 +114,7 @@ export default function ChatBox(): ReactElement {
           transitionProperty: 'width',
         }}
       >
-        <ChatHeader motd={motd} onlineCount={onlineCount} />
+        <ChatHeader motd={motd} />
         <ChatMaintenance />
       </div>
     )
@@ -128,7 +132,7 @@ export default function ChatBox(): ReactElement {
           transitionProperty: 'width',
         }}
       >
-        <ChatHeader motd={motd} onlineCount={onlineCount} />
+        <ChatHeader motd={motd} />
         <ChatBanned />
       </div>
     )
