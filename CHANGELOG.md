@@ -1,3 +1,11 @@
+<!-- 2.2.5 -->
+
+### Changes in v2.2.5
+
+- Multiple improvements, new features, and fixes for the chat feature
+  - Added a darker background for easier visibilty on different displays
+  - Shifted the layout of the user list
+
 <!-- 2.2.4 -->
 
 ### Changes in v2.2.4

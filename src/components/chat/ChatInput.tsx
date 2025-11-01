@@ -252,6 +252,7 @@ export default function ChatInput({
             className='w-full mb-0 pb-0 resize-y'
             classNames={{
               inputWrapper: cn(
+                'border border-border',
                 'bg-input data-[hover=true]:!bg-inputhover rounded-md',
                 'group-data-[focus-within=true]:!bg-inputhover',
                 'group-data-[focus-visible=true]:ring-transparent',

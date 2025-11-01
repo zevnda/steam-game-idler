@@ -127,7 +127,7 @@ export default function ChatUserList(): ReactElement {
   }, [allUsers, onlineUsers, userRoles])
 
   return (
-    <div className='user-render w-[230px] h-full border-l border-border px-2 py-3 overflow-y-auto'>
+    <div className='user-render w-[230px] h-full border-l border-border px-2 py-3 ml-0.5 overflow-y-auto'>
       <div className='flex flex-col gap-4'>
         {roleGroups.map(group => (
           <div key={group.role}>

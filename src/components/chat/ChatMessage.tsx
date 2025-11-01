@@ -92,10 +92,11 @@ export default function ChatMessage({
 
   // End group if next message is from a different user or more than 3 minute apart
   const isLastFromUser =
-    idx === msgs.length - 1 ||
-    msgs[idx + 1]?.user_id !== msg.user_id ||
-    (msgs[idx + 1] && new Date(msgs[idx + 1].created_at).getTime() - new Date(msg.created_at).getTime() > 3 * 60 * 1000)
-  const currentRole = userRoles[msg.user_id] ?? 'user'
+    idx < msgs.length - 1 &&
+    (msgs[idx + 1]?.user_id !== msg.user_id ||
+      (msgs[idx + 1] &&
+        new Date(msgs[idx + 1].created_at).getTime() - new Date(msg.created_at).getTime() > 3 * 60 * 1000))
+  const currentRole = userRoles[msg.user_id] || 'user'
 
   // Ban/Unban user handler
   const handleBanUser = async (): Promise<void> => {
@@ -111,7 +112,7 @@ export default function ChatMessage({
         logEvent(`[Error] in handleBanUser (fetch): ${fetchError.message}`)
         return
       }
-      const currentRole = userData?.role ?? 'user'
+      const currentRole = userData?.role || 'user'
       const newRole = currentRole === 'banned' ? 'user' : 'banned'
       const { error: updateError } = await supabase.from('users').update({ role: newRole }).eq('user_id', msg.user_id)
       if (updateError) {
