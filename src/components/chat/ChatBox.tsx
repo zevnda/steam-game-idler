@@ -11,10 +11,8 @@ import ChatInput from '@/components/chat/ChatInput'
 import ChatMaintenance from '@/components/chat/ChatMaintenance'
 import ChatMessages from '@/components/chat/ChatMessages'
 import { useStateContext } from '@/components/contexts/StateContext'
-import { useChatMaintenanceMode } from '@/hooks/chat/useChatMaintenanceMode'
+import { useSupabase } from '@/components/contexts/SupabaseContext'
 import { useMessages } from '@/hooks/chat/useMessages'
-import { useMotd } from '@/hooks/chat/useMotd'
-import { useOnlineUsers } from '@/hooks/chat/useOnlineUsers'
 import { usePinnedMessage } from '@/hooks/chat/usePinnedMessage'
 import { useUserRoles } from '@/hooks/chat/useUserRoles'
 
@@ -25,7 +23,7 @@ export default function ChatBox(): ReactElement {
   const inputRef = useRef<HTMLTextAreaElement>(null as unknown as HTMLTextAreaElement)
   const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
 
-  const chatMaintenanceMode = useChatMaintenanceMode()
+  const { chatMaintenanceMode } = useSupabase()
 
   const { userRoles } = useUserRoles()
   const { pinnedMessageId, pinnedMessage, handlePinMessage, handleUnpinMessage, setPinnedMessage } =
@@ -58,12 +56,6 @@ export default function ChatBox(): ReactElement {
     inputRef,
     pinnedMessageId,
     setPinnedMessage,
-  })
-  const motd = useMotd()
-
-  const onlineCount = useOnlineUsers({
-    user_id: userSummary?.steamId ?? '',
-    username: userSummary?.personaName ?? '',
   })
 
   const [replyToMessage, setReplyToMessage] = useState<ChatMessageType | null>(null)
@@ -118,7 +110,7 @@ export default function ChatBox(): ReactElement {
           transitionProperty: 'width',
         }}
       >
-        <ChatHeader motd={motd} />
+        <ChatHeader />
         <ChatMaintenance />
       </div>
     )
@@ -136,7 +128,7 @@ export default function ChatBox(): ReactElement {
           transitionProperty: 'width',
         }}
       >
-        <ChatHeader motd={motd} />
+        <ChatHeader />
         <ChatBanned />
       </div>
     )
@@ -154,7 +146,7 @@ export default function ChatBox(): ReactElement {
           transitionProperty: 'width',
         }}
       >
-        <ChatHeader motd={motd} onlineCount={onlineCount} />
+        <ChatHeader />
         {/* Pinned message at top */}
         {pinnedMessage && (
           <div className='mb-2 border-b border-border'>

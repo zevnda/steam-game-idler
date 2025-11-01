@@ -35,6 +35,9 @@ interface SupabaseContextType {
   // Chat maintenance mode
   chatMaintenanceMode: boolean
 
+  // Message of the day
+  motd: string
+
   // Online users count (via presence)
   onlineCount: number
 
@@ -61,6 +64,7 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
   const [chatMaintenanceMode, setChatMaintenanceMode] = useState(false)
   const [onlineCount, setOnlineCount] = useState(0)
   const [typingUsers, setTypingUsers] = useState<TypingUser[]>([])
+  const [motd, setMotd] = useState<string>('')
 
   const supabaseRef = useRef(
     createClient(
@@ -127,7 +131,8 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
     const steamId = userSummary?.steamId
 
     // Skip in development for maintenance mode
-    const isDevelopment = process.env.NODE_ENV === 'development'
+    // const isDevelopment = process.env.NODE_ENV === 'development'
+    const isDevelopment = false
 
     // Fetch initial user roles
     const fetchUserRoles = async (): Promise<void> => {
@@ -158,9 +163,18 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
       }
     }
 
+    // Fetch initial MOTD
+    const fetchMotd = async (): Promise<void> => {
+      const { data, error } = await supabase.from('chat_settings').select('motd').maybeSingle()
+      if (!error && typeof data?.motd === 'string') {
+        setMotd(data.motd)
+      }
+    }
+
     fetchUserRoles()
     fetchBannedStatus()
     fetchMaintenanceMode()
+    fetchMotd()
 
     // Create ONE unified channel for everything
     const channel = supabase.channel('unified-chat-channel', {
@@ -222,6 +236,7 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
         if (isDevelopment) return
         if (payload.eventType === 'INSERT' || payload.eventType === 'UPDATE') {
           setChatMaintenanceMode(payload.new?.maintenance ?? false)
+          setMotd(payload.new?.motd ?? '')
         } else if (payload.eventType === 'DELETE') {
           setChatMaintenanceMode(false)
         }
@@ -272,6 +287,7 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
         isBanned,
         userRoles,
         chatMaintenanceMode,
+        motd,
         onlineCount,
         typingUsers,
         broadcastTyping,
