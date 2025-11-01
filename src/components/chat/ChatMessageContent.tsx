@@ -30,6 +30,8 @@ interface ChatMessageContentProps {
   isPinned?: boolean
   onPin?: (message: string) => void
   onUnpin?: () => void
+  replyToId?: string | null
+  scrollToMessage?: (messageId: string) => Promise<void>
 }
 
 function MarkdownLink(props: AnchorHTMLAttributes<HTMLAnchorElement>): ReactElement {
@@ -67,11 +69,20 @@ const preprocessMessage = (text: string, validMentions: string[]): string => {
   return processed
 }
 
-const FIXED_IMG_SIZE = 200
+// Helper function to detect if message contains only emojis
+const isEmojiOnly = (text: string): boolean => {
+  // Remove whitespace and check if remaining content is only emojis
+  const trimmed = text.trim()
+  // Regex to match emojis (including modifiers and compound emojis)
+  const emojiRegex = /^(\p{Emoji_Presentation}|\p{Emoji}\uFE0F|\p{Emoji_Modifier_Base}\p{Emoji_Modifier}?)+$/u
+  return emojiRegex.test(trimmed)
+}
 
-// Custom blockquote renderer to inject the arrow icon
+// Custom blockquote renderer to inject the arrow icon and make it clickable
 const MarkdownBlockquote = (
   props: BlockquoteHTMLAttributes<HTMLQuoteElement> & { children?: ReactNode },
+  replyToId?: string | null,
+  scrollToMessage?: (messageId: string) => Promise<void>,
 ): ReactElement => {
   // Check if any child contains ':arrow:'
   let hasArrow = false
@@ -107,7 +118,7 @@ const MarkdownBlockquote = (
   // Replace ':arrow:' with the icon
   const replaced = Children.map(props.children, child => {
     if (typeof child === 'string') {
-      return child.replace(':arrow:', '') // Remove the placeholder if present
+      return child.replace(':arrow:', '')
     }
 
     if (
@@ -116,6 +127,7 @@ const MarkdownBlockquote = (
       typeof (child.props as { children?: ReactNode }).children === 'string'
     ) {
       const text = (child.props as { children?: ReactNode }).children as string
+
       if (text.startsWith(':arrow:')) {
         return (
           <p>
@@ -154,13 +166,24 @@ const MarkdownBlockquote = (
       style={
         hasArrow ? { paddingLeft: '2px', userSelect: 'none' } : { borderLeft: '4px solid #555559', paddingLeft: '6px' }
       }
+      className={hasArrow && replyToId && scrollToMessage ? 'cursor-pointer hover:bg-white/5 rounded' : ''}
+      onClick={() => {
+        if (hasArrow && replyToId && scrollToMessage) {
+          scrollToMessage(replyToId)
+        }
+      }}
     >
       {replaced}
     </blockquote>
   )
 }
 
-export default function ChatMessageContent({ message, userSummary }: ChatMessageContentProps): ReactElement {
+export default function ChatMessageContent({
+  message,
+  userSummary,
+  replyToId,
+  scrollToMessage,
+}: ChatMessageContentProps): ReactElement {
   const [modalImg, setModalImg] = useState<string | null>(null)
   const [lightboxOpen, setLightboxOpen] = useState(false)
   const [validMentions, setValidMentions] = useState<string[]>([])
@@ -205,8 +228,8 @@ export default function ChatMessageContent({ message, userSummary }: ChatMessage
       <Image
         src={typeof props.src === 'string' ? props.src : ''}
         alt={props.alt || 'image'}
-        width={FIXED_IMG_SIZE}
-        height={FIXED_IMG_SIZE}
+        width={200}
+        height={200}
         className='max-w-[200px] h-[200px] object-cover cursor-pointer rounded-lg my-2'
         onClick={() => {
           if (typeof props.src === 'string') {
@@ -219,14 +242,14 @@ export default function ChatMessageContent({ message, userSummary }: ChatMessage
   }
 
   return (
-    <div>
+    <div className={isEmojiOnly(message) ? 'emoji-only-message' : ''}>
       <ReactMarkdown
         rehypePlugins={[rehypeRaw]}
         remarkPlugins={[remarkGfm]}
         components={{
           a: MarkdownLink,
           img: MarkdownImage,
-          blockquote: MarkdownBlockquote,
+          blockquote: props => MarkdownBlockquote(props, replyToId, scrollToMessage),
         }}
       >
         {preprocessMessage(message.trim(), validMentions)}

@@ -4,8 +4,9 @@ import type { ReactElement, RefObject } from 'react'
 
 import { Spinner } from '@heroui/react'
 import { memo, useEffect, useRef } from 'react'
-import ChatDateDivider from './ChatDateDivider'
-import ChatMessage from './ChatMessage'
+
+import ChatDateDivider from '@/components/chat/ChatDateDivider'
+import ChatMessage from '@/components/chat/ChatMessage'
 
 export interface Message {
   id: string
@@ -14,6 +15,7 @@ export interface Message {
   message: string
   created_at: string
   avatar_url?: string
+  reply_to_id?: string | null
 }
 
 interface ChatMessagesProps {
@@ -26,13 +28,14 @@ interface ChatMessagesProps {
   handleEditMessage: (msgId: string, newContent: string) => void
   getColorFromUsername: (name: string) => string
   userRoles: { [userId: string]: string }
-  getRoleColor: (role: string) => string
+  getRoleStyles: (role: string) => string
   inputRef: RefObject<HTMLTextAreaElement>
   pinnedMessageId?: string | null
   handlePinMessage?: (message: ChatMessageType) => void
   handleUnpinMessage?: () => void
   isAdmin?: boolean
-  onReply?: (msg: Message) => void // Add this
+  onReply?: (msg: Message) => void
+  scrollToMessage?: (messageId: string) => Promise<void>
 }
 
 const ChatMessages = ({
@@ -45,7 +48,7 @@ const ChatMessages = ({
   handleEditMessage,
   getColorFromUsername,
   userRoles,
-  getRoleColor,
+  getRoleStyles,
   editingMessageId,
   setEditingMessageId,
   editedMessage,
@@ -56,6 +59,7 @@ const ChatMessages = ({
   handleUnpinMessage,
   isAdmin,
   onReply,
+  scrollToMessage,
 }: ChatMessagesProps & {
   editingMessageId: string | null
   setEditingMessageId: (id: string | null) => void
@@ -71,18 +75,22 @@ const ChatMessages = ({
 
   useEffect(() => {
     if (!editingMessageId) return
+
     const handleEsc = (e: KeyboardEvent): void => {
       if (e.key === 'Escape') {
         setEditingMessageId(null)
         inputRef.current?.focus()
       }
     }
+
     window.addEventListener('keydown', handleEsc)
+
     if (editTextareaRef.current) {
       const len = editTextareaRef.current.value.length
       editTextareaRef.current.focus()
       editTextareaRef.current.setSelectionRange(len, len)
     }
+
     return () => {
       window.removeEventListener('keydown', handleEsc)
     }
@@ -120,7 +128,7 @@ const ChatMessages = ({
                     userSummary={userSummary}
                     userRoles={userRoles}
                     getColorFromUsername={getColorFromUsername}
-                    getRoleColor={getRoleColor}
+                    getRoleStyles={getRoleStyles}
                     isOwnMessage={isOwnMessage}
                     canEditOrDeleteAny={canEditOrDeleteAny}
                     editingMessageId={editingMessageId}
@@ -135,6 +143,7 @@ const ChatMessages = ({
                     onUnpin={handleUnpinMessage}
                     isAdmin={isAdmin}
                     onReply={onReply ? () => onReply(msg) : undefined}
+                    scrollToMessage={scrollToMessage}
                   />
                 )
               })}

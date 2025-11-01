@@ -123,6 +123,8 @@ svg {
   }
 }
 
+/* Chat feature styles */
+
 .chat-message a {
   color: #4d70fc;
   text-decoration: underline;
@@ -219,4 +221,44 @@ svg {
   color: #f1f8ffff;
   padding: 2px;
   border-radius: 2px;
+}
+
+.emoji-only-message {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.emoji-only-message p {
+  margin: 0;
+}
+
+.donator-role {
+  background: linear-gradient(90deg, #4d70fc, #8b5cf6, #ec4899, #f59e0b, #10b981, #4d70fc);
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient-shift 3s linear infinite;
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.message-highlight {
+  animation: message-flash 2s ease-out;
+}
+
+@keyframes message-flash {
+  0% {
+    background-color: rgba(77, 112, 252, 0.4);
+  }
+  100% {
+    background-color: transparent;
+  }
 }

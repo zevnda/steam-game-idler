@@ -10,12 +10,13 @@ import { useTranslation } from 'react-i18next'
 import { FaImage } from 'react-icons/fa6'
 import { IoSend } from 'react-icons/io5'
 
+import { useSupabase } from '@/components/contexts/SupabaseContext'
 import { useUserContext } from '@/components/contexts/UserContext'
 import ExtLink from '@/components/ui/ExtLink'
 import { useEmojiPicker } from '@/hooks/chat/useEmojiPicker'
 import { useMentionUsers } from '@/hooks/chat/useMentionUsers'
 import { useReplyPrefill } from '@/hooks/chat/useReplyPrefill'
-import { useTypingUsers } from '@/hooks/chat/useTypingUsers'
+import { logEvent } from '@/utils/tasks'
 
 const supabase = createClient(
   'https://inbxfhxkrhwiybnephlq.supabase.co',
@@ -26,8 +27,8 @@ interface ChatInputProps {
   inputRef: RefObject<HTMLTextAreaElement>
   onSendMessage: (msg: string) => void
   handleEditLastMessage: () => void
-  replyToMessage?: { username: string; message: string } | null // Add this
-  clearReplyToMessage?: () => void // Add this
+  replyToMessage?: { username: string; message: string } | null
+  clearReplyToMessage?: () => void
 }
 
 export default function ChatInput({
@@ -46,7 +47,7 @@ export default function ChatInput({
     user_id: userSummary?.steamId ?? '',
     username: userSummary?.personaName ?? '',
   }
-  const { typingUsers, broadcastTyping, broadcastStopTyping } = useTypingUsers(currentUser)
+  const { typingUsers, broadcastTyping, broadcastStopTyping } = useSupabase()
 
   const {
     mentionStart,
@@ -86,6 +87,7 @@ export default function ChatInput({
 
       if (error) {
         console.error('Error uploading image:', error)
+        logEvent(`[Error] in uploadImageToSupabase: ${error.message}`)
         return null
       }
 
@@ -97,58 +99,69 @@ export default function ChatInput({
       return publicUrl
     } catch (error) {
       console.error('Error uploading image:', error)
+      logEvent(`[Error] in uploadImageToSupabase: ${error}`)
       return null
     }
   }
 
   // Handle paste event for images
   const handleImageUpload = async (e: React.ClipboardEvent<HTMLInputElement>): Promise<void> => {
-    const items = e.clipboardData.items
-    for (let i = 0; i < items.length; i++) {
-      const item = items[i]
-      if (item.type.startsWith('image/')) {
-        const file = item.getAsFile()
-        if (file) {
-          e.preventDefault()
+    try {
+      const items = e.clipboardData.items
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i]
+        if (item.type.startsWith('image/')) {
+          const file = item.getAsFile()
+          if (file) {
+            e.preventDefault()
 
-          // Show loading state (optional)
-          // setIsUploading(true)
+            // Show loading state (optional)
+            // setIsUploading(true)
 
-          const imageUrl = await uploadImageToSupabase(file)
+            const imageUrl = await uploadImageToSupabase(file)
 
-          if (imageUrl) {
-            // Send the message with the image URL
-            onSendMessage(imageUrl)
-            setNewMessage('')
-            setMentionQuery('')
-            setMentionStart(null)
-            if (clearReplyToMessage) clearReplyToMessage()
+            if (imageUrl) {
+              // Send the message with the image URL
+              onSendMessage(imageUrl)
+              setNewMessage('')
+              setMentionQuery('')
+              setMentionStart(null)
+              if (clearReplyToMessage) clearReplyToMessage()
+            }
+
+            // setIsUploading(false)
+            break
           }
-
-          // setIsUploading(false)
-          break
         }
       }
+    } catch (error) {
+      console.error('Error in handleImageUpload:', error)
+      logEvent(`[Error] in handleImageUpload: ${error}`)
     }
   }
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
-    const file = e.target.files?.[0]
-    if (file) {
-      // Wrap file in a ClipboardEvent-like object for handleImageUpload
-      const fakeClipboardEvent = {
-        clipboardData: {
-          items: [
-            {
-              type: file.type,
-              getAsFile: () => file,
-            },
-          ],
-        },
-        preventDefault: () => {},
-      } as unknown as React.ClipboardEvent<HTMLInputElement>
-      await handleImageUpload(fakeClipboardEvent)
-      e.target.value = ''
+    try {
+      const file = e.target.files?.[0]
+      if (file) {
+        // Wrap file in a ClipboardEvent-like object for handleImageUpload
+        const fakeClipboardEvent = {
+          clipboardData: {
+            items: [
+              {
+                type: file.type,
+                getAsFile: () => file,
+              },
+            ],
+          },
+          preventDefault: () => {},
+        } as unknown as React.ClipboardEvent<HTMLInputElement>
+        await handleImageUpload(fakeClipboardEvent)
+        e.target.value = ''
+      }
+    } catch (error) {
+      console.error('Error in handleFileSelect:', error)
+      logEvent(`[Error] in handleFileSelect: ${error}`)
     }
   }
 
@@ -225,7 +238,7 @@ export default function ChatInput({
                 <input
                   ref={fileInputRef}
                   type='file'
-                  accept='image/png,image/jpeg,image/jpg,image/webp'
+                  accept='image/png,image/jpeg,image/jpg,image/webp,image/gif,image/svg+xml'
                   style={{ display: 'none' }}
                   onChange={handleFileSelect}
                 />
@@ -254,6 +267,8 @@ export default function ChatInput({
                       previewPosition='none'
                       perLine={8}
                       navPosition='top'
+                      onClickOutside={() => setShowEmojiPicker(false)}
+                      autoFocus
                     />
                   </div>
                 )}

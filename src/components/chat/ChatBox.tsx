@@ -4,19 +4,17 @@ import type { Dispatch, ReactElement, SetStateAction } from 'react'
 
 import { cn } from '@heroui/react'
 import { useRef, useState } from 'react'
-import ChatHeader from './ChatHeader'
-import ChatInput from './ChatInput'
-import ChatMessages from './ChatMessages'
 
 import ChatBanned from '@/components/chat/ChatBanned'
+import ChatHeader from '@/components/chat/ChatHeader'
+import ChatInput from '@/components/chat/ChatInput'
 import ChatMaintenance from '@/components/chat/ChatMaintenance'
+import ChatMessages from '@/components/chat/ChatMessages'
 import { useStateContext } from '@/components/contexts/StateContext'
-import { useChatMaintenanceMode } from '@/hooks/chat/useChatMaintenanceMode'
+import { useSupabase } from '@/components/contexts/SupabaseContext'
 import { useMessages } from '@/hooks/chat/useMessages'
-import { useMotd } from '@/hooks/chat/useMotd'
-import { useOnlineUsers } from '@/hooks/chat/useOnlineUsers'
 import { usePinnedMessage } from '@/hooks/chat/usePinnedMessage'
-import { useUserRoles } from '@/hooks/chat/useUserRoles'
+import { useScrollToMessage } from '@/hooks/chat/useScrollToMessage'
 
 export default function ChatBox(): ReactElement {
   const { sidebarCollapsed, transitionDuration } = useStateContext()
@@ -25,9 +23,8 @@ export default function ChatBox(): ReactElement {
   const inputRef = useRef<HTMLTextAreaElement>(null as unknown as HTMLTextAreaElement)
   const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
 
-  const chatMaintenanceMode = useChatMaintenanceMode()
+  const { chatMaintenanceMode, userRoles } = useSupabase()
 
-  const { userRoles } = useUserRoles()
   const { pinnedMessageId, pinnedMessage, handlePinMessage, handleUnpinMessage, setPinnedMessage } =
     usePinnedMessage() as {
       pinnedMessageId: string | null
@@ -50,6 +47,7 @@ export default function ChatBox(): ReactElement {
     handleEditLastMessage,
     groupMessagesByDate,
     isBanned,
+    setMessages,
   } = useMessages({
     userSummary,
     userRoles,
@@ -59,21 +57,34 @@ export default function ChatBox(): ReactElement {
     pinnedMessageId,
     setPinnedMessage,
   })
-  const motd = useMotd()
-  const onlineCount = useOnlineUsers()
+
+  const { scrollToMessage } = useScrollToMessage({
+    messages,
+    setMessages,
+    messagesContainerRef,
+    pagination,
+  })
 
   const [replyToMessage, setReplyToMessage] = useState<ChatMessageType | null>(null)
 
-  const getRoleColor = (role: string): string => {
+  const handleReplyToMessage = (msg: ChatMessageType): void => {
+    setReplyToMessage(msg)
+  }
+
+  const getRoleStyles = (role: string): string => {
     switch (role) {
       case 'admin':
-        return '#e91e63'
+        return 'text-[#e91e63]'
       case 'mod':
-        return '#1eb6e9ff'
+        return 'text-[#1eb6e9ff]'
       case 'early_supporter':
-        return '#43b581'
+        return 'text-[#43b581]'
+      case 'donator':
+        return 'donator-role'
+      case 'banned':
+        return 'text-[#525252] line-through italic'
       default:
-        return '#dbdee1'
+        return 'text-[#dbdee1]'
     }
   }
 
@@ -110,7 +121,7 @@ export default function ChatBox(): ReactElement {
           transitionProperty: 'width',
         }}
       >
-        <ChatHeader motd={motd} onlineCount={onlineCount} />
+        <ChatHeader />
         <ChatMaintenance />
       </div>
     )
@@ -128,7 +139,7 @@ export default function ChatBox(): ReactElement {
           transitionProperty: 'width',
         }}
       >
-        <ChatHeader motd={motd} onlineCount={onlineCount} />
+        <ChatHeader />
         <ChatBanned />
       </div>
     )
@@ -146,7 +157,7 @@ export default function ChatBox(): ReactElement {
           transitionProperty: 'width',
         }}
       >
-        <ChatHeader motd={motd} onlineCount={onlineCount} />
+        <ChatHeader />
         {/* Pinned message at top */}
         {pinnedMessage && (
           <div className='mb-2 border-b border-border'>
@@ -160,7 +171,7 @@ export default function ChatBox(): ReactElement {
               handleEditMessage={handleEditMessage}
               getColorFromUsername={getColorFromUsername}
               userRoles={userRoles}
-              getRoleColor={getRoleColor}
+              getRoleStyles={getRoleStyles}
               editingMessageId={editingMessageId}
               setEditingMessageId={setEditingMessageId}
               editedMessage={editedMessage}
@@ -170,7 +181,8 @@ export default function ChatBox(): ReactElement {
               handlePinMessage={handlePinMessage}
               handleUnpinMessage={handleUnpinMessage}
               isAdmin={userRoles[String(userSummary?.steamId)] === 'admin'}
-              onReply={setReplyToMessage}
+              onReply={handleReplyToMessage}
+              scrollToMessage={scrollToMessage}
             />
           </div>
         )}
@@ -185,7 +197,7 @@ export default function ChatBox(): ReactElement {
           handleEditMessage={handleEditMessage}
           getColorFromUsername={getColorFromUsername}
           userRoles={userRoles}
-          getRoleColor={getRoleColor}
+          getRoleStyles={getRoleStyles}
           editingMessageId={editingMessageId}
           setEditingMessageId={setEditingMessageId}
           editedMessage={editedMessage}
@@ -195,12 +207,13 @@ export default function ChatBox(): ReactElement {
           handlePinMessage={handlePinMessage}
           handleUnpinMessage={handleUnpinMessage}
           isAdmin={userRoles[String(userSummary?.steamId)] === 'admin'}
-          onReply={setReplyToMessage}
+          onReply={handleReplyToMessage}
+          scrollToMessage={scrollToMessage}
         />
 
         <ChatInput
           inputRef={inputRef}
-          onSendMessage={handleSendMessage}
+          onSendMessage={msg => handleSendMessage(msg, replyToMessage?.id || null)}
           handleEditLastMessage={handleEditLastMessage}
           replyToMessage={replyToMessage}
           clearReplyToMessage={() => setReplyToMessage(null)}

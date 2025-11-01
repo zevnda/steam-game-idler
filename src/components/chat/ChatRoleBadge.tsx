@@ -2,7 +2,7 @@ import type { ReactElement } from 'react'
 
 import { Tooltip } from '@heroui/react'
 import { FaCrown } from 'react-icons/fa'
-import { FaRocket, FaShield } from 'react-icons/fa6'
+import { FaBan, FaMoneyBill1Wave, FaRocket, FaShield } from 'react-icons/fa6'
 
 interface ChatRoleBadgeProps {
   role: string
@@ -27,6 +27,20 @@ export default function ChatRoleBadge({ role }: ChatRoleBadgeProps): ReactElemen
     return (
       <Tooltip content='Early Supporter' className='text-xs' delay={500} closeDelay={0} showArrow>
         <FaRocket className='inline ml-1 -translate-y-0.5' size={14} />
+      </Tooltip>
+    )
+  }
+  if (role === 'donator') {
+    return (
+      <Tooltip content='Donator' className='text-xs' delay={500} closeDelay={0} showArrow>
+        <FaMoneyBill1Wave className='inline ml-1 -translate-y-0.5 text-[#ac19f0]' size={14} />
+      </Tooltip>
+    )
+  }
+  if (role === 'banned') {
+    return (
+      <Tooltip content='Banned User' className='text-xs' delay={500} closeDelay={0} showArrow>
+        <FaBan className='inline ml-1 -translate-y-0.5 text-[#525252]' size={14} />
       </Tooltip>
     )
   }

@@ -1,3 +1,21 @@
+<!-- 2.2.3 -->
+
+### Changes in v2.2.3
+
+- Multiple improvements, new features, and fixes for the chat feature
+  - Added a confirmation modal when deleting messages
+    - Holding `SHIFT` while pressing the delete buttons skips the confirmation
+  - Added a `donator` role for users who have supported SGI monetarily in any way
+  - Improved the notification sound
+    - You may need to readjust the notification volume in `settings > general`
+  - Improved the style and layout of the chat header
+  - Improved message replies
+    - Users can click the replied-to message to scroll that message into view
+    - Replies no longer include the image from the replied-to message
+  - Improved error handling
+    - Errors will now be logged to `settings > debug`
+  - Messages containing only emojis now display larger emojis
+
 <!-- 2.2.2 -->
 
 ### Changes in v2.2.2

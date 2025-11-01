@@ -205,19 +205,10 @@ export async function playMentionBeep(): Promise<void> {
 
     const { chatSounds } = settings?.general || {}
 
-    const AudioCtx =
-      window.AudioContext || (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext
-    const ctx = new AudioCtx()
-    const oscillator = ctx.createOscillator()
-    const gain = ctx.createGain()
-    oscillator.type = 'sine'
-    oscillator.frequency.value = 1500
-    gain.gain.setValueAtTime(chatSounds[0], ctx.currentTime)
-    gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.2)
-    oscillator.connect(gain)
-    gain.connect(ctx.destination)
-    oscillator.start()
-    oscillator.stop(ctx.currentTime + 0.3)
-    oscillator.onended = () => ctx.close()
-  } catch {}
+    const audio = new Audio('/pop.mp3')
+    audio.volume = chatSounds[0] > 1 ? 1 : chatSounds[0] // Ensure volume does not exceed 1
+    await audio.play()
+  } catch (error) {
+    console.error('Error playing mention beep:', error)
+  }
 }
