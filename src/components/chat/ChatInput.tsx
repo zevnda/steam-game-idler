@@ -238,7 +238,7 @@ export default function ChatInput({
                 <input
                   ref={fileInputRef}
                   type='file'
-                  accept='image/png,image/jpeg,image/jpg,image/webp'
+                  accept='image/png,image/jpeg,image/jpg,image/webp,image/gif,image/svg+xml'
                   style={{ display: 'none' }}
                   onChange={handleFileSelect}
                 />

@@ -17,6 +17,23 @@ export function useReplyPrefill(
         } else {
           messageContent = messageContent.split('\n')[0]
         }
+
+        // Check if the message contains an image URL
+        const imageUrlRegex = /(https?:\/\/(?:[\w.-]+)\/(?:[\w\-./%]+)\.(?:jpg|jpeg|png|gif|webp|svg))(?![^\s])/gi
+        const hasImage = imageUrlRegex.test(messageContent)
+
+        // If the message contains an image, replace it with "CONTAINS ATTACHMENT"
+        if (hasImage) {
+          messageContent = messageContent.replace(imageUrlRegex, '').trim()
+          // If there's still text content after removing the image, keep it
+          // Otherwise, just use an image icon
+          if (messageContent) {
+            messageContent = `${messageContent} :attachment:`
+          } else {
+            messageContent = ':attachment:'
+          }
+        }
+
         const quoted = `> :arrow: @${replyToMessage.username} ${messageContent}\n\n`
         setNewMessage(quoted)
         setTimeout(() => {

@@ -118,7 +118,7 @@ const MarkdownBlockquote = (
   // Replace ':arrow:' with the icon
   const replaced = Children.map(props.children, child => {
     if (typeof child === 'string') {
-      return child.replace(':arrow:', '') // Remove the placeholder if present
+      return child.replace(':arrow:', '')
     }
 
     if (
@@ -127,6 +127,7 @@ const MarkdownBlockquote = (
       typeof (child.props as { children?: ReactNode }).children === 'string'
     ) {
       const text = (child.props as { children?: ReactNode }).children as string
+
       if (text.startsWith(':arrow:')) {
         return (
           <p>
