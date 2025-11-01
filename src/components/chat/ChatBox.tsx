@@ -76,6 +76,8 @@ export default function ChatBox(): ReactElement {
         return 'text-[#1eb6e9ff]'
       case 'early_supporter':
         return 'text-[#43b581]'
+      case 'donator':
+        return 'donator-role'
       case 'banned':
         return 'text-[#525252] line-through italic'
       default:
