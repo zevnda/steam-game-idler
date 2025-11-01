@@ -5,6 +5,8 @@ import type { Dispatch, ReactNode, SetStateAction } from 'react'
 import { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
 
+import { playMentionBeep } from '@/utils/tasks'
+
 export interface ChatMessageType {
   id: string
   user_id: string
@@ -202,6 +204,10 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
           )
           return [...filtered, newMsg]
         })
+        // Play mention beep only if the new message mentions the current user
+        if (userSummary?.personaName && newMsg.message.includes(`@${userSummary.personaName}`)) {
+          playMentionBeep()
+        }
       })
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'messages' }, payload => {
         const updatedMsg = payload.new as ChatMessageType

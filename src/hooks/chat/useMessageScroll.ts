@@ -4,8 +4,6 @@ import type { RefObject } from 'react'
 
 import { useCallback, useEffect, useState } from 'react'
 
-import { playMentionBeep } from '@/utils/tasks'
-
 interface UseMessageScrollParams {
   messages: ChatMessageType[]
   messagesEndRef: RefObject<HTMLDivElement>
@@ -38,15 +36,9 @@ export function useMessageScroll({
     }
   }, [loading, messages, scrollToBottom, shouldScrollToBottom])
 
-  // Handle mention beeps and auto-scrolling for new messages
+  // Handle auto-scrolling for new messages
   useEffect(() => {
     if (messages.length === 0) return
-
-    const lastMessage = messages[messages.length - 1]
-    // Check if message mentions current user
-    if (userSummary?.personaName && lastMessage.message.includes(`@${userSummary.personaName}`)) {
-      playMentionBeep()
-    }
 
     // Auto-scroll if near bottom
     const container = messagesContainerRef.current
@@ -57,7 +49,7 @@ export function useMessageScroll({
         setTimeout(() => setShouldScrollToBottom(true), 0)
       }
     }
-  }, [messages, userSummary?.personaName, messagesContainerRef])
+  }, [messages, messagesContainerRef])
 
   return {
     shouldScrollToBottom,
