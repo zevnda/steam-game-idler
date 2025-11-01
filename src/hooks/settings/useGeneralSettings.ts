@@ -33,7 +33,7 @@ export const useGeneralSettings = (): GeneralSettingsHook => {
   // Sync local settings with global settings when they change
   useEffect(() => {
     const value = userSettings.general?.chatSounds
-    const getPercent = (val: number): number => Math.round((val / 2) * 100)
+    const getPercent = (val: number): number => Math.round(val * 100)
     setSliderLabel(
       t('settings.general.chatSounds.description', {
         value: `${getPercent(value[0])}%`,
