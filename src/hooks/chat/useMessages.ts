@@ -39,7 +39,7 @@ export function useMessages({
   setPagination: Dispatch<SetStateAction<{ limit: number; offset: number }>>
   shouldScrollToBottom: boolean
   setShouldScrollToBottom: Dispatch<SetStateAction<boolean>>
-  handleSendMessage: (message: string) => Promise<void>
+  handleSendMessage: (message: string, replyToId?: string | null) => Promise<void>
   handleDeleteMessage: (msgId: string, msgUserId: string) => Promise<string | null | void>
   handleEditMessage: (msgId: string, newContent: string) => Promise<void>
   editingMessageId: string | null

@@ -23,13 +23,13 @@ export function useMessageOperations({
   setShouldScrollToBottom,
   pagination,
 }: UseMessageOperationsParams): {
-  handleSendMessage: (message: string) => Promise<void>
+  handleSendMessage: (message: string, replyToId?: string | null) => Promise<void>
   handleDeleteMessage: (msgId: string, msgUserId: string) => Promise<string | null | void>
   handleEditMessage: (msgId: string, newContent: string) => Promise<void>
 } {
   const { supabase } = useSupabase()
 
-  const handleSendMessage = async (message: string): Promise<void> => {
+  const handleSendMessage = async (message: string, replyToId?: string | null): Promise<void> => {
     if (!message.trim()) return
     const steamId = userSummary?.steamId || crypto.randomUUID()
 
@@ -68,7 +68,7 @@ export function useMessageOperations({
     }
 
     const tempId = `temp-${Date.now()}`
-    const tempMessage = {
+    const tempMessage: ChatMessageType = {
       id: tempId,
       user_id: steamId,
       username: userSummary?.personaName || 'Unknown',
@@ -76,21 +76,39 @@ export function useMessageOperations({
       created_at: new Date().toISOString(),
       avatar_url: userSummary?.avatar || undefined,
     }
+
+    // Only add reply_to_id if it exists
+    if (replyToId) {
+      tempMessage.reply_to_id = replyToId
+    }
+
     setMessages(prev => {
       // Add new message, then trim to latest pagination.limit messages
       const updated = [...prev, tempMessage]
       return updated.length > pagination.limit ? updated.slice(updated.length - pagination.limit) : updated
     })
     setShouldScrollToBottom(true)
-    const payload = {
+    const payload: Record<string, unknown> = {
       user_id: steamId,
       username: userSummary?.personaName || 'Unknown',
       message,
       avatar_url: userSummary?.avatar || undefined,
     }
+
+    // Only include reply_to_id if it exists and is not null
+    if (replyToId) {
+      payload.reply_to_id = replyToId
+    }
+
     const { error } = await supabase.from('messages').insert([payload])
     if (error) {
+      console.error('Error sending message:', error)
       setMessages(prev => prev.filter(m => m.id !== tempId))
+      addToast({
+        title: 'Failed to send message',
+        description: error.message,
+        color: 'danger',
+      })
     }
   }
 

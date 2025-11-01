@@ -30,6 +30,8 @@ interface ChatMessageContentProps {
   isPinned?: boolean
   onPin?: (message: string) => void
   onUnpin?: () => void
+  replyToId?: string | null
+  scrollToMessage?: (messageId: string) => Promise<void>
 }
 
 function MarkdownLink(props: AnchorHTMLAttributes<HTMLAnchorElement>): ReactElement {
@@ -76,9 +78,11 @@ const isEmojiOnly = (text: string): boolean => {
   return emojiRegex.test(trimmed)
 }
 
-// Custom blockquote renderer to inject the arrow icon
+// Custom blockquote renderer to inject the arrow icon and make it clickable
 const MarkdownBlockquote = (
   props: BlockquoteHTMLAttributes<HTMLQuoteElement> & { children?: ReactNode },
+  replyToId?: string | null,
+  scrollToMessage?: (messageId: string) => Promise<void>,
 ): ReactElement => {
   // Check if any child contains ':arrow:'
   let hasArrow = false
@@ -161,13 +165,24 @@ const MarkdownBlockquote = (
       style={
         hasArrow ? { paddingLeft: '2px', userSelect: 'none' } : { borderLeft: '4px solid #555559', paddingLeft: '6px' }
       }
+      className={hasArrow && replyToId && scrollToMessage ? 'cursor-pointer hover:bg-white/5 rounded' : ''}
+      onClick={() => {
+        if (hasArrow && replyToId && scrollToMessage) {
+          scrollToMessage(replyToId)
+        }
+      }}
     >
       {replaced}
     </blockquote>
   )
 }
 
-export default function ChatMessageContent({ message, userSummary }: ChatMessageContentProps): ReactElement {
+export default function ChatMessageContent({
+  message,
+  userSummary,
+  replyToId,
+  scrollToMessage,
+}: ChatMessageContentProps): ReactElement {
   const [modalImg, setModalImg] = useState<string | null>(null)
   const [lightboxOpen, setLightboxOpen] = useState(false)
   const [validMentions, setValidMentions] = useState<string[]>([])
@@ -233,7 +248,7 @@ export default function ChatMessageContent({ message, userSummary }: ChatMessage
         components={{
           a: MarkdownLink,
           img: MarkdownImage,
-          blockquote: MarkdownBlockquote,
+          blockquote: props => MarkdownBlockquote(props, replyToId, scrollToMessage),
         }}
       >
         {preprocessMessage(message.trim(), validMentions)}

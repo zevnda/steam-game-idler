@@ -32,7 +32,8 @@ interface ChatMessageProps {
   onPin?: () => void
   onUnpin?: () => void
   isAdmin?: boolean
-  onReply?: () => void // Add this
+  onReply?: () => void
+  scrollToMessage?: (messageId: string) => Promise<void>
 }
 
 export interface Message {
@@ -42,6 +43,7 @@ export interface Message {
   message: string
   created_at: string
   avatar_url?: string
+  reply_to_id?: string | null
 }
 
 const supabase = createClient(
@@ -71,6 +73,7 @@ export default function ChatMessage({
   onUnpin,
   isAdmin,
   onReply,
+  scrollToMessage,
 }: ChatMessageProps): ReactElement {
   // Collect all usernames from msgs for mention highlighting
   const avatarColor = getColorFromUsername(msg.username)
@@ -193,6 +196,8 @@ export default function ChatMessage({
                 onPin={onPin}
                 onUnpin={onUnpin}
                 isAdmin={isAdmin}
+                replyToId={msg.reply_to_id}
+                scrollToMessage={scrollToMessage}
               />
             )}
           </div>

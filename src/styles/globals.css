@@ -123,6 +123,8 @@ svg {
   }
 }
 
+/* Chat feature styles */
+
 .chat-message a {
   color: #4d70fc;
   text-decoration: underline;
@@ -245,5 +247,18 @@ svg {
   }
   100% {
     background-position: 200% center;
+  }
+}
+
+.message-highlight {
+  animation: message-flash 2s ease-out;
+}
+
+@keyframes message-flash {
+  0% {
+    background-color: rgba(77, 112, 252, 0.4);
+  }
+  100% {
+    background-color: transparent;
   }
 }

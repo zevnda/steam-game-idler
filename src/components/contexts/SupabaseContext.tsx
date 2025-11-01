@@ -14,6 +14,7 @@ export interface ChatMessageType {
   message: string
   created_at: string
   avatar_url?: string
+  reply_to_id?: string | null
 }
 
 interface TypingUser {

@@ -14,6 +14,7 @@ import { useStateContext } from '@/components/contexts/StateContext'
 import { useSupabase } from '@/components/contexts/SupabaseContext'
 import { useMessages } from '@/hooks/chat/useMessages'
 import { usePinnedMessage } from '@/hooks/chat/usePinnedMessage'
+import { useScrollToMessage } from '@/hooks/chat/useScrollToMessage'
 import { useUserRoles } from '@/hooks/chat/useUserRoles'
 
 export default function ChatBox(): ReactElement {
@@ -48,6 +49,7 @@ export default function ChatBox(): ReactElement {
     handleEditLastMessage,
     groupMessagesByDate,
     isBanned,
+    setMessages,
   } = useMessages({
     userSummary,
     userRoles,
@@ -58,7 +60,18 @@ export default function ChatBox(): ReactElement {
     setPinnedMessage,
   })
 
+  const { scrollToMessage } = useScrollToMessage({
+    messages,
+    setMessages,
+    messagesContainerRef,
+    pagination,
+  })
+
   const [replyToMessage, setReplyToMessage] = useState<ChatMessageType | null>(null)
+
+  const handleReplyToMessage = (msg: ChatMessageType): void => {
+    setReplyToMessage(msg)
+  }
 
   const getRoleStyles = (role: string): string => {
     switch (role) {
@@ -170,7 +183,8 @@ export default function ChatBox(): ReactElement {
               handlePinMessage={handlePinMessage}
               handleUnpinMessage={handleUnpinMessage}
               isAdmin={userRoles[String(userSummary?.steamId)] === 'admin'}
-              onReply={setReplyToMessage}
+              onReply={handleReplyToMessage}
+              scrollToMessage={scrollToMessage}
             />
           </div>
         )}
@@ -195,12 +209,13 @@ export default function ChatBox(): ReactElement {
           handlePinMessage={handlePinMessage}
           handleUnpinMessage={handleUnpinMessage}
           isAdmin={userRoles[String(userSummary?.steamId)] === 'admin'}
-          onReply={setReplyToMessage}
+          onReply={handleReplyToMessage}
+          scrollToMessage={scrollToMessage}
         />
 
         <ChatInput
           inputRef={inputRef}
-          onSendMessage={handleSendMessage}
+          onSendMessage={msg => handleSendMessage(msg, replyToMessage?.id || null)}
           handleEditLastMessage={handleEditLastMessage}
           replyToMessage={replyToMessage}
           clearReplyToMessage={() => setReplyToMessage(null)}

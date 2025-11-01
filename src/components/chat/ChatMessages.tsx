@@ -15,6 +15,7 @@ export interface Message {
   message: string
   created_at: string
   avatar_url?: string
+  reply_to_id?: string | null
 }
 
 interface ChatMessagesProps {
@@ -33,7 +34,8 @@ interface ChatMessagesProps {
   handlePinMessage?: (message: ChatMessageType) => void
   handleUnpinMessage?: () => void
   isAdmin?: boolean
-  onReply?: (msg: Message) => void // Add this
+  onReply?: (msg: Message) => void
+  scrollToMessage?: (messageId: string) => Promise<void>
 }
 
 const ChatMessages = ({
@@ -57,6 +59,7 @@ const ChatMessages = ({
   handleUnpinMessage,
   isAdmin,
   onReply,
+  scrollToMessage,
 }: ChatMessagesProps & {
   editingMessageId: string | null
   setEditingMessageId: (id: string | null) => void
@@ -136,6 +139,7 @@ const ChatMessages = ({
                     onUnpin={handleUnpinMessage}
                     isAdmin={isAdmin}
                     onReply={onReply ? () => onReply(msg) : undefined}
+                    scrollToMessage={scrollToMessage}
                   />
                 )
               })}
