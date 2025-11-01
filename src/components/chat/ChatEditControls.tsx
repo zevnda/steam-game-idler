@@ -64,15 +64,16 @@ export default function ChatEditControls({
         e.preventDefault()
         onSave(localEditedMessage)
       }}
-      className='flex flex-col gap-2'
+      className='flex flex-col w-full mt-2'
     >
       <Textarea
         ref={setTextareaNode}
         value={localEditedMessage}
-        className='min-w-[700px]'
+        className='w-full'
         classNames={{
           inputWrapper: cn(
-            'bg-input data-[hover=true]:!bg-inputhover rounded-md',
+            'border border-border',
+            'bg-input data-[hover=true]:!bg-input rounded-md',
             'group-data-[focus-within=true]:!bg-inputhover',
             'group-data-[focus-visible=true]:ring-transparent',
             'group-data-[focus-visible=true]:ring-offset-transparent',

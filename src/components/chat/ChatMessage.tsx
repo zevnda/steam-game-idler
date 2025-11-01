@@ -189,7 +189,7 @@ export default function ChatMessage({
               </Tooltip>
             </div>
           )}
-          <div className='chat-message text-[#dbdee1] break-words text-xs w-fit leading-[1.375rem]'>
+          <div className='chat-message text-[#dbdee1] break-words text-xs w-full leading-[1.375rem]'>
             {editingMessageId === msg.id ? (
               <ChatEditControls
                 isEditing={true}

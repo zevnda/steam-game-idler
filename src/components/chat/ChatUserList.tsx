@@ -154,7 +154,7 @@ export default function ChatUserList(): ReactElement {
                       width={28}
                       height={28}
                     />
-                    <div className='absolute bottom-0 right-1 h-2.5 w-2.5 rounded-full bg-green-500 border-2 border-background' />
+                    <div className='absolute bottom-0 right-1 h-3 w-3 rounded-full bg-success-500 border-2 border-border' />
                   </div>
 
                   <span className={`text-xs truncate ${getRoleStyles(group.role)}`}>{user.username}</span>
