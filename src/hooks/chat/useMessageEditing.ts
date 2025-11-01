@@ -4,6 +4,8 @@ import type { RefObject } from 'react'
 
 import { useEffect, useState } from 'react'
 
+import { logEvent } from '@/utils/tasks'
+
 interface UseMessageEditingParams {
   messages: ChatMessageType[]
   userSummary: UserSummary
@@ -21,11 +23,16 @@ export function useMessageEditing({ messages, userSummary, inputRef }: UseMessag
   const [editedMessage, setEditedMessage] = useState('')
 
   const handleEditLastMessage = (): void => {
-    const steamId = userSummary?.steamId ?? ''
-    const lastMsg = [...messages].reverse().find(m => m.user_id === steamId)
-    if (lastMsg) {
-      setEditingMessageId(lastMsg.id)
-      setEditedMessage(lastMsg.message)
+    try {
+      const steamId = userSummary?.steamId ?? ''
+      const lastMsg = [...messages].reverse().find(m => m.user_id === steamId)
+      if (lastMsg) {
+        setEditingMessageId(lastMsg.id)
+        setEditedMessage(lastMsg.message)
+      }
+    } catch (error) {
+      console.error('Error in handleEditLastMessage:', error)
+      logEvent(`[Error] in handleEditLastMessage: ${error}`)
     }
   }
 

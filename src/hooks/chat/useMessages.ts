@@ -9,6 +9,7 @@ import { useMessageEditing } from '@/hooks/chat/useMessageEditing'
 import { useMessageOperations } from '@/hooks/chat/useMessageOperations'
 import { useMessagePagination } from '@/hooks/chat/useMessagePagination'
 import { useMessageScroll } from '@/hooks/chat/useMessageScroll'
+import { logEvent } from '@/utils/tasks'
 
 export type { ChatMessageType }
 
@@ -84,17 +85,23 @@ export function useMessages({
     })
 
   const groupMessagesByDate = (msgs: ChatMessageType[]): { [key: string]: ChatMessageType[] } => {
-    const groups: { [key: string]: ChatMessageType[] } = {}
-    msgs.forEach(msg => {
-      const date = new Date(msg.created_at).toLocaleDateString('en-US', {
-        month: 'long',
-        day: 'numeric',
-        year: 'numeric',
+    try {
+      const groups: { [key: string]: ChatMessageType[] } = {}
+      msgs.forEach(msg => {
+        const date = new Date(msg.created_at).toLocaleDateString('en-US', {
+          month: 'long',
+          day: 'numeric',
+          year: 'numeric',
+        })
+        if (!groups[date]) groups[date] = []
+        groups[date].push(msg)
       })
-      if (!groups[date]) groups[date] = []
-      groups[date].push(msg)
-    })
-    return groups
+      return groups
+    } catch (error) {
+      console.error('Error in groupMessagesByDate:', error)
+      logEvent(`[Error] in groupMessagesByDate: ${error}`)
+      return {}
+    }
   }
 
   useEffect(() => {
@@ -113,10 +120,19 @@ export function useMessages({
     let interval: NodeJS.Timeout | undefined
     if (userSummary?.steamId) {
       const updateLastActive = async (): Promise<void> => {
-        await supabase
-          .from('users')
-          .update({ last_active: new Date().toISOString() })
-          .eq('user_id', userSummary.steamId)
+        try {
+          const { error } = await supabase
+            .from('users')
+            .update({ last_active: new Date().toISOString() })
+            .eq('user_id', userSummary.steamId)
+          if (error) {
+            console.error('Error updating last_active:', error)
+            logEvent(`[Error] in updateLastActive: ${error.message}`)
+          }
+        } catch (error) {
+          console.error('Error in updateLastActive:', error)
+          logEvent(`[Error] in updateLastActive: ${error}`)
+        }
       }
       updateLastActive()
       interval = setInterval(updateLastActive, 30000)

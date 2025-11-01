@@ -3,6 +3,8 @@ import type { RefObject } from 'react'
 import { useEffect, useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
 
+import { logEvent } from '@/utils/tasks'
+
 const supabase = createClient(
   'https://inbxfhxkrhwiybnephlq.supabase.co',
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImluYnhmaHhrcmh3aXlibmVwaGxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3Njc5NjgsImV4cCI6MjA3NzM0Mzk2OH0.xUbDMdMUk7S2FgRZu8itWr4WsIV41TX-sNgilXiZg_Y',
@@ -36,25 +38,39 @@ export function useMentionUsers(
 
   useEffect(() => {
     const fetchUsers = async (): Promise<void> => {
-      if (mentionQuery === '') {
+      try {
+        if (mentionQuery === '') {
+          const { data, error } = await supabase
+            .from('users')
+            .select('user_id,username,avatar_url')
+            .order('username', { ascending: true })
+            .limit(10)
+          if (error) {
+            console.error('Error fetching users:', error)
+            logEvent(`[Error] in fetchUsers (mention): ${error.message}`)
+          }
+          setMentionResults(!error && Array.isArray(data) ? data : [])
+          return
+        }
+        if (!mentionQuery || mentionQuery.length < 1) {
+          setMentionResults([])
+          return
+        }
         const { data, error } = await supabase
           .from('users')
           .select('user_id,username,avatar_url')
-          .order('username', { ascending: true })
-          .limit(10)
+          .ilike('username', `${mentionQuery}%`)
+          .limit(5)
+        if (error) {
+          console.error('Error searching users:', error)
+          logEvent(`[Error] in searchUsers (mention): ${error.message}`)
+        }
         setMentionResults(!error && Array.isArray(data) ? data : [])
-        return
-      }
-      if (!mentionQuery || mentionQuery.length < 1) {
+      } catch (error) {
+        console.error('Error in fetchUsers:', error)
+        logEvent(`[Error] in fetchUsers: ${error}`)
         setMentionResults([])
-        return
       }
-      const { data, error } = await supabase
-        .from('users')
-        .select('user_id,username,avatar_url')
-        .ilike('username', `${mentionQuery}%`)
-        .limit(5)
-      setMentionResults(!error && Array.isArray(data) ? data : [])
     }
     fetchUsers()
   }, [mentionQuery])
@@ -64,33 +80,43 @@ export function useMentionUsers(
   }, [mentionResults])
 
   const handleInputChange = (value: string, cursorPos: number): void => {
-    // Find last @mention in the text before cursor
-    const textBeforeCursor = value.slice(0, cursorPos)
-    const mentionMatch = /@([^\s@]*)$/.exec(textBeforeCursor)
-    if (mentionMatch) {
-      setMentionQuery(mentionMatch[1])
-      setMentionStart(cursorPos - mentionMatch[0].length)
-    } else {
-      setMentionQuery('')
-      setMentionStart(null)
+    try {
+      // Find last @mention in the text before cursor
+      const textBeforeCursor = value.slice(0, cursorPos)
+      const mentionMatch = /@([^\s@]*)$/.exec(textBeforeCursor)
+      if (mentionMatch) {
+        setMentionQuery(mentionMatch[1])
+        setMentionStart(cursorPos - mentionMatch[0].length)
+      } else {
+        setMentionQuery('')
+        setMentionStart(null)
+      }
+    } catch (error) {
+      console.error('Error in handleInputChange:', error)
+      logEvent(`[Error] in handleInputChange (mention): ${error}`)
     }
   }
 
   const handleMentionSelect = (userIdx: number, setNewMessage: (msg: string) => void): void => {
-    const user = mentionResults[userIdx]
-    if (mentionStart !== null && inputRef.current && user) {
-      const before = newMessage.slice(0, mentionStart)
-      const after = newMessage.slice(inputRef.current.selectionStart)
-      const mentionText = `@${user.username} `
-      const updated = before + mentionText + after
-      setNewMessage(updated)
-      setMentionQuery('')
-      setMentionStart(null)
-      setMentionResults([])
-      setTimeout(() => {
-        inputRef.current!.focus()
-        inputRef.current!.setSelectionRange((before + mentionText).length, (before + mentionText).length)
-      }, 0)
+    try {
+      const user = mentionResults[userIdx]
+      if (mentionStart !== null && inputRef.current && user) {
+        const before = newMessage.slice(0, mentionStart)
+        const after = newMessage.slice(inputRef.current.selectionStart)
+        const mentionText = `@${user.username} `
+        const updated = before + mentionText + after
+        setNewMessage(updated)
+        setMentionQuery('')
+        setMentionStart(null)
+        setMentionResults([])
+        setTimeout(() => {
+          inputRef.current!.focus()
+          inputRef.current!.setSelectionRange((before + mentionText).length, (before + mentionText).length)
+        }, 0)
+      }
+    } catch (error) {
+      console.error('Error in handleMentionSelect:', error)
+      logEvent(`[Error] in handleMentionSelect: ${error}`)
     }
   }
 

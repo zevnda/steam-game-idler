@@ -3,6 +3,8 @@ import type { ReactElement, RefObject } from 'react'
 import { cn, Textarea } from '@heroui/react'
 import { useEffect, useRef, useState } from 'react'
 
+import { logEvent } from '@/utils/tasks'
+
 interface ChatEditControlsProps {
   isEditing: boolean
   editedMessage: string
@@ -20,10 +22,7 @@ export default function ChatEditControls({
   onCancel,
   textareaRef,
 }: ChatEditControlsProps): ReactElement {
-  // Local ref for the actual textarea DOM node
   const innerTextareaRef = useRef<HTMLTextAreaElement | null>(null)
-
-  // Local state for textarea value to avoid laggy typing
   const [localEditedMessage, setLocalEditedMessage] = useState(editedMessage)
 
   // Sync local state when editedMessage prop changes
@@ -33,19 +32,29 @@ export default function ChatEditControls({
 
   // Callback ref to get the actual textarea element
   const setTextareaNode = (node: HTMLTextAreaElement | null): void => {
-    innerTextareaRef.current = node
-    // Also update the parent ref if provided
-    if (textareaRef && typeof textareaRef !== 'function') {
-      textareaRef.current = node as HTMLTextAreaElement
+    try {
+      innerTextareaRef.current = node
+      // Also update the parent ref if provided
+      if (textareaRef && typeof textareaRef !== 'function') {
+        textareaRef.current = node as HTMLTextAreaElement
+      }
+    } catch (error) {
+      console.error('Error in setTextareaNode:', error)
+      logEvent(`[Error] in setTextareaNode: ${error}`)
     }
   }
 
-  // Only set cursor position when editing starts (not on every change)
+  // Set cursor position only when editing starts
   useEffect(() => {
-    if (isEditing && innerTextareaRef.current) {
-      const len = innerTextareaRef.current.value.length
-      innerTextareaRef.current.focus()
-      innerTextareaRef.current.setSelectionRange(len, len)
+    try {
+      if (isEditing && innerTextareaRef.current) {
+        const len = innerTextareaRef.current.value.length
+        innerTextareaRef.current.focus()
+        innerTextareaRef.current.setSelectionRange(len, len)
+      }
+    } catch (error) {
+      console.error('Error setting cursor position:', error)
+      logEvent(`[Error] in setCursorPosition: ${error}`)
     }
   }, [isEditing])
 
@@ -81,7 +90,7 @@ export default function ChatEditControls({
             onCancel()
           } else if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault()
-            onSave(localEditedMessage) // <-- pass value directly
+            onSave(localEditedMessage)
           }
         }}
         autoFocus

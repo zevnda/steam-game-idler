@@ -5,7 +5,7 @@ import type { Dispatch, ReactNode, SetStateAction } from 'react'
 import { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
 
-import { playMentionBeep } from '@/utils/tasks'
+import { logEvent, playMentionBeep } from '@/utils/tasks'
 
 export interface ChatMessageType {
   id: string
@@ -26,28 +26,22 @@ interface SupabaseContextType {
   // Messages state
   messages: ChatMessageType[]
   setMessages: Dispatch<SetStateAction<ChatMessageType[]>>
-
   // User ban status
   isBanned: boolean
-
   // User roles
   userRoles: { [steamId: string]: string }
-
   // Chat maintenance mode
   chatMaintenanceMode: boolean
-
   // Message of the day
   motd: string
-
   // Online users count (via presence)
   onlineCount: number
-
   // Typing users
   typingUsers: TypingUser[]
+  // Typing indicators
   broadcastTyping: () => void
   broadcastStopTyping: () => void
-
-  // Supabase client (exposing for direct access if needed)
+  // Supabase client
   supabase: SupabaseClient
 }
 
@@ -78,53 +72,63 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   const broadcastTyping = (): void => {
-    if (!userSummary?.steamId || !channelRef.current) return
+    try {
+      if (!userSummary?.steamId || !channelRef.current) return
 
-    const currentUser = {
-      user_id: userSummary.steamId,
-      username: userSummary.personaName || 'Unknown',
-    }
-
-    channelRef.current.send({
-      type: 'broadcast',
-      event: 'typing',
-      payload: currentUser,
-    })
-
-    // Add self locally
-    setTypingUsers(prev => {
-      const exists = prev.some(u => u.user_id === currentUser.user_id)
-      if (!exists) {
-        return [...prev, currentUser]
+      const currentUser = {
+        user_id: userSummary.steamId,
+        username: userSummary.personaName || 'Unknown',
       }
-      return prev
-    })
 
-    // Clear previous timeout
-    if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current)
+      channelRef.current.send({
+        type: 'broadcast',
+        event: 'typing',
+        payload: currentUser,
+      })
 
-    // After 3s of inactivity, broadcast stop_typing
-    typingTimeoutRef.current = setTimeout(() => {
-      broadcastStopTyping()
-    }, 3000)
+      // Add self locally
+      setTypingUsers(prev => {
+        const exists = prev.some(u => u.user_id === currentUser.user_id)
+        if (!exists) {
+          return [...prev, currentUser]
+        }
+        return prev
+      })
+
+      // Clear previous timeout
+      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current)
+
+      // After 3s of inactivity, broadcast stop_typing
+      typingTimeoutRef.current = setTimeout(() => {
+        broadcastStopTyping()
+      }, 3000)
+    } catch (error) {
+      console.error('Error in broadcastTyping:', error)
+      logEvent(`[Error] in broadcastTyping: ${error}`)
+    }
   }
 
   const broadcastStopTyping = (): void => {
-    if (!userSummary?.steamId || !channelRef.current) return
+    try {
+      if (!userSummary?.steamId || !channelRef.current) return
 
-    const currentUser = {
-      user_id: userSummary.steamId,
-      username: userSummary.personaName || 'Unknown',
+      const currentUser = {
+        user_id: userSummary.steamId,
+        username: userSummary.personaName || 'Unknown',
+      }
+
+      channelRef.current.send({
+        type: 'broadcast',
+        event: 'stop_typing',
+        payload: currentUser,
+      })
+
+      // Remove self locally
+      setTypingUsers(prev => prev.filter(u => u.user_id !== currentUser.user_id))
+    } catch (error) {
+      console.error('Error in broadcastStopTyping:', error)
+      logEvent(`[Error] in broadcastStopTyping: ${error}`)
     }
-
-    channelRef.current.send({
-      type: 'broadcast',
-      event: 'stop_typing',
-      payload: currentUser,
-    })
-
-    // Remove self locally
-    setTypingUsers(prev => prev.filter(u => u.user_id !== currentUser.user_id))
   }
 
   useEffect(() => {
@@ -137,38 +141,77 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
 
     // Fetch initial user roles
     const fetchUserRoles = async (): Promise<void> => {
-      const { data, error } = await supabase.from('users').select('user_id,role,is_banned')
-      if (!error && data) {
-        const roles: { [userId: string]: string } = {}
-        data.forEach((user: { user_id: string; role: string; is_banned?: boolean }) => {
-          roles[user.user_id] = user.role
-        })
-        setUserRoles(roles)
+      try {
+        const { data, error } = await supabase.from('users').select('user_id,role,is_banned')
+        if (error) {
+          console.error('Error fetching user roles:', error)
+          logEvent(`[Error] in fetchUserRoles: ${error.message}`)
+          return
+        }
+        if (data) {
+          const roles: { [userId: string]: string } = {}
+          data.forEach((user: { user_id: string; role: string; is_banned?: boolean }) => {
+            roles[user.user_id] = user.role
+          })
+          setUserRoles(roles)
+        }
+      } catch (error) {
+        console.error('Error in fetchUserRoles:', error)
+        logEvent(`[Error] in fetchUserRoles: ${error}`)
       }
     }
 
     // Fetch initial banned status
     const fetchBannedStatus = async (): Promise<void> => {
-      if (!steamId) return
-      const { data, error } = await supabase.from('users').select('is_banned').eq('user_id', steamId).single()
-      if (!error && data?.is_banned === true) setIsBanned(true)
-      else setIsBanned(false)
+      try {
+        if (!steamId) return
+        const { data, error } = await supabase.from('users').select('is_banned').eq('user_id', steamId).single()
+        if (error && error.code !== 'PGRST116') {
+          console.error('Error fetching banned status:', error)
+          logEvent(`[Error] in fetchBannedStatus: ${error.message}`)
+        }
+        if (!error && data?.is_banned === true) setIsBanned(true)
+        else setIsBanned(false)
+      } catch (error) {
+        console.error('Error in fetchBannedStatus:', error)
+        logEvent(`[Error] in fetchBannedStatus: ${error}`)
+      }
     }
 
     // Fetch initial maintenance mode
     const fetchMaintenanceMode = async (): Promise<void> => {
-      if (isDevelopment) return
-      const { data, error } = await supabase.from('chat_settings').select('maintenance').maybeSingle()
-      if (!error && typeof data?.maintenance === 'boolean') {
-        setChatMaintenanceMode(data.maintenance)
+      try {
+        if (isDevelopment) return
+        const { data, error } = await supabase.from('chat_settings').select('maintenance').maybeSingle()
+        if (error) {
+          console.error('Error fetching maintenance mode:', error)
+          logEvent(`[Error] in fetchMaintenanceMode: ${error.message}`)
+          return
+        }
+        if (typeof data?.maintenance === 'boolean') {
+          setChatMaintenanceMode(data.maintenance)
+        }
+      } catch (error) {
+        console.error('Error in fetchMaintenanceMode:', error)
+        logEvent(`[Error] in fetchMaintenanceMode: ${error}`)
       }
     }
 
     // Fetch initial MOTD
     const fetchMotd = async (): Promise<void> => {
-      const { data, error } = await supabase.from('chat_settings').select('motd').maybeSingle()
-      if (!error && typeof data?.motd === 'string') {
-        setMotd(data.motd)
+      try {
+        const { data, error } = await supabase.from('chat_settings').select('motd').maybeSingle()
+        if (error) {
+          console.error('Error fetching MOTD:', error)
+          logEvent(`[Error] in fetchMotd: ${error.message}`)
+          return
+        }
+        if (typeof data?.motd === 'string') {
+          setMotd(data.motd)
+        }
+      } catch (error) {
+        console.error('Error in fetchMotd:', error)
+        logEvent(`[Error] in fetchMotd: ${error}`)
       }
     }
 
@@ -205,70 +248,110 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
       })
       // 2. Listen for message changes (from useMessages)
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
-        const newMsg = payload.new as ChatMessageType
-        setMessages(current => {
-          // Filter out temp messages with same user_id and message content
-          const filtered = current.filter(
-            m =>
-              !(
-                typeof m.id === 'string' &&
-                m.id.startsWith('temp-') &&
-                m.user_id === newMsg.user_id &&
-                m.message === newMsg.message
-              ),
-          )
-          return [...filtered, newMsg]
-        })
-        // Play mention beep only if the new message mentions the current user
-        if (userSummary?.personaName && newMsg.message.includes(`@${userSummary.personaName}`)) {
-          playMentionBeep()
+        try {
+          const newMsg = payload.new as ChatMessageType
+          setMessages(current => {
+            // Filter out temp messages with same user_id and message content
+            const filtered = current.filter(
+              m =>
+                !(
+                  typeof m.id === 'string' &&
+                  m.id.startsWith('temp-') &&
+                  m.user_id === newMsg.user_id &&
+                  m.message === newMsg.message
+                ),
+            )
+            return [...filtered, newMsg]
+          })
+          // Play mention beep only if the new message mentions the current user
+          if (userSummary?.personaName && newMsg.message.includes(`@${userSummary.personaName}`)) {
+            playMentionBeep()
+          }
+        } catch (error) {
+          console.error('Error handling INSERT message:', error)
+          logEvent(`[Error] in message INSERT handler: ${error}`)
         }
       })
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'messages' }, payload => {
-        const updatedMsg = payload.new as ChatMessageType
-        setMessages(current => current.map(m => (m.id === updatedMsg.id ? { ...m, ...updatedMsg } : m)))
+        try {
+          const updatedMsg = payload.new as ChatMessageType
+          setMessages(current => current.map(m => (m.id === updatedMsg.id ? { ...m, ...updatedMsg } : m)))
+        } catch (error) {
+          console.error('Error handling UPDATE message:', error)
+          logEvent(`[Error] in message UPDATE handler: ${error}`)
+        }
       })
       .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'messages' }, payload => {
-        const deletedMsg = payload.old as ChatMessageType
-        setMessages(current => current.filter(m => m.id !== deletedMsg.id))
+        try {
+          const deletedMsg = payload.old as ChatMessageType
+          setMessages(current => current.filter(m => m.id !== deletedMsg.id))
+        } catch (error) {
+          console.error('Error handling DELETE message:', error)
+          logEvent(`[Error] in message DELETE handler: ${error}`)
+        }
       })
       // 3. Listen for chat settings changes (from useChatMaintenanceMode)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'chat_settings' }, payload => {
-        if (isDevelopment) return
-        if (payload.eventType === 'INSERT' || payload.eventType === 'UPDATE') {
-          setChatMaintenanceMode(payload.new?.maintenance ?? false)
-          setMotd(payload.new?.motd ?? '')
-        } else if (payload.eventType === 'DELETE') {
-          setChatMaintenanceMode(false)
+        try {
+          if (isDevelopment) return
+          if (payload.eventType === 'INSERT' || payload.eventType === 'UPDATE') {
+            setChatMaintenanceMode(payload.new?.maintenance ?? false)
+            setMotd(payload.new?.motd ?? '')
+          } else if (payload.eventType === 'DELETE') {
+            setChatMaintenanceMode(false)
+          }
+        } catch (error) {
+          console.error('Error handling chat_settings change:', error)
+          logEvent(`[Error] in chat_settings handler: ${error}`)
         }
       })
       // 4. Listen for typing broadcasts (from useTypingUsers)
       .on('broadcast', { event: 'typing' }, payload => {
-        setTypingUsers(prev => {
-          const exists = prev.some(u => u.user_id === payload.payload.user_id)
-          if (!exists) {
-            return [...prev, payload.payload]
-          }
-          return prev
-        })
+        try {
+          setTypingUsers(prev => {
+            const exists = prev.some(u => u.user_id === payload.payload.user_id)
+            if (!exists) {
+              return [...prev, payload.payload]
+            }
+            return prev
+          })
+        } catch (error) {
+          console.error('Error handling typing broadcast:', error)
+          logEvent(`[Error] in typing broadcast handler: ${error}`)
+        }
       })
       .on('broadcast', { event: 'stop_typing' }, payload => {
-        setTypingUsers(prev => prev.filter(u => u.user_id !== payload.payload.user_id))
+        try {
+          setTypingUsers(prev => prev.filter(u => u.user_id !== payload.payload.user_id))
+        } catch (error) {
+          console.error('Error handling stop_typing broadcast:', error)
+          logEvent(`[Error] in stop_typing broadcast handler: ${error}`)
+        }
       })
       // 5. Listen for presence changes (from useOnlineUsers)
       .on('presence', { event: 'sync' }, () => {
-        const state = channel.presenceState()
-        const count = Object.keys(state).length
-        setOnlineCount(count)
+        try {
+          const state = channel.presenceState()
+          const count = Object.keys(state).length
+          setOnlineCount(count)
+        } catch (error) {
+          console.error('Error handling presence sync:', error)
+          logEvent(`[Error] in presence sync handler: ${error}`)
+        }
       })
       .subscribe(async status => {
-        if (status === 'SUBSCRIBED' && steamId) {
-          // Track presence for online users
-          await channel.track({
-            user_id: steamId,
-            username: userSummary?.personaName || 'Unknown',
-            online_at: new Date().toISOString(),
-          })
+        try {
+          if (status === 'SUBSCRIBED' && steamId) {
+            // Track presence for online users
+            await channel.track({
+              user_id: steamId,
+              username: userSummary?.personaName || 'Unknown',
+              online_at: new Date().toISOString(),
+            })
+          }
+        } catch (error) {
+          console.error('Error in channel subscription:', error)
+          logEvent(`[Error] in channel subscription: ${error}`)
         }
       })
 

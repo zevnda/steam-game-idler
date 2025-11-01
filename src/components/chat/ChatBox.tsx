@@ -15,7 +15,6 @@ import { useSupabase } from '@/components/contexts/SupabaseContext'
 import { useMessages } from '@/hooks/chat/useMessages'
 import { usePinnedMessage } from '@/hooks/chat/usePinnedMessage'
 import { useScrollToMessage } from '@/hooks/chat/useScrollToMessage'
-import { useUserRoles } from '@/hooks/chat/useUserRoles'
 
 export default function ChatBox(): ReactElement {
   const { sidebarCollapsed, transitionDuration } = useStateContext()
@@ -24,9 +23,8 @@ export default function ChatBox(): ReactElement {
   const inputRef = useRef<HTMLTextAreaElement>(null as unknown as HTMLTextAreaElement)
   const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
 
-  const { chatMaintenanceMode } = useSupabase()
+  const { chatMaintenanceMode, userRoles } = useSupabase()
 
-  const { userRoles } = useUserRoles()
   const { pinnedMessageId, pinnedMessage, handlePinMessage, handleUnpinMessage, setPinnedMessage } =
     usePinnedMessage() as {
       pinnedMessageId: string | null

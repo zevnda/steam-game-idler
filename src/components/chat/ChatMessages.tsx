@@ -75,18 +75,22 @@ const ChatMessages = ({
 
   useEffect(() => {
     if (!editingMessageId) return
+
     const handleEsc = (e: KeyboardEvent): void => {
       if (e.key === 'Escape') {
         setEditingMessageId(null)
         inputRef.current?.focus()
       }
     }
+
     window.addEventListener('keydown', handleEsc)
+
     if (editTextareaRef.current) {
       const len = editTextareaRef.current.value.length
       editTextareaRef.current.focus()
       editTextareaRef.current.setSelectionRange(len, len)
     }
+
     return () => {
       window.removeEventListener('keydown', handleEsc)
     }
