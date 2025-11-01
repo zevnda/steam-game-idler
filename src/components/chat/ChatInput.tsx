@@ -254,6 +254,8 @@ export default function ChatInput({
                       previewPosition='none'
                       perLine={8}
                       navPosition='top'
+                      onClickOutside={() => setShowEmojiPicker(false)}
+                      autoFocus
                     />
                   </div>
                 )}

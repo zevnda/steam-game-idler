@@ -67,7 +67,14 @@ const preprocessMessage = (text: string, validMentions: string[]): string => {
   return processed
 }
 
-const FIXED_IMG_SIZE = 200
+// Helper function to detect if message contains only emojis
+const isEmojiOnly = (text: string): boolean => {
+  // Remove whitespace and check if remaining content is only emojis
+  const trimmed = text.trim()
+  // Regex to match emojis (including modifiers and compound emojis)
+  const emojiRegex = /^(\p{Emoji_Presentation}|\p{Emoji}\uFE0F|\p{Emoji_Modifier_Base}\p{Emoji_Modifier}?)+$/u
+  return emojiRegex.test(trimmed)
+}
 
 // Custom blockquote renderer to inject the arrow icon
 const MarkdownBlockquote = (
@@ -205,8 +212,8 @@ export default function ChatMessageContent({ message, userSummary }: ChatMessage
       <Image
         src={typeof props.src === 'string' ? props.src : ''}
         alt={props.alt || 'image'}
-        width={FIXED_IMG_SIZE}
-        height={FIXED_IMG_SIZE}
+        width={200}
+        height={200}
         className='max-w-[200px] h-[200px] object-cover cursor-pointer rounded-lg my-2'
         onClick={() => {
           if (typeof props.src === 'string') {
@@ -219,7 +226,7 @@ export default function ChatMessageContent({ message, userSummary }: ChatMessage
   }
 
   return (
-    <div>
+    <div className={isEmojiOnly(message) ? 'emoji-only-message' : ''}>
       <ReactMarkdown
         rehypePlugins={[rehypeRaw]}
         remarkPlugins={[remarkGfm]}

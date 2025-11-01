@@ -221,6 +221,15 @@ svg {
   border-radius: 2px;
 }
 
+.emoji-only-message {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.emoji-only-message p {
+  margin: 0;
+}
+
 .donator-role {
   background: linear-gradient(90deg, #4d70fc, #8b5cf6, #ec4899, #f59e0b, #10b981, #4d70fc);
   background-size: 200% auto;
