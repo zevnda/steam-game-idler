@@ -125,6 +125,14 @@ svg {
 
 /* Chat feature styles */
 
+.message-render::-webkit-scrollbar-track {
+  background: none;
+}
+
+.user-render::-webkit-scrollbar-track {
+  background: none;
+}
+
 .chat-message a {
   color: #4d70fc;
   text-decoration: underline;
