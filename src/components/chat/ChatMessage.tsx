@@ -18,7 +18,7 @@ interface ChatMessageProps {
   userSummary: UserSummary
   userRoles: { [userId: string]: string }
   getColorFromUsername: (name: string) => string
-  getRoleColor: (role: string) => string
+  getRoleStyles: (role: string) => string
   isOwnMessage: boolean
   canEditOrDeleteAny: boolean
   editingMessageId: string | null
@@ -56,7 +56,7 @@ export default function ChatMessage({
   userSummary,
   userRoles,
   getColorFromUsername,
-  getRoleColor,
+  getRoleStyles,
   isOwnMessage,
   canEditOrDeleteAny,
   editingMessageId,
@@ -95,10 +95,17 @@ export default function ChatMessage({
     (msgs[idx + 1] && new Date(msgs[idx + 1].created_at).getTime() - new Date(msg.created_at).getTime() > 3 * 60 * 1000)
   const currentRole = userRoles[msg.user_id] || 'user'
 
-  // Ban user handler
+  // Ban/Unban user handler
   const handleBanUser = async (): Promise<void> => {
-    await supabase.from('users').update({ is_banned: true }).eq('user_id', msg.user_id)
-    // Optionally, show a toast or feedback here
+    // Check current role
+    const { data: userData } = await supabase.from('users').select('role').eq('user_id', msg.user_id).single()
+
+    const currentRole = userData?.role || 'user'
+
+    // Toggle: if already banned, set to 'user', otherwise set to 'banned'
+    const newRole = currentRole === 'banned' ? 'user' : 'banned'
+
+    await supabase.from('users').update({ role: newRole }).eq('user_id', msg.user_id)
   }
 
   // Highlight if message mentions us (username or steamId)
@@ -138,10 +145,9 @@ export default function ChatMessage({
               <ExtLink href={`https://steamcommunity.com/profiles/${msg.user_id}`}>
                 <span
                   style={{
-                    color: getRoleColor(currentRole),
                     fontWeight: userRoles[msg.user_id] ? 'bold' : 'normal',
                   }}
-                  className='mr-1 text-xs'
+                  className={cn('mr-1 text-xs text-[#3f3f3f]', getRoleStyles(currentRole))}
                 >
                   {msg.username}
                   <ChatRoleBadge role={currentRole} />

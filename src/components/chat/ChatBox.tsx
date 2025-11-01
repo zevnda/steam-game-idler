@@ -68,16 +68,18 @@ export default function ChatBox(): ReactElement {
 
   const [replyToMessage, setReplyToMessage] = useState<ChatMessageType | null>(null)
 
-  const getRoleColor = (role: string): string => {
+  const getRoleStyles = (role: string): string => {
     switch (role) {
       case 'admin':
-        return '#e91e63'
+        return 'text-[#e91e63]'
       case 'mod':
-        return '#1eb6e9ff'
+        return 'text-[#1eb6e9ff]'
       case 'early_supporter':
-        return '#43b581'
+        return 'text-[#43b581]'
+      case 'banned':
+        return 'text-[#525252] line-through italic'
       default:
-        return '#dbdee1'
+        return 'text-[#dbdee1]'
     }
   }
 
@@ -164,7 +166,7 @@ export default function ChatBox(): ReactElement {
               handleEditMessage={handleEditMessage}
               getColorFromUsername={getColorFromUsername}
               userRoles={userRoles}
-              getRoleColor={getRoleColor}
+              getRoleStyles={getRoleStyles}
               editingMessageId={editingMessageId}
               setEditingMessageId={setEditingMessageId}
               editedMessage={editedMessage}
@@ -189,7 +191,7 @@ export default function ChatBox(): ReactElement {
           handleEditMessage={handleEditMessage}
           getColorFromUsername={getColorFromUsername}
           userRoles={userRoles}
-          getRoleColor={getRoleColor}
+          getRoleStyles={getRoleStyles}
           editingMessageId={editingMessageId}
           setEditingMessageId={setEditingMessageId}
           editedMessage={editedMessage}

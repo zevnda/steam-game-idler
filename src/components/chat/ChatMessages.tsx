@@ -26,7 +26,7 @@ interface ChatMessagesProps {
   handleEditMessage: (msgId: string, newContent: string) => void
   getColorFromUsername: (name: string) => string
   userRoles: { [userId: string]: string }
-  getRoleColor: (role: string) => string
+  getRoleStyles: (role: string) => string
   inputRef: RefObject<HTMLTextAreaElement>
   pinnedMessageId?: string | null
   handlePinMessage?: (message: ChatMessageType) => void
@@ -45,7 +45,7 @@ const ChatMessages = ({
   handleEditMessage,
   getColorFromUsername,
   userRoles,
-  getRoleColor,
+  getRoleStyles,
   editingMessageId,
   setEditingMessageId,
   editedMessage,
@@ -120,7 +120,7 @@ const ChatMessages = ({
                     userSummary={userSummary}
                     userRoles={userRoles}
                     getColorFromUsername={getColorFromUsername}
-                    getRoleColor={getRoleColor}
+                    getRoleStyles={getRoleStyles}
                     isOwnMessage={isOwnMessage}
                     canEditOrDeleteAny={canEditOrDeleteAny}
                     editingMessageId={editingMessageId}
