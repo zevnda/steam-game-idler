@@ -164,7 +164,9 @@ const MarkdownBlockquote = (
   return (
     <blockquote
       style={
-        hasArrow ? { paddingLeft: '2px', userSelect: 'none' } : { borderLeft: '4px solid #555559', paddingLeft: '6px' }
+        hasArrow
+          ? { paddingLeft: '2px', userSelect: 'none', width: 'fit-content' }
+          : { borderLeft: '4px solid #555559', paddingLeft: '6px' }
       }
       className={hasArrow && replyToId && scrollToMessage ? 'cursor-pointer hover:bg-white/5 rounded' : ''}
       onClick={() => {
