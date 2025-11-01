@@ -11,7 +11,7 @@ import { useNavigationContext } from '@/components/contexts/NavigationContext'
 import { useSearchContext } from '@/components/contexts/SearchContext'
 import { useSupabase } from '@/components/contexts/SupabaseContext'
 import { useUserContext } from '@/components/contexts/UserContext'
-import { logEvent, playMentionBeep } from '@/utils/tasks'
+import { logEvent } from '@/utils/tasks'
 import { showDangerToast } from '@/utils/toasts'
 
 interface SideBarHook {
@@ -53,10 +53,16 @@ export default function useSideBar(
     const lastReadTs = lastRead ? new Date(lastRead).getTime() : 0
     const msgTs = new Date(lastMessage.created_at).getTime()
 
-    if (msgTs > lastReadTs && activePage !== 'chat') {
+    // If user is viewing chat, update lastRead timestamp for each new message
+    if (activePage === 'chat') {
+      localStorage.setItem('chatLastRead', lastMessage.created_at)
+      return
+    }
+
+    // If user is not viewing chat, check for unread messages
+    if (msgTs > lastReadTs) {
       setHasUnreadChat(true)
       if (userSummary?.personaName && lastMessage.message.includes(`@${userSummary.personaName}`)) {
-        playMentionBeep()
         setHasBeenMentionedSinceLastRead(true)
       }
     }
