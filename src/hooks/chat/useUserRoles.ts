@@ -1,37 +1,6 @@
-import { useEffect, useState } from 'react'
-import { createClient } from '@supabase/supabase-js'
-
-const supabase = createClient(
-  'https://inbxfhxkrhwiybnephlq.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImluYnhmaHhrcmh3aXlibmVwaGxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3Njc5NjgsImV4cCI6MjA3NzM0Mzk2OH0.xUbDMdMUk7S2FgRZu8itWr4WsIV41TX-sNgilXiZg_Y',
-)
+import { useSupabase } from '@/components/contexts/SupabaseContext'
 
 export function useUserRoles(): { userRoles: { [steamId: string]: string } } {
-  const [userRoles, setUserRoles] = useState<{ [steamId: string]: string }>({})
-
-  useEffect(() => {
-    const fetchUserRoles = async (): Promise<void> => {
-      const { data, error } = await supabase.from('users').select('user_id,role,is_banned')
-      if (!error && data) {
-        const roles: { [userId: string]: string } = {}
-        // Optionally, you can also track banned status here if needed
-        data.forEach((user: { user_id: string; role: string; is_banned?: boolean }) => {
-          roles[user.user_id] = user.role
-        })
-        setUserRoles(roles)
-      }
-    }
-    fetchUserRoles()
-    const usersChannel = supabase
-      .channel('users')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'users' }, fetchUserRoles)
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'users' }, fetchUserRoles)
-      .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'users' }, fetchUserRoles)
-      .subscribe()
-    return () => {
-      supabase.removeChannel(usersChannel)
-    }
-  }, [])
-
+  const { userRoles } = useSupabase()
   return { userRoles }
 }

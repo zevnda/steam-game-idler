@@ -1,25 +1,14 @@
+import type { ChatMessageType } from '@/components/contexts/SupabaseContext'
 import type { UserSummary } from '@/types'
 import type { Dispatch, RefObject, SetStateAction } from 'react'
 
 import { addToast } from '@heroui/react'
 import { useCallback, useEffect, useState } from 'react'
-import { createClient } from '@supabase/supabase-js'
 
+import { useSupabase } from '@/components/contexts/SupabaseContext'
 import { playMentionBeep } from '@/utils/tasks'
 
-const supabase = createClient(
-  'https://inbxfhxkrhwiybnephlq.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImluYnhmaHhrcmh3aXlibmVwaGxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3Njc5NjgsImV4cCI6MjA3NzM0Mzk2OH0.xUbDMdMUk7S2FgRZu8itWr4WsIV41TX-sNgilXiZg_Y',
-)
-
-export interface ChatMessageType {
-  id: string
-  user_id: string
-  username: string
-  message: string
-  created_at: string
-  avatar_url?: string
-}
+export type { ChatMessageType }
 
 interface UseMessagesParams {
   userSummary: UserSummary
@@ -60,40 +49,13 @@ export function useMessages({
   scrollToBottom: () => void
   isBanned: boolean
 } {
+  const { messages, setMessages, isBanned, supabase } = useSupabase()
   const [shouldScrollToBottom, setShouldScrollToBottom] = useState(true)
-  const [messages, setMessages] = useState<ChatMessageType[]>([])
   const [loading, setLoading] = useState(true)
   const [hasMore, setHasMore] = useState(true)
   const [pagination, setPagination] = useState({ limit: 25, offset: 0 })
   const [editingMessageId, setEditingMessageId] = useState<string | null>(null)
   const [editedMessage, setEditedMessage] = useState('')
-  const [isBanned, setIsBanned] = useState(false)
-
-  useEffect(() => {
-    const fetchBannedStatus = async (): Promise<void> => {
-      if (!userSummary?.steamId) return
-      const { data, error } = await supabase
-        .from('users')
-        .select('is_banned')
-        .eq('user_id', userSummary.steamId)
-        .single()
-      if (!error && data?.is_banned === true) setIsBanned(true)
-      else setIsBanned(false)
-    }
-    fetchBannedStatus()
-    // Listen for changes to banned status
-    const channel = supabase
-      .channel('users_ban_status')
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'users' }, payload => {
-        if (payload.new?.user_id === userSummary?.steamId) {
-          setIsBanned(payload.new?.is_banned === true)
-        }
-      })
-      .subscribe()
-    return () => {
-      supabase.removeChannel(channel)
-    }
-  }, [userSummary?.steamId])
 
   useEffect(() => {
     const container = messagesContainerRef.current
@@ -115,10 +77,10 @@ export function useMessages({
           .order('created_at', { ascending: false })
           .range(newOffset, newOffset + pagination.limit - 1)
         if (!error && data && data.length > 0) {
-          const olderMessages = data.reverse()
+          const olderMessages = data.reverse() as ChatMessageType[]
           setMessages(current => {
             const currentIds = new Set(current.map(m => m.id))
-            const uniqueOlder = olderMessages.filter(m => !currentIds.has(m.id))
+            const uniqueOlder = olderMessages.filter((m: ChatMessageType) => !currentIds.has(m.id))
             return [...uniqueOlder, ...current]
           })
           setPagination(prev => ({ ...prev, offset: newOffset }))
@@ -142,7 +104,7 @@ export function useMessages({
     return () => {
       container.removeEventListener('scroll', handleScroll)
     }
-  }, [messagesContainerRef, hasMore, loading, pagination])
+  }, [messagesContainerRef, hasMore, loading, pagination, setMessages, supabase])
 
   const handleEditMessage = async (msgId: string, newContent: string): Promise<void> => {
     const msg = messages.find(m => m.id === msgId)
@@ -215,7 +177,7 @@ export function useMessages({
             return newMessages
           } else {
             const currentIds = new Set(current.map(m => m.id))
-            const uniqueOlder = newMessages.filter(m => !currentIds.has(m.id))
+            const uniqueOlder = newMessages.filter((m: ChatMessageType) => !currentIds.has(m.id))
             return [...uniqueOlder, ...current]
           }
         })
@@ -224,50 +186,29 @@ export function useMessages({
       setLoading(false)
     }
     fetchMessages()
-    const channel = supabase
-      .channel('messages')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
-        const newMsg = payload.new as ChatMessageType
-        const container = messagesContainerRef.current
-        setMessages(current => {
-          const filtered = current.filter(
-            m =>
-              !(
-                typeof m.id === 'string' &&
-                m.id.startsWith('temp-') &&
-                m.user_id === newMsg.user_id &&
-                m.message === newMsg.message
-              ),
-          )
-          // Add new message, then trim to latest pagination.limit messages
-          const updated = [...filtered, newMsg]
-          return updated.length > pagination.limit ? updated.slice(updated.length - pagination.limit) : updated
-        })
-        // Play mention beep only if the new message mentions the current user
-        if (userSummary?.personaName && newMsg.message.includes(`@${userSummary.personaName}`)) {
-          playMentionBeep()
-        }
-        if (container) {
-          const threshold = 10
-          const isAtBottom = container.scrollTop + container.clientHeight >= container.scrollHeight - threshold
-          if (isAtBottom) {
-            setTimeout(() => setShouldScrollToBottom(true), 0)
-          }
-        }
-      })
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'messages' }, payload => {
-        const updatedMsg = payload.new as ChatMessageType
-        setMessages(current => current.map(m => (m.id === updatedMsg.id ? { ...m, ...updatedMsg } : m)))
-      })
-      .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'messages' }, payload => {
-        const deletedMsg = payload.old as ChatMessageType
-        setMessages(current => current.filter(m => m.id !== deletedMsg.id))
-      })
-      .subscribe()
-    return () => {
-      supabase.removeChannel(channel)
+    // Note: Real-time subscriptions are now handled by SupabaseContext
+  }, [pagination, supabase, setMessages, setShouldScrollToBottom, setHasMore])
+
+  // Handle mention beeps and auto-scrolling for new messages
+  useEffect(() => {
+    if (messages.length === 0) return
+
+    const lastMessage = messages[messages.length - 1]
+    // Check if message mentions current user
+    if (userSummary?.personaName && lastMessage.message.includes(`@${userSummary.personaName}`)) {
+      playMentionBeep()
     }
-  }, [userSummary?.steamId, userSummary?.personaName, pagination, messagesContainerRef])
+
+    // Auto-scroll if near bottom
+    const container = messagesContainerRef.current
+    if (container) {
+      const threshold = 10
+      const isAtBottom = container.scrollTop + container.clientHeight >= container.scrollHeight - threshold
+      if (isAtBottom) {
+        setTimeout(() => setShouldScrollToBottom(true), 0)
+      }
+    }
+  }, [messages, userSummary?.personaName, messagesContainerRef, setShouldScrollToBottom])
 
   const handleSendMessage = async (message: string): Promise<void> => {
     if (!message.trim()) return
@@ -391,7 +332,7 @@ export function useMessages({
     return () => {
       if (interval) clearInterval(interval)
     }
-  }, [userSummary?.steamId])
+  }, [userSummary?.steamId, supabase])
 
   return {
     messages,
