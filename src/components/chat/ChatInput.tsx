@@ -1,3 +1,4 @@
+import type { Emoji } from '@/hooks/chat/useEmojiShortcodes'
 import type { ReactElement, RefObject } from 'react'
 
 import { Button, cn, Textarea } from '@heroui/react'
@@ -15,6 +16,7 @@ import { useSupabase } from '@/components/contexts/SupabaseContext'
 import { useUserContext } from '@/components/contexts/UserContext'
 import ExtLink from '@/components/ui/ExtLink'
 import { useEmojiPicker } from '@/hooks/chat/useEmojiPicker'
+import { useEmojiShortcodes } from '@/hooks/chat/useEmojiShortcodes'
 import { useMentionUsers } from '@/hooks/chat/useMentionUsers'
 import { logEvent } from '@/utils/tasks'
 
@@ -65,6 +67,17 @@ export default function ChatInput({
   } = useMentionUsers(inputRef, newMessage)
 
   const { showEmojiPicker, setShowEmojiPicker, insertEmoji } = useEmojiPicker(inputRef, newMessage, setNewMessage)
+
+  const {
+    emojiStart,
+    emojiResults,
+    emojiSelectedIdx,
+    setEmojiSelectedIdx,
+    handleEmojiInputChange,
+    handleEmojiSelect,
+    setEmojiQuery,
+    setEmojiStart,
+  } = useEmojiShortcodes(inputRef, newMessage)
 
   const scrollToBottom = useCallback((): void => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'auto' })
@@ -132,6 +145,8 @@ export default function ChatInput({
         setImagePreview(null)
         setMentionQuery('')
         setMentionStart(null)
+        setEmojiQuery('')
+        setEmojiStart(null)
         scrollToBottom()
         if (clearReplyToMessage) clearReplyToMessage()
       }
@@ -141,6 +156,8 @@ export default function ChatInput({
       setNewMessage('')
       setMentionQuery('')
       setMentionStart(null)
+      setEmojiQuery('')
+      setEmojiStart(null)
       if (clearReplyToMessage) clearReplyToMessage()
     }
   }
@@ -347,16 +364,7 @@ export default function ChatInput({
 
                 {showEmojiPicker && (
                   <div className='absolute -right-2 bottom-9 mb-2 z-50'>
-                    <Picker
-                      data={emojiData}
-                      onEmojiSelect={insertEmoji}
-                      theme='dark'
-                      previewPosition='none'
-                      perLine={8}
-                      navPosition='top'
-                      onClickOutside={() => setShowEmojiPicker(false)}
-                      autoFocus
-                    />
+                    <Picker data={emojiData} onEmojiSelect={insertEmoji} />
                   </div>
                 )}
 
@@ -380,7 +388,9 @@ export default function ChatInput({
             onChange={e => {
               setNewMessage(e.target.value)
               const textarea = e.target as unknown as HTMLTextAreaElement
-              handleMentionInputChange(e.target.value, textarea.selectionStart || e.target.value.length)
+              const cursorPos = textarea.selectionStart || e.target.value.length
+              handleMentionInputChange(e.target.value, cursorPos)
+              handleEmojiInputChange(e.target.value, cursorPos, setNewMessage)
               broadcastTyping()
             }}
             onKeyDown={e => {
@@ -394,6 +404,35 @@ export default function ChatInput({
                 if (imagePreview) {
                   e.preventDefault()
                   handleRemoveImage()
+                  return
+                }
+                if (emojiResults.length > 0 && emojiStart !== null) {
+                  e.preventDefault()
+                  setEmojiStart(null)
+                  setEmojiQuery('')
+                  return
+                }
+              }
+              // Emoji shortcode navigation
+              if (emojiResults.length > 0 && emojiStart !== null) {
+                if (e.key === 'ArrowDown') {
+                  e.preventDefault()
+                  setEmojiSelectedIdx(Math.min(emojiSelectedIdx + 1, emojiResults.length - 1))
+                  return
+                }
+                if (e.key === 'ArrowUp') {
+                  e.preventDefault()
+                  setEmojiSelectedIdx(Math.max(emojiSelectedIdx - 1, 0))
+                  return
+                }
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault()
+                  handleEmojiSelect(emojiSelectedIdx, setNewMessage)
+                  return
+                }
+                if (e.key === 'Tab') {
+                  e.preventDefault()
+                  handleEmojiSelect(emojiSelectedIdx, setNewMessage)
                   return
                 }
               }
@@ -435,6 +474,28 @@ export default function ChatInput({
             onPaste={handleImageUpload}
             autoFocus
           />
+          {/* Floating emoji shortcode preview */}
+          {emojiResults.length > 0 && emojiStart !== null && (
+            <div className='absolute left-0 bottom-[110%] bg-input rounded-lg z-50 w-full max-h-[200px] overflow-y-auto'>
+              <p className='text-[10px] font-semibold border-b border-border p-2 uppercase'>Emojis</p>
+
+              {emojiResults.map((emoji: Emoji, idx: number) => (
+                <div
+                  key={emoji.id}
+                  className={cn(
+                    'flex items-center gap-1 cursor-pointer p-2 hover:bg-white/5 text-xs',
+                    idx === emojiSelectedIdx ? 'bg-white/10' : '',
+                  )}
+                  onClick={() => handleEmojiSelect(idx, setNewMessage)}
+                  tabIndex={-1}
+                  aria-selected={idx === emojiSelectedIdx}
+                >
+                  <span className='text-sm'>{emoji.native}</span>
+                  <span>:{emoji.id}:</span>
+                </div>
+              ))}
+            </div>
+          )}
           {/* Floating mention preview */}
           {mentionResults.length > 0 && mentionStart !== null && (
             <div className='absolute left-0 bottom-[110%] bg-input rounded-lg z-50 w-full'>

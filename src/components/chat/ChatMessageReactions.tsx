@@ -53,7 +53,7 @@ export default function ChatMessageReactions({
             )}
           >
             <span className='text-sm'>{reaction.emoji}</span>
-            <span className={cn('text-xs font-medium', hasReacted ? 'text-[#5865f2]' : 'text-[#b5bac1]')}>
+            <span className={cn('text-xs font-medium', hasReacted ? 'text-[#a5adfc]' : 'text-[#b5bac1]')}>
               {reaction.count}
             </span>
           </button>
@@ -72,14 +72,7 @@ export default function ChatMessageReactions({
           </button>
         </PopoverTrigger>
         <PopoverContent className='p-0 border-0 bg-transparent'>
-          <Picker
-            data={data}
-            onEmojiSelect={handleEmojiSelect}
-            theme='dark'
-            previewPosition='none'
-            skinTonePosition='none'
-            maxFrequentRows={2}
-          />
+          <Picker data={data} onEmojiSelect={handleEmojiSelect} />
         </PopoverContent>
       </Popover>
     </div>
