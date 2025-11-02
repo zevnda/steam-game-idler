@@ -38,7 +38,7 @@ export default function ChatUserList(): ReactElement {
   const getRoleName = (role: string): string => {
     switch (role) {
       case 'admin':
-        return 'Admin'
+        return 'Developer'
       case 'moderator':
         return 'Moderator'
       case 'early_supporter':
@@ -56,9 +56,9 @@ export default function ChatUserList(): ReactElement {
         return 0
       case 'moderator':
         return 1
-      case 'early_supporter':
-        return 2
       case 'donator':
+        return 2
+      case 'early_supporter':
         return 3
       case 'banned':
         return 5
