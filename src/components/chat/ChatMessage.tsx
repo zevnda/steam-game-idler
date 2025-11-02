@@ -85,7 +85,6 @@ export default function ChatMessage({
   isAdmin,
   onReply,
   scrollToMessage,
-  isShiftPressed,
   onAddReaction,
   onRemoveReaction,
 }: ChatMessageProps): ReactElement {
@@ -286,7 +285,6 @@ export default function ChatMessage({
           isAdmin={isAdmin}
           onReply={onReply}
           onBan={isAdmin ? handleBanUser : undefined}
-          isShiftPressed={isShiftPressed}
           onAddReaction={onAddReaction ? (emoji: string) => onAddReaction(msg.id, emoji) : undefined}
         />
       </div>

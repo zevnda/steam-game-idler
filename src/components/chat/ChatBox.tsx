@@ -3,7 +3,7 @@ import type { UserSummary } from '@/types'
 import type { Dispatch, ReactElement, SetStateAction } from 'react'
 
 import { cn } from '@heroui/react'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 
 import ChatBanned from '@/components/chat/ChatBanned'
 import ChatHeader from '@/components/chat/ChatHeader'
@@ -26,31 +26,6 @@ export default function ChatBox(): ReactElement {
   const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
 
   const { chatMaintenanceMode, userRoles } = useSupabase()
-
-  const [isShiftPressed, setIsShiftPressed] = useState(false)
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent): void => {
-      if (e.key === 'Shift') {
-        setIsShiftPressed(true)
-      }
-    }
-
-    const handleKeyUp = (e: KeyboardEvent): void => {
-      if (e.key === 'Shift') {
-        setIsShiftPressed(false)
-      }
-    }
-
-    // Use capture phase to intercept events before they reach input
-    window.addEventListener('keydown', handleKeyDown, true)
-    window.addEventListener('keyup', handleKeyUp, true)
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown, true)
-      window.removeEventListener('keyup', handleKeyUp, true)
-    }
-  }, [])
 
   const { pinnedMessageId, pinnedMessage, handlePinMessage, handleUnpinMessage, setPinnedMessage } =
     usePinnedMessage() as {
@@ -223,7 +198,6 @@ export default function ChatBox(): ReactElement {
                   isAdmin={userRoles[String(userSummary?.steamId)] === 'admin'}
                   onReply={handleReplyToMessage}
                   scrollToMessage={scrollToMessage}
-                  isShiftPressed={isShiftPressed}
                   onAddReaction={handleAddReaction}
                   onRemoveReaction={handleRemoveReaction}
                 />
@@ -252,7 +226,6 @@ export default function ChatBox(): ReactElement {
               isAdmin={userRoles[String(userSummary?.steamId)] === 'admin'}
               onReply={handleReplyToMessage}
               scrollToMessage={scrollToMessage}
-              isShiftPressed={isShiftPressed}
               onAddReaction={handleAddReaction}
               onRemoveReaction={handleRemoveReaction}
             />

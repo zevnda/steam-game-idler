@@ -31,7 +31,6 @@ export default function ChatMessageActions({
   isAdmin,
   onReply,
   onBan,
-  isShiftPressed,
   onAddReaction,
 }: ChatMessageActionsProps): ReactElement {
   const { t } = useTranslation()
@@ -115,7 +114,7 @@ export default function ChatMessageActions({
           onPress={onEdit}
         />
       )}
-      {onDelete && isShiftPressed && (
+      {onDelete && (
         <Button
           isIconOnly
           radius='none'
@@ -133,7 +132,7 @@ export default function ChatMessageActions({
           }}
         />
       )}
-      {isAdmin && onBan && isShiftPressed && (
+      {isAdmin && onBan && (
         <Button
           isIconOnly
           radius='none'

@@ -151,18 +151,6 @@ svg {
   color: #476bf8ff;
 }
 
-/* .chat-message img {
-  display: inline-block;
-  max-width: 400px;
-  max-height: 300px;
-  width: auto;
-  height: auto;
-  object-fit: contain;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: opacity 0.2s ease;
-} */
-
 .chat-message img:hover {
   opacity: 0.9;
 }
@@ -207,6 +195,7 @@ svg {
 .chat-message pre code {
   font-family: 'Fira Code', monospace !important;
   font-size: 0.7rem !important;
+  margin-bottom: 10px !important;
 }
 
 .chat-message code:not(pre code) {

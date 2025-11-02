@@ -8,7 +8,6 @@
   - Improved the look of messages containing a reply
   - Improved the look of images in messages
   - Other style and backend improvements
-  - Destructive message actions *(delete, ban)* are now only visible when holding the `SHIFT` key while hovering over a message
   - Chat notifications can now be louder
   
 <!-- 2.2.5 -->
