@@ -5,6 +5,7 @@ import type { Dispatch, ReactNode, SetStateAction } from 'react'
 import { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
 
+import { useNavigationContext } from '@/components/contexts/NavigationContext'
 import { logEvent, playMentionBeep } from '@/utils/tasks'
 
 export interface MessageReaction {
@@ -77,6 +78,9 @@ interface SupabaseProviderProps {
 }
 
 export function SupabaseProvider({ children, userSummary }: SupabaseProviderProps): ReactNode {
+  const { activePage } = useNavigationContext()
+  const isChatActive = activePage === 'chat'
+
   const [allUsers, setAllUsers] = useState<ChatUser[]>([])
   const [messages, setMessages] = useState<ChatMessageType[]>([])
   const [isBanned, setIsBanned] = useState(false)
@@ -200,6 +204,9 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
   }, [userSummary?.steamId, userSummary?.personaName, userSummary?.avatar])
 
   useEffect(() => {
+    // Only run if chat is active
+    if (!isChatActive) return
+
     const supabase = supabaseRef.current
     const steamId = userSummary?.steamId
 
@@ -505,7 +512,7 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
       }
       supabase.removeChannel(channel)
     }
-  }, [userSummary?.steamId, userSummary?.personaName])
+  }, [userSummary?.steamId, userSummary?.personaName, isChatActive])
 
   return (
     <SupabaseContext.Provider

@@ -1,3 +1,11 @@
+<!-- 2.2.7 -->
+
+### Changes in v2.2.7
+
+- Users are no longer connected to chat by default, just by having SGI open
+  - Only users who are actively viewing the chat will be connected
+  - Because of this change, users will no longer see notification dots for new messages and mentions in the sidebar
+
 <!-- 2.2.6 -->
 
 ### Changes in v2.2.6
