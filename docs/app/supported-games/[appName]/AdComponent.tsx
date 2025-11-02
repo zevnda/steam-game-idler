@@ -11,9 +11,13 @@ declare global {
 export default function AdComponent() {
   const [adKey, setAdKey] = useState(0)
   const [hasAd, setHasAd] = useState(true)
+  const [showOverlay, setShowOverlay] = useState(true)
   const adRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
+    // Reset overlay when ad refreshes
+    setShowOverlay(true)
+
     const loadAd = () => {
       try {
         ;(window.adsbygoogle = window.adsbygoogle || []).push({})
@@ -21,20 +25,33 @@ export default function AdComponent() {
         // Check if ad loaded after a delay
         setTimeout(() => {
           const adIframe = adRef.current?.querySelector('iframe')
+
           if (!adIframe || adIframe.style.display === 'none') {
             setHasAd(false)
+            setShowOverlay(false)
           } else {
-            setHasAd(true)
-          }
+            // Check if iframe has actual ad content
+            const iframeSrc = adIframe.src || ''
+            const hasAdContent =
+              iframeSrc.includes('doubleclick') ||
+              iframeSrc.includes('googlesyndication') ||
+              (adIframe.clientWidth > 0 && adIframe.clientHeight > 0)
 
-          // Try to style the iframe background
-          if (adIframe) {
-            adIframe.style.backgroundColor = '#121316'
+            if (hasAdContent) {
+              // Ad loaded successfully, remove overlay
+              setShowOverlay(false)
+              setHasAd(true)
+            } else {
+              // No ad content, hide the component
+              setHasAd(false)
+              setShowOverlay(false)
+            }
           }
         }, 3000)
       } catch (err) {
         console.error('AdSense error:', err)
         setHasAd(false)
+        setShowOverlay(false)
       }
     }
 
@@ -62,7 +79,15 @@ export default function AdComponent() {
   if (!hasAd) return null
 
   return (
-    <div ref={adRef} className='fixed bottom-0 right-0 z-50 bg-[#121316]'>
+    <div
+      ref={adRef}
+      className='fixed bottom-0 right-0 z-50'
+      style={{
+        width: '300px',
+        height: '250px',
+        position: 'relative',
+      }}
+    >
       <ins
         key={adKey}
         className='adsbygoogle'
@@ -73,14 +98,24 @@ export default function AdComponent() {
           display: 'block',
           width: '300px',
           height: '250px',
-          backgroundColor: '#121316',
         }}
       />
-      <style jsx>{`
-        div :global(iframe) {
-          background-color: #121316 !important;
-        }
-      `}</style>
+
+      {/* Dark overlay that covers the ad until it's confirmed loaded */}
+      {showOverlay && (
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: '#121316',
+            pointerEvents: 'none',
+            transition: 'opacity 300ms ease-out',
+          }}
+        />
+      )}
     </div>
   )
 }
