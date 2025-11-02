@@ -241,16 +241,7 @@ export default function ChatMessage({
                 textareaRef={inputRef}
               />
             ) : (
-              <ChatMessageContent
-                message={msg.message}
-                userSummary={userSummary}
-                isPinned={isPinned}
-                onPin={onPin}
-                onUnpin={onUnpin}
-                isAdmin={isAdmin}
-                replyToId={msg.reply_to_id}
-                scrollToMessage={scrollToMessage}
-              />
+              <ChatMessageContent message={msg.message} />
             )}
           </div>
 

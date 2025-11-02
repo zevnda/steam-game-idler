@@ -80,14 +80,7 @@ export default function ChatMessageActions({
             />
           </PopoverTrigger>
           <PopoverContent className='p-0 border-0 bg-transparent'>
-            <Picker
-              data={data}
-              onEmojiSelect={handleEmojiSelect}
-              theme='dark'
-              previewPosition='none'
-              skinTonePosition='none'
-              maxFrequentRows={2}
-            />
+            <Picker data={data} onEmojiSelect={handleEmojiSelect} />
           </PopoverContent>
         </Popover>
       )}

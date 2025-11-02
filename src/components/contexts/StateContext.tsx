@@ -34,7 +34,9 @@ interface StateContextType {
 export const StateContext = createContext<StateContextType | undefined>(undefined)
 
 export const StateProvider = ({ children }: { children: ReactNode }): ReactElement => {
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(
+    typeof window !== 'undefined' && localStorage.getItem('sidebarCollapsed') === 'true',
+  )
   const [appId, setAppId] = useState<number | null>(null)
   const [appName, setAppName] = useState<string | null>(null)
   const [showFreeGamesTab, setShowFreeGamesTab] = useState(false)

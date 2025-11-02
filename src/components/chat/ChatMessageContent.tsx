@@ -1,4 +1,3 @@
-import type { UserSummary } from '@/types'
 import type { AnchorHTMLAttributes, ImgHTMLAttributes, MouseEvent, ReactElement } from 'react'
 
 import 'github-markdown-css/github-markdown.css'
@@ -26,13 +25,6 @@ const supabase = createClient(
 
 interface ChatMessageContentProps {
   message: string
-  userSummary: UserSummary
-  isAdmin?: boolean
-  isPinned?: boolean
-  onPin?: (message: string) => void
-  onUnpin?: () => void
-  replyToId?: string | null
-  scrollToMessage?: (messageId: string) => Promise<void>
 }
 
 function MarkdownLink(props: AnchorHTMLAttributes<HTMLAnchorElement>): ReactElement {

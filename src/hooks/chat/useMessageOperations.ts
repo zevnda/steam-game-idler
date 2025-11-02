@@ -102,7 +102,9 @@ export function useMessageOperations({
         const updated = [...prev, tempMessage]
         return updated.length > pagination.limit ? updated.slice(updated.length - pagination.limit) : updated
       })
+
       setShouldScrollToBottom(true)
+
       const payload: Record<string, unknown> = {
         user_id: steamId,
         username: userSummary?.personaName || 'Unknown',

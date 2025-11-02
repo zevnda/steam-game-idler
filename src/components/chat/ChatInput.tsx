@@ -1,13 +1,14 @@
+import type { Emoji } from '@/hooks/chat/useEmojiShortcodes'
 import type { ReactElement, RefObject } from 'react'
 
 import { Button, cn, Textarea } from '@heroui/react'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import emojiData from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
 import { createClient } from '@supabase/supabase-js'
 import Image from 'next/image'
 import { useTranslation } from 'react-i18next'
-import { FaImage } from 'react-icons/fa6'
+import { FaImage, FaTrash } from 'react-icons/fa6'
 import { IoSend } from 'react-icons/io5'
 
 import ChatReplyPreview from '@/components/chat/ChatReplyPreview'
@@ -15,6 +16,7 @@ import { useSupabase } from '@/components/contexts/SupabaseContext'
 import { useUserContext } from '@/components/contexts/UserContext'
 import ExtLink from '@/components/ui/ExtLink'
 import { useEmojiPicker } from '@/hooks/chat/useEmojiPicker'
+import { useEmojiShortcodes } from '@/hooks/chat/useEmojiShortcodes'
 import { useMentionUsers } from '@/hooks/chat/useMentionUsers'
 import { logEvent } from '@/utils/tasks'
 
@@ -29,6 +31,7 @@ interface ChatInputProps {
   handleEditLastMessage: () => void
   replyToMessage?: { id: string; username: string; message: string } | null
   clearReplyToMessage?: () => void
+  messagesEndRef: RefObject<HTMLDivElement>
 }
 
 export default function ChatInput({
@@ -37,8 +40,11 @@ export default function ChatInput({
   handleEditLastMessage,
   replyToMessage,
   clearReplyToMessage,
+  messagesEndRef,
 }: ChatInputProps): ReactElement {
   const [newMessage, setNewMessage] = useState('')
+  const [imagePreview, setImagePreview] = useState<{ file: File; url: string } | null>(null)
+  const [isUploading, setIsUploading] = useState(false)
   const { t } = useTranslation()
   const { userSummary } = useUserContext()
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -58,10 +64,24 @@ export default function ChatInput({
     handleMentionSelect,
     setMentionQuery,
     setMentionStart,
-    setMentionResults,
   } = useMentionUsers(inputRef, newMessage)
 
   const { showEmojiPicker, setShowEmojiPicker, insertEmoji } = useEmojiPicker(inputRef, newMessage, setNewMessage)
+
+  const {
+    emojiStart,
+    emojiResults,
+    emojiSelectedIdx,
+    setEmojiSelectedIdx,
+    handleEmojiInputChange,
+    handleEmojiSelect,
+    setEmojiQuery,
+    setEmojiStart,
+  } = useEmojiShortcodes(inputRef, newMessage)
+
+  const scrollToBottom = useCallback((): void => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'auto' })
+  }, [messagesEndRef])
 
   // Auto-focus input when typing anywhere
   useEffect(() => {
@@ -98,9 +118,55 @@ export default function ChatInput({
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [inputRef])
 
+  // Cleanup image preview URL on unmount
+  useEffect(() => {
+    return () => {
+      if (imagePreview) {
+        URL.revokeObjectURL(imagePreview.url)
+      }
+    }
+  }, [imagePreview])
+
   // Broadcast stop_typing on submit
-  const handleSend = (): void => {
+  const handleSend = async (): Promise<void> => {
     broadcastStopTyping()
+
+    // If there's an image preview, upload it first
+    if (imagePreview) {
+      setIsUploading(true)
+      const imageUrl = await uploadImageToSupabase(imagePreview.file)
+      setIsUploading(false)
+
+      if (imageUrl) {
+        // Combine image URL with text message
+        const messageContent = newMessage.trim() ? `${newMessage}\n${imageUrl}` : imageUrl
+        onSendMessage(messageContent, replyToMessage?.id || null)
+        setNewMessage('')
+        setImagePreview(null)
+        setMentionQuery('')
+        setMentionStart(null)
+        setEmojiQuery('')
+        setEmojiStart(null)
+        scrollToBottom()
+        if (clearReplyToMessage) clearReplyToMessage()
+      }
+    } else if (newMessage.trim()) {
+      // Send text-only message
+      onSendMessage(newMessage, replyToMessage?.id || null)
+      setNewMessage('')
+      setMentionQuery('')
+      setMentionStart(null)
+      setEmojiQuery('')
+      setEmojiStart(null)
+      if (clearReplyToMessage) clearReplyToMessage()
+    }
+  }
+
+  const handleRemoveImage = (): void => {
+    if (imagePreview) {
+      URL.revokeObjectURL(imagePreview.url)
+      setImagePreview(null)
+    }
   }
 
   const uploadImageToSupabase = async (file: File): Promise<string | null> => {
@@ -148,21 +214,9 @@ export default function ChatInput({
           if (file) {
             e.preventDefault()
 
-            // Show loading state (optional)
-            // setIsUploading(true)
-
-            const imageUrl = await uploadImageToSupabase(file)
-
-            if (imageUrl) {
-              // Send the message with the image URL
-              onSendMessage(imageUrl)
-              setNewMessage('')
-              setMentionQuery('')
-              setMentionStart(null)
-              if (clearReplyToMessage) clearReplyToMessage()
-            }
-
-            // setIsUploading(false)
+            // Create preview URL
+            const previewUrl = URL.createObjectURL(file)
+            setImagePreview({ file, url: previewUrl })
             break
           }
         }
@@ -177,19 +231,9 @@ export default function ChatInput({
     try {
       const file = e.target.files?.[0]
       if (file) {
-        // Wrap file in a ClipboardEvent-like object for handleImageUpload
-        const fakeClipboardEvent = {
-          clipboardData: {
-            items: [
-              {
-                type: file.type,
-                getAsFile: () => file,
-              },
-            ],
-          },
-          preventDefault: () => {},
-        } as unknown as React.ClipboardEvent<HTMLInputElement>
-        await handleImageUpload(fakeClipboardEvent)
+        // Create preview URL
+        const previewUrl = URL.createObjectURL(file)
+        setImagePreview({ file, url: previewUrl })
         e.target.value = ''
       }
     } catch (error) {
@@ -230,15 +274,10 @@ export default function ChatInput({
       </div>
 
       <form
-        onSubmit={e => {
+        onSubmit={async e => {
           e.preventDefault()
-          if (newMessage.trim()) {
-            handleSend()
-            onSendMessage(newMessage, replyToMessage?.id || null)
-            setNewMessage('')
-            setMentionQuery('')
-            setMentionStart(null)
-            if (clearReplyToMessage) clearReplyToMessage()
+          if (newMessage.trim() || imagePreview) {
+            await handleSend()
           }
         }}
       >
@@ -248,10 +287,36 @@ export default function ChatInput({
             <ChatReplyPreview username={replyToMessage.username} onCancel={clearReplyToMessage} />
           )}
 
+          {/* Image preview */}
+          {imagePreview && (
+            <div className='mb-2 p-2 border border-border rounded-lg bg-input/50 relative'>
+              <div className='flex items-start gap-2'>
+                <div className='relative'>
+                  <div className='flex justify-center items-center w-auto min-h-[150px] max-h-[150px] min-w-[150px] max-w-[150px] bg-black/10 rounded-lg overflow-hidden border border-border'>
+                    <Image
+                      src={imagePreview.url}
+                      alt='image preview'
+                      width={400}
+                      height={300}
+                      className='max-w-full max-h-[150px] min-w-[150px] w-auto h-auto object-contain rounded-lg my-2'
+                    />
+                  </div>
+                  <p className='text-[10px] text-altwhite/70 my-1 select-none'>{imagePreview.file.name}</p>
+                  <FaTrash
+                    size={12}
+                    onClick={handleRemoveImage}
+                    aria-label='Remove image'
+                    className='absolute top-1.5 right-1.5 inline ml-2 text-danger hover:opacity-90 cursor-pointer'
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
           <Textarea
             ref={inputRef}
             size='sm'
-            placeholder={t('chat.inputPlaceholder')}
+            placeholder={imagePreview ? t('chat.addTextToImage') : t('chat.inputPlaceholder')}
             className='w-full mb-0 pb-0 resize-y'
             classNames={{
               inputWrapper: cn(
@@ -299,28 +364,20 @@ export default function ChatInput({
 
                 {showEmojiPicker && (
                   <div className='absolute -right-2 bottom-9 mb-2 z-50'>
-                    <Picker
-                      data={emojiData}
-                      onEmojiSelect={insertEmoji}
-                      theme='dark'
-                      previewPosition='none'
-                      perLine={8}
-                      navPosition='top'
-                      onClickOutside={() => setShowEmojiPicker(false)}
-                      autoFocus
-                    />
+                    <Picker data={emojiData} onEmojiSelect={insertEmoji} />
                   </div>
                 )}
 
                 <Button
                   size='sm'
                   isIconOnly
-                  isDisabled={!newMessage.trim()}
-                  startContent={<IoSend size={16} />}
+                  isDisabled={!newMessage.trim() && !imagePreview}
+                  isLoading={isUploading}
+                  startContent={!isUploading ? <IoSend size={16} /> : undefined}
                   type='submit'
                   className={cn(
                     'bg-transparent hover:bg-white/10 hover:text-dynamic/80 transition-colors',
-                    newMessage.trim() ? 'text-dynamic' : 'text-white/10',
+                    newMessage.trim() || imagePreview ? 'text-dynamic' : 'text-white/10',
                   )}
                 />
               </div>
@@ -331,15 +388,53 @@ export default function ChatInput({
             onChange={e => {
               setNewMessage(e.target.value)
               const textarea = e.target as unknown as HTMLTextAreaElement
-              handleMentionInputChange(e.target.value, textarea.selectionStart || e.target.value.length)
+              const cursorPos = textarea.selectionStart || e.target.value.length
+              handleMentionInputChange(e.target.value, cursorPos)
+              handleEmojiInputChange(e.target.value, cursorPos, setNewMessage)
               broadcastTyping()
             }}
             onKeyDown={e => {
-              // Escape cancels reply
-              if (e.key === 'Escape' && replyToMessage && clearReplyToMessage) {
-                e.preventDefault()
-                clearReplyToMessage()
-                return
+              // Escape cancels reply or removes image
+              if (e.key === 'Escape') {
+                if (replyToMessage && clearReplyToMessage) {
+                  e.preventDefault()
+                  clearReplyToMessage()
+                  return
+                }
+                if (imagePreview) {
+                  e.preventDefault()
+                  handleRemoveImage()
+                  return
+                }
+                if (emojiResults.length > 0 && emojiStart !== null) {
+                  e.preventDefault()
+                  setEmojiStart(null)
+                  setEmojiQuery('')
+                  return
+                }
+              }
+              // Emoji shortcode navigation
+              if (emojiResults.length > 0 && emojiStart !== null) {
+                if (e.key === 'ArrowDown') {
+                  e.preventDefault()
+                  setEmojiSelectedIdx(Math.min(emojiSelectedIdx + 1, emojiResults.length - 1))
+                  return
+                }
+                if (e.key === 'ArrowUp') {
+                  e.preventDefault()
+                  setEmojiSelectedIdx(Math.max(emojiSelectedIdx - 1, 0))
+                  return
+                }
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault()
+                  handleEmojiSelect(emojiSelectedIdx, setNewMessage)
+                  return
+                }
+                if (e.key === 'Tab') {
+                  e.preventDefault()
+                  handleEmojiSelect(emojiSelectedIdx, setNewMessage)
+                  return
+                }
               }
               // Mention navigation
               if (mentionResults.length > 0 && mentionStart !== null) {
@@ -370,14 +465,8 @@ export default function ChatInput({
                 handleEditLastMessage()
               } else if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault()
-                if (newMessage.trim()) {
+                if (newMessage.trim() || imagePreview) {
                   handleSend()
-                  onSendMessage(newMessage, replyToMessage?.id || null)
-                  setNewMessage('')
-                  setMentionQuery('')
-                  setMentionStart(null)
-                  setMentionResults([])
-                  if (clearReplyToMessage) clearReplyToMessage()
                 }
               }
               // SHIFT+ENTER is default (new line)
@@ -385,6 +474,28 @@ export default function ChatInput({
             onPaste={handleImageUpload}
             autoFocus
           />
+          {/* Floating emoji shortcode preview */}
+          {emojiResults.length > 0 && emojiStart !== null && (
+            <div className='absolute left-0 bottom-[110%] bg-input rounded-lg z-50 w-full max-h-[200px] overflow-y-auto'>
+              <p className='text-[10px] font-semibold border-b border-border p-2 uppercase'>Emojis</p>
+
+              {emojiResults.map((emoji: Emoji, idx: number) => (
+                <div
+                  key={emoji.id}
+                  className={cn(
+                    'flex items-center gap-1 cursor-pointer p-2 hover:bg-white/5 text-xs',
+                    idx === emojiSelectedIdx ? 'bg-white/10' : '',
+                  )}
+                  onClick={() => handleEmojiSelect(idx, setNewMessage)}
+                  tabIndex={-1}
+                  aria-selected={idx === emojiSelectedIdx}
+                >
+                  <span className='text-sm'>{emoji.native}</span>
+                  <span>:{emoji.id}:</span>
+                </div>
+              ))}
+            </div>
+          )}
           {/* Floating mention preview */}
           {mentionResults.length > 0 && mentionStart !== null && (
             <div className='absolute left-0 bottom-[110%] bg-input rounded-lg z-50 w-full'>

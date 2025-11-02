@@ -236,6 +236,7 @@ export default function ChatBox(): ReactElement {
               handleEditLastMessage={handleEditLastMessage}
               replyToMessage={replyToMessage}
               clearReplyToMessage={() => setReplyToMessage(null)}
+              messagesEndRef={messagesEndRef}
             />
           </div>
 

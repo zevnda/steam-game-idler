@@ -46,6 +46,7 @@ export default function Header(): ReactElement {
             onClick={() => {
               setTransitionDuration('300ms')
               setSidebarCollapsed(!sidebarCollapsed)
+              localStorage.setItem('sidebarCollapsed', String(!sidebarCollapsed))
               setTimeout(() => {
                 setTransitionDuration('0ms')
               }, 100)
