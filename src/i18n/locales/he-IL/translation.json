@@ -121,6 +121,7 @@
   "achievementManager.statistics.flags": "דגלים,",
   "chat.title": "צ'אטבוקס",
   "chat.inputPlaceholder": "שלח הודעה...",
+  "chat.addTextToImage": "הוסף הודעה (אופציונלי)...",
   "chat.messageAction.delete": "מחק את ההודעה הזו",
   "chat.messageAction.ban": "חסום/בטל חסימה של משתמש זה",
   "chat.messageAction.modal": "האם אתה בטוח שאתה רוצה <1>{{action}}</1> ?",

@@ -121,6 +121,7 @@
   "achievementManager.statistics.flags": "フラグ",
   "chat.title": "チャットボックス",
   "chat.inputPlaceholder": "メッセージを送信...",
+  "chat.addTextToImage": "メッセージを追加します (オプション)...",
   "chat.messageAction.delete": "このメッセージを削除する",
   "chat.messageAction.ban": "このユーザーを禁止/禁止解除する",
   "chat.messageAction.modal": "本当に<1>{{action}}しますか？</1> ?",

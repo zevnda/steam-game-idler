@@ -121,6 +121,7 @@
   "achievementManager.statistics.flags": "Drapeaux",
   "chat.title": "Boîte de dialogue",
   "chat.inputPlaceholder": "Envoyer un message...",
+  "chat.addTextToImage": "Ajouter un message (facultatif)...",
   "chat.messageAction.delete": "supprimer ce message",
   "chat.messageAction.ban": "bannir/débannir cet utilisateur",
   "chat.messageAction.modal": "Êtes-vous sûr de vouloir <1>{{action}}</1> ?",

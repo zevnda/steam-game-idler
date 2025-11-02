@@ -121,6 +121,7 @@
   "achievementManager.statistics.flags": "Vlaggen",
   "chat.title": "Chatbox",
   "chat.inputPlaceholder": "Stuur een bericht...",
+  "chat.addTextToImage": "Voeg een bericht toe (optioneel)...",
   "chat.messageAction.delete": "verwijder dit bericht",
   "chat.messageAction.ban": "deze gebruiker verbannen/deblokkeren",
   "chat.messageAction.modal": "Weet u zeker dat u <1>{{action}}wilt?</1> ?",

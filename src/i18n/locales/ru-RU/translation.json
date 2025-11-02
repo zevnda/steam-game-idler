@@ -121,6 +121,7 @@
   "achievementManager.statistics.flags": "Флаги",
   "chat.title": "Чатбокс",
   "chat.inputPlaceholder": "Отправить сообщение...",
+  "chat.addTextToImage": "Добавьте сообщение (необязательно)...",
   "chat.messageAction.delete": "удалить это сообщение",
   "chat.messageAction.ban": "забанить/разбанить этого пользователя",
   "chat.messageAction.modal": "Вы уверены, что хотите <1>{{action}}</1> ?",

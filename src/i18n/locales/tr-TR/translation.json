@@ -121,6 +121,7 @@
   "achievementManager.statistics.flags": "Etiketler",
   "chat.title": "Sohbet kutusu",
   "chat.inputPlaceholder": "Mesaj gönder...",
+  "chat.addTextToImage": "Bir mesaj ekleyin (isteğe bağlı)...",
   "chat.messageAction.delete": "bu mesajı sil",
   "chat.messageAction.ban": "bu kullanıcıyı yasakla/yasağını kaldır",
   "chat.messageAction.modal": "<1>{{action}}istediğinizden emin misiniz?</1> ?",

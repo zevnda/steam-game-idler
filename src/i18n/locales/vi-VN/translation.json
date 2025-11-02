@@ -121,6 +121,7 @@
   "achievementManager.statistics.flags": "Cờ",
   "chat.title": "Hộp trò chuyện",
   "chat.inputPlaceholder": "Gửi tin nhắn...",
+  "chat.addTextToImage": "Thêm tin nhắn (tùy chọn)...",
   "chat.messageAction.delete": "xóa tin nhắn này",
   "chat.messageAction.ban": "cấm/bỏ cấm người dùng này",
   "chat.messageAction.modal": "Bạn có chắc chắn muốn <1>{{action}}</1> ?",

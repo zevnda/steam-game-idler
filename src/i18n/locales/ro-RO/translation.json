@@ -121,6 +121,7 @@
   "achievementManager.statistics.flags": "Semnalări",
   "chat.title": "Chatbox",
   "chat.inputPlaceholder": "Trimite un mesaj...",
+  "chat.addTextToImage": "Adăugați un mesaj (opțional)...",
   "chat.messageAction.delete": "șterge acest mesaj",
   "chat.messageAction.ban": "interzice/retrage interdicția acestui utilizator",
   "chat.messageAction.modal": "Sigur vrei să <1>{{action}}</1> ?",

@@ -121,6 +121,7 @@
   "achievementManager.statistics.flags": "Bandeiras",
   "chat.title": "Caixa de chat",
   "chat.inputPlaceholder": "Enviar uma mensagem...",
+  "chat.addTextToImage": "Adicione uma mensagem (opcional)...",
   "chat.messageAction.delete": "apagar esta mensagem",
   "chat.messageAction.ban": "banir/desbanir este utilizador",
   "chat.messageAction.modal": "Tem a certeza que pretende <1>{{action}}</1> ?",

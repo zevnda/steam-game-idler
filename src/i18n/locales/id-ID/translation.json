@@ -121,6 +121,7 @@
   "achievementManager.statistics.flags": "Flag",
   "chat.title": "Kotak obrolan",
   "chat.inputPlaceholder": "Kirim pesan...",
+  "chat.addTextToImage": "Tambahkan pesan (opsional)...",
   "chat.messageAction.delete": "hapus pesan ini",
   "chat.messageAction.ban": "larang/buka larangan pengguna ini",
   "chat.messageAction.modal": "Apakah Anda yakin ingin <1>{{action}}</1> ?",

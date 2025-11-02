@@ -121,6 +121,7 @@
   "achievementManager.statistics.flags": "Flaggor",
   "chat.title": "Chattbox",
   "chat.inputPlaceholder": "Skicka ett meddelande...",
+  "chat.addTextToImage": "Lägg till ett meddelande (valfritt)...",
   "chat.messageAction.delete": "radera det här meddelandet",
   "chat.messageAction.ban": "avstänga/avstänga den här användaren",
   "chat.messageAction.modal": "Är du säker på att du vill <1>{{action}}</1> ?",

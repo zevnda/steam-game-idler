@@ -121,6 +121,7 @@
   "achievementManager.statistics.flags": "झंडे",
   "chat.title": "चैटबॉक्स",
   "chat.inputPlaceholder": "एक संदेश भेजो...",
+  "chat.addTextToImage": "संदेश जोड़ें (वैकल्पिक)...",
   "chat.messageAction.delete": "इस संदेश को हटाएँ",
   "chat.messageAction.ban": "इस उपयोगकर्ता को प्रतिबंधित/अनबैन करें",
   "chat.messageAction.modal": "क्या आप वाकई <1>{{action}}करना चाहते हैं?</1> ?",

@@ -121,6 +121,7 @@
   "achievementManager.statistics.flags": "旗幟",
   "chat.title": "聊天框",
   "chat.inputPlaceholder": "發送訊息…",
+  "chat.addTextToImage": "新增留言（可選）…",
   "chat.messageAction.delete": "刪除此訊息",
   "chat.messageAction.ban": "封鎖/解封此用戶",
   "chat.messageAction.modal": "你確定要<1>{{action}}</1> ？",
