@@ -1,3 +1,15 @@
+<!-- 2.2.6 -->
+
+### Changes in v2.2.6
+
+- Multiple improvements, new features, and fixes for the chat feature
+  - Added a Discord-styled message reaction system
+  - Fixed an issue that didn't allow older messages to be replied to
+  - Improved the look of messages containing a reply
+  - Other style and backend improvements
+  - Destructive message actions *(delete, ban)* are now only visible when holding the `SHIFT` key while hovering over a message
+  - Chat notifications can now be louder
+  
 <!-- 2.2.5 -->
 
 ### Changes in v2.2.5
