@@ -35,6 +35,7 @@ interface ChatMessageProps {
   isAdmin?: boolean
   onReply?: () => void
   scrollToMessage?: (messageId: string) => Promise<void>
+  isShiftPressed?: boolean
 }
 
 export interface Message {
@@ -76,6 +77,7 @@ export default function ChatMessage({
   isAdmin,
   onReply,
   scrollToMessage,
+  isShiftPressed,
 }: ChatMessageProps): ReactElement {
   // Use pre-fetched reply data or fallback to searching in msgs array
   const replyToMessage = msg.reply_to || (msg.reply_to_id ? msgs.find(m => m.id === msg.reply_to_id) : null)
@@ -261,6 +263,7 @@ export default function ChatMessage({
           isAdmin={isAdmin}
           onReply={onReply}
           onBan={isAdmin ? handleBanUser : undefined}
+          isShiftPressed={isShiftPressed}
         />
       </div>
     </div>

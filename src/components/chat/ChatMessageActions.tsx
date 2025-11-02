@@ -16,6 +16,7 @@ interface ChatMessageActionsProps {
   isAdmin?: boolean
   onReply?: () => void
   onBan?: () => void
+  isShiftPressed?: boolean
 }
 
 export default function ChatMessageActions({
@@ -27,6 +28,7 @@ export default function ChatMessageActions({
   isAdmin,
   onReply,
   onBan,
+  isShiftPressed,
 }: ChatMessageActionsProps): ReactElement {
   const { t } = useTranslation()
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
@@ -75,7 +77,7 @@ export default function ChatMessageActions({
           onPress={onEdit}
         />
       )}
-      {onDelete && (
+      {onDelete && isShiftPressed && (
         <Button
           isIconOnly
           radius='none'
@@ -93,7 +95,7 @@ export default function ChatMessageActions({
           }}
         />
       )}
-      {isAdmin && onBan && (
+      {isAdmin && onBan && isShiftPressed && (
         <Button
           isIconOnly
           radius='none'

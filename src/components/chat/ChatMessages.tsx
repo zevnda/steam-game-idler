@@ -35,6 +35,7 @@ interface ChatMessagesProps {
   isAdmin?: boolean
   onReply?: (msg: Message) => void
   scrollToMessage?: (messageId: string) => Promise<void>
+  isShiftPressed?: boolean
 }
 
 const ChatMessages = ({
@@ -59,6 +60,7 @@ const ChatMessages = ({
   isAdmin,
   onReply,
   scrollToMessage,
+  isShiftPressed,
 }: ChatMessagesProps & {
   editingMessageId: string | null
   setEditingMessageId: (id: string | null) => void
@@ -144,6 +146,7 @@ const ChatMessages = ({
                     isAdmin={isAdmin}
                     onReply={onReply ? () => onReply(msg) : undefined}
                     scrollToMessage={scrollToMessage}
+                    isShiftPressed={isShiftPressed}
                   />
                 )
               })}
