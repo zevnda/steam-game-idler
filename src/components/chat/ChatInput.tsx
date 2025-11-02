@@ -7,7 +7,7 @@ import Picker from '@emoji-mart/react'
 import { createClient } from '@supabase/supabase-js'
 import Image from 'next/image'
 import { useTranslation } from 'react-i18next'
-import { FaImage } from 'react-icons/fa6'
+import { FaImage, FaTrash } from 'react-icons/fa6'
 import { IoSend } from 'react-icons/io5'
 
 import ChatReplyPreview from '@/components/chat/ChatReplyPreview'
@@ -41,6 +41,8 @@ export default function ChatInput({
   messagesEndRef,
 }: ChatInputProps): ReactElement {
   const [newMessage, setNewMessage] = useState('')
+  const [imagePreview, setImagePreview] = useState<{ file: File; url: string } | null>(null)
+  const [isUploading, setIsUploading] = useState(false)
   const { t } = useTranslation()
   const { userSummary } = useUserContext()
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -60,7 +62,6 @@ export default function ChatInput({
     handleMentionSelect,
     setMentionQuery,
     setMentionStart,
-    setMentionResults,
   } = useMentionUsers(inputRef, newMessage)
 
   const { showEmojiPicker, setShowEmojiPicker, insertEmoji } = useEmojiPicker(inputRef, newMessage, setNewMessage)
@@ -104,9 +105,51 @@ export default function ChatInput({
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [inputRef])
 
+  // Cleanup image preview URL on unmount
+  useEffect(() => {
+    return () => {
+      if (imagePreview) {
+        URL.revokeObjectURL(imagePreview.url)
+      }
+    }
+  }, [imagePreview])
+
   // Broadcast stop_typing on submit
-  const handleSend = (): void => {
+  const handleSend = async (): Promise<void> => {
     broadcastStopTyping()
+
+    // If there's an image preview, upload it first
+    if (imagePreview) {
+      setIsUploading(true)
+      const imageUrl = await uploadImageToSupabase(imagePreview.file)
+      setIsUploading(false)
+
+      if (imageUrl) {
+        // Combine image URL with text message
+        const messageContent = newMessage.trim() ? `${newMessage}\n${imageUrl}` : imageUrl
+        onSendMessage(messageContent, replyToMessage?.id || null)
+        setNewMessage('')
+        setImagePreview(null)
+        setMentionQuery('')
+        setMentionStart(null)
+        scrollToBottom()
+        if (clearReplyToMessage) clearReplyToMessage()
+      }
+    } else if (newMessage.trim()) {
+      // Send text-only message
+      onSendMessage(newMessage, replyToMessage?.id || null)
+      setNewMessage('')
+      setMentionQuery('')
+      setMentionStart(null)
+      if (clearReplyToMessage) clearReplyToMessage()
+    }
+  }
+
+  const handleRemoveImage = (): void => {
+    if (imagePreview) {
+      URL.revokeObjectURL(imagePreview.url)
+      setImagePreview(null)
+    }
   }
 
   const uploadImageToSupabase = async (file: File): Promise<string | null> => {
@@ -154,23 +197,9 @@ export default function ChatInput({
           if (file) {
             e.preventDefault()
 
-            // Show loading state (optional)
-            // setIsUploading(true)
-
-            const imageUrl = await uploadImageToSupabase(file)
-
-            if (imageUrl) {
-              // Send the message with the image URL
-              onSendMessage(imageUrl)
-              setNewMessage('')
-              setMentionQuery('')
-              setMentionStart(null)
-              scrollToBottom()
-
-              if (clearReplyToMessage) clearReplyToMessage()
-            }
-
-            // setIsUploading(false)
+            // Create preview URL
+            const previewUrl = URL.createObjectURL(file)
+            setImagePreview({ file, url: previewUrl })
             break
           }
         }
@@ -185,19 +214,9 @@ export default function ChatInput({
     try {
       const file = e.target.files?.[0]
       if (file) {
-        // Wrap file in a ClipboardEvent-like object for handleImageUpload
-        const fakeClipboardEvent = {
-          clipboardData: {
-            items: [
-              {
-                type: file.type,
-                getAsFile: () => file,
-              },
-            ],
-          },
-          preventDefault: () => {},
-        } as unknown as React.ClipboardEvent<HTMLInputElement>
-        await handleImageUpload(fakeClipboardEvent)
+        // Create preview URL
+        const previewUrl = URL.createObjectURL(file)
+        setImagePreview({ file, url: previewUrl })
         e.target.value = ''
       }
     } catch (error) {
@@ -238,15 +257,10 @@ export default function ChatInput({
       </div>
 
       <form
-        onSubmit={e => {
+        onSubmit={async e => {
           e.preventDefault()
-          if (newMessage.trim()) {
-            handleSend()
-            onSendMessage(newMessage, replyToMessage?.id || null)
-            setNewMessage('')
-            setMentionQuery('')
-            setMentionStart(null)
-            if (clearReplyToMessage) clearReplyToMessage()
+          if (newMessage.trim() || imagePreview) {
+            await handleSend()
           }
         }}
       >
@@ -256,10 +270,36 @@ export default function ChatInput({
             <ChatReplyPreview username={replyToMessage.username} onCancel={clearReplyToMessage} />
           )}
 
+          {/* Image preview */}
+          {imagePreview && (
+            <div className='mb-2 p-2 border border-border rounded-lg bg-input/50 relative'>
+              <div className='flex items-start gap-2'>
+                <div className='relative'>
+                  <div className='flex justify-center items-center w-auto min-h-[150px] max-h-[150px] min-w-[150px] max-w-[150px] bg-black/10 rounded-lg overflow-hidden border border-border'>
+                    <Image
+                      src={imagePreview.url}
+                      alt='image preview'
+                      width={400}
+                      height={300}
+                      className='max-w-full max-h-[150px] min-w-[150px] w-auto h-auto object-contain rounded-lg my-2'
+                    />
+                  </div>
+                  <p className='text-[10px] text-altwhite/70 my-1 select-none'>{imagePreview.file.name}</p>
+                  <FaTrash
+                    size={12}
+                    onClick={handleRemoveImage}
+                    aria-label='Remove image'
+                    className='absolute top-1.5 right-1.5 inline ml-2 text-danger hover:opacity-90 cursor-pointer'
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
           <Textarea
             ref={inputRef}
             size='sm'
-            placeholder={t('chat.inputPlaceholder')}
+            placeholder={imagePreview ? t('chat.addTextToImage') : t('chat.inputPlaceholder')}
             className='w-full mb-0 pb-0 resize-y'
             classNames={{
               inputWrapper: cn(
@@ -323,12 +363,13 @@ export default function ChatInput({
                 <Button
                   size='sm'
                   isIconOnly
-                  isDisabled={!newMessage.trim()}
-                  startContent={<IoSend size={16} />}
+                  isDisabled={!newMessage.trim() && !imagePreview}
+                  isLoading={isUploading}
+                  startContent={!isUploading ? <IoSend size={16} /> : undefined}
                   type='submit'
                   className={cn(
                     'bg-transparent hover:bg-white/10 hover:text-dynamic/80 transition-colors',
-                    newMessage.trim() ? 'text-dynamic' : 'text-white/10',
+                    newMessage.trim() || imagePreview ? 'text-dynamic' : 'text-white/10',
                   )}
                 />
               </div>
@@ -343,11 +384,18 @@ export default function ChatInput({
               broadcastTyping()
             }}
             onKeyDown={e => {
-              // Escape cancels reply
-              if (e.key === 'Escape' && replyToMessage && clearReplyToMessage) {
-                e.preventDefault()
-                clearReplyToMessage()
-                return
+              // Escape cancels reply or removes image
+              if (e.key === 'Escape') {
+                if (replyToMessage && clearReplyToMessage) {
+                  e.preventDefault()
+                  clearReplyToMessage()
+                  return
+                }
+                if (imagePreview) {
+                  e.preventDefault()
+                  handleRemoveImage()
+                  return
+                }
               }
               // Mention navigation
               if (mentionResults.length > 0 && mentionStart !== null) {
@@ -378,14 +426,8 @@ export default function ChatInput({
                 handleEditLastMessage()
               } else if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault()
-                if (newMessage.trim()) {
+                if (newMessage.trim() || imagePreview) {
                   handleSend()
-                  onSendMessage(newMessage, replyToMessage?.id || null)
-                  setNewMessage('')
-                  setMentionQuery('')
-                  setMentionStart(null)
-                  setMentionResults([])
-                  if (clearReplyToMessage) clearReplyToMessage()
                 }
               }
               // SHIFT+ENTER is default (new line)

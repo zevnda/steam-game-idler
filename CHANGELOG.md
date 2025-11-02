@@ -3,6 +3,8 @@
 ### Changes in v2.2.7
 
 - Users are no longer connected to chat by default, just by having SGI open
+  - Added an image preview when sending images in chat
+    - Also allows images to be sent as an attachment to a message
   - Only users who are actively viewing the chat will be connected
   - Because of this change, users will no longer see notification dots for new messages and mentions in the sidebar
   - Fixed an issue where the chat would not scroll to the bottom of the page when a new message was received from another user
