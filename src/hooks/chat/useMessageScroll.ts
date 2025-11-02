@@ -37,13 +37,15 @@ export function useMessageScroll({ messages, messagesEndRef, messagesContainerRe
     // Auto-scroll if near bottom
     const container = messagesContainerRef.current
     if (container) {
-      const threshold = 10
+      const threshold = 150
       const isAtBottom = container.scrollTop + container.clientHeight >= container.scrollHeight - threshold
       if (isAtBottom) {
-        setTimeout(() => setShouldScrollToBottom(true), 0)
+        requestAnimationFrame(() => {
+          scrollToBottom()
+        })
       }
     }
-  }, [messages, messagesContainerRef])
+  }, [messages, messagesContainerRef, scrollToBottom])
 
   return {
     shouldScrollToBottom,
