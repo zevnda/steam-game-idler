@@ -15,6 +15,7 @@ export interface Message {
   created_at: string
   avatar_url?: string
   reply_to_id?: string | null
+  reply_to?: Message | null
 }
 
 interface ChatMessagesProps {
@@ -74,6 +75,9 @@ const ChatMessages = ({
 }): ReactElement => {
   const editTextareaRef = useRef<HTMLTextAreaElement>(null)
 
+  // Flatten all messages from all date groups for reply lookups
+  const allMessages = Object.values(groupedMessages).flat()
+
   useEffect(() => {
     if (!editingMessageId) return
 
@@ -126,7 +130,7 @@ const ChatMessages = ({
                     key={msg.id}
                     msg={msg}
                     idx={idx}
-                    msgs={msgs}
+                    msgs={allMessages}
                     userSummary={userSummary}
                     userRoles={userRoles}
                     getColorFromUsername={getColorFromUsername}

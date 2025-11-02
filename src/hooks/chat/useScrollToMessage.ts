@@ -53,6 +53,18 @@ export function useScrollToMessage({
           return
         }
 
+        // Fetch reply data if target message has reply_to_id
+        if (targetMessage.reply_to_id) {
+          const { data: replyMsg } = await supabase
+            .from('messages')
+            .select('*')
+            .eq('id', targetMessage.reply_to_id)
+            .single()
+          if (replyMsg) {
+            targetMessage.reply_to = replyMsg as ChatMessageType
+          }
+        }
+
         // Store current messages before loading older ones
         const currentMessages = [...messages]
 
@@ -89,7 +101,23 @@ export function useScrollToMessage({
         }
 
         // Combine messages around the target
-        const contextMessages = [...olderMessages.reverse(), ...(newerMessages || [])]
+        let contextMessages = [...olderMessages.reverse(), ...(newerMessages || [])]
+
+        // Fetch reply data for messages that have reply_to_id
+        const messageIds = contextMessages.filter(m => m.reply_to_id).map(m => m.reply_to_id)
+        if (messageIds.length > 0) {
+          const { data: replyMessages } = await supabase.from('messages').select('*').in('id', messageIds)
+
+          if (replyMessages) {
+            const replyMap = new Map(replyMessages.map(msg => [msg.id, msg]))
+            contextMessages = contextMessages.map(msg => {
+              if (msg.reply_to_id && replyMap.has(msg.reply_to_id)) {
+                return { ...msg, reply_to: replyMap.get(msg.reply_to_id) as ChatMessageType }
+              }
+              return msg
+            })
+          }
+        }
 
         // Merge with current messages, avoiding duplicates
         const currentMessageIds = new Set(currentMessages.map(m => m.id))

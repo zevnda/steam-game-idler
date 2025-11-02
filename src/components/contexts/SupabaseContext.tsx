@@ -15,6 +15,7 @@ export interface ChatMessageType {
   created_at: string
   avatar_url?: string
   reply_to_id?: string | null
+  reply_to?: ChatMessageType | null
 }
 
 export interface ChatUser {
@@ -332,6 +333,25 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, async payload => {
         try {
           const newMsg = payload.new as ChatMessageType
+
+          // If the message has a reply_to_id, fetch the full reply data
+          if (newMsg.reply_to_id) {
+            try {
+              const { data: replyToMsg, error: replyError } = await supabase
+                .from('messages')
+                .select('*')
+                .eq('id', newMsg.reply_to_id)
+                .single()
+
+              if (!replyError && replyToMsg) {
+                newMsg.reply_to = replyToMsg as ChatMessageType
+              }
+            } catch (error) {
+              console.error('Error fetching reply data for new message:', error)
+              logEvent(`[Error] in fetching reply data: ${error}`)
+            }
+          }
+
           setMessages(current => {
             // Filter out temp messages with same user_id and message content
             const filtered = current.filter(
