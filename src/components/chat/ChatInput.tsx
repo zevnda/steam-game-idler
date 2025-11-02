@@ -10,12 +10,12 @@ import { useTranslation } from 'react-i18next'
 import { FaImage } from 'react-icons/fa6'
 import { IoSend } from 'react-icons/io5'
 
+import ChatReplyPreview from '@/components/chat/ChatReplyPreview'
 import { useSupabase } from '@/components/contexts/SupabaseContext'
 import { useUserContext } from '@/components/contexts/UserContext'
 import ExtLink from '@/components/ui/ExtLink'
 import { useEmojiPicker } from '@/hooks/chat/useEmojiPicker'
 import { useMentionUsers } from '@/hooks/chat/useMentionUsers'
-import { useReplyPrefill } from '@/hooks/chat/useReplyPrefill'
 import { logEvent } from '@/utils/tasks'
 
 const supabase = createClient(
@@ -25,9 +25,9 @@ const supabase = createClient(
 
 interface ChatInputProps {
   inputRef: RefObject<HTMLTextAreaElement>
-  onSendMessage: (msg: string) => void
+  onSendMessage: (msg: string, replyToId?: string | null) => void
   handleEditLastMessage: () => void
-  replyToMessage?: { username: string; message: string } | null
+  replyToMessage?: { id: string; username: string; message: string } | null
   clearReplyToMessage?: () => void
 }
 
@@ -62,8 +62,6 @@ export default function ChatInput({
   } = useMentionUsers(inputRef, newMessage)
 
   const { showEmojiPicker, setShowEmojiPicker, insertEmoji } = useEmojiPicker(inputRef, newMessage, setNewMessage)
-
-  useReplyPrefill(replyToMessage ?? null, inputRef, setNewMessage)
 
   // Auto-focus input when typing anywhere
   useEffect(() => {
@@ -236,7 +234,7 @@ export default function ChatInput({
           e.preventDefault()
           if (newMessage.trim()) {
             handleSend()
-            onSendMessage(newMessage)
+            onSendMessage(newMessage, replyToMessage?.id || null)
             setNewMessage('')
             setMentionQuery('')
             setMentionStart(null)
@@ -244,7 +242,12 @@ export default function ChatInput({
           }
         }}
       >
-        <div style={{ position: 'relative' }}>
+        <div className='relative'>
+          {/* Reply preview */}
+          {replyToMessage && clearReplyToMessage && (
+            <ChatReplyPreview username={replyToMessage.username} onCancel={clearReplyToMessage} />
+          )}
+
           <Textarea
             ref={inputRef}
             size='sm'
@@ -252,6 +255,7 @@ export default function ChatInput({
             className='w-full mb-0 pb-0 resize-y'
             classNames={{
               inputWrapper: cn(
+                'border border-border',
                 'bg-input data-[hover=true]:!bg-inputhover rounded-md',
                 'group-data-[focus-within=true]:!bg-inputhover',
                 'group-data-[focus-visible=true]:ring-transparent',
@@ -331,6 +335,12 @@ export default function ChatInput({
               broadcastTyping()
             }}
             onKeyDown={e => {
+              // Escape cancels reply
+              if (e.key === 'Escape' && replyToMessage && clearReplyToMessage) {
+                e.preventDefault()
+                clearReplyToMessage()
+                return
+              }
               // Mention navigation
               if (mentionResults.length > 0 && mentionStart !== null) {
                 if (e.key === 'ArrowDown') {
@@ -362,7 +372,7 @@ export default function ChatInput({
                 e.preventDefault()
                 if (newMessage.trim()) {
                   handleSend()
-                  onSendMessage(newMessage)
+                  onSendMessage(newMessage, replyToMessage?.id || null)
                   setNewMessage('')
                   setMentionQuery('')
                   setMentionStart(null)

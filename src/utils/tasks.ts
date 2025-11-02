@@ -205,9 +205,23 @@ export async function playMentionBeep(): Promise<void> {
 
     const { chatSounds } = settings?.general || {}
 
-    const audio = new Audio('/pop.mp3')
-    audio.volume = chatSounds[0] > 1 ? 1 : chatSounds[0] // Ensure volume does not exceed 1
-    await audio.play()
+    // Use Web Audio API for volume amplification
+    const audioContext = new AudioContext()
+    const audioResponse = await fetch('/pop.mp3')
+    const arrayBuffer = await audioResponse.arrayBuffer()
+    const audioBuffer = await audioContext.decodeAudioData(arrayBuffer)
+
+    const source = audioContext.createBufferSource()
+    source.buffer = audioBuffer
+
+    const gainNode = audioContext.createGain()
+    // Amplify volume - can go beyond 1.0 (e.g., 2.0 = 200%)
+    const volumeMultiplier = chatSounds[0]
+    gainNode.gain.value = volumeMultiplier
+
+    source.connect(gainNode)
+    gainNode.connect(audioContext.destination)
+    source.start(0)
   } catch (error) {
     console.error('Error playing mention beep:', error)
   }

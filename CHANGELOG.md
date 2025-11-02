@@ -1,3 +1,23 @@
+<!-- 2.2.6 -->
+
+### Changes in v2.2.6
+
+- Multiple improvements, new features, and fixes for the chat feature
+  - Added a Discord-styled message reaction system
+  - Fixed an issue that didn't allow older messages to be replied to
+  - Improved the look of messages containing a reply
+  - Improved the look of images in messages
+  - Other style and backend improvements
+  - Chat notifications can now be louder
+  
+<!-- 2.2.5 -->
+
+### Changes in v2.2.5
+
+- Multiple improvements, new features, and fixes for the chat feature
+  - Added a darker background for easier visibilty on different displays
+  - Shifted the layout of the user list
+
 <!-- 2.2.4 -->
 
 ### Changes in v2.2.4

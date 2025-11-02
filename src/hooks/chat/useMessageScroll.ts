@@ -12,13 +12,7 @@ interface UseMessageScrollParams {
   loading: boolean
 }
 
-export function useMessageScroll({
-  messages,
-  messagesEndRef,
-  messagesContainerRef,
-  userSummary,
-  loading,
-}: UseMessageScrollParams): {
+export function useMessageScroll({ messages, messagesEndRef, messagesContainerRef, loading }: UseMessageScrollParams): {
   shouldScrollToBottom: boolean
   setShouldScrollToBottom: React.Dispatch<React.SetStateAction<boolean>>
   scrollToBottom: () => void

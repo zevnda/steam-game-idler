@@ -38,7 +38,7 @@ export default function ChatUserList(): ReactElement {
   const getRoleName = (role: string): string => {
     switch (role) {
       case 'admin':
-        return 'Admin'
+        return 'Developer'
       case 'moderator':
         return 'Moderator'
       case 'early_supporter':
@@ -56,9 +56,9 @@ export default function ChatUserList(): ReactElement {
         return 0
       case 'moderator':
         return 1
-      case 'early_supporter':
-        return 2
       case 'donator':
+        return 2
+      case 'early_supporter':
         return 3
       case 'banned':
         return 5
@@ -107,18 +107,8 @@ export default function ChatUserList(): ReactElement {
       group.online.sort((a, b) => a.username.localeCompare(b.username))
     })
 
-    // Sort offline users by role priority, then alphabetically
-    offline.sort((a, b) => {
-      const roleA = (a.user_id && userRoles[a.user_id]) ?? 'user'
-      const roleB = (b.user_id && userRoles[b.user_id]) ?? 'user'
-      const priorityA = getRolePriority(roleA)
-      const priorityB = getRolePriority(roleB)
-
-      if (priorityA !== priorityB) {
-        return priorityA - priorityB
-      }
-      return a.username.localeCompare(b.username)
-    })
+    // Sort offline users alphabetically by username
+    offline.sort((a, b) => a.username.localeCompare(b.username))
 
     // Convert to array and sort by role priority
     const sortedGroups = Array.from(groups.values()).sort((a, b) => getRolePriority(a.role) - getRolePriority(b.role))
@@ -127,7 +117,7 @@ export default function ChatUserList(): ReactElement {
   }, [allUsers, onlineUsers, userRoles])
 
   return (
-    <div className='user-render w-[230px] h-full border-l border-border px-2 py-3 overflow-y-auto'>
+    <div className='user-render w-[230px] h-full border-l border-border px-2 py-3 ml-0.5 overflow-y-auto'>
       <div className='flex flex-col gap-4'>
         {roleGroups.map(group => (
           <div key={group.role}>
@@ -154,7 +144,7 @@ export default function ChatUserList(): ReactElement {
                       width={28}
                       height={28}
                     />
-                    <div className='absolute bottom-0 right-1 h-2.5 w-2.5 rounded-full bg-green-500 border-2 border-background' />
+                    <div className='absolute bottom-0 right-1 h-3 w-3 rounded-full bg-success-500 border-2 border-border' />
                   </div>
 
                   <span className={`text-xs truncate ${getRoleStyles(group.role)}`}>{user.username}</span>

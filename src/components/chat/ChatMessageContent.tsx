@@ -1,27 +1,28 @@
 import type { UserSummary } from '@/types'
-import type {
-  AnchorHTMLAttributes,
-  BlockquoteHTMLAttributes,
-  ImgHTMLAttributes,
-  MouseEvent,
-  ReactElement,
-  ReactNode,
-} from 'react'
+import type { AnchorHTMLAttributes, ImgHTMLAttributes, MouseEvent, ReactElement } from 'react'
+
+import 'github-markdown-css/github-markdown.css'
 
 import { open } from '@tauri-apps/plugin-shell'
 
 import 'react-image-lightbox/style.css'
 
-import { Children, isValidElement, useEffect, useState } from 'react'
+import type { Components } from 'react-markdown'
+
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import Image from 'next/image'
-import { BsArrow90DegRight } from 'react-icons/bs'
 import Lightbox from 'react-image-lightbox'
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
 
 import ExtLink from '@/components/ui/ExtLink'
+
+const supabase = createClient(
+  'https://inbxfhxkrhwiybnephlq.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImluYnhmaHhrcmh3aXlibmVwaGxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3Njc5NjgsImV4cCI6MjA3NzM0Mzk2OH0.xUbDMdMUk7S2FgRZu8itWr4WsIV41TX-sNgilXiZg_Y',
+)
 
 interface ChatMessageContentProps {
   message: string
@@ -46,218 +47,203 @@ function MarkdownLink(props: AnchorHTMLAttributes<HTMLAnchorElement>): ReactElem
   )
 }
 
-const supabase = createClient(
-  'https://inbxfhxkrhwiybnephlq.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImluYnhmaHhrcmh3aXlibmVwaGxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3Njc5NjgsImV4cCI6MjA3NzM0Mzk2OH0.xUbDMdMUk7S2FgRZu8itWr4WsIV41TX-sNgilXiZg_Y',
-)
-
-const preprocessMessage = (text: string, validMentions: string[]): string => {
-  let processed = text
-  // Replace image URLs with Markdown image syntax
-  const imageUrlRegex = /(https?:\/\/(?:[\w.-]+)\/(?:[\w\-./%]+)\.(?:jpg|jpeg|png|gif|webp|svg))(?![^\s])/gi
-  processed = processed.replace(imageUrlRegex, url => `![](${url})`)
-
-  if (validMentions && validMentions.length > 0) {
-    validMentions.forEach(username => {
-      // Escape username for regex safety
-      const escapedUsername = username.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-      // Match @username with robust boundaries (start, end, whitespace, punctuation, blockquote)
-      const regex = new RegExp(`(?<=^|\\s|[>])@${escapedUsername}(?=$|\\s|[.,!?;:])`, 'g')
-      processed = processed.replace(regex, `<span class='mention-highlight'>@${username}</span>`)
-    })
-  }
-  return processed
-}
-
 // Helper function to detect if message contains only emojis
 const isEmojiOnly = (text: string): boolean => {
-  // Remove whitespace and check if remaining content is only emojis
   const trimmed = text.trim()
-  // Regex to match emojis (including modifiers and compound emojis)
   const emojiRegex = /^(\p{Emoji_Presentation}|\p{Emoji}\uFE0F|\p{Emoji_Modifier_Base}\p{Emoji_Modifier}?)+$/u
   return emojiRegex.test(trimmed)
 }
 
-// Custom blockquote renderer to inject the arrow icon and make it clickable
-const MarkdownBlockquote = (
-  props: BlockquoteHTMLAttributes<HTMLQuoteElement> & { children?: ReactNode },
-  replyToId?: string | null,
-  scrollToMessage?: (messageId: string) => Promise<void>,
-): ReactElement => {
-  // Check if any child contains ':arrow:'
-  let hasArrow = false
-  Children.forEach(props.children, child => {
-    if (typeof child === 'string' && child.includes(':arrow:')) {
-      hasArrow = true
-    }
-    if (
-      isValidElement(child) &&
-      (child.props as { children?: ReactNode }) &&
-      typeof (child.props as { children?: ReactNode }).children === 'string'
-    ) {
-      if (((child.props as { children?: ReactNode }).children as string).includes(':arrow:')) {
-        hasArrow = true
-      }
-    }
-    if (
-      isValidElement(child) &&
-      (child.props as { children?: ReactNode }) &&
-      Array.isArray((child.props as { children?: ReactNode }).children)
-    ) {
-      const childrenArr = (child.props as { children?: ReactNode }).children as unknown[]
-      if (
-        childrenArr.length > 0 &&
-        typeof childrenArr[0] === 'string' &&
-        (childrenArr[0] as string).includes(':arrow:')
-      ) {
-        hasArrow = true
-      }
-    }
-  })
-
-  // Replace ':arrow:' with the icon
-  const replaced = Children.map(props.children, child => {
-    if (typeof child === 'string') {
-      return child.replace(':arrow:', '')
-    }
-
-    if (
-      isValidElement(child) &&
-      (child.props as { children?: ReactNode }) &&
-      typeof (child.props as { children?: ReactNode }).children === 'string'
-    ) {
-      const text = (child.props as { children?: ReactNode }).children as string
-
-      if (text.startsWith(':arrow:')) {
-        return (
-          <p>
-            <BsArrow90DegRight className='inline mr-1' />
-            {text.replace(':arrow:', '')}
-          </p>
-        )
-      }
-    }
-
-    if (
-      isValidElement(child) &&
-      (child.props as { children?: ReactNode }) &&
-      Array.isArray((child.props as { children?: ReactNode }).children)
-    ) {
-      const childrenArr = (child.props as { children?: ReactNode }).children as ReactNode[]
-      if (
-        childrenArr.length > 0 &&
-        typeof childrenArr[0] === 'string' &&
-        (childrenArr[0] as string).startsWith(':arrow:')
-      ) {
-        return (
-          <p>
-            <BsArrow90DegRight className='inline mr-1' />
-            {(childrenArr[0] as string).replace(':arrow:', '')}
-            {childrenArr.slice(1) as ReactNode[]}
-          </p>
-        )
-      }
-    }
-    return child
-  })
-
-  return (
-    <blockquote
-      style={
-        hasArrow ? { paddingLeft: '2px', userSelect: 'none' } : { borderLeft: '4px solid #555559', paddingLeft: '6px' }
-      }
-      className={hasArrow && replyToId && scrollToMessage ? 'cursor-pointer hover:bg-white/5 rounded' : ''}
-      onClick={() => {
-        if (hasArrow && replyToId && scrollToMessage) {
-          scrollToMessage(replyToId)
-        }
-      }}
-    >
-      {replaced}
-    </blockquote>
-  )
+// Helper function to convert image URLs to markdown
+const convertImageUrlsToMarkdown = (text: string): string => {
+  // Match image URLs that are not already in markdown or HTML
+  const imageUrlRegex = /(?<![(\["'])(https?:\/\/[^\s<>]+\.(?:jpg|jpeg|png|gif|webp|svg|bmp|ico))(?![)\]"'>])/gi
+  return text.replace(imageUrlRegex, url => `![](${url})`)
 }
 
-export default function ChatMessageContent({
-  message,
-  userSummary,
-  replyToId,
-  scrollToMessage,
-}: ChatMessageContentProps): ReactElement {
+// Extract mention candidates more efficiently
+const extractMentionCandidates = (message: string): string[] => {
+  const candidates = new Set<string>()
+  const words = message.split(/\s+/)
+
+  for (let i = 0; i < words.length; i++) {
+    if (!words[i].startsWith('@')) continue
+
+    // Try multi-word combinations (up to 5 words)
+    for (let len = 1; len <= 5 && i + len <= words.length; len++) {
+      const candidate = words
+        .slice(i, i + len)
+        .join(' ')
+        .slice(1) // Remove @ prefix
+        .trim()
+
+      if (candidate) candidates.add(candidate)
+    }
+  }
+
+  return Array.from(candidates)
+}
+
+// Cache for username validation to avoid redundant queries
+const usernameCache = new Map<string, boolean>()
+
+export default function ChatMessageContent({ message }: ChatMessageContentProps): ReactElement {
   const [modalImg, setModalImg] = useState<string | null>(null)
   const [lightboxOpen, setLightboxOpen] = useState(false)
-  const [validMentions, setValidMentions] = useState<string[]>([])
+  const [processedMessage, setProcessedMessage] = useState(message)
 
-  // Extract all @username patterns from the message and check Supabase
+  const abortControllerRef = useRef<AbortController | null>(null)
+
+  // Memoize emoji check
+  const isEmoji = useMemo(() => isEmojiOnly(message), [message])
+
+  const handleImageClick = useCallback((src: string) => {
+    setModalImg(src)
+    setLightboxOpen(true)
+  }, [])
+
+  const handleLightboxClose = useCallback(() => {
+    setLightboxOpen(false)
+  }, [])
+
+  // Custom mention renderer
+  const MentionComponent = useCallback(
+    ({ node, ...props }: { node?: unknown; [key: string]: unknown }): ReactElement => {
+      const nodeProps = node as { properties?: { dataUser?: string } }
+      const username = nodeProps?.properties?.dataUser || (props['data-user'] as string)
+      return (
+        <span className='bg-blue-600/20 text-blue-400 px-1 rounded font-medium hover:bg-blue-600/30 transition-colors'>
+          @{username}
+        </span>
+      )
+    },
+    [],
+  )
+
+  // Custom image renderer for markdown
+  const MarkdownImage = useCallback(
+    (props: ImgHTMLAttributes<HTMLImageElement>): ReactElement => {
+      return (
+        <div className='max-w-[40%] max-h-[200px]'>
+          <Image
+            src={typeof props.src === 'string' ? props.src : ''}
+            alt={props.alt || 'image'}
+            width={400}
+            height={300}
+            className='max-w-full max-h-[200px] w-auto h-auto object-contain cursor-pointer rounded-lg my-2'
+            onClick={() => {
+              if (typeof props.src === 'string') {
+                handleImageClick(props.src)
+              }
+            }}
+          />
+        </div>
+      )
+    },
+    [handleImageClick],
+  )
+
+  // Memoize custom components to prevent recreating on every render
+  const customComponents = useMemo<Components>(
+    () => ({
+      a: MarkdownLink,
+      img: MarkdownImage,
+      mention: MentionComponent,
+    }),
+    [MarkdownImage, MentionComponent],
+  )
+
+  // Combined effect: extract, validate, and process mentions
   useEffect(() => {
-    // Split message into words and try to match all possible @mentions
-    const words = message.split(/\s+/)
-    const candidates: string[] = []
-    for (let i = 0; i < words.length; i++) {
-      if (words[i].startsWith('@')) {
-        // Try to build multi-word usernames up to 5 words (adjust as needed)
-        for (let len = 1; len <= 5 && i + len - 1 < words.length; len++) {
-          const candidate = words
-            .slice(i, i + len)
-            .join(' ')
-            .replace(/^@/, '')
-            .trim()
-          if (candidate.length > 0) candidates.push(candidate)
+    // Cancel any pending requests
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort()
+    }
+    abortControllerRef.current = new AbortController()
+    const signal = abortControllerRef.current.signal
+
+    // Convert image URLs to markdown first
+    const messageWithImages = convertImageUrlsToMarkdown(message)
+    const candidates = extractMentionCandidates(messageWithImages)
+
+    if (candidates.length === 0) {
+      setProcessedMessage(messageWithImages)
+      return
+    }
+
+    const validateAndProcessMentions = async (): Promise<void> => {
+      try {
+        // Separate cached and uncached usernames
+        const uncached = candidates.filter(c => !usernameCache.has(c))
+        const cachedValid = candidates.filter(c => usernameCache.get(c) === true)
+
+        const validMentions = [...cachedValid]
+
+        // Query only uncached usernames
+        if (uncached.length > 0) {
+          const { data, error } = await supabase.from('users').select('username').in('username', uncached)
+
+          if (signal.aborted) return
+
+          if (!error && Array.isArray(data)) {
+            const validUsernames = data.map(u => u.username)
+
+            // Update cache
+            uncached.forEach(username => {
+              const isValid = validUsernames.includes(username)
+              usernameCache.set(username, isValid)
+              if (isValid) validMentions.push(username)
+            })
+          } else {
+            // Cache as invalid on error
+            uncached.forEach(username => usernameCache.set(username, false))
+          }
+        }
+
+        if (signal.aborted) return
+
+        // Process message with valid mentions (longest first to avoid partial replacements)
+        const sortedMentions = validMentions.sort((a, b) => b.length - a.length)
+        let processed = messageWithImages
+
+        sortedMentions.forEach(mention => {
+          const escapedMention = mention.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+          const regex = new RegExp(`@${escapedMention}\\b`, 'g')
+          processed = processed.replace(regex, `<mention data-user="${mention}">@${mention}</mention>`)
+        })
+
+        if (!signal.aborted) {
+          setProcessedMessage(processed)
+        }
+      } catch (error) {
+        if (!signal.aborted) {
+          console.error('Error processing mentions:', error)
+          setProcessedMessage(messageWithImages)
         }
       }
     }
-    if (candidates.length === 0) {
-      setValidMentions([])
-      return
-    }
-    // Query Supabase for these usernames
-    const fetchMentions = async (): Promise<void> => {
-      const { data, error } = await supabase.from('users').select('username').in('username', candidates)
-      if (!error && Array.isArray(data)) {
-        setValidMentions(data.map(u => u.username))
-      } else {
-        setValidMentions([])
+
+    validateAndProcessMentions()
+
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort()
       }
     }
-    fetchMentions()
   }, [message])
 
-  // Custom image renderer for markdown
-  const MarkdownImage = (props: ImgHTMLAttributes<HTMLImageElement>): ReactElement => {
-    return (
-      <Image
-        src={typeof props.src === 'string' ? props.src : ''}
-        alt={props.alt || 'image'}
-        width={200}
-        height={200}
-        className='max-w-[200px] h-[200px] object-cover cursor-pointer rounded-lg my-2'
-        onClick={() => {
-          if (typeof props.src === 'string') {
-            setModalImg(props.src)
-            setLightboxOpen(true)
-          }
-        }}
-      />
-    )
-  }
-
   return (
-    <div className={isEmojiOnly(message) ? 'emoji-only-message' : ''}>
-      <ReactMarkdown
-        rehypePlugins={[rehypeRaw]}
-        remarkPlugins={[remarkGfm]}
-        components={{
-          a: MarkdownLink,
-          img: MarkdownImage,
-          blockquote: props => MarkdownBlockquote(props, replyToId, scrollToMessage),
-        }}
-      >
-        {preprocessMessage(message.trim(), validMentions)}
-      </ReactMarkdown>
+    <div className={isEmoji ? 'emoji-only-message' : ''}>
+      <div className='markdown-body'>
+        <ReactMarkdown rehypePlugins={[rehypeRaw]} remarkPlugins={[remarkGfm]} components={customComponents}>
+          {processedMessage}
+        </ReactMarkdown>
+      </div>
+
       {lightboxOpen && modalImg && (
         <Lightbox
           mainSrc={modalImg}
-          onCloseRequest={() => setLightboxOpen(false)}
+          onCloseRequest={handleLightboxClose}
           imagePadding={100}
           imageTitle={
             <ExtLink href={modalImg} className='text-sm p-4'>

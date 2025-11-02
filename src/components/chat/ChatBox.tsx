@@ -3,15 +3,17 @@ import type { UserSummary } from '@/types'
 import type { Dispatch, ReactElement, SetStateAction } from 'react'
 
 import { cn } from '@heroui/react'
-import { useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 
 import ChatBanned from '@/components/chat/ChatBanned'
 import ChatHeader from '@/components/chat/ChatHeader'
 import ChatInput from '@/components/chat/ChatInput'
 import ChatMaintenance from '@/components/chat/ChatMaintenance'
 import ChatMessages from '@/components/chat/ChatMessages'
+import ChatUserList from '@/components/chat/ChatUserList'
 import { useStateContext } from '@/components/contexts/StateContext'
 import { useSupabase } from '@/components/contexts/SupabaseContext'
+import { useMessageReactions } from '@/hooks/chat/useMessageReactions'
 import { useMessages } from '@/hooks/chat/useMessages'
 import { usePinnedMessage } from '@/hooks/chat/usePinnedMessage'
 import { useScrollToMessage } from '@/hooks/chat/useScrollToMessage'
@@ -65,10 +67,21 @@ export default function ChatBox(): ReactElement {
     pagination,
   })
 
+  const { handleAddReaction, handleRemoveReaction } = useMessageReactions({
+    userSteamId: userSummary?.steamId || '',
+  })
+
   const [replyToMessage, setReplyToMessage] = useState<ChatMessageType | null>(null)
+
+  const scrollToBottom = useCallback((): void => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'auto' })
+  }, [messagesEndRef])
 
   const handleReplyToMessage = (msg: ChatMessageType): void => {
     setReplyToMessage(msg)
+    setTimeout(() => {
+      scrollToBottom()
+    }, 0)
   }
 
   const getRoleStyles = (role: string): string => {
@@ -149,7 +162,7 @@ export default function ChatBox(): ReactElement {
     return (
       <div
         className={cn(
-          'flex flex-col h-screen ease-in-out',
+          'flex flex-col h-screen ease-in-out bg-[#181a1d]/80',
           sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]',
         )}
         style={{
@@ -159,11 +172,41 @@ export default function ChatBox(): ReactElement {
       >
         <ChatHeader />
         {/* Pinned message at top */}
-        {pinnedMessage && (
-          <div className='mb-0'>
+        <div className='relative flex flex-1 overflow-hidden'>
+          <div className='flex flex-col flex-1'>
+            {pinnedMessage && (
+              <div className='mb-0'>
+                <ChatMessages
+                  loading={false}
+                  groupedMessages={{ Pinned: [pinnedMessage] }}
+                  userSummary={userSummary}
+                  messagesEndRef={messagesEndRef}
+                  messagesContainerRef={messagesContainerRef}
+                  handleDeleteMessage={handleDeleteMessage}
+                  handleEditMessage={handleEditMessage}
+                  getColorFromUsername={getColorFromUsername}
+                  userRoles={userRoles}
+                  getRoleStyles={getRoleStyles}
+                  editingMessageId={editingMessageId}
+                  setEditingMessageId={setEditingMessageId}
+                  editedMessage={editedMessage}
+                  setEditedMessage={setEditedMessage}
+                  inputRef={inputRef}
+                  pinnedMessageId={pinnedMessageId}
+                  handlePinMessage={handlePinMessage}
+                  handleUnpinMessage={handleUnpinMessage}
+                  isAdmin={userRoles[String(userSummary?.steamId)] === 'admin'}
+                  onReply={handleReplyToMessage}
+                  scrollToMessage={scrollToMessage}
+                  onAddReaction={handleAddReaction}
+                  onRemoveReaction={handleRemoveReaction}
+                />
+              </div>
+            )}
+
             <ChatMessages
-              loading={false}
-              groupedMessages={{ Pinned: [pinnedMessage] }}
+              loading={pagination.offset === 0 ? loading : false}
+              groupedMessages={groupedMessages}
               userSummary={userSummary}
               messagesEndRef={messagesEndRef}
               messagesContainerRef={messagesContainerRef}
@@ -183,41 +226,21 @@ export default function ChatBox(): ReactElement {
               isAdmin={userRoles[String(userSummary?.steamId)] === 'admin'}
               onReply={handleReplyToMessage}
               scrollToMessage={scrollToMessage}
+              onAddReaction={handleAddReaction}
+              onRemoveReaction={handleRemoveReaction}
+            />
+
+            <ChatInput
+              inputRef={inputRef}
+              onSendMessage={msg => handleSendMessage(msg, replyToMessage?.id || null)}
+              handleEditLastMessage={handleEditLastMessage}
+              replyToMessage={replyToMessage}
+              clearReplyToMessage={() => setReplyToMessage(null)}
             />
           </div>
-        )}
 
-        <ChatMessages
-          loading={pagination.offset === 0 ? loading : false}
-          groupedMessages={groupedMessages}
-          userSummary={userSummary}
-          messagesEndRef={messagesEndRef}
-          messagesContainerRef={messagesContainerRef}
-          handleDeleteMessage={handleDeleteMessage}
-          handleEditMessage={handleEditMessage}
-          getColorFromUsername={getColorFromUsername}
-          userRoles={userRoles}
-          getRoleStyles={getRoleStyles}
-          editingMessageId={editingMessageId}
-          setEditingMessageId={setEditingMessageId}
-          editedMessage={editedMessage}
-          setEditedMessage={setEditedMessage}
-          inputRef={inputRef}
-          pinnedMessageId={pinnedMessageId}
-          handlePinMessage={handlePinMessage}
-          handleUnpinMessage={handleUnpinMessage}
-          isAdmin={userRoles[String(userSummary?.steamId)] === 'admin'}
-          onReply={handleReplyToMessage}
-          scrollToMessage={scrollToMessage}
-        />
-
-        <ChatInput
-          inputRef={inputRef}
-          onSendMessage={msg => handleSendMessage(msg, replyToMessage?.id || null)}
-          handleEditLastMessage={handleEditLastMessage}
-          replyToMessage={replyToMessage}
-          clearReplyToMessage={() => setReplyToMessage(null)}
-        />
+          <ChatUserList />
+        </div>
       </div>
     )
   }

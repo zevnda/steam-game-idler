@@ -53,7 +53,29 @@ export function useMessagePagination({
             return
           }
           if (data && data.length > 0) {
-            const olderMessages = data.reverse() as ChatMessageType[]
+            let olderMessages = data.reverse() as ChatMessageType[]
+
+            // Fetch reply data for messages that have reply_to_id
+            const messageIds = olderMessages.filter(m => m.reply_to_id).map(m => m.reply_to_id)
+            if (messageIds.length > 0) {
+              const { data: replyMessages, error: replyError } = await supabase
+                .from('messages')
+                .select('*')
+                .in('id', messageIds)
+
+              if (!replyError && replyMessages) {
+                // Map reply messages to their IDs
+                const replyMap = new Map(replyMessages.map(msg => [msg.id, msg]))
+                // Attach reply data to messages
+                olderMessages = olderMessages.map(msg => {
+                  if (msg.reply_to_id && replyMap.has(msg.reply_to_id)) {
+                    return { ...msg, reply_to: replyMap.get(msg.reply_to_id) as ChatMessageType }
+                  }
+                  return msg
+                })
+              }
+            }
+
             setMessages(current => {
               const currentIds = new Set(current.map(m => m.id))
               const uniqueOlder = olderMessages.filter((m: ChatMessageType) => !currentIds.has(m.id))
@@ -61,18 +83,22 @@ export function useMessagePagination({
             })
             setPagination(prev => ({ ...prev, offset: newOffset }))
             setHasMore(data.length === pagination.limit)
-            setTimeout(() => {
-              // After new messages are loaded, scroll to the previous oldest message
-              if (oldestMessageId) {
-                const oldestMsgElem = container.querySelector(`[data-message-id="${oldestMessageId}"]`)
-                if (oldestMsgElem && oldestMsgElem instanceof HTMLElement) {
-                  const top = oldestMsgElem.offsetTop
-                  const offset = 50
-                  container.scrollTop = top - offset
-                }
-              }
-            }, 0)
             setShouldScrollToBottom(false)
+
+            // Use requestAnimationFrame to ensure DOM is fully updated before restoring scroll
+            requestAnimationFrame(() => {
+              requestAnimationFrame(() => {
+                // After new messages are loaded, scroll to the previous oldest message
+                if (oldestMessageId) {
+                  const oldestMsgElem = container.querySelector(`[data-message-id="${oldestMessageId}"]`)
+                  if (oldestMsgElem && oldestMsgElem instanceof HTMLElement) {
+                    const top = oldestMsgElem.offsetTop
+                    const offset = 50
+                    container.scrollTop = top - offset
+                  }
+                }
+              })
+            })
           }
         }
       } catch (error) {
@@ -101,7 +127,29 @@ export function useMessagePagination({
           setLoading(false)
           return
         } else {
-          const newMessages = ((data || []) as ChatMessageType[]).reverse()
+          let newMessages = ((data || []) as ChatMessageType[]).reverse()
+
+          // Fetch reply data for messages that have reply_to_id
+          const messageIds = newMessages.filter(m => m.reply_to_id).map(m => m.reply_to_id)
+          if (messageIds.length > 0) {
+            const { data: replyMessages, error: replyError } = await supabase
+              .from('messages')
+              .select('*')
+              .in('id', messageIds)
+
+            if (!replyError && replyMessages) {
+              // Map reply messages to their IDs
+              const replyMap = new Map(replyMessages.map(msg => [msg.id, msg]))
+              // Attach reply data to messages
+              newMessages = newMessages.map(msg => {
+                if (msg.reply_to_id && replyMap.has(msg.reply_to_id)) {
+                  return { ...msg, reply_to: replyMap.get(msg.reply_to_id) as ChatMessageType }
+                }
+                return msg
+              })
+            }
+          }
+
           setMessages(current => {
             if (pagination.offset === 0) {
               setShouldScrollToBottom(true)

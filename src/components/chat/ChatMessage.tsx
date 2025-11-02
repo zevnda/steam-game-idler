@@ -8,6 +8,7 @@ import ChatAvatar from '@/components/chat/ChatAvatar'
 import ChatEditControls from '@/components/chat/ChatEditControls'
 import ChatMessageActions from '@/components/chat/ChatMessageActions'
 import ChatMessageContent from '@/components/chat/ChatMessageContent'
+import ChatMessageReactions from '@/components/chat/ChatMessageReactions'
 import ChatRoleBadge from '@/components/chat/ChatRoleBadge'
 import ExtLink from '@/components/ui/ExtLink'
 import { logEvent } from '@/utils/tasks'
@@ -35,6 +36,9 @@ interface ChatMessageProps {
   isAdmin?: boolean
   onReply?: () => void
   scrollToMessage?: (messageId: string) => Promise<void>
+  isShiftPressed?: boolean
+  onAddReaction?: (messageId: string, emoji: string) => void
+  onRemoveReaction?: (messageId: string, emoji: string) => void
 }
 
 export interface Message {
@@ -45,6 +49,12 @@ export interface Message {
   created_at: string
   avatar_url?: string
   reply_to_id?: string | null
+  reply_to?: Message | null
+  reactions?: Array<{
+    emoji: string
+    user_ids: string[]
+    count: number
+  }>
 }
 
 const supabase = createClient(
@@ -75,12 +85,17 @@ export default function ChatMessage({
   isAdmin,
   onReply,
   scrollToMessage,
+  onAddReaction,
+  onRemoveReaction,
 }: ChatMessageProps): ReactElement {
+  // Use pre-fetched reply data or fallback to searching in msgs array
+  const replyToMessage = msg.reply_to || (msg.reply_to_id ? msgs.find(m => m.id === msg.reply_to_id) : null)
+
   const avatarColor = getColorFromUsername(msg.username)
 
-  // Show avatar if first message, or previous message is from a different user, or more than 3 minute has passed since previous message
+  // Show avatar if first message, or previous message is from a different user, or more than 3 minute has passed since previous message, or if message is a reply
   let showAvatar = true
-  if (idx > 0) {
+  if (idx > 0 && !msg.reply_to_id) {
     const prevMsg = msgs[idx - 1]
     const prevTime = new Date(prevMsg.created_at).getTime()
     const currTime = new Date(msg.created_at).getTime()
@@ -90,12 +105,15 @@ export default function ChatMessage({
     }
   }
 
-  // End group if next message is from a different user or more than 3 minute apart
+  // End group if next message is from a different user or more than 3 minute apart or if next message is a reply
   const isLastFromUser =
-    idx === msgs.length - 1 ||
-    msgs[idx + 1]?.user_id !== msg.user_id ||
-    (msgs[idx + 1] && new Date(msgs[idx + 1].created_at).getTime() - new Date(msg.created_at).getTime() > 3 * 60 * 1000)
-  const currentRole = userRoles[msg.user_id] ?? 'user'
+    idx < msgs.length - 1 &&
+    (msgs[idx + 1]?.user_id !== msg.user_id ||
+      msgs[idx + 1]?.reply_to_id ||
+      (msgs[idx + 1] &&
+        new Date(msgs[idx + 1].created_at).getTime() - new Date(msg.created_at).getTime() > 3 * 60 * 1000))
+
+  const currentRole = userRoles[msg.user_id] || 'user'
 
   // Ban/Unban user handler
   const handleBanUser = async (): Promise<void> => {
@@ -111,7 +129,7 @@ export default function ChatMessage({
         logEvent(`[Error] in handleBanUser (fetch): ${fetchError.message}`)
         return
       }
-      const currentRole = userData?.role ?? 'user'
+      const currentRole = userData?.role || 'user'
       const newRole = currentRole === 'banned' ? 'user' : 'banned'
       const { error: updateError } = await supabase.from('users').update({ role: newRole }).eq('user_id', msg.user_id)
       if (updateError) {
@@ -133,6 +151,10 @@ export default function ChatMessage({
     : null
   const isMentioned = mentionRegex ? mentionRegex.test(msg.message) : false
 
+  // Check if message is replying to us
+  const isReplyingToUs =
+    userSummary && msg.reply_to_id ? msgs.find(m => m.id === msg.reply_to_id)?.user_id === userSummary.steamId : false
+
   return (
     <div
       key={msg.id}
@@ -140,7 +162,9 @@ export default function ChatMessage({
       className={cn(
         'group px-4 py-0 -mx-4 transition-colors duration-75 flex relative',
         isLastFromUser && 'mb-3',
-        isMentioned ? 'bg-blue-900/30 border-l-2 border-blue-400 hover:bg-blue-900/40' : 'hover:bg-white/3',
+        isMentioned || isReplyingToUs
+          ? 'bg-blue-900/15 border-l-2 border-blue-400 hover:bg-blue-900/25'
+          : 'hover:bg-white/3',
       )}
     >
       <div className='flex gap-4 flex-1'>
@@ -156,6 +180,21 @@ export default function ChatMessage({
         )}
 
         <div className='flex-1 min-w-0'>
+          {/* Reply preview */}
+          {replyToMessage && (
+            <div
+              className='flex items-center gap-1 -mb-1.5 cursor-pointer hover:opacity-80 transition-opacity'
+              onClick={() => scrollToMessage?.(msg.reply_to_id!)}
+            >
+              <div className='w-6 h-2 border-l-1 border-t-1 border-[#4e5058] rounded-tl-md -mb-2' />
+              <span className='text-[10px] text-[#b5bac1] font-medium'>{replyToMessage.username}</span>
+              <span className='text-[10px] text-[#949ba4] truncate'>
+                {replyToMessage.message.substring(0, 50)}
+                {replyToMessage.message.length > 50 ? '...' : ''}
+              </span>
+            </div>
+          )}
+
           {showAvatar && (
             <div className='flex items-baseline gap-2'>
               <ExtLink href={`https://steamcommunity.com/profiles/${msg.user_id}`}>
@@ -188,7 +227,7 @@ export default function ChatMessage({
               </Tooltip>
             </div>
           )}
-          <div className='chat-message text-[#dbdee1] break-words text-xs w-fit leading-[1.375rem]'>
+          <div className='chat-message text-[#dbdee1] break-words text-xs w-full leading-[1.375rem]'>
             {editingMessageId === msg.id ? (
               <ChatEditControls
                 isEditing={true}
@@ -214,6 +253,19 @@ export default function ChatMessage({
               />
             )}
           </div>
+
+          {/* Message Reactions */}
+          {msg.reactions && msg.reactions.length > 0 && onAddReaction && onRemoveReaction && userSummary?.steamId && (
+            <div className={msg.reactions && msg.reactions.length > 0 ? '' : 'opacity-0 group-hover:opacity-100'}>
+              <ChatMessageReactions
+                messageId={msg.id}
+                reactions={msg.reactions || []}
+                userSteamId={userSummary.steamId}
+                onAddReaction={onAddReaction}
+                onRemoveReaction={onRemoveReaction}
+              />
+            </div>
+          )}
         </div>
         <ChatMessageActions
           onEdit={
@@ -233,6 +285,7 @@ export default function ChatMessage({
           isAdmin={isAdmin}
           onReply={onReply}
           onBan={isAdmin ? handleBanUser : undefined}
+          onAddReaction={onAddReaction ? (emoji: string) => onAddReaction(msg.id, emoji) : undefined}
         />
       </div>
     </div>

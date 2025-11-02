@@ -7,6 +7,12 @@ import { createClient } from '@supabase/supabase-js'
 
 import { logEvent, playMentionBeep } from '@/utils/tasks'
 
+export interface MessageReaction {
+  emoji: string
+  user_ids: string[]
+  count: number
+}
+
 export interface ChatMessageType {
   id: string
   user_id: string
@@ -15,6 +21,8 @@ export interface ChatMessageType {
   created_at: string
   avatar_url?: string
   reply_to_id?: string | null
+  reply_to?: ChatMessageType | null
+  reactions?: MessageReaction[]
 }
 
 export interface ChatUser {
@@ -329,9 +337,28 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
         fetchUserRoles()
       })
       // 2. Listen for message changes (from useMessages)
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, async payload => {
         try {
           const newMsg = payload.new as ChatMessageType
+
+          // If the message has a reply_to_id, fetch the full reply data
+          if (newMsg.reply_to_id) {
+            try {
+              const { data: replyToMsg, error: replyError } = await supabase
+                .from('messages')
+                .select('*')
+                .eq('id', newMsg.reply_to_id)
+                .single()
+
+              if (!replyError && replyToMsg) {
+                newMsg.reply_to = replyToMsg as ChatMessageType
+              }
+            } catch (error) {
+              console.error('Error fetching reply data for new message:', error)
+              logEvent(`[Error] in fetching reply data: ${error}`)
+            }
+          }
+
           setMessages(current => {
             // Filter out temp messages with same user_id and message content
             const filtered = current.filter(
@@ -345,9 +372,30 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
             )
             return [...filtered, newMsg]
           })
-          // Play mention beep only if the new message mentions the current user
+
+          // Play mention beep if:
+          // 1. The new message mentions the current user by username
           if (userSummary?.personaName && newMsg.message.includes(`@${userSummary.personaName}`)) {
             playMentionBeep()
+            return
+          }
+
+          // 2. The new message is a reply to one of the current user's messages
+          if (newMsg.reply_to_id && steamId) {
+            try {
+              const { data: repliedToMessage, error } = await supabase
+                .from('messages')
+                .select('user_id')
+                .eq('id', newMsg.reply_to_id)
+                .single()
+
+              if (!error && repliedToMessage?.user_id === steamId) {
+                playMentionBeep()
+              }
+            } catch (error) {
+              console.error('Error checking reply notification:', error)
+              logEvent(`[Error] in reply notification check: ${error}`)
+            }
           }
         } catch (error) {
           console.error('Error handling INSERT message:', error)
