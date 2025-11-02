@@ -134,9 +134,9 @@ export default function GeneralSettings(): ReactElement {
           </div>
           <Slider
             size='md'
-            step={0.05}
+            step={0.15}
             minValue={0}
-            maxValue={1}
+            maxValue={3}
             defaultValue={userSettings?.general?.chatSounds || 1}
             hideValue
             className='mt-2 w-[350px]'
@@ -147,7 +147,7 @@ export default function GeneralSettings(): ReactElement {
             }}
             onChangeEnd={e => handleSliderChange(e, userSummary, setUserSettings)}
             onChange={e => {
-              const getPercent = (val: number): number => Math.round(val * 100)
+              const getPercent = (val: number): number => Math.round((val / 3) * 100)
               if (Array.isArray(e)) {
                 setSliderLabel(
                   t('settings.general.chatSounds.description', {
