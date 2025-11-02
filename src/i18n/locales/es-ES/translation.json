@@ -121,6 +121,7 @@
   "achievementManager.statistics.flags": "Banderas",
   "chat.title": "Chatbox",
   "chat.inputPlaceholder": "Enviar un mensaje...",
+  "chat.addTextToImage": "Añadir un mensaje (opcional)...",
   "chat.messageAction.delete": "Eliminar este mensaje",
   "chat.messageAction.ban": "banear/desbanear a este usuario",
   "chat.messageAction.modal": "¿Estás seguro de que quieres <1>{{action}}</1> ¿",

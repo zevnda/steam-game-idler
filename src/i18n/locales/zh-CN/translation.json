@@ -121,6 +121,7 @@
   "achievementManager.statistics.flags": "标记",
   "chat.title": "聊天框",
   "chat.inputPlaceholder": "发送消息……",
+  "chat.addTextToImage": "添加留言（可选）……",
   "chat.messageAction.delete": "删除此消息",
   "chat.messageAction.ban": "封禁/解封此用户",
   "chat.messageAction.modal": "你确定要<1>{{action}}</1> ？",

@@ -121,6 +121,7 @@
   "achievementManager.statistics.flags": "Прапори",
   "chat.title": "Чат",
   "chat.inputPlaceholder": "Надіслати повідомлення...",
+  "chat.addTextToImage": "Додати повідомлення (необов'язково)...",
   "chat.messageAction.delete": "видалити це повідомлення",
   "chat.messageAction.ban": "забанити/розбанити цього користувача",
   "chat.messageAction.modal": "Ви впевнені, що хочете <1>{{action}}</1> ?",

@@ -121,6 +121,7 @@
   "achievementManager.statistics.flags": "플래그",
   "chat.title": "채팅창",
   "chat.inputPlaceholder": "메시지를 보내세요...",
+  "chat.addTextToImage": "메시지를 추가하세요(선택 사항)...",
   "chat.messageAction.delete": "이 메시지를 삭제하세요",
   "chat.messageAction.ban": "이 사용자 금지/금지 해제",
   "chat.messageAction.modal": "<1>{{action}}을(를) 실행하시겠습니까?</1> ?",

@@ -121,6 +121,7 @@
   "achievementManager.statistics.flags": "Sinalizações",
   "chat.title": "Caixa de bate-papo",
   "chat.inputPlaceholder": "Enviar uma mensagem...",
+  "chat.addTextToImage": "Adicione uma mensagem (opcional)...",
   "chat.messageAction.delete": "apagar esta mensagem",
   "chat.messageAction.ban": "banir/desbanir este usuário",
   "chat.messageAction.modal": "Tem certeza que deseja <1>{{action}}</1> ?",

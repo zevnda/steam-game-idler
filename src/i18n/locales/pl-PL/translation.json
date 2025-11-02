@@ -121,6 +121,7 @@
   "achievementManager.statistics.flags": "Flagi",
   "chat.title": "Okno czatu",
   "chat.inputPlaceholder": "Wyślij wiadomość...",
+  "chat.addTextToImage": "Dodaj wiadomość (opcjonalnie)...",
   "chat.messageAction.delete": "usuń tę wiadomość",
   "chat.messageAction.ban": "zablokuj/odblokuj tego użytkownika",
   "chat.messageAction.modal": "Czy na pewno chcesz <1>{{action}}</1> ?",

@@ -121,6 +121,7 @@
   "achievementManager.statistics.flags": "Vlajky",
   "chat.title": "Chatovací schránka",
   "chat.inputPlaceholder": "Poslat zprávu...",
+  "chat.addTextToImage": "Přidat zprávu (volitelné)...",
   "chat.messageAction.delete": "smazat tuto zprávu",
   "chat.messageAction.ban": "zablokovat/zrušit zablokování tohoto uživatele",
   "chat.messageAction.modal": "Jste si jistý/á, že chcete <1>{{action}}</1> ?",

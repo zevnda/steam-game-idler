@@ -121,6 +121,7 @@
   "achievementManager.statistics.flags": "Jelzők",
   "chat.title": "Csevegőablak",
   "chat.inputPlaceholder": "Küldj üzenetet...",
+  "chat.addTextToImage": "Üzenet hozzáadása (opcionális)...",
   "chat.messageAction.delete": "törölje ezt az üzenetet",
   "chat.messageAction.ban": "kitiltás/feloldás a felhasználóról",
   "chat.messageAction.modal": "Biztosan ezt szeretnéd <1>{{action}}</1> ?",

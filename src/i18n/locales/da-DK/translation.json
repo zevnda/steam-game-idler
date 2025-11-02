@@ -121,6 +121,7 @@
   "achievementManager.statistics.flags": "Flag",
   "chat.title": "Chatboks",
   "chat.inputPlaceholder": "Send en besked...",
+  "chat.addTextToImage": "Tilføj en besked (valgfrit)...",
   "chat.messageAction.delete": "slet denne besked",
   "chat.messageAction.ban": "udelukke/fjern udelukkelse af denne bruger",
   "chat.messageAction.modal": "Er du sikker på, at du vil <1>{{action}}</1> ?",

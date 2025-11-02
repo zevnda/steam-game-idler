@@ -121,6 +121,7 @@
   "achievementManager.statistics.flags": "Liput",
   "chat.title": "Keskusteluikkuna",
   "chat.inputPlaceholder": "Lähetä viesti...",
+  "chat.addTextToImage": "Lisää viesti (valinnainen)...",
   "chat.messageAction.delete": "poista tämä viesti",
   "chat.messageAction.ban": "estää/poistaa käyttäjän esto",
   "chat.messageAction.modal": "Oletko varma, että haluat <1>{{action}}</1> ?",

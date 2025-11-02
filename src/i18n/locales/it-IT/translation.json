@@ -121,6 +121,7 @@
   "achievementManager.statistics.flags": "Segnali",
   "chat.title": "Chatbox",
   "chat.inputPlaceholder": "Invia un messaggio...",
+  "chat.addTextToImage": "Aggiungi un messaggio (facoltativo)...",
   "chat.messageAction.delete": "elimina questo messaggio",
   "chat.messageAction.ban": "banna/sbanna questo utente",
   "chat.messageAction.modal": "Sei sicuro di voler <1>{{action}}</1> ?",

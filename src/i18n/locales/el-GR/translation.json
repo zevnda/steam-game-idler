@@ -121,6 +121,7 @@
   "achievementManager.statistics.flags": "Σημαίες",
   "chat.title": "Κουτί συνομιλίας",
   "chat.inputPlaceholder": "Στείλτε ένα μήνυμα...",
+  "chat.addTextToImage": "Προσθήκη μηνύματος (προαιρετικό)...",
   "chat.messageAction.delete": "διαγράψτε αυτό το μήνυμα",
   "chat.messageAction.ban": "αποκλεισμός/κατάργηση αποκλεισμού αυτού του χρήστη",
   "chat.messageAction.modal": "Είστε σίγουροι ότι θέλετε να <1>{{action}}</1> ;",

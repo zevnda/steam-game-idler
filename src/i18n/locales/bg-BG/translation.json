@@ -121,6 +121,7 @@
   "achievementManager.statistics.flags": "Флагове",
   "chat.title": "Чатбокс",
   "chat.inputPlaceholder": "Изпрати съобщение...",
+  "chat.addTextToImage": "Добавете съобщение (по избор)...",
   "chat.messageAction.delete": "изтрий това съобщение",
   "chat.messageAction.ban": "забрана/отмяна на забрана на този потребител",
   "chat.messageAction.modal": "Сигурни ли сте, че искате <1>{{action}}</1> ?",

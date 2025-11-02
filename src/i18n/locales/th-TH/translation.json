@@ -121,6 +121,7 @@
   "achievementManager.statistics.flags": "ธง",
   "chat.title": "แชทบ็อกซ์",
   "chat.inputPlaceholder": "ส่งข้อความ...",
+  "chat.addTextToImage": "เพิ่มข้อความ (ไม่บังคับ)...",
   "chat.messageAction.delete": "ลบข้อความนี้",
   "chat.messageAction.ban": "แบน/ยกเลิกการแบนผู้ใช้รายนี้",
   "chat.messageAction.modal": "คุณแน่ใจหรือไม่ว่าต้องการ <1>{{action}}</1> -",
