@@ -2,7 +2,6 @@ import type { UserSummary } from '@/types'
 import type { ReactElement, RefObject } from 'react'
 
 import { cn, Tooltip } from '@heroui/react'
-import { useEffect, useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
 
 import ChatAvatar from '@/components/chat/ChatAvatar'
@@ -46,6 +45,7 @@ export interface Message {
   created_at: string
   avatar_url?: string
   reply_to_id?: string | null
+  reply_to?: Message | null
 }
 
 const supabase = createClient(
@@ -77,32 +77,10 @@ export default function ChatMessage({
   onReply,
   scrollToMessage,
 }: ChatMessageProps): ReactElement {
-  const [replyToMessage, setReplyToMessage] = useState<Message | null>(null)
+  // Use pre-fetched reply data or fallback to searching in msgs array
+  const replyToMessage = msg.reply_to || (msg.reply_to_id ? msgs.find(m => m.id === msg.reply_to_id) : null)
 
   const avatarColor = getColorFromUsername(msg.username)
-
-  // Fetch reply-to message if exists
-  useEffect(() => {
-    if (msg.reply_to_id) {
-      // First check if message is in current msgs array
-      const localMsg = msgs.find(m => m.id === msg.reply_to_id)
-      if (localMsg) {
-        setReplyToMessage(localMsg)
-      } else {
-        // Fetch from database if not in current view
-        const fetchReply = async (): Promise<void> => {
-          try {
-            const { data } = await supabase.from('messages').select('*').eq('id', msg.reply_to_id).single()
-            if (data) setReplyToMessage(data as Message)
-          } finally {
-          }
-        }
-        fetchReply()
-      }
-    } else {
-      setReplyToMessage(null)
-    }
-  }, [msg.reply_to_id, msgs])
 
   // Show avatar if first message, or previous message is from a different user, or more than 3 minute has passed since previous message, or if message is a reply
   let showAvatar = true

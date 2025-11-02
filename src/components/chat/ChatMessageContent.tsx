@@ -155,6 +155,7 @@ export default function ChatMessageContent({ message }: ChatMessageContentProps)
       >
         {preprocessMessage(message.trim(), validMentions)}
       </ReactMarkdown>
+
       {lightboxOpen && modalImg && (
         <Lightbox
           mainSrc={modalImg}
