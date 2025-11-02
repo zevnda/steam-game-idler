@@ -30,8 +30,6 @@ import SearchBar from '@/components/ui/SearchBar'
 import useSideBar from '@/hooks/ui/useSideBar'
 
 export default function SideBar(): ReactElement {
-  // (All context and state hooks are declared below, only once)
-
   const { t } = useTranslation()
   const [showSearchModal, setShowSearchModal] = useState(false)
   const { idleGamesList } = useIdleContext()
