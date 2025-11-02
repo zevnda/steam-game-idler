@@ -54,6 +54,13 @@ const isEmojiOnly = (text: string): boolean => {
   return emojiRegex.test(trimmed)
 }
 
+// Helper function to convert image URLs to markdown
+const convertImageUrlsToMarkdown = (text: string): string => {
+  // Match image URLs that are not already in markdown or HTML
+  const imageUrlRegex = /(?<![(\["'])(https?:\/\/[^\s<>]+\.(?:jpg|jpeg|png|gif|webp|svg|bmp|ico))(?![)\]"'>])/gi
+  return text.replace(imageUrlRegex, url => `![](${url})`)
+}
+
 // Extract mention candidates more efficiently
 const extractMentionCandidates = (message: string): string[] => {
   const candidates = new Set<string>()
@@ -117,18 +124,20 @@ export default function ChatMessageContent({ message }: ChatMessageContentProps)
   const MarkdownImage = useCallback(
     (props: ImgHTMLAttributes<HTMLImageElement>): ReactElement => {
       return (
-        <Image
-          src={typeof props.src === 'string' ? props.src : ''}
-          alt={props.alt || 'image'}
-          width={200}
-          height={200}
-          className='max-w-[200px] h-[200px] object-cover cursor-pointer rounded-lg my-2'
-          onClick={() => {
-            if (typeof props.src === 'string') {
-              handleImageClick(props.src)
-            }
-          }}
-        />
+        <div className='max-w-[40%] max-h-[200px]'>
+          <Image
+            src={typeof props.src === 'string' ? props.src : ''}
+            alt={props.alt || 'image'}
+            width={400}
+            height={300}
+            className='max-w-full max-h-[200px] w-auto h-auto object-contain cursor-pointer rounded-lg my-2'
+            onClick={() => {
+              if (typeof props.src === 'string') {
+                handleImageClick(props.src)
+              }
+            }}
+          />
+        </div>
       )
     },
     [handleImageClick],
@@ -153,10 +162,12 @@ export default function ChatMessageContent({ message }: ChatMessageContentProps)
     abortControllerRef.current = new AbortController()
     const signal = abortControllerRef.current.signal
 
-    const candidates = extractMentionCandidates(message)
+    // Convert image URLs to markdown first
+    const messageWithImages = convertImageUrlsToMarkdown(message)
+    const candidates = extractMentionCandidates(messageWithImages)
 
     if (candidates.length === 0) {
-      setProcessedMessage(message)
+      setProcessedMessage(messageWithImages)
       return
     }
 
@@ -193,7 +204,7 @@ export default function ChatMessageContent({ message }: ChatMessageContentProps)
 
         // Process message with valid mentions (longest first to avoid partial replacements)
         const sortedMentions = validMentions.sort((a, b) => b.length - a.length)
-        let processed = message
+        let processed = messageWithImages
 
         sortedMentions.forEach(mention => {
           const escapedMention = mention.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
@@ -207,7 +218,7 @@ export default function ChatMessageContent({ message }: ChatMessageContentProps)
       } catch (error) {
         if (!signal.aborted) {
           console.error('Error processing mentions:', error)
-          setProcessedMessage(message)
+          setProcessedMessage(messageWithImages)
         }
       }
     }

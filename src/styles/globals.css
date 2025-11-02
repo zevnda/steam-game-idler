@@ -151,9 +151,20 @@ svg {
   color: #476bf8ff;
 }
 
-.chat-message img {
-  max-height: 200px;
+/* .chat-message img {
+  display: inline-block;
+  max-width: 400px;
+  max-height: 300px;
   width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+} */
+
+.chat-message img:hover {
+  opacity: 0.9;
 }
 
 .chat-message p {
