@@ -1,7 +1,7 @@
 import type { ReactElement, RefObject } from 'react'
 
 import { Button, cn, Textarea } from '@heroui/react'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import emojiData from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
 import { createClient } from '@supabase/supabase-js'
@@ -29,6 +29,7 @@ interface ChatInputProps {
   handleEditLastMessage: () => void
   replyToMessage?: { id: string; username: string; message: string } | null
   clearReplyToMessage?: () => void
+  messagesEndRef: RefObject<HTMLDivElement>
 }
 
 export default function ChatInput({
@@ -37,6 +38,7 @@ export default function ChatInput({
   handleEditLastMessage,
   replyToMessage,
   clearReplyToMessage,
+  messagesEndRef,
 }: ChatInputProps): ReactElement {
   const [newMessage, setNewMessage] = useState('')
   const { t } = useTranslation()
@@ -62,6 +64,10 @@ export default function ChatInput({
   } = useMentionUsers(inputRef, newMessage)
 
   const { showEmojiPicker, setShowEmojiPicker, insertEmoji } = useEmojiPicker(inputRef, newMessage, setNewMessage)
+
+  const scrollToBottom = useCallback((): void => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'auto' })
+  }, [messagesEndRef])
 
   // Auto-focus input when typing anywhere
   useEffect(() => {
@@ -159,6 +165,8 @@ export default function ChatInput({
               setNewMessage('')
               setMentionQuery('')
               setMentionStart(null)
+              scrollToBottom()
+
               if (clearReplyToMessage) clearReplyToMessage()
             }
 
