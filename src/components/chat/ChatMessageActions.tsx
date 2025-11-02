@@ -1,9 +1,11 @@
 import type { ReactElement } from 'react'
 
-import { Button, cn, useDisclosure } from '@heroui/react'
+import { Button, cn, Popover, PopoverContent, PopoverTrigger, useDisclosure } from '@heroui/react'
 import { useState } from 'react'
+import data from '@emoji-mart/data'
+import Picker from '@emoji-mart/react'
 import { Trans, useTranslation } from 'react-i18next'
-import { FaPencilAlt, FaReply, FaThumbtack, FaTrashAlt, FaUserAltSlash } from 'react-icons/fa'
+import { FaPencilAlt, FaReply, FaSmile, FaThumbtack, FaTrashAlt, FaUserAltSlash } from 'react-icons/fa'
 
 import CustomModal from '@/components/ui/CustomModal'
 
@@ -17,6 +19,7 @@ interface ChatMessageActionsProps {
   onReply?: () => void
   onBan?: () => void
   isShiftPressed?: boolean
+  onAddReaction?: (emoji: string) => void
 }
 
 export default function ChatMessageActions({
@@ -29,14 +32,23 @@ export default function ChatMessageActions({
   onReply,
   onBan,
   isShiftPressed,
+  onAddReaction,
 }: ChatMessageActionsProps): ReactElement {
   const { t } = useTranslation()
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const [action, setAction] = useState('')
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false)
 
   const handleShowModal = (onOpen: () => void, action: string): void => {
     setAction(action)
     onOpen()
+  }
+
+  const handleEmojiSelect = (emoji: { native: string }): void => {
+    if (onAddReaction) {
+      onAddReaction(emoji.native)
+    }
+    setShowEmojiPicker(false)
   }
 
   return (
@@ -53,6 +65,32 @@ export default function ChatMessageActions({
           onPress={isPinned ? onUnpin : onPin}
           aria-label={isPinned ? 'Unpin message' : 'Pin message'}
         />
+      )}
+      {onAddReaction && (
+        <Popover isOpen={showEmojiPicker} onOpenChange={setShowEmojiPicker} placement='top'>
+          <PopoverTrigger>
+            <Button
+              isIconOnly
+              radius='none'
+              className={cn(
+                'bg-transparent h-6 w-5 flex items-center justify-center',
+                'focus:outline-none duration-75 hover:scale-[1.2] transition-all',
+              )}
+              startContent={<FaSmile size={12} className='text-altwhite' />}
+              aria-label='Add reaction'
+            />
+          </PopoverTrigger>
+          <PopoverContent className='p-0 border-0 bg-transparent'>
+            <Picker
+              data={data}
+              onEmojiSelect={handleEmojiSelect}
+              theme='dark'
+              previewPosition='none'
+              skinTonePosition='none'
+              maxFrequentRows={2}
+            />
+          </PopoverContent>
+        </Popover>
       )}
       <Button
         isIconOnly

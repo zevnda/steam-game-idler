@@ -8,6 +8,7 @@ import ChatAvatar from '@/components/chat/ChatAvatar'
 import ChatEditControls from '@/components/chat/ChatEditControls'
 import ChatMessageActions from '@/components/chat/ChatMessageActions'
 import ChatMessageContent from '@/components/chat/ChatMessageContent'
+import ChatMessageReactions from '@/components/chat/ChatMessageReactions'
 import ChatRoleBadge from '@/components/chat/ChatRoleBadge'
 import ExtLink from '@/components/ui/ExtLink'
 import { logEvent } from '@/utils/tasks'
@@ -36,6 +37,8 @@ interface ChatMessageProps {
   onReply?: () => void
   scrollToMessage?: (messageId: string) => Promise<void>
   isShiftPressed?: boolean
+  onAddReaction?: (messageId: string, emoji: string) => void
+  onRemoveReaction?: (messageId: string, emoji: string) => void
 }
 
 export interface Message {
@@ -47,6 +50,11 @@ export interface Message {
   avatar_url?: string
   reply_to_id?: string | null
   reply_to?: Message | null
+  reactions?: Array<{
+    emoji: string
+    user_ids: string[]
+    count: number
+  }>
 }
 
 const supabase = createClient(
@@ -78,6 +86,8 @@ export default function ChatMessage({
   onReply,
   scrollToMessage,
   isShiftPressed,
+  onAddReaction,
+  onRemoveReaction,
 }: ChatMessageProps): ReactElement {
   // Use pre-fetched reply data or fallback to searching in msgs array
   const replyToMessage = msg.reply_to || (msg.reply_to_id ? msgs.find(m => m.id === msg.reply_to_id) : null)
@@ -244,6 +254,19 @@ export default function ChatMessage({
               />
             )}
           </div>
+
+          {/* Message Reactions */}
+          {msg.reactions && msg.reactions.length > 0 && onAddReaction && onRemoveReaction && userSummary?.steamId && (
+            <div className={msg.reactions && msg.reactions.length > 0 ? '' : 'opacity-0 group-hover:opacity-100'}>
+              <ChatMessageReactions
+                messageId={msg.id}
+                reactions={msg.reactions || []}
+                userSteamId={userSummary.steamId}
+                onAddReaction={onAddReaction}
+                onRemoveReaction={onRemoveReaction}
+              />
+            </div>
+          )}
         </div>
         <ChatMessageActions
           onEdit={
@@ -264,6 +287,7 @@ export default function ChatMessage({
           onReply={onReply}
           onBan={isAdmin ? handleBanUser : undefined}
           isShiftPressed={isShiftPressed}
+          onAddReaction={onAddReaction ? (emoji: string) => onAddReaction(msg.id, emoji) : undefined}
         />
       </div>
     </div>

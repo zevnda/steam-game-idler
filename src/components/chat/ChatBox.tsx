@@ -13,6 +13,7 @@ import ChatMessages from '@/components/chat/ChatMessages'
 import ChatUserList from '@/components/chat/ChatUserList'
 import { useStateContext } from '@/components/contexts/StateContext'
 import { useSupabase } from '@/components/contexts/SupabaseContext'
+import { useMessageReactions } from '@/hooks/chat/useMessageReactions'
 import { useMessages } from '@/hooks/chat/useMessages'
 import { usePinnedMessage } from '@/hooks/chat/usePinnedMessage'
 import { useScrollToMessage } from '@/hooks/chat/useScrollToMessage'
@@ -89,6 +90,10 @@ export default function ChatBox(): ReactElement {
     setMessages,
     messagesContainerRef,
     pagination,
+  })
+
+  const { handleAddReaction, handleRemoveReaction } = useMessageReactions({
+    userSteamId: userSummary?.steamId || '',
   })
 
   const [replyToMessage, setReplyToMessage] = useState<ChatMessageType | null>(null)
@@ -219,6 +224,8 @@ export default function ChatBox(): ReactElement {
                   onReply={handleReplyToMessage}
                   scrollToMessage={scrollToMessage}
                   isShiftPressed={isShiftPressed}
+                  onAddReaction={handleAddReaction}
+                  onRemoveReaction={handleRemoveReaction}
                 />
               </div>
             )}
@@ -246,6 +253,8 @@ export default function ChatBox(): ReactElement {
               onReply={handleReplyToMessage}
               scrollToMessage={scrollToMessage}
               isShiftPressed={isShiftPressed}
+              onAddReaction={handleAddReaction}
+              onRemoveReaction={handleRemoveReaction}
             />
 
             <ChatInput

@@ -37,6 +37,8 @@ interface ChatMessagesProps {
   onReply?: (msg: Message) => void
   scrollToMessage?: (messageId: string) => Promise<void>
   isShiftPressed?: boolean
+  onAddReaction?: (messageId: string, emoji: string) => void
+  onRemoveReaction?: (messageId: string, emoji: string) => void
 }
 
 const ChatMessages = ({
@@ -62,6 +64,8 @@ const ChatMessages = ({
   onReply,
   scrollToMessage,
   isShiftPressed,
+  onAddReaction,
+  onRemoveReaction,
 }: ChatMessagesProps & {
   editingMessageId: string | null
   setEditingMessageId: (id: string | null) => void
@@ -151,6 +155,8 @@ const ChatMessages = ({
                     onReply={onReply ? () => onReply(msg) : undefined}
                     scrollToMessage={scrollToMessage}
                     isShiftPressed={isShiftPressed}
+                    onAddReaction={onAddReaction}
+                    onRemoveReaction={onRemoveReaction}
                   />
                 )
               })}

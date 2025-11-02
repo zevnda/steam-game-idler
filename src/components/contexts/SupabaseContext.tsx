@@ -7,6 +7,12 @@ import { createClient } from '@supabase/supabase-js'
 
 import { logEvent, playMentionBeep } from '@/utils/tasks'
 
+export interface MessageReaction {
+  emoji: string
+  user_ids: string[]
+  count: number
+}
+
 export interface ChatMessageType {
   id: string
   user_id: string
@@ -16,6 +22,7 @@ export interface ChatMessageType {
   avatar_url?: string
   reply_to_id?: string | null
   reply_to?: ChatMessageType | null
+  reactions?: MessageReaction[]
 }
 
 export interface ChatUser {
