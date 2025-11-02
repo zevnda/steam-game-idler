@@ -26,6 +26,11 @@ export default function AdComponent() {
           } else {
             setHasAd(true)
           }
+
+          // Try to style the iframe background
+          if (adIframe) {
+            adIframe.style.backgroundColor = '#121316'
+          }
         }, 3000)
       } catch (err) {
         console.error('AdSense error:', err)
@@ -71,6 +76,11 @@ export default function AdComponent() {
           backgroundColor: '#121316',
         }}
       />
+      <style jsx>{`
+        div :global(iframe) {
+          background-color: #121316 !important;
+        }
+      `}</style>
     </div>
   )
 }
