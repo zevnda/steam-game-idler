@@ -34,13 +34,7 @@ export interface ChatUser {
   username: string
   avatar_url?: string
   is_banned?: boolean
-}
-
-interface PresenceState {
-  user_id?: string
-  username?: string
-  online_at?: string
-  presence_ref: string
+  last_seen?: string
 }
 
 interface SupabaseContextType {
@@ -117,7 +111,7 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
       const timeSinceLastBroadcast = now - lastTypingBroadcastRef.current
 
       // Only broadcast if we haven't broadcasted recently (first keystroke or renewal)
-      if (!isTypingRef.current || timeSinceLastBroadcast >= 5000) {
+      if (!isTypingRef.current || timeSinceLastBroadcast >= 10000) {
         channelRef.current.send({
           type: 'broadcast',
           event: 'typing',
@@ -152,12 +146,12 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
           })
           lastTypingBroadcastRef.current = Date.now()
         }
-      }, 5000)
+      }, 10000)
 
-      // Stop typing after 5s of inactivity (for auto-clear if user stops without sending)
+      // Stop typing after 3s of inactivity (for auto-clear if user stops without sending)
       typingTimeoutRef.current = setTimeout(() => {
         broadcastStopTyping()
-      }, 5000)
+      }, 10000)
     } catch (error) {
       console.error('Error in broadcastTyping:', error)
       logEvent(`[Error] in broadcastTyping: ${error}`)
@@ -196,47 +190,140 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
     }
   }
 
-  // Ensure current user exists in Supabase 'users' table; create if missing
+  // Heartbeat: Update last_seen while app is open (creates user if doesn't exist)
   useEffect(() => {
     const supabase = supabaseRef.current
+    const steamId = userSummary?.steamId
 
-    const ensureUserExists = async (): Promise<void> => {
+    if (!steamId) return
+
+    const updateLastSeen = async (): Promise<void> => {
       try {
-        if (!userSummary?.steamId) return
-
-        const { data, error } = await supabase
+        // First, check if user exists
+        const { data: existingUser } = await supabase
           .from('users')
           .select('user_id')
-          .eq('user_id', userSummary.steamId)
+          .eq('user_id', steamId)
           .maybeSingle()
 
-        if (error) {
-          console.error('Error checking user existence:', error)
-          logEvent(`[Error] in ensureUserExists (select): ${error.message || error}`)
-        }
+        if (existingUser) {
+          // User exists - UPDATE only username, avatar, and last_seen (preserve role and is_banned)
+          const { error } = await supabase
+            .from('users')
+            .update({
+              username: userSummary?.personaName || 'Unknown',
+              avatar_url: userSummary?.avatar || null,
+              last_seen: new Date().toISOString(),
+            })
+            .eq('user_id', steamId)
 
-        if (!data) {
-          const insertPayload = {
-            user_id: userSummary.steamId,
-            username: userSummary.personaName || 'Unknown',
-            avatar_url: userSummary.avatar || null,
+          if (error) {
+            console.error('Error updating last_seen:', error)
+            logEvent(`[Error] in updateLastSeen: ${error.message}`)
+          }
+        } else {
+          // User doesn't exist - INSERT with default role and is_banned
+          const { error } = await supabase.from('users').insert({
+            user_id: steamId,
+            username: userSummary?.personaName || 'Unknown',
+            avatar_url: userSummary?.avatar || null,
+            last_seen: new Date().toISOString(),
             role: 'user',
             is_banned: false,
-          }
-          const { error: insertError } = await supabase.from('users').insert([insertPayload])
-          if (insertError) {
-            console.error('Error inserting new user:', insertError)
-            logEvent(`[Error] in ensureUserExists (insert): ${insertError.message || insertError}`)
+          })
+
+          if (error) {
+            console.error('Error inserting new user:', error)
+            logEvent(`[Error] in insertUser: ${error.message}`)
           }
         }
       } catch (err) {
-        console.error('Error in ensureUserExists:', err)
-        logEvent(`[Error] in ensureUserExists: ${err}`)
+        console.error('Error in updateLastSeen:', err)
+        logEvent(`[Error] in updateLastSeen: ${err}`)
       }
     }
 
-    ensureUserExists()
+    // Initial update when app opens
+    updateLastSeen()
+
+    // Update every 5 minutes while app is open
+    const heartbeatInterval = setInterval(updateLastSeen, 5 * 60 * 1000)
+
+    return () => {
+      clearInterval(heartbeatInterval)
+    }
   }, [userSummary?.steamId, userSummary?.personaName, userSummary?.avatar])
+
+  // Poll for users and calculate online status (only when viewing chat)
+  useEffect(() => {
+    if (!isChatActive) return
+
+    const supabase = supabaseRef.current
+    const steamId = userSummary?.steamId
+
+    const fetchUsers = async (): Promise<void> => {
+      try {
+        // Fetch ALL users from database
+        const { data: allUsersData, error } = await supabase
+          .from('users')
+          .select('*')
+          .order('username', { ascending: true })
+
+        if (error) {
+          console.error('Error fetching users:', error)
+          logEvent(`[Error] in fetchUsers: ${error.message}`)
+          return
+        }
+
+        if (allUsersData) {
+          // Set all users for the user list
+          setAllUsers(allUsersData as ChatUser[])
+
+          // Calculate online/offline based on last_seen
+          const fiveMinutesAgo = Date.now() - 5 * 60 * 1000
+
+          const online = allUsersData.filter(user => {
+            if (!user.last_seen) return false
+            const lastSeenTime = new Date(user.last_seen).getTime()
+            return lastSeenTime >= fiveMinutesAgo
+          })
+
+          setOnlineUsers(online as ChatUser[])
+          setOnlineCount(online.length)
+
+          // Build user roles map
+          const roles: { [userId: string]: string } = {}
+          allUsersData.forEach((user: { user_id: string; role: string }) => {
+            if (user.user_id && user.role) {
+              roles[user.user_id] = user.role
+            }
+          })
+          setUserRoles(roles)
+
+          // Check if current user is banned (polling replaces Realtime listener)
+          if (steamId) {
+            const currentUser = allUsersData.find(u => u.user_id === steamId)
+            if (currentUser?.is_banned === true) {
+              setIsBanned(true)
+            } else {
+              setIsBanned(false)
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error in fetchUsers:', error)
+        logEvent(`[Error] in fetchUsers: ${error}`)
+      }
+    }
+
+    // Fetch immediately when chat opens
+    fetchUsers()
+
+    // Poll every 60 seconds while viewing chat
+    const pollInterval = setInterval(fetchUsers, 60 * 1000)
+
+    return () => clearInterval(pollInterval)
+  }, [isChatActive, userSummary?.steamId])
 
   useEffect(() => {
     // Only run if chat is active
@@ -248,63 +335,6 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
     // Skip in development for maintenance mode
     const isDevelopment = process.env.NODE_ENV === 'development'
     // const isDevelopment = false
-
-    // Fetch all users
-    const fetchAllUsers = async (): Promise<void> => {
-      try {
-        const { data, error } = await supabase.from('users').select('user_id,username,avatar_url,role')
-        if (error) {
-          console.error('Error fetching all users:', error)
-          logEvent(`[Error] in fetchAllUsers: ${error.message}`)
-          return
-        }
-        if (data) {
-          setAllUsers(data as ChatUser[])
-        }
-      } catch (error) {
-        console.error('Error in fetchAllUsers:', error)
-        logEvent(`[Error] in fetchAllUsers: ${error}`)
-      }
-    }
-
-    // Fetch initial user roles
-    const fetchUserRoles = async (): Promise<void> => {
-      try {
-        const { data, error } = await supabase.from('users').select('user_id,role,is_banned')
-        if (error) {
-          console.error('Error fetching user roles:', error)
-          logEvent(`[Error] in fetchUserRoles: ${error.message}`)
-          return
-        }
-        if (data) {
-          const roles: { [userId: string]: string } = {}
-          data.forEach((user: { user_id: string; role: string; is_banned?: boolean }) => {
-            roles[user.user_id] = user.role
-          })
-          setUserRoles(roles)
-        }
-      } catch (error) {
-        console.error('Error in fetchUserRoles:', error)
-        logEvent(`[Error] in fetchUserRoles: ${error}`)
-      }
-    }
-
-    // Fetch initial banned status
-    const fetchBannedStatus = async (): Promise<void> => {
-      try {
-        if (!steamId) return
-        const { data, error } = await supabase.from('users').select('is_banned').eq('user_id', steamId).single()
-        if (error && error.code !== 'PGRST116') {
-          console.error('Error fetching banned status:', error)
-          logEvent(`[Error] in fetchBannedStatus: ${error.message}`)
-        }
-        if (!error && data?.is_banned === true) setIsBanned(true)
-        else setIsBanned(false)
-      } catch (error) {
-        console.error('Error in fetchBannedStatus:', error)
-        logEvent(`[Error] in fetchBannedStatus: ${error}`)
-      }
-    }
 
     // Fetch initial maintenance mode
     const fetchMaintenanceMode = async (): Promise<void> => {
@@ -343,57 +373,33 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
       }
     }
 
-    fetchAllUsers()
-    fetchUserRoles()
-    fetchBannedStatus()
     fetchMaintenanceMode()
     fetchMotd()
 
-    // Create ONE unified channel for everything
-    const channel = supabase.channel('unified-chat-channel', {
-      config: {
-        presence: {
-          key: steamId || 'anonymous',
-        },
-      },
-    })
+    // Create channel for chat features (messages, typing, settings)
+    const channel = supabase.channel('chat-channel')
 
     channelRef.current = channel
 
     channel
-      // 1. Listen for user role changes (from useUserRoles)
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'users' }, () => {
-        fetchAllUsers()
-        fetchUserRoles()
-      })
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'users' }, payload => {
-        fetchAllUsers()
-        fetchUserRoles()
-        // Also check if current user's ban status changed (from useMessages)
-        if (payload.new?.user_id === steamId) {
-          setIsBanned(payload.new?.is_banned === true)
-        }
-      })
-      .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'users' }, () => {
-        fetchAllUsers()
-        fetchUserRoles()
-      })
-      // 2. Listen for message changes (from useMessages)
+      // 1. Listen for message changes (from useMessages)
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, async payload => {
         try {
           const newMsg = payload.new as ChatMessageType
+          let replyToMsg: ChatMessageType | null = null
 
           // If the message has a reply_to_id, fetch the full reply data
           if (newMsg.reply_to_id) {
             try {
-              const { data: replyToMsg, error: replyError } = await supabase
+              const { data, error: replyError } = await supabase
                 .from('messages')
                 .select('*')
                 .eq('id', newMsg.reply_to_id)
                 .single()
 
-              if (!replyError && replyToMsg) {
-                newMsg.reply_to = replyToMsg as ChatMessageType
+              if (!replyError && data) {
+                replyToMsg = data as ChatMessageType
+                newMsg.reply_to = replyToMsg
               }
             } catch (error) {
               console.error('Error fetching reply data for new message:', error)
@@ -423,21 +429,9 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
           }
 
           // 2. The new message is a reply to one of the current user's messages
-          if (newMsg.reply_to_id && steamId) {
-            try {
-              const { data: repliedToMessage, error } = await supabase
-                .from('messages')
-                .select('user_id')
-                .eq('id', newMsg.reply_to_id)
-                .single()
-
-              if (!error && repliedToMessage?.user_id === steamId) {
-                playMentionBeep()
-              }
-            } catch (error) {
-              console.error('Error checking reply notification:', error)
-              logEvent(`[Error] in reply notification check: ${error}`)
-            }
+          // Reuse replyToMsg instead of fetching again
+          if (replyToMsg && replyToMsg.user_id === steamId) {
+            playMentionBeep()
           }
         } catch (error) {
           console.error('Error handling INSERT message:', error)
@@ -462,7 +456,7 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
           logEvent(`[Error] in message DELETE handler: ${error}`)
         }
       })
-      // 3. Listen for chat settings changes (from useChatMaintenanceMode)
+      // 2. Listen for chat settings changes (from useChatMaintenanceMode)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'chat_settings' }, payload => {
         try {
           if (isDevelopment) return
@@ -477,7 +471,7 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
           logEvent(`[Error] in chat_settings handler: ${error}`)
         }
       })
-      // 4. Listen for typing broadcasts (from useTypingUsers)
+      // 3. Listen for typing broadcasts (from useTypingUsers)
       .on('broadcast', { event: 'typing' }, payload => {
         try {
           setTypingUsers(prev => {
@@ -500,46 +494,7 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
           logEvent(`[Error] in stop_typing broadcast handler: ${error}`)
         }
       })
-      // 5. Listen for presence changes (from useOnlineUsers)
-      .on('presence', { event: 'sync' }, () => {
-        try {
-          const state = channel.presenceState()
-          setOnlineCount(Object.keys(state).length)
-
-          // Extract online users from presence state (deduplicated by user_id)
-          const onlineMap = new Map<string, ChatUser>()
-          Object.values(state).forEach((presences: unknown) => {
-            const presenceArray = presences as PresenceState[]
-            presenceArray.forEach((presence: PresenceState) => {
-              if (presence.user_id && presence.username) {
-                onlineMap.set(presence.user_id, {
-                  user_id: presence.user_id,
-                  username: presence.username,
-                })
-              }
-            })
-          })
-          setOnlineUsers(Array.from(onlineMap.values()))
-        } catch (error) {
-          console.error('Error handling presence sync:', error)
-          logEvent(`[Error] in presence sync handler: ${error}`)
-        }
-      })
-      .subscribe(async status => {
-        try {
-          if (status === 'SUBSCRIBED' && steamId) {
-            // Track presence for online users
-            await channel.track({
-              user_id: steamId,
-              username: userSummary?.personaName || 'Unknown',
-              online_at: new Date().toISOString(),
-            })
-          }
-        } catch (error) {
-          console.error('Error in channel subscription:', error)
-          logEvent(`[Error] in channel subscription: ${error}`)
-        }
-      })
+      .subscribe()
 
     return () => {
       if (typingTimeoutRef.current) {
