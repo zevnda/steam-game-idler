@@ -82,6 +82,7 @@ export function useMessages({
       messages,
       userSummary,
       inputRef,
+      messagesContainerRef,
     })
 
   const groupMessagesByDate = (msgs: ChatMessageType[]): { [key: string]: ChatMessageType[] } => {

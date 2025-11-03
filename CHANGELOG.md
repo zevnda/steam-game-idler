@@ -1,3 +1,9 @@
+<!-- 2.2.8 -->
+
+### Changes in v2.2.8
+
+- When editing a message in chat, the input is now scrolled into view if it is completely or partially off the screen
+
 <!-- 2.2.7 -->
 
 ### Changes in v2.2.7

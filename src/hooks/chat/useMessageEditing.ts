@@ -10,9 +10,10 @@ interface UseMessageEditingParams {
   messages: ChatMessageType[]
   userSummary: UserSummary
   inputRef: RefObject<HTMLTextAreaElement>
+  messagesContainerRef: RefObject<HTMLDivElement>
 }
 
-export function useMessageEditing({ messages, userSummary, inputRef }: UseMessageEditingParams): {
+export function useMessageEditing({ messages, userSummary, inputRef, messagesContainerRef }: UseMessageEditingParams): {
   editingMessageId: string | null
   setEditingMessageId: React.Dispatch<React.SetStateAction<string | null>>
   editedMessage: string
@@ -29,6 +30,22 @@ export function useMessageEditing({ messages, userSummary, inputRef }: UseMessag
       if (lastMsg) {
         setEditingMessageId(lastMsg.id)
         setEditedMessage(lastMsg.message)
+        // Scroll the message into view after a brief delay to ensure textarea is rendered
+        setTimeout(() => {
+          const messageElement = document.querySelector(`[data-message-id="${lastMsg.id}"]`)
+          if (messageElement && messagesContainerRef?.current) {
+            const container = messagesContainerRef.current
+            const messageRect = messageElement.getBoundingClientRect()
+            const containerRect = container.getBoundingClientRect()
+
+            // Check if message is partially or fully out of view
+            const isOutOfView = messageRect.bottom > containerRect.bottom || messageRect.top < containerRect.top
+
+            if (isOutOfView) {
+              messageElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+            }
+          }
+        }, 100)
       }
     } catch (error) {
       console.error('Error in handleEditLastMessage:', error)

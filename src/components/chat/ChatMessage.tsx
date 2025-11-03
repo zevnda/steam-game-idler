@@ -39,6 +39,7 @@ interface ChatMessageProps {
   isShiftPressed?: boolean
   onAddReaction?: (messageId: string, emoji: string) => void
   onRemoveReaction?: (messageId: string, emoji: string) => void
+  messagesContainerRef?: RefObject<HTMLDivElement>
 }
 
 export interface Message {
@@ -87,6 +88,7 @@ export default function ChatMessage({
   scrollToMessage,
   onAddReaction,
   onRemoveReaction,
+  messagesContainerRef,
 }: ChatMessageProps): ReactElement {
   // Use pre-fetched reply data or fallback to searching in msgs array
   const replyToMessage = msg.reply_to || (msg.reply_to_id ? msgs.find(m => m.id === msg.reply_to_id) : null)
@@ -264,6 +266,23 @@ export default function ChatMessage({
               ? () => {
                   setEditingMessageId(msg.id)
                   setEditedMessage(msg.message)
+                  // Scroll the message into view after a brief delay to ensure textarea is rendered
+                  setTimeout(() => {
+                    const messageElement = document.querySelector(`[data-message-id="${msg.id}"]`)
+                    if (messageElement && messagesContainerRef?.current) {
+                      const container = messagesContainerRef.current
+                      const messageRect = messageElement.getBoundingClientRect()
+                      const containerRect = container.getBoundingClientRect()
+
+                      // Check if message is partially or fully out of view
+                      const isOutOfView =
+                        messageRect.bottom > containerRect.bottom || messageRect.top < containerRect.top
+
+                      if (isOutOfView) {
+                        messageElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+                      }
+                    }
+                  }, 100)
                 }
               : undefined
           }
