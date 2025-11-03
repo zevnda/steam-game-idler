@@ -17,6 +17,7 @@ import { useUserContext } from '@/components/contexts/UserContext'
 import ExtLink from '@/components/ui/ExtLink'
 import { useEmojiPicker } from '@/hooks/chat/useEmojiPicker'
 import { useEmojiShortcodes } from '@/hooks/chat/useEmojiShortcodes'
+import { useMarkdownShortcuts } from '@/hooks/chat/useMarkdownShortcuts'
 import { useMentionUsers } from '@/hooks/chat/useMentionUsers'
 import { logEvent } from '@/utils/tasks'
 
@@ -78,6 +79,9 @@ export default function ChatInput({
     setEmojiQuery,
     setEmojiStart,
   } = useEmojiShortcodes(inputRef, newMessage)
+
+  // Add markdown shortcuts hook
+  useMarkdownShortcuts(inputRef, newMessage, setNewMessage)
 
   const scrollToBottom = useCallback((): void => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'auto' })

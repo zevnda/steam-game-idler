@@ -4,6 +4,7 @@ import { cn, Textarea } from '@heroui/react'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { useMarkdownShortcuts } from '@/hooks/chat/useMarkdownShortcuts'
 import { logEvent } from '@/utils/tasks'
 
 interface ChatEditControlsProps {
@@ -26,6 +27,9 @@ export default function ChatEditControls({
   const { t } = useTranslation()
   const innerTextareaRef = useRef<HTMLTextAreaElement | null>(null)
   const [localEditedMessage, setLocalEditedMessage] = useState(editedMessage)
+
+  // Add markdown shortcuts hook
+  useMarkdownShortcuts(innerTextareaRef, localEditedMessage, setLocalEditedMessage)
 
   // Sync local state when editedMessage prop changes
   useEffect(() => {

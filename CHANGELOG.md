@@ -3,6 +3,7 @@
 ### Changes in v2.2.8
 
 - When editing a message in chat, the input is now scrolled into view if it is completely or partially off the screen
+- Added hotkey support for markdown formatting in chat, `ctrl+b` for **bold**, `ctrl+i` for _italic_, `dtrl+d` for ~~strikethrough~~, etc..
 
 <!-- 2.2.7 -->
 
