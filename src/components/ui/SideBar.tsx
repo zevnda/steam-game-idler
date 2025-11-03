@@ -2,7 +2,7 @@ import type { SidebarItem } from '@/types/navigation'
 import type { ReactElement } from 'react'
 
 import { Button, cn, Divider } from '@heroui/react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FiLogOut } from 'react-icons/fi'
 import { RiChatSmile2Line, RiSearchLine } from 'react-icons/ri'
@@ -43,23 +43,10 @@ export default function SideBar(): ReactElement {
   } = useStateContext()
   const { activePage, setActivePage } = useNavigationContext()
   const searchContent = useSearchContext()
-  const {
-    isOpen,
-    onOpenChange,
-    openConfirmation,
-    handleLogout,
-    hasUnreadChat,
-    setHasUnreadChat,
-    hasBeenMentionedSinceLastRead,
-  } = useSideBar(activePage, setActivePage)
-
-  // When user navigates to chat, update last read and reset unread
-  useEffect(() => {
-    if (activePage === 'chat') {
-      localStorage.setItem('chatLastRead', new Date().toISOString())
-      setHasUnreadChat(false)
-    }
-  }, [activePage, setHasUnreadChat])
+  const { isOpen, onOpenChange, openConfirmation, handleLogout, hasBeenMentionedSinceLastRead } = useSideBar(
+    activePage,
+    setActivePage,
+  )
 
   const mainSidebarItems: SidebarItem[] = [
     {
@@ -118,7 +105,6 @@ export default function SideBar(): ReactElement {
       title: t('chat.title'),
       icon: RiChatSmile2Line,
       isBeta: true,
-      hasUnread: hasUnreadChat,
     },
     {
       id: 'free-games',
