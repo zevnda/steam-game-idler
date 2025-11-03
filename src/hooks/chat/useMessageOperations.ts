@@ -149,6 +149,31 @@ export function useMessageOperations({
           color: 'danger',
         })
       }
+
+      // Find the message to check if it contains any Supabase storage images
+      const message = messages.find(m => m.id === msgId)
+      if (message?.message) {
+        // Extract all Supabase storage URLs from the message
+        const storageUrlRegex =
+          /https:\/\/inbxfhxkrhwiybnephlq\.supabase\.co\/storage\/v1\/object\/public\/sgi-chat\/([^)\s]+)/g
+        const matches = [...message.message.matchAll(storageUrlRegex)]
+
+        // Delete each image from storage
+        for (const match of matches) {
+          const filename = match[1]
+          try {
+            const { error: storageError } = await supabase.storage.from('sgi-chat').remove([filename])
+            if (storageError) {
+              console.error('Error deleting image from storage:', storageError)
+              logEvent(`[Error] in deleteImageFromStorage: ${storageError.message}`)
+            }
+          } catch (storageErr) {
+            console.error('Error deleting image from storage:', storageErr)
+            logEvent(`[Error] in deleteImageFromStorage: ${storageErr}`)
+          }
+        }
+      }
+
       const { error } = await supabase.from('messages').delete().eq('id', msgId)
       if (error) {
         console.error('Error deleting message:', error)
