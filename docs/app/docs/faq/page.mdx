@@ -7,8 +7,12 @@ description: "The FAQ section provides answers to common questions and issues ab
 ## General
 
 <details>
-    <summary>Can I get banned for using a Steam idler?</summary>
-    > No, SGI uses Valve's official [Steamworks SDK](https://partner.steamgames.com/doc/sdk) and interacts with Steam just like normal gaming activity.
+    <summary>Why are some games not showing up in my games list in SGI?</summary>
+    > There are several reasons why a game may not appear in your SGI games list:
+    > * Family shared games don't appear in the games list by default, but you can add them to any of the lists *(Card Farming, Achievement Unlocker, etc..)*  by using the `+` button, entering the game's AppID and name, and clicking "Add"
+    > * The game may be [marked as private](https://help.steampowered.com/en/faqs/view/1150-C06F-4D62-4966) on your Steam profile
+    > * Some demos and playtests may not show up correctly in SGI, or be able to be idled
+    > * The game may have been removed from the Steam store or your license for the game may have been revoked
 </details>
 
 <details>
@@ -24,8 +28,13 @@ description: "The FAQ section provides answers to common questions and issues ab
 </details>
 
 <details>
+    <summary>Do I need an internet connection to use SGI?</summary>
+    > Yes, SGI requires an active internet connection to communicate with the Steam servers for idling games, unlocking achievements, and farming trading cards.
+</details>
+
+<details>
     <summary>What is the "Do you want to allow public/private networks to access this app" message when I first launched SGI?</summary>
-    > SGI needs to handle multiple inbound/outbound HTTP requests to fetch data from Steam. For SGI to function correctly you will need to accept this prompt
+    > SGI needs to handle multiple inbound/outbound HTTP requests to fetch data from Steam. For SGI to function correctly you will need to accept this prompt.
     >
     > If you declined the prompt already, you will need to add SGI as an allowed app in Windows Defender Firewall:
     >
@@ -38,57 +47,11 @@ description: "The FAQ section provides answers to common questions and issues ab
     > 7. Click "OK" to save the changes
 </details>
 
-## Error messages
-
 <details>
-    <summary>"Steam is not running"</summary>
-    > Most features of SGI require the Steam client to be running, and you must be signed in to the same account you are currently logged in to SGI with
-</details>
-
-<details>
-    <summary>"No Steam users found"</summary>
-    > * The Steam client needs to be installed
-    > * You need to be signed in to at least one Steam account in the Steam client
-    > * SGI failed to find the install directory for Steam. Try reinstalling Steam in its default location `C:\Program Files (x86)\Steam`
+    <summary>Can I get banned for using a Steam idler or achievement unlocker?</summary>
+    > No. Steam idlers and achievement unlockers have been around for 10+ years with no valid reports of people getting banned.
     >
-    > SGI will automatically search for the Steam install directory by referencing Windows registry keys. Make sure the registry keys are correct by following these steps:
-    > 1. Press `WinKey + S` to open the search bar
-    > 2. Type `Registry Editor` and press `Enter` to open the Registry Editor
-    > 3. Navigate to `HKEY_CURRENT_USER\Software\Valve\Steam` and make sure the value of `SteamPath` is set to the correct path of your Steam installation
-    > 4. If the value is not set to the correct path of your Steam installation, you can manually set it by right-clicking on `SteamPath`, selecting `Modify`, and entering the correct path (e.g., `C:\Program Files (x86)\Steam`)
-    > 5. Close the Registry Editor and restart SGI
-</details>
-
-<details>
-    <summary>"Add some games to your card farming list or enable "all games" in "settings > card farming""</summary>
-    > Your `card farming list` is empty. You either need to add games to the list by following [these steps](/docs/features/card-farming), or enable the `all games` setting in [Settings > Card Farming](/docs/settings/card-farming)
-</details>
-
-<details>
-    <summary>"There are no games in your achievement unlocker list"</summary>
-    > Your `achievement unlocker list` is empty. You can add games to your list by following [these steps](/docs/features/achievement-unlocker)
-</details>
-
-<details>
-    <summary>"Account mismatch between Steam and SGI"</summary>
-    > You are logged in to the Steam client with a different account than you are using in SGI. Most features in SGI require you to be logged in to the same account in both the Steam client and SGI
-</details>
-
-<details>
-    <summary>"Incorrect card farming credentials"</summary>
-    > * You have entered the incorrect cookies. Follow the steps found in the [Steam Credentials](/docs/steam-credentials) section
-    > * Steam accounts with [Family View](https://store.steampowered.com/parental/) _(parental restrictions)_ enabled will also have a `steamParental` cookie that needs to be saved in SGI's settings
-    > * In some cases, Steam accounts might have a `steamMachineAuth` cookie that needs to be saved in SGI's settings
-</details>
-
-<details>
-    <summary>"Missing card farming credentials in "settings > card farming""</summary>
-    > SGI requires your Steam community credentials for the account that you plan to farm cards on to see if games in your library have card drops remaining or not. Read the [Steam Credentials](/docs/steam-credentials) section for more information
-</details>
-
-<details>
-    <summary>"Card farming credentials need to be updated in "settings > card farming""</summary>
-    > From time to time the cookies you supply to SGI will expire for several reasons and they will need to be updated. Follow the [Steam Credentials](/docs/steam-credentials) steps to get the updated cookies
+    > SGI also uses Valve's official [Steamworks SDK](https://partner.steamgames.com/doc/sdk) and interacts with Steam just like normal gaming activity.
 </details>
 
 ## Farming cards
@@ -107,6 +70,7 @@ description: "The FAQ section provides answers to common questions and issues ab
     > * You need to own the game on your account. It can't be a family-shared game
     > * Games must not be [marked as private](https://help.steampowered.com/en/faqs/view/1150-C06F-4D62-4966)
     > * Paid games earned from promotions typically won't drop cards
+    > * You must have a stable internet connection while idling for card drops to be tracked correctly
 </details>
 
 <details>
@@ -119,26 +83,55 @@ description: "The FAQ section provides answers to common questions and issues ab
 
 <details>
     <summary>How long does it take for cards to drop?</summary>
-    > Card drop timers can be different for every game. The developer sets these timers, and they can vary from 15 minutes to 3 hours
+    > Card drop timers can be different for every game. The developer sets these timers, and they can vary from 15 minutes to 3 hours.
 </details>
 
-## Steam idling (auto & manual)
+## Playtime boosting / idling games
 
 <details>
-    <summary>Can I use SGI to idle in-game items?</summary>
-    > No. SGI cannot idle in-game items as it doesn't run an instance of the game. A feature like this could also be seen as exploiting in most game's ToS
+    <summary>Can I idle family shared games?</summary>
+    > Yes, you can idle family shared games by manually adding them to one of your lists using the `+` button, entering the game's AppID and name, and clicking "Add". Once the game is added to your list, you can idle it like any other game.
 </details>
 
 <details>
-    <summary>How many games can SGI handle simultaneously?</summary>
-    > You can idle a max of 32 games simultaneously. This is a limitation of the Steam client.
+    <summary>Why am I unable to idle some games?</summary>
+    > There could be several reasons why you are unable to idle certain games:
+    > * The Steam client may not be running, or you may not be signed in to the correct account
+    > * Another person may be currently playing the game on your account, or via family share
+    > * You may not own the game on your account. While most family shared games can be idled, some games may not work
+    > * The game may be [marked as private](https://help.steampowered.com/en/faqs/view/1150-C06F-4D62-4966) on your Steam profile
+    > * Some demos and playtests may not show up correctly in SGI, or be able to be idled
+    > * Some games may have restrictions that prevent them from being idled, such as region locks or account bans
+    > * Some games may have their own third-party launcher that needs to be used to launch the game instead of the Steam client (EA, Ubisoft, etc.)
+    >
+    > Sometimes running SGI as an administrator can help resolve some issues with idling certain games.
+</details>
+
+<details>
+    <summary>Why is my playtime not increasing on Steam?</summary>
+    > There could be several reasons for this:
+    > * The Steam client may have been closed while idling, or you may not be signed in to the correct account
+    > * You were disconnected from the internet while idling and only playtime before the disconnection was recorded
+    > * Steam's cloud sync may be down or has not updated your playtime yet. You can try restarting the Steam client to force a sync
+</details>
+
+<details>
+    <summary>Can I use SGI to idle in-game items or join game servers?</summary>
+    > No. SGI cannot idle in-game items or join game servers as it doesn't run an actual instance of the game.
+</details>
+
+<details>
+    <summary>How many games can SGI idle simultaneously?</summary>
+    > You can idle a max of 32 games simultaneously. This limit is imposed by the Steam client.
 </details>
 
 ## Unlocking & locking achievements (auto & manual)
 
 <details>
-    <summary>Why can't I unlock achievements for a specific game?</summary>
-    > While most achievements for most games can be unlocked with SGI, some can't be. Some games contain `protected` achievements and statistics that can only be modified by official game servers. [Learn more](https://partner.steamgames.com/doc/features/achievements#game_server_stats:~:text=Stats%20and%20achievements%20that%20are%20settable%20by%20game%20servers%20cannot%20be%20set%20by%20clients.)
+    <summary>Why am I unable to unlock/lock some achievement for some games?</summary>
+    > While most achievements for most games can be unlocked with SGI, some can't be. Some games contain `protected` achievements and statistics that can only be modified by official game servers. [Learn more](https://partner.steamgames.com/doc/features/achievements#game_server_stats:~:text=Stats%20and%20achievements%20that%20are%20settable%20by%20game%20servers%20cannot%20be%20set%20by%20clients).
+    >
+    > Additionally, some games may have removed their achievements entirely, or have other restrictions that prevent achievements from being unlocked/locked.
 </details>
 
 <details>
@@ -154,10 +147,68 @@ description: "The FAQ section provides answers to common questions and issues ab
 
 <details>
     <summary>Can I unlock achievements for games I don't own?</summary>
-    > No, you can only unlock achievements for games that are owned by your Steam account, or shared via family share. The game must be in your library.
+    > No. You can only unlock achievements for games that are owned by your Steam account, or shared via family share. The game must be in your library.
+</details>
+
+<details>
+    <summary>Can I unlock achievements for family shared games?</summary>
+    > Yes, you can unlock achievements for family shared games by manually adding them to one of your lists using the `+` button, entering the game's AppID and name, and clicking "Add". Once the game is added to your list, you can unlock achievements for it like any other game.
 </details>
 
 <details>
     <summary>Is there a way to unlock achievements in a specific order?</summary>
     > The automatic [achievement unlocker](/docs/features/achievement-unlocker) will unlock achievements in the order of completion percentage. If you need to unlock achievements in a specific order, you can manually unlock them in the [achievement manager](/docs/features/achievement-manager) in any order you like.
+</details>
+
+## Error messages
+
+<details>
+    <summary>"Steam is not running"</summary>
+    > Most features of SGI require the Steam client to be running, and you must be signed in to the same account you are currently logged in to SGI with.
+</details>
+
+<details>
+    <summary>"No Steam users found"</summary>
+    > * The Steam client needs to be installed
+    > * You need to be signed in to at least one Steam account in the Steam client
+    > * SGI failed to find the install directory for Steam. Try reinstalling Steam in its default location `C:\Program Files (x86)\Steam`
+    >
+    > SGI will automatically search for the Steam install directory by referencing Windows registry keys. Make sure the registry keys are correct by following these steps:
+    > 1. Press `WinKey + S` to open the search bar
+    > 2. Type `Registry Editor` and press `Enter` to open the Registry Editor
+    > 3. Navigate to `HKEY_CURRENT_USER\Software\Valve\Steam` and make sure the value of `SteamPath` is set to the correct path of your Steam installation
+    > 4. If the value is not set to the correct path of your Steam installation, you can manually set it by right-clicking on `SteamPath`, selecting `Modify`, and entering the correct path (e.g., `C:\Program Files (x86)\Steam`)
+    > 5. Close the Registry Editor and restart SGI
+</details>
+
+<details>
+    <summary>"Add some games to your card farming list or enable "all games" in "settings > card farming""</summary>
+    > Your `card farming list` is empty. You either need to add games to the list by following [these steps](/docs/features/card-farming), or enable the `all games` setting in [Settings > Card Farming](/docs/settings/card-farming).
+</details>
+
+<details>
+    <summary>"There are no games in your achievement unlocker list"</summary>
+    > Your `achievement unlocker list` is empty. You can add games to your list by following [these steps](/docs/features/achievement-unlocker)
+</details>
+
+<details>
+    <summary>"Account mismatch between Steam and SGI"</summary>
+    > You are logged in to the Steam client with a different account than you are using in SGI. Most features in SGI require you to be logged in to the same account in both the Steam client and SGI.
+</details>
+
+<details>
+    <summary>"Incorrect card farming credentials"</summary>
+    > * You have entered the incorrect cookies. Follow the steps found in the [Steam Credentials](/docs/steam-credentials) section
+    > * Steam accounts with [Family View](https://store.steampowered.com/parental/) _(parental restrictions)_ enabled will also have a `steamParental` cookie that needs to be saved in SGI's settings
+    > * In some cases, Steam accounts might have a `steamMachineAuth` cookie that needs to be saved in SGI's settings
+</details>
+
+<details>
+    <summary>"Missing card farming credentials in "settings > card farming""</summary>
+    > SGI requires your Steam community credentials for the account that you plan to farm cards on to see if games in your library have card drops remaining or not. Read the [Steam Credentials](/docs/steam-credentials) section for more information.
+</details>
+
+<details>
+    <summary>"Card farming credentials need to be updated in "settings > card farming""</summary>
+    > From time to time the cookies you supply to SGI will expire for several reasons and they will need to be updated. Follow the [Steam Credentials](/docs/steam-credentials) steps to get the updated cookies.
 </details>
