@@ -1,3 +1,9 @@
+<!-- 2.2.9 -->
+
+### Changes in v2.2.9
+
+- Improve chat polling for user status and typing indicators
+
 <!-- 2.2.8 -->
 
 ### Changes in v2.2.8
