@@ -28,12 +28,15 @@ export function useMessageOperations({
   handleDeleteMessage: (msgId: string, msgUserId: string) => Promise<string | null | void>
   handleEditMessage: (msgId: string, newContent: string) => Promise<void>
 } {
-  const { supabase } = useSupabase()
+  const { supabase, broadcastStopTyping } = useSupabase()
 
   const handleSendMessage = async (message: string, replyToId?: string | null): Promise<void> => {
     try {
       if (!message.trim()) return
       const steamId = userSummary?.steamId || crypto.randomUUID()
+
+      // Broadcast stop typing when sending message
+      broadcastStopTyping()
 
       // Upsert user to 'users' table before sending message
       const { data: existingUser, error: userFetchError } = await supabase
@@ -82,6 +85,21 @@ export function useMessageOperations({
         }
       }
 
+      // Fetch reply data BEFORE creating the optimistic message
+      let replyToData: ChatMessageType | null = null
+      if (replyToId) {
+        try {
+          const { data, error: replyError } = await supabase.from('messages').select('*').eq('id', replyToId).single()
+
+          if (!replyError && data) {
+            replyToData = data as ChatMessageType
+          }
+        } catch (error) {
+          console.error('Error fetching reply data:', error)
+          logEvent(`[Error] in fetching reply data: ${error}`)
+        }
+      }
+
       const tempId = `temp-${Date.now()}`
       const tempMessage: ChatMessageType = {
         id: tempId,
@@ -90,11 +108,8 @@ export function useMessageOperations({
         message,
         created_at: new Date().toISOString(),
         avatar_url: userSummary?.avatar || undefined,
-      }
-
-      // Only add reply_to_id if it exists
-      if (replyToId) {
-        tempMessage.reply_to_id = replyToId
+        reply_to_id: replyToId || undefined,
+        reply_to: replyToData || undefined,
       }
 
       setMessages(prev => {

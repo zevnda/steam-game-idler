@@ -1,7 +1,7 @@
 import type { Dispatch, SetStateAction } from 'react'
 
 import { addToast } from '@heroui/react'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 import { useSupabase } from '@/components/contexts/SupabaseContext'
 import { logEvent } from '@/utils/tasks'
@@ -29,6 +29,7 @@ export function useMessageReactions({ userSteamId }: UseMessageReactionsParams):
 } {
   const { supabase } = useSupabase()
   const [reactions, setReactions] = useState<MessageReactions>({})
+  const reactionDebounceRef = useRef<Map<string, NodeJS.Timeout>>(new Map())
 
   // Get all reactions for a message
   const getMessageReactions = (messageId: string): MessageReaction[] => {
@@ -43,13 +44,21 @@ export function useMessageReactions({ userSteamId }: UseMessageReactionsParams):
 
   // Add a reaction to a message
   const handleAddReaction = async (messageId: string, emoji: string): Promise<void> => {
+    const key = `${messageId}-${emoji}`
+
     try {
       if (!userSteamId) {
         addToast({ title: 'You must be logged in to react', color: 'danger' })
         return
       }
 
-      // Optimistically update UI
+      // Clear existing debounce for this message+emoji
+      if (reactionDebounceRef.current.has(key)) {
+        clearTimeout(reactionDebounceRef.current.get(key)!)
+        reactionDebounceRef.current.delete(key)
+      }
+
+      // Optimistically update UI immediately
       setReactions(prev => {
         const messageReactions = prev[messageId] || []
         const existingReaction = messageReactions.find(r => r.emoji === emoji)
@@ -89,83 +98,131 @@ export function useMessageReactions({ userSteamId }: UseMessageReactionsParams):
         }
       })
 
-      // Fetch current reactions from database
-      const { data: message, error: fetchError } = await supabase
-        .from('messages')
-        .select('reactions')
-        .eq('id', messageId)
-        .single()
+      // Debounce the actual database update (300ms)
+      const timeout = setTimeout(async () => {
+        try {
+          // Fetch current reactions from database
+          const { data: message, error: fetchError } = await supabase
+            .from('messages')
+            .select('reactions')
+            .eq('id', messageId)
+            .single()
 
-      if (fetchError) {
-        console.error('Error fetching message reactions:', fetchError)
-        logEvent(`[Error] in fetchMessageReactions: ${fetchError.message}`)
-        addToast({ title: 'Failed to add reaction', color: 'danger' })
-        return
-      }
-
-      const currentReactions = (message?.reactions as MessageReaction[]) || []
-      const existingReaction = currentReactions.find(r => r.emoji === emoji)
-
-      let updatedReactions: MessageReaction[]
-
-      if (existingReaction) {
-        // User already reacted with this emoji
-        if (existingReaction.user_ids.includes(userSteamId)) {
-          return
-        }
-
-        // Add user to existing reaction
-        updatedReactions = currentReactions.map(r =>
-          r.emoji === emoji
-            ? {
-                ...r,
-                user_ids: [...r.user_ids, userSteamId],
-                count: r.count + 1,
-              }
-            : r,
-        )
-      } else {
-        // Create new reaction
-        updatedReactions = [
-          ...currentReactions,
-          {
-            emoji,
-            user_ids: [userSteamId],
-            count: 1,
-          },
-        ]
-      }
-
-      // Update database
-      const { error: updateError } = await supabase
-        .from('messages')
-        .update({ reactions: updatedReactions })
-        .eq('id', messageId)
-
-      if (updateError) {
-        console.error('Error updating message reactions:', updateError)
-        logEvent(`[Error] in updateMessageReactions: ${updateError.message}`)
-        addToast({ title: 'Failed to add reaction', color: 'danger' })
-
-        // Revert optimistic update
-        setReactions(prev => {
-          const messageReactions = prev[messageId] || []
-          return {
-            ...prev,
-            [messageId]: messageReactions
-              .map(r =>
-                r.emoji === emoji
-                  ? {
-                      ...r,
-                      user_ids: r.user_ids.filter(id => id !== userSteamId),
-                      count: r.count - 1,
+          if (fetchError) {
+            console.error('Error fetching message reactions:', fetchError)
+            logEvent(`[Error] in fetchMessageReactions: ${fetchError.message}`)
+            addToast({ title: 'Failed to add reaction', color: 'danger' })
+            // Revert optimistic update
+            setReactions(prev => {
+              const messageReactions = prev[messageId] || []
+              return {
+                ...prev,
+                [messageId]: messageReactions
+                  .map(r => {
+                    if (r.emoji === emoji) {
+                      const newUserIds = r.user_ids.filter(id => id !== userSteamId)
+                      return newUserIds.length > 0 ? { ...r, user_ids: newUserIds, count: newUserIds.length } : null
                     }
-                  : r,
-              )
-              .filter(r => r.count > 0),
+                    return r
+                  })
+                  .filter(Boolean) as MessageReaction[],
+              }
+            })
+            reactionDebounceRef.current.delete(key)
+            return
           }
-        })
-      }
+
+          const currentReactions = (message?.reactions as MessageReaction[]) || []
+          const existingReaction = currentReactions.find(r => r.emoji === emoji)
+
+          let updatedReactions: MessageReaction[]
+
+          if (existingReaction) {
+            // User already reacted with this emoji
+            if (existingReaction.user_ids.includes(userSteamId)) {
+              reactionDebounceRef.current.delete(key)
+              return
+            }
+
+            // Add user to existing reaction
+            updatedReactions = currentReactions.map(r =>
+              r.emoji === emoji
+                ? {
+                    ...r,
+                    user_ids: [...r.user_ids, userSteamId],
+                    count: r.count + 1,
+                  }
+                : r,
+            )
+          } else {
+            // Create new reaction
+            updatedReactions = [
+              ...currentReactions,
+              {
+                emoji,
+                user_ids: [userSteamId],
+                count: 1,
+              },
+            ]
+          }
+
+          // Update database
+          const { error: updateError } = await supabase
+            .from('messages')
+            .update({ reactions: updatedReactions })
+            .eq('id', messageId)
+
+          if (updateError) {
+            console.error('Error updating message reactions:', updateError)
+            logEvent(`[Error] in updateMessageReactions: ${updateError.message}`)
+            addToast({ title: 'Failed to add reaction', color: 'danger' })
+
+            // Revert optimistic update
+            setReactions(prev => {
+              const messageReactions = prev[messageId] || []
+              return {
+                ...prev,
+                [messageId]: messageReactions
+                  .map(r =>
+                    r.emoji === emoji
+                      ? {
+                          ...r,
+                          user_ids: r.user_ids.filter(id => id !== userSteamId),
+                          count: r.count - 1,
+                        }
+                      : r,
+                  )
+                  .filter(r => r.count > 0),
+              }
+            })
+          }
+
+          reactionDebounceRef.current.delete(key)
+        } catch (error) {
+          console.error('Error in debounced reaction update:', error)
+          logEvent(`[Error] in debounced reaction update: ${error}`)
+          addToast({ title: 'Failed to add reaction', color: 'danger' })
+          // Revert optimistic update
+          setReactions(prev => {
+            const messageReactions = prev[messageId] || []
+            return {
+              ...prev,
+              [messageId]: messageReactions
+                .map(r => {
+                  if (r.emoji === emoji) {
+                    const newUserIds = r.user_ids.filter(id => id !== userSteamId)
+                    return newUserIds.length > 0 ? { ...r, user_ids: newUserIds, count: newUserIds.length } : null
+                  }
+                  return r
+                })
+                .filter(Boolean) as MessageReaction[],
+            }
+          })
+          reactionDebounceRef.current.delete(key)
+        }
+      }, 300)
+
+      reactionDebounceRef.current.set(key, timeout)
     } catch (error) {
       console.error('Error in handleAddReaction:', error)
       logEvent(`[Error] in handleAddReaction: ${error}`)
