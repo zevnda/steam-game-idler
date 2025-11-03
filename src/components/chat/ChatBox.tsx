@@ -81,6 +81,7 @@ export default function ChatBox(): ReactElement {
     setReplyToMessage(msg)
     setTimeout(() => {
       scrollToBottom()
+      inputRef.current?.focus()
     }, 0)
   }
 
