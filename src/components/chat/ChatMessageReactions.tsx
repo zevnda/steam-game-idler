@@ -72,7 +72,12 @@ export default function ChatMessageReactions({
           </button>
         </PopoverTrigger>
         <PopoverContent className='p-0 border-0 bg-transparent'>
-          <Picker data={data} onEmojiSelect={handleEmojiSelect} />
+          <Picker
+            autoFocus
+            data={data}
+            onEmojiSelect={handleEmojiSelect}
+            onClickOutside={() => setShowEmojiPicker(false)}
+          />
         </PopoverContent>
       </Popover>
     </div>

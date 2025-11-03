@@ -364,7 +364,12 @@ export default function ChatInput({
 
                 {showEmojiPicker && (
                   <div className='absolute -right-2 bottom-9 mb-2 z-50'>
-                    <Picker data={emojiData} onEmojiSelect={insertEmoji} />
+                    <Picker
+                      autoFocus
+                      data={emojiData}
+                      onEmojiSelect={insertEmoji}
+                      onClickOutside={() => setShowEmojiPicker(false)}
+                    />
                   </div>
                 )}
 
