@@ -157,6 +157,7 @@ const ChatMessages = ({
                     isShiftPressed={isShiftPressed}
                     onAddReaction={onAddReaction}
                     onRemoveReaction={onRemoveReaction}
+                    messagesContainerRef={messagesContainerRef}
                   />
                 )
               })}

@@ -93,13 +93,16 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
 
   const supabaseRef = useRef(
     createClient(
-      'https://inbxfhxkrhwiybnephlq.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImluYnhmaHhrcmh3aXlibmVwaGxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3Njc5NjgsImV4cCI6MjA3NzM0Mzk2OH0.xUbDMdMUk7S2FgRZu8itWr4WsIV41TX-sNgilXiZg_Y',
+      'https://zirhwhmtmhindenkzsoh.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inppcmh3aG10bWhpbmRlbmt6c29oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIxNTQ4NDYsImV4cCI6MjA3NzczMDg0Nn0.x2VF88-3oA3OsrK5WGR7hdlonCovQqCAB5d4w7j8f1k',
     ),
   )
 
   const channelRef = useRef<RealtimeChannel | null>(null)
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const renewTypingTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const isTypingRef = useRef(false)
+  const lastTypingBroadcastRef = useRef<number>(0)
 
   const broadcastTyping = (): void => {
     try {
@@ -110,28 +113,51 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
         username: userSummary.personaName || 'Unknown',
       }
 
-      channelRef.current.send({
-        type: 'broadcast',
-        event: 'typing',
-        payload: currentUser,
-      })
+      const now = Date.now()
+      const timeSinceLastBroadcast = now - lastTypingBroadcastRef.current
 
-      // Add self locally
-      setTypingUsers(prev => {
-        const exists = prev.some(u => u.user_id === currentUser.user_id)
-        if (!exists) {
-          return [...prev, currentUser]
-        }
-        return prev
-      })
+      // Only broadcast if we haven't broadcasted recently (first keystroke or renewal)
+      if (!isTypingRef.current || timeSinceLastBroadcast >= 5000) {
+        channelRef.current.send({
+          type: 'broadcast',
+          event: 'typing',
+          payload: currentUser,
+        })
 
-      // Clear previous timeout
+        lastTypingBroadcastRef.current = now
+        isTypingRef.current = true
+
+        // Add self locally
+        setTypingUsers(prev => {
+          const exists = prev.some(u => u.user_id === currentUser.user_id)
+          if (!exists) {
+            return [...prev, currentUser]
+          }
+          return prev
+        })
+      }
+
+      // Clear previous timeouts
       if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current)
+      if (renewTypingTimeoutRef.current) clearTimeout(renewTypingTimeoutRef.current)
 
-      // After 3s of inactivity, broadcast stop_typing
+      // Renew typing indicator after 5 seconds if still typing
+      renewTypingTimeoutRef.current = setTimeout(() => {
+        if (isTypingRef.current) {
+          // User is still typing after 5s, renew the indicator
+          channelRef.current?.send({
+            type: 'broadcast',
+            event: 'typing',
+            payload: currentUser,
+          })
+          lastTypingBroadcastRef.current = Date.now()
+        }
+      }, 5000)
+
+      // Stop typing after 5s of inactivity (for auto-clear if user stops without sending)
       typingTimeoutRef.current = setTimeout(() => {
         broadcastStopTyping()
-      }, 3000)
+      }, 5000)
     } catch (error) {
       console.error('Error in broadcastTyping:', error)
       logEvent(`[Error] in broadcastTyping: ${error}`)
@@ -147,14 +173,23 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
         username: userSummary.personaName || 'Unknown',
       }
 
-      channelRef.current.send({
-        type: 'broadcast',
-        event: 'stop_typing',
-        payload: currentUser,
-      })
+      if (isTypingRef.current) {
+        channelRef.current.send({
+          type: 'broadcast',
+          event: 'stop_typing',
+          payload: currentUser,
+        })
+
+        isTypingRef.current = false
+        lastTypingBroadcastRef.current = 0
+      }
 
       // Remove self locally
       setTypingUsers(prev => prev.filter(u => u.user_id !== currentUser.user_id))
+
+      // Clear timeouts
+      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current)
+      if (renewTypingTimeoutRef.current) clearTimeout(renewTypingTimeoutRef.current)
     } catch (error) {
       console.error('Error in broadcastStopTyping:', error)
       logEvent(`[Error] in broadcastStopTyping: ${error}`)
@@ -509,6 +544,9 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
     return () => {
       if (typingTimeoutRef.current) {
         clearTimeout(typingTimeoutRef.current)
+      }
+      if (renewTypingTimeoutRef.current) {
+        clearTimeout(renewTypingTimeoutRef.current)
       }
       supabase.removeChannel(channel)
     }

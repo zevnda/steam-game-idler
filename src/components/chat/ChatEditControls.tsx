@@ -2,7 +2,9 @@ import type { ReactElement, RefObject } from 'react'
 
 import { cn, Textarea } from '@heroui/react'
 import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
+import { useMarkdownShortcuts } from '@/hooks/chat/useMarkdownShortcuts'
 import { logEvent } from '@/utils/tasks'
 
 interface ChatEditControlsProps {
@@ -22,8 +24,12 @@ export default function ChatEditControls({
   onCancel,
   textareaRef,
 }: ChatEditControlsProps): ReactElement {
+  const { t } = useTranslation()
   const innerTextareaRef = useRef<HTMLTextAreaElement | null>(null)
   const [localEditedMessage, setLocalEditedMessage] = useState(editedMessage)
+
+  // Add markdown shortcuts hook
+  useMarkdownShortcuts(innerTextareaRef, localEditedMessage, setLocalEditedMessage)
 
   // Sync local state when editedMessage prop changes
   useEffect(() => {
@@ -96,19 +102,26 @@ export default function ChatEditControls({
         }}
         autoFocus
       />
-      <div className='flex gap-2'>
-        <button type='submit' className='text-dynamic hover:text-dynamic-hover rounded text-[10px] cursor-pointer'>
-          Save
-        </button>
+      <div className='flex items-center gap-1'>
+        <span className='text-[9px] text-content font-light'>escape to</span>
         <button
           type='button'
-          className='text-dynamic hover:text-dynamic-hover rounded text-[10px] cursor-pointer'
+          className='text-dynamic hover:text-dynamic-hover rounded text-[9px] cursor-pointer lowercase'
           onClick={() => {
             setLocalEditedMessage(editedMessage)
             onCancel()
           }}
         >
-          Cancel
+          {t('common.cancel')}
+        </button>
+        <div className='w-0.5 h-0.5 bg-content rounded-full' />
+
+        <span className='text-[9px] text-content font-light'>enter to</span>
+        <button
+          type='submit'
+          className='text-dynamic hover:text-dynamic-hover rounded text-[9px] cursor-pointer lowercase'
+        >
+          {t('common.save')}
         </button>
       </div>
     </form>

@@ -20,8 +20,6 @@ interface SideBarHook {
   setActivePage: Dispatch<SetStateAction<ActivePageType>>
   openConfirmation: () => void
   handleLogout: (onClose: () => void) => Promise<void>
-  hasUnreadChat: boolean
-  setHasUnreadChat: Dispatch<SetStateAction<boolean>>
   hasBeenMentionedSinceLastRead: boolean
   setHasBeenMentionedSinceLastRead: Dispatch<SetStateAction<boolean>>
 }
@@ -35,7 +33,6 @@ export default function useSideBar(
   const { setCurrentTab } = useNavigationContext()
   const { userSummary, setUserSummary } = useUserContext()
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
-  const [hasUnreadChat, setHasUnreadChat] = useState(false)
   const [hasBeenMentionedSinceLastRead, setHasBeenMentionedSinceLastRead] = useState(false)
 
   const openConfirmation = (): void => {
@@ -88,8 +85,6 @@ export default function useSideBar(
     setActivePage,
     openConfirmation,
     handleLogout,
-    hasUnreadChat,
-    setHasUnreadChat,
     hasBeenMentionedSinceLastRead,
     setHasBeenMentionedSinceLastRead,
   }

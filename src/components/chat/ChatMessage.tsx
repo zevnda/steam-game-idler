@@ -39,6 +39,7 @@ interface ChatMessageProps {
   isShiftPressed?: boolean
   onAddReaction?: (messageId: string, emoji: string) => void
   onRemoveReaction?: (messageId: string, emoji: string) => void
+  messagesContainerRef?: RefObject<HTMLDivElement>
 }
 
 export interface Message {
@@ -58,8 +59,8 @@ export interface Message {
 }
 
 const supabase = createClient(
-  'https://inbxfhxkrhwiybnephlq.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImluYnhmaHhrcmh3aXlibmVwaGxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3Njc5NjgsImV4cCI6MjA3NzM0Mzk2OH0.xUbDMdMUk7S2FgRZu8itWr4WsIV41TX-sNgilXiZg_Y',
+  'https://zirhwhmtmhindenkzsoh.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inppcmh3aG10bWhpbmRlbmt6c29oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIxNTQ4NDYsImV4cCI6MjA3NzczMDg0Nn0.x2VF88-3oA3OsrK5WGR7hdlonCovQqCAB5d4w7j8f1k',
 )
 
 export default function ChatMessage({
@@ -87,6 +88,7 @@ export default function ChatMessage({
   scrollToMessage,
   onAddReaction,
   onRemoveReaction,
+  messagesContainerRef,
 }: ChatMessageProps): ReactElement {
   // Use pre-fetched reply data or fallback to searching in msgs array
   const replyToMessage = msg.reply_to || (msg.reply_to_id ? msgs.find(m => m.id === msg.reply_to_id) : null)
@@ -264,6 +266,23 @@ export default function ChatMessage({
               ? () => {
                   setEditingMessageId(msg.id)
                   setEditedMessage(msg.message)
+                  // Scroll the message into view after a brief delay to ensure textarea is rendered
+                  setTimeout(() => {
+                    const messageElement = document.querySelector(`[data-message-id="${msg.id}"]`)
+                    if (messageElement && messagesContainerRef?.current) {
+                      const container = messagesContainerRef.current
+                      const messageRect = messageElement.getBoundingClientRect()
+                      const containerRect = container.getBoundingClientRect()
+
+                      // Check if message is partially or fully out of view
+                      const isOutOfView =
+                        messageRect.bottom > containerRect.bottom || messageRect.top < containerRect.top
+
+                      if (isOutOfView) {
+                        messageElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+                      }
+                    }
+                  }, 100)
                 }
               : undefined
           }
