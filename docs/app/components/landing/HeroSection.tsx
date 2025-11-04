@@ -153,6 +153,7 @@ export default function HeroSection() {
             {/* GitHub link */}
             <div className='flex justify-center lg:justify-start px-4 sm:px-0'>
               <Link
+                prefetch={false}
                 href='https://github.com/zevnda/steam-game-idler'
                 target='_blank'
                 rel='noopener noreferrer'
@@ -167,6 +168,7 @@ export default function HeroSection() {
             {/* Action buttons */}
             <div className='flex flex-col sm:flex-row gap-3 md:gap-4 justify-center lg:justify-start px-4 sm:px-0'>
               <Link
+                prefetch={false}
                 href='https://github.com/zevnda/steam-game-idler/releases/latest'
                 className='group inline-flex items-center justify-center px-6 sm:px-6 md:px-8 py-3 sm:py-3 md:py-4 bg-linear-to-r from-purple-500 to-pink-500 text-white font-bold rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all duration-200 transform hover:scale-105 shadow-lg text-sm md:text-base'
               >
@@ -176,6 +178,7 @@ export default function HeroSection() {
               </Link>
 
               <Link
+                prefetch={false}
                 href='/docs'
                 className='inline-flex items-center justify-center px-6 sm:px-6 md:px-8 py-3 sm:py-3 md:py-4 bg-white border-2 border-purple-300 text-purple-700 font-bold rounded-xl hover:bg-purple-50 hover:border-purple-400 transition-colors duration-200 shadow-md text-sm md:text-base'
               >

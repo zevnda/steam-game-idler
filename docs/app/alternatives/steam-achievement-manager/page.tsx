@@ -103,6 +103,7 @@ export default function page(): ReactElement {
       <section className='py-16 sm:py-20 md:py-24 relative overflow-hidden'>
         {/* Go Back Button */}
         <Link
+          prefetch={false}
           href='/'
           className='fixed top-6 left-6 z-50 inline-flex items-center px-4 py-2 bg-white/90 hover:bg-white border border-gray-200 rounded-lg text-gray-700 hover:text-gray-900 font-medium transition-all duration-200 shadow-sm hover:shadow-md'
         >
@@ -260,6 +261,7 @@ export default function page(): ReactElement {
 
             <div className='flex flex-col sm:flex-row gap-4 justify-center'>
               <Link
+                prefetch={false}
                 href='https://github.com/zevnda/steam-game-idler/releases/latest'
                 className='inline-flex items-center justify-center px-8 py-4 bg-white text-green-700 font-bold rounded-xl hover:bg-gray-100 transition-colors duration-200 shadow-lg'
               >
@@ -269,6 +271,7 @@ export default function page(): ReactElement {
               </Link>
 
               <Link
+                prefetch={false}
                 href='/docs'
                 className='inline-flex items-center justify-center px-8 py-4 bg-white/20 text-white font-bold rounded-xl hover:bg-white/30 transition-colors duration-200'
               >

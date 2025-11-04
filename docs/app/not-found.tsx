@@ -19,6 +19,7 @@ export default function NotFound(): ReactElement {
       <p className='text-2xl font-semibold'>Uh-oh!</p>
       <p>The page you&apos;re looking for doesn&apos;t exist</p>
       <Link
+        prefetch={false}
         className='mt-5'
         style={{
           ...styles,

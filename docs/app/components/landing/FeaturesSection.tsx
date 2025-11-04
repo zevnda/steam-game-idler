@@ -78,7 +78,7 @@ export default function FeaturesSection() {
               key={feature.title}
               className={`group block relative overflow-hidden bg-white border-2 ${feature.borderColor} rounded-3xl p-8 hover:shadow-lg transition-all duration-200 transform hover:-translate-y-1 hover:scale-[1.01]`}
             >
-              <Link href={feature.link} className='block'>
+              <Link prefetch={false} href={feature.link} className='block'>
                 {/* Background gradient */}
                 <div
                   className={`absolute inset-0 bg-linear-to-br ${feature.bgGradient} opacity-0 group-hover:opacity-50 transition-opacity duration-200`}
