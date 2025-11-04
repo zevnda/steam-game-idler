@@ -1,8 +1,8 @@
 import type { TradingCard } from '@/types'
-import type { ReactElement } from 'react'
+import type { ReactElement, RefObject } from 'react'
 
 import { Checkbox, cn, Spinner } from '@heroui/react'
-import { memo, useEffect, useMemo, useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Image from 'next/image'
 import { useTranslation } from 'react-i18next'
 import { FaCheckCircle } from 'react-icons/fa'
@@ -20,90 +20,109 @@ import ExtLink from '@/components/ui/ExtLink'
 import useTradingCardsList from '@/hooks/trading-cards/useTradingCardsList'
 
 interface RowData {
-  tradingCardContext: ReturnType<typeof useTradingCardsList> & { filteredTradingCardsList: TradingCard[] }
-  t: (key: string, options?: Record<string, number>) => string
+  filteredTradingCardsList: TradingCard[]
+  selectedCards: Record<string, boolean>
+  changedCardPrices: Record<string, number>
   lockedCards: string[]
   cardsPerRow: number
+  contextRef: RefObject<ReturnType<typeof useTradingCardsList>>
+  tRef: RefObject<(key: string, options?: Record<string, number>) => string>
   handleLockCard: (id: string) => void
 }
 
 interface RowProps {
   index: number
   data: RowData
+  style: React.CSSProperties
 }
 
-const Row = memo(({ index, data }: RowProps): ReactElement | null => {
-  const { tradingCardContext, t, lockedCards, handleLockCard } = data
+const Row = memo(
+  ({ index, data, style }: RowProps): ReactElement | null => {
+    const { filteredTradingCardsList, selectedCards, lockedCards, cardsPerRow, contextRef, tRef, handleLockCard } = data
 
-  const cardsPerRow = data.cardsPerRow || 6
-  const items = []
-  for (let i = 0; i < cardsPerRow; i++) {
-    const item = tradingCardContext.filteredTradingCardsList[index * cardsPerRow + i]
-    items.push(item)
-  }
+    const context = contextRef.current
+    const t = tRef.current
 
-  if (items.every(item => !item)) return null
+    const items = []
+    for (let i = 0; i < cardsPerRow; i++) {
+      const item = filteredTradingCardsList[index * cardsPerRow + i]
+      items.push(item)
+    }
 
-  const renderCard = (item: TradingCard): ReactElement | null => {
-    if (!item) return null
+    if (items.every(item => !item)) return null
 
-    const isLocked = lockedCards.includes(item.id)
-    const isFoil = item.foil
+    const renderCard = (item: TradingCard): ReactElement | null => {
+      if (!item) return null
 
-    return (
-      <div
-        key={item.assetid}
-        className={cn(
-          'flex flex-col justify-start items-center bg-sidebar mb-2 rounded-lg border border-border p-2',
-          lockedCards.includes(item.id) && 'opacity-50',
-          isFoil && 'holo-bg',
-        )}
-      >
-        <div className='relative flex justify-between items-center w-full mb-2'>
-          <Checkbox
-            size='sm'
-            name={item.assetid}
-            isSelected={tradingCardContext.selectedCards[item.assetid] || false}
-            onChange={() => tradingCardContext.toggleCardSelection(item.assetid)}
-            classNames={{
-              hiddenInput: 'w-fit',
-              wrapper: cn(
-                'before:group-data-[selected=true]:!border-dynamic',
-                'before:border-altwhite after:bg-dynamic m-0',
-              ),
-              label: 'hidden',
-            }}
-          />
+      const isLocked = lockedCards.includes(item.id)
+      const isFoil = item.foil
 
-          <div className='flex items-center gap-1'>
-            <CustomTooltip content={t('tradingCards.lockCard')} placement='top'>
-              <div
-                className='hover:bg-item-hover rounded-full p-1 cursor-pointer duration-200'
-                onClick={() => handleLockCard(item.id)}
-              >
-                {isLocked ? <TbLock fontSize={14} className='text-yellow-500' /> : <TbLockOpen fontSize={14} />}
-              </div>
-            </CustomTooltip>
+      return (
+        <div
+          key={item.assetid}
+          className={cn(
+            'flex flex-col justify-start items-center bg-sidebar mb-2 rounded-lg border border-border p-2',
+            lockedCards.includes(item.id) && 'opacity-50',
+            isFoil && 'holo-bg',
+          )}
+        >
+          <div className='relative flex justify-between items-center w-full mb-2'>
+            <Checkbox
+              size='sm'
+              name={item.assetid}
+              isSelected={selectedCards[item.assetid] || false}
+              onChange={() => context.toggleCardSelection(item.assetid)}
+              classNames={{
+                hiddenInput: 'w-fit',
+                wrapper: cn(
+                  'before:group-data-[selected=true]:!border-dynamic',
+                  'before:border-altwhite after:bg-dynamic m-0',
+                ),
+                label: 'hidden',
+              }}
+            />
 
-            <CustomTooltip content={t('tradingCards.cardExchange')} placement='top'>
-              <div>
-                <ExtLink href={`https://www.steamcardexchange.net/index.php?gamepage-appid-${item.appid}`}>
-                  <div className='hover:bg-item-hover rounded-full p-1.5 cursor-pointer duration-200'>
-                    <SiExpertsexchange fontSize={10} />
-                  </div>
-                </ExtLink>
-              </div>
-            </CustomTooltip>
+            <div className='flex items-center gap-1'>
+              <CustomTooltip content={t('tradingCards.lockCard')} placement='top'>
+                <div
+                  className='hover:bg-item-hover rounded-full p-1 cursor-pointer duration-200'
+                  onClick={() => handleLockCard(item.id)}
+                >
+                  {isLocked ? <TbLock fontSize={14} className='text-yellow-500' /> : <TbLockOpen fontSize={14} />}
+                </div>
+              </CustomTooltip>
+
+              <CustomTooltip content={t('tradingCards.cardExchange')} placement='top'>
+                <div>
+                  <ExtLink href={`https://www.steamcardexchange.net/index.php?gamepage-appid-${item.appid}`}>
+                    <div className='hover:bg-item-hover rounded-full p-1.5 cursor-pointer duration-200'>
+                      <SiExpertsexchange fontSize={10} />
+                    </div>
+                  </ExtLink>
+                </div>
+              </CustomTooltip>
+            </div>
           </div>
-        </div>
 
-        <CustomTooltip
-          important
-          placement='right'
-          content={
-            <div className='py-2'>
+          <CustomTooltip
+            important
+            placement='right'
+            content={
+              <div className='py-2'>
+                <Image
+                  className='w-[150px] h-auto border border-border'
+                  src={item.image}
+                  width={224}
+                  height={261}
+                  alt={`${item.appname} image`}
+                  priority={true}
+                />
+              </div>
+            }
+          >
+            <div className='flex items-center justify-center bg-input rounded-lg p-1.5 border border-border'>
               <Image
-                className='w-[150px] h-auto border border-border'
+                className='w-[80px] h-auto border border-border'
                 src={item.image}
                 width={224}
                 height={261}
@@ -111,60 +130,97 @@ const Row = memo(({ index, data }: RowProps): ReactElement | null => {
                 priority={true}
               />
             </div>
-          }
-        >
-          <div className='flex items-center justify-between bg-input rounded-lg p-1.5 border border-border'>
-            <Image
-              className='w-[80px] h-auto border border-border'
-              src={item.image}
-              width={224}
-              height={261}
-              alt={`${item.appname} image`}
-              priority={true}
-            />
-          </div>
-        </CustomTooltip>
-
-        <div className='flex flex-col items-center justify-center gap-0.5 mt-2'>
-          <p className='text-xs truncate max-w-[140px]'>{item.full_name.replace('(Trading Card)', '') || 'Unknown'}</p>
-
-          <CustomTooltip
-            content={
-              item.badge_level > 0
-                ? t('tradingCards.badgeLevel', { level: item.badge_level })
-                : t('tradingCards.noBadge')
-            }
-            placement='top'
-            important
-          >
-            <div className='flex items-center justify-center gap-1'>
-              {item.badge_level > 0 && (
-                <div className='flex items-center justify-center'>
-                  <FaCheckCircle size={12} className='text-green-400' />
-                </div>
-              )}
-              <p
-                className={cn('text-xs text-altwhite truncate max-w-[140px]', item.badge_level > 0 && 'text-green-400')}
-              >
-                {item.appname}
-              </p>
-            </div>
           </CustomTooltip>
+
+          <div className='flex flex-col items-center justify-center gap-0.5 mt-2'>
+            <p className='text-xs truncate max-w-[140px]'>
+              {item.full_name.replace('(Trading Card)', '') || 'Unknown'}
+            </p>
+
+            <CustomTooltip
+              content={
+                item.badge_level > 0
+                  ? t('tradingCards.badgeLevel', { level: item.badge_level })
+                  : t('tradingCards.noBadge')
+              }
+              placement='top'
+              important
+            >
+              <div className='flex items-center justify-center gap-1'>
+                {item.badge_level > 0 && (
+                  <div className='flex items-center justify-center'>
+                    <FaCheckCircle size={12} className='text-green-400' />
+                  </div>
+                )}
+                <p
+                  className={cn(
+                    'text-xs text-altwhite truncate max-w-[140px]',
+                    item.badge_level > 0 && 'text-green-400',
+                  )}
+                >
+                  {item.appname}
+                </p>
+              </div>
+            </CustomTooltip>
+          </div>
+
+          <PriceInput item={item} tradingCardContext={context} />
+
+          <PriceData item={item} tradingCardContext={context} />
         </div>
+      )
+    }
 
-        <PriceInput item={item} tradingCardContext={tradingCardContext} />
-
-        <PriceData item={item} tradingCardContext={tradingCardContext} />
+    return (
+      <div style={style} className={`grid gap-4 px-6 pt-2 ${cardsPerRow === 9 ? 'grid-cols-9' : 'grid-cols-6'}`}>
+        {items.map((item, idx) => renderCard(item))}
       </div>
     )
-  }
+  },
+  (prevProps, nextProps) => {
+    // Custom comparison to prevent unnecessary re-renders
+    if (prevProps.index !== nextProps.index) return false
+    if (prevProps.data.cardsPerRow !== nextProps.data.cardsPerRow) return false
 
-  return (
-    <div className={`grid gap-4 px-6 pt-2 ${cardsPerRow === 9 ? 'grid-cols-9' : 'grid-cols-6'}`}>
-      {items.map((item, idx) => renderCard(item))}
-    </div>
-  )
-})
+    // Check if the actual cards in this row have changed
+    const prevCards = []
+    const nextCards = []
+    const cardsPerRow = prevProps.data.cardsPerRow || 6
+
+    for (let i = 0; i < cardsPerRow; i++) {
+      prevCards.push(prevProps.data.filteredTradingCardsList[prevProps.index * cardsPerRow + i])
+      nextCards.push(nextProps.data.filteredTradingCardsList[nextProps.index * cardsPerRow + i])
+    }
+
+    // Compare cards by their assetids
+    for (let i = 0; i < cardsPerRow; i++) {
+      const prevCard = prevCards[i]
+      const nextCard = nextCards[i]
+
+      if (prevCard?.assetid !== nextCard?.assetid) return false
+
+      // If card exists, check relevant properties
+      if (prevCard && nextCard) {
+        // Check if selection state changed
+        if (prevProps.data.selectedCards[prevCard.assetid] !== nextProps.data.selectedCards[nextCard.assetid]) {
+          return false
+        }
+
+        // Check if price changed
+        if (prevProps.data.changedCardPrices[prevCard.assetid] !== nextProps.data.changedCardPrices[nextCard.assetid]) {
+          return false
+        }
+
+        // Check if locked state changed
+        if (prevProps.data.lockedCards.includes(prevCard.id) !== nextProps.data.lockedCards.includes(nextCard.id)) {
+          return false
+        }
+      }
+    }
+
+    return true // Props are equal, don't re-render
+  },
+)
 
 Row.displayName = 'Row'
 
@@ -176,6 +232,19 @@ export default function TradingCardsList(): ReactElement {
   const [lockedCards, setLockedCards] = useState<string[]>([])
   const [cardsPerRow, setCardsPerRow] = useState(6)
   const tradingCardContext = useTradingCardsList()
+
+  // Use refs to avoid re-creating itemData on every render
+  const contextRef = useRef(tradingCardContext)
+  const tRef = useRef(t)
+
+  // Keep refs up to date
+  useEffect(() => {
+    contextRef.current = tradingCardContext
+  }, [tradingCardContext])
+
+  useEffect(() => {
+    tRef.current = t
+  }, [t])
 
   useEffect(() => {
     setWindowInnerHeight(window.innerHeight)
@@ -204,13 +273,13 @@ export default function TradingCardsList(): ReactElement {
     return () => window.removeEventListener('resize', updateCardsPerRow)
   }, [])
 
-  const handleLockCard = (id: string): void => {
+  const handleLockCard = useCallback((id: string): void => {
     setLockedCards(prev => {
       const newLockedCards = prev.includes(id) ? prev.filter(cardId => cardId !== id) : [...prev, id]
       localStorage.setItem('lockedTradingCards', JSON.stringify(newLockedCards))
       return newLockedCards
     })
-  }
+  }, [])
 
   const filteredTradingCardsList = useMemo(
     () =>
@@ -222,16 +291,26 @@ export default function TradingCardsList(): ReactElement {
     [tradingCardContext.tradingCardsList, tradingCardQueryValue],
   )
 
-  const itemData: RowData & { cardsPerRow: number } = {
-    tradingCardContext: {
-      ...tradingCardContext,
+  const itemData: RowData = useMemo(
+    () => ({
       filteredTradingCardsList,
-    },
-    t,
-    lockedCards,
-    handleLockCard,
-    cardsPerRow,
-  }
+      selectedCards: tradingCardContext.selectedCards,
+      changedCardPrices: tradingCardContext.changedCardPrices,
+      lockedCards,
+      cardsPerRow,
+      contextRef,
+      tRef,
+      handleLockCard,
+    }),
+    [
+      filteredTradingCardsList,
+      tradingCardContext.selectedCards,
+      tradingCardContext.changedCardPrices,
+      lockedCards,
+      cardsPerRow,
+      handleLockCard,
+    ],
+  )
 
   const selectedCardsWithPrice = useMemo(
     () =>
