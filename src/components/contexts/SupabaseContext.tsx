@@ -2,7 +2,7 @@ import type { UserSummary } from '@/types'
 import type { RealtimeChannel, SupabaseClient } from '@supabase/supabase-js'
 import type { Dispatch, ReactNode, SetStateAction } from 'react'
 
-import { createContext, useContext, useEffect, useRef, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
 
 import { useNavigationContext } from '@/components/contexts/NavigationContext'
@@ -35,6 +35,7 @@ export interface ChatUser {
   avatar_url?: string
   is_banned?: boolean
   last_seen?: string
+  lastTyping?: number
 }
 
 interface SupabaseContextType {
@@ -98,7 +99,39 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
   const isTypingRef = useRef(false)
   const lastTypingBroadcastRef = useRef<number>(0)
 
-  const broadcastTyping = (): void => {
+  const broadcastStopTyping = useCallback((): void => {
+    try {
+      if (!userSummary?.steamId || !channelRef.current) return
+
+      const currentUser = {
+        user_id: userSummary.steamId,
+        username: userSummary.personaName || 'Unknown',
+      }
+
+      if (isTypingRef.current) {
+        channelRef.current.send({
+          type: 'broadcast',
+          event: 'stop_typing',
+          payload: currentUser,
+        })
+
+        isTypingRef.current = false
+        lastTypingBroadcastRef.current = 0
+      }
+
+      // Remove self locally
+      setTypingUsers(prev => prev.filter(u => u.user_id !== currentUser.user_id))
+
+      // Clear timeouts
+      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current)
+      if (renewTypingTimeoutRef.current) clearTimeout(renewTypingTimeoutRef.current)
+    } catch (error) {
+      console.error('Error in broadcastStopTyping:', error)
+      logEvent(`[Error] in broadcastStopTyping: ${error}`)
+    }
+  }, [userSummary?.steamId, userSummary?.personaName])
+
+  const broadcastTyping = useCallback((): void => {
     try {
       if (!userSummary?.steamId || !channelRef.current) return
 
@@ -156,39 +189,7 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
       console.error('Error in broadcastTyping:', error)
       logEvent(`[Error] in broadcastTyping: ${error}`)
     }
-  }
-
-  const broadcastStopTyping = (): void => {
-    try {
-      if (!userSummary?.steamId || !channelRef.current) return
-
-      const currentUser = {
-        user_id: userSummary.steamId,
-        username: userSummary.personaName || 'Unknown',
-      }
-
-      if (isTypingRef.current) {
-        channelRef.current.send({
-          type: 'broadcast',
-          event: 'stop_typing',
-          payload: currentUser,
-        })
-
-        isTypingRef.current = false
-        lastTypingBroadcastRef.current = 0
-      }
-
-      // Remove self locally
-      setTypingUsers(prev => prev.filter(u => u.user_id !== currentUser.user_id))
-
-      // Clear timeouts
-      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current)
-      if (renewTypingTimeoutRef.current) clearTimeout(renewTypingTimeoutRef.current)
-    } catch (error) {
-      console.error('Error in broadcastStopTyping:', error)
-      logEvent(`[Error] in broadcastStopTyping: ${error}`)
-    }
-  }
+  }, [userSummary?.steamId, userSummary?.personaName, broadcastStopTyping])
 
   // Heartbeat: Update last_seen while app is open (creates user if doesn't exist)
   useEffect(() => {
@@ -325,9 +326,47 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
     return () => clearInterval(pollInterval)
   }, [isChatActive, userSummary?.steamId])
 
+  // Cleanup typing indicator when chat becomes inactive or component unmounts
+  useEffect(() => {
+    return () => {
+      if (isTypingRef.current) {
+        broadcastStopTyping()
+      }
+    }
+  }, [isChatActive, broadcastStopTyping])
+
+  // Auto-cleanup stale typing indicators
+  useEffect(() => {
+    if (!isChatActive) return
+
+    const cleanupInterval = setInterval(() => {
+      setTypingUsers(prev => {
+        const now = Date.now()
+        // Filter out typing users whose last broadcast was more than 15 seconds ago
+        return prev.filter(user => {
+          // Keep current user's typing indicator
+          if (user.user_id === userSummary?.steamId) return true
+
+          // Remove others if they haven't renewed in 15 seconds
+          // This is a safeguard for when stop_typing broadcasts fail
+          const lastSeen = user.lastTyping || now
+          return now - lastSeen < 15000
+        })
+      })
+    }, 5000) // Check every 5 seconds
+
+    return () => clearInterval(cleanupInterval)
+  }, [isChatActive, userSummary?.steamId])
+
   useEffect(() => {
     // Only run if chat is active
-    if (!isChatActive) return
+    if (!isChatActive) {
+      // If chat becomes inactive and user was typing, stop typing
+      if (isTypingRef.current) {
+        broadcastStopTyping()
+      }
+      return
+    }
 
     const supabase = supabaseRef.current
     const steamId = userSummary?.steamId
@@ -476,10 +515,12 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
         try {
           setTypingUsers(prev => {
             const exists = prev.some(u => u.user_id === payload.payload.user_id)
-            if (!exists) {
-              return [...prev, payload.payload]
+            if (exists) {
+              // Update timestamp for existing user
+              return prev.map(u => (u.user_id === payload.payload.user_id ? { ...u, lastTyping: Date.now() } : u))
             }
-            return prev
+            // Add new typing user with timestamp
+            return [...prev, { ...payload.payload, lastTyping: Date.now() }]
           })
         } catch (error) {
           console.error('Error handling typing broadcast:', error)
@@ -497,6 +538,10 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
       .subscribe()
 
     return () => {
+      // Clean up typing indicator when channel is removed
+      if (isTypingRef.current) {
+        broadcastStopTyping()
+      }
       if (typingTimeoutRef.current) {
         clearTimeout(typingTimeoutRef.current)
       }
@@ -505,7 +550,7 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
       }
       supabase.removeChannel(channel)
     }
-  }, [userSummary?.steamId, userSummary?.personaName, isChatActive])
+  }, [userSummary?.steamId, userSummary?.personaName, isChatActive, broadcastStopTyping])
 
   return (
     <SupabaseContext.Provider
