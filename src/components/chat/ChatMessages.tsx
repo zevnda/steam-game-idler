@@ -6,6 +6,7 @@ import { memo, useEffect, useRef } from 'react'
 
 import ChatDateDivider from '@/components/chat/ChatDateDivider'
 import ChatMessage from '@/components/chat/ChatMessage'
+import Loader from '@/components/ui/Loader'
 
 export interface Message {
   id: string
@@ -111,10 +112,7 @@ const ChatMessages = ({
       className='message-render flex-1 overflow-y-auto flex flex-col overflow-x-hidden p-4 pb-1'
     >
       {Object.keys(groupedMessages).length === 0 ? (
-        <div className='flex flex-col items-center justify-center h-full text-center'>
-          <div className='text-[#b5bac1] mb-2'>No messages yet</div>
-          <div className='text-[#80848e] text-sm'>Be the first to say hi! 👋</div>
-        </div>
+        <Loader styles='w-full h-full' />
       ) : (
         <>
           {Object.entries(groupedMessages).map(([date, msgs]) => (
