@@ -3,6 +3,7 @@
 ### Changes in v2.2.10
 
 - Fixed an issue in chat where typing indicators were occasionally not being cleared correctly
+- Fixed an issue in trading card manager where the page would constantly render/unrender the last row of cards
 
 <!-- 2.2.9 -->
 
