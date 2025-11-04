@@ -1,3 +1,9 @@
+<!-- 2.2.10 -->
+
+### Changes in v2.2.10
+
+- Fixed an issue in chat where typing indicators were occasionally not being cleared correctly
+
 <!-- 2.2.9 -->
 
 ### Changes in v2.2.9
