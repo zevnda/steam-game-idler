@@ -37,6 +37,7 @@ export default function CTASection() {
           {/* Action buttons */}
           <div className='flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center mb-12 sm:mb-16 px-4 sm:px-0'>
             <Link
+              prefetch={false}
               href='https://github.com/zevnda/steam-game-idler/releases/latest'
               className='group inline-flex items-center justify-center px-8 sm:px-10 py-4 sm:py-5 bg-white text-indigo-700 font-black text-base sm:text-lg rounded-xl hover:bg-cyan-100 transform hover:scale-105 transition-all duration-200 shadow-2xl'
             >

@@ -143,6 +143,7 @@ export default function ComparisonSection(): ReactElement {
           {competitors.map((competitor, index) => (
             <article key={competitor.name}>
               <Link
+                prefetch={false}
                 href={competitor.link}
                 className={`group block bg-white border-2 ${competitor.borderColor} rounded-2xl p-6 hover:shadow-lg transition-all duration-200 transform hover:-translate-y-1`}
               >

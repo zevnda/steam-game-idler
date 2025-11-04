@@ -48,6 +48,7 @@ export default function FooterSection() {
               <ul className='space-y-3 sm:space-y-4'>
                 <li>
                   <Link
+                    prefetch={false}
                     href='/docs'
                     className='text-sm sm:text-base text-gray-600 hover:text-indigo-700 transition-colors duration-200 flex items-center gap-2 sm:gap-3'
                   >
@@ -79,6 +80,7 @@ export default function FooterSection() {
               <ul className='space-y-3 sm:space-y-4'>
                 <li>
                   <Link
+                    prefetch={false}
                     href='/privacy'
                     className='text-sm sm:text-base text-gray-600 hover:text-indigo-700 transition-colors duration-200 flex items-center gap-2 sm:gap-3'
                   >
@@ -88,6 +90,7 @@ export default function FooterSection() {
                 </li>
                 <li>
                   <Link
+                    prefetch={false}
                     href='/tos'
                     className='text-sm sm:text-base text-gray-600 hover:text-indigo-700 transition-colors duration-200 flex items-center gap-2 sm:gap-3'
                   >
@@ -129,6 +132,7 @@ export default function FooterSection() {
             <p className='text-gray-400 text-xs sm:text-sm font-mono text-center sm:text-left uppercase'>
               Website created and managed by{' '}
               <Link
+                prefetch={false}
                 href='https://aswebdesign.com.au/'
                 target='_blank'
                 rel='noopener'
