@@ -3,7 +3,11 @@ import { fileURLToPath } from 'url'
 
 import { FlatCompat } from '@eslint/eslintrc'
 import js from '@eslint/js'
+import nextPlugin from '@next/eslint-plugin-next'
 import typescriptParser from '@typescript-eslint/parser'
+import reactPlugin from 'eslint-plugin-react'
+import reactHooksPlugin from 'eslint-plugin-react-hooks'
+import unusedImports from 'eslint-plugin-unused-imports'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -17,8 +21,14 @@ const config = [
   {
     ignores: ['docs/**/*', '.next/**/*', 'out/**/*', 'node_modules/**/*', 'src-tauri/**/*'],
   },
-  ...compat.extends('next/core-web-vitals', 'plugin:@typescript-eslint/recommended'),
+  ...compat.extends('plugin:@typescript-eslint/recommended'),
   {
+    plugins: {
+      'unused-imports': unusedImports,
+      '@next/next': nextPlugin,
+      'react': reactPlugin,
+      'react-hooks': reactHooksPlugin,
+    },
     languageOptions: {
       parser: typescriptParser,
       parserOptions: {
@@ -28,7 +38,9 @@ const config = [
     },
     rules: {
       'strict': 'error',
-      '@typescript-eslint/no-unused-vars': [
+      '@typescript-eslint/no-unused-vars': 'off',
+      'unused-imports/no-unused-imports': 'error',
+      'unused-imports/no-unused-vars': [
         'error',
         {
           varsIgnorePattern: '^_',
