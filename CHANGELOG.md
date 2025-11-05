@@ -7,6 +7,7 @@
 - Fixed two issue where chat wouldn't scroll to the bottom of the message list:
   - When another use sent an image
   - When loading the chat and there were multiple reply messages
+- Increased the initial amount of chat messages loaded from `25` to `75`
 
 <!-- 2.2.10 -->
 
