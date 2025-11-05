@@ -250,7 +250,7 @@ export default function Pro(): ReactElement {
             onClick={() => {
               setLoading(true)
               const clientId = 'Ov23li6v2lfsoHWx3KDr'
-              const redirectUri = encodeURIComponent('http://localhost:3002/api/github-oauth-callback')
+              const redirectUri = encodeURIComponent('https://apibase.vercel.app/api/github-oauth-callback')
               window.location.href = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=read:user`
             }}
             className={`w-full flex justify-center items-center gap-2 mt-2 text-black font-bold px-6 py-3 rounded-xl shadow-lg cursor-pointer hover:scale-102 transition-transform ${loading ? 'opacity-60 cursor-not-allowed' : ''}`}

@@ -134,7 +134,6 @@ export default function useWindow(): void {
 
     // Run every 6 hours
     const intervalId = setInterval(verifyProStatus, 6 * 60 * 60 * 1000)
-    // const intervalId = setInterval(verifyProStatus, 60 * 1000)
     return () => clearInterval(intervalId)
   }, [setUserAdStatus])
 
