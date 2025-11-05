@@ -30,3 +30,7 @@ main a {
 .section-padding {
   padding: 5rem 0;
 }
+
+details h3 {
+  user-select: text;
+}
