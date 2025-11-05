@@ -2,7 +2,6 @@ import type { ReactElement } from 'react'
 
 import { cn, Spinner } from '@heroui/react'
 import { useEffect, useMemo, useState } from 'react'
-import Image from 'next/image'
 
 import { useNavigationContext } from '@/components/contexts/NavigationContext'
 import { useStateContext } from '@/components/contexts/StateContext'
@@ -132,22 +131,22 @@ export default function AdSlot(): ReactElement {
         sidebarCollapsed ? 'duration-100' : 'duration-450',
       )}
     >
-      <div className='relative flex justify-center items-center overflow-hidden rounded-lg'>
-        <iframe
-          className='overflow-scroll rounded-lg -mt-[352px] -ml-[301px] z-1'
-          src={gameUrl}
-          width='600'
-          height='600'
-          title='External Website'
-          sandbox='allow-scripts allow-same-origin allow-forms allow-popups allow-top-navigation-by-user-activation'
-        />
-        <Spinner className='absolute inset-0 m-auto z-0' />
-      </div>
+      <WebviewWindow href='http://localhost:3001/pro' size={{ width: 500, height: 600 }}>
+        <div className='relative flex justify-center items-center overflow-hidden rounded-lg'>
+          <iframe
+            className='overflow-scroll rounded-lg -mt-[352px] -ml-[301px] z-1'
+            src={gameUrl}
+            width='600'
+            height='600'
+            title='External Website'
+            sandbox='allow-scripts allow-same-origin allow-forms allow-popups allow-top-navigation-by-user-activation'
+          />
+          <Spinner className='absolute inset-0 m-auto z-0' />
+        </div>
 
-      <div className='mt-2 flex justify-center items-center'>
-        <p className='text-sm'>
-          Remove ads with Steam Game Idler{' '}
-          <WebviewWindow href='http://localhost:3001/pro' size={{ width: 500, height: 600 }}>
+        <div className='mt-2 flex justify-center items-center'>
+          <p className='text-sm'>
+            Remove ads with Steam Game Idler{' '}
             <span
               className='p-1 rounded-lg font-bold'
               style={{
@@ -157,9 +156,9 @@ export default function AdSlot(): ReactElement {
             >
               PRO
             </span>
-          </WebviewWindow>
-        </p>
-      </div>
+          </p>
+        </div>
+      </WebviewWindow>
     </div>
   )
 }

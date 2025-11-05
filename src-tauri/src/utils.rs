@@ -1,4 +1,5 @@
 use base64::Engine;
+use chrono::Utc;
 use lazy_static::lazy_static;
 use regex::Regex;
 use reqwest::Client;
@@ -205,11 +206,134 @@ pub fn get_cache_dir(app_handle: &tauri::AppHandle) -> Result<std::path::PathBuf
 pub fn store_and_save(
     username: String,
     is_pro: bool,
+    expires_at: Option<String>,
     app_handle: tauri::AppHandle,
 ) -> Result<String, String> {
     let store = app_handle.store("store.json").map_err(|e| e.to_string())?;
-    store.set("githubUsername", username);
+    store.set("username", username);
     store.set("isPro", is_pro);
+    store.set("expiresAt", expires_at);
+
+    // Update lastChecked to current timestamp
+    let now = Utc::now().to_rfc3339();
+    store.set("lastChecked", now);
+
     store.save().map_err(|e| e.to_string())?;
     Ok("Data stored successfully".into())
+}
+
+#[tauri::command]
+pub fn read_store(app_handle: tauri::AppHandle) -> Result<Value, String> {
+    let store = app_handle.store("store.json").map_err(|e| e.to_string())?;
+
+    let mut result = serde_json::Map::new();
+
+    if let Some(username) = store.get("username") {
+        result.insert("username".to_string(), username.clone());
+    }
+
+    if let Some(is_pro) = store.get("isPro") {
+        result.insert("isPro".to_string(), is_pro.clone());
+    }
+
+    if let Some(expires_at) = store.get("expiresAt") {
+        result.insert("expiresAt".to_string(), expires_at.clone());
+    }
+
+    if let Some(last_checked) = store.get("lastChecked") {
+        result.insert("lastChecked".to_string(), last_checked.clone());
+    }
+
+    Ok(Value::Object(result))
+}
+
+// Relaunch the application
+#[tauri::command]
+pub fn relaunch_app(app_handle: tauri::AppHandle) {
+    app_handle.restart();
+}
+
+// Verify GitHub sponsorship status
+#[tauri::command]
+pub async fn verify_github_sponsorship(username: String) -> Result<Value, String> {
+    let client = Client::new();
+
+    // Get the API key from environment
+    let api_key = crate::crypto::get_github_pat_from_env()?;
+
+    // GraphQL query to check if the username is in your list of active sponsors
+    let query = json!({
+        "query": r#"
+            query {
+                viewer {
+                    sponsorshipsAsMaintainer(first: 100, activeOnly: true) {
+                        edges {
+                            node {
+                                sponsorEntity {
+                                    ... on User {
+                                        login
+                                    }
+                                }
+                                isActive
+                            }
+                        }
+                    }
+                }
+            }
+        "#
+    });
+
+    match client
+        .post("https://api.github.com/graphql")
+        .header("Authorization", format!("Bearer {}", api_key))
+        .header("User-Agent", "steam-game-idler")
+        .json(&query)
+        .send()
+        .await
+    {
+        Ok(response) => {
+            if response.status().is_success() {
+                match response.json::<Value>().await {
+                    Ok(body) => {
+                        // Check if the username exists in the list of active sponsors
+                        let is_sponsor = body["data"]["viewer"]["sponsorshipsAsMaintainer"]
+                            ["edges"]
+                            .as_array()
+                            .map(|edges| {
+                                edges.iter().any(|edge| {
+                                    edge["node"]["sponsorEntity"]["login"]
+                                        .as_str()
+                                        .map(|login| login.eq_ignore_ascii_case(&username))
+                                        .unwrap_or(false)
+                                        && edge["node"]["isActive"].as_bool().unwrap_or(false)
+                                })
+                            })
+                            .unwrap_or(false);
+
+                        Ok(json!({
+                            "isActiveSponsor": is_sponsor,
+                            "success": true
+                        }))
+                    }
+                    Err(e) => Ok(json!({
+                        "error": "Failed to parse GitHub response",
+                        "success": false,
+                        "details": e.to_string()
+                    })),
+                }
+            } else {
+                Ok(json!({
+                    "error": "GitHub API request failed",
+                    "success": false,
+                    "status": response.status().as_u16()
+                }))
+            }
+        }
+        Err(e) => Ok(json!({
+            "error": "Network error when contacting GitHub",
+            "success": false,
+            "offline": true,
+            "details": e.to_string()
+        })),
+    }
 }

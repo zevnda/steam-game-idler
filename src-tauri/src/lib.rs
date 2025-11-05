@@ -43,6 +43,15 @@ pub fn run() {
                 dotenv::from_filename(".env.dev").unwrap().load();
             }
         }
+        // Load GitHub PAT in dev mode
+        match crypto::decrypt_github_pat() {
+            pat if !pat.is_empty() => {
+                std::env::set_var("GITHUB_PAT", pat);
+            }
+            _ => {
+                dotenv::from_filename(".env.dev").unwrap().load();
+            }
+        }
     } else {
         match crypto::decrypt_api_key() {
             key if !key.is_empty() => {
@@ -50,6 +59,15 @@ pub fn run() {
             }
             _ => {
                 panic!("No obfuscated API key available in production build");
+            }
+        }
+        // Load GitHub PAT in production mode
+        match crypto::decrypt_github_pat() {
+            pat if !pat.is_empty() => {
+                std::env::set_var("GITHUB_PAT", pat);
+            }
+            _ => {
+                panic!("No obfuscated GitHub PAT available in production build");
             }
         }
     }
@@ -136,7 +154,10 @@ pub fn run() {
             get_tray_icon,
             is_portable,
             get_cache_dir_path,
-            store_and_save
+            store_and_save,
+            read_store,
+            relaunch_app,
+            verify_github_sponsorship
         ])
         .build(tauri::generate_context!())
         .expect("Error while building tauri application")

@@ -1,11 +1,18 @@
-import type { ReactElement } from 'react'
+import { type ReactElement } from 'react'
 
+import { useNavigationContext } from '@/components/contexts/NavigationContext'
+import { useUserContext } from '@/components/contexts/UserContext'
 import WebviewWindow from '@/components/ui/WebviewWindow'
 
-export default function GoPro(): ReactElement {
+export default function GoPro(): ReactElement | null {
+  const { activePage } = useNavigationContext()
+  const { userAdStatus } = useUserContext()
+
+  if (activePage === 'chat' || userAdStatus.isPro) return null
+
   return (
     <div className='scale-60 -ml-7' data-tauri-drag-region>
-      <WebviewWindow href='http://localhost:3001/pro' size={{ width: 500, height: 600 }}>
+      <WebviewWindow href='http://localhost:3001/pro' size={{ width: 500, height: 600 }} title='Go Pro'>
         <div
           className='flex justify-center items-center p-1 min-w-[184px] rounded-full hover:brightness-90 cursor-pointer duration-150'
           style={{

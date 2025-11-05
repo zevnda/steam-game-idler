@@ -11,12 +11,41 @@ const SALT: [u8; 16] = [
     0x73, 0x61, 0x6c, 0x74, 0x5f, 0x66, 0x6f, 0x72, 0x5f, 0x61, 0x70, 0x69, 0x5f, 0x6b, 0x65, 0x79,
 ];
 
+// Different salt for GitHub PAT
+const GITHUB_SALT: [u8; 16] = [
+    0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x5f, 0x70, 0x61, 0x74, 0x5f, 0x73, 0x61, 0x6c, 0x74, 0x00,
+];
+
 const fn derive_aes_key() -> [u8; 32] {
     let mut key = [0u8; 32];
     let mut i = 0;
 
     while i < 32 {
         let salt_byte = SALT[i % 16];
+        let mut temp = SEED[i] ^ salt_byte;
+
+        let mut round = 0;
+        while round < 100 {
+            temp = temp.wrapping_add(SEED[(i + round) % 32]);
+            temp = temp ^ (temp >> 3);
+            temp = temp.wrapping_mul(0x9e);
+            temp = temp ^ salt_byte;
+            round += 1;
+        }
+
+        key[i] = temp;
+        i += 1;
+    }
+
+    key
+}
+
+const fn derive_github_key() -> [u8; 32] {
+    let mut key = [0u8; 32];
+    let mut i = 0;
+
+    while i < 32 {
+        let salt_byte = GITHUB_SALT[i % 16];
         let mut temp = SEED[i] ^ salt_byte;
 
         let mut round = 0;
@@ -50,6 +79,21 @@ const fn encrypt_api_key_const(api_key: &str) -> ([u8; 64], usize) {
     (encrypted, api_len)
 }
 
+const fn encrypt_github_pat_const(pat: &str) -> ([u8; 64], usize) {
+    let key = derive_github_key();
+    let pat_bytes = pat.as_bytes();
+    let pat_len = pat_bytes.len();
+
+    let mut encrypted = [0u8; 64];
+    let mut i = 0;
+    while i < pat_len && i < 64 {
+        encrypted[i] = pat_bytes[i] ^ key[i % 32] ^ ((i as u8).wrapping_mul(11));
+        i += 1;
+    }
+
+    (encrypted, pat_len)
+}
+
 pub fn decrypt_api_key() -> String {
     match option_env!("STEAM_API_KEY") {
         Some(_compile_time_key) => {
@@ -67,6 +111,32 @@ pub fn decrypt_api_key() -> String {
             let mut decrypted = Vec::with_capacity(original_len);
             for i in 0..original_len {
                 let decrypted_byte = encrypted_data[i] ^ key[i % 32] ^ ((i as u8).wrapping_mul(7));
+                decrypted.push(decrypted_byte);
+            }
+
+            String::from_utf8_lossy(&decrypted).to_string()
+        }
+        None => String::new(),
+    }
+}
+
+pub fn decrypt_github_pat() -> String {
+    match option_env!("GITHUB_PAT") {
+        Some(_compile_time_pat) => {
+            const ENCRYPTED_DATA: ([u8; 64], usize) = {
+                match option_env!("GITHUB_PAT") {
+                    Some(pat) => encrypt_github_pat_const(pat),
+                    None => ([0u8; 64], 0),
+                }
+            };
+
+            let (encrypted_data, original_len) = ENCRYPTED_DATA;
+
+            let key = derive_github_key();
+
+            let mut decrypted = Vec::with_capacity(original_len);
+            for i in 0..original_len {
+                let decrypted_byte = encrypted_data[i] ^ key[i % 32] ^ ((i as u8).wrapping_mul(11));
                 decrypted.push(decrypted_byte);
             }
 
@@ -96,4 +166,8 @@ pub fn get_api_key_from_env() -> Result<String, String> {
     env::var("KEY")
         .or_else(|_| env::var("STEAM_API_KEY"))
         .map_err(|_| "No API key found in environment variables".to_string())
+}
+
+pub fn get_github_pat_from_env() -> Result<String, String> {
+    env::var("GITHUB_PAT").map_err(|_| "No GitHub PAT found in environment variables".to_string())
 }

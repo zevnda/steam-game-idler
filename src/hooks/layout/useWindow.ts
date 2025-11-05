@@ -2,8 +2,10 @@ import type {
   Game,
   InvokeCustomList,
   InvokeFreeGames,
+  InvokeReadStore,
   InvokeRunningProcess,
   InvokeSettings,
+  InvokeVerifySponsor,
   UserSummary,
 } from '@/types'
 import type { Dispatch, SetStateAction } from 'react'
@@ -31,13 +33,110 @@ export default function useWindow(): void {
   const { setShowFreeGamesTab, setIsCardFarming, setIsAchievementUnlocker, setShowSteamWarning, setUseBeta } =
     useStateContext()
   const { setUpdateAvailable, setShowChangelog } = useUpdateContext()
-  const { userSummary, setUserSummary, userSettings, setUserSettings, gamesList, setFreeGamesList } = useUserContext()
+  const { userSummary, setUserSummary, userSettings, setUserSettings, gamesList, setFreeGamesList, setUserAdStatus } =
+    useUserContext()
 
   console.error('Monitor for rerenders')
 
   useEffect(() => {
     emit('ready')
   }, [])
+
+  // Read user store
+  useEffect(() => {
+    const fetchStoreData = async (): Promise<void> => {
+      try {
+        const storedData = await invoke<InvokeReadStore>('read_store')
+        if (storedData && storedData.expiresAt && new Date(storedData.expiresAt) > new Date()) {
+          setUserAdStatus(storedData)
+        } else {
+          setUserAdStatus({ username: '', isPro: false, expiresAt: undefined })
+        }
+      } catch (error) {
+        console.error('Error reading store data:', error)
+      }
+    }
+    fetchStoreData()
+  }, [setUserAdStatus])
+
+  // Verify Pro status on launch and every 6 hours
+  useEffect(() => {
+    const verifyProStatus = async (): Promise<void> => {
+      try {
+        const storedData = await invoke<InvokeReadStore>('read_store')
+
+        // Skip verification if user is not pro
+        if (!storedData?.isPro || !storedData?.username) return
+
+        // Check if subscription has expired
+        if (storedData.expiresAt && new Date(storedData.expiresAt) <= new Date()) {
+          // Expired - revoke pro status
+          await invoke('store_and_save', {
+            username: storedData.username,
+            isPro: false,
+            expiresAt: undefined,
+          })
+          setUserAdStatus({ username: storedData.username, isPro: false, expiresAt: undefined })
+          logEvent('[Pro] Subscription expired')
+          return
+        }
+
+        // Verify with GitHub
+        const verifyResult = await invoke<InvokeVerifySponsor>('verify_github_sponsorship', {
+          username: storedData.username,
+        })
+
+        if (verifyResult.offline) {
+          // Network error - apply grace period (2 days)
+          const GRACE_PERIOD_DAYS = 2
+          const lastChecked = storedData.lastChecked ? new Date(storedData.lastChecked) : new Date(0)
+          const gracePeriodEnd = new Date(lastChecked)
+          gracePeriodEnd.setDate(gracePeriodEnd.getDate() + GRACE_PERIOD_DAYS)
+
+          if (new Date() > gracePeriodEnd) {
+            // Grace period expired, revoke pro status
+            await invoke('store_and_save', {
+              username: storedData.username,
+              isPro: false,
+              expiresAt: undefined,
+            })
+            setUserAdStatus({ username: storedData.username, isPro: false, expiresAt: undefined })
+            logEvent('[Pro] Grace period expired, unable to verify sponsorship')
+          }
+          return
+        }
+
+        if (verifyResult.success && verifyResult.isActiveSponsor) {
+          // Still a sponsor - keep pro status, update lastChecked only
+          await invoke('store_and_save', {
+            username: storedData.username,
+            isPro: true,
+            expiresAt: storedData.expiresAt,
+          })
+        } else {
+          // No longer a sponsor - revoke pro status
+          await invoke('store_and_save', {
+            username: storedData.username,
+            isPro: false,
+            expiresAt: undefined,
+          })
+          setUserAdStatus({ username: storedData.username, isPro: false, expiresAt: undefined })
+          logEvent('[Pro] Sponsorship ended')
+        }
+      } catch (error) {
+        console.error('Error verifying pro status:', error)
+        logEvent(`[Pro] Error verifying pro status: ${error}`)
+      }
+    }
+
+    // Run on mount
+    verifyProStatus()
+
+    // Run every 6 hours
+    const intervalId = setInterval(verifyProStatus, 6 * 60 * 60 * 1000)
+    // const intervalId = setInterval(verifyProStatus, 60 * 1000)
+    return () => clearInterval(intervalId)
+  }, [setUserAdStatus])
 
   // Disable context menu and refresh actions
   useEffect(() => {

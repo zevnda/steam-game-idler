@@ -138,3 +138,19 @@ export interface InvokeRemoveListings {
   }[]
   successful_removals: number
 }
+
+export interface InvokeReadStore {
+  username: string
+  isPro: boolean
+  expiresAt?: string
+  lastChecked?: string
+}
+
+export interface InvokeVerifySponsor {
+  isActiveSponsor?: boolean
+  success: boolean
+  error?: string
+  offline?: boolean
+  details?: string
+  status?: number
+}

@@ -22,6 +22,7 @@ import { useIdleContext } from '@/components/contexts/IdleContext'
 import { useNavigationContext } from '@/components/contexts/NavigationContext'
 import { useSearchContext } from '@/components/contexts/SearchContext'
 import { useStateContext } from '@/components/contexts/StateContext'
+import { useUserContext } from '@/components/contexts/UserContext'
 import AdSlot from '@/components/ui/AdSlot'
 import Beta from '@/components/ui/Beta'
 import CustomModal from '@/components/ui/CustomModal'
@@ -47,6 +48,7 @@ export default function SideBar(): ReactElement {
     activePage,
     setActivePage,
   )
+  const { userAdStatus } = useUserContext()
 
   const mainSidebarItems: SidebarItem[] = [
     {
@@ -255,8 +257,7 @@ export default function SideBar(): ReactElement {
         </div>
 
         <div className='flex flex-col grow justify-end items-center gap-1.5 p-2 min-w-0 overflow-hidden'>
-          {/* {process.env.NODE_ENV === 'production' && <AdSlot />} */}
-          <AdSlot />
+          {process.env.NODE_ENV === 'production' && !userAdStatus.isPro && <AdSlot />}
 
           <Divider className='w-full bg-border/60 my-0.5' />
 

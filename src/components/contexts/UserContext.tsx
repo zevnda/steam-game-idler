@@ -1,4 +1,4 @@
-import type { Game, UserSettings, UserSummary } from '@/types'
+import type { Game, InvokeReadStore, UserSettings, UserSummary } from '@/types'
 import type { Dispatch, ReactElement, ReactNode, SetStateAction } from 'react'
 
 import { Time } from '@internationalized/date'
@@ -16,6 +16,8 @@ interface UserContextType {
   setGamesList: Dispatch<SetStateAction<Game[]>>
   freeGamesList: Game[]
   setFreeGamesList: Dispatch<SetStateAction<Game[]>>
+  userAdStatus: InvokeReadStore
+  setUserAdStatus: Dispatch<SetStateAction<InvokeReadStore>>
   userSettings: UserSettings
   setUserSettings: Dispatch<SetStateAction<UserSettings>>
 }
@@ -28,6 +30,11 @@ export const UserProvider = ({ children }: { children: ReactNode }): ReactElemen
   const [statisticsUnavailable, setStatisticsUnavailable] = useState(true)
   const [gamesList, setGamesList] = useState<Game[]>([])
   const [freeGamesList, setFreeGamesList] = useState<Game[]>([])
+  const [userAdStatus, setUserAdStatus] = useState<InvokeReadStore>({
+    username: '',
+    isPro: false,
+    expiresAt: undefined,
+  })
   const [userSettings, setUserSettings] = useState<UserSettings>({
     gameSettings: null,
     general: {
@@ -84,6 +91,8 @@ export const UserProvider = ({ children }: { children: ReactNode }): ReactElemen
         setStatisticsUnavailable,
         freeGamesList,
         setFreeGamesList,
+        userAdStatus,
+        setUserAdStatus,
         userSettings,
         setUserSettings,
       }}

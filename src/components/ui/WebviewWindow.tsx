@@ -8,6 +8,7 @@ interface ExtLinkProps {
   href: string
   size?: { width: number; height: number }
   className?: string
+  title?: string
 }
 
 export default function WebviewWindow({
@@ -15,6 +16,7 @@ export default function WebviewWindow({
   href,
   size = { width: 1500, height: 825 },
   className = '',
+  title,
 }: ExtLinkProps): ReactElement {
   const handleClick = async (e: MouseEvent<HTMLAnchorElement>): Promise<void> => {
     e.preventDefault()
@@ -27,7 +29,7 @@ export default function WebviewWindow({
           : href
 
       appWindow.once('tauri://created', async function () {
-        appWindow.setTitle(`Steam Game Idler - ${parseHref}`)
+        appWindow.setTitle(`Steam Game Idler - ${title || parseHref}`)
         appWindow.setPosition(new LogicalPosition(10, 10))
         appWindow.setSize(new LogicalSize(size.width, size.height))
         appWindow.setResizable(false)

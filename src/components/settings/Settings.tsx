@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { TbX } from 'react-icons/tb'
 
 import { useNavigationContext } from '@/components/contexts/NavigationContext'
+import { useUserContext } from '@/components/contexts/UserContext'
 import AchievementSettings from '@/components/settings/AchievementSettings'
 import CardSettings from '@/components/settings/CardSettings'
 import GameSettings from '@/components/settings/GameSettings'
@@ -20,6 +21,7 @@ export default function Settings(): ReactElement {
   const { t } = useTranslation()
   const { version, refreshKey } = useSettings()
   const { setActivePage, setCurrentSettingsTab } = useNavigationContext()
+  const { userAdStatus } = useUserContext()
 
   return (
     <div key={refreshKey} className={cn('min-h-screen min-w-screen bg-base')}>
@@ -34,7 +36,7 @@ export default function Settings(): ReactElement {
       </div>
 
       <div className='absolute flex flex-col items-center gap-4 bottom-4 left-0 px-6 w-[250px] z-40'>
-        {process.env.NODE_ENV === 'production' && <AdSlot />}
+        {process.env.NODE_ENV === 'production' && !userAdStatus.isPro && <AdSlot />}
 
         <ViewDocumentation />
         <span className='text-xs text-altwhite text-center'>Steam Game Idler v{version}</span>
