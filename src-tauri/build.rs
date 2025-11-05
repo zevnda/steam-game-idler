@@ -6,6 +6,7 @@ fn main() {
     let env_prod_paths = [Path::new(".env.prod"), Path::new("../.env.prod")];
 
     let mut found_key = false;
+    let mut found_pat = false;
 
     for env_prod_path in &env_prod_paths {
         if env_prod_path.exists() {
@@ -18,10 +19,13 @@ fn main() {
                     let api_key = line.strip_prefix("KEY=").unwrap().trim_matches('"');
                     println!("cargo:rustc-env=STEAM_API_KEY={}", api_key);
                     found_key = true;
-                    break;
+                } else if line.starts_with("GH_PAT=") {
+                    let gh_pat = line.strip_prefix("GH_PAT=").unwrap().trim_matches('"');
+                    println!("cargo:rustc-env=GH_PAT={}", gh_pat);
+                    found_pat = true;
                 }
             }
-            if found_key {
+            if found_key && found_pat {
                 break;
             }
         }
@@ -36,6 +40,17 @@ fn main() {
             );
         }
     }
+
+    if !found_pat {
+        if let Ok(gh_pat) = env::var("GH_PAT") {
+            println!("cargo:rustc-env=GH_PAT={}", gh_pat);
+        } else {
+            println!(
+                "cargo:warning=No GitHub PAT found in .env.prod or GH_PAT environment variable"
+            );
+        }
+    }
+
     println!("cargo:rerun-if-changed=.env.prod");
     println!("cargo:rerun-if-changed=../.env.prod");
 

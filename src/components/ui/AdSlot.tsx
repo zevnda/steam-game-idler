@@ -131,6 +131,7 @@ export default function AdSlot(): ReactElement {
         sidebarCollapsed ? 'duration-100' : 'duration-450',
       )}
     >
+      {/* <WebviewWindow href='https://steamgameidler.com/pro' size={{ width: 500, height: 600 }}> */}
       <WebviewWindow href='http://localhost:3001/pro' size={{ width: 500, height: 600 }}>
         <div className='relative flex justify-center items-center overflow-hidden rounded-lg'>
           <iframe

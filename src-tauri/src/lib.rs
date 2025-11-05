@@ -46,7 +46,7 @@ pub fn run() {
         // Load GitHub PAT in dev mode
         match crypto::decrypt_github_pat() {
             pat if !pat.is_empty() => {
-                std::env::set_var("GITHUB_PAT", pat);
+                std::env::set_var("GH_PAT", pat);
             }
             _ => {
                 dotenv::from_filename(".env.dev").unwrap().load();
@@ -64,7 +64,7 @@ pub fn run() {
         // Load GitHub PAT in production mode
         match crypto::decrypt_github_pat() {
             pat if !pat.is_empty() => {
-                std::env::set_var("GITHUB_PAT", pat);
+                std::env::set_var("GH_PAT", pat);
             }
             _ => {
                 panic!("No obfuscated GitHub PAT available in production build");

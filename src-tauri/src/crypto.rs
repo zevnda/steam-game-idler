@@ -121,10 +121,10 @@ pub fn decrypt_api_key() -> String {
 }
 
 pub fn decrypt_github_pat() -> String {
-    match option_env!("GITHUB_PAT") {
+    match option_env!("GH_PAT") {
         Some(_compile_time_pat) => {
             const ENCRYPTED_DATA: ([u8; 64], usize) = {
-                match option_env!("GITHUB_PAT") {
+                match option_env!("GH_PAT") {
                     Some(pat) => encrypt_github_pat_const(pat),
                     None => ([0u8; 64], 0),
                 }
@@ -169,5 +169,5 @@ pub fn get_api_key_from_env() -> Result<String, String> {
 }
 
 pub fn get_github_pat_from_env() -> Result<String, String> {
-    env::var("GITHUB_PAT").map_err(|_| "No GitHub PAT found in environment variables".to_string())
+    env::var("GH_PAT").map_err(|_| "No GitHub PAT found in environment variables".to_string())
 }
