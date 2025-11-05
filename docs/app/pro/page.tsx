@@ -4,7 +4,7 @@ import type { ReactElement } from 'react'
 
 import { invoke } from '@tauri-apps/api/core'
 
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { FaGithub, FaSpinner } from 'react-icons/fa'
 
@@ -14,7 +14,7 @@ declare global {
   }
 }
 
-export default function Pro(): ReactElement {
+function ProContent(): ReactElement {
   const searchParams = useSearchParams()
   const [isPro, setIsPro] = useState(false)
   const [githubUsername, setGithubUsername] = useState<string | null>(null)
@@ -280,4 +280,23 @@ export default function Pro(): ReactElement {
   }
 
   return null
+}
+
+export default function Pro(): ReactElement {
+  return (
+    <Suspense
+      fallback={
+        <div
+          className='min-h-screen w-screen flex flex-col items-center justify-center p-4'
+          style={{
+            background: 'linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 60%, #232323 100%)',
+          }}
+        >
+          <FaSpinner size={40} className='animate-spin text-indigo-500' />
+        </div>
+      }
+    >
+      <ProContent />
+    </Suspense>
+  )
 }
