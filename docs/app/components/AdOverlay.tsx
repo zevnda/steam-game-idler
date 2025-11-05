@@ -17,7 +17,7 @@ export default function AdOverlay() {
     }
   }, [pathname])
 
-  if (pathname.includes('/supported-games/')) {
+  if (pathname.includes('/supported-games/') || pathname.includes('/pro')) {
     return null
   }
 
