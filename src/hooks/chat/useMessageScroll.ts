@@ -2,7 +2,7 @@ import type { ChatMessageType } from '@/components/contexts/SupabaseContext'
 import type { UserSummary } from '@/types'
 import type { RefObject } from 'react'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 interface UseMessageScrollParams {
   messages: ChatMessageType[]
@@ -18,13 +18,45 @@ export function useMessageScroll({ messages, messagesEndRef, messagesContainerRe
   scrollToBottom: () => void
 } {
   const [shouldScrollToBottom, setShouldScrollToBottom] = useState(true)
+  const hasScrolledOnce = useRef(false)
 
   const scrollToBottom = useCallback((): void => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'auto' })
   }, [messagesEndRef])
 
+  // Immediate scroll on first messages load
   useEffect(() => {
-    if (!loading && messages.length > 0 && shouldScrollToBottom) {
+    if (messages.length > 0 && !hasScrolledOnce.current && shouldScrollToBottom) {
+      // Use multiple scroll attempts to ensure we get there even as content loads
+      const scrollImmediately = (): void => {
+        scrollToBottom()
+        requestAnimationFrame(() => {
+          scrollToBottom()
+          requestAnimationFrame(() => {
+            scrollToBottom()
+          })
+        })
+      }
+
+      scrollImmediately()
+      hasScrolledOnce.current = true
+
+      // Keep trying for 500ms to catch any late-loading content
+      const timeoutId = setTimeout(scrollToBottom, 100)
+      const timeoutId2 = setTimeout(scrollToBottom, 300)
+      const timeoutId3 = setTimeout(scrollToBottom, 500)
+
+      return () => {
+        clearTimeout(timeoutId)
+        clearTimeout(timeoutId2)
+        clearTimeout(timeoutId3)
+      }
+    }
+  }, [messages.length, scrollToBottom, shouldScrollToBottom])
+
+  // Previous behavior for subsequent updates
+  useEffect(() => {
+    if (!loading && messages.length > 0 && shouldScrollToBottom && hasScrolledOnce.current) {
       scrollToBottom()
       setShouldScrollToBottom(false)
     }

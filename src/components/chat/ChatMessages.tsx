@@ -1,3 +1,4 @@
+import type { Message } from '@/components/chat/ChatMessage'
 import type { ChatMessageType } from '@/hooks/chat/useMessages'
 import type { UserSummary } from '@/types'
 import type { ReactElement, RefObject } from 'react'
@@ -7,17 +8,6 @@ import { memo, useEffect, useRef } from 'react'
 import ChatDateDivider from '@/components/chat/ChatDateDivider'
 import ChatMessage from '@/components/chat/ChatMessage'
 import Loader from '@/components/ui/Loader'
-
-export interface Message {
-  id: string
-  user_id: string
-  username: string
-  message: string
-  created_at: string
-  avatar_url?: string
-  reply_to_id?: string | null
-  reply_to?: Message | null
-}
 
 interface ChatMessagesProps {
   loading: boolean

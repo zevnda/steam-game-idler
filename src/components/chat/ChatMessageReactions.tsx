@@ -7,6 +7,8 @@ import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
 import { FaSmile } from 'react-icons/fa'
 
+import CustomTooltip from '@/components/ui/CustomTooltip'
+
 interface ChatMessageReactionsProps {
   messageId: string
   reactions: MessageReaction[]
@@ -41,22 +43,30 @@ export default function ChatMessageReactions({
     <div className='flex items-center gap-1 mt-1 flex-wrap'>
       {reactions.map(reaction => {
         const hasReacted = reaction.user_ids.includes(userSteamId)
+        const tooltipContent =
+          reaction.usernames && reaction.usernames.length > 0 ? reaction.usernames.join('\n') : 'No users'
 
         return (
-          <button
+          <CustomTooltip
             key={reaction.emoji}
-            onClick={() => handleReactionClick(reaction.emoji, hasReacted)}
-            className={cn(
-              'flex items-center gap-1 px-1.5 py-0.5 rounded-md text-xs transition-all cursor-pointer',
-              'border border-border hover:border-[#5865f2] hover:bg-[#5865f2]/10',
-              hasReacted ? 'bg-[#5865f2]/20 border-[#5865f2]' : 'bg-[#2b2d31]',
-            )}
+            content={tooltipContent}
+            placement='top'
+            className='text-[10px] whitespace-pre-line'
           >
-            <span className='text-sm'>{reaction.emoji}</span>
-            <span className={cn('text-xs font-medium', hasReacted ? 'text-[#a5adfc]' : 'text-[#b5bac1]')}>
-              {reaction.count}
-            </span>
-          </button>
+            <button
+              onClick={() => handleReactionClick(reaction.emoji, hasReacted)}
+              className={cn(
+                'flex items-center gap-1 px-1.5 py-0.5 rounded-md text-xs transition-all cursor-pointer',
+                'border border-border hover:border-[#5865f2] hover:bg-[#5865f2]/10',
+                hasReacted ? 'bg-[#5865f2]/20 border-[#5865f2]' : 'bg-[#2b2d31]',
+              )}
+            >
+              <span className='text-sm'>{reaction.emoji}</span>
+              <span className={cn('text-xs font-medium', hasReacted ? 'text-[#a5adfc]' : 'text-[#b5bac1]')}>
+                {reaction.count}
+              </span>
+            </button>
+          </CustomTooltip>
         )
       })}
 

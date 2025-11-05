@@ -3,7 +3,12 @@
 ### Changes in v2.2.11
 
 - Added an external link to the descriptions of `settings > general > steam credentials` and `settings > general > steam web api key`
-  - These links open in the user's default browser, making it easier to get your Steam cookies and API key
+  - These links open in the user's default browser, making it easier to get Steam cookies and API keys
+- Fixed two issues where chat wouldn't scroll to the bottom of the message list:
+  - When another user sent an image
+  - When loading the chat and there were multiple reply messages
+- Reactions on chat messages now show the usernames of users who reacted when hovering over the emoji
+- Increased the initial amount of chat messages loaded from `25` to `75`
 
 <!-- 2.2.10 -->
 

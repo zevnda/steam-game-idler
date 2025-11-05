@@ -9,6 +9,7 @@ import { logEvent } from '@/utils/tasks'
 export interface MessageReaction {
   emoji: string
   user_ids: string[]
+  usernames: string[]
   count: number
 }
 
@@ -18,9 +19,10 @@ export interface MessageReactions {
 
 interface UseMessageReactionsParams {
   userSteamId: string
+  username: string
 }
 
-export function useMessageReactions({ userSteamId }: UseMessageReactionsParams): {
+export function useMessageReactions({ userSteamId, username }: UseMessageReactionsParams): {
   reactions: MessageReactions
   setReactions: Dispatch<SetStateAction<MessageReactions>>
   handleAddReaction: (messageId: string, emoji: string) => Promise<void>
@@ -77,6 +79,7 @@ export function useMessageReactions({ userSteamId }: UseMessageReactionsParams):
                 ? {
                     ...r,
                     user_ids: [...r.user_ids, userSteamId],
+                    usernames: [...r.usernames, username],
                     count: r.count + 1,
                   }
                 : r,
@@ -92,6 +95,7 @@ export function useMessageReactions({ userSteamId }: UseMessageReactionsParams):
             {
               emoji,
               user_ids: [userSteamId],
+              usernames: [username],
               count: 1,
             },
           ],
@@ -150,6 +154,7 @@ export function useMessageReactions({ userSteamId }: UseMessageReactionsParams):
                 ? {
                     ...r,
                     user_ids: [...r.user_ids, userSteamId],
+                    usernames: [...(r.usernames || []), username],
                     count: r.count + 1,
                   }
                 : r,
@@ -161,6 +166,7 @@ export function useMessageReactions({ userSteamId }: UseMessageReactionsParams):
               {
                 emoji,
                 user_ids: [userSteamId],
+                usernames: [username],
                 count: 1,
               },
             ]
@@ -244,15 +250,20 @@ export function useMessageReactions({ userSteamId }: UseMessageReactionsParams):
         return {
           ...prev,
           [messageId]: messageReactions
-            .map(r =>
-              r.emoji === emoji
-                ? {
-                    ...r,
-                    user_ids: r.user_ids.filter(id => id !== userSteamId),
-                    count: r.count - 1,
-                  }
-                : r,
-            )
+            .map(r => {
+              if (r.emoji === emoji) {
+                const userIndex = r.user_ids.indexOf(userSteamId)
+                const newUserIds = r.user_ids.filter(id => id !== userSteamId)
+                const newUsernames = r.usernames.filter((_, idx) => idx !== userIndex)
+                return {
+                  ...r,
+                  user_ids: newUserIds,
+                  usernames: newUsernames,
+                  count: r.count - 1,
+                }
+              }
+              return r
+            })
             .filter(r => r.count > 0),
         }
       })
@@ -273,15 +284,20 @@ export function useMessageReactions({ userSteamId }: UseMessageReactionsParams):
 
       const currentReactions = (message?.reactions as MessageReaction[]) || []
       const updatedReactions = currentReactions
-        .map(r =>
-          r.emoji === emoji
-            ? {
-                ...r,
-                user_ids: r.user_ids.filter(id => id !== userSteamId),
-                count: r.count - 1,
-              }
-            : r,
-        )
+        .map(r => {
+          if (r.emoji === emoji) {
+            const userIndex = r.user_ids.indexOf(userSteamId)
+            const newUserIds = r.user_ids.filter(id => id !== userSteamId)
+            const newUsernames = (r.usernames || []).filter((_, idx) => idx !== userIndex)
+            return {
+              ...r,
+              user_ids: newUserIds,
+              usernames: newUsernames,
+              count: r.count - 1,
+            }
+          }
+          return r
+        })
         .filter(r => r.count > 0)
 
       // Update database
@@ -308,6 +324,7 @@ export function useMessageReactions({ userSteamId }: UseMessageReactionsParams):
                   ? {
                       ...r,
                       user_ids: [...r.user_ids, userSteamId],
+                      usernames: [...(r.usernames || []), username],
                       count: r.count + 1,
                     }
                   : r,
@@ -322,6 +339,7 @@ export function useMessageReactions({ userSteamId }: UseMessageReactionsParams):
               {
                 emoji,
                 user_ids: [userSteamId],
+                usernames: [username],
                 count: 1,
               },
             ],

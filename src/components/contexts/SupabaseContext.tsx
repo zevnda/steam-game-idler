@@ -11,6 +11,7 @@ import { logEvent, playMentionBeep } from '@/utils/tasks'
 export interface MessageReaction {
   emoji: string
   user_ids: string[]
+  usernames: string[]
   count: number
 }
 

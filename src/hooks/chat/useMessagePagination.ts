@@ -25,7 +25,7 @@ export function useMessagePagination({
   const { supabase } = useSupabase()
   const [loading, setLoading] = useState(true)
   const [hasMore, setHasMore] = useState(true)
-  const [pagination, setPagination] = useState({ limit: 25, offset: 0 })
+  const [pagination, setPagination] = useState({ limit: 75, offset: 0 })
 
   useEffect(() => {
     const container = messagesContainerRef.current
@@ -153,6 +153,12 @@ export function useMessagePagination({
           setMessages(current => {
             if (pagination.offset === 0) {
               setShouldScrollToBottom(true)
+              // For initial load, use requestAnimationFrame to ensure DOM is ready
+              requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                  setShouldScrollToBottom(true)
+                })
+              })
               return newMessages
             } else {
               const currentIds = new Set(current.map(m => m.id))
