@@ -205,6 +205,17 @@ export default function GeneralSettings(): ReactElement {
                 </WebviewWindow>
               </Trans>
             </p>
+            <p className='text-xs text-altwhite'>
+              <Trans i18nKey='settings.cardFarming.steamCredentialsTwo'>
+                Get your Steam credentials from.&nbsp;
+                <ExtLink
+                  href='https://steamcommunity.com/'
+                  className='text-dynamic hover:text-dynamic-hover duration-150'
+                >
+                  https://steamcommunity.com/
+                </ExtLink>
+              </Trans>
+            </p>
             {cardSettings.cardFarmingUser && (
               <div className='flex gap-4 bg-tab-panel p-2 rounded-lg items-center w-fit min-w-[50%] mt-3'>
                 {!cardSettings.isCFDataLoading ? (
@@ -365,6 +376,17 @@ export default function GeneralSettings(): ReactElement {
                 >
                   Learn more
                 </WebviewWindow>
+              </Trans>
+            </p>
+            <p className='text-xs text-altwhite'>
+              <Trans i18nKey='settings.general.webApi.descriptionTwo'>
+                Get your Steam Web API key from.&nbsp;
+                <ExtLink
+                  href='https://steamcommunity.com/dev/apikey'
+                  className='text-dynamic hover:text-dynamic-hover duration-150'
+                >
+                  https://steamcommunity.com/dev/apikey
+                </ExtLink>
               </Trans>
             </p>
           </div>
