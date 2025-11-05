@@ -54,6 +54,7 @@ export interface Message {
   reactions?: Array<{
     emoji: string
     user_ids: string[]
+    usernames: string[]
     count: number
   }>
 }

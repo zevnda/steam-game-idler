@@ -69,6 +69,7 @@ export default function ChatBox(): ReactElement {
 
   const { handleAddReaction, handleRemoveReaction } = useMessageReactions({
     userSteamId: userSummary?.steamId || '',
+    username: userSummary?.personaName || '',
   })
 
   const [replyToMessage, setReplyToMessage] = useState<ChatMessageType | null>(null)
