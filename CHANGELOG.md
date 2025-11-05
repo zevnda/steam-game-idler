@@ -4,6 +4,7 @@
 
 - Added an external link to the descriptions of `settings > general > steam credentials` and `settings > general > steam web api key`
   - These links open in the user's default browser, making it easier to get your Steam cookies and API key
+- Fixed an issue where chat wouldn't scroll to the bottom of the message list when another use sent an image
 
 <!-- 2.2.10 -->
 
