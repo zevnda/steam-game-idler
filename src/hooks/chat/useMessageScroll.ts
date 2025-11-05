@@ -2,7 +2,7 @@ import type { ChatMessageType } from '@/components/contexts/SupabaseContext'
 import type { UserSummary } from '@/types'
 import type { RefObject } from 'react'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 interface UseMessageScrollParams {
   messages: ChatMessageType[]
@@ -18,50 +18,45 @@ export function useMessageScroll({ messages, messagesEndRef, messagesContainerRe
   scrollToBottom: () => void
 } {
   const [shouldScrollToBottom, setShouldScrollToBottom] = useState(true)
+  const hasScrolledOnce = useRef(false)
 
   const scrollToBottom = useCallback((): void => {
-    const container = messagesContainerRef.current
-    if (!container) {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'auto' })
-      return
-    }
+    messagesEndRef.current?.scrollIntoView({ behavior: 'auto' })
+  }, [messagesEndRef])
 
-    // Wait for both images to load AND DOM to be fully rendered (including reply previews)
-    const performScroll = (): void => {
-      // Wait for any images to load before scrolling
-      const images = container.querySelectorAll('img')
-      const imagePromises = Array.from(images).map(img => {
-        if (img.complete) {
-          return Promise.resolve()
-        }
-        return new Promise<void>(resolve => {
-          img.onload = () => resolve()
-          img.onerror = () => resolve() // Resolve even on error to not block scroll
-          // Timeout after 3 seconds to prevent infinite waiting
-          setTimeout(() => resolve(), 3000)
+  // Immediate scroll on first messages load
+  useEffect(() => {
+    if (messages.length > 0 && !hasScrolledOnce.current && shouldScrollToBottom) {
+      // Use multiple scroll attempts to ensure we get there even as content loads
+      const scrollImmediately = (): void => {
+        scrollToBottom()
+        requestAnimationFrame(() => {
+          scrollToBottom()
+          requestAnimationFrame(() => {
+            scrollToBottom()
+          })
         })
-      })
+      }
 
-      if (imagePromises.length > 0) {
-        Promise.all(imagePromises).then(() => {
-          messagesEndRef.current?.scrollIntoView({ behavior: 'auto' })
-        })
-      } else {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'auto' })
+      scrollImmediately()
+      hasScrolledOnce.current = true
+
+      // Keep trying for 500ms to catch any late-loading content
+      const timeoutId = setTimeout(scrollToBottom, 100)
+      const timeoutId2 = setTimeout(scrollToBottom, 300)
+      const timeoutId3 = setTimeout(scrollToBottom, 500)
+
+      return () => {
+        clearTimeout(timeoutId)
+        clearTimeout(timeoutId2)
+        clearTimeout(timeoutId3)
       }
     }
+  }, [messages.length, scrollToBottom, shouldScrollToBottom])
 
-    // Use requestAnimationFrame to ensure React has finished rendering
-    // This gives reply previews and other dynamic content time to render
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        performScroll()
-      })
-    })
-  }, [messagesEndRef, messagesContainerRef])
-
+  // Previous behavior for subsequent updates
   useEffect(() => {
-    if (!loading && messages.length > 0 && shouldScrollToBottom) {
+    if (!loading && messages.length > 0 && shouldScrollToBottom && hasScrolledOnce.current) {
       scrollToBottom()
       setShouldScrollToBottom(false)
     }

@@ -153,6 +153,12 @@ export function useMessagePagination({
           setMessages(current => {
             if (pagination.offset === 0) {
               setShouldScrollToBottom(true)
+              // For initial load, use requestAnimationFrame to ensure DOM is ready
+              requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                  setShouldScrollToBottom(true)
+                })
+              })
               return newMessages
             } else {
               const currentIds = new Set(current.map(m => m.id))
