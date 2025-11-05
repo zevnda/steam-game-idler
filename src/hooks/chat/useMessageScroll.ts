@@ -26,27 +26,38 @@ export function useMessageScroll({ messages, messagesEndRef, messagesContainerRe
       return
     }
 
-    // Wait for any images to load before scrolling
-    const images = container.querySelectorAll('img')
-    const imagePromises = Array.from(images).map(img => {
-      if (img.complete) {
-        return Promise.resolve()
+    // Wait for both images to load AND DOM to be fully rendered (including reply previews)
+    const performScroll = (): void => {
+      // Wait for any images to load before scrolling
+      const images = container.querySelectorAll('img')
+      const imagePromises = Array.from(images).map(img => {
+        if (img.complete) {
+          return Promise.resolve()
+        }
+        return new Promise<void>(resolve => {
+          img.onload = () => resolve()
+          img.onerror = () => resolve() // Resolve even on error to not block scroll
+          // Timeout after 3 seconds to prevent infinite waiting
+          setTimeout(() => resolve(), 3000)
+        })
+      })
+
+      if (imagePromises.length > 0) {
+        Promise.all(imagePromises).then(() => {
+          messagesEndRef.current?.scrollIntoView({ behavior: 'auto' })
+        })
+      } else {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'auto' })
       }
-      return new Promise<void>(resolve => {
-        img.onload = () => resolve()
-        img.onerror = () => resolve() // Resolve even on error to not block scroll
-        // Timeout after 3 seconds to prevent infinite waiting
-        setTimeout(() => resolve(), 3000)
+    }
+
+    // Use requestAnimationFrame to ensure React has finished rendering
+    // This gives reply previews and other dynamic content time to render
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        performScroll()
       })
     })
-
-    if (imagePromises.length > 0) {
-      Promise.all(imagePromises).then(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'auto' })
-      })
-    } else {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'auto' })
-    }
   }, [messagesEndRef, messagesContainerRef])
 
   useEffect(() => {
