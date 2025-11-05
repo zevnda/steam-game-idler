@@ -99,6 +99,11 @@ const config = [
       'object-shorthand': ['warn', 'always'],
       '@typescript-eslint/triple-slash-reference': 'off',
     },
+    settings: {
+      react: {
+        version: 'detect',
+      },
+    },
   },
 ]
 
