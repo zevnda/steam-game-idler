@@ -1,3 +1,10 @@
+<!-- 2.2.11 -->
+
+### Changes in v2.2.11
+
+- Added an external link to the descriptions of `settings > general > steam credentials` and `settings > general > steam web api key`
+  - These links open in the user's default browser, making it easier to get your Steam cookies and API key
+
 <!-- 2.2.10 -->
 
 ### Changes in v2.2.10
