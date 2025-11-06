@@ -28,7 +28,7 @@ export default function AdComponent() {
           setAdKey(prev => prev + 1)
           scheduleNextRefresh()
         },
-        1.7 * 60 * 1000,
+        1.5 * 60 * 1000,
       )
 
       return interval
