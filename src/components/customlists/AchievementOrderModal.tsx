@@ -1,0 +1,235 @@
+import type { Achievement, Game, InvokeAchievementData } from '@/types'
+import type { DragEndEvent } from '@dnd-kit/core'
+import type { ReactElement } from 'react'
+
+import { invoke } from '@tauri-apps/api/core'
+
+import { Button, Spinner } from '@heroui/react'
+import { useEffect, useState } from 'react'
+import { closestCenter, DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
+import Image from 'next/image'
+import { useTranslation } from 'react-i18next'
+
+import { useUserContext } from '@/components/contexts/UserContext'
+import CustomModal from '@/components/ui/CustomModal'
+import { checkSteamStatus, logEvent } from '@/utils/tasks'
+import { showAccountMismatchToast, showDangerToast } from '@/utils/toasts'
+
+interface SortableAchievementProps {
+  item: Game
+  achievement: Achievement
+  index: number
+}
+
+function SortableAchievement({ item, achievement, index }: SortableAchievementProps): ReactElement {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: achievement.name })
+
+  const iconUrl = 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/'
+  const icon = achievement.achieved
+    ? `${iconUrl}${item.appid}/${achievement.iconNormal}`
+    : `${iconUrl}${item.appid}/${achievement.iconLocked}`
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  }
+
+  return (
+    <div className='flex items-center gap-2'>
+      <span className='text-lg font-bold text-altwhite w-6 text-right select-none'>{index + 1}</span>
+      <div
+        ref={setNodeRef}
+        style={style}
+        {...attributes}
+        {...listeners}
+        className='flex items-center gap-3 p-1 bg-card hover:bg-card/80 rounded-lg cursor-grab active:cursor-grabbing hover:bg-inputhover flex-1'
+      >
+        <Image className='rounded-full' src={icon} width={32} height={32} alt={`${achievement.name} image`} priority />
+        <div className='flex-1'>
+          <p className='font-semibold'>{achievement.name}</p>
+          <p className='text-xs text-gray-400'>{achievement.description}</p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default function AchievementOrderModal({
+  item,
+  isOpen,
+  onOpenChange,
+}: {
+  item: Game
+  isOpen: boolean
+  onOpenChange: () => void
+}): ReactElement {
+  const { t } = useTranslation()
+  const { userSummary } = useUserContext()
+  const [isLoading, setIsLoading] = useState(false)
+  const [achievements, setAchievements] = useState<Achievement[]>([])
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+  )
+
+  const handleDragEnd = (event: DragEndEvent): void => {
+    const { active, over } = event
+
+    if (over && active.id !== over.id) {
+      setAchievements(items => {
+        const oldIndex = items.findIndex(item => item.name === active.id)
+        const newIndex = items.findIndex(item => item.name === over.id)
+        return arrayMove(items, oldIndex, newIndex)
+      })
+    }
+  }
+
+  const handleSave = async (): Promise<void> => {
+    try {
+      await invoke('save_achievement_order', {
+        steamId: userSummary?.steamId,
+        appId: item.appid,
+        achievementOrder: {
+          achievements,
+        },
+      })
+      onOpenChange()
+    } catch (error) {
+      console.error('Error saving achievement order:', error)
+      showDangerToast(t('toast.achievementOrder.error'))
+    }
+  }
+
+  useEffect(() => {
+    const getAchievementData = async (): Promise<void> => {
+      try {
+        setIsLoading(true)
+        setAchievements([])
+        // Make sure Steam client is running
+        const isSteamRunning = checkSteamStatus(true)
+        if (!isSteamRunning) return setIsLoading(false)
+
+        // First try to get custom achievement order
+        const customOrder = await invoke<{ achievement_order: { achievements: Achievement[] } | null }>(
+          'get_achievement_order',
+          {
+            steamId: userSummary?.steamId,
+            appId: item.appid,
+          },
+        )
+
+        // If we have a custom order, use that
+        if (customOrder.achievement_order?.achievements) {
+          setAchievements(customOrder.achievement_order.achievements)
+          setIsLoading(false)
+          return
+        }
+
+        // Otherwise fetch achievement data
+        const response = await invoke<InvokeAchievementData | string>('get_achievement_data', {
+          steamId: userSummary?.steamId,
+          appId: item.appid,
+          refetch: false,
+        })
+
+        // Handle case where Steam API initialization failed
+        // We already check if Steam client is running so usually account mismatch
+        if (typeof response === 'string' && response.includes('Failed to initialize Steam API')) {
+          setIsLoading(false)
+          showAccountMismatchToast('danger')
+          logEvent(`Error in (getAchievementData): ${response}`)
+          return
+        }
+
+        const achievementData = response as InvokeAchievementData
+
+        if (achievementData?.achievement_data?.achievements) {
+          if (achievementData.achievement_data.achievements.length > 0) {
+            // Sort achievements by percent initially - prevents button state flickering
+            setAchievements(achievementData.achievement_data.achievements)
+          }
+        }
+
+        setIsLoading(false)
+      } catch (error) {
+        setIsLoading(false)
+        showDangerToast(t('toast.achievementData.error'))
+        console.error('Error in (getAchievementData):', error)
+        logEvent(`Error in (getAchievementData): ${error}`)
+      }
+    }
+
+    if (isOpen && item.appid) {
+      getAchievementData()
+    }
+  }, [t, isOpen, item.appid, userSummary?.steamId])
+
+  return (
+    <CustomModal
+      isOpen={isOpen}
+      onOpenChange={onOpenChange}
+      classNames={{
+        body: '!p-0 !pr-2 !max-h-[60vh] !min-h-[60vh]',
+      }}
+      title={
+        <div>
+          <p className='truncate'>{item.name}</p>
+          <p className='text-xs font-normal mt-2'>
+            Manually set the order in which achievements are unlocked in Achievement Unlocker.
+          </p>
+        </div>
+      }
+      body={
+        <div>
+          {isLoading ? (
+            <div className='flex justify-center items-center w-full p-4'>
+              <Spinner />
+            </div>
+          ) : achievements.length === 0 ? (
+            <div className='flex justify-center items-center w-full p-4'>
+              <p className='text-center text-content'>{t('achievementManager.achievements.empty')}</p>
+            </div>
+          ) : (
+            <div className='space-y-2 overflow-y-auto overflow-x-hidden max-w-fit select-none'>
+              <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                <SortableContext items={achievements.map(a => a.name)} strategy={verticalListSortingStrategy}>
+                  {achievements.map((achievement, index) => (
+                    <SortableAchievement item={item} key={achievement.name} achievement={achievement} index={index} />
+                  ))}
+                </SortableContext>
+              </DndContext>
+            </div>
+          )}
+        </div>
+      }
+      buttons={
+        <>
+          <Button
+            size='sm'
+            color='danger'
+            variant='light'
+            radius='full'
+            className='font-semibold'
+            onPress={onOpenChange}
+          >
+            {t('common.cancel')}
+          </Button>
+          <Button size='sm' className='bg-btn-secondary text-btn-text font-bold' radius='full' onPress={handleSave}>
+            {t('common.save')}
+          </Button>
+        </>
+      }
+    />
+  )
+}

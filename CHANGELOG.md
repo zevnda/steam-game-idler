@@ -1,3 +1,14 @@
+<!-- 2.3.0 -->
+
+### Changes in v2.3.0
+
+- Added custom achievement order for the Achievement Unlocker feature
+  - Users can now customize the order in which achievements are unlocked for games in Achievement Unlocker
+  - Click the sort icon *(up and down arrow)* on any game in the Achievement Unlocker list to open the achievement order modal
+  - Drag and drop achievements to set your preferred unlock order
+  - Custom orders are saved per game and will be used instead of the default percentage-based ordering
+  - If no custom order exists, achievements will still be unlocked from highest to lowest global achieved percentage
+
 <!-- 2.2.11 -->
 
 ### Changes in v2.2.11
