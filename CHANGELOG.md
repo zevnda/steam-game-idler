@@ -8,6 +8,7 @@
   - Drag and drop achievements to set your preferred unlock order
   - Custom orders are saved per game and will be used instead of the default percentage-based ordering
   - If no custom order exists, achievements will still be unlocked from highest to lowest global achieved percentage
+- Offline users are now hidden in the user list in chat
 
 <!-- 2.2.11 -->
 
