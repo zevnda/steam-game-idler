@@ -12,7 +12,6 @@ interface RoleGroup {
   role: string
   roleName: string
   online: ChatUser[]
-  offline: ChatUser[]
 }
 
 export default function ChatUserList(): ReactElement {
@@ -67,14 +66,12 @@ export default function ChatUserList(): ReactElement {
     }
   }
 
-  const { roleGroups, offlineUsers } = useMemo(() => {
+  const { roleGroups } = useMemo(() => {
     // Create a map of all users from database for quick lookup
     const allUsersMap = new Map(allUsers.map(u => [u.user_id, u]))
-    const onlineIds = new Set(onlineUsers.map(u => u.user_id))
 
     // Group users by role
     const groups = new Map<string, RoleGroup>()
-    const offline: ChatUser[] = []
 
     // First, process all online users (including those not in database)
     onlineUsers.forEach(onlineUser => {
@@ -89,17 +86,9 @@ export default function ChatUserList(): ReactElement {
           role: userRole,
           roleName: getRoleName(userRole),
           online: [],
-          offline: [],
         })
       }
       groups.get(userRole)!.online.push(user)
-    })
-
-    // Then, process offline users (in database but not online)
-    allUsers.forEach(user => {
-      if (user.user_id && !onlineIds.has(user.user_id)) {
-        offline.push(user)
-      }
     })
 
     // Sort users within each group alphabetically
@@ -107,13 +96,10 @@ export default function ChatUserList(): ReactElement {
       group.online.sort((a, b) => a.username.localeCompare(b.username))
     })
 
-    // Sort offline users alphabetically by username
-    offline.sort((a, b) => a.username.localeCompare(b.username))
-
     // Convert to array and sort by role priority
     const sortedGroups = Array.from(groups.values()).sort((a, b) => getRolePriority(a.role) - getRolePriority(b.role))
 
-    return { roleGroups: sortedGroups, offlineUsers: offline }
+    return { roleGroups: sortedGroups }
   }, [allUsers, onlineUsers, userRoles])
 
   return (
@@ -153,42 +139,6 @@ export default function ChatUserList(): ReactElement {
             </div>
           </div>
         ))}
-
-        {/* Offline users section */}
-        {offlineUsers.length > 0 && (
-          <div>
-            <p className='text-[10px] text-altwhite mb-2 select-none uppercase font-semibold'>
-              Offline — {offlineUsers.length}
-            </p>
-            <div className='flex flex-col'>
-              {offlineUsers.map(user => {
-                const userRole = (user.user_id && userRoles[user.user_id]) ?? 'user'
-                return (
-                  <ExtLink
-                    key={user.user_id}
-                    href={`https://steamcommunity.com/profiles/${user.user_id}`}
-                    className='flex items-center gap-2 w-full hover:bg-white/5 p-1 rounded-sm brightness-40 hover:brightness-100 cursor-pointer'
-                  >
-                    <div className='relative'>
-                      <Image
-                        src={
-                          user.avatar_url ||
-                          `https://ui-avatars.com/api/?name=${user.username}&background=5865f2&color=fff`
-                        }
-                        alt={`Avatar of ${user.username}`}
-                        className='w-7 h-7 rounded-full mr-2'
-                        width={28}
-                        height={28}
-                      />
-                    </div>
-
-                    <span className={`text-xs truncate ${getRoleStyles(userRole)}`}>{user.username}</span>
-                  </ExtLink>
-                )
-              })}
-            </div>
-          </div>
-        )}
       </div>
     </div>
   )
