@@ -6,6 +6,72 @@ use std::io::Read;
 use std::io::Write;
 
 #[tauri::command]
+pub async fn get_achievement_order(
+    steam_id: String,
+    app_id: u32,
+    app_handle: tauri::AppHandle,
+) -> Result<Value, String> {
+    let app_data_dir = get_cache_dir(&app_handle)?
+        .join(steam_id.clone())
+        .join("achievement_data");
+
+    // Create cache directory if it doesn't exist
+    if !app_data_dir.exists() {
+        fs::create_dir_all(&app_data_dir)
+            .map_err(|e| format!("Failed to create achievement data directory: {}", e))?;
+    }
+
+    let file_name = format!("{}_order.json", app_id);
+    let achievement_file_path = app_data_dir.join(&file_name);
+
+    if achievement_file_path.exists() {
+        let mut file = File::open(&achievement_file_path)
+            .map_err(|e| format!("Failed to open achievement order file: {}", e))?;
+        let mut contents = String::new();
+        file.read_to_string(&mut contents)
+            .map_err(|e| format!("Failed to read achievement order file: {}", e))?;
+        let achievement_order: Value = serde_json::from_str(&contents)
+            .map_err(|e| format!("Failed to parse achievement order JSON: {}", e))?;
+        Ok(json!({ "achievement_order": achievement_order }))
+    } else {
+        Ok(json!({ "achievement_order": null }))
+    }
+}
+
+#[tauri::command]
+pub async fn save_achievement_order(
+    steam_id: String,
+    app_id: u32,
+    achievement_order: Value,
+    app_handle: tauri::AppHandle,
+) -> Result<Value, String> {
+    let app_data_dir = get_cache_dir(&app_handle)?
+        .join(steam_id.clone())
+        .join("achievement_data");
+
+    // Create cache directory if it doesn't exist
+    if !app_data_dir.exists() {
+        fs::create_dir_all(&app_data_dir)
+            .map_err(|e| format!("Failed to create achievement data directory: {}", e))?;
+    }
+
+    let file_name = format!("{}_order.json", app_id);
+    let achievement_file_path = app_data_dir.join(&file_name);
+
+    // Write the achievement order to file
+    let json_string = serde_json::to_string_pretty(&achievement_order)
+        .map_err(|e| format!("Failed to serialize achievement order JSON: {}", e))?;
+
+    let mut file = File::create(&achievement_file_path)
+        .map_err(|e| format!("Failed to create achievement order file: {}", e))?;
+
+    file.write_all(json_string.as_bytes())
+        .map_err(|e| format!("Failed to write achievement order: {}", e))?;
+
+    Ok(json!({ "success": true }))
+}
+
+#[tauri::command]
 pub async fn get_custom_lists(
     steam_id: String,
     list: String,

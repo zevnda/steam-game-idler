@@ -1,3 +1,4 @@
+import type { ModalProps } from '@heroui/react'
 import type { ReactElement, ReactNode } from 'react'
 
 import { cn, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@heroui/react'
@@ -7,6 +8,7 @@ interface CustomModalProps {
   onOpen?: () => void
   onOpenChange?: () => void
   className?: string
+  classNames?: ModalProps['classNames']
   title: ReactNode | string
   body: ReactNode | string
   buttons: ReactNode
@@ -18,6 +20,7 @@ export default function CustomModal({
   onOpen,
   onOpenChange,
   className,
+  classNames,
   title,
   body,
   buttons,
@@ -33,10 +36,10 @@ export default function CustomModal({
         closeButton: 'text-altwhite hover:bg-item-hover/40 duration-200 active:bg-item-hover/50',
         base: 'bg-base/85 backdrop-blur-sm',
         body: 'p-0',
+        ...classNames,
       }}
     >
       <ModalContent>
-        {/* {(onClose: () => void) => ( */}
         <>
           <ModalHeader className='flex flex-col gap-1 border-b border-border/40' data-tauri-drag-region>
             {title}
@@ -44,7 +47,6 @@ export default function CustomModal({
           <ModalBody className='my-0 p-6 text-sm max-h-80 overflow-auto'>{body}</ModalBody>
           <ModalFooter className='border-t border-border/40 px-4 py-3'>{buttons}</ModalFooter>
         </>
-        {/* )} */}
       </ModalContent>
     </Modal>
   )

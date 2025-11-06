@@ -4,7 +4,7 @@ import type { ReactElement, ReactNode } from 'react'
 
 import { invoke } from '@tauri-apps/api/core'
 
-import { Button, cn } from '@heroui/react'
+import { Button, cn, useDisclosure } from '@heroui/react'
 import { useEffect, useState } from 'react'
 import { DndContext } from '@dnd-kit/core'
 import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable'
@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next'
 import { TbAward, TbCards, TbEdit } from 'react-icons/tb'
 
 import { useStateContext } from '@/components/contexts/StateContext'
+import AchievementOrderModal from '@/components/customlists/AchievementOrderModal'
 import EditListModal from '@/components/customlists/EditListModal'
 import ManualAdd from '@/components/customlists/ManualAdd'
 import RecommendedCardDropsCarousel from '@/components/customlists/RecommendedCardDropsCarousel'
@@ -60,11 +61,13 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
     handleUpdateListOrder,
     handleClearList,
   } = useCustomList(type)
-  const { startCardFarming, startAchievementUnlocker } = useAutomate()
   const [isEditModalOpen, setEditModalOpen] = useState(false)
-  const { sidebarCollapsed, transitionDuration } = useStateContext()
   const [gamesWithDrops, setGamesWithDrops] = useState<Game[]>([])
   const [isLoadingDrops, setIsLoadingDrops] = useState(false)
+  const [selectedGame, setSelectedGame] = useState<Game | null>(null)
+  const { startCardFarming, startAchievementUnlocker } = useAutomate()
+  const { sidebarCollapsed, transitionDuration } = useStateContext()
+  const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
   const handleDragEnd = (event: DragEndEvent): void => {
     const { active, over } = event
@@ -163,6 +166,11 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
     handleAddGame(game)
   }
 
+  const handleGameClick = (game: Game): void => {
+    setSelectedGame(game)
+    onOpen()
+  }
+
   return (
     <>
       <div
@@ -227,11 +235,18 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
         <DndContext onDragEnd={handleDragEnd}>
           <SortableContext items={list.map(item => item.appid)}>
             <div className='grid grid-cols-5 2xl:grid-cols-7 gap-4 p-6 pt-4'>
-              {list && list.slice(0, visibleGames).map(item => <SortableGameCard key={item.appid} item={item} />)}
+              {list &&
+                list
+                  .slice(0, visibleGames)
+                  .map(item => (
+                    <SortableGameCard key={item.appid} item={item} type={type} onOpen={() => handleGameClick(item)} />
+                  ))}
             </div>
           </SortableContext>
         </DndContext>
       </div>
+
+      {selectedGame && <AchievementOrderModal item={selectedGame} isOpen={isOpen} onOpenChange={onOpenChange} />}
 
       <EditListModal
         type={type}
@@ -259,9 +274,11 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
 
 interface SortableGameCardProps {
   item: Game
+  type: CustomListType
+  onOpen: () => void
 }
 
-function SortableGameCard({ item }: SortableGameCardProps): ReactElement {
+function SortableGameCard({ item, type, onOpen }: SortableGameCardProps): ReactElement {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: item.appid })
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -270,7 +287,7 @@ function SortableGameCard({ item }: SortableGameCardProps): ReactElement {
 
   return (
     <div className='cursor-grab' ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      <GameCard item={item} />
+      <GameCard item={item} isAchievementUnlocker={type === 'achievementUnlockerList'} onOpen={onOpen} />
     </div>
   )
 }

@@ -1,4 +1,5 @@
 import type {
+  Achievement,
   AchievementUnlockerSettings,
   Game,
   InvokeAchievementData,
@@ -164,26 +165,88 @@ const fetchAchievements = async (
       return { achievements: [], game }
     }
 
-    // Filter out hidden achievements
-    const achievements: AchievementToUnlock[] = rawAchievements
-      .filter(achievement => {
-        return !achievement.achieved && (!hidden || achievement.hidden === false)
-      })
-      .map(achievement => {
-        return {
+    // First check if there's a custom order file
+    let orderedAchievements: AchievementToUnlock[] = []
+
+    try {
+      const customOrder = await invoke<{ achievement_order: { achievements: Achievement[] } | null }>(
+        'get_achievement_order',
+        {
+          steamId: userSummary?.steamId,
+          appId: game.appid,
+        },
+      )
+
+      // If we have a custom order, use that order to sort achievements
+      if (customOrder.achievement_order?.achievements) {
+        logEvent(`Custom achievement order found for ${game.name} (${game.appid}), applying order`)
+
+        const customOrderMap = new Map(
+          customOrder.achievement_order.achievements.map((achievement, index) => [achievement.name, index]),
+        )
+
+        // Filter and map achievements
+        orderedAchievements = rawAchievements
+          .filter(achievement => !achievement.achieved && (!hidden || achievement.hidden === false))
+          .map(achievement => ({
+            appId: game.appid,
+            id: achievement.id,
+            gameName: game.name,
+            percentage: achievement.percent || 0,
+            name: achievement.name,
+            hidden: achievement.hidden,
+          }))
+          // Sort based on custom order if achievement is in the order, otherwise put at end and sort by percentage
+          .sort((a, b) => {
+            const orderA = customOrderMap.get(a.name!)
+            const orderB = customOrderMap.get(b.name!)
+
+            if (orderA !== undefined && orderB !== undefined) {
+              return orderA - orderB
+            } else if (orderA !== undefined) {
+              return -1
+            } else if (orderB !== undefined) {
+              return 1
+            } else {
+              return b.percentage - a.percentage
+            }
+          })
+      } else {
+        // No custom order, use default percentage-based sorting
+        logEvent(`No custom achievement order found for ${game.name} (${game.appid}), using default sorting`)
+
+        orderedAchievements = rawAchievements
+          .filter(achievement => !achievement.achieved && (!hidden || achievement.hidden === false))
+          .map(achievement => ({
+            appId: game.appid,
+            id: achievement.id,
+            gameName: game.name,
+            percentage: achievement.percent || 0,
+            name: achievement.name,
+            hidden: achievement.hidden,
+          }))
+          .sort((a, b) => b.percentage - a.percentage)
+      }
+    } catch (error) {
+      // If there's any error getting custom order, fall back to percentage-based sorting
+      logEvent(`Error getting custom achievement order: ${error}`)
+
+      orderedAchievements = rawAchievements
+        .filter(achievement => !achievement.achieved && (!hidden || achievement.hidden === false))
+        .map(achievement => ({
           appId: game.appid,
           id: achievement.id,
           gameName: game.name,
           percentage: achievement.percent || 0,
           name: achievement.name,
           hidden: achievement.hidden,
-        }
-      })
-      .sort((a, b) => b.percentage - a.percentage)
+        }))
+        .sort((a, b) => b.percentage - a.percentage)
+    }
 
-    setAchievementCount(maxAchievementUnlocks || achievements.length)
+    setAchievementCount(maxAchievementUnlocks || orderedAchievements.length)
 
-    return { achievements, game }
+    return { achievements: orderedAchievements, game }
   } catch (error) {
     handleError('fetchAchievements', error)
     return { achievements: [], game }

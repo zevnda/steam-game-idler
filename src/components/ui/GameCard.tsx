@@ -5,7 +5,7 @@ import { Button } from '@heroui/react'
 import { memo } from 'react'
 import Image from 'next/image'
 import { FaSteam } from 'react-icons/fa'
-import { TbAwardFilled, TbPlayerPlayFilled, TbPlayerStopFilled } from 'react-icons/tb'
+import { TbArrowsSort, TbAwardFilled, TbPlayerPlayFilled, TbPlayerStopFilled } from 'react-icons/tb'
 
 import { useIdleContext } from '@/components/contexts/IdleContext'
 import { useStateContext } from '@/components/contexts/StateContext'
@@ -17,11 +17,16 @@ import { handleIdle, handleStopIdle, viewAchievments } from '@/hooks/ui/useGameC
 interface GameCardProps {
   item: Game
   isFreeGame?: boolean
-  imageWidth?: number
-  imageHeight?: number
+  isAchievementUnlocker?: boolean
+  onOpen?: () => void
 }
 
-const GameCard = memo(function GameCard({ item, isFreeGame = false }: GameCardProps): ReactElement {
+const GameCard = memo(function GameCard({
+  item,
+  isFreeGame = false,
+  isAchievementUnlocker = false,
+  onOpen,
+}: GameCardProps): ReactElement {
   const { idleGamesList, setIdleGamesList } = useIdleContext()
   const { setAppId, setAppName, setShowAchievements } = useStateContext()
 
@@ -113,6 +118,20 @@ const GameCard = memo(function GameCard({ item, isFreeGame = false }: GameCardPr
             >
               <TbAwardFilled size={18} />
             </Button>
+
+            {isAchievementUnlocker && (
+              <Button
+                isIconOnly
+                size='sm'
+                radius='full'
+                className='bg-transparent hover:bg-item-hover text-altwhite hover:text-content transition-colors duration-150'
+                onPress={() => {
+                  if (onOpen) onOpen()
+                }}
+              >
+                <TbArrowsSort size={18} />
+              </Button>
+            )}
           </div>
         </div>
       </div>
