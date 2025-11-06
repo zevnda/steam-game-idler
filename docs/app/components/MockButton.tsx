@@ -1,6 +1,7 @@
 import type { ReactElement } from 'react'
 
 import {
+  TbArrowsSort,
   TbAward,
   TbBuildingStore,
   TbCards,
@@ -35,6 +36,7 @@ type ButtonType =
   | 'remove-all'
   | 'done'
   | 'save'
+  | 'save-alt'
   | 'save-changes'
   | 'context-add'
   | 'context-cog'
@@ -45,6 +47,7 @@ type ButtonType =
   | 'idling-games'
   | 'auto-idle'
   | 'free-games'
+  | 'unlock-order'
 
 interface MockButtonProps {
   type: ButtonType
@@ -136,6 +139,12 @@ export default function MockButton({ type, content }: MockButtonProps): ReactEle
         <TbUpload fontSize={20} className='inline' /> Save
       </span>
     )
+  } else if (type === 'save-alt') {
+    return (
+      <span className='inline bg-icon-light dark:bg-icon-dark text-icon-light dark:text-icon-dark text-[12px] font-semibold px-2 py-1.5 rounded-full shadow-sm select-none'>
+        Save
+      </span>
+    )
   } else if (type === 'save-changes') {
     return (
       <span className='inline bg-icon-light dark:bg-icon-dark text-icon-light dark:text-icon-dark text-[12px] font-semibold px-2 py-1.5 rounded-full shadow-sm select-none'>
@@ -194,6 +203,12 @@ export default function MockButton({ type, content }: MockButtonProps): ReactEle
     return (
       <span className='inline bg-icon-light dark:bg-icon-dark text-icon-light dark:text-icon-dark text-[12px] font-semibold px-2 py-1.5 rounded-full shadow-sm select-none'>
         <TbGift fontSize={20} className='inline' /> Free Games
+      </span>
+    )
+  } else if (type === 'unlock-order') {
+    return (
+      <span className='inline bg-icon-light dark:bg-icon-dark text-icon-light dark:text-icon-dark text-[12px] font-semibold px-2 py-1.5 rounded-full shadow-sm select-none'>
+        <TbArrowsSort fontSize={20} className='inline' />
       </span>
     )
   }
