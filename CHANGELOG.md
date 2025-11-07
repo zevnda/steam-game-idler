@@ -1,3 +1,9 @@
+<!-- 2.3.1 -->
+
+### Changes in v2.3.1
+
+- Increased the maximum value of `unlock interval` in `settings > achievement unlocker` from `0.5` days to `2` days
+
 <!-- 2.3.0 -->
 
 ### Changes in v2.3.0
