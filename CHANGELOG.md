@@ -3,6 +3,7 @@
 ### Changes in v2.3.1
 
 - Increased the maximum value of `unlock interval` in `settings > achievement unlocker` from `0.5` days to `2` days
+- Fixed an issue in the `achievement unlocker` custom order modal that allowed the achievements to be dragged horizontally, causing an infinite scroll and bad UX
 
 <!-- 2.3.0 -->
 
