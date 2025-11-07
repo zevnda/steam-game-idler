@@ -10,6 +10,7 @@ export interface Achievement {
   percent: number
   permission: number
   protected_achievement: boolean
+  skip?: boolean
 }
 
 export interface Statistic {

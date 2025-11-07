@@ -31,6 +31,7 @@ interface AchievementToUnlock {
   percentage: number
   name?: string
   hidden?: boolean
+  skip?: boolean
 }
 
 export const useAchievementUnlocker = async (
@@ -188,14 +189,21 @@ const fetchAchievements = async (
         // Filter and map achievements
         orderedAchievements = rawAchievements
           .filter(achievement => !achievement.achieved && (!hidden || achievement.hidden === false))
-          .map(achievement => ({
-            appId: game.appid,
-            id: achievement.id,
-            gameName: game.name,
-            percentage: achievement.percent || 0,
-            name: achievement.name,
-            hidden: achievement.hidden,
-          }))
+          .map(achievement => {
+            // Get skip property from custom order if it exists
+            const customAchievement = customOrder.achievement_order!.achievements.find(a => a.name === achievement.name)
+            return {
+              appId: game.appid,
+              id: achievement.id,
+              gameName: game.name,
+              percentage: achievement.percent || 0,
+              name: achievement.name,
+              hidden: achievement.hidden,
+              skip: customAchievement?.skip,
+            }
+          })
+          // Filter out achievements with skip: true
+          .filter(achievement => achievement.skip !== true)
           // Sort based on custom order if achievement is in the order, otherwise put at end and sort by percentage
           .sort((a, b) => {
             const orderA = customOrderMap.get(a.name!)

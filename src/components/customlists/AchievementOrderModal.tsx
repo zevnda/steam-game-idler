@@ -4,7 +4,7 @@ import type { ReactElement } from 'react'
 
 import { invoke } from '@tauri-apps/api/core'
 
-import { Button, Spinner } from '@heroui/react'
+import { Button, Checkbox, cn, Spinner } from '@heroui/react'
 import { useEffect, useState } from 'react'
 import { DndContext, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
@@ -24,7 +24,12 @@ interface SortableAchievementProps {
   index: number
 }
 
-function SortableAchievement({ item, achievement, index }: SortableAchievementProps): ReactElement {
+function SortableAchievement({
+  item,
+  achievement,
+  index,
+  onToggleSkip,
+}: SortableAchievementProps & { onToggleSkip: (name: string) => void }): ReactElement {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: achievement.name })
 
   const iconUrl = 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/'
@@ -38,19 +43,45 @@ function SortableAchievement({ item, achievement, index }: SortableAchievementPr
   }
 
   return (
-    <div className='flex items-center gap-2'>
-      <span className='text-lg font-bold text-altwhite w-6 text-right select-none'>{index + 1}</span>
+    <div className='grid grid-cols-[40px_1fr] gap-2 items-center'>
+      <span className='text-lg font-bold text-altwhite text-center select-none'>{index + 1}</span>
       <div
         ref={setNodeRef}
         style={style}
         {...attributes}
         {...listeners}
-        className='flex items-center gap-3 p-1 bg-card hover:bg-card/80 rounded-lg cursor-grab active:cursor-grabbing hover:bg-inputhover flex-1'
+        className={cn(
+          'flex items-center gap-3 p-2 bg-card hover:bg-card/80 rounded-lg cursor-grab',
+          'active:cursor-grabbing hover:bg-inputhover group min-w-[98%] max-w-[98%]',
+          achievement.skip === true && 'opacity-40',
+        )}
       >
-        <Image className='rounded-full' src={icon} width={32} height={32} alt={`${achievement.name} image`} priority />
-        <div className='flex-1 w-[90%]'>
-          <p className='font-semibold'>{achievement.name}</p>
-          <p className='text-xs text-gray-400 truncate'>{achievement.description}</p>
+        <div className='flex items-center justify-center w-[26px]'>
+          <Checkbox
+            isSelected={achievement.skip !== true}
+            onValueChange={() => onToggleSkip(achievement.name)}
+            onClick={e => e.stopPropagation()}
+            className='ml-3'
+          />
+        </div>
+        <Image
+          className='rounded-full ml-8 select-none'
+          src={icon}
+          width={32}
+          height={32}
+          alt={`${achievement.name} image`}
+          priority
+        />
+        <div className='flex-1 min-w-0 select-none'>
+          <p className='font-semibold truncate'>{achievement.name}</p>
+          <p
+            className={cn(
+              'text-xs text-gray-400 truncate',
+              achievement.hidden && 'blur-[3px] group-hover:blur-none transition-all duration-200',
+            )}
+          >
+            {achievement.description}
+          </p>
         </div>
       </div>
     </div>
@@ -81,6 +112,14 @@ export default function AchievementOrderModal({
         return arrayMove(items, oldIndex, newIndex)
       })
     }
+  }
+
+  const handleToggleSkip = (achievementName: string): void => {
+    setAchievements(items =>
+      items.map(achievement =>
+        achievement.name === achievementName ? { ...achievement, skip: achievement.skip !== true } : achievement,
+      ),
+    )
   }
 
   const handleSave = async (): Promise<void> => {
@@ -183,7 +222,7 @@ export default function AchievementOrderModal({
         </div>
       }
       body={
-        <div className='overflow-x-hidden p-2'>
+        <div className='overflow-x-hidden overflow-y-auto relative '>
           {isLoading ? (
             <div className='flex justify-center items-center w-full p-4'>
               <Spinner />
@@ -193,15 +232,30 @@ export default function AchievementOrderModal({
               <p className='text-center text-content'>{t('achievementManager.achievements.empty')}</p>
             </div>
           ) : (
-            <DndContext sensors={sensors} onDragEnd={handleDragEnd} modifiers={[restrictToVerticalAxis]}>
-              <SortableContext items={achievements.map(a => a.name)}>
-                <div className='grid grid-cols-1 gap-1'>
-                  {achievements.map((achievement, index) => (
-                    <SortableAchievement item={item} key={achievement.name} achievement={achievement} index={index} />
-                  ))}
+            <>
+              <div className='grid grid-cols-[40px_1fr] gap-2 items-center p-2 mb-2 border-b border-border sticky top-0 bg-[#18181b] z-50'>
+                <span className='text-sm font-semibold text-content select-none text-center w-[26px]'>#</span>
+                <div className='flex items-center gap-3 pl-0'>
+                  <span className='text-sm font-semibold text-content text-center w-[26px]'>Unlock</span>
+                  <span className='text-sm font-semibold text-content flex-1 ml-8'>Achievement</span>
                 </div>
-              </SortableContext>
-            </DndContext>
+              </div>
+              <DndContext sensors={sensors} onDragEnd={handleDragEnd} modifiers={[restrictToVerticalAxis]}>
+                <SortableContext items={achievements.map(a => a.name)}>
+                  <div className='grid grid-cols-1 gap-1'>
+                    {achievements.map((achievement, index) => (
+                      <SortableAchievement
+                        item={item}
+                        key={achievement.name}
+                        achievement={achievement}
+                        index={index}
+                        onToggleSkip={handleToggleSkip}
+                      />
+                    ))}
+                  </div>
+                </SortableContext>
+              </DndContext>
+            </>
           )}
         </div>
       }
