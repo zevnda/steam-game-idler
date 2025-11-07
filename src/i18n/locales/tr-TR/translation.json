@@ -40,6 +40,7 @@
   "customLists.cardFarming.drops_other": "{{count}} damla kaldı",
   "customLists.achievementUnlocker.subtitle": "Bu listeye başarımlarını açmak istediğiniz oyunları ekleyin",
   "customLists.achievementUnlocker.buttonLabel": "Başarım açıcısını başlat",
+  "customLists.achievementUnlocker.customOrderDesc": "Başarı Kilidi Açıcı'da başarıların kilidinin açılacağı sırayı manuel olarak ayarlayın",
   "customLists.autoIdle.title": "Otomatik Boşta Bırakıcı",
   "customLists.autoIdle.subtitle": "Bu listeye SGI açılınca otomatik olarak boşta bırakmasını istediğiniz oyunları ekleyin",
   "customLists.favorites.title": "Favorileriniz",

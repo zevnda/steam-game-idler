@@ -40,6 +40,7 @@
   "customLists.cardFarming.drops_other": "{{count}} số giọt còn lại",
   "customLists.achievementUnlocker.subtitle": "Thêm trò chơi vào danh sách này để mở khóa thành tựu của chúng",
   "customLists.achievementUnlocker.buttonLabel": "Bắt đầu Trình mở khóa Thành tích",
+  "customLists.achievementUnlocker.customOrderDesc": "Thiết lập thủ công thứ tự mở khóa các thành tích trong Achievement Unlocker",
   "customLists.autoIdle.title": "Trình Idle tự động",
   "customLists.autoIdle.subtitle": "Thêm trò chơi vào danh sách này để tự động idle chúng khi khởi chạy",
   "customLists.favorites.title": "Mục yêu thích",

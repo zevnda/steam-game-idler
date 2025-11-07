@@ -40,6 +40,7 @@
   "customLists.cardFarming.drops_other": "Залишилося {{count}} крапель",
   "customLists.achievementUnlocker.subtitle": "Додайте ігри до цього списку, щоб розблокувати їхні досягнення",
   "customLists.achievementUnlocker.buttonLabel": "Почати розблокування досягнень",
+  "customLists.achievementUnlocker.customOrderDesc": "Вручну встановіть порядок розблокування досягнень у Achievement Unlocker",
   "customLists.autoIdle.title": "Автоматичний бездіяльність",
   "customLists.autoIdle.subtitle": "Додайте ігри до цього списку, щоб автоматично очікувати їх при запуску",
   "customLists.favorites.title": "Улюблені",

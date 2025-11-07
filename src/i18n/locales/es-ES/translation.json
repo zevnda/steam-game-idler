@@ -40,6 +40,7 @@
   "customLists.cardFarming.drops_other": "{{count}} drops restantes",
   "customLists.achievementUnlocker.subtitle": "Añade juegos a esta lista para desbloquear sus logros",
   "customLists.achievementUnlocker.buttonLabel": "Iniciar desbloqueo de logros",
+  "customLists.achievementUnlocker.customOrderDesc": "Establece manualmente el orden en el que se desbloquean los logros en el Desbloqueador de Logros.",
   "customLists.autoIdle.title": "Farmeador automático",
   "customLists.autoIdle.subtitle": "Añadir juegos a esta lista para farmear automáticamente al iniciar",
   "customLists.favorites.title": "Favoritos",

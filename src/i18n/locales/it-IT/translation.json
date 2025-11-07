@@ -40,6 +40,7 @@
   "customLists.cardFarming.drops_other": "{{count}} gocce rimanenti",
   "customLists.achievementUnlocker.subtitle": "Aggiungi giochi alla tua lista per sbloccare i loro obiettivi",
   "customLists.achievementUnlocker.buttonLabel": "Inizia a sbloccare Obiettivi",
+  "customLists.achievementUnlocker.customOrderDesc": "Imposta manualmente l'ordine in cui vengono sbloccati i risultati in Achievement Unlocker",
   "customLists.autoIdle.title": "Identificatore Automatico",
   "customLists.autoIdle.subtitle": "Aggiungi giochi a questa lista per farli entrare automaticamente in modalità idle all'avvio",
   "customLists.favorites.title": "Preferiti",

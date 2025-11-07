@@ -40,6 +40,7 @@
   "customLists.cardFarming.drops_other": "{{count}} csepp van hátra",
   "customLists.achievementUnlocker.subtitle": "Adj játékokat ehhez a listához, hogy feloldják az eredményeket",
   "customLists.achievementUnlocker.buttonLabel": "Eredmény feloldó indítása",
+  "customLists.achievementUnlocker.customOrderDesc": "Az Achievement Unlockerben az elért eredmények feloldásának sorrendjének manuális beállítása",
   "customLists.autoIdle.title": "Automatikus idler",
   "customLists.autoIdle.subtitle": "Adj játékokat ehhez a listához, hogy automatikusan idling legyenek indításkor",
   "customLists.favorites.title": "Kedvencek",

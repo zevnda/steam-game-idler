@@ -40,6 +40,7 @@
   "customLists.cardFarming.drops_other": "{{count}} 剩餘滴數",
   "customLists.achievementUnlocker.subtitle": "將遊戲新增至此清單以解鎖其成就",
   "customLists.achievementUnlocker.buttonLabel": "開始成就解鎖器",
+  "customLists.achievementUnlocker.customOrderDesc": "在成就解鎖器中手動設定成就解鎖順序",
   "customLists.autoIdle.title": "自動閒置",
   "customLists.autoIdle.subtitle": "新增遊戲到此清單以在啟動時自動閒置",
   "customLists.favorites.title": "我的最愛",
