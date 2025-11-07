@@ -48,9 +48,9 @@ function SortableAchievement({ item, achievement, index }: SortableAchievementPr
         className='flex items-center gap-3 p-1 bg-card hover:bg-card/80 rounded-lg cursor-grab active:cursor-grabbing hover:bg-inputhover flex-1'
       >
         <Image className='rounded-full' src={icon} width={32} height={32} alt={`${achievement.name} image`} priority />
-        <div className='flex-1'>
+        <div className='flex-1 w-[90%]'>
           <p className='font-semibold'>{achievement.name}</p>
-          <p className='text-xs text-gray-400'>{achievement.description}</p>
+          <p className='text-xs text-gray-400 truncate'>{achievement.description}</p>
         </div>
       </div>
     </div>
@@ -174,7 +174,7 @@ export default function AchievementOrderModal({
       onOpenChange={onOpenChange}
       classNames={{
         body: '!p-0 !max-h-[60vh] !min-h-[60vh]',
-        base: 'max-w-3xl',
+        base: 'max-w-xl',
       }}
       title={
         <div>
