@@ -40,6 +40,7 @@
   "customLists.cardFarming.drops_other": "{{count}} осталось капель",
   "customLists.achievementUnlocker.subtitle": "Добавьте игры в этот список для разблокировки их достижений",
   "customLists.achievementUnlocker.buttonLabel": "Запустить разблокировщик достижений",
+  "customLists.achievementUnlocker.customOrderDesc": "Вручную задайте порядок разблокировки достижений в Achievement Unlocker.",
   "customLists.autoIdle.title": "Автоматический Простаиватель",
   "customLists.autoIdle.subtitle": "Добавьте игры в этот список, чтобы они автоматически переходили в режим бездействия при запуске",
   "customLists.favorites.title": "Избранное",

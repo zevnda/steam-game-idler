@@ -40,6 +40,7 @@
   "customLists.cardFarming.drops_other": "{{count}} verbleibende Tropfen",
   "customLists.achievementUnlocker.subtitle": "Füge Spiele zu dieser Liste hinzu, um deren Errungenschaften freizuschalten",
   "customLists.achievementUnlocker.buttonLabel": "Errungenschafts-Freischaltung starten",
+  "customLists.achievementUnlocker.customOrderDesc": "Die Reihenfolge, in der Erfolge im Erfolgsfreischalter freigeschaltet werden, kann manuell festgelegt werden.",
   "customLists.autoIdle.title": "Automatischer Idler",
   "customLists.autoIdle.subtitle": "Füge Spiele zu dieser Liste hinzu, um sie beim Start automatisch laufen zu lassen",
   "customLists.favorites.title": "Favoriten",

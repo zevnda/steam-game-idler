@@ -40,6 +40,7 @@
   "customLists.cardFarming.drops_other": "{{count}} dråber tilbage",
   "customLists.achievementUnlocker.subtitle": "Tilføj spil til denne liste for at låse op for deres præstationer",
   "customLists.achievementUnlocker.buttonLabel": "Start Opnåelsesoplåsning",
+  "customLists.achievementUnlocker.customOrderDesc": "Indstil manuelt den rækkefølge, som præstationer låses op i i Achievement Unlocker",
   "customLists.autoIdle.title": "Automatisk Idler",
   "customLists.autoIdle.subtitle": "Tilføj spil til denne liste for automatisk at idle dem ved lanceringen",
   "customLists.favorites.title": "Favoritter",

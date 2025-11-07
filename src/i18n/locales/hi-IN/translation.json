@@ -40,6 +40,7 @@
   "customLists.cardFarming.drops_other": "{{count}} ड्रॉप शेष",
   "customLists.achievementUnlocker.subtitle": "अपनी उपलब्धियों को अनलॉक करने के लिए इस सूची में गेम्स जोड़ें",
   "customLists.achievementUnlocker.buttonLabel": "उपलब्धि अनलॉकर शुरू करें",
+  "customLists.achievementUnlocker.customOrderDesc": "उपलब्धि अनलॉकर में उपलब्धियों को अनलॉक करने का क्रम मैन्युअल रूप से सेट करें",
   "customLists.autoIdle.title": "स्वचालित आइडलर",
   "customLists.autoIdle.subtitle": "उन गेम्स को इस सूची में जोड़ें जिन्हें लॉन्च पर स्वचालित रूप से आइडल किया जाए",
   "customLists.favorites.title": "पसंदीदा",

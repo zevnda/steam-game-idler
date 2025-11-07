@@ -40,6 +40,7 @@
   "customLists.cardFarming.drops_other": "{{count}} σταγόνες που απομένουν",
   "customLists.achievementUnlocker.subtitle": "Προσθήκη παιχνιδιών σε αυτή τη λίστα για να ξεκλειδώσετε τα επιτεύγματά τους",
   "customLists.achievementUnlocker.buttonLabel": "Έναρξη Ξεκλειδώματος Επιτευγμάτων",
+  "customLists.achievementUnlocker.customOrderDesc": "Ορίστε χειροκίνητα τη σειρά με την οποία ξεκλειδώνονται τα επιτεύγματα στο Achievement Unlocker",
   "customLists.autoIdle.title": "Αυτόματο Idler",
   "customLists.autoIdle.subtitle": "Προσθήκη παιχνιδιών σε αυτή τη λίστα για αυτόματη αδράνεια κατά την εκκίνηση",
   "customLists.favorites.title": "Αγαπημένα",

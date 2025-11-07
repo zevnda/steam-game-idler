@@ -40,6 +40,7 @@
   "customLists.cardFarming.drops_other": "{{count}} gouttes restantes",
   "customLists.achievementUnlocker.subtitle": "Ajoutez des jeux à cette liste pour débloquer leurs succès",
   "customLists.achievementUnlocker.buttonLabel": "Démarrer le déblocage de succès",
+  "customLists.achievementUnlocker.customOrderDesc": "Définissez manuellement l'ordre de déblocage des succès dans le débloqueur de succès.",
   "customLists.autoIdle.title": "Idler Automatique",
   "customLists.autoIdle.subtitle": "Ajoutez des jeux à cette liste pour les lancer automatiquement en mode idle",
   "customLists.favorites.title": "Favoris",
