@@ -6,14 +6,9 @@ import { invoke } from '@tauri-apps/api/core'
 
 import { Button, Spinner } from '@heroui/react'
 import { useEffect, useState } from 'react'
-import { closestCenter, DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
-import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  useSortable,
-  verticalListSortingStrategy,
-} from '@dnd-kit/sortable'
+import { DndContext, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
+import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
+import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import Image from 'next/image'
 import { useTranslation } from 'react-i18next'
@@ -75,13 +70,6 @@ export default function AchievementOrderModal({
   const { userSummary } = useUserContext()
   const [isLoading, setIsLoading] = useState(false)
   const [achievements, setAchievements] = useState<Achievement[]>([])
-
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    }),
-  )
 
   const handleDragEnd = (event: DragEndEvent): void => {
     const { active, over } = event
@@ -175,23 +163,24 @@ export default function AchievementOrderModal({
     }
   }, [t, isOpen, item.appid, userSummary?.steamId])
 
+  const sensors = useSensors(useSensor(PointerSensor))
+
   return (
     <CustomModal
       isOpen={isOpen}
       onOpenChange={onOpenChange}
       classNames={{
-        body: '!p-0 !pr-2 !max-h-[60vh] !min-h-[60vh]',
+        body: '!p-0 !max-h-[60vh] !min-h-[60vh]',
+        base: 'max-w-3xl',
       }}
       title={
         <div>
           <p className='truncate'>{item.name}</p>
-          <p className='text-xs font-normal mt-2'>
-            Manually set the order in which achievements are unlocked in Achievement Unlocker.
-          </p>
+          <p className='text-xs font-normal mt-2'>{t('customLists.achievementUnlocker.customOrderDesc')}</p>
         </div>
       }
       body={
-        <div>
+        <div className='overflow-x-hidden p-2'>
           {isLoading ? (
             <div className='flex justify-center items-center w-full p-4'>
               <Spinner />
@@ -201,15 +190,15 @@ export default function AchievementOrderModal({
               <p className='text-center text-content'>{t('achievementManager.achievements.empty')}</p>
             </div>
           ) : (
-            <div className='space-y-2 overflow-y-auto overflow-x-hidden max-w-fit select-none'>
-              <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                <SortableContext items={achievements.map(a => a.name)} strategy={verticalListSortingStrategy}>
+            <DndContext sensors={sensors} onDragEnd={handleDragEnd} modifiers={[restrictToVerticalAxis]}>
+              <SortableContext items={achievements.map(a => a.name)}>
+                <div className='grid grid-cols-1 gap-1'>
                   {achievements.map((achievement, index) => (
                     <SortableAchievement item={item} key={achievement.name} achievement={achievement} index={index} />
                   ))}
-                </SortableContext>
-              </DndContext>
-            </div>
+                </div>
+              </SortableContext>
+            </DndContext>
           )}
         </div>
       }

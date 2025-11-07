@@ -40,6 +40,7 @@
   "customLists.cardFarming.drops_other": "{{count}} drops remaining",
   "customLists.achievementUnlocker.subtitle": "Add games to this list to unlock their achievements",
   "customLists.achievementUnlocker.buttonLabel": "Start Achievement Unlocker",
+  "customLists.achievementUnlocker.customOrderDesc": "Manually set the order in which achievements are unlocked in Achievement Unlocker",
   "customLists.autoIdle.title": "Automatic Idler",
   "customLists.autoIdle.subtitle": "Add games to this list to automatically idle them on launch",
   "customLists.favorites.title": "Favorites",
