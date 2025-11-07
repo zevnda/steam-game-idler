@@ -167,7 +167,7 @@ export default function AchievementSettings(): ReactElement {
             size='md'
             step={1}
             minValue={1}
-            maxValue={720}
+            maxValue={2880}
             defaultValue={userSettings?.achievementUnlocker?.interval}
             formatOptions={{ style: 'currency', currency: 'USD' }}
             hideValue
