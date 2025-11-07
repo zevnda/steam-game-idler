@@ -40,7 +40,7 @@
   "customLists.cardFarming.drops_other": "Pozostało: {{count}} kart",
   "customLists.achievementUnlocker.subtitle": "Dodaj gry do tej listy, aby odblokować ich osiągnięcia",
   "customLists.achievementUnlocker.buttonLabel": "Rozpocznij Odblokowanie Osiągnięć",
-  "customLists.achievementUnlocker.customOrderDesc": "Ręcznie ustaw kolejność odblokowywania osiągnięć w programie Achievement Unlocker",
+  "customLists.achievementUnlocker.customOrderDesc": "Przeciągnij osiągnięcia, aby ustalić kolejność ich odblokowywania. Odznacz dowolne, aby wykluczyć je z odblokowywania.",
   "customLists.autoIdle.title": "Automatyczny Idling",
   "customLists.autoIdle.subtitle": "Dodaj gry do tej listy, aby je automatycznie farmić po uruchomieniu",
   "customLists.favorites.title": "Ulubione",

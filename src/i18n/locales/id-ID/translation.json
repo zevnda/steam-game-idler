@@ -40,7 +40,7 @@
   "customLists.cardFarming.drops_other": "{{count}} tetes tersisa",
   "customLists.achievementUnlocker.subtitle": "Tambahkan game ke daftar ini untuk membuka pencapaian mereka",
   "customLists.achievementUnlocker.buttonLabel": "Mulai Pembuka Pencapaian",
-  "customLists.achievementUnlocker.customOrderDesc": "Atur urutan pembukaan pencapaian secara manual di Achievement Unlocker",
+  "customLists.achievementUnlocker.customOrderDesc": "Seret pencapaian untuk mengatur urutan pembukaannya. Hapus centang apa pun untuk mengecualikannya dari pembukaan.",
   "customLists.autoIdle.title": "Idle Otomatis",
   "customLists.autoIdle.subtitle": "Tambahkan game ke daftar ini untuk mengidlekan mereka secara otomatis saat diluncurkan",
   "customLists.favorites.title": "Favorit",

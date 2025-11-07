@@ -40,7 +40,7 @@
   "customLists.cardFarming.drops_other": "{{count}} dråper igjen",
   "customLists.achievementUnlocker.subtitle": "Legg til spill til denne listen for å låse opp prestasjoner",
   "customLists.achievementUnlocker.buttonLabel": "Start oppnÃ¥elses Unlocker",
-  "customLists.achievementUnlocker.customOrderDesc": "Angi manuelt rekkefølgen prestasjoner låses opp i i Achievement Unlocker",
+  "customLists.achievementUnlocker.customOrderDesc": "Dra prestasjoner for å angi opplåsingsrekkefølgen. Fjern merket for eventuelle prestasjoner for å utelukke dem fra å bli opplåst.",
   "customLists.autoIdle.title": "Automatisk Idler",
   "customLists.autoIdle.subtitle": "Legg til spill i denne listen for automatisk å uvirksom dem ved oppstart",
   "customLists.favorites.title": "Favoritter",

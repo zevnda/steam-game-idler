@@ -40,7 +40,7 @@
   "customLists.cardFarming.drops_other": "Остават {{count}} капки",
   "customLists.achievementUnlocker.subtitle": "Добавете игри към този списък, за да отключите постиженията им",
   "customLists.achievementUnlocker.buttonLabel": "Започнете отключване на постижения",
-  "customLists.achievementUnlocker.customOrderDesc": "Ръчно задаване на реда, в който се отключват постиженията в Achievement Unlocker",
+  "customLists.achievementUnlocker.customOrderDesc": "Плъзнете постиженията, за да зададете реда им за отключване. Премахнете отметката от всяко, за да ги изключите от отключването.",
   "customLists.autoIdle.title": "Автоматичен режим на бездействие",
   "customLists.autoIdle.subtitle": "Добавете игри към този списък, за да ги пускате автоматично в режим на бездействие при стартиране",
   "customLists.favorites.title": "Любими",

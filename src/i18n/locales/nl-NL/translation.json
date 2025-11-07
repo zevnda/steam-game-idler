@@ -40,7 +40,7 @@
   "customLists.cardFarming.drops_other": "{{count}} laat de rest vallen",
   "customLists.achievementUnlocker.subtitle": "Voeg spellen toe aan deze lijst om hun prestaties te ontgrendelen",
   "customLists.achievementUnlocker.buttonLabel": "Start Prestatie Ontgrendeling",
-  "customLists.achievementUnlocker.customOrderDesc": "Stel handmatig de volgorde in waarin prestaties worden ontgrendeld in Achievement Unlocker",
+  "customLists.achievementUnlocker.customOrderDesc": "Versleep prestaties om de volgorde van ontgrendeling in te stellen. Vink ze uit om ze uit te sluiten van ontgrendeling.",
   "customLists.autoIdle.title": "Automatische Idler",
   "customLists.autoIdle.subtitle": "Voeg spellen toe aan deze lijst om ze automatisch in te schakelen bij het opstarten",
   "customLists.favorites.title": "Favorieten",

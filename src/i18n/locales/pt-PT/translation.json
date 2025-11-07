@@ -40,7 +40,7 @@
   "customLists.cardFarming.drops_other": "{{count}} gotas restantes",
   "customLists.achievementUnlocker.subtitle": "Adicione jogos a esta lista para desbloquear suas conquistas",
   "customLists.achievementUnlocker.buttonLabel": "Iniciar Desbloqueador de Conquistas",
-  "customLists.achievementUnlocker.customOrderDesc": "Defina manualmente a ordem pela qual as conquistas são desbloqueadas no Desbloqueador de Conquistas.",
+  "customLists.achievementUnlocker.customOrderDesc": "Arraste as conquistas para definir a ordem de desbloqueio. Desmarque as que desejar para as excluir do desbloqueio.",
   "customLists.autoIdle.title": "Idler automático",
   "customLists.autoIdle.subtitle": "Adicione jogos a esta lista para coletá-los automaticamente no lançamento",
   "customLists.favorites.title": "Atalhos",

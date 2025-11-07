@@ -40,7 +40,7 @@
   "customLists.cardFarming.drops_other": "{{count}} tippaa jäljellä",
   "customLists.achievementUnlocker.subtitle": "Lisää pelejä tähän luetteloon avataksesi niiden saavutukset",
   "customLists.achievementUnlocker.buttonLabel": "Käynnistä Saavutus Avaaja",
-  "customLists.achievementUnlocker.customOrderDesc": "Aseta saavutusten avausjärjestys manuaalisesti Achievement Unlockerissa",
+  "customLists.achievementUnlocker.customOrderDesc": "Vedä saavutuksia asettaaksesi niiden avausjärjestyksen. Poista valinta mistä tahansa saavutuksesta, jos et halua niiden avautuvan.",
   "customLists.autoIdle.title": "Automaattinen Idler",
   "customLists.autoIdle.subtitle": "Lisää pelejä tähän luetteloon käyttääksesi niitä automaattisesti käynnistettäessä",
   "customLists.favorites.title": "Suosikit",

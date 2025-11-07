@@ -40,7 +40,7 @@
   "customLists.cardFarming.drops_other": "残りドロップ数 {{count}}",
   "customLists.achievementUnlocker.subtitle": "このリストにゲームを追加して、実績のロックを解除する",
   "customLists.achievementUnlocker.buttonLabel": "実績アンロッカーを開始",
-  "customLists.achievementUnlocker.customOrderDesc": "Achievement Unlockerで実績のロックを解除する順序を手動で設定します",
+  "customLists.achievementUnlocker.customOrderDesc": "実績をドラッグして解除順を設定します。解除対象から除外するにはチェックを外します。",
   "customLists.autoIdle.title": "自動 Idler",
   "customLists.autoIdle.subtitle": "このリストにゲームを追加すると、起動時に自動的にアイドル状態になります",
   "customLists.favorites.title": "お気に入り",

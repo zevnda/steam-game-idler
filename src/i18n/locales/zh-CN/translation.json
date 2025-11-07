@@ -40,7 +40,7 @@
   "customLists.cardFarming.drops_other": "{{count}} 剩余滴数",
   "customLists.achievementUnlocker.subtitle": "将游戏添加到此列表中以解锁其成就",
   "customLists.achievementUnlocker.buttonLabel": "启动成就解锁器",
-  "customLists.achievementUnlocker.customOrderDesc": "在成就解锁器中手动设置成就解锁顺序",
+  "customLists.achievementUnlocker.customOrderDesc": "拖动成就即可设置解锁顺序。取消勾选即可将其排除在解锁范围之外。",
   "customLists.autoIdle.title": "自动挂机",
   "customLists.autoIdle.subtitle": "将游戏添加到此列表中以在启动时自动挂机",
   "customLists.favorites.title": "收藏夹",

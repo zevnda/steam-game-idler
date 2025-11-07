@@ -40,7 +40,7 @@
   "customLists.cardFarming.drops_other": "{{count}} gotas restantes",
   "customLists.achievementUnlocker.subtitle": "Adicione jogos a esta lista para desbloquear suas conquistas",
   "customLists.achievementUnlocker.buttonLabel": "Iniciar Desbloqueador de Conquistas",
-  "customLists.achievementUnlocker.customOrderDesc": "Defina manualmente a ordem em que as conquistas são desbloqueadas no Desbloqueador de Conquistas.",
+  "customLists.achievementUnlocker.customOrderDesc": "Arraste as conquistas para definir a ordem de desbloqueio. Desmarque as que desejar para excluí-las do desbloqueio.",
   "customLists.autoIdle.title": "Repouso Automático",
   "customLists.autoIdle.subtitle": "Adicione jogos a esta lista para deixá-los em repouso automaticamente ao iniciar",
   "customLists.favorites.title": "Favoritos",
