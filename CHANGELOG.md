@@ -2,7 +2,7 @@
 
 ### Changes in v2.3.2
 
-- Improvemants for `achievement unlocker` custom order modal
+- Improvements for `achievement unlocker` custom order modal
   - Added a checkbox to each achievement
     - Unchecked achievements will not be unlocked by `achievement unlocker`
   - Achievements with the `hidden` property will now show a blurred description until hovered
@@ -2060,5 +2060,6 @@ If you have any issues while using this beta version, please [open a new issue](
 ### Changes in v1.0.0
 
 - Reduce build package size
+
 
 
