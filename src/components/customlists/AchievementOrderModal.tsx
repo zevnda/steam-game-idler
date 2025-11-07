@@ -117,14 +117,7 @@ export default function AchievementOrderModal({
           },
         )
 
-        // If we have a custom order, use that
-        if (customOrder.achievement_order?.achievements) {
-          setAchievements(customOrder.achievement_order.achievements)
-          setIsLoading(false)
-          return
-        }
-
-        // Otherwise fetch achievement data
+        // Fetch achievement data to sync states
         const response = await invoke<InvokeAchievementData | string>('get_achievement_data', {
           steamId: userSummary?.steamId,
           appId: item.appid,
@@ -132,7 +125,6 @@ export default function AchievementOrderModal({
         })
 
         // Handle case where Steam API initialization failed
-        // We already check if Steam client is running so usually account mismatch
         if (typeof response === 'string' && response.includes('Failed to initialize Steam API')) {
           setIsLoading(false)
           showAccountMismatchToast('danger')
@@ -142,9 +134,20 @@ export default function AchievementOrderModal({
 
         const achievementData = response as InvokeAchievementData
 
+        // If we have a custom order, update its achievement states and use it
+        if (customOrder.achievement_order?.achievements && achievementData?.achievement_data?.achievements) {
+          const updatedAchievements = customOrder.achievement_order.achievements.map(achievement => {
+            const currentState = achievementData.achievement_data.achievements.find(a => a.name === achievement.name)
+            return currentState ? { ...achievement, achieved: currentState.achieved } : achievement
+          })
+          setAchievements(updatedAchievements)
+          setIsLoading(false)
+          return
+        }
+
+        // Otherwise use achievement data directly
         if (achievementData?.achievement_data?.achievements) {
           if (achievementData.achievement_data.achievements.length > 0) {
-            // Sort achievements by percent initially - prevents button state flickering
             setAchievements(achievementData.achievement_data.achievements)
           }
         }
