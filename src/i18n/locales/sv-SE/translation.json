@@ -40,7 +40,7 @@
   "customLists.cardFarming.drops_other": "{{count}} droppar kvar",
   "customLists.achievementUnlocker.subtitle": "Lägg till spel till denna lista för att låsa upp deras prestationer",
   "customLists.achievementUnlocker.buttonLabel": "Starta Prestation Unlocker",
-  "customLists.achievementUnlocker.customOrderDesc": "Ställ manuellt in ordningen i vilken prestationer låses upp i Achievement Unlocker",
+  "customLists.achievementUnlocker.customOrderDesc": "Dra prestationer för att ange deras upplåsningsordning. Avmarkera alla för att utesluta att de låses upp.",
   "customLists.autoIdle.title": "Automatisk Idler",
   "customLists.autoIdle.subtitle": "Lägg till spel till denna lista för att automatiskt inaktivera dem vid uppstart",
   "customLists.favorites.title": "Favoriter",

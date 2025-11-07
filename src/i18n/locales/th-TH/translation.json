@@ -40,7 +40,7 @@
   "customLists.cardFarming.drops_other": "{{count}} หยดที่เหลือ",
   "customLists.achievementUnlocker.subtitle": "เพิ่มเกมในรายการนี้เพื่อปลดล็อกความสำเร็จของพวกเขา",
   "customLists.achievementUnlocker.buttonLabel": "เริ่มปลดล็อกความสำเร็จ",
-  "customLists.achievementUnlocker.customOrderDesc": "ตั้งค่าลำดับการปลดล็อคความสำเร็จด้วยตนเองใน Achievement Unlocker",
+  "customLists.achievementUnlocker.customOrderDesc": "ลากความสำเร็จเพื่อกำหนดลำดับการปลดล็อก ยกเลิกการเลือกใดๆ เพื่อยกเว้นไม่ให้ปลดล็อก",
   "customLists.autoIdle.title": "พักอัตโนมัติ",
   "customLists.autoIdle.subtitle": "เพิ่มเกมในรายการนี้เพื่อพักอัตโนมัติเมื่อเปิดตัว",
   "customLists.favorites.title": "รายการโปรด",

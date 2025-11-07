@@ -40,7 +40,7 @@
   "customLists.cardFarming.drops_other": "{{count}} picături rămase",
   "customLists.achievementUnlocker.subtitle": "Adaugă jocuri în această listă pentru a debloca realizările lor",
   "customLists.achievementUnlocker.buttonLabel": "Începe deblocarea Realizărilor",
-  "customLists.achievementUnlocker.customOrderDesc": "Setați manual ordinea în care sunt deblocate realizările în Achievement Unlocker",
+  "customLists.achievementUnlocker.customOrderDesc": "Trageți realizările pentru a seta ordinea lor de deblocare. Debifați oricare dintre ele pentru a le exclude de la deblocare.",
   "customLists.autoIdle.title": "Idle automat",
   "customLists.autoIdle.subtitle": "Adaugă jocuri în această listă pentru a le lăsa automat deschise la pornire",
   "customLists.favorites.title": "Favorite",

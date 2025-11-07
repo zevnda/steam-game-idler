@@ -40,7 +40,7 @@
   "customLists.cardFarming.drops_other": "Zbývá {{count}} kapek",
   "customLists.achievementUnlocker.subtitle": "Přidat hry do tohoto seznamu a odemknout jejich úspěchy",
   "customLists.achievementUnlocker.buttonLabel": "Začít odemykání úspěchů",
-  "customLists.achievementUnlocker.customOrderDesc": "Ručně nastavte pořadí odemykání achievementů v Achievement Unlockeru",
+  "customLists.achievementUnlocker.customOrderDesc": "Přetažením achievementů nastavte pořadí jejich odemčení. Zrušením zaškrtnutí libovolných achievementů je vyloučíte z odemčení.",
   "customLists.autoIdle.title": "Automatické Idler",
   "customLists.autoIdle.subtitle": "Přidat hry do tohoto seznamu, aby je při spuštění automaticky nečinily",
   "customLists.favorites.title": "Oblíbené",

@@ -40,7 +40,7 @@
   "customLists.cardFarming.drops_other": "{{count}} טיפות שנותרו",
   "customLists.achievementUnlocker.subtitle": "הוסף משחקים לרשימה זו כדי לפתוח את ההישגים שלהם,",
   "customLists.achievementUnlocker.buttonLabel": "התחל את פותח ההישגים,",
-  "customLists.achievementUnlocker.customOrderDesc": "הגדרה ידנית של הסדר שבו הישגים נפתחים ב-Achievement Unlocker",
+  "customLists.achievementUnlocker.customOrderDesc": "גררו הישגים כדי לקבוע את סדר הפתיחה שלהם. בטל את הסימון של כל אחד מהם כדי לא לכלול אותם בפתיחה.",
   "customLists.autoIdle.title": "מצב תהליך אוטומטי,",
   "customLists.autoIdle.subtitle": "הוסף משחקים לרשימה זו כדי להכניס אותם אוטומטית למצב תהליך בעת ההפעלה,",
   "customLists.favorites.title": "מועדפים,",
