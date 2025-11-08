@@ -157,7 +157,7 @@ export default async function RootLayout({ children }: { children: ReactNode }):
           {children}
         </Layout>
         <AdOverlay />
-        <TelemetryLoader />
+        {/* <TelemetryLoader /> */}
       </body>
     </html>
   )
