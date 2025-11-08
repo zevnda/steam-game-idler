@@ -19,7 +19,15 @@ const compat = new FlatCompat({
 
 const config = [
   {
-    ignores: ['docs/**/*', '.next/**/*', 'out/**/*', 'node_modules/**/*', 'src-tauri/**/*'],
+    ignores: [
+      '.next/**/*',
+      'out/**/*',
+      'node_modules/**/*',
+      'src-tauri/**/*',
+      'docs/public/**/*',
+      'docs/.next/**/*',
+      'docs/node_modules/**/*',
+    ],
   },
   ...compat.extends('plugin:@typescript-eslint/recommended'),
   {
@@ -95,7 +103,7 @@ const config = [
           allow: ['error'],
         },
       ],
-      'quotes': ['warn', 'single'],
+      'quotes': ['warn', 'single', { avoidEscape: true }],
       'object-shorthand': ['warn', 'always'],
       '@typescript-eslint/triple-slash-reference': 'off',
     },

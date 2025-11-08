@@ -15,9 +15,10 @@ export default function TermsOfService(): ReactElement {
             </p>
 
             <p className='mb-6'>
-              These Terms of Service ("Terms") govern your use of Steam Game Idler ("SGI", "the Application", "we",
-              "us", or "our"), a desktop application designed to help you manage your Steam gaming activities. By
-              downloading, installing, or using SGI, you agree to be bound by these Terms.
+              These Terms of Service (&quot;Terms&quot;) govern your use of Steam Game Idler (&quot;SGI&quot;, &quot;the
+              Application&quot;, &quot;we&quot;, &quot;us&quot;, or &quot;our&quot;), a desktop application designed to
+              help you manage your Steam gaming activities. By downloading, installing, or using SGI, you agree to be
+              bound by these Terms.
             </p>
           </section>
 
@@ -29,8 +30,8 @@ export default function TermsOfService(): ReactElement {
               use the Application.
             </p>
             <p className='mb-4'>
-              You must be at least 13 years old to use SGI. If you are under 18, you must have your parent or guardian's
-              permission to use the Application.
+              You must be at least 13 years old to use SGI. If you are under 18, you must have your parent or
+              guardian&apos;s permission to use the Application.
             </p>
           </section>
 
@@ -100,14 +101,14 @@ export default function TermsOfService(): ReactElement {
             <p className='mb-4'>You may NOT use SGI to:</p>
             <ul className='list-disc pl-6 space-y-2 mb-4'>
               <li>Access, modify, or manipulate Steam accounts that do not belong to you</li>
-              <li>Circumvent Steam's security measures or anti-cheat systems</li>
-              <li>Engage in any activity that violates Steam's Terms of Service</li>
+              <li>Circumvent Steam&apos;s security measures or anti-cheat systems</li>
+              <li>Engage in any activity that violates Steam&apos;s Terms of Service</li>
               <li>
                 Use the Application for commercial purposes or financial gain beyond legitimate trading card sales
               </li>
               <li>Share your Steam account credentials with others for use with SGI</li>
-              <li>Attempt to reverse engineer, decompile, or modify the Application's core functionality</li>
-              <li>Use SGI in a manner that could damage, disable, or impair Steam's services</li>
+              <li>Attempt to reverse engineer, decompile, or modify the Application&apos;s core functionality</li>
+              <li>Use SGI in a manner that could damage, disable, or impair Steam&apos;s services</li>
               <li>Engage in behavior that could be considered cheating in multiplayer or competitive games</li>
             </ul>
           </section>
@@ -117,9 +118,9 @@ export default function TermsOfService(): ReactElement {
 
             <h3 className='text-xl font-medium mb-3'>5.1 Steam Integration</h3>
             <p className='mb-4'>
-              SGI integrates with Steam's official APIs and services. Your use of these features is subject to Steam's
-              Terms of Service and Privacy Policy. We are not responsible for any changes to Steam's APIs or services
-              that may affect SGI's functionality.
+              SGI integrates with Steam&apos;s official APIs and services. Your use of these features is subject to
+              Steam&apos;s Terms of Service and Privacy Policy. We are not responsible for any changes to Steam&apos;s
+              APIs or services that may affect SGI&apos;s functionality.
             </p>
 
             <h3 className='text-xl font-medium mb-3'>5.2 Steam Web API</h3>
@@ -132,7 +133,7 @@ export default function TermsOfService(): ReactElement {
                 target='_blank'
                 rel='noopener noreferrer'
               >
-                Steam's API Terms of Use
+                Steam&apos;s API Terms of Use
               </a>
               .
             </p>
@@ -145,11 +146,11 @@ export default function TermsOfService(): ReactElement {
               <li>Maintaining the security of your Steam account credentials</li>
               <li>All activities that occur under your Steam account while using SGI</li>
               <li>Ensuring your Steam account remains in good standing</li>
-              <li>Complying with Steam's security requirements and policies</li>
+              <li>Complying with Steam&apos;s security requirements and policies</li>
               <li>Any consequences resulting from your use of SGI with your Steam account</li>
             </ul>
             <p className='mb-4'>
-              We strongly recommend enabling Steam Guard and following Steam's security best practices.
+              We strongly recommend enabling Steam Guard and following Steam&apos;s security best practices.
             </p>
           </section>
 
@@ -158,8 +159,8 @@ export default function TermsOfService(): ReactElement {
 
             <h3 className='text-xl font-medium mb-3'>7.1 Steam Account Risks</h3>
             <p className='mb-4'>
-              <strong>USE AT YOUR OWN RISK:</strong> While SGI is designed to work within Steam's guidelines, the use of
-              any third-party automation tool carries inherent risks, including but not limited to:
+              <strong>USE AT YOUR OWN RISK:</strong> While SGI is designed to work within Steam&apos;s guidelines, the
+              use of any third-party automation tool carries inherent risks, including but not limited to:
             </p>
             <ul className='list-disc pl-6 space-y-2 mb-4'>
               <li>Potential Steam account restrictions or bans</li>
@@ -171,7 +172,7 @@ export default function TermsOfService(): ReactElement {
             <h3 className='text-xl font-medium mb-3'>7.2 No Guarantees</h3>
             <p className='mb-4'>We do not guarantee that:</p>
             <ul className='list-disc pl-6 space-y-2 mb-4'>
-              <li>SGI will always be compatible with Steam's current or future systems</li>
+              <li>SGI will always be compatible with Steam&apos;s current or future systems</li>
               <li>Your Steam account will remain unaffected by using SGI</li>
               <li>All features will work as expected in all circumstances</li>
               <li>Trading card drops or achievement unlocks will occur as anticipated</li>
@@ -217,7 +218,7 @@ export default function TermsOfService(): ReactElement {
             <ul className='list-disc pl-6 space-y-2 mb-4'>
               <li>Your use of SGI</li>
               <li>Your violation of these Terms</li>
-              <li>Your violation of Steam's Terms of Service</li>
+              <li>Your violation of Steam&apos;s Terms of Service</li>
               <li>Any actions taken with your Steam account while using SGI</li>
             </ul>
           </section>
@@ -244,7 +245,7 @@ export default function TermsOfService(): ReactElement {
               We reserve the right to modify these Terms at any time. Material changes will be communicated through:
             </p>
             <ul className='list-disc pl-6 space-y-2 mb-4'>
-              <li>Updates to this page with a revised "Last Updated" date</li>
+              <li>Updates to this page with a revised &quot;Last Updated&quot; date</li>
               <li>Application notifications</li>
               <li>Announcements in our GitHub repository</li>
             </ul>

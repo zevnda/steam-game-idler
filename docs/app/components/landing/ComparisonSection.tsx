@@ -104,23 +104,23 @@ export default function ComparisonSection(): ReactElement {
             <div className='grid sm:grid-cols-2 gap-6'>
               <div>
                 <h4 className='text-sm font-bold text-gray-800 mb-3 uppercase tracking-wider'>
-                  Why We're The Best Steam Idler
+                  Why We&apos;re The Best Steam Idler
                 </h4>
                 <ul className='space-y-2'>
                   <li className='flex items-center gap-3 text-sm text-gray-700'>
-                    <div className='w-2 h-2 bg-green-500 rounded-full' aria-hidden='true'></div>
+                    <div className='w-2 h-2 bg-green-500 rounded-full' aria-hidden='true' />
                     Most user-friendly Steam idle interface
                   </li>
                   <li className='flex items-center gap-3 text-sm text-gray-700'>
-                    <div className='w-2 h-2 bg-green-500 rounded-full' aria-hidden='true'></div>
+                    <div className='w-2 h-2 bg-green-500 rounded-full' aria-hidden='true' />
                     Fastest Steam card farmer setup
                   </li>
                   <li className='flex items-center gap-3 text-sm text-gray-700'>
-                    <div className='w-2 h-2 bg-green-500 rounded-full' aria-hidden='true'></div>
+                    <div className='w-2 h-2 bg-green-500 rounded-full' aria-hidden='true' />
                     Most comprehensive Steam idling features
                   </li>
                   <li className='flex items-center gap-3 text-sm text-gray-700'>
-                    <div className='w-2 h-2 bg-green-500 rounded-full' aria-hidden='true'></div>
+                    <div className='w-2 h-2 bg-green-500 rounded-full' aria-hidden='true' />
                     Active development & Steam idler community
                   </li>
                 </ul>
@@ -179,10 +179,10 @@ export default function ComparisonSection(): ReactElement {
                     <div>
                       <h4 className='text-xs font-bold text-gray-800 mb-2 uppercase tracking-wider'>Pros</h4>
                       <ul className='space-y-1'>
-                        {competitor.pros.map((pro, proIndex) => (
-                          <li key={proIndex} className='flex items-center gap-2 text-xs text-gray-600'>
-                            <div className='w-1.5 h-1.5 bg-green-500 rounded-full' aria-hidden='true'></div>
-                            {pro}
+                        {competitor.pros.map(item => (
+                          <li key={item} className='flex items-center gap-2 text-xs text-gray-600'>
+                            <div className='w-1.5 h-1.5 bg-green-500 rounded-full' aria-hidden='true' />
+                            {item}
                           </li>
                         ))}
                       </ul>
@@ -191,10 +191,10 @@ export default function ComparisonSection(): ReactElement {
                     <div>
                       <h4 className='text-xs font-bold text-gray-800 mb-2 uppercase tracking-wider'>Cons</h4>
                       <ul className='space-y-1'>
-                        {competitor.cons.map((con, conIndex) => (
-                          <li key={conIndex} className='flex items-center gap-2 text-xs text-gray-600'>
+                        {competitor.cons.map(item => (
+                          <li key={item} className='flex items-center gap-2 text-xs text-gray-600'>
                             <FiX className='w-3 h-3 text-red-500 shrink-0' aria-hidden='true' />
-                            {con}
+                            {item}
                           </li>
                         ))}
                       </ul>

@@ -1,15 +1,17 @@
 'use client'
 
+import type { ReactElement } from 'react'
+
 import { useEffect, useState } from 'react'
 import { FiDownload, FiGlobe, FiStar } from 'react-icons/fi'
 import { TbCode } from 'react-icons/tb'
 
-export default function StatsSection() {
+export default function StatsSection(): ReactElement {
   const [githubStars, setGithubStars] = useState(999)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    const loadGitHubStars = async () => {
+    const loadGitHubStars = async (): Promise<void> => {
       try {
         const response = await fetch('https://api.github.com/repos/zevnda/steam-game-idler')
         const data = await response.json()

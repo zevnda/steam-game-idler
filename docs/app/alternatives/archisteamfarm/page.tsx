@@ -91,7 +91,7 @@ const comparisonData = [
   },
 ]
 
-function ComparisonIcon({ value }: { value: boolean | string }) {
+function ComparisonIcon({ value }: { value: boolean | string }): ReactElement | null {
   if (typeof value === 'boolean') {
     return (
       <div className='flex justify-center'>
@@ -120,7 +120,7 @@ export default function page(): ReactElement {
         <div
           className='absolute inset-0 opacity-[0.4]'
           style={{
-            backgroundImage: `radial-gradient(circle at 2px 2px, rgb(139 69 193) 1px, transparent 0)`,
+            backgroundImage: 'radial-gradient(circle at 2px 2px, rgb(139 69 193) 1px, transparent 0)',
             backgroundSize: '24px 24px',
           }}
         />

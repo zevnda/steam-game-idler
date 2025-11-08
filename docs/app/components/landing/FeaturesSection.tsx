@@ -1,5 +1,7 @@
 'use client'
 
+import type { ReactElement } from 'react'
+
 import Link from 'next/link'
 import { FiArrowUpRight, FiTrendingUp } from 'react-icons/fi'
 import { TbAward, TbBuildingStore, TbCards } from 'react-icons/tb'
@@ -47,7 +49,7 @@ const features = [
   },
 ]
 
-export default function FeaturesSection() {
+export default function FeaturesSection(): ReactElement {
   return (
     <section className='py-12 sm:py-16 md:py-20 lg:py-24 relative' aria-labelledby='features-heading'>
       {/* Top transition border */}

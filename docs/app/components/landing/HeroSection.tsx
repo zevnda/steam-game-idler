@@ -1,12 +1,14 @@
 'use client'
 
+import type { ReactElement } from 'react'
+
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { FaArrowRight, FaWindows } from 'react-icons/fa'
 import { FiBook, FiGithub } from 'react-icons/fi'
 
-export default function HeroSection() {
+export default function HeroSection(): ReactElement {
   const [latestVersion, setLatestVersion] = useState('1.2.3')
 
   useEffect(() => {
@@ -29,7 +31,7 @@ export default function HeroSection() {
       <div
         className='absolute inset-0 opacity-[0.4]'
         style={{
-          backgroundImage: `radial-gradient(circle at 2px 2px, rgb(139 69 193) 1px, transparent 0)`,
+          backgroundImage: 'radial-gradient(circle at 2px 2px, rgb(139 69 193) 1px, transparent 0)',
           backgroundSize: '24px 24px',
         }}
       />
@@ -46,7 +48,7 @@ export default function HeroSection() {
               <div className='flex items-start space-x-3'>
                 <div className='flex text-yellow-400 text-sm'>★★★★★</div>
                 <div className='flex-1'>
-                  <p className='text-xs text-gray-700 font-medium'>"Farmed 500+ cards in just 2 days!"</p>
+                  <p className='text-xs text-gray-700 font-medium'>&quot;Farmed 500+ cards in just 2 days!&quot;</p>
                 </div>
               </div>
             </div>
@@ -60,7 +62,9 @@ export default function HeroSection() {
               <div className='flex items-start space-x-3'>
                 <div className='flex text-yellow-400 text-sm'>★★★★★</div>
                 <div className='flex-1'>
-                  <p className='text-xs text-gray-700 font-medium'>"Best idler I've ever used. So simple!"</p>
+                  <p className='text-xs text-gray-700 font-medium'>
+                    &quot;Best idler I&apos;ve ever used. So simple!&quot;
+                  </p>
                 </div>
               </div>
             </div>
@@ -74,7 +78,9 @@ export default function HeroSection() {
               <div className='flex items-start space-x-3'>
                 <div className='flex text-yellow-400 text-sm'>★★★★★</div>
                 <div className='flex-1'>
-                  <p className='text-xs text-gray-700 font-medium'>"Open source and completely safe to use"</p>
+                  <p className='text-xs text-gray-700 font-medium'>
+                    &quot;Open source and completely safe to use&quot;
+                  </p>
                 </div>
               </div>
             </div>
@@ -88,7 +94,7 @@ export default function HeroSection() {
               <div className='flex items-start space-x-3'>
                 <div className='flex text-yellow-400 text-sm'>★★★★★</div>
                 <div className='flex-1'>
-                  <p className='text-xs text-gray-700 font-medium'>"Earned $50+ selling cards this month"</p>
+                  <p className='text-xs text-gray-700 font-medium'>&quot;Earned $50+ selling cards this month&quot;</p>
                 </div>
               </div>
             </div>
@@ -101,7 +107,9 @@ export default function HeroSection() {
               <div className='flex items-start space-x-3'>
                 <div className='flex text-yellow-400 text-sm'>★★★★★</div>
                 <div className='flex-1'>
-                  <p className='text-xs text-gray-700 font-medium'>"Works perfectly with all my Steam games"</p>
+                  <p className='text-xs text-gray-700 font-medium'>
+                    &quot;Works perfectly with all my Steam games&quot;
+                  </p>
                 </div>
               </div>
             </div>
@@ -114,7 +122,9 @@ export default function HeroSection() {
               <div className='flex items-start space-x-3'>
                 <div className='flex text-yellow-400 text-sm'>★★★★★</div>
                 <div className='flex-1'>
-                  <p className='text-xs text-gray-700 font-medium'>"Set it and forget it - works like magic!"</p>
+                  <p className='text-xs text-gray-700 font-medium'>
+                    &quot;Set it and forget it - works like magic!&quot;
+                  </p>
                 </div>
               </div>
             </div>
@@ -194,9 +204,9 @@ export default function HeroSection() {
                   className='text-lg sm:text-xl md:text-2xl font-bold text-purple-600'
                   aria-label='16 thousand plus Steam idlers'
                 >
-                  16K+
+                  20K+
                 </div>
-                <div className='text-xs text-gray-600 uppercase tracking-wider'>STEAM IDLERS</div>
+                <div className='text-xs text-gray-600 uppercase tracking-wider'>USERS</div>
               </div>
               <div className='w-px h-5 sm:h-6 md:h-8 bg-purple-300' />
               <div className='text-center'>
@@ -204,7 +214,7 @@ export default function HeroSection() {
                   className='text-lg sm:text-xl md:text-2xl font-bold text-pink-600'
                   aria-label='42 languages supported'
                 >
-                  42
+                  30
                 </div>
                 <div className='text-xs text-gray-600 uppercase tracking-wider'>LANGUAGES</div>
               </div>
