@@ -10,7 +10,8 @@ import 'nextra-theme-docs/style.css'
 import './globals.css'
 
 import AdOverlay from '@docs/components/AdOverlay'
-import TelemetryLoader from '@docs/components/TelemetryLoader'
+
+// import TelemetryLoader from '@docs/components/TelemetryLoader'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -157,7 +158,7 @@ export default async function RootLayout({ children }: { children: ReactNode }):
           {children}
         </Layout>
         <AdOverlay />
-        <TelemetryLoader />
+        {/* <TelemetryLoader /> */}
       </body>
     </html>
   )
