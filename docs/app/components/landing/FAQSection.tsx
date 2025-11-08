@@ -1,5 +1,7 @@
 'use client'
 
+import type { ReactElement } from 'react'
+
 import { useState } from 'react'
 
 // FAQ data for SEO targeting
@@ -17,8 +19,8 @@ const faqData = [
           most user-friendly option available.
         </p>
         <p className='mt-4 text-black'>
-          If you want to manage or unlock achievements easily, SGI's Steam achievement manager and achievement unlocking
-          tool are the best choices. Learn more in our documentation.
+          If you want to manage or unlock achievements easily, SGI&apos;s Steam achievement manager and achievement
+          unlocking tool are the best choices. Learn more in our documentation.
         </p>
       </>
     ),
@@ -30,13 +32,14 @@ const faqData = [
       <>
         <p className='mb-4 text-black'>
           The <strong>Steam Achievement Unlocker</strong> feature in SGI allows you to automatically unlock Steam
-          achievements in a way that looks natural. If you're searching for a Steam achievement unlocker to auto unlock
-          achievements, SGI offers the safest and most advanced solution. Our achievement unlocking tool is designed to
-          help you unlock achievements for any game you own, with options for manual and automatic unlocking.
+          achievements in a way that looks natural. If you&apos;re searching for a Steam achievement unlocker to auto
+          unlock achievements, SGI offers the safest and most advanced solution. Our achievement unlocking tool is
+          designed to help you unlock achievements for any game you own, with options for manual and automatic
+          unlocking.
         </p>
         <p className='mt-4 text-black'>
-          For anyone looking to unlock achievements safely, SGI's Steam achievement unlocker and achievement unlocking
-          tool are the most reliable choices. Read our guides for more details.
+          For anyone looking to unlock achievements safely, SGI&apos;s Steam achievement unlocker and achievement
+          unlocking tool are the most reliable choices. Read our guides for more details.
         </p>
       </>
     ),
@@ -48,9 +51,9 @@ const faqData = [
       <>
         <p className='mb-4 text-black'>
           SGI is a powerful <strong>Steam idle</strong> tool and card farmer, letting you idle Steam games to boost
-          playtime and automatically farm trading cards. If you're searching for a Steam idle solution or want to idle
-          steam games for playtime, SGI offers advanced automation for maximizing card drops and playtime. Our Steam
-          idle tool supports up to 32 games at once, making it the best choice for efficient Steam idling and card
+          playtime and automatically farm trading cards. If you&apos;re searching for a Steam idle solution or want to
+          idle steam games for playtime, SGI offers advanced automation for maximizing card drops and playtime. Our
+          Steam idle tool supports up to 32 games at once, making it the best choice for efficient Steam idling and card
           farming.
         </p>
         <p className='mt-4 text-black'>
@@ -71,7 +74,7 @@ function AccordionItem({
   answer: string
   open: boolean
   onToggle: () => void
-}) {
+}): ReactElement {
   return (
     <div className='border border-black/5 hover:border-black/10 rounded-xl bg-white hover:bg-[#00000003] duration-150'>
       <button
@@ -102,12 +105,12 @@ function AccordionItem({
   )
 }
 
-export default function FAQSection() {
+export default function FAQSection(): ReactElement {
   // State: { [section]: openQuestion }
   const [openItems, setOpenItems] = useState<{ [section: string]: string | null }>({})
 
   // Helper to render accordions for a section
-  function renderAccordionItems(section: string, items: { question: string; answer: string }[]) {
+  function renderAccordionItems(section: string, items: { question: string; answer: string }[]): ReactElement[] {
     return items.map(({ question, answer }) => (
       <AccordionItem
         key={question}
@@ -236,9 +239,7 @@ export default function FAQSection() {
           {preparedFaqData.map((section, idx) => (
             <article
               key={section.section}
-              className={
-                'group block relative overflow-hidden bg-white border-2 border-gray-200 hover:border-gray-300 rounded-3xl p-8 hover:shadow-lg transition-all duration-200 transform'
-              }
+              className='group block relative overflow-hidden bg-white border-2 border-gray-200 hover:border-gray-300 rounded-3xl p-8 hover:shadow-lg transition-all duration-200 transform'
             >
               {/* Background gradient */}
               <div className='absolute inset-0 bg-linear-to-br from-gray-50 to-gray-70 opacity-0 group-hover:opacity-50 transition-opacity duration-200' />

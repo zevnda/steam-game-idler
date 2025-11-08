@@ -1,10 +1,12 @@
 'use client'
 
+import type { ReactElement } from 'react'
+
 import Image from 'next/image'
 import Link from 'next/link'
 import { FiBook, FiFileText, FiGithub, FiMail, FiShield } from 'react-icons/fi'
 
-export default function FooterSection() {
+export default function FooterSection(): ReactElement {
   return (
     <footer className='py-12 sm:py-16 md:py-20 relative'>
       {/* Top transition overlay */}

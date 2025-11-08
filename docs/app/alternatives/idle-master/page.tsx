@@ -88,7 +88,7 @@ const comparisonData = [
   },
 ]
 
-function ComparisonIcon({ value }: { value: boolean | string }) {
+function ComparisonIcon({ value }: { value: boolean | string }): ReactElement | null {
   if (typeof value === 'boolean') {
     return (
       <div className='flex justify-center'>
@@ -117,7 +117,7 @@ export default function page(): ReactElement {
         <div
           className='absolute inset-0 opacity-[0.4]'
           style={{
-            backgroundImage: `radial-gradient(circle at 2px 2px, rgb(139 69 193) 1px, transparent 0)`,
+            backgroundImage: 'radial-gradient(circle at 2px 2px, rgb(139 69 193) 1px, transparent 0)',
             backgroundSize: '24px 24px',
           }}
         />
@@ -217,7 +217,7 @@ export default function page(): ReactElement {
                 <FiRefreshCw className='w-8 h-8 text-orange-600 mx-auto mb-4' />
                 <h3 className='text-lg font-bold text-gray-800 mb-2'>Active Development</h3>
                 <p className='text-sm text-gray-600'>
-                  Regular updates and new features versus Idle Master's abandoned status
+                  Regular updates and new features versus Idle Master&apos;s abandoned status
                 </p>
               </div>
 

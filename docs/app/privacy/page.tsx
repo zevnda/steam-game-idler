@@ -15,10 +15,10 @@ export default function PrivacyPolicy(): ReactElement {
             </p>
 
             <p className='mb-6'>
-              Steam Game Idler ("SGI", "the Application", "we", "us", or "our") respects your privacy and is committed
-              to protecting your personal information. This Privacy Policy explains how we collect, use, and safeguard
-              your information when you use our desktop application or visit our website. Both may display Google
-              AdSense advertisements.
+              Steam Game Idler (&quot;SGI&quot;, &quot;the Application&quot;, &quot;we&quot;, &quot;us&quot;, or
+              &quot;our&quot;) respects your privacy and is committed to protecting your personal information. This
+              Privacy Policy explains how we collect, use, and safeguard your information when you use our desktop
+              application or visit our website. Both may display Google AdSense advertisements.
             </p>
           </section>
 
@@ -75,7 +75,7 @@ export default function PrivacyPolicy(): ReactElement {
 
           <section>
             <h2 className='text-2xl font-semibold mb-4'>2. How We Use Your Information</h2>
-            <p className='mb-4'>We use the collected information solely to provide SGI's functionality:</p>
+            <p className='mb-4'>We use the collected information solely to provide SGI&apos;s functionality:</p>
             <ul className='list-disc pl-6 space-y-2'>
               <li>
                 <strong>Game Management:</strong> To idle games, unlock achievements, and manage trading cards in your
@@ -100,9 +100,9 @@ export default function PrivacyPolicy(): ReactElement {
 
             <h3 className='text-xl font-medium mb-3'>3.1 Local Storage</h3>
             <p className='mb-4'>
-              All your data is stored locally on your device in the application's data directory. We do not transmit
-              your personal information to external servers except when necessary to communicate with Steam's official
-              APIs.
+              All your data is stored locally on your device in the application&apos;s data directory. We do not
+              transmit your personal information to external servers except when necessary to communicate with
+              Steam&apos;s official APIs.
             </p>
 
             <h3 className='text-xl font-medium mb-3'>3.2 Data Location</h3>
@@ -118,7 +118,9 @@ export default function PrivacyPolicy(): ReactElement {
             <h2 className='text-2xl font-semibold mb-4'>4. Third-Party Services</h2>
 
             <h3 className='text-xl font-medium mb-3'>4.1 Steam Integration</h3>
-            <p className='mb-4'>SGI integrates with Steam's official services and APIs. When using our application:</p>
+            <p className='mb-4'>
+              SGI integrates with Steam&apos;s official services and APIs. When using our application:
+            </p>
             <ul className='list-disc pl-6 space-y-2 mb-4'>
               <li>We communicate with Steam Community and Steam Web API endpoints</li>
               <li>
@@ -129,10 +131,12 @@ export default function PrivacyPolicy(): ReactElement {
                   target='_blank'
                   rel='noopener noreferrer'
                 >
-                  Steam's Privacy Policy
+                  Steam&apos;s Privacy Policy
                 </a>
               </li>
-              <li>We only access Steam data that you explicitly authorize through Steam's authentication mechanisms</li>
+              <li>
+                We only access Steam data that you explicitly authorize through Steam&apos;s authentication mechanisms
+              </li>
             </ul>
 
             <h3 className='text-xl font-medium mb-3'>4.2 No Analytics or Tracking</h3>
@@ -193,8 +197,8 @@ export default function PrivacyPolicy(): ReactElement {
             </p>
             <ul className='list-disc pl-6 space-y-2'>
               <li>
-                <strong>Steam API Communication:</strong> Only the necessary data to communicate with Steam's official
-                APIs for application functionality
+                <strong>Steam API Communication:</strong> Only the necessary data to communicate with Steam&apos;s
+                official APIs for application functionality
               </li>
               <li>
                 <strong>Legal Requirements:</strong> If required by law or legal process
@@ -212,13 +216,13 @@ export default function PrivacyPolicy(): ReactElement {
             <h3 className='text-xl font-medium mb-3'>6.1 Data Export</h3>
             <p className='mb-4'>
               SGI includes built-in functionality to export your settings and preferences. You can access this feature
-              through the application's settings panel to create a backup of your configuration.
+              through the application&apos;s settings panel to create a backup of your configuration.
             </p>
 
             <h3 className='text-xl font-medium mb-3'>6.2 Data Deletion</h3>
             <p className='mb-4'>You can delete your data at any time by:</p>
             <ul className='list-disc pl-6 space-y-2'>
-              <li>Using the "Reset Settings" feature in the application</li>
+              <li>Using the &quot;Reset Settings&quot; feature in the application</li>
               <li>Uninstalling the application (which will remove all local data)</li>
               <li>Manually deleting the application data folder from your system</li>
             </ul>
@@ -250,7 +254,7 @@ export default function PrivacyPolicy(): ReactElement {
             </p>
             <ul className='list-disc pl-6 space-y-2'>
               <li>Application updates with changelog notifications</li>
-              <li>Updates to this page with a revised "Last Updated" date</li>
+              <li>Updates to this page with a revised &quot;Last Updated&quot; date</li>
               <li>Announcements in our GitHub repository</li>
             </ul>
           </section>

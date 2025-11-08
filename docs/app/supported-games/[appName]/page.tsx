@@ -8,7 +8,7 @@ interface PageProps {
   }
 }
 
-export async function generateStaticParams() {
+export async function generateStaticParams(): Promise<{ appName: string }[]> {
   return [
     { appName: 'scum' },
     { appName: 'dayz' },
@@ -101,7 +101,14 @@ function formatGameName(appName: string): string {
     .join(' ')
 }
 
-function getRandomContent() {
+function getRandomContent(): {
+  introText: string
+  whyUseText: string
+  cardFeature: { title: string; items: string[] }
+  achievementFeature: { title: string; items: string[] }
+  howItWorksText: string
+  cardValueText: string
+} {
   const introTexts = [
     'Looking to maximize your {gameName} experience on Steam? Our Steam Game Idler is the perfect solution for collecting trading cards, farming achievements, and increasing your playtime in {gameName} without the grind. Start earning rewards from {gameName} today!',
     'Transform your {gameName} gaming experience with our advanced Steam Game Idler! Effortlessly collect trading cards, unlock achievements, and boost your Steam profile while {gameName} runs in the background. Get started with {gameName} idling now!',
@@ -110,8 +117,8 @@ function getRandomContent() {
   ]
 
   const whyUseTexts = [
-    "Steam Game Idler allows you to run {gameName} in the background, automatically collecting trading cards and unlocking time-based achievements. Whether you're building your Steam level or looking to complete your {gameName} badge collection, our idler makes the process effortless and efficient.",
-    "Our advanced idling technology transforms how you experience {gameName} on Steam. By running {gameName} intelligently in the background, you'll accumulate trading cards, unlock achievements, and build your Steam reputation without any manual effort.",
+    `Steam Game Idler allows you to run {gameName} in the background, automatically collecting trading cards and unlocking time-based achievements. Whether you're building your Steam level or looking to complete your {gameName} badge collection, our idler makes the process effortless and efficient.",
+    "Our advanced idling technology transforms how you experience {gameName} on Steam. By running {gameName} intelligently in the background, you'll accumulate trading cards, unlock achievements, and build your Steam reputation without any manual effort.`,
     'Experience the power of automated {gameName} progression with Steam Game Idler. Our sophisticated system handles all the repetitive tasks, from card collection to achievement farming, while you enjoy other activities or games.',
     "Revolutionize your {gameName} Steam journey with our cutting-edge idling solution. Seamlessly collect all available rewards, build impressive achievement showcases, and maximize your Steam profile's potential.",
   ]
@@ -245,16 +252,16 @@ export default async function AdPage({ params }: PageProps): Promise<ReactElemen
             <div className='bg-gray-900 rounded-xl shadow-lg p-6 hover:shadow-blue-900 transition-shadow'>
               <h3 className='text-xl font-bold text-blue-200 mb-3'>{randomContent.cardFeature.title}</h3>
               <ul className='list-disc list-inside text-gray-100 space-y-2'>
-                {randomContent.cardFeature.items.map((item, index) => (
-                  <li key={index}>{item.replace(/{gameName}/g, gameName)}</li>
+                {randomContent.cardFeature.items.map(item => (
+                  <li key={item}>{item.replace(/{gameName}/g, gameName)}</li>
                 ))}
               </ul>
             </div>
             <div className='bg-gray-900 rounded-xl shadow-lg p-6 hover:shadow-blue-900 transition-shadow'>
               <h3 className='text-xl font-bold text-blue-200 mb-3'>{randomContent.achievementFeature.title}</h3>
               <ul className='list-disc list-inside text-gray-100 space-y-2'>
-                {randomContent.achievementFeature.items.map((item, index) => (
-                  <li key={index}>{item.replace(/{gameName}/g, gameName)}</li>
+                {randomContent.achievementFeature.items.map(item => (
+                  <li key={item}>{item.replace(/{gameName}/g, gameName)}</li>
                 ))}
               </ul>
             </div>
@@ -275,8 +282,8 @@ export default async function AdPage({ params }: PageProps): Promise<ReactElemen
               usage
             </li>
             <li>
-              <strong className='text-blue-200'>Steam Integration:</strong> Seamlessly works with Steam's systems for{' '}
-              {gameName}
+              <strong className='text-blue-200'>Steam Integration:</strong> Seamlessly works with Steam&apos;s systems
+              for {gameName}
             </li>
             <li>
               <strong className='text-blue-200'>Progress Tracking:</strong> Monitor your {gameName} card collection
@@ -339,16 +346,16 @@ export default async function AdPage({ params }: PageProps): Promise<ReactElemen
           <h2 className='text-3xl font-bold text-blue-300 mb-4'>Why Choose Our Steam Game Idler?</h2>
           <p className='text-gray-200 mb-4 leading-relaxed'>
             Our Steam Game Idler is the most reliable and efficient tool for maximizing your {gameName} experience. With
-            advanced features, safety protocols, and 24/7 operation, it's the perfect solution for serious Steam
+            advanced features, safety protocols, and 24/7 operation, it&apos;s the perfect solution for serious Steam
             collectors and casual gamers alike.
           </p>
           <hr className='my-8 border-gray-700' />
 
           <h2 className='text-3xl font-bold text-blue-300 mb-4'>Safety and Security</h2>
           <p className='text-gray-200 mb-4 leading-relaxed'>
-            Steam Game Idler is designed to work safely with {gameName} and Steam's terms of service. Our tool doesn't
-            modify game files or use cheats - it simply runs the game legitimately to trigger natural card drops and
-            achievements.
+            Steam Game Idler is designed to work safely with {gameName} and Steam&apos;s terms of service. Our tool
+            doesn&apos;t modify game files or use cheats - it simply runs the game legitimately to trigger natural card
+            drops and achievements.
           </p>
           <hr className='my-8 border-gray-700' />
 

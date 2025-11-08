@@ -1,18 +1,20 @@
 'use client'
 
+import type { ReactElement } from 'react'
+
 import { useEffect, useState } from 'react'
 
 declare global {
   interface Window {
-    adsbygoogle: any[]
+    adsbygoogle: Record<string, unknown>[]
   }
 }
 
-export default function AdComponent() {
+export default function AdComponent(): ReactElement {
   const [adKey, setAdKey] = useState(0)
 
   useEffect(() => {
-    const loadAd = () => {
+    const loadAd = (): void => {
       try {
         ;(window.adsbygoogle = window.adsbygoogle || []).push({})
       } catch (err) {
@@ -22,7 +24,7 @@ export default function AdComponent() {
 
     loadAd()
 
-    const scheduleNextRefresh = () => {
+    const scheduleNextRefresh = (): NodeJS.Timeout => {
       const interval = setTimeout(
         () => {
           setAdKey(prev => prev + 1)

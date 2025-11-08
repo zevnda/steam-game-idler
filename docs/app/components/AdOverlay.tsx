@@ -1,9 +1,11 @@
 'use client'
 
+import type { ReactElement } from 'react'
+
 import { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 
-export default function AdOverlay() {
+export default function AdOverlay(): ReactElement | null {
   const pathname = usePathname()
 
   useEffect(() => {

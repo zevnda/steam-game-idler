@@ -1,10 +1,12 @@
 'use client'
 
-import Link from 'next/link'
-import { FaArrowRight, FaWindows } from 'react-icons/fa'
-import { FiBook, FiDownload } from 'react-icons/fi'
+import type { ReactElement } from 'react'
 
-export default function CTASection() {
+import Link from 'next/link'
+import { FaArrowRight } from 'react-icons/fa'
+import { FiDownload } from 'react-icons/fi'
+
+export default function CTASection(): ReactElement {
   return (
     <section className='py-16 sm:py-20 md:py-24 lg:py-32 relative overflow-hidden' aria-labelledby='cta-heading'>
       {/* Transition from previous section */}
