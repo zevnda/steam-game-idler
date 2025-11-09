@@ -15,7 +15,7 @@ interface RoleGroup {
 }
 
 export default function ChatUserList(): ReactElement {
-  const { allUsers, onlineUsers, userRoles } = useSupabase()
+  const { onlineUsers, userRoles } = useSupabase()
 
   const getRoleStyles = (role: string): string => {
     switch (role) {
@@ -67,20 +67,12 @@ export default function ChatUserList(): ReactElement {
   }
 
   const { roleGroups } = useMemo(() => {
-    // Create a map of all users from database for quick lookup
-    const allUsersMap = new Map(allUsers.map(u => [u.user_id, u]))
-
-    // Group users by role
+    // Group users by role using only onlineUsers
     const groups = new Map<string, RoleGroup>()
 
-    // First, process all online users (including those not in database)
-    onlineUsers.forEach(onlineUser => {
-      if (!onlineUser.user_id) return
-
-      const dbUser = allUsersMap.get(onlineUser.user_id)
-      const user = dbUser || onlineUser
+    onlineUsers.forEach(user => {
+      if (!user.user_id) return
       const userRole = (user.user_id && userRoles[user.user_id]) ?? 'user'
-
       if (!groups.has(userRole)) {
         groups.set(userRole, {
           role: userRole,
@@ -100,7 +92,7 @@ export default function ChatUserList(): ReactElement {
     const sortedGroups = Array.from(groups.values()).sort((a, b) => getRolePriority(a.role) - getRolePriority(b.role))
 
     return { roleGroups: sortedGroups }
-  }, [allUsers, onlineUsers, userRoles])
+  }, [onlineUsers, userRoles])
 
   return (
     <div className='user-render w-[230px] h-full border-l border-border px-2 py-3 ml-0.5 overflow-y-auto'>
