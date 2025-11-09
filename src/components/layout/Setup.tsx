@@ -38,6 +38,7 @@ export default function Setup(): ReactElement {
 
       <div className='absolute bottom-0 right-0 p-10 z-10'>
         <LanguageSwitch
+          className='w-[180px]'
           classNames={{
             trigger: [
               'bg-input/80 data-[hover=true]:!bg-inputhover/80 data-[open=true]:!bg-inputhover/80 duration-100 rounded-lg border border-border',

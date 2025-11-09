@@ -1,11 +1,17 @@
 import type { ReactElement } from 'react'
 
-import { Select, SelectItem } from '@heroui/react'
+import { cn, Select, SelectItem } from '@heroui/react'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TbLanguage } from 'react-icons/tb'
 
-export default function LanguageSwitch({ classNames }: { classNames?: Record<string, string[]> }): ReactElement | null {
+export default function LanguageSwitch({
+  className,
+  classNames,
+}: {
+  className?: string
+  classNames?: Record<string, string[]>
+}): ReactElement | null {
   const { i18n } = useTranslation()
   const [mounted, setMounted] = useState(false)
 
@@ -57,7 +63,7 @@ export default function LanguageSwitch({ classNames }: { classNames?: Record<str
       radius='none'
       startContent={<TbLanguage />}
       items={languages}
-      className='w-[250px]'
+      className={cn('w-[250px]', className)}
       classNames={{
         listbox: 'p-0',
         value: 'text-sm !text-content',
