@@ -100,7 +100,7 @@ const config = [
       'no-console': [
         'error',
         {
-          allow: ['error'],
+          allow: ['error', 'debug', 'warn'],
         },
       ],
       'quotes': ['warn', 'single', { avoidEscape: true }],
