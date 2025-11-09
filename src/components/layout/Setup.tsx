@@ -27,6 +27,7 @@ export default function Setup(): ReactElement {
 
   const handleRefresh = async (): Promise<void> => {
     await invoke('delete_user_summary_file')
+    setSelectedUser(null)
     setRefreshKey(prev => prev + 1)
   }
 
