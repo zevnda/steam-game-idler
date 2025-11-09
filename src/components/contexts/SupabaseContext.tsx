@@ -40,8 +40,6 @@ export interface ChatUser {
 }
 
 interface SupabaseContextType {
-  // All users
-  allUsers: ChatUser[]
   // Messages state
   messages: ChatMessageType[]
   setMessages: Dispatch<SetStateAction<ChatMessageType[]>>
@@ -77,7 +75,6 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
   const { activePage } = useNavigationContext()
   const isChatActive = activePage === 'chat'
 
-  const [allUsers, setAllUsers] = useState<ChatUser[]>([])
   const [messages, setMessages] = useState<ChatMessageType[]>([])
   const [isBanned, setIsBanned] = useState(false)
   const [userRoles, setUserRoles] = useState<{ [steamId: string]: string }>({})
@@ -263,39 +260,31 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
     const supabase = supabaseRef.current
     const steamId = userSummary?.steamId
 
-    const fetchUsers = async (): Promise<void> => {
+    const fetchOnlineUsers = async (): Promise<void> => {
       try {
-        // Fetch ALL users from database
-        const { data: allUsersData, error } = await supabase
+        // Only fetch users whose last_seen is within the last 5 minutes
+        // TODO: PostgREST only returns a max of 1000 rows. In the future,
+        // use `.limit(n)` when online user count is greater that 1000
+        const fiveMinutesAgoISO = new Date(Date.now() - 5 * 60 * 1000).toISOString()
+        const { data: onlineUsersData, error } = await supabase
           .from('users')
           .select('*')
+          .gte('last_seen', fiveMinutesAgoISO)
           .order('username', { ascending: true })
 
         if (error) {
-          console.error('Error fetching users:', error)
-          logEvent(`[Error] in fetchUsers: ${error.message}`)
+          console.error('Error fetching online users:', error)
+          logEvent(`[Error] in fetchOnlineUsers: ${error.message}`)
           return
         }
 
-        if (allUsersData) {
-          // Set all users for the user list
-          setAllUsers(allUsersData as ChatUser[])
-
-          // Calculate online/offline based on last_seen
-          const fiveMinutesAgo = Date.now() - 5 * 60 * 1000
-
-          const online = allUsersData.filter(user => {
-            if (!user.last_seen) return false
-            const lastSeenTime = new Date(user.last_seen).getTime()
-            return lastSeenTime >= fiveMinutesAgo
-          })
-
-          setOnlineUsers(online as ChatUser[])
-          setOnlineCount(online.length)
+        if (onlineUsersData) {
+          setOnlineUsers(onlineUsersData as ChatUser[])
+          setOnlineCount(onlineUsersData.length)
 
           // Build user roles map
           const roles: { [userId: string]: string } = {}
-          allUsersData.forEach((user: { user_id: string; role: string }) => {
+          onlineUsersData.forEach((user: { user_id: string; role: string }) => {
             if (user.user_id && user.role) {
               roles[user.user_id] = user.role
             }
@@ -304,7 +293,7 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
 
           // Check if current user is banned (polling replaces Realtime listener)
           if (steamId) {
-            const currentUser = allUsersData.find(u => u.user_id === steamId)
+            const currentUser = onlineUsersData.find(u => u.user_id === steamId)
             if (currentUser?.is_banned === true) {
               setIsBanned(true)
             } else {
@@ -313,16 +302,16 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
           }
         }
       } catch (error) {
-        console.error('Error in fetchUsers:', error)
-        logEvent(`[Error] in fetchUsers: ${error}`)
+        console.error('Error in fetchOnlineUsers:', error)
+        logEvent(`[Error] in fetchOnlineUsers: ${error}`)
       }
     }
 
     // Fetch immediately when chat opens
-    fetchUsers()
+    fetchOnlineUsers()
 
     // Poll every 60 seconds while viewing chat
-    const pollInterval = setInterval(fetchUsers, 60 * 1000)
+    const pollInterval = setInterval(fetchOnlineUsers, 60 * 1000)
 
     return () => clearInterval(pollInterval)
   }, [isChatActive, userSummary?.steamId])
@@ -462,13 +451,17 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
           })
 
           // Play mention beep if:
-          // 1. The new message mentions the current user by username
+          // 1. Always for admin user
+          if (userSummary?.steamId === '76561198158912649' && newMsg.user_id !== userSummary.steamId) {
+            playMentionBeep()
+            return
+          }
+          // 2. The new message mentions the current user by username
           if (userSummary?.personaName && newMsg.message.includes(`@${userSummary.personaName}`)) {
             playMentionBeep()
             return
           }
-
-          // 2. The new message is a reply to one of the current user's messages
+          // 3. The new message is a reply to one of the current user's messages
           // Reuse replyToMsg instead of fetching again
           if (replyToMsg && replyToMsg.user_id === steamId) {
             playMentionBeep()
@@ -556,7 +549,7 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
   return (
     <SupabaseContext.Provider
       value={{
-        allUsers,
+        // Remove allUsers,
         messages,
         setMessages,
         isBanned,

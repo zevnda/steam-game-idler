@@ -1,3 +1,9 @@
+<!-- 2.3.3 -->
+
+### Changes in v2.3.3
+
+- Fixed an issue in chat where users weren't being fetched and displayed correctly in the user list
+
 <!-- 2.3.2 -->
 
 ### Changes in v2.3.2
