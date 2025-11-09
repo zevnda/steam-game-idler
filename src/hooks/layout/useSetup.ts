@@ -11,8 +11,12 @@ import { showAccountMismatchToast, showDangerToast } from '@/utils/toasts'
 
 interface SetupHook {
   isLoading: boolean
+  userSummaries: UserSummary[]
   handleLogin: (index: number) => Promise<void>
   steamUsers: UserSummary[]
+  selectedUser: UserSummary | null
+  setSelectedUser: (user: UserSummary | null) => void
+  getRandomAvatarUrl: () => string
 }
 
 export default function useSetup(refreshKey: number): SetupHook {
@@ -21,6 +25,7 @@ export default function useSetup(refreshKey: number): SetupHook {
   const [isLoading, setIsLoading] = useState(false)
   const [steamUsers, setSteamUsers] = useState<UserSummary[]>([])
   const [userSummaries, setUserSummaries] = useState<UserSummary[]>([])
+  const [selectedUser, setSelectedUser] = useState<UserSummary | null>(null)
 
   // Process user summary data from API response
   const processUserSummaries = (response: InvokeUserSummary, steamUsersData: UserSummary[]): UserSummary[] => {
@@ -163,5 +168,11 @@ export default function useSetup(refreshKey: number): SetupHook {
     }
   }
 
-  return { isLoading, handleLogin, steamUsers }
+  const getRandomAvatarUrl = (): string => {
+    const randomSeed = Math.random().toString(36).substring(7)
+    const avatarUrl = `https://api.dicebear.com/9.x/fun-emoji/svg?seed=${randomSeed}`
+    return avatarUrl
+  }
+
+  return { isLoading, userSummaries, handleLogin, steamUsers, selectedUser, setSelectedUser, getRandomAvatarUrl }
 }

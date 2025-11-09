@@ -33,7 +33,7 @@ export default function useWindow(): void {
   const { setUpdateAvailable, setShowChangelog } = useUpdateContext()
   const { userSummary, setUserSummary, userSettings, setUserSettings, gamesList, setFreeGamesList } = useUserContext()
 
-  console.error('Monitor for rerenders')
+  console.debug('Monitor for rerenders')
 
   useEffect(() => {
     emit('ready')

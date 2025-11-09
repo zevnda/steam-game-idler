@@ -2,6 +2,7 @@
 
 ### Changes in v2.3.3
 
+- Overhauled the sign in screen UI
 - Fixed an issue in chat where users weren't being fetched and displayed correctly in the user list
 
 <!-- 2.3.2 -->

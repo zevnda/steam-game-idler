@@ -2,17 +2,15 @@ import type { ReactElement } from 'react'
 
 import { invoke } from '@tauri-apps/api/core'
 
-import { cn, Spinner } from '@heroui/react'
+import { Button, cn, Spinner } from '@heroui/react'
 import { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
 import Image from 'next/image'
-import { useTranslation } from 'react-i18next'
-import { TbRefresh, TbUserFilled } from 'react-icons/tb'
+import { Trans, useTranslation } from 'react-i18next'
+import { TbArrowRight } from 'react-icons/tb'
 
 import { useNavigationContext } from '@/components/contexts/NavigationContext'
-import CustomTooltip from '@/components/ui/CustomTooltip'
+import GradientBackground from '@/components/ui/GradientBackground'
 import Header from '@/components/ui/header/Header'
-import Logo from '@/components/ui/header/Logo'
 import WebviewWindow from '@/components/ui/WebviewWindow'
 import useSetup from '@/hooks/layout/useSetup'
 
@@ -20,7 +18,8 @@ export default function Setup(): ReactElement {
   const { t } = useTranslation()
   const { setActivePage } = useNavigationContext()
   const [refreshKey, setRefreshKey] = useState(0)
-  const { isLoading, handleLogin, steamUsers } = useSetup(refreshKey)
+  const { isLoading, userSummaries, handleLogin, steamUsers, selectedUser, setSelectedUser, getRandomAvatarUrl } =
+    useSetup(refreshKey)
 
   useEffect(() => {
     setActivePage('setup')
@@ -34,176 +33,149 @@ export default function Setup(): ReactElement {
   return (
     <>
       <Header />
-      <div className='relative w-full bg-base overflow-hidden'>
-        <motion.div
-          className='absolute top-0 left-0 w-[135%] h-[135%]'
-          animate={{
-            x: [0, -50, 0],
-            y: [0, -30, 0],
-          }}
-          transition={{
-            duration: 20,
-            ease: 'easeInOut',
-            repeat: Infinity,
-            repeatType: 'reverse',
-          }}
-        >
-          <Image
-            src='/background.webp'
-            className='w-full h-full object-cover'
-            alt='background'
-            width={1920}
-            height={1080}
-            priority
-          />
-        </motion.div>
-        <div className='absolute bg-base/20 backdrop-blur-lg w-full h-screen' />
 
-        <div className='relative flex justify-center items-center flex-col gap-8 w-full h-screen px-4'>
-          <motion.div
-            className={cn(
-              'flex backdrop-blur-xl bg-base/40 justify-center items-center',
-              'flex-col min-w-[500px] max-w-[500px]',
-              'rounded-2xl shadow-2xl shadow-black/20',
-            )}
-            initial={{ y: 80, scale: 0.9, opacity: 0 }}
-            animate={{ y: 0, scale: 1, opacity: 1 }}
-            transition={{
-              type: 'spring',
-              stiffness: 260,
-              damping: 25,
-              opacity: { duration: 0.3 },
-            }}
-          >
-            <div className='flex justify-center items-center flex-col w-full'>
-              <div className='p-4 w-full bg-base/10'>
-                <div className='flex flex-col items-center justify-center text-center'>
-                  <Logo width='10' height='10' />
-                  <p className='text-3xl font-black text-content mb-8'>{t('setup.welcome')}</p>
-                  <p className='font-bold text-content'>{t('setup.chooseAccount')}</p>
+      {isLoading ? (
+        <div className='w-screen h-screen flex items-center justify-center'>
+          <Spinner variant='simple' />
+        </div>
+      ) : (
+        <div className='w-screen h-screen relative overflow-hidden'>
+          <div className='flex flex-col items-center justify-center w-screen h-calc'>
+            {/* Logo and glow effect */}
+            <div className='relative flex items-center justify-center mb-10'>
+              {/* Outer, soft vibrant glow */}
+              <span
+                className='absolute -inset-1 rounded-full'
+                style={{
+                  zIndex: 0,
+                  filter: 'blur(18px)',
+                  background: 'linear-gradient(45deg, #00f7ffff 10%, #8c00ffff 80%)',
+                  opacity: 0.5,
+                }}
+                aria-hidden='true'
+              />
+              <Image src='/app-logo.svg' alt='logo' width={70} height={70} className='rounded-2xl relative z-10' />
+            </div>
+
+            {/* User selection */}
+            {steamUsers.length > 0 ? (
+              <div className='flex flex-col items-center'>
+                {/* Welcome text */}
+                <div className='flex flex-col items-center mb-6'>
+                  <p className='text-3xl font-semibold'>{t('setup.chooseAccount')}</p>
+                </div>
+
+                {/* User cards */}
+                <div className='flex flex-row flex-wrap items-center justify-center mb-10'>
+                  {userSummaries.map(user => (
+                    <div
+                      key={user?.steamId}
+                      className='flex flex-col items-center mx-4 cursor-pointer hover:scale-105 transition-transform group'
+                      onClick={() => setSelectedUser(user)}
+                    >
+                      {/* User avatar */}
+                      <div
+                        className={cn(
+                          'relative p-1 rounded-lg',
+                          selectedUser?.steamId === user?.steamId
+                            ? 'ring-transparent bg-gradient-to-tr from-cyan-500 via-blue-500 to-violet-700'
+                            : 'ring-transparent bg-transparent',
+                        )}
+                        style={{ display: 'inline-block' }}
+                      >
+                        {user?.avatar ? (
+                          <Image
+                            src={user.avatar}
+                            alt={user.personaName}
+                            width={128}
+                            height={128}
+                            className='rounded-md bg-white'
+                          />
+                        ) : (
+                          <Image
+                            src={getRandomAvatarUrl()}
+                            alt='Placeholder Avatar'
+                            width={128}
+                            height={128}
+                            className='rounded-md'
+                          />
+                        )}
+                      </div>
+
+                      {/* User persona name */}
+                      <p className='text-lg mt-1'>{user?.personaName}</p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Agreement */}
+                <p className='text-xs text-altwhite max-w-sm text-center'>
+                  <Trans
+                    i18nKey='setup.acknowledge'
+                    components={[
+                      // index 0 is plain text, so start with 1
+                      <WebviewWindow
+                        href='https://steamgameidler.com/tos'
+                        className='font-semibold hover:opacity-90 duration-150'
+                        key='tos'
+                      >
+                        Terms of Service
+                      </WebviewWindow>,
+                      <WebviewWindow
+                        href='https://steamgameidler.com/privacy'
+                        className='font-semibold hover:opacity-90 duration-150'
+                        key='privacy'
+                      >
+                        Privacy Policy
+                      </WebviewWindow>,
+                    ]}
+                  />
+                </p>
+
+                {/* Buttons */}
+                <div className='flex gap-4 mt-10'>
+                  <Button
+                    radius='full'
+                    variant='bordered'
+                    className='font-semibold border-white'
+                    onPress={handleRefresh}
+                  >
+                    {t('setup.refresh')}
+                  </Button>
+                  <Button
+                    radius='full'
+                    className='font-semibold bg-content text-black group'
+                    onPress={() => {
+                      if (selectedUser) handleLogin(steamUsers.indexOf(selectedUser))
+                    }}
+                    isDisabled={!selectedUser}
+                  >
+                    {t('common.continue')}
+                    <TbArrowRight className='group-hover:translate-x-1 duration-150' />
+                  </Button>
                 </div>
               </div>
-              {isLoading ? (
-                <div className='flex justify-center items-center h-full p-6'>
-                  <Spinner size='sm' label='Loading user data..' classNames={{ label: 'text-xs text-altwhite' }} />
+            ) : (
+              <div className='flex flex-col items-center text-center gap-2'>
+                <p className='text-xl font-semibold'>{t('setup.noUsers')}</p>
+                <p className='text-xs text-altwhite max-w-md'>{t('setup.noUsersTwo')}</p>
+
+                <div className='flex items-center gap-4 mt-10'>
+                  <WebviewWindow href='https://steamgameidler.com/docs/faq#error-messages:~:text=No%20Steam%20users%20found'>
+                    <div className='border-2 border-content py-2 px-4 rounded-full hover:opacity-90 duration-150'>
+                      <p className='text-sm font-semibold'>{t('common.learnMore')}</p>
+                    </div>
+                  </WebviewWindow>
+                  <Button radius='full' className='font-semibold bg-content text-black' onPress={handleRefresh}>
+                    {t('setup.refresh')}
+                  </Button>
                 </div>
-              ) : steamUsers.length > 0 ? (
-                <>
-                  <div
-                    className={cn(
-                      'flex flex-col max-h-[390px]',
-                      'w-full overflow-y-auto',
-                      'scrollbar-thin scrollbar-thumb-border/50',
-                    )}
-                  >
-                    {steamUsers.map((item, index) => (
-                      <div
-                        key={item?.steamId}
-                        className='last:border-none border-b border-border/30 hover:bg-item-hover transition-all duration-300 cursor-pointer group'
-                        onClick={() => handleLogin(index)}
-                      >
-                        <div className='flex gap-3 h-full p-4 w-full items-center'>
-                          <div className='relative'>
-                            <Image
-                              src={item?.avatar || ''}
-                              height={38}
-                              width={38}
-                              alt='user avatar'
-                              priority
-                              className='w-[38px] h-[38px] rounded-full group-hover:scale-110 transition-transform duration-300 ring-2 ring-border/30 group-hover:ring-dynamic/50'
-                            />
-                            {item?.mostRecent === 1 && (
-                              <div className='absolute -top-1 -right-1 w-4 h-4 bg-dynamic rounded-full border-2 border-base' />
-                            )}
-                          </div>
-                          <div className='flex-1 min-w-0'>
-                            <p className='font-semibold truncate group-hover:text-dynamic transition-colors duration-200'>
-                              {item?.personaName}
-                            </p>
-                            <p className='text-sm text-altwhite truncate font-mono'>{item?.steamId}</p>
-                          </div>
-                          {item?.mostRecent === 1 && (
-                            <div className='flex justify-end items-center'>
-                              <CustomTooltip content={t('setup.currentlySignedIn')} placement='top' important>
-                                <div className='flex items-center gap-1 px-2 py-1 bg-dynamic/20 rounded-full'>
-                                  <TbUserFilled size={16} className='text-dynamic' />
-                                </div>
-                              </CustomTooltip>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  <div className='flex justify-center items-center bg-base/10 w-full'>
-                    <div
-                      className='flex gap-1 p-2 cursor-pointer group justify-center items-center w-full'
-                      onClick={handleRefresh}
-                    >
-                      <TbRefresh
-                        className='text-altwhite group-hover:text-dynamic group-hover:rotate-180 transition-all duration-300'
-                        fontSize={16}
-                      />
-                      <p className='text-sm text-altwhite group-hover:text-dynamic transition-colors duration-200'>
-                        {t('setup.refresh')}
-                      </p>
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className={cn('flex flex-col justify-center items-center h-32 max-h-[390px] p-4')}>
-                    <p className='text-center mb-3 text-altwhite/80 font-medium'>{t('setup.noUsers')}</p>
-                    <WebviewWindow href='https://steamgameidler.com/docs/faq#error-messages:~:text=No%20Steam%20users%20found'>
-                      <p className='text-sm text-dynamic hover:text-dynamic-hover transition-colors duration-150'>
-                        {t('setup.learn')}
-                      </p>
-                    </WebviewWindow>
-                  </div>
-                  <div className='flex justify-center items-center bg-base/10 w-full'>
-                    <div
-                      className='flex gap-1 p-2 cursor-pointer group justify-center items-center w-full'
-                      onClick={handleRefresh}
-                    >
-                      <TbRefresh
-                        className='text-altwhite group-hover:text-dynamic group-hover:rotate-180 transition-all duration-300'
-                        fontSize={16}
-                      />
-                      <p className='text-sm text-altwhite group-hover:text-dynamic transition-colors duration-200'>
-                        {t('setup.refresh')}
-                      </p>
-                    </div>
-                  </div>
-                </>
-              )}
-            </div>
-          </motion.div>
+              </div>
+            )}
+          </div>
         </div>
-
-        <div
-          className={cn(
-            'absolute flex items-center justify-center bg-base/40 backdrop-blur-md w-full',
-            'gap-6 bottom-0 h-9 left-1/2 transform -translate-x-1/2',
-          )}
-        >
-          <WebviewWindow href='https://steamgameidler.com/docs/get-started/how-to-sign-in'>
-            <p className='text-xs font-medium cursor-pointer text-content hover:text-content/80 transition-colors duration-200'>
-              {t('setup.help')}
-            </p>
-          </WebviewWindow>
-
-          <WebviewWindow href='https://steamgameidler.com/privacy'>
-            <p className='text-xs font-medium cursor-pointer text-content hover:text-content/80 transition-colors duration-200'>
-              {t('setup.privacy')}
-            </p>
-          </WebviewWindow>
-          <WebviewWindow href='https://steamgameidler.com/tos'>
-            <p className='text-xs font-medium cursor-pointer text-content hover:text-content/80 transition-colors duration-200'>
-              {t('setup.termsOfService')}
-            </p>
-          </WebviewWindow>
-        </div>
-      </div>
+      )}
+      <GradientBackground />
     </>
   )
 }
