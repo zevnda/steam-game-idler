@@ -11,6 +11,7 @@ import { TbArrowRight } from 'react-icons/tb'
 import { useNavigationContext } from '@/components/contexts/NavigationContext'
 import GradientBackground from '@/components/ui/GradientBackground'
 import Header from '@/components/ui/header/Header'
+import LanguageSwitch from '@/components/ui/i18n/LanguageSwitch'
 import WebviewWindow from '@/components/ui/WebviewWindow'
 import useSetup from '@/hooks/layout/useSetup'
 
@@ -34,6 +35,17 @@ export default function Setup(): ReactElement {
   return (
     <>
       <Header />
+
+      <div className='absolute bottom-0 right-0 p-10 z-10'>
+        <LanguageSwitch
+          className='w-[180px]'
+          classNames={{
+            trigger: [
+              'bg-input/80 data-[hover=true]:!bg-inputhover/80 data-[open=true]:!bg-inputhover/80 duration-100 rounded-lg border border-border',
+            ],
+          }}
+        />
+      </div>
 
       {isLoading ? (
         <div className='w-screen h-screen flex items-center justify-center'>

@@ -5,7 +5,13 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TbLanguage } from 'react-icons/tb'
 
-export default function LanguageSwitch(): ReactElement | null {
+export default function LanguageSwitch({
+  className,
+  classNames,
+}: {
+  className?: string
+  classNames?: Record<string, string[]>
+}): ReactElement | null {
   const { i18n } = useTranslation()
   const [mounted, setMounted] = useState(false)
 
@@ -57,12 +63,13 @@ export default function LanguageSwitch(): ReactElement | null {
       radius='none'
       startContent={<TbLanguage />}
       items={languages}
-      className='w-[250px]'
+      className={cn('w-[250px]', className)}
       classNames={{
-        listbox: ['p-0'],
-        value: ['text-sm !text-content'],
-        trigger: cn('bg-input data-[hover=true]:!bg-inputhover', 'data-[open=true]:!bg-input duration-100 rounded-lg'),
-        popoverContent: ['bg-input rounded-xl justify-start !text-content'],
+        listbox: 'p-0',
+        value: 'text-sm !text-content',
+        trigger: 'bg-input data-[hover=true]:!bg-inputhover data-[open=true]:!bg-input duration-100 rounded-lg',
+        popoverContent: 'bg-input rounded-xl justify-start !text-content',
+        ...classNames,
       }}
       defaultSelectedKeys={[currentLanguage]}
       onSelectionChange={e => {
