@@ -9,6 +9,7 @@ import { useStateContext } from '@/components/contexts/StateContext'
 import { useUpdateContext } from '@/components/contexts/UpdateContext'
 import Notifications from '@/components/notifications/Notifications'
 import HeaderMenu from '@/components/ui/header/HeaderMenu'
+import HelpDesk from '@/components/ui/header/HelpDesk'
 import UpdateButton from '@/components/ui/UpdateButton'
 import useHeader from '@/hooks/ui/useHeader'
 
@@ -58,6 +59,8 @@ export default function Header(): ReactElement {
 
         <div className='flex justify-end items-center h-full w-full' data-tauri-drag-region>
           {updateAvailable && <UpdateButton />}
+
+          <HelpDesk />
 
           {activePage !== 'setup' && (
             <>
