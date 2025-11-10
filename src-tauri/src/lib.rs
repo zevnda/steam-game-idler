@@ -136,7 +136,8 @@ pub fn run() {
             is_portable,
             get_cache_dir_path,
             get_achievement_order,
-            save_achievement_order
+            save_achievement_order,
+            quit_app
         ])
         .build(tauri::generate_context!())
         .expect("Error while building tauri application")

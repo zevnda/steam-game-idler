@@ -17,6 +17,7 @@ fn get_default_settings() -> Value {
             "disableTooltips": false,
             "runAtStartup": false,
             "startMinimized": false,
+            "closeToTray": true,
             "chatSounds": [0.5],
         },
         "cardFarming": {

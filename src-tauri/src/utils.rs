@@ -199,3 +199,9 @@ pub fn get_cache_dir(app_handle: &tauri::AppHandle) -> Result<std::path::PathBuf
             .map(|path| path.join("cache"))
     }
 }
+
+// Command to quit the application
+#[tauri::command]
+pub fn quit_app(app_handle: tauri::AppHandle) {
+    app_handle.exit(0);
+}
