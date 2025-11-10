@@ -1,5 +1,8 @@
+import { invoke } from '@tauri-apps/api/core'
 import { getCurrentWindow } from '@tauri-apps/api/window'
 import { isPermissionGranted, requestPermission, sendNotification } from '@tauri-apps/plugin-notification'
+
+import { useUserContext } from '@/components/contexts/UserContext'
 
 interface HeaderActions {
   windowMinimize: () => Promise<void>
@@ -8,6 +11,8 @@ interface HeaderActions {
 }
 
 export default function useHeader(): HeaderActions {
+  const { userSettings } = useUserContext()
+
   const windowMinimize = async (): Promise<void> => {
     await getCurrentWindow().minimize()
   }
@@ -17,6 +22,12 @@ export default function useHeader(): HeaderActions {
   }
 
   const windowClose = async (): Promise<void> => {
+    // If the user has not enabled "close to tray", quit the app
+    if (!userSettings.general.closeToTray) {
+      await invoke('quit_app')
+      return
+    }
+
     await getCurrentWindow().hide()
 
     const minToTrayNotified = localStorage.getItem('minToTrayNotified') || 'false'

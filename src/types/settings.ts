@@ -50,6 +50,7 @@ export interface GeneralSettings {
   disableTooltips: boolean
   runAtStartup: boolean
   startMinimized: boolean
+  closeToTray: boolean
   chatSounds: number[]
 }
 

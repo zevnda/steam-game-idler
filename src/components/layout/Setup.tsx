@@ -36,6 +36,7 @@ export default function Setup(): ReactElement {
     <>
       <Header />
 
+      {/* Language switch */}
       <div className='absolute bottom-0 right-0 p-10 z-10'>
         <LanguageSwitch
           className='w-[180px]'

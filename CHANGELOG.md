@@ -1,3 +1,11 @@
+<!-- 2.3.4 -->
+
+### Changes in v2.3.4
+
+- Added a `close to tray` option to `settings > general` (#1020)
+  - When enabled, clicking the X button in the `title bar` will minimize SGI to the system tray and it will continue to run in the background
+  - When disabled, clicking the X button in the `title bar` will fully close SGI, exiting the application completely
+
 <!-- 2.3.3 -->
 
 ### Changes in v2.3.3
