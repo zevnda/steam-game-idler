@@ -274,6 +274,7 @@
   "common.nextTask": "Schedule Next Task",
   "common.sortBy": "Sort By",
   "common.continue": "Continue",
+  "common.helpDesk": "Help Desk",
   "changelog.title": "Changes in {{version}}",
   "changelog.star": "Star on GitHub",
   "changelog.report": "Report issue on GitHub",

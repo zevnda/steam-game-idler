@@ -254,3 +254,19 @@ svg {
     background-color: transparent;
   }
 }
+
+/* Crisp support desk */
+
+#crisp-chatbox-button {
+  display: none !important;
+}
+
+#crisp-chatbox-chat {
+  display: absolute !important;
+  top: 36px !important;
+  min-width: 550px !important;
+}
+
+a[href*='crisp.chat/en/livechat'][target='_blank'][rel~='noopener'][rel~='noreferrer'][rel~='nofollow'] {
+  display: none !important;
+}
