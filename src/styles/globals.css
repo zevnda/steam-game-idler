@@ -168,6 +168,10 @@ svg {
   word-wrap: break-word;
 }
 
+.chat-message strong {
+  font-weight: 800 !important;
+}
+
 .chat-message ul {
   list-style-position: inside;
   counter-reset: list-counter;
