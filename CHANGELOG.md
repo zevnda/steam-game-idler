@@ -1,3 +1,9 @@
+<!-- 2.3.6 -->
+
+### Changes in v2.3.6
+
+- Fixed an issue in `chat` where offline users' roles were not displayed
+
 <!-- 2.3.5 -->
 
 ### Changes in v2.3.5

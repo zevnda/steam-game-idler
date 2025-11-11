@@ -262,43 +262,44 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
 
     const fetchOnlineUsers = async (): Promise<void> => {
       try {
-        // Only fetch users whose last_seen is within the last 5 minutes
-        // TODO: PostgREST only returns a max of 1000 rows. In the future,
-        // use `.limit(n)` when online user count is greater that 1000
         const fiveMinutesAgoISO = new Date(Date.now() - 5 * 60 * 1000).toISOString()
-        const { data: onlineUsersData, error } = await supabase
+
+        // Fetch users who are online OR have a custom role (role != 'user')
+        const { data: usersData, error } = await supabase
           .from('users')
           .select('*')
-          .gte('last_seen', fiveMinutesAgoISO)
+          .or(`last_seen.gte.${fiveMinutesAgoISO},role.neq.user`)
           .order('username', { ascending: true })
 
         if (error) {
-          console.error('Error fetching online users:', error)
+          console.error('Error fetching users:', error)
           logEvent(`[Error] in fetchOnlineUsers: ${error.message}`)
           return
         }
 
-        if (onlineUsersData) {
-          setOnlineUsers(onlineUsersData as ChatUser[])
-          setOnlineCount(onlineUsersData.length)
+        // Online users are those with last_seen >= fiveMinutesAgoISO
+        const onlineUsers = (usersData || []).filter(
+          (user: ChatUser) => user.last_seen && user.last_seen >= fiveMinutesAgoISO,
+        )
+        setOnlineUsers(onlineUsers as ChatUser[])
+        setOnlineCount(onlineUsers.length)
 
-          // Build user roles map
-          const roles: { [userId: string]: string } = {}
-          onlineUsersData.forEach((user: { user_id: string; role: string }) => {
-            if (user.user_id && user.role) {
-              roles[user.user_id] = user.role
-            }
-          })
-          setUserRoles(roles)
+        // Build user roles map (from all fetched users)
+        const roles: { [userId: string]: string } = {}
+        ;(usersData || []).forEach((user: { user_id: string; role: string }) => {
+          if (user.user_id && user.role) {
+            roles[user.user_id] = user.role
+          }
+        })
+        setUserRoles(roles)
 
-          // Check if current user is banned (polling replaces Realtime listener)
-          if (steamId) {
-            const currentUser = onlineUsersData.find(u => u.user_id === steamId)
-            if (currentUser?.is_banned === true) {
-              setIsBanned(true)
-            } else {
-              setIsBanned(false)
-            }
+        // Check if current user is banned (from all fetched users)
+        if (steamId) {
+          const currentUser = (usersData || []).find(u => u.user_id === steamId)
+          if (currentUser?.is_banned === true || currentUser?.role === 'banned') {
+            setIsBanned(true)
+          } else {
+            setIsBanned(false)
           }
         }
       } catch (error) {
@@ -307,12 +308,8 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
       }
     }
 
-    // Fetch immediately when chat opens
     fetchOnlineUsers()
-
-    // Poll every 60 seconds while viewing chat
     const pollInterval = setInterval(fetchOnlineUsers, 60 * 1000)
-
     return () => clearInterval(pollInterval)
   }, [isChatActive, userSummary?.steamId])
 
