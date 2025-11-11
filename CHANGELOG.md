@@ -1,15 +1,10 @@
-<!-- 2.3.6 -->
-
-### Changes in v2.3.6
-
-- Fixed an issue in `chat` where offline users' roles were not displayed
-- Improved the loading state of the `signin` screen to prevent a brief flash of `no steam users found`
-
 <!-- 2.3.5 -->
 
 ### Changes in v2.3.5
 
 - Improved the logic for replacing finished games with new ones in the `card farming` queue
+- Improved the loading state of the `signin` screen to prevent a brief flash of `no steam users found`
+- Fixed an issue in `chat` where offline users' roles were not displayed
 
 <!-- 2.3.4 -->
 
