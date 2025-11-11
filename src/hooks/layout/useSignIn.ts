@@ -19,10 +19,10 @@ interface SetupHook {
   getRandomAvatarUrl: () => string
 }
 
-export default function useSetup(refreshKey: number): SetupHook {
+export default function useSignIn(refreshKey: number): SetupHook {
   const { t } = useTranslation()
   const { userSettings, setUserSummary } = useUserContext()
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const [steamUsers, setSteamUsers] = useState<UserSummary[]>([])
   const [userSummaries, setUserSummaries] = useState<UserSummary[]>([])
   const [selectedUser, setSelectedUser] = useState<UserSummary | null>(null)
