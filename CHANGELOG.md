@@ -1,3 +1,9 @@
+<!-- 2.3.5 -->
+
+### Changes in v2.3.5
+
+- Improved the logic for replacing finished games with new ones in the `card farming` queue
+
 <!-- 2.3.4 -->
 
 ### Changes in v2.3.4
