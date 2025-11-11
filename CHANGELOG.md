@@ -3,6 +3,7 @@
 ### Changes in v2.3.6
 
 - Fixed an issue in `chat` where offline users' roles were not displayed
+- Improved the loading state of the `signin` screen to prevent a brief flash of `no steam users found`
 
 <!-- 2.3.5 -->
 

@@ -2,7 +2,7 @@ import type { ReactElement } from 'react'
 
 import { useUserContext } from '@/components/contexts/UserContext'
 import Dashboard from '@/components/layout/Dashboard'
-import Setup from '@/components/layout/Setup'
+import SignIn from '@/components/layout/SignIn'
 import ChangelogModal from '@/components/ui/ChangelogModal'
 import SteamWarning from '@/components/ui/SteamWarning'
 import useWindow from '@/hooks/layout/useWindow'
@@ -14,7 +14,7 @@ export default function Window(): ReactElement {
   if (!userSummary)
     return (
       <>
-        <Setup />
+        <SignIn />
         <ChangelogModal />
       </>
     )

@@ -13,14 +13,14 @@ import GradientBackground from '@/components/ui/GradientBackground'
 import Header from '@/components/ui/header/Header'
 import LanguageSwitch from '@/components/ui/i18n/LanguageSwitch'
 import WebviewWindow from '@/components/ui/WebviewWindow'
-import useSetup from '@/hooks/layout/useSetup'
+import useSignIn from '@/hooks/layout/useSignIn'
 
-export default function Setup(): ReactElement {
+export default function SignIn(): ReactElement {
   const { t } = useTranslation()
   const { setActivePage } = useNavigationContext()
   const [refreshKey, setRefreshKey] = useState(0)
   const { isLoading, userSummaries, handleLogin, steamUsers, selectedUser, setSelectedUser, getRandomAvatarUrl } =
-    useSetup(refreshKey)
+    useSignIn(refreshKey)
 
   useEffect(() => {
     setActivePage('setup')
