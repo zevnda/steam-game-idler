@@ -233,7 +233,6 @@
   "toast.resetSettings.success": "Налаштування скинуто до стандартних",
   "toast.checkUpdate.none": "Оновлень немає",
   "toast.checkUpdate.error": "Помилка перевірки наявності оновлень",
-  "toast.checkUpdate.portable": "Оновлення вимкнено в портативній версії",
   "toast.tradingCards.noCards": "Не вдалося знайти жодних торгівельних карт в вашому інвентарі Steam",
   "toast.tradingCards.processing": "Обробка вашого запиту. Це може зайняти секунду..",
   "toast.tradingCards.emailConfirm": "Успішно додано {{count}} card(s) для продажу. Підтвердьте список на електронну пошту",

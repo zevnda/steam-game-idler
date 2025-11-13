@@ -233,7 +233,6 @@
   "toast.resetSettings.success": "Inställningarna har återställts till standard",
   "toast.checkUpdate.none": "Inga uppdateringar tillgängliga",
   "toast.checkUpdate.error": "Fel vid sökning efter uppdateringar",
-  "toast.checkUpdate.portable": "Uppdateringar är inaktiverade i bärbar version",
   "toast.tradingCards.noCards": "Det gick inte att hitta några handelskort i ditt Steam-lager",
   "toast.tradingCards.processing": "Bearbetar din begäran. Detta kan ta en sekund..",
   "toast.tradingCards.emailConfirm": "Framgångsrikt listade {{count}} kort till salu. Bekräfta noteringen via e-post",

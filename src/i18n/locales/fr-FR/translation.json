@@ -233,7 +233,6 @@
   "toast.resetSettings.success": "Les paramètres ont été réinitialisés par défaut",
   "toast.checkUpdate.none": "Aucune mise à jour disponible",
   "toast.checkUpdate.error": "Erreur lors de la vérification des mises à jour",
-  "toast.checkUpdate.portable": "Les mises à jour sont désactivées dans la version portable",
   "toast.tradingCards.noCards": "Impossible de trouver des cartes de trading dans votre inventaire Steam",
   "toast.tradingCards.processing": "Traitement de votre demande. Cela peut prendre une seconde..",
   "toast.tradingCards.emailConfirm": "Carte(s) {{count}} à vendre avec succès. Confirmez l'annonce par e-mail",

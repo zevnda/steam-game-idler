@@ -233,7 +233,6 @@
   "toast.resetSettings.success": "Indstillinger er blevet nulstillet til standard",
   "toast.checkUpdate.none": "Ingen opdateringer tilgængelige",
   "toast.checkUpdate.error": "Fejl under søgning efter opdateringer",
-  "toast.checkUpdate.portable": "Opdateringer er deaktiveret i bærbar version",
   "toast.tradingCards.noCards": "Kan ikke finde nogen handelskort i din Steam-beholdning",
   "toast.tradingCards.processing": "Behandler din anmodning. Dette kan tage et sekund..",
   "toast.tradingCards.emailConfirm": "{{count}} kort til salg er listet. Bekræft listen via e-mail",

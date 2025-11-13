@@ -233,7 +233,6 @@
   "toast.resetSettings.success": "Nastavení byla obnovena do výchozího nastavení",
   "toast.checkUpdate.none": "Nejsou k dispozici žádné aktualizace",
   "toast.checkUpdate.error": "Chyba při kontrole aktualizací",
-  "toast.checkUpdate.portable": "Aktualizace jsou zakázány v přenosné verzi",
   "toast.tradingCards.noCards": "Nelze najít žádnou obchodní kartu ve tvém Steam inventáři",
   "toast.tradingCards.processing": "Zpracovávání požadavku. Může to chvíli trvat..",
   "toast.tradingCards.emailConfirm": "Úspěšně zobrazeno {{count}} karet pro prodej. Potvrďte seznam e-mailem",

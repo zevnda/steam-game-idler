@@ -233,7 +233,6 @@
   "toast.resetSettings.success": "Ayarlar varsayılanlara sıfırlandı",
   "toast.checkUpdate.none": "Güncelleme bulunmamaktadır",
   "toast.checkUpdate.error": "Güncellemeleri kontrol ederken bir sorun yaşandı",
-  "toast.checkUpdate.portable": "Taşınabilir sürümde güncellemeler devre dışı bırakıldı",
   "toast.tradingCards.noCards": "Steam envanterinizde herhangi bir takas kartı bulunmamaktadır",
   "toast.tradingCards.processing": "İşleminiz işleniyor. Bu birkaç saniye sürebilir..",
   "toast.tradingCards.emailConfirm": "{{count}} adet kart başarılı bir şekilde satışa koyuldu. E-Posta ile satışı onaylayın",

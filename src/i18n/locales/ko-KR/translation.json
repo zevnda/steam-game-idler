@@ -233,7 +233,6 @@
   "toast.resetSettings.success": "설정이 기본값으로 재설정됨",
   "toast.checkUpdate.none": "업데이트가 없습니다",
   "toast.checkUpdate.error": "업데이트 확인 오류",
-  "toast.checkUpdate.portable": "휴대용 버전에서는 업데이트가 비활성화됩니다.",
   "toast.tradingCards.noCards": "Steam 인벤토리에서 거래 카드 찾기 실패",
   "toast.tradingCards.processing": "요청을 처리 중입니다. 잠시만 기다려 주세요..",
   "toast.tradingCards.emailConfirm": "{{count}}개의 카드를 판매 목록에 성공적으로 등록했습니다. 이메일로 확인하세요",

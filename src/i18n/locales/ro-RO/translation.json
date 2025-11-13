@@ -233,7 +233,6 @@
   "toast.resetSettings.success": "Setările au fost resetate la valorile implicite",
   "toast.checkUpdate.none": "Nu sunt actualizări disponibile",
   "toast.checkUpdate.error": "Eroare la verificarea actualizărilor",
-  "toast.checkUpdate.portable": "Actualizările sunt dezactivate în versiunea portabilă",
   "toast.tradingCards.noCards": "Nu s-au putut găsi cărți de schimb în inventarul tău Steam",
   "toast.tradingCards.processing": "Se procesează cererea ta. Acest lucru poate dura câteva secunde..",
   "toast.tradingCards.emailConfirm": "{{count}} carte/cărți au fost listate cu succes spre vânzare. Confirmă listarea prin e-mail",

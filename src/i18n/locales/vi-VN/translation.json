@@ -233,7 +233,6 @@
   "toast.resetSettings.success": "Các cài đặt đã được đặt lại về mặc định",
   "toast.checkUpdate.none": "Không có bản cập nhật nào",
   "toast.checkUpdate.error": "Lỗi khi kiểm tra cập nhật",
-  "toast.checkUpdate.portable": "Bản cập nhật bị vô hiệu hóa trong phiên bản di động",
   "toast.tradingCards.noCards": "Không thể tìm thấy bất kỳ thẻ giao dịch nào trong kho của bạn trên Steam",
   "toast.tradingCards.processing": "Đang xử lý yêu cầu của bạn. Điều này có thể mất một giây..",
   "toast.tradingCards.emailConfirm": "Đã niêm yết thành công {{count}} thẻ để bán. Xác nhận danh sách qua email",
