@@ -35,7 +35,7 @@
       "providerShortName": null,
       "signingIdentity": null
     },
-    "resources": ["libs/*", "LICENSE"],
+    "resources": ["libs/*", "LICENSE", ".installed"],
     "linux": {
       "deb": {
         "depends": []

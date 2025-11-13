@@ -167,10 +167,10 @@ pub fn is_portable() -> bool {
     }
 
     if let Ok(current_exe) = tauri::utils::platform::current_exe() {
-        let mut uninstaller_path = current_exe;
-        uninstaller_path.pop();
-        uninstaller_path.push("uninstall.exe");
-        !uninstaller_path.exists()
+        let mut installed_flag = current_exe.clone();
+        installed_flag.pop();
+        installed_flag.push(".installed");
+        !installed_flag.exists()
     } else {
         true
     }
