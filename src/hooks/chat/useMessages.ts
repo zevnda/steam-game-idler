@@ -87,8 +87,10 @@ export function useMessages({
 
   const groupMessagesByDate = (msgs: ChatMessageType[]): { [key: string]: ChatMessageType[] } => {
     try {
+      // Sort all messages by created_at ascending
+      const sortedMsgs = [...msgs].sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
       const groups: { [key: string]: ChatMessageType[] } = {}
-      msgs.forEach(msg => {
+      sortedMsgs.forEach(msg => {
         const date = new Date(msg.created_at).toLocaleDateString('en-US', {
           month: 'long',
           day: 'numeric',
@@ -96,6 +98,10 @@ export function useMessages({
         })
         if (!groups[date]) groups[date] = []
         groups[date].push(msg)
+      })
+      // Ensure each group is sorted by created_at as well
+      Object.keys(groups).forEach(date => {
+        groups[date].sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
       })
       return groups
     } catch (error) {

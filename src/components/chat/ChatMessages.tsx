@@ -70,9 +70,6 @@ const ChatMessages = ({
 }): ReactElement => {
   const editTextareaRef = useRef<HTMLTextAreaElement>(null)
 
-  // Flatten all messages from all date groups for reply lookups
-  const allMessages = Object.values(groupedMessages).flat()
-
   useEffect(() => {
     if (!editingMessageId) return
 
@@ -122,7 +119,8 @@ const ChatMessages = ({
                     key={msg.id}
                     msg={msg}
                     idx={idx}
-                    msgs={allMessages}
+                    // Pass only the current date group's messages
+                    msgs={msgs}
                     userSummary={userSummary}
                     userRoles={userRoles}
                     getColorFromUsername={getColorFromUsername}
