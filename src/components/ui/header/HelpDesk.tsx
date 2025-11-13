@@ -1,7 +1,7 @@
 import type { ReactElement } from 'react'
 
 import { cn } from '@heroui/react'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { RiCustomerService2Line } from 'react-icons/ri'
@@ -24,11 +24,14 @@ export default function HelpDesk(): ReactElement | null {
   const { userSummary } = useUserContext()
   const [showHelpDesk, setShowHelpDesk] = useState(false)
   const [crispLoaded, setCrispLoaded] = useState(false)
+  const observerRef = useRef<MutationObserver | null>(null)
 
   useEffect(() => {
     // Poll for window.$crisp until it exists
     if (typeof window === 'undefined') return
+
     let interval: NodeJS.Timeout
+
     if (!window.$crisp) {
       interval = setInterval(() => {
         if (window.$crisp) {
@@ -41,6 +44,30 @@ export default function HelpDesk(): ReactElement | null {
     }
     return () => {
       if (interval) clearInterval(interval)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const hideCrispButton = (): void => {
+      const btn = document.querySelector('div[role="button"][aria-label="Open chat"]') as HTMLElement | null
+      if (btn) btn.setAttribute('style', 'display: none !important;')
+    }
+
+    observerRef.current = new MutationObserver(() => {
+      hideCrispButton()
+    })
+
+    observerRef.current.observe(document.body, {
+      childList: true,
+      subtree: true,
+    })
+
+    hideCrispButton()
+
+    return () => {
+      observerRef.current?.disconnect()
     }
   }, [])
 
