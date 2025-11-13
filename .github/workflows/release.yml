@@ -341,6 +341,9 @@ jobs:
           
           # Copy the libs folder
           Copy-Item "./src-tauri/libs" -Destination "$portableDir/libs" -Recurse -Force
+
+          # Copy the LICENSE file
+          Copy-Item "./LICENSE" -Destination "$portableDir/LICENSE" -Force
           
           # Create the portable zip
           Compress-Archive -Path "$portableDir/*" -DestinationPath "./src-tauri/target/release/Steam Game Idler_${{ github.event.inputs.version }}_x64-portable.zip" -Force
