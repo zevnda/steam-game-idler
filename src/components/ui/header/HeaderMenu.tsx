@@ -6,7 +6,7 @@ import { open } from '@tauri-apps/plugin-shell'
 import { check } from '@tauri-apps/plugin-updater'
 
 import { cn, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@heroui/react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   TbBookFilled,
@@ -27,17 +27,19 @@ export default function HeaderMenu(): ReactElement {
   const { t } = useTranslation()
   const { setShowChangelog } = useUpdateContext()
   const [showMenu, setShowMenu] = useState(false)
+  const [isPortable, setIsPortable] = useState(false)
 
   const githubIssueUrl = 'https://github.com/zevnda/steam-game-idler/issues/new?assignees=zevnda&labels='
 
+  useEffect(() => {
+    ;(async () => {
+      const portable = await isPortableCheck()
+      setIsPortable(portable)
+    })()
+  }, [])
+
   const handleUpdate = async (): Promise<void> => {
     try {
-      const isPortable = await isPortableCheck()
-      if (isPortable) {
-        showPrimaryToast(t('toast.checkUpdate.portable'))
-        return
-      }
-
       const update = await check()
       if (update) {
         localStorage.setItem('hasUpdated', 'true')
@@ -161,18 +163,20 @@ export default function HeaderMenu(): ReactElement {
               {t('menu.changelog')}
             </DropdownItem>
 
-            <DropdownItem
-              key='updates'
-              startContent={<TbDownload size={18} />}
-              textValue='Check for updates'
-              className='rounded-xl text-content'
-              classNames={{
-                base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
-              }}
-              onPress={handleUpdate}
-            >
-              {t('menu.update')}
-            </DropdownItem>
+            {isPortable === false ? (
+              <DropdownItem
+                key='updates'
+                startContent={<TbDownload size={18} />}
+                textValue='Check for updates'
+                className='rounded-xl text-content'
+                classNames={{
+                  base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
+                }}
+                onPress={handleUpdate}
+              >
+                {t('menu.update')}
+              </DropdownItem>
+            ) : null}
           </DropdownMenu>
         </Dropdown>
       </div>

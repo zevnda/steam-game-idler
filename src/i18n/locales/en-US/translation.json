@@ -233,7 +233,6 @@
   "toast.resetSettings.success": "Settings have been reset to default",
   "toast.checkUpdate.none": "No updates available",
   "toast.checkUpdate.error": "Error checking for updates",
-  "toast.checkUpdate.portable": "Updates are disabled in portable version",
   "toast.tradingCards.noCards": "Unable to find any trading cards in your Steam inventory",
   "toast.tradingCards.processing": "Processing your request. This might take a second..",
   "toast.tradingCards.emailConfirm": "Successfully listed {{count}} card(s) for sale. Confirm the listing via email",

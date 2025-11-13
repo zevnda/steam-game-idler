@@ -1,6 +1,7 @@
 import type { ReactElement } from 'react'
 
 import { cn } from '@heroui/react'
+import { useEffect, useState } from 'react'
 import { TbLayoutSidebar, TbLayoutSidebarFilled } from 'react-icons/tb'
 import { VscChromeClose, VscChromeMaximize, VscChromeMinimize } from 'react-icons/vsc'
 
@@ -12,12 +13,21 @@ import HeaderMenu from '@/components/ui/header/HeaderMenu'
 import HelpDesk from '@/components/ui/header/HelpDesk'
 import UpdateButton from '@/components/ui/UpdateButton'
 import useHeader from '@/hooks/ui/useHeader'
+import { isPortableCheck } from '@/utils/tasks'
 
 export default function Header(): ReactElement {
   const { updateAvailable } = useUpdateContext()
   const { windowMinimize, windowToggleMaximize, windowClose } = useHeader()
   const { sidebarCollapsed, transitionDuration, setSidebarCollapsed, setTransitionDuration } = useStateContext()
   const { activePage } = useNavigationContext()
+  const [isPortable, setIsPortable] = useState<boolean | null>(null)
+
+  useEffect(() => {
+    ;(async () => {
+      const portable = await isPortableCheck()
+      setIsPortable(portable)
+    })()
+  }, [])
 
   return (
     <div
@@ -58,7 +68,7 @@ export default function Header(): ReactElement {
         )}
 
         <div className='flex justify-end items-center h-full w-full' data-tauri-drag-region>
-          {updateAvailable && <UpdateButton />}
+          {isPortable === false && updateAvailable && <UpdateButton />}
 
           <HelpDesk />
 

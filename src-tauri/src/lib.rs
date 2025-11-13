@@ -196,9 +196,14 @@ fn setup_tray_icon(app: &mut tauri::App) -> Result<(), Box<dyn std::error::Error
 
     // Create system tray menu
     let show = MenuItem::with_id(app, "show", "Show", true, None::<&str>)?;
-    let update = MenuItem::with_id(app, "update", "Check for updates..", true, None::<&str>)?;
     let quit = MenuItem::with_id(app, "quit", "Quit", true, None::<&str>)?;
-    let menu = Menu::with_items(app, &[&show, &update, &quit])?;
+    // Only add "update" if not portable
+    let menu = if !is_portable() {
+        let update = MenuItem::with_id(app, "update", "Check for updates..", true, None::<&str>)?;
+        Menu::with_items(app, &[&show, &update, &quit])?
+    } else {
+        Menu::with_items(app, &[&show, &quit])?
+    };
 
     // Load icon directly from binary resources
     let icon_bytes = include_bytes!("../icons/32x32.png");
@@ -254,20 +259,6 @@ fn setup_tray_icon(app: &mut tauri::App) -> Result<(), Box<dyn std::error::Error
 }
 
 async fn check_for_updates(app_handle: tauri::AppHandle) -> tauri_plugin_updater::Result<()> {
-    // Check for updates and install if available and not portable version
-    let is_portable = is_portable();
-    if is_portable {
-        use tauri_plugin_notification::NotificationExt;
-        app_handle
-            .notification()
-            .builder()
-            .title("Updates are disabled in portable version")
-            .show()
-            .unwrap();
-
-        return Ok(());
-    }
-
     if let Some(update) = app_handle.updater()?.check().await? {
         update
             .download_and_install(|_downloaded, _total| {}, || {})
