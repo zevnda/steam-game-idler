@@ -25,7 +25,12 @@ export function useMessagePagination({
   const { supabase } = useSupabase()
   const [loading, setLoading] = useState(true)
   const [hasMore, setHasMore] = useState(true)
-  const [pagination, setPagination] = useState({ limit: 40, offset: 0 })
+  // Initial load: 40 messages, subsequent paginations: 20 messages, max 3 paginations
+  const INITIAL_LIMIT = 40
+  const PAGINATION_LIMIT = 20
+  const MAX_PAGINATIONS = 3
+  const [pagination, setPagination] = useState({ limit: INITIAL_LIMIT, offset: 0 })
+  const [paginationCount, setPaginationCount] = useState(0)
 
   useEffect(() => {
     const container = messagesContainerRef.current
@@ -33,7 +38,8 @@ export function useMessagePagination({
 
     const handleScroll = async (): Promise<void> => {
       try {
-        if (container.scrollTop === 0 && hasMore && !loading) {
+        // Only allow paginating up to MAX_PAGINATIONS times
+        if (container.scrollTop === 0 && hasMore && !loading && paginationCount < MAX_PAGINATIONS) {
           // Find the oldest message of the current batch before loading more
           const messageElements = container.querySelectorAll('[data-message-id]')
           let oldestMessageId: string | null = null
@@ -41,12 +47,13 @@ export function useMessagePagination({
             oldestMessageId = messageElements[0].getAttribute('data-message-id')
           }
 
-          const newOffset = pagination.offset + pagination.limit
+          // Always fetch the next batch after the last offset + limit
+          const nextOffset = pagination.offset + pagination.limit
           const { data, error } = await supabase
             .from('messages')
             .select('*')
             .order('created_at', { ascending: false })
-            .range(newOffset, newOffset + pagination.limit - 1)
+            .range(nextOffset, nextOffset + PAGINATION_LIMIT - 1)
           if (error) {
             console.error('Error loading more messages:', error)
             logEvent(`[Error] in loadMoreMessages: ${error.message}`)
@@ -81,8 +88,9 @@ export function useMessagePagination({
               const uniqueOlder = olderMessages.filter((m: ChatMessageType) => !currentIds.has(m.id))
               return [...uniqueOlder, ...current]
             })
-            setPagination(prev => ({ ...prev, offset: newOffset }))
-            setHasMore(data.length === pagination.limit)
+            setPagination({ limit: PAGINATION_LIMIT, offset: nextOffset })
+            setPaginationCount(prev => prev + 1)
+            setHasMore(data.length === PAGINATION_LIMIT)
             setShouldScrollToBottom(false)
 
             // Use requestAnimationFrame to ensure DOM is fully updated before restoring scroll
@@ -110,7 +118,16 @@ export function useMessagePagination({
     return () => {
       container.removeEventListener('scroll', handleScroll)
     }
-  }, [messagesContainerRef, hasMore, loading, pagination, setMessages, supabase, setShouldScrollToBottom])
+  }, [
+    messagesContainerRef,
+    hasMore,
+    loading,
+    pagination,
+    paginationCount,
+    setMessages,
+    supabase,
+    setShouldScrollToBottom,
+  ])
 
   useEffect(() => {
     const fetchMessages = async (): Promise<void> => {
