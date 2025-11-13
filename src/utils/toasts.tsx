@@ -66,7 +66,7 @@ export function showOutdatedCredentialsToast(): void {
     title: (
       <ErrorToast
         message={t('toast.outdatedCredentials')}
-        href='https://steamgameidler.com/docs/faq#error-messages:~:text=Card%20farming%20credentials%20need%20to%20be%20updated%20in%20%E2%80%9Csettings%20%3E%20card%20farming%22'
+        href='https://steamgameidler.com/docs/faq#error-messages:~:text=Card%20farming%20credentials%20need%20to%20be%20updated%20in%20%E2%80%9Csettings%20%3E%20general%22'
       />
     ),
     color: 'danger',
