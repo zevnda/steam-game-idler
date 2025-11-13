@@ -1,3 +1,9 @@
+<!-- 2.3.6 -->
+
+### Changes in v2.3.6
+
+- Update context menus will now only be available in non-portable versions
+
 <!-- 2.3.5 -->
 
 ### Changes in v2.3.5
