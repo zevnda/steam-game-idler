@@ -233,7 +233,6 @@
   "toast.resetSettings.success": "Pengaturan telah diatur ulang ke default",
   "toast.checkUpdate.none": "Tidak ada pembaruan yang tersedia",
   "toast.checkUpdate.error": "Error memeriksa pembaruan",
-  "toast.checkUpdate.portable": "Pembaruan dinonaktifkan dalam versi portabel",
   "toast.tradingCards.noCards": "Tidak dapat menemukan kartu perdagangan di inventaris Steam Anda",
   "toast.tradingCards.processing": "Memproses permintaan Anda. Ini mungkin memerlukan sedikit waktu..",
   "toast.tradingCards.emailConfirm": "Berhasil mendaftarkan {{count}} kartu(s) untuk dijual. Konfirmasikan pendaftaran melalui email",

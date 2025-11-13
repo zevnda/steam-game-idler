@@ -233,7 +233,6 @@
   "toast.resetSettings.success": "設定已重設為預設值",
   "toast.checkUpdate.none": "沒有可用的更新",
   "toast.checkUpdate.error": "檢查更新時出錯",
-  "toast.checkUpdate.portable": "隨身版已停用更新",
   "toast.tradingCards.noCards": "無法在您的 Steam 庫存中找到任何交易卡",
   "toast.tradingCards.processing": "正在處理您的請求。這可能需要一秒鐘..",
   "toast.tradingCards.emailConfirm": "成功列出 {{count}} 張卡片供出售。請通過電子郵件確認列表",

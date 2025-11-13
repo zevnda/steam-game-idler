@@ -233,7 +233,6 @@
   "toast.resetSettings.success": "le impostazioni sono state ripristinate",
   "toast.checkUpdate.none": "Nessun aggiornamento disponibile",
   "toast.checkUpdate.error": "Errore nel controllo degli aggiornamenti",
-  "toast.checkUpdate.portable": "Gli aggiornamenti sono disabilitati nella versione portatile",
   "toast.tradingCards.noCards": "Impossibile trovare alcuna carta di trading nel tuo inventario di Steam",
   "toast.tradingCards.processing": "Elaborazione della tua richiesta. Questo potrebbe richiedere un secondo..",
   "toast.tradingCards.emailConfirm": "Carta(e) {{count}} in vendita con successo. Conferma la lista via email",

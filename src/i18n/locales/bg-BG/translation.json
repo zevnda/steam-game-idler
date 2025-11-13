@@ -233,7 +233,6 @@
   "toast.resetSettings.success": "Настройките са нулирани до стойностите по подразбиране",
   "toast.checkUpdate.none": "Няма налични актуализации",
   "toast.checkUpdate.error": "Грешка при проверка за актуализации",
-  "toast.checkUpdate.portable": "Актуализациите са деактивирани в преносимата версия",
   "toast.tradingCards.noCards": "Не са намерени търговски карти в инвентара ви в Steam",
   "toast.tradingCards.processing": "Обработва се заявката ви. Това може да отнеме секунда..",
   "toast.tradingCards.emailConfirm": "Успешно листнати {{count}} карта(и) за продажба. Потвърдете листването чрез имейл",

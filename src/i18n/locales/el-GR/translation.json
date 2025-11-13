@@ -233,7 +233,6 @@
   "toast.resetSettings.success": "Οι ρυθμίσεις έχουν επαναφερθεί στις προεπιλεγμένες ρυθμίσεις",
   "toast.checkUpdate.none": "Δεν υπάρχουν διαθέσιμες ενημερώσεις",
   "toast.checkUpdate.error": "Σφάλμα κατά τον έλεγχο για ενημερώσεις",
-  "toast.checkUpdate.portable": "Οι ενημερώσεις είναι απενεργοποιημένες στην φορητή έκδοση",
   "toast.tradingCards.noCards": "Δεν είναι δυνατή η εύρεση καρτών συναλλαγών στο απόθεμα Steam σας",
   "toast.tradingCards.processing": "Επεξεργασία του αιτήματός σας. Αυτό μπορεί να διαρκέσει ένα δευτερόλεπτο..",
   "toast.tradingCards.emailConfirm": "Επιτυχής παράθεση {{count}} καρτών προς πώληση. Επιβεβαιώστε την καταχώρηση μέσω email",

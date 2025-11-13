@@ -233,7 +233,6 @@
   "toast.resetSettings.success": "Ustawienia zostały zresetowane do ustawień domyślnych",
   "toast.checkUpdate.none": "Brak dostępnych aktualizacji",
   "toast.checkUpdate.error": "Błąd podczas sprawdzania aktualizacji",
-  "toast.checkUpdate.portable": "Aktualizacje są wyłączone w wersji przenośnej",
   "toast.tradingCards.noCards": "Nie można znaleźć żadnych kart handlowych w twoim ekwipunku Steam",
   "toast.tradingCards.processing": "Przetwarzanie twojego żądania. Może to potrwać chwilę..",
   "toast.tradingCards.emailConfirm": "Pomyślnie wymieniono karty {{count}} do sprzedaży. Potwierdź aukcję przez e-mail",

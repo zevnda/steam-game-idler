@@ -233,7 +233,6 @@
   "toast.resetSettings.success": "A beállítások visszaállítva az alapértelmezett értékekre",
   "toast.checkUpdate.none": "Nincs elérhető frissítés",
   "toast.checkUpdate.error": "Hiba a frissítések ellenőrzésekor",
-  "toast.checkUpdate.portable": "A frissítések le vannak tiltva a hordozható verzióban",
   "toast.tradingCards.noCards": "Nem található kereskedési kártya a Steam készletedben",
   "toast.tradingCards.processing": "Feldolgozás folyamatban. Ez egy másodpercet is igénybe vehet...",
   "toast.tradingCards.emailConfirm": "Sikeresen listáztál {{count}} kártyát eladásra. Erősítsd meg az eladást e-mailen keresztül",

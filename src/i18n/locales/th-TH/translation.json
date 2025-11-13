@@ -233,7 +233,6 @@
   "toast.resetSettings.success": "การตั้งค่าได้รีเซ็ตเป็นค่าเริ่มต้นแล้ว",
   "toast.checkUpdate.none": "ไม่มีการอัปเดต",
   "toast.checkUpdate.error": "เกิดข้อผิดพลาดในการตรวจสอบการอัปเดต",
-  "toast.checkUpdate.portable": "การอัปเดตถูกปิดใช้งานในเวอร์ชันพกพา",
   "toast.tradingCards.noCards": "ไม่พบการ์ดแลกเปลี่ยนในคลัง Steam ของคุณ",
   "toast.tradingCards.processing": "กำลังดำเนินการคำขอของคุณ อาจใช้เวลาสักครู่..",
   "toast.tradingCards.emailConfirm": "ลงรายการ {{count}} การ์ดเรียบร้อยแล้ว ยืนยันรายการผ่านอีเมล",

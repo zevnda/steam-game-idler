@@ -233,7 +233,6 @@
   "toast.resetSettings.success": "As configurações foram redefinidas para o padrão",
   "toast.checkUpdate.none": "Não há atualizações disponíveis",
   "toast.checkUpdate.error": "Erro ao verificar se há atualizações",
-  "toast.checkUpdate.portable": "As atualizações estão desativadas na versão portátil",
   "toast.tradingCards.noCards": "Não foi possível encontrar cartas colecionáveis no seu inventário da Steam",
   "toast.tradingCards.processing": "Processando sua solicitação. Isso pode demorar um segundo..",
   "toast.tradingCards.emailConfirm": "Cartão {{count}} listado com sucesso. Confirme o anúncio via e-mail",

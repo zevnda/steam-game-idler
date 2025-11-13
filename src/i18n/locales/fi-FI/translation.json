@@ -233,7 +233,6 @@
   "toast.resetSettings.success": "Asetukset on palautettu oletukseksi",
   "toast.checkUpdate.none": "Ei päivityksiä saatavilla",
   "toast.checkUpdate.error": "Virhe päivitysten tarkistuksessa",
-  "toast.checkUpdate.portable": "Päivitykset on poistettu käytöstä kannettavassa versiossa",
   "toast.tradingCards.noCards": "Steam-tavaraluettelosta ei löydy yhtään kauppakorttia",
   "toast.tradingCards.processing": "Käsitellään pyyntöäsi. Tämä saattaa kestää sekunnin..",
   "toast.tradingCards.emailConfirm": "Onnistuneesti listattu {{count}} kortti(t) myytäväksi. Vahvista listaus sähköpostitse",

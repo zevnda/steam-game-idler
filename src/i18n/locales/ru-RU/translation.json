@@ -233,7 +233,6 @@
   "toast.resetSettings.success": "Настройки сброшены до значений по умолчанию",
   "toast.checkUpdate.none": "Обновлений нет",
   "toast.checkUpdate.error": "Ошибка при проверке обновлений",
-  "toast.checkUpdate.portable": "Обновления отключены в портативной версии",
   "toast.tradingCards.noCards": "Невозможно найти торговые карточки в инвентаре Steam",
   "toast.tradingCards.processing": "Обрабатываем ваш запрос. Это может занять секунду..",
   "toast.tradingCards.emailConfirm": "Успешно выставили {{count}} карту(ы) на продажу. Подтвердите через электронную почту",

@@ -233,7 +233,6 @@
   "toast.resetSettings.success": "सेटिंग्स को डिफ़ॉल्ट पर रीसेट किया गया",
   "toast.checkUpdate.none": "कोई अपडेट उपलब्ध नहीं",
   "toast.checkUpdate.error": "अपडेट जांचने में त्रुटि",
-  "toast.checkUpdate.portable": "पोर्टेबल संस्करण में अपडेट अक्षम हैं",
   "toast.tradingCards.noCards": "आपके Steam इन्वेंटरी में कोई ट्रेडिंग कार्ड्स नहीं मिला",
   "toast.tradingCards.processing": "आपका अनुरोध संसाधित किया जा रहा है। यह सेकंड ले सकता है..",
   "toast.tradingCards.emailConfirm": "{{count}} कार्ड(स) को सफलतापूर्वक बिक्री के लिए सूचीबद्ध किया गया। ईमेल के माध्यम से सूचीबद्धन की पुष्टि करें",

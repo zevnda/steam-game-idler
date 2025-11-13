@@ -233,7 +233,6 @@
   "toast.resetSettings.success": "Einstellungen wurden auf Standardwerte zurückgesetzt",
   "toast.checkUpdate.none": "Keine Updates verfügbar",
   "toast.checkUpdate.error": "Fehler beim Prüfen auf Updates",
-  "toast.checkUpdate.portable": "Aktualisierungen sind in portabler Version deaktiviert",
   "toast.tradingCards.noCards": "Keine Handelskarten in deinem Steam Inventar gefunden",
   "toast.tradingCards.processing": "Verarbeitung Ihrer Anfrage. Dies kann eine Sekunde dauern..",
   "toast.tradingCards.emailConfirm": "{{count}} Karte(n) erfolgreich zum Verkauf aufgelistet. Bestätigen Sie das Angebot per E-Mail",

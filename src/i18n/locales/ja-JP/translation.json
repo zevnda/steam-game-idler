@@ -233,7 +233,6 @@
   "toast.resetSettings.success": "設定が既定にリセットされました",
   "toast.checkUpdate.none": "利用可能なアップデートはありません",
   "toast.checkUpdate.error": "アップデートの確認エラー",
-  "toast.checkUpdate.portable": "ポータブルバージョンでは更新は無効です",
   "toast.tradingCards.noCards": "Steamインベントリにトレーディングカードが見つかりません",
   "toast.tradingCards.processing": "リクエストを処理しています。しばらくお待ちください。",
   "toast.tradingCards.emailConfirm": "{{count}} カードを販売しました。メールで確認してください。",

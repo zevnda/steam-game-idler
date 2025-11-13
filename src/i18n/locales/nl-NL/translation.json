@@ -233,7 +233,6 @@
   "toast.resetSettings.success": "De instellingen zijn teruggezet naar de standaardinstellingen",
   "toast.checkUpdate.none": "Geen updates beschikbaar",
   "toast.checkUpdate.error": "Fout bij het controleren op updates",
-  "toast.checkUpdate.portable": "Updates zijn uitgeschakeld in draagbare versie",
   "toast.tradingCards.noCards": "Kan geen handelskaarten vinden in je Steam inventaris",
   "toast.tradingCards.processing": "Je verzoek wordt verwerkt. Dit kan even duren..",
   "toast.tradingCards.emailConfirm": "{{count}} kaart(en) succesvol vermeld voor verkoop. Bevestig de aanbieding via e-mail",

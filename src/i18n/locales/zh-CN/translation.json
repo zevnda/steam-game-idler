@@ -233,7 +233,6 @@
   "toast.resetSettings.success": "设置已重置为默认值",
   "toast.checkUpdate.none": "没有可用的更新",
   "toast.checkUpdate.error": "检查更新时出错",
-  "toast.checkUpdate.portable": "在便携式版本中禁用更新",
   "toast.tradingCards.noCards": "无法在您的Steam库存中找到任何交易卡",
   "toast.tradingCards.processing": "正在处理您的请求。这可能需要二秒钟...",
   "toast.tradingCards.emailConfirm": "{{count}} 张卡片已成功挂牌出售。请通过电子邮件确认上架",
