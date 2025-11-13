@@ -3,6 +3,7 @@
 ### Changes in v2.3.6
 
 - Context menus and logic for handling app updates will now only be available in non-portable versions
+- Fixed an issue where [SteamUtility](https://github.com/zevnda/steam-utility) was not correctly handling achievement data permission flags, resulting in some game's achievements not showing as `protected` in `achievement manager` 
 - Other miscellaneous improvements
 
 <!-- 2.3.5 -->
