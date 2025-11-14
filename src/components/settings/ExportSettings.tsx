@@ -72,7 +72,10 @@ export default function ExportSettings(): ReactElement {
 
   const processLocalStorageItem = (key: string, value: string | null): string | null | object => {
     // Skip specific keys
-    if (['cachedNotifications', 'seenNotifications', 'ally-supports-cache', 'steamCookies', 'apiKey'].includes(key)) {
+    if (
+      ['cachedNotifications', 'seenNotifications', 'ally-supports-cache', 'steamCookies', 'apiKey'].includes(key) ||
+      key.startsWith('crisp-client/')
+    ) {
       return null
     }
 
@@ -81,17 +84,10 @@ export default function ExportSettings(): ReactElement {
         const parsedValue = JSON.parse(value)
 
         // Sanitize sensitive data
-        if (key === 'userSummary' && parsedValue && parsedValue.steamId) {
-          const sanitizedValue = JSON.parse(JSON.stringify(parsedValue))
-          delete sanitizedValue.steamId
-          return sanitizedValue
-        } else if (key === 'cardFarming' && parsedValue) {
+        if (key === 'cardFarming' && parsedValue) {
           const sanitizedValue = JSON.parse(JSON.stringify(parsedValue))
           if (sanitizedValue.credentials) {
             delete sanitizedValue.credentials
-          }
-          if (sanitizedValue.userSummary && sanitizedValue.userSummary.steamId) {
-            delete sanitizedValue.userSummary.steamId
           }
           return sanitizedValue
         } else {

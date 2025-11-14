@@ -24,6 +24,7 @@ export default function HelpDesk(): ReactElement | null {
   const { userSummary } = useUserContext()
   const [showHelpDesk, setShowHelpDesk] = useState(false)
   const [crispLoaded, setCrispLoaded] = useState(false)
+  const [unreadMessages, setUnreadMessages] = useState<boolean>(false)
   const observerRef = useRef<MutationObserver | null>(null)
 
   useEffect(() => {
@@ -79,9 +80,15 @@ export default function HelpDesk(): ReactElement | null {
     if (userSummary?.avatar) {
       window.$crisp.push(['set', 'user:avatar', [userSummary.avatar]])
     }
+    if (userSummary?.steamId) {
+      window.$crisp.push(['set', 'session:data', [[['steam_id', userSummary?.steamId]]]])
+    }
 
     // Handler for chat opened/closed events
-    const handleChatOpened = (): void => setShowHelpDesk(true)
+    const handleChatOpened = (): void => {
+      setShowHelpDesk(true)
+      setUnreadMessages(false)
+    }
     const handleChatClosed = (): void => setShowHelpDesk(false)
 
     window.$crisp.push(['on', 'chat:opened', handleChatOpened])
@@ -92,6 +99,15 @@ export default function HelpDesk(): ReactElement | null {
       window.$crisp.push(['off', 'chat:closed', handleChatClosed])
     }
   }, [crispLoaded, userSummary])
+
+  // Handle incoming messages to set unread state
+  useEffect(() => {
+    if (!crispLoaded || typeof window === 'undefined' || !window.$crisp) return
+
+    const handleMessageReceived = (): void => setUnreadMessages(true)
+
+    window.$crisp.push(['on', 'message:received', handleMessageReceived])
+  }, [crispLoaded])
 
   const toggleHelpDesk = (): void => {
     if (typeof window !== 'undefined' && window.$crisp) {
@@ -120,6 +136,9 @@ export default function HelpDesk(): ReactElement | null {
             onClick={toggleHelpDesk}
           >
             <RiCustomerService2Line fontSize={18} className='text-content' />
+            {unreadMessages && (
+              <span className='absolute flex justify-center items-center w-2 h-2 top-2 right-3 bg-danger rounded-full shadow' />
+            )}
           </div>
         </CustomTooltip>
         <AnimatePresence>
