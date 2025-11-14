@@ -84,7 +84,7 @@ export default function HelpDesk(): ReactElement | null {
       window.$crisp.push([
         'set',
         'session:data',
-        [[['steam_id', `https://steamcommunity.com/profiles/${userSummary.steamId}`]]],
+        [[['profile', `https://steamcommunity.com/profiles/${userSummary.steamId}`]]],
       ])
     }
 
