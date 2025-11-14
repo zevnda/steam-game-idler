@@ -1,3 +1,9 @@
+<!-- 2.3.7 -->
+
+### Changes in v2.3.7
+
+- Show a notification badge on the `help desk` icon when a new message has been received
+
 <!-- 2.3.6 -->
 
 ### Changes in v2.3.6
