@@ -1,3 +1,9 @@
+<!-- 2.3.8 -->
+
+### Changes in v2.3.8
+
+- Fixed in infinite loading issue on the `sign in` screen when no Steam user's were found
+
 <!-- 2.3.7 -->
 
 ### Changes in v2.3.7
