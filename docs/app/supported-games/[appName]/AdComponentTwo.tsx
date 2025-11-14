@@ -2,10 +2,11 @@
 
 import type { ReactElement } from 'react'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 export default function AdComponentTwo(): ReactElement {
   const adRef = useRef<HTMLDivElement>(null)
+  const [adKey, setAdKey] = useState(0)
 
   useEffect(() => {
     const adContainer = adRef.current
@@ -31,11 +32,19 @@ export default function AdComponentTwo(): ReactElement {
     return () => {
       if (adContainer) adContainer.innerHTML = ''
     }
+  }, [adKey])
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setAdKey(prev => prev + 1)
+    }, 60000)
+
+    return () => clearInterval(interval)
   }, [])
 
   return (
     <div className='fixed bottom-0 left-0 z-50 bg-[#121316]'>
-      <div ref={adRef} style={{ width: 300, height: 250 }} />
+      <div ref={adRef} key={adKey} style={{ width: 300, height: 250 }} />
     </div>
   )
 }
