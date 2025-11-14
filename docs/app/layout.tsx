@@ -11,6 +11,7 @@ import './globals.css'
 
 import AdOverlay from '@docs/components/AdOverlay'
 import TelemetryLoader from '@docs/components/TelemetryLoader'
+import Script from 'next/script'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -158,6 +159,10 @@ export default async function RootLayout({ children }: { children: ReactNode }):
         </Layout>
         <AdOverlay />
         <TelemetryLoader />
+        <Script
+          src='//pl28051196.effectivegatecpm.com/c4/26/a5/c426a5dd2fa7302020e196b721701d7e.js'
+          strategy='afterInteractive'
+        />
       </body>
     </html>
   )
