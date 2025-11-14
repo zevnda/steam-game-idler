@@ -81,7 +81,11 @@ export default function HelpDesk(): ReactElement | null {
       window.$crisp.push(['set', 'user:avatar', [userSummary.avatar]])
     }
     if (userSummary?.steamId) {
-      window.$crisp.push(['set', 'session:data', [[['steam_id', userSummary?.steamId]]]])
+      window.$crisp.push([
+        'set',
+        'session:data',
+        [[['profile', `https://steamcommunity.com/profiles/${userSummary.steamId}`]]],
+      ])
     }
 
     // Handler for chat opened/closed events
@@ -90,24 +94,18 @@ export default function HelpDesk(): ReactElement | null {
       setUnreadMessages(false)
     }
     const handleChatClosed = (): void => setShowHelpDesk(false)
+    const handleMessageReceived = (): void => setUnreadMessages(true)
 
     window.$crisp.push(['on', 'chat:opened', handleChatOpened])
     window.$crisp.push(['on', 'chat:closed', handleChatClosed])
+    window.$crisp.push(['on', 'message:received', handleMessageReceived])
 
     return () => {
       window.$crisp.push(['off', 'chat:opened', handleChatOpened])
       window.$crisp.push(['off', 'chat:closed', handleChatClosed])
+      window.$crisp.push(['off', 'message:received', handleMessageReceived])
     }
   }, [crispLoaded, userSummary])
-
-  // Handle incoming messages to set unread state
-  useEffect(() => {
-    if (!crispLoaded || typeof window === 'undefined' || !window.$crisp) return
-
-    const handleMessageReceived = (): void => setUnreadMessages(true)
-
-    window.$crisp.push(['on', 'message:received', handleMessageReceived])
-  }, [crispLoaded])
 
   const toggleHelpDesk = (): void => {
     if (typeof window !== 'undefined' && window.$crisp) {
