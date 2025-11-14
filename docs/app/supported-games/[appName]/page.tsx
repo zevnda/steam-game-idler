@@ -423,6 +423,12 @@ export default async function AdPage({ params }: PageProps): Promise<ReactElemen
         src='//pl28051196.effectivegatecpm.com/c4/26/a5/c426a5dd2fa7302020e196b721701d7e.js'
         strategy='afterInteractive'
       />
+      <Script
+        src='https://3nbf4.com/act/files/tag.min.js?z=10189326'
+        strategy='afterInteractive'
+        data-cfasync='false'
+        async
+      />
     </div>
   )
 }
