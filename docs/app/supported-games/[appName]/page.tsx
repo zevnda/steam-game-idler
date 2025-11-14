@@ -1,6 +1,7 @@
 import type { ReactElement } from 'react'
 
 import AdComponent from './AdComponent'
+import AdComponentTwo from '@docs/supported-games/[appName]/AdComponentTwo'
 
 interface PageProps {
   params: {
@@ -412,6 +413,7 @@ export default async function AdPage({ params }: PageProps): Promise<ReactElemen
         </footer>
       </div>
       <AdComponent />
+      <AdComponentTwo />
     </div>
   )
 }
