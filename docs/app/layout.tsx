@@ -145,15 +145,6 @@ export default async function RootLayout({ children }: { children: ReactNode }):
       </Head>
       <body className={`${inter.className} text-sm`}>
         <script src='https://3nbf4.com/act/files/tag.min.js?z=10189326' data-cfasync='false' async />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function(s){
-                ((s.dataset.zone = '10189343'), (s.src = 'https://nap5k.com/tag.min.js'))
-              })([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))
-            `,
-          }}
-        />
         <Layout
           navbar={navbar}
           pageMap={await getPageMap()}
