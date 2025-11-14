@@ -4,7 +4,7 @@ import type { ReactElement } from 'react'
 
 import { useEffect, useRef, useState } from 'react'
 
-export default function AdComponentTwo(): ReactElement {
+export default function AdComponentFour(): ReactElement {
   const adRef = useRef<HTMLDivElement>(null)
   const [adKey, setAdKey] = useState(0)
 
@@ -16,16 +16,16 @@ export default function AdComponentTwo(): ReactElement {
       optionsScript.type = 'text/javascript'
       optionsScript.innerHTML = `
         atOptions = {
-          'key' : '40116e815e38fb7afabae8c0ecb3a250',
+          'key' : '68b7a3fcb25a8c00273bc633cce8a0ae',
           'format' : 'iframe',
-          'height' : 250,
-          'width' : 300,
+          'height' : 90,
+          'width' : 728,
           'params' : {}
         };
       `
       const invokeScript = document.createElement('script')
       invokeScript.type = 'text/javascript'
-      invokeScript.src = '//www.highperformanceformat.com/40116e815e38fb7afabae8c0ecb3a250/invoke.js'
+      invokeScript.src = '//www.highperformanceformat.com/68b7a3fcb25a8c00273bc633cce8a0ae/invoke.js'
       adContainer.appendChild(optionsScript)
       adContainer.appendChild(invokeScript)
     }
@@ -46,8 +46,8 @@ export default function AdComponentTwo(): ReactElement {
   }, [])
 
   return (
-    <div className='fixed bottom-0 left-0 z-40 bg-[#121316]'>
-      <div ref={adRef} key={adKey} style={{ width: 300, height: 250 }} />
+    <div className='fixed top-0 right-0 z-40 bg-[#121316]'>
+      <div ref={adRef} key={adKey} style={{ width: 728, height: 90 }} />
     </div>
   )
 }
