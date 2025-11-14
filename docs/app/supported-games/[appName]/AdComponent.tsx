@@ -44,7 +44,7 @@ export default function AdComponent(): ReactElement {
   }, [adKey])
 
   return (
-    <div className='fixed bottom-0 right-0 z-50 bg-[#0938c7]'>
+    <div className='fixed bottom-0 right-0 z-50 bg-[#121316]'>
       <ins
         key={adKey}
         className='adsbygoogle'

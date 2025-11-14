@@ -5,32 +5,36 @@ import type { ReactElement } from 'react'
 import { useEffect, useRef, useState } from 'react'
 
 export default function AdComponentThree(): ReactElement {
-  const adRef = useRef<HTMLDivElement>(null)
+  const iframeRef = useRef<HTMLIFrameElement>(null)
   const [adKey, setAdKey] = useState(0)
 
   useEffect(() => {
-    const adContainer = adRef.current
-    if (adContainer) {
-      adContainer.innerHTML = ''
-      const optionsScript = document.createElement('script')
-      optionsScript.type = 'text/javascript'
-      optionsScript.innerHTML = `
-        atOptions = {
-          'key' : '9e3ce85948245be365e8fe7b59943949',
-          'format' : 'iframe',
-          'height' : 600,
-          'width' : 160,
-          'params' : {}
-        };
-      `
-      const invokeScript = document.createElement('script')
-      invokeScript.type = 'text/javascript'
-      invokeScript.src = '//www.highperformanceformat.com/9e3ce85948245be365e8fe7b59943949/invoke.js'
-      adContainer.appendChild(optionsScript)
-      adContainer.appendChild(invokeScript)
+    const iframe = iframeRef.current
+    if (iframe && iframe.contentDocument) {
+      const doc = iframe.contentDocument
+      doc.open()
+      doc.write(`
+        <html>
+          <head></head>
+          <body style="margin:0;padding:0;overflow:hidden;">
+            <div id="ad-container"></div>
+            <script type="text/javascript">
+              atOptions = {
+                'key' : '9e3ce85948245be365e8fe7b59943949',
+                'format' : 'iframe',
+                'height' : 600,
+                'width' : 160,
+                'params' : {}
+              };
+            <\/script>
+            <script type="text/javascript" src="//www.highperformanceformat.com/9e3ce85948245be365e8fe7b59943949/invoke.js"><\/script>
+          </body>
+        </html>
+      `)
+      doc.close()
     }
     return () => {
-      if (adContainer) adContainer.innerHTML = ''
+      if (iframe) iframe.src = ''
     }
   }, [adKey])
 
@@ -47,7 +51,16 @@ export default function AdComponentThree(): ReactElement {
 
   return (
     <div className='fixed top-0 left-0 z-40 bg-[#121316]'>
-      <div ref={adRef} key={adKey} style={{ width: 160, height: 600 }} />
+      <iframe
+        ref={iframeRef}
+        key={adKey}
+        style={{ width: 160, height: 600, border: 'none', overflow: 'hidden' }}
+        width={160}
+        height={600}
+        sandbox='allow-scripts allow-same-origin'
+        scrolling='no'
+        title='ad-three'
+      />
     </div>
   )
 }
