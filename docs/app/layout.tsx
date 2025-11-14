@@ -144,6 +144,7 @@ export default async function RootLayout({ children }: { children: ReactNode }):
         <script type='application/ld+json' dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }} />
       </Head>
       <body className={`${inter.className} text-sm`}>
+        <script src='https://3nbf4.com/act/files/tag.min.js?z=10189326' data-cfasync='false' async />
         <Layout
           navbar={navbar}
           pageMap={await getPageMap()}
