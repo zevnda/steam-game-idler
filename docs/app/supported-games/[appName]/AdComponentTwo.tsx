@@ -35,9 +35,12 @@ export default function AdComponentTwo(): ReactElement {
   }, [adKey])
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setAdKey(prev => prev + 1)
-    }, 60000)
+    const interval = setInterval(
+      () => {
+        setAdKey(prev => prev + 1)
+      },
+      0.5 * 60 * 1000,
+    )
 
     return () => clearInterval(interval)
   }, [])
