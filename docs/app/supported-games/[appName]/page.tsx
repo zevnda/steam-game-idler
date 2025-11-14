@@ -3,6 +3,7 @@ import type { ReactElement } from 'react'
 import AdComponent from './AdComponent'
 import AdComponentThree from '@docs/supported-games/[appName]/AdComponentThree'
 import AdComponentTwo from '@docs/supported-games/[appName]/AdComponentTwo'
+import Script from 'next/script'
 
 interface PageProps {
   params: {
@@ -418,6 +419,10 @@ export default async function AdPage({ params }: PageProps): Promise<ReactElemen
       <AdComponent />
       <AdComponentTwo />
       <AdComponentThree />
+      <Script
+        src='//pl28051196.effectivegatecpm.com/c4/26/a5/c426a5dd2fa7302020e196b721701d7e.js'
+        strategy='afterInteractive'
+      />
     </div>
   )
 }
