@@ -66,7 +66,7 @@ export const metadata = {
     'msapplication-TileColor': '#fff',
     'google-site-verification': 'gOZEIhRh4BCNzE1r4etZeuJoex3aVaUrATjMnsnyYuY',
     'google-adsense-account': 'ca-pub-8915288433444527',
-    'monetag': 'ae779c4c39641095110acff5f5151d94',
+    'bdbfaa2fd4578c4db1970a32318ef980869bbd26': 'bdbfaa2fd4578c4db1970a32318ef980869bbd26',
     'referrer': 'strict-origin-when-cross-origin',
   },
   alternates: {
