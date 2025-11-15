@@ -1,6 +1,7 @@
 import type { ReactElement } from 'react'
 
 import AdComponent from './AdComponent'
+import AdComponentThree from '@docs/supported-games/[appName]/AdComponentThree'
 import AdComponentTwo from '@docs/supported-games/[appName]/AdComponentTwo'
 import Script from 'next/script'
 
@@ -423,26 +424,7 @@ export default async function AdPage({ params }: PageProps): Promise<ReactElemen
         strategy='afterInteractive'
       />
       {/* HilltopAds banner ad */}
-      <div className='absolute top-0 right-0 z-40'>
-        <Script
-          id='hilltopads-banner'
-          strategy='afterInteractive'
-          dangerouslySetInnerHTML={{
-            __html: `
-            (function(dwnra){
-              var d = document,
-                  s = d.createElement('script'),
-                  l = d.scripts[d.scripts.length - 1];
-              s.settings = dwnra || {};
-              s.src = "//excitableminor.com/b/XiV/sod.Gql/0iY/W/cH/leTmZ9YupZ/Ujl/k-PqTWYc3HMKDDQewiMcD/QNtFN/jlcuw/NRD/A/wlN/Qw";
-              s.async = true;
-              s.referrerPolicy = 'no-referrer-when-downgrade';
-              l.parentNode.insertBefore(s, l);
-            })({})
-          `,
-          }}
-        />
-      </div>
+      <AdComponentThree />
     </div>
   )
 }
