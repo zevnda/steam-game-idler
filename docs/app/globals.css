@@ -41,4 +41,5 @@ details h3 {
   right: 0px;
   min-width: 300px;
   min-height: 250px;
+  z-index: 40;
 }
