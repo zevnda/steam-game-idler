@@ -28,8 +28,7 @@ import { showDangerToast, t } from '@/utils/toasts'
 export default function useWindow(): void {
   const { t } = useTranslation()
   const { setIdleGamesList } = useIdleContext()
-  const { setShowFreeGamesTab, setIsCardFarming, setIsAchievementUnlocker, setShowSteamWarning, setUseBeta } =
-    useStateContext()
+  const { setIsCardFarming, setIsAchievementUnlocker, setShowSteamWarning, setUseBeta } = useStateContext()
   const { setUpdateAvailable, setShowChangelog } = useUpdateContext()
   const { userSummary, setUserSummary, userSettings, setUserSettings, gamesList, setFreeGamesList } = useUserContext()
 
@@ -192,8 +191,8 @@ export default function useWindow(): void {
   }, [setIdleGamesList])
 
   const freeGamesCheck = useCallback((): void => {
-    checkForFreeGames(setFreeGamesList, setShowFreeGamesTab, gamesList)
-  }, [setFreeGamesList, setShowFreeGamesTab, gamesList])
+    checkForFreeGames(setFreeGamesList, gamesList)
+  }, [setFreeGamesList, gamesList])
 
   useEffect(() => {
     // Check for free games
@@ -219,7 +218,6 @@ export default function useWindow(): void {
 // Check for free games
 export const checkForFreeGames = async (
   setFreeGamesList: Dispatch<SetStateAction<Game[]>>,
-  setShowFreeGamesTab: Dispatch<SetStateAction<boolean>>,
   gamesList: Game[],
 ): Promise<void> => {
   try {
@@ -249,7 +247,6 @@ export const checkForFreeGames = async (
     // Show free games tab if there are any
     if (filteredFreeGames.length > 0) {
       setFreeGamesList(filteredFreeGames)
-      setShowFreeGamesTab(true)
 
       // Sort the arrays before comparing to ignore order differences
       const sortedOldIds = [...oldFreeGameIds].sort((a, b) => a - b)
@@ -265,7 +262,6 @@ export const checkForFreeGames = async (
     } else {
       localStorage.setItem('freeGamesIds', JSON.stringify([]))
       setFreeGamesList([])
-      setShowFreeGamesTab(false)
     }
   } catch (error) {
     showDangerToast(t('common.error'))
