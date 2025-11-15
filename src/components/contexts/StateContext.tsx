@@ -9,8 +9,6 @@ interface StateContextType {
   setAppId: Dispatch<SetStateAction<number | null>>
   appName: string | null
   setAppName: Dispatch<SetStateAction<string | null>>
-  showFreeGamesTab: boolean
-  setShowFreeGamesTab: Dispatch<SetStateAction<boolean>>
   showAchievements: boolean
   setShowAchievements: Dispatch<SetStateAction<boolean>>
   isCardFarming: boolean
@@ -39,7 +37,6 @@ export const StateProvider = ({ children }: { children: ReactNode }): ReactEleme
   )
   const [appId, setAppId] = useState<number | null>(null)
   const [appName, setAppName] = useState<string | null>(null)
-  const [showFreeGamesTab, setShowFreeGamesTab] = useState(false)
   const [showAchievements, setShowAchievements] = useState(false)
   const [isCardFarming, setIsCardFarming] = useState(false)
   const [isAchievementUnlocker, setIsAchievementUnlocker] = useState(false)
@@ -55,8 +52,6 @@ export const StateProvider = ({ children }: { children: ReactNode }): ReactEleme
       value={{
         sidebarCollapsed,
         setSidebarCollapsed,
-        showFreeGamesTab,
-        setShowFreeGamesTab,
         appId,
         setAppId,
         appName,

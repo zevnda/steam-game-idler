@@ -22,6 +22,7 @@ import { useIdleContext } from '@/components/contexts/IdleContext'
 import { useNavigationContext } from '@/components/contexts/NavigationContext'
 import { useSearchContext } from '@/components/contexts/SearchContext'
 import { useStateContext } from '@/components/contexts/StateContext'
+import { useUserContext } from '@/components/contexts/UserContext'
 import AdSlot from '@/components/ui/AdSlot'
 import Beta from '@/components/ui/Beta'
 import CustomModal from '@/components/ui/CustomModal'
@@ -33,15 +34,10 @@ export default function SideBar(): ReactElement {
   const { t } = useTranslation()
   const [showSearchModal, setShowSearchModal] = useState(false)
   const { idleGamesList } = useIdleContext()
-  const {
-    sidebarCollapsed,
-    showFreeGamesTab,
-    isCardFarming,
-    isAchievementUnlocker,
-    setShowAchievements,
-    transitionDuration,
-  } = useStateContext()
+  const { sidebarCollapsed, isCardFarming, isAchievementUnlocker, setShowAchievements, transitionDuration } =
+    useStateContext()
   const { activePage, setActivePage } = useNavigationContext()
+  const { freeGamesList } = useUserContext()
   const searchContent = useSearchContext()
   const { isOpen, onOpenChange, openConfirmation, handleLogout, hasBeenMentionedSinceLastRead } = useSideBar(
     activePage,
@@ -111,18 +107,15 @@ export default function SideBar(): ReactElement {
       page: 'freeGames',
       title: t('freeGames.title'),
       icon: TbGift,
-      shouldShow: showFreeGamesTab,
-      customClassName: 'text-[#ffc700]',
       hasDivider: true,
     },
   ]
 
   const renderSidebarItem = (item: SidebarItem): ReactElement | null => {
-    if (item.shouldShow === false) return null
-
     const Icon = item.icon
     const isCurrentPage = activePage === item.page
     const isFreeGames = item.id === 'free-games'
+    const hasFreeGames = freeGamesList.length > 0
     const isBeta = item.isBeta
     const isChat = item.id === 'chat'
 
@@ -133,7 +126,7 @@ export default function SideBar(): ReactElement {
         <div className='flex w-full'>
           <div
             className={cn(
-              'p-1.5 rounded-lg duration-150 cursor-pointer active:scale-95 border border-transparent w-full overflow-hidden',
+              'px-1.5 py-1 rounded-lg duration-150 cursor-pointer active:scale-95 border border-transparent w-full overflow-hidden',
               isCurrentPage ? 'bg-item-active text-content' : 'text-altwhite hover:bg-item-hover',
               item.customClassName,
             )}
@@ -149,7 +142,7 @@ export default function SideBar(): ReactElement {
               )}
             >
               <div className='relative shrink-0'>
-                <Icon fontSize={20} className={isFreeGames ? 'text-[#ffc700]' : undefined} />
+                <Icon fontSize={20} className={isFreeGames && hasFreeGames ? 'text-[#ffc700]' : undefined} />
                 {isChat && item.hasUnread && (
                   <span
                     className={cn(
@@ -164,7 +157,7 @@ export default function SideBar(): ReactElement {
                   <p
                     className={cn(
                       'flex justify-center items-center text-sm font-bold',
-                      isFreeGames ? 'text-[#ffc700]' : undefined,
+                      isFreeGames && hasFreeGames ? 'text-[#ffc700]' : undefined,
                     )}
                   >
                     {item.title}

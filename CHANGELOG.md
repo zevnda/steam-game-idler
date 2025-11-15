@@ -6,6 +6,9 @@
   - Previously, SGI would return early when a specific condition was met. This condition has been removed, as it would cause some games with completed badges, but also with card drops remaining, to not be returned
   - SGI will now parse all pages of the user's badges page `https://steamcommunity.com/my/badges/`
   - While this change is more robust, it also means that it may take longer to fetch this data for users with a lot of badges
+- To avoid confusion, the `free games` button in the `sidebar` will now always be visible
+  - When there are free games available for you to claim, the `free games` button will be gold, and the available games will be shown in the list
+  - You will still receive desktop notifications *(if enabled)* when free games are available for you to claim
 - Fixed an infinite loading issue on the `sign in` screen when no Steam users were found
 
 <!-- 2.3.7 -->

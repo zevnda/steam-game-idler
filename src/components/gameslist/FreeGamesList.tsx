@@ -31,10 +31,12 @@ export default function FreeGamesList(): ReactElement {
               <p className='text-3xl font-black'>{t('freeGames.title')}</p>
 
               <p className='text-xs text-altwhite my-2'>
-                {t('common.showing', {
-                  count: freeGamesList.length,
-                  total: freeGamesList.length,
-                })}
+                {freeGamesList.length > 0
+                  ? t('common.showing', {
+                      count: freeGamesList.length,
+                      total: freeGamesList.length,
+                    })
+                  : t('freeGames.subtitle')}
               </p>
             </div>
           </div>
