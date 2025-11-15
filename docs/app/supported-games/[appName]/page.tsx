@@ -423,11 +423,12 @@ export default async function AdPage({ params }: PageProps): Promise<ReactElemen
         strategy='afterInteractive'
       />
       {/* HilltopAds banner ad */}
-      <Script
-        id='hilltopads-banner'
-        strategy='afterInteractive'
-        dangerouslySetInnerHTML={{
-          __html: `
+      <div className='absolute top-0 right-0 z-40'>
+        <Script
+          id='hilltopads-banner'
+          strategy='afterInteractive'
+          dangerouslySetInnerHTML={{
+            __html: `
             (function(dwnra){
               var d = document,
                   s = d.createElement('script'),
@@ -439,8 +440,9 @@ export default async function AdPage({ params }: PageProps): Promise<ReactElemen
               l.parentNode.insertBefore(s, l);
             })({})
           `,
-        }}
-      />
+          }}
+        />
+      </div>
     </div>
   )
 }
