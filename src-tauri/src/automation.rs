@@ -85,6 +85,8 @@ pub async fn get_games_with_drops(
         None => format!("sessionid={}; steamLoginSecure={}", sid, sls),
     };
 
+    let mut total_pages = None;
+
     // Loop through the badge pages to find games with card drops remaining
     loop {
         let url = format!(
@@ -142,32 +144,36 @@ pub async fn get_games_with_drops(
             }
         }
 
-        // Check if the badge 13 link is on this page - if so, we can stop after we've processed the page
-        let badge13_link = "/badges/13";
-        let should_stop = html.contains(&badge13_link);
-
-        // Check if there are more pages to process
-        let profile_paging_selector = Selector::parse(".profile_paging").unwrap();
-        if let Some(paging_info) = document.select(&profile_paging_selector).next() {
-            let paging_text = paging_info.text().collect::<Vec<_>>().join("");
-            if let Some(captures) = Regex::new(r"Showing ([\d,]+)-([\d,]+) of ([\d,]+)")
-                .unwrap()
-                .captures(&paging_text)
-            {
-                let end_num = captures[2].replace(",", "");
-                let total_num = captures[3].replace(",", "");
-                if end_num == total_num {
+        // Determine total number of pages if not already done
+        if total_pages.is_none() {
+            let profile_paging_selector = Selector::parse(".profile_paging").unwrap();
+            if let Some(paging_info) = document.select(&profile_paging_selector).next() {
+                let paging_text = paging_info.text().collect::<Vec<_>>().join("");
+                if let Some(captures) = Regex::new(r"Showing ([\d,]+)-([\d,]+) of ([\d,]+)")
+                    .unwrap()
+                    .captures(&paging_text)
+                {
+                    let total_num = captures[3].replace(",", "");
+                    if let Ok(total_badges) = total_num.parse::<usize>() {
+                        let pages = (total_badges + 149) / 150; // 150 badges per page
+                        total_pages = Some(pages);
+                    } else {
+                        break;
+                    }
+                } else {
                     break;
                 }
             } else {
                 break;
             }
-        } else {
-            break;
         }
 
-        // If we found the badge 13 link on this page, we're done
-        if should_stop {
+        // Stop if we've reached the last page
+        if let Some(pages) = total_pages {
+            if page >= pages {
+                break;
+            }
+        } else {
             break;
         }
 

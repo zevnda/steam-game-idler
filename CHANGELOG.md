@@ -2,7 +2,11 @@
 
 ### Changes in v2.3.8
 
-- Fixed in infinite loading issue on the `sign in` screen when no Steam user's were found
+- Improved the logic for getting a user's `games with card drops remaining`
+  - Previously, SGI would return early when a specific condition was met. This condition has been removed, as it would cause some games with completed badges, but also with card drops remaining, to not be returned
+  - SGI will now parse all pages of the user's badges page `https://steamcommunity.com/my/badges/`
+  - While this change is more robust, it also means that it may take longer to fetch this data for users with a lot of badges
+- Fixed an infinite loading issue on the `sign in` screen when no Steam users were found
 
 <!-- 2.3.7 -->
 
