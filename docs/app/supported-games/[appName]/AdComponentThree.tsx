@@ -1,29 +1,23 @@
-'use client'
-
 import type { ReactElement } from 'react'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import Script from 'next/script'
 
 export default function AdComponentThree(): ReactElement {
+  const [key, setKey] = useState(0)
+
   useEffect(() => {
-    try {
-      const adElements = document.querySelectorAll('.adsbygoogle')
-      adElements.forEach(() => {
-        ;(window.adsbygoogle = window.adsbygoogle || []).push({})
-      })
-    } catch (err) {
-      console.error('AdSense error:', err)
-    }
+    const interval = setInterval(() => {
+      setKey(k => k + 1)
+    }, 30000)
+    return () => clearInterval(interval)
   }, [])
 
   return (
-    <div className='hidden 2xl:flex fixed top-0 left-0 flex-col gap-4 z-40'>
-      <ins
-        className='adsbygoogle'
-        data-ad-client='ca-pub-8915288433444527'
-        data-ad-slot='9143494556'
-        style={{ display: 'block', width: '160px', height: '600px' }}
-      />
-    </div>
+    <Script
+      key={key}
+      src='//pl28051196.effectivegatecpm.com/c4/26/a5/c426a5dd2fa7302020e196b721701d7e.js'
+      strategy='afterInteractive'
+    />
   )
 }
