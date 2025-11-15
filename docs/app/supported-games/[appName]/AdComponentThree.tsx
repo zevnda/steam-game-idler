@@ -9,15 +9,15 @@ export default function AdComponentThree(): ReactElement {
     const container = document.getElementById('hilltop-container')
     const script = document.createElement('script')
     script.innerHTML = `
-      (function(ypw){
-        var d = document,
-            s = d.createElement('script'),
-            l = document.getElementById('hilltop-container');
-        s.settings = ypw || {};
-        s.src = "//excitableminor.com/bhX.VdszdxGxlP0dYYWtcY/eetma9Vu/ZuUBlEk-PYTlYb3tMLDTQvwfMBDlASwPNWQR";
-        s.async = true;
-        s.referrerPolicy = 'no-referrer-when-downgrade';
-        l.appendChild(s);
+      (function(acn){
+      var d = document,
+        s = d.createElement('script'),
+        l = d.scripts[d.scripts.length - 1];
+      s.settings = acn || {};
+      s.src = "\/\/excitableminor.com\/bwXfVss.dYG-la0\/YXWVcm\/_eimS9QuOZrUNlvkNPxTlYT3bMsD\/Qow\/MUD\/QstYN-jrcpw\/NrDFAAwgN\/QG";
+      s.async = true;
+      s.referrerPolicy = 'no-referrer-when-downgrade';
+      l.parentNode.insertBefore(s, l);
       })({})
     `
     container.appendChild(script)
