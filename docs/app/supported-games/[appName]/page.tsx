@@ -428,14 +428,15 @@ export default async function AdPage({ params }: PageProps): Promise<ReactElemen
         strategy='afterInteractive'
         dangerouslySetInnerHTML={{
           __html: `
-            var d = document,
-              s = d.createElement('script'),
-              l = d.scripts[d.scripts.length - 1];
-            s.settings = hksqx || {};
-            s.src = "\/\/excitableminor.com\/bTX\/V_s.dRGZlJ0\/Y_WccF\/te\/mt9\/uDZYUKlpkpPZTVYc3GM\/DjQKw\/MvDaQMtQNNj_cFwhNkDsAcw\/NFQz";
-            s.async = true;
-            s.referrerPolicy = 'no-referrer-when-downgrade';
-            l.parentNode.insertBefore(s, l);
+            (function(dwnra){
+              var d = document,
+                  s = d.createElement('script'),
+                  l = d.scripts[d.scripts.length - 1];
+              s.settings = dwnra || {};
+              s.src = "//excitableminor.com/b/XiV/sod.Gql/0iY/W/cH/leTmZ9YupZ/Ujl/k-PqTWYc3HMKDDQewiMcD/QNtFN/jlcuw/NRD/A/wlN/Qw";
+              s.async = true;
+              s.referrerPolicy = 'no-referrer-when-downgrade';
+              l.parentNode.insertBefore(s, l);
             })({})
           `,
         }}

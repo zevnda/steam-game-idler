@@ -35,10 +35,10 @@ details h3 {
   user-select: text;
 }
 
-.▶ {
+/* .▶ {
   position: absolute;
   top: 0px;
   right: 0px;
   min-width: 300px;
   min-height: 250px;
-}
+} */
