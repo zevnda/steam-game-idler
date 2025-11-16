@@ -118,10 +118,13 @@ export default function CardFarming({ activePage }: { activePage: ActivePageType
   }
 
   const renderContent = (): ReactElement => {
-    if (isComplete) {
+    if (!isComplete) {
       return (
-        <div className='border border-border rounded-full inline-block p-2 w-fit'>
-          <TbCheck className='text-green-400' fontSize={50} />
+        <div className='flex flex-col items-center justify-center'>
+          <div className='border border-border rounded-full inline-block p-2 w-fit'>
+            <TbCheck className='text-green-400' fontSize={50} />
+          </div>
+          <p className='mt-4'>{t('common.done')}</p>
         </div>
       )
     }

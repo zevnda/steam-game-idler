@@ -1,3 +1,10 @@
+<!-- 2.3.9 -->
+
+### Changes in v2.3.9
+
+- When fetching a users `games with card drops remaining`, we now fetch all `badges` and `gamecards` pages in parallel
+  - This drastically reduced the time it takes to return data for user's with a lot of badges
+
 <!-- 2.3.8 -->
 
 ### Changes in v2.3.8
