@@ -127,7 +127,6 @@ export default function AdSlot(): ReactElement {
       className={cn(
         'transition-all ease-in-out',
         sidebarCollapsed && activePage !== 'settings' ? 'scale-[.160]' : undefined,
-        sidebarCollapsed ? 'duration-100' : 'duration-450',
       )}
     >
       <div className='relative flex justify-center items-center overflow-hidden rounded-lg'>
