@@ -68,7 +68,7 @@ export const useCardFarming = async (
       if (isMountedRef.current && gamesSet.size > 0) {
         const success = await beginFarmingCycle(gamesSet, isMountedRef, abortControllerRef)
         if (!success) {
-          logEvent('[Card Farming] An error occurred - stopping')
+          logEvent('[Card Farming] An error occurred (this error can often be ignored) - stopping')
           return setIsComplete(true)
         }
       } else {
