@@ -3,6 +3,7 @@ import type { TradingCard } from '@/types'
 import type { ReactElement } from 'react'
 
 import { Button, Spinner, useDisclosure } from '@heroui/react'
+import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TbArrowRight } from 'react-icons/tb'
 
@@ -17,6 +18,13 @@ interface PriceDataProps {
 export default function PriceData({ item, tradingCardContext }: PriceDataProps): ReactElement {
   const { t } = useTranslation()
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
+
+  useEffect(() => {
+    if (isOpen && !item.price_data) {
+      // Fetch price data when the modal is opened and no price data exists
+      tradingCardContext.fetchCardPrices(item.market_hash_name)
+    }
+  }, [isOpen, item.price_data, item.market_hash_name, tradingCardContext])
 
   const handleFetchPrice = async (item: TradingCard): Promise<void> => {
     try {

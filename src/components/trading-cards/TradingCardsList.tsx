@@ -52,6 +52,7 @@ const Row = memo(
     const renderCard = (item: TradingCard): ReactElement | null => {
       if (!item) return null
 
+      // Add a dependency on item.price_data to ensure re-render
       const isLocked = lockedCards.includes(item.id)
       const isFoil = item.foil
 
@@ -190,29 +191,16 @@ const Row = memo(
       nextCards.push(nextProps.data.filteredTradingCardsList[nextProps.index * cardsPerRow + i])
     }
 
-    // Compare cards by their assetids
+    // Compare cards by their assetids and price_data
     for (let i = 0; i < cardsPerRow; i++) {
       const prevCard = prevCards[i]
       const nextCard = nextCards[i]
 
       if (prevCard?.assetid !== nextCard?.assetid) return false
 
-      // If card exists, check relevant properties
-      if (prevCard && nextCard) {
-        // Check if selection state changed
-        if (prevProps.data.selectedCards[prevCard.assetid] !== nextProps.data.selectedCards[nextCard.assetid]) {
-          return false
-        }
-
-        // Check if price changed
-        if (prevProps.data.changedCardPrices[prevCard.assetid] !== nextProps.data.changedCardPrices[nextCard.assetid]) {
-          return false
-        }
-
-        // Check if locked state changed
-        if (prevProps.data.lockedCards.includes(prevCard.id) !== nextProps.data.lockedCards.includes(nextCard.id)) {
-          return false
-        }
+      // Check if price_data changed
+      if (JSON.stringify(prevCard?.price_data) !== JSON.stringify(nextCard?.price_data)) {
+        return false
       }
     }
 
