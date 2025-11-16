@@ -50,6 +50,7 @@ export default function SideBar(): ReactElement {
       page: 'games',
       title: t('gamesList.title'),
       icon: TbDeviceGamepad2,
+      hasDivider: false,
     },
     {
       id: 'idling',
@@ -58,7 +59,18 @@ export default function SideBar(): ReactElement {
       icon: TbPlayerPlay,
       isActive: idleGamesList.length > 0,
       customClassName: idleGamesList.length > 0 ? 'text-dynamic animate-pulse' : '',
-      hasDivider: true,
+    },
+    {
+      id: 'favorites',
+      page: 'customlists/favorites',
+      title: t('customLists.favorites.title'),
+      icon: TbHeart,
+    },
+    {
+      id: 'free-games',
+      page: 'freeGames',
+      title: t('freeGames.title'),
+      icon: TbGift,
     },
     {
       id: 'card-farming',
@@ -67,6 +79,7 @@ export default function SideBar(): ReactElement {
       icon: TbCards,
       isActive: isCardFarming,
       customClassName: isCardFarming ? 'text-dynamic animate-pulse' : '',
+      hasDivider: false,
     },
     {
       id: 'achievement-unlocker',
@@ -83,17 +96,11 @@ export default function SideBar(): ReactElement {
       icon: TbHourglassLow,
     },
     {
-      id: 'favorites',
-      page: 'customlists/favorites',
-      title: t('customLists.favorites.title'),
-      icon: TbHeart,
-    },
-    {
       id: 'trading-cards',
       page: 'tradingCards',
       title: t('tradingCards.title'),
       icon: TbBuildingStore,
-      hasDivider: true,
+      hasDivider: false,
     },
     {
       id: 'chat',
@@ -102,16 +109,32 @@ export default function SideBar(): ReactElement {
       icon: RiChatSmile2Line,
       isBeta: true,
     },
-    {
-      id: 'free-games',
-      page: 'freeGames',
-      title: t('freeGames.title'),
-      icon: TbGift,
-      hasDivider: true,
-    },
   ]
 
-  const renderSidebarItem = (item: SidebarItem): ReactElement | null => {
+  // Section headers and their corresponding first item indices
+  const sectionHeaders: { [index: number]: string } = {
+    0: t('sidebar.section.games'),
+    4: t('sidebar.section.automation'),
+    7: t('sidebar.section.misc'),
+  }
+
+  // Helper to render section header if needed
+  const renderSectionHeader = (index: number): ReactElement | null => {
+    if (sidebarCollapsed) return null
+    const header = sectionHeaders[index]
+    if (!header) return null
+    return (
+      <div
+        className={cn(
+          'px-1.5 py-1 mt-2 text-[10px] font-bold text-content uppercase tracking-wider select-none transition-all ease-in-out overflow-hidden whitespace-nowrap',
+        )}
+      >
+        {header}
+      </div>
+    )
+  }
+
+  const renderSidebarItem = (item: SidebarItem, index: number): ReactElement | null => {
     const Icon = item.icon
     const isCurrentPage = activePage === item.page
     const isFreeGames = item.id === 'free-games'
@@ -121,6 +144,7 @@ export default function SideBar(): ReactElement {
 
     return (
       <div className='overflow-hidden' key={item.id}>
+        {renderSectionHeader(index)}
         {item.hasDivider && <Divider className='w-full bg-border/60 mt-0.5 mb-2' />}
 
         <div className='flex w-full'>
@@ -243,13 +267,16 @@ export default function SideBar(): ReactElement {
         </div>
 
         <div className='flex flex-col gap-1.5 p-2 w-full min-w-0 overflow-hidden'>
-          <Divider className='w-full bg-border/60 my-0.5' />
-          {mainSidebarItems.map(renderSidebarItem)}
+          {mainSidebarItems.map((item, idx) => renderSidebarItem(item, idx))}
         </div>
 
-        <div className='flex flex-col grow justify-end items-center gap-1.5 p-2 min-w-0 overflow-hidden'>
-          {process.env.NODE_ENV === 'production' && <AdSlot />}
+        {process.env.NODE_ENV === 'production' && (
+          <div className='flex flex-col items-center justify-end grow'>
+            <AdSlot />
+          </div>
+        )}
 
+        <div className='flex flex-col grow justify-end items-center gap-1.5 p-2 min-w-0 overflow-hidden'>
           <Divider className='w-full bg-border/60 my-0.5' />
 
           <div className='flex w-full'>
@@ -280,7 +307,7 @@ export default function SideBar(): ReactElement {
                   <TbSettings fontSize={20} />
                 </div>
                 {!sidebarCollapsed && (
-                  <div className={cn('transition-all  ease-in-out overflow-hidden whitespace-nowrap')}>
+                  <div className={cn('transition-all ease-in-out overflow-hidden whitespace-nowrap')}>
                     <p className='text-sm font-bold'>{t('settings.title')}</p>
                   </div>
                 )}
