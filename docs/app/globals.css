@@ -43,3 +43,44 @@ details h3 {
   min-height: 250px;
   z-index: 40;
 }
+
+.markdown-body a {
+  color: #1aa3ff;
+}
+
+.markdown-body p {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  line-height: 2;
+}
+
+.markdown-body code {
+  background-color: #2b2b2bff;
+  padding: 1px 3px;
+  border-radius: 4px;
+  font-family: 'Source Code Pro', monospace;
+  border: 1px solid #3c3c3cff;
+}
+
+.markdown-body blockquote {
+  border-left: 2px solid #989fa7ff;
+  padding-left: 1.5em;
+  padding-right: 0.5rem;
+  color: #989fa7ff;
+  margin-left: 0;
+  margin-right: 0;
+  line-height: 2;
+  font-style: italic;
+}
+
+.markdown-body ul {
+  padding-left: 1.5em;
+  list-style-type: disc;
+  margin-top: 0.5rem;
+}
+
+.markdown-body ol {
+  padding-left: 1.5em;
+  list-style-type: decimal;
+  margin-top: 1rem;
+}
