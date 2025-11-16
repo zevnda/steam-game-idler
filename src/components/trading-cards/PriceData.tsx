@@ -29,12 +29,15 @@ export default function PriceData({ item, tradingCardContext }: PriceDataProps):
   const handleFetchPrice = async (item: TradingCard): Promise<void> => {
     try {
       onOpen()
+      tradingCardContext.loadingItemPrice[item.market_hash_name] = true
       if (!item.price_data) {
         await tradingCardContext.fetchCardPrices(item.market_hash_name)
       }
     } catch (error) {
       console.error('Error fetching price data:', error)
       logEvent(`[Error] in handleFetchPrice: ${error}`)
+    } finally {
+      tradingCardContext.loadingItemPrice[item.market_hash_name] = false
     }
   }
 
@@ -54,7 +57,9 @@ export default function PriceData({ item, tradingCardContext }: PriceDataProps):
         title={item.full_name}
         body={
           <div className='flex justify-center gap-4'>
-            {!tradingCardContext.loadingItemPrice[item.market_hash_name] ? (
+            {tradingCardContext.loadingItemPrice[item.market_hash_name] ? (
+              <Spinner />
+            ) : (
               <>
                 <div className='flex flex-col gap-2'>
                   <p className='font-bold'>{t('tradingCards.priceData.sellOrders')}</p>
@@ -138,8 +143,6 @@ export default function PriceData({ item, tradingCardContext }: PriceDataProps):
                   </table>
                 </div>
               </>
-            ) : (
-              <Spinner />
             )}
           </div>
         }
