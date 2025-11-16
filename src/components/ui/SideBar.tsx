@@ -3,6 +3,7 @@ import type { ReactElement } from 'react'
 
 import { Button, cn, Divider } from '@heroui/react'
 import { useState } from 'react'
+import Image from 'next/image'
 import { useTranslation } from 'react-i18next'
 import { FiLogOut } from 'react-icons/fi'
 import { RiChatSmile2Line, RiSearchLine } from 'react-icons/ri'
@@ -37,7 +38,7 @@ export default function SideBar(): ReactElement {
   const { sidebarCollapsed, isCardFarming, isAchievementUnlocker, setShowAchievements, transitionDuration } =
     useStateContext()
   const { activePage, setActivePage } = useNavigationContext()
-  const { freeGamesList } = useUserContext()
+  const { freeGamesList, userSummary } = useUserContext()
   const searchContent = useSearchContext()
   const { isOpen, onOpenChange, openConfirmation, handleLogout } = useSideBar(activePage, setActivePage)
 
@@ -265,83 +266,72 @@ export default function SideBar(): ReactElement {
         </div>
 
         {process.env.NODE_ENV === 'production' && (
-          <div className='flex flex-col items-center justify-end grow'>
+          <div className='flex flex-col items-center justify-end grow mb-4 overflow-hidden'>
             <AdSlot />
           </div>
         )}
 
-        <div className='flex flex-col grow justify-end items-center gap-1.5 p-2 min-w-0 overflow-hidden'>
-          <div className='flex w-full'>
-            <div
-              className={cn(
-                'p-1.5 rounded-md duration-150 transition-all w-full overflow-hidden',
-                activePage === 'settings' ? 'bg-item-active text-content' : 'text-altwhite hover:bg-item-hover',
-                isCardFarming || isAchievementUnlocker
-                  ? 'opacity-40 hover:bg-transparent hover:shadow-none'
-                  : 'cursor-pointer active:scale-95',
-              )}
-              onClick={
-                !(isCardFarming || isAchievementUnlocker)
-                  ? () => {
-                      setShowAchievements(false)
-                      setActivePage('settings')
-                    }
-                  : undefined
-              }
-            >
-              <div
-                className={cn(
-                  'flex items-center transition-all duration-500 ease-in-out',
-                  sidebarCollapsed ? 'justify-center' : 'gap-3',
-                )}
-              >
-                <div className='shrink-0'>
+        {/* Settings and signout */}
+        <div
+          className={cn(
+            'flex items-center mt-auto w-full bg-gradient-to-tr from-cyan-500/5 via-blue-500/5 to-violet-700/5',
+            'rounded-t-xl',
+            sidebarCollapsed ? 'justify-center flex-col gap-2 p-2 pt-3' : 'justify-start p-4',
+          )}
+        >
+          <Image
+            src={userSummary?.avatar || ''}
+            alt={userSummary?.personaName || 'User Avatar'}
+            width={34}
+            height={34}
+            className='rounded-full'
+          />
+          {!sidebarCollapsed && (
+            <div className='flex items-center justify-between w-full ml-3 overflow-hidden'>
+              <div className='flex flex-col overflow-hidden'>
+                <p className='text-sm leading-tight truncate whitespace-nowrap'>{userSummary?.personaName}</p>
+                <p className='text-[10px] text-altwhite/70 leading-tight truncate whitespace-nowrap'>
+                  {userSummary?.steamId}
+                </p>
+              </div>
+              <div className='flex items-center gap-2'>
+                <div
+                  className='text-altwhite hover:bg-item-hover rounded-full p-1.5 duration-150 cursor-pointer'
+                  onClick={() => {
+                    setShowAchievements(false)
+                    setActivePage('settings')
+                  }}
+                >
                   <TbSettings fontSize={20} />
                 </div>
-                {!sidebarCollapsed && (
-                  <div className={cn('transition-all ease-in-out whitespace-nowrap')}>
-                    <p className='text-sm font-bold'>{t('settings.title')}</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <div className='flex w-full'>
-            <div
-              className={cn(
-                'p-1.5 rounded-md duration-150 transition-all group w-full overflow-hidden',
-                isCardFarming || isAchievementUnlocker
-                  ? 'opacity-40'
-                  : 'hover:bg-danger/20 cursor-pointer active:scale-95 hover:shadow-sm',
-              )}
-              onClick={!(isCardFarming || isAchievementUnlocker) ? openConfirmation : undefined}
-            >
-              <div
-                className={cn(
-                  'flex items-center min-h-5 transition-all duration-500',
-                  sidebarCollapsed ? 'justify-center' : 'gap-3',
-                )}
-              >
-                <div className='shrink-0'>
-                  <FiLogOut
-                    className={cn(
-                      'rotate-180 transition-all duration-150 text-altwhite',
-                      isCardFarming || isAchievementUnlocker ? '' : 'group-hover:text-danger',
-                    )}
-                    fontSize={18}
-                  />
+                <div
+                  className='text-altwhite hover:text-danger hover:bg-danger/20 rounded-full p-1.5 duration-150 cursor-pointer'
+                  onClick={openConfirmation}
+                >
+                  <FiLogOut fontSize={18} />
                 </div>
-                {!sidebarCollapsed && (
-                  <div className={cn('transition-all duration-150 ease-in-out whitespace-nowrap')}>
-                    <p className='text-sm text-altwhite font-bold group-hover:text-danger transition-all duration-150'>
-                      {t('common.signOut')}
-                    </p>
-                  </div>
-                )}
               </div>
             </div>
-          </div>
+          )}
+          {sidebarCollapsed && (
+            <div className='flex flex-col items-center gap-2 mt-2'>
+              <div
+                className='text-altwhite hover:bg-item-hover rounded-full p-1.5 duration-150 cursor-pointer'
+                onClick={() => {
+                  setShowAchievements(false)
+                  setActivePage('settings')
+                }}
+              >
+                <TbSettings fontSize={20} />
+              </div>
+              <div
+                className='text-altwhite hover:text-danger hover:bg-danger/20 rounded-full p-1.5 duration-150 cursor-pointer'
+                onClick={openConfirmation}
+              >
+                <FiLogOut fontSize={18} />
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
