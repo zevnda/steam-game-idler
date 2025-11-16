@@ -23,5 +23,5 @@ export default function AdComponentThree(): ReactElement {
     container.appendChild(script)
   }, [])
 
-  return <div id='hilltop-container' className='absolute top-0 right-0 z-40' />
+  return <div id='hilltop-container' className='fixed bottom-0 left-0 z-40 bg-[#121316]' />
 }
