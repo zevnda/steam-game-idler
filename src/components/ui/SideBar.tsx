@@ -39,10 +39,7 @@ export default function SideBar(): ReactElement {
   const { activePage, setActivePage } = useNavigationContext()
   const { freeGamesList } = useUserContext()
   const searchContent = useSearchContext()
-  const { isOpen, onOpenChange, openConfirmation, handleLogout, hasBeenMentionedSinceLastRead } = useSideBar(
-    activePage,
-    setActivePage,
-  )
+  const { isOpen, onOpenChange, openConfirmation, handleLogout } = useSideBar(activePage, setActivePage)
 
   const mainSidebarItems: SidebarItem[] = [
     {
@@ -50,7 +47,6 @@ export default function SideBar(): ReactElement {
       page: 'games',
       title: t('gamesList.title'),
       icon: TbDeviceGamepad2,
-      hasDivider: false,
     },
     {
       id: 'idling',
@@ -79,7 +75,6 @@ export default function SideBar(): ReactElement {
       icon: TbCards,
       isActive: isCardFarming,
       customClassName: isCardFarming ? 'text-dynamic animate-pulse' : '',
-      hasDivider: false,
     },
     {
       id: 'achievement-unlocker',
@@ -100,7 +95,6 @@ export default function SideBar(): ReactElement {
       page: 'tradingCards',
       title: t('tradingCards.title'),
       icon: TbBuildingStore,
-      hasDivider: false,
     },
     {
       id: 'chat',
@@ -120,13 +114,15 @@ export default function SideBar(): ReactElement {
 
   // Helper to render section header if needed
   const renderSectionHeader = (index: number): ReactElement | null => {
-    if (sidebarCollapsed) return null
     const header = sectionHeaders[index]
     if (!header) return null
+    if (sidebarCollapsed) {
+      return <Divider className='w-full bg-border/60 mt-0.5 mb-2' />
+    }
     return (
       <div
         className={cn(
-          'px-1.5 py-1 mt-2 text-[10px] font-bold text-content uppercase tracking-wider select-none transition-all ease-in-out overflow-hidden whitespace-nowrap truncate',
+          'px-1.5 py-1 mt-2 text-[10px] font-bold text-content uppercase tracking-wider select-none transition-all ease-in-out whitespace-nowrap truncate',
         )}
       >
         {header}
@@ -145,7 +141,6 @@ export default function SideBar(): ReactElement {
     return (
       <div className='overflow-hidden' key={item.id}>
         {renderSectionHeader(index)}
-        {item.hasDivider && <Divider className='w-full bg-border/60 mt-0.5 mb-2' />}
 
         <div className='flex w-full'>
           <div
@@ -170,14 +165,13 @@ export default function SideBar(): ReactElement {
                 {isChat && item.hasUnread && (
                   <span
                     className={cn(
-                      'absolute flex justify-center items-center w-2 h-2 top-0 right-0 text-white text-[10px] font-bold rounded-full shadow',
-                      hasBeenMentionedSinceLastRead ? 'bg-[#ffc700]' : 'bg-danger',
+                      'absolute flex justify-center items-center w-2 h-2 top-0 right-0 text-white text-[10px] font-bold rounded-full',
                     )}
                   />
                 )}
               </div>
               {!sidebarCollapsed && (
-                <div className={cn('transition-all duration-500 ease-in-out overflow-hidden whitespace-nowrap')}>
+                <div className={cn('transition-all duration-500 ease-in-out whitespace-nowrap')}>
                   <p
                     className={cn(
                       'flex justify-center items-center text-sm font-bold',
@@ -277,8 +271,6 @@ export default function SideBar(): ReactElement {
         )}
 
         <div className='flex flex-col grow justify-end items-center gap-1.5 p-2 min-w-0 overflow-hidden'>
-          <Divider className='w-full bg-border/60 my-0.5' />
-
           <div className='flex w-full'>
             <div
               className={cn(
@@ -307,7 +299,7 @@ export default function SideBar(): ReactElement {
                   <TbSettings fontSize={20} />
                 </div>
                 {!sidebarCollapsed && (
-                  <div className={cn('transition-all ease-in-out overflow-hidden whitespace-nowrap')}>
+                  <div className={cn('transition-all ease-in-out whitespace-nowrap')}>
                     <p className='text-sm font-bold'>{t('settings.title')}</p>
                   </div>
                 )}
@@ -341,7 +333,7 @@ export default function SideBar(): ReactElement {
                   />
                 </div>
                 {!sidebarCollapsed && (
-                  <div className={cn('transition-all duration-150 overflow-hidden whitespace-nowrap')}>
+                  <div className={cn('transition-all duration-150 ease-in-out whitespace-nowrap')}>
                     <p className='text-sm text-altwhite font-bold group-hover:text-danger transition-all duration-150'>
                       {t('common.signOut')}
                     </p>
