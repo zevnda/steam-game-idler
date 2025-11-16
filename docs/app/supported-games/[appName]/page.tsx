@@ -422,25 +422,6 @@ export default async function AdPage({ params }: PageProps): Promise<ReactElemen
         src='//pl28051196.effectivegatecpm.com/c4/26/a5/c426a5dd2fa7302020e196b721701d7e.js'
         strategy='afterInteractive'
       />
-      {/* HilltopAds banner ad */}
-      <Script
-        id='hilltopads-banner'
-        strategy='afterInteractive'
-        dangerouslySetInnerHTML={{
-          __html: `
-            (function(dwnra){
-              var d = document,
-                  s = d.createElement('script'),
-                  l = d.scripts[d.scripts.length - 1];
-              s.settings = dwnra || {};
-              s.src = "//excitableminor.com/b/XiV/sod.Gql/0iY/W/cH/leTmZ9YupZ/Ujl/k-PqTWYc3HMKDDQewiMcD/QNtFN/jlcuw/NRD/A/wlN/Qw";
-              s.async = true;
-              s.referrerPolicy = 'no-referrer-when-downgrade';
-              l.parentNode.insertBefore(s, l);
-            })({})
-          `,
-        }}
-      />
     </div>
   )
 }
