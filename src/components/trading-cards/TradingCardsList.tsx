@@ -1,8 +1,8 @@
 import type { TradingCard } from '@/types'
-import type { ReactElement, RefObject } from 'react'
+import type { ReactElement } from 'react'
 
 import { Checkbox, cn, Spinner } from '@heroui/react'
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import Image from 'next/image'
 import { useTranslation } from 'react-i18next'
 import { FaCheckCircle } from 'react-icons/fa'
@@ -25,8 +25,8 @@ interface RowData {
   changedCardPrices: Record<string, number>
   lockedCards: string[]
   cardsPerRow: number
-  contextRef: RefObject<ReturnType<typeof useTradingCardsList>>
-  tRef: RefObject<(key: string, options?: Record<string, number>) => string>
+  tradingCardContext: ReturnType<typeof useTradingCardsList>
+  t: (key: string, options?: Record<string, number>) => string
   handleLockCard: (id: string) => void
 }
 
@@ -38,10 +38,8 @@ interface RowProps {
 
 const Row = memo(
   ({ index, data, style }: RowProps): ReactElement | null => {
-    const { filteredTradingCardsList, selectedCards, lockedCards, cardsPerRow, contextRef, tRef, handleLockCard } = data
-
-    const context = contextRef.current
-    const t = tRef.current
+    const { filteredTradingCardsList, selectedCards, lockedCards, cardsPerRow, tradingCardContext, t, handleLockCard } =
+      data
 
     const items = []
     for (let i = 0; i < cardsPerRow; i++) {
@@ -71,7 +69,7 @@ const Row = memo(
               size='sm'
               name={item.assetid}
               isSelected={selectedCards[item.assetid] || false}
-              onChange={() => context.toggleCardSelection(item.assetid)}
+              onChange={() => tradingCardContext.toggleCardSelection(item.assetid)}
               classNames={{
                 hiddenInput: 'w-fit',
                 wrapper: cn(
@@ -164,9 +162,9 @@ const Row = memo(
             </CustomTooltip>
           </div>
 
-          <PriceInput item={item} tradingCardContext={context} />
+          <PriceInput item={item} tradingCardContext={tradingCardContext} />
 
-          <PriceData item={item} tradingCardContext={context} />
+          <PriceData item={item} tradingCardContext={tradingCardContext} />
         </div>
       )
     }
@@ -233,19 +231,6 @@ export default function TradingCardsList(): ReactElement {
   const [cardsPerRow, setCardsPerRow] = useState(6)
   const tradingCardContext = useTradingCardsList()
 
-  // Use refs to avoid re-creating itemData on every render
-  const contextRef = useRef(tradingCardContext)
-  const tRef = useRef(t)
-
-  // Keep refs up to date
-  useEffect(() => {
-    contextRef.current = tradingCardContext
-  }, [tradingCardContext])
-
-  useEffect(() => {
-    tRef.current = t
-  }, [t])
-
   useEffect(() => {
     setWindowInnerHeight(window.innerHeight)
 
@@ -298,18 +283,11 @@ export default function TradingCardsList(): ReactElement {
       changedCardPrices: tradingCardContext.changedCardPrices,
       lockedCards,
       cardsPerRow,
-      contextRef,
-      tRef,
+      tradingCardContext,
+      t,
       handleLockCard,
     }),
-    [
-      filteredTradingCardsList,
-      tradingCardContext.selectedCards,
-      tradingCardContext.changedCardPrices,
-      lockedCards,
-      cardsPerRow,
-      handleLockCard,
-    ],
+    [filteredTradingCardsList, lockedCards, cardsPerRow, tradingCardContext, t, handleLockCard],
   )
 
   const selectedCardsWithPrice = useMemo(
