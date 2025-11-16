@@ -3,6 +3,7 @@ import type { TradingCard } from '@/types'
 import type { ReactElement } from 'react'
 
 import { Button, cn, NumberInput } from '@heroui/react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TbPackageExport } from 'react-icons/tb'
 
@@ -15,6 +16,12 @@ interface PriceInputProps {
 
 export default function PriceInput({ item, tradingCardContext }: PriceInputProps): ReactElement {
   const { t } = useTranslation()
+  const [localValue, setLocalValue] = useState(tradingCardContext.getCardPriceValue(item.assetid))
+
+  const handleValueChange = (value: number): void => {
+    setLocalValue(value)
+    tradingCardContext.updateCardPrice(item.assetid, value)
+  }
 
   return (
     <div className='flex items-center justify-center gap-1 mt-2'>
@@ -23,7 +30,7 @@ export default function PriceInput({ item, tradingCardContext }: PriceInputProps
         isInvalid={
           tradingCardContext.selectedCards[item.assetid] && tradingCardContext.getCardPriceValue(item.assetid) <= 0
         }
-        value={tradingCardContext.getCardPriceValue(item.assetid)}
+        value={localValue}
         maxValue={99999}
         defaultValue={0}
         step={0.01}
@@ -46,7 +53,10 @@ export default function PriceInput({ item, tradingCardContext }: PriceInputProps
           input: ['text-sm !text-content'],
           stepperButton: ['!text-content', 'text-sm'],
         }}
-        onValueChange={value => tradingCardContext.updateCardPrice(item.assetid, value)}
+        onValueChange={handleValueChange}
+        onBlur={() => {
+          tradingCardContext.updateCardPrice(item.assetid, localValue)
+        }}
       />
 
       <CustomTooltip content={t('common.list')} placement='top'>
