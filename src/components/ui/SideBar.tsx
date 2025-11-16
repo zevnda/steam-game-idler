@@ -126,7 +126,7 @@ export default function SideBar(): ReactElement {
     return (
       <div
         className={cn(
-          'px-1.5 py-1 mt-2 text-[10px] font-bold text-content uppercase tracking-wider select-none transition-all ease-in-out overflow-hidden whitespace-nowrap',
+          'px-1.5 py-1 mt-2 text-[10px] font-bold text-content uppercase tracking-wider select-none transition-all ease-in-out overflow-hidden whitespace-nowrap truncate',
         )}
       >
         {header}
