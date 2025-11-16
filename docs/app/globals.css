@@ -36,9 +36,9 @@ details h3 {
 }
 
 .▶ {
-  position: absolute;
-  top: 0px;
-  right: 0px;
+  position: fixed;
+  bottom: 0px;
+  left: 0px;
   min-width: 300px;
   min-height: 250px;
   z-index: 40;
