@@ -274,7 +274,7 @@ export default function SideBar(): ReactElement {
         {/* Settings and signout */}
         <div
           className={cn(
-            'flex items-center mt-auto w-full bg-gradient-to-tr from-cyan-500/5 via-blue-500/5 to-violet-700/5',
+            'flex items-center mt-auto w-full bg-gradient-to-t from-gray-900/5 to-gray-400/5',
             'rounded-t-xl',
             sidebarCollapsed ? 'justify-center flex-col gap-2 p-2 pt-3' : 'justify-start p-4',
           )}
