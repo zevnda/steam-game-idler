@@ -19,8 +19,7 @@ export const faqData: Record<string, { id: string; question: string; markdown: s
     markdown:
       '**Do I need to make my Steam profile and game details public for the Steam card idler to work?**\n' +
       '> In most cases, yes. For some features to function correctly SGI requires your Steam profile and game details to be set to public in your [privacy settings](https://steamcommunity.com/id/undefined/edit/settings).\n' +
-      '> \n' +
-      '> \n' +
+      '>\n' +
       '> However, providing your own Steam Web API key in the [settings > general](/docs/settings/general) will allow you to use SGI with a private profile.',
   },
   q3: {
