@@ -62,6 +62,7 @@ export default function ManualAdd({ listName, setList }: ManualAddProps): ReactE
                 input: ['!text-content placeholder:text-altwhite/50'],
               }}
               onChange={manualAdd.handleNameChange}
+              onKeyDown={e => handleKeyPress(e, onOpenChange)}
             />
 
             <NumberInput

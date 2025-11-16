@@ -7,8 +7,8 @@ import { useNavigationContext } from '@/components/contexts/NavigationContext'
 import { useStateContext } from '@/components/contexts/StateContext'
 
 export default function AdSlot(): ReactElement {
-  const { sidebarCollapsed } = useStateContext()
   const { activePage } = useNavigationContext()
+  const { sidebarCollapsed } = useStateContext()
   const [reloadKey, setReloadKey] = useState(0)
 
   const gameSlugs = useMemo(
@@ -125,14 +125,14 @@ export default function AdSlot(): ReactElement {
   return (
     <div
       className={cn(
-        'bg-sidebar/80 border border-border/70 p-2 rounded-lg -mb-6 transition-all ease-in-out',
-        sidebarCollapsed && activePage !== 'settings' ? 'scale-[.160]' : 'scale-[.75]',
+        'transition-all ease-in-out',
+        sidebarCollapsed && activePage !== 'settings' ? 'scale-[.160]' : undefined,
         sidebarCollapsed ? 'duration-100' : 'duration-450',
       )}
     >
       <div className='relative flex justify-center items-center overflow-hidden rounded-lg'>
         <iframe
-          className='overflow-scroll rounded-lg -mt-[352px] -ml-[301px] z-1'
+          className='overflow-scroll rounded-lg -mt-[432px] -ml-[381px] z-1'
           src={gameUrl}
           width='600'
           height='600'

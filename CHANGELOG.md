@@ -2,6 +2,7 @@
 
 ### Changes in v2.3.8
 
+- Reorganized the `sidebar` by grouping related items/features into categories 
 - Improved the logic for getting a user's `games with card drops remaining`
   - Previously, SGI would return early when a specific condition was met. This condition has been removed, as it would cause some games with completed badges, but also with card drops remaining, to not be returned
   - SGI will now parse all pages of the user's badges page `https://steamcommunity.com/my/badges/`
