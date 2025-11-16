@@ -74,7 +74,7 @@ export default function AchievementSettings(): ReactElement {
               radius='none'
               items={taskOptions}
               className='w-[200px]'
-              placeholder='Select an option'
+              placeholder={t('common.nextTask.selectPlaceholder')}
               classNames={{
                 listbox: ['p-0'],
                 value: ['text-sm !text-content'],

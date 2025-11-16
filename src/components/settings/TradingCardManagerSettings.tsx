@@ -146,7 +146,7 @@ export default function TradingCardManagerSettings(): ReactElement {
               radius='none'
               items={sellOptions}
               className='w-[200px]'
-              placeholder='Select an option'
+              placeholder={t('common.nextTask.selectPlaceholder')}
               classNames={{
                 listbox: ['p-0'],
                 value: ['text-sm !text-content'],
