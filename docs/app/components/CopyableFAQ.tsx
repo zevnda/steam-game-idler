@@ -3,6 +3,7 @@
 import type { ReactElement, ReactNode } from 'react'
 
 import { useEffect, useRef, useState } from 'react'
+import { faqData } from '../docs/faq/faqData'
 import { MdOutlineContentCopy } from 'react-icons/md'
 import { PiCaretRightBold } from 'react-icons/pi'
 
@@ -50,14 +51,19 @@ export default function CopyableFAQ({ id, question, children }: Props): ReactEle
   }
 
   function handleCopy(): void {
+    // Use the markdown from the dictionary if available
+    const entry = faqData[id]
+    if (entry && entry.markdown) {
+      copyToClipboard(entry.markdown)
+      return
+    }
+    // fallback: copy as before
     let answer = ''
     const details = detailsRef.current
     const wasOpen = details?.open
-
     if (details && !details.open) {
       details.open = true
     }
-
     if (answerRef.current) {
       answer = answerRef.current.innerText
         .split('\n')
@@ -65,11 +71,9 @@ export default function CopyableFAQ({ id, question, children }: Props): ReactEle
         .map(line => (line.startsWith('>') ? line : line ? '> ' + line : '>'))
         .join('\n')
     }
-
     if (details && !wasOpen) {
       details.open = false
     }
-
     const text = `**${question}**\n${answer}`
     copyToClipboard(text)
   }
@@ -78,10 +82,13 @@ export default function CopyableFAQ({ id, question, children }: Props): ReactEle
     <details
       ref={detailsRef}
       id={id}
-      className='px-3 py-2.5 bg-icon-light dark:bg-icon-dark/20 text-icon-light dark:text-icon-dark border border-border-light dark:border-border-dark rounded-md my-4 group'
+      className='bg-icon-light dark:bg-icon-dark/20 text-icon-light dark:text-icon-dark border border-border-light dark:border-border-dark rounded-md my-4 group'
     >
-      <summary className='cursor-pointer flex items-center p-0.5 gap-2 hover:bg-icon-dark/5 dark:hover:bg-icon-light/5 transition-colors'>
-        <PiCaretRightBold />
+      <summary className='cursor-pointer flex items-center px-3 py-2.5 gap-2 hover:bg-icon-dark/5 dark:hover:bg-icon-light/5 transition-colors'>
+        {/* Rotate when expanded */}
+        <PiCaretRightBold
+          className={open ? 'rotate-90 transition-transform duration-200' : 'transition-transform duration-200'}
+        />
 
         <h3>{question}</h3>
 
@@ -91,22 +98,26 @@ export default function CopyableFAQ({ id, question, children }: Props): ReactEle
             e.stopPropagation()
             handleCopy()
           }}
-          className='ml-auto cursor-pointer'
+          className='ml-auto cursor-pointer p-1.5 rounded hover:bg-icon-dark/10 dark:hover:bg-icon-light/10 transition-colors active:scale-95'
         >
           <MdOutlineContentCopy />
         </div>
       </summary>
 
       <div
-        className='mt-2 overflow-hidden transition-all duration-300 ease-in-out'
+        className='markdown-body px-2 pb-2 overflow-hidden transition-all duration-300 ease-in-out'
         ref={answerRef}
         style={{
           maxHeight,
           opacity: open ? 1 : 0,
           transition: `max-height ${transitionMs}ms ease, opacity ${transitionMs}ms ease`,
+          position: visible ? 'static' : 'absolute',
+          pointerEvents: visible ? 'auto' : 'none',
+          width: '100%',
         }}
+        aria-hidden={!visible}
       >
-        {visible ? children : null}
+        {children}
       </div>
     </details>
   )
