@@ -275,6 +275,7 @@
   "common.list": "รายการ",
   "common.search": "ค้นหา",
   "common.nextTask": "กำหนดตารางงานถัดไป",
+  "common.nextTask.selectPlaceholder": "เลือกตัวเลือก",
   "common.sortBy": "จัดเรียงตาม",
   "common.continue": "ดำเนินการต่อ",
   "common.helpDesk": "ฝ่ายช่วยเหลือ",

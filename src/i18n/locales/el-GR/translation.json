@@ -275,6 +275,7 @@
   "common.list": "Λίστα",
   "common.search": "Αναζήτηση",
   "common.nextTask": "Προγραμματισμός Επόμενης Εργασίας",
+  "common.nextTask.selectPlaceholder": "Επιλέξτε μια επιλογή",
   "common.sortBy": "Ταξινόμηση Κατά",
   "common.continue": "Συνέχεια",
   "common.helpDesk": "Γραφείο βοήθειας",

@@ -275,6 +275,7 @@
   "common.list": "Seznam",
   "common.search": "Hledat",
   "common.nextTask": "Naplánovat další úkol",
+  "common.nextTask.selectPlaceholder": "Vyberte možnost",
   "common.sortBy": "Seřadit podle",
   "common.continue": "Pokračovat",
   "common.helpDesk": "Help Desk",

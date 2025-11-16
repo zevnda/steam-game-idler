@@ -275,6 +275,7 @@
   "common.list": "목록",
   "common.search": "찾다",
   "common.nextTask": "다음 작업 일정",
+  "common.nextTask.selectPlaceholder": "옵션을 선택하세요",
   "common.sortBy": "정렬 기준",
   "common.continue": "계속",
   "common.helpDesk": "헬프 데스크",

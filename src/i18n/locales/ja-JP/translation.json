@@ -275,6 +275,7 @@
   "common.list": "リスト",
   "common.search": "検索",
   "common.nextTask": "次のタスクをスケジュールする",
+  "common.nextTask.selectPlaceholder": "オプションを選択",
   "common.sortBy": "並び替え",
   "common.continue": "続ける",
   "common.helpDesk": "ヘルプデスク",

@@ -275,6 +275,7 @@
   "common.list": "清單",
   "common.search": "搜尋",
   "common.nextTask": "安排下一個任務",
+  "common.nextTask.selectPlaceholder": "選擇一個選項",
   "common.sortBy": "排序方式",
   "common.continue": "繼續",
   "common.helpDesk": "幫助台",

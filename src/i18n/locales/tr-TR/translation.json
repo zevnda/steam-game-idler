@@ -275,6 +275,7 @@
   "common.list": "Sat",
   "common.search": "Aramak",
   "common.nextTask": "Sonraki Görevi Planla",
+  "common.nextTask.selectPlaceholder": "Bir seçenek seçin",
   "common.sortBy": "Göre sırala",
   "common.continue": "Devam Et",
   "common.helpDesk": "Yardım Masası",

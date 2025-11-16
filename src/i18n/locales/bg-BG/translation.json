@@ -275,6 +275,7 @@
   "common.list": "Списък",
   "common.search": "Търсене",
   "common.nextTask": "Планиране на следващата задача",
+  "common.nextTask.selectPlaceholder": "Изберете опция",
   "common.sortBy": "Сортиране по",
   "common.continue": "Продължете",
   "common.helpDesk": "Бюро за помощ",

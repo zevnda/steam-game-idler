@@ -275,6 +275,7 @@
   "common.list": "Listă",
   "common.search": "Caută",
   "common.nextTask": "Programează următoarea sarcină",
+  "common.nextTask.selectPlaceholder": "Selectați o opțiune",
   "common.sortBy": "Sortează după",
   "common.continue": "Continuă",
   "common.helpDesk": "Biroul de asistență",

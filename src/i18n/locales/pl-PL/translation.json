@@ -275,6 +275,7 @@
   "common.list": "Lista",
   "common.search": "Szukaj",
   "common.nextTask": "Zaplanuj następne zadanie",
+  "common.nextTask.selectPlaceholder": "Wybierz opcję",
   "common.sortBy": "Sortuj wg",
   "common.continue": "Kontynuuj",
   "common.helpDesk": "Biuro pomocy",
