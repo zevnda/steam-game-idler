@@ -4,7 +4,6 @@ import type { Dispatch, SetStateAction } from 'react'
 import { invoke } from '@tauri-apps/api/core'
 
 import { useDisclosure } from '@heroui/react'
-import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useNavigationContext } from '@/components/contexts/NavigationContext'
@@ -20,8 +19,6 @@ interface SideBarHook {
   setActivePage: Dispatch<SetStateAction<ActivePageType>>
   openConfirmation: () => void
   handleLogout: (onClose: () => void) => Promise<void>
-  hasBeenMentionedSinceLastRead: boolean
-  setHasBeenMentionedSinceLastRead: Dispatch<SetStateAction<boolean>>
 }
 
 export default function useSideBar(
@@ -33,18 +30,10 @@ export default function useSideBar(
   const { setCurrentTab } = useNavigationContext()
   const { userSummary, setUserSummary } = useUserContext()
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
-  const [hasBeenMentionedSinceLastRead, setHasBeenMentionedSinceLastRead] = useState(false)
 
   const openConfirmation = (): void => {
     onOpen()
   }
-
-  // Reset mention state when chat is checked
-  useEffect(() => {
-    if (activePage === 'chat') {
-      setHasBeenMentionedSinceLastRead(false)
-    }
-  }, [activePage])
 
   // Handle logging out
   const handleLogout = async (onClose: () => void): Promise<void> => {
@@ -85,7 +74,5 @@ export default function useSideBar(
     setActivePage,
     openConfirmation,
     handleLogout,
-    hasBeenMentionedSinceLastRead,
-    setHasBeenMentionedSinceLastRead,
   }
 }
