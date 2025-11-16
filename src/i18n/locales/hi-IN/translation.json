@@ -275,6 +275,7 @@
   "common.list": "सूची",
   "common.search": "खोज",
   "common.nextTask": "अगला कार्य शेड्यूल करें",
+  "common.nextTask.selectPlaceholder": "कोई विकल्प चुनें",
   "common.sortBy": "इसके अनुसार क्रमबद्ध करें",
   "common.continue": "जारी रखें",
   "common.helpDesk": "सहायता केंद्र",

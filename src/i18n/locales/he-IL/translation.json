@@ -275,6 +275,7 @@
   "common.list": "רשימה,",
   "common.search": "לְחַפֵּשׂ",
   "common.nextTask": "תזמון המשימה הבאה",
+  "common.nextTask.selectPlaceholder": "בחר אפשרות",
   "common.sortBy": "מיין לפי",
   "common.continue": "המשך",
   "common.helpDesk": "דלפק עזרה",

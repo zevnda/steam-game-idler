@@ -275,6 +275,7 @@
   "common.list": "Liste",
   "common.search": "Søk",
   "common.nextTask": "Planlegg neste oppgave",
+  "common.nextTask.selectPlaceholder": "Velg et alternativ",
   "common.sortBy": "Sorter etter",
   "common.continue": "Fortsett",
   "common.helpDesk": "Hjelpesenter",

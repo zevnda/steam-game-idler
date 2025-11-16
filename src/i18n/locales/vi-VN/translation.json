@@ -275,6 +275,7 @@
   "common.list": "Danh sách",
   "common.search": "Tìm kiếm",
   "common.nextTask": "Lên lịch nhiệm vụ tiếp theo",
+  "common.nextTask.selectPlaceholder": "Chọn một tùy chọn",
   "common.sortBy": "Sắp xếp theo",
   "common.continue": "Tiếp tục",
   "common.helpDesk": "Bàn trợ giúp",

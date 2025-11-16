@@ -275,6 +275,7 @@
   "common.list": "Lista",
   "common.search": "Keresés",
   "common.nextTask": "Következő feladat ütemezése",
+  "common.nextTask.selectPlaceholder": "Válasszon egy lehetőséget",
   "common.sortBy": "Rendezés alapja",
   "common.continue": "Folytatás",
   "common.helpDesk": "Ügyfélszolgálat",

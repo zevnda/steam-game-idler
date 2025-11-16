@@ -275,6 +275,7 @@
   "common.list": "Daftar",
   "common.search": "Mencari",
   "common.nextTask": "Jadwalkan Tugas Berikutnya",
+  "common.nextTask.selectPlaceholder": "Pilih opsi",
   "common.sortBy": "Urutkan Berdasarkan",
   "common.continue": "Lanjutkan",
   "common.helpDesk": "Meja Bantuan",

@@ -275,6 +275,7 @@
   "common.list": "Elenco",
   "common.search": "Cerca",
   "common.nextTask": "Pianifica Attività Successiva",
+  "common.nextTask.selectPlaceholder": "Seleziona un'opzione",
   "common.sortBy": "Ordina Per",
   "common.continue": "Continua",
   "common.helpDesk": "Servizio di assistenza",

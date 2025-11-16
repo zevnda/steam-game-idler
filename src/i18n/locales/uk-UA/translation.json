@@ -275,6 +275,7 @@
   "common.list": "Список",
   "common.search": "Пошук",
   "common.nextTask": "Запланувати наступне завдання",
+  "common.nextTask.selectPlaceholder": "Виберіть опцію",
   "common.sortBy": "Сортувати за",
   "common.continue": "Продовжити",
   "common.helpDesk": "Служба підтримки",

@@ -275,6 +275,7 @@
   "common.list": "列表",
   "common.search": "搜索",
   "common.nextTask": "安排下一个任务",
+  "common.nextTask.selectPlaceholder": "选择一个选项",
   "common.sortBy": "排序方式",
   "common.continue": "继续",
   "common.helpDesk": "帮助台",

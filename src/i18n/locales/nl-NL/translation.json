@@ -275,6 +275,7 @@
   "common.list": "Klantenlijst",
   "common.search": "Zoeken",
   "common.nextTask": "Volgende taak plannen",
+  "common.nextTask.selectPlaceholder": "Selecteer een optie",
   "common.sortBy": "Sorteren op",
   "common.continue": "Doorgaan",
   "common.helpDesk": "Helpdesk",

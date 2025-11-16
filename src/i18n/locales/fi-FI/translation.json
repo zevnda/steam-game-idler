@@ -275,6 +275,7 @@
   "common.list": "Lista",
   "common.search": "Etsi",
   "common.nextTask": "Ajoita Seuraava Tehtävä",
+  "common.nextTask.selectPlaceholder": "Valitse vaihtoehto",
   "common.sortBy": "Järjestä Mukaan",
   "common.continue": "Jatka",
   "common.helpDesk": "Tukipalvelu",
