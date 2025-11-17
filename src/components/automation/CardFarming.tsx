@@ -118,7 +118,7 @@ export default function CardFarming({ activePage }: { activePage: ActivePageType
   }
 
   const renderContent = (): ReactElement => {
-    if (!isComplete) {
+    if (isComplete) {
       return (
         <div className='flex flex-col items-center justify-center'>
           <div className='border border-border rounded-full inline-block p-2 w-fit'>
