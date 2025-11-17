@@ -1,14 +1,8 @@
 import type { ReactElement } from 'react'
 
-import { cn, Spinner } from '@heroui/react'
 import { useEffect, useMemo, useState } from 'react'
 
-import { useNavigationContext } from '@/components/contexts/NavigationContext'
-import { useStateContext } from '@/components/contexts/StateContext'
-
 export default function AdSlot(): ReactElement {
-  const { activePage } = useNavigationContext()
-  const { sidebarCollapsed } = useStateContext()
   const [reloadKey, setReloadKey] = useState(0)
 
   const gameSlugs = useMemo(
@@ -123,23 +117,13 @@ export default function AdSlot(): ReactElement {
   }, [gameSlugs, reloadKey])
 
   return (
-    <div
-      className={cn(
-        'transition-all ease-in-out',
-        sidebarCollapsed && activePage !== 'settings' ? 'scale-[.160]' : undefined,
-      )}
-    >
-      <div className='relative flex justify-center items-center overflow-hidden rounded-lg'>
-        <iframe
-          className='overflow-scroll rounded-lg -mt-[432px] -ml-[381px] z-1'
-          src={gameUrl}
-          width='600'
-          height='600'
-          title='External Website'
-          sandbox='allow-scripts allow-same-origin allow-forms allow-popups allow-top-navigation-by-user-activation'
-        />
-        <Spinner className='absolute inset-0 m-auto z-0' />
-      </div>
+    <div className='absolute top-0 left-0 z-0 pointer-events-none opacity-0'>
+      <iframe
+        className='overflow-scroll rounded-lg z-1 w-screen h-screen'
+        src={gameUrl}
+        title='External Website'
+        sandbox='allow-scripts allow-same-origin allow-forms allow-popups allow-top-navigation-by-user-activation'
+      />
     </div>
   )
 }

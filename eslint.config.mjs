@@ -27,6 +27,8 @@ const config = [
       'docs/public/**/*',
       'docs/.next/**/*',
       'docs/node_modules/**/*',
+      '*.d.ts',
+      'docs/*.d.ts',
     ],
   },
   ...compat.extends('plugin:@typescript-eslint/recommended'),
