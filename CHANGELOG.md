@@ -1,3 +1,9 @@
+<!-- 2.3.10 -->
+
+### Changes in v2.3.10
+
+- Fixed an incorrect condition in the `card farming` UI which caused it to show as "Done" immediately after starting the feature
+
 <!-- 2.3.9 -->
 
 ### Changes in v2.3.9
