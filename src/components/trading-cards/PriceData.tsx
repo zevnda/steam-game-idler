@@ -3,7 +3,6 @@ import type { TradingCard } from '@/types'
 import type { ReactElement } from 'react'
 
 import { Button, Spinner, useDisclosure } from '@heroui/react'
-import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TbArrowRight } from 'react-icons/tb'
 
@@ -19,25 +18,15 @@ export default function PriceData({ item, tradingCardContext }: PriceDataProps):
   const { t } = useTranslation()
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
-  useEffect(() => {
-    if (isOpen && !item.price_data) {
-      // Fetch price data when the modal is opened and no price data exists
-      tradingCardContext.fetchCardPrices(item.market_hash_name)
-    }
-  }, [isOpen, item.price_data, item.market_hash_name, tradingCardContext])
-
   const handleFetchPrice = async (item: TradingCard): Promise<void> => {
     try {
       onOpen()
-      tradingCardContext.loadingItemPrice[item.market_hash_name] = true
       if (!item.price_data) {
         await tradingCardContext.fetchCardPrices(item.market_hash_name)
       }
     } catch (error) {
       console.error('Error fetching price data:', error)
       logEvent(`[Error] in handleFetchPrice: ${error}`)
-    } finally {
-      tradingCardContext.loadingItemPrice[item.market_hash_name] = false
     }
   }
 
@@ -57,9 +46,7 @@ export default function PriceData({ item, tradingCardContext }: PriceDataProps):
         title={item.full_name}
         body={
           <div className='flex justify-center gap-4'>
-            {tradingCardContext.loadingItemPrice[item.market_hash_name] ? (
-              <Spinner />
-            ) : (
+            {!tradingCardContext.loadingItemPrice[item.market_hash_name] ? (
               <>
                 <div className='flex flex-col gap-2'>
                   <p className='font-bold'>{t('tradingCards.priceData.sellOrders')}</p>
@@ -143,6 +130,8 @@ export default function PriceData({ item, tradingCardContext }: PriceDataProps):
                   </table>
                 </div>
               </>
+            ) : (
+              <Spinner />
             )}
           </div>
         }

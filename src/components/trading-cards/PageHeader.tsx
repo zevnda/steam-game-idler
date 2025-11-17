@@ -4,7 +4,7 @@ import type { ReactElement } from 'react'
 
 import { Button, cn, Divider, Tab, Tabs, useDisclosure } from '@heroui/react'
 import { useTranslation } from 'react-i18next'
-import { TbChecks, TbEraser, TbPackageExport, TbX } from 'react-icons/tb'
+import { TbChecks, TbChevronLeft, TbChevronRight, TbEraser, TbPackageExport, TbX } from 'react-icons/tb'
 
 import { useSearchContext } from '@/components/contexts/SearchContext'
 import CustomModal from '@/components/ui/CustomModal'
@@ -25,9 +25,18 @@ const formatTime = (seconds: number): string => {
 interface PageHeaderProps {
   selectedCardsWithPrice: string[]
   tradingCardContext: ReturnType<typeof useTradingCardsList>
+  currentPage: number
+  totalPages: number
+  onPageChange: (page: number) => void
 }
 
-export default function PageHeader({ selectedCardsWithPrice, tradingCardContext }: PageHeaderProps): ReactElement {
+export default function PageHeader({
+  selectedCardsWithPrice,
+  tradingCardContext,
+  currentPage,
+  totalPages,
+  onPageChange,
+}: PageHeaderProps): ReactElement {
   const { t } = useTranslation()
   const { tradingCardQueryValue, setTradingCardQueryValue } = useSearchContext()
   const { isOpen: isConfirmOpen, onOpen: onConfirmOpen, onOpenChange: onConfirmOpenChange } = useDisclosure()
@@ -140,6 +149,31 @@ export default function PageHeader({ selectedCardsWithPrice, tradingCardContext 
                       </div>
                     </div>
                   )}
+
+                  {/* Pagination */}
+                  <div className='flex ml-auto justify-center items-center gap-4'>
+                    <Button
+                      isIconOnly
+                      className='bg-btn-secondary text-btn-text font-bold'
+                      radius='full'
+                      startContent={<TbChevronLeft fontSize={20} />}
+                      disabled={currentPage === 1}
+                      onPress={() => onPageChange(currentPage - 1)}
+                    />
+
+                    <p className='text-sm'>
+                      {currentPage} / {totalPages}
+                    </p>
+
+                    <Button
+                      isIconOnly
+                      className='bg-btn-secondary text-btn-text font-bold'
+                      radius='full'
+                      startContent={<TbChevronRight fontSize={20} />}
+                      disabled={currentPage === totalPages}
+                      onPress={() => onPageChange(currentPage + 1)}
+                    />
+                  </div>
                 </div>
               </div>
             </div>

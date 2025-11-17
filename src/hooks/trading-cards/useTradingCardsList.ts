@@ -204,10 +204,10 @@ export default function useTradingCardsList(): UseTradingCardsList {
       const priceDataCleaned = {
         sell_order_graph: cardPrices.sell_order_graph,
         buy_order_graph: cardPrices.buy_order_graph,
-        highest_buy_order: cardPrices?.buy_order_graph?.[0]?.[0]?.toString(), // Convert to string
-        lowest_sell_order: cardPrices?.sell_order_graph?.[0]?.[0]?.toString(), // Convert to string
-        buy_order_summary: cardPrices?.buy_order_summary || '', // Fallback to empty string
-        sell_order_summary: cardPrices?.sell_order_summary || '', // Fallback to empty string
+        highest_buy_order: cardPrices?.buy_order_graph?.[0]?.[0],
+        lowest_sell_order: cardPrices?.sell_order_graph?.[0]?.[0],
+        buy_order_summary: cardPrices?.buy_order_summary,
+        sell_order_summary: cardPrices?.sell_order_summary,
       }
 
       const response = await invoke<InvokeCardData>('update_card_data', {
@@ -219,11 +219,6 @@ export default function useTradingCardsList(): UseTradingCardsList {
       if (response.card_data.length > 0) {
         const sortedCards = response.card_data.sort((a, b) => a.appname.localeCompare(b.appname))
         setTradingCardsList(sortedCards)
-      } else {
-        // Update only the specific card's price_data
-        setTradingCardsList(prevCards =>
-          prevCards.map(card => (card.market_hash_name === hash ? { ...card, price_data: priceDataCleaned } : card)),
-        )
       }
 
       return { success: true, price }
