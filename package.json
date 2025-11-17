@@ -39,7 +39,7 @@
     "@supabase/supabase-js": "^2.77.0",
     "@tauri-apps/api": "^2.8.0",
     "@tauri-apps/plugin-autostart": "~2.5.0",
-    "@tauri-apps/plugin-dialog": "~2.4.0",
+    "@tauri-apps/plugin-dialog": "~2.4.2",
     "@tauri-apps/plugin-fs": "~2.4.0",
     "@tauri-apps/plugin-notification": "~2.3.0",
     "@tauri-apps/plugin-os": "~2.3.0",
