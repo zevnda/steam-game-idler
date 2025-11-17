@@ -164,7 +164,7 @@ export default function ChatBox(): ReactElement {
     return (
       <div
         className={cn(
-          'flex flex-col h-screen ease-in-out bg-[#181a1d]/80',
+          'flex flex-col h-screen ease-in-out',
           sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]',
         )}
         style={{
