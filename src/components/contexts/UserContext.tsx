@@ -42,8 +42,8 @@ export const UserProvider = ({ children }: { children: ReactNode }): ReactElemen
       chatSounds: [0.5],
     },
     cardFarming: {
-      listGames: true,
-      allGames: false,
+      listGames: false,
+      allGames: true,
       nextTaskCheckbox: false,
       nextTask: null,
       credentials: null,

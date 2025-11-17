@@ -2,6 +2,9 @@
 
 ### Changes in v2.3.10
 
+- Added a settings button to the page header of `card farming`, `achievement unlocker`, and `trading card manager`
+  - Allows users to easily access settings pages specific to those features
+- Added an `alert` to the `card farming` and `trading card manager` pages to notify users to add `steam credentials` before trying to use the feature
 - Fixed an incorrect condition in the `card farming` UI which caused it to show as "Done" immediately after starting the feature
 
 <!-- 2.3.9 -->
