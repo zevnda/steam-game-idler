@@ -24,7 +24,6 @@ import { useNavigationContext } from '@/components/contexts/NavigationContext'
 import { useSearchContext } from '@/components/contexts/SearchContext'
 import { useStateContext } from '@/components/contexts/StateContext'
 import { useUserContext } from '@/components/contexts/UserContext'
-import AdSlot from '@/components/ui/AdSlot'
 import Beta from '@/components/ui/Beta'
 import CustomModal from '@/components/ui/CustomModal'
 import HeaderTitle from '@/components/ui/header/HeaderTitle'
@@ -266,12 +265,6 @@ export default function SideBar(): ReactElement {
           {mainSidebarItems.map((item, idx) => renderSidebarItem(item, idx))}
         </div>
 
-        {process.env.NODE_ENV === 'production' && (
-          <div className='flex flex-col items-center justify-end grow mb-4 overflow-hidden'>
-            <AdSlot />
-          </div>
-        )}
-
         {/* Settings and signout */}
         <div
           className={cn(
@@ -281,7 +274,7 @@ export default function SideBar(): ReactElement {
         >
           <div
             className={cn(
-              'flex items-center w-full bg-sidebar-active p-2 h-[50px] rounded-lg',
+              'flex items-center w-full bg-sidebar-active p-2 min-h-[50px] rounded-lg',
               sidebarCollapsed ? 'flex-col gap-2' : 'flex-row gap-3',
             )}
           >
@@ -293,7 +286,7 @@ export default function SideBar(): ReactElement {
               className='rounded-full duration-150'
             />
             {!sidebarCollapsed && (
-              <div className='flex items-center justify-between w-full ml-3 overflow-hidden'>
+              <div className='flex items-center justify-between w-full overflow-hidden'>
                 <div className='flex flex-col overflow-hidden'>
                   <p className='text-sm leading-tight truncate whitespace-nowrap'>{userSummary?.personaName}</p>
                   <p className='text-[10px] text-altwhite/70 leading-tight truncate whitespace-nowrap'>
@@ -302,7 +295,7 @@ export default function SideBar(): ReactElement {
                 </div>
                 <div className='flex items-center gap-2'>
                   <div
-                    className='text-altwhite hover:bg-item-hover rounded-full p-1.5 duration-150 cursor-pointer'
+                    className='text-altwhite hover:bg-white/7 rounded-full p-1.5 duration-150 cursor-pointer'
                     onClick={() => {
                       setShowAchievements(false)
                       setActivePage('settings')
@@ -320,7 +313,7 @@ export default function SideBar(): ReactElement {
               </div>
             )}
             {sidebarCollapsed && (
-              <div className='flex flex-col items-center gap-2 mt-2'>
+              <div className='flex flex-col items-center gap-2'>
                 <div
                   className='text-altwhite hover:bg-item-hover rounded-full p-1.5 duration-150 cursor-pointer'
                   onClick={() => {

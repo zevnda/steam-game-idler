@@ -1,3 +1,10 @@
+<!-- 2.3.12 -->
+
+### Changes in v2.3.12
+
+- Ads will no longer be shown in the `sidebar`
+- Fixed a layout issue with the user summary in the `sidebar`
+
 <!-- 2.3.11 -->
 
 ### Changes in v2.3.11
