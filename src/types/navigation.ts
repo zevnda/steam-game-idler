@@ -11,7 +11,13 @@ export type ActivePageType =
   | 'tradingCards'
   | 'chat'
 export type CurrentTabType = 'achievements' | 'statistics'
-export type CurrentSettingsTabType = 'general' | 'card-farming' | 'achievement-unlocker' | 'debug'
+export type CurrentSettingsTabType =
+  | 'general'
+  | 'card-farming'
+  | 'achievement-unlocker'
+  | 'trading-card-manager'
+  | 'game-settings'
+  | 'debug'
 
 export interface NavigationContextType {
   activePage: ActivePageType
@@ -20,6 +26,8 @@ export interface NavigationContextType {
   setCurrentTab: Dispatch<SetStateAction<CurrentTabType>>
   currentSettingsTab: CurrentSettingsTabType
   setCurrentSettingsTab: Dispatch<SetStateAction<CurrentSettingsTabType>>
+  previousActivePage: ActivePageType
+  setPreviousActivePage: Dispatch<SetStateAction<ActivePageType>>
 }
 
 export interface SidebarItem {

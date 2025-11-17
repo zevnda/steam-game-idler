@@ -4,8 +4,9 @@ import type { ReactElement } from 'react'
 
 import { Button, cn, Divider, Tab, Tabs, useDisclosure } from '@heroui/react'
 import { useTranslation } from 'react-i18next'
-import { TbChecks, TbChevronLeft, TbChevronRight, TbEraser, TbPackageExport, TbX } from 'react-icons/tb'
+import { TbChecks, TbChevronLeft, TbChevronRight, TbEraser, TbPackageExport, TbSettings, TbX } from 'react-icons/tb'
 
+import { useNavigationContext } from '@/components/contexts/NavigationContext'
 import { useSearchContext } from '@/components/contexts/SearchContext'
 import CustomModal from '@/components/ui/CustomModal'
 
@@ -42,6 +43,7 @@ export default function PageHeader({
   const { isOpen: isConfirmOpen, onOpen: onConfirmOpen, onOpenChange: onConfirmOpenChange } = useDisclosure()
   const { isOpen: isBulkOpen, onOpen: onBulkOpen, onOpenChange: onBulkOpenChange } = useDisclosure()
   const { isOpen: isRemoveOpen, onOpen: onRemoveOpen, onOpenChange: onRemoveOpenChange } = useDisclosure()
+  const { setActivePage, setPreviousActivePage, setCurrentSettingsTab } = useNavigationContext()
 
   const handleCardSorting = (key: string): void => {
     tradingCardContext.setCardSortStyle?.(key)
@@ -134,10 +136,22 @@ export default function PageHeader({
                     {t('tradingCards.remove')}
                   </Button>
 
+                  <Button
+                    isIconOnly
+                    radius='full'
+                    className='bg-btn-secondary text-btn-text font-bold'
+                    startContent={<TbSettings size={20} />}
+                    onPress={() => {
+                      setPreviousActivePage('tradingCards')
+                      setActivePage('settings')
+                      setCurrentSettingsTab('trading-card-manager')
+                    }}
+                  />
+
                   {tradingCardQueryValue && (
                     <div className='flex items-center gap-2'>
                       <Divider orientation='vertical' className='mx-2 h-8 bg-border' />
-                      <p className='text-sm text-altwhite font-bold'>Search</p>
+                      <p className='text-sm text-altwhite font-bold'>{t('common.search')}</p>
                       <div className='flex items-center gap-2 text-sm text-altwhite p-2 bg-item-active rounded-full max-w-44'>
                         <p className='text-content truncate'>{tradingCardQueryValue}</p>
                         <div

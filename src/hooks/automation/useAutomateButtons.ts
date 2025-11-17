@@ -30,7 +30,7 @@ export const useAutomate = (): AutomateButtonsHook => {
   const startCardFarming = async (): Promise<void> => {
     try {
       // Make sure Steam client is running
-      const isSteamRunning = checkSteamStatus(true)
+      const isSteamRunning = await checkSteamStatus(true)
       if (!isSteamRunning) return
 
       // Retrieve Steam cookies from local storage
@@ -82,7 +82,7 @@ export const useAutomate = (): AutomateButtonsHook => {
   const startAchievementUnlocker = async (): Promise<void> => {
     try {
       // Make sure Steam client is running
-      const isSteamRunning = checkSteamStatus(true)
+      const isSteamRunning = await checkSteamStatus(true)
       if (!isSteamRunning) return
 
       // Retrieve achievement unlocker list

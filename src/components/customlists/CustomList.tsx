@@ -1,18 +1,20 @@
-import type { Game, InvokeSettings, UserSummary } from '@/types'
+import type { ActivePageType, CurrentSettingsTabType, Game, InvokeSettings, UserSummary } from '@/types'
 import type { DragEndEvent } from '@dnd-kit/core'
 import type { ReactElement, ReactNode } from 'react'
 
 import { invoke } from '@tauri-apps/api/core'
 
-import { Button, cn, useDisclosure } from '@heroui/react'
+import { Alert, Button, cn, useDisclosure } from '@heroui/react'
 import { useEffect, useState } from 'react'
 import { DndContext } from '@dnd-kit/core'
 import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useTranslation } from 'react-i18next'
-import { TbAward, TbCards, TbEdit } from 'react-icons/tb'
+import { TbAward, TbCards, TbEdit, TbSettings } from 'react-icons/tb'
 
+import { useNavigationContext } from '@/components/contexts/NavigationContext'
 import { useStateContext } from '@/components/contexts/StateContext'
+import { useUserContext } from '@/components/contexts/UserContext'
 import AchievementOrderModal from '@/components/customlists/AchievementOrderModal'
 import EditListModal from '@/components/customlists/EditListModal'
 import ManualAdd from '@/components/customlists/ManualAdd'
@@ -40,6 +42,9 @@ interface ListTypeConfig {
   icon: ReactNode
   startButton: 'startCardFarming' | 'startAchievementUnlocker' | null
   buttonLabel: string | null
+  settingsButton?: boolean
+  settingsButtonLink?: string
+  switches?: boolean
 }
 
 export default function CustomList({ type }: CustomListProps): ReactElement {
@@ -68,6 +73,8 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
   const { startCardFarming, startAchievementUnlocker } = useAutomate()
   const { sidebarCollapsed, transitionDuration } = useStateContext()
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
+  const { setActivePage, setPreviousActivePage, setCurrentSettingsTab } = useNavigationContext()
+  const { userSettings } = useUserContext()
 
   const handleDragEnd = (event: DragEndEvent): void => {
     const { active, over } = event
@@ -132,6 +139,9 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
       icon: <TbCards fontSize={20} />,
       startButton: 'startCardFarming',
       buttonLabel: t('customLists.cardFarming.buttonLabel'),
+      settingsButton: true,
+      settingsButtonLink: 'card-farming',
+      switches: true,
     },
     achievementUnlockerList: {
       title: t('common.achievementUnlocker'),
@@ -139,6 +149,8 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
       icon: <TbAward fontSize={20} />,
       startButton: 'startAchievementUnlocker',
       buttonLabel: t('customLists.achievementUnlocker.buttonLabel'),
+      settingsButton: true,
+      settingsButtonLink: 'achievement-unlocker',
     },
     autoIdleList: {
       title: t('customLists.autoIdle.title'),
@@ -203,6 +215,22 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
 
                   <ManualAdd listName={type} setList={setList} />
 
+                  {listType.settingsButton && listType.settingsButtonLink && (
+                    <Button
+                      isIconOnly
+                      radius='full'
+                      className='bg-btn-secondary text-btn-text font-bold'
+                      startContent={<TbSettings size={20} />}
+                      onPress={() => {
+                        setPreviousActivePage(('customlists/' + listType.settingsButtonLink) as ActivePageType)
+                        setActivePage('settings')
+                        if (listType.settingsButtonLink) {
+                          setCurrentSettingsTab(listType.settingsButtonLink as CurrentSettingsTabType)
+                        }
+                      }}
+                    />
+                  )}
+
                   {listType.startButton && (
                     <Button
                       className='bg-linear-to-r from-purple-800 via-purple-600 to-cyan-500 text-white font-bold transition-all duration-300 relative overflow-hidden before:absolute before:inset-0 before:bg-linear-to-r before:from-transparent before:via-white/20 before:to-transparent before:-translate-x-full before:animate-[shimmer_2s_ease-in-out_infinite] hover:before:animate-[shimmer_0.7s_ease-in-out] *:relative *:z-10'
@@ -220,6 +248,21 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
             </div>
           </div>
         </div>
+
+        {!userSettings.cardFarming.credentials && (
+          <div className='mx-6 max-w-fit'>
+            <Alert
+              color='primary'
+              variant='faded'
+              classNames={{
+                base: '!bg-dynamic/30 text-dynamic !border-dynamic/40',
+                iconWrapper: '!bg-dynamic/30 border-dynamic/40',
+                description: 'font-bold text-xs',
+              }}
+              description={t('settings.cardFarming.alert')}
+            />
+          </div>
+        )}
 
         <RecommendedCardDropsCarousel
           gamesWithDrops={type === 'cardFarmingList' ? gamesWithDrops : []}

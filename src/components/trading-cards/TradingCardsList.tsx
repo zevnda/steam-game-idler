@@ -1,7 +1,7 @@
 import type { TradingCard } from '@/types'
 import type { ReactElement } from 'react'
 
-import { Checkbox, cn, Spinner } from '@heroui/react'
+import { Alert, Checkbox, cn, Spinner } from '@heroui/react'
 import { useEffect, useMemo, useState } from 'react'
 import Image from 'next/image'
 import { useTranslation } from 'react-i18next'
@@ -11,6 +11,7 @@ import { TbLock, TbLockOpen } from 'react-icons/tb'
 
 import { useSearchContext } from '@/components/contexts/SearchContext'
 import { useStateContext } from '@/components/contexts/StateContext'
+import { useUserContext } from '@/components/contexts/UserContext'
 import PageHeader from '@/components/trading-cards/PageHeader'
 import PriceData from '@/components/trading-cards/PriceData'
 import PriceInput from '@/components/trading-cards/PriceInput'
@@ -22,6 +23,7 @@ export default function TradingCardsList(): ReactElement {
   const { t } = useTranslation()
   const { tradingCardQueryValue } = useSearchContext()
   const { sidebarCollapsed, transitionDuration } = useStateContext()
+  const { userSettings } = useUserContext()
   const [lockedCards, setLockedCards] = useState<string[]>([])
   const [cardsPerRow, setCardsPerRow] = useState(6)
   const [currentPage, setCurrentPage] = useState(1)
@@ -149,7 +151,7 @@ export default function TradingCardsList(): ReactElement {
         >
           <div className='flex items-center justify-between bg-input rounded-lg p-1.5 border border-border'>
             <Image
-              className='w-[80px] h-auto border border-border'
+              className='w-20 h-auto border border-border'
               src={item.image}
               width={224}
               height={261}
@@ -212,6 +214,21 @@ export default function TradingCardsList(): ReactElement {
         totalPages={totalPages}
         onPageChange={setCurrentPage}
       />
+
+      {!userSettings.cardFarming.credentials && (
+        <div className='mx-6 max-w-fit'>
+          <Alert
+            color='primary'
+            variant='faded'
+            classNames={{
+              base: '!bg-dynamic/30 text-dynamic !border-dynamic/40',
+              iconWrapper: '!bg-dynamic/30 border-dynamic/40',
+              description: 'font-bold text-xs',
+            }}
+            description={t('settings.tradingCards.alert')}
+          />
+        </div>
+      )}
 
       {!tradingCardContext.isLoading ? (
         <div className='flex flex-col'>

@@ -19,7 +19,8 @@ import useSettings from '@/hooks/settings/useSettings'
 export default function Settings(): ReactElement {
   const { t } = useTranslation()
   const { version, refreshKey } = useSettings()
-  const { setActivePage, setCurrentSettingsTab } = useNavigationContext()
+  const { setActivePage, previousActivePage, setPreviousActivePage, currentSettingsTab, setCurrentSettingsTab } =
+    useNavigationContext()
 
   return (
     <div key={refreshKey} className={cn('min-h-screen min-w-screen bg-base')}>
@@ -29,7 +30,11 @@ export default function Settings(): ReactElement {
           radius='full'
           className='bg-item-hover'
           startContent={<TbX />}
-          onPress={() => setActivePage('games')}
+          onPress={() => {
+            setActivePage(previousActivePage)
+            setCurrentSettingsTab('general')
+            setPreviousActivePage('games')
+          }}
         />
       </div>
 
@@ -43,6 +48,7 @@ export default function Settings(): ReactElement {
       <Tabs
         isVertical
         aria-label='Settings tabs'
+        defaultSelectedKey={currentSettingsTab}
         onSelectionChange={(key: Key) => setCurrentSettingsTab(key as CurrentSettingsTabType)}
         classNames={{
           base: 'absolute top-0 bg-sidebar min-h-screen p-4 py-14 z-39',

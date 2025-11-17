@@ -9,6 +9,7 @@ export const NavigationProvider = ({ children }: { children: ReactNode }): React
   const [activePage, setActivePage] = useState<ActivePageType>('games')
   const [currentTab, setCurrentTab] = useState<CurrentTabType>('achievements')
   const [currentSettingsTab, setCurrentSettingsTab] = useState<CurrentSettingsTabType>('general')
+  const [previousActivePage, setPreviousActivePage] = useState<ActivePageType>('games')
 
   return (
     <NavigationContext.Provider
@@ -19,6 +20,8 @@ export const NavigationProvider = ({ children }: { children: ReactNode }): React
         setCurrentTab,
         currentSettingsTab,
         setCurrentSettingsTab,
+        previousActivePage,
+        setPreviousActivePage,
       }}
     >
       {children}

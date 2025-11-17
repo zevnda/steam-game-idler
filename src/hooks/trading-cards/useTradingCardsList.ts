@@ -110,7 +110,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
         const credentials = userSettings.cardFarming.credentials
         const apiKey = userSettings.general?.apiKey
 
-        if (!credentials?.sid || !credentials?.sls) return showMissingCredentialsToast()
+        if (!credentials?.sid || !credentials?.sls) return
 
         setIsLoading(true)
 
