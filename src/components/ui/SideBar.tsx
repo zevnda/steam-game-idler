@@ -147,7 +147,7 @@ export default function SideBar(): ReactElement {
           <div
             className={cn(
               'px-1.5 py-1 rounded-lg duration-150 cursor-pointer active:scale-95 border border-transparent w-full overflow-hidden',
-              isCurrentPage ? 'bg-item-active text-content' : 'text-altwhite hover:bg-item-hover',
+              isCurrentPage ? 'bg-sidebar-active text-content' : 'text-altwhite hover:bg-sidebar-hover',
               item.customClassName,
             )}
             onClick={() => {
@@ -195,7 +195,7 @@ export default function SideBar(): ReactElement {
     <>
       <div
         className={cn(
-          'relative flex flex-col h-screen z-40 bg-sidebar/40 select-none ease-in-out',
+          'relative flex flex-col h-screen z-40 bg-sidebar select-none ease-in-out',
           sidebarCollapsed ? 'min-w-14 max-w-14' : 'min-w-[250px] max-w-[250px]',
         )}
         style={{
@@ -211,6 +211,7 @@ export default function SideBar(): ReactElement {
         >
           <HeaderTitle />
 
+          {/* Search button */}
           <Button
             isIconOnly={sidebarCollapsed}
             radius='full'
@@ -228,7 +229,7 @@ export default function SideBar(): ReactElement {
                 searchContent.achievementQueryValue ||
                 searchContent.statisticQueryValue
                 ? 'bg-dynamic/10 hover:bg-dynamic/20'
-                : 'bg-search',
+                : 'bg-sidebar-active hover:bg-sidebar-active/90',
             )}
             onPress={() => setShowSearchModal(true)}
           >
@@ -274,27 +275,52 @@ export default function SideBar(): ReactElement {
         {/* Settings and signout */}
         <div
           className={cn(
-            'flex items-center mt-auto w-full bg-linear-to-t from-gray-900/5 to-gray-400/5',
-            'rounded-t-xl',
-            sidebarCollapsed ? 'justify-center flex-col gap-2 p-2 pt-3' : 'justify-start p-4',
+            'flex items-center mt-auto w-full rounded-t-xl py-2 px-1.5',
+            sidebarCollapsed ? 'justify-center flex-col gap-2 pt-3' : 'justify-start',
           )}
         >
-          <Image
-            src={userSummary?.avatar || ''}
-            alt={userSummary?.personaName || 'User Avatar'}
-            width={34}
-            height={34}
-            className='rounded-full'
-          />
-          {!sidebarCollapsed && (
-            <div className='flex items-center justify-between w-full ml-3 overflow-hidden'>
-              <div className='flex flex-col overflow-hidden'>
-                <p className='text-sm leading-tight truncate whitespace-nowrap'>{userSummary?.personaName}</p>
-                <p className='text-[10px] text-altwhite/70 leading-tight truncate whitespace-nowrap'>
-                  {userSummary?.steamId}
-                </p>
+          <div
+            className={cn(
+              'flex items-center w-full bg-sidebar-active p-2 h-[50px] rounded-lg',
+              sidebarCollapsed ? 'flex-col gap-2' : 'flex-row gap-3',
+            )}
+          >
+            <Image
+              src={userSummary?.avatar || ''}
+              alt={userSummary?.personaName || 'User Avatar'}
+              width={sidebarCollapsed ? 28 : 32}
+              height={sidebarCollapsed ? 28 : 32}
+              className='rounded-full duration-150'
+            />
+            {!sidebarCollapsed && (
+              <div className='flex items-center justify-between w-full ml-3 overflow-hidden'>
+                <div className='flex flex-col overflow-hidden'>
+                  <p className='text-sm leading-tight truncate whitespace-nowrap'>{userSummary?.personaName}</p>
+                  <p className='text-[10px] text-altwhite/70 leading-tight truncate whitespace-nowrap'>
+                    {userSummary?.steamId}
+                  </p>
+                </div>
+                <div className='flex items-center gap-2'>
+                  <div
+                    className='text-altwhite hover:bg-item-hover rounded-full p-1.5 duration-150 cursor-pointer'
+                    onClick={() => {
+                      setShowAchievements(false)
+                      setActivePage('settings')
+                    }}
+                  >
+                    <TbSettings fontSize={20} />
+                  </div>
+                  <div
+                    className='text-altwhite hover:text-danger hover:bg-danger/20 rounded-full p-1.5 duration-150 cursor-pointer'
+                    onClick={openConfirmation}
+                  >
+                    <FiLogOut fontSize={18} />
+                  </div>
+                </div>
               </div>
-              <div className='flex items-center gap-2'>
+            )}
+            {sidebarCollapsed && (
+              <div className='flex flex-col items-center gap-2 mt-2'>
                 <div
                   className='text-altwhite hover:bg-item-hover rounded-full p-1.5 duration-150 cursor-pointer'
                   onClick={() => {
@@ -311,27 +337,8 @@ export default function SideBar(): ReactElement {
                   <FiLogOut fontSize={18} />
                 </div>
               </div>
-            </div>
-          )}
-          {sidebarCollapsed && (
-            <div className='flex flex-col items-center gap-2 mt-2'>
-              <div
-                className='text-altwhite hover:bg-item-hover rounded-full p-1.5 duration-150 cursor-pointer'
-                onClick={() => {
-                  setShowAchievements(false)
-                  setActivePage('settings')
-                }}
-              >
-                <TbSettings fontSize={20} />
-              </div>
-              <div
-                className='text-altwhite hover:text-danger hover:bg-danger/20 rounded-full p-1.5 duration-150 cursor-pointer'
-                onClick={openConfirmation}
-              >
-                <FiLogOut fontSize={18} />
-              </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
 

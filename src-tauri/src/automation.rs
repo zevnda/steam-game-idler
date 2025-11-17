@@ -18,7 +18,7 @@ pub async fn get_drops_remaining(
     sls: String,
     sma: Option<String>,
     steam_id: String,
-    app_ids: Vec<u32>,
+    app_id: u32,
 ) -> Result<Value, String> {
     let client = Client::new();
 
@@ -31,88 +31,39 @@ pub async fn get_drops_remaining(
         None => format!("sessionid={}; steamLoginSecure={}", sid, sls),
     };
 
-    let mut futures = Vec::with_capacity(app_ids.len());
+    let response = client
+        .get(&format!(
+            "https://steamcommunity.com/profiles/{}/gamecards/{}/?l=english",
+            steam_id, app_id
+        ))
+        .header("Content-Type", "application/json")
+        .header("Cookie", cookie_value)
+        .send()
+        .await
+        .map_err(|e| e.to_string())?;
 
-    for app_id in &app_ids {
-        let client = client.clone();
-        let cookie_value = cookie_value.clone();
-        let steam_id = steam_id.clone();
-        let app_id = *app_id;
-        println!("Queueing fetch for app_id: {}", app_id);
+    let html = response.text().await.map_err(|e| e.to_string())?;
+    let document = Html::parse_document(&html);
+    let progress_info_bold = Selector::parse(".progress_info_bold").map_err(|e| e.to_string())?;
 
-        futures.push(async move {
-            let url = format!(
-                "https://steamcommunity.com/profiles/{}/gamecards/{}/?l=english",
-                steam_id, app_id
-            );
-            println!("Fetching card page: {}", url);
-
-            let resp = client
-                .get(&url)
-                .header("Content-Type", "application/json")
-                .header("Cookie", cookie_value)
-                .send()
-                .await;
-
-            match resp {
-                Ok(response) => {
-                    let html = response.text().await.unwrap_or_default();
-                    println!("Fetched app_id {} HTML length: {}", app_id, html.len());
-                    let document = Html::parse_document(&html);
-                    let progress_info_bold = Selector::parse(".progress_info_bold").unwrap();
-
-                    if let Some(element) = document.select(&progress_info_bold).next() {
-                        let text = element.text().collect::<Vec<_>>().join("");
-                        if text.contains("No card drops remaining") {
-                            println!("App {}: No card drops remaining", app_id);
-                            return Ok((app_id, 0));
-                        }
-
-                        let regex = Regex::new(r"(\d+)\s+card\s+drop(?:s)?\s+remaining").unwrap();
-                        if let Some(captures) = regex.captures(&text) {
-                            let card_drops_remaining = captures[1].parse::<u32>().unwrap_or(0);
-                            println!(
-                                "App {}: Found {} card drops remaining",
-                                app_id, card_drops_remaining
-                            );
-                            return Ok((app_id, card_drops_remaining));
-                        } else {
-                            println!("App {}: Card drops data not found", app_id);
-                            return Ok((app_id, 0));
-                        }
-                    } else {
-                        println!("App {}: Card drops data not found", app_id);
-                        return Ok((app_id, 0));
-                    }
-                }
-                Err(e) => {
-                    println!("Failed to fetch app_id {}: {}", app_id, e);
-                    Err((app_id, format!("Failed to fetch: {}", e)))
-                }
-            }
-        });
-    }
-
-    let results = join_all(futures).await;
-
-    let mut drops = Vec::new();
-    let mut errors = Vec::new();
-
-    for result in results {
-        match result {
-            Ok((app_id, remaining)) => {
-                drops.push(json!({ "app_id": app_id, "remaining": remaining }));
-            }
-            Err((app_id, err)) => {
-                errors.push(json!({ "app_id": app_id, "error": err }));
-            }
+    // Parse the HTML to find the number of card drops remaining
+    if let Some(element) = document.select(&progress_info_bold).next() {
+        let text = element.text().collect::<Vec<_>>().join("");
+        if text.contains("No card drops remaining") {
+            return Ok(json!({ "remaining": 0 }));
         }
-    }
 
-    Ok(json!({
-        "drops": drops,
-        "errors": errors
-    }))
+        let regex =
+            Regex::new(r"(\d+)\s+card\s+drop(?:s)?\s+remaining").map_err(|e| e.to_string())?;
+        if let Some(captures) = regex.captures(&text) {
+            let card_drops_remaining = captures[1].parse::<i32>().map_err(|e| e.to_string())?;
+            return Ok(json!({"remaining": card_drops_remaining}));
+        } else {
+            return Ok(json!({"error": "Card drops data not found"}));
+        }
+    } else {
+        return Ok(json!({"error": "Card drops data not found"}));
+    }
 }
 
 #[tauri::command]

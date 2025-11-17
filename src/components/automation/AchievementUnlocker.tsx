@@ -80,24 +80,6 @@ export default function AchievementUnlocker({ activePage }: { activePage: Active
         transitionProperty: 'width, left',
       }}
     >
-      <Image
-        src={
-          currentGame?.appid
-            ? `https://cdn.steamstatic.com/steam/apps/${currentGame?.appid}/library_hero.jpg`
-            : '/background.webp'
-        }
-        className='absolute top-0 left-0 w-full h-full object-cover'
-        alt='background'
-        width={1920}
-        height={1080}
-        priority
-        onError={handleImageError}
-        style={{
-          WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 40%)',
-        }}
-      />
-      <div className={cn('absolute top-0 left-0 w-full h-screen bg-base/70 backdrop-blur-lg')} />
-
       <div
         className={cn(
           'relative w-[calc(100vw-227px)] pl-6 pt-2 pr-12 mt-9 ease-in-out',
@@ -144,7 +126,7 @@ export default function AchievementUnlocker({ activePage }: { activePage: Active
             transitionProperty: 'width',
           }}
         >
-          <div className='flex flex-col items-center bg-base/40 rounded-xl p-8 w-full'>
+          <div className='flex flex-col items-center bg-sidebar rounded-xl p-8 w-full'>
             {isWaitingForSchedule && (
               <p className='text-sm text-yellow-400'>{t('automation.achievementUnlocker.scheduleWait')}</p>
             )}

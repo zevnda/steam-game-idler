@@ -44,7 +44,7 @@ export default function GeneralSettings(): ReactElement {
             height={64}
             width={64}
             alt='user avatar'
-            className='w-[64px] h-[64px] rounded-full blur-[3px] group-hover:blur-none transition-all duration-200'
+            className='w-16 h-16 rounded-full blur-[3px] group-hover:blur-none transition-all duration-200'
             priority
           />
           <div className='flex flex-col gap-1'>

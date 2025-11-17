@@ -93,7 +93,7 @@ export default function CardFarming({ activePage }: { activePage: ActivePageType
           </p>
         )}
 
-        <div className='p-2 rounded-lg w-full h-[calc(100vh-320px)] overflow-y-auto'>
+        <div className='p-2 rounded-lg w-full max-h-[calc(100vh-380px)] overflow-y-auto'>
           <div className='grid grid-cols-2 gap-2 px-2 overflow-y-auto'>
             {[...Array.from(gamesWithDrops)].map(item => (
               <div key={item.appid} className='flex gap-1 border border-border rounded-lg p-1'>
@@ -144,23 +144,10 @@ export default function CardFarming({ activePage }: { activePage: ActivePageType
         transitionProperty: 'width, left',
       }}
     >
-      <Image
-        src='/background.webp'
-        className='absolute top-0 left-0 w-full h-full object-cover'
-        alt='background'
-        width={1920}
-        height={1080}
-        priority
-        style={{
-          WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 40%)',
-        }}
-      />
-      <div className='absolute top-0 left-0 bg-base/70 w-full h-screen backdrop-blur-lg' />
-
       <div
         className={cn(
           'relative w-[calc(100vw-227px)] pl-6 pt-2 pr-12 mt-9 ease-in-out',
-          sidebarCollapsed ? 'ml-[56px]' : 'ml-[250px]',
+          sidebarCollapsed ? 'ml-14' : 'ml-[250px]',
         )}
         style={{
           transitionDuration,
@@ -204,7 +191,7 @@ export default function CardFarming({ activePage }: { activePage: ActivePageType
             transitionProperty: 'width',
           }}
         >
-          <div className='flex flex-col items-center gap-6 bg-base/40 rounded-xl p-8 w-full'>{renderContent()}</div>
+          <div className='flex flex-col items-center gap-6 bg-sidebar rounded-xl p-8 w-full'>{renderContent()}</div>
         </div>
       </div>
     </div>

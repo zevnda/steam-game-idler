@@ -49,8 +49,6 @@ interface SupabaseContextType {
   userRoles: { [steamId: string]: string }
   // Chat maintenance mode
   chatMaintenanceMode: boolean
-  // Message of the day
-  motd: string
   // Online users count (via presence)
   onlineCount: number
   // Online users
@@ -82,7 +80,6 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
   const [onlineCount, setOnlineCount] = useState(0)
   const [onlineUsers, setOnlineUsers] = useState<ChatUser[]>([])
   const [typingUsers, setTypingUsers] = useState<ChatUser[]>([])
-  const [motd, setMotd] = useState<string>('')
 
   const supabaseRef = useRef(
     createClient(
@@ -381,26 +378,7 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
       }
     }
 
-    // Fetch initial MOTD
-    const fetchMotd = async (): Promise<void> => {
-      try {
-        const { data, error } = await supabase.from('chat_settings').select('motd').maybeSingle()
-        if (error) {
-          console.error('Error fetching MOTD:', error)
-          logEvent(`[Error] in fetchMotd: ${error.message}`)
-          return
-        }
-        if (typeof data?.motd === 'string') {
-          setMotd(data.motd)
-        }
-      } catch (error) {
-        console.error('Error in fetchMotd:', error)
-        logEvent(`[Error] in fetchMotd: ${error}`)
-      }
-    }
-
     fetchMaintenanceMode()
-    fetchMotd()
 
     // Create channel for chat features (messages, typing, settings)
     const channel = supabase.channel('chat-channel')
@@ -492,7 +470,6 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
           if (isDevelopment) return
           if (payload.eventType === 'INSERT' || payload.eventType === 'UPDATE') {
             setChatMaintenanceMode(payload.new?.maintenance ?? false)
-            setMotd(payload.new?.motd ?? '')
           } else if (payload.eventType === 'DELETE') {
             setChatMaintenanceMode(false)
           }
@@ -552,7 +529,6 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
         isBanned,
         userRoles,
         chatMaintenanceMode,
-        motd,
         onlineCount,
         onlineUsers,
         typingUsers,

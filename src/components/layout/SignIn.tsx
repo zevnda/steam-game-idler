@@ -9,7 +9,6 @@ import { Trans, useTranslation } from 'react-i18next'
 import { TbArrowRight } from 'react-icons/tb'
 
 import { useNavigationContext } from '@/components/contexts/NavigationContext'
-import GradientBackground from '@/components/ui/GradientBackground'
 import Header from '@/components/ui/header/Header'
 import LanguageSwitch from '@/components/ui/i18n/LanguageSwitch'
 import WebviewWindow from '@/components/ui/WebviewWindow'
@@ -92,7 +91,7 @@ export default function SignIn(): ReactElement {
                         className={cn(
                           'relative p-1 rounded-lg',
                           selectedUser?.steamId === user?.steamId
-                            ? 'ring-transparent bg-gradient-to-tr from-cyan-500 via-blue-500 to-violet-700'
+                            ? 'ring-transparent bg-linear-to-tr from-cyan-500 via-blue-500 to-violet-700'
                             : 'ring-transparent bg-transparent',
                         )}
                         style={{ display: 'inline-block' }}
@@ -189,7 +188,6 @@ export default function SignIn(): ReactElement {
           </div>
         </div>
       )}
-      <GradientBackground />
     </>
   )
 }

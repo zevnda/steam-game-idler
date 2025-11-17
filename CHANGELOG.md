@@ -1,3 +1,10 @@
+<!-- 2.3.11 -->
+
+### Changes in v2.3.11
+
+- Miscellaneous UI theme/color changes
+- Fixed an issue with fetching `card farming` games
+
 <!-- 2.3.10 -->
 
 ### Changes in v2.3.10
