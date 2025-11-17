@@ -130,7 +130,7 @@ importers:
         specifier: ^16.0.1
         version: 16.0.3
       '@tailwindcss/postcss':
-        specifier: ^4.1.11
+        specifier: ^4.1.17
         version: 4.1.17
       '@tauri-apps/cli':
         specifier: ^2.8.4
@@ -187,7 +187,7 @@ importers:
   docs:
     dependencies:
       '@tailwindcss/postcss':
-        specifier: ^4.1.11
+        specifier: ^4.1.17
         version: 4.1.17
       '@vercel/analytics':
         specifier: ^1.5.0
