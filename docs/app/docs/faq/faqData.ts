@@ -1,20 +1,21 @@
-// FAQ data: id -> { question, markdown }
-export const faqData: Record<string, { id: string; question: string; markdown: string }> = {
-  q1: {
-    id: 'q1',
+export type FAQEntry = { section: string } | { question: string; markdown: string }
+
+export const faqData: FAQEntry[] = [
+  { section: 'General' },
+  {
     question: 'Why are some games not showing up in my games list in SGI?',
     markdown:
       '**Why are some games not showing up in my games list in SGI?**\n' +
       '> There are several reasons why a game may not appear in your SGI games list:\n' +
       '> * Family shared games don\'t appear in the games list by default, but you can add them to any of the lists *(Card Farming, Achievement Unlocker, etc..)*  by using the `+` button, entering the game\'s AppID and name, and clicking "Add"\n' +
+      '> * Free-to-play games only appear in your library after you\'ve launched them at least once, which grants you a license. Simply clicking "Add to library" on the store page doesn\'t grant you a license\n' +
+      '> * Some demos and playtests (unvetted apps) may not show up correctly in SGI, or be able to be idled\n' +
       '> * The game may be [marked as private](https://help.steampowered.com/en/faqs/view/1150-C06F-4D62-4966) on your Steam profile\n' +
-      '> * Some demos and playtests may not show up correctly in SGI, or be able to be idled\n' +
       '> * The game may have been removed from the Steam store or your license for the game may have been revoked\n' +
       '> * The game was part of a subscription service such as an EA Play, and your subscription has expired\n' +
-      '> * Some games may have region specific restrictions that prevent them from being displayed',
+      '> * Some games may have region specific restrictions and you may not own the game in your current region\n',
   },
-  q2: {
-    id: 'q2',
+  {
     question: 'Do I need to make my Steam profile and game details public for the Steam card idler to work?',
     markdown:
       '**Do I need to make my Steam profile and game details public for the Steam card idler to work?**\n' +
@@ -22,40 +23,38 @@ export const faqData: Record<string, { id: string; question: string; markdown: s
       '>\n' +
       '> However, providing your own Steam Web API key in the [settings > general](/docs/settings/general) will allow you to use SGI with a private profile.',
   },
-  q3: {
-    id: 'q3',
+  {
     question: 'What makes this different from other Steam tools?',
     markdown:
       '**What makes this different from other Steam tools?**\n' +
-      '> SGI combines multiple useful features from a range of other tools, while other tools may focus on a single aspect. SGI offers card farming, achievement management, trading card management, and playtime boosting in a single, user-friendly interface.',
+      '> Other Steam tools available today only specialize in one specific feature. Some require you to buy a subscription, download and install add-ons and plugins to gain access to other features, and even requiring you to use multiple applications.\n' +
+      '>\n' +
+      '> SGI streamlines this by integrating all of these features into a single free and comprehensive app with an easy-to-use interface.',
   },
-  q4: {
-    id: 'q4',
+  {
     question: 'Do I need an internet connection to use SGI?',
     markdown:
       '**Do I need an internet connection to use SGI?**\n' +
-      '> Yes, SGI requires an active internet connection to communicate with the Steam servers for idling games, unlocking achievements, and farming trading cards.',
+      '> Yes, SGI requires an active internet connection to communicate with the Steam servers for fetching games lists, idling games, managing achievements, farming trading cards, and more.',
   },
-  q5: {
-    id: 'q5',
+  {
     question:
       'What is the "Do you want to allow public/private networks to access this app" message when I first launched SGI?',
     markdown:
       '**What is the "Do you want to allow public/private networks to access this app" message when I first launched SGI?**\n' +
-      '> SGI needs to handle multiple inbound/outbound HTTP requests to fetch data from Steam. For SGI to function correctly you will need to accept this prompt.\n' +
+      "> SGI needs to make outbound HTTP requests to communicate with Steam's servers and check for automatic updates. For SGI to function correctly, you will need to accept this prompt.\n" +
       '>\n' +
       '> If you declined the prompt already, you will need to add SGI as an allowed app in Windows Defender Firewall:\n' +
       '>\n' +
       '> 1. Open the Windows Control Panel\n' +
       '> 2. Go to System and Security > Windows Defender Firewall\n' +
       '> 3. Click on "Allow an app or feature through Windows Defender Firewall"\n' +
-      '> 4. Click "Change settings" then "Add another app..." and then "Browse"\n' +
+      '> 4. Click "Change settings" then "Allow another app..." and then "Browse"\n' +
       '> 5. Navigate to the install directory of the app you want to add, select it, and click "Open"\n' +
       '> 6. Check the boxes for "Private" and/or "Public" networks as needed\n' +
       '> 7. Click "OK" to save the changes',
   },
-  q6: {
-    id: 'q6',
+  {
     question: 'Can I get banned for using a Steam idler or achievement unlocker?',
     markdown:
       '**Can I get banned for using a Steam idler or achievement unlocker?**\n' +
@@ -63,29 +62,40 @@ export const faqData: Record<string, { id: string; question: string; markdown: s
       '>\n' +
       "> SGI also uses Valve's official [Steamworks SDK](https://partner.steamgames.com/doc/sdk) and interacts with Steam just like normal gaming activity.",
   },
-  q7: {
-    id: 'q7',
+  {
+    question: 'Can I manually add games to my lists in SGI?',
+    markdown:
+      '**Can I manually add games to my lists in SGI?**\n' +
+      '> Yes. You can manually add games (such as family shared games) to your lists in SGI.\n' +
+      '>\n' +
+      '> 1. Click the `+` button located above the game lists (Card Farming, Achievement Unlocker, etc..)\n' +
+      "> 2. Enter the game's AppID and name in the respective fields\n" +
+      '> 3. Click "Add" to add the game to your list\n' +
+      '>\n' +
+      '> NOTE: You can only add games that you own or are family shared.',
+  },
+  { section: 'Farming cards' },
+  {
     question: 'What are trading cards and how do they work with Steam idlers?',
     markdown:
       '**What are trading cards and how do they work with Steam idlers?**\n' +
       "> This is covered in great detail in [Steam's Trading Cards FAQ](https://steamcommunity.com/tradingcards/faq). Our Steam trading card idler automates the process of collecting these cards.",
   },
-  q8: {
-    id: 'q8',
+  {
     question: 'Why am I not getting any card drops with the Steam card idler?',
     markdown:
       '**Why am I not getting any card drops with the Steam card idler?**\n' +
-      '> * You can only receive a limited amount of card drops per game, check "How do I know if my games have card drops remaining?" below for more information\n' +
+      '> * You can only receive a limited amount of card drops per game, check "[How do I know if my games have card drops remaining?](/docs/faq#How%20do%20I%20know%20if%20my%20games%20have%20card%20drops%20remaining?:~:text=How%20do%20I%20know%20if%20my%20games%20have%20card%20drops%20remaining%3F,-Go%20to%20https)" below for more information\n' +
       '> * New accounts, accounts with recently refunded games, or accounts with [other restrictions](https://help.steampowered.com/en/faqs/view/71D3-35C2-AD96-AA3A) might experience a delay of up to 3 hours before receiving their first card drop, or even no card drops at all\n' +
-      '> * You must be connected to the internet and signed in to the Steam client\n' +
-      '> * Free-to-play (F2P) games typically require in-game purchases to drop cards\n' +
-      "> * You need to own the game on your account. It can't be a family-shared game\n" +
-      '> * Games must not be [marked as private](https://help.steampowered.com/en/faqs/view/1150-C06F-4D62-4966)\n' +
-      "> * Paid games earned from promotions typically won't drop cards\n" +
-      '> * You must have a stable internet connection while idling for card drops to be tracked correctly',
+      '> * The Steam client must remain open and signed in to the Steam account in which you are farming cards on while farming cards\n' +
+      '> * You must have a stable internet connection while farming cards. If you lose connection, card drops may not be tracked correctly\n' +
+      '> * Free-to-play games require you to spend at least $9 USD (or equivalent) in-game to become eligible for card drops"\n' +
+      "> * Games (which usually have a price) obtained for free during promotional giveaways typically won't drop cards\n" +
+      '> * You need to own a license for the game on your account\n' +
+      '> * You can not farm cards for family shared games\n' +
+      '> * Games must not be [marked as private](https://help.steampowered.com/en/faqs/view/1150-C06F-4D62-4966)',
   },
-  q9: {
-    id: 'q9',
+  {
     question: 'How do I know if my games have card drops remaining?',
     markdown:
       '**How do I know if my games have card drops remaining?**\n' +
@@ -93,22 +103,20 @@ export const faqData: Record<string, { id: string; question: string; markdown: s
       "> 2. Scroll down, or press `CTRL+F` to search for the game's title\n" +
       '> 3. In the top-right of the game card, you will see either `X card drops remaining` or `no card drops remaining`',
   },
-  q10: {
-    id: 'q10',
+  {
     question: 'How long does it take for cards to drop?',
     markdown:
       '**How long does it take for cards to drop?**\n' +
-      '> Card drop timers can be different for every game. The developer sets these timers, and they can vary from 15 minutes to 3 hours.',
+      '> Card drop timers can be different for every game. The developer sets these timers and they can vary anywhere from 10 minutes to 2 hours between drops.',
   },
-  q11: {
-    id: 'q11',
+  { section: 'Playtime boosting / idling games' },
+  {
     question: 'Can I idle family shared games?',
     markdown:
       '**Can I idle family shared games?**\n' +
-      '> Yes, you can idle family shared games by manually adding them to one of your lists using the `+` button, entering the game\'s AppID and name, and clicking "Add". Once the game is added to your list, you can idle it like any other game.',
+      '> Yes, you can idle family shared games by manually adding them to one of your lists using the `+` button, entering the game\'s AppID and name, and clicking "Add". Once the game is added to your list, you can idle it like any other game. However, you cannot farm trading cards for family shared games.',
   },
-  q12: {
-    id: 'q12',
+  {
     question: 'Why am I unable to idle some games?',
     markdown:
       '**Why am I unable to idle some games?**\n' +
@@ -123,32 +131,29 @@ export const faqData: Record<string, { id: string; question: string; markdown: s
       '>\n' +
       '> Sometimes running SGI as an administrator can help resolve some issues with idling certain games.',
   },
-  q13: {
-    id: 'q13',
-    question: 'Why is my playtime not increasing on Steam?',
+  {
+    question: 'Why is my playtime not increasing on Steam when using SGI?',
     markdown:
       '**Why is my playtime not increasing on Steam?**\n' +
       '> There could be several reasons for this:\n' +
       '> * The Steam client may have been closed while idling, or you may not be signed in to the correct account\n' +
       '> * You were disconnected from the internet while idling and only playtime before the disconnection was recorded\n' +
-      "> * Steam's cloud sync may be down or has not updated your playtime yet. You can try restarting the Steam client to force a sync",
+      "> * The game didn't exit properly when stopping idling. Try restarting the Steam client and SGI to resolve this issue",
   },
-  q14: {
-    id: 'q14',
+  {
     question: 'Can I use SGI to idle in-game items or join game servers?',
     markdown:
       '**Can I use SGI to idle in-game items or join game servers?**\n' +
       "> No. SGI cannot idle in-game items or join game servers as it doesn't run an actual instance of the game.",
   },
-  q15: {
-    id: 'q15',
+  {
     question: 'How many games can SGI idle simultaneously?',
     markdown:
       '**How many games can SGI idle simultaneously?**\n' +
       '> You can idle a max of 32 games simultaneously. This limit is imposed by the Steam client.',
   },
-  q16: {
-    id: 'q16',
+  { section: 'Unlocking & locking achievements (auto & manual)' },
+  {
     question: 'Why am I unable to unlock/lock some achievement for some games?',
     markdown:
       '**Why am I unable to unlock/lock some achievement for some games?**\n' +
@@ -156,52 +161,48 @@ export const faqData: Record<string, { id: string; question: string; markdown: s
       '>\n' +
       '> Additionally, some games may have removed their achievements entirely, or have other restrictions that prevent achievements from being unlocked/locked.',
   },
-  q17: {
-    id: 'q17',
+  {
     question:
       'Why do I see "No achievements found" and "No statistics found" on the game\'s achievement manager screen?',
     markdown:
       '**Why do I see "No achievements found" and "No statistics found" on the game\'s achievement manager screen?**\n' +
       '> * The game you are trying to view achievements for does not have any achievements\n' +
-      "> * Your 'Game Details' are set to private in your Steam profile settings",
+      '> * Your "Game Details" are set to private in your [Steam profile settings](https://steamcommunity.com/my/edit/settings)',
   },
-  q18: {
-    id: 'q18',
+  {
     question: 'Will unlocking achievements affect my completion percentage on tracking sites?',
     markdown:
       '**Will unlocking achievements affect my completion percentage on tracking sites?**\n' +
       '> Yes, achievements unlocked with SGI will count toward your completion percentage on sites like Steam, TrueSteamAchievements, SteamHunters, and others that track Steam achievements.',
   },
-  q19: {
-    id: 'q19',
+  {
     question: "Can I unlock achievements for games I don't own?",
     markdown:
       "**Can I unlock achievements for games I don't own?**\n" +
       '> No. You can only unlock achievements for games that are owned by your Steam account, or shared via family share. The game must be in your library.',
   },
-  q20: {
-    id: 'q20',
+  {
     question: 'Can I unlock achievements for family shared games?',
     markdown:
       '**Can I unlock achievements for family shared games?**\n' +
       '> Yes, you can unlock achievements for family shared games by manually adding them to one of your lists using the `+` button, entering the game\'s AppID and name, and clicking "Add". Once the game is added to your list, you can unlock achievements for it like any other game.',
   },
-  q21: {
-    id: 'q21',
+  {
     question: 'Is there a way to unlock achievements in a specific order?',
     markdown:
       '**Is there a way to unlock achievements in a specific order?**\n' +
-      '> The automatic [achievement unlocker](/docs/features/achievement-unlocker) will unlock achievements in the order of completion percentage. If you need to unlock achievements in a specific order, you can manually unlock them in the [achievement manager](/docs/features/achievement-manager) in any order you like.',
+      '> By default, the automatic [achievement unlocker](/docs/features/achievement-unlocker) will unlock achievements in the order of global completion percentage.\n' +
+      '>\n' +
+      '> If you need to unlock achievements in a specific order, check [step 3 of this guide](/docs/features/achievement-unlocker#steps).',
   },
-  q22: {
-    id: 'q22',
+  { section: 'Error messages' },
+  {
     question: 'Steam is not running',
     markdown:
       '**Steam is not running**\n' +
       '> Most features of SGI require the Steam client to be running, and you must be signed in to the same account you are currently logged in to SGI with.',
   },
-  q23: {
-    id: 'q23',
+  {
     question: 'No Steam users found',
     markdown:
       '**No Steam users found**\n' +
@@ -216,29 +217,29 @@ export const faqData: Record<string, { id: string; question: string; markdown: s
       '> 4. If the value is not set to the correct path of your Steam installation, you can manually set it by right-clicking on `SteamPath`, selecting `Modify`, and entering the correct path (e.g., `C:\\Program Files (x86)\\Steam`)\n' +
       '> 5. Close the Registry Editor and restart SGI',
   },
-  q24: {
-    id: 'q24',
+  {
     question: "Add some games to your card farming list or enable 'all games' in 'settings > card farming'",
     markdown:
       "**Add some games to your card farming list or enable 'all games' in 'settings > card farming'**\n" +
-      '> Your `card farming list` is empty. You either need to add games to the list by following [these steps](/docs/features/card-farming), or enable the `all games` setting in [Settings > Card Farming](/docs/settings/card-farming).',
+      '> Your `card farming list` is empty. You either need to add games to the list by following [these steps](/docs/features/card-farming), or enable the [`Farm All Games`](/docs/settings/card-farming#farm-all-games) setting in [Settings > Card Farming](/docs/settings/card-farming).',
   },
-  q25: {
-    id: 'q25',
+  {
     question: 'There are no games in your achievement unlocker list',
     markdown:
       '**There are no games in your achievement unlocker list**\n' +
       '> Your `achievement unlocker list` is empty. You can add games to your list by following [these steps](/docs/features/achievement-unlocker)',
   },
-  q26: {
-    id: 'q26',
+  {
     question: 'Account mismatch between Steam and SGI',
     markdown:
       '**Account mismatch between Steam and SGI**\n' +
-      '> You are logged in to the Steam client with a different account than you are using in SGI. Most features in SGI require you to be logged in to the same account in both the Steam client and SGI.',
+      '> This error can be thrown for a few reasons. The most common one is:\n' +
+      '>\n' +
+      '> * You are logged in to the Steam client with a different account than you are using in SGI. Most features in SGI require you to be logged in to the same account in both the Steam client and SGI\n' +
+      '>\n' +
+      '> If you confirm that you are logged in to the same account in both SGI and the Steam client and the error message persists, please report the issue on the [GitHub Issues page](https://github.com/zevnda/steam-game-idler/issues).',
   },
-  q27: {
-    id: 'q27',
+  {
     question: 'Incorrect card farming credentials',
     markdown:
       '**Incorrect card farming credentials**\n' +
@@ -246,18 +247,16 @@ export const faqData: Record<string, { id: string; question: string; markdown: s
       "> * Steam accounts with [Family View](https://store.steampowered.com/parental/) _(parental restrictions)_ enabled will also have a `steamParental` cookie that needs to be saved in SGI's settings\n" +
       "> * In some cases, Steam accounts might have a `steamMachineAuth` cookie that needs to be saved in SGI's settings",
   },
-  q28: {
-    id: 'q28',
+  {
     question: 'Missing card farming credentials in "settings > card farming"',
     markdown:
       '**Missing card farming credentials in "settings > card farming"**\n' +
       '> SGI requires your Steam community credentials for the account that you plan to farm cards on to see if games in your library have card drops remaining or not. Read the [Steam Credentials](/docs/steam-credentials) section for more information.',
   },
-  q29: {
-    id: 'q29',
+  {
     question: 'Card farming credentials need to be updated in "settings > general"',
     markdown:
       '**Card farming credentials need to be updated in "settings > general"**\n' +
       '> From time to time the cookies you supply to SGI will expire for several reasons and they will need to be updated. Follow the [Steam Credentials](/docs/steam-credentials) steps to get the updated cookies.',
   },
-}
+]
