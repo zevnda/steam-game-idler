@@ -249,8 +249,8 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
           </div>
         </div>
 
-        {!userSettings.cardFarming.credentials && (
-          <div className='mx-6 max-w-fit'>
+        {type === 'cardFarmingList' && !userSettings.cardFarming.credentials && (
+          <div className='mx-6 mb-1 max-w-fit'>
             <Alert
               color='primary'
               variant='faded'

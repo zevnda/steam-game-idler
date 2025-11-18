@@ -213,7 +213,7 @@ export default function AchievementOrderModal({
       onOpenChange={onOpenChange}
       classNames={{
         body: '!p-0 !max-h-[60vh] !min-h-[60vh]',
-        base: 'max-w-xl',
+        base: 'max-w-xl bg-base/85 backdrop-blur-sm',
       }}
       title={
         <div>
@@ -233,7 +233,7 @@ export default function AchievementOrderModal({
             </div>
           ) : (
             <>
-              <div className='grid grid-cols-[40px_1fr] gap-2 items-center p-2 mb-2 border-b border-border sticky top-0 bg-[#18181b] z-50'>
+              <div className='grid grid-cols-[40px_1fr] gap-2 items-center p-2 mb-2 border-b border-border sticky top-0 bg-sidebar/50 z-50'>
                 <span className='text-sm font-semibold text-content select-none text-center w-[26px]'>#</span>
                 <div className='flex items-center gap-3 pl-0'>
                   <span className='text-sm font-semibold text-content text-center w-[26px]'>Unlock</span>

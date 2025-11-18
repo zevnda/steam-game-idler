@@ -48,11 +48,11 @@ export default function SignIn(): ReactElement {
       </div>
 
       {isLoading ? (
-        <div className='w-screen h-screen flex items-center justify-center'>
+        <div className='absolute w-screen h-screen flex items-center justify-center z-1'>
           <Spinner variant='simple' />
         </div>
       ) : (
-        <div className='w-screen h-screen relative overflow-hidden'>
+        <div className='w-screen h-screen relative overflow-hidden z-1'>
           <div className='flex flex-col items-center justify-center w-screen h-calc'>
             {/* Logo and glow effect */}
             <div className='relative flex items-center justify-center mb-10'>
@@ -67,7 +67,7 @@ export default function SignIn(): ReactElement {
                 }}
                 aria-hidden='true'
               />
-              <Image src='/app-logo.svg' alt='logo' width={70} height={70} className='rounded-2xl relative z-10' />
+              <Image src='/app-logo.svg' alt='logo' width={70} height={70} className='rounded-2xl relative' />
             </div>
 
             {/* User selection */}

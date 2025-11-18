@@ -54,7 +54,7 @@ export default function Settings(): ReactElement {
           tabContent:
             'font-bold truncate duration-150 text-altwhite group-data-[hover-unselected=true]:text-content group-data-[selected=true]:text-content',
           cursor: 'bg-transparent! shadow-none w-full',
-          panel: 'w-full pb-10 pl-10 ml-[260px] mt-9 h-calc overflow-y-auto',
+          panel: 'w-full pb-10 pl-10 ml-[260px] mt-9 h-calc overflow-y-auto z-39',
         }}
       >
         <Tab key='general' title={t('settings.general.title')}>

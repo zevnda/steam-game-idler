@@ -49,8 +49,6 @@ interface SupabaseContextType {
   userRoles: { [steamId: string]: string }
   // Chat maintenance mode
   chatMaintenanceMode: boolean
-  // Online users count (via presence)
-  onlineCount: number
   // Online users
   onlineUsers: ChatUser[]
   // Typing users
@@ -77,7 +75,6 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
   const [isBanned, setIsBanned] = useState(false)
   const [userRoles, setUserRoles] = useState<{ [steamId: string]: string }>({})
   const [chatMaintenanceMode, setChatMaintenanceMode] = useState(false)
-  const [onlineCount, setOnlineCount] = useState(0)
   const [onlineUsers, setOnlineUsers] = useState<ChatUser[]>([])
   const [typingUsers, setTypingUsers] = useState<ChatUser[]>([])
 
@@ -279,7 +276,6 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
           (user: ChatUser) => user.last_seen && user.last_seen >= fiveMinutesAgoISO,
         )
         setOnlineUsers(onlineUsers as ChatUser[])
-        setOnlineCount(onlineUsers.length)
 
         // Build user roles map (from all fetched users)
         const roles: { [userId: string]: string } = {}
@@ -529,7 +525,6 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
         isBanned,
         userRoles,
         chatMaintenanceMode,
-        onlineCount,
         onlineUsers,
         typingUsers,
         broadcastTyping,
