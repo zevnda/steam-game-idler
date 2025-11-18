@@ -86,6 +86,7 @@
   "automation.achievementUnlocker.running": "Prestasjon Unlocker kjører for øyeblikket",
   "automation.achievementUnlocker.initialDelay": "Starter om <1>{{timer}}</1>",
   "automation.achievementUnlocker.delay": "Den neste bragden vil bli låst opp i <1>{{timer}}</1>",
+  "automation.achievementUnlocker.currentGame": "Nåværende spill",
   "automation.achievementUnlocker.progress": "Låser opp <1>{{count}}</1> prestasjon(er) for <3>{{appName}}</3>",
   "automation.achievementUnlocker.scheduleWait": "Prestasjon opplåsning på grunn av å være utenfor planlagt tid, og vil gjenoppta igjen en gang innenfor den planlagte tiden",
   "freeGames.title": "Gratis spill",

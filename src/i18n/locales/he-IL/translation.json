@@ -86,6 +86,7 @@
   "automation.achievementUnlocker.running": "פותח ההישגים פועל כעת",
   "automation.achievementUnlocker.initialDelay": "מתחיל בעוד <1>{{timer}}</1>,",
   "automation.achievementUnlocker.delay": "ההישג הבא ייפתח ב-<1>{{timer}}</1>",
+  "automation.achievementUnlocker.currentGame": "המשחק הנוכחי",
   "automation.achievementUnlocker.progress": "פותח <1>{{count}}</1> הישג(ים) עבור <3>{{appName}}</3>,",
   "automation.achievementUnlocker.scheduleWait": "נעילת הישגים מושהית עקב הימצאות מחוץ לזמן המתוזמן ותתחדש שוב לאחר הכניסה לזמן המתוזמן,",
   "freeGames.title": "משחקים בחינם,",

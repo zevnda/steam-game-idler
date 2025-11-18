@@ -86,6 +86,7 @@
   "automation.achievementUnlocker.running": "Le Déverrouillage du Succès est en cours d'exécution",
   "automation.achievementUnlocker.initialDelay": "Démarrage dans <1>{{timer}}</1>",
   "automation.achievementUnlocker.delay": "La prochaine réalisation sera débloquée dans <1>{{timer}}</1>",
+  "automation.achievementUnlocker.currentGame": "Jeu actuel",
   "automation.achievementUnlocker.progress": "Déblocage de <1>{{count}}</1> succès pour <3>{{appName}}</3>",
   "automation.achievementUnlocker.scheduleWait": "Le déblocage des succès est en pause car il est en dehors de l'horaire prévu et reprendra une fois dans l'horaire prévu",
   "freeGames.title": "Jeux Gratuits",

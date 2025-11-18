@@ -86,6 +86,7 @@
   "automation.achievementUnlocker.running": "Saavutettu avaaja on käynnissä",
   "automation.achievementUnlocker.initialDelay": "Aloitetaan <1>{{timer}}</1>",
   "automation.achievementUnlocker.delay": "Seuraava saavutus avataan <1>{{timer}}</1>",
+  "automation.achievementUnlocker.currentGame": "Nykyinen peli",
   "automation.achievementUnlocker.progress": "Avaamassa <1>{{count}}</1> saavutusta kohteelle <3>{{appName}}</3>",
   "automation.achievementUnlocker.scheduleWait": "Saavutus lukituksen avaamisesta taukoon, koska se on aikataulun ulkopuolella ja se jatkuu jälleen kerran aikataulun sisällä",
   "freeGames.title": "Ilmaiset Pelit",

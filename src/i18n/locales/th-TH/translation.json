@@ -86,6 +86,7 @@
   "automation.achievementUnlocker.running": "Achievement Unlocker กำลังทำงานอยู่",
   "automation.achievementUnlocker.initialDelay": "เริ่มใน <1>{{timer}}</1>",
   "automation.achievementUnlocker.delay": "ความสำเร็จถัดไปจะถูกปลดล็อคใน <1>{{timer}}</1>",
+  "automation.achievementUnlocker.currentGame": "เกมปัจจุบัน",
   "automation.achievementUnlocker.progress": "ปลดล็อกความสำเร็จ <1>{{count}}</1> สำหรับ <3>{{appName}}</3>",
   "automation.achievementUnlocker.scheduleWait": "การปลดล็อกความสำเร็จหยุดชั่วคราวเนื่องจากอยู่นอกเวลาที่กำหนดไว้และจะดำเนินการต่อเมื่ออยู่ในเวลาที่กำหนด",
   "freeGames.title": "เกมฟรี",

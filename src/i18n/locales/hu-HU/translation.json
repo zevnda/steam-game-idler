@@ -86,6 +86,7 @@
   "automation.achievementUnlocker.running": "Az Eredményfeloldó jelenleg fut",
   "automation.achievementUnlocker.initialDelay": "Indul <1>{{timer}}</1>-ban",
   "automation.achievementUnlocker.delay": "A következő eredmény feloldásához <1>{{timer}}szükséges.</1>",
+  "automation.achievementUnlocker.currentGame": "Jelenlegi játék",
   "automation.achievementUnlocker.progress": "Eredmények feloldása <1>{{count}}</1> játék számára, a(z) <3>{{appName}}</3>-nál",
   "automation.achievementUnlocker.scheduleWait": "Az eredményfeloldás szünetel a tervezett időn kívül, és újraindul, amint belép a tervezett időbe",
   "freeGames.title": "Ingyen játékok",

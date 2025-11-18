@@ -86,6 +86,7 @@
   "automation.achievementUnlocker.running": "Momentálně je spuštěn herní Unlocker",
   "automation.achievementUnlocker.initialDelay": "Začíná za <1>{{timer}}</1>",
   "automation.achievementUnlocker.delay": "Další úspěch bude odemčen v <1>{{timer}}</1>",
+  "automation.achievementUnlocker.currentGame": "Aktuální hra",
   "automation.achievementUnlocker.progress": "Odemknutí <1>{{count}}</1> úspěchů pro <3>{{appName}}</3>",
   "automation.achievementUnlocker.scheduleWait": "Úspěch odemknutí pozastaven z důvodu mimo plánovaný čas a bude pokračovat znovu uvnitř plánovaného času",
   "freeGames.title": "Bezplatné hry",

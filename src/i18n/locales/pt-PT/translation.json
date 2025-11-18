@@ -86,6 +86,7 @@
   "automation.achievementUnlocker.running": "A Desbloqueadora de Conquista está em execução",
   "automation.achievementUnlocker.initialDelay": "Começando em <1>{{timer}}</1>",
   "automation.achievementUnlocker.delay": "A próxima conquista será desbloqueada em <1>{{timer}}</1>",
+  "automation.achievementUnlocker.currentGame": "Jogo atual",
   "automation.achievementUnlocker.progress": "Desbloqueando <1>{{count}}</1> conquista(s) para <3>{{appName}}</3>",
   "automation.achievementUnlocker.scheduleWait": "Realização de conquista pausada por estar fora do horário programado e será retomada uma vez dentro do horário programado",
   "freeGames.title": "Jogos Gratuitos",

@@ -86,6 +86,7 @@
   "automation.achievementUnlocker.running": "Το Ξεκλείδωμα Επιτευγμάτων εκτελείται αυτή τη στιγμή",
   "automation.achievementUnlocker.initialDelay": "Ξεκινώντας από <1>{{timer}}</1>",
   "automation.achievementUnlocker.delay": "Το επόμενο επίτευγμα θα ξεκλειδωθεί σε <1>{{timer}}</1>",
+  "automation.achievementUnlocker.currentGame": "Τρέχον παιχνίδι",
   "automation.achievementUnlocker.progress": "Ξεκλείδωμα <1>{{count}}</1> achievement(s) για <3>{{appName}}</3>",
   "automation.achievementUnlocker.scheduleWait": "Το ξεκλείδωμα επιτεύγματος σταμάτησε λόγω του ότι βρίσκεται εκτός της προγραμματισμένης ώρας και θα συνεχιστεί ξανά μία φορά εντός της προγραμματισμένης ώρας",
   "freeGames.title": "Δωρεάν Παιχνίδια",
