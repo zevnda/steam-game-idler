@@ -59,7 +59,7 @@ export default function AdComponentTwo(): ReactElement {
           }
         })
       },
-      5 * 60 * 1000,
+      15 * 60 * 1000,
     )
 
     const iframes = document.querySelectorAll('iframe[id^="container-"]')
