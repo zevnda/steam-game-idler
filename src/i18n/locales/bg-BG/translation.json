@@ -86,6 +86,7 @@
   "automation.achievementUnlocker.running": "Отключването на постиженията в момента работи",
   "automation.achievementUnlocker.initialDelay": "Започва в <1>{{timer}}</1>",
   "automation.achievementUnlocker.delay": "Следващото постижение ще бъде отключено след <1>{{timer}}</1>",
+  "automation.achievementUnlocker.currentGame": "Текуща игра",
   "automation.achievementUnlocker.progress": "Отключвам <1>{{count}}</1> постижение(я) за <3>{{appName}}</3>",
   "automation.achievementUnlocker.scheduleWait": "Отключването на постижения е паузирано поради това, че е извън разписаното време и ще се възобнови, когато влезе в разписаното време",
   "freeGames.title": "Безплатни игри",

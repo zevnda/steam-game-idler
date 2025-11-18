@@ -86,6 +86,7 @@
   "automation.achievementUnlocker.running": "Præstationsoplåsning kører i øjeblikket",
   "automation.achievementUnlocker.initialDelay": "Starter i <1>{{timer}}</1>",
   "automation.achievementUnlocker.delay": "Det næste resultat vil blive låst op i <1>{{timer}}</1>",
+  "automation.achievementUnlocker.currentGame": "Nuværende spil",
   "automation.achievementUnlocker.progress": "Låser op for <1>{{count}}</1> gennemførelse(r) for <3>{{appName}}</3>",
   "automation.achievementUnlocker.scheduleWait": "Præstationsoplåsning på pause på grund af at være uden for det planlagte tidspunkt og vil genoptage igen en gang inde i det planlagte tidspunkt",
   "freeGames.title": "Gratis Spil",

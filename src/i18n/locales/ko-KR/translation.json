@@ -86,6 +86,7 @@
   "automation.achievementUnlocker.running": "현재 Achievement Unlocker가 실행 중입니다.",
   "automation.achievementUnlocker.initialDelay": "<1>{{timer}}</1>초 후 시작",
   "automation.achievementUnlocker.delay": "다음 업적은 <1>{{timer}}에서 잠금 해제됩니다.</1>",
+  "automation.achievementUnlocker.currentGame": "현재 게임",
   "automation.achievementUnlocker.progress": "<3>{{appName}}</3>의 <1>{{count}}</1>개 업적 해제 중",
   "automation.achievementUnlocker.scheduleWait": "예약된 시간 외에 있어 업적 해제가 일시 중지되었으며, 예약된 시간 내에 다시 재개됩니다",
   "freeGames.title": "무료 게임",

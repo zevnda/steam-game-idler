@@ -86,6 +86,7 @@
   "automation.achievementUnlocker.running": "成就解鎖器正在運行",
   "automation.achievementUnlocker.initialDelay": "開始於 <1>{{timer}}</1>",
   "automation.achievementUnlocker.delay": "下一個成就將在<1>{{timer}}中解鎖</1>",
+  "automation.achievementUnlocker.currentGame": "目前遊戲",
   "automation.achievementUnlocker.progress": "為 <3>{{appName}}</3> 解鎖 <1>{{count}}</1> 個成就",
   "automation.achievementUnlocker.scheduleWait": "由於超出預定時間，成就解鎖暫停，待進入預定時間後將再次繼續",
   "freeGames.title": "免費遊戲",

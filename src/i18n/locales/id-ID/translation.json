@@ -86,6 +86,7 @@
   "automation.achievementUnlocker.running": "Pembuka Prestasi sedang berjalan",
   "automation.achievementUnlocker.initialDelay": "Dimulai dalam <1>{{timer}}</1>",
   "automation.achievementUnlocker.delay": "Prestasi berikutnya akan dibuka di <1>{{timer}}</1>",
+  "automation.achievementUnlocker.currentGame": "Permainan Saat Ini",
   "automation.achievementUnlocker.progress": "Membuka <1>{{count}}</1> pencapaian(s) untuk <3>{{appName}}</3>",
   "automation.achievementUnlocker.scheduleWait": "Pembukaan pencapaian dijeda karena berada di luar waktu yang dijadwalkan dan akan dilanjutkan lagi saat masuk ke waktu yang dijadwalkan",
   "freeGames.title": "Game Gratis",

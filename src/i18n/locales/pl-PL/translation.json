@@ -86,6 +86,7 @@
   "automation.achievementUnlocker.running": "Odblokowanie Osiągnięć jest aktualnie uruchomione",
   "automation.achievementUnlocker.initialDelay": "Początek za <1>{{timer}}</1>",
   "automation.achievementUnlocker.delay": "Następne osiągnięcie zostanie odblokowane za <1>{{timer}}</1>",
+  "automation.achievementUnlocker.currentGame": "Aktualna gra",
   "automation.achievementUnlocker.progress": "Odblokowuję <1>{{count}}</1> osiągnięcie(-cia) dla <3>{{appName}}</3>",
   "automation.achievementUnlocker.scheduleWait": "Odblokowanie osiągnięć wstrzymane z powodu zaplanowanego czasu, odblokowywanie rozpocznie się ponownie z zaplanowanym czasie",
   "freeGames.title": "Darmowe gry",

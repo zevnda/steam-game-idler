@@ -86,6 +86,7 @@
   "automation.achievementUnlocker.running": "実績アンロッカーは現在実行中です",
   "automation.achievementUnlocker.initialDelay": "<1>{{timer}}</1>から開始",
   "automation.achievementUnlocker.delay": "次の実績は<1>{{timer}}</1>でアンロックされます",
+  "automation.achievementUnlocker.currentGame": "現在のゲーム",
   "automation.achievementUnlocker.progress": "<1>{{count}}</1> の実績<3>{{appName}}</3> のロックを解除する",
   "automation.achievementUnlocker.scheduleWait": "アチーブメントのロック解除は予定時間外のため一時停止され、再び予定時間内に再開されます",
   "freeGames.title": "無料ゲーム",

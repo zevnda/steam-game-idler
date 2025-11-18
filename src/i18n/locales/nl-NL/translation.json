@@ -86,6 +86,7 @@
   "automation.achievementUnlocker.running": "Prestatie Unlocker is momenteel actief",
   "automation.achievementUnlocker.initialDelay": "Vanaf <1>{{timer}}</1>",
   "automation.achievementUnlocker.delay": "De volgende prestatie zal worden ontgrendeld in <1>{{timer}}</1>",
+  "automation.achievementUnlocker.currentGame": "Huidige spel",
   "automation.achievementUnlocker.progress": "Ontgrendelen <1>{{count}}</1> prestatie(s) voor <3>{{appName}}</3>",
   "automation.achievementUnlocker.scheduleWait": "Prestatie ontgrendelen onderbroken vanwege het buiten de geplande tijd vallen en zal opnieuw worden hervat zodra het binnen de geplande tijd is",
   "freeGames.title": "Gratis Spellen",

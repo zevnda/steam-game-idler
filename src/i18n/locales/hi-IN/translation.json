@@ -86,6 +86,7 @@
   "automation.achievementUnlocker.running": "उपलब्धि अनलॉकर वर्तमान में चल रहा है",
   "automation.achievementUnlocker.initialDelay": "<1>{{timer}}</1> में शुरू हो रहा है",
   "automation.achievementUnlocker.delay": "अगली उपलब्धि <1>{{timer}}में अनलॉक होगी</1>",
+  "automation.achievementUnlocker.currentGame": "वर्तमान खेल",
   "automation.achievementUnlocker.progress": "<1>{{count}}</1> उपलब्धि(यां) को <3>{{appName}}</3> के लिए अनलॉक कर रहा है",
   "automation.achievementUnlocker.scheduleWait": "उपलब्धि अनलॉकिंग अनुसूचित समय से बाहर होने के कारण रुकी हुई है और अनुसूचित समय में फिर से शुरू होगी",
   "freeGames.title": "मुफ्त गेम्स",
