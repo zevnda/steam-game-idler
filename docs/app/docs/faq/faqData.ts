@@ -7,11 +7,12 @@ export const faqData: Record<string, { id: string; question: string; markdown: s
       '**Why are some games not showing up in my games list in SGI?**\n' +
       '> There are several reasons why a game may not appear in your SGI games list:\n' +
       '> * Family shared games don\'t appear in the games list by default, but you can add them to any of the lists *(Card Farming, Achievement Unlocker, etc..)*  by using the `+` button, entering the game\'s AppID and name, and clicking "Add"\n' +
+      '> * Free-to-play games only appear in your library after you\'ve launched them at least once, which grants you a license. Simply clicking "Add to library" on the store page doesn\'t grant you a license\n' +
+      '> * Some demos and playtests (unvetted apps) may not show up correctly in SGI, or be able to be idled\n' +
       '> * The game may be [marked as private](https://help.steampowered.com/en/faqs/view/1150-C06F-4D62-4966) on your Steam profile\n' +
-      '> * Some demos and playtests may not show up correctly in SGI, or be able to be idled\n' +
       '> * The game may have been removed from the Steam store or your license for the game may have been revoked\n' +
       '> * The game was part of a subscription service such as an EA Play, and your subscription has expired\n' +
-      '> * Some games may have region specific restrictions that prevent them from being displayed',
+      '> * Some games may have region specific restrictions and you may not own the game in your current region\n',
   },
   q2: {
     id: 'q2',
@@ -27,14 +28,16 @@ export const faqData: Record<string, { id: string; question: string; markdown: s
     question: 'What makes this different from other Steam tools?',
     markdown:
       '**What makes this different from other Steam tools?**\n' +
-      '> SGI combines multiple useful features from a range of other tools, while other tools may focus on a single aspect. SGI offers card farming, achievement management, trading card management, and playtime boosting in a single, user-friendly interface.',
+      '> Other Steam tools available today only specialize in one specific feature. Some require you to buy a subscription, download and install add-ons and plugins to gain access to other features, and even requiring you to use multiple applications.\n' +
+      '>\n' +
+      '> SGI streamlines this by integrating all of these features into a single free and comprehensive app with an easy-to-use interface.',
   },
   q4: {
     id: 'q4',
     question: 'Do I need an internet connection to use SGI?',
     markdown:
       '**Do I need an internet connection to use SGI?**\n' +
-      '> Yes, SGI requires an active internet connection to communicate with the Steam servers for idling games, unlocking achievements, and farming trading cards.',
+      '> Yes, SGI requires an active internet connection to communicate with the Steam servers for fetching games lists, idling games, managing achievements, farming trading cards, and more.',
   },
   q5: {
     id: 'q5',
@@ -42,14 +45,14 @@ export const faqData: Record<string, { id: string; question: string; markdown: s
       'What is the "Do you want to allow public/private networks to access this app" message when I first launched SGI?',
     markdown:
       '**What is the "Do you want to allow public/private networks to access this app" message when I first launched SGI?**\n' +
-      '> SGI needs to handle multiple inbound/outbound HTTP requests to fetch data from Steam. For SGI to function correctly you will need to accept this prompt.\n' +
+      "> SGI needs to make outbound HTTP requests to communicate with Steam's servers and check for automatic updates. For SGI to function correctly, you will need to accept this prompt.\n" +
       '>\n' +
       '> If you declined the prompt already, you will need to add SGI as an allowed app in Windows Defender Firewall:\n' +
       '>\n' +
       '> 1. Open the Windows Control Panel\n' +
       '> 2. Go to System and Security > Windows Defender Firewall\n' +
       '> 3. Click on "Allow an app or feature through Windows Defender Firewall"\n' +
-      '> 4. Click "Change settings" then "Add another app..." and then "Browse"\n' +
+      '> 4. Click "Change settings" then "Allow another app..." and then "Browse"\n' +
       '> 5. Navigate to the install directory of the app you want to add, select it, and click "Open"\n' +
       '> 6. Check the boxes for "Private" and/or "Public" networks as needed\n' +
       '> 7. Click "OK" to save the changes',
@@ -75,14 +78,15 @@ export const faqData: Record<string, { id: string; question: string; markdown: s
     question: 'Why am I not getting any card drops with the Steam card idler?',
     markdown:
       '**Why am I not getting any card drops with the Steam card idler?**\n' +
-      '> * You can only receive a limited amount of card drops per game, check "How do I know if my games have card drops remaining?" below for more information\n' +
+      '> * You can only receive a limited amount of card drops per game, check "[How do I know if my games have card drops remaining?](/docs/faq#How%20do%20I%20know%20if%20my%20games%20have%20card%20drops%20remaining?:~:text=How%20do%20I%20know%20if%20my%20games%20have%20card%20drops%20remaining%3F,-Go%20to%20https)" below for more information\n' +
       '> * New accounts, accounts with recently refunded games, or accounts with [other restrictions](https://help.steampowered.com/en/faqs/view/71D3-35C2-AD96-AA3A) might experience a delay of up to 3 hours before receiving their first card drop, or even no card drops at all\n' +
-      '> * You must be connected to the internet and signed in to the Steam client\n' +
-      '> * Free-to-play (F2P) games typically require in-game purchases to drop cards\n' +
-      "> * You need to own the game on your account. It can't be a family-shared game\n" +
-      '> * Games must not be [marked as private](https://help.steampowered.com/en/faqs/view/1150-C06F-4D62-4966)\n' +
-      "> * Paid games earned from promotions typically won't drop cards\n" +
-      '> * You must have a stable internet connection while idling for card drops to be tracked correctly',
+      '> * The Steam client must remain open and signed in to the Steam account in which you are farming cards on while farming cards\n' +
+      '> * You must have a stable internet connection while farming cards. If you lose connection, card drops may not be tracked correctly\n' +
+      '> * Free-to-play games require you to spend at least $9 USD (or equivalent) in-game to become eligible for card drops"\n' +
+      "> * Games (which usually have a price) obtained for free during promotional giveaways typically won't drop cards\n" +
+      '> * You need to own a license for the game on your account\n' +
+      '> * You can not farm cards for family shared games\n' +
+      '> * Games must not be [marked as private](https://help.steampowered.com/en/faqs/view/1150-C06F-4D62-4966)',
   },
   q9: {
     id: 'q9',
@@ -98,14 +102,14 @@ export const faqData: Record<string, { id: string; question: string; markdown: s
     question: 'How long does it take for cards to drop?',
     markdown:
       '**How long does it take for cards to drop?**\n' +
-      '> Card drop timers can be different for every game. The developer sets these timers, and they can vary from 15 minutes to 3 hours.',
+      '> Card drop timers can be different for every game. The developer sets these timers and they can vary anywhere from 10 minutes to 2 hours between drops.',
   },
   q11: {
     id: 'q11',
     question: 'Can I idle family shared games?',
     markdown:
       '**Can I idle family shared games?**\n' +
-      '> Yes, you can idle family shared games by manually adding them to one of your lists using the `+` button, entering the game\'s AppID and name, and clicking "Add". Once the game is added to your list, you can idle it like any other game.',
+      '> Yes, you can idle family shared games by manually adding them to one of your lists using the `+` button, entering the game\'s AppID and name, and clicking "Add". Once the game is added to your list, you can idle it like any other game. However, you cannot farm trading cards for family shared games.',
   },
   q12: {
     id: 'q12',
