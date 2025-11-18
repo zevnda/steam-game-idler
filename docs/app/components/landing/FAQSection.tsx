@@ -223,7 +223,7 @@ export default function FAQSection(): ReactElement {
             id='faq-heading'
           >
             FREQUENTLY ASKED{' '}
-            <span className='block text-transparent bg-clip-text bg-linear-to-r from-red-500 to-orange-500'>
+            <span className='block text-transparent bg-clip-text bg-linear-to-r from-[#ff0606] to-[#ffbd06]'>
               QUESTIONS
             </span>
           </h2>

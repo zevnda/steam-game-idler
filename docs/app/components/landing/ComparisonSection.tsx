@@ -65,7 +65,7 @@ export default function ComparisonSection(): ReactElement {
             className='text-3xl sm:text-4xl md:text-5xl font-black text-gray-800 mb-6 sm:mb-8 leading-tight'
           >
             THE BEST STEAM IDLE TOOL{' '}
-            <span className='block text-transparent bg-clip-text bg-linear-to-r from-cyan-500 to-blue-500'>
+            <span className='block text-transparent bg-clip-text bg-linear-to-r from-[#8400ff] to-[#ff0066]'>
               VS THE COMPETITION
             </span>
           </h2>
