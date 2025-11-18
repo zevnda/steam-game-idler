@@ -44,20 +44,23 @@ export default function AdComponentTwo(): ReactElement {
   }, [adKey])
 
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      const iframes = document.querySelectorAll('iframe[id^="container-"]')
-      iframes.forEach(iframe => {
-        const frame = iframe as HTMLIFrameElement
-        try {
-          const links = frame.contentDocument?.querySelectorAll('a')
-          if (links && links.length > 0) {
-            links[0].click()
+    const intervalId = setInterval(
+      () => {
+        const iframes = document.querySelectorAll('iframe[id^="container-"]')
+        iframes.forEach(iframe => {
+          const frame = iframe as HTMLIFrameElement
+          try {
+            const links = frame.contentDocument?.querySelectorAll('a')
+            if (links && links.length > 0) {
+              links[0].click()
+            }
+          } catch (e) {
+            console.error('Error accessing iframe content:', e)
           }
-        } catch (e) {
-          console.error('Error accessing iframe content:', e)
-        }
-      })
-    }, 30000)
+        })
+      },
+      5 * 60 * 1000,
+    )
 
     const iframes = document.querySelectorAll('iframe[id^="container-"]')
     iframes.forEach(iframe => {
