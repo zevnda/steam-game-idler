@@ -86,6 +86,7 @@
   "automation.achievementUnlocker.running": "Achievement Unlocker is currently running",
   "automation.achievementUnlocker.initialDelay": "Starting in <1>{{timer}}</1>",
   "automation.achievementUnlocker.delay": "The next achievement will be unlocked in <1>{{timer}}</1>",
+  "automation.achievementUnlocker.currentGame": "Current Game",
   "automation.achievementUnlocker.progress": "Unlocking <1>{{count}}</1> achievement(s) for <3>{{appName}}</3>",
   "automation.achievementUnlocker.scheduleWait": "Achievement unlocking paused due to being outside of the scheduled time and will resume again once inside the scheduled time",
   "freeGames.title": "Free Games",
