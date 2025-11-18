@@ -39,10 +39,12 @@ export default function HeroSection(): ReactElement {
       {/* Gradient overlay for smooth transition */}
       <div className='absolute inset-0 bg-linear-to-b from-white via-transparent to-white' />
 
-      {/* Floating feature badges - positioned across entire hero section */}
       <div className='absolute inset-0 pointer-events-none z-20'>
         {/* Top left area */}
-        <div className='absolute hidden xl:block top-14 left-4 md:left-12 lg:left-16 transform -rotate-12 animate-float delay-500'>
+        <div
+          className='absolute hidden xl:block top-14 left-4 md:left-12 lg:left-16 transform -rotate-12 animate-float'
+          style={{ animationDelay: '0.1s' }}
+        >
           <div className='relative p-px bg-linear-to-r from-purple-400 via-pink-400 to-yellow-400 rounded-xl'>
             <div className='bg-white/95 rounded-xl px-4 py-3 shadow-xl max-w-xs'>
               <div className='flex items-start space-x-3'>
@@ -56,7 +58,10 @@ export default function HeroSection(): ReactElement {
         </div>
 
         {/* Top right area */}
-        <div className='absolute hidden xl:block top-12 right-4 md:right-12 lg:right-20 transform rotate-6 animate-float delay-200'>
+        <div
+          className='absolute hidden xl:block top-12 right-4 md:right-12 lg:right-20 transform rotate-6 animate-float'
+          style={{ animationDelay: '0.5s' }}
+        >
           <div className='relative p-px bg-linear-to-r from-green-400 via-blue-400 to-purple-400 rounded-xl'>
             <div className='bg-white/95 rounded-xl px-4 py-3 shadow-xl max-w-xs'>
               <div className='flex items-start space-x-3'>
@@ -72,7 +77,10 @@ export default function HeroSection(): ReactElement {
         </div>
 
         {/* Bottom left area */}
-        <div className='absolute hidden xl:block bottom-16 left-6 md:left-16 lg:left-24 transform rotate-6 animate-float delay-2000'>
+        <div
+          className='absolute hidden xl:block bottom-16 left-6 md:left-16 lg:left-24 transform rotate-6 animate-float'
+          style={{ animationDelay: '0.6s' }}
+        >
           <div className='relative p-px bg-linear-to-r from-pink-400 via-rose-400 to-orange-400 rounded-xl'>
             <div className='bg-white/95 rounded-xl px-4 py-3 shadow-xl max-w-xs'>
               <div className='flex items-start space-x-3'>
@@ -88,7 +96,10 @@ export default function HeroSection(): ReactElement {
         </div>
 
         {/* Bottom right area */}
-        <div className='absolute hidden xl:block bottom-20 right-6 md:right-16 lg:right-28 transform -rotate-12 animate-float delay-2500'>
+        <div
+          className='absolute hidden xl:block bottom-20 right-6 md:right-16 lg:right-28 transform -rotate-12 animate-float'
+          style={{ animationDelay: '1.0s' }}
+        >
           <div className='relative p-px bg-linear-to-r from-orange-400 via-amber-400 to-yellow-400 rounded-xl'>
             <div className='bg-white/95 rounded-xl px-4 py-3 shadow-xl max-w-xs'>
               <div className='flex items-start space-x-3'>
@@ -101,7 +112,10 @@ export default function HeroSection(): ReactElement {
           </div>
         </div>
 
-        <div className='hidden xl:block absolute top-24 left-1/3 transform rotate-3 animate-float delay-3000'>
+        <div
+          className='hidden xl:block absolute top-24 left-1/3 transform rotate-3 animate-float'
+          style={{ animationDelay: '1s' }}
+        >
           <div className='relative p-px bg-linear-to-r from-indigo-400 via-purple-400 to-blue-400 rounded-xl'>
             <div className='bg-white/95 rounded-xl px-4 py-3 shadow-xl max-w-xs'>
               <div className='flex items-start space-x-3'>
@@ -116,7 +130,10 @@ export default function HeroSection(): ReactElement {
           </div>
         </div>
 
-        <div className='hidden xl:block absolute bottom-20 left-1/2 transform -translate-x-1/2 -rotate-3 animate-float delay-3500'>
+        <div
+          className='hidden xl:block absolute bottom-20 left-1/2 transform -translate-x-1/2 -rotate-3 animate-float'
+          style={{ animationDelay: '1.0s' }}
+        >
           <div className='relative p-px bg-linear-to-r from-rose-400 via-pink-400 to-purple-400 rounded-xl'>
             <div className='bg-white/95 rounded-xl px-4 py-3 shadow-xl max-w-xs'>
               <div className='flex items-start space-x-3'>
