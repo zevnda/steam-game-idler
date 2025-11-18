@@ -6,7 +6,6 @@ import { cn } from '@heroui/react'
 import { useCallback, useRef, useState } from 'react'
 
 import ChatBanned from '@/components/chat/ChatBanned'
-import ChatHeader from '@/components/chat/ChatHeader'
 import ChatInput from '@/components/chat/ChatInput'
 import ChatMaintenance from '@/components/chat/ChatMaintenance'
 import ChatMessages from '@/components/chat/ChatMessages'
@@ -128,7 +127,7 @@ export default function ChatBox(): ReactElement {
     return (
       <div
         className={cn(
-          'flex flex-col h-screen ease-in-out',
+          'flex flex-col h-screen ease-in-out pt-9',
           sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]',
         )}
         style={{
@@ -136,7 +135,6 @@ export default function ChatBox(): ReactElement {
           transitionProperty: 'width',
         }}
       >
-        <ChatHeader />
         <ChatMaintenance />
       </div>
     )
@@ -146,7 +144,7 @@ export default function ChatBox(): ReactElement {
     return (
       <div
         className={cn(
-          'flex flex-col h-screen ease-in-out',
+          'flex flex-col h-screen ease-in-out pt-9',
           sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]',
         )}
         style={{
@@ -154,7 +152,6 @@ export default function ChatBox(): ReactElement {
           transitionProperty: 'width',
         }}
       >
-        <ChatHeader />
         <ChatBanned />
       </div>
     )
@@ -164,7 +161,7 @@ export default function ChatBox(): ReactElement {
     return (
       <div
         className={cn(
-          'flex flex-col h-screen ease-in-out',
+          'flex flex-col h-screen ease-in-out pt-9',
           sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]',
         )}
         style={{
@@ -172,7 +169,6 @@ export default function ChatBox(): ReactElement {
           transitionProperty: 'width',
         }}
       >
-        <ChatHeader />
         {/* Pinned message at top */}
         <div className='relative flex flex-1 overflow-hidden'>
           <div className='flex flex-col flex-1'>

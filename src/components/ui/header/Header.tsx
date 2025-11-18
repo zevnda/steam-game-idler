@@ -32,7 +32,7 @@ export default function Header(): ReactElement {
   return (
     <div
       className={cn(
-        'absolute top-0 right-0 select-none pr-0 h-9 z-48 ease-in-out bg-transparent',
+        'absolute top-0 right-0 select-none pr-0 h-9 z-48 ease-in-out',
         sidebarCollapsed ? 'w-[calc(100vw-56px)]' : activePage === 'setup' ? 'w-full' : 'w-calc',
       )}
       style={{

@@ -51,7 +51,7 @@ export default function ChatMessageActions({
   }
 
   return (
-    <div className='absolute right-4 -top-3 flex opacity-0 group-hover:opacity-100 z-10 bg-sidebar-hover rounded-sm border border-border'>
+    <div className='absolute right-4 -top-3 flex opacity-0 group-hover:opacity-100 z-10 bg-item-hover rounded-sm border border-border'>
       {isAdmin && (
         <Button
           isIconOnly

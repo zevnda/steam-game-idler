@@ -122,7 +122,9 @@ export default function SideBar(): ReactElement {
     return (
       <div
         className={cn(
-          'px-1.5 py-1 mt-2 text-[10px] font-bold text-content uppercase tracking-wider select-none transition-all ease-in-out whitespace-nowrap truncate',
+          'px-1.5 py-1 mb-0 text-[12px] font-bold text-content uppercase tracking-wider select-none',
+          'transition-all ease-in-out whitespace-nowrap truncate',
+          header !== 'Games' ? 'mt-4' : 'mt-0',
         )}
       >
         {header}
@@ -146,7 +148,7 @@ export default function SideBar(): ReactElement {
           <div
             className={cn(
               'px-1.5 py-1 rounded-lg duration-150 cursor-pointer active:scale-95 border border-transparent w-full overflow-hidden',
-              isCurrentPage ? 'bg-sidebar-active text-content' : 'text-altwhite hover:bg-sidebar-hover',
+              isCurrentPage ? 'bg-item-active text-content' : 'text-altwhite hover:bg-item-hover',
               item.customClassName,
             )}
             onClick={() => {
@@ -194,7 +196,7 @@ export default function SideBar(): ReactElement {
     <>
       <div
         className={cn(
-          'relative flex flex-col h-screen z-40 bg-sidebar select-none ease-in-out',
+          'relative flex flex-col h-screen z-40 bg-sidebar/50 select-none ease-in-out',
           sidebarCollapsed ? 'min-w-14 max-w-14' : 'min-w-[250px] max-w-[250px]',
         )}
         style={{
@@ -228,7 +230,7 @@ export default function SideBar(): ReactElement {
                 searchContent.achievementQueryValue ||
                 searchContent.statisticQueryValue
                 ? 'bg-dynamic/10 hover:bg-dynamic/20'
-                : 'bg-sidebar-active hover:bg-sidebar-active/90',
+                : 'bg-item-active hover:bg-item-active/90',
             )}
             onPress={() => setShowSearchModal(true)}
           >
@@ -274,7 +276,7 @@ export default function SideBar(): ReactElement {
         >
           <div
             className={cn(
-              'flex items-center w-full bg-sidebar-active p-2 min-h-[50px] rounded-lg',
+              'flex items-center w-full bg-item-active p-2 min-h-[50px] rounded-lg',
               sidebarCollapsed ? 'flex-col gap-2' : 'flex-row gap-3',
             )}
           >
