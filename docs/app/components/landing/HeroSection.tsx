@@ -5,11 +5,12 @@ import type { ReactElement } from 'react'
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { FaArrowRight, FaWindows } from 'react-icons/fa'
+import { FaArrowRight, FaStar, FaWindows } from 'react-icons/fa'
 import { FiBook, FiGithub } from 'react-icons/fi'
 
 export default function HeroSection(): ReactElement {
   const [latestVersion, setLatestVersion] = useState('1.2.3')
+  const [stars, setStars] = useState<number | null>(null)
 
   useEffect(() => {
     try {
@@ -22,6 +23,20 @@ export default function HeroSection(): ReactElement {
         })
     } catch (error) {
       console.error('Error fetching latest version:', error)
+    }
+  }, [])
+
+  useEffect(() => {
+    try {
+      fetch('https://api.github.com/repos/zevnda/steam-game-idler')
+        .then(response => response.json())
+        .then(data => {
+          if (typeof data.stargazers_count === 'number') {
+            setStars(data.stargazers_count)
+          }
+        })
+    } catch (error) {
+      console.error('Error fetching GitHub stars:', error)
     }
   }, [])
 
@@ -113,7 +128,7 @@ export default function HeroSection(): ReactElement {
         </div>
 
         <div
-          className='hidden xl:block absolute top-24 left-1/3 transform rotate-3 animate-float'
+          className='hidden xl:block absolute top-20 left-1/3 transform rotate-3 animate-float'
           style={{ animationDelay: '1s' }}
         >
           <div className='relative p-px bg-linear-to-r from-indigo-400 via-purple-400 to-blue-400 rounded-xl'>
@@ -154,10 +169,22 @@ export default function HeroSection(): ReactElement {
         <div className='grid lg:grid-cols-2 gap-6 lg:gap-12 items-center min-h-screen py-12 sm:py-16 md:py-20'>
           {/* Left column - Text content */}
           <div className='space-y-4 sm:space-y-6 md:space-y-8 text-center lg:text-left'>
-            {/* Badge */}
-            <div className='inline-flex items-center px-3 py-1.5 sm:px-4 sm:py-2 bg-linear-to-r from-green-200 to-blue-200 border border-green-300 rounded-full text-green-800 text-xs sm:text-sm font-medium shadow-lg'>
-              <span className='w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-500 rounded-full mr-2 animate-pulse' />v
-              {latestVersion} Available
+            {/* Badges */}
+            <div className='flex flex-wrap gap-2 justify-center lg:justify-start'>
+              <div className='inline-flex items-center px-3 py-1.5 sm:px-4 sm:py-2 bg-linear-to-r from-green-200 to-blue-200 border border-green-300 rounded-full text-green-800 text-xs sm:text-sm font-medium shadow-lg'>
+                <span className='w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-500 rounded-full mr-2 animate-pulse' />v
+                {latestVersion} Available
+              </div>
+
+              <Link href='https://github.com/zevnda/steam-game-idler'>
+                <div className='inline-flex items-center px-3 py-1.5 sm:px-4 sm:py-2 bg-linear-to-r from-yellow-100 to-yellow-300 border border-yellow-300 rounded-full text-yellow-800 text-xs sm:text-sm font-medium shadow-lg'>
+                  <FaStar className='text-yellow-500 mr-1' />
+                  Star on GitHub{' '}
+                  <span className='bg-yellow-400 font-semibold rounded-full px-1.5 ml-1 '>
+                    {stars !== null ? stars.toLocaleString() : '...'}
+                  </span>
+                </div>
+              </Link>
             </div>
 
             {/* Main heading */}
