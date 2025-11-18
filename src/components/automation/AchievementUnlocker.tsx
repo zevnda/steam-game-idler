@@ -147,7 +147,7 @@ export default function AchievementUnlocker({ activePage }: { activePage: Active
 
             {!isInitialDelay && !isComplete && !isWaitingForSchedule && (
               <div className='flex flex-col items-center gap-4'>
-                <p className='text-xl font-black'>Current Game</p>
+                <p className='text-xl font-black'>{t('automation.achievementUnlocker.currentGame')}</p>
 
                 <Image
                   src={`https://cdn.cloudflare.steamstatic.com/steam/apps/${currentGame?.appid}/header.jpg`}

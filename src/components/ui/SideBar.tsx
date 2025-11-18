@@ -297,17 +297,31 @@ export default function SideBar(): ReactElement {
                 </div>
                 <div className='flex items-center gap-2'>
                   <div
-                    className='text-altwhite hover:bg-white/7 rounded-full p-1.5 duration-150 cursor-pointer'
-                    onClick={() => {
-                      setShowAchievements(false)
-                      setActivePage('settings')
-                    }}
+                    className={cn(
+                      'text-altwhite hover:bg-white/7 rounded-full p-1.5 duration-150',
+                      isCardFarming || isAchievementUnlocker
+                        ? 'opacity-40 hover:bg-transparent hover:shadow-none'
+                        : 'cursor-pointer active:scale-95',
+                    )}
+                    onClick={
+                      !(isCardFarming || isAchievementUnlocker)
+                        ? () => {
+                            setShowAchievements(false)
+                            setActivePage('settings')
+                          }
+                        : undefined
+                    }
                   >
                     <TbSettings fontSize={20} />
                   </div>
                   <div
-                    className='text-altwhite hover:text-danger hover:bg-danger/20 rounded-full p-1.5 duration-150 cursor-pointer'
-                    onClick={openConfirmation}
+                    className={cn(
+                      'text-altwhite rounded-full p-1.5 duration-150',
+                      isCardFarming || isAchievementUnlocker
+                        ? 'opacity-40'
+                        : 'hover:bg-danger/20 hover:text-danger cursor-pointer active:scale-95',
+                    )}
+                    onClick={!(isCardFarming || isAchievementUnlocker) ? openConfirmation : undefined}
                   >
                     <FiLogOut fontSize={18} />
                   </div>
@@ -317,17 +331,31 @@ export default function SideBar(): ReactElement {
             {sidebarCollapsed && (
               <div className='flex flex-col items-center gap-2'>
                 <div
-                  className='text-altwhite hover:bg-item-hover rounded-full p-1.5 duration-150 cursor-pointer'
-                  onClick={() => {
-                    setShowAchievements(false)
-                    setActivePage('settings')
-                  }}
+                  className={cn(
+                    'text-altwhite hover:bg-white/7 rounded-full p-1.5 duration-150',
+                    isCardFarming || isAchievementUnlocker
+                      ? 'opacity-40 hover:bg-transparent hover:shadow-none'
+                      : 'cursor-pointer active:scale-95',
+                  )}
+                  onClick={
+                    !(isCardFarming || isAchievementUnlocker)
+                      ? () => {
+                          setShowAchievements(false)
+                          setActivePage('settings')
+                        }
+                      : undefined
+                  }
                 >
                   <TbSettings fontSize={20} />
                 </div>
                 <div
-                  className='text-altwhite hover:text-danger hover:bg-danger/20 rounded-full p-1.5 duration-150 cursor-pointer'
-                  onClick={openConfirmation}
+                  className={cn(
+                    'text-altwhite rounded-full p-1.5 duration-150',
+                    isCardFarming || isAchievementUnlocker
+                      ? 'opacity-40'
+                      : 'hover:bg-danger/20 hover:text-danger cursor-pointer active:scale-95',
+                  )}
+                  onClick={!(isCardFarming || isAchievementUnlocker) ? openConfirmation : undefined}
                 >
                   <FiLogOut fontSize={18} />
                 </div>
