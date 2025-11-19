@@ -51,10 +51,15 @@ export default function CopyableFAQ({ id, question, children }: Props): ReactEle
   }
 
   function handleCopy(): void {
-    // Use the markdown from the dictionary if available
-    const entry = faqData[id]
+    // Find the entry by question string
+    const entry = faqData.find(
+      (e): e is { question: string; markdown: string } => 'question' in e && e.question === question,
+    )
+    const makeAbsolute = (markdown: string): string =>
+      markdown.replace(/(\]\()\/([^)\s]+)\)/g, (_match, prefix, path) => `${prefix}https://steamgameidler.com/${path})`)
+
     if (entry && entry.markdown) {
-      copyToClipboard(entry.markdown)
+      copyToClipboard(makeAbsolute(entry.markdown))
       return
     }
     // fallback: copy as before
@@ -75,7 +80,7 @@ export default function CopyableFAQ({ id, question, children }: Props): ReactEle
       details.open = false
     }
     const text = `**${question}**\n${answer}`
-    copyToClipboard(text)
+    copyToClipboard(makeAbsolute(text))
   }
 
   return (

@@ -1,6 +1,18 @@
 @import 'tailwindcss';
 @config "../tailwind.config.mjs";
 
+.light {
+  --blockquote-text: #4a5568;
+  --code-bg: #f5f5f5ff;
+  --code-border: #d4d4d4ff;
+}
+
+.dark {
+  --blockquote-text: #989fa7ff;
+  --code-bg: #2b2b2bff;
+  --code-border: #3c3c3cff;
+}
+
 a {
   text-decoration: none;
 }
@@ -55,18 +67,18 @@ details h3 {
 }
 
 .markdown-body code {
-  background-color: #2b2b2bff;
+  background-color: var(--code-bg);
   padding: 1px 3px;
   border-radius: 4px;
   font-family: 'Source Code Pro', monospace;
-  border: 1px solid #3c3c3cff;
+  border: 1px solid var(--code-border);
 }
 
 .markdown-body blockquote {
   border-left: 2px solid #989fa7ff;
   padding-left: 1.5em;
   padding-right: 0.5rem;
-  color: #989fa7ff;
+  color: var(--blockquote-text);
   margin-left: 0;
   margin-right: 0;
   line-height: 2;
