@@ -39,36 +39,8 @@ permissions:
   pull-requests: write
 
 jobs:
-  validate_changelog:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Check if version exists in changelog
-        run: |
-          VERSION="${{ github.event.inputs.version }}"
-          
-          # Check if the version exists as a comment in the changelog
-          if ! grep -q "<!-- $VERSION -->" CHANGELOG.md; then
-            echo "❌ Error: Version $VERSION not found in CHANGELOG.md"
-            echo ""
-            echo "Please add the following section to CHANGELOG.md before creating a release:"
-            echo ""
-            echo "<!-- $VERSION -->"
-            echo ""
-            echo "### Changes in v$VERSION"
-            echo ""
-            echo "- Add your changes here"
-            echo ""
-            exit 1
-          fi
-          
-          echo "✅ Version $VERSION found in CHANGELOG.md"
-
   fetch_previous_version:
     runs-on: ubuntu-latest
-    needs: validate_changelog
     outputs:
       previous_version: ${{ steps.get_version.outputs.previous_version }}
     steps:
@@ -79,9 +51,51 @@ jobs:
           echo "Found previous version: $PREVIOUS_VERSION"
           echo "previous_version=$PREVIOUS_VERSION" >> $GITHUB_OUTPUT
 
+  validate_version:
+    runs-on: ubuntu-latest
+    needs: fetch_previous_version
+    steps:
+      - name: Validate semantic version format
+        id: validate_format
+        uses: matt-usurp/validate-semver@v2
+        with:
+          version: ${{ github.event.inputs.version }}
+      
+      - name: Validate version increment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prev = '${{ needs.fetch_previous_version.outputs.previous_version }}'.replace(/^v/, '');
+            const next = '${{ github.event.inputs.version }}'.replace(/^v/, '');
+            
+            const [prevMajor, prevMinor, prevPatch] = prev.split('.').map(Number);
+            const [nextMajor, nextMinor, nextPatch] = next.split('.').map(Number);
+            
+            // Check if it's a valid increment
+            const isMajor = nextMajor > prevMajor && nextMinor === 0 && nextPatch === 0;
+            const isMinor = nextMajor === prevMajor && nextMinor > prevMinor && nextPatch === 0;
+            const isPatch = nextMajor === prevMajor && nextMinor === prevMinor && nextPatch === prevPatch + 1;
+            
+            if (!isMajor && !isMinor && !isPatch) {
+              const validOptions = [
+                `${prevMajor}.${prevMinor}.${prevPatch + 1} (patch)`,
+                `${prevMajor}.${prevMinor + 1}.0 (minor)`,
+                `${prevMajor + 1}.0.0 (major)`
+              ];
+              
+              core.setFailed(
+                `❌ Invalid version increment!\n\n` +
+                `Current: ${prev}\n` +
+                `Attempted: ${next}\n\n` +
+                `Valid options:\n${validOptions.map(v => `  • ${v}`).join('\n')}`
+              );
+            }
+            
+            console.log(`✅ Valid version increment: ${prev} → ${next}`);
+
   build_dotnet_libs:
     runs-on: windows-latest
-    needs: [fetch_previous_version, validate_changelog]
+    needs: [fetch_previous_version]
     timeout-minutes: 15
     steps:
       - name: Checkout repository
@@ -132,7 +146,7 @@ jobs:
           retention-days: 1
 
   build_release_bundle:
-    needs: [build_dotnet_libs, fetch_previous_version, validate_changelog]
+    needs: [build_dotnet_libs, fetch_previous_version]
     timeout-minutes: 30
     runs-on: windows-latest
     steps:
@@ -295,40 +309,36 @@ jobs:
             latest.json
           sign-commits: true
 
-      - name: Extract current version changelog
-        run: |
-          $newVersion = "${{ github.event.inputs.version }}"
-          $changelog = Get-Content CHANGELOG.md -Raw
-
-          Write-Host "Looking for version: $newVersion in changelog"
-
-          $pattern = "(?ms)<!-- $newVersion -->(.*?)(?=<!--|\z)"
-          $match = [regex]::Match($changelog, $pattern)
-
-          if ($match.Success) {
-            $versionChangelog = $match.Groups[1].Value.Trim()
+      - name: Generate release notes
+        id: generate_notes
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data } = await github.rest.repos.generateReleaseNotes({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_name: '${{ github.event.inputs.version }}',
+              previous_tag_name: '${{ needs.fetch_previous_version.outputs.previous_version }}'
+            });
             
-            if ($versionChangelog.Length -gt 0) {
-              $releaseContent = "$versionChangelog"
-              $releaseContent | Out-File -FilePath "./release_notes.md" -Encoding utf8
-              
-              if (Test-Path "./release_notes.md") {
-                $fileContent = Get-Content "./release_notes.md" -Raw
-                Write-Host "File created with $($fileContent.Length) characters"
-              } else {
-                Write-Error "Failed to create release_notes.md file"
-              }
-            } else {
-              Write-Host "Warning: Extracted changelog was empty after trimming"
-              "No detailed changelog available for this version." | Out-File -FilePath "./release_notes.md" -Encoding utf8
-            }
-          } else {
-            Write-Host "No changelog found for version $newVersion"
-            "No detailed changelog available for this version." | Out-File -FilePath "./release_notes.md" -Encoding utf8
-          }
-
-          Get-ChildItem "./release_notes.md" | Select-Object FullName, Length
-        shell: pwsh
+            // Filter out version bump PRs
+            let body = data.body;
+            const lines = body.split('\n');
+            const filtered = lines.filter(line => {
+              // Remove lines containing "chore(version): bump to"
+              return !line.includes('chore(version): bump to');
+            });
+            
+            const cleanedBody = filtered.join('\n');
+            
+            // Save to file
+            const fs = require('fs');
+            fs.writeFileSync('./release_notes.md', cleanedBody);
+            
+            console.log('Generated release notes:');
+            console.log(cleanedBody);
+            
+            return cleanedBody;
 
       - name: Prepare portable executable
         run: |
