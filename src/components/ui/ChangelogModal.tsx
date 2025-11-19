@@ -7,11 +7,14 @@ import { useTranslation } from 'react-i18next'
 import { TbStarFilled } from 'react-icons/tb'
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
+import remarkGfm from 'remark-gfm'
+
+import 'github-markdown-css/github-markdown-light.css'
 
 import { useUpdateContext } from '@/components/contexts/UpdateContext'
 import CustomModal from '@/components/ui/CustomModal'
 import ExtLink from '@/components/ui/ExtLink'
-import useChangelog, { transformIssueReferences, transformLinks, transformMentions } from '@/hooks/ui/useChangelog'
+import useChangelog from '@/hooks/ui/useChangelog'
 
 export default function ChangelogModal(): ReactElement {
   const { t } = useTranslation()
@@ -31,7 +34,10 @@ export default function ChangelogModal(): ReactElement {
       isOpen={isOpen}
       onOpenChange={onOpenChange}
       hideCloseButton={true}
-      className='min-w-[830px] max-h-[480px]'
+      className='min-w-[830px]'
+      classNames={{
+        body: '!max-h-[60vh]',
+      }}
       title={
         <div className='flex justify-between items-center w-full'>
           <p>
@@ -49,9 +55,19 @@ export default function ChangelogModal(): ReactElement {
       }
       body={
         changelog ? (
-          <div className={`${styles.list} text-sm`}>
-            <ReactMarkdown rehypePlugins={[rehypeRaw]}>
-              {transformLinks(transformIssueReferences(transformMentions(changelog)))}
+          <div className={`markdown-body text-sm ${styles.markdown}`}>
+            <ReactMarkdown
+              rehypePlugins={[rehypeRaw]}
+              remarkPlugins={[remarkGfm]}
+              components={{
+                a: ({ href, children, ...props }) => (
+                  <ExtLink href={href ?? ''} {...props}>
+                    {children}
+                  </ExtLink>
+                ),
+              }}
+            >
+              {changelog.replace("## What's Changed", '')}
             </ReactMarkdown>
           </div>
         ) : (

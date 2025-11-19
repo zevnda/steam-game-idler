@@ -10,6 +10,28 @@ interface ChangelogResult {
   version: string
 }
 
+function preprocessChangelog(markdown: string): string {
+  // Convert @username to [@username](link)
+  markdown = markdown.replace(
+    /(^|[^\w`])@([a-zA-Z0-9](?:[a-zA-Z0-9-]{0,38}[a-zA-Z0-9])?)(?![\/a-zA-Z0-9_-])/g,
+    (match, prefix, username) => `${prefix}[@${username}](https://github.com/${username})`,
+  )
+
+  // Convert PR links to [#123](link)
+  markdown = markdown.replace(
+    /https:\/\/github\.com\/zevnda\/steam-game-idler\/pull\/(\d+)/g,
+    (match, pr) => `[#${pr}](${match})`,
+  )
+
+  // Convert Issue links to [#123](link)
+  markdown = markdown.replace(
+    /https:\/\/github\.com\/zevnda\/steam-game-idler\/issues\/(\d+)/g,
+    (match, issue) => `[#${issue}](${match})`,
+  )
+
+  return markdown
+}
+
 export default function useChangelog(): ChangelogResult {
   const { showChangelog } = useUpdateContext()
   const [changelog, setChangelog] = useState('')
@@ -24,7 +46,7 @@ export default function useChangelog(): ChangelogResult {
         const res = await fetch(`https://api.github.com/repos/zevnda/steam-game-idler/releases/tags/${currentVersion}`)
         if (res.ok) {
           const data = await res.json()
-          setChangelog(data.body || 'No changelog available for this version.')
+          setChangelog(preprocessChangelog(data.body || 'No changelog available for this version.'))
           return
         }
         setChangelog('No changelog available for this version.')
@@ -37,49 +59,4 @@ export default function useChangelog(): ChangelogResult {
   }, [showChangelog])
 
   return { changelog, version }
-}
-
-export const transformIssueReferences = (text: string): string => {
-  const issueRegex = /(#\d{2,3})\b/g
-  let result = text
-
-  let match
-  while ((match = issueRegex.exec(text)) !== null) {
-    const issueNumber = match[1]
-    const issueLink = `https://github.com/zevnda/steam-game-idler/issues/${issueNumber.substring(1)}`
-    const link = `<a href='${issueLink}' target='_blank'>${match[0]}</a>`
-    result = result.replace(match[0], link)
-  }
-
-  return result
-}
-
-export const transformMentions = (text: string): string => {
-  const userRegex = /@([a-zA-Z0-9_-]+)/g
-  let result = text
-
-  let match
-  while ((match = userRegex.exec(text)) !== null) {
-    const username = match[1]
-    const userLink = `https://github.com/${username}`
-    const link = `<a href='${userLink}' target='_blank' rel='noopener noreferrer'>${match[0]}</a>`
-    result = result.replace(match[0], link)
-  }
-
-  return result
-}
-
-export const transformLinks = (text: string): string => {
-  const linkRegex = /\[(.*?)\]\((https?:\/\/.*?)\)/g
-  let result = text
-
-  let match
-  while ((match = linkRegex.exec(text)) !== null) {
-    const linkText = match[1]
-    const linkUrl = match[2]
-    const newLink = `<a href='${linkUrl}' target='_blank' rel='noopener noreferrer'>${linkText}</a>`
-    result = result.replace(match[0], newLink)
-  }
-
-  return result
 }
