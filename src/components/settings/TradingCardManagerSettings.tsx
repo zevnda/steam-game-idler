@@ -18,13 +18,13 @@ export default function TradingCardManagerSettings(): ReactElement {
   const [priceAdjustment, setPriceAdjustment] = useState<number>(0.0)
   const [sellLimitMin, setSellLimitMin] = useState<number>(0.01)
   const [sellLimitMax, setSellLimitMax] = useState<number>(1.1)
-  const [sellDelay, setSellDelay] = useState<number>(3)
+  const [sellDelay, setSellDelay] = useState<number>(5)
 
   useEffect(() => {
     setPriceAdjustment(userSettings?.tradingCards?.priceAdjustment || 0.0)
     setSellLimitMin(userSettings?.tradingCards?.sellLimit?.min || 0.01)
     setSellLimitMax(userSettings?.tradingCards?.sellLimit?.max || 1.1)
-    setSellDelay(userSettings?.tradingCards?.sellDelay || 3)
+    setSellDelay(userSettings?.tradingCards?.sellDelay || 5)
   }, [
     userSettings?.tradingCards?.priceAdjustment,
     userSettings?.tradingCards?.sellLimit,
@@ -301,8 +301,8 @@ export default function TradingCardManagerSettings(): ReactElement {
             size='sm'
             value={sellDelay}
             step={1}
-            minValue={3}
-            maxValue={15}
+            minValue={5}
+            maxValue={30}
             aria-label='sell delay value'
             className='w-[90px]'
             classNames={{
