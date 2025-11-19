@@ -193,6 +193,12 @@ svg {
   list-style-type: square;
 }
 
+.chat-message blockquote {
+  border-left: 3px solid #474747ff !important;
+  color: #8a8a8aff !important;
+  font-style: italic !important;
+}
+
 .chat-message pre {
   background-color: #232323ff !important;
   padding: 0.5rem 0.4rem !important;
