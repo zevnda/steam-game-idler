@@ -1,5 +1,12 @@
 [
   {
+    "id": "28",
+    "title": "New Feature: Global Max Idle Time",
+    "message": "Click here to learn more about the new global max idle time feature released in 2.4.0",
+    "url": "http://steamgameidler.com/docs/settings/game-settings#global-max-idle-time",
+    "timestamp": "1763547660"
+  },
+  {
     "id": "27",
     "title": "New Feature: Per-Achievement Unlock Delay",
     "message": "Click here to learn more about the new per-achievement unlock delay feature released in 2.4.0",

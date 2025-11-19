@@ -173,8 +173,11 @@ const processGamesWithDrops = (
         const gameName = gameData.name
         const remaining = isGameWithDrops ? gameData.remaining : 0
 
-        const gameSetting = gameSettings[gameId] || {}
-        const maxCardDrops = gameSetting?.maxCardDrops || remaining
+        const gameSetting = gameSettings[gameId]
+        let maxCardDrops = remaining
+        if (typeof gameSetting === 'object' && gameSetting !== null && !Array.isArray(gameSetting)) {
+          maxCardDrops = gameSetting.maxCardDrops ?? remaining
+        }
         const dropsToCount = Math.min(remaining, maxCardDrops)
 
         gamesSet.add({
@@ -216,8 +219,11 @@ const processIndividualGames = async (
       ])
 
       if (dropsRemaining > 0) {
-        const gameSetting = gameSettings[gameData.appid] || {}
-        const maxCardDrops = gameSetting?.maxCardDrops || dropsRemaining
+        const gameSetting = gameSettings[gameData.appid]
+        let maxCardDrops = dropsRemaining
+        if (typeof gameSetting === 'object' && gameSetting !== null && !Array.isArray(gameSetting)) {
+          maxCardDrops = gameSetting.maxCardDrops ?? dropsRemaining
+        }
         const dropsToCount = Math.min(Number(dropsRemaining), Number(maxCardDrops))
 
         gamesSet.add({

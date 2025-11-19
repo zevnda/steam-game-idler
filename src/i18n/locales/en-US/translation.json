@@ -95,6 +95,8 @@
   "cardMenu.idle": "Start idling",
   "cardMenu.achievements": "View achievements",
   "cardMenu.store": "View store page",
+  "gameSettings.globalMaxIdle": "Global Max Idle Time",
+  "gameSettings.globalMaxIdleSub": "The maximum amount of time (in minutes) all games should be idled for before stopping (overrides individual game settings)",
   "gameSettings.idle": "Max Idle Time",
   "gameSettings.idleSub": "The maximum amount of time (in minutes) this game should be idled for before stopping",
   "gameSettings.drops": "Max Card Drops",

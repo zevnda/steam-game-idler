@@ -23,7 +23,17 @@ export async function startIdle(appId: number, appName: string, manual: boolean 
     })
 
     const gameSettings = settingsResponse.settings.gameSettings || {}
-    const maxIdleTime = gameSettings[appId]?.maxIdleTime || 0
+    let maxIdleTime = 0
+    // Check for globalMaxIdleTime first
+    const globalMaxIdleTime = typeof gameSettings.globalMaxIdleTime === 'number' ? gameSettings.globalMaxIdleTime : 0
+    if (globalMaxIdleTime > 0) {
+      maxIdleTime = globalMaxIdleTime
+    } else {
+      const perGameSetting = gameSettings[appId]
+      if (typeof perGameSetting === 'object' && perGameSetting !== null && !Array.isArray(perGameSetting)) {
+        maxIdleTime = perGameSetting.maxIdleTime || 0
+      }
+    }
 
     // Make sure the game is not already being idled
     const response = await invoke<InvokeRunningProcess>('get_running_processes')
