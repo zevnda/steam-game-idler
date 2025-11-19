@@ -25,7 +25,17 @@ export default function GamesList(): ReactElement {
   useEffect(() => {
     const handleResize = (): void => {
       setWindowSize({ width: window.innerWidth, height: window.innerHeight })
-      setColumnCount(window.innerWidth >= 1536 ? 7 : 5)
+      if (window.innerWidth >= 3200) {
+        setColumnCount(12)
+      } else if (window.innerWidth >= 2300) {
+        setColumnCount(10)
+      } else if (window.innerWidth >= 2000) {
+        setColumnCount(8)
+      } else if (window.innerWidth >= 1500) {
+        setColumnCount(7)
+      } else {
+        setColumnCount(5)
+      }
       if (listRef.current) {
         listRef.current.resetAfterIndex(0, true)
       }
@@ -88,7 +98,16 @@ export default function GamesList(): ReactElement {
     }
     if (typeof rowType === 'number') {
       return (
-        <div style={style} className={`grid gap-x-5 gap-y-4 px-6 ${columnCount === 7 ? 'grid-cols-7' : 'grid-cols-5'}`}>
+        <div
+          style={style}
+          className={cn(
+            'grid gap-x-5 gap-y-4 px-6',
+            columnCount === 7 ? 'grid-cols-7' : 'grid-cols-5',
+            columnCount === 8 ? 'grid-cols-8' : '',
+            columnCount === 10 ? 'grid-cols-10' : '',
+            columnCount === 12 ? 'grid-cols-12' : '',
+          )}
+        >
           {games.slice(rowType * columnCount, (rowType + 1) * columnCount).map(item => (
             <GameCard key={item.appid} item={item} />
           ))}
