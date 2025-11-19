@@ -25,7 +25,9 @@ export default function GamesList(): ReactElement {
   useEffect(() => {
     const handleResize = (): void => {
       setWindowSize({ width: window.innerWidth, height: window.innerHeight })
-      if (window.innerWidth >= 2300) {
+      if (window.innerWidth >= 3200) {
+        setColumnCount(12)
+      } else if (window.innerWidth >= 2300) {
         setColumnCount(10)
       } else if (window.innerWidth >= 2000) {
         setColumnCount(8)
@@ -103,6 +105,7 @@ export default function GamesList(): ReactElement {
             columnCount === 7 ? 'grid-cols-7' : 'grid-cols-5',
             columnCount === 8 ? 'grid-cols-8' : '',
             columnCount === 10 ? 'grid-cols-10' : '',
+            columnCount === 12 ? 'grid-cols-12' : '',
           )}
         >
           {games.slice(rowType * columnCount, (rowType + 1) * columnCount).map(item => (
