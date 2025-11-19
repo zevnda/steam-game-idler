@@ -151,7 +151,7 @@ export default function GeneralSettings(): ReactElement {
             hideValue
             className='mt-2 w-[350px]'
             classNames={{
-              track: 'bg-input',
+              track: 'bg-input data-[fill-start=true]:border-s-dynamic',
               filler: 'bg-dynamic',
               thumb: 'bg-dynamic',
             }}
