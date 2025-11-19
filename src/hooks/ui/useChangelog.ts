@@ -3,6 +3,7 @@ import { getVersion } from '@tauri-apps/api/app'
 import { useEffect, useState } from 'react'
 
 import { useUpdateContext } from '@/components/contexts/UpdateContext'
+import { logEvent } from '@/utils/tasks'
 
 interface ChangelogResult {
   changelog: string
@@ -19,17 +20,17 @@ export default function useChangelog(): ChangelogResult {
       if (!showChangelog) return
       const currentVersion = await getVersion()
       setVersion(currentVersion)
-      const res = await fetch('https://raw.githubusercontent.com/zevnda/steam-game-idler/refs/heads/main/CHANGELOG.md')
-      const data = await res.text()
-
-      // Find the current versions changelog
-      const versionPattern = new RegExp(`<!-- ${currentVersion} -->([\\s\\S]*?)(?=<!--|$)`, 'i')
-      const versionMatch = versionPattern.exec(data)
-
-      if (versionMatch && versionMatch[1]) {
-        setChangelog(versionMatch[1].trim().replace(`### Changes in v${currentVersion}`, ''))
-      } else {
+      try {
+        const res = await fetch(`https://api.github.com/repos/zevnda/steam-game-idler/releases/tags/${currentVersion}`)
+        if (res.ok) {
+          const data = await res.json()
+          setChangelog(data.body || 'No changelog available for this version.')
+          return
+        }
         setChangelog('No changelog available for this version.')
+      } catch (error) {
+        setChangelog('No changelog available for this version.')
+        logEvent(`[Error] Failed to fetch changelog: ${error}`)
       }
     }
     fetchData()
