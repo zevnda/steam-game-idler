@@ -60,7 +60,7 @@ fn get_default_settings() -> Value {
                 "min": 0.01,
                 "max": 1.10
             },
-            "sellDelay": 3
+            "sellDelay": 5
         },
     })
 }

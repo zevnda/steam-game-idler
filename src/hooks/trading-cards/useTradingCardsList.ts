@@ -358,7 +358,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
   const handleSellSelectedCards = async (): Promise<void> => {
     try {
       const credentials = userSettings.cardFarming.credentials
-      const sellDelay = userSettings?.tradingCards?.sellDelay || 3
+      const sellDelay = userSettings?.tradingCards?.sellDelay || 5
 
       if (!credentials?.sid || !credentials?.sls) return showMissingCredentialsToast()
 
@@ -471,7 +471,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
       showPrimaryToast(t('toast.tradingCards.processing'))
 
       const priceAdjustment = userSettings?.tradingCards?.priceAdjustment || 0.0
-      const sellDelay = userSettings?.tradingCards?.sellDelay || 3
+      const sellDelay = userSettings?.tradingCards?.sellDelay || 5
       const successfulCards = []
       const failedCards = []
       const skippedCards = []
@@ -496,7 +496,9 @@ export default function useTradingCardsList(): UseTradingCardsList {
           const priceResult = await fetchCardPrices(card.market_hash_name)
 
           if (!priceResult.success) {
-            logEvent(`[Error] Failed to fetch price for card ${card.assetid} (${card.market_hash_name}) - skipping`)
+            logEvent(
+              `[Error] Failed to fetch price for card ${card.assetid} (${card.market_hash_name}) (Increasing the 'sell delay' in 'settings > trading card manager' can help prevent this issue') - skipping`,
+            )
             continue
           }
 

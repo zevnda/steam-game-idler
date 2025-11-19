@@ -68,7 +68,7 @@ export const UserProvider = ({ children }: { children: ReactNode }): ReactElemen
         min: 0.01,
         max: 1.1,
       },
-      sellDelay: 3,
+      sellDelay: 5,
     },
   })
 
