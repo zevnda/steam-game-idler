@@ -358,7 +358,11 @@ const getMaxAchievementUnlocks = async (steamId: string | undefined, appId: numb
       steamId,
     })
     const gameSettings = response.settings.gameSettings || {}
-    return gameSettings[appId]?.maxAchievementUnlocks || null
+    const perGameSetting = gameSettings[appId]
+    if (typeof perGameSetting === 'object' && perGameSetting !== null && !Array.isArray(perGameSetting)) {
+      return perGameSetting.maxAchievementUnlocks || null
+    }
+    return null
   } catch (error) {
     handleError('getMaxAchievementUnlocks', error)
     return null

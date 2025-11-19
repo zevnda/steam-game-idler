@@ -39,7 +39,8 @@ export interface GameSpecificSettings {
 }
 
 export interface GameSettings {
-  [appId: string]: GameSpecificSettings
+  globalMaxIdleTime?: number
+  [appId: string]: GameSpecificSettings | number | undefined
 }
 
 export interface GeneralSettings {

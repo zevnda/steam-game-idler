@@ -71,8 +71,10 @@ export default function GameSettings(): ReactElement {
   const [selectedGame, setSelectedGame] = useState<Game | null>(null)
 
   const {
+    globalMaxIdleTime,
     maxIdleTime,
     maxCardDrops,
+    handleGlobalMaxIdleTimeChange,
     maxAchievementUnlocks,
     handleMaxIdleTimeChange,
     handleMaxCardDropsChange,
@@ -141,6 +143,40 @@ export default function GameSettings(): ReactElement {
           >
             {Row}
           </List>
+        </div>
+
+        <Divider className='bg-border/70 my-4' />
+
+        <div className='flex justify-between items-center'>
+          <div className='flex flex-col gap-2 w-1/2'>
+            <p className='text-sm text-content font-bold'>{t('gameSettings.globalMaxIdle')}</p>
+            <p className='text-xs text-altwhite'>
+              <Trans i18nKey='gameSettings.globalMaxIdleSub' />
+            </p>
+          </div>
+          <NumberInput
+            size='sm'
+            value={globalMaxIdleTime}
+            step={1}
+            minValue={0}
+            maxValue={99999}
+            aria-label='max idle time'
+            className='w-[90px]'
+            classNames={{
+              inputWrapper: cn(
+                'bg-input data-[hover=true]:!bg-inputhover border-none',
+                'group-data-[focus-visible=true]:ring-transparent',
+                'group-data-[focus-visible=true]:ring-offset-transparent',
+                'group-data-[focus-within=true]:!bg-inputhover',
+                'border group-data-[invalid=true]:border-red-500!',
+                'border group-data-[invalid=true]:bg-red-500/10!',
+                !selectedGame && 'opacity-50',
+              ),
+              input: ['text-sm !text-content'],
+              stepperButton: ['!text-content', 'text-sm'],
+            }}
+            onValueChange={handleGlobalMaxIdleTimeChange}
+          />
         </div>
 
         <Divider className='bg-border/70 my-4' />
