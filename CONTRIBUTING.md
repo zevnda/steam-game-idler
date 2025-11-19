@@ -79,5 +79,5 @@ When to bump version numbers:
 | Type  | Description                                                                                      |
 | ----- | ------------------------------------------------------------------------------------------------ |
 | Major | Breaking changes (steam API changes, UI overhauls, removed functionality)                        |
-| Minor | New major features or functionality added in a backwards compatible manner                       |
+| Minor | New major features or functionality added or removed in a backwards compatible manner            |
 | Patch | Backwards compatible bug fixes, performance improvements, UI adjustments, and new minor features |
