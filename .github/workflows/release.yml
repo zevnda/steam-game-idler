@@ -95,7 +95,7 @@ jobs:
 
   build_dotnet_libs:
     runs-on: windows-latest
-    needs: [fetch_previous_version]
+    needs: [fetch_previous_version, validate_version]
     timeout-minutes: 15
     steps:
       - name: Checkout repository
@@ -146,7 +146,7 @@ jobs:
           retention-days: 1
 
   build_release_bundle:
-    needs: [build_dotnet_libs, fetch_previous_version]
+    needs: [build_dotnet_libs, fetch_previous_version, validate_version]
     timeout-minutes: 30
     runs-on: windows-latest
     steps:
