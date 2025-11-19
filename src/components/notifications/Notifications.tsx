@@ -137,6 +137,7 @@ export default function Notifications(): ReactElement {
                       {/* Icon for notification */}
                       <GoDotFill
                         className={cn(
+                          'min-w-4',
                           unseenNotifications.some(unseen => unseen.id === notification.id)
                             ? 'text-dynamic'
                             : 'text-content/40',
@@ -148,7 +149,7 @@ export default function Notifications(): ReactElement {
                       <div className='flex flex-col gap-1 w-full'>
                         <div className='flex items-center gap-2'>
                           <span className='text-xs font-semibold truncate'>{notification.title}</span>
-                          <span className='font-normal text-altwhite text-[11px] ml-1'>
+                          <span className='font-normal text-altwhite text-[11px] ml-1 min-w-12'>
                             • {timeAgo(Number(notification.timestamp))}
                           </span>
                         </div>

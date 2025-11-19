@@ -35,6 +35,9 @@ importers:
       '@supabase/supabase-js':
         specifier: ^2.77.0
         version: 2.83.0
+      '@tanstack/react-virtual':
+        specifier: ^3.13.12
+        version: 3.13.12(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@tauri-apps/api':
         specifier: ^2.8.0
         version: 2.9.0

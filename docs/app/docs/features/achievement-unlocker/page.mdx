@@ -18,6 +18,10 @@ The Steam Achievement Unlocker feature will automatically unlock your Steam game
 
 ## Steps
 
+### Default Mode
+
+In default mode
+
 <Steps>
     {<h3 />}
     Click <MockButton type='achievement-unlocker' /> in the sidebar
@@ -26,14 +30,45 @@ The Steam Achievement Unlocker feature will automatically unlock your Steam game
     Click <MockButton type='edit' /> and click on individual games to add and remove them, and then click <MockButton type='done' />
 
     {<h3 />}
-    Optionally, you can customize the order in which achievements are unlocked by clicking the <MockButton type='unlock-order' /> button below the game and dragging and dropping achievements into your desired order, then clicking <MockButton type='save-alt' />
-
-    You can also uncheck the checkbox next to any achievement that you do not want Achievement Unlocker to unlock for you
-
-    By default, SGI will unlock achievements in order of their global `achieved` percentage, from highest to lowest
+    Optionally, you can customize the unlock order and set unlock delays for individual achievements by [following these steps](#custom-order--unlock-delay)
 
     {<h3 />}
     Click <MockButton type='achievement-unlocker-action' />
+</Steps>
+
+### Custom Order & Unlock Delay
+
+The `custom order` feature allows you to specify the exact order in which achievements are unlocked for each game. You can drag and drop achievements to rearrange their order, and you can also choose to skip certain achievements if you don't want them to be unlocked.
+
+The `unlock delay` is the amount of time SGI will wait after unlocking a specific achievement before unlocking the next one. For example, if you set a delay of 10 minutes on achievement 1, SGI will unlock achievement 1, wait 10 minutes, and then unlock achievement 2.
+
+The custom `unlock delay` takes precedence over the value set in the [Settings → General → Unlock Interval](/docs/settings/achievement-unlocker#unlock-interval). If no custom delay is set for an achievement, SGI will use the value from the settings.
+
+All steps are optional. You can choose to only customize the unlock order, only set the delay between achievements, or do both.
+
+<Steps>
+    {<h3 />}
+    Click <MockButton type='achievement-unlocker' /> in the sidebar
+
+    {<h3 />}
+    Click <MockButton type='edit' /> and click on individual games to add and remove them, and then click <MockButton type='done' />
+
+    {<h3 />}
+    Click <MockButton type='unlock-order' /> under the game you want to customize
+
+    {<h3 />}
+    Drag and drop achievements by grabbing the <MockButton type='grabber' /> to set their unlock order
+
+    {<h3 />}
+    Uncheck any achievements you want to exclude from being unlocked
+
+    {<h3 />}
+    Click `+ Add a delay after unlocking this achievement` on each achievement that you want to set a custom delay for and set the delay (in minutes)
+
+    If an achievement already has a delay set, you can click `✔ Edit delay` to change or clear it
+
+    {<h3 />}
+    Click <MockButton type='save-alt' /> and then click <MockButton type='achievement-unlocker-action' />
 </Steps>
 
 ## Additional Information

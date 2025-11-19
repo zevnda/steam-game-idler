@@ -1,5 +1,6 @@
 import type { ReactElement } from 'react'
 
+import { GoGrabber } from 'react-icons/go'
 import {
   TbArrowsSort,
   TbAward,
@@ -48,6 +49,7 @@ type ButtonType =
   | 'auto-idle'
   | 'free-games'
   | 'unlock-order'
+  | 'grabber'
 
 interface MockButtonProps {
   type: ButtonType
@@ -209,6 +211,12 @@ export default function MockButton({ type, content }: MockButtonProps): ReactEle
     return (
       <span className='inline bg-icon-light dark:bg-icon-dark text-icon-light dark:text-icon-dark text-[12px] font-semibold px-2 py-1.5 rounded-full shadow-sm select-none'>
         <TbArrowsSort fontSize={20} className='inline' />
+      </span>
+    )
+  } else if (type === 'grabber') {
+    return (
+      <span className='inline bg-icon-light dark:bg-icon-dark text-icon-light dark:text-icon-dark text-[12px] font-semibold px-2 py-1.5 rounded-full shadow-sm select-none'>
+        <GoGrabber fontSize={24} className='inline' />
       </span>
     )
   }

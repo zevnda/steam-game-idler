@@ -4,17 +4,20 @@ import type { ReactElement } from 'react'
 
 import { invoke } from '@tauri-apps/api/core'
 
-import { Button, Checkbox, cn, Spinner } from '@heroui/react'
-import { useEffect, useState } from 'react'
+import { Button, Checkbox, cn, Input, Spinner } from '@heroui/react'
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { DndContext, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
 import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import Image from 'next/image'
 import { useTranslation } from 'react-i18next'
+import { FaCheck, FaPlus } from 'react-icons/fa6'
+import { GoGrabber } from 'react-icons/go'
 
 import { useUserContext } from '@/components/contexts/UserContext'
 import CustomModal from '@/components/ui/CustomModal'
+import WebviewWindow from '@/components/ui/WebviewWindow'
 import { checkSteamStatus, logEvent } from '@/utils/tasks'
 import { showAccountMismatchToast, showDangerToast } from '@/utils/toasts'
 
@@ -24,12 +27,17 @@ interface SortableAchievementProps {
   index: number
 }
 
-function SortableAchievement({
+const SortableAchievement = memo(function SortableAchievement({
   item,
   achievement,
   index,
   onToggleSkip,
-}: SortableAchievementProps & { onToggleSkip: (name: string) => void }): ReactElement {
+  onSetDelay,
+}: SortableAchievementProps & {
+  onToggleSkip: (name: string) => void
+  onSetDelay: (name: string, value: number | null) => void
+}): ReactElement {
+  const { t } = useTranslation()
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: achievement.name })
 
   const iconUrl = 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/'
@@ -37,22 +45,62 @@ function SortableAchievement({
     ? `${iconUrl}${item.appid}/${achievement.iconNormal}`
     : `${iconUrl}${item.appid}/${achievement.iconLocked}`
 
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
+  const [showDelayInput, setShowDelayInput] = useState(false)
+  const [delayValue, setDelayValue] = useState<number | ''>(
+    achievement.delayNextUnlock !== undefined ? achievement.delayNextUnlock : '',
+  )
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    setDelayValue(achievement.delayNextUnlock !== undefined ? achievement.delayNextUnlock : '')
+  }, [achievement.delayNextUnlock])
+
+  useEffect(() => {
+    if (showDelayInput && inputRef.current) {
+      inputRef.current.focus()
+      inputRef.current.select()
+    }
+  }, [showDelayInput])
+
+  const handleDelayChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const val = e.target.value
+    if (val === '') {
+      setDelayValue('')
+    } else {
+      const num = Math.max(0, Number(val))
+      setDelayValue(num)
+    }
+  }
+
+  const handleShowInput = (): void => setShowDelayInput(true)
+
+  const handleClearInput = (): void => {
+    setShowDelayInput(false)
+    setDelayValue('')
+    onSetDelay(achievement.name, null)
+  }
+
+  const handleInputBlur = (): void => {
+    setShowDelayInput(false)
+    if (delayValue === '' || delayValue === 0) {
+      onSetDelay(achievement.name, null)
+    } else {
+      onSetDelay(achievement.name, Number(delayValue))
+    }
   }
 
   return (
-    <div className='grid grid-cols-[40px_1fr] gap-2 items-center'>
+    <div className='grid grid-cols-[40px_1fr] gap-2 items-center duration-150'>
       <span className='text-lg font-bold text-altwhite text-center select-none'>{index + 1}</span>
       <div
         ref={setNodeRef}
-        style={style}
-        {...attributes}
-        {...listeners}
+        style={{
+          transform: CSS.Transform.toString(transform),
+          transition,
+        }}
         className={cn(
-          'flex items-center gap-3 p-2 bg-card hover:bg-card/80 rounded-lg cursor-grab',
-          'active:cursor-grabbing hover:bg-inputhover group min-w-[98%] max-w-[98%]',
+          'flex items-center gap-3 p-2 bg-card hover:bg-sidebar/70 rounded-lg',
+          'group min-w-[98%] max-w-[98%]',
           achievement.skip === true && 'opacity-40',
         )}
       >
@@ -82,11 +130,71 @@ function SortableAchievement({
           >
             {achievement.description}
           </p>
+
+          <div className=''>
+            {!showDelayInput && (
+              <Button
+                size='sm'
+                className='text-xs max-h-5 bg-transparent p-0 cursor-pointer hover:opacity-80 duration-150'
+                type='button'
+                onPress={handleShowInput}
+                onPointerDown={e => e.stopPropagation()}
+              >
+                {delayValue !== '' && delayValue !== 0 ? (
+                  <p className='flex items-center text-green-400'>
+                    <FaCheck className='inline-block mr-1' />
+                    {t('customLists.achievementUnlocker.editDelay', { minutes: delayValue })}
+                  </p>
+                ) : (
+                  <p className='flex items-center text-blue-400'>
+                    <FaPlus className='inline-block mr-1' />
+                    {t('customLists.achievementUnlocker.addDelay')}
+                  </p>
+                )}
+              </Button>
+            )}
+            {showDelayInput && (
+              <div className='flex items-center gap-2 mt-1'>
+                <Input
+                  ref={inputRef}
+                  type='number'
+                  min={0}
+                  className='w-16 text-xs'
+                  value={delayValue.toString() || '0'}
+                  onChange={handleDelayChange}
+                  size='sm'
+                  onPointerDown={e => e.stopPropagation()}
+                  onBlur={handleInputBlur}
+                />
+                <span className='text-xs text-gray-400'>{t('common.minutes')}</span>
+                <Button
+                  size='sm'
+                  color='danger'
+                  variant='light'
+                  radius='full'
+                  className='font-semibold'
+                  onPress={handleClearInput}
+                  onMouseDown={handleClearInput}
+                  onPointerDown={e => e.stopPropagation()}
+                >
+                  {t('common.clear')}
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
+        <span
+          {...listeners}
+          {...attributes}
+          className='cursor-grab active:cursor-grabbing'
+          style={{ touchAction: 'none' }}
+        >
+          <GoGrabber size={30} className='text-altwhite hover:scale-115 hover:text-white duration-150' />
+        </span>
       </div>
     </div>
   )
-}
+})
 
 export default function AchievementOrderModal({
   item,
@@ -101,8 +209,9 @@ export default function AchievementOrderModal({
   const { userSummary } = useUserContext()
   const [isLoading, setIsLoading] = useState(false)
   const [achievements, setAchievements] = useState<Achievement[]>([])
+  const [originalAchievements, setOriginalAchievements] = useState<Achievement[]>([])
 
-  const handleDragEnd = (event: DragEndEvent): void => {
+  const handleDragEnd = useCallback((event: DragEndEvent): void => {
     const { active, over } = event
 
     if (over && active.id !== over.id) {
@@ -112,15 +221,30 @@ export default function AchievementOrderModal({
         return arrayMove(items, oldIndex, newIndex)
       })
     }
-  }
+  }, [])
 
-  const handleToggleSkip = (achievementName: string): void => {
+  const handleToggleSkip = useCallback((achievementName: string): void => {
     setAchievements(items =>
       items.map(achievement =>
         achievement.name === achievementName ? { ...achievement, skip: achievement.skip !== true } : achievement,
       ),
     )
-  }
+  }, [])
+
+  const handleSetDelay = useCallback((achievementName: string, value: number | null): void => {
+    setAchievements(items =>
+      items.map(achievement =>
+        achievement.name === achievementName
+          ? value === null
+            ? (() => {
+                const { delayNextUnlock, ...rest } = achievement
+                return rest
+              })()
+            : { ...achievement, delayNextUnlock: value }
+          : achievement,
+      ),
+    )
+  }, [])
 
   const handleSave = async (): Promise<void> => {
     try {
@@ -143,6 +267,8 @@ export default function AchievementOrderModal({
       try {
         setIsLoading(true)
         setAchievements([])
+        setOriginalAchievements([])
+
         // Make sure Steam client is running
         const isSteamRunning = checkSteamStatus(true)
         if (!isSteamRunning) return setIsLoading(false)
@@ -180,6 +306,14 @@ export default function AchievementOrderModal({
             return currentState ? { ...achievement, achieved: currentState.achieved } : achievement
           })
           setAchievements(updatedAchievements)
+          // Save the default order (from achievementData) for reset
+          setOriginalAchievements(
+            achievementData.achievement_data.achievements.map(a => ({
+              ...a,
+              skip: undefined,
+              delayNextUnlock: undefined,
+            })),
+          )
           setIsLoading(false)
           return
         }
@@ -188,6 +322,13 @@ export default function AchievementOrderModal({
         if (achievementData?.achievement_data?.achievements) {
           if (achievementData.achievement_data.achievements.length > 0) {
             setAchievements(achievementData.achievement_data.achievements)
+            setOriginalAchievements(
+              achievementData.achievement_data.achievements.map(a => ({
+                ...a,
+                skip: undefined,
+                delayNextUnlock: undefined,
+              })),
+            )
           }
         }
 
@@ -207,6 +348,39 @@ export default function AchievementOrderModal({
 
   const sensors = useSensors(useSensor(PointerSensor))
 
+  const achievementList = useMemo(
+    () => (
+      <DndContext sensors={sensors} onDragEnd={handleDragEnd} modifiers={[restrictToVerticalAxis]}>
+        <SortableContext items={achievements.map(a => a.name)}>
+          <div className='grid grid-cols-1 gap-1'>
+            {achievements.map((achievement, index) => (
+              <SortableAchievement
+                item={item}
+                key={achievement.name}
+                achievement={achievement}
+                index={index}
+                onToggleSkip={handleToggleSkip}
+                onSetDelay={handleSetDelay}
+              />
+            ))}
+          </div>
+        </SortableContext>
+      </DndContext>
+    ),
+    [achievements, handleDragEnd, handleToggleSkip, handleSetDelay, item, sensors],
+  )
+
+  // Reset handler: restore original order and clear skips/delays
+  const handleReset = useCallback(() => {
+    setAchievements(
+      originalAchievements.map(a => ({
+        ...a,
+        skip: undefined,
+        delayNextUnlock: undefined,
+      })),
+    )
+  }, [originalAchievements])
+
   return (
     <CustomModal
       isOpen={isOpen}
@@ -216,9 +390,8 @@ export default function AchievementOrderModal({
         base: 'max-w-xl bg-base/85 backdrop-blur-sm',
       }}
       title={
-        <div>
+        <div className='flex justify-between items-center'>
           <p className='truncate'>{item.name}</p>
-          <p className='text-xs font-normal mt-2'>{t('customLists.achievementUnlocker.customOrderDesc')}</p>
         </div>
       }
       body={
@@ -233,34 +406,27 @@ export default function AchievementOrderModal({
             </div>
           ) : (
             <>
-              <div className='grid grid-cols-[40px_1fr] gap-2 items-center p-2 mb-2 border-b border-border sticky top-0 bg-sidebar/50 z-50'>
+              <div className='grid grid-cols-[40px_1fr] gap-2 items-center p-2 mb-2 border-b border-border sticky top-0 bg-sidebar z-50'>
                 <span className='text-sm font-semibold text-content select-none text-center w-[26px]'>#</span>
                 <div className='flex items-center gap-3 pl-0'>
-                  <span className='text-sm font-semibold text-content text-center w-[26px]'>Unlock</span>
-                  <span className='text-sm font-semibold text-content flex-1 ml-8'>Achievement</span>
+                  <span className='text-sm font-semibold text-content text-center w-[26px]'>
+                    {t('achievementManager.achievements.unlock')}
+                  </span>
+                  <span className='text-sm font-semibold text-content flex-1 ml-8'>
+                    {t('achievementManager.achievements.title')}
+                  </span>
                 </div>
               </div>
-              <DndContext sensors={sensors} onDragEnd={handleDragEnd} modifiers={[restrictToVerticalAxis]}>
-                <SortableContext items={achievements.map(a => a.name)}>
-                  <div className='grid grid-cols-1 gap-1'>
-                    {achievements.map((achievement, index) => (
-                      <SortableAchievement
-                        item={item}
-                        key={achievement.name}
-                        achievement={achievement}
-                        index={index}
-                        onToggleSkip={handleToggleSkip}
-                      />
-                    ))}
-                  </div>
-                </SortableContext>
-              </DndContext>
+              {achievementList}
             </>
           )}
         </div>
       }
       buttons={
         <>
+          <WebviewWindow href='https://steamgameidler.com/docs/features/achievement-unlocker#custom-order--unlock-delay'>
+            <p className='text-xs cursor-pointer hover:text-altwhite duration-150 p-2 rounded-lg'>{t('setup.help')}</p>
+          </WebviewWindow>
           <Button
             size='sm'
             color='danger'
@@ -270,6 +436,16 @@ export default function AchievementOrderModal({
             onPress={onOpenChange}
           >
             {t('common.cancel')}
+          </Button>
+          <Button
+            size='sm'
+            color='danger'
+            variant='light'
+            radius='full'
+            className='font-semibold'
+            onPress={handleReset}
+          >
+            {t('achievementManager.statistics.resetAll')}
           </Button>
           <Button size='sm' className='bg-btn-secondary text-btn-text font-bold' radius='full' onPress={handleSave}>
             {t('common.save')}

@@ -1,5 +1,12 @@
 [
   {
+    "id": "27",
+    "title": "New Feature: Per-Achievement Unlock Delay",
+    "message": "Click here to learn more about the new per-achievement unlock delay feature released in 2.4.0",
+    "url": "http://steamgameidler.com/docs/features/achievement-unlocker#custom-order--unlock-delay",
+    "timestamp": "1763547660"
+  },
+  {
     "id": "26",
     "title": "POLL: Do you want custom plugins for SGI?",
     "message": "Click here to view the poll and cast your vote",
