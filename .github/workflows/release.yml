@@ -321,15 +321,15 @@ jobs:
               previous_tag_name: '${{ needs.fetch_previous_version.outputs.previous_version }}'
             });
             
-            // Filter out version bump PRs and docs PRs
+            // Remove lines for version bumps, docs, ci, and chore(ci)
             let body = data.body;
             const lines = body.split('\n');
             const filtered = lines.filter(line => {
-              // Remove lines containing "chore(version): bump to" or starting with "docs: "
-              if (line.includes('chore(version): bump to')) return false;
-              if (line.trim().startsWith('docs: ')) return false;
-              if (line.trim().startsWith('ci: ')) return false;
-              if (line.trim().startsWith('chore(ci): ')) return false;
+              const trimmed = line.trim();
+              if (trimmed.startsWith('* chore(version): bump to')) return false;
+              if (trimmed.startsWith('* docs:')) return false;
+              if (trimmed.startsWith('* ci:')) return false;
+              if (trimmed.startsWith('* chore(ci):')) return false;
               return true;
             });
             
