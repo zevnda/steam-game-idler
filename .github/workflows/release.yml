@@ -328,6 +328,8 @@ jobs:
               // Remove lines containing "chore(version): bump to" or starting with "docs: "
               if (line.includes('chore(version): bump to')) return false;
               if (line.trim().startsWith('docs: ')) return false;
+              if (line.trim().startsWith('ci: ')) return false;
+              if (line.trim().startsWith('chore(ci): ')) return false;
               return true;
             });
             
