@@ -13,15 +13,20 @@ export const faqData: FAQEntry[] = [
       '> * The game may be [marked as private](https://help.steampowered.com/en/faqs/view/1150-C06F-4D62-4966) on your Steam profile\n' +
       '> * The game may have been removed from the Steam store or your license for the game may have been revoked\n' +
       '> * The game was part of a subscription service such as an EA Play, and your subscription has expired\n' +
-      '> * Some games may have region specific restrictions and you may not own the game in your current region\n',
+      '> * Some games may have region specific restrictions and you may not own the game in your current region\n' +
+      '> * One or more of your [Steam profile privacy settings](https://steamcommunity.com/my/edit/settings) is set to private.\n' +
+      '>\n' +
+      '> ![Profile settings](/examples/profile-settings.png)',
   },
   {
     question: 'Do I need to make my Steam profile and game details public for the Steam card idler to work?',
     markdown:
       '**Do I need to make my Steam profile and game details public for the Steam card idler to work?**\n' +
-      '> In most cases, yes. For some features to function correctly SGI requires your Steam profile and game details to be set to public in your [privacy settings](https://steamcommunity.com/id/undefined/edit/settings).\n' +
+      '> In most cases, yes. For some features to function correctly SGI requires your Steam profile and game details to be set to public in your [Steam profile privacy settings](https://steamcommunity.com/my/edit/settings).\n' +
       '>\n' +
-      '> However, providing your own Steam Web API key in the [settings > general](/docs/settings/general) will allow you to use SGI with a private profile.',
+      '> However, providing your own Steam Web API key in the [settings > general](/docs/settings/general) will allow you to use SGI with a private profile.\n' +
+      '>\n' +
+      '> ![Profile settings](/examples/profile-settings.png)',
   },
   {
     question: 'What makes this different from other Steam tools?',
@@ -73,6 +78,14 @@ export const faqData: FAQEntry[] = [
       '> 3. Click "Add" to add the game to your list\n' +
       '>\n' +
       '> NOTE: You can only add games that you own or are family shared.',
+  },
+  {
+    question: 'Is it possible to run SGI in sleep/hibernation mode?',
+    markdown:
+      '**Is it possible to run SGI in sleep mode?**\n' +
+      '> No. Sleep and hibernation modes suspend most running processes on your computer, including SGI and the Steam client. This means that SGI will not be able to idle games, farm cards, or unlock achievements while your computer is in sleep or hibernation mode.\n' +
+      '>\n' +
+      '> However, with a little setup, you can schedule a task using Windows Task Scheduler to wake up and put your computer to sleep at a specific times. This way, you can ensure that SGI is running and able to perform its functions when you need it to.',
   },
   { section: 'Farming cards' },
   {
@@ -167,7 +180,7 @@ export const faqData: FAQEntry[] = [
     markdown:
       '**Why do I see "No achievements found" and "No statistics found" on the game\'s achievement manager screen?**\n' +
       '> * The game you are trying to view achievements for does not have any achievements\n' +
-      '> * Your "Game Details" are set to private in your [Steam profile settings](https://steamcommunity.com/my/edit/settings)',
+      '> * Your "Game Details" are set to private in your [Steam profile privacy settings](https://steamcommunity.com/my/edit/settings)',
   },
   {
     question: 'Will unlocking achievements affect my completion percentage on tracking sites?',
