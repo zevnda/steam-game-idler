@@ -149,12 +149,11 @@ svg {
 }
 
 .chat-message a {
-  color: #4d70fc;
-  text-decoration: underline;
+  color: #51a2ff !important;
 }
 
 .chat-message a:hover {
-  color: #476bf8ff;
+  color: #4592eaff !important;
 }
 
 .chat-message img:hover {
