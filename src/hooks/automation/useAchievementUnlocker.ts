@@ -32,6 +32,7 @@ interface AchievementToUnlock {
   name?: string
   hidden?: boolean
   skip?: boolean
+  delayNextUnlock?: number // <-- add optional delayNextUnlock property
 }
 
 export const useAchievementUnlocker = async (
@@ -190,7 +191,7 @@ const fetchAchievements = async (
         orderedAchievements = rawAchievements
           .filter(achievement => !achievement.achieved && (!hidden || achievement.hidden === false))
           .map(achievement => {
-            // Get skip property from custom order if it exists
+            // Get skip and delayNextUnlock from custom order if it exists
             const customAchievement = customOrder.achievement_order!.achievements.find(a => a.name === achievement.name)
             return {
               appId: game.appid,
@@ -200,6 +201,7 @@ const fetchAchievements = async (
               name: achievement.name,
               hidden: achievement.hidden,
               skip: customAchievement?.skip,
+              delayNextUnlock: customAchievement?.delayNextUnlock,
             }
           })
           // Filter out achievements with skip: true
@@ -333,10 +335,16 @@ const unlockAchievements = async (
           break
         }
 
-        // Wait for a random delay before unlocking the next achievement
-        const randomDelay = getRandomDelay(interval[0], interval[1])
-        startCountdown(randomDelay / 60000, setCountdownTimer)
-        await delay(randomDelay, isMountedRef, abortControllerRef)
+        // Wait for a delay before unlocking the next achievement
+        // Use delayNextUnlock from achievement if present, otherwise use a global unlock interval
+        let delayMs: number
+        if (typeof achievement.delayNextUnlock === 'number' && achievement.delayNextUnlock > 0) {
+          delayMs = achievement.delayNextUnlock * 60 * 1000
+        } else {
+          delayMs = getRandomDelay(interval[0], interval[1])
+        }
+        startCountdown(delayMs / 60000, setCountdownTimer)
+        await delay(delayMs, isMountedRef, abortControllerRef)
       }
     }
   } catch (error) {

@@ -11,6 +11,7 @@ export interface Achievement {
   permission: number
   protected_achievement: boolean
   skip?: boolean
+  delayNextUnlock?: number
 }
 
 export interface Statistic {
