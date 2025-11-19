@@ -73,7 +73,7 @@
     "@tailwindcss/postcss": "^4.1.17",
     "@tauri-apps/cli": "^2.8.4",
     "@types/node": "^24.10.1",
-    "@types/react": "^19.2.2",
+    "@types/react": "^19.2.6",
     "@types/react-dom": "^19.2.2",
     "@types/react-window": "^2.0.0",
     "@typescript-eslint/eslint-plugin": "^8.46.4",
