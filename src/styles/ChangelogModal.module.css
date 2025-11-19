@@ -1,47 +1,82 @@
-.list a {
-  color: #3c93f1;
+.markdown {
+  background-color: transparent !important;
+  color: white !important;
 }
 
-.list a:hover {
-  color: #4b82bb;
+.markdown .markdown-body {
+  background-color: transparent !important;
+  background: inherit;
+  color: inherit !important;
+  font-size: inherit !important;
+  font-family: inherit !important;
+  line-height: inherit !important;
 }
 
-.list ul {
-  display: flex;
-  flex-direction: column;
-  line-height: 30px;
-  list-style-type: disc;
+.markdown .markdown-body pre code {
+  white-space: pre-wrap !important;
+  /* line-break: anywhere !important; */
+  overflow-wrap: break-word !important;
 }
 
-.list ol {
-  display: flex;
-  flex-direction: column;
-  line-height: 30px;
-  list-style-type: decimal;
+.markdown a {
+  color: #4d70fc;
+  text-decoration: underline;
 }
 
-.list li {
-  margin-left: 20px;
+.markdown a:hover {
+  color: #476bf8ff;
 }
 
-.list li li {
-  margin-left: 30px;
+.markdown img:hover {
+  opacity: 0.9;
 }
 
-.list li ul {
+.markdown p {
+  margin-top: 4px !important;
+  margin-bottom: 12px !important;
+  white-space: break-spaces;
+  word-wrap: break-word;
+}
+
+.markdown ul {
+  list-style-position: inside;
+  counter-reset: list-counter;
+  list-style: disc;
+}
+
+.markdown ol {
+  list-style-position: inside;
+  counter-reset: list-counter;
+  list-style: decimal;
+}
+
+.markdown li ul {
   list-style-type: circle;
 }
 
-.list li ul ul,
-.list li ol ul {
+.markdown li ul ul,
+.markdown li ol ul {
   list-style-type: square;
 }
 
-.list code {
-  background-color: var(--code);
-  padding-left: 4px;
-  padding-right: 4px;
-  padding-top: 1px;
-  padding-bottom: 1px;
-  border-radius: 2px;
+.markdown pre {
+  background-color: #232323ff !important;
+  padding: 0.5rem 0.4rem !important;
+  border: 1px solid #313131ff !important;
+  border-radius: 0.2rem !important;
+  font-size: 0.95em !important;
+  max-width: 70%;
+}
+
+.markdown pre code {
+  font-family: 'Fira Code', monospace !important;
+  font-size: 0.7rem !important;
+  margin-bottom: 10px !important;
+}
+
+.markdown code:not(pre code) {
+  background-color: #232323ff !important;
+  border: 1px solid #313131ff !important;
+  font-family: 'Fira Code', monospace !important;
+  font-size: 0.7rem !important;
 }
