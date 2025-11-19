@@ -72,7 +72,7 @@
     "@next/eslint-plugin-next": "^16.0.1",
     "@tailwindcss/postcss": "^4.1.17",
     "@tauri-apps/cli": "^2.8.4",
-    "@types/node": "^24.9.1",
+    "@types/node": "^24.10.1",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
     "@types/react-window": "^2.0.0",
