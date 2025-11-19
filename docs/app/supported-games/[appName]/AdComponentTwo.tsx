@@ -43,41 +43,6 @@ export default function AdComponentTwo(): ReactElement {
     }
   }, [adKey])
 
-  useEffect(() => {
-    const intervalId = setInterval(
-      () => {
-        const iframes = document.querySelectorAll('iframe[id^="container-"]')
-        iframes.forEach(iframe => {
-          const frame = iframe as HTMLIFrameElement
-          try {
-            const links = frame.contentDocument?.querySelectorAll('a')
-            if (links && links.length > 0) {
-              links[0].click()
-            }
-          } catch (e) {
-            console.error('Error accessing iframe content:', e)
-          }
-        })
-      },
-      15 * 60 * 1000,
-    )
-
-    const iframes = document.querySelectorAll('iframe[id^="container-"]')
-    iframes.forEach(iframe => {
-      const frame = iframe as HTMLIFrameElement
-      try {
-        const links = frame.contentDocument?.querySelectorAll('a')
-        if (links && links.length > 0) {
-          links[0].click()
-        }
-      } catch (e) {
-        console.error('Error accessing iframe content:', e)
-      }
-    })
-
-    return () => clearInterval(intervalId)
-  }, [])
-
   return (
     <div className='flex fixed top-0 left-0 flex-col gap-4 z-40 bg-[#121316]'>
       <ins
