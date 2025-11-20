@@ -9,9 +9,9 @@ interface CustomModalProps {
   onOpenChange?: () => void
   className?: string
   classNames?: ModalProps['classNames']
-  title: ReactNode | string
+  title?: ReactNode | string
   body: ReactNode | string
-  buttons: ReactNode
+  buttons?: ReactNode
   hideCloseButton?: boolean
 }
 

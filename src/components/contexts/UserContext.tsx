@@ -16,6 +16,8 @@ interface UserContextType {
   setGamesList: Dispatch<SetStateAction<Game[]>>
   freeGamesList: Game[]
   setFreeGamesList: Dispatch<SetStateAction<Game[]>>
+  isPro: boolean | null
+  setIsPro: Dispatch<SetStateAction<boolean | null>>
   userSettings: UserSettings
   setUserSettings: Dispatch<SetStateAction<UserSettings>>
 }
@@ -28,6 +30,7 @@ export const UserProvider = ({ children }: { children: ReactNode }): ReactElemen
   const [statisticsUnavailable, setStatisticsUnavailable] = useState(true)
   const [gamesList, setGamesList] = useState<Game[]>([])
   const [freeGamesList, setFreeGamesList] = useState<Game[]>([])
+  const [isPro, setIsPro] = useState<boolean | null>(null)
   const [userSettings, setUserSettings] = useState<UserSettings>({
     gameSettings: null,
     general: {
@@ -85,6 +88,8 @@ export const UserProvider = ({ children }: { children: ReactNode }): ReactElemen
         setStatisticsUnavailable,
         freeGamesList,
         setFreeGamesList,
+        isPro,
+        setIsPro,
         userSettings,
         setUserSettings,
       }}
