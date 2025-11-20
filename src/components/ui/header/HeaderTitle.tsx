@@ -3,10 +3,13 @@ import type { ReactElement } from 'react'
 import { cn } from '@heroui/react'
 
 import { useStateContext } from '@/components/contexts/StateContext'
+import { useUserContext } from '@/components/contexts/UserContext'
 import Logo from '@/components/ui/header/Logo'
+import ProBadge from '@/components/ui/ProBadge'
 
 export default function HeaderTitle(): ReactElement {
   const { sidebarCollapsed } = useStateContext()
+  const { isPro } = useUserContext()
 
   return (
     <div
@@ -24,6 +27,7 @@ export default function HeaderTitle(): ReactElement {
         >
           <p className={cn('font-medium text-content text-sm ml-3')} data-tauri-drag-region>
             Steam Game Idler
+            {isPro !== null && isPro === true && <ProBadge />}
           </p>
         </div>
       )}

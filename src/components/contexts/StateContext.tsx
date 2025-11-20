@@ -27,6 +27,8 @@ interface StateContextType {
   setUseBeta: Dispatch<SetStateAction<boolean>>
   transitionDuration: string
   setTransitionDuration: Dispatch<SetStateAction<string>>
+  proModalOpen: boolean
+  setProModalOpen: Dispatch<SetStateAction<boolean>>
 }
 
 export const StateContext = createContext<StateContextType | undefined>(undefined)
@@ -46,6 +48,7 @@ export const StateProvider = ({ children }: { children: ReactNode }): ReactEleme
   const [loadingRemoveListings, setLoadingRemoveListings] = useState(false)
   const [useBeta, setUseBeta] = useState(false)
   const [transitionDuration, setTransitionDuration] = useState('0ms')
+  const [proModalOpen, setProModalOpen] = useState(false)
 
   return (
     <StateContext.Provider
@@ -74,6 +77,8 @@ export const StateProvider = ({ children }: { children: ReactNode }): ReactEleme
         setUseBeta,
         transitionDuration,
         setTransitionDuration,
+        proModalOpen,
+        setProModalOpen,
       }}
     >
       {children}

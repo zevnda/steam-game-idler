@@ -6,6 +6,7 @@ import { createContext, useCallback, useContext, useEffect, useRef, useState } f
 import { createClient } from '@supabase/supabase-js'
 
 import { useNavigationContext } from '@/components/contexts/NavigationContext'
+import { useUserContext } from '@/components/contexts/UserContext'
 import { logEvent, playMentionBeep } from '@/utils/tasks'
 
 export interface MessageReaction {
@@ -69,6 +70,7 @@ interface SupabaseProviderProps {
 
 export function SupabaseProvider({ children, userSummary }: SupabaseProviderProps): ReactNode {
   const { activePage } = useNavigationContext()
+  const { setIsPro } = useUserContext()
   const isChatActive = activePage === 'chat'
 
   const [messages, setMessages] = useState<ChatMessageType[]>([])
@@ -305,6 +307,43 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
     const pollInterval = setInterval(fetchOnlineUsers, 60 * 1000)
     return () => clearInterval(pollInterval)
   }, [isChatActive, userSummary?.steamId])
+
+  // Check for active subscription and set isPro
+  useEffect(() => {
+    const supabase = supabaseRef.current
+    const steamId = userSummary?.steamId
+
+    if (!steamId) return
+
+    const checkSubscription = async (): Promise<void> => {
+      try {
+        const { data, error } = await supabase
+          .from('subscriptions')
+          .select('status')
+          .eq('steam_id', steamId)
+          .in('status', ['active', 'trialing', 'past_due'])
+          .maybeSingle()
+
+        if (error) {
+          console.error('Error checking subscription:', error)
+          logEvent(`[Error] in checkSubscription: ${error.message}`)
+          setIsPro(false)
+          return
+        }
+
+        setIsPro(!!data)
+      } catch (error) {
+        console.error('Error checking subscription:', error)
+        logEvent(`[Error] in checkSubscription: ${error}`)
+        setIsPro(false)
+      }
+    }
+
+    checkSubscription()
+    // Optionally, poll every few minutes if needed:
+    // const interval = setInterval(checkSubscription, 5 * 60 * 1000)
+    // return () => clearInterval(interval)
+  }, [userSummary?.steamId, setIsPro])
 
   // Cleanup typing indicator when chat becomes inactive or component unmounts
   useEffect(() => {

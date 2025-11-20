@@ -24,6 +24,7 @@ import { useNavigationContext } from '@/components/contexts/NavigationContext'
 import { useSearchContext } from '@/components/contexts/SearchContext'
 import { useStateContext } from '@/components/contexts/StateContext'
 import { useUserContext } from '@/components/contexts/UserContext'
+import AdSlot from '@/components/ui/AdSlot'
 import Beta from '@/components/ui/Beta'
 import CustomModal from '@/components/ui/CustomModal'
 import HeaderTitle from '@/components/ui/header/HeaderTitle'
@@ -37,7 +38,7 @@ export default function SideBar(): ReactElement {
   const { sidebarCollapsed, isCardFarming, isAchievementUnlocker, setShowAchievements, transitionDuration } =
     useStateContext()
   const { activePage, setActivePage } = useNavigationContext()
-  const { freeGamesList, userSummary } = useUserContext()
+  const { freeGamesList, userSummary, isPro } = useUserContext()
   const searchContent = useSearchContext()
   const { isOpen, onOpenChange, openConfirmation, handleLogout } = useSideBar(activePage, setActivePage)
 
@@ -267,6 +268,12 @@ export default function SideBar(): ReactElement {
           {mainSidebarItems.map((item, idx) => renderSidebarItem(item, idx))}
         </div>
 
+        {process.env.NODE_ENV === 'production' && (
+          <div className='flex flex-col items-center justify-end grow mb-1 overflow-hidden'>
+            <AdSlot />
+          </div>
+        )}
+
         {/* Settings and signout */}
         <div
           className={cn(
@@ -280,13 +287,21 @@ export default function SideBar(): ReactElement {
               sidebarCollapsed ? 'flex-col gap-2' : 'flex-row gap-3',
             )}
           >
-            <Image
-              src={userSummary?.avatar || ''}
-              alt={userSummary?.personaName || 'User Avatar'}
-              width={sidebarCollapsed ? 28 : 32}
-              height={sidebarCollapsed ? 28 : 32}
-              className='rounded-full duration-150'
-            />
+            <div
+              className={cn(
+                isPro !== null &&
+                  isPro === true &&
+                  'p-0.5 rounded-full bg-linear-to-tr from-cyan-500 via-[#5602fc] to-purple-500',
+              )}
+            >
+              <Image
+                src={userSummary?.avatar || ''}
+                alt={userSummary?.personaName || 'User Avatar'}
+                width={sidebarCollapsed ? 28 : 32}
+                height={sidebarCollapsed ? 28 : 32}
+                className='rounded-full bg-white'
+              />
+            </div>
             {!sidebarCollapsed && (
               <div className='flex items-center justify-between w-full overflow-hidden'>
                 <div className='flex flex-col overflow-hidden'>

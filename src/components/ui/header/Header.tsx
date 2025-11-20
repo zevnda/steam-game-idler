@@ -8,7 +8,9 @@ import { VscChromeClose, VscChromeMaximize, VscChromeMinimize } from 'react-icon
 import { useNavigationContext } from '@/components/contexts/NavigationContext'
 import { useStateContext } from '@/components/contexts/StateContext'
 import { useUpdateContext } from '@/components/contexts/UpdateContext'
+import { useUserContext } from '@/components/contexts/UserContext'
 import Notifications from '@/components/notifications/Notifications'
+import { GoPro } from '@/components/ui/header/GoPro'
 import HeaderMenu from '@/components/ui/header/HeaderMenu'
 import HelpDesk from '@/components/ui/header/HelpDesk'
 import UpdateButton from '@/components/ui/UpdateButton'
@@ -20,6 +22,7 @@ export default function Header(): ReactElement {
   const { windowMinimize, windowToggleMaximize, windowClose } = useHeader()
   const { sidebarCollapsed, transitionDuration, setSidebarCollapsed, setTransitionDuration } = useStateContext()
   const { activePage } = useNavigationContext()
+  const { isPro } = useUserContext()
   const [isPortable, setIsPortable] = useState<boolean | null>(null)
 
   useEffect(() => {
@@ -64,6 +67,12 @@ export default function Header(): ReactElement {
             }}
           >
             {sidebarCollapsed ? <TbLayoutSidebarFilled fontSize={18} /> : <TbLayoutSidebar fontSize={18} />}
+          </div>
+        )}
+
+        {isPro !== null && isPro === false && activePage !== 'setup' && (
+          <div className='flex justify-center items-center h-full'>
+            <GoPro />
           </div>
         )}
 

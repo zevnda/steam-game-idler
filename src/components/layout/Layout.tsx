@@ -5,8 +5,6 @@ import Head from 'next/head'
 import Image from 'next/image'
 import Script from 'next/script'
 
-import AdSlot from '@/components/ui/AdSlot'
-
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
@@ -49,7 +47,6 @@ export default function Layout({ children }: { children: ReactNode }): ReactElem
 
       <div className='absolute top-0 left-0 bg-base/80 w-full h-screen backdrop-blur-lg pointer-events-none z-1' />
 
-      <AdSlot />
       <main className={`${inter.className} h-full min-h-screen bg-base text-content`}>{children}</main>
     </>
   )

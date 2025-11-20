@@ -1,8 +1,17 @@
 import type { ReactElement } from 'react'
 
+import { cn, Spinner } from '@heroui/react'
 import { useEffect, useMemo, useState } from 'react'
 
+import { useNavigationContext } from '@/components/contexts/NavigationContext'
+import { useStateContext } from '@/components/contexts/StateContext'
+import { useUserContext } from '@/components/contexts/UserContext'
+import ProBadge from '@/components/ui/ProBadge'
+
 export default function AdSlot(): ReactElement {
+  const { activePage } = useNavigationContext()
+  const { sidebarCollapsed, setProModalOpen } = useStateContext()
+  const { isPro } = useUserContext()
   const [reloadKey, setReloadKey] = useState(0)
 
   const gameSlugs = useMemo(
@@ -117,13 +126,36 @@ export default function AdSlot(): ReactElement {
   }, [gameSlugs, reloadKey])
 
   return (
-    <div className='absolute top-0 left-0 z-0 pointer-events-none opacity-0'>
-      <iframe
-        className='overflow-scroll rounded-lg z-1 w-screen h-screen'
-        src={gameUrl}
-        title='External Website'
-        sandbox='allow-scripts allow-same-origin allow-forms allow-popups allow-top-navigation-by-user-activation'
-      />
+    <div
+      className={cn(
+        'transition-all ease-in-out border border-border p-2 pb-1 rounded-lg',
+        sidebarCollapsed && activePage !== 'settings' ? 'scale-[.160]' : undefined,
+        isPro === null && 'opacity-0',
+        isPro === true && 'opacity-0',
+        isPro === false && 'opacity-100',
+      )}
+    >
+      <div className='relative flex justify-center items-center overflow-hidden rounded-lg'>
+        <iframe
+          className='overflow-scroll rounded-lg -mt-[432px] -ml-[381px] z-1'
+          src={gameUrl}
+          width='600'
+          height='600'
+          title='External Website'
+          sandbox='allow-scripts allow-same-origin allow-forms allow-popups allow-top-navigation-by-user-activation'
+        />
+        <Spinner className='absolute inset-0 m-auto z-0' />
+      </div>
+
+      <div
+        className='text-xs text-altwhite mt-1 text-center cursor-pointer hover:text-white duration-150'
+        onClick={() => setProModalOpen(true)}
+      >
+        <p>
+          Remove ads with
+          <ProBadge />
+        </p>
+      </div>
     </div>
   )
 }
