@@ -2,6 +2,7 @@ import type { ReactElement } from 'react'
 
 import { cn, Modal, ModalBody, ModalContent, Tab, Tabs } from '@heroui/react'
 import Image from 'next/image'
+import { useTranslation } from 'react-i18next'
 import { FaCheck } from 'react-icons/fa6'
 
 import { useStateContext } from '@/components/contexts/StateContext'
@@ -9,6 +10,7 @@ import ExtLink from '@/components/ui/ExtLink'
 import ProBadge from '@/components/ui/ProBadge'
 
 export default function GoProModal(): ReactElement {
+  const { t } = useTranslation()
   const { proModalOpen, setProModalOpen } = useStateContext()
 
   return (
@@ -30,7 +32,7 @@ export default function GoProModal(): ReactElement {
               Steam Game Idler
               <ProBadge />
             </p>
-            <p className='text-3xl font-black uppercase mb-6'>Select A Plan</p>
+            <p className='text-3xl font-black uppercase mb-6'>{t('proMode.modal.select')}</p>
 
             <Tabs
               aria-label='Settings tabs'
@@ -43,7 +45,7 @@ export default function GoProModal(): ReactElement {
                 panel: 'w-full px-12',
               }}
             >
-              <Tab key='monthly' title='Monthly'>
+              <Tab key='monthly' title={t('proMode.modal.monthly')}>
                 <div className='flex flex-col justify-center items-center'>
                   <p className='text-3xl font-bold mt-3 mb-6'>
                     $1.00
@@ -57,27 +59,27 @@ export default function GoProModal(): ReactElement {
                         'text-white text-md bg-[#5750DF] py-2.5 hover:bg-[#5750DF]/90 hover:scale-[1.02] duration-150',
                       )}
                     >
-                      Get Started
+                      {t('proMode.modal.getStarted')}
                     </div>
                   </ExtLink>
 
-                  <p className='text-xs text-altwhite mt-2'>Cancel anytime</p>
+                  <p className='text-xs text-altwhite mt-2'>{t('proMode.modal.cancelAnytime')}</p>
                 </div>
 
                 <div className='mt-10 w-full max-w-xs text-sm'>
-                  <p className='font-semibold mb-3'>Features</p>
+                  <p className='font-semibold mb-3'>{t('proMode.modal.benefits')}</p>
                   <ul className='space-y-1'>
                     <li className='flex items-center gap-2'>
                       <FaCheck className='text-green-500' />
-                      <span>Remove in app ads</span>
+                      <span>{t('proMode.modal.removeAds')}</span>
                     </li>
                     <li className='flex items-center gap-2'>
                       <FaCheck className='text-green-500' />
-                      <span>Unique chat role and color</span>
+                      <span>{t('proMode.modal.uniqueChatRole')}</span>
                     </li>
                     <li className='flex items-center gap-2'>
                       <FaCheck className='text-green-500' />
-                      <span>More benefits coming in the future</span>
+                      <span>{t('proMode.modal.moreBenefits')}</span>
                     </li>
                   </ul>
                 </div>
@@ -87,9 +89,9 @@ export default function GoProModal(): ReactElement {
                 key='yearly'
                 title={
                   <div className='flex items-center gap-2'>
-                    Yearly
+                    {t('proMode.modal.yearly')}
                     <div className='px-1 py-0.5 bg-[#5750DF] text-white rounded-sm text-xs font-normal uppercase'>
-                      <p>7-Day Trial</p>
+                      <p>{t('proMode.modal.trial')}</p>
                     </div>
                   </div>
                 }
@@ -99,7 +101,7 @@ export default function GoProModal(): ReactElement {
                     $0.75
                     <span className='text-sm'>/mo</span>
                     <div className='px-1 py-0.5 bg-[#5750DF] text-white rounded-sm text-xs font-normal ml-2 mb-2 uppercase'>
-                      <p>Best value</p>
+                      <p>{t('proMode.modal.bestValue')}</p>
                     </div>
                   </p>
 
@@ -110,27 +112,27 @@ export default function GoProModal(): ReactElement {
                         'text-white text-md bg-[#5750DF] py-2.5 hover:bg-[#5750DF]/90 hover:scale-[1.02] duration-150',
                       )}
                     >
-                      Start Free Trial
+                      {t('proMode.modal.startFreeTrial')}
                     </div>
                   </ExtLink>
 
-                  <p className='text-xs text-altwhite mt-2'>Cancel anytime</p>
+                  <p className='text-xs text-altwhite mt-2'>{t('proMode.modal.cancelAnytime')}</p>
                 </div>
 
                 <div className='mt-10 w-full max-w-xs text-sm'>
-                  <p className='font-semibold mb-3'>Features</p>
+                  <p className='font-semibold mb-3'>{t('proMode.modal.benefits')}</p>
                   <ul className='space-y-1'>
                     <li className='flex items-center gap-2'>
                       <FaCheck className='text-green-500' />
-                      <span>Remove in app ads</span>
+                      <span>{t('proMode.modal.removeAds')}</span>
                     </li>
                     <li className='flex items-center gap-2'>
                       <FaCheck className='text-green-500' />
-                      <span>Unique chat role and color</span>
+                      <span>{t('proMode.modal.uniqueChatRole')}</span>
                     </li>
                     <li className='flex items-center gap-2'>
                       <FaCheck className='text-green-500' />
-                      <span>More benefits coming in the future</span>
+                      <span>{t('proMode.modal.moreBenefits')}</span>
                     </li>
                   </ul>
                 </div>
@@ -138,6 +140,7 @@ export default function GoProModal(): ReactElement {
             </Tabs>
 
             <Image src='/powered-by-stripe.svg' alt='Powered by Stripe' className='mt-6' width={130} height={50} />
+            <p className='text-[10px] text-altwhite mt-2'>{t('proMode.modal.footer')}</p>
           </div>
         </ModalBody>
       </ModalContent>
