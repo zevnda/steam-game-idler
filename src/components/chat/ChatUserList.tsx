@@ -45,7 +45,7 @@ export default function ChatUserList(): ReactElement {
       case 'donator':
         return 'Donator'
       default:
-        return 'Members'
+        return 'Member'
     }
   }
 

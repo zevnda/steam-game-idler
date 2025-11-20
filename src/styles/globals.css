@@ -234,12 +234,12 @@ svg {
 }
 
 .donator-role {
-  background: linear-gradient(90deg, #700084, #7e15ff, #0095ff, #00a2c3, #0095ff, #7e15ff, #700084);
+  background: linear-gradient(90deg, #dc15ffff, #9238ffff, #2ea8ffff, #2ea8ffff, #9238ffff, #dc15ffff);
   background-size: 200% auto;
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: gradient-shift 3s linear infinite;
+  animation: gradient-shift 3.5s linear infinite;
 }
 
 @keyframes gradient-shift {
