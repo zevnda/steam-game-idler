@@ -15,6 +15,10 @@ const FEATURES = {
   'free-games': 'Free Games',
 }
 
+const GUIDES = {
+  'manual-add': 'Manual Add',
+}
+
 const SETTINGS = {
   'general': 'General',
   'card-farming': 'Card Farming',
@@ -75,6 +79,12 @@ export default {
       },
       'features': {
         items: FEATURES,
+        theme: {
+          collapsed: true,
+        },
+      },
+      'guides': {
+        items: GUIDES,
         theme: {
           collapsed: true,
         },

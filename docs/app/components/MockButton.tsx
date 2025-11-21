@@ -11,6 +11,7 @@ import {
   TbEdit,
   TbEraser,
   TbGift,
+  TbHeart,
   TbHourglassLow,
   TbLock,
   TbLockOpen,
@@ -22,6 +23,7 @@ import {
 } from 'react-icons/tb'
 
 type ButtonType =
+  | 'content'
   | 'unlock'
   | 'lock'
   | 'unlock-all'
@@ -50,6 +52,7 @@ type ButtonType =
   | 'free-games'
   | 'unlock-order'
   | 'grabber'
+  | 'favorites'
 
 interface MockButtonProps {
   type: ButtonType
@@ -57,7 +60,13 @@ interface MockButtonProps {
 }
 
 export default function MockButton({ type, content }: MockButtonProps): ReactElement | null {
-  if (type === 'unlock') {
+  if (type === 'content') {
+    return (
+      <span className='inline bg-icon-light dark:bg-icon-dark text-icon-light dark:text-icon-dark text-[12px] font-semibold px-2 py-1.5 rounded-full shadow-sm select-none'>
+        {content}
+      </span>
+    )
+  } else if (type === 'unlock') {
     return (
       <span className='inline bg-icon-light dark:bg-icon-dark text-icon-light dark:text-icon-dark text-[12px] font-semibold px-2 py-1.5 rounded-full shadow-sm select-none'>
         <TbLockOpen fontSize={20} className='inline' /> Unlock
@@ -156,7 +165,7 @@ export default function MockButton({ type, content }: MockButtonProps): ReactEle
   } else if (type === 'context-add') {
     return (
       <span className='inline bg-icon-light dark:bg-icon-dark text-icon-light dark:text-icon-dark text-[12px] font-semibold px-2 py-1.5 rounded-full shadow-sm select-none'>
-        <TbPlus fontSize={20} className='inline' /> {content}
+        <TbPlus fontSize={16} className='inline' /> {content}
       </span>
     )
   } else if (type === 'context-cog') {
@@ -217,6 +226,12 @@ export default function MockButton({ type, content }: MockButtonProps): ReactEle
     return (
       <span className='inline bg-icon-light dark:bg-icon-dark text-icon-light dark:text-icon-dark text-[12px] font-semibold px-2 py-1.5 rounded-full shadow-sm select-none'>
         <GoGrabber fontSize={24} className='inline' />
+      </span>
+    )
+  } else if (type === 'favorites') {
+    return (
+      <span className='inline bg-icon-light dark:bg-icon-dark text-icon-light dark:text-icon-dark text-[12px] font-semibold px-2 py-1.5 rounded-full shadow-sm select-none'>
+        <TbHeart fontSize={20} className='inline' /> Favorite Games
       </span>
     )
   }
