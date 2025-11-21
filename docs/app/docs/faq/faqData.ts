@@ -160,6 +160,14 @@ export const faqData: FAQEntry[] = [
       "> No. SGI cannot idle in-game items or join game servers as it doesn't run an actual instance of the game.",
   },
   {
+    question: 'Can I use SGI and play Steam games at the same time?',
+    markdown:
+      '**Can I use SGI and play Steam games at the same time?**\n' +
+      '> Yes. You can idle games with SGI while playing others.\n' +
+      '>\n' +
+      '> Keep in mind that Steam only allows a maximum of 32 simultaneous game instances (whether through SGI or the Steam client). So, just make sure that the total number of games being idled by SGI and the game you are playing does not exceed this limit, and that you are not trying to idle the same game you are trying to play.',
+  },
+  {
     question: 'How many games can SGI idle simultaneously?',
     markdown:
       '**How many games can SGI idle simultaneously?**\n' +
