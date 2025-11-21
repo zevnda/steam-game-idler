@@ -30,7 +30,7 @@ export default function AdComponent(): ReactElement {
           setAdKey(prev => prev + 1)
           scheduleNextRefresh()
         },
-        3 * 60 * 1000,
+        1.25 * 60 * 1000,
       )
 
       return interval
