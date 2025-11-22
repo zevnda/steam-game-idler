@@ -50,7 +50,6 @@ export default function AdComponent(): ReactElement {
         className='adsbygoogle'
         data-ad-client='ca-pub-8915288433444527'
         data-ad-slot='9100790437'
-        data-full-width-responsive='true'
         style={{ display: 'block', width: '300px', height: '250px' }}
       />
     </div>
