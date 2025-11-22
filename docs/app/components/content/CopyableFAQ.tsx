@@ -49,22 +49,22 @@ export default function CopyableFAQ({ id, question, children, value }: Props): R
   return (
     <Accordion
       title={
-        <div className='flex items-center gap-2 w-full'>
-          <h3 className='flex-1'>{question}</h3>
+        <>
+          <div className='flex items-center gap-2 w-full cursor-pointer hover:bg-icon-dark/10 dark:hover:bg-icon-light/5 rounded duration-100 px-2 py-1'>
+            <h3 className='flex-1'>{question}</h3>
+          </div>
           <div
+            className='text-icon-light/50 dark:text-icon-dark/50 hover:bg-icon-dark/10 hover:dark:bg-icon-light/10 hover:text-icon-light/70 dark:hover:text-icon-dark/70 p-1.5 rounded-md cursor-pointer duration-100 h-[30px] w-[30px]'
             onClick={e => {
               e.preventDefault()
               e.stopPropagation()
               handleCopy()
             }}
-            className='p-1.5 rounded hover:bg-icon-dark/10 dark:hover:bg-icon-light/10 transition-colors active:scale-95 text-icon-light/50 dark:text-icon-dark/50 hover:text-icon-light/70 dark:hover:text-icon-dark/70'
-            title='Copy answer'
           >
-            <MdOutlineContentCopy className='' />
+            <MdOutlineContentCopy />
           </div>
-        </div>
+        </>
       }
-      className='my-4'
       id={id}
       value={value}
     >
