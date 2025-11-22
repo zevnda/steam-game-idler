@@ -104,8 +104,28 @@ pub async fn get_custom_lists(
         let mut contents = String::new();
         file.read_to_string(&mut contents)
             .map_err(|e| format!("Failed to read games list file: {}", e))?;
-        serde_json::from_str(&contents)
-            .map_err(|e| format!("Failed to parse games list JSON: {}", e))?
+        match serde_json::from_str(&contents) {
+            Ok(data) => data,
+            Err(_e) => {
+                // Backup the corrupted file
+                let backup_path = games_file_path.with_extension("json.bak");
+                let _ = fs::rename(&games_file_path, &backup_path);
+                // Log the event
+                let _ = crate::logging::log_event(
+                "[Error] Tried to load a corrupt JSON file. A backup has been created and a new file was created".to_string(),
+                app_handle.clone()
+            );
+                // Reset to empty array
+                let empty_array = json!([]);
+                let json_string = serde_json::to_string_pretty(&empty_array)
+                    .map_err(|e| format!("Failed to serialize empty list JSON: {}", e))?;
+                let mut file = File::create(&games_file_path)
+                    .map_err(|e| format!("Failed to create list file: {}", e))?;
+                file.write_all(json_string.as_bytes())
+                    .map_err(|e| format!("Failed to write to list file: {}", e))?;
+                empty_array
+            }
+        }
     } else {
         // Create a new file with an empty array
         let empty_array = json!([]);
