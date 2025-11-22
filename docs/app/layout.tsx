@@ -3,7 +3,6 @@ import SearchDialog from '@docs/components/search'
 import TelemetryLoader from '@docs/components/TelemetryLoader'
 import { RootProvider } from 'fumadocs-ui/provider/next'
 import { Geist, Geist_Mono } from 'next/font/google'
-import Head from 'next/head'
 
 import './global.css'
 
@@ -134,14 +133,14 @@ const schemaData = [
 export default function Layout({ children }: LayoutProps<'/'>) {
   return (
     <html lang='en' className={`${geist.variable} ${mono.variable}`} suppressHydrationWarning>
-      <Head>
+      <head>
         <script
           async
           src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8915288433444527'
           crossOrigin='anonymous'
         />
         <script type='application/ld+json' dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }} />
-      </Head>
+      </head>
 
       <body className='flex flex-col min-h-screen'>
         <RootProvider
