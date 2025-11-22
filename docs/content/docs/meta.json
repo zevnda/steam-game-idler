@@ -20,10 +20,9 @@
     "./settings/card-farming",
     "./settings/achievement-unlocker",
     "./settings/trading-card-manager",
+    "./steam-credentials",
     "./settings/game-settings",
     "./settings/debug",
-    "---Miscellaneous---",
-    "./steam-credentials",
     "---Help & Support---",
     "./troubleshooting",
     "./faq"
