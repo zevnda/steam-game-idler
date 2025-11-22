@@ -1,0 +1,66 @@
+---
+title: Achievement Manager
+description: The Steam Achievement Manager feature is similar to SAM by Gibbed and allows you to manually unlock and lock Steam game achievements, as well as modify achievement statistics.
+---
+
+import MockButton from '@docs/components/content/MockButton';
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+
+# Achievement Manager
+
+The Steam Achievement Manager feature allows you to manage your Steam game's achievements, including manually unlocking and locking achievements, as well as modifying an achievement's statistics.
+
+If you have previously used Steam Achievement Manager (SAM) by Gibbed in the past, then SGI's Achievement Manager should feel familiar.
+
+### Achievements
+
+<Steps>
+  <Step>
+    Click <MockButton type='your-games' /> in the sidebar
+  </Step>
+
+  <Step>
+    Click <MockButton type='achievement-manager' /> beneath the game image to open the achievement manager
+  </Step>
+
+  <Step>
+    On the achievement manager screen you will see a list of achievements for that game, if any are available
+
+    Click <MockButton type='unlock' /> or <MockButton type='lock' /> next to an achievement to unlock or lock that specific achievement
+
+    Click <MockButton type='unlock-all' /> or <MockButton type='lock-all' /> in the page header to unlock or lock all achievements for that game
+  </Step>
+</Steps>
+
+### Statistics
+
+<Steps>
+  <Step>
+    Click <MockButton type='your-games' /> in the sidebar
+  </Step>
+
+  <Step>
+    Click <MockButton type='achievement-manager' /> beneath the game image to open the achievement manager
+  </Step>
+
+  <Step>
+    On the achievement manager screen, click the <MockButton type='content' content='Statistics' /> tab. You will see a list of statistics for that game, if any are available
+  </Step>
+
+  <Step>
+    Change the `value` of any statistics you want to modify and click <MockButton type='save-changes' />
+  </Step>
+</Steps>
+
+## Special Flags
+
+Some games have achievements and statistics with [special flags](https://partner.steamgames.com/doc/features/achievements#3) set by the develper:
+- **Protected:** Only official game servers can change these. You won't be able to change these in SGI
+- **IncrementOnly:** You can only increase this statistic's value, not decrease it (5 → 6 is allowed, but 5 → 4 is not)
+- **Hidden:** The achievement description is hidden, so it’s harder to know how to unlock it
+
+For statistics with any flags, the flags will be shown under the statistic in the statistics tab.
+
+For achievements with the "Hidden" flag, the description will be blurred until you hover over it with your mouse.
+
+For achievements with the "Protected" flag, the unlock/lock buttons will be disabled.

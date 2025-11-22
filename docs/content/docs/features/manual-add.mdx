@@ -1,0 +1,41 @@
+---
+title: Manually Adding Games
+description: You can manually add Steam games to SGI to take advantage of features like Card Farming and Achievement Unlocker.
+---
+
+import MockButton from '@docs/components/content/MockButton';
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+
+# Manually Adding Games
+
+In some cases, SGI may not automatically detect all the games in your Steam library [for reasons explained here](/docs/faq#:~:text=Why%20are%20some%20games%20not%20showing%20up%20in%20my%20games%20list%20in%20SGI%3F).
+
+When this happens, you can manually add games to SGI to ensure they are included in features like [Card Farming](/docs/features/card-farming), [Achievement Unlocker](/docs/features/achievement-unlocker), and [Automatic Idler](/docs/features/auto-idler).
+
+<Callout type="info">
+    Adding games manually does not always guarantee that all SGI features will work correctly with those games
+</Callout>
+
+<Steps>
+  <Step>
+    Click either <MockButton type='card-farming' />, <MockButton type='achievement-unlocker' />, <MockButton type='auto-idle' />, or <MockButton type='favorites' /> in the sidebar, depending on which list you want to add the game to
+  </Step>
+
+  <Step>
+    Click on the <MockButton type='context-add' /> button in the page header
+  </Step>
+
+  <Step>
+    In the modal that opens, enter the `game name` and `game id` of the game you want to add
+
+    The `game id` is the number in the game's store page URL. For example, here it is `570`:
+
+    ```
+    https://store.steampowered.com/app/570/Dota_2/
+    ```
+  </Step>
+
+  <Step>
+    Click <MockButton type='content' content='Add' /> to add the game to the list
+  </Step>
+</Steps>

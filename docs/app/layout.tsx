@@ -1,21 +1,27 @@
-import type { ReactElement, ReactNode } from 'react'
-
-import Logo from '@docs/components/Logo'
-import { Inter } from 'next/font/google'
-import { Layout, Navbar } from 'nextra-theme-docs'
-import { Head } from 'nextra/components'
-import { getPageMap } from 'nextra/page-map'
-
-import 'nextra-theme-docs/style.css'
-import './globals.css'
-
 import AdOverlay from '@docs/components/AdOverlay'
+import SearchDialog from '@docs/components/search'
 import TelemetryLoader from '@docs/components/TelemetryLoader'
+import { RootProvider } from 'fumadocs-ui/provider/next'
+import { Geist, Geist_Mono } from 'next/font/google'
+import Head from 'next/head'
 
-const inter = Inter({
+import './global.css'
+
+const geist = Geist({
+  variable: '--font-sans',
   subsets: ['latin'],
-  variable: '--font-inter',
 })
+
+const mono = Geist_Mono({
+  variable: '--font-mono',
+  subsets: ['latin'],
+})
+
+declare global {
+  interface Window {
+    adsbygoogle: Record<string, unknown>[]
+  }
+}
 
 export const metadata = {
   title: {
@@ -125,17 +131,10 @@ const schemaData = [
   },
 ]
 
-const navbar = <Navbar logo={<Logo />} projectLink='https://github.com/zevnda/steam-game-idler' />
-
-export default async function RootLayout({ children }: { children: ReactNode }): Promise<ReactElement> {
+export default function Layout({ children }: LayoutProps<'/'>) {
   return (
-    <html lang='en' dir='ltr' suppressHydrationWarning>
-      <Head
-        backgroundColor={{
-          light: '#fafafa',
-          dark: '#101010',
-        }}
-      >
+    <html lang='en' className={`${geist.variable} ${mono.variable}`} suppressHydrationWarning>
+      <Head>
         <script
           async
           src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8915288433444527'
@@ -143,20 +142,16 @@ export default async function RootLayout({ children }: { children: ReactNode }):
         />
         <script type='application/ld+json' dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }} />
       </Head>
-      <body className={`${inter.className} text-sm`}>
-        <Layout
-          navbar={navbar}
-          pageMap={await getPageMap()}
-          docsRepositoryBase='https://github.com/zevnda/steam-game-idler/tree/main/docs'
-          editLink='Edit on GitHub'
-          sidebar={{
-            defaultMenuCollapseLevel: 1,
-            toggleButton: false,
+
+      <body className='flex flex-col min-h-screen'>
+        <RootProvider
+          search={{
+            SearchDialog,
           }}
-          feedback={{ content: 'Give us feedback' }}
         >
           {children}
-        </Layout>
+        </RootProvider>
+
         <AdOverlay />
         <TelemetryLoader />
       </body>

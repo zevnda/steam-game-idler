@@ -1,0 +1,85 @@
+---
+title: Achievement Unlocker
+description: The Steam Achievement Unlocker feature allows you to automatically unlock your Steam game's achievements in a way that looks like they were earned naturally.
+---
+
+import MockButton from '@docs/components/content/MockButton';
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+
+# Achievement Unlocker
+
+The Steam Achievement Unlocker feature will automatically unlock your Steam game's achievements in a way that looks like they were earned naturally.
+
+<Callout type="info">
+    Configure this feature's settings in [Settings → Achievement Unlocker](/docs/settings/achievement-unlocker) before using it
+</Callout>
+
+### Default Mode
+
+In default mode, achievements are unlocked in the order of global achievement percentage, with the delay set in [Settings → General → Unlock Interval](/docs/settings/achievement-unlocker#unlock-interval).
+
+<Steps>
+  <Step>
+    Click <MockButton type='achievement-unlocker' /> in the sidebar
+  </Step>
+
+  <Step>
+    Click <MockButton type='edit' /> and click on individual games to add and remove them, and then click <MockButton type='content' content='Done' />
+  </Step>
+
+  <Step>
+    Optionally, you can customize the unlock order and set delays for individual achievements by [following these steps](#custom-order--unlock-delay)
+  </Step>
+
+  <Step>
+    Click <MockButton type='achievement-unlocker-action' />
+  </Step>
+</Steps>
+
+### Custom Order & Unlock Delay
+
+The `custom order` feature lets you set the exact order in which achievements are unlocked, and allows you to skip any that you don’t want unlocked.
+
+The `unlock delay` is how long SGI waits after unlocking one achievement before unlocking the next.
+
+> If you set a delay of 10 minutes on achievement one, SGI will unlock achievement one, wait 10 minutes, and then unlock achievement two.
+
+Unlock delays override the global value set in [Settings → General → Unlock Interval](/docs/settings/achievement-unlocker#unlock-interval). If no unlock delay is set, the global value is used.
+
+You can customize the order, set delays, or both — each step is optional.
+
+<Steps>
+  <Step>
+    Follow steps 1 and 2 from the [Default Mode](#default-mode) section above
+  </Step>
+
+  <Step>
+    Click <MockButton type='unlock-order' /> below the game you want to customize
+  </Step>
+
+  <Step>
+    Drag and drop achievements by grabbing the <MockButton type='grabber' /> to set their unlock order
+  </Step>
+
+  <Step>
+    Click <MockButton type='checkbox' /> to uncheck achievements that you want to exclude from being unlocked
+  </Step>
+
+  <Step>
+    Click <MockButton type='content' content='+ Add a delay after unlocking this achievement' /> on each achievement that you want to set an unlock delay for and set the delay (in minutes)
+
+    If an achievement already has a delay set, you can click <MockButton type='content' content='✔ Edit delay' /> to change or clear it
+  </Step>
+
+  <Step>
+    Click <MockButton type='save-alt' /> and then click <MockButton type='achievement-unlocker-action' />
+  </Step>
+</Steps>
+
+## Additional Information
+
+You can add as many games as you want to your achievement unlocker list.
+
+As this feature is to look legitimate, it will only unlock achievements for **one game at a time**. When all achievements for that game are unlocked, SGI will move on to the next game in your list.
+
+If you want to unlock achievements for multiple games at the same time, you can run more than one instance of SGI and choose a different game, or set of games, all with their own settings, for each instance.

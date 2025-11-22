@@ -1,0 +1,50 @@
+---
+title: FAQ
+description: "The FAQ section provides answers to common questions and issues about using SGI."
+---
+
+import CopyableFAQ from '@docs/components/content/CopyableFAQ';
+import { faqData } from './faqData';
+import ReactMarkdown from 'react-markdown';
+import { Accordions } from 'fumadocs-ui/components/accordion';
+
+# FAQ
+
+{(() => {
+  const sections = [];
+  let currentFaqs = [];
+  let currentSection = null;
+  faqData.forEach((faq, i) => {
+    if ('section' in faq) {
+      if (currentFaqs.length > 0) {
+        sections.push(
+          <Accordions type="multiple" key={'faqs-' + currentSection}>
+            {currentFaqs}
+          </Accordions>
+        );
+        currentFaqs = [];
+      }
+      sections.push(<h2 key={faq.section + i}>{faq.section}</h2>);
+      currentSection = faq.section;
+    } else {
+      currentFaqs.push(
+        <CopyableFAQ
+          key={faq.question}
+          id={faq.question}
+          question={faq.question}
+          value={faq.question}
+        >
+          <ReactMarkdown>{faq.markdown.split('\n').slice(1).join('\n')}</ReactMarkdown>
+        </CopyableFAQ>
+      );
+    }
+  });
+  if (currentFaqs.length > 0) {
+    sections.push(
+      <Accordions type="multiple" key={'faqs-last'}>
+        {currentFaqs}
+      </Accordions>
+    );
+  }
+  return sections;
+})()}
