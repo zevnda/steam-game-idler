@@ -26,6 +26,8 @@ const config = [
       'src-tauri/**/*',
       'docs/public/**/*',
       'docs/.next/**/*',
+      'docs/out/**/*',
+      'docs/.source/**/*',
       'docs/node_modules/**/*',
       '*.d.ts',
       'docs/*.d.ts',
@@ -57,13 +59,6 @@ const config = [
           argsIgnorePattern: '^_',
           ignoreRestSiblings: true,
           args: 'none',
-        },
-      ],
-      '@typescript-eslint/explicit-function-return-type': [
-        'error',
-        {
-          allowExpressions: true,
-          allowHigherOrderFunctions: true,
         },
       ],
       '@typescript-eslint/consistent-type-imports': [

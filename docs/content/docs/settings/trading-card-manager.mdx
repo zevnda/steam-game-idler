@@ -1,0 +1,29 @@
+---
+title: Trading Card Manager
+description: View the settings for the Trading Card Manager feature, which allows you to manage and sell your Steam trading cards.
+---
+
+# Trading Card Manager
+
+## Default Sell Option
+Choose the default sell price for trading cards when using the `sell all` button
+
+Prices are fetched from the trading card's histogram data. For example, [this trading card](https://steamcommunity.com/market/listings/753/774861-Traitor) has it's own [price histogram data](https://steamcommunity.com/market/itemordershistogram?country=AU&language=english&currency=21&item_nameid=176219335). The histogram data is the same data that populates the tables on the [card's listing page](https://steamcommunity.com/market/listings/753/774861-Traitor)
+
+The histogram data contains a `highest_buy_order` and `lowest_sell_order` price, which are used to determine the default sell price
+
+## Price Adjustment
+Add or subtract a fixed amount from the sale price of all trading cards listed for sale. This can be useful to adjust prices based on market trends or personal preferences
+
+For example, if you set a price adjustment of `-0.10`, and sell a card listed at `1.00`, it will be sold for `0.90`
+
+## Sell Limit
+Set minimum and maximum price limits for selling trading cards
+
+If the final sale price is below the minimum or above the maximum, the card will not be listed for sale. This helps avoid selling cards at unfavorable prices
+
+For example, if you set a minimum price of `0.50` and a maximum price of `2.00`, cards priced below `0.50` or above `2.00` will not be sold
+
+## Sell Delay
+
+Set a delay between listing each trading card for sale to avoid being rate-limited by Steam's API

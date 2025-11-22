@@ -1,15 +1,12 @@
-import nextra from 'nextra'
+import { createMDX } from 'fumadocs-mdx/next'
 
-const withNextra = nextra({})
+const withMDX = createMDX()
 
-export default withNextra({
+/** @type {import('next').NextConfig} */
+export default withMDX({
   output: 'export',
   images: {
     unoptimized: true,
   },
-  turbopack: {
-    resolveAlias: {
-      'next-mdx-import-source-file': './mdx-components.tsx',
-    },
-  },
+  reactStrictMode: true,
 })
