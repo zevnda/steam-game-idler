@@ -16,6 +16,7 @@ export type CurrentSettingsTabType =
   | 'card-farming'
   | 'achievement-unlocker'
   | 'trading-card-manager'
+  | 'steam-credentials'
   | 'game-settings'
   | 'debug'
 
