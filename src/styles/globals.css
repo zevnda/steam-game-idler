@@ -75,6 +75,12 @@ svg {
   background: var(--holo-bg);
 }
 
+.inner-glow {
+  box-shadow:
+    inset 0 0 60px 10px rgba(0, 0, 0, 1),
+    inset 0 0 120px 20px rgba(0, 0, 0, 1);
+}
+
 .holo-bg::after {
   content: '';
   position: absolute;

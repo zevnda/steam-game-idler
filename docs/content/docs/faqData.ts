@@ -235,7 +235,7 @@ export const faqData: FAQEntry[] = [
       '> 1. Press `WinKey + S` to open the search bar\n' +
       '> 2. Type `Registry Editor` and press `Enter` to open the Registry Editor\n' +
       '> 3. Navigate to `HKEY_CURRENT_USER\\Software\\Valve\\Steam` and make sure the value of `SteamPath` is set to the correct path of your Steam installation\n' +
-      '> 4. If the value is not set to the correct path of your Steam installation, you can manually set it by right-clicking on `SteamPath`, selecting `Modify`, and entering the correct path (e.g., `C:\\Program Files (x86)\\Steam`)\n' +
+      '> 4. If the value is not set to the correct path of your Steam installation, you can manually set it by right-clicking on `SteamPath`, selecting `Modify`, and entering the correct path (e.g., `c:/program files (x86)/steam`)\n' +
       '> 5. Close the Registry Editor and restart SGI',
   },
   {
