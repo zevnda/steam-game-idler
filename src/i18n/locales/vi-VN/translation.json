@@ -6,6 +6,8 @@
   "setup.noUsers": "Không tìm thấy người dùng Steam",
   "setup.noUsersTwo": "Hãy đảm bảo rằng bạn đã cài đặt Steam và đăng nhập vào ít nhất một tài khoản, sau đó nhấp vào làm mới.",
   "setup.acknowledge": "Bằng cách nhấp vào 'Tiếp tục', bạn đồng ý với <0>Điều khoản dịch vụ</0> và xác nhận rằng bạn đã đọc <1>Chính sách bảo mật của chúng tôi</1> .",
+  "setup.hero.title": "Công cụ tự động hóa Steam duy nhất bạn cần",
+  "setup.hero.subtitle": "Thu thập thẻ giao dịch, mở khóa thành tích, tăng thời gian chơi và tự động hóa trải nghiệm Steam của bạn — tất cả trong một công cụ.",
   "notifications.empty": "Không có thông báo",
   "notifications.markAllRead": "Đánh dấu tất cả là đã đọc",
   "menu.guide": "Hướng dẫn người dùng",

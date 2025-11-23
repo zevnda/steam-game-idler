@@ -6,6 +6,8 @@
   "setup.noUsers": "Nebyli nalezeni žádní uživatelé Steamu",
   "setup.noUsersTwo": "Ujistěte se, že máte nainstalovaný Steam a jste přihlášeni alespoň k jednomu účtu, a poté klikněte na tlačítko Obnovit.",
   "setup.acknowledge": "Kliknutím na tlačítko „Pokračovat“ souhlasíte s <0>Smluvními podmínkami</0> a potvrzujete, že jste si přečetli naše <1>Zásady ochrany osobních údajů</1> .",
+  "setup.hero.title": "Jediný nástroj pro automatizaci ve službě Steam, který kdy budete potřebovat",
+  "setup.hero.subtitle": "Farmějte sběratelské karty, odemykejte achievementy, zvyšte herní dobu a automatizujte svůj zážitek ze služby Steam – to vše v jednom nástroji.",
   "notifications.empty": "Žádná upozornění",
   "notifications.markAllRead": "Označit vše jako přečtené",
   "menu.guide": "Uživatelský návod",

@@ -6,6 +6,8 @@
   "setup.noUsers": "Hiçbir Steam hesabı bulunamadı",
   "setup.noUsersTwo": "Lütfen Steam'in yüklü olduğundan ve en az bir hesapta oturum açtığınızdan emin olun, ardından yenile'ye tıklayın.",
   "setup.acknowledge": "'Devam'a tıklayarak <0>Hizmet Şartları'nı kabul etmiş olursunuz</0> ve Gizlilik Politikamızı okuduğunuzu kabul ediyorsunuz</1> .",
+  "setup.hero.title": "İhtiyaç Duyacağınız Tek Steam Otomasyon Aracı",
+  "setup.hero.subtitle": "Koleksiyon kartları toplayın, başarıların kilidini açın, oyun sürenizi artırın ve Steam deneyiminizi otomatikleştirin; hepsi tek bir araçta.",
   "notifications.empty": "Hiçbir bildirim yok",
   "notifications.markAllRead": "Hepsini okundu olarak işaretle",
   "menu.guide": "Kullanıcı kılavuzu",

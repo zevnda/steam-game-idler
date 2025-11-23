@@ -6,6 +6,8 @@
   "setup.noUsers": "Nu s-au găsit utilizatori Steam",
   "setup.noUsersTwo": "Te rugăm să te asiguri că ai instalat Steam și că ești conectat la cel puțin un cont, apoi dă clic pe Reîmprospătare.",
   "setup.acknowledge": "Dând clic pe „Continuă”, ești de acord cu <0>Termenii și condițiile de utilizare</0> și confirmați că ați citit <1>Politica noastră de confidențialitate</1> .",
+  "setup.hero.title": "Singurul instrument de automatizare Steam de care vei avea vreodată nevoie",
+  "setup.hero.subtitle": "Colecționează cărți de colecționare Farm, deblochează realizări, mărește timpul de joc și automatizează-ți experiența Steam — toate într-un singur instrument.",
   "notifications.empty": "Fără notificări",
   "notifications.markAllRead": "Marchează totul citit",
   "menu.guide": "Ghidul utilizatorului",

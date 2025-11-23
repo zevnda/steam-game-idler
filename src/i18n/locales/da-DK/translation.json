@@ -6,6 +6,8 @@
   "setup.noUsers": "Ingen Steam brugere fundet",
   "setup.noUsersTwo": "Sørg for, at du har Steam installeret og er logget ind på mindst én konto, og klik derefter på Opdater.",
   "setup.acknowledge": "Ved at klikke på 'Fortsæt' accepterer du <0>Servicevilkårene</0> og bekræfter, at du har læst vores <1>Privatlivspolitik</1> .",
+  "setup.hero.title": "Det eneste Steam<1/>automatiseringsværktøj<1/>du nogensinde får brug for",
+  "setup.hero.subtitle": "Farm-samlekort, lås op for præstationer, boost spilletiden og automatiser din Steam-oplevelse – alt i ét værktøj.",
   "notifications.empty": "Ingen notifikationer",
   "notifications.markAllRead": "Markér alle som læst",
   "menu.guide": "Brugervejledning",

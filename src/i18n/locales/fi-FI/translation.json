@@ -6,6 +6,8 @@
   "setup.noUsers": "Steam-käyttäjiä ei löytynyt",
   "setup.noUsersTwo": "Varmista, että sinulla on Steam asennettuna ja olet kirjautuneena vähintään yhdelle tilille, ja napsauta sitten päivitä.",
   "setup.acknowledge": "Klikkaamalla 'Jatka' hyväksyt <0>Käyttöehdot</0> ja vahvistat, että olet lukenut <1>tietosuojakäytäntömme</1> .",
+  "setup.hero.title": "Ainoa Steam-<1/>automaatiotyökalu<1/>jota koskaan tarvitset",
+  "setup.hero.subtitle": "Keräilykortit maatilalla, availe saavutuksia, lisää peliaikaa ja automatisoi Steam-kokemuksesi – kaikki yhdessä työkalussa.",
   "notifications.empty": "Ei ilmoituksia",
   "notifications.markAllRead": "Merkitse kaikki luetuiksi",
   "menu.guide": "Käyttäjän Opas",
