@@ -11,6 +11,7 @@ import { TbArrowRight } from 'react-icons/tb'
 import { useNavigationContext } from '@/components/contexts/NavigationContext'
 import Header from '@/components/ui/header/Header'
 import LanguageSwitch from '@/components/ui/i18n/LanguageSwitch'
+import SignInHero from '@/components/ui/SignInHero'
 import WebviewWindow from '@/components/ui/WebviewWindow'
 import useSignIn from '@/hooks/layout/useSignIn'
 
@@ -36,9 +37,16 @@ export default function SignIn(): ReactElement {
       <Header />
 
       {/* Language switch */}
-      <div className='absolute bottom-0 right-0 p-10 z-10'>
+      <div className='absolute bottom-0 right-0 p-10 z-10 flex items-center gap-4 pointer-events-none'>
+        <WebviewWindow
+          href='https://steamgameidler.com/docs/get-started/how-to-sign-in'
+          className='pointer-events-auto'
+        >
+          <p className='text-sm text-altwhite hover:text-altwhite/90 duration-150'>{t('setup.help')}</p>
+        </WebviewWindow>
+
         <LanguageSwitch
-          className='w-[180px]'
+          className='w-[180px] pointer-events-auto'
           classNames={{
             trigger: [
               'bg-input/80 data-[hover=true]:!bg-inputhover/80 data-[open=true]:!bg-inputhover/80 duration-100 rounded-lg border border-border',
@@ -52,10 +60,10 @@ export default function SignIn(): ReactElement {
           <Spinner variant='simple' />
         </div>
       ) : (
-        <div className='w-screen h-screen relative overflow-hidden z-1'>
-          <div className='flex flex-col items-center justify-center w-screen h-calc'>
+        <div className='flex gap-4 w-screen h-screen relative overflow-hidden z-1'>
+          <div className='flex flex-col items-center w-[90%] justify-center h-calc'>
             {/* Logo and glow effect */}
-            <div className='relative flex items-center justify-center mb-10'>
+            <div className='relative flex items-center justify-center my-10'>
               {/* Outer, soft vibrant glow */}
               <span
                 className='absolute -inset-1 rounded-full'
@@ -77,9 +85,8 @@ export default function SignIn(): ReactElement {
                 <div className='flex flex-col items-center mb-6'>
                   <p className='text-3xl font-semibold'>{t('setup.chooseAccount')}</p>
                 </div>
-
                 {/* User cards */}
-                <div className='flex flex-row flex-wrap items-center justify-center mb-10'>
+                <div className='flex flex-row flex-wrap items-center justify-center mb-4 min-h-56 max-h-96 overflow-auto space-y-2 p-2 overflow-x-auto'>
                   {userSummaries.map(user => (
                     <div
                       key={user?.steamId}
@@ -121,6 +128,29 @@ export default function SignIn(): ReactElement {
                   ))}
                 </div>
 
+                {/* Buttons */}
+                <div className='flex gap-4 mb-6'>
+                  <Button
+                    radius='full'
+                    variant='bordered'
+                    className='font-semibold border-white'
+                    onPress={handleRefresh}
+                  >
+                    {t('setup.refresh')}
+                  </Button>
+                  <Button
+                    radius='full'
+                    className='font-semibold bg-content text-black group'
+                    onPress={() => {
+                      if (selectedUser) handleLogin(steamUsers.indexOf(selectedUser))
+                    }}
+                    isDisabled={!selectedUser}
+                  >
+                    {t('common.continue')}
+                    <TbArrowRight className='group-hover:translate-x-1 duration-150' />
+                  </Button>
+                </div>
+
                 {/* Agreement */}
                 <p className='text-xs text-altwhite max-w-sm text-center'>
                   <Trans
@@ -144,29 +174,6 @@ export default function SignIn(): ReactElement {
                     ]}
                   />
                 </p>
-
-                {/* Buttons */}
-                <div className='flex gap-4 mt-10'>
-                  <Button
-                    radius='full'
-                    variant='bordered'
-                    className='font-semibold border-white'
-                    onPress={handleRefresh}
-                  >
-                    {t('setup.refresh')}
-                  </Button>
-                  <Button
-                    radius='full'
-                    className='font-semibold bg-content text-black group'
-                    onPress={() => {
-                      if (selectedUser) handleLogin(steamUsers.indexOf(selectedUser))
-                    }}
-                    isDisabled={!selectedUser}
-                  >
-                    {t('common.continue')}
-                    <TbArrowRight className='group-hover:translate-x-1 duration-150' />
-                  </Button>
-                </div>
               </div>
             ) : (
               <div className='flex flex-col items-center text-center gap-2'>
@@ -185,6 +192,10 @@ export default function SignIn(): ReactElement {
                 </div>
               </div>
             )}
+          </div>
+
+          <div className='relative flex flex-col items-center justify-center w-2/3 h-calc pr-10 select-none'>
+            <SignInHero />
           </div>
         </div>
       )}

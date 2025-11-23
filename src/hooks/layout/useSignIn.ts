@@ -52,6 +52,10 @@ export default function useSignIn(refreshKey: number): SetupHook {
     // Get all steam users
     const getSteamUsers = async (): Promise<void> => {
       setIsLoading(true)
+
+      // Simulate loading time for better UX
+      await new Promise(resolve => setTimeout(resolve, 1000))
+
       try {
         const response = await invoke<InvokeUsers>('get_users')
 
