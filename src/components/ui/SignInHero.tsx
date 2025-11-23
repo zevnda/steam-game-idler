@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import { Trans } from 'react-i18next'
 
 export default function SignInHero() {
   const uniqueItems = [
@@ -49,16 +50,11 @@ export default function SignInHero() {
       />
       <div className='absolute flex flex-col items-center justify-between w-[90%] h-[90%] z-10 pointer-events-none'>
         <p className='font-black text-[52px] leading-14 text-center'>
-          The Only Steam
-          <br />
-          Automation Tool
-          <br />
-          You Will Ever Need
+          <Trans i18nKey='setup.hero.title' components={{ br: <br /> }} />
         </p>
 
         <p className='text-lg mt-4 text-center'>
-          Farm trading cards, unlock achievements, boost playtime, and manage your Steam library automatically — all in
-          one tool.
+          <Trans i18nKey='setup.hero.subtitle' />
         </p>
 
         <Image src='/mock.webp' alt='app mockup' width={730} height={380} className='mt-10 -translate-x-3' />
