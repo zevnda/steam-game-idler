@@ -6,6 +6,8 @@
   "setup.noUsers": "Tidak ditemukan pengguna Steam",
   "setup.noUsersTwo": "Pastikan Anda telah menginstal Steam dan masuk ke setidaknya satu akun, lalu klik segarkan.",
   "setup.acknowledge": "Dengan mengklik 'Lanjutkan', Anda menyetujui <0>Persyaratan Layanan</0> dan mengakui bahwa Anda telah membaca <1>Kebijakan Privasi kami</1> .",
+  "setup.hero.title": "Satu-satunya Alat Otomatisasi Steam<1/>Yang Anda Perlukan",
+  "setup.hero.subtitle": "Bertani kartu perdagangan, membuka pencapaian, meningkatkan waktu bermain, dan mengotomatiskan pengalaman Steam Anda — semuanya dalam satu alat.",
   "notifications.empty": "Tidak ada notifikasi",
   "notifications.markAllRead": "Tandai semua sebagai dibaca",
   "menu.guide": "Panduan Pengguna",

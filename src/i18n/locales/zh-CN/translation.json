@@ -6,6 +6,8 @@
   "setup.noUsers": "找不到Steam用户",
   "setup.noUsersTwo": "请确保您已安装 Steam 并登录至少一个帐户，然后点击刷新。",
   "setup.acknowledge": "点击“继续”，即表示您同意<0>服务条款</0></0>并确认您已阅读我们的<1>隐私政策</1></1> 。",
+  "setup.hero.title": "你唯一需要的Steam自动化工具",
+  "setup.hero.subtitle": "收集交易卡牌、解锁成就、延长游戏时间、自动化您的 Steam 体验——所有这一切都可以在一个工具中完成。",
   "notifications.empty": "没有通知",
   "notifications.markAllRead": "全部标记为已读",
   "menu.guide": "用户指南",

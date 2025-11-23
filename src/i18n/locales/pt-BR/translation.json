@@ -6,6 +6,8 @@
   "setup.noUsers": "Nenhum usuário do Steam encontrado",
   "setup.noUsersTwo": "Certifique-se de que o Steam esteja instalado e que você esteja conectado a pelo menos uma conta. Em seguida, clique em atualizar.",
   "setup.acknowledge": "Ao clicar em 'Continuar', você concorda com os <0>Termos de Serviço</0>.</0> e confirmo que li nossa <1>Política de Privacidade</1> .",
+  "setup.hero.title": "A única ferramenta de automação Steam que você precisará.",
+  "setup.hero.subtitle": "Colecione cartas, desbloqueie conquistas, aumente seu tempo de jogo e automatize sua experiência no Steam — tudo em uma única ferramenta.",
   "notifications.empty": "Nenhuma notificação",
   "notifications.markAllRead": "Marcar tudo como lido",
   "menu.guide": "Manual do Usuário",

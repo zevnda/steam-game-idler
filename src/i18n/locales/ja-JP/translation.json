@@ -6,6 +6,8 @@
   "setup.noUsers": "Steamユーザーが見つかりません",
   "setup.noUsersTwo": "Steam がインストールされており、少なくとも 1 つのアカウントにサインインしていることを確認してから、「更新」をクリックしてください。",
   "setup.acknowledge": "「続行」をクリックすると、<0>利用規約に同意したことになります。</0>当社の<1>プライバシーポリシーをお読みになったことを承認します</1>。",
+  "setup.hero.title": "必要なのはこれだけ：Steam<1/>自動化ツール<1/>",
+  "setup.hero.subtitle": "トレーディング カードを集め、実績をアンロックし、プレイ時間を増やし、Steam エクスペリエンスを自動化するすべてが 1 つのツールにまとめられています。",
   "notifications.empty": "通知なし",
   "notifications.markAllRead": "すべて既読にする",
   "menu.guide": "ユーザーガイド",

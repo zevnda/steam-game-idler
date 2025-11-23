@@ -6,6 +6,8 @@
   "setup.noUsers": "Inga Steam-användare hittades",
   "setup.noUsersTwo": "Se till att du har Steam installerat och är inloggad på minst ett konto, klicka sedan på uppdatera.",
   "setup.acknowledge": "Genom att klicka på \"Fortsätt\" godkänner du <0>Användarvillkoren</0> och bekräftar att du har läst vår <1>Integritetspolicy</1> .",
+  "setup.hero.title": "Det enda Steam-automatiseringsverktyget du någonsin kommer att behöva",
+  "setup.hero.subtitle": "Farm-samlarkort, lås upp prestationer, öka speltiden och automatisera din Steam-upplevelse – allt i ett verktyg.",
   "notifications.empty": "Inga aviseringar",
   "notifications.markAllRead": "Markera alla som lästa",
   "menu.guide": "Användarhandbok",

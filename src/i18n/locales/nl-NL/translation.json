@@ -6,6 +6,8 @@
   "setup.noUsers": "Geen Steam gebruikers gevonden",
   "setup.noUsersTwo": "Zorg ervoor dat je Steam hebt geïnstalleerd en dat je bent aangemeld met minimaal één account. Klik vervolgens op Vernieuwen.",
   "setup.acknowledge": "Door op 'Doorgaan' te klikken, gaat u akkoord met de <0>Servicevoorwaarden</0> en bevestig dat u ons <1>Privacybeleid hebt gelezen</1> .",
+  "setup.hero.title": "De enige Steam<1/>automatiseringstool<1/>die u ooit nodig zult hebben",
+  "setup.hero.subtitle": "Verzamel ruilkaarten, ontgrendel prestaties, verhoog de speeltijd en automatiseer je Steam-ervaring - allemaal in één tool.",
   "notifications.empty": "Geen meldingen",
   "notifications.markAllRead": "Alles als gelezen markeren",
   "menu.guide": "Gebruikers gids",

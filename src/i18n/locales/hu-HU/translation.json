@@ -6,6 +6,8 @@
   "setup.noUsers": "Nem található Steam felhasználó",
   "setup.noUsersTwo": "Kérjük, győződj meg róla, hogy telepítve van a Steam, és legalább egy fiókba be vagy jelentkezve, majd kattints a frissítés gombra.",
   "setup.acknowledge": "A „Folytatás” gombra kattintva elfogadja a <0>Szolgáltatási feltételeket</0> és tudomásul veszed, hogy elolvastad az <1>Adatvédelmi irányelveinket</1> .",
+  "setup.hero.title": "Az egyetlen Steam<1/>automatizálási eszköz,<1/>amire valaha is szükséged lesz",
+  "setup.hero.subtitle": "Kereskedőkártyákat farmolhatsz, megszerezhető eredményeket oldhatsz fel, növelheted a játékidőt és automatizálhatod a Steam-élményedet – mindezt egyetlen eszközben.",
   "notifications.empty": "Nincsenek értesítések",
   "notifications.markAllRead": "Összes olvasottnak jelölés",
   "menu.guide": "Felhasználói útmutató",
