@@ -1,10 +1,10 @@
 {
-  "version": "2.4.3",
+  "version": "2.4.4",
   "major": false,
   "platforms": {
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUSDh2NGF3cDBSMGtackpyOHo5Unc4SHhoR1d5K3A2QzkrOUNkakl4eENZUGY4WjJOTmNYSVNhVEhaUWpSeXBHcmtLcy9NbWhEbGhlQXNlc0pBR0txU1JTcmJYRVZFZUFvPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzYzODAzMzE1CWZpbGU6U3RlYW0gR2FtZSBJZGxlcl8yLjQuM194NjQtc2V0dXAubnNpcy56aXAKZUVVbDc2clg1TmNPbUVVdFJYWDlyZUlmTXQwMWk4SG42YW95OFZiSE1sVHFuVEpwSUVrbkQ0dWZIY2ZCZm9VbXpPVU1tTVBCSHlJUmRyVzRlaE9rQ1E9PQo=",
-      "url": "https://github.com/zevnda/steam-game-idler/releases/download/2.4.3/Steam.Game.Idler_2.4.3_x64-setup.nsis.zip"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUSDh2NGF3cDBSMHYrNHJUQ0dUcGdqelFBVjR1K0Uycjd3enBiMW1pODBvMnhJV1c3K1ZCc3hvTVdtRWduaVk5UUlhWW1yYzNFREV5RzNtOC9yWlc1WGtFc3JUQ0ErcncwPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzYzOTAwMjIxCWZpbGU6U3RlYW0gR2FtZSBJZGxlcl8yLjQuNF94NjQtc2V0dXAubnNpcy56aXAKSVEybXlES2ZjNU1Xa3dHckJDYWRTQzVIWlJTa2VsSUZ4QUJVZHBuNUVZcHl4YmRpVnpLYThLQnJRMUNDaVFLRU5xaXgzaEZzZklTZ0dkdE5OeWV5RHc9PQo=",
+      "url": "https://github.com/zevnda/steam-game-idler/releases/download/2.4.4/Steam.Game.Idler_2.4.4_x64-setup.nsis.zip"
     }
   }
 }
