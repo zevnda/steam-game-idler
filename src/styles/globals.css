@@ -270,20 +270,12 @@ svg {
   }
 }
 
-/* Crisp support desk */
+/* Chatway */
 
-div[role='button'][aria-label='Open chat'] {
-  display: none !important;
-}
-
-#crisp-chatbox-chat {
-  display: absolute !important;
-  top: 36px !important;
+.chatway--frame-container {
   min-width: 550px !important;
-}
-
-a[href*='crisp.chat/en/livechat'][target='_blank'][rel~='noopener'][rel~='noreferrer'][rel~='nofollow'] {
-  display: none !important;
+  top: 36px !important;
+  border: 0 !important;
 }
 
 /* Go pro button */
