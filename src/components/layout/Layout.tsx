@@ -21,17 +21,14 @@ export default function Layout({ children }: { children: ReactNode }): ReactElem
         <title>Steam Game Idler</title>
       </Head>
 
-      <Script strategy='lazyOnload'>
+      <Script id='chatway' src='https://cdn.chatway.app/widget.js?id=1F2cY0TT2RKh' />
+      <Script id='chatway-hide-icon' strategy='afterInteractive'>
         {`
-          window.$crisp=[];
-          window.CRISP_WEBSITE_ID="eb33074a-5483-48db-a289-f727b77679d5";
-          (function(){
-            var d=document;
-            var s=d.createElement("script");
-            s.src="https://client.crisp.chat/l.js";
-            s.async=1;
-            d.getElementsByTagName("head")[0].appendChild(s);
-          })();
+          window.$chatwayOnLoad = function() {
+            if (window.$chatway && typeof window.$chatway.hideChatwayIcon === 'function') {
+              window.$chatway.hideChatwayIcon();
+            }
+          };
         `}
       </Script>
 

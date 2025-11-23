@@ -72,10 +72,7 @@ export default function ExportSettings(): ReactElement {
 
   const processLocalStorageItem = (key: string, value: string | null): string | null | object => {
     // Skip specific keys
-    if (
-      ['cachedNotifications', 'seenNotifications', 'ally-supports-cache', 'steamCookies', 'apiKey'].includes(key) ||
-      key.startsWith('crisp-client/')
-    ) {
+    if (['cachedNotifications', 'seenNotifications', 'ally-supports-cache', 'steamCookies', 'apiKey'].includes(key)) {
       return null
     }
 
