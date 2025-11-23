@@ -1,7 +1,9 @@
 import Image from 'next/image'
-import { Trans } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 
 export default function SignInHero() {
+  const { t } = useTranslation()
+
   const uniqueItems = [
     { id: '1', src: '/cover-art/1091500.webp' },
     { id: '2', src: '/cover-art/1174180.webp' },
@@ -50,12 +52,16 @@ export default function SignInHero() {
       />
       <div className='absolute flex flex-col items-center justify-between w-[90%] h-[90%] z-10 pointer-events-none'>
         <p className='font-black text-[52px] leading-14 text-center'>
-          <Trans i18nKey='setup.hero.title' components={{ br: <br /> }} />
+          <Trans i18nKey='setup.hero.title'>
+            The Only Steam
+            <br />
+            Automation Tool
+            <br />
+            You Will Ever Need
+          </Trans>
         </p>
 
-        <p className='text-lg mt-4 text-center'>
-          <Trans i18nKey='setup.hero.subtitle' />
-        </p>
+        <p className='text-lg mt-4 text-center'>{t('setup.hero.subtitle')}</p>
 
         <Image src='/mock.webp' alt='app mockup' width={730} height={380} className='mt-10 -translate-x-3' />
       </div>

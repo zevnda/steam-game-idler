@@ -6,7 +6,7 @@
   "setup.noUsers": "No Steam users found",
   "setup.noUsersTwo": "Please make sure you have Steam installed and are signed into at least one account, then click refresh.",
   "setup.acknowledge": "By clicking 'Continue', you agree to the <0>Terms of Service</0> and acknowledge that you have read our <1>Privacy Policy</1>.",
-  "setup.hero.title": "The Only Steam<br/>Automation Tool<br/>You Will Ever Need",
+  "setup.hero.title": "The Only Steam<1/>Automation Tool<1/>You Will Ever Need",
   "setup.hero.subtitle": "Farm trading cards, unlock achievements, boost playtime, and automate your Steam experience — all in one tool.",
   "notifications.empty": "No notifications",
   "notifications.markAllRead": "Mark all as read",
