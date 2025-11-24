@@ -248,7 +248,7 @@ export const faqData: FAQEntry[] = [
     question: "Add some games to your card farming list or enable 'all games' in 'settings > card farming'",
     markdown:
       "**Add some games to your card farming list or enable 'all games' in 'settings > card farming'**\n" +
-      '> Your `card farming list` is empty. You either need to add games to the list by following [these steps](/docs/features/card-farming), or enable the [`Farm All Games`](/docs/settings/card-farming#farm-all-games) setting in [Settings > Card Farming](/docs/settings/card-farming).',
+      '> Your `card farming list` is empty. You either need to add games to the list by following [these steps](/docs/features/card-farming), or enable [`Farm All Games`](/docs/settings/card-farming#farm-all-games) in [Settings > Card Farming](/docs/settings/card-farming).',
   },
   {
     question: 'There are no games in your achievement unlocker list',
@@ -285,5 +285,21 @@ export const faqData: FAQEntry[] = [
     markdown:
       '**Card farming credentials need to be updated in "settings > general"**\n' +
       '> From time to time the cookies you supply to SGI will expire for several reasons and they will need to be updated. Follow the [Steam Credentials](/docs/steam-credentials) steps to get the updated cookies.',
+  },
+  {
+    question: 'Please wait X seconds before fetching more card prices',
+    markdown:
+      '**Please wait X seconds before fetching more card prices**\n' +
+      '> SGI uses an undocumented Steam API endpoint with strict rate limits to fetch card prices. To avoid being rate limited by Steam, SGI enforces a 5 second cooldown when manually fetching prices. This ensures that users have a smooth experience when fetching card prices without running into rate limit issues.',
+  },
+  {
+    question: 'Rate limited when fetching card prices',
+    markdown:
+      '**Rate limited when fetching card prices**\n' +
+      '> SGI uses an undocumented Steam API endpoint with strict rate limits to fetch card prices. If you encounter this message, it means that the rate limit has been exceeded while listing cards on the Steam market.\n' +
+      '>\n' +
+      '> Rate limit times can vary, so you may need to wait a few minutes to an hour before trying again.\n' +
+      '>\n' +
+      '> To avoid hitting the rate limit in the future, consider increasing the [Sell Delay](/docs/settings/trading-card-manager#sell-delay) in [Settings > Trading Card Manager](/docs/settings/trading-card-manager).',
   },
 ]

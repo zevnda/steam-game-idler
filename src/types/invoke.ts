@@ -109,6 +109,7 @@ export interface InvokeCardPrice {
   lowest_sell_order?: string
   buy_order_summary?: string
   sell_order_summary?: string
+  error?: string
 }
 
 export interface InvokeListCards {
