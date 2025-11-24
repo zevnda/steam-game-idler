@@ -6,6 +6,7 @@ import Image from 'next/image'
 import Script from 'next/script'
 
 import { useNavigationContext } from '@/components/contexts/NavigationContext'
+import { useStateContext } from '@/components/contexts/StateContext'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -14,6 +15,7 @@ const inter = Inter({
 
 export default function Layout({ children }: { children: ReactNode }): ReactElement {
   const { activePage } = useNavigationContext()
+  const { loadingUserSummary } = useStateContext()
 
   return (
     <>
@@ -32,7 +34,7 @@ export default function Layout({ children }: { children: ReactNode }): ReactElem
         `}
       </Script>
 
-      {activePage !== 'settings' && (
+      {activePage !== 'settings' && !loadingUserSummary && (
         <>
           <Image
             src='/bg.webp'

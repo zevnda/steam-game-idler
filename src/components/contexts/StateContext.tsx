@@ -29,6 +29,8 @@ interface StateContextType {
   setTransitionDuration: Dispatch<SetStateAction<string>>
   proModalOpen: boolean
   setProModalOpen: Dispatch<SetStateAction<boolean>>
+  loadingUserSummary: boolean
+  setLoadingUserSummary: Dispatch<SetStateAction<boolean>>
 }
 
 export const StateContext = createContext<StateContextType | undefined>(undefined)
@@ -49,6 +51,7 @@ export const StateProvider = ({ children }: { children: ReactNode }): ReactEleme
   const [useBeta, setUseBeta] = useState(false)
   const [transitionDuration, setTransitionDuration] = useState('0ms')
   const [proModalOpen, setProModalOpen] = useState(false)
+  const [loadingUserSummary, setLoadingUserSummary] = useState(true)
 
   return (
     <StateContext.Provider
@@ -79,6 +82,8 @@ export const StateProvider = ({ children }: { children: ReactNode }): ReactEleme
         setTransitionDuration,
         proModalOpen,
         setProModalOpen,
+        loadingUserSummary,
+        setLoadingUserSummary,
       }}
     >
       {children}

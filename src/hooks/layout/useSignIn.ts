@@ -54,7 +54,7 @@ export default function useSignIn(refreshKey: number): SetupHook {
       setIsLoading(true)
 
       // Simulate loading time for better UX
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      // await new Promise(resolve => setTimeout(resolve, 1000))
 
       try {
         const response = await invoke<InvokeUsers>('get_users')
