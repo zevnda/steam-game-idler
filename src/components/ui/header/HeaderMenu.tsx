@@ -1,9 +1,7 @@
 import type { ReactElement } from 'react'
 
-import { getVersion } from '@tauri-apps/api/app'
 import { invoke } from '@tauri-apps/api/core'
 import { relaunch } from '@tauri-apps/plugin-process'
-import { open } from '@tauri-apps/plugin-shell'
 import { check } from '@tauri-apps/plugin-updater'
 
 import { cn, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@heroui/react'
@@ -19,15 +17,16 @@ import {
   TbStarFilled,
 } from 'react-icons/tb'
 
+import { useUpdateContext } from '@/components/contexts/UpdateContext'
 import CustomTooltip from '@/components/ui/CustomTooltip'
-import { fetchLatest, isPortableCheck, logEvent, preserveKeysAndClearData } from '@/utils/tasks'
+import { fetchLatest, handleOpenExtLink, isPortableCheck, logEvent, preserveKeysAndClearData } from '@/utils/tasks'
 import { showDangerToast, showPrimaryToast } from '@/utils/toasts'
 
 export default function HeaderMenu(): ReactElement {
   const { t } = useTranslation()
+  const { setShowChangelog } = useUpdateContext()
   const [showMenu, setShowMenu] = useState(false)
   const [isPortable, setIsPortable] = useState(false)
-  const [appVersion, setAppVersion] = useState<string | undefined>(undefined)
 
   const githubIssueUrl = 'https://github.com/zevnda/steam-game-idler/issues/new?assignees=zevnda&labels='
 
@@ -38,17 +37,11 @@ export default function HeaderMenu(): ReactElement {
     })()
   }, [])
 
-  useEffect(() => {
-    ;(async () => {
-      const version = await getVersion()
-      setAppVersion(version)
-    })()
-  }, [])
-
   const handleUpdate = async (): Promise<void> => {
     try {
       const update = await check()
       if (update) {
+        localStorage.setItem('hasUpdated', 'true')
         await invoke('kill_all_steamutil_processes')
         const latest = await fetchLatest()
         await update.downloadAndInstall()
@@ -63,14 +56,6 @@ export default function HeaderMenu(): ReactElement {
       showDangerToast(t('toast.checkUpdate.error'))
       console.error('Error in (handleUpdate):', error)
       logEvent(`Error in (handleUpdate): ${error}`)
-    }
-  }
-
-  const handleOpenExtLink = async (href: string): Promise<void> => {
-    try {
-      await open(href)
-    } catch (error) {
-      console.error('Failed to open link:', error)
     }
   }
 
@@ -164,7 +149,7 @@ export default function HeaderMenu(): ReactElement {
               classNames={{
                 base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
               }}
-              onPress={() => handleOpenExtLink(`https://steamgameidler.com/changelog#${appVersion}`)}
+              onPress={() => setShowChangelog(true)}
             >
               {t('menu.changelog')}
             </DropdownItem>

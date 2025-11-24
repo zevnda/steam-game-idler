@@ -5,18 +5,23 @@ import { createContext, useContext, useState } from 'react'
 interface UpdateContextType {
   updateAvailable: boolean
   setUpdateAvailable: Dispatch<SetStateAction<boolean>>
+  showChangelog: boolean
+  setShowChangelog: Dispatch<SetStateAction<boolean>>
 }
 
 export const UpdateContext = createContext<UpdateContextType | undefined>(undefined)
 
 export const UpdateProvider = ({ children }: { children: ReactNode }): ReactElement => {
   const [updateAvailable, setUpdateAvailable] = useState(false)
+  const [showChangelog, setShowChangelog] = useState(false)
 
   return (
     <UpdateContext.Provider
       value={{
         updateAvailable,
         setUpdateAvailable,
+        showChangelog,
+        setShowChangelog,
       }}
     >
       {children}

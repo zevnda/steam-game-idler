@@ -4,6 +4,7 @@ import type { InvokeSettings, LatestData, UserSummary } from '@/types'
 import { getVersion } from '@tauri-apps/api/app'
 import { invoke } from '@tauri-apps/api/core'
 import { TrayIcon } from '@tauri-apps/api/tray'
+import { open } from '@tauri-apps/plugin-shell'
 
 import { showDangerToast, showSteamNotRunningToast, t } from '@/utils/toasts'
 
@@ -76,7 +77,7 @@ export async function antiAwayStatus(active: boolean | null = null): Promise<voi
 // Clear local/session storage but preserving important keys
 export const preserveKeysAndClearData = async (): Promise<void> => {
   try {
-    const keysToPreserve = ['theme', 'minToTrayNotified', 'seenNotifications']
+    const keysToPreserve = ['theme', 'minToTrayNotified', 'seenNotifications', 'hasUpdated']
 
     const preservedData: Record<string, string> = keysToPreserve.reduce(
       (acc, key) => {
@@ -224,5 +225,13 @@ export async function playMentionBeep(): Promise<void> {
     source.start(0)
   } catch (error) {
     console.error('Error playing mention beep:', error)
+  }
+}
+
+export const handleOpenExtLink = async (href: string): Promise<void> => {
+  try {
+    await open(href)
+  } catch (error) {
+    console.error('Failed to open link:', error)
   }
 }
