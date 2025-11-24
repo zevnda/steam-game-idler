@@ -8,6 +8,7 @@ import { TbArrowRight } from 'react-icons/tb'
 
 import CustomModal from '@/components/ui/CustomModal'
 import { logEvent } from '@/utils/tasks'
+import { showPriceFetchCooldownToast } from '@/utils/toasts'
 
 interface PriceDataProps {
   item: TradingCard
@@ -20,10 +21,27 @@ export default function PriceData({ item, tradingCardContext }: PriceDataProps):
 
   const handleFetchPrice = async (item: TradingCard): Promise<void> => {
     try {
-      onOpen()
-      if (!item.price_data) {
-        await tradingCardContext.fetchCardPrices(item.market_hash_name)
+      const cooldownKey = 'tcPriceFetchCooldown'
+      const now = Date.now()
+      const cooldown = Number(localStorage.getItem(cooldownKey)) || 0
+
+      // If we already have price data, open the modal
+      if (item.price_data) {
+        onOpen()
+        return
       }
+
+      // If we are in cooldown and don't have price data, show toast and do not open modal
+      if (now < cooldown) {
+        const secondsLeft = Math.ceil((cooldown - now) / 1000)
+        showPriceFetchCooldownToast(secondsLeft)
+        return
+      }
+
+      // Not in cooldown, fetch price data, open modal and set new cooldown
+      localStorage.setItem(cooldownKey, (now + 5_000).toString())
+      onOpen()
+      await tradingCardContext.fetchCardPrices(item.market_hash_name)
     } catch (error) {
       console.error('Error fetching price data:', error)
       logEvent(`[Error] in handleFetchPrice: ${error}`)

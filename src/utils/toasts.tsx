@@ -108,3 +108,27 @@ export function showNoGamesToast(): void {
     color: 'danger',
   })
 }
+
+export function showPriceFetchCooldownToast(cooldown: number): void {
+  addToast({
+    title: (
+      <ErrorToast
+        message={t('toast.tradingCards.cooldown', { cooldown })}
+        href='https://steamgameidler.com/docs/faq#error-messages:~:text=Please%20wait%20X%20seconds%20before%20fetching%20more%20card%20prices'
+      />
+    ),
+    color: 'warning',
+  })
+}
+
+export function showPriceFetchRateLimitToast(): void {
+  addToast({
+    title: (
+      <ErrorToast
+        message={t('toast.tradingCards.rateLimit')}
+        href='https://steamgameidler.com/docs/faq#:~:text=Rate%20limited%20when%20fetching%20card%20prices'
+      />
+    ),
+    color: 'danger',
+  })
+}

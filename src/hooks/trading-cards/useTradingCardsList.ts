@@ -19,6 +19,7 @@ import {
   showDangerToast,
   showIncorrectCredentialsToast,
   showMissingCredentialsToast,
+  showPriceFetchRateLimitToast,
   showPrimaryToast,
   showSuccessToast,
 } from '@/utils/toasts'
@@ -159,7 +160,9 @@ export default function useTradingCardsList(): UseTradingCardsList {
     getTradingCards()
   }, [refreshKey, t, userSettings.cardFarming.credentials, userSummary?.steamId, userSettings.general?.apiKey])
 
-  const fetchCardPrices = async (hash: string): Promise<{ success: boolean; price?: string }> => {
+  const fetchCardPrices = async (
+    hash: string,
+  ): Promise<{ success: boolean; price?: string; rateLimited?: boolean }> => {
     setLoadingItemPrice(prev => ({ ...prev, [hash]: true }))
 
     try {
@@ -187,6 +190,12 @@ export default function useTradingCardsList(): UseTradingCardsList {
         marketHashName: hash,
         currency: localStorage.getItem('currency') || '1',
       })
+
+      if (cardPrices.error && cardPrices.error.includes('HTTP 429')) {
+        showPriceFetchRateLimitToast()
+        logEvent(`[Error] in (fetchCardPrices): Rate limited when fetching price for card ${hash}`)
+        return { success: false, rateLimited: true }
+      }
 
       if (!cardPrices.success || !cardPrices.sell_order_graph || !cardPrices.buy_order_graph) {
         return { success: false }
@@ -495,19 +504,31 @@ export default function useTradingCardsList(): UseTradingCardsList {
         try {
           const priceResult = await fetchCardPrices(card.market_hash_name)
 
-          if (!priceResult.success) {
+          // If rate limited, stop processing further cards
+          if (!priceResult.success && priceResult.rateLimited) {
             logEvent(
-              `[Error] Failed to fetch price for card ${card.assetid} (${card.market_hash_name}) (Increasing the 'sell delay' in 'settings > trading card manager' can help prevent this issue') - skipping`,
+              `[Error] in (handleSellAllCards): Rate limited when fetching price for card ${card.assetid} (${card.market_hash_name}) (Increasing the 'sell delay' in 'settings > trading card manager' can help prevent this issue) - stopping`,
+            )
+            return
+          } else {
+            // Other errors fetching price - skip this card
+            if (!priceResult.success) {
+              logEvent(
+                `[Error] in (handleSellAllCards): Failed to fetch price for card ${card.assetid} (${card.market_hash_name}) - skipping`,
+              )
+              continue
+            }
+          }
+
+          if (!priceResult.price) {
+            logEvent(
+              `[Error] in (handleSellAllCards): Couldn't determine price for card ${card.assetid} (${card.market_hash_name}) - skipping`,
             )
             continue
           }
 
-          if (!priceResult.price) {
-            logEvent(`[Error] Couldn't determine price for card ${card.assetid} (${card.market_hash_name}) - skipping`)
-            continue
-          }
-
-          await new Promise(resolve => setTimeout(resolve, sellDelay * 1000)) // Wait between listings to avoid rate limiting
+          // Wait before processing to avoid rate limiting
+          await new Promise(resolve => setTimeout(resolve, sellDelay * 1000))
 
           if (!shouldContinue) break
 
@@ -517,7 +538,9 @@ export default function useTradingCardsList(): UseTradingCardsList {
           // Check if price is within sell limits
           if (!isWithinSellLimits(finalPrice)) {
             skippedCards.push(card.assetid)
-            logEvent(`[Info] Skipped card ${card.assetid} - price ${finalPrice} outside sell limits`)
+            logEvent(
+              `[Info] in (handleSellAllCards): Skipped card ${card.assetid} (${card.market_hash_name}) - price ${finalPrice} outside sell limits`,
+            )
             continue
           }
 
@@ -539,7 +562,10 @@ export default function useTradingCardsList(): UseTradingCardsList {
               failedCards.push({ assetid: card.assetid, message: result.message })
 
               if (result.message && result.message.toLowerCase().includes('rate limit')) {
-                showDangerToast(t('toast.tradingCards.rateLimit'))
+                showPriceFetchRateLimitToast()
+                logEvent(
+                  `[Error] in (handleSellAllCards): Rate limited when listing card ${card.assetid} (${card.market_hash_name}) - stopping (Increasing the 'sell delay' in 'settings > trading card manager' can help prevent this issue)`,
+                )
                 shouldContinue = false
                 break
               }
@@ -550,7 +576,9 @@ export default function useTradingCardsList(): UseTradingCardsList {
         } catch (error) {
           failedCards.push({ assetid: card.assetid, message: String(error) })
           console.error(`Error processing card ${card.assetid}:`, error)
-          logEvent(`[Error] processing card ${card.assetid}: ${error}`)
+          logEvent(
+            `[Error] in (handleSellAllCards): processing card ${card.assetid} (${card.market_hash_name}): ${error}`,
+          )
         }
       }
 
@@ -560,18 +588,18 @@ export default function useTradingCardsList(): UseTradingCardsList {
 
       if (skippedCards.length > 0) {
         showPrimaryToast(t('toast.tradingCards.skippedCards', { count: skippedCards.length }))
-        logEvent(`[Info] Skipped ${skippedCards.length} cards due to sell limit restrictions`)
+        logEvent(`[Info] in (handleSellAllCards): Skipped ${skippedCards.length} cards due to sell limit restrictions`)
       }
 
       if (failedCards.length > 0) {
         for (const failed of failedCards) {
-          logEvent(`[Error] Failed to list trading card ${failed.assetid}: ${failed.message}`)
+          logEvent(`[Error] in (handleSellAllCards): Failed to list trading card ${failed.assetid}: ${failed.message}`)
         }
       }
     } catch (error) {
       showDangerToast(t('common.error'))
       console.error('Error in handleSellAllCards:', error)
-      logEvent(`[Error] in handleSellAllCards: ${error}`)
+      logEvent(`[Error] in (handleSellAllCards): ${error}`)
     } finally {
       setLoadingListButton(false)
     }
