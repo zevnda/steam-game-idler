@@ -28,7 +28,8 @@ import { showDangerToast, t } from '@/utils/toasts'
 export default function useWindow(): void {
   const { t } = useTranslation()
   const { setIdleGamesList } = useIdleContext()
-  const { setIsCardFarming, setIsAchievementUnlocker, setShowSteamWarning, setUseBeta } = useStateContext()
+  const { setIsCardFarming, setIsAchievementUnlocker, setShowSteamWarning, setUseBeta, setLoadingUserSummary } =
+    useStateContext()
   const { setUpdateAvailable, setShowChangelog } = useUpdateContext()
   const { userSummary, setUserSummary, userSettings, setUserSettings, gamesList, setFreeGamesList } = useUserContext()
 
@@ -210,9 +211,13 @@ export default function useWindow(): void {
       setUserSummary(userSummary)
     }
 
+    setTimeout(() => {
+      setLoadingUserSummary(false)
+    }, 500)
+
     // Start idling games in auto idle list
     startAutoIdleGames()
-  }, [setUserSummary])
+  }, [setUserSummary, setLoadingUserSummary])
 }
 
 // Check for free games

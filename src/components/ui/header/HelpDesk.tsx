@@ -21,6 +21,7 @@ export default function HelpDesk(): ReactElement | null {
   const [isOpen, setIsOpen] = useState(false)
   const [isLoaded, setIsLoaded] = useState(false)
   const [showGuide, setShowGuide] = useState(false)
+  const [hasUnread, setHasUnread] = useState(false)
   const { userSummary } = useUserContext()
 
   // If it's the user's first time using SGI, show an overlay
@@ -51,6 +52,7 @@ export default function HelpDesk(): ReactElement | null {
     return () => clearInterval(interval)
   }, [userSummary])
 
+  // Watch for widget open/close
   useEffect(() => {
     if (!isLoaded) return
 
@@ -68,6 +70,32 @@ export default function HelpDesk(): ReactElement | null {
     return () => observer.disconnect()
   }, [isLoaded])
 
+  // Watch for unread messages
+  useEffect(() => {
+    if (!isLoaded) return
+
+    const trigger = document.getElementById('chatway_widget_trigger')
+    if (!trigger) return
+
+    const checkUnread = () => {
+      const unread = Number(trigger.getAttribute('data-unread-message') || '0')
+      setHasUnread(unread > 0)
+    }
+
+    checkUnread()
+
+    const observer = new MutationObserver(() => {
+      checkUnread()
+    })
+
+    observer.observe(trigger, {
+      attributes: true,
+      attributeFilter: ['data-unread-message', 'class'],
+    })
+
+    return () => observer.disconnect()
+  }, [isLoaded])
+
   const handleToggle = () => {
     if (!isLoaded) return
 
@@ -79,6 +107,7 @@ export default function HelpDesk(): ReactElement | null {
       $chatway.openChatwayWidget()
     }
     setIsOpen(prev => !prev)
+    setHasUnread(false)
   }
 
   const handleClose = () => {
@@ -123,6 +152,7 @@ export default function HelpDesk(): ReactElement | null {
               onClick={handleToggle}
             >
               <RiCustomerService2Line fontSize={18} className='text-content' />
+              {hasUnread && <span className='absolute top-2 right-3 h-2 w-2 rounded-full bg-danger z-10' />}
             </div>
           </CustomTooltip>
         </div>
@@ -133,6 +163,7 @@ export default function HelpDesk(): ReactElement | null {
         <>
           {/* Dim background */}
           <div className='fixed inset-0 bg-black/60 z-1000 pointer-events-auto' onClick={() => setShowGuide(false)} />
+
           {/* Floating card with arrow */}
           <div className='fixed top-13 right-36 z-1002 flex flex-col items-end'>
             {/* Card */}

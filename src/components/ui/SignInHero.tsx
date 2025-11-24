@@ -40,7 +40,7 @@ export default function SignInHero() {
     { id: '33', src: '/cover-art/1623730.webp' },
   ]
 
-  const items = Array.from({ length: 2 }).flatMap(() => uniqueItems)
+  const items = Array.from({ length: 2 }).flatMap((_, repeat) => uniqueItems.map(item => ({ ...item, repeat })))
 
   return (
     <div className='relative flex items-center justify-center h-[75vh] w-full mt-9 overflow-hidden rounded-t-3xl inner-glow'>
@@ -70,7 +70,7 @@ export default function SignInHero() {
         <div className='mx-auto h-full w-[170%] -translate-x-72 -translate-y-18 animate-skew-scroll grid grid-cols-8 gap-3'>
           {items.map((item, idx) => (
             <div
-              key={item.src}
+              key={`${item.id}-${item.repeat}`}
               className={`relative ${idx % 2 === 1 ? '-translate-y-16' : ''}`}
               style={{ breakInside: 'avoid' }}
             >
