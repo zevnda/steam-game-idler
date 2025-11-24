@@ -116,8 +116,8 @@ export default function AchievementButtons({
           listbox: ['p-0'],
           value: ['text-sm !text-content'],
           trigger: cn(
-            'bg-input data-[hover=true]:!bg-inputhover',
-            'data-[open=true]:!bg-input duration-100 rounded-lg',
+            'bg-btn-achievement-header data-[hover=true]:!bg-btn-achievement-header-hover',
+            'data-[open=true]:!bg-btn-achievement-header-open duration-100 rounded-lg',
           ),
           popoverContent: ['bg-input rounded-xl justify-start !text-content'],
         }}

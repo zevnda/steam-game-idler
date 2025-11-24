@@ -54,7 +54,7 @@ export default function PageHeader({ protectedAchievements, protectedStatistics 
         <Button
           isIconOnly
           radius='full'
-          className='bg-btn-achievement-header text-btn-alt'
+          className='bg-btn-achievement-header hover:bg-btn-achievement-header-hover text-btn-alt'
           startContent={<TbX />}
           onPress={handleClick}
         />
