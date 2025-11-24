@@ -22,7 +22,6 @@ export default function UpdateButton(): ReactElement {
       setIsLoading(true)
       const update = await check()
       if (update) {
-        localStorage.setItem('hasUpdated', 'true')
         await invoke('kill_all_steamutil_processes')
         await update.downloadAndInstall()
         await relaunch()

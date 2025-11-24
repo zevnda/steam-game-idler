@@ -76,7 +76,7 @@ export async function antiAwayStatus(active: boolean | null = null): Promise<voi
 // Clear local/session storage but preserving important keys
 export const preserveKeysAndClearData = async (): Promise<void> => {
   try {
-    const keysToPreserve = ['theme', 'minToTrayNotified', 'seenNotifications', 'hasUpdated']
+    const keysToPreserve = ['theme', 'minToTrayNotified', 'seenNotifications']
 
     const preservedData: Record<string, string> = keysToPreserve.reduce(
       (acc, key) => {

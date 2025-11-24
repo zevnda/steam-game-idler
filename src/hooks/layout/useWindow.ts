@@ -30,7 +30,7 @@ export default function useWindow(): void {
   const { setIdleGamesList } = useIdleContext()
   const { setIsCardFarming, setIsAchievementUnlocker, setShowSteamWarning, setUseBeta, setLoadingUserSummary } =
     useStateContext()
-  const { setUpdateAvailable, setShowChangelog } = useUpdateContext()
+  const { setUpdateAvailable } = useUpdateContext()
   const { userSummary, setUserSummary, userSettings, setUserSettings, gamesList, setFreeGamesList } = useUserContext()
 
   console.debug('Monitor for rerenders')
@@ -95,7 +95,6 @@ export default function useWindow(): void {
         if (update) {
           const latest = await fetchLatest()
           if (latest?.major) {
-            localStorage.setItem('hasUpdated', 'true')
             await invoke('kill_all_steamutil_processes')
             await update.downloadAndInstall()
             await preserveKeysAndClearData()
@@ -140,15 +139,6 @@ export default function useWindow(): void {
       clearInterval(intervalId)
     }
   }, [userSummary, setIsAchievementUnlocker, setIsCardFarming, setShowSteamWarning])
-
-  useEffect(() => {
-    // Show changelog after updates
-    const hasUpdated = localStorage.getItem('hasUpdated')
-    if (hasUpdated) {
-      localStorage.removeItem('hasUpdated')
-      setShowChangelog(true)
-    }
-  }, [setShowChangelog])
 
   useEffect(() => {
     // Track games that are being idled
