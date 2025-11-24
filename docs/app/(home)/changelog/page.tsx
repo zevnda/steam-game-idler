@@ -46,6 +46,8 @@ export default async function Page() {
     return paB - pa
   })
 
+  // TODO: Pagination, load more posts on scroll
+
   return (
     <main className='min-h-screen bg-black text-gray-100'>
       {/* Home button */}
@@ -60,22 +62,20 @@ export default async function Page() {
         <div className='mb-16 relative'>
           <h1 className='text-5xl font-extrabold mb-2'>Changelog</h1>
           <p className='text-[#979797] font-medium'>
-            See what’s new, fixed, and improved in each release of Steam Game Idler.
+            See what’s new, improved, and fixed, in each release of Steam Game Idler.
           </p>
         </div>
-
-        {/* Divider */}
-        <div className='border-t border-[#212121] my-8' />
 
         {/* Posts */}
         <div className='space-y-16'>
           {posts.map(post => (
             <article
               key={post.url}
-              className='flex flex-col md:flex-row items-start border-t border-[#212121] pt-12 first:border-t-0 first:pt-0'
+              id={post.data.title}
+              className='flex flex-col md:flex-row items-start border-t border-[#212121] pt-12'
             >
               {/* Date and Tags */}
-              <div className='flex flex-col gap-3 mb-4 w-1/4 shrink-0'>
+              <div className='flex flex-row-reverse md:flex-col items-center justify-between md:items-start gap-3 mb-4 w-full md:w-1/4 shrink-0'>
                 <time className='text-xs text-[#979797]'>
                   {new Date(post.data.date ?? getName(post.path)).toLocaleDateString('en-US', {
                     year: 'numeric',
@@ -90,12 +90,12 @@ export default async function Page() {
                       <span
                         key={tag}
                         className={`text-xs px-2.5 py-1 rounded-md font-medium ${
-                          tag === 'new'
-                            ? 'bg-green-500/10 text-green-400'
-                            : tag === 'fixed'
-                              ? 'bg-blue-500/10 text-blue-400'
-                              : tag === 'changed'
-                                ? 'bg-purple-500/10 text-purple-400'
+                          tag === 'New'
+                            ? 'bg-green-500/15 text-green-400'
+                            : tag === 'Improved'
+                              ? 'bg-purple-500/15 text-purple-400'
+                              : tag === 'Fixed'
+                                ? 'bg-cyan-500/15 text-cyan-400'
                                 : 'bg-gray-700 text-gray-300'
                         }`}
                       >
@@ -108,9 +108,9 @@ export default async function Page() {
 
               <div>
                 {/* Title */}
-                <h2 id={post.data.title} className='text-3xl font-bold mb-4'>
-                  {post.data.title}
-                </h2>
+                <Link href={`/changelog/${post.data.title}`}>
+                  <h2 className='text-3xl font-bold mb-4'>v{post.data.title}</h2>
+                </Link>
 
                 {/* Rendered Markdown (MDX) */}
                 <div className='prose text-gray-300 leading-relaxed mb-4'>

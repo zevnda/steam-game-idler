@@ -1,63 +1,75 @@
 @import 'tailwindcss';
+@import 'fumadocs-ui/css/neutral.css';
+@import 'fumadocs-ui/css/preset.css';
 @config "../tailwind.config.mjs";
 
 .light {
-  --blockquote-text: #4a5568;
+  --base: #ffffff;
+  --blockquote-border: #c7ccd2ff;
+  --blockquote-text: #727d90ff;
   --code-bg: #f5f5f5ff;
   --code-border: #d4d4d4ff;
 }
 
 .dark {
+  --base: #000000;
+  --blockquote-border: #71757aff;
   --blockquote-text: #989fa7ff;
   --code-bg: #2b2b2bff;
   --code-border: #3c3c3cff;
 }
 
-a {
-  text-decoration: none;
+.dark {
+  --color-fd-primary: #a5f84cff;
 }
 
-ul {
-  margin-top: 0;
+.light {
+  --color-fd-primary: #5fb700ff;
 }
 
-ol {
-  margin-top: 0;
+.changelog-scroll::-webkit-scrollbar {
+  width: 4px;
+  background: linear-gradient(to bottom, #1d1d1dff 0%, #000000ff 100%);
 }
 
-sub {
-  bottom: 0.5em;
+.changelog-scroll::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 5px;
 }
 
-main a {
-  font-weight: 700;
+.changelog-scroll::-webkit-scrollbar-track {
+  background: transparent;
 }
 
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
+.fd-steps {
+  margin-top: 3rem;
+  margin-bottom: 3rem;
 }
 
-.section-padding {
-  padding: 5rem 0;
+.fd-steps .fd-steps {
+  counter-reset: step lower-roman;
+  margin-top: 0rem;
+  margin-bottom: 0rem;
 }
 
-details h3 {
-  user-select: text;
+.fd-steps .fd-steps .fd-step::before {
+  content: counter(step, lower-roman) '.';
 }
 
-.▶ {
-  position: fixed;
-  bottom: 0px;
-  left: 0px;
-  min-width: 300px;
-  min-height: 250px;
-  z-index: 40;
+.fd-step::before {
+  height: 1.7rem;
+  width: 1.7rem;
+  inset-inline-start: -0.75rem;
 }
 
-.markdown-body a {
-  color: #1aa3ff;
+a[data-active='false'].relative.flex.flex-row.items-center.gap-2.rounded-lg.p-2,
+a[data-active='true'].relative.flex.flex-row.items-center.gap-2.rounded-lg.p-2 {
+  margin-top: 3px;
+  margin-bottom: 3px;
+}
+
+button[aria-label='Copy Link'] {
+  cursor: pointer;
 }
 
 .markdown-body p {
@@ -75,14 +87,15 @@ details h3 {
 }
 
 .markdown-body blockquote {
-  border-left: 2px solid #989fa7ff;
-  padding-left: 1.5em;
-  padding-right: 0.5rem;
+  border-left: 2px solid var(--blockquote-border);
   color: var(--blockquote-text);
-  margin-left: 0;
-  margin-right: 0;
   line-height: 2;
   font-style: italic;
+  font-size: 14px;
+}
+
+.markdown-body blockquote p::before {
+  content: '';
 }
 
 .markdown-body ul {
@@ -94,5 +107,5 @@ details h3 {
 .markdown-body ol {
   padding-left: 1.5em;
   list-style-type: decimal;
-  margin-top: 1rem;
+  margin-top: 0.5rem;
 }

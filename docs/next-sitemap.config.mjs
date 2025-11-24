@@ -10,7 +10,7 @@ export default {
     policies: [
       {
         userAgent: '*',
-        disallow: ['/docs.txt', '/index.txt', '/privacy.txt', '/tos.txt'],
+        disallow: ['/changelog', '/docs.txt', '/index.txt', '/privacy.txt', '/tos.txt'],
       },
     ],
   },
