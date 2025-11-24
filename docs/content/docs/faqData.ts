@@ -148,7 +148,13 @@ export const faqData: FAQEntry[] = [
     question: 'Why is my playtime not increasing on Steam when using SGI?',
     markdown:
       '**Why is my playtime not increasing on Steam?**\n' +
-      '> There could be several reasons for this:\n' +
+      "> Playtime not being counted when idling games in SGI isn't strictly an issue with SGI, but rather, it's an issue on Steam's servers. This issue has been reported many times over the years and happens even when playing games legitimately.\n" +
+      '>\n' +
+      '> The Steam client also shows inconsistencies between playtime displayed in the "Library" tab versus the playtime displayed on the "Profile". Be sure to check both to see if one is showing the correct playtime.\n' +
+      '>\n' +
+      '> Some users have reported that simply closing the Steam client completely, or signing out and then back in can fix this inconsistency. And sometimes it resolves on its own after a few hours.\n' +
+      '>\n' +
+      '> While this is generally always a Steam server issue, there are some things that can affect playtime being tracked correctly:\n' +
       '> * The Steam client may have been closed while idling, or you may not be signed in to the correct account\n' +
       '> * You were disconnected from the internet while idling and only playtime before the disconnection was recorded\n' +
       "> * The game didn't exit properly when stopping idling. Try restarting the Steam client and SGI to resolve this issue",
