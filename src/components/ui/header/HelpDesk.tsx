@@ -11,10 +11,14 @@ import { useUserContext } from '@/components/contexts/UserContext'
 import { getExportData } from '@/components/settings/ExportSettings'
 import CustomTooltip from '@/components/ui/CustomTooltip'
 
-declare const $chatway: {
-  updateChatwayCustomData: (key: string, value: string) => void
-  openChatwayWidget: () => void
-  closeChatwayWidget: () => void
+declare global {
+  interface Window {
+    $chatway: {
+      openChatwayWidget: () => void
+      closeChatwayWidget: () => void
+      updateChatwayCustomData: (key: string, value: string) => void
+    }
+  }
 }
 
 export default function HelpDesk(): ReactElement | null {
@@ -95,41 +99,44 @@ export default function HelpDesk(): ReactElement | null {
   }, [isLoaded])
 
   useEffect(() => {
-    if (userSummary) {
-      $chatway.updateChatwayCustomData('name', `${userSummary?.personaName} (${userSummary?.steamId})`)
-      $chatway.updateChatwayCustomData('profile', `https://steamcommunity.com/profiles/${userSummary?.steamId}`)
+    if (userSummary && typeof window !== 'undefined' && window.$chatway) {
+      window.$chatway.updateChatwayCustomData('name', `${userSummary?.personaName} (${userSummary?.steamId})`)
+      window.$chatway.updateChatwayCustomData('profile', `https://steamcommunity.com/profiles/${userSummary?.steamId}`)
       getExportData(userSettings).then(exportData => {
-        $chatway.updateChatwayCustomData('exportData', JSON.stringify(exportData))
+        window.$chatway.updateChatwayCustomData('exportData', JSON.stringify(exportData))
       })
     }
   }, [userSummary, userSettings])
 
   const handleToggle = () => {
-    if (!isLoaded) return
+    if (!isLoaded || typeof window === 'undefined' || !window.$chatway) return
 
     const widget = document.querySelector('.chatway--container')
 
     if (widget && widget.classList.contains('widget--open')) {
-      $chatway.closeChatwayWidget()
+      window.$chatway.closeChatwayWidget()
     } else {
       if (userSummary) {
-        $chatway.updateChatwayCustomData('name', `${userSummary?.personaName} (${userSummary?.steamId})`)
-        $chatway.updateChatwayCustomData('profile', `https://steamcommunity.com/profiles/${userSummary?.steamId}`)
+        window.$chatway.updateChatwayCustomData('name', `${userSummary?.personaName} (${userSummary?.steamId})`)
+        window.$chatway.updateChatwayCustomData(
+          'profile',
+          `https://steamcommunity.com/profiles/${userSummary?.steamId}`,
+        )
         getExportData(userSettings).then(exportData => {
-          $chatway.updateChatwayCustomData('exportData', JSON.stringify(exportData))
+          window.$chatway.updateChatwayCustomData('exportData', JSON.stringify(exportData))
         })
       }
-      $chatway.openChatwayWidget()
+      window.$chatway.openChatwayWidget()
     }
     setIsOpen(prev => !prev)
     setHasUnread(false)
   }
 
   const handleClose = () => {
-    if (!isLoaded) return
+    if (!isLoaded || typeof window === 'undefined' || !window.$chatway) return
     const widget = document.querySelector('.chatway--container')
     if (widget && widget.classList.contains('widget--open')) {
-      $chatway.closeChatwayWidget()
+      window.$chatway.closeChatwayWidget()
       setIsOpen(false)
     }
   }
