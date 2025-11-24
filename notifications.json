@@ -1,5 +1,12 @@
 [
   {
+    "id": "31",
+    "title": "Changelogs have moved",
+    "message": "Changelogs have moved and are now available on the Steam Game Idler website. Click here to view them online",
+    "url": "https://steamgameidler.com/changelog",
+    "timestamp": "1763980413"
+  },
+  {
     "id": "30",
     "title": "Steam Credentials have moved",
     "message": "The 'Steam Credentials' setting has been moved to 'Settings → Steam Credentials'. Click here to learn more about the change",
