@@ -28,6 +28,7 @@ export default function Private({ setRefreshKey }: PrivateProps): ReactElement {
             <li>{t('gamesList.private.reason.2')}</li>
             <li>{t('gamesList.private.reason.3')}</li>
             <li>{t('gamesList.private.reason.4')}</li>
+            <li>{t('gamesList.private.reason.5')}</li>
           </ul>
         </div>
         <ExtLink
