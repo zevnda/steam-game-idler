@@ -165,29 +165,31 @@ export default function PageHeader({
                   )}
 
                   {/* Pagination */}
-                  <div className='flex ml-auto justify-center items-center gap-4'>
-                    <Button
-                      isIconOnly
-                      className='bg-btn-secondary text-btn-text font-bold'
-                      radius='full'
-                      startContent={<TbChevronLeft fontSize={20} />}
-                      disabled={currentPage === 1}
-                      onPress={() => onPageChange(currentPage - 1)}
-                    />
+                  {tradingCardContext.tradingCardsList.length > 0 && (
+                    <div className='flex ml-auto justify-center items-center gap-4'>
+                      <Button
+                        isIconOnly
+                        className='bg-btn-secondary text-btn-text font-bold'
+                        radius='full'
+                        startContent={<TbChevronLeft fontSize={20} />}
+                        disabled={currentPage === 1}
+                        onPress={() => onPageChange(currentPage - 1)}
+                      />
 
-                    <p className='text-sm'>
-                      {currentPage} / {totalPages}
-                    </p>
+                      <p className='text-sm'>
+                        {currentPage} / {totalPages}
+                      </p>
 
-                    <Button
-                      isIconOnly
-                      className='bg-btn-secondary text-btn-text font-bold'
-                      radius='full'
-                      startContent={<TbChevronRight fontSize={20} />}
-                      disabled={currentPage === totalPages}
-                      onPress={() => onPageChange(currentPage + 1)}
-                    />
-                  </div>
+                      <Button
+                        isIconOnly
+                        className='bg-btn-secondary text-btn-text font-bold'
+                        radius='full'
+                        startContent={<TbChevronRight fontSize={20} />}
+                        disabled={currentPage === totalPages}
+                        onPress={() => onPageChange(currentPage + 1)}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
