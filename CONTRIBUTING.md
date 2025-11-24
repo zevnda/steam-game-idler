@@ -9,7 +9,7 @@
   │       │
   │       └─⫸ Commit Scope: tauri|states|games-list|card-farming|achievement-unlocker|achievement-manager|
   │                          auto-idle|settings|components|hooks|ui|utils|types|cache|config|i18n|
-  │                          deps|readme|changelog                         
+  │                          deps|readme                         
   │
   └─⫸ Commit Type: fix|feat|chore|refactor|libs|docs|ci|config|build|perf
 ```
@@ -56,7 +56,6 @@ Common scopes for this project include:
 | **i18n**                 | Internationalization and localization changes                                                |
 | **deps**                 | Updates to dependencies (Rust, Tauri, pnpm, .NET)                                            |
 | **readme**               | Updates to the README file                                                                   |
-| **changelog**            | Updates to the CHANGELOG file                                                                |
 
 ### Examples
 ```

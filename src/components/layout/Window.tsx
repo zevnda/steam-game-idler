@@ -6,7 +6,6 @@ import { useStateContext } from '@/components/contexts/StateContext'
 import { useUserContext } from '@/components/contexts/UserContext'
 import Dashboard from '@/components/layout/Dashboard'
 import SignIn from '@/components/layout/SignIn'
-import ChangelogModal from '@/components/ui/ChangelogModal'
 import SteamWarning from '@/components/ui/SteamWarning'
 import useWindow from '@/hooks/layout/useWindow'
 
@@ -22,19 +21,12 @@ export default function Window(): ReactElement {
       </div>
     )
 
-  if (!userSummary)
-    return (
-      <>
-        <SignIn />
-        <ChangelogModal />
-      </>
-    )
+  if (!userSummary) return <SignIn />
 
   return (
     <div className='bg-sidebar min-h-calc'>
       <Dashboard />
       <SteamWarning />
-      <ChangelogModal />
     </div>
   )
 }
