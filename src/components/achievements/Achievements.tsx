@@ -24,6 +24,7 @@ export default function Achievements(): ReactElement {
   const [protectedAchievements, setProtectedAchievements] = useState(false)
   const [protectedStatistics, setProtectedStatistics] = useState(false)
   const [imageLoaded, setImageLoaded] = useState(false)
+  const [fallbackImage, setFallbackImage] = useState('')
   const achievementStates = useAchievements(
     setIsLoading,
     setAchievements,
@@ -32,16 +33,12 @@ export default function Achievements(): ReactElement {
     setProtectedStatistics,
   )
 
-  if (isLoading) {
-    return (
-      <div className={cn('overflow-y-auto overflow-x-hidden bg-base w-calc')}>
-        <Loader />
-      </div>
-    )
-  }
-
   const handleImageLoad = (): void => {
     setImageLoaded(true)
+  }
+
+  const handleImageError = (): void => {
+    setFallbackImage(`https://cdn.steamstatic.com/steam/apps/${appId}/header.jpg`)
   }
 
   return (
@@ -56,18 +53,26 @@ export default function Achievements(): ReactElement {
       }}
     >
       <Image
-        src={`https://cdn.steamstatic.com/steam/apps/${appId}/library_hero.jpg`}
-        className={cn('absolute top-0 left-0 w-full h-full object-cover', !imageLoaded && 'hidden')}
+        src={fallbackImage || `https://cdn.steamstatic.com/steam/apps/${appId}/library_hero.jpg`}
+        className={cn('absolute top-0 left-0 w-full', !imageLoaded && 'hidden')}
         alt='background'
         width={1920}
         height={1080}
         priority
         onLoad={handleImageLoad}
+        onError={handleImageError}
         style={{
-          WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 40%)',
+          WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 70%)',
         }}
       />
-      {imageLoaded && <div className='absolute top-0 left-0 w-full h-screen bg-base/70 backdrop-blur-lg' />}
+      {imageLoaded && <div className='absolute top-0 left-0 w-full h-screen bg-base/80' />}
+
+      {/* Loader overlay */}
+      {(isLoading || (!imageLoaded && !fallbackImage && !isLoading)) && (
+        <div className={cn('absolute inset-0 flex items-center justify-center bg-base w-calc ml-[250px] z-50')}>
+          <Loader />
+        </div>
+      )}
 
       <div className='p-4'>
         <PageHeader protectedAchievements={protectedAchievements} protectedStatistics={protectedStatistics} />
@@ -82,11 +87,11 @@ export default function Achievements(): ReactElement {
             radius='full'
             className='max-w-[300px] ml-5'
             classNames={{
-              tabList: 'gap-0 w-full bg-tab-panel ml-7 mt-4',
+              tabList: 'gap-0 w-full bg-btn-achievement-header ml-7 mt-4',
               tab: cn('data-[hover-unselected=true]:!bg-item-hover', 'data-[hover-unselected=true]:opacity-100'),
               cursor: '!bg-item-active w-full',
               tabContent: 'text-sm group-data-[selected=true]:text-content text-altwhite font-bold',
-              panel: 'p-0 py-10 pl-8 ml-12 mr-10 mt-4 rounded-xl h-calc bg-tab-panel/20',
+              panel: 'p-0 py-10 pl-8 ml-12 mr-10 mt-4 rounded-xl h-calc bg-tab-panel/90',
             }}
             onSelectionChange={e => setCurrentTab(e as CurrentTabType)}
           >
