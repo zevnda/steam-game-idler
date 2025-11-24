@@ -8,6 +8,7 @@ import { RiCustomerService2Line } from 'react-icons/ri'
 import { TbX } from 'react-icons/tb'
 
 import { useUserContext } from '@/components/contexts/UserContext'
+import { getExportData } from '@/components/settings/ExportSettings'
 import CustomTooltip from '@/components/ui/CustomTooltip'
 
 declare const $chatway: {
@@ -22,7 +23,7 @@ export default function HelpDesk(): ReactElement | null {
   const [isLoaded, setIsLoaded] = useState(false)
   const [showGuide, setShowGuide] = useState(false)
   const [hasUnread, setHasUnread] = useState(false)
-  const { userSummary } = useUserContext()
+  const { userSummary, userSettings } = useUserContext()
 
   // If it's the user's first time using SGI, show an overlay
   // that directs them to the help desk
@@ -43,14 +44,11 @@ export default function HelpDesk(): ReactElement | null {
       if (widget) {
         setIsLoaded(true)
 
-        $chatway.updateChatwayCustomData('name', `${userSummary?.personaName} (${userSummary?.steamId})` || 'Guest')
-        $chatway.updateChatwayCustomData('profile', `https://steamcommunity.com/profiles/${userSummary?.steamId}`)
-
         clearInterval(interval)
       }
     }, 300)
     return () => clearInterval(interval)
-  }, [userSummary])
+  }, [])
 
   // Watch for widget open/close
   useEffect(() => {
@@ -96,6 +94,16 @@ export default function HelpDesk(): ReactElement | null {
     return () => observer.disconnect()
   }, [isLoaded])
 
+  useEffect(() => {
+    if (userSummary) {
+      $chatway.updateChatwayCustomData('name', `${userSummary?.personaName} (${userSummary?.steamId})`)
+      $chatway.updateChatwayCustomData('profile', `https://steamcommunity.com/profiles/${userSummary?.steamId}`)
+      getExportData(userSettings).then(exportData => {
+        $chatway.updateChatwayCustomData('exportData', JSON.stringify(exportData))
+      })
+    }
+  }, [userSummary, userSettings])
+
   const handleToggle = () => {
     if (!isLoaded) return
 
@@ -104,6 +112,13 @@ export default function HelpDesk(): ReactElement | null {
     if (widget && widget.classList.contains('widget--open')) {
       $chatway.closeChatwayWidget()
     } else {
+      if (userSummary) {
+        $chatway.updateChatwayCustomData('name', `${userSummary?.personaName} (${userSummary?.steamId})`)
+        $chatway.updateChatwayCustomData('profile', `https://steamcommunity.com/profiles/${userSummary?.steamId}`)
+        getExportData(userSettings).then(exportData => {
+          $chatway.updateChatwayCustomData('exportData', JSON.stringify(exportData))
+        })
+      }
       $chatway.openChatwayWidget()
     }
     setIsOpen(prev => !prev)
