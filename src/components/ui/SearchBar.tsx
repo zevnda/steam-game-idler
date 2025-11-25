@@ -227,7 +227,7 @@ export default function SearchBar({ isModalOpen = false, onModalClose }: SearchB
                         className='flex items-center justify-center cursor-pointer bg-item-hover hover:bg-item-hover/80 rounded-full p-1 duration-150'
                         onClick={() => searchContext.removeRecentSearch(query)}
                       >
-                        <TbX />
+                        <TbX className='text-content' />
                       </div>
                     </div>
                   ))}

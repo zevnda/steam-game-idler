@@ -133,7 +133,7 @@ export default function GameSettings(): ReactElement {
           onClear={() => setSearchTerm('')}
         />
 
-        <div className='border border-border/70 rounded-lg mb-2 overflow-hidden'>
+        <div className='border border-border/70 rounded-lg mb-2 overflow-hidden bg-popover/80'>
           <List
             height={windowInnerHeight - 610}
             itemCount={filteredGamesList.length}

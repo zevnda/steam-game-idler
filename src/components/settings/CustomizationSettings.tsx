@@ -1,26 +1,42 @@
+import type { InvokeSettings } from '@/types'
 import type { ReactElement } from 'react'
 
-import { Divider, Radio, RadioGroup } from '@heroui/react'
+import { invoke } from '@tauri-apps/api/core'
+
+import { cn, Divider, Input, Radio, RadioGroup, Slider } from '@heroui/react'
 import { useEffect, useState } from 'react'
 import { useTheme } from 'next-themes'
 import Image from 'next/image'
 import { useTranslation } from 'react-i18next'
 import { TbChevronRight } from 'react-icons/tb'
 
+import { useStateContext } from '@/components/contexts/StateContext'
+import { useUserContext } from '@/components/contexts/UserContext'
+import SettingsSwitch from '@/components/settings/SettingsSwitch'
+import ProBadge from '@/components/ui/ProBadge'
+import { handleSliderChange, useGeneralSettings } from '@/hooks/settings/useGeneralSettings'
+
 interface Theme {
   key: string
   label: string
+  isProTheme: boolean
 }
 
 export default function CustomizationSettings(): ReactElement | null {
   const { t } = useTranslation()
   const { setTheme, resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
+  const { isPro } = useUserContext()
+  const { setProModalOpen } = useStateContext()
+  const { userSummary, userSettings, setUserSettings } = useUserContext()
+  const { sliderLabel, setSliderLabel } = useGeneralSettings()
 
   const themes: Theme[] = [
-    { key: 'dark', label: 'Default' },
-    { key: 'dark-alt1', label: 'Dark Alt 1' },
-    { key: 'dark-alt2', label: 'Dark Alt 2' },
+    { key: 'dark', label: 'Default', isProTheme: false },
+    { key: 'blue', label: 'Blue', isProTheme: true },
+    { key: 'red', label: 'Red', isProTheme: true },
+    { key: 'purple', label: 'Purple', isProTheme: true },
+    { key: 'black', label: 'Black', isProTheme: true },
   ]
 
   useEffect(() => {
@@ -34,6 +50,38 @@ export default function CustomizationSettings(): ReactElement | null {
     setMounted(true)
   }, [setTheme])
 
+  const handleThemeChange = async (themeKey: string): Promise<void> => {
+    localStorage.setItem('theme', themeKey)
+    setTheme(themeKey)
+    await invoke<InvokeSettings>('update_user_settings', {
+      steamId: userSummary?.steamId,
+      key: 'general.theme',
+      value: themeKey,
+    })
+  }
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = async () => {
+      const dataUri = reader.result as string
+      await invoke<InvokeSettings>('update_user_settings', {
+        steamId: userSummary?.steamId,
+        key: 'general.customBackground',
+        value: dataUri,
+      })
+      setUserSettings(prev => ({
+        ...prev,
+        general: {
+          ...prev?.general,
+          customBackground: dataUri,
+        },
+      }))
+    }
+    reader.readAsDataURL(file)
+  }
+
   if (!mounted) return null
 
   return (
@@ -45,10 +93,85 @@ export default function CustomizationSettings(): ReactElement | null {
             <TbChevronRight size={12} />
           </span>
         </p>
-        <p className='text-3xl font-black'>{t('common.customization')}</p>
+        <p className='text-3xl font-black'>{t('settings.customization.title')}</p>
       </div>
 
       <div className='flex flex-col gap-3 mt-4'>
+        <div className='flex justify-between items-center'>
+          <div className='flex flex-col gap-2 w-1/2'>
+            <p className='text-sm text-content font-bold'>{t('settings.general.disableTooltips')}</p>
+            <p className='text-xs text-altwhite'>{t('settings.general.disableTooltips.description')}</p>
+          </div>
+          <SettingsSwitch type='general' name='disableTooltips' />
+        </div>
+
+        <Divider className='bg-border/70 my-4' />
+
+        <div className='flex justify-between items-center'>
+          <div className='flex flex-col gap-2 w-1/2'>
+            <p className='text-sm text-content font-bold'>{t('settings.general.chatSounds')}</p>
+            <p className='text-xs text-altwhite'>{sliderLabel}</p>
+          </div>
+
+          <Slider
+            size='md'
+            step={0.15}
+            minValue={0}
+            maxValue={3}
+            defaultValue={userSettings?.general?.chatSounds || 1}
+            hideValue
+            className='mt-2 w-[350px]'
+            classNames={{
+              track: 'bg-input data-[fill-start=true]:border-s-dynamic',
+              filler: 'bg-dynamic',
+              thumb: 'bg-white after:bg-dynamic',
+            }}
+            onChangeEnd={e => handleSliderChange(e, userSummary, setUserSettings)}
+            onChange={e => {
+              const getPercent = (val: number): number => Math.round((val / 3) * 100)
+              if (Array.isArray(e)) {
+                setSliderLabel(
+                  t('settings.general.chatSounds.description', {
+                    value: `${getPercent(e[0])}%`,
+                  }),
+                )
+              }
+            }}
+          />
+        </div>
+
+        <Divider className='bg-border/70 my-4' />
+
+        <div className='flex justify-between items-start'>
+          <div className='flex flex-col gap-2 w-1/2'>
+            <div className='flex items-center'>
+              <p className='text-sm text-content font-bold'>{t('settings.customization.backgroundImage')}</p>
+              {!isPro && <ProBadge className='scale-65' />}
+            </div>
+            <p className='text-xs text-altwhite'>{t('settings.customization.backgroundImage.description')}</p>
+          </div>
+
+          <div onClick={() => !isPro && setProModalOpen(true)}>
+            <Input
+              type='file'
+              accept='image/*'
+              className='max-w-[250px]'
+              isDisabled={!isPro}
+              classNames={{
+                base: '',
+                inputWrapper: cn(
+                  'bg-input data-[hover=true]:!bg-inputhover !cursor-pointer',
+                  'rounded-lg group-data-[focus-within=true]:!bg-inputhover',
+                ),
+                input: ['!text-content cursor-pointer'],
+              }}
+              onChange={handleFileChange}
+            />
+          </div>
+        </div>
+
+        <Divider className='bg-border/70 my-4' />
+
         <div className='flex flex-col justify-between gap-6'>
           <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>{t('settings.customization.theme')}</p>
@@ -57,25 +180,36 @@ export default function CustomizationSettings(): ReactElement | null {
 
           <RadioGroup
             orientation='horizontal'
-            classNames={{ wrapper: 'items-end gap-6' }}
             defaultValue={resolvedTheme}
-            onValueChange={value => {
-              const selectedTheme = value
-              localStorage.setItem('theme', selectedTheme ?? 'dark')
-              setTheme(selectedTheme ?? 'dark')
-            }}
+            onValueChange={value => handleThemeChange(value)}
           >
             {themes.map(theme => (
-              <div key={theme.key} className='flex flex-col gap-2'>
-                <Image
-                  src='/themes/default.png'
-                  alt={theme.label}
-                  width={150}
-                  height={45}
-                  className='rounded-lg border border-border object-cover'
-                />
-                <Radio value={theme.key}>
-                  <p className='text-altwhite'>{theme.label}</p>
+              <div key={theme.key} onClick={() => theme.isProTheme && !isPro && setProModalOpen(true)}>
+                <Radio
+                  value={theme.key}
+                  isDisabled={theme.isProTheme && !isPro}
+                  classNames={{
+                    base: 'items-end gap-1',
+                  }}
+                  size='sm'
+                >
+                  <div className='relative cursor-pointer'>
+                    <Image
+                      src={`/themes/${theme.key}.webp`}
+                      alt={theme.label}
+                      width={147}
+                      height={45}
+                      className='rounded-lg border border-border object-cover -translate-x-6 mb-2'
+                    />
+                    <div
+                      className='pointer-events-none -translate-x-6 absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-150'
+                      style={{ boxShadow: 'inset 0 0 0 2px hsl(var(--heroui-dynamic))' }}
+                    />
+                  </div>
+                  <div className='flex items-center translate-y-0.5'>
+                    <p className='text-altwhite'>{theme.label}</p>
+                    {theme.isProTheme && !isPro && <ProBadge className='ml-2 scale-75' />}
+                  </div>
                 </Radio>
               </div>
             ))}

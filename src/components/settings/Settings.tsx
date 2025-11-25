@@ -30,7 +30,7 @@ export default function Settings(): ReactElement {
         <Button
           isIconOnly
           radius='full'
-          className='bg-item-hover'
+          className='bg-item-hover text-content'
           startContent={<TbX />}
           onPress={() => {
             setActivePage(previousActivePage)
@@ -80,7 +80,7 @@ export default function Settings(): ReactElement {
         <Tab key='game-settings' title={t('common.gameSettings')}>
           <GameSettings />
         </Tab>
-        <Tab key='customization' title={t('common.customization')}>
+        <Tab key='customization' title={t('settings.customization.title')}>
           <CustomizationSettings />
         </Tab>
         <Tab key='debug' title={t('settings.debug.title')}>

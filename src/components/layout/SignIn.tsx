@@ -142,7 +142,12 @@ function UserSelectionArea({ onRefresh }: { onRefresh: () => void }) {
           </div>
           {/* Buttons */}
           <div className='flex gap-4 mb-6'>
-            <Button radius='full' variant='bordered' className='font-semibold border-white' onPress={onRefresh}>
+            <Button
+              radius='full'
+              variant='bordered'
+              className='font-semibold border-white text-content'
+              onPress={onRefresh}
+            >
               {t('setup.refresh')}
             </Button>
             <Button

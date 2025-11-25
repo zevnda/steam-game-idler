@@ -22,6 +22,7 @@
     "./settings/trading-card-manager",
     "./steam-credentials",
     "./settings/game-settings",
+    "./settings/customization",
     "./settings/debug",
     "---Help & Support---",
     "./troubleshooting",

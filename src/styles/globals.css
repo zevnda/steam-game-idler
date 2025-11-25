@@ -30,14 +30,24 @@
   --holo-border: linear-gradient(120deg, #1d1d208f 0%, #7778868f 50%, #1d1d208f 100%);
 }
 
-.dark-alt1 {
-  --gradient-bg: linear-gradient(to bottom, #18181b 0%, #23232a 100%);
-  --gradient-alt: linear-gradient(to bottom, #23232a 0%, #18181b 100%);
+.blue {
+  --gradient-bg: linear-gradient(to bottom, #131a26 0%, #05080c 100%);
+  --gradient-alt: linear-gradient(to bottom, #131a26 0%, #0a0f15 100%);
 }
 
-.dark-alt2 {
-  --gradient-bg: linear-gradient(to bottom, #0f172a 0%, #1e293b 100%);
-  --gradient-alt: linear-gradient(to bottom, #1e293b 0%, #0f172a 100%);
+.red {
+  --gradient-bg: linear-gradient(to bottom, #1b1114 0%, #060305 100%);
+  --gradient-alt: linear-gradient(to bottom, #1b1114 0%, #0d080a 100%);
+}
+
+.purple {
+  --gradient-bg: linear-gradient(to bottom, #181428 0%, #08070c 100%);
+  --gradient-alt: linear-gradient(to bottom, #181428 0%, #100e17 100%);
+}
+
+.black {
+  --gradient-bg: linear-gradient(to bottom, #000000 0%, #050505 100%);
+  --gradient-alt: linear-gradient(to bottom, #000000 0%, #0a0a0a 100%);
 }
 
 ::-webkit-scrollbar {
@@ -233,6 +243,13 @@ svg {
   font-size: 2rem;
   margin-top: 12px;
   margin-bottom: 12px;
+}
+
+.emoji:not(.emoji-only-message .emoji) {
+  font-size: 1.4em;
+  vertical-align: middle;
+  line-height: 1;
+  user-select: none;
 }
 
 .donator-role {

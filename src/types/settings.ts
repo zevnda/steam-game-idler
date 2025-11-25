@@ -53,6 +53,8 @@ export interface GeneralSettings {
   startMinimized: boolean
   closeToTray: boolean
   chatSounds: number[]
+  theme?: string | null
+  customBackground?: string | null
 }
 
 export interface TradingCardsSettings {

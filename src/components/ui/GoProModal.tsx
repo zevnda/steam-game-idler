@@ -65,24 +65,6 @@ export default function GoProModal(): ReactElement {
 
                   <p className='text-xs text-altwhite mt-2'>{t('proMode.modal.cancelAnytime')}</p>
                 </div>
-
-                <div className='mt-10 w-full max-w-xs text-sm'>
-                  <p className='font-semibold mb-3'>{t('proMode.modal.benefits')}</p>
-                  <ul className='space-y-1'>
-                    <li className='flex items-center gap-2'>
-                      <FaCheck className='text-green-500' />
-                      <span>{t('proMode.modal.removeAds')}</span>
-                    </li>
-                    <li className='flex items-center gap-2'>
-                      <FaCheck className='text-green-500' />
-                      <span>{t('proMode.modal.uniqueChatRole')}</span>
-                    </li>
-                    <li className='flex items-center gap-2'>
-                      <FaCheck className='text-green-500' />
-                      <span>{t('proMode.modal.moreBenefits')}</span>
-                    </li>
-                  </ul>
-                </div>
               </Tab>
 
               <Tab
@@ -118,26 +100,30 @@ export default function GoProModal(): ReactElement {
 
                   <p className='text-xs text-altwhite mt-2'>{t('proMode.modal.cancelAnytime')}</p>
                 </div>
-
-                <div className='mt-10 w-full max-w-xs text-sm'>
-                  <p className='font-semibold mb-3'>{t('proMode.modal.benefits')}</p>
-                  <ul className='space-y-1'>
-                    <li className='flex items-center gap-2'>
-                      <FaCheck className='text-green-500' />
-                      <span>{t('proMode.modal.removeAds')}</span>
-                    </li>
-                    <li className='flex items-center gap-2'>
-                      <FaCheck className='text-green-500' />
-                      <span>{t('proMode.modal.uniqueChatRole')}</span>
-                    </li>
-                    <li className='flex items-center gap-2'>
-                      <FaCheck className='text-green-500' />
-                      <span>{t('proMode.modal.moreBenefits')}</span>
-                    </li>
-                  </ul>
-                </div>
               </Tab>
             </Tabs>
+
+            <div className='mt-10 w-full max-w-xs text-sm'>
+              <p className='font-semibold mb-3'>{t('proMode.modal.benefits')}</p>
+              <ul className='space-y-1'>
+                <li className='flex items-center gap-2'>
+                  <FaCheck className='text-green-500' />
+                  <span>{t('proMode.modal.removeAds')}</span>
+                </li>
+                <li className='flex items-center gap-2'>
+                  <FaCheck className='text-green-500' />
+                  <span>{t('proMode.modal.themes')}</span>
+                </li>
+                <li className='flex items-center gap-2'>
+                  <FaCheck className='text-green-500' />
+                  <span>{t('proMode.modal.uniqueChatRole')}</span>
+                </li>
+                <li className='flex items-center gap-2'>
+                  <FaCheck className='text-green-500' />
+                  <span>{t('proMode.modal.moreBenefits')}</span>
+                </li>
+              </ul>
+            </div>
 
             <Image src='/powered-by-stripe.svg' alt='Powered by Stripe' className='mt-6' width={130} height={50} />
             <p className='text-[10px] text-altwhite mt-2'>{t('proMode.modal.footer')}</p>

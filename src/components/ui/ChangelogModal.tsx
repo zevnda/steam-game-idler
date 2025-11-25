@@ -59,7 +59,7 @@ export default function ChangelogModal(): ReactElement | null {
             radius='full'
             className='font-semibold'
             startContent={<FaStar size={20} />}
-            onPress={onOpenChange}
+            onPress={() => handleOpenExtLink('https://github.com/zevnda/steam-game-idler')}
           >
             {t('changelog.star')}
           </Button>

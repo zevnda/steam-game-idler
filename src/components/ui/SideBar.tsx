@@ -263,11 +263,11 @@ export default function SideBar(): ReactElement {
           {mainSidebarItems.map((item, idx) => renderSidebarItem(item, idx))}
         </div>
 
-        {/* {process.env.NODE_ENV === 'production' && ( */}
-        <div className='flex flex-col items-center justify-end grow mb-1 overflow-hidden'>
-          <AdSlot />
-        </div>
-        {/* )} */}
+        {process.env.NODE_ENV === 'production' && (
+          <div className='flex flex-col items-center justify-end grow mb-1 overflow-hidden'>
+            <AdSlot />
+          </div>
+        )}
 
         {/* Settings and signout */}
         <div

@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react'
 
-import { Button, cn, Divider, Input, Slider } from '@heroui/react'
+import { Button, cn, Divider, Input } from '@heroui/react'
 import Image from 'next/image'
 import { Trans, useTranslation } from 'react-i18next'
 import { TbChevronRight, TbEraser, TbUpload } from 'react-icons/tb'
@@ -10,14 +10,13 @@ import SettingsSwitch from '@/components/settings/SettingsSwitch'
 import ExtLink from '@/components/ui/ExtLink'
 import CurrencySwitch from '@/components/ui/i18n/CurrencySwitch'
 import LanguageSwitch from '@/components/ui/i18n/LanguageSwitch'
-import ThemeSwitch from '@/components/ui/theme/ThemeSwitch'
 import WebviewWindow from '@/components/ui/WebviewWindow'
-import { handleClear, handleKeySave, handleSliderChange, useGeneralSettings } from '@/hooks/settings/useGeneralSettings'
+import { handleClear, handleKeySave, useGeneralSettings } from '@/hooks/settings/useGeneralSettings'
 
 export default function GeneralSettings(): ReactElement {
   const { t } = useTranslation()
-  const { userSummary, userSettings, setUserSettings } = useUserContext()
-  const { keyValue, setKeyValue, hasKey, setHasKey, sliderLabel, setSliderLabel } = useGeneralSettings()
+  const { userSummary, setUserSettings } = useUserContext()
+  const { keyValue, setKeyValue, hasKey, setHasKey } = useGeneralSettings()
 
   return (
     <div className='relative flex flex-col gap-4 mt-9 pb-16 w-4/5'>
@@ -55,8 +54,6 @@ export default function GeneralSettings(): ReactElement {
           </div>
         </div>
 
-        <ThemeSwitch />
-
         <Divider className='bg-border/70 my-4' />
 
         <div className='flex justify-between items-center'>
@@ -91,16 +88,6 @@ export default function GeneralSettings(): ReactElement {
 
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
-            <p className='text-sm text-content font-bold'>{t('settings.general.disableTooltips')}</p>
-            <p className='text-xs text-altwhite'>{t('settings.general.disableTooltips.description')}</p>
-          </div>
-          <SettingsSwitch type='general' name='disableTooltips' />
-        </div>
-
-        <Divider className='bg-border/70 my-4' />
-
-        <div className='flex justify-between items-center'>
-          <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>{t('settings.general.runAtStartup')}</p>
             <p className='text-xs text-altwhite'>{t('settings.general.runAtStartup.description')}</p>
           </div>
@@ -125,40 +112,6 @@ export default function GeneralSettings(): ReactElement {
             <p className='text-xs text-altwhite'>{t('settings.general.closeToTray.description')}</p>
           </div>
           <SettingsSwitch type='general' name='closeToTray' />
-        </div>
-
-        <Divider className='bg-border/70 my-4' />
-
-        <div className='flex justify-between items-center'>
-          <div className='flex flex-col gap-2 w-1/2'>
-            <p className='text-sm text-content font-bold'>{t('settings.general.chatSounds')}</p>
-            <p className='text-xs text-altwhite'>{sliderLabel}</p>
-          </div>
-          <Slider
-            size='md'
-            step={0.15}
-            minValue={0}
-            maxValue={3}
-            defaultValue={userSettings?.general?.chatSounds || 1}
-            hideValue
-            className='mt-2 w-[350px]'
-            classNames={{
-              track: 'bg-input data-[fill-start=true]:border-s-dynamic',
-              filler: 'bg-dynamic',
-              thumb: 'bg-white after:bg-dynamic',
-            }}
-            onChangeEnd={e => handleSliderChange(e, userSummary, setUserSettings)}
-            onChange={e => {
-              const getPercent = (val: number): number => Math.round((val / 3) * 100)
-              if (Array.isArray(e)) {
-                setSliderLabel(
-                  t('settings.general.chatSounds.description', {
-                    value: `${getPercent(e[0])}%`,
-                  }),
-                )
-              }
-            }}
-          />
         </div>
 
         <Divider className='bg-border/70 my-4' />
