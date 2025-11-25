@@ -155,6 +155,7 @@ export default function HelpDesk(): ReactElement | null {
             />
           )}
         </AnimatePresence>
+
         <div className='flex justify-center items-center'>
           {/* Pulsing highlight for focus guide */}
           {showGuide && (
@@ -169,7 +170,7 @@ export default function HelpDesk(): ReactElement | null {
                 'hover:bg-header-hover/10 h-9 w-12 px-2 duration-150 cursor-pointer',
                 'hover:text-white transition-colors',
                 isOpen && 'text-primary',
-                showGuide && 'z-1002 relative',
+                showGuide && 'z-1002 relative pointer-events-none',
               )}
               onClick={handleToggle}
             >
