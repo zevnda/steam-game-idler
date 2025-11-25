@@ -6,6 +6,10 @@ tags: ['New', 'Improved', 'Fixed']
 
 ### New 🎉
 - **Trading Card Manager**: Added a cooldown when manually fetching price data via the show market prices button. This won't completely prevent being rate-limited, but it should do better at letting users know not to spam that action
+- **Zoom Controls**: Added keyboard shortcuts for control over the UI scale
+  - `Ctrl` + `+` to zoom in
+  - `Ctrl` + `-` to zoom out
+  - `Ctrl` + `0` to reset zoom to default
 
 ### Improved 🚀
 - **Trading Card Manager**: Improved the way we handle being rate-limited in both `fetchCardPrices()` and `handleSellAllCards()`. In both cases, a toast will be shown to the user. When hitting a rate limit while selling cards, we now exit the function completely to prevent trying to list further cards, and a more descriptive error message is logged

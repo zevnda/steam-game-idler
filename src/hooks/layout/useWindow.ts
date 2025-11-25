@@ -14,7 +14,7 @@ import { isPermissionGranted, requestPermission, sendNotification } from '@tauri
 import { relaunch } from '@tauri-apps/plugin-process'
 import { check } from '@tauri-apps/plugin-updater'
 
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useIdleContext } from '@/components/contexts/IdleContext'
@@ -32,12 +32,60 @@ export default function useWindow(): void {
     useStateContext()
   const { setUpdateAvailable, setShowChangelog } = useUpdateContext()
   const { userSummary, setUserSummary, userSettings, setUserSettings, gamesList, setFreeGamesList } = useUserContext()
+  const [zoom, setZoom] = useState(1.0)
 
   console.debug('Monitor for rerenders')
 
   useEffect(() => {
     emit('ready')
   }, [])
+
+  useEffect(() => {
+    // Set initial zoom level from localStorage
+    const storedZoom = localStorage.getItem('zoomLevel')
+    if (storedZoom) {
+      const parsedZoom = parseFloat(storedZoom)
+      if (!isNaN(parsedZoom)) {
+        setZoom(parsedZoom)
+        invoke('set_zoom', { scaleFactor: parsedZoom })
+      }
+    }
+  }, [])
+
+  // Zoom controls
+  useEffect(() => {
+    const handleZoomControls = async (e: KeyboardEvent) => {
+      try {
+        if (e.ctrlKey || e.metaKey) {
+          if (e.key === '=' || e.key === '+') {
+            e.preventDefault()
+            const newZoom = Math.min(zoom + 0.1, 3.0)
+            setZoom(newZoom)
+            localStorage.setItem('zoomLevel', newZoom.toString())
+            await invoke('set_zoom', { scaleFactor: newZoom })
+          } else if (e.key === '-') {
+            e.preventDefault()
+            const newZoom = Math.max(zoom - 0.1, 0.5)
+            setZoom(newZoom)
+            localStorage.setItem('zoomLevel', newZoom.toString())
+            await invoke('set_zoom', { scaleFactor: newZoom })
+          } else if (e.key === '0') {
+            e.preventDefault()
+            setZoom(1.0)
+            localStorage.setItem('zoomLevel', '1.0')
+            await invoke('set_zoom', { scaleFactor: 1.0 })
+          }
+        }
+      } catch (error) {
+        showDangerToast(t('common.error'))
+        console.error('Error in (handleZoomControls):', error)
+        logEvent(`[Error] in (handleZoomControls): ${error}`)
+      }
+    }
+
+    window.addEventListener('keydown', handleZoomControls)
+    return () => window.removeEventListener('keydown', handleZoomControls)
+  }, [zoom, t])
 
   // Disable context menu and refresh actions
   useEffect(() => {

@@ -137,6 +137,7 @@ pub fn run() {
             get_cache_dir_path,
             get_achievement_order,
             save_achievement_order,
+            set_zoom,
             quit_app
         ])
         .build(tauri::generate_context!())
