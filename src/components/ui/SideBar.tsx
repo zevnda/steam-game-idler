@@ -142,7 +142,7 @@ export default function SideBar(): ReactElement {
     const isChat = item.id === 'chat'
 
     return (
-      <div className='overflow-hidden' key={item.id}>
+      <div key={item.id}>
         {renderSectionHeader(index)}
 
         <div className='flex w-full'>
@@ -205,12 +205,7 @@ export default function SideBar(): ReactElement {
           transitionProperty: 'min-width, max-width',
         }}
       >
-        <div
-          className={cn(
-            'flex flex-col gap-1.5 p-2 w-full min-w-0 overflow-hidden',
-            sidebarCollapsed ? 'items-center' : undefined,
-          )}
-        >
+        <div className={cn('flex flex-col gap-1.5 p-2 w-full min-w-0', sidebarCollapsed ? 'items-center' : undefined)}>
           <HeaderTitle />
 
           {/* Search button */}
@@ -264,7 +259,7 @@ export default function SideBar(): ReactElement {
           </Button>
         </div>
 
-        <div className='flex flex-col gap-1.5 p-2 w-full min-w-0 overflow-hidden'>
+        <div className='flex flex-col gap-1.5 p-2 w-full min-w-0 overflow-y-auto'>
           {mainSidebarItems.map((item, idx) => renderSidebarItem(item, idx))}
         </div>
 
