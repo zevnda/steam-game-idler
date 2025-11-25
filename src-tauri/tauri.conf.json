@@ -59,9 +59,9 @@
       {
         "title": "Steam Game Idler",
         "width": 1440,
-        "height": 825,
+        "height": 905,
         "minWidth": 1440,
-        "minHeight": 825,
+        "minHeight": 905,
         "fullscreen": false,
         "resizable": true,
         "decorations": false,
