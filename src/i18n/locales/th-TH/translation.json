@@ -34,6 +34,7 @@
   "gamesList.private.reason.2": "รายละเอียดเกมของคุณตั้งเป็นส่วนตัว",
   "gamesList.private.reason.3": "คุณไม่มีเกมในคลังของคุณ",
   "gamesList.private.reason.4": "คุณใช้คีย์ API เว็บ Steam ที่ไม่ถูกต้อง",
+  "gamesList.private.reason.5": "มีบางอย่างกำลังบล็อกการเชื่อมต่อขาออก (ไฟร์วอลล์, โปรแกรมป้องกันไวรัส ฯลฯ)",
   "idlingGames.title": "เกมที่กำลังพัก",
   "idlingGames.subtitle": "เกมที่คุณกำลังพักอยู่จะแสดงที่นี่",
   "idlingGames.stopAll": "หยุดทั้งหมด",

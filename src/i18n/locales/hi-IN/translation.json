@@ -34,6 +34,7 @@
   "gamesList.private.reason.2": "आपके गेम विवरण निजी पर सेट हैं",
   "gamesList.private.reason.3": "आपकी लाइब्रेरी में कोई गेम नहीं है",
   "gamesList.private.reason.4": "आप एक अवैध Steam वेब API कुंजी का उपयोग कर रहे हैं",
+  "gamesList.private.reason.5": "कुछ आउटबाउंड कनेक्शन को अवरुद्ध कर रहा है (फ़ायरवॉल, एंटीवायरस, आदि)",
   "idlingGames.title": "आईडीलिंग गेम्स",
   "idlingGames.subtitle": "गेम्स जो आप वर्तमान में आइडल कर रहे हैं, यहां दिखाई देंगे",
   "idlingGames.stopAll": "सभी रोकें",

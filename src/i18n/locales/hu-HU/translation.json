@@ -34,6 +34,7 @@
   "gamesList.private.reason.2": "A játék részleteid privátok",
   "gamesList.private.reason.3": "Nincs játék a könyvtáradban",
   "gamesList.private.reason.4": "Érvénytelen Steam web API kulcsot használsz",
+  "gamesList.private.reason.5": "Valami blokkolja a kimenő kapcsolatokat (tűzfal, víruskereső stb.)",
   "idlingGames.title": "Idling játékok",
   "idlingGames.subtitle": "Az itt megjelenő játékok jelenleg is idling módban vannak",
   "idlingGames.stopAll": "Összes leállítása",

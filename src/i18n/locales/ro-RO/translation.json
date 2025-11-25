@@ -34,6 +34,7 @@
   "gamesList.private.reason.2": "Detaliile jocului dvs. sunt setate la privat",
   "gamesList.private.reason.3": "Nu ai jocuri în biblioteca ta",
   "gamesList.private.reason.4": "Folosiți o cheie web API invalidă Steam",
+  "gamesList.private.reason.5": "Ceva blochează conexiunile de ieșire (firewall, antivirus etc.)",
   "idlingGames.title": "Manipulare Jocuri",
   "idlingGames.subtitle": "Jocurile pe care le lași deschise în prezent vor apărea aici",
   "idlingGames.stopAll": "Oprește tot",

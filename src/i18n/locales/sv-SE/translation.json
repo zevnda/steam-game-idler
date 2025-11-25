@@ -34,6 +34,7 @@
   "gamesList.private.reason.2": "Dina speluppgifter är inställda till privata",
   "gamesList.private.reason.3": "Du har inga spel i ditt bibliotek",
   "gamesList.private.reason.4": "Du använder en ogiltig API-nyckel för Steam",
+  "gamesList.private.reason.5": "Något blockerar utgående anslutningar (brandvägg, antivirus osv.)",
   "idlingGames.title": "Idling spel",
   "idlingGames.subtitle": "Spel som du för närvarande farmar visas här",
   "idlingGames.stopAll": "Stoppa alla",

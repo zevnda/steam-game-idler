@@ -34,6 +34,7 @@
   "gamesList.private.reason.2": "您的遊戲詳細資料已設為私人",
   "gamesList.private.reason.3": "你的遊戲庫中沒有遊戲",
   "gamesList.private.reason.4": "您正在使用無效的 Steam 網絡 API 金鑰",
+  "gamesList.private.reason.5": "某些程式阻止了出站連線（例如防火牆、防毒軟體等）。",
   "idlingGames.title": "閒置遊戲",
   "idlingGames.subtitle": "你目前正在閒置的遊戲將會顯示在這裡",
   "idlingGames.stopAll": "停止全部",

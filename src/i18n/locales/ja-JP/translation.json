@@ -34,6 +34,7 @@
   "gamesList.private.reason.2": "ゲームの詳細は非公開に設定されています",
   "gamesList.private.reason.3": "ライブラリにゲームがありません",
   "gamesList.private.reason.4": "無効なSteam Web APIキーを使用しています",
+  "gamesList.private.reason.5": "何かが送信接続をブロックしています（ファイアウォール、ウイルス対策など）",
   "idlingGames.title": "アイドリングゲーム",
   "idlingGames.subtitle": "現在アイドリング中のゲームはここに表示されます",
   "idlingGames.stopAll": "すべて停止",

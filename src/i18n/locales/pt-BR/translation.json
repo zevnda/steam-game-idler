@@ -34,6 +34,7 @@
   "gamesList.private.reason.2": "Os detalhes dos seus jogos estão definidos como privados",
   "gamesList.private.reason.3": "Você não possui jogos em sua biblioteca",
   "gamesList.private.reason.4": "Você está usando uma chave inválida da API web do Steam",
+  "gamesList.private.reason.5": "Algo está bloqueando as conexões de saída (firewall, antivírus, etc.).",
   "idlingGames.title": "Jogos em Repouso",
   "idlingGames.subtitle": "Os jogos em que você está em repouso aparecerão aqui",
   "idlingGames.stopAll": "Parar Todos",

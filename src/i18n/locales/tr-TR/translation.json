@@ -34,6 +34,7 @@
   "gamesList.private.reason.2": "Oyun detaylarınız gizlidir",
   "gamesList.private.reason.3": "Kütüphanenizde oyun bulunmamaktadır",
   "gamesList.private.reason.4": "Geçersiz bir Steam web API anahtarı kullanıyorsunuz",
+  "gamesList.private.reason.5": "Giden bağlantıları engelleyen bir şey var (güvenlik duvarı, antivirüs vb.)",
   "idlingGames.title": "Boşta Bırakılan Oyunlar",
   "idlingGames.subtitle": "Şu anda boşta bırakılan oyunlar burada görünür",
   "idlingGames.stopAll": "Hepsini Durdur",
