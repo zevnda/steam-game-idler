@@ -205,3 +205,20 @@ pub fn get_cache_dir(app_handle: &tauri::AppHandle) -> Result<std::path::PathBuf
 pub fn quit_app(app_handle: tauri::AppHandle) {
     app_handle.exit(0);
 }
+
+// Command to set the zoom level of the webview
+#[tauri::command]
+pub fn set_zoom(webview: tauri::Webview, scale_factor: f64) -> Result<(), String> {
+    webview
+        .with_webview(move |webview| {
+            #[cfg(windows)]
+            unsafe {
+                if let Err(e) = webview.controller().SetZoomFactor(scale_factor) {
+                    eprintln!("Failed to set zoom factor: {}", e);
+                }
+            }
+        })
+        .map_err(|e| e.to_string())?;
+
+    Ok(())
+}
