@@ -30,7 +30,7 @@ export default function CardMenu({ item }: CardMenuProps): ReactElement {
   return (
     <Dropdown
       classNames={{
-        content: ['rounded-lg p-0 bg-transparent'],
+        content: ['rounded-xl p-0 bg-transparent'],
       }}
     >
       <DropdownTrigger>
@@ -38,7 +38,7 @@ export default function CardMenu({ item }: CardMenuProps): ReactElement {
           <TbDotsVertical />
         </div>
       </DropdownTrigger>
-      <DropdownMenu aria-label='actions' classNames={{ base: 'bg-base/85 backdrop-blur-sm rounded-xl' }}>
+      <DropdownMenu aria-label='actions' classNames={{ base: 'bg-popover border border-border rounded-xl' }}>
         <DropdownItem
           className='rounded-xl'
           classNames={{ base: ['data-[hover=true]:bg-item-hover'] }}

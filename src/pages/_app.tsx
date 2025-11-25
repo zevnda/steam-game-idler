@@ -12,7 +12,7 @@ export default function App({ Component, pageProps }: AppProps): ReactElement {
   return (
     <ThemeProvider
       attribute='class'
-      themes={['dark']}
+      themes={['dark', 'blue', 'red', 'purple', 'black']}
       enableSystem={true}
       defaultTheme='dark'
       disableTransitionOnChange

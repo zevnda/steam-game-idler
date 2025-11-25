@@ -135,7 +135,7 @@ export default function CardFarming({ activePage }: { activePage: ActivePageType
   return (
     <div
       className={cn(
-        'absolute top-0 z-4 w-full h-screen bg-base',
+        'absolute top-0 z-4 w-full h-screen bg-gradient-bg',
         'overflow-y-auto overflow-x-hidden ease-in-out',
         activePage !== 'customlists/card-farming' && 'hidden',
       )}
@@ -191,7 +191,9 @@ export default function CardFarming({ activePage }: { activePage: ActivePageType
             transitionProperty: 'width',
           }}
         >
-          <div className='flex flex-col items-center gap-6 bg-sidebar rounded-xl p-8 w-full'>{renderContent()}</div>
+          <div className='flex justify-center items-center flex-col p-6 bg-tab-panel rounded-4xl border border-border'>
+            {renderContent()}
+          </div>
         </div>
       </div>
     </div>

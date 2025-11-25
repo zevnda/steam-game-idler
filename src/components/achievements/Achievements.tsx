@@ -65,11 +65,11 @@ export default function Achievements(): ReactElement {
           WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 70%)',
         }}
       />
-      {imageLoaded && <div className='absolute top-0 left-0 w-full h-screen bg-base/80' />}
+      {imageLoaded && <div className='absolute top-0 left-0 w-full h-screen bg-base/70' />}
 
       {/* Loader overlay */}
       {(isLoading || (!imageLoaded && !fallbackImage && !isLoading)) && (
-        <div className={cn('absolute inset-0 flex items-center justify-center bg-base w-calc ml-[250px] z-50')}>
+        <div className={cn('absolute inset-0 flex items-center justify-center w-calc ml-[250px] z-50')}>
           <Loader />
         </div>
       )}
@@ -91,7 +91,7 @@ export default function Achievements(): ReactElement {
               tab: cn('data-[hover-unselected=true]:!bg-item-hover', 'data-[hover-unselected=true]:opacity-100'),
               cursor: '!bg-item-active w-full',
               tabContent: 'text-sm group-data-[selected=true]:text-content text-altwhite font-bold',
-              panel: 'p-0 py-10 pl-8 ml-12 mr-10 mt-4 rounded-xl h-calc bg-tab-panel/90',
+              panel: 'p-0 ml-12 mr-10 mt-6 rounded-xl h-calc bg-base/50 p-4',
             }}
             onSelectionChange={e => setCurrentTab(e as CurrentTabType)}
           >

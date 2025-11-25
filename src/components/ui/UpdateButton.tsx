@@ -46,7 +46,7 @@ export default function UpdateButton(): ReactElement {
       ) : (
         <CustomTooltip content='Update Ready!'>
           <div className='flex justify-center items-center cursor-pointer' onClick={handleUpdate}>
-            <div className='flex items-center px-1 py-1.5 text-success hover:text-success/80 duration-150'>
+            <div className='flex items-center px-1 py-1.5 text-dynamic hover:text-dynamic/80 duration-150'>
               <TbCircleArrowDown fontSize={20} />
             </div>
           </div>

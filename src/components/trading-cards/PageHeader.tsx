@@ -8,6 +8,7 @@ import { TbChecks, TbChevronLeft, TbChevronRight, TbEraser, TbPackageExport, TbS
 
 import { useNavigationContext } from '@/components/contexts/NavigationContext'
 import { useSearchContext } from '@/components/contexts/SearchContext'
+import { useStateContext } from '@/components/contexts/StateContext'
 import CustomModal from '@/components/ui/CustomModal'
 
 // Helper function to format seconds to HH:MM:SS
@@ -39,6 +40,7 @@ export default function PageHeader({
   onPageChange,
 }: PageHeaderProps): ReactElement {
   const { t } = useTranslation()
+  const { sidebarCollapsed, transitionDuration } = useStateContext()
   const { tradingCardQueryValue, setTradingCardQueryValue } = useSearchContext()
   const { isOpen: isConfirmOpen, onOpen: onConfirmOpen, onOpenChange: onConfirmOpenChange } = useDisclosure()
   const { isOpen: isBulkOpen, onOpen: onBulkOpen, onOpenChange: onBulkOpenChange } = useDisclosure()
@@ -61,10 +63,16 @@ export default function PageHeader({
 
   return (
     <>
-      <div className={cn('w-[calc(100vw-227px)] z-50 pl-6 pt-2')}>
-        <div className='flex justify-between items-center pb-3'>
-          <div className='flex items-center gap-1 select-none'>
-            <div className='flex flex-col justify-center'>
+      <div
+        className={cn('z-50 pl-6 pt-2', sidebarCollapsed ? 'w-[calc(100vw-85px)]' : 'w-[calc(100vw-280px)]')}
+        style={{
+          transitionDuration,
+          transitionProperty: 'width',
+        }}
+      >
+        <div className='flex justify-between items-center pb-3 w-full'>
+          <div className='flex items-center gap-1 select-none w-full'>
+            <div className='flex flex-col justify-center w-full'>
               <p className='text-3xl font-black'>{t('tradingCards.title')}</p>
               <p className='text-xs text-altwhite my-2'>{t('tradingCards.subtitle')}</p>
 

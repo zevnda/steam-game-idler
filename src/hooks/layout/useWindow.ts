@@ -15,6 +15,7 @@ import { relaunch } from '@tauri-apps/plugin-process'
 import { check } from '@tauri-apps/plugin-updater'
 
 import { useCallback, useEffect, useState } from 'react'
+import { useTheme } from 'next-themes'
 import { useTranslation } from 'react-i18next'
 
 import { useIdleContext } from '@/components/contexts/IdleContext'
@@ -27,11 +28,13 @@ import { showDangerToast, t } from '@/utils/toasts'
 
 export default function useWindow(): void {
   const { t } = useTranslation()
+  const { setTheme } = useTheme()
   const { setIdleGamesList } = useIdleContext()
   const { setIsCardFarming, setIsAchievementUnlocker, setShowSteamWarning, setUseBeta, setLoadingUserSummary } =
     useStateContext()
   const { setUpdateAvailable, setShowChangelog } = useUpdateContext()
-  const { userSummary, setUserSummary, userSettings, setUserSettings, gamesList, setFreeGamesList } = useUserContext()
+  const { userSummary, setUserSummary, userSettings, setUserSettings, gamesList, setFreeGamesList, isPro } =
+    useUserContext()
   const [zoom, setZoom] = useState(1.0)
 
   console.debug('Monitor for rerenders')
@@ -86,6 +89,46 @@ export default function useWindow(): void {
     window.addEventListener('keydown', handleZoomControls)
     return () => window.removeEventListener('keydown', handleZoomControls)
   }, [zoom, t])
+
+  useEffect(() => {
+    const applyThemeForUser = async (): Promise<void> => {
+      try {
+        if (!userSummary) return
+
+        const html = document.documentElement
+        const proThemes = ['blue', 'red', 'purple', 'black']
+        let userTheme = 'dark'
+
+        // Get user settings if available
+        if (isPro) {
+          const cachedUserSettings = await invoke<InvokeSettings>('get_user_settings', {
+            steamId: userSummary.steamId,
+          })
+          userTheme = cachedUserSettings.settings.general.theme || 'dark'
+        } else {
+          // If not pro, remove any pro themes
+          const currentTheme = localStorage.getItem('theme')
+          if (currentTheme && proThemes.includes(currentTheme)) {
+            userTheme = 'dark'
+          } else {
+            userTheme = currentTheme || 'dark'
+          }
+        }
+
+        // Always reset classes and apply the correct one
+        html.className = ''
+        html.classList.add(userTheme)
+        localStorage.setItem('theme', userTheme)
+        setTheme(userTheme)
+      } catch (error) {
+        showDangerToast(t('common.error'))
+        console.error('Error in (applyThemeForUser):', error)
+        logEvent(`[Error] in (applyThemeForUser): ${error}`)
+      }
+    }
+
+    applyThemeForUser()
+  }, [userSummary, isPro, setTheme, t])
 
   // Disable context menu and refresh actions
   useEffect(() => {

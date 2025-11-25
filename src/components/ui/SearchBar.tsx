@@ -1,6 +1,6 @@
 import type { ChangeEvent, KeyboardEvent, ReactElement } from 'react'
 
-import { cn, Input, Modal, ModalBody, ModalContent } from '@heroui/react'
+import { cn, Input, Modal, ModalBody, ModalContent, ModalHeader } from '@heroui/react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { RiSearchLine } from 'react-icons/ri'
@@ -167,13 +167,14 @@ export default function SearchBar({ isModalOpen = false, onModalClose }: SearchB
       onClose={onModalClose}
       placement='top'
       size='lg'
+      className='max-h-[75%] min-w-[40%] border border-border rounded-4xl'
       classNames={{
-        base: 'bg-base/85 backdrop-blur-sm',
+        base: 'bg-gradient-bg',
         body: 'p-0 gap-0',
       }}
     >
       <ModalContent>
-        <ModalBody>
+        <ModalHeader className='flex gap-2 border-b border-border/40 p-3'>
           <Input
             isClearable
             isDisabled={searchConfig.isDisabled}
@@ -182,12 +183,11 @@ export default function SearchBar({ isModalOpen = false, onModalClose }: SearchB
             className='w-full mb-0 pb-0'
             classNames={{
               inputWrapper: cn(
-                'bg-transparent hover:bg-transparent! h-24 ',
+                'bg-transparent hover:bg-transparent! h-24',
                 'rounded-lg group-data-[focus-within=true]:bg-transparent!',
                 'group-data-[focus-visible=true]:ring-0! group-data-[focus-visible=true]:ring-offset-0!',
                 'focus-visible:ring-0! focus-visible:ring-offset-0! focus:ring-0! focus:ring-offset-0!',
-                'outline-none! focus:outline-none! focus-visible:outline-none!',
-                'border-none shadow-sm',
+                'outline-none! focus:outline-none! focus-visible:outline-none! border-none shadow-none',
               ),
               input: ['!text-content text-xl! placeholder:text-xl placeholder:text-content/60'],
               clearButton: 'text-content/60 hover:text-content',
@@ -198,7 +198,8 @@ export default function SearchBar({ isModalOpen = false, onModalClose }: SearchB
             onClear={handleClear}
             autoFocus
           />
-
+        </ModalHeader>
+        <ModalBody className='relative p-0 gap-0 overflow-y-auto'>
           {searchContext.recentSearches.length > 0 && (
             <div className='p-4 border-t border-border/40'>
               <div className='flex items-center gap-2'>
@@ -215,7 +216,7 @@ export default function SearchBar({ isModalOpen = false, onModalClose }: SearchB
                         key={query}
                         className={cn(
                           'flex justify-between items-center px-4 py-1 rounded-lg cursor-pointer w-full',
-                          'hover:bg-item-hover transition-all duration-150',
+                          'hover:bg-item-hover transition-all duration-150 max-w-md',
                         )}
                         onClick={() => handleRecentSearchClick(query)}
                       >
@@ -226,7 +227,7 @@ export default function SearchBar({ isModalOpen = false, onModalClose }: SearchB
                         className='flex items-center justify-center cursor-pointer bg-item-hover hover:bg-item-hover/80 rounded-full p-1 duration-150'
                         onClick={() => searchContext.removeRecentSearch(query)}
                       >
-                        <TbX />
+                        <TbX className='text-content' />
                       </div>
                     </div>
                   ))}

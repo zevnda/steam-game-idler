@@ -2,31 +2,17 @@
 @config "../../tailwind.config.mjs";
 
 :root {
+  --gradient-bg: linear-gradient(to bottom, #171717ff 0%, #070707ff 100%);
+  --gradient-alt: linear-gradient(to bottom, #171717ff 0%, #0c0c0cff 100%);
   --dynamic-r: 44;
   --dynamic-g: 122;
   --dynamic-b: 219;
   --dynamic-text: #fff;
 }
 
-.light {
-  --sb-thumb: #c8c8c8;
-  --sb-track: #efefef;
-  --code: #e9e9e9;
-  --indicator: #4894e7;
-  --indicatoralt: #4895e789;
-  --holo-bg: linear-gradient(120deg, #e1e1e1 0%, #ffffff 50%, #e1e1e1 100%);
-  --holo-shine: linear-gradient(
-    115deg,
-    transparent 38%,
-    rgba(123, 123, 123, 0.5) 46%,
-    rgba(57, 57, 57, 0.8) 50%,
-    rgba(123, 123, 123, 0.5) 54%,
-    transparent 62%
-  );
-  --holo-border: linear-gradient(120deg, #f2f2f2 0%, #c7c7c7 50%, #f2f2f2 100%);
-}
-
 .dark {
+  --gradient-bg: linear-gradient(to bottom, #171717ff 0%, #070707ff 100%);
+  --gradient-alt: linear-gradient(to bottom, #171717ff 0%, #0c0c0cff 100%);
   --sb-thumb: #515255;
   --sb-track: #222326;
   --code: #2d2d2d;
@@ -42,6 +28,26 @@
     transparent 62%
   );
   --holo-border: linear-gradient(120deg, #1d1d208f 0%, #7778868f 50%, #1d1d208f 100%);
+}
+
+.blue {
+  --gradient-bg: linear-gradient(to bottom, #131a26 0%, #05080c 100%);
+  --gradient-alt: linear-gradient(to bottom, #131a26 0%, #0a0f15 100%);
+}
+
+.red {
+  --gradient-bg: linear-gradient(to bottom, #1b1114 0%, #060305 100%);
+  --gradient-alt: linear-gradient(to bottom, #1b1114 0%, #0d080a 100%);
+}
+
+.purple {
+  --gradient-bg: linear-gradient(to bottom, #181428 0%, #08070c 100%);
+  --gradient-alt: linear-gradient(to bottom, #181428 0%, #100e17 100%);
+}
+
+.black {
+  --gradient-bg: linear-gradient(to bottom, #000000 0%, #050505 100%);
+  --gradient-alt: linear-gradient(to bottom, #000000 0%, #0a0a0a 100%);
 }
 
 ::-webkit-scrollbar {
@@ -237,6 +243,13 @@ svg {
   font-size: 2rem;
   margin-top: 12px;
   margin-bottom: 12px;
+}
+
+.emoji:not(.emoji-only-message .emoji) {
+  font-size: 1.4em;
+  vertical-align: middle;
+  line-height: 1;
+  user-select: none;
 }
 
 .donator-role {

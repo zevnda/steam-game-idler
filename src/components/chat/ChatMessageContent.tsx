@@ -46,6 +46,15 @@ const isEmojiOnly = (text: string): boolean => {
   return emojiRegex.test(trimmed)
 }
 
+// Helper function to wrap emojis in a span
+const wrapEmojis = (text: string): string => {
+  // This regex matches most emoji codepoints
+  return text.replace(
+    /(\p{Emoji_Presentation}|\p{Emoji}\uFE0F|\p{Emoji_Modifier_Base}\p{Emoji_Modifier}?)/gu,
+    '<span class="emoji">$1</span>',
+  )
+}
+
 // Helper function to convert image URLs to markdown
 const convertImageUrlsToMarkdown = (text: string): string => {
   // Match image URLs that are not already in markdown or HTML
@@ -159,7 +168,7 @@ export default function ChatMessageContent({ message }: ChatMessageContentProps)
     const candidates = extractMentionCandidates(messageWithImages)
 
     if (candidates.length === 0) {
-      setProcessedMessage(messageWithImages)
+      setProcessedMessage(wrapEmojis(messageWithImages))
       return
     }
 

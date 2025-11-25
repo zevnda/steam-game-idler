@@ -216,7 +216,7 @@ export default function ChatMessage({
 
               <Tooltip
                 content={new Date(msg.created_at).toUTCString()}
-                className='text-xs'
+                className='text-xs bg-[#0a0a0a] text-content'
                 delay={1000}
                 closeDelay={0}
                 showArrow
@@ -230,7 +230,7 @@ export default function ChatMessage({
               </Tooltip>
             </div>
           )}
-          <div className='chat-message text-[#dbdee1] break-words text-xs w-full leading-[1.375rem]'>
+          <div className='chat-message text-[#dbdee1] wrap-break-words text-xs w-full leading-5.5'>
             {editingMessageId === msg.id ? (
               <ChatEditControls
                 isEditing={true}

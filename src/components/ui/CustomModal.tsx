@@ -31,10 +31,9 @@ export default function CustomModal({
       isOpen={isOpen}
       onOpenChange={onOpenChange}
       hideCloseButton={hideCloseButton}
-      className={cn('text-content', className)}
+      className={cn('text-content bg-gradient-alt border border-border rounded-4xl', className)}
       classNames={{
-        closeButton: 'text-altwhite hover:bg-item-hover/40 duration-200 active:bg-item-hover/50',
-        base: 'bg-base/85 backdrop-blur-sm',
+        closeButton: 'mr-1.5 mt-1.5',
         body: 'p-0',
         ...classNames,
       }}

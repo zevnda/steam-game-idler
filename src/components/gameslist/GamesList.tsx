@@ -119,7 +119,7 @@ export default function GamesList(): ReactElement {
 
   if (!gamesContext.isLoading && gamesContext.gamesList.length === 0)
     return (
-      <div className={cn('w-calc min-h-calc max-h-calc bg-base overflow-y-auto overflow-x-hidden')}>
+      <div className={cn('w-calc min-h-calc max-h-calc overflow-y-auto overflow-x-hidden')}>
         <Private setRefreshKey={gamesContext.setRefreshKey} />
       </div>
     )

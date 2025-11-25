@@ -38,7 +38,7 @@ export default function ChangelogModal(): ReactElement | null {
       isOpen={isOpen}
       onOpenChange={onOpenChange}
       size='lg'
-      className='text-content bg-transparent border-1 border-border rounded-4xl'
+      className='text-content bg-transparent border border-border rounded-4xl'
       classNames={{
         closeButton: 'mr-1.5 mt-1.5',
       }}
@@ -59,7 +59,7 @@ export default function ChangelogModal(): ReactElement | null {
             radius='full'
             className='font-semibold'
             startContent={<FaStar size={20} />}
-            onPress={onOpenChange}
+            onPress={() => handleOpenExtLink('https://github.com/zevnda/steam-game-idler')}
           >
             {t('changelog.star')}
           </Button>

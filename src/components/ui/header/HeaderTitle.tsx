@@ -27,7 +27,7 @@ export default function HeaderTitle(): ReactElement {
         >
           <p className={cn('font-medium text-content text-sm ml-3')} data-tauri-drag-region>
             Steam Game Idler
-            {isPro !== null && isPro === true && <ProBadge />}
+            {isPro !== null && isPro === true && <ProBadge className='scale-80' />}
           </p>
         </div>
       )}

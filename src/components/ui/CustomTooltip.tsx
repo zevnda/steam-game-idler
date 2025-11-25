@@ -30,7 +30,7 @@ export default function CustomTooltip({
       showArrow
       content={content}
       placement={placement}
-      className={`font-semibold bg-[#0a0a0a] ${className}`}
+      className={`font-semibold bg-[#0a0a0a] text-content ${className}`}
       delay={250}
       closeDelay={100}
       classNames={{

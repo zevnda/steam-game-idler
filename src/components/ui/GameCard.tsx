@@ -49,7 +49,7 @@ const GameCard = memo(function GameCard({
               alt={`${item.name} image`}
               priority={true}
               onError={handleImageError}
-              className='w-full h-full object-cover rounded-lg duration-150'
+              className='w-full h-full object-cover rounded-lg duration-150 group-hover:brightness-70 group-hover:scale-[1.02]'
             />
             <div
               className='pointer-events-none absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-150'
@@ -86,7 +86,7 @@ const GameCard = memo(function GameCard({
             alt={`${item.name} image`}
             priority={true}
             onError={handleImageError}
-            className='w-full h-full object-cover rounded-lg duration-150'
+            className='w-full h-full object-cover rounded-lg duration-150 group-hover:brightness-70 group-hover:scale-[1.02]'
           />
           <div
             className='pointer-events-none absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-150'

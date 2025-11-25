@@ -1,12 +1,13 @@
 import type { ReactElement, ReactNode } from 'react'
 
+import { useEffect, useState } from 'react'
 import { Inter } from 'next/font/google'
 import Head from 'next/head'
 import Image from 'next/image'
 import Script from 'next/script'
 
-import { useNavigationContext } from '@/components/contexts/NavigationContext'
 import { useStateContext } from '@/components/contexts/StateContext'
+import { useUserContext } from '@/components/contexts/UserContext'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -14,8 +15,17 @@ const inter = Inter({
 })
 
 export default function Layout({ children }: { children: ReactNode }): ReactElement {
-  const { activePage } = useNavigationContext()
   const { loadingUserSummary } = useStateContext()
+  const { userSettings, isPro } = useUserContext()
+  const [customBackground, setCustomBackground] = useState('')
+
+  useEffect(() => {
+    if (userSettings?.general?.customBackground) {
+      setCustomBackground(userSettings.general.customBackground)
+    } else {
+      setCustomBackground('')
+    }
+  }, [userSettings])
 
   return (
     <>
@@ -34,10 +44,10 @@ export default function Layout({ children }: { children: ReactNode }): ReactElem
         `}
       </Script>
 
-      {activePage !== 'settings' && !loadingUserSummary && (
+      {!loadingUserSummary && customBackground && isPro && (
         <>
           <Image
-            src='/bg.webp'
+            src={customBackground}
             className='absolute top-0 left-0 w-full h-full object-cover pointer-events-none'
             alt='background'
             width={1920}
@@ -50,11 +60,11 @@ export default function Layout({ children }: { children: ReactNode }): ReactElem
             }}
           />
 
-          <div className='absolute top-0 left-0 bg-base/80 w-full h-screen backdrop-blur-lg pointer-events-none z-1' />
+          <div className='absolute top-0 left-0 bg-base/80 w-full h-screen backdrop-blur-xs pointer-events-none z-1' />
         </>
       )}
 
-      <main className={`${inter.className} h-full min-h-screen bg-base text-content`}>{children}</main>
+      <main className={`${inter.className} h-full min-h-screen text-content bg-gradient-bg`}>{children}</main>
     </>
   )
 }

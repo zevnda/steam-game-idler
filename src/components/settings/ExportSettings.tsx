@@ -61,6 +61,7 @@ const sanitizeUserSettings = (settings: UserSettings): Partial<UserSettings> => 
 
   if (sanitizedSettings.general) {
     delete sanitizedSettings.general.apiKey
+    delete sanitizedSettings.general.customBackground
   }
 
   return sanitizedSettings
