@@ -19,7 +19,7 @@ export default function AdOverlay(): ReactElement | null {
     }
   }, [pathname])
 
-  if (pathname.includes('/supported-games/') || pathname.includes('/changelog')) {
+  if (pathname.includes('/supported-games/') || pathname.includes('/changelog/')) {
     return null
   }
 
