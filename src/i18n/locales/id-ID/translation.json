@@ -34,6 +34,7 @@
   "gamesList.private.reason.2": "Detail game Anda disetel ke pribadi",
   "gamesList.private.reason.3": "Anda tidak memiliki game di perpustakaan Anda",
   "gamesList.private.reason.4": "Anda menggunakan kunci API web Steam yang tidak valid",
+  "gamesList.private.reason.5": "Ada sesuatu yang memblokir koneksi keluar (firewall, antivirus, dll.)",
   "idlingGames.title": "Game Idle",
   "idlingGames.subtitle": "Game yang sedang Anda idle akan muncul di sini",
   "idlingGames.stopAll": "Hentikan Semua",

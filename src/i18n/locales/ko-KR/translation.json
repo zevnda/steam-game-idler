@@ -34,6 +34,7 @@
   "gamesList.private.reason.2": "게임 세부정보가 비공개로 설정되어 있습니다",
   "gamesList.private.reason.3": "라이브러리에 게임이 없습니다",
   "gamesList.private.reason.4": "잘못된 Steam 웹 API 키를 사용하고 있습니다",
+  "gamesList.private.reason.5": "아웃바운드 연결을 차단하는 것이 있습니다(방화벽, 바이러스 백신 등)",
   "idlingGames.title": "아이들링 게임",
   "idlingGames.subtitle": "현재 아이들링 중인 게임이 여기에 표시됩니다",
   "idlingGames.stopAll": "모두 중지",

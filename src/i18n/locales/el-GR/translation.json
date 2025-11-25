@@ -34,6 +34,7 @@
   "gamesList.private.reason.2": "Τα στοιχεία του παιχνιδιού σας έχουν οριστεί σε ιδιωτικό",
   "gamesList.private.reason.3": "Δεν έχετε παιχνίδια στη βιβλιοθήκη σας",
   "gamesList.private.reason.4": "Χρησιμοποιείτε ένα μη έγκυρο κλειδί API ιστού Steam",
+  "gamesList.private.reason.5": "Κάτι μπλοκάρει τις εξερχόμενες συνδέσεις (τείχος προστασίας, antivirus κ.λπ.)",
   "idlingGames.title": "Παιχνίδια Idling",
   "idlingGames.subtitle": "Παιχνίδια που είστε επί του παρόντος idling θα εμφανιστούν εδώ",
   "idlingGames.stopAll": "Διακοπή Όλων",

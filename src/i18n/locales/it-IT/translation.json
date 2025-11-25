@@ -34,6 +34,7 @@
   "gamesList.private.reason.2": "I dettagli dei tuoi giochi sono privati",
   "gamesList.private.reason.3": "Non hai giochi nella tua libreria",
   "gamesList.private.reason.4": "Stai usando una chiave Steam web API non valida",
+  "gamesList.private.reason.5": "Qualcosa sta bloccando le connessioni in uscita (firewall, antivirus, ecc.)",
   "idlingGames.title": "Giochi in Idle",
   "idlingGames.subtitle": "I giochi che stai attualmente idlando appariranno qui",
   "idlingGames.stopAll": "Ferma Tutto",

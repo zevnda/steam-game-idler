@@ -34,6 +34,7 @@
   "gamesList.private.reason.2": "您的游戏详细信息已设置为私密信息",
   "gamesList.private.reason.3": "您的游戏库中没有游戏",
   "gamesList.private.reason.4": "您正在使用无效的 Steam Web API 密钥",
+  "gamesList.private.reason.5": "某些程序阻止了出站连接（例如防火墙、杀毒软件等）。",
   "idlingGames.title": "挂机游戏",
   "idlingGames.subtitle": "您正在挂机的游戏将出现在这里",
   "idlingGames.stopAll": "停止所有",

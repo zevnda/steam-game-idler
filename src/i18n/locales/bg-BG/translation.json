@@ -34,6 +34,7 @@
   "gamesList.private.reason.2": "Детайлите за игрите ви са настроени на поверителни",
   "gamesList.private.reason.3": "Нямате игри в библиотеката си",
   "gamesList.private.reason.4": "Използвате невалиден Steam web API ключ",
+  "gamesList.private.reason.5": "Нещо блокира изходящите връзки (защитна стена, антивирусна програма и др.)",
   "idlingGames.title": "Игри в режим на бездействие",
   "idlingGames.subtitle": "Игрите, които в момента бездействат, ще се появят тук",
   "idlingGames.stopAll": "Спри всички",

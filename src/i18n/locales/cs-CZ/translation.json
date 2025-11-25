@@ -34,6 +34,7 @@
   "gamesList.private.reason.2": "Vaše údaje o hře jsou nastaveny na soukromé",
   "gamesList.private.reason.3": "Nemáte žádné hry ve své knihovně",
   "gamesList.private.reason.4": "Používáte neplatný webový Steam API klíč",
+  "gamesList.private.reason.5": "Něco blokuje odchozí připojení (firewall, antivir atd.)",
   "idlingGames.title": "Volnoběžné hry",
   "idlingGames.subtitle": "Zde se objeví hry, které právě nehrajete",
   "idlingGames.stopAll": "Zastavit vše",

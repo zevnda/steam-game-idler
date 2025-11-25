@@ -34,6 +34,7 @@
   "gamesList.private.reason.2": "Детали вашей игры установлены как приватные",
   "gamesList.private.reason.3": "В вашей библиотеке нет игр",
   "gamesList.private.reason.4": "Вы используете недействительный Steam web API ключ",
+  "gamesList.private.reason.5": "Что-то блокирует исходящие соединения (брандмауэр, антивирус и т. д.)",
   "idlingGames.title": "Игры в режиме бездействия",
   "idlingGames.subtitle": "Здесь отображаются игры, которые в данный момент находятся в режиме бездействия",
   "idlingGames.stopAll": "Остановить все",

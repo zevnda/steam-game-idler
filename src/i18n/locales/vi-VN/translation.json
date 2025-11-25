@@ -34,6 +34,7 @@
   "gamesList.private.reason.2": "Chi tiết trò chơi của bạn đã đặt ở chế độ riêng tư",
   "gamesList.private.reason.3": "Bạn không có trò chơi nào trong thư viện",
   "gamesList.private.reason.4": "Bạn đang sử dụng khóa web API Steam không hợp lệ",
+  "gamesList.private.reason.5": "Có thứ gì đó đang chặn các kết nối đi (tường lửa, phần mềm diệt vi-rút, v.v.)",
   "idlingGames.title": "Trò chơi Idle",
   "idlingGames.subtitle": "Các trò chơi bạn đang idle sẽ hiển thị ở đây",
   "idlingGames.stopAll": "Dừng tất cả",

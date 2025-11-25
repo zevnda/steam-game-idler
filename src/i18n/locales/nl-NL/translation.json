@@ -34,6 +34,7 @@
   "gamesList.private.reason.2": "Je spelgegevens zijn ingesteld op privé",
   "gamesList.private.reason.3": "Je hebt geen spellen in je bibliotheek",
   "gamesList.private.reason.4": "Je gebruikt een ongeldige Steam web API key",
+  "gamesList.private.reason.5": "Er is iets dat uitgaande verbindingen blokkeert (firewall, antivirus, enz.)",
   "idlingGames.title": "Idling Games",
   "idlingGames.subtitle": "Spellen die je momenteel aan het farmen bent zullen hier verschijnen",
   "idlingGames.stopAll": "Alles stoppen",

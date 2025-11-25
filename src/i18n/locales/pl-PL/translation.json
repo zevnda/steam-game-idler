@@ -34,6 +34,7 @@
   "gamesList.private.reason.2": "Szczegóły Twoich gier są ustawione jako prywatne",
   "gamesList.private.reason.3": "Nie masz żadnych gier w swojej bibliotece",
   "gamesList.private.reason.4": "Używasz nieprawidłowego klucza API Steam",
+  "gamesList.private.reason.5": "Coś blokuje połączenia wychodzące (zapora sieciowa, program antywirusowy itp.)",
   "idlingGames.title": "Idling Gier",
   "idlingGames.subtitle": "Tu pojawią się gry, które obecnie farmisz",
   "idlingGames.stopAll": "Zatrzymaj wszystko",

@@ -34,6 +34,7 @@
   "gamesList.private.reason.2": "Dine spil detaljer er sat til privat",
   "gamesList.private.reason.3": "Du har ingen spil i dit bibliotek",
   "gamesList.private.reason.4": "Du bruger en ugyldig Steam web API-nøgle",
+  "gamesList.private.reason.5": "Noget blokerer udgående forbindelser (firewall, antivirus osv.)",
   "idlingGames.title": "Idling Spil",
   "idlingGames.subtitle": "Spil, som du i øjeblikket er inaktiv, vises her",
   "idlingGames.stopAll": "Stop Alle",

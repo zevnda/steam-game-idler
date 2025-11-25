@@ -34,6 +34,7 @@
   "gamesList.private.reason.2": "Deine Spieldetails auf privat eingestellt sind",
   "gamesList.private.reason.3": "Du keine Spiele in deiner Bibliothek hast",
   "gamesList.private.reason.4": "Du einen ungültigen Steam Web-API-Schlüssel verwendest",
+  "gamesList.private.reason.5": "Etwas blockiert ausgehende Verbindungen (Firewall, Antivirusprogramm usw.).",
   "idlingGames.title": "Laufende Spiele",
   "idlingGames.subtitle": "Spiele, die du derzeit laufen lässt, werden hier angezeigt",
   "idlingGames.stopAll": "Alle beenden",

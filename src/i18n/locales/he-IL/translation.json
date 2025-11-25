@@ -34,6 +34,7 @@
   "gamesList.private.reason.2": "פרטי המשחק שלך מוגדרים כפרטיים,",
   "gamesList.private.reason.3": "אין לך משחקים בספרייה שלך,",
   "gamesList.private.reason.4": "אתה משתמש במפתח API לא חוקי של Steam,",
+  "gamesList.private.reason.5": "משהו חוסם חיבורים יוצאים (חומת אש, אנטי-וירוס וכו')",
   "idlingGames.title": "משחקים בתהליך,",
   "idlingGames.subtitle": "משחקים שאתה כרגע בתהליך יופיעו כאן,",
   "idlingGames.stopAll": "עצור הכל,",

@@ -34,6 +34,7 @@
   "gamesList.private.reason.2": "Ваші дані про ігри встановлено як приватні",
   "gamesList.private.reason.3": "У вашій бібліотеці немає ігор",
   "gamesList.private.reason.4": "Ви використовуєте недійсний ключ Steam web API",
+  "gamesList.private.reason.5": "Щось блокує вихідні з’єднання (брандмауер, антивірус тощо)",
   "idlingGames.title": "Ігри в режимі очікування",
   "idlingGames.subtitle": "Ігри, які ви зараз очікуєте, з'являться тут",
   "idlingGames.stopAll": "Зупинити всі",

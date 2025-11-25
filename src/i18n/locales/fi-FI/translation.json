@@ -34,6 +34,7 @@
   "gamesList.private.reason.2": "Pelisi tiedot on asetettu yksityisiksi",
   "gamesList.private.reason.3": "Sinulla ei ole pelejä kirjastossa",
   "gamesList.private.reason.4": "Käytät virheellistä Steam web API -avainta",
+  "gamesList.private.reason.5": "Jokin estää lähtevät yhteydet (palomuuri, virustorjunta tms.)",
   "idlingGames.title": "Idlaaminen Pelit",
   "idlingGames.subtitle": "Pelit, joita olet tällä hetkellä idlalla ilmestyy tänne",
   "idlingGames.stopAll": "Pysäytä Kaikki",
