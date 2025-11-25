@@ -175,7 +175,7 @@ export default function AchievementSettings(): ReactElement {
             classNames={{
               track: 'bg-input',
               filler: 'bg-dynamic',
-              thumb: 'bg-dynamic',
+              thumb: 'bg-white after:bg-dynamic',
             }}
             onChangeEnd={e => handleSliderChange(e, userSummary, setUserSettings)}
             onChange={e => {

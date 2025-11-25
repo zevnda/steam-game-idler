@@ -10,8 +10,8 @@ export default function Beta({ className }: BetaProps): ReactElement {
   return (
     <span
       className={cn(
-        'text-[9px] text-black uppercase px-1 py-0.5 select-none',
-        'max-w-[30px] max-h-[14px] ml-1 bg-dynamic brightness-125 rounded-full font-semibold',
+        'inline-flex items-center align-middle text-[9px] text-dynamic uppercase px-1 select-none',
+        'max-w-[30px] h-4 ml-1 bg-dynamic/30 rounded font-semibold',
         className,
       )}
     >

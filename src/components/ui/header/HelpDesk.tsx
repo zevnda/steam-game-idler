@@ -160,7 +160,7 @@ export default function HelpDesk(): ReactElement | null {
           {/* Pulsing highlight for focus guide */}
           {showGuide && (
             <span className='absolute z-1001 -top-2 left-1/2 -translate-x-1/2 pointer-events-none'>
-              <span className='block h-12 w-12 rounded-full bg-primary/30 animate-pulse ring-4 ring-primary/40' />
+              <span className='block h-12 w-12 rounded-full bg-dynamic/20 animate-ping ring-4 ring-dynamic/50' />
             </span>
           )}
           <CustomTooltip content={t('common.helpDesk')}>

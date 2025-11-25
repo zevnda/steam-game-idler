@@ -71,7 +71,7 @@ export default function AchievementUnlocker({ activePage }: { activePage: Active
   return (
     <div
       className={cn(
-        'absolute top-0 z-4 w-full h-screen bg-base',
+        'absolute top-0 z-4 w-full h-screen bg-gradient-bg',
         'overflow-y-auto overflow-x-hidden ease-in-out',
         activePage !== 'customlists/achievement-unlocker' && 'hidden',
       )}
@@ -126,21 +126,24 @@ export default function AchievementUnlocker({ activePage }: { activePage: Active
             transitionProperty: 'width',
           }}
         >
-          <div className='flex flex-col items-center bg-sidebar rounded-xl p-8 w-full'>
+          <div className='flex justify-center items-center flex-col p-6 bg-tab-panel min-h-[40vh] w-full rounded-4xl border border-border'>
             {isWaitingForSchedule && (
-              <p className='text-sm text-yellow-400'>{t('automation.achievementUnlocker.scheduleWait')}</p>
+              <p className='font-semibold text-yellow-400'>{t('automation.achievementUnlocker.scheduleWait')}</p>
             )}
 
             {isComplete && (
-              <div className='border border-border rounded-full inline-block p-2 w-fit'>
-                <TbCheck className='text-green-400' fontSize={50} />
-              </div>
+              <>
+                <div className='border border-border rounded-full inline-block p-2 w-fit'>
+                  <TbCheck className='text-green-400' fontSize={50} />
+                </div>
+                <p className='mt-4'>{t('common.done')}</p>
+              </>
             )}
 
             {isInitialDelay && (
-              <p className='text-sm'>
+              <p className='text-lg font-semibold'>
                 <Trans i18nKey='automation.achievementUnlocker.initialDelay' values={{ timer: countdownTimer }}>
-                  Starting in <span className='font-bold text-sm text-dynamic'>{countdownTimer}</span>
+                  Starting in <span className='font-bold text-dynamic'>{countdownTimer}</span>
                 </Trans>
               </p>
             )}

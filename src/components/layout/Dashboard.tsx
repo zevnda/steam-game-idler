@@ -67,7 +67,7 @@ export default function Dashboard(): ReactElement {
 
   return (
     <>
-      <div className='flex w-full bg-base'>
+      <div className='flex w-full'>
         <SideBar />
         <Header />
         <div className='z-4'>{renderContent()}</div>

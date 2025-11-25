@@ -164,14 +164,14 @@ function UserSelectionArea({ onRefresh }: { onRefresh: () => void }) {
               components={[
                 <WebviewWindow
                   href='https://steamgameidler.com/tos'
-                  className='font-semibold hover:opacity-90 duration-150'
+                  className='text-dynamic font-semibold hover:opacity-90 duration-150'
                   key='tos'
                 >
                   Terms of Service
                 </WebviewWindow>,
                 <WebviewWindow
                   href='https://steamgameidler.com/privacy'
-                  className='font-semibold hover:opacity-90 duration-150'
+                  className='text-dynamic font-semibold hover:opacity-90 duration-150'
                   key='privacy'
                 >
                   Privacy Policy

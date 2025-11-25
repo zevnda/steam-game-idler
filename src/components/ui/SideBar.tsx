@@ -149,7 +149,7 @@ export default function SideBar(): ReactElement {
           <div
             className={cn(
               'px-1.5 py-1 rounded-lg duration-150 cursor-pointer active:scale-95 border border-transparent w-full overflow-hidden',
-              isCurrentPage ? 'bg-item-active text-content' : 'text-altwhite hover:bg-item-hover',
+              isCurrentPage ? 'bg-dynamic/10 text-dynamic' : 'text-altwhite hover:bg-item-hover',
               item.customClassName,
             )}
             onClick={() => {
@@ -197,7 +197,7 @@ export default function SideBar(): ReactElement {
     <>
       <div
         className={cn(
-          'relative flex flex-col h-screen z-40 bg-sidebar/50 select-none ease-in-out',
+          'relative flex flex-col h-screen z-40 bg-sidebar/90 border-r border-border select-none ease-in-out',
           sidebarCollapsed ? 'min-w-14 max-w-14' : 'min-w-[250px] max-w-[250px]',
         )}
         style={{

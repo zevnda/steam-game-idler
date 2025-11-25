@@ -10,6 +10,7 @@ import SettingsSwitch from '@/components/settings/SettingsSwitch'
 import ExtLink from '@/components/ui/ExtLink'
 import CurrencySwitch from '@/components/ui/i18n/CurrencySwitch'
 import LanguageSwitch from '@/components/ui/i18n/LanguageSwitch'
+import ThemeSwitch from '@/components/ui/theme/ThemeSwitch'
 import WebviewWindow from '@/components/ui/WebviewWindow'
 import { handleClear, handleKeySave, handleSliderChange, useGeneralSettings } from '@/hooks/settings/useGeneralSettings'
 
@@ -53,6 +54,8 @@ export default function GeneralSettings(): ReactElement {
             </p>
           </div>
         </div>
+
+        <ThemeSwitch />
 
         <Divider className='bg-border/70 my-4' />
 
@@ -142,7 +145,7 @@ export default function GeneralSettings(): ReactElement {
             classNames={{
               track: 'bg-input data-[fill-start=true]:border-s-dynamic',
               filler: 'bg-dynamic',
-              thumb: 'bg-dynamic',
+              thumb: 'bg-white after:bg-dynamic',
             }}
             onChangeEnd={e => handleSliderChange(e, userSummary, setUserSettings)}
             onChange={e => {

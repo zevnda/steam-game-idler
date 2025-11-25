@@ -29,7 +29,7 @@ export default function TradingCardsList(): ReactElement {
   const [currentPage, setCurrentPage] = useState(1)
   const tradingCardContext = useTradingCardsList()
 
-  const CARDS_PER_PAGE = 50
+  const CARDS_PER_PAGE = 54
 
   useEffect(() => {
     const storedLockedCards = localStorage.getItem('lockedTradingCards')
@@ -90,7 +90,7 @@ export default function TradingCardsList(): ReactElement {
       <div
         key={item.assetid}
         className={cn(
-          'flex flex-col justify-start items-center bg-sidebar mb-2 rounded-lg border border-border p-2',
+          'flex flex-col justify-start items-center bg-sidebar mb-2 rounded-xl border border-border p-2',
           lockedCards.includes(item.id) && 'opacity-50',
           isFoil && 'holo-bg',
         )}

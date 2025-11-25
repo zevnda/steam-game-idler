@@ -59,8 +59,8 @@ export default function Logs(): ReactElement {
           </div>
         </div>
 
-        <div className='bg-base border border-border rounded-lg overflow-hidden'>
-          <div className='h-[calc(100vh-290px)] overflow-y-auto bg-tab-panel'>
+        <div className='border border-border rounded-lg overflow-hidden bg-base/20'>
+          <div className='h-[calc(100vh-290px)] overflow-y-auto'>
             {logs.length > 0 ? (
               <div className='divide-y divide-border/30'>
                 {logs.map((log, index) => (

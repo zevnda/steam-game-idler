@@ -31,7 +31,7 @@ export default function Window(): ReactElement {
     )
 
   return (
-    <div className='bg-sidebar min-h-calc'>
+    <div className='min-h-calc'>
       <Dashboard />
       <SteamWarning />
       <ChangelogModal />
