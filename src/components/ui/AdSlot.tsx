@@ -130,8 +130,8 @@ export default function AdSlot(): ReactElement {
   return (
     <div
       className={cn(
-        'transition-all ease-in-out border border-border p-2 pb-1 rounded-lg',
-        sidebarCollapsed && activePage !== 'settings' ? 'scale-[.160]' : undefined,
+        'transition-all ease-in-out border border-border p-2 pb-1 rounded-lg translate-y-8',
+        sidebarCollapsed && activePage !== 'settings' ? 'scale-[.160]' : 'scale-[.75]',
         isPro === null && 'opacity-0',
         isPro === true && 'opacity-0',
         isPro === false && 'opacity-100',
@@ -139,7 +139,7 @@ export default function AdSlot(): ReactElement {
     >
       <div className='relative flex justify-center items-center overflow-hidden rounded-lg'>
         <iframe
-          className='overflow-scroll rounded-lg -mt-[432px] -ml-[381px] z-1'
+          className='overflow-scroll rounded-lg -mt-[352px] -ml-[301px] z-1'
           src={gameUrl}
           width='600'
           height='600'
