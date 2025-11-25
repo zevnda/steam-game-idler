@@ -31,7 +31,7 @@ export default async function Page(props: PageProps<'/changelog/[slug]'>) {
         {/* Single Post */}
         <article className='flex flex-col md:flex-row items-start'>
           {/* Date and Tags */}
-          <div className='flex flex-row-reverse md:flex-col items-center justify-between md:items-start gap-3 mb-4 w-full md:w-1/4 shrink-0'>
+          <div className='flex flex-row-reverse md:flex-col items-center justify-between md:items-start gap-3 mb-4 w-full md:w-[180px] shrink-0'>
             <time className='text-xs text-[#979797]'>
               {new Date(data.date ?? getName(page.path)).toLocaleDateString('en-US', {
                 year: 'numeric',
@@ -41,7 +41,7 @@ export default async function Page(props: PageProps<'/changelog/[slug]'>) {
             </time>
 
             {data.tags && (
-              <div className='flex gap-2'>
+              <div className='flex gap-2 flex-wrap'>
                 {data.tags.map(tag => (
                   <span
                     key={tag}
