@@ -67,10 +67,10 @@ export default function PageHeader({
                 selectedKey={sortStyle}
                 radius='full'
                 classNames={{
-                  tabList: 'gap-0 w-full bg-tab-panel',
-                  tab: cn('data-[hover-unselected=true]:!bg-item-hover', 'data-[hover-unselected=true]:opacity-100'),
-                  tabContent: 'text-sm group-data-[selected=true]:text-content text-altwhite font-bold',
-                  cursor: '!bg-item-active w-full',
+                  tabList: 'gap-0 w-full bg-item-active',
+                  tab: 'data-[hover-unselected=true]:!bg-item-hover data-[hover-unselected=true]:opacity-100',
+                  tabContent: 'text-sm group-data-[selected=true]:text-dynamic text-altwhite font-bold',
+                  cursor: '!bg-dynamic/10 w-full',
                 }}
                 onSelectionChange={key => {
                   handleSorting(key as string)
@@ -83,7 +83,7 @@ export default function PageHeader({
                 <div className='flex items-center gap-2'>
                   <Divider orientation='vertical' className='mx-2 h-8 bg-border' />
                   <p className='text-sm text-altwhite font-bold'>Search</p>
-                  <div className='flex items-center gap-2 text-sm text-altwhite p-2 bg-item-active rounded-full max-wpx-64'>
+                  <div className='flex items-center gap-2 text-sm text-altwhite p-2 bg-item-active rounded-full max-w-64'>
                     <p className='text-content truncate'>{gameQueryValue}</p>
                     <div
                       className='flex items-center justify-center cursor-pointer bg-item-hover hover:bg-item-hover/80 rounded-full p-1 duration-150'

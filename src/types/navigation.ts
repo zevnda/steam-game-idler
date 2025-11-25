@@ -18,6 +18,7 @@ export type CurrentSettingsTabType =
   | 'trading-card-manager'
   | 'steam-credentials'
   | 'game-settings'
+  | 'customization'
   | 'debug'
 
 export interface NavigationContextType {

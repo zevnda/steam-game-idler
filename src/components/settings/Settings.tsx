@@ -8,6 +8,7 @@ import { TbX } from 'react-icons/tb'
 import { useNavigationContext } from '@/components/contexts/NavigationContext'
 import AchievementSettings from '@/components/settings/AchievementSettings'
 import CardSettings from '@/components/settings/CardSettings'
+import CustomizationSettings from '@/components/settings/CustomizationSettings'
 import GameSettings from '@/components/settings/GameSettings'
 import GeneralSettings from '@/components/settings/GeneralSettings'
 import Logs from '@/components/settings/Logs'
@@ -24,7 +25,7 @@ export default function Settings(): ReactElement {
     useNavigationContext()
 
   return (
-    <div key={refreshKey} className={cn('min-h-screen min-w-screen bg-base')}>
+    <div key={refreshKey} className={cn('min-h-screen min-w-screen bg-gradient-alt')}>
       <div className='absolute top-3 left-3 z-40'>
         <Button
           isIconOnly
@@ -52,7 +53,7 @@ export default function Settings(): ReactElement {
         defaultSelectedKey={currentSettingsTab}
         onSelectionChange={(key: Key) => setCurrentSettingsTab(key as CurrentSettingsTabType)}
         classNames={{
-          base: 'absolute top-0 bg-sidebar min-h-screen p-4 py-14 z-39',
+          base: 'absolute top-0 bg-sidebar/50 border-r border-border min-h-screen p-4 py-14 z-39',
           tabList: 'gap-0 w-full bg-transparent w-[218px]',
           tab: cn('data-[hover-unselected=true]:opacity-100', 'rounded-lg bg-transparent justify-start py-5'),
           tabContent:
@@ -78,6 +79,9 @@ export default function Settings(): ReactElement {
         </Tab>
         <Tab key='game-settings' title={t('common.gameSettings')}>
           <GameSettings />
+        </Tab>
+        <Tab key='customization' title={t('common.customization')}>
+          <CustomizationSettings />
         </Tab>
         <Tab key='debug' title={t('settings.debug.title')}>
           <Logs />

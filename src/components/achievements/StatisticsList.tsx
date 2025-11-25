@@ -54,10 +54,10 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
               className='w-[120px]'
               classNames={{
                 inputWrapper: cn(
-                  'bg-stat-input data-[hover=true]:!bg-stat-input-hover',
+                  'bg-input data-[hover=true]:!bg-inputhover',
                   'group-data-[focus-visible=true]:ring-transparent',
                   'group-data-[focus-visible=true]:ring-offset-transparent',
-                  'group-data-[focus-within=true]:!bg-stat-input-hover h-8',
+                  'group-data-[focus-within=true]:!bg-inputhover h-8',
                 ),
                 input: ['text-sm !text-content'],
               }}
@@ -86,10 +86,10 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
               className='w-[120px]'
               classNames={{
                 inputWrapper: cn(
-                  'bg-stat-input data-[hover=true]:!bg-stat-input-hover',
+                  'bg-input data-[hover=true]:!bg-inputhover',
                   'group-data-[focus-visible=true]:ring-transparent',
                   'group-data-[focus-visible=true]:ring-offset-transparent',
-                  'group-data-[focus-within=true]:!bg-stat-input-hover h-8',
+                  'group-data-[focus-within=true]:!bg-inputhover h-8',
                 ),
                 input: ['text-sm !text-content'],
               }}
@@ -167,7 +167,7 @@ export default function StatisticsList({
           />
 
           <List
-            height={windowInnerHeight - 228}
+            height={windowInnerHeight - 196}
             itemCount={Math.ceil(filteredStatistics.length / 2)}
             itemSize={62}
             width='100%'

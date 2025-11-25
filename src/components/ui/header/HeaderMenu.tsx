@@ -67,7 +67,7 @@ export default function HeaderMenu(): ReactElement {
           backdrop='opaque'
           onOpenChange={() => setShowMenu(!showMenu)}
           classNames={{
-            content: ['rounded-lg p-0 bg-transparent'],
+            content: ['rounded-xl p-0 bg-transparent'],
           }}
         >
           <DropdownTrigger>
@@ -81,7 +81,10 @@ export default function HeaderMenu(): ReactElement {
             </div>
           </DropdownTrigger>
 
-          <DropdownMenu aria-label='Settings actions' classNames={{ base: 'bg-base/85 backdrop-blur-sm rounded-xl' }}>
+          <DropdownMenu
+            aria-label='Settings actions'
+            classNames={{ base: 'bg-popover border border-border rounded-xl' }}
+          >
             <DropdownItem
               showDivider
               key='help'

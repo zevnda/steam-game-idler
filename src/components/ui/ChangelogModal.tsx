@@ -38,7 +38,7 @@ export default function ChangelogModal(): ReactElement | null {
       isOpen={isOpen}
       onOpenChange={onOpenChange}
       size='lg'
-      className='text-content bg-transparent border-1 border-border rounded-4xl'
+      className='text-content bg-transparent border border-border rounded-4xl'
       classNames={{
         closeButton: 'mr-1.5 mt-1.5',
       }}
