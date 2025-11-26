@@ -4,20 +4,8 @@
 :root {
   --gradient-bg: linear-gradient(to bottom, #171717ff 0%, #070707ff 100%);
   --gradient-alt: linear-gradient(to bottom, #171717ff 0%, #0c0c0cff 100%);
-  --dynamic-r: 44;
-  --dynamic-g: 122;
-  --dynamic-b: 219;
-  --dynamic-text: #fff;
-}
-
-.dark {
-  --gradient-bg: linear-gradient(to bottom, #171717ff 0%, #070707ff 100%);
-  --gradient-alt: linear-gradient(to bottom, #171717ff 0%, #0c0c0cff 100%);
   --sb-thumb: #515255;
   --sb-track: #222326;
-  --code: #2d2d2d;
-  --indicator: #1c79de;
-  --indicatoralt: #1c7ade89;
   --holo-bg: linear-gradient(120deg, #3031358f 0%, #2020228f 50%, #3031358f 100%);
   --holo-shine: linear-gradient(
     115deg,
@@ -28,6 +16,11 @@
     transparent 62%
   );
   --holo-border: linear-gradient(120deg, #1d1d208f 0%, #7778868f 50%, #1d1d208f 100%);
+}
+
+.dark {
+  --gradient-bg: linear-gradient(to bottom, #171717ff 0%, #070707ff 100%);
+  --gradient-alt: linear-gradient(to bottom, #171717ff 0%, #0c0c0cff 100%);
 }
 
 .blue {

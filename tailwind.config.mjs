@@ -70,6 +70,8 @@ const config = {
             'popover': '#101010ff',
             'achievement-main': '#1c1c1ccc',
             'achievement-footer': '#1f1f1fcc',
+            'stats-input': '#333333ff',
+            'stats-inputhover': '#272727ff',
             'primary': {
               DEFAULT: '#2c7adb',
             },
@@ -85,7 +87,7 @@ const config = {
         blue: {
           colors: {
             'base': '#070a0f',
-            'dynamic': '#a4c7dfff',
+            'dynamic': '#61b7f0ff',
             'dynamic-hover': '#47a8ef',
             'btn-text': '#070a0f',
             'btn-secondary': '#d9eaff',
@@ -106,6 +108,8 @@ const config = {
             'popover': '#0c1016',
             'achievement-main': '#18202bcc',
             'achievement-footer': '#18202be6',
+            'stats-input': '#232c38ff',
+            'stats-inputhover': '#1d252fff',
             'primary': {
               DEFAULT: '#2c7adb',
             },
@@ -142,6 +146,8 @@ const config = {
             'popover': '#10090b',
             'achievement-main': '#241518cc',
             'achievement-footer': '#241518e6',
+            'stats-input': '#312325ff',
+            'stats-inputhover': '#2c1f21ff',
             'primary': {
               DEFAULT: '#2c7adb',
             },
@@ -178,6 +184,8 @@ const config = {
             'popover': '#0f0d15',
             'achievement-main': '#221c2fcc',
             'achievement-footer': '#221c2fe6',
+            'stats-input': '#2a2436ff',
+            'stats-inputhover': '#241f2fff',
             'primary': {
               DEFAULT: '#2c7adb',
             },
@@ -214,6 +222,8 @@ const config = {
             'popover': '#050505',
             'achievement-main': '#1a1a1acc',
             'achievement-footer': '#1a1a1ae6',
+            'stats-input': '#212121ff',
+            'stats-inputhover': '#1b1b1bff',
             'primary': {
               DEFAULT: '#2c7adb',
             },

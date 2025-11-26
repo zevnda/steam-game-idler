@@ -54,10 +54,10 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
               className='w-[120px]'
               classNames={{
                 inputWrapper: cn(
-                  'bg-input data-[hover=true]:!bg-inputhover',
+                  'bg-stats-input data-[hover=true]:!bg-stats-inputhover',
                   'group-data-[focus-visible=true]:ring-transparent',
                   'group-data-[focus-visible=true]:ring-offset-transparent',
-                  'group-data-[focus-within=true]:!bg-inputhover h-8',
+                  'group-data-[focus-within=true]:!bg-stats-inputhover h-8',
                 ),
                 input: ['text-sm !text-content'],
               }}
@@ -86,10 +86,10 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
               className='w-[120px]'
               classNames={{
                 inputWrapper: cn(
-                  'bg-input data-[hover=true]:!bg-inputhover',
+                  'bg-stats-input data-[hover=true]:!bg-stats-inputhover',
                   'group-data-[focus-visible=true]:ring-transparent',
                   'group-data-[focus-visible=true]:ring-offset-transparent',
-                  'group-data-[focus-within=true]:!bg-inputhover h-8',
+                  'group-data-[focus-within=true]:!bg-stats-inputhover h-8',
                 ),
                 input: ['text-sm !text-content'],
               }}

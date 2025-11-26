@@ -3,12 +3,12 @@ import type { ReactElement } from 'react'
 
 import { invoke } from '@tauri-apps/api/core'
 
-import { cn, Divider, Input, Radio, RadioGroup, Slider } from '@heroui/react'
+import { Button, cn, Divider, Input, Radio, RadioGroup, Slider } from '@heroui/react'
 import { useEffect, useState } from 'react'
 import { useTheme } from 'next-themes'
 import Image from 'next/image'
 import { useTranslation } from 'react-i18next'
-import { TbChevronRight } from 'react-icons/tb'
+import { TbChevronRight, TbEraser } from 'react-icons/tb'
 
 import { useStateContext } from '@/components/contexts/StateContext'
 import { useUserContext } from '@/components/contexts/UserContext'
@@ -82,6 +82,21 @@ export default function CustomizationSettings(): ReactElement | null {
     reader.readAsDataURL(file)
   }
 
+  const handleDeleteBackground = async (): Promise<void> => {
+    await invoke<InvokeSettings>('update_user_settings', {
+      steamId: userSummary?.steamId,
+      key: 'general.customBackground',
+      value: null,
+    })
+    setUserSettings(prev => ({
+      ...prev,
+      general: {
+        ...prev?.general,
+        customBackground: null,
+      },
+    }))
+  }
+
   if (!mounted) return null
 
   return (
@@ -151,7 +166,7 @@ export default function CustomizationSettings(): ReactElement | null {
             <p className='text-xs text-altwhite'>{t('settings.customization.backgroundImage.description')}</p>
           </div>
 
-          <div onClick={() => !isPro && setProModalOpen(true)}>
+          <div className='flex flex-col gap-4 w-[250px]' onClick={() => !isPro && setProModalOpen(true)}>
             <Input
               type='file'
               accept='image/*'
@@ -167,6 +182,19 @@ export default function CustomizationSettings(): ReactElement | null {
               }}
               onChange={handleFileChange}
             />
+
+            <div className='flex justify-end'>
+              <Button
+                size='sm'
+                variant='light'
+                radius='full'
+                color='danger'
+                onPress={handleDeleteBackground}
+                startContent={<TbEraser size={20} />}
+              >
+                {t('common.clear')}
+              </Button>
+            </div>
           </div>
         </div>
 
