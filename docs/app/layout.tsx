@@ -7,6 +7,7 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 
 import HelpDesk from '@docs/components/HelpDesk'
+import Script from 'next/script'
 
 const geist = Geist({
   variable: '--font-sans',
@@ -136,7 +137,7 @@ export default function Layout({ children }: LayoutProps<'/'>) {
   return (
     <html lang='en' className={`${geist.variable} ${mono.variable}`} suppressHydrationWarning>
       <head>
-        <script type='application/ld+json' dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }} />
+        <Script type='application/ld+json' dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }} />
 
         <script
           async
