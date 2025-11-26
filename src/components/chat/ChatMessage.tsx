@@ -2,7 +2,6 @@ import type { UserSummary } from '@/types'
 import type { ReactElement, RefObject } from 'react'
 
 import { cn, Tooltip } from '@heroui/react'
-import { createClient } from '@supabase/supabase-js'
 
 import ChatAvatar from '@/components/chat/ChatAvatar'
 import ChatEditControls from '@/components/chat/ChatEditControls'
@@ -11,6 +10,7 @@ import ChatMessageContent from '@/components/chat/ChatMessageContent'
 import ChatMessageReactions from '@/components/chat/ChatMessageReactions'
 import ChatRoleBadge from '@/components/chat/ChatRoleBadge'
 import ExtLink from '@/components/ui/ExtLink'
+import { supabase } from '@/utils/supabaseClient'
 import { logEvent } from '@/utils/tasks'
 
 interface ChatMessageProps {
@@ -58,11 +58,6 @@ export interface Message {
     count: number
   }>
 }
-
-const supabase = createClient(
-  'https://zirhwhmtmhindenkzsoh.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inppcmh3aG10bWhpbmRlbmt6c29oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIxNTQ4NDYsImV4cCI6MjA3NzczMDg0Nn0.x2VF88-3oA3OsrK5WGR7hdlonCovQqCAB5d4w7j8f1k',
-)
 
 export default function ChatMessage({
   msg,
