@@ -125,7 +125,7 @@ export default function ChatMessageContent({ message }: ChatMessageContentProps)
   const MarkdownImage = useCallback(
     (props: ImgHTMLAttributes<HTMLImageElement>): ReactElement => {
       return (
-        <div className='max-w-[40%] max-h-[200px]'>
+        <span className='max-w-[40%] max-h-[200px]'>
           <Image
             src={typeof props.src === 'string' ? props.src : ''}
             alt={props.alt || 'image'}
@@ -138,7 +138,7 @@ export default function ChatMessageContent({ message }: ChatMessageContentProps)
               }
             }}
           />
-        </div>
+        </span>
       )
     },
     [handleImageClick],
