@@ -9,7 +9,6 @@ import 'react-image-lightbox/style.css'
 import type { Components } from 'react-markdown'
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { createClient } from '@supabase/supabase-js'
 import Image from 'next/image'
 import Lightbox from 'react-image-lightbox'
 import ReactMarkdown from 'react-markdown'
@@ -17,11 +16,7 @@ import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
 
 import ExtLink from '@/components/ui/ExtLink'
-
-const supabase = createClient(
-  'https://zirhwhmtmhindenkzsoh.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inppcmh3aG10bWhpbmRlbmt6c29oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIxNTQ4NDYsImV4cCI6MjA3NzczMDg0Nn0.x2VF88-3oA3OsrK5WGR7hdlonCovQqCAB5d4w7j8f1k',
-)
+import { supabase } from '@/utils/supabaseClient'
 
 interface ChatMessageContentProps {
   message: string

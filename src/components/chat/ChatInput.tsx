@@ -5,7 +5,6 @@ import { Button, cn, Textarea } from '@heroui/react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import emojiData from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
-import { createClient } from '@supabase/supabase-js'
 import Image from 'next/image'
 import { useTranslation } from 'react-i18next'
 import { FaImage, FaTrash } from 'react-icons/fa6'
@@ -19,12 +18,8 @@ import { useEmojiPicker } from '@/hooks/chat/useEmojiPicker'
 import { useEmojiShortcodes } from '@/hooks/chat/useEmojiShortcodes'
 import { useMarkdownShortcuts } from '@/hooks/chat/useMarkdownShortcuts'
 import { useMentionUsers } from '@/hooks/chat/useMentionUsers'
+import { supabase } from '@/utils/supabaseClient'
 import { logEvent } from '@/utils/tasks'
-
-const supabase = createClient(
-  'https://zirhwhmtmhindenkzsoh.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inppcmh3aG10bWhpbmRlbmt6c29oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIxNTQ4NDYsImV4cCI6MjA3NzczMDg0Nn0.x2VF88-3oA3OsrK5WGR7hdlonCovQqCAB5d4w7j8f1k',
-)
 
 interface ChatInputProps {
   inputRef: RefObject<HTMLTextAreaElement>
