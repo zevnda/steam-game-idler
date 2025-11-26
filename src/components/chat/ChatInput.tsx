@@ -325,7 +325,7 @@ export default function ChatInput({
             classNames={{
               inputWrapper: cn(
                 'border border-border',
-                'bg-input data-[hover=true]:!bg-inputhover rounded-md',
+                'bg-chat-input data-[hover=true]:!bg-inputhover rounded-md',
                 'group-data-[focus-within=true]:!bg-inputhover',
                 'group-data-[focus-visible=true]:ring-transparent',
                 'group-data-[focus-visible=true]:ring-offset-transparent',
