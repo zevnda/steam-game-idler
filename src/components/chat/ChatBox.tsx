@@ -78,15 +78,10 @@ export default function ChatBox(): ReactElement {
   }, [messagesEndRef])
 
   const handleReplyToMessage = (msg: ChatMessageType): void => {
-    // Defer all state updates and side effects out of the click event
+    setReplyToMessage(msg)
     setTimeout(() => {
-      setReplyToMessage(msg)
-      requestAnimationFrame(() => {
-        scrollToBottom()
-        setTimeout(() => {
-          inputRef.current?.focus()
-        }, 0)
-      })
+      scrollToBottom()
+      inputRef.current?.focus()
     }, 0)
   }
 
