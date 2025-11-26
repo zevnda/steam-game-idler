@@ -2,11 +2,11 @@ import type { UserSummary } from '@/types'
 import type { RealtimeChannel, SupabaseClient } from '@supabase/supabase-js'
 import type { Dispatch, ReactNode, SetStateAction } from 'react'
 
-import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
-import { createClient } from '@supabase/supabase-js'
+import { createContext, startTransition, useCallback, useContext, useEffect, useRef, useState } from 'react'
 
 import { useNavigationContext } from '@/components/contexts/NavigationContext'
 import { useUserContext } from '@/components/contexts/UserContext'
+import { supabase } from '@/utils/supabaseClient'
 import { logEvent, playMentionBeep } from '@/utils/tasks'
 
 export interface MessageReaction {
@@ -79,13 +79,6 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
   const [chatMaintenanceMode, setChatMaintenanceMode] = useState(false)
   const [onlineUsers, setOnlineUsers] = useState<ChatUser[]>([])
   const [typingUsers, setTypingUsers] = useState<ChatUser[]>([])
-
-  const supabaseRef = useRef(
-    createClient(
-      'https://zirhwhmtmhindenkzsoh.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inppcmh3aG10bWhpbmRlbmt6c29oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIxNTQ4NDYsImV4cCI6MjA3NzczMDg0Nn0.x2VF88-3oA3OsrK5WGR7hdlonCovQqCAB5d4w7j8f1k',
-    ),
-  )
 
   const channelRef = useRef<RealtimeChannel | null>(null)
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null)
@@ -185,9 +178,26 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
     }
   }, [userSummary?.steamId, userSummary?.personaName, broadcastStopTyping])
 
+  async function fetchReplyToMessage(replyToId: string, currentUserId?: string) {
+    try {
+      const { data, error } = await supabase.from('messages').select('*').eq('id', replyToId).single()
+      if (!error && data) {
+        setMessages(current =>
+          current.map(msg => (msg.reply_to_id === replyToId && !msg.reply_to ? { ...msg, reply_to: data } : msg)),
+        )
+        // Play mention beep if the reply is to the current user
+        if (data.user_id === currentUserId) {
+          playMentionBeep()
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching reply data for new message:', error)
+      logEvent(`[Error] in fetching reply data: ${error}`)
+    }
+  }
+
   // Heartbeat: Update last_seen while app is open (creates user if doesn't exist)
   useEffect(() => {
-    const supabase = supabaseRef.current
     const steamId = userSummary?.steamId
 
     if (!steamId) return
@@ -253,7 +263,6 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
   useEffect(() => {
     if (!isChatActive) return
 
-    const supabase = supabaseRef.current
     const steamId = userSummary?.steamId
 
     const fetchOnlineUsers = async (): Promise<void> => {
@@ -310,7 +319,6 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
 
   // Check for active subscription and set isPro
   useEffect(() => {
-    const supabase = supabaseRef.current
     const steamId = userSummary?.steamId
 
     if (!steamId) return
@@ -340,9 +348,6 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
     }
 
     checkSubscription()
-    // Optionally, poll every few minutes if needed:
-    // const interval = setInterval(checkSubscription, 5 * 60 * 1000)
-    // return () => clearInterval(interval)
   }, [userSummary?.steamId, setIsPro])
 
   // Cleanup typing indicator when chat becomes inactive or component unmounts
@@ -387,9 +392,6 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
       return
     }
 
-    const supabase = supabaseRef.current
-    const steamId = userSummary?.steamId
-
     // Skip in development for maintenance mode
     const isDevelopment = process.env.NODE_ENV === 'development'
     // const isDevelopment = false
@@ -422,43 +424,41 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
 
     channel
       // 1. Listen for message changes (from useMessages)
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, async payload => {
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
         try {
           const newMsg = payload.new as ChatMessageType
-          let replyToMsg: ChatMessageType | null = null
 
-          // If the message has a reply_to_id, fetch the full reply data
-          if (newMsg.reply_to_id) {
-            try {
-              const { data, error: replyError } = await supabase
-                .from('messages')
-                .select('*')
-                .eq('id', newMsg.reply_to_id)
-                .single()
-
-              if (!replyError && data) {
-                replyToMsg = data as ChatMessageType
-                newMsg.reply_to = replyToMsg
-              }
-            } catch (error) {
-              console.error('Error fetching reply data for new message:', error)
-              logEvent(`[Error] in fetching reply data: ${error}`)
-            }
+          if (typeof window !== 'undefined' && 'startTransition') {
+            startTransition(() => {
+              setMessages(current => {
+                const filtered = current.filter(
+                  m =>
+                    !(
+                      typeof m.id === 'string' &&
+                      m.id.startsWith('temp-') &&
+                      m.user_id === newMsg.user_id &&
+                      m.message === newMsg.message
+                    ),
+                )
+                return [...filtered, newMsg]
+              })
+            })
+          } else {
+            setTimeout(() => {
+              setMessages(current => {
+                const filtered = current.filter(
+                  m =>
+                    !(
+                      typeof m.id === 'string' &&
+                      m.id.startsWith('temp-') &&
+                      m.user_id === newMsg.user_id &&
+                      m.message === newMsg.message
+                    ),
+                )
+                return [...filtered, newMsg]
+              })
+            }, 0)
           }
-
-          setMessages(current => {
-            // Filter out temp messages with same user_id and message content
-            const filtered = current.filter(
-              m =>
-                !(
-                  typeof m.id === 'string' &&
-                  m.id.startsWith('temp-') &&
-                  m.user_id === newMsg.user_id &&
-                  m.message === newMsg.message
-                ),
-            )
-            return [...filtered, newMsg]
-          })
 
           // Play mention beep if:
           // 1. Always for admin user
@@ -472,9 +472,9 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
             return
           }
           // 3. The new message is a reply to one of the current user's messages
-          // Reuse replyToMsg instead of fetching again
-          if (replyToMsg && replyToMsg.user_id === steamId) {
-            playMentionBeep()
+          if (newMsg.reply_to_id) {
+            // Fetch reply in background, don't block handler
+            fetchReplyToMessage(newMsg.reply_to_id, userSummary?.steamId)
           }
         } catch (error) {
           console.error('Error handling INSERT message:', error)
@@ -568,7 +568,7 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
         typingUsers,
         broadcastTyping,
         broadcastStopTyping,
-        supabase: supabaseRef.current,
+        supabase,
       }}
     >
       {children}
