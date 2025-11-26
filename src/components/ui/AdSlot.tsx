@@ -150,7 +150,7 @@ export default function AdSlot(): ReactElement {
       </div>
 
       <div
-        className='text-xs text-altwhite mt-1 text-center cursor-pointer hover:text-white duration-150'
+        className='text-xs text-altwhite mt-1 text-center cursor-pointer hover:text-white duration-150 scale-125'
         onClick={() => setProModalOpen(true)}
       >
         <p>
