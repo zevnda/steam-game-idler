@@ -4,6 +4,7 @@
 :root {
   --gradient-bg: linear-gradient(to bottom, #171717ff 0%, #070707ff 100%);
   --gradient-alt: linear-gradient(to bottom, #171717ff 0%, #0c0c0cff 100%);
+  --gradient-btn: linear-gradient(100deg, #154d66ff 0%, #227ca5ff 40%, #2eabe5ff 70%, #34bfffff 100%);
   --sb-thumb: #515255;
   --sb-track: #222326;
   --holo-bg: linear-gradient(120deg, #3031358f 0%, #2020228f 50%, #3031358f 100%);
@@ -18,29 +19,47 @@
   --holo-border: linear-gradient(120deg, #1d1d208f 0%, #7778868f 50%, #1d1d208f 100%);
 }
 
+/* // Themes */
 .dark {
   --gradient-bg: linear-gradient(to bottom, #171717ff 0%, #070707ff 100%);
   --gradient-alt: linear-gradient(to bottom, #171717ff 0%, #0c0c0cff 100%);
+  --gradient-btn: linear-gradient(100deg, #154d66ff 0%, #227ca5ff 40%, #2eabe5ff 70%, #34bfffff 100%);
 }
 
 .blue {
   --gradient-bg: linear-gradient(to bottom, #131a26 0%, #05080c 100%);
   --gradient-alt: linear-gradient(to bottom, #131a26 0%, #0a0f15 100%);
+  --gradient-btn: linear-gradient(100deg, #154d66ff 0%, #227ca5ff 40%, #2eabe5ff 70%, #34bfffff 100%);
 }
 
 .red {
   --gradient-bg: linear-gradient(to bottom, #1b1114 0%, #060305 100%);
   --gradient-alt: linear-gradient(to bottom, #1b1114 0%, #0d080a 100%);
+  --gradient-btn: linear-gradient(100deg, #661515ff 0%, #a52222ff 40%, #e52e2eff 70%, #ff3434ff 100%);
 }
 
 .purple {
   --gradient-bg: linear-gradient(to bottom, #181428 0%, #08070c 100%);
   --gradient-alt: linear-gradient(to bottom, #181428 0%, #100e17 100%);
+  --gradient-btn: linear-gradient(100deg, #3f1566ff 0%, #7322a5ff 40%, #962ee5ff 70%, #9d34ffff 100%);
+}
+
+.pink {
+  --gradient-bg: linear-gradient(to bottom, #281423 0%, #0a0910 100%);
+  --gradient-alt: linear-gradient(to bottom, #281423 0%, #140e18 100%);
+  --gradient-btn: linear-gradient(100deg, #621566ff 0%, #a522a5ff 40%, #dc2ee5ff 70%, #f534ffff 100%);
+}
+
+.gold {
+  --gradient-bg: linear-gradient(to bottom, #3a3629 0%, #040404 100%);
+  --gradient-alt: linear-gradient(to bottom, #3a3629 0%, #0e0e0b 100%);
+  --gradient-btn: linear-gradient(100deg, #3e3928ff 0%, #605a38ff 38%, #978d5fff 68%, #c0ae6cff 100%);
 }
 
 .black {
   --gradient-bg: linear-gradient(to bottom, #000000 0%, #050505 100%);
   --gradient-alt: linear-gradient(to bottom, #000000 0%, #0a0a0a 100%);
+  --gradient-btn: linear-gradient(100deg, #232323ff 0%, #383838ff 40%, #5e5e5eff 70%, #606060ff 100%);
 }
 
 ::-webkit-scrollbar {
@@ -316,8 +335,8 @@ svg {
   --shiny-cta-bg: #000000ff;
   --shiny-cta-bg-subtle: #1a1818;
   --shiny-cta-fg: #ffffff;
-  --shiny-cta-highlight: #5eff00ff;
-  --shiny-cta-highlight-subtle: #a5f60dff;
+  --shiny-cta-highlight: #34bfffff;
+  --shiny-cta-highlight-subtle: #34bfffff;
   --animation: gradient-angle linear infinite;
   --duration: 3s;
   --shadow-size: 2px;
@@ -339,7 +358,7 @@ svg {
   border-radius: 9999px;
   color: var(--shiny-cta-fg);
   background:
-    linear-gradient(100deg, #29460aff 0%, #5f9723ff 40%, #77b832ff 70%, #a5f84cff 100%) padding-box,
+    linear-gradient(100deg, #154d66ff 0%, #227ca5ff 40%, #2eabe5ff 70%, #34bfffff 100%) padding-box,
     conic-gradient(
         from calc(var(--gradient-angle) - var(--gradient-angle-offset)),
         transparent,

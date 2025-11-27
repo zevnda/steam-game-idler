@@ -96,7 +96,8 @@ export default function useWindow(): void {
         if (!userSummary) return
 
         const html = document.documentElement
-        const proThemes = ['blue', 'red', 'purple', 'black']
+        // Themes
+        const proThemes = ['blue', 'red', 'purple', 'pink', 'gold', 'black']
         let userTheme = 'dark'
 
         // Get user settings if available
