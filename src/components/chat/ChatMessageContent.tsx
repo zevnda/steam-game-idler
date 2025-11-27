@@ -228,6 +228,21 @@ export default function ChatMessageContent({ message }: ChatMessageContentProps)
     }
   }, [message, processedMessage])
 
+  // Close lightbox on unmount
+  useEffect(() => {
+    return () => {
+      if (lightboxOpen) {
+        setLightboxOpen(false)
+      }
+      // Clear username cache on unmount to free memory
+      usernameCache.clear()
+      // Clear any pending abort controllers
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort()
+      }
+    }
+  }, [lightboxOpen])
+
   return (
     <div className={isEmoji ? 'emoji-only-message' : ''}>
       <div className='markdown-body'>

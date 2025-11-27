@@ -25,10 +25,10 @@ export function useMessagePagination({
   const { supabase } = useSupabase()
   const [loading, setLoading] = useState(true)
   const [hasMore, setHasMore] = useState(true)
-  // Initial load: 40 messages, subsequent paginations: 20 messages, max 3 paginations
-  const INITIAL_LIMIT = 40
-  const PAGINATION_LIMIT = 20
-  const MAX_PAGINATIONS = 3
+  // Initial load: 20 messages, subsequent paginations: 10 messages, max 2 paginations
+  const INITIAL_LIMIT = 20
+  const PAGINATION_LIMIT = 10
+  const MAX_PAGINATIONS = 2
   const [pagination, setPagination] = useState({ limit: INITIAL_LIMIT, offset: 0 })
   const [paginationCount, setPaginationCount] = useState(0)
 
