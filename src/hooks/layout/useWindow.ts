@@ -56,8 +56,8 @@ export default function useWindow(): void {
   }, [])
 
   // Zoom controls
-  useEffect(() => {
-    const handleZoomControls = async (e: KeyboardEvent) => {
+  const handleZoomControls = useCallback(
+    async (e: KeyboardEvent) => {
       try {
         if (e.ctrlKey || e.metaKey) {
           if (e.key === '=' || e.key === '+') {
@@ -84,11 +84,14 @@ export default function useWindow(): void {
         console.error('Error in (handleZoomControls):', error)
         logEvent(`[Error] in (handleZoomControls): ${error}`)
       }
-    }
+    },
+    [zoom, t],
+  )
 
-    window.addEventListener('keydown', handleZoomControls)
-    return () => window.removeEventListener('keydown', handleZoomControls)
-  }, [zoom, t])
+  useEffect(() => {
+    document.addEventListener('keydown', handleZoomControls, { capture: true })
+    return () => document.removeEventListener('keydown', handleZoomControls, { capture: true })
+  }, [handleZoomControls])
 
   useEffect(() => {
     const applyThemeForUser = async (): Promise<void> => {
