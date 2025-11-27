@@ -1,6 +1,6 @@
 import type { RefObject } from 'react'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { supabase } from '@/utils/supabaseClient'
 import { logEvent } from '@/utils/tasks'
@@ -115,10 +115,14 @@ export function useMentionUsers(
     }
   }
 
+  const mentionResultsMemo = useMemo(() => {
+    return mentionResults
+  }, [mentionResults])
+
   return {
     mentionQuery,
     mentionStart,
-    mentionResults,
+    mentionResults: mentionResultsMemo,
     mentionSelectedIdx,
     setMentionSelectedIdx,
     handleInputChange,

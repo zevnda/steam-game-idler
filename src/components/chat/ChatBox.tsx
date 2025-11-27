@@ -3,7 +3,7 @@ import type { UserSummary } from '@/types'
 import type { Dispatch, ReactElement, SetStateAction } from 'react'
 
 import { cn } from '@heroui/react'
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 
 import ChatBanned from '@/components/chat/ChatBanned'
 import ChatInput from '@/components/chat/ChatInput'
@@ -77,51 +77,62 @@ export default function ChatBox(): ReactElement {
     messagesEndRef.current?.scrollIntoView({ behavior: 'auto' })
   }, [messagesEndRef])
 
-  const handleReplyToMessage = (msg: ChatMessageType): void => {
-    setReplyToMessage(msg)
-    setTimeout(() => {
-      scrollToBottom()
-      inputRef.current?.focus()
-    }, 0)
-  }
+  const handleReplyToMessage = useCallback(
+    (msg: ChatMessageType): void => {
+      setReplyToMessage(msg)
+      setTimeout(() => {
+        scrollToBottom()
+        inputRef.current?.focus()
+      }, 0)
+    },
+    [scrollToBottom],
+  )
 
-  const getRoleStyles = (role: string): string => {
-    switch (role) {
-      case 'admin':
-        return 'text-[#e91e63]'
-      case 'mod':
-        return 'text-[#1eb6e9ff]'
-      case 'early_supporter':
-        return 'text-[#43b581]'
-      case 'donator':
-        return 'donator-role'
-      case 'banned':
-        return 'text-[#525252] line-through italic'
-      default:
-        return 'text-[#dbdee1]'
-    }
-  }
+  const getRoleStyles = useMemo(
+    () =>
+      (role: string): string => {
+        switch (role) {
+          case 'admin':
+            return 'text-[#e91e63]'
+          case 'mod':
+            return 'text-[#1eb6e9ff]'
+          case 'early_supporter':
+            return 'text-[#43b581]'
+          case 'donator':
+            return 'donator-role'
+          case 'banned':
+            return 'text-[#525252] line-through italic'
+          default:
+            return 'text-[#dbdee1]'
+        }
+      },
+    [],
+  )
 
-  const getColorFromUsername = (name: string): string => {
-    const colors = [
-      '#f23f43',
-      '#f26522',
-      '#f0c419',
-      '#43b581',
-      '#5865f2',
-      '#7289da',
-      '#9c84ef',
-      '#e91e63',
-      '#1abc9c',
-      '#3498db',
-      '#9b59b6',
-      '#e67e22',
-    ]
-    const hash = name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)
-    return colors[hash % colors.length]
-  }
+  const getColorFromUsername = useMemo(
+    () =>
+      (name: string): string => {
+        const colors = [
+          '#f23f43',
+          '#f26522',
+          '#f0c419',
+          '#43b581',
+          '#5865f2',
+          '#7289da',
+          '#9c84ef',
+          '#e91e63',
+          '#1abc9c',
+          '#3498db',
+          '#9b59b6',
+          '#e67e22',
+        ]
+        const hash = name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)
+        return colors[hash % colors.length]
+      },
+    [],
+  )
 
-  const groupedMessages = groupMessagesByDate(messages)
+  const groupedMessages = useMemo(() => groupMessagesByDate(messages), [groupMessagesByDate, messages])
 
   if (chatMaintenanceMode) {
     return (

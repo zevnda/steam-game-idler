@@ -1,7 +1,7 @@
 import type { ReactElement, RefObject } from 'react'
 
 import { cn, Textarea } from '@heroui/react'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useMarkdownShortcuts } from '@/hooks/chat/useMarkdownShortcuts'
@@ -11,7 +11,7 @@ interface ChatEditControlsProps {
   isEditing: boolean
   editedMessage: string
   setEditedMessage: (msg: string) => void
-  onSave: (msg: string) => void // <-- change signature
+  onSave: (msg: string) => void
   onCancel: () => void
   textareaRef: RefObject<HTMLTextAreaElement>
 }
@@ -37,18 +37,21 @@ export default function ChatEditControls({
   }, [editedMessage])
 
   // Callback ref to get the actual textarea element
-  const setTextareaNode = (node: HTMLTextAreaElement | null): void => {
-    try {
-      innerTextareaRef.current = node
-      // Also update the parent ref if provided
-      if (textareaRef && typeof textareaRef !== 'function') {
-        textareaRef.current = node as HTMLTextAreaElement
+  const setTextareaNode = useCallback(
+    (node: HTMLTextAreaElement | null): void => {
+      try {
+        innerTextareaRef.current = node
+        // Also update the parent ref if provided
+        if (textareaRef && typeof textareaRef !== 'function') {
+          textareaRef.current = node as HTMLTextAreaElement
+        }
+      } catch (error) {
+        console.error('Error in setTextareaNode:', error)
+        logEvent(`[Error] in setTextareaNode: ${error}`)
       }
-    } catch (error) {
-      console.error('Error in setTextareaNode:', error)
-      logEvent(`[Error] in setTextareaNode: ${error}`)
-    }
-  }
+    },
+    [textareaRef],
+  )
 
   // Set cursor position only when editing starts
   useEffect(() => {

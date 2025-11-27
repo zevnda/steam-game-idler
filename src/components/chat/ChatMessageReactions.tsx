@@ -2,7 +2,7 @@ import type { MessageReaction } from '@/hooks/chat/useMessageReactions'
 import type { ReactElement } from 'react'
 
 import { cn, Popover, PopoverContent, PopoverTrigger } from '@heroui/react'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
 import { FaSmile } from 'react-icons/fa'
@@ -26,18 +26,24 @@ export default function ChatMessageReactions({
 }: ChatMessageReactionsProps): ReactElement {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
 
-  const handleEmojiSelect = (emoji: { native: string }): void => {
-    onAddReaction(messageId, emoji.native)
-    setShowEmojiPicker(false)
-  }
+  const handleEmojiSelect = useCallback(
+    (emoji: { native: string }): void => {
+      onAddReaction(messageId, emoji.native)
+      setShowEmojiPicker(false)
+    },
+    [messageId, onAddReaction],
+  )
 
-  const handleReactionClick = (emoji: string, hasReacted: boolean): void => {
-    if (hasReacted) {
-      onRemoveReaction(messageId, emoji)
-    } else {
-      onAddReaction(messageId, emoji)
-    }
-  }
+  const handleReactionClick = useCallback(
+    (emoji: string, hasReacted: boolean): void => {
+      if (hasReacted) {
+        onRemoveReaction(messageId, emoji)
+      } else {
+        onAddReaction(messageId, emoji)
+      }
+    },
+    [messageId, onAddReaction, onRemoveReaction],
+  )
 
   return (
     <div className='flex items-center gap-1 mt-1 flex-wrap'>

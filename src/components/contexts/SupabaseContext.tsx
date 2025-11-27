@@ -541,6 +541,16 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
     }
   }, [userSummary?.steamId, userSummary?.personaName, isChatActive, broadcastStopTyping])
 
+  useEffect(() => {
+    if (!isChatActive) {
+      // Clear typing users when chat is inactive
+      setMessages([])
+      setUserRoles({})
+      setOnlineUsers([])
+      setTypingUsers([])
+    }
+  }, [isChatActive])
+
   return (
     <SupabaseContext.Provider
       value={{

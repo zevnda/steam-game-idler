@@ -2,6 +2,7 @@ import type { UserSummary } from '@/types'
 import type { ReactElement, RefObject } from 'react'
 
 import { cn, Tooltip } from '@heroui/react'
+import { memo } from 'react'
 
 import ChatAvatar from '@/components/chat/ChatAvatar'
 import ChatEditControls from '@/components/chat/ChatEditControls'
@@ -59,7 +60,7 @@ export interface Message {
   }>
 }
 
-export default function ChatMessage({
+function ChatMessage({
   msg,
   idx,
   msgs,
@@ -297,3 +298,5 @@ export default function ChatMessage({
     </div>
   )
 }
+
+export default memo(ChatMessage)

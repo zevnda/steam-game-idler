@@ -1,7 +1,7 @@
 import type { CSSProperties, ReactElement } from 'react'
 
 import { cn, Spinner } from '@heroui/react'
-import { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { VariableSizeList as List } from 'react-window'
 
@@ -22,58 +22,68 @@ export default function GamesList(): ReactElement {
   const listRef = useRef<List>(null)
   const [windowSize, setWindowSize] = useState({ width: window.innerWidth, height: window.innerHeight })
 
-  useEffect(() => {
-    const handleResize = (): void => {
-      setWindowSize({ width: window.innerWidth, height: window.innerHeight })
-      if (window.innerWidth >= 3200) {
-        setColumnCount(12)
-      } else if (window.innerWidth >= 2300) {
-        setColumnCount(10)
-      } else if (window.innerWidth >= 2000) {
-        setColumnCount(8)
-      } else if (window.innerWidth >= 1500) {
-        setColumnCount(7)
-      } else {
-        setColumnCount(5)
-      }
-      if (listRef.current) {
-        listRef.current.resetAfterIndex(0, true)
-      }
+  const handleResize = useCallback((): void => {
+    setWindowSize({ width: window.innerWidth, height: window.innerHeight })
+    if (window.innerWidth >= 3200) {
+      setColumnCount(12)
+    } else if (window.innerWidth >= 2300) {
+      setColumnCount(10)
+    } else if (window.innerWidth >= 2000) {
+      setColumnCount(8)
+    } else if (window.innerWidth >= 1500) {
+      setColumnCount(7)
+    } else {
+      setColumnCount(5)
     }
+    if (listRef.current) {
+      listRef.current.resetAfterIndex(0, true)
+    }
+  }, [])
+
+  useEffect(() => {
     handleResize()
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
-  }, [])
+  }, [handleResize])
 
   const recommendedHeight = 335
   const recentsHeight = 210
   const headerHeight = 40
-  const getDynamicRowHeight = (): number => (sidebarCollapsed ? 175 : 160)
+  const getDynamicRowHeight = useCallback((): number => (sidebarCollapsed ? 175 : 160), [sidebarCollapsed])
 
-  const games = gamesContext.filteredGames || []
-  const gameRowCount = Math.ceil(games.length / columnCount)
+  const games = useMemo(() => gamesContext.filteredGames || [], [gamesContext.filteredGames])
+  const gameRowCount = useMemo(() => Math.ceil(games.length / columnCount), [games.length, columnCount])
 
-  const hasRecommended = !gamesContext.isLoading && gamesContext.unplayedGames.length > 0
-  const hasRecent = !gamesContext.isLoading && gamesContext.recentGames.length > 0
+  const hasRecommended = useMemo(
+    () => !gamesContext.isLoading && gamesContext.unplayedGames.length > 0,
+    [gamesContext.isLoading, gamesContext.unplayedGames.length],
+  )
+  const hasRecent = useMemo(
+    () => !gamesContext.isLoading && gamesContext.recentGames.length > 0,
+    [gamesContext.isLoading, gamesContext.recentGames.length],
+  )
 
-  const rows: Array<'recommended' | 'recent' | 'header' | number> = []
-  if (hasRecommended) rows.push('recommended')
-  if (hasRecent) rows.push('recent')
-  rows.push('header')
-  for (let i = 0; i < gameRowCount; i++) rows.push(i)
+  const rows = useMemo((): Array<'recommended' | 'recent' | 'header' | number> => {
+    const r: Array<'recommended' | 'recent' | 'header' | number> = []
+    if (hasRecommended) r.push('recommended')
+    if (hasRecent) r.push('recent')
+    r.push('header')
+    for (let i = 0; i < gameRowCount; i++) r.push(i)
+    return r
+  }, [hasRecommended, hasRecent, gameRowCount])
 
-  const getRowHeight = (index: number): number => {
-    const rowType = rows[index]
-    if (rowType === 'recommended') return recommendedHeight
-    if (rowType === 'recent') return recentsHeight
-    if (rowType === 'header') return headerHeight
-    return getDynamicRowHeight()
-  }
+  const getRowHeight = useCallback(
+    (index: number): number => {
+      const rowType = rows[index]
+      if (rowType === 'recommended') return recommendedHeight
+      if (rowType === 'recent') return recentsHeight
+      if (rowType === 'header') return headerHeight
+      return getDynamicRowHeight()
+    },
+    [rows, getDynamicRowHeight],
+  )
 
-  const totalHeight = rows.reduce<number>((sum, _, idx) => sum + getRowHeight(idx), 0)
-  const listHeight = Math.min(totalHeight, windowSize.height - 168)
-
-  const Row = ({ index, style }: { index: number; style: CSSProperties }): ReactElement | null => {
+  const Row = React.memo(({ index, style }: { index: number; style: CSSProperties }): ReactElement | null => {
     const rowType = rows[index]
     if (rowType === 'recommended') {
       return (
@@ -115,11 +125,11 @@ export default function GamesList(): ReactElement {
       )
     }
     return null
-  }
+  })
 
   if (!gamesContext.isLoading && gamesContext.gamesList.length === 0)
     return (
-      <div className={cn('w-calc min-h-calc max-h-calc overflow-y-auto overflow-x-hidden')}>
+      <div className={cn('w-calc min-h-calc max-h-calc overflow-x-hidden')}>
         <Private setRefreshKey={gamesContext.setRefreshKey} />
       </div>
     )
@@ -127,15 +137,11 @@ export default function GamesList(): ReactElement {
   return (
     <div
       key={gamesContext.refreshKey}
-      className={cn(
-        'min-h-calc max-h-calc overflow-y-auto overflow-x-hidden mt-9 ease-in-out',
-        sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]',
-      )}
+      className={cn('mt-9 ease-in-out', sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]')}
       style={{
         transitionDuration,
         transitionProperty: 'width',
       }}
-      ref={gamesContext.scrollContainerRef}
     >
       {!showAchievements && (
         <PageHeader
@@ -154,13 +160,12 @@ export default function GamesList(): ReactElement {
               ? `collapsed-${windowSize.width}x${windowSize.height}`
               : `expanded-${windowSize.width}x${windowSize.height}`
           }
-          height={listHeight}
+          height={windowSize.height - 168}
           itemCount={rows.length}
           itemSize={getRowHeight}
           width='100%'
           style={{
             overflowX: 'hidden',
-            minHeight: windowSize.height - 168,
           }}
           ref={listRef}
         >

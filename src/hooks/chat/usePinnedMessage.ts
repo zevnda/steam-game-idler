@@ -1,7 +1,7 @@
 import type { ChatMessageType } from '@/hooks/chat/useMessages'
 import type { Dispatch, SetStateAction } from 'react'
 
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 
 export function usePinnedMessage(): {
   pinnedMessageId: string | null
@@ -13,15 +13,15 @@ export function usePinnedMessage(): {
   const [pinnedMessageId, setPinnedMessageId] = useState<string | null>(null)
   const [pinnedMessage, setPinnedMessage] = useState<ChatMessageType | null>(null)
 
-  const handlePinMessage = (message: ChatMessageType): void => {
+  const handlePinMessage = useCallback((message: ChatMessageType): void => {
     setPinnedMessageId(message.id)
     setPinnedMessage(message)
-  }
+  }, [])
 
-  const handleUnpinMessage = (): void => {
+  const handleUnpinMessage = useCallback((): void => {
     setPinnedMessageId(null)
     setPinnedMessage(null)
-  }
+  }, [])
 
   return {
     pinnedMessageId,

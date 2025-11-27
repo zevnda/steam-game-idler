@@ -2,7 +2,7 @@ import type { Game } from '@/types'
 import type { Dispatch, ReactElement, SetStateAction } from 'react'
 
 import { Button, cn } from '@heroui/react'
-import { useRef } from 'react'
+import { useCallback, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TbChevronLeft, TbChevronRight } from 'react-icons/tb'
 
@@ -20,7 +20,7 @@ export default function RecentGamesCarousel({ gamesContext }: RecentGamesCarouse
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const { t } = useTranslation()
 
-  const scroll = (direction: 'left' | 'right'): void => {
+  const scroll = useCallback((direction: 'left' | 'right'): void => {
     if (scrollContainerRef.current) {
       const scrollAmount = 192 * 2 + 20 + 20
       const container = scrollContainerRef.current
@@ -51,9 +51,9 @@ export default function RecentGamesCarousel({ gamesContext }: RecentGamesCarouse
         behavior: 'smooth',
       })
     }
-  }
+  }, [])
 
-  const topRecentGames = gamesContext.recentGames.slice(0, 15)
+  const topRecentGames = useMemo(() => gamesContext.recentGames.slice(0, 15), [gamesContext.recentGames])
 
   if (topRecentGames.length === 0) {
     return <div />

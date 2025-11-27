@@ -209,7 +209,7 @@ export default function ChatMessageContent({ message }: ChatMessageContentProps)
         })
 
         if (!signal.aborted) {
-          setProcessedMessage(processed)
+          setProcessedMessage(processedMessage)
         }
       } catch (error) {
         if (!signal.aborted) {
@@ -226,7 +226,7 @@ export default function ChatMessageContent({ message }: ChatMessageContentProps)
         abortControllerRef.current.abort()
       }
     }
-  }, [message])
+  }, [message, processedMessage])
 
   return (
     <div className={isEmoji ? 'emoji-only-message' : ''}>
