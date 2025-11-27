@@ -4,9 +4,9 @@ import type { Dispatch, RefObject, SetStateAction } from 'react'
 import { invoke } from '@tauri-apps/api/core'
 
 import { useEffect, useRef, useState } from 'react'
+import { useStateStore } from '@/stores/stateStore'
+import { useUserStore } from '@/stores/userStore'
 
-import { useStateContext } from '@/components/contexts/StateContext'
-import { useUserContext } from '@/components/contexts/UserContext'
 import { showDangerToast } from '@/utils/toasts'
 
 interface CustomListHook {
@@ -28,8 +28,8 @@ interface CustomListHook {
 }
 
 export default function useCustomList(listName: string): CustomListHook {
-  const { isAchievementUnlocker, isCardFarming } = useStateContext()
-  const { userSummary, gamesList } = useUserContext()
+  const { isAchievementUnlocker, isCardFarming } = useStateStore()
+  const { userSummary, gamesList } = useUserStore()
   const [list, setList] = useState<Game[]>([])
   const [searchTerm, setSearchTerm] = useState('')
   const [showInList, setShowInList] = useState(false)

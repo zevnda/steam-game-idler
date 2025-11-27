@@ -2,12 +2,12 @@ import type { ReactElement } from 'react'
 
 import { Button, cn } from '@heroui/react'
 import { useEffect, useState } from 'react'
+import { useUserStore } from '@/stores/userStore'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { RiCustomerService2Line } from 'react-icons/ri'
 import { TbX } from 'react-icons/tb'
 
-import { useUserContext } from '@/components/contexts/UserContext'
 import { getExportData } from '@/components/settings/ExportSettings'
 import CustomTooltip from '@/components/ui/CustomTooltip'
 
@@ -27,7 +27,7 @@ export default function HelpDesk(): ReactElement | null {
   const [isLoaded, setIsLoaded] = useState(false)
   const [showGuide, setShowGuide] = useState(false)
   const [hasUnread, setHasUnread] = useState(false)
-  const { userSummary, userSettings } = useUserContext()
+  const { userSummary, userSettings } = useUserStore()
 
   // If it's the user's first time using SGI, show an overlay
   // that directs them to the help desk

@@ -3,9 +3,9 @@ import type { InvokeUsers, InvokeUserSummary, UserSummary } from '@/types'
 import { invoke } from '@tauri-apps/api/core'
 
 import { useEffect, useState } from 'react'
+import { useUserStore } from '@/stores/userStore'
 import { useTranslation } from 'react-i18next'
 
-import { useUserContext } from '@/components/contexts/UserContext'
 import { checkSteamStatus, decrypt, logEvent } from '@/utils/tasks'
 import { showAccountMismatchToast, showDangerToast } from '@/utils/toasts'
 
@@ -21,7 +21,7 @@ interface SetupHook {
 
 export default function useSignIn(refreshKey: number): SetupHook {
   const { t } = useTranslation()
-  const { userSettings, setUserSummary } = useUserContext()
+  const { userSettings, setUserSummary } = useUserStore()
   const [isLoading, setIsLoading] = useState(true)
   const [steamUsers, setSteamUsers] = useState<UserSummary[]>([])
   const [userSummaries, setUserSummaries] = useState<UserSummary[]>([])

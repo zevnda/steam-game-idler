@@ -5,13 +5,13 @@ import { invoke } from '@tauri-apps/api/core'
 
 import { Button, cn, Divider, Input, Radio, RadioGroup, Slider } from '@heroui/react'
 import { useEffect, useState } from 'react'
+import { useStateStore } from '@/stores/stateStore'
+import { useUserStore } from '@/stores/userStore'
 import { useTheme } from 'next-themes'
 import Image from 'next/image'
 import { useTranslation } from 'react-i18next'
 import { TbChevronRight, TbEraser } from 'react-icons/tb'
 
-import { useStateContext } from '@/components/contexts/StateContext'
-import { useUserContext } from '@/components/contexts/UserContext'
 import SettingsSwitch from '@/components/settings/SettingsSwitch'
 import ProBadge from '@/components/ui/ProBadge'
 import { handleSliderChange, useGeneralSettings } from '@/hooks/settings/useGeneralSettings'
@@ -26,9 +26,8 @@ export default function CustomizationSettings(): ReactElement | null {
   const { t } = useTranslation()
   const { setTheme, resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
-  const { isPro } = useUserContext()
-  const { setProModalOpen } = useStateContext()
-  const { userSummary, userSettings, setUserSettings } = useUserContext()
+  const { setProModalOpen } = useStateStore()
+  const { userSummary, userSettings, setUserSettings, isPro } = useUserStore()
   const { sliderLabel, setSliderLabel } = useGeneralSettings()
 
   // Themes

@@ -1,8 +1,7 @@
 import type { ReactNode } from 'react'
 
 import { Tooltip } from '@heroui/react'
-
-import { useUserContext } from '@/components/contexts/UserContext'
+import { useUserStore } from '@/stores/userStore'
 
 interface CustomTooltipProps {
   children: ReactNode
@@ -19,7 +18,7 @@ export default function CustomTooltip({
   className,
   important = false,
 }: CustomTooltipProps): ReactNode {
-  const { userSettings } = useUserContext()
+  const { userSettings } = useUserStore()
 
   if (!important && userSettings.general.disableTooltips) {
     return children

@@ -1,13 +1,12 @@
 import type { ReactElement, ReactNode } from 'react'
 
 import { useEffect, useState } from 'react'
+import { useStateStore } from '@/stores/stateStore'
+import { useUserStore } from '@/stores/userStore'
 import { Inter } from 'next/font/google'
 import Head from 'next/head'
 import Image from 'next/image'
 import Script from 'next/script'
-
-import { useStateContext } from '@/components/contexts/StateContext'
-import { useUserContext } from '@/components/contexts/UserContext'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -15,8 +14,8 @@ const inter = Inter({
 })
 
 export default function Layout({ children }: { children: ReactNode }): ReactElement {
-  const { loadingUserSummary } = useStateContext()
-  const { userSettings, isPro } = useUserContext()
+  const { loadingUserSummary } = useStateStore()
+  const { userSettings, isPro } = useUserStore()
   const [customBackground, setCustomBackground] = useState('')
 
   useEffect(() => {

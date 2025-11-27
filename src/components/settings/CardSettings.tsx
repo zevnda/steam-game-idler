@@ -1,16 +1,16 @@
 import type { ReactElement } from 'react'
 
 import { Alert, cn, Divider, Select, SelectItem } from '@heroui/react'
+import { useUserStore } from '@/stores/userStore'
 import { useTranslation } from 'react-i18next'
 import { TbChevronRight } from 'react-icons/tb'
 
-import { useUserContext } from '@/components/contexts/UserContext'
 import SettingsSwitch from '@/components/settings/SettingsSwitch'
 import { handleNextTaskChange, useCardSettings } from '@/hooks/settings/useCardSettings'
 
 export default function CardSettings(): ReactElement {
   const { t } = useTranslation()
-  const { userSummary, userSettings, setUserSettings } = useUserContext()
+  const { userSummary, userSettings, setUserSettings } = useUserStore()
   const cardSettings = useCardSettings()
 
   const taskOptions = [

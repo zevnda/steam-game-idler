@@ -5,9 +5,9 @@ import type { Dispatch, SetStateAction } from 'react'
 import { invoke } from '@tauri-apps/api/core'
 
 import { useEffect, useState } from 'react'
+import { useUserStore } from '@/stores/userStore'
 import { useTranslation } from 'react-i18next'
 
-import { useUserContext } from '@/components/contexts/UserContext'
 import { logEvent } from '@/utils/tasks'
 import { showDangerToast, t } from '@/utils/toasts'
 
@@ -18,7 +18,7 @@ interface AchievementSettingsHook {
 
 export const useAchievementSettings = (): AchievementSettingsHook => {
   const { t } = useTranslation()
-  const { userSettings } = useUserContext()
+  const { userSettings } = useUserStore()
   const [sliderLabel, setSliderLabel] = useState('')
 
   // Sync local settings with global settings when they change

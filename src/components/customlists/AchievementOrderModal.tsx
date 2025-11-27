@@ -6,6 +6,7 @@ import { invoke } from '@tauri-apps/api/core'
 
 import { Button, Checkbox, cn, Input, Spinner } from '@heroui/react'
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useUserStore } from '@/stores/userStore'
 import { DndContext, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
 import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable'
@@ -15,7 +16,6 @@ import { useTranslation } from 'react-i18next'
 import { FaCheck, FaPlus } from 'react-icons/fa6'
 import { GoGrabber } from 'react-icons/go'
 
-import { useUserContext } from '@/components/contexts/UserContext'
 import CustomModal from '@/components/ui/CustomModal'
 import WebviewWindow from '@/components/ui/WebviewWindow'
 import { checkSteamStatus, logEvent } from '@/utils/tasks'
@@ -206,7 +206,7 @@ export default function AchievementOrderModal({
   onOpenChange: () => void
 }): ReactElement {
   const { t } = useTranslation()
-  const { userSummary } = useUserContext()
+  const { userSummary } = useUserStore()
   const [isLoading, setIsLoading] = useState(false)
   const [achievements, setAchievements] = useState<Achievement[]>([])
   const [originalAchievements, setOriginalAchievements] = useState<Achievement[]>([])

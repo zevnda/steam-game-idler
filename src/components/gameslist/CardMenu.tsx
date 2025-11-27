@@ -4,11 +4,11 @@ import type { ReactElement } from 'react'
 import { open } from '@tauri-apps/plugin-shell'
 
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@heroui/react'
+import { useStateStore } from '@/stores/stateStore'
 import { useTranslation } from 'react-i18next'
 import { FaSteam } from 'react-icons/fa'
 import { TbAwardFilled, TbDotsVertical, TbPlayerPlayFilled } from 'react-icons/tb'
 
-import { useStateContext } from '@/components/contexts/StateContext'
 import { handleIdle, viewAchievments } from '@/hooks/ui/useGameCard'
 
 interface CardMenuProps {
@@ -17,7 +17,7 @@ interface CardMenuProps {
 
 export default function CardMenu({ item }: CardMenuProps): ReactElement {
   const { t } = useTranslation()
-  const { setAppId, setAppName, setShowAchievements } = useStateContext()
+  const { setAppId, setAppName, setShowAchievements } = useStateStore()
 
   const viewStorePage = async (item: Game): Promise<void> => {
     try {

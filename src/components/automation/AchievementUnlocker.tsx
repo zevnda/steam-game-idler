@@ -3,11 +3,11 @@ import type { ReactElement, SyntheticEvent } from 'react'
 
 import { Button, cn } from '@heroui/react'
 import { useEffect, useRef, useState } from 'react'
+import { useStateStore } from '@/stores/stateStore'
 import Image from 'next/image'
 import { Trans, useTranslation } from 'react-i18next'
 import { TbCheck, TbPlayerStopFilled } from 'react-icons/tb'
 
-import { useStateContext } from '@/components/contexts/StateContext'
 import { useAchievementUnlocker } from '@/hooks/automation/useAchievementUnlocker'
 import { useAutomate } from '@/hooks/automation/useAutomateButtons'
 import { stopIdle } from '@/utils/idle'
@@ -15,7 +15,7 @@ import { updateTrayIcon } from '@/utils/tasks'
 
 export default function AchievementUnlocker({ activePage }: { activePage: ActivePageType }): ReactElement {
   const { t } = useTranslation()
-  const { isAchievementUnlocker, setIsAchievementUnlocker, transitionDuration, sidebarCollapsed } = useStateContext()
+  const { isAchievementUnlocker, setIsAchievementUnlocker, transitionDuration, sidebarCollapsed } = useStateStore()
 
   const isMountedRef = useRef(true)
   const abortControllerRef = useRef<AbortController>(new AbortController())

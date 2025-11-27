@@ -3,11 +3,11 @@ import type { ChangeEvent, CSSProperties, Dispatch, ReactElement, SetStateAction
 
 import { cn, NumberInput } from '@heroui/react'
 import { memo, useMemo, useState } from 'react'
+import { useSearchStore } from '@/stores/searchStore'
 import { useTranslation } from 'react-i18next'
 import { FixedSizeList as List } from 'react-window'
 
 import StatisticButtons from '@/components/achievements/StatisticButtons'
-import { useSearchContext } from '@/components/contexts/SearchContext'
 
 interface RowData {
   filteredStatistics: Statistic[]
@@ -119,7 +119,7 @@ export default function StatisticsList({
   setRefreshKey,
 }: StatisticsListProps): ReactElement {
   const { t } = useTranslation()
-  const { statisticQueryValue } = useSearchContext()
+  const { statisticQueryValue } = useSearchStore()
   const [changedStats, setChangedStats] = useState<ChangedStats>({})
 
   const updateStatistic = (id: string, e: number | ChangeEvent<HTMLInputElement>): void => {

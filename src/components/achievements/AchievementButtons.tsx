@@ -3,11 +3,11 @@ import type { Dispatch, ReactElement, SetStateAction } from 'react'
 
 import { Button, cn, Select, SelectItem, useDisclosure } from '@heroui/react'
 import { useState } from 'react'
+import { useStateStore } from '@/stores/stateStore'
+import { useUserStore } from '@/stores/userStore'
 import { Trans, useTranslation } from 'react-i18next'
 import { TbLock, TbLockOpen, TbSortDescending2 } from 'react-icons/tb'
 
-import { useStateContext } from '@/components/contexts/StateContext'
-import { useUserContext } from '@/components/contexts/UserContext'
 import CustomModal from '@/components/ui/CustomModal'
 import useAchievementButtons from '@/hooks/achievements/useAchievementButtons'
 
@@ -25,8 +25,8 @@ export default function AchievementButtons({
   setRefreshKey,
 }: AchievementButtonsProps): ReactElement {
   const { t } = useTranslation()
-  const { userSummary } = useUserContext()
-  const { appId, appName } = useStateContext()
+  const { userSummary } = useUserStore()
+  const { appId, appName } = useStateStore()
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const { handleChange, handleUnlockAll, handleLockAll } = useAchievementButtons(userSummary, setAchievements)
   const [state, setState] = useState('')

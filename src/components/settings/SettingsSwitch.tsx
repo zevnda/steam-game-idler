@@ -2,8 +2,8 @@ import type { AchievementUnlockerSettings, CardFarmingSettings, GeneralSettings 
 import type { ChangeEvent, ReactElement } from 'react'
 
 import { cn, Switch } from '@heroui/react'
+import { useUserStore } from '@/stores/userStore'
 
-import { useUserContext } from '@/components/contexts/UserContext'
 import { useAchievementSettings } from '@/hooks/settings/useAchievementSettings'
 import { useCardSettings } from '@/hooks/settings/useCardSettings'
 import { handleRunAtStartupChange, useGeneralSettings } from '@/hooks/settings/useGeneralSettings'
@@ -16,7 +16,7 @@ interface SettingsCheckboxProps {
 }
 
 export default function SettingsSwitch({ type, name }: SettingsCheckboxProps): ReactElement {
-  const { userSummary, userSettings, setUserSettings } = useUserContext()
+  const { userSummary, userSettings, setUserSettings } = useUserStore()
   const { startupState, setStartupState } = useGeneralSettings()
 
   useCardSettings()

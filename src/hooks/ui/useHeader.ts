@@ -2,7 +2,7 @@ import { invoke } from '@tauri-apps/api/core'
 import { getCurrentWindow } from '@tauri-apps/api/window'
 import { isPermissionGranted, requestPermission, sendNotification } from '@tauri-apps/plugin-notification'
 
-import { useUserContext } from '@/components/contexts/UserContext'
+import { useUserStore } from '@/stores/userStore'
 
 interface HeaderActions {
   windowMinimize: () => Promise<void>
@@ -11,7 +11,7 @@ interface HeaderActions {
 }
 
 export default function useHeader(): HeaderActions {
-  const { userSettings } = useUserContext()
+  const { userSettings } = useUserStore()
 
   const windowMinimize = async (): Promise<void> => {
     await getCurrentWindow().minimize()

@@ -3,16 +3,16 @@ import type { ReactElement } from 'react'
 import { invoke } from '@tauri-apps/api/core'
 
 import { Button } from '@heroui/react'
+import { useUserStore } from '@/stores/userStore'
 import { useTranslation } from 'react-i18next'
 import { TbFolders } from 'react-icons/tb'
 
-import { useUserContext } from '@/components/contexts/UserContext'
 import { logEvent } from '@/utils/tasks'
 import { showDangerToast } from '@/utils/toasts'
 
 export default function OpenSettings(): ReactElement {
   const { t } = useTranslation()
-  const { userSummary } = useUserContext()
+  const { userSummary } = useUserStore()
 
   // Open the log file in file explorer
   const handleOpenSettingsFile = async (): Promise<void> => {

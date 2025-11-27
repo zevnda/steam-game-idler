@@ -1,11 +1,11 @@
 import type { ReactElement } from 'react'
 
 import { Button, cn, Input, Spinner } from '@heroui/react'
+import { useUserStore } from '@/stores/userStore'
 import Image from 'next/image'
 import { Trans, useTranslation } from 'react-i18next'
 import { TbChevronRight, TbEraser, TbRefresh, TbUpload } from 'react-icons/tb'
 
-import { useUserContext } from '@/components/contexts/UserContext'
 import ExtLink from '@/components/ui/ExtLink'
 import WebviewWindow from '@/components/ui/WebviewWindow'
 import {
@@ -17,7 +17,7 @@ import {
 
 export default function SteamCredentials(): ReactElement {
   const { t } = useTranslation()
-  const { userSummary, userSettings, setUserSettings } = useUserContext()
+  const { userSummary, userSettings, setUserSettings } = useUserStore()
   const cardSettings = useCardSettings()
 
   return (

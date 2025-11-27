@@ -3,12 +3,12 @@ import type { cardSortOption } from '@/types'
 import type { ReactElement } from 'react'
 
 import { Button, cn, Divider, Tab, Tabs, useDisclosure } from '@heroui/react'
+import { useNavigationStore } from '@/stores/navigationStore'
+import { useSearchStore } from '@/stores/searchStore'
+import { useStateStore } from '@/stores/stateStore'
 import { useTranslation } from 'react-i18next'
 import { TbChecks, TbChevronLeft, TbChevronRight, TbEraser, TbPackageExport, TbSettings, TbX } from 'react-icons/tb'
 
-import { useNavigationContext } from '@/components/contexts/NavigationContext'
-import { useSearchContext } from '@/components/contexts/SearchContext'
-import { useStateContext } from '@/components/contexts/StateContext'
 import CustomModal from '@/components/ui/CustomModal'
 
 // Helper function to format seconds to HH:MM:SS
@@ -40,12 +40,12 @@ export default function PageHeader({
   onPageChange,
 }: PageHeaderProps): ReactElement {
   const { t } = useTranslation()
-  const { sidebarCollapsed, transitionDuration } = useStateContext()
-  const { tradingCardQueryValue, setTradingCardQueryValue } = useSearchContext()
+  const { sidebarCollapsed, transitionDuration } = useStateStore()
+  const { tradingCardQueryValue, setTradingCardQueryValue } = useSearchStore()
   const { isOpen: isConfirmOpen, onOpen: onConfirmOpen, onOpenChange: onConfirmOpenChange } = useDisclosure()
   const { isOpen: isBulkOpen, onOpen: onBulkOpen, onOpenChange: onBulkOpenChange } = useDisclosure()
   const { isOpen: isRemoveOpen, onOpen: onRemoveOpen, onOpenChange: onRemoveOpenChange } = useDisclosure()
-  const { setActivePage, setPreviousActivePage, setCurrentSettingsTab } = useNavigationContext()
+  const { setActivePage, setPreviousActivePage, setCurrentSettingsTab } = useNavigationStore()
 
   const handleCardSorting = (key: string): void => {
     tradingCardContext.setCardSortStyle?.(key)

@@ -2,14 +2,14 @@ import type { ChangeEvent, KeyboardEvent, ReactElement } from 'react'
 
 import { cn, Input, Modal, ModalBody, ModalContent, ModalHeader } from '@heroui/react'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { useNavigationStore } from '@/stores/navigationStore'
+import { useSearchStore } from '@/stores/searchStore'
+import { useStateStore } from '@/stores/stateStore'
+import { useUserStore } from '@/stores/userStore'
 import { useTranslation } from 'react-i18next'
 import { RiSearchLine } from 'react-icons/ri'
 import { TbX } from 'react-icons/tb'
 
-import { useNavigationContext } from '@/components/contexts/NavigationContext'
-import { useSearchContext } from '@/components/contexts/SearchContext'
-import { useStateContext } from '@/components/contexts/StateContext'
-import { useUserContext } from '@/components/contexts/UserContext'
 import useHeader from '@/hooks/ui/useHeader'
 
 interface SearchBarProps {
@@ -20,10 +20,10 @@ interface SearchBarProps {
 export default function SearchBar({ isModalOpen = false, onModalClose }: SearchBarProps): ReactElement {
   const { t } = useTranslation()
   const [inputValue, setInputValue] = useState<string>('')
-  const searchContext = useSearchContext()
-  const { showAchievements } = useStateContext()
-  const { activePage, currentTab } = useNavigationContext()
-  const { achievementsUnavailable, statisticsUnavailable } = useUserContext()
+  const searchContext = useSearchStore()
+  const { showAchievements } = useStateStore()
+  const { activePage, currentTab } = useNavigationStore()
+  const { achievementsUnavailable, statisticsUnavailable } = useUserStore()
   const hasLoadedRecentSearches = useRef(false)
 
   useHeader()

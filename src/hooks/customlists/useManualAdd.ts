@@ -4,9 +4,9 @@ import type { ChangeEvent, Dispatch, SetStateAction } from 'react'
 import { invoke } from '@tauri-apps/api/core'
 
 import { useState } from 'react'
+import { useUserStore } from '@/stores/userStore'
 import { useTranslation } from 'react-i18next'
 
-import { useUserContext } from '@/components/contexts/UserContext'
 import { logEvent } from '@/utils/tasks'
 import { showDangerToast, showWarningToast } from '@/utils/toasts'
 
@@ -23,7 +23,7 @@ interface ManualAddHook {
 
 export default function useManualAdd(listName: string, setList: Dispatch<SetStateAction<Game[]>>): ManualAddHook {
   const { t } = useTranslation()
-  const { userSummary } = useUserContext()
+  const { userSummary } = useUserStore()
   const [appNameValue, setAppNameValue] = useState('')
   const [appIdValue, setAppIdValue] = useState(0)
   const [isLoading, setIsLoading] = useState(false)

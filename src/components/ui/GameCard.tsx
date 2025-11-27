@@ -3,12 +3,12 @@ import type { ReactElement, SyntheticEvent } from 'react'
 
 import { Button } from '@heroui/react'
 import { memo } from 'react'
+import { useIdleStore } from '@/stores/idleStore'
+import { useStateStore } from '@/stores/stateStore'
 import Image from 'next/image'
 import { FaSteam } from 'react-icons/fa'
 import { TbArrowsSort, TbAwardFilled, TbPlayerPlayFilled, TbPlayerStopFilled } from 'react-icons/tb'
 
-import { useIdleContext } from '@/components/contexts/IdleContext'
-import { useStateContext } from '@/components/contexts/StateContext'
 import CardMenu from '@/components/gameslist/CardMenu'
 import ExtLink from '@/components/ui/ExtLink'
 import IdleTimer from '@/components/ui/IdleTimer'
@@ -27,8 +27,8 @@ const GameCard = memo(function GameCard({
   isAchievementUnlocker = false,
   onOpen,
 }: GameCardProps): ReactElement {
-  const { idleGamesList, setIdleGamesList } = useIdleContext()
-  const { setAppId, setAppName, setShowAchievements } = useStateContext()
+  const { idleGamesList, setIdleGamesList } = useIdleStore()
+  const { setAppId, setAppName, setShowAchievements } = useStateStore()
 
   const idlingGame = idleGamesList.find(game => game.appid === item.appid)
   const isIdling = idlingGame !== undefined

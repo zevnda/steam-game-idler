@@ -11,8 +11,8 @@ import type { Dispatch, SetStateAction } from 'react'
 import { invoke } from '@tauri-apps/api/core'
 
 import { useEffect, useState } from 'react'
+import { useUserStore } from '@/stores/userStore'
 
-import { useUserContext } from '@/components/contexts/UserContext'
 import { getAllGamesWithDrops } from '@/utils/automation'
 import { decrypt, encrypt, logEvent } from '@/utils/tasks'
 import {
@@ -44,7 +44,7 @@ interface CardSettingsHook {
 }
 
 export const useCardSettings = (): CardSettingsHook => {
-  const { userSettings } = useUserContext()
+  const { userSettings } = useUserStore()
   const [sidValue, setSidValue] = useState('') // sessionid
   const [slsValue, setSlsValue] = useState('') // steamLoginSecure
   const [smaValue, setSmaValue] = useState('') // steamMachineAuth

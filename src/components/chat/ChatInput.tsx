@@ -3,6 +3,7 @@ import type { ReactElement, RefObject } from 'react'
 
 import { Button, cn, Textarea } from '@heroui/react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useUserStore } from '@/stores/userStore'
 import emojiData from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
 import Image from 'next/image'
@@ -12,7 +13,6 @@ import { IoSend } from 'react-icons/io5'
 
 import ChatReplyPreview from '@/components/chat/ChatReplyPreview'
 import { useSupabase } from '@/components/contexts/SupabaseContext'
-import { useUserContext } from '@/components/contexts/UserContext'
 import ExtLink from '@/components/ui/ExtLink'
 import { useEmojiPicker } from '@/hooks/chat/useEmojiPicker'
 import { useEmojiShortcodes } from '@/hooks/chat/useEmojiShortcodes'
@@ -42,7 +42,7 @@ export default function ChatInput({
   const [imagePreview, setImagePreview] = useState<{ file: File; url: string } | null>(null)
   const [isUploading, setIsUploading] = useState(false)
   const { t } = useTranslation()
-  const { userSummary } = useUserContext()
+  const { userSummary } = useUserStore()
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const currentUser = useMemo(

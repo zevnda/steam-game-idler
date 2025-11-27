@@ -7,15 +7,15 @@ import 'github-markdown-css/github-markdown-light.css'
 
 import { getVersion } from '@tauri-apps/api/app'
 
+import { useUpdateStore } from '@/stores/updateStore'
 import { useTranslation } from 'react-i18next'
 import { FaStar } from 'react-icons/fa6'
 
-import { useUpdateContext } from '@/components/contexts/UpdateContext'
 import { handleOpenExtLink } from '@/utils/tasks'
 
 export default function ChangelogModal(): ReactElement | null {
   const { t } = useTranslation()
-  const { showChangelog, setShowChangelog } = useUpdateContext()
+  const { showChangelog, setShowChangelog } = useUpdateStore()
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const [appVersion, setAppVersion] = useState('')
 

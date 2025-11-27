@@ -1,9 +1,9 @@
 import type { ReactElement } from 'react'
 
 import { Spinner } from '@heroui/react'
+import { useStateStore } from '@/stores/stateStore'
+import { useUserStore } from '@/stores/userStore'
 
-import { useStateContext } from '@/components/contexts/StateContext'
-import { useUserContext } from '@/components/contexts/UserContext'
 import Dashboard from '@/components/layout/Dashboard'
 import SignIn from '@/components/layout/SignIn'
 import ChangelogModal from '@/components/ui/ChangelogModal'
@@ -11,8 +11,8 @@ import SteamWarning from '@/components/ui/SteamWarning'
 import useWindow from '@/hooks/layout/useWindow'
 
 export default function Window(): ReactElement {
-  const { userSummary } = useUserContext()
-  const { loadingUserSummary } = useStateContext()
+  const { userSummary } = useUserStore()
+  const { loadingUserSummary } = useStateStore()
   useWindow()
 
   if (loadingUserSummary)

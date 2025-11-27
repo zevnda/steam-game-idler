@@ -15,13 +15,13 @@ import { relaunch } from '@tauri-apps/plugin-process'
 import { check } from '@tauri-apps/plugin-updater'
 
 import { useCallback, useEffect, useState } from 'react'
+import { useIdleStore } from '@/stores/idleStore'
+import { useStateStore } from '@/stores/stateStore'
+import { useUpdateStore } from '@/stores/updateStore'
+import { useUserStore } from '@/stores/userStore'
 import { useTheme } from 'next-themes'
 import { useTranslation } from 'react-i18next'
 
-import { useIdleContext } from '@/components/contexts/IdleContext'
-import { useStateContext } from '@/components/contexts/StateContext'
-import { useUpdateContext } from '@/components/contexts/UpdateContext'
-import { useUserContext } from '@/components/contexts/UserContext'
 import { startIdle } from '@/utils/idle'
 import { checkSteamStatus, fetchLatest, isPortableCheck, logEvent, preserveKeysAndClearData } from '@/utils/tasks'
 import { showDangerToast, t } from '@/utils/toasts'
@@ -29,12 +29,12 @@ import { showDangerToast, t } from '@/utils/toasts'
 export default function useWindow(): void {
   const { t } = useTranslation()
   const { setTheme } = useTheme()
-  const { setIdleGamesList } = useIdleContext()
+  const { setIdleGamesList } = useIdleStore()
   const { setIsCardFarming, setIsAchievementUnlocker, setShowSteamWarning, setUseBeta, setLoadingUserSummary } =
-    useStateContext()
-  const { setUpdateAvailable, setShowChangelog } = useUpdateContext()
+    useStateStore()
+  const { setUpdateAvailable, setShowChangelog } = useUpdateStore()
   const { userSummary, setUserSummary, userSettings, setUserSettings, gamesList, setFreeGamesList, isPro } =
-    useUserContext()
+    useUserStore()
   const [zoom, setZoom] = useState(1.0)
 
   console.debug('Monitor for rerenders')

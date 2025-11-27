@@ -1,14 +1,14 @@
 import type { ReactElement } from 'react'
 
 import { cn } from '@heroui/react'
+import { useNavigationStore } from '@/stores/navigationStore'
+import { useStateStore } from '@/stores/stateStore'
 
-import { useNavigationContext } from '@/components/contexts/NavigationContext'
-import { useStateContext } from '@/components/contexts/StateContext'
 import GoProModal from '@/components/ui/GoProModal'
 
 export function GoPro(): ReactElement {
-  const { setProModalOpen } = useStateContext()
-  const { activePage } = useNavigationContext()
+  const { setProModalOpen } = useStateStore()
+  const { activePage } = useNavigationStore()
 
   return (
     <>

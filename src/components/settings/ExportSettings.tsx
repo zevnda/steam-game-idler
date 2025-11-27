@@ -5,10 +5,10 @@ import { invoke } from '@tauri-apps/api/core'
 import { arch, locale, version } from '@tauri-apps/plugin-os'
 
 import { Button } from '@heroui/react'
+import { useUserStore } from '@/stores/userStore'
 import { useTranslation } from 'react-i18next'
 import { TbArrowBarUp } from 'react-icons/tb'
 
-import { useUserContext } from '@/components/contexts/UserContext'
 import { getAppVersion } from '@/utils/tasks'
 import { showDangerToast, showSuccessToast } from '@/utils/toasts'
 
@@ -147,7 +147,7 @@ export const getExportData = async (userSettings: UserSettings) => {
 
 export default function ExportSettings(): ReactElement {
   const { t } = useTranslation()
-  const { userSettings } = useUserContext()
+  const { userSettings } = useUserStore()
 
   const exportSettings = async (): Promise<void> => {
     try {

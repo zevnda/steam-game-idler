@@ -4,11 +4,11 @@ import type { Dispatch, SetStateAction } from 'react'
 import { invoke } from '@tauri-apps/api/core'
 
 import { useDisclosure } from '@heroui/react'
+import { useNavigationStore } from '@/stores/navigationStore'
+import { useSearchStore } from '@/stores/searchStore'
+import { useUserStore } from '@/stores/userStore'
 import { useTranslation } from 'react-i18next'
 
-import { useNavigationContext } from '@/components/contexts/NavigationContext'
-import { useSearchContext } from '@/components/contexts/SearchContext'
-import { useUserContext } from '@/components/contexts/UserContext'
 import { logEvent } from '@/utils/tasks'
 import { showDangerToast } from '@/utils/toasts'
 
@@ -26,9 +26,9 @@ export default function useSideBar(
   setActivePage: Dispatch<SetStateAction<ActivePageType>>,
 ): SideBarHook {
   const { t } = useTranslation()
-  const { setGameQueryValue, setAchievementQueryValue } = useSearchContext()
-  const { setCurrentTab } = useNavigationContext()
-  const { userSummary, setUserSummary } = useUserContext()
+  const { setGameQueryValue, setAchievementQueryValue } = useSearchStore()
+  const { setCurrentTab } = useNavigationStore()
+  const { userSummary, setUserSummary } = useUserStore()
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
   const openConfirmation = (): void => {

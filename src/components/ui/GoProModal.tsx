@@ -1,17 +1,17 @@
 import type { ReactElement } from 'react'
 
 import { cn, Modal, ModalBody, ModalContent, Tab, Tabs } from '@heroui/react'
+import { useStateStore } from '@/stores/stateStore'
 import Image from 'next/image'
 import { useTranslation } from 'react-i18next'
 import { FaCheck } from 'react-icons/fa6'
 
-import { useStateContext } from '@/components/contexts/StateContext'
 import ExtLink from '@/components/ui/ExtLink'
 import ProBadge from '@/components/ui/ProBadge'
 
 export default function GoProModal(): ReactElement {
   const { t } = useTranslation()
-  const { proModalOpen, setProModalOpen } = useStateContext()
+  const { proModalOpen, setProModalOpen } = useStateStore()
 
   return (
     <Modal

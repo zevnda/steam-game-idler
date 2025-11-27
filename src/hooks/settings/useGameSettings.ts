@@ -3,8 +3,7 @@ import type { GameSettings, GameSpecificSettings, InvokeSettings } from '@/types
 import { invoke } from '@tauri-apps/api/core'
 
 import { useEffect, useRef, useState } from 'react'
-
-import { useUserContext } from '@/components/contexts/UserContext'
+import { useUserStore } from '@/stores/userStore'
 
 interface UseGameSettingsProps {
   appId?: number | string
@@ -27,7 +26,7 @@ interface UseGameSettingsReturn {
 }
 
 export function useGameSettings({ appId }: UseGameSettingsProps = {}): UseGameSettingsReturn {
-  const { userSummary, userSettings, setUserSettings } = useUserContext()
+  const { userSummary, userSettings, setUserSettings } = useUserStore()
   const [maxIdleTime, setMaxIdleTime] = useState(0)
   const [maxCardDrops, setMaxCardDrops] = useState(0)
   const [maxAchievementUnlocks, setMaxAchievementUnlocks] = useState(0)

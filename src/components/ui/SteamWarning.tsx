@@ -4,18 +4,18 @@ import { invoke } from '@tauri-apps/api/core'
 
 import { Button, useDisclosure } from '@heroui/react'
 import { useEffect } from 'react'
+import { useStateStore } from '@/stores/stateStore'
+import { useUserStore } from '@/stores/userStore'
 import { useTranslation } from 'react-i18next'
 
-import { useStateContext } from '@/components/contexts/StateContext'
-import { useUserContext } from '@/components/contexts/UserContext'
 import CustomModal from '@/components/ui/CustomModal'
 import { checkSteamStatus } from '@/utils/tasks'
 
 export default function SteamWarning(): ReactElement {
   const { t } = useTranslation()
-  const { showSteamWarning, setShowSteamWarning } = useStateContext()
+  const { showSteamWarning, setShowSteamWarning } = useStateStore()
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
-  const { userSummary } = useUserContext()
+  const { userSummary } = useUserStore()
 
   useEffect(() => {
     const shouldShowWarning = async (): Promise<void> => {
