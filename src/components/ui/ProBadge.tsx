@@ -13,12 +13,10 @@ export default function ProBadge({ className }: { className?: string }): ReactEl
       style={{
         backgroundImage: isPro
           ? 'linear-gradient(90deg, hsl(var(--heroui-dynamic) / 0.2) 0%, hsl(var(--heroui-dynamic) / 0.8) 100%)'
-          : 'linear-gradient(90deg, #29460aff 0%, #5f9723ff 40%, #77b832ff 70%, #a5f84cff 100%)',
+          : 'linear-gradient(100deg, #154d66ff 0%, #227ca5ff 40%, #2eabe5ff 70%, #34bfffff 100%)',
       }}
     >
       PRO
     </span>
   )
 }
-
-// #29460aff 0%, #5f9723ff 40%, #77b832ff 70%, #a5f84cff 100%

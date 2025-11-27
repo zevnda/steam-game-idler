@@ -21,7 +21,7 @@ export function GoPro(): ReactElement {
           <span className='block w-full text-center'>STEAM GAME IDLER</span>
         </p>
         <div className='bg-white py-1 px-1.5 rounded-full h-[90%] w-[52px] flex items-center'>
-          <p className='text-[10px] font-black text-[#3d8d00] italic text-center'>GO PRO</p>
+          <p className='text-[10px] font-black text-[#0092d0] italic text-center'>GO PRO</p>
         </div>
       </div>
       <GoProModal />

@@ -28,9 +28,9 @@ export default function GoProModal(): ReactElement {
       <ModalContent>
         <ModalBody>
           <div className='flex flex-col justify-center items-center h-full py-10'>
-            <p className='font-bold border border-border px-1.5 py-1 rounded-lg mb-4 text-sm'>
+            <p className='font-bold px-1.5 py-1 rounded-lg mb-4 text-sm'>
               Steam Game Idler
-              <ProBadge />
+              <ProBadge className='scale-90' />
             </p>
             <p className='text-3xl font-black uppercase mb-6'>{t('proMode.modal.select')}</p>
 

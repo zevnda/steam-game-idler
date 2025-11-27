@@ -31,11 +31,14 @@ export default function CustomizationSettings(): ReactElement | null {
   const { userSummary, userSettings, setUserSettings } = useUserContext()
   const { sliderLabel, setSliderLabel } = useGeneralSettings()
 
+  // Themes
   const themes: Theme[] = [
     { key: 'dark', label: 'Default', isProTheme: false },
     { key: 'blue', label: 'Blue', isProTheme: true },
     { key: 'red', label: 'Red', isProTheme: true },
     { key: 'purple', label: 'Purple', isProTheme: true },
+    { key: 'pink', label: 'Pink', isProTheme: true },
+    { key: 'gold', label: 'Gold', isProTheme: true },
     { key: 'black', label: 'Black', isProTheme: true },
   ]
 
@@ -211,36 +214,38 @@ export default function CustomizationSettings(): ReactElement | null {
             defaultValue={resolvedTheme}
             onValueChange={value => handleThemeChange(value)}
           >
-            {themes.map(theme => (
-              <div key={theme.key} onClick={() => theme.isProTheme && !isPro && setProModalOpen(true)}>
-                <Radio
-                  value={theme.key}
-                  isDisabled={theme.isProTheme && !isPro}
-                  classNames={{
-                    base: 'items-end gap-1',
-                  }}
-                  size='sm'
-                >
-                  <div className='relative cursor-pointer'>
-                    <Image
-                      src={`/themes/${theme.key}.webp`}
-                      alt={theme.label}
-                      width={147}
-                      height={45}
-                      className='rounded-lg border border-border object-cover -translate-x-6 mb-2'
-                    />
-                    <div
-                      className='pointer-events-none -translate-x-6 absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-150'
-                      style={{ boxShadow: 'inset 0 0 0 2px hsl(var(--heroui-dynamic))' }}
-                    />
-                  </div>
-                  <div className='flex items-center translate-y-0.5'>
-                    <p className='text-altwhite'>{theme.label}</p>
-                    {theme.isProTheme && !isPro && <ProBadge className='ml-2 scale-75' />}
-                  </div>
-                </Radio>
-              </div>
-            ))}
+            <div className='grid grid-cols-4 space-x-2 space-y-4'>
+              {themes.map(theme => (
+                <div key={theme.key} onClick={() => theme.isProTheme && !isPro && setProModalOpen(true)}>
+                  <Radio
+                    value={theme.key}
+                    isDisabled={theme.isProTheme && !isPro}
+                    classNames={{
+                      base: 'items-end gap-0',
+                    }}
+                    size='sm'
+                  >
+                    <div className='relative cursor-pointer'>
+                      <Image
+                        src={`/themes/${theme.key}.webp`}
+                        alt={theme.label}
+                        width={147}
+                        height={45}
+                        className='rounded-lg border border-border object-cover -translate-x-6 mb-2'
+                      />
+                      <div
+                        className='pointer-events-none -translate-x-6 absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-150'
+                        style={{ boxShadow: 'inset 0 0 0 2px hsl(var(--heroui-dynamic))' }}
+                      />
+                    </div>
+                    <div className='flex items-center translate-y-0.5'>
+                      <p className='text-altwhite'>{theme.label}</p>
+                      {theme.isProTheme && !isPro && <ProBadge className='ml-2 scale-75' />}
+                    </div>
+                  </Radio>
+                </div>
+              ))}
+            </div>
           </RadioGroup>
         </div>
 
