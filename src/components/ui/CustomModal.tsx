@@ -5,7 +5,6 @@ import { cn, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@h
 
 interface CustomModalProps {
   isOpen?: boolean
-  onOpen?: () => void
   onOpenChange?: () => void
   className?: string
   classNames?: ModalProps['classNames']
@@ -17,7 +16,6 @@ interface CustomModalProps {
 
 export default function CustomModal({
   isOpen,
-  onOpen,
   onOpenChange,
   className,
   classNames,

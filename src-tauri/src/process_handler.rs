@@ -1,7 +1,9 @@
 use crate::idling::SPAWNED_PROCESSES;
 use serde_json::{json, Value};
 use std::os::windows::process::CommandExt;
+use std::time::Duration;
 use sysinfo::{ProcessesToUpdate, System};
+use tauri::Emitter;
 use windows::Win32::{
     Foundation::{HWND, LPARAM},
     UI::WindowsAndMessaging::{EnumWindows, GetWindowTextW, GetWindowThreadProcessId},
@@ -179,4 +181,27 @@ pub fn cleanup_dead_processes() -> Result<(), String> {
         }
     }
     Ok(())
+}
+
+// Monitor and emit running processes changes
+#[tauri::command]
+pub async fn start_processes_monitor(app_handle: tauri::AppHandle) {
+    tauri::async_runtime::spawn(async move {
+        let mut last_processes: Option<String> = None;
+        loop {
+            match get_running_processes().await {
+                Ok(processes_value) => {
+                    let current_json = processes_value.to_string();
+                    if last_processes.as_ref() != Some(&current_json) {
+                        last_processes = Some(current_json.clone());
+                        let _ = app_handle.emit("running_processes_changed", processes_value);
+                    }
+                }
+                Err(e) => {
+                    eprintln!("Error getting running processes: {}", e);
+                }
+            }
+            tokio::time::sleep(Duration::from_millis(1000)).await;
+        }
+    });
 }

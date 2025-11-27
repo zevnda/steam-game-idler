@@ -6,8 +6,10 @@ use serde_json::{json, Value};
 use std::collections::HashMap;
 use std::os::windows::process::CommandExt;
 use std::sync::Mutex;
+use std::time::Duration;
 use steamlocate::SteamDir;
 use sysinfo::{ProcessesToUpdate, System};
+use tauri::Emitter;
 use tauri::Manager;
 
 lazy_static! {
@@ -221,4 +223,20 @@ pub fn set_zoom(webview: tauri::Webview, scale_factor: f64) -> Result<(), String
         .map_err(|e| e.to_string())?;
 
     Ok(())
+}
+
+// Monitor and emit Steam running status changes
+#[tauri::command]
+pub async fn start_steam_status_monitor(app_handle: tauri::AppHandle) {
+    tauri::async_runtime::spawn(async move {
+        let mut last_status: Option<bool> = None;
+        loop {
+            let current_status = is_steam_running().await;
+            if last_status != Some(current_status) {
+                last_status = Some(current_status);
+                let _ = app_handle.emit("steam_status_changed", current_status);
+            }
+            tokio::time::sleep(Duration::from_millis(1000)).await;
+        }
+    });
 }
