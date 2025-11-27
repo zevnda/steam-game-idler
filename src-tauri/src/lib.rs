@@ -137,6 +137,8 @@ pub fn run() {
             get_cache_dir_path,
             get_achievement_order,
             save_achievement_order,
+            start_steam_status_monitor,
+            start_processes_monitor,
             set_zoom,
             quit_app
         ])

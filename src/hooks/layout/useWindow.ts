@@ -9,7 +9,7 @@ import type {
 import type { Dispatch, SetStateAction } from 'react'
 
 import { invoke } from '@tauri-apps/api/core'
-import { emit } from '@tauri-apps/api/event'
+import { emit, listen } from '@tauri-apps/api/event'
 import { isPermissionGranted, requestPermission, sendNotification } from '@tauri-apps/plugin-notification'
 import { relaunch } from '@tauri-apps/plugin-process'
 import { check } from '@tauri-apps/plugin-updater'
@@ -41,6 +41,10 @@ export default function useWindow(): void {
 
   useEffect(() => {
     emit('ready')
+    // Start the Steam status monitor once globally
+    invoke('start_steam_status_monitor')
+    // Start the processes monitor once globally
+    invoke('start_processes_monitor')
   }, [])
 
   useEffect(() => {
@@ -206,33 +210,26 @@ export default function useWindow(): void {
       }
     }
     checkForUpdates()
-    const intervalId = setInterval(checkForUpdates, 5000 * 60)
+    const intervalId = setInterval(checkForUpdates, 5 * 60 * 1000)
     return () => {
       clearInterval(intervalId)
     }
   }, [setUpdateAvailable, t])
 
+  // Listen for Steam status changes
   useEffect(() => {
-    // Monitor if Steam client is running - stop features if Steam closes
-    // and show a modal to the user
-    const checkSteamStatusInt = async (): Promise<void> => {
-      try {
-        const isSteamRunning = await checkSteamStatus()
-        if (!isSteamRunning && userSummary) {
-          await invoke('kill_all_steamutil_processes')
-          setIsCardFarming(false)
-          setIsAchievementUnlocker(false)
-          setShowSteamWarning(true)
-        }
-      } catch (error) {
-        console.error('Error in (checkSteamStatusInt):', error)
-        logEvent(`Error in (checkSteamStatusInt): ${error}`)
+    const unlistenPromise = listen<boolean>('steam_status_changed', event => {
+      const isSteamRunning = event.payload
+      if (!isSteamRunning && userSummary) {
+        invoke('kill_all_steamutil_processes')
+        setIsCardFarming(false)
+        setIsAchievementUnlocker(false)
+        setShowSteamWarning(true)
       }
-    }
-    checkSteamStatusInt()
-    const intervalId = setInterval(checkSteamStatusInt, 1000)
+    })
+
     return () => {
-      clearInterval(intervalId)
+      unlistenPromise.then(unlisten => unlisten())
     }
   }, [userSummary, setIsAchievementUnlocker, setIsCardFarming, setShowSteamWarning])
 
@@ -245,44 +242,38 @@ export default function useWindow(): void {
     }
   }, [setShowChangelog])
 
+  // Listen for running processes changes
   useEffect(() => {
-    // Track games that are being idled
-    const fetchRunningProcesses = async (): Promise<void> => {
-      try {
-        const response = await invoke<InvokeRunningProcess>('get_running_processes')
-        const processes = response?.processes
+    const unlistenPromise = listen('running_processes_changed', event => {
+      const response = event.payload as InvokeRunningProcess
+      const processes = response?.processes
 
-        setIdleGamesList((prevList: Game[]) => {
-          if (prevList.length !== processes.length) {
-            return processes.map(process => {
-              const existingGame = prevList.find(game => game.appid === process.appid)
-              return {
-                ...process,
-                // Track start time for idle timer
-                startTime: existingGame?.startTime || Date.now(),
-              }
-            })
-          }
+      setIdleGamesList((prevList: Game[]) => {
+        if (prevList.length !== processes.length) {
+          return processes.map(process => {
+            const existingGame = prevList.find(game => game.appid === process.appid)
+            return {
+              ...process,
+              // Track start time for idle timer
+              startTime: existingGame?.startTime || Date.now(),
+            }
+          })
+        }
 
-          // Only update if the list of games has actually changed
-          const prevMap = new Map(prevList.map(item => [item.appid, item]))
-          const newMap = new Map(processes.map(item => [item.appid, item]))
+        // Only update if the list of games has actually changed
+        const prevMap = new Map(prevList.map(item => [item.appid, item]))
+        const newMap = new Map(processes.map(item => [item.appid, item]))
 
-          if (prevList.some(item => !newMap.has(item.appid)) || processes.some(item => !prevMap.has(item.appid))) {
-            return processes
-          }
+        if (prevList.some(item => !newMap.has(item.appid)) || processes.some(item => !prevMap.has(item.appid))) {
+          return processes
+        }
 
-          return prevList
-        })
-      } catch (error) {
-        console.error('Error fetching running processes:', error)
-      }
-    }
+        return prevList
+      })
+    })
 
-    fetchRunningProcesses()
-    const intervalId = setInterval(fetchRunningProcesses, 1000)
     return () => {
-      clearInterval(intervalId)
+      unlistenPromise.then(unlisten => unlisten())
     }
   }, [setIdleGamesList])
 
@@ -294,7 +285,7 @@ export default function useWindow(): void {
     // Check for free games
     freeGamesCheck()
 
-    const intervalId = setInterval(freeGamesCheck, 60000 * 60)
+    const intervalId = setInterval(freeGamesCheck, 60 * 60 * 1000)
     return () => clearInterval(intervalId)
   }, [userSummary?.steamId, freeGamesCheck])
 
@@ -376,7 +367,9 @@ export const startAutoIdleGames = async (): Promise<void> => {
     const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
     if (!userSummary?.steamId) return
 
-    // Check if Steam is running
+    // Check if Steam is running, if not, wait until it is
+    // Recheck every 10 seconds, timeout after 5 minutes
+    // We do this because it can take some time for Steam to launch on system startup
     const isSteamRunning = await checkSteamStatus()
     if (!isSteamRunning) {
       const checkInterval = setInterval(async () => {

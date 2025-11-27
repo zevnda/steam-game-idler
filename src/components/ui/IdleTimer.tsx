@@ -28,17 +28,12 @@ export default function IdleTimer({ startTime }: { startTime: number }): ReactEl
 
   const [, forceUpdate] = useState<Record<string, never>>({})
 
-  // Update time every frame
   useEffect(() => {
-    let frameId: number
-
-    const updateTimer = (): void => {
+    const intervalId = setInterval(() => {
       forceUpdate({})
-      frameId = requestAnimationFrame(updateTimer)
-    }
+    }, 1000)
 
-    frameId = requestAnimationFrame(updateTimer)
-    return () => cancelAnimationFrame(frameId)
+    return () => clearInterval(intervalId)
   }, [])
 
   // Calculate time directly in render
