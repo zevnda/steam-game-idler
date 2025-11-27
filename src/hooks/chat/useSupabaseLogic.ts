@@ -196,6 +196,7 @@ export function useSupabaseLogic(userSummary: UserSummary | null): {
           .from('users')
           .select('*')
           .or(`last_seen.gte.${fiveMinutesAgoISO},role.neq.user`)
+          .limit(250)
           .order('username', { ascending: true })
 
         if (error) {
@@ -482,6 +483,13 @@ export function useSupabaseLogic(userSummary: UserSummary | null): {
         clearTimeout(renewTypingTimeoutRef.current)
       }
       supabase.removeChannel(channel)
+      // Reset store on cleanup
+      setMessages([])
+      setUserRoles({})
+      setOnlineUsers([])
+      setTypingUsers([])
+      setChatMaintenanceMode(false)
+      setIsBanned(false)
     }
   }, [
     userSummary?.steamId,
@@ -491,6 +499,9 @@ export function useSupabaseLogic(userSummary: UserSummary | null): {
     setMessages,
     setChatMaintenanceMode,
     setTypingUsers,
+    setIsBanned,
+    setUserRoles,
+    setOnlineUsers,
   ])
 
   useEffect(() => {
@@ -499,8 +510,10 @@ export function useSupabaseLogic(userSummary: UserSummary | null): {
       setUserRoles({})
       setOnlineUsers([])
       setTypingUsers([])
+      setChatMaintenanceMode(false)
+      setIsBanned(false)
     }
-  }, [isChatActive, setMessages, setUserRoles, setOnlineUsers, setTypingUsers])
+  }, [isChatActive, setMessages, setUserRoles, setOnlineUsers, setTypingUsers, setChatMaintenanceMode, setIsBanned])
 
   return { broadcastTyping, broadcastStopTyping }
 }

@@ -4,11 +4,13 @@ import type { ReactElement } from 'react'
 import { useEffect } from 'react'
 import { useNavigationStore } from '@/stores/navigationStore'
 import { useStateStore } from '@/stores/stateStore'
+import { useUserStore } from '@/stores/userStore'
 
 import Achievements from '@/components/achievements/Achievements'
 import AchievementUnlocker from '@/components/automation/AchievementUnlocker'
 import CardFarming from '@/components/automation/CardFarming'
 import ChatBox from '@/components/chat/ChatBox'
+import { SupabaseProvider } from '@/components/chat/SupabaseContext'
 import CustomList from '@/components/customlists/CustomList'
 import FreeGamesList from '@/components/gameslist/FreeGamesList'
 import GamesList from '@/components/gameslist/GamesList'
@@ -22,6 +24,7 @@ import { antiAwayStatus } from '@/utils/tasks'
 export default function Dashboard(): ReactElement {
   const { showAchievements, isCardFarming, isAchievementUnlocker } = useStateStore()
   const { activePage, setActivePage } = useNavigationStore()
+  const { userSummary } = useUserStore()
 
   useEffect(() => {
     setActivePage('games' as ActivePageType)
@@ -50,7 +53,11 @@ export default function Dashboard(): ReactElement {
       case 'tradingCards':
         return <TradingCardsList />
       case 'chat':
-        return <ChatBox />
+        return (
+          <SupabaseProvider userSummary={userSummary}>
+            <ChatBox />
+          </SupabaseProvider>
+        )
       default:
         return <GamesList />
     }
