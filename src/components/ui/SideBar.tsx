@@ -123,7 +123,7 @@ export default function SideBar(): ReactElement {
     return (
       <div
         className={cn(
-          'px-1.5 py-1 mb-0 text-[12px] font-bold text-content uppercase tracking-wider select-none',
+          'px-4 py-1 mb-0 text-[12px] font-bold text-content uppercase tracking-wider select-none',
           'transition-all ease-in-out whitespace-nowrap truncate',
           header !== 'Games' ? 'mt-4' : 'mt-0',
         )}
@@ -146,10 +146,25 @@ export default function SideBar(): ReactElement {
         {renderSectionHeader(index)}
 
         <div className='flex w-full'>
+          {/* Left indicator */}
+          {!sidebarCollapsed && (
+            <div
+              className={cn(
+                'mr-2 shrink-0 rounded-r-md transition-transform duration-150',
+                'w-1.5 h-7',
+                isCurrentPage ? 'bg-dynamic scale-y-100' : 'scale-y-0',
+              )}
+              aria-hidden
+            />
+          )}
           <div
             className={cn(
-              'px-1.5 py-1 rounded-lg duration-150 cursor-pointer active:scale-95 border border-transparent w-full overflow-hidden',
-              isCurrentPage ? 'bg-dynamic/10 text-dynamic' : 'text-altwhite hover:bg-item-hover',
+              'px-1.5 py-[5px] rounded-lg duration-150 cursor-pointer active:scale-95 w-full overflow-hidden',
+              isCurrentPage
+                ? sidebarCollapsed
+                  ? 'bg-dynamic/10 text-dynamic'
+                  : 'bg-linear-to-r from-dynamic/20 via-dynamic/2 to-dynamic/0 text-dynamic'
+                : 'text-altwhite hover:bg-item-hover',
               item.customClassName,
             )}
             onClick={() => {
@@ -259,7 +274,12 @@ export default function SideBar(): ReactElement {
           </Button>
         </div>
 
-        <div className='flex flex-col gap-1.5 p-2 w-full min-w-0 overflow-y-auto'>
+        <div
+          className={cn(
+            'flex flex-col gap-1.5 p-2 w-full min-w-0 overflow-y-auto',
+            !sidebarCollapsed ? 'pl-0' : undefined,
+          )}
+        >
           {mainSidebarItems.map((item, idx) => renderSidebarItem(item, idx))}
         </div>
 
