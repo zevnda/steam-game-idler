@@ -282,13 +282,7 @@ export default function SideBar(): ReactElement {
               sidebarCollapsed ? 'flex-col gap-2' : 'flex-row gap-3',
             )}
           >
-            <div
-              className={cn(
-                isPro !== null &&
-                  isPro === true &&
-                  'p-0.5 rounded-full bg-linear-to-tr from-cyan-500 via-[#5602fc] to-purple-500',
-              )}
-            >
+            <div className={cn('relative shrink-0', sidebarCollapsed ? 'w-7 h-7' : 'w-8 h-8')}>
               <Image
                 src={userSummary?.avatar || ''}
                 alt={userSummary?.personaName || 'User Avatar'}
@@ -296,7 +290,14 @@ export default function SideBar(): ReactElement {
                 height={sidebarCollapsed ? 28 : 32}
                 className='rounded-full bg-white'
               />
+              {isPro && (
+                <div
+                  className='pointer-events-none absolute inset-0 rounded-full'
+                  style={{ boxShadow: 'inset 0 0 0 2px hsl(var(--heroui-dynamic))' }}
+                />
+              )}
             </div>
+
             {!sidebarCollapsed && (
               <div className='flex items-center justify-between w-full overflow-hidden'>
                 <div className='flex flex-col overflow-hidden'>
