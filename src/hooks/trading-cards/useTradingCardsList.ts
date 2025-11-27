@@ -10,10 +10,10 @@ import type {
 import { invoke } from '@tauri-apps/api/core'
 
 import { useEffect, useMemo, useState } from 'react'
+import { useStateStore } from '@/stores/stateStore'
+import { useUserStore } from '@/stores/userStore'
 import { useTranslation } from 'react-i18next'
 
-import { useStateContext } from '@/components/contexts/StateContext'
-import { useUserContext } from '@/components/contexts/UserContext'
 import { decrypt, logEvent } from '@/utils/tasks'
 import {
   showDangerToast,
@@ -49,7 +49,7 @@ interface UseTradingCardsList {
 
 export default function useTradingCardsList(): UseTradingCardsList {
   const { t } = useTranslation()
-  const { userSummary, userSettings } = useUserContext()
+  const { userSummary, userSettings } = useUserStore()
   const {
     loadingItemPrice,
     setLoadingItemPrice,
@@ -57,7 +57,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
     setLoadingListButton,
     loadingRemoveListings,
     setLoadingRemoveListings,
-  } = useStateContext()
+  } = useStateStore()
   const [tradingCardsList, setTradingCardsList] = useState<TradingCard[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [changedCardPrices, setChangedCardPrices] = useState<Record<string, number>>({})

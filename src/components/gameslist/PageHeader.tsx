@@ -2,11 +2,11 @@ import type { Game, SortOption } from '@/types'
 import type { Dispatch, ReactElement, SetStateAction } from 'react'
 
 import { Button, cn, Divider, Tab, Tabs } from '@heroui/react'
+import { useSearchStore } from '@/stores/searchStore'
+import { useUserStore } from '@/stores/userStore'
 import { useTranslation } from 'react-i18next'
 import { TbX } from 'react-icons/tb'
 
-import { useSearchContext } from '@/components/contexts/SearchContext'
-import { useUserContext } from '@/components/contexts/UserContext'
 import { usePageHeader } from '@/hooks/gameslist/usePageHeader'
 
 interface PageHeaderProps {
@@ -24,8 +24,8 @@ export default function PageHeader({
   setRefreshKey,
 }: PageHeaderProps): ReactElement {
   const { t } = useTranslation()
-  const { userSummary } = useUserContext()
-  const { gameQueryValue, setGameQueryValue } = useSearchContext()
+  const { userSummary } = useUserStore()
+  const { gameQueryValue, setGameQueryValue } = useSearchStore()
   const { handleSorting, handleRefetch } = usePageHeader(setSortStyle, setRefreshKey)
 
   const sortOptions: SortOption[] = [

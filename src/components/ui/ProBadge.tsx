@@ -1,11 +1,10 @@
 import type { ReactElement } from 'react'
 
 import { cn } from '@heroui/react'
-
-import { useUserContext } from '@/components/contexts/UserContext'
+import { useUserStore } from '@/stores/userStore'
 
 export default function ProBadge({ className }: { className?: string }): ReactElement {
-  const { isPro } = useUserContext()
+  const { isPro } = useUserStore()
 
   return (
     <span

@@ -4,10 +4,10 @@ import type { Dispatch, SetStateAction } from 'react'
 import { invoke } from '@tauri-apps/api/core'
 
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { useSearchStore } from '@/stores/searchStore'
+import { useUserStore } from '@/stores/userStore'
 import { useTranslation } from 'react-i18next'
 
-import { useSearchContext } from '@/components/contexts/SearchContext'
-import { useUserContext } from '@/components/contexts/UserContext'
 import { decrypt, logEvent } from '@/utils/tasks'
 import { showDangerToast } from '@/utils/toasts'
 
@@ -31,8 +31,8 @@ interface GamesListHook {
 
 export default function useGamesList(): GamesListHook {
   const { t } = useTranslation()
-  const { userSummary, userSettings, gamesList, setGamesList } = useUserContext()
-  const { isQuery, gameQueryValue, setGameQueryValue } = useSearchContext()
+  const { userSummary, userSettings, gamesList, setGamesList } = useUserStore()
+  const { isQuery, gameQueryValue, setGameQueryValue } = useSearchStore()
   const [isLoading, setIsLoading] = useState(true)
   const [recentGames, setRecentGames] = useState<Game[] | null>(null)
   const [unplayedGames, setUnplayedGames] = useState<Game[]>([])

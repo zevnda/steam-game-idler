@@ -5,9 +5,9 @@ import { invoke } from '@tauri-apps/api/core'
 import { disable, enable, isEnabled } from '@tauri-apps/plugin-autostart'
 
 import { useEffect, useState } from 'react'
+import { useUserStore } from '@/stores/userStore'
 import { useTranslation } from 'react-i18next'
 
-import { useUserContext } from '@/components/contexts/UserContext'
 import { encrypt, logEvent } from '@/utils/tasks'
 import { showDangerToast, showSuccessToast, t } from '@/utils/toasts'
 
@@ -24,7 +24,7 @@ interface GeneralSettingsHook {
 
 export const useGeneralSettings = (): GeneralSettingsHook => {
   const { t } = useTranslation()
-  const { userSettings } = useUserContext()
+  const { userSettings } = useUserStore()
   const [startupState, setStartupState] = useState<boolean | null>(null)
   const [keyValue, setKeyValue] = useState('')
   const [hasKey, setHasKey] = useState(false)

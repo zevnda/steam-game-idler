@@ -2,18 +2,18 @@ import type { ReactElement } from 'react'
 
 import { cn, Spinner } from '@heroui/react'
 import { useEffect, useMemo, useState } from 'react'
+import { useNavigationStore } from '@/stores/navigationStore'
+import { useStateStore } from '@/stores/stateStore'
+import { useUserStore } from '@/stores/userStore'
 import { useTranslation } from 'react-i18next'
 
-import { useNavigationContext } from '@/components/contexts/NavigationContext'
-import { useStateContext } from '@/components/contexts/StateContext'
-import { useUserContext } from '@/components/contexts/UserContext'
 import ProBadge from '@/components/ui/ProBadge'
 
 export default function AdSlot(): ReactElement {
   const { t } = useTranslation()
-  const { activePage } = useNavigationContext()
-  const { sidebarCollapsed, setProModalOpen } = useStateContext()
-  const { isPro } = useUserContext()
+  const { activePage } = useNavigationStore()
+  const { sidebarCollapsed, setProModalOpen } = useStateStore()
+  const { isPro } = useUserStore()
   const [reloadKey, setReloadKey] = useState(0)
 
   const gameSlugs = useMemo(

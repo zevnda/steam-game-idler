@@ -6,6 +6,7 @@ import { check } from '@tauri-apps/plugin-updater'
 
 import { cn, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@heroui/react'
 import { useEffect, useState } from 'react'
+import { useUpdateStore } from '@/stores/updateStore'
 import { useTranslation } from 'react-i18next'
 import {
   TbBookFilled,
@@ -17,14 +18,13 @@ import {
   TbStarFilled,
 } from 'react-icons/tb'
 
-import { useUpdateContext } from '@/components/contexts/UpdateContext'
 import CustomTooltip from '@/components/ui/CustomTooltip'
 import { fetchLatest, handleOpenExtLink, isPortableCheck, logEvent, preserveKeysAndClearData } from '@/utils/tasks'
 import { showDangerToast, showPrimaryToast } from '@/utils/toasts'
 
 export default function HeaderMenu(): ReactElement {
   const { t } = useTranslation()
-  const { setShowChangelog } = useUpdateContext()
+  const { setShowChangelog } = useUpdateStore()
   const [showMenu, setShowMenu] = useState(false)
   const [isPortable, setIsPortable] = useState(false)
 

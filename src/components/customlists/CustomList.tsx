@@ -6,15 +6,15 @@ import { invoke } from '@tauri-apps/api/core'
 
 import { Alert, Button, cn, useDisclosure } from '@heroui/react'
 import { useEffect, useState } from 'react'
+import { useNavigationStore } from '@/stores/navigationStore'
+import { useStateStore } from '@/stores/stateStore'
+import { useUserStore } from '@/stores/userStore'
 import { DndContext } from '@dnd-kit/core'
 import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useTranslation } from 'react-i18next'
 import { TbAward, TbCards, TbEdit, TbSettings } from 'react-icons/tb'
 
-import { useNavigationContext } from '@/components/contexts/NavigationContext'
-import { useStateContext } from '@/components/contexts/StateContext'
-import { useUserContext } from '@/components/contexts/UserContext'
 import AchievementOrderModal from '@/components/customlists/AchievementOrderModal'
 import EditListModal from '@/components/customlists/EditListModal'
 import ManualAdd from '@/components/customlists/ManualAdd'
@@ -71,10 +71,10 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
   const [isLoadingDrops, setIsLoadingDrops] = useState(false)
   const [selectedGame, setSelectedGame] = useState<Game | null>(null)
   const { startCardFarming, startAchievementUnlocker } = useAutomate()
-  const { sidebarCollapsed, transitionDuration, isCardFarming, isAchievementUnlocker } = useStateContext()
+  const { sidebarCollapsed, transitionDuration, isCardFarming, isAchievementUnlocker } = useStateStore()
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
-  const { setActivePage, setPreviousActivePage, setCurrentSettingsTab } = useNavigationContext()
-  const { userSettings } = useUserContext()
+  const { setActivePage, setPreviousActivePage, setCurrentSettingsTab } = useNavigationStore()
+  const { userSettings } = useUserStore()
 
   const handleDragEnd = (event: DragEndEvent): void => {
     const { active, over } = event

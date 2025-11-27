@@ -4,18 +4,18 @@ import type { ReactElement } from 'react'
 
 import { Button, cn, Spinner } from '@heroui/react'
 import { useEffect, useRef, useState } from 'react'
+import { useStateStore } from '@/stores/stateStore'
 import Image from 'next/image'
 import { Trans, useTranslation } from 'react-i18next'
 import { TbCheck, TbPlayerStopFilled } from 'react-icons/tb'
 
-import { useStateContext } from '@/components/contexts/StateContext'
 import { useAutomate } from '@/hooks/automation/useAutomateButtons'
 import { handleCancel, useCardFarming } from '@/hooks/automation/useCardFarming'
 import { updateTrayIcon } from '@/utils/tasks'
 
 export default function CardFarming({ activePage }: { activePage: ActivePageType }): ReactElement {
   const { t } = useTranslation()
-  const { isCardFarming, sidebarCollapsed, transitionDuration, setIsCardFarming } = useStateContext()
+  const { isCardFarming, sidebarCollapsed, transitionDuration, setIsCardFarming } = useStateStore()
 
   const isMountedRef = useRef(true)
   const abortControllerRef = useRef(new AbortController())

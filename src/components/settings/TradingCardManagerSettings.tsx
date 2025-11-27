@@ -5,15 +5,15 @@ import { invoke } from '@tauri-apps/api/core'
 
 import { Alert, cn, Divider, NumberInput, Select, SelectItem } from '@heroui/react'
 import { useEffect, useState } from 'react'
+import { useUserStore } from '@/stores/userStore'
 import { Trans, useTranslation } from 'react-i18next'
 import { TbChevronRight } from 'react-icons/tb'
 
-import { useUserContext } from '@/components/contexts/UserContext'
 import { useCardSettings } from '@/hooks/settings/useCardSettings'
 
 export default function TradingCardManagerSettings(): ReactElement {
   const { t } = useTranslation()
-  const { userSummary, userSettings, setUserSettings } = useUserContext()
+  const { userSummary, userSettings, setUserSettings } = useUserStore()
   const cardSettings = useCardSettings()
   const [priceAdjustment, setPriceAdjustment] = useState<number>(0.0)
   const [sellLimitMin, setSellLimitMin] = useState<number>(0.01)

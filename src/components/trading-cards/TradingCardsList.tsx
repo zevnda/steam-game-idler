@@ -3,15 +3,15 @@ import type { ReactElement } from 'react'
 
 import { Alert, Checkbox, cn, Spinner } from '@heroui/react'
 import { useEffect, useMemo, useState } from 'react'
+import { useSearchStore } from '@/stores/searchStore'
+import { useStateStore } from '@/stores/stateStore'
+import { useUserStore } from '@/stores/userStore'
 import Image from 'next/image'
 import { useTranslation } from 'react-i18next'
 import { FaCheckCircle } from 'react-icons/fa'
 import { SiExpertsexchange } from 'react-icons/si'
 import { TbLock, TbLockOpen } from 'react-icons/tb'
 
-import { useSearchContext } from '@/components/contexts/SearchContext'
-import { useStateContext } from '@/components/contexts/StateContext'
-import { useUserContext } from '@/components/contexts/UserContext'
 import PageHeader from '@/components/trading-cards/PageHeader'
 import PriceData from '@/components/trading-cards/PriceData'
 import PriceInput from '@/components/trading-cards/PriceInput'
@@ -21,9 +21,9 @@ import useTradingCardsList from '@/hooks/trading-cards/useTradingCardsList'
 
 export default function TradingCardsList(): ReactElement {
   const { t } = useTranslation()
-  const { tradingCardQueryValue } = useSearchContext()
-  const { sidebarCollapsed, transitionDuration } = useStateContext()
-  const { userSettings } = useUserContext()
+  const { tradingCardQueryValue } = useSearchStore()
+  const { sidebarCollapsed, transitionDuration } = useStateStore()
+  const { userSettings } = useUserStore()
   const [lockedCards, setLockedCards] = useState<string[]>([])
   const [cardsPerRow, setCardsPerRow] = useState(6)
   const [currentPage, setCurrentPage] = useState(1)

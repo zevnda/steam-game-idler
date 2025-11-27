@@ -1,6 +1,6 @@
 import { useDisclosure } from '@heroui/react'
+import { useUserStore } from '@/stores/userStore'
 
-import { useUserContext } from '@/components/contexts/UserContext'
 import { handleClearLogs } from '@/hooks/settings/useLogs'
 import { logEvent, preserveKeysAndClearData } from '@/utils/tasks'
 
@@ -12,7 +12,7 @@ interface ClearDataHook {
 }
 
 const useClearData = (): ClearDataHook => {
-  const { setUserSummary } = useUserContext()
+  const { setUserSummary } = useUserStore()
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
   // Clear all data

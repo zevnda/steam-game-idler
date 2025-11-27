@@ -2,13 +2,13 @@ import type { ReactElement } from 'react'
 
 import { cn } from '@heroui/react'
 import { useEffect, useState } from 'react'
+import { useNavigationStore } from '@/stores/navigationStore'
+import { useStateStore } from '@/stores/stateStore'
+import { useUpdateStore } from '@/stores/updateStore'
+import { useUserStore } from '@/stores/userStore'
 import { TbLayoutSidebar, TbLayoutSidebarFilled } from 'react-icons/tb'
 import { VscChromeClose, VscChromeMaximize, VscChromeMinimize } from 'react-icons/vsc'
 
-import { useNavigationContext } from '@/components/contexts/NavigationContext'
-import { useStateContext } from '@/components/contexts/StateContext'
-import { useUpdateContext } from '@/components/contexts/UpdateContext'
-import { useUserContext } from '@/components/contexts/UserContext'
 import Notifications from '@/components/notifications/Notifications'
 import { GoPro } from '@/components/ui/header/GoPro'
 import HeaderMenu from '@/components/ui/header/HeaderMenu'
@@ -18,11 +18,11 @@ import useHeader from '@/hooks/ui/useHeader'
 import { isPortableCheck } from '@/utils/tasks'
 
 export default function Header(): ReactElement {
-  const { updateAvailable } = useUpdateContext()
+  const { updateAvailable } = useUpdateStore()
   const { windowMinimize, windowToggleMaximize, windowClose } = useHeader()
-  const { sidebarCollapsed, transitionDuration, setSidebarCollapsed, setTransitionDuration } = useStateContext()
-  const { activePage } = useNavigationContext()
-  const { isPro } = useUserContext()
+  const { sidebarCollapsed, transitionDuration, setSidebarCollapsed, setTransitionDuration } = useStateStore()
+  const { activePage } = useNavigationStore()
+  const { isPro } = useUserStore()
   const [isPortable, setIsPortable] = useState<boolean | null>(null)
 
   useEffect(() => {

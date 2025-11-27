@@ -3,15 +3,15 @@ import type { CSSProperties, Dispatch, ReactElement, SetStateAction } from 'reac
 
 import { Button, cn } from '@heroui/react'
 import { memo, useMemo } from 'react'
+import { useSearchStore } from '@/stores/searchStore'
+import { useStateStore } from '@/stores/stateStore'
+import { useUserStore } from '@/stores/userStore'
 import Image from 'next/image'
 import { useTranslation } from 'react-i18next'
 import { TbCancel, TbLock, TbLockOpen } from 'react-icons/tb'
 import { FixedSizeList as List } from 'react-window'
 
 import AchievementButtons from '@/components/achievements/AchievementButtons'
-import { useSearchContext } from '@/components/contexts/SearchContext'
-import { useStateContext } from '@/components/contexts/StateContext'
-import { useUserContext } from '@/components/contexts/UserContext'
 import CustomTooltip from '@/components/ui/CustomTooltip'
 import { toggleAchievement } from '@/utils/achievements'
 import { checkSteamStatus } from '@/utils/tasks'
@@ -146,9 +146,9 @@ export default function AchievementsList({
   setRefreshKey,
 }: AchievementsListProps): ReactElement {
   const { t } = useTranslation()
-  const { userSummary } = useUserContext()
-  const { achievementQueryValue } = useSearchContext()
-  const { appId, appName } = useStateContext()
+  const { userSummary } = useUserStore()
+  const { achievementQueryValue } = useSearchStore()
+  const { appId, appName } = useStateStore()
 
   const updateAchievement = (achievementId: string, newAchievedState: boolean): void => {
     setAchievements(prevAchievements => {

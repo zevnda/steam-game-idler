@@ -3,6 +3,11 @@ import type { ReactElement } from 'react'
 
 import { Button, cn, Divider } from '@heroui/react'
 import { useState } from 'react'
+import { useIdleStore } from '@/stores/idleStore'
+import { useNavigationStore } from '@/stores/navigationStore'
+import { useSearchStore } from '@/stores/searchStore'
+import { useStateStore } from '@/stores/stateStore'
+import { useUserStore } from '@/stores/userStore'
 import Image from 'next/image'
 import { useTranslation } from 'react-i18next'
 import { FiLogOut } from 'react-icons/fi'
@@ -19,11 +24,6 @@ import {
   TbSettings,
 } from 'react-icons/tb'
 
-import { useIdleContext } from '@/components/contexts/IdleContext'
-import { useNavigationContext } from '@/components/contexts/NavigationContext'
-import { useSearchContext } from '@/components/contexts/SearchContext'
-import { useStateContext } from '@/components/contexts/StateContext'
-import { useUserContext } from '@/components/contexts/UserContext'
 import AdSlot from '@/components/ui/AdSlot'
 import Beta from '@/components/ui/Beta'
 import CustomModal from '@/components/ui/CustomModal'
@@ -34,12 +34,12 @@ import useSideBar from '@/hooks/ui/useSideBar'
 export default function SideBar(): ReactElement {
   const { t } = useTranslation()
   const [showSearchModal, setShowSearchModal] = useState(false)
-  const { idleGamesList } = useIdleContext()
+  const { idleGamesList } = useIdleStore()
   const { sidebarCollapsed, isCardFarming, isAchievementUnlocker, setShowAchievements, transitionDuration } =
-    useStateContext()
-  const { activePage, setActivePage } = useNavigationContext()
-  const { freeGamesList, userSummary, isPro } = useUserContext()
-  const searchContent = useSearchContext()
+    useStateStore()
+  const { activePage, setActivePage } = useNavigationStore()
+  const { freeGamesList, userSummary, isPro } = useUserStore()
+  const searchContent = useSearchStore()
   const { isOpen, onOpenChange, openConfirmation, handleLogout } = useSideBar(activePage, setActivePage)
 
   const mainSidebarItems: SidebarItem[] = [

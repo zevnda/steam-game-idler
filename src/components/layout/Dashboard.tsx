@@ -2,13 +2,13 @@ import type { ActivePageType, CustomListType } from '@/types'
 import type { ReactElement } from 'react'
 
 import { useEffect } from 'react'
+import { useNavigationStore } from '@/stores/navigationStore'
+import { useStateStore } from '@/stores/stateStore'
 
 import Achievements from '@/components/achievements/Achievements'
 import AchievementUnlocker from '@/components/automation/AchievementUnlocker'
 import CardFarming from '@/components/automation/CardFarming'
 import ChatBox from '@/components/chat/ChatBox'
-import { useNavigationContext } from '@/components/contexts/NavigationContext'
-import { useStateContext } from '@/components/contexts/StateContext'
 import CustomList from '@/components/customlists/CustomList'
 import FreeGamesList from '@/components/gameslist/FreeGamesList'
 import GamesList from '@/components/gameslist/GamesList'
@@ -20,8 +20,8 @@ import SideBar from '@/components/ui/SideBar'
 import { antiAwayStatus } from '@/utils/tasks'
 
 export default function Dashboard(): ReactElement {
-  const { showAchievements, isCardFarming, isAchievementUnlocker } = useStateContext()
-  const { activePage, setActivePage } = useNavigationContext()
+  const { showAchievements, isCardFarming, isAchievementUnlocker } = useStateStore()
+  const { activePage, setActivePage } = useNavigationStore()
 
   useEffect(() => {
     setActivePage('games' as ActivePageType)

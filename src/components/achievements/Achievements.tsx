@@ -3,21 +3,21 @@ import type { ReactElement } from 'react'
 
 import { cn, Tab, Tabs } from '@heroui/react'
 import { useState } from 'react'
+import { useNavigationStore } from '@/stores/navigationStore'
+import { useStateStore } from '@/stores/stateStore'
 import Image from 'next/image'
 import { useTranslation } from 'react-i18next'
 
 import AchievementsList from '@/components/achievements/AchievementsList'
 import PageHeader from '@/components/achievements/PageHeader'
 import StatisticsList from '@/components/achievements/StatisticsList'
-import { useNavigationContext } from '@/components/contexts/NavigationContext'
-import { useStateContext } from '@/components/contexts/StateContext'
 import Loader from '@/components/ui/Loader'
 import useAchievements from '@/hooks/achievements/useAchievements'
 
 export default function Achievements(): ReactElement {
   const { t } = useTranslation()
-  const { setCurrentTab } = useNavigationContext()
-  const { appId, sidebarCollapsed, transitionDuration } = useStateContext()
+  const { setCurrentTab } = useNavigationStore()
+  const { appId, sidebarCollapsed, transitionDuration } = useStateStore()
   const [isLoading, setIsLoading] = useState(true)
   const [achievements, setAchievements] = useState<Achievement[]>([])
   const [statistics, setStatistics] = useState<Statistic[]>([])

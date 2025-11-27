@@ -2,10 +2,10 @@ import type { CurrentSettingsTabType } from '@/types'
 import type { Key, ReactElement } from 'react'
 
 import { Button, cn, Tab, Tabs } from '@heroui/react'
+import { useNavigationStore } from '@/stores/navigationStore'
 import { useTranslation } from 'react-i18next'
 import { TbX } from 'react-icons/tb'
 
-import { useNavigationContext } from '@/components/contexts/NavigationContext'
 import AchievementSettings from '@/components/settings/AchievementSettings'
 import CardSettings from '@/components/settings/CardSettings'
 import CustomizationSettings from '@/components/settings/CustomizationSettings'
@@ -22,7 +22,7 @@ export default function Settings(): ReactElement {
   const { t } = useTranslation()
   const { version, refreshKey } = useSettings()
   const { setActivePage, previousActivePage, setPreviousActivePage, currentSettingsTab, setCurrentSettingsTab } =
-    useNavigationContext()
+    useNavigationStore()
 
   return (
     <div key={refreshKey} className={cn('min-h-screen min-w-screen bg-gradient-alt')}>

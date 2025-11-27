@@ -1,15 +1,15 @@
 import type { ReactElement } from 'react'
 
 import { cn } from '@heroui/react'
+import { useStateStore } from '@/stores/stateStore'
+import { useUserStore } from '@/stores/userStore'
 
-import { useStateContext } from '@/components/contexts/StateContext'
-import { useUserContext } from '@/components/contexts/UserContext'
 import Logo from '@/components/ui/header/Logo'
 import ProBadge from '@/components/ui/ProBadge'
 
 export default function HeaderTitle(): ReactElement {
-  const { sidebarCollapsed } = useStateContext()
-  const { isPro } = useUserContext()
+  const { sidebarCollapsed } = useStateStore()
+  const { isPro } = useUserStore()
 
   return (
     <div

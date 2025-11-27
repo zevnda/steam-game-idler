@@ -2,16 +2,16 @@ import type { Game } from '@/types'
 import type { ReactElement } from 'react'
 
 import { cn } from '@heroui/react'
+import { useStateStore } from '@/stores/stateStore'
+import { useUserStore } from '@/stores/userStore'
 import { useTranslation } from 'react-i18next'
 
-import { useStateContext } from '@/components/contexts/StateContext'
-import { useUserContext } from '@/components/contexts/UserContext'
 import GameCard from '@/components/ui/GameCard'
 
 export default function FreeGamesList(): ReactElement {
   const { t } = useTranslation()
-  const { freeGamesList } = useUserContext()
-  const { sidebarCollapsed, transitionDuration } = useStateContext()
+  const { freeGamesList } = useUserStore()
+  const { sidebarCollapsed, transitionDuration } = useStateStore()
 
   return (
     <div

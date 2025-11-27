@@ -4,13 +4,13 @@ import type { Dispatch, ReactElement, SetStateAction } from 'react'
 
 import { cn } from '@heroui/react'
 import { useCallback, useMemo, useRef, useState } from 'react'
+import { useStateStore } from '@/stores/stateStore'
 
 import ChatBanned from '@/components/chat/ChatBanned'
 import ChatInput from '@/components/chat/ChatInput'
 import ChatMaintenance from '@/components/chat/ChatMaintenance'
 import ChatMessages from '@/components/chat/ChatMessages'
 import ChatUserList from '@/components/chat/ChatUserList'
-import { useStateContext } from '@/components/contexts/StateContext'
 import { useSupabase } from '@/components/contexts/SupabaseContext'
 import { useMessageReactions } from '@/hooks/chat/useMessageReactions'
 import { useMessages } from '@/hooks/chat/useMessages'
@@ -18,7 +18,7 @@ import { usePinnedMessage } from '@/hooks/chat/usePinnedMessage'
 import { useScrollToMessage } from '@/hooks/chat/useScrollToMessage'
 
 export default function ChatBox(): ReactElement {
-  const { sidebarCollapsed, transitionDuration } = useStateContext()
+  const { sidebarCollapsed, transitionDuration } = useStateStore()
   const messagesEndRef = useRef<HTMLDivElement>(null as unknown as HTMLDivElement)
   const messagesContainerRef = useRef<HTMLDivElement>(null as unknown as HTMLDivElement)
   const inputRef = useRef<HTMLTextAreaElement>(null as unknown as HTMLTextAreaElement)

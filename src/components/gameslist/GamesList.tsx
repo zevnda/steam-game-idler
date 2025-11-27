@@ -2,10 +2,10 @@ import type { CSSProperties, ReactElement } from 'react'
 
 import { cn, Spinner } from '@heroui/react'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useStateStore } from '@/stores/stateStore'
 import { useTranslation } from 'react-i18next'
 import { VariableSizeList as List } from 'react-window'
 
-import { useStateContext } from '@/components/contexts/StateContext'
 import PageHeader from '@/components/gameslist/PageHeader'
 import Private from '@/components/gameslist/Private'
 import RecentGamesCarousel from '@/components/gameslist/RecentGamesCarousel'
@@ -15,7 +15,7 @@ import useGamesList from '@/hooks/gameslist/useGamesList'
 
 export default function GamesList(): ReactElement {
   const gamesContext = useGamesList()
-  const { sidebarCollapsed, showAchievements, transitionDuration } = useStateContext()
+  const { sidebarCollapsed, showAchievements, transitionDuration } = useStateStore()
   const { t } = useTranslation()
 
   const [columnCount, setColumnCount] = useState(5)

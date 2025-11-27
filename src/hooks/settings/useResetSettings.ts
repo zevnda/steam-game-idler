@@ -4,9 +4,9 @@ import type { Dispatch, SetStateAction } from 'react'
 import { invoke } from '@tauri-apps/api/core'
 
 import { useDisclosure } from '@heroui/react'
+import { useUserStore } from '@/stores/userStore'
 import { useTranslation } from 'react-i18next'
 
-import { useUserContext } from '@/components/contexts/UserContext'
 import { logEvent } from '@/utils/tasks'
 import { showDangerToast, showSuccessToast } from '@/utils/toasts'
 
@@ -19,7 +19,7 @@ interface ResetSettingsHook {
 
 export default function useResetSettings(): ResetSettingsHook {
   const { t } = useTranslation()
-  const { userSummary, setUserSettings } = useUserContext()
+  const { userSummary, setUserSettings } = useUserStore()
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
   // Reset settings to default

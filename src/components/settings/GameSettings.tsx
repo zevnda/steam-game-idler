@@ -3,13 +3,13 @@ import type { CSSProperties, ReactElement, SyntheticEvent } from 'react'
 
 import { cn, Divider, Input, NumberInput } from '@heroui/react'
 import { memo, useEffect, useMemo, useState } from 'react'
+import { useUserStore } from '@/stores/userStore'
 import Image from 'next/image'
 import { Trans, useTranslation } from 'react-i18next'
 import { RiSearchLine } from 'react-icons/ri'
 import { TbChevronRight } from 'react-icons/tb'
 import { FixedSizeList as List } from 'react-window'
 
-import { useUserContext } from '@/components/contexts/UserContext'
 import { useGameSettings } from '@/hooks/settings/useGameSettings'
 
 interface RowData {
@@ -65,7 +65,7 @@ Row.displayName = 'Row'
 
 export default function GameSettings(): ReactElement {
   const { t } = useTranslation()
-  const { gamesList } = useUserContext()
+  const { gamesList } = useUserStore()
   const [searchTerm, setSearchTerm] = useState('')
   const [windowInnerHeight, setWindowInnerHeight] = useState(window.innerHeight)
   const [selectedGame, setSelectedGame] = useState<Game | null>(null)

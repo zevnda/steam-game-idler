@@ -4,10 +4,10 @@ import type { Dispatch, SetStateAction } from 'react'
 import { invoke } from '@tauri-apps/api/core'
 
 import { useEffect, useState } from 'react'
+import { useStateStore } from '@/stores/stateStore'
+import { useUserStore } from '@/stores/userStore'
 import { useTranslation } from 'react-i18next'
 
-import { useStateContext } from '@/components/contexts/StateContext'
-import { useUserContext } from '@/components/contexts/UserContext'
 import { checkSteamStatus, logEvent } from '@/utils/tasks'
 import { showAccountMismatchToast, showDangerToast } from '@/utils/toasts'
 
@@ -24,8 +24,8 @@ export default function useAchievements(
   setProtectedStatistics: Dispatch<SetStateAction<boolean>>,
 ): UseAchievementsProps {
   const { t } = useTranslation()
-  const { appId } = useStateContext()
-  const { userSummary, setAchievementsUnavailable, setStatisticsUnavailable } = useUserContext()
+  const { appId } = useStateStore()
+  const { userSummary, setAchievementsUnavailable, setStatisticsUnavailable } = useUserStore()
   const [windowInnerHeight, setWindowInnerHeight] = useState(window.innerHeight)
   const [refreshKey, setRefreshKey] = useState(0)
 

@@ -4,19 +4,19 @@ import type { ReactElement } from 'react'
 import { invoke } from '@tauri-apps/api/core'
 
 import { Button, cn } from '@heroui/react'
+import { useIdleStore } from '@/stores/idleStore'
+import { useStateStore } from '@/stores/stateStore'
 import { useTranslation } from 'react-i18next'
 import { TbPlayerStopFilled } from 'react-icons/tb'
 
-import { useIdleContext } from '@/components/contexts/IdleContext'
-import { useStateContext } from '@/components/contexts/StateContext'
 import GameCard from '@/components/ui/GameCard'
 import { logEvent } from '@/utils/tasks'
 import { showDangerToast, showSuccessToast } from '@/utils/toasts'
 
 export default function IdlingGamesList(): ReactElement {
   const { t } = useTranslation()
-  const { idleGamesList, setIdleGamesList } = useIdleContext()
-  const { sidebarCollapsed, transitionDuration, setIsCardFarming, setIsAchievementUnlocker } = useStateContext()
+  const { idleGamesList, setIdleGamesList } = useIdleStore()
+  const { sidebarCollapsed, transitionDuration, setIsCardFarming, setIsAchievementUnlocker } = useStateStore()
 
   const handleStopIdleAll = async (): Promise<void> => {
     try {

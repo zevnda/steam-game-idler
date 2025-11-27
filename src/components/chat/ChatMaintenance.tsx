@@ -1,12 +1,11 @@
 import type { ReactElement } from 'react'
 
 import { cn } from '@heroui/react'
+import { useStateStore } from '@/stores/stateStore'
 import { BiSolidMessageSquareError } from 'react-icons/bi'
 
-import { useStateContext } from '@/components/contexts/StateContext'
-
 export default function ChatMaintenance(): ReactElement {
-  const { sidebarCollapsed, transitionDuration } = useStateContext()
+  const { sidebarCollapsed, transitionDuration } = useStateStore()
 
   return (
     <div

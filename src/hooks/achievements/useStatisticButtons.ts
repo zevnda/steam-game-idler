@@ -3,10 +3,10 @@ import type { Dispatch, SetStateAction } from 'react'
 
 import { invoke } from '@tauri-apps/api/core'
 
+import { useStateStore } from '@/stores/stateStore'
+import { useUserStore } from '@/stores/userStore'
 import { useTranslation } from 'react-i18next'
 
-import { useStateContext } from '@/components/contexts/StateContext'
-import { useUserContext } from '@/components/contexts/UserContext'
 import { updateStats } from '@/utils/achievements'
 import { checkSteamStatus } from '@/utils/tasks'
 import { showDangerToast, showSuccessToast, showWarningToast } from '@/utils/toasts'
@@ -24,8 +24,8 @@ export default function useStatisticButtons(
   setAchievements: Dispatch<SetStateAction<Achievement[]>>,
 ): StatisticButtonHook {
   const { t } = useTranslation()
-  const { userSummary } = useUserContext()
-  const { appId, appName } = useStateContext()
+  const { userSummary } = useUserStore()
+  const { appId, appName } = useStateStore()
 
   // Handle updating only changed statistics
   const handleUpdateAllStats = async (): Promise<void> => {

@@ -2,10 +2,10 @@ import type { InvokeCustomList, InvokeSettings, InvokeValidateSession } from '@/
 
 import { invoke } from '@tauri-apps/api/core'
 
+import { useStateStore } from '@/stores/stateStore'
+import { useUserStore } from '@/stores/userStore'
 import { useTranslation } from 'react-i18next'
 
-import { useStateContext } from '@/components/contexts/StateContext'
-import { useUserContext } from '@/components/contexts/UserContext'
 import { checkSteamStatus, decrypt, logEvent } from '@/utils/tasks'
 import {
   showDangerToast,
@@ -23,8 +23,8 @@ interface AutomateButtonsHook {
 // Automate card farming and achievement unlocking
 export const useAutomate = (): AutomateButtonsHook => {
   const { t } = useTranslation()
-  const { userSummary, userSettings, setUserSettings } = useUserContext()
-  const { setIsCardFarming, setIsAchievementUnlocker } = useStateContext()
+  const { userSummary, userSettings, setUserSettings } = useUserStore()
+  const { setIsCardFarming, setIsAchievementUnlocker } = useStateStore()
 
   // Start card farming
   const startCardFarming = async (): Promise<void> => {
