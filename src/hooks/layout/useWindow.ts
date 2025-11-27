@@ -382,11 +382,14 @@ export const startAutoIdleGames = async (): Promise<void> => {
         }
       }, 10000)
 
-      setTimeout(() => {
-        if (checkInterval) {
-          clearInterval(checkInterval)
-        }
-      }, 300000)
+      setTimeout(
+        () => {
+          if (checkInterval) {
+            clearInterval(checkInterval)
+          }
+        },
+        5 * 60 * 1000,
+      )
 
       return
     }

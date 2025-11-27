@@ -178,15 +178,15 @@ pub fn is_portable() -> bool {
     }
 }
 
-/// Get the cache directory path as a string for frontend use
+// Get the cache directory path as a string for frontend use
 #[tauri::command]
 pub fn get_cache_dir_path(app_handle: tauri::AppHandle) -> Result<String, String> {
     get_cache_dir(&app_handle).map(|path| path.to_string_lossy().to_string())
 }
 
-/// Get the base cache directory path based on whether the app is running in portable mode.
-/// In portable mode: returns exe_dir/cache
-/// In non-portable mode: returns app_data_dir/cache
+// Get the base cache directory path based on whether the app is running in portable mode.
+// In portable mode: returns exe_dir/cache
+// In non-portable mode: returns app_data_dir/cache
 pub fn get_cache_dir(app_handle: &tauri::AppHandle) -> Result<std::path::PathBuf, String> {
     if is_portable() {
         let mut exe_path = tauri::utils::platform::current_exe()

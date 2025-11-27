@@ -330,9 +330,6 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
     }
 
     checkSubscription()
-    // Optionally, poll every few minutes if needed:
-    // const interval = setInterval(checkSubscription, 5 * 60 * 1000)
-    // return () => clearInterval(interval)
   }, [userSummary?.steamId, setIsPro])
 
   // Cleanup typing indicator when chat becomes inactive or component unmounts
