@@ -316,8 +316,8 @@ svg {
   --shiny-cta-bg: #000000ff;
   --shiny-cta-bg-subtle: #1a1818;
   --shiny-cta-fg: #ffffff;
-  --shiny-cta-highlight: #00aaffff;
-  --shiny-cta-highlight-subtle: #720df6;
+  --shiny-cta-highlight: #5eff00ff;
+  --shiny-cta-highlight-subtle: #a5f60dff;
   --animation: gradient-angle linear infinite;
   --duration: 3s;
   --shadow-size: 2px;
@@ -339,7 +339,7 @@ svg {
   border-radius: 9999px;
   color: var(--shiny-cta-fg);
   background:
-    linear-gradient(100deg, #700084ff 0%, #7e15ffff 40%, #0095ffff 70%, #00a2c3ff 100%) padding-box,
+    linear-gradient(100deg, #29460aff 0%, #5f9723ff 40%, #77b832ff 70%, #a5f84cff 100%) padding-box,
     conic-gradient(
         from calc(var(--gradient-angle) - var(--gradient-angle-offset)),
         transparent,
