@@ -13,7 +13,7 @@ interface ChatAvatarProps {
 
 export default function ChatAvatar({ userId, username, avatarUrl, avatarColor }: ChatAvatarProps): ReactElement {
   return (
-    <ExtLink href={`https://steamcommunity.com/profiles/${userId}`} className='flex-shrink-0 mt-1 select-none'>
+    <ExtLink href={`https://steamcommunity.com/profiles/${userId}`} className='shrink-0 mt-1 select-none'>
       <Image
         src={avatarUrl || `https://ui-avatars.com/api/?name=${username}&background=${avatarColor}&color=fff`}
         alt={username}

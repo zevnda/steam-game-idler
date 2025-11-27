@@ -2,7 +2,7 @@ import type { ChatMessageType } from '@/components/contexts/SupabaseContext'
 import type { UserSummary } from '@/types'
 import type { RefObject } from 'react'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { logEvent } from '@/utils/tasks'
 
@@ -23,7 +23,7 @@ export function useMessageEditing({ messages, userSummary, inputRef, messagesCon
   const [editingMessageId, setEditingMessageId] = useState<string | null>(null)
   const [editedMessage, setEditedMessage] = useState('')
 
-  const handleEditLastMessage = (): void => {
+  const handleEditLastMessage = useCallback((): void => {
     try {
       const steamId = userSummary?.steamId ?? ''
       const lastMsg = [...messages].reverse().find(m => m.user_id === steamId)
@@ -51,7 +51,7 @@ export function useMessageEditing({ messages, userSummary, inputRef, messagesCon
       console.error('Error in handleEditLastMessage:', error)
       logEvent(`[Error] in handleEditLastMessage: ${error}`)
     }
-  }
+  }, [messages, userSummary, messagesContainerRef])
 
   useEffect(() => {
     if (editingMessageId === null) {

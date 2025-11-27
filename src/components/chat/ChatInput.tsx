@@ -2,7 +2,7 @@ import type { Emoji } from '@/hooks/chat/useEmojiShortcodes'
 import type { ReactElement, RefObject } from 'react'
 
 import { Button, cn, Textarea } from '@heroui/react'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import emojiData from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
 import Image from 'next/image'
@@ -45,10 +45,13 @@ export default function ChatInput({
   const { userSummary } = useUserContext()
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const currentUser = {
-    user_id: userSummary?.steamId ?? '',
-    username: userSummary?.personaName ?? '',
-  }
+  const currentUser = useMemo(
+    () => ({
+      user_id: userSummary?.steamId ?? '',
+      username: userSummary?.personaName ?? '',
+    }),
+    [userSummary],
+  )
   const { typingUsers, broadcastTyping, broadcastStopTyping } = useSupabase()
 
   const {
@@ -103,7 +106,6 @@ export default function ChatInput({
         e.key.length > 1 || // Special keys like Enter, Escape, Arrow keys, etc.
         e.key === ' '
       ) {
-        // Space might be used for other actions
         return
       }
 
@@ -126,49 +128,7 @@ export default function ChatInput({
     }
   }, [imagePreview])
 
-  // Broadcast stop_typing on submit
-  const handleSend = async (): Promise<void> => {
-    broadcastStopTyping()
-
-    // If there's an image preview, upload it first
-    if (imagePreview) {
-      setIsUploading(true)
-      const imageUrl = await uploadImageToSupabase(imagePreview.file)
-      setIsUploading(false)
-
-      if (imageUrl) {
-        // Combine image URL with text message
-        const messageContent = newMessage.trim() ? `${newMessage}\n${imageUrl}` : imageUrl
-        onSendMessage(messageContent, replyToMessage?.id || null)
-        setNewMessage('')
-        setImagePreview(null)
-        setMentionQuery('')
-        setMentionStart(null)
-        setEmojiQuery('')
-        setEmojiStart(null)
-        scrollToBottom()
-        if (clearReplyToMessage) clearReplyToMessage()
-      }
-    } else if (newMessage.trim()) {
-      // Send text-only message
-      onSendMessage(newMessage, replyToMessage?.id || null)
-      setNewMessage('')
-      setMentionQuery('')
-      setMentionStart(null)
-      setEmojiQuery('')
-      setEmojiStart(null)
-      if (clearReplyToMessage) clearReplyToMessage()
-    }
-  }
-
-  const handleRemoveImage = (): void => {
-    if (imagePreview) {
-      URL.revokeObjectURL(imagePreview.url)
-      setImagePreview(null)
-    }
-  }
-
-  const uploadImageToSupabase = async (file: File): Promise<string | null> => {
+  const uploadImageToSupabase = useCallback(async (file: File): Promise<string | null> => {
     try {
       // Generate a unique filename
       const fileExt = file.name.split('.').pop()
@@ -200,10 +160,67 @@ export default function ChatInput({
       logEvent(`[Error] in uploadImageToSupabase: ${error}`)
       return null
     }
-  }
+  }, [])
+
+  // Broadcast stop_typing on submit
+  const handleSend = useCallback(async (): Promise<void> => {
+    broadcastStopTyping()
+
+    // If there's an image preview, upload it first
+    if (imagePreview) {
+      setIsUploading(true)
+      const imageUrl = await uploadImageToSupabase(imagePreview.file)
+      setIsUploading(false)
+
+      if (imageUrl) {
+        // Combine image URL with text message
+        const messageContent = newMessage.trim() ? `${newMessage}\n${imageUrl}` : imageUrl
+        onSendMessage(messageContent, replyToMessage?.id || null)
+        setNewMessage('')
+        setImagePreview(null)
+        setMentionQuery('')
+        setMentionStart(null)
+        setEmojiQuery('')
+        setEmojiStart(null)
+        scrollToBottom()
+        if (clearReplyToMessage) clearReplyToMessage()
+      }
+    } else if (newMessage.trim()) {
+      // Send text-only message
+      onSendMessage(newMessage, replyToMessage?.id || null)
+      setNewMessage('')
+      setMentionQuery('')
+      setMentionStart(null)
+      setEmojiQuery('')
+      setEmojiStart(null)
+      if (clearReplyToMessage) clearReplyToMessage()
+    }
+  }, [
+    broadcastStopTyping,
+    imagePreview,
+    newMessage,
+    replyToMessage,
+    onSendMessage,
+    setNewMessage,
+    setImagePreview,
+    setMentionQuery,
+    setMentionStart,
+    setEmojiQuery,
+    setEmojiStart,
+    scrollToBottom,
+    clearReplyToMessage,
+    uploadImageToSupabase,
+  ])
+
+  const handleRemoveImage = useCallback((): void => {
+    if (imagePreview) {
+      URL.revokeObjectURL(imagePreview.url)
+      setImagePreview(null)
+    }
+  }, [imagePreview])
 
   // Handle paste event for images
-  const handleImageUpload = async (e: React.ClipboardEvent<HTMLInputElement>): Promise<void> => {
+  const handleImageUpload = useCallback(async (e: React.ClipboardEvent<HTMLInputElement>): Promise<void> => {
     try {
       const items = e.clipboardData.items
       for (let i = 0; i < items.length; i++) {
@@ -224,9 +241,9 @@ export default function ChatInput({
       console.error('Error in handleImageUpload:', error)
       logEvent(`[Error] in handleImageUpload: ${error}`)
     }
-  }
+  }, [])
 
-  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
+  const handleFileSelect = useCallback(async (e: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
     try {
       const file = e.target.files?.[0]
       if (file) {
@@ -239,7 +256,7 @@ export default function ChatInput({
       console.error('Error in handleFileSelect:', error)
       logEvent(`[Error] in handleFileSelect: ${error}`)
     }
-  }
+  }, [])
 
   return (
     <div className='p-2 pt-0'>

@@ -1,7 +1,7 @@
 import type { ReactElement } from 'react'
 
 import { Button, cn, Popover, PopoverContent, PopoverTrigger, useDisclosure } from '@heroui/react'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
 import { Trans, useTranslation } from 'react-i18next'
@@ -38,17 +38,20 @@ export default function ChatMessageActions({
   const [action, setAction] = useState('')
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
 
-  const handleShowModal = (onOpen: () => void, action: string): void => {
+  const handleShowModal = useCallback((onOpen: () => void, action: string): void => {
     setAction(action)
     onOpen()
-  }
+  }, [])
 
-  const handleEmojiSelect = (emoji: { native: string }): void => {
-    if (onAddReaction) {
-      onAddReaction(emoji.native)
-    }
-    setShowEmojiPicker(false)
-  }
+  const handleEmojiSelect = useCallback(
+    (emoji: { native: string }): void => {
+      if (onAddReaction) {
+        onAddReaction(emoji.native)
+      }
+      setShowEmojiPicker(false)
+    },
+    [onAddReaction],
+  )
 
   return (
     <div className='absolute right-4 -top-3 flex opacity-0 group-hover:opacity-100 z-10 bg-sidebar rounded-sm border border-border'>

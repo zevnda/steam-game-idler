@@ -2,7 +2,7 @@ import type { ChatMessageType } from '@/components/contexts/SupabaseContext'
 import type { UserSummary } from '@/types'
 import type { Dispatch, RefObject, SetStateAction } from 'react'
 
-import { useEffect } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 
 import { useSupabase } from '@/components/contexts/SupabaseContext'
 import { useMessageEditing } from '@/hooks/chat/useMessageEditing'
@@ -49,6 +49,7 @@ export function useMessages({
   setEditedMessage: Dispatch<SetStateAction<string>>
   handleEditLastMessage: () => void
   groupMessagesByDate: (msgs: ChatMessageType[]) => { [key: string]: ChatMessageType[] }
+  groupedMessages: { [key: string]: ChatMessageType[] }
   scrollToBottom: () => void
   isBanned: boolean
 } {
@@ -85,7 +86,7 @@ export function useMessages({
       messagesContainerRef,
     })
 
-  const groupMessagesByDate = (msgs: ChatMessageType[]): { [key: string]: ChatMessageType[] } => {
+  const groupMessagesByDate = useCallback((msgs: ChatMessageType[]): { [key: string]: ChatMessageType[] } => {
     try {
       // Sort all messages by created_at ascending
       const sortedMsgs = [...msgs].sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
@@ -109,7 +110,9 @@ export function useMessages({
       logEvent(`[Error] in groupMessagesByDate: ${error}`)
       return {}
     }
-  }
+  }, [])
+
+  const groupedMessages = useMemo(() => groupMessagesByDate(messages), [groupMessagesByDate, messages])
 
   // Scroll to bottom and focus main input if ESC key press if not editing a message
   useEffect(() => {
@@ -156,6 +159,7 @@ export function useMessages({
     setEditedMessage,
     handleEditLastMessage,
     groupMessagesByDate,
+    groupedMessages,
     scrollToBottom,
     isBanned,
   }

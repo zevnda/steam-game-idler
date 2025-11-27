@@ -1,6 +1,6 @@
 import type { RefObject } from 'react'
 
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import { logEvent } from '@/utils/tasks'
 
@@ -15,26 +15,29 @@ export function useEmojiPicker(
 } {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
 
-  const insertEmoji = (emoji: { native: string }): void => {
-    try {
-      if (!inputRef.current) return
-      const textarea = inputRef.current
-      const start = textarea.selectionStart
-      const end = textarea.selectionEnd
-      const before = newMessage.slice(0, start)
-      const after = newMessage.slice(end)
-      const updated = before + emoji.native + after
-      setNewMessage(updated)
-      setTimeout(() => {
-        textarea.focus()
-        textarea.setSelectionRange(start + emoji.native.length, start + emoji.native.length)
-      }, 0)
-      setShowEmojiPicker(false)
-    } catch (error) {
-      console.error('Error in insertEmoji:', error)
-      logEvent(`[Error] in insertEmoji: ${error}`)
-    }
-  }
+  const insertEmoji = useCallback(
+    (emoji: { native: string }): void => {
+      try {
+        if (!inputRef.current) return
+        const textarea = inputRef.current
+        const start = textarea.selectionStart
+        const end = textarea.selectionEnd
+        const before = newMessage.slice(0, start)
+        const after = newMessage.slice(end)
+        const updated = before + emoji.native + after
+        setNewMessage(updated)
+        setTimeout(() => {
+          textarea.focus()
+          textarea.setSelectionRange(start + emoji.native.length, start + emoji.native.length)
+        }, 0)
+        setShowEmojiPicker(false)
+      } catch (error) {
+        console.error('Error in insertEmoji:', error)
+        logEvent(`[Error] in insertEmoji: ${error}`)
+      }
+    },
+    [inputRef, newMessage, setNewMessage],
+  )
 
   return {
     showEmojiPicker,

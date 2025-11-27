@@ -1,6 +1,6 @@
 import type { RefObject } from 'react'
 
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import emojiData from '@emoji-mart/data'
 
 export interface Emoji {
@@ -49,7 +49,6 @@ export function useEmojiShortcodes(
 } {
   const [emojiStart, setEmojiStart] = useState<number | null>(null)
   const [emojiQuery, setEmojiQuery] = useState('')
-  const [emojiResults, setEmojiResults] = useState<Emoji[]>([])
   const [emojiSelectedIdx, setEmojiSelectedIdx] = useState(0)
 
   const handleEmojiInputChange = useCallback(
@@ -80,7 +79,7 @@ export function useEmojiShortcodes(
           // Close the dropdown
           setEmojiStart(null)
           setEmojiQuery('')
-          setEmojiResults([])
+          setEmojiSelectedIdx(0)
 
           // Set cursor position after the emoji and space
           setTimeout(() => {
@@ -101,7 +100,7 @@ export function useEmojiShortcodes(
       if (lastColonIdx === -1) {
         setEmojiStart(null)
         setEmojiQuery('')
-        setEmojiResults([])
+        setEmojiSelectedIdx(0)
         return
       }
 
@@ -110,7 +109,7 @@ export function useEmojiShortcodes(
       if (charBeforeColon !== ' ' && lastColonIdx !== 0) {
         setEmojiStart(null)
         setEmojiQuery('')
-        setEmojiResults([])
+        setEmojiSelectedIdx(0)
         return
       }
 
@@ -120,79 +119,80 @@ export function useEmojiShortcodes(
       if (afterColon.includes(' ')) {
         setEmojiStart(null)
         setEmojiQuery('')
-        setEmojiResults([])
+        setEmojiSelectedIdx(0)
         return
       }
 
       setEmojiStart(lastColonIdx)
       setEmojiQuery(afterColon)
-
-      // Search emojis
-      if (afterColon.length > 0) {
-        const allEmojis: Emoji[] = []
-
-        // Extract emojis from emoji-mart data
-        Object.values((emojiData as EmojiMartData).emojis).forEach(emoji => {
-          allEmojis.push({
-            id: emoji.id,
-            name: emoji.name,
-            native: emoji.skins[0].native,
-            shortcodes: emoji.id,
-            keywords: emoji.keywords,
-          })
-        })
-
-        const query = afterColon.toLowerCase()
-
-        // Improved filtering: prioritize exact matches
-        const filtered = allEmojis
-          .map(emoji => {
-            const idLower = emoji.id.toLowerCase()
-            const nameLower = emoji.name.toLowerCase()
-
-            // Calculate match score
-            let score = 0
-
-            // Exact match gets highest priority
-            if (idLower === query) {
-              score = 1000
-            }
-            // Starts with query
-            else if (idLower.startsWith(query)) {
-              score = 500
-            }
-            // Name starts with query
-            else if (nameLower.startsWith(query)) {
-              score = 400
-            }
-            // Contains query in id
-            else if (idLower.includes(query)) {
-              score = 200
-            }
-            // Contains query in name
-            else if (nameLower.includes(query)) {
-              score = 100
-            }
-            // Keyword match
-            else if (emoji.keywords?.some(k => k.toLowerCase().startsWith(query))) {
-              score = 50
-            }
-
-            return { emoji, score }
-          })
-          .filter(item => item.score > 0)
-          .sort((a, b) => b.score - a.score)
-          .slice(0, 8)
-          .map(item => item.emoji)
-
-        setEmojiResults(filtered)
-        setEmojiSelectedIdx(0)
-      } else {
-        setEmojiResults([])
-      }
     },
     [inputRef],
   )
+
+  const emojiResults = useMemo(() => {
+    // Search emojis
+    if (emojiQuery.length === 0) {
+      return []
+    }
+
+    const allEmojis: Emoji[] = []
+
+    // Extract emojis from emoji-mart data
+    Object.values((emojiData as EmojiMartData).emojis).forEach(emoji => {
+      allEmojis.push({
+        id: emoji.id,
+        name: emoji.name,
+        native: emoji.skins[0].native,
+        shortcodes: emoji.id,
+        keywords: emoji.keywords,
+      })
+    })
+
+    const query = emojiQuery.toLowerCase()
+
+    // Improved filtering: prioritize exact matches
+    const filtered = allEmojis
+      .map(emoji => {
+        const idLower = emoji.id.toLowerCase()
+        const nameLower = emoji.name.toLowerCase()
+
+        // Calculate match score
+        let score = 0
+
+        // Exact match gets highest priority
+        if (idLower === query) {
+          score = 1000
+        }
+        // Starts with query
+        else if (idLower.startsWith(query)) {
+          score = 500
+        }
+        // Name starts with query
+        else if (nameLower.startsWith(query)) {
+          score = 400
+        }
+        // Contains query in id
+        else if (idLower.includes(query)) {
+          score = 200
+        }
+        // Contains query in name
+        else if (nameLower.includes(query)) {
+          score = 100
+        }
+        // Keyword match
+        else if (emoji.keywords?.some(k => k.toLowerCase().startsWith(query))) {
+          score = 50
+        }
+
+        return { emoji, score }
+      })
+      .filter(item => item.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 8)
+      .map(item => item.emoji)
+
+    return filtered
+  }, [emojiQuery])
 
   const handleEmojiSelect = useCallback(
     (idx: number, setMessage: (msg: string) => void) => {
@@ -210,7 +210,7 @@ export function useEmojiShortcodes(
       // Reset state
       setEmojiStart(null)
       setEmojiQuery('')
-      setEmojiResults([])
+      setEmojiSelectedIdx(0)
 
       // Set cursor position after the inserted emoji and space
       setTimeout(() => {

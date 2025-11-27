@@ -21,7 +21,7 @@ export default function RecommendedGamesCarousel({ gamesContext }: RecommendedGa
   const pauseTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const { t } = useTranslation()
 
-  const scroll = (direction: 'left' | 'right'): void => {
+  const scroll = useCallback((direction: 'left' | 'right'): void => {
     if (scrollContainerRef.current) {
       const scrollAmount = 440 * 2 + 20 + 20
       const container = scrollContainerRef.current
@@ -52,7 +52,7 @@ export default function RecommendedGamesCarousel({ gamesContext }: RecommendedGa
         behavior: 'smooth',
       })
     }
-  }
+  }, [])
 
   const autoScroll = useCallback((): void => {
     if (scrollContainerRef.current) {
@@ -69,20 +69,23 @@ export default function RecommendedGamesCarousel({ gamesContext }: RecommendedGa
         scroll('right')
       }
     }
-  }, [scrollContainerRef])
+  }, [scroll])
 
-  const handleManualScroll = (direction: 'left' | 'right'): void => {
-    setIsAutoScrolling(false)
-    scroll(direction)
+  const handleManualScroll = useCallback(
+    (direction: 'left' | 'right'): void => {
+      setIsAutoScrolling(false)
+      scroll(direction)
 
-    if (pauseTimeoutRef.current) {
-      clearTimeout(pauseTimeoutRef.current)
-    }
+      if (pauseTimeoutRef.current) {
+        clearTimeout(pauseTimeoutRef.current)
+      }
 
-    pauseTimeoutRef.current = setTimeout(() => {
-      setIsAutoScrolling(true)
-    }, 5000)
-  }
+      pauseTimeoutRef.current = setTimeout(() => {
+        setIsAutoScrolling(true)
+      }, 5000)
+    },
+    [scroll],
+  )
 
   useEffect(() => {
     if (isAutoScrolling && gamesContext.unplayedGames.length > 0) {
