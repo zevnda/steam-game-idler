@@ -12,7 +12,7 @@ import { FaImage, FaTrash } from 'react-icons/fa6'
 import { IoSend } from 'react-icons/io5'
 
 import ChatReplyPreview from '@/components/chat/ChatReplyPreview'
-import { useSupabase } from '@/components/contexts/SupabaseContext'
+import { useSupabase } from '@/components/chat/SupabaseContext'
 import ExtLink from '@/components/ui/ExtLink'
 import { useEmojiPicker } from '@/hooks/chat/useEmojiPicker'
 import { useEmojiShortcodes } from '@/hooks/chat/useEmojiShortcodes'

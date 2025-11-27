@@ -1,10 +1,10 @@
-import type { ChatMessageType } from '@/components/contexts/SupabaseContext'
+import type { ChatMessageType } from '@/components/chat/SupabaseContext'
 import type { UserSummary } from '@/types'
 import type { Dispatch, RefObject, SetStateAction } from 'react'
 
 import { useCallback, useEffect, useMemo } from 'react'
 
-import { useSupabase } from '@/components/contexts/SupabaseContext'
+import { useSupabase } from '@/components/chat/SupabaseContext'
 import { useMessageEditing } from '@/hooks/chat/useMessageEditing'
 import { useMessageOperations } from '@/hooks/chat/useMessageOperations'
 import { useMessagePagination } from '@/hooks/chat/useMessagePagination'

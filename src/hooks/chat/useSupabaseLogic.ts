@@ -1,4 +1,4 @@
-import type { ChatMessageType, ChatUser } from '@/components/contexts/SupabaseContext'
+import type { ChatMessageType, ChatUser } from '@/components/chat/SupabaseContext'
 import type { UserSummary } from '@/types'
 import type { RealtimeChannel } from '@supabase/supabase-js'
 
@@ -467,6 +467,10 @@ export function useSupabaseLogic(userSummary: UserSummary | null): {
       .subscribe()
 
     return () => {
+      if (channelRef.current) {
+        channelRef.current.unsubscribe()
+        channelRef.current = null
+      }
       // Clean up typing indicator when channel is removed
       if (isTypingRef.current) {
         broadcastStopTyping()
@@ -491,7 +495,6 @@ export function useSupabaseLogic(userSummary: UserSummary | null): {
 
   useEffect(() => {
     if (!isChatActive) {
-      // Clear typing users when chat is inactive
       setMessages([])
       setUserRoles({})
       setOnlineUsers([])

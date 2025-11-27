@@ -1,4 +1,4 @@
-import type { ChatMessageType, ChatUser } from '@/components/contexts/SupabaseContext'
+import type { ChatMessageType, ChatUser } from '@/components/chat/SupabaseContext'
 
 import { create } from 'zustand'
 

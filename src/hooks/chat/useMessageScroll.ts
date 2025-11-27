@@ -1,4 +1,4 @@
-import type { ChatMessageType } from '@/components/contexts/SupabaseContext'
+import type { ChatMessageType } from '@/components/chat/SupabaseContext'
 import type { UserSummary } from '@/types'
 import type { RefObject } from 'react'
 
