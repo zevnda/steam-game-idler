@@ -13,7 +13,7 @@ import { DndContext } from '@dnd-kit/core'
 import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useTranslation } from 'react-i18next'
-import { TbAward, TbCards, TbEdit, TbSettings } from 'react-icons/tb'
+import { TbAward, TbCards, TbEdit, TbHeart, TbHourglassLow, TbSettings } from 'react-icons/tb'
 
 import AchievementOrderModal from '@/components/customlists/AchievementOrderModal'
 import EditListModal from '@/components/customlists/EditListModal'
@@ -22,6 +22,7 @@ import RecommendedCardDropsCarousel from '@/components/customlists/RecommendedCa
 import GameCard from '@/components/ui/GameCard'
 import { useAutomate } from '@/hooks/automation/useAutomateButtons'
 import useCustomList from '@/hooks/customlists/useCustomList'
+import { startAutoIdleGamesImpl } from '@/hooks/layout/useWindow'
 import { getAllGamesWithDrops } from '@/utils/automation'
 
 type CustomListType = 'cardFarmingList' | 'achievementUnlockerList' | 'autoIdleList' | 'favoritesList'
@@ -40,7 +41,7 @@ interface ListTypeConfig {
   title: string
   description: string
   icon: ReactNode
-  startButton: 'startCardFarming' | 'startAchievementUnlocker' | null
+  startButton: 'startCardFarming' | 'startAchievementUnlocker' | 'startAutoIdleGamesImpl' | null
   buttonLabel: string | null
   settingsButton?: boolean
   settingsButtonLink?: string
@@ -74,7 +75,7 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
   const { sidebarCollapsed, transitionDuration, isCardFarming, isAchievementUnlocker } = useStateStore()
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const { setActivePage, setPreviousActivePage, setCurrentSettingsTab } = useNavigationStore()
-  const { userSettings } = useUserStore()
+  const { userSummary, userSettings } = useUserStore()
 
   const handleDragEnd = (event: DragEndEvent): void => {
     const { active, over } = event
@@ -155,14 +156,14 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
     autoIdleList: {
       title: t('customLists.autoIdle.title'),
       description: t('customLists.autoIdle.subtitle'),
-      icon: <TbEdit fontSize={20} />,
-      startButton: null,
-      buttonLabel: null,
+      icon: <TbHourglassLow fontSize={20} />,
+      startButton: 'startAutoIdleGamesImpl',
+      buttonLabel: t('customLists.autoIdle.buttonLabel'),
     },
     favoritesList: {
       title: t('customLists.favorites.title'),
       description: t('customLists.favorites.subtitle'),
-      icon: <TbEdit fontSize={20} />,
+      icon: <TbHeart fontSize={20} />,
       startButton: null,
       buttonLabel: null,
     },
@@ -241,7 +242,19 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
                       radius='full'
                       startContent={listType.icon}
                       onPress={
-                        listType.startButton === 'startCardFarming' ? startCardFarming : startAchievementUnlocker
+                        listType.startButton === 'startCardFarming'
+                          ? () => {
+                              void startCardFarming()
+                            }
+                          : listType.startButton === 'startAchievementUnlocker'
+                            ? () => {
+                                void startAchievementUnlocker()
+                              }
+                            : listType.startButton === 'startAutoIdleGamesImpl'
+                              ? () => {
+                                  if (userSummary?.steamId) void startAutoIdleGamesImpl(userSummary.steamId, true)
+                                }
+                              : undefined
                       }
                     >
                       {listType.buttonLabel}

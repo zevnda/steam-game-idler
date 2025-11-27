@@ -102,7 +102,7 @@ export function showNoGamesToast(): void {
     title: (
       <ErrorToast
         message={t('toast.noGames')}
-        href='https://steamgameidler.com/docs/faq#error-messages:~:text=There%20are%20no%20games%20in%20your%20achievement%20unlocker%20list'
+        href='https://steamgameidler.com/docs/faq#:~:text=There%20are%20no%20games%20in%20your%20list'
       />
     ),
     color: 'danger',
