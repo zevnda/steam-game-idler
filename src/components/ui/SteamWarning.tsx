@@ -19,9 +19,12 @@ export default function SteamWarning(): ReactElement {
 
   useEffect(() => {
     const shouldShowWarning = async (): Promise<void> => {
+      const devAccounts = ['76561198158912649', '76561198999797359']
       const isDev = await invoke('is_dev')
 
-      if (showSteamWarning && !isDev) {
+      const isUserDev = devAccounts.includes(userSummary?.steamId ?? '')
+
+      if (showSteamWarning && !isDev && !isUserDev) {
         onOpen()
       }
     }
