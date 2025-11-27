@@ -71,7 +71,7 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
   const [isLoadingDrops, setIsLoadingDrops] = useState(false)
   const [selectedGame, setSelectedGame] = useState<Game | null>(null)
   const { startCardFarming, startAchievementUnlocker } = useAutomate()
-  const { sidebarCollapsed, transitionDuration } = useStateContext()
+  const { sidebarCollapsed, transitionDuration, isCardFarming, isAchievementUnlocker } = useStateContext()
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const { setActivePage, setPreviousActivePage, setCurrentSettingsTab } = useNavigationContext()
   const { userSettings } = useUserContext()
@@ -221,6 +221,7 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
                       radius='full'
                       className='bg-btn-secondary text-btn-text font-bold'
                       startContent={<TbSettings size={20} />}
+                      isDisabled={isCardFarming || isAchievementUnlocker}
                       onPress={() => {
                         setPreviousActivePage(('customlists/' + listType.settingsButtonLink) as ActivePageType)
                         setActivePage('settings')
