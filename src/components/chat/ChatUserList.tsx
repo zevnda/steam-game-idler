@@ -1,11 +1,11 @@
-import type { ChatUser } from '@/components/contexts/SupabaseContext'
+import type { ChatUser } from '@/components/chat/SupabaseContext'
 import type { ReactElement } from 'react'
 
 import { useMemo } from 'react'
 import Image from 'next/image'
 
 import ChatRoleBadge from '@/components/chat/ChatRoleBadge'
-import { useSupabase } from '@/components/contexts/SupabaseContext'
+import { useSupabase } from '@/components/chat/SupabaseContext'
 import ExtLink from '@/components/ui/ExtLink'
 
 interface RoleGroup {

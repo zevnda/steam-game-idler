@@ -1,9 +1,9 @@
-import type { ChatMessageType } from '@/components/contexts/SupabaseContext'
+import type { ChatMessageType } from '@/components/chat/SupabaseContext'
 import type { Dispatch, RefObject, SetStateAction } from 'react'
 
 import { useEffect, useState } from 'react'
 
-import { useSupabase } from '@/components/contexts/SupabaseContext'
+import { useSupabase } from '@/components/chat/SupabaseContext'
 import { logEvent } from '@/utils/tasks'
 
 interface UseMessagePaginationParams {

@@ -1,11 +1,11 @@
-import type { ChatMessageType } from '@/components/contexts/SupabaseContext'
+import type { ChatMessageType } from '@/components/chat/SupabaseContext'
 import type { UserSummary } from '@/types'
 import type { Dispatch, SetStateAction } from 'react'
 
 import { addToast } from '@heroui/react'
 import { useCallback } from 'react'
 
-import { useSupabase } from '@/components/contexts/SupabaseContext'
+import { useSupabase } from '@/components/chat/SupabaseContext'
 import { logEvent } from '@/utils/tasks'
 
 interface UseMessageOperationsParams {

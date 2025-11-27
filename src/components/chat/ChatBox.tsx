@@ -3,7 +3,7 @@ import type { UserSummary } from '@/types'
 import type { Dispatch, ReactElement, SetStateAction } from 'react'
 
 import { cn } from '@heroui/react'
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useStateStore } from '@/stores/stateStore'
 
 import ChatBanned from '@/components/chat/ChatBanned'
@@ -11,7 +11,7 @@ import ChatInput from '@/components/chat/ChatInput'
 import ChatMaintenance from '@/components/chat/ChatMaintenance'
 import ChatMessages from '@/components/chat/ChatMessages'
 import ChatUserList from '@/components/chat/ChatUserList'
-import { useSupabase } from '@/components/contexts/SupabaseContext'
+import { useSupabase } from '@/components/chat/SupabaseContext'
 import { useMessageReactions } from '@/hooks/chat/useMessageReactions'
 import { useMessages } from '@/hooks/chat/useMessages'
 import { usePinnedMessage } from '@/hooks/chat/usePinnedMessage'
@@ -133,6 +133,13 @@ export default function ChatBox(): ReactElement {
   )
 
   const groupedMessages = useMemo(() => groupMessagesByDate(messages), [groupMessagesByDate, messages])
+
+  useEffect(() => {
+    return () => {
+      setPinnedMessage(null)
+      setReplyToMessage(null)
+    }
+  }, [setPinnedMessage, setReplyToMessage])
 
   if (chatMaintenanceMode) {
     return (
