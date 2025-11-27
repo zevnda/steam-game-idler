@@ -133,7 +133,6 @@ export default function useSignIn(refreshKey: number): SetupHook {
             setIsLoading(false)
           }
         } else {
-          // TODO: handle case when no users are found
           setSteamUsers([])
           setUserSummaries([])
         }
