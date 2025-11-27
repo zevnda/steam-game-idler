@@ -251,10 +251,10 @@ export const faqData: FAQEntry[] = [
       '> Your `card farming list` is empty. You either need to add games to the list by following [these steps](/docs/features/card-farming), or enable [`Farm All Games`](/docs/settings/card-farming#farm-all-games) in [Settings > Card Farming](/docs/settings/card-farming).',
   },
   {
-    question: 'There are no games in your achievement unlocker list',
+    question: 'There are no games in your list',
     markdown:
-      '**There are no games in your achievement unlocker list**\n' +
-      '> Your `achievement unlocker list` is empty. You can add games to your list by following [these steps](/docs/features/achievement-unlocker)',
+      '**There are no games in your list**\n' +
+      '> The list you are trying to start a feature for is empty. You can add games to your list by following these steps for [Achievement Unlocker](/docs/features/achievement-unlocker), [Card Farming](/docs/features/card-farming) or [Automatic Idler](/docs/features/auto-idler).',
   },
   {
     question: 'Account mismatch between Steam and SGI',

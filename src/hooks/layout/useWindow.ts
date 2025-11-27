@@ -24,7 +24,7 @@ import { useTranslation } from 'react-i18next'
 
 import { startIdle } from '@/utils/idle'
 import { checkSteamStatus, fetchLatest, isPortableCheck, logEvent, preserveKeysAndClearData } from '@/utils/tasks'
-import { showDangerToast, t } from '@/utils/toasts'
+import { showDangerToast, showNoGamesToast, t } from '@/utils/toasts'
 
 export default function useWindow(): void {
   const { t } = useTranslation()
@@ -403,12 +403,17 @@ export const startAutoIdleGames = async (): Promise<void> => {
   }
 }
 
-async function startAutoIdleGamesImpl(steamId: string): Promise<void> {
+export async function startAutoIdleGamesImpl(steamId: string, manual?: boolean): Promise<void> {
   try {
     const customLists = await invoke<InvokeCustomList>('get_custom_lists', {
       steamId,
       list: 'autoIdleList',
     })
+
+    if (manual && customLists.list_data.length === 0) {
+      showNoGamesToast()
+      return
+    }
 
     if (!customLists.error && customLists.list_data.length > 0) {
       // Only idle a maximum of 32 games
@@ -431,13 +436,15 @@ async function startAutoIdleGamesImpl(steamId: string): Promise<void> {
       let remainingGames = [...gamesToIdle]
 
       while (remainingGames.length > 0 && retryCount < maxRetries) {
-        // Start the remaining games
-        for (const appid of remainingGames) {
-          const game = autoIdleGames.find(g => g.appid === appid)
-          if (game) {
-            await startIdle(game.appid, game.name, true)
-          }
-        }
+        // Start the remaining games concurrently
+        await Promise.all(
+          remainingGames.map(async appid => {
+            const game = autoIdleGames.find(g => g.appid === appid)
+            if (game) {
+              await startIdle(game.appid, game.name, true)
+            }
+          }),
+        )
 
         // Wait a moment for games to start
         await new Promise(resolve => setTimeout(resolve, 2000))
