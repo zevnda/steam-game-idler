@@ -72,10 +72,16 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
   const [isLoadingDrops, setIsLoadingDrops] = useState(false)
   const [selectedGame, setSelectedGame] = useState<Game | null>(null)
   const { startCardFarming, startAchievementUnlocker } = useAutomate()
-  const { sidebarCollapsed, transitionDuration, isCardFarming, isAchievementUnlocker } = useStateStore()
+  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
+  const transitionDuration = useStateStore(state => state.transitionDuration)
+  const isCardFarming = useStateStore(state => state.isCardFarming)
+  const isAchievementUnlocker = useStateStore(state => state.isAchievementUnlocker)
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
-  const { setActivePage, setPreviousActivePage, setCurrentSettingsTab } = useNavigationStore()
-  const { userSummary, userSettings } = useUserStore()
+  const setActivePage = useNavigationStore(state => state.setActivePage)
+  const setPreviousActivePage = useNavigationStore(state => state.setPreviousActivePage)
+  const setCurrentSettingsTab = useNavigationStore(state => state.setCurrentSettingsTab)
+  const userSummary = useUserStore(state => state.userSummary)
+  const userSettings = useUserStore(state => state.userSettings)
 
   const handleDragEnd = (event: DragEndEvent): void => {
     const { active, over } = event

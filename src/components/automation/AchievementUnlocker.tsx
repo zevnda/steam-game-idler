@@ -15,7 +15,10 @@ import { updateTrayIcon } from '@/utils/tasks'
 
 export default function AchievementUnlocker({ activePage }: { activePage: ActivePageType }): ReactElement {
   const { t } = useTranslation()
-  const { isAchievementUnlocker, setIsAchievementUnlocker, transitionDuration, sidebarCollapsed } = useStateStore()
+  const isAchievementUnlocker = useStateStore(state => state.isAchievementUnlocker)
+  const setIsAchievementUnlocker = useStateStore(state => state.setIsAchievementUnlocker)
+  const transitionDuration = useStateStore(state => state.transitionDuration)
+  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
 
   const isMountedRef = useRef(true)
   const abortControllerRef = useRef<AbortController>(new AbortController())

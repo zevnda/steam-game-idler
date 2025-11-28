@@ -15,7 +15,8 @@ import { handleClear, handleKeySave, useGeneralSettings } from '@/hooks/settings
 
 export default function GeneralSettings(): ReactElement {
   const { t } = useTranslation()
-  const { userSummary, setUserSettings } = useUserStore()
+  const userSummary = useUserStore(state => state.userSummary)
+  const setUserSettings = useUserStore(state => state.setUserSettings)
   const { keyValue, setKeyValue, hasKey, setHasKey } = useGeneralSettings()
 
   return (

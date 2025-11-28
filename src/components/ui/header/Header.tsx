@@ -18,11 +18,14 @@ import useHeader from '@/hooks/ui/useHeader'
 import { isPortableCheck } from '@/utils/tasks'
 
 export default function Header(): ReactElement {
-  const { updateAvailable } = useUpdateStore()
   const { windowMinimize, windowToggleMaximize, windowClose } = useHeader()
-  const { sidebarCollapsed, transitionDuration, setSidebarCollapsed, setTransitionDuration } = useStateStore()
-  const { activePage } = useNavigationStore()
-  const { isPro } = useUserStore()
+  const updateAvailable = useUpdateStore(state => state.updateAvailable)
+  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
+  const transitionDuration = useStateStore(state => state.transitionDuration)
+  const setSidebarCollapsed = useStateStore(state => state.setSidebarCollapsed)
+  const setTransitionDuration = useStateStore(state => state.setTransitionDuration)
+  const activePage = useNavigationStore(state => state.activePage)
+  const isPro = useUserStore(state => state.isPro)
   const [isPortable, setIsPortable] = useState<boolean | null>(null)
 
   useEffect(() => {

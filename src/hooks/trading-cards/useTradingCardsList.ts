@@ -49,15 +49,14 @@ interface UseTradingCardsList {
 
 export default function useTradingCardsList(): UseTradingCardsList {
   const { t } = useTranslation()
-  const { userSummary, userSettings } = useUserStore()
-  const {
-    loadingItemPrice,
-    setLoadingItemPrice,
-    loadingListButton,
-    setLoadingListButton,
-    loadingRemoveListings,
-    setLoadingRemoveListings,
-  } = useStateStore()
+  const userSummary = useUserStore(state => state.userSummary)
+  const userSettings = useUserStore(state => state.userSettings)
+  const loadingItemPrice = useStateStore(state => state.loadingItemPrice)
+  const setLoadingItemPrice = useStateStore(state => state.setLoadingItemPrice)
+  const loadingListButton = useStateStore(state => state.loadingListButton)
+  const setLoadingListButton = useStateStore(state => state.setLoadingListButton)
+  const loadingRemoveListings = useStateStore(state => state.loadingRemoveListings)
+  const setLoadingRemoveListings = useStateStore(state => state.setLoadingRemoveListings)
   const [tradingCardsList, setTradingCardsList] = useState<TradingCard[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [changedCardPrices, setChangedCardPrices] = useState<Record<string, number>>({})

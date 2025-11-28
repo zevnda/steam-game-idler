@@ -24,8 +24,9 @@ export default function useStatisticButtons(
   setAchievements: Dispatch<SetStateAction<Achievement[]>>,
 ): StatisticButtonHook {
   const { t } = useTranslation()
-  const { userSummary } = useUserStore()
-  const { appId, appName } = useStateStore()
+  const userSummary = useUserStore(state => state.userSummary)
+  const appId = useStateStore(state => state.appId)
+  const appName = useStateStore(state => state.appName)
 
   // Handle updating only changed statistics
   const handleUpdateAllStats = async (): Promise<void> => {

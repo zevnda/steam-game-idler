@@ -18,7 +18,7 @@ export default function CustomTooltip({
   className,
   important = false,
 }: CustomTooltipProps): ReactNode {
-  const { userSettings } = useUserStore()
+  const userSettings = useUserStore(state => state.userSettings)
 
   if (!important && userSettings.general.disableTooltips) {
     return children

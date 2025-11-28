@@ -5,7 +5,8 @@ import { useStateStore } from '@/stores/stateStore'
 import { BiSolidMessageSquareError } from 'react-icons/bi'
 
 export default function ChatMaintenance(): ReactElement {
-  const { sidebarCollapsed, transitionDuration } = useStateStore()
+  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
+  const transitionDuration = useStateStore(state => state.transitionDuration)
 
   return (
     <div

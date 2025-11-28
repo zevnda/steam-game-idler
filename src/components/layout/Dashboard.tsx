@@ -20,8 +20,11 @@ import SideBar from '@/components/ui/SideBar'
 import { antiAwayStatus } from '@/utils/tasks'
 
 export default function Dashboard(): ReactElement {
-  const { showAchievements, isCardFarming, isAchievementUnlocker } = useStateStore()
-  const { activePage, setActivePage } = useNavigationStore()
+  const showAchievements = useStateStore(state => state.showAchievements)
+  const isCardFarming = useStateStore(state => state.isCardFarming)
+  const isAchievementUnlocker = useStateStore(state => state.isAchievementUnlocker)
+  const activePage = useNavigationStore(state => state.activePage)
+  const setActivePage = useNavigationStore(state => state.setActivePage)
 
   useEffect(() => {
     setActivePage('games' as ActivePageType)

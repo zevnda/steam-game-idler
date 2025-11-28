@@ -15,7 +15,10 @@ import { updateTrayIcon } from '@/utils/tasks'
 
 export default function CardFarming({ activePage }: { activePage: ActivePageType }): ReactElement {
   const { t } = useTranslation()
-  const { isCardFarming, sidebarCollapsed, transitionDuration, setIsCardFarming } = useStateStore()
+  const isCardFarming = useStateStore(state => state.isCardFarming)
+  const setIsCardFarming = useStateStore(state => state.setIsCardFarming)
+  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
+  const transitionDuration = useStateStore(state => state.transitionDuration)
 
   const isMountedRef = useRef(true)
   const abortControllerRef = useRef(new AbortController())

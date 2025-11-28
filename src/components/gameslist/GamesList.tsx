@@ -15,7 +15,9 @@ import useGamesList from '@/hooks/gameslist/useGamesList'
 
 export default function GamesList(): ReactElement {
   const gamesContext = useGamesList()
-  const { sidebarCollapsed, showAchievements, transitionDuration } = useStateStore()
+  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
+  const transitionDuration = useStateStore(state => state.transitionDuration)
+  const showAchievements = useStateStore(state => state.showAchievements)
   const { t } = useTranslation()
 
   const [columnCount, setColumnCount] = useState(5)

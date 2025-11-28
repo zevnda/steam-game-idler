@@ -13,9 +13,10 @@ import { checkSteamStatus } from '@/utils/tasks'
 
 export default function SteamWarning(): ReactElement {
   const { t } = useTranslation()
-  const { showSteamWarning, setShowSteamWarning } = useStateStore()
+  const showSteamWarning = useStateStore(state => state.showSteamWarning)
+  const setShowSteamWarning = useStateStore(state => state.setShowSteamWarning)
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
-  const { userSummary } = useUserStore()
+  const userSummary = useUserStore(state => state.userSummary)
 
   useEffect(() => {
     const shouldShowWarning = async (): Promise<void> => {

@@ -68,8 +68,13 @@ interface SupabaseProviderProps {
 }
 
 export function SupabaseProvider({ children, userSummary }: SupabaseProviderProps): ReactNode {
-  const { messages, setMessages, isBanned, userRoles, chatMaintenanceMode, onlineUsers, typingUsers } =
-    useSupabaseStore()
+  const messages = useSupabaseStore(state => state.messages)
+  const setMessages = useSupabaseStore(state => state.setMessages)
+  const isBanned = useSupabaseStore(state => state.isBanned)
+  const userRoles = useSupabaseStore(state => state.userRoles)
+  const chatMaintenanceMode = useSupabaseStore(state => state.chatMaintenanceMode)
+  const onlineUsers = useSupabaseStore(state => state.onlineUsers)
+  const typingUsers = useSupabaseStore(state => state.typingUsers)
   const { broadcastTyping, broadcastStopTyping } = useSupabaseLogic(userSummary)
 
   return (

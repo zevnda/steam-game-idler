@@ -7,8 +7,8 @@ import { useStateStore } from '@/stores/stateStore'
 import GoProModal from '@/components/ui/GoProModal'
 
 export function GoPro(): ReactElement {
-  const { setProModalOpen } = useStateStore()
-  const { activePage } = useNavigationStore()
+  const setProModalOpen = useStateStore(state => state.setProModalOpen)
+  const activePage = useNavigationStore(state => state.activePage)
 
   return (
     <>

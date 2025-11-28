@@ -11,7 +11,8 @@ import ProBadge from '@/components/ui/ProBadge'
 
 export default function GoProModal(): ReactElement {
   const { t } = useTranslation()
-  const { proModalOpen, setProModalOpen } = useStateStore()
+  const proModalOpen = useStateStore(state => state.proModalOpen)
+  const setProModalOpen = useStateStore(state => state.setProModalOpen)
 
   return (
     <Modal

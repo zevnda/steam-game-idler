@@ -11,7 +11,7 @@ interface HeaderActions {
 }
 
 export default function useHeader(): HeaderActions {
-  const { userSettings } = useUserStore()
+  const userSettings = useUserStore(state => state.userSettings)
 
   const windowMinimize = async (): Promise<void> => {
     await getCurrentWindow().minimize()

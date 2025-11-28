@@ -119,7 +119,7 @@ export default function StatisticsList({
   setRefreshKey,
 }: StatisticsListProps): ReactElement {
   const { t } = useTranslation()
-  const { statisticQueryValue } = useSearchStore()
+  const statisticQueryValue = useSearchStore(state => state.statisticQueryValue)
   const [changedStats, setChangedStats] = useState<ChangedStats>({})
 
   const updateStatistic = (id: string, e: number | ChangeEvent<HTMLInputElement>): void => {

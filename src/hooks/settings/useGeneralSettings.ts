@@ -24,7 +24,7 @@ interface GeneralSettingsHook {
 
 export const useGeneralSettings = (): GeneralSettingsHook => {
   const { t } = useTranslation()
-  const { userSettings } = useUserStore()
+  const userSettings = useUserStore(state => state.userSettings)
   const [startupState, setStartupState] = useState<boolean | null>(null)
   const [keyValue, setKeyValue] = useState('')
   const [hasKey, setHasKey] = useState(false)

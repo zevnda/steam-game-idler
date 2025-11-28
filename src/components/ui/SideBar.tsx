@@ -34,12 +34,18 @@ import useSideBar from '@/hooks/ui/useSideBar'
 export default function SideBar(): ReactElement {
   const { t } = useTranslation()
   const [showSearchModal, setShowSearchModal] = useState(false)
-  const { idleGamesList } = useIdleStore()
-  const { sidebarCollapsed, isCardFarming, isAchievementUnlocker, setShowAchievements, transitionDuration } =
-    useStateStore()
-  const { activePage, setActivePage } = useNavigationStore()
-  const { freeGamesList, userSummary, isPro } = useUserStore()
+  const activePage = useNavigationStore(state => state.activePage)
+  const setActivePage = useNavigationStore(state => state.setActivePage)
+  const freeGamesList = useUserStore(state => state.freeGamesList)
+  const userSummary = useUserStore(state => state.userSummary)
+  const isPro = useUserStore(state => state.isPro)
   const searchContent = useSearchStore()
+  const idleGamesList = useIdleStore(state => state.idleGamesList)
+  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
+  const isCardFarming = useStateStore(state => state.isCardFarming)
+  const isAchievementUnlocker = useStateStore(state => state.isAchievementUnlocker)
+  const transitionDuration = useStateStore(state => state.transitionDuration)
+  const setShowAchievements = useStateStore(state => state.setShowAchievements)
   const { isOpen, onOpenChange, openConfirmation, handleLogout } = useSideBar(activePage, setActivePage)
 
   const mainSidebarItems: SidebarItem[] = [

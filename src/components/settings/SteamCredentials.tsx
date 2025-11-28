@@ -17,7 +17,9 @@ import {
 
 export default function SteamCredentials(): ReactElement {
   const { t } = useTranslation()
-  const { userSummary, userSettings, setUserSettings } = useUserStore()
+  const userSummary = useUserStore(state => state.userSummary)
+  const userSettings = useUserStore(state => state.userSettings)
+  const setUserSettings = useUserStore(state => state.setUserSettings)
   const cardSettings = useCardSettings()
 
   return (

@@ -11,9 +11,10 @@ import ProBadge from '@/components/ui/ProBadge'
 
 export default function AdSlot(): ReactElement {
   const { t } = useTranslation()
-  const { activePage } = useNavigationStore()
-  const { sidebarCollapsed, setProModalOpen } = useStateStore()
-  const { isPro } = useUserStore()
+  const activePage = useNavigationStore(state => state.activePage)
+  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
+  const setProModalOpen = useStateStore(state => state.setProModalOpen)
+  const isPro = useUserStore(state => state.isPro)
   const [reloadKey, setReloadKey] = useState(0)
 
   const gameSlugs = useMemo(

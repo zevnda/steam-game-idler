@@ -21,8 +21,11 @@ import useSettings from '@/hooks/settings/useSettings'
 export default function Settings(): ReactElement {
   const { t } = useTranslation()
   const { version, refreshKey } = useSettings()
-  const { setActivePage, previousActivePage, setPreviousActivePage, currentSettingsTab, setCurrentSettingsTab } =
-    useNavigationStore()
+  const setActivePage = useNavigationStore(state => state.setActivePage)
+  const previousActivePage = useNavigationStore(state => state.previousActivePage)
+  const setPreviousActivePage = useNavigationStore(state => state.setPreviousActivePage)
+  const currentSettingsTab = useNavigationStore(state => state.currentSettingsTab)
+  const setCurrentSettingsTab = useNavigationStore(state => state.setCurrentSettingsTab)
 
   return (
     <div key={refreshKey} className={cn('min-h-screen min-w-screen bg-gradient-alt')}>

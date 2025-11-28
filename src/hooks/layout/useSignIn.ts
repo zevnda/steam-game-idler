@@ -21,7 +21,8 @@ interface SetupHook {
 
 export default function useSignIn(refreshKey: number): SetupHook {
   const { t } = useTranslation()
-  const { userSettings, setUserSummary } = useUserStore()
+  const userSettings = useUserStore(state => state.userSettings)
+  const setUserSummary = useUserStore(state => state.setUserSummary)
   const [isLoading, setIsLoading] = useState(true)
   const [steamUsers, setSteamUsers] = useState<UserSummary[]>([])
   const [userSummaries, setUserSummaries] = useState<UserSummary[]>([])

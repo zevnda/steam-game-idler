@@ -40,7 +40,7 @@ export async function startIdle(appId: number, appName: string, manual: boolean 
     const processes = response?.processes
     const runningIdlers = processes.map(p => p.appid)
 
-    if (processes.length === 3) {
+    if (processes.length === 32) {
       // We already show a warning toast if startIdle returns false in most cases, so just log here
       logEvent(
         `[Error] [Idle] Maximum number of idling processes (32) reached when attempting to idle ${appName} (${appId})`,

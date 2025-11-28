@@ -17,7 +17,9 @@ interface CardMenuProps {
 
 export default function CardMenu({ item }: CardMenuProps): ReactElement {
   const { t } = useTranslation()
-  const { setAppId, setAppName, setShowAchievements } = useStateStore()
+  const setAppId = useStateStore(state => state.setAppId)
+  const setAppName = useStateStore(state => state.setAppName)
+  const setShowAchievements = useStateStore(state => state.setShowAchievements)
 
   const viewStorePage = async (item: Game): Promise<void> => {
     try {

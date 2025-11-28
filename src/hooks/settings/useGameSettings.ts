@@ -26,7 +26,9 @@ interface UseGameSettingsReturn {
 }
 
 export function useGameSettings({ appId }: UseGameSettingsProps = {}): UseGameSettingsReturn {
-  const { userSummary, userSettings, setUserSettings } = useUserStore()
+  const userSummary = useUserStore(state => state.userSummary)
+  const userSettings = useUserStore(state => state.userSettings)
+  const setUserSettings = useUserStore(state => state.setUserSettings)
   const [maxIdleTime, setMaxIdleTime] = useState(0)
   const [maxCardDrops, setMaxCardDrops] = useState(0)
   const [maxAchievementUnlocks, setMaxAchievementUnlocks] = useState(0)

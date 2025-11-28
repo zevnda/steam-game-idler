@@ -26,9 +26,11 @@ export default function useSideBar(
   setActivePage: Dispatch<SetStateAction<ActivePageType>>,
 ): SideBarHook {
   const { t } = useTranslation()
-  const { setGameQueryValue, setAchievementQueryValue } = useSearchStore()
-  const { setCurrentTab } = useNavigationStore()
-  const { userSummary, setUserSummary } = useUserStore()
+  const setGameQueryValue = useSearchStore(state => state.setGameQueryValue)
+  const setAchievementQueryValue = useSearchStore(state => state.setAchievementQueryValue)
+  const setCurrentTab = useNavigationStore(state => state.setCurrentTab)
+  const userSummary = useUserStore(state => state.userSummary)
+  const setUserSummary = useUserStore(state => state.setUserSummary)
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
   const openConfirmation = (): void => {
