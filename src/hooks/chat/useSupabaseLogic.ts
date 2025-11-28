@@ -14,10 +14,14 @@ export function useSupabaseLogic(userSummary: UserSummary | null): {
   broadcastTyping: () => void
   broadcastStopTyping: () => void
 } {
-  const { activePage } = useNavigationStore()
-  const { setIsPro } = useUserStore()
-  const { setMessages, setIsBanned, setUserRoles, setChatMaintenanceMode, setOnlineUsers, setTypingUsers } =
-    useSupabaseStore()
+  const activePage = useNavigationStore(state => state.activePage)
+  const setIsPro = useUserStore(state => state.setIsPro)
+  const setMessages = useSupabaseStore(state => state.setMessages)
+  const setIsBanned = useSupabaseStore(state => state.setIsBanned)
+  const setUserRoles = useSupabaseStore(state => state.setUserRoles)
+  const setChatMaintenanceMode = useSupabaseStore(state => state.setChatMaintenanceMode)
+  const setOnlineUsers = useSupabaseStore(state => state.setOnlineUsers)
+  const setTypingUsers = useSupabaseStore(state => state.setTypingUsers)
   const isChatActive = activePage === 'chat'
 
   const channelRef = useRef<RealtimeChannel | null>(null)

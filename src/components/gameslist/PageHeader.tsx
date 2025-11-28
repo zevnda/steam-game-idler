@@ -24,8 +24,9 @@ export default function PageHeader({
   setRefreshKey,
 }: PageHeaderProps): ReactElement {
   const { t } = useTranslation()
-  const { userSummary } = useUserStore()
-  const { gameQueryValue, setGameQueryValue } = useSearchStore()
+  const userSummary = useUserStore(state => state.userSummary)
+  const gameQueryValue = useSearchStore(state => state.gameQueryValue)
+  const setGameQueryValue = useSearchStore(state => state.setGameQueryValue)
   const { handleSorting, handleRefetch } = usePageHeader(setSortStyle, setRefreshKey)
 
   const sortOptions: SortOption[] = [

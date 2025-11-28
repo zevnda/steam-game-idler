@@ -13,7 +13,9 @@ import { useCardSettings } from '@/hooks/settings/useCardSettings'
 
 export default function TradingCardManagerSettings(): ReactElement {
   const { t } = useTranslation()
-  const { userSummary, userSettings, setUserSettings } = useUserStore()
+  const userSummary = useUserStore(state => state.userSummary)
+  const userSettings = useUserStore(state => state.userSettings)
+  const setUserSettings = useUserStore(state => state.setUserSettings)
   const cardSettings = useCardSettings()
   const [priceAdjustment, setPriceAdjustment] = useState<number>(0.0)
   const [sellLimitMin, setSellLimitMin] = useState<number>(0.01)

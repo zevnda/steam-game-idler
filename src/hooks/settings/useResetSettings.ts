@@ -19,7 +19,8 @@ interface ResetSettingsHook {
 
 export default function useResetSettings(): ResetSettingsHook {
   const { t } = useTranslation()
-  const { userSummary, setUserSettings } = useUserStore()
+  const userSummary = useUserStore(state => state.userSummary)
+  const setUserSettings = useUserStore(state => state.setUserSettings)
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
   // Reset settings to default

@@ -18,7 +18,8 @@ import { usePinnedMessage } from '@/hooks/chat/usePinnedMessage'
 import { useScrollToMessage } from '@/hooks/chat/useScrollToMessage'
 
 export default function ChatBox(): ReactElement {
-  const { sidebarCollapsed, transitionDuration } = useStateStore()
+  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
+  const transitionDuration = useStateStore(state => state.transitionDuration)
   const messagesEndRef = useRef<HTMLDivElement>(null as unknown as HTMLDivElement)
   const messagesContainerRef = useRef<HTMLDivElement>(null as unknown as HTMLDivElement)
   const inputRef = useRef<HTMLTextAreaElement>(null as unknown as HTMLTextAreaElement)

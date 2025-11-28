@@ -14,8 +14,9 @@ const inter = Inter({
 })
 
 export default function Layout({ children }: { children: ReactNode }): ReactElement {
-  const { loadingUserSummary } = useStateStore()
-  const { userSettings, isPro } = useUserStore()
+  const loadingUserSummary = useStateStore(state => state.loadingUserSummary)
+  const userSettings = useUserStore(state => state.userSettings)
+  const isPro = useUserStore(state => state.isPro)
   const [customBackground, setCustomBackground] = useState('')
 
   useEffect(() => {

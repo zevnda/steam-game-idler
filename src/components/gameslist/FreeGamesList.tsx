@@ -10,8 +10,9 @@ import GameCard from '@/components/ui/GameCard'
 
 export default function FreeGamesList(): ReactElement {
   const { t } = useTranslation()
-  const { freeGamesList } = useUserStore()
-  const { sidebarCollapsed, transitionDuration } = useStateStore()
+  const freeGamesList = useUserStore(state => state.freeGamesList)
+  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
+  const transitionDuration = useStateStore(state => state.transitionDuration)
 
   return (
     <div

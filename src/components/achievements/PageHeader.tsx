@@ -23,10 +23,15 @@ interface PageHeaderProps {
 
 export default function PageHeader({ protectedAchievements, protectedStatistics }: PageHeaderProps): ReactElement {
   const { t } = useTranslation()
-  const { userSummary, setAchievementsUnavailable, setStatisticsUnavailable } = useUserStore()
-  const { appId, appName, setShowAchievements } = useStateStore()
-  const { setAchievementQueryValue, setStatisticQueryValue } = useSearchStore()
-  const { setCurrentTab } = useNavigationStore()
+  const userSummary = useUserStore(state => state.userSummary)
+  const setAchievementsUnavailable = useUserStore(state => state.setAchievementsUnavailable)
+  const setStatisticsUnavailable = useUserStore(state => state.setStatisticsUnavailable)
+  const appId = useStateStore(state => state.appId)
+  const appName = useStateStore(state => state.appName)
+  const setShowAchievements = useStateStore(state => state.setShowAchievements)
+  const setAchievementQueryValue = useSearchStore(state => state.setAchievementQueryValue)
+  const setStatisticQueryValue = useSearchStore(state => state.setStatisticQueryValue)
+  const setCurrentTab = useNavigationStore(state => state.setCurrentTab)
 
   const handleClick = (): void => {
     setShowAchievements(false)

@@ -12,7 +12,7 @@ interface ClearDataHook {
 }
 
 const useClearData = (): ClearDataHook => {
-  const { setUserSummary } = useUserStore()
+  const setUserSummary = useUserStore(state => state.setUserSummary)
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
   // Clear all data

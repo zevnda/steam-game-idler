@@ -9,7 +9,7 @@ import Window from '@/components/layout/Window'
 import I18nProvider from '@/components/ui/i18n/I18nProvider'
 
 export default function Index(): ReactElement {
-  const { userSummary } = useUserStore()
+  const userSummary = useUserStore(state => state.userSummary)
 
   return (
     <ErrorBoundary>

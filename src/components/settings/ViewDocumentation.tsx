@@ -7,7 +7,7 @@ import WebviewWindow from '@/components/ui/WebviewWindow'
 
 export default function ViewDocumentation(): ReactElement {
   const { t } = useTranslation()
-  const { currentSettingsTab } = useNavigationStore()
+  const currentSettingsTab = useNavigationStore(state => state.currentSettingsTab)
 
   return (
     <WebviewWindow href={`https://steamgameidler.com/docs/settings/${currentSettingsTab}`}>

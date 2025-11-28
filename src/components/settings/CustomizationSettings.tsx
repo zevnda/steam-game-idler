@@ -26,8 +26,11 @@ export default function CustomizationSettings(): ReactElement | null {
   const { t } = useTranslation()
   const { setTheme, resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
-  const { setProModalOpen } = useStateStore()
-  const { userSummary, userSettings, setUserSettings, isPro } = useUserStore()
+  const setProModalOpen = useStateStore(state => state.setProModalOpen)
+  const userSummary = useUserStore(state => state.userSummary)
+  const userSettings = useUserStore(state => state.userSettings)
+  const setUserSettings = useUserStore(state => state.setUserSettings)
+  const isPro = useUserStore(state => state.isPro)
   const { sliderLabel, setSliderLabel } = useGeneralSettings()
 
   // Themes

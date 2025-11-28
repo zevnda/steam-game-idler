@@ -146,9 +146,10 @@ export default function AchievementsList({
   setRefreshKey,
 }: AchievementsListProps): ReactElement {
   const { t } = useTranslation()
-  const { userSummary } = useUserStore()
-  const { achievementQueryValue } = useSearchStore()
-  const { appId, appName } = useStateStore()
+  const userSummary = useUserStore(state => state.userSummary)
+  const achievementQueryValue = useSearchStore(state => state.achievementQueryValue)
+  const appId = useStateStore(state => state.appId)
+  const appName = useStateStore(state => state.appName)
 
   const updateAchievement = (achievementId: string, newAchievedState: boolean): void => {
     setAchievements(prevAchievements => {

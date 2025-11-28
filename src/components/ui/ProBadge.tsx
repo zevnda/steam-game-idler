@@ -4,7 +4,7 @@ import { cn } from '@heroui/react'
 import { useUserStore } from '@/stores/userStore'
 
 export default function ProBadge({ className }: { className?: string }): ReactElement {
-  const { isPro } = useUserStore()
+  const isPro = useUserStore(state => state.isPro)
 
   return (
     <span

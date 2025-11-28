@@ -23,7 +23,7 @@ interface ManualAddHook {
 
 export default function useManualAdd(listName: string, setList: Dispatch<SetStateAction<Game[]>>): ManualAddHook {
   const { t } = useTranslation()
-  const { userSummary } = useUserStore()
+  const userSummary = useUserStore(state => state.userSummary)
   const [appNameValue, setAppNameValue] = useState('')
   const [appIdValue, setAppIdValue] = useState(0)
   const [isLoading, setIsLoading] = useState(false)

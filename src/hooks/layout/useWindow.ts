@@ -29,12 +29,21 @@ import { showDangerToast, showNoGamesToast, t } from '@/utils/toasts'
 export default function useWindow(): void {
   const { t } = useTranslation()
   const { setTheme } = useTheme()
-  const { setIdleGamesList } = useIdleStore()
-  const { setIsCardFarming, setIsAchievementUnlocker, setShowSteamWarning, setUseBeta, setLoadingUserSummary } =
-    useStateStore()
-  const { setUpdateAvailable, setShowChangelog } = useUpdateStore()
-  const { userSummary, setUserSummary, userSettings, setUserSettings, gamesList, setFreeGamesList, isPro } =
-    useUserStore()
+  const setIdleGamesList = useIdleStore(state => state.setIdleGamesList)
+  const setIsCardFarming = useStateStore(state => state.setIsCardFarming)
+  const setIsAchievementUnlocker = useStateStore(state => state.setIsAchievementUnlocker)
+  const setShowSteamWarning = useStateStore(state => state.setShowSteamWarning)
+  const setUseBeta = useStateStore(state => state.setUseBeta)
+  const setLoadingUserSummary = useStateStore(state => state.setLoadingUserSummary)
+  const setUpdateAvailable = useUpdateStore(state => state.setUpdateAvailable)
+  const setShowChangelog = useUpdateStore(state => state.setShowChangelog)
+  const userSummary = useUserStore(state => state.userSummary)
+  const userSettings = useUserStore(state => state.userSettings)
+  const setUserSettings = useUserStore(state => state.setUserSettings)
+  const setUserSummary = useUserStore(state => state.setUserSummary)
+  const setFreeGamesList = useUserStore(state => state.setFreeGamesList)
+  const gamesList = useUserStore(state => state.gamesList)
+  const isPro = useUserStore(state => state.isPro)
   const [zoom, setZoom] = useState(1.0)
 
   console.debug('Monitor for rerenders')

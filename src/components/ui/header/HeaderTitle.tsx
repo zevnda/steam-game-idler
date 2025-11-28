@@ -8,8 +8,8 @@ import Logo from '@/components/ui/header/Logo'
 import ProBadge from '@/components/ui/ProBadge'
 
 export default function HeaderTitle(): ReactElement {
-  const { sidebarCollapsed } = useStateStore()
-  const { isPro } = useUserStore()
+  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
+  const isPro = useUserStore(state => state.isPro)
 
   return (
     <div

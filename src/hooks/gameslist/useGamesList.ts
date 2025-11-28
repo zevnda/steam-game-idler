@@ -31,8 +31,13 @@ interface GamesListHook {
 
 export default function useGamesList(): GamesListHook {
   const { t } = useTranslation()
-  const { userSummary, userSettings, gamesList, setGamesList } = useUserStore()
-  const { isQuery, gameQueryValue, setGameQueryValue } = useSearchStore()
+  const userSummary = useUserStore(state => state.userSummary)
+  const userSettings = useUserStore(state => state.userSettings)
+  const gamesList = useUserStore(state => state.gamesList)
+  const setGamesList = useUserStore(state => state.setGamesList)
+  const isQuery = useSearchStore(state => state.isQuery)
+  const gameQueryValue = useSearchStore(state => state.gameQueryValue)
+  const setGameQueryValue = useSearchStore(state => state.setGameQueryValue)
   const [isLoading, setIsLoading] = useState(true)
   const [recentGames, setRecentGames] = useState<Game[] | null>(null)
   const [unplayedGames, setUnplayedGames] = useState<Game[]>([])

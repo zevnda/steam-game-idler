@@ -24,7 +24,7 @@ import { showDangerToast, showPrimaryToast } from '@/utils/toasts'
 
 export default function HeaderMenu(): ReactElement {
   const { t } = useTranslation()
-  const { setShowChangelog } = useUpdateStore()
+  const setShowChangelog = useUpdateStore(state => state.setShowChangelog)
   const [showMenu, setShowMenu] = useState(false)
   const [isPortable, setIsPortable] = useState(false)
 

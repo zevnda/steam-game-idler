@@ -27,8 +27,11 @@ const GameCard = memo(function GameCard({
   isAchievementUnlocker = false,
   onOpen,
 }: GameCardProps): ReactElement {
-  const { idleGamesList, setIdleGamesList } = useIdleStore()
-  const { setAppId, setAppName, setShowAchievements } = useStateStore()
+  const idleGamesList = useIdleStore(state => state.idleGamesList)
+  const setIdleGamesList = useIdleStore(state => state.setIdleGamesList)
+  const setAppId = useStateStore(state => state.setAppId)
+  const setAppName = useStateStore(state => state.setAppName)
+  const setShowAchievements = useStateStore(state => state.setShowAchievements)
 
   const idlingGame = idleGamesList.find(game => game.appid === item.appid)
   const isIdling = idlingGame !== undefined

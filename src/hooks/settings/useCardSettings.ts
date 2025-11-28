@@ -44,7 +44,7 @@ interface CardSettingsHook {
 }
 
 export const useCardSettings = (): CardSettingsHook => {
-  const { userSettings } = useUserStore()
+  const userSettings = useUserStore(state => state.userSettings)
   const [sidValue, setSidValue] = useState('') // sessionid
   const [slsValue, setSlsValue] = useState('') // steamLoginSecure
   const [smaValue, setSmaValue] = useState('') // steamMachineAuth

@@ -2,6 +2,7 @@ import type { ReactElement } from 'react'
 
 import { cn, Modal, ModalBody, ModalContent, Tab, Tabs } from '@heroui/react'
 import { useStateStore } from '@/stores/stateStore'
+import { Manrope } from 'next/font/google'
 import Image from 'next/image'
 import { useTranslation } from 'react-i18next'
 import { FaCheck } from 'react-icons/fa6'
@@ -9,9 +10,15 @@ import { FaCheck } from 'react-icons/fa6'
 import ExtLink from '@/components/ui/ExtLink'
 import ProBadge from '@/components/ui/ProBadge'
 
+const manrope = Manrope({
+  subsets: ['latin'],
+  variable: '--font-manrope',
+})
+
 export default function GoProModal(): ReactElement {
   const { t } = useTranslation()
-  const { proModalOpen, setProModalOpen } = useStateStore()
+  const proModalOpen = useStateStore(state => state.proModalOpen)
+  const setProModalOpen = useStateStore(state => state.setProModalOpen)
 
   return (
     <Modal
@@ -28,9 +35,9 @@ export default function GoProModal(): ReactElement {
       <ModalContent>
         <ModalBody>
           <div className='flex flex-col justify-center items-center h-full py-10'>
-            <p className='font-bold px-1.5 py-1 rounded-lg mb-4 text-sm'>
+            <p className='font-bold px-1.5 py-1 rounded-lg mb-4 text-md'>
               Steam Game Idler
-              <ProBadge className='scale-90' />
+              <ProBadge className='scale-80' />
             </p>
             <p className='text-3xl font-black uppercase mb-6'>{t('proMode.modal.select')}</p>
 
@@ -47,9 +54,9 @@ export default function GoProModal(): ReactElement {
             >
               <Tab key='monthly' title={t('proMode.modal.monthly')}>
                 <div className='flex flex-col justify-center items-center'>
-                  <p className='text-3xl font-bold mt-3 mb-6'>
-                    $1.00
-                    <span className='text-sm'>/mo</span>
+                  <p className={`${manrope.className} text-4xl font-black mt-3 mb-6`}>
+                    $1
+                    <span className='text-sm ml-1 lowercase font-medium'>{t('proMode.modal.monthly')}</span>
                   </p>
 
                   <ExtLink href='https://buy.stripe.com/bJedRa2lQ7lc1vr9wacbC04' className='w-full'>
@@ -79,12 +86,9 @@ export default function GoProModal(): ReactElement {
                 }
               >
                 <div className='flex flex-col justify-center items-center'>
-                  <p className='flex items-end text-3xl font-bold mt-3 mb-6'>
+                  <p className={`${manrope.className} text-4xl font-black mt-3 mb-6`}>
                     $0.75
-                    <span className='text-sm'>/mo</span>
-                    <div className='px-1 py-0.5 bg-[#5750DF] text-white rounded-sm text-xs font-normal ml-2 mb-2 uppercase'>
-                      <p>{t('proMode.modal.bestValue')}</p>
-                    </div>
+                    <span className='text-sm ml-1 lowercase font-medium'>{t('proMode.modal.monthly')}</span>
                   </p>
 
                   <ExtLink href='https://buy.stripe.com/00w4gA5y26h81vrcImcbC06' className='w-full'>

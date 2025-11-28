@@ -17,7 +17,7 @@ import useSignIn from '@/hooks/layout/useSignIn'
 
 export default function SignIn(): ReactElement {
   const { t } = useTranslation()
-  const { setActivePage } = useNavigationStore()
+  const setActivePage = useNavigationStore(state => state.setActivePage)
   const [refreshKey, setRefreshKey] = useState(0)
 
   useEffect(() => {

@@ -16,7 +16,9 @@ interface SettingsCheckboxProps {
 }
 
 export default function SettingsSwitch({ type, name }: SettingsCheckboxProps): ReactElement {
-  const { userSummary, userSettings, setUserSettings } = useUserStore()
+  const userSummary = useUserStore(state => state.userSummary)
+  const userSettings = useUserStore(state => state.userSettings)
+  const setUserSettings = useUserStore(state => state.setUserSettings)
   const { startupState, setStartupState } = useGeneralSettings()
 
   useCardSettings()

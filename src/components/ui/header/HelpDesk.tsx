@@ -27,7 +27,8 @@ export default function HelpDesk(): ReactElement | null {
   const [isLoaded, setIsLoaded] = useState(false)
   const [showGuide, setShowGuide] = useState(false)
   const [hasUnread, setHasUnread] = useState(false)
-  const { userSummary, userSettings } = useUserStore()
+  const userSummary = useUserStore(state => state.userSummary)
+  const userSettings = useUserStore(state => state.userSettings)
 
   // If it's the user's first time using SGI, show an overlay
   // that directs them to the help desk

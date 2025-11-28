@@ -42,7 +42,7 @@ export default function ChatInput({
   const [imagePreview, setImagePreview] = useState<{ file: File; url: string } | null>(null)
   const [isUploading, setIsUploading] = useState(false)
   const { t } = useTranslation()
-  const { userSummary } = useUserStore()
+  const userSummary = useUserStore(state => state.userSummary)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const currentUser = useMemo(

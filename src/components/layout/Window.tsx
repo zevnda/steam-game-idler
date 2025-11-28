@@ -11,8 +11,9 @@ import SteamWarning from '@/components/ui/SteamWarning'
 import useWindow from '@/hooks/layout/useWindow'
 
 export default function Window(): ReactElement {
-  const { userSummary } = useUserStore()
-  const { loadingUserSummary } = useStateStore()
+  const userSummary = useUserStore(state => state.userSummary)
+  const loadingUserSummary = useStateStore(state => state.loadingUserSummary)
+
   useWindow()
 
   if (loadingUserSummary)

@@ -23,8 +23,11 @@ interface AutomateButtonsHook {
 // Automate card farming and achievement unlocking
 export const useAutomate = (): AutomateButtonsHook => {
   const { t } = useTranslation()
-  const { userSummary, userSettings, setUserSettings } = useUserStore()
-  const { setIsCardFarming, setIsAchievementUnlocker } = useStateStore()
+  const userSummary = useUserStore(state => state.userSummary)
+  const userSettings = useUserStore(state => state.userSettings)
+  const setUserSettings = useUserStore(state => state.setUserSettings)
+  const setIsCardFarming = useStateStore(state => state.setIsCardFarming)
+  const setIsAchievementUnlocker = useStateStore(state => state.setIsAchievementUnlocker)
 
   // Start card farming
   const startCardFarming = async (): Promise<void> => {

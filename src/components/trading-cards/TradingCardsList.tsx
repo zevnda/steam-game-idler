@@ -21,9 +21,10 @@ import useTradingCardsList from '@/hooks/trading-cards/useTradingCardsList'
 
 export default function TradingCardsList(): ReactElement {
   const { t } = useTranslation()
-  const { tradingCardQueryValue } = useSearchStore()
-  const { sidebarCollapsed, transitionDuration } = useStateStore()
-  const { userSettings } = useUserStore()
+  const tradingCardQueryValue = useSearchStore(state => state.tradingCardQueryValue)
+  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
+  const transitionDuration = useStateStore(state => state.transitionDuration)
+  const userSettings = useUserStore(state => state.userSettings)
   const [lockedCards, setLockedCards] = useState<string[]>([])
   const [cardsPerRow, setCardsPerRow] = useState(6)
   const [currentPage, setCurrentPage] = useState(1)

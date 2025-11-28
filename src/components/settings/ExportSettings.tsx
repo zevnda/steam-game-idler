@@ -147,7 +147,7 @@ export const getExportData = async (userSettings: UserSettings) => {
 
 export default function ExportSettings(): ReactElement {
   const { t } = useTranslation()
-  const { userSettings } = useUserStore()
+  const userSettings = useUserStore(state => state.userSettings)
 
   const exportSettings = async (): Promise<void> => {
     try {

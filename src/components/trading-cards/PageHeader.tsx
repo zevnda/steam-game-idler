@@ -40,12 +40,16 @@ export default function PageHeader({
   onPageChange,
 }: PageHeaderProps): ReactElement {
   const { t } = useTranslation()
-  const { sidebarCollapsed, transitionDuration } = useStateStore()
-  const { tradingCardQueryValue, setTradingCardQueryValue } = useSearchStore()
+  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
+  const transitionDuration = useStateStore(state => state.transitionDuration)
+  const tradingCardQueryValue = useSearchStore(state => state.tradingCardQueryValue)
+  const setTradingCardQueryValue = useSearchStore(state => state.setTradingCardQueryValue)
   const { isOpen: isConfirmOpen, onOpen: onConfirmOpen, onOpenChange: onConfirmOpenChange } = useDisclosure()
   const { isOpen: isBulkOpen, onOpen: onBulkOpen, onOpenChange: onBulkOpenChange } = useDisclosure()
   const { isOpen: isRemoveOpen, onOpen: onRemoveOpen, onOpenChange: onRemoveOpenChange } = useDisclosure()
-  const { setActivePage, setPreviousActivePage, setCurrentSettingsTab } = useNavigationStore()
+  const setActivePage = useNavigationStore(state => state.setActivePage)
+  const setPreviousActivePage = useNavigationStore(state => state.setPreviousActivePage)
+  const setCurrentSettingsTab = useNavigationStore(state => state.setCurrentSettingsTab)
 
   const handleCardSorting = (key: string): void => {
     tradingCardContext.setCardSortStyle?.(key)

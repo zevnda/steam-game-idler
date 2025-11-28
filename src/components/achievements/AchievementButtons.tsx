@@ -25,8 +25,9 @@ export default function AchievementButtons({
   setRefreshKey,
 }: AchievementButtonsProps): ReactElement {
   const { t } = useTranslation()
-  const { userSummary } = useUserStore()
-  const { appId, appName } = useStateStore()
+  const userSummary = useUserStore(state => state.userSummary)
+  const appId = useStateStore(state => state.appId)
+  const appName = useStateStore(state => state.appName)
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const { handleChange, handleUnlockAll, handleLockAll } = useAchievementButtons(userSummary, setAchievements)
   const [state, setState] = useState('')

@@ -15,7 +15,8 @@ import { handleOpenExtLink } from '@/utils/tasks'
 
 export default function ChangelogModal(): ReactElement | null {
   const { t } = useTranslation()
-  const { showChangelog, setShowChangelog } = useUpdateStore()
+  const showChangelog = useUpdateStore(state => state.showChangelog)
+  const setShowChangelog = useUpdateStore(state => state.setShowChangelog)
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const [appVersion, setAppVersion] = useState('')
   const [isVersionLoaded, setIsVersionLoaded] = useState(false)

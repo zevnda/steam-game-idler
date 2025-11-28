@@ -18,7 +18,7 @@ interface AchievementSettingsHook {
 
 export const useAchievementSettings = (): AchievementSettingsHook => {
   const { t } = useTranslation()
-  const { userSettings } = useUserStore()
+  const userSettings = useUserStore(state => state.userSettings)
   const [sliderLabel, setSliderLabel] = useState('')
 
   // Sync local settings with global settings when they change

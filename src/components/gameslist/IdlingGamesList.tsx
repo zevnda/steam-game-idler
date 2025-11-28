@@ -15,8 +15,12 @@ import { showDangerToast, showSuccessToast } from '@/utils/toasts'
 
 export default function IdlingGamesList(): ReactElement {
   const { t } = useTranslation()
-  const { idleGamesList, setIdleGamesList } = useIdleStore()
-  const { sidebarCollapsed, transitionDuration, setIsCardFarming, setIsAchievementUnlocker } = useStateStore()
+  const idleGamesList = useIdleStore(state => state.idleGamesList)
+  const setIdleGamesList = useIdleStore(state => state.setIdleGamesList)
+  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
+  const transitionDuration = useStateStore(state => state.transitionDuration)
+  const setIsCardFarming = useStateStore(state => state.setIsCardFarming)
+  const setIsAchievementUnlocker = useStateStore(state => state.setIsAchievementUnlocker)
 
   const handleStopIdleAll = async (): Promise<void> => {
     try {

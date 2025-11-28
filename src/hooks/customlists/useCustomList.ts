@@ -28,8 +28,10 @@ interface CustomListHook {
 }
 
 export default function useCustomList(listName: string): CustomListHook {
-  const { isAchievementUnlocker, isCardFarming } = useStateStore()
-  const { userSummary, gamesList } = useUserStore()
+  const isAchievementUnlocker = useStateStore(state => state.isAchievementUnlocker)
+  const isCardFarming = useStateStore(state => state.isCardFarming)
+  const userSummary = useUserStore(state => state.userSummary)
+  const gamesList = useUserStore(state => state.gamesList)
   const [list, setList] = useState<Game[]>([])
   const [searchTerm, setSearchTerm] = useState('')
   const [showInList, setShowInList] = useState(false)

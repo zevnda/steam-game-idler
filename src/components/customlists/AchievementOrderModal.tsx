@@ -206,7 +206,7 @@ export default function AchievementOrderModal({
   onOpenChange: () => void
 }): ReactElement {
   const { t } = useTranslation()
-  const { userSummary } = useUserStore()
+  const userSummary = useUserStore(state => state.userSummary)
   const [isLoading, setIsLoading] = useState(false)
   const [achievements, setAchievements] = useState<Achievement[]>([])
   const [originalAchievements, setOriginalAchievements] = useState<Achievement[]>([])

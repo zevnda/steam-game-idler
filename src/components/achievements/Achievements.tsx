@@ -16,8 +16,10 @@ import useAchievements from '@/hooks/achievements/useAchievements'
 
 export default function Achievements(): ReactElement {
   const { t } = useTranslation()
-  const { setCurrentTab } = useNavigationStore()
-  const { appId, sidebarCollapsed, transitionDuration } = useStateStore()
+  const setCurrentTab = useNavigationStore(state => state.setCurrentTab)
+  const appId = useStateStore(state => state.appId)
+  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
+  const transitionDuration = useStateStore(state => state.transitionDuration)
   const [isLoading, setIsLoading] = useState(true)
   const [achievements, setAchievements] = useState<Achievement[]>([])
   const [statistics, setStatistics] = useState<Statistic[]>([])

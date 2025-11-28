@@ -24,8 +24,10 @@ export default function useAchievements(
   setProtectedStatistics: Dispatch<SetStateAction<boolean>>,
 ): UseAchievementsProps {
   const { t } = useTranslation()
-  const { appId } = useStateStore()
-  const { userSummary, setAchievementsUnavailable, setStatisticsUnavailable } = useUserStore()
+  const appId = useStateStore(state => state.appId)
+  const userSummary = useUserStore(state => state.userSummary)
+  const setAchievementsUnavailable = useUserStore(state => state.setAchievementsUnavailable)
+  const setStatisticsUnavailable = useUserStore(state => state.setStatisticsUnavailable)
   const [windowInnerHeight, setWindowInnerHeight] = useState(window.innerHeight)
   const [refreshKey, setRefreshKey] = useState(0)
 

@@ -65,7 +65,7 @@ Row.displayName = 'Row'
 
 export default function GameSettings(): ReactElement {
   const { t } = useTranslation()
-  const { gamesList } = useUserStore()
+  const gamesList = useUserStore(state => state.gamesList)
   const [searchTerm, setSearchTerm] = useState('')
   const [windowInnerHeight, setWindowInnerHeight] = useState(window.innerHeight)
   const [selectedGame, setSelectedGame] = useState<Game | null>(null)

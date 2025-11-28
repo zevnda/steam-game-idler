@@ -12,7 +12,7 @@ import { showDangerToast } from '@/utils/toasts'
 
 export default function OpenSettings(): ReactElement {
   const { t } = useTranslation()
-  const { userSummary } = useUserStore()
+  const userSummary = useUserStore(state => state.userSummary)
 
   // Open the log file in file explorer
   const handleOpenSettingsFile = async (): Promise<void> => {
