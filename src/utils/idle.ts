@@ -40,8 +40,18 @@ export async function startIdle(appId: number, appName: string, manual: boolean 
     const processes = response?.processes
     const runningIdlers = processes.map(p => p.appid)
 
+    if (processes.length === 3) {
+      // We already show a warning toast if startIdle returns false in most cases, so just log here
+      logEvent(
+        `[Error] [Idle] Maximum number of idling processes (32) reached when attempting to idle ${appName} (${appId})`,
+      )
+      return false
+    }
+
     if (runningIdlers.includes(appId)) {
+      // This is unlikely to happen but worth handling just in case
       showWarningToast(t('toast.startIdle.alreadyIdling', { appName, appId }))
+      logEvent(`[Error] [Idle] Attempted to idle already idling game ${appName} (${appId})`)
       return false
     }
 
