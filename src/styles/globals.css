@@ -17,6 +17,7 @@
     transparent 62%
   );
   --holo-border: linear-gradient(120deg, #1d1d208f 0%, #7778868f 50%, #1d1d208f 100%);
+  --shimmer-color: #ffffff38;
 }
 
 /* // Themes */
@@ -480,8 +481,14 @@ svg {
 }
 
 @keyframes shimmer {
-  to {
-    rotate: 360deg;
+  0% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(100%);
   }
 }
 
@@ -492,5 +499,17 @@ svg {
   }
   50% {
     scale: 1.2;
+  }
+}
+
+@keyframes custom-shimmer {
+  0% {
+    transform: translateX(0%);
+  }
+  50% {
+    transform: translateX(200%);
+  }
+  100% {
+    transform: translateX(200%);
   }
 }
