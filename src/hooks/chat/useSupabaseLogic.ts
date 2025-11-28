@@ -195,8 +195,7 @@ export function useSupabaseLogic(userSummary: UserSummary | null): {
         const { data: usersData, error } = await supabase
           .from('users')
           .select('*')
-          .or(`last_seen.gte.${fiveMinutesAgoISO},role.neq.user`)
-          .limit(250)
+          .or(`last_seen.gte.${fiveMinutesAgoISO}`)
           .order('username', { ascending: true })
 
         if (error) {
