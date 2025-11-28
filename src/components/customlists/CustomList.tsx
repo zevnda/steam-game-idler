@@ -241,7 +241,12 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
 
                   {listType.startButton && (
                     <Button
-                      className='text-white font-bold transition-all duration-300 relative overflow-hidden before:absolute before:inset-0 before:bg-linear-to-r before:from-transparent before:via-[#ffffff]/30 before:to-transparent before:-translate-x-full before:animate-[shimmer_2s_ease-in-out_infinite] hover:before:animate-[shimmer_0.7s_ease-in-out] *:relative *:z-10'
+                      className={cn(
+                        'text-white font-bold transition-all duration-300 relative overflow-hidden before:absolute',
+                        'before:inset-0 before:bg-linear-to-r before:from-transparent before:via-(--shimmer-color)',
+                        'before:to-transparent before:-translate-x-full before:animate-[custom-shimmer_2.7s_ease-in-out_infinite]',
+                        '*:relative *:z-10',
+                      )}
                       style={{
                         backgroundImage: 'var(--gradient-btn)',
                       }}
