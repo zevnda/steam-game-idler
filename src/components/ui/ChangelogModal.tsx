@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react'
 
-import { Button, Modal, ModalBody, ModalContent, ModalFooter, useDisclosure } from '@heroui/react'
+import { Button, Modal, ModalBody, ModalContent, ModalFooter, Spinner, useDisclosure } from '@heroui/react'
 import { useEffect, useState } from 'react'
 
 import 'github-markdown-css/github-markdown-light.css'
@@ -18,18 +18,26 @@ export default function ChangelogModal(): ReactElement | null {
   const { showChangelog, setShowChangelog } = useUpdateStore()
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const [appVersion, setAppVersion] = useState('')
+  const [isVersionLoaded, setIsVersionLoaded] = useState(false)
 
   useEffect(() => {
-    if (showChangelog) {
+    if (showChangelog && isVersionLoaded) {
       onOpen()
       setShowChangelog(false)
     }
-  }, [onOpen, showChangelog, setShowChangelog])
+  }, [onOpen, showChangelog, setShowChangelog, isVersionLoaded])
 
   useEffect(() => {
     ;(async () => {
-      const version = await getVersion()
-      setAppVersion(version)
+      try {
+        const version = await getVersion()
+        setAppVersion(version)
+        setIsVersionLoaded(true)
+      } catch (error) {
+        console.error('Failed to get app version:', error)
+        setAppVersion('latest')
+        setIsVersionLoaded(true)
+      }
     })()
   }, [])
 
@@ -48,7 +56,13 @@ export default function ChangelogModal(): ReactElement | null {
     >
       <ModalContent>
         <ModalBody className='p-0'>
-          <iframe src={`https://steamgameidler.com/changelog/${appVersion}`} className='min-h-[500px]' />
+          {isVersionLoaded ? (
+            <iframe src={`https://steamgameidler.com/changelog/${appVersion}`} className='min-h-[500px]' />
+          ) : (
+            <div className='flex items-center justify-center min-h-[500px]'>
+              <Spinner variant='simple' className='m-10' />
+            </div>
+          )}
         </ModalBody>
 
         <ModalFooter className='border-t border-border justify-between'>
