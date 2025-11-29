@@ -60,12 +60,15 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
     setSearchTerm,
     showInList,
     setShowInList,
+    showBlacklist,
+    setShowBlacklist,
     handleAddGame,
     handleAddAllGames,
     handleAddAllResults,
     handleRemoveGame,
     handleUpdateListOrder,
     handleClearList,
+    handleBlacklistGame,
   } = useCustomList(type)
   const [isEditModalOpen, setEditModalOpen] = useState(false)
   const [gamesWithDrops, setGamesWithDrops] = useState<Game[]>([])
@@ -354,19 +357,24 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
         isOpen={isEditModalOpen}
         filteredGamesList={filteredGamesList}
         showInList={showInList}
+        showBlacklist={showBlacklist}
         onOpenChange={setEditModalOpen}
         onClose={() => {
           setSearchTerm('')
           setShowInList(false)
+          setShowBlacklist(false)
         }}
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
         setShowInList={setShowInList}
+        setShowBlacklist={setShowBlacklist}
         handleAddGame={handleAddGame}
         handleAddAllGames={handleAddAllGames}
         handleAddAllResults={handleAddAllResults}
         handleRemoveGame={handleRemoveGame}
         handleClearList={handleClearList}
+        handleBlacklistGame={handleBlacklistGame}
+        blacklist={userSettings.cardFarming.blacklist || []}
       />
     </>
   )

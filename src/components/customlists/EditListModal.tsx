@@ -10,10 +10,14 @@ import { TbCheck } from 'react-icons/tb'
 import { FixedSizeList as List } from 'react-window'
 
 interface RowData {
+  t: (key: string) => string
   filteredGamesList: Game[]
   list: Game[]
   handleAddGame: (game: Game) => void
   handleRemoveGame: (game: Game) => void
+  type?: string
+  handleBlacklistGame?: (game: Game) => void
+  blacklist: number[]
 }
 
 interface RowProps {
@@ -23,7 +27,7 @@ interface RowProps {
 }
 
 const Row = memo(({ index, style, data }: RowProps): ReactElement => {
-  const { filteredGamesList, list, handleAddGame, handleRemoveGame } = data
+  const { t, filteredGamesList, list, handleAddGame, handleRemoveGame, type, handleBlacklistGame, blacklist } = data
   const item = filteredGamesList[index]
 
   const handleImageError = (event: SyntheticEvent<HTMLImageElement, Event>): void => {
@@ -42,6 +46,17 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement => {
       onClick={() => (list.some(game => game.appid === item.appid) ? handleRemoveGame(item) : handleAddGame(item))}
     >
       <div className='flex items-center gap-3 max-w-[90%]'>
+        {type === 'cardFarmingList' && handleBlacklistGame && (
+          <Button
+            size='sm'
+            className={cn('min-w-6 h-6', blacklist.includes(item.appid) ? 'bg-danger/20 text-danger' : 'mr-3.5')}
+            onPress={e => {
+              handleBlacklistGame(item)
+            }}
+          >
+            {blacklist.includes(item.appid) ? t('customLists.blacklisted') : t('customLists.blacklist')}
+          </Button>
+        )}
         <Image
           src={`https://cdn.cloudflare.steamstatic.com/steam/apps/${item.appid}/header.jpg`}
           className='aspect-62/29 rounded-sm'
@@ -68,16 +83,20 @@ interface EditListModalProps {
   isOpen: boolean
   filteredGamesList: Game[]
   showInList: boolean
+  showBlacklist: boolean
   onOpenChange: Dispatch<SetStateAction<boolean>>
   onClose: () => void
   searchTerm: string
   setSearchTerm: (term: string) => void
   setShowInList: (show: boolean) => void
+  setShowBlacklist: (show: boolean) => void
   handleAddGame: (game: Game) => void
   handleAddAllGames: (games: Game[]) => void
   handleAddAllResults: (games: Game[]) => void
   handleRemoveGame: (game: Game) => void
   handleClearList: () => void
+  handleBlacklistGame?: (game: Game) => void
+  blacklist: number[]
 }
 
 export default function EditListModal({
@@ -86,23 +105,41 @@ export default function EditListModal({
   isOpen,
   filteredGamesList,
   showInList,
+  showBlacklist,
   onOpenChange,
   onClose,
   searchTerm,
   setSearchTerm,
   setShowInList,
+  setShowBlacklist,
   handleAddGame,
   handleAddAllGames,
   handleAddAllResults,
   handleRemoveGame,
   handleClearList,
+  handleBlacklistGame,
+  blacklist,
 }: EditListModalProps): ReactElement {
   const { t } = useTranslation()
   const itemData = {
+    t,
     filteredGamesList,
     list,
     handleAddGame,
     handleRemoveGame,
+    type,
+    handleBlacklistGame,
+    blacklist,
+  }
+
+  // Compute the list to show in the virtualized list
+  let displayList: Game[]
+  if (showInList) {
+    displayList = list
+  } else if (showBlacklist) {
+    displayList = filteredGamesList.filter(game => blacklist.includes(game.appid))
+  } else {
+    displayList = filteredGamesList
   }
 
   return (
@@ -137,7 +174,7 @@ export default function EditListModal({
                   input: ['!text-content text-xl! placeholder:text-xl placeholder:text-content/60'],
                   clearButton: 'text-content/60 hover:text-content',
                 }}
-                isDisabled={showInList}
+                isDisabled={showInList || showBlacklist}
                 onChange={e => setSearchTerm(e.target.value)}
                 onClear={() => setSearchTerm('')}
               />
@@ -145,17 +182,13 @@ export default function EditListModal({
             <ModalBody className='relative p-0 gap-0 overflow-y-auto'>
               <List
                 height={window.innerHeight - 225}
-                itemCount={showInList ? list.length : filteredGamesList.length}
+                itemCount={displayList.length}
                 itemSize={37}
                 width='100%'
-                itemData={
-                  showInList
-                    ? {
-                        ...itemData,
-                        filteredGamesList: list,
-                      }
-                    : itemData
-                }
+                itemData={{
+                  ...itemData,
+                  filteredGamesList: displayList,
+                }}
               >
                 {Row}
               </List>
@@ -174,10 +207,24 @@ export default function EditListModal({
               <Button
                 size='sm'
                 radius='full'
-                className={`font-bold ${showInList ? 'bg-green-400/40 text-green-600' : 'bg-btn-secondary text-btn-text'}`}
+                className={`font-bold ${showBlacklist ? 'bg-danger/20 text-danger' : 'bg-btn-secondary text-btn-text'}`}
+                isDisabled={blacklist.length === 0}
+                onPress={() => {
+                  setShowBlacklist(!showBlacklist)
+                  if (showInList) setShowInList(false)
+                }}
+              >
+                {t('customLists.inBlacklist')}
+              </Button>
+              <Button
+                size='sm'
+                radius='full'
+                className={`font-bold ${showInList ? 'bg-success/20 text-success' : 'bg-btn-secondary text-btn-text'}`}
                 isDisabled={list.length === 0}
-                startContent={<TbCheck fontSize={18} className={showInList ? 'text-green-600' : undefined} />}
-                onPress={() => setShowInList(!showInList)}
+                onPress={() => {
+                  setShowInList(!showInList)
+                  if (showBlacklist) setShowBlacklist(false)
+                }}
               >
                 {t('customLists.inList')}
               </Button>

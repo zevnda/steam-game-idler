@@ -122,6 +122,7 @@ const checkGamesForDrops = async (): Promise<DropsCheckResult> => {
   const gameSettings = response.settings.gameSettings || {}
   const credentials = response.settings.cardFarming.credentials
   const allGames = response.settings.cardFarming.allGames
+  const blacklist = response.settings.cardFarming.blacklist || []
 
   const cardFarmingList = await invoke<InvokeCustomList>('get_custom_lists', {
     steamId: userSummary?.steamId,
@@ -140,7 +141,7 @@ const checkGamesForDrops = async (): Promise<DropsCheckResult> => {
         credentials?.sma,
       )
 
-      totalDrops = processGamesWithDrops(gamesWithDrops, gamesSet, gameSettings)
+      totalDrops = processGamesWithDrops(gamesWithDrops, gamesSet, gameSettings, blacklist)
     } else {
       totalDrops = await processIndividualGames(
         cardFarmingList.list_data,
@@ -148,6 +149,7 @@ const checkGamesForDrops = async (): Promise<DropsCheckResult> => {
         gameSettings,
         userSummary,
         credentials,
+        blacklist,
       )
     }
   } catch (error) {
@@ -161,6 +163,7 @@ const processGamesWithDrops = (
   gamesWithDrops: GameWithRemainingDrops[] | Game[],
   gamesSet: Set<GameWithDrops>,
   gameSettings: GameSettings,
+  blacklist: number[],
 ): number => {
   let totalDrops = 0
 
@@ -172,6 +175,11 @@ const processGamesWithDrops = (
         const gameId = isGameWithDrops ? Number(gameData.id) : Number(gameData.appid)
         const gameName = gameData.name
         const remaining = isGameWithDrops ? gameData.remaining : 0
+
+        // Skip if game is blacklisted
+        if (blacklist.includes(gameId)) {
+          continue
+        }
 
         const gameSetting = gameSettings[gameId]
         let maxCardDrops = remaining
@@ -203,12 +211,18 @@ const processIndividualGames = async (
   gameSettings: GameSettings,
   userSummary: UserSummary,
   credentials: CardFarmingSettings['credentials'],
+  blacklist: number[],
 ): Promise<number> => {
   let totalDrops = 0
   const TIMEOUT = 30000
 
   const checkGame = async (gameData: Game): Promise<void> => {
     if (gamesSet.size >= 32) return
+
+    // Skip if game is blacklisted
+    if (blacklist.includes(gameData.appid)) {
+      return
+    }
 
     const timeoutPromise = new Promise<number>((_, reject) => setTimeout(() => reject(), TIMEOUT))
 
