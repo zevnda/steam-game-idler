@@ -7,6 +7,7 @@ export const faqData: FAQEntry[] = [
     markdown:
       '**Why are some games not showing up in my games list in SGI?**\n' +
       '> There are several reasons why a game may not appear in your SGI games list:\n' +
+      '> * You need to click the "Refresh" button in "Your Games" to update the list\n' +
       '> * Family shared games don\'t appear in the games list by default, but you can add them to any of the lists *(Card Farming, Achievement Unlocker, etc..)*  by using the `+` button, entering the game\'s AppID and name, and clicking "Add"\n' +
       '> * Free-to-play games only appear in your library after you\'ve launched them at least once, which grants you a license. Simply clicking "Add to library" on the store page doesn\'t grant you a license\n' +
       '> * Some demos and playtests (unvetted apps) may not show up correctly in SGI, or be able to be idled\n' +
