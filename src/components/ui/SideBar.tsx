@@ -180,7 +180,7 @@ export default function SideBar(): ReactElement {
           >
             <div
               className={cn(
-                'flex items-center gap-3 transition-all duration-500 ease-in-out',
+                'flex items-center gap-3 transition-all duration-150 ease-in-out',
                 sidebarCollapsed ? 'justify-center' : 'justify-start',
               )}
             >
@@ -195,7 +195,7 @@ export default function SideBar(): ReactElement {
                 )}
               </div>
               {!sidebarCollapsed && (
-                <div className={cn('transition-all duration-500 ease-in-out whitespace-nowrap')}>
+                <div className={cn('transition-all duration-150 ease-in-out whitespace-nowrap')}>
                   <p
                     className={cn(
                       'flex justify-center items-center text-sm font-bold',
