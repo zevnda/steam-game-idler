@@ -2,6 +2,7 @@ import type { Game } from '@/types'
 import type { ReactElement } from 'react'
 
 import { cn } from '@heroui/react'
+import { useCallback, useEffect, useState } from 'react'
 import { useStateStore } from '@/stores/stateStore'
 import { useUserStore } from '@/stores/userStore'
 import { useTranslation } from 'react-i18next'
@@ -13,6 +14,27 @@ export default function FreeGamesList(): ReactElement {
   const freeGamesList = useUserStore(state => state.freeGamesList)
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
   const transitionDuration = useStateStore(state => state.transitionDuration)
+  const [columnCount, setColumnCount] = useState(5)
+
+  const handleResize = useCallback((): void => {
+    if (window.innerWidth >= 3200) {
+      setColumnCount(12)
+    } else if (window.innerWidth >= 2300) {
+      setColumnCount(10)
+    } else if (window.innerWidth >= 2000) {
+      setColumnCount(8)
+    } else if (window.innerWidth >= 1500) {
+      setColumnCount(7)
+    } else {
+      setColumnCount(5)
+    }
+  }, [])
+
+  useEffect(() => {
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [handleResize])
 
   return (
     <div
@@ -44,7 +66,15 @@ export default function FreeGamesList(): ReactElement {
         </div>
       </div>
 
-      <div className='grid grid-cols-5 2xl:grid-cols-7 gap-x-4 gap-y-4 p-6 pt-0'>
+      <div
+        className={cn(
+          'grid gap-x-5 gap-y-4 px-6',
+          columnCount === 7 ? 'grid-cols-7' : 'grid-cols-5',
+          columnCount === 8 ? 'grid-cols-8' : '',
+          columnCount === 10 ? 'grid-cols-10' : '',
+          columnCount === 12 ? 'grid-cols-12' : '',
+        )}
+      >
         {freeGamesList &&
           freeGamesList.map((item: Game) => <GameCard key={item.appid} item={item} isFreeGame={true} />)}
       </div>
