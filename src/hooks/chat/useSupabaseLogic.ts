@@ -491,8 +491,6 @@ export function useSupabaseLogic(userSummary: UserSummary | null): {
       setUserRoles({})
       setOnlineUsers([])
       setTypingUsers([])
-      setChatMaintenanceMode(false)
-      setIsBanned(false)
     }
   }, [
     userSummary?.steamId,
@@ -513,10 +511,8 @@ export function useSupabaseLogic(userSummary: UserSummary | null): {
       setUserRoles({})
       setOnlineUsers([])
       setTypingUsers([])
-      setChatMaintenanceMode(false)
-      setIsBanned(false)
     }
-  }, [isChatActive, setMessages, setUserRoles, setOnlineUsers, setTypingUsers, setChatMaintenanceMode, setIsBanned])
+  }, [isChatActive, setMessages, setUserRoles, setOnlineUsers, setTypingUsers])
 
   return { broadcastTyping, broadcastStopTyping }
 }
