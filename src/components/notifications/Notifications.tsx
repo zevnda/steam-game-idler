@@ -46,7 +46,7 @@ export default function Notifications(): ReactElement {
             setShowNotifications(!showNotifications)
           }}
         >
-          <TbBell fontSize={20} className={cn(unseenNotifications.length > 0 && 'text-dynamic')} />
+          <TbBell fontSize={20} className={cn(unseenNotifications.length > 0 && 'text-yellow-400')} />
           {/* Notification counter badge */}
           {unseenNotifications.length > 0 && (
             <span className='absolute flex justify-center items-center w-4 h-4 top-1 right-2 bg-danger text-white text-[10px] font-bold rounded-full shadow'>
