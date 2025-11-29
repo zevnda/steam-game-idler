@@ -1,4 +1,4 @@
-import type { Game, InvokeCustomList } from '@/types'
+import type { Game, InvokeCustomList, InvokeSettings } from '@/types'
 import type { Dispatch, RefObject, SetStateAction } from 'react'
 
 import { invoke } from '@tauri-apps/api/core'
@@ -19,12 +19,15 @@ interface CustomListHook {
   setSearchTerm: Dispatch<SetStateAction<string>>
   showInList: boolean
   setShowInList: Dispatch<SetStateAction<boolean>>
+  showBlacklist: boolean
+  setShowBlacklist: Dispatch<SetStateAction<boolean>>
   handleAddGame: (game: Game) => Promise<void>
   handleAddAllGames: (games: Game[]) => Promise<void>
   handleAddAllResults: (games: Game[]) => Promise<void>
   handleRemoveGame: (game: Game) => Promise<void>
   handleUpdateListOrder: (newList: Game[]) => Promise<void>
   handleClearList: () => Promise<void>
+  handleBlacklistGame: (game: Game) => Promise<void>
 }
 
 export default function useCustomList(listName: string): CustomListHook {
@@ -32,9 +35,11 @@ export default function useCustomList(listName: string): CustomListHook {
   const isCardFarming = useStateStore(state => state.isCardFarming)
   const userSummary = useUserStore(state => state.userSummary)
   const gamesList = useUserStore(state => state.gamesList)
+  const setUserSettings = useUserStore(state => state.setUserSettings)
   const [list, setList] = useState<Game[]>([])
   const [searchTerm, setSearchTerm] = useState('')
   const [showInList, setShowInList] = useState(false)
+  const [showBlacklist, setShowBlacklist] = useState(false)
   const [visibleGames, setVisibleGames] = useState(50)
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -158,6 +163,39 @@ export default function useCustomList(listName: string): CustomListHook {
     }
   }
 
+  const handleBlacklistGame = async (game: Game): Promise<void> => {
+    // Blacklist a game (only for card farming list)
+    const cachedUserSummary = await invoke<InvokeSettings>('get_user_settings', {
+      steamId: userSummary?.steamId,
+    })
+
+    const currentBlacklist: number[] = cachedUserSummary.settings.cardFarming.blacklist || []
+
+    // if already in blacklist, remove it
+    const updatedBlacklist = currentBlacklist.includes(game.appid)
+      ? currentBlacklist.filter(appid => appid !== game.appid)
+      : [...currentBlacklist, game.appid]
+
+    if (updatedBlacklist.length === 0) {
+      // If blacklist is empty after update, switch view mode
+      setShowBlacklist(false)
+    }
+
+    invoke<InvokeSettings>('update_user_settings', {
+      steamId: userSummary?.steamId,
+      key: 'cardFarming.blacklist',
+      value: updatedBlacklist,
+    })
+
+    setUserSettings(prevSettings => ({
+      ...prevSettings,
+      cardFarming: {
+        ...prevSettings.cardFarming,
+        blacklist: updatedBlacklist,
+      },
+    }))
+  }
+
   const handleUpdateListOrder = async (newList: Game[]): Promise<void> => {
     // Save the new order of games in the list (after drag n drop)
     const response = await invoke<InvokeCustomList>('update_custom_list', {
@@ -197,11 +235,14 @@ export default function useCustomList(listName: string): CustomListHook {
     setSearchTerm,
     showInList,
     setShowInList,
+    showBlacklist,
+    setShowBlacklist,
     handleAddGame,
     handleAddAllGames,
     handleAddAllResults,
     handleRemoveGame,
     handleUpdateListOrder,
     handleClearList,
+    handleBlacklistGame,
   }
 }

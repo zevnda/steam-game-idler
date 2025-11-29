@@ -30,6 +30,7 @@ export interface CardFarmingSettings {
   userSummary: CardFarmingUser | null
   totalDropsRemaining: number
   gamesWithDrops: number
+  blacklist: number[] | null
 }
 
 export interface GameSpecificSettings {

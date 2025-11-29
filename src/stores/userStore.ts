@@ -74,6 +74,7 @@ export const useUserStore = create<UserStore>(set => ({
       userSummary: null,
       gamesWithDrops: 0,
       totalDropsRemaining: 0,
+      blacklist: null,
     },
     achievementUnlocker: {
       idle: true,
