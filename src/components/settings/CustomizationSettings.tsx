@@ -216,7 +216,7 @@ export default function CustomizationSettings(): ReactElement | null {
             defaultValue={resolvedTheme}
             onValueChange={value => handleThemeChange(value)}
           >
-            <div className='grid grid-cols-4 space-x-2 space-y-4'>
+            <div className='grid grid-cols-5 space-x-2 space-y-4'>
               {themes.map(theme => (
                 <div key={theme.key} onClick={() => theme.isProTheme && !isPro && setProModalOpen(true)}>
                   <Radio
