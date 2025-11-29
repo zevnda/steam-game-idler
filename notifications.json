@@ -1,5 +1,12 @@
 [
   {
+    "id": "32",
+    "title": "New PRO Feature: Automatically fetch Steam Credentials",
+    "message": "Sick of manually copying your Steam Credentials into SGI? With PRO, you can now fetch them automatically! Click here to learn more",
+    "url": "https://github.com/zevnda/steam-game-idler/discussions/1266",
+    "timestamp": "1764440412"
+  },
+  {
     "id": "31",
     "title": "Changelogs have moved",
     "message": "Changelogs have moved and are now available on the Steam Game Idler website. Click here to view them online",
