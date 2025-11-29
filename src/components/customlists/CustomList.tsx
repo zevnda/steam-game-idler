@@ -5,7 +5,7 @@ import type { ReactElement, ReactNode } from 'react'
 import { invoke } from '@tauri-apps/api/core'
 
 import { Alert, Button, cn, useDisclosure } from '@heroui/react'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useNavigationStore } from '@/stores/navigationStore'
 import { useStateStore } from '@/stores/stateStore'
 import { useUserStore } from '@/stores/userStore'
@@ -82,6 +82,27 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
   const setCurrentSettingsTab = useNavigationStore(state => state.setCurrentSettingsTab)
   const userSummary = useUserStore(state => state.userSummary)
   const userSettings = useUserStore(state => state.userSettings)
+  const [columnCount, setColumnCount] = useState(5)
+
+  const handleResize = useCallback((): void => {
+    if (window.innerWidth >= 3200) {
+      setColumnCount(12)
+    } else if (window.innerWidth >= 2300) {
+      setColumnCount(10)
+    } else if (window.innerWidth >= 2000) {
+      setColumnCount(8)
+    } else if (window.innerWidth >= 1500) {
+      setColumnCount(7)
+    } else {
+      setColumnCount(5)
+    }
+  }, [])
+
+  useEffect(() => {
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [handleResize])
 
   const handleDragEnd = (event: DragEndEvent): void => {
     const { active, over } = event
@@ -305,7 +326,15 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
         )}
         <DndContext onDragEnd={handleDragEnd}>
           <SortableContext items={list.map(item => item.appid)}>
-            <div className='grid grid-cols-5 2xl:grid-cols-7 gap-4 p-6 pt-4'>
+            <div
+              className={cn(
+                'grid gap-x-5 gap-y-4 px-6',
+                columnCount === 7 ? 'grid-cols-7' : 'grid-cols-5',
+                columnCount === 8 ? 'grid-cols-8' : '',
+                columnCount === 10 ? 'grid-cols-10' : '',
+                columnCount === 12 ? 'grid-cols-12' : '',
+              )}
+            >
               {list &&
                 list
                   .slice(0, visibleGames)

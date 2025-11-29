@@ -131,7 +131,7 @@ export default function AdSlot(): ReactElement {
   return (
     <div
       className={cn(
-        'transition-all ease-in-out border border-border p-2 pb-1 rounded-lg translate-y-8',
+        'transition-all ease-in-out border border-border p-2 pb-1 rounded-lg',
         sidebarCollapsed && activePage !== 'settings' ? 'scale-[.160]' : 'scale-[.75]',
         isPro === null && 'opacity-0',
         isPro === true && 'opacity-0',
@@ -151,7 +151,7 @@ export default function AdSlot(): ReactElement {
       </div>
 
       <div
-        className='text-xs text-altwhite mt-1 text-center cursor-pointer hover:text-white duration-150 scale-125'
+        className='text-xs text-altwhite mt-1 text-center cursor-pointer hover:text-white duration-150 scale-125 pointer-events-auto'
         onClick={() => setProModalOpen(true)}
       >
         <p>

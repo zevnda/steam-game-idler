@@ -165,7 +165,7 @@ export default function SideBar(): ReactElement {
           )}
           <div
             className={cn(
-              'px-1.5 py-[5px] rounded-lg duration-150 cursor-pointer active:scale-95 w-full overflow-hidden',
+              'px-1.5 py-1.5 rounded-lg duration-150 cursor-pointer active:scale-95 w-full overflow-hidden',
               isCurrentPage
                 ? sidebarCollapsed
                   ? 'bg-dynamic/10 text-dynamic'
@@ -180,7 +180,7 @@ export default function SideBar(): ReactElement {
           >
             <div
               className={cn(
-                'flex items-center gap-3 transition-all duration-500 ease-in-out',
+                'flex items-center gap-3 transition-all duration-150 ease-in-out',
                 sidebarCollapsed ? 'justify-center' : 'justify-start',
               )}
             >
@@ -195,7 +195,7 @@ export default function SideBar(): ReactElement {
                 )}
               </div>
               {!sidebarCollapsed && (
-                <div className={cn('transition-all duration-500 ease-in-out whitespace-nowrap')}>
+                <div className={cn('transition-all duration-150 ease-in-out whitespace-nowrap')}>
                   <p
                     className={cn(
                       'flex justify-center items-center text-sm font-bold',
@@ -282,7 +282,7 @@ export default function SideBar(): ReactElement {
 
         <div
           className={cn(
-            'flex flex-col gap-1.5 p-2 w-full min-w-0 overflow-y-auto',
+            'flex flex-col gap-1 p-2 w-full min-w-0 overflow-y-auto',
             !sidebarCollapsed ? 'pl-0' : undefined,
           )}
         >
@@ -290,7 +290,7 @@ export default function SideBar(): ReactElement {
         </div>
 
         {process.env.NODE_ENV === 'production' && (
-          <div className='flex flex-col items-center justify-end grow mb-1 overflow-hidden'>
+          <div className='absolute bottom-8 left-0 right-0 flex flex-col items-center justify-end grow mb-1 overflow-hidden pointer-events-none'>
             <AdSlot />
           </div>
         )}

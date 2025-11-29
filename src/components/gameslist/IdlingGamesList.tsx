@@ -4,6 +4,7 @@ import type { ReactElement } from 'react'
 import { invoke } from '@tauri-apps/api/core'
 
 import { Button, cn } from '@heroui/react'
+import { useCallback, useEffect, useState } from 'react'
 import { useIdleStore } from '@/stores/idleStore'
 import { useStateStore } from '@/stores/stateStore'
 import { useTranslation } from 'react-i18next'
@@ -21,6 +22,27 @@ export default function IdlingGamesList(): ReactElement {
   const transitionDuration = useStateStore(state => state.transitionDuration)
   const setIsCardFarming = useStateStore(state => state.setIsCardFarming)
   const setIsAchievementUnlocker = useStateStore(state => state.setIsAchievementUnlocker)
+  const [columnCount, setColumnCount] = useState(5)
+
+  const handleResize = useCallback((): void => {
+    if (window.innerWidth >= 3200) {
+      setColumnCount(12)
+    } else if (window.innerWidth >= 2300) {
+      setColumnCount(10)
+    } else if (window.innerWidth >= 2000) {
+      setColumnCount(8)
+    } else if (window.innerWidth >= 1500) {
+      setColumnCount(7)
+    } else {
+      setColumnCount(5)
+    }
+  }, [])
+
+  useEffect(() => {
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [handleResize])
 
   const handleStopIdleAll = async (): Promise<void> => {
     try {
@@ -81,7 +103,15 @@ export default function IdlingGamesList(): ReactElement {
         </div>
       </div>
 
-      <div className='grid grid-cols-5 2xl:grid-cols-7 gap-4 p-6 pt-2'>
+      <div
+        className={cn(
+          'grid gap-x-5 gap-y-4 px-6',
+          columnCount === 7 ? 'grid-cols-7' : 'grid-cols-5',
+          columnCount === 8 ? 'grid-cols-8' : '',
+          columnCount === 10 ? 'grid-cols-10' : '',
+          columnCount === 12 ? 'grid-cols-12' : '',
+        )}
+      >
         {idleGamesList && idleGamesList.map(item => <GameCard key={item.appid} item={item} />)}
       </div>
     </div>
