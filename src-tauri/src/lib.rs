@@ -139,6 +139,8 @@ pub fn run() {
             save_achievement_order,
             start_steam_status_monitor,
             start_processes_monitor,
+            open_steam_login_window,
+            delete_login_window_cookies,
             set_zoom,
             quit_app
         ])

@@ -49,6 +49,7 @@ export default function useWindow(): void {
   console.debug('Monitor for rerenders')
 
   useEffect(() => {
+    // Emit ready event to backend
     emit('ready')
     // Start the Steam status monitor once globally
     invoke('start_steam_status_monitor')

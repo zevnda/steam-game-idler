@@ -1,11 +1,15 @@
+import type { InvokeSteamCredentials } from '@/types'
 import type { ReactElement } from 'react'
 
-import { Button, cn, Input, Spinner } from '@heroui/react'
+import { invoke } from '@tauri-apps/api/core'
+
+import { Button, cn, Divider, Input, Spinner } from '@heroui/react'
 import { useUserStore } from '@/stores/userStore'
 import Image from 'next/image'
 import { Trans, useTranslation } from 'react-i18next'
 import { TbChevronRight, TbEraser, TbRefresh, TbUpload } from 'react-icons/tb'
 
+import Beta from '@/components/ui/Beta'
 import ExtLink from '@/components/ui/ExtLink'
 import WebviewWindow from '@/components/ui/WebviewWindow'
 import {
@@ -14,6 +18,8 @@ import {
   handleCredentialsSave,
   useCardSettings,
 } from '@/hooks/settings/useCardSettings'
+import { logEvent } from '@/utils/tasks'
+import { showWarningToast } from '@/utils/toasts'
 
 export default function SteamCredentials(): ReactElement {
   const { t } = useTranslation()
@@ -21,6 +27,52 @@ export default function SteamCredentials(): ReactElement {
   const userSettings = useUserStore(state => state.userSettings)
   const setUserSettings = useUserStore(state => state.setUserSettings)
   const cardSettings = useCardSettings()
+
+  const handleShowSteamLoginWindow = async (): Promise<void> => {
+    const result = await invoke<InvokeSteamCredentials>('open_steam_login_window')
+
+    if (!result || result.success === false) {
+      showWarningToast('Failed to retrieve Steam credentials')
+      logEvent(`[Error] in (handleShowSteamLoginWindow): ${result?.message || 'Unknown error'}`)
+      return
+    }
+
+    if (result.success) {
+      handleCredentialsSave(
+        result.sessionid,
+        result.steamLoginSecure,
+        result.steamMachineAuth || result.steamParental || undefined,
+        cardSettings.setHasCookies,
+        cardSettings.setCardFarmingUser,
+        userSummary,
+        userSettings,
+        setUserSettings,
+        cardSettings.setIsCFDataLoading,
+      )
+    }
+  }
+
+  const handleSignOutCurrentUser = async (): Promise<void> => {
+    const result = await invoke<InvokeSteamCredentials>('delete_login_window_cookies')
+
+    if (!result || result.success === false) {
+      showWarningToast('Either no user is signed in, or an error occurred while signing out')
+      logEvent(`[Error] in (handleSignOutCurrentUser): ${result?.message || 'Unknown error'}`)
+      return
+    }
+
+    handleCredentialsClear(
+      cardSettings.setHasCookies,
+      cardSettings.setSidValue,
+      cardSettings.setSlsValue,
+      cardSettings.setSmaValue,
+      cardSettings.setCardFarmingUser,
+      userSummary,
+      setUserSettings,
+      cardSettings.setGamesWithDrops,
+      cardSettings.setTotalDropsRemaining,
+    )
+  }
 
   return (
     <div className='relative flex flex-col gap-4 mt-9 pb-16 w-4/5'>
@@ -37,11 +89,58 @@ export default function SteamCredentials(): ReactElement {
       <div className='flex flex-col gap-3 mt-4'>
         <div className='flex justify-between items-start'>
           <div className='flex flex-col gap-2 w-1/2'>
+            <div className='flex items-center gap-2'>
+              <p className='text-sm text-content font-bold'>Semi-Automated Method</p>
+              <Beta />
+            </div>
+            <p className='text-xs text-altwhite'>
+              This method opens a Steam login window handled by SGI, where you can sign in directly to the Steam
+              website.
+            </p>
+            <p className='text-xs text-altwhite'>
+              After signing in, SGI will automatically retrieve and store the necessary Steam Credentials for you.
+            </p>
+            <p className='text-xs text-altwhite'>
+              If your Steam Credentials need to be refreshed, you can use the &quot;Reauthenticate&quot; button to
+              automatically refresh them.
+            </p>
+            <p className='text-xs text-altwhite'>
+              If you want to sign in as a different user, you can use the &quot;Sign Out&quot; button to clear the
+              stored credentials.
+            </p>
+            <WebviewWindow
+              href='https://steamgameidler.com/docs/steam-credentials#semi-automatic-method-recommended'
+              className='text-xs text-dynamic hover:text-dynamic-hover duration-150'
+            >
+              Learn more
+            </WebviewWindow>
+          </div>
+
+          <div className='flex flex-col justify-end gap-2'>
+            <Button
+              size='sm'
+              className='bg-btn-secondary text-btn-text font-bold'
+              radius='full'
+              onPress={handleShowSteamLoginWindow}
+            >
+              {cardSettings.hasCookies ? 'Reauthenticate' : 'Sign In via Steam'}
+            </Button>
+            <Button size='sm' variant='light' radius='full' color='danger' onPress={handleSignOutCurrentUser}>
+              Sign Out
+            </Button>
+          </div>
+        </div>
+
+        <Divider className='bg-border/70 my-4' />
+
+        <div className='flex justify-between items-start'>
+          <div className='flex flex-col gap-2 w-1/2'>
+            <p className='text-sm text-content font-bold'>Manual Method (legacy)</p>
             <p className='text-xs text-altwhite'>
               <Trans i18nKey='settings.cardFarming.steamCredentials'>
                 Steam credentials are required in order to use the Card Farming and Trading Card Manager features.&nbsp;
                 <WebviewWindow
-                  href='https://steamgameidler.com/docs/steam-credentials'
+                  href='https://steamgameidler.com/docs/steam-credentials#manual-method-legacy'
                   className='text-dynamic hover:text-dynamic-hover duration-150'
                 >
                   Learn more
