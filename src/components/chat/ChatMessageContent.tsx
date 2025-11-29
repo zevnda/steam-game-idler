@@ -162,11 +162,6 @@ export default function ChatMessageContent({ message }: ChatMessageContentProps)
     const messageWithImages = convertImageUrlsToMarkdown(message)
     const candidates = extractMentionCandidates(messageWithImages)
 
-    if (candidates.length === 0) {
-      setProcessedMessage(wrapEmojis(messageWithImages))
-      return
-    }
-
     const validateAndProcessMentions = async (): Promise<void> => {
       try {
         // Separate cached and uncached usernames
@@ -209,12 +204,12 @@ export default function ChatMessageContent({ message }: ChatMessageContentProps)
         })
 
         if (!signal.aborted) {
-          setProcessedMessage(processedMessage)
+          setProcessedMessage(wrapEmojis(processed))
         }
       } catch (error) {
         if (!signal.aborted) {
           console.error('Error processing mentions:', error)
-          setProcessedMessage(messageWithImages)
+          setProcessedMessage(wrapEmojis(messageWithImages))
         }
       }
     }
@@ -226,7 +221,7 @@ export default function ChatMessageContent({ message }: ChatMessageContentProps)
         abortControllerRef.current.abort()
       }
     }
-  }, [message, processedMessage])
+  }, [message])
 
   // Close lightbox on unmount
   useEffect(() => {
