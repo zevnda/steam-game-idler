@@ -21,7 +21,7 @@ import {
   useCardSettings,
 } from '@/hooks/settings/useCardSettings'
 import { logEvent } from '@/utils/tasks'
-import { showWarningToast } from '@/utils/toasts'
+import { showDangerToast } from '@/utils/toasts'
 
 export default function SteamCredentials(): ReactElement {
   const { t } = useTranslation()
@@ -36,7 +36,7 @@ export default function SteamCredentials(): ReactElement {
     const result = await invoke<InvokeSteamCredentials>('open_steam_login_window')
 
     if (!result || result.success === false) {
-      showWarningToast('Failed to retrieve Steam credentials')
+      showDangerToast(t('common.error'))
       logEvent(`[Error] in (handleShowSteamLoginWindow): ${result?.message || 'Unknown error'}`)
       return
     }
@@ -60,8 +60,10 @@ export default function SteamCredentials(): ReactElement {
     const result = await invoke<InvokeSteamCredentials>('delete_login_window_cookies')
 
     if (!result || result.success === false) {
-      showWarningToast('Either no user is signed in, or an error occurred while signing out')
-      logEvent(`[Error] in (handleSignOutCurrentUser): ${result?.message || 'Unknown error'}`)
+      showDangerToast(t('common.error'))
+      logEvent(
+        `[Error] in (handleSignOutCurrentUser) this error can occur if you are not already signed in: ${result?.message || 'Unknown error'}`,
+      )
       return
     }
 

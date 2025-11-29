@@ -246,7 +246,7 @@ pub async fn start_steam_status_monitor(app_handle: tauri::AppHandle) {
 pub async fn open_steam_login_window(app_handle: tauri::AppHandle) -> Result<Value, String> {
     use std::time::Duration;
 
-    // Create a new window for Steam login
+    // Create a new window for Steam login (initially hidden)
     let window = tauri::webview::WebviewWindowBuilder::new(
         &app_handle,
         "steam-login",
@@ -258,8 +258,44 @@ pub async fn open_steam_login_window(app_handle: tauri::AppHandle) -> Result<Val
     )
     .title("Steam Login")
     .inner_size(800.0, 700.0)
+    .visible(false)
     .build()
     .map_err(|e| e.to_string())?;
+
+    // Wait a moment for webview to initialize
+    tokio::time::sleep(Duration::from_millis(500)).await;
+
+    // Check if we already have valid cookies
+    if let Some(webview) = window.get_webview("steam-login") {
+        if let Ok(cookies) =
+            webview.cookies_for_url(tauri::Url::parse("https://steamcommunity.com/").unwrap())
+        {
+            let mut sessionid = None;
+            let mut steam_login_secure = None;
+
+            for cookie in cookies {
+                if cookie.name() == "sessionid" {
+                    sessionid = Some(cookie.value().to_string());
+                }
+                if cookie.name() == "steamLoginSecure" {
+                    steam_login_secure = Some(cookie.value().to_string());
+                }
+            }
+
+            // If we already have both cookies, return them immediately without showing window
+            if let (Some(sid), Some(sls)) = (sessionid, steam_login_secure) {
+                let _ = window.close();
+                return Ok(serde_json::json!({
+                    "success": true,
+                    "sessionid": sid,
+                    "steamLoginSecure": sls
+                }));
+            }
+        }
+    }
+
+    // No valid cookies found, show the window for user to log in
+    window.show().map_err(|e| e.to_string())?;
 
     // Listen for window close event
     let window_clone = window.clone();
@@ -348,6 +384,9 @@ pub async fn delete_login_window_cookies(app_handle: tauri::AppHandle) -> Result
     .visible(false)
     .build()
     .map_err(|e| e.to_string())?;
+
+    // Wait for webview to fully initialize
+    tokio::time::sleep(Duration::from_millis(1500)).await;
 
     if let Some(webview) = window.get_webview("steam-logout") {
         // Get all cookies first
