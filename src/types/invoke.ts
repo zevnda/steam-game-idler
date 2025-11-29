@@ -139,3 +139,12 @@ export interface InvokeRemoveListings {
   }[]
   successful_removals: number
 }
+
+export interface InvokeSteamCredentials {
+  sessionid: string
+  steamLoginSecure: string
+  steamParental?: string
+  steamMachineAuth?: string
+  success: boolean
+  message?: string
+}

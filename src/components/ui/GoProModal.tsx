@@ -116,6 +116,10 @@ export default function GoProModal(): ReactElement {
                 </li>
                 <li className='flex items-center gap-2'>
                   <FaCheck className='text-green-500' />
+                  <span>{t('proMode.modal.credentials')}</span>
+                </li>
+                <li className='flex items-center gap-2'>
+                  <FaCheck className='text-green-500' />
                   <span>{t('proMode.modal.themes')}</span>
                 </li>
                 <li className='flex items-center gap-2'>

@@ -240,3 +240,157 @@ pub async fn start_steam_status_monitor(app_handle: tauri::AppHandle) {
         }
     });
 }
+
+// Open a Steam login window, allow user to log in, and retrieve session cookies automatically
+#[tauri::command]
+pub async fn open_steam_login_window(app_handle: tauri::AppHandle) -> Result<Value, String> {
+    use std::time::Duration;
+
+    // Create a new window for Steam login
+    let window = tauri::webview::WebviewWindowBuilder::new(
+        &app_handle,
+        "steam-login",
+        tauri::WebviewUrl::External(
+            "https://steamcommunity.com/login/home/?goto="
+                .parse()
+                .unwrap(),
+        ),
+    )
+    .title("Steam Login")
+    .inner_size(800.0, 700.0)
+    .build()
+    .map_err(|e| e.to_string())?;
+
+    // Listen for window close event
+    let window_clone = window.clone();
+    let (tx, mut rx) = tokio::sync::mpsc::channel(1);
+
+    window.on_window_event(move |event| {
+        if let tauri::WindowEvent::CloseRequested { .. } = event {
+            let _ = tx.try_send(());
+        }
+    });
+
+    // Poll for cookies from the Rust side using the webview cookie manager
+    let start = std::time::Instant::now();
+    loop {
+        // Check if window was closed
+        if rx.try_recv().is_ok() {
+            return Ok(serde_json::json!({
+                "success": false,
+                "message": "Login window closed"
+            }));
+        }
+
+        if start.elapsed() > Duration::from_secs(300) {
+            let _ = window_clone.close();
+            return Ok(serde_json::json!({
+                "success": false,
+                "message": "Login timed out"
+            }));
+        }
+
+        // Get cookies from the webview
+        if let Some(webview) = window_clone.get_webview("steam-login") {
+            // Get all cookies
+            if let Ok(cookies) =
+                webview.cookies_for_url(tauri::Url::parse("https://steamcommunity.com/").unwrap())
+            {
+                let mut sessionid = None;
+                let mut steam_login_secure = None;
+
+                for cookie in cookies {
+                    if cookie.name() == "sessionid" {
+                        sessionid = Some(cookie.value().to_string());
+                    }
+                    if cookie.name() == "steamLoginSecure" {
+                        steam_login_secure = Some(cookie.value().to_string());
+                    }
+                }
+
+                // Check if we have both cookies
+                if let (Some(sid), Some(sls)) = (sessionid, steam_login_secure) {
+                    let _ = window_clone.close();
+                    return Ok(serde_json::json!({
+                        "success": true,
+                        "sessionid": sid,
+                        "steamLoginSecure": sls
+                    }));
+                }
+            }
+        } else {
+            // Window or webview no longer exists
+            return Ok(serde_json::json!({
+                "success": false,
+                "message": "Login window closed"
+            }));
+        }
+
+        tokio::time::sleep(Duration::from_millis(500)).await;
+    }
+}
+
+// Delete Steam login window cookies to sign out the user
+#[tauri::command]
+pub async fn delete_login_window_cookies(app_handle: tauri::AppHandle) -> Result<Value, String> {
+    // Create a hidden window
+    let window = tauri::webview::WebviewWindowBuilder::new(
+        &app_handle,
+        "steam-logout",
+        tauri::WebviewUrl::External(
+            "https://steamcommunity.com/login/home/?goto="
+                .parse()
+                .unwrap(),
+        ),
+    )
+    .title("Steam Logout")
+    .inner_size(0.0, 0.0)
+    .visible(false)
+    .build()
+    .map_err(|e| e.to_string())?;
+
+    if let Some(webview) = window.get_webview("steam-logout") {
+        // Get all cookies first
+        let cookies = webview.cookies().map_err(|e| e.to_string())?;
+
+        for cookie in cookies {
+            webview
+                .delete_cookie(cookie.clone())
+                .map_err(|e| e.to_string())?;
+        }
+
+        // Wait a moment for deletion to complete
+        tokio::time::sleep(Duration::from_millis(500)).await;
+
+        // Verify deletion
+        let remaining_cookies = webview.cookies().map_err(|e| e.to_string())?;
+        let mut found_sessionid = false;
+        let mut found_steam_login_secure = false;
+
+        for cookie in remaining_cookies {
+            if cookie.name() == "sessionid" {
+                found_sessionid = true;
+            }
+            if cookie.name() == "steamLoginSecure" {
+                found_steam_login_secure = true;
+            }
+        }
+
+        let _ = window.close();
+
+        if found_sessionid || found_steam_login_secure {
+            return Ok(serde_json::json!({
+                "success": false,
+                "message": "Failed to delete all cookies"
+            }));
+        }
+
+        return Ok(serde_json::json!({
+            "success": true,
+            "message": "Cookies deleted successfully"
+        }));
+    }
+
+    let _ = window.close();
+    Err("Failed to get webview".to_string())
+}
