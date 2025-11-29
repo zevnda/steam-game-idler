@@ -58,7 +58,7 @@ fn get_default_settings() -> Value {
             "priceAdjustment": 0.0,
             "sellLimit": {
                 "min": 0.01,
-                "max": 1.10
+                "max": 10
             },
             "sellDelay": 5
         },

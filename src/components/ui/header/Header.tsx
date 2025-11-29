@@ -73,7 +73,7 @@ export default function Header(): ReactElement {
           </div>
         )}
 
-        {isPro !== null && isPro === false && activePage !== 'setup' && (
+        {isPro !== null && isPro === false && activePage !== 'setup' && activePage !== 'settings' && (
           <div className='flex justify-center items-center h-full'>
             <GoPro />
           </div>
