@@ -25,7 +25,7 @@ export default function ChatBox(): ReactElement {
   const inputRef = useRef<HTMLTextAreaElement>(null as unknown as HTMLTextAreaElement)
   const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
 
-  const { chatMaintenanceMode, userRoles } = useSupabase()
+  const { chatMaintenanceMode, userRoles, fetchRolesForUsers, onlineUsers } = useSupabase()
 
   const { pinnedMessageId, pinnedMessage, handlePinMessage, handleUnpinMessage, setPinnedMessage } =
     usePinnedMessage() as {
@@ -134,6 +134,14 @@ export default function ChatBox(): ReactElement {
   )
 
   const groupedMessages = useMemo(() => groupMessagesByDate(messages), [groupMessagesByDate, messages])
+
+  // Fetch roles for all users in messages or online to ensure roles are always available
+  useEffect(() => {
+    const messageUserIds = [...new Set(messages.map(msg => msg.user_id))]
+    const onlineUserIds = onlineUsers.map(u => u.user_id).filter((id): id is string => id !== undefined)
+    const allUserIds = [...new Set([...messageUserIds, ...onlineUserIds])]
+    fetchRolesForUsers(allUserIds)
+  }, [messages, onlineUsers, fetchRolesForUsers])
 
   useEffect(() => {
     return () => {

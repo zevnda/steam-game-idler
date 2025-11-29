@@ -34,8 +34,6 @@ export interface ChatUser {
   role?: string
   username: string
   avatar_url?: string
-  is_banned?: boolean
-  last_seen?: string
   lastTyping?: number
 }
 
@@ -56,6 +54,8 @@ interface SupabaseContextType {
   // Typing indicators
   broadcastTyping: () => void
   broadcastStopTyping: () => void
+  // Fetch roles for users
+  fetchRolesForUsers: (userIds: string[]) => Promise<void>
   // Supabase client
   supabase: SupabaseClient
 }
@@ -75,7 +75,7 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
   const chatMaintenanceMode = useSupabaseStore(state => state.chatMaintenanceMode)
   const onlineUsers = useSupabaseStore(state => state.onlineUsers)
   const typingUsers = useSupabaseStore(state => state.typingUsers)
-  const { broadcastTyping, broadcastStopTyping } = useSupabaseLogic(userSummary)
+  const { broadcastTyping, broadcastStopTyping, fetchRolesForUsers } = useSupabaseLogic(userSummary)
 
   return (
     <SupabaseContext.Provider
@@ -89,6 +89,7 @@ export function SupabaseProvider({ children, userSummary }: SupabaseProviderProp
         typingUsers,
         broadcastTyping,
         broadcastStopTyping,
+        fetchRolesForUsers,
         supabase,
       }}
     >
