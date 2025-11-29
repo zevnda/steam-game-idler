@@ -207,7 +207,7 @@ export default function EditListModal({
               <Button
                 size='sm'
                 radius='full'
-                className={`font-bold ${showBlacklist ? 'bg-danger/20 text-danger' : 'bg-btn-secondary text-btn-text'}`}
+                className={`font-bold ${showBlacklist ? 'bg-success/20 text-success' : 'bg-btn-secondary text-btn-text'}`}
                 isDisabled={blacklist.length === 0}
                 onPress={() => {
                   setShowBlacklist(!showBlacklist)
