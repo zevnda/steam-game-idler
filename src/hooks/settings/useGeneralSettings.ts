@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react'
 import { useUserStore } from '@/stores/userStore'
 import { useTranslation } from 'react-i18next'
 
+import { supabase } from '@/utils/supabaseClient'
 import { encrypt, logEvent } from '@/utils/tasks'
 import { showDangerToast, showSuccessToast, t } from '@/utils/toasts'
 
@@ -170,5 +171,51 @@ export const handleSliderChange = async (
     showDangerToast(t('common.error'))
     console.error('Error in (handleSliderChange - General):', error)
     logEvent(`[Error] in (handleSliderChange - General): ${error}`)
+  }
+}
+
+export const handleCancelPro = async (
+  userSummary: UserSummary,
+  setUserSummary: Dispatch<SetStateAction<UserSummary>>,
+): Promise<void> => {
+  try {
+    const { data, error } = await supabase
+      .from('subscriptions')
+      .select('*')
+      .eq('steam_id', userSummary?.steamId)
+      .single()
+
+    if (error) {
+      console.error('Error searching subscriptions:', error)
+      logEvent(`[Error] in (searchSubscriptions): ${error.message}`)
+    }
+
+    if (data) {
+      const response = await fetch('https://apibase.vercel.app/api/stripe-cancel', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          steamId: userSummary?.steamId,
+          data,
+        }),
+      })
+
+      if (response.ok) {
+        showSuccessToast(t('toast.pro.cancelSuccess'))
+        logEvent(`[PRO] User ${userSummary?.steamId} cancelled PRO subscription`)
+        setUserSummary(null)
+      } else {
+        showDangerToast(t('toast.pro.cancelError'))
+        logEvent(
+          '[Error] in (handleCancelPro): Failed to cancel PRO subscription. Please contact support via the Help Desk for assistance',
+        )
+      }
+    }
+  } catch (error) {
+    showDangerToast(t('common.error'))
+    console.error('Error in (handleCancelPro):', error)
+    logEvent(`[Error] in (handleCancelPro): ${error}`)
   }
 }
