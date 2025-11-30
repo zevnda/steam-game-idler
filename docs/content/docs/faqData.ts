@@ -17,7 +17,7 @@ export const faqData: FAQEntry[] = [
       '> * Some games may have region specific restrictions and you may not own the game in your current region\n' +
       '> * One or more of your [Steam profile privacy settings](https://steamcommunity.com/my/edit/settings) is set to private.\n' +
       '>\n' +
-      '> ![Profile settings](/examples/profile-settings.png)',
+      '> ![Profile settings](/examples/profile-settings.webp)',
   },
   {
     question: 'Do I need to make my Steam profile and game details public for the Steam card idler to work?',
@@ -27,7 +27,7 @@ export const faqData: FAQEntry[] = [
       '>\n' +
       '> However, providing your own Steam Web API key in the [settings > general](/docs/settings/general) will allow you to use SGI with a private profile.\n' +
       '>\n' +
-      '> ![Profile settings](/examples/profile-settings.png)',
+      '> ![Profile settings](/examples/profile-settings.webp)',
   },
   {
     question: 'What makes this different from other Steam tools?',
