@@ -31,7 +31,6 @@ export function useSupabaseLogic(userSummary: UserSummary | null): {
   const setChatMaintenanceMode = useSupabaseStore(state => state.setChatMaintenanceMode)
   const setOnlineUsers = useSupabaseStore(state => state.setOnlineUsers)
   const setTypingUsers = useSupabaseStore(state => state.setTypingUsers)
-  const onlineUsers = useSupabaseStore(state => state.onlineUsers)
 
   const channelRef = useRef<RealtimeChannel | null>(null)
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null)
@@ -218,7 +217,7 @@ export function useSupabaseLogic(userSummary: UserSummary | null): {
     checkSubscription()
   }, [userSummary?.steamId, setIsPro])
 
-  // Check if current user is banned
+  // Check if current user is banned (initial check only, updates handled by realtime)
   useEffect(() => {
     const checkBanned = async () => {
       if (!isChatActive) return
@@ -246,14 +245,17 @@ export function useSupabaseLogic(userSummary: UserSummary | null): {
     }
 
     checkBanned()
-  }, [userSummary?.steamId, onlineUsers, setIsBanned, isChatActive])
+  }, [userSummary?.steamId, setIsBanned, isChatActive])
 
+  // Fetch roles for a list of user IDs, avoiding redundant refetches
   const fetchRolesForUsers = useCallback(
     async (userIds: string[]): Promise<void> => {
-      if (userIds.length === 0) return
+      const currentRoles = useSupabaseStore.getState().userRoles
+      const newUserIds = userIds.filter(id => !(id in currentRoles))
+      if (newUserIds.length === 0) return
 
       try {
-        const { data, error } = await supabase.from('users').select('user_id, role').in('user_id', userIds)
+        const { data, error } = await supabase.from('users').select('user_id, role').in('user_id', newUserIds)
 
         if (error) {
           console.error('Error fetching roles:', error)
@@ -501,12 +503,26 @@ export function useSupabaseLogic(userSummary: UserSummary | null): {
           logEvent(`[Error] in typing broadcast handler: ${error}`)
         }
       })
+      // 4. Listen for stop_typing broadcasts (from useTypingUsers)
       .on('broadcast', { event: 'stop_typing' }, payload => {
         try {
           setTypingUsers(prev => prev.filter(u => u.user_id !== payload.payload.user_id))
         } catch (error) {
           console.error('Error handling stop_typing broadcast:', error)
           logEvent(`[Error] in stop_typing broadcast handler: ${error}`)
+        }
+      })
+      // 5. Listen for user role changes (from useUserRoles)
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'users' }, payload => {
+        try {
+          const updatedUser = payload.new as { user_id: string; role: string }
+          setUserRoles(prev => ({ ...prev, [updatedUser.user_id]: updatedUser.role || 'user' }))
+          if (updatedUser.user_id === userSummary?.steamId) {
+            setIsBanned(updatedUser.role === 'banned')
+          }
+        } catch (error) {
+          console.error('Error handling user role update:', error)
+          logEvent(`[Error] in user role update handler: ${error}`)
         }
       })
       .subscribe()
