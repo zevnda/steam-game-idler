@@ -97,7 +97,7 @@ export default function SteamCredentials(): ReactElement {
           <div className='flex flex-col gap-2 w-1/2'>
             <div className='flex items-center'>
               <p className='text-sm text-content font-bold'>{t('settings.steamCredentials.automated')}</p>
-              <ProBadge className='scale-65' />
+              {!isPro && <ProBadge className='scale-65' />}
               <Beta />
             </div>
             <p className='text-xs text-altwhite'>{t('settings.steamCredentials.automated.description')}</p>
