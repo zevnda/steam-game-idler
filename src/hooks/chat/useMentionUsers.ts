@@ -31,22 +31,12 @@ export function useMentionUsers(
   const [mentionResults, setMentionResults] = useState<MentionUser[]>([])
   const [mentionSelectedIdx, setMentionSelectedIdx] = useState<number>(0)
 
+  // Fetch mention candidates when query changes
   useEffect(() => {
     const fetchUsers = async (): Promise<void> => {
+      if (mentionStart === null) return
+
       try {
-        if (mentionQuery === '') {
-          const { data, error } = await supabase
-            .from('users')
-            .select('user_id,username,avatar_url')
-            .order('username', { ascending: true })
-            .limit(10)
-          if (error) {
-            console.error('Error fetching users:', error)
-            logEvent(`[Error] in fetchUsers (mention): ${error.message}`)
-          }
-          setMentionResults(!error && Array.isArray(data) ? data : [])
-          return
-        }
         if (!mentionQuery || mentionQuery.length < 1) {
           setMentionResults([])
           return
@@ -68,7 +58,7 @@ export function useMentionUsers(
       }
     }
     fetchUsers()
-  }, [mentionQuery])
+  }, [mentionQuery, mentionStart])
 
   useEffect(() => {
     setMentionSelectedIdx(0)
