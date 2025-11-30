@@ -110,7 +110,7 @@ export default function ChatUserList(): ReactElement {
             {roleGroups.map(group => (
               <div key={group.role}>
                 <p className='flex items-center gap-1 text-[10px] text-altwhite mb-2 select-none uppercase font-semibold'>
-                  <ChatRoleBadge role={group.role} />
+                  <ChatRoleBadge role={group.role} className={getRoleStyles(group.role)} />
                   {group.roleName} — {group.online.length}
                 </p>
 
