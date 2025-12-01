@@ -51,10 +51,10 @@ export default function SecuritySection(): ReactElement {
 
               <div className='flex items-start gap-3 sm:gap-4'>
                 <div
-                  className='bg-linear-to-r from-teal-200 to-teal-300 p-2 sm:p-3 rounded-xl border border-teal-300 shrink-0'
+                  className='bg-linear-to-r from-purple-200 to-purple-300 p-2 sm:p-3 rounded-xl border border-purple-300 shrink-0'
                   aria-hidden='true'
                 >
-                  <FiEye className='w-5 h-5 sm:w-6 sm:h-6 text-teal-700' />
+                  <FiEye className='w-5 h-5 sm:w-6 sm:h-6 text-purple-700' />
                 </div>
                 <div>
                   <h3 className='text-base sm:text-lg font-bold text-gray-800 mb-1 sm:mb-2'>Zero Data Collection</h3>
@@ -66,10 +66,10 @@ export default function SecuritySection(): ReactElement {
 
               <div className='flex items-start gap-3 sm:gap-4'>
                 <div
-                  className='bg-linear-to-r from-cyan-200 to-cyan-300 p-2 sm:p-3 rounded-xl border border-cyan-300 shrink-0'
+                  className='bg-linear-to-r from-rose-200 to-rose-300 p-2 sm:p-3 rounded-xl border border-rose-300 shrink-0'
                   aria-hidden='true'
                 >
-                  <FiRefreshCw className='w-5 h-5 sm:w-6 sm:h-6 text-cyan-700' />
+                  <FiRefreshCw className='w-5 h-5 sm:w-6 sm:h-6 text-rose-700' />
                 </div>
                 <div>
                   <h3 className='text-base sm:text-lg font-bold text-gray-800 mb-1 sm:mb-2'>Continuous Updates</h3>

@@ -42,45 +42,31 @@ export const metadata = {
 
 const comparisonData = [
   {
-    category: 'Achievement Management',
-    features: [
-      { name: 'Achievement Unlock/Lock', steamGameIdler: true, sam: true },
-      { name: 'Batch Achievement Operations', steamGameIdler: true, sam: true },
-      { name: 'Statistics Editor', steamGameIdler: true, sam: true },
-      { name: 'Automated Achievement Unlocker', steamGameIdler: true, sam: false },
-    ],
-  },
-  {
-    category: 'User Interface & Experience',
-    features: [
-      { name: 'Graphical User Interface', steamGameIdler: true, sam: true },
-      { name: 'Modern GUI Design', steamGameIdler: true, sam: false },
-      { name: 'Game Cover Art Display', steamGameIdler: true, sam: true },
-      { name: 'Intuitive Navigation', steamGameIdler: true, sam: false },
-      { name: 'Setup Complexity', steamGameIdler: 'Simple', sam: 'Simple' },
-      { name: 'Settings Configuration', steamGameIdler: true, sam: false },
-      { name: 'Settings Configuration Method', steamGameIdler: 'GUI-based', sam: 'N/A' },
-      { name: 'Real-time Monitoring', steamGameIdler: true, sam: false },
-    ],
-  },
-  {
     category: 'Core Features',
     features: [
-      { name: 'Trading Card Farming', steamGameIdler: true, sam: false },
-      { name: 'Achievement Management', steamGameIdler: true, sam: true },
-      { name: 'Playtime Boosting', steamGameIdler: true, sam: false },
-      { name: 'Trading Card Manager', steamGameIdler: true, sam: false },
-      { name: 'Multi-language Support', steamGameIdler: '44 languages', sam: false },
-      { name: 'Auto-update System', steamGameIdler: true, sam: false },
+      { name: 'Achievement Management', steamGameIdler: true, alt: true },
+      { name: 'Automated Achievement Unlocker', steamGameIdler: true, alt: false },
+      { name: 'Unlock/Lock Single Achievements', steamGameIdler: true, alt: true },
+      { name: 'Unlock/Lock All Achievements', steamGameIdler: true, alt: true },
+      { name: 'Statistics Editor', steamGameIdler: true, alt: true },
+      { name: 'Queue-based Unlocking', steamGameIdler: true, alt: false },
+      { name: 'Custom Queue Order', steamGameIdler: true, alt: false },
+      { name: 'Automated Card Farming', steamGameIdler: true, alt: false },
+      { name: 'Trading Card Manager', steamGameIdler: true, alt: false },
+      { name: 'Playtime Boosting', steamGameIdler: true, alt: false },
+      { name: 'Game Cover Art', steamGameIdler: true, alt: true },
     ],
   },
   {
     category: 'Technical',
     features: [
-      { name: 'Resource Usage', steamGameIdler: 'Low', sam: 'Low' },
-      { name: 'Platform Support', steamGameIdler: 'Windows', sam: 'Windows' },
-      { name: 'Installation', steamGameIdler: 'Installer', sam: 'Portable' },
-      { name: 'Updates', steamGameIdler: 'Auto-update', sam: 'Manual' },
+      { name: 'Graphical User Interface', steamGameIdler: 'Native', alt: 'Native' },
+      { name: 'Setup Complexity', steamGameIdler: 'Simple', alt: 'Simple' },
+      { name: 'Multi-language Support', steamGameIdler: '30 Languages', alt: false },
+      { name: 'Resource Usage', steamGameIdler: 'Moderate', alt: 'Low' },
+      { name: 'Platform Support', steamGameIdler: 'Windows', alt: 'Windows' },
+      { name: 'Installation', steamGameIdler: 'Installer & Portable', alt: 'Portable' },
+      { name: 'Updates', steamGameIdler: 'Automatic', alt: 'Manual' },
     ],
   },
 ]
@@ -136,8 +122,8 @@ export default function page(): ReactElement {
             </h1>
 
             <p className='text-lg sm:text-xl text-gray-700 mb-8 leading-relaxed'>
-              Compare the evolution of achievement management tools and discover why Steam Game Idler offers enhanced
-              safety, features, and user experience.
+              Compare core features, usability, and capabilities of Steam Game Idler against Steam Achievement Manager
+              to make an informed choice for your Steam automation needs.
             </p>
           </div>
         </div>
@@ -185,7 +171,7 @@ export default function page(): ReactElement {
                               <ComparisonIcon value={feature.steamGameIdler} />
                             </td>
                             <td className='py-4 px-6 text-center'>
-                              <ComparisonIcon value={feature.sam} />
+                              <ComparisonIcon value={feature.alt} />
                             </td>
                           </tr>
                         ))}
