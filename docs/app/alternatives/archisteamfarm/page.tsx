@@ -45,48 +45,32 @@ export const metadata = {
 
 const comparisonData = [
   {
-    category: 'Card Farming',
-    features: [
-      { name: 'Automatic Card Farming', steamGameIdler: true, archiSteamFarm: true },
-      { name: 'Queue-based Farming', steamGameIdler: true, archiSteamFarm: true },
-      { name: 'Intuitive Queue Management', steamGameIdler: true, archiSteamFarm: false },
-      { name: 'Smart Farming Algorithm', steamGameIdler: true, archiSteamFarm: false },
-      { name: 'Marketplace Integration', steamGameIdler: true, archiSteamFarm: false },
-      { name: 'Multi-game Simultaneous Idling', steamGameIdler: true, archiSteamFarm: true },
-      { name: 'Multiple Account Support', steamGameIdler: false, archiSteamFarm: true },
-    ],
-  },
-  {
-    category: 'User Interface & Experience',
-    features: [
-      { name: 'Graphical User Interface', steamGameIdler: true, archiSteamFarm: false },
-      { name: 'Modern GUI Design', steamGameIdler: true, archiSteamFarm: false },
-      { name: 'Game Cover Art Display', steamGameIdler: true, archiSteamFarm: false },
-      { name: 'Intuitive Navigation', steamGameIdler: true, archiSteamFarm: false },
-      { name: 'Setup Complexity', steamGameIdler: 'Simple', archiSteamFarm: 'Complex' },
-      { name: 'Settings Configuration', steamGameIdler: true, archiSteamFarm: true },
-      { name: 'Settings Configuration Method', steamGameIdler: 'GUI-based', archiSteamFarm: 'JSON files' },
-      { name: 'Real-time Monitoring', steamGameIdler: true, archiSteamFarm: 'Plugin required' },
-    ],
-  },
-  {
     category: 'Core Features',
     features: [
-      { name: 'Trading Card Farming', steamGameIdler: true, archiSteamFarm: true },
-      { name: 'Achievement Management', steamGameIdler: true, archiSteamFarm: false },
-      { name: 'Playtime Boosting', steamGameIdler: true, archiSteamFarm: false },
-      { name: 'Trading Card Manager', steamGameIdler: true, archiSteamFarm: false },
-      { name: 'Multi-language Support', steamGameIdler: '44 languages', archiSteamFarm: 'Partial translations' },
-      { name: 'Auto-update System', steamGameIdler: true, archiSteamFarm: true },
+      { name: 'Automated Card Farming', steamGameIdler: true, alt: true },
+      { name: 'Queue-based Farming', steamGameIdler: true, alt: true },
+      { name: 'Custom Queue Order', steamGameIdler: true, alt: false },
+      { name: 'Simultaneous Game Farming', steamGameIdler: true, alt: 'Partial' },
+      { name: 'Achievement Management', steamGameIdler: true, alt: false },
+      { name: 'Trading Card Manager', steamGameIdler: true, alt: false },
+      { name: 'Marketplace Integration', steamGameIdler: true, alt: false },
+      { name: 'Playtime Boosting', steamGameIdler: true, alt: false },
+      { name: 'Multiple Account Support', steamGameIdler: true, alt: true },
+      { name: 'Simultaneous Account Farming', steamGameIdler: false, alt: true },
     ],
   },
   {
     category: 'Technical',
     features: [
-      { name: 'Resource Usage', steamGameIdler: 'Low', archiSteamFarm: 'Low' },
-      { name: 'Platform Support', steamGameIdler: 'Windows', archiSteamFarm: 'Cross-platform' },
-      { name: 'Installation', steamGameIdler: 'Installer', archiSteamFarm: 'Complex' },
-      { name: 'Updates', steamGameIdler: 'Automatic', archiSteamFarm: 'Automatic' },
+      { name: 'Graphical User Interface', steamGameIdler: 'Native', alt: 'Additional Setup Required' },
+      { name: 'Setup Complexity', steamGameIdler: 'Simple', alt: 'Complex' },
+      { name: 'Settings Configuration', steamGameIdler: 'Simple', alt: 'Complex' },
+      { name: 'Settings Configuration Method', steamGameIdler: 'GUI-based', alt: 'JSON Files' },
+      { name: 'Multi-language Support', steamGameIdler: '30 Languages', alt: 'Partial Translations' },
+      { name: 'Resource Usage', steamGameIdler: 'Moderate', alt: 'Low' },
+      { name: 'Platform Support', steamGameIdler: 'Windows', alt: 'Cross-platform' },
+      { name: 'Installation', steamGameIdler: 'Installer & Portable', alt: 'Complex Multi-step Setup' },
+      { name: 'Updates', steamGameIdler: 'Automatic', alt: 'Automatic' },
     ],
   },
 ]
@@ -142,7 +126,7 @@ export default function page(): ReactElement {
             </h1>
 
             <p className='text-lg sm:text-xl text-gray-700 mb-8 leading-relaxed'>
-              Compare the features, usability, and capabilities of Steam Game Idler against ArchiSteamFarm to make an
+              Compare core features, usability, and capabilities of Steam Game Idler against ArchiSteamFarm to make an
               informed choice for your Steam automation needs.
             </p>
           </div>
@@ -191,7 +175,7 @@ export default function page(): ReactElement {
                               <ComparisonIcon value={feature.steamGameIdler} />
                             </td>
                             <td className='py-4 px-6 text-center'>
-                              <ComparisonIcon value={feature.archiSteamFarm} />
+                              <ComparisonIcon value={feature.alt} />
                             </td>
                           </tr>
                         ))}

@@ -30,7 +30,7 @@ const competitors = [
     bgGradient: 'from-gray-50 to-slate-50',
     borderColor: 'border-gray-200 hover:border-gray-300',
     link: '/alternatives/steam-achievement-manager',
-    pros: ['Simple achievement management', 'Open source'],
+    pros: ['Basic achievement management', 'Open source'],
     cons: ['Outdated original UI', 'No automation', 'No card farming'],
   },
   {

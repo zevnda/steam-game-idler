@@ -42,48 +42,28 @@ export const metadata = {
 
 const comparisonData = [
   {
-    category: 'Card Farming',
-    features: [
-      { name: 'Automatic Card Farming', steamGameIdler: true, idleMaster: true },
-      { name: 'Queue-based Farming', steamGameIdler: true, idleMaster: true },
-      { name: 'Card Drop Detection', steamGameIdler: true, idleMaster: false },
-      { name: 'Multiple Account Support', steamGameIdler: false, idleMaster: false },
-      { name: 'Marketplace Integration', steamGameIdler: true, idleMaster: false },
-      { name: 'Real-time Progress Tracking', steamGameIdler: true, idleMaster: false },
-      { name: 'Multi-game Simultaneous Idling', steamGameIdler: true, idleMaster: false },
-    ],
-  },
-  {
-    category: 'User Interface & Experience',
-    features: [
-      { name: 'Graphical User Interface', steamGameIdler: true, idleMaster: true },
-      { name: 'Modern GUI Design', steamGameIdler: true, idleMaster: false },
-      { name: 'Game Cover Art Display', steamGameIdler: true, idleMaster: 'Partial support' },
-      { name: 'Intuitive Navigation', steamGameIdler: true, idleMaster: false },
-      { name: 'Setup Complexity', steamGameIdler: 'Simple', idleMaster: 'Simple' },
-      { name: 'Settings Configuration', steamGameIdler: true, idleMaster: 'Basic' },
-      { name: 'Settings Configuration Method', steamGameIdler: 'GUI-based', idleMaster: 'GUI-based' },
-      { name: 'Real-time Monitoring', steamGameIdler: true, idleMaster: true },
-    ],
-  },
-  {
     category: 'Core Features',
     features: [
-      { name: 'Trading Card Farming', steamGameIdler: true, idleMaster: true },
-      { name: 'Achievement Management', steamGameIdler: true, idleMaster: false },
-      { name: 'Playtime Boosting', steamGameIdler: true, idleMaster: false },
-      { name: 'Trading Card Manager', steamGameIdler: true, idleMaster: false },
-      { name: 'Multi-language Support', steamGameIdler: '44 languages', idleMaster: '24 languages' },
-      { name: 'Auto-update System', steamGameIdler: true, idleMaster: false },
+      { name: 'Automated Card Farming', steamGameIdler: true, alt: true },
+      { name: 'Queue-based Farming', steamGameIdler: true, alt: true },
+      { name: 'Custom Queue Order', steamGameIdler: true, alt: false },
+      { name: 'Simultaneous Game Farming', steamGameIdler: true, alt: false },
+      { name: 'Achievement Management', steamGameIdler: true, alt: false },
+      { name: 'Trading Card Manager', steamGameIdler: true, alt: false },
+      { name: 'Marketplace Integration', steamGameIdler: true, alt: false },
+      { name: 'Playtime Boosting', steamGameIdler: true, alt: false },
     ],
   },
   {
     category: 'Technical',
     features: [
-      { name: 'Resource Usage', steamGameIdler: 'Low', idleMaster: 'Low' },
-      { name: 'Platform Support', steamGameIdler: 'Windows', idleMaster: 'Windows' },
-      { name: 'Installation', steamGameIdler: 'Installer', idleMaster: 'Portable' },
-      { name: 'Updates', steamGameIdler: 'Auto-update', idleMaster: 'Manual' },
+      { name: 'Graphical User Interface', steamGameIdler: 'Native', alt: 'Native' },
+      { name: 'Setup Complexity', steamGameIdler: 'Simple', alt: 'Simple' },
+      { name: 'Multi-language Support', steamGameIdler: '30 Languages', alt: '24 Languages' },
+      { name: 'Resource Usage', steamGameIdler: 'Moderate', alt: 'Low' },
+      { name: 'Platform Support', steamGameIdler: 'Windows', alt: 'Windows' },
+      { name: 'Installation', steamGameIdler: 'Installer & Portable', alt: 'Portable' },
+      { name: 'Updates', steamGameIdler: 'Automatic', alt: 'Manual' },
     ],
   },
 ]
@@ -139,8 +119,8 @@ export default function page(): ReactElement {
             </h1>
 
             <p className='text-lg sm:text-xl text-gray-700 mb-8 leading-relaxed'>
-              Compare the evolution of card farming tools and see why Steam Game Idler is the modern choice for Steam
-              automation needs.
+              Compare core features, usability, and capabilities of Steam Game Idler against Idle Master to make an
+              informed choice for your Steam automation needs.
             </p>
           </div>
         </div>
@@ -186,7 +166,7 @@ export default function page(): ReactElement {
                               <ComparisonIcon value={feature.steamGameIdler} />
                             </td>
                             <td className='py-4 px-6 text-center'>
-                              <ComparisonIcon value={feature.idleMaster} />
+                              <ComparisonIcon value={feature.alt} />
                             </td>
                           </tr>
                         ))}
