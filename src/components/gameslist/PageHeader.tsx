@@ -7,7 +7,7 @@ import { useUserStore } from '@/stores/userStore'
 import { useTranslation } from 'react-i18next'
 import { TbX } from 'react-icons/tb'
 
-import { usePageHeader } from '@/hooks/gameslist/usePageHeader'
+import { handleRefetch, usePageHeader } from '@/hooks/gameslist/usePageHeader'
 
 interface PageHeaderProps {
   sortStyle: string
@@ -27,7 +27,7 @@ export default function PageHeader({
   const userSummary = useUserStore(state => state.userSummary)
   const gameQueryValue = useSearchStore(state => state.gameQueryValue)
   const setGameQueryValue = useSearchStore(state => state.setGameQueryValue)
-  const { handleSorting, handleRefetch } = usePageHeader(setSortStyle, setRefreshKey)
+  const { handleSorting } = usePageHeader(setSortStyle)
 
   const sortOptions: SortOption[] = [
     { key: '1-0', label: t('gamesList.sort.playtimeDesc') },
@@ -53,7 +53,7 @@ export default function PageHeader({
               <Button
                 className='bg-btn-secondary text-btn-text font-bold'
                 radius='full'
-                onPress={() => handleRefetch(userSummary?.steamId)}
+                onPress={() => handleRefetch(t, userSummary?.steamId, setRefreshKey)}
               >
                 {t('setup.refresh')}
               </Button>

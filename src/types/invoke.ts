@@ -55,6 +55,11 @@ export interface InvokeFreeGames {
   games: Game[]
 }
 
+export interface InvokeRedeemFreeGame {
+  success: boolean
+  message?: string
+}
+
 export interface InvokeCustomList {
   error?: string
   list_data: Game[]

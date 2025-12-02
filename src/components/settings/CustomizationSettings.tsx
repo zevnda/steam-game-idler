@@ -250,8 +250,6 @@ export default function CustomizationSettings(): ReactElement | null {
             </div>
           </RadioGroup>
         </div>
-
-        <Divider className='bg-border/70 my-4' />
       </div>
     </div>
   )

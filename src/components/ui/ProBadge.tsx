@@ -8,7 +8,7 @@ export default function ProBadge({ className }: { className?: string }): ReactEl
 
   return (
     <span
-      className={cn('inline-block rounded-full px-2 ml-1 font-black text-white italic', className)}
+      className={cn('inline-block rounded-full px-2 ml-1 font-black text-white italic select-none', className)}
       style={{
         backgroundImage: isPro
           ? 'linear-gradient(90deg, hsl(var(--heroui-dynamic) / 0.2) 0%, hsl(var(--heroui-dynamic) / 0.8) 100%)'

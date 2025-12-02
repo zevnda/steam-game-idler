@@ -56,6 +56,7 @@ export interface GeneralSettings {
   chatSounds: number[]
   theme?: string | null
   customBackground?: string | null
+  autoRedeemFreeGames: boolean
 }
 
 export interface TradingCardsSettings {

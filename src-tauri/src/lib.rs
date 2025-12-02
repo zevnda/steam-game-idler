@@ -36,18 +36,18 @@ pub fn run() {
     // Load environment variables based on the build configuration
     if cfg!(debug_assertions) {
         match crypto::decrypt_api_key() {
-            key if !key.is_empty() => {
+            key if !key.is_empty() => unsafe {
                 std::env::set_var("KEY", key);
-            }
+            },
             _ => {
                 dotenv::from_filename(".env.dev").unwrap().load();
             }
         }
     } else {
         match crypto::decrypt_api_key() {
-            key if !key.is_empty() => {
+            key if !key.is_empty() => unsafe {
                 std::env::set_var("KEY", key);
-            }
+            },
             _ => {
                 panic!("No obfuscated API key available in production build");
             }
@@ -141,6 +141,7 @@ pub fn run() {
             start_processes_monitor,
             open_steam_login_window,
             delete_login_window_cookies,
+            redeem_free_game,
             set_zoom,
             quit_app
         ])

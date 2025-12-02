@@ -1,7 +1,9 @@
+import type { GamesListHook } from '@/hooks/gameslist/useGamesList'
 import type {
   Game,
   InvokeCustomList,
   InvokeFreeGames,
+  InvokeRedeemFreeGame,
   InvokeRunningProcess,
   InvokeSettings,
   UserSummary,
@@ -14,7 +16,7 @@ import { isPermissionGranted, requestPermission, sendNotification } from '@tauri
 import { relaunch } from '@tauri-apps/plugin-process'
 import { check } from '@tauri-apps/plugin-updater'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useIdleStore } from '@/stores/idleStore'
 import { useStateStore } from '@/stores/stateStore'
 import { useUpdateStore } from '@/stores/updateStore'
@@ -22,13 +24,16 @@ import { useUserStore } from '@/stores/userStore'
 import { useTheme } from 'next-themes'
 import { useTranslation } from 'react-i18next'
 
+import useGamesList from '@/hooks/gameslist/useGamesList'
+import { handleRefetch } from '@/hooks/gameslist/usePageHeader'
 import { startIdle } from '@/utils/idle'
 import { checkSteamStatus, fetchLatest, isPortableCheck, logEvent, preserveKeysAndClearData } from '@/utils/tasks'
-import { showDangerToast, showNoGamesToast, t } from '@/utils/toasts'
+import { showDangerToast, showNoGamesToast, showSuccessToast, t } from '@/utils/toasts'
 
 export default function useWindow(): void {
   const { t } = useTranslation()
   const { setTheme } = useTheme()
+  const gamesContext = useGamesList()
   const setIdleGamesList = useIdleStore(state => state.setIdleGamesList)
   const setIsCardFarming = useStateStore(state => state.setIsCardFarming)
   const setIsAchievementUnlocker = useStateStore(state => state.setIsAchievementUnlocker)
@@ -41,10 +46,13 @@ export default function useWindow(): void {
   const userSettings = useUserStore(state => state.userSettings)
   const setUserSettings = useUserStore(state => state.setUserSettings)
   const setUserSummary = useUserStore(state => state.setUserSummary)
+  const freeGamesList = useUserStore(state => state.freeGamesList)
   const setFreeGamesList = useUserStore(state => state.setFreeGamesList)
   const gamesList = useUserStore(state => state.gamesList)
   const isPro = useUserStore(state => state.isPro)
   const [zoom, setZoom] = useState(1.0)
+
+  const lastRedeemedIdsRef = useRef<string>('')
 
   console.debug('Monitor for rerenders')
 
@@ -287,17 +295,32 @@ export default function useWindow(): void {
     }
   }, [setIdleGamesList])
 
-  const freeGamesCheck = useCallback((): void => {
+  const freeGamesCheck = useCallback(() => {
     checkForFreeGames(setFreeGamesList, gamesList)
   }, [setFreeGamesList, gamesList])
 
+  // Check for free games
   useEffect(() => {
-    // Check for free games
     freeGamesCheck()
 
     const intervalId = setInterval(freeGamesCheck, 60 * 60 * 1000)
     return () => clearInterval(intervalId)
   }, [userSummary?.steamId, freeGamesCheck])
+
+  // Auto redeem free games
+  useEffect(() => {
+    if (isPro && userSettings.general.autoRedeemFreeGames && freeGamesList.length > 0) {
+      // Create a unique key for the current free games list
+      const ids = freeGamesList
+        .map(g => g.appid)
+        .sort()
+        .join(',')
+      if (lastRedeemedIdsRef.current === ids) return // Already redeemed this set
+
+      lastRedeemedIdsRef.current = ids
+      autoRedeemFreeGames(freeGamesList, setFreeGamesList, userSummary, gamesContext)
+    }
+  }, [isPro, userSettings.general.autoRedeemFreeGames, freeGamesList, setFreeGamesList, userSummary, gamesContext])
 
   useEffect(() => {
     // Set user summary data
@@ -368,6 +391,47 @@ export const checkForFreeGames = async (
     showDangerToast(t('common.error'))
     console.error('Error in (checkForFreeGames):', error)
     logEvent(`[Error] in (checkForFreeGames): ${error}`)
+  }
+}
+
+// Auto redeem free games
+export const autoRedeemFreeGames = async (
+  freeGamesList: Game[],
+  setFreeGamesList: Dispatch<SetStateAction<Game[]>>,
+  userSummary: UserSummary,
+  gamesContext: GamesListHook,
+): Promise<void> => {
+  try {
+    const redeemedAppIds: number[] = []
+
+    for (const game of freeGamesList) {
+      const result = await invoke<InvokeRedeemFreeGame>('redeem_free_game', { appId: game.appid })
+      if (result.success) {
+        showSuccessToast(t('toast.autoRedeem.success', { appName: game.name }))
+        logEvent(`[Auto Redeem] Successfully redeemed free game ${game.name} (${game.appid})`)
+        redeemedAppIds.push(Number(game.appid))
+      } else {
+        showDangerToast(t('toast.autoRedeem.failure', { appName: game.name }))
+        logEvent(`[Auto Redeem] Failed to redeem free game ${game.name} (${game.appid}) - ${result.message}`)
+      }
+    }
+
+    if (redeemedAppIds.length > 0) {
+      // Update free games list and localStorage
+      setFreeGamesList(prev => prev.filter(game => !redeemedAppIds.includes(Number(game.appid))))
+      const oldIdsStr = localStorage.getItem('freeGamesIds')
+      const oldIds: number[] = oldIdsStr ? JSON.parse(oldIdsStr) : []
+      const newIds = oldIds.filter(id => !redeemedAppIds.includes(id))
+      localStorage.setItem('freeGamesIds', JSON.stringify(newIds))
+
+      setTimeout(() => {
+        handleRefetch(t, userSummary?.steamId, gamesContext.setRefreshKey, false)
+      }, 3000)
+    }
+  } catch (error) {
+    showDangerToast(t('common.error'))
+    console.error('Error in (autoRedeemFreeGames):', error)
+    logEvent(`[Error] in (autoRedeemFreeGames): ${error}`)
   }
 }
 
