@@ -16,7 +16,7 @@ interface GameListResult {
   recentGamesList: Game[]
 }
 
-interface GamesListHook {
+export interface GamesListHook {
   isLoading: boolean
   gamesList: Game[]
   recentGames: Game[]

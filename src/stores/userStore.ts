@@ -64,6 +64,8 @@ export const useUserStore = create<UserStore>(set => ({
       startMinimized: false,
       closeToTray: true,
       chatSounds: [0.5],
+      customBackground: null,
+      autoRedeemFreeGames: false,
     },
     cardFarming: {
       listGames: false,

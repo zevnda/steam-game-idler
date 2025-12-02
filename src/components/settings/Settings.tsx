@@ -9,6 +9,7 @@ import { TbX } from 'react-icons/tb'
 import AchievementSettings from '@/components/settings/AchievementSettings'
 import CardSettings from '@/components/settings/CardSettings'
 import CustomizationSettings from '@/components/settings/CustomizationSettings'
+import FreeGamesSettings from '@/components/settings/FreeGamesSettings'
 import GameSettings from '@/components/settings/GameSettings'
 import GeneralSettings from '@/components/settings/GeneralSettings'
 import Logs from '@/components/settings/Logs'
@@ -68,6 +69,12 @@ export default function Settings(): ReactElement {
         <Tab key='general' title={t('settings.general.title')}>
           <GeneralSettings />
         </Tab>
+        <Tab key='customization' title={t('settings.customization.title')}>
+          <CustomizationSettings />
+        </Tab>
+        <Tab key='steam-credentials' title={t('settings.cardFarming.steamCredentialsTitle')}>
+          <SteamCredentials />
+        </Tab>
         <Tab key='card-farming' title={t('common.cardFarming')}>
           <CardSettings />
         </Tab>
@@ -77,14 +84,11 @@ export default function Settings(): ReactElement {
         <Tab key='trading-card-manager' title={t('tradingCards.title')}>
           <TradingCardManagerSettings />
         </Tab>
-        <Tab key='steam-credentials' title={t('settings.cardFarming.steamCredentialsTitle')}>
-          <SteamCredentials />
+        <Tab key='free-games' title={t('freeGames.title')}>
+          <FreeGamesSettings />
         </Tab>
         <Tab key='game-settings' title={t('common.gameSettings')}>
           <GameSettings />
-        </Tab>
-        <Tab key='customization' title={t('settings.customization.title')}>
-          <CustomizationSettings />
         </Tab>
         <Tab key='debug' title={t('settings.debug.title')}>
           <Logs />

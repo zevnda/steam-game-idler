@@ -7,6 +7,7 @@ use std::fs::File;
 use std::fs::{create_dir_all, remove_dir_all, remove_file, OpenOptions};
 use std::io::Read;
 use std::io::Write;
+use tauri::Manager;
 
 #[derive(Serialize, Deserialize)]
 struct GameInfo {
@@ -272,4 +273,82 @@ pub async fn get_free_games() -> Result<serde_json::Value, String> {
     }
 
     Ok(json!({ "games": free_games }))
+}
+
+// Redeem a free game by opening the Steam store page and clicking the "Add to Library" button if available
+#[tauri::command]
+pub async fn redeem_free_game(
+    app_handle: tauri::AppHandle,
+    app_id: String,
+) -> Result<Value, String> {
+    use std::time::Duration;
+
+    // Construct the URL for the game page
+    let url = format!("https://store.steampowered.com/app/{}", app_id);
+
+    // Create a hidden window for the game page
+    let window = tauri::webview::WebviewWindowBuilder::new(
+        &app_handle,
+        &format!("steam-redeem-{}", app_id),
+        tauri::WebviewUrl::External(url.parse().unwrap()),
+    )
+    .title(&format!("Redeeming Free Game {}", app_id))
+    .inner_size(0.0, 0.0)
+    .visible(false)
+    .build()
+    .map_err(|e| e.to_string())?;
+
+    // Wait a moment for the page to load
+    tokio::time::sleep(Duration::from_millis(500)).await;
+
+    // Poll for the "Add to Library" button up to 5 times, every second
+    for _ in 0..5 {
+        if let Some(webview) = window.get_webview(&format!("steam-redeem-{}", app_id)) {
+            // Execute JavaScript to check for the button and extract the product ID
+            let js_check = r#"
+                const btn = document.querySelector('.btn_addtocart.btn_packageinfo span[onclick*="AddFreeLicense"]');
+                if (!btn) {
+                    throw new Error('Button not found');
+                }
+                const onclick = btn.getAttribute('onclick');
+                const match = onclick.match(/AddFreeLicense\(\s*(\d+)/);
+                if (!match) {
+                    throw new Error('No match for product ID');
+                }
+                const productId = match[1];
+                // Call the function to add the free license
+                AddFreeLicense(productId, 'Game Name'); // Note: Game name might not be needed, but included as per original
+            "#;
+
+            match webview.eval(js_check) {
+                Ok(_) => {
+                    // Button found and clicked, wait a bit then close
+                    tokio::time::sleep(Duration::from_millis(500)).await;
+                    let _ = window.close();
+                    return Ok(serde_json::json!({
+                        "success": true,
+                        "message": "Free game redeemed successfully"
+                    }));
+                }
+                Err(_) => {
+                    // JS execution failed (button not found), continue polling
+                }
+            }
+        } else {
+            // Window or webview no longer exists
+            return Ok(serde_json::json!({
+                "success": false,
+                "message": "Redeem window closed unexpectedly"
+            }));
+        }
+
+        tokio::time::sleep(Duration::from_secs(1)).await;
+    }
+
+    // If we reach here, the button was not found
+    let _ = window.close();
+    Ok(serde_json::json!({
+        "success": false,
+        "message": "Could not find redeem button or game is not free"
+    }))
 }

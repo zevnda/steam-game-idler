@@ -74,16 +74,6 @@ export default function GeneralSettings(): ReactElement {
 
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
-            <p className='text-sm text-content font-bold'>{t('settings.general.freeGameNotifications')}</p>
-            <p className='text-xs text-altwhite'>{t('settings.general.freeGameNotifications.description')}</p>
-          </div>
-          <SettingsSwitch type='general' name='freeGameNotifications' />
-        </div>
-
-        <Divider className='bg-border/70 my-4' />
-
-        <div className='flex justify-between items-center'>
-          <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>{t('settings.general.useBeta')}</p>
             <p className='text-xs text-altwhite'>{t('settings.general.useBeta.description')}</p>
           </div>

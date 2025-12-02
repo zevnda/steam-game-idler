@@ -19,6 +19,8 @@ fn get_default_settings() -> Value {
             "startMinimized": false,
             "closeToTray": true,
             "chatSounds": [0.5],
+            "customBackground": null,
+            "autoRedeemFreeGames": false
         },
         "cardFarming": {
             "listGames": false,
