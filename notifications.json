@@ -1,5 +1,12 @@
 [
   {
+    "id": "33",
+    "title": "IMPORTANT: Update to the latest version",
+    "message": "A potential memory leak was introduced in v2.5.6. Update to v2.5.11 or newer when you can. Click here for more information",
+    "url": "https://github.com/zevnda/steam-game-idler/discussions/1291",
+    "timestamp": "1764732687"
+  },
+  {
     "id": "32",
     "title": "New PRO Feature: Automatically fetch Steam Credentials",
     "message": "Sick of manually copying your Steam Credentials into SGI? With PRO, you can now fetch them automatically! Click here to learn more",
