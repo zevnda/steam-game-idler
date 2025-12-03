@@ -39,30 +39,28 @@ export default function CardSettings(): ReactElement {
 
         <Divider className='bg-border/70 my-4' />
 
-        <div className='flex flex-col gap-3 mt-4'>
-          <div className='flex justify-between items-center'>
-            <div className='flex flex-col gap-2 w-1/2'>
-              <div className='flex items-center'>
-                <p className='text-sm text-content font-bold'>{t('settings.general.autoRedeemFreeGames')}</p>
-                {!isPro && <ProBadge className='scale-65' />}
-                <Beta />
-              </div>
-              <p className='text-xs text-altwhite'>
-                <Trans i18nKey='settings.general.autoRedeemFreeGames.description'>
-                  Automatically redeem free games on Steam when they become available. You must be signed in via the
-                  <strong>Automated Method</strong> in <strong>Steam Credentials</strong>
-                </Trans>
-              </p>
-              <WebviewWindow
-                href='https://steamgameidler.com/docs/settings/free-games#auto-redeem-free-games'
-                className='text-xs text-dynamic hover:text-dynamic-hover duration-150'
-              >
-                {t('common.learnMore')}
-              </WebviewWindow>
+        <div className='flex justify-between items-center'>
+          <div className='flex flex-col gap-2 w-1/2'>
+            <div className='flex items-center'>
+              <p className='text-sm text-content font-bold'>{t('settings.general.autoRedeemFreeGames')}</p>
+              {!isPro && <ProBadge className='scale-65' />}
+              <Beta />
             </div>
-            <div onClick={() => !isPro && setProModalOpen(true)}>
-              <SettingsSwitch isProSetting type='general' name='autoRedeemFreeGames' />
-            </div>
+            <p className='text-xs text-altwhite'>
+              <Trans i18nKey='settings.general.autoRedeemFreeGames.description'>
+                Automatically redeem free games on Steam when they become available. You must be signed in via the
+                <strong>Automated Method</strong> in <strong>Steam Credentials</strong>
+              </Trans>
+            </p>
+            <WebviewWindow
+              href='https://steamgameidler.com/docs/settings/free-games#auto-redeem-free-games'
+              className='text-xs text-dynamic hover:text-dynamic-hover duration-150'
+            >
+              {t('common.learnMore')}
+            </WebviewWindow>
+          </div>
+          <div onClick={() => !isPro && setProModalOpen(true)}>
+            <SettingsSwitch isProSetting type='general' name='autoRedeemFreeGames' />
           </div>
         </div>
       </div>
