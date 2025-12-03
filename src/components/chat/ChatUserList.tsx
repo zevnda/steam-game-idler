@@ -1,7 +1,6 @@
 import type { ChatUser } from '@/components/chat/SupabaseContext'
 import type { ReactElement } from 'react'
 
-import { Spinner } from '@heroui/react'
 import { useMemo } from 'react'
 import Image from 'next/image'
 
@@ -17,7 +16,6 @@ interface RoleGroup {
 
 export default function ChatUserList(): ReactElement {
   const { onlineUsers, userRoles } = useSupabase()
-  const isUserRolesEmpty = Object.keys(userRoles).length === 0
 
   const getRoleStyles = (role: string): string => {
     switch (role) {
@@ -101,48 +99,40 @@ export default function ChatUserList(): ReactElement {
   return (
     <div className='user-render w-[230px] h-full border-l border-border px-2 py-3 ml-0.5 overflow-y-auto'>
       <div className='flex flex-col gap-4'>
-        {isUserRolesEmpty ? (
-          <div className='flex justify-center items-center h-full py-10'>
-            <Spinner variant='simple' />
+        {roleGroups.map(group => (
+          <div key={group.role}>
+            <p className='flex items-center gap-1 text-[10px] text-altwhite mb-2 select-none uppercase font-semibold'>
+              <ChatRoleBadge role={group.role} className={getRoleStyles(group.role)} />
+              {group.roleName} — {group.online.length}
+            </p>
+
+            <div className='flex flex-col'>
+              {group.online.map(user => (
+                <ExtLink
+                  key={user.user_id}
+                  href={`https://steamcommunity.com/profiles/${user.user_id}`}
+                  className='flex items-center gap-2 w-full hover:bg-white/5 p-1 rounded-sm cursor-pointer'
+                >
+                  <div className='relative'>
+                    <Image
+                      src={
+                        user.avatar_url ||
+                        `https://ui-avatars.com/api/?name=${user.username}&background=5865f2&color=fff`
+                      }
+                      alt={`Avatar of ${user.username}`}
+                      className='w-7 h-7 rounded-full mr-2'
+                      width={28}
+                      height={28}
+                    />
+                    <div className='absolute bottom-0 right-1 h-3 w-3 rounded-full bg-success-500 border-2 border-border' />
+                  </div>
+
+                  <span className={`text-xs truncate ${getRoleStyles(group.role)}`}>{user.username}</span>
+                </ExtLink>
+              ))}
+            </div>
           </div>
-        ) : (
-          <>
-            {roleGroups.map(group => (
-              <div key={group.role}>
-                <p className='flex items-center gap-1 text-[10px] text-altwhite mb-2 select-none uppercase font-semibold'>
-                  <ChatRoleBadge role={group.role} className={getRoleStyles(group.role)} />
-                  {group.roleName} — {group.online.length}
-                </p>
-
-                <div className='flex flex-col'>
-                  {group.online.map(user => (
-                    <ExtLink
-                      key={user.user_id}
-                      href={`https://steamcommunity.com/profiles/${user.user_id}`}
-                      className='flex items-center gap-2 w-full hover:bg-white/5 p-1 rounded-sm cursor-pointer'
-                    >
-                      <div className='relative'>
-                        <Image
-                          src={
-                            user.avatar_url ||
-                            `https://ui-avatars.com/api/?name=${user.username}&background=5865f2&color=fff`
-                          }
-                          alt={`Avatar of ${user.username}`}
-                          className='w-7 h-7 rounded-full mr-2'
-                          width={28}
-                          height={28}
-                        />
-                        <div className='absolute bottom-0 right-1 h-3 w-3 rounded-full bg-success-500 border-2 border-border' />
-                      </div>
-
-                      <span className={`text-xs truncate ${getRoleStyles(group.role)}`}>{user.username}</span>
-                    </ExtLink>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </>
-        )}
+        ))}
       </div>
     </div>
   )

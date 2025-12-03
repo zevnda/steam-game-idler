@@ -8,9 +8,7 @@ interface SupabaseStore {
   isBanned: boolean
   setIsBanned: (isBanned: boolean) => void
   userRoles: { [steamId: string]: string }
-  setUserRoles: (
-    userRoles: { [steamId: string]: string } | ((prev: { [steamId: string]: string }) => { [steamId: string]: string }),
-  ) => void
+  setUserRoles: (userRoles: { [steamId: string]: string }) => void
   chatMaintenanceMode: boolean
   setChatMaintenanceMode: (chatMaintenanceMode: boolean) => void
   onlineUsers: ChatUser[]
@@ -28,10 +26,7 @@ export const useSupabaseStore = create<SupabaseStore>(set => ({
   isBanned: false,
   setIsBanned: isBanned => set({ isBanned }),
   userRoles: {},
-  setUserRoles: value =>
-    set(state => ({
-      userRoles: typeof value === 'function' ? value(state.userRoles) : value,
-    })),
+  setUserRoles: userRoles => set({ userRoles }),
   chatMaintenanceMode: false,
   setChatMaintenanceMode: chatMaintenanceMode => set({ chatMaintenanceMode }),
   onlineUsers: [],

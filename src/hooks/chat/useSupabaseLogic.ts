@@ -10,18 +10,9 @@ import { useUserStore } from '@/stores/userStore'
 import { supabase } from '@/utils/supabaseClient'
 import { logEvent, playMentionBeep } from '@/utils/tasks'
 
-interface PresenceData {
-  user_id: string
-  username: string
-  avatar_url?: string
-  role?: string
-  presence_ref: string
-}
-
 export function useSupabaseLogic(userSummary: UserSummary | null): {
   broadcastTyping: () => void
   broadcastStopTyping: () => void
-  fetchRolesForUsers: (userIds: string[]) => Promise<void>
 } {
   const activePage = useNavigationStore(state => state.activePage)
   const setIsPro = useUserStore(state => state.setIsPro)
@@ -31,14 +22,13 @@ export function useSupabaseLogic(userSummary: UserSummary | null): {
   const setChatMaintenanceMode = useSupabaseStore(state => state.setChatMaintenanceMode)
   const setOnlineUsers = useSupabaseStore(state => state.setOnlineUsers)
   const setTypingUsers = useSupabaseStore(state => state.setTypingUsers)
+  const isChatActive = activePage === 'chat'
 
   const channelRef = useRef<RealtimeChannel | null>(null)
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const renewTypingTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const isTypingRef = useRef(false)
   const lastTypingBroadcastRef = useRef<number>(0)
-
-  const isChatActive = activePage === 'chat'
 
   const broadcastStopTyping = useCallback((): void => {
     try {
@@ -132,14 +122,13 @@ export function useSupabaseLogic(userSummary: UserSummary | null): {
     }
   }, [userSummary?.steamId, userSummary?.personaName, setTypingUsers, broadcastStopTyping])
 
-  // Update or insert user in 'users' table on app load
+  // Heartbeat: Update last_seen while app is open (creates user if doesn't exist)
   useEffect(() => {
     const steamId = userSummary?.steamId
-    const personaName = userSummary?.personaName
 
-    if (!steamId || !personaName) return
+    if (!steamId) return
 
-    const updateUserStore = async (): Promise<void> => {
+    const updateLastSeen = async (): Promise<void> => {
       try {
         // First, check if user exists
         const { data: existingUser } = await supabase
@@ -149,26 +138,29 @@ export function useSupabaseLogic(userSummary: UserSummary | null): {
           .maybeSingle()
 
         if (existingUser) {
-          // User exists - UPDATE only username and avatar_url
+          // User exists - UPDATE only username, avatar, and last_seen (preserve role and is_banned)
           const { error } = await supabase
             .from('users')
             .update({
-              username: personaName,
+              username: userSummary?.personaName || 'Unknown',
               avatar_url: userSummary?.avatar || null,
+              last_seen: new Date().toISOString(),
             })
             .eq('user_id', steamId)
 
           if (error) {
-            console.error('Error updating user:', error)
-            logEvent(`[Error] in updateUserStore: ${error.message}`)
+            console.error('Error updating last_seen:', error)
+            logEvent(`[Error] in updateLastSeen: ${error.message}`)
           }
         } else {
-          // User doesn't exist - INSERT with defaults
+          // User doesn't exist - INSERT with default role and is_banned
           const { error } = await supabase.from('users').insert({
             user_id: steamId,
-            username: personaName,
+            username: userSummary?.personaName || 'Unknown',
             avatar_url: userSummary?.avatar || null,
+            last_seen: new Date().toISOString(),
             role: 'user',
+            is_banned: false,
           })
 
           if (error) {
@@ -177,12 +169,79 @@ export function useSupabaseLogic(userSummary: UserSummary | null): {
           }
         }
       } catch (err) {
-        console.error('Error in updateUserStore:', err)
-        logEvent(`[Error] in updateUserStore: ${err}`)
+        console.error('Error in updateLastSeen:', err)
+        logEvent(`[Error] in updateLastSeen: ${err}`)
       }
     }
-    updateUserStore()
+
+    // Initial update when app opens
+    updateLastSeen()
+
+    // Update every 5 minutes while app is open
+    const heartbeatInterval = setInterval(updateLastSeen, 5 * 60 * 1000)
+
+    return () => {
+      clearInterval(heartbeatInterval)
+    }
   }, [userSummary?.steamId, userSummary?.personaName, userSummary?.avatar])
+
+  // Poll for users and calculate online status (only when viewing chat)
+  useEffect(() => {
+    if (!isChatActive) return
+
+    const steamId = userSummary?.steamId
+
+    const fetchOnlineUsers = async (): Promise<void> => {
+      try {
+        const fiveMinutesAgoISO = new Date(Date.now() - 5 * 60 * 1000).toISOString()
+
+        // Fetch users who are online OR have a custom role (role != 'user')
+        const { data: usersData, error } = await supabase
+          .from('users')
+          .select('*')
+          .or(`last_seen.gte.${fiveMinutesAgoISO}`)
+          .order('username', { ascending: true })
+
+        if (error) {
+          console.error('Error fetching users:', error)
+          logEvent(`[Error] in fetchOnlineUsers: ${error.message}`)
+          return
+        }
+
+        // Online users are those with last_seen >= fiveMinutesAgoISO
+        const onlineUsers = (usersData || []).filter(
+          (user: ChatUser) => user.last_seen && user.last_seen >= fiveMinutesAgoISO,
+        )
+        setOnlineUsers(onlineUsers as ChatUser[])
+
+        // Build user roles map (from all fetched users)
+        const roles: { [userId: string]: string } = {}
+        ;(usersData || []).forEach((user: { user_id: string; role: string }) => {
+          if (user.user_id && user.role) {
+            roles[user.user_id] = user.role
+          }
+        })
+        setUserRoles(roles)
+
+        // Check if current user is banned (from all fetched users)
+        if (steamId) {
+          const currentUser = (usersData || []).find(u => u.user_id === steamId)
+          if (currentUser?.is_banned === true || currentUser?.role === 'banned') {
+            setIsBanned(true)
+          } else {
+            setIsBanned(false)
+          }
+        }
+      } catch (error) {
+        console.error('Error in fetchOnlineUsers:', error)
+        logEvent(`[Error] in fetchOnlineUsers: ${error}`)
+      }
+    }
+
+    fetchOnlineUsers()
+    const pollInterval = setInterval(fetchOnlineUsers, 3 * 60 * 1000)
+    return () => clearInterval(pollInterval)
+  }, [isChatActive, userSummary?.steamId, setOnlineUsers, setUserRoles, setIsBanned])
 
   // Check for active subscription and set isPro
   useEffect(() => {
@@ -217,69 +276,6 @@ export function useSupabaseLogic(userSummary: UserSummary | null): {
     checkSubscription()
   }, [userSummary?.steamId, setIsPro])
 
-  // Check if current user is banned (initial check only, updates handled by realtime)
-  useEffect(() => {
-    const checkBanned = async () => {
-      if (!isChatActive) return
-
-      const steamId = userSummary?.steamId
-
-      if (!steamId) return
-
-      try {
-        const { data, error } = await supabase.from('users').select('role').eq('user_id', steamId).maybeSingle()
-
-        if (error) {
-          console.error('Error checking banned status:', error)
-          logEvent(`[Error] in checkBanned: ${error.message}`)
-          setIsBanned(false)
-          return
-        }
-
-        setIsBanned(data?.role === 'banned')
-      } catch (error) {
-        console.error('Error checking banned:', error)
-        logEvent(`[Error] in checkBanned: ${error}`)
-        setIsBanned(false)
-      }
-    }
-
-    checkBanned()
-  }, [userSummary?.steamId, setIsBanned, isChatActive])
-
-  // Fetch roles for a list of user IDs, avoiding redundant refetches
-  const fetchRolesForUsers = useCallback(
-    async (userIds: string[]): Promise<void> => {
-      const currentRoles = useSupabaseStore.getState().userRoles
-      const newUserIds = userIds.filter(id => !(id in currentRoles))
-      if (newUserIds.length === 0) return
-
-      try {
-        const { data, error } = await supabase.from('users').select('user_id, role').in('user_id', newUserIds)
-
-        if (error) {
-          console.error('Error fetching roles:', error)
-          logEvent(`[Error] in fetchRolesForUsers: ${error.message}`)
-          return
-        }
-
-        const rolesMap = data.reduce(
-          (acc, user) => {
-            acc[user.user_id] = user.role || 'user'
-            return acc
-          },
-          {} as { [userId: string]: string },
-        )
-
-        setUserRoles(prev => ({ ...prev, ...rolesMap }))
-      } catch (error) {
-        console.error('Error in fetchRolesForUsers:', error)
-        logEvent(`[Error] in fetchRolesForUsers: ${error}`)
-      }
-    },
-    [setUserRoles],
-  )
-
   // Cleanup typing indicator when chat becomes inactive or component unmounts
   useEffect(() => {
     return () => {
@@ -303,52 +299,14 @@ export function useSupabaseLogic(userSummary: UserSummary | null): {
 
           // Remove others if they haven't renewed in 15 seconds
           // This is a safeguard for when stop_typing broadcasts fail
-          const lastTyping = user.lastTyping || now
-          return now - lastTyping < 15000
+          const lastSeen = user.lastTyping || now
+          return now - lastSeen < 15000
         })
       })
     }, 5000) // Check every 5 seconds
 
     return () => clearInterval(cleanupInterval)
   }, [isChatActive, userSummary?.steamId, setTypingUsers])
-
-  // Presence channel for online users (always active when user is logged in)
-  useEffect(() => {
-    if (!userSummary?.steamId) return
-
-    const presenceChannel = supabase.channel('online-presence')
-
-    presenceChannel
-      .on('presence', { event: 'sync' }, () => {
-        const state = presenceChannel.presenceState() as Record<string, PresenceData[]>
-        const onlineUsersMap = new Map<string, ChatUser>()
-        Object.values(state).forEach(presences => {
-          presences.forEach(presence => {
-            // Deduplicate by user_id, keeping the latest presence data
-            onlineUsersMap.set(presence.user_id, {
-              user_id: presence.user_id,
-              username: presence.username,
-              avatar_url: presence.avatar_url,
-            })
-          })
-        })
-        setOnlineUsers(Array.from(onlineUsersMap.values()))
-      })
-      .subscribe(status => {
-        if (status === 'SUBSCRIBED') {
-          presenceChannel.track({
-            user_id: userSummary.steamId,
-            username: userSummary.personaName || 'Unknown',
-            avatar_url: userSummary.avatar,
-          })
-        }
-      })
-
-    return () => {
-      presenceChannel.unsubscribe()
-      supabase.removeChannel(presenceChannel)
-    }
-  }, [userSummary?.steamId, userSummary?.personaName, userSummary?.avatar, setOnlineUsers])
 
   useEffect(() => {
     // Only run if chat is active
@@ -376,7 +334,6 @@ export function useSupabaseLogic(userSummary: UserSummary | null): {
           logEvent(`[Error] in fetchMaintenanceMode: ${error.message}`)
           return
         }
-
         if (typeof data?.maintenance === 'boolean') {
           setChatMaintenanceMode(data.maintenance)
         }
@@ -503,26 +460,12 @@ export function useSupabaseLogic(userSummary: UserSummary | null): {
           logEvent(`[Error] in typing broadcast handler: ${error}`)
         }
       })
-      // 4. Listen for stop_typing broadcasts (from useTypingUsers)
       .on('broadcast', { event: 'stop_typing' }, payload => {
         try {
           setTypingUsers(prev => prev.filter(u => u.user_id !== payload.payload.user_id))
         } catch (error) {
           console.error('Error handling stop_typing broadcast:', error)
           logEvent(`[Error] in stop_typing broadcast handler: ${error}`)
-        }
-      })
-      // 5. Listen for user role changes (from useUserRoles)
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'users' }, payload => {
-        try {
-          const updatedUser = payload.new as { user_id: string; role: string }
-          setUserRoles(prev => ({ ...prev, [updatedUser.user_id]: updatedUser.role || 'user' }))
-          if (updatedUser.user_id === userSummary?.steamId) {
-            setIsBanned(updatedUser.role === 'banned')
-          }
-        } catch (error) {
-          console.error('Error handling user role update:', error)
-          logEvent(`[Error] in user role update handler: ${error}`)
         }
       })
       .subscribe()
@@ -546,12 +489,12 @@ export function useSupabaseLogic(userSummary: UserSummary | null): {
       // Reset store on cleanup
       setMessages([])
       setUserRoles({})
+      setOnlineUsers([])
       setTypingUsers([])
     }
   }, [
     userSummary?.steamId,
     userSummary?.personaName,
-    userSummary?.avatar,
     isChatActive,
     broadcastStopTyping,
     setMessages,
@@ -559,15 +502,17 @@ export function useSupabaseLogic(userSummary: UserSummary | null): {
     setTypingUsers,
     setIsBanned,
     setUserRoles,
+    setOnlineUsers,
   ])
 
   useEffect(() => {
     if (!isChatActive) {
       setMessages([])
       setUserRoles({})
+      setOnlineUsers([])
       setTypingUsers([])
     }
-  }, [isChatActive, setMessages, setUserRoles, setTypingUsers])
+  }, [isChatActive, setMessages, setUserRoles, setOnlineUsers, setTypingUsers])
 
-  return { broadcastTyping, broadcastStopTyping, fetchRolesForUsers }
+  return { broadcastTyping, broadcastStopTyping }
 }
