@@ -54,7 +54,6 @@ export interface GeneralSettings {
   runAtStartup: boolean
   startMinimized: boolean
   closeToTray: boolean
-  chatSounds: number[]
   theme?: string | null
   customBackground?: string | null
   autoRedeemFreeGames: boolean

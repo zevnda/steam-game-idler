@@ -2,7 +2,7 @@ import { baseOptions } from '../../lib/layout.shared'
 import { source } from '../../lib/source'
 import { DocsLayout } from 'fumadocs-ui/layouts/docs'
 import Image from 'next/image'
-import { FaGithub } from 'react-icons/fa6'
+import { FaDiscord, FaGithub } from 'react-icons/fa6'
 
 export default function Layout({ children }: LayoutProps<'/docs'>) {
   const base = baseOptions()
@@ -18,6 +18,14 @@ export default function Layout({ children }: LayoutProps<'/docs'>) {
           label: 'github',
           text: 'Github',
           icon: <FaGithub />,
+          external: true,
+        },
+        {
+          type: 'icon',
+          url: 'https://discord.com/invite/eB3uRXZ3Am',
+          label: 'discord',
+          text: 'Discord',
+          icon: <FaDiscord />,
           external: true,
         },
       ]}
