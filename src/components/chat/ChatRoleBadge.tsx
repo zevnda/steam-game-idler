@@ -1,9 +1,7 @@
 import type { ReactElement } from 'react'
 
-import { Tooltip } from '@heroui/react'
+import { cn, Tooltip } from '@heroui/react'
 import { FaBan, FaGithub, FaRocket, FaShield } from 'react-icons/fa6'
-
-import ProBadge from '@/components/ui/ProBadge'
 
 interface ChatRoleBadgeProps {
   role: string
@@ -35,7 +33,17 @@ export default function ChatRoleBadge({ role, className }: ChatRoleBadgeProps): 
   if (role === 'donator') {
     return (
       <Tooltip content='Donator' className='text-xs' delay={500} closeDelay={0} showArrow>
-        <ProBadge className='donator-badge scale-80 -ml-px -mr-1' />
+        <span
+          className={cn(
+            'donator-badge inline-block rounded-full px-2 font-black text-white italic select-none scale-80 -ml-px -mr-1',
+            className,
+          )}
+          style={{
+            backgroundImage: 'linear-gradient(100deg, #154d66ff 0%, #227ca5ff 40%, #2eabe5ff 70%, #34bfffff 100%)',
+          }}
+        >
+          PRO
+        </span>
       </Tooltip>
     )
   }
