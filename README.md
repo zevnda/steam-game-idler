@@ -10,7 +10,6 @@ See how it stacks up against other software, such as [ArchiSteamFarm](https://st
 [![Downloads][downloads]](https://github.com/zevnda/steam-game-idler/releases)
 [![Release][release]](https://github.com/zevnda/steam-game-idler/releases/latest)
 ![Build][build]
-[![Localized][localized]](https://github.com/zevnda/steam-game-idler?tab=readme-ov-file#supported-languages)
 
 <img src="./public/example.png" width="700" alt="example image"><br />
 </div>
@@ -59,4 +58,4 @@ Copyright © 2024-2025 zevnda — **[MIT License](./LICENSE)**
 [downloads]: https://img.shields.io/github/downloads/zevnda/steam-game-idler/total?style=flat-square&color=%23e86827
 [release]: https://img.shields.io/github/v/release/zevnda/steam-game-idler?style=flat-square&color=%232d6acc&label=Version
 [build]: https://img.shields.io/github/actions/workflow/status/zevnda/steam-game-idler/release.yml?style=flat-square&color=%2338ba56
-[localized]: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapibase.vercel.app%2Fapi%2Fcrowdin&query=%24.totalProgress&suffix=%25&style=flat-square&label=Translated&color=%23985FCC
+
