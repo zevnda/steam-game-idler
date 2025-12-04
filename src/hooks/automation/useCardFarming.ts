@@ -31,6 +31,7 @@ interface GameWithRemainingDrops {
   id: number
   name: string
   remaining: number
+  playtime: number
 }
 
 interface CycleStep {
@@ -123,6 +124,7 @@ const checkGamesForDrops = async (): Promise<DropsCheckResult> => {
   const credentials = response.settings.cardFarming.credentials
   const allGames = response.settings.cardFarming.allGames
   const blacklist = response.settings.cardFarming.blacklist || []
+  const skipNoPlaytime = response.settings.cardFarming.skipNoPlaytime || false
 
   const cardFarmingList = await invoke<InvokeCustomList>('get_custom_lists', {
     steamId: userSummary?.steamId,
@@ -141,7 +143,7 @@ const checkGamesForDrops = async (): Promise<DropsCheckResult> => {
         credentials?.sma,
       )
 
-      totalDrops = processGamesWithDrops(gamesWithDrops, gamesSet, gameSettings, blacklist)
+      totalDrops = processGamesWithDrops(gamesWithDrops, gamesSet, gameSettings, blacklist, skipNoPlaytime)
     } else {
       totalDrops = await processIndividualGames(
         cardFarmingList.list_data,
@@ -164,6 +166,7 @@ const processGamesWithDrops = (
   gamesSet: Set<GameWithDrops>,
   gameSettings: GameSettings,
   blacklist: number[],
+  skipNoPlaytime: boolean,
 ): number => {
   let totalDrops = 0
 
@@ -175,9 +178,17 @@ const processGamesWithDrops = (
         const gameId = isGameWithDrops ? Number(gameData.id) : Number(gameData.appid)
         const gameName = gameData.name
         const remaining = isGameWithDrops ? gameData.remaining : 0
+        const playtime = isGameWithDrops ? gameData.playtime : 0
 
         // Skip if game is blacklisted
         if (blacklist.includes(gameId)) {
+          logEvent(`[Card Farming] Skipping ${gameName} (${gameId}) because it is blacklisted`)
+          continue
+        }
+
+        // Remove games with 0 playtime if 'skipNoPlaytime' is enabled
+        if (skipNoPlaytime && playtime <= 0) {
+          logEvent(`[Card Farming] Skipping ${gameName} (${gameId}) due to zero playtime`)
           continue
         }
 
@@ -221,6 +232,7 @@ const processIndividualGames = async (
 
     // Skip if game is blacklisted
     if (blacklist.includes(gameData.appid)) {
+      logEvent(`[Card Farming] Skipping ${gameData.name} (${gameData.appid}) because it is blacklisted`)
       return
     }
 

@@ -76,6 +76,16 @@ export default function CardSettings(): ReactElement {
 
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
+            <p className='text-sm text-content font-bold'>{t('settings.cardFarming.skipNoPlaytime')}</p>
+            <p className='text-xs text-altwhite'>{t('settings.cardFarming.skipNoPlaytime.description')}</p>
+          </div>
+          <SettingsSwitch type='cardFarming' name='skipNoPlaytime' />
+        </div>
+
+        <Divider className='bg-border/70 my-4' />
+
+        <div className='flex justify-between items-center'>
+          <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>{t('common.nextTask')}</p>
             <p className='text-xs text-altwhite'>{t('settings.cardFarming.nextTask.description')}</p>
           </div>

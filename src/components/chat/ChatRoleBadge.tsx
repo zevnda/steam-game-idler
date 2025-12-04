@@ -36,7 +36,6 @@ export default function ChatRoleBadge({ role, className }: ChatRoleBadgeProps): 
         <span
           className={cn(
             'donator-badge inline-block rounded-full px-2 font-black text-white italic select-none scale-80 -ml-px -mr-1',
-            className,
           )}
           style={{
             backgroundImage: 'linear-gradient(100deg, #154d66ff 0%, #227ca5ff 40%, #2eabe5ff 70%, #34bfffff 100%)',

@@ -69,6 +69,21 @@
         "focus": false,
         "visible": false,
         "useHttpsScheme": true
+      },
+      {
+        "title": "Webview Window",
+        "label": "webview",
+        "url": "/webview.html",
+        "width": 1550,
+        "height": 800,
+        "minWidth": 1550,
+        "minHeight": 800,
+        "fullscreen": false,
+        "resizable": false,
+        "decorations": false,
+        "transparent": true,
+        "focus": false,
+        "visible": false
       }
     ],
     "security": {
