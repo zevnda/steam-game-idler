@@ -28,6 +28,7 @@ import { useTranslation } from 'react-i18next'
 import useGamesList from '@/hooks/gameslist/useGamesList'
 import { handleRefetch } from '@/hooks/gameslist/usePageHeader'
 import { startIdle } from '@/utils/idle'
+import { supabase } from '@/utils/supabaseClient'
 import { checkSteamStatus, fetchLatest, isPortableCheck, logEvent, preserveKeysAndClearData } from '@/utils/tasks'
 import { showDangerToast, showNoGamesToast, showSuccessToast, t } from '@/utils/toasts'
 
@@ -51,6 +52,7 @@ export default function useWindow(): void {
   const setFreeGamesList = useUserStore(state => state.setFreeGamesList)
   const gamesList = useUserStore(state => state.gamesList)
   const isPro = useUserStore(state => state.isPro)
+  const setIsPro = useUserStore(state => state.setIsPro)
   const [zoom, setZoom] = useState(1.0)
 
   const lastRedeemedIdsRef = useRef<string>('')
@@ -66,8 +68,8 @@ export default function useWindow(): void {
     invoke('start_processes_monitor')
   }, [])
 
+  // Set initial zoom level from localStorage
   useEffect(() => {
-    // Set initial zoom level from localStorage
     const storedZoom = localStorage.getItem('zoomLevel')
     if (storedZoom) {
       const parsedZoom = parseFloat(storedZoom)
@@ -251,6 +253,39 @@ export default function useWindow(): void {
       unlistenPromise.then(unlisten => unlisten())
     }
   }, [userSummary, setIsAchievementUnlocker, setIsCardFarming, setShowSteamWarning])
+
+  // Check for active subscription and set isPro
+  useEffect(() => {
+    const steamId = userSummary?.steamId
+
+    if (!steamId) return
+
+    const checkSubscription = async (): Promise<void> => {
+      try {
+        const { data, error } = await supabase
+          .from('subscriptions')
+          .select('status')
+          .eq('steam_id', steamId)
+          .in('status', ['active', 'trialing', 'past_due'])
+          .maybeSingle()
+
+        if (error) {
+          console.error('Error checking subscription:', error)
+          logEvent(`[Error] in checkSubscription: ${error.message}`)
+          setIsPro(false)
+          return
+        }
+
+        setIsPro(!!data)
+      } catch (error) {
+        console.error('Error checking subscription:', error)
+        logEvent(`[Error] in checkSubscription: ${error}`)
+        setIsPro(false)
+      }
+    }
+
+    checkSubscription()
+  }, [userSummary?.steamId, setIsPro])
 
   useEffect(() => {
     // Show changelog after updates

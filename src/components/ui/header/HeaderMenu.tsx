@@ -8,6 +8,7 @@ import { cn, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@hero
 import { useEffect, useState } from 'react'
 import { useUpdateStore } from '@/stores/updateStore'
 import { useTranslation } from 'react-i18next'
+import { FaDiscord } from 'react-icons/fa6'
 import {
   TbBookFilled,
   TbBugFilled,
@@ -142,6 +143,20 @@ export default function HeaderMenu(): ReactElement {
               onPress={() => handleOpenExtLink('https://github.com/sponsors/zevnda')}
             >
               {t('menu.support')}
+            </DropdownItem>
+
+            <DropdownItem
+              showDivider
+              key='join-discord'
+              startContent={<FaDiscord size={18} />}
+              textValue='Join our Discord'
+              className='rounded-xl text-content'
+              classNames={{
+                base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
+              }}
+              onPress={() => handleOpenExtLink('https://discord.com/invite/eB3uRXZ3Am')}
+            >
+              {t('menu.joinDiscord')}
             </DropdownItem>
 
             <DropdownItem

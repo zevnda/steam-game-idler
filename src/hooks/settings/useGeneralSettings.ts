@@ -6,7 +6,6 @@ import { disable, enable, isEnabled } from '@tauri-apps/plugin-autostart'
 
 import { useEffect, useState } from 'react'
 import { useUserStore } from '@/stores/userStore'
-import { useTranslation } from 'react-i18next'
 
 import { supabase } from '@/utils/supabaseClient'
 import { encrypt, logEvent } from '@/utils/tasks'
@@ -24,23 +23,11 @@ interface GeneralSettingsHook {
 }
 
 export const useGeneralSettings = (): GeneralSettingsHook => {
-  const { t } = useTranslation()
   const userSettings = useUserStore(state => state.userSettings)
   const [startupState, setStartupState] = useState<boolean | null>(null)
   const [keyValue, setKeyValue] = useState('')
   const [hasKey, setHasKey] = useState(false)
   const [sliderLabel, setSliderLabel] = useState('')
-
-  // Sync local settings with global settings when they change
-  useEffect(() => {
-    const value = userSettings.general?.chatSounds
-    const getPercent = (val: number): number => Math.round((val / 3) * 100)
-    setSliderLabel(
-      t('settings.general.chatSounds.description', {
-        value: `${getPercent(value[0])}%`,
-      }),
-    )
-  }, [userSettings.general?.chatSounds, setSliderLabel, t])
 
   useEffect(() => {
     // Check the current state of auto start
@@ -150,27 +137,6 @@ export const handleClear = async (
     showDangerToast(t('common.error'))
     console.error('Error in (handleClear):', error)
     logEvent(`[Error] in (handleClear): ${error}`)
-  }
-}
-
-// Handle changes to the slider in the settings
-export const handleSliderChange = async (
-  newInterval: [number, number] | number[] | number,
-  userSummary: UserSummary,
-  setUserSettings: Dispatch<SetStateAction<UserSettings>>,
-): Promise<void> => {
-  try {
-    const response = await invoke<InvokeSettings>('update_user_settings', {
-      steamId: userSummary?.steamId,
-      key: 'general.chatSounds',
-      value: newInterval,
-    })
-    setUserSettings(response.settings)
-    logEvent(`[Settings - General] Changed 'chatSounds' to '${String(newInterval)}'`)
-  } catch (error) {
-    showDangerToast(t('common.error'))
-    console.error('Error in (handleSliderChange - General):', error)
-    logEvent(`[Error] in (handleSliderChange - General): ${error}`)
   }
 }
 

@@ -11,7 +11,7 @@ import { useUserStore } from '@/stores/userStore'
 import Image from 'next/image'
 import { useTranslation } from 'react-i18next'
 import { FiLogOut } from 'react-icons/fi'
-import { RiChatSmile2Line, RiSearchLine } from 'react-icons/ri'
+import { RiSearchLine } from 'react-icons/ri'
 import {
   TbAward,
   TbBuildingStore,
@@ -103,13 +103,6 @@ export default function SideBar(): ReactElement {
       title: t('tradingCards.title'),
       icon: TbBuildingStore,
     },
-    {
-      id: 'chat',
-      page: 'chat',
-      title: t('chat.title'),
-      icon: RiChatSmile2Line,
-      isBeta: true,
-    },
   ]
 
   // Section headers and their corresponding first item indices
@@ -145,7 +138,6 @@ export default function SideBar(): ReactElement {
     const isFreeGames = item.id === 'free-games'
     const hasFreeGames = freeGamesList.length > 0
     const isBeta = item.isBeta
-    const isChat = item.id === 'chat'
 
     return (
       <div key={item.id}>
@@ -186,13 +178,6 @@ export default function SideBar(): ReactElement {
             >
               <div className='relative shrink-0'>
                 <Icon fontSize={20} className={isFreeGames && hasFreeGames ? 'text-[#ffc700]' : undefined} />
-                {isChat && item.hasUnread && (
-                  <span
-                    className={cn(
-                      'absolute flex justify-center items-center w-2 h-2 top-0 right-0 text-white text-[10px] font-bold rounded-full',
-                    )}
-                  />
-                )}
               </div>
               {!sidebarCollapsed && (
                 <div className={cn('transition-all duration-150 ease-in-out whitespace-nowrap')}>
@@ -233,12 +218,7 @@ export default function SideBar(): ReactElement {
           <Button
             isIconOnly={sidebarCollapsed}
             radius='full'
-            isDisabled={
-              activePage === 'idling' ||
-              activePage === 'freeGames' ||
-              activePage === 'chat' ||
-              activePage.includes('customlists')
-            }
+            isDisabled={activePage === 'idling' || activePage === 'freeGames' || activePage.includes('customlists')}
             className={cn(
               'text-altwhite active:scale-95 w-full mt-4 duration-150',
               sidebarCollapsed ? 'w-0 justify-center' : 'min-w-40 justify-start',

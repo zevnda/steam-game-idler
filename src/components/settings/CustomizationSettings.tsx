@@ -3,7 +3,7 @@ import type { ReactElement } from 'react'
 
 import { invoke } from '@tauri-apps/api/core'
 
-import { Button, cn, Divider, Input, Radio, RadioGroup, Slider } from '@heroui/react'
+import { Button, cn, Divider, Input, Radio, RadioGroup } from '@heroui/react'
 import { useEffect, useState } from 'react'
 import { useStateStore } from '@/stores/stateStore'
 import { useUserStore } from '@/stores/userStore'
@@ -14,7 +14,6 @@ import { TbChevronRight, TbEraser } from 'react-icons/tb'
 
 import SettingsSwitch from '@/components/settings/SettingsSwitch'
 import ProBadge from '@/components/ui/ProBadge'
-import { handleSliderChange, useGeneralSettings } from '@/hooks/settings/useGeneralSettings'
 
 interface Theme {
   key: string
@@ -28,10 +27,8 @@ export default function CustomizationSettings(): ReactElement | null {
   const [mounted, setMounted] = useState(false)
   const setProModalOpen = useStateStore(state => state.setProModalOpen)
   const userSummary = useUserStore(state => state.userSummary)
-  const userSettings = useUserStore(state => state.userSettings)
   const setUserSettings = useUserStore(state => state.setUserSettings)
   const isPro = useUserStore(state => state.isPro)
-  const { sliderLabel, setSliderLabel } = useGeneralSettings()
 
   // Themes
   const themes: Theme[] = [
@@ -123,41 +120,6 @@ export default function CustomizationSettings(): ReactElement | null {
             <p className='text-xs text-altwhite'>{t('settings.general.disableTooltips.description')}</p>
           </div>
           <SettingsSwitch type='general' name='disableTooltips' />
-        </div>
-
-        <Divider className='bg-border/70 my-4' />
-
-        <div className='flex justify-between items-center'>
-          <div className='flex flex-col gap-2 w-1/2'>
-            <p className='text-sm text-content font-bold'>{t('settings.general.chatSounds')}</p>
-            <p className='text-xs text-altwhite'>{sliderLabel}</p>
-          </div>
-
-          <Slider
-            size='md'
-            step={0.15}
-            minValue={0}
-            maxValue={3}
-            defaultValue={userSettings?.general?.chatSounds || 1}
-            hideValue
-            className='mt-2 w-[350px]'
-            classNames={{
-              track: 'bg-input data-[fill-start=true]:border-s-dynamic',
-              filler: 'bg-dynamic',
-              thumb: 'bg-white after:bg-dynamic',
-            }}
-            onChangeEnd={e => handleSliderChange(e, userSummary, setUserSettings)}
-            onChange={e => {
-              const getPercent = (val: number): number => Math.round((val / 3) * 100)
-              if (Array.isArray(e)) {
-                setSliderLabel(
-                  t('settings.general.chatSounds.description', {
-                    value: `${getPercent(e[0])}%`,
-                  }),
-                )
-              }
-            }}
-          />
         </div>
 
         <Divider className='bg-border/70 my-4' />

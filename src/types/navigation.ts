@@ -9,7 +9,6 @@ export type ActivePageType =
   | 'settings'
   | `customlists/${string}`
   | 'tradingCards'
-  | 'chat'
 export type CurrentTabType = 'achievements' | 'statistics'
 export type CurrentSettingsTabType =
   | 'general'

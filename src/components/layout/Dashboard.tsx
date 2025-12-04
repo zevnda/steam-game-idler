@@ -8,7 +8,6 @@ import { useStateStore } from '@/stores/stateStore'
 import Achievements from '@/components/achievements/Achievements'
 import AchievementUnlocker from '@/components/automation/AchievementUnlocker'
 import CardFarming from '@/components/automation/CardFarming'
-import ChatBox from '@/components/chat/ChatBox'
 import CustomList from '@/components/customlists/CustomList'
 import FreeGamesList from '@/components/gameslist/FreeGamesList'
 import GamesList from '@/components/gameslist/GamesList'
@@ -52,8 +51,6 @@ export default function Dashboard(): ReactElement {
         return <FreeGamesList />
       case 'tradingCards':
         return <TradingCardsList />
-      case 'chat':
-        return <ChatBox />
       default:
         return <GamesList />
     }
