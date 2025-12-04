@@ -233,6 +233,7 @@
   "proMode.modal.benefits": "Benefits",
   "proMode.modal.removeAds": "No advertisements",
   "proMode.modal.credentials": "Automated Steam credentials retrieval",
+  "proMode.modal.autoRedeem": "Automatically redeem free games",
   "proMode.modal.themes": "Theme customization",
   "proMode.modal.uniqueChatRole": "Unique chat role and color",
   "proMode.modal.moreBenefits": "More benefits coming in the future",
