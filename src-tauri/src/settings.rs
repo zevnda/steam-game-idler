@@ -31,7 +31,8 @@ fn get_default_settings() -> Value {
             "userSummary": null,
             "gamesWithDrops": 0,
             "totalDropsRemaining": 0,
-            "blacklist": null
+            "blacklist": null,
+            "skipNoPlaytime": false
         },
         "achievementUnlocker": {
             "idle": true,

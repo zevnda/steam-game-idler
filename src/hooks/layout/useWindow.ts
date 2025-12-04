@@ -12,6 +12,7 @@ import type { Dispatch, SetStateAction } from 'react'
 
 import { invoke } from '@tauri-apps/api/core'
 import { emit, listen } from '@tauri-apps/api/event'
+import { WebviewWindow } from '@tauri-apps/api/webviewWindow'
 import { isPermissionGranted, requestPermission, sendNotification } from '@tauri-apps/plugin-notification'
 import { relaunch } from '@tauri-apps/plugin-process'
 import { check } from '@tauri-apps/plugin-updater'
@@ -337,6 +338,20 @@ export default function useWindow(): void {
     // Start idling games in auto idle list
     startAutoIdleGames()
   }, [setUserSummary, setLoadingUserSummary])
+
+  useEffect(() => {
+    const closeWebview = async (): Promise<void> => {
+      try {
+        const webview = await WebviewWindow.getByLabel('webview')
+        setTimeout(async () => {
+          await webview?.close()
+        }, 5000)
+      } catch (error) {
+        console.error('Error in (closeWebview):', error)
+      }
+    }
+    closeWebview()
+  }, [])
 }
 
 // Check for free games

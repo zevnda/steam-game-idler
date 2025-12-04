@@ -31,6 +31,7 @@ export interface CardFarmingSettings {
   totalDropsRemaining: number
   gamesWithDrops: number
   blacklist: number[] | null
+  skipNoPlaytime: boolean
 }
 
 export interface GameSpecificSettings {

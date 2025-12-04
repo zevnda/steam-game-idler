@@ -175,6 +175,8 @@
   "settings.cardFarming.listGames.description": "Only farm games that are in your Card Farming list",
   "settings.cardFarming.allGames": "Farm All Games",
   "settings.cardFarming.allGames.description": "Farm cards for all games in your library that have card drops remaining",
+  "settings.cardFarming.skipNoPlaytime": "Skip Unplayed Games",
+  "settings.cardFarming.skipNoPlaytime.description": "Do not farm games that have zero playtime",
   "settings.cardFarming.steamCredentialsTitle": "Steam Credentials",
   "settings.cardFarming.steamCredentials": "Steam credentials are required in order to use the Card Farming and Trading Card Manager features. <1>Learn more</1>",
   "settings.cardFarming.steamCredentialsTwo": "Get your Steam credentials from <1>https://steamcommunity.com</1>",

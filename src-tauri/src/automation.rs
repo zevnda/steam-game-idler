@@ -10,6 +10,7 @@ struct Game {
     name: String,
     id: String,
     remaining: u32,
+    playtime: f32,
 }
 
 #[tauri::command]
@@ -44,25 +45,45 @@ pub async fn get_drops_remaining(
 
     let html = response.text().await.map_err(|e| e.to_string())?;
     let document = Html::parse_document(&html);
-    let progress_info_bold = Selector::parse(".progress_info_bold").map_err(|e| e.to_string())?;
+
+    // Extract playtime
+    let badge_title_stats_playtime_selector =
+        Selector::parse(".badge_title_stats_playtime").map_err(|e| e.to_string())?;
+    let playtime_text = document
+        .select(&badge_title_stats_playtime_selector)
+        .next()
+        .map(|e| e.text().collect::<Vec<_>>().join("").trim().to_string())
+        .unwrap_or_else(|| "".to_string());
+
+    let playtime = if !playtime_text.is_empty() {
+        let re = Regex::new(r"([\d\.]+)\s*hrs? on record").unwrap();
+        if let Some(cap) = re.captures(&playtime_text) {
+            cap[1].parse::<f32>().unwrap_or(0.0)
+        } else {
+            0.0
+        }
+    } else {
+        0.0
+    };
 
     // Parse the HTML to find the number of card drops remaining
+    let progress_info_bold = Selector::parse(".progress_info_bold").map_err(|e| e.to_string())?;
     if let Some(element) = document.select(&progress_info_bold).next() {
         let text = element.text().collect::<Vec<_>>().join("");
         if text.contains("No card drops remaining") {
-            return Ok(json!({ "remaining": 0 }));
+            return Ok(json!({ "remaining": 0, "playtime": playtime }));
         }
 
         let regex =
             Regex::new(r"(\d+)\s+card\s+drop(?:s)?\s+remaining").map_err(|e| e.to_string())?;
         if let Some(captures) = regex.captures(&text) {
             let card_drops_remaining = captures[1].parse::<i32>().map_err(|e| e.to_string())?;
-            return Ok(json!({"remaining": card_drops_remaining}));
+            return Ok(json!({"remaining": card_drops_remaining, "playtime": playtime}));
         } else {
-            return Ok(json!({"error": "Card drops data not found"}));
+            return Ok(json!({"error": "Card drops data not found", "playtime": playtime}));
         }
     } else {
-        return Ok(json!({"error": "Card drops data not found"}));
+        return Ok(json!({"error": "Card drops data not found", "playtime": playtime}));
     }
 }
 
@@ -147,6 +168,8 @@ pub async fn get_games_with_drops(
                     let badge_title_selector = Selector::parse(".badge_title").unwrap();
                     let btn_green_white_innerfade_selector =
                         Selector::parse(".btn_green_white_innerfade").unwrap();
+                    let badge_title_stats_playtime_selector =
+                        Selector::parse(".badge_title_stats_playtime").unwrap();
 
                     let mut games = Vec::new();
                     let document = Html::parse_document(&text);
@@ -176,18 +199,37 @@ pub async fn get_games_with_drops(
                                     .and_then(|href| href.strip_prefix("steam://run/"))
                                     .unwrap_or_default();
 
+                                // Extract playtime as a number (f32)
+                                let playtime_text = badge_row
+                                    .select(&badge_title_stats_playtime_selector)
+                                    .next()
+                                    .map(|e| e.text().collect::<Vec<_>>().join("").trim().to_string())
+                                    .unwrap_or_else(|| "".to_string());
+
+                                let playtime = if !playtime_text.is_empty() {
+                                    let re = Regex::new(r"([\d\.]+)\s*hrs? on record").unwrap();
+                                    if let Some(cap) = re.captures(&playtime_text) {
+                                        cap[1].parse::<f32>().unwrap_or(0.0)
+                                    } else {
+                                        0.0
+                                    }
+                                } else {
+                                    0.0
+                                };
+
                                 if !app_id.is_empty() {
                                     let card_drops_remaining = captures[1].parse().unwrap_or(0);
                                     let game_name =
                                         game_name.replace("View details", "").trim().to_string();
                                     println!(
-                                        "Found game with drops: {} (app_id: {}) - remaining: {}",
-                                        game_name, app_id, card_drops_remaining
+                                        "Found game with drops: {} (app_id: {}) - remaining: {} - playtime: {}",
+                                        game_name, app_id, card_drops_remaining, playtime
                                     );
                                     games.push(Game {
                                         name: game_name,
                                         id: app_id.to_string(),
                                         remaining: card_drops_remaining,
+                                        playtime,
                                     });
                                 }
                             }
