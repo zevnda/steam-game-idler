@@ -201,7 +201,7 @@ function ChatMessage({
                   style={{
                     fontWeight: userRoles[msg.user_id] ? 'bold' : 'normal',
                   }}
-                  className={cn('mr-1 text-xs text-[#3f3f3f]', getRoleStyles(currentRole))}
+                  className={cn('mr-1 text-xs text-[#3f3f3f] inline-flex items-center', getRoleStyles(currentRole))}
                 >
                   {msg.username}
                   <ChatRoleBadge role={currentRole} />
