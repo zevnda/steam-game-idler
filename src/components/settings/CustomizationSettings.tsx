@@ -124,6 +124,36 @@ export default function CustomizationSettings(): ReactElement | null {
 
         <Divider className='bg-border/70 my-4' />
 
+        <div className='flex justify-between items-center'>
+          <div className='flex flex-col gap-2 w-1/2'>
+            <p className='text-sm text-content font-bold'>{t('settings.general.showRecommendedCarousel')}</p>
+            <p className='text-xs text-altwhite'>{t('settings.general.showRecommendedCarousel.description')}</p>
+          </div>
+          <SettingsSwitch type='general' name='showRecommendedCarousel' />
+        </div>
+
+        <Divider className='bg-border/70 my-4' />
+
+        <div className='flex justify-between items-center'>
+          <div className='flex flex-col gap-2 w-1/2'>
+            <p className='text-sm text-content font-bold'>{t('settings.general.showRecentCarousel')}</p>
+            <p className='text-xs text-altwhite'>{t('settings.general.showRecentCarousel.description')}</p>
+          </div>
+          <SettingsSwitch type='general' name='showRecentCarousel' />
+        </div>
+
+        <Divider className='bg-border/70 my-4' />
+
+        <div className='flex justify-between items-center'>
+          <div className='flex flex-col gap-2 w-1/2'>
+            <p className='text-sm text-content font-bold'>{t('settings.general.showCardDropsCarousel')}</p>
+            <p className='text-xs text-altwhite'>{t('settings.general.showCardDropsCarousel.description')}</p>
+          </div>
+          <SettingsSwitch type='general' name='showCardDropsCarousel' />
+        </div>
+
+        <Divider className='bg-border/70 my-4' />
+
         <div className='flex justify-between items-start'>
           <div className='flex flex-col gap-2 w-1/2'>
             <div className='flex items-center'>

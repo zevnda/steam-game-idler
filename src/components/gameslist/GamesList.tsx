@@ -3,6 +3,7 @@ import type { CSSProperties, ReactElement } from 'react'
 import { cn, Spinner } from '@heroui/react'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useStateStore } from '@/stores/stateStore'
+import { useUserStore } from '@/stores/userStore'
 import { useTranslation } from 'react-i18next'
 import { VariableSizeList as List } from 'react-window'
 
@@ -18,6 +19,7 @@ export default function GamesList(): ReactElement {
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
   const transitionDuration = useStateStore(state => state.transitionDuration)
   const showAchievements = useStateStore(state => state.showAchievements)
+  const userSettings = useUserStore(state => state.userSettings)
   const { t } = useTranslation()
 
   const [columnCount, setColumnCount] = useState(5)
@@ -57,12 +59,19 @@ export default function GamesList(): ReactElement {
   const gameRowCount = useMemo(() => Math.ceil(games.length / columnCount), [games.length, columnCount])
 
   const hasRecommended = useMemo(
-    () => !gamesContext.isLoading && gamesContext.unplayedGames.length > 0,
-    [gamesContext.isLoading, gamesContext.unplayedGames.length],
+    () =>
+      !gamesContext.isLoading &&
+      gamesContext.unplayedGames.length > 0 &&
+      userSettings?.general?.showRecommendedCarousel !== false,
+    [gamesContext.isLoading, gamesContext.unplayedGames.length, userSettings?.general?.showRecommendedCarousel],
   )
+
   const hasRecent = useMemo(
-    () => !gamesContext.isLoading && gamesContext.recentGames.length > 0,
-    [gamesContext.isLoading, gamesContext.recentGames.length],
+    () =>
+      !gamesContext.isLoading &&
+      gamesContext.recentGames.length > 0 &&
+      userSettings?.general?.showRecentCarousel !== false,
+    [gamesContext.isLoading, gamesContext.recentGames.length, userSettings?.general?.showRecentCarousel],
   )
 
   const rows = useMemo((): Array<'recommended' | 'recent' | 'header' | number> => {
