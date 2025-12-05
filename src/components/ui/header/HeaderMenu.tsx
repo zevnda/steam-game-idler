@@ -154,7 +154,7 @@ export default function HeaderMenu(): ReactElement {
               classNames={{
                 base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
               }}
-              onPress={() => handleOpenExtLink('https://discord.com/invite/eB3uRXZ3Am')}
+              onPress={() => handleOpenExtLink('https://discord.com/invite/5kY2ZbVnZ8')}
             >
               {t('menu.joinDiscord')}
             </DropdownItem>

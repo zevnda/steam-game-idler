@@ -24,7 +24,7 @@ export default function SocialButtons(): ReactElement {
         </p>
       </ExtLink>
 
-      <ExtLink href='https://discord.com/invite/eB3uRXZ3Am'>
+      <ExtLink href='https://discord.com/invite/5kY2ZbVnZ8'>
         <p className='bg-transparent rounded-full hover:bg-item-active p-2 duration-150'>
           <FaDiscord size={20} />
         </p>

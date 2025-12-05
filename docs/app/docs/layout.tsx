@@ -22,7 +22,7 @@ export default function Layout({ children }: LayoutProps<'/docs'>) {
         },
         {
           type: 'icon',
-          url: 'https://discord.com/invite/eB3uRXZ3Am',
+          url: 'https://discord.com/invite/5kY2ZbVnZ8',
           label: 'discord',
           text: 'Discord',
           icon: <FaDiscord />,
