@@ -87,13 +87,13 @@ export default function useWindow(): void {
         if (e.ctrlKey || e.metaKey) {
           if (e.key === '=' || e.key === '+') {
             e.preventDefault()
-            const newZoom = Math.min(zoom + 0.1, 3.0)
+            const newZoom = Math.min(zoom + 0.1, 1.3)
             setZoom(newZoom)
             localStorage.setItem('zoomLevel', newZoom.toString())
             await invoke('set_zoom', { scaleFactor: newZoom })
           } else if (e.key === '-') {
             e.preventDefault()
-            const newZoom = Math.max(zoom - 0.1, 0.5)
+            const newZoom = Math.max(zoom - 0.1, 0.7)
             setZoom(newZoom)
             localStorage.setItem('zoomLevel', newZoom.toString())
             await invoke('set_zoom', { scaleFactor: newZoom })
@@ -113,10 +113,36 @@ export default function useWindow(): void {
     [zoom, t],
   )
 
+  // Zoom controls - mouse wheel
+  const handleWheelZoom = useCallback(
+    async (e: WheelEvent) => {
+      try {
+        if (e.ctrlKey || e.metaKey) {
+          e.preventDefault()
+          const delta = e.deltaY > 0 ? -0.1 : 0.1
+          const newZoom = Math.min(Math.max(zoom + delta, 0.7), 1.3)
+          setZoom(newZoom)
+          localStorage.setItem('zoomLevel', newZoom.toString())
+          await invoke('set_zoom', { scaleFactor: newZoom })
+        }
+      } catch (error) {
+        showDangerToast(t('common.error'))
+        console.error('Error in (handleWheelZoom):', error)
+        logEvent(`[Error] in (handleWheelZoom): ${error}`)
+      }
+    },
+    [zoom, t],
+  )
+
   useEffect(() => {
     document.addEventListener('keydown', handleZoomControls, { capture: true })
     return () => document.removeEventListener('keydown', handleZoomControls, { capture: true })
   }, [handleZoomControls])
+
+  useEffect(() => {
+    document.addEventListener('wheel', handleWheelZoom, { passive: false })
+    return () => document.removeEventListener('wheel', handleWheelZoom)
+  }, [handleWheelZoom])
 
   useEffect(() => {
     const applyThemeForUser = async (): Promise<void> => {
