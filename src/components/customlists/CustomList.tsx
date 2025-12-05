@@ -122,7 +122,7 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
 
   useEffect(() => {
     const getGamesWithDrops = async (): Promise<void> => {
-      if (type === 'cardFarmingList') {
+      if (type === 'cardFarmingList' && userSettings?.general?.showCardDropsCarousel) {
         const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
 
         const cachedUserSettings = await invoke<InvokeSettings>('get_user_settings', {
@@ -161,7 +161,7 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
       }
     }
     getGamesWithDrops()
-  }, [type])
+  }, [type, userSettings?.general?.showCardDropsCarousel])
 
   const listTypes: Record<CustomListType, ListTypeConfig> = {
     cardFarmingList: {

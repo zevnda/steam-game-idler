@@ -19,7 +19,10 @@ fn get_default_settings() -> Value {
             "startMinimized": false,
             "closeToTray": true,
             "customBackground": null,
-            "autoRedeemFreeGames": false
+            "autoRedeemFreeGames": false,
+            "showRecommendedCarousel": true,
+            "showRecentCarousel": true,
+            "showCardDropsCarousel": false
         },
         "cardFarming": {
             "listGames": false,

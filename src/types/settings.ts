@@ -57,6 +57,9 @@ export interface GeneralSettings {
   theme?: string | null
   customBackground?: string | null
   autoRedeemFreeGames: boolean
+  showRecommendedCarousel: boolean
+  showRecentCarousel: boolean
+  showCardDropsCarousel: boolean
 }
 
 export interface TradingCardsSettings {

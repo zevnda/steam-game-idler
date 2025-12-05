@@ -107,7 +107,7 @@ export default function GoProModal(): ReactElement {
               </Tab>
             </Tabs>
 
-            <div className='mt-10 w-full max-w-xs text-sm'>
+            <div className='mt-4 w-full max-w-xs text-sm'>
               <p className='font-semibold mb-3'>{t('proMode.modal.benefits')}</p>
               <ul className='space-y-1'>
                 <li className='flex items-center gap-2'>
