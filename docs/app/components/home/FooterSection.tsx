@@ -4,6 +4,7 @@ import type { ReactElement } from 'react'
 
 import Image from 'next/image'
 import Link from 'next/link'
+import { FaDiscord } from 'react-icons/fa6'
 import { FiBook, FiFileText, FiGithub, FiMail, FiShield } from 'react-icons/fi'
 
 export default function FooterSection(): ReactElement {
@@ -34,6 +35,15 @@ export default function FooterSection(): ReactElement {
                 aria-label='Visit our GitHub repository'
               >
                 <FiGithub className='w-4 h-4 sm:w-5 sm:h-5 text-gray-600 hover:text-indigo-700' />
+              </a>
+              <a
+                href='https://discord.com/invite/5kY2ZbVnZ8'
+                target='_blank'
+                rel='noopener noreferrer'
+                className='w-9 h-9 sm:w-10 sm:h-10 bg-white border-2 border-indigo-200 flex items-center justify-center rounded-lg hover:border-indigo-400 hover:bg-indigo-50 transition-colors duration-200 shadow-sm'
+                aria-label='Join our Discord server'
+              >
+                <FaDiscord className='w-4 h-4 sm:w-5 sm:h-5 text-gray-600 hover:text-indigo-700' />
               </a>
             </div>
           </div>
