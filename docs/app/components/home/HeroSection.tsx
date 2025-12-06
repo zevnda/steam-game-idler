@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { FaArrowRight, FaStar, FaWindows } from 'react-icons/fa'
+import { FaDiscord } from 'react-icons/fa6'
 import { FiBook, FiGithub } from 'react-icons/fi'
 
 export default function HeroSection(): ReactElement {
@@ -238,6 +239,16 @@ export default function HeroSection(): ReactElement {
               >
                 <FiBook className='w-4 h-4 md:w-5 md:h-5 mr-2 md:mr-3' />
                 DOCUMENTATION
+              </Link>
+
+              <Link
+                prefetch={false}
+                href='https://discord.com/invite/5kY2ZbVnZ8'
+                target='_blank'
+                className='inline-flex items-center justify-center px-3 sm:px-3 md:px-4 py-3 sm:py-3 md:py-4 bg-white border-2 border-purple-300 text-purple-700 font-bold rounded-xl hover:bg-purple-50 hover:border-purple-400 transition-colors duration-200 shadow-md text-sm md:text-base'
+              >
+                <FaDiscord className='w-4 h-4 md:w-5 md:h-5 mr-2 sm:mr-0' />
+                <span className='block sm:hidden'>JOIN OUR DISCORD</span>
               </Link>
             </div>
 
