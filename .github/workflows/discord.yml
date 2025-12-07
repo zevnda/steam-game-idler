@@ -40,14 +40,14 @@ jobs:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         run: |
           VERSION="${{ steps.get_version.outputs.version }}"
-          CHANGELOG="${{ steps.changelog.outputs.changelog }}"
           RELEASE_URL="https://github.com/${{ github.repository }}/releases/tag/${VERSION}"
           
-          # Escape special characters for JSON
-          MESSAGE="# Steam Game Idler v${VERSION}\n\n${CHANGELOG}\n\n[View full release notes on GitHub](${RELEASE_URL})"
-          MESSAGE_ESCAPED=$(echo "$MESSAGE" | jq -Rs .)
-          
-          # Send to Discord
-          curl -H "Content-Type: application/json" \
-            -d "{\"content\": ${MESSAGE_ESCAPED}}" \
+          # Create JSON payload using jq to properly escape everything
+          jq -n \
+            --arg version "$VERSION" \
+            --arg changelog "${{ steps.changelog.outputs.changelog }}" \
+            --arg url "$RELEASE_URL" \
+            '{content: ("# Steam Game Idler v" + $version + "\n\n" + $changelog + "\n\n[View full release notes on GitHub](" + $url + ")")}' \
+          | curl -H "Content-Type: application/json" \
+            -d @- \
             $DISCORD_WEBHOOK
