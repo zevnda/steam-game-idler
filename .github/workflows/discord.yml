@@ -17,37 +17,28 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Using version: $VERSION"
       
-      - name: Get changelog content
-        id: changelog
+      - name: Send to Discord
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         run: |
           VERSION="${{ steps.get_version.outputs.version }}"
           CHANGELOG_FILE="docs/content/changelog/${VERSION}.mdx"
+          RELEASE_URL="https://github.com/${{ github.repository }}/releases/tag/${VERSION}"
           
           if [ ! -f "$CHANGELOG_FILE" ]; then
             echo "Error: Changelog file not found: $CHANGELOG_FILE"
             exit 1
           fi
           
-          # Read the changelog content and extract body after frontmatter
+          # Extract changelog body after frontmatter
           CHANGELOG_BODY=$(cat "$CHANGELOG_FILE" | awk '/^---$/,/^---$/{next} {print}' | sed '/^$/d')
-          
-          echo "changelog<<EOF" >> $GITHUB_OUTPUT
-          echo "$CHANGELOG_BODY" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
-      
-      - name: Send to Discord
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-        run: |
-          VERSION="${{ steps.get_version.outputs.version }}"
-          RELEASE_URL="https://github.com/${{ github.repository }}/releases/tag/${VERSION}"
           
           # Create JSON payload using jq to properly escape everything
           jq -n \
             --arg version "$VERSION" \
-            --arg changelog "${{ steps.changelog.outputs.changelog }}" \
+            --arg changelog "$CHANGELOG_BODY" \
             --arg url "$RELEASE_URL" \
             '{content: ("# Steam Game Idler v" + $version + "\n\n" + $changelog + "\n\n[View full release notes on GitHub](" + $url + ")")}' \
           | curl -H "Content-Type: application/json" \
             -d @- \
-            $DISCORD_WEBHOOK
+            "$DISCORD_WEBHOOK"
