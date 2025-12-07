@@ -38,7 +38,7 @@ jobs:
             --arg version "$VERSION" \
             --arg changelog "$CHANGELOG_BODY" \
             --arg url "$RELEASE_URL" \
-            '{content: ("# Steam Game Idler v" + $version + "\n\n" + $changelog + "\n\n[View full release notes on GitHub](<" + $url + ">)")}' \
+            '{content: ("# Steam Game Idler v" + $version + "\n\n" + $changelog + "\n\n[View on GitHub](<" + $url + ">)")}' \
           | curl -H "Content-Type: application/json" \
             -d @- \
             "$DISCORD_WEBHOOK"

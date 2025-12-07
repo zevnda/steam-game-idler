@@ -380,6 +380,18 @@ jobs:
             ./src-tauri/target/release/bundle/nsis/Steam Game Idler_${{ github.event.inputs.version }}_x64-setup.nsis.zip.sig
             ./src-tauri/target/release/Steam Game Idler_${{ github.event.inputs.version }}_x64-portable.zip
 
+      - name: Trigger Discord notification
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'discord.yml',
+              ref: 'main'
+            });
+
       - name: Cleanup artifacts
         if: always()
         uses: geekyeggo/delete-artifact@v5
