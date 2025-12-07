@@ -45,7 +45,7 @@ export default function SteamCredentials(): ReactElement {
       handleCredentialsSave(
         result.sessionid,
         result.steamLoginSecure,
-        result.steamMachineAuth || result.steamParental || undefined,
+        undefined,
         cardSettings.setHasCookies,
         cardSettings.setCardFarmingUser,
         userSummary,
