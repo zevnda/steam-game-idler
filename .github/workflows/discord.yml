@@ -1,0 +1,53 @@
+name: Discord Notification
+
+on:
+  workflow_dispatch:
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Get latest release version
+        id: get_version
+        run: |
+          VERSION=$(curl -s https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r .tag_name)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Using version: $VERSION"
+      
+      - name: Get changelog content
+        id: changelog
+        run: |
+          VERSION="${{ steps.get_version.outputs.version }}"
+          CHANGELOG_FILE="docs/content/changelog/${VERSION}.mdx"
+          
+          if [ ! -f "$CHANGELOG_FILE" ]; then
+            echo "Error: Changelog file not found: $CHANGELOG_FILE"
+            exit 1
+          fi
+          
+          # Read the changelog content and extract body after frontmatter
+          CHANGELOG_BODY=$(cat "$CHANGELOG_FILE" | awk '/^---$/,/^---$/{next} {print}' | sed '/^$/d')
+          
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG_BODY" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+      
+      - name: Send to Discord
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        run: |
+          VERSION="${{ steps.get_version.outputs.version }}"
+          CHANGELOG="${{ steps.changelog.outputs.changelog }}"
+          RELEASE_URL="https://github.com/${{ github.repository }}/releases/tag/${VERSION}"
+          
+          # Escape special characters for JSON
+          MESSAGE="# Steam Game Idler v${VERSION}\n\n${CHANGELOG}\n\n[View full release notes on GitHub](${RELEASE_URL})"
+          MESSAGE_ESCAPED=$(echo "$MESSAGE" | jq -Rs .)
+          
+          # Send to Discord
+          curl -H "Content-Type: application/json" \
+            -d "{\"content\": ${MESSAGE_ESCAPED}}" \
+            $DISCORD_WEBHOOK
