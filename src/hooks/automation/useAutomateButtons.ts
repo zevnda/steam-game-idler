@@ -6,7 +6,7 @@ import { useStateStore } from '@/stores/stateStore'
 import { useUserStore } from '@/stores/userStore'
 import { useTranslation } from 'react-i18next'
 
-import { checkSteamStatus, decrypt, logEvent } from '@/utils/tasks'
+import { autoRevalidateSteamCredentials, checkSteamStatus, decrypt, logEvent } from '@/utils/tasks'
 import {
   showDangerToast,
   showEnableAllGamesToast,
@@ -28,6 +28,7 @@ export const useAutomate = (): AutomateButtonsHook => {
   const setUserSettings = useUserStore(state => state.setUserSettings)
   const setIsCardFarming = useStateStore(state => state.setIsCardFarming)
   const setIsAchievementUnlocker = useStateStore(state => state.setIsAchievementUnlocker)
+  const isPro = useUserStore(state => state.isPro)
 
   // Start card farming
   const startCardFarming = async (): Promise<void> => {
@@ -37,7 +38,15 @@ export const useAutomate = (): AutomateButtonsHook => {
       if (!isSteamRunning) return
 
       // Retrieve Steam cookies from local storage
-      const credentials = userSettings.cardFarming.credentials
+      let credentials = userSettings.cardFarming.credentials
+
+      // Attempt to automatically revalidate Steam credentials for PRO users
+      if (isPro) {
+        const autoRevalidateResult = await autoRevalidateSteamCredentials(setUserSettings)
+        if (autoRevalidateResult?.credentials) {
+          credentials = autoRevalidateResult.credentials
+        }
+      }
 
       if (!credentials?.sid || !credentials?.sls) return showMissingCredentialsToast()
 

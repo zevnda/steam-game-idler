@@ -89,7 +89,7 @@ export const useCardSettings = (): CardSettingsHook => {
 }
 
 // Gets user summary
-const fetchUserSummary = async (steamId: string, apiKey: string | null): Promise<CardFarmingUser> => {
+export const fetchUserSummary = async (steamId: string, apiKey: string | null): Promise<CardFarmingUser> => {
   const res = await invoke<InvokeUserSummary>('get_user_summary', {
     steamId,
     apiKey: apiKey ? decrypt(apiKey) : null,
