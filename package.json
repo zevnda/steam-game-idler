@@ -25,6 +25,7 @@
     "prettier": "prettier --write .",
     "td": "tauri dev",
     "tb": "tauri build",
+    "dd": "pnpm --filter steam-game-idler-docs dev",
     "main": "git checkout main && git pull && git fetch -p"
   },
   "dependencies": {

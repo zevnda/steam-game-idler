@@ -273,6 +273,7 @@ export const faqData: FAQEntry[] = [
       '**Incorrect card farming credentials**\n' +
       '> * You have entered the incorrect cookies. Follow the steps found in the [Steam Credentials](/docs/steam-credentials) section\n' +
       "> * Steam accounts with [Family View](https://store.steampowered.com/parental/) _(parental restrictions)_ enabled will also have a `steamParental` cookie that needs to be saved in SGI's settings\n" +
+      '> * If you are using the [Automated Steam Credentials Method](/docs/steam-credentials#automated-method), you must disable [Family View](https://store.steampowered.com/parental/) to use this method\n' +
       "> * In some cases, Steam accounts might have a `steamMachineAuth` cookie that needs to be saved in SGI's settings",
   },
   {
