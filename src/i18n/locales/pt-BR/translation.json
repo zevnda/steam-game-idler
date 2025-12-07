@@ -167,7 +167,7 @@
   "settings.general.showRecommendedCarousel.description": "Exibir um carrossel de jogos recomendados na página Seus Jogos.",
   "settings.general.showRecentCarousel": "Mostrar jogos jogados recentemente",
   "settings.general.showRecentCarousel.description": "Exiba um carrossel de jogos jogados recentemente na página Seus Jogos.",
-  "settings.general.showCardDropsCarousel": "Exiba jogos com sorteios de cartas.",
+  "settings.general.showCardDropsCarousel": "Exibir jogos com drops de cartas",
   "settings.general.showCardDropsCarousel.description": "Exiba um carrossel de jogos com itens de cartas restantes na página de Coleta de Cartas.",
   "settings.cardFarming.alert": "Para usar o recurso de Farm de Cartas, adicione suas credenciais da Steam em Configurações → Credenciais da Steam",
   "settings.cardFarming.listGames": "Farmar jogos da lista",
