@@ -30,15 +30,15 @@ jobs:
             exit 1
           fi
           
-          # Extract changelog body after frontmatter
-          CHANGELOG_BODY=$(cat "$CHANGELOG_FILE" | awk '/^---$/,/^---$/{next} {print}' | sed '/^$/d')
+          # Extract changelog body after frontmatter (remove everything between --- markers and trim)
+          CHANGELOG_BODY=$(awk 'BEGIN{p=0} /^---$/{p++; next} p==2{print}' "$CHANGELOG_FILE" | sed '/^$/d')
           
           # Create JSON payload using jq to properly escape everything
           jq -n \
             --arg version "$VERSION" \
             --arg changelog "$CHANGELOG_BODY" \
             --arg url "$RELEASE_URL" \
-            '{content: ("# Steam Game Idler v" + $version + "\n\n" + $changelog + "\n\n[View full release notes on GitHub](" + $url + ")")}' \
+            '{content: ("# Steam Game Idler v" + $version + "\n\n" + $changelog + "\n\n[View full release notes on GitHub](<" + $url + ">)")}' \
           | curl -H "Content-Type: application/json" \
             -d @- \
             "$DISCORD_WEBHOOK"
