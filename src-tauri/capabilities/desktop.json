@@ -52,6 +52,8 @@
     "os:allow-arch",
     "os:allow-locale",
     "os:allow-platform",
-    "os:allow-version"
+    "os:allow-version",
+    "clipboard-manager:allow-read-text",
+    "clipboard-manager:allow-write-text"
   ]
 }
