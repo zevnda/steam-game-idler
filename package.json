@@ -37,7 +37,7 @@
     "@emoji-mart/react": "^1.1.1",
     "@heroui/react": "^2.8.5",
     "@internationalized/date": "^3.10.0",
-    "@supabase/supabase-js": "^2.77.0",
+    "@supabase/supabase-js": "^2.86.2",
     "@tanstack/react-virtual": "^3.13.12",
     "@tauri-apps/api": "^2.8.0",
     "@tauri-apps/plugin-autostart": "~2.5.0",
