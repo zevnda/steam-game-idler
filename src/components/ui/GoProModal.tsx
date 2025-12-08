@@ -74,17 +74,7 @@ export default function GoProModal(): ReactElement {
                 </div>
               </Tab>
 
-              <Tab
-                key='yearly'
-                title={
-                  <div className='flex items-center gap-2'>
-                    {t('proMode.modal.yearly')}
-                    <div className='px-1 py-0.5 bg-[#5750DF] text-white rounded-sm text-xs font-normal uppercase'>
-                      <p>{t('proMode.modal.trial')}</p>
-                    </div>
-                  </div>
-                }
-              >
+              <Tab key='yearly' title={t('proMode.modal.yearly')}>
                 <div className='flex flex-col justify-center items-center'>
                   <p className={`${manrope.className} text-4xl font-black mt-3 mb-6`}>
                     $0.75
@@ -98,7 +88,7 @@ export default function GoProModal(): ReactElement {
                         'text-white text-md bg-[#5750DF] py-2.5 hover:bg-[#5750DF]/90 hover:scale-[1.02] duration-150',
                       )}
                     >
-                      {t('proMode.modal.startFreeTrial')}
+                      {t('proMode.modal.getStarted')}
                     </div>
                   </ExtLink>
 
