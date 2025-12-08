@@ -83,6 +83,13 @@ export default function GamesList(): ReactElement {
     return r
   }, [hasRecommended, hasRecent, gameRowCount])
 
+  // Reset list measurements when rows structure changes
+  useEffect(() => {
+    if (listRef.current) {
+      listRef.current.resetAfterIndex(0, true)
+    }
+  }, [rows])
+
   const getRowHeight = useCallback(
     (index: number): number => {
       const rowType = rows[index]
