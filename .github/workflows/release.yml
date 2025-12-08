@@ -380,20 +380,41 @@ jobs:
             ./src-tauri/target/release/bundle/nsis/Steam Game Idler_${{ github.event.inputs.version }}_x64-setup.nsis.zip.sig
             ./src-tauri/target/release/Steam Game Idler_${{ github.event.inputs.version }}_x64-portable.zip
 
-      - name: Trigger Discord notification
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ steps.generate-token.outputs.token }}
-          script: |
-            await github.rest.actions.createWorkflowDispatch({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              workflow_id: 'discord.yml',
-              ref: 'main'
-            });
-
       - name: Cleanup artifacts
         if: always()
         uses: geekyeggo/delete-artifact@v5
         with:
           name: dotnet-libs
+
+  send_discord_notification:
+    needs: build_release_bundle
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Send changelog to Discord
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        run: |
+          VERSION="${{ github.event.inputs.version }}"
+          CHANGELOG_FILE="docs/content/changelog/${VERSION}.mdx"
+          RELEASE_URL="https://github.com/${{ github.repository }}/releases/tag/${VERSION}"
+          
+          if [ ! -f "$CHANGELOG_FILE" ]; then
+            echo "Error: Changelog file not found: $CHANGELOG_FILE"
+            exit 1
+          fi
+          
+          # Extract changelog body after frontmatter (remove everything between --- markers and trim)
+          CHANGELOG_BODY=$(awk 'BEGIN{p=0} /^---$/{p++; next} p==2{print}' "$CHANGELOG_FILE" | sed '/^$/d')
+          
+          # Create JSON payload using jq to properly escape everything
+          jq -n \
+            --arg version "$VERSION" \
+            --arg changelog "$CHANGELOG_BODY" \
+            --arg url "$RELEASE_URL" \
+            '{content: ("# Steam Game Idler v" + $version + "\n\n" + $changelog + "\n\n[View on GitHub](<" + $url + ">)")}' \
+          | curl -H "Content-Type: application/json" \
+            -d @- \
+            "$DISCORD_WEBHOOK"
