@@ -75,7 +75,7 @@
     "@ianvs/prettier-plugin-sort-imports": "^4.5.1",
     "@next/eslint-plugin-next": "^16.0.7",
     "@tailwindcss/postcss": "^4.1.17",
-    "@tauri-apps/cli": "^2.8.4",
+    "@tauri-apps/cli": "^2.9.5",
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.2",
