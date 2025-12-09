@@ -30,8 +30,8 @@ importers:
         specifier: ^2.77.0
         version: 2.87.0
       '@tauri-apps/api':
-        specifier: ^2.8.0
-        version: 2.9.1
+        specifier: ~2.8.0
+        version: 2.8.0
       '@tauri-apps/plugin-autostart':
         specifier: ~2.5.0
         version: 2.5.1
@@ -2377,8 +2377,8 @@ packages:
   '@tanstack/virtual-core@3.11.3':
     resolution: {integrity: sha512-v2mrNSnMwnPJtcVqNvV0c5roGCBqeogN8jDtgtuHCphdwBasOZ17x8UV8qpHUh+u0MLfX43c0uUHKje0s+Zb0w==}
 
-  '@tauri-apps/api@2.9.1':
-    resolution: {integrity: sha512-IGlhP6EivjXHepbBic618GOmiWe4URJiIeZFlB7x3czM0yDHHYviH1Xvoiv4FefdkQtn6v7TuwWCRfOGdnVUGw==}
+  '@tauri-apps/api@2.8.0':
+    resolution: {integrity: sha512-ga7zdhbS2GXOMTIZRT0mYjKJtR9fivsXzsyq5U3vjDL0s6DTMwYRm0UHNjzTY5dh4+LSC68Sm/7WEiimbQNYlw==}
 
   '@tauri-apps/cli-darwin-arm64@2.9.5':
     resolution: {integrity: sha512-P5XDyCwq3VbWGAplyfP/bgmuUITVDcypxgZUyX45SM7HbU1Nrkk0cNK1HCOkuNBAVVbWen2GUNWah/AiupHHXg==}
@@ -7628,7 +7628,7 @@ snapshots:
 
   '@tanstack/virtual-core@3.11.3': {}
 
-  '@tauri-apps/api@2.9.1': {}
+  '@tauri-apps/api@2.8.0': {}
 
   '@tauri-apps/cli-darwin-arm64@2.9.5':
     optional: true
@@ -7679,43 +7679,43 @@ snapshots:
 
   '@tauri-apps/plugin-autostart@2.5.1':
     dependencies:
-      '@tauri-apps/api': 2.9.1
+      '@tauri-apps/api': 2.8.0
 
   '@tauri-apps/plugin-clipboard-manager@2.3.2':
     dependencies:
-      '@tauri-apps/api': 2.9.1
+      '@tauri-apps/api': 2.8.0
 
   '@tauri-apps/plugin-dialog@2.4.2':
     dependencies:
-      '@tauri-apps/api': 2.9.1
+      '@tauri-apps/api': 2.8.0
 
   '@tauri-apps/plugin-fs@2.4.4':
     dependencies:
-      '@tauri-apps/api': 2.9.1
+      '@tauri-apps/api': 2.8.0
 
   '@tauri-apps/plugin-notification@2.3.3':
     dependencies:
-      '@tauri-apps/api': 2.9.1
+      '@tauri-apps/api': 2.8.0
 
   '@tauri-apps/plugin-os@2.3.2':
     dependencies:
-      '@tauri-apps/api': 2.9.1
+      '@tauri-apps/api': 2.8.0
 
   '@tauri-apps/plugin-process@2.3.1':
     dependencies:
-      '@tauri-apps/api': 2.9.1
+      '@tauri-apps/api': 2.8.0
 
   '@tauri-apps/plugin-shell@2.3.3':
     dependencies:
-      '@tauri-apps/api': 2.9.1
+      '@tauri-apps/api': 2.8.0
 
   '@tauri-apps/plugin-updater@2.9.0':
     dependencies:
-      '@tauri-apps/api': 2.9.1
+      '@tauri-apps/api': 2.8.0
 
   '@tauri-apps/plugin-window-state@2.4.1':
     dependencies:
-      '@tauri-apps/api': 2.9.1
+      '@tauri-apps/api': 2.8.0
 
   '@types/debug@4.1.12':
     dependencies:
