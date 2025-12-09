@@ -159,8 +159,6 @@
   "settings.general.webApi.description": "Använd din egen API-nyckel för Steam-webben. <1>Läs mer</1>",
   "settings.general.webApi.descriptionTwo": "Hämta din Steam Web API-nyckel från <1>https://steamcommunity.com/dev/apikey</1>",
   "settings.general.helpTranslate": "Hjälp till att översätta SGI. <1>Läs mer</1>",
-  "settings.general.cancelPro": "Avsluta PRO-prenumerationen",
-  "settings.general.cancelPro.description": "Din PRO-prenumeration upphör omedelbart och du förlorar åtkomst till PRO-funktioner",
   "settings.general.autoRedeemFreeGames": "Automatiskt inlösen av gratisspel",
   "settings.general.autoRedeemFreeGames.description": "Lös in gratisspel automatiskt på Steam när de blir tillgängliga. Du måste vara inloggad via den <1>automatiserade metoden</1> i <3>Steam-inloggningsuppgifter</3>",
   "settings.general.showRecommendedCarousel": "Visa rekommenderade spel",

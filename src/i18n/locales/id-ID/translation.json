@@ -159,8 +159,6 @@
   "settings.general.webApi.description": "Gunakan kunci API web Steam Anda sendiri. <1>Pelajari lebih lanjut</1>",
   "settings.general.webApi.descriptionTwo": "Dapatkan kunci Steam Web API Anda dari <1>https://steamcommunity.com/dev/apikey</1>",
   "settings.general.helpTranslate": "Bantu menerjemahkan SGI. <1>Pelajari lebih lanjut</1>",
-  "settings.general.cancelPro": "Batalkan Langganan PRO",
-  "settings.general.cancelPro.description": "Langganan PRO Anda akan segera berakhir dan Anda akan kehilangan akses ke fitur PRO",
   "settings.general.autoRedeemFreeGames": "Penukaran Otomatis Game Gratis",
   "settings.general.autoRedeemFreeGames.description": "Tukarkan game gratis di Steam secara otomatis saat tersedia. Anda harus masuk melalui <1>Metode Otomatis</1> di <3>Kredensial Steam</3>",
   "settings.general.showRecommendedCarousel": "Tampilkan Game yang Direkomendasikan",

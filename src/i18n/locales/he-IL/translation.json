@@ -159,8 +159,6 @@
   "settings.general.webApi.description": "השתמש במפתח ה-API של Steam שלך. <1>למידע נוסף</1>",
   "settings.general.webApi.descriptionTwo": "קבל את מפתח ה-API של Steam Web שלך מ-<1>https://steamcommunity.com/dev/apikey</1>",
   "settings.general.helpTranslate": "עזור לתרגם SGI. <1>למידע נוסף</1>",
-  "settings.general.cancelPro": "ביטול מנוי PRO",
-  "settings.general.cancelPro.description": "מנוי ה-PRO שלך יסתיים באופן מיידי ותאבד גישה לתכונות PRO",
   "settings.general.autoRedeemFreeGames": "מימוש אוטומטי של משחקים בחינם",
   "settings.general.autoRedeemFreeGames.description": "מימוש משחקים בחינם באופן אוטומטי ב-Steam כאשר הם הופכים לזמינים. עליך להתחבר באמצעות השיטה האוטומטית <1></1> ב-<3>אישורי Steam</3>",
   "settings.general.showRecommendedCarousel": "הצג משחקים מומלצים",

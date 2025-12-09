@@ -159,8 +159,6 @@
   "settings.general.webApi.description": "Използвайте свой собствен Steam web API ключ. <1>Научете повече</1>",
   "settings.general.webApi.descriptionTwo": "Вземете вашия Steam Web API ключ от <1>https://steamcommunity.com/dev/apikey</1>",
   "settings.general.helpTranslate": "Помогнете за превода на SGI. <1>Научете повече</1>",
-  "settings.general.cancelPro": "Анулиране на PRO абонамент",
-  "settings.general.cancelPro.description": "Вашият PRO абонамент ще приключи незабавно и ще загубите достъп до PRO функциите",
   "settings.general.autoRedeemFreeGames": "Автоматично осребряване на безплатни игри",
   "settings.general.autoRedeemFreeGames.description": "Автоматично осребряване на безплатни игри в Steam, когато станат достъпни. Трябва да сте влезли чрез <1>автоматизирания метод</1> в <3>Steam идентификационни данни</3>",
   "settings.general.showRecommendedCarousel": "Показване на препоръчани игри",

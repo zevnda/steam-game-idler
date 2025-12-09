@@ -159,8 +159,6 @@
   "settings.general.webApi.description": "Verwende deinen eigenen Steam Web API-Schlüssel. <1>Mehr erfahren</1>",
   "settings.general.webApi.descriptionTwo": "Hol dir deinen Steam Web API-Schlüssel hier: <1>https://steamcommunity.com/dev/apikey</1>",
   "settings.general.helpTranslate": "Hilf dabei, SGI zu übersetzen. <1>Mehr erfahren</1>",
-  "settings.general.cancelPro": "PRO-Abonnement kündigen",
-  "settings.general.cancelPro.description": "Ihr PRO-Abonnement endet sofort und Sie verlieren den Zugriff auf die PRO-Funktionen.",
   "settings.general.autoRedeemFreeGames": "Kostenlose Spiele automatisch einlösen",
   "settings.general.autoRedeemFreeGames.description": "Kostenlose Spiele auf Steam werden automatisch eingelöst, sobald sie verfügbar sind. Sie müssen über die <1>Automatische Methode angemeldet sein.</1> in <3>Steam-Anmeldeinformationen</3>",
   "settings.general.showRecommendedCarousel": "Empfohlene Spiele anzeigen",

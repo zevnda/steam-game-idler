@@ -159,8 +159,6 @@
   "settings.general.webApi.description": "Folosiți propria cheie API Steam. <1>Aflați mai multe</1>",
   "settings.general.webApi.descriptionTwo": "Obțineți cheia API-ului web Steam de la <1>https://steamcommunity.com/dev/apikey</1>",
   "settings.general.helpTranslate": "Ajută la traducerea SGI. <1>Află mai multe</1>",
-  "settings.general.cancelPro": "Anulează abonamentul PRO",
-  "settings.general.cancelPro.description": "Abonamentul tău PRO se va încheia imediat și vei pierde accesul la funcțiile PRO",
   "settings.general.autoRedeemFreeGames": "Jocuri gratuite cu răscumpărare automată",
   "settings.general.autoRedeemFreeGames.description": "Valorifică automat jocurile gratuite pe Steam când devin disponibile. Trebuie să fii conectat prin <1>Metoda automată</1> în <3>Acreditări Steam</3>",
   "settings.general.showRecommendedCarousel": "Afișează jocuri recomandate",

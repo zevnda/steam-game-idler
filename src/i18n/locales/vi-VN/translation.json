@@ -159,8 +159,6 @@
   "settings.general.webApi.description": "Sử dụng khóa API web Steam của riêng bạn. <1>Tìm hiểu thêm</1>",
   "settings.general.webApi.descriptionTwo": "Nhận khóa Steam Web API của bạn từ <1>https://steamcommunity.com/dev/apikey</1>",
   "settings.general.helpTranslate": "Giúp dịch SGI. <1>Tìm hiểu thêm</1>",
-  "settings.general.cancelPro": "Hủy đăng ký PRO",
-  "settings.general.cancelPro.description": "Đăng ký PRO của bạn sẽ kết thúc ngay lập tức và bạn sẽ mất quyền truy cập vào các tính năng PRO",
   "settings.general.autoRedeemFreeGames": "Tự động đổi trò chơi miễn phí",
   "settings.general.autoRedeemFreeGames.description": "Tự động đổi trò chơi miễn phí trên Steam khi chúng có sẵn. Bạn phải đăng nhập bằng <1>Phương thức tự động</1> trong <3>Thông tin xác thực Steam</3>",
   "settings.general.showRecommendedCarousel": "Hiển thị trò chơi được đề xuất",

@@ -159,8 +159,6 @@
   "settings.general.webApi.description": "Use sua própria chave de Steam Web API. <1>Saiba mais</1>",
   "settings.general.webApi.descriptionTwo": "Obtenha sua chave da Steam Web API em <1>https://steamcommunity.com/dev/apikey</1>",
   "settings.general.helpTranslate": "Ajude a traduzir o SGI. <1>Saiba mais</1>",
-  "settings.general.cancelPro": "Cancelar assinatura PRO",
-  "settings.general.cancelPro.description": "Sua assinatura PRO será encerrada imediatamente e você perderá acesso aos recursos PRO",
   "settings.general.autoRedeemFreeGames": "Resgatar jogos grátis automaticamente",
   "settings.general.autoRedeemFreeGames.description": "Resgata automaticamente jogos grátis na Steam quando ficarem disponíveis. Você precisa estar logado pelo <1>Método Automatizado</1> em <3>Credenciais da Steam</3>",
   "settings.general.showRecommendedCarousel": "Mostrar jogos recomendados",
