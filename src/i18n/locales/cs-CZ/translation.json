@@ -159,8 +159,6 @@
   "settings.general.webApi.description": "Použijte vlastní Steam webový API klíč. <1>Více informací</1>",
   "settings.general.webApi.descriptionTwo": "Získejte klíč Steam Web API z <1>https://steamcommunity.com/dev/apikey</1>",
   "settings.general.helpTranslate": "Pomozte přeložit SGI. <1>Více informací</1>",
-  "settings.general.cancelPro": "Zrušit předplatné PRO",
-  "settings.general.cancelPro.description": "Vaše PRO předplatné okamžitě skončí a ztratíte přístup k funkcím PRO.",
   "settings.general.autoRedeemFreeGames": "Automatické uplatnění bezplatných her",
   "settings.general.autoRedeemFreeGames.description": "Automaticky uplatněte bezplatné hry na Steamu, jakmile budou k dispozici. Musíte být přihlášeni pomocí <1>Automatizované metody</1> v <3>Přihlašovacích údajích Steam</3>",
   "settings.general.showRecommendedCarousel": "Zobrazit doporučené hry",

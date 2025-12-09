@@ -159,8 +159,6 @@
   "settings.general.webApi.description": "使用您自己的 Steam Web API 金鑰。 <1>了解更多</1>",
   "settings.general.webApi.descriptionTwo": "從 <1>https://steamcommunity.com/dev/apikey 取得您的 Steam Web API 金鑰</1>",
   "settings.general.helpTranslate": "幫助翻譯 SGI。 <1>了解更多</1>",
-  "settings.general.cancelPro": "取消專業版訂閱",
-  "settings.general.cancelPro.description": "您的專業版訂閱將立即終止，您將無法再使用專業版功能。",
   "settings.general.autoRedeemFreeGames": "自動兌換免費遊戲",
   "settings.general.autoRedeemFreeGames.description": "免費遊戲上線後，系統會自動在 Steam 上領取。您必須透過<1>自動方式</1>登入。</1>在 <3>Steam 憑證</3>",
   "settings.general.showRecommendedCarousel": "顯示推薦遊戲",

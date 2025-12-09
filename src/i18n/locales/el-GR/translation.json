@@ -159,8 +159,6 @@
   "settings.general.webApi.description": "Χρησιμοποιήστε το δικό σας κλειδί API ιστού Steam. <1>Μάθετε περισσότερα</1>",
   "settings.general.webApi.descriptionTwo": "Αποκτήστε το κλειδί Steam Web API από <1>https://steamcommunity.com/dev/apikey</1>",
   "settings.general.helpTranslate": "Βοηθήστε στη μετάφραση SGI. <1>Μάθετε περισσότερα</1>",
-  "settings.general.cancelPro": "Ακύρωση συνδρομής PRO",
-  "settings.general.cancelPro.description": "Η συνδρομή σας PRO θα λήξει αμέσως και θα χάσετε την πρόσβαση στις λειτουργίες PRO.",
   "settings.general.autoRedeemFreeGames": "Αυτόματη εξαργύρωση δωρεάν παιχνιδιών",
   "settings.general.autoRedeemFreeGames.description": "Αυτόματη εξαργύρωση δωρεάν παιχνιδιών στο Steam όταν γίνουν διαθέσιμα. Πρέπει να συνδεθείτε μέσω της <1>Αυτοματοποιημένης Μεθόδου</1> σε <3>Διαπιστευτήρια Steam</3>",
   "settings.general.showRecommendedCarousel": "Εμφάνιση προτεινόμενων παιχνιδιών",

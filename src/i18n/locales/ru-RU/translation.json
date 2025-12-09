@@ -159,8 +159,6 @@
   "settings.general.webApi.description": "Используйте свой собственный ключ API Steam. <1>Подробнее</1>",
   "settings.general.webApi.descriptionTwo": "Получите ключ Steam Web API по ссылке <1>https://steamcommunity.com/dev/apikey</1>",
   "settings.general.helpTranslate": "Помогите перевести SGI. <1>Подробнее</1>",
-  "settings.general.cancelPro": "Отменить подписку PRO",
-  "settings.general.cancelPro.description": "Ваша подписка PRO будет немедленно прекращена, и вы потеряете доступ к функциям PRO.",
   "settings.general.autoRedeemFreeGames": "Автоматическое погашение бесплатных игр",
   "settings.general.autoRedeemFreeGames.description": "Автоматически активируйте бесплатные игры в Steam, когда они станут доступны. Вам необходимо войти в систему автоматическим способом.</1> в <3>Учетные данные Steam</3>",
   "settings.general.showRecommendedCarousel": "Показать рекомендуемые игры",

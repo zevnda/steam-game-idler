@@ -159,8 +159,6 @@
   "settings.general.webApi.description": "अपनी स्वयं की स्टीम वेब API कुंजी का उपयोग करें। <1>और जानें</1>",
   "settings.general.webApi.descriptionTwo": "अपनी स्टीम वेब API कुंजी <1>https://steamcommunity.com/dev/apikey से प्राप्त करें</1>",
   "settings.general.helpTranslate": "SGI का अनुवाद करने में सहायता करें। <1>और जानें</1>",
-  "settings.general.cancelPro": "PRO सदस्यता रद्द करें",
-  "settings.general.cancelPro.description": "आपकी PRO सदस्यता तुरंत समाप्त हो जाएगी और आप PRO सुविधाओं तक पहुँच खो देंगे",
   "settings.general.autoRedeemFreeGames": "ऑटो रिडीम फ्री गेम्स",
   "settings.general.autoRedeemFreeGames.description": "स्टीम पर मुफ़्त गेम उपलब्ध होने पर उन्हें अपने आप रिडीम करें। आपको <1>स्वचालित विधि के ज़रिए साइन इन करना होगा</1> <3>स्टीम क्रेडेंशियल्स में</3>",
   "settings.general.showRecommendedCarousel": "अनुशंसित गेम दिखाएं",

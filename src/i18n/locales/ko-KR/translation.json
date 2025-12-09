@@ -159,8 +159,6 @@
   "settings.general.webApi.description": "자신의 Steam 웹 API 키를 사용하세요. <1>자세히 알아보기</1>",
   "settings.general.webApi.descriptionTwo": "<1>https://steamcommunity.com/dev/apikey에서 Steam 웹 API 키를 받으세요.</1>",
   "settings.general.helpTranslate": "SGI 번역에 도움을 주세요. <1>자세히 알아보기</1>",
-  "settings.general.cancelPro": "PRO 구독 취소",
-  "settings.general.cancelPro.description": "귀하의 PRO 구독은 즉시 종료되며 PRO 기능에 대한 액세스 권한을 잃게 됩니다.",
   "settings.general.autoRedeemFreeGames": "무료 게임 자동 사용",
   "settings.general.autoRedeemFreeGames.description": "Steam에서 무료 게임이 출시되면 자동으로 사용하세요. <1>자동 로그인 방식을 통해 로그인해야 합니다.</1> <3>Steam 자격 증명</3>",
   "settings.general.showRecommendedCarousel": "추천 게임 보기",

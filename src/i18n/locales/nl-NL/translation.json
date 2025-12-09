@@ -159,8 +159,6 @@
   "settings.general.webApi.description": "Gebruik je eigen Steam web API-sleutel. <1>Meer informatie</1>",
   "settings.general.webApi.descriptionTwo": "Haal uw Steam Web API-sleutel op via <1>https://steamcommunity.com/dev/apikey</1>",
   "settings.general.helpTranslate": "Help SGI te vertalen. <1>Meer informatie</1>",
-  "settings.general.cancelPro": "PRO-abonnement opzeggen",
-  "settings.general.cancelPro.description": "Je PRO-abonnement eindigt onmiddellijk en je verliest de toegang tot PRO-functies",
   "settings.general.autoRedeemFreeGames": "Automatisch inwisselen van gratis spellen",
   "settings.general.autoRedeemFreeGames.description": "Wissel automatisch gratis games in op Steam zodra ze beschikbaar zijn. Je moet ingelogd zijn via de <1>Automatische Methode.</1> in <3>Steam-referenties</3>",
   "settings.general.showRecommendedCarousel": "Aanbevolen spellen weergeven",
