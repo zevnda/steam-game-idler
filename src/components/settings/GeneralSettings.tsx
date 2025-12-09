@@ -1,27 +1,23 @@
 import type { ReactElement } from 'react'
 
-import { Button, cn, Divider, Input, useDisclosure } from '@heroui/react'
+import { Button, cn, Divider, Input } from '@heroui/react'
 import { useUserStore } from '@/stores/userStore'
 import Image from 'next/image'
 import { Trans, useTranslation } from 'react-i18next'
 import { TbChevronRight, TbEraser, TbUpload } from 'react-icons/tb'
 
 import SettingsSwitch from '@/components/settings/SettingsSwitch'
-import CustomModal from '@/components/ui/CustomModal'
 import ExtLink from '@/components/ui/ExtLink'
 import CurrencySwitch from '@/components/ui/i18n/CurrencySwitch'
 import LanguageSwitch from '@/components/ui/i18n/LanguageSwitch'
 import WebviewWindow from '@/components/ui/WebviewWindow'
-import { handleCancelPro, handleClear, handleKeySave, useGeneralSettings } from '@/hooks/settings/useGeneralSettings'
+import { handleClear, handleKeySave, useGeneralSettings } from '@/hooks/settings/useGeneralSettings'
 
 export default function GeneralSettings(): ReactElement {
   const { t } = useTranslation()
   const userSummary = useUserStore(state => state.userSummary)
-  const setUserSummary = useUserStore(state => state.setUserSummary)
   const setUserSettings = useUserStore(state => state.setUserSettings)
   const isPro = useUserStore(state => state.isPro)
-  // const [showCancelModal, setShowCancelModal] = useState(false)
-  const { isOpen, onOpenChange } = useDisclosure()
   const { keyValue, setKeyValue, hasKey, setHasKey } = useGeneralSettings()
 
   return (
@@ -37,7 +33,7 @@ export default function GeneralSettings(): ReactElement {
       </div>
 
       <div className='flex flex-col gap-3 mt-4'>
-        <div className='flex items-center gap-4 w-fit group'>
+        <div className='flex items-end gap-4 w-fit group'>
           <Image
             src={userSummary?.avatar || ''}
             height={64}
@@ -58,6 +54,18 @@ export default function GeneralSettings(): ReactElement {
               <span className='transition-all duration-200'>{userSummary?.steamId}</span>
             </p>
           </div>
+          {isPro && (
+            <ExtLink href='https://billing.stripe.com/p/login/8x23cwf8CeNE6PLaAecbC00'>
+              <div
+                className={cn(
+                  'flex justify-center items-center w-full rounded-full',
+                  'text-black bg-white font-semibold text-xs py-2 px-3',
+                )}
+              >
+                {t('settings.general.manageSubscription')}
+              </div>
+            </ExtLink>
+          )}
         </div>
 
         <Divider className='bg-border/70 my-4' />
@@ -208,62 +216,6 @@ export default function GeneralSettings(): ReactElement {
             </div>
           </div>
         </div>
-
-        {isPro && (
-          <>
-            <Divider className='bg-border/70 my-4' />
-
-            <div className='flex justify-between items-center'>
-              <div className='flex flex-col gap-2 w-1/2'>
-                <p className='text-sm text-content font-bold'>{t('settings.general.cancelPro')}</p>
-                <p className='text-xs text-altwhite'>{t('settings.general.cancelPro.description')}</p>
-              </div>
-
-              <Button
-                size='sm'
-                radius='full'
-                color='danger'
-                className='font-bold'
-                onPress={onOpenChange}
-                isLoading={isOpen}
-              >
-                {t('common.cancel')}
-              </Button>
-            </div>
-
-            <CustomModal
-              isOpen={isOpen}
-              onOpenChange={onOpenChange}
-              title={t('common.confirm')}
-              body={t('proMode.modal.cancel')}
-              buttons={
-                <>
-                  <Button
-                    size='sm'
-                    color='danger'
-                    variant='light'
-                    radius='full'
-                    className='font-semibold'
-                    onPress={onOpenChange}
-                  >
-                    {t('common.cancel')}
-                  </Button>
-                  <Button
-                    size='sm'
-                    className='bg-btn-secondary text-btn-text font-bold'
-                    radius='full'
-                    onPress={() => {
-                      handleCancelPro(userSummary, setUserSummary)
-                      onOpenChange()
-                    }}
-                  >
-                    {t('common.confirm')}
-                  </Button>
-                </>
-              }
-            />
-          </>
-        )}
       </div>
     </div>
   )
