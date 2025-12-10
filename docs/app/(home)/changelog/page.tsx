@@ -1,4 +1,5 @@
 import { blog } from '../../../lib/source'
+import ChangelogClient from './client'
 import { PathUtils } from 'fumadocs-core/source'
 import { getMDXComponents } from 'mdx-components'
 import Link from 'next/link'
@@ -46,8 +47,6 @@ export default async function Page() {
     return paB - pa
   })
 
-  // TODO: Pagination, load more posts on scroll
-
   return (
     <main className='min-h-screen bg-black text-gray-100'>
       {/* Home button */}
@@ -62,15 +61,16 @@ export default async function Page() {
         <div className='mb-16 relative'>
           <h1 className='text-5xl font-extrabold mb-2'>Changelog</h1>
           <p className='text-[#979797] font-medium'>
-            See what’s new, improved, and fixed, in each release of Steam Game Idler.
+            See what&apos;s new, improved, and fixed, in each release of Steam Game Idler.
           </p>
         </div>
 
-        {/* Posts */}
-        <div className='space-y-16'>
-          {posts.map(post => (
+        {/* Posts with pagination wrapper */}
+        <ChangelogClient totalPosts={posts.length}>
+          {posts.map((post, index) => (
             <article
               key={post.url}
+              data-index={index}
               id={post.data.title}
               className='flex flex-col md:flex-row gap-4 items-start border-t border-[#212121] pt-12'
             >
@@ -119,7 +119,7 @@ export default async function Page() {
               </div>
             </article>
           ))}
-        </div>
+        </ChangelogClient>
 
         {/* Empty State */}
         {posts.length === 0 && (
