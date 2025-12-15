@@ -127,8 +127,8 @@ importers:
         specifier: ^2.8.4
         version: 2.9.6
       '@types/node':
-        specifier: ^24.10.1
-        version: 24.10.4
+        specifier: ^25.0.2
+        version: 25.0.2
       '@types/react':
         specifier: ^19.2.7
         version: 19.2.7
@@ -221,8 +221,8 @@ importers:
         specifier: ^2.0.13
         version: 2.0.13
       '@types/node':
-        specifier: ^24.10.0
-        version: 24.10.4
+        specifier: ^25.0.2
+        version: 25.0.2
       '@types/react':
         specifier: ^19.2.7
         version: 19.2.7
@@ -2505,8 +2505,8 @@ packages:
   '@types/ms@2.1.0':
     resolution: {integrity: sha512-GsCCIZDE/p3i96vtEqx+7dBUGXrc7zeSK3wwPHIaRThS+9OhWIXRqzs4d6k1SVU8g91DrNRWxWUGhp5KXQb2VA==}
 
-  '@types/node@24.10.4':
-    resolution: {integrity: sha512-vnDVpYPMzs4wunl27jHrfmwojOGKya0xyM3sH+UE5iv5uPS6vX7UIoh6m+vQc5LGBq52HBKPIn/zcSZVzeDEZg==}
+  '@types/node@25.0.2':
+    resolution: {integrity: sha512-gWEkeiyYE4vqjON/+Obqcoeffmk0NF15WSBwSs7zwVA2bAbTaE0SJ7P0WNGoJn8uE7fiaV5a7dKYIJriEqOrmA==}
 
   '@types/phoenix@1.6.7':
     resolution: {integrity: sha512-oN9ive//QSBkf19rfDv45M7eZPi0eEXylht2OLEXicu5b4KoQ1OzXIw+xDSGWxSxe1JmepRR/ZH283vsu518/Q==}
@@ -7731,7 +7731,7 @@ snapshots:
 
   '@types/ms@2.1.0': {}
 
-  '@types/node@24.10.4':
+  '@types/node@25.0.2':
     dependencies:
       undici-types: 7.16.0
 
@@ -7755,7 +7755,7 @@ snapshots:
 
   '@types/ws@8.18.1':
     dependencies:
-      '@types/node': 24.10.4
+      '@types/node': 25.0.2
 
   '@typescript-eslint/eslint-plugin@8.49.0(@typescript-eslint/parser@8.49.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)':
     dependencies:
