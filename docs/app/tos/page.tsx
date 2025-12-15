@@ -2,16 +2,25 @@
 
 import type { ReactElement } from 'react'
 
+import Link from 'next/link'
+
 export default function TermsOfService(): ReactElement {
   return (
     <div className='min-h-screen overflow-hidden py-12'>
+      {/* Home button */}
+      <div className='absolute top-6 left-6'>
+        <Link href='/' className='text-[#979797] hover:opacity-80 duration-150'>
+          &larr; Home
+        </Link>
+      </div>
+
       <div className='container mx-auto px-6 py-8 max-w-4xl'>
         <h1 className='text-4xl font-bold mb-8 text-center'>Terms of Service</h1>
 
         <div className='space-y-8'>
           <section>
             <p className='text-sm mb-6'>
-              <strong>Last Updated:</strong> June 20, 2025
+              <strong>Last Updated:</strong> December 16, 2025
             </p>
 
             <p className='mb-6'>
@@ -140,7 +149,132 @@ export default function TermsOfService(): ReactElement {
           </section>
 
           <section>
-            <h2 className='text-2xl font-semibold mb-4'>6. Account Security and Responsibility</h2>
+            <h2 className='text-2xl font-semibold mb-4'>6. Steam Game Idler PRO Subscriptions</h2>
+
+            <h3 className='text-xl font-medium mb-3'>6.1 PRO Subscription Overview</h3>
+            <p className='mb-4'>
+              Steam Game Idler PRO is an optional subscription service that provides additional features and benefits
+              while supporting the continued development of SGI. All core features of SGI remain free to use.
+            </p>
+
+            <h3 className='text-xl font-medium mb-3'>6.2 Subscription Tiers and Pricing</h3>
+            <p className='mb-4'>PRO is available in three subscription tiers, all offering the same benefits:</p>
+            <ul className='list-disc pl-6 space-y-2 mb-4'>
+              <li>
+                <strong>Casual:</strong> $2 USD per month
+              </li>
+              <li>
+                <strong>Gamer:</strong> $4 USD per month
+              </li>
+              <li>
+                <strong>Legendary:</strong> $9 USD per month
+              </li>
+            </ul>
+            <p className='mb-4'>
+              All prices are in USD and exclude applicable taxes. Prices are subject to change with reasonable notice to
+              existing subscribers.
+            </p>
+
+            <h3 className='text-xl font-medium mb-3'>6.3 Billing and Payment</h3>
+            <ul className='list-disc pl-6 space-y-2 mb-4'>
+              <li>
+                <strong>Payment Processing:</strong> All payments are processed securely through Stripe, our third-party
+                payment processor
+              </li>
+              <li>
+                <strong>Recurring Billing:</strong> PRO subscriptions are billed on a monthly recurring basis unless
+                canceled
+              </li>
+              <li>
+                <strong>Auto-Renewal:</strong> Your subscription will automatically renew each month unless you cancel
+                before the renewal date
+              </li>
+              <li>
+                <strong>Payment Methods:</strong> We accept payment methods supported by Stripe (credit cards, debit
+                cards, and other methods as available)
+              </li>
+              <li>
+                <strong>Failed Payments:</strong> If a payment fails, we will attempt to process it again. Continued
+                payment failures may result in suspension of PRO benefits
+              </li>
+              <li>
+                <strong>Receipts:</strong> You will receive email receipts for all successful payments
+              </li>
+            </ul>
+
+            <h3 className='text-xl font-medium mb-3'>6.4 Subscription Data Collection</h3>
+            <p className='mb-4'>When you subscribe to PRO, we collect and store:</p>
+            <ul className='list-disc pl-6 space-y-2 mb-4'>
+              <li>Your Steam ID</li>
+              <li>Your email address</li>
+              <li>Your Discord User ID (only if you claim the donator role)</li>
+              <li>Subscription status and tier information</li>
+            </ul>
+            <p className='mb-4'>
+              We do NOT store your payment information. All payment details are securely handled by Stripe. See our
+              Privacy Policy for more information.
+            </p>
+
+            <h3 className='text-xl font-medium mb-3'>6.5 Cancellation</h3>
+            <ul className='list-disc pl-6 space-y-2 mb-4'>
+              <li>You may cancel your PRO subscription at any time through the application settings</li>
+              <li>
+                Upon cancellation, you will retain access to PRO benefits until the end of your current billing period
+              </li>
+              <li>No refunds will be issued for partial billing periods after cancellation</li>
+              <li>You can resubscribe at any time after canceling</li>
+            </ul>
+
+            <h3 className='text-xl font-medium mb-3'>6.6 Switching Tiers</h3>
+            <p className='mb-4'>
+              To switch between PRO tiers, you must cancel your current subscription and subscribe to your desired tier.
+              Changes will take effect at the start of the next billing period.
+            </p>
+
+            <h3 className='text-xl font-medium mb-3'>6.7 Refund Policy</h3>
+            <p className='mb-4'>
+              PRO subscriptions are considered donations to support SGI development and are generally non-refundable.
+              However, refunds may be considered on a case-by-case basis for:
+            </p>
+            <ul className='list-disc pl-6 space-y-2 mb-4'>
+              <li>Billing errors or duplicate charges</li>
+              <li>Technical issues preventing access to PRO features</li>
+              <li>Other exceptional circumstances</li>
+            </ul>
+            <p className='mb-4'>
+              To request a refund, contact us through the in-app help desk or email contact@steamgameidler.com within 14
+              days of the charge.
+            </p>
+
+            <h3 className='text-xl font-medium mb-3'>6.8 Chargebacks</h3>
+            <p className='mb-4'>
+              <strong>Important:</strong> If you dispute a charge with your bank or credit card company (chargeback)
+              without first contacting us, your access to Steam Game Idler and all of its features may be permanently
+              revoked. Fraudulent chargebacks cause significant harm to our small independent project.
+            </p>
+            <p className='mb-4'>
+              If you believe a charge was made in error, please contact us first at contact@steamgameidler.com or
+              through the in-app help desk so we can resolve the issue.
+            </p>
+
+            <h3 className='text-xl font-medium mb-3'>6.9 Modification of PRO Features</h3>
+            <p className='mb-4'>
+              We reserve the right to add, modify, or remove PRO features at any time. We will make reasonable efforts
+              to notify subscribers of significant changes. If changes substantially diminish the value of your
+              subscription, you may cancel and request a prorated refund for the remaining period.
+            </p>
+
+            <h3 className='text-xl font-medium mb-3'>6.10 Termination of PRO Access</h3>
+            <p className='mb-4'>We may suspend or terminate your PRO subscription if:</p>
+            <ul className='list-disc pl-6 space-y-2 mb-4'>
+              <li>You violate these Terms of Service</li>
+              <li>You engage in fraudulent chargebacks</li>
+              <li>You abuse PRO features or attempt to share access with others</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2 className='text-2xl font-semibold mb-4'>7. Account Security and Responsibility</h2>
             <p className='mb-4'>You are solely responsible for:</p>
             <ul className='list-disc pl-6 space-y-2 mb-4'>
               <li>Maintaining the security of your Steam account credentials</li>
@@ -155,7 +289,7 @@ export default function TermsOfService(): ReactElement {
           </section>
 
           <section>
-            <h2 className='text-2xl font-semibold mb-4'>7. Risks and Disclaimers</h2>
+            <h2 className='text-2xl font-semibold mb-4'>8. Risks and Disclaimers</h2>
 
             <h3 className='text-xl font-medium mb-3'>7.1 Steam Account Risks</h3>
             <p className='mb-4'>
@@ -180,7 +314,7 @@ export default function TermsOfService(): ReactElement {
           </section>
 
           <section>
-            <h2 className='text-2xl font-semibold mb-4'>8. Intellectual Property</h2>
+            <h2 className='text-2xl font-semibold mb-4'>9. Intellectual Property</h2>
             <p className='mb-4'>
               SGI is open-source software released under the terms specified in our GitHub repository. You may view,
               modify, and distribute the software in accordance with the applicable open-source license.
@@ -192,7 +326,7 @@ export default function TermsOfService(): ReactElement {
           </section>
 
           <section>
-            <h2 className='text-2xl font-semibold mb-4'>9. Limitation of Liability</h2>
+            <h2 className='text-2xl font-semibold mb-4'>10. Limitation of Liability</h2>
             <p className='mb-4'>
               TO THE MAXIMUM EXTENT PERMITTED BY LAW, WE SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL,
               CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING BUT NOT LIMITED TO:
@@ -210,7 +344,7 @@ export default function TermsOfService(): ReactElement {
           </section>
 
           <section>
-            <h2 className='text-2xl font-semibold mb-4'>10. Indemnification</h2>
+            <h2 className='text-2xl font-semibold mb-4'>11. Indemnification</h2>
             <p className='mb-4'>
               You agree to indemnify and hold harmless SGI, its developers, and contributors from any claims, damages,
               or expenses arising from:
@@ -224,7 +358,7 @@ export default function TermsOfService(): ReactElement {
           </section>
 
           <section>
-            <h2 className='text-2xl font-semibold mb-4'>11. Termination</h2>
+            <h2 className='text-2xl font-semibold mb-4'>12. Termination</h2>
             <p className='mb-4'>
               You may stop using SGI at any time by uninstalling the Application. These Terms remain in effect until
               terminated.
@@ -236,7 +370,7 @@ export default function TermsOfService(): ReactElement {
           </section>
 
           <section>
-            <h2 className='text-2xl font-semibold mb-4'>12. Updates and Modifications</h2>
+            <h2 className='text-2xl font-semibold mb-4'>13. Updates and Modifications</h2>
             <p className='mb-4'>
               We may update SGI from time to time to add features, fix bugs, or improve compatibility. You are
               encouraged to keep SGI updated to the latest version.
@@ -255,7 +389,7 @@ export default function TermsOfService(): ReactElement {
           </section>
 
           <section>
-            <h2 className='text-2xl font-semibold mb-4'>13. Open Source and Community</h2>
+            <h2 className='text-2xl font-semibold mb-4'>14. Open Source and Community</h2>
             <p className='mb-4'>
               SGI is developed as an open-source project. You can contribute to its development, report issues, or
               suggest improvements through our{' '}
@@ -276,7 +410,7 @@ export default function TermsOfService(): ReactElement {
           </section>
 
           <section>
-            <h2 className='text-2xl font-semibold mb-4'>14. Governing Law and Dispute Resolution</h2>
+            <h2 className='text-2xl font-semibold mb-4'>15. Governing Law and Dispute Resolution</h2>
             <p className='mb-4'>
               These Terms shall be governed by and construed in accordance with applicable laws. Any disputes arising
               from these Terms or your use of SGI should first be addressed through our GitHub issues system.
@@ -284,9 +418,16 @@ export default function TermsOfService(): ReactElement {
           </section>
 
           <section>
-            <h2 className='text-2xl font-semibold mb-4'>15. Contact Information</h2>
+            <h2 className='text-2xl font-semibold mb-4'>16. Contact Information</h2>
             <p className='mb-4'>If you have questions about these Terms of Service, please contact us through:</p>
             <ul className='list-disc pl-6 space-y-2 mb-4'>
+              <li>
+                <strong>Email:</strong> contact@steamgameidler.com (for billing and subscription inquiries)
+              </li>
+              <li>
+                <strong>In-App Help Desk:</strong> Available in the applications title bar menu under &quot;Help
+                Desk&quot;
+              </li>
               <li>
                 <strong>GitHub Issues:</strong>{' '}
                 <a
@@ -313,7 +454,7 @@ export default function TermsOfService(): ReactElement {
           </section>
 
           <section>
-            <h2 className='text-2xl font-semibold mb-4'>16. Severability</h2>
+            <h2 className='text-2xl font-semibold mb-4'>17. Severability</h2>
             <p className='mb-4'>
               If any provision of these Terms is found to be invalid or unenforceable, the remaining provisions shall
               remain in full force and effect.
@@ -321,7 +462,7 @@ export default function TermsOfService(): ReactElement {
           </section>
 
           <section>
-            <h2 className='text-2xl font-semibold mb-4'>17. Entire Agreement</h2>
+            <h2 className='text-2xl font-semibold mb-4'>18. Entire Agreement</h2>
             <p className='mb-4'>
               These Terms of Service, together with our Privacy Policy, constitute the entire agreement between you and
               SGI regarding the use of the Application.

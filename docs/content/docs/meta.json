@@ -25,6 +25,8 @@
     "./settings/free-games",
     "./settings/game-settings",
     "./settings/debug",
+    "---Misc---",
+    "./pro",
     "---Help & Support---",
     "./troubleshooting",
     "./faq"
