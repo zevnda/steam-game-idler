@@ -178,8 +178,8 @@ importers:
   docs:
     dependencies:
       '@orama/orama':
-        specifier: ^3.1.16
-        version: 3.1.16
+        specifier: ^3.1.17
+        version: 3.1.17
       '@vercel/analytics':
         specifier: ^1.5.0
         version: 1.6.1(next@16.0.10(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)
@@ -1404,8 +1404,8 @@ packages:
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
 
-  '@orama/orama@3.1.16':
-    resolution: {integrity: sha512-scSmQBD8eANlMUOglxHrN1JdSW8tDghsPuS83otqealBiIeMukCQMOf/wc0JJjDXomqwNdEQFLXLGHrU6PGxuA==}
+  '@orama/orama@3.1.17':
+    resolution: {integrity: sha512-APwpZ+FTGMryo4QEeD6ti+Ei8suBkvxe8PeWdUcQHVfJDpjpt4c1dKojjNswcBmdeWSiiTYcnkKKH+yuo6727g==}
     engines: {node: '>= 20.0.0'}
 
   '@radix-ui/number@1.1.1':
@@ -6327,7 +6327,7 @@ snapshots:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.19.1
 
-  '@orama/orama@3.1.16': {}
+  '@orama/orama@3.1.17': {}
 
   '@radix-ui/number@1.1.1': {}
 
@@ -8549,7 +8549,7 @@ snapshots:
   fumadocs-core@16.0.15(@types/react@19.2.7)(lucide-react@0.552.0(react@19.2.0))(next@16.0.10(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
     dependencies:
       '@formatjs/intl-localematcher': 0.6.2
-      '@orama/orama': 3.1.16
+      '@orama/orama': 3.1.17
       '@shikijs/rehype': 3.19.0
       '@shikijs/transformers': 3.19.0
       estree-util-value-to-estree: 3.5.0
@@ -8578,7 +8578,7 @@ snapshots:
   fumadocs-core@16.1.0(@types/react@19.2.7)(lucide-react@0.552.0(react@19.2.0))(next@16.0.10(@babel/core@7.28.5)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
     dependencies:
       '@formatjs/intl-localematcher': 0.6.2
-      '@orama/orama': 3.1.16
+      '@orama/orama': 3.1.17
       '@shikijs/rehype': 3.19.0
       '@shikijs/transformers': 3.19.0
       estree-util-value-to-estree: 3.5.0
