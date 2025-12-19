@@ -204,7 +204,7 @@ export default function SideBar(): ReactElement {
       <div
         className={cn(
           'relative flex flex-col h-screen z-40 bg-sidebar/90 border-r border-border select-none ease-in-out',
-          sidebarCollapsed ? 'min-w-14 max-w-14' : 'min-w-[250px] max-w-[250px]',
+          sidebarCollapsed ? 'min-w-14 max-w-14' : 'min-w-62.5 max-w-62.5',
         )}
         style={{
           transitionDuration,
@@ -284,7 +284,7 @@ export default function SideBar(): ReactElement {
         >
           <div
             className={cn(
-              'flex items-center w-full bg-item-active p-2 min-h-[50px] rounded-lg',
+              'flex items-center w-full bg-item-active p-2 min-h-12.5 rounded-lg',
               sidebarCollapsed ? 'flex-col gap-2' : 'flex-row gap-3',
             )}
           >

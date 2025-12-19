@@ -10,7 +10,6 @@ import Image from 'next/image'
 import { Trans, useTranslation } from 'react-i18next'
 import { TbChevronRight, TbEraser, TbRefresh, TbUpload } from 'react-icons/tb'
 
-import Beta from '@/components/ui/Beta'
 import ExtLink from '@/components/ui/ExtLink'
 import ProBadge from '@/components/ui/ProBadge'
 import WebviewWindow from '@/components/ui/WebviewWindow'
@@ -98,7 +97,6 @@ export default function SteamCredentials(): ReactElement {
             <div className='flex items-center'>
               <p className='text-sm text-content font-bold'>{t('settings.steamCredentials.automated')}</p>
               {!isPro && <ProBadge className='scale-65' />}
-              <Beta />
             </div>
             <p className='text-xs text-altwhite'>{t('settings.steamCredentials.automated.description')}</p>
             <WebviewWindow
@@ -117,7 +115,7 @@ export default function SteamCredentials(): ReactElement {
               isDisabled={!isPro}
               onPress={handleShowSteamLoginWindow}
             >
-              {cardSettings.hasCookies ? 'Reauthenticate' : 'Sign In via Steam'}
+              {cardSettings.hasCookies ? t('common.reauthenticate') : t('common.signInSteam')}
             </Button>
             <Button
               size='sm'
@@ -127,7 +125,7 @@ export default function SteamCredentials(): ReactElement {
               isDisabled={!isPro}
               onPress={handleSignOutCurrentUser}
             >
-              Sign Out
+              {t('common.signOut')}
             </Button>
           </div>
         </div>
@@ -136,7 +134,7 @@ export default function SteamCredentials(): ReactElement {
 
         <div className='flex justify-between items-start'>
           <div className='flex flex-col gap-2 w-1/2'>
-            <p className='text-sm text-content font-bold'>Manual Method</p>
+            <p className='text-sm text-content font-bold'>{t('settings.steamCredentials.manual')}</p>
             <p className='text-xs text-altwhite'>
               <Trans i18nKey='settings.cardFarming.steamCredentials'>
                 Steam credentials are required in order to use the Card Farming and Trading Card Manager features.&nbsp;
@@ -168,7 +166,7 @@ export default function SteamCredentials(): ReactElement {
                       height={38}
                       width={38}
                       alt='user avatar'
-                      className='w-[38px] h-[38px] rounded-full'
+                      className='w-9.5 h-9.5 rounded-full'
                       priority
                     />
                     <div className='flex flex-col items-end gap-1'>
@@ -201,13 +199,13 @@ export default function SteamCredentials(): ReactElement {
               </div>
             )}
           </div>
-          <div className='flex flex-col gap-4 w-[250px]'>
+          <div className='flex flex-col gap-4 w-62.5'>
             <Input
               isRequired
               label='sessionid'
               labelPlacement='outside'
               placeholder='sessionid'
-              className='max-w-[290px]'
+              className='max-w-72.5'
               classNames={{
                 inputWrapper: cn(
                   'bg-input data-[hover=true]:!bg-inputhover',
@@ -225,7 +223,7 @@ export default function SteamCredentials(): ReactElement {
               label='steamLoginSecure'
               labelPlacement='outside'
               placeholder='steamLoginSecure'
-              className='max-w-[290px]'
+              className='max-w-72.5'
               classNames={{
                 inputWrapper: cn(
                   'bg-input data-[hover=true]:!bg-inputhover',
@@ -242,7 +240,7 @@ export default function SteamCredentials(): ReactElement {
               label={<p>steamParental / steamMachineAuth</p>}
               labelPlacement='outside'
               placeholder='steamParental / steamMachineAuth'
-              className='max-w-[290px]'
+              className='max-w-72.5'
               classNames={{
                 inputWrapper: cn(
                   'bg-input data-[hover=true]:!bg-inputhover',

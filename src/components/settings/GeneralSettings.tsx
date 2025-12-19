@@ -176,10 +176,10 @@ export default function GeneralSettings(): ReactElement {
               </Trans>
             </p>
           </div>
-          <div className='flex flex-col gap-4 w-[250px]'>
+          <div className='flex flex-col gap-4 w-62.5'>
             <Input
               placeholder={t('settings.general.webApi')}
-              className='max-w-[250px]'
+              className='max-w-62.5'
               classNames={{
                 inputWrapper: cn(
                   'bg-input data-[hover=true]:!bg-inputhover',
