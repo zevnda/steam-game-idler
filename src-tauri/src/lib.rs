@@ -142,6 +142,8 @@ pub fn run() {
             start_processes_monitor,
             open_steam_login_window,
             delete_login_window_cookies,
+            open_store_login_window,
+            delete_store_cookies,
             redeem_free_game,
             set_zoom,
             quit_app

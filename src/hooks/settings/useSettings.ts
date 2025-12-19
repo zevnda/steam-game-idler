@@ -51,6 +51,7 @@ export const handleCheckboxChange = async (
       key: `${key}.${name}`,
       value: checked,
     })
+
     if (key === 'cardFarming' && (name === 'listGames' || name === 'allGames')) {
       // Add radio-button-like behavior for mutually exclusive options
       // Only one of the card farming options can be active at a time

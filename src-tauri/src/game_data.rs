@@ -293,45 +293,83 @@ pub async fn redeem_free_game(
         tauri::WebviewUrl::External(url.parse().unwrap()),
     )
     .title(&format!("Redeeming Free Game {}", app_id))
-    .inner_size(0.0, 0.0)
-    .visible(false)
+    .inner_size(800.0, 700.0)
+    .visible(true)
     .build()
     .map_err(|e| e.to_string())?;
 
     // Wait a moment for the page to load
-    tokio::time::sleep(Duration::from_millis(500)).await;
+    tokio::time::sleep(Duration::from_millis(5000)).await;
 
-    // Poll for the "Add to Library" button up to 5 times, every second
+    // Poll for the "Add to Account" button up to 5 times, every second
     for _ in 0..5 {
         if let Some(webview) = window.get_webview(&format!("steam-redeem-{}", app_id)) {
-            // Execute JavaScript to check for the button and extract the product ID
+            // Execute JavaScript to check for the button and click it
             let js_check = r#"
-                const btn = document.querySelector('.btn_addtocart.btn_packageinfo span[onclick*="AddFreeLicense"]');
-                if (!btn) {
-                    throw new Error('Button not found');
-                }
-                const onclick = btn.getAttribute('onclick');
-                const match = onclick.match(/AddFreeLicense\(\s*(\d+)/);
-                if (!match) {
-                    throw new Error('No match for product ID');
-                }
-                const productId = match[1];
-                // Call the function to add the free license
-                AddFreeLicense(productId, 'Game Name'); // Note: Game name might not be needed, but included as per original
+                (function() {
+                    console.log('=== Debug: Starting button search ===');
+                    
+                    // Check for btn_addtocart div
+                    const cartDiv = document.querySelector('.btn_addtocart');
+                    console.log('btn_addtocart div found:', !!cartDiv);
+                    if (cartDiv) {
+                        console.log('btn_addtocart HTML:', cartDiv.innerHTML);
+                    }
+                    
+                    // Try different selectors
+                    const btn1 = document.querySelector('.btn_addtocart a');
+                    console.log('Selector ".btn_addtocart a" found:', !!btn1);
+                    
+                    const btn2 = document.querySelector('.btn_addtocart a.btn_green_steamui');
+                    console.log('Selector ".btn_addtocart a.btn_green_steamui" found:', !!btn2);
+                    
+                    const btn3 = document.querySelector('a.btn_green_steamui[href*="addToCart"]');
+                    console.log('Selector "a.btn_green_steamui[href*="addToCart"]" found:', !!btn3);
+                    
+                    const btn4 = document.querySelector('.btn_addtocart a[href*="addToCart"]');
+                    console.log('Selector ".btn_addtocart a[href*="addToCart"]" found:', !!btn4);
+                    
+                    // Use the most specific selector
+                    const btn = document.querySelector('.btn_addtocart a[href*="addToCart"]');
+                    if (!btn) {
+                        console.error('Button not found with any selector');
+                        throw new Error('Button not found');
+                    }
+                    
+                    console.log('Found button:', btn);
+                    const href = btn.getAttribute('href');
+                    console.log('Button href:', href);
+                    
+                    const match = href.match(/addToCart\(\s*(\d+)\s*\)/);
+                    if (!match) {
+                        console.error('No match for product ID in href:', href);
+                        throw new Error('No match for product ID');
+                    }
+                    
+                    const productId = match[1];
+                    console.log('Found product ID:', productId);
+                    
+                    // Call the addToCart function
+                    console.log('Calling addToCart with product ID:', productId);
+                    addToCart(productId);
+                    
+                    return true;
+                })();
             "#;
 
             match webview.eval(js_check) {
                 Ok(_) => {
                     // Button found and clicked, wait a bit then close
                     tokio::time::sleep(Duration::from_millis(500)).await;
-                    let _ = window.close();
+                    // let _ = window.close();
                     return Ok(serde_json::json!({
                         "success": true,
                         "message": "Free game redeemed successfully"
                     }));
                 }
-                Err(_) => {
+                Err(e) => {
                     // JS execution failed (button not found), continue polling
+                    println!("JS execution error: {}", e);
                 }
             }
         } else {
@@ -346,7 +384,7 @@ pub async fn redeem_free_game(
     }
 
     // If we reach here, the button was not found
-    let _ = window.close();
+    // let _ = window.close();
     Ok(serde_json::json!({
         "success": false,
         "message": "Could not find redeem button or game is not free"
