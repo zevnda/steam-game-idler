@@ -293,8 +293,8 @@ pub async fn redeem_free_game(
         tauri::WebviewUrl::External(url.parse().unwrap()),
     )
     .title(&format!("Redeeming Free Game {}", app_id))
-    .inner_size(800.0, 700.0)
-    .visible(true)
+    .inner_size(0.0, 0.0)
+    .visible(false)
     .build()
     .map_err(|e| e.to_string())?;
 
@@ -361,7 +361,7 @@ pub async fn redeem_free_game(
                 Ok(_) => {
                     // Button found and clicked, wait a bit then close
                     tokio::time::sleep(Duration::from_millis(500)).await;
-                    // let _ = window.close();
+                    let _ = window.close();
                     return Ok(serde_json::json!({
                         "success": true,
                         "message": "Free game redeemed successfully"
@@ -384,7 +384,7 @@ pub async fn redeem_free_game(
     }
 
     // If we reach here, the button was not found
-    // let _ = window.close();
+    let _ = window.close();
     Ok(serde_json::json!({
         "success": false,
         "message": "Could not find redeem button or game is not free"
