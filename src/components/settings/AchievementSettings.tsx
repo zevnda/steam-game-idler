@@ -168,7 +168,7 @@ export default function AchievementSettings(): ReactElement {
           <Slider
             size='md'
             step={1}
-            minValue={1}
+            minValue={0}
             maxValue={2880}
             defaultValue={userSettings?.achievementUnlocker?.interval}
             formatOptions={{ style: 'currency', currency: 'USD' }}

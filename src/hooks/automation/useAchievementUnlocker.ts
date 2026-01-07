@@ -63,8 +63,8 @@ export const useAchievementUnlocker = async (
 
       // Delay for 10 seconds before starting
       if (!hasInitialDelayOccurred) {
-        startCountdown(10000 / 60000, setCountdownTimer)
-        await delay(10000, isMountedRef, abortControllerRef)
+        startCountdown(2000 / 60000, setCountdownTimer)
+        await delay(2000, isMountedRef, abortControllerRef)
         setIsInitialDelay(false)
         hasInitialDelayOccurred = true
       }

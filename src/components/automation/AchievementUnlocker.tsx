@@ -27,7 +27,7 @@ export default function AchievementUnlocker({ activePage }: { activePage: Active
   const [currentGame, setCurrentGame] = useState<Game | null>(null)
   const [isComplete, setIsComplete] = useState(false)
   const [achievementCount, setAchievementCount] = useState(0)
-  const [countdownTimer, setCountdownTimer] = useState('00:00:10')
+  const [countdownTimer, setCountdownTimer] = useState('00:00:02')
   const [isWaitingForSchedule, setIsWaitingForSchedule] = useState(false)
   const { startCardFarming } = useAutomate()
 
