@@ -3,8 +3,8 @@
   "major": false,
   "platforms": {
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUSDh2NGF3cDBSMHBhVEJyUnpxc3o2a1YzNTFRQTRHajFxWTNETGFHYlQwanlFVnFOQ3lmcjFVNjJJSWVLNXA5dGVQc3J3WDlwYjlPZWd3YXhyWDYydiswTUczK251bXdFPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzY2MTcxMTM4CWZpbGU6U3RlYW0gR2FtZSBJZGxlcl8yLjUuMjFfeDY0LXNldHVwLm5zaXMuemlwCkR5VUpkZUhIZFlpb3p4S1FQQjlUdnVUM3RvclJzdVRRN3JFcVRCN1ZnSnFDMGNwWHlST3VoNHlhMTk5bGE5Z1ZhcnRJNEsxY3hwcXJyRzhBcHA0ZUJnPT0K",
-      "url": "https://github.com/zevnda/steam-game-idler/releases/download/2.5.21/Steam.Game.Idler_2.5.21_x64-setup.nsis.zip"
+      "signature": "PLACEHOLDER_WILL_BE_UPDATED_BY_WORKFLOW",
+      "url": "https://github.com/Autapomorph/steam-game-idler/releases/download/2.5.21/Steam.Game.Idler_2.5.21_x64-setup.nsis.zip"
     }
   }
 }

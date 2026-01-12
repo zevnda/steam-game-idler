@@ -3,8 +3,8 @@
 libs
 node_modules
 out
+package-lock.yaml
 public
-pnpm-lock.yaml
 *.lock
 *.md
 *.mdx

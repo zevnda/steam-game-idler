@@ -55,7 +55,6 @@ export interface GeneralSettings {
   startMinimized: boolean
   closeToTray: boolean
   theme?: string | null
-  customBackground?: string | null
   autoRedeemFreeGames: boolean
   showRecommendedCarousel: boolean
   showRecentCarousel: boolean

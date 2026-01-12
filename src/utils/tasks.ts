@@ -38,7 +38,7 @@ export async function checkSteamStatus(showToast: boolean = false): Promise<bool
 // Fetch the latest.json for tauri updater
 export async function fetchLatest(): Promise<LatestData | null> {
   try {
-    const res = await fetch('https://raw.githubusercontent.com/zevnda/steam-game-idler/main/latest.json')
+    const res = await fetch('https://raw.githubusercontent.com/Autapomorph/steam-game-idler/main/latest.json')
     const data = await res.json()
     return data
   } catch (error) {

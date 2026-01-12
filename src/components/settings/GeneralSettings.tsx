@@ -17,7 +17,6 @@ export default function GeneralSettings(): ReactElement {
   const { t } = useTranslation()
   const userSummary = useUserStore(state => state.userSummary)
   const setUserSettings = useUserStore(state => state.setUserSettings)
-  const isPro = useUserStore(state => state.isPro)
   const { keyValue, setKeyValue, hasKey, setHasKey } = useGeneralSettings()
 
   return (
@@ -54,18 +53,6 @@ export default function GeneralSettings(): ReactElement {
               <span className='transition-all duration-200'>{userSummary?.steamId}</span>
             </p>
           </div>
-          {isPro && (
-            <ExtLink href='https://billing.stripe.com/p/login/8x23cwf8CeNE6PLaAecbC00'>
-              <div
-                className={cn(
-                  'flex justify-center items-center w-full rounded-full',
-                  'text-black bg-white font-semibold text-xs py-2 px-3',
-                )}
-              >
-                {t('settings.general.manageSubscription')}
-              </div>
-            </ExtLink>
-          )}
         </div>
 
         <Divider className='bg-border/70 my-4' />
@@ -123,17 +110,6 @@ export default function GeneralSettings(): ReactElement {
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>{t('settings.general.language')}</p>
-            <p className='text-xs text-altwhite'>
-              <Trans i18nKey='settings.general.helpTranslate'>
-                Help translate SGI.&nbsp;
-                <ExtLink
-                  href='https://github.com/zevnda/steam-game-idler/discussions/148'
-                  className='text-dynamic hover:text-dynamic-hover duration-150'
-                >
-                  Learn more
-                </ExtLink>
-              </Trans>
-            </p>
           </div>
           <LanguageSwitch />
         </div>

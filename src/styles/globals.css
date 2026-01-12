@@ -20,41 +20,11 @@
   --shimmer-color: #ffffff38;
 }
 
-/* // Themes */
+/* Themes */
 .dark {
   --gradient-bg: linear-gradient(to bottom, #171717ff 0%, #070707ff 100%);
   --gradient-alt: linear-gradient(to bottom, #171717ff 0%, #0c0c0cff 100%);
   --gradient-btn: linear-gradient(100deg, #154d66ff 0%, #227ca5ff 40%, #2eabe5ff 70%, #34bfffff 100%);
-}
-
-.blue {
-  --gradient-bg: linear-gradient(to bottom, #131a26 0%, #05080c 100%);
-  --gradient-alt: linear-gradient(to bottom, #131a26 0%, #0a0f15 100%);
-  --gradient-btn: linear-gradient(100deg, #154d66ff 0%, #227ca5ff 40%, #2eabe5ff 70%, #34bfffff 100%);
-}
-
-.red {
-  --gradient-bg: linear-gradient(to bottom, #1b1114 0%, #060305 100%);
-  --gradient-alt: linear-gradient(to bottom, #1b1114 0%, #0d080a 100%);
-  --gradient-btn: linear-gradient(100deg, #661515ff 0%, #a52222ff 40%, #e52e2eff 70%, #ff3434ff 100%);
-}
-
-.purple {
-  --gradient-bg: linear-gradient(to bottom, #181428 0%, #08070c 100%);
-  --gradient-alt: linear-gradient(to bottom, #181428 0%, #100e17 100%);
-  --gradient-btn: linear-gradient(100deg, #3f1566ff 0%, #7322a5ff 40%, #962ee5ff 70%, #9d34ffff 100%);
-}
-
-.pink {
-  --gradient-bg: linear-gradient(to bottom, #281423 0%, #0a0910 100%);
-  --gradient-alt: linear-gradient(to bottom, #281423 0%, #140e18 100%);
-  --gradient-btn: linear-gradient(100deg, #621566ff 0%, #a522a5ff 40%, #dc2ee5ff 70%, #f534ffff 100%);
-}
-
-.gold {
-  --gradient-bg: linear-gradient(to bottom, #3a3629 0%, #040404 100%);
-  --gradient-alt: linear-gradient(to bottom, #3a3629 0%, #0e0e0b 100%);
-  --gradient-btn: linear-gradient(100deg, #3e3928ff 0%, #605a38ff 38%, #978d5fff 68%, #c0ae6cff 100%);
 }
 
 .black {
@@ -146,15 +116,6 @@ svg {
     transform: translateX(250%) skewX(-16deg);
     opacity: 0;
   }
-}
-
-/* Chatway */
-
-.chatway--frame-container {
-  min-width: 550px !important;
-  top: 36px !important;
-  right: 36px !important;
-  left: auto !important;
 }
 
 /* Go pro button */

@@ -8,16 +8,7 @@ import { cn, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@hero
 import { useEffect, useState } from 'react'
 import { useUpdateStore } from '@/stores/updateStore'
 import { useTranslation } from 'react-i18next'
-import { FaDiscord } from 'react-icons/fa6'
-import {
-  TbBookFilled,
-  TbBugFilled,
-  TbBulbFilled,
-  TbDownload,
-  TbListCheck,
-  TbSquareRoundedChevronDown,
-  TbStarFilled,
-} from 'react-icons/tb'
+import { TbBookFilled, TbDownload, TbListCheck, TbSquareRoundedChevronDown } from 'react-icons/tb'
 
 import CustomTooltip from '@/components/ui/CustomTooltip'
 import { fetchLatest, handleOpenExtLink, isPortableCheck, logEvent, preserveKeysAndClearData } from '@/utils/tasks'
@@ -28,8 +19,6 @@ export default function HeaderMenu(): ReactElement {
   const setShowChangelog = useUpdateStore(state => state.setShowChangelog)
   const [showMenu, setShowMenu] = useState(false)
   const [isPortable, setIsPortable] = useState(false)
-
-  const githubIssueUrl = 'https://github.com/zevnda/steam-game-idler/issues/new?assignees=zevnda&labels='
 
   useEffect(() => {
     ;(async () => {
@@ -98,65 +87,6 @@ export default function HeaderMenu(): ReactElement {
               onPress={() => handleOpenExtLink('https://steamgameidler.com/docs/')}
             >
               {t('menu.guide')}
-            </DropdownItem>
-
-            <DropdownItem
-              key='report'
-              startContent={<TbBugFilled size={18} />}
-              textValue='Report an issue'
-              className='rounded-xl text-content'
-              classNames={{
-                base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
-              }}
-              onPress={() =>
-                handleOpenExtLink(githubIssueUrl + 'bug%2Cinvestigating&projects=&template=issue_report.yml')
-              }
-            >
-              {t('menu.issue')}
-            </DropdownItem>
-
-            <DropdownItem
-              showDivider
-              key='feature'
-              startContent={<TbBulbFilled size={18} />}
-              textValue='Feature request'
-              className='rounded-xl text-content'
-              classNames={{
-                base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
-              }}
-              onPress={() =>
-                handleOpenExtLink(githubIssueUrl + 'feature+request&projects=&template=feature_request.yml')
-              }
-            >
-              {t('menu.feature')}
-            </DropdownItem>
-
-            <DropdownItem
-              showDivider
-              key='support-me'
-              startContent={<TbStarFilled size={18} />}
-              textValue='Support me'
-              className='rounded-xl text-content'
-              classNames={{
-                base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
-              }}
-              onPress={() => handleOpenExtLink('https://github.com/sponsors/zevnda')}
-            >
-              {t('menu.support')}
-            </DropdownItem>
-
-            <DropdownItem
-              showDivider
-              key='join-discord'
-              startContent={<FaDiscord size={18} />}
-              textValue='Join our Discord'
-              className='rounded-xl text-content'
-              classNames={{
-                base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
-              }}
-              onPress={() => handleOpenExtLink('https://discord.com/invite/5kY2ZbVnZ8')}
-            >
-              {t('menu.joinDiscord')}
             </DropdownItem>
 
             <DropdownItem

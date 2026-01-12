@@ -7,8 +7,8 @@ Steam Game Idler (SGI) is a Steam automation tool for farming trading cards, man
 
 See how it stacks up against other software, such as [ArchiSteamFarm](https://steamgameidler.com/alternatives/archisteamfarm), [Steam Achievement Manager](https://steamgameidler.com/alternatives/steam-achievement-manager), and [Idle Master](https://steamgameidler.com/alternatives/idle-master).
 
-[![Downloads][downloads]](https://github.com/zevnda/steam-game-idler/releases)
-[![Release][release]](https://github.com/zevnda/steam-game-idler/releases/latest)
+[![Downloads][downloads]](https://github.com/Autapomorph/steam-game-idler/releases)
+[![Release][release]](https://github.com/Autapomorph/steam-game-idler/releases/latest)
 ![Build][build]
 
 <img src="./public/example.png" width="700" alt="example image"><br />
@@ -17,7 +17,7 @@ See how it stacks up against other software, such as [ArchiSteamFarm](https://st
 # Installation
 You must have the **[Steam client](https://store.steampowered.com/about)** installed, running, and signed in to at least one account
 
-1. Download the `setup.exe` installer from the **[releases page](https://github.com/zevnda/steam-game-idler/releases/latest)**
+1. Download the `setup.exe` installer from the **[releases page](https://github.com/Autapomorph/steam-game-idler/releases/latest)**
 2. Run the installer and follow the steps
 
 Or if you prefer, you can **[build it yourself](https://steamgameidler.com/docs/get-started/build-it-yourself)**
@@ -37,7 +37,7 @@ Refer to the **[documentation](https://steamgameidler.com/docs/)** for a detaile
 * **Actively Maintained**: Regular updates with new features and bug fixes
 
 # Supported Languages
-Contribute to this project by adding new translations or improving existing ones. **[Read more here](https://github.com/zevnda/steam-game-idler/discussions/148)**
+Contribute to this project by adding new translations or improving existing ones. **[Read more here](https://github.com/Autapomorph/steam-game-idler/discussions/148)**
 
 | Language            | Flag | Language             | Flag | Language              | Flag |
 | ------------------- | ---- | -------------------- | ---- | --------------------- | ---- |
@@ -53,9 +53,9 @@ Contribute to this project by adding new translations or improving existing ones
 | Turkish             | 🇹🇷    | Ukrainian            | 🇺🇦    | Vietnamese            | 🇻🇳    |
 
 # License
-Copyright © 2024-2025 zevnda — **[MIT License](./LICENSE)**
+Copyright © 2026 Autapomorph — **[MIT License](./LICENSE)**
 
-[downloads]: https://img.shields.io/github/downloads/zevnda/steam-game-idler/total?style=flat-square&color=%23e86827
-[release]: https://img.shields.io/github/v/release/zevnda/steam-game-idler?style=flat-square&color=%232d6acc&label=Version
-[build]: https://img.shields.io/github/actions/workflow/status/zevnda/steam-game-idler/release.yml?style=flat-square&color=%2338ba56
+[downloads]: https://img.shields.io/github/downloads/Autapomorph/steam-game-idler/total?style=flat-square&color=%23e86827
+[release]: https://img.shields.io/github/v/release/Autapomorph/steam-game-idler?style=flat-square&color=%232d6acc&label=Version
+[build]: https://img.shields.io/github/actions/workflow/status/Autapomorph/steam-game-idler/release.yml?style=flat-square&color=%2338ba56
 

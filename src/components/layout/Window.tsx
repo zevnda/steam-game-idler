@@ -7,7 +7,6 @@ import { useUserStore } from '@/stores/userStore'
 import Dashboard from '@/components/layout/Dashboard'
 import SignIn from '@/components/layout/SignIn'
 import ChangelogModal from '@/components/ui/ChangelogModal'
-import GoProModal from '@/components/ui/GoProModal'
 import SteamWarning from '@/components/ui/SteamWarning'
 import useWindow from '@/hooks/layout/useWindow'
 
@@ -36,7 +35,6 @@ export default function Window(): ReactElement {
     <div className='min-h-calc'>
       <Dashboard />
       <SteamWarning />
-      <GoProModal />
       <ChangelogModal />
     </div>
   )

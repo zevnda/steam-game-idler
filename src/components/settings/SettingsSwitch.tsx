@@ -13,14 +13,12 @@ import { antiAwayStatus } from '@/utils/tasks'
 interface SettingsCheckboxProps {
   type: 'general' | 'cardFarming' | 'achievementUnlocker'
   name: string
-  isProSetting?: boolean
 }
 
-export default function SettingsSwitch({ type, name, isProSetting = false }: SettingsCheckboxProps): ReactElement {
+export default function SettingsSwitch({ type, name }: SettingsCheckboxProps): ReactElement {
   const userSummary = useUserStore(state => state.userSummary)
   const userSettings = useUserStore(state => state.userSettings)
   const setUserSettings = useUserStore(state => state.setUserSettings)
-  const isPro = useUserStore(state => state.isPro)
   const { startupState, setStartupState } = useGeneralSettings()
 
   useCardSettings()
@@ -79,7 +77,6 @@ export default function SettingsSwitch({ type, name, isProSetting = false }: Set
       size='sm'
       name={name}
       isSelected={isSettingEnabled()}
-      isDisabled={isProSetting && !isPro}
       classNames={{
         wrapper: cn('group-data-[selected=true]:!bg-dynamic !bg-switch'),
       }}

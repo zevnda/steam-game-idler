@@ -4,14 +4,12 @@ import type { ReactElement } from 'react'
 import { invoke } from '@tauri-apps/api/core'
 
 import { Button, cn, Divider, Input, Spinner } from '@heroui/react'
-import { useStateStore } from '@/stores/stateStore'
 import { useUserStore } from '@/stores/userStore'
 import Image from 'next/image'
 import { Trans, useTranslation } from 'react-i18next'
 import { TbChevronRight, TbEraser, TbRefresh, TbUpload } from 'react-icons/tb'
 
 import ExtLink from '@/components/ui/ExtLink'
-import ProBadge from '@/components/ui/ProBadge'
 import WebviewWindow from '@/components/ui/WebviewWindow'
 import {
   fetchGamesWithDropsData,
@@ -24,11 +22,9 @@ import { showDangerToast } from '@/utils/toasts'
 
 export default function SteamCredentials(): ReactElement {
   const { t } = useTranslation()
-  const setProModalOpen = useStateStore(state => state.setProModalOpen)
   const userSummary = useUserStore(state => state.userSummary)
   const userSettings = useUserStore(state => state.userSettings)
   const setUserSettings = useUserStore(state => state.setUserSettings)
-  const isPro = useUserStore(state => state.isPro)
   const cardSettings = useCardSettings()
 
   const handleShowSteamLoginWindow = async (): Promise<void> => {
@@ -96,7 +92,6 @@ export default function SteamCredentials(): ReactElement {
           <div className='flex flex-col gap-2 w-1/2'>
             <div className='flex items-center'>
               <p className='text-sm text-content font-bold'>{t('settings.steamCredentials.automated')}</p>
-              {!isPro && <ProBadge className='scale-65' />}
             </div>
             <p className='text-xs text-altwhite'>{t('settings.steamCredentials.automated.description')}</p>
             <WebviewWindow
@@ -107,24 +102,16 @@ export default function SteamCredentials(): ReactElement {
             </WebviewWindow>
           </div>
 
-          <div className='flex flex-col justify-end gap-2' onClick={() => !isPro && setProModalOpen(true)}>
+          <div className='flex flex-col justify-end gap-2'>
             <Button
               size='sm'
               className='bg-btn-secondary text-btn-text font-bold'
               radius='full'
-              isDisabled={!isPro}
               onPress={handleShowSteamLoginWindow}
             >
               {cardSettings.hasCookies ? t('common.reauthenticate') : t('common.signInSteam')}
             </Button>
-            <Button
-              size='sm'
-              variant='light'
-              radius='full'
-              color='danger'
-              isDisabled={!isPro}
-              onPress={handleSignOutCurrentUser}
-            >
+            <Button size='sm' variant='light' radius='full' color='danger' onPress={handleSignOutCurrentUser}>
               {t('common.signOut')}
             </Button>
           </div>

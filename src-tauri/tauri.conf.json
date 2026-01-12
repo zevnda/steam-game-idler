@@ -3,17 +3,17 @@
   "productName": "Steam Game Idler",
   "mainBinaryName": "Steam Game Idler",
   "version": "2.5.21",
-  "identifier": "com.zevnda.steam-game-idler",
+  "identifier": "com.autapomorph.steam-game-idler",
   "build": {
-    "beforeDevCommand": "pnpm run dev",
-    "beforeBuildCommand": "pnpm run build",
+    "beforeDevCommand": "npm run dev",
+    "beforeBuildCommand": "npm run build",
     "devUrl": "http://localhost:3000",
     "frontendDist": "../out"
   },
   "bundle": {
     "active": true,
     "category": "Utility",
-    "copyright": "Copyright © 2024-2025 zevnda",
+    "copyright": "Copyright © 2026 Autapomorph",
     "targets": "all",
     "externalBin": [],
     "icon": ["icons/icon.ico"],
@@ -46,8 +46,8 @@
   },
   "plugins": {
     "updater": {
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEQyMTE5REMyMUFGRUYyQzcKUldUSDh2NGF3cDBSMGh6UVk2a1NKNFV0d1BBcnZsRnFFdDkvTTR0KzJQN0hjOTJzSWFpMFhGaysK",
-      "endpoints": ["https://raw.githubusercontent.com/zevnda/steam-game-idler/main/latest.json"],
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEU5ODg4QkQ2QUY3N0QwOUMKUldTYzBIZXYxb3VJNldTOVVRL1IrSmJMKzJkRWMySUplWC9keVhSZEpGZWYzcHkrNndxL3RnT0EK",
+      "endpoints": ["https://raw.githubusercontent.com/Autapomorph/steam-game-idler/main/latest.json"],
       "windows": {
         "installMode": "passive"
       }

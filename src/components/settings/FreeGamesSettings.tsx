@@ -4,25 +4,21 @@ import type { ReactElement } from 'react'
 import { invoke } from '@tauri-apps/api/core'
 
 import { Button, Divider } from '@heroui/react'
-import { useStateStore } from '@/stores/stateStore'
 import { useUserStore } from '@/stores/userStore'
 import { useTranslation } from 'react-i18next'
 import { TbChevronRight } from 'react-icons/tb'
 
 import SettingsSwitch from '@/components/settings/SettingsSwitch'
 import Beta from '@/components/ui/Beta'
-import ProBadge from '@/components/ui/ProBadge'
 import WebviewWindow from '@/components/ui/WebviewWindow'
 import { logEvent } from '@/utils/tasks'
 import { showDangerToast } from '@/utils/toasts'
 
 export default function CardSettings(): ReactElement {
   const { t } = useTranslation()
-  const isPro = useUserStore(state => state.isPro)
   const userSummary = useUserStore(state => state.userSummary)
   const userSettings = useUserStore(state => state.userSettings)
   const setUserSettings = useUserStore(state => state.setUserSettings)
-  const setProModalOpen = useStateStore(state => state.setProModalOpen)
 
   const handleShowStoreLoginWindow = async (): Promise<void> => {
     const result = await invoke<InvokeSteamCredentials>('open_store_login_window')
@@ -89,7 +85,6 @@ export default function CardSettings(): ReactElement {
           <div className='flex flex-col gap-2 w-1/2'>
             <div className='flex items-center'>
               <p className='text-sm text-content font-bold'>{t('settings.general.autoRedeemFreeGames')}</p>
-              {!isPro && <ProBadge className='scale-65' />}
               <Beta />
             </div>
             <p className='text-xs text-altwhite'>{t('settings.general.autoRedeemFreeGames.description')}</p>
@@ -101,24 +96,16 @@ export default function CardSettings(): ReactElement {
             </WebviewWindow>
           </div>
 
-          <div className='flex flex-col justify-end gap-2' onClick={() => !isPro && setProModalOpen(true)}>
+          <div className='flex flex-col justify-end gap-2'>
             <Button
               size='sm'
               className='bg-btn-secondary text-btn-text font-bold'
               radius='full'
-              isDisabled={!isPro}
               onPress={handleShowStoreLoginWindow}
             >
               {userSettings.general?.autoRedeemFreeGames ? t('common.reauthenticate') : t('common.signInSteam')}
             </Button>
-            <Button
-              size='sm'
-              variant='light'
-              radius='full'
-              color='danger'
-              isDisabled={!isPro}
-              onPress={handleSignOutCurrentStoreUser}
-            >
+            <Button size='sm' variant='light' radius='full' color='danger' onPress={handleSignOutCurrentStoreUser}>
               {t('common.signOut')}
             </Button>
           </div>

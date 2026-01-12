@@ -28,7 +28,6 @@ export const useAutomate = (): AutomateButtonsHook => {
   const setUserSettings = useUserStore(state => state.setUserSettings)
   const setIsCardFarming = useStateStore(state => state.setIsCardFarming)
   const setIsAchievementUnlocker = useStateStore(state => state.setIsAchievementUnlocker)
-  const isPro = useUserStore(state => state.isPro)
 
   // Start card farming
   const startCardFarming = async (): Promise<void> => {
@@ -41,11 +40,9 @@ export const useAutomate = (): AutomateButtonsHook => {
       let credentials = userSettings.cardFarming.credentials
 
       // Attempt to automatically revalidate Steam credentials for PRO users
-      if (isPro) {
-        const autoRevalidateResult = await autoRevalidateSteamCredentials(setUserSettings)
-        if (autoRevalidateResult?.credentials) {
-          credentials = autoRevalidateResult.credentials
-        }
+      const autoRevalidateResult = await autoRevalidateSteamCredentials(setUserSettings)
+      if (autoRevalidateResult?.credentials) {
+        credentials = autoRevalidateResult.credentials
       }
 
       if (!credentials?.sid || !credentials?.sls) return showMissingCredentialsToast()

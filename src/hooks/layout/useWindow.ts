@@ -30,7 +30,6 @@ import { useTranslation } from 'react-i18next'
 import useGamesList from '@/hooks/gameslist/useGamesList'
 import { handleRefetch } from '@/hooks/gameslist/usePageHeader'
 import { startIdle } from '@/utils/idle'
-import { supabase } from '@/utils/supabaseClient'
 import { checkSteamStatus, fetchLatest, isPortableCheck, logEvent, preserveKeysAndClearData } from '@/utils/tasks'
 import { showDangerToast, showNoGamesToast, showSuccessToast, t } from '@/utils/toasts'
 
@@ -53,8 +52,6 @@ export default function useWindow(): void {
   const freeGamesList = useUserStore(state => state.freeGamesList)
   const setFreeGamesList = useUserStore(state => state.setFreeGamesList)
   const gamesList = useUserStore(state => state.gamesList)
-  const isPro = useUserStore(state => state.isPro)
-  const setIsPro = useUserStore(state => state.setIsPro)
   const [zoom, setZoom] = useState(1.0)
 
   const lastRedeemedIdsRef = useRef<string>('')
@@ -238,24 +235,13 @@ export default function useWindow(): void {
 
         const html = document.documentElement
         // Themes
-        const proThemes = ['blue', 'red', 'purple', 'pink', 'gold', 'black']
         let userTheme = 'dark'
 
         // Get user settings if available
-        if (isPro) {
-          const cachedUserSettings = await invoke<InvokeSettings>('get_user_settings', {
-            steamId: userSummary.steamId,
-          })
-          userTheme = cachedUserSettings.settings.general.theme || 'dark'
-        } else {
-          // If not pro, remove any pro themes
-          const currentTheme = localStorage.getItem('theme')
-          if (currentTheme && proThemes.includes(currentTheme)) {
-            userTheme = 'dark'
-          } else {
-            userTheme = currentTheme || 'dark'
-          }
-        }
+        const cachedUserSettings = await invoke<InvokeSettings>('get_user_settings', {
+          steamId: userSummary.steamId,
+        })
+        userTheme = cachedUserSettings.settings.general.theme || 'dark'
 
         // Always reset classes and apply the correct one
         html.className = ''
@@ -270,7 +256,7 @@ export default function useWindow(): void {
     }
 
     applyThemeForUser()
-  }, [userSummary, isPro, setTheme, t])
+  }, [userSummary, setTheme, t])
 
   // Disable context menu and refresh actions
   useEffect(() => {
@@ -367,39 +353,6 @@ export default function useWindow(): void {
     }
   }, [userSummary, setIsAchievementUnlocker, setIsCardFarming, setShowSteamWarning])
 
-  // Check for active subscription and set isPro
-  useEffect(() => {
-    const steamId = userSummary?.steamId
-
-    if (!steamId) return
-
-    const checkSubscription = async (): Promise<void> => {
-      try {
-        const { data, error } = await supabase
-          .from('subscriptions')
-          .select('status')
-          .eq('steam_id', steamId)
-          .in('status', ['active', 'trialing', 'past_due'])
-          .maybeSingle()
-
-        if (error) {
-          console.error('Error checking subscription:', error)
-          logEvent(`[Error] in checkSubscription: ${error.message}`)
-          setIsPro(false)
-          return
-        }
-
-        setIsPro(!!data)
-      } catch (error) {
-        console.error('Error checking subscription:', error)
-        logEvent(`[Error] in checkSubscription: ${error}`)
-        setIsPro(false)
-      }
-    }
-
-    checkSubscription()
-  }, [userSummary?.steamId, setIsPro])
-
   useEffect(() => {
     // Show changelog after updates
     const hasUpdated = localStorage.getItem('hasUpdated')
@@ -458,7 +411,7 @@ export default function useWindow(): void {
 
   // Auto redeem free games
   useEffect(() => {
-    if (isPro && userSettings.general.autoRedeemFreeGames && freeGamesList.length > 0) {
+    if (userSettings.general.autoRedeemFreeGames && freeGamesList.length > 0) {
       // Create a unique key for the current free games list
       const ids = freeGamesList
         .map(g => g.appid)
@@ -469,7 +422,7 @@ export default function useWindow(): void {
       lastRedeemedIdsRef.current = ids
       autoRedeemFreeGames(freeGamesList, setFreeGamesList, userSummary, gamesContext)
     }
-  }, [isPro, userSettings.general.autoRedeemFreeGames, freeGamesList, setFreeGamesList, userSummary, gamesContext])
+  }, [userSettings.general.autoRedeemFreeGames, freeGamesList, setFreeGamesList, userSummary, gamesContext])
 
   useEffect(() => {
     // Set user summary data

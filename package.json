@@ -2,30 +2,18 @@
   "name": "steam-game-idler",
   "version": "0.1.0",
   "description": "Farm trading cards, manage achievements, and boost playtime effortlessly with Steam Game Idler",
-  "author": "zevnda",
+  "author": "Autapomorph",
   "private": true,
-  "workspaces": [
-    "docs"
-  ],
   "scripts": {
     "dev": "next dev",
-    "dev:docs": "pnpm --filter steam-game-idler-docs dev",
-    "dev:all": "pnpm td & pnpm --filter steam-game-idler-docs dev",
-    "pub:docs": "pnpm --filter steam-game-idler-docs pub",
     "build": "next build",
-    "build:docs": "pnpm --filter steam-game-idler-docs build",
-    "build:all": "pnpm build && pnpm build:docs",
     "start": "next start",
-    "start:docs": "pnpm --filter steam-game-idler-docs start",
     "lint": "eslint .",
-    "lint:docs": "pnpm --filter steam-game-idler-docs lint",
-    "lint:all": "pnpm lint && pnpm lint:docs",
     "tauri": "tauri",
     "prepare": "husky",
     "prettier": "prettier --write .",
     "td": "tauri dev",
     "tb": "tauri build",
-    "dd": "pnpm --filter steam-game-idler-docs dev",
     "main": "git checkout main && git pull && git fetch -p"
   },
   "dependencies": {
@@ -35,7 +23,6 @@
     "@dnd-kit/utilities": "^3.2.2",
     "@heroui/react": "^2.8.5",
     "@internationalized/date": "^3.10.0",
-    "@supabase/supabase-js": "^2.77.0",
     "@tauri-apps/api": "~2.8.0",
     "@tauri-apps/plugin-autostart": "~2.5.0",
     "@tauri-apps/plugin-clipboard-manager": "^2.3.2",
@@ -89,7 +76,7 @@
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
-      "pnpm lint ."
+      "npm run lint ."
     ],
     "**/*": "prettier --write --ignore-unknown"
   }

@@ -24,7 +24,6 @@ import {
   TbSettings,
 } from 'react-icons/tb'
 
-import AdSlot from '@/components/ui/AdSlot'
 import Beta from '@/components/ui/Beta'
 import CustomModal from '@/components/ui/CustomModal'
 import HeaderTitle from '@/components/ui/header/HeaderTitle'
@@ -38,7 +37,6 @@ export default function SideBar(): ReactElement {
   const setActivePage = useNavigationStore(state => state.setActivePage)
   const freeGamesList = useUserStore(state => state.freeGamesList)
   const userSummary = useUserStore(state => state.userSummary)
-  const isPro = useUserStore(state => state.isPro)
   const searchContent = useSearchStore()
   const idleGamesList = useIdleStore(state => state.idleGamesList)
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
@@ -269,12 +267,6 @@ export default function SideBar(): ReactElement {
           {mainSidebarItems.map((item, idx) => renderSidebarItem(item, idx))}
         </div>
 
-        {process.env.NODE_ENV === 'production' && (
-          <div className='absolute bottom-8 left-0 right-0 flex flex-col items-center justify-end grow mb-1 overflow-hidden pointer-events-none'>
-            <AdSlot />
-          </div>
-        )}
-
         {/* Settings and signout */}
         <div
           className={cn(
@@ -296,12 +288,6 @@ export default function SideBar(): ReactElement {
                 height={sidebarCollapsed ? 28 : 32}
                 className='rounded-full bg-white'
               />
-              {isPro && (
-                <div
-                  className='pointer-events-none absolute inset-0 rounded-full'
-                  style={{ boxShadow: 'inset 0 0 0 2px hsl(var(--heroui-dynamic))' }}
-                />
-              )}
             </div>
 
             {!sidebarCollapsed && (

@@ -79,7 +79,7 @@ export const fetchNotifications = async (
   try {
     // Fetch notifications
     const response = await fetch(
-      'https://raw.githubusercontent.com/zevnda/steam-game-idler/refs/heads/main/notifications.json',
+      'https://raw.githubusercontent.com/Autapomorph/steam-game-idler/refs/heads/main/notifications.json',
     )
     const data: Notification[] = await response.json()
     const LimitNotifications = data.slice(0, 10)

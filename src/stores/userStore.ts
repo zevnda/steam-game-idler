@@ -15,8 +15,6 @@ interface UserStore {
   setGamesList: (value: Game[] | ((prev: Game[]) => Game[])) => void
   freeGamesList: Game[]
   setFreeGamesList: (value: Game[] | ((prev: Game[]) => Game[])) => void
-  isPro: boolean | null
-  setIsPro: (value: boolean | null | ((prev: boolean | null) => boolean | null)) => void
   userSettings: UserSettings
   setUserSettings: (value: UserSettings | ((prev: UserSettings) => UserSettings)) => void
 }
@@ -47,11 +45,6 @@ export const useUserStore = create<UserStore>(set => ({
     set(state => ({
       freeGamesList: typeof value === 'function' ? value(state.freeGamesList) : value,
     })),
-  isPro: null,
-  setIsPro: value =>
-    set(state => ({
-      isPro: typeof value === 'function' ? value(state.isPro) : value,
-    })),
   userSettings: {
     gameSettings: null,
     general: {
@@ -63,7 +56,6 @@ export const useUserStore = create<UserStore>(set => ({
       runAtStartup: false,
       startMinimized: false,
       closeToTray: true,
-      customBackground: null,
       autoRedeemFreeGames: false,
       showRecommendedCarousel: true,
       showRecentCarousel: true,

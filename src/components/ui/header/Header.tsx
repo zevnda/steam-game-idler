@@ -5,14 +5,11 @@ import { useEffect, useState } from 'react'
 import { useNavigationStore } from '@/stores/navigationStore'
 import { useStateStore } from '@/stores/stateStore'
 import { useUpdateStore } from '@/stores/updateStore'
-import { useUserStore } from '@/stores/userStore'
 import { TbLayoutSidebar, TbLayoutSidebarFilled } from 'react-icons/tb'
 import { VscChromeClose, VscChromeMaximize, VscChromeMinimize } from 'react-icons/vsc'
 
 import Notifications from '@/components/notifications/Notifications'
-import { GoPro } from '@/components/ui/header/GoPro'
 import HeaderMenu from '@/components/ui/header/HeaderMenu'
-import HelpDesk from '@/components/ui/header/HelpDesk'
 import UpdateButton from '@/components/ui/UpdateButton'
 import useHeader from '@/hooks/ui/useHeader'
 import { isPortableCheck } from '@/utils/tasks'
@@ -25,7 +22,6 @@ export default function Header(): ReactElement {
   const setSidebarCollapsed = useStateStore(state => state.setSidebarCollapsed)
   const setTransitionDuration = useStateStore(state => state.setTransitionDuration)
   const activePage = useNavigationStore(state => state.activePage)
-  const isPro = useUserStore(state => state.isPro)
   const [isPortable, setIsPortable] = useState<boolean | null>(null)
 
   useEffect(() => {
@@ -73,16 +69,8 @@ export default function Header(): ReactElement {
           </div>
         )}
 
-        {isPro !== null && isPro === false && activePage !== 'setup' && activePage !== 'settings' && (
-          <div className='flex justify-center items-center h-full'>
-            <GoPro />
-          </div>
-        )}
-
         <div className='flex justify-end items-center h-full w-full' data-tauri-drag-region>
           {isPortable === false && updateAvailable && <UpdateButton />}
-
-          <HelpDesk />
 
           {activePage !== 'setup' && (
             <>
