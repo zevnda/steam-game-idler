@@ -104,7 +104,7 @@ const SortableAchievement = memo(function SortableAchievement({
           achievement.skip === true && 'opacity-40',
         )}
       >
-        <div className='flex items-center justify-center w-[26px]'>
+        <div className='flex items-center justify-center w-6.5'>
           <Checkbox
             isSelected={achievement.skip !== true}
             onValueChange={() => onToggleSkip(achievement.name)}
@@ -407,9 +407,9 @@ export default function AchievementOrderModal({
           ) : (
             <>
               <div className='grid grid-cols-[40px_1fr] gap-2 items-center p-2 mb-2 border-b border-border sticky top-0 bg-sidebar z-50'>
-                <span className='text-sm font-semibold text-content select-none text-center w-[26px]'>#</span>
+                <span className='text-sm font-semibold text-content select-none text-center w-6.5'>#</span>
                 <div className='flex items-center gap-3 pl-0'>
-                  <span className='text-sm font-semibold text-content text-center w-[26px]'>
+                  <span className='text-sm font-semibold text-content text-center w-6.5'>
                     {t('achievementManager.achievements.unlock')}
                   </span>
                   <span className='text-sm font-semibold text-content flex-1 ml-8'>

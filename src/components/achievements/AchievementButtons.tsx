@@ -112,7 +112,7 @@ export default function AchievementButtons({
         radius='none'
         startContent={<TbSortDescending2 fontSize={26} />}
         items={sortOptions}
-        className='w-[230px]'
+        className='w-57.5'
         classNames={{
           listbox: ['p-0'],
           value: ['text-sm !text-content'],

@@ -74,7 +74,7 @@ export default function PriceData({ item, tradingCardContext }: PriceDataProps):
                       dangerouslySetInnerHTML={{ __html: item.price_data.sell_order_summary }}
                     />
                   )}
-                  <table className='text-xs border border-border w-[150px] h-fit'>
+                  <table className='text-xs border border-border w-37.5 h-fit'>
                     <thead>
                       <tr className='bg-content/5'>
                         <th className='px-2 py-1 text-center'>{t('tradingCards.priceData.price')}</th>
@@ -115,7 +115,7 @@ export default function PriceData({ item, tradingCardContext }: PriceDataProps):
                       dangerouslySetInnerHTML={{ __html: item.price_data.buy_order_summary }}
                     />
                   )}
-                  <table className='text-xs border border-border w-[150px] h-fit'>
+                  <table className='text-xs border border-border w-37.5 h-fit'>
                     <thead>
                       <tr className='bg-content/5'>
                         <th className='px-2 py-1 text-center'>{t('tradingCards.priceData.price')}</th>

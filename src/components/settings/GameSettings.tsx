@@ -161,7 +161,7 @@ export default function GameSettings(): ReactElement {
             minValue={0}
             maxValue={99999}
             aria-label='max idle time'
-            className='w-[90px]'
+            className='w-22.5'
             classNames={{
               inputWrapper: cn(
                 'bg-input data-[hover=true]:!bg-inputhover border-none',
@@ -195,7 +195,7 @@ export default function GameSettings(): ReactElement {
             minValue={0}
             maxValue={99999}
             aria-label='max idle time'
-            className='w-[90px]'
+            className='w-22.5'
             isDisabled={!selectedGame}
             classNames={{
               inputWrapper: cn(
@@ -230,7 +230,7 @@ export default function GameSettings(): ReactElement {
             minValue={0}
             maxValue={99999}
             aria-label='max card drops'
-            className='w-[90px]'
+            className='w-22.5'
             isDisabled={!selectedGame}
             classNames={{
               inputWrapper: cn(
@@ -265,7 +265,7 @@ export default function GameSettings(): ReactElement {
             minValue={0}
             maxValue={99999}
             aria-label='max achievement unlocks'
-            className='w-[90px]'
+            className='w-22.5'
             isDisabled={!selectedGame}
             classNames={{
               inputWrapper: cn(

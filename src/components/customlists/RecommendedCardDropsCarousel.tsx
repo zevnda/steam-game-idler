@@ -128,7 +128,7 @@ export default function RecommendedCardDropsCarousel({
           </div>
         </div>
 
-        <div className='h-[266px] flex items-center justify-center'>
+        <div className='h-66.5 flex items-center justify-center'>
           <Spinner size='lg' />
         </div>
       </div>
@@ -167,7 +167,7 @@ export default function RecommendedCardDropsCarousel({
 
       <div ref={scrollContainerRef} className='flex gap-5 pb-2 overflow-x-hidden'>
         {gamesWithDrops.map(game => (
-          <div key={game.appid} className='shrink-0 w-[440px]'>
+          <div key={game.appid} className='shrink-0 w-110'>
             <div className='relative group select-none'>
               <div className='overflow-hidden will-change-transform transition-transform duration-150'>
                 <div className='aspect-460/215 relative overflow-hidden'>

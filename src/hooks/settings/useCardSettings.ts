@@ -1,5 +1,6 @@
 import type {
   CardFarmingUser,
+  GameWithRemainingDrops,
   InvokeSettings,
   InvokeUserSummary,
   InvokeValidateSession,
@@ -28,6 +29,8 @@ interface CardSettingsHook {
   sidValue: string
   slsValue: string
   smaValue: string
+  gamesWithDropsData: GameWithRemainingDrops[]
+  setGamesWithDropsData: Dispatch<SetStateAction<GameWithRemainingDrops[]>>
   gamesWithDrops: number
   totalDropsRemaining: number
   hasCookies: boolean
@@ -48,6 +51,7 @@ export const useCardSettings = (): CardSettingsHook => {
   const [sidValue, setSidValue] = useState('') // sessionid
   const [slsValue, setSlsValue] = useState('') // steamLoginSecure
   const [smaValue, setSmaValue] = useState('') // steamMachineAuth
+  const [gamesWithDropsData, setGamesWithDropsData] = useState<GameWithRemainingDrops[]>([])
   const [gamesWithDrops, setGamesWithDrops] = useState(0)
   const [totalDropsRemaining, setTotalDropsRemaining] = useState(0)
   const [hasCookies, setHasCookies] = useState(false)
@@ -72,6 +76,8 @@ export const useCardSettings = (): CardSettingsHook => {
     sidValue,
     slsValue,
     smaValue,
+    gamesWithDropsData,
+    setGamesWithDropsData,
     gamesWithDrops,
     totalDropsRemaining,
     hasCookies,
@@ -141,6 +147,7 @@ export const fetchGamesWithDropsData = async (
   userSummary: UserSummary,
   setIsCFDataLoading: Dispatch<SetStateAction<boolean>>,
   setUserSettings: Dispatch<SetStateAction<UserSettings>>,
+  setGamesWithDropsData: Dispatch<SetStateAction<GameWithRemainingDrops[]>>,
 ): Promise<void> => {
   try {
     setIsCFDataLoading(true)
@@ -189,6 +196,8 @@ export const fetchGamesWithDropsData = async (
       credentials?.sma,
     )
 
+    setGamesWithDropsData(getGamesWithDrops)
+
     const gamesWithDrops = getGamesWithDrops.length
     const totalDropsRemaining = getGamesWithDrops.reduce((total, game) => total + (game.remaining || 0), 0)
 
@@ -226,6 +235,7 @@ export const handleCredentialsSave = async (
   userSettings: UserSettings,
   setUserSettings: Dispatch<SetStateAction<UserSettings>>,
   setIsCFDataLoading: Dispatch<SetStateAction<boolean>>,
+  setGamesWithDropsData: Dispatch<SetStateAction<GameWithRemainingDrops[]>>,
 ): Promise<void> => {
   try {
     if (sidValue.length > 0 && slsValue.length > 0) {
@@ -271,7 +281,7 @@ export const handleCredentialsSave = async (
         showSuccessToast(t('toast.cardFarming.logIn', { user: validate.user }))
         logEvent(`[Settings - Card Farming] Logged in as ${validate.user}`)
 
-        fetchGamesWithDropsData(userSummary, setIsCFDataLoading, setUserSettings)
+        fetchGamesWithDropsData(userSummary, setIsCFDataLoading, setUserSettings, setGamesWithDropsData)
       } else {
         showIncorrectCredentialsToast()
         logEvent('[Error] [Settings - Card Farming] Incorrect card farming credentials')
