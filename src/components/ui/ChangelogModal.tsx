@@ -58,9 +58,9 @@ export default function ChangelogModal(): ReactElement | null {
       <ModalContent>
         <ModalBody className='p-0'>
           {isVersionLoaded ? (
-            <iframe src={`https://steamgameidler.com/changelog/${appVersion}`} className='min-h-[500px]' />
+            <iframe src={`https://steamgameidler.com/changelog/${appVersion}`} className='min-h-125' />
           ) : (
-            <div className='flex items-center justify-center min-h-[500px]'>
+            <div className='flex items-center justify-center min-h-125'>
               <Spinner variant='simple' className='m-10' />
             </div>
           )}

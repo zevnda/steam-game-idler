@@ -1,5 +1,7 @@
 import type { ReactElement } from 'react'
 
+import { getVersion } from '@tauri-apps/api/app'
+
 import { Button, cn } from '@heroui/react'
 import { useEffect, useState } from 'react'
 import { useUserStore } from '@/stores/userStore'
@@ -8,8 +10,8 @@ import { useTranslation } from 'react-i18next'
 import { RiCustomerService2Line } from 'react-icons/ri'
 import { TbX } from 'react-icons/tb'
 
-import { getExportData } from '@/components/settings/ExportSettings'
 import CustomTooltip from '@/components/ui/CustomTooltip'
+import { isPortableCheck } from '@/utils/tasks'
 
 declare global {
   interface Window {
@@ -29,6 +31,7 @@ export default function HelpDesk(): ReactElement | null {
   const [hasUnread, setHasUnread] = useState(false)
   const userSummary = useUserStore(state => state.userSummary)
   const userSettings = useUserStore(state => state.userSettings)
+  const isPro = useUserStore(state => state.isPro)
 
   // If it's the user's first time using SGI, show an overlay
   // that directs them to the help desk
@@ -100,17 +103,25 @@ export default function HelpDesk(): ReactElement | null {
   }, [isLoaded])
 
   useEffect(() => {
-    if (userSummary && typeof window !== 'undefined' && window.$chatway) {
-      window.$chatway.updateChatwayCustomData('name', `${userSummary?.personaName} (${userSummary?.steamId})`)
-      window.$chatway.updateChatwayCustomData('profile', `https://steamcommunity.com/profiles/${userSummary?.steamId}`)
-      getExportData(userSettings).then(exportData => {
-        window.$chatway.updateChatwayCustomData('exportData', JSON.stringify(exportData))
-      })
-    }
-  }, [userSummary, userSettings])
+    const setUserData = async () => {
+      const version = await getVersion()
+      const isPortable = await isPortableCheck()
 
-  const handleToggle = () => {
+      if (userSummary && typeof window !== 'undefined' && window.$chatway) {
+        window.$chatway.updateChatwayCustomData(
+          'name',
+          `${userSummary?.personaName} (${userSummary?.steamId}, v${version}, ${isPro ? 'PRO' : 'Free'}, ${isPortable ? 'Portable' : 'Installer'})`,
+        )
+      }
+    }
+    setUserData()
+  }, [userSummary, userSettings, isPro])
+
+  const handleToggle = async () => {
     if (!isLoaded || typeof window === 'undefined' || !window.$chatway) return
+
+    const version = await getVersion()
+    const isPortable = await isPortableCheck()
 
     const widget = document.querySelector('.chatway--container')
 
@@ -118,14 +129,10 @@ export default function HelpDesk(): ReactElement | null {
       window.$chatway.closeChatwayWidget()
     } else {
       if (userSummary) {
-        window.$chatway.updateChatwayCustomData('name', `${userSummary?.personaName} (${userSummary?.steamId})`)
         window.$chatway.updateChatwayCustomData(
-          'profile',
-          `https://steamcommunity.com/profiles/${userSummary?.steamId}`,
+          'name',
+          `${userSummary?.personaName} (${userSummary?.steamId}, v${version}, ${isPro ? 'PRO' : 'Free'}, ${isPortable ? 'Portable' : 'Installer'})`,
         )
-        getExportData(userSettings).then(exportData => {
-          window.$chatway.updateChatwayCustomData('exportData', JSON.stringify(exportData))
-        })
       }
       window.$chatway.openChatwayWidget()
     }
@@ -195,7 +202,7 @@ export default function HelpDesk(): ReactElement | null {
               initial={{ opacity: 0, y: -20, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -20, scale: 0.95 }}
-              className='relative w-[540px] bg-sidebar/80 backdrop-blur-md p-6 rounded-xl shadow-2xl border border-border text-content'
+              className='relative w-135 bg-sidebar/80 backdrop-blur-md p-6 rounded-xl shadow-2xl border border-border text-content'
             >
               <p className='leading-relaxed text-sm mr-6'>
                 It looks like it&apos;s your first time here. If you need help with anything, just click the{' '}
