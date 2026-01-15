@@ -6,3 +6,10 @@ export interface Game {
   playtime_forever?: number
   remaining?: number
 }
+
+export interface GameWithRemainingDrops {
+  id: number
+  name: string
+  remaining: number
+  playtime: number
+}

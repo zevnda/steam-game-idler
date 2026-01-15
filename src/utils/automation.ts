@@ -1,4 +1,4 @@
-import type { Game, InvokeDropsRemaining, InvokeGamesWithDrops } from '@/types'
+import type { GameWithRemainingDrops, InvokeDropsRemaining, InvokeGamesWithDrops } from '@/types'
 import type { TimeInputValue } from '@heroui/react'
 
 import { Time } from '@internationalized/date'
@@ -48,7 +48,7 @@ export async function getAllGamesWithDrops(
   sid: string | undefined,
   sls: string | undefined,
   sma: string | undefined,
-): Promise<Game[]> {
+): Promise<GameWithRemainingDrops[]> {
   try {
     if (!sid || !sls) {
       showMissingCredentialsToast()

@@ -1,15 +1,16 @@
 import type { InvokeSteamCredentials } from '@/types'
-import type { ReactElement } from 'react'
+import type { ReactElement, SyntheticEvent } from 'react'
 
 import { invoke } from '@tauri-apps/api/core'
 
-import { Button, cn, Divider, Input, Spinner } from '@heroui/react'
+import { Button, cn, Divider, Input, Spinner, useDisclosure } from '@heroui/react'
 import { useStateStore } from '@/stores/stateStore'
 import { useUserStore } from '@/stores/userStore'
 import Image from 'next/image'
 import { Trans, useTranslation } from 'react-i18next'
-import { TbChevronRight, TbEraser, TbRefresh, TbUpload } from 'react-icons/tb'
+import { TbChevronRight, TbEraser, TbUpload } from 'react-icons/tb'
 
+import CustomModal from '@/components/ui/CustomModal'
 import ExtLink from '@/components/ui/ExtLink'
 import ProBadge from '@/components/ui/ProBadge'
 import WebviewWindow from '@/components/ui/WebviewWindow'
@@ -30,6 +31,7 @@ export default function SteamCredentials(): ReactElement {
   const setUserSettings = useUserStore(state => state.setUserSettings)
   const isPro = useUserStore(state => state.isPro)
   const cardSettings = useCardSettings()
+  const { isOpen, onOpenChange } = useDisclosure()
 
   const handleShowSteamLoginWindow = async (): Promise<void> => {
     const result = await invoke<InvokeSteamCredentials>('open_steam_login_window')
@@ -51,6 +53,7 @@ export default function SteamCredentials(): ReactElement {
         userSettings,
         setUserSettings,
         cardSettings.setIsCFDataLoading,
+        cardSettings.setGamesWithDropsData,
       )
     }
   }
@@ -77,6 +80,10 @@ export default function SteamCredentials(): ReactElement {
       cardSettings.setGamesWithDrops,
       cardSettings.setTotalDropsRemaining,
     )
+  }
+
+  const handleImageError = (event: SyntheticEvent<HTMLImageElement, Event>): void => {
+    ;(event.target as HTMLImageElement).src = '/fallback.webp'
   }
 
   return (
@@ -160,36 +167,72 @@ export default function SteamCredentials(): ReactElement {
             {cardSettings.cardFarmingUser && (
               <div className='flex gap-4 bg-tab-panel p-2 rounded-lg items-center w-fit min-w-[50%] mt-3'>
                 {!cardSettings.isCFDataLoading ? (
-                  <>
-                    <Image
-                      src={userSummary?.avatar || ''}
-                      height={38}
-                      width={38}
-                      alt='user avatar'
-                      className='w-9.5 h-9.5 rounded-full'
-                      priority
-                    />
-                    <div className='flex flex-col items-end gap-1'>
-                      <div className='flex gap-1'>
-                        <p className='text-sm text-altwhite font-bold'>{t('settings.cardFarming.gamesWithDrops')}</p>
-                        <p className='text-sm text-dynamic font-bold'>{userSettings.cardFarming.gamesWithDrops || 0}</p>
-                      </div>
-                      <div className='flex gap-1'>
-                        <p className='text-sm text-altwhite font-bold'>{t('settings.cardFarming.totalDrops')}</p>
-                        <p className='text-sm text-dynamic font-bold'>
-                          {userSettings.cardFarming.totalDropsRemaining || 0}
-                        </p>
+                  <div className='flex-col'>
+                    <div className='flex justify-center items-center gap-3'>
+                      <Image
+                        src={userSummary?.avatar || ''}
+                        height={38}
+                        width={38}
+                        alt='user avatar'
+                        className='w-9.5 h-9.5 rounded-full'
+                        priority
+                      />
+                      <div className='flex flex-col items-end gap-1'>
+                        <div className='flex gap-1'>
+                          <p className='text-sm text-altwhite font-bold mr-2'>
+                            {t('settings.cardFarming.gamesWithDrops')}
+                          </p>
+                          <p className='text-sm text-dynamic font-bold'>
+                            {userSettings.cardFarming.gamesWithDrops || 0}
+                          </p>
+                        </div>
+                        <div className='flex gap-1'>
+                          <p className='text-sm text-altwhite font-bold mr-2'>{t('settings.cardFarming.totalDrops')}</p>
+                          <p className='text-sm text-dynamic font-bold'>
+                            {userSettings.cardFarming.totalDropsRemaining || 0}
+                          </p>
+                        </div>
                       </div>
                     </div>
-                    <div
-                      className='text-altwhite hover:bg-item-hover p-1 rounded-full cursor-pointer duration-150'
-                      onClick={() =>
-                        fetchGamesWithDropsData(userSummary, cardSettings.setIsCFDataLoading, setUserSettings)
-                      }
-                    >
-                      <TbRefresh size={18} />
+
+                    <div className='flex justify-center gap-2 mt-3'>
+                      <Button
+                        size='sm'
+                        className='bg-btn-secondary text-btn-text font-bold'
+                        radius='full'
+                        fullWidth
+                        onPress={() => {
+                          if (cardSettings.gamesWithDropsData.length === 0) {
+                            fetchGamesWithDropsData(
+                              userSummary,
+                              cardSettings.setIsCFDataLoading,
+                              setUserSettings,
+                              cardSettings.setGamesWithDropsData,
+                            )
+                          }
+                          onOpenChange()
+                        }}
+                      >
+                        {t('common.viewList')}
+                      </Button>
+                      <Button
+                        size='sm'
+                        className='bg-btn-secondary text-btn-text font-bold'
+                        radius='full'
+                        fullWidth
+                        onPress={() =>
+                          fetchGamesWithDropsData(
+                            userSummary,
+                            cardSettings.setIsCFDataLoading,
+                            setUserSettings,
+                            cardSettings.setGamesWithDropsData,
+                          )
+                        }
+                      >
+                        {t('setup.refresh')}
+                      </Button>
                     </div>
-                  </>
+                  </div>
                 ) : (
                   <div className='flex items-center justify-center gap-2'>
                     <Spinner size='sm' variant='simple' />
@@ -199,6 +242,7 @@ export default function SteamCredentials(): ReactElement {
               </div>
             )}
           </div>
+
           <div className='flex flex-col gap-4 w-62.5'>
             <Input
               isRequired
@@ -293,6 +337,7 @@ export default function SteamCredentials(): ReactElement {
                     userSettings,
                     setUserSettings,
                     cardSettings.setIsCFDataLoading,
+                    cardSettings.setGamesWithDropsData,
                   )
                 }
                 startContent={<TbUpload size={20} />}
@@ -303,6 +348,73 @@ export default function SteamCredentials(): ReactElement {
           </div>
         </div>
       </div>
+
+      <CustomModal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        classNames={{
+          body: '!p-0 !max-h-[60vh] !min-h-[60vh]',
+          base: 'max-w-xl bg-base/85 backdrop-blur-sm',
+        }}
+        title={
+          <div className='flex justify-between items-center'>
+            <p className='truncate capitalize'>{t('settings.cardFarming.gamesWithDrops')}</p>
+          </div>
+        }
+        body={
+          <div className='overflow-x-hidden overflow-y-auto relative'>
+            {cardSettings.isCFDataLoading ? (
+              <div className='flex justify-center items-center w-full p-4'>
+                <Spinner />
+              </div>
+            ) : cardSettings.gamesWithDropsData.length === 0 ? (
+              <div className='flex justify-center items-center w-full p-4'>
+                <p className='text-center text-content'>{t('customLists.cardFarming.drops', { count: 0 })}</p>
+              </div>
+            ) : (
+              <div className='flex flex-col'>
+                {cardSettings.gamesWithDropsData.map(item => (
+                  <div
+                    className='flex items-center gap-3 hover:bg-item-hover px-3 py-1 duration-150 select-none'
+                    key={item.id}
+                  >
+                    <Image
+                      src={`https://cdn.cloudflare.steamstatic.com/steam/apps/${item.id}/header.jpg`}
+                      className='aspect-62/29 rounded-sm'
+                      width={62}
+                      height={29}
+                      alt={`${item.name} image`}
+                      priority={true}
+                      onError={handleImageError}
+                    />
+                    <ExtLink
+                      className='text-sm max-w-1/2 text-dynamic hover:text-dynamic-hover duration-150'
+                      href={`https://steamcommunity.com/my/gamecards/${item.id}`}
+                    >
+                      <p className='truncate'>{item.name}</p>
+                    </ExtLink>
+                    <p className='grow text-right'>
+                      {t('customLists.cardFarming.drops', { count: item.remaining || 0 })}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        }
+        buttons={
+          <Button
+            size='sm'
+            color='danger'
+            variant='light'
+            radius='full'
+            className='font-semibold'
+            onPress={onOpenChange}
+          >
+            {t('common.close')}
+          </Button>
+        }
+      />
     </div>
   )
 }

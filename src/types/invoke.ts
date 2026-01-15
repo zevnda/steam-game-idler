@@ -1,4 +1,12 @@
-import type { Achievement, Game, Statistic, TradingCard, UserSettings, UserSummary } from '@/types'
+import type {
+  Achievement,
+  Game,
+  GameWithRemainingDrops,
+  Statistic,
+  TradingCard,
+  UserSettings,
+  UserSummary,
+} from '@/types'
 
 interface Processes {
   appid: number
@@ -96,7 +104,7 @@ export interface InvokeDropsRemaining {
 
 export interface InvokeGamesWithDrops {
   error?: string
-  gamesWithDrops: Game[]
+  gamesWithDrops: GameWithRemainingDrops[]
 }
 
 export interface InvokeCardData {

@@ -53,7 +53,7 @@ Contribute to this project by adding new translations or improving existing ones
 | Turkish             | 🇹🇷    | Ukrainian            | 🇺🇦    | Vietnamese            | 🇻🇳    |
 
 # License
-Copyright © 2024-2025 zevnda — **[MIT License](./LICENSE)**
+Copyright © 2024-2026 zevnda — **[MIT License](./LICENSE)**
 
 [downloads]: https://img.shields.io/github/downloads/zevnda/steam-game-idler/total?style=flat-square&color=%23e86827
 [release]: https://img.shields.io/github/v/release/zevnda/steam-game-idler?style=flat-square&color=%232d6acc&label=Version

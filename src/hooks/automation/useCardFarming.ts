@@ -1,4 +1,12 @@
-import type { CardFarmingSettings, Game, GameSettings, InvokeCustomList, InvokeSettings, UserSummary } from '@/types'
+import type {
+  CardFarmingSettings,
+  Game,
+  GameSettings,
+  GameWithRemainingDrops,
+  InvokeCustomList,
+  InvokeSettings,
+  UserSummary,
+} from '@/types'
 import type { Dispatch, RefObject, SetStateAction } from 'react'
 
 import { invoke } from '@tauri-apps/api/core'
@@ -25,13 +33,6 @@ export interface GameWithDrops extends GameForFarming {
 interface DropsCheckResult {
   totalDrops: number
   gamesSet: Set<GameWithDrops>
-}
-
-interface GameWithRemainingDrops {
-  id: number
-  name: string
-  remaining: number
-  playtime: number
 }
 
 interface CycleStep {
