@@ -1,4 +1,8 @@
-[submodule "libs"]
-path = libs
-url = https://github.com/zevnda/steam-utility.git
-branch = main
+[submodule "libs/steam-utility"]
+	path = libs/steam-utility
+	url = https://github.com/zevnda/steam-utility.git
+	branch = main
+[submodule "libs/discord-quests-utility"]
+	path = libs/discord-quests-utility
+	url = https://github.com/zevnda/discord-quests-utility.git
+	branch = main
