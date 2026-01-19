@@ -9,21 +9,27 @@ import { showDangerToast, showSuccessToast, t } from '@/utils/toasts'
 
 // Handle starting idling for a game
 export const handleIdle = async (item: Game): Promise<void> => {
-  const success = await startIdle(item.appid, item.name, true)
-  if (success) {
-    showSuccessToast(
-      t('toast.startIdle.success', {
-        appName: item.name,
-        appId: item.appid,
-      }),
-    )
-  } else {
-    showDangerToast(
-      t('toast.startIdle.error', {
-        appName: item.name,
-        appId: item.appid,
-      }),
-    )
+  try {
+    const success = await startIdle(item.appid, item.name, true)
+    if (success) {
+      showSuccessToast(
+        t('toast.startIdle.success', {
+          appName: item.name,
+          appId: item.appid,
+        }),
+      )
+    } else {
+      showDangerToast(
+        t('toast.startIdle.error', {
+          appName: item.name,
+          appId: item.appid,
+        }),
+      )
+    }
+  } catch (error) {
+    showDangerToast(t('common.error'))
+    console.error('Error in handleIdle:', error)
+    logEvent(`Error in (handleIdle): ${error}`)
   }
 }
 
