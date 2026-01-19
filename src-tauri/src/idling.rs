@@ -1,5 +1,5 @@
 use crate::process_handler::{cleanup_dead_processes, kill_all_steamutil_processes};
-use crate::utils::get_lib_path;
+use crate::utils::get_steam_utility_path;
 use serde_json::{json, Value};
 use std::os::windows::process::CommandExt;
 use std::process::Child;
@@ -23,7 +23,7 @@ lazy_static::lazy_static! {
 pub async fn start_idle(app_id: u32, app_name: String) -> Result<Value, String> {
     cleanup_dead_processes().map_err(|e| e.to_string())?;
 
-    let exe_path = get_lib_path()?;
+    let exe_path = get_steam_utility_path()?;
 
     let child = Command::new(exe_path)
         .args(&["idle", &app_id.to_string(), app_name.as_str()])
@@ -85,7 +85,7 @@ pub struct GameInfo {
 #[tauri::command]
 // Start idling multiple games
 pub async fn start_farm_idle(games_list: Vec<GameInfo>) -> Result<Value, String> {
-    let exe_path = get_lib_path()?;
+    let exe_path = get_steam_utility_path()?;
 
     cleanup_dead_processes().map_err(|e| e.to_string())?;
 

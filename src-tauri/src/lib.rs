@@ -3,6 +3,7 @@ pub mod achievement_manager;
 pub mod automation;
 pub mod crypto;
 pub mod custom_lists;
+pub mod discord_quests;
 pub mod game_data;
 pub mod idling;
 pub mod logging;
@@ -14,6 +15,7 @@ pub mod utils;
 use achievement_manager::*;
 use automation::*;
 use custom_lists::*;
+use discord_quests::*;
 use game_data::*;
 use idling::*;
 use logging::*;
@@ -145,6 +147,8 @@ pub fn run() {
             open_store_login_window,
             delete_store_cookies,
             redeem_free_game,
+            start_discord_quest,
+            stop_discord_quest,
             set_zoom,
             quit_app
         ])

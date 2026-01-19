@@ -1,4 +1,4 @@
-use crate::utils::{get_cache_dir, get_lib_path};
+use crate::utils::{get_cache_dir, get_steam_utility_path};
 use serde_json::{json, Value};
 use std::fs::File;
 use std::io::Read;
@@ -26,7 +26,7 @@ pub async fn get_achievement_data(
         let cache_dir_str = cache_dir.to_string_lossy().to_string();
 
         // Fetch new data
-        let exe_path = get_lib_path()?;
+        let exe_path = get_steam_utility_path()?;
         let output = std::process::Command::new(exe_path)
             .args(&["get_achievement_data", &app_id.to_string(), &cache_dir_str])
             .creation_flags(0x08000000)
@@ -71,7 +71,7 @@ pub async fn get_achievement_data(
 #[tauri::command]
 // Unlock an achievement
 pub async fn unlock_achievement(app_id: u32, achievement_id: &str) -> Result<String, String> {
-    let exe_path = get_lib_path()?;
+    let exe_path = get_steam_utility_path()?;
     let output = std::process::Command::new(exe_path)
         .args(&["unlock_achievement", &app_id.to_string(), achievement_id])
         .creation_flags(0x08000000)
@@ -85,7 +85,7 @@ pub async fn unlock_achievement(app_id: u32, achievement_id: &str) -> Result<Str
 #[tauri::command]
 // Lock an achievement
 pub async fn lock_achievement(app_id: u32, achievement_id: &str) -> Result<String, String> {
-    let exe_path = get_lib_path()?;
+    let exe_path = get_steam_utility_path()?;
     let output = std::process::Command::new(exe_path)
         .args(&["lock_achievement", &app_id.to_string(), achievement_id])
         .creation_flags(0x08000000)
@@ -99,7 +99,7 @@ pub async fn lock_achievement(app_id: u32, achievement_id: &str) -> Result<Strin
 #[tauri::command]
 // Unlock an achievement
 pub async fn toggle_achievement(app_id: u32, achievement_id: &str) -> Result<String, String> {
-    let exe_path = get_lib_path()?;
+    let exe_path = get_steam_utility_path()?;
     let output = std::process::Command::new(exe_path)
         .args(&["toggle_achievement", &app_id.to_string(), achievement_id])
         .creation_flags(0x08000000)
@@ -113,7 +113,7 @@ pub async fn toggle_achievement(app_id: u32, achievement_id: &str) -> Result<Str
 #[tauri::command]
 // Unlock all achievements
 pub async fn unlock_all_achievements(app_id: u32) -> Result<String, String> {
-    let exe_path = get_lib_path()?;
+    let exe_path = get_steam_utility_path()?;
     let output = std::process::Command::new(exe_path)
         .args(&["unlock_all_achievements", &app_id.to_string()])
         .creation_flags(0x08000000)
@@ -127,7 +127,7 @@ pub async fn unlock_all_achievements(app_id: u32) -> Result<String, String> {
 #[tauri::command]
 // Lock all achievements
 pub async fn lock_all_achievements(app_id: u32) -> Result<String, String> {
-    let exe_path = get_lib_path()?;
+    let exe_path = get_steam_utility_path()?;
     let output = std::process::Command::new(exe_path)
         .args(&["lock_all_achievements", &app_id.to_string()])
         .creation_flags(0x08000000)
@@ -141,7 +141,7 @@ pub async fn lock_all_achievements(app_id: u32) -> Result<String, String> {
 #[tauri::command]
 // Update achievement statistic
 pub async fn update_stats(app_id: u32, stats_arr: &str) -> Result<String, String> {
-    let exe_path = get_lib_path()?;
+    let exe_path = get_steam_utility_path()?;
     let output = std::process::Command::new(exe_path)
         .args(&["update_stats", &app_id.to_string(), stats_arr])
         .creation_flags(0x08000000)
@@ -155,7 +155,7 @@ pub async fn update_stats(app_id: u32, stats_arr: &str) -> Result<String, String
 #[tauri::command]
 // Reset all achievement statistics
 pub async fn reset_all_stats(app_id: u32) -> Result<String, String> {
-    let exe_path = get_lib_path()?;
+    let exe_path = get_steam_utility_path()?;
     let output = std::process::Command::new(exe_path)
         .args(&["reset_all_stats", &app_id.to_string()])
         .creation_flags(0x08000000)

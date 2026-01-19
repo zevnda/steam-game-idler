@@ -146,12 +146,21 @@ pub fn get_tray_icon(default: bool) -> String {
     base64::engine::general_purpose::STANDARD.encode(icon_bytes)
 }
 
-pub fn get_lib_path() -> Result<String, String> {
+pub fn get_steam_utility_path() -> Result<String, String> {
     // Get the current executable path
     let mut path = std::env::current_exe().map_err(|e| e.to_string())?;
     path.pop();
     path.push("libs");
     path.push("SteamUtility.exe");
+    Ok(path.to_str().unwrap().to_string())
+}
+
+pub fn get_discord_quests_utility_path() -> Result<String, String> {
+    // Get the current executable path
+    let mut path = std::env::current_exe().map_err(|e| e.to_string())?;
+    path.pop();
+    path.push("libs");
+    path.push("DiscordQuestsUtility.exe");
     Ok(path.to_str().unwrap().to_string())
 }
 

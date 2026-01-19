@@ -129,13 +129,15 @@ jobs:
         uses: actions/cache@v4
         with:
           path: src-tauri/libs/
-          key: ${{ runner.os }}-dotnet-${{ hashFiles('libs/**/*.cs', 'libs/**/*.csproj') }}
+          key: ${{ runner.os }}-dotnet-${{ hashFiles('libs/steam-utility/**/*.cs', 'libs/steam-utility/**/*.csproj', 'libs/discord-quests-utility/**/*.cs', 'libs/discord-quests-utility/**/*.csproj') }}
           restore-keys: |
             ${{ runner.os }}-dotnet-
 
       - name: Build .NET libraries
         if: steps.cache-dotnet.outputs.cache-hit != 'true' || github.event.inputs.force_dotnet_build == 'true'
-        run: MSBuild.exe .\libs\SteamUtility.csproj
+        run: |
+          MSBuild.exe .\libs\steam-utility\SteamUtility.csproj
+          MSBuild.exe .\libs\discord-quests-utility\DiscordQuestsUtility.csproj
         shell: pwsh
 
       - name: Upload built .NET libraries
