@@ -49,7 +49,7 @@
   "customLists.achievementUnlocker.editDelay": "Задержка редактирования ({{minutes}} минут)",
   "customLists.autoIdle.title": "Автоматический Простаиватель",
   "customLists.autoIdle.subtitle": "Добавьте игры в этот список, чтобы они автоматически переходили в режим бездействия при запуске",
-  "customLists.favorites.title": "Любимые игры",
+  "customLists.favorites.title": "Избранные игры",
   "customLists.favorites.subtitle": "Добавьте игры в этот список, чтобы легко получить к ним доступ.",
   "customLists.autoIdle.buttonLabel": "Запустить вручную",
   "customLists.manualAdd.title": "Добавить игру",
