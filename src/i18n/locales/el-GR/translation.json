@@ -1,5 +1,4 @@
 {
-  "setup.welcome": "Καλωσόρισμα",
   "setup.chooseAccount": "Επιλέξτε λογαριασμό",
   "setup.refresh": "Ανανέωση",
   "setup.help": "Χρειάζεστε βοήθεια?",
@@ -76,7 +75,6 @@
   "tradingCards.bulk": "Παράθεση όλων ({{count}})",
   "tradingCards.list": "Λίστα Επιλεγμένων",
   "tradingCards.remove": "Αφαίρεση Όλων",
-  "tradingCards.confirmSingle": "Είστε βέβαιοι ότι θέλετε να καταχωρήσετε αυτή την κάρτα?",
   "tradingCards.confirm": "Είστε βέβαιοι ότι θέλετε να παραθέσετε τις επιλεγμένες κάρτες;\n\nΟ κατά προσέγγιση χρόνος παράθεσης {{count}} καρτών είναι {{time}}\n\nΑφήστε το SGI να τρέχει μέχρι να ολοκληρωθεί η διαδικασία",
   "tradingCards.confirmBulk": "Είστε βέβαιοι ότι θέλετε να παραθέσετε όλες τις κάρτες;\n\nΟ κατά προσέγγιση χρόνος παράθεσης {{count}} καρτών είναι {{time}}\n\nΑφήστε το SGI να τρέχει μέχρι να ολοκληρωθεί η διαδικασία",
   "tradingCards.confirmRemove": "Είστε βέβαιοι ότι θέλετε να αφαιρέσετε όλες τις καταχωρήσεις ενεργών εμπορικών καρτών από την αγορά Steam?",
@@ -218,7 +216,6 @@
   "settings.resetSettings.button": "Επαναφορά Ρυθμίσεων",
   "settings.clearData.button": "Εκκαθάριση Δεδομένων",
   "settings.exportData": "Εξαγωγή Δεδομένων",
-  "settings.documentation": "Δείτε την τεκμηρίωση",
   "confirmation.logout": "Είστε βέβαιοι ότι θέλετε να αποσυνδεθείτε?",
   "confirmation.resetStatistics": "Είστε βέβαιοι ότι θέλετε να <1>επαναφορά</1> όλα τα στατιστικά στοιχεία?",
   "confirmation.resetSettings": "Είστε βέβαιοι ότι θέλετε να επαναφέρετε τις ρυθμίσεις στις προεπιλεγμένες?",
@@ -241,9 +238,7 @@
   "proMode.modal.themes": "Προσαρμόστε με αποκλειστικά θέματα",
   "proMode.modal.uniqueChatRole": "Μοναδικός ρόλος συνομιλίας στο Discord",
   "proMode.modal.moreBenefits": "Περισσότερα οφέλη έρχονται στο μέλλον",
-  "proMode.modal.bestValue": "Καλύτερη αξία",
   "proMode.modal.footer": "Οι τιμές που εμφανίζονται είναι σε USD και δεν περιλαμβάνουν φόρους.",
-  "proMode.modal.cancel": "Είστε βέβαιοι ότι θέλετε να ακυρώσετε τη συνδρομή σας στο PRO; Θα χάσετε αμέσως την πρόσβαση στις λειτουργίες του PRO.",
   "proMode.removeAdsWith": "Αφαίρεση διαφημίσεων με",
   "toast.steam": "Το Steam δεν εκτελείται",
   "toast.mismatch": "Ασυμφωνία λογαριασμού μεταξύ Steam και SGI",
@@ -297,8 +292,6 @@
   "toast.tradingCards.allCardsLocked": "Όλες οι κάρτες είναι κλειδωμένες και δεν μπορούν να αναφερθούν προς πώληση",
   "toast.tradingCards.allCardsOutOfRange": "Όλες οι κάρτες είναι εκτός των ορίων πώλησης και δεν μπορούν να αναφέρονται προς πώληση",
   "toast.tradingCards.cooldown": "Παρακαλώ περιμένετε {{cooldown}} δευτερόλεπτα πριν λάβετε περισσότερες τιμές καρτών",
-  "toast.pro.cancelSuccess": "Η συνδρομή PRO ακυρώθηκε με επιτυχία.",
-  "toast.pro.cancelError": "Αποτυχία ακύρωσης συνδρομής PRO",
   "toast.autoRedeem.success": "Το δωρεάν παιχνίδι {{appName}}εξαργυρώθηκε με επιτυχία",
   "toast.autoRedeem.failure": "Αποτυχία εξαργύρωσης δωρεάν παιχνιδιού {{appName}}",
   "trayIcon.achievementUnlocker": "Ξεκλείδωμα {{total}} επίτευγμα(τα) για {{appName}}",
@@ -332,8 +325,5 @@
   "common.helpDesk": "Γραφείο βοήθειας",
   "common.minutes": "πρακτικά",
   "common.viewList": "Προβολή λίστας",
-  "changelog.title": "Αλλαγές στο {{version}}",
-  "changelog.star": "Star on GitHub",
-  "changelog.report": "Αναφορά προβλήματος στο GitHub",
-  "changelog.release": "Προβολή στο GitHub"
+  "changelog.star": "Star on GitHub"
 }

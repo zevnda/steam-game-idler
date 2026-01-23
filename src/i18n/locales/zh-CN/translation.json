@@ -1,5 +1,4 @@
 {
-  "setup.welcome": "欢迎使用",
   "setup.chooseAccount": "选择一个帐户",
   "setup.refresh": "刷新",
   "setup.help": "需要帮助？",
@@ -76,7 +75,6 @@
   "tradingCards.bulk": "列出所有 ({{count}})",
   "tradingCards.list": "已选择列表",
   "tradingCards.remove": "删除所有",
-  "tradingCards.confirmSingle": "您确定要上架这张卡片吗？",
   "tradingCards.confirm": "您确定要列出所选卡牌吗？\n\n列出 {{count}} 张卡牌的预计时间为 {{time}}\n\n在流程完成之前，请保持 SGI 运行",
   "tradingCards.confirmBulk": "你确定要列出所有卡片吗？\n\n列出 {{count}} 张卡片的大概时间是 {{time}}\n\n在进程完成之前，请保持 SGI 运行",
   "tradingCards.confirmRemove": "您确定要从Steam市场移除所有活动交易卡列表吗？",
@@ -218,7 +216,6 @@
   "settings.resetSettings.button": "重置设置",
   "settings.clearData.button": "清除数据",
   "settings.exportData": "导出数据",
-  "settings.documentation": "查看文档",
   "confirmation.logout": "您确定要注销吗？",
   "confirmation.resetStatistics": "你确定你想要<1>重置</1>所有统计?",
   "confirmation.resetSettings": "您确定要重置设置为默认值吗？",
@@ -241,9 +238,7 @@
   "proMode.modal.themes": "使用专属主题进行个性化定制",
   "proMode.modal.uniqueChatRole": "独特的 Discord 聊天角色",
   "proMode.modal.moreBenefits": "未来还将有更多福利。",
-  "proMode.modal.bestValue": "性价比最高",
   "proMode.modal.footer": "所示价格为美元，不含税。",
-  "proMode.modal.cancel": "您确定要取消专业版订阅吗？取消后您将立即失去专业版功能的使用权限。",
   "proMode.removeAdsWith": "使用以下方式移除广告",
   "toast.steam": "Steam未运行",
   "toast.mismatch": "Steam和SGI之间账户不匹配",
@@ -297,8 +292,6 @@
   "toast.tradingCards.allCardsLocked": "所有卡片都被锁定，无法上架出售。",
   "toast.tradingCards.allCardsOutOfRange": "所有卡片都在销售限额之外，无法上架出售。",
   "toast.tradingCards.cooldown": "请稍等 {{cooldown}} 秒，稍后获取更多卡牌价格",
-  "toast.pro.cancelSuccess": "PRO订阅已成功取消",
-  "toast.pro.cancelError": "取消 PRO 订阅失败",
   "toast.autoRedeem.success": "免费游戏兑换成功 {{appName}}",
   "toast.autoRedeem.failure": "免费游戏兑换失败 {{appName}}",
   "trayIcon.achievementUnlocker": "为 {{appName}}解锁 {{total}} 成就",
@@ -332,8 +325,5 @@
   "common.helpDesk": "帮助台",
   "common.minutes": "分钟",
   "common.viewList": "查看列表",
-  "changelog.title": "变动 {{version}}",
-  "changelog.star": "在 GitHub 点亮星标",
-  "changelog.report": "在 GitHub 反馈问题",
-  "changelog.release": "在 GitHub 上查看"
+  "changelog.star": "在 GitHub 点亮星标"
 }

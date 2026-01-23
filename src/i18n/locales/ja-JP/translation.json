@@ -1,5 +1,4 @@
 {
-  "setup.welcome": "いらっしゃいませ",
   "setup.chooseAccount": "アカウントを選択",
   "setup.refresh": "更新",
   "setup.help": "ヘルプが必要ですか？",
@@ -76,7 +75,6 @@
   "tradingCards.bulk": "すべてのリスト ({{count}})",
   "tradingCards.list": "選択されたリスト",
   "tradingCards.remove": "すべて削除",
-  "tradingCards.confirmSingle": "このカードを一覧表示しますか？",
   "tradingCards.confirm": "カードを一覧表示してもよろしいですか？\n\n{{count}}枚のカードを一覧表示する概算時間は{{time}}です\n\nプロセスが完了するまでSGIを実行したままにしてください",
   "tradingCards.confirmBulk": "すべてのカードを一覧表示してもよろしいですか？\n\n{{count}}枚のカードを一覧表示する概算時間は{{time}}です\n\nプロセスが完了するまでSGIを実行したままにしてください",
   "tradingCards.confirmRemove": "Steamマーケットからすべての有効なトレーディングカードのリストを削除してもよろしいですか？",
@@ -218,7 +216,6 @@
   "settings.resetSettings.button": "設定をリセット",
   "settings.clearData.button": "データをクリア",
   "settings.exportData": "データをエクスポート",
-  "settings.documentation": "ドキュメントを表示",
   "confirmation.logout": "ログアウトしてもよろしいですか？",
   "confirmation.resetStatistics": "すべての統計を<1>リセット</1>してもよろしいですか？",
   "confirmation.resetSettings": "設定を既定にリセットしてもよろしいですか？",
@@ -241,9 +238,7 @@
   "proMode.modal.themes": "限定テーマでカスタマイズ",
   "proMode.modal.uniqueChatRole": "ユニークなDiscordチャットロール",
   "proMode.modal.moreBenefits": "今後さらに多くの特典が提供されます",
-  "proMode.modal.bestValue": "最高の価値",
   "proMode.modal.footer": "表示される価格は米ドルで、税金は含まれません。",
-  "proMode.modal.cancel": "PRO サブスクリプションをキャンセルしてもよろしいですか? キャンセルすると、直ちに PRO 機能にアクセスできなくなります。",
   "proMode.removeAdsWith": "広告を削除する",
   "toast.steam": "Steamが実行されていません",
   "toast.mismatch": "SteamとSGIのアカウントの不一致",
@@ -297,8 +292,6 @@
   "toast.tradingCards.allCardsLocked": "すべてのカードはロックされているため、販売できません。",
   "toast.tradingCards.allCardsOutOfRange": "すべてのカードは売り上げ上限の外にあり、販売のために表示することはできません",
   "toast.tradingCards.cooldown": "さらにカードの価格を取得するには {{cooldown}} 秒お待ちください",
-  "toast.pro.cancelSuccess": "PROサブスクリプションが正常にキャンセルされました",
-  "toast.pro.cancelError": "PROサブスクリプションのキャンセルに失敗しました",
   "toast.autoRedeem.success": "無料ゲームを正常に引き換えました {{appName}}",
   "toast.autoRedeem.failure": "無料ゲームの引き換えに失敗しました {{appName}}",
   "trayIcon.achievementUnlocker": "{{appName}}の {{total}} 実績をアンロックしています",
@@ -332,8 +325,5 @@
   "common.helpDesk": "ヘルプデスク",
   "common.minutes": "分",
   "common.viewList": "リストを表示",
-  "changelog.title": "{{version}} の変更",
-  "changelog.star": "Star on GitHub",
-  "changelog.report": "GitHub で問題を報告",
-  "changelog.release": "GitHubで見る"
+  "changelog.star": "Star on GitHub"
 }

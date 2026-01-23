@@ -1,5 +1,4 @@
 {
-  "setup.welcome": "Selamat Datang",
   "setup.chooseAccount": "Pilih akun",
   "setup.refresh": "Segarkan",
   "setup.help": "Butuh bantuan?",
@@ -76,7 +75,6 @@
   "tradingCards.bulk": "Daftar Semua ({{count}})",
   "tradingCards.list": "Daftar yang Dipilih",
   "tradingCards.remove": "Hapus Semua",
-  "tradingCards.confirmSingle": "Apakah Anda yakin ingin mendaftarkan kartu ini?",
   "tradingCards.confirm": "Apakah Anda yakin ingin mendaftarkan kartu yang dipilih?\n\nWaktu perkiraan untuk mendaftarkan {{count}} kartu adalah {{time}}\n\nBiarkan SGI berjalan sampai proses selesai",
   "tradingCards.confirmBulk": "Apakah Anda yakin ingin mendaftarkan semua kartu?\n\nWaktu perkiraan untuk mendaftarkan {{count}} kartu adalah {{time}}\n\nBiarkan SGI berjalan sampai proses selesai",
   "tradingCards.confirmRemove": "Apakah Anda yakin ingin menghapus semua daftar kartu perdagangan aktif dari pasar Steam?",
@@ -218,7 +216,6 @@
   "settings.resetSettings.button": "Atur Ulang Pengaturan",
   "settings.clearData.button": "Hapus Data",
   "settings.exportData": "Ekspor Data",
-  "settings.documentation": "Lihat dokumentasi",
   "confirmation.logout": "Apakah Anda yakin ingin keluar?",
   "confirmation.resetStatistics": "Apakah Anda yakin ingin <1>atur ulang</1> semua statistik?",
   "confirmation.resetSettings": "Apakah Anda yakin ingin mengatur ulang pengaturan ke default?",
@@ -241,9 +238,7 @@
   "proMode.modal.themes": "Sesuaikan dengan tema eksklusif",
   "proMode.modal.uniqueChatRole": "Peran obrolan Discord yang unik",
   "proMode.modal.moreBenefits": "Lebih banyak manfaat akan hadir di masa mendatang",
-  "proMode.modal.bestValue": "Nilai Terbaik",
   "proMode.modal.footer": "Harga yang ditampilkan dalam USD dan belum termasuk pajak.",
-  "proMode.modal.cancel": "Yakin ingin membatalkan langganan PRO? Anda akan segera kehilangan akses ke fitur PRO.",
   "proMode.removeAdsWith": "Hapus iklan dengan",
   "toast.steam": "Steam tidak sedang berjalan",
   "toast.mismatch": "Akun tidak cocok antara Steam dan SGI",
@@ -297,8 +292,6 @@
   "toast.tradingCards.allCardsLocked": "Semua kartu terkunci dan tidak dapat didaftarkan untuk dijual",
   "toast.tradingCards.allCardsOutOfRange": "Semua kartu berada di luar batas penjualan dan tidak dapat didaftarkan untuk dijual",
   "toast.tradingCards.cooldown": "Harap tunggu {{cooldown}} detik sebelum mengambil harga kartu lainnya",
-  "toast.pro.cancelSuccess": "Langganan PRO berhasil dibatalkan",
-  "toast.pro.cancelError": "Gagal membatalkan langganan PRO",
   "toast.autoRedeem.success": "Berhasil menebus game gratis {{appName}}",
   "toast.autoRedeem.failure": "Gagal menebus game gratis {{appName}}",
   "trayIcon.achievementUnlocker": "Membuka {{total}} pencapaian untuk {{appName}}",
@@ -332,8 +325,5 @@
   "common.helpDesk": "Meja Bantuan",
   "common.minutes": "menit",
   "common.viewList": "Lihat Daftar",
-  "changelog.title": "Perubahan dalam {{version}}",
-  "changelog.star": "Bintangi di GitHub",
-  "changelog.report": "Laporkan masalah di GitHub",
-  "changelog.release": "Lihat di GitHub"
+  "changelog.star": "Bintangi di GitHub"
 }

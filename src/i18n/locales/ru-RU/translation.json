@@ -1,5 +1,4 @@
 {
-  "setup.welcome": "Добро пожаловать",
   "setup.chooseAccount": "Выберите учетную запись",
   "setup.refresh": "Обновить",
   "setup.help": "Нужна помощь?",
@@ -76,7 +75,6 @@
   "tradingCards.bulk": "Выставить все ({{count}})",
   "tradingCards.list": "Выставить выбранные",
   "tradingCards.remove": "Удалить все",
-  "tradingCards.confirmSingle": "Вы уверены, что хотите выставить эту карточку на продажу?",
   "tradingCards.confirm": "Вы уверены, что хотите выставить выбранные карточки?\n\nПриблизительное время на выставление {{count}} карточек составляет {{time}}\n\nОставьте SGI запущенным до завершения процесса",
   "tradingCards.confirmBulk": "Вы уверены, что хотите выставить все карточки?\n\nПриблизительное время на выставление {{count}} карточек составляет {{time}}\n\nОставьте SGI запущенным до завершения процесса",
   "tradingCards.confirmRemove": "Вы действительно хотите удалить все активные торговые карты из торговой площадки Steam?",
@@ -218,7 +216,6 @@
   "settings.resetSettings.button": "Сбросить настройки",
   "settings.clearData.button": "Очистить данные",
   "settings.exportData": "Экспорт данных",
-  "settings.documentation": "Посмотреть документацию",
   "confirmation.logout": "Вы уверены, что хотите выйти?",
   "confirmation.resetStatistics": "Вы уверены, что хотите <1>сбросить</1> всю статистику?",
   "confirmation.resetSettings": "Вы уверены, что хотите сбросить настройки до значений по умолчанию?",
@@ -241,9 +238,7 @@
   "proMode.modal.themes": "Настройте внешний вид с помощью эксклюзивных тем.",
   "proMode.modal.uniqueChatRole": "Уникальная роль в чате Discord",
   "proMode.modal.moreBenefits": "Больше преимуществ в будущем",
-  "proMode.modal.bestValue": "Лучшее соотношение цены и качества",
   "proMode.modal.footer": "Цены указаны в долларах США и не включают налоги.",
-  "proMode.modal.cancel": "Вы уверены, что хотите отменить подписку PRO? Вы немедленно потеряете доступ к функциям PRO.",
   "proMode.removeAdsWith": "Удалить рекламу с",
   "toast.steam": "Steam не запущен",
   "toast.mismatch": "Несоответствие учетных записей Steam и SGI",
@@ -297,8 +292,6 @@
   "toast.tradingCards.allCardsLocked": "Все карты заблокированы и не могут быть перечислены для продажи",
   "toast.tradingCards.allCardsOutOfRange": "Все карты находятся за пределами ограничений на продажу и не могут быть перечислены на продажу",
   "toast.tradingCards.cooldown": "Пожалуйста, подождите {{cooldown}} секунд, прежде чем загрузить дополнительные цены на карты.",
-  "toast.pro.cancelSuccess": "Подписка PRO успешно отменена",
-  "toast.pro.cancelError": "Не удалось отменить подписку PRO",
   "toast.autoRedeem.success": "Успешно получена бесплатная игра {{appName}}",
   "toast.autoRedeem.failure": "Не удалось получить бесплатную игру {{appName}}",
   "trayIcon.achievementUnlocker": "Разблокирование достижения {{total}} для {{appName}}",
@@ -332,8 +325,5 @@
   "common.helpDesk": "Справочная служба",
   "common.minutes": "минут",
   "common.viewList": "Просмотреть список",
-  "changelog.title": "Изменения в {{version}}",
-  "changelog.star": "Star on GitHub",
-  "changelog.report": "Сообщить о проблеме на GitHub",
-  "changelog.release": "Посмотреть на GitHub"
+  "changelog.star": "Star on GitHub"
 }

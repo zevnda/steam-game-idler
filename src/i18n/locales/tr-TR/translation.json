@@ -1,5 +1,4 @@
 {
-  "setup.welcome": "Hoşgeldiniz",
   "setup.chooseAccount": "Bir hesap seçin",
   "setup.refresh": "Yenile",
   "setup.help": "Yardım mı lazım?",
@@ -76,7 +75,6 @@
   "tradingCards.bulk": "Hepsini Sat ({{count}})",
   "tradingCards.list": "Seçilenleri Sat",
   "tradingCards.remove": "Hepsini Kaldır",
-  "tradingCards.confirmSingle": "Bu kartı satmak istediğinizden emin misin?",
   "tradingCards.confirm": "Seçilmiş kartları satmak istediğinden emin misin?\n\n{{count}} adet kartı satmak için süre yaklaşık {{time}} kadardır\n\nİşlem bitene kadar SGI'i açık tutun",
   "tradingCards.confirmBulk": "Tüm kartları satmak istediğinden emin misin?\n\n{{count}} adet kartı satmak için süre yaklaşık {{time}} kadardır\n\nİşlem bitene kadar SGI'i açık tutun",
   "tradingCards.confirmRemove": "Tüm aktif takas kart satışlarınızı Steam marketinden kaldırmak istediğinden emin misin?",
@@ -218,7 +216,6 @@
   "settings.resetSettings.button": "Ayarları Sıfırla",
   "settings.clearData.button": "Veriyi Temizle",
   "settings.exportData": "Veriyi Dışa Aktar",
-  "settings.documentation": "Belgeleri görüntüleyin",
   "confirmation.logout": "Çıkış yapmak istediğinden emin misin?",
   "confirmation.resetStatistics": "Tüm istatistikleri <1>sıfırlamak</1> istediğinden emin misin?",
   "confirmation.resetSettings": "Ayarları varsayılanlara sıfırlamaya emin misin?",
@@ -241,9 +238,7 @@
   "proMode.modal.themes": "Özel temalarla kişiselleştirin",
   "proMode.modal.uniqueChatRole": "Benzersiz Discord sohbet rolü",
   "proMode.modal.moreBenefits": "Gelecekte daha fazla avantaj geliyor",
-  "proMode.modal.bestValue": "En İyi Değer",
   "proMode.modal.footer": "Gösterilen fiyatlar USD cinsindendir ve vergileri içermez.",
-  "proMode.modal.cancel": "PRO aboneliğinizi iptal etmek istediğinizden emin misiniz? PRO özelliklerine erişiminizi anında kaybedeceksiniz.",
   "proMode.removeAdsWith": "Reklamları kaldırın",
   "toast.steam": "Steam çalışmıyor",
   "toast.mismatch": "Steam ile SGI arasındaki hesaplar uyuşmamaktadır",
@@ -297,8 +292,6 @@
   "toast.tradingCards.allCardsLocked": "Tüm kartlar kilitlidir ve satışa sunulamaz",
   "toast.tradingCards.allCardsOutOfRange": "Tüm kartlar satış limitlerinin dışındadır ve satışa sunulamaz",
   "toast.tradingCards.cooldown": "Daha fazla kart fiyatı getirmeden önce lütfen {{cooldown}} saniye bekleyin",
-  "toast.pro.cancelSuccess": "PRO aboneliği başarıyla iptal edildi",
-  "toast.pro.cancelError": "PRO aboneliği iptal edilemedi",
   "toast.autoRedeem.success": "Ücretsiz oyun başarıyla kullanıldı {{appName}}",
   "toast.autoRedeem.failure": "Ücretsiz oyun kullanılamadı {{appName}}",
   "trayIcon.achievementUnlocker": "{{appName}}için {{total}} başarısının kilidini açma",
@@ -332,8 +325,5 @@
   "common.helpDesk": "Yardım Masası",
   "common.minutes": "dakikalar",
   "common.viewList": "Listeyi Görüntüle",
-  "changelog.title": "{{version}}'daki değişiklikler",
-  "changelog.star": "GitHub üzerinden yıldızlayın",
-  "changelog.report": "GitHub üzerinden sorun bildirin",
-  "changelog.release": "GitHub üzerinde görüntüle"
+  "changelog.star": "GitHub üzerinden yıldızlayın"
 }

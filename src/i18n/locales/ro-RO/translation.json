@@ -1,5 +1,4 @@
 {
-  "setup.welcome": "Bun venit",
   "setup.chooseAccount": "Alegeți un cont",
   "setup.refresh": "Reîncarcă",
   "setup.help": "Aveți nevoie de ajutor?",
@@ -76,7 +75,6 @@
   "tradingCards.bulk": "Listează toate ({{count}})",
   "tradingCards.list": "Listează selecția",
   "tradingCards.remove": "Elimină tot",
-  "tradingCards.confirmSingle": "Ești sigur că vrei să listezi această carte?",
   "tradingCards.confirm": "Ești sigur că vrei să listezi cărțile selectate?\n\nTimpul estimat pentru listarea a {{count}} cărți este {{time}}\n\nLasă SGI pornit până la finalizarea procesului",
   "tradingCards.confirmBulk": "Ești sigur că vrei să listezi toate cărțile?\n\nTimpul estimat pentru listarea a {{count}} cărți este {{time}}\n\nLasă SGI pornit până când procesul este finalizat",
   "tradingCards.confirmRemove": "Ești sigur că vrei să elimini toate listările active de cărți de schimb de pe piața Steam?",
@@ -218,7 +216,6 @@
   "settings.resetSettings.button": "Resetează setările",
   "settings.clearData.button": "Șterge Datele",
   "settings.exportData": "Exportă Datele",
-  "settings.documentation": "Vezi documentația",
   "confirmation.logout": "Ești sigur că vrei să te deconectezi?",
   "confirmation.resetStatistics": "Ești sigur că vrei să <1>resetezi</1> toate statisticile?",
   "confirmation.resetSettings": "Ești sigur că vrei să resetezi setările la valorile implicite?",
@@ -241,9 +238,7 @@
   "proMode.modal.themes": "Personalizați cu teme exclusive",
   "proMode.modal.uniqueChatRole": "Rol unic în chatul Discord",
   "proMode.modal.moreBenefits": "Mai multe beneficii vor veni în viitor",
-  "proMode.modal.bestValue": "Cea mai bună valoare",
   "proMode.modal.footer": "Prețurile afișate sunt în USD și nu includ taxe.",
-  "proMode.modal.cancel": "Sigur vrei să anulezi abonamentul PRO? Vei pierde imediat accesul la funcțiile PRO.",
   "proMode.removeAdsWith": "Eliminați reclamele cu",
   "toast.steam": "Steam nu rulează",
   "toast.mismatch": "Nepotrivire între contul Steam și SGI",
@@ -297,8 +292,6 @@
   "toast.tradingCards.allCardsLocked": "Toate cardurile sunt blocate și nu pot fi listate pentru vânzare",
   "toast.tradingCards.allCardsOutOfRange": "Toate cardurile sunt în afara limitelor de vânzare și nu pot fi listate spre vânzare",
   "toast.tradingCards.cooldown": "Vă rugăm să așteptați {{cooldown}} secunde înainte de a prelua mai multe prețuri pe carduri.",
-  "toast.pro.cancelSuccess": "Abonamentul PRO a fost anulat cu succes",
-  "toast.pro.cancelError": "Abonamentul PRO nu a putut fi anulat.",
   "toast.autoRedeem.success": "Joc gratuit valorificat cu succes {{appName}}",
   "toast.autoRedeem.failure": "Nu s-a putut valorifica jocul gratuit {{appName}}",
   "trayIcon.achievementUnlocker": "Deblocarea realizării (realizărilor) {{total}} pentru {{appName}}",
@@ -332,8 +325,5 @@
   "common.helpDesk": "Biroul de asistență",
   "common.minutes": "minute",
   "common.viewList": "Vizualizare listă",
-  "changelog.title": "Modificări în {{version}}",
-  "changelog.star": "Dă un Star pe GitHub",
-  "changelog.report": "Raportează o problemă pe GitHub",
-  "changelog.release": "Vezi pe GitHub"
+  "changelog.star": "Dă un Star pe GitHub"
 }
