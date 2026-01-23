@@ -1,5 +1,4 @@
 {
-  "setup.welcome": "Chào mừng",
   "setup.chooseAccount": "Chọn một tài khoản",
   "setup.refresh": "Làm mới",
   "setup.help": "Cần giúp đỡ?",
@@ -76,7 +75,6 @@
   "tradingCards.bulk": "Liệt kê tất cả ({{count}})",
   "tradingCards.list": "Liệt kê đã chọn",
   "tradingCards.remove": "Xóa tất cả",
-  "tradingCards.confirmSingle": "Bạn có chắc chắn muốn niêm yết thẻ này không?",
   "tradingCards.confirm": "Bạn có chắc chắn muốn liệt kê các thẻ đã chọn không?\n\nThời gian ước tính để liệt kê {{count}} thẻ là {{time}}\n\nGiữ SGI chạy cho đến khi quá trình hoàn tất",
   "tradingCards.confirmBulk": "Bạn có chắc chắn muốn liệt kê tất cả các thẻ không?\n\nThời gian ước tính để liệt kê {{count}} thẻ là {{time}}\n\nGiữ SGI chạy cho đến khi quá trình hoàn tất",
   "tradingCards.confirmRemove": "Bạn có chắc chắn muốn xóa tất cả các danh sách thẻ giao dịch đang hoạt động khỏi thị trường Steam không?",
@@ -218,7 +216,6 @@
   "settings.resetSettings.button": "Đặt lại cài đặt",
   "settings.clearData.button": "Xóa dữ liệu",
   "settings.exportData": "Xuất dữ liệu",
-  "settings.documentation": "Xem tài liệu",
   "confirmation.logout": "Bạn có chắc chắn muốn đăng xuất không?",
   "confirmation.resetStatistics": "Bạn có chắc chắn muốn <1>đặt lại</1> tất cả thống kê không?",
   "confirmation.resetSettings": "Bạn có chắc chắn muốn đặt lại cài đặt về mặc định không?",
@@ -241,9 +238,7 @@
   "proMode.modal.themes": "Tùy chỉnh với các chủ đề độc quyền",
   "proMode.modal.uniqueChatRole": "Vai trò trò chuyện Discord độc đáo",
   "proMode.modal.moreBenefits": "Sẽ có nhiều lợi ích hơn trong tương lai",
-  "proMode.modal.bestValue": "Giá trị tốt nhất",
   "proMode.modal.footer": "Giá hiển thị tính bằng USD và chưa bao gồm thuế.",
-  "proMode.modal.cancel": "Bạn có chắc chắn muốn hủy đăng ký PRO không? Bạn sẽ mất quyền truy cập vào các tính năng PRO ngay lập tức.",
   "proMode.removeAdsWith": "Xóa quảng cáo bằng",
   "toast.steam": "Steam không đang chạy",
   "toast.mismatch": "Không khớp tài khoản giữa Steam và SGI",
@@ -297,8 +292,6 @@
   "toast.tradingCards.allCardsLocked": "Tất cả các thẻ đều bị khóa và không thể được niêm yết để bán",
   "toast.tradingCards.allCardsOutOfRange": "Tất cả các thẻ đều nằm ngoài giới hạn bán và không thể được liệt kê để bán",
   "toast.tradingCards.cooldown": "Vui lòng đợi {{cooldown}} giây trước khi lấy thêm giá thẻ",
-  "toast.pro.cancelSuccess": "Đã hủy đăng ký PRO thành công",
-  "toast.pro.cancelError": "Không thể hủy đăng ký PRO",
   "toast.autoRedeem.success": "Đã đổi thành công trò chơi miễn phí {{appName}}",
   "toast.autoRedeem.failure": "Không thể đổi trò chơi miễn phí {{appName}}",
   "trayIcon.achievementUnlocker": "Mở khóa {{total}} thành tích cho {{appName}}",
@@ -332,8 +325,5 @@
   "common.helpDesk": "Bàn trợ giúp",
   "common.minutes": "phút",
   "common.viewList": "Xem danh sách",
-  "changelog.title": "Thay đổi trong {{version}}",
-  "changelog.star": "Star trên GitHub",
-  "changelog.report": "Báo cáo vấn đề trên GitHub",
-  "changelog.release": "Xem trên GitHub"
+  "changelog.star": "Star trên GitHub"
 }

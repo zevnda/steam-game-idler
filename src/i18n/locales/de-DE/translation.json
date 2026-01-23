@@ -1,5 +1,4 @@
 {
-  "setup.welcome": "Willkommen",
   "setup.chooseAccount": "Wähle ein Konto",
   "setup.refresh": "Aktualisieren",
   "setup.help": "Brauchst du Hilfe?",
@@ -76,7 +75,6 @@
   "tradingCards.bulk": "Alle auflisten ({{count}})",
   "tradingCards.list": "Liste ausgewählt",
   "tradingCards.remove": "Alle entfernen",
-  "tradingCards.confirmSingle": "Sind Sie sicher, dass Sie diese Karte auflisten möchten?",
   "tradingCards.confirm": "Möchten Sie die ausgewählten Karten wirklich auflisten?\n\nDie ungefähre Dauer zum Auflisten von {{count}} Karten beträgt {{time}}.\n\nLassen Sie SGI laufen, bis der Vorgang abgeschlossen ist.",
   "tradingCards.confirmBulk": "Möchten Sie wirklich alle Karten auflisten?\n\nDie ungefähre Zeit zum Auflisten von {{count}} Karten beträgt {{time}}.\n\nLassen Sie SGI laufen, bis der Vorgang abgeschlossen ist.",
   "tradingCards.confirmRemove": "Sind Sie sicher, dass Sie alle aktiven Handelskartenlisten vom Steammarkt entfernen möchten?",
@@ -218,7 +216,6 @@
   "settings.resetSettings.button": "Einstellungen zurücksetzen",
   "settings.clearData.button": "Daten löschen",
   "settings.exportData": "Daten exportieren",
-  "settings.documentation": "Dokumentation anzeigen",
   "confirmation.logout": "Bist du sicher, dass du dich abmelden möchtest?",
   "confirmation.resetStatistics": "Bist du sicher, dass du alle Statistiken <1>zurücksetzen</1> möchtest?",
   "confirmation.resetSettings": "Bist du sicher, dass du die Einstellungen auf Standardwerte zurücksetzen möchtest?",
@@ -241,9 +238,7 @@
   "proMode.modal.themes": "Mit exklusiven Designs individuell gestalten",
   "proMode.modal.uniqueChatRole": "Einzigartige Discord-Chatrolle",
   "proMode.modal.moreBenefits": "Weitere Vorteile folgen in Zukunft",
-  "proMode.modal.bestValue": "Bestes Preis-Leistungs-Verhältnis",
   "proMode.modal.footer": "Die angegebenen Preise verstehen sich in US-Dollar und exklusive Steuern.",
-  "proMode.modal.cancel": "Möchten Sie Ihr PRO-Abonnement wirklich kündigen? Sie verlieren dann sofort den Zugriff auf die PRO-Funktionen.",
   "proMode.removeAdsWith": "Entfernen Sie Werbung mit",
   "toast.steam": "Steam ist nicht gestartet",
   "toast.mismatch": "Kontomismatch zwischen Steam und SGI",
@@ -297,8 +292,6 @@
   "toast.tradingCards.allCardsLocked": "Alle Karten sind gesperrt und können nicht zum Verkauf aufgelistet werden",
   "toast.tradingCards.allCardsOutOfRange": "Alle Karten sind außerhalb der Verkaufsgrenzen und können nicht zum Verkauf aufgelistet werden",
   "toast.tradingCards.cooldown": "Bitte warten Sie {{cooldown}} Sekunden, bevor weitere Kartenpreise abgerufen werden.",
-  "toast.pro.cancelSuccess": "PRO-Abonnement erfolgreich gekündigt",
-  "toast.pro.cancelError": "PRO-Abonnement konnte nicht gekündigt werden.",
   "toast.autoRedeem.success": "Kostenloses Spiel erfolgreich eingelöst {{appName}}",
   "toast.autoRedeem.failure": "Kostenloses Spiel konnte nicht eingelöst werden {{appName}}",
   "trayIcon.achievementUnlocker": "Entsperren von {{total}} Leistung(en) für {{appName}}",
@@ -332,8 +325,5 @@
   "common.helpDesk": "Hilfe-Desk",
   "common.minutes": "Minuten",
   "common.viewList": "Liste anzeigen",
-  "changelog.title": "Änderungen in {{version}}",
-  "changelog.star": "Star on GitHub",
-  "changelog.report": "Problem auf GitHub melden",
-  "changelog.release": "Auf GitHub anzeigen"
+  "changelog.star": "Star on GitHub"
 }

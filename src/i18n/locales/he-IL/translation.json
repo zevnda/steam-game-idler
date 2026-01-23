@@ -1,5 +1,4 @@
 {
-  "setup.welcome": "ברוך הבא",
   "setup.chooseAccount": "בחר חשבון,",
   "setup.refresh": "רענן,",
   "setup.help": "צריך עזרה?,",
@@ -76,7 +75,6 @@
   "tradingCards.bulk": "רשום הכל ({{count}}),",
   "tradingCards.list": "רשום נבחרים,",
   "tradingCards.remove": "הסר הכל,",
-  "tradingCards.confirmSingle": "האם אתה בטוח שברצונך לרשום את הקלף הזה?,",
   "tradingCards.confirm": "האם אתה בטוח שברצונך לרשום את הקלפים שנבחרו?\n\nהזמן המשוער לרשימת {{count}} קלפים הוא {{time}}\n\nהשאר את SGI פועל עד שהתהליך יסתיים,",
   "tradingCards.confirmBulk": "האם אתה בטוח שברצונך לרשום את כל הקלפים?\n\nהזמן המשוער לרשימת {{count}} קלפים הוא {{time}}\n\nהשאר את SGI פועל עד שהתהליך יסתיים,",
   "tradingCards.confirmRemove": "האם אתה בטוח שברצונך להסיר את כל רישומי קלפי המסחר הפעילים משוק Steam?,",
@@ -218,7 +216,6 @@
   "settings.resetSettings.button": "אפס הגדרות,",
   "settings.clearData.button": "נקה נתונים,",
   "settings.exportData": "יצא נתונים,",
-  "settings.documentation": "צפה בתיעוד",
   "confirmation.logout": "האם אתה בטוח שברצונך להתנתק?,",
   "confirmation.resetStatistics": "האם אתה בטוח שברצונך <1>לאפס</1> את כל הסטטיסטיקות?,",
   "confirmation.resetSettings": "האם אתה בטוח שברצונך לאפס את ההגדרות לברירת המחדל?,",
@@ -241,9 +238,7 @@
   "proMode.modal.themes": "התאמה אישית עם ערכות נושא בלעדיות",
   "proMode.modal.uniqueChatRole": "תפקיד ייחודי בצ'אט של דיסקורד",
   "proMode.modal.moreBenefits": "יתרונות נוספים בעתיד",
-  "proMode.modal.bestValue": "התמורה הטובה ביותר",
   "proMode.modal.footer": "המחירים המוצגים הם בדולר אמריקאי ואינם כוללים מיסים.",
-  "proMode.modal.cancel": "האם אתה בטוח שברצונך לבטל את מנוי ה-PRO שלך? תאבד גישה לתכונות PRO באופן מיידי.",
   "proMode.removeAdsWith": "הסר מודעות עם",
   "toast.steam": "Steam לא פועל,",
   "toast.mismatch": "חוסר התאמה בחשבון בין Steam ל-SGI,",
@@ -297,8 +292,6 @@
   "toast.tradingCards.allCardsLocked": "כל הכרטיסים נעולים ולא ניתן לפרסם אותם למכירה",
   "toast.tradingCards.allCardsOutOfRange": "כל הקלפים חורגים ממגבלות המכירה ולא ניתן לפרסם אותם למכירה",
   "toast.tradingCards.cooldown": "אנא המתינו {{cooldown}} שניות לפני אחזור מחירי כרטיסים נוספים",
-  "toast.pro.cancelSuccess": "מנוי PRO בוטל בהצלחה",
-  "toast.pro.cancelError": "נכשל ביטול מנוי PRO",
   "toast.autoRedeem.success": "משחק חינמי מומש בהצלחה {{appName}}",
   "toast.autoRedeem.failure": "נכשלה המימוש של המשחק החינמי {{appName}}",
   "trayIcon.achievementUnlocker": "פותח {{total}} הישג/ים עבור {{appName}}",
@@ -332,8 +325,5 @@
   "common.helpDesk": "דלפק עזרה",
   "common.minutes": "פּרוֹטוֹקוֹל",
   "common.viewList": "הצג רשימה",
-  "changelog.title": "שינויים ב-{{version}},",
-  "changelog.star": "כוכב ב-GitHub,",
-  "changelog.report": "דווח על בעיה ב-GitHub,",
-  "changelog.release": "הצג ב-GitHub,"
+  "changelog.star": "כוכב ב-GitHub,"
 }

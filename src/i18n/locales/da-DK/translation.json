@@ -1,5 +1,4 @@
 {
-  "setup.welcome": "Velkommen",
   "setup.chooseAccount": "Vælg en konto",
   "setup.refresh": "Opdater",
   "setup.help": "Brug for hjælp?",
@@ -76,7 +75,6 @@
   "tradingCards.bulk": "List Alle ({{count}})",
   "tradingCards.list": "Liste Valgte",
   "tradingCards.remove": "Fjern Alle",
-  "tradingCards.confirmSingle": "Er du sikker på, at du vil liste dette kort?",
   "tradingCards.confirm": "Er du sikker på, at du vil liste de valgte kort?\n\nDen omtrentlige tid til at liste {{count}} kort er {{time}}\n\nEfterlad SGI kørende indtil processen er afsluttet",
   "tradingCards.confirmBulk": "Er du sikker på, at du vil liste alle kort?\n\nDen omtrentlige tid til at liste {{count}} kort er {{time}}\n\nEfterlad SGI kørende indtil processen er afsluttet",
   "tradingCards.confirmRemove": "Er du sikker på, at du vil fjerne alle fortegnelser over aktive handelskort fra Steam-markedet?",
@@ -218,7 +216,6 @@
   "settings.resetSettings.button": "Nulstil Indstillinger",
   "settings.clearData.button": "Ryd Data",
   "settings.exportData": "Eksporter Data",
-  "settings.documentation": "Se dokumentationen",
   "confirmation.logout": "Er du sikker på, at du vil logge ud?",
   "confirmation.resetStatistics": "Er du sikker på, at du vil <1>nulstille </1> alle statistikker?",
   "confirmation.resetSettings": "Er du sikker på, at du vil nulstille indstillingerne til standard?",
@@ -241,9 +238,7 @@
   "proMode.modal.themes": "Tilpas med eksklusive temaer",
   "proMode.modal.uniqueChatRole": "Unik Discord-chatrolle",
   "proMode.modal.moreBenefits": "Flere fordele kommer i fremtiden",
-  "proMode.modal.bestValue": "Bedste værdi",
   "proMode.modal.footer": "De viste priser er i USD og eksklusive skatter.",
-  "proMode.modal.cancel": "Er du sikker på, at du vil opsige dit PRO-abonnement? Du mister adgangen til PRO-funktionerne med det samme.",
   "proMode.removeAdsWith": "Fjern annoncer med",
   "toast.steam": "Steam kører ikke",
   "toast.mismatch": "Konto uoverensstemmelse mellem Steam og SGI",
@@ -297,8 +292,6 @@
   "toast.tradingCards.allCardsLocked": "Alle kort er låst og kan ikke vises til salg",
   "toast.tradingCards.allCardsOutOfRange": "Alle kort er uden for salgsgrænserne og kan ikke noteres til salg",
   "toast.tradingCards.cooldown": "Vent venligst {{cooldown}} sekunder, før du henter flere kortpriser",
-  "toast.pro.cancelSuccess": "PRO-abonnementet er blevet annulleret",
-  "toast.pro.cancelError": "PRO-abonnementet kunne ikke annulleres",
   "toast.autoRedeem.success": "Gratis spil {{appName}}er indløst",
   "toast.autoRedeem.failure": "Kunne ikke indløse gratis spil {{appName}}",
   "trayIcon.achievementUnlocker": "Låser op for {{total}} gennemførelse(r) for {{appName}}",
@@ -332,8 +325,5 @@
   "common.helpDesk": "Hjælpecenter",
   "common.minutes": "minutter",
   "common.viewList": "Vis liste",
-  "changelog.title": "Ændringer i {{version}}",
-  "changelog.star": "Star on GitHub",
-  "changelog.report": "Rapporter problem på GitHub",
-  "changelog.release": "Se på GitHub"
+  "changelog.star": "Star on GitHub"
 }

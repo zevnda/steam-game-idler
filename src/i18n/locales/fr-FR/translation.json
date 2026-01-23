@@ -1,5 +1,4 @@
 {
-  "setup.welcome": "Bienvenue",
   "setup.chooseAccount": "Choisir un compte",
   "setup.refresh": "Rafraîchir",
   "setup.help": "Besoin d'aide ?",
@@ -76,7 +75,6 @@
   "tradingCards.bulk": "Lister tout ({{count}})",
   "tradingCards.list": "Liste sélectionnée",
   "tradingCards.remove": "Retirer tout",
-  "tradingCards.confirmSingle": "Êtes-vous sûr de vouloir lister cette carte ?",
   "tradingCards.confirm": "Êtes-vous sûr de vouloir mettre en vente les cartes sélectionnées ?\n\nLe temps estimé pour mettre en vente {{count}} cartes est de {{time}}\n\nLaissez SGI ouvert jusqu'à la fin du processus",
   "tradingCards.confirmBulk": "Êtes-vous sûr de vouloir lister toutes les cartes ?\n\nLe temps approximatif pour lister {{count}} cartes est {{time}}\n\nLaissez SGI en cours d'exécution jusqu'à ce que le processus soit terminé",
   "tradingCards.confirmRemove": "Êtes-vous sûr de vouloir supprimer toutes les listes de cartes de trading actives du marché Steam?",
@@ -218,7 +216,6 @@
   "settings.resetSettings.button": "Réinitialiser les paramètres",
   "settings.clearData.button": "Effacer les données",
   "settings.exportData": "Exporter les données",
-  "settings.documentation": "Voir la documentation",
   "confirmation.logout": "Êtes-vous sûr de vouloir vous déconnecter ?",
   "confirmation.resetStatistics": "Êtes-vous sûr de vouloir <1>réinitialiser</1> toutes les statistiques ?",
   "confirmation.resetSettings": "Êtes-vous sûr de vouloir réinitialiser les paramètres par défaut ?",
@@ -241,9 +238,7 @@
   "proMode.modal.themes": "Personnalisez avec des thèmes exclusifs",
   "proMode.modal.uniqueChatRole": "Rôle unique dans le chat Discord",
   "proMode.modal.moreBenefits": "D'autres avantages seront offerts à l'avenir.",
-  "proMode.modal.bestValue": "Meilleure valeur",
   "proMode.modal.footer": "Les prix affichés sont en dollars américains et hors taxes.",
-  "proMode.modal.cancel": "Êtes-vous sûr de vouloir annuler votre abonnement PRO ? Vous perdrez immédiatement l’accès aux fonctionnalités PRO.",
   "proMode.removeAdsWith": "Supprimer les publicités avec",
   "toast.steam": "Steam n'est pas en cours d'exécution",
   "toast.mismatch": "Incohérence de compte entre Steam et SGI",
@@ -297,8 +292,6 @@
   "toast.tradingCards.allCardsLocked": "Toutes les cartes sont verrouillées et ne peuvent pas être listées pour la vente",
   "toast.tradingCards.allCardsOutOfRange": "Toutes les cartes sont en dehors des limites de vente et ne peuvent pas être listées à la vente",
   "toast.tradingCards.cooldown": "Veuillez patienter {{cooldown}} secondes avant de récupérer d'autres prix de cartes",
-  "toast.pro.cancelSuccess": "Abonnement PRO annulé avec succès",
-  "toast.pro.cancelError": "Impossible d'annuler l'abonnement PRO",
   "toast.autoRedeem.success": "Jeu gratuit obtenu avec succès {{appName}}",
   "toast.autoRedeem.failure": "Impossible de récupérer le jeu gratuit {{appName}}",
   "trayIcon.achievementUnlocker": "Déverrouillage des accomplissements {{total}} pour {{appName}}",
@@ -332,8 +325,5 @@
   "common.helpDesk": "Service d'assistance",
   "common.minutes": "minutes",
   "common.viewList": "Afficher la liste",
-  "changelog.title": "Changements dans {{version}}",
-  "changelog.star": "Star on GitHub",
-  "changelog.report": "Signaler un problème sur GitHub",
-  "changelog.release": "Voir sur GitHub"
+  "changelog.star": "Star on GitHub"
 }

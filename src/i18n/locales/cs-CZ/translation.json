@@ -1,5 +1,4 @@
 {
-  "setup.welcome": "Vítejte",
   "setup.chooseAccount": "Vyberte účet",
   "setup.refresh": "Obnovit",
   "setup.help": "Potřebujete pomoct?",
@@ -76,7 +75,6 @@
   "tradingCards.bulk": "Seznam všech ({{count}})",
   "tradingCards.list": "Seznam vybraných",
   "tradingCards.remove": "Odstranit vše",
-  "tradingCards.confirmSingle": "Jste si jisti, že chcete zobrazit seznam této karty?",
   "tradingCards.confirm": "Jste si jisti, že chcete zobrazit seznam vybraných karet?\n\nPřibližný čas pro seznam {{count}} karet je {{time}}\n\nNechte SGI běžet, dokud nebude proces dokončen",
   "tradingCards.confirmBulk": "Jste si jisti, že chcete zobrazit seznam všech karet?\n\nPřibližný čas pro seznam {{count}} karet je {{time}}\n\nNechte SGI běžet, dokud nebude proces dokončen",
   "tradingCards.confirmRemove": "Jste si jisti, že chcete odstranit všechny seznamy aktivních obchodních karet ze Steam trhu?",
@@ -218,7 +216,6 @@
   "settings.resetSettings.button": "Obnovit nastavení",
   "settings.clearData.button": "Vymazat data",
   "settings.exportData": "Exportovat data",
-  "settings.documentation": "Zobrazit dokumentaci",
   "confirmation.logout": "Opravdu se chcete odhlásit?",
   "confirmation.resetStatistics": "Opravdu chcete <1>reset</1> všechny statistiky?",
   "confirmation.resetSettings": "Opravdu chcete obnovit výchozí nastavení?",
@@ -241,9 +238,7 @@
   "proMode.modal.themes": "Přizpůsobte si pomocí exkluzivních témat",
   "proMode.modal.uniqueChatRole": "Unikátní role v chatu na Discordu",
   "proMode.modal.moreBenefits": "Další výhody přijdou v budoucnu",
-  "proMode.modal.bestValue": "Nejlepší hodnota",
   "proMode.modal.footer": "Zobrazené ceny jsou v USD a nezahrnují daně.",
-  "proMode.modal.cancel": "Opravdu chcete zrušit své předplatné PRO? Okamžitě ztratíte přístup k funkcím PRO.",
   "proMode.removeAdsWith": "Odstraňte reklamy pomocí",
   "toast.steam": "Steam není spuštěn",
   "toast.mismatch": "Nesrovnalost účtu mezi Steamem a SGI",
@@ -297,8 +292,6 @@
   "toast.tradingCards.allCardsLocked": "Všechny karty jsou uzamčené a nemohou být uvedeny k prodeji",
   "toast.tradingCards.allCardsOutOfRange": "Všechny karty jsou mimo prodejní limity a nemohou být uvedeny k prodeji",
   "toast.tradingCards.cooldown": "Před načtením dalších cen karet prosím počkejte {{cooldown}} sekund",
-  "toast.pro.cancelSuccess": "Předplatné PRO bylo úspěšně zrušeno",
-  "toast.pro.cancelError": "Zrušení předplatného PRO se nezdařilo",
   "toast.autoRedeem.success": "Úspěšně uplatněna bezplatná hra {{appName}}",
   "toast.autoRedeem.failure": "Nepodařilo se uplatnit bezplatnou hru {{appName}}",
   "trayIcon.achievementUnlocker": "Odemknutí {{total}} úspěchů pro {{appName}}",
@@ -332,8 +325,5 @@
   "common.helpDesk": "Help Desk",
   "common.minutes": "zápis",
   "common.viewList": "Zobrazit seznam",
-  "changelog.title": "Změny v {{version}}",
-  "changelog.star": "Star on GitHub",
-  "changelog.report": "Nahlásit problém na GitHubu",
-  "changelog.release": "Zobrazit na GitHub"
+  "changelog.star": "Star on GitHub"
 }

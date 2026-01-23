@@ -1,5 +1,4 @@
 {
-  "setup.welcome": "Welkom",
   "setup.chooseAccount": "Selecteer een account",
   "setup.refresh": "Ververs",
   "setup.help": "Hulp nodig?",
@@ -76,7 +75,6 @@
   "tradingCards.bulk": "Lijst met alles ({{count}})",
   "tradingCards.list": "Geselecteerde lijst",
   "tradingCards.remove": "Alles verwijderen",
-  "tradingCards.confirmSingle": "Weet u zeker dat u deze kaart wilt vermelden?",
   "tradingCards.confirm": "Weet u zeker dat u de geselecteerde kaarten wilt vermelden?\n\nDe geschatte tijd om {{count}} kaarten te tonen is {{time}}\n\nLaat SGI lopen tot het proces is voltooid",
   "tradingCards.confirmBulk": "Weet u zeker dat u alle kaarten wilt vermelden?\n\nDe geschatte tijd om {{count}} kaarten te tonen is {{time}}\n\nLaat SGI lopen tot het proces is voltooid",
   "tradingCards.confirmRemove": "Weet je zeker dat je alle actieve handelskaartenlijsten van de Steam markt wilt verwijderen?",
@@ -218,7 +216,6 @@
   "settings.resetSettings.button": "Instellingen opnieuw instellen",
   "settings.clearData.button": "Gegevens wissen",
   "settings.exportData": "Gegevens exporteren",
-  "settings.documentation": "Bekijk de documentatie",
   "confirmation.logout": "Weet je zeker dat je wilt uitloggen?",
   "confirmation.resetStatistics": "Weet je zeker dat je alle statistieken wilt resetten</1>resetten?",
   "confirmation.resetSettings": "Weet u zeker dat u de instellingen wilt herstellen naar de standaard?",
@@ -241,9 +238,7 @@
   "proMode.modal.themes": "Personaliseer met exclusieve thema's",
   "proMode.modal.uniqueChatRole": "Unieke Discord-chatrol",
   "proMode.modal.moreBenefits": "Meer voordelen in de toekomst",
-  "proMode.modal.bestValue": "Beste waarde",
   "proMode.modal.footer": "De getoonde prijzen zijn in USD en exclusief belastingen.",
-  "proMode.modal.cancel": "Weet u zeker dat u uw PRO-abonnement wilt opzeggen? U verliest dan onmiddellijk de toegang tot PRO-functies.",
   "proMode.removeAdsWith": "Verwijder advertenties met",
   "toast.steam": "Steam is niet actief",
   "toast.mismatch": "Account komt niet overeen met Steam en SGI",
@@ -297,8 +292,6 @@
   "toast.tradingCards.allCardsLocked": "Alle kaarten zijn vergrendeld en kunnen niet worden vermeld voor de verkoop",
   "toast.tradingCards.allCardsOutOfRange": "Alle kaarten vallen buiten de verkooplimieten en kunnen niet voor verkoop worden weergegeven",
   "toast.tradingCards.cooldown": "Wacht {{cooldown}} seconden voordat u meer kaartprijzen ophaalt",
-  "toast.pro.cancelSuccess": "PRO-abonnement succesvol geannuleerd",
-  "toast.pro.cancelError": "Het is niet gelukt om het PRO-abonnement op te zeggen",
   "toast.autoRedeem.success": "Gratis spel succesvol ingewisseld {{appName}}",
   "toast.autoRedeem.failure": "Het is niet gelukt om het gratis spel te verzilveren {{appName}}",
   "trayIcon.achievementUnlocker": "Ontgrendelen van {{total}} prestatie(s) voor {{appName}}",
@@ -332,8 +325,5 @@
   "common.helpDesk": "Helpdesk",
   "common.minutes": "notulen",
   "common.viewList": "Lijst bekijken",
-  "changelog.title": "Wijzigingen in {{version}}",
-  "changelog.star": "Star on GitHub",
-  "changelog.report": "Probleem melden op GitHub",
-  "changelog.release": "Bekijk op GitHub"
+  "changelog.star": "Star on GitHub"
 }

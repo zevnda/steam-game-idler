@@ -1,5 +1,4 @@
 {
-  "setup.welcome": "환영합니다",
   "setup.chooseAccount": "계정 선택",
   "setup.refresh": "새로고침",
   "setup.help": "도움이 필요하신가요?",
@@ -76,7 +75,6 @@
   "tradingCards.bulk": "모두 등록 ({{count}})",
   "tradingCards.list": "선택한 항목 등록",
   "tradingCards.remove": "모두 제거",
-  "tradingCards.confirmSingle": "이 카드를 등록하시겠습니까?",
   "tradingCards.confirm": "선택한 카드를 등록하시겠습니까?\n\n{{count}}개의 카드 등록 예상 시간은 {{time}}입니다\n\n프로세스가 완료될 때까지 SGI를 실행 상태로 유지하세요",
   "tradingCards.confirmBulk": "모든 카드를 등록하시겠습니까?\n\n{{count}}개의 카드 등록 예상 시간은 {{time}}입니다\n\n프로세스가 완료될 때까지 SGI를 실행 상태로 유지하세요",
   "tradingCards.confirmRemove": "Steam 마켓에서 모든 활성 트레이딩 카드 목록을 제거하시겠습니까?",
@@ -218,7 +216,6 @@
   "settings.resetSettings.button": "설정 초기화",
   "settings.clearData.button": "데이터 지우기",
   "settings.exportData": "데이터 내보내기",
-  "settings.documentation": "설명서 보기",
   "confirmation.logout": "로그아웃하시겠습니까?",
   "confirmation.resetStatistics": "모든 통계를 <1>초기화</1>하시겠습니까?",
   "confirmation.resetSettings": "설정을 기본값으로 재설정하시겠습니까?",
@@ -241,9 +238,7 @@
   "proMode.modal.themes": "독점 테마로 맞춤 설정하세요",
   "proMode.modal.uniqueChatRole": "고유한 Discord 채팅 역할",
   "proMode.modal.moreBenefits": "앞으로 더 많은 혜택이 제공됩니다",
-  "proMode.modal.bestValue": "최고의 가치",
   "proMode.modal.footer": "표시된 가격은 USD이며 세금은 제외되어 있습니다.",
-  "proMode.modal.cancel": "PRO 구독을 취소하시겠습니까? 취소 시 PRO 기능을 즉시 이용할 수 없게 됩니다.",
   "proMode.removeAdsWith": "광고 제거",
   "toast.steam": "Steam이 실행 중이 아닙니다",
   "toast.mismatch": "Steam과 SGI 계정이 일치하지 않습니다",
@@ -297,8 +292,6 @@
   "toast.tradingCards.allCardsLocked": "모든 카드는 잠겨 있어 판매용으로 등록할 수 없습니다.",
   "toast.tradingCards.allCardsOutOfRange": "모든 카드는 판매 한도를 벗어났으므로 판매용으로 등록할 수 없습니다.",
   "toast.tradingCards.cooldown": "더 많은 카드 가격을 가져오기 전에 {{cooldown}} 초 동안 기다려 주세요.",
-  "toast.pro.cancelSuccess": "PRO 구독이 성공적으로 취소되었습니다.",
-  "toast.pro.cancelError": "PRO 구독 취소에 실패했습니다.",
   "toast.autoRedeem.success": "무료 게임 {{appName}}을 성공적으로 받았습니다.",
   "toast.autoRedeem.failure": "무료 게임 {{appName}}을(를) 사용하지 못했습니다.",
   "trayIcon.achievementUnlocker": "{{appName}}에 대한 {{total}} 업적 잠금 해제",
@@ -332,8 +325,5 @@
   "common.helpDesk": "헬프 데스크",
   "common.minutes": "분",
   "common.viewList": "목록 보기",
-  "changelog.title": "{{version}}의 변경 사항",
-  "changelog.star": "GitHub에서 별표하기",
-  "changelog.report": "GitHub에 문제 신고",
-  "changelog.release": "GitHub에서 보기"
+  "changelog.star": "GitHub에서 별표하기"
 }

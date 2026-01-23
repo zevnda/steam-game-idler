@@ -1,5 +1,4 @@
 {
-  "setup.welcome": "Добре дошли",
   "setup.chooseAccount": "Изберете акаунт",
   "setup.refresh": "Опресни",
   "setup.help": "Имате нужда от помощ?",
@@ -76,7 +75,6 @@
   "tradingCards.bulk": "Листвайте всички ({{count}})",
   "tradingCards.list": "Листвайте избраните",
   "tradingCards.remove": "Премахнете всички",
-  "tradingCards.confirmSingle": "Сигурни ли сте, че искате да листвате тази карта?",
   "tradingCards.confirm": "Сигурни ли сте, че искате да листвате избраните карти?\n\nПриблизителното време за листване на {{count}} карти е {{time}}\n\nОставете SGI да работи, докато процесът приключи",
   "tradingCards.confirmBulk": "Сигурни ли сте, че искате да листвате всички карти?\n\nПриблизителното време за листване на {{count}} карти е {{time}}\n\nОставете SGI да работи, докато процесът приключи",
   "tradingCards.confirmRemove": "Сигурни ли сте, че искате да премахнете всички активни оферти за търговски карти от Steam пазара?",
@@ -218,7 +216,6 @@
   "settings.resetSettings.button": "Нулирайте настройките",
   "settings.clearData.button": "Изчистване на данните",
   "settings.exportData": "Експортиране на данни",
-  "settings.documentation": "Преглед на документацията",
   "confirmation.logout": "Сигурни ли сте, че искате да се изпишете?",
   "confirmation.resetStatistics": "Сигурни ли сте, че искате да <1>нулирате</1> всички статистики?",
   "confirmation.resetSettings": "Сигурни ли сте, че искате да нулирате настройките до стойностите по подразбиране?",
@@ -241,9 +238,7 @@
   "proMode.modal.themes": "Персонализирайте с ексклузивни теми",
   "proMode.modal.uniqueChatRole": "Уникална роля в чата на Discord",
   "proMode.modal.moreBenefits": "Още предимства предстоят в бъдеще",
-  "proMode.modal.bestValue": "Най-добра стойност",
   "proMode.modal.footer": "Показаните цени са в щатски долари и не включват данъци.",
-  "proMode.modal.cancel": "Сигурни ли сте, че искате да прекратите PRO абонамента си? Ще загубите достъп до PRO функциите незабавно.",
   "proMode.removeAdsWith": "Премахване на реклами с",
   "toast.steam": "Steam не е стартиран",
   "toast.mismatch": "Несъвместимост на акаунта между Steam и SGI",
@@ -297,8 +292,6 @@
   "toast.tradingCards.allCardsLocked": "Всички карти са заключени и не могат да бъдат обявени за продажба",
   "toast.tradingCards.allCardsOutOfRange": "Всички карти са извън лимитите за продажба и не могат да бъдат обявени за продажба.",
   "toast.tradingCards.cooldown": "Моля, изчакайте {{cooldown}} секунди, преди да получите още цени на карти",
-  "toast.pro.cancelSuccess": "PRO абонаментът е успешно анулиран",
-  "toast.pro.cancelError": "Неуспешно анулиране на PRO абонамента",
   "toast.autoRedeem.success": "Успешно осребрена безплатна игра {{appName}}",
   "toast.autoRedeem.failure": "Неуспешно осребряване на безплатната игра {{appName}}",
   "trayIcon.achievementUnlocker": "Отключване на {{total}} постижения за {{appName}}",
@@ -332,8 +325,5 @@
   "common.helpDesk": "Бюро за помощ",
   "common.minutes": "минути",
   "common.viewList": "Преглед на списъка",
-  "changelog.title": "Промени в {{version}}",
-  "changelog.star": "Оценете в GitHub",
-  "changelog.report": "Съобщете проблем в GitHub",
-  "changelog.release": "Прегледайте в GitHub"
+  "changelog.star": "Оценете в GitHub"
 }

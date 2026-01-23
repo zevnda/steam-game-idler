@@ -1,5 +1,4 @@
 {
-  "setup.welcome": "歡迎",
   "setup.chooseAccount": "選擇帳戶",
   "setup.refresh": "重新整理",
   "setup.help": "需要協助？",
@@ -76,7 +75,6 @@
   "tradingCards.bulk": "全部列出 ({{count}})",
   "tradingCards.list": "列出已選擇",
   "tradingCards.remove": "全部移除",
-  "tradingCards.confirmSingle": "您確定要列出這張卡嗎？",
   "tradingCards.confirm": "你確定要列出所選的卡片嗎？\n\n列出 {{count}} 張卡片的預計時間為 {{time}}\n\n在程序完成之前，請保持 SGI 運行",
   "tradingCards.confirmBulk": "你確定要列出所有卡片嗎？\n\n列出 {{count}} 張卡片的預計時間為 {{time}}\n\n在程序完成之前，請保持 SGI 運行",
   "tradingCards.confirmRemove": "你確定要從Steam市場中移除所有活躍的交易卡列表嗎？",
@@ -218,7 +216,6 @@
   "settings.resetSettings.button": "重設設定",
   "settings.clearData.button": "清除資料",
   "settings.exportData": "匯出資料",
-  "settings.documentation": "查看文件",
   "confirmation.logout": "您確定要登出嗎？",
   "confirmation.resetStatistics": "你確定要 <1>重設</1> 所有統計資料嗎？",
   "confirmation.resetSettings": "你確定要將設定重設為預設值嗎？",
@@ -241,9 +238,7 @@
   "proMode.modal.themes": "使用專屬主題進行個性化定制",
   "proMode.modal.uniqueChatRole": "獨特的 Discord 聊天角色",
   "proMode.modal.moreBenefits": "未來還將有更多好處。",
-  "proMode.modal.bestValue": "性價比最高",
   "proMode.modal.footer": "所示價格為美元，不含稅。",
-  "proMode.modal.cancel": "您確定要取消專業版訂閱嗎？取消後您將立即失去專業版功能的使用權限。",
   "proMode.removeAdsWith": "使用以下方式移除廣告",
   "toast.steam": "Steam 未執行",
   "toast.mismatch": "蒸汽平台和SGI之間的帳戶不匹配",
@@ -297,8 +292,6 @@
   "toast.tradingCards.allCardsLocked": "所有卡片已鎖定，無法出售",
   "toast.tradingCards.allCardsOutOfRange": "所有卡牌均超出銷售限額，無法上架出售",
   "toast.tradingCards.cooldown": "請稍等 {{cooldown}} 秒，稍後再取得更多卡片價格",
-  "toast.pro.cancelSuccess": "PRO訂閱已成功取消",
-  "toast.pro.cancelError": "取消 PRO 訂閱失敗",
   "toast.autoRedeem.success": "免費遊戲兌換成功 {{appName}}",
   "toast.autoRedeem.failure": "免費遊戲兌換失敗 {{appName}}",
   "trayIcon.achievementUnlocker": "為 {{appName}}解鎖 {{total}} 成就",
@@ -332,8 +325,5 @@
   "common.helpDesk": "幫助台",
   "common.minutes": "分分鐘",
   "common.viewList": "查看列表",
-  "changelog.title": "{{version}} 的變更",
-  "changelog.star": "在 GitHub 上加星",
-  "changelog.report": "在 GitHub 上報告問題",
-  "changelog.release": "在 GitHub 上檢視"
+  "changelog.star": "在 GitHub 上加星"
 }

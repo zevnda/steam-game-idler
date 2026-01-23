@@ -1,5 +1,4 @@
 {
-  "setup.welcome": "Tervetuloa",
   "setup.chooseAccount": "Valitse tili",
   "setup.refresh": "Päivitä",
   "setup.help": "Tarvitsetko apua?",
@@ -76,7 +75,6 @@
   "tradingCards.bulk": "Listaa Kaikki ({{count}})",
   "tradingCards.list": "Listaa Valitut",
   "tradingCards.remove": "Poista Kaikki",
-  "tradingCards.confirmSingle": "Oletko varma, että haluat listata tämän kortin?",
   "tradingCards.confirm": "Oletko varma, että haluat listata valitut kortit?\n\nArvioitu aika listata {{count}} korttia on {{time}}\n\nJätä SGI käyntiin, kunnes prosessi on valmis",
   "tradingCards.confirmBulk": "Oletko varma, että haluat listata kaikki kortit?\n\nArvioitu aika listata {{count}} korttia on {{time}}\n\nJätä SGI käyntiin, kunnes prosessi on valmis",
   "tradingCards.confirmRemove": "Oletko varma, että haluat poistaa kaikki aktiiviset kaupankäynnin kortin luettelot Steam-markkinoilla?",
@@ -218,7 +216,6 @@
   "settings.resetSettings.button": "Nollaa Asetukset",
   "settings.clearData.button": "Tyhjennä Tiedot",
   "settings.exportData": "Vie Tiedot",
-  "settings.documentation": "Näytä dokumentaatio",
   "confirmation.logout": "Oletko varma, että haluat kirjautua ulos?",
   "confirmation.resetStatistics": "Oletko varma, että haluat <1>nollata</1> kaikki tilastot?",
   "confirmation.resetSettings": "Oletko varma, että haluat palauttaa asetukset oletuksiin?",
@@ -241,9 +238,7 @@
   "proMode.modal.themes": "Mukauta ainutlaatuisilla teemoilla",
   "proMode.modal.uniqueChatRole": "Ainutlaatuinen Discord-chat-rooli",
   "proMode.modal.moreBenefits": "Lisää etuja tulossa tulevaisuudessa",
-  "proMode.modal.bestValue": "Paras hinta-laatusuhde",
   "proMode.modal.footer": "Näytetyt hinnat ovat Yhdysvaltain dollareissa (USD) eivätkä sisällä veroja.",
-  "proMode.modal.cancel": "Haluatko varmasti peruuttaa PRO-tilauksesi? Menetät PRO-ominaisuuksien käyttöoikeuden välittömästi.",
   "proMode.removeAdsWith": "Poista mainokset sovelluksella",
   "toast.steam": "Steam ei ole käynnissä",
   "toast.mismatch": "Tili ei täsmää Steamin ja SGI:n välillä",
@@ -297,8 +292,6 @@
   "toast.tradingCards.allCardsLocked": "Kaikki kortit ovat lukittuja, eikä niitä voi listata myyntiin",
   "toast.tradingCards.allCardsOutOfRange": "Kaikki kortit eivät kuulu myyntirajoihin eikä niitä voi listata myyntiin",
   "toast.tradingCards.cooldown": "Odota {{cooldown}} sekuntia ennen kuin haet lisää korttihintoja",
-  "toast.pro.cancelSuccess": "PRO-tilaus peruutettu onnistuneesti",
-  "toast.pro.cancelError": "PRO-tilauksen peruuttaminen epäonnistui",
   "toast.autoRedeem.success": "Ilmaispeli lunastettu onnistuneesti {{appName}}",
   "toast.autoRedeem.failure": "Ilmaisen pelin lunastus epäonnistui {{appName}}",
   "trayIcon.achievementUnlocker": "Avataan {{total}} saavutusta {{appName}}:lle",
@@ -332,8 +325,5 @@
   "common.helpDesk": "Tukipalvelu",
   "common.minutes": "minuuttia",
   "common.viewList": "Näytä luettelo",
-  "changelog.title": "Muutokset {{version}}",
-  "changelog.star": "Star on GitHub",
-  "changelog.report": "Raportoi ongelma GitHubissa",
-  "changelog.release": "Näytä GitHubissa"
+  "changelog.star": "Star on GitHub"
 }

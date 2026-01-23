@@ -1,5 +1,4 @@
 {
-  "setup.welcome": "ยินดีต้อนรับ",
   "setup.chooseAccount": "เลือกบัญชี",
   "setup.refresh": "รีเฟรช",
   "setup.help": "ต้องการความช่วยเหลือ?",
@@ -76,7 +75,6 @@
   "tradingCards.bulk": "รายการทั้งหมด ({{count}})",
   "tradingCards.list": "รายการที่เลือก",
   "tradingCards.remove": "ลบทั้งหมด",
-  "tradingCards.confirmSingle": "คุณแน่ใจว่าต้องการลงรายการการ์ดนี้หรือไม่?",
   "tradingCards.confirm": "คุณแน่ใจหรือไม่ว่าต้องการลิสต์การ์ดที่เลือก?\n\nเวลาโดยประมาณในการลิสต์การ์ด {{count}} ใบคือ {{time}}\n\nปล่อยให้ SGI ทำงานจนกว่ากระบวนการจะเสร็จสมบูรณ์",
   "tradingCards.confirmBulk": "คุณแน่ใจหรือไม่ว่าต้องการลิสต์การ์ดทั้งหมด?\n\nเวลาโดยประมาณในการลิสต์การ์ด {{count}} ใบคือ {{time}}\n\nปล่อยให้ SGI ทำงานจนกว่ากระบวนการจะเสร็จสมบูรณ์",
   "tradingCards.confirmRemove": "คุณแน่ใจว่าต้องการลบรายการการ์ดแลกเปลี่ยนที่ใช้งานอยู่ทั้งหมดจากตลาด Steam หรือไม่?",
@@ -218,7 +216,6 @@
   "settings.resetSettings.button": "รีเซ็ตการตั้งค่า",
   "settings.clearData.button": "ลบข้อมูล",
   "settings.exportData": "ส่งออกข้อมูล",
-  "settings.documentation": "ดูเอกสารประกอบ",
   "confirmation.logout": "คุณแน่ใจว่าต้องการออกจากระบบหรือไม่?",
   "confirmation.resetStatistics": "คุณแน่ใจว่าต้องการ <1>รีเซ็ต</1> สถิติทั้งหมดหรือไม่?",
   "confirmation.resetSettings": "คุณแน่ใจว่าต้องการรีเซ็ตการตั้งค่าเป็นค่าเริ่มต้นหรือไม่?",
@@ -241,9 +238,7 @@
   "proMode.modal.themes": "ปรับแต่งได้ตามต้องการด้วยธีมสุดพิเศษ",
   "proMode.modal.uniqueChatRole": "บทบาทแชท Discord ที่ไม่เหมือนใคร",
   "proMode.modal.moreBenefits": "ผลประโยชน์เพิ่มเติมจะมาในอนาคต",
-  "proMode.modal.bestValue": "คุ้มค่าที่สุด",
   "proMode.modal.footer": "ราคาที่แสดงเป็นสกุลเงินดอลลาร์สหรัฐและไม่รวมภาษี",
-  "proMode.modal.cancel": "คุณแน่ใจหรือไม่ว่าต้องการยกเลิกการสมัครสมาชิก PRO? คุณจะสูญเสียสิทธิ์การเข้าถึงฟีเจอร์ PRO ทันที",
   "proMode.removeAdsWith": "ลบโฆษณาด้วย",
   "toast.steam": "Steam ไม่ได้ทำงาน",
   "toast.mismatch": "ความแตกต่างของบัญชีระหว่าง Steam และ SGI",
@@ -297,8 +292,6 @@
   "toast.tradingCards.allCardsLocked": "การ์ดทั้งหมดถูกล็อคและไม่สามารถนำไปลงขายได้",
   "toast.tradingCards.allCardsOutOfRange": "การ์ดทั้งหมดอยู่นอกเหนือขีดจำกัดการขายและไม่สามารถนำมาลงขายได้",
   "toast.tradingCards.cooldown": "กรุณารอ {{cooldown}} วินาทีก่อนจะรับราคาการ์ดเพิ่มเติม",
-  "toast.pro.cancelSuccess": "ยกเลิกการสมัครสมาชิก PRO สำเร็จแล้ว",
-  "toast.pro.cancelError": "ไม่สามารถยกเลิกการสมัคร PRO ได้",
   "toast.autoRedeem.success": "แลกรับเกมฟรีสำเร็จแล้ว {{appName}}",
   "toast.autoRedeem.failure": "ไม่สามารถแลกรับเกมฟรี {{appName}}",
   "trayIcon.achievementUnlocker": "ปลดล็อคความสำเร็จ {{total}} สำหรับ {{appName}}",
@@ -332,8 +325,5 @@
   "common.helpDesk": "ฝ่ายช่วยเหลือ",
   "common.minutes": "นาที",
   "common.viewList": "ดูรายการ",
-  "changelog.title": "การเปลี่ยนแปลงใน {{version}}",
-  "changelog.star": "ดาวบน GitHub",
-  "changelog.report": "รายงานปัญหาบน GitHub",
-  "changelog.release": "ดูบน GitHub"
+  "changelog.star": "ดาวบน GitHub"
 }
