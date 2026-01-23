@@ -1,5 +1,4 @@
 {
-  "setup.welcome": "Welcome",
   "setup.chooseAccount": "Choose an account",
   "setup.refresh": "Refresh",
   "setup.help": "Need help?",
@@ -76,7 +75,6 @@
   "tradingCards.bulk": "List All ({{count}})",
   "tradingCards.list": "List Selected",
   "tradingCards.remove": "Remove All",
-  "tradingCards.confirmSingle": "Are you sure you want to list this card?",
   "tradingCards.confirm": "Are you sure you want to list the selected cards?\n\nThe approximate time to list {{count}} cards is {{time}}\n\nLeave SGI running until the process is complete",
   "tradingCards.confirmBulk": "Are you sure you want to list all cards?\n\nThe approximate time to list {{count}} cards is {{time}}\n\nLeave SGI running until the process is complete",
   "tradingCards.confirmRemove": "Are you sure you want to remove all active trading card listings from the Steam market?",
@@ -218,7 +216,6 @@
   "settings.resetSettings.button": "Reset Settings",
   "settings.clearData.button": "Clear Data",
   "settings.exportData": "Export Data",
-  "settings.documentation": "View the documentation",
   "confirmation.logout": "Are you sure you want to logout?",
   "confirmation.resetStatistics": "Are you sure you want to <1>reset</1> all statistics?",
   "confirmation.resetSettings": "Are you sure you want to reset settings to default?",
@@ -241,9 +238,7 @@
   "proMode.modal.themes": "Customize with exclusive themes",
   "proMode.modal.uniqueChatRole": "Unique Discord chat role",
   "proMode.modal.moreBenefits": "More benefits coming in the future",
-  "proMode.modal.bestValue": "Best Value",
   "proMode.modal.footer": "Prices displayed are in USD and exclude taxes.",
-  "proMode.modal.cancel": "Are you sure you want to cancel your PRO subscription? You will lose access to PRO features immediately.",
   "proMode.removeAdsWith": "Remove ads with",
   "toast.steam": "Steam is not running",
   "toast.mismatch": "Account mismatch between Steam and SGI",
@@ -297,8 +292,6 @@
   "toast.tradingCards.allCardsLocked": "All cards are locked and cannot be listed for sale",
   "toast.tradingCards.allCardsOutOfRange": "All cards are outside of the sell limits and cannot be listed for sale",
   "toast.tradingCards.cooldown": "Please wait {{cooldown}} seconds before fetching more card prices",
-  "toast.pro.cancelSuccess": "PRO subscription cancelled successfully",
-  "toast.pro.cancelError": "Failed to cancel PRO subscription",
   "toast.autoRedeem.success": "Successfully redeemed free game {{appName}}",
   "toast.autoRedeem.failure": "Failed to redeem free game {{appName}}",
   "trayIcon.achievementUnlocker": "Unlocking {{total}} achievement(s) for {{appName}}",
@@ -332,8 +325,5 @@
   "common.helpDesk": "Help Desk",
   "common.minutes": "minutes",
   "common.viewList": "View List",
-  "changelog.title": "Changes in {{version}}",
-  "changelog.star": "Star on GitHub",
-  "changelog.report": "Report issue on GitHub",
-  "changelog.release": "View on GitHub"
+  "changelog.star": "Star on GitHub"
 }
