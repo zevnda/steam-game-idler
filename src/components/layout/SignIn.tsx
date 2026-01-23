@@ -104,7 +104,7 @@ function UserSelectionArea({ onRefresh }: { onRefresh: () => void }) {
             {userSummaries.map(user => (
               <div
                 key={user?.steamId}
-                className='flex flex-col items-center mx-4 cursor-pointer hover:scale-105 transition-transform group'
+                className='flex flex-col items-center mx-4 cursor-pointer hover:scale-105 transition-transform group duration-150'
                 onClick={() => setSelectedUser(user)}
               >
                 {/* User avatar */}
