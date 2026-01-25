@@ -181,9 +181,9 @@ export default function FAQSection(): ReactElement {
     } else if (section.section === 'Card Farmer & Playtime Booster') {
       items = [
         {
-          question: 'What is a Steam idle tool?',
+          question: 'What is a Steam card farming tool?',
           answer:
-            "A Steam idle tool lets you simulate playing games to boost playtime and earn trading cards. SGI's Steam idle feature is fast, safe, and easy to use. You can idle steam games in the background for hours.",
+            "A Steam card farming tool lets you simulate playing games to boost playtime and earn trading cards. SGI's Steam idle feature is fast, safe, and easy to use. You can idle steam games in the background for hours.",
         },
         {
           question: 'How many games can I idle at once?',

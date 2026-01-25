@@ -1,19 +1,17 @@
 ---
 title: Achievement Unlocker
-description: Automatically unlock Steam achievements naturally with delays and custom ordering. Unlock your Steam game's achievements in a way that looks like they were earned naturally.
+description: Learn how to use the Steam Achievement Unlocker to automatically unlock achievements for your Steam games.
 ---
 
 import DocsCTA from '@docs/components/content/DocsCTA';
 import MockButton from '@docs/components/content/MockButton';
 import { Step, Steps } from 'fumadocs-ui/components/steps';
 
-# How to Automatically Unlock Steam Achievements
+# How to Unlock Steam Achievements Automatically
 
-Unlock Steam achievements automatically with natural timing and realistic delays. SGI's Steam Achievement Unlocker gradually unlocks your game achievements in a way that mimics legitimate gameplay, helping you avoid detection while completing your achievement collection.
+The Steam Achievement Unlocker feature allows you to automatically unlock achievements for your Steam games over time, with customizable delays and ordering to mimic natural gameplay.
 
-Unlike manual achievement managers, the achievement unlocker automates the entire process with customizable unlock intervals, custom ordering, and intelligent timing based on global achievement percentages.
-
-<DocsCTA content='Download SGI and start unlocking, locking, and managing your Steam game achievements with our modern, easy-to-use interface.' />
+<DocsCTA />
 
 <Callout type="info">
     Configure this feature's settings in [Settings → Achievement Unlocker](/docs/settings/achievement-unlocker) before using it
@@ -80,145 +78,3 @@ You can customize the order, set delays, or both — each step is optional.
     Click <MockButton type='save-alt' /> and then click <MockButton type='achievement-unlocker-action' />
   </Step>
 </Steps>
-
-## What is a Steam Achievement Unlocker?
-
-A Steam achievement unlocker is an automated tool that gradually unlocks Steam game achievements with realistic timing and delays to mimic natural gameplay. Unlike manual achievement managers that require you to click each achievement individually, automatic achievement unlockers handle the entire process for you.
-
-Steam achievement unlockers are commonly used to:
-- Complete achievement collections without spending excessive time grinding
-- Unlock achievements for games you've already beaten but lost save data
-- Restore progress after technical issues or game bugs
-- Test achievement systems for game developers
-- Avoid suspiciously fast achievement unlocking patterns
-
-SGI's Achievement Unlocker differentiates itself by unlocking achievements based on global popularity (most common achievements first), adding customizable delays between unlocks, and allowing you to set custom unlock orders for maximum authenticity.
-
-## Why Use SGI's Automatic Achievement Unlocker?
-
-**Natural Timing**: Unlike tools that unlock all achievements instantly (which is obviously suspicious), SGI spaces out achievement unlocks with customizable delays to simulate realistic gameplay patterns.
-
-**Smart Ordering**: By default, achievements unlock in order of global completion percentage—just like a real player would earn common achievements before rare ones. This makes your achievement timeline look legitimate.
-
-**Fully Automated**: Once configured, the achievement unlocker runs automatically in the background. No need to manually click through hundreds of achievements.
-
-**Custom Control**: Override default settings with custom unlock orders and individual achievement delays for complete control over how your achievements appear.
-
-**Multiple Games Support**: Queue up multiple games and let SGI work through them one at a time, automatically moving to the next game when the current one is complete.
-
-**Safe & Discrete**: By avoiding instant mass-unlocking and mimicking natural gameplay patterns, SGI helps you stay under the radar when completing your achievement collection.
-
-## How Automatic Achievement Unlocking Works
-
-When you start the achievement unlocker, SGI follows this process:
-
-1. **Analyzes Global Stats**: SGI retrieves global achievement statistics for your selected games from Steam's API
-2. **Determines Order**: Achievements are sorted by completion percentage (most common first) unless you've set a custom order
-3. **Applies Delays**: SGI waits the specified interval between each unlock (customizable per achievement or globally)
-4. **Unlocks Gradually**: Achievements unlock one at a time over hours or days, depending on your settings
-5. **Moves to Next Game**: Once all achievements for a game are unlocked, SGI automatically processes the next game in your queue
-
-This gradual, intelligent approach is what makes SGI's achievement unlocker appear more legitimate than instant unlock tools.
-
-## SGI vs Other Achievement Unlockers
-
-**vs SAM (Steam Achievement Manager)**
-- SAM is manual-only—you must unlock each achievement yourself
-- SGI automates the entire process with smart timing
-- SAM has no delay features, making it easier to create suspicious unlock patterns
-- SGI actively maintained while SAM development has slowed
-
-**vs Other Automatic Unlockers**
-- Many basic unlockers unlock all achievements instantly or in quick succession
-- SGI uses intelligent ordering based on global achievement percentages
-- SGI provides granular control with per-achievement delays
-- Modern interface vs command-line alternatives
-
-**vs Manual Unlocking**
-- Automatic process saves hours of clicking
-- Built-in safety with realistic timing
-- Handles hundreds of achievements across multiple games effortlessly
-
-## Frequently Asked Questions
-
-### Is using a Steam achievement unlocker safe?
-
-Achievement unlockers interact with Steam's API, and while VAC cannot be triggered by achievement unlocking tools given how anticheat systems work , using any achievement tool violates Steam's terms of service. Spacing out achievement unlocks over time makes detection nearly impossible unless you have very low playtime . Use responsibly and at your own discretion.
-
-### Can I get banned for automatically unlocking achievements?
-
-Steam is unlikely to ban accounts for achievement unlocking because these changes only affect cosmetic aspects rather than impacting other players . However, unlocking all achievements simultaneously is obviously suspicious, whereas spacing them out makes it much harder to detect . SGI's delay features help you avoid creating obvious patterns.
-
-### How is this different from the Achievement Manager feature?
-
-The Achievement Manager is for manual control—you click to unlock/lock specific achievements and edit statistics. The Achievement Unlocker is fully automated—it unlocks achievements automatically over time with delays and smart ordering. Use Achievement Manager for precise control, Achievement Unlocker for bulk automated completion.
-
-### What's the best delay setting to use?
-
-This depends on the game and how quickly you want achievements unlocked. For realistic timing:
-- **Casual games**: 5-15 minute delays
-- **Story-driven games**: 30-60 minute delays  
-- **Long RPGs**: 1-4 hour delays
-- **Maximum realism**: Match delays to typical gameplay session lengths
-
-Remember, if you unlock achievements with very low playtime, it becomes more obvious , so consider running the game idler alongside the achievement unlocker.
-
-### Can I unlock achievements for multiple games at once?
-
-SGI unlocks achievements for one game at a time to maintain authenticity. Once all achievements for a game are completed, it automatically moves to the next game in your queue. If you need to unlock multiple games simultaneously, you can run multiple instances of SGI with different game selections.
-
-### Will unlocked achievements show up immediately?
-
-Achievement unlocks sync with Steam's servers within moments. You'll see achievement notifications pop up (if Steam is running) as they unlock. Check your Steam profile to verify achievements appear correctly.
-
-### What if I want to skip certain achievements?
-
-Use the custom order feature to uncheck any achievements you don't want unlocked. Only checked achievements will be unlocked when you start the process.
-
-## Troubleshooting Achievement Unlocker Issues
-
-### Achievements aren't unlocking automatically
-- Verify Steam is running and you're logged in
-- Check that you've added games to your achievement unlocker list
-- Ensure unlock intervals are configured in settings
-- Verify the game has unlockable achievements (not all are unlockable)
-
-### Process stops unexpectedly
-- Some achievements may be protected and cannot be unlocked
-- Check if Steam disconnected or requires re-authentication
-- Verify your settings haven't been reset
-- Review the game for any special achievement flags
-
-### Achievements unlocking too fast
-- Increase the global unlock interval in settings
-- Add individual delays to specific achievements
-- Consider longer delays for rare achievements to maintain realism
-
-### Multiple instances not working
-- Ensure each instance is configured with different games
-- Verify Steam can handle multiple API connections
-- Check that both instances are properly authenticated
-
-## Best Practices for Achievement Unlocking
-
-**Start with Common Achievements**: Let the default global percentage ordering guide the unlock sequence—this is how real players earn achievements.
-
-**Use Realistic Delays**: Achievements unlocked in order of global popularity with timed delays between them appear more authentic . Don't rush the process.
-
-**Combine with Game Idling**: Running achievements unlocker while idling the game increases your playtime, making your achievement timeline more believable.
-
-**Avoid Instant Mass Unlocks**: Unlocking many achievements simultaneously is an obvious indicator of cheating . Always use delays.
-
-**Check Protected Achievements**: Some games have achievements that cannot be modified. Review your game's achievement list before starting.
-
-**Queue Games Strategically**: Start with games you have some playtime in already, then move to newer titles to maintain a realistic progression pattern.
-
-## Additional Information
-
-You can add as many games as you want to your achievement unlocker list.
-
-As this feature is designed to look legitimate, it will only unlock achievements for **one game at a time**. When all achievements for that game are unlocked, SGI will move on to the next game in your list.
-
-If you want to unlock achievements for multiple games at the same time, you can run more than one instance of SGI and choose a different game, or set of games, all with their own settings, for each instance.
-
-The achievement unlocker works alongside other SGI features like card farming and game idling, allowing you to automate multiple aspects of your Steam account management simultaneously.

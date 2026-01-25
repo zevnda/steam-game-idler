@@ -2,11 +2,28 @@
 
 import type { ReactElement } from 'react'
 
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { FaArrowRight } from 'react-icons/fa'
-import { FiDownload } from 'react-icons/fi'
+import { FaWindows } from 'react-icons/fa6'
 
 export default function CTASection(): ReactElement {
+  const [installerUrl, setInstallerUrl] = useState<string>('')
+
+  useEffect(() => {
+    try {
+      fetch('https://api.github.com/repos/zevnda/steam-game-idler/releases/latest')
+        .then(response => response.json())
+        .then(data => {
+          const installer = data.assets?.find((asset: { name: string }) => asset.name.endsWith('_x64-setup.exe'))
+          if (installer) {
+            setInstallerUrl(installer.browser_download_url)
+          }
+        })
+    } catch (error) {
+      console.error('Error fetching latest release:', error)
+    }
+  }, [])
+
   return (
     <section className='py-16 sm:py-20 md:py-24 lg:py-32 relative overflow-hidden' aria-labelledby='cta-heading'>
       {/* Transition from previous section */}
@@ -40,13 +57,11 @@ export default function CTASection(): ReactElement {
           <div className='flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center mb-12 sm:mb-16 px-4 sm:px-0'>
             <Link
               prefetch={false}
-              href='https://github.com/zevnda/steam-game-idler/releases/latest'
+              href={installerUrl || 'https://github.com/zevnda/steam-game-idler/releases/latest'}
               className='group inline-flex items-center justify-center px-8 sm:px-10 py-4 sm:py-5 bg-white text-indigo-700 font-black text-base sm:text-lg rounded-xl hover:bg-cyan-100 transform hover:scale-105 transition-all duration-200 shadow-2xl'
             >
-              <FiDownload className='w-5 h-5 sm:w-6 sm:h-6 mr-3 sm:mr-4' />
-              <span className='hidden sm:inline'>GET THE BEST STEAM IDLER</span>
-              <span className='sm:hidden'>DOWNLOAD STEAM IDLER</span>
-              <FaArrowRight className='w-4 h-4 sm:w-5 sm:h-5 ml-3 sm:ml-4 group-hover:translate-x-2 transition-transform duration-200' />
+              <FaWindows className='w-4 h-4 md:w-5 md:h-5 mr-2 md:mr-3' />
+              DOWNLOAD
             </Link>
           </div>
 
@@ -58,7 +73,7 @@ export default function CTASection(): ReactElement {
             </div>
             <div className='text-center bg-white/10 rounded-xl p-3 sm:p-4'>
               <h3 className='text-base sm:text-lg font-bold mb-1 sm:mb-2'>SIZE</h3>
-              <div className='text-xs sm:text-sm opacity-90'>~6MB Download</div>
+              <div className='text-xs sm:text-sm opacity-90'>~7MB Download</div>
             </div>
             <div className='text-center bg-white/10 rounded-xl p-3 sm:p-4'>
               <h3 className='text-base sm:text-lg font-bold mb-1 sm:mb-2'>MIT LICENSE</h3>
