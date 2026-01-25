@@ -28,13 +28,13 @@ export default function StatsSection(): ReactElement {
 
   const stats = [
     {
-      value: '16K+',
+      value: '70K+',
       label: 'Downloads',
       icon: <FiDownload className='w-6 h-6' />,
       description: 'Active installations worldwide',
     },
     {
-      value: '42',
+      value: '30',
       label: 'Languages',
       icon: <FiGlobe className='w-6 h-6' />,
       description: 'Localization support',
@@ -78,7 +78,7 @@ export default function StatsSection(): ReactElement {
           <div>
             <p className='text-base sm:text-lg text-gray-700 leading-relaxed'>
               Steam Game Idler is the go-to choice for users looking to automate their Steam experience. Our Steam card
-              farmer is trusted by thousands of users worldwide, with support for 42 languages.
+              farmer is trusted by thousands of users worldwide, with support for 30 languages.
             </p>
           </div>
         </header>

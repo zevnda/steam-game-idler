@@ -1,6 +1,6 @@
 ---
 title: Card Farming
-description: Best Steam card farmer tool. Automatically farm Steam trading cards from up to 32 games simultaneously. Modern alternative to ArchiSteamFarm and Idle Master for efficient card farming.
+description: Learn how to farm Steam trading cards automatically using the advanced card farming tool.
 ---
 
 import DocsCTA from '@docs/components/content/DocsCTA';
@@ -9,17 +9,15 @@ import { Step, Steps } from 'fumadocs-ui/components/steps';
 
 # How to Farm Steam Trading Cards Automatically
 
-Farm Steam trading cards automatically from your game library with SGI's advanced Steam card farming tool. Our Steam card farmer runs games in the background to maximize card drops without downloading or actively playing, making it the most efficient way to build your card collection and earn Steam marketplace profits.
+The Card Farming feature allows you to automatically farm trading cards from your Steam games without needing to download or play them. This is ideal for users looking to collect cards for badge crafting or marketplace sales efficiently.
 
-Whether you want to farm cards from specific games or automatically idle all games with card drops remaining, SGI's Steam card farmer handles everything automatically with an optimized farming algorithm that maximizes card drop efficiency.
-
-<DocsCTA content='Download SGI and start farming Steam trading cards automatically with our powerful, easy-to-use card farming tool.' />
+<DocsCTA />
 
 <Callout type="info">
     You must add your [Steam Credentials](/docs/steam-credentials) before you can use this feature
 </Callout>
 
-### Farm Specific Games (Card Farming List)
+### Farm Games In The Card Farming List Only
 
 <Steps>
   <Step>
@@ -39,7 +37,7 @@ Whether you want to farm cards from specific games or automatically idle all gam
   </Step>
 </Steps>
 
-### Farm All Games (All Games With Drops Remaining)
+### Farm All Games With Drops Remaining
 
 <Steps>
   <Step>
@@ -72,57 +70,7 @@ You can blacklist specific games from being farmed for cards by clicking the <Mo
 
 Blacklisted games will not be farmed for cards in either mode, even if they have card drops remaining, and even if you have added them to your card farming list.
 
-## What is a Steam Card Farmer?
-
-A Steam card farmer is an automated tool that idles Steam games in the background to collect trading card drops without requiring you to download, install, or actively play the games. Steam card farming tools simulate game playtime, triggering Steam's card drop system while you're away from your computer.
-
-Steam card farmers are commonly used to:
-- Collect trading cards from your entire game library automatically
-- Earn Steam marketplace profits by selling farmed cards
-- Level up your Steam account by crafting badges from collected card sets
-- Farm cards from games you own but don't want to play
-- Maximize card drops without consuming computer resources running actual games
-- Build complete card collections for badge crafting
-
-Card farming tools allow you to farm cards from multiple accounts simultaneously without requiring the official Steam client running in the background , making them significantly more efficient than manual card collection methods.
-
-## Why Use SGI's Steam Card Farmer?
-
-**Optimized Farming Algorithm**: SGI uses an intelligent card farming strategy that maximizes drop efficiency. Our algorithm idles games in short bursts followed by brief pauses to trigger card drops as quickly as possible, often faster than traditional continuous idling.
-
-**Farm Up to 32 Games Simultaneously**: Steam allows farming cards from up to 30-32 games at the same time , and SGI fully utilizes this limit to maximize your card farming efficiency.
-
-**No Game Downloads Required**: Unlike manually farming cards by running games, SGI's Steam card farmer doesn't require downloading or installing games. Simply add games to your farming list and let SGI handle the rest.
-
-**Automatic Queue Management**: When a game runs out of card drops, SGI automatically removes it from the queue and starts farming the next available game, ensuring continuous card farming without manual intervention.
-
-**Blacklist Support**: Exclude specific games from being farmed while still farming everything else in your library automatically.
-
-**Farm All or Farm Selected**: Choose between farming all games with remaining drops or manually selecting specific games to farm for cards.
-
-**Background Operation**: SGI runs quietly in the background, consuming minimal system resources while farming Steam cards continuously.
-
-**Active Development**: Unlike legacy Steam card farming tools like Idle Master that are no longer actively maintained, SGI receives regular updates and support.
-
-## How Steam Card Farming Works
-
-Steam trading cards are digital collectibles that drop as you accumulate playtime in games that support them. Games must support trading cards, and your Steam account must have at least $5 in purchases to receive card drops .
-
-When you farm cards with SGI, here's what happens:
-
-1. **Game Selection**: SGI identifies all games in your library with remaining card drops available
-2. **Simultaneous Idling**: Up to 32 games are idled simultaneously to meet the initial playtime requirement
-3. **Optimized Card Drops**: SGI uses a specialized farming algorithm that alternates between idling periods and pauses to trigger card drops efficiently
-4. **Automatic Rotation**: When a game has no more card drops, it's removed and replaced with the next game in your queue
-5. **Continuous Farming**: The process repeats until all selected games have been farmed for cards
-
-If a card set consists of eight cards, you will be awarded half—four cards from farming . The remaining cards must be obtained through trading or marketplace purchases to complete the set.
-
-## SGI's Advanced Card Farming Algorithm
-
-You can add as many games as you want to your card farming list, but Steam only allows farming cards from up to 32 games at the same time.
-
-When a game has no card drops left, it will be removed from the list and SGI will start farming the next available game.
+## Card Farming Algorithm
 
 While farming cards, you may see `SteamUtility.exe (idle)` processes start and stop. This is normal — SGI uses the following method to farm cards as quickly as possible:
 
@@ -137,116 +85,3 @@ While farming cards, you may see `SteamUtility.exe (idle)` processes start and s
 8. Stop idling for 1 minute
 9. Repeat the process
 ```
-
-## SGI vs Other Steam Card Farmers
-
-**vs ArchiSteamFarm (ASF)**
-- ASF is designed to farm Steam cards from multiple accounts simultaneously  and requires technical setup
-- SGI focuses on single-account farming with a user-friendly graphical interface
-- ASF is command-line based; SGI provides a modern visual interface
-- SGI includes achievement management and game idling features beyond card farming
-- SGI is ideal for individual users; ASF is better for managing many accounts
-
-**vs Idle Master**
-- Idle Master development has largely ceased; SGI is actively maintained
-- Idle Master allows you to effectively unlock all available Steam trading cards , but lacks modern features
-- SGI includes optimized farming algorithms for faster card drops
-- SGI provides more granular control with blacklisting and custom lists
-- SGI includes additional Steam automation features
-
-**vs Manual Card Farming**
-- Manual farming requires downloading and running actual games
-- You can farm cards by simply launching games via Steam without actively playing them , but this requires games to be installed
-- SGI eliminates download requirements and automates the entire process
-- Manual farming consumes more system resources than SGI's lightweight idling
-
-**vs Mobile Card Farming Apps**
-- Mobile apps like Idle Daddy offered convenient card farming on the go, but due to lack of updates, their functionality has become unreliable 
-- SGI runs on your PC with full reliability and active support
-- Mobile apps often require cloud services or subscriptions; SGI is free and local
-
-## Frequently Asked Questions
-
-### Is Steam card farming safe?
-
-Steam card farming tools use Steam's official API to simulate game playtime. While using card farmers is technically against Steam's terms of service, card farming tools guarantee being VAC-free, with a focus on security and privacy . Card farming has not historically resulted in account bans, though use any card farmer at your own discretion.
-
-### How many cards can I farm per game?
-
-If a set consists of eight cards, you will be awarded half—four cards  from farming. The exact number varies per game, but you'll always receive approximately half of the total card set through farming.
-
-### Do I need to download games to farm their cards?
-
-No. SGI's Steam card farmer doesn't require downloading or installing games. It simulates game playtime through Steam's API, triggering card drops without the games being installed on your computer.
-
-### Can I farm cards from all my games at once?
-
-You can configure the card farmer to idle 30 games at once  during the initial farming phase. SGI supports farming up to 32 games simultaneously, which is Steam's maximum limit.
-
-### How long does it take to farm all my cards?
-
-This depends on how many games you own, their individual drop rates, and how many cards are remaining. With SGI's optimized algorithm, most users can farm their entire library's available card drops within a few days to a week of continuous farming.
-
-### Can I use my computer while farming cards?
-
-Yes. SGI runs in the background and consumes minimal resources. You can use your computer normally, including playing Steam games (though playing games may affect card drop rates for the games you're farming).
-
-### What's the difference between card farming and game idling?
-
-Card farming specifically focuses on collecting trading card drops. Game idling increases playtime for any game, whether or not it has cards. SGI includes both features—use card farming to collect cards, and use game idling to boost playtime.
-
-### Will card farming affect my Steam status?
-
-Offline farming enables you to skip in-game status and stop confusing your friends with fake playing status . SGI can farm cards without showing "In-Game" status to your friends, depending on your configuration.
-
-## Troubleshooting Card Farming Issues
-
-### Cards aren't dropping
-- Verify your Steam account meets the $5 minimum purchase requirement
-- Check if the game actually has trading cards (visit the Steam store page)
-- Ensure you haven't already received all available card drops for that game
-- Confirm Steam is running and you're logged in
-- Wait for the appropriate drop interval (30 minutes to 2 hours per card)
-
-### Card farming stopped unexpectedly
-- Check if Steam disconnected or requires re-authentication
-- Verify your Steam credentials in SGI settings
-- Ensure no Steam Guard confirmations are pending
-- Restart SGI and Steam to refresh the connection
-
-### Not all games are being farmed
-- Verify games aren't blacklisted in your settings
-- Check that "Farm All Games" is enabled if you want to farm everything
-- Confirm games actually have remaining card drops
-- Review your card farming list to ensure games are added
-
-### SteamUtility.exe processes showing
-- This is normal behavior—SGI creates these processes to idle games
-- Multiple processes may appear when farming 32 games simultaneously
-- Processes will stop and start as part of the farming algorithm
-- Do not manually end these processes or card farming will stop
-
-## Best Practices for Steam Card Farming
-
-**Farm During Downtime**: Let SGI run overnight or while you're at work to maximize card collection without interrupting your computer use.
-
-**Prioritize High-Value Cards**: Check Steam marketplace prices and prioritize farming games with valuable card drops first.
-
-**Combine with Achievement Unlocking**: Use SGI's achievement unlocker alongside card farming to automate multiple Steam tasks simultaneously.
-
-**Regular Maintenance**: Periodically check your card inventory and sell or trade cards to keep your collection organized.
-
-**Monitor Drop Rates**: Some games have longer drop intervals—if a game isn't dropping cards, give it more time before troubleshooting.
-
-**Use Blacklist Wisely**: Blacklist games you want to play manually or games with special requirements that don't work well with automated farming.
-
-## Maximizing Your Card Farming Profits
-
-Once you've farmed your cards, you have several options:
-
-- **Sell on Steam Marketplace**: Most cards sell for $0.05-$0.15, with rare cards worth more
-- **Craft Badges**: Combine complete card sets to craft badges, earn XP, and level up your Steam account
-- **Trade for Complete Sets**: Trade duplicate cards with other users to complete sets faster
-- **Hold Valuable Cards**: Some cards appreciate in value over time, especially from delisted or seasonal games
-
-With SGI's efficient card farming, you can collect hundreds of cards per week, potentially earning $10-50 per month depending on your library size and card values.
