@@ -30,7 +30,6 @@ import { useTranslation } from 'react-i18next'
 import useGamesList from '@/hooks/gameslist/useGamesList'
 import { handleRefetch } from '@/hooks/gameslist/usePageHeader'
 import { startIdle } from '@/utils/idle'
-import { supabase } from '@/utils/supabaseClient'
 import { checkSteamStatus, fetchLatest, isPortableCheck, logEvent, preserveKeysAndClearData } from '@/utils/tasks'
 import { showDangerToast, showNoGamesToast, showSuccessToast, t } from '@/utils/toasts'
 
@@ -375,21 +374,21 @@ export default function useWindow(): void {
 
     const checkSubscription = async (): Promise<void> => {
       try {
-        const { data, error } = await supabase
-          .from('subscriptions')
-          .select('status')
-          .eq('steam_id', steamId)
-          .in('status', ['active', 'trialing', 'past_due'])
-          .maybeSingle()
+        const response = await fetch('https://apibase.vercel.app/api/subscriptions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ steamId }),
+        })
 
-        if (error) {
-          console.error('Error checking subscription:', error)
-          logEvent(`[Error] in checkSubscription: ${error.message}`)
+        const data = await response.json()
+
+        if (data?.results?.status) {
+          setIsPro(true)
+        } else {
           setIsPro(false)
-          return
         }
-
-        setIsPro(!!data)
       } catch (error) {
         console.error('Error checking subscription:', error)
         logEvent(`[Error] in checkSubscription: ${error}`)
