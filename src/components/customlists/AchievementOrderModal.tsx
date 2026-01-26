@@ -89,6 +89,12 @@ const SortableAchievement = memo(function SortableAchievement({
     }
   }
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
+    if (e.key === 'Enter') {
+      handleInputBlur()
+    }
+  }
+
   return (
     <div className='grid grid-cols-[40px_1fr] gap-2 items-center duration-150'>
       <span className='text-lg font-bold text-altwhite text-center select-none'>{index + 1}</span>
@@ -159,12 +165,14 @@ const SortableAchievement = memo(function SortableAchievement({
                   ref={inputRef}
                   type='number'
                   min={0}
+                  step={0.1}
                   className='w-16 text-xs'
                   value={delayValue.toString() || '0'}
                   onChange={handleDelayChange}
                   size='sm'
                   onPointerDown={e => e.stopPropagation()}
                   onBlur={handleInputBlur}
+                  onKeyDown={handleKeyDown}
                 />
                 <span className='text-xs text-gray-400'>{t('common.minutes')}</span>
                 <Button
