@@ -1,5 +1,12 @@
 [
   {
+    "id": "38",
+    "title": "Important Update For PRO Users",
+    "message": "In v3.0.0, improvements are made to the way the app checks for active PRO subscriptions. Versions before v3.0.0 will eventually no longer be able to verify PRO subscriptions",
+    "url": "https://steamgameidler.com/changelog/3.0.0",
+    "timestamp": "1769487462"
+  },
+  {
     "id": "37",
     "title": "🎉 1-month PRO Giveaway",
     "message": "Join the Discord to enter the giveaway to win a free 1-month PRO subscription! Click here to join",
