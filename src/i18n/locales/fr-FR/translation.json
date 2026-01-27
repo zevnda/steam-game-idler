@@ -292,6 +292,7 @@
   "toast.tradingCards.allCardsLocked": "Toutes les cartes sont verrouillées et ne peuvent pas être listées pour la vente",
   "toast.tradingCards.allCardsOutOfRange": "Toutes les cartes sont en dehors des limites de vente et ne peuvent pas être listées à la vente",
   "toast.tradingCards.cooldown": "Veuillez patienter {{cooldown}} secondes avant de récupérer d'autres prix de cartes",
+  "toast.autoRedeem.authenticated": "Authentification réussie {{user}}",
   "toast.autoRedeem.success": "Jeu gratuit obtenu avec succès {{appName}}",
   "toast.autoRedeem.failure": "Impossible de récupérer le jeu gratuit {{appName}}",
   "trayIcon.achievementUnlocker": "Déverrouillage des accomplissements {{total}} pour {{appName}}",

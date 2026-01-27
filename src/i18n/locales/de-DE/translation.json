@@ -292,6 +292,7 @@
   "toast.tradingCards.allCardsLocked": "Alle Karten sind gesperrt und können nicht zum Verkauf aufgelistet werden",
   "toast.tradingCards.allCardsOutOfRange": "Alle Karten sind außerhalb der Verkaufsgrenzen und können nicht zum Verkauf aufgelistet werden",
   "toast.tradingCards.cooldown": "Bitte warten Sie {{cooldown}} Sekunden, bevor weitere Kartenpreise abgerufen werden.",
+  "toast.autoRedeem.authenticated": "Erfolgreich authentifiziert {{user}}",
   "toast.autoRedeem.success": "Kostenloses Spiel erfolgreich eingelöst {{appName}}",
   "toast.autoRedeem.failure": "Kostenloses Spiel konnte nicht eingelöst werden {{appName}}",
   "trayIcon.achievementUnlocker": "Entsperren von {{total}} Leistung(en) für {{appName}}",

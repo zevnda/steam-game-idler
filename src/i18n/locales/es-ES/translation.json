@@ -292,6 +292,7 @@
   "toast.tradingCards.allCardsLocked": "Todas las tarjetas están bloqueadas y no pueden ser listadas para la venta",
   "toast.tradingCards.allCardsOutOfRange": "Todas las tarjetas están fuera de los límites de venta y no pueden ser listadas para la venta",
   "toast.tradingCards.cooldown": "Espere {{cooldown}} segundos antes de obtener más precios de tarjetas",
+  "toast.autoRedeem.authenticated": "Autenticado exitosamente {{user}}",
   "toast.autoRedeem.success": "Juego gratuito canjeado con éxito {{appName}}",
   "toast.autoRedeem.failure": "No se pudo canjear el juego gratuito {{appName}}",
   "trayIcon.achievementUnlocker": "Desbloqueando {{total}} logro(s) para {{appName}}",

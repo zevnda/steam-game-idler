@@ -292,6 +292,7 @@
   "toast.tradingCards.allCardsLocked": "Alle kort er låst og kan ikke vises til salg",
   "toast.tradingCards.allCardsOutOfRange": "Alle kort er uden for salgsgrænserne og kan ikke noteres til salg",
   "toast.tradingCards.cooldown": "Vent venligst {{cooldown}} sekunder, før du henter flere kortpriser",
+  "toast.autoRedeem.authenticated": "Godkendt {{user}}",
   "toast.autoRedeem.success": "Gratis spil {{appName}}er indløst",
   "toast.autoRedeem.failure": "Kunne ikke indløse gratis spil {{appName}}",
   "trayIcon.achievementUnlocker": "Låser op for {{total}} gennemførelse(r) for {{appName}}",

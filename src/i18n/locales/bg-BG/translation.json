@@ -292,6 +292,7 @@
   "toast.tradingCards.allCardsLocked": "Всички карти са заключени и не могат да бъдат обявени за продажба",
   "toast.tradingCards.allCardsOutOfRange": "Всички карти са извън лимитите за продажба и не могат да бъдат обявени за продажба.",
   "toast.tradingCards.cooldown": "Моля, изчакайте {{cooldown}} секунди, преди да получите още цени на карти",
+  "toast.autoRedeem.authenticated": "Успешно удостоверяване {{user}}",
   "toast.autoRedeem.success": "Успешно осребрена безплатна игра {{appName}}",
   "toast.autoRedeem.failure": "Неуспешно осребряване на безплатната игра {{appName}}",
   "trayIcon.achievementUnlocker": "Отключване на {{total}} постижения за {{appName}}",

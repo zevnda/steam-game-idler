@@ -292,6 +292,7 @@
   "toast.tradingCards.allCardsLocked": "Alle kaarten zijn vergrendeld en kunnen niet worden vermeld voor de verkoop",
   "toast.tradingCards.allCardsOutOfRange": "Alle kaarten vallen buiten de verkooplimieten en kunnen niet voor verkoop worden weergegeven",
   "toast.tradingCards.cooldown": "Wacht {{cooldown}} seconden voordat u meer kaartprijzen ophaalt",
+  "toast.autoRedeem.authenticated": "Succesvol geverifieerd {{user}}",
   "toast.autoRedeem.success": "Gratis spel succesvol ingewisseld {{appName}}",
   "toast.autoRedeem.failure": "Het is niet gelukt om het gratis spel te verzilveren {{appName}}",
   "trayIcon.achievementUnlocker": "Ontgrendelen van {{total}} prestatie(s) voor {{appName}}",

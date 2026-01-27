@@ -292,6 +292,7 @@
   "toast.tradingCards.allCardsLocked": "Все карты заблокированы и не могут быть перечислены для продажи",
   "toast.tradingCards.allCardsOutOfRange": "Все карты находятся за пределами ограничений на продажу и не могут быть перечислены на продажу",
   "toast.tradingCards.cooldown": "Пожалуйста, подождите {{cooldown}} секунд, прежде чем загрузить дополнительные цены на карты.",
+  "toast.autoRedeem.authenticated": "Аутентификация успешно пройдена {{user}}",
   "toast.autoRedeem.success": "Успешно получена бесплатная игра {{appName}}",
   "toast.autoRedeem.failure": "Не удалось получить бесплатную игру {{appName}}",
   "trayIcon.achievementUnlocker": "Разблокирование достижения {{total}} для {{appName}}",

@@ -292,6 +292,7 @@
   "toast.tradingCards.allCardsLocked": "所有卡片都被锁定，无法上架出售。",
   "toast.tradingCards.allCardsOutOfRange": "所有卡片都在销售限额之外，无法上架出售。",
   "toast.tradingCards.cooldown": "请稍等 {{cooldown}} 秒，稍后获取更多卡牌价格",
+  "toast.autoRedeem.authenticated": "身份验证成功 {{user}}",
   "toast.autoRedeem.success": "免费游戏兑换成功 {{appName}}",
   "toast.autoRedeem.failure": "免费游戏兑换失败 {{appName}}",
   "trayIcon.achievementUnlocker": "为 {{appName}}解锁 {{total}} 成就",

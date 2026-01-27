@@ -292,6 +292,7 @@
   "toast.tradingCards.allCardsLocked": "Alle oppgavelapper er låst og kan ikke føres opp for salg",
   "toast.tradingCards.allCardsOutOfRange": "Alle kort ligger utenfor salgsgrensene og kan ikke føres opp for salg",
   "toast.tradingCards.cooldown": "Vent {{cooldown}} sekunder før du henter flere kortpriser",
+  "toast.autoRedeem.authenticated": "Autentisert {{user}}",
   "toast.autoRedeem.success": "Gratisspillet {{appName}}er innløst",
   "toast.autoRedeem.failure": "Kunne ikke løse inn gratisspillet {{appName}}",
   "trayIcon.achievementUnlocker": "Låses opp {{total}} prestasjon(er) for {{appName}}",

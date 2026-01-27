@@ -292,6 +292,7 @@
   "toast.tradingCards.allCardsLocked": "Všechny karty jsou uzamčené a nemohou být uvedeny k prodeji",
   "toast.tradingCards.allCardsOutOfRange": "Všechny karty jsou mimo prodejní limity a nemohou být uvedeny k prodeji",
   "toast.tradingCards.cooldown": "Před načtením dalších cen karet prosím počkejte {{cooldown}} sekund",
+  "toast.autoRedeem.authenticated": "Úspěšně ověřeno {{user}}",
   "toast.autoRedeem.success": "Úspěšně uplatněna bezplatná hra {{appName}}",
   "toast.autoRedeem.failure": "Nepodařilo se uplatnit bezplatnou hru {{appName}}",
   "trayIcon.achievementUnlocker": "Odemknutí {{total}} úspěchů pro {{appName}}",
