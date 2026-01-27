@@ -9,6 +9,10 @@ import './globals.css'
 import HelpDesk from '@docs/components/HelpDesk'
 import Script from 'next/script'
 
+interface LayoutProps {
+  children: React.ReactNode
+}
+
 const geist = Geist({
   variable: '--font-sans',
   subsets: ['latin'],
@@ -132,7 +136,7 @@ const schemaData = [
   },
 ]
 
-export default function Layout({ children }: LayoutProps<'/'>) {
+export default function Layout({ children }: LayoutProps) {
   return (
     <html lang='en' className={`${geist.variable} ${mono.variable}`} suppressHydrationWarning>
       <head>

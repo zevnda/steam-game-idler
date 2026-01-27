@@ -3,14 +3,13 @@
   "compilerOptions": {
     "paths": {
       "@docs/*": ["./app/*"],
-      "fumadocs-mdx:collections/*": [".source/*"]
+      "fumadocs-mdx:collections/*": ["./.source/*"]
     },
     "plugins": [
       {
         "name": "next"
       }
     ],
-    "baseUrl": ".",
     "target": "ESNext",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,

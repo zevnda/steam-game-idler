@@ -1,7 +1,7 @@
 import { blog } from '../../../lib/source'
+import { getMDXComponents } from '../../../mdx-components'
 import ChangelogClient from './client'
 import { PathUtils } from 'fumadocs-core/source'
-import { getMDXComponents } from 'mdx-components'
 import Link from 'next/link'
 
 interface BlogData {

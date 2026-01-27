@@ -4,7 +4,11 @@ import { DocsLayout } from 'fumadocs-ui/layouts/docs'
 import Image from 'next/image'
 import { FaDiscord, FaGithub } from 'react-icons/fa6'
 
-export default function Layout({ children }: LayoutProps<'/docs'>) {
+interface LayoutProps {
+  children: React.ReactNode
+}
+
+export default function Layout({ children }: LayoutProps) {
   const base = baseOptions()
 
   return (
