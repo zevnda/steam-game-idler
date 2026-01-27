@@ -54,7 +54,7 @@ export default function CopyableFAQ({ id, question, children, value }: Props): R
             <h3 className='flex-1'>{question}</h3>
           </div>
           <div
-            className='text-icon-light/50 dark:text-icon-dark/50 hover:bg-icon-dark/10 hover:dark:bg-icon-light/10 hover:text-icon-light/70 dark:hover:text-icon-dark/70 p-1.5 rounded-md cursor-pointer duration-100 h-[30px] w-[30px]'
+            className='text-icon-light/50 dark:text-icon-dark/50 hover:bg-icon-dark/10 hover:dark:bg-icon-light/10 hover:text-icon-light/70 dark:hover:text-icon-dark/70 p-1.5 rounded-md cursor-pointer duration-100 h-7.5 w-7.5'
             onClick={e => {
               e.preventDefault()
               e.stopPropagation()

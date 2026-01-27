@@ -141,7 +141,7 @@ export default function RecommendedGamesCarousel({ gamesContext }: RecommendedGa
 
       <div ref={scrollContainerRef} className='flex gap-5 pb-2 overflow-x-hidden'>
         {gamesContext.unplayedGames.map(game => (
-          <div key={game.appid} className='shrink-0 w-[440px]'>
+          <div key={game.appid} className='shrink-0 w-110'>
             <GameCard item={game} />
           </div>
         ))}

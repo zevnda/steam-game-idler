@@ -63,7 +63,7 @@ export default function LanguageSwitch({
       radius='none'
       startContent={<TbLanguage />}
       items={languages}
-      className={cn('w-[250px]', className)}
+      className={cn('w-62.5', className)}
       classNames={{
         listbox: 'p-0',
         value: 'text-sm !text-content',
