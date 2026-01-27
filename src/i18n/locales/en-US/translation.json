@@ -292,6 +292,7 @@
   "toast.tradingCards.allCardsLocked": "All cards are locked and cannot be listed for sale",
   "toast.tradingCards.allCardsOutOfRange": "All cards are outside of the sell limits and cannot be listed for sale",
   "toast.tradingCards.cooldown": "Please wait {{cooldown}} seconds before fetching more card prices",
+  "toast.autoRedeem.authenticated": "Successfully authenticated {{user}}",
   "toast.autoRedeem.success": "Successfully redeemed free game {{appName}}",
   "toast.autoRedeem.failure": "Failed to redeem free game {{appName}}",
   "trayIcon.achievementUnlocker": "Unlocking {{total}} achievement(s) for {{appName}}",

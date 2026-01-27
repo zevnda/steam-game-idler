@@ -14,7 +14,7 @@ import Beta from '@/components/ui/Beta'
 import ProBadge from '@/components/ui/ProBadge'
 import WebviewWindow from '@/components/ui/WebviewWindow'
 import { logEvent } from '@/utils/tasks'
-import { showDangerToast } from '@/utils/toasts'
+import { showDangerToast, showSuccessToast } from '@/utils/toasts'
 
 export default function CardSettings(): ReactElement {
   const { t } = useTranslation()
@@ -33,13 +33,17 @@ export default function CardSettings(): ReactElement {
       return
     }
 
-    const response = await invoke<InvokeSettings>('update_user_settings', {
-      steamId: userSummary?.steamId,
-      key: 'general.autoRedeemFreeGames',
-      value: true,
-    })
+    if (result.success) {
+      const response = await invoke<InvokeSettings>('update_user_settings', {
+        steamId: userSummary?.steamId,
+        key: 'general.autoRedeemFreeGames',
+        value: true,
+      })
 
-    setUserSettings(response.settings)
+      setUserSettings(response.settings)
+
+      showSuccessToast(t('toast.autoRedeem.authenticated', { user: userSummary?.personaName }))
+    }
   }
 
   const handleSignOutCurrentStoreUser = async (): Promise<void> => {
