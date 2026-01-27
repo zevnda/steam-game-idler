@@ -140,7 +140,7 @@ export default function TradingCardsList(): ReactElement {
           content={
             <div className='py-2'>
               <Image
-                className='w-[150px] h-auto border border-border'
+                className='w-37.5 h-auto border border-border'
                 src={item.image}
                 width={224}
                 height={261}
@@ -163,7 +163,7 @@ export default function TradingCardsList(): ReactElement {
         </CustomTooltip>
 
         <div className='flex flex-col items-center justify-center gap-0.5 mt-2'>
-          <p className='text-xs truncate max-w-[140px]'>{item.full_name.replace('(Trading Card)', '') || 'Unknown'}</p>
+          <p className='text-xs truncate max-w-35'>{item.full_name.replace('(Trading Card)', '') || 'Unknown'}</p>
 
           <CustomTooltip
             content={
@@ -180,9 +180,7 @@ export default function TradingCardsList(): ReactElement {
                   <FaCheckCircle size={12} className='text-green-400' />
                 </div>
               )}
-              <p
-                className={cn('text-xs text-altwhite truncate max-w-[140px]', item.badge_level > 0 && 'text-green-400')}
-              >
+              <p className={cn('text-xs text-altwhite truncate max-w-35', item.badge_level > 0 && 'text-green-400')}>
                 {item.appname}
               </p>
             </div>

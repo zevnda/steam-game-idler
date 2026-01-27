@@ -150,7 +150,7 @@ export default function CardFarming({ activePage }: { activePage: ActivePageType
       <div
         className={cn(
           'relative w-[calc(100vw-227px)] pl-6 pt-2 pr-12 mt-9 ease-in-out',
-          sidebarCollapsed ? 'ml-14' : 'ml-[250px]',
+          sidebarCollapsed ? 'ml-14' : 'ml-62.5',
         )}
         style={{
           transitionDuration,

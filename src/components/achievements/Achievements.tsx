@@ -71,7 +71,7 @@ export default function Achievements(): ReactElement {
 
       {/* Loader overlay */}
       {(isLoading || (!imageLoaded && !fallbackImage && !isLoading)) && (
-        <div className={cn('absolute inset-0 flex items-center justify-center w-calc ml-[250px] z-50')}>
+        <div className={cn('absolute inset-0 flex items-center justify-center w-calc ml-62.5 z-50')}>
           <Loader />
         </div>
       )}
@@ -87,7 +87,7 @@ export default function Achievements(): ReactElement {
             color='default'
             variant='solid'
             radius='full'
-            className='max-w-[300px] ml-5'
+            className='max-w-75 ml-5'
             classNames={{
               tabList: 'gap-0 w-full bg-btn-achievement-header ml-7 mt-4',
               tab: cn('data-[hover-unselected=true]:!bg-item-hover', 'data-[hover-unselected=true]:opacity-100'),

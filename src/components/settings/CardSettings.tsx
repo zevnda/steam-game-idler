@@ -95,7 +95,7 @@ export default function CardSettings(): ReactElement {
               disallowEmptySelection
               radius='none'
               items={taskOptions}
-              className='w-[200px]'
+              className='w-50'
               placeholder={t('common.nextTask.selectPlaceholder')}
               classNames={{
                 listbox: ['p-0'],

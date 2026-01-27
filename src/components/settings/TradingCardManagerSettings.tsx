@@ -147,7 +147,7 @@ export default function TradingCardManagerSettings(): ReactElement {
               disallowEmptySelection
               radius='none'
               items={sellOptions}
-              className='w-[200px]'
+              className='w-50'
               placeholder={t('common.nextTask.selectPlaceholder')}
               classNames={{
                 listbox: ['p-0'],
@@ -201,7 +201,7 @@ export default function TradingCardManagerSettings(): ReactElement {
             }}
             step={0.01}
             aria-label='price adjustment value'
-            className='w-[90px]'
+            className='w-22.5'
             classNames={{
               inputWrapper: cn(
                 'bg-input data-[hover=true]:!bg-inputhover border-none',
@@ -243,7 +243,7 @@ export default function TradingCardManagerSettings(): ReactElement {
               minValue={0.01}
               step={0.01}
               aria-label='sell limit minimum value'
-              className='w-[90px]'
+              className='w-22.5'
               classNames={{
                 inputWrapper: cn(
                   'bg-input data-[hover=true]:!bg-inputhover border-none',
@@ -268,7 +268,7 @@ export default function TradingCardManagerSettings(): ReactElement {
               }}
               step={0.01}
               aria-label='sell limit maximum value'
-              className='w-[90px]'
+              className='w-22.5'
               classNames={{
                 inputWrapper: cn(
                   'bg-input data-[hover=true]:!bg-inputhover border-none',
@@ -306,7 +306,7 @@ export default function TradingCardManagerSettings(): ReactElement {
             minValue={5}
             maxValue={30}
             aria-label='sell delay value'
-            className='w-[90px]'
+            className='w-22.5'
             classNames={{
               inputWrapper: cn(
                 'bg-input data-[hover=true]:!bg-inputhover border-none',

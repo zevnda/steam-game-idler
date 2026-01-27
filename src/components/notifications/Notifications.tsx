@@ -68,7 +68,7 @@ export default function Notifications(): ReactElement {
             <motion.div
               ref={dropdownRef}
               className={cn(
-                'absolute right-0 mx-auto mt-3 w-[480px] p-0 m-0 rounded-xl',
+                'absolute right-0 mx-auto mt-3 w-120 p-0 m-0 rounded-xl',
                 'outline-none z-999 shadow-2xl bg-popover border border-border',
               )}
               initial={{
@@ -114,7 +114,7 @@ export default function Notifications(): ReactElement {
                 </div>
               </div>
               {/* Notification list or empty state */}
-              <div className='max-h-[550px] overflow-y-auto'>
+              <div className='max-h-137.5 overflow-y-auto'>
                 {notifications.length === 0 ? (
                   <div className='flex flex-col items-center justify-center py-16 text-center text-altwhite/85 bg-red-500'>
                     <TbBell size={48} className='mb-2 opacity-30' />

@@ -75,7 +75,7 @@ export default async function Page() {
               className='flex flex-col md:flex-row gap-4 items-start border-t border-[#212121] pt-12'
             >
               {/* Date and Tags */}
-              <div className='flex flex-row-reverse md:flex-col items-center justify-between md:items-start gap-3 mb-4 w-full md:w-[180px] shrink-0'>
+              <div className='flex flex-row-reverse md:flex-col items-center justify-between md:items-start gap-3 mb-4 w-full md:w-45 shrink-0'>
                 <time className='text-xs text-[#979797]'>
                   {new Date(post.data.date ?? getName(post.path)).toLocaleDateString('en-US', {
                     year: 'numeric',
