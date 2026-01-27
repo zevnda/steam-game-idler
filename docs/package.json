@@ -30,7 +30,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.16",
     "@types/mdx": "^2.0.13",
-    "@types/node": "^24.10.0",
+    "@types/node": "^25.0.10",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.2",
     "concurrently": "^9.2.1",
