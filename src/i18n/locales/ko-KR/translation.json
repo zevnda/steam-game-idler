@@ -292,6 +292,7 @@
   "toast.tradingCards.allCardsLocked": "모든 카드는 잠겨 있어 판매용으로 등록할 수 없습니다.",
   "toast.tradingCards.allCardsOutOfRange": "모든 카드는 판매 한도를 벗어났으므로 판매용으로 등록할 수 없습니다.",
   "toast.tradingCards.cooldown": "더 많은 카드 가격을 가져오기 전에 {{cooldown}} 초 동안 기다려 주세요.",
+  "toast.autoRedeem.authenticated": "인증에 성공했습니다 {{user}}",
   "toast.autoRedeem.success": "무료 게임 {{appName}}을 성공적으로 받았습니다.",
   "toast.autoRedeem.failure": "무료 게임 {{appName}}을(를) 사용하지 못했습니다.",
   "trayIcon.achievementUnlocker": "{{appName}}에 대한 {{total}} 업적 잠금 해제",

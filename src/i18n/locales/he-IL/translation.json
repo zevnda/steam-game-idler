@@ -292,6 +292,7 @@
   "toast.tradingCards.allCardsLocked": "כל הכרטיסים נעולים ולא ניתן לפרסם אותם למכירה",
   "toast.tradingCards.allCardsOutOfRange": "כל הקלפים חורגים ממגבלות המכירה ולא ניתן לפרסם אותם למכירה",
   "toast.tradingCards.cooldown": "אנא המתינו {{cooldown}} שניות לפני אחזור מחירי כרטיסים נוספים",
+  "toast.autoRedeem.authenticated": "אומת בהצלחה {{user}}",
   "toast.autoRedeem.success": "משחק חינמי מומש בהצלחה {{appName}}",
   "toast.autoRedeem.failure": "נכשלה המימוש של המשחק החינמי {{appName}}",
   "trayIcon.achievementUnlocker": "פותח {{total}} הישג/ים עבור {{appName}}",

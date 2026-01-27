@@ -292,6 +292,7 @@
   "toast.tradingCards.allCardsLocked": "Όλες οι κάρτες είναι κλειδωμένες και δεν μπορούν να αναφερθούν προς πώληση",
   "toast.tradingCards.allCardsOutOfRange": "Όλες οι κάρτες είναι εκτός των ορίων πώλησης και δεν μπορούν να αναφέρονται προς πώληση",
   "toast.tradingCards.cooldown": "Παρακαλώ περιμένετε {{cooldown}} δευτερόλεπτα πριν λάβετε περισσότερες τιμές καρτών",
+  "toast.autoRedeem.authenticated": "Επιτυχής έλεγχος ταυτότητας {{user}}",
   "toast.autoRedeem.success": "Το δωρεάν παιχνίδι {{appName}}εξαργυρώθηκε με επιτυχία",
   "toast.autoRedeem.failure": "Αποτυχία εξαργύρωσης δωρεάν παιχνιδιού {{appName}}",
   "trayIcon.achievementUnlocker": "Ξεκλείδωμα {{total}} επίτευγμα(τα) για {{appName}}",

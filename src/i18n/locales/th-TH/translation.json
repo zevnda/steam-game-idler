@@ -292,6 +292,7 @@
   "toast.tradingCards.allCardsLocked": "การ์ดทั้งหมดถูกล็อคและไม่สามารถนำไปลงขายได้",
   "toast.tradingCards.allCardsOutOfRange": "การ์ดทั้งหมดอยู่นอกเหนือขีดจำกัดการขายและไม่สามารถนำมาลงขายได้",
   "toast.tradingCards.cooldown": "กรุณารอ {{cooldown}} วินาทีก่อนจะรับราคาการ์ดเพิ่มเติม",
+  "toast.autoRedeem.authenticated": "ยืนยันตัวตนสำเร็จแล้ว {{user}}",
   "toast.autoRedeem.success": "แลกรับเกมฟรีสำเร็จแล้ว {{appName}}",
   "toast.autoRedeem.failure": "ไม่สามารถแลกรับเกมฟรี {{appName}}",
   "trayIcon.achievementUnlocker": "ปลดล็อคความสำเร็จ {{total}} สำหรับ {{appName}}",

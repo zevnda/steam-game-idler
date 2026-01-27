@@ -292,6 +292,7 @@
   "toast.tradingCards.allCardsLocked": "Alla kort är låsta och kan inte listas till salu",
   "toast.tradingCards.allCardsOutOfRange": "Alla kort ligger utanför säljgränserna och kan inte listas för försäljning",
   "toast.tradingCards.cooldown": "Vänta {{cooldown}} sekunder innan du hämtar fler kortpriser",
+  "toast.autoRedeem.authenticated": "Lyckades autentisera {{user}}",
   "toast.autoRedeem.success": "Lyckades lösa in gratisspelet {{appName}}",
   "toast.autoRedeem.failure": "Misslyckades med att lösa in gratisspelet {{appName}}",
   "trayIcon.achievementUnlocker": "Låsa upp {{total}} achievement(er) för {{appName}}",

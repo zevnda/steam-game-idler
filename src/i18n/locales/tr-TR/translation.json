@@ -292,6 +292,7 @@
   "toast.tradingCards.allCardsLocked": "Tüm kartlar kilitlidir ve satışa sunulamaz",
   "toast.tradingCards.allCardsOutOfRange": "Tüm kartlar satış limitlerinin dışındadır ve satışa sunulamaz",
   "toast.tradingCards.cooldown": "Daha fazla kart fiyatı getirmeden önce lütfen {{cooldown}} saniye bekleyin",
+  "toast.autoRedeem.authenticated": "Kimlik doğrulama başarıyla tamamlandı {{user}}",
   "toast.autoRedeem.success": "Ücretsiz oyun başarıyla kullanıldı {{appName}}",
   "toast.autoRedeem.failure": "Ücretsiz oyun kullanılamadı {{appName}}",
   "trayIcon.achievementUnlocker": "{{appName}}için {{total}} başarısının kilidini açma",

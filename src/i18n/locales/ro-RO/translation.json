@@ -292,6 +292,7 @@
   "toast.tradingCards.allCardsLocked": "Toate cardurile sunt blocate și nu pot fi listate pentru vânzare",
   "toast.tradingCards.allCardsOutOfRange": "Toate cardurile sunt în afara limitelor de vânzare și nu pot fi listate spre vânzare",
   "toast.tradingCards.cooldown": "Vă rugăm să așteptați {{cooldown}} secunde înainte de a prelua mai multe prețuri pe carduri.",
+  "toast.autoRedeem.authenticated": "Autentificare reușită {{user}}",
   "toast.autoRedeem.success": "Joc gratuit valorificat cu succes {{appName}}",
   "toast.autoRedeem.failure": "Nu s-a putut valorifica jocul gratuit {{appName}}",
   "trayIcon.achievementUnlocker": "Deblocarea realizării (realizărilor) {{total}} pentru {{appName}}",

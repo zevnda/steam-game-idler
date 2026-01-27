@@ -292,6 +292,7 @@
   "toast.tradingCards.allCardsLocked": "Wszystkie karty są zablokowane i nie mogą być wymienione w sprzedaży",
   "toast.tradingCards.allCardsOutOfRange": "Wszystkie karty są poza limitami sprzedaży i nie mogą być notowane na sprzedaż",
   "toast.tradingCards.cooldown": "Proszę odczekać {{cooldown}} sekund przed pobraniem kolejnych cen kart",
+  "toast.autoRedeem.authenticated": "Pomyślnie uwierzytelniono {{user}}",
   "toast.autoRedeem.success": "Pomyślnie odebrano darmową grę {{appName}}",
   "toast.autoRedeem.failure": "Nie udało się zrealizować darmowej gry {{appName}}",
   "trayIcon.achievementUnlocker": "Odblokowywanie osiągnięć {{total}} dla {{appName}}",

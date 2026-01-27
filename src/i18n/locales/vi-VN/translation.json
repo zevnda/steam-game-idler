@@ -292,6 +292,7 @@
   "toast.tradingCards.allCardsLocked": "Tất cả các thẻ đều bị khóa và không thể được niêm yết để bán",
   "toast.tradingCards.allCardsOutOfRange": "Tất cả các thẻ đều nằm ngoài giới hạn bán và không thể được liệt kê để bán",
   "toast.tradingCards.cooldown": "Vui lòng đợi {{cooldown}} giây trước khi lấy thêm giá thẻ",
+  "toast.autoRedeem.authenticated": "Xác thực thành công {{user}}",
   "toast.autoRedeem.success": "Đã đổi thành công trò chơi miễn phí {{appName}}",
   "toast.autoRedeem.failure": "Không thể đổi trò chơi miễn phí {{appName}}",
   "trayIcon.achievementUnlocker": "Mở khóa {{total}} thành tích cho {{appName}}",

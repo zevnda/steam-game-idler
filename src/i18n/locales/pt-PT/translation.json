@@ -292,6 +292,7 @@
   "toast.tradingCards.allCardsLocked": "Todos os cartões estão bloqueados e não podem ser listados para venda",
   "toast.tradingCards.allCardsOutOfRange": "Todos os cartões estão fora dos limites de venda e não podem ser listados para venda",
   "toast.tradingCards.cooldown": "Aguarde {{cooldown}} segundos antes de pesquisar mais preços de cartas.",
+  "toast.autoRedeem.authenticated": "Autenticação concluída com sucesso {{user}}",
   "toast.autoRedeem.success": "Resgate do jogo gratuito realizado com sucesso {{appName}}",
   "toast.autoRedeem.failure": "Falha ao resgatar o jogo grátis {{appName}}",
   "trayIcon.achievementUnlocker": "Desbloqueando {{total}} conquista(s) para {{appName}}",

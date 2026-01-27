@@ -292,6 +292,7 @@
   "toast.tradingCards.allCardsLocked": "所有卡片已鎖定，無法出售",
   "toast.tradingCards.allCardsOutOfRange": "所有卡牌均超出銷售限額，無法上架出售",
   "toast.tradingCards.cooldown": "請稍等 {{cooldown}} 秒，稍後再取得更多卡片價格",
+  "toast.autoRedeem.authenticated": "身份驗證成功 {{user}}",
   "toast.autoRedeem.success": "免費遊戲兌換成功 {{appName}}",
   "toast.autoRedeem.failure": "免費遊戲兌換失敗 {{appName}}",
   "trayIcon.achievementUnlocker": "為 {{appName}}解鎖 {{total}} 成就",

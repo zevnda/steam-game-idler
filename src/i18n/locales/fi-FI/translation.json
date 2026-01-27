@@ -292,6 +292,7 @@
   "toast.tradingCards.allCardsLocked": "Kaikki kortit ovat lukittuja, eikä niitä voi listata myyntiin",
   "toast.tradingCards.allCardsOutOfRange": "Kaikki kortit eivät kuulu myyntirajoihin eikä niitä voi listata myyntiin",
   "toast.tradingCards.cooldown": "Odota {{cooldown}} sekuntia ennen kuin haet lisää korttihintoja",
+  "toast.autoRedeem.authenticated": "Todennus onnistui {{user}}",
   "toast.autoRedeem.success": "Ilmaispeli lunastettu onnistuneesti {{appName}}",
   "toast.autoRedeem.failure": "Ilmaisen pelin lunastus epäonnistui {{appName}}",
   "trayIcon.achievementUnlocker": "Avataan {{total}} saavutusta {{appName}}:lle",

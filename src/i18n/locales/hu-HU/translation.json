@@ -292,6 +292,7 @@
   "toast.tradingCards.allCardsLocked": "Minden kártya zárolva van, és nem eladó",
   "toast.tradingCards.allCardsOutOfRange": "Minden kártya az eladási limiten kívül esik, és nem lehet eladásra kínálni.",
   "toast.tradingCards.cooldown": "Kérjük, várjon {{cooldown}} másodpercet, mielőtt további kártyaárakat kér le",
+  "toast.autoRedeem.authenticated": "Sikeresen hitelesítve {{user}}",
   "toast.autoRedeem.success": "Sikeresen beváltottad az ingyenes játékot {{appName}}",
   "toast.autoRedeem.failure": "Nem sikerült beváltani az ingyenes játékot {{appName}}",
   "trayIcon.achievementUnlocker": "{{total}} eredmény feloldása {{appName}}-ért",
