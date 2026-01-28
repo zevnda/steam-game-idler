@@ -3,14 +3,17 @@ use std::fs;
 use std::path::Path;
 
 fn main() {
-    let env_prod_paths = [Path::new(".env.prod"), Path::new("../.env.prod")];
+    let env_prod_paths = [
+        Path::new(".env.production"),
+        Path::new("../.env.production"),
+    ];
 
     let mut found_key = false;
 
     for env_prod_path in &env_prod_paths {
         if env_prod_path.exists() {
             let env_content =
-                fs::read_to_string(env_prod_path).expect("Failed to read .env.prod file");
+                fs::read_to_string(env_prod_path).expect("Failed to read .env.production file");
 
             for line in env_content.lines() {
                 let line = line.trim();
@@ -32,12 +35,12 @@ fn main() {
             println!("cargo:rustc-env=STEAM_API_KEY={}", api_key);
         } else {
             println!(
-                "cargo:warning=No API key found in .env.prod or STEAM_API_KEY environment variable"
+                "cargo:warning=No API key found in .env.production or STEAM_API_KEY environment variable"
             );
         }
     }
-    println!("cargo:rerun-if-changed=.env.prod");
-    println!("cargo:rerun-if-changed=../.env.prod");
+    println!("cargo:rerun-if-changed=.env.production");
+    println!("cargo:rerun-if-changed=../.env.production");
 
     tauri_build::build()
 }
