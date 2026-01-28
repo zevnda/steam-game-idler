@@ -248,7 +248,7 @@ export default function page(): ReactElement {
             <div className='flex flex-col sm:flex-row gap-4 justify-center'>
               <Link
                 prefetch={false}
-                href='https://github.com/steam-game-idler/steam-game-idler/releases/latest'
+                href='https://github.com/zevnda/steam-game-idler/releases/latest'
                 className='inline-flex items-center justify-center px-8 py-4 bg-white text-green-700 font-bold rounded-xl hover:bg-gray-100 transition-colors duration-200 shadow-lg'
               >
                 <FiDownload className='w-5 h-5 mr-3' />

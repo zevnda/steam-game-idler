@@ -13,7 +13,7 @@ export default function StatsSection(): ReactElement {
   useEffect(() => {
     const loadGitHubStars = async (): Promise<void> => {
       try {
-        const response = await fetch('https://api.github.com/repos/steam-game-idler/steam-game-idler')
+        const response = await fetch('https://api.github.com/repos/zevnda/steam-game-idler')
         const data = await response.json()
         setGithubStars(data.stargazers_count || 999)
       } catch (error) {

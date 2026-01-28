@@ -16,7 +16,7 @@ export default function HeroSection(): ReactElement {
 
   useEffect(() => {
     try {
-      fetch('https://api.github.com/repos/steam-game-idler/steam-game-idler/releases/latest')
+      fetch('https://api.github.com/repos/zevnda/steam-game-idler/releases/latest')
         .then(response => response.json())
         .then(data => {
           if (data.tag_name) {
@@ -34,7 +34,7 @@ export default function HeroSection(): ReactElement {
 
   useEffect(() => {
     try {
-      fetch('https://api.github.com/repos/steam-game-idler/steam-game-idler')
+      fetch('https://api.github.com/repos/zevnda/steam-game-idler')
         .then(response => response.json())
         .then(data => {
           if (typeof data.stargazers_count === 'number') {
@@ -182,7 +182,7 @@ export default function HeroSection(): ReactElement {
                 {latestVersion} Available
               </div>
 
-              <Link href='https://github.com/steam-game-idler/steam-game-idler'>
+              <Link href='https://github.com/zevnda/steam-game-idler'>
                 <div className='inline-flex items-center px-3 py-1.5 sm:px-4 sm:py-2 bg-linear-to-r from-yellow-100 to-yellow-300 border border-yellow-300 rounded-full text-yellow-800 text-xs sm:text-sm font-medium shadow-lg'>
                   <FaStar className='text-yellow-500 mr-1' />
                   Star on GitHub{' '}
@@ -214,7 +214,7 @@ export default function HeroSection(): ReactElement {
             <div className='flex justify-center lg:justify-start px-4 sm:px-0'>
               <Link
                 prefetch={false}
-                href='https://github.com/steam-game-idler/steam-game-idler'
+                href='https://github.com/zevnda/steam-game-idler'
                 target='_blank'
                 rel='noopener noreferrer'
                 className='group inline-flex items-center text-gray-600 hover:text-purple-600 transition-colors duration-200 text-sm font-bold'
@@ -229,7 +229,7 @@ export default function HeroSection(): ReactElement {
             <div className='flex flex-col sm:flex-row gap-3 md:gap-4 justify-center lg:justify-start px-4 sm:px-0'>
               <Link
                 prefetch={false}
-                href={installerUrl || 'https://github.com/steam-game-idler/steam-game-idler/releases/latest'}
+                href={installerUrl || 'https://github.com/zevnda/steam-game-idler/releases/latest'}
                 className='group inline-flex items-center justify-center px-6 sm:px-6 md:px-8 py-3 sm:py-3 md:py-4 bg-linear-to-r from-purple-500 to-pink-500 text-white font-bold rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all duration-200 transform hover:scale-105 shadow-lg text-sm md:text-base'
               >
                 <FaWindows className='w-4 h-4 md:w-5 md:h-5 mr-2 md:mr-3' />

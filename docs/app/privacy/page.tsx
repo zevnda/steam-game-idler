@@ -377,7 +377,7 @@ export default function PrivacyPolicy(): ReactElement {
               Steam Game Idler is fully open source. You can review our code, data handling practices, and security
               measures at our
               <a
-                href='https://github.com/steam-game-idler/steam-game-idler'
+                href='https://github.com/zevnda/steam-game-idler'
                 className='text-blue-400 hover:text-blue-300 underline'
                 target='_blank'
                 rel='noopener noreferrer'
@@ -412,7 +412,7 @@ export default function PrivacyPolicy(): ReactElement {
               <li>
                 <strong>GitHub Issues:</strong>{' '}
                 <a
-                  href='https://github.com/steam-game-idler/steam-game-idler/issues'
+                  href='https://github.com/zevnda/steam-game-idler/issues'
                   className='text-blue-400 hover:text-blue-300 underline'
                   target='_blank'
                   rel='noopener noreferrer'
@@ -423,7 +423,7 @@ export default function PrivacyPolicy(): ReactElement {
               <li>
                 <strong>GitHub Discussions:</strong>{' '}
                 <a
-                  href='https://github.com/steam-game-idler/steam-game-idler/discussions'
+                  href='https://github.com/zevnda/steam-game-idler/discussions'
                   className='text-blue-400 hover:text-blue-300 underline'
                   target='_blank'
                   rel='noopener noreferrer'
