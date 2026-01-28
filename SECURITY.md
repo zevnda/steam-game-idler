@@ -7,4 +7,4 @@ Please ensure you are using the most up-to-date version before reporting vulnera
 
 ## Reporting a Vulnerability
 
-If you discover a security vulnerability, please **do not** disclose it publicly. Instead, [open a security advisory](https://github.com/zevnda/steam-game-idler/security/advisories/new) or [email me directly](mailto:zevnda@gmail.com)
+If you discover a security vulnerability, please **do not** disclose it publicly. Instead, [open a security advisory](https://github.com/steam-game-idler/steam-game-idler/security/advisories/new) or [email me directly](mailto:contact@steamgameidler.com)

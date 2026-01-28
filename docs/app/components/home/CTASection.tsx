@@ -11,7 +11,7 @@ export default function CTASection(): ReactElement {
 
   useEffect(() => {
     try {
-      fetch('https://api.github.com/repos/zevnda/steam-game-idler/releases/latest')
+      fetch('https://api.github.com/repos/steam-game-idler/steam-game-idler/releases/latest')
         .then(response => response.json())
         .then(data => {
           const installer = data.assets?.find((asset: { name: string }) => asset.name.endsWith('_x64-setup.exe'))
@@ -57,7 +57,7 @@ export default function CTASection(): ReactElement {
           <div className='flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center mb-12 sm:mb-16 px-4 sm:px-0'>
             <Link
               prefetch={false}
-              href={installerUrl || 'https://github.com/zevnda/steam-game-idler/releases/latest'}
+              href={installerUrl || 'https://github.com/steam-game-idler/steam-game-idler/releases/latest'}
               className='group inline-flex items-center justify-center px-8 sm:px-10 py-4 sm:py-5 bg-white text-indigo-700 font-black text-base sm:text-lg rounded-xl hover:bg-cyan-100 transform hover:scale-105 transition-all duration-200 shadow-2xl'
             >
               <FaWindows className='w-4 h-4 md:w-5 md:h-5 mr-2 md:mr-3' />

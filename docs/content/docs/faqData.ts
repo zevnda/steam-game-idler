@@ -265,7 +265,7 @@ export const faqData: FAQEntry[] = [
       '>\n' +
       '> * You are logged in to the Steam client with a different account than you are using in SGI. Most features in SGI require you to be logged in to the same account in both the Steam client and SGI\n' +
       '>\n' +
-      '> If you confirm that you are logged in to the same account in both SGI and the Steam client and the error message persists, please report the issue on the [GitHub Issues page](https://github.com/zevnda/steam-game-idler/issues).',
+      '> If you confirm that you are logged in to the same account in both SGI and the Steam client and the error message persists, please report the issue on the [GitHub Issues page](https://github.com/steam-game-idler/steam-game-idler/issues).',
   },
   {
     question: 'Incorrect card farming credentials',

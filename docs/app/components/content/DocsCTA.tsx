@@ -9,7 +9,7 @@ export default function DocsCTA() {
   const [installerUrl, setInstallerUrl] = useState<string>('')
 
   useEffect(() => {
-    fetch('https://api.github.com/repos/zevnda/steam-game-idler/releases/latest')
+    fetch('https://api.github.com/repos/steam-game-idler/steam-game-idler/releases/latest')
       .then(res => res.json())
       .then(data => {
         const installer = data.assets?.find((asset: { name: string }) => asset.name.endsWith('_x64-setup.exe'))
@@ -32,7 +32,7 @@ export default function DocsCTA() {
         <div className='flex flex-col sm:flex-row gap-3'>
           <Link
             prefetch={false}
-            href={installerUrl || 'https://github.com/zevnda/steam-game-idler/releases/latest'}
+            href={installerUrl || 'https://github.com/steam-game-idler/steam-game-idler/releases/latest'}
             className='inline-flex items-center justify-center px-4 py-2 bg-neutral-900 text-white text-sm font-medium rounded-md hover:bg-neutral-800 transition-colors dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-200'
           >
             <FaWindows className='w-4 h-4 mr-2' />
@@ -41,7 +41,7 @@ export default function DocsCTA() {
 
           <Link
             prefetch={false}
-            href='https://github.com/zevnda/steam-game-idler'
+            href='https://github.com/steam-game-idler/steam-game-idler'
             target='_blank'
             rel='noopener noreferrer'
             className='inline-flex items-center justify-center px-4 py-2 border border-neutral-300 text-neutral-700 text-sm font-medium rounded-md hover:bg-neutral-100 transition-colors dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800'
