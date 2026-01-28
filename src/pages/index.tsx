@@ -1,18 +1,16 @@
-import type { ReactElement } from 'react'
+import { emit } from '@tauri-apps/api/event'
 
-import ErrorBoundary from '@/components/layout/ErrorBoundary'
-import Layout from '@/components/layout/Layout'
-import Window from '@/components/layout/Window'
-import I18nProvider from '@/components/ui/i18n/I18nProvider'
+import { useEffect } from 'react'
 
-export default function Index(): ReactElement {
+export default function Index() {
+  // Emits the 'ready' event to Tauri backend when the component is mounted
+  useEffect(() => {
+    emit('ready')
+  }, [])
+
   return (
-    <ErrorBoundary>
-      <I18nProvider>
-        <Layout>
-          <Window />
-        </Layout>
-      </I18nProvider>
-    </ErrorBoundary>
+    <div className='bg-black h-screen w-screen'>
+      <p>Entry point</p>
+    </div>
   )
 }
