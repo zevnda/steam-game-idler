@@ -69,3 +69,6 @@ public/robots.txt
 
 # Keys
 *.pem
+
+# Scripts
+*.ps1
