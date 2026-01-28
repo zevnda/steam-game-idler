@@ -20,17 +20,12 @@ const compat = new FlatCompat({
 const config = [
   {
     ignores: [
+      'node_modules/**/*',
+      'public/**/*',
       '.next/**/*',
       'out/**/*',
-      'node_modules/**/*',
-      'src-tauri/**/*',
-      'docs/public/**/*',
-      'docs/.next/**/*',
-      'docs/out/**/*',
-      'docs/.source/**/*',
-      'docs/node_modules/**/*',
+      '.source/**/*',
       '*.d.ts',
-      'docs/*.d.ts',
     ],
   },
   ...compat.extends('plugin:@typescript-eslint/recommended'),
