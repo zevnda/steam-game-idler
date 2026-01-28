@@ -1,6 +1,6 @@
 # Set to true to add reviewers to pull requests
 addReviewers: false
-# A list of assignees, overrides reviewers if set
-assignees:
+# A list of reviewers to be added to pull requests (GitHub user name)
+reviewers:
   - zevnda
   - Autapomorph
