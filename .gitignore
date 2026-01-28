@@ -1,50 +1,71 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# Visual Studio
-.vs
-
-# dependencies
-/node_modules
-/.pnp
+# Dependencies
+node_modules/
+.pnp/
 .pnp.js
 .yarn/install-state.gz
 
-# testing
-/coverage
+# env files
+.env*
+!.env.example
 
-# next.js
-/.next/
-/out/
+# Tests
+coverage/
+.nyc_output/
 
-# production
-/build
+# Production
+.next/
+out/
+build/
 
-# misc
+# Generated content
+.source/
+
+# OS
 .DS_Store
-*.pem
 
-# debug
+# Logs
+logs
+*.log
 npm-debug.log*
+pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-# local env files
-.env*
-
-# vercel
-.vercel
+lerna-debug.log*
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
 
-# tauri
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+.vs/
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Vercel
+.vercel/
+
+# Tauri
 src-tauri/target
 src-tauri/libs
 src-tauri/gen
 .window-state.json
 
-# rust-analyzer
-target
+# Sitemap
+_pagefind/
+public/sitemap*.xml
+public/robots.txt
 
-*.ps1
+# Keys
+*.pem
