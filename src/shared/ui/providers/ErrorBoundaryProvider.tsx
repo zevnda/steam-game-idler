@@ -1,6 +1,6 @@
 import { type PropsWithChildren } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
-import { CustomErrorFallback } from './CustomErrorFallback'
+import { CustomErrorFallback } from '../error-boundaries/CustomErrorFallback'
 
 type Props = PropsWithChildren
 
