@@ -1,3 +1,7 @@
-interface Window {
-  lastComponentStack?: string;
+declare global {
+  interface Window {
+      lastComponentStack?: string;
+  }
 }
+
+export {}
