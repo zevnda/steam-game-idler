@@ -24,6 +24,7 @@
       "@/*": ["./src/*"]
     }
   },
+  "typeRoots": ["./node_modules/@types", "./src/@types"],
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules", "src-tauri", "docs"]
 }
