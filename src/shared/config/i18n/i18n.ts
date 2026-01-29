@@ -27,9 +27,9 @@ i18n
     partialBundledLanguages: true,
 
     fallbackLng: {
+      be: ['ru'],
+      uk: ['ru'],
       kk: ['ru'],
-      ua: ['ru'],
-      by: ['ru'],
       default: ['en-US'],
     },
 
