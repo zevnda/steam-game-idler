@@ -1,3 +1,14 @@
 {
-  "sample": "Пример текста"
+  "sample": "Sample Text",
+  "error_boundary": {
+    "title": "Что-то пошло не так",
+    "description": "Во время работы приложения произошла ошибка",
+    "stack_trace": "Стек-трейс",
+    "no_stack_trace": "Стек-трейс недоступен",
+    "report_on_github": "Сообщить о проблеме"
+  },
+  "common": {
+    "reload_button": "Обновить",
+    "error": "Ошибка"
+  }
 }
