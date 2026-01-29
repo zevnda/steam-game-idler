@@ -1,9 +1,8 @@
 import type { PropsWithChildren } from 'react'
 
 import { useEffect, useState } from 'react'
-import { I18nextProvider } from 'react-i18next'
-
 import { i18n } from '@/shared/config'
+import { I18nextProvider } from 'react-i18next'
 
 type Props = PropsWithChildren
 
