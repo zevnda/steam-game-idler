@@ -4,8 +4,7 @@ import { HeroUIProvider } from '@heroui/react'
 
 import '@/styles/globals.css'
 
-import '@/shared/config'
-import { ThemeProvider } from '@/shared/ui'
+import { ThemeProvider, I18nProvider } from '@/shared/ui'
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -16,9 +15,11 @@ export default function App({ Component, pageProps }: AppProps) {
       defaultTheme='dark'
       disableTransitionOnChange
     >
-      <HeroUIProvider>
-        <Component {...pageProps} />
-      </HeroUIProvider>
+      <I18nProvider>
+        <HeroUIProvider>
+          <Component {...pageProps} />
+        </HeroUIProvider>
+      </I18nProvider>
     </ThemeProvider>
   )
 }
