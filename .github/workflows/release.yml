@@ -233,9 +233,9 @@ jobs:
           $updatedLatest = $latest -replace $previousVersion, $newVersion
           $updatedLatest | Set-Content latest.json
 
-      - name: Create .env.prod file
+      - name: Create .env.production file
         run: |
-          echo "KEY=${{ secrets.KEY }}" > .env.prod
+          echo "KEY=${{ secrets.KEY }}" > .env.production
         shell: pwsh
         working-directory: ${{ github.workspace }}
 

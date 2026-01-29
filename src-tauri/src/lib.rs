@@ -40,7 +40,7 @@ pub fn run() {
                 std::env::set_var("KEY", key);
             },
             _ => {
-                dotenv::from_filename(".env.dev").unwrap().load();
+                dotenv::from_filename(".env.development").unwrap().load();
             }
         }
     } else {

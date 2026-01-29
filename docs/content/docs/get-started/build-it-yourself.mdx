@@ -46,9 +46,9 @@ import { File, Folder, Files } from 'fumadocs-ui/components/files';
   <Step>
     ### Create Environment Files
 
-    Create a `.env.dev` and `.env.prod` file in the root of `steam-game-idler`
+    Create a `.env.development` and `.env.production` file in the root of `steam-game-idler`
 
-    Add a `KEY` variable containing your [Steam Web API Key](https://steamcommunity.com/dev/apikey) to both `.env.dev` and `.env.prod`
+    Add a `KEY` variable containing your [Steam Web API Key](https://steamcommunity.com/dev/apikey) to both `.env.development` and `.env.production`
 
     <Files>
       <Folder name="steam-game-idler" defaultOpen>
@@ -61,18 +61,18 @@ import { File, Folder, Files } from 'fumadocs-ui/components/files';
         <Folder name="src-tauri" defaultOpen>
             <Folder name="tauri.conf.json" />
         </Folder>
-        <File name=".env.dev" className='bg-fd-primary/10 text-fd-primary hover:bg-fd-primary/20 hover:text-fd-primary' />
-        <File name=".env.prod" className='bg-fd-primary/10 text-fd-primary hover:bg-fd-primary/20 hover:text-fd-primary' />
+        <File name=".env.development" className='bg-fd-primary/10 text-fd-primary hover:bg-fd-primary/20 hover:text-fd-primary' />
+        <File name=".env.production" className='bg-fd-primary/10 text-fd-primary hover:bg-fd-primary/20 hover:text-fd-primary' />
         <File name="pnpm-lock.yaml" />
         <File name="package.json" />
       </Folder>
     </Files>
 
-    ```ini title=".env.dev" copy
+    ```ini title=".env.development" copy
     KEY="ABC123******789XYZ"
     ```
 
-    ```ini title=".env.prod" copy
+    ```ini title=".env.production" copy
     KEY="ABC123******789XYZ"
     ```
   </Step>
