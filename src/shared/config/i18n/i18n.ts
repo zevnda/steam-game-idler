@@ -3,7 +3,6 @@ import LanguageDetector from 'i18next-browser-languagedetector'
 import { initReactI18next } from 'react-i18next'
 
 import { config } from '../env'
-
 import translationENUS from './locales/en-US/translation.json'
 import translationRU from './locales/ru/translation.json'
 
