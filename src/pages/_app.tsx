@@ -4,8 +4,7 @@ import { HeroUIProvider } from '@heroui/react'
 
 import '@/styles/globals.css'
 
-import { ThemeProvider, I18nProvider } from '@/shared/ui'
-import ErrorBoundaryProvider from '@/shared/ui/providers/ErrorBoundaryProvider'
+import { ThemeProvider, I18nProvider, ErrorBoundaryProvider } from '@/shared/ui'
 
 export default function App({ Component, pageProps }: AppProps) {
   return (

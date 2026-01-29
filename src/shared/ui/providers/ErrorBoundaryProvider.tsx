@@ -1,9 +1,7 @@
-import type { ReactNode } from 'react'
-import type { FallbackProps } from 'react-error-boundary'
-import { ErrorBoundary } from 'react-error-boundary'
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
+import { ErrorBoundary, type FallbackProps } from 'react-error-boundary'
 import { FaBug } from 'react-icons/fa'
-import PrimaryButton from '@/shared/ui/PrimaryButton'
+import { PrimaryButton } from '../PrimaryButton'
 
 interface ErrorBoundaryProviderProps {
   children: ReactNode
@@ -106,12 +104,10 @@ function onError(_: unknown, info: ErrorInfo) {
   ;(window as WindowWithComponentStack).lastComponentStack = info.componentStack ?? ''
 }
 
-function ErrorBoundaryProvider({ children }: ErrorBoundaryProviderProps) {
+export function ErrorBoundaryProvider({ children }: ErrorBoundaryProviderProps) {
   return (
     <ErrorBoundary FallbackComponent={CustomErrorFallback} onError={onError}>
       {children}
     </ErrorBoundary>
   )
 }
-
-export default ErrorBoundaryProvider

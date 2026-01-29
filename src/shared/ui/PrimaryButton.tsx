@@ -1,24 +1,15 @@
-import { Button, cn } from '@heroui/react'
-import type { ReactNode } from 'react'
+import { type ReactNode } from 'react'
+import { Button, cn, type ButtonProps } from '@heroui/react'
 
-interface ButtonProps {
-  size?: 'sm' | 'md' | 'lg'
-  className?: string
-  onPress?: () => void
-  children: ReactNode
-}
-
-export default function PrimaryButton({
+export function PrimaryButton({
   children,
-  size = 'sm',
-  onPress,
   className = '',
-}: ButtonProps) {
+  ...props
+}: ButtonProps & { children: ReactNode }) {
   return (
     <Button
-      size={size}
-      onPress={onPress}
       className={cn('font-semibold bg-gray-200 text-gray-800 rounded-full', className)}
+      {...props}
     >
       {children}
     </Button>
