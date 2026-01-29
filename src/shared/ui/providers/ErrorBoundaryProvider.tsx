@@ -3,7 +3,7 @@ import type { FallbackProps } from 'react-error-boundary'
 import { ErrorBoundary } from 'react-error-boundary'
 import { useState } from 'react'
 import { FaBug } from 'react-icons/fa'
-import PrimaryButton from '@/shared/ui/components/PrimaryButton'
+import PrimaryButton from '@/shared/ui/PrimaryButton'
 
 interface ErrorBoundaryProviderProps {
   children: ReactNode
