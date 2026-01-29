@@ -4,6 +4,7 @@ import { HeroUIProvider } from '@heroui/react'
 
 import '@/styles/globals.css'
 
+import '@/shared/config'
 import { ThemeProvider } from '@/styles/ThemeProvider'
 
 export default function App({ Component, pageProps }: AppProps) {
