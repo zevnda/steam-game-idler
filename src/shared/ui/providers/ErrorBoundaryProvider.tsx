@@ -14,7 +14,7 @@ function onError(_: unknown, info: ErrorInfo) {
   window.lastComponentStack = info.componentStack ?? ''
 }
 
-export function ErrorBoundaryProvider({ children }: Props) {
+export const ErrorBoundaryProvider = ({ children }: Props) => {
   return (
     <ErrorBoundary FallbackComponent={GlobalErrorFallback} onError={onError}>
       {children}

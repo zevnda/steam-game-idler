@@ -4,7 +4,7 @@ import { createRoot } from 'react-dom/client'
 
 import { bootstrap } from './app/bootstrap'
 
-async function start() {
+const start = async () => {
   await bootstrap()
 
   const container = document.getElementById('root')!

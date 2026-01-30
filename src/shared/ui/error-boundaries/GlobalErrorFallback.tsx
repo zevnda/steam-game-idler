@@ -9,7 +9,7 @@ interface ErrorInfo {
   componentStack?: string | null
 }
 
-export function GlobalErrorFallback({ error }: FallbackProps) {
+export const GlobalErrorFallback = ({ error }: FallbackProps) => {
   const { t } = useTranslation()
   const [errorInfo, setErrorInfo] = useState<ErrorInfo | null>(null)
 

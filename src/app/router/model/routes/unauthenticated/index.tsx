@@ -1,6 +1,7 @@
+import type { RouteObject } from 'react-router'
+
 import { SignInPage } from '@/pages/auth/sign-in'
 import { UnauthenticatedLayout } from '@/shared/ui'
-import { type RouteObject } from 'react-router'
 
 export const unauthenticatedRoute: RouteObject = {
   element: <UnauthenticatedLayout />,
