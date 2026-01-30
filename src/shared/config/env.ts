@@ -8,7 +8,7 @@ const validationSchema = z.object({
 
 const validatedConfig = validationSchema.parse(import.meta.env)
 
-interface AppConfig {
+export interface AppConfig {
   MODE: 'production' | 'development' | 'test'
   isProd: boolean
   isDev: boolean
