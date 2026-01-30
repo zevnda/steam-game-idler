@@ -2,7 +2,7 @@ import type { PropsWithChildren } from 'react'
 
 import { ErrorBoundary } from 'react-error-boundary'
 
-import { CustomErrorFallback } from '../error-boundaries/CustomErrorFallback'
+import { GlobalErrorFallback } from '../error-boundaries/GlobalErrorFallback'
 
 type Props = PropsWithChildren
 
@@ -16,7 +16,7 @@ function onError(_: unknown, info: ErrorInfo) {
 
 export function ErrorBoundaryProvider({ children }: Props) {
   return (
-    <ErrorBoundary FallbackComponent={CustomErrorFallback} onError={onError}>
+    <ErrorBoundary FallbackComponent={GlobalErrorFallback} onError={onError}>
       {children}
     </ErrorBoundary>
   )

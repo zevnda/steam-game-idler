@@ -1,5 +1,10 @@
 {
-  "sample": "Sample Text",
+  "sample": "Пример текста",
+
+  "app": {
+    "title": "Steam Game Idler"
+  },
+
   "error_boundary": {
     "title": "Что-то пошло не так",
     "description": "Во время работы приложения произошла ошибка",

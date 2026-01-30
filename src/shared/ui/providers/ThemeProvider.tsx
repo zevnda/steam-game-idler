@@ -6,5 +6,16 @@ import { ThemeProvider as NextThemesProvider } from 'next-themes'
 type ThemeProviderProps = PropsWithChildren & Omit<NextThemesProviderProps, 'children'>
 
 export const ThemeProvider = ({ children, ...props }: ThemeProviderProps) => {
-  return <NextThemesProvider {...props}>{children}</NextThemesProvider>
+  return (
+    <NextThemesProvider
+      attribute='class'
+      themes={['dark']}
+      enableSystem
+      defaultTheme='dark'
+      disableTransitionOnChange
+      {...props}
+    >
+      {children}
+    </NextThemesProvider>
+  )
 }

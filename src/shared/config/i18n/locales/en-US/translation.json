@@ -1,5 +1,10 @@
 {
   "sample": "Sample Text",
+
+  "app": {
+    "title": "Steam Game Idler"
+  },
+
   "error_boundary": {
     "title": "Something went wrong.",
     "description": "An error occurred while rendering the application.",

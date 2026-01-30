@@ -15,32 +15,32 @@ export const ns = ['translation'] as const
 
 export const defaultNS = 'translation' as const
 
-i18n
-  .use(LanguageDetector)
-  .use(initReactI18next)
-  .init({
-    debug: config.isDev,
-    resources,
-    ns,
-    defaultNS,
-    partialBundledLanguages: true,
+export const initI18n = () => {
+  i18n
+    .use(LanguageDetector)
+    .use(initReactI18next)
+    .init({
+      debug: config.isDev,
+      resources,
+      ns,
+      defaultNS,
+      partialBundledLanguages: true,
 
-    fallbackLng: {
-      be: ['ru'],
-      uk: ['ru'],
-      kk: ['ru'],
-      default: ['en-US'],
-    },
+      fallbackLng: {
+        be: ['ru'],
+        uk: ['ru'],
+        kk: ['ru'],
+        default: ['en-US'],
+      },
 
-    detection: {
-      order: ['localStorage', 'navigator'],
-      lookupLocalStorage: 'locale',
-      caches: ['localStorage'],
-    },
+      detection: {
+        order: ['localStorage', 'navigator'],
+        lookupLocalStorage: 'locale',
+        caches: ['localStorage'],
+      },
 
-    interpolation: {
-      escapeValue: false,
-    },
-  })
-
-export { i18n }
+      interpolation: {
+        escapeValue: false,
+      },
+    })
+}

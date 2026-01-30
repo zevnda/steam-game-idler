@@ -5,10 +5,10 @@
   "version": "3.0.0",
   "identifier": "com.zevnda.steam-game-idler",
   "build": {
-    "beforeDevCommand": "pnpm run dev",
-    "beforeBuildCommand": "pnpm run build",
+    "beforeDevCommand": "pnpm dev",
+    "beforeBuildCommand": "pnpm build",
     "devUrl": "http://localhost:3000",
-    "frontendDist": "../out"
+    "frontendDist": "../dist"
   },
   "bundle": {
     "active": true,
