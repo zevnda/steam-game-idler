@@ -1,6 +1,7 @@
 export { ThemeProvider } from './providers/ThemeProvider'
 export { ErrorBoundaryProvider } from './providers/ErrorBoundaryProvider'
 export { MainLayout } from './layouts/MainLayout'
+export { UnauthenticatedLayout } from './layouts/UnauthenticatedLayout'
 export { GlobalErrorFallback } from './error-boundaries/GlobalErrorFallback'
 export { FullScreenLoader } from './loaders/FullScreenLoader'
 export { PrimaryButton } from './buttons/PrimaryButton'

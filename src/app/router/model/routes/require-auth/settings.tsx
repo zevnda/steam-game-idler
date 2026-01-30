@@ -1,15 +1,15 @@
 import type { RouteObject } from 'react-router'
 
-import { HomePage } from '@/pages/home'
+import { SettingsPage } from '@/pages/settings'
 import { MainLayout } from '@/shared/ui'
 
-export const homeRoute: RouteObject = {
+export const settingsRoute: RouteObject = {
   element: <MainLayout />,
   children: [
     {
       path: '/',
       index: true,
-      element: <HomePage />,
+      element: <SettingsPage />,
     },
   ],
 }

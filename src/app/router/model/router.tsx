@@ -2,8 +2,9 @@ import { Suspense } from 'react'
 import { FullScreenLoader } from '@/shared/ui'
 import { createBrowserRouter, Outlet, ScrollRestoration } from 'react-router'
 
-import { homeRoute } from './routes/home'
 import { notFoundRoute } from './routes/not-found'
+import { requireAuthRoute } from './routes/require-auth'
+import { unauthenticatedRoute } from './routes/unauthenticated'
 
 export const router = createBrowserRouter([
   {
@@ -15,6 +16,6 @@ export const router = createBrowserRouter([
         </Suspense>
       </>
     ),
-    children: [homeRoute, notFoundRoute],
+    children: [unauthenticatedRoute, requireAuthRoute, notFoundRoute],
   },
 ])
