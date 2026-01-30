@@ -1,15 +1,15 @@
 import { z } from 'zod'
 
 const validationSchema = z.object({
-  NODE_ENV: z.enum(['production', 'development', 'test']),
+  MODE: z.enum(['production', 'development', 'test']),
+  DEV: z.boolean(),
+  PROD: z.boolean(),
 })
 
-const validatedConfig = validationSchema.parse({
-  NODE_ENV: process.env.NODE_ENV,
-})
+const validatedConfig = validationSchema.parse(import.meta.env)
 
 interface AppConfig {
-  NODE_ENV: 'production' | 'development' | 'test'
+  MODE: 'production' | 'development' | 'test'
   isProd: boolean
   isDev: boolean
   isTest: boolean
@@ -17,10 +17,10 @@ interface AppConfig {
 
 const getConfig = (): AppConfig => {
   return {
-    NODE_ENV: validatedConfig.NODE_ENV,
-    isProd: validatedConfig.NODE_ENV === 'production',
-    isDev: validatedConfig.NODE_ENV === 'development',
-    isTest: validatedConfig.NODE_ENV === 'test',
+    MODE: validatedConfig.MODE,
+    isProd: validatedConfig.PROD || validatedConfig.MODE === 'production',
+    isDev: validatedConfig.DEV || validatedConfig.MODE === 'development',
+    isTest: validatedConfig.MODE === 'test',
   }
 }
 

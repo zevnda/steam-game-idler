@@ -3,13 +3,13 @@ import type { FallbackProps } from 'react-error-boundary'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { PrimaryButton } from '../PrimaryButton'
+import { PrimaryButton } from '../buttons/PrimaryButton'
 
 interface ErrorInfo {
   componentStack?: string | null
 }
 
-export function CustomErrorFallback({ error }: FallbackProps) {
+export function GlobalErrorFallback({ error }: FallbackProps) {
   const { t } = useTranslation()
   const [errorInfo, setErrorInfo] = useState<ErrorInfo | null>(null)
 
