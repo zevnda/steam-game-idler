@@ -1,18 +1,22 @@
 import { cn } from '@heroui/react'
 import { VscChromeClose, VscChromeMaximize, VscChromeMinimize } from 'react-icons/vsc'
 
-import { Menu } from '@/shared/ui/title-bar/Menu'
-import { windowClose, windowMinimize, windowToggleMaximize } from '@/shared/ui/title-bar/title-bar'
+import { HelpDesk } from '@/shared/ui/title-bar/components/HelpDesk'
+import { Menu } from '@/shared/ui/title-bar/components/Menu'
+import { windowClose, windowMinimize, windowToggleMaximize } from '@/shared/ui/title-bar/utils'
 
 // TODO:
 // Add compat with sidebar when implemented
-// Only render menu when isAuthenticated
+// Only render menu and notifications when isAuthenticated
 
 export const TitleBar = () => {
   return (
     <div className='absolute top-0 left-0 select-none flex items-center h-9' data-tauri-drag-region>
       <div className='flex justify-end w-screen' data-tauri-drag-region>
         <div className='flex justify-center items-center'>
+          {/* Helpdesk */}
+          <HelpDesk />
+
           {/* Dropdown Menu */}
           <Menu />
 

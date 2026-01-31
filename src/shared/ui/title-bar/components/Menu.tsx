@@ -61,7 +61,7 @@ export const Menu = () => {
             }}
             onPress={() => openExternalLink('https://steamgameidler.com/docs/')}
           >
-            {t('titlebar_menu.user_guide')}
+            {t('titlebar.menu.user_guide')}
           </DropdownItem>
 
           <DropdownItem
@@ -76,7 +76,7 @@ export const Menu = () => {
               openExternalLink(`${githubIssueUrl}bug+report&projects=&template=bug_report.yml`)
             }
           >
-            {t('titlebar_menu.report_issue')}
+            {t('titlebar.menu.report_issue')}
           </DropdownItem>
 
           <DropdownItem
@@ -94,7 +94,7 @@ export const Menu = () => {
               )
             }
           >
-            {t('titlebar_menu.request_feature')}
+            {t('titlebar.menu.request_feature')}
           </DropdownItem>
 
           <DropdownItem
@@ -108,7 +108,7 @@ export const Menu = () => {
             }}
             onPress={() => openExternalLink('https://github.com/sponsors/zevnda')}
           >
-            {t('titlebar_menu.support_project')}
+            {t('titlebar.menu.support_project')}
           </DropdownItem>
 
           <DropdownItem
@@ -122,7 +122,7 @@ export const Menu = () => {
             }}
             onPress={() => openExternalLink('https://discord.com/invite/5kY2ZbVnZ8')}
           >
-            {t('titlebar_menu.join_discord')}
+            {t('titlebar.menu.join_discord')}
           </DropdownItem>
 
           <DropdownItem
@@ -135,7 +135,7 @@ export const Menu = () => {
             }}
             // onPress={() => setShowChangelog(true)}
           >
-            {t('titlebar_menu.view_changelog')}
+            {t('titlebar.menu.view_changelog')}
           </DropdownItem>
 
           {isPortable ? (
@@ -149,7 +149,7 @@ export const Menu = () => {
               }}
               // onPress={handleUpdate}
             >
-              {t('titlebar_menu.check_for_updates')}
+              {t('titlebar.menu.check_for_updates')}
             </DropdownItem>
           ) : null}
         </DropdownMenu>

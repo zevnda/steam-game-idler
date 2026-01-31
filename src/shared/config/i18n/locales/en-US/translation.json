@@ -5,14 +5,20 @@
     "title": "Steam Game Idler"
   },
 
-  "titlebar_menu": {
-    "user_guide": "User Guide",
-    "report_issue": "Report an Issue",
-    "request_feature": "Request a Feature",
-    "support_project": "Support the Project",
-    "join_discord": "Join our Discord",
-    "view_changelog": "View Changelog",
-    "check_for_updates": "Check for Updates"
+  "titlebar": {
+    "menu": {
+      "user_guide": "User Guide",
+      "report_issue": "Report an Issue",
+      "request_feature": "Request a Feature",
+      "support_project": "Support the Project",
+      "join_discord": "Join our Discord",
+      "view_changelog": "View Changelog",
+      "check_for_updates": "Check for Updates"
+    },
+
+    "help_desk": {
+      "first_time_message": "<title>First time here?</title> <body>If you need help with anything, click the <iconWrapper><icon/></iconWrapper> to chat with us.</body>"
+    }
   },
 
   "error_boundary": {

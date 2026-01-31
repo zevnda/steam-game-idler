@@ -1,9 +1,12 @@
+import { invoke } from '@tauri-apps/api/core'
 import { getCurrentWindow } from '@tauri-apps/api/window'
 import {
   isPermissionGranted,
   requestPermission,
   sendNotification,
 } from '@tauri-apps/plugin-notification'
+
+import { useSettings } from '@/shared/stores'
 
 export async function windowMinimize() {
   try {
@@ -23,8 +26,14 @@ export async function windowToggleMaximize() {
 
 export async function windowClose() {
   try {
-    // TODO: Invoke `quit_app` when user has "close to tray" enabled
+    // If the user has not enabled "close to tray", quit the app
+    const { globalSettings } = useSettings.getState()
+    if (!globalSettings.closeToTray) {
+      await invoke('quit_app')
+      return
+    }
 
+    // Otherwise, hide the window and show a notification (only once)
     await getCurrentWindow().hide()
 
     const minToTrayNotified = localStorage.getItem('minToTrayNotified') ?? 'false'

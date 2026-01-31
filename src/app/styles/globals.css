@@ -87,3 +87,12 @@ body {
 svg {
   outline: none;
 }
+
+/* Chatway */
+
+.chatway--frame-container {
+  min-width: 550px !important;
+  top: 36px !important;
+  right: 36px !important;
+  left: auto !important;
+}

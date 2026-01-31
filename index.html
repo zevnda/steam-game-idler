@@ -9,5 +9,13 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script src="https://cdn.chatway.app/widget.js?id=1F2cY0TT2RKh" id="chatway"></script>
+    <script id="chatway-hide-icon">
+      window.$chatwayOnLoad = function () {
+        if (window.$chatway && typeof window.$chatway.hideChatwayIcon === 'function') {
+          window.$chatway.hideChatwayIcon()
+        }
+      }
+    </script>
   </body>
 </html>
