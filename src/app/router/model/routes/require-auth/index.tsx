@@ -1,9 +1,8 @@
 import type { RouteObject } from 'react-router'
-
-import { dashboardRoute } from '@/app/router/model/routes/require-auth/dashboard'
-import { settingsRoute } from '@/app/router/model/routes/require-auth/settings'
-import { RequireAuth } from '@/app/router/ui/RequireAuth'
 import { MainLayout } from '@/shared/ui'
+import { RequireAuth } from '../../../ui/RequireAuth'
+import { dashboardRoute } from './dashboard'
+import { settingsRoute } from './settings'
 
 export const requireAuthRoute: RouteObject = {
   element: <RequireAuth />,

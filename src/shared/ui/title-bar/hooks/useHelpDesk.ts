@@ -1,9 +1,7 @@
 import { getVersion } from '@tauri-apps/api/app'
-
 import { useCallback, useEffect, useState } from 'react'
-
-import { getRuntimeConfig } from '@/shared/config'
-import { useUserStore } from '@/shared/stores'
+import { getRuntimeConfig } from '../../../config'
+import { useUserStore } from '../../../stores'
 
 export function useHelpDesk() {
   const { isPortable } = getRuntimeConfig()
@@ -11,8 +9,8 @@ export function useHelpDesk() {
   const [isLoaded, setIsLoaded] = useState(false)
   const [showGuide, setShowGuide] = useState(false)
   const [hasUnread, setHasUnread] = useState(false)
-  const isPro = useUserStore(state => state.isPro)
   const userSummary = useUserStore(state => state.userSummary)
+  const isPro = useUserStore(state => state.isPro)
 
   // If it's the user's first time using SGI, show an overlay
   useEffect(() => {

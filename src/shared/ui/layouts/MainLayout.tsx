@@ -1,6 +1,5 @@
 import { Outlet } from 'react-router'
-
-import { ErrorBoundaryProvider } from '@/shared/ui/providers/ErrorBoundaryProvider'
+import { ErrorBoundaryProvider } from '../providers/ErrorBoundaryProvider'
 
 export const MainLayout = () => {
   return (

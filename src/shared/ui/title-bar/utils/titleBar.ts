@@ -5,8 +5,7 @@ import {
   requestPermission,
   sendNotification,
 } from '@tauri-apps/plugin-notification'
-
-import { useSettings } from '@/shared/stores'
+import { useSettings } from '../../../stores'
 
 export async function windowMinimize() {
   try {

@@ -1,6 +1,5 @@
 import { Navigate, Outlet } from 'react-router'
-
-import { FullScreenLoader } from '@/shared/ui/loaders/FullScreenLoader'
+import { FullScreenLoader } from '../loaders/FullScreenLoader'
 
 export const UnauthenticatedLayout = () => {
   // const { isAuthenticated, isLoading, error } = useAuth()

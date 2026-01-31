@@ -1,8 +1,6 @@
 import type { PropsWithChildren } from 'react'
-
 import { ErrorBoundary } from 'react-error-boundary'
-
-import { GlobalErrorFallback } from '@/shared/ui/error-boundaries/GlobalErrorFallback'
+import { GlobalErrorFallback } from '../error-boundaries/GlobalErrorFallback'
 
 type Props = PropsWithChildren
 

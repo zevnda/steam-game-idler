@@ -1,4 +1,4 @@
-import { isPortableInstall } from '@/shared/config/isPortableInstall'
+import { isPortableInstall } from './isPortableInstall'
 
 export interface RuntimeConfig {
   isPortable: boolean

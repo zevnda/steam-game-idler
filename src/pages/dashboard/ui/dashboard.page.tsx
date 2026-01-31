@@ -1,5 +1,4 @@
 import { useTranslation } from 'react-i18next'
-
 import { getRuntimeConfig } from '@/shared/config'
 
 export const DashboardPage = () => {

@@ -11,9 +11,8 @@ import {
   TbSquareRoundedChevronDown,
   TbStarFilled,
 } from 'react-icons/tb'
-
-import { getRuntimeConfig } from '@/shared/config/runtime'
-import { openExternalLink } from '@/shared/utils'
+import { getRuntimeConfig } from '../../config'
+import { openExternalLink } from '../../utils'
 
 // TODO: Uncomment lines when changelog modal and update handler are implemented
 
