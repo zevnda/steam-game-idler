@@ -1,8 +1,6 @@
-import type { GlobalSettings, UserSettings } from '@/@types/settings'
-
 import { Time } from '@internationalized/date'
-
 import { create } from 'zustand'
+import type { GlobalSettings, UserSettings } from '../types'
 
 interface Store {
   userSettings: UserSettings

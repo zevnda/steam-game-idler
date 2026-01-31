@@ -1,5 +1,5 @@
-import type { UserSummary } from '@/@types/user'
 import type { TimeInputValue } from '@heroui/react'
+import type { UserSummary } from './user'
 
 export interface UserSettings {
   general: GeneralSettings

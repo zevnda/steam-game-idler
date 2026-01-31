@@ -1,6 +1,5 @@
-import type { UserSummary } from '@/@types/user'
-
 import { create } from 'zustand'
+import type { UserSummary } from '../types'
 
 interface Store {
   userSummary: UserSummary
