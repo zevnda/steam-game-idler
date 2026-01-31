@@ -5,7 +5,7 @@
     "title": "Steam Game Idler"
   },
 
-  "titlebar": {
+  "title_bar": {
     "menu": {
       "user_guide": "User Guide",
       "report_issue": "Report an Issue",
