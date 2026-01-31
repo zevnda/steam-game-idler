@@ -1,9 +1,8 @@
 import { cn } from '@heroui/react'
 import { VscChromeClose, VscChromeMaximize, VscChromeMinimize } from 'react-icons/vsc'
-
-import { HelpDesk } from '@/shared/ui/title-bar/components/HelpDesk'
-import { Menu } from '@/shared/ui/title-bar/components/Menu'
-import { windowClose, windowMinimize, windowToggleMaximize } from '@/shared/ui/title-bar/utils'
+import { HelpDesk } from './HelpDesk'
+import { Menu } from './Menu'
+import { windowClose, windowMinimize, windowToggleMaximize } from './utils'
 
 // TODO:
 // Add compat with sidebar when implemented
