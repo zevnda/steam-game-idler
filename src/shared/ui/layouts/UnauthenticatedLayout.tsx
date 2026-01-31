@@ -1,6 +1,6 @@
 import { Navigate, Outlet } from 'react-router'
 
-import { FullScreenLoader } from '../loaders/FullScreenLoader'
+import { FullScreenLoader } from '@/shared/ui/loaders/FullScreenLoader'
 
 export const UnauthenticatedLayout = () => {
   // const { isAuthenticated, isLoading, error } = useAuth()
@@ -22,8 +22,9 @@ export const UnauthenticatedLayout = () => {
 
   return (
     <div>
-      <p>Example unauthenticated layout</p>
-      <Outlet />
+      <div className='bg-base pt-9'>
+        <Outlet />
+      </div>
     </div>
   )
 }

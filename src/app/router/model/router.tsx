@@ -1,10 +1,10 @@
 import { Suspense } from 'react'
-import { FullScreenLoader } from '@/shared/ui'
 import { createBrowserRouter, Outlet, ScrollRestoration } from 'react-router'
 
-import { notFoundRoute } from './routes/not-found'
-import { requireAuthRoute } from './routes/require-auth'
-import { unauthenticatedRoute } from './routes/unauthenticated'
+import { notFoundRoute } from '@/app/router/model/routes/not-found'
+import { requireAuthRoute } from '@/app/router/model/routes/require-auth'
+import { unauthenticatedRoute } from '@/app/router/model/routes/unauthenticated'
+import { FullScreenLoader } from '@/shared/ui'
 
 export const router = createBrowserRouter([
   {

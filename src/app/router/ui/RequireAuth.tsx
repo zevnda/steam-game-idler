@@ -1,5 +1,6 @@
-import { FullScreenLoader } from '@/shared/ui'
 import { Navigate, Outlet } from 'react-router'
+
+import { FullScreenLoader } from '@/shared/ui'
 
 export const RequireAuth = () => {
   // const { isAuthenticated, isLoading } = useAuth()

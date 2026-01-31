@@ -1,7 +1,8 @@
 import { HeroUIProvider } from '@heroui/react'
-import { ErrorBoundaryProvider, ThemeProvider } from '@/shared/ui'
 import { createHead, UnheadProvider } from '@unhead/react/client'
 import { TemplateParamsPlugin } from '@unhead/react/plugins'
+
+import { ErrorBoundaryProvider, ThemeProvider } from '@/shared/ui'
 
 type Props = React.PropsWithChildren
 

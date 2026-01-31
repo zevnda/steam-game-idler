@@ -1,6 +1,6 @@
 import { ns, defaultNS } from '@/shared/config';
 
-import translation from '../shared/config/i18n/locales/en-US/translation.json';
+import translation from '@/shared/config/i18n/locales/en-US/translation.json';
 
 const resources = {
   translation,

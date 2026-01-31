@@ -66,6 +66,12 @@ export default defineConfig([
       'class-methods-use-this': 'off',
       'no-restricted-syntax': 'off',
       'no-promise-executor-return': 'off',
+      'no-console': [
+        'warn',
+        {
+          allow: ['error', 'debug', 'warn'],
+        },
+      ],
       'no-param-reassign': [
         'error',
         {
@@ -126,7 +132,6 @@ export default defineConfig([
       '@typescript-eslint/no-redundant-type-constituents': 'off',
       '@typescript-eslint/method-signature-style': 'off',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
-
       '@typescript-eslint/no-use-before-define': [
         'error',
         {

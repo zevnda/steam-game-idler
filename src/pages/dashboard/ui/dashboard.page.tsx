@@ -1,5 +1,6 @@
-import { getRuntimeConfig } from '@/shared/config'
 import { useTranslation } from 'react-i18next'
+
+import { getRuntimeConfig } from '@/shared/config'
 
 export const DashboardPage = () => {
   const { t } = useTranslation()
@@ -7,7 +8,7 @@ export const DashboardPage = () => {
   const { isPortable } = getRuntimeConfig()
 
   return (
-    <div className='bg-black h-screen w-screen'>
+    <div className='h-calc w-screen'>
       <p>{t('sample')}</p>
       <p>{`isPortable: ${String(isPortable)}`}</p>
       <p>Dashboard Page</p>

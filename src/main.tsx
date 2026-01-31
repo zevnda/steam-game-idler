@@ -1,8 +1,8 @@
 import { StrictMode } from 'react'
-import { App } from '@/app/App'
 import { createRoot } from 'react-dom/client'
 
-import { bootstrap } from './app/bootstrap'
+import { App } from '@/app/App'
+import { bootstrap } from '@/app/bootstrap'
 
 const start = async () => {
   await bootstrap()

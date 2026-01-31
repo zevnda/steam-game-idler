@@ -2,9 +2,9 @@ import i18n from 'i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
 import { initReactI18next } from 'react-i18next'
 
-import { config } from '../env'
-import translationENUS from './locales/en-US/translation.json'
-import translationRU from './locales/ru/translation.json'
+import { config } from '@/shared/config/env'
+import translationENUS from '@/shared/config/i18n/locales/en-US/translation.json'
+import translationRU from '@/shared/config/i18n/locales/ru/translation.json'
 
 const resources = {
   'en-US': { translation: translationENUS },

@@ -1,0 +1,1 @@
+export { openExternalLink } from './openExternalLink'
