@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { Trans } from 'react-i18next'
 import { RiCustomerService2Line } from 'react-icons/ri'
 import { TbX } from 'react-icons/tb'
-import { useHelpDesk } from './hooks'
+import { useHelpDesk } from './hooks/useHelpDesk'
 
 export const HelpDesk = () => {
   const { isOpen, showGuide, hasUnread, handleToggle, handleClose, setShowGuide } = useHelpDesk()

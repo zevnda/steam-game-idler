@@ -1,6 +1,6 @@
 import { cn } from '@heroui/react'
 import { VscChromeClose, VscChromeMaximize, VscChromeMinimize } from 'react-icons/vsc'
-import { windowClose, windowMinimize, windowToggleMaximize } from './utils'
+import { windowClose, windowMinimize, windowToggleMaximize } from './utils/titleBar'
 import { HelpDesk } from './HelpDesk'
 import { Menu } from './Menu'
 
