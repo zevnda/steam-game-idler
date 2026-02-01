@@ -1,11 +1,25 @@
 {
-  "sample": "Sample Text",
   "error_boundary": {
     "title": "Something went wrong.",
     "description": "An error occurred while rendering the application.",
     "stack_trace": "Stack Trace",
     "no_stack_trace": "No stack trace available.",
     "report_on_github": "Report on GitHub"
+  },
+  "titlebar": {
+    "menu": {
+      "user_guide": "User Guide",
+      "report_issue": "Report an Issue",
+      "request_feature": "Request a Feature",
+      "support_project": "Support the Project",
+      "join_discord": "Join our Discord",
+      "view_changelog": "View Changelog",
+      "check_for_updates": "Check for Updates"
+    },
+
+    "help_desk": {
+      "first_time_message": "<title>First time here?</title> <body>If you need help with anything, click the <iconWrapper><icon/></iconWrapper> to chat with us.</body>"
+    }
   },
   "common": {
     "reload_button": "Reload",

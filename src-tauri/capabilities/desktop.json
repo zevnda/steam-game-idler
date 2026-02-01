@@ -43,16 +43,16 @@
     "core:window:allow-center",
     "core:webview:allow-webview-show",
     "core:event:allow-emit",
-    "shell:allow-open",
     "dialog:allow-ask",
     "notification:default",
     "process:allow-restart",
-    "shell:default",
     "window-state:default",
     "os:allow-arch",
     "os:allow-locale",
     "os:allow-platform",
     "os:allow-version",
+    "opener:default",
+    "opener:allow-open-url",
     "clipboard-manager:allow-read-text",
     "clipboard-manager:allow-write-text"
   ]

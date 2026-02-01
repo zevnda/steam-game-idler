@@ -1,0 +1,1 @@
+export { useIndex } from './useIndex'

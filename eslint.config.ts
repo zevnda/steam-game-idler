@@ -73,6 +73,12 @@ export default defineConfig([
           ignorePropertyModificationsFor: ['state', 'acc'],
         },
       ],
+      'no-console': [
+        'warn',
+        {
+          allow: ['error', 'debug', 'warn'],
+        },
+      ],
       'spaced-comment': [
         'error',
         'always',
@@ -80,7 +86,6 @@ export default defineConfig([
           markers: ['/'],
         },
       ],
-
       'import-x/extensions': 'off',
       'import-x/no-unresolved': 'error',
       'import-x/no-named-as-default': 'off',
@@ -91,7 +96,6 @@ export default defineConfig([
           devDependencies: true,
         },
       ],
-
       'react/prop-types': 'off',
       'react/react-in-jsx-scope': 'off',
       'react/function-component-definition': 'off',
@@ -100,7 +104,6 @@ export default defineConfig([
       'react/jsx-props-no-spreading': 'off',
       'react/jsx-one-expression-per-line': 'off',
       'react/require-default-props': [
-        // 'error',
         'off',
         {
           classes: 'ignore',
@@ -126,7 +129,6 @@ export default defineConfig([
       '@typescript-eslint/no-redundant-type-constituents': 'off',
       '@typescript-eslint/method-signature-style': 'off',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
-
       '@typescript-eslint/no-use-before-define': [
         'error',
         {

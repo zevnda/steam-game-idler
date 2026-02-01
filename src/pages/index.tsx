@@ -1,19 +1,10 @@
-import { emit } from '@tauri-apps/api/event'
+import { SignInPage } from '@/features/auth/ui'
+import { useIndex } from '../features/auth/hooks'
 
-import { useEffect } from 'react'
-import { useTranslation } from 'react-i18next'
+export const Index = () => {
+  useIndex()
 
-export default function Index() {
-  const { t } = useTranslation()
-
-  // Emits the 'ready' event to Tauri backend when the component is mounted
-  useEffect(() => {
-    emit('ready')
-  }, [])
-
-  return (
-    <div className='bg-black h-screen w-screen'>
-      <p>{t('sample')}</p>
-    </div>
-  )
+  return <SignInPage />
 }
+
+export default Index

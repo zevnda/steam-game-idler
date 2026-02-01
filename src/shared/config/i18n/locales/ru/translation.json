@@ -1,5 +1,4 @@
 {
-  "sample": "Sample Text",
   "error_boundary": {
     "title": "Что-то пошло не так",
     "description": "Во время работы приложения произошла ошибка",
