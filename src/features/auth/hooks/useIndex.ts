@@ -1,7 +1,7 @@
 import { useLoaderStore } from '@/shared/stores'
 import { emit } from '@tauri-apps/api/event'
 import { useEffect } from 'react'
-import { getSteamUsers } from '../utils'
+import { getSteamUsers } from '../utils/getSteamUsers'
 
 export const useIndex = () => {
   const { showLoader, hideLoader } = useLoaderStore()

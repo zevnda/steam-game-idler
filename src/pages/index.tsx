@@ -1,5 +1,4 @@
-import { SignInPage } from '@/features/auth/ui'
-import { useIndex } from '../features/auth/hooks'
+import { SignInPage, useIndex } from '@/features/auth'
 
 export const Index = () => {
   useIndex()
