@@ -1,7 +1,7 @@
 import type { InvokeUsers, InvokeUserSummary, UserSummary } from '@/shared/types'
 import { useSettings, useUserStore } from '@/shared/stores'
 import { invoke } from '@tauri-apps/api/core'
-import { decrypt } from '@/shared/utils'
+import { decrypt, logEvent } from '@/shared/utils'
 
 const processUserSummaries = (response: InvokeUserSummary, steamUsersData: UserSummary[]) => {
   const players = response.response.players || []
@@ -84,6 +84,8 @@ export const getSteamUsers = async () => {
       }
     }
   } catch (error) {
-    console.error('Error fetching Steam users:', error)
+    useUserStore.getState().setSteamUsers([])
+    console.error('[Error] in (getSteamUsers):', error)
+    logEvent(`[Error] in (getSteamUsers): ${error}`)
   }
 }

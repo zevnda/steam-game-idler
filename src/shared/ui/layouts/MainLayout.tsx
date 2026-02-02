@@ -21,7 +21,7 @@ export const MainLayout = ({ children }: React.PropsWithChildren) => {
         `}
       </Script>
 
-      <div className={`${inter.className} bg-base h-screen w-screen`}>
+      <div className={`${inter.className} bg-gradient-bg h-screen w-screen`}>
         <Titlebar />
         <main>{children}</main>
       </div>

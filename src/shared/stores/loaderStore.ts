@@ -1,18 +1,18 @@
 import { create } from 'zustand'
 
 interface LoaderStore {
-  visible: boolean
-  fadeOut: boolean
+  loaderVisible: boolean
+  loaderFadeOut: boolean
   showLoader: () => void
   hideLoader: () => void
 }
 
 export const useLoaderStore = create<LoaderStore>(set => ({
-  visible: false,
-  fadeOut: false,
-  showLoader: () => set({ visible: true, fadeOut: false }),
+  loaderVisible: true,
+  loaderFadeOut: false,
+  showLoader: () => set({ loaderVisible: true, loaderFadeOut: false }),
   hideLoader: () => {
-    set({ fadeOut: true })
-    setTimeout(() => set({ visible: false }), 250)
+    set({ loaderFadeOut: true })
+    setTimeout(() => set({ loaderVisible: false }), 250)
   },
 }))

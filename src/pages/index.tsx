@@ -1,9 +1,7 @@
-import { SignInPage, useIndex } from '@/features/auth'
+import { SignIn } from '@/features/auth'
 
 export const Index = () => {
-  useIndex()
-
-  return <SignInPage />
+  return <SignIn />
 }
 
 export default Index
