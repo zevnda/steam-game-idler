@@ -6,14 +6,14 @@ const unbounded = Unbounded({
   variable: '--font-unbounded',
 })
 
-export const FullScreenLoader = ({ fadeOut = false }: { fadeOut?: boolean }) => {
+export const FullScreenLoader = ({ loaderFadeOut = false }: { loaderFadeOut?: boolean }) => {
   return (
     <div
       className={cn(
         'fixed inset-0 w-screen h-screen z-9998 bg-base transition-opacity duration-250',
         {
-          'opacity-0 pointer-events-none': fadeOut,
-          'opacity-100': !fadeOut,
+          'opacity-0 pointer-events-none': loaderFadeOut,
+          'opacity-100': !loaderFadeOut,
         },
       )}
     >

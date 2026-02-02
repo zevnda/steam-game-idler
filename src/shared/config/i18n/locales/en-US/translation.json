@@ -1,11 +1,5 @@
 {
-  "error_boundary": {
-    "title": "Something went wrong.",
-    "description": "An error occurred while rendering the application.",
-    "stack_trace": "Stack Trace",
-    "no_stack_trace": "No stack trace available.",
-    "report_on_github": "Report on GitHub"
-  },
+  "app_name": "Steam Game Idler",
   "titlebar": {
     "menu": {
       "user_guide": "User Guide",
@@ -16,13 +10,36 @@
       "view_changelog": "View Changelog",
       "check_for_updates": "Check for Updates"
     },
-
     "help_desk": {
       "first_time_message": "<title>First time here?</title> <body>If you need help with anything, click the <iconWrapper><icon/></iconWrapper> to chat with us.</body>"
     }
   },
+  "sign_in": {
+    "choose_account": "Choose an account",
+    "no_accounts_found": "No Steam accounts found",
+    "account_instructions": "Please make sure you have Steam installed and you are signed in to at least one account, then click refresh.",
+    "hero": {
+      "title": "The Only Steam<br/>Automation Tool<br/>You Will Ever Need",
+      "subtitle": "Farm trading cards, unlock achievements, boost playtime, and automate your Steam experience — all in one tool."
+    }
+  },
   "common": {
-    "reload_button": "Reload",
-    "error": "Error"
+    "learn_more": "Learn more",
+    "need_help": "Need help?",
+    "refresh": "Refresh",
+    "reload": "Reload",
+    "continue": "Continue",
+    "error": "Error",
+    "an_error_occurred": "An error occurred. Check the logs for more information"
+  },
+  "toasts": {
+    "account_mismatch": "Account mismatch between Steam and Steam Game Idler. Please ensure you are signed in to the correct Steam account."
+  },
+  "error_boundary": {
+    "title": "Something went wrong.",
+    "description": "An error occurred while rendering the application.",
+    "stack_trace": "Stack Trace",
+    "no_stack_trace": "No stack trace available.",
+    "report_on_github": "Report on GitHub"
   }
 }

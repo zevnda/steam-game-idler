@@ -85,7 +85,7 @@ ${errorInfo?.componentStack ?? ''}
           </a>
 
           <PrimaryButton size='sm' onPress={() => window.location.reload()}>
-            {t('common.reload_button')}
+            {t('common.reload')}
           </PrimaryButton>
         </div>
       </div>
