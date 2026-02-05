@@ -1,0 +1,110 @@
+import type {
+  AchievementUnlockerSettings,
+  CardFarmingSettings,
+  GeneralSettings,
+} from '@/shared/types'
+import type { ChangeEvent, ReactElement } from 'react'
+import { cn, Switch } from '@heroui/react'
+import { useAchievementSettings } from '@/features/settings/achievement-unlocker/hooks/useAchievementSettings'
+import { useCardSettings } from '@/features/settings/card-farming/hooks/useCardSettings'
+import {
+  handleRunAtStartupChange,
+  useGeneralSettings,
+} from '@/features/settings/general/hooks/useGeneralSettings'
+import { handleCheckboxChange } from '@/features/settings/hooks/useSettings'
+import { useUserStore } from '@/shared/stores/userStore'
+import { antiAwayStatus } from '@/shared/utils/tasks'
+
+interface SettingsCheckboxProps {
+  type: 'general' | 'cardFarming' | 'achievementUnlocker'
+  name: string
+  isProSetting?: boolean
+}
+
+export default function SettingsSwitch({
+  type,
+  name,
+  isProSetting = false,
+}: SettingsCheckboxProps): ReactElement {
+  const userSummary = useUserStore(state => state.userSummary)
+  const userSettings = useUserStore(state => state.userSettings)
+  const setUserSettings = useUserStore(state => state.setUserSettings)
+  const isPro = useUserStore(state => state.isPro)
+  const { startupState, setStartupState } = useGeneralSettings()
+
+  useCardSettings()
+  useAchievementSettings()
+
+  const isSettingEnabled = (): boolean => {
+    if (!userSettings) return false
+
+    if (type === 'general') {
+      return Boolean((userSettings.general as GeneralSettings)[name as keyof GeneralSettings])
+    }
+    if (type === 'cardFarming') {
+      return Boolean(
+        (userSettings.cardFarming as CardFarmingSettings)[name as keyof CardFarmingSettings],
+      )
+    }
+    if (type === 'achievementUnlocker') {
+      return Boolean(
+        (userSettings.achievementUnlocker as AchievementUnlockerSettings)[
+          name as keyof AchievementUnlockerSettings
+        ],
+      )
+    }
+    return false
+  }
+
+  if (name === 'antiAway') {
+    return (
+      <Switch
+        size='sm'
+        name={name}
+        isSelected={isSettingEnabled()}
+        classNames={{
+          wrapper: cn('group-data-[selected=true]:!bg-dynamic !bg-switch'),
+        }}
+        onChange={(e: ChangeEvent<HTMLInputElement>) => {
+          handleCheckboxChange(e, 'general', userSummary?.steamId, setUserSettings)
+          antiAwayStatus(isSettingEnabled() ? null : undefined)
+        }}
+      />
+    )
+  }
+
+  if (name === 'runAtStartup') {
+    return (
+      <Switch
+        size='sm'
+        name={name}
+        isSelected={startupState || false}
+        classNames={{
+          wrapper: cn('group-data-[selected=true]:!bg-dynamic !bg-switch'),
+        }}
+        onChange={() => handleRunAtStartupChange(setStartupState)}
+      />
+    )
+  }
+
+  return (
+    <Switch
+      size='sm'
+      name={name}
+      isSelected={isSettingEnabled()}
+      isDisabled={isProSetting && !isPro}
+      classNames={{
+        wrapper: cn('group-data-[selected=true]:!bg-dynamic !bg-switch'),
+      }}
+      onChange={e => {
+        if (type === 'general') {
+          handleCheckboxChange(e, 'general', userSummary?.steamId, setUserSettings)
+        } else if (type === 'cardFarming') {
+          handleCheckboxChange(e, 'cardFarming', userSummary?.steamId, setUserSettings)
+        } else {
+          handleCheckboxChange(e, 'achievementUnlocker', userSummary?.steamId, setUserSettings)
+        }
+      }}
+    />
+  )
+}

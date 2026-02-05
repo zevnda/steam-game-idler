@@ -1,0 +1,428 @@
+import type {
+  ActivePageType,
+  CurrentSettingsTabType,
+  Game,
+  InvokeSettings,
+  UserSummary,
+} from '@/shared/types'
+import type { DragEndEvent } from '@dnd-kit/core'
+import type { ReactElement, ReactNode } from 'react'
+import { invoke } from '@tauri-apps/api/core'
+import { useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { TbAward, TbCards, TbEdit, TbHeart, TbHourglassLow, TbSettings } from 'react-icons/tb'
+import { DndContext } from '@dnd-kit/core'
+import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
+import { Alert, Button, cn, useDisclosure } from '@heroui/react'
+import AchievementOrderModal from '@/features/achievement-unlocker/AchievementOrderModal'
+import RecommendedCardDropsCarousel from '@/features/card-farming/RecommendedCardDropsCarousel'
+import EditListModal from '@/features/customlists/EditListModal'
+import { useAutomate } from '@/features/customlists/hooks/useAutomateButtons'
+import useCustomList from '@/features/customlists/hooks/useCustomList'
+import ManualAddModal from '@/features/customlists/ManualAddModal'
+import { startAutoIdleGamesImpl } from '@/shared/layouts/hooks/useWindow'
+import { useNavigationStore } from '@/shared/stores/navigationStore'
+import { useStateStore } from '@/shared/stores/stateStore'
+import { useUserStore } from '@/shared/stores/userStore'
+import GameCard from '@/shared/ui/game-card/GameCard'
+import { getAllGamesWithDrops } from '@/shared/utils/automation'
+
+type CustomListType =
+  | 'cardFarmingList'
+  | 'achievementUnlockerList'
+  | 'autoIdleList'
+  | 'favoritesList'
+
+interface CustomListProps {
+  type: CustomListType
+}
+
+interface GameWithDropsData {
+  id: string
+  name: string
+  remaining: number
+}
+
+interface ListTypeConfig {
+  title: string
+  description: string
+  icon: ReactNode
+  startButton: 'startCardFarming' | 'startAchievementUnlocker' | 'startAutoIdleGamesImpl' | null
+  buttonLabel: string | null
+  settingsButton?: boolean
+  settingsButtonLink?: string
+  switches?: boolean
+}
+
+export default function CustomList({ type }: CustomListProps): ReactElement {
+  const { t } = useTranslation()
+  const {
+    list,
+    setList,
+    visibleGames,
+    filteredGamesList,
+    containerRef,
+    searchTerm,
+    setSearchTerm,
+    showInList,
+    setShowInList,
+    showBlacklist,
+    setShowBlacklist,
+    handleAddGame,
+    handleAddAllGames,
+    handleAddAllResults,
+    handleRemoveGame,
+    handleUpdateListOrder,
+    handleClearList,
+    handleBlacklistGame,
+  } = useCustomList(type)
+  const [isEditModalOpen, setEditModalOpen] = useState(false)
+  const [gamesWithDrops, setGamesWithDrops] = useState<Game[]>([])
+  const [isLoadingDrops, setIsLoadingDrops] = useState(false)
+  const [selectedGame, setSelectedGame] = useState<Game | null>(null)
+  const { startCardFarming, startAchievementUnlocker } = useAutomate()
+  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
+  const transitionDuration = useStateStore(state => state.transitionDuration)
+  const isCardFarming = useStateStore(state => state.isCardFarming)
+  const isAchievementUnlocker = useStateStore(state => state.isAchievementUnlocker)
+  const { isOpen, onOpen, onOpenChange } = useDisclosure()
+  const setActivePage = useNavigationStore(state => state.setActivePage)
+  const setPreviousActivePage = useNavigationStore(state => state.setPreviousActivePage)
+  const setCurrentSettingsTab = useNavigationStore(state => state.setCurrentSettingsTab)
+  const userSummary = useUserStore(state => state.userSummary)
+  const userSettings = useUserStore(state => state.userSettings)
+  const [columnCount, setColumnCount] = useState(5)
+
+  const handleResize = useCallback((): void => {
+    if (window.innerWidth >= 3200) {
+      setColumnCount(12)
+    } else if (window.innerWidth >= 2300) {
+      setColumnCount(10)
+    } else if (window.innerWidth >= 2000) {
+      setColumnCount(8)
+    } else if (window.innerWidth >= 1500) {
+      setColumnCount(7)
+    } else {
+      setColumnCount(5)
+    }
+  }, [])
+
+  useEffect(() => {
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [handleResize])
+
+  const handleDragEnd = (event: DragEndEvent): void => {
+    const { active, over } = event
+    if (over && active.id !== over.id) {
+      setList(items => {
+        const oldIndex = items.findIndex(item => item.appid === active.id)
+        const newIndex = items.findIndex(item => item.appid === over.id)
+        const newList = arrayMove(items, oldIndex, newIndex)
+        handleUpdateListOrder(newList)
+        return newList
+      })
+    }
+  }
+
+  useEffect(() => {
+    const getGamesWithDrops = async (): Promise<void> => {
+      if (type === 'cardFarmingList' && userSettings?.general?.showCardDropsCarousel) {
+        const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
+
+        const cachedUserSettings = await invoke<InvokeSettings>('get_user_settings', {
+          steamId: userSummary?.steamId,
+        })
+
+        setIsLoadingDrops(true)
+
+        const credentials = cachedUserSettings.settings.cardFarming.credentials
+
+        if (!credentials?.sid || !credentials?.sls) {
+          setIsLoadingDrops(false)
+          return
+        }
+
+        const gamesWithDropsData = (await getAllGamesWithDrops(
+          userSummary?.steamId,
+          credentials.sid,
+          credentials.sls,
+          credentials?.sma,
+        )) as unknown as GameWithDropsData[]
+
+        const parsedGamesData: Game[] = gamesWithDropsData.map((game: GameWithDropsData) => ({
+          appid: parseInt(game.id),
+          name: game.name,
+          playtime_forever: 0,
+          img_icon_url: '',
+          has_community_visible_stats: false,
+          remaining: game.remaining,
+        }))
+
+        const shuffledAndLimitedGames = [...parsedGamesData]
+          .sort(() => Math.random() - 0.5)
+          .slice(0, 10)
+
+        setGamesWithDrops(shuffledAndLimitedGames)
+        setIsLoadingDrops(false)
+      }
+    }
+    getGamesWithDrops()
+  }, [type, userSettings?.general?.showCardDropsCarousel])
+
+  const listTypes: Record<CustomListType, ListTypeConfig> = {
+    cardFarmingList: {
+      title: t('common.cardFarming'),
+      description: t('customLists.cardFarming.subtitle'),
+      icon: <TbCards fontSize={20} />,
+      startButton: 'startCardFarming',
+      buttonLabel: t('customLists.cardFarming.buttonLabel'),
+      settingsButton: true,
+      settingsButtonLink: 'card-farming',
+      switches: true,
+    },
+    achievementUnlockerList: {
+      title: t('common.achievementUnlocker'),
+      description: t('customLists.achievementUnlocker.subtitle'),
+      icon: <TbAward fontSize={20} />,
+      startButton: 'startAchievementUnlocker',
+      buttonLabel: t('customLists.achievementUnlocker.buttonLabel'),
+      settingsButton: true,
+      settingsButtonLink: 'achievement-unlocker',
+    },
+    autoIdleList: {
+      title: t('customLists.autoIdle.title'),
+      description: t('customLists.autoIdle.subtitle'),
+      icon: <TbHourglassLow fontSize={20} />,
+      startButton: 'startAutoIdleGamesImpl',
+      buttonLabel: t('customLists.autoIdle.buttonLabel'),
+    },
+    favoritesList: {
+      title: t('customLists.favorites.title'),
+      description: t('customLists.favorites.subtitle'),
+      icon: <TbHeart fontSize={20} />,
+      startButton: null,
+      buttonLabel: null,
+    },
+  }
+
+  const listType = listTypes[type]
+
+  if (!listType) {
+    return <p>{t('customLists.invalid')}</p>
+  }
+
+  const handleAddGameFromCarousel = (game: Game): void => {
+    handleAddGame(game)
+  }
+
+  const handleGameClick = (game: Game): void => {
+    setSelectedGame(game)
+    onOpen()
+  }
+
+  return (
+    <>
+      <div
+        ref={containerRef}
+        className={cn(
+          'min-h-calc max-h-calc overflow-y-auto overflow-x-hidden mt-9 ease-in-out',
+          sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]',
+        )}
+        style={{
+          transitionDuration,
+          transitionProperty: 'width',
+        }}
+      >
+        <div className={cn('w-[calc(100vw-227px)] z-50 pl-6 pt-2')}>
+          <div className='flex justify-between items-center pb-3'>
+            <div className='flex items-center gap-1 select-none'>
+              <div className='flex flex-col justify-center'>
+                <p className='text-3xl font-black'>{listType.title}</p>
+                <p className='text-xs text-altwhite my-2'>{listType.description}</p>
+
+                <div className='flex items-center gap-2 mt-1'>
+                  <Button
+                    className='bg-btn-secondary text-btn-text font-bold'
+                    radius='full'
+                    startContent={<TbEdit fontSize={20} />}
+                    onPress={() => setEditModalOpen(true)}
+                  >
+                    {t('customLists.edit')}
+                  </Button>
+
+                  <ManualAddModal listName={type} setList={setList} />
+
+                  {listType.settingsButton && listType.settingsButtonLink && (
+                    <Button
+                      isIconOnly
+                      radius='full'
+                      className='bg-btn-secondary text-btn-text font-bold'
+                      startContent={<TbSettings size={20} />}
+                      isDisabled={isCardFarming || isAchievementUnlocker}
+                      onPress={() => {
+                        setPreviousActivePage(
+                          ('customlists/' + listType.settingsButtonLink) as ActivePageType,
+                        )
+                        setActivePage('settings')
+                        if (listType.settingsButtonLink) {
+                          setCurrentSettingsTab(
+                            listType.settingsButtonLink as CurrentSettingsTabType,
+                          )
+                        }
+                      }}
+                    />
+                  )}
+
+                  {listType.startButton && (
+                    <Button
+                      className={cn(
+                        'text-white font-bold transition-all duration-300 relative overflow-hidden before:absolute',
+                        'before:inset-0 before:bg-linear-to-r before:from-transparent before:via-(--shimmer-color)',
+                        'before:to-transparent before:-translate-x-full before:animate-[custom-shimmer_2.7s_ease-in-out_infinite]',
+                        '*:relative *:z-10',
+                      )}
+                      style={{
+                        backgroundImage: 'var(--gradient-btn)',
+                      }}
+                      radius='full'
+                      startContent={listType.icon}
+                      onPress={
+                        listType.startButton === 'startCardFarming'
+                          ? () => {
+                              void startCardFarming()
+                            }
+                          : listType.startButton === 'startAchievementUnlocker'
+                            ? () => {
+                                void startAchievementUnlocker()
+                              }
+                            : listType.startButton === 'startAutoIdleGamesImpl'
+                              ? () => {
+                                  if (userSummary?.steamId)
+                                    void startAutoIdleGamesImpl(userSummary.steamId, true)
+                                }
+                              : undefined
+                      }
+                    >
+                      {listType.buttonLabel}
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {type === 'cardFarmingList' && !userSettings.cardFarming.credentials && (
+          <div className='mx-6 mb-1 max-w-fit'>
+            <Alert
+              color='primary'
+              variant='faded'
+              classNames={{
+                base: '!bg-dynamic/30 text-dynamic !border-dynamic/40',
+                iconWrapper: '!bg-dynamic/30 border-dynamic/40',
+                description: 'font-bold text-xs',
+              }}
+              description={t('settings.cardFarming.alert')}
+            />
+          </div>
+        )}
+
+        <RecommendedCardDropsCarousel
+          gamesWithDrops={type === 'cardFarmingList' ? gamesWithDrops : []}
+          onAddGame={handleAddGameFromCarousel}
+          isLoading={type === 'cardFarmingList' ? isLoadingDrops : false}
+        />
+
+        {list.length > 0 && (
+          <div>
+            <p className='text-lg font-black px-6'>{t('customLists.yourList')}</p>
+          </div>
+        )}
+        <DndContext onDragEnd={handleDragEnd}>
+          <SortableContext items={list.map(item => item.appid)}>
+            <div
+              className={cn(
+                'grid gap-x-5 gap-y-4 px-6',
+                columnCount === 7 ? 'grid-cols-7' : 'grid-cols-5',
+                columnCount === 8 ? 'grid-cols-8' : '',
+                columnCount === 10 ? 'grid-cols-10' : '',
+                columnCount === 12 ? 'grid-cols-12' : '',
+              )}
+            >
+              {list &&
+                list
+                  .slice(0, visibleGames)
+                  .map(item => (
+                    <SortableGameCard
+                      key={item.appid}
+                      item={item}
+                      type={type}
+                      onOpen={() => handleGameClick(item)}
+                    />
+                  ))}
+            </div>
+          </SortableContext>
+        </DndContext>
+      </div>
+
+      {selectedGame && (
+        <AchievementOrderModal item={selectedGame} isOpen={isOpen} onOpenChange={onOpenChange} />
+      )}
+
+      <EditListModal
+        type={type}
+        list={list}
+        isOpen={isEditModalOpen}
+        filteredGamesList={filteredGamesList}
+        showInList={showInList}
+        showBlacklist={showBlacklist}
+        onOpenChange={setEditModalOpen}
+        onClose={() => {
+          setSearchTerm('')
+          setShowInList(false)
+          setShowBlacklist(false)
+        }}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        setShowInList={setShowInList}
+        setShowBlacklist={setShowBlacklist}
+        handleAddGame={handleAddGame}
+        handleAddAllGames={handleAddAllGames}
+        handleAddAllResults={handleAddAllResults}
+        handleRemoveGame={handleRemoveGame}
+        handleClearList={handleClearList}
+        handleBlacklistGame={handleBlacklistGame}
+        blacklist={userSettings.cardFarming.blacklist || []}
+      />
+    </>
+  )
+}
+
+interface SortableGameCardProps {
+  item: Game
+  type: CustomListType
+  onOpen: () => void
+}
+
+function SortableGameCard({ item, type, onOpen }: SortableGameCardProps): ReactElement {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id: item.appid,
+  })
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  }
+
+  return (
+    <div className='cursor-grab' ref={setNodeRef} style={style} {...attributes} {...listeners}>
+      <GameCard
+        item={item}
+        isAchievementUnlocker={type === 'achievementUnlockerList'}
+        onOpen={onOpen}
+      />
+    </div>
+  )
+}

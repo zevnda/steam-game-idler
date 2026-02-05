@@ -1,7 +1,6 @@
+import { initReactI18next } from 'react-i18next'
 import i18n from 'i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
-import { initReactI18next } from 'react-i18next'
-
 import translationBGBG from '@/i18n/locales/bg-BG/translation.json'
 import translationCSCZ from '@/i18n/locales/cs-CZ/translation.json'
 import translationDADK from '@/i18n/locales/da-DK/translation.json'

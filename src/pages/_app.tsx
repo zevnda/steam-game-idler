@@ -1,11 +1,8 @@
 import type { AppProps } from 'next/app'
 import type { ReactElement } from 'react'
-
-import { HeroUIProvider, ToastProvider } from '@heroui/react'
 import { TbX } from 'react-icons/tb'
-
-import { ThemeProvider } from '@/components/ui/theme/ThemeProvider'
-
+import { HeroUIProvider, ToastProvider } from '@heroui/react'
+import { ThemeProvider } from '@/shared/providers/ThemeProvider'
 import '@/styles/globals.css'
 
 export default function App({ Component, pageProps }: AppProps): ReactElement {
