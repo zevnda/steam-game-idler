@@ -1,5 +1,4 @@
 import type { TradingCard } from '@/shared/types'
-import type { ReactElement } from 'react'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FaCheckCircle } from 'react-icons/fa'
@@ -7,17 +6,16 @@ import { SiExpertsexchange } from 'react-icons/si'
 import { TbLock, TbLockOpen } from 'react-icons/tb'
 import { Alert, Checkbox, cn, Spinner } from '@heroui/react'
 import Image from 'next/image'
-import useTradingCardsList from '@/features/trading-card-manager/hooks/useTradingCardsList'
-import PageHeader from '@/features/trading-card-manager/PageHeader'
-import PriceData from '@/features/trading-card-manager/PriceData'
-import PriceInput from '@/features/trading-card-manager/PriceInput'
-import { useSearchStore } from '@/shared/stores/searchStore'
-import { useStateStore } from '@/shared/stores/stateStore'
-import { useUserStore } from '@/shared/stores/userStore'
-import CustomTooltip from '@/shared/ui/CustomTooltip'
-import ExtLink from '@/shared/ui/ExtLink'
+import {
+  PageHeader,
+  PriceData,
+  PriceInput,
+  useTradingCardsList,
+} from '@/features/trading-card-manager'
+import { useSearchStore, useStateStore, useUserStore } from '@/shared/stores'
+import { CustomTooltip, ExtLink } from '@/shared/ui'
 
-export default function TradingCardsList(): ReactElement {
+export const TradingCardsList = () => {
   const { t } = useTranslation()
   const tradingCardQueryValue = useSearchStore(state => state.tradingCardQueryValue)
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
@@ -38,7 +36,7 @@ export default function TradingCardsList(): ReactElement {
   }, [])
 
   useEffect(() => {
-    const updateCardsPerRow = (): void => {
+    const updateCardsPerRow = () => {
       setCardsPerRow(window.innerWidth >= 1536 ? 9 : 6)
     }
     updateCardsPerRow()
@@ -46,7 +44,7 @@ export default function TradingCardsList(): ReactElement {
     return () => window.removeEventListener('resize', updateCardsPerRow)
   }, [])
 
-  const handleLockCard = (id: string): void => {
+  const handleLockCard = (id: string) => {
     setLockedCards(prev => {
       const newLockedCards = prev.includes(id)
         ? prev.filter(cardId => cardId !== id)
@@ -85,7 +83,7 @@ export default function TradingCardsList(): ReactElement {
     [tradingCardContext.selectedCards, tradingCardContext.changedCardPrices],
   )
 
-  const renderCard = (item: TradingCard): ReactElement | null => {
+  const renderCard = (item: TradingCard) => {
     if (!item) return null
 
     const isLocked = lockedCards.includes(item.id)

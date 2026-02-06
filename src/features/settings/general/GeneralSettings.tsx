@@ -1,21 +1,18 @@
-import type { ReactElement } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { TbChevronRight, TbEraser, TbUpload } from 'react-icons/tb'
 import { Button, cn, Divider, Input } from '@heroui/react'
 import Image from 'next/image'
-import CurrencySwitch from '@/features/settings/general/CurrencySwitch'
 import {
+  CurrencySwitch,
   handleClear,
   handleKeySave,
+  SettingsSwitch,
   useGeneralSettings,
-} from '@/features/settings/general/hooks/useGeneralSettings'
-import SettingsSwitch from '@/features/settings/SettingsSwitch'
-import { useUserStore } from '@/shared/stores/userStore'
-import ExtLink from '@/shared/ui/ExtLink'
-import LanguageSwitch from '@/shared/ui/LanguageSwitch'
-import WebviewWindow from '@/shared/ui/WebviewWindow'
+} from '@/features/settings'
+import { useUserStore } from '@/shared/stores'
+import { ExtLink, LanguageSwitch, WebviewWindow } from '@/shared/ui'
 
-export default function GeneralSettings(): ReactElement {
+export const GeneralSettings = () => {
   const { t } = useTranslation()
   const userSummary = useUserStore(state => state.userSummary)
   const setUserSettings = useUserStore(state => state.setUserSettings)

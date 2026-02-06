@@ -1,5 +1,4 @@
 import type { InvokeSteamCredentials } from '@/shared/types'
-import type { ReactElement, SyntheticEvent } from 'react'
 import { invoke } from '@tauri-apps/api/core'
 import { Trans, useTranslation } from 'react-i18next'
 import { TbChevronRight, TbEraser, TbUpload } from 'react-icons/tb'
@@ -10,17 +9,12 @@ import {
   handleCredentialsClear,
   handleCredentialsSave,
   useCardSettings,
-} from '@/features/settings/card-farming/hooks/useCardSettings'
-import { useStateStore } from '@/shared/stores/stateStore'
-import { useUserStore } from '@/shared/stores/userStore'
-import CustomModal from '@/shared/ui/CustomModal'
-import ExtLink from '@/shared/ui/ExtLink'
-import ProBadge from '@/shared/ui/pro/ProBadge'
-import WebviewWindow from '@/shared/ui/WebviewWindow'
-import { logEvent } from '@/shared/utils/tasks'
-import { showDangerToast } from '@/shared/utils/toasts'
+} from '@/features/settings'
+import { useStateStore, useUserStore } from '@/shared/stores'
+import { CustomModal, ExtLink, ProBadge, WebviewWindow } from '@/shared/ui'
+import { logEvent, showDangerToast } from '@/shared/utils'
 
-export default function SteamCredentials(): ReactElement {
+export const SteamCredentials = () => {
   const { t } = useTranslation()
   const setProModalOpen = useStateStore(state => state.setProModalOpen)
   const userSummary = useUserStore(state => state.userSummary)
@@ -30,7 +24,7 @@ export default function SteamCredentials(): ReactElement {
   const cardSettings = useCardSettings()
   const { isOpen, onOpenChange } = useDisclosure()
 
-  const handleShowSteamLoginWindow = async (): Promise<void> => {
+  const handleShowSteamLoginWindow = async () => {
     const result = await invoke<InvokeSteamCredentials>('open_steam_login_window')
 
     if (!result || result.success === false) {
@@ -55,7 +49,7 @@ export default function SteamCredentials(): ReactElement {
     }
   }
 
-  const handleSignOutCurrentUser = async (): Promise<void> => {
+  const handleSignOutCurrentUser = async () => {
     const result = await invoke<InvokeSteamCredentials>('delete_login_window_cookies')
 
     if (!result || result.success === false) {
@@ -79,7 +73,7 @@ export default function SteamCredentials(): ReactElement {
     )
   }
 
-  const handleImageError = (event: SyntheticEvent<HTMLImageElement, Event>): void => {
+  const handleImageError = (event: React.SyntheticEvent<HTMLImageElement, Event>) => {
     ;(event.target as HTMLImageElement).src = '/fallback.webp'
   }
 

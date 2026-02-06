@@ -1,22 +1,21 @@
-import type { ReactNode } from 'react'
 import { Tooltip } from '@heroui/react'
-import { useUserStore } from '@/shared/stores/userStore'
+import { useUserStore } from '@/shared/stores'
 
 interface CustomTooltipProps {
-  children: ReactNode
-  content: ReactNode
+  children: React.ReactNode
+  content: React.ReactNode
   placement?: 'top' | 'bottom' | 'left' | 'right' | undefined
   className?: string
   important?: boolean
 }
 
-export default function CustomTooltip({
+export const CustomTooltip = ({
   children,
   content,
   placement = 'bottom',
   className,
   important = false,
-}: CustomTooltipProps): ReactNode {
+}: CustomTooltipProps) => {
   const userSettings = useUserStore(state => state.userSettings)
 
   if (!important && userSettings.general.disableTooltips) {

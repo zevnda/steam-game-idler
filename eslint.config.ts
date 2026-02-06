@@ -49,6 +49,19 @@ const config = [
     },
     rules: {
       'strict': 'error',
+      '@typescript-eslint/no-inferrable-types': 'error',
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: 'VariableDeclarator > ArrowFunctionExpression > TSTypeAnnotation',
+          message:
+            'Do not use explicit return types on arrow functions. Rely on TypeScripts inference.',
+        },
+        {
+          selector: 'FunctionDeclaration > TSTypeAnnotation',
+          message: 'Do not use explicit return types on function declarations.',
+        },
+      ],
       '@typescript-eslint/no-unused-vars': 'off',
       'unused-imports/no-unused-imports': 'error',
       'unused-imports/no-unused-vars': [

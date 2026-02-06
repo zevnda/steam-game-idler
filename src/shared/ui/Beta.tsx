@@ -1,11 +1,10 @@
-import type { ReactElement } from 'react'
 import { cn } from '@heroui/react'
 
 interface BetaProps {
   className?: string
 }
 
-export default function Beta({ className }: BetaProps): ReactElement {
+export const Beta = ({ className }: BetaProps) => {
   return (
     <span
       className={cn(

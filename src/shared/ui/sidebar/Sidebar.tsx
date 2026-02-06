@@ -1,5 +1,4 @@
 import type { SidebarItem } from '@/shared/types'
-import type { ReactElement } from 'react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FiLogOut } from 'react-icons/fi'
@@ -17,19 +16,16 @@ import {
 } from 'react-icons/tb'
 import { Button, cn, Divider } from '@heroui/react'
 import Image from 'next/image'
-import { useIdleStore } from '@/shared/stores/idleStore'
-import { useNavigationStore } from '@/shared/stores/navigationStore'
-import { useSearchStore } from '@/shared/stores/searchStore'
-import { useStateStore } from '@/shared/stores/stateStore'
-import { useUserStore } from '@/shared/stores/userStore'
-import AdSlot from '@/shared/ui/AdSlot'
-import Beta from '@/shared/ui/Beta'
-import CustomModal from '@/shared/ui/CustomModal'
-import Searchbar from '@/shared/ui/Searchbar'
-import useSidebar from '@/shared/ui/sidebar/hooks/useSidebar'
-import Brand from '@/shared/ui/titlebar/Brand'
+import {
+  useIdleStore,
+  useNavigationStore,
+  useSearchStore,
+  useStateStore,
+  useUserStore,
+} from '@/shared/stores'
+import { AdSlot, Beta, Brand, CustomModal, Searchbar, useSidebar } from '@/shared/ui'
 
-export default function Sidebar(): ReactElement {
+export const Sidebar = () => {
   const { t } = useTranslation()
   const [showSearchModal, setShowSearchModal] = useState(false)
   const activePage = useNavigationStore(state => state.activePage)
@@ -114,7 +110,7 @@ export default function Sidebar(): ReactElement {
   }
 
   // Helper to render section header if needed
-  const renderSectionHeader = (index: number): ReactElement | null => {
+  const renderSectionHeader = (index: number) => {
     const header = sectionHeaders[index]
     if (!header) return null
     if (sidebarCollapsed) {
@@ -133,7 +129,7 @@ export default function Sidebar(): ReactElement {
     )
   }
 
-  const renderSidebarItem = (item: SidebarItem, index: number): ReactElement | null => {
+  const renderSidebarItem = (item: SidebarItem, index: number) => {
     const Icon = item.icon
     const isCurrentPage = activePage === item.page
     const isFreeGames = item.id === 'free-games'

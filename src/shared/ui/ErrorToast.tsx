@@ -1,13 +1,12 @@
-import type { ReactElement } from 'react'
 import { useTranslation } from 'react-i18next'
-import WebviewWindow from '@/shared/ui/WebviewWindow'
+import { WebviewWindow } from '@/shared/ui'
 
 interface ErrorToastProps {
   message: string
   href: string
 }
 
-export default function ErrorToast({ message, href }: ErrorToastProps): ReactElement {
+export const ErrorToast = ({ message, href }: ErrorToastProps) => {
   const { t } = useTranslation()
 
   return (

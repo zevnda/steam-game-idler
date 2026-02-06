@@ -1,17 +1,15 @@
 'use client'
 
-import type { ReactElement } from 'react'
-
 import { useEffect, useState } from 'react'
 import { FiDownload, FiGlobe, FiStar } from 'react-icons/fi'
 import { TbCode } from 'react-icons/tb'
 
-export default function StatsSection(): ReactElement {
+export default function StatsSection() {
   const [githubStars, setGithubStars] = useState(999)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    const loadGitHubStars = async (): Promise<void> => {
+    const loadGitHubStars = async () => {
       try {
         const response = await fetch('https://api.github.com/repos/zevnda/steam-game-idler')
         const data = await response.json()
@@ -54,7 +52,10 @@ export default function StatsSection(): ReactElement {
   ]
 
   return (
-    <section className='py-12 sm:py-16 md:py-20 lg:py-24 relative overflow-hidden' aria-labelledby='stats-heading'>
+    <section
+      className='py-12 sm:py-16 md:py-20 lg:py-24 relative overflow-hidden'
+      aria-labelledby='stats-heading'
+    >
       {/* Top transition border */}
       <div className='absolute top-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-blue-300 to-transparent' />
 
@@ -77,8 +78,9 @@ export default function StatsSection(): ReactElement {
           </div>
           <div>
             <p className='text-base sm:text-lg text-gray-700 leading-relaxed'>
-              Steam Game Idler is the go-to choice for users looking to automate their Steam experience. Our Steam card
-              farmer is trusted by thousands of users worldwide, with support for 30 languages.
+              Steam Game Idler is the go-to choice for users looking to automate their Steam
+              experience. Our Steam card farmer is trusted by thousands of users worldwide, with
+              support for 30 languages.
             </p>
           </div>
         </header>
@@ -102,7 +104,9 @@ export default function StatsSection(): ReactElement {
                     >
                       {stat.value}
                     </div>
-                    <div className='text-xs text-indigo-600 uppercase tracking-widest font-bold'>{stat.label}</div>
+                    <div className='text-xs text-indigo-600 uppercase tracking-widest font-bold'>
+                      {stat.label}
+                    </div>
                   </div>
                 </div>
                 <p className='text-sm text-gray-600 leading-relaxed'>{stat.description}</p>

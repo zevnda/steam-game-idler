@@ -1,6 +1,5 @@
-import type useTradingCardsList from '@/features/trading-card-manager/hooks/useTradingCardsList'
+import type { useTradingCardsList } from '@/features/trading-card-manager'
 import type { cardSortOption } from '@/shared/types'
-import type { ReactElement } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   TbChecks,
@@ -12,13 +11,11 @@ import {
   TbX,
 } from 'react-icons/tb'
 import { Button, cn, Divider, Tab, Tabs, useDisclosure } from '@heroui/react'
-import { useNavigationStore } from '@/shared/stores/navigationStore'
-import { useSearchStore } from '@/shared/stores/searchStore'
-import { useStateStore } from '@/shared/stores/stateStore'
-import CustomModal from '@/shared/ui/CustomModal'
+import { useNavigationStore, useSearchStore, useStateStore } from '@/shared/stores'
+import { CustomModal } from '@/shared/ui'
 
 // Helper function to format seconds to HH:MM:SS
-const formatTime = (seconds: number): string => {
+const formatTime = (seconds: number) => {
   const hours = Math.floor(seconds / 3600)
   const minutes = Math.floor((seconds % 3600) / 60)
   const secs = Math.floor(seconds % 60)
@@ -38,18 +35,21 @@ interface PageHeaderProps {
   onPageChange: (page: number) => void
 }
 
-export default function PageHeader({
+export const PageHeader = ({
   selectedCardsWithPrice,
   tradingCardContext,
   currentPage,
   totalPages,
   onPageChange,
-}: PageHeaderProps): ReactElement {
+}: PageHeaderProps) => {
   const { t } = useTranslation()
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
   const transitionDuration = useStateStore(state => state.transitionDuration)
   const tradingCardQueryValue = useSearchStore(state => state.tradingCardQueryValue)
   const setTradingCardQueryValue = useSearchStore(state => state.setTradingCardQueryValue)
+  const setActivePage = useNavigationStore(state => state.setActivePage)
+  const setPreviousActivePage = useNavigationStore(state => state.setPreviousActivePage)
+  const setCurrentSettingsTab = useNavigationStore(state => state.setCurrentSettingsTab)
   const {
     isOpen: isConfirmOpen,
     onOpen: onConfirmOpen,
@@ -61,11 +61,8 @@ export default function PageHeader({
     onOpen: onRemoveOpen,
     onOpenChange: onRemoveOpenChange,
   } = useDisclosure()
-  const setActivePage = useNavigationStore(state => state.setActivePage)
-  const setPreviousActivePage = useNavigationStore(state => state.setPreviousActivePage)
-  const setCurrentSettingsTab = useNavigationStore(state => state.setCurrentSettingsTab)
 
-  const handleCardSorting = (key: string): void => {
+  const handleCardSorting = (key: string) => {
     tradingCardContext.setCardSortStyle?.(key)
   }
 

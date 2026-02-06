@@ -1,15 +1,13 @@
 import type { AppProps } from 'next/app'
-import type { ReactElement } from 'react'
 import { TbX } from 'react-icons/tb'
 import { HeroUIProvider, ToastProvider } from '@heroui/react'
-import { ThemeProvider } from '@/shared/providers/ThemeProvider'
+import { ThemeProvider } from '@/shared/providers'
 import '@/styles/globals.css'
 
-export default function App({ Component, pageProps }: AppProps): ReactElement {
+const App = ({ Component, pageProps }: AppProps) => {
   return (
     <ThemeProvider
       attribute='class'
-      // Themes
       themes={['dark', 'blue', 'red', 'purple', 'gold', 'black']}
       enableSystem={true}
       defaultTheme='dark'
@@ -35,3 +33,5 @@ export default function App({ Component, pageProps }: AppProps): ReactElement {
     </ThemeProvider>
   )
 }
+
+export default App

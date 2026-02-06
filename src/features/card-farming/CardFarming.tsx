@@ -1,17 +1,16 @@
-import type { GameWithDrops } from '@/features/card-farming/hooks/useCardFarming'
+import type { GameWithDrops } from '@/features/card-farming'
 import type { ActivePageType } from '@/shared/types'
-import type { ReactElement } from 'react'
 import { useEffect, useRef, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { TbCheck, TbPlayerStopFilled } from 'react-icons/tb'
 import { Button, cn, Spinner } from '@heroui/react'
 import Image from 'next/image'
-import { handleCancel, useCardFarming } from '@/features/card-farming/hooks/useCardFarming'
-import { useAutomate } from '@/features/customlists/hooks/useAutomateButtons'
-import { useStateStore } from '@/shared/stores/stateStore'
-import { updateTrayIcon } from '@/shared/utils/tasks'
+import { handleCancel, useCardFarming } from '@/features/card-farming'
+import { useAutomateButtons } from '@/features/customlists'
+import { useStateStore } from '@/shared/stores'
+import { updateTrayIcon } from '@/shared/utils'
 
-export default function CardFarming({ activePage }: { activePage: ActivePageType }): ReactElement {
+export const CardFarming = ({ activePage }: { activePage: ActivePageType }) => {
   const { t } = useTranslation()
   const isCardFarming = useStateStore(state => state.isCardFarming)
   const setIsCardFarming = useStateStore(state => state.setIsCardFarming)
@@ -25,7 +24,7 @@ export default function CardFarming({ activePage }: { activePage: ActivePageType
   const [totalDropsRemaining, setTotalDropsRemaining] = useState(0)
   const [gamesWithDrops, setGamesWithDrops] = useState<Set<GameWithDrops>>(new Set())
   const [disableStopButton, setDisableStopButton] = useState(true)
-  const { startAchievementUnlocker } = useAutomate()
+  const { startAchievementUnlocker } = useAutomateButtons()
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -65,7 +64,7 @@ export default function CardFarming({ activePage }: { activePage: ActivePageType
     }, 5000)
   }, [])
 
-  const renderGamesList = (): ReactElement => {
+  const renderGamesList = () => {
     if (!gamesWithDrops.size) {
       return (
         <Spinner
@@ -118,7 +117,7 @@ export default function CardFarming({ activePage }: { activePage: ActivePageType
     )
   }
 
-  const renderContent = (): ReactElement => {
+  const renderContent = () => {
     if (isComplete) {
       return (
         <div className='flex flex-col items-center justify-center'>

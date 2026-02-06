@@ -1,19 +1,35 @@
-import type { ReactElement } from 'react'
 import { Spinner } from '@heroui/react'
-import Dashboard from '@/shared/layouts/Dashboard'
-import useWindow from '@/shared/layouts/hooks/useWindow'
-import SignIn from '@/shared/layouts/SignIn'
-import { useStateStore } from '@/shared/stores/stateStore'
-import { useUserStore } from '@/shared/stores/userStore'
-import ChangelogModal from '@/shared/ui/ChangelogModal'
-import GoProModal from '@/shared/ui/pro/GoProModal'
-import SteamWarning from '@/shared/ui/SteamWarning'
+import {
+  Dashboard,
+  SignIn,
+  useAutoIdleGames,
+  useCheckForPro,
+  useCheckForUpdates,
+  useContextMenu,
+  useFreeGames,
+  useInitSettings,
+  useSteamMonitor,
+  useThemes,
+  useWindow,
+  useZoomControls,
+} from '@/shared/layouts'
+import { useStateStore, useUserStore } from '@/shared/stores'
+import { ChangelogModal, GoProModal, SteamWarning } from '@/shared/ui'
 
-export default function Window(): ReactElement {
+export const Window = () => {
   const userSummary = useUserStore(state => state.userSummary)
   const loadingUserSummary = useStateStore(state => state.loadingUserSummary)
 
   useWindow()
+  useThemes()
+  useInitSettings()
+  useCheckForUpdates()
+  useAutoIdleGames()
+  useCheckForPro()
+  useFreeGames()
+  useZoomControls()
+  useContextMenu()
+  useSteamMonitor()
 
   if (loadingUserSummary)
     return (

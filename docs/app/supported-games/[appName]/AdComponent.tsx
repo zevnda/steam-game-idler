@@ -1,7 +1,5 @@
 'use client'
 
-import type { ReactElement } from 'react'
-
 import { useEffect, useState } from 'react'
 
 declare global {
@@ -10,11 +8,11 @@ declare global {
   }
 }
 
-export default function AdComponent(): ReactElement {
+export default function AdComponent() {
   const [adKey, setAdKey] = useState(0)
 
   useEffect(() => {
-    const loadAd = (): void => {
+    const loadAd = () => {
       try {
         ;(window.adsbygoogle = window.adsbygoogle || []).push({})
       } catch (err) {
@@ -24,7 +22,7 @@ export default function AdComponent(): ReactElement {
 
     loadAd()
 
-    const scheduleNextRefresh = (): NodeJS.Timeout => {
+    const scheduleNextRefresh = () => {
       const interval = setTimeout(
         () => {
           setAdKey(prev => prev + 1)

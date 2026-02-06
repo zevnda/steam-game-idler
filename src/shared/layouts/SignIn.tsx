@@ -1,18 +1,14 @@
-import type { ReactElement } from 'react'
 import { invoke } from '@tauri-apps/api/core'
 import { useEffect, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { TbArrowRight } from 'react-icons/tb'
 import { Button, cn, Spinner } from '@heroui/react'
 import Image from 'next/image'
-import useSignIn from '@/shared/layouts/hooks/useSignIn'
-import { useNavigationStore } from '@/shared/stores/navigationStore'
-import LanguageSwitch from '@/shared/ui/LanguageSwitch'
-import SignInHero from '@/shared/ui/SignInHero'
-import Header from '@/shared/ui/titlebar/Titlebar'
-import WebviewWindow from '@/shared/ui/WebviewWindow'
+import { useSignIn } from '@/shared/layouts'
+import { useNavigationStore } from '@/shared/stores'
+import { LanguageSwitch, SignInHero, Titlebar, WebviewWindow } from '@/shared/ui'
 
-export default function SignIn(): ReactElement {
+export const SignIn = () => {
   const { t } = useTranslation()
   const setActivePage = useNavigationStore(state => state.setActivePage)
   const [refreshKey, setRefreshKey] = useState(0)
@@ -21,14 +17,14 @@ export default function SignIn(): ReactElement {
     setActivePage('setup')
   }, [setActivePage])
 
-  const handleRefresh = async (): Promise<void> => {
+  const handleRefresh = async () => {
     await invoke('delete_user_summary_file')
     setRefreshKey(prev => prev + 1)
   }
 
   return (
     <>
-      <Header />
+      <Titlebar />
       {/* Language switch */}
       <div className='absolute bottom-0 right-0 p-10 z-10 flex items-center gap-4 pointer-events-none'>
         <WebviewWindow

@@ -1,20 +1,18 @@
 import type { Game } from '@/shared/types'
-import type { ReactElement } from 'react'
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@heroui/react'
-import { useStateStore } from '@/shared/stores/stateStore'
-import { useUserStore } from '@/shared/stores/userStore'
-import GameCard from '@/shared/ui/game-card/GameCard'
+import { useStateStore, useUserStore } from '@/shared/stores'
+import { GameCard } from '@/shared/ui'
 
-export default function FreeGamesList(): ReactElement {
+export const FreeGamesList = () => {
   const { t } = useTranslation()
   const freeGamesList = useUserStore(state => state.freeGamesList)
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
   const transitionDuration = useStateStore(state => state.transitionDuration)
   const [columnCount, setColumnCount] = useState(5)
 
-  const handleResize = useCallback((): void => {
+  const handleResize = useCallback(() => {
     if (window.innerWidth >= 3200) {
       setColumnCount(12)
     } else if (window.innerWidth >= 2300) {

@@ -1,28 +1,27 @@
 import type { Achievement, ChangedStats, Statistic } from '@/shared/types'
-import type { Dispatch, ReactElement, SetStateAction } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { TbRotateClockwise, TbUpload } from 'react-icons/tb'
 import { Button, useDisclosure } from '@heroui/react'
-import useStatisticButtons from '@/features/achievement-manager/hooks/useStatisticButtons'
-import CustomModal from '@/shared/ui/CustomModal'
+import { useStatisticButtons } from '@/features/achievement-manager'
+import { CustomModal } from '@/shared/ui'
 
 interface StatisticButtonsProps {
   statistics: Statistic[]
-  setStatistics: Dispatch<SetStateAction<Statistic[]>>
+  setStatistics: React.Dispatch<React.SetStateAction<Statistic[]>>
   changedStats: ChangedStats
-  setChangedStats: Dispatch<SetStateAction<ChangedStats>>
-  setAchievements: Dispatch<SetStateAction<Achievement[]>>
-  setRefreshKey?: Dispatch<SetStateAction<number>>
+  setChangedStats: React.Dispatch<React.SetStateAction<ChangedStats>>
+  setAchievements: React.Dispatch<React.SetStateAction<Achievement[]>>
+  setRefreshKey?: React.Dispatch<React.SetStateAction<number>>
 }
 
-export default function StatisticButtons({
+export const StatisticButtons = ({
   statistics,
   setStatistics,
   changedStats,
   setChangedStats,
   setAchievements,
   setRefreshKey,
-}: StatisticButtonsProps): ReactElement {
+}: StatisticButtonsProps) => {
   const { t } = useTranslation()
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const { handleUpdateAllStats, handleResetAll } = useStatisticButtons(

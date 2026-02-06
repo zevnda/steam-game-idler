@@ -1,21 +1,15 @@
 import type { ActivePageType, Game } from '@/shared/types'
-import type { ReactElement, SyntheticEvent } from 'react'
 import { useEffect, useRef, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { TbCheck, TbPlayerStopFilled } from 'react-icons/tb'
 import { Button, cn } from '@heroui/react'
 import Image from 'next/image'
-import { useAchievementUnlocker } from '@/features/achievement-unlocker/hooks/useAchievementUnlocker'
-import { useAutomate } from '@/features/customlists/hooks/useAutomateButtons'
-import { useStateStore } from '@/shared/stores/stateStore'
-import { stopIdle } from '@/shared/utils/idle'
-import { updateTrayIcon } from '@/shared/utils/tasks'
+import { useAchievementUnlocker } from '@/features/achievement-unlocker'
+import { useAutomateButtons } from '@/features/customlists'
+import { useStateStore } from '@/shared/stores'
+import { stopIdle, updateTrayIcon } from '@/shared/utils'
 
-export default function AchievementUnlocker({
-  activePage,
-}: {
-  activePage: ActivePageType
-}): ReactElement {
+export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType }) => {
   const { t } = useTranslation()
   const isAchievementUnlocker = useStateStore(state => state.isAchievementUnlocker)
   const setIsAchievementUnlocker = useStateStore(state => state.setIsAchievementUnlocker)
@@ -31,7 +25,7 @@ export default function AchievementUnlocker({
   const [achievementCount, setAchievementCount] = useState(0)
   const [countdownTimer, setCountdownTimer] = useState('00:00:10')
   const [isWaitingForSchedule, setIsWaitingForSchedule] = useState(false)
-  const { startCardFarming } = useAutomate()
+  const { startCardFarming } = useAutomateButtons()
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -69,7 +63,7 @@ export default function AchievementUnlocker({
     }
   }, [isAchievementUnlocker, currentGame, achievementCount, t])
 
-  const handleImageError = (event: SyntheticEvent<HTMLImageElement, Event>): void => {
+  const handleImageError = (event: React.SyntheticEvent<HTMLImageElement, Event>) => {
     ;(event.target as HTMLImageElement).src = '/fallback.webp'
   }
 

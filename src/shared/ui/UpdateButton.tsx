@@ -1,4 +1,3 @@
-import type { ReactElement } from 'react'
 import { invoke } from '@tauri-apps/api/core'
 import { relaunch } from '@tauri-apps/plugin-process'
 import { check } from '@tauri-apps/plugin-updater'
@@ -6,15 +5,14 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TbCircleArrowDown } from 'react-icons/tb'
 import { Spinner } from '@heroui/react'
-import CustomTooltip from '@/shared/ui/CustomTooltip'
-import { logEvent } from '@/shared/utils/tasks'
-import { showDangerToast } from '@/shared/utils/toasts'
+import { CustomTooltip } from '@/shared/ui'
+import { logEvent, showDangerToast } from '@/shared/utils'
 
-export default function UpdateButton(): ReactElement {
+export const UpdateButton = () => {
   const { t } = useTranslation()
   const [isLoading, setIsLoading] = useState(false)
 
-  const handleUpdate = async (): Promise<void> => {
+  const handleUpdate = async () => {
     try {
       setIsLoading(true)
       const update = await check()

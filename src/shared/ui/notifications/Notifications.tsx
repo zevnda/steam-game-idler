@@ -1,19 +1,12 @@
-import type { ReactElement } from 'react'
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { GoDotFill } from 'react-icons/go'
 import { TbBell } from 'react-icons/tb'
 import { cn } from '@heroui/react'
 import { AnimatePresence, motion } from 'framer-motion'
-import CustomTooltip from '@/shared/ui/CustomTooltip'
-import {
-  handleOpenUrl,
-  markAllAsSeen,
-  timeAgo,
-  useNotifications,
-} from '@/shared/ui/notifications/hooks/useNotifications'
+import { CustomTooltip, handleOpenUrl, markAllAsSeen, timeAgo, useNotifications } from '@/shared/ui'
 
-export default function Notifications(): ReactElement {
+export const Notifications = () => {
   const { t } = useTranslation()
   const {
     notifications,
@@ -25,7 +18,7 @@ export default function Notifications(): ReactElement {
   } = useNotifications()
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent): void => {
+    const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setShowNotifications(false)
       }

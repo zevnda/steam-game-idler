@@ -1,19 +1,13 @@
 import type { InvokeSettings, UserSettings, UserSummary } from '@/shared/types'
 import type { TimeInputValue } from '@heroui/react'
-import type { Dispatch, SetStateAction } from 'react'
 import { invoke } from '@tauri-apps/api/core'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useUserStore } from '@/shared/stores/userStore'
-import { logEvent } from '@/shared/utils/tasks'
-import { showDangerToast, t } from '@/shared/utils/toasts'
+import i18next from 'i18next'
+import { useUserStore } from '@/shared/stores'
+import { logEvent, showDangerToast } from '@/shared/utils'
 
-interface AchievementSettingsHook {
-  sliderLabel: string
-  setSliderLabel: Dispatch<SetStateAction<string>>
-}
-
-export const useAchievementSettings = (): AchievementSettingsHook => {
+export const useAchievementSettings = () => {
   const { t } = useTranslation()
   const userSettings = useUserStore(state => state.userSettings)
   const [sliderLabel, setSliderLabel] = useState('')
@@ -36,8 +30,8 @@ export const useAchievementSettings = (): AchievementSettingsHook => {
 export const handleSliderChange = async (
   newInterval: [number, number] | number[] | number,
   userSummary: UserSummary,
-  setUserSettings: Dispatch<SetStateAction<UserSettings>>,
-): Promise<void> => {
+  setUserSettings: (value: UserSettings) => void,
+) => {
   try {
     const response = await invoke<InvokeSettings>('update_user_settings', {
       steamId: userSummary?.steamId,
@@ -47,7 +41,7 @@ export const handleSliderChange = async (
     setUserSettings(response.settings)
     logEvent(`[Settings - Achievement Unlocker] Changed 'interval' to '${String(newInterval)}'`)
   } catch (error) {
-    showDangerToast(t('common.error'))
+    showDangerToast(i18next.t('common.error'))
     console.error('Error in (handleSliderChange - Achievement Unlocker):', error)
     logEvent(`[Error] in (handleSliderChange - Achievement Unlocker): ${error}`)
   }
@@ -58,8 +52,8 @@ export const handleScheduleChange = async (
   value: TimeInputValue | null,
   type: 'scheduleFrom' | 'scheduleTo',
   userSummary: UserSummary,
-  setUserSettings: Dispatch<SetStateAction<UserSettings>>,
-): Promise<void> => {
+  setUserSettings: (value: UserSettings) => void,
+) => {
   try {
     const response = await invoke<InvokeSettings>('update_user_settings', {
       steamId: userSummary?.steamId,
@@ -69,17 +63,17 @@ export const handleScheduleChange = async (
     setUserSettings(response.settings)
     logEvent(`[Settings - Achievement Unlocker] Changed '${type}' to '${String(value)}'`)
   } catch (error) {
-    showDangerToast(t('common.error'))
+    showDangerToast(i18next.t('common.error'))
     console.error('Error in (handleScheduleChange):', error)
     logEvent(`[Error] in (handleScheduleChange): ${error}`)
   }
 }
 
-export const handleNextTaskChange = async (
+export const handleNextTaskChangeAchievementUnlocker = async (
   currentKey: string,
   userSummary: UserSummary,
-  setUserSettings: Dispatch<SetStateAction<UserSettings>>,
-): Promise<void> => {
+  setUserSettings: (value: UserSettings) => void,
+) => {
   const response = await invoke<InvokeSettings>('update_user_settings', {
     steamId: userSummary?.steamId,
     key: 'achievementUnlocker.nextTask',

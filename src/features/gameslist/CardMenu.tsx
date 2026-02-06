@@ -1,24 +1,23 @@
 import type { Game } from '@/shared/types'
-import type { ReactElement } from 'react'
 import { open } from '@tauri-apps/plugin-shell'
 import { useTranslation } from 'react-i18next'
 import { FaSteam } from 'react-icons/fa'
 import { TbAwardFilled, TbDotsVertical, TbPlayerPlayFilled } from 'react-icons/tb'
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@heroui/react'
-import { useStateStore } from '@/shared/stores/stateStore'
-import { handleIdle, viewAchievments } from '@/shared/ui/game-card/hooks/useGameCard'
+import { useStateStore } from '@/shared/stores'
+import { handleIdle, viewAchievments } from '@/shared/utils'
 
 interface CardMenuProps {
   item: Game
 }
 
-export default function CardMenu({ item }: CardMenuProps): ReactElement {
+export const CardMenu = ({ item }: CardMenuProps) => {
   const { t } = useTranslation()
   const setAppId = useStateStore(state => state.setAppId)
   const setAppName = useStateStore(state => state.setAppName)
   const setShowAchievements = useStateStore(state => state.setShowAchievements)
 
-  const viewStorePage = async (item: Game): Promise<void> => {
+  const viewStorePage = async (item: Game) => {
     try {
       await open(`https://store.steampowered.com/app/${item.appid}`)
     } catch (error) {

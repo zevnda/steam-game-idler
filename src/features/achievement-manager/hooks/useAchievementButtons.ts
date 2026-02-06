@@ -1,42 +1,27 @@
 import type { Achievement, UserSummary } from '@/shared/types'
-import type { Dispatch, SetStateAction } from 'react'
 import { useTranslation } from 'react-i18next'
-import { lockAllAchievements, unlockAllAchievements } from '@/shared/utils/achievements'
-import { checkSteamStatus, logEvent } from '@/shared/utils/tasks'
-import { showAccountMismatchToast, showDangerToast, showSuccessToast } from '@/shared/utils/toasts'
+import {
+  checkSteamStatus,
+  lockAllAchievements,
+  logEvent,
+  showAccountMismatchToast,
+  showDangerToast,
+  showSuccessToast,
+  unlockAllAchievements,
+} from '@/shared/utils'
 
-interface AchievementButtonsHook {
-  handleChange: (
-    currentKey: string | undefined,
-    achievements: Achievement[],
-    setAchievements: Dispatch<SetStateAction<Achievement[]>>,
-  ) => void
-  handleUnlockAll: (
-    appId: number,
-    appName: string,
-    achievements: Achievement[],
-    onClose: () => void,
-  ) => Promise<void>
-  handleLockAll: (
-    appId: number,
-    appName: string,
-    achievements: Achievement[],
-    onClose: () => void,
-  ) => Promise<void>
-}
-
-export default function useAchievementButtons(
+export function useAchievementButtons(
   userSummary: UserSummary,
-  setAchievements: Dispatch<SetStateAction<Achievement[]>>,
-): AchievementButtonsHook {
+  setAchievements: React.Dispatch<React.SetStateAction<Achievement[]>>,
+) {
   const { t } = useTranslation()
 
   // Handle change in sorting option
   const handleChange = (
     currentKey: string | undefined,
     achievements: Achievement[],
-    setAchievements: Dispatch<SetStateAction<Achievement[]>>,
-  ): void => {
+    setAchievements: React.Dispatch<React.SetStateAction<Achievement[]>>,
+  ) => {
     if (!currentKey) return
 
     // Convert event selection to array and get first value
@@ -89,13 +74,13 @@ export default function useAchievementButtons(
     appName: string,
     achievements: Achievement[],
     onClose: () => void,
-  ): Promise<void> => {
+  ) => {
     try {
       // Close modal
       onClose()
 
       // Make sure Steam client is running
-      const isSteamRunning = checkSteamStatus(true)
+      const isSteamRunning = await checkSteamStatus(true)
       if (!isSteamRunning) return
 
       // Unlock all achievements
@@ -137,7 +122,7 @@ export default function useAchievementButtons(
     appName: string,
     achievements: Achievement[],
     onClose: () => void,
-  ): Promise<void> => {
+  ) => {
     try {
       // Close modal
       onClose()

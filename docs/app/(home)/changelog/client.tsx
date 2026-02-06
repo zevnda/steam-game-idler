@@ -1,7 +1,6 @@
 'use client'
 
 import type { ReactNode } from 'react'
-
 import { useEffect, useRef, useState } from 'react'
 
 interface ChangelogClientProps {
@@ -68,7 +67,9 @@ export default function ChangelogClient({ children, totalPosts }: ChangelogClien
       </div>
 
       {/* Pagination sentinel */}
-      {visibleCount < totalPosts && <div ref={sentinelRef} className='h-px w-full' aria-hidden='true' />}
+      {visibleCount < totalPosts && (
+        <div ref={sentinelRef} className='h-px w-full' aria-hidden='true' />
+      )}
 
       {/* Loading indicator */}
       {visibleCount < totalPosts && (

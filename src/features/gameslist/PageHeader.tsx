@@ -1,26 +1,24 @@
 import type { Game, SortOption } from '@/shared/types'
-import type { Dispatch, ReactElement, SetStateAction } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TbX } from 'react-icons/tb'
 import { Button, cn, Divider, Tab, Tabs } from '@heroui/react'
-import { handleRefetch, usePageHeader } from '@/features/gameslist/hooks/usePageHeader'
-import { useSearchStore } from '@/shared/stores/searchStore'
-import { useUserStore } from '@/shared/stores/userStore'
+import { handleRefetch, usePageHeader } from '@/features/gameslist'
+import { useSearchStore, useUserStore } from '@/shared/stores'
 
 interface PageHeaderProps {
   sortStyle: string
-  setSortStyle: Dispatch<SetStateAction<string>>
+  setSortStyle: React.Dispatch<React.SetStateAction<string>>
   filteredGames: Game[]
   visibleGames: Game[]
-  setRefreshKey: Dispatch<SetStateAction<number>>
+  setRefreshKey: React.Dispatch<React.SetStateAction<number>>
 }
 
-export default function PageHeader({
+export const PageHeader = ({
   sortStyle,
   setSortStyle,
   filteredGames,
   setRefreshKey,
-}: PageHeaderProps): ReactElement {
+}: PageHeaderProps) => {
   const { t } = useTranslation()
   const userSummary = useUserStore(state => state.userSummary)
   const gameQueryValue = useSearchStore(state => state.gameQueryValue)
@@ -51,7 +49,7 @@ export default function PageHeader({
               <Button
                 className='bg-btn-secondary text-btn-text font-bold'
                 radius='full'
-                onPress={() => handleRefetch(t, userSummary?.steamId, setRefreshKey)}
+                onPress={() => handleRefetch(t, userSummary?.steamId, setRefreshKey, true)}
               >
                 {t('setup.refresh')}
               </Button>

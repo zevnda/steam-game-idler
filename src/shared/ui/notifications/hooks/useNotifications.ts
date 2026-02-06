@@ -1,4 +1,3 @@
-import type { Dispatch, RefObject, SetStateAction } from 'react'
 import { open } from '@tauri-apps/plugin-shell'
 import { useEffect, useRef, useState } from 'react'
 
@@ -11,16 +10,7 @@ interface Notification {
   seen: boolean
 }
 
-interface NotificationHook {
-  notifications: Notification[]
-  showNotifications: boolean
-  setShowNotifications: Dispatch<SetStateAction<boolean>>
-  unseenNotifications: Notification[]
-  setUnseenNotifications: Dispatch<SetStateAction<Notification[]>>
-  dropdownRef: RefObject<HTMLDivElement | null>
-}
-
-export const useNotifications = (): NotificationHook => {
+export const useNotifications = () => {
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [showNotifications, setShowNotifications] = useState(false)
   const [unseenNotifications, setUnseenNotifications] = useState<Notification[]>([])
@@ -37,8 +27,8 @@ export const useNotifications = (): NotificationHook => {
   }, [])
 
   useEffect(() => {
-    // Close notification pabnel when clicking outside
-    const handleClickOutside = (event: MouseEvent): void => {
+    // Close notification panel when clicking outside
+    const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setShowNotifications(false)
       }
@@ -62,9 +52,9 @@ export const useNotifications = (): NotificationHook => {
 
 // Fetch notifications and update state
 export const fetchNotifications = async (
-  setNotifications: Dispatch<SetStateAction<Notification[]>>,
-  setUnseenNotifications: Dispatch<SetStateAction<Notification[]>>,
-): Promise<void> => {
+  setNotifications: React.Dispatch<React.SetStateAction<Notification[]>>,
+  setUnseenNotifications: React.Dispatch<React.SetStateAction<Notification[]>>,
+) => {
   const cooldownTimestamp = localStorage.getItem('notificationsCooldown')
   const now = new Date().getTime()
 
@@ -75,7 +65,7 @@ export const fetchNotifications = async (
       ? JSON.parse(cachedNotificationsStr)
       : []
     setNotifications(cachedNotifications)
-    await checkUnseenNotifications(cachedNotifications, setUnseenNotifications)
+    checkUnseenNotifications(cachedNotifications, setUnseenNotifications)
     return
   }
 
@@ -87,7 +77,7 @@ export const fetchNotifications = async (
     const data: Notification[] = await response.json()
     const LimitNotifications = data.slice(0, 10)
     setNotifications(LimitNotifications)
-    await checkUnseenNotifications(LimitNotifications, setUnseenNotifications)
+    checkUnseenNotifications(LimitNotifications, setUnseenNotifications)
     // Cache notifications and set cooldown timestamp
     localStorage.setItem('cachedNotifications', JSON.stringify(LimitNotifications))
     localStorage.setItem('notificationsCooldown', String(now + 30 * 60 * 1000))
@@ -97,10 +87,10 @@ export const fetchNotifications = async (
 }
 
 // Check for unseen notifications
-export const checkUnseenNotifications = async (
+export const checkUnseenNotifications = (
   notifications: Notification[],
-  setUnseenNotifications: Dispatch<SetStateAction<Notification[]>>,
-): Promise<void> => {
+  setUnseenNotifications: React.Dispatch<React.SetStateAction<Notification[]>>,
+) => {
   const seenNotificationsStr = localStorage.getItem('seenNotifications')
   const seenNotifications: string[] = seenNotificationsStr ? JSON.parse(seenNotificationsStr) : []
   const unseen = notifications.filter(notification => !seenNotifications.includes(notification.id))
@@ -111,8 +101,8 @@ export const checkUnseenNotifications = async (
 export const markAsSeen = (
   id: string,
   unseenNotifications: Notification[],
-  setUnseenNotifications: Dispatch<SetStateAction<Notification[]>>,
-): void => {
+  setUnseenNotifications: React.Dispatch<React.SetStateAction<Notification[]>>,
+) => {
   const seenNotificationsStr = localStorage.getItem('seenNotifications')
   const seenNotifications: string[] = seenNotificationsStr ? JSON.parse(seenNotificationsStr) : []
   if (!seenNotifications.includes(id)) {
@@ -125,8 +115,8 @@ export const markAsSeen = (
 // Mark all notifications as seen
 export const markAllAsSeen = (
   notifications: Notification[],
-  setUnseenNotifications: Dispatch<SetStateAction<Notification[]>>,
-): void => {
+  setUnseenNotifications: React.Dispatch<React.SetStateAction<Notification[]>>,
+) => {
   const seenNotificationsStr = localStorage.getItem('seenNotifications')
   const seenNotifications: string[] = seenNotificationsStr ? JSON.parse(seenNotificationsStr) : []
   notifications.forEach(notification => {
@@ -146,8 +136,8 @@ export const handleOpenUrl = async (
   url: string,
   id: string,
   unseenNotifications: Notification[],
-  setUnseenNotifications: Dispatch<SetStateAction<Notification[]>>,
-): Promise<void> => {
+  setUnseenNotifications: React.Dispatch<React.SetStateAction<Notification[]>>,
+) => {
   markAsSeen(id, unseenNotifications, setUnseenNotifications)
   try {
     await open(url)
@@ -157,7 +147,7 @@ export const handleOpenUrl = async (
 }
 
 // Convert timestamp to relative time
-export const timeAgo = (timestamp: number): string => {
+export const timeAgo = (timestamp: number) => {
   const now = new Date()
   const secondsPast = Math.floor(now.getTime() / 1000 - timestamp)
 

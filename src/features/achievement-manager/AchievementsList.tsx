@@ -1,18 +1,14 @@
 import type { Achievement, UserSummary } from '@/shared/types'
-import type { CSSProperties, Dispatch, ReactElement, SetStateAction } from 'react'
 import { memo, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TbCancel, TbLock, TbLockOpen } from 'react-icons/tb'
 import { FixedSizeList as List } from 'react-window'
 import { Button, cn } from '@heroui/react'
 import Image from 'next/image'
-import AchievementButtons from '@/features/achievement-manager/AchievementButtons'
-import { useSearchStore } from '@/shared/stores/searchStore'
-import { useStateStore } from '@/shared/stores/stateStore'
-import { useUserStore } from '@/shared/stores/userStore'
-import CustomTooltip from '@/shared/ui/CustomTooltip'
-import { toggleAchievement } from '@/shared/utils/achievements'
-import { checkSteamStatus } from '@/shared/utils/tasks'
+import { AchievementButtons } from '@/features/achievement-manager'
+import { useSearchStore, useStateStore, useUserStore } from '@/shared/stores'
+import { CustomTooltip } from '@/shared/ui'
+import { checkSteamStatus, toggleAchievement } from '@/shared/utils'
 
 interface RowData {
   userSummary: UserSummary
@@ -25,11 +21,11 @@ interface RowData {
 
 interface RowProps {
   index: number
-  style: CSSProperties
+  style: React.CSSProperties
   data: RowData
 }
 
-const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
+const Row = memo(({ index, style, data }: RowProps) => {
   const { userSummary, appId, appName, filteredAchievements, updateAchievement, t } = data
   const item = filteredAchievements[index]
 
@@ -45,7 +41,7 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
     ? `${iconUrl}${appId}/${item.iconNormal}`
     : `${iconUrl}${appId}/${item.iconLocked}`
 
-  const handleToggle = async (): Promise<void> => {
+  const handleToggle = async () => {
     // Make sure Steam client is running
     const isSteamRunning = await checkSteamStatus(true)
     if (!isSteamRunning) return
@@ -145,26 +141,26 @@ Row.displayName = 'Row'
 
 interface AchievementsListProps {
   achievements: Achievement[]
-  setAchievements: Dispatch<SetStateAction<Achievement[]>>
+  setAchievements: React.Dispatch<React.SetStateAction<Achievement[]>>
   protectedAchievements: boolean
   windowInnerHeight: number
-  setRefreshKey: Dispatch<SetStateAction<number>>
+  setRefreshKey: React.Dispatch<React.SetStateAction<number>>
 }
 
-export default function AchievementsList({
+export const AchievementsList = ({
   achievements,
   setAchievements,
   protectedAchievements,
   windowInnerHeight,
   setRefreshKey,
-}: AchievementsListProps): ReactElement {
+}: AchievementsListProps) => {
   const { t } = useTranslation()
   const userSummary = useUserStore(state => state.userSummary)
   const achievementQueryValue = useSearchStore(state => state.achievementQueryValue)
   const appId = useStateStore(state => state.appId)
   const appName = useStateStore(state => state.appName)
 
-  const updateAchievement = (achievementId: string, newAchievedState: boolean): void => {
+  const updateAchievement = (achievementId: string, newAchievedState: boolean) => {
     setAchievements(prevAchievements => {
       return prevAchievements.map(achievement =>
         achievement.id === achievementId

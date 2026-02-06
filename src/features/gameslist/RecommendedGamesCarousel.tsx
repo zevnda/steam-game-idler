@@ -1,10 +1,9 @@
 import type { Game } from '@/shared/types'
-import type { ReactElement } from 'react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TbChevronLeft, TbChevronRight } from 'react-icons/tb'
 import { Button } from '@heroui/react'
-import GameCard from '@/shared/ui/game-card/GameCard'
+import { GameCard } from '@/shared/ui'
 
 interface RecommendedGamesCarouselProps {
   gamesContext: {
@@ -12,16 +11,14 @@ interface RecommendedGamesCarouselProps {
   }
 }
 
-export default function RecommendedGamesCarousel({
-  gamesContext,
-}: RecommendedGamesCarouselProps): ReactElement {
+export const RecommendedGamesCarousel = ({ gamesContext }: RecommendedGamesCarouselProps) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const [isAutoScrolling, setIsAutoScrolling] = useState(true)
   const autoScrollIntervalRef = useRef<NodeJS.Timeout | null>(null)
   const pauseTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const { t } = useTranslation()
 
-  const scroll = useCallback((direction: 'left' | 'right'): void => {
+  const scroll = useCallback((direction: 'left' | 'right') => {
     if (scrollContainerRef.current) {
       const scrollAmount = 440 * 2 + 20 + 20
       const container = scrollContainerRef.current
@@ -54,7 +51,7 @@ export default function RecommendedGamesCarousel({
     }
   }, [])
 
-  const autoScroll = useCallback((): void => {
+  const autoScroll = useCallback(() => {
     if (scrollContainerRef.current) {
       const container = scrollContainerRef.current
       const maxScroll = container.scrollWidth - container.clientWidth
@@ -72,7 +69,7 @@ export default function RecommendedGamesCarousel({
   }, [scroll])
 
   const handleManualScroll = useCallback(
-    (direction: 'left' | 'right'): void => {
+    (direction: 'left' | 'right') => {
       setIsAutoScrolling(false)
       scroll(direction)
 

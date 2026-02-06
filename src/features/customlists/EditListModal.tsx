@@ -1,5 +1,4 @@
 import type { Game } from '@/shared/types'
-import type { CSSProperties, Dispatch, ReactElement, SetStateAction, SyntheticEvent } from 'react'
 import { memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { RiSearchLine } from 'react-icons/ri'
@@ -30,11 +29,11 @@ interface RowData {
 
 interface RowProps {
   index: number
-  style: CSSProperties
+  style: React.CSSProperties
   data: RowData
 }
 
-const Row = memo(({ index, style, data }: RowProps): ReactElement => {
+const Row = memo(({ index, style, data }: RowProps) => {
   const {
     t,
     filteredGamesList,
@@ -47,7 +46,7 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement => {
   } = data
   const item = filteredGamesList[index]
 
-  const handleImageError = (event: SyntheticEvent<HTMLImageElement, Event>): void => {
+  const handleImageError = (event: React.SyntheticEvent<HTMLImageElement, Event>) => {
     ;(event.target as HTMLImageElement).src = '/fallback.webp'
   }
 
@@ -110,7 +109,7 @@ interface EditListModalProps {
   filteredGamesList: Game[]
   showInList: boolean
   showBlacklist: boolean
-  onOpenChange: Dispatch<SetStateAction<boolean>>
+  onOpenChange: React.Dispatch<React.SetStateAction<boolean>>
   onClose: () => void
   searchTerm: string
   setSearchTerm: (term: string) => void
@@ -125,7 +124,7 @@ interface EditListModalProps {
   blacklist: number[]
 }
 
-export default function EditListModal({
+export const EditListModal = ({
   type,
   list,
   isOpen,
@@ -145,7 +144,7 @@ export default function EditListModal({
   handleClearList,
   handleBlacklistGame,
   blacklist,
-}: EditListModalProps): ReactElement {
+}: EditListModalProps) => {
   const { t } = useTranslation()
   const itemData = {
     t,

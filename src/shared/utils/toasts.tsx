@@ -1,32 +1,29 @@
-import type { TOptions } from 'i18next'
 import { addToast } from '@heroui/react'
 import i18next from 'i18next'
-import ErrorToast from '@/shared/ui/ErrorToast'
+import { ErrorToast } from '@/shared/ui'
 
-export const t = (key: string, options?: TOptions): string => i18next.t(key, options)
-
-export function showSuccessToast(description: string): void {
+export function showSuccessToast(description: string) {
   addToast({ description, color: 'success' })
 }
 
-export function showPrimaryToast(description: string): void {
+export function showPrimaryToast(description: string) {
   addToast({ description, color: 'primary' })
 }
 
-export function showWarningToast(description: string): void {
+export function showWarningToast(description: string) {
   addToast({ description, color: 'warning' })
 }
 
-export function showDangerToast(description: string): void {
+export function showDangerToast(description: string) {
   addToast({ description, color: 'danger' })
 }
 
-export function showSteamNotRunningToast(): void {
+export function showSteamNotRunningToast() {
   addToast({
     title: (
       <div className='grow'>
         <ErrorToast
-          message={t('toast.steam')}
+          message={i18next.t('toast.steam')}
           href='https://steamgameidler.com/docs/faq#error-messages:~:text=Steam%20is%20not%20running'
         />
       </div>
@@ -35,11 +32,11 @@ export function showSteamNotRunningToast(): void {
   })
 }
 
-export function showAccountMismatchToast(color: 'danger' | 'warning'): void {
+export function showAccountMismatchToast(color: 'danger' | 'warning') {
   addToast({
     title: (
       <ErrorToast
-        message={t('toast.mismatch')}
+        message={i18next.t('toast.mismatch')}
         href='https://steamgameidler.com/docs/faq#error-messages:~:text=Account%20mismatch%20between%20Steam%20and%20SGI'
       />
     ),
@@ -47,11 +44,11 @@ export function showAccountMismatchToast(color: 'danger' | 'warning'): void {
   })
 }
 
-export function showMissingCredentialsToast(): void {
+export function showMissingCredentialsToast() {
   addToast({
     title: (
       <ErrorToast
-        message={t('toast.missingCredentials')}
+        message={i18next.t('toast.missingCredentials')}
         href='https://steamgameidler.com/docs/faq#error-messages:~:text=Missing%20card%20farming%20credentials%20in%20%E2%80%9Csettings%20%3E%20card%20farming%22'
       />
     ),
@@ -59,11 +56,11 @@ export function showMissingCredentialsToast(): void {
   })
 }
 
-export function showOutdatedCredentialsToast(): void {
+export function showOutdatedCredentialsToast() {
   addToast({
     title: (
       <ErrorToast
-        message={t('toast.outdatedCredentials')}
+        message={i18next.t('toast.outdatedCredentials')}
         href='https://steamgameidler.com/docs/faq#error-messages:~:text=Card%20farming%20credentials%20need%20to%20be%20updated%20in%20%E2%80%9Csettings%20%3E%20general%22'
       />
     ),
@@ -71,11 +68,11 @@ export function showOutdatedCredentialsToast(): void {
   })
 }
 
-export function showEnableAllGamesToast(): void {
+export function showEnableAllGamesToast() {
   addToast({
     title: (
       <ErrorToast
-        message={t('toast.enableAllGames')}
+        message={i18next.t('toast.enableAllGames')}
         href='https://steamgameidler.com/docs/faq#error-messages:~:text=Add%20some%20games%20to%20your%20card%20farming%20list%20or%20enable%20%E2%80%9Call%20games%E2%80%9D%20in%20%E2%80%9Csettings%20%3E%20card%20farming%22'
       />
     ),
@@ -83,11 +80,11 @@ export function showEnableAllGamesToast(): void {
   })
 }
 
-export function showIncorrectCredentialsToast(): void {
+export function showIncorrectCredentialsToast() {
   addToast({
     title: (
       <ErrorToast
-        message={t('toast.incorrectCredentials')}
+        message={i18next.t('toast.incorrectCredentials')}
         href='https://steamgameidler.com/docs/faq#error-messages:~:text=Incorrect%20card%20farming%20credentials'
       />
     ),
@@ -95,11 +92,11 @@ export function showIncorrectCredentialsToast(): void {
   })
 }
 
-export function showNoGamesToast(): void {
+export function showNoGamesToast() {
   addToast({
     title: (
       <ErrorToast
-        message={t('toast.noGames')}
+        message={i18next.t('toast.noGames')}
         href='https://steamgameidler.com/docs/faq#:~:text=There%20are%20no%20games%20in%20your%20list'
       />
     ),
@@ -107,11 +104,11 @@ export function showNoGamesToast(): void {
   })
 }
 
-export function showPriceFetchCooldownToast(cooldown: number): void {
+export function showPriceFetchCooldownToast(cooldown: number) {
   addToast({
     title: (
       <ErrorToast
-        message={t('toast.tradingCards.cooldown', { cooldown })}
+        message={i18next.t('toast.tradingCards.cooldown', { cooldown })}
         href='https://steamgameidler.com/docs/faq#error-messages:~:text=Please%20wait%20X%20seconds%20before%20fetching%20more%20card%20prices'
       />
     ),
@@ -119,11 +116,11 @@ export function showPriceFetchCooldownToast(cooldown: number): void {
   })
 }
 
-export function showPriceFetchRateLimitToast(): void {
+export function showPriceFetchRateLimitToast() {
   addToast({
     title: (
       <ErrorToast
-        message={t('toast.tradingCards.rateLimit')}
+        message={i18next.t('toast.tradingCards.rateLimit')}
         href='https://steamgameidler.com/docs/faq#:~:text=Rate%20limited%20when%20fetching%20card%20prices'
       />
     ),

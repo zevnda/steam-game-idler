@@ -1,27 +1,20 @@
-import type { ChangeEvent, KeyboardEvent, ReactElement } from 'react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { RiSearchLine } from 'react-icons/ri'
 import { TbX } from 'react-icons/tb'
 import { cn, Input, Modal, ModalBody, ModalContent, ModalHeader } from '@heroui/react'
-import { useNavigationStore } from '@/shared/stores/navigationStore'
-import { useSearchStore } from '@/shared/stores/searchStore'
-import { useStateStore } from '@/shared/stores/stateStore'
-import { useUserStore } from '@/shared/stores/userStore'
-import useTitlebar from '@/shared/ui/titlebar/hooks/useTitlebar'
+import { useNavigationStore, useSearchStore, useStateStore, useUserStore } from '@/shared/stores'
+import { useTitlebar } from '@/shared/ui'
 
 interface SearchbarProps {
   isModalOpen?: boolean
   onModalClose?: () => void
 }
 
-export default function Searchbar({
-  isModalOpen = false,
-  onModalClose,
-}: SearchbarProps): ReactElement {
+export const Searchbar = ({ isModalOpen = false, onModalClose }: SearchbarProps) => {
   const { t } = useTranslation()
   const [inputValue, setInputValue] = useState<string>('')
-  const searchContext = useSearchStore()
+  const searchStore = useSearchStore()
   const showAchievements = useStateStore(state => state.showAchievements)
   const activePage = useNavigationStore(state => state.activePage)
   const currentTab = useNavigationStore(state => state.currentTab)
@@ -30,44 +23,44 @@ export default function Searchbar({
   const hasLoadedRecentSearches = useRef(false)
   useTitlebar()
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value)
   }
 
-  const applySearchQuery = (query: string): void => {
+  const applySearchQuery = (query: string) => {
     if (activePage === 'games' && !showAchievements) {
-      searchContext.setGameQueryValue(query)
+      searchStore.setGameQueryValue(query)
     } else if (activePage === 'tradingCards' && !showAchievements) {
-      searchContext.setTradingCardQueryValue(query)
+      searchStore.setTradingCardQueryValue(query)
     } else if (showAchievements && currentTab === 'achievements') {
-      searchContext.setAchievementQueryValue(query)
+      searchStore.setAchievementQueryValue(query)
     } else if (showAchievements && currentTab === 'statistics') {
-      searchContext.setStatisticQueryValue(query)
+      searchStore.setStatisticQueryValue(query)
     }
   }
 
-  const getCurrentSearchQuery = useCallback((): string => {
+  const getCurrentSearchQuery = useCallback(() => {
     if (activePage === 'games' && !showAchievements) {
-      return searchContext.gameQueryValue
+      return searchStore.gameQueryValue
     }
     if (activePage === 'tradingCards' && !showAchievements) {
-      return searchContext.tradingCardQueryValue
+      return searchStore.tradingCardQueryValue
     }
     if (showAchievements && currentTab === 'achievements') {
-      return searchContext.achievementQueryValue
+      return searchStore.achievementQueryValue
     }
     if (showAchievements && currentTab === 'statistics') {
-      return searchContext.statisticQueryValue
+      return searchStore.statisticQueryValue
     }
     return ''
   }, [
     activePage,
     showAchievements,
     currentTab,
-    searchContext.gameQueryValue,
-    searchContext.tradingCardQueryValue,
-    searchContext.achievementQueryValue,
-    searchContext.statisticQueryValue,
+    searchStore.gameQueryValue,
+    searchStore.tradingCardQueryValue,
+    searchStore.achievementQueryValue,
+    searchStore.statisticQueryValue,
   ])
 
   useEffect(() => {
@@ -82,16 +75,16 @@ export default function Searchbar({
       const stored = localStorage.getItem('searchQueries')
       if (stored) {
         const queries = JSON.parse(stored)
-        queries.forEach((query: string) => searchContext.addRecentSearch(query))
+        queries.forEach((query: string) => searchStore.addRecentSearch(query))
       }
       hasLoadedRecentSearches.current = true
     }
     if (!isModalOpen) {
       hasLoadedRecentSearches.current = false
     }
-  }, [isModalOpen, searchContext])
+  }, [isModalOpen, searchStore])
 
-  const saveSearchQuery = (query: string): void => {
+  const saveSearchQuery = (query: string) => {
     if (query.trim()) {
       const stored = localStorage.getItem('searchQueries')
       let queries: string[] = stored ? JSON.parse(stored) : []
@@ -101,36 +94,34 @@ export default function Searchbar({
       queries = queries.slice(0, 10)
 
       localStorage.setItem('searchQueries', JSON.stringify(queries))
-      searchContext.addRecentSearch(query.trim())
+      searchStore.addRecentSearch(query.trim())
     }
   }
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>): void => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       const target = e.target as HTMLInputElement
       applySearchQuery(target.value)
       saveSearchQuery(target.value)
-      searchContext.setIsQuery(true)
+      searchStore.setIsQuery(true)
       onModalClose?.()
     }
   }
 
-  const handleRecentSearchClick = (query: string): void => {
+  const handleRecentSearchClick = (query: string) => {
     setInputValue(query)
     applySearchQuery(query)
     saveSearchQuery(query)
-    searchContext.setIsQuery(true)
+    searchStore.setIsQuery(true)
     onModalClose?.()
   }
 
-  const handleClear = (): void => {
+  const handleClear = () => {
     setInputValue('')
     applySearchQuery('')
   }
 
-  const getSearchConfig = (): {
-    isDisabled: boolean
-  } => {
+  const getSearchConfig = () => {
     if (activePage === 'games' && !showAchievements) {
       return {
         isDisabled: false,
@@ -202,14 +193,14 @@ export default function Searchbar({
           />
         </ModalHeader>
         <ModalBody className='relative p-0 gap-0 overflow-y-auto'>
-          {searchContext.recentSearches.length > 0 && (
+          {searchStore.recentSearches.length > 0 && (
             <div className='p-4 border-t border-border/40'>
               <div className='flex items-center gap-2'>
                 <h3 className='text-sm font-bold text-altwhite'>Recent searches</h3>
               </div>
 
               <div className='grid max-h-96 overflow-y-auto'>
-                {searchContext.recentSearches
+                {searchStore.recentSearches
                   .slice()
                   .reverse()
                   .map(query => (
@@ -227,7 +218,7 @@ export default function Searchbar({
 
                       <div
                         className='flex items-center justify-center cursor-pointer bg-item-hover hover:bg-item-hover/80 rounded-full p-1 duration-150'
-                        onClick={() => searchContext.removeRecentSearch(query)}
+                        onClick={() => searchStore.removeRecentSearch(query)}
                       >
                         <TbX className='text-content' />
                       </div>
@@ -237,7 +228,7 @@ export default function Searchbar({
             </div>
           )}
 
-          {searchContext.recentSearches.length === 0 && (
+          {searchStore.recentSearches.length === 0 && (
             <div className='text-center py-8 border-t border-border/40'>
               <RiSearchLine size={32} className='text-altwhite mx-auto mb-3' />
               <p className='text-altwhite'>No recent searches</p>

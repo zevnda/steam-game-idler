@@ -1,26 +1,23 @@
 import type { Game } from '@/shared/types'
-import type { Dispatch, ReactElement, SetStateAction } from 'react'
 import { useCallback, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TbChevronLeft, TbChevronRight } from 'react-icons/tb'
 import { Button, cn } from '@heroui/react'
-import GameCard from '@/shared/ui/game-card/GameCard'
+import { GameCard } from '@/shared/ui'
 
 interface RecentGamesCarouselProps {
   gamesContext: {
     sortStyle: string
     recentGames: Game[]
-    setSortStyle: Dispatch<SetStateAction<string>>
+    setSortStyle: React.Dispatch<React.SetStateAction<string>>
   }
 }
 
-export default function RecentGamesCarousel({
-  gamesContext,
-}: RecentGamesCarouselProps): ReactElement {
+export const RecentGamesCarousel = ({ gamesContext }: RecentGamesCarouselProps) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const { t } = useTranslation()
 
-  const scroll = useCallback((direction: 'left' | 'right'): void => {
+  const scroll = useCallback((direction: 'left' | 'right') => {
     if (scrollContainerRef.current) {
       const scrollAmount = 192 * 2 + 20 + 20
       const container = scrollContainerRef.current

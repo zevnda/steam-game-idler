@@ -1,21 +1,15 @@
 import type { SortStyleValue } from '@/shared/types'
-import type { Dispatch, SetStateAction } from 'react'
 import { invoke } from '@tauri-apps/api/core'
 import { useTranslation } from 'react-i18next'
 import moment from 'moment'
-import { logEvent } from '@/shared/utils/tasks'
-import { showDangerToast, showPrimaryToast } from '@/shared/utils/toasts'
-
-interface PageHeaderHook {
-  handleSorting: (currentKey: string | undefined) => void
-}
+import { logEvent, showDangerToast, showPrimaryToast } from '@/shared/utils'
 
 export const usePageHeader = (
-  setSortStyle: Dispatch<SetStateAction<SortStyleValue>>,
-): PageHeaderHook => {
+  setSortStyle: React.Dispatch<React.SetStateAction<SortStyleValue>>,
+) => {
   const { t } = useTranslation()
 
-  const handleSorting = (currentKey: string | undefined): void => {
+  const handleSorting = (currentKey: string | undefined) => {
     try {
       if (!currentKey) return
       // Save the selected sort style to localStorage and update state
@@ -34,9 +28,9 @@ export const usePageHeader = (
 export const handleRefetch = async (
   t: (key: string, options?: Record<string, unknown>) => string,
   steamId: string | undefined,
-  setRefreshKey: Dispatch<SetStateAction<number>>,
-  manual: boolean = true,
-): Promise<void> => {
+  setRefreshKey: React.Dispatch<React.SetStateAction<number>>,
+  manual: boolean,
+) => {
   try {
     if (manual && steamId !== '76561198158912649' && steamId !== '76561198999797359') {
       // Check if user is on cooldown for refreshing games

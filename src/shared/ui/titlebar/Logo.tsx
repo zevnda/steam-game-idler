@@ -1,11 +1,9 @@
-import type { ReactElement } from 'react'
-
 interface LogoProps {
   width?: string
   height?: string
 }
 
-export default function Logo({ width = '5', height = '5' }: LogoProps): ReactElement {
+export const Logo = ({ width = '5', height = '5' }: LogoProps) => {
   return (
     <svg
       className={`w-${width} h-${height} fill-content pointer-events-none shrink-0`}

@@ -1,10 +1,7 @@
-import type { ReactElement } from 'react'
-import Layout from '@/shared/layouts/Layout'
-import Window from '@/shared/layouts/Window'
-import ErrorBoundaryProvider from '@/shared/providers/ErrorBoundaryProvider'
-import I18nProvider from '@/shared/providers/I18nProvider'
+import { Layout, Window } from '@/shared/layouts'
+import { ErrorBoundaryProvider, I18nProvider } from '@/shared/providers'
 
-export default function Index(): ReactElement {
+const Index = () => {
   return (
     <ErrorBoundaryProvider>
       <I18nProvider>
@@ -15,3 +12,5 @@ export default function Index(): ReactElement {
     </ErrorBoundaryProvider>
   )
 }
+
+export default Index

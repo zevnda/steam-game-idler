@@ -1,19 +1,18 @@
-import type { ErrorInfo, ReactNode } from 'react'
 import { Component } from 'react'
 import { Button, cn } from '@heroui/react'
-import ExtLink from '@/shared/ui/ExtLink'
+import { ExtLink } from '@/shared/ui'
 
 interface ErrorBoundaryState {
   hasError: boolean
   error: Error | null
-  errorInfo: ErrorInfo | null
+  errorInfo: React.ErrorInfo | null
 }
 
 interface ErrorBoundaryProps {
-  children: ReactNode
+  children: React.ReactNode
 }
 
-class ErrorBoundaryProvider extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+export class ErrorBoundaryProvider extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
     super(props)
     this.state = {
@@ -27,7 +26,7 @@ class ErrorBoundaryProvider extends Component<ErrorBoundaryProps, ErrorBoundaryS
     return { hasError: true }
   }
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     this.setState({
       error,
       errorInfo,
@@ -36,7 +35,7 @@ class ErrorBoundaryProvider extends Component<ErrorBoundaryProps, ErrorBoundaryS
     console.error('Client side error caught by ErrorBoundary:', error, errorInfo)
   }
 
-  render(): ReactNode {
+  render(): React.ReactNode {
     if (this.state.hasError) {
       const { error, errorInfo } = this.state
 
@@ -119,5 +118,3 @@ ${errorInfo && errorInfo.componentStack}
     return this.props.children
   }
 }
-
-export default ErrorBoundaryProvider

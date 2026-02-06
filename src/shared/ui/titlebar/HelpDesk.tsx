@@ -1,4 +1,3 @@
-import type { ReactElement } from 'react'
 import { getVersion } from '@tauri-apps/api/app'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -6,9 +5,9 @@ import { RiCustomerService2Line } from 'react-icons/ri'
 import { TbX } from 'react-icons/tb'
 import { Button, cn } from '@heroui/react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { useUserStore } from '@/shared/stores/userStore'
-import CustomTooltip from '@/shared/ui/CustomTooltip'
-import { isPortableCheck } from '@/shared/utils/tasks'
+import { useUserStore } from '@/shared/stores'
+import { CustomTooltip } from '@/shared/ui'
+import { isPortableCheck } from '@/shared/utils'
 
 declare global {
   interface Window {
@@ -20,7 +19,7 @@ declare global {
   }
 }
 
-export default function HelpDesk(): ReactElement | null {
+export const HelpDesk = () => {
   const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
   const [isLoaded, setIsLoaded] = useState(false)

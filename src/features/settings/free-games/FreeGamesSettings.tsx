@@ -1,19 +1,14 @@
 import type { InvokeSettings, InvokeSteamCredentials } from '@/shared/types'
-import type { ReactElement } from 'react'
 import { invoke } from '@tauri-apps/api/core'
 import { useTranslation } from 'react-i18next'
 import { TbChevronRight } from 'react-icons/tb'
 import { Button, Divider } from '@heroui/react'
-import SettingsSwitch from '@/features/settings/SettingsSwitch'
-import { useStateStore } from '@/shared/stores/stateStore'
-import { useUserStore } from '@/shared/stores/userStore'
-import Beta from '@/shared/ui/Beta'
-import ProBadge from '@/shared/ui/pro/ProBadge'
-import WebviewWindow from '@/shared/ui/WebviewWindow'
-import { logEvent } from '@/shared/utils/tasks'
-import { showDangerToast, showSuccessToast } from '@/shared/utils/toasts'
+import { SettingsSwitch } from '@/features/settings'
+import { useStateStore, useUserStore } from '@/shared/stores'
+import { Beta, ProBadge, WebviewWindow } from '@/shared/ui'
+import { logEvent, showDangerToast, showSuccessToast } from '@/shared/utils'
 
-export default function CardSettings(): ReactElement {
+export const FreeGamesSettings = () => {
   const { t } = useTranslation()
   const isPro = useUserStore(state => state.isPro)
   const userSummary = useUserStore(state => state.userSummary)
@@ -21,7 +16,7 @@ export default function CardSettings(): ReactElement {
   const setUserSettings = useUserStore(state => state.setUserSettings)
   const setProModalOpen = useStateStore(state => state.setProModalOpen)
 
-  const handleShowStoreLoginWindow = async (): Promise<void> => {
+  const handleShowStoreLoginWindow = async () => {
     const result = await invoke<InvokeSteamCredentials>('open_store_login_window')
 
     if (!result || result.success === false) {
@@ -43,7 +38,7 @@ export default function CardSettings(): ReactElement {
     }
   }
 
-  const handleSignOutCurrentStoreUser = async (): Promise<void> => {
+  const handleSignOutCurrentStoreUser = async () => {
     const result = await invoke<InvokeSteamCredentials>('delete_store_cookies')
 
     if (!result || result.success === false) {

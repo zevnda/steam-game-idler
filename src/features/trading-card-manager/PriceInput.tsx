@@ -1,17 +1,16 @@
-import type useTradingCardsList from '@/features/trading-card-manager/hooks/useTradingCardsList'
+import type { useTradingCardsList } from '@/features/trading-card-manager'
 import type { TradingCard } from '@/shared/types'
-import type { ReactElement } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TbPackageExport } from 'react-icons/tb'
 import { Button, cn, NumberInput } from '@heroui/react'
-import CustomTooltip from '@/shared/ui/CustomTooltip'
+import { CustomTooltip } from '@/shared/ui'
 
 interface PriceInputProps {
   item: TradingCard
   tradingCardContext: ReturnType<typeof useTradingCardsList>
 }
 
-export default function PriceInput({ item, tradingCardContext }: PriceInputProps): ReactElement {
+export const PriceInput = ({ item, tradingCardContext }: PriceInputProps) => {
   const { t } = useTranslation()
 
   return (
@@ -32,7 +31,7 @@ export default function PriceInput({ item, tradingCardContext }: PriceInputProps
           maximumFractionDigits: 2,
         }}
         aria-label='statistic value'
-        className='w-[85px]'
+        className='w-21.25'
         classNames={{
           inputWrapper: cn(
             'bg-input data-[hover=true]:!bg-inputhover border-none',

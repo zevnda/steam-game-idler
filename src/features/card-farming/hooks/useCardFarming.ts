@@ -7,12 +7,15 @@ import type {
   InvokeSettings,
   UserSummary,
 } from '@/shared/types'
-import type { Dispatch, RefObject, SetStateAction } from 'react'
 import { invoke } from '@tauri-apps/api/core'
-import { startAutoIdleGames } from '@/shared/layouts/hooks/useWindow'
-import { checkDrops, getAllGamesWithDrops } from '@/shared/utils/automation'
-import { startFarmIdle, stopFarmIdle } from '@/shared/utils/idle'
-import { logEvent } from '@/shared/utils/tasks'
+import { startAutoIdleGames } from '@/shared/layouts'
+import {
+  checkDrops,
+  getAllGamesWithDrops,
+  logEvent,
+  startFarmIdle,
+  stopFarmIdle,
+} from '@/shared/utils'
 
 export interface GameForFarming {
   appid: number
@@ -28,33 +31,28 @@ export interface GameWithDrops extends GameForFarming {
   initialDrops: number
 }
 
-interface DropsCheckResult {
-  totalDrops: number
-  gamesSet: Set<GameWithDrops>
-}
-
 interface CycleStep {
   action: (gamesSet: Set<GameWithDrops>) => Promise<boolean>
   delay: number
 }
 
 export const useCardFarming = async (
-  setIsComplete: Dispatch<SetStateAction<boolean>>,
-  setIsCardFarming: Dispatch<SetStateAction<boolean>>,
-  setTotalDropsRemaining: Dispatch<SetStateAction<number>>,
-  setGamesWithDrops: Dispatch<SetStateAction<Set<GameWithDrops>>>,
+  setIsComplete: React.Dispatch<React.SetStateAction<boolean>>,
+  setIsCardFarming: (value: boolean) => void,
+  setTotalDropsRemaining: React.Dispatch<React.SetStateAction<number>>,
+  setGamesWithDrops: React.Dispatch<React.SetStateAction<Set<GameWithDrops>>>,
   startAchievementUnlocker: () => Promise<void>,
-  isMountedRef: RefObject<boolean>,
-  abortControllerRef: RefObject<AbortController>,
-): Promise<() => void> => {
-  const cleanup = (): void => {
+  isMountedRef: React.RefObject<boolean>,
+  abortControllerRef: React.RefObject<AbortController>,
+) => {
+  const cleanup = () => {
     isMountedRef.current = false
     if (abortControllerRef.current) {
       abortControllerRef.current.abort()
     }
   }
 
-  const startCardFarming = async (): Promise<void> => {
+  const startCardFarming = async () => {
     try {
       if (!isMountedRef.current) return
 
@@ -112,7 +110,7 @@ export const useCardFarming = async (
 }
 
 // Check games for drops and return total drops and games set
-const checkGamesForDrops = async (): Promise<DropsCheckResult> => {
+const checkGamesForDrops = async () => {
   const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
 
   const response = await invoke<InvokeSettings>('get_user_settings', {
@@ -172,7 +170,7 @@ const processGamesWithDrops = (
   gameSettings: GameSettings,
   blacklist: number[],
   skipNoPlaytime: boolean,
-): number => {
+) => {
   let totalDrops = 0
 
   if (gamesWithDrops) {
@@ -232,11 +230,11 @@ const processIndividualGames = async (
   userSummary: UserSummary,
   credentials: CardFarmingSettings['credentials'],
   blacklist: number[],
-): Promise<number> => {
+) => {
   let totalDrops = 0
   const TIMEOUT = 30000
 
-  const checkGame = async (gameData: Game): Promise<void> => {
+  const checkGame = async (gameData: Game) => {
     if (gamesSet.size >= 32) return
 
     // Skip if game is blacklisted
@@ -300,9 +298,9 @@ const processIndividualGames = async (
 // Begin the cycle of farming for all games in the set
 export const beginFarmingCycle = async (
   gamesSet: Set<GameWithDrops>,
-  isMountedRef: RefObject<boolean>,
-  abortControllerRef: RefObject<AbortController>,
-): Promise<boolean> => {
+  isMountedRef: React.RefObject<boolean>,
+  abortControllerRef: React.RefObject<AbortController>,
+) => {
   const delays = {
     farming: 60000 * 30,
     short: 15000,
@@ -363,7 +361,7 @@ export const beginFarmingCycle = async (
 }
 
 // Periodically check if there are still drops remaining for each game
-const checkDropsRemaining = async (gameSet: Set<GameWithDrops>): Promise<Set<GameWithDrops>> => {
+const checkDropsRemaining = async (gameSet: Set<GameWithDrops>) => {
   const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
 
   const updatedGameSet = new Set<GameWithDrops>()
@@ -407,7 +405,7 @@ const checkDropsRemaining = async (gameSet: Set<GameWithDrops>): Promise<Set<Gam
 }
 
 // Remove game from farming list
-const removeGameFromFarmingList = async (gameId: number): Promise<void> => {
+const removeGameFromFarmingList = async (gameId: number) => {
   try {
     const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
 
@@ -429,10 +427,7 @@ const removeGameFromFarmingList = async (gameId: number): Promise<void> => {
 }
 
 // Check for next task to move on to once farming is complete
-const checkForNextTask = async (): Promise<{
-  shouldStartNextTask: boolean
-  task: string | null
-}> => {
+const checkForNextTask = async () => {
   try {
     const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
 
@@ -463,9 +458,9 @@ const checkForNextTask = async (): Promise<{
 // Delay function
 const delay = (
   ms: number,
-  isMountedRef: RefObject<boolean>,
-  abortControllerRef: RefObject<AbortController>,
-): Promise<void> => {
+  isMountedRef: React.RefObject<boolean>,
+  abortControllerRef: React.RefObject<AbortController>,
+) => {
   return new Promise<void>((resolve, reject) => {
     if (!isMountedRef.current) {
       return reject()
@@ -484,7 +479,7 @@ const delay = (
       elapsedTime += checkInterval
     }, checkInterval)
 
-    const abortHandler = (): void => {
+    const abortHandler = () => {
       clearInterval(intervalId)
       reject()
     }
@@ -507,9 +502,9 @@ const delay = (
 // Handle cancel action
 export const handleCancel = async (
   gamesWithDrops: Set<GameWithDrops>,
-  isMountedRef: RefObject<boolean>,
-  abortControllerRef: RefObject<AbortController>,
-): Promise<void> => {
+  isMountedRef: React.RefObject<boolean>,
+  abortControllerRef: React.RefObject<AbortController>,
+) => {
   try {
     await stopFarmIdle(gamesWithDrops)
   } catch (error) {
@@ -521,7 +516,7 @@ export const handleCancel = async (
 }
 
 // Handle errors
-const handleError = (functionName: string, error: unknown): void => {
+const handleError = (functionName: string, error: unknown) => {
   if (!error) return
   console.error(`Error in (${functionName}):`, error)
   logEvent(`[Error] in (${functionName}) ${error}`)

@@ -1,7 +1,7 @@
 import { Trans, useTranslation } from 'react-i18next'
 import Image from 'next/image'
 
-export default function SignInHero() {
+export const SignInHero = () => {
   const { t } = useTranslation()
 
   const uniqueItems = [

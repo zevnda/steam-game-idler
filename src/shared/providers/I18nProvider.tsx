@@ -1,9 +1,8 @@
-import type { ReactElement, ReactNode } from 'react'
 import { useEffect, useState } from 'react'
 import { I18nextProvider } from 'react-i18next'
 import i18n from '@/i18n/i18n'
 
-export default function I18nProvider({ children }: { children: ReactNode }): ReactElement | null {
+export const I18nProvider = ({ children }: React.PropsWithChildren) => {
   const [isClient, setIsClient] = useState(false)
 
   useEffect(() => {

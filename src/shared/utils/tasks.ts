@@ -3,25 +3,28 @@ import type {
   InvokeSettings,
   InvokeSteamCredentials,
   InvokeValidateSession,
-  LatestData,
   UserSettings,
   UserSummary,
 } from '@/shared/types'
-import type { Dispatch, SetStateAction } from 'react'
 import { getVersion } from '@tauri-apps/api/app'
 import { invoke } from '@tauri-apps/api/core'
 import { TrayIcon } from '@tauri-apps/api/tray'
+import {
+  isPermissionGranted,
+  requestPermission,
+  sendNotification,
+} from '@tauri-apps/plugin-notification'
 import { open } from '@tauri-apps/plugin-shell'
-import { fetchUserSummary } from '@/features/settings/card-farming/hooks/useCardSettings'
+import i18next from 'i18next'
+import { fetchUserSummary } from '@/features/settings'
 import {
   showAccountMismatchToast,
   showDangerToast,
   showIncorrectCredentialsToast,
   showSteamNotRunningToast,
-  t,
-} from '@/shared/utils/toasts'
+} from '@/shared/utils'
 
-export async function checkSteamStatus(showToast: boolean = false): Promise<boolean> {
+export async function checkSteamStatus(showToast: boolean) {
   try {
     const isSteamRunning = await invoke<boolean>('is_steam_running')
     if (!isSteamRunning && showToast) showSteamNotRunningToast()
@@ -34,7 +37,7 @@ export async function checkSteamStatus(showToast: boolean = false): Promise<bool
 }
 
 // Fetch the latest.json for tauri updater
-export async function fetchLatest(): Promise<LatestData | null> {
+export async function fetchLatest() {
   try {
     const res = await fetch(
       'https://raw.githubusercontent.com/zevnda/steam-game-idler/main/latest.json',
@@ -50,7 +53,7 @@ export async function fetchLatest(): Promise<LatestData | null> {
 
 // Manage the anti-away status
 let antiAwayInterval: ReturnType<typeof setTimeout> | null = null
-export async function antiAwayStatus(active: boolean | null = null): Promise<void> {
+export async function antiAwayStatus(active: boolean | null = null) {
   try {
     const steamRunning = await invoke('is_steam_running')
     if (!steamRunning) return
@@ -91,13 +94,13 @@ export async function antiAwayStatus(active: boolean | null = null): Promise<voi
 
 // Automatically revalidate Steam credentials for PRO users
 export async function autoRevalidateSteamCredentials(
-  setUserSettings: Dispatch<SetStateAction<UserSettings>>,
-): Promise<{ credentials: { sid: string; sls: string } | null } | void> {
+  setUserSettings: (value: UserSettings) => void,
+) {
   try {
     const result = await invoke<InvokeSteamCredentials>('open_steam_login_window')
 
     if (!result || result.success === false) {
-      showDangerToast(t('common.error'))
+      showDangerToast(i18next.t('common.error'))
       logEvent(`[Error] in (handleShowSteamLoginWindow): ${result?.message || 'Unknown error'}`)
       return
     }
@@ -167,14 +170,14 @@ export async function autoRevalidateSteamCredentials(
       }
     }
   } catch (error) {
-    showDangerToast(t('common.error'))
+    showDangerToast(i18next.t('common.error'))
     console.error('Error in (autoRevalidateSteamCredentials):', error)
     logEvent(`[Error] in (autoRevalidateSteamCredentials): ${error}`)
   }
 }
 
 // Clear local/session storage but preserving important keys
-export const preserveKeysAndClearData = async (): Promise<void> => {
+export const preserveKeysAndClearData = async () => {
   try {
     const keysToPreserve = [
       'theme',
@@ -202,26 +205,26 @@ export const preserveKeysAndClearData = async (): Promise<void> => {
       localStorage.setItem(key, value)
     })
   } catch (error) {
-    showDangerToast(t('common.error'))
+    showDangerToast(i18next.t('common.error'))
     console.error('Error in (preserveKeysAndClearData):', error)
     logEvent(`[Error] in (preserveKeysAndClearData): ${error}`)
   }
 }
 
 // Get the app version
-export const getAppVersion = async (): Promise<string | undefined> => {
+export const getAppVersion = async () => {
   try {
     const appVersion = await getVersion()
     return appVersion
   } catch (error) {
-    showDangerToast(t('common.error'))
+    showDangerToast(i18next.t('common.error'))
     console.error('Error in (getAppVersion):', error)
     logEvent(`[Error] in (getAppVersion): ${error}`)
   }
 }
 
 // Log event
-export async function logEvent(message: string): Promise<void> {
+export async function logEvent(message: string) {
   try {
     const version = await getVersion()
     await invoke('log_event', { message: `[v${version}] ${message}` })
@@ -230,7 +233,7 @@ export async function logEvent(message: string): Promise<void> {
   }
 }
 
-export function encrypt(string: string): string {
+export function encrypt(string: string) {
   try {
     const iv = crypto.randomBytes(16)
     const cipher = crypto.createCipheriv('aes-256-gcm', '7k9m2n8q4r6t1u3w5y7z9a2c4e6g8h0j', iv)
@@ -244,7 +247,7 @@ export function encrypt(string: string): string {
   }
 }
 
-export function decrypt(string: string): string {
+export function decrypt(string: string) {
   try {
     const parts = string.split(':')
     const iv = Buffer.from(parts[0], 'hex')
@@ -261,7 +264,7 @@ export function decrypt(string: string): string {
   }
 }
 
-export async function updateTrayIcon(tooltip?: string, runningStatus?: boolean): Promise<void> {
+export async function updateTrayIcon(tooltip?: string, runningStatus?: boolean) {
   try {
     const trayIcon = await TrayIcon.getById('1')
     if (trayIcon) {
@@ -288,7 +291,7 @@ export async function updateTrayIcon(tooltip?: string, runningStatus?: boolean):
   }
 }
 
-export async function isPortableCheck(): Promise<boolean> {
+export async function isPortableCheck() {
   try {
     const portable = await invoke<boolean>('is_portable')
     return portable
@@ -299,10 +302,31 @@ export async function isPortableCheck(): Promise<boolean> {
   }
 }
 
-export const handleOpenExtLink = async (href: string): Promise<void> => {
+export const handleOpenExtLink = async (href: string) => {
   try {
     await open(href)
   } catch (error) {
     console.error('Failed to open link:', error)
+  }
+}
+
+// Send a native notification
+export async function sendNativeNotification(title: string, body: string) {
+  try {
+    let permissionGranted = await isPermissionGranted()
+
+    // Request permission if not granted
+    if (!permissionGranted) {
+      const permission = await requestPermission()
+      permissionGranted = permission === 'granted'
+    }
+
+    if (permissionGranted) {
+      sendNotification({ title, body })
+    }
+  } catch (error) {
+    showDangerToast(i18next.t('common.error'))
+    console.error('Error in (sendNativeNotification):', error)
+    logEvent(`[Error] in (sendNativeNotification): ${error}`)
   }
 }

@@ -1,13 +1,11 @@
 import type { UserSettings } from '@/shared/types'
-import type { ReactElement } from 'react'
 import { invoke } from '@tauri-apps/api/core'
 import { arch, locale, version } from '@tauri-apps/plugin-os'
 import { useTranslation } from 'react-i18next'
 import { TbArrowBarUp } from 'react-icons/tb'
 import { Button } from '@heroui/react'
-import { useUserStore } from '@/shared/stores/userStore'
-import { getAppVersion } from '@/shared/utils/tasks'
-import { showDangerToast, showSuccessToast } from '@/shared/utils/toasts'
+import { useUserStore } from '@/shared/stores'
+import { getAppVersion, showDangerToast, showSuccessToast } from '@/shared/utils'
 
 interface SystemType {
   version: string
@@ -22,7 +20,7 @@ interface ExportedData {
   [key: string]: unknown
 }
 
-const collectSystemInfo = async (): Promise<SystemType> => {
+const collectSystemInfo = async () => {
   const system = {} as SystemType
   const osVersion = await version()
   const cpuArch = await arch()
@@ -43,7 +41,7 @@ const collectSystemInfo = async (): Promise<SystemType> => {
   return system
 }
 
-const sanitizeUserSettings = (settings: UserSettings): Partial<UserSettings> => {
+const sanitizeUserSettings = (settings: UserSettings) => {
   const sanitizedSettings = JSON.parse(JSON.stringify(settings))
 
   // Remove sensitive data before exporting
@@ -67,7 +65,7 @@ const sanitizeUserSettings = (settings: UserSettings): Partial<UserSettings> => 
   return sanitizedSettings
 }
 
-const processLocalStorageItem = (key: string, value: string | null): string | null | object => {
+const processLocalStorageItem = (key: string, value: string | null) => {
   // Skip specific keys
   if (
     [
@@ -109,7 +107,7 @@ const processLocalStorageItem = (key: string, value: string | null): string | nu
   }
 }
 
-const collectLocalStorageData = (): Record<string, unknown> => {
+const collectLocalStorageData = () => {
   const storageData: Record<string, unknown> = {}
 
   for (let i = 0; i < localStorage.length; i++) {
@@ -145,11 +143,11 @@ export const getExportData = async (userSettings: UserSettings) => {
   return allSettings
 }
 
-export default function ExportSettings(): ReactElement {
+export const ExportSettings = () => {
   const { t } = useTranslation()
   const userSettings = useUserStore(state => state.userSettings)
 
-  const exportSettings = async (): Promise<void> => {
+  const exportSettings = async () => {
     try {
       const allSettings = await getExportData(userSettings)
       // Copy to clipboard

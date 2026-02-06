@@ -1,4 +1,3 @@
-import type { ReactElement } from 'react'
 import { invoke } from '@tauri-apps/api/core'
 import { relaunch } from '@tauri-apps/plugin-process'
 import { check } from '@tauri-apps/plugin-updater'
@@ -15,18 +14,19 @@ import {
   TbStarFilled,
 } from 'react-icons/tb'
 import { cn, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@heroui/react'
-import { useUpdateStore } from '@/shared/stores/updateStore'
-import CustomTooltip from '@/shared/ui/CustomTooltip'
+import { useUpdateStore } from '@/shared/stores'
+import { CustomTooltip } from '@/shared/ui'
 import {
   fetchLatest,
   handleOpenExtLink,
   isPortableCheck,
   logEvent,
   preserveKeysAndClearData,
-} from '@/shared/utils/tasks'
-import { showDangerToast, showPrimaryToast } from '@/shared/utils/toasts'
+  showDangerToast,
+  showPrimaryToast,
+} from '@/shared/utils'
 
-export default function Menu(): ReactElement {
+export const Menu = () => {
   const { t } = useTranslation()
   const setShowChangelog = useUpdateStore(state => state.setShowChangelog)
   const [showMenu, setShowMenu] = useState(false)
@@ -42,7 +42,7 @@ export default function Menu(): ReactElement {
     })()
   }, [])
 
-  const handleUpdate = async (): Promise<void> => {
+  const handleUpdate = async () => {
     try {
       const update = await check()
       if (update) {

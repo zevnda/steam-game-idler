@@ -1,32 +1,11 @@
 import type { Game, InvokeGamesList, SortStyleValue } from '@/shared/types'
-import type { Dispatch, SetStateAction } from 'react'
 import { invoke } from '@tauri-apps/api/core'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useSearchStore } from '@/shared/stores/searchStore'
-import { useUserStore } from '@/shared/stores/userStore'
-import { decrypt, logEvent } from '@/shared/utils/tasks'
-import { showDangerToast } from '@/shared/utils/toasts'
+import { useSearchStore, useUserStore } from '@/shared/stores'
+import { decrypt, logEvent, showDangerToast } from '@/shared/utils'
 
-interface GameListResult {
-  gamesList: Game[]
-  recentGamesList: Game[]
-}
-
-export interface GamesListHook {
-  isLoading: boolean
-  gamesList: Game[]
-  recentGames: Game[]
-  unplayedGames: Game[]
-  filteredGames: Game[]
-  visibleGames: Game[]
-  sortStyle: string
-  setSortStyle: Dispatch<SetStateAction<string>>
-  refreshKey: number
-  setRefreshKey: Dispatch<SetStateAction<number>>
-}
-
-export default function useGamesList(): GamesListHook {
+export function useGamesList() {
   const { t } = useTranslation()
   const userSummary = useUserStore(state => state.userSummary)
   const userSettings = useUserStore(state => state.userSettings)
@@ -47,7 +26,7 @@ export default function useGamesList(): GamesListHook {
   const previousRefreshKeyRef = useRef(refreshKey)
 
   useEffect(() => {
-    const getGamesList = async (): Promise<void> => {
+    const getGamesList = async () => {
       try {
         setIsLoading(true)
         const sortStyle = localStorage.getItem('sortStyle')
@@ -136,7 +115,7 @@ export const fetchGamesList = async (
   refreshKey: number,
   prevRefreshKey: number,
   apiKey?: string,
-): Promise<GameListResult> => {
+) => {
   if (!steamId) return { gamesList: [], recentGamesList: [] }
   // Try to get games from cache first
   const cachedGamesListFiles = await invoke<InvokeGamesList>('get_games_list_cache', { steamId })
@@ -181,7 +160,7 @@ export const sortAndFilterGames = (
   sortStyle: string,
   isQuery: boolean,
   gameQueryValue: string,
-): Game[] => {
+) => {
   let sortedAndFilteredGames = [...gamesList]
   switch (sortStyle) {
     case 'a-z':
@@ -217,7 +196,7 @@ export const sortAndFilterGames = (
 }
 
 // Helper function to get random games from an array
-const getRandomGames = (games: Game[], count: number): Game[] => {
+const getRandomGames = (games: Game[], count: number) => {
   const shuffled = [...games].sort(() => 0.5 - Math.random())
   return shuffled.slice(0, count)
 }

@@ -7,43 +7,23 @@ import type {
   UserSettings,
   UserSummary,
 } from '@/shared/types'
-import type { Dispatch, SetStateAction } from 'react'
 import { invoke } from '@tauri-apps/api/core'
 import { useEffect, useState } from 'react'
-import { useUserStore } from '@/shared/stores/userStore'
-import { getAllGamesWithDrops } from '@/shared/utils/automation'
-import { decrypt, encrypt, logEvent } from '@/shared/utils/tasks'
+import i18next from 'i18next'
+import { useUserStore } from '@/shared/stores'
 import {
+  decrypt,
+  encrypt,
+  getAllGamesWithDrops,
+  logEvent,
   showAccountMismatchToast,
   showDangerToast,
   showIncorrectCredentialsToast,
   showOutdatedCredentialsToast,
   showSuccessToast,
-  t,
-} from '@/shared/utils/toasts'
+} from '@/shared/utils'
 
-interface CardSettingsHook {
-  sidValue: string
-  slsValue: string
-  smaValue: string
-  gamesWithDropsData: GameWithRemainingDrops[]
-  setGamesWithDropsData: Dispatch<SetStateAction<GameWithRemainingDrops[]>>
-  gamesWithDrops: number
-  totalDropsRemaining: number
-  hasCookies: boolean
-  cardFarmingUser: CardFarmingUser | null
-  setCardFarmingUser: Dispatch<SetStateAction<CardFarmingUser | null>>
-  setSidValue: Dispatch<SetStateAction<string>>
-  setSlsValue: Dispatch<SetStateAction<string>>
-  setSmaValue: Dispatch<SetStateAction<string>>
-  setHasCookies: Dispatch<SetStateAction<boolean>>
-  setGamesWithDrops: Dispatch<SetStateAction<number>>
-  setTotalDropsRemaining: Dispatch<SetStateAction<number>>
-  isCFDataLoading: boolean
-  setIsCFDataLoading: Dispatch<SetStateAction<boolean>>
-}
-
-export const useCardSettings = (): CardSettingsHook => {
+export const useCardSettings = () => {
   const userSettings = useUserStore(state => state.userSettings)
   const [sidValue, setSidValue] = useState('') // sessionid
   const [slsValue, setSlsValue] = useState('') // steamLoginSecure
@@ -92,10 +72,7 @@ export const useCardSettings = (): CardSettingsHook => {
 }
 
 // Gets user summary
-export const fetchUserSummary = async (
-  steamId: string,
-  apiKey: string | null,
-): Promise<CardFarmingUser> => {
+export const fetchUserSummary = async (steamId: string, apiKey: string | null) => {
   const res = await invoke<InvokeUserSummary>('get_user_summary', {
     steamId,
     apiKey: apiKey ? decrypt(apiKey) : null,
@@ -109,14 +86,14 @@ export const fetchUserSummary = async (
 
 const getStoredSettings = async (
   userSettings: UserSettings,
-  setHasCookies: Dispatch<SetStateAction<boolean>>,
-  setSidValue: Dispatch<SetStateAction<string>>,
-  setSlsValue: Dispatch<SetStateAction<string>>,
-  setSmaValue: Dispatch<SetStateAction<string>>,
-  setGamesWithDrops: Dispatch<SetStateAction<number>>,
-  setTotalDropsRemaining: Dispatch<SetStateAction<number>>,
-  setCardFarmingUser: Dispatch<SetStateAction<CardFarmingUser | null>>,
-): Promise<void> => {
+  setHasCookies: React.Dispatch<React.SetStateAction<boolean>>,
+  setSidValue: React.Dispatch<React.SetStateAction<string>>,
+  setSlsValue: React.Dispatch<React.SetStateAction<string>>,
+  setSmaValue: React.Dispatch<React.SetStateAction<string>>,
+  setGamesWithDrops: React.Dispatch<React.SetStateAction<number>>,
+  setTotalDropsRemaining: React.Dispatch<React.SetStateAction<number>>,
+  setCardFarmingUser: React.Dispatch<React.SetStateAction<CardFarmingUser | null>>,
+) => {
   try {
     const credentials = userSettings.cardFarming.credentials
     const cardFarmingUser = userSettings.cardFarming.userSummary
@@ -137,7 +114,7 @@ const getStoredSettings = async (
       setTotalDropsRemaining(totalDropsRemaining)
     }
   } catch (error) {
-    showDangerToast(t('common.error'))
+    showDangerToast(i18next.t('common.error'))
     console.error('Error in (getStoredSettings):', error)
     logEvent(`[Error] in (getStoredSettings): ${error}`)
   }
@@ -145,10 +122,10 @@ const getStoredSettings = async (
 
 export const fetchGamesWithDropsData = async (
   userSummary: UserSummary,
-  setIsCFDataLoading: Dispatch<SetStateAction<boolean>>,
-  setUserSettings: Dispatch<SetStateAction<UserSettings>>,
-  setGamesWithDropsData: Dispatch<SetStateAction<GameWithRemainingDrops[]>>,
-): Promise<void> => {
+  setIsCFDataLoading: React.Dispatch<React.SetStateAction<boolean>>,
+  setUserSettings: (value: UserSettings) => void,
+  setGamesWithDropsData: React.Dispatch<React.SetStateAction<GameWithRemainingDrops[]>>,
+) => {
   try {
     setIsCFDataLoading(true)
 
@@ -222,7 +199,7 @@ export const fetchGamesWithDropsData = async (
     setIsCFDataLoading(false)
   } catch (error) {
     setIsCFDataLoading(false)
-    showDangerToast(t('common.error'))
+    showDangerToast(i18next.t('common.error'))
     console.error('Error in (fetchGamesWithDropsData):', error)
     logEvent(`[Error] in (fetchGamesWithDropsData): ${error}`)
   }
@@ -232,14 +209,14 @@ export const handleCredentialsSave = async (
   sidValue: string,
   slsValue: string,
   smaValue: string | undefined,
-  setHasCookies: Dispatch<SetStateAction<boolean>>,
-  setCardFarmingUser: Dispatch<SetStateAction<CardFarmingUser | null>>,
+  setHasCookies: React.Dispatch<React.SetStateAction<boolean>>,
+  setCardFarmingUser: React.Dispatch<React.SetStateAction<CardFarmingUser | null>>,
   userSummary: UserSummary,
   userSettings: UserSettings,
-  setUserSettings: Dispatch<SetStateAction<UserSettings>>,
-  setIsCFDataLoading: Dispatch<SetStateAction<boolean>>,
-  setGamesWithDropsData: Dispatch<SetStateAction<GameWithRemainingDrops[]>>,
-): Promise<void> => {
+  setUserSettings: (value: UserSettings) => void,
+  setIsCFDataLoading: React.Dispatch<React.SetStateAction<boolean>>,
+  setGamesWithDropsData: React.Dispatch<React.SetStateAction<GameWithRemainingDrops[]>>,
+) => {
   try {
     if (sidValue.length > 0 && slsValue.length > 0) {
       // Verify steam cookies are valid
@@ -281,7 +258,7 @@ export const handleCredentialsSave = async (
         setCardFarmingUser(cardFarmingUser)
         setHasCookies(true)
 
-        showSuccessToast(t('toast.cardFarming.logIn', { user: validate.user }))
+        showSuccessToast(i18next.t('toast.cardFarming.logIn', { user: validate.user }))
         logEvent(`[Settings - Card Farming] Logged in as ${validate.user}`)
 
         fetchGamesWithDropsData(
@@ -296,23 +273,23 @@ export const handleCredentialsSave = async (
       }
     }
   } catch (error) {
-    showDangerToast(t('common.error'))
+    showDangerToast(i18next.t('common.error'))
     console.error('Error in (handleSave):', error)
     logEvent(`[Error] in (handleSave): ${error}`)
   }
 }
 
 export const handleCredentialsClear = async (
-  setHasCookies: Dispatch<SetStateAction<boolean>>,
-  setSidValue: Dispatch<SetStateAction<string>>,
-  setSlsValue: Dispatch<SetStateAction<string>>,
-  setSmaValue: Dispatch<SetStateAction<string>>,
-  setCardFarmingUser: Dispatch<SetStateAction<CardFarmingUser | null>>,
+  setHasCookies: React.Dispatch<React.SetStateAction<boolean>>,
+  setSidValue: React.Dispatch<React.SetStateAction<string>>,
+  setSlsValue: React.Dispatch<React.SetStateAction<string>>,
+  setSmaValue: React.Dispatch<React.SetStateAction<string>>,
+  setCardFarmingUser: React.Dispatch<React.SetStateAction<CardFarmingUser | null>>,
   userSummary: UserSummary,
-  setUserSettings: Dispatch<SetStateAction<UserSettings>>,
-  setGamesWithDrops: Dispatch<SetStateAction<number>>,
-  setTotalDropsRemaining: Dispatch<SetStateAction<number>>,
-): Promise<void> => {
+  setUserSettings: (value: UserSettings) => void,
+  setGamesWithDrops: React.Dispatch<React.SetStateAction<number>>,
+  setTotalDropsRemaining: React.Dispatch<React.SetStateAction<number>>,
+) => {
   try {
     // Clear all saved credentials and reset UI states
     await invoke('update_user_settings', {
@@ -348,21 +325,21 @@ export const handleCredentialsClear = async (
     setTotalDropsRemaining(0)
     setUserSettings(response.settings)
 
-    showSuccessToast(t('toast.cardFarming.logOut'))
+    showSuccessToast(i18next.t('toast.cardFarming.logOut'))
 
     logEvent('[Settings - Card Farming] Logged out')
   } catch (error) {
-    showDangerToast(t('common.error'))
+    showDangerToast(i18next.t('common.error'))
     console.error('Error in (handleCredentialsClear):', error)
     logEvent(`[Error] in (handleCredentialsClear): ${error}`)
   }
 }
 
-export const handleNextTaskChange = async (
+export const handleNextTaskChangeCardFarming = async (
   currentKey: string,
   userSummary: UserSummary,
-  setUserSettings: Dispatch<SetStateAction<UserSettings>>,
-): Promise<void> => {
+  setUserSettings: (value: UserSettings) => void,
+) => {
   const response = await invoke<InvokeSettings>('update_user_settings', {
     steamId: userSummary?.steamId,
     key: 'cardFarming.nextTask',

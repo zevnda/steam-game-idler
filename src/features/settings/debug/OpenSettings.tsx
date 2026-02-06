@@ -1,18 +1,16 @@
-import type { ReactElement } from 'react'
 import { invoke } from '@tauri-apps/api/core'
 import { useTranslation } from 'react-i18next'
 import { TbFolders } from 'react-icons/tb'
 import { Button } from '@heroui/react'
-import { useUserStore } from '@/shared/stores/userStore'
-import { logEvent } from '@/shared/utils/tasks'
-import { showDangerToast } from '@/shared/utils/toasts'
+import { useUserStore } from '@/shared/stores'
+import { logEvent, showDangerToast } from '@/shared/utils'
 
-export default function OpenSettings(): ReactElement {
+export const OpenSettings = () => {
   const { t } = useTranslation()
   const userSummary = useUserStore(state => state.userSummary)
 
   // Open the log file in file explorer
-  const handleOpenSettingsFile = async (): Promise<void> => {
+  const handleOpenSettingsFile = async () => {
     try {
       const filePath = `${userSummary?.steamId}\\settings.json`
       await invoke('open_file_explorer', { path: filePath })

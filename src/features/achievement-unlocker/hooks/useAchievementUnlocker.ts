@@ -8,19 +8,16 @@ import type {
   UserSummary,
 } from '@/shared/types'
 import type { TimeInputValue } from '@heroui/react'
-import type { Dispatch, RefObject, SetStateAction } from 'react'
 import { invoke } from '@tauri-apps/api/core'
-import { startAutoIdleGames } from '@/shared/layouts/hooks/useWindow'
-import { unlockAchievement } from '@/shared/utils/achievements'
-import { isWithinSchedule } from '@/shared/utils/automation'
-import { startIdle, stopIdle } from '@/shared/utils/idle'
-import { logEvent } from '@/shared/utils/tasks'
-import { showAccountMismatchToast } from '@/shared/utils/toasts'
-
-interface GameWithAchievements {
-  achievements: AchievementToUnlock[]
-  game: Game
-}
+import { startAutoIdleGames } from '@/shared/layouts'
+import {
+  isWithinSchedule,
+  logEvent,
+  showAccountMismatchToast,
+  startIdle,
+  stopIdle,
+  unlockAchievement,
+} from '@/shared/utils'
 
 interface AchievementToUnlock {
   appId: number
@@ -35,19 +32,19 @@ interface AchievementToUnlock {
 
 export const useAchievementUnlocker = async (
   isInitialDelay: boolean,
-  setIsInitialDelay: Dispatch<SetStateAction<boolean>>,
-  setCurrentGame: Dispatch<SetStateAction<Game | null>>,
-  setIsComplete: Dispatch<SetStateAction<boolean>>,
-  setAchievementCount: Dispatch<SetStateAction<number>>,
-  setCountdownTimer: Dispatch<SetStateAction<string>>,
-  setIsWaitingForSchedule: Dispatch<SetStateAction<boolean>>,
+  setIsInitialDelay: React.Dispatch<React.SetStateAction<boolean>>,
+  setCurrentGame: React.Dispatch<React.SetStateAction<Game | null>>,
+  setIsComplete: React.Dispatch<React.SetStateAction<boolean>>,
+  setAchievementCount: React.Dispatch<React.SetStateAction<number>>,
+  setCountdownTimer: React.Dispatch<React.SetStateAction<string>>,
+  setIsWaitingForSchedule: React.Dispatch<React.SetStateAction<boolean>>,
   startCardFarming: () => Promise<void>,
-  isMountedRef: RefObject<boolean>,
-  abortControllerRef: RefObject<AbortController>,
-): Promise<void> => {
+  isMountedRef: React.RefObject<boolean>,
+  abortControllerRef: React.RefObject<AbortController>,
+) => {
   let hasInitialDelayOccurred = !isInitialDelay
 
-  const startAchievementUnlocker = async (): Promise<void> => {
+  const startAchievementUnlocker = async () => {
     try {
       let currentGame: Game | null = null as Game | null
 
@@ -134,8 +131,8 @@ export const useAchievementUnlocker = async (
 // Fetch achievements for the current game
 const fetchAchievements = async (
   game: Game,
-  setAchievementCount: Dispatch<SetStateAction<number>>,
-): Promise<GameWithAchievements> => {
+  setAchievementCount: React.Dispatch<React.SetStateAction<number>>,
+) => {
   const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
   const maxAchievementUnlocks = await getMaxAchievementUnlocks(userSummary?.steamId, game.appid)
 
@@ -283,12 +280,12 @@ const fetchAchievements = async (
 const unlockAchievements = async (
   achievements: AchievementToUnlock[],
   game: Game,
-  setAchievementCount: Dispatch<SetStateAction<number>>,
-  setCountdownTimer: Dispatch<SetStateAction<string>>,
-  setIsWaitingForSchedule: Dispatch<SetStateAction<boolean>>,
-  isMountedRef: RefObject<boolean>,
-  abortControllerRef: RefObject<AbortController>,
-): Promise<void> => {
+  setAchievementCount: React.Dispatch<React.SetStateAction<number>>,
+  setCountdownTimer: React.Dispatch<React.SetStateAction<string>>,
+  setIsWaitingForSchedule: React.Dispatch<React.SetStateAction<boolean>>,
+  isMountedRef: React.RefObject<boolean>,
+  abortControllerRef: React.RefObject<AbortController>,
+) => {
   try {
     const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
 
@@ -376,10 +373,7 @@ const unlockAchievements = async (
   }
 }
 
-const getMaxAchievementUnlocks = async (
-  steamId: string | undefined,
-  appId: number,
-): Promise<number | null> => {
+const getMaxAchievementUnlocks = async (steamId: string | undefined, appId: number) => {
   try {
     const response = await invoke<InvokeSettings>('get_user_settings', {
       steamId,
@@ -401,7 +395,7 @@ const getMaxAchievementUnlocks = async (
 }
 
 // Remove a game from the unlocker list
-const removeGameFromUnlockerList = async (gameId: number): Promise<void> => {
+const removeGameFromUnlockerList = async (gameId: number) => {
   try {
     const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
 
@@ -427,8 +421,8 @@ const removeGameFromUnlockerList = async (gameId: number): Promise<void> => {
 // Start the countdown timer
 const startCountdown = (
   durationInMinutes: number,
-  setCountdownTimer: Dispatch<SetStateAction<string>>,
-): void => {
+  setCountdownTimer: React.Dispatch<React.SetStateAction<string>>,
+) => {
   try {
     const durationInMilliseconds = durationInMinutes * 60000
     let remainingTime = durationInMilliseconds
@@ -451,10 +445,10 @@ const startCountdown = (
 const waitUntilInSchedule = async (
   scheduleFrom: TimeInputValue,
   scheduleTo: TimeInputValue,
-  isMountedRef: RefObject<boolean>,
-  setIsWaitingForSchedule: Dispatch<SetStateAction<boolean>>,
-  abortControllerRef: RefObject<AbortController>,
-): Promise<void> => {
+  isMountedRef: React.RefObject<boolean>,
+  setIsWaitingForSchedule: React.Dispatch<React.SetStateAction<boolean>>,
+  abortControllerRef: React.RefObject<AbortController>,
+) => {
   try {
     setIsWaitingForSchedule(true)
     while (!isWithinSchedule(scheduleFrom, scheduleTo)) {
@@ -484,10 +478,7 @@ const waitUntilInSchedule = async (
 }
 
 // Check for next task to move on to once farming is complete
-const checkForNextTask = async (): Promise<{
-  shouldStartNextTask: boolean
-  task: string | null
-}> => {
+const checkForNextTask = async () => {
   try {
     const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
 
@@ -518,9 +509,9 @@ const checkForNextTask = async (): Promise<{
 // Delay execution for a specified amount of time
 const delay = (
   ms: number,
-  isMountedRef: RefObject<boolean>,
-  abortControllerRef: RefObject<AbortController>,
-): Promise<void> => {
+  isMountedRef: React.RefObject<boolean>,
+  abortControllerRef: React.RefObject<AbortController>,
+) => {
   try {
     return new Promise<void>((resolve, reject) => {
       const checkInterval = 1000
@@ -549,12 +540,12 @@ const delay = (
 }
 
 // Get a random delay between a minimum and maximum value
-export function getRandomDelay(min: number, max: number): number {
+export function getRandomDelay(min: number, max: number) {
   return Math.floor(Math.random() * ((max - min) * 60 * 1000 + 1)) + min * 60 * 1000
 }
 
 // Format time in HH:MM:SS format
-export function formatTime(ms: number): string {
+export function formatTime(ms: number) {
   const hours = Math.floor(ms / 3600000)
   const minutes = Math.floor((ms % 3600000) / 60000)
   const seconds = Math.floor((ms % 60000) / 1000)
@@ -562,7 +553,7 @@ export function formatTime(ms: number): string {
 }
 
 // Handle errors
-const handleError = (functionName: string, error: unknown): void => {
+const handleError = (functionName: string, error: unknown) => {
   if (!error) return
   console.error(`Error in (${functionName}):`, error)
   logEvent(`[Error] in (${functionName}) ${error}`)

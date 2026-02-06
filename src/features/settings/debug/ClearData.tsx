@@ -1,11 +1,10 @@
-import type { ReactElement } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TbEraser } from 'react-icons/tb'
 import { Button } from '@heroui/react'
-import useClearData from '@/features/settings/debug/hooks/useClearData'
-import CustomModal from '@/shared/ui/CustomModal'
+import { useClearData } from '@/features/settings'
+import { CustomModal } from '@/shared/ui'
 
-export default function ClearData(): ReactElement {
+export const ClearData = () => {
   const { t } = useTranslation()
   const { isOpen, onOpen, onOpenChange, handleClearData } = useClearData()
 

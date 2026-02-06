@@ -1,13 +1,14 @@
 'use client'
 
-import type { ReactElement } from 'react'
-
 import { FiCode, FiEye, FiRefreshCw } from 'react-icons/fi'
 import { TbBrandGithub } from 'react-icons/tb'
 
-export default function SecuritySection(): ReactElement {
+export default function SecuritySection() {
   return (
-    <section className='py-12 sm:py-16 md:py-20 lg:py-24 relative overflow-hidden' aria-labelledby='security-heading'>
+    <section
+      className='py-12 sm:py-16 md:py-20 lg:py-24 relative overflow-hidden'
+      aria-labelledby='security-heading'
+    >
       {/* Top transition border */}
       <div className='absolute top-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-emerald-300 to-transparent' />
 
@@ -29,8 +30,8 @@ export default function SecuritySection(): ReactElement {
             </h2>
 
             <p className='text-base sm:text-lg md:text-xl text-gray-700 mb-8 sm:mb-12 leading-relaxed'>
-              Every line of code is open for inspection. No hidden telemetry, no data collection, no backdoors. Your
-              Steam credentials never leave your machine.
+              Every line of code is open for inspection. No hidden telemetry, no data collection, no
+              backdoors. Your Steam credentials never leave your machine.
             </p>
 
             <div className='space-y-4 sm:space-y-6'>
@@ -42,7 +43,9 @@ export default function SecuritySection(): ReactElement {
                   <TbBrandGithub className='w-5 h-5 sm:w-6 sm:h-6 text-emerald-700' />
                 </div>
                 <div>
-                  <h3 className='text-base sm:text-lg font-bold text-gray-800 mb-1 sm:mb-2'>Open Source Repository</h3>
+                  <h3 className='text-base sm:text-lg font-bold text-gray-800 mb-1 sm:mb-2'>
+                    Open Source Repository
+                  </h3>
                   <p className='text-sm sm:text-base text-gray-600'>
                     Complete source code available on GitHub with full commit history.
                   </p>
@@ -57,7 +60,9 @@ export default function SecuritySection(): ReactElement {
                   <FiEye className='w-5 h-5 sm:w-6 sm:h-6 text-purple-700' />
                 </div>
                 <div>
-                  <h3 className='text-base sm:text-lg font-bold text-gray-800 mb-1 sm:mb-2'>Zero Data Collection</h3>
+                  <h3 className='text-base sm:text-lg font-bold text-gray-800 mb-1 sm:mb-2'>
+                    Zero Data Collection
+                  </h3>
                   <p className='text-sm sm:text-base text-gray-600'>
                     No analytics, tracking, or personal data harvesting of any kind.
                   </p>
@@ -72,7 +77,9 @@ export default function SecuritySection(): ReactElement {
                   <FiRefreshCw className='w-5 h-5 sm:w-6 sm:h-6 text-rose-700' />
                 </div>
                 <div>
-                  <h3 className='text-base sm:text-lg font-bold text-gray-800 mb-1 sm:mb-2'>Continuous Updates</h3>
+                  <h3 className='text-base sm:text-lg font-bold text-gray-800 mb-1 sm:mb-2'>
+                    Continuous Updates
+                  </h3>
                   <p className='text-sm sm:text-base text-gray-600'>
                     Regular security patches and feature improvements from the community.
                   </p>
@@ -86,7 +93,9 @@ export default function SecuritySection(): ReactElement {
             <div className='bg-white border-2 border-emerald-200 rounded-2xl p-4 sm:p-6 shadow-xl'>
               <div className='flex items-center gap-2 mb-4 sm:mb-6'>
                 <FiCode className='w-4 h-4 sm:w-5 sm:h-5 text-emerald-600' />
-                <span className='text-emerald-700 font-mono text-xs sm:text-sm'>security-audit.log</span>
+                <span className='text-emerald-700 font-mono text-xs sm:text-sm'>
+                  security-audit.log
+                </span>
               </div>
 
               <div className='space-y-2 sm:space-y-3 font-mono text-xs sm:text-sm'>
@@ -113,7 +122,9 @@ export default function SecuritySection(): ReactElement {
               </div>
 
               <div className='mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-emerald-200'>
-                <div className='text-emerald-700 font-mono text-xs font-bold'>SECURITY SCORE: A+</div>
+                <div className='text-emerald-700 font-mono text-xs font-bold'>
+                  SECURITY SCORE: A+
+                </div>
               </div>
             </div>
 

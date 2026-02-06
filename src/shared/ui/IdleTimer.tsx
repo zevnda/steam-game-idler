@@ -1,10 +1,9 @@
-import type { ReactElement } from 'react'
 import { useEffect, useState } from 'react'
 import { TbPlayerPlayFilled } from 'react-icons/tb'
 import { cn } from '@heroui/react'
 
-export default function IdleTimer({ startTime }: { startTime: number }): ReactElement {
-  const formatTime = (elapsed: number): string => {
+export const IdleTimer = ({ startTime }: { startTime: number }) => {
+  const formatTime = (elapsed: number) => {
     const hours = Math.floor(elapsed / (1000 * 60 * 60))
     const minutes = Math.floor((elapsed % (1000 * 60 * 60)) / (1000 * 60))
     const seconds = Math.floor((elapsed % (1000 * 60)) / 1000)

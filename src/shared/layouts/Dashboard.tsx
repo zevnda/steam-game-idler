@@ -1,22 +1,17 @@
 import type { ActivePageType, CustomListType } from '@/shared/types'
-import type { ReactElement } from 'react'
 import { useEffect } from 'react'
-import Achievements from '@/features/achievement-manager/Achievements'
-import AchievementUnlocker from '@/features/achievement-unlocker/AchievementUnlocker'
-import CardFarming from '@/features/card-farming/CardFarming'
-import CustomList from '@/features/customlists/CustomList'
-import FreeGamesList from '@/features/gameslist/FreeGamesList'
-import GamesList from '@/features/gameslist/GamesList'
-import IdlingGamesList from '@/features/gameslist/IdlingGamesList'
-import Settings from '@/features/settings/Settings'
-import TradingCardsList from '@/features/trading-card-manager/TradingCardsList'
-import { useNavigationStore } from '@/shared/stores/navigationStore'
-import { useStateStore } from '@/shared/stores/stateStore'
-import Sidebar from '@/shared/ui/sidebar/Sidebar'
-import Titlebar from '@/shared/ui/titlebar/Titlebar'
-import { antiAwayStatus } from '@/shared/utils/tasks'
+import { Achievements } from '@/features/achievement-manager'
+import { AchievementUnlocker } from '@/features/achievement-unlocker'
+import { CardFarming } from '@/features/card-farming'
+import { CustomList } from '@/features/customlists'
+import { FreeGamesList, GamesList, IdlingGamesList } from '@/features/gameslist'
+import { Settings } from '@/features/settings'
+import { TradingCardsList } from '@/features/trading-card-manager'
+import { useNavigationStore, useStateStore } from '@/shared/stores'
+import { Sidebar, Titlebar } from '@/shared/ui'
+import { antiAwayStatus } from '@/shared/utils'
 
-export default function Dashboard(): ReactElement {
+export const Dashboard = () => {
   const showAchievements = useStateStore(state => state.showAchievements)
   const isCardFarming = useStateStore(state => state.isCardFarming)
   const isAchievementUnlocker = useStateStore(state => state.isAchievementUnlocker)
@@ -28,7 +23,7 @@ export default function Dashboard(): ReactElement {
     antiAwayStatus()
   }, [setActivePage])
 
-  const renderContent = (): ReactElement => {
+  const renderContent = () => {
     if (showAchievements) return <Achievements />
 
     const customListMap: Record<string, CustomListType> = {

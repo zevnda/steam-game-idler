@@ -1,9 +1,7 @@
-import type { ReactElement } from 'react'
 import { cn } from '@heroui/react'
-import { useNavigationStore } from '@/shared/stores/navigationStore'
-import { useStateStore } from '@/shared/stores/stateStore'
+import { useNavigationStore, useStateStore } from '@/shared/stores'
 
-export function GoPro(): ReactElement {
+export const GoPro = () => {
   const setProModalOpen = useStateStore(state => state.setProModalOpen)
   const activePage = useNavigationStore(state => state.activePage)
 

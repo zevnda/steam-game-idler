@@ -1,33 +1,10 @@
 import type { Game, InvokeCustomList, InvokeSettings } from '@/shared/types'
-import type { Dispatch, RefObject, SetStateAction } from 'react'
 import { invoke } from '@tauri-apps/api/core'
 import { useEffect, useRef, useState } from 'react'
-import { useStateStore } from '@/shared/stores/stateStore'
-import { useUserStore } from '@/shared/stores/userStore'
-import { showDangerToast } from '@/shared/utils/toasts'
+import { useStateStore, useUserStore } from '@/shared/stores'
+import { showDangerToast } from '@/shared/utils'
 
-interface CustomListHook {
-  list: Game[]
-  setList: Dispatch<SetStateAction<Game[]>>
-  visibleGames: number
-  filteredGamesList: Game[]
-  containerRef: RefObject<HTMLDivElement | null>
-  searchTerm: string
-  setSearchTerm: Dispatch<SetStateAction<string>>
-  showInList: boolean
-  setShowInList: Dispatch<SetStateAction<boolean>>
-  showBlacklist: boolean
-  setShowBlacklist: Dispatch<SetStateAction<boolean>>
-  handleAddGame: (game: Game) => Promise<void>
-  handleAddAllGames: (games: Game[]) => Promise<void>
-  handleAddAllResults: (games: Game[]) => Promise<void>
-  handleRemoveGame: (game: Game) => Promise<void>
-  handleUpdateListOrder: (newList: Game[]) => Promise<void>
-  handleClearList: () => Promise<void>
-  handleBlacklistGame: (game: Game) => Promise<void>
-}
-
-export default function useCustomList(listName: string): CustomListHook {
+export function useCustomList(listName: string) {
   const isAchievementUnlocker = useStateStore(state => state.isAchievementUnlocker)
   const isCardFarming = useStateStore(state => state.isCardFarming)
   const userSummary = useUserStore(state => state.userSummary)
@@ -46,7 +23,7 @@ export default function useCustomList(listName: string): CustomListHook {
   )
 
   useEffect(() => {
-    const getCustomLists = async (): Promise<void> => {
+    const getCustomLists = async () => {
       // Fetch the custom list data
       const response = await invoke<InvokeCustomList>('get_custom_lists', {
         steamId: userSummary?.steamId,
@@ -78,7 +55,7 @@ export default function useCustomList(listName: string): CustomListHook {
     }
   }, [filteredGamesList, visibleGames])
 
-  const handleScroll = (): void => {
+  const handleScroll = () => {
     if (containerRef.current) {
       // Load more games when scrolled near bottom
       if (
@@ -90,7 +67,7 @@ export default function useCustomList(listName: string): CustomListHook {
     }
   }
 
-  const handleAddGame = async (game: Game): Promise<void> => {
+  const handleAddGame = async (game: Game) => {
     // Add single game to the custom list
     const response = await invoke<InvokeCustomList>('add_game_to_custom_list', {
       steamId: userSummary?.steamId,
@@ -104,7 +81,7 @@ export default function useCustomList(listName: string): CustomListHook {
     }
   }
 
-  const handleAddAllGames = async (games: Game[]): Promise<void> => {
+  const handleAddAllGames = async (games: Game[]) => {
     // First clear the list, then add all games in one go
     const clearResponse = await invoke<InvokeCustomList>('update_custom_list', {
       steamId: userSummary?.steamId,
@@ -127,7 +104,7 @@ export default function useCustomList(listName: string): CustomListHook {
     }
   }
 
-  const handleAddAllResults = async (games: Game[]): Promise<void> => {
+  const handleAddAllResults = async (games: Game[]) => {
     const newGames = games.filter(
       game => !list.some(existingGame => existingGame.appid === game.appid),
     )
@@ -146,7 +123,7 @@ export default function useCustomList(listName: string): CustomListHook {
     }
   }
 
-  const handleRemoveGame = async (game: Game): Promise<void> => {
+  const handleRemoveGame = async (game: Game) => {
     // Remove a game from the custom list
     const response = await invoke<InvokeCustomList>('remove_game_from_custom_list', {
       steamId: userSummary?.steamId,
@@ -164,7 +141,7 @@ export default function useCustomList(listName: string): CustomListHook {
     }
   }
 
-  const handleBlacklistGame = async (game: Game): Promise<void> => {
+  const handleBlacklistGame = async (game: Game) => {
     // Blacklist a game (only for card farming list)
     const cachedUserSummary = await invoke<InvokeSettings>('get_user_settings', {
       steamId: userSummary?.steamId,
@@ -197,7 +174,7 @@ export default function useCustomList(listName: string): CustomListHook {
     }))
   }
 
-  const handleUpdateListOrder = async (newList: Game[]): Promise<void> => {
+  const handleUpdateListOrder = async (newList: Game[]) => {
     // Save the new order of games in the list (after drag n drop)
     const response = await invoke<InvokeCustomList>('update_custom_list', {
       steamId: userSummary?.steamId,
@@ -211,7 +188,7 @@ export default function useCustomList(listName: string): CustomListHook {
     }
   }
 
-  const handleClearList = async (): Promise<void> => {
+  const handleClearList = async () => {
     // Remove all games from the list
     const response = await invoke<InvokeCustomList>('update_custom_list', {
       steamId: userSummary?.steamId,

@@ -1,4 +1,4 @@
-import type { ComponentType, Dispatch, SetStateAction } from 'react'
+import type { ComponentType } from 'react'
 
 export type CustomListType =
   | 'cardFarmingList'
@@ -27,13 +27,13 @@ export type CurrentSettingsTabType =
 
 export interface NavigationContextType {
   activePage: ActivePageType
-  setActivePage: Dispatch<SetStateAction<ActivePageType>>
+  setActivePage: (value: ActivePageType) => void
   currentTab: CurrentTabType
-  setCurrentTab: Dispatch<SetStateAction<CurrentTabType>>
+  setCurrentTab: (value: CurrentTabType) => void
   currentSettingsTab: CurrentSettingsTabType
-  setCurrentSettingsTab: Dispatch<SetStateAction<CurrentSettingsTabType>>
+  setCurrentSettingsTab: (value: CurrentSettingsTabType) => void
   previousActivePage: ActivePageType
-  setPreviousActivePage: Dispatch<SetStateAction<ActivePageType>>
+  setPreviousActivePage: (value: ActivePageType) => void
 }
 
 export interface SidebarItem {

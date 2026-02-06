@@ -5,26 +5,20 @@ import {
   requestPermission,
   sendNotification,
 } from '@tauri-apps/plugin-notification'
-import { useUserStore } from '@/shared/stores/userStore'
+import { useUserStore } from '@/shared/stores'
 
-interface TitlebarProps {
-  windowMinimize: () => Promise<void>
-  windowToggleMaximize: () => Promise<void>
-  windowClose: () => Promise<void>
-}
-
-export default function useTitlebar(): TitlebarProps {
+export function useTitlebar() {
   const userSettings = useUserStore(state => state.userSettings)
 
-  const windowMinimize = async (): Promise<void> => {
+  const windowMinimize = async () => {
     await getCurrentWindow().minimize()
   }
 
-  const windowToggleMaximize = async (): Promise<void> => {
+  const windowToggleMaximize = async () => {
     await getCurrentWindow().toggleMaximize()
   }
 
-  const windowClose = async (): Promise<void> => {
+  const windowClose = async () => {
     // If the user has not enabled "close to tray", quit the app
     if (!userSettings.general.closeToTray) {
       await invoke('quit_app')

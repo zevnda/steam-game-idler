@@ -1,13 +1,10 @@
-import type { ReactElement } from 'react'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { cn, Spinner } from '@heroui/react'
-import { useNavigationStore } from '@/shared/stores/navigationStore'
-import { useStateStore } from '@/shared/stores/stateStore'
-import { useUserStore } from '@/shared/stores/userStore'
-import ProBadge from '@/shared/ui/pro/ProBadge'
+import { useNavigationStore, useStateStore, useUserStore } from '@/shared/stores'
+import { ProBadge } from '@/shared/ui'
 
-export default function AdSlot(): ReactElement {
+export const AdSlot = () => {
   const { t } = useTranslation()
   const activePage = useNavigationStore(state => state.activePage)
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)

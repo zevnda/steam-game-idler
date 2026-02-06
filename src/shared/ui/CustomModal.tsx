@@ -1,5 +1,4 @@
 import type { ModalProps } from '@heroui/react'
-import type { ReactElement, ReactNode } from 'react'
 import { cn, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@heroui/react'
 
 interface CustomModalProps {
@@ -7,13 +6,13 @@ interface CustomModalProps {
   onOpenChange?: () => void
   className?: string
   classNames?: ModalProps['classNames']
-  title?: ReactNode | string
-  body: ReactNode | string
-  buttons?: ReactNode
+  title?: React.ReactNode | string
+  body: React.ReactNode | string
+  buttons?: React.ReactNode
   hideCloseButton?: boolean
 }
 
-export default function CustomModal({
+export const CustomModal = ({
   isOpen,
   onOpenChange,
   className,
@@ -22,7 +21,7 @@ export default function CustomModal({
   body,
   buttons,
   hideCloseButton = false,
-}: CustomModalProps): ReactElement {
+}: CustomModalProps) => {
   return (
     <Modal
       isOpen={isOpen}

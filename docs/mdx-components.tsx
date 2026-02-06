@@ -1,8 +1,8 @@
 import type { MDXComponents } from 'mdx/types'
-
 import { ImageZoom } from 'fumadocs-ui/components/image-zoom'
 import defaultMdxComponents from 'fumadocs-ui/mdx'
 
+// eslint-disable-next-line no-restricted-syntax
 export function getMDXComponents(components?: MDXComponents): MDXComponents {
   return {
     ...defaultMdxComponents,

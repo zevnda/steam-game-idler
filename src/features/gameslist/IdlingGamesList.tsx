@@ -1,17 +1,14 @@
 import type { InvokeKillProcess } from '@/shared/types'
-import type { ReactElement } from 'react'
 import { invoke } from '@tauri-apps/api/core'
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TbPlayerStopFilled } from 'react-icons/tb'
 import { Button, cn } from '@heroui/react'
-import { useIdleStore } from '@/shared/stores/idleStore'
-import { useStateStore } from '@/shared/stores/stateStore'
-import GameCard from '@/shared/ui/game-card/GameCard'
-import { logEvent } from '@/shared/utils/tasks'
-import { showDangerToast, showSuccessToast } from '@/shared/utils/toasts'
+import { useIdleStore, useStateStore } from '@/shared/stores'
+import { GameCard } from '@/shared/ui'
+import { logEvent, showDangerToast, showSuccessToast } from '@/shared/utils'
 
-export default function IdlingGamesList(): ReactElement {
+export const IdlingGamesList = () => {
   const { t } = useTranslation()
   const idleGamesList = useIdleStore(state => state.idleGamesList)
   const setIdleGamesList = useIdleStore(state => state.setIdleGamesList)
@@ -21,7 +18,7 @@ export default function IdlingGamesList(): ReactElement {
   const setIsAchievementUnlocker = useStateStore(state => state.setIsAchievementUnlocker)
   const [columnCount, setColumnCount] = useState(5)
 
-  const handleResize = useCallback((): void => {
+  const handleResize = useCallback(() => {
     if (window.innerWidth >= 3200) {
       setColumnCount(12)
     } else if (window.innerWidth >= 2300) {
@@ -41,7 +38,7 @@ export default function IdlingGamesList(): ReactElement {
     return () => window.removeEventListener('resize', handleResize)
   }, [handleResize])
 
-  const handleStopIdleAll = async (): Promise<void> => {
+  const handleStopIdleAll = async () => {
     try {
       const response = await invoke<InvokeKillProcess>('kill_all_steamutil_processes')
       if (response.success) {

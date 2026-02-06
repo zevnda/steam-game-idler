@@ -1,13 +1,11 @@
-import type { ReactElement } from 'react'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FaCheck } from 'react-icons/fa6'
 import { cn, Modal, ModalBody, ModalContent, Tab, Tabs } from '@heroui/react'
 import { Manrope } from 'next/font/google'
 import Image from 'next/image'
-import { useStateStore } from '@/shared/stores/stateStore'
-import ExtLink from '@/shared/ui/ExtLink'
-import WebviewWindow from '@/shared/ui/WebviewWindow'
+import { useStateStore } from '@/shared/stores'
+import { ExtLink, WebviewWindow } from '@/shared/ui'
 
 const manrope = Manrope({
   subsets: ['latin'],
@@ -29,7 +27,7 @@ interface PriceData {
   }
 }
 
-export default function GoProModal(): ReactElement {
+export const GoProModal = () => {
   const { t } = useTranslation()
   const proModalOpen = useStateStore(state => state.proModalOpen)
   const setProModalOpen = useStateStore(state => state.setProModalOpen)

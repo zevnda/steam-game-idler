@@ -1,11 +1,9 @@
-import type { ReactElement } from 'react'
 import { FaDiscord, FaGithub } from 'react-icons/fa6'
 import { TbBookFilled } from 'react-icons/tb'
-import { useNavigationStore } from '@/shared/stores/navigationStore'
-import ExtLink from '@/shared/ui/ExtLink'
-import WebviewWindow from '@/shared/ui/WebviewWindow'
+import { useNavigationStore } from '@/shared/stores'
+import { ExtLink, WebviewWindow } from '@/shared/ui'
 
-export default function SocialButtons(): ReactElement {
+export const SocialButtons = () => {
   const currentSettingsTab = useNavigationStore(state => state.currentSettingsTab)
 
   return (

@@ -1,25 +1,24 @@
 import type { Achievement, ChangedStats, Statistic } from '@/shared/types'
-import type { ChangeEvent, CSSProperties, Dispatch, ReactElement, SetStateAction } from 'react'
 import { memo, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FixedSizeList as List } from 'react-window'
 import { cn, NumberInput } from '@heroui/react'
-import StatisticButtons from '@/features/achievement-manager/StatisticButtons'
-import { useSearchStore } from '@/shared/stores/searchStore'
+import { StatisticButtons } from '@/features/achievement-manager'
+import { useSearchStore } from '@/shared/stores'
 
 interface RowData {
   filteredStatistics: Statistic[]
-  updateStatistic: (id: string, e: number | ChangeEvent<HTMLInputElement>) => void
+  updateStatistic: (id: string, e: number | React.ChangeEvent<HTMLInputElement>) => void
   t: (key: string) => string
 }
 
 interface RowProps {
   index: number
-  style: CSSProperties
+  style: React.CSSProperties
   data: RowData
 }
 
-const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
+const Row = memo(({ index, style, data }: RowProps) => {
   const { filteredStatistics, updateStatistic, t } = data
   const item1 = filteredStatistics[index * 2]
   const item2 = filteredStatistics[index * 2 + 1]
@@ -117,24 +116,24 @@ Row.displayName = 'Row'
 
 interface StatisticsListProps {
   statistics: Statistic[]
-  setStatistics: Dispatch<SetStateAction<Statistic[]>>
-  setAchievements: Dispatch<SetStateAction<Achievement[]>>
+  setStatistics: React.Dispatch<React.SetStateAction<Statistic[]>>
+  setAchievements: React.Dispatch<React.SetStateAction<Achievement[]>>
   windowInnerHeight: number
-  setRefreshKey?: Dispatch<SetStateAction<number>>
+  setRefreshKey?: React.Dispatch<React.SetStateAction<number>>
 }
 
-export default function StatisticsList({
+export const StatisticsList = ({
   statistics,
   setStatistics,
   setAchievements,
   windowInnerHeight,
   setRefreshKey,
-}: StatisticsListProps): ReactElement {
+}: StatisticsListProps) => {
   const { t } = useTranslation()
   const statisticQueryValue = useSearchStore(state => state.statisticQueryValue)
   const [changedStats, setChangedStats] = useState<ChangedStats>({})
 
-  const updateStatistic = (id: string, e: number | ChangeEvent<HTMLInputElement>): void => {
+  const updateStatistic = (id: string, e: number | React.ChangeEvent<HTMLInputElement>) => {
     setStatistics(prevStatistics => {
       const stat = prevStatistics.find(s => s.id === id)
       const originalValue = stat ? stat.value : 0

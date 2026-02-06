@@ -1,23 +1,16 @@
 import type { InvokeSettings, UserSettings } from '@/shared/types'
-import type { Dispatch, SetStateAction } from 'react'
 import { invoke } from '@tauri-apps/api/core'
 import { useEffect, useState } from 'react'
-import { getAppVersion, logEvent } from '@/shared/utils/tasks'
-import { showDangerToast, t } from '@/shared/utils/toasts'
+import i18next from 'i18next'
+import { getAppVersion, logEvent, showDangerToast } from '@/shared/utils'
 
-interface SettingsHook {
-  version: string
-  refreshKey: number
-  setRefreshKey: Dispatch<SetStateAction<number>>
-}
-
-export default function useSettings(): SettingsHook {
+export function useSettings() {
   const [version, setVersion] = useState('0.0.0')
   const [refreshKey, setRefreshKey] = useState(0)
 
   // Get the app version
   useEffect(() => {
-    const getAndSetVersion = async (): Promise<void> => {
+    const getAndSetVersion = async () => {
       const version = await getAppVersion()
       setVersion(version ? version : '0.0.0')
     }
@@ -38,8 +31,8 @@ export const handleCheckboxChange = async (
   e: CheckboxEvent,
   key: keyof UserSettings,
   steamId: string | undefined,
-  setUserSettings: Dispatch<SetStateAction<UserSettings>>,
-): Promise<void> => {
+  setUserSettings: (value: UserSettings) => void,
+) => {
   try {
     const { name, checked } = e.target
 
@@ -85,7 +78,7 @@ export const handleCheckboxChange = async (
 
     logEvent(`[Settings - ${key}] Changed '${name}' to '${checked}'`)
   } catch (error) {
-    showDangerToast(t('common.error'))
+    showDangerToast(i18next.t('common.error'))
     console.error('Error in (handleCheckboxChange):', error)
     logEvent(`[Error] in (handleCheckboxChange): ${error}`)
   }

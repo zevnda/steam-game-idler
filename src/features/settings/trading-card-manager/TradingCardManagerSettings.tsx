@@ -1,14 +1,13 @@
 import type { InvokeSettings, UserSettings, UserSummary } from '@/shared/types'
-import type { Dispatch, ReactElement, SetStateAction } from 'react'
 import { invoke } from '@tauri-apps/api/core'
 import { useEffect, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { TbChevronRight } from 'react-icons/tb'
 import { Alert, cn, Divider, NumberInput, Select, SelectItem } from '@heroui/react'
-import { useCardSettings } from '@/features/settings/card-farming/hooks/useCardSettings'
-import { useUserStore } from '@/shared/stores/userStore'
+import { useCardSettings } from '@/features/settings'
+import { useUserStore } from '@/shared/stores'
 
-export default function TradingCardManagerSettings(): ReactElement {
+export const TradingCardManagerSettings = () => {
   const { t } = useTranslation()
   const userSummary = useUserStore(state => state.userSummary)
   const userSettings = useUserStore(state => state.userSettings)
@@ -44,8 +43,8 @@ export default function TradingCardManagerSettings(): ReactElement {
   const handleSellOptionChange = async (
     key: string,
     userSummary: UserSummary,
-    setUserSettings: Dispatch<SetStateAction<UserSettings>>,
-  ): Promise<void> => {
+    setUserSettings: (value: UserSettings) => void,
+  ) => {
     const updateResponse = await invoke<InvokeSettings>('update_user_settings', {
       steamId: userSummary?.steamId,
       key: 'tradingCards.sellOptions',
@@ -55,7 +54,7 @@ export default function TradingCardManagerSettings(): ReactElement {
     setUserSettings(updateResponse.settings)
   }
 
-  const handlePriceAdjustmentChange = async (value: number): Promise<void> => {
+  const handlePriceAdjustmentChange = async (value: number) => {
     setPriceAdjustment(value)
     const updateResponse = await invoke<InvokeSettings>('update_user_settings', {
       steamId: userSummary?.steamId,
@@ -66,7 +65,7 @@ export default function TradingCardManagerSettings(): ReactElement {
     setUserSettings(updateResponse.settings)
   }
 
-  const handleSellLimitMinChange = async (value: number): Promise<void> => {
+  const handleSellLimitMinChange = async (value: number) => {
     setSellLimitMin(value)
     const updateResponse = await invoke<InvokeSettings>('update_user_settings', {
       steamId: userSummary?.steamId,
@@ -80,7 +79,7 @@ export default function TradingCardManagerSettings(): ReactElement {
     setUserSettings(updateResponse.settings)
   }
 
-  const handleSellLimitMaxChange = async (value: number): Promise<void> => {
+  const handleSellLimitMaxChange = async (value: number) => {
     setSellLimitMax(value)
     const updateResponse = await invoke<InvokeSettings>('update_user_settings', {
       steamId: userSummary?.steamId,
@@ -94,7 +93,7 @@ export default function TradingCardManagerSettings(): ReactElement {
     setUserSettings(updateResponse.settings)
   }
 
-  const handleSellDelayChange = async (value: number): Promise<void> => {
+  const handleSellDelayChange = async (value: number) => {
     setSellDelay(value)
     const updateResponse = await invoke<InvokeSettings>('update_user_settings', {
       steamId: userSummary?.steamId,

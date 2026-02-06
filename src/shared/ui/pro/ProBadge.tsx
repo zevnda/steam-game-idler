@@ -1,8 +1,7 @@
-import type { ReactElement } from 'react'
 import { cn } from '@heroui/react'
-import { useUserStore } from '@/shared/stores/userStore'
+import { useUserStore } from '@/shared/stores'
 
-export default function ProBadge({ className }: { className?: string }): ReactElement {
+export const ProBadge = ({ className }: { className?: string }) => {
   const isPro = useUserStore(state => state.isPro)
 
   return (

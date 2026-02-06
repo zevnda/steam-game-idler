@@ -1,6 +1,4 @@
-import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared'
-
-export function baseOptions(): BaseLayoutProps {
+export function baseOptions() {
   return {
     nav: {
       title: 'Steam Game Idler',

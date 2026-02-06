@@ -1,20 +1,14 @@
 import type { Game } from '@/shared/types'
-import type { ReactElement, SyntheticEvent } from 'react'
 import { memo } from 'react'
 import { FaSteam } from 'react-icons/fa'
 import { TbArrowsSort, TbAwardFilled, TbPlayerPlayFilled, TbPlayerStopFilled } from 'react-icons/tb'
 import { Button } from '@heroui/react'
 import Image from 'next/image'
-import CardMenu from '@/features/gameslist/CardMenu'
-import { useIdleStore } from '@/shared/stores/idleStore'
-import { useStateStore } from '@/shared/stores/stateStore'
-import ExtLink from '@/shared/ui/ExtLink'
-import {
-  handleIdle,
-  handleStopIdle,
-  viewAchievments,
-} from '@/shared/ui/game-card/hooks/useGameCard'
-import IdleTimer from '@/shared/ui/IdleTimer'
+import { CardMenu } from '@/features/gameslist'
+import { useIdleStore, useStateStore } from '@/shared/stores'
+import { ExtLink } from '@/shared/ui/ExtLink'
+import { IdleTimer } from '@/shared/ui/IdleTimer'
+import { handleIdle, handleStopIdle, viewAchievments } from '@/shared/utils'
 
 interface GameCardProps {
   item: Game
@@ -23,12 +17,12 @@ interface GameCardProps {
   onOpen?: () => void
 }
 
-const GameCard = memo(function GameCard({
+export const GameCard = memo(function GameCard({
   item,
   isFreeGame = false,
   isAchievementUnlocker = false,
   onOpen,
-}: GameCardProps): ReactElement {
+}: GameCardProps) {
   const idleGamesList = useIdleStore(state => state.idleGamesList)
   const setIdleGamesList = useIdleStore(state => state.setIdleGamesList)
   const setAppId = useStateStore(state => state.setAppId)
@@ -38,7 +32,7 @@ const GameCard = memo(function GameCard({
   const idlingGame = idleGamesList.find(game => game.appid === item.appid)
   const isIdling = idlingGame !== undefined
 
-  const handleImageError = (event: SyntheticEvent<HTMLImageElement, Event>): void => {
+  const handleImageError = (event: React.SyntheticEvent<HTMLImageElement, Event>) => {
     ;(event.target as HTMLImageElement).src = '/fallback.webp'
   }
 
@@ -149,5 +143,3 @@ const GameCard = memo(function GameCard({
     </div>
   )
 })
-
-export default GameCard

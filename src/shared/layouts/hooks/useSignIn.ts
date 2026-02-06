@@ -2,21 +2,16 @@ import type { InvokeUsers, InvokeUserSummary, UserSummary } from '@/shared/types
 import { invoke } from '@tauri-apps/api/core'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useUserStore } from '@/shared/stores/userStore'
-import { checkSteamStatus, decrypt, logEvent } from '@/shared/utils/tasks'
-import { showAccountMismatchToast, showDangerToast } from '@/shared/utils/toasts'
+import { useUserStore } from '@/shared/stores'
+import {
+  checkSteamStatus,
+  decrypt,
+  logEvent,
+  showAccountMismatchToast,
+  showDangerToast,
+} from '@/shared/utils'
 
-interface SetupHook {
-  isLoading: boolean
-  userSummaries: UserSummary[]
-  handleLogin: (index: number) => Promise<void>
-  steamUsers: UserSummary[]
-  selectedUser: UserSummary | null
-  setSelectedUser: (user: UserSummary | null) => void
-  getRandomAvatarUrl: () => string
-}
-
-export default function useSignIn(refreshKey: number): SetupHook {
+export function useSignIn(refreshKey: number) {
   const { t } = useTranslation()
   const userSettings = useUserStore(state => state.userSettings)
   const setUserSummary = useUserStore(state => state.setUserSummary)
@@ -26,10 +21,7 @@ export default function useSignIn(refreshKey: number): SetupHook {
   const [selectedUser, setSelectedUser] = useState<UserSummary | null>(null)
 
   // Process user summary data from API response
-  const processUserSummaries = (
-    response: InvokeUserSummary,
-    steamUsersData: UserSummary[],
-  ): UserSummary[] => {
+  const processUserSummaries = (response: InvokeUserSummary, steamUsersData: UserSummary[]) => {
     const players = response.response.players || []
 
     return steamUsersData.flatMap(userData => {
@@ -51,7 +43,7 @@ export default function useSignIn(refreshKey: number): SetupHook {
 
   useEffect(() => {
     // Get all steam users
-    const getSteamUsers = async (): Promise<void> => {
+    const getSteamUsers = async () => {
       setIsLoading(true)
 
       // Simulate loading time for better UX
@@ -149,7 +141,7 @@ export default function useSignIn(refreshKey: number): SetupHook {
     getSteamUsers()
   }, [userSettings.general?.apiKey, refreshKey])
 
-  const handleLogin = async (index: number): Promise<void> => {
+  const handleLogin = async (index: number) => {
     try {
       // Make sure Steam is running
       const isSteamRunning = await checkSteamStatus(true)
@@ -181,7 +173,7 @@ export default function useSignIn(refreshKey: number): SetupHook {
     }
   }
 
-  const getRandomAvatarUrl = (): string => {
+  const getRandomAvatarUrl = () => {
     const randomSeed = Math.random().toString(36).substring(7)
     const avatarUrl = `https://api.dicebear.com/9.x/fun-emoji/svg?seed=${randomSeed}`
     return avatarUrl

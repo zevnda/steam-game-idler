@@ -1,19 +1,14 @@
-import type { MouseEvent, ReactElement, ReactNode } from 'react'
 import { Webview } from '@tauri-apps/api/webview'
 import { LogicalPosition, LogicalSize, Window } from '@tauri-apps/api/window'
 
 interface WebviewWindowProps {
-  children: ReactNode
+  children: React.ReactNode
   href: string
   className?: string
 }
 
-export default function WebviewWindow({
-  children,
-  href,
-  className = '',
-}: WebviewWindowProps): ReactElement {
-  const handleClick = async (e: MouseEvent<HTMLAnchorElement>): Promise<void> => {
+export const WebviewWindow = ({ children, href, className = '' }: WebviewWindowProps) => {
+  const handleClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault()
     try {
       const appWindow = new Window('ext-link')

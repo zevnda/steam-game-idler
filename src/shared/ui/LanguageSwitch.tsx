@@ -1,16 +1,15 @@
-import type { ReactElement } from 'react'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TbLanguage } from 'react-icons/tb'
 import { cn, Select, SelectItem } from '@heroui/react'
 
-export default function LanguageSwitch({
+export const LanguageSwitch = ({
   className,
   classNames,
 }: {
   className?: string
   classNames?: Record<string, string[]>
-}): ReactElement | null {
+}) => {
   const { i18n } = useTranslation()
   const [mounted, setMounted] = useState(false)
 

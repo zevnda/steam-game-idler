@@ -3,17 +3,16 @@ import type {
   CardFarmingSettings,
   GeneralSettings,
 } from '@/shared/types'
-import type { ChangeEvent, ReactElement } from 'react'
 import { cn, Switch } from '@heroui/react'
-import { useAchievementSettings } from '@/features/settings/achievement-unlocker/hooks/useAchievementSettings'
-import { useCardSettings } from '@/features/settings/card-farming/hooks/useCardSettings'
 import {
+  handleCheckboxChange,
   handleRunAtStartupChange,
+  useAchievementSettings,
+  useCardSettings,
   useGeneralSettings,
-} from '@/features/settings/general/hooks/useGeneralSettings'
-import { handleCheckboxChange } from '@/features/settings/hooks/useSettings'
-import { useUserStore } from '@/shared/stores/userStore'
-import { antiAwayStatus } from '@/shared/utils/tasks'
+} from '@/features/settings'
+import { useUserStore } from '@/shared/stores'
+import { antiAwayStatus } from '@/shared/utils'
 
 interface SettingsCheckboxProps {
   type: 'general' | 'cardFarming' | 'achievementUnlocker'
@@ -21,11 +20,7 @@ interface SettingsCheckboxProps {
   isProSetting?: boolean
 }
 
-export default function SettingsSwitch({
-  type,
-  name,
-  isProSetting = false,
-}: SettingsCheckboxProps): ReactElement {
+export const SettingsSwitch = ({ type, name, isProSetting = false }: SettingsCheckboxProps) => {
   const userSummary = useUserStore(state => state.userSummary)
   const userSettings = useUserStore(state => state.userSettings)
   const setUserSettings = useUserStore(state => state.setUserSettings)
@@ -35,7 +30,7 @@ export default function SettingsSwitch({
   useCardSettings()
   useAchievementSettings()
 
-  const isSettingEnabled = (): boolean => {
+  const isSettingEnabled = () => {
     if (!userSettings) return false
 
     if (type === 'general') {
@@ -65,7 +60,7 @@ export default function SettingsSwitch({
         classNames={{
           wrapper: cn('group-data-[selected=true]:!bg-dynamic !bg-switch'),
         }}
-        onChange={(e: ChangeEvent<HTMLInputElement>) => {
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
           handleCheckboxChange(e, 'general', userSummary?.steamId, setUserSettings)
           antiAwayStatus(isSettingEnabled() ? null : undefined)
         }}

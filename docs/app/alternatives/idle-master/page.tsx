@@ -1,9 +1,7 @@
-import type { ReactElement } from 'react'
-
-import Link from 'next/link'
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa'
 import { FiBook, FiCheck, FiDownload, FiRefreshCw, FiX } from 'react-icons/fi'
 import { TbCards, TbEye, TbShield } from 'react-icons/tb'
+import Link from 'next/link'
 
 export const metadata = {
   title: 'Idle Master Feature Comparison',
@@ -68,18 +66,22 @@ const comparisonData = [
   },
 ]
 
-function ComparisonIcon({ value }: { value: boolean | string }): ReactElement | null {
+function ComparisonIcon({ value }: { value: boolean | string }) {
   if (typeof value === 'boolean') {
     return (
       <div className='flex justify-center'>
-        {value ? <FiCheck className='w-5 h-5 text-emerald-600' /> : <FiX className='w-5 h-5 text-red-500' />}
+        {value ? (
+          <FiCheck className='w-5 h-5 text-emerald-600' />
+        ) : (
+          <FiX className='w-5 h-5 text-red-500' />
+        )}
       </div>
     )
   }
   return <span className='text-sm font-medium text-gray-700'>{value}</span>
 }
 
-export default function page(): ReactElement {
+export default function page() {
   return (
     <div className='min-h-screen bg-linear-to-b from-white via-gray-50 to-white'>
       {/* Hero Section */}
@@ -97,7 +99,8 @@ export default function page(): ReactElement {
         <div
           className='absolute inset-0 opacity-[0.4]'
           style={{
-            backgroundImage: 'radial-gradient(circle at 2px 2px, rgb(139 69 193) 1px, transparent 0)',
+            backgroundImage:
+              'radial-gradient(circle at 2px 2px, rgb(139 69 193) 1px, transparent 0)',
             backgroundSize: '24px 24px',
           }}
         />
@@ -119,8 +122,8 @@ export default function page(): ReactElement {
             </h1>
 
             <p className='text-lg sm:text-xl text-gray-700 mb-8 leading-relaxed'>
-              Compare core features, usability, and capabilities of Steam Game Idler against Idle Master to make an
-              informed choice for your Steam automation needs.
+              Compare core features, usability, and capabilities of Steam Game Idler against Idle
+              Master to make an informed choice for your Steam automation needs.
             </p>
           </div>
         </div>
@@ -151,16 +154,23 @@ export default function page(): ReactElement {
                     <table className='w-full'>
                       <thead>
                         <tr className='bg-gray-50'>
-                          <th className='text-left py-4 px-6 font-semibold text-gray-800 text-base'>Feature</th>
+                          <th className='text-left py-4 px-6 font-semibold text-gray-800 text-base'>
+                            Feature
+                          </th>
                           <th className='text-center py-4 px-6 font-semibold text-orange-600 text-base'>
                             Steam Game Idler
                           </th>
-                          <th className='text-center py-4 px-6 font-semibold text-gray-600 text-base'>Idle Master</th>
+                          <th className='text-center py-4 px-6 font-semibold text-gray-600 text-base'>
+                            Idle Master
+                          </th>
                         </tr>
                       </thead>
                       <tbody>
                         {section.features.map((feature, index) => (
-                          <tr key={feature.name} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                          <tr
+                            key={feature.name}
+                            className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
+                          >
                             <td className='py-4 px-6 font-medium text-gray-800'>{feature.name}</td>
                             <td className='py-4 px-6 text-center'>
                               <ComparisonIcon value={feature.steamGameIdler} />
@@ -204,19 +214,24 @@ export default function page(): ReactElement {
               <div className='bg-white border-2 border-orange-200 rounded-xl p-6 text-center'>
                 <TbEye className='w-8 h-8 text-orange-600 mx-auto mb-4' />
                 <h3 className='text-lg font-bold text-gray-800 mb-2'>Modern Interface</h3>
-                <p className='text-sm text-gray-600'>Beautiful, intuitive design with real-time progress tracking</p>
+                <p className='text-sm text-gray-600'>
+                  Beautiful, intuitive design with real-time progress tracking
+                </p>
               </div>
 
               <div className='bg-white border-2 border-orange-200 rounded-xl p-6 text-center sm:col-span-2 lg:col-span-1'>
                 <TbShield className='w-8 h-8 text-orange-600 mx-auto mb-4' />
                 <h3 className='text-lg font-bold text-gray-800 mb-2'>Enhanced Security</h3>
-                <p className='text-sm text-gray-600'>Modern safety features and VAC detection avoidance</p>
+                <p className='text-sm text-gray-600'>
+                  Modern safety features and VAC detection avoidance
+                </p>
               </div>
             </div>
 
             <p className='text-lg text-gray-700 mb-8'>
-              While Idle Master was revolutionary in its time, Steam Game Idler represents the modern evolution of card
-              farming tools with comprehensive features, active development, and enhanced security.
+              While Idle Master was revolutionary in its time, Steam Game Idler represents the
+              modern evolution of card farming tools with comprehensive features, active
+              development, and enhanced security.
             </p>
           </div>
         </div>
@@ -236,8 +251,8 @@ export default function page(): ReactElement {
             </h2>
 
             <p className='text-lg text-white/90 mb-8'>
-              Experience the next generation of Steam card farming. Download Steam Game Idler and discover what modern
-              automation can do.
+              Experience the next generation of Steam card farming. Download Steam Game Idler and
+              discover what modern automation can do.
             </p>
 
             <div className='flex flex-col sm:flex-row gap-4 justify-center'>

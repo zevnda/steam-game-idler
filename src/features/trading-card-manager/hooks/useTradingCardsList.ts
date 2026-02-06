@@ -9,42 +9,19 @@ import type {
 import { invoke } from '@tauri-apps/api/core'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useStateStore } from '@/shared/stores/stateStore'
-import { useUserStore } from '@/shared/stores/userStore'
-import { decrypt, logEvent } from '@/shared/utils/tasks'
+import { useStateStore, useUserStore } from '@/shared/stores'
 import {
+  decrypt,
+  logEvent,
   showDangerToast,
   showIncorrectCredentialsToast,
   showMissingCredentialsToast,
   showPriceFetchRateLimitToast,
   showPrimaryToast,
   showSuccessToast,
-} from '@/shared/utils/toasts'
+} from '@/shared/utils'
 
-interface UseTradingCardsList {
-  tradingCardsList: TradingCard[]
-  filteredTradingCardsList?: TradingCard[]
-  isLoading: boolean
-  loadingItemPrice: Record<string, boolean>
-  loadingListButton: boolean
-  loadingRemoveListings: boolean
-  changedCardPrices: Record<string, number>
-  selectedCards: Record<string, boolean>
-  fetchCardPrices: (hash: string) => Promise<{ success: boolean; price?: string }>
-  updateCardPrice: (assetId: string, value: number) => void
-  toggleCardSelection: (assetId: string) => void
-  handleSellSelectedCards: () => Promise<void>
-  handleSellSingleCard: (assetId: string, itemId: string, price: number) => Promise<void>
-  getCardPriceValue: (assetId: string) => number
-  refreshKey: number
-  handleRefresh: () => void
-  handleSellAllCards: () => Promise<void>
-  handleRemoveActiveListings: () => Promise<void>
-  cardSortStyle: string
-  setCardSortStyle: (style: string) => void
-}
-
-export default function useTradingCardsList(): UseTradingCardsList {
+export function useTradingCardsList() {
   const { t } = useTranslation()
   const userSummary = useUserStore(state => state.userSummary)
   const userSettings = useUserStore(state => state.userSettings)
@@ -102,7 +79,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
   }, [tradingCardsList, cardSortStyle])
 
   useEffect(() => {
-    const getTradingCards = async (): Promise<void> => {
+    const getTradingCards = async () => {
       try {
         const credentials = userSettings.cardFarming.credentials
         const apiKey = userSettings.general?.apiKey
@@ -166,9 +143,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
     userSettings.general?.apiKey,
   ])
 
-  const fetchCardPrices = async (
-    hash: string,
-  ): Promise<{ success: boolean; price?: string; rateLimited?: boolean }> => {
+  const fetchCardPrices = async (hash: string) => {
     setLoadingItemPrice(prev => ({ ...prev, [hash]: true }))
 
     try {
@@ -246,7 +221,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
     }
   }
 
-  const updateCardPrice = (assetId: string, value: number): void => {
+  const updateCardPrice = (assetId: string, value: number) => {
     setChangedCardPrices(prev => {
       const updated = { ...prev }
       if (value > 0) {
@@ -265,7 +240,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
     })
   }
 
-  const toggleCardSelection = (assetId: string): void => {
+  const toggleCardSelection = (assetId: string) => {
     setSelectedCards(prev => {
       const updated = { ...prev }
       updated[assetId] = !prev[assetId]
@@ -273,7 +248,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
     })
   }
 
-  const isWithinSellLimits = (finalPrice: number): boolean => {
+  const isWithinSellLimits = (finalPrice: number) => {
     const sellLimit = userSettings?.tradingCards?.sellLimit
     if (!sellLimit) return true
 
@@ -281,7 +256,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
     return finalPrice >= min && finalPrice <= max
   }
 
-  const isCardLocked = (cardId: string): boolean => {
+  const isCardLocked = (cardId: string) => {
     const storedLockedCards = localStorage.getItem('lockedTradingCards')
     if (!storedLockedCards) return false
 
@@ -293,11 +268,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
     }
   }
 
-  const handleSellSingleCard = async (
-    assetId: string,
-    itemId: string,
-    price: number,
-  ): Promise<void> => {
+  const handleSellSingleCard = async (assetId: string, itemId: string, price: number) => {
     try {
       const card = tradingCardsList.find(c => c.assetid === assetId)
       if (card && isCardLocked(card.id)) {
@@ -374,7 +345,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
     }
   }
 
-  const handleSellSelectedCards = async (): Promise<void> => {
+  const handleSellSelectedCards = async () => {
     try {
       const credentials = userSettings.cardFarming.credentials
       const sellDelay = userSettings?.tradingCards?.sellDelay || 5
@@ -488,7 +459,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
     }
   }
 
-  const handleSellAllCards = async (): Promise<void> => {
+  const handleSellAllCards = async () => {
     try {
       const credentials = userSettings?.cardFarming.credentials
 
@@ -627,7 +598,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
     }
   }
 
-  const handleRemoveActiveListings = async (): Promise<void> => {
+  const handleRemoveActiveListings = async () => {
     try {
       const credentials = userSettings.cardFarming.credentials
 
@@ -679,11 +650,11 @@ export default function useTradingCardsList(): UseTradingCardsList {
     }
   }
 
-  const getCardPriceValue = (assetId: string): number => {
+  const getCardPriceValue = (assetId: string) => {
     return changedCardPrices[assetId] || 0
   }
 
-  const handleRefresh = async (): Promise<void> => {
+  const handleRefresh = async () => {
     try {
       await invoke('delete_user_trading_card_file', {
         steamId: userSummary?.steamId,

@@ -1,25 +1,22 @@
 import type { Achievement, InvokeAchievementData, Statistic } from '@/shared/types'
-import type { Dispatch, SetStateAction } from 'react'
 import { invoke } from '@tauri-apps/api/core'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useStateStore } from '@/shared/stores/stateStore'
-import { useUserStore } from '@/shared/stores/userStore'
-import { checkSteamStatus, logEvent } from '@/shared/utils/tasks'
-import { showAccountMismatchToast, showDangerToast } from '@/shared/utils/toasts'
+import { useStateStore, useUserStore } from '@/shared/stores'
+import {
+  checkSteamStatus,
+  logEvent,
+  showAccountMismatchToast,
+  showDangerToast,
+} from '@/shared/utils'
 
-interface UseAchievementsProps {
-  windowInnerHeight: number
-  setRefreshKey: Dispatch<SetStateAction<number>>
-}
-
-export default function useAchievements(
-  setIsLoading: Dispatch<SetStateAction<boolean>>,
-  setAchievements: Dispatch<SetStateAction<Achievement[]>>,
-  setStatistics: Dispatch<SetStateAction<Statistic[]>>,
-  setProtectedAchievements: Dispatch<SetStateAction<boolean>>,
-  setProtectedStatistics: Dispatch<SetStateAction<boolean>>,
-): UseAchievementsProps {
+export function useAchievements(
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
+  setAchievements: React.Dispatch<React.SetStateAction<Achievement[]>>,
+  setStatistics: React.Dispatch<React.SetStateAction<Statistic[]>>,
+  setProtectedAchievements: React.Dispatch<React.SetStateAction<boolean>>,
+  setProtectedStatistics: React.Dispatch<React.SetStateAction<boolean>>,
+) {
   const { t } = useTranslation()
   const appId = useStateStore(state => state.appId)
   const userSummary = useUserStore(state => state.userSummary)
@@ -29,11 +26,11 @@ export default function useAchievements(
   const [refreshKey, setRefreshKey] = useState(0)
 
   useEffect(() => {
-    const getAchievementData = async (): Promise<void> => {
+    const getAchievementData = async () => {
       try {
         setIsLoading(true)
         // Make sure Steam client is running
-        const isSteamRunning = checkSteamStatus(true)
+        const isSteamRunning = await checkSteamStatus(true)
         if (!isSteamRunning) return setIsLoading(false)
 
         // Fetch achievement data
@@ -111,7 +108,7 @@ export default function useAchievements(
   ])
 
   useEffect(() => {
-    const handleResize = (): void => {
+    const handleResize = () => {
       setWindowInnerHeight(window.innerHeight)
     }
     window.addEventListener('resize', handleResize)

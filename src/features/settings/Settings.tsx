@@ -1,23 +1,24 @@
 import type { CurrentSettingsTabType } from '@/shared/types'
-import type { Key, ReactElement } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TbX } from 'react-icons/tb'
 import { Button, cn, Tab, Tabs } from '@heroui/react'
-import AchievementSettings from '@/features/settings/achievement-unlocker/AchievementSettings'
-import CardSettings from '@/features/settings/card-farming/CardSettings'
-import CustomizationSettings from '@/features/settings/customization/CustomizationSettings'
-import Logs from '@/features/settings/debug/Logs'
-import FreeGamesSettings from '@/features/settings/free-games/FreeGamesSettings'
-import GameSettings from '@/features/settings/game-settings/GameSettings'
-import GeneralSettings from '@/features/settings/general/GeneralSettings'
-import useSettings from '@/features/settings/hooks/useSettings'
-import SocialButtons from '@/features/settings/SocialButtons'
-import SteamCredentials from '@/features/settings/steam-credentials/SteamCredentials'
-import TradingCardManagerSettings from '@/features/settings/trading-card-manager/TradingCardManagerSettings'
-import { useNavigationStore } from '@/shared/stores/navigationStore'
-import AdSlot from '@/shared/ui/AdSlot'
+import {
+  AchievementSettings,
+  CardSettings,
+  CustomizationSettings,
+  FreeGamesSettings,
+  GameSettings,
+  GeneralSettings,
+  Logs,
+  SocialButtons,
+  SteamCredentials,
+  TradingCardManagerSettings,
+  useSettings,
+} from '@/features/settings'
+import { useNavigationStore } from '@/shared/stores'
+import { AdSlot } from '@/shared/ui'
 
-export default function Settings(): ReactElement {
+export const Settings = () => {
   const { t } = useTranslation()
   const { version, refreshKey } = useSettings()
   const setActivePage = useNavigationStore(state => state.setActivePage)
@@ -57,7 +58,7 @@ export default function Settings(): ReactElement {
         isVertical
         aria-label='Settings tabs'
         defaultSelectedKey={currentSettingsTab}
-        onSelectionChange={(key: Key) => setCurrentSettingsTab(key as CurrentSettingsTabType)}
+        onSelectionChange={key => setCurrentSettingsTab(key as CurrentSettingsTabType)}
         classNames={{
           base: 'absolute top-0 bg-sidebar/50 border-r border-border min-h-screen p-4 py-14 z-39',
           tabList: 'gap-0 w-full bg-transparent w-[218px]',

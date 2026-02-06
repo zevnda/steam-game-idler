@@ -1,5 +1,4 @@
 import type { Game } from '@/shared/types'
-import type { CSSProperties, ReactElement, SyntheticEvent } from 'react'
 import { memo, useEffect, useMemo, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { RiSearchLine } from 'react-icons/ri'
@@ -7,8 +6,8 @@ import { TbChevronRight } from 'react-icons/tb'
 import { FixedSizeList as List } from 'react-window'
 import { cn, Divider, Input, NumberInput } from '@heroui/react'
 import Image from 'next/image'
-import { useGameSettings } from '@/features/settings/game-settings/hooks/useGameSettings'
-import { useUserStore } from '@/shared/stores/userStore'
+import { useGameSettings } from '@/features/settings'
+import { useUserStore } from '@/shared/stores'
 
 interface RowData {
   filteredGamesList: Game[]
@@ -18,15 +17,15 @@ interface RowData {
 
 interface RowProps {
   index: number
-  style: CSSProperties
+  style: React.CSSProperties
   data: RowData
 }
 
-const Row = memo(({ index, style, data }: RowProps): ReactElement => {
+const Row = memo(({ index, style, data }: RowProps) => {
   const { filteredGamesList, selectedGame, onGameSelect } = data
   const item = filteredGamesList[index]
 
-  const handleImageError = (event: SyntheticEvent<HTMLImageElement, Event>): void => {
+  const handleImageError = (event: React.SyntheticEvent<HTMLImageElement, Event>) => {
     ;(event.target as HTMLImageElement).src = '/fallback.webp'
   }
 
@@ -61,7 +60,7 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement => {
 
 Row.displayName = 'Row'
 
-export default function GameSettings(): ReactElement {
+export const GameSettings = () => {
   const { t } = useTranslation()
   const gamesList = useUserStore(state => state.gamesList)
   const [searchTerm, setSearchTerm] = useState('')
@@ -91,7 +90,7 @@ export default function GameSettings(): ReactElement {
   }
 
   useEffect(() => {
-    const handleResize = (): void => {
+    const handleResize = () => {
       setWindowInnerHeight(window.innerHeight)
     }
     window.addEventListener('resize', handleResize)

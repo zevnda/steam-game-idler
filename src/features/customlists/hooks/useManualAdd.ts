@@ -1,34 +1,21 @@
 import type { Game, InvokeCustomList } from '@/shared/types'
-import type { ChangeEvent, Dispatch, SetStateAction } from 'react'
 import { invoke } from '@tauri-apps/api/core'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useUserStore } from '@/shared/stores/userStore'
-import { logEvent } from '@/shared/utils/tasks'
-import { showDangerToast, showWarningToast } from '@/shared/utils/toasts'
+import { useUserStore } from '@/shared/stores'
+import { logEvent, showDangerToast, showWarningToast } from '@/shared/utils'
 
-interface ManualAddHook {
-  isLoading: boolean
-  appNameValue: string
-  appIdValue: number | string
-  setAppNameValue: Dispatch<SetStateAction<string>>
-  setAppIdValue: Dispatch<SetStateAction<number>>
-  handleNameChange: (e: ChangeEvent<HTMLInputElement>) => void
-  handleIdChange: (e: number | ChangeEvent<HTMLInputElement>) => void
-  handleAdd: (onClose: () => void) => Promise<void>
-}
-
-export default function useManualAdd(
+export function useManualAdd(
   listName: string,
-  setList: Dispatch<SetStateAction<Game[]>>,
-): ManualAddHook {
+  setList: React.Dispatch<React.SetStateAction<Game[]>>,
+) {
   const { t } = useTranslation()
   const userSummary = useUserStore(state => state.userSummary)
   const [appNameValue, setAppNameValue] = useState('')
   const [appIdValue, setAppIdValue] = useState(0)
   const [isLoading, setIsLoading] = useState(false)
 
-  const handleAdd = async (onClose: () => void): Promise<void> => {
+  const handleAdd = async (onClose: () => void) => {
     setIsLoading(true)
     try {
       // Add game to custom list
@@ -56,7 +43,7 @@ export default function useManualAdd(
     }
   }
 
-  const handleNameChange = (e: ChangeEvent<HTMLInputElement>): void => {
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     try {
       setAppNameValue(e.target.value || '')
     } catch (error) {
@@ -66,7 +53,7 @@ export default function useManualAdd(
     }
   }
 
-  const handleIdChange = (e: number | ChangeEvent<HTMLInputElement>): void => {
+  const handleIdChange = (e: number | React.ChangeEvent<HTMLInputElement>) => {
     try {
       // If input value starts with 0, remove it
       // Happens when user copy-pastes the appid into the input

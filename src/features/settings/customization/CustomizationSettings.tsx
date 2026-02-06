@@ -1,5 +1,4 @@
 import type { InvokeSettings } from '@/shared/types'
-import type { ReactElement } from 'react'
 import { invoke } from '@tauri-apps/api/core'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -7,10 +6,9 @@ import { TbChevronRight, TbEraser } from 'react-icons/tb'
 import { Button, cn, Divider, Input, Radio, RadioGroup } from '@heroui/react'
 import { useTheme } from 'next-themes'
 import Image from 'next/image'
-import SettingsSwitch from '@/features/settings/SettingsSwitch'
-import { useStateStore } from '@/shared/stores/stateStore'
-import { useUserStore } from '@/shared/stores/userStore'
-import ProBadge from '@/shared/ui/pro/ProBadge'
+import { SettingsSwitch } from '@/features/settings'
+import { useStateStore, useUserStore } from '@/shared/stores'
+import { ProBadge } from '@/shared/ui'
 
 interface Theme {
   key: string
@@ -18,7 +16,7 @@ interface Theme {
   isProTheme: boolean
 }
 
-export default function CustomizationSettings(): ReactElement | null {
+export const CustomizationSettings = () => {
   const { t } = useTranslation()
   const { setTheme, resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
@@ -49,7 +47,7 @@ export default function CustomizationSettings(): ReactElement | null {
     setMounted(true)
   }, [setTheme])
 
-  const handleThemeChange = async (themeKey: string): Promise<void> => {
+  const handleThemeChange = async (themeKey: string) => {
     localStorage.setItem('theme', themeKey)
     setTheme(themeKey)
     await invoke<InvokeSettings>('update_user_settings', {
@@ -81,7 +79,7 @@ export default function CustomizationSettings(): ReactElement | null {
     reader.readAsDataURL(file)
   }
 
-  const handleDeleteBackground = async (): Promise<void> => {
+  const handleDeleteBackground = async () => {
     await invoke<InvokeSettings>('update_user_settings', {
       steamId: userSummary?.steamId,
       key: 'general.customBackground',

@@ -1,5 +1,4 @@
 import type { Game } from '@/shared/types'
-import type { ReactElement, SyntheticEvent } from 'react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TbChevronLeft, TbChevronRight, TbPlus } from 'react-icons/tb'
@@ -12,18 +11,18 @@ interface RecommendedCardDropsCarouselProps {
   isLoading: boolean
 }
 
-export default function RecommendedCardDropsCarousel({
+export const RecommendedCardDropsCarousel = ({
   gamesWithDrops,
   onAddGame,
   isLoading,
-}: RecommendedCardDropsCarouselProps): ReactElement {
+}: RecommendedCardDropsCarouselProps) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const [isAutoScrolling, setIsAutoScrolling] = useState(true)
   const autoScrollIntervalRef = useRef<NodeJS.Timeout | null>(null)
   const pauseTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const { t } = useTranslation()
 
-  const scroll = (direction: 'left' | 'right'): void => {
+  const scroll = (direction: 'left' | 'right') => {
     if (scrollContainerRef.current) {
       const scrollAmount = 440 * 2 + 20 + 20
       const container = scrollContainerRef.current
@@ -56,7 +55,7 @@ export default function RecommendedCardDropsCarousel({
     }
   }
 
-  const autoScroll = useCallback((): void => {
+  const autoScroll = useCallback(() => {
     if (scrollContainerRef.current) {
       const container = scrollContainerRef.current
       const maxScroll = container.scrollWidth - container.clientWidth
@@ -73,7 +72,7 @@ export default function RecommendedCardDropsCarousel({
     }
   }, [scrollContainerRef])
 
-  const handleManualScroll = (direction: 'left' | 'right'): void => {
+  const handleManualScroll = (direction: 'left' | 'right') => {
     setIsAutoScrolling(false)
     scroll(direction)
 
@@ -86,7 +85,7 @@ export default function RecommendedCardDropsCarousel({
     }, 5000)
   }
 
-  const handleImageError = (event: SyntheticEvent<HTMLImageElement, Event>): void => {
+  const handleImageError = (event: React.SyntheticEvent<HTMLImageElement, Event>) => {
     ;(event.target as HTMLImageElement).src = '/fallback.webp'
   }
 

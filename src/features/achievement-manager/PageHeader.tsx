@@ -1,27 +1,18 @@
-import type { ReactElement } from 'react'
 import { invoke } from '@tauri-apps/api/core'
 import { Trans, useTranslation } from 'react-i18next'
 import { SiSteam, SiSteamdb } from 'react-icons/si'
 import { TbAlertHexagonFilled, TbFoldersFilled, TbX } from 'react-icons/tb'
 import { Alert, Button, cn } from '@heroui/react'
-import { useNavigationStore } from '@/shared/stores/navigationStore'
-import { useSearchStore } from '@/shared/stores/searchStore'
-import { useStateStore } from '@/shared/stores/stateStore'
-import { useUserStore } from '@/shared/stores/userStore'
-import CustomTooltip from '@/shared/ui/CustomTooltip'
-import ExtLink from '@/shared/ui/ExtLink'
-import { logEvent } from '@/shared/utils/tasks'
-import { showDangerToast } from '@/shared/utils/toasts'
+import { useNavigationStore, useSearchStore, useStateStore, useUserStore } from '@/shared/stores'
+import { CustomTooltip, ExtLink } from '@/shared/ui'
+import { logEvent, showDangerToast } from '@/shared/utils'
 
 interface PageHeaderProps {
   protectedAchievements: boolean
   protectedStatistics: boolean
 }
 
-export default function PageHeader({
-  protectedAchievements,
-  protectedStatistics,
-}: PageHeaderProps): ReactElement {
+export const PageHeader = ({ protectedAchievements, protectedStatistics }: PageHeaderProps) => {
   const { t } = useTranslation()
   const userSummary = useUserStore(state => state.userSummary)
   const setAchievementsUnavailable = useUserStore(state => state.setAchievementsUnavailable)
@@ -33,7 +24,7 @@ export default function PageHeader({
   const setStatisticQueryValue = useSearchStore(state => state.setStatisticQueryValue)
   const setCurrentTab = useNavigationStore(state => state.setCurrentTab)
 
-  const handleClick = (): void => {
+  const handleClick = () => {
     setShowAchievements(false)
     setCurrentTab('achievements')
     setAchievementQueryValue('')
@@ -42,7 +33,7 @@ export default function PageHeader({
     setStatisticsUnavailable(true)
   }
 
-  const handleOpenAchievementFile = async (): Promise<void> => {
+  const handleOpenAchievementFile = async () => {
     try {
       const filePath = `${userSummary?.steamId}\\achievement_data\\${appId}.json`
       await invoke('open_file_explorer', { path: filePath })

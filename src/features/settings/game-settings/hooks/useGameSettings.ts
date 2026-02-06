@@ -1,29 +1,13 @@
 import type { GameSettings, GameSpecificSettings, InvokeSettings } from '@/shared/types'
 import { invoke } from '@tauri-apps/api/core'
 import { useEffect, useRef, useState } from 'react'
-import { useUserStore } from '@/shared/stores/userStore'
+import { useUserStore } from '@/shared/stores'
 
 interface UseGameSettingsProps {
   appId?: number | string
 }
 
-interface UseGameSettingsReturn {
-  maxIdleTime: number
-  maxCardDrops: number
-  maxAchievementUnlocks: number
-  setMaxIdleTime: (value: number) => void
-  setMaxCardDrops: (value: number) => void
-  setMaxAchievementUnlocks: (value: number) => void
-  handleMaxIdleTimeChange: (value: number) => void
-  handleMaxCardDropsChange: (value: number) => void
-  handleMaxAchievementUnlocksChange: (value: number) => void
-  resetSettings: () => void
-  globalMaxIdleTime: number
-  setGlobalMaxIdleTime: (value: number) => void
-  handleGlobalMaxIdleTimeChange: (value: number) => void
-}
-
-export function useGameSettings({ appId }: UseGameSettingsProps = {}): UseGameSettingsReturn {
+export function useGameSettings({ appId }: UseGameSettingsProps = {}) {
   const userSummary = useUserStore(state => state.userSummary)
   const userSettings = useUserStore(state => state.userSettings)
   const setUserSettings = useUserStore(state => state.setUserSettings)
@@ -33,13 +17,12 @@ export function useGameSettings({ appId }: UseGameSettingsProps = {}): UseGameSe
   const [globalMaxIdleTime, setGlobalMaxIdleTime] = useState(0)
   const isInitializedRef = useRef(false)
 
-  // Type guard for GameSpecificSettings
-  function isGameSpecificSettings(val: unknown): val is GameSpecificSettings {
+  function isGameSpecificSettings(val: unknown) {
     return typeof val === 'object' && val !== null && !Array.isArray(val)
   }
 
   useEffect(() => {
-    const fetchGameSettings = async (): Promise<void> => {
+    const fetchGameSettings = async () => {
       let gameSettings: GameSpecificSettings = {}
       if (
         userSettings.gameSettings &&
@@ -62,7 +45,7 @@ export function useGameSettings({ appId }: UseGameSettingsProps = {}): UseGameSe
     fetchGameSettings()
   }, [appId, userSettings.gameSettings])
 
-  const handleMaxIdleTimeChange = (value: number): void => {
+  const handleMaxIdleTimeChange = (value: number) => {
     const newValue = value || 0
     setMaxIdleTime(newValue)
     if (isInitializedRef.current && appId) {
@@ -70,7 +53,7 @@ export function useGameSettings({ appId }: UseGameSettingsProps = {}): UseGameSe
     }
   }
 
-  const handleMaxAchievementUnlocksChange = (value: number): void => {
+  const handleMaxAchievementUnlocksChange = (value: number) => {
     const newValue = value || 0
     setMaxAchievementUnlocks(newValue)
     if (isInitializedRef.current && appId) {
@@ -78,7 +61,7 @@ export function useGameSettings({ appId }: UseGameSettingsProps = {}): UseGameSe
     }
   }
 
-  const handleMaxCardDropsChange = (value: number): void => {
+  const handleMaxCardDropsChange = (value: number) => {
     const newValue = value || 0
     setMaxCardDrops(newValue)
     if (isInitializedRef.current && appId) {
@@ -86,11 +69,7 @@ export function useGameSettings({ appId }: UseGameSettingsProps = {}): UseGameSe
     }
   }
 
-  const saveWithValues = async (
-    idleTime: number,
-    cardDrops: number,
-    achievements: number,
-  ): Promise<void> => {
+  const saveWithValues = async (idleTime: number, cardDrops: number, achievements: number) => {
     if (!appId) return
 
     const gameSettings = userSettings.gameSettings || {}
@@ -98,7 +77,9 @@ export function useGameSettings({ appId }: UseGameSettingsProps = {}): UseGameSe
     // Only assign to appId if not globalMaxIdleTime
     if (appId !== 'globalMaxIdleTime') {
       gameSettings[appId] = {
-        ...(isGameSpecificSettings(gameSettings[appId]) ? gameSettings[appId] : {}),
+        ...(isGameSpecificSettings(gameSettings[appId])
+          ? (gameSettings[appId] as GameSpecificSettings)
+          : {}),
         maxIdleTime: idleTime,
         maxCardDrops: cardDrops,
         maxAchievementUnlocks: achievements,
@@ -114,7 +95,7 @@ export function useGameSettings({ appId }: UseGameSettingsProps = {}): UseGameSe
     setUserSettings(updateResponse.settings)
   }
 
-  const saveGlobalMaxIdleTime = async (value: number): Promise<void> => {
+  const saveGlobalMaxIdleTime = async (value: number) => {
     const gameSettings = { ...(userSettings.gameSettings || {}) }
     ;(gameSettings as GameSettings).globalMaxIdleTime = value
 
@@ -127,13 +108,13 @@ export function useGameSettings({ appId }: UseGameSettingsProps = {}): UseGameSe
     setUserSettings(updateResponse.settings)
   }
 
-  const handleGlobalMaxIdleTimeChange = (value: number): void => {
+  const handleGlobalMaxIdleTimeChange = (value: number) => {
     const newValue = value || 0
     setGlobalMaxIdleTime(newValue)
     saveGlobalMaxIdleTime(newValue)
   }
 
-  const resetSettings = (): void => {
+  const resetSettings = () => {
     if (!appId) {
       setMaxIdleTime(0)
       setMaxCardDrops(0)

@@ -1,18 +1,28 @@
-import type { GameForFarming } from '@/features/card-farming/hooks/useCardFarming'
-import type { InvokeIdle, InvokeRunningProcess, InvokeSettings, UserSummary } from '@/shared/types'
+import type { GameForFarming } from '@/features/card-farming'
+import type {
+  Game,
+  InvokeIdle,
+  InvokeKillProcess,
+  InvokeRunningProcess,
+  InvokeSettings,
+  UserSummary,
+} from '@/shared/types'
 import { invoke } from '@tauri-apps/api/core'
-import { checkSteamStatus, logEvent } from '@/shared/utils/tasks'
-import { showAccountMismatchToast, showWarningToast, t } from '@/shared/utils/toasts'
+import i18next from 'i18next'
+import {
+  checkSteamStatus,
+  logEvent,
+  showAccountMismatchToast,
+  showDangerToast,
+  showSuccessToast,
+  showWarningToast,
+} from '@/shared/utils'
 
 const idleTimeouts: { [key: number]: ReturnType<typeof setTimeout> } = {}
 const idleIntervals: { [key: number]: ReturnType<typeof setTimeout> } = {}
 
 // Start idling a game
-export async function startIdle(
-  appId: number,
-  appName: string,
-  manual: boolean = true,
-): Promise<boolean> {
+export async function startIdle(appId: number, appName: string, manual: boolean) {
   try {
     // Make sure Steam client is running
     const isSteamRunning = checkSteamStatus(true)
@@ -57,7 +67,7 @@ export async function startIdle(
 
     if (runningIdlers.includes(appId)) {
       // This is unlikely to happen but worth handling just in case
-      showWarningToast(t('toast.startIdle.alreadyIdling', { appName, appId }))
+      showWarningToast(i18next.t('toast.startIdle.alreadyIdling', { appName, appId }))
       logEvent(`[Error] [Idle] Attempted to idle already idling game ${appName} (${appId})`)
       return false
     }
@@ -105,10 +115,7 @@ export async function startIdle(
 }
 
 // Stop idling a game
-export async function stopIdle(
-  appId: number | undefined,
-  appName: string | undefined,
-): Promise<boolean> {
+export async function stopIdle(appId: number | undefined, appName: string | undefined) {
   try {
     if (!appId || !appName) {
       return false
@@ -138,7 +145,7 @@ export async function stopIdle(
 }
 
 // Start farming idle
-export async function startFarmIdle(gamesSet: Set<GameForFarming>): Promise<boolean> {
+export async function startFarmIdle(gamesSet: Set<GameForFarming>) {
   try {
     // Make sure Steam client is running
     const isSteamRunning = checkSteamStatus(true)
@@ -169,7 +176,7 @@ export async function startFarmIdle(gamesSet: Set<GameForFarming>): Promise<bool
 }
 
 // Stop farming idle
-export async function stopFarmIdle(gamesSet: Set<GameForFarming>): Promise<boolean> {
+export async function stopFarmIdle(gamesSet: Set<GameForFarming>) {
   try {
     await invoke('stop_farm_idle')
     logEvent(`[Card Farming] Stopped idling ${gamesSet.size} games`)
@@ -177,5 +184,65 @@ export async function stopFarmIdle(gamesSet: Set<GameForFarming>): Promise<boole
   } catch (error) {
     console.error('Error in stopFarmIdle util (these errors can often be ignored): ', error)
     return false
+  }
+}
+
+// Handle starting idling for a game
+export const handleIdle = async (item: Game) => {
+  try {
+    const success = await startIdle(item.appid, item.name, true)
+    if (success) {
+      showSuccessToast(
+        i18next.t('toast.startIdle.success', {
+          appName: item.name,
+          appId: item.appid,
+        }),
+      )
+    } else {
+      showDangerToast(
+        i18next.t('toast.startIdle.error', {
+          appName: item.name,
+          appId: item.appid,
+        }),
+      )
+    }
+  } catch (error) {
+    showDangerToast(i18next.t('common.error'))
+    console.error('Error in handleIdle:', error)
+    logEvent(`Error in (handleIdle): ${error}`)
+  }
+}
+
+// Handle stopping idling for a game
+export const handleStopIdle = async (
+  item: Game,
+  idleGamesList: Game[],
+  setIdleGamesList: (value: Game[]) => void,
+) => {
+  const game = idleGamesList.find(game => game.appid === item.appid)
+  try {
+    const response = await invoke<InvokeKillProcess>('kill_process_by_pid', {
+      pid: game?.pid,
+    })
+    if (response.success) {
+      setIdleGamesList(idleGamesList.filter(i => i.pid !== item.pid))
+      showSuccessToast(
+        i18next.t('toast.stopIdle.success', {
+          appName: item.name,
+          appId: item.appid,
+        }),
+      )
+    } else {
+      showDangerToast(
+        i18next.t('toast.stopIdle.error', {
+          appName: item.name,
+          appId: item.appid,
+        }),
+      )
+    }
+  } catch (error) {
+    showDangerToast(i18next.t('common.error'))
+    console.error('Error in handleStopIdle:', error)
+    logEvent(`Error in (handleStopIdle): ${error}`)
   }
 }

@@ -1,21 +1,12 @@
-import type { ReactElement } from 'react'
 import { useEffect, useState } from 'react'
 import { TbLayoutSidebar, TbLayoutSidebarFilled } from 'react-icons/tb'
 import { VscChromeClose, VscChromeMaximize, VscChromeMinimize } from 'react-icons/vsc'
 import { cn } from '@heroui/react'
-import { useNavigationStore } from '@/shared/stores/navigationStore'
-import { useStateStore } from '@/shared/stores/stateStore'
-import { useUpdateStore } from '@/shared/stores/updateStore'
-import { useUserStore } from '@/shared/stores/userStore'
-import Notifications from '@/shared/ui/notifications/Notifications'
-import { GoPro } from '@/shared/ui/pro/GoPro'
-import HelpDesk from '@/shared/ui/titlebar/HelpDesk'
-import useTitlebar from '@/shared/ui/titlebar/hooks/useTitlebar'
-import Menu from '@/shared/ui/titlebar/Menu'
-import UpdateButton from '@/shared/ui/UpdateButton'
-import { isPortableCheck } from '@/shared/utils/tasks'
+import { useNavigationStore, useStateStore, useUpdateStore, useUserStore } from '@/shared/stores'
+import { GoPro, HelpDesk, Menu, Notifications, UpdateButton, useTitlebar } from '@/shared/ui'
+import { isPortableCheck } from '@/shared/utils'
 
-export default function Titlebar(): ReactElement {
+export const Titlebar = () => {
   const { windowMinimize, windowToggleMaximize, windowClose } = useTitlebar()
   const updateAvailable = useUpdateStore(state => state.updateAvailable)
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)

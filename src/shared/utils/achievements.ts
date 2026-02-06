@@ -1,14 +1,14 @@
 import type {
   Achievement,
+  Game,
   InvokeAchievementData,
   InvokeAchievementUnlock,
   InvokeStatUpdate,
   StatValue,
 } from '@/shared//types'
-import type { Dispatch, SetStateAction } from 'react'
 import { invoke } from '@tauri-apps/api/core'
-import { logEvent } from '@/shared/utils/tasks'
-import { showDangerToast, showSuccessToast, t } from '@/shared/utils/toasts'
+import i18next from 'i18next'
+import { checkSteamStatus, logEvent, showDangerToast, showSuccessToast } from '@/shared/utils'
 
 // Unlock a single achievement for a game
 export async function unlockAchievement(
@@ -16,7 +16,7 @@ export async function unlockAchievement(
   appId: number,
   achievementName: string,
   appName: string,
-): Promise<boolean> {
+) {
   try {
     const response = await invoke<InvokeAchievementUnlock>('unlock_achievement', {
       appId,
@@ -54,7 +54,7 @@ export async function toggleAchievement(
   achievementName: string,
   appName: string,
   type: string,
-): Promise<boolean> {
+) {
   try {
     const response = await invoke<InvokeAchievementUnlock>('toggle_achievement', {
       appId,
@@ -66,12 +66,12 @@ export async function toggleAchievement(
     const status = JSON.parse(String(response)) as InvokeAchievementUnlock
 
     if (status.success) {
-      showSuccessToast(t('toast.toggle.success', { type, achievementName, appName }))
+      showSuccessToast(i18next.t('toast.toggle.success', { type, achievementName, appName }))
       logEvent(`[Achievement Manager] ${type} ${achievementName} for ${appName} (${appId})`)
       return true
     } else {
       showDangerToast(
-        t('toast.toggle.error', {
+        i18next.t('toast.toggle.error', {
           type: type.replace('ed', '').toLowerCase(),
           achievementName,
           appName,
@@ -95,7 +95,7 @@ export async function unlockAllAchievements(
   appId: number,
   achievementsArr: Achievement[],
   appName: string,
-): Promise<boolean> {
+) {
   try {
     const response = await invoke<InvokeAchievementUnlock>('unlock_all_achievements', { appId })
 
@@ -131,7 +131,7 @@ export async function lockAllAchievements(
   appId: number,
   achievementsArr: Achievement[],
   appName: string,
-): Promise<boolean> {
+) {
   try {
     const response = await invoke<InvokeAchievementUnlock>('lock_all_achievements', { appId })
 
@@ -167,8 +167,8 @@ export async function updateStats(
   appId: number | null,
   appName: string | null,
   valuesArr: StatValue[],
-  setAchievements: Dispatch<SetStateAction<Achievement[]>>,
-): Promise<boolean> {
+  setAchievements: React.Dispatch<React.SetStateAction<Achievement[]>>,
+) {
   try {
     const response = await invoke<InvokeStatUpdate>('update_stats', {
       appId,
@@ -199,4 +199,20 @@ export async function updateStats(
     logEvent(`[Error] in (updateStats) util: ${error}`)
     return false
   }
+}
+
+// Handle viewing achievements for a game
+export const viewAchievments = async (
+  item: Game,
+  setAppId: (value: number | null) => void,
+  setAppName: (value: string | null) => void,
+  setShowAchievements: (value: boolean) => void,
+) => {
+  // Make sure Steam client is running
+  const isSteamRunning = checkSteamStatus(true)
+  if (!isSteamRunning) return
+
+  setAppId(item.appid)
+  setAppName(item.name)
+  setShowAchievements(true)
 }

@@ -1,11 +1,8 @@
-import type { ReactElement } from 'react'
 import { cn } from '@heroui/react'
-import { useStateStore } from '@/shared/stores/stateStore'
-import { useUserStore } from '@/shared/stores/userStore'
-import ProBadge from '@/shared/ui/pro/ProBadge'
-import Logo from '@/shared/ui/titlebar/Logo'
+import { useStateStore, useUserStore } from '@/shared/stores'
+import { Logo, ProBadge } from '@/shared/ui'
 
-export default function Brand(): ReactElement {
+export const Brand = () => {
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
   const isPro = useUserStore(state => state.isPro)
 

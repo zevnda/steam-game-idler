@@ -1,7 +1,6 @@
 'use client'
 
 import type { SharedProps } from 'fumadocs-ui/components/dialog/search'
-
 import { create } from '@orama/orama'
 import { useDocsSearch } from 'fumadocs-core/search/client'
 import {

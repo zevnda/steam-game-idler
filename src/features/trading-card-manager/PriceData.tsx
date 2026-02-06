@@ -1,23 +1,21 @@
-import type useTradingCardsList from '@/features/trading-card-manager/hooks/useTradingCardsList'
+import type { useTradingCardsList } from '@/features/trading-card-manager'
 import type { TradingCard } from '@/shared/types'
-import type { ReactElement } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TbArrowRight } from 'react-icons/tb'
 import { Button, Spinner, useDisclosure } from '@heroui/react'
-import CustomModal from '@/shared/ui/CustomModal'
-import { logEvent } from '@/shared/utils/tasks'
-import { showPriceFetchCooldownToast } from '@/shared/utils/toasts'
+import { CustomModal } from '@/shared/ui'
+import { logEvent, showPriceFetchCooldownToast } from '@/shared/utils'
 
 interface PriceDataProps {
   item: TradingCard
   tradingCardContext: ReturnType<typeof useTradingCardsList>
 }
 
-export default function PriceData({ item, tradingCardContext }: PriceDataProps): ReactElement {
+export const PriceData = ({ item, tradingCardContext }: PriceDataProps) => {
   const { t } = useTranslation()
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
-  const handleFetchPrice = async (item: TradingCard): Promise<void> => {
+  const handleFetchPrice = async (item: TradingCard) => {
     try {
       const cooldownKey = 'tcPriceFetchCooldown'
       const now = Date.now()

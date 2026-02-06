@@ -2,18 +2,14 @@ import type { LogEntry } from '@/shared/types'
 import { invoke } from '@tauri-apps/api/core'
 import { readTextFile } from '@tauri-apps/plugin-fs'
 import { useEffect, useState } from 'react'
-import { logEvent } from '@/shared/utils/tasks'
-import { showDangerToast, showSuccessToast, t } from '@/shared/utils/toasts'
+import i18next from 'i18next'
+import { logEvent, showDangerToast, showSuccessToast } from '@/shared/utils'
 
-interface LogsHook {
-  logs: LogEntry[]
-}
-
-export const useLogs = (): LogsHook => {
+export const useLogs = () => {
   const [logs, setLogs] = useState<LogEntry[]>([])
 
   useEffect(() => {
-    const fetchLogs = async (): Promise<void> => {
+    const fetchLogs = async () => {
       try {
         const fullLogPath = await invoke<string>('get_cache_dir_path')
         const logFilePath = `${fullLogPath}\\log.txt`
@@ -47,7 +43,7 @@ export const useLogs = (): LogsHook => {
           })
         setLogs(logEntries)
       } catch (error) {
-        showDangerToast(t('common.error'))
+        showDangerToast(i18next.t('common.error'))
         console.error('Error in (fetchLogs):', error)
         logEvent(`[Error] in (fetchLogs): ${error}`)
       }
@@ -63,27 +59,27 @@ export const useLogs = (): LogsHook => {
 }
 
 // Open the log file in file explorer
-export const handleOpenLogFile = async (): Promise<void> => {
+export const handleOpenLogFile = async () => {
   try {
     await invoke('open_file_explorer', { path: 'log.txt' })
   } catch (error) {
-    showDangerToast(t('common.error'))
+    showDangerToast(i18next.t('common.error'))
     console.error('Error in (handleOpenLogFile):', error)
     logEvent(`[Error] in (handleOpenLogFile): ${error}`)
   }
 }
 
 // Clear the log file
-export const handleClearLogs = async (log = true): Promise<void> => {
+export const handleClearLogs = async (log = true) => {
   try {
     await invoke('clear_log_file')
     // Only show toast if log was manually cleared
     if (log) {
-      showSuccessToast(t('toast.clearLogs.success'))
+      showSuccessToast(i18next.t('toast.clearLogs.success'))
       logEvent('[Settings - Logs] Logs cleared successfully')
     }
   } catch (error) {
-    showDangerToast(t('common.error'))
+    showDangerToast(i18next.t('common.error'))
     console.error('Error in (handleClearLogs):', error)
     logEvent(`[Error] in (handleClearLogs): ${error}`)
   }

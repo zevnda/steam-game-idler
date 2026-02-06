@@ -6,36 +6,33 @@ import type {
   Statistic,
   StatValue,
 } from '@/shared/types'
-import type { Dispatch, SetStateAction } from 'react'
 import { invoke } from '@tauri-apps/api/core'
 import { useTranslation } from 'react-i18next'
-import { useStateStore } from '@/shared/stores/stateStore'
-import { useUserStore } from '@/shared/stores/userStore'
-import { updateStats } from '@/shared/utils/achievements'
-import { checkSteamStatus } from '@/shared/utils/tasks'
-import { showDangerToast, showSuccessToast, showWarningToast } from '@/shared/utils/toasts'
+import { useStateStore, useUserStore } from '@/shared/stores'
+import {
+  checkSteamStatus,
+  showDangerToast,
+  showSuccessToast,
+  showWarningToast,
+  updateStats,
+} from '@/shared/utils'
 
-interface StatisticButtonHook {
-  handleUpdateAllStats: () => Promise<void>
-  handleResetAll: (onClose: () => void) => Promise<void>
-}
-
-export default function useStatisticButtons(
+export function useStatisticButtons(
   statistics: Statistic[],
-  setStatistics: Dispatch<SetStateAction<Statistic[]>>,
+  setStatistics: React.Dispatch<React.SetStateAction<Statistic[]>>,
   changedStats: ChangedStats,
-  setChangedStats: Dispatch<SetStateAction<ChangedStats>>,
-  setAchievements: Dispatch<SetStateAction<Achievement[]>>,
-): StatisticButtonHook {
+  setChangedStats: React.Dispatch<React.SetStateAction<ChangedStats>>,
+  setAchievements: React.Dispatch<React.SetStateAction<Achievement[]>>,
+) {
   const { t } = useTranslation()
   const userSummary = useUserStore(state => state.userSummary)
   const appId = useStateStore(state => state.appId)
   const appName = useStateStore(state => state.appName)
 
   // Handle updating only changed statistics
-  const handleUpdateAllStats = async (): Promise<void> => {
+  const handleUpdateAllStats = async () => {
     // Make sure Steam client is running
-    const isSteamRunning = checkSteamStatus(true)
+    const isSteamRunning = await checkSteamStatus(true)
     if (!isSteamRunning) return
 
     // Get list of stats that were modified by the user
@@ -76,7 +73,7 @@ export default function useStatisticButtons(
   }
 
   // Handle resetting all statistics
-  const handleResetAll = async (onClose: () => void): Promise<void> => {
+  const handleResetAll = async (onClose: () => void) => {
     // Close modla
     onClose()
 

@@ -1,4 +1,3 @@
-import type { ReactElement } from 'react'
 import { useEffect, useState } from 'react'
 import {
   Button,
@@ -13,10 +12,10 @@ import 'github-markdown-css/github-markdown-light.css'
 import { getVersion } from '@tauri-apps/api/app'
 import { useTranslation } from 'react-i18next'
 import { FaStar } from 'react-icons/fa6'
-import { useUpdateStore } from '@/shared/stores/updateStore'
-import { handleOpenExtLink } from '@/shared/utils/tasks'
+import { useUpdateStore } from '@/shared/stores'
+import { handleOpenExtLink } from '@/shared/utils'
 
-export default function ChangelogModal(): ReactElement | null {
+export const ChangelogModal = () => {
   const { t } = useTranslation()
   const showChangelog = useUpdateStore(state => state.showChangelog)
   const setShowChangelog = useUpdateStore(state => state.setShowChangelog)

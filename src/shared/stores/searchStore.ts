@@ -12,8 +12,8 @@ interface SearchStore {
   statisticQueryValue: string
   setStatisticQueryValue: (value: string | ((prev: string) => string)) => void
   recentSearches: string[]
-  addRecentSearch: (query: string) => void
-  removeRecentSearch: (query: string) => void
+  addRecentSearch: (value: string) => void
+  removeRecentSearch: (value: string) => void
   clearRecentSearches: () => void
 }
 
@@ -46,14 +46,14 @@ export const useSearchStore = create<SearchStore>(set => ({
       statisticQueryValue: typeof value === 'function' ? value(state.statisticQueryValue) : value,
     })),
   recentSearches: [],
-  addRecentSearch: query =>
+  addRecentSearch: value =>
     set(state => {
-      const filtered = state.recentSearches.filter(search => search !== query)
-      return { recentSearches: [query, ...filtered].slice(0, 10) }
+      const filtered = state.recentSearches.filter(search => search !== value)
+      return { recentSearches: [value, ...filtered].slice(0, 10) }
     }),
-  removeRecentSearch: query =>
+  removeRecentSearch: value =>
     set(state => {
-      const filtered = state.recentSearches.filter(search => search !== query)
+      const filtered = state.recentSearches.filter(search => search !== value)
       localStorage.setItem('searchQueries', JSON.stringify(filtered))
       return { recentSearches: filtered }
     }),

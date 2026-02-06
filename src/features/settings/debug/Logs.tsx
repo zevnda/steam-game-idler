@@ -1,21 +1,20 @@
 import type { LogEntry } from '@/shared/types'
-import type { ReactElement } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TbChevronRight, TbEraser, TbFolders } from 'react-icons/tb'
 import { Button, cn } from '@heroui/react'
 import { GeistMono } from 'geist/font/mono'
-import ClearData from '@/features/settings/debug/ClearData'
-import ExportSettings from '@/features/settings/debug/ExportSettings'
 import {
+  ClearData,
+  ExportSettings,
   handleClearLogs,
   handleOpenLogFile,
+  OpenSettings,
+  ResetSettings,
   useLogs,
-} from '@/features/settings/debug/hooks/useLogs'
-import OpenSettings from '@/features/settings/debug/OpenSettings'
-import ResetSettings from '@/features/settings/debug/ResetSettings'
-import useSettings from '@/features/settings/hooks/useSettings'
+  useSettings,
+} from '@/features/settings'
 
-export default function Logs(): ReactElement {
+export const Logs = () => {
   const { t } = useTranslation()
   const { logs }: { logs: LogEntry[] } = useLogs()
   const { setRefreshKey } = useSettings()

@@ -1,6 +1,5 @@
 import type { Achievement, Game, InvokeAchievementData } from '@/shared/types'
 import type { DragEndEvent } from '@dnd-kit/core'
-import type { ReactElement } from 'react'
 import { invoke } from '@tauri-apps/api/core'
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -12,11 +11,14 @@ import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { Button, Checkbox, cn, Input, Spinner } from '@heroui/react'
 import Image from 'next/image'
-import { useUserStore } from '@/shared/stores/userStore'
-import CustomModal from '@/shared/ui/CustomModal'
-import WebviewWindow from '@/shared/ui/WebviewWindow'
-import { checkSteamStatus, logEvent } from '@/shared/utils/tasks'
-import { showAccountMismatchToast, showDangerToast } from '@/shared/utils/toasts'
+import { useUserStore } from '@/shared/stores'
+import { CustomModal, WebviewWindow } from '@/shared/ui'
+import {
+  checkSteamStatus,
+  logEvent,
+  showAccountMismatchToast,
+  showDangerToast,
+} from '@/shared/utils'
 
 interface SortableAchievementProps {
   item: Game
@@ -33,7 +35,7 @@ const SortableAchievement = memo(function SortableAchievement({
 }: SortableAchievementProps & {
   onToggleSkip: (name: string) => void
   onSetDelay: (name: string, value: number | null) => void
-}): ReactElement {
+}) {
   const { t } = useTranslation()
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: achievement.name,
@@ -61,7 +63,7 @@ const SortableAchievement = memo(function SortableAchievement({
     }
   }, [showDelayInput])
 
-  const handleDelayChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+  const handleDelayChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value
     if (val === '') {
       setDelayValue('')
@@ -71,15 +73,15 @@ const SortableAchievement = memo(function SortableAchievement({
     }
   }
 
-  const handleShowInput = (): void => setShowDelayInput(true)
+  const handleShowInput = () => setShowDelayInput(true)
 
-  const handleClearInput = (): void => {
+  const handleClearInput = () => {
     setShowDelayInput(false)
     setDelayValue('')
     onSetDelay(achievement.name, null)
   }
 
-  const handleInputBlur = (): void => {
+  const handleInputBlur = () => {
     setShowDelayInput(false)
     if (delayValue === '' || delayValue === 0) {
       onSetDelay(achievement.name, null)
@@ -88,7 +90,7 @@ const SortableAchievement = memo(function SortableAchievement({
     }
   }
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       handleInputBlur()
     }
@@ -206,7 +208,7 @@ const SortableAchievement = memo(function SortableAchievement({
   )
 })
 
-export default function AchievementOrderModal({
+export const AchievementOrderModal = ({
   item,
   isOpen,
   onOpenChange,
@@ -214,14 +216,14 @@ export default function AchievementOrderModal({
   item: Game
   isOpen: boolean
   onOpenChange: () => void
-}): ReactElement {
+}) => {
   const { t } = useTranslation()
   const userSummary = useUserStore(state => state.userSummary)
   const [isLoading, setIsLoading] = useState(false)
   const [achievements, setAchievements] = useState<Achievement[]>([])
   const [originalAchievements, setOriginalAchievements] = useState<Achievement[]>([])
 
-  const handleDragEnd = useCallback((event: DragEndEvent): void => {
+  const handleDragEnd = useCallback((event: DragEndEvent) => {
     const { active, over } = event
 
     if (over && active.id !== over.id) {
@@ -233,7 +235,7 @@ export default function AchievementOrderModal({
     }
   }, [])
 
-  const handleToggleSkip = useCallback((achievementName: string): void => {
+  const handleToggleSkip = useCallback((achievementName: string) => {
     setAchievements(items =>
       items.map(achievement =>
         achievement.name === achievementName
@@ -243,7 +245,7 @@ export default function AchievementOrderModal({
     )
   }, [])
 
-  const handleSetDelay = useCallback((achievementName: string, value: number | null): void => {
+  const handleSetDelay = useCallback((achievementName: string, value: number | null) => {
     setAchievements(items =>
       items.map(achievement =>
         achievement.name === achievementName
@@ -258,7 +260,7 @@ export default function AchievementOrderModal({
     )
   }, [])
 
-  const handleSave = async (): Promise<void> => {
+  const handleSave = async () => {
     try {
       await invoke('save_achievement_order', {
         steamId: userSummary?.steamId,
@@ -275,7 +277,7 @@ export default function AchievementOrderModal({
   }
 
   useEffect(() => {
-    const getAchievementData = async (): Promise<void> => {
+    const getAchievementData = async () => {
       try {
         setIsLoading(true)
         setAchievements([])

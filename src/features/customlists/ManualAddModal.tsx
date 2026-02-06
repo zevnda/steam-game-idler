@@ -1,28 +1,27 @@
 import type { Game } from '@/shared/types'
-import type { Dispatch, KeyboardEvent, ReactElement, SetStateAction } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TbPlus } from 'react-icons/tb'
 import { Button, cn, Input, NumberInput, useDisclosure } from '@heroui/react'
-import useManualAdd from '@/features/customlists/hooks/useManualAdd'
-import CustomModal from '@/shared/ui/CustomModal'
+import { useManualAdd } from '@/features/customlists'
+import { CustomModal } from '@/shared/ui'
 
 interface ManualAddModalProps {
   listName: string
-  setList: Dispatch<SetStateAction<Game[]>>
+  setList: React.Dispatch<React.SetStateAction<Game[]>>
 }
 
-export default function ManualAddModal({ listName, setList }: ManualAddModalProps): ReactElement {
+export const ManualAddModal = ({ listName, setList }: ManualAddModalProps) => {
   const { t } = useTranslation()
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const manualAdd = useManualAdd(listName, setList)
 
-  const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>, onClose: () => void): void => {
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>, onClose: () => void) => {
     if (e.key === 'Enter') {
       manualAdd.handleAdd(onClose)
     }
   }
 
-  const handleClose = (): void => {
+  const handleClose = () => {
     manualAdd.setAppNameValue('')
     manualAdd.setAppIdValue(0)
   }

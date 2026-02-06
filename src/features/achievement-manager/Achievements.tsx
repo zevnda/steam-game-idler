@@ -1,18 +1,18 @@
 import type { Achievement, CurrentTabType, Statistic } from '@/shared/types'
-import type { ReactElement } from 'react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { cn, Tab, Tabs } from '@heroui/react'
 import Image from 'next/image'
-import AchievementsList from '@/features/achievement-manager/AchievementsList'
-import useAchievements from '@/features/achievement-manager/hooks/useAchievements'
-import PageHeader from '@/features/achievement-manager/PageHeader'
-import StatisticsList from '@/features/achievement-manager/StatisticsList'
-import { useNavigationStore } from '@/shared/stores/navigationStore'
-import { useStateStore } from '@/shared/stores/stateStore'
-import Loader from '@/shared/ui/Loader'
+import {
+  AchievementsList,
+  PageHeader,
+  StatisticsList,
+  useAchievements,
+} from '@/features/achievement-manager'
+import { useNavigationStore, useStateStore } from '@/shared/stores'
+import { Loader } from '@/shared/ui'
 
-export default function Achievements(): ReactElement {
+export const Achievements = () => {
   const { t } = useTranslation()
   const setCurrentTab = useNavigationStore(state => state.setCurrentTab)
   const appId = useStateStore(state => state.appId)
@@ -33,11 +33,11 @@ export default function Achievements(): ReactElement {
     setProtectedStatistics,
   )
 
-  const handleImageLoad = (): void => {
+  const handleImageLoad = () => {
     setImageLoaded(true)
   }
 
-  const handleImageError = (): void => {
+  const handleImageError = () => {
     setFallbackImage(`https://cdn.steamstatic.com/steam/apps/${appId}/header.jpg`)
   }
 

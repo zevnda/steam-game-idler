@@ -1,13 +1,8 @@
-import type {
-  GameWithRemainingDrops,
-  InvokeDropsRemaining,
-  InvokeGamesWithDrops,
-} from '@/shared/types'
+import type { InvokeDropsRemaining, InvokeGamesWithDrops } from '@/shared/types'
 import type { TimeInputValue } from '@heroui/react'
 import { Time } from '@internationalized/date'
 import { invoke } from '@tauri-apps/api/core'
-import { decrypt, logEvent } from '@/shared/utils/tasks'
-import { showMissingCredentialsToast } from '@/shared/utils/toasts'
+import { decrypt, logEvent, showMissingCredentialsToast } from '@/shared/utils'
 
 // Check remaining card drops for a game
 export async function checkDrops(
@@ -16,7 +11,7 @@ export async function checkDrops(
   sid: string | undefined,
   sls: string | undefined,
   sma: string | undefined,
-): Promise<number> {
+) {
   try {
     if (!sid || !sls) {
       showMissingCredentialsToast()
@@ -49,7 +44,7 @@ export async function getAllGamesWithDrops(
   sid: string | undefined,
   sls: string | undefined,
   sma: string | undefined,
-): Promise<GameWithRemainingDrops[]> {
+) {
   try {
     if (!sid || !sls) {
       showMissingCredentialsToast()
@@ -76,10 +71,7 @@ export async function getAllGamesWithDrops(
 }
 
 // Check if the current time is within the specified schedule
-export function isWithinSchedule(
-  scheduleFrom: TimeInputValue,
-  scheduleTo: TimeInputValue,
-): boolean {
+export function isWithinSchedule(scheduleFrom: TimeInputValue, scheduleTo: TimeInputValue) {
   const now = new Date()
   const currentTime = new Time(now.getHours(), now.getMinutes())
   const scheduleFromTime = new Time(scheduleFrom.hour, scheduleFrom.minute)

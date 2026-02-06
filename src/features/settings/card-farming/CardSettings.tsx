@@ -1,15 +1,14 @@
-import type { ReactElement } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TbChevronRight } from 'react-icons/tb'
 import { Alert, cn, Divider, Select, SelectItem } from '@heroui/react'
 import {
-  handleNextTaskChange,
+  handleNextTaskChangeCardFarming,
+  SettingsSwitch,
   useCardSettings,
-} from '@/features/settings/card-farming/hooks/useCardSettings'
-import SettingsSwitch from '@/features/settings/SettingsSwitch'
-import { useUserStore } from '@/shared/stores/userStore'
+} from '@/features/settings'
+import { useUserStore } from '@/shared/stores'
 
-export default function CardSettings(): ReactElement {
+export const CardSettings = () => {
   const { t } = useTranslation()
   const userSummary = useUserStore(state => state.userSummary)
   const userSettings = useUserStore(state => state.userSettings)
@@ -122,7 +121,7 @@ export default function CardSettings(): ReactElement {
                 userSettings.cardFarming.nextTask ? [userSettings.cardFarming.nextTask] : []
               }
               onSelectionChange={e => {
-                handleNextTaskChange(e.currentKey!, userSummary, setUserSettings)
+                handleNextTaskChangeCardFarming(e.currentKey!, userSummary, setUserSettings)
               }}
             >
               {item => (

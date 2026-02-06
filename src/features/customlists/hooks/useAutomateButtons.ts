@@ -1,29 +1,21 @@
 import type { InvokeCustomList, InvokeSettings, InvokeValidateSession } from '@/shared/types'
 import { invoke } from '@tauri-apps/api/core'
 import { useTranslation } from 'react-i18next'
-import { useStateStore } from '@/shared/stores/stateStore'
-import { useUserStore } from '@/shared/stores/userStore'
+import { useStateStore, useUserStore } from '@/shared/stores'
 import {
   autoRevalidateSteamCredentials,
   checkSteamStatus,
   decrypt,
   logEvent,
-} from '@/shared/utils/tasks'
-import {
   showDangerToast,
   showEnableAllGamesToast,
   showMissingCredentialsToast,
   showNoGamesToast,
   showOutdatedCredentialsToast,
-} from '@/shared/utils/toasts'
-
-interface AutomateButtonsHook {
-  startCardFarming: () => Promise<void>
-  startAchievementUnlocker: () => Promise<void>
-}
+} from '@/shared/utils'
 
 // Automate card farming and achievement unlocking
-export const useAutomate = (): AutomateButtonsHook => {
+export const useAutomateButtons = () => {
   const { t } = useTranslation()
   const userSummary = useUserStore(state => state.userSummary)
   const userSettings = useUserStore(state => state.userSettings)
@@ -33,7 +25,7 @@ export const useAutomate = (): AutomateButtonsHook => {
   const isPro = useUserStore(state => state.isPro)
 
   // Start card farming
-  const startCardFarming = async (): Promise<void> => {
+  const startCardFarming = async () => {
     try {
       // Make sure Steam client is running
       const isSteamRunning = await checkSteamStatus(true)
@@ -94,7 +86,7 @@ export const useAutomate = (): AutomateButtonsHook => {
   }
 
   // Start achievement unlocker
-  const startAchievementUnlocker = async (): Promise<void> => {
+  const startAchievementUnlocker = async () => {
     try {
       // Make sure Steam client is running
       const isSteamRunning = await checkSteamStatus(true)

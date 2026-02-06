@@ -1,24 +1,12 @@
 import type { InvokeSettings, InvokeValidateKey, UserSettings } from '@/shared/types'
-import type { Dispatch, SetStateAction } from 'react'
 import { invoke } from '@tauri-apps/api/core'
 import { disable, enable, isEnabled } from '@tauri-apps/plugin-autostart'
 import { useEffect, useState } from 'react'
-import { useUserStore } from '@/shared/stores/userStore'
-import { encrypt, logEvent } from '@/shared/utils/tasks'
-import { showDangerToast, showSuccessToast, t } from '@/shared/utils/toasts'
+import i18next from 'i18next'
+import { useUserStore } from '@/shared/stores'
+import { encrypt, logEvent, showDangerToast, showSuccessToast } from '@/shared/utils'
 
-interface GeneralSettingsHook {
-  startupState: boolean | null
-  setStartupState: Dispatch<SetStateAction<boolean | null>>
-  keyValue: string
-  setKeyValue: Dispatch<SetStateAction<string>>
-  hasKey: boolean
-  setHasKey: Dispatch<SetStateAction<boolean>>
-  sliderLabel: string
-  setSliderLabel: Dispatch<SetStateAction<string>>
-}
-
-export const useGeneralSettings = (): GeneralSettingsHook => {
+export const useGeneralSettings = () => {
   const userSettings = useUserStore(state => state.userSettings)
   const [startupState, setStartupState] = useState<boolean | null>(null)
   const [keyValue, setKeyValue] = useState('')
@@ -27,7 +15,7 @@ export const useGeneralSettings = (): GeneralSettingsHook => {
 
   useEffect(() => {
     // Check the current state of auto start
-    const checkStartupState = async (): Promise<void> => {
+    const checkStartupState = async () => {
       const isEnabledState = await isEnabled()
       setStartupState(isEnabledState)
     }
@@ -57,8 +45,8 @@ export const useGeneralSettings = (): GeneralSettingsHook => {
 
 // Toggle app auto start using tauri plugin
 export const handleRunAtStartupChange = async (
-  setStartupState: Dispatch<SetStateAction<boolean | null>>,
-): Promise<void> => {
+  setStartupState: React.Dispatch<React.SetStateAction<boolean | null>>,
+) => {
   try {
     const isEnabledState = await isEnabled()
     if (isEnabledState) {
@@ -68,7 +56,7 @@ export const handleRunAtStartupChange = async (
     }
     setStartupState(!isEnabledState)
   } catch (error) {
-    showDangerToast(t('common.error'))
+    showDangerToast(i18next.t('common.error'))
     console.error('Error in (handleRunAtStartupChange):', error)
     logEvent(`[Error] in (handleRunAtStartupChange): ${error}`)
   }
@@ -78,9 +66,9 @@ export const handleRunAtStartupChange = async (
 export const handleKeySave = async (
   steamId: string | undefined,
   keyValue: string,
-  setHasKey: Dispatch<SetStateAction<boolean>>,
-  setUserSettings: Dispatch<SetStateAction<UserSettings>>,
-): Promise<void> => {
+  setHasKey: React.Dispatch<React.SetStateAction<boolean>>,
+  setUserSettings: (value: UserSettings) => void,
+) => {
   try {
     if (keyValue.length > 0) {
       const validate = await invoke<InvokeValidateKey>('validate_steam_api_key', {
@@ -98,14 +86,14 @@ export const handleKeySave = async (
 
         setHasKey(true)
 
-        showSuccessToast(t('toast.apiKey.save'))
+        showSuccessToast(i18next.t('toast.apiKey.save'))
         logEvent('[Settings - General] Steam web API key added')
       } else {
-        showDangerToast(t('toast.apiKey.error'))
+        showDangerToast(i18next.t('toast.apiKey.error'))
       }
     }
   } catch (error) {
-    showDangerToast(t('common.error'))
+    showDangerToast(i18next.t('common.error'))
     console.error('Error in (handleKeySave):', error)
     logEvent(`[Error] in (handleKeySave): ${error}`)
   }
@@ -114,10 +102,10 @@ export const handleKeySave = async (
 // Removes Steam API key from localStorage and resets state
 export const handleClear = async (
   steamId: string | undefined,
-  setKeyValue: Dispatch<SetStateAction<string>>,
-  setHasKey: Dispatch<SetStateAction<boolean>>,
-  setUserSettings: Dispatch<SetStateAction<UserSettings>>,
-): Promise<void> => {
+  setKeyValue: React.Dispatch<React.SetStateAction<string>>,
+  setHasKey: React.Dispatch<React.SetStateAction<boolean>>,
+  setUserSettings: (value: UserSettings) => void,
+) => {
   try {
     const response = await invoke<InvokeSettings>('update_user_settings', {
       steamId,
@@ -127,10 +115,10 @@ export const handleClear = async (
     setUserSettings(response.settings)
     setKeyValue('')
     setHasKey(false)
-    showSuccessToast(t('toast.apiKey.clear'))
+    showSuccessToast(i18next.t('toast.apiKey.clear'))
     logEvent('[Settings - General] Steam web API key cleared')
   } catch (error) {
-    showDangerToast(t('common.error'))
+    showDangerToast(i18next.t('common.error'))
     console.error('Error in (handleClear):', error)
     logEvent(`[Error] in (handleClear): ${error}`)
   }

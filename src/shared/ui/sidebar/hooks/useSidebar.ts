@@ -1,27 +1,14 @@
 import type { ActivePageType, CurrentTabType } from '@/shared/types'
-import type { Dispatch, SetStateAction } from 'react'
 import { invoke } from '@tauri-apps/api/core'
 import { useTranslation } from 'react-i18next'
 import { useDisclosure } from '@heroui/react'
-import { useNavigationStore } from '@/shared/stores/navigationStore'
-import { useSearchStore } from '@/shared/stores/searchStore'
-import { useUserStore } from '@/shared/stores/userStore'
-import { logEvent } from '@/shared/utils/tasks'
-import { showDangerToast } from '@/shared/utils/toasts'
+import { useNavigationStore, useSearchStore, useUserStore } from '@/shared/stores'
+import { logEvent, showDangerToast } from '@/shared/utils'
 
-interface SidebarProps {
-  isOpen: boolean
-  onOpenChange: () => void
-  activePage: ActivePageType
-  setActivePage: Dispatch<SetStateAction<ActivePageType>>
-  openConfirmation: () => void
-  handleLogout: (onClose: () => void) => Promise<void>
-}
-
-export default function useSidebar(
+export function useSidebar(
   activePage: ActivePageType,
-  setActivePage: Dispatch<SetStateAction<ActivePageType>>,
-): SidebarProps {
+  setActivePage: (value: ActivePageType) => void,
+) {
   const { t } = useTranslation()
   const setGameQueryValue = useSearchStore(state => state.setGameQueryValue)
   const setAchievementQueryValue = useSearchStore(state => state.setAchievementQueryValue)
@@ -30,12 +17,12 @@ export default function useSidebar(
   const setUserSummary = useUserStore(state => state.setUserSummary)
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
-  const openConfirmation = (): void => {
+  const openConfirmation = () => {
     onOpen()
   }
 
   // Handle logging out
-  const handleLogout = async (onClose: () => void): Promise<void> => {
+  const handleLogout = async (onClose: () => void) => {
     try {
       onClose()
       setUserSummary(null)
@@ -50,7 +37,7 @@ export default function useSidebar(
   }
 
   // Clear local storage data and reset states on logout
-  const clearLocalStorageData = async (): Promise<void> => {
+  const clearLocalStorageData = async () => {
     try {
       setActivePage('' as ActivePageType)
       setCurrentTab('' as CurrentTabType)

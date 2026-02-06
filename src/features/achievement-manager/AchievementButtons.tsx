@@ -1,27 +1,25 @@
 import type { Achievement, SortOption } from '@/shared/types'
-import type { Dispatch, ReactElement, SetStateAction } from 'react'
 import { useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { TbLock, TbLockOpen, TbSortDescending2 } from 'react-icons/tb'
 import { Button, cn, Select, SelectItem, useDisclosure } from '@heroui/react'
-import useAchievementButtons from '@/features/achievement-manager/hooks/useAchievementButtons'
-import { useStateStore } from '@/shared/stores/stateStore'
-import { useUserStore } from '@/shared/stores/userStore'
-import CustomModal from '@/shared/ui/CustomModal'
+import { useAchievementButtons } from '@/features/achievement-manager'
+import { useStateStore, useUserStore } from '@/shared/stores'
+import { CustomModal } from '@/shared/ui'
 
 interface AchievementButtonsProps {
   achievements: Achievement[]
-  setAchievements: Dispatch<SetStateAction<Achievement[]>>
+  setAchievements: React.Dispatch<React.SetStateAction<Achievement[]>>
   protectedAchievements: boolean
-  setRefreshKey?: Dispatch<SetStateAction<number>>
+  setRefreshKey?: React.Dispatch<React.SetStateAction<number>>
 }
 
-export default function AchievementButtons({
+export const AchievementButtons = ({
   achievements,
   setAchievements,
   protectedAchievements,
   setRefreshKey,
-}: AchievementButtonsProps): ReactElement {
+}: AchievementButtonsProps) => {
   const { t } = useTranslation()
   const userSummary = useUserStore(state => state.userSummary)
   const appId = useStateStore(state => state.appId)
@@ -63,13 +61,13 @@ export default function AchievementButtons({
   const unAchieved = achievements.filter(achievement => !achievement.achieved)
   const achieved = achievements.filter(achievement => achievement.achieved)
 
-  const getTranslatedState = (state: string): string => {
+  const getTranslatedState = (state: string) => {
     if (state === 'unlock') return t('achievementManager.achievements.unlock')
     if (state === 'lock') return t('achievementManager.achievements.lock')
     return state
   }
 
-  const handleShowModal = (onOpen: () => void, state: string): void => {
+  const handleShowModal = (onOpen: () => void, state: string) => {
     setState(state)
     onOpen()
   }
