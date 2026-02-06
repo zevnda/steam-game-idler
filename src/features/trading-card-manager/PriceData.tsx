@@ -3,8 +3,8 @@ import type { TradingCard } from '@/shared/types'
 import { useTranslation } from 'react-i18next'
 import { TbArrowRight } from 'react-icons/tb'
 import { Button, Spinner, useDisclosure } from '@heroui/react'
-import { CustomModal } from '@/shared/ui'
-import { logEvent, showPriceFetchCooldownToast } from '@/shared/utils'
+import { CustomModal, showPriceFetchCooldownToast } from '@/shared/ui'
+import { logEvent } from '@/shared/utils'
 
 interface PriceDataProps {
   item: TradingCard

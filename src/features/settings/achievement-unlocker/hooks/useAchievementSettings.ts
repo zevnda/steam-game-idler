@@ -5,7 +5,8 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import i18next from 'i18next'
 import { useUserStore } from '@/shared/stores'
-import { logEvent, showDangerToast } from '@/shared/utils'
+import { showDangerToast } from '@/shared/ui'
+import { logEvent } from '@/shared/utils'
 
 export const useAchievementSettings = () => {
   const { t } = useTranslation()

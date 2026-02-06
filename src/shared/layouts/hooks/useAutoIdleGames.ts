@@ -2,13 +2,8 @@ import type { InvokeCustomList, InvokeRunningProcess, UserSummary } from '@/shar
 import { invoke } from '@tauri-apps/api/core'
 import { useEffect } from 'react'
 import i18next from 'i18next'
-import {
-  checkSteamStatus,
-  logEvent,
-  showDangerToast,
-  showNoGamesToast,
-  startIdle,
-} from '@/shared/utils'
+import { showDangerToast, showNoGamesToast } from '@/shared/ui'
+import { checkSteamStatus, logEvent, startIdle } from '@/shared/utils'
 
 export function useAutoIdleGames() {
   useEffect(() => {

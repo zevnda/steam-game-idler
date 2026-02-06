@@ -4,8 +4,8 @@ import { SiSteam, SiSteamdb } from 'react-icons/si'
 import { TbAlertHexagonFilled, TbFoldersFilled, TbX } from 'react-icons/tb'
 import { Alert, Button, cn } from '@heroui/react'
 import { useNavigationStore, useSearchStore, useStateStore, useUserStore } from '@/shared/stores'
-import { CustomTooltip, ExtLink } from '@/shared/ui'
-import { logEvent, showDangerToast } from '@/shared/utils'
+import { CustomTooltip, ExtLink, showDangerToast } from '@/shared/ui'
+import { logEvent } from '@/shared/utils'
 
 interface PageHeaderProps {
   protectedAchievements: boolean

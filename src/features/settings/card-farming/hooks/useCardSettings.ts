@@ -12,16 +12,13 @@ import { useEffect, useState } from 'react'
 import i18next from 'i18next'
 import { useUserStore } from '@/shared/stores'
 import {
-  decrypt,
-  encrypt,
-  getAllGamesWithDrops,
-  logEvent,
   showAccountMismatchToast,
   showDangerToast,
   showIncorrectCredentialsToast,
   showOutdatedCredentialsToast,
   showSuccessToast,
-} from '@/shared/utils'
+} from '@/shared/ui'
+import { decrypt, encrypt, getAllGamesWithDrops, logEvent } from '@/shared/utils'
 
 export const useCardSettings = () => {
   const userSettings = useUserStore(state => state.userSettings)

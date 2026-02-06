@@ -5,8 +5,8 @@ import { TbChevronRight } from 'react-icons/tb'
 import { Button, Divider } from '@heroui/react'
 import { SettingsSwitch } from '@/features/settings'
 import { useStateStore, useUserStore } from '@/shared/stores'
-import { Beta, ProBadge, WebviewWindow } from '@/shared/ui'
-import { logEvent, showDangerToast, showSuccessToast } from '@/shared/utils'
+import { Beta, ProBadge, showDangerToast, showSuccessToast, WebviewWindow } from '@/shared/ui'
+import { logEvent } from '@/shared/utils'
 
 export const FreeGamesSettings = () => {
   const { t } = useTranslation()

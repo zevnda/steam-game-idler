@@ -4,13 +4,8 @@ import { check } from '@tauri-apps/plugin-updater'
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useUpdateStore } from '@/shared/stores'
-import {
-  fetchLatest,
-  isPortableCheck,
-  logEvent,
-  preserveKeysAndClearData,
-  showDangerToast,
-} from '@/shared/utils'
+import { showDangerToast } from '@/shared/ui'
+import { fetchLatest, isPortableCheck, logEvent, preserveKeysAndClearData } from '@/shared/utils'
 
 export function useCheckForUpdates() {
   const { t } = useTranslation()

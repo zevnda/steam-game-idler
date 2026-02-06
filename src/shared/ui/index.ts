@@ -29,4 +29,5 @@ export { Titlebar } from './titlebar/Titlebar'
 export { useSidebar } from './sidebar/hooks/useSidebar'
 export { useTitlebar } from './titlebar/hooks/useTitlebar'
 
+export * from './Toasts'
 export * from './notifications/hooks/useNotifications'

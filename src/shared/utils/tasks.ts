@@ -22,7 +22,7 @@ import {
   showDangerToast,
   showIncorrectCredentialsToast,
   showSteamNotRunningToast,
-} from '@/shared/utils'
+} from '@/shared/ui'
 
 export async function checkSteamStatus(showToast: boolean) {
   try {

@@ -3,12 +3,8 @@ import { invoke } from '@tauri-apps/api/core'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useStateStore, useUserStore } from '@/shared/stores'
-import {
-  checkSteamStatus,
-  logEvent,
-  showAccountMismatchToast,
-  showDangerToast,
-} from '@/shared/utils'
+import { showAccountMismatchToast, showDangerToast } from '@/shared/ui'
+import { checkSteamStatus, logEvent } from '@/shared/utils'
 
 export function useAchievements(
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,

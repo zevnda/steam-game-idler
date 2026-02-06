@@ -15,15 +15,13 @@ import {
 } from 'react-icons/tb'
 import { cn, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@heroui/react'
 import { useUpdateStore } from '@/shared/stores'
-import { CustomTooltip } from '@/shared/ui'
+import { CustomTooltip, showDangerToast, showPrimaryToast } from '@/shared/ui'
 import {
   fetchLatest,
   handleOpenExtLink,
   isPortableCheck,
   logEvent,
   preserveKeysAndClearData,
-  showDangerToast,
-  showPrimaryToast,
 } from '@/shared/utils'
 
 export const Menu = () => {

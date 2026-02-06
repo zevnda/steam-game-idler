@@ -4,7 +4,8 @@ import { disable, enable, isEnabled } from '@tauri-apps/plugin-autostart'
 import { useEffect, useState } from 'react'
 import i18next from 'i18next'
 import { useUserStore } from '@/shared/stores'
-import { encrypt, logEvent, showDangerToast, showSuccessToast } from '@/shared/utils'
+import { showDangerToast, showSuccessToast } from '@/shared/ui'
+import { encrypt, logEvent } from '@/shared/utils'
 
 export const useGeneralSettings = () => {
   const userSettings = useUserStore(state => state.userSettings)

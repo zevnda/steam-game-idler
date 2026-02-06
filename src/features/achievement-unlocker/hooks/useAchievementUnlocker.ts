@@ -10,14 +10,8 @@ import type {
 import type { TimeInputValue } from '@heroui/react'
 import { invoke } from '@tauri-apps/api/core'
 import { startAutoIdleGames } from '@/shared/layouts'
-import {
-  isWithinSchedule,
-  logEvent,
-  showAccountMismatchToast,
-  startIdle,
-  stopIdle,
-  unlockAchievement,
-} from '@/shared/utils'
+import { showAccountMismatchToast } from '@/shared/ui'
+import { isWithinSchedule, logEvent, startIdle, stopIdle, unlockAchievement } from '@/shared/utils'
 
 interface AchievementToUnlock {
   appId: number

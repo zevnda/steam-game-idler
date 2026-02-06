@@ -2,7 +2,8 @@ import type { SortStyleValue } from '@/shared/types'
 import { invoke } from '@tauri-apps/api/core'
 import { useTranslation } from 'react-i18next'
 import moment from 'moment'
-import { logEvent, showDangerToast, showPrimaryToast } from '@/shared/utils'
+import { showDangerToast, showPrimaryToast } from '@/shared/ui'
+import { logEvent } from '@/shared/utils'
 
 export const usePageHeader = (
   setSortStyle: React.Dispatch<React.SetStateAction<SortStyleValue>>,

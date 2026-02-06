@@ -3,16 +3,13 @@ import { invoke } from '@tauri-apps/api/core'
 import { useTranslation } from 'react-i18next'
 import { useStateStore, useUserStore } from '@/shared/stores'
 import {
-  autoRevalidateSteamCredentials,
-  checkSteamStatus,
-  decrypt,
-  logEvent,
   showDangerToast,
   showEnableAllGamesToast,
   showMissingCredentialsToast,
   showNoGamesToast,
   showOutdatedCredentialsToast,
-} from '@/shared/utils'
+} from '@/shared/ui'
+import { autoRevalidateSteamCredentials, checkSteamStatus, decrypt, logEvent } from '@/shared/utils'
 
 // Automate card farming and achievement unlocking
 export const useAutomateButtons = () => {

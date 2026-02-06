@@ -3,7 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { TbFolders } from 'react-icons/tb'
 import { Button } from '@heroui/react'
 import { useUserStore } from '@/shared/stores'
-import { logEvent, showDangerToast } from '@/shared/utils'
+import { showDangerToast } from '@/shared/ui'
+import { logEvent } from '@/shared/utils'
 
 export const OpenSettings = () => {
   const { t } = useTranslation()

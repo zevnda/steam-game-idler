@@ -3,13 +3,8 @@ import { invoke } from '@tauri-apps/api/core'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useUserStore } from '@/shared/stores'
-import {
-  checkSteamStatus,
-  decrypt,
-  logEvent,
-  showAccountMismatchToast,
-  showDangerToast,
-} from '@/shared/utils'
+import { showAccountMismatchToast, showDangerToast } from '@/shared/ui'
+import { checkSteamStatus, decrypt, logEvent } from '@/shared/utils'
 
 export function useSignIn(refreshKey: number) {
   const { t } = useTranslation()

@@ -11,15 +11,14 @@ import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useStateStore, useUserStore } from '@/shared/stores'
 import {
-  decrypt,
-  logEvent,
   showDangerToast,
   showIncorrectCredentialsToast,
   showMissingCredentialsToast,
   showPriceFetchRateLimitToast,
   showPrimaryToast,
   showSuccessToast,
-} from '@/shared/utils'
+} from '@/shared/ui'
+import { decrypt, logEvent } from '@/shared/utils'
 
 export function useTradingCardsList() {
   const { t } = useTranslation()

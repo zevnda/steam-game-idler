@@ -5,7 +5,8 @@ import { useTranslation } from 'react-i18next'
 import { TbArrowBarUp } from 'react-icons/tb'
 import { Button } from '@heroui/react'
 import { useUserStore } from '@/shared/stores'
-import { getAppVersion, showDangerToast, showSuccessToast } from '@/shared/utils'
+import { showDangerToast, showSuccessToast } from '@/shared/ui'
+import { getAppVersion } from '@/shared/utils'
 
 interface SystemType {
   version: string

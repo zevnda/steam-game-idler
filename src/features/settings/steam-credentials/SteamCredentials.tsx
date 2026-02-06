@@ -11,8 +11,8 @@ import {
   useCardSettings,
 } from '@/features/settings'
 import { useStateStore, useUserStore } from '@/shared/stores'
-import { CustomModal, ExtLink, ProBadge, WebviewWindow } from '@/shared/ui'
-import { logEvent, showDangerToast } from '@/shared/utils'
+import { CustomModal, ExtLink, ProBadge, showDangerToast, WebviewWindow } from '@/shared/ui'
+import { logEvent } from '@/shared/utils'
 
 export const SteamCredentials = () => {
   const { t } = useTranslation()

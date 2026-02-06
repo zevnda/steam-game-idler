@@ -12,13 +12,8 @@ import { CSS } from '@dnd-kit/utilities'
 import { Button, Checkbox, cn, Input, Spinner } from '@heroui/react'
 import Image from 'next/image'
 import { useUserStore } from '@/shared/stores'
-import { CustomModal, WebviewWindow } from '@/shared/ui'
-import {
-  checkSteamStatus,
-  logEvent,
-  showAccountMismatchToast,
-  showDangerToast,
-} from '@/shared/utils'
+import { CustomModal, showAccountMismatchToast, showDangerToast, WebviewWindow } from '@/shared/ui'
+import { checkSteamStatus, logEvent } from '@/shared/utils'
 
 interface SortableAchievementProps {
   item: Game

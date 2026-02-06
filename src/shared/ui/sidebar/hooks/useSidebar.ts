@@ -3,7 +3,8 @@ import { invoke } from '@tauri-apps/api/core'
 import { useTranslation } from 'react-i18next'
 import { useDisclosure } from '@heroui/react'
 import { useNavigationStore, useSearchStore, useUserStore } from '@/shared/stores'
-import { logEvent, showDangerToast } from '@/shared/utils'
+import { showDangerToast } from '@/shared/ui'
+import { logEvent } from '@/shared/utils'
 
 export function useSidebar(
   activePage: ActivePageType,

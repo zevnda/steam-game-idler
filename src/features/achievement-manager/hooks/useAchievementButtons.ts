@@ -1,12 +1,10 @@
 import type { Achievement, UserSummary } from '@/shared/types'
 import { useTranslation } from 'react-i18next'
+import { showAccountMismatchToast, showDangerToast, showSuccessToast } from '@/shared/ui'
 import {
   checkSteamStatus,
   lockAllAchievements,
   logEvent,
-  showAccountMismatchToast,
-  showDangerToast,
-  showSuccessToast,
   unlockAllAchievements,
 } from '@/shared/utils'
 

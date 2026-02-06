@@ -3,7 +3,8 @@ import { invoke } from '@tauri-apps/api/core'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSearchStore, useUserStore } from '@/shared/stores'
-import { decrypt, logEvent, showDangerToast } from '@/shared/utils'
+import { showDangerToast } from '@/shared/ui'
+import { decrypt, logEvent } from '@/shared/utils'
 
 export function useGamesList() {
   const { t } = useTranslation()

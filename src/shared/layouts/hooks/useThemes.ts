@@ -4,7 +4,8 @@ import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from 'next-themes'
 import { useUserStore } from '@/shared/stores'
-import { logEvent, showDangerToast } from '@/shared/utils'
+import { showDangerToast } from '@/shared/ui'
+import { logEvent } from '@/shared/utils'
 
 export function useThemes() {
   const { t } = useTranslation()

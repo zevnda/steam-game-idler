@@ -3,7 +3,8 @@ import { invoke } from '@tauri-apps/api/core'
 import { readTextFile } from '@tauri-apps/plugin-fs'
 import { useEffect, useState } from 'react'
 import i18next from 'i18next'
-import { logEvent, showDangerToast, showSuccessToast } from '@/shared/utils'
+import { showDangerToast, showSuccessToast } from '@/shared/ui'
+import { logEvent } from '@/shared/utils'
 
 export const useLogs = () => {
   const [logs, setLogs] = useState<LogEntry[]>([])

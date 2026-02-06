@@ -3,7 +3,8 @@ import { invoke } from '@tauri-apps/api/core'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useUserStore } from '@/shared/stores'
-import { logEvent, showDangerToast, showWarningToast } from '@/shared/utils'
+import { showDangerToast, showWarningToast } from '@/shared/ui'
+import { logEvent } from '@/shared/utils'
 
 export function useManualAdd(
   listName: string,

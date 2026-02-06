@@ -9,13 +9,8 @@ import type {
 import { invoke } from '@tauri-apps/api/core'
 import { useTranslation } from 'react-i18next'
 import { useStateStore, useUserStore } from '@/shared/stores'
-import {
-  checkSteamStatus,
-  showDangerToast,
-  showSuccessToast,
-  showWarningToast,
-  updateStats,
-} from '@/shared/utils'
+import { showDangerToast, showSuccessToast, showWarningToast } from '@/shared/ui'
+import { checkSteamStatus, updateStats } from '@/shared/utils'
 
 export function useStatisticButtons(
   statistics: Statistic[],
@@ -78,7 +73,7 @@ export function useStatisticButtons(
     onClose()
 
     // Make sure Steam client is running
-    const isSteamRunning = checkSteamStatus(true)
+    const isSteamRunning = await checkSteamStatus(true)
     if (!isSteamRunning) return
 
     // Reset all stats

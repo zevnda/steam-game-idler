@@ -2,7 +2,8 @@ import type { InvokeSettings, UserSettings } from '@/shared/types'
 import { invoke } from '@tauri-apps/api/core'
 import { useEffect, useState } from 'react'
 import i18next from 'i18next'
-import { getAppVersion, logEvent, showDangerToast } from '@/shared/utils'
+import { showDangerToast } from '@/shared/ui'
+import { getAppVersion, logEvent } from '@/shared/utils'
 
 export function useSettings() {
   const [version, setVersion] = useState('0.0.0')

@@ -10,7 +10,8 @@ import { useCallback, useEffect, useRef } from 'react'
 import i18next from 'i18next'
 import { handleRefetch, useGamesList } from '@/features/gameslist'
 import { useUserStore } from '@/shared/stores'
-import { logEvent, sendNativeNotification, showDangerToast, showSuccessToast } from '@/shared/utils'
+import { showDangerToast, showSuccessToast } from '@/shared/ui'
+import { logEvent, sendNativeNotification } from '@/shared/utils'
 
 interface GamesContext {
   setRefreshKey: React.Dispatch<React.SetStateAction<number>>

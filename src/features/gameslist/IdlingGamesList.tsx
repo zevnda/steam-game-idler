@@ -5,8 +5,8 @@ import { useTranslation } from 'react-i18next'
 import { TbPlayerStopFilled } from 'react-icons/tb'
 import { Button, cn } from '@heroui/react'
 import { useIdleStore, useStateStore } from '@/shared/stores'
-import { GameCard } from '@/shared/ui'
-import { logEvent, showDangerToast, showSuccessToast } from '@/shared/utils'
+import { GameCard, showDangerToast, showSuccessToast } from '@/shared/ui'
+import { logEvent } from '@/shared/utils'
 
 export const IdlingGamesList = () => {
   const { t } = useTranslation()

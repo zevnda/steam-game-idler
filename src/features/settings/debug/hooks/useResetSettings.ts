@@ -3,7 +3,8 @@ import { invoke } from '@tauri-apps/api/core'
 import { useTranslation } from 'react-i18next'
 import { useDisclosure } from '@heroui/react'
 import { useUserStore } from '@/shared/stores'
-import { logEvent, showDangerToast, showSuccessToast } from '@/shared/utils'
+import { showDangerToast, showSuccessToast } from '@/shared/ui'
+import { logEvent } from '@/shared/utils'
 
 export function useResetSettings() {
   const { t } = useTranslation()

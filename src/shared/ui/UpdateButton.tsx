@@ -5,8 +5,8 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TbCircleArrowDown } from 'react-icons/tb'
 import { Spinner } from '@heroui/react'
-import { CustomTooltip } from '@/shared/ui'
-import { logEvent, showDangerToast } from '@/shared/utils'
+import { CustomTooltip, showDangerToast } from '@/shared/ui'
+import { logEvent } from '@/shared/utils'
 
 export const UpdateButton = () => {
   const { t } = useTranslation()
