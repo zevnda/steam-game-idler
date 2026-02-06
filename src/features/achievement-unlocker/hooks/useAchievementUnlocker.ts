@@ -9,7 +9,7 @@ import type {
 } from '@/shared/types'
 import type { TimeInputValue } from '@heroui/react'
 import { invoke } from '@tauri-apps/api/core'
-import { startAutoIdleGames } from '@/shared/layouts'
+import { startAutoIdleGames } from '@/shared/hooks'
 import { showAccountMismatchToast } from '@/shared/ui'
 import { isWithinSchedule, logEvent, startIdle, stopIdle, unlockAchievement } from '@/shared/utils'
 

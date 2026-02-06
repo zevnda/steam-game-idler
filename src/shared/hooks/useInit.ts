@@ -5,7 +5,7 @@ import { WebviewWindow } from '@tauri-apps/api/webviewWindow'
 import { useEffect } from 'react'
 import { useStateStore, useUserStore } from '@/shared/stores'
 
-export function useWindow() {
+export function useInit() {
   const setLoadingUserSummary = useStateStore(state => state.setLoadingUserSummary)
   const setUserSummary = useUserStore(state => state.setUserSummary)
 

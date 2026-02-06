@@ -8,7 +8,7 @@ import type {
   UserSummary,
 } from '@/shared/types'
 import { invoke } from '@tauri-apps/api/core'
-import { startAutoIdleGames } from '@/shared/layouts'
+import { startAutoIdleGames } from '@/shared/hooks'
 import {
   checkDrops,
   getAllGamesWithDrops,

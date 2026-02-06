@@ -23,6 +23,7 @@
     "tauri": "tauri",
     "prepare": "husky",
     "prettier": "prettier --write .",
+    "typecheck": "tsc --noEmit",
     "td": "tauri dev",
     "tb": "tauri build",
     "dd": "pnpm --filter steam-game-idler-docs dev",

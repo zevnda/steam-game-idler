@@ -22,7 +22,7 @@ import {
   useAutomateButtons,
   useCustomList,
 } from '@/features/customlists'
-import { startAutoIdleGamesImpl } from '@/shared/layouts'
+import { startAutoIdleGamesImpl } from '@/shared/hooks'
 import { useNavigationStore, useStateStore, useUserStore } from '@/shared/stores'
 import { GameCard } from '@/shared/ui'
 import { getAllGamesWithDrops } from '@/shared/utils'
