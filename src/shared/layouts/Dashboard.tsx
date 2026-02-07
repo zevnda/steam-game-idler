@@ -8,7 +8,7 @@ import { FreeGamesList, GamesList, IdlingGamesList } from '@/features/gameslist'
 import { Settings } from '@/features/settings'
 import { TradingCardsList } from '@/features/trading-card-manager'
 import { useNavigationStore, useStateStore } from '@/shared/stores'
-import { Sidebar, Titlebar } from '@/shared/ui'
+import { Sidebar } from '@/shared/ui'
 import { antiAwayStatus } from '@/shared/utils'
 
 export const Dashboard = () => {
@@ -50,19 +50,13 @@ export const Dashboard = () => {
   }
 
   if (activePage === 'settings') {
-    return (
-      <>
-        <Titlebar />
-        <Settings />
-      </>
-    )
+    return <Settings />
   }
 
   return (
     <>
       <div className='flex w-full'>
         <Sidebar />
-        <Titlebar />
         <div className='z-4'>{renderContent()}</div>
       </div>
       {isCardFarming && <CardFarming activePage={activePage} />}

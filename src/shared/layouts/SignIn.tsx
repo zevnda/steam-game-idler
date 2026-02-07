@@ -6,7 +6,7 @@ import { Button, cn, Spinner } from '@heroui/react'
 import Image from 'next/image'
 import { useSignIn } from '@/shared/layouts'
 import { useNavigationStore } from '@/shared/stores'
-import { LanguageSwitch, SignInHero, Titlebar, WebviewWindow } from '@/shared/ui'
+import { LanguageSwitch, SignInHero, WebviewWindow } from '@/shared/ui'
 
 export const SignIn = () => {
   const { t } = useTranslation()
@@ -24,7 +24,6 @@ export const SignIn = () => {
 
   return (
     <>
-      <Titlebar />
       {/* Language switch */}
       <div className='absolute bottom-0 right-0 p-10 z-10 flex items-center gap-4 pointer-events-none'>
         <WebviewWindow

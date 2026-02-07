@@ -4,6 +4,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import Script from 'next/script'
 import { useStateStore, useUserStore } from '@/shared/stores'
+import { Titlebar } from '@/shared/ui'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -62,6 +63,7 @@ export const Layout = ({ children }: React.PropsWithChildren) => {
         </>
       )}
 
+      <Titlebar />
       <main className={`${inter.className} h-full min-h-screen text-content bg-gradient-bg`}>
         {children}
       </main>

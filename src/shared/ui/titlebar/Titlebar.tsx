@@ -2,12 +2,19 @@ import { useEffect, useState } from 'react'
 import { TbLayoutSidebar, TbLayoutSidebarFilled } from 'react-icons/tb'
 import { VscChromeClose, VscChromeMaximize, VscChromeMinimize } from 'react-icons/vsc'
 import { cn } from '@heroui/react'
-import { useNavigationStore, useStateStore, useUpdateStore, useUserStore } from '@/shared/stores'
+import {
+  useLoaderStore,
+  useNavigationStore,
+  useStateStore,
+  useUpdateStore,
+  useUserStore,
+} from '@/shared/stores'
 import { GoPro, HelpDesk, Menu, Notifications, UpdateButton, useTitlebar } from '@/shared/ui'
 import { isPortableCheck } from '@/shared/utils'
 
 export const Titlebar = () => {
   const { windowMinimize, windowToggleMaximize, windowClose } = useTitlebar()
+  const loaderVisible = useLoaderStore(state => state.loaderVisible)
   const updateAvailable = useUpdateStore(state => state.updateAvailable)
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
   const transitionDuration = useStateStore(state => state.transitionDuration)
@@ -27,7 +34,7 @@ export const Titlebar = () => {
   return (
     <div
       className={cn(
-        'absolute top-0 right-0 select-none pr-0 h-9 z-48 ease-in-out',
+        'absolute top-0 right-0 select-none pr-0 h-9 z-9999 ease-in-out',
         sidebarCollapsed ? 'w-[calc(100vw-56px)]' : activePage === 'setup' ? 'w-full' : 'w-calc',
       )}
       style={{
@@ -37,7 +44,7 @@ export const Titlebar = () => {
       data-tauri-drag-region
     >
       <div className='flex justify-between gap-1.5 h-9 w-full' data-tauri-drag-region>
-        {activePage !== 'setup' && activePage !== 'settings' && (
+        {!loaderVisible && activePage !== 'setup' && activePage !== 'settings' && (
           <div
             className={cn(
               'flex justify-center items-center p-2 cursor-pointer group',
@@ -66,7 +73,8 @@ export const Titlebar = () => {
           </div>
         )}
 
-        {isPro !== null &&
+        {!loaderVisible &&
+          isPro !== null &&
           isPro === false &&
           activePage !== 'setup' &&
           activePage !== 'settings' && (
@@ -80,7 +88,7 @@ export const Titlebar = () => {
 
           <HelpDesk />
 
-          {activePage !== 'setup' && (
+          {!loaderVisible && activePage !== 'setup' && (
             <>
               <Notifications />
               <Menu />
