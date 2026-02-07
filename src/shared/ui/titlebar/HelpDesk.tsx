@@ -62,9 +62,8 @@ export const HelpDesk = () => {
     if (!widget) return
 
     const observer = new MutationObserver(() => {
-      if (!widget.classList.contains('widget--open')) {
-        setIsOpen(false)
-      }
+      const isWidgetOpen = widget.classList.contains('widget--open')
+      setIsOpen(isWidgetOpen)
     })
 
     observer.observe(widget, { attributes: true, attributeFilter: ['class'] })
@@ -132,7 +131,6 @@ export const HelpDesk = () => {
       }
       window.$chatway.openChatwayWidget()
     }
-    setIsOpen(prev => !prev)
     setHasUnread(false)
   }
 
