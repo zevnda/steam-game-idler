@@ -3,9 +3,14 @@ import { TbX } from 'react-icons/tb'
 import { HeroUIProvider, ToastProvider } from '@heroui/react'
 import { Layout } from '@/shared/layouts'
 import { ErrorBoundaryProvider, I18nProvider, ThemeProvider } from '@/shared/providers'
+import { useLoaderStore, useStateStore } from '@/shared/stores'
+import { FullscreenLoader } from '@/shared/ui'
 import '@/styles/globals.css'
 
 const App = ({ Component, pageProps }: AppProps) => {
+  const { loadingUserSummary } = useStateStore()
+  const { loaderFadeOut } = useLoaderStore()
+
   return (
     <ErrorBoundaryProvider>
       <I18nProvider>
@@ -31,6 +36,7 @@ const App = ({ Component, pageProps }: AppProps) => {
                 },
               }}
             />
+            {loadingUserSummary && <FullscreenLoader loaderFadeOut={loaderFadeOut} />}
             <Layout>
               <Component {...pageProps} />
             </Layout>

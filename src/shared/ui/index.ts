@@ -15,6 +15,7 @@ export { SteamWarning } from './SteamWarning'
 export { UpdateButton } from './UpdateButton'
 export { WebviewWindow } from './WebviewWindow'
 
+export { FullscreenLoader } from './loaders/FullscreenLoader'
 export { Notifications } from './notifications/Notifications'
 export { GoPro } from './pro/GoPro'
 export { GoProModal } from './pro/GoProModal'

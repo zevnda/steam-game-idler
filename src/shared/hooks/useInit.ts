@@ -3,11 +3,12 @@ import { invoke } from '@tauri-apps/api/core'
 import { emit } from '@tauri-apps/api/event'
 import { WebviewWindow } from '@tauri-apps/api/webviewWindow'
 import { useEffect } from 'react'
-import { useStateStore, useUserStore } from '@/shared/stores'
+import { useLoaderStore, useStateStore, useUserStore } from '@/shared/stores'
 
 export function useInit() {
   const setLoadingUserSummary = useStateStore(state => state.setLoadingUserSummary)
   const setUserSummary = useUserStore(state => state.setUserSummary)
+  const { hideLoader } = useLoaderStore()
 
   console.debug('Monitor for rerenders')
 
@@ -29,9 +30,12 @@ export function useInit() {
     }
 
     setTimeout(() => {
-      setLoadingUserSummary(false)
-    }, 500)
-  }, [setUserSummary, setLoadingUserSummary])
+      hideLoader()
+      setTimeout(() => {
+        setLoadingUserSummary(false)
+      }, 250)
+    }, 1500)
+  }, [setUserSummary, setLoadingUserSummary, hideLoader])
 
   useEffect(() => {
     const closeWebview = async () => {
