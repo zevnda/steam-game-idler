@@ -2,13 +2,13 @@ import { useTranslation } from 'react-i18next'
 import { TbChevronRight } from 'react-icons/tb'
 import { cn, Divider, Select, SelectItem, Slider, TimeInput } from '@heroui/react'
 import {
-  handleNextTaskChangeAchievementUnlocker,
   handleScheduleChange,
   handleSliderChange,
   SettingsSwitch,
   useAchievementSettings,
 } from '@/features/settings'
 import { useUserStore } from '@/shared/stores'
+import { handleNextTaskChange } from '@/shared/utils'
 
 export const AchievementSettings = () => {
   const { t } = useTranslation()
@@ -100,7 +100,12 @@ export const AchievementSettings = () => {
                   : []
               }
               onSelectionChange={e => {
-                handleNextTaskChangeAchievementUnlocker(e.currentKey!, userSummary, setUserSettings)
+                handleNextTaskChange(
+                  'achievementUnlocker',
+                  e.currentKey!,
+                  userSummary,
+                  setUserSettings,
+                )
               }}
             >
               {item => (

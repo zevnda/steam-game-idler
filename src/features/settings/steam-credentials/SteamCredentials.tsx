@@ -6,10 +6,10 @@ import { Button, cn, Divider, Input, Spinner, useDisclosure } from '@heroui/reac
 import Image from 'next/image'
 import {
   fetchGamesWithDropsData,
-  handleCredentialsClear,
-  handleCredentialsSave,
+  handleClearCredentials,
   useCardSettings,
 } from '@/features/settings'
+import { handleSaveCredentials } from '@/features/settings/steam-credentials/utils/handleSteamCredentials'
 import { useStateStore, useUserStore } from '@/shared/stores'
 import { CustomModal, ExtLink, ProBadge, showDangerToast } from '@/shared/ui'
 import { logEvent } from '@/shared/utils'
@@ -34,7 +34,7 @@ export const SteamCredentials = () => {
     }
 
     if (result.success) {
-      handleCredentialsSave(
+      handleSaveCredentials(
         result.sessionid,
         result.steamLoginSecure,
         undefined,
@@ -60,7 +60,7 @@ export const SteamCredentials = () => {
       return
     }
 
-    handleCredentialsClear(
+    handleClearCredentials(
       cardSettings.setHasCookies,
       cardSettings.setSidValue,
       cardSettings.setSlsValue,
@@ -308,7 +308,7 @@ export const SteamCredentials = () => {
                 color='danger'
                 isDisabled={!cardSettings.hasCookies}
                 onPress={() =>
-                  handleCredentialsClear(
+                  handleClearCredentials(
                     cardSettings.setHasCookies,
                     cardSettings.setSidValue,
                     cardSettings.setSlsValue,
@@ -332,7 +332,7 @@ export const SteamCredentials = () => {
                   cardSettings.hasCookies || !cardSettings.sidValue || !cardSettings.slsValue
                 }
                 onPress={() =>
-                  handleCredentialsSave(
+                  handleSaveCredentials(
                     cardSettings.sidValue,
                     cardSettings.slsValue,
                     cardSettings.smaValue,

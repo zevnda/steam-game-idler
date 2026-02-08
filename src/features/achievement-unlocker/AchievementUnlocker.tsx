@@ -5,9 +5,8 @@ import { TbCheck, TbPlayerStopFilled } from 'react-icons/tb'
 import { Button, cn } from '@heroui/react'
 import Image from 'next/image'
 import { useAchievementUnlocker } from '@/features/achievement-unlocker'
-import { useAutomateButtons } from '@/features/customlists'
 import { useStateStore } from '@/shared/stores'
-import { stopIdle, updateTrayIcon } from '@/shared/utils'
+import { startCardFarming, stopIdle, updateTrayIcon } from '@/shared/utils'
 
 export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType }) => {
   const { t } = useTranslation()
@@ -25,7 +24,6 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
   const [achievementCount, setAchievementCount] = useState(0)
   const [countdownTimer, setCountdownTimer] = useState('00:00:10')
   const [isWaitingForSchedule, setIsWaitingForSchedule] = useState(false)
-  const { startCardFarming } = useAutomateButtons()
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/rules-of-hooks

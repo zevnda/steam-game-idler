@@ -1,10 +1,15 @@
-import type { InvokeSettings, UserSettings, UserSummary } from '@/shared/types'
-import { invoke } from '@tauri-apps/api/core'
 import { useEffect, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { TbChevronRight } from 'react-icons/tb'
 import { Alert, cn, Divider, NumberInput, Select, SelectItem } from '@heroui/react'
-import { useCardSettings } from '@/features/settings'
+import {
+  handlePriceAdjustmentChange,
+  handleSellDelayChange,
+  handleSellLimitMaxChange,
+  handleSellLimitMinChange,
+  handleSellOptionChange,
+  useCardSettings,
+} from '@/features/settings'
 import { useUserStore } from '@/shared/stores'
 
 export const TradingCardManagerSettings = () => {
@@ -39,70 +44,6 @@ export const TradingCardManagerSettings = () => {
       label: t('settings.tradingCards.sellOptions.lowestSellOrder'),
     },
   ]
-
-  const handleSellOptionChange = async (
-    key: string,
-    userSummary: UserSummary,
-    setUserSettings: (value: UserSettings) => void,
-  ) => {
-    const updateResponse = await invoke<InvokeSettings>('update_user_settings', {
-      steamId: userSummary?.steamId,
-      key: 'tradingCards.sellOptions',
-      value: key,
-    })
-
-    setUserSettings(updateResponse.settings)
-  }
-
-  const handlePriceAdjustmentChange = async (value: number) => {
-    setPriceAdjustment(value)
-    const updateResponse = await invoke<InvokeSettings>('update_user_settings', {
-      steamId: userSummary?.steamId,
-      key: 'tradingCards.priceAdjustment',
-      value,
-    })
-
-    setUserSettings(updateResponse.settings)
-  }
-
-  const handleSellLimitMinChange = async (value: number) => {
-    setSellLimitMin(value)
-    const updateResponse = await invoke<InvokeSettings>('update_user_settings', {
-      steamId: userSummary?.steamId,
-      key: 'tradingCards.sellLimit',
-      value: {
-        min: value,
-        max: sellLimitMax,
-      },
-    })
-
-    setUserSettings(updateResponse.settings)
-  }
-
-  const handleSellLimitMaxChange = async (value: number) => {
-    setSellLimitMax(value)
-    const updateResponse = await invoke<InvokeSettings>('update_user_settings', {
-      steamId: userSummary?.steamId,
-      key: 'tradingCards.sellLimit',
-      value: {
-        min: sellLimitMin,
-        max: value,
-      },
-    })
-
-    setUserSettings(updateResponse.settings)
-  }
-
-  const handleSellDelayChange = async (value: number) => {
-    setSellDelay(value)
-    const updateResponse = await invoke<InvokeSettings>('update_user_settings', {
-      steamId: userSummary?.steamId,
-      key: 'tradingCards.sellDelay',
-      value,
-    })
-
-    setUserSettings(updateResponse.settings)
-  }
 
   return (
     <div className='relative flex flex-col gap-4 mt-9 pb-16 w-4/5'>
@@ -218,7 +159,9 @@ export const TradingCardManagerSettings = () => {
               input: ['text-sm !text-content'],
               stepperButton: ['!text-content', 'text-sm'],
             }}
-            onValueChange={handlePriceAdjustmentChange}
+            onValueChange={value =>
+              handlePriceAdjustmentChange(value, userSummary, setUserSettings, setPriceAdjustment)
+            }
           />
         </div>
 
@@ -260,7 +203,15 @@ export const TradingCardManagerSettings = () => {
                 input: ['text-sm !text-content'],
                 stepperButton: ['!text-content', 'text-sm'],
               }}
-              onValueChange={handleSellLimitMinChange}
+              onValueChange={value =>
+                handleSellLimitMinChange(
+                  value,
+                  userSummary,
+                  setUserSettings,
+                  sellLimitMax,
+                  setSellLimitMin,
+                )
+              }
             />
             <NumberInput
               size='sm'
@@ -285,7 +236,15 @@ export const TradingCardManagerSettings = () => {
                 input: ['text-sm !text-content'],
                 stepperButton: ['!text-content', 'text-sm'],
               }}
-              onValueChange={handleSellLimitMaxChange}
+              onValueChange={value =>
+                handleSellLimitMaxChange(
+                  value,
+                  userSummary,
+                  setUserSettings,
+                  sellLimitMin,
+                  setSellLimitMax,
+                )
+              }
             />
           </div>
         </div>
@@ -323,7 +282,9 @@ export const TradingCardManagerSettings = () => {
               input: ['text-sm !text-content'],
               stepperButton: ['!text-content', 'text-sm'],
             }}
-            onValueChange={handleSellDelayChange}
+            onValueChange={value =>
+              handleSellDelayChange(value, userSummary, setUserSettings, setSellDelay)
+            }
           />
         </div>
       </div>

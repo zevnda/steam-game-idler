@@ -16,16 +16,11 @@ import { CSS } from '@dnd-kit/utilities'
 import { Alert, Button, cn, useDisclosure } from '@heroui/react'
 import { AchievementOrderModal } from '@/features/achievement-unlocker'
 import { RecommendedCardDropsCarousel } from '@/features/card-farming'
-import {
-  EditListModal,
-  ManualAddModal,
-  useAutomateButtons,
-  useCustomList,
-} from '@/features/customlists'
+import { EditListModal, ManualAddModal, useCustomList } from '@/features/customlists'
 import { startAutoIdleGamesImpl } from '@/shared/hooks'
 import { useNavigationStore, useStateStore, useUserStore } from '@/shared/stores'
 import { GameCard } from '@/shared/ui'
-import { getAllGamesWithDrops } from '@/shared/utils'
+import { getAllGamesWithDrops, startAchievementUnlocker, startCardFarming } from '@/shared/utils'
 
 type CustomListType =
   | 'cardFarmingList'
@@ -80,7 +75,6 @@ export const CustomList = ({ type }: CustomListProps) => {
   const [gamesWithDrops, setGamesWithDrops] = useState<Game[]>([])
   const [isLoadingDrops, setIsLoadingDrops] = useState(false)
   const [selectedGame, setSelectedGame] = useState<Game | null>(null)
-  const { startCardFarming, startAchievementUnlocker } = useAutomateButtons()
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
   const transitionDuration = useStateStore(state => state.transitionDuration)
   const isCardFarming = useStateStore(state => state.isCardFarming)

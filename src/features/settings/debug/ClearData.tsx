@@ -1,12 +1,14 @@
 import { useTranslation } from 'react-i18next'
 import { TbEraser } from 'react-icons/tb'
-import { Button } from '@heroui/react'
-import { useClearData } from '@/features/settings'
+import { Button, useDisclosure } from '@heroui/react'
+import { handleClearData } from '@/features/settings'
+import { useUserStore } from '@/shared/stores'
 import { CustomModal } from '@/shared/ui'
 
 export const ClearData = () => {
   const { t } = useTranslation()
-  const { isOpen, onOpen, onOpenChange, handleClearData } = useClearData()
+  const { isOpen, onOpen, onOpenChange } = useDisclosure()
+  const setUserSummary = useUserStore(state => state.setUserSummary)
 
   return (
     <>
@@ -42,7 +44,7 @@ export const ClearData = () => {
               size='sm'
               className='bg-btn-secondary text-btn-text font-bold'
               radius='full'
-              onPress={() => handleClearData(onOpenChange)}
+              onPress={() => handleClearData(onOpenChange, setUserSummary)}
             >
               {t('common.confirm')}
             </Button>

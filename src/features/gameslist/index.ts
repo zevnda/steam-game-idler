@@ -8,4 +8,5 @@ export { RecentGamesCarousel } from './RecentGamesCarousel'
 export { RecommendedGamesCarousel } from './RecommendedGamesCarousel'
 
 export * from './hooks/useGamesList'
-export * from './hooks/usePageHeader'
+
+export { handleSortingChange } from './utils/handleSortingChange'

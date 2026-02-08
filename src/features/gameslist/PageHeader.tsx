@@ -2,8 +2,8 @@ import type { Game, SortOption } from '@/shared/types'
 import { useTranslation } from 'react-i18next'
 import { TbX } from 'react-icons/tb'
 import { Button, cn, Divider, Tab, Tabs } from '@heroui/react'
-import i18next from 'i18next'
-import { handleRefetch, usePageHeader } from '@/features/gameslist'
+import { handleSortingChange } from '@/features/gameslist'
+import { handleRefreshGamesList } from '@/features/gameslist/utils/handleRefreshGamesList'
 import { useSearchStore, useUserStore } from '@/shared/stores'
 
 interface PageHeaderProps {
@@ -24,7 +24,6 @@ export const PageHeader = ({
   const userSummary = useUserStore(state => state.userSummary)
   const gameQueryValue = useSearchStore(state => state.gameQueryValue)
   const setGameQueryValue = useSearchStore(state => state.setGameQueryValue)
-  const { handleSorting } = usePageHeader(setSortStyle)
 
   const sortOptions: SortOption[] = [
     { key: '1-0', label: t('gamesList.sort.playtimeDesc') },
@@ -50,7 +49,7 @@ export const PageHeader = ({
               <Button
                 className='bg-btn-secondary text-btn-text font-bold'
                 radius='full'
-                onPress={() => handleRefetch(i18next.t, userSummary?.steamId, setRefreshKey, true)}
+                onPress={() => handleRefreshGamesList(userSummary?.steamId, setRefreshKey, true)}
               >
                 {t('setup.refresh')}
               </Button>
@@ -72,7 +71,7 @@ export const PageHeader = ({
                   cursor: '!bg-dynamic/10 w-full',
                 }}
                 onSelectionChange={key => {
-                  handleSorting(key as string)
+                  handleSortingChange(key as string, setSortStyle)
                 }}
               >
                 {item => <Tab key={item.key} title={item.label} />}

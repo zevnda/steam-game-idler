@@ -4,8 +4,8 @@ import { Button, cn, Divider, Input } from '@heroui/react'
 import Image from 'next/image'
 import {
   CurrencySwitch,
-  handleClear,
-  handleKeySave,
+  handleSteamWebAPIKeyClear,
+  handleSteamWebAPIKeySave,
   SettingsSwitch,
   useGeneralSettings,
 } from '@/features/settings'
@@ -202,7 +202,12 @@ export const GeneralSettings = () => {
                 color='danger'
                 isDisabled={!hasKey}
                 onPress={() =>
-                  handleClear(userSummary?.steamId, setKeyValue, setHasKey, setUserSettings)
+                  handleSteamWebAPIKeyClear(
+                    userSummary?.steamId,
+                    setKeyValue,
+                    setHasKey,
+                    setUserSettings,
+                  )
                 }
                 startContent={<TbEraser size={20} />}
               >
@@ -214,7 +219,12 @@ export const GeneralSettings = () => {
                 radius='full'
                 isDisabled={hasKey || !keyValue}
                 onPress={() =>
-                  handleKeySave(userSummary?.steamId, keyValue, setHasKey, setUserSettings)
+                  handleSteamWebAPIKeySave(
+                    userSummary?.steamId,
+                    keyValue,
+                    setHasKey,
+                    setUserSettings,
+                  )
                 }
                 startContent={<TbUpload size={20} />}
               >

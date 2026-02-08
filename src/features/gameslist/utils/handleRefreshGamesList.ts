@@ -1,34 +1,10 @@
-import type i18next from '@/i18n/i18n'
-import type { SortStyleValue } from '@/shared/types'
 import { invoke } from '@tauri-apps/api/core'
-import { useTranslation } from 'react-i18next'
+import i18next from 'i18next'
 import moment from 'moment'
 import { showDangerToast, showPrimaryToast } from '@/shared/ui'
 import { logEvent } from '@/shared/utils'
 
-export const usePageHeader = (
-  setSortStyle: React.Dispatch<React.SetStateAction<SortStyleValue>>,
-) => {
-  const { t } = useTranslation()
-
-  const handleSorting = (currentKey: string | undefined) => {
-    try {
-      if (!currentKey) return
-      // Save the selected sort style to localStorage and update state
-      localStorage.setItem('sortStyle', currentKey)
-      setSortStyle(currentKey)
-    } catch (error) {
-      showDangerToast(t('common.error'))
-      console.error('Error in (handleSorting):', error)
-      logEvent(`[Error] in (handleSorting): ${error}`)
-    }
-  }
-
-  return { handleSorting }
-}
-
-export const handleRefetch = async (
-  t: typeof i18next.t,
+export const handleRefreshGamesList = async (
   steamId: string | undefined,
   setRefreshKey: React.Dispatch<React.SetStateAction<number>>,
   manual: boolean,
@@ -39,7 +15,7 @@ export const handleRefetch = async (
       const cooldown = sessionStorage.getItem('cooldown')
       if (cooldown && moment().unix() < Number(cooldown)) {
         return showPrimaryToast(
-          t('toast.refetch.cooldown', {
+          i18next.t('toast.refetch.cooldown', {
             time: moment.unix(Number(cooldown)).format('h:mm A'),
           }),
         )
@@ -55,7 +31,7 @@ export const handleRefetch = async (
     // Trigger a refresh by incrementing the refresh key
     setRefreshKey(prevKey => prevKey + 1)
   } catch (error) {
-    showDangerToast(t('common.error'))
+    showDangerToast(i18next.t('common.error'))
     console.error('Error in (handleRefetch):', error)
     logEvent(`[Error] in (handleRefetch): ${error}`)
   }

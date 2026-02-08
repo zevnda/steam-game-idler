@@ -1,12 +1,15 @@
-import type { InvokeSettings } from '@/shared/types'
-import { invoke } from '@tauri-apps/api/core'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TbChevronRight, TbEraser } from 'react-icons/tb'
 import { Button, cn, Divider, Input, Radio, RadioGroup } from '@heroui/react'
 import { useTheme } from 'next-themes'
 import Image from 'next/image'
-import { SettingsSwitch } from '@/features/settings'
+import {
+  handleBackgroundDelete,
+  handleBackgroundSave,
+  handleThemeChange,
+  SettingsSwitch,
+} from '@/features/settings'
 import { useStateStore, useUserStore } from '@/shared/stores'
 import { ProBadge } from '@/shared/ui'
 
@@ -21,7 +24,6 @@ export const CustomizationSettings = () => {
   const { setTheme, resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
   const setProModalOpen = useStateStore(state => state.setProModalOpen)
-  const userSummary = useUserStore(state => state.userSummary)
   const setUserSettings = useUserStore(state => state.setUserSettings)
   const isPro = useUserStore(state => state.isPro)
 
@@ -46,53 +48,6 @@ export const CustomizationSettings = () => {
     }
     setMounted(true)
   }, [setTheme])
-
-  const handleThemeChange = async (themeKey: string) => {
-    localStorage.setItem('theme', themeKey)
-    setTheme(themeKey)
-    await invoke<InvokeSettings>('update_user_settings', {
-      steamId: userSummary?.steamId,
-      key: 'general.theme',
-      value: themeKey,
-    })
-  }
-
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-    const reader = new FileReader()
-    reader.onload = async () => {
-      const dataUri = reader.result as string
-      await invoke<InvokeSettings>('update_user_settings', {
-        steamId: userSummary?.steamId,
-        key: 'general.customBackground',
-        value: dataUri,
-      })
-      setUserSettings(prev => ({
-        ...prev,
-        general: {
-          ...prev?.general,
-          customBackground: dataUri,
-        },
-      }))
-    }
-    reader.readAsDataURL(file)
-  }
-
-  const handleDeleteBackground = async () => {
-    await invoke<InvokeSettings>('update_user_settings', {
-      steamId: userSummary?.steamId,
-      key: 'general.customBackground',
-      value: null,
-    })
-    setUserSettings(prev => ({
-      ...prev,
-      general: {
-        ...prev?.general,
-        customBackground: null,
-      },
-    }))
-  }
 
   if (!mounted) return null
 
@@ -195,7 +150,7 @@ export const CustomizationSettings = () => {
                 ),
                 input: ['!text-content cursor-pointer'],
               }}
-              onChange={handleFileChange}
+              onChange={e => handleBackgroundSave(e, setUserSettings)}
             />
 
             <div className='flex justify-end'>
@@ -204,7 +159,7 @@ export const CustomizationSettings = () => {
                 variant='light'
                 radius='full'
                 color='danger'
-                onPress={handleDeleteBackground}
+                onPress={() => handleBackgroundDelete(setUserSettings)}
                 startContent={<TbEraser size={20} />}
               >
                 {t('common.clear')}
@@ -224,7 +179,7 @@ export const CustomizationSettings = () => {
           <RadioGroup
             orientation='horizontal'
             defaultValue={resolvedTheme}
-            onValueChange={value => handleThemeChange(value)}
+            onValueChange={value => handleThemeChange(value, setTheme)}
           >
             <div className='grid grid-cols-5 space-x-2 space-y-4'>
               {themes.map(theme => (

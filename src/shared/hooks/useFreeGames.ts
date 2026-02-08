@@ -8,7 +8,8 @@ import type {
 import { invoke } from '@tauri-apps/api/core'
 import { useCallback, useEffect, useRef } from 'react'
 import i18next from 'i18next'
-import { handleRefetch, useGamesList } from '@/features/gameslist'
+import { useGamesList } from '@/features/gameslist'
+import { handleRefreshGamesList } from '@/features/gameslist/utils/handleRefreshGamesList'
 import { useUserStore } from '@/shared/stores'
 import { showDangerToast, showSuccessToast } from '@/shared/ui'
 import { logEvent, sendNativeNotification } from '@/shared/utils'
@@ -155,7 +156,7 @@ export const autoRedeemFreeGames = async (
       localStorage.setItem('freeGamesIds', JSON.stringify(newIds))
 
       setTimeout(() => {
-        handleRefetch(i18next.t, userSummary?.steamId, gamesContext.setRefreshKey, false)
+        handleRefreshGamesList(userSummary?.steamId, gamesContext.setRefreshKey, false)
       }, 3000)
     }
   } catch (error) {

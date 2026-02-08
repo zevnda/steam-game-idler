@@ -1,62 +1,20 @@
-import type { InvokeSettings, InvokeSteamCredentials } from '@/shared/types'
-import { invoke } from '@tauri-apps/api/core'
 import { useTranslation } from 'react-i18next'
 import { TbChevronRight } from 'react-icons/tb'
 import { Button, Divider } from '@heroui/react'
-import { SettingsSwitch } from '@/features/settings'
+import {
+  handleShowStoreLoginWindow,
+  handleSignOutCurrentStoreUser,
+  SettingsSwitch,
+} from '@/features/settings'
 import { useStateStore, useUserStore } from '@/shared/stores'
-import { Beta, ExtLink, ProBadge, showDangerToast, showSuccessToast } from '@/shared/ui'
-import { logEvent } from '@/shared/utils'
+import { Beta, ExtLink, ProBadge } from '@/shared/ui'
 
 export const FreeGamesSettings = () => {
   const { t } = useTranslation()
   const isPro = useUserStore(state => state.isPro)
-  const userSummary = useUserStore(state => state.userSummary)
   const userSettings = useUserStore(state => state.userSettings)
   const setUserSettings = useUserStore(state => state.setUserSettings)
   const setProModalOpen = useStateStore(state => state.setProModalOpen)
-
-  const handleShowStoreLoginWindow = async () => {
-    const result = await invoke<InvokeSteamCredentials>('open_store_login_window')
-
-    if (!result || result.success === false) {
-      showDangerToast(t('common.error'))
-      logEvent(`[Error] in (handleShowStoreLoginWindow): ${result?.message || 'Unknown error'}`)
-      return
-    }
-
-    if (result.success) {
-      const response = await invoke<InvokeSettings>('update_user_settings', {
-        steamId: userSummary?.steamId,
-        key: 'general.autoRedeemFreeGames',
-        value: true,
-      })
-
-      setUserSettings(response.settings)
-
-      showSuccessToast(t('toast.autoRedeem.authenticated', { user: userSummary?.personaName }))
-    }
-  }
-
-  const handleSignOutCurrentStoreUser = async () => {
-    const result = await invoke<InvokeSteamCredentials>('delete_store_cookies')
-
-    if (!result || result.success === false) {
-      showDangerToast(t('common.error'))
-      logEvent(
-        `[Error] in (handleSignOutCurrentStoreUser) this error can occur if you are not already signed in: ${result?.message || 'Unknown error'}`,
-      )
-      return
-    }
-
-    const response = await invoke<InvokeSettings>('update_user_settings', {
-      steamId: userSummary?.steamId,
-      key: 'general.autoRedeemFreeGames',
-      value: false,
-    })
-
-    setUserSettings(response.settings)
-  }
 
   return (
     <div className='relative flex flex-col gap-4 mt-9 pb-16 w-4/5'>
@@ -114,7 +72,7 @@ export const FreeGamesSettings = () => {
               className='bg-btn-secondary text-btn-text font-bold'
               radius='full'
               isDisabled={!isPro}
-              onPress={handleShowStoreLoginWindow}
+              onPress={() => handleShowStoreLoginWindow(setUserSettings)}
             >
               {userSettings.general?.autoRedeemFreeGames
                 ? t('common.reauthenticate')
@@ -126,7 +84,7 @@ export const FreeGamesSettings = () => {
               radius='full'
               color='danger'
               isDisabled={!isPro}
-              onPress={handleSignOutCurrentStoreUser}
+              onPress={() => handleSignOutCurrentStoreUser(setUserSettings)}
             >
               {t('common.signOut')}
             </Button>

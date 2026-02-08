@@ -6,9 +6,8 @@ import { TbCheck, TbPlayerStopFilled } from 'react-icons/tb'
 import { Button, cn, Spinner } from '@heroui/react'
 import Image from 'next/image'
 import { handleCancel, useCardFarming } from '@/features/card-farming'
-import { useAutomateButtons } from '@/features/customlists'
 import { useStateStore } from '@/shared/stores'
-import { updateTrayIcon } from '@/shared/utils'
+import { startAchievementUnlocker, updateTrayIcon } from '@/shared/utils'
 
 export const CardFarming = ({ activePage }: { activePage: ActivePageType }) => {
   const { t } = useTranslation()
@@ -24,7 +23,6 @@ export const CardFarming = ({ activePage }: { activePage: ActivePageType }) => {
   const [totalDropsRemaining, setTotalDropsRemaining] = useState(0)
   const [gamesWithDrops, setGamesWithDrops] = useState<Set<GameWithDrops>>(new Set())
   const [disableStopButton, setDisableStopButton] = useState(true)
-  const { startAchievementUnlocker } = useAutomateButtons()
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
