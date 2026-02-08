@@ -1,5 +1,4 @@
 import path from 'node:path'
-
 import { blog } from '../../../../lib/source'
 import { getMDXComponents } from '../../../../mdx-components'
 import { notFound } from 'next/navigation'
@@ -85,7 +84,7 @@ export default async function Page(props: PageProps) {
   )
 }
 
-export function generateStaticParams(): { slug: string }[] {
+export function generateStaticParams() {
   return blog.getPages().map(page => ({
     slug: page.slugs[0],
   }))

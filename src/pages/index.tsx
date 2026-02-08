@@ -1,18 +1,52 @@
-import type { ReactElement } from 'react'
+import { ChangelogModal, Dashboard, GoProModal, SignIn, SteamWarning } from '@/shared/components'
+import {
+  useAutoIdleGames,
+  useCheckForPro,
+  useCheckForUpdates,
+  useContextMenu,
+  useFreeGames,
+  useInit,
+  useInitSettings,
+  useSteamMonitor,
+  useThemes,
+  useZoomControls,
+} from '@/shared/hooks'
+import { useLoaderStore, useUserStore } from '@/shared/stores'
 
-import ErrorBoundary from '@/components/layout/ErrorBoundary'
-import Layout from '@/components/layout/Layout'
-import Window from '@/components/layout/Window'
-import I18nProvider from '@/components/ui/i18n/I18nProvider'
+const Index = () => {
+  const userSummary = useUserStore(state => state.userSummary)
+  const { loaderVisible } = useLoaderStore()
 
-export default function Index(): ReactElement {
+  useInit()
+  useThemes()
+  useInitSettings()
+  useCheckForUpdates()
+  useAutoIdleGames()
+  useCheckForPro()
+  useFreeGames()
+  useZoomControls()
+  useContextMenu()
+  useSteamMonitor()
+
+  if (loaderVisible) return null
+
+  if (!userSummary) {
+    return (
+      <>
+        <SignIn />
+        <ChangelogModal />
+      </>
+    )
+  }
+
   return (
-    <ErrorBoundary>
-      <I18nProvider>
-        <Layout>
-          <Window />
-        </Layout>
-      </I18nProvider>
-    </ErrorBoundary>
+    <div className='min-h-calc'>
+      <Dashboard />
+      <SteamWarning />
+      <GoProModal />
+      <ChangelogModal />
+    </div>
   )
 }
+
+export default Index

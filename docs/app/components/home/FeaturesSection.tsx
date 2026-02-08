@@ -1,10 +1,8 @@
 'use client'
 
-import type { ReactElement } from 'react'
-
-import Link from 'next/link'
 import { FiArrowUpRight, FiTrendingUp } from 'react-icons/fi'
 import { TbAward, TbBuildingStore, TbCards } from 'react-icons/tb'
+import Link from 'next/link'
 
 const features = [
   {
@@ -49,9 +47,12 @@ const features = [
   },
 ]
 
-export default function FeaturesSection(): ReactElement {
+export default function FeaturesSection() {
   return (
-    <section className='py-12 sm:py-16 md:py-20 lg:py-24 relative' aria-labelledby='features-heading'>
+    <section
+      className='py-12 sm:py-16 md:py-20 lg:py-24 relative'
+      aria-labelledby='features-heading'
+    >
       {/* Top transition border */}
       <div className='absolute top-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-purple-300 to-transparent' />
 
@@ -68,8 +69,9 @@ export default function FeaturesSection(): ReactElement {
             </span>
           </h2>
           <p className='text-base sm:text-lg md:text-xl text-gray-700 leading-relaxed'>
-            Our advanced Steam automation tool is designed to enhance your Steam experience. From being the best Steam
-            card farmer to the most reliable Steam idle tool for achievements and playtime boosting.
+            Our advanced Steam automation tool is designed to enhance your Steam experience. From
+            being the best Steam card farmer to the most reliable Steam idle tool for achievements
+            and playtime boosting.
           </p>
         </header>
 

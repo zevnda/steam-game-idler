@@ -1,13 +1,11 @@
 'use client'
 
-import type { ReactElement } from 'react'
-
-import Image from 'next/image'
-import Link from 'next/link'
 import { FaDiscord } from 'react-icons/fa6'
 import { FiBook, FiFileText, FiGithub, FiMail, FiShield } from 'react-icons/fi'
+import Image from 'next/image'
+import Link from 'next/link'
 
-export default function FooterSection(): ReactElement {
+export default function FooterSection() {
   return (
     <footer className='py-12 sm:py-16 md:py-20 relative'>
       {/* Top transition overlay */}
@@ -19,12 +17,18 @@ export default function FooterSection(): ReactElement {
           {/* Brand section */}
           <div className='lg:col-span-1'>
             <div className='flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6'>
-              <Image src='/logo.svg' alt='Steam Game Idler' width={28} height={28} className='sm:w-8 sm:h-8' />
+              <Image
+                src='/logo.svg'
+                alt='Steam Game Idler'
+                width={28}
+                height={28}
+                className='sm:w-8 sm:h-8'
+              />
               <span className='text-lg sm:text-xl font-black text-gray-800'>STEAM GAME IDLER</span>
             </div>
             <p className='text-sm sm:text-base text-gray-600 leading-relaxed mb-4 sm:mb-6'>
-              The ultimate desktop application for managing your Steam gaming activities. Idle games, farm trading
-              cards, unlock achievements, and optimize your Steam experience.
+              The ultimate desktop application for managing your Steam gaming activities. Idle
+              games, farm trading cards, unlock achievements, and optimize your Steam experience.
             </p>
             <div className='flex gap-4'>
               <a

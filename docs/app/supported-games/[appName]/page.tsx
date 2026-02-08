@@ -1,5 +1,3 @@
-import type { ReactElement } from 'react'
-
 import AdComponent from './AdComponent'
 import AdComponentTwo from '@docs/supported-games/[appName]/AdComponentTwo'
 
@@ -9,7 +7,7 @@ interface PageProps {
   }
 }
 
-export async function generateStaticParams(): Promise<{ appName: string }[]> {
+export async function generateStaticParams() {
   return [
     { appName: 'scum' },
     { appName: 'dayz' },
@@ -95,21 +93,14 @@ export async function generateStaticParams(): Promise<{ appName: string }[]> {
   ]
 }
 
-function formatGameName(appName: string): string {
+function formatGameName(appName: string) {
   return appName
     .split('-')
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ')
 }
 
-function getRandomContent(): {
-  introText: string
-  whyUseText: string
-  cardFeature: { title: string; items: string[] }
-  achievementFeature: { title: string; items: string[] }
-  howItWorksText: string
-  cardValueText: string
-} {
+function getRandomContent() {
   const introTexts = [
     'Looking to maximize your {gameName} experience on Steam? Our Steam Game Idler is the perfect solution for collecting trading cards, farming achievements, and increasing your playtime in {gameName} without the grind. Start earning rewards from {gameName} today!',
     'Transform your {gameName} gaming experience with our advanced Steam Game Idler! Effortlessly collect trading cards, unlock achievements, and boost your Steam profile while {gameName} runs in the background. Get started with {gameName} idling now!',
@@ -208,7 +199,7 @@ function getRandomContent(): {
   }
 }
 
-export default async function AdPage({ params }: PageProps): Promise<ReactElement> {
+export default async function AdPage({ params }: PageProps) {
   const { appName } = await params
   const gameName = formatGameName(appName)
   const randomContent = getRandomContent()
@@ -242,16 +233,22 @@ export default async function AdPage({ params }: PageProps): Promise<ReactElemen
           </p>
           <hr className='my-8 border-gray-700' />
 
-          <h2 className='text-3xl font-bold text-blue-300 mb-4'>Why Use Steam Game Idler for {gameName}?</h2>
+          <h2 className='text-3xl font-bold text-blue-300 mb-4'>
+            Why Use Steam Game Idler for {gameName}?
+          </h2>
           <p className='text-gray-200 mb-8 leading-relaxed'>
             {randomContent.whyUseText.replace(/{gameName}/g, gameName)}
           </p>
           <hr className='my-8 border-gray-700' />
 
-          <h2 className='text-3xl font-bold text-blue-300 mb-4'>Steam Game Idler Features for {gameName}</h2>
+          <h2 className='text-3xl font-bold text-blue-300 mb-4'>
+            Steam Game Idler Features for {gameName}
+          </h2>
           <div className='grid md:grid-cols-2 gap-8 mb-10'>
             <div className='bg-gray-900 rounded-xl shadow-lg p-6 hover:shadow-blue-900 transition-shadow'>
-              <h3 className='text-xl font-bold text-blue-200 mb-3'>{randomContent.cardFeature.title}</h3>
+              <h3 className='text-xl font-bold text-blue-200 mb-3'>
+                {randomContent.cardFeature.title}
+              </h3>
               <ul className='list-disc list-inside text-gray-100 space-y-2'>
                 {randomContent.cardFeature.items.map(item => (
                   <li key={item}>{item.replace(/{gameName}/g, gameName)}</li>
@@ -259,7 +256,9 @@ export default async function AdPage({ params }: PageProps): Promise<ReactElemen
               </ul>
             </div>
             <div className='bg-gray-900 rounded-xl shadow-lg p-6 hover:shadow-blue-900 transition-shadow'>
-              <h3 className='text-xl font-bold text-blue-200 mb-3'>{randomContent.achievementFeature.title}</h3>
+              <h3 className='text-xl font-bold text-blue-200 mb-3'>
+                {randomContent.achievementFeature.title}
+              </h3>
               <ul className='list-disc list-inside text-gray-100 space-y-2'>
                 {randomContent.achievementFeature.items.map(item => (
                   <li key={item}>{item.replace(/{gameName}/g, gameName)}</li>
@@ -269,34 +268,39 @@ export default async function AdPage({ params }: PageProps): Promise<ReactElemen
           </div>
           <hr className='my-8 border-gray-700' />
 
-          <h2 className='text-3xl font-bold text-blue-300 mb-4'>How Steam Game Idler Works with {gameName}</h2>
+          <h2 className='text-3xl font-bold text-blue-300 mb-4'>
+            How Steam Game Idler Works with {gameName}
+          </h2>
           <p className='text-gray-200 mb-4 leading-relaxed'>
             {randomContent.howItWorksText.replace(/{gameName}/g, gameName)}
           </p>
           <ul className='list-disc list-inside text-gray-100 space-y-2 mb-8 ml-4'>
             <li>
-              <strong className='text-blue-200'>Smart Timing:</strong> Automatically calculates optimal idle time for{' '}
-              {gameName} card drops
+              <strong className='text-blue-200'>Smart Timing:</strong> Automatically calculates
+              optimal idle time for {gameName} card drops
             </li>
             <li>
-              <strong className='text-blue-200'>Resource Efficient:</strong> Runs {gameName} with minimal CPU and memory
-              usage
+              <strong className='text-blue-200'>Resource Efficient:</strong> Runs {gameName} with
+              minimal CPU and memory usage
             </li>
             <li>
-              <strong className='text-blue-200'>Steam Integration:</strong> Seamlessly works with Steam&apos;s systems
-              for {gameName}
+              <strong className='text-blue-200'>Steam Integration:</strong> Seamlessly works with
+              Steam&apos;s systems for {gameName}
             </li>
             <li>
-              <strong className='text-blue-200'>Progress Tracking:</strong> Monitor your {gameName} card collection
-              progress in real-time
+              <strong className='text-blue-200'>Progress Tracking:</strong> Monitor your {gameName}{' '}
+              card collection progress in real-time
             </li>
           </ul>
           <hr className='my-8 border-gray-700' />
 
-          <h2 className='text-3xl font-bold text-blue-300 mb-4'>Getting Started with {gameName} Idling</h2>
+          <h2 className='text-3xl font-bold text-blue-300 mb-4'>
+            Getting Started with {gameName} Idling
+          </h2>
           <p className='text-gray-200 mb-4 leading-relaxed'>
-            Setting up Steam Game Idler for {gameName} is simple and takes less than 5 minutes. Our user-friendly
-            interface makes it easy to start collecting {gameName} trading cards immediately.
+            Setting up Steam Game Idler for {gameName} is simple and takes less than 5 minutes. Our
+            user-friendly interface makes it easy to start collecting {gameName} trading cards
+            immediately.
           </p>
           <div className='bg-blue-900 border-l-4 border-blue-400 p-6 mb-8 rounded-xl shadow'>
             <ul className='list-disc list-inside text-white space-y-2'>
@@ -344,34 +348,42 @@ export default async function AdPage({ params }: PageProps): Promise<ReactElemen
           </div>
           <hr className='my-8 border-gray-700' />
 
-          <h2 className='text-3xl font-bold text-blue-300 mb-4'>Why Choose Our Steam Game Idler?</h2>
+          <h2 className='text-3xl font-bold text-blue-300 mb-4'>
+            Why Choose Our Steam Game Idler?
+          </h2>
           <p className='text-gray-200 mb-4 leading-relaxed'>
-            Our Steam Game Idler is the most reliable and efficient tool for maximizing your {gameName} experience. With
-            advanced features, safety protocols, and 24/7 operation, it&apos;s the perfect solution for serious Steam
-            collectors and casual gamers alike.
+            Our Steam Game Idler is the most reliable and efficient tool for maximizing your{' '}
+            {gameName} experience. With advanced features, safety protocols, and 24/7 operation,
+            it&apos;s the perfect solution for serious Steam collectors and casual gamers alike.
           </p>
           <hr className='my-8 border-gray-700' />
 
           <h2 className='text-3xl font-bold text-blue-300 mb-4'>Safety and Security</h2>
           <p className='text-gray-200 mb-4 leading-relaxed'>
-            Steam Game Idler is designed to work safely with {gameName} and Steam&apos;s terms of service. Our tool
-            doesn&apos;t modify game files or use cheats - it simply runs the game legitimately to trigger natural card
-            drops and achievements.
+            Steam Game Idler is designed to work safely with {gameName} and Steam&apos;s terms of
+            service. Our tool doesn&apos;t modify game files or use cheats - it simply runs the game
+            legitimately to trigger natural card drops and achievements.
           </p>
           <hr className='my-8 border-gray-700' />
 
-          <h2 className='text-3xl font-bold text-blue-300 mb-4'>Advanced Features for {gameName}</h2>
+          <h2 className='text-3xl font-bold text-blue-300 mb-4'>
+            Advanced Features for {gameName}
+          </h2>
           <p className='text-gray-200 mb-8 leading-relaxed'>
-            Take your {gameName} idling to the next level with our advanced features including queue management,
-            automatic switching between games, detailed analytics, and cloud synchronization across multiple devices.
+            Take your {gameName} idling to the next level with our advanced features including queue
+            management, automatic switching between games, detailed analytics, and cloud
+            synchronization across multiple devices.
           </p>
 
           <div className='bg-green-900 border-l-4 border-green-400 p-8 mb-8 rounded-xl shadow'>
-            <h3 className='text-2xl font-bold text-green-200 mb-2'>Start Idling {gameName} Today</h3>
+            <h3 className='text-2xl font-bold text-green-200 mb-2'>
+              Start Idling {gameName} Today
+            </h3>
             <p className='text-green-100'>
-              Ready to maximize your {gameName} experience? Download Steam Game Idler now and start collecting trading
-              cards, unlocking achievements, and building your Steam level automatically. Join thousands of satisfied
-              users who trust our idler for their Steam gaming needs.
+              Ready to maximize your {gameName} experience? Download Steam Game Idler now and start
+              collecting trading cards, unlocking achievements, and building your Steam level
+              automatically. Join thousands of satisfied users who trust our idler for their Steam
+              gaming needs.
             </p>
           </div>
         </div>
@@ -406,8 +418,8 @@ export default async function AdPage({ params }: PageProps): Promise<ReactElemen
           </div>
           <div className='text-center mt-6'>
             <p className='text-sm text-gray-400'>
-              &copy; 2024 Steam Game Idler. All rights reserved. &mdash; Maximize your {gameName} experience with our
-              trusted idling solution.
+              &copy; 2024 Steam Game Idler. All rights reserved. &mdash; Maximize your {gameName}{' '}
+              experience with our trusted idling solution.
             </p>
           </div>
         </footer>

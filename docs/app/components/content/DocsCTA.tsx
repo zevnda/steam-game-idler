@@ -1,9 +1,9 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import Link from 'next/link'
 import { FaWindows } from 'react-icons/fa'
 import { FiGithub } from 'react-icons/fi'
+import Link from 'next/link'
 
 export default function DocsCTA() {
   const [installerUrl, setInstallerUrl] = useState<string>('')
@@ -12,7 +12,9 @@ export default function DocsCTA() {
     fetch('https://api.github.com/repos/zevnda/steam-game-idler/releases/latest')
       .then(res => res.json())
       .then(data => {
-        const installer = data.assets?.find((asset: { name: string }) => asset.name.endsWith('_x64-setup.exe'))
+        const installer = data.assets?.find((asset: { name: string }) =>
+          asset.name.endsWith('_x64-setup.exe'),
+        )
         if (installer) {
           setInstallerUrl(installer.browser_download_url)
         }
@@ -23,10 +25,13 @@ export default function DocsCTA() {
   return (
     <div className='not-prose my-8'>
       <div className='rounded-lg border border-neutral-200 bg-neutral-50 p-6 dark:border-neutral-800 dark:bg-neutral-900/50'>
-        <h3 className='mb-3 text-lg font-semibold text-neutral-900 dark:text-neutral-100'>Ready to get started?</h3>
+        <h3 className='mb-3 text-lg font-semibold text-neutral-900 dark:text-neutral-100'>
+          Ready to get started?
+        </h3>
 
         <p className='mb-4 text-sm text-neutral-600 dark:text-neutral-400'>
-          Join thousands of users who are already using Steam Game Idler to enhance their Steam experience.
+          Join thousands of users who are already using Steam Game Idler to enhance their Steam
+          experience.
         </p>
 
         <div className='flex flex-col sm:flex-row gap-3'>

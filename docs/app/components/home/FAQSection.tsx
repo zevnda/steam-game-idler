@@ -1,7 +1,5 @@
 'use client'
 
-import type { ReactElement } from 'react'
-
 import { useState } from 'react'
 
 // FAQ data for SEO targeting
@@ -12,15 +10,16 @@ const faqData = [
     content: (
       <>
         <p className='mb-4 text-black'>
-          The <strong>Steam Achievement Manager</strong> in SGI lets you manage Steam achievements for any game in your
-          library. With our Steam achievement manager, you can unlock, lock, and modify achievements and statistics,
-          giving you full control over your Steam profile. Many users search for a reliable Steam achievement manager or
-          achievement unlocking tool to safely manage and unlock achievements, and SGI is designed to be the safest and
-          most user-friendly option available.
+          The <strong>Steam Achievement Manager</strong> in SGI lets you manage Steam achievements
+          for any game in your library. With our Steam achievement manager, you can unlock, lock,
+          and modify achievements and statistics, giving you full control over your Steam profile.
+          Many users search for a reliable Steam achievement manager or achievement unlocking tool
+          to safely manage and unlock achievements, and SGI is designed to be the safest and most
+          user-friendly option available.
         </p>
         <p className='mt-4 text-black'>
-          If you want to manage or unlock achievements easily, SGI&apos;s Steam achievement manager and achievement
-          unlocking tool are the best choices. Learn more in our documentation.
+          If you want to manage or unlock achievements easily, SGI&apos;s Steam achievement manager
+          and achievement unlocking tool are the best choices. Learn more in our documentation.
         </p>
       </>
     ),
@@ -31,15 +30,16 @@ const faqData = [
     content: (
       <>
         <p className='mb-4 text-black'>
-          The <strong>Steam Achievement Unlocker</strong> feature in SGI allows you to automatically unlock Steam
-          achievements in a way that looks natural. If you&apos;re searching for a Steam achievement unlocker to auto
-          unlock achievements, SGI offers the safest and most advanced solution. Our achievement unlocking tool is
-          designed to help you unlock achievements for any game you own, with options for manual and automatic
-          unlocking.
+          The <strong>Steam Achievement Unlocker</strong> feature in SGI allows you to automatically
+          unlock Steam achievements in a way that looks natural. If you&apos;re searching for a
+          Steam achievement unlocker to auto unlock achievements, SGI offers the safest and most
+          advanced solution. Our achievement unlocking tool is designed to help you unlock
+          achievements for any game you own, with options for manual and automatic unlocking.
         </p>
         <p className='mt-4 text-black'>
-          For anyone looking to unlock achievements safely, SGI&apos;s Steam achievement unlocker and achievement
-          unlocking tool are the most reliable choices. Read our guides for more details.
+          For anyone looking to unlock achievements safely, SGI&apos;s Steam achievement unlocker
+          and achievement unlocking tool are the most reliable choices. Read our guides for more
+          details.
         </p>
       </>
     ),
@@ -50,14 +50,15 @@ const faqData = [
     content: (
       <>
         <p className='mb-4 text-black'>
-          SGI is a powerful <strong>Steam idle</strong> tool and card farmer, letting you idle Steam games to boost
-          playtime and automatically farm trading cards. If you&apos;re searching for a Steam idle solution or want to
-          idle steam games for playtime, SGI offers advanced automation for maximizing card drops and playtime. Our
-          Steam idle tool supports up to 32 games at once, making it the best choice for efficient Steam idling and card
-          farming.
+          SGI is a powerful <strong>Steam idle</strong> tool and card farmer, letting you idle Steam
+          games to boost playtime and automatically farm trading cards. If you&apos;re searching for
+          a Steam idle solution or want to idle steam games for playtime, SGI offers advanced
+          automation for maximizing card drops and playtime. Our Steam idle tool supports up to 32
+          games at once, making it the best choice for efficient Steam idling and card farming.
         </p>
         <p className='mt-4 text-black'>
-          For the best Steam idle experience and card farming, SGI is the most advanced tool for idling steam games.
+          For the best Steam idle experience and card farming, SGI is the most advanced tool for
+          idling steam games.
         </p>
       </>
     ),
@@ -74,7 +75,7 @@ function AccordionItem({
   answer: string
   open: boolean
   onToggle: () => void
-}): ReactElement {
+}) {
   return (
     <div className='border border-black/5 hover:border-black/10 rounded-xl bg-white hover:bg-[#00000003] duration-150'>
       <button
@@ -105,12 +106,12 @@ function AccordionItem({
   )
 }
 
-export default function FAQSection(): ReactElement {
+export default function FAQSection() {
   // State: { [section]: openQuestion }
   const [openItems, setOpenItems] = useState<{ [section: string]: string | null }>({})
 
   // Helper to render accordions for a section
-  function renderAccordionItems(section: string, items: { question: string; answer: string }[]): ReactElement[] {
+  function renderAccordionItems(section: string, items: { question: string; answer: string }[]) {
     return items.map(({ question, answer }) => (
       <AccordionItem
         key={question}
@@ -175,7 +176,8 @@ export default function FAQSection(): ReactElement {
         },
         {
           question: "Can I unlock achievements for games I don't own?",
-          answer: 'No, you can only unlock achievements for games you own or have access to via family sharing.',
+          answer:
+            'No, you can only unlock achievements for games you own or have access to via family sharing.',
         },
       ]
     } else if (section.section === 'Card Farmer & Playtime Booster') {
@@ -192,7 +194,8 @@ export default function FAQSection(): ReactElement {
         },
         {
           question: 'Can I get banned for using a Steam idle tool?',
-          answer: 'SGI uses official Steamworks SDK methods and mimics normal gaming activity, minimizing risk.',
+          answer:
+            'SGI uses official Steamworks SDK methods and mimics normal gaming activity, minimizing risk.',
         },
         {
           question: 'Why am I not getting card drops while idling?',
@@ -228,9 +231,9 @@ export default function FAQSection(): ReactElement {
             </span>
           </h2>
           <p className='text-base sm:text-lg md:text-xl text-gray-700 leading-relaxed'>
-            Find answers to common questions about our Steam achievement manager, Steam achievement unlocker, and Steam
-            idle features. SGI is designed to be the safest and most advanced Steam automation tool for achievement
-            management, unlocking, and card farming.
+            Find answers to common questions about our Steam achievement manager, Steam achievement
+            unlocker, and Steam idle features. SGI is designed to be the safest and most advanced
+            Steam automation tool for achievement management, unlocking, and card farming.
           </p>
         </header>
 
@@ -246,13 +249,18 @@ export default function FAQSection(): ReactElement {
 
               {/* Content */}
               <div className='relative z-10'>
-                <h2 className='text-2xl font-bold text-gray-900 mb-4' id={section.heading.replace(/\s+/g, '-')}>
+                <h2
+                  className='text-2xl font-bold text-gray-900 mb-4'
+                  id={section.heading.replace(/\s+/g, '-')}
+                >
                   {section.heading}
                 </h2>
                 {/* Section description */}
                 {section.content.props.children[0]}
                 {/* Accordions */}
-                <div className='space-y-2'>{renderAccordionItems(section.section, section.accordionItems)}</div>
+                <div className='space-y-2'>
+                  {renderAccordionItems(section.section, section.accordionItems)}
+                </div>
                 {/* Section footer */}
                 {section.content.props.children[2]}
               </div>

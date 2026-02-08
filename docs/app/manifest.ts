@@ -1,8 +1,6 @@
-import type { Manifest } from 'next/dist/lib/metadata/types/manifest-types'
-
 export const dynamic = 'force-static'
 
-export default function manifest(): Manifest {
+export default function manifest() {
   return {
     name: 'Steam Game Idler',
     short_name: 'SGI',

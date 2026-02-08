@@ -1,33 +1,35 @@
 'use client'
 
-import type { ReactElement, ReactNode } from 'react'
-
 import { useRef } from 'react'
+import { MdOutlineContentCopy } from 'react-icons/md'
 import { faqData } from '../../../content/docs/faqData'
 import { Accordion } from 'fumadocs-ui/components/accordion'
-import { MdOutlineContentCopy } from 'react-icons/md'
 
 interface Props {
   id: string
   question: string
-  children: ReactNode
+  children: React.ReactNode
   value?: string
 }
 
-export default function CopyableFAQ({ id, question, children, value }: Props): ReactElement {
+export default function CopyableFAQ({ id, question, children, value }: Props) {
   const answerRef = useRef<HTMLDivElement>(null)
 
-  const copyToClipboard = (text: string): void => {
+  const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text)
   }
 
-  function handleCopy(): void {
+  function handleCopy() {
     // Find the entry by question string
     const entry = faqData.find(
-      (e): e is { question: string; markdown: string } => 'question' in e && e.question === question,
+      (e): e is { question: string; markdown: string } =>
+        'question' in e && e.question === question,
     )
-    const makeAbsolute = (markdown: string): string =>
-      markdown.replace(/(\]\()\/([^)\s]+)\)/g, (_match, prefix, path) => `${prefix}https://steamgameidler.com/${path})`)
+    const makeAbsolute = (markdown: string) =>
+      markdown.replace(
+        /(\]\()\/([^)\s]+)\)/g,
+        (_match, prefix, path) => `${prefix}https://steamgameidler.com/${path})`,
+      )
 
     if (entry && entry.markdown) {
       copyToClipboard(makeAbsolute(entry.markdown))

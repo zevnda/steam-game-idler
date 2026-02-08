@@ -1,8 +1,8 @@
+import { FaDiscord, FaGithub } from 'react-icons/fa6'
 import { baseOptions } from '../../lib/layout.shared'
 import { source } from '../../lib/source'
 import { DocsLayout } from 'fumadocs-ui/layouts/docs'
 import Image from 'next/image'
-import { FaDiscord, FaGithub } from 'react-icons/fa6'
 
 interface LayoutProps {
   children: React.ReactNode

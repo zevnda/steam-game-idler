@@ -1,6 +1,4 @@
-export type FAQEntry = { section: string } | { question: string; markdown: string }
-
-export const faqData: FAQEntry[] = [
+export const faqData = [
   { section: 'General' },
   {
     question: 'Why are some games not showing up in my games list in SGI?',
@@ -20,7 +18,8 @@ export const faqData: FAQEntry[] = [
       '> ![Profile settings](/examples/profile-settings.webp)',
   },
   {
-    question: 'Do I need to make my Steam profile and game details public for the Steam card idler to work?',
+    question:
+      'Do I need to make my Steam profile and game details public for the Steam card idler to work?',
     markdown:
       '**Do I need to make my Steam profile and game details public for the Steam card idler to work?**\n' +
       '> In most cases, yes. For some features to function correctly SGI requires your Steam profile and game details to be set to public in your [Steam profile privacy settings](https://steamcommunity.com/my/edit/settings).\n' +
@@ -246,7 +245,8 @@ export const faqData: FAQEntry[] = [
       '> 5. Close the Registry Editor and restart SGI',
   },
   {
-    question: "Add some games to your card farming list or enable 'all games' in 'settings > card farming'",
+    question:
+      "Add some games to your card farming list or enable 'all games' in 'settings > card farming'",
     markdown:
       "**Add some games to your card farming list or enable 'all games' in 'settings > card farming'**\n" +
       '> Your `card farming list` is empty. You either need to add games to the list by following [these steps](/docs/features/card-farming), or enable [`Farm All Games`](/docs/settings/card-farming#farm-all-games) in [Settings > Card Farming](/docs/settings/card-farming).',

@@ -1,0 +1,143 @@
+import { useEffect, useState } from 'react'
+import { TbLayoutSidebar, TbLayoutSidebarFilled } from 'react-icons/tb'
+import { VscChromeClose, VscChromeMaximize, VscChromeMinimize } from 'react-icons/vsc'
+import { cn } from '@heroui/react'
+import { GoPro, HelpDesk, Menu, Notifications, UpdateButton } from '@/shared/components'
+import { useTitlebar } from '@/shared/hooks'
+import {
+  useLoaderStore,
+  useNavigationStore,
+  useStateStore,
+  useUpdateStore,
+  useUserStore,
+} from '@/shared/stores'
+import { isPortableCheck } from '@/shared/utils'
+
+export const Titlebar = () => {
+  const { windowMinimize, windowToggleMaximize, windowClose } = useTitlebar()
+  const loaderVisible = useLoaderStore(state => state.loaderVisible)
+  const updateAvailable = useUpdateStore(state => state.updateAvailable)
+  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
+  const transitionDuration = useStateStore(state => state.transitionDuration)
+  const setSidebarCollapsed = useStateStore(state => state.setSidebarCollapsed)
+  const setTransitionDuration = useStateStore(state => state.setTransitionDuration)
+  const activePage = useNavigationStore(state => state.activePage)
+  const isPro = useUserStore(state => state.isPro)
+  const [isPortable, setIsPortable] = useState<boolean | null>(null)
+
+  useEffect(() => {
+    ;(async () => {
+      const portable = await isPortableCheck()
+      setIsPortable(portable)
+    })()
+  }, [])
+
+  return (
+    <div
+      className={cn(
+        'absolute top-0 right-0 select-none pr-0 h-9 z-9999 ease-in-out',
+        sidebarCollapsed ? 'w-[calc(100vw-56px)]' : activePage === 'setup' ? 'w-full' : 'w-calc',
+      )}
+      style={{
+        transitionDuration,
+        transitionProperty: 'width',
+      }}
+      data-tauri-drag-region
+    >
+      <div className='flex justify-between gap-1.5 h-9 w-full' data-tauri-drag-region>
+        {!loaderVisible && activePage !== 'setup' && activePage !== 'settings' && (
+          <div
+            className={cn(
+              'flex justify-center items-center p-2 cursor-pointer group',
+              'text-content hover:bg-sidebar/40 hover:text-content/80 h-9 w-12',
+              'rounded-br-xl',
+            )}
+            style={{
+              transitionProperty: 'margin-left, color, background-color',
+              transitionDuration: `${transitionDuration}, 150ms, 150ms`,
+              transitionTimingFunction: 'ease-in-out, ease, ease',
+            }}
+            onClick={() => {
+              setTransitionDuration('300ms')
+              setSidebarCollapsed(!sidebarCollapsed)
+              localStorage.setItem('sidebarCollapsed', String(!sidebarCollapsed))
+              setTimeout(() => {
+                setTransitionDuration('0ms')
+              }, 100)
+            }}
+          >
+            {sidebarCollapsed ? (
+              <TbLayoutSidebarFilled fontSize={18} />
+            ) : (
+              <TbLayoutSidebar fontSize={18} />
+            )}
+          </div>
+        )}
+
+        {!loaderVisible &&
+          isPro !== null &&
+          isPro === false &&
+          activePage !== 'setup' &&
+          activePage !== 'settings' && (
+            <div className='flex justify-center items-center h-full'>
+              <GoPro />
+            </div>
+          )}
+
+        <div className='flex justify-end items-center h-full w-full' data-tauri-drag-region>
+          {isPortable === false && updateAvailable && <UpdateButton />}
+
+          <HelpDesk />
+
+          {!loaderVisible && activePage !== 'setup' && (
+            <>
+              <Notifications />
+              <Menu />
+            </>
+          )}
+
+          <div className='flex justify-center items-center'>
+            <div className='flex justify-center items-center'>
+              <div
+                className={cn(
+                  'flex justify-center items-center',
+                  'hover:bg-header-hover/10 h-9 w-12 px-2 duration-150 cursor-pointer',
+                  'hover:text-white transition-colors',
+                )}
+                onClick={windowMinimize}
+              >
+                <VscChromeMinimize fontSize={16} className='text-content' />
+              </div>
+            </div>
+
+            <div className='flex justify-center items-center'>
+              <div
+                className={cn(
+                  'flex justify-center items-center',
+                  'hover:bg-header-hover/10 h-9 w-12 px-2.5 duration-150 cursor-pointer',
+                  'hover:text-white transition-colors',
+                )}
+                onClick={windowToggleMaximize}
+              >
+                <VscChromeMaximize fontSize={16} className='text-content' />
+              </div>
+            </div>
+
+            <div className='flex justify-center items-center'>
+              <div
+                className={cn(
+                  'flex justify-center items-center',
+                  'hover:bg-danger/90 h-9 w-12 px-2 duration-150 cursor-pointer',
+                  'hover:text-white transition-colors',
+                )}
+                onClick={windowClose}
+              >
+                <VscChromeClose fontSize={16} className='text-content' />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}

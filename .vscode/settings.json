@@ -1,0 +1,9 @@
+{
+  "typescript.tsdk": "node_modules\\typescript\\lib",
+  "json.schemas": [
+    {
+      "fileMatch": ["**/tauri.conf.json"],
+      "url": "https://schema.tauri.app/config/2"
+    }
+  ]
+}

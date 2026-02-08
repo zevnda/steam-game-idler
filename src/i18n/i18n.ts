@@ -1,7 +1,7 @@
+import { initReactI18next } from 'react-i18next'
 import i18n from 'i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
-import { initReactI18next } from 'react-i18next'
-
+// Language file imports
 import translationBGBG from '@/i18n/locales/bg-BG/translation.json'
 import translationCSCZ from '@/i18n/locales/cs-CZ/translation.json'
 import translationDADK from '@/i18n/locales/da-DK/translation.json'
@@ -32,6 +32,9 @@ import translationUKUA from '@/i18n/locales/uk-UA/translation.json'
 import translationVIVN from '@/i18n/locales/vi-VN/translation.json'
 import translationZHCN from '@/i18n/locales/zh-CN/translation.json'
 import translationZHTW from '@/i18n/locales/zh-TW/translation.json'
+
+export const ns = ['translation'] as const
+export const defaultNS = 'translation' as const
 
 const resources = {
   'bg-BG': { translation: translationBGBG },
@@ -71,11 +74,37 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    fallbackLng: 'en-US',
+    fallbackLng: {
+      'da-DK': ['no-NO', 'sv-SE'],
+      'no-NO': ['da-DK', 'sv-SE'],
+      'sv-SE': ['no-NO', 'da-DK'],
+      'fi-FI': ['sv-SE'],
+      'pt-BR': ['pt-PT'],
+      'pt-PT': ['pt-BR'],
+      'zh-CN': ['zh-TW'],
+      'zh-TW': ['zh-CN'],
+      'zh-HK': ['zh-TW', 'zh-CN'],
+      'zh-SG': ['zh-CN'],
+      'es-MX': ['es-ES'],
+      'es-AR': ['es-ES'],
+      'es-CO': ['es-ES'],
+      'es-CL': ['es-ES'],
+      'es-VE': ['es-ES'],
+      'fr-CA': ['fr-FR'],
+      'fr-BE': ['fr-FR'],
+      'fr-CH': ['fr-FR'],
+      'de-AT': ['de-DE'],
+      'de-CH': ['de-DE'],
+      'nl-BE': ['nl-NL'],
+      'it-CH': ['it-IT'],
+      'ms': ['id-ID'],
+      'sk': ['cs-CZ'],
+      'default': ['en-US'],
+    },
     debug: process.env.NODE_ENV === 'development',
 
-    ns: ['translation'],
-    defaultNS: 'translation',
+    ns,
+    defaultNS,
     partialBundledLanguages: true,
 
     detection: {
@@ -90,3 +119,11 @@ i18n
   })
 
 export default i18n
+
+declare module 'i18next' {
+  interface CustomTypeOptions {
+    ns: typeof ns
+    defaultNS: typeof defaultNS
+    resources: (typeof resources)['en-US']
+  }
+}

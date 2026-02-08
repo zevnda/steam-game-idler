@@ -1,17 +1,16 @@
 'use client'
 
-import type { ReactElement } from 'react'
-
-import Link from 'next/link'
 import { FiArrowRight, FiClock, FiX } from 'react-icons/fi'
 import { TbAward, TbSettings2, TbTerminal2 } from 'react-icons/tb'
+import Link from 'next/link'
 
 const competitors = [
   {
     name: 'ArchiSteamFarm',
     status: 'Actively Maintained',
     statusColor: 'text-blue-600',
-    description: 'Command-line tool for multi-account farming requiring complex and manual configuration',
+    description:
+      'Command-line tool for multi-account farming requiring complex and manual configuration',
     icon: <TbTerminal2 className='w-8 h-8' />,
     gradient: 'from-gray-500 to-gray-600',
     bgGradient: 'from-gray-50 to-slate-50',
@@ -48,9 +47,12 @@ const competitors = [
   },
 ]
 
-export default function ComparisonSection(): ReactElement {
+export default function ComparisonSection() {
   return (
-    <section className='py-12 sm:py-16 md:py-20 lg:py-24 relative' aria-labelledby='comparison-heading'>
+    <section
+      className='py-12 sm:py-16 md:py-20 lg:py-24 relative'
+      aria-labelledby='comparison-heading'
+    >
       {/* Top transition border */}
       <div className='absolute top-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-rose-300 to-transparent' />
 
@@ -70,9 +72,9 @@ export default function ComparisonSection(): ReactElement {
             </span>
           </h2>
           <p className='text-base sm:text-lg md:text-xl text-gray-700 leading-relaxed'>
-            Steam Game Idler stands out from other Steam idlers and card farmers with modern features, active
-            development, and user-friendly design. See how our Steam idle tool compares to ArchiSteamFarm, Steam
-            Achievement Manager, and Idle Master.
+            Steam Game Idler stands out from other Steam idlers and card farmers with modern
+            features, active development, and user-friendly design. See how our Steam idle tool
+            compares to ArchiSteamFarm, Steam Achievement Manager, and Idle Master.
           </p>
         </header>
 
@@ -94,9 +96,9 @@ export default function ComparisonSection(): ReactElement {
                   </div>
                 </div>
                 <p className='text-gray-700 text-sm sm:text-base leading-relaxed'>
-                  The best Steam idle tool and card farmer available. A modern alternative to ArchiSteamFarm, Steam
-                  Achievement Manager, and Idle Master. Offering Steam card farming, achievement management, and
-                  playtime boosting in an all-in-one solution.
+                  The best Steam idle tool and card farmer available. A modern alternative to
+                  ArchiSteamFarm, Steam Achievement Manager, and Idle Master. Offering Steam card
+                  farming, achievement management, and playtime boosting in an all-in-one solution.
                 </p>
               </div>
             </div>
@@ -130,8 +132,9 @@ export default function ComparisonSection(): ReactElement {
                   Perfect For Steam Idlers Who Want
                 </h4>
                 <p className='text-sm text-gray-700 leading-relaxed'>
-                  Individual Steam users who want the best Steam idle tool with modern design, active development, and
-                  comprehensive Steam card farming features without the complexity of ArchiSteamFarm.
+                  Individual Steam users who want the best Steam idle tool with modern design,
+                  active development, and comprehensive Steam card farming features without the
+                  complexity of ArchiSteamFarm.
                 </p>
               </div>
             </div>
@@ -166,22 +169,31 @@ export default function ComparisonSection(): ReactElement {
                   {/* Title and Status */}
                   <div className='mb-3'>
                     <h3 className='text-xl font-bold text-gray-800 mb-1'>{competitor.name}</h3>
-                    <div className={`text-xs font-semibold ${competitor.statusColor} uppercase tracking-wider`}>
+                    <div
+                      className={`text-xs font-semibold ${competitor.statusColor} uppercase tracking-wider`}
+                    >
                       {competitor.status}
                     </div>
                   </div>
 
                   {/* Description */}
-                  <p className='text-gray-600 text-sm leading-relaxed mb-6'>{competitor.description}</p>
+                  <p className='text-gray-600 text-sm leading-relaxed mb-6'>
+                    {competitor.description}
+                  </p>
 
                   {/* Pros and Cons */}
                   <div className='space-y-4'>
                     <div>
-                      <h4 className='text-xs font-bold text-gray-800 mb-2 uppercase tracking-wider'>Pros</h4>
+                      <h4 className='text-xs font-bold text-gray-800 mb-2 uppercase tracking-wider'>
+                        Pros
+                      </h4>
                       <ul className='space-y-1'>
                         {competitor.pros.map(item => (
                           <li key={item} className='flex items-center gap-2 text-xs text-gray-600'>
-                            <div className='w-1.5 h-1.5 bg-green-500 rounded-full' aria-hidden='true' />
+                            <div
+                              className='w-1.5 h-1.5 bg-green-500 rounded-full'
+                              aria-hidden='true'
+                            />
                             {item}
                           </li>
                         ))}
@@ -189,7 +201,9 @@ export default function ComparisonSection(): ReactElement {
                     </div>
 
                     <div>
-                      <h4 className='text-xs font-bold text-gray-800 mb-2 uppercase tracking-wider'>Cons</h4>
+                      <h4 className='text-xs font-bold text-gray-800 mb-2 uppercase tracking-wider'>
+                        Cons
+                      </h4>
                       <ul className='space-y-1'>
                         {competitor.cons.map(item => (
                           <li key={item} className='flex items-center gap-2 text-xs text-gray-600'>

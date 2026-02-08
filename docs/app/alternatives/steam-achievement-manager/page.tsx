@@ -1,9 +1,7 @@
-import type { ReactElement } from 'react'
-
-import Link from 'next/link'
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa'
 import { FiBook, FiCheck, FiDownload, FiShield, FiX } from 'react-icons/fi'
 import { TbAward, TbCards, TbTrendingUp } from 'react-icons/tb'
+import Link from 'next/link'
 
 export const metadata = {
   title: 'Steam Achievement Manager Feature Comparison',
@@ -71,18 +69,22 @@ const comparisonData = [
   },
 ]
 
-function ComparisonIcon({ value }: { value: boolean | string }): ReactElement {
+function ComparisonIcon({ value }: { value: boolean | string }) {
   if (typeof value === 'boolean') {
     return (
       <div className='flex justify-center'>
-        {value ? <FiCheck className='w-5 h-5 text-emerald-600' /> : <FiX className='w-5 h-5 text-red-500' />}
+        {value ? (
+          <FiCheck className='w-5 h-5 text-emerald-600' />
+        ) : (
+          <FiX className='w-5 h-5 text-red-500' />
+        )}
       </div>
     )
   }
   return <span className='text-sm font-medium text-gray-700'>{value}</span>
 }
 
-export default function page(): ReactElement {
+export default function page() {
   return (
     <div className='min-h-screen bg-linear-to-b from-white via-gray-50 to-white'>
       {/* Hero Section */}
@@ -100,7 +102,8 @@ export default function page(): ReactElement {
         <div
           className='absolute inset-0 opacity-[0.4]'
           style={{
-            backgroundImage: 'radial-gradient(circle at 2px 2px, rgb(139 69 193) 1px, transparent 0)',
+            backgroundImage:
+              'radial-gradient(circle at 2px 2px, rgb(139 69 193) 1px, transparent 0)',
             backgroundSize: '24px 24px',
           }}
         />
@@ -122,8 +125,8 @@ export default function page(): ReactElement {
             </h1>
 
             <p className='text-lg sm:text-xl text-gray-700 mb-8 leading-relaxed'>
-              Compare core features, usability, and capabilities of Steam Game Idler against Steam Achievement Manager
-              to make an informed choice for your Steam automation needs.
+              Compare core features, usability, and capabilities of Steam Game Idler against Steam
+              Achievement Manager to make an informed choice for your Steam automation needs.
             </p>
           </div>
         </div>
@@ -154,7 +157,9 @@ export default function page(): ReactElement {
                     <table className='w-full'>
                       <thead>
                         <tr className='bg-gray-50'>
-                          <th className='text-left py-4 px-6 font-semibold text-gray-800 text-base'>Feature</th>
+                          <th className='text-left py-4 px-6 font-semibold text-gray-800 text-base'>
+                            Feature
+                          </th>
                           <th className='text-center py-4 px-6 font-semibold text-green-600 text-base'>
                             Steam Game Idler
                           </th>
@@ -165,7 +170,10 @@ export default function page(): ReactElement {
                       </thead>
                       <tbody>
                         {section.features.map((feature, index) => (
-                          <tr key={feature.name} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                          <tr
+                            key={feature.name}
+                            className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
+                          >
                             <td className='py-4 px-6 font-medium text-gray-800'>{feature.name}</td>
                             <td className='py-4 px-6 text-center'>
                               <ComparisonIcon value={feature.steamGameIdler} />
@@ -209,19 +217,24 @@ export default function page(): ReactElement {
               <div className='bg-white border-2 border-green-200 rounded-xl p-6 text-center'>
                 <FiShield className='w-8 h-8 text-green-600 mx-auto mb-4' />
                 <h3 className='text-lg font-bold text-gray-800 mb-2'>Enhanced Safety</h3>
-                <p className='text-sm text-gray-600'>Modern VAC detection avoidance and human-like behavior patterns</p>
+                <p className='text-sm text-gray-600'>
+                  Modern VAC detection avoidance and human-like behavior patterns
+                </p>
               </div>
 
               <div className='bg-white border-2 border-green-200 rounded-xl p-6 text-center sm:col-span-2 lg:col-span-1'>
                 <TbTrendingUp className='w-8 h-8 text-green-600 mx-auto mb-4' />
                 <h3 className='text-lg font-bold text-gray-800 mb-2'>Active Development</h3>
-                <p className='text-sm text-gray-600'>Regular updates and community support versus legacy tools</p>
+                <p className='text-sm text-gray-600'>
+                  Regular updates and community support versus legacy tools
+                </p>
               </div>
             </div>
 
             <p className='text-lg text-gray-700 mb-8'>
-              While Steam Achievement Manager was pioneering for its time, Steam Game Idler represents the modern
-              evolution with comprehensive features, enhanced security, and ongoing development.
+              While Steam Achievement Manager was pioneering for its time, Steam Game Idler
+              represents the modern evolution with comprehensive features, enhanced security, and
+              ongoing development.
             </p>
           </div>
         </div>
@@ -241,8 +254,8 @@ export default function page(): ReactElement {
             </h2>
 
             <p className='text-lg text-white/90 mb-8'>
-              Experience the next generation of Steam automation. Download Steam Game Idler and discover what modern
-              achievement management can do.
+              Experience the next generation of Steam automation. Download Steam Game Idler and
+              discover what modern achievement management can do.
             </p>
 
             <div className='flex flex-col sm:flex-row gap-4 justify-center'>

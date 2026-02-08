@@ -1,5 +1,3 @@
-import type { Metadata } from 'next'
-
 import { getMDXComponents } from '../../..//mdx-components'
 import { getPageImage, source } from '../../../lib/source'
 import { createRelativeLink } from 'fumadocs-ui/mdx'
@@ -38,7 +36,7 @@ export async function generateStaticParams() {
   return source.generateParams()
 }
 
-export async function generateMetadata(props: PageProps): Promise<Metadata> {
+export async function generateMetadata(props: PageProps) {
   const params = await props.params
   const page = source.getPage(params.slug)
   if (!page) notFound()

@@ -1,40 +1,49 @@
 import type { AppProps } from 'next/app'
-import type { ReactElement } from 'react'
-
-import { HeroUIProvider, ToastProvider } from '@heroui/react'
 import { TbX } from 'react-icons/tb'
-
-import { ThemeProvider } from '@/components/ui/theme/ThemeProvider'
-
+import { HeroUIProvider, ToastProvider } from '@heroui/react'
+import { FullscreenLoader, Layout } from '@/shared/components'
+import { ErrorBoundaryProvider, I18nProvider, ThemeProvider } from '@/shared/providers'
+import { useLoaderStore, useStateStore } from '@/shared/stores'
 import '@/styles/globals.css'
 
-export default function App({ Component, pageProps }: AppProps): ReactElement {
+const App = ({ Component, pageProps }: AppProps) => {
+  const { loadingUserSummary } = useStateStore()
+  const { loaderFadeOut } = useLoaderStore()
+
   return (
-    <ThemeProvider
-      attribute='class'
-      // Themes
-      themes={['dark', 'blue', 'red', 'purple', 'gold', 'black']}
-      enableSystem={true}
-      defaultTheme='dark'
-      disableTransitionOnChange
-    >
-      <HeroUIProvider>
-        <ToastProvider
-          toastProps={{
-            radius: 'sm',
-            variant: 'flat',
-            timeout: 3000,
-            shouldShowTimeoutProgress: true,
-            closeIcon: <TbX size={16} className='text-content' />,
-            classNames: {
-              base: ['bg-sidebar border-none cursor-default'],
-              description: ['text-content text-sm font-medium'],
-              closeButton: ['opacity-100 absolute right-1 top-1 hover:bg-item-hover'],
-            },
-          }}
-        />
-        <Component {...pageProps} />
-      </HeroUIProvider>
-    </ThemeProvider>
+    <ErrorBoundaryProvider>
+      <I18nProvider>
+        <ThemeProvider
+          attribute='class'
+          themes={['dark', 'blue', 'red', 'purple', 'gold', 'black']}
+          enableSystem={true}
+          defaultTheme='dark'
+          disableTransitionOnChange
+        >
+          <HeroUIProvider>
+            <ToastProvider
+              toastProps={{
+                radius: 'sm',
+                variant: 'flat',
+                timeout: 3000,
+                shouldShowTimeoutProgress: true,
+                closeIcon: <TbX size={16} className='text-content' />,
+                classNames: {
+                  base: ['bg-sidebar border-none cursor-default'],
+                  description: ['text-content text-sm font-medium'],
+                  closeButton: ['opacity-100 absolute right-1 top-1 hover:bg-item-hover'],
+                },
+              }}
+            />
+            {loadingUserSummary && <FullscreenLoader loaderFadeOut={loaderFadeOut} />}
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </HeroUIProvider>
+        </ThemeProvider>
+      </I18nProvider>
+    </ErrorBoundaryProvider>
   )
 }
+
+export default App

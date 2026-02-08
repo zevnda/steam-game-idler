@@ -1,15 +1,13 @@
 'use client'
 
-import type { ReactElement } from 'react'
-
 import { useEffect, useState } from 'react'
-import Image from 'next/image'
-import Link from 'next/link'
 import { FaArrowRight, FaStar, FaWindows } from 'react-icons/fa'
 import { FaDiscord } from 'react-icons/fa6'
 import { FiBook, FiGithub } from 'react-icons/fi'
+import Image from 'next/image'
+import Link from 'next/link'
 
-export default function HeroSection(): ReactElement {
+export default function HeroSection() {
   const [latestVersion, setLatestVersion] = useState('1.2.3')
   const [stars, setStars] = useState<number | null>(null)
   const [installerUrl, setInstallerUrl] = useState<string>('')
@@ -22,7 +20,9 @@ export default function HeroSection(): ReactElement {
           if (data.tag_name) {
             setLatestVersion(data.tag_name)
           }
-          const installer = data.assets?.find((asset: { name: string }) => asset.name.endsWith('_x64-setup.exe'))
+          const installer = data.assets?.find((asset: { name: string }) =>
+            asset.name.endsWith('_x64-setup.exe'),
+          )
           if (installer) {
             setInstallerUrl(installer.browser_download_url)
           }
@@ -71,7 +71,9 @@ export default function HeroSection(): ReactElement {
               <div className='flex items-start space-x-3'>
                 <div className='flex text-yellow-400 text-sm'>★★★★★</div>
                 <div className='flex-1'>
-                  <p className='text-xs text-gray-700 font-medium'>&quot;Farmed 500+ cards in just 2 days!&quot;</p>
+                  <p className='text-xs text-gray-700 font-medium'>
+                    &quot;Farmed 500+ cards in just 2 days!&quot;
+                  </p>
                 </div>
               </div>
             </div>
@@ -126,7 +128,9 @@ export default function HeroSection(): ReactElement {
               <div className='flex items-start space-x-3'>
                 <div className='flex text-yellow-400 text-sm'>★★★★★</div>
                 <div className='flex-1'>
-                  <p className='text-xs text-gray-700 font-medium'>&quot;Earned $50+ selling cards this month&quot;</p>
+                  <p className='text-xs text-gray-700 font-medium'>
+                    &quot;Earned $50+ selling cards this month&quot;
+                  </p>
                 </div>
               </div>
             </div>
@@ -178,8 +182,8 @@ export default function HeroSection(): ReactElement {
             {/* Badges */}
             <div className='flex flex-wrap gap-2 justify-center lg:justify-start'>
               <div className='inline-flex items-center px-3 py-1.5 sm:px-4 sm:py-2 bg-linear-to-r from-green-200 to-blue-200 border border-green-300 rounded-full text-green-800 text-xs sm:text-sm font-medium shadow-lg'>
-                <span className='w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-500 rounded-full mr-2 animate-pulse' />v
-                {latestVersion} Available
+                <span className='w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-500 rounded-full mr-2 animate-pulse' />
+                v{latestVersion} Available
               </div>
 
               <Link href='https://github.com/zevnda/steam-game-idler'>
@@ -206,8 +210,8 @@ export default function HeroSection(): ReactElement {
 
             {/* Subtitle */}
             <h2 className='text-sm sm:text-base md:text-lg lg:text-xl text-gray-700 max-w-lg leading-relaxed mx-auto lg:mx-0 px-4 sm:px-0'>
-              The most advanced Steam idle tool for farming trading cards, managing achievements, and boosting playtime.
-              Join thousands of Steam idlers using our card farmer.
+              The most advanced Steam idle tool for farming trading cards, managing achievements,
+              and boosting playtime. Join thousands of Steam idlers using our card farmer.
             </h2>
 
             {/* GitHub link */}

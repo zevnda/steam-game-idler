@@ -1,12 +1,10 @@
 'use client'
 
-import type { ReactElement } from 'react'
-
 import { useEffect, useState } from 'react'
-import Link from 'next/link'
 import { FaWindows } from 'react-icons/fa6'
+import Link from 'next/link'
 
-export default function CTASection(): ReactElement {
+export default function CTASection() {
   const [installerUrl, setInstallerUrl] = useState<string>('')
 
   useEffect(() => {
@@ -14,7 +12,9 @@ export default function CTASection(): ReactElement {
       fetch('https://api.github.com/repos/zevnda/steam-game-idler/releases/latest')
         .then(response => response.json())
         .then(data => {
-          const installer = data.assets?.find((asset: { name: string }) => asset.name.endsWith('_x64-setup.exe'))
+          const installer = data.assets?.find((asset: { name: string }) =>
+            asset.name.endsWith('_x64-setup.exe'),
+          )
           if (installer) {
             setInstallerUrl(installer.browser_download_url)
           }
@@ -25,7 +25,10 @@ export default function CTASection(): ReactElement {
   }, [])
 
   return (
-    <section className='py-16 sm:py-20 md:py-24 lg:py-32 relative overflow-hidden' aria-labelledby='cta-heading'>
+    <section
+      className='py-16 sm:py-20 md:py-24 lg:py-32 relative overflow-hidden'
+      aria-labelledby='cta-heading'
+    >
       {/* Transition from previous section */}
       <div className='absolute top-0 left-0 right-0 h-16 bg-linear-to-b from-purple-100/50 to-transparent' />
 
@@ -49,8 +52,8 @@ export default function CTASection(): ReactElement {
           </h2>
 
           <p className='text-lg sm:text-xl md:text-2xl text-white/90 mb-8 sm:mb-12 leading-relaxed px-4 sm:px-0'>
-            Download the ultimate Steam idle tool and card farmer today. Join thousands of users automating their Steam
-            experience. No registration, no subscriptions, completely free.
+            Download the ultimate Steam idle tool and card farmer today. Join thousands of users
+            automating their Steam experience. No registration, no subscriptions, completely free.
           </p>
 
           {/* Action buttons */}
