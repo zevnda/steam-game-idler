@@ -5,6 +5,10 @@ export { PageHeader } from './PageHeader'
 export { StatisticButtons } from './StatisticButtons'
 export { StatisticsList } from './StatisticsList'
 
-export { useAchievementButtons } from './hooks/useAchievementButtons'
 export { useAchievements } from './hooks/useAchievements'
-export { useStatisticButtons } from './hooks/useStatisticButtons'
+
+export { handleSortingChange } from './utils/handleSortingChange'
+export { handleUnlockAllAchievements } from './utils/handleUnlockAllAchievements'
+export { handleLockAllAchievements } from './utils/handleLockAllAchievements'
+export { handleUpdateAllStats } from './utils/handleUpdateAllStats'
+export { handleResetAllStats } from './utils/handleResetAllStats'

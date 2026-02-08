@@ -2,7 +2,7 @@ import type { Achievement, ChangedStats, Statistic } from '@/shared/types'
 import { Trans, useTranslation } from 'react-i18next'
 import { TbRotateClockwise, TbUpload } from 'react-icons/tb'
 import { Button, useDisclosure } from '@heroui/react'
-import { useStatisticButtons } from '@/features/achievement-manager'
+import { handleResetAllStats, handleUpdateAllStats } from '@/features/achievement-manager'
 import { CustomModal } from '@/shared/ui'
 
 interface StatisticButtonsProps {
@@ -24,13 +24,6 @@ export const StatisticButtons = ({
 }: StatisticButtonsProps) => {
   const { t } = useTranslation()
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
-  const { handleUpdateAllStats, handleResetAll } = useStatisticButtons(
-    statistics,
-    setStatistics,
-    changedStats,
-    setChangedStats,
-    setAchievements,
-  )
 
   const changedCount = Object.keys(changedStats).length
   const hasChanges = changedCount > 0
@@ -50,7 +43,7 @@ export const StatisticButtons = ({
       <Button
         className='bg-btn-secondary text-btn-text font-bold'
         radius='full'
-        onPress={handleUpdateAllStats}
+        onPress={() => handleUpdateAllStats(changedStats, setChangedStats, setAchievements)}
         isDisabled={!hasChanges}
         startContent={<TbUpload size={19} />}
       >
@@ -94,7 +87,9 @@ export const StatisticButtons = ({
               size='sm'
               className='bg-btn-secondary text-btn-text font-bold'
               radius='full'
-              onPress={() => handleResetAll(onOpenChange)}
+              onPress={() =>
+                handleResetAllStats(statistics, setStatistics, setChangedStats, onOpenChange)
+              }
             >
               {t('common.confirm')}
             </Button>

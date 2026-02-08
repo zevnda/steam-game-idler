@@ -3,8 +3,12 @@ import { useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { TbLock, TbLockOpen, TbSortDescending2 } from 'react-icons/tb'
 import { Button, cn, Select, SelectItem, useDisclosure } from '@heroui/react'
-import { useAchievementButtons } from '@/features/achievement-manager'
-import { useStateStore, useUserStore } from '@/shared/stores'
+import {
+  handleLockAllAchievements,
+  handleSortingChange,
+  handleUnlockAllAchievements,
+} from '@/features/achievement-manager'
+import { useStateStore } from '@/shared/stores'
 import { CustomModal } from '@/shared/ui'
 
 interface AchievementButtonsProps {
@@ -21,14 +25,9 @@ export const AchievementButtons = ({
   setRefreshKey,
 }: AchievementButtonsProps) => {
   const { t } = useTranslation()
-  const userSummary = useUserStore(state => state.userSummary)
   const appId = useStateStore(state => state.appId)
   const appName = useStateStore(state => state.appName)
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
-  const { handleChange, handleUnlockAll, handleLockAll } = useAchievementButtons(
-    userSummary,
-    setAchievements,
-  )
   const [state, setState] = useState('')
 
   const sortOptions: SortOption[] = [
@@ -123,7 +122,7 @@ export const AchievementButtons = ({
         }}
         defaultSelectedKeys={['percent']}
         onSelectionChange={e => {
-          handleChange(e.currentKey, achievements, setAchievements)
+          handleSortingChange(e.currentKey, achievements, setAchievements)
         }}
       >
         {item => (
@@ -172,11 +171,23 @@ export const AchievementButtons = ({
               onPress={() => {
                 if (state === 'unlock') {
                   if (appId && appName) {
-                    handleUnlockAll(appId, appName, achievements, onOpenChange)
+                    handleUnlockAllAchievements(
+                      appId,
+                      appName,
+                      achievements,
+                      setAchievements,
+                      onOpenChange,
+                    )
                   }
                 } else {
                   if (appId && appName) {
-                    handleLockAll(appId, appName, achievements, onOpenChange)
+                    handleLockAllAchievements(
+                      appId,
+                      appName,
+                      achievements,
+                      setAchievements,
+                      onOpenChange,
+                    )
                   }
                 }
               }}
