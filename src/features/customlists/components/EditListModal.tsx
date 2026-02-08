@@ -227,18 +227,20 @@ export const EditListModal = ({
               >
                 {t('common.clear')}
               </Button>
-              <Button
-                size='sm'
-                radius='full'
-                className={`font-bold ${showBlacklist ? 'bg-success/20 text-success' : 'bg-btn-secondary text-btn-text'}`}
-                isDisabled={blacklist.length === 0}
-                onPress={() => {
-                  setShowBlacklist(!showBlacklist)
-                  if (showInList) setShowInList(false)
-                }}
-              >
-                {t('customLists.inBlacklist')}
-              </Button>
+              {type === 'cardFarmingList' && (
+                <Button
+                  size='sm'
+                  radius='full'
+                  className={`font-bold ${showBlacklist ? 'bg-success/20 text-success' : 'bg-btn-secondary text-btn-text'}`}
+                  isDisabled={blacklist.length === 0}
+                  onPress={() => {
+                    setShowBlacklist(!showBlacklist)
+                    if (showInList) setShowInList(false)
+                  }}
+                >
+                  {t('customLists.inBlacklist')}
+                </Button>
+              )}
               <Button
                 size='sm'
                 radius='full'
