@@ -18,9 +18,9 @@ import { CustomTooltip, showDangerToast, showPrimaryToast } from '@/shared/compo
 import { useUpdateStore } from '@/shared/stores'
 import {
   fetchLatest,
-  handleOpenExtLink,
   isPortableCheck,
   logEvent,
+  openExternalLink,
   preserveKeysAndClearData,
 } from '@/shared/utils'
 
@@ -97,7 +97,7 @@ export const Menu = () => {
               classNames={{
                 base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
               }}
-              onPress={() => handleOpenExtLink('https://steamgameidler.com/docs/')}
+              onPress={() => openExternalLink('https://steamgameidler.com/docs/')}
             >
               {t('menu.guide')}
             </DropdownItem>
@@ -111,7 +111,7 @@ export const Menu = () => {
                 base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
               }}
               onPress={() =>
-                handleOpenExtLink(
+                openExternalLink(
                   githubIssueUrl + 'bug%2Cinvestigating&projects=&template=issue_report.yml',
                 )
               }
@@ -129,7 +129,7 @@ export const Menu = () => {
                 base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
               }}
               onPress={() =>
-                handleOpenExtLink(
+                openExternalLink(
                   githubIssueUrl + 'feature+request&projects=&template=feature_request.yml',
                 )
               }
@@ -146,7 +146,7 @@ export const Menu = () => {
               classNames={{
                 base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
               }}
-              onPress={() => handleOpenExtLink('https://github.com/sponsors/zevnda')}
+              onPress={() => openExternalLink('https://github.com/sponsors/zevnda')}
             >
               {t('menu.support')}
             </DropdownItem>
@@ -160,7 +160,7 @@ export const Menu = () => {
               classNames={{
                 base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
               }}
-              onPress={() => handleOpenExtLink('https://discord.com/invite/5kY2ZbVnZ8')}
+              onPress={() => openExternalLink('https://discord.com/invite/5kY2ZbVnZ8')}
             >
               {t('menu.joinDiscord')}
             </DropdownItem>

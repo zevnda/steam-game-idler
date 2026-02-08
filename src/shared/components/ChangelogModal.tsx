@@ -13,7 +13,7 @@ import { getVersion } from '@tauri-apps/api/app'
 import { useTranslation } from 'react-i18next'
 import { FaStar } from 'react-icons/fa6'
 import { useUpdateStore } from '@/shared/stores'
-import { handleOpenExtLink } from '@/shared/utils'
+import { openExternalLink } from '@/shared/utils'
 
 export const ChangelogModal = () => {
   const { t } = useTranslation()
@@ -79,7 +79,7 @@ export const ChangelogModal = () => {
             radius='full'
             className='font-semibold'
             startContent={<FaStar size={20} />}
-            onPress={() => handleOpenExtLink('https://github.com/zevnda/steam-game-idler')}
+            onPress={() => openExternalLink('https://github.com/zevnda/steam-game-idler')}
           >
             {t('changelog.star')}
           </Button>
@@ -98,9 +98,7 @@ export const ChangelogModal = () => {
               size='sm'
               radius='full'
               className='bg-white text-black font-semibold'
-              onPress={() =>
-                handleOpenExtLink(`https://steamgameidler.com/changelog#${appVersion}`)
-              }
+              onPress={() => openExternalLink(`https://steamgameidler.com/changelog#${appVersion}`)}
             >
               {t('menu.changelog')}
             </Button>

@@ -302,14 +302,6 @@ export async function isPortableCheck() {
   }
 }
 
-export const handleOpenExtLink = async (href: string) => {
-  try {
-    await open(href)
-  } catch (error) {
-    console.error('Failed to open link:', error)
-  }
-}
-
 // Send a native notification
 export async function sendNativeNotification(title: string, body: string) {
   try {
