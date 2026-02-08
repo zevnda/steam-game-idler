@@ -144,8 +144,6 @@
   "settings.general.startMinimized.description": "Запустити SGI згорнутим до системного трею",
   "settings.general.closeToTray": "Близько до лотка",
   "settings.general.closeToTray.description": "Натискання кнопки X згорне SGI в системний трей, а не закриє його.",
-  "settings.general.useBeta": "Можливості Бета",
-  "settings.general.useBeta.description": "Бета-функції можуть бути нестабільними, змінюватися неочікувано, або бути видалені в будь-який час. Якщо у вас виникли будь-які проблеми під час використання бета-функції, будь ласка, повідомте про це на GitHub",
   "settings.general.disableTooltips": "Вимкнути підказки",
   "settings.general.disableTooltips.description": "Вимкнути неважливі підказки у програмі",
   "settings.general.runAtStartup": "Запускати під час запуску системи",

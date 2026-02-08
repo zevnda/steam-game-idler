@@ -144,8 +144,6 @@
   "settings.general.startMinimized.description": "Стартирайте SGI минимизиран в системния трей",
   "settings.general.closeToTray": "Близо до тава",
   "settings.general.closeToTray.description": "Щракването върху бутона X ще минимизира SGI в системния трей, вместо да го затвори.",
-  "settings.general.useBeta": "Бета функции",
-  "settings.general.useBeta.description": "Бета функциите може да са нестабилни, да се променят неочаквано или да бъдат премахнати по всяко време. Ако срещнете някакви проблеми при използването на бета функция, моля, докладвайте го в GitHub",
   "settings.general.disableTooltips": "Деактивиране на подсказките",
   "settings.general.disableTooltips.description": "Деактивирайте несъществените подсказки в приложението",
   "settings.general.runAtStartup": "Стартиране при стартиране",

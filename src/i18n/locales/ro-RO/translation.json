@@ -144,8 +144,6 @@
   "settings.general.startMinimized.description": "Pornire SGI minimizată în bara de sistem",
   "settings.general.closeToTray": "Aproape de tavă",
   "settings.general.closeToTray.description": "Dacă faceți clic pe butonul X, SGI va fi minimizat în bara de sistem în loc să fie închis.",
-  "settings.general.useBeta": "Caracteristici Beta",
-  "settings.general.useBeta.description": "Caracteristicile beta pot fi instabile, pot fi modificate în mod neașteptat sau pot fi eliminate în orice moment. Dacă întâmpinați orice probleme atunci când utilizați o funcție beta, vă rugăm să o raportați pe GitHub",
   "settings.general.disableTooltips": "Dezactivează Tooltips",
   "settings.general.disableTooltips.description": "Dezactivează tooltips neesențiale în aplicație",
   "settings.general.runAtStartup": "Rulează la pornire",

@@ -144,8 +144,6 @@
   "settings.general.startMinimized.description": "Lancer SGI minimisé dans la zone de notification",
   "settings.general.closeToTray": "Près du plateau",
   "settings.general.closeToTray.description": "Cliquer sur le bouton X réduira SGI dans la barre d'état système au lieu de le fermer.",
-  "settings.general.useBeta": "Fonctionnalités bêta",
-  "settings.general.useBeta.description": "Les fonctionnalités bêta peuvent être instables, changer de façon inattendue ou être supprimées à tout moment. Si vous rencontrez des problèmes lors de l'utilisation d'une fonctionnalité bêta, veuillez le signaler sur GitHub",
   "settings.general.disableTooltips": "Désactiver les infobulles",
   "settings.general.disableTooltips.description": "Désactiver les info-bulles non essentielles dans l'application",
   "settings.general.runAtStartup": "Lancer au démarrage",

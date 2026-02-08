@@ -144,8 +144,6 @@
   "settings.general.startMinimized.description": "시스템 트레이에 최소화된 SGI 시작",
   "settings.general.closeToTray": "트레이에 가까이",
   "settings.general.closeToTray.description": "X 버튼을 클릭하면 SGI가 닫히지 않고 시스템 트레이로 최소화됩니다.",
-  "settings.general.useBeta": "베타 기능",
-  "settings.general.useBeta.description": "베타 기능은 불안정하거나, 예상치 못하게 변경되거나, 언제든지 삭제될 수 있습니다. 베타 기능 사용 중 문제가 발생하면 GitHub에 보고해 주세요.",
   "settings.general.disableTooltips": "도구 설명 비활성화",
   "settings.general.disableTooltips.description": "앱에서 필수적이지 않은 도구 설명 비활성화",
   "settings.general.runAtStartup": "시작 시 실행",

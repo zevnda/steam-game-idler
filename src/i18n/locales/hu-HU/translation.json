@@ -144,8 +144,6 @@
   "settings.general.startMinimized.description": "Az SGI indítása minimalizálva a rendszertálcára",
   "settings.general.closeToTray": "Tálca közelében",
   "settings.general.closeToTray.description": "Az X gombra kattintva az SGI a bezárás helyett a tálcára kerül.",
-  "settings.general.useBeta": "Béta funkciók",
-  "settings.general.useBeta.description": "A béta funkciók instabilak lehetnek, váratlanul megváltozhatnak, vagy bármikor eltávolításra kerülhetnek. Ha bármilyen problémát tapasztal egy béta funkció használata során, kérjük, jelentse azt a GitHubon.",
   "settings.general.disableTooltips": "Eszköztippek letiltása",
   "settings.general.disableTooltips.description": "Nem létfontosságú elemleírások letiltása az alkalmazásban",
   "settings.general.runAtStartup": "Indításkor futtatás",

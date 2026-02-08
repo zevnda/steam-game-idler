@@ -144,8 +144,6 @@
   "settings.general.startMinimized.description": "Iniciar SGI minimizado en la bandeja del sistema",
   "settings.general.closeToTray": "Cerca de la bandeja",
   "settings.general.closeToTray.description": "Al hacer clic en el botón X, SGI se minimizará a la bandeja del sistema en lugar de cerrarse.",
-  "settings.general.useBeta": "Características beta",
-  "settings.general.useBeta.description": "Las características beta pueden ser inestables, cambiar inesperadamente o eliminarse en cualquier momento. Si experimenta algún problema al usar una característica beta, por favor repórtelo en GitHub",
   "settings.general.disableTooltips": "Desactivar sugerencias",
   "settings.general.disableTooltips.description": "Desactivar sugerencias no esenciales en la aplicación",
   "settings.general.runAtStartup": "Ejecutar al inicio",

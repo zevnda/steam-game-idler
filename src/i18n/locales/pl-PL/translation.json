@@ -144,8 +144,6 @@
   "settings.general.startMinimized.description": "Uruchom SGI zminimalizowane do zasobnika systemowego",
   "settings.general.closeToTray": "Blisko tacy",
   "settings.general.closeToTray.description": "Kliknięcie przycisku X spowoduje zminimalizowanie SGI do paska zadań zamiast jego zamknięcia",
-  "settings.general.useBeta": "Funkcje Beta",
-  "settings.general.useBeta.description": "Funkcje beta mogą być niestabilne, zmieniają się niespodziewanie lub zostają usunięte w dowolnym momencie. Jeśli wystąpią jakiekolwiek problemy podczas korzystania z funkcji beta zgłoś je na GitHub",
   "settings.general.disableTooltips": "Wyłącz podpowiedzi",
   "settings.general.disableTooltips.description": "Wyłącz nieistotne podpowiedzi w aplikacji",
   "settings.general.runAtStartup": "Uruchom przy starcie",

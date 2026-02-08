@@ -144,8 +144,6 @@
   "settings.general.startMinimized.description": "Avvia SGI minimizzato nell'area di notifica",
   "settings.general.closeToTray": "Chiudi nell’area di notifica",
   "settings.general.closeToTray.description": "Cliccando il pulsante X SGI verrà minimizzato sulla barra delle applicazioni nell’area di notifica invece di essere chiuso",
-  "settings.general.useBeta": "Caratteristiche Beta",
-  "settings.general.useBeta.description": "Le funzioni beta possono essere instabili, cambiare inaspettatamente o essere rimosse in qualsiasi momento. Se si verificano problemi quando si utilizza una funzione beta, si prega di segnalarlo su GitHub",
   "settings.general.disableTooltips": "Disabilita suggerimenti",
   "settings.general.disableTooltips.description": "Disabilita i suggerimenti non essenziali nell'app",
   "settings.general.runAtStartup": "Esegui all'avvio",

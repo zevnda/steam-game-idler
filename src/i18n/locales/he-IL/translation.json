@@ -144,8 +144,6 @@
   "settings.general.startMinimized.description": "הפעלת SGI ממוזערת למגש המערכת",
   "settings.general.closeToTray": "קרוב למגש",
   "settings.general.closeToTray.description": "לחיצה על כפתור ה-X תמזער את SGI למגש המערכת במקום לסגור אותו",
-  "settings.general.useBeta": "תכונות בטא",
-  "settings.general.useBeta.description": "תכונות בטא עשויות להיות לא יציבות, להשתנות באופן בלתי צפוי או להיות מוסרות בכל עת. אם אתם נתקלים בבעיות בעת שימוש בתכונת בטא, אנא דווחו על כך ב-GitHub.",
   "settings.general.disableTooltips": "השבתת תיאורי כלים",
   "settings.general.disableTooltips.description": "השבתת תיאורי כלים שאינם חיוניים באפליקציה",
   "settings.general.runAtStartup": "הפעל בעת ההפעלה",

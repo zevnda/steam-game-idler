@@ -144,8 +144,6 @@
   "settings.general.startMinimized.description": "सिस्टम ट्रे में न्यूनतमीकृत SGI प्रारंभ करें",
   "settings.general.closeToTray": "ट्रे के पास",
   "settings.general.closeToTray.description": "X बटन पर क्लिक करने से SGI सिस्टम ट्रे को बंद करने के बजाय उसे छोटा कर देगा",
-  "settings.general.useBeta": "बीटा सुविधाएँ",
-  "settings.general.useBeta.description": "बीटा सुविधाएँ अस्थिर हो सकती हैं, अप्रत्याशित रूप से बदल सकती हैं, या कभी भी हटाई जा सकती हैं। अगर आपको बीटा सुविधा का उपयोग करते समय कोई समस्या आती है, तो कृपया GitHub पर इसकी रिपोर्ट करें।",
   "settings.general.disableTooltips": "टूलटिप्स अक्षम करें",
   "settings.general.disableTooltips.description": "ऐप में गैर-ज़रूरी टूलटिप्स अक्षम करें",
   "settings.general.runAtStartup": "स्टार्टअप पर चलाएँ",

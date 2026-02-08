@@ -144,8 +144,6 @@
   "settings.general.startMinimized.description": "Bắt đầu SGI thu nhỏ vào khay hệ thống",
   "settings.general.closeToTray": "Gần Khay",
   "settings.general.closeToTray.description": "Nhấp vào nút X sẽ thu nhỏ SGI vào khay hệ thống thay vì đóng nó",
-  "settings.general.useBeta": "Tính năng Beta",
-  "settings.general.useBeta.description": "Các tính năng beta có thể không ổn định, thay đổi bất ngờ hoặc bị xóa bất cứ lúc nào. Nếu bạn gặp bất kỳ sự cố nào khi sử dụng tính năng beta, vui lòng báo cáo trên GitHub.",
   "settings.general.disableTooltips": "Tắt chú giải công cụ",
   "settings.general.disableTooltips.description": "Tắt các chú giải công cụ không cần thiết trong ứng dụng",
   "settings.general.runAtStartup": "Chạy khi khởi động",

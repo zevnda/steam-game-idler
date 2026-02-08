@@ -144,8 +144,6 @@
   "settings.general.startMinimized.description": "เริ่ม SGI โดยย่อขนาดลงในถาดระบบ",
   "settings.general.closeToTray": "ใกล้ถาด",
   "settings.general.closeToTray.description": "การคลิกปุ่ม X จะย่อ SGI ลงในถาดระบบแทนที่จะปิดมัน",
-  "settings.general.useBeta": "คุณสมบัติเบต้า",
-  "settings.general.useBeta.description": "ฟีเจอร์เบต้าอาจไม่เสถียร เปลี่ยนแปลงโดยไม่คาดคิด หรือถูกลบออกได้ทุกเมื่อ หากคุณพบปัญหาใดๆ ขณะใช้งานฟีเจอร์เบต้า โปรดรายงานปัญหาดังกล่าวบน GitHub",
   "settings.general.disableTooltips": "ปิดใช้งานคำแนะนำเครื่องมือ",
   "settings.general.disableTooltips.description": "ปิดใช้งานคำแนะนำเครื่องมือที่ไม่จำเป็นในแอป",
   "settings.general.runAtStartup": "รันเมื่อเริ่มต้น",

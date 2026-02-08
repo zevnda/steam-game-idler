@@ -144,8 +144,6 @@
   "settings.general.startMinimized.description": "Starta SGI minimeras till systemfältet",
   "settings.general.closeToTray": "Nära facket",
   "settings.general.closeToTray.description": "Om du klickar på X-knappen minimeras SGI till systemfältet istället för att stänga det.",
-  "settings.general.useBeta": "Beta funktioner",
-  "settings.general.useBeta.description": "Beta-funktioner kan vara instabila, ändra oväntat eller tas bort när som helst. Om du upplever några problem när du använder en beta-funktion, vänligen rapportera det på GitHub",
   "settings.general.disableTooltips": "Inaktivera verktygstips",
   "settings.general.disableTooltips.description": "Inaktivera icke-väsentliga verktygstips i appen",
   "settings.general.runAtStartup": "Kör vid start",

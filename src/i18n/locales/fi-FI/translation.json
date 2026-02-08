@@ -144,8 +144,6 @@
   "settings.general.startMinimized.description": "Käynnistä SGI minimoitu ilmoitusalueelle",
   "settings.general.closeToTray": "Sulje lokero",
   "settings.general.closeToTray.description": "X-painikkeen napsauttaminen pienentää SGI:n ilmaisinalueelle sulkemisen sijaan.",
-  "settings.general.useBeta": "Beta Ominaisuudet",
-  "settings.general.useBeta.description": "Beta-ominaisuudet voivat olla epävakaita, muuttua odottamattomasti tai poistaa milloin tahansa. Jos sinulla on ongelmia beeta-ominaisuuden käytössä, ilmoita siitä GitHubissa",
   "settings.general.disableTooltips": "Poista Työkaluvinkit Käytöstä",
   "settings.general.disableTooltips.description": "Poista muut kuin työkaluvihjeet käytöstä sovelluksessa",
   "settings.general.runAtStartup": "Suorita Käynnistyksessä",

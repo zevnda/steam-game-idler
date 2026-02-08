@@ -144,8 +144,6 @@
   "settings.general.startMinimized.description": "Start SGI minimert til systemstatusfeltet",
   "settings.general.closeToTray": "Nær brettet",
   "settings.general.closeToTray.description": "Hvis du klikker på X-knappen, minimeres SGI til systemstatusfeltet i stedet for å lukke det.",
-  "settings.general.useBeta": "Beta-funksjoner",
-  "settings.general.useBeta.description": "Betafunksjoner kan være ustabile, endre uventet, eller bli fjernet når som helst. Hvis du opplever problemer når du bruker en beta-funksjon, vennligst rapporter det på GitHub",
   "settings.general.disableTooltips": "Deaktiver verktøytips",
   "settings.general.disableTooltips.description": "Deaktiver ikke-essensielle hjelpetekster i appen",
   "settings.general.runAtStartup": "Kjør ved oppstart",

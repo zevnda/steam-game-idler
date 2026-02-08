@@ -144,8 +144,6 @@
   "settings.general.startMinimized.description": "Mulai SGI diminimalkan ke baki sistem",
   "settings.general.closeToTray": "Dekat dengan Tray",
   "settings.general.closeToTray.description": "Mengklik tombol X akan meminimalkan SGI ke baki sistem alih-alih menutupnya",
-  "settings.general.useBeta": "Fitur Beta",
-  "settings.general.useBeta.description": "Fitur beta mungkin tidak stabil, berubah secara tak terduga, atau dihapus sewaktu-waktu. Jika Anda mengalami masalah saat menggunakan fitur beta, harap laporkan di GitHub.",
   "settings.general.disableTooltips": "Nonaktifkan Tooltip",
   "settings.general.disableTooltips.description": "Nonaktifkan tooltip yang tidak penting di aplikasi",
   "settings.general.runAtStartup": "Jalankan Saat Startup",
