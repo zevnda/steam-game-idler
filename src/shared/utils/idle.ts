@@ -14,7 +14,7 @@ import {
   showDangerToast,
   showSuccessToast,
   showWarningToast,
-} from '@/shared/ui'
+} from '@/shared/components'
 import { checkSteamStatus, logEvent } from '@/shared/utils'
 
 const idleTimeouts: { [key: number]: ReturnType<typeof setTimeout> } = {}

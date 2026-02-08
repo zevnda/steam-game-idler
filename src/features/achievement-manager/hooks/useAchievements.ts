@@ -2,8 +2,8 @@ import type { Achievement, InvokeAchievementData, Statistic } from '@/shared/typ
 import { invoke } from '@tauri-apps/api/core'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { showAccountMismatchToast, showDangerToast } from '@/shared/components'
 import { useStateStore, useUserStore } from '@/shared/stores'
-import { showAccountMismatchToast, showDangerToast } from '@/shared/ui'
 import { checkSteamStatus, logEvent } from '@/shared/utils'
 
 export function useAchievements(

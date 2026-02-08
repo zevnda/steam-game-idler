@@ -1,7 +1,7 @@
 import type { Achievement } from '@/shared/types'
 import i18next from 'i18next'
+import { showAccountMismatchToast, showDangerToast, showSuccessToast } from '@/shared/components'
 import { useUserStore } from '@/shared/stores'
-import { showAccountMismatchToast, showDangerToast, showSuccessToast } from '@/shared/ui'
 import { checkSteamStatus, lockAllAchievements, logEvent } from '@/shared/utils'
 
 export const handleLockAllAchievements = async (

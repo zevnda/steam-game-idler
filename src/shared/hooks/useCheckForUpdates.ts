@@ -3,8 +3,8 @@ import { relaunch } from '@tauri-apps/plugin-process'
 import { check } from '@tauri-apps/plugin-updater'
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
+import { showDangerToast } from '@/shared/components'
 import { useUpdateStore } from '@/shared/stores'
-import { showDangerToast } from '@/shared/ui'
 import { fetchLatest, isPortableCheck, logEvent, preserveKeysAndClearData } from '@/shared/utils'
 
 export function useCheckForUpdates() {

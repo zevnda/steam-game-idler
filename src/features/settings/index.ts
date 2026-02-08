@@ -1,7 +1,5 @@
 // Main Components
-export { Settings } from './Settings'
-export { SettingsSwitch } from './SettingsSwitch'
-export { SocialButtons } from './SocialButtons'
+export { Settings } from './components/Settings'
 
 // Main Hooks
 export * from './hooks/useSettings'
@@ -10,54 +8,54 @@ export * from './hooks/useSettings'
 export { handleCheckboxChange } from './utils/handleCheckboxChange'
 
 // Achievement Unlocker Feature
-export { AchievementSettings } from './achievement-unlocker/AchievementSettings'
-export * from './achievement-unlocker/hooks/useAchievementSettings'
-export { handleSliderChange } from './achievement-unlocker/utils/handleSliderChange'
-export { handleScheduleChange } from './achievement-unlocker/utils/handleScheduleChange'
+export { AchievementSettings } from './components/achievement-unlocker/AchievementSettings'
+export * from './hooks/achievement-unlocker/useAchievementSettings'
+export { handleSliderChange } from './utils/achievement-unlocker/handleSliderChange'
+export { handleScheduleChange } from './utils/achievement-unlocker/handleScheduleChange'
 
 // Card Farming Feature
-export { CardSettings } from './card-farming/CardSettings'
-export * from './card-farming/hooks/useCardSettings'
-export { fetchUserSummary } from './card-farming/utils/fetchUserSummary'
-export { getStoredSettings } from './card-farming/utils/getStoredSettings'
-export { fetchGamesWithDropsData } from './card-farming/utils/fetchGamesWithDropsData'
+export { CardSettings } from './components/card-farming/CardSettings'
+export * from './hooks/card-farming/useCardSettings'
+export { fetchUserSummary } from './utils/card-farming/fetchUserSummary'
+export { getStoredSettings } from './utils/card-farming/getStoredSettings'
+export { fetchGamesWithDropsData } from './utils/card-farming/fetchGamesWithDropsData'
 
 // Customization Feature
-export { CustomizationSettings } from './customization/CustomizationSettings'
-export { handleThemeChange } from './customization/utils/handleThemeChange'
-export * from './customization/utils/handleBackgroundChange'
+export { CustomizationSettings } from './components/customization/CustomizationSettings'
+export { handleThemeChange } from './utils/customization/handleThemeChange'
+export * from './utils/customization/handleBackgroundChange'
 
 // Debug Feature
-export { ClearData } from './debug/ClearData'
-export { ExportSettings } from './debug/ExportSettings'
-export { Logs } from './debug/Logs'
-export { OpenSettings } from './debug/OpenSettings'
-export { ResetSettings } from './debug/ResetSettings'
-export { useResetSettings } from './debug/hooks/useResetSettings'
-export * from './debug/hooks/useLogs'
-export { handleClearData } from './debug/utils/handleClearData'
-export { handleOpenLogFile } from './debug/utils/handleOpenLogFile'
-export { handleClearLogs } from './debug/utils/handleClearLogs'
+export { ClearData } from './components/debug/ClearData'
+export { ExportSettings } from './components/debug/ExportSettings'
+export { Logs } from './components/debug/Logs'
+export { OpenSettings } from './components/debug/OpenSettings'
+export { ResetSettings } from './components/debug/ResetSettings'
+export { useResetSettings } from './hooks/debug/useResetSettings'
+export * from './hooks/debug/useLogs'
+export { handleClearData } from './utils/debug/handleClearData'
+export { handleOpenLogFile } from './utils/debug/handleOpenLogFile'
+export { handleClearLogs } from './utils/debug/handleClearLogs'
 
 // Free Games Feature
-export { FreeGamesSettings } from './free-games/FreeGamesSettings'
-export * from './free-games/utils/handleStoreLoginWindow'
+export { FreeGamesSettings } from './components/free-games/FreeGamesSettings'
+export * from './utils/free-games/handleStoreLoginWindow'
 
 // Game Settings Feature
-export { GameSettings } from './game-settings/GameSettings'
-export { useGameSettings } from './game-settings/hooks/useGameSettings'
+export { GameSettings } from './components/game-settings/GameSettings'
+export { useGameSettings } from './hooks/game-settings/useGameSettings'
 
 // General Feature
-export { GeneralSettings } from './general/GeneralSettings'
-export { CurrencySwitch } from './general/CurrencySwitch'
-export * from './general/hooks/useGeneralSettings'
-export { handleRunAtStartupChange } from './general/utils/handleRunAtStartupChange'
-export * from './general/utils/handleSteamWebAPIKey'
+export { GeneralSettings } from './components/general/GeneralSettings'
+export { CurrencySwitch } from './components/general/CurrencySwitch'
+export * from './hooks/general/useGeneralSettings'
+export { handleRunAtStartupChange } from './utils/general/handleRunAtStartupChange'
+export * from './utils/general/handleSteamWebAPIKey'
 
 // Steam Credentials Feature
-export { SteamCredentials } from './steam-credentials/SteamCredentials'
-export * from './steam-credentials/utils/handleSteamCredentials'
+export { SteamCredentials } from './components/steam-credentials/SteamCredentials'
+export * from './utils/steam-credentials/handleSteamCredentials'
 
 // Trading Card Manager Feature
-export { TradingCardManagerSettings } from './trading-card-manager/TradingCardManagerSettings'
-export * from './trading-card-manager/utils/handleSettingsChange'
+export { TradingCardManagerSettings } from './components/trading-card-manager/TradingCardManagerSettings'
+export * from './utils/trading-card-manager/handleSettingsChange'

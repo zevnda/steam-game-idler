@@ -9,7 +9,6 @@ import type {
 import { invoke } from '@tauri-apps/api/core'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useStateStore, useUserStore } from '@/shared/stores'
 import {
   showDangerToast,
   showIncorrectCredentialsToast,
@@ -17,7 +16,8 @@ import {
   showPriceFetchRateLimitToast,
   showPrimaryToast,
   showSuccessToast,
-} from '@/shared/ui'
+} from '@/shared/components'
+import { useStateStore, useUserStore } from '@/shared/stores'
 import { decrypt, logEvent } from '@/shared/utils'
 
 export function useTradingCardsList() {

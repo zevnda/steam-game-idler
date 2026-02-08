@@ -1,13 +1,13 @@
 import type { InvokeCustomList, InvokeSettings, InvokeValidateSession } from '@/shared/types'
 import { invoke } from '@tauri-apps/api/core'
 import i18next from 'i18next'
-import { useStateStore, useUserStore } from '@/shared/stores'
 import {
   showDangerToast,
   showEnableAllGamesToast,
   showMissingCredentialsToast,
   showOutdatedCredentialsToast,
-} from '@/shared/ui'
+} from '@/shared/components'
+import { useStateStore, useUserStore } from '@/shared/stores'
 import { autoRevalidateSteamCredentials, checkSteamStatus, decrypt, logEvent } from '@/shared/utils'
 
 export const startCardFarming = async () => {

@@ -1,6 +1,6 @@
 import { Component } from 'react'
 import { Button, cn } from '@heroui/react'
-import { ExtLink } from '@/shared/ui'
+import { ExtLink } from '@/shared/components'
 
 interface ErrorBoundaryState {
   hasError: boolean

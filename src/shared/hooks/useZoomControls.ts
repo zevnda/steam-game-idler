@@ -1,7 +1,7 @@
 import { invoke } from '@tauri-apps/api/core'
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { showDangerToast } from '@/shared/ui'
+import { showDangerToast } from '@/shared/components'
 import { logEvent } from '@/shared/utils'
 
 export function useZoomControls() {

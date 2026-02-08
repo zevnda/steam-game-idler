@@ -1,10 +1,9 @@
 import type { AppProps } from 'next/app'
 import { TbX } from 'react-icons/tb'
 import { HeroUIProvider, ToastProvider } from '@heroui/react'
-import { Layout } from '@/shared/layouts'
+import { FullscreenLoader, Layout } from '@/shared/components'
 import { ErrorBoundaryProvider, I18nProvider, ThemeProvider } from '@/shared/providers'
 import { useLoaderStore, useStateStore } from '@/shared/stores'
-import { FullscreenLoader } from '@/shared/ui'
 import '@/styles/globals.css'
 
 const App = ({ Component, pageProps }: AppProps) => {

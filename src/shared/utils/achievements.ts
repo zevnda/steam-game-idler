@@ -8,7 +8,7 @@ import type {
 } from '@/shared//types'
 import { invoke } from '@tauri-apps/api/core'
 import i18next from 'i18next'
-import { showDangerToast, showSuccessToast } from '@/shared/ui'
+import { showDangerToast, showSuccessToast } from '@/shared/components'
 import { checkSteamStatus, logEvent } from '@/shared/utils'
 
 // Unlock a single achievement for a game

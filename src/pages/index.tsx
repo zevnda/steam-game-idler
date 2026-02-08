@@ -1,3 +1,4 @@
+import { ChangelogModal, Dashboard, GoProModal, SignIn, SteamWarning } from '@/shared/components'
 import {
   useAutoIdleGames,
   useCheckForPro,
@@ -10,9 +11,7 @@ import {
   useThemes,
   useZoomControls,
 } from '@/shared/hooks'
-import { Dashboard, SignIn } from '@/shared/layouts'
 import { useLoaderStore, useUserStore } from '@/shared/stores'
-import { ChangelogModal, GoProModal, SteamWarning } from '@/shared/ui'
 
 const Index = () => {
   const userSummary = useUserStore(state => state.userSummary)

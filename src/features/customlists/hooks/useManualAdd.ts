@@ -2,8 +2,8 @@ import type { Game, InvokeCustomList } from '@/shared/types'
 import { invoke } from '@tauri-apps/api/core'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { showDangerToast, showWarningToast } from '@/shared/components'
 import { useUserStore } from '@/shared/stores'
-import { showDangerToast, showWarningToast } from '@/shared/ui'
 import { logEvent } from '@/shared/utils'
 
 export function useManualAdd(

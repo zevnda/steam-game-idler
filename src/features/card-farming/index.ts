@@ -1,4 +1,4 @@
-export { CardFarming } from './CardFarming'
-export { RecommendedCardDropsCarousel } from './RecommendedCardDropsCarousel'
+export { CardFarming } from './components/CardFarming'
+export { RecommendedCardDropsCarousel } from './components/RecommendedCardDropsCarousel'
 
 export * from './hooks/useCardFarming'

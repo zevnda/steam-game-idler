@@ -1,7 +1,7 @@
 import type { Achievement, ChangedStats, StatValue } from '@/shared/types'
 import i18next from 'i18next'
+import { showDangerToast, showSuccessToast, showWarningToast } from '@/shared/components'
 import { useStateStore, useUserStore } from '@/shared/stores'
-import { showDangerToast, showSuccessToast, showWarningToast } from '@/shared/ui'
 import { checkSteamStatus, updateStats } from '@/shared/utils'
 
 export const handleUpdateAllStats = async (

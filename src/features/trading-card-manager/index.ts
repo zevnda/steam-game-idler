@@ -1,6 +1,6 @@
-export { PageHeader } from './PageHeader'
-export { PriceData } from './PriceData'
-export { PriceInput } from './PriceInput'
-export { TradingCardsList } from './TradingCardsList'
+export { PageHeader } from './components/PageHeader'
+export { PriceData } from './components/PriceData'
+export { PriceInput } from './components/PriceInput'
+export { TradingCardsList } from './components/TradingCardsList'
 
 export { useTradingCardsList } from './hooks/useTradingCardsList'

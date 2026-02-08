@@ -1,6 +1,6 @@
 import type { SortStyleValue } from '@/shared/types'
 import i18next from 'i18next'
-import { showDangerToast } from '@/shared/ui'
+import { showDangerToast } from '@/shared/components'
 import { logEvent } from '@/shared/utils'
 
 export const handleSortingChange = (

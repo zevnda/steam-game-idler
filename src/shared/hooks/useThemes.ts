@@ -3,8 +3,8 @@ import { invoke } from '@tauri-apps/api/core'
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from 'next-themes'
+import { showDangerToast } from '@/shared/components'
 import { useUserStore } from '@/shared/stores'
-import { showDangerToast } from '@/shared/ui'
 import { logEvent } from '@/shared/utils'
 
 export function useThemes() {

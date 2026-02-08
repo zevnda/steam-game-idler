@@ -1,9 +1,9 @@
-export { AchievementButtons } from './AchievementButtons'
-export { Achievements } from './Achievements'
-export { AchievementsList } from './AchievementsList'
-export { PageHeader } from './PageHeader'
-export { StatisticButtons } from './StatisticButtons'
-export { StatisticsList } from './StatisticsList'
+export { AchievementButtons } from './components/AchievementButtons'
+export { Achievements } from './components/Achievements'
+export { AchievementsList } from './components/AchievementsList'
+export { PageHeader } from './components/PageHeader'
+export { StatisticButtons } from './components/StatisticButtons'
+export { StatisticsList } from './components/StatisticsList'
 
 export { useAchievements } from './hooks/useAchievements'
 

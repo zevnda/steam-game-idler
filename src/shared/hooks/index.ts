@@ -7,5 +7,9 @@ export { useFreeGames } from './useFreeGames'
 export { useZoomControls } from './useZoomControls'
 export { useContextMenu } from './useContextMenu'
 export { useSteamMonitor } from './useSteamMonitor'
-
 export * from './useAutoIdleGames'
+
+export { useSignIn } from './layouts/useSignIn'
+export { useSidebar } from './sidebar/useSidebar'
+export { useTitlebar } from './titlebar/useTitlebar'
+export * from './notifications/useNotifications'

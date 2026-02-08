@@ -2,6 +2,8 @@ export * from './achievements'
 export * from './automation'
 export * from './idle'
 export * from './tasks'
+export * from './handleStartAutoIdleGames'
+export * from './handleCheckForFreeGames'
 
 export { startCardFarming } from './startCardFarming'
 export { startAchievementUnlocker } from './startAchievementUnlocker'

@@ -1,7 +1,7 @@
 import { invoke } from '@tauri-apps/api/core'
 import i18next from 'i18next'
 import moment from 'moment'
-import { showDangerToast, showPrimaryToast } from '@/shared/ui'
+import { showDangerToast, showPrimaryToast } from '@/shared/components'
 import { logEvent } from '@/shared/utils'
 
 export const handleRefreshGamesList = async (
