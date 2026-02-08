@@ -284,11 +284,9 @@ export const Sidebar = () => {
           {mainSidebarItems.map((item, idx) => renderSidebarItem(item, idx))}
         </div>
 
-        {process.env.NODE_ENV === 'production' && (
-          <div className='absolute bottom-8 left-0 right-0 flex flex-col items-center justify-end grow mb-1 overflow-hidden pointer-events-none'>
-            <AdSlot />
-          </div>
-        )}
+        <div className='absolute bottom-8 left-0 right-0 flex flex-col items-center justify-end grow mb-1 overflow-hidden pointer-events-none'>
+          <AdSlot />
+        </div>
 
         {/* Settings and signout */}
         <div
