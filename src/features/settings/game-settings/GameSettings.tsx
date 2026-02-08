@@ -1,6 +1,6 @@
 import type { Game } from '@/shared/types'
 import { memo, useEffect, useMemo, useState } from 'react'
-import { Trans, useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import { RiSearchLine } from 'react-icons/ri'
 import { TbChevronRight } from 'react-icons/tb'
 import { FixedSizeList as List } from 'react-window'
@@ -147,9 +147,7 @@ export const GameSettings = () => {
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>{t('gameSettings.globalMaxIdle')}</p>
-            <p className='text-xs text-altwhite'>
-              <Trans i18nKey='gameSettings.globalMaxIdleSub' />
-            </p>
+            <p className='text-xs text-altwhite'>{t('gameSettings.globalMaxIdleSub')}</p>
           </div>
           <NumberInput
             size='sm'
@@ -181,9 +179,7 @@ export const GameSettings = () => {
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>{t('gameSettings.idle')}</p>
-            <p className='text-xs text-altwhite'>
-              <Trans i18nKey='gameSettings.idleSub' />
-            </p>
+            <p className='text-xs text-altwhite'>{t('gameSettings.idleSub')}</p>
           </div>
           <NumberInput
             size='sm'
@@ -216,9 +212,7 @@ export const GameSettings = () => {
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>{t('gameSettings.drops')}</p>
-            <p className='text-xs text-altwhite'>
-              <Trans i18nKey='gameSettings.dropsSub' />
-            </p>
+            <p className='text-xs text-altwhite'>{t('gameSettings.dropsSub')}</p>
           </div>
           <NumberInput
             size='sm'
@@ -251,9 +245,7 @@ export const GameSettings = () => {
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>{t('gameSettings.achievements')}</p>
-            <p className='text-xs text-altwhite'>
-              <Trans i18nKey='gameSettings.achievementsSub' />
-            </p>
+            <p className='text-xs text-altwhite'>{t('gameSettings.achievementsSub')}</p>
           </div>
           <NumberInput
             size='sm'

@@ -1,3 +1,4 @@
+import type i18next from '@/i18n/i18n'
 import type { SortStyleValue } from '@/shared/types'
 import { invoke } from '@tauri-apps/api/core'
 import { useTranslation } from 'react-i18next'
@@ -27,7 +28,7 @@ export const usePageHeader = (
 }
 
 export const handleRefetch = async (
-  t: (key: string, options?: Record<string, unknown>) => string,
+  t: typeof i18next.t,
   steamId: string | undefined,
   setRefreshKey: React.Dispatch<React.SetStateAction<number>>,
   manual: boolean,

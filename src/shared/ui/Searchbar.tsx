@@ -196,7 +196,7 @@ export const Searchbar = ({ isModalOpen = false, onModalClose }: SearchbarProps)
           {searchStore.recentSearches.length > 0 && (
             <div className='p-4 border-t border-border/40'>
               <div className='flex items-center gap-2'>
-                <h3 className='text-sm font-bold text-altwhite'>Recent searches</h3>
+                <h3 className='text-sm font-bold text-altwhite'>{t('common.recentSearches')}</h3>
               </div>
 
               <div className='grid max-h-96 overflow-y-auto'>
@@ -231,7 +231,7 @@ export const Searchbar = ({ isModalOpen = false, onModalClose }: SearchbarProps)
           {searchStore.recentSearches.length === 0 && (
             <div className='text-center py-8 border-t border-border/40'>
               <RiSearchLine size={32} className='text-altwhite mx-auto mb-3' />
-              <p className='text-altwhite'>No recent searches</p>
+              <p className='text-altwhite'>{t('common.noRecentSearches')}</p>
             </div>
           )}
         </ModalBody>

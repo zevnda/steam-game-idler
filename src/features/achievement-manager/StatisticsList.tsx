@@ -3,13 +3,13 @@ import { memo, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FixedSizeList as List } from 'react-window'
 import { cn, NumberInput } from '@heroui/react'
+import i18next from 'i18next'
 import { StatisticButtons } from '@/features/achievement-manager'
 import { useSearchStore } from '@/shared/stores'
 
 interface RowData {
   filteredStatistics: Statistic[]
   updateStatistic: (id: string, e: number | React.ChangeEvent<HTMLInputElement>) => void
-  t: (key: string) => string
 }
 
 interface RowProps {
@@ -19,7 +19,7 @@ interface RowProps {
 }
 
 const Row = memo(({ index, style, data }: RowProps) => {
-  const { filteredStatistics, updateStatistic, t } = data
+  const { filteredStatistics, updateStatistic } = data
   const item1 = filteredStatistics[index * 2]
   const item2 = filteredStatistics[index * 2 + 1]
 
@@ -43,7 +43,7 @@ const Row = memo(({ index, style, data }: RowProps) => {
               <p
                 className={`text-[10px] ${protectedStatisticOne ? 'text-warning' : 'text-altwhite'}`}
               >
-                {t('achievementManager.statistics.flags')}: {item1.flags}
+                {i18next.t('achievementManager.statistics.flags')}: {item1.flags}
               </p>
             </div>
             <NumberInput
@@ -82,7 +82,7 @@ const Row = memo(({ index, style, data }: RowProps) => {
               <p
                 className={`text-[10px] ${protectedStatisticTwo ? 'text-warning' : 'text-altwhite'}`}
               >
-                {t('achievementManager.statistics.flags')}: {item2.flags}
+                {i18next.t('achievementManager.statistics.flags')}: {item2.flags}
               </p>
             </div>
             <NumberInput
@@ -165,7 +165,7 @@ export const StatisticsList = ({
     [statistics, statisticQueryValue],
   )
 
-  const itemData: RowData = { filteredStatistics, updateStatistic, t }
+  const itemData: RowData = { filteredStatistics, updateStatistic }
 
   return (
     <div className='flex flex-col gap-2 w-full scroll-smooth'>

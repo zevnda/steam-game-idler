@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { TbCancel, TbLock, TbLockOpen } from 'react-icons/tb'
 import { FixedSizeList as List } from 'react-window'
 import { Button, cn } from '@heroui/react'
+import i18next from 'i18next'
 import Image from 'next/image'
 import { AchievementButtons } from '@/features/achievement-manager'
 import { useSearchStore, useStateStore, useUserStore } from '@/shared/stores'
@@ -16,7 +17,6 @@ interface RowData {
   appName: string
   filteredAchievements: Achievement[]
   updateAchievement: (achievementId: string, newAchievedState: boolean) => void
-  t: (key: string) => string
 }
 
 interface RowProps {
@@ -26,7 +26,7 @@ interface RowProps {
 }
 
 const Row = memo(({ index, style, data }: RowProps) => {
-  const { userSummary, appId, appName, filteredAchievements, updateAchievement, t } = data
+  const { userSummary, appId, appName, filteredAchievements, updateAchievement } = data
   const item = filteredAchievements[index]
 
   if (!item) return null
@@ -110,10 +110,10 @@ const Row = memo(({ index, style, data }: RowProps) => {
             }
           >
             {protectedAchievement
-              ? t('achievementManager.achievements.protected')
+              ? i18next.t('achievementManager.achievements.protected')
               : achieved
-                ? t('achievementManager.achievements.lock')
-                : t('achievementManager.achievements.unlock')}
+                ? i18next.t('achievementManager.achievements.lock')
+                : i18next.t('achievementManager.achievements.unlock')}
           </Button>
         </div>
         <div className='py-2 px-3 bg-achievement-footer select-none rounded-b-lg'>
@@ -184,7 +184,6 @@ export const AchievementsList = ({
     appName: appName as string,
     filteredAchievements,
     updateAchievement,
-    t,
   }
 
   return (

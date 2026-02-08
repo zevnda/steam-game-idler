@@ -109,7 +109,7 @@ export const Logs = () => {
               <div className='flex items-center justify-center py-16'>
                 <div className='text-center'>
                   <div className='text-2xl text-altwhite/30 mb-2'>◯</div>
-                  <p className='text-sm text-altwhite/60 font-mono'>No logs found</p>
+                  <p className='text-sm text-altwhite/60 font-mono'>{t('settings.debug.noLogs')}</p>
                 </div>
               </div>
             )}

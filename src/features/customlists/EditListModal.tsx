@@ -14,10 +14,10 @@ import {
   ModalFooter,
   ModalHeader,
 } from '@heroui/react'
+import i18next from 'i18next'
 import Image from 'next/image'
 
 interface RowData {
-  t: (key: string) => string
   filteredGamesList: Game[]
   list: Game[]
   handleAddGame: (game: Game) => void
@@ -35,7 +35,6 @@ interface RowProps {
 
 const Row = memo(({ index, style, data }: RowProps) => {
   const {
-    t,
     filteredGamesList,
     list,
     handleAddGame,
@@ -76,8 +75,8 @@ const Row = memo(({ index, style, data }: RowProps) => {
             }}
           >
             {blacklist.includes(item.appid)
-              ? t('customLists.blacklisted')
-              : t('customLists.blacklist')}
+              ? i18next.t('customLists.blacklisted')
+              : i18next.t('customLists.blacklist')}
           </Button>
         )}
         <Image
@@ -147,7 +146,6 @@ export const EditListModal = ({
 }: EditListModalProps) => {
   const { t } = useTranslation()
   const itemData = {
-    t,
     filteredGamesList,
     list,
     handleAddGame,

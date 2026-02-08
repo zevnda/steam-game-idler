@@ -2,6 +2,7 @@ import type { Game, SortOption } from '@/shared/types'
 import { useTranslation } from 'react-i18next'
 import { TbX } from 'react-icons/tb'
 import { Button, cn, Divider, Tab, Tabs } from '@heroui/react'
+import i18next from 'i18next'
 import { handleRefetch, usePageHeader } from '@/features/gameslist'
 import { useSearchStore, useUserStore } from '@/shared/stores'
 
@@ -49,7 +50,7 @@ export const PageHeader = ({
               <Button
                 className='bg-btn-secondary text-btn-text font-bold'
                 radius='full'
-                onPress={() => handleRefetch(t, userSummary?.steamId, setRefreshKey, true)}
+                onPress={() => handleRefetch(i18next.t, userSummary?.steamId, setRefreshKey, true)}
               >
                 {t('setup.refresh')}
               </Button>
@@ -80,7 +81,7 @@ export const PageHeader = ({
               {gameQueryValue && (
                 <div className='flex items-center gap-2'>
                   <Divider orientation='vertical' className='mx-2 h-8 bg-border' />
-                  <p className='text-sm text-altwhite font-bold'>Search</p>
+                  <p className='text-sm text-altwhite font-bold'>{t('common.search')}</p>
                   <div className='flex items-center gap-2 text-sm text-altwhite p-2 bg-item-active rounded-full max-w-64'>
                     <p className='text-content truncate'>{gameQueryValue}</p>
                     <div
