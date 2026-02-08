@@ -24,7 +24,7 @@ const idleIntervals: { [key: number]: ReturnType<typeof setTimeout> } = {}
 export async function startIdle(appId: number, appName: string, manual: boolean) {
   try {
     // Make sure Steam client is running
-    const isSteamRunning = checkSteamStatus(true)
+    const isSteamRunning = await checkSteamStatus(true)
     if (!isSteamRunning) return false
 
     const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
@@ -147,7 +147,7 @@ export async function stopIdle(appId: number | undefined, appName: string | unde
 export async function startFarmIdle(gamesSet: Set<GameForFarming>) {
   try {
     // Make sure Steam client is running
-    const isSteamRunning = checkSteamStatus(true)
+    const isSteamRunning = await checkSteamStatus(true)
     if (!isSteamRunning) return false
 
     const gamesList = Array.from(gamesSet).map(game => ({

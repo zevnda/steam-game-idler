@@ -210,7 +210,7 @@ export const viewAchievments = async (
   setShowAchievements: (value: boolean) => void,
 ) => {
   // Make sure Steam client is running
-  const isSteamRunning = checkSteamStatus(true)
+  const isSteamRunning = await checkSteamStatus(true)
   if (!isSteamRunning) return
 
   setAppId(item.appid)
