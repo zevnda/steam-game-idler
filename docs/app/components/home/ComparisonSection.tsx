@@ -59,7 +59,7 @@ export default function ComparisonSection() {
       {/* Bottom transition overlay */}
       <div className='absolute bottom-0 left-0 right-0 h-32 bg-linear-to-b from-transparent to-purple-50/50' />
 
-      <div className='container relative z-10 px-4 sm:px-6 md:px-8'>
+      <div className='container mx-auto relative z-10 px-4 sm:px-6 md:px-8'>
         {/* Header */}
         <header className='max-w-4xl mx-auto text-center mb-12 sm:mb-16 lg:mb-20'>
           <h2

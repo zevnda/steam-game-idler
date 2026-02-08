@@ -62,7 +62,7 @@ export default function StatsSection() {
       {/* Bottom transition overlay */}
       <div className='absolute bottom-0 left-0 right-0 h-32 bg-linear-to-b from-transparent to-purple-100/50' />
 
-      <div className='container relative z-10 px-4 sm:px-6 md:px-8'>
+      <div className='container mx-auto relative z-10 px-4 sm:px-6 md:px-8'>
         {/* Header with side-by-side layout */}
         <header className='grid lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 items-center mb-12 sm:mb-16 lg:mb-20'>
           <div>

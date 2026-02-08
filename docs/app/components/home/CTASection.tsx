@@ -39,7 +39,7 @@ export default function CTASection() {
       {/* Bottom transition to footer */}
       <div className='absolute bottom-0 left-0 right-0 h-16 bg-linear-to-b from-transparent to-gray-100/20' />
 
-      <div className='container relative z-10 px-4 sm:px-6 md:px-8'>
+      <div className='container mx-auto relative z-10 px-4 sm:px-6 md:px-8'>
         <div className='text-center max-w-4xl mx-auto'>
           <h2
             id='cta-heading'

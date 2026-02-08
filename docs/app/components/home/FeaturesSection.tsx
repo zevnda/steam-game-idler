@@ -59,7 +59,7 @@ export default function FeaturesSection() {
       {/* Bottom transition overlay */}
       <div className='absolute bottom-0 left-0 right-0 h-32 bg-linear-to-b from-transparent to-rose-50/50' />
 
-      <div className='container relative z-10 px-4 sm:px-6 md:px-8'>
+      <div className='container mx-auto relative z-10 px-4 sm:px-6 md:px-8'>
         {/* Header */}
         <header className='max-w-3xl mx-auto text-center mb-12 sm:mb-16 lg:mb-20'>
           <h2 className='text-3xl sm:text-4xl md:text-5xl font-black text-gray-800 mb-6 sm:mb-8 leading-tight'>
