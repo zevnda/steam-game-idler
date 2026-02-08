@@ -86,11 +86,5 @@
     "prettier": "^3.7.4",
     "tailwindcss": "^4.1.17",
     "typescript": "^5.8.3"
-  },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "pnpm lint ."
-    ],
-    "**/*": "prettier --write --ignore-unknown"
   }
 }
