@@ -9,6 +9,10 @@ const config = {
   trailingComma: 'all',
   arrowParens: 'avoid',
   quoteProps: 'consistent',
+  bracketSpacing: true,
+  bracketSameLine: false,
+  objectWrap: 'preserve',
+  endOfLine: 'lf',
   plugins: ['@ianvs/prettier-plugin-sort-imports'],
   importOrder: [
     '<TYPES>^(node:)',
