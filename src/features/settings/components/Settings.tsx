@@ -43,11 +43,9 @@ export const Settings = () => {
       </div>
 
       <div className='absolute flex flex-col items-center gap-4 bottom-4 left-0 px-6 w-62.5 z-40'>
-        {process.env.NODE_ENV === 'production' && (
-          <div className='absolute bottom-12 left-0 right-0 flex flex-col items-center justify-end grow mb-1 overflow-hidden pointer-events-none'>
-            <AdSlot />
-          </div>
-        )}
+        <div className='absolute bottom-12 left-0 right-0 flex flex-col items-center justify-end grow mb-1 overflow-hidden pointer-events-none'>
+          <AdSlot />
+        </div>
 
         <SocialButtons />
         <span className='text-xs text-altwhite text-center'>Steam Game Idler v{version}</span>
