@@ -11,7 +11,7 @@ export default function FooterSection() {
       {/* Top transition overlay */}
       <div className='absolute top-0 left-0 right-0 h-8 bg-linear-to-b from-purple-600/10 to-transparent' />
 
-      <div className='container px-4 sm:px-6 md:px-8 relative z-10'>
+      <div className='container mx-auto px-4 sm:px-6 md:px-8 relative z-10'>
         {/* Main footer content */}
         <div className='grid lg:grid-cols-3 gap-8 sm:gap-12 mb-12 sm:mb-16'>
           {/* Brand section */}

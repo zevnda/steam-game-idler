@@ -15,7 +15,7 @@ export default function SecuritySection() {
       {/* Bottom transition overlay */}
       <div className='absolute bottom-0 left-0 right-0 h-32 bg-linear-to-b from-transparent to-blue-50/50' />
 
-      <div className='container relative z-10 px-4 sm:px-6 md:px-8'>
+      <div className='container mx-auto relative z-10 px-4 sm:px-6 md:px-8'>
         <div className='grid lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center'>
           {/* Left side - Content */}
           <div>
