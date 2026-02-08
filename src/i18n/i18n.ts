@@ -74,7 +74,17 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    fallbackLng: 'en-US',
+    fallbackLng: {
+      'da-DK': ['no-NO', 'sv-SE'],
+      'no-NO': ['da-DK', 'sv-SE'],
+      'sv-SE': ['no-NO', 'da-DK'],
+      'fi-FI': ['sv-SE'],
+      'pt-BR': ['pt-PT'],
+      'pt-PT': ['pt-BR'],
+      'zh-CN': ['zh-TW'],
+      'zh-TW': ['zh-CN'],
+      'default': ['en-US'],
+    },
     debug: process.env.NODE_ENV === 'development',
 
     ns,
