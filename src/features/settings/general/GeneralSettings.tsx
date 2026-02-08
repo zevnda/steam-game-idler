@@ -10,7 +10,7 @@ import {
   useGeneralSettings,
 } from '@/features/settings'
 import { useUserStore } from '@/shared/stores'
-import { ExtLink, LanguageSwitch, WebviewWindow } from '@/shared/ui'
+import { ExtLink, LanguageSwitch } from '@/shared/ui'
 
 export const GeneralSettings = () => {
   const { t } = useTranslation()
@@ -159,12 +159,12 @@ export const GeneralSettings = () => {
             <p className='text-xs text-altwhite'>
               <Trans i18nKey='settings.general.webApi.description'>
                 Use your own Steam Web API Key.&nbsp;
-                <WebviewWindow
+                <ExtLink
                   href='https://steamgameidler.com/docs/settings/general#steam-web-api-key'
                   className='text-dynamic hover:text-dynamic-hover duration-150'
                 >
                   Learn more
-                </WebviewWindow>
+                </ExtLink>
               </Trans>
             </p>
             <p className='text-xs text-altwhite'>

@@ -5,7 +5,7 @@ import { cn, Modal, ModalBody, ModalContent, Tab, Tabs } from '@heroui/react'
 import { Manrope } from 'next/font/google'
 import Image from 'next/image'
 import { useStateStore } from '@/shared/stores'
-import { ExtLink, WebviewWindow } from '@/shared/ui'
+import { ExtLink } from '@/shared/ui'
 
 const manrope = Manrope({
   subsets: ['latin'],
@@ -159,12 +159,12 @@ export const GoProModal = () => {
               </Tab>
             </Tabs>
 
-            <WebviewWindow
+            <ExtLink
               href='https://steamgameidler.com/docs/pro'
               className='text-dynamic hover:text-dynamic-hover duration-150 text-xs'
             >
               <p>{t('proMode.modal.learnMore')}</p>
-            </WebviewWindow>
+            </ExtLink>
 
             <div className='mt-4 w-full max-w-xs text-sm'>
               <p className='font-semibold mb-3'>{t('proMode.modal.benefits')}</p>

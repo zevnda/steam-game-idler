@@ -1,18 +1,18 @@
 import { FaDiscord, FaGithub } from 'react-icons/fa6'
 import { TbBookFilled } from 'react-icons/tb'
 import { useNavigationStore } from '@/shared/stores'
-import { ExtLink, WebviewWindow } from '@/shared/ui'
+import { ExtLink } from '@/shared/ui'
 
 export const SocialButtons = () => {
   const currentSettingsTab = useNavigationStore(state => state.currentSettingsTab)
 
   return (
     <div className='flex items-center gap-1'>
-      <WebviewWindow href={`https://steamgameidler.com/docs/settings/${currentSettingsTab}`}>
+      <ExtLink href={`https://steamgameidler.com/docs/settings/${currentSettingsTab}`}>
         <p className='bg-transparent rounded-full hover:bg-item-active p-2 duration-150'>
           <TbBookFilled size={20} />
         </p>
-      </WebviewWindow>
+      </ExtLink>
 
       <ExtLink href='https://github.com/zevnda/steam-game-idler'>
         <p className='bg-transparent rounded-full hover:bg-item-active p-2 duration-150'>

@@ -6,7 +6,7 @@ import { Button, cn, Spinner } from '@heroui/react'
 import Image from 'next/image'
 import { useSignIn } from '@/shared/layouts'
 import { useNavigationStore } from '@/shared/stores'
-import { LanguageSwitch, SignInHero, WebviewWindow } from '@/shared/ui'
+import { ExtLink, LanguageSwitch, SignInHero } from '@/shared/ui'
 
 export const SignIn = () => {
   const { t } = useTranslation()
@@ -26,14 +26,14 @@ export const SignIn = () => {
     <>
       {/* Language switch */}
       <div className='absolute bottom-0 right-0 p-10 z-10 flex items-center gap-4 pointer-events-none'>
-        <WebviewWindow
+        <ExtLink
           href='https://steamgameidler.com/docs/get-started/how-to-sign-in'
           className='pointer-events-auto'
         >
           <p className='text-sm text-altwhite hover:text-altwhite/90 duration-150'>
             {t('setup.help')}
           </p>
-        </WebviewWindow>
+        </ExtLink>
 
         <LanguageSwitch
           className='w-45 pointer-events-auto'
@@ -111,11 +111,11 @@ function UserSelectionArea({ onRefresh }: { onRefresh: () => void }) {
               <p className='text-xl font-semibold'>{t('setup.noUsers')}</p>
               <p className='text-xs text-altwhite max-w-md'>{t('setup.noUsersTwo')}</p>
               <div className='flex items-center gap-4 mt-2'>
-                <WebviewWindow href='https://steamgameidler.com/docs/faq#error-messages:~:text=No%20Steam%20users%20found'>
+                <ExtLink href='https://steamgameidler.com/docs/faq#error-messages:~:text=No%20Steam%20users%20found'>
                   <div className='border-2 border-content py-2 px-4 rounded-full hover:opacity-90 duration-150'>
                     <p className='text-sm font-semibold'>{t('common.learnMore')}</p>
                   </div>
-                </WebviewWindow>
+                </ExtLink>
               </div>
             </div>
           )}
@@ -186,20 +186,20 @@ function UserSelectionArea({ onRefresh }: { onRefresh: () => void }) {
           <Trans
             i18nKey='setup.acknowledge'
             components={[
-              <WebviewWindow
+              <ExtLink
                 href='https://steamgameidler.com/tos'
                 className='text-dynamic font-semibold hover:opacity-90 duration-150'
                 key='tos'
               >
                 Terms of Service
-              </WebviewWindow>,
-              <WebviewWindow
+              </ExtLink>,
+              <ExtLink
                 href='https://steamgameidler.com/privacy'
                 className='text-dynamic font-semibold hover:opacity-90 duration-150'
                 key='privacy'
               >
                 Privacy Policy
-              </WebviewWindow>,
+              </ExtLink>,
             ]}
           />
         </p>

@@ -11,7 +11,7 @@ import {
   useCardSettings,
 } from '@/features/settings'
 import { useStateStore, useUserStore } from '@/shared/stores'
-import { CustomModal, ExtLink, ProBadge, showDangerToast, WebviewWindow } from '@/shared/ui'
+import { CustomModal, ExtLink, ProBadge, showDangerToast } from '@/shared/ui'
 import { logEvent } from '@/shared/utils'
 
 export const SteamCredentials = () => {
@@ -101,12 +101,12 @@ export const SteamCredentials = () => {
             <p className='text-xs text-altwhite'>
               {t('settings.steamCredentials.automated.description')}
             </p>
-            <WebviewWindow
+            <ExtLink
               href='https://steamgameidler.com/docs/steam-credentials#automated-method'
               className='text-xs text-dynamic hover:text-dynamic-hover duration-150'
             >
               {t('common.learnMore')}
-            </WebviewWindow>
+            </ExtLink>
           </div>
 
           <div
@@ -146,12 +146,12 @@ export const SteamCredentials = () => {
               <Trans i18nKey='settings.cardFarming.steamCredentials'>
                 Steam credentials are required in order to use the Card Farming and Trading Card
                 Manager features.&nbsp;
-                <WebviewWindow
+                <ExtLink
                   href='https://steamgameidler.com/docs/steam-credentials#manual-method'
                   className='text-dynamic hover:text-dynamic-hover duration-150'
                 >
                   Learn more
-                </WebviewWindow>
+                </ExtLink>
               </Trans>
             </p>
             <p className='text-xs text-altwhite'>

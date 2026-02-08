@@ -1,17 +1,12 @@
 import type { Game } from '@/shared/types'
-import { open } from '@tauri-apps/plugin-shell'
 import { useTranslation } from 'react-i18next'
 import { FaSteam } from 'react-icons/fa'
 import { TbAwardFilled, TbDotsVertical, TbPlayerPlayFilled } from 'react-icons/tb'
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@heroui/react'
 import { useStateStore } from '@/shared/stores'
-import { handleIdle, viewAchievments } from '@/shared/utils'
+import { handleIdle, openExternalLink, viewAchievments } from '@/shared/utils'
 
-interface CardMenuProps {
-  item: Game
-}
-
-export const CardMenu = ({ item }: CardMenuProps) => {
+export const CardMenu = ({ item }: { item: Game }) => {
   const { t } = useTranslation()
   const setAppId = useStateStore(state => state.setAppId)
   const setAppName = useStateStore(state => state.setAppName)
@@ -19,7 +14,7 @@ export const CardMenu = ({ item }: CardMenuProps) => {
 
   const viewStorePage = async (item: Game) => {
     try {
-      await open(`https://store.steampowered.com/app/${item.appid}`)
+      await openExternalLink(`https://store.steampowered.com/app/${item.appid}`)
     } catch (error) {
       console.error('Failed to open link:', error)
     }

@@ -12,7 +12,7 @@ import { CSS } from '@dnd-kit/utilities'
 import { Button, Checkbox, cn, Input, Spinner } from '@heroui/react'
 import Image from 'next/image'
 import { useUserStore } from '@/shared/stores'
-import { CustomModal, showAccountMismatchToast, showDangerToast, WebviewWindow } from '@/shared/ui'
+import { CustomModal, ExtLink, showAccountMismatchToast, showDangerToast } from '@/shared/ui'
 import { checkSteamStatus, logEvent } from '@/shared/utils'
 
 interface SortableAchievementProps {
@@ -445,11 +445,11 @@ export const AchievementOrderModal = ({
       }
       buttons={
         <>
-          <WebviewWindow href='https://steamgameidler.com/docs/features/achievement-unlocker#custom-order--unlock-delay'>
+          <ExtLink href='https://steamgameidler.com/docs/features/achievement-unlocker#custom-order--unlock-delay'>
             <p className='text-xs cursor-pointer hover:text-altwhite duration-150 p-2 rounded-lg'>
               {t('setup.help')}
             </p>
-          </WebviewWindow>
+          </ExtLink>
           <Button
             size='sm'
             color='danger'

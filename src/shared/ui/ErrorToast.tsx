@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { WebviewWindow } from '@/shared/ui'
+import { ExtLink } from '@/shared/ui'
 
 interface ErrorToastProps {
   message: string
@@ -12,9 +12,9 @@ export const ErrorToast = ({ message, href }: ErrorToastProps) => {
   return (
     <div className='flex flex-col gap-1'>
       <p className='text-sm text-content'>{message}</p>
-      <WebviewWindow href={href}>
+      <ExtLink href={href}>
         <p className='text-xs text-dynamic hover:text-dynamic-hover'>{t('common.learnMore')}</p>
-      </WebviewWindow>
+      </ExtLink>
     </div>
   )
 }

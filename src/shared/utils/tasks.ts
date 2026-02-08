@@ -14,7 +14,7 @@ import {
   requestPermission,
   sendNotification,
 } from '@tauri-apps/plugin-notification'
-import { open } from '@tauri-apps/plugin-shell'
+import { openUrl } from '@tauri-apps/plugin-opener'
 import i18next from 'i18next'
 import { fetchUserSummary } from '@/features/settings'
 import {
@@ -328,5 +328,13 @@ export async function sendNativeNotification(title: string, body: string) {
     showDangerToast(i18next.t('common.error'))
     console.error('Error in (sendNativeNotification):', error)
     logEvent(`[Error] in (sendNativeNotification): ${error}`)
+  }
+}
+
+export async function openExternalLink(href: string) {
+  try {
+    await openUrl(href)
+  } catch (error) {
+    console.error('Failed to open link:', error)
   }
 }

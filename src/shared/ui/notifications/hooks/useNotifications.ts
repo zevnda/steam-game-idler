@@ -1,5 +1,5 @@
-import { open } from '@tauri-apps/plugin-shell'
 import { useEffect, useRef, useState } from 'react'
+import { openExternalLink } from '@/shared/utils'
 
 interface Notification {
   id: string
@@ -140,7 +140,7 @@ export const handleOpenUrl = async (
 ) => {
   markAsSeen(id, unseenNotifications, setUnseenNotifications)
   try {
-    await open(url)
+    await openExternalLink(url)
   } catch (error) {
     console.error('Failed to open link:', error)
   }

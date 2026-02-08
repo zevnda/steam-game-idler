@@ -5,7 +5,7 @@ import { TbChevronRight } from 'react-icons/tb'
 import { Button, Divider } from '@heroui/react'
 import { SettingsSwitch } from '@/features/settings'
 import { useStateStore, useUserStore } from '@/shared/stores'
-import { Beta, ProBadge, showDangerToast, showSuccessToast, WebviewWindow } from '@/shared/ui'
+import { Beta, ExtLink, ProBadge, showDangerToast, showSuccessToast } from '@/shared/ui'
 import { logEvent } from '@/shared/utils'
 
 export const FreeGamesSettings = () => {
@@ -97,12 +97,12 @@ export const FreeGamesSettings = () => {
             <p className='text-xs text-altwhite'>
               {t('settings.general.autoRedeemFreeGames.description')}
             </p>
-            <WebviewWindow
+            <ExtLink
               href='https://steamgameidler.com/docs/settings/free-games#auto-redeem-free-games'
               className='text-xs text-dynamic hover:text-dynamic-hover duration-150'
             >
               {t('common.learnMore')}
-            </WebviewWindow>
+            </ExtLink>
           </div>
 
           <div

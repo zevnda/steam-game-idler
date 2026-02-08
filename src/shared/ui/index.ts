@@ -13,7 +13,6 @@ export { Searchbar } from './Searchbar'
 export { SignInHero } from './SignInHero'
 export { SteamWarning } from './SteamWarning'
 export { UpdateButton } from './UpdateButton'
-export { WebviewWindow } from './WebviewWindow'
 
 export { FullscreenLoader } from './loaders/FullscreenLoader'
 export { Notifications } from './notifications/Notifications'
