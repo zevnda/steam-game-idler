@@ -36,7 +36,7 @@ export const Notifications = () => {
       <CustomTooltip content={t('common.notifications')}>
         <div
           className={cn(
-            'flex items-center justify-center hover:text-content/80 hover:bg-header-hover/10 h-9 w-12',
+            'flex items-center justify-center hover:bg-header-hover/10 h-9 w-12',
             'cursor-pointer active:scale-95 relative duration-150',
           )}
           onClick={() => {
@@ -45,7 +45,7 @@ export const Notifications = () => {
         >
           <TbBell
             fontSize={20}
-            className={cn(unseenNotifications.length > 0 && 'text-yellow-400')}
+            className={cn(unseenNotifications.length > 0 ? 'text-yellow-400' : 'text-content')}
           />
           {/* Notification counter badge */}
           {unseenNotifications.length > 0 && (
@@ -153,7 +153,7 @@ export const Notifications = () => {
                       {/* Notification content */}
                       <div className='flex flex-col gap-1 w-full'>
                         <div className='flex items-center gap-2'>
-                          <span className='text-xs font-semibold truncate'>
+                          <span className='text-content text-xs font-semibold truncate'>
                             {notification.title}
                           </span>
                           <span className='font-normal text-altwhite text-[11px] ml-1 min-w-12'>

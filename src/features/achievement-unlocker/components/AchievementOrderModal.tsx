@@ -174,6 +174,15 @@ const SortableAchievement = memo(function SortableAchievement({
                   onPointerDown={e => e.stopPropagation()}
                   onBlur={handleInputBlur}
                   onKeyDown={handleKeyDown}
+                  classNames={{
+                    inputWrapper: cn(
+                      'bg-input data-[hover=true]:!bg-inputhover',
+                      'group-data-[focus-within=true]:!bg-inputhover',
+                      'group-data-[focus-visible=true]:ring-transparent',
+                      'group-data-[focus-visible=true]:ring-offset-transparent',
+                    ),
+                    input: ['!text-content placeholder:text-altwhite/50'],
+                  }}
                 />
                 <span className='text-xs text-gray-400'>{t('common.minutes')}</span>
                 <Button

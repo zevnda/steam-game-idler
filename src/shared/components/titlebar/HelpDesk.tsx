@@ -168,9 +168,8 @@ export const HelpDesk = () => {
           <CustomTooltip content={t('common.helpDesk')}>
             <div
               className={cn(
-                'flex justify-center items-center',
-                'hover:bg-header-hover/10 h-9 w-12 px-2 duration-150 cursor-pointer',
-                'hover:text-white transition-colors',
+                'flex justify-center items-center hover:bg-header-hover/10 h-9 w-12 px-2 ',
+                'duration-150 cursor-pointer transition-colors',
                 isOpen && 'text-primary',
                 showGuide && 'z-1002 relative pointer-events-none',
               )}

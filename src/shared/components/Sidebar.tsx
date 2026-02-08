@@ -33,7 +33,6 @@ export const Sidebar = () => {
   const setActivePage = useNavigationStore(state => state.setActivePage)
   const freeGamesList = useUserStore(state => state.freeGamesList)
   const userSummary = useUserStore(state => state.userSummary)
-  const isPro = useUserStore(state => state.isPro)
   const searchContent = useSearchStore()
   const idleGamesList = useIdleStore(state => state.idleGamesList)
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
@@ -312,12 +311,6 @@ export const Sidebar = () => {
                 height={sidebarCollapsed ? 28 : 32}
                 className='rounded-full bg-white'
               />
-              {isPro && (
-                <div
-                  className='pointer-events-none absolute inset-0 rounded-full'
-                  style={{ boxShadow: 'inset 0 0 0 2px hsl(var(--heroui-dynamic))' }}
-                />
-              )}
             </div>
 
             {!sidebarCollapsed && (
