@@ -23,8 +23,6 @@ interface StateStore {
   setLoadingListButton: (value: boolean | ((prev: boolean) => boolean)) => void
   loadingRemoveListings: boolean
   setLoadingRemoveListings: (value: boolean | ((prev: boolean) => boolean)) => void
-  useBeta: boolean
-  setUseBeta: (value: boolean | ((prev: boolean) => boolean)) => void
   transitionDuration: string
   setTransitionDuration: (value: string | ((prev: string) => string)) => void
   proModalOpen: boolean
@@ -86,11 +84,6 @@ export const useStateStore = create<StateStore>(set => ({
     set(state => ({
       loadingRemoveListings:
         typeof value === 'function' ? value(state.loadingRemoveListings) : value,
-    })),
-  useBeta: false,
-  setUseBeta: value =>
-    set(state => ({
-      useBeta: typeof value === 'function' ? value(state.useBeta) : value,
     })),
   transitionDuration: '0ms',
   setTransitionDuration: value =>

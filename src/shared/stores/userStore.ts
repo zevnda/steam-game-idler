@@ -58,7 +58,6 @@ export const useUserStore = create<UserStore>(set => ({
       antiAway: false,
       freeGameNotifications: true,
       apiKey: null,
-      useBeta: false,
       disableTooltips: false,
       runAtStartup: false,
       startMinimized: false,

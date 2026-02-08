@@ -13,7 +13,6 @@ fn get_default_settings() -> Value {
             "antiAway": false,
             "freeGameNotifications": true,
             "apiKey": null,
-            "useBeta": false,
             "disableTooltips": false,
             "runAtStartup": false,
             "startMinimized": false,
