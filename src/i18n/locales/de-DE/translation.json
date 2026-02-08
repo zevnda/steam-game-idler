@@ -144,8 +144,6 @@
   "settings.general.startMinimized.description": "SGI in die Systemleiste minimiert starten",
   "settings.general.closeToTray": "In der Nähe des Tabletts",
   "settings.general.closeToTray.description": "Durch Klicken auf die Schaltfläche „X“ wird SGI in die Taskleiste minimiert, anstatt es zu schließen.",
-  "settings.general.useBeta": "Beta-Funktionen",
-  "settings.general.useBeta.description": "Beta-Funktionen können instabil sein, unerwartet ändern oder jederzeit entfernt werden. Wenn du Probleme bei der Verwendung einer Beta-Funktion hast, melde es bitte auf GitHub",
   "settings.general.disableTooltips": "Tooltips deaktivieren",
   "settings.general.disableTooltips.description": "Nicht notwendige Tooltips in der App deaktivieren",
   "settings.general.runAtStartup": "Beim Start ausführen",

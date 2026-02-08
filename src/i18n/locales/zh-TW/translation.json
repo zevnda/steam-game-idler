@@ -144,8 +144,6 @@
   "settings.general.startMinimized.description": "啟動 SGI 並最小化到系統托盤",
   "settings.general.closeToTray": "靠近托盤",
   "settings.general.closeToTray.description": "點擊“X”按鈕會將SGI最小化到系統托盤，而不是將其關閉。",
-  "settings.general.useBeta": "Beta 版功能",
-  "settings.general.useBeta.description": "Beta 版功能可能不穩定、意外變更或隨時移除。如果您在使用 Beta 版功能時遇到任何問題，請在 GitHub 上報告",
   "settings.general.disableTooltips": "禁用工具提示",
   "settings.general.disableTooltips.description": "停用應用程式中不必要的工具提示",
   "settings.general.runAtStartup": "啟動時運行",

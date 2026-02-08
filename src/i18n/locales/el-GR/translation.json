@@ -144,8 +144,6 @@
   "settings.general.startMinimized.description": "Εκκίνηση SGI ελαχιστοποίηση στο πλαίσιο συστήματος",
   "settings.general.closeToTray": "Κοντά στο δίσκο",
   "settings.general.closeToTray.description": "Κάνοντας κλικ στο κουμπί X, θα ελαχιστοποιηθεί το SGI στο δίσκο συστήματος αντί να το κλείσει",
-  "settings.general.useBeta": "Χαρακτηριστικά Beta",
-  "settings.general.useBeta.description": "Τα δοκιμαστικά χαρακτηριστικά μπορεί να είναι ασταθή, να αλλάζουν απροσδόκητα, ή να απομακρύνονται ανά πάσα στιγμή. Εάν αντιμετωπίζετε οποιαδήποτε προβλήματα κατά τη χρήση μιας δυνατότητας beta, παρακαλούμε να το αναφέρετε στο GitHub",
   "settings.general.disableTooltips": "Απενεργοποίηση Συμβουλών Εργαλείων",
   "settings.general.disableTooltips.description": "Απενεργοποίηση μη απαραίτητων υποδείξεων στην εφαρμογή",
   "settings.general.runAtStartup": "Εκτέλεση Στην Εκκίνηση",

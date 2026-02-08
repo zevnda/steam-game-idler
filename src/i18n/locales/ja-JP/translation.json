@@ -144,8 +144,6 @@
   "settings.general.startMinimized.description": "システムトレイに最小化された SGI を起動します",
   "settings.general.closeToTray": "トレイに近い",
   "settings.general.closeToTray.description": "Xボタンをクリックすると、SGIは閉じるのではなく、システムトレイに最小化されます。",
-  "settings.general.useBeta": "ベータ版の機能",
-  "settings.general.useBeta.description": "ベータ機能が不安定で、予期せず変更されたり、いつでも削除されたりすることがあります。 ベータ機能の使用中に問題が発生した場合は、GitHubで報告してください",
   "settings.general.disableTooltips": "ツールチップを無効にする",
   "settings.general.disableTooltips.description": "非必須のツールチップを無効にする",
   "settings.general.runAtStartup": "起動時に実行",

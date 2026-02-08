@@ -144,8 +144,6 @@
   "settings.general.startMinimized.description": "SGI'yi sistem tepsisine küçültülmüş olarak başlatın",
   "settings.general.closeToTray": "Tepsiye Yakın",
   "settings.general.closeToTray.description": "X düğmesine tıklamak SGI'yi kapatmak yerine sistem tepsisine küçültecektir",
-  "settings.general.useBeta": "Beta Özellikleri",
-  "settings.general.useBeta.description": "Beta özellikleri dengesiz olabilir, beklenmedik şekilde değişebilir veya herhangi bir zamanda kaldırılabilir. Bir beta özelliğini kullanırken herhangi bir sorun yaşarsanız, lütfen GitHub'da bildirin.",
   "settings.general.disableTooltips": "Araç İpuçlarını Devre Dışı Bırak",
   "settings.general.disableTooltips.description": "Uygulamada gerekli olmayan araç ipuçlarını devre dışı bırakın",
   "settings.general.runAtStartup": "Başlangıçta Çalıştır",

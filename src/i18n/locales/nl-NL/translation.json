@@ -144,8 +144,6 @@
   "settings.general.startMinimized.description": "Start SGI geminimaliseerd in het systeemvak",
   "settings.general.closeToTray": "Dichtbij Tray",
   "settings.general.closeToTray.description": "Als u op de X-knop klikt, wordt SGI geminimaliseerd naar de systeemlade in plaats van dat het wordt gesloten.",
-  "settings.general.useBeta": "Beta Functies",
-  "settings.general.useBeta.description": "Beta-functies kunnen instabiel zijn, onverwacht veranderen of op elk moment worden verwijderd. Als u problemen ondervindt bij het gebruik van een bèta-functie, rapporteer deze dan op GitHub",
   "settings.general.disableTooltips": "Tooltips uitschakelen",
   "settings.general.disableTooltips.description": "Schakel niet-essentiële tooltips in de app uit",
   "settings.general.runAtStartup": "Uitvoeren bij opstarten",
