@@ -186,10 +186,10 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
                   <Trans
                     i18nKey='automation.achievementUnlocker.delay'
                     values={{ timer: countdownTimer }}
-                  >
-                    Next unlock in{' '}
-                    <span className='font-bold text-sm text-dynamic'>{countdownTimer}</span>
-                  </Trans>
+                    components={{
+                      1: <span className='font-bold text-sm text-dynamic' />,
+                    }}
+                  />
                 </p>
               </div>
             )}
