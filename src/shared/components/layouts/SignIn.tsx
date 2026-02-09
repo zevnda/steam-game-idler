@@ -31,7 +31,7 @@ export const SignIn = () => {
           className='pointer-events-auto'
         >
           <p className='text-sm text-altwhite hover:text-altwhite/90 duration-150'>
-            {t('setup.help')}
+            {t('common.needHelp')}
           </p>
         </ExtLink>
 
@@ -95,7 +95,7 @@ function UserSelectionArea({ onRefresh }: { onRefresh: () => void }) {
       <div className='flex flex-col items-center'>
         {/* Welcome text */}
         <div className='flex flex-col items-center mb-6'>
-          <p className='text-3xl font-semibold'>{t('setup.chooseAccount')}</p>
+          <p className='text-3xl font-semibold'>{t('signIn.chooseAccount')}</p>
         </div>
         {/* User cards */}
         <div className='flex flex-row flex-wrap items-center justify-center mb-4 min-h-56 max-h-96 overflow-auto space-y-2 p-2 overflow-x-auto'>
@@ -108,8 +108,8 @@ function UserSelectionArea({ onRefresh }: { onRefresh: () => void }) {
           {/* No accounts found */}
           {!isLoading && userSummaries.length === 0 && (
             <div className='flex flex-col items-center text-center gap-2'>
-              <p className='text-xl font-semibold'>{t('setup.noUsers')}</p>
-              <p className='text-xs text-altwhite max-w-md'>{t('setup.noUsersTwo')}</p>
+              <p className='text-xl font-semibold'>{t('signIn.noUsers')}</p>
+              <p className='text-xs text-altwhite max-w-md'>{t('signIn.noUsersTwo')}</p>
               <div className='flex items-center gap-4 mt-2'>
                 <ExtLink href='https://steamgameidler.com/docs/faq#error-messages:~:text=No%20Steam%20users%20found'>
                   <div className='border-2 border-content py-2 px-4 rounded-full hover:opacity-90 duration-150'>
@@ -167,7 +167,7 @@ function UserSelectionArea({ onRefresh }: { onRefresh: () => void }) {
             className='font-semibold border-white text-content'
             onPress={onRefresh}
           >
-            {t('setup.refresh')}
+            {t('common.refresh')}
           </Button>
           <Button
             radius='full'
@@ -184,7 +184,7 @@ function UserSelectionArea({ onRefresh }: { onRefresh: () => void }) {
         {/* Agreement */}
         <p className='text-xs text-altwhite max-w-sm text-center'>
           <Trans
-            i18nKey='setup.acknowledge'
+            i18nKey='signIn.acknowledge'
             components={[
               <ExtLink
                 href='https://steamgameidler.com/tos'

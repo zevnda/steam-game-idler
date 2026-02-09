@@ -232,7 +232,7 @@ export const SteamCredentials = () => {
                           )
                         }
                       >
-                        {t('setup.refresh')}
+                        {t('common.refresh')}
                       </Button>
                     </div>
                   </div>

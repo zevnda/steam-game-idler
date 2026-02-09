@@ -127,7 +127,7 @@ export const PageHeader = ({
                     radius='full'
                     onPress={() => tradingCardContext.handleRefresh()}
                   >
-                    {t('setup.refresh')}
+                    {t('common.refresh')}
                   </Button>
 
                   <Button

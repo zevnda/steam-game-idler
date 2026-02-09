@@ -51,7 +51,7 @@ export const PageHeader = ({
                 radius='full'
                 onPress={() => handleRefreshGamesList(userSummary?.steamId, setRefreshKey, true)}
               >
-                {t('setup.refresh')}
+                {t('common.refresh')}
               </Button>
 
               <Divider orientation='vertical' className='mx-2 h-8 bg-border' />
