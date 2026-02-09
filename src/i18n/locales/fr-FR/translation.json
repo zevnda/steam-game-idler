@@ -1,8 +1,4 @@
 {
-  "setup.chooseAccount": "Choisir un compte",
-  "setup.refresh": "Rafraîchir",
-  "setup.help": "Besoin d'aide ?",
-  "setup.noUsers": "Aucun utilisateur Steam trouvé",
   "notifications.empty": "Aucune notification",
   "notifications.markAllRead": "Tout marquer comme lu",
   "menu.guide": "Guide de l'utilisateur",

@@ -1,8 +1,4 @@
 {
-  "setup.chooseAccount": "选择一个帐户",
-  "setup.refresh": "刷新",
-  "setup.help": "需要帮助？",
-  "setup.noUsers": "找不到Steam用户",
   "notifications.empty": "没有通知",
   "notifications.markAllRead": "全部标记为已读",
   "menu.guide": "用户指南",

@@ -34,10 +34,6 @@
   "gameSettings.drops": "Máximo de cromos",
   "gameSettings.dropsSub": "La cantidad máxima de cromos que se pueden obtener para farmear en este juego antes de detenerse",
   "settings.general.disableTooltips": "Desactivar sugerencias",
-  "settings.general.disableTooltips.description": "Desactivar sugerencias no esenciales en la aplicación",
   "settings.general.currency": "Divisa",
-  "settings.general.currency.description": "Seleccione qué divisa utilizar para los precios de las tarjetas de trading",
-  "settings.cardFarming.listGames.description": "Solo los juegos que están disponibles para farmear cromos",
-  "settings.cardFarming.allGames": "Farmear todos los juegos",
-  "settings.cardFarming.allGames.description": "Farmear cromos de todos los juegos en tu librería que tengan cromos restantes disponibles"
+  "settings.cardFarming.allGames": "Farmear todos los juegos"
 }

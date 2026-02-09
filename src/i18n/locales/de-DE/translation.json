@@ -1,8 +1,4 @@
 {
-  "setup.chooseAccount": "Wähle ein Konto",
-  "setup.refresh": "Aktualisieren",
-  "setup.help": "Brauchst du Hilfe?",
-  "setup.noUsers": "Keine Steam-Benutzer gefunden",
   "notifications.empty": "Keine Benachrichtigungen",
   "notifications.markAllRead": "Alle als gelesen markieren",
   "menu.guide": "Benutzerhandbuch",
@@ -78,7 +74,6 @@
   "achievementManager.statistics.empty": "Keine Statistiken gefunden",
   "achievementManager.statistics.saveChanges": "Änderungen speichern",
   "achievementManager.statistics.resetAll": "Alle zurücksetzen",
-  "achievementManager.statistics.flags": "Flags",
   "settings.title": "Einstellungen",
   "settings.general.title": "Allgemein",
   "settings.general.language": "Sprache",
@@ -150,6 +145,5 @@
   "common.cancel": "Abbrechen",
   "common.clear": "Löschen",
   "common.list": "Liste",
-  "common.continue": "Weiter",
-  "changelog.star": "Star on GitHub"
+  "common.continue": "Weiter"
 }
