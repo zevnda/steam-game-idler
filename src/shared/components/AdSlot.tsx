@@ -2,14 +2,13 @@ import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { cn, Spinner } from '@heroui/react'
 import { ProBadge } from '@/shared/components'
-import { useNavigationStore, useStateStore, useUserStore } from '@/shared/stores'
+import { useNavigationStore, useStateStore } from '@/shared/stores'
 
-export const AdSlot = () => {
+export const AdSlot = ({ isPro }: { isPro: boolean | null }) => {
   const { t } = useTranslation()
   const activePage = useNavigationStore(state => state.activePage)
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
   const setProModalOpen = useStateStore(state => state.setProModalOpen)
-  const isPro = useUserStore(state => state.isPro)
   const [reloadKey, setReloadKey] = useState(0)
 
   const gameSlugs = useMemo(
