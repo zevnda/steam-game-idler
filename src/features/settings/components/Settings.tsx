@@ -15,11 +15,12 @@ import {
   useSettings,
 } from '@/features/settings'
 import { AdSlot, SocialButtons } from '@/shared/components'
-import { useNavigationStore } from '@/shared/stores'
+import { useNavigationStore, useUserStore } from '@/shared/stores'
 
 export const Settings = () => {
   const { t } = useTranslation()
   const { version, refreshKey } = useSettings()
+  const isPro = useUserStore(state => state.isPro)
   const setActivePage = useNavigationStore(state => state.setActivePage)
   const previousActivePage = useNavigationStore(state => state.previousActivePage)
   const setPreviousActivePage = useNavigationStore(state => state.setPreviousActivePage)
@@ -43,9 +44,11 @@ export const Settings = () => {
       </div>
 
       <div className='absolute flex flex-col items-center gap-4 bottom-4 left-0 px-6 w-62.5 z-40'>
-        <div className='absolute bottom-12 left-0 right-0 flex flex-col items-center justify-end grow mb-1 overflow-hidden pointer-events-none'>
-          <AdSlot />
-        </div>
+        {process.env.NODE_ENV === 'production' && (
+          <div className='absolute bottom-12 left-0 right-0 flex flex-col items-center justify-end grow mb-1 overflow-hidden pointer-events-none'>
+            <AdSlot isPro={isPro} />
+          </div>
+        )}
 
         <SocialButtons />
         <span className='text-xs text-altwhite text-center'>Steam Game Idler v{version}</span>
