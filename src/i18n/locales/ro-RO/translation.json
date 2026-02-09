@@ -1,8 +1,4 @@
 {
-  "setup.chooseAccount": "Alegeți un cont",
-  "setup.refresh": "Reîncarcă",
-  "setup.help": "Aveți nevoie de ajutor?",
-  "setup.noUsers": "Nu s-au găsit utilizatori Steam",
   "notifications.empty": "Fără notificări",
   "notifications.markAllRead": "Marchează totul citit",
   "menu.guide": "Ghidul utilizatorului",
@@ -82,7 +78,6 @@
   "achievementManager.statistics.resetAll": "Resetează tot",
   "achievementManager.statistics.flags": "Semnalări",
   "settings.title": "Setări",
-  "settings.general.title": "General",
   "settings.general.language": "Limbă",
   "settings.general.currency": "Monedă",
   "settings.cardFarming.steamCredentialsTitle": "Date de autentificare Steam",
