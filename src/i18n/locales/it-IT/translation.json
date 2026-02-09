@@ -1,109 +1,445 @@
 {
-  "setup.hero.subtitle": "Farma carte collezionabili, sblocca obiettivi, aumenta il tempo di gioco e automatizza la tua esperienza su Steam — tutto con un unico strumento.",
-  "menu.guide": "Guida utente",
-  "menu.support": "Supporta il progetto",
-  "menu.changelog": "Visualizza changelog",
-  "menu.update": "Controlla aggiornamenti..",
-  "gamesList.recommended": "Consigliati",
-  "gamesList.recentlyPlayed": "Avviati Di Recente",
-  "gamesList.sort.titleAsc": "Titolo A–Z",
-  "gamesList.sort.titleDesc": "Titolo Z–A",
-  "gamesList.sort.playtimeDesc": "Tempo di gioco ↑",
-  "gamesList.sort.playtimeAsc": "Tempo di gioco ↓",
-  "idlingGames.subtitle": "I giochi che sono attualmente in idle appariranno qui",
-  "idlingGames.stopAll": "Ferma tutto",
-  "customLists.cardFarming.drops": "{{count}} carta rimanente",
-  "customLists.cardFarming.drops_other": "{{count}} carte rimanenti",
-  "customLists.achievementUnlocker.buttonLabel": "Inizia a sbloccare obiettivi",
-  "customLists.autoIdle.subtitle": "Aggiungi giochi a questa lista per farli entrare automaticamente in idle all'avvio",
-  "customLists.favorites.title": "Giochi Preferiti",
-  "customLists.manualAdd.gameName": "Nome del gioco",
-  "customLists.blacklisted": "Nella Lista nera",
-  "customLists.inBlacklist": "Nella Lista nera",
-  "tradingCards.subtitle": "Vendi le tue carte collezionabili sul Mercato di Steam",
-  "tradingCards.sort.cardNameAsc": "Nome carta A–Z",
-  "tradingCards.sort.cardNameDesc": "Nome carta Z–A",
-  "tradingCards.sort.gameNameAsc": "Nome gioco A–Z",
-  "tradingCards.sort.gameNameDesc": "Nome gioco Z–A",
-  "tradingCards.sort.badge": "Liv. medaglia",
-  "tradingCards.sort.foils": "Foil",
-  "tradingCards.bulk": "Vendi tutto ({{count}})",
-  "tradingCards.list": "Vendi selezionati",
-  "tradingCards.remove": "Rimuovi tutto",
-  "tradingCards.confirm": "Vuoi mettere in vendita le carte selezionate?\n\nTempo stimato per {{count}} carte: {{time}}\n\nLascia SGI in esecuzione fino al termine dell’operazione",
-  "tradingCards.confirmBulk": "Vuoi mettere in vendita tutte le carte?\n\nTempo stimato per {{count}} carte: {{time}}\n\nLascia SGI in esecuzione fino al termine dell'operazione",
-  "tradingCards.confirmRemove": "Vuoi rimuovere dal Mercato di Steam tutte le inserzioni attive di carte collezionabili?",
-  "tradingCards.fetchPrice": "Prezzi di mercato",
-  "tradingCards.lockCard": "Impedisci la messa in vendita di questa carta",
-  "tradingCards.noBadge": "Nessuna medaglia",
-  "tradingCards.badgeLevel": "Livello medaglia: {{level}}",
-  "automation.cardFarming.running": "Il farming delle carte è attualmente in corso",
-  "automation.cardFarming.progress": "<1>{{count}}</1> giochi in idle con <3>{{total}}</3> carte da ottenere",
-  "automation.achievementUnlocker.delay": "Il prossimo achievement sarà sbloccato in <1>{{timer}}</1>",
-  "automation.achievementUnlocker.currentGame": "Gioco attuale",
-  "freeGames.subtitle": "I giochi gratuiti disponibili da riscattare verranno mostrati qui",
-  "gameSettings.globalMaxIdleSub": "Tempo massimo (in minuti) per cui tutti i giochi devono restare in idle prima di fermasi (sostituisce le impostazioni dei singoli giochi)",
-  "achievementManager.file": "Visualizza in Esplora file",
-  "achievementManager.alert": "Alcuni obiettivi o statistiche sono state disabilitate. <1>Scopri di più</1>",
-  "achievementManager.achievements.sort.title": "Alfabetico",
-  "achievementManager.statistics.saveChanges": "Salva",
-  "settings.general.antiAway": "Sempre online",
-  "settings.general.freeGameNotifications": "Notifiche giochi gratuiti",
-  "settings.general.startMinimized.description": "Avvia SGI minimizzato nell'area di notifica",
-  "settings.general.closeToTray": "Chiudi nell’area di notifica",
-  "settings.general.closeToTray.description": "Cliccando il pulsante X SGI verrà minimizzato sulla barra delle applicazioni nell’area di notifica invece di essere chiuso",
-  "settings.general.disableTooltips": "Disabilita suggerimenti",
-  "settings.general.runAtStartup": "Esegui all'avvio",
-  "settings.general.showRecentCarousel": "Mostra i titoli giocati di recente",
-  "settings.general.showRecentCarousel.description": "Mostra un carosello di titoli giocati di recente nella pagina I Tuoi Giochi",
-  "settings.general.showCardDropsCarousel": "Mostra giochi con carte da farmare",
-  "settings.general.showCardDropsCarousel.description": "Visualizza un carosello di giochi con le carte rimanenti nella pagina Farming Carte",
-  "settings.cardFarming.listGames": "Farma giochi nell'elenco",
-  "settings.cardFarming.listGames.description": "Farma solo i giochi che sono nella lista Farming Carte",
-  "settings.cardFarming.allGames": "Farma tutti i giochi",
-  "settings.cardFarming.allGames.description": "Ottieni carte per tutti i giochi nella Libreria che hanno carte rimanenti",
-  "settings.cardFarming.skipNoPlaytime": "Salta titoli non giocati",
-  "settings.cardFarming.skipNoPlaytime.description": "Non farmare giochi con un tempo di gioco pari a zero",
-  "settings.cardFarming.steamCredentialsTitle": "Credenziali di Steam",
-  "settings.cardFarming.gamesWithDrops": "Giochi con carte",
-  "settings.cardFarming.totalDrops": "Totale carte rimanenti",
-  "settings.cardFarming.nextTask.description": "Esegui la prossima attività automaticamente dopo che il Farming Carte è stato completato",
-  "settings.achievementUnlocker.idle": "Gioco inattivo",
-  "settings.achievementUnlocker.idle.description": "Metti in idle il gioco attuale mentre Achievement Unlocker è in esecuzione",
-  "settings.achievementUnlocker.hidden": "Salta obiettivi nascosti",
-  "settings.achievementUnlocker.scheduleLabel": "Intervallo di tempo",
-  "settings.achievementUnlocker.unlockInterval": "Intervallo di sblocco",
-  "settings.achievementUnlocker.interval": "Sblocca obiettivi con intervallo casuale da {{min}} a {{max}} minuti",
-  "settings.achievementUnlocker.nextTask.description": "Esegui la prossima attività automaticamente dopo che lo Sblocco Obiettivi è stato completato",
-  "settings.tradingCards.sellOptions": "Opzione di vendita predefinita",
-  "settings.tradingCards.sellOptions.highestBuyOrder": "Ordine acquisto più alto",
-  "settings.tradingCards.sellOptions.lowestSellOrder": "Ordine vendita più basso",
-  "settings.tradingCards.priceAdjustment": "Adeguamento prezzo",
-  "settings.tradingCards.sellDelaySub": "Attendi <1>{{sellDelay}}</1> secondi prima di mettere in vendita la prossima carta per evitare una limitazione per la velocità",
-  "settings.tradingCards.sellLimit": "Limite di vendita",
-  "settings.debug.noLogs": "Nessun log trovato",
-  "settings.debug.viewLogFile": "Visualizza log in Esplora file",
-  "settings.debug.viewSettingsFile": "Visualizza impostazioni in File Explorer",
-  "confirmation.resetStatistics": "Sei sicuro di voler <1>resettare</1> tutte le statistiche?",
-  "confirmation.clearData": "Sei sicuro di voler cancellare tutti i dati?",
-  "proMode.removeAdsWith": "Rimuovi annunci con",
-  "toast.incorrectCredentials": "Credenziali incorrette per il farming delle carte",
-  "toast.enableAllGames": "Per farmare carte aggiungi dei giochi alla lista oppure abilita \"tutti i giochi\" in \"Impostazioni → Farming carte\"",
-  "toast.noGames": "Non ci sono giochi nella lista",
-  "toast.achievementOrder.error": "Errore durante il salvataggio dell'obiettivo",
-  "toast.tradingCards.mobileConfirm": "{{count}} carte messe in vendita con successo. Conferma la vendita usando l'app mobile di Steam",
-  "toast.tradingCards.listed": "{{count}} carte messe in vendita con successo",
-  "toast.tradingCards.failedRemove": "Impossibile rimuovere le inserzioni attive di carte collezionabili dal Mercato di Steam",
-  "toast.tradingCards.cardLocked": "La carta è bloccata e non può essere messa in vendita",
-  "toast.tradingCards.allCardsLocked": "Tutte le carte sono bloccate e non possono essere messe in vendita",
-  "toast.tradingCards.allCardsOutOfRange": "Tutte le carte sono al di fuori dei limiti di vendita e non possono essere messe in vendita",
-  "toast.autoRedeem.authenticated": "Autenticazione riuscita per {{user}}",
-  "trayIcon.achievementUnlocker": "Sbloccando {{total}} obiettivi per {{appName}}",
-  "common.showing": "Visualizzati {{total}} giochi",
-  "common.gameSettings": "Impostazioni di Gioco",
-  "common.cancel": "Annulla",
-  "common.recentSearches": "Ricerche recenti",
-  "common.noRecentSearches": "Nessuna ricerca recente",
-  "common.nextTask": "Pianifica attività successiva",
-  "common.sortBy": "Ordine"
+  "signIn": {
+    "chooseAccount": "",
+    "noUsers": "",
+    "noUsersTwo": "",
+    "acknowledge": "",
+    "hero": {
+      "title": "",
+      "subtitle": ""
+    }
+  },
+  "notifications": {
+    "empty": "",
+    "markAllRead": ""
+  },
+  "menu": {
+    "guide": "",
+    "issue": "",
+    "feature": "",
+    "support": "",
+    "joinDiscord": "",
+    "changelog": "",
+    "update": ""
+  },
+  "sidebar": {
+    "section": {
+      "games": "",
+      "automation": "",
+      "misc": ""
+    }
+  },
+  "gamesList": {
+    "title": "",
+    "allGames": "",
+    "recommended": "",
+    "recentlyPlayed": "",
+    "sort": {
+      "titleAsc": "",
+      "titleDesc": "",
+      "playtimeDesc": "",
+      "playtimeAsc": ""
+    },
+    "private": {
+      "message": "",
+      "change": "",
+      "tryAgain": "",
+      "reason": {
+        "1": "",
+        "2": "",
+        "3": "",
+        "4": "",
+        "5": ""
+      }
+    }
+  },
+  "idlingGames": {
+    "title": "",
+    "subtitle": "",
+    "stopAll": ""
+  },
+  "customLists": {
+    "cardFarming": {
+      "subtitle": "",
+      "buttonLabel": "",
+      "drops": "",
+      "drops_other": ""
+    },
+    "achievementUnlocker": {
+      "subtitle": "",
+      "buttonLabel": "",
+      "addDelay": "",
+      "editDelay": ""
+    },
+    "autoIdle": {
+      "title": "",
+      "subtitle": "",
+      "buttonLabel": ""
+    },
+    "favorites": {
+      "title": "",
+      "subtitle": ""
+    },
+    "manualAdd": {
+      "title": "",
+      "gameName": "",
+      "gameId": ""
+    },
+    "yourList": "",
+    "edit": "",
+    "inList": "",
+    "blacklist": "",
+    "blacklisted": "",
+    "inBlacklist": "",
+    "addAll": "",
+    "addAllResults": "",
+    "invalid": ""
+  },
+  "tradingCards": {
+    "title": "",
+    "subtitle": "",
+    "sort": {
+      "cardNameAsc": "",
+      "cardNameDesc": "",
+      "gameNameAsc": "",
+      "gameNameDesc": "",
+      "badge": "",
+      "foils": "",
+      "duplicates": ""
+    },
+    "bulk": "",
+    "list": "",
+    "remove": "",
+    "confirm": "",
+    "confirmBulk": "",
+    "confirmRemove": "",
+    "fetchPrice": "",
+    "priceData": {
+      "price": "",
+      "quantity": "",
+      "sellOrders": "",
+      "buyOrders": ""
+    },
+    "cardExchange": "",
+    "lockCard": "",
+    "noBadge": "",
+    "badgeLevel": ""
+  },
+  "automation": {
+    "cardFarming": {
+      "running": "",
+      "initialDelay": "",
+      "progress": ""
+    },
+    "achievementUnlocker": {
+      "running": "",
+      "initialDelay": "",
+      "delay": "",
+      "currentGame": "",
+      "progress": "",
+      "scheduleWait": ""
+    }
+  },
+  "freeGames": {
+    "title": "",
+    "subtitle": ""
+  },
+  "cardMenu": {
+    "idle": "",
+    "achievements": "",
+    "store": ""
+  },
+  "gameSettings": {
+    "globalMaxIdle": "",
+    "globalMaxIdleSub": "",
+    "idle": "",
+    "idleSub": "",
+    "drops": "",
+    "dropsSub": "",
+    "achievements": "",
+    "achievementsSub": ""
+  },
+  "achievementManager": {
+    "steam": "",
+    "steamDB": "",
+    "file": "",
+    "alert": "",
+    "achievements": {
+      "title": "",
+      "empty": "",
+      "unlockAll": "",
+      "lockAll": "",
+      "unlock": "",
+      "lock": "",
+      "protected": "",
+      "modal": "",
+      "sort": {
+        "percent": "",
+        "title": "",
+        "unlocked": "",
+        "locked": "",
+        "unprotected": "",
+        "protected": ""
+      }
+    },
+    "statistics": {
+      "title": "",
+      "empty": "",
+      "saveChanges": "",
+      "resetAll": "",
+      "flags": ""
+    }
+  },
+  "settings": {
+    "title": "",
+    "general": {
+      "title": "",
+      "displayName": "",
+      "steamId": "",
+      "antiAway": "",
+      "freeGameNotifications": "",
+      "startMinimized": "",
+      "closeToTray": "",
+      "disableTooltips": "",
+      "runAtStartup": "",
+      "language": "",
+      "currency": "",
+      "webApi": "",
+      "helpTranslate": "",
+      "manageSubscription": "",
+      "autoRedeemFreeGames": "",
+      "showRecommendedCarousel": "",
+      "showRecentCarousel": "",
+      "showCardDropsCarousel": ""
+    },
+    "cardFarming": {
+      "alert": "",
+      "listGames": "",
+      "allGames": "",
+      "skipNoPlaytime": "",
+      "steamCredentialsTitle": "",
+      "steamCredentials": "",
+      "steamCredentialsTwo": "",
+      "gamesWithDrops": "",
+      "totalDrops": "",
+      "loading": "",
+      "nextTask": {
+        "description": ""
+      }
+    },
+    "steamCredentials": {
+      "automated": "",
+      "manual": ""
+    },
+    "achievementUnlocker": {
+      "idle": "",
+      "hidden": "",
+      "scheduleLabel": "",
+      "schedule": {
+        "description": ""
+      },
+      "scheduleTo": "",
+      "unlockInterval": "",
+      "interval": "",
+      "nextTask": {
+        "description": ""
+      }
+    },
+    "tradingCards": {
+      "alert": "",
+      "sellOptions": "",
+      "priceAdjustment": "",
+      "priceAdjustmentSub": "",
+      "sellDelay": "",
+      "sellDelaySub": "",
+      "sellLimit": "",
+      "sellLimitSub": ""
+    },
+    "customization": {
+      "title": "",
+      "backgroundImage": "",
+      "theme": ""
+    },
+    "debug": {
+      "title": "",
+      "noLogs": "",
+      "clearLogs": "",
+      "viewLogFile": "",
+      "viewSettingsFile": ""
+    },
+    "resetSettings": {
+      "button": ""
+    },
+    "clearData": {
+      "button": ""
+    },
+    "exportData": ""
+  },
+  "confirmation": {
+    "logout": "",
+    "resetStatistics": "",
+    "resetSettings": "",
+    "clearData": "",
+    "steamClosed": ""
+  },
+  "proMode": {
+    "modal": {
+      "select": "",
+      "tierOne": "",
+      "tierTwo": "",
+      "tierThree": "",
+      "monthly": "",
+      "trial": "",
+      "learnMore": "",
+      "getStarted": "",
+      "startFreeTrial": "",
+      "cancelAnytime": "",
+      "benefits": "",
+      "removeAds": "",
+      "credentials": "",
+      "autoRedeem": "",
+      "themes": "",
+      "uniqueChatRole": "",
+      "moreBenefits": "",
+      "footer": ""
+    },
+    "removeAdsWith": ""
+  },
+  "toast": {
+    "steam": "",
+    "mismatch": "",
+    "missingCredentials": "",
+    "outdatedCredentials": "",
+    "incorrectCredentials": "",
+    "enableAllGames": "",
+    "noGames": "",
+    "refetch": {
+      "cooldown": ""
+    },
+    "achievementData": {
+      "error": ""
+    },
+    "achievementOrder": {
+      "error": ""
+    },
+    "startIdle": {
+      "success": "",
+      "alreadyIdling": "",
+      "error": ""
+    },
+    "stopIdle": {
+      "success": "",
+      "error": ""
+    },
+    "stopIdleAll": {
+      "success": "",
+      "error": ""
+    },
+    "exportData": {
+      "success": "",
+      "error": ""
+    },
+    "toggle": {
+      "success": "",
+      "error": ""
+    },
+    "unlockAll": {
+      "success": ""
+    },
+    "lockAll": {
+      "success": ""
+    },
+    "updateAll": {
+      "success": "",
+      "noChanges": "",
+      "error": ""
+    },
+    "resetAll": {
+      "success": "",
+      "error": ""
+    },
+    "cardFarming": {
+      "logIn": "",
+      "logOut": ""
+    },
+    "apiKey": {
+      "save": "",
+      "error": "",
+      "clear": ""
+    },
+    "clearLogs": {
+      "success": ""
+    },
+    "resetSettings": {
+      "success": ""
+    },
+    "checkUpdate": {
+      "none": "",
+      "error": ""
+    },
+    "tradingCards": {
+      "noCards": "",
+      "processing": "",
+      "emailConfirm": "",
+      "mobileConfirm": "",
+      "listed": "",
+      "rateLimit": "",
+      "noListings": "",
+      "removedListings": "",
+      "failedRemove": "",
+      "priceOutOfRange": "",
+      "cardLocked": "",
+      "skippedCards": "",
+      "skippedLockedCards": "",
+      "allCardsLocked": "",
+      "allCardsOutOfRange": "",
+      "cooldown": ""
+    },
+    "autoRedeem": {
+      "authenticated": "",
+      "success": "",
+      "failure": ""
+    }
+  },
+  "trayIcon": {
+    "achievementUnlocker": "",
+    "cardFarming": ""
+  },
+  "common": {
+    "cardFarming": "",
+    "achievementUnlocker": "",
+    "showing": "",
+    "learnMore": "",
+    "signInSteam": "",
+    "signOut": "",
+    "reauthenticate": "",
+    "notifications": "",
+    "gameSettings": "",
+    "refresh": "",
+    "needHelp": "",
+    "menu": "",
+    "error": "",
+    "stop": "",
+    "notice": "",
+    "confirm": "",
+    "done": "",
+    "add": "",
+    "save": "",
+    "close": "",
+    "cancel": "",
+    "clear": "",
+    "list": "",
+    "search": "",
+    "recentSearches": "",
+    "noRecentSearches": "",
+    "nextTask": "",
+    "sortBy": "",
+    "continue": "",
+    "helpDesk": "",
+    "minutes": "",
+    "viewList": ""
+  },
+  "changelog": {
+    "star": ""
+  }
 }
