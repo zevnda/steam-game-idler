@@ -37,7 +37,7 @@ export const StatisticButtons = ({
           if (setRefreshKey) setRefreshKey(prev => prev + 1)
         }}
       >
-        {t('setup.refresh')}
+        {t('common.refresh')}
       </Button>
 
       <Button

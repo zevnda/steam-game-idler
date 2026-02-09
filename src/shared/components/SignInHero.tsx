@@ -49,7 +49,7 @@ export const SignInHero = () => {
       <div className='pointer-events-none absolute left-0 bottom-0 w-full h-1/4 z-20' />
       <div className='absolute flex flex-col items-center justify-between w-[90%] h-[90%] z-10 pointer-events-none'>
         <p className='font-black text-[52px] leading-14 text-center'>
-          <Trans i18nKey='setup.hero.title'>
+          <Trans i18nKey='signIn.hero.title'>
             The Only Steam
             <br />
             Automation Tool
@@ -58,7 +58,7 @@ export const SignInHero = () => {
           </Trans>
         </p>
 
-        <p className='text-lg mt-4 text-center'>{t('setup.hero.subtitle')}</p>
+        <p className='text-lg mt-4 text-center'>{t('signIn.hero.subtitle')}</p>
 
         <Image
           src='/mock.webp'

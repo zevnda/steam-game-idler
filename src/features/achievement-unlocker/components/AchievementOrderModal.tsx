@@ -461,7 +461,7 @@ export const AchievementOrderModal = ({
         <>
           <ExtLink href='https://steamgameidler.com/docs/features/achievement-unlocker#custom-order--unlock-delay'>
             <p className='text-xs cursor-pointer hover:text-altwhite duration-150 p-2 rounded-lg'>
-              {t('setup.help')}
+              {t('common.needHelp')}
             </p>
           </ExtLink>
           <Button
