@@ -11,8 +11,8 @@ import { File, Folder, Files } from 'fumadocs-ui/components/files';
 
 ## Prerequisites
 
-* [Node.js](https://nodejs.org/en/download/prebuilt-installer) >= 18.0
-* [Rustup](https://www.rust-lang.org/tools/install) = latest
+* [Node.js](https://nodejs.org/en/download/prebuilt-installer) >= 20.0
+* [Rust](https://www.rust-lang.org/tools/install) = 1.77.2
 * [.NET SDK](https://dotnet.microsoft.com/en-us/download) >= 8.0
 * [.NET Framework Developer Pack](https://dotnet.microsoft.com/en-us/download/dotnet-framework/net48) = 4.8
 * [VS Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/) = latest
@@ -21,8 +21,9 @@ import { File, Folder, Files } from 'fumadocs-ui/components/files';
 <Steps>
   <Step>
     ### Clone Repo And Submodules
-    ```npm
+    ```bash
     git clone --recursive https://github.com/zevnda/steam-game-idler.git
+    cd ./steam-game-idler
     ```
   </Step>
 
@@ -30,7 +31,6 @@ import { File, Folder, Files } from 'fumadocs-ui/components/files';
     ### Install Dependencies
 
     ```npm
-    cd ./steam-game-idler
     npm run install
     ```
   </Step>
@@ -38,7 +38,7 @@ import { File, Folder, Files } from 'fumadocs-ui/components/files';
   <Step>
     ### Build Libraries
 
-    ```npm
+    ```bash
     dotnet build ./libs/SteamUtility.csproj # Outputs to `/src-tauri/libs/`
     ```
   </Step>
@@ -46,7 +46,7 @@ import { File, Folder, Files } from 'fumadocs-ui/components/files';
   <Step>
     ### Create Environment Files
 
-    Create a `.env.dev` and `.env.prod` file in the root of `steam-game-idler`
+    Create a `.env.dev` and `.env.prod` file in the root of `./steam-game-idler`
 
     Add a `KEY` variable containing your [Steam Web API Key](https://steamcommunity.com/dev/apikey) to both `.env.dev` and `.env.prod`
 
@@ -78,13 +78,13 @@ import { File, Folder, Files } from 'fumadocs-ui/components/files';
   </Step>
 
   <Step>
-    ### Start in Dev Mode or Build App
+    ### Development or Production Build
 
     ```npm
-    # Start in dev mode, or
+    # Development
     npm run tauri dev
 
-    # Build the bundle
+    # Production
     npm run tauri build # Outputs to `/src-tauri/target/release/bundle/`
     ```
   </Step>

@@ -1,11 +1,12 @@
 import AdOverlay from '@docs/components/AdOverlay'
+import HelpDesk from '@docs/components/HelpDesk'
 import SearchDialog from '@docs/components/search'
+import StoreLoader from '@docs/components/StoreLoader'
 import TelemetryLoader from '@docs/components/TelemetryLoader'
 import { RootProvider } from 'fumadocs-ui/provider/next'
 import { Geist, Geist_Mono } from 'next/font/google'
-import './globals.css'
-import HelpDesk from '@docs/components/HelpDesk'
 import Script from 'next/script'
+import './globals.css'
 
 interface LayoutProps {
   children: React.ReactNode
@@ -164,6 +165,7 @@ export default function Layout({ children }: LayoutProps) {
 
         <AdOverlay />
         <TelemetryLoader />
+        <StoreLoader />
       </body>
     </html>
   )

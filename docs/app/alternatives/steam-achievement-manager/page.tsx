@@ -60,7 +60,7 @@ const comparisonData = [
     features: [
       { name: 'Graphical User Interface', steamGameIdler: 'Native', alt: 'Native' },
       { name: 'Setup Complexity', steamGameIdler: 'Simple', alt: 'Simple' },
-      { name: 'Multi-language Support', steamGameIdler: '30 Languages', alt: false },
+      { name: 'Multi-language Support', steamGameIdler: 'Partial Translations', alt: false },
       { name: 'Resource Usage', steamGameIdler: 'Moderate', alt: 'Low' },
       { name: 'Platform Support', steamGameIdler: 'Windows', alt: 'Windows' },
       { name: 'Installation', steamGameIdler: 'Installer & Portable', alt: 'Portable' },
@@ -109,7 +109,7 @@ export default function page() {
         />
         <div className='absolute inset-0 bg-linear-to-b from-white via-transparent to-white' />
 
-        <div className='container relative z-10 px-4 mt-10! md:mt-0! sm:px-6 md:px-8'>
+        <div className='container mx-auto relative z-10 px-4 mt-10! md:mt-0! sm:px-6 md:px-8'>
           <div className='max-w-4xl mx-auto text-center'>
             <div className='inline-flex items-center px-4 py-2 bg-linear-to-r from-green-200 to-emerald-200 border border-green-300 rounded-full text-green-800 text-sm font-medium shadow-lg mb-6'>
               <TbAward className='w-4 h-4 mr-2' />
@@ -134,7 +134,7 @@ export default function page() {
 
       {/* Detailed Comparison Table */}
       <section className='py-16 relative'>
-        <div className='container px-4 sm:px-6 md:px-8'>
+        <div className='container mx-auto px-4 sm:px-6 md:px-8'>
           <div className='max-w-6xl mx-auto'>
             <h2 className='text-3xl sm:text-4xl font-black text-gray-800 mb-12 text-center'>
               DETAILED FEATURE
@@ -196,7 +196,7 @@ export default function page() {
       {/* Why Choose Steam Game Idler */}
       <section className='py-16 relative'>
         <div className='absolute inset-0 bg-linear-to-br from-green-50 to-emerald-50' />
-        <div className='container relative z-10 px-4 sm:px-6 md:px-8'>
+        <div className='container mx-auto relative z-10 px-4 sm:px-6 md:px-8'>
           <div className='max-w-4xl mx-auto text-center'>
             <h2 className='text-3xl sm:text-4xl font-black text-gray-800 mb-8'>
               WHY CHOOSE
@@ -244,7 +244,7 @@ export default function page() {
       <section className='py-16 relative overflow-hidden'>
         <div className='absolute inset-0 bg-linear-to-br from-green-600 to-emerald-600' />
 
-        <div className='container relative z-10 px-4 sm:px-6 md:px-8'>
+        <div className='container mx-auto relative z-10 px-4 sm:px-6 md:px-8'>
           <div className='text-center max-w-3xl mx-auto'>
             <h2 className='text-3xl sm:text-4xl font-black text-white mb-6'>
               READY TO UPGRADE FROM
