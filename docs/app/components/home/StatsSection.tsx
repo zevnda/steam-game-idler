@@ -32,10 +32,10 @@ export default function StatsSection() {
       description: 'Active installations worldwide',
     },
     {
-      value: '30',
-      label: 'Languages',
+      value: '150K+',
+      label: 'Supported Games',
       icon: <FiGlobe className='w-6 h-6' />,
-      description: 'Localization support',
+      description: 'Game compatibility',
     },
     {
       value: isLoading ? '...' : githubStars.toString(),
@@ -80,7 +80,7 @@ export default function StatsSection() {
             <p className='text-base sm:text-lg text-gray-700 leading-relaxed'>
               Steam Game Idler is the go-to choice for users looking to automate their Steam
               experience. Our Steam card farmer is trusted by thousands of users worldwide, with
-              support for 30 languages.
+              support for 150,000+ Steam games.
             </p>
           </div>
         </header>

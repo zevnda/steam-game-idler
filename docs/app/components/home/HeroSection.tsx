@@ -1,50 +1,12 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { FaArrowRight, FaStar, FaWindows } from 'react-icons/fa'
-import { FaDiscord } from 'react-icons/fa6'
-import { FiBook, FiGithub } from 'react-icons/fi'
+import { FaBook, FaDiscord, FaGithub, FaStar, FaWindows } from 'react-icons/fa6'
+import { useGlobalStore } from '@docs/stores/globalStore'
 import Image from 'next/image'
 import Link from 'next/link'
 
 export default function HeroSection() {
-  const [latestVersion, setLatestVersion] = useState('1.2.3')
-  const [stars, setStars] = useState<number | null>(null)
-  const [installerUrl, setInstallerUrl] = useState<string>('')
-
-  useEffect(() => {
-    try {
-      fetch('https://api.github.com/repos/zevnda/steam-game-idler/releases/latest')
-        .then(response => response.json())
-        .then(data => {
-          if (data.tag_name) {
-            setLatestVersion(data.tag_name)
-          }
-          const installer = data.assets?.find((asset: { name: string }) =>
-            asset.name.endsWith('_x64-setup.exe'),
-          )
-          if (installer) {
-            setInstallerUrl(installer.browser_download_url)
-          }
-        })
-    } catch (error) {
-      console.error('Error fetching latest version:', error)
-    }
-  }, [])
-
-  useEffect(() => {
-    try {
-      fetch('https://api.github.com/repos/zevnda/steam-game-idler')
-        .then(response => response.json())
-        .then(data => {
-          if (typeof data.stargazers_count === 'number') {
-            setStars(data.stargazers_count)
-          }
-        })
-    } catch (error) {
-      console.error('Error fetching GitHub stars:', error)
-    }
-  }, [])
+  const { downloadUrl, latestVersion, repoStars } = useGlobalStore(state => state)
 
   return (
     <section className='min-h-screen flex items-center relative overflow-hidden bg-linear-to-b from-white via-gray-50 to-white'>
@@ -191,7 +153,7 @@ export default function HeroSection() {
                   <FaStar className='text-yellow-500 mr-1' />
                   Star on GitHub{' '}
                   <span className='bg-yellow-400 font-semibold rounded-full px-1.5 ml-1 '>
-                    {stars !== null ? stars.toLocaleString() : '...'}
+                    {repoStars !== null ? repoStars.toLocaleString() : '...'}
                   </span>
                 </div>
               </Link>
@@ -214,26 +176,11 @@ export default function HeroSection() {
               and boosting playtime. Join thousands of Steam idlers using our card farmer.
             </h2>
 
-            {/* GitHub link */}
-            <div className='flex justify-center lg:justify-start px-4 sm:px-0'>
-              <Link
-                prefetch={false}
-                href='https://github.com/zevnda/steam-game-idler'
-                target='_blank'
-                rel='noopener noreferrer'
-                className='group inline-flex items-center text-gray-600 hover:text-purple-600 transition-colors duration-200 text-sm font-bold'
-              >
-                <FiGithub className='w-4 h-4 mr-2 group-hover:scale-110 transition-transform duration-200' />
-                View on GitHub
-                <FaArrowRight className='w-3 h-3 ml-1 group-hover:translate-x-1 transition-transform duration-200' />
-              </Link>
-            </div>
-
             {/* Action buttons */}
             <div className='flex flex-col sm:flex-row gap-3 md:gap-4 justify-center lg:justify-start px-4 sm:px-0'>
               <Link
                 prefetch={false}
-                href={installerUrl || 'https://github.com/zevnda/steam-game-idler/releases/latest'}
+                href={downloadUrl}
                 className='group inline-flex items-center justify-center px-6 sm:px-6 md:px-8 py-3 sm:py-3 md:py-4 bg-linear-to-r from-purple-500 to-pink-500 text-white font-bold rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all duration-200 transform hover:scale-105 shadow-lg text-sm md:text-base'
               >
                 <FaWindows className='w-4 h-4 md:w-5 md:h-5 mr-2 md:mr-3' />
@@ -245,8 +192,18 @@ export default function HeroSection() {
                 href='/docs'
                 className='inline-flex items-center justify-center px-6 sm:px-6 md:px-8 py-3 sm:py-3 md:py-4 bg-white border-2 border-purple-300 text-purple-700 font-bold rounded-xl hover:bg-purple-50 hover:border-purple-400 transition-colors duration-200 shadow-md text-sm md:text-base'
               >
-                <FiBook className='w-4 h-4 md:w-5 md:h-5 mr-2 md:mr-3' />
+                <FaBook className='w-4 h-4 md:w-5 md:h-5 mr-2 md:mr-3' />
                 DOCUMENTATION
+              </Link>
+
+              <Link
+                prefetch={false}
+                href='https://github.com/zevnda/steam-game-idler'
+                target='_blank'
+                className='inline-flex items-center justify-center px-3 sm:px-3 md:px-4 py-3 sm:py-3 md:py-4 bg-white border-2 border-purple-300 text-purple-700 font-bold rounded-xl hover:bg-purple-50 hover:border-purple-400 transition-colors duration-200 shadow-md text-sm md:text-base'
+              >
+                <FaGithub className='w-4 h-4 md:w-5 md:h-5 mr-2 sm:mr-0' />
+                <span className='block sm:hidden'>VIEW ON GITHUB</span>
               </Link>
 
               <Link
@@ -275,11 +232,13 @@ export default function HeroSection() {
               <div className='text-center'>
                 <div
                   className='text-lg sm:text-xl md:text-2xl font-bold text-pink-600'
-                  aria-label='42 languages supported'
+                  aria-label='150,000 plus supported games'
                 >
-                  30
+                  150K+
                 </div>
-                <div className='text-xs text-gray-600 uppercase tracking-wider'>LANGUAGES</div>
+                <div className='text-xs text-gray-600 uppercase tracking-wider'>
+                  SUPPORTED GAMES
+                </div>
               </div>
               <div className='w-px h-5 sm:h-6 md:h-8 bg-purple-300' />
               <div className='text-center'>

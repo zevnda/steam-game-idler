@@ -1,28 +1,11 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import { FaWindows } from 'react-icons/fa6'
+import { useGlobalStore } from '@docs/stores/globalStore'
 import Link from 'next/link'
 
 export default function CTASection() {
-  const [installerUrl, setInstallerUrl] = useState<string>('')
-
-  useEffect(() => {
-    try {
-      fetch('https://api.github.com/repos/zevnda/steam-game-idler/releases/latest')
-        .then(response => response.json())
-        .then(data => {
-          const installer = data.assets?.find((asset: { name: string }) =>
-            asset.name.endsWith('_x64-setup.exe'),
-          )
-          if (installer) {
-            setInstallerUrl(installer.browser_download_url)
-          }
-        })
-    } catch (error) {
-      console.error('Error fetching latest release:', error)
-    }
-  }, [])
+  const { downloadUrl } = useGlobalStore(state => state)
 
   return (
     <section
@@ -60,7 +43,7 @@ export default function CTASection() {
           <div className='flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center mb-12 sm:mb-16 px-4 sm:px-0'>
             <Link
               prefetch={false}
-              href={installerUrl || 'https://github.com/zevnda/steam-game-idler/releases/latest'}
+              href={downloadUrl}
               className='group inline-flex items-center justify-center px-8 sm:px-10 py-4 sm:py-5 bg-white text-indigo-700 font-black text-base sm:text-lg rounded-xl hover:bg-cyan-100 transform hover:scale-105 transition-all duration-200 shadow-2xl'
             >
               <FaWindows className='w-4 h-4 md:w-5 md:h-5 mr-2 md:mr-3' />
