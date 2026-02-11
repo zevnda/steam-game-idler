@@ -14,7 +14,6 @@ import translationITIT from '@/i18n/locales/it-IT/translation.json'
 import translationJAJP from '@/i18n/locales/ja-JP/translation.json'
 import translationKOKR from '@/i18n/locales/ko-KR/translation.json'
 import translationMKMK from '@/i18n/locales/mk-MK/translation.json'
-import translationNLNL from '@/i18n/locales/nl-NL/translation.json'
 import translationPLPL from '@/i18n/locales/pl-PL/translation.json'
 import translationPTBR from '@/i18n/locales/pt-BR/translation.json'
 import translationPTPT from '@/i18n/locales/pt-PT/translation.json'
@@ -41,7 +40,6 @@ const resources = {
   'ja-JP': { translation: translationJAJP },
   'ko-KR': { translation: translationKOKR },
   'mk-MK': { translation: translationMKMK },
-  'nl-NL': { translation: translationNLNL },
   'pl-PL': { translation: translationPLPL },
   'pt-BR': { translation: translationPTBR },
   'pt-PT': { translation: translationPTPT },

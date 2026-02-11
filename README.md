@@ -43,11 +43,11 @@ Contribute to this project by adding new translations or improving existing ones
 | -------------------- | ---- | ---------- | ---- | -------- | ---- |
 | Chinese (Simplified) | 🇨🇳    | Czech      | 🇨🇿    | English  | 🇬🇧    |
 | Finnish              | 🇫🇮    | French     | 🇫🇷    | German   | 🇩🇪    |
-| Hindi                | 🇮🇳    | Italian    | 🇮🇹    | Macedonian | 🇲🇰    |
-| Polish               | 🇵🇱    | Portuguese (Brazil) | 🇧🇷 | Romanian | 🇷🇴 |
-| Russian              | 🇷🇺    | Spanish    | 🇪🇸    | Turkish  | 🇹🇷    |
+| Italian              | 🇮🇹    | Macedonian | 🇲🇰    | Polish   | 🇵🇱    |
+| Portuguese (Brazil)  | 🇧🇷    | Romanian   | 🇷🇴    | Russian  | 🇷🇺    |
+| Spanish              | 🇪🇸    | Turkish    | 🇹🇷    |
 
-<sup>Some languages may only have partial support</sup>
+<sup>*Some languages may only have partial support*</sup>
 
 # License
 Copyright © 2024-2026 zevnda — **[MIT License](./LICENSE)**
