@@ -3,6 +3,7 @@
   "signIn.noUsers": "Steam kullanıcısı bulunamadı",
   "signIn.noUsersTwo": "Lütfen Steam'in yüklü olduğundan ve en az bir hesaba giriş yapıldığından emin olun, ardından yenile butonuna tıklayın.",
   "signIn.acknowledge": "'Devam Et' butonuna tıklayarak <0>Hizmet Şartları'nı</0> kabul etmiş ve <1>Gizlilik Politikası'nı</1> okuduğunuzu onaylamış olursunuz.",
+  "signIn.hero.title": "İhtiyacınız Olan Tek<1/>Steam Otomasyon Aracı<1/>",
   "signIn.hero.subtitle": "Koleksiyon kartlarını düşürün, başarımları açın, oynama süresi kasın ve Steam deneyiminizi otomatikleştirin — hepsi tek araçta.",
   "notifications.empty": "Bildirim yok",
   "notifications.markAllRead": "Tümünü okundu olarak işaretle",
