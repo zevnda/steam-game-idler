@@ -1,5 +1,12 @@
 [
   {
+    "id": "39",
+    "title": "Issues Loading Game Achievements",
+    "message": "A recent Steam Beta update broke achievement viewing functionality. Click here to learn how to fix it",
+    "url": "https://steamgameidler.com/changelog/3.0.0",
+    "timestamp": "1769487462"
+  },
+  {
     "id": "38",
     "title": "Important Update For PRO Users",
     "message": "In v3.0.0, improvements are made to the way the app checks for active PRO subscriptions. Versions before v3.0.0 will eventually no longer be able to verify PRO subscriptions",
