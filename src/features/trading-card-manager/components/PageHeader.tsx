@@ -33,6 +33,7 @@ interface PageHeaderProps {
   currentPage: number
   totalPages: number
   onPageChange: (page: number) => void
+  lockedCards: string[]
 }
 
 export const PageHeader = ({
@@ -41,6 +42,7 @@ export const PageHeader = ({
   currentPage,
   totalPages,
   onPageChange,
+  lockedCards,
 }: PageHeaderProps) => {
   const { t } = useTranslation()
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
@@ -155,7 +157,7 @@ export const PageHeader = ({
                     onPress={onBulkOpen}
                   >
                     {t('tradingCards.bulk', {
-                      count: tradingCardContext.tradingCardsList?.length || 0,
+                      count: tradingCardContext.tradingCardsList?.length - lockedCards.length || 0,
                     })}
                   </Button>
 

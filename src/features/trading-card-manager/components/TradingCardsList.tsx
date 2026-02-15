@@ -100,9 +100,10 @@ export const TradingCardsList = () => {
       >
         <div className='relative flex justify-between items-center w-full mb-2'>
           <Checkbox
+            isDisabled={isLocked}
             size='sm'
             name={item.assetid}
-            isSelected={tradingCardContext.selectedCards[item.assetid] || false}
+            isSelected={(!isLocked && tradingCardContext.selectedCards[item.assetid]) || false}
             onChange={() => tradingCardContext.toggleCardSelection(item.assetid)}
             classNames={{
               hiddenInput: 'w-fit',
@@ -202,9 +203,9 @@ export const TradingCardsList = () => {
           </CustomTooltip>
         </div>
 
-        <PriceInput item={item} tradingCardContext={tradingCardContext} />
+        <PriceInput item={item} tradingCardContext={tradingCardContext} isLocked={isLocked} />
 
-        <PriceData item={item} tradingCardContext={tradingCardContext} />
+        <PriceData item={item} tradingCardContext={tradingCardContext} isLocked={isLocked} />
       </div>
     )
   }
@@ -227,6 +228,7 @@ export const TradingCardsList = () => {
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={setCurrentPage}
+        lockedCards={lockedCards}
       />
 
       {!userSettings.cardFarming.credentials && (
