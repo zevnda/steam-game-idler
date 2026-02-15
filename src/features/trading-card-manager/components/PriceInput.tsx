@@ -8,14 +8,16 @@ import { CustomTooltip } from '@/shared/components'
 interface PriceInputProps {
   item: TradingCard
   tradingCardContext: ReturnType<typeof useTradingCardsList>
+  isLocked?: boolean
 }
 
-export const PriceInput = ({ item, tradingCardContext }: PriceInputProps) => {
+export const PriceInput = ({ item, tradingCardContext, isLocked }: PriceInputProps) => {
   const { t } = useTranslation()
 
   return (
     <div className='flex items-center justify-center gap-1 mt-2'>
       <NumberInput
+        isDisabled={isLocked}
         size='sm'
         isInvalid={
           tradingCardContext.selectedCards[item.assetid] &&

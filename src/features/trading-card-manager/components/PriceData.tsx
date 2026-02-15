@@ -2,16 +2,17 @@ import type { useTradingCardsList } from '@/features/trading-card-manager'
 import type { TradingCard } from '@/shared/types'
 import { useTranslation } from 'react-i18next'
 import { TbArrowRight } from 'react-icons/tb'
-import { Button, Spinner, useDisclosure } from '@heroui/react'
+import { Button, cn, Spinner, useDisclosure } from '@heroui/react'
 import { CustomModal, showPriceFetchCooldownToast } from '@/shared/components'
 import { logEvent } from '@/shared/utils'
 
 interface PriceDataProps {
   item: TradingCard
   tradingCardContext: ReturnType<typeof useTradingCardsList>
+  isLocked?: boolean
 }
 
-export const PriceData = ({ item, tradingCardContext }: PriceDataProps) => {
+export const PriceData = ({ item, tradingCardContext, isLocked }: PriceDataProps) => {
   const { t } = useTranslation()
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
@@ -47,11 +48,14 @@ export const PriceData = ({ item, tradingCardContext }: PriceDataProps) => {
   return (
     <div className='flex justify-center items-center h-full mt-2'>
       <div
-        className='flex justify-center items-center gap-2 text-xs text-content cursor-pointer hover:opacity-80 group w-36'
-        onClick={() => handleFetchPrice(item)}
+        className={cn(
+          'flex justify-center items-center gap-2 text-xs text-content group w-36 duration-150 select-none',
+          !isLocked && 'cursor-pointer hover:opacity-80',
+        )}
+        onClick={() => !isLocked && handleFetchPrice(item)}
       >
         <p className='truncate'>{t('tradingCards.fetchPrice')}</p>
-        <TbArrowRight className='group-hover:translate-x-1 duration-200' />
+        <TbArrowRight className={cn('duration-150', !isLocked && 'group-hover:translate-x-1')} />
       </div>
 
       <CustomModal
