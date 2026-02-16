@@ -39,7 +39,7 @@ export const UpdateButton = () => {
           <Spinner size='sm' variant='simple' />
         </div>
       ) : (
-        <CustomTooltip content='Update Ready!'>
+        <CustomTooltip content={t('common.updateReady')}>
           <div className='flex justify-center items-center cursor-pointer' onClick={handleUpdate}>
             <div className='flex items-center px-1 py-1.5 text-success hover:text-success/80 duration-150'>
               <TbCircleArrowDown fontSize={20} />
