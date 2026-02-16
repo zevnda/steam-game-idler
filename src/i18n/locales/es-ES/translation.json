@@ -1,6 +1,7 @@
 {
   "signIn.noUsers": "No se han encontrado usuarios de Steam",
   "signIn.noUsersTwo": "Por favor, este seguro de tener Steam instalado y estar registrado en al menos una cuenta, después haz clic en refrescar.",
+  "signIn.hero.subtitle": "Farmea cromos de Steam, desbloquea logros, boostea tu tiempo de juego y automatiza tu experiencia en Steam — Todo con una sola herramienta.",
   "notifications.empty": "Sin notificaciones",
   "notifications.markAllRead": "Marcar todo como leído",
   "menu.changelog": "Ver los Cambios",
@@ -34,6 +35,7 @@
   "tradingCards.confirmRemove": "¿Estás seguro de que quieres eliminar todos los anuncios activos de intercambio de cromos del mercado de Steam?",
   "tradingCards.priceData.sellOrders": "Órdenes de venta",
   "tradingCards.priceData.buyOrders": "Órdenes de compra",
+  "tradingCards.noBadge": "Sin insignia",
   "automation.cardFarming.running": "El farmeo de cromos se está ejecutando",
   "automation.cardFarming.initialDelay": "Esto podría tardar unos segundos..",
   "automation.cardFarming.progress": "Idleando <1>{{count}}</1> juego(s) con <3>{{total}}</3> cromos total restantes",
@@ -47,5 +49,14 @@
   "gameSettings.dropsSub": "La cantidad máxima de cromos que se pueden obtener para farmear en este juego antes de detenerse",
   "settings.general.disableTooltips": "Desactivar sugerencias",
   "settings.general.currency": "Divisa",
-  "settings.cardFarming.allGames": "Farmear todos los juegos"
+  "settings.general.webApi": "Clave de API web de Steam (opcional)",
+  "settings.general.showCardDropsCarousel": "Mostrar juegos con Cromos Obtenibles",
+  "settings.general.showCardDropsCarousel.description": "Muestra un carrusel de juegos con cartas restantes en la página Farmear Cromos",
+  "settings.cardFarming.listGames": "Farmear Juegos en la Lista",
+  "settings.cardFarming.listGames.description": "Solo farmear juegos que están en la lista de Farmeo de Cromos",
+  "settings.cardFarming.allGames": "Farmear todos los juegos",
+  "settings.cardFarming.totalDrops": "Cantidad de Drops restantes",
+  "settings.achievementUnlocker.nextTask.description": "Ejecutar la siguiente tarea automáticamente después de que se complete el Desbloqueador de logros",
+  "common.refresh": "Actualizar",
+  "common.sortBy": "Ordenar Por"
 }
