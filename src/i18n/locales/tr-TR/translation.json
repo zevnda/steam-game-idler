@@ -191,7 +191,6 @@
   "settings.achievementUnlocker.nextTask.description": "Başarım Açıcı tamamlandıktan sonra bir sonraki görevi otomatik çalıştır",
   "settings.tradingCards.alert": "Koleksiyon Kartı Yöneticisi özelliğini kullanmak için lütfen Ayarlar → Steam Giriş Bilgileri kısmından bilgilerinizi ekleyin.",
   "settings.tradingCards.sellOptions": "Varsayılan Satış Seçeneği",
-  "settings.tradingCards.sellOptions.description": "'Tümünü Sat' butonunu kullanırken kartlar için varsayılan satış fiyatını seçin",
   "settings.tradingCards.sellOptions.highestBuyOrder": "En Yüksek Alış Emri",
   "settings.tradingCards.sellOptions.lowestSellOrder": "En Düşük Satış Emri",
   "settings.tradingCards.priceAdjustment": "Fiyat Ayarlaması",

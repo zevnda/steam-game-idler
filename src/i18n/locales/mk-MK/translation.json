@@ -191,7 +191,6 @@
   "settings.achievementUnlocker.nextTask.description": "Извршете ја следната задача автоматски откако ќе заврши Отклучувањето на Achievements",
   "settings.tradingCards.alert": "За да ја користите функцијатa Trading Card Manager, додадете ги вашите Steam креденцијали во Settings → Steam Credentials",
   "settings.tradingCards.sellOptions": "Стандардна опција за продажба",
-  "settings.tradingCards.sellOptions.description": "Изберете ја стандардната продажна цена за trading cards кога го користите копчето „Продај сè“",
   "settings.tradingCards.sellOptions.highestBuyOrder": "Највисока нарачка за купување",
   "settings.tradingCards.sellOptions.lowestSellOrder": "Најниска нарачка за продажба",
   "settings.tradingCards.priceAdjustment": "Прилагодување на цената",
