@@ -191,7 +191,6 @@
   "settings.achievementUnlocker.nextTask.description": "Führen Sie die nächste Aufgabe automatisch aus, nachdem Errungenschaft Unlocker abgeschlossen ist",
   "settings.tradingCards.alert": "Um den Trading Card Manager zu nutzen, fügen Sie bitte Ihre Steam Zugangsdaten in Einstellungen → Allgemein → Steam Zugangsdaten hinzu",
   "settings.tradingCards.sellOptions": "Standard-Sell-Option",
-  "settings.tradingCards.sellOptions.description": "Wählen Sie den Standard-Verkaufspreis für Handelskarten, wenn Sie den \"Alle verkaufen\" Button verwenden",
   "settings.tradingCards.sellOptions.highestBuyOrder": "Höchster Kaufauftrag",
   "settings.tradingCards.sellOptions.lowestSellOrder": "Niedrigste Verkaufsbestellung",
   "settings.tradingCards.priceAdjustment": "Preisanpassung",
