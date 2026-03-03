@@ -72,7 +72,6 @@
     "@tailwindcss/postcss": "^4.1.17",
     "@tauri-apps/cli": "^2.8.4",
     "@types/node": "^25.0.10",
-    "@types/pusher-js": "^5.1.0",
     "@types/react": "^19.2.13",
     "@types/react-dom": "^19.2.3",
     "@types/react-window": "^1.8.8",

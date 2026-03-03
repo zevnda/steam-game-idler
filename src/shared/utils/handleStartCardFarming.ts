@@ -1,6 +1,7 @@
 import type { InvokeCustomList, InvokeSettings, InvokeValidateSession } from '@/shared/types'
 import { invoke } from '@tauri-apps/api/core'
 import i18next from 'i18next'
+import { handlePusherStateUpdate } from '@/features/remote'
 import {
   showDangerToast,
   showEnableAllGamesToast,
@@ -69,6 +70,7 @@ export const startCardFarming = async () => {
     }
 
     setIsCardFarming(true)
+    handlePusherStateUpdate('cardFarming', true)
   } catch (error) {
     showDangerToast(i18next.t('common.error'))
     console.error('Error in (startCardFarming):', error)

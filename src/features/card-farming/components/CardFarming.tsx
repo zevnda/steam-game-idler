@@ -6,7 +6,8 @@ import { TbCheck, TbPlayerStopFilled } from 'react-icons/tb'
 import { Button, cn, Spinner } from '@heroui/react'
 import Image from 'next/image'
 import { handleCancel, useCardFarming } from '@/features/card-farming'
-import { useStateStore } from '@/shared/stores'
+import { handlePusherCommand, handlePusherStateUpdate } from '@/features/remote'
+import { useRemoteStore, useStateStore } from '@/shared/stores'
 import { startAchievementUnlocker, updateTrayIcon } from '@/shared/utils'
 
 export const CardFarming = ({ activePage }: { activePage: ActivePageType }) => {
@@ -15,6 +16,7 @@ export const CardFarming = ({ activePage }: { activePage: ActivePageType }) => {
   const setIsCardFarming = useStateStore(state => state.setIsCardFarming)
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
   const transitionDuration = useStateStore(state => state.transitionDuration)
+  const pusherChannel = useRemoteStore(state => state.pusherChannel)
 
   const isMountedRef = useRef(true)
   const abortControllerRef = useRef(new AbortController())
@@ -61,6 +63,19 @@ export const CardFarming = ({ activePage }: { activePage: ActivePageType }) => {
       setDisableStopButton(false)
     }, 5000)
   }, [])
+
+  const handleStopCardFarming = () => {
+    handleCancel(gamesWithDrops, isMountedRef, abortControllerRef)
+    setIsCardFarming(false)
+    updateTrayIcon()
+    handlePusherStateUpdate('cardFarming', false)
+  }
+
+  if (pusherChannel?.name) {
+    pusherChannel.bind('client-command', (data: { command: string }) => {
+      handlePusherCommand(data, handleStopCardFarming)
+    })
+  }
 
   const renderGamesList = () => {
     if (!gamesWithDrops.size) {
@@ -166,11 +181,7 @@ export const CardFarming = ({ activePage }: { activePage: ActivePageType }) => {
                   className='font-bold'
                   startContent={<TbPlayerStopFilled size={18} />}
                   isDisabled={!isComplete && disableStopButton}
-                  onPress={() => {
-                    handleCancel(gamesWithDrops, isMountedRef, abortControllerRef)
-                    setIsCardFarming(false)
-                    updateTrayIcon()
-                  }}
+                  onPress={handleStopCardFarming}
                 >
                   {isComplete ? <p>{t('common.close')}</p> : <p>{t('common.stop')}</p>}
                 </Button>

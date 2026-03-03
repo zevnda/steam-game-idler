@@ -3,7 +3,7 @@ import type { NextConfig } from 'next'
 const nextConfig: NextConfig = {
   output: 'export',
   devIndicators: false,
-  transpilePackages: ['geist'],
+  transpilePackages: ['geist', 'pusher-js'],
   images: {
     unoptimized: true,
     remotePatterns: [

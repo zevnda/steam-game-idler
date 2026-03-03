@@ -7,6 +7,7 @@ import {
   useFreeGames,
   useInit,
   useInitSettings,
+  useRemoteCode,
   useSteamMonitor,
   useThemes,
   useZoomControls,
@@ -27,6 +28,7 @@ const Index = () => {
   useZoomControls()
   useContextMenu()
   useSteamMonitor()
+  useRemoteCode()
 
   if (loaderVisible) return null
 

@@ -1,6 +1,7 @@
 import type { InvokeCustomList } from '@/shared/types'
 import { invoke } from '@tauri-apps/api/core'
 import i18next from 'i18next'
+import { handlePusherStateUpdate } from '@/features/remote'
 import { showDangerToast, showNoGamesToast } from '@/shared/components'
 import { useStateStore, useUserStore } from '@/shared/stores'
 import { checkSteamStatus, logEvent } from '@/shared/utils'
@@ -23,6 +24,7 @@ export const startAchievementUnlocker = async () => {
     if (achievementUnlockerList.list_data.length === 0) return showNoGamesToast()
 
     setIsAchievementUnlocker(true)
+    handlePusherStateUpdate('achievementUnlocker', true)
   } catch (error) {
     showDangerToast(i18next.t('common.error'))
     console.error('Error in (startAchievementUnlocker):', error)

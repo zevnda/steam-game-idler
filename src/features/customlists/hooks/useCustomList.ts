@@ -1,6 +1,7 @@
 import type { Game, InvokeCustomList, InvokeSettings } from '@/shared/types'
 import { invoke } from '@tauri-apps/api/core'
 import { useEffect, useRef, useState } from 'react'
+import { handleSendUpdatedData } from '@/features/remote'
 import { showDangerToast } from '@/shared/components'
 import { useStateStore, useUserStore } from '@/shared/stores'
 
@@ -76,6 +77,10 @@ export function useCustomList(listName: string) {
     })
     if (!response.error) {
       setList(response.list_data)
+      // Sync updated list to remote
+      if (listName !== 'favoritesList' && userSummary?.steamId) {
+        handleSendUpdatedData(listName, userSummary?.steamId)
+      }
     } else {
       showDangerToast(response.error)
     }
@@ -96,6 +101,10 @@ export function useCustomList(listName: string) {
       })
       if (!addResponse.error) {
         setList(addResponse.list_data)
+        // Sync updated list to remote
+        if (listName !== 'favoritesList' && userSummary?.steamId) {
+          handleSendUpdatedData(listName, userSummary?.steamId)
+        }
       } else {
         showDangerToast(addResponse.error)
       }
@@ -118,6 +127,10 @@ export function useCustomList(listName: string) {
     })
     if (!addResponse.error) {
       setList(addResponse.list_data)
+      // Sync updated list to remote
+      if (listName !== 'favoritesList' && userSummary?.steamId) {
+        handleSendUpdatedData(listName, userSummary?.steamId)
+      }
     } else {
       showDangerToast(addResponse.error)
     }
@@ -135,6 +148,10 @@ export function useCustomList(listName: string) {
       if (response.list_data.length === 0) {
         // Switch view mode if list becomes empty
         setShowInList(false)
+      }
+      // Sync updated list to remote
+      if (listName !== 'favoritesList' && userSummary?.steamId) {
+        handleSendUpdatedData(listName, userSummary?.steamId)
       }
     } else {
       showDangerToast(response.error)
@@ -183,6 +200,10 @@ export function useCustomList(listName: string) {
     })
     if (!response.error) {
       setList(response.list_data)
+      // Sync updated list to remote
+      if (listName !== 'favoritesList' && userSummary?.steamId) {
+        handleSendUpdatedData(listName, userSummary?.steamId)
+      }
     } else {
       showDangerToast(response.error)
     }
@@ -198,6 +219,10 @@ export function useCustomList(listName: string) {
     if (!response.error) {
       setList([])
       setShowInList(false)
+      // Sync updated list to remote
+      if (listName !== 'favoritesList' && userSummary?.steamId) {
+        handleSendUpdatedData(listName, userSummary?.steamId)
+      }
     } else {
       showDangerToast(response.error)
     }

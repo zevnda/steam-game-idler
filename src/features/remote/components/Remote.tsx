@@ -1,18 +1,22 @@
 import { useState } from 'react'
 import { FiCheck, FiCopy } from 'react-icons/fi'
-import { TbDeviceMobile } from 'react-icons/tb'
+import { TbDeviceDesktop } from 'react-icons/tb'
 import { Button, cn, InputOtp } from '@heroui/react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { useRemote } from '@/features/remote'
+import { handlePusherConnect, useRemote } from '@/features/remote'
+import { ExtLink, ProBadge } from '@/shared/components'
+import { useRemoteStore, useUserStore } from '@/shared/stores'
 
 export const Remote = () => {
   const [copied, setCopied] = useState(false)
-  const { code, showDropdown, openDropdown, closeDropdown, dropdownRef } = useRemote()
+  const { remoteCode, pusherClient, setPusherClient, setPusherChannel } = useRemoteStore()
+  const { isPro } = useUserStore()
+  const { showDropdown, setShowDropdown, openDropdown, dropdownRef } = useRemote()
 
   const handleCopy = async () => {
-    if (!code) return
+    if (!remoteCode) return
     try {
-      await navigator.clipboard.writeText(code)
+      await navigator.clipboard.writeText(remoteCode)
       setCopied(true)
       setTimeout(() => setCopied(false), 1500)
     } catch {
@@ -24,28 +28,28 @@ export const Remote = () => {
     <div className='relative'>
       <div
         className={cn(
-          'flex items-center justify-center hover:bg-yellow-500/10 h-9 w-12',
+          'flex items-center justify-center hover:bg-dynamic/10 h-9 w-12',
           'cursor-pointer active:scale-95 relative duration-150',
         )}
         onClick={openDropdown}
       >
-        <TbDeviceMobile fontSize={20} className='text-yellow-500' />
+        <TbDeviceDesktop fontSize={20} className='text-dynamic' />
       </div>
 
       <AnimatePresence>
-        {showDropdown && code && (
+        {showDropdown && remoteCode && (
           <>
             <motion.div
               className='fixed inset-0 bg-black opacity-50 z-998'
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.5 }}
               exit={{ opacity: 0 }}
-              onClick={closeDropdown}
+              onClick={() => setShowDropdown(false)}
             />
             <motion.div
               ref={dropdownRef}
               className={cn(
-                'absolute right-0 mx-auto mt-3 w-96 p-0 m-0 rounded-xl',
+                'absolute right-0 mx-auto mt-3 p-0 m-0 w-96 rounded-xl',
                 'outline-none z-999 shadow-2xl bg-popover border border-border flex flex-col items-center',
               )}
               initial={{ opacity: 0, y: -10, scale: 0.95 }}
@@ -53,28 +57,86 @@ export const Remote = () => {
               exit={{ opacity: 0, y: -10, scale: 0.95 }}
               transition={{ type: 'spring', damping: 20, stiffness: 300 }}
             >
-              <div className='flex items-center justify-between h-10 rounded-t-xl px-6 border-b border-border w-full'>
-                <p className='text-content font-semibold'>Remote Code</p>
-              </div>
-              <div className='flex flex-col items-center justify-center py-8 w-full'>
-                <div className='flex items-center gap-2'>
-                  <InputOtp
-                    color={copied ? 'success' : 'default'}
-                    size='sm'
-                    isReadOnly
-                    defaultValue={code || '------'}
-                    length={6}
-                  />
-                  <Button
-                    size='sm'
-                    isIconOnly
-                    startContent={copied ? <FiCheck fontSize={18} /> : <FiCopy fontSize={18} />}
-                    className={cn('rounded-md', copied ? ' bg-green-500/50' : 'text-content')}
-                    onPress={handleCopy}
-                    type='button'
-                  />
-                </div>
-                <p className='text-xs text-altwhite mt-2'>Use this code to connect your device</p>
+              <div className='flex flex-col w-full p-4'>
+                <p className='font-bold text-xl mb-2'>
+                  Remote Control{' '}
+                  {isPro !== null && isPro === true && <ProBadge className='scale-60 -ml-1.5' />}
+                </p>
+
+                {!pusherClient && (
+                  <div className='grid grid-cols-[auto,1fr] items-center gap-4 mb-4'>
+                    <div className='flex flex-col items-start gap-2 w-full'>
+                      <p className='text-sm text-altwhite'>
+                        Easily control Steam Game Idler from anywhere using your phone or other
+                        device
+                      </p>
+                    </div>
+                    <video
+                      className='rounded-xl min-w-60 border border-border'
+                      src='/remote.mp4'
+                      autoPlay
+                      loop
+                      muted
+                    />
+                  </div>
+                )}
+
+                {pusherClient && (
+                  <div className='grid grid-cols-[auto,1fr] items-center gap-4 mb-4'>
+                    <div className='flex flex-col items-center justify-center gap-2 w-full'>
+                      <p className='text-sm text-altwhite'>
+                        Open{' '}
+                        <ExtLink
+                          href='https://remote.steamgameidler.com/'
+                          className='text-dynamic hover:text-dynamic-hover duration-150'
+                        >
+                          remote.steamgameidler.com
+                        </ExtLink>{' '}
+                        on your phone or other device and enter the code below to connect
+                      </p>
+                      <div className='flex items-center gap-2'>
+                        <InputOtp
+                          color={copied ? 'success' : 'default'}
+                          size='sm'
+                          isReadOnly
+                          defaultValue={remoteCode || '------'}
+                          length={6}
+                        />
+                        <Button
+                          size='sm'
+                          isIconOnly
+                          startContent={
+                            copied ? <FiCheck fontSize={18} /> : <FiCopy fontSize={18} />
+                          }
+                          className={cn('rounded-md', copied ? ' bg-green-500/50' : 'text-content')}
+                          onPress={handleCopy}
+                          type='button'
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                <Button
+                  size='sm'
+                  radius='full'
+                  fullWidth
+                  className={cn(
+                    !pusherClient
+                      ? 'bg-btn-secondary text-btn-text font-bold'
+                      : 'bg-danger text-white font-bold',
+                  )}
+                  onPress={() => {
+                    handlePusherConnect(
+                      !!pusherClient,
+                      remoteCode,
+                      setPusherClient,
+                      setPusherChannel,
+                    )
+                  }}
+                >
+                  {pusherClient ? 'Disable Remote Control' : 'Enable Remote Control'}
+                </Button>
               </div>
             </motion.div>
           </>

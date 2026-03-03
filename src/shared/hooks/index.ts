@@ -7,6 +7,7 @@ export { useFreeGames } from './useFreeGames'
 export { useZoomControls } from './useZoomControls'
 export { useContextMenu } from './useContextMenu'
 export { useSteamMonitor } from './useSteamMonitor'
+export { useRemoteCode } from './useRemoteCode'
 export * from './useAutoIdleGames'
 
 export { useSignIn } from './layouts/useSignIn'

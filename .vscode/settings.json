@@ -1,5 +1,11 @@
 {
   "typescript.tsdk": "node_modules\\typescript\\lib",
+  "search.exclude": {
+    "**/node_modules": true
+  },
+  "files.watcherExclude": {
+    "**/node_modules/**": true
+  },
   "json.schemas": [
     {
       "fileMatch": ["**/tauri.conf.json"],

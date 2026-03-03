@@ -5,7 +5,8 @@ import { TbCheck, TbPlayerStopFilled } from 'react-icons/tb'
 import { Button, cn } from '@heroui/react'
 import Image from 'next/image'
 import { useAchievementUnlocker } from '@/features/achievement-unlocker'
-import { useStateStore } from '@/shared/stores'
+import { handlePusherCommand, handlePusherStateUpdate } from '@/features/remote'
+import { useRemoteStore, useStateStore } from '@/shared/stores'
 import { startCardFarming, stopIdle, updateTrayIcon } from '@/shared/utils'
 
 export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType }) => {
@@ -14,6 +15,7 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
   const setIsAchievementUnlocker = useStateStore(state => state.setIsAchievementUnlocker)
   const transitionDuration = useStateStore(state => state.transitionDuration)
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
+  const pusherChannel = useRemoteStore(state => state.pusherChannel)
 
   const isMountedRef = useRef(true)
   const abortControllerRef = useRef<AbortController>(new AbortController())
@@ -61,6 +63,19 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
     }
   }, [isAchievementUnlocker, currentGame, achievementCount, t])
 
+  const handleStopAchievementUnlocker = () => {
+    stopIdle(currentGame?.appid, currentGame?.name)
+    setIsAchievementUnlocker(false)
+    updateTrayIcon()
+    handlePusherStateUpdate('achievementUnlocker', false)
+  }
+
+  if (pusherChannel?.name) {
+    pusherChannel.bind('client-command', (data: { command: string }) => {
+      handlePusherCommand(data, handleStopAchievementUnlocker)
+    })
+  }
+
   const handleImageError = (event: React.SyntheticEvent<HTMLImageElement, Event>) => {
     ;(event.target as HTMLImageElement).src = '/fallback.webp'
   }
@@ -102,11 +117,7 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
                   radius='full'
                   className='font-bold'
                   startContent={<TbPlayerStopFilled size={18} />}
-                  onPress={() => {
-                    stopIdle(currentGame?.appid, currentGame?.name)
-                    setIsAchievementUnlocker(false)
-                    updateTrayIcon()
-                  }}
+                  onPress={handleStopAchievementUnlocker}
                 >
                   {isComplete ? <p>{t('common.close')}</p> : <p>{t('common.stop')}</p>}
                 </Button>
