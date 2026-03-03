@@ -39,6 +39,7 @@ export const Sidebar = () => {
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
   const isCardFarming = useStateStore(state => state.isCardFarming)
   const isAchievementUnlocker = useStateStore(state => state.isAchievementUnlocker)
+  const showAchievements = useStateStore(state => state.showAchievements)
   const transitionDuration = useStateStore(state => state.transitionDuration)
   const setShowAchievements = useStateStore(state => state.setShowAchievements)
   const { isOpen, onOpenChange, openConfirmation, handleLogout } = useSidebar(
@@ -227,7 +228,7 @@ export const Sidebar = () => {
             isDisabled={
               activePage === 'idling' ||
               activePage === 'freeGames' ||
-              activePage.includes('customlists')
+              (activePage.includes('customlists') && !showAchievements)
             }
             className={cn(
               'text-altwhite active:scale-95 w-full mt-4 duration-150',
