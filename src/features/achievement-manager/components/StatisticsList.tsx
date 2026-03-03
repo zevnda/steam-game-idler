@@ -181,7 +181,7 @@ export const StatisticsList = ({
           />
 
           <List
-            height={windowInnerHeight - 196}
+            height={windowInnerHeight - 212}
             itemCount={Math.ceil(filteredStatistics.length / 2)}
             itemSize={62}
             width='100%'
