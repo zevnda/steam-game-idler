@@ -128,6 +128,12 @@ export const Searchbar = ({ isModalOpen = false, onModalClose }: SearchbarProps)
       }
     }
 
+    if (activePage.includes('customlists') && !showAchievements) {
+      return {
+        isDisabled: false,
+      }
+    }
+
     if (activePage === 'tradingCards' && !showAchievements) {
       return {
         isDisabled: false,
