@@ -4,7 +4,7 @@ import i18next from 'i18next'
 import { showDangerToast } from '@/shared/components'
 import { logEvent } from '@/shared/utils'
 
-export const handleSliderChange = async (
+export const handleIntervalChange = async (
   newInterval: [number, number] | number[] | number,
   userSummary: UserSummary,
   setUserSettings: (value: UserSettings) => void,

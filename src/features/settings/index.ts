@@ -10,7 +10,7 @@ export { handleCheckboxChange } from './utils/handleCheckboxChange'
 // Achievement Unlocker Feature
 export { AchievementSettings } from './components/achievement-unlocker/AchievementSettings'
 export * from './hooks/achievement-unlocker/useAchievementSettings'
-export { handleSliderChange } from './utils/achievement-unlocker/handleSliderChange'
+export { handleIntervalChange } from './utils/achievement-unlocker/handleIntervalChange'
 export { handleScheduleChange } from './utils/achievement-unlocker/handleScheduleChange'
 
 // Card Farming Feature

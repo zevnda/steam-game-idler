@@ -1,9 +1,10 @@
 import { useTranslation } from 'react-i18next'
+import { FaMinus, FaPlus } from 'react-icons/fa6'
 import { TbChevronRight } from 'react-icons/tb'
-import { cn, Divider, Select, SelectItem, Slider, TimeInput } from '@heroui/react'
+import { Button, cn, Divider, Select, SelectItem, Slider, TimeInput } from '@heroui/react'
 import {
+  handleIntervalChange,
   handleScheduleChange,
-  handleSliderChange,
   useAchievementSettings,
 } from '@/features/settings'
 import { SettingsSwitch } from '@/shared/components'
@@ -182,39 +183,97 @@ export const AchievementSettings = () => {
 
         <Divider className='bg-border/70 my-4' />
 
-        <div className='flex justify-between items-center'>
+        <div className='flex justify-between items-start'>
           <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>
               {t('settings.achievementUnlocker.unlockInterval')}
             </p>
             <p className='text-xs text-altwhite'>{sliderLabel}</p>
           </div>
-          <Slider
-            size='md'
-            step={1}
-            minValue={1}
-            maxValue={2880}
-            defaultValue={userSettings?.achievementUnlocker?.interval}
-            formatOptions={{ style: 'currency', currency: 'USD' }}
-            hideValue
-            className='mt-2 w-87.5'
-            classNames={{
-              track: 'bg-input',
-              filler: 'bg-dynamic',
-              thumb: 'bg-white after:bg-dynamic',
-            }}
-            onChangeEnd={e => handleSliderChange(e, userSummary, setUserSettings)}
-            onChange={e => {
-              if (Array.isArray(e)) {
-                setSliderLabel(
-                  t('settings.achievementUnlocker.interval', {
-                    min: e[0],
-                    max: e[1],
-                  }),
-                )
-              }
-            }}
-          />
+
+          <div className='flex flex-col items-center gap-1'>
+            <Slider
+              size='md'
+              step={1}
+              minValue={1}
+              maxValue={2880}
+              defaultValue={userSettings?.achievementUnlocker?.interval}
+              hideValue
+              className='mt-2 w-87.5'
+              classNames={{
+                track: 'bg-input',
+                filler: 'bg-dynamic',
+                thumb: 'bg-white after:bg-dynamic',
+              }}
+              onChangeEnd={e => handleIntervalChange(e, userSummary, setUserSettings)}
+              onChange={e => {
+                if (Array.isArray(e)) {
+                  setSliderLabel(
+                    t('settings.achievementUnlocker.interval', {
+                      min: e[0],
+                      max: e[1],
+                    }),
+                  )
+                }
+              }}
+            />
+
+            <div className='flex w-full justify-between'>
+              <div>
+                <Button
+                  isIconOnly
+                  size='sm'
+                  radius='full'
+                  variant='light'
+                  startContent={<FaMinus />}
+                  onPress={() => {
+                    const [min, max] = userSettings?.achievementUnlocker?.interval
+                    const newValue = [Math.max(1, min - 1), max]
+                    handleIntervalChange(newValue, userSummary, setUserSettings)
+                  }}
+                />
+                <Button
+                  isIconOnly
+                  size='sm'
+                  radius='full'
+                  variant='light'
+                  startContent={<FaPlus />}
+                  onPress={() => {
+                    const [min, max] = userSettings?.achievementUnlocker?.interval
+                    const newValue = [Math.min(max, min + 1), max]
+                    handleIntervalChange(newValue, userSummary, setUserSettings)
+                  }}
+                />
+              </div>
+
+              <div>
+                <Button
+                  isIconOnly
+                  size='sm'
+                  radius='full'
+                  variant='light'
+                  startContent={<FaMinus />}
+                  onPress={() => {
+                    const [min, max] = userSettings?.achievementUnlocker?.interval
+                    const newValue = [min, Math.max(min, max - 1)]
+                    handleIntervalChange(newValue, userSummary, setUserSettings)
+                  }}
+                />
+                <Button
+                  isIconOnly
+                  size='sm'
+                  radius='full'
+                  variant='light'
+                  startContent={<FaPlus />}
+                  onPress={() => {
+                    const [min, max] = userSettings?.achievementUnlocker?.interval
+                    const newValue = [min, Math.min(2880, max + 1)]
+                    handleIntervalChange(newValue, userSummary, setUserSettings)
+                  }}
+                />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
