@@ -198,7 +198,7 @@ export const AchievementsList = ({
           />
 
           <List
-            height={windowInnerHeight - 196}
+            height={windowInnerHeight - 212}
             itemCount={filteredAchievements.length}
             itemSize={110}
             width='100%'
