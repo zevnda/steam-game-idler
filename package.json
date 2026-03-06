@@ -35,7 +35,7 @@
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
     "@heroui/react": "^2.8.7",
-    "@internationalized/date": "^3.10.0",
+    "@internationalized/date": "^3.11.0",
     "@tauri-apps/api": "~2.8.0",
     "@tauri-apps/plugin-autostart": "~2.5.0",
     "@tauri-apps/plugin-clipboard-manager": "^2.3.2",
