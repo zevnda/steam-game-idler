@@ -39,13 +39,14 @@ Refer to the **[documentation](https://steamgameidler.com/docs/)** for a detaile
 # Supported Languages
 Contribute to this project by adding new translations or improving existing ones. **[Read more here](https://github.com/zevnda/steam-game-idler/discussions/148)**
 
-| Language             | Flag | Language   | Flag | Language | Flag |
-| -------------------- | ---- | ---------- | ---- | -------- | ---- |
-| Chinese (Simplified) | 🇨🇳    | Czech      | 🇨🇿    | English  | 🇬🇧    |
-| Finnish              | 🇫🇮    | French     | 🇫🇷    | German   | 🇩🇪    |
-| Italian              | 🇮🇹    | Macedonian | 🇲🇰    | Polish   | 🇵🇱    |
-| Portuguese (Brazil)  | 🇧🇷    | Romanian   | 🇷🇴    | Russian  | 🇷🇺    |
-| Spanish              | 🇪🇸    | Turkish    | 🇹🇷    |
+| Language             | Flag | Language   | Flag | Language        | Flag |
+| -------------------- | ---- | ---------- | ---- | --------------- | ---- |
+| Chinese (Simplified) | 🇨🇳   | Czech      | 🇨🇿   | English         | 🇬🇧   |
+| Finnish              | 🇫🇮   | French     | 🇫🇷   | German          | 🇩🇪   |
+| Indonesian           | 🇮🇩   | Italian    | 🇮🇹   | Macedonian      | 🇲🇰   |
+| Polish               | 🇵🇱   | Portuguese (Brazil) | 🇧🇷 | Romanian   | 🇷🇴   |
+| Russian              | 🇷🇺   | Spanish    | 🇪🇸   | Turkish         | 🇹🇷   |
+| Ukrainian            | 🇺🇦   |            |      |                 |      |
 
 <sup>*Some languages may only have partial support*</sup>
 
@@ -56,3 +57,4 @@ Copyright © 2024-2026 zevnda — **[MIT License](./LICENSE)**
 [release]: https://img.shields.io/github/v/release/zevnda/steam-game-idler?style=flat-square&color=%232d6acc&label=Version
 
 [build]: https://img.shields.io/github/actions/workflow/status/zevnda/steam-game-idler/release.yml?style=flat-square&color=%2313a135&label=Build
+
