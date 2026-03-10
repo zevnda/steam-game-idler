@@ -21,7 +21,7 @@ export const LanguageSwitch = ({
     { key: 'fi-FI', label: 'Suomi' },
     { key: 'fr-FR', label: 'Français' },
     // { key: 'hi-IN', label: 'हिन्दी' },
-    // { key: 'id-ID', label: 'Bahasa Indonesia' },
+    { key: 'id-ID', label: 'Bahasa Indonesia' },
     { key: 'it-IT', label: 'Italiano' },
     // { key: 'ja-JP', label: '日本語' },
     // { key: 'ko-KR', label: '한국어' },
@@ -32,7 +32,7 @@ export const LanguageSwitch = ({
     { key: 'ro-RO', label: 'Română' },
     { key: 'ru-RU', label: 'Русский' },
     { key: 'tr-TR', label: 'Türkçe' },
-    // { key: 'uk-UA', label: 'Українська' },
+    { key: 'uk-UA', label: 'Українська' },
     { key: 'zh-CN', label: '简体中文' },
     // { key: 'zh-TW', label: '繁體中文' },
   ]
