@@ -97,7 +97,7 @@ export const useUserStore = create<UserStore>(set => ({
         min: 0.01,
         max: 10,
       },
-      sellDelay: 5,
+      sellDelay: 10,
     },
   },
   setUserSettings: value =>

@@ -1,0 +1,11 @@
+---
+title: 4.0.7
+date: 2026-03-10
+tags: ['Improved', 'Fixed']
+---
+
+### Improved 🚀
+- Increased the minimum "**Sell Delay**" value in "**Trading Card Manager**" settings from 5 seconds to 10 seconds to help reduce the likelihood of hitting rate limits when bulk selling cards. This will result in longer processing times when selling large amounts of cards, but should help ensure that all cards are listed successfully without hitting rate limits
+
+### Fixed 🐛
+- Fixed an issue with the "**Sell All**" functionality in "**Trading Card Manager**". Previously if a card failed to sell there was no delay before attempting to list the next card, which could cause a rate limit to be hit if multiple cards failed consecutively. Now, if a card fails to sell, the process will correctly wait before attempting to list the next card
