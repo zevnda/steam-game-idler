@@ -21,13 +21,13 @@ export const TradingCardManagerSettings = () => {
   const [priceAdjustment, setPriceAdjustment] = useState<number>(0.0)
   const [sellLimitMin, setSellLimitMin] = useState<number>(0.01)
   const [sellLimitMax, setSellLimitMax] = useState<number>(1.1)
-  const [sellDelay, setSellDelay] = useState<number>(5)
+  const [sellDelay, setSellDelay] = useState<number>(10)
 
   useEffect(() => {
     setPriceAdjustment(userSettings?.tradingCards?.priceAdjustment || 0.0)
     setSellLimitMin(userSettings?.tradingCards?.sellLimit?.min || 0.01)
     setSellLimitMax(userSettings?.tradingCards?.sellLimit?.max || 1.1)
-    setSellDelay(userSettings?.tradingCards?.sellDelay || 5)
+    setSellDelay(userSettings?.tradingCards?.sellDelay || 10)
   }, [
     userSettings?.tradingCards?.priceAdjustment,
     userSettings?.tradingCards?.sellLimit,
@@ -266,8 +266,8 @@ export const TradingCardManagerSettings = () => {
             size='sm'
             value={sellDelay}
             step={1}
-            minValue={5}
-            maxValue={30}
+            minValue={10}
+            maxValue={60}
             aria-label='sell delay value'
             className='w-22.5'
             classNames={{
