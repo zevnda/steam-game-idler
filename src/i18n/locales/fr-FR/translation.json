@@ -236,6 +236,7 @@
   "proMode.modal.uniqueChatRole": "Rôle de chat unique dans Discord",
   "proMode.modal.moreBenefits": "Plus d'avantages à venir à l'avenir",
   "proMode.modal.footer": "Les prix affichés sont en USD et hors taxes.",
+  "proMode.removeAdsWith": "Supprimez les pubs avec",
   "toast.steam": "Steam n'est pas en cours d'exécution",
   "toast.mismatch": "Incohérence de compte entre Steam et SGI",
   "toast.missingCredentials": "Identifiants de farm de cartes manquants dans « Paramètres → Identifiants Steam »",
