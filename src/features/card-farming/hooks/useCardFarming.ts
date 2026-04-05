@@ -122,6 +122,9 @@ const checkGamesForDrops = async () => {
   const allGames = response.settings.cardFarming.allGames
   const blacklist = response.settings.cardFarming.blacklist || []
   const skipNoPlaytime = response.settings.cardFarming.skipNoPlaytime || false
+  const farmUnplayedOnly = response.settings.cardFarming.farmUnplayedOnly || false
+  const sortByHighestDrops = response.settings.cardFarming.sortByHighestDrops || false
+  const sortByLowestDrops = response.settings.cardFarming.sortByLowestDrops || false
 
   const cardFarmingList = await invoke<InvokeCustomList>('get_custom_lists', {
     steamId: userSummary?.steamId,
@@ -146,6 +149,9 @@ const checkGamesForDrops = async () => {
         gameSettings,
         blacklist,
         skipNoPlaytime,
+        farmUnplayedOnly,
+        sortByHighestDrops,
+        sortByLowestDrops,
       )
     } else {
       totalDrops = await processIndividualGames(
@@ -170,11 +176,30 @@ const processGamesWithDrops = (
   gameSettings: GameSettings,
   blacklist: number[],
   skipNoPlaytime: boolean,
+  farmUnplayedOnly: boolean,
+  sortByHighestDrops: boolean,
+  sortByLowestDrops: boolean,
 ) => {
   let totalDrops = 0
 
-  if (gamesWithDrops) {
-    for (const gameData of gamesWithDrops) {
+  // Sort the games list by drop count if a sort option is enabled
+  const sortedGames = gamesWithDrops ? [...gamesWithDrops] : []
+  if (sortByHighestDrops) {
+    sortedGames.sort((a, b) => {
+      const aRemaining = 'remaining' in a ? (a.remaining ?? 0) : 0
+      const bRemaining = 'remaining' in b ? (b.remaining ?? 0) : 0
+      return bRemaining - aRemaining
+    })
+  } else if (sortByLowestDrops) {
+    sortedGames.sort((a, b) => {
+      const aRemaining = 'remaining' in a ? (a.remaining ?? 0) : 0
+      const bRemaining = 'remaining' in b ? (b.remaining ?? 0) : 0
+      return aRemaining - bRemaining
+    })
+  }
+
+  if (sortedGames.length > 0) {
+    for (const gameData of sortedGames) {
       if (gamesSet.size < 32) {
         // Check if this is a GameWithRemainingDrops or a Game
         const isGameWithDrops = 'remaining' in gameData && 'id' in gameData
@@ -192,6 +217,12 @@ const processGamesWithDrops = (
         // Remove games with 0 playtime if 'skipNoPlaytime' is enabled
         if (skipNoPlaytime && playtime <= 0) {
           logEvent(`[Card Farming] Skipping ${gameName} (${gameId}) due to zero playtime`)
+          continue
+        }
+
+        // Only farm games with 0 playtime if 'farmUnplayedOnly' is enabled
+        if (farmUnplayedOnly && playtime > 0) {
+          logEvent(`[Card Farming] Skipping ${gameName} (${gameId}) - only farming unplayed games`)
           continue
         }
 

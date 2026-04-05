@@ -92,6 +92,48 @@ export const CardSettings = () => {
 
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
+            <p className='text-sm text-content font-bold'>
+              {t('settings.cardFarming.farmUnplayedOnly')}
+            </p>
+            <p className='text-xs text-altwhite'>
+              {t('settings.cardFarming.farmUnplayedOnly.description')}
+            </p>
+          </div>
+          <SettingsSwitch type='cardFarming' name='farmUnplayedOnly' />
+        </div>
+
+        <Divider className='bg-border/70 my-4' />
+
+        <div className='flex justify-between items-center'>
+          <div className='flex flex-col gap-2 w-1/2'>
+            <p className='text-sm text-content font-bold'>
+              {t('settings.cardFarming.sortByHighestDrops')}
+            </p>
+            <p className='text-xs text-altwhite'>
+              {t('settings.cardFarming.sortByHighestDrops.description')}
+            </p>
+          </div>
+          <SettingsSwitch type='cardFarming' name='sortByHighestDrops' />
+        </div>
+
+        <Divider className='bg-border/70 my-4' />
+
+        <div className='flex justify-between items-center'>
+          <div className='flex flex-col gap-2 w-1/2'>
+            <p className='text-sm text-content font-bold'>
+              {t('settings.cardFarming.sortByLowestDrops')}
+            </p>
+            <p className='text-xs text-altwhite'>
+              {t('settings.cardFarming.sortByLowestDrops.description')}
+            </p>
+          </div>
+          <SettingsSwitch type='cardFarming' name='sortByLowestDrops' />
+        </div>
+
+        <Divider className='bg-border/70 my-4' />
+
+        <div className='flex justify-between items-center'>
+          <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>{t('common.nextTask')}</p>
             <p className='text-xs text-altwhite'>
               {t('settings.cardFarming.nextTask.description')}

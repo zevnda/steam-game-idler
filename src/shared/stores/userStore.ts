@@ -79,6 +79,9 @@ export const useUserStore = create<UserStore>(set => ({
       totalDropsRemaining: 0,
       blacklist: null,
       skipNoPlaytime: false,
+      farmUnplayedOnly: false,
+      sortByHighestDrops: false,
+      sortByLowestDrops: false,
     },
     achievementUnlocker: {
       idle: true,
