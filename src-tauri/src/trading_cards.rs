@@ -168,25 +168,6 @@ pub async fn get_trading_cards(
     }
 
     for item in &all_descriptions {
-        // Check if this is a trading card and is marketable
-        let is_trading_card = item
-            .get("tags")
-            .and_then(|tags| tags.as_array())
-            .map(|tags| {
-                tags.iter().any(|tag| {
-                    tag.get("category")
-                        .and_then(|c| c.as_str())
-                        .map(|c| c == "item_class")
-                        .unwrap_or(false)
-                        && tag
-                            .get("internal_name")
-                            .and_then(|n| n.as_str())
-                            .map(|n| n == "item_class_2")
-                            .unwrap_or(false)
-                })
-            })
-            .unwrap_or(false);
-
         // Only get marketable items
         let is_marketable = item
             .get("marketable")
@@ -194,7 +175,7 @@ pub async fn get_trading_cards(
             .map(|m| m == 1)
             .unwrap_or(false);
 
-        if is_trading_card && is_marketable {
+        if is_marketable {
             let classid = item.get("classid").and_then(|id| id.as_str()).unwrap_or("");
             let instanceid = item
                 .get("instanceid")
@@ -224,26 +205,60 @@ pub async fn get_trading_cards(
                 .or_else(|| item.get("name").and_then(|name| name.as_str()))
                 .unwrap_or("");
 
-            // Get the game name from type field or extract from full name
-            let appname = item
-                .get("type")
-                .and_then(|t| t.as_str())
-                .and_then(|t| {
-                    if t.ends_with(" Trading Card") {
-                        Some(t.trim_end_matches(" Trading Card"))
-                    } else {
-                        None
-                    }
+            // Get the game/source name: prefer the "Game" category tag, then fall back
+            // to stripping known suffixes from the type field
+            let appname: String = {
+                let from_game_tag = item
+                    .get("tags")
+                    .and_then(|tags| tags.as_array())
+                    .and_then(|tags| {
+                        tags.iter().find(|tag| {
+                            tag.get("category")
+                                .and_then(|c| c.as_str())
+                                .map(|c| c.eq_ignore_ascii_case("Game"))
+                                .unwrap_or(false)
+                        })
+                    })
+                    .and_then(|tag| tag.get("localized_tag_name").and_then(|n| n.as_str()))
+                    .map(|s| s.to_string());
+
+                from_game_tag.unwrap_or_else(|| {
+                    item.get("type")
+                        .and_then(|t| t.as_str())
+                        .and_then(|t| {
+                            if t.ends_with(" Trading Card") {
+                                Some(t.trim_end_matches(" Trading Card").to_string())
+                            } else {
+                                None
+                            }
+                        })
+                        .unwrap_or_else(|| {
+                            if let Some(idx) = full_name.find(" - ") {
+                                full_name[0..idx].to_string()
+                            } else if let Some(idx) = full_name.find(" Trading Card") {
+                                full_name[0..idx].to_string()
+                            } else {
+                                full_name.to_string()
+                            }
+                        })
                 })
-                .unwrap_or_else(|| {
-                    if let Some(idx) = full_name.find(" - ") {
-                        &full_name[0..idx]
-                    } else if let Some(idx) = full_name.find(" Trading Card") {
-                        &full_name[0..idx]
-                    } else {
-                        full_name
-                    }
-                });
+            };
+
+            // Get item type from item_class tag (e.g. "item_class_2" = trading card)
+            let item_type = item
+                .get("tags")
+                .and_then(|tags| tags.as_array())
+                .and_then(|tags| {
+                    tags.iter().find(|tag| {
+                        tag.get("category")
+                            .and_then(|c| c.as_str())
+                            .map(|c| c == "item_class")
+                            .unwrap_or(false)
+                    })
+                })
+                .and_then(|tag| tag.get("internal_name").and_then(|n| n.as_str()))
+                .unwrap_or("unknown")
+                .to_string();
 
             // Get badge level for this appid
             let badge_level = badge_levels.get(&appid).cloned().unwrap_or(0);
@@ -283,7 +298,8 @@ pub async fn get_trading_cards(
                                 "appname": appname,
                                 "full_name": full_name,
                                 "market_hash_name": market_hash_name,
-                                "badge_level": badge_level
+                                "badge_level": badge_level,
+                                "item_type": item_type
                             });
                             if is_foil {
                                 card_json["foil"] = json!(true);
@@ -303,8 +319,8 @@ pub async fn get_trading_cards(
     let app_data_dir = get_cache_dir(&app_handle)?.join(steam_id.clone());
     create_dir_all(&app_data_dir).map_err(|e| format!("Failed to create app directory: {}", e))?;
 
-    // Save the response to trading_cards.json
-    let file_name = "trading_cards.json";
+    // Save the response to inventory.json
+    let file_name = "inventory.json";
     let trading_cards_file_path = app_data_dir.join(file_name);
     let mut file = OpenOptions::new()
         .write(true)
@@ -330,7 +346,7 @@ pub fn get_trading_cards_cache(
 
     // Read trading cards file
     let trading_cards = {
-        let file_name = "trading_cards.json";
+        let file_name = "inventory.json";
         let cards_file_path = app_data_dir.join(file_name);
         if cards_file_path.exists() {
             let mut file = File::open(&cards_file_path)
@@ -366,8 +382,8 @@ pub async fn update_card_data(
         ));
     }
 
-    // Define the trading_cards.json file path
-    let cards_file_path = app_data_dir.join("trading_cards.json");
+    // Define the inventory.json file path
+    let cards_file_path = app_data_dir.join("inventory.json");
 
     if !cards_file_path.exists() {
         return Err("Card farming data file does not exist".to_string());
@@ -423,7 +439,7 @@ pub fn delete_user_trading_card_file(
     steam_id: String,
     app_handle: tauri::AppHandle,
 ) -> Result<(), String> {
-    let trading_card_file_name = format!("trading_cards.json");
+    let trading_card_file_name = "inventory.json".to_string();
     let app_data_dir = get_cache_dir(&app_handle)?.join(steam_id.clone());
     // Delete the games list file
     let trading_cards_file_path = app_data_dir.join(trading_card_file_name);
@@ -435,6 +451,54 @@ pub fn delete_user_trading_card_file(
     Ok(())
 }
 
+/// Returns true for Steam currency codes that have no sub-units (0 decimal places).
+/// For these currencies row[0] from the histogram is already in the smallest unit
+/// (e.g. ¥3 = 3, ₩100 = 100) so no ×100 conversion is needed.
+fn is_zero_decimal_currency(code: u32) -> bool {
+    matches!(
+        code,
+        8   // JPY – Japanese Yen
+        | 10  // IDR – Indonesian Rupiah
+        | 15  // VND – Vietnamese Dong
+        | 16  // KRW – South Korean Won
+        | 25  // CLP – Chilean Peso
+        | 45 // HUF – Hungarian Forint
+    )
+}
+
+// Given a *buyer* target price in the currency's **smallest unit** (cents for USD/EUR,
+// whole units for JPY/KRW/etc.), return the **seller-receives** amount in the same unit
+// such that `buyer_pays ≤ buyer_target`.
+//
+// Steam fees charged on top of the seller amount:
+//   • Valve fee  : 5 % of seller amount, minimum 1 unit
+//   • Publisher fee: 10 % of seller amount, minimum 1 unit
+//
+// Because the fees are floored, the buyer_pays for a given seller amount equals:
+//   `seller + floor(seller × 0.05).max(1) + floor(seller × 0.10).max(1)`
+//
+// We start from an estimate of `floor(buyer_target / 1.15)` (exact when fees are 15 % of
+// seller) and walk downward until the resulting buyer price no longer exceeds the target.
+// This guarantees that existing buy-orders at `buyer_target` will match the listing.
+fn find_seller_price(buyer_target: u64) -> u64 {
+    if buyer_target == 0 {
+        return 1;
+    }
+    let mut seller = ((buyer_target as f64 / 1.15).ceil() as u64 + 2).max(1);
+    loop {
+        let valve_fee = (seller * 5 / 100).max(1);
+        let dev_fee = (seller * 10 / 100).max(1);
+        if seller + valve_fee + dev_fee <= buyer_target {
+            return seller;
+        }
+        if seller <= 1 {
+            // Minimum possible listing — buyer will pay 1+1+1 = 3 units minimum
+            return 1;
+        }
+        seller -= 1;
+    }
+}
+
 #[tauri::command]
 pub async fn list_trading_cards(
     sid: String,
@@ -442,6 +506,7 @@ pub async fn list_trading_cards(
     sma: Option<String>,
     steam_id: String,
     cards: Vec<(String, String)>,
+    currency: Option<String>,
     delay: Option<f64>,
 ) -> Result<Value, String> {
     let client = Client::builder()
@@ -479,50 +544,27 @@ pub async fn list_trading_cards(
             }
         };
 
-        // Adjust sell price for Steam fees
-        let calculate_fees = |price: f64| -> (f64, f64) {
-            let valve_fee = ((price / 11.5) * 1000.0).round() / 1000.0;
-            let valve_fee = (valve_fee * 100.0).floor() / 100.0;
-            let valve_fee = valve_fee.max(0.01);
-
-            let dev_fee = ((price / 23.0) * 1000.0).round() / 1000.0;
-            let dev_fee = (dev_fee * 100.0).floor() / 100.0;
-            let dev_fee = dev_fee.max(0.01);
-
-            (valve_fee, dev_fee)
+        // Determine currency unit multiplier.
+        // row[0] from Steam's histogram is expressed as a decimal in the major currency unit
+        // (e.g. $0.03 for USD, €0.03 for EUR, ¥3 for JPY).
+        // Steam's sellitem/ API expects the price in the currency's *smallest* unit as an integer
+        // (cents for USD/EUR, whole yen for JPY, whole won for KRW, etc.).
+        // For 2-decimal currencies multiply by 100; for 0-decimal currencies multiply by 1.
+        let currency_code: u32 = currency.as_deref().unwrap_or("1").parse().unwrap_or(1);
+        let multiplier = if is_zero_decimal_currency(currency_code) {
+            1.0_f64
+        } else {
+            100.0_f64
         };
 
-        let find_listing_price = |target_buyer_price: f64| -> f64 {
-            if target_buyer_price <= 0.10 {
-                match (target_buyer_price * 100.0).round() as u64 {
-                    1 => 0.01,
-                    2 => 0.01,
-                    3 => 0.01,
-                    4 => 0.02,
-                    5 => 0.03,
-                    6 => 0.04,
-                    7 => 0.05,
-                    8 => 0.06,
-                    9 => 0.07,
-                    10 => 0.08,
-                    _ => target_buyer_price / 1.15,
-                }
-            } else {
-                target_buyer_price / 1.15
-            }
-        };
-
-        let listing_price = find_listing_price(user_price);
-        let (valve_fee, dev_fee) = calculate_fees(user_price);
-        let seller_receives = user_price - valve_fee - dev_fee;
-        let adjusted_price = (listing_price * 100.0).round() as u64;
+        // Convert buyer's target price to the smallest currency unit, then derive the
+        // correct seller-receives amount that accounts for Steam's fee floors.
+        let buyer_target_units = (user_price * multiplier).round() as u64;
+        let adjusted_price = find_seller_price(buyer_target_units);
 
         println!(
-            "Listing card with assetid: {}, buyer pays: ${:.2}, API price: ${:.2}, seller receives: ${:.2}",
-            assetid,
-            user_price,
-            listing_price,
-            seller_receives
+            "Listing assetid={} | currency={} | buyer_target={} units | seller_receives={} units",
+            assetid, currency_code, buyer_target_units, adjusted_price
         );
 
         // Create form data for card listings
@@ -698,36 +740,53 @@ pub async fn get_card_price(
         currency.as_deref().unwrap_or(""),
         item_nameid
     );
-    let hist_resp = client
-        .get(&histogram_url)
-        .header("User-Agent", "Mozilla/5.0")
-        .header("Referer", &url)
-        .send()
-        .await;
+    // Fetch histogram with retry/backoff for HTTP 429 (rate limit)
+    let json: Value = {
+        let max_retries: u32 = 3;
+        let mut retry_count: u32 = 0;
+        loop {
+            let hist_resp = client
+                .get(&histogram_url)
+                .header("User-Agent", "Mozilla/5.0")
+                .header("Referer", &url)
+                .send()
+                .await;
 
-    let hist_resp = match hist_resp {
-        Ok(r) => r,
-        Err(e) => {
-            return Ok(json!({
-                "success": false,
-                "error": format!("Failed to fetch histogram: {}", e)
-            }));
-        }
-    };
-
-    if !hist_resp.status().is_success() {
-        return Ok(json!({
-            "success": false,
-            "error": format!("Failed to fetch histogram: HTTP {}", hist_resp.status())
-        }));
-    }
-    let json: Value = match hist_resp.json().await {
-        Ok(j) => j,
-        Err(e) => {
-            return Ok(json!({
-                "success": false,
-                "error": format!("Failed to parse histogram JSON: {}", e)
-            }));
+            match hist_resp {
+                Err(e) => {
+                    return Ok(json!({
+                        "success": false,
+                        "error": format!("Failed to fetch histogram: {}", e)
+                    }));
+                }
+                Ok(r) if r.status().as_u16() == 429 => {
+                    if retry_count >= max_retries {
+                        return Ok(json!({
+                            "success": false,
+                            "error": "HTTP 429: Rate limited (max retries exceeded)"
+                        }));
+                    }
+                    // Exponential backoff: 5s, 10s, 20s
+                    let delay_ms = 5_000u64 * (1u64 << retry_count);
+                    retry_count += 1;
+                    tokio::time::sleep(tokio::time::Duration::from_millis(delay_ms)).await;
+                }
+                Ok(r) if !r.status().is_success() => {
+                    return Ok(json!({
+                        "success": false,
+                        "error": format!("HTTP {}", r.status())
+                    }));
+                }
+                Ok(r) => match r.json::<Value>().await {
+                    Ok(j) => break j,
+                    Err(e) => {
+                        return Ok(json!({
+                            "success": false,
+                            "error": format!("Failed to parse histogram JSON: {}", e)
+                        }));
+                    }
+                },
+            }
         }
     };
 

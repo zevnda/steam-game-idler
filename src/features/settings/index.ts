@@ -56,6 +56,6 @@ export * from './utils/general/handleSteamWebAPIKey'
 export { SteamCredentials } from './components/steam-credentials/SteamCredentials'
 export * from './utils/steam-credentials/handleSteamCredentials'
 
-// Trading Card Manager Feature
-export { TradingCardManagerSettings } from './components/trading-card-manager/TradingCardManagerSettings'
-export * from './utils/trading-card-manager/handleSettingsChange'
+// Inventory Manager Feature
+export { InventoryManagerSettings } from './components/inventory-manager/InventoryManagerSettings'
+export * from './utils/inventory-manager/handleSettingsChange'

@@ -12,7 +12,7 @@ import {
 } from '@/features/settings'
 import { useUserStore } from '@/shared/stores'
 
-export const TradingCardManagerSettings = () => {
+export const InventoryManagerSettings = () => {
   const { t } = useTranslation()
   const userSummary = useUserStore(state => state.userSummary)
   const userSettings = useUserStore(state => state.userSettings)

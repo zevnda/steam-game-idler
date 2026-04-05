@@ -47,7 +47,7 @@ const comparisonData = [
       { name: 'Custom Queue Order', steamGameIdler: true, alt: false },
       { name: 'Simultaneous Game Farming', steamGameIdler: true, alt: false },
       { name: 'Achievement Management', steamGameIdler: true, alt: false },
-      { name: 'Trading Card Manager', steamGameIdler: true, alt: false },
+      { name: 'Inventory Manager', steamGameIdler: true, alt: false },
       { name: 'Marketplace Integration', steamGameIdler: true, alt: false },
       { name: 'Playtime Boosting', steamGameIdler: true, alt: false },
     ],

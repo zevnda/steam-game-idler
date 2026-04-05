@@ -51,7 +51,7 @@ export function useTradingCardsList() {
         return list.sort((a, b) => b.appname.localeCompare(a.appname))
       case 'badge':
         return list
-          .filter(card => card.badge_level !== undefined)
+          .filter(card => card.item_type === 'item_class_2' && (card.badge_level || 0) > 0)
           .sort((a, b) => {
             const levelA = a.badge_level || 0
             const levelB = b.badge_level || 0
@@ -59,7 +59,7 @@ export function useTradingCardsList() {
           })
       case 'foil':
         return list
-          .filter(card => card.foil === true)
+          .filter(card => card.item_type === 'item_class_2' && card.foil === true)
           .sort((a, b) => {
             const levelA = a.badge_level || 0
             const levelB = b.badge_level || 0
@@ -72,6 +72,10 @@ export function useTradingCardsList() {
         })
         return list.filter(card => countMap[card.market_hash_name] > 1)
       }
+      case 'cards':
+        return list
+          .filter(card => card.item_type === 'item_class_2')
+          .sort((a, b) => a.full_name.localeCompare(b.full_name))
       default:
         return list
     }
@@ -91,40 +95,47 @@ export function useTradingCardsList() {
           steamId: userSummary?.steamId,
         })
 
-        if (cachedCards && cachedCards.card_data) {
-          const sortedCards = cachedCards.card_data.sort((a, b) =>
-            a.appname.localeCompare(b.appname),
-          )
-          setTradingCardsList(sortedCards)
-        } else {
-          // Validate credentials
-          const validate = await invoke<InvokeValidateSession>('validate_session', {
-            sid: decrypt(credentials.sid),
-            sls: decrypt(credentials.sls),
-            sma: credentials?.sma,
-            steamid: userSummary?.steamId,
-          })
-
-          if (!validate.user) return showIncorrectCredentialsToast()
-
-          const response = await invoke<InvokeCardData>('get_trading_cards', {
-            sid: decrypt(credentials.sid),
-            sls: decrypt(credentials.sls),
-            sma: credentials?.sma,
-            steamId: userSummary?.steamId,
-            includePrices: true,
-            apiKey: apiKey ? decrypt(apiKey) : null,
-          })
-
-          if (response.card_data.length > 0) {
-            const sortedCards = response.card_data.sort((a, b) =>
+        if (cachedCards && cachedCards.card_data && cachedCards.card_data.length > 0) {
+          // Stale-cache guard: if items are missing item_type the cache was written
+          // by an older version that only stored trading cards — force a re-fetch.
+          const isStale = cachedCards.card_data.every(c => c.item_type === undefined)
+          if (!isStale) {
+            const sortedCards = cachedCards.card_data.sort((a, b) =>
               a.appname.localeCompare(b.appname),
             )
             setTradingCardsList(sortedCards)
-          } else {
-            setTradingCardsList([])
-            showPrimaryToast(t('toast.tradingCards.noCards'))
+            setIsLoading(false)
+            return
           }
+          // Stale — delete so the fresh fetch below saves clean data
+          await invoke('delete_user_trading_card_file', { steamId: userSummary?.steamId })
+        }
+
+        // Validate credentials
+        const validate = await invoke<InvokeValidateSession>('validate_session', {
+          sid: decrypt(credentials.sid),
+          sls: decrypt(credentials.sls),
+          sma: credentials?.sma,
+          steamid: userSummary?.steamId,
+        })
+
+        if (!validate.user) return showIncorrectCredentialsToast()
+
+        const response = await invoke<InvokeCardData>('get_trading_cards', {
+          sid: decrypt(credentials.sid),
+          sls: decrypt(credentials.sls),
+          sma: credentials?.sma,
+          steamId: userSummary?.steamId,
+          includePrices: true,
+          apiKey: apiKey ? decrypt(apiKey) : null,
+        })
+
+        if (response.card_data.length > 0) {
+          const sortedCards = response.card_data.sort((a, b) => a.appname.localeCompare(b.appname))
+          setTradingCardsList(sortedCards)
+        } else {
+          setTradingCardsList([])
+          showPrimaryToast(t('toast.tradingCards.noCards'))
         }
       } catch (error) {
         console.error('Error in getTradingCards:', error)
@@ -310,6 +321,7 @@ export function useTradingCardsList() {
         sma: credentials?.sma,
         steamId: userSummary?.steamId,
         cards: [cardForListing],
+        currency: localStorage.getItem('currency') || '1',
       })
 
       if (response.successful && response.results && response.results.length > 0) {
@@ -411,6 +423,7 @@ export function useTradingCardsList() {
         sma: credentials?.sma,
         steamId: userSummary?.steamId,
         cards: cardsForBulkListing,
+        currency: localStorage.getItem('currency') || '1',
         delay: sellDelay,
       })
 
@@ -458,135 +471,169 @@ export function useTradingCardsList() {
     }
   }
 
+  // Shared helper: fetch price and list a batch of items sequentially with rate-limit handling
+  const sellCardsList = async (items: TradingCard[], context: string) => {
+    const credentials = userSettings?.cardFarming.credentials
+    if (!credentials?.sid || !credentials?.sls) return showMissingCredentialsToast()
+
+    const priceAdjustment = userSettings?.tradingCards?.priceAdjustment || 0.0
+    const sellDelay = userSettings?.tradingCards?.sellDelay || 10
+    const successfulCards: string[] = []
+    const failedCards: { assetid: string; message?: string }[] = []
+    const skippedCards: string[] = []
+
+    for (let i = 0; i < items.length; i++) {
+      const card = items[i]
+
+      // Apply delay before each item except the first to space out all requests
+      if (i > 0) {
+        await new Promise(resolve => setTimeout(resolve, sellDelay * 1000))
+      }
+
+      // Skip locked cards
+      if (isCardLocked(card.id)) {
+        skippedCards.push(card.assetid)
+        logEvent(`[Info] in (${context}): Skipped locked item ${card.assetid}`)
+        continue
+      }
+
+      if (!card.market_hash_name) {
+        logEvent(
+          `[Error] in (${context}): Item ${card.assetid} missing market_hash_name - skipping`,
+        )
+        continue
+      }
+
+      try {
+        const priceResult = await fetchCardPrices(card.market_hash_name)
+
+        if (!priceResult.success) {
+          if (priceResult.rateLimited) {
+            logEvent(
+              `[Error] in (${context}): Rate limited fetching price for ${card.assetid} (${card.market_hash_name}) - stopping`,
+            )
+            break
+          }
+          logEvent(
+            `[Error] in (${context}): Failed to fetch price for ${card.assetid} (${card.market_hash_name}) - skipping`,
+          )
+          continue
+        }
+
+        if (!priceResult.price) {
+          logEvent(
+            `[Error] in (${context}): No price determined for ${card.assetid} (${card.market_hash_name}) - skipping`,
+          )
+          continue
+        }
+
+        const finalPrice = parseFloat(priceResult.price) + priceAdjustment
+
+        if (!isWithinSellLimits(finalPrice)) {
+          skippedCards.push(card.assetid)
+          logEvent(
+            `[Info] in (${context}): Skipped ${card.assetid} (${card.market_hash_name}) - price ${finalPrice} outside sell limits`,
+          )
+          continue
+        }
+
+        const cardForListing: [string, string] = [card.assetid, finalPrice.toString()]
+        const response = await invoke<InvokeListCards>('list_trading_cards', {
+          sid: decrypt(credentials.sid),
+          sls: decrypt(credentials.sls),
+          sma: credentials?.sma,
+          steamId: userSummary?.steamId,
+          cards: [cardForListing],
+          currency: localStorage.getItem('currency') || '1',
+        })
+
+        if (response.successful && response.results && response.results.length > 0) {
+          const result = response.results[0]
+          if (result.success) {
+            successfulCards.push(card.assetid)
+          } else {
+            failedCards.push({ assetid: card.assetid, message: result.message })
+            if (result.message && result.message.toLowerCase().includes('rate limit')) {
+              showPriceFetchRateLimitToast()
+              logEvent(
+                `[Error] in (${context}): Rate limited listing ${card.assetid} (${card.market_hash_name}) - stopping`,
+              )
+              break
+            }
+          }
+        }
+      } catch (error) {
+        failedCards.push({ assetid: card.assetid, message: String(error) })
+        console.error(`Error processing item ${card.assetid}:`, error)
+        logEvent(
+          `[Error] in (${context}): processing ${card.assetid} (${card.market_hash_name}): ${error}`,
+        )
+      }
+    }
+
+    if (successfulCards.length > 0) {
+      showSuccessToast(t('toast.tradingCards.listed', { count: successfulCards.length }))
+    }
+
+    if (skippedCards.length > 0) {
+      showPrimaryToast(t('toast.tradingCards.skippedCards', { count: skippedCards.length }))
+      logEvent(`[Info] in (${context}): Skipped ${skippedCards.length} items`)
+    }
+
+    for (const failed of failedCards) {
+      logEvent(`[Error] in (${context}): Failed to list ${failed.assetid}: ${failed.message}`)
+    }
+  }
+
   const handleSellAllCards = async () => {
     try {
       const credentials = userSettings?.cardFarming.credentials
-
       if (!credentials?.sid || !credentials?.sls) return showMissingCredentialsToast()
 
       setLoadingListButton(true)
       showPrimaryToast(t('toast.tradingCards.processing'))
-
-      const priceAdjustment = userSettings?.tradingCards?.priceAdjustment || 0.0
-      const sellDelay = userSettings?.tradingCards?.sellDelay || 10
-      const successfulCards = []
-      const failedCards = []
-      const skippedCards = []
-      let shouldContinue = true
-
-      for (const card of tradingCardsList) {
-        if (!shouldContinue) break
-
-        // Skip locked cards
-        if (isCardLocked(card.id)) {
-          skippedCards.push(card.assetid)
-          logEvent(`[Info] Skipped locked card ${card.assetid}`)
-          continue
-        }
-
-        if (!card.market_hash_name) {
-          logEvent(`[Error] Card ${card.assetid} doesn't have a market hash name - skipping`)
-          continue
-        }
-
-        try {
-          const priceResult = await fetchCardPrices(card.market_hash_name)
-
-          // If rate limited, stop processing further cards
-          if (!priceResult.success && priceResult.rateLimited) {
-            logEvent(
-              `[Error] in (handleSellAllCards): Rate limited when fetching price for card ${card.assetid} (${card.market_hash_name}) (Increasing the 'sell delay' in 'settings > trading card manager' can help prevent this issue) - stopping`,
-            )
-            return
-          } else {
-            // Other errors fetching price - skip this card
-            if (!priceResult.success) {
-              logEvent(
-                `[Error] in (handleSellAllCards): Failed to fetch price for card ${card.assetid} (${card.market_hash_name}) - skipping`,
-              )
-            } else if (!priceResult.price) {
-              logEvent(
-                `[Error] in (handleSellAllCards): Couldn't determine price for card ${card.assetid} (${card.market_hash_name}) - skipping`,
-              )
-            } else {
-              if (!shouldContinue) {
-                // Check shouldContinue before proceeding
-                // This is to ensure that if we were rate limited during price fetching, we don't attempt to list any more cards
-              } else {
-                const parsedPrice = priceResult.price.replace(/[^0-9.,]/g, '').replace(',', '.')
-                const finalPrice = parseFloat(parsedPrice) + priceAdjustment
-
-                // Check if price is within sell limits
-                if (!isWithinSellLimits(finalPrice)) {
-                  skippedCards.push(card.assetid)
-                  logEvent(
-                    `[Info] in (handleSellAllCards): Skipped card ${card.assetid} (${card.market_hash_name}) - price ${finalPrice} outside sell limits`,
-                  )
-                } else {
-                  const cardForListing: [string, string] = [card.assetid, finalPrice.toString()]
-
-                  const response = await invoke<InvokeListCards>('list_trading_cards', {
-                    sid: decrypt(credentials.sid),
-                    sls: decrypt(credentials.sls),
-                    sma: credentials?.sma,
-                    steamId: userSummary?.steamId,
-                    cards: [cardForListing],
-                  })
-
-                  if (response.successful && response.results && response.results.length > 0) {
-                    const result = response.results[0]
-                    if (result.success) {
-                      successfulCards.push(card.assetid)
-                    } else {
-                      failedCards.push({ assetid: card.assetid, message: result.message })
-
-                      if (result.message && result.message.toLowerCase().includes('rate limit')) {
-                        showPriceFetchRateLimitToast()
-                        logEvent(
-                          `[Error] in (handleSellAllCards): Rate limited when listing card ${card.assetid} (${card.market_hash_name}) - stopping (Increasing the 'sell delay' in 'settings > trading card manager' can help prevent this issue)`,
-                        )
-                        shouldContinue = false
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        } catch (error) {
-          failedCards.push({ assetid: card.assetid, message: String(error) })
-          console.error(`Error processing card ${card.assetid}:`, error)
-          logEvent(
-            `[Error] in (handleSellAllCards): processing card ${card.assetid} (${card.market_hash_name}): ${error}`,
-          )
-        }
-
-        // Delay once per card iteration, regardless of success or failure
-        await new Promise(resolve => setTimeout(resolve, sellDelay * 1000))
-      }
-
-      if (successfulCards.length > 0) {
-        showSuccessToast(t('toast.tradingCards.listed', { count: successfulCards.length }))
-      }
-
-      if (skippedCards.length > 0) {
-        showPrimaryToast(t('toast.tradingCards.skippedCards', { count: skippedCards.length }))
-        logEvent(
-          `[Info] in (handleSellAllCards): Skipped ${skippedCards.length} cards due to sell limit restrictions`,
-        )
-      }
-
-      if (failedCards.length > 0) {
-        for (const failed of failedCards) {
-          logEvent(
-            `[Error] in (handleSellAllCards): Failed to list trading card ${failed.assetid}: ${failed.message}`,
-          )
-        }
-      }
+      await sellCardsList(tradingCardsList, 'handleSellAllCards')
     } catch (error) {
       showDangerToast(t('common.error'))
       console.error('Error in handleSellAllCards:', error)
-      logEvent(`[Error] in (handleSellAllCards): ${error}`)
+      logEvent(`[Error] in handleSellAllCards: ${error}`)
+    } finally {
+      setLoadingListButton(false)
+    }
+  }
+
+  const handleSellAllDupes = async () => {
+    try {
+      const credentials = userSettings?.cardFarming.credentials
+      if (!credentials?.sid || !credentials?.sls) return showMissingCredentialsToast()
+
+      // Group items by market_hash_name, keep 1 per group, collect the rest as dupes
+      const groups = new Map<string, TradingCard[]>()
+      for (const card of tradingCardsList) {
+        const group = groups.get(card.market_hash_name) || []
+        group.push(card)
+        groups.set(card.market_hash_name, group)
+      }
+
+      const dupesToSell: TradingCard[] = []
+      for (const cards of groups.values()) {
+        if (cards.length > 1) {
+          dupesToSell.push(...cards.slice(1))
+        }
+      }
+
+      if (dupesToSell.length === 0) {
+        showPrimaryToast(t('toast.tradingCards.noDupes'))
+        return
+      }
+
+      setLoadingListButton(true)
+      showPrimaryToast(t('toast.tradingCards.processing'))
+      await sellCardsList(dupesToSell, 'handleSellAllDupes')
+    } catch (error) {
+      showDangerToast(t('common.error'))
+      console.error('Error in handleSellAllDupes:', error)
+      logEvent(`[Error] in handleSellAllDupes: ${error}`)
     } finally {
       setLoadingListButton(false)
     }
@@ -679,6 +726,7 @@ export function useTradingCardsList() {
     refreshKey,
     handleRefresh,
     handleSellAllCards,
+    handleSellAllDupes,
     handleRemoveActiveListings,
     cardSortStyle,
     setCardSortStyle,

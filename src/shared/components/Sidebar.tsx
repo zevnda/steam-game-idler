@@ -97,8 +97,8 @@ export const Sidebar = () => {
       icon: TbHourglassLow,
     },
     {
-      id: 'trading-cards',
-      page: 'tradingCards',
+      id: 'inventory-manager',
+      page: 'inventoryManager',
       title: t('tradingCards.title'),
       icon: TbBuildingStore,
     },

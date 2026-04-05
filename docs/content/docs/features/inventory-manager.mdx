@@ -1,0 +1,93 @@
+---
+title: Inventory Manager
+description: Learn how to use the Inventory Manager to manage and sell your Steam inventory items directly from SGI.
+---
+
+import DocsCTA from '@docs/components/content/DocsCTA';
+import MockButton from '@docs/components/content/MockButton';
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+
+# How to Manage and Sell Steam Inventory Items Automatically
+
+The Inventory Manager feature allows you to manage your Steam inventory directly within SGI, including the ability to view all your marketable items (trading cards, foil cards, emoticons, backgrounds, and more) and sell them on the Steam marketplace.
+
+<DocsCTA />
+
+<Callout type="warn">
+    This feature uses an undocumented Steam API endpoint with strict rate limits to fetch card prices. If you encounter errors while selling card or fetching card prices, please try increasing the [Sell Delay](/docs/settings/inventory-manager#sell-delay), or wait a few minutes before trying to fetch card prices again
+</Callout>
+
+<Callout type="info">
+    You must add your [Steam Credentials](/docs/steam-credentials) before you can use this feature
+</Callout>
+
+<Callout type="info">
+    Configure this feature's settings in [Settings → Inventory Manager](/docs/settings/inventory-manager) before using it
+</Callout>
+
+<Steps>
+  <Step>
+    Click <MockButton type='inventory-manager' /> in the sidebar
+  </Step>
+
+    #### List individual items
+    <Steps>
+      <Step>
+        Find the item you want to sell and input a sale price
+      </Step>
+      <Step>
+        Click <MockButton type='list-card' /> to list the item
+      </Step>
+    </Steps>
+
+    #### List selected items
+    <Steps>
+      <Step>
+        Find the items you want to sell and input a sale price for each one
+      </Step>
+      <Step>
+        Click <MockButton type='list-selected' /> to list only the selected items
+      </Step>
+    </Steps>
+
+    #### List all items
+    <Steps>
+      <Step>
+        Click <MockButton type='list-all' /> to list all items
+      </Step>
+    </Steps>
+
+    #### Sell duplicate items
+    <Steps>
+      <Step>
+        Click <MockButton type='sell-dupes' /> to automatically sell all duplicate items, keeping one copy of each
+      </Step>
+    </Steps>
+
+  <Step>
+    Confirm each listing via the Steam mobile app or email depending on your [Steam Guard](https://help.steampowered.com/en/faqs/view/06B0-26E6-2CF8-254C) settings
+  </Step>
+
+  <Step>
+    Click <MockButton type='content' content='Refresh' /> in the page header to update your card list
+  </Step>
+</Steps>
+
+## Removing Listings
+
+Click <MockButton type='remove-all'/> to remove all your active listings from the Steam marketplace.
+
+## Pricing Details
+
+When you use <MockButton type='list-all' />, SGI will list each item at its `highest_buy_order`. If that price isn't available, it will use its `lowest_sell_order`. If neither price is available, the item won't be listed.
+
+You can choose which option to use by default by changing the [Default Sell Option](/docs/settings/inventory-manager#default-sell-option) in the settings.
+
+## Marketplace Fees
+
+Steam charges a [15% transaction fee](https://help.steampowered.com/en/faqs/view/61F0-72B7-9A18-C70B#steamfee) on each marketplace sale, which is made up of two parts:
+- **Steam Transaction Fee (5%)**: This goes to Valve for facilitating the transaction.
+- **Game Publisher Fee (10%)**: This goes to the publisher of the game the item is from (not just Valve games—all publishers receive this fee for their own items).
+
+SGI automatically accounts for the 15% Steam transaction fee when you set a sale price. The price you enter is what the **buyer pays** — SGI works out the correct listing price so that the buyer pays exactly that amount.
+> If you set a price of `$0.50`, the buyer pays `$0.50` and you receive `$0.44` after fees.

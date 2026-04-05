@@ -41,7 +41,7 @@ Common scopes for this project include:
 | **card-farming**         | Changes to the card farming components and hooks                                             |
 | **achievement-unlocker** | Changes to the achievement unlocker components and hooks                                     |
 | **achievement-manager**  | Changes to the achievement manager components and hooks                                      |
-| **trading-card-manager** | Changes to the trading card manager components and hooks                                     |
+| **inventory-manager**    | Changes to the inventory manager components and hooks                                        |
 | **auto-idle**            | Changes to the auto-idle components and hooks                                                |
 | **free-games**           | Changes to the free games components and hooks                                               |
 | **automation**           | Changes that affect multiple automation features (e.g.: card farming, achievement unlocker)  |

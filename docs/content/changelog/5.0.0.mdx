@@ -1,0 +1,24 @@
+---
+title: 5.0.0
+date: 2026-04-05
+tags: ['New', 'Improved']
+---
+
+### New 🎉
+- **Introducing the inventory manager**: The old "**Trading Card Manager**" has been reworked and is now known as "**Inventory Manager**" which shows all of the user's marketable Steam inventory items including trading cards, backgrounds, emoticons, etc. In the rework, the inventory manager has received some much-needed QOL improvements:
+  - Pricing now correctly accounts for regional currencies (JPY, KRW, IDR, etc.) and uses Steam's exact floor-based fee calculation, ensuring listings always match the intended buyer price
+  - Sell/buy order prices in the price modal are now displayed in the user's local currency format
+  - Added a "**Sell Dupes**" button that automatically lists all duplicate items for sale, keeping one copy of each
+  - Price fetching has been improves to better handle Steam's rate limits, hopefully reducing the number of errors encountered when bulk listing items for sale
+- Added 3 new settings to the "**Card Farming**" settings page:
+  - **Unplayed Games Only**: Restrict card farming to games with zero playtime
+  - **Highest Drops First**: Farm games with the most card drops remaining first
+  - **Lowest Drops First**: Farm games with the fewest card drops remaining first
+
+### Improved 🚀
+- **Achievement Unlocker**:
+  - Improved the "**Custom Order**" modal by adding a **select/deselect all** header checkbox, and already-unlocked achievements are now visually distinct with their controls disabled
+  - Now waits 2 minutes before switching to the next game in the queue, preventing two achievements from different games being unlocked in quick succession
+- **Achievement Manager**:
+  - Added a checkbox for each achievement to enable bulk selection. A new "**Apply Changes**" button lets you unlock or lock all selected achievements in a single action
+  - Removed the `99,999` cap on value inputs in the "**Statistics**" tab

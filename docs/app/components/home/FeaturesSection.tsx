@@ -27,10 +27,10 @@ const features = [
   },
   {
     icon: <TbBuildingStore className='w-8 h-8' />,
-    title: 'Steam Trading Card Manager & Marketplace Tool',
+    title: 'Steam Inventory Manager & Marketplace Tool',
     description:
-      'View and manage your entire Steam trading card inventory. Sell cards directly on the Steam marketplace from within the app, offering better integration than traditional Steam idling tools and card farmers.',
-    link: '/docs/features/trading-card-manager',
+      'View and manage your entire Steam inventory. Sell items directly on the Steam marketplace from within the app, offering better integration than traditional Steam idling tools and card farmers.',
+    link: '/docs/features/inventory-manager',
     gradient: 'from-emerald-500 to-teal-600',
     bgGradient: 'from-emerald-50 to-teal-50',
     borderColor: 'border-emerald-200 hover:border-emerald-300',

@@ -30,7 +30,7 @@ export const Searchbar = ({ isModalOpen = false, onModalClose }: SearchbarProps)
   const applySearchQuery = (query: string) => {
     if (activePage === 'games' && !showAchievements) {
       searchStore.setGameQueryValue(query)
-    } else if (activePage === 'tradingCards' && !showAchievements) {
+    } else if (activePage === 'inventoryManager' && !showAchievements) {
       searchStore.setTradingCardQueryValue(query)
     } else if (showAchievements && currentTab === 'achievements') {
       searchStore.setAchievementQueryValue(query)
@@ -43,7 +43,7 @@ export const Searchbar = ({ isModalOpen = false, onModalClose }: SearchbarProps)
     if (activePage === 'games' && !showAchievements) {
       return searchStore.gameQueryValue
     }
-    if (activePage === 'tradingCards' && !showAchievements) {
+    if (activePage === 'inventoryManager' && !showAchievements) {
       return searchStore.tradingCardQueryValue
     }
     if (showAchievements && currentTab === 'achievements') {
@@ -134,7 +134,7 @@ export const Searchbar = ({ isModalOpen = false, onModalClose }: SearchbarProps)
       }
     }
 
-    if (activePage === 'tradingCards' && !showAchievements) {
+    if (activePage === 'inventoryManager' && !showAchievements) {
       return {
         isDisabled: false,
       }

@@ -1,4 +1,4 @@
-import type { useTradingCardsList } from '@/features/trading-card-manager'
+import type { useTradingCardsList } from '@/features/inventory-manager'
 import type { TradingCard } from '@/shared/types'
 import { useTranslation } from 'react-i18next'
 import { TbPackageExport } from 'react-icons/tb'
