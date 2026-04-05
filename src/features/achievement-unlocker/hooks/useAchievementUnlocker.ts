@@ -119,7 +119,22 @@ export const useAchievementUnlocker = async (
       }
 
       // Rerun if component is still mounted - needed check if user stops feature during loop
-      if (isMountedRef.current) startAchievementUnlocker()
+      if (isMountedRef.current) {
+        // Check if there are more games before switching to avoid unnecessary delay
+        const remainingList = await invoke<InvokeCustomList>('get_custom_lists', {
+          steamId: userSummary?.steamId,
+          list: 'achievementUnlockerList',
+        })
+
+        if (remainingList.list_data.length > 0) {
+          // Add 2-minute delay before switching to the next game to appear more human-like
+          logEvent('[Achievement Unlocker] Switching to next game in 2 minutes')
+          startCountdown(2, setCountdownTimer)
+          await delay(120000, isMountedRef, abortControllerRef)
+        }
+
+        startAchievementUnlocker()
+      }
     } catch (error) {
       handleError('startAchievementUnlocker', error)
     }
