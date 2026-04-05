@@ -1,9 +1,9 @@
 import type { Achievement, UserSummary } from '@/shared/types'
-import { memo, useMemo } from 'react'
+import { memo, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TbCancel, TbLock, TbLockOpen } from 'react-icons/tb'
 import { FixedSizeList as List } from 'react-window'
-import { Button, cn } from '@heroui/react'
+import { Button, Checkbox, cn } from '@heroui/react'
 import i18next from 'i18next'
 import Image from 'next/image'
 import { AchievementButtons } from '@/features/achievement-manager'
@@ -17,6 +17,10 @@ interface RowData {
   appName: string
   filteredAchievements: Achievement[]
   updateAchievement: (achievementId: string, newAchievedState: boolean) => void
+  selectedToUnlock: Set<string>
+  setSelectedToUnlock: React.Dispatch<React.SetStateAction<Set<string>>>
+  selectedToLock: Set<string>
+  setSelectedToLock: React.Dispatch<React.SetStateAction<Set<string>>>
 }
 
 interface RowProps {
@@ -26,7 +30,17 @@ interface RowProps {
 }
 
 const Row = memo(({ index, style, data }: RowProps) => {
-  const { userSummary, appId, appName, filteredAchievements, updateAchievement } = data
+  const {
+    userSummary,
+    appId,
+    appName,
+    filteredAchievements,
+    updateAchievement,
+    selectedToUnlock,
+    setSelectedToUnlock,
+    selectedToLock,
+    setSelectedToLock,
+  } = data
   const item = filteredAchievements[index]
 
   if (!item) return null
@@ -40,6 +54,32 @@ const Row = memo(({ index, style, data }: RowProps) => {
   const icon = achieved
     ? `${iconUrl}${appId}/${item.iconNormal}`
     : `${iconUrl}${appId}/${item.iconLocked}`
+
+  const isSelected = achieved ? !selectedToLock.has(item.id) : selectedToUnlock.has(item.id)
+
+  const handleCheckboxChange = (checked: boolean) => {
+    if (achieved) {
+      setSelectedToLock(prev => {
+        const next = new Set(prev)
+        if (!checked) {
+          next.add(item.id)
+        } else {
+          next.delete(item.id)
+        }
+        return next
+      })
+    } else {
+      setSelectedToUnlock(prev => {
+        const next = new Set(prev)
+        if (checked) {
+          next.add(item.id)
+        } else {
+          next.delete(item.id)
+        }
+        return next
+      })
+    }
+  }
 
   const handleToggle = async () => {
     // Make sure Steam client is running
@@ -61,6 +101,14 @@ const Row = memo(({ index, style, data }: RowProps) => {
     <div style={style} className='grid grid-cols-1 pb-4 pr-6'>
       <div className='rounded-lg shadow-sm group'>
         <div className='flex items-center py-3 px-3 bg-achievement-main rounded-t-lg'>
+          {!protectedAchievement && (
+            <Checkbox
+              isSelected={isSelected}
+              onValueChange={handleCheckboxChange}
+              className='mr-1 min-w-fit'
+              size='sm'
+            />
+          )}
           <div className='w-10 h-10 flex items-center justify-center'>
             <Image
               className='rounded-full'
@@ -155,6 +203,8 @@ export const AchievementsList = ({
   setRefreshKey,
 }: AchievementsListProps) => {
   const { t } = useTranslation()
+  const [selectedToUnlock, setSelectedToUnlock] = useState<Set<string>>(new Set())
+  const [selectedToLock, setSelectedToLock] = useState<Set<string>>(new Set())
   const userSummary = useUserStore(state => state.userSummary)
   const achievementQueryValue = useSearchStore(state => state.achievementQueryValue)
   const appId = useStateStore(state => state.appId)
@@ -168,6 +218,20 @@ export const AchievementsList = ({
           : achievement,
       )
     })
+    // Clear from selection sets when manually toggled
+    if (newAchievedState) {
+      setSelectedToUnlock(prev => {
+        const next = new Set(prev)
+        next.delete(achievementId)
+        return next
+      })
+    } else {
+      setSelectedToLock(prev => {
+        const next = new Set(prev)
+        next.delete(achievementId)
+        return next
+      })
+    }
   }
 
   const filteredAchievements = useMemo(
@@ -184,6 +248,10 @@ export const AchievementsList = ({
     appName: appName as string,
     filteredAchievements,
     updateAchievement,
+    selectedToUnlock,
+    setSelectedToUnlock,
+    selectedToLock,
+    setSelectedToLock,
   }
 
   return (
@@ -195,6 +263,10 @@ export const AchievementsList = ({
             setAchievements={setAchievements}
             protectedAchievements={protectedAchievements}
             setRefreshKey={setRefreshKey}
+            selectedToUnlock={selectedToUnlock}
+            setSelectedToUnlock={setSelectedToUnlock}
+            selectedToLock={selectedToLock}
+            setSelectedToLock={setSelectedToLock}
           />
 
           <List
