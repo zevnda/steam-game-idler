@@ -106,28 +106,28 @@ const SortableAchievement = memo(function SortableAchievement({
           transition,
         }}
         className={cn(
-          'flex items-center gap-3 p-2 bg-card hover:bg-sidebar/70 rounded-lg',
-          'group min-w-[98%] max-w-[98%]',
-          achievement.skip === true && 'opacity-40',
+          'grid grid-cols-[28px_36px_1fr_30px] items-center gap-3 p-2 bg-card hover:bg-sidebar/70 rounded-lg',
+          'group',
+          (achievement.skip === true || achievement.achieved) && 'opacity-40',
         )}
       >
-        <div className='flex items-center justify-center w-6.5'>
+        <div className='flex items-center justify-center'>
           <Checkbox
-            isSelected={achievement.skip !== true}
+            isSelected={!achievement.achieved && achievement.skip !== true}
+            isDisabled={achievement.achieved}
             onValueChange={() => onToggleSkip(achievement.name)}
             onClick={e => e.stopPropagation()}
-            className='ml-3'
           />
         </div>
         <Image
-          className='rounded-full ml-8 select-none'
+          className='rounded-full select-none'
           src={icon}
           width={32}
           height={32}
           alt={`${achievement.name} image`}
           priority
         />
-        <div className='flex-1 min-w-0 select-none'>
+        <div className='min-w-0 select-none'>
           <p className='font-semibold truncate'>{achievement.name}</p>
           <p
             className={cn(
@@ -144,6 +144,7 @@ const SortableAchievement = memo(function SortableAchievement({
                 size='sm'
                 className='text-xs max-h-5 bg-transparent p-0 cursor-pointer hover:opacity-80 duration-150'
                 type='button'
+                isDisabled={achievement.achieved}
                 onPress={handleShowInput}
                 onPointerDown={e => e.stopPropagation()}
               >
@@ -204,7 +205,7 @@ const SortableAchievement = memo(function SortableAchievement({
         <span
           {...listeners}
           {...attributes}
-          className='cursor-grab active:cursor-grabbing'
+          className='cursor-grab active:cursor-grabbing justify-self-end'
           style={{ touchAction: 'none' }}
         >
           <GoGrabber
@@ -401,6 +402,17 @@ export const AchievementOrderModal = ({
     [achievements, handleDragEnd, handleToggleSkip, handleSetDelay, item, sensors],
   )
 
+  const unlockedAchievements = achievements.filter(a => !a.achieved)
+  const allSelected =
+    unlockedAchievements.length > 0 && unlockedAchievements.every(a => a.skip !== true)
+  const isIndeterminate = !allSelected && unlockedAchievements.some(a => a.skip !== true)
+
+  const handleToggleAll = useCallback(() => {
+    setAchievements(items =>
+      items.map(a => (a.achieved ? a : { ...a, skip: allSelected ? true : undefined })),
+    )
+  }, [allSelected])
+
   // Reset handler: restore original order and clear skips/delays
   const handleReset = useCallback(() => {
     setAchievements(
@@ -439,17 +451,23 @@ export const AchievementOrderModal = ({
             </div>
           ) : (
             <>
-              <div className='grid grid-cols-[40px_1fr] gap-2 items-center p-2 mb-2 border-b border-border sticky top-0 bg-sidebar z-50'>
-                <span className='text-sm font-semibold text-content select-none text-center w-6.5'>
+              <div className='grid grid-cols-[40px_1fr] gap-2 items-center px-2 pt-2 pb-3 mb-2 border-b border-border sticky top-0 bg-sidebar z-50'>
+                <span className='text-sm font-semibold text-content select-none text-center'>
                   #
                 </span>
-                <div className='flex items-center gap-3 pl-0'>
-                  <span className='text-sm font-semibold text-content text-center w-6.5'>
-                    {t('achievementManager.achievements.unlock')}
-                  </span>
-                  <span className='text-sm font-semibold text-content flex-1 ml-8'>
+                <div className='grid grid-cols-[28px_36px_1fr_30px] items-center gap-3'>
+                  <div className='flex items-center justify-center'>
+                    <Checkbox
+                      isSelected={allSelected}
+                      isIndeterminate={isIndeterminate}
+                      onValueChange={handleToggleAll}
+                    />
+                  </div>
+                  <span />
+                  <span className='text-sm font-semibold text-content'>
                     {t('achievementManager.achievements.title')}
                   </span>
+                  <span />
                 </div>
               </div>
               {achievementList}
