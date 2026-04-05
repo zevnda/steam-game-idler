@@ -33,7 +33,10 @@ fn get_default_settings() -> Value {
             "gamesWithDrops": 0,
             "totalDropsRemaining": 0,
             "blacklist": null,
-            "skipNoPlaytime": false
+            "skipNoPlaytime": false,
+            "farmUnplayedOnly": false,
+            "sortByHighestDrops": false,
+            "sortByLowestDrops": false
         },
         "achievementUnlocker": {
             "idle": true,

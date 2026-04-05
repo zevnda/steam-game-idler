@@ -26,35 +26,41 @@ export const handleCheckboxChange = async (
       value: checked,
     })
 
-    if (key === 'cardFarming' && (name === 'listGames' || name === 'allGames')) {
-      // Add radio-button-like behavior for mutually exclusive options
-      // Only one of the card farming options can be active at a time
-      if (checked) {
-        // If this checkbox is checked, uncheck the other one
-        const otherCheckboxName = name === 'listGames' ? 'allGames' : 'listGames'
+    const mutuallyExclusivePairs: Record<string, string> = {
+      listGames: 'allGames',
+      allGames: 'listGames',
+      sortByHighestDrops: 'sortByLowestDrops',
+      sortByLowestDrops: 'sortByHighestDrops',
+      skipNoPlaytime: 'farmUnplayedOnly',
+      farmUnplayedOnly: 'skipNoPlaytime',
+    }
 
-        const response = await invoke<InvokeSettings>('update_user_settings', {
+    const listGamesPair = name === 'listGames' || name === 'allGames'
+    const otherName = mutuallyExclusivePairs[name]
+
+    if (key === 'cardFarming' && otherName) {
+      if (checked) {
+        // Uncheck the mutually exclusive counterpart
+        const updated = await invoke<InvokeSettings>('update_user_settings', {
           steamId,
-          key: `cardFarming.${otherCheckboxName}`,
+          key: `cardFarming.${otherName}`,
           value: false,
         })
-        setUserSettings(response.settings)
-      } else {
-        // Don't allow both checkboxes to be unchecked - keep one enabled
-        const otherCheckboxName = name === 'listGames' ? 'allGames' : 'listGames'
-
+        setUserSettings(updated.settings)
+      } else if (listGamesPair) {
+        // For listGames/allGames pair: don't allow both to be unchecked
         if (
-          !response.settings.cardFarming[
-            otherCheckboxName as keyof typeof response.settings.cardFarming
-          ]
+          !response.settings.cardFarming[otherName as keyof typeof response.settings.cardFarming]
         ) {
-          const response = await invoke<InvokeSettings>('update_user_settings', {
+          const updated = await invoke<InvokeSettings>('update_user_settings', {
             steamId,
-            key: `cardFarming.${otherCheckboxName}`,
+            key: `cardFarming.${otherName}`,
             value: true,
           })
-          setUserSettings(response.settings)
+          setUserSettings(updated.settings)
         }
+      } else {
+        setUserSettings(response.settings)
       }
     } else {
       setUserSettings(response.settings)

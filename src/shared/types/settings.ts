@@ -32,6 +32,9 @@ export interface CardFarmingSettings {
   gamesWithDrops: number
   blacklist: number[] | null
   skipNoPlaytime: boolean
+  farmUnplayedOnly: boolean
+  sortByHighestDrops: boolean
+  sortByLowestDrops: boolean
 }
 
 export interface GameSpecificSettings {
