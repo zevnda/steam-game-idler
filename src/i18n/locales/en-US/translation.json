@@ -115,6 +115,7 @@
   "achievementManager.achievements.empty": "No achievements found",
   "achievementManager.achievements.unlockAll": "Unlock All",
   "achievementManager.achievements.lockAll": "Lock All",
+  "achievementManager.achievements.applyChanges": "Apply Changes ({{total}})",
   "achievementManager.achievements.unlock": "Unlock",
   "achievementManager.achievements.lock": "Lock",
   "achievementManager.achievements.protected": "Protected",

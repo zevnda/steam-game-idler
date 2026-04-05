@@ -4,6 +4,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import { TbLock, TbLockOpen, TbSortDescending2 } from 'react-icons/tb'
 import { Button, cn, Select, SelectItem, useDisclosure } from '@heroui/react'
 import {
+  handleApplyChanges,
   handleLockAllAchievements,
   handleSortingChange,
   handleUnlockAllAchievements,
@@ -16,6 +17,10 @@ interface AchievementButtonsProps {
   setAchievements: React.Dispatch<React.SetStateAction<Achievement[]>>
   protectedAchievements: boolean
   setRefreshKey?: React.Dispatch<React.SetStateAction<number>>
+  selectedToUnlock: Set<string>
+  setSelectedToUnlock: React.Dispatch<React.SetStateAction<Set<string>>>
+  selectedToLock: Set<string>
+  setSelectedToLock: React.Dispatch<React.SetStateAction<Set<string>>>
 }
 
 export const AchievementButtons = ({
@@ -23,6 +28,10 @@ export const AchievementButtons = ({
   setAchievements,
   protectedAchievements,
   setRefreshKey,
+  selectedToUnlock,
+  setSelectedToUnlock,
+  selectedToLock,
+  setSelectedToLock,
 }: AchievementButtonsProps) => {
   const { t } = useTranslation()
   const appId = useStateStore(state => state.appId)
@@ -60,6 +69,8 @@ export const AchievementButtons = ({
   const unAchieved = achievements.filter(achievement => !achievement.achieved)
   const achieved = achievements.filter(achievement => achievement.achieved)
 
+  const hasChanges = selectedToUnlock.size > 0 || selectedToLock.size > 0
+
   const getTranslatedState = (state: string) => {
     if (state === 'unlock') return t('achievementManager.achievements.unlock')
     if (state === 'lock') return t('achievementManager.achievements.lock')
@@ -82,6 +93,19 @@ export const AchievementButtons = ({
       >
         {t('common.refresh')}
       </Button>
+
+      {hasChanges && (
+        <Button
+          className='bg-btn-secondary text-btn-text font-bold'
+          radius='full'
+          onPress={() => handleShowModal(onOpen, 'applyChanges')}
+          startContent={<TbLockOpen size={20} />}
+        >
+          {t('achievementManager.achievements.applyChanges', {
+            total: selectedToUnlock.size + selectedToLock.size,
+          })}
+        </Button>
+      )}
 
       <Button
         className='bg-btn-secondary text-btn-text font-bold'
@@ -142,14 +166,21 @@ export const AchievementButtons = ({
         title={t('common.confirm')}
         body={
           <p className='text-sm'>
-            <Trans
-              i18nKey='achievementManager.achievements.modal'
-              values={{
-                state: getTranslatedState(state).toLowerCase(),
-              }}
-            >
-              Are you sure you want to <strong>{state}</strong> all achievements?
-            </Trans>
+            {state === 'applyChanges' ? (
+              <>
+                Are you sure you want to <strong>unlock {selectedToUnlock.size}</strong> and{' '}
+                <strong>lock {selectedToLock.size}</strong> achievement(s)?
+              </>
+            ) : (
+              <Trans
+                i18nKey='achievementManager.achievements.modal'
+                values={{
+                  state: getTranslatedState(state).toLowerCase(),
+                }}
+              >
+                Are you sure you want to <strong>{state}</strong> all achievements?
+              </Trans>
+            )}
           </p>
         }
         buttons={
@@ -169,26 +200,35 @@ export const AchievementButtons = ({
               className='bg-btn-secondary text-btn-text font-bold'
               radius='full'
               onPress={() => {
-                if (state === 'unlock') {
-                  if (appId && appName) {
-                    handleUnlockAllAchievements(
-                      appId,
-                      appName,
-                      achievements,
-                      setAchievements,
-                      onOpenChange,
-                    )
-                  }
+                if (!appId || !appName) return
+                if (state === 'applyChanges') {
+                  handleApplyChanges(
+                    appId,
+                    appName,
+                    selectedToUnlock,
+                    selectedToLock,
+                    achievements,
+                    setAchievements,
+                    setSelectedToUnlock,
+                    setSelectedToLock,
+                    onOpenChange,
+                  )
+                } else if (state === 'unlock') {
+                  handleUnlockAllAchievements(
+                    appId,
+                    appName,
+                    achievements,
+                    setAchievements,
+                    onOpenChange,
+                  )
                 } else {
-                  if (appId && appName) {
-                    handleLockAllAchievements(
-                      appId,
-                      appName,
-                      achievements,
-                      setAchievements,
-                      onOpenChange,
-                    )
-                  }
+                  handleLockAllAchievements(
+                    appId,
+                    appName,
+                    achievements,
+                    setAchievements,
+                    onOpenChange,
+                  )
                 }
               }}
             >
