@@ -9,9 +9,9 @@ import {
   FreeGamesSettings,
   GameSettings,
   GeneralSettings,
+  InventoryManagerSettings,
   Logs,
   SteamCredentials,
-  TradingCardManagerSettings,
   useSettings,
 } from '@/features/settings'
 import { AdSlot, SocialButtons } from '@/shared/components'
@@ -87,8 +87,8 @@ export const Settings = () => {
         <Tab key='achievement-unlocker' title={t('common.achievementUnlocker')}>
           <AchievementSettings />
         </Tab>
-        <Tab key='trading-card-manager' title={t('tradingCards.title')}>
-          <TradingCardManagerSettings />
+        <Tab key='inventory-manager' title={t('tradingCards.title')}>
+          <InventoryManagerSettings />
         </Tab>
         <Tab key='free-games' title={t('freeGames.title')}>
           <FreeGamesSettings />

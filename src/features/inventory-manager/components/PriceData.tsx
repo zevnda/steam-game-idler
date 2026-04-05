@@ -1,4 +1,4 @@
-import type { useTradingCardsList } from '@/features/trading-card-manager'
+import type { useTradingCardsList } from '@/features/inventory-manager'
 import type { TradingCard } from '@/shared/types'
 import { useTranslation } from 'react-i18next'
 import { TbArrowRight } from 'react-icons/tb'
@@ -61,6 +61,7 @@ export const PriceData = ({ item, tradingCardContext, isLocked }: PriceDataProps
       <CustomModal
         isOpen={isOpen}
         onOpenChange={onOpenChange}
+        className='max-w-2xl'
         title={item.full_name}
         body={
           <div className='flex justify-center gap-4'>
@@ -74,7 +75,7 @@ export const PriceData = ({ item, tradingCardContext, isLocked }: PriceDataProps
                       dangerouslySetInnerHTML={{ __html: item.price_data.sell_order_summary }}
                     />
                   )}
-                  <table className='text-xs border border-border w-37.5 h-fit'>
+                  <table className='text-xs border border-border w-full h-fit'>
                     <thead>
                       <tr className='bg-content/5'>
                         <th className='px-2 py-1 text-center'>
@@ -102,7 +103,7 @@ export const PriceData = ({ item, tradingCardContext, isLocked }: PriceDataProps
                                 onOpenChange()
                               }}
                             >
-                              {row[0]}
+                              {row[2] ? row[2].split(' (')[0] : row[0]}
                             </td>
                             <td className='px-2 py-1 text-center'>{row[1]}</td>
                           </tr>
@@ -119,7 +120,7 @@ export const PriceData = ({ item, tradingCardContext, isLocked }: PriceDataProps
                       dangerouslySetInnerHTML={{ __html: item.price_data.buy_order_summary }}
                     />
                   )}
-                  <table className='text-xs border border-border w-37.5 h-fit'>
+                  <table className='text-xs border border-border w-full h-fit'>
                     <thead>
                       <tr className='bg-content/5'>
                         <th className='px-2 py-1 text-center'>
@@ -147,7 +148,7 @@ export const PriceData = ({ item, tradingCardContext, isLocked }: PriceDataProps
                                 onOpenChange()
                               }}
                             >
-                              {row[0]}
+                              {row[2] ? row[2].split(' (')[0] : row[0]}
                             </td>
                             <td className='px-2 py-1 text-center'>{row[1]}</td>
                           </tr>

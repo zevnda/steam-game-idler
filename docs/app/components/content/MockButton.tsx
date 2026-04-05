@@ -44,7 +44,7 @@ type ButtonType =
   | 'context-add'
   | 'context-cog'
   | 'your-games'
-  | 'trading-card-manager'
+  | 'inventory-manager'
   | 'idling-games'
   | 'auto-idle'
   | 'free-games'
@@ -192,10 +192,10 @@ export default function MockButton({ type, content }: MockButtonProps) {
         <TbDeviceGamepad2 fontSize={16} className='inline' /> Your Games
       </span>
     )
-  } else if (type === 'trading-card-manager') {
+  } else if (type === 'inventory-manager') {
     return (
       <span className='inline-flex align-middle items-center justify-center bg-icon-light dark:bg-icon-dark text-icon-light dark:text-icon-dark text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
-        <TbBuildingStore fontSize={16} className='inline' /> Trading Card Manager
+        <TbBuildingStore fontSize={16} className='inline' /> Inventory Manager
       </span>
     )
   } else if (type === 'idling-games') {

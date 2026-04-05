@@ -1,4 +1,4 @@
-import type { useTradingCardsList } from '@/features/trading-card-manager'
+import type { useTradingCardsList } from '@/features/inventory-manager'
 import type { cardSortOption } from '@/shared/types'
 import { useTranslation } from 'react-i18next'
 import {
@@ -60,6 +60,11 @@ export const PageHeader = ({
   } = useDisclosure()
   const { isOpen: isBulkOpen, onOpen: onBulkOpen, onOpenChange: onBulkOpenChange } = useDisclosure()
   const {
+    isOpen: isDupesOpen,
+    onOpen: onDupesOpen,
+    onOpenChange: onDupesOpenChange,
+  } = useDisclosure()
+  const {
     isOpen: isRemoveOpen,
     onOpen: onRemoveOpen,
     onOpenChange: onRemoveOpenChange,
@@ -74,6 +79,7 @@ export const PageHeader = ({
     { key: 'z-a', label: t('tradingCards.sort.cardNameDesc') },
     { key: 'aa-zz', label: t('tradingCards.sort.gameNameAsc') },
     { key: 'zz-aa', label: t('tradingCards.sort.gameNameDesc') },
+    { key: 'cards', label: t('tradingCards.sort.cards') },
     { key: 'badge', label: t('tradingCards.sort.badge') },
     { key: 'foil', label: t('tradingCards.sort.foils') },
     { key: 'dupes', label: t('tradingCards.sort.duplicates') },
@@ -98,32 +104,6 @@ export const PageHeader = ({
               <p className='text-xs text-altwhite my-2'>{t('tradingCards.subtitle')}</p>
 
               <div className='flex flex-col justify-center gap-2 mt-1'>
-                <div className='flex items-center gap-2 mt-1'>
-                  <p className='text-sm text-altwhite font-bold'>{t('common.sortBy')}</p>
-
-                  <Tabs
-                    aria-label='sort options'
-                    items={cardSortOptions}
-                    selectedKey={tradingCardContext.cardSortStyle}
-                    radius='full'
-                    classNames={{
-                      tabList: 'gap-0 w-full bg-tab-panel',
-                      tab: cn(
-                        'data-[hover-unselected=true]:!bg-item-hover',
-                        'data-[hover-unselected=true]:opacity-100',
-                      ),
-                      tabContent:
-                        'text-sm group-data-[selected=true]:text-content text-altwhite font-bold',
-                      cursor: '!bg-item-active w-full',
-                    }}
-                    onSelectionChange={key => {
-                      handleCardSorting(key as string)
-                    }}
-                  >
-                    {item => <Tab key={item.key} title={item.label} />}
-                  </Tabs>
-                </div>
-
                 <div className='flex items-center gap-2 mt-1'>
                   <Button
                     className='bg-btn-secondary text-btn-text font-bold'
@@ -163,6 +143,19 @@ export const PageHeader = ({
                   </Button>
 
                   <Button
+                    className='bg-btn-secondary text-btn-text font-bold'
+                    radius='full'
+                    isDisabled={tradingCardContext.tradingCardsList.length === 0}
+                    isLoading={tradingCardContext.loadingListButton}
+                    startContent={
+                      !tradingCardContext.loadingListButton && <TbPackageExport fontSize={20} />
+                    }
+                    onPress={onDupesOpen}
+                  >
+                    {t('tradingCards.sellDupes')}
+                  </Button>
+
+                  <Button
                     className='font-bold'
                     radius='full'
                     color='danger'
@@ -181,9 +174,9 @@ export const PageHeader = ({
                     className='bg-btn-secondary text-btn-text font-bold'
                     startContent={<TbSettings size={20} />}
                     onPress={() => {
-                      setPreviousActivePage('tradingCards')
+                      setPreviousActivePage('inventoryManager')
                       setActivePage('settings')
-                      setCurrentSettingsTab('trading-card-manager')
+                      setCurrentSettingsTab('inventory-manager')
                     }}
                   />
 
@@ -229,6 +222,29 @@ export const PageHeader = ({
                       />
                     </div>
                   )}
+                </div>
+
+                <div className='flex items-center gap-2 mt-1'>
+                  <p className='text-sm text-altwhite font-bold'>{t('common.sortBy')}</p>
+
+                  <Tabs
+                    aria-label='sort options'
+                    items={cardSortOptions}
+                    selectedKey={tradingCardContext.cardSortStyle}
+                    radius='full'
+                    classNames={{
+                      tabList: 'gap-0 w-full bg-item-active',
+                      tab: 'data-[hover-unselected=true]:!bg-item-hover data-[hover-unselected=true]:opacity-100',
+                      tabContent:
+                        'text-sm group-data-[selected=true]:text-dynamic text-altwhite font-bold',
+                      cursor: '!bg-dynamic/10 w-full',
+                    }}
+                    onSelectionChange={key => {
+                      handleCardSorting(key as string)
+                    }}
+                  >
+                    {item => <Tab key={item.key} title={item.label} />}
+                  </Tabs>
                 </div>
               </div>
             </div>
@@ -309,6 +325,38 @@ export const PageHeader = ({
               onPress={() => {
                 tradingCardContext.handleSellAllCards()
                 onBulkOpenChange()
+              }}
+            >
+              {t('common.confirm')}
+            </Button>
+          </>
+        }
+      />
+
+      <CustomModal
+        isOpen={isDupesOpen}
+        onOpenChange={onDupesOpenChange}
+        title={t('common.notice')}
+        body={<div className='whitespace-pre-line'>{t('tradingCards.confirmDupes')}</div>}
+        buttons={
+          <>
+            <Button
+              size='sm'
+              color='danger'
+              variant='light'
+              radius='full'
+              className='font-semibold'
+              onPress={onDupesOpenChange}
+            >
+              {t('common.cancel')}
+            </Button>
+            <Button
+              size='sm'
+              className='bg-btn-secondary text-btn-text font-bold'
+              radius='full'
+              onPress={() => {
+                tradingCardContext.handleSellAllDupes()
+                onDupesOpenChange()
               }}
             >
               {t('common.confirm')}

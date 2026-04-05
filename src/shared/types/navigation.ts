@@ -12,13 +12,13 @@ export type ActivePageType =
   | 'freeGames'
   | 'settings'
   | `customlists/${string}`
-  | 'tradingCards'
+  | 'inventoryManager'
 export type CurrentTabType = 'achievements' | 'statistics'
 export type CurrentSettingsTabType =
   | 'general'
   | 'card-farming'
   | 'achievement-unlocker'
-  | 'trading-card-manager'
+  | 'inventory-manager'
   | 'free-games'
   | 'steam-credentials'
   | 'game-settings'

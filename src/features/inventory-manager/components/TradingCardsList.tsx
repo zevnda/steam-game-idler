@@ -11,7 +11,7 @@ import {
   PriceData,
   PriceInput,
   useTradingCardsList,
-} from '@/features/trading-card-manager'
+} from '@/features/inventory-manager'
 import { CustomTooltip, ExtLink } from '@/shared/components'
 import { useSearchStore, useStateStore, useUserStore } from '@/shared/stores'
 
@@ -27,6 +27,10 @@ export const TradingCardsList = () => {
   const tradingCardContext = useTradingCardsList()
 
   const CARDS_PER_PAGE = 54
+
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [tradingCardContext.cardSortStyle])
 
   useEffect(() => {
     const storedLockedCards = localStorage.getItem('lockedTradingCards')
@@ -159,9 +163,9 @@ export const TradingCardsList = () => {
             </div>
           }
         >
-          <div className='flex items-center justify-between bg-input rounded-lg p-1.5 border border-border'>
+          <div className='flex items-center justify-center bg-input rounded-lg p-1.5 border border-border'>
             <Image
-              className='w-20 h-auto border border-border'
+              className='w-20 h-24 object-contain border border-border'
               src={item.image}
               width={224}
               height={261}
@@ -176,31 +180,35 @@ export const TradingCardsList = () => {
             {item.full_name.replace('(Trading Card)', '') || 'Unknown'}
           </p>
 
-          <CustomTooltip
-            content={
-              item.badge_level > 0
-                ? t('tradingCards.badgeLevel', { level: item.badge_level })
-                : t('tradingCards.noBadge')
-            }
-            placement='top'
-            important
-          >
-            <div className='flex items-center justify-center gap-1'>
-              {item.badge_level > 0 && (
-                <div className='flex items-center justify-center'>
-                  <FaCheckCircle size={12} className='text-green-400' />
-                </div>
-              )}
-              <p
-                className={cn(
-                  'text-xs text-altwhite truncate max-w-35',
-                  item.badge_level > 0 && 'text-green-400',
+          {item.item_type === 'item_class_2' ? (
+            <CustomTooltip
+              content={
+                item.badge_level > 0
+                  ? t('tradingCards.badgeLevel', { level: item.badge_level })
+                  : t('tradingCards.noBadge')
+              }
+              placement='top'
+              important
+            >
+              <div className='flex items-center justify-center gap-1'>
+                {item.badge_level > 0 && (
+                  <div className='flex items-center justify-center'>
+                    <FaCheckCircle size={12} className='text-green-400' />
+                  </div>
                 )}
-              >
-                {item.appname}
-              </p>
-            </div>
-          </CustomTooltip>
+                <p
+                  className={cn(
+                    'text-xs text-altwhite truncate max-w-35',
+                    item.badge_level > 0 && 'text-green-400',
+                  )}
+                >
+                  {item.appname}
+                </p>
+              </div>
+            </CustomTooltip>
+          ) : (
+            <p className='text-xs text-altwhite truncate max-w-35'>{item.appname}</p>
+          )}
         </div>
 
         <PriceInput item={item} tradingCardContext={tradingCardContext} isLocked={isLocked} />

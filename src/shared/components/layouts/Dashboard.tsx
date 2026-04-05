@@ -5,8 +5,8 @@ import { AchievementUnlocker } from '@/features/achievement-unlocker'
 import { CardFarming } from '@/features/card-farming'
 import { CustomList } from '@/features/customlists'
 import { FreeGamesList, GamesList, IdlingGamesList } from '@/features/gameslist'
+import { TradingCardsList } from '@/features/inventory-manager'
 import { Settings } from '@/features/settings'
-import { TradingCardsList } from '@/features/trading-card-manager'
 import { Sidebar } from '@/shared/components'
 import { useNavigationStore, useStateStore } from '@/shared/stores'
 import { antiAwayStatus } from '@/shared/utils'
@@ -42,7 +42,7 @@ export const Dashboard = () => {
         return <IdlingGamesList />
       case 'freeGames':
         return <FreeGamesList />
-      case 'tradingCards':
+      case 'inventoryManager':
         return <TradingCardsList />
       default:
         return <GamesList />

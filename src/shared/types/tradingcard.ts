@@ -11,6 +11,7 @@ export interface TradingCard {
   market_hash_name: string
   badge_level: number
   foil: boolean
+  item_type?: string
   price_data: {
     lowest_sell_order: string
     highest_buy_order: string
