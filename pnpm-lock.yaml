@@ -24,8 +24,8 @@ importers:
         specifier: ^2.8.7
         version: 2.8.7(@types/react@19.2.13)(framer-motion@12.23.25(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tailwindcss@4.1.18)
       '@internationalized/date':
-        specifier: ^3.10.0
-        version: 3.10.1
+        specifier: ^3.12.0
+        version: 3.12.0
       '@tauri-apps/api':
         specifier: ~2.8.0
         version: 2.8.0
@@ -1321,6 +1321,9 @@ packages:
   '@internationalized/date@3.10.1':
     resolution: {integrity: sha512-oJrXtQiAXLvT9clCf1K4kxp3eKsQhIaZqxEyowkBcsvZDdZkbWrVmnGknxs5flTD0VGsxrxKgBCZty1EzoiMzA==}
 
+  '@internationalized/date@3.12.0':
+    resolution: {integrity: sha512-/PyIMzK29jtXaGU23qTvNZxvBXRtKbNnGDFD+PY6CZw/Y8Ex8pFUzkuCJCG9aOqmShjqhS9mPqP6Dk5onQY8rQ==}
+
   '@internationalized/message@3.1.8':
     resolution: {integrity: sha512-Rwk3j/TlYZhn3HQ6PyXUV0XP9Uv42jqZGNegt0BXlxjE6G3+LwHjbQZAGHhCnCPdaA6Tvd3ma/7QzLlLkJxAWA==}
 
@@ -2266,9 +2269,6 @@ packages:
 
   '@swc/helpers@0.5.15':
     resolution: {integrity: sha512-JQ5TuMi45Owi4/BIMAJBoSQoOJu12oOk/gADqlcUL9JEdHB8vyjUSsxqeNXnmXHjYKMi2WcYtezGEEhqUI/E2g==}
-
-  '@swc/helpers@0.5.18':
-    resolution: {integrity: sha512-TXTnIcNJQEKwThMMqBXsZ4VGAza6bvN4pa41Rkqoio6QBKMvo+5lexeTMScGCIxtzgQJzElcvIltani+adC5PQ==}
 
   '@swc/helpers@0.5.21':
     resolution: {integrity: sha512-jI/VAmtdjB/RnI8GTnokyX7Ug8c+g+ffD6QRLa6XQewtnGyukKkKSk3wLTM3b5cjt1jNh9x0jfVlagdN2gDKQg==}
@@ -6200,7 +6200,11 @@ snapshots:
 
   '@internationalized/date@3.10.1':
     dependencies:
-      '@swc/helpers': 0.5.18
+      '@swc/helpers': 0.5.21
+
+  '@internationalized/date@3.12.0':
+    dependencies:
+      '@swc/helpers': 0.5.21
 
   '@internationalized/message@3.1.8':
     dependencies:
@@ -6691,7 +6695,7 @@ snapshots:
 
   '@react-aria/calendar@3.9.3(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
     dependencies:
-      '@internationalized/date': 3.10.1
+      '@internationalized/date': 3.12.0
       '@react-aria/i18n': 3.12.14(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@react-aria/interactions': 3.26.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@react-aria/live-announcer': 3.4.4
@@ -6743,7 +6747,7 @@ snapshots:
 
   '@react-aria/datepicker@3.15.3(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
     dependencies:
-      '@internationalized/date': 3.10.1
+      '@internationalized/date': 3.12.0
       '@internationalized/number': 3.6.5
       '@internationalized/string': 3.2.7
       '@react-aria/focus': 3.21.3(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -6815,7 +6819,7 @@ snapshots:
 
   '@react-aria/i18n@3.12.14(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
     dependencies:
-      '@internationalized/date': 3.10.1
+      '@internationalized/date': 3.12.0
       '@internationalized/message': 3.1.8
       '@internationalized/number': 3.6.5
       '@internationalized/string': 3.2.7
@@ -7123,7 +7127,7 @@ snapshots:
 
   '@react-stately/calendar@3.9.1(react@19.2.4)':
     dependencies:
-      '@internationalized/date': 3.10.1
+      '@internationalized/date': 3.12.0
       '@react-stately/utils': 3.11.0(react@19.2.4)
       '@react-types/calendar': 3.8.1(react@19.2.4)
       '@react-types/shared': 3.32.1(react@19.2.4)
@@ -7159,7 +7163,7 @@ snapshots:
 
   '@react-stately/datepicker@3.15.3(react@19.2.4)':
     dependencies:
-      '@internationalized/date': 3.10.1
+      '@internationalized/date': 3.12.0
       '@internationalized/string': 3.2.7
       '@react-stately/form': 3.2.2(react@19.2.4)
       '@react-stately/overlays': 3.6.21(react@19.2.4)
@@ -7327,7 +7331,7 @@ snapshots:
 
   '@react-types/calendar@3.8.1(react@19.2.4)':
     dependencies:
-      '@internationalized/date': 3.10.1
+      '@internationalized/date': 3.12.0
       '@react-types/shared': 3.32.1(react@19.2.4)
       react: 19.2.4
 
@@ -7343,7 +7347,7 @@ snapshots:
 
   '@react-types/datepicker@3.13.3(react@19.2.4)':
     dependencies:
-      '@internationalized/date': 3.10.1
+      '@internationalized/date': 3.12.0
       '@react-types/calendar': 3.8.1(react@19.2.4)
       '@react-types/overlays': 3.9.2(react@19.2.4)
       '@react-types/shared': 3.32.1(react@19.2.4)
@@ -7487,10 +7491,6 @@ snapshots:
   '@standard-schema/spec@1.1.0': {}
 
   '@swc/helpers@0.5.15':
-    dependencies:
-      tslib: 2.8.1
-
-  '@swc/helpers@0.5.18':
     dependencies:
       tslib: 2.8.1
 
