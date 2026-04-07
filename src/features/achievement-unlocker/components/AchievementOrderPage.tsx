@@ -1,7 +1,7 @@
 import type { Achievement, InvokeAchievementData } from '@/shared/types'
 import type { DragEndEvent } from '@dnd-kit/core'
 import { invoke } from '@tauri-apps/api/core'
-import { memo, useCallback, useEffect, useMemo, useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { GoGrabber } from 'react-icons/go'
 import { TbClock, TbX } from 'react-icons/tb'
@@ -377,6 +377,8 @@ export const AchievementOrderPage = () => {
     )
   }, [allSelected])
 
+  const listOuterRef = useRef<HTMLDivElement>(null)
+
   const achievementList = useMemo(() => {
     const rowData: SortableRowData = {
       appid: item.appid,
@@ -385,9 +387,15 @@ export const AchievementOrderPage = () => {
       onSetDelay: handleSetDelay,
     }
     return (
-      <DndContext sensors={sensors} onDragEnd={handleDragEnd} modifiers={[restrictToVerticalAxis]}>
+      <DndContext
+        sensors={sensors}
+        onDragEnd={handleDragEnd}
+        modifiers={[restrictToVerticalAxis]}
+        autoScroll={{ canScroll: element => element === listOuterRef.current }}
+      >
         <SortableContext items={achievements.map(a => a.name)}>
           <List
+            outerRef={listOuterRef}
             height={windowInnerHeight - 245}
             itemCount={achievements.length}
             itemSize={60}
