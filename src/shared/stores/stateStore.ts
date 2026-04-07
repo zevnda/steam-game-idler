@@ -1,3 +1,4 @@
+import type { Game } from '@/shared/types'
 import { create } from 'zustand'
 
 interface StateStore {
@@ -9,6 +10,10 @@ interface StateStore {
   setAppName: (value: string | null | ((prev: string | null) => string | null)) => void
   showAchievements: boolean
   setShowAchievements: (value: boolean | ((prev: boolean) => boolean)) => void
+  showAchievementOrder: boolean
+  setShowAchievementOrder: (value: boolean) => void
+  achievementOrderGame: Game | null
+  setAchievementOrderGame: (value: Game | null) => void
   isCardFarming: boolean
   setIsCardFarming: (value: boolean | ((prev: boolean) => boolean)) => void
   isAchievementUnlocker: boolean
@@ -53,6 +58,10 @@ export const useStateStore = create<StateStore>(set => ({
     set(state => ({
       showAchievements: typeof value === 'function' ? value(state.showAchievements) : value,
     })),
+  showAchievementOrder: false,
+  setShowAchievementOrder: value => set({ showAchievementOrder: value }),
+  achievementOrderGame: null,
+  setAchievementOrderGame: value => set({ achievementOrderGame: value }),
   isCardFarming: false,
   setIsCardFarming: value =>
     set(state => ({

@@ -24,6 +24,8 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
   const [achievementCount, setAchievementCount] = useState(0)
   const [countdownTimer, setCountdownTimer] = useState('00:00:10')
   const [isWaitingForSchedule, setIsWaitingForSchedule] = useState(false)
+  const [imageLoaded, setImageLoaded] = useState(false)
+  const [fallbackImage, setFallbackImage] = useState('')
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -61,6 +63,11 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
     }
   }, [isAchievementUnlocker, currentGame, achievementCount, t])
 
+  useEffect(() => {
+    setImageLoaded(false)
+    setFallbackImage('')
+  }, [currentGame?.appid])
+
   const handleImageError = (event: React.SyntheticEvent<HTMLImageElement, Event>) => {
     ;(event.target as HTMLImageElement).src = '/fallback.webp'
   }
@@ -77,6 +84,31 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
         transitionProperty: 'width, left',
       }}
     >
+      {currentGame?.appid && (
+        <Image
+          src={
+            fallbackImage ||
+            `https://cdn.steamstatic.com/steam/apps/${currentGame.appid}/library_hero.jpg`
+          }
+          className={cn('absolute top-0 left-0 w-full', !imageLoaded && 'hidden')}
+          alt='background'
+          width={1920}
+          height={1080}
+          priority
+          onLoad={() => setImageLoaded(true)}
+          onError={() =>
+            setFallbackImage(
+              `https://cdn.steamstatic.com/steam/apps/${currentGame.appid}/header.jpg`,
+            )
+          }
+          style={{
+            WebkitMaskImage:
+              'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 70%)',
+          }}
+        />
+      )}
+      {imageLoaded && <div className='absolute top-0 left-0 w-full h-screen bg-base/70' />}
+
       <div
         className={cn(
           'relative w-[calc(100vw-227px)] pl-6 pt-2 pr-12 mt-9 ease-in-out',

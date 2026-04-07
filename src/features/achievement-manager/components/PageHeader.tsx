@@ -45,7 +45,7 @@ export const PageHeader = ({ protectedAchievements, protectedStatistics }: PageH
   }
 
   return (
-    <div className='relative flex justify-between items-center px-10'>
+    <div className='relative flex justify-between items-center px-8'>
       <div className='flex items-center gap-3'>
         <Button
           isIconOnly

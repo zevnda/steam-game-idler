@@ -23,6 +23,8 @@ export const CardFarming = ({ activePage }: { activePage: ActivePageType }) => {
   const [totalDropsRemaining, setTotalDropsRemaining] = useState(0)
   const [gamesWithDrops, setGamesWithDrops] = useState<Set<GameWithDrops>>(new Set())
   const [disableStopButton, setDisableStopButton] = useState(true)
+  const [imageLoaded, setImageLoaded] = useState(false)
+  const [fallbackImage, setFallbackImage] = useState('')
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -61,6 +63,13 @@ export const CardFarming = ({ activePage }: { activePage: ActivePageType }) => {
       setDisableStopButton(false)
     }, 5000)
   }, [])
+
+  const firstGame = [...gamesWithDrops][0]
+
+  useEffect(() => {
+    setImageLoaded(false)
+    setFallbackImage('')
+  }, [firstGame?.appid])
 
   const renderGamesList = () => {
     if (!gamesWithDrops.size) {
@@ -142,6 +151,29 @@ export const CardFarming = ({ activePage }: { activePage: ActivePageType }) => {
         transitionProperty: 'width, left',
       }}
     >
+      {firstGame?.appid && (
+        <Image
+          src={
+            fallbackImage ||
+            `https://cdn.steamstatic.com/steam/apps/${firstGame.appid}/library_hero.jpg`
+          }
+          className={cn('absolute top-0 left-0 w-full', !imageLoaded && 'hidden')}
+          alt='background'
+          width={1920}
+          height={1080}
+          priority
+          onLoad={() => setImageLoaded(true)}
+          onError={() =>
+            setFallbackImage(`https://cdn.steamstatic.com/steam/apps/${firstGame.appid}/header.jpg`)
+          }
+          style={{
+            WebkitMaskImage:
+              'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 70%)',
+          }}
+        />
+      )}
+      {imageLoaded && <div className='absolute top-0 left-0 w-full h-screen bg-base/70' />}
+
       <div
         className={cn(
           'relative w-[calc(100vw-227px)] pl-6 pt-2 pr-12 mt-9 ease-in-out',

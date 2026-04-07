@@ -29,20 +29,18 @@ const Row = memo(({ index, style, data }: RowProps) => {
   const protectedStatisticTwo = item2?.protected_stat || false
 
   return (
-    <div style={style} className='grid grid-cols-2 gap-3 pr-6'>
+    <div style={style} className='grid grid-cols-2 gap-3 p-2'>
       {item1 && (
-        <div key={item1.id} className='flex flex-col gap-4'>
+        <div key={item1.id}>
           <div
             className={cn(
-              'flex justify-between items-center max-h-12',
-              'bg-achievement-main p-2 rounded-lg',
+              'flex justify-between items-center',
+              'bg-card hover:bg-sidebar/60 duration-150 px-3 py-2.5 rounded-lg',
             )}
           >
-            <div className='flex flex-col'>
-              <p className='text-sm font-bold w-full truncate'>{item1.id}</p>
-              <p
-                className={`text-[10px] ${protectedStatisticOne ? 'text-warning' : 'text-altwhite'}`}
-              >
+            <div className='flex flex-col min-w-0 mr-3'>
+              <p className='text-sm font-semibold truncate'>{item1.id}</p>
+              <p className={`text-xs ${protectedStatisticOne ? 'text-warning' : 'text-altwhite'}`}>
                 {i18next.t('achievementManager.statistics.flags')}: {item1.flags}
               </p>
             </div>
@@ -54,7 +52,7 @@ const Row = memo(({ index, style, data }: RowProps) => {
               formatOptions={{ useGrouping: false }}
               onChange={e => updateStatistic(item1.id, e)}
               aria-label='statistic value'
-              className='w-30'
+              className='w-30 shrink-0'
               classNames={{
                 inputWrapper: cn(
                   'bg-stats-input data-[hover=true]:!bg-stats-inputhover',
@@ -69,18 +67,16 @@ const Row = memo(({ index, style, data }: RowProps) => {
         </div>
       )}
       {item2 && (
-        <div key={item2.id} className='flex flex-col gap-4'>
+        <div key={item2.id}>
           <div
             className={cn(
-              'flex justify-between items-center max-h-12',
-              'bg-achievement-main p-2 rounded-lg',
+              'flex justify-between items-center',
+              'bg-card hover:bg-sidebar/60 duration-150 px-3 py-2.5 rounded-lg',
             )}
           >
-            <div className='flex flex-col'>
-              <p className='text-sm font-bold w-full truncate'>{item2.id}</p>
-              <p
-                className={`text-[10px] ${protectedStatisticTwo ? 'text-warning' : 'text-altwhite'}`}
-              >
+            <div className='flex flex-col min-w-0 mr-3'>
+              <p className='text-sm font-semibold truncate'>{item2.id}</p>
+              <p className={`text-xs ${protectedStatisticTwo ? 'text-warning' : 'text-altwhite'}`}>
                 {i18next.t('achievementManager.statistics.flags')}: {item2.flags}
               </p>
             </div>
@@ -92,7 +88,7 @@ const Row = memo(({ index, style, data }: RowProps) => {
               formatOptions={{ useGrouping: false }}
               onChange={e => updateStatistic(item2.id, e)}
               aria-label='statistic value'
-              className='w-30'
+              className='w-30 shrink-0'
               classNames={{
                 inputWrapper: cn(
                   'bg-stats-input data-[hover=true]:!bg-stats-inputhover',
@@ -167,32 +163,42 @@ export const StatisticsList = ({
 
   return (
     <div className='flex flex-col gap-2 w-full scroll-smooth'>
-      {statistics.length > 0 ? (
-        <>
-          <StatisticButtons
-            statistics={statistics}
-            setStatistics={setStatistics}
-            changedStats={changedStats}
-            setChangedStats={setChangedStats}
-            setAchievements={setAchievements}
-            setRefreshKey={setRefreshKey}
-          />
+      <StatisticButtons
+        statistics={statistics}
+        setStatistics={setStatistics}
+        changedStats={changedStats}
+        setChangedStats={setChangedStats}
+        setAchievements={setAchievements}
+        setRefreshKey={setRefreshKey}
+      />
 
-          <List
-            height={windowInnerHeight - 212}
-            itemCount={Math.ceil(filteredStatistics.length / 2)}
-            itemSize={62}
-            width='100%'
-            itemData={itemData}
-          >
-            {Row}
-          </List>
-        </>
-      ) : (
-        <div className='flex flex-col gap-2 justify-center items-center my-2 bg-tab-panel rounded-lg p-4 mr-10'>
-          <p>{t('achievementManager.statistics.empty')}</p>
-        </div>
-      )}
+      <div className='border border-border/40 rounded-xl overflow-hidden bg-base/50'>
+        {statistics.length === 0 ? (
+          <div className='flex justify-center items-center p-12'>
+            <p className='text-center text-content'>{t('achievementManager.statistics.empty')}</p>
+          </div>
+        ) : (
+          <>
+            {/* Sticky column header */}
+            <div className='grid grid-cols-[28px_40px_1fr_auto] items-center gap-3 px-3 py-2 border-b border-border/40 sticky top-0 bg-sidebar z-10'>
+              <span className='text-sm font-semibold text-content'>
+                {t('achievementManager.statistics.title')}
+              </span>
+            </div>
+
+            {/* List */}
+            <List
+              height={windowInnerHeight - 270}
+              itemCount={Math.ceil(filteredStatistics.length / 2)}
+              itemSize={62}
+              width='100%'
+              itemData={itemData}
+            >
+              {Row}
+            </List>
+          </>
+        )}
+      </div>
     </div>
   )
 }
