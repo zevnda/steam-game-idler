@@ -56,6 +56,11 @@ export const useAchievementUnlocker = async (
         list: 'achievementUnlockerList',
       })
 
+      // Set current game early so the background image renders during the initial delay
+      if (!hasInitialDelayOccurred && achievementUnlockerList.list_data.length > 0) {
+        setCurrentGame(achievementUnlockerList.list_data[0])
+      }
+
       // Delay for 10 seconds before starting
       if (!hasInitialDelayOccurred) {
         startCountdown(10000 / 60000, setCountdownTimer)
@@ -92,7 +97,7 @@ export const useAchievementUnlocker = async (
 
       // Fetch achievements for the current game
       const achievementUnlockerGame = achievementUnlockerList.list_data[0]
-      const { achievements, game } = await fetchAchievements(
+      const { achievements, game, delayBeforeFirstUnlock } = await fetchAchievements(
         achievementUnlockerGame,
         setAchievementCount,
       )
@@ -105,6 +110,7 @@ export const useAchievementUnlocker = async (
         await unlockAchievements(
           achievements,
           game,
+          delayBeforeFirstUnlock,
           setAchievementCount,
           setCountdownTimer,
           setIsWaitingForSchedule,
@@ -126,11 +132,36 @@ export const useAchievementUnlocker = async (
           list: 'achievementUnlockerList',
         })
 
-        if (remainingList.list_data.length > 0) {
-          // Add 2-minute delay before switching to the next game to appear more human-like
-          logEvent('[Achievement Unlocker] Switching to next game in 2 minutes')
-          startCountdown(2, setCountdownTimer)
-          await delay(120000, isMountedRef, abortControllerRef)
+        if (remainingList.list_data.length > 0 && achievements.length > 0) {
+          // Check if the next game has a delayBeforeFirstUnlock configured, which makes the 2-minute delay redundant
+          let nextGameHasPreDelay = false
+          try {
+            const nextGame = remainingList.list_data[0]
+            const nextCustomOrder = await invoke<{
+              achievement_order: {
+                achievements: Achievement[]
+                delayBeforeFirstUnlock?: number
+              } | null
+            }>('get_achievement_order', {
+              steamId: userSummary?.steamId,
+              appId: nextGame.appid,
+            })
+            const nextDelay = nextCustomOrder.achievement_order?.delayBeforeFirstUnlock
+            nextGameHasPreDelay = typeof nextDelay === 'number' && nextDelay > 0
+          } catch {
+            // If we can't check, assume no pre-delay
+          }
+
+          if (!nextGameHasPreDelay) {
+            // Add 2-minute delay before switching to the next game to appear more human-like
+            logEvent('[Achievement Unlocker] Switching to next game in 2 minutes')
+            startCountdown(2, setCountdownTimer)
+            await delay(120000, isMountedRef, abortControllerRef)
+          } else {
+            logEvent(
+              '[Achievement Unlocker] Skipping 2-minute delay - next game has a pre-unlock delay configured',
+            )
+          }
         }
 
         startAchievementUnlocker()
@@ -192,10 +223,11 @@ const fetchAchievements = async (
 
     // First check if there's a custom order file
     let orderedAchievements: AchievementToUnlock[] = []
+    let delayBeforeFirstUnlock: number | undefined
 
     try {
       const customOrder = await invoke<{
-        achievement_order: { achievements: Achievement[] } | null
+        achievement_order: { achievements: Achievement[]; delayBeforeFirstUnlock?: number } | null
       }>('get_achievement_order', {
         steamId: userSummary?.steamId,
         appId: game.appid,
@@ -204,6 +236,7 @@ const fetchAchievements = async (
       // If we have a custom order, use that order to sort achievements
       if (customOrder.achievement_order?.achievements) {
         logEvent(`Custom achievement order found for ${game.name} (${game.appid}), applying order`)
+        delayBeforeFirstUnlock = customOrder.achievement_order.delayBeforeFirstUnlock
 
         const customOrderMap = new Map(
           customOrder.achievement_order.achievements.map((achievement, index) => [
@@ -285,16 +318,17 @@ const fetchAchievements = async (
 
     setAchievementCount(maxAchievementUnlocks || orderedAchievements.length)
 
-    return { achievements: orderedAchievements, game }
+    return { achievements: orderedAchievements, game, delayBeforeFirstUnlock }
   } catch (error) {
     handleError('fetchAchievements', error)
-    return { achievements: [], game }
+    return { achievements: [], game, delayBeforeFirstUnlock: undefined }
   }
 }
 
 const unlockAchievements = async (
   achievements: AchievementToUnlock[],
   game: Game,
+  delayBeforeFirstUnlock: number | undefined,
   setAchievementCount: React.Dispatch<React.SetStateAction<number>>,
   setCountdownTimer: React.Dispatch<React.SetStateAction<string>>,
   setIsWaitingForSchedule: React.Dispatch<React.SetStateAction<boolean>>,
@@ -314,6 +348,20 @@ const unlockAchievements = async (
 
     let achievementsRemaining = achievements.length
     const maxAchievementUnlocks = await getMaxAchievementUnlocks(userSummary?.steamId, game.appid)
+
+    // Apply delay before first unlock if configured for this game
+    if (
+      typeof delayBeforeFirstUnlock === 'number' &&
+      delayBeforeFirstUnlock > 0 &&
+      isMountedRef.current
+    ) {
+      const firstDelayMs = delayBeforeFirstUnlock * 60 * 1000
+      logEvent(
+        `[Achievement Unlocker] Waiting ${delayBeforeFirstUnlock} minute(s) before first unlock for ${game.name} (${game.appid})`,
+      )
+      startCountdown(firstDelayMs / 60000, setCountdownTimer)
+      await delay(firstDelayMs, isMountedRef, abortControllerRef)
+    }
 
     for (const achievement of achievements) {
       if (isMountedRef.current) {

@@ -100,7 +100,7 @@ export const Achievements = () => {
               ),
               cursor: '!bg-item-active w-full',
               tabContent: 'text-sm group-data-[selected=true]:text-content text-altwhite font-bold',
-              panel: 'p-0 ml-12 mr-10 mt-6 rounded-xl h-calc bg-base/50 p-4',
+              panel: 'p-0 ml-12 mr-10 mt-6 rounded-xl',
             }}
             onSelectionChange={e => setCurrentTab(e as CurrentTabType)}
           >

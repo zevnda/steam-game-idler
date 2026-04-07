@@ -1,7 +1,7 @@
 import type { ActivePageType, CustomListType } from '@/shared/types'
 import { useEffect } from 'react'
 import { Achievements } from '@/features/achievement-manager'
-import { AchievementUnlocker } from '@/features/achievement-unlocker'
+import { AchievementOrderPage, AchievementUnlocker } from '@/features/achievement-unlocker'
 import { CardFarming } from '@/features/card-farming'
 import { CustomList } from '@/features/customlists'
 import { FreeGamesList, GamesList, IdlingGamesList } from '@/features/gameslist'
@@ -13,6 +13,7 @@ import { antiAwayStatus } from '@/shared/utils'
 
 export const Dashboard = () => {
   const showAchievements = useStateStore(state => state.showAchievements)
+  const showAchievementOrder = useStateStore(state => state.showAchievementOrder)
   const isCardFarming = useStateStore(state => state.isCardFarming)
   const isAchievementUnlocker = useStateStore(state => state.isAchievementUnlocker)
   const activePage = useNavigationStore(state => state.activePage)
@@ -25,6 +26,7 @@ export const Dashboard = () => {
 
   const renderContent = () => {
     if (showAchievements) return <Achievements />
+    if (showAchievementOrder) return <AchievementOrderPage />
 
     const customListMap: Record<string, CustomListType> = {
       'customlists/card-farming': 'cardFarmingList',

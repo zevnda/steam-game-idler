@@ -13,8 +13,7 @@ import { TbAward, TbCards, TbEdit, TbHeart, TbHourglassLow, TbSettings } from 'r
 import { DndContext } from '@dnd-kit/core'
 import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { Alert, Button, cn, useDisclosure } from '@heroui/react'
-import { AchievementOrderModal } from '@/features/achievement-unlocker'
+import { Alert, Button, cn } from '@heroui/react'
 import { RecommendedCardDropsCarousel } from '@/features/card-farming'
 import { EditListModal, ManualAddModal, useCustomList } from '@/features/customlists'
 import { GameCard } from '@/shared/components'
@@ -78,12 +77,12 @@ export const CustomList = ({ type }: CustomListProps) => {
   const [isEditModalOpen, setEditModalOpen] = useState(false)
   const [gamesWithDrops, setGamesWithDrops] = useState<Game[]>([])
   const [isLoadingDrops, setIsLoadingDrops] = useState(false)
-  const [selectedGame, setSelectedGame] = useState<Game | null>(null)
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
   const transitionDuration = useStateStore(state => state.transitionDuration)
   const isCardFarming = useStateStore(state => state.isCardFarming)
   const isAchievementUnlocker = useStateStore(state => state.isAchievementUnlocker)
-  const { isOpen, onOpen, onOpenChange } = useDisclosure()
+  const setShowAchievementOrder = useStateStore(state => state.setShowAchievementOrder)
+  const setAchievementOrderGame = useStateStore(state => state.setAchievementOrderGame)
   const setActivePage = useNavigationStore(state => state.setActivePage)
   const setPreviousActivePage = useNavigationStore(state => state.setPreviousActivePage)
   const setCurrentSettingsTab = useNavigationStore(state => state.setCurrentSettingsTab)
@@ -216,8 +215,8 @@ export const CustomList = ({ type }: CustomListProps) => {
   }
 
   const handleGameClick = (game: Game) => {
-    setSelectedGame(game)
-    onOpen()
+    setAchievementOrderGame(game)
+    setShowAchievementOrder(true)
   }
 
   return (
@@ -364,10 +363,6 @@ export const CustomList = ({ type }: CustomListProps) => {
           </SortableContext>
         </DndContext>
       </div>
-
-      {selectedGame && (
-        <AchievementOrderModal item={selectedGame} isOpen={isOpen} onOpenChange={onOpenChange} />
-      )}
 
       <EditListModal
         type={type}
