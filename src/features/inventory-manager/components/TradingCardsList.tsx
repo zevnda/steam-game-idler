@@ -22,6 +22,7 @@ export const TradingCardsList = () => {
   const transitionDuration = useStateStore(state => state.transitionDuration)
   const userSettings = useUserStore(state => state.userSettings)
   const [lockedCards, setLockedCards] = useState<string[]>([])
+  const [cardFilterValues, setCardFilterValues] = useState<Set<string>>(new Set())
   const [cardsPerRow, setCardsPerRow] = useState(6)
   const [currentPage, setCurrentPage] = useState(1)
   const tradingCardContext = useTradingCardsList()
@@ -30,7 +31,7 @@ export const TradingCardsList = () => {
 
   useEffect(() => {
     setCurrentPage(1)
-  }, [tradingCardContext.cardSortStyle])
+  }, [tradingCardContext.cardSortStyle, cardFilterValues])
 
   useEffect(() => {
     const storedLockedCards = localStorage.getItem('lockedTradingCards')
@@ -58,15 +59,55 @@ export const TradingCardsList = () => {
     })
   }
 
-  const filteredTradingCardsList = useMemo(
-    () =>
-      tradingCardContext.tradingCardsList.filter(
+  const filteredTradingCardsList = useMemo(() => {
+    let list = tradingCardContext.tradingCardsList
+
+    if (tradingCardQueryValue) {
+      list = list.filter(
         card =>
           card.full_name.toLowerCase().includes(tradingCardQueryValue.toLowerCase()) ||
           card.appname.toLowerCase().includes(tradingCardQueryValue.toLowerCase()),
-      ),
-    [tradingCardContext.tradingCardsList, tradingCardQueryValue],
-  )
+      )
+    }
+
+    // By default hide locked items; include them only when the locked filter is active
+    if (!cardFilterValues.has('locked')) {
+      list = list.filter(card => !lockedCards.includes(card.id))
+    }
+
+    if (cardFilterValues.size === 0) return list
+
+    const dupeMap: Record<string, number> = {}
+    if (cardFilterValues.has('dupes')) {
+      list.forEach(card => {
+        dupeMap[card.market_hash_name] = (dupeMap[card.market_hash_name] || 0) + 1
+      })
+    }
+
+    // Type filters (OR): card must match at least one selected type/class
+    const typeFilterMap: Record<string, string> = {
+      cards: 'item_class_2',
+      backgrounds: 'item_class_3',
+      emoticons: 'item_class_4',
+      boosters: 'item_class_5',
+      sale: 'item_class_10',
+    }
+    const activeTypeFilters = Object.keys(typeFilterMap).filter(k => cardFilterValues.has(k))
+    const hasTypeFilter = activeTypeFilters.length > 0 || cardFilterValues.has('foil')
+
+    // Attribute filters (AND): narrow down whatever the type filters matched
+    return list.filter(card => {
+      if (hasTypeFilter) {
+        const matchesType = activeTypeFilters.some(k => card.item_type === typeFilterMap[k])
+        const matchesFoil = cardFilterValues.has('foil') && card.foil
+        if (!matchesType && !matchesFoil) return false
+      }
+      if (cardFilterValues.has('badge') && !(card.badge_level > 0)) return false
+      if (cardFilterValues.has('dupes') && !(dupeMap[card.market_hash_name] > 1)) return false
+      if (cardFilterValues.has('locked') && !lockedCards.includes(card.id)) return false
+      return true
+    })
+  }, [tradingCardContext.tradingCardsList, tradingCardQueryValue, cardFilterValues, lockedCards])
 
   const totalPages = Math.ceil(filteredTradingCardsList.length / CARDS_PER_PAGE)
 
@@ -233,10 +274,13 @@ export const TradingCardsList = () => {
       <PageHeader
         selectedCardsWithPrice={selectedCardsWithPrice}
         tradingCardContext={tradingCardContext}
+        filteredTradingCardsList={filteredTradingCardsList}
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={setCurrentPage}
         lockedCards={lockedCards}
+        cardFilterValues={cardFilterValues}
+        setCardFilterValues={setCardFilterValues}
       />
 
       {!userSettings.cardFarming.credentials && (

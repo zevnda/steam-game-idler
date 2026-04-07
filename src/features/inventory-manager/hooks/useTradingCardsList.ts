@@ -49,33 +49,12 @@ export function useTradingCardsList() {
         return list.sort((a, b) => a.appname.localeCompare(b.appname))
       case 'zz-aa':
         return list.sort((a, b) => b.appname.localeCompare(a.appname))
-      case 'badge':
-        return list
-          .filter(card => card.item_type === 'item_class_2' && (card.badge_level || 0) > 0)
-          .sort((a, b) => {
-            const levelA = a.badge_level || 0
-            const levelB = b.badge_level || 0
-            return levelB - levelA
-          })
-      case 'foil':
-        return list
-          .filter(card => card.item_type === 'item_class_2' && card.foil === true)
-          .sort((a, b) => {
-            const levelA = a.badge_level || 0
-            const levelB = b.badge_level || 0
-            return levelB - levelA
-          })
-      case 'dupes': {
-        const countMap: Record<string, number> = {}
-        list.forEach(card => {
-          countMap[card.market_hash_name] = (countMap[card.market_hash_name] || 0) + 1
+      case 'badge-desc':
+        return list.sort((a, b) => {
+          const levelA = a.badge_level || 0
+          const levelB = b.badge_level || 0
+          return levelB - levelA
         })
-        return list.filter(card => countMap[card.market_hash_name] > 1)
-      }
-      case 'cards':
-        return list
-          .filter(card => card.item_type === 'item_class_2')
-          .sort((a, b) => a.full_name.localeCompare(b.full_name))
       default:
         return list
     }
@@ -585,14 +564,14 @@ export function useTradingCardsList() {
     }
   }
 
-  const handleSellAllCards = async () => {
+  const handleSellAllCards = async (list?: TradingCard[]) => {
     try {
       const credentials = userSettings?.cardFarming.credentials
       if (!credentials?.sid || !credentials?.sls) return showMissingCredentialsToast()
 
       setLoadingListButton(true)
       showPrimaryToast(t('toast.tradingCards.processing'))
-      await sellCardsList(tradingCardsList, 'handleSellAllCards')
+      await sellCardsList(list ?? tradingCardsList, 'handleSellAllCards')
     } catch (error) {
       showDangerToast(t('common.error'))
       console.error('Error in handleSellAllCards:', error)
