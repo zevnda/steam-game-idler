@@ -276,7 +276,9 @@ export const AchievementOrderPage = () => {
 
   const handleReset = useCallback(() => {
     setAchievements(
-      originalAchievements.map(a => ({ ...a, skip: undefined, delayNextUnlock: undefined })),
+      [...originalAchievements]
+        .sort((a, b) => (b.percent || 0) - (a.percent || 0))
+        .map(a => ({ ...a, skip: undefined, delayNextUnlock: undefined })),
     )
     setDelayBeforeFirstUnlock('')
   }, [originalAchievements])
@@ -340,7 +342,10 @@ export const AchievementOrderPage = () => {
         }
 
         if (achievementData?.achievement_data?.achievements?.length > 0) {
-          setAchievements(achievementData.achievement_data.achievements)
+          const sorted = [...achievementData.achievement_data.achievements].sort(
+            (a, b) => (b.percent || 0) - (a.percent || 0),
+          )
+          setAchievements(sorted)
           setOriginalAchievements(
             achievementData.achievement_data.achievements.map(a => ({
               ...a,
