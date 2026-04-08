@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { cn, Spinner } from '@heroui/react'
+import Image from 'next/image'
 import { ProBadge } from '@/shared/components'
 import { useNavigationStore, useStateStore } from '@/shared/stores'
 
@@ -10,6 +11,26 @@ export const AdSlot = ({ isPro }: { isPro: boolean | null }) => {
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
   const setProModalOpen = useStateStore(state => state.setProModalOpen)
   const [reloadKey, setReloadKey] = useState(0)
+  const [adFilled, setAdFilled] = useState(false)
+
+  // Add more fallback ad image paths here as needed
+  const fallbackAds = useMemo(
+    () => ['/ads/ad-fallback-1.webp', '/ads/ad-fallback-2.webp', '/ads/ad-fallback-3.webp'],
+    [],
+  )
+
+  const [fallbackAd, setFallbackAd] = useState(
+    () => fallbackAds[Math.floor(Math.random() * fallbackAds.length)],
+  )
+
+  // Pick a random fallback ad that's different from the current one
+  const pickNextFallback = useCallback(
+    (current: string) => {
+      const others = fallbackAds.filter(ad => ad !== current)
+      return others[Math.floor(Math.random() * others.length)]
+    },
+    [fallbackAds],
+  )
 
   const gameSlugs = useMemo(
     () => [
@@ -108,6 +129,53 @@ export const AdSlot = ({ isPro }: { isPro: boolean | null }) => {
     return `https://steamgameidler.com/${randomSlug}`
   })
 
+  // Reset fallback state whenever the iframe loads a new page
+  useEffect(() => {
+    setAdFilled(false)
+    setFallbackAd(prev => pickNextFallback(prev))
+  }, [gameUrl, reloadKey, fallbackAds, pickNextFallback])
+
+  // Listen for ad-refresh from AdComponent to reset detection on each internal ad cycle
+  useEffect(() => {
+    const handler = (e: MessageEvent) => {
+      if (e.origin !== 'https://steamgameidler.com') return
+      console.debug('Received message:', e.data)
+      try {
+        const data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data
+        if (data?.type === 'ad-refresh') {
+          setAdFilled(false)
+          setFallbackAd(prev => pickNextFallback(prev))
+        }
+      } catch {
+        // ignore
+      }
+    }
+
+    window.addEventListener('message', handler)
+    return () => window.removeEventListener('message', handler)
+  }, [fallbackAds, pickNextFallback])
+
+  // adpnt is sent by AdSense only when an ad actually renders — hide fallback if it arrives
+  useEffect(() => {
+    const handler = (e: MessageEvent) => {
+      if (e.origin !== 'https://googleads.g.doubleclick.net') return
+      try {
+        const data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data
+        if (data?.googMsgType === 'adpnt') {
+          setAdFilled(true)
+        }
+      } catch {
+        // ignore
+      }
+    }
+
+    window.addEventListener('message', handler)
+
+    return () => {
+      window.removeEventListener('message', handler)
+    }
+  }, [gameUrl])
+
   useEffect(() => {
     const timer = setTimeout(
       () => {
@@ -139,8 +207,18 @@ export const AdSlot = ({ isPro }: { isPro: boolean | null }) => {
           width='600'
           height='600'
           title='External Website'
-          sandbox='allow-scripts allow-same-origin allow-forms allow-popups allow-top-navigation-by-user-activation'
         />
+        {adFilled === false && (
+          <div className='absolute inset-0 z-10 flex items-center justify-center bg-[#121316]'>
+            <Image
+              src={fallbackAd}
+              alt='Advertisement'
+              width={300}
+              height={250}
+              className='w-full h-full object-fill'
+            />
+          </div>
+        )}
         <Spinner className='absolute inset-0 m-auto z-0' />
       </div>
 
