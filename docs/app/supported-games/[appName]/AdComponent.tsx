@@ -20,6 +20,7 @@ export default function AdComponent() {
       }
     }
 
+    window.top?.postMessage({ type: 'ad-refresh' }, '*')
     loadAd()
 
     const scheduleNextRefresh = () => {
