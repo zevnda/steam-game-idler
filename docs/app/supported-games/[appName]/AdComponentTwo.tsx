@@ -20,24 +20,30 @@ export default function AdComponentTwo() {
       }
     }
 
-    loadAd()
+    const initialDelay = setTimeout(() => {
+      loadAd()
 
-    const scheduleNextRefresh = () => {
-      const interval = setTimeout(
-        () => {
-          setAdKey(prev => prev + 1)
-          scheduleNextRefresh()
-        },
-        3 * 60 * 1000,
-      )
+      const scheduleNextRefresh = () => {
+        const interval = setTimeout(
+          () => {
+            setAdKey(prev => prev + 1)
+            scheduleNextRefresh()
+          },
+          3 * 60 * 1000,
+        )
 
-      return interval
-    }
+        return interval
+      }
 
-    const timeoutId = scheduleNextRefresh()
+      const timeoutId = scheduleNextRefresh()
+
+      return () => {
+        clearTimeout(timeoutId)
+      }
+    }, 5000)
 
     return () => {
-      clearTimeout(timeoutId)
+      clearTimeout(initialDelay)
     }
   }, [adKey])
 
