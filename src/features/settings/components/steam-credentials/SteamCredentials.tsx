@@ -12,7 +12,7 @@ import {
 import { handleSaveCredentials } from '@/features/settings/utils/steam-credentials/handleSteamCredentials'
 import { CustomModal, ExtLink, ProBadge, showDangerToast } from '@/shared/components'
 import { useStateStore, useUserStore } from '@/shared/stores'
-import { logEvent } from '@/shared/utils'
+import { logEvent, showDesktopOnlyToast, waitForTauriInvoke } from '@/shared/utils'
 
 export const SteamCredentials = () => {
   const { t } = useTranslation()
@@ -25,6 +25,12 @@ export const SteamCredentials = () => {
   const { isOpen, onOpenChange } = useDisclosure()
 
   const handleShowSteamLoginWindow = async () => {
+    const tauriReady = await waitForTauriInvoke()
+    if (!tauriReady) {
+      showDesktopOnlyToast()
+      return
+    }
+
     const result = await invoke<InvokeSteamCredentials>('open_steam_login_window')
 
     if (!result || result.success === false) {
@@ -50,6 +56,12 @@ export const SteamCredentials = () => {
   }
 
   const handleSignOutCurrentUser = async () => {
+    const tauriReady = await waitForTauriInvoke()
+    if (!tauriReady) {
+      showDesktopOnlyToast()
+      return
+    }
+
     const result = await invoke<InvokeSteamCredentials>('delete_login_window_cookies')
 
     if (!result || result.success === false) {
@@ -74,7 +86,7 @@ export const SteamCredentials = () => {
   }
 
   const handleImageError = (event: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    ;(event.target as HTMLImageElement).src = '/fallback.webp'
+    ; (event.target as HTMLImageElement).src = '/fallback.webp'
   }
 
   return (
@@ -246,7 +258,7 @@ export const SteamCredentials = () => {
             )}
           </div>
 
-          <div className='flex flex-col gap-4 w-62.5'>
+          <form className='flex flex-col gap-4 w-62.5' onSubmit={e => e.preventDefault()}>
             <Input
               isRequired
               label='sessionid'
@@ -302,6 +314,7 @@ export const SteamCredentials = () => {
             />
             <div className='flex justify-end gap-2'>
               <Button
+                type='button'
                 size='sm'
                 variant='light'
                 radius='full'
@@ -325,6 +338,7 @@ export const SteamCredentials = () => {
                 {t('common.clear')}
               </Button>
               <Button
+                type='button'
                 size='sm'
                 className='bg-btn-secondary text-btn-text font-bold'
                 radius='full'
@@ -350,7 +364,7 @@ export const SteamCredentials = () => {
                 {t('common.save')}
               </Button>
             </div>
-          </div>
+          </form>
         </div>
       </div>
 

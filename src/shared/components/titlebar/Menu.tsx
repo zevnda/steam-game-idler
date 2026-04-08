@@ -19,9 +19,11 @@ import { useUpdateStore } from '@/shared/stores'
 import {
   fetchLatest,
   isPortableCheck,
+  isTauriRuntime,
   logEvent,
   openExternalLink,
   preserveKeysAndClearData,
+  showDesktopOnlyToast,
 } from '@/shared/utils'
 
 export const Menu = () => {
@@ -34,7 +36,11 @@ export const Menu = () => {
     'https://github.com/zevnda/steam-game-idler/issues/new?assignees=zevnda&labels='
 
   useEffect(() => {
-    ;(async () => {
+    if (!isTauriRuntime) {
+      setIsPortable(true)
+      return
+    }
+    ; (async () => {
       const portable = await isPortableCheck()
       setIsPortable(portable)
     })()
@@ -42,6 +48,10 @@ export const Menu = () => {
 
   const handleUpdate = async () => {
     try {
+      if (!isTauriRuntime) {
+        showDesktopOnlyToast()
+        return
+      }
       const update = await check()
       if (update) {
         localStorage.setItem('hasUpdated', 'true')

@@ -14,8 +14,17 @@ fn main() {
 
             for line in env_content.lines() {
                 let line = line.trim();
-                if line.starts_with("KEY=") {
-                    let api_key = line.strip_prefix("KEY=").unwrap().trim_matches('"');
+                if line.is_empty() || line.starts_with('#') {
+                    continue;
+                }
+
+                if let Some((name, raw_value)) = line.split_once('=') {
+                    let name = name.trim();
+                    if name != "KEY" && name != "STEAM_API_KEY" {
+                        continue;
+                    }
+
+                    let api_key = raw_value.trim().trim_matches('"');
                     println!("cargo:rustc-env=STEAM_API_KEY={}", api_key);
                     found_key = true;
                     break;

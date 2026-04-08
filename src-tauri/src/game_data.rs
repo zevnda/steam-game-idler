@@ -1,4 +1,5 @@
 use crate::utils::{get_cache_dir, get_lib_path};
+use crate::utils::hide_command_window;
 use reqwest::Client;
 use scraper::{Html, Selector};
 use serde::{Deserialize, Serialize};
@@ -8,7 +9,6 @@ use std::fs::File;
 use std::fs::{create_dir_all, remove_dir_all, remove_file, OpenOptions};
 use std::io::Read;
 use std::io::Write;
-use std::os::windows::process::CommandExt;
 use tauri::Manager;
 
 #[derive(Serialize, Deserialize)]
@@ -39,11 +39,14 @@ pub async fn get_games_list(
 
     // Create an empty temp file to write to
     let exe_path = get_lib_path()?;
-    let output = std::process::Command::new(exe_path)
-        .args(&["check_ownership", &temp_games_file_str])
-        .creation_flags(0x08000000)
-        .output()
-        .map_err(|e| format!("Failed to execute check_ownership: {}", e))?;
+    let output = {
+        let mut command = std::process::Command::new(exe_path);
+        command.args(&["check_ownership", &temp_games_file_str]);
+        hide_command_window(&mut command);
+        command
+            .output()
+            .map_err(|e| format!("Failed to execute check_ownership: {}", e))?
+    };
 
     let output_str = String::from_utf8_lossy(&output.stdout);
     let error_str = String::from_utf8_lossy(&output.stderr);

@@ -1,10 +1,12 @@
 import type { Achievement, InvokeAchievementData, Statistic } from '@/shared/types'
-import { invoke } from '@tauri-apps/api/core'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { showAccountMismatchToast, showDangerToast } from '@/shared/components'
 import { useStateStore, useUserStore } from '@/shared/stores'
-import { checkSteamStatus, logEvent } from '@/shared/utils'
+import { checkSteamStatus, invokeSafe, isMissingTauriInvokeError, logEvent } from '@/shared/utils'
+
+const isWindowsOnlySteamUtilityError = (error: unknown) =>
+  String(error).toLowerCase().includes('steamutility is only available on windows')
 
 export function useAchievements(
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
@@ -30,11 +32,31 @@ export function useAchievements(
         if (!isSteamRunning) return setIsLoading(false)
 
         // Fetch achievement data
-        const response = await invoke<InvokeAchievementData | string>('get_achievement_data', {
-          steamId: userSummary?.steamId,
-          appId,
-          refetch: refreshKey !== 0,
-        })
+        const response = await invokeSafe<InvokeAchievementData | string>(
+          'get_achievement_data',
+          {
+            steamId: userSummary?.steamId,
+            appId,
+            refetch: refreshKey !== 0,
+          },
+          5000,
+        )
+
+        if (response === null) {
+          setIsLoading(false)
+          setAchievementsUnavailable(true)
+          setStatisticsUnavailable(true)
+          return
+        }
+
+        // Handle unsupported platform for SteamUtility-based features
+        if (typeof response === 'string' && isWindowsOnlySteamUtilityError(response)) {
+          setIsLoading(false)
+          setAchievementsUnavailable(true)
+          setStatisticsUnavailable(true)
+          logEvent(`Error in (getAchievementData): ${response}`)
+          return
+        }
 
         // Handle case where Steam API initialization failed
         // We already check if Steam client is running so usually account mismatch
@@ -79,6 +101,14 @@ export function useAchievements(
 
         setIsLoading(false)
       } catch (error) {
+        if (isMissingTauriInvokeError(error) || isWindowsOnlySteamUtilityError(error)) {
+          setIsLoading(false)
+          setAchievementsUnavailable(true)
+          setStatisticsUnavailable(true)
+          logEvent(`Error in (getAchievementData): ${error}`)
+          return
+        }
+
         setIsLoading(false)
         setAchievementsUnavailable(true)
         setStatisticsUnavailable(true)

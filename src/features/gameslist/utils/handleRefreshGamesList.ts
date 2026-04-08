@@ -1,8 +1,7 @@
-import { invoke } from '@tauri-apps/api/core'
 import i18next from 'i18next'
 import moment from 'moment'
 import { showDangerToast, showPrimaryToast } from '@/shared/components'
-import { logEvent } from '@/shared/utils'
+import { invokeSafe, logEvent } from '@/shared/utils'
 
 export const handleRefreshGamesList = async (
   steamId: string | undefined,
@@ -22,8 +21,8 @@ export const handleRefreshGamesList = async (
       }
     }
 
-    // Delete cached games list files from backend
-    await invoke('delete_user_games_list_files', { steamId })
+    // On desktop, clear cached files first. On web, continue with regular refresh.
+    await invokeSafe('delete_user_games_list_files', { steamId }, 1500)
 
     // Set a 30 min cooldown for refreshing games
     sessionStorage.setItem('cooldown', String(moment().add(30, 'minutes').unix()))

@@ -1,6 +1,5 @@
 import type { Achievement, InvokeAchievementData } from '@/shared/types'
 import type { DragEndEvent } from '@dnd-kit/core'
-import { invoke } from '@tauri-apps/api/core'
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { GoGrabber } from 'react-icons/go'
@@ -14,7 +13,10 @@ import { Button, Checkbox, cn, Input, Spinner } from '@heroui/react'
 import Image from 'next/image'
 import { ExtLink, showAccountMismatchToast, showDangerToast } from '@/shared/components'
 import { useStateStore, useUserStore } from '@/shared/stores'
-import { checkSteamStatus, logEvent } from '@/shared/utils'
+import { checkSteamStatus, invokeSafe, isMissingTauriInvokeError, logEvent } from '@/shared/utils'
+
+const isWindowsOnlySteamUtilityError = (error: unknown) =>
+  String(error).toLowerCase().includes('steamutility is only available on windows')
 
 interface SortableAchievementProps {
   appid: number
@@ -257,7 +259,7 @@ export const AchievementOrderPage = () => {
 
   const handleSave = async () => {
     try {
-      await invoke('save_achievement_order', {
+      await invokeSafe('save_achievement_order', {
         steamId: userSummary?.steamId,
         appId: item.appid,
         achievementOrder: {
@@ -291,7 +293,7 @@ export const AchievementOrderPage = () => {
         const isSteamRunning = await checkSteamStatus(true)
         if (!isSteamRunning) return setIsLoading(false)
 
-        const customOrder = await invoke<{
+        const customOrder = await invokeSafe<{
           achievement_order: {
             achievements: Achievement[]
             delayBeforeFirstUnlock?: number
@@ -301,11 +303,31 @@ export const AchievementOrderPage = () => {
           appId: item.appid,
         })
 
-        const response = await invoke<InvokeAchievementData | string>('get_achievement_data', {
-          steamId: userSummary?.steamId,
-          appId: item.appid,
-          refetch: false,
-        })
+        if (!customOrder) {
+          setIsLoading(false)
+          return
+        }
+
+        const response = await invokeSafe<InvokeAchievementData | string>(
+          'get_achievement_data',
+          {
+            steamId: userSummary?.steamId,
+            appId: item.appid,
+            refetch: false,
+          },
+          5000,
+        )
+
+        if (!response) {
+          setIsLoading(false)
+          return
+        }
+
+        if (typeof response === 'string' && isWindowsOnlySteamUtilityError(response)) {
+          setIsLoading(false)
+          logEvent(`Error in (getAchievementData): ${response}`)
+          return
+        }
 
         if (typeof response === 'string' && response.includes('Failed to initialize Steam API')) {
           setIsLoading(false)
@@ -352,6 +374,12 @@ export const AchievementOrderPage = () => {
 
         setIsLoading(false)
       } catch (error) {
+        if (isMissingTauriInvokeError(error) || isWindowsOnlySteamUtilityError(error)) {
+          setIsLoading(false)
+          logEvent(`Error in (getAchievementData): ${error}`)
+          return
+        }
+
         setIsLoading(false)
         showDangerToast(t('toast.achievementData.error'))
         console.error('Error in (getAchievementData):', error)

@@ -31,16 +31,20 @@ export const Layout = ({ children }: React.PropsWithChildren) => {
         <title>Steam Game Idler</title>
       </Head>
 
-      <Script id='chatway' src='https://cdn.chatway.app/widget.js?id=1F2cY0TT2RKh' />
-      <Script id='chatway-hide-icon' strategy='afterInteractive'>
-        {`
-          window.$chatwayOnLoad = function() {
-            if (window.$chatway && typeof window.$chatway.hideChatwayIcon === 'function') {
-              window.$chatway.hideChatwayIcon();
-            }
-          };
-        `}
-      </Script>
+      {process.env.NODE_ENV === 'production' && (
+        <>
+          <Script id='chatway' src='https://cdn.chatway.app/widget.js?id=1F2cY0TT2RKh' />
+          <Script id='chatway-hide-icon' strategy='afterInteractive'>
+            {`
+              window.$chatwayOnLoad = function() {
+                if (window.$chatway && typeof window.$chatway.hideChatwayIcon === 'function') {
+                  window.$chatway.hideChatwayIcon();
+                }
+              };
+            `}
+          </Script>
+        </>
+      )}
 
       {!loadingUserSummary && customBackground && isPro && (
         <>

@@ -1,10 +1,9 @@
 import type { Game, InvokeGamesList, SortStyleValue } from '@/shared/types'
-import { invoke } from '@tauri-apps/api/core'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { showDangerToast } from '@/shared/components'
 import { useSearchStore, useUserStore } from '@/shared/stores'
-import { decrypt, logEvent } from '@/shared/utils'
+import { decrypt, invokeSafe, logEvent } from '@/shared/utils'
 
 export function useGamesList() {
   const { t } = useTranslation()
@@ -118,9 +117,63 @@ export const fetchGamesList = async (
   apiKey?: string,
 ) => {
   if (!steamId) return { gamesList: [], recentGamesList: [] }
-  // Try to get games from cache first
-  const cachedGamesListFiles = await invoke<InvokeGamesList>('get_games_list_cache', { steamId })
 
+  const fetchGamesListFromApi = async (apiKeyValue?: string) => {
+    const params = new URLSearchParams({ steamId })
+    if (apiKeyValue) params.set('apiKey', apiKeyValue)
+
+    const response = await fetch(`/api/steam-games?${params.toString()}`)
+    if (!response.ok) {
+      return { gamesList: [], recentGamesList: [] }
+    }
+
+    const contentType = response.headers.get('content-type') || ''
+    if (!contentType.includes('application/json')) {
+      return { gamesList: [], recentGamesList: [] }
+    }
+
+    const data = (await response.json()) as InvokeGamesList & { error?: string }
+
+    if (!response.ok || data.error) {
+      return { gamesList: [], recentGamesList: [] }
+    }
+
+    return {
+      gamesList: data.games_list || [],
+      recentGamesList: data.recent_games || [],
+    }
+  }
+
+  const fetchGamesListFromApiWithKeyFallback = async () => {
+    const fromApiWithUserKey = await fetchGamesListFromApi(apiKey)
+
+    const hasDataWithUserKey =
+      fromApiWithUserKey.gamesList.length > 0 || fromApiWithUserKey.recentGamesList.length > 0
+
+    if (!hasDataWithUserKey && apiKey) {
+      return fetchGamesListFromApi()
+    }
+
+    return fromApiWithUserKey
+  }
+
+  const apiGamesResult = await fetchGamesListFromApiWithKeyFallback()
+  const hasApiGames =
+    apiGamesResult.gamesList.length > 0 || apiGamesResult.recentGamesList.length > 0
+
+  if (hasApiGames) {
+    return apiGamesResult
+  }
+
+  // Try native backend first (desktop). If bridge is unavailable, fallback to API route.
+  const cachedGamesListFiles = await invokeSafe<InvokeGamesList>('get_games_list_cache', {
+    steamId,
+  })
+  if (!cachedGamesListFiles) {
+    return apiGamesResult
+  }
+
+  // Try to get games from cache first
   const hasCachedGamesList = cachedGamesListFiles && cachedGamesListFiles.games_list.length > 0
 
   const cachedGamesList = cachedGamesListFiles.games_list
@@ -134,18 +187,26 @@ export const fetchGamesList = async (
     }
   } else {
     // Fallback to API if cache isn't available or user requested refresh
-    const gamesListResponse = await invoke<InvokeGamesList>('get_games_list', {
+    const gamesListResponse = await invokeSafe<InvokeGamesList>('get_games_list', {
       steamId,
       apiKey: apiKey ? decrypt(apiKey) : null,
     })
 
-    const recentGamesListResponse = await invoke<InvokeGamesList>('get_recent_games', {
+    const recentGamesListResponse = await invokeSafe<InvokeGamesList>('get_recent_games', {
       steamId,
       apiKey: apiKey ? decrypt(apiKey) : null,
     })
+
+    if (!gamesListResponse || !recentGamesListResponse) {
+      return apiGamesResult
+    }
 
     const gamesList = gamesListResponse.games_list
     const recentGamesList = recentGamesListResponse.games_list
+
+    if ((gamesList?.length || 0) === 0 && (recentGamesList?.length || 0) === 0) {
+      return apiGamesResult
+    }
 
     return {
       gamesList: gamesList || [],

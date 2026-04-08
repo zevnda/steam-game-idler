@@ -47,10 +47,10 @@ export const useUserStore = create<UserStore>(set => ({
     set(state => ({
       freeGamesList: typeof value === 'function' ? value(state.freeGamesList) : value,
     })),
-  isPro: null,
-  setIsPro: value =>
-    set(state => ({
-      isPro: typeof value === 'function' ? value(state.isPro) : value,
+  isPro: true,
+  setIsPro: _value =>
+    set(() => ({
+      isPro: true,
     })),
   userSettings: {
     gameSettings: null,

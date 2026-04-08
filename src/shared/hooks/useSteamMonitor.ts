@@ -3,6 +3,7 @@ import { invoke } from '@tauri-apps/api/core'
 import { listen } from '@tauri-apps/api/event'
 import { useEffect } from 'react'
 import { useIdleStore, useStateStore, useUserStore } from '@/shared/stores'
+import { isTauriRuntime } from '@/shared/utils'
 
 export function useSteamMonitor() {
   const userSummary = useUserStore(state => state.userSummary)
@@ -13,6 +14,7 @@ export function useSteamMonitor() {
 
   // Listen for Steam status changes
   useEffect(() => {
+    if (!isTauriRuntime) return
     const unlistenPromise = listen<boolean>('steam_status_changed', event => {
       const isSteamRunning = event.payload
       if (!isSteamRunning && userSummary) {
@@ -30,6 +32,7 @@ export function useSteamMonitor() {
 
   // Listen for running processes changes
   useEffect(() => {
+    if (!isTauriRuntime) return
     const unlistenPromise = listen('running_processes_changed', event => {
       const response = event.payload as InvokeRunningProcess
       const processes = response?.processes

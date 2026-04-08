@@ -1,8 +1,7 @@
 import type { InvokeSettings, InvokeValidateKey, UserSettings } from '@/shared/types'
-import { invoke } from '@tauri-apps/api/core'
 import i18next from 'i18next'
 import { showDangerToast, showSuccessToast } from '@/shared/components'
-import { encrypt, logEvent } from '@/shared/utils'
+import { encrypt, invokeSafe, logEvent } from '@/shared/utils'
 
 export const handleSteamWebAPIKeySave = async (
   steamId: string | undefined,
@@ -12,18 +11,21 @@ export const handleSteamWebAPIKeySave = async (
 ) => {
   try {
     if (keyValue.length > 0) {
-      const validate = await invoke<InvokeValidateKey>('validate_steam_api_key', {
+      const validate = await invokeSafe<InvokeValidateKey>('validate_steam_api_key', {
         steamId,
         apiKey: keyValue,
       })
 
-      if (validate.response) {
-        const response = await invoke<InvokeSettings>('update_user_settings', {
+      if (validate?.response) {
+        const response = await invokeSafe<InvokeSettings>('update_user_settings', {
           steamId,
           key: 'general.apiKey',
           value: encrypt(keyValue),
         })
-        setUserSettings(response.settings)
+
+        if (response) {
+          setUserSettings(response.settings)
+        }
 
         setHasKey(true)
 
@@ -48,12 +50,16 @@ export const handleSteamWebAPIKeyClear = async (
   setUserSettings: (value: UserSettings) => void,
 ) => {
   try {
-    const response = await invoke<InvokeSettings>('update_user_settings', {
+    const response = await invokeSafe<InvokeSettings>('update_user_settings', {
       steamId,
       key: 'general.apiKey',
       value: null,
     })
-    setUserSettings(response.settings)
+
+    if (response) {
+      setUserSettings(response.settings)
+    }
+
     setKeyValue('')
     setHasKey(false)
     showSuccessToast(i18next.t('toast.apiKey.clear'))

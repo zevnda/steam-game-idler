@@ -7,6 +7,7 @@ import Image from 'next/image'
 import { ExtLink, LanguageSwitch, SignInHero } from '@/shared/components'
 import { useSignIn } from '@/shared/hooks'
 import { useNavigationStore } from '@/shared/stores'
+import { isTauriRuntime } from '@/shared/utils'
 
 export const SignIn = () => {
   const { t } = useTranslation()
@@ -18,7 +19,9 @@ export const SignIn = () => {
   }, [setActivePage])
 
   const handleRefresh = async () => {
-    await invoke('delete_user_summary_file')
+    if (isTauriRuntime) {
+      await invoke('delete_user_summary_file')
+    }
     setRefreshKey(prev => prev + 1)
   }
 
@@ -173,7 +176,15 @@ function UserSelectionArea({ onRefresh }: { onRefresh: () => void }) {
             radius='full'
             className='font-semibold bg-content text-black group'
             onPress={() => {
-              if (selectedUser) handleLogin(steamUsers.indexOf(selectedUser))
+              if (!selectedUser) return
+
+              const selectedIndex = steamUsers.findIndex(
+                user => user?.steamId === selectedUser?.steamId,
+              )
+
+              if (selectedIndex >= 0) {
+                handleLogin(selectedIndex)
+              }
             }}
             isDisabled={!selectedUser}
           >

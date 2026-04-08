@@ -1,8 +1,7 @@
 import type { InvokeSettings, UserSettings, UserSummary } from '@/shared/types'
-import { invoke } from '@tauri-apps/api/core'
 import i18next from 'i18next'
 import { showDangerToast } from '@/shared/components'
-import { logEvent } from '@/shared/utils'
+import { invokeSafe, logEvent } from '@/shared/utils'
 
 export const handleIntervalChange = async (
   newInterval: [number, number] | number[] | number,
@@ -10,12 +9,16 @@ export const handleIntervalChange = async (
   setUserSettings: (value: UserSettings) => void,
 ) => {
   try {
-    const response = await invoke<InvokeSettings>('update_user_settings', {
+    const response = await invokeSafe<InvokeSettings>('update_user_settings', {
       steamId: userSummary?.steamId,
       key: 'achievementUnlocker.interval',
       value: newInterval,
     })
-    setUserSettings(response.settings)
+
+    if (response) {
+      setUserSettings(response.settings)
+    }
+
     logEvent(`[Settings - Achievement Unlocker] Changed 'interval' to '${String(newInterval)}'`)
   } catch (error) {
     showDangerToast(i18next.t('common.error'))

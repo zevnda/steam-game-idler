@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { TbCircleArrowDown } from 'react-icons/tb'
 import { Spinner } from '@heroui/react'
 import { CustomTooltip, showDangerToast } from '@/shared/components'
-import { logEvent } from '@/shared/utils'
+import { isTauriRuntime, logEvent, showDesktopOnlyToast } from '@/shared/utils'
 
 export const UpdateButton = () => {
   const { t } = useTranslation()
@@ -14,6 +14,10 @@ export const UpdateButton = () => {
 
   const handleUpdate = async () => {
     try {
+      if (!isTauriRuntime) {
+        showDesktopOnlyToast()
+        return
+      }
       setIsLoading(true)
       const update = await check()
       if (update) {

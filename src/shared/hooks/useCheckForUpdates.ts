@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { showDangerToast } from '@/shared/components'
 import { useUpdateStore } from '@/shared/stores'
 import { fetchLatest, isPortableCheck, logEvent, preserveKeysAndClearData } from '@/shared/utils'
+import { isTauriRuntime } from '@/shared/utils'
 
 export function useCheckForUpdates() {
   const { t } = useTranslation()
@@ -13,6 +14,7 @@ export function useCheckForUpdates() {
   const setShowChangelog = useUpdateStore(state => state.setShowChangelog)
 
   useEffect(() => {
+    if (!isTauriRuntime) return
     // Check for updates - immediate update for major, or show notification
     const checkForUpdates = async () => {
       try {

@@ -2,10 +2,12 @@ import { invoke } from '@tauri-apps/api/core'
 import { Menu, MenuItem } from '@tauri-apps/api/menu'
 import { readText, writeText } from '@tauri-apps/plugin-clipboard-manager'
 import { useEffect } from 'react'
+import { isTauriRuntime } from '@/shared/utils'
 
 export function useContextMenu() {
   // Disable context menu and refresh actions
   useEffect(() => {
+    if (!isTauriRuntime) return
     const disableContextMenuAndRefresh = async () => {
       const isDev = await invoke<boolean>('is_dev')
       if (!isDev) {
@@ -35,6 +37,7 @@ export function useContextMenu() {
 
   // Create the context menu once on mount
   useEffect(() => {
+    if (!isTauriRuntime) return
     const handleGlobalContextMenu = async (e: MouseEvent) => {
       e.preventDefault()
 

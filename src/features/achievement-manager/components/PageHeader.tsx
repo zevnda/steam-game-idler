@@ -1,11 +1,10 @@
-import { invoke } from '@tauri-apps/api/core'
 import { Trans, useTranslation } from 'react-i18next'
 import { SiSteam, SiSteamdb } from 'react-icons/si'
 import { TbAlertHexagonFilled, TbFoldersFilled, TbX } from 'react-icons/tb'
 import { Alert, Button, cn } from '@heroui/react'
 import { CustomTooltip, ExtLink, showDangerToast } from '@/shared/components'
 import { useNavigationStore, useSearchStore, useStateStore, useUserStore } from '@/shared/stores'
-import { logEvent } from '@/shared/utils'
+import { invokeSafe, logEvent } from '@/shared/utils'
 
 interface PageHeaderProps {
   protectedAchievements: boolean
@@ -35,8 +34,10 @@ export const PageHeader = ({ protectedAchievements, protectedStatistics }: PageH
 
   const handleOpenAchievementFile = async () => {
     try {
-      const filePath = `${userSummary?.steamId}\\achievement_data\\${appId}.json`
-      await invoke('open_file_explorer', { path: filePath })
+      if (!userSummary?.steamId || !appId) return
+
+      const filePath = `${userSummary.steamId}/achievement_data/${appId}.json`
+      await invokeSafe('open_file_explorer', { path: filePath })
     } catch (error) {
       showDangerToast(t('common.error'))
       console.error('Error in (handleOpenAchievementFile):', error)

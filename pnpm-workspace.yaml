@@ -1,3 +1,7 @@
 packages:
   - '.'
   - 'docs'
+allowBuilds:
+  '@heroui/shared-utils': false
+  esbuild: false
+  sharp: false

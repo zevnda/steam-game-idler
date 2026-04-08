@@ -1,4 +1,4 @@
-import { openExternalLink } from '@/shared/utils'
+import { hasTauriInvoke, openExternalLink } from '@/shared/utils'
 
 interface ExtLinkProps {
   children: React.ReactNode
@@ -11,9 +11,13 @@ export const ExtLink = ({ children, href, className = '' }: ExtLinkProps) => {
     <a
       className={`w-fit h-fit cursor-pointer ${className}`}
       href={href}
+      target='_blank'
+      rel='noopener noreferrer'
       onClick={e => {
-        e.preventDefault()
-        openExternalLink(href)
+        if (hasTauriInvoke()) {
+          e.preventDefault()
+          void openExternalLink(href)
+        }
       }}
     >
       {children}

@@ -1,12 +1,19 @@
 import { disable, enable, isEnabled } from '@tauri-apps/plugin-autostart'
 import i18next from 'i18next'
 import { showDangerToast } from '@/shared/components'
-import { logEvent } from '@/shared/utils'
+import { logEvent, showDesktopOnlyToast, waitForTauriInvoke } from '@/shared/utils'
 
 export const handleRunAtStartupChange = async (
   setStartupState: React.Dispatch<React.SetStateAction<boolean | null>>,
 ) => {
   try {
+    const tauriReady = await waitForTauriInvoke()
+    if (!tauriReady) {
+      setStartupState(false)
+      showDesktopOnlyToast()
+      return
+    }
+
     const isEnabledState = await isEnabled()
     if (isEnabledState) {
       await disable()

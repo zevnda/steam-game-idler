@@ -3,11 +3,13 @@ import { invoke } from '@tauri-apps/api/core'
 import { useEffect, useRef, useState } from 'react'
 import { showDangerToast } from '@/shared/components'
 import { useStateStore, useUserStore } from '@/shared/stores'
+import { hasTauriInvoke } from '@/shared/utils'
 
 export function useCustomList(listName: string) {
   const isAchievementUnlocker = useStateStore(state => state.isAchievementUnlocker)
   const isCardFarming = useStateStore(state => state.isCardFarming)
   const userSummary = useUserStore(state => state.userSummary)
+  const userSettings = useUserStore(state => state.userSettings)
   const gamesList = useUserStore(state => state.gamesList)
   const setUserSettings = useUserStore(state => state.setUserSettings)
   const [list, setList] = useState<Game[]>([])
@@ -24,6 +26,10 @@ export function useCustomList(listName: string) {
 
   useEffect(() => {
     const getCustomLists = async () => {
+      if (!hasTauriInvoke()) {
+        setList([])
+        return
+      }
       // Fetch the custom list data
       const response = await invoke<InvokeCustomList>('get_custom_lists', {
         steamId: userSummary?.steamId,
@@ -68,6 +74,14 @@ export function useCustomList(listName: string) {
   }
 
   const handleAddGame = async (game: Game) => {
+    if (!hasTauriInvoke()) {
+      setList(prevList => {
+        if (prevList.some(item => item.appid === game.appid)) return prevList
+        return [...prevList, game]
+      })
+      return
+    }
+
     // Add single game to the custom list
     const response = await invoke<InvokeCustomList>('add_game_to_custom_list', {
       steamId: userSummary?.steamId,
@@ -82,6 +96,11 @@ export function useCustomList(listName: string) {
   }
 
   const handleAddAllGames = async (games: Game[]) => {
+    if (!hasTauriInvoke()) {
+      setList(games)
+      return
+    }
+
     // First clear the list, then add all games in one go
     const clearResponse = await invoke<InvokeCustomList>('update_custom_list', {
       steamId: userSummary?.steamId,
@@ -111,6 +130,11 @@ export function useCustomList(listName: string) {
 
     const combinedList = [...list, ...newGames]
 
+    if (!hasTauriInvoke()) {
+      setList(combinedList)
+      return
+    }
+
     const addResponse = await invoke<InvokeCustomList>('update_custom_list', {
       steamId: userSummary?.steamId,
       list: listName,
@@ -124,6 +148,15 @@ export function useCustomList(listName: string) {
   }
 
   const handleRemoveGame = async (game: Game) => {
+    if (!hasTauriInvoke()) {
+      setList(prevList => {
+        const updatedList = prevList.filter(item => item.appid !== game.appid)
+        if (updatedList.length === 0) setShowInList(false)
+        return updatedList
+      })
+      return
+    }
+
     // Remove a game from the custom list
     const response = await invoke<InvokeCustomList>('remove_game_from_custom_list', {
       steamId: userSummary?.steamId,
@@ -143,11 +176,13 @@ export function useCustomList(listName: string) {
 
   const handleBlacklistGame = async (game: Game) => {
     // Blacklist a game (only for card farming list)
-    const cachedUserSummary = await invoke<InvokeSettings>('get_user_settings', {
-      steamId: userSummary?.steamId,
-    })
-
-    const currentBlacklist: number[] = cachedUserSummary.settings.cardFarming.blacklist || []
+    const currentBlacklist: number[] = hasTauriInvoke()
+      ? (
+          await invoke<InvokeSettings>('get_user_settings', {
+            steamId: userSummary?.steamId,
+          })
+        ).settings.cardFarming.blacklist || []
+      : userSettings.cardFarming.blacklist || []
 
     // if already in blacklist, remove it
     const updatedBlacklist = currentBlacklist.includes(game.appid)
@@ -159,11 +194,13 @@ export function useCustomList(listName: string) {
       setShowBlacklist(false)
     }
 
-    invoke<InvokeSettings>('update_user_settings', {
-      steamId: userSummary?.steamId,
-      key: 'cardFarming.blacklist',
-      value: updatedBlacklist,
-    })
+    if (hasTauriInvoke()) {
+      invoke<InvokeSettings>('update_user_settings', {
+        steamId: userSummary?.steamId,
+        key: 'cardFarming.blacklist',
+        value: updatedBlacklist,
+      })
+    }
 
     setUserSettings(prevSettings => ({
       ...prevSettings,
@@ -175,6 +212,11 @@ export function useCustomList(listName: string) {
   }
 
   const handleUpdateListOrder = async (newList: Game[]) => {
+    if (!hasTauriInvoke()) {
+      setList(newList)
+      return
+    }
+
     // Save the new order of games in the list (after drag n drop)
     const response = await invoke<InvokeCustomList>('update_custom_list', {
       steamId: userSummary?.steamId,
@@ -189,6 +231,12 @@ export function useCustomList(listName: string) {
   }
 
   const handleClearList = async () => {
+    if (!hasTauriInvoke()) {
+      setList([])
+      setShowInList(false)
+      return
+    }
+
     // Remove all games from the list
     const response = await invoke<InvokeCustomList>('update_custom_list', {
       steamId: userSummary?.steamId,

@@ -6,7 +6,6 @@ import type {
   InvokeValidateSession,
   TradingCard,
 } from '@/shared/types'
-import { invoke } from '@tauri-apps/api/core'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
@@ -18,7 +17,7 @@ import {
   showSuccessToast,
 } from '@/shared/components'
 import { useStateStore, useUserStore } from '@/shared/stores'
-import { decrypt, logEvent } from '@/shared/utils'
+import { decrypt, invokeSafe, logEvent } from '@/shared/utils'
 
 export function useTradingCardsList() {
   const { t } = useTranslation()
@@ -70,7 +69,7 @@ export function useTradingCardsList() {
 
         setIsLoading(true)
 
-        const cachedCards = await invoke<InvokeCardData>('get_trading_cards_cache', {
+        const cachedCards = await invokeSafe<InvokeCardData>('get_trading_cards_cache', {
           steamId: userSummary?.steamId,
         })
 
@@ -87,20 +86,20 @@ export function useTradingCardsList() {
             return
           }
           // Stale — delete so the fresh fetch below saves clean data
-          await invoke('delete_user_trading_card_file', { steamId: userSummary?.steamId })
+          await invokeSafe('delete_user_trading_card_file', { steamId: userSummary?.steamId })
         }
 
         // Validate credentials
-        const validate = await invoke<InvokeValidateSession>('validate_session', {
+        const validate = await invokeSafe<InvokeValidateSession>('validate_session', {
           sid: decrypt(credentials.sid),
           sls: decrypt(credentials.sls),
           sma: credentials?.sma,
           steamid: userSummary?.steamId,
         })
 
-        if (!validate.user) return showIncorrectCredentialsToast()
+        if (!validate?.user) return showIncorrectCredentialsToast()
 
-        const response = await invoke<InvokeCardData>('get_trading_cards', {
+        const response = await invokeSafe<InvokeCardData>('get_trading_cards', {
           sid: decrypt(credentials.sid),
           sls: decrypt(credentials.sls),
           sma: credentials?.sma,
@@ -108,6 +107,8 @@ export function useTradingCardsList() {
           includePrices: true,
           apiKey: apiKey ? decrypt(apiKey) : null,
         })
+
+        if (!response) return
 
         if (response.card_data.length > 0) {
           const sortedCards = response.card_data.sort((a, b) => a.appname.localeCompare(b.appname))
@@ -144,22 +145,26 @@ export function useTradingCardsList() {
       }
 
       // Validate credentials
-      const validate = await invoke<InvokeValidateSession>('validate_session', {
+      const validate = await invokeSafe<InvokeValidateSession>('validate_session', {
         sid: decrypt(credentials.sid),
         sls: decrypt(credentials.sls),
         sma: credentials?.sma,
         steamid: userSummary?.steamId,
       })
 
-      if (!validate.user) {
+      if (!validate?.user) {
         showIncorrectCredentialsToast()
         return { success: false }
       }
 
-      const cardPrices = await invoke<InvokeCardPrice>('get_card_price', {
+      const cardPrices = await invokeSafe<InvokeCardPrice>('get_card_price', {
         marketHashName: hash,
         currency: localStorage.getItem('currency') || '1',
       })
+
+      if (!cardPrices) {
+        return { success: false }
+      }
 
       if (cardPrices.error && cardPrices.error.includes('HTTP 429')) {
         showPriceFetchRateLimitToast()
@@ -189,13 +194,13 @@ export function useTradingCardsList() {
         sell_order_summary: cardPrices?.sell_order_summary,
       }
 
-      const response = await invoke<InvokeCardData>('update_card_data', {
+      const response = await invokeSafe<InvokeCardData>('update_card_data', {
         steamId: userSummary?.steamId,
         key: hash,
         data: priceDataCleaned,
       })
 
-      if (response.card_data.length > 0) {
+      if (response && response.card_data.length > 0) {
         const sortedCards = response.card_data.sort((a, b) => a.appname.localeCompare(b.appname))
         setTradingCardsList(sortedCards)
       }
@@ -294,7 +299,7 @@ export function useTradingCardsList() {
       const cardForListing: [string, string] = [assetId, adjustedPrice.toString()]
       logEvent(`Card for listing: ${JSON.stringify(cardForListing)}`)
 
-      const response = await invoke<InvokeListCards>('list_trading_cards', {
+      const response = await invokeSafe<InvokeListCards>('list_trading_cards', {
         sid: decrypt(credentials.sid),
         sls: decrypt(credentials.sls),
         sma: credentials?.sma,
@@ -302,6 +307,11 @@ export function useTradingCardsList() {
         cards: [cardForListing],
         currency: localStorage.getItem('currency') || '1',
       })
+
+      if (!response) {
+        showDangerToast(t('common.error'))
+        return
+      }
 
       if (response.successful && response.results && response.results.length > 0) {
         const result = response.results[0]
@@ -396,7 +406,7 @@ export function useTradingCardsList() {
       showPrimaryToast(t('toast.tradingCards.processing'))
       logEvent(`Cards for listing: ${JSON.stringify(cardsForBulkListing)}`)
 
-      const response = await invoke<InvokeListCards>('list_trading_cards', {
+      const response = await invokeSafe<InvokeListCards>('list_trading_cards', {
         sid: decrypt(credentials.sid),
         sls: decrypt(credentials.sls),
         sma: credentials?.sma,
@@ -405,6 +415,11 @@ export function useTradingCardsList() {
         currency: localStorage.getItem('currency') || '1',
         delay: sellDelay,
       })
+
+      if (!response) {
+        showDangerToast(t('common.error'))
+        return
+      }
 
       if (response.successful && response.results && response.results.length > 0) {
         const successfulCards = response.results.filter(card => card.success)
@@ -517,7 +532,7 @@ export function useTradingCardsList() {
         }
 
         const cardForListing: [string, string] = [card.assetid, finalPrice.toString()]
-        const response = await invoke<InvokeListCards>('list_trading_cards', {
+        const response = await invokeSafe<InvokeListCards>('list_trading_cards', {
           sid: decrypt(credentials.sid),
           sls: decrypt(credentials.sls),
           sma: credentials?.sma,
@@ -525,6 +540,11 @@ export function useTradingCardsList() {
           cards: [cardForListing],
           currency: localStorage.getItem('currency') || '1',
         })
+
+        if (!response) {
+          failedCards.push({ assetid: card.assetid, message: 'tauri invoke unavailable' })
+          continue
+        }
 
         if (response.successful && response.results && response.results.length > 0) {
           const result = response.results[0]
@@ -625,24 +645,29 @@ export function useTradingCardsList() {
       if (!credentials?.sid || !credentials?.sls) return showMissingCredentialsToast()
 
       // Validate credentials
-      const validate = await invoke<InvokeValidateSession>('validate_session', {
+      const validate = await invokeSafe<InvokeValidateSession>('validate_session', {
         sid: decrypt(credentials.sid),
         sls: decrypt(credentials.sls),
         sma: credentials?.sma,
         steamid: userSummary?.steamId,
       })
 
-      if (!validate.user) return showIncorrectCredentialsToast()
+      if (!validate?.user) return showIncorrectCredentialsToast()
 
       setLoadingRemoveListings(true)
       showPrimaryToast(t('toast.tradingCards.processing'))
 
-      const response = await invoke<InvokeRemoveListings>('remove_market_listings', {
+      const response = await invokeSafe<InvokeRemoveListings>('remove_market_listings', {
         sid: decrypt(credentials.sid),
         sls: decrypt(credentials.sls),
         sma: credentials?.sma,
         steamId: userSummary?.steamId,
       })
+
+      if (!response) {
+        showDangerToast(t('common.error'))
+        return
+      }
 
       if (response.successful_removals > 0) {
         showSuccessToast(
@@ -676,7 +701,7 @@ export function useTradingCardsList() {
 
   const handleRefresh = async () => {
     try {
-      await invoke('delete_user_trading_card_file', {
+      await invokeSafe('delete_user_trading_card_file', {
         steamId: userSummary?.steamId,
       })
 

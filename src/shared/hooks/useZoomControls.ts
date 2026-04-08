@@ -2,7 +2,7 @@ import { invoke } from '@tauri-apps/api/core'
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { showDangerToast } from '@/shared/components'
-import { logEvent } from '@/shared/utils'
+import { isTauriRuntime, logEvent } from '@/shared/utils'
 
 export function useZoomControls() {
   const { t } = useTranslation()
@@ -10,6 +10,7 @@ export function useZoomControls() {
 
   // Set initial zoom level from localStorage
   useEffect(() => {
+    if (!isTauriRuntime) return
     const storedZoom = localStorage.getItem('zoomLevel')
     if (storedZoom) {
       const parsedZoom = parseFloat(storedZoom)
@@ -30,18 +31,18 @@ export function useZoomControls() {
             const newZoom = Math.min(zoom + 0.1, 1.3)
             setZoom(newZoom)
             localStorage.setItem('zoomLevel', newZoom.toString())
-            await invoke('set_zoom', { scaleFactor: newZoom })
+            if (isTauriRuntime) await invoke('set_zoom', { scaleFactor: newZoom })
           } else if (e.key === '-') {
             e.preventDefault()
             const newZoom = Math.max(zoom - 0.1, 0.7)
             setZoom(newZoom)
             localStorage.setItem('zoomLevel', newZoom.toString())
-            await invoke('set_zoom', { scaleFactor: newZoom })
+            if (isTauriRuntime) await invoke('set_zoom', { scaleFactor: newZoom })
           } else if (e.key === '0') {
             e.preventDefault()
             setZoom(1.0)
             localStorage.setItem('zoomLevel', '1.0')
-            await invoke('set_zoom', { scaleFactor: 1.0 })
+            if (isTauriRuntime) await invoke('set_zoom', { scaleFactor: 1.0 })
           }
         }
       } catch (error) {
@@ -63,7 +64,7 @@ export function useZoomControls() {
           const newZoom = Math.min(Math.max(zoom + delta, 0.7), 1.3)
           setZoom(newZoom)
           localStorage.setItem('zoomLevel', newZoom.toString())
-          await invoke('set_zoom', { scaleFactor: newZoom })
+          if (isTauriRuntime) await invoke('set_zoom', { scaleFactor: newZoom })
         }
       } catch (error) {
         showDangerToast(t('common.error'))

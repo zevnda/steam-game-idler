@@ -51,19 +51,41 @@ const resources = {
   'zh-TW': { translation: translationZHTW },
 }
 
+const i18nLogger = {
+  type: 'logger',
+  log: () => {},
+  warn: (...args: unknown[]) => {
+    const message = String(args[0] || '')
+    if (message.includes('i18next is maintained with support from locize.com')) return
+    if (message.includes('No backend was added via i18next.use')) return
+    console.warn(...args)
+  },
+  error: (...args: unknown[]) => {
+    console.error(...args)
+  },
+} as const
+
+if (typeof window !== 'undefined') {
+  const persistedLanguage = localStorage.getItem('i18nextLng')
+  if (persistedLanguage && !(persistedLanguage in resources)) {
+    localStorage.removeItem('i18nextLng')
+  }
+}
+
 i18n
+  .use(i18nLogger as any)
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
     resources,
-    fallbackLng: {
-      default: ['en-US'],
-    },
-    debug: process.env.NODE_ENV === 'development',
+    fallbackLng: 'en-US',
+    debug: false,
+    load: 'currentOnly',
+    supportedLngs: Object.keys(resources),
 
     ns,
     defaultNS,
-    partialBundledLanguages: true,
+    partialBundledLanguages: false,
 
     detection: {
       order: ['localStorage', 'navigator'],

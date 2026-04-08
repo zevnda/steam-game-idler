@@ -1,11 +1,9 @@
-import type { InvokeSettings } from '@/shared/types'
-import { invoke } from '@tauri-apps/api/core'
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from 'next-themes'
 import { showDangerToast } from '@/shared/components'
 import { useUserStore } from '@/shared/stores'
-import { logEvent } from '@/shared/utils'
+import { isMissingTauriInvokeError, logEvent } from '@/shared/utils'
 
 export function useThemes() {
   const { t } = useTranslation()
@@ -19,24 +17,10 @@ export function useThemes() {
         if (!userSummary) return
 
         const html = document.documentElement
-        // Themes
-        const proThemes = ['blue', 'red', 'purple', 'pink', 'gold', 'black']
-        let userTheme = 'dark'
+        let userTheme = localStorage.getItem('theme') || 'dark'
 
-        // Get user settings if available
-        if (isPro) {
-          const cachedUserSettings = await invoke<InvokeSettings>('get_user_settings', {
-            steamId: userSummary.steamId,
-          })
-          userTheme = cachedUserSettings.settings.general.theme || 'dark'
-        } else {
-          // If not pro, remove any pro themes
-          const currentTheme = localStorage.getItem('theme')
-          if (currentTheme && proThemes.includes(currentTheme)) {
-            userTheme = 'dark'
-          } else {
-            userTheme = currentTheme || 'dark'
-          }
+        if (!isPro) {
+          userTheme = 'dark'
         }
 
         // Always reset classes and apply the correct one
@@ -45,6 +29,14 @@ export function useThemes() {
         localStorage.setItem('theme', userTheme)
         setTheme(userTheme)
       } catch (error) {
+        if (isMissingTauriInvokeError(error)) {
+          const fallbackTheme = localStorage.getItem('theme') || 'dark'
+          document.documentElement.className = ''
+          document.documentElement.classList.add(fallbackTheme)
+          setTheme(fallbackTheme)
+          return
+        }
+
         showDangerToast(t('common.error'))
         console.error('Error in (applyThemeForUser):', error)
         logEvent(`[Error] in (applyThemeForUser): ${error}`)

@@ -5,10 +5,9 @@ import type {
   UserSettings,
   UserSummary,
 } from '@/shared/types'
-import { invoke } from '@tauri-apps/api/core'
 import i18next from 'i18next'
 import { showDangerToast, showOutdatedCredentialsToast } from '@/shared/components'
-import { decrypt, getAllGamesWithDrops, logEvent } from '@/shared/utils'
+import { decrypt, getAllGamesWithDrops, invokeSafe, logEvent } from '@/shared/utils'
 
 export const fetchGamesWithDropsData = async (
   userSummary: UserSummary,
@@ -19,9 +18,14 @@ export const fetchGamesWithDropsData = async (
   try {
     setIsCFDataLoading(true)
 
-    const cachedUserSummary = await invoke<InvokeSettings>('get_user_settings', {
+    const cachedUserSummary = await invokeSafe<InvokeSettings>('get_user_settings', {
       steamId: userSummary?.steamId,
     })
+
+    if (!cachedUserSummary) {
+      setIsCFDataLoading(false)
+      return
+    }
 
     const credentials = cachedUserSummary.settings.cardFarming.credentials
 
@@ -31,27 +35,30 @@ export const fetchGamesWithDropsData = async (
     }
 
     // Validate credentials
-    const validate = await invoke<InvokeValidateSession>('validate_session', {
+    const validate = await invokeSafe<InvokeValidateSession>('validate_session', {
       sid: decrypt(credentials.sid),
       sls: decrypt(credentials.sls),
       sma: credentials?.sma,
       steamid: userSummary?.steamId,
     })
 
-    if (!validate.user) {
-      await invoke<InvokeSettings>('update_user_settings', {
+    if (!validate?.user) {
+      await invokeSafe<InvokeSettings>('update_user_settings', {
         steamId: userSummary?.steamId,
         key: 'cardFarming.credentials',
         value: null,
       })
 
-      const response = await invoke<InvokeSettings>('update_user_settings', {
+      const response = await invokeSafe<InvokeSettings>('update_user_settings', {
         steamId: userSummary?.steamId,
         key: 'cardFarming.userSummary',
         value: null,
       })
 
-      setUserSettings(response.settings)
+      if (response) {
+        setUserSettings(response.settings)
+      }
+
       setIsCFDataLoading(false)
       return showOutdatedCredentialsToast()
     }
@@ -72,20 +79,23 @@ export const fetchGamesWithDropsData = async (
     )
 
     // Save games with drops and total drops remaining
-    await invoke<InvokeSettings>('update_user_settings', {
+    await invokeSafe<InvokeSettings>('update_user_settings', {
       steamId: userSummary?.steamId,
       key: 'cardFarming.gamesWithDrops',
       value: gamesWithDrops,
     })
 
     // Save total drops remaining
-    const response = await invoke<InvokeSettings>('update_user_settings', {
+    const response = await invokeSafe<InvokeSettings>('update_user_settings', {
       steamId: userSummary?.steamId,
       key: 'cardFarming.totalDropsRemaining',
       value: totalDropsRemaining,
     })
 
-    setUserSettings(response.settings)
+    if (response) {
+      setUserSettings(response.settings)
+    }
+
     setIsCFDataLoading(false)
   } catch (error) {
     setIsCFDataLoading(false)

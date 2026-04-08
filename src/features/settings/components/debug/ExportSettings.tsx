@@ -1,12 +1,12 @@
 import type { UserSettings } from '@/shared/types'
-import { invoke } from '@tauri-apps/api/core'
 import { arch, locale, version } from '@tauri-apps/plugin-os'
+import { writeText } from '@tauri-apps/plugin-clipboard-manager'
 import { useTranslation } from 'react-i18next'
 import { TbArrowBarUp } from 'react-icons/tb'
 import { Button } from '@heroui/react'
 import { showDangerToast, showSuccessToast } from '@/shared/components'
 import { useUserStore } from '@/shared/stores'
-import { getAppVersion } from '@/shared/utils'
+import { getAppVersion, hasTauriInvoke, invokeSafe, logEvent } from '@/shared/utils'
 
 interface SystemType {
   version: string
@@ -22,24 +22,44 @@ interface ExportedData {
 }
 
 const collectSystemInfo = async () => {
-  const system = {} as SystemType
-  const osVersion = await version()
-  const cpuArch = await arch()
-  const isPortable = await invoke<boolean>('is_portable')
+  const system = {
+    version: 'Unknown',
+    locale: null,
+    isPortable: false,
+  } as SystemType
 
-  let winVersion = 'Windows'
-  const buildMatch = osVersion.match(/^10\.0\.(\d+)$/)
-  if (buildMatch && buildMatch[1]) {
-    const buildNumber = Number(buildMatch[1])
-    winVersion = buildNumber >= 22000 ? 'Windows 11' : 'Windows 10'
-  }
+  const osVersion = await version().catch(() => 'Unknown')
+  const cpuArch = await arch().catch(() => 'unknown')
+  const portableValue = await invokeSafe<boolean>('is_portable').catch(() => null)
 
-  const is64Bit = cpuArch === 'x86_64'
-  system.version = `${winVersion} ${is64Bit ? '64-bit' : '32-bit'} (${osVersion})`
-  system.locale = await locale()
-  system.isPortable = isPortable
+  const is64Bit = cpuArch === 'x86_64' || cpuArch.includes('64')
+  system.version = `${is64Bit ? '64-bit' : '32-bit'} (${osVersion})`
+  system.locale = await locale().catch(() => null)
+  system.isPortable = Boolean(portableValue)
 
   return system
+}
+
+const copyToClipboard = async (text: string) => {
+  if (hasTauriInvoke()) {
+    await writeText(text)
+    return
+  }
+
+  if (typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(text)
+    return
+  }
+
+  // Fallback for environments without Clipboard API.
+  const textarea = document.createElement('textarea')
+  textarea.value = text
+  textarea.style.position = 'fixed'
+  textarea.style.opacity = '0'
+  document.body.appendChild(textarea)
+  textarea.select()
+  document.execCommand('copy')
+  document.body.removeChild(textarea)
 }
 
 const sanitizeUserSettings = (settings: UserSettings) => {
@@ -153,11 +173,12 @@ export const ExportSettings = () => {
       const allSettings = await getExportData(userSettings)
       // Copy to clipboard
       const allSettingsString = JSON.stringify(allSettings, null, 2)
-      await navigator.clipboard.writeText(allSettingsString)
+      await copyToClipboard(allSettingsString)
       showSuccessToast(t('toast.exportData.success'))
     } catch (error) {
       showDangerToast(t('toast.exportData.error'))
       console.error('Export settings error:', error)
+      logEvent(`[Error] in (exportSettings): ${error}`)
     }
   }
 

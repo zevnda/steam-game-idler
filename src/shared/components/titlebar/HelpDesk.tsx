@@ -7,7 +7,7 @@ import { Button, cn } from '@heroui/react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { CustomTooltip } from '@/shared/components'
 import { useUserStore } from '@/shared/stores'
-import { isPortableCheck } from '@/shared/utils'
+import { isPortableCheck, isTauriRuntime } from '@/shared/utils'
 
 declare global {
   interface Window {
@@ -98,6 +98,7 @@ export const HelpDesk = () => {
   }, [isLoaded])
 
   useEffect(() => {
+    if (!isTauriRuntime) return
     const setUserData = async () => {
       const version = await getVersion()
       const isPortable = await isPortableCheck()
@@ -113,6 +114,13 @@ export const HelpDesk = () => {
   }, [userSummary, userSettings, isPro])
 
   const handleToggle = async () => {
+    if (!isTauriRuntime) {
+      if (typeof window !== 'undefined') {
+        window.open('https://steamgameidler.com/docs/', '_blank', 'noopener,noreferrer')
+      }
+      return
+    }
+
     if (!isLoaded || typeof window === 'undefined' || !window.$chatway) return
 
     const version = await getVersion()
@@ -135,7 +143,7 @@ export const HelpDesk = () => {
   }
 
   const handleClose = () => {
-    if (!isLoaded || typeof window === 'undefined' || !window.$chatway) return
+    if (!isTauriRuntime || !isLoaded || typeof window === 'undefined' || !window.$chatway) return
     const widget = document.querySelector('.chatway--container')
     if (widget && widget.classList.contains('widget--open')) {
       window.$chatway.closeChatwayWidget()

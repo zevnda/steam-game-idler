@@ -4,7 +4,7 @@ use regex::Regex;
 use reqwest::Client;
 use serde_json::{json, Value};
 use std::collections::HashMap;
-use std::os::windows::process::CommandExt;
+use std::env;
 use std::sync::Mutex;
 use std::time::Duration;
 use steamlocate::SteamDir;
@@ -27,7 +27,10 @@ pub async fn is_steam_running() -> bool {
     sys.refresh_processes(ProcessesToUpdate::All, true);
     sys.processes()
         .values()
-        .any(|proc| proc.name().eq_ignore_ascii_case("steam.exe"))
+        .any(|proc| {
+            let name = proc.name().to_string_lossy().to_ascii_lowercase();
+            matches!(name.as_str(), "steam" | "steam.exe" | "steamwebhelper" | "steamwebhelper.exe")
+        })
 }
 
 #[tauri::command]
@@ -115,11 +118,20 @@ pub async fn validate_steam_api_key(
 #[tauri::command]
 pub async fn anti_away() -> Result<(), String> {
     // Execute a command to set Steam status to online
-    std::process::Command::new("cmd")
-        .args(&["/C", "start steam://friends/status/online"])
-        .creation_flags(0x08000000)
-        .spawn()
-        .map_err(|e| e.to_string())?;
+    #[cfg(target_os = "windows")]
+    {
+        let mut command = std::process::Command::new("cmd");
+        command.args(&["/C", "start steam://friends/status/online"]);
+        hide_command_window(&mut command);
+        command.spawn().map_err(|e| e.to_string())?;
+    }
+
+    #[cfg(not(target_os = "windows"))]
+    {
+        let mut command = std::process::Command::new("xdg-open");
+        command.arg("steam://friends/status/online");
+        command.spawn().map_err(|e| e.to_string())?;
+    }
     Ok(())
 }
 
@@ -127,12 +139,22 @@ pub async fn anti_away() -> Result<(), String> {
 pub fn open_file_explorer(path: String, app_handle: tauri::AppHandle) -> Result<(), String> {
     let cache_dir = get_cache_dir(&app_handle)?;
 
-    // Open the file explorer and select the specified path
-    std::process::Command::new("explorer")
-        .args(["/select,", cache_dir.join(path).to_str().unwrap()])
-        .creation_flags(0x08000000)
-        .spawn()
-        .map_err(|e| e.to_string())?;
+    let target = cache_dir.join(path);
+    #[cfg(target_os = "windows")]
+    {
+        std::process::Command::new("explorer")
+            .args(["/select,", target.to_str().unwrap()])
+            .spawn()
+            .map_err(|e| e.to_string())?;
+    }
+
+    #[cfg(not(target_os = "windows"))]
+    {
+        std::process::Command::new("xdg-open")
+            .arg(target.parent().unwrap_or(&target))
+            .spawn()
+            .map_err(|e| e.to_string())?;
+    }
     Ok(())
 }
 
@@ -147,18 +169,51 @@ pub fn get_tray_icon(default: bool) -> String {
 }
 
 pub fn get_lib_path() -> Result<String, String> {
-    // Get the current executable path
-    let mut path = std::env::current_exe().map_err(|e| e.to_string())?;
-    path.pop();
-    path.push("libs");
-    path.push("SteamUtility.exe");
-    Ok(path.to_str().unwrap().to_string())
+    #[cfg(target_os = "windows")]
+    {
+        let mut path = std::env::current_exe().map_err(|e| e.to_string())?;
+        path.pop();
+        path.push("libs");
+        path.push("SteamUtility.exe");
+        return Ok(path.to_str().unwrap().to_string());
+    }
+
+    #[cfg(not(target_os = "windows"))]
+    {
+        Err("SteamUtility is only available on Windows".to_string())
+    }
 }
 
 pub async fn get_steam_location() -> Result<String, steamlocate::Error> {
+    let candidates = [
+        env::var("STEAM_DIR").ok().map(std::path::PathBuf::from),
+        env::var("XDG_DATA_HOME")
+            .ok()
+            .map(|value| std::path::PathBuf::from(value).join("Steam")),
+        env::var("HOME").ok().map(|home| std::path::PathBuf::from(home).join(".steam/steam")),
+        env::var("HOME").ok().map(|home| std::path::PathBuf::from(home).join(".local/share/Steam")),
+        env::var("HOME").ok().map(|home| std::path::PathBuf::from(home).join(".var/app/com.valvesoftware.Steam/data/Steam")),
+    ];
+
+    for candidate in candidates.into_iter().flatten() {
+        let config_path = candidate.join("config").join("loginusers.vdf");
+        if config_path.exists() {
+            return Ok(config_path.display().to_string());
+        }
+    }
+
     let steam_dir = SteamDir::locate()?;
     let config_path = steam_dir.path().join("config").join("loginusers.vdf");
     Ok(config_path.display().to_string())
+}
+
+pub fn hide_command_window(command: &mut std::process::Command) {
+    let _ = command;
+    #[cfg(target_os = "windows")]
+    {
+        use std::os::windows::process::CommandExt;
+        command.creation_flags(0x08000000);
+    }
 }
 
 #[tauri::command]
@@ -211,11 +266,12 @@ pub fn quit_app(app_handle: tauri::AppHandle) {
 // Command to set the zoom level of the webview
 #[tauri::command]
 pub fn set_zoom(webview: tauri::Webview, scale_factor: f64) -> Result<(), String> {
+    let _ = (&webview, scale_factor);
     webview
-        .with_webview(move |webview| {
+        .with_webview(move |_webview| {
             #[cfg(windows)]
             unsafe {
-                if let Err(e) = webview.controller().SetZoomFactor(scale_factor) {
+                if let Err(e) = _webview.controller().SetZoomFactor(scale_factor) {
                     eprintln!("Failed to set zoom factor: {}", e);
                 }
             }

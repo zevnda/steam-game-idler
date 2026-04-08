@@ -206,6 +206,7 @@ export const GoProModal = () => {
               className='mt-6 select-none'
               width={130}
               height={50}
+              style={{ height: 'auto' }}
             />
             <p className='text-[10px] text-altwhite mt-2 select-none'>
               {t('proMode.modal.footer')}

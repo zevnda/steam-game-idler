@@ -1,10 +1,10 @@
-import type { InvokeUsers, InvokeUserSummary, UserSummary } from '@/shared/types'
 import { invoke } from '@tauri-apps/api/core'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { showAccountMismatchToast, showDangerToast } from '@/shared/components'
 import { useUserStore } from '@/shared/stores'
-import { checkSteamStatus, decrypt, logEvent } from '@/shared/utils'
+import type { InvokeUserSummary, InvokeUsers, UserSummary } from '@/shared/types'
+import { checkSteamStatus, decrypt, isTauriRuntime, logEvent } from '@/shared/utils'
 
 export function useSignIn(refreshKey: number) {
   const { t } = useTranslation()
@@ -15,7 +15,6 @@ export function useSignIn(refreshKey: number) {
   const [userSummaries, setUserSummaries] = useState<UserSummary[]>([])
   const [selectedUser, setSelectedUser] = useState<UserSummary | null>(null)
 
-  // Process user summary data from API response
   const processUserSummaries = (response: InvokeUserSummary, steamUsersData: UserSummary[]) => {
     const players = response.response.players || []
 
@@ -31,20 +30,39 @@ export function useSignIn(refreshKey: number) {
         }
       }
 
-      // Don't include users without proper data
       return []
     })
   }
 
   useEffect(() => {
-    // Get all steam users
     const getSteamUsers = async () => {
       setIsLoading(true)
 
-      // Simulate loading time for better UX
-      // await new Promise(resolve => setTimeout(resolve, 1000))
-
       try {
+        if (!isTauriRuntime) {
+          const response = await fetch('/api/steam-users')
+          const contentType = response.headers.get('content-type') || ''
+          if (!contentType.includes('application/json')) {
+            throw new Error('Invalid API response format')
+          }
+
+          const responseData = (await response.json()) as InvokeUsers
+          const fallbackUsers = (responseData.users || [])
+            .filter(user => user?.steamId)
+            .map(user => ({
+              steamId: String(user?.steamId),
+              personaName: user?.personaName || 'Unknown User',
+              avatar: '',
+              mostRecent: user?.mostRecent ?? 0,
+            }))
+
+          fallbackUsers.sort((b, a) => (a?.mostRecent ?? 0) - (b?.mostRecent ?? 0))
+          setSteamUsers(fallbackUsers)
+          setUserSummaries(fallbackUsers)
+          setIsLoading(false)
+          return
+        }
+
         const response = await invoke<InvokeUsers>('get_users')
 
         if (response.users && response.users.length > 0) {
@@ -59,13 +77,11 @@ export function useSignIn(refreshKey: number) {
           }
 
           try {
-            // Check for cached user summaries first
             const cachedUserSummaries = await invoke<InvokeUserSummary[]>('get_user_summary_cache')
 
-            const steamUsers: UserSummary[] = []
+            const steamUsersResult: UserSummary[] = []
             const uncachedUsers: UserSummary[] = []
 
-            // Process each user - use cache if available, otherwise collect for API call
             validUsers.forEach(user => {
               const cachedUserSummary = cachedUserSummaries.find(
                 (summary: InvokeUserSummary) =>
@@ -73,21 +89,18 @@ export function useSignIn(refreshKey: number) {
               )
 
               if (cachedUserSummary) {
-                // Use cached data
                 const player = cachedUserSummary.response.players[0]
-                steamUsers.push({
+                steamUsersResult.push({
                   steamId: player.steamid,
                   personaName: player.personaname,
                   avatar: player.avatar.replace('.jpg', '_full.jpg'),
                   mostRecent: user?.mostRecent ?? 0,
                 })
               } else {
-                // Collect for API call
                 uncachedUsers.push(user)
               }
             })
 
-            // If there are uncached users, make API call for them
             if (uncachedUsers.length > 0) {
               const steamIds = uncachedUsers.map(user => String(user?.steamId)).join(',')
               const userSummaryResponse = await invoke<InvokeUserSummary>('get_user_summary', {
@@ -96,29 +109,27 @@ export function useSignIn(refreshKey: number) {
               })
 
               const freshUsers = processUserSummaries(userSummaryResponse, uncachedUsers)
-              steamUsers.push(...freshUsers)
+              steamUsersResult.push(...freshUsers)
             }
 
-            // Sort users by last logged in to Steam client - most recent first
-            steamUsers.sort((b, a) => (a?.mostRecent ?? 0) - (b?.mostRecent ?? 0))
+            steamUsersResult.sort((b, a) => (a?.mostRecent ?? 0) - (b?.mostRecent ?? 0))
 
-            setSteamUsers(steamUsers)
-            setUserSummaries(steamUsers)
+            setSteamUsers(steamUsersResult)
+            setUserSummaries(steamUsersResult)
             setIsLoading(false)
           } catch (error) {
             console.error('Error fetching user summaries:', error)
 
-            // Fallback: create basic user summaries without API data
-            const steamUsers = validUsers.map(user => ({
+            const steamUsersFallback = validUsers.map(user => ({
               steamId: String(user?.steamId),
               personaName: user?.personaName || 'Unknown User',
               avatar: '',
               mostRecent: user?.mostRecent ?? 0,
             }))
 
-            steamUsers.sort((b, a) => (a?.mostRecent ?? 0) - (b?.mostRecent ?? 0))
-            setSteamUsers(steamUsers)
-            setUserSummaries(steamUsers)
+            steamUsersFallback.sort((b, a) => (a?.mostRecent ?? 0) - (b?.mostRecent ?? 0))
+            setSteamUsers(steamUsersFallback)
+            setUserSummaries(steamUsersFallback)
             setIsLoading(false)
           }
         } else {
@@ -133,30 +144,33 @@ export function useSignIn(refreshKey: number) {
         setIsLoading(false)
       }
     }
+
     getSteamUsers()
   }, [userSettings.general?.apiKey, refreshKey])
 
   const handleLogin = async (index: number) => {
     try {
-      // Make sure Steam is running
+      const userSummary = userSummaries[index]
+      if (!userSummary) return
+
+      if (!isTauriRuntime) {
+        localStorage.setItem('userSummary', JSON.stringify(userSummary))
+        setUserSummary(userSummary)
+        return
+      }
+
       const isSteamRunning = await checkSteamStatus(true)
 
       const devAccounts = ['76561198158912649', '76561198999797359']
       const isDev = await invoke('is_dev')
 
-      if (!isSteamRunning && !isDev && !devAccounts.includes(userSummaries[index]?.steamId ?? ''))
-        return
+      if (!isSteamRunning && !isDev && !devAccounts.includes(userSummary?.steamId ?? '')) return
 
       setIsLoading(true)
-      const userSummary = userSummaries[index]
 
-      // mostRecent !== 1 means this isn't the account that's currently logged in to Steam
-      // so show a warning to the user when they log in
-      if (userSummaries[index]?.mostRecent !== 1) showAccountMismatchToast('warning')
+      if (userSummary?.mostRecent !== 1) showAccountMismatchToast('warning')
 
-      // Save selected user to localStorage and context for app-wide access
       localStorage.setItem('userSummary', JSON.stringify(userSummary))
-
       setUserSummary(userSummary)
       setIsLoading(false)
       logEvent(`[System] Logged in as ${userSummary?.personaName}`)

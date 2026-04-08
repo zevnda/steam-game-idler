@@ -8,7 +8,7 @@
     "docs"
   ],
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --webpack",
     "dev:docs": "pnpm --filter steam-game-idler-docs dev",
     "dev:all": "pnpm td & pnpm --filter steam-game-idler-docs dev",
     "pub:docs": "pnpm --filter steam-game-idler-docs pub",

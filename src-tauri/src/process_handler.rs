@@ -1,9 +1,9 @@
 use crate::idling::SPAWNED_PROCESSES;
 use serde_json::{json, Value};
-use std::os::windows::process::CommandExt;
 use std::time::Duration;
 use sysinfo::{ProcessesToUpdate, System};
 use tauri::Emitter;
+#[cfg(target_os = "windows")]
 use windows::Win32::{
     Foundation::{HWND, LPARAM},
     UI::WindowsAndMessaging::{EnumWindows, GetWindowTextW, GetWindowThreadProcessId},
@@ -11,6 +11,14 @@ use windows::Win32::{
 
 // Get window title for a process
 fn get_any_window_title_for_pid(pid: u32) -> Option<String> {
+    #[cfg(not(target_os = "windows"))]
+    {
+        let _ = pid;
+        return None;
+    }
+
+    #[cfg(target_os = "windows")]
+    {
     use windows::Win32::Foundation::BOOL;
 
     struct EnumData {
@@ -43,6 +51,7 @@ fn get_any_window_title_for_pid(pid: u32) -> Option<String> {
         let _ = EnumWindows(Some(enum_windows_proc), lparam);
     }
     data.title
+    }
 }
 
 #[tauri::command]
@@ -89,16 +98,32 @@ pub async fn get_running_processes() -> Result<Value, String> {
 pub async fn kill_process_by_pid(pid: u32) -> Result<Value, String> {
     cleanup_dead_processes().map_err(|e| e.to_string())?;
 
-    let output = std::process::Command::new("taskkill")
-        .args(&["/F", "/PID", &pid.to_string()])
-        .creation_flags(0x08000000)
-        .output()
-        .map_err(|e| e.to_string())?;
+    #[cfg(target_os = "windows")]
+    {
+        let output = std::process::Command::new("taskkill")
+            .args(&["/F", "/PID", &pid.to_string()])
+            .output()
+            .map_err(|e| e.to_string())?;
 
-    if output.status.success() {
-        Ok(json!({"success": "Successfully killed process with PID"}))
-    } else {
-        Ok(json!({"error": "Failed to kill process with PID"}))
+        return if output.status.success() {
+            Ok(json!({"success": "Successfully killed process with PID"}))
+        } else {
+            Ok(json!({"error": "Failed to kill process with PID"}))
+        };
+    }
+
+    #[cfg(not(target_os = "windows"))]
+    {
+        let status = std::process::Command::new("kill")
+            .args(["-9", &pid.to_string()])
+            .status()
+            .map_err(|e| e.to_string())?;
+
+        return if status.success() {
+            Ok(json!({"success": "Successfully killed process with PID"}))
+        } else {
+            Ok(json!({"error": "Failed to kill process with PID"}))
+        };
     }
 }
 
@@ -107,53 +132,39 @@ pub async fn kill_process_by_pid(pid: u32) -> Result<Value, String> {
 pub async fn kill_all_steamutil_processes() -> Result<Value, String> {
     cleanup_dead_processes().map_err(|e| e.to_string())?;
 
-    let output = std::process::Command::new("tasklist")
-        .args(&[
-            "/V",
-            "/FO",
-            "CSV",
-            "/NH",
-            "/FI",
-            "IMAGENAME eq SteamUtility.exe",
-        ])
-        .creation_flags(0x08000000)
-        .output()
-        .map_err(|e| e.to_string())?;
+    let mut system = System::new_all();
+    system.refresh_processes(ProcessesToUpdate::All, true);
+    let steamutil_pids: Vec<u32> = system
+        .processes()
+        .values()
+        .filter_map(|process| {
+            let name = process.name().to_ascii_lowercase();
+            if name == "steamutility" || name == "steamutility.exe" {
+                Some(process.pid().as_u32())
+            } else {
+                None
+            }
+        })
+        .collect();
 
-    let output_str = String::from_utf8_lossy(&output.stdout);
     let mut killed_count = 0;
     let mut failed_pids = Vec::new();
 
-    for line in output_str.lines() {
-        let parts: Vec<&str> = line.split(',').collect();
-        if parts.len() >= 2 {
-            let pid_str = parts[1].trim_matches('"');
-            if let Ok(pid) = pid_str.parse::<u32>() {
-                let kill_output = std::process::Command::new("taskkill")
-                    .args(&["/F", "/PID", &pid.to_string()])
-                    .creation_flags(0x08000000)
-                    .output();
-
-                match kill_output {
-                    Ok(output) if output.status.success() => {
-                        killed_count += 1;
-                    }
-                    _ => {
-                        failed_pids.push(pid);
-                    }
-                }
-            }
+    for pid in steamutil_pids {
+        match kill_process_by_pid(pid).await {
+            Ok(result) if result.get("success").is_some() => killed_count += 1,
+            _ => failed_pids.push(pid),
         }
     }
 
     if failed_pids.is_empty() {
         if killed_count > 0 {
             Ok(json!({
-                "success": "Successfully killed all SteamUtility.exe processes",
+                "success": "Successfully killed all SteamUtility processes",
                 "killed_count": killed_count
             }))
         } else {
-            Ok(json!({"error": "No SteamUtility.exe processes found"}))
+            Ok(json!({"error": "No SteamUtility processes found"}))
         }
     } else {
         Ok(json!({

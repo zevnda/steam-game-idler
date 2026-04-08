@@ -1,8 +1,15 @@
 import type { InvokeCustomList, InvokeRunningProcess, UserSummary } from '@/shared/types'
-import { invoke } from '@tauri-apps/api/core'
 import i18next from 'i18next'
 import { showDangerToast, showNoGamesToast } from '@/shared/components'
-import { checkSteamStatus, logEvent, startIdle } from '@/shared/utils'
+import {
+  checkSteamStatus,
+  isMissingTauriInvokeError,
+  invokeSafe,
+  logEvent,
+  showDesktopOnlyToast,
+  startIdle,
+  waitForTauriInvoke,
+} from '@/shared/utils'
 
 export const startAutoIdleGames = async () => {
   try {
@@ -47,10 +54,21 @@ export const startAutoIdleGames = async () => {
 
 export async function startAutoIdleGamesImpl(steamId: string, manual?: boolean) {
   try {
-    const customLists = await invoke<InvokeCustomList>('get_custom_lists', {
+    const tauriReady = await waitForTauriInvoke()
+    if (!tauriReady) {
+      if (manual) showDesktopOnlyToast()
+      return
+    }
+
+    const customLists = await invokeSafe<InvokeCustomList>('get_custom_lists', {
       steamId,
       list: 'autoIdleList',
     })
+
+    if (!customLists) {
+      if (manual) showDesktopOnlyToast()
+      return
+    }
 
     if (manual && customLists.list_data.length === 0) {
       showNoGamesToast()
@@ -63,7 +81,12 @@ export async function startAutoIdleGamesImpl(steamId: string, manual?: boolean) 
       const gameIds = autoIdleGames.map(game => game.appid)
 
       // Get currently running games to avoid starting duplicates
-      const response = await invoke<InvokeRunningProcess>('get_running_processes')
+      const response = await invokeSafe<InvokeRunningProcess>('get_running_processes')
+      if (!response) {
+        if (manual) showDesktopOnlyToast()
+        return
+      }
+
       const processes = response?.processes
       const runningIdlers = processes.map(p => p.appid)
 
@@ -92,7 +115,12 @@ export async function startAutoIdleGamesImpl(steamId: string, manual?: boolean) 
         await new Promise(resolve => setTimeout(resolve, 2000))
 
         // Check which games actually started
-        const updatedResponse = await invoke<InvokeRunningProcess>('get_running_processes')
+        const updatedResponse = await invokeSafe<InvokeRunningProcess>('get_running_processes')
+        if (!updatedResponse) {
+          if (manual) showDesktopOnlyToast()
+          return
+        }
+
         const updatedProcesses = updatedResponse?.processes || []
         const currentlyRunning = updatedProcesses.map(p => p.appid)
 
@@ -114,6 +142,11 @@ export async function startAutoIdleGamesImpl(steamId: string, manual?: boolean) 
       }
     }
   } catch (error) {
+    if (isMissingTauriInvokeError(error)) {
+      if (manual) showDesktopOnlyToast()
+      return
+    }
+
     showDangerToast(i18next.t('common.error'))
     console.error('Error in (startAutoIdleGamesImpl):', error)
     logEvent(`[Error] in (startAutoIdleGamesImpl): ${error}`)

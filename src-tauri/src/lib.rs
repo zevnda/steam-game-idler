@@ -24,6 +24,7 @@ use user_data::*;
 use utils::*;
 
 use std::env;
+use std::time::Duration;
 use tauri::image::Image;
 use tauri::menu::{Menu, MenuItem};
 use tauri::tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent};
@@ -40,7 +41,7 @@ pub fn run() {
                 std::env::set_var("KEY", key);
             },
             _ => {
-                dotenv::from_filename(".env.dev").unwrap().load();
+                let _ = dotenv::from_filename(".env.dev").map(|dotenv| dotenv.load());
             }
         }
     } else {
@@ -195,6 +196,25 @@ fn setup_window(app_handle: &tauri::AppHandle) -> Result<(), Box<dyn std::error:
                 }
             }
         });
+    });
+
+    // Fallback: if frontend doesn't emit "ready" in time, still show the main window
+    // (unless start minimized is explicitly enabled).
+    let app_handle_fallback = app_handle.clone();
+    let window_fallback = window.clone();
+    tauri::async_runtime::spawn(async move {
+        tokio::time::sleep(Duration::from_secs(8)).await;
+
+        let should_start_minimized =
+            settings::check_start_minimized_setting(&app_handle_fallback).await;
+
+        if matches!(should_start_minimized, Ok(true)) {
+            return;
+        }
+
+        if !window_fallback.is_visible().unwrap_or(false) {
+            let _ = window_fallback.show();
+        }
     });
 
     Ok(())

@@ -9,7 +9,12 @@ import { invoke } from '@tauri-apps/api/core'
 import i18next from 'i18next'
 import { handleRefreshGamesList } from '@/features/gameslist/utils/handleRefreshGamesList'
 import { showDangerToast, showSuccessToast } from '@/shared/components'
-import { logEvent, sendNativeNotification } from '@/shared/utils'
+import {
+  hasTauriInvoke,
+  isMissingTauriInvokeError,
+  logEvent,
+  sendNativeNotification,
+} from '@/shared/utils'
 
 interface GamesContext {
   setRefreshKey: React.Dispatch<React.SetStateAction<number>>
@@ -20,6 +25,8 @@ export const checkForFreeGames = async (
   gamesList: Game[],
 ) => {
   try {
+    if (!hasTauriInvoke()) return
+
     // Wait for user summary and games list to be available
     const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
     if (!userSummary?.steamId || gamesList.length === 0) return
@@ -68,6 +75,8 @@ export const checkForFreeGames = async (
       setFreeGamesList([])
     }
   } catch (error) {
+    if (isMissingTauriInvokeError(error)) return
+
     showDangerToast(i18next.t('common.error'))
     console.error('Error in (checkForFreeGames):', error)
     logEvent(`[Error] in (checkForFreeGames): ${error}`)
@@ -81,6 +90,8 @@ export const autoRedeemFreeGames = async (
   gamesContext: GamesContext,
 ) => {
   try {
+    if (!hasTauriInvoke()) return
+
     const redeemedAppIds: number[] = []
 
     // Attempt to redeem each free game
@@ -112,6 +123,8 @@ export const autoRedeemFreeGames = async (
       }, 3000)
     }
   } catch (error) {
+    if (isMissingTauriInvokeError(error)) return
+
     showDangerToast(i18next.t('common.error'))
     console.error('Error in (autoRedeemFreeGames):', error)
     logEvent(`[Error] in (autoRedeemFreeGames): ${error}`)
@@ -120,9 +133,13 @@ export const autoRedeemFreeGames = async (
 
 async function getFreeGames() {
   try {
+    if (!hasTauriInvoke()) return null
+
     const response = await invoke<InvokeFreeGames>('get_free_games')
     return response || null
   } catch (error) {
+    if (isMissingTauriInvokeError(error)) return null
+
     console.error('Error in (getFreeGames):', error)
     logEvent(`[Error] in (getFreeGames): ${error}`)
     return null

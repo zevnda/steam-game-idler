@@ -1,7 +1,7 @@
 use crate::process_handler::{cleanup_dead_processes, kill_all_steamutil_processes};
 use crate::utils::get_lib_path;
+use crate::utils::hide_command_window;
 use serde_json::{json, Value};
-use std::os::windows::process::CommandExt;
 use std::process::Child;
 use std::process::Command;
 use std::sync::{Arc, Mutex};
@@ -25,11 +25,11 @@ pub async fn start_idle(app_id: u32, app_name: String) -> Result<Value, String> 
 
     let exe_path = get_lib_path()?;
 
-    let child = Command::new(exe_path)
-        .args(&["idle", &app_id.to_string(), app_name.as_str()])
-        .creation_flags(0x08000000)
-        .spawn()
-        .map_err(|e| e.to_string())?;
+    let mut command = Command::new(exe_path);
+    command.args(&["idle", &app_id.to_string(), app_name.as_str()]);
+    hide_command_window(&mut command);
+
+    let child = command.spawn().map_err(|e| e.to_string())?;
 
     let pid = child.id();
 
@@ -61,13 +61,23 @@ pub async fn stop_idle(app_id: u32) -> Result<Value, String> {
     }
     .ok_or_else(|| "No matching process found".to_string())?;
 
-    let mut child = std::process::Command::new("taskkill")
-        .args(&["/F", "/PID", &pid.to_string()])
-        .creation_flags(0x08000000)
-        .spawn()
-        .map_err(|e| e.to_string())?;
+    #[cfg(target_os = "windows")]
+    {
+        let mut child = std::process::Command::new("taskkill")
+            .args(&["/F", "/PID", &pid.to_string()])
+            .spawn()
+            .map_err(|e| e.to_string())?;
+        child.wait().map_err(|e| e.to_string())?;
+    }
 
-    child.wait().map_err(|e| e.to_string())?;
+    #[cfg(not(target_os = "windows"))]
+    {
+        let mut child = std::process::Command::new("kill")
+            .args(["-9", &pid.to_string()])
+            .spawn()
+            .map_err(|e| e.to_string())?;
+        child.wait().map_err(|e| e.to_string())?;
+    }
 
     if let Ok(mut processes) = SPAWNED_PROCESSES.lock() {
         processes.retain(|p| p.app_id != app_id);
@@ -93,11 +103,11 @@ pub async fn start_farm_idle(games_list: Vec<GameInfo>) -> Result<Value, String>
     let app_ids: Vec<u32> = games_list.iter().map(|game| game.app_id).collect();
 
     for game in &games_list {
-        let child = Command::new(&exe_path)
-            .args(&["idle", &game.app_id.to_string(), &game.name])
-            .creation_flags(0x08000000)
-            .spawn()
-            .map_err(|e| e.to_string())?;
+        let mut command = Command::new(&exe_path);
+        command.args(&["idle", &game.app_id.to_string(), &game.name]);
+        hide_command_window(&mut command);
+
+        let child = command.spawn().map_err(|e| e.to_string())?;
 
         let pid = child.id();
 
@@ -152,18 +162,28 @@ pub async fn stop_farm_idle() -> Result<Value, String> {
     };
 
     if !pids.is_empty() {
-        let mut command = std::process::Command::new("taskkill");
-        command.arg("/F");
+        let output = {
+            #[cfg(target_os = "windows")]
+            {
+                let mut command = std::process::Command::new("taskkill");
+                command.arg("/F");
+                for pid in &pids {
+                    command.arg("/PID");
+                    command.arg(pid.to_string());
+                }
+                command.output().map_err(|e| e.to_string())?
+            }
 
-        for pid in &pids {
-            command.arg("/PID");
-            command.arg(pid.to_string());
-        }
-
-        let output = command
-            .creation_flags(0x08000000)
-            .output()
-            .map_err(|e| e.to_string())?;
+            #[cfg(not(target_os = "windows"))]
+            {
+                let mut command = std::process::Command::new("kill");
+                command.arg("-9");
+                for pid in &pids {
+                    command.arg(pid.to_string());
+                }
+                command.output().map_err(|e| e.to_string())?
+            }
+        };
 
         if !output.status.success() {
             let error_message = String::from_utf8_lossy(&output.stderr);

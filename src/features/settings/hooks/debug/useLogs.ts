@@ -1,19 +1,28 @@
 import type { LogEntry } from '@/shared/types'
-import { invoke } from '@tauri-apps/api/core'
 import { readTextFile } from '@tauri-apps/plugin-fs'
 import { useEffect, useState } from 'react'
-import i18next from 'i18next'
-import { showDangerToast } from '@/shared/components'
-import { logEvent } from '@/shared/utils'
+import { hasTauriInvoke, invokeSafe, isMissingTauriInvokeError, logEvent } from '@/shared/utils'
 
 export const useLogs = () => {
   const [logs, setLogs] = useState<LogEntry[]>([])
 
   useEffect(() => {
+    if (!hasTauriInvoke()) {
+      setLogs([])
+      return
+    }
+
     const fetchLogs = async () => {
       try {
-        const fullLogPath = await invoke<string>('get_cache_dir_path')
-        const logFilePath = `${fullLogPath}\\log.txt`
+        const fullLogPath = await invokeSafe<string>('get_cache_dir_path')
+        if (!fullLogPath) {
+          setLogs([])
+          return
+        }
+
+        const separator = fullLogPath.includes('\\') ? '\\' : '/'
+        const normalizedBasePath = fullLogPath.replace(/[\\/]+$/, '')
+        const logFilePath = `${normalizedBasePath}${separator}log.txt`
 
         // Check if log file exists
         let logContents = ''
@@ -44,9 +53,13 @@ export const useLogs = () => {
           })
         setLogs(logEntries)
       } catch (error) {
-        showDangerToast(i18next.t('common.error'))
+        if (isMissingTauriInvokeError(error)) {
+          setLogs([])
+          return
+        }
+
+        setLogs([])
         console.error('Error in (fetchLogs):', error)
-        logEvent(`[Error] in (fetchLogs): ${error}`)
       }
     }
     fetchLogs()

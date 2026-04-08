@@ -13,7 +13,7 @@ import { getVersion } from '@tauri-apps/api/app'
 import { useTranslation } from 'react-i18next'
 import { FaStar } from 'react-icons/fa6'
 import { useUpdateStore } from '@/shared/stores'
-import { openExternalLink } from '@/shared/utils'
+import { isTauriRuntime, openExternalLink } from '@/shared/utils'
 
 export const ChangelogModal = () => {
   const { t } = useTranslation()
@@ -31,6 +31,12 @@ export const ChangelogModal = () => {
   }, [onOpen, showChangelog, setShowChangelog, isVersionLoaded])
 
   useEffect(() => {
+    if (!isTauriRuntime) {
+      setAppVersion('latest')
+      setIsVersionLoaded(true)
+      return
+    }
+
     ;(async () => {
       try {
         const version = await getVersion()

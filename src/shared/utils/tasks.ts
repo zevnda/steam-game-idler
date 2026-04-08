@@ -24,9 +24,138 @@ import {
   showSteamNotRunningToast,
 } from '@/shared/components'
 
+export const hasTauriInvoke = () =>
+  typeof window !== 'undefined' &&
+  (() => {
+    const tauriWindow = window as Window & {
+      __TAURI_INTERNALS__?: { invoke?: unknown }
+      __TAURI__?: {
+        invoke?: unknown
+        core?: { invoke?: unknown }
+      }
+      isTauri?: boolean
+    }
+
+    return (
+      typeof tauriWindow.__TAURI_INTERNALS__?.invoke === 'function' ||
+      typeof tauriWindow.__TAURI__?.core?.invoke === 'function' ||
+      typeof tauriWindow.__TAURI__?.invoke === 'function' ||
+      tauriWindow.isTauri === true ||
+      (globalThis as { isTauri?: boolean }).isTauri === true ||
+      (typeof navigator !== 'undefined' && navigator.userAgent.includes('Tauri'))
+    )
+  })()
+
+const hasTauriInvokeFunction = () =>
+  typeof window !== 'undefined' &&
+  (() => {
+    const tauriWindow = window as Window & {
+      __TAURI_INTERNALS__?: { invoke?: unknown }
+      __TAURI__?: {
+        invoke?: unknown
+        core?: { invoke?: unknown }
+      }
+    }
+
+    return (
+      typeof tauriWindow.__TAURI_INTERNALS__?.invoke === 'function' ||
+      typeof tauriWindow.__TAURI__?.core?.invoke === 'function' ||
+      typeof tauriWindow.__TAURI__?.invoke === 'function'
+    )
+  })()
+
+const refreshTauriRuntimeFlag = () => {
+  isTauriRuntime = typeof window !== 'undefined' && hasTauriInvoke()
+  return isTauriRuntime
+}
+
+export let isTauriRuntime = typeof window !== 'undefined' && hasTauriInvoke()
+
+if (typeof window !== 'undefined' && !isTauriRuntime) {
+  const pollUntilTauriReady = () => {
+    if (refreshTauriRuntimeFlag()) return
+    setTimeout(pollUntilTauriReady, 200)
+  }
+
+  pollUntilTauriReady()
+}
+
+export const isMissingTauriInvokeError = (error: unknown) => {
+  const message = String(error).toLowerCase()
+  const mentionsInvoke = message.includes('invoke')
+  const missingBridgeHint =
+    message.includes('undefined') ||
+    message.includes('__tauri') ||
+    message.includes('not a function')
+
+  return mentionsInvoke && missingBridgeHint
+}
+
+export const showDesktopOnlyToast = () => {
+  showDangerToast('Esta acao esta disponivel apenas no aplicativo desktop.')
+}
+
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+
+export const waitForTauriInvoke = async (timeoutMs = 3000, intervalMs = 100) => {
+  if (hasTauriInvokeFunction()) {
+    refreshTauriRuntimeFlag()
+    return true
+  }
+
+  const startedAt = Date.now()
+  while (Date.now() - startedAt < timeoutMs) {
+    await sleep(intervalMs)
+    if (hasTauriInvokeFunction()) {
+      refreshTauriRuntimeFlag()
+      return true
+    }
+  }
+
+  if (hasTauriInvokeFunction()) {
+    refreshTauriRuntimeFlag()
+    return true
+  }
+
+  return false
+}
+
+export const invokeSafe = async <T>(
+  command: string,
+  args?: Record<string, unknown>,
+  timeoutMs = 3000,
+) => {
+  const startedAt = Date.now()
+
+  while (Date.now() - startedAt < timeoutMs) {
+    try {
+      const result = await invoke<T>(command, args)
+      isTauriRuntime = true
+      return result
+    } catch (error) {
+      if (!isMissingTauriInvokeError(error)) throw error
+      await sleep(100)
+    }
+  }
+
+  try {
+    const result = await invoke<T>(command, args)
+    isTauriRuntime = true
+    return result
+  } catch (error) {
+    if (isMissingTauriInvokeError(error)) return null
+    throw error
+  }
+}
+
 export async function checkSteamStatus(showToast: boolean) {
   try {
-    const isSteamRunning = await invoke<boolean>('is_steam_running')
+    const isSteamRunning = await invokeSafe<boolean>('is_steam_running')
+    if (isSteamRunning === null) {
+      if (showToast) showDesktopOnlyToast()
+      return false
+    }
+
     if (!isSteamRunning && showToast) showSteamNotRunningToast()
     return isSteamRunning
   } catch (error) {
@@ -55,6 +184,14 @@ export async function fetchLatest() {
 let antiAwayInterval: ReturnType<typeof setTimeout> | null = null
 export async function antiAwayStatus(active: boolean | null = null) {
   try {
+    if (!isTauriRuntime) {
+      if (antiAwayInterval) {
+        clearInterval(antiAwayInterval)
+        antiAwayInterval = null
+      }
+      return
+    }
+
     const steamRunning = await invoke('is_steam_running')
     if (!steamRunning) return
 
@@ -214,6 +351,7 @@ export const preserveKeysAndClearData = async () => {
 // Get the app version
 export const getAppVersion = async () => {
   try {
+    if (!isTauriRuntime) return undefined
     const appVersion = await getVersion()
     return appVersion
   } catch (error) {
@@ -226,6 +364,7 @@ export const getAppVersion = async () => {
 // Log event
 export async function logEvent(message: string) {
   try {
+    if (!isTauriRuntime) return
     const version = await getVersion()
     await invoke('log_event', { message: `[v${version}] ${message}` })
   } catch (error) {
@@ -293,6 +432,7 @@ export async function updateTrayIcon(tooltip?: string, runningStatus?: boolean) 
 
 export async function isPortableCheck() {
   try {
+    if (!isTauriRuntime) return false
     const portable = await invoke<boolean>('is_portable')
     return portable
   } catch (error) {
@@ -324,9 +464,19 @@ export async function sendNativeNotification(title: string, body: string) {
 }
 
 export async function openExternalLink(href: string) {
-  try {
-    await openUrl(href)
-  } catch (error) {
-    console.error('Failed to open link:', error)
+  if (hasTauriInvoke()) {
+    try {
+      await openUrl(href)
+      return
+    } catch (error) {
+      console.error('Failed to open link with Tauri opener:', error)
+    }
+  }
+
+  if (typeof window !== 'undefined') {
+    const popup = window.open(href, '_blank', 'noopener,noreferrer')
+    if (!popup) {
+      window.location.href = href
+    }
   }
 }

@@ -5,20 +5,37 @@ import {
   requestPermission,
   sendNotification,
 } from '@tauri-apps/plugin-notification'
+import { showDangerToast } from '@/shared/components'
 import { useUserStore } from '@/shared/stores'
+import { isTauriRuntime, waitForTauriInvoke } from '@/shared/utils'
 
 export function useTitlebar() {
   const userSettings = useUserStore(state => state.userSettings)
 
   const windowMinimize = async () => {
+    const tauriReady = await waitForTauriInvoke(1500)
+    if (!isTauriRuntime || !tauriReady) {
+      showDangerToast('Esta acao esta disponivel apenas no aplicativo desktop.')
+      return
+    }
     await getCurrentWindow().minimize()
   }
 
   const windowToggleMaximize = async () => {
+    const tauriReady = await waitForTauriInvoke(1500)
+    if (!isTauriRuntime || !tauriReady) {
+      showDangerToast('Esta acao esta disponivel apenas no aplicativo desktop.')
+      return
+    }
     await getCurrentWindow().toggleMaximize()
   }
 
   const windowClose = async () => {
+    const tauriReady = await waitForTauriInvoke(1500)
+    if (!isTauriRuntime || !tauriReady) {
+      showDangerToast('Esta acao esta disponivel apenas no aplicativo desktop.')
+      return
+    }
     // If the user has not enabled "close to tray", quit the app
     if (!userSettings.general.closeToTray) {
       await invoke('quit_app')

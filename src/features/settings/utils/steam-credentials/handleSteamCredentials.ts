@@ -15,7 +15,13 @@ import {
   showIncorrectCredentialsToast,
   showSuccessToast,
 } from '@/shared/components'
-import { encrypt, logEvent } from '@/shared/utils'
+import {
+  encrypt,
+  isMissingTauriInvokeError,
+  logEvent,
+  showDesktopOnlyToast,
+  waitForTauriInvoke,
+} from '@/shared/utils'
 
 export const handleSaveCredentials = async (
   sidValue: string,
@@ -30,6 +36,12 @@ export const handleSaveCredentials = async (
   setGamesWithDropsData: React.Dispatch<React.SetStateAction<GameWithRemainingDrops[]>>,
 ) => {
   try {
+    const tauriReady = await waitForTauriInvoke()
+    if (!tauriReady) {
+      showDesktopOnlyToast()
+      return
+    }
+
     if (sidValue.length > 0 && slsValue.length > 0) {
       // Verify steam cookies are valid
       const validate = await invoke<InvokeValidateSession>('validate_session', {
@@ -85,6 +97,8 @@ export const handleSaveCredentials = async (
       }
     }
   } catch (error) {
+    if (isMissingTauriInvokeError(error)) return
+
     showDangerToast(i18next.t('common.error'))
     console.error('Error in (handleSave):', error)
     logEvent(`[Error] in (handleSave): ${error}`)
@@ -103,6 +117,19 @@ export const handleClearCredentials = async (
   setTotalDropsRemaining: React.Dispatch<React.SetStateAction<number>>,
 ) => {
   try {
+    const tauriReady = await waitForTauriInvoke()
+    if (!tauriReady) {
+      showDesktopOnlyToast()
+      setSidValue('')
+      setSlsValue('')
+      setSmaValue('')
+      setHasCookies(false)
+      setCardFarmingUser(null)
+      setGamesWithDrops(0)
+      setTotalDropsRemaining(0)
+      return
+    }
+
     // Clear all saved credentials and reset UI states
     await invoke('update_user_settings', {
       steamId: userSummary?.steamId,
@@ -141,6 +168,8 @@ export const handleClearCredentials = async (
 
     logEvent('[Settings - Card Farming] Logged out')
   } catch (error) {
+    if (isMissingTauriInvokeError(error)) return
+
     showDangerToast(i18next.t('common.error'))
     console.error('Error in (handleCredentialsClear):', error)
     logEvent(`[Error] in (handleCredentialsClear): ${error}`)

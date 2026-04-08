@@ -44,7 +44,7 @@ export const SettingsSwitch = ({ type, name, isProSetting = false }: SettingsChe
     if (type === 'achievementUnlocker') {
       return Boolean(
         (userSettings.achievementUnlocker as AchievementUnlockerSettings)[
-          name as keyof AchievementUnlockerSettings
+        name as keyof AchievementUnlockerSettings
         ],
       )
     }
@@ -61,7 +61,7 @@ export const SettingsSwitch = ({ type, name, isProSetting = false }: SettingsChe
           wrapper: cn('group-data-[selected=true]:!bg-dynamic !bg-switch'),
         }}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-          handleCheckboxChange(e, 'general', userSummary?.steamId, setUserSettings)
+          handleCheckboxChange(e, 'general', userSummary?.steamId, userSettings, setUserSettings)
           antiAwayStatus(isSettingEnabled() ? null : undefined)
         }}
       />
@@ -93,11 +93,29 @@ export const SettingsSwitch = ({ type, name, isProSetting = false }: SettingsChe
       }}
       onChange={e => {
         if (type === 'general') {
-          handleCheckboxChange(e, 'general', userSummary?.steamId, setUserSettings)
+          handleCheckboxChange(
+            e,
+            'general',
+            userSummary?.steamId,
+            userSettings,
+            setUserSettings,
+          )
         } else if (type === 'cardFarming') {
-          handleCheckboxChange(e, 'cardFarming', userSummary?.steamId, setUserSettings)
+          handleCheckboxChange(
+            e,
+            'cardFarming',
+            userSummary?.steamId,
+            userSettings,
+            setUserSettings,
+          )
         } else {
-          handleCheckboxChange(e, 'achievementUnlocker', userSummary?.steamId, setUserSettings)
+          handleCheckboxChange(
+            e,
+            'achievementUnlocker',
+            userSummary?.steamId,
+            userSettings,
+            setUserSettings,
+          )
         }
       }}
     />
