@@ -10,42 +10,47 @@ declare global {
 
 export default function AdComponentTwo() {
   const [adKey, setAdKey] = useState(0)
+  const [ready, setReady] = useState(false)
 
   useEffect(() => {
-    const loadAd = () => {
-      try {
-        ;(window.adsbygoogle = window.adsbygoogle || []).push({})
-      } catch (err) {
-        console.error('AdSense error:', err)
-      }
-    }
-
     const initialDelay = setTimeout(() => {
-      loadAd()
-
-      const scheduleNextRefresh = () => {
-        const interval = setTimeout(
-          () => {
-            setAdKey(prev => prev + 1)
-            scheduleNextRefresh()
-          },
-          3 * 60 * 1000,
-        )
-
-        return interval
-      }
-
-      const timeoutId = scheduleNextRefresh()
-
-      return () => {
-        clearTimeout(timeoutId)
-      }
+      setReady(true)
     }, 5000)
 
     return () => {
       clearTimeout(initialDelay)
     }
-  }, [adKey])
+  }, [])
+
+  useEffect(() => {
+    if (!ready) return
+
+    try {
+      ;(window.adsbygoogle = window.adsbygoogle || []).push({})
+    } catch (err) {
+      console.error('AdSense error:', err)
+    }
+
+    const scheduleNextRefresh = () => {
+      const interval = setTimeout(
+        () => {
+          setAdKey(prev => prev + 1)
+          scheduleNextRefresh()
+        },
+        3 * 60 * 1000,
+      )
+
+      return interval
+    }
+
+    const timeoutId = scheduleNextRefresh()
+
+    return () => {
+      clearTimeout(timeoutId)
+    }
+  }, [adKey, ready])
+
+  if (!ready) return null
 
   return (
     <div className='flex fixed top-0 left-0 flex-col gap-4 z-40 bg-[#121316]'>
