@@ -49,7 +49,7 @@ pub fn run() {
                 std::env::set_var("KEY", key);
             },
             _ => {
-                panic!("No obfuscated API key available in production build");
+                dotenv::from_filename(".env.prod").ok();
             }
         }
     }
