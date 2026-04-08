@@ -181,7 +181,7 @@ export default function TermsOfService() {
                 <strong>Gamer:</strong> $4 USD per month
               </li>
               <li>
-                <strong>Legendary:</strong> $9 USD per month
+                <strong>Legendary:</strong> $6 USD per month
               </li>
             </ul>
             <p className='mb-4'>
