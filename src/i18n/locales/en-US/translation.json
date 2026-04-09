@@ -349,5 +349,8 @@
   "common.helpDesk": "Help Desk",
   "common.minutes": "minutes",
   "common.viewList": "View List",
-  "changelog.star": "Star on GitHub"
+  "changelog.star": "Star on GitHub",
+  "tray.show": "Show",
+  "tray.quit": "Quit",
+  "tray.update": "Check for Updates.."
 }
