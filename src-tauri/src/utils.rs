@@ -600,3 +600,33 @@ pub async fn delete_store_cookies(app_handle: tauri::AppHandle) -> Result<Value,
     let _ = window.close();
     Err("Failed to get webview".to_string())
 }
+
+#[tauri::command]
+pub fn update_tray_menu(
+    app: tauri::AppHandle,
+    show: String,
+    update: String,
+    quit: String,
+) -> Result<(), String> {
+    use tauri::menu::{Menu, MenuItem};
+
+    let show_item =
+        MenuItem::with_id(&app, "show", &show, true, None::<&str>).map_err(|e| e.to_string())?;
+    let quit_item =
+        MenuItem::with_id(&app, "quit", &quit, true, None::<&str>).map_err(|e| e.to_string())?;
+
+    let menu = if !is_portable() {
+        let update_item = MenuItem::with_id(&app, "update", &update, true, None::<&str>)
+            .map_err(|e| e.to_string())?;
+        Menu::with_items(&app, &[&show_item, &update_item, &quit_item])
+            .map_err(|e| e.to_string())?
+    } else {
+        Menu::with_items(&app, &[&show_item, &quit_item]).map_err(|e| e.to_string())?
+    };
+
+    if let Some(tray) = app.tray_by_id("1") {
+        tray.set_menu(Some(menu)).map_err(|e| e.to_string())?;
+    }
+
+    Ok(())
+}

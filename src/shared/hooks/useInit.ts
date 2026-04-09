@@ -3,12 +3,14 @@ import { invoke } from '@tauri-apps/api/core'
 import { emit } from '@tauri-apps/api/event'
 import { WebviewWindow } from '@tauri-apps/api/webviewWindow'
 import { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useLoaderStore, useStateStore, useUserStore } from '@/shared/stores'
 
 export function useInit() {
   const setLoadingUserSummary = useStateStore(state => state.setLoadingUserSummary)
   const setUserSummary = useUserStore(state => state.setUserSummary)
   const { hideLoader } = useLoaderStore()
+  const { t, i18n } = useTranslation()
 
   console.debug('Monitor for rerenders')
 
@@ -20,6 +22,14 @@ export function useInit() {
     // Start the processes monitor once globally
     invoke('start_processes_monitor')
   }, [])
+
+  useEffect(() => {
+    invoke('update_tray_menu', {
+      show: t('tray.show'),
+      update: t('tray.update'),
+      quit: t('tray.quit'),
+    })
+  }, [t, i18n.language])
 
   useEffect(() => {
     // Set user summary data

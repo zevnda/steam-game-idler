@@ -146,7 +146,8 @@ pub fn run() {
             delete_store_cookies,
             redeem_free_game,
             set_zoom,
-            quit_app
+            quit_app,
+            update_tray_menu
         ])
         .build(tauri::generate_context!())
         .expect("Error while building tauri application")
