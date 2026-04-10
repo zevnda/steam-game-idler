@@ -24,6 +24,7 @@ export function useTradingCardsList() {
   const { t } = useTranslation()
   const userSummary = useUserStore(state => state.userSummary)
   const userSettings = useUserStore(state => state.userSettings)
+  const isPro = useUserStore(state => state.isPro)
   const loadingItemPrice = useStateStore(state => state.loadingItemPrice)
   const setLoadingItemPrice = useStateStore(state => state.setLoadingItemPrice)
   const loadingListButton = useStateStore(state => state.loadingListButton)
@@ -582,6 +583,10 @@ export function useTradingCardsList() {
   }
 
   const handleSellAllDupes = async () => {
+    if (!isPro) {
+      return
+    }
+
     try {
       const credentials = userSettings?.cardFarming.credentials
       if (!credentials?.sid || !credentials?.sls) return showMissingCredentialsToast()

@@ -10,11 +10,10 @@ import {
   TbPackageExport,
   TbSettings,
   TbSortDescending2,
-  TbX,
 } from 'react-icons/tb'
-import { Button, cn, Divider, Select, SelectItem, useDisclosure } from '@heroui/react'
-import { CustomModal } from '@/shared/components'
-import { useNavigationStore, useSearchStore, useStateStore, useUserStore } from '@/shared/stores'
+import { Button, cn, Select, SelectItem, useDisclosure } from '@heroui/react'
+import { CustomModal, ProBadge } from '@/shared/components'
+import { useNavigationStore, useStateStore, useUserStore } from '@/shared/stores'
 
 // Helper function to format seconds to HH:MM:SS
 const formatTime = (seconds: number) => {
@@ -54,10 +53,10 @@ export const PageHeader = ({
 }: PageHeaderProps) => {
   const { t } = useTranslation()
   const userSettings = useUserStore(state => state.userSettings)
+  const isPro = useUserStore(state => state.isPro)
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
   const transitionDuration = useStateStore(state => state.transitionDuration)
-  const tradingCardQueryValue = useSearchStore(state => state.tradingCardQueryValue)
-  const setTradingCardQueryValue = useSearchStore(state => state.setTradingCardQueryValue)
+  const setProModalOpen = useStateStore(state => state.setProModalOpen)
   const setActivePage = useNavigationStore(state => state.setActivePage)
   const setPreviousActivePage = useNavigationStore(state => state.setPreviousActivePage)
   const setCurrentSettingsTab = useNavigationStore(state => state.setCurrentSettingsTab)
@@ -159,18 +158,21 @@ export const PageHeader = ({
                     })}
                   </Button>
 
-                  <Button
-                    className='bg-btn-secondary text-btn-text font-bold'
-                    radius='full'
-                    isDisabled={tradingCardContext.tradingCardsList.length === 0}
-                    isLoading={tradingCardContext.loadingListButton}
-                    startContent={
-                      !tradingCardContext.loadingListButton && <TbPackageExport fontSize={20} />
-                    }
-                    onPress={onDupesOpen}
-                  >
-                    {t('tradingCards.sellDupes')}
-                  </Button>
+                  <div onClick={() => !isPro && setProModalOpen(true)}>
+                    <Button
+                      className='bg-btn-secondary text-btn-text font-bold'
+                      radius='full'
+                      isDisabled={tradingCardContext.tradingCardsList.length === 0 || !isPro}
+                      isLoading={tradingCardContext.loadingListButton}
+                      startContent={
+                        !tradingCardContext.loadingListButton && <TbPackageExport fontSize={20} />
+                      }
+                      onPress={onDupesOpen}
+                    >
+                      {t('tradingCards.sellDupes')}
+                      {!isPro && <ProBadge className='scale-70 -mx-2' />}
+                    </Button>
+                  </div>
 
                   <Button
                     className='font-bold'
@@ -196,22 +198,6 @@ export const PageHeader = ({
                       setCurrentSettingsTab('inventory-manager')
                     }}
                   />
-
-                  {tradingCardQueryValue && (
-                    <div className='flex items-center gap-2'>
-                      <Divider orientation='vertical' className='mx-2 h-8 bg-border' />
-                      <p className='text-sm text-altwhite font-bold'>{t('common.search')}</p>
-                      <div className='flex items-center gap-2 text-sm text-altwhite p-2 bg-item-active rounded-full max-w-44'>
-                        <p className='text-content truncate'>{tradingCardQueryValue}</p>
-                        <div
-                          className='flex items-center justify-center cursor-pointer bg-item-hover hover:bg-item-hover/80 rounded-full p-1 duration-150'
-                          onClick={() => setTradingCardQueryValue('')}
-                        >
-                          <TbX />
-                        </div>
-                      </div>
-                    </div>
-                  )}
 
                   {/* Pagination */}
                   {tradingCardContext.tradingCardsList.length > 0 && (
