@@ -8,14 +8,15 @@ import {
   handleSteamWebAPIKeySave,
   useGeneralSettings,
 } from '@/features/settings'
-import { ExtLink, LanguageSwitch, SettingsSwitch } from '@/shared/components'
-import { useUserStore } from '@/shared/stores'
+import { ExtLink, LanguageSwitch, ProBadge, SettingsSwitch } from '@/shared/components'
+import { useStateStore, useUserStore } from '@/shared/stores'
 
 export const GeneralSettings = () => {
   const { t } = useTranslation()
   const userSummary = useUserStore(state => state.userSummary)
   const setUserSettings = useUserStore(state => state.setUserSettings)
   const isPro = useUserStore(state => state.isPro)
+  const setProModalOpen = useStateStore(state => state.setProModalOpen)
   const { keyValue, setKeyValue, hasKey, setHasKey } = useGeneralSettings()
 
   return (
@@ -108,6 +109,25 @@ export const GeneralSettings = () => {
             <p className='text-xs text-altwhite'>{t('settings.general.closeToTray.description')}</p>
           </div>
           <SettingsSwitch type='general' name='closeToTray' />
+        </div>
+
+        <Divider className='bg-border/70 my-4' />
+
+        <div className='flex justify-between items-center'>
+          <div className='flex flex-col gap-2 w-1/2'>
+            <div className='flex items-center'>
+              <p className='text-sm text-content font-bold'>
+                {t('settings.general.autoUpdateGamesList')}
+              </p>
+              {!isPro && <ProBadge className='scale-65' />}
+            </div>
+            <p className='text-xs text-altwhite'>
+              {t('settings.general.autoUpdateGamesList.description')}
+            </p>
+          </div>
+          <div onClick={() => !isPro && setProModalOpen(true)}>
+            <SettingsSwitch type='general' name='autoUpdateGamesList' isProSetting={true} />
+          </div>
         </div>
 
         <Divider className='bg-border/70 my-4' />

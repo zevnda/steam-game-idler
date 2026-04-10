@@ -59,6 +59,7 @@ export interface GeneralSettings {
   theme?: string | null
   customBackground?: string | null
   autoRedeemFreeGames: boolean
+  autoUpdateGamesList: boolean
   showRecommendedCarousel: boolean
   showRecentCarousel: boolean
   showCardDropsCarousel: boolean

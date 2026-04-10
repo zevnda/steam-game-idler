@@ -64,6 +64,7 @@ export const useUserStore = create<UserStore>(set => ({
       closeToTray: true,
       customBackground: null,
       autoRedeemFreeGames: false,
+      autoUpdateGamesList: false,
       showRecommendedCarousel: true,
       showRecentCarousel: true,
       showCardDropsCarousel: false,
