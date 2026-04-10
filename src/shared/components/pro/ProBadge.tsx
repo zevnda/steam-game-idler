@@ -2,7 +2,7 @@ import { cn } from '@heroui/react'
 
 interface ProBadgeProps {
   className?: string
-  requiredTier?: 'casual' | 'gamer'
+  requiredTier?: 'casual' | 'gamer' | 'pro'
 }
 
 export const ProBadge = ({ className, requiredTier = 'casual' }: ProBadgeProps) => {
@@ -16,10 +16,12 @@ export const ProBadge = ({ className, requiredTier = 'casual' }: ProBadgeProps) 
         backgroundImage:
           requiredTier === 'gamer'
             ? 'linear-gradient(100deg, #3b0764ff 0%, #6b21a8ff 40%, #9333eaff 70%, #c026d3ff 100%)'
-            : 'linear-gradient(100deg, #154d66ff 0%, #227ca5ff 40%, #2eabe5ff 70%, #34bfffff 100%)',
+            : requiredTier === 'pro'
+              ? 'linear-gradient(100deg, #154d66ff 0%, #227ca5ff 40%, #2eabe5ff 70%, #34bfffff 100%)'
+              : 'linear-gradient(100deg, #154d66ff 0%, #227ca5ff 40%, #2eabe5ff 70%, #34bfffff 100%)',
       }}
     >
-      {requiredTier === 'gamer' ? 'GAMER' : 'CASUAL'}
+      {requiredTier === 'gamer' ? 'GAMER' : requiredTier === 'pro' ? 'PRO' : 'CASUAL'}
     </span>
   )
 }
