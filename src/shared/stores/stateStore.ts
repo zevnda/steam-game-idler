@@ -32,6 +32,8 @@ interface StateStore {
   setTransitionDuration: (value: string | ((prev: string) => string)) => void
   proModalOpen: boolean
   setProModalOpen: (value: boolean | ((prev: boolean) => boolean)) => void
+  proModalRequiredTier: 'casual' | 'gamer' | null
+  setProModalRequiredTier: (value: 'casual' | 'gamer' | null) => void
   loadingUserSummary: boolean
   setLoadingUserSummary: (value: boolean | ((prev: boolean) => boolean)) => void
 }
@@ -104,6 +106,8 @@ export const useStateStore = create<StateStore>(set => ({
     set(state => ({
       proModalOpen: typeof value === 'function' ? value(state.proModalOpen) : value,
     })),
+  proModalRequiredTier: null,
+  setProModalRequiredTier: value => set({ proModalRequiredTier: value }),
   loadingUserSummary: true,
   setLoadingUserSummary: value =>
     set(state => ({

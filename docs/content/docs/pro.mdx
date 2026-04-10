@@ -5,15 +5,31 @@ description: Upgrade to PRO to enhance your experience.
 
 import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
 import { Step, Steps } from 'fumadocs-ui/components/steps';
+import { FaCheck, FaXmark } from 'react-icons/fa6';
+
+export const Yes = () => <FaCheck className='text-green-500 inline' />
+export const No = () => <FaXmark className='text-red-400/50 inline' />
 
 # What is Steam Game Idler PRO?
 First and foremost, Steam Game Idler is completely free to use, and always will be. All of the core features of SGI are available to all users at no cost.
 
 Steam Game Idler **PRO** is an optional way to support the development of SGI. To thank you for your support, **PRO** subscribers receive a range of additional benefits that enhance the SGI experience.
 
-There are three subscription tiers available, each offering the same set of benefits, but allowing you to choose the level of support that best fits your budget.
+There are two subscription tiers available — **Casual** and **Gamer** — each unlocking a different set of benefits.
 
 By subscribing to **PRO**, you help with the ongoing development and maintenance of SGI, ensuring that it continues to improve and evolve over time.
+
+| Feature | Casual ($2/mo) | Gamer ($4/mo) |
+|---------|:--------------:|:--------------:|
+| Ad-free experience | <Yes /> | <Yes /> |
+| Exclusive themes | <Yes /> | <Yes /> |
+| Unique Discord chat role | <Yes /> | <Yes /> |
+| Automated Steam credentials | <No /> | <Yes /> |
+| Automated games list updates | <No /> | <Yes /> |
+| Automated free game redemption | <No /> | <Yes /> |
+| Sell duplicate inventory items | <No /> | <Yes /> |
+
+<p className='text-xs text-muted-foreground -mt-4'>* Prices are in USD and exclude taxes. Billed monthly, cancel anytime.</p>
 
 ## FAQ
 
@@ -27,7 +43,7 @@ By subscribing to **PRO**, you help with the ongoing development and maintenance
         Click the "**Go PRO**" badge in the app's title bar
       </Step>
       <Step>
-        Select your desired subscription tier *(Casual, Gamer, or Legendary)*
+        Select your desired subscription tier *(Casual or Gamer)*
       </Step>
       <Step>
         Click the "**Get Started**" button
@@ -57,29 +73,6 @@ By subscribing to **PRO**, you help with the ongoing development and maintenance
       </Step>
     </Steps>
     After cancellation, you will retain access to **PRO** benefits until the end of your current billing cycle.
-  </Accordion>
-
-  <Accordion title='What Benefits Does PRO Offer?' id='pro-benefits'>
-    Steam Game Idler **PRO** offers a range of benefits designed to improve your experience:
-    
-    - **Ad-Free Experience**: Enjoy SGI without any advertisements for a cleaner interface
-    - **Automated Steam Credentials**: Easily retrieve your [Steam credentials](/docs/steam-credentials) without manual input
-    - **Automated Free Game Redemption**: Automatically redeem [free games](/docs/features/free-games) on Steam when they become available
-    - **Automated Games List Updates**: Keep your games list up-to-date effortlessly with automatic updates every 15 minutes, ensuring that any new games added to your Steam library are also added to SGI
-    - **Easily Sell Duplicate Inventory Items**: Instantly list all duplicate items (except one) via the Inventory Manager for sale with a single click
-    - **Exclusive Themes**: Customize SGI with 6 unique themes available only to **PRO** users
-    - **Unique Discord Chat Role**: Stand out in our [Discord community](https://discord.com/invite/5kY2ZbVnZ8) with a special <span className='text-[#d1ff01] font-semibold'>@DONATOR</span> role
-
-    More benefits are planned for the future as SGI continues to grow and evolve.
-  </Accordion>
-
-  <Accordion title='What are the Different PRO Tiers?' id='pro-tiers'>
-    Steam Game Idler **PRO** is available in three subscription tiers, each tier offers the same set of benefits, but allow you to choose the level of support that best fits your budget:
-    - **Casual**: $2 / monthly
-    - **Gamer**: $4 / monthly
-    - **Legendary**: $6 / monthly
-
-    All prices are in USD and exclude taxes. Subscriptions are billed monthly, and can be canceled at any time.
   </Accordion>
 
   <Accordion title='Switch Between PRO Tiers' id='switch-tiers'>

@@ -5,12 +5,12 @@ import { useTranslation } from 'react-i18next'
 import { useTheme } from 'next-themes'
 import { showDangerToast } from '@/shared/components'
 import { useUserStore } from '@/shared/stores'
-import { logEvent } from '@/shared/utils'
+import { hasCasualFeature, logEvent } from '@/shared/utils'
 
 export function useThemes() {
   const { t } = useTranslation()
   const { setTheme } = useTheme()
-  const isPro = useUserStore(state => state.isPro)
+  const proTier = useUserStore(state => state.proTier)
   const userSummary = useUserStore(state => state.userSummary)
 
   useEffect(() => {
@@ -24,7 +24,7 @@ export function useThemes() {
         let userTheme = 'dark'
 
         // Get user settings if available
-        if (isPro) {
+        if (hasCasualFeature(proTier)) {
           const cachedUserSettings = await invoke<InvokeSettings>('get_user_settings', {
             steamId: userSummary.steamId,
           })
@@ -52,5 +52,5 @@ export function useThemes() {
     }
 
     applyThemeForUser()
-  }, [userSummary, isPro, setTheme, t])
+  }, [userSummary, proTier, setTheme, t])
 }

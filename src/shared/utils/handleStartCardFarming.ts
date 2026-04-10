@@ -8,10 +8,16 @@ import {
   showOutdatedCredentialsToast,
 } from '@/shared/components'
 import { useStateStore, useUserStore } from '@/shared/stores'
-import { autoRevalidateSteamCredentials, checkSteamStatus, decrypt, logEvent } from '@/shared/utils'
+import {
+  autoRevalidateSteamCredentials,
+  checkSteamStatus,
+  decrypt,
+  hasGamerFeature,
+  logEvent,
+} from '@/shared/utils'
 
 export const startCardFarming = async () => {
-  const { userSettings, userSummary, isPro, setUserSettings } = useUserStore.getState()
+  const { userSettings, userSummary, proTier, setUserSettings } = useUserStore.getState()
   const { setIsCardFarming } = useStateStore.getState()
 
   try {
@@ -22,8 +28,8 @@ export const startCardFarming = async () => {
     // Retrieve Steam cookies from local storage
     let credentials = userSettings.cardFarming.credentials
 
-    // Attempt to automatically revalidate Steam credentials for PRO users
-    if (isPro) {
+    // Attempt to automatically revalidate Steam credentials for Gamer tier PRO users
+    if (hasGamerFeature(proTier)) {
       const autoRevalidateResult = await autoRevalidateSteamCredentials(setUserSettings)
       if (autoRevalidateResult?.credentials) {
         credentials = autoRevalidateResult.credentials

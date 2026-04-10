@@ -14,6 +14,7 @@ import {
 import { Button, cn, Select, SelectItem, useDisclosure } from '@heroui/react'
 import { CustomModal, ProBadge } from '@/shared/components'
 import { useNavigationStore, useStateStore, useUserStore } from '@/shared/stores'
+import { hasGamerFeature } from '@/shared/utils'
 
 // Helper function to format seconds to HH:MM:SS
 const formatTime = (seconds: number) => {
@@ -53,10 +54,11 @@ export const PageHeader = ({
 }: PageHeaderProps) => {
   const { t } = useTranslation()
   const userSettings = useUserStore(state => state.userSettings)
-  const isPro = useUserStore(state => state.isPro)
+  const proTier = useUserStore(state => state.proTier)
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
   const transitionDuration = useStateStore(state => state.transitionDuration)
   const setProModalOpen = useStateStore(state => state.setProModalOpen)
+  const setProModalRequiredTier = useStateStore(state => state.setProModalRequiredTier)
   const setActivePage = useNavigationStore(state => state.setActivePage)
   const setPreviousActivePage = useNavigationStore(state => state.setPreviousActivePage)
   const setCurrentSettingsTab = useNavigationStore(state => state.setCurrentSettingsTab)
@@ -158,11 +160,21 @@ export const PageHeader = ({
                     })}
                   </Button>
 
-                  <div onClick={() => !isPro && setProModalOpen(true)}>
+                  <div
+                    onClick={() => {
+                      if (!hasGamerFeature(proTier)) {
+                        setProModalRequiredTier('gamer')
+                        setProModalOpen(true)
+                      }
+                    }}
+                  >
                     <Button
                       className='bg-btn-secondary text-btn-text font-bold'
                       radius='full'
-                      isDisabled={tradingCardContext.tradingCardsList.length === 0 || !isPro}
+                      isDisabled={
+                        tradingCardContext.tradingCardsList.length === 0 ||
+                        !hasGamerFeature(proTier)
+                      }
                       isLoading={tradingCardContext.loadingListButton}
                       startContent={
                         !tradingCardContext.loadingListButton && <TbPackageExport fontSize={20} />
@@ -170,7 +182,9 @@ export const PageHeader = ({
                       onPress={onDupesOpen}
                     >
                       {t('tradingCards.sellDupes')}
-                      {!isPro && <ProBadge className='scale-70 -mx-2' />}
+                      {!hasGamerFeature(proTier) && (
+                        <ProBadge className='scale-70 -mx-2' requiredTier='gamer' />
+                      )}
                     </Button>
                   </div>
 

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { useGamesList } from '@/features/gameslist'
 import { useUserStore } from '@/shared/stores'
-import { autoRedeemFreeGames, checkForFreeGames } from '@/shared/utils'
+import { autoRedeemFreeGames, checkForFreeGames, hasGamerFeature } from '@/shared/utils'
 
 export function useFreeGames() {
   const gamesContext = useGamesList()
@@ -10,7 +10,7 @@ export function useFreeGames() {
   const freeGamesList = useUserStore(state => state.freeGamesList)
   const setFreeGamesList = useUserStore(state => state.setFreeGamesList)
   const gamesList = useUserStore(state => state.gamesList)
-  const isPro = useUserStore(state => state.isPro)
+  const proTier = useUserStore(state => state.proTier)
   const lastRedeemedIdsRef = useRef<string>('')
 
   const freeGamesCheck = useCallback(() => {
@@ -27,7 +27,11 @@ export function useFreeGames() {
 
   // Auto redeem free games
   useEffect(() => {
-    if (isPro && userSettings.general.autoRedeemFreeGames && freeGamesList.length > 0) {
+    if (
+      hasGamerFeature(proTier) &&
+      userSettings.general.autoRedeemFreeGames &&
+      freeGamesList.length > 0
+    ) {
       // Create a unique key for the current free games list
       const ids = freeGamesList
         .map(g => g.appid)
@@ -39,7 +43,7 @@ export function useFreeGames() {
       autoRedeemFreeGames(freeGamesList, setFreeGamesList, userSummary, gamesContext)
     }
   }, [
-    isPro,
+    proTier,
     userSettings.general.autoRedeemFreeGames,
     freeGamesList,
     setFreeGamesList,

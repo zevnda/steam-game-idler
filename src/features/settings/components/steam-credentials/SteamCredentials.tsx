@@ -12,15 +12,16 @@ import {
 import { handleSaveCredentials } from '@/features/settings/utils/steam-credentials/handleSteamCredentials'
 import { CustomModal, ExtLink, ProBadge, showDangerToast } from '@/shared/components'
 import { useStateStore, useUserStore } from '@/shared/stores'
-import { logEvent } from '@/shared/utils'
+import { hasGamerFeature, logEvent } from '@/shared/utils'
 
 export const SteamCredentials = () => {
   const { t } = useTranslation()
   const setProModalOpen = useStateStore(state => state.setProModalOpen)
+  const setProModalRequiredTier = useStateStore(state => state.setProModalRequiredTier)
   const userSummary = useUserStore(state => state.userSummary)
   const userSettings = useUserStore(state => state.userSettings)
   const setUserSettings = useUserStore(state => state.setUserSettings)
-  const isPro = useUserStore(state => state.isPro)
+  const proTier = useUserStore(state => state.proTier)
   const cardSettings = useCardSettings()
   const { isOpen, onOpenChange } = useDisclosure()
 
@@ -96,7 +97,7 @@ export const SteamCredentials = () => {
               <p className='text-sm text-content font-bold'>
                 {t('settings.steamCredentials.automated')}
               </p>
-              {!isPro && <ProBadge className='scale-65' />}
+              {!hasGamerFeature(proTier) && <ProBadge className='scale-65' requiredTier='gamer' />}
             </div>
             <p className='text-xs text-altwhite'>
               {t('settings.steamCredentials.automated.description')}
@@ -111,13 +112,18 @@ export const SteamCredentials = () => {
 
           <div
             className='flex flex-col justify-end gap-2'
-            onClick={() => !isPro && setProModalOpen(true)}
+            onClick={() => {
+              if (!hasGamerFeature(proTier)) {
+                setProModalRequiredTier('gamer')
+                setProModalOpen(true)
+              }
+            }}
           >
             <Button
               size='sm'
               className='bg-btn-secondary text-btn-text font-bold'
               radius='full'
-              isDisabled={!isPro}
+              isDisabled={!hasGamerFeature(proTier)}
               onPress={handleShowSteamLoginWindow}
             >
               {cardSettings.hasCookies ? t('common.reauthenticate') : t('common.signInSteam')}
@@ -127,7 +133,7 @@ export const SteamCredentials = () => {
               variant='light'
               radius='full'
               color='danger'
-              isDisabled={!isPro}
+              isDisabled={!hasGamerFeature(proTier)}
               onPress={handleSignOutCurrentUser}
             >
               {t('common.signOut')}

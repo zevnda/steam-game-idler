@@ -1,7 +1,7 @@
 import { cn } from '@heroui/react'
 import { Unbounded } from 'next/font/google'
-import { Logo, ProBadge } from '@/shared/components'
-import { useStateStore, useUserStore } from '@/shared/stores'
+import { Logo } from '@/shared/components'
+import { useStateStore } from '@/shared/stores'
 
 const unbounded = Unbounded({
   subsets: ['latin'],
@@ -10,7 +10,6 @@ const unbounded = Unbounded({
 
 export const Brand = () => {
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
-  const isPro = useUserStore(state => state.isPro)
 
   return (
     <div
@@ -34,7 +33,6 @@ export const Brand = () => {
             data-tauri-drag-region
           >
             Steam Game Idler
-            {isPro !== null && isPro === true && <ProBadge className='scale-60 -ml-1.5' />}
           </p>
         </div>
       )}

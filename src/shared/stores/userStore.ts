@@ -15,6 +15,14 @@ interface UserStore {
   setFreeGamesList: (value: Game[] | ((prev: Game[]) => Game[])) => void
   isPro: boolean | null
   setIsPro: (value: boolean | null | ((prev: boolean | null) => boolean | null)) => void
+  proTier: 'casual' | 'gamer' | null
+  setProTier: (
+    value:
+      | 'casual'
+      | 'gamer'
+      | null
+      | ((prev: 'casual' | 'gamer' | null) => 'casual' | 'gamer' | null),
+  ) => void
   userSettings: UserSettings
   setUserSettings: (value: UserSettings | ((prev: UserSettings) => UserSettings)) => void
 }
@@ -51,6 +59,11 @@ export const useUserStore = create<UserStore>(set => ({
   setIsPro: value =>
     set(state => ({
       isPro: typeof value === 'function' ? value(state.isPro) : value,
+    })),
+  proTier: null,
+  setProTier: value =>
+    set(state => ({
+      proTier: typeof value === 'function' ? value(state.proTier) : value,
     })),
   userSettings: {
     gameSettings: null,

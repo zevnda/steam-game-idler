@@ -28,6 +28,7 @@ export const HelpDesk = () => {
   const userSummary = useUserStore(state => state.userSummary)
   const userSettings = useUserStore(state => state.userSettings)
   const isPro = useUserStore(state => state.isPro)
+  const proTier = useUserStore(state => state.proTier)
 
   // If it's the user's first time using SGI, show an overlay
   // that directs them to the help desk
@@ -105,12 +106,12 @@ export const HelpDesk = () => {
       if (userSummary && typeof window !== 'undefined' && window.$chatway) {
         window.$chatway.updateChatwayCustomData(
           'name',
-          `${userSummary?.personaName} (${userSummary?.steamId}, v${version}, ${isPro ? 'PRO' : 'Free'}, ${isPortable ? 'Portable' : 'Installer'})`,
+          `${userSummary?.personaName} (${userSummary?.steamId}, v${version}, ${proTier ? proTier.charAt(0).toUpperCase() + proTier.slice(1) : 'Free'}, ${isPortable ? 'Portable' : 'Installer'})`,
         )
       }
     }
     setUserData()
-  }, [userSummary, userSettings, isPro])
+  }, [userSummary, userSettings, isPro, proTier])
 
   const handleToggle = async () => {
     if (!isLoaded || typeof window === 'undefined' || !window.$chatway) return
@@ -126,7 +127,7 @@ export const HelpDesk = () => {
       if (userSummary) {
         window.$chatway.updateChatwayCustomData(
           'name',
-          `${userSummary?.personaName} (${userSummary?.steamId}, v${version}, ${isPro ? 'PRO' : 'Free'}, ${isPortable ? 'Portable' : 'Installer'})`,
+          `${userSummary?.personaName} (${userSummary?.steamId}, v${version}, ${proTier ? proTier.charAt(0).toUpperCase() + proTier.slice(1) : 'Free'}, ${isPortable ? 'Portable' : 'Installer'})`,
         )
       }
       window.$chatway.openChatwayWidget()
