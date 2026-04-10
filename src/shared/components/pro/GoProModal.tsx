@@ -162,7 +162,7 @@ export const GoProModal = () => {
             </Tabs>
 
             <ExtLink
-              href='https://steamgameidler.com/docs/pro'
+              href='https://steamgameidler.com/pro'
               className='text-dynamic hover:text-dynamic-hover duration-150 text-xs'
             >
               <p>{t('proMode.modal.learnMore')}</p>
