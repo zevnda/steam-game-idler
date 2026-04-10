@@ -231,7 +231,7 @@ export const AdSlot = () => {
       >
         <p>
           {t('proMode.removeAdsWith')}
-          <ProBadge />
+          <ProBadge requiredTier='pro' className='scale-75' />
         </p>
       </div>
     </div>
