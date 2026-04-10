@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FaCheck } from 'react-icons/fa6'
+import { TbSparkles } from 'react-icons/tb'
 import { cn, Modal, ModalBody, ModalContent, Tab, Tabs } from '@heroui/react'
 import { Manrope } from 'next/font/google'
 import Image from 'next/image'
@@ -173,7 +174,11 @@ export const GoProModal = () => {
               <ul className='space-y-1'>
                 {activeFeatures.map(key => (
                   <li key={key} className='flex items-center gap-2'>
-                    <FaCheck className='text-green-500 shrink-0' />
+                    {key === 'proMode.modal.everythingInCasual' ? (
+                      <TbSparkles className='text-purple-400 shrink-0' />
+                    ) : (
+                      <FaCheck className='text-green-500 shrink-0' />
+                    )}
                     <span>{t(key)}</span>
                   </li>
                 ))}
