@@ -15,12 +15,11 @@ import {
   useSettings,
 } from '@/features/settings'
 import { AdSlot, SocialButtons } from '@/shared/components'
-import { useNavigationStore, useUserStore } from '@/shared/stores'
+import { useNavigationStore } from '@/shared/stores'
 
 export const Settings = () => {
   const { t } = useTranslation()
   const { version, refreshKey } = useSettings()
-  const isPro = useUserStore(state => state.isPro)
   const setActivePage = useNavigationStore(state => state.setActivePage)
   const previousActivePage = useNavigationStore(state => state.previousActivePage)
   const setPreviousActivePage = useNavigationStore(state => state.setPreviousActivePage)
@@ -46,7 +45,7 @@ export const Settings = () => {
       <div className='absolute flex flex-col items-center gap-4 bottom-4 left-0 px-6 w-62.5 z-40'>
         {process.env.NODE_ENV === 'production' && (
           <div className='absolute bottom-12 left-0 right-0 flex flex-col items-center justify-end grow mb-1 overflow-hidden pointer-events-none'>
-            <AdSlot isPro={isPro} />
+            <AdSlot />
           </div>
         )}
 

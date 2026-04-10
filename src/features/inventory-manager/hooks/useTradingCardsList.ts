@@ -18,13 +18,13 @@ import {
   showSuccessToast,
 } from '@/shared/components'
 import { useStateStore, useUserStore } from '@/shared/stores'
-import { decrypt, logEvent } from '@/shared/utils'
+import { decrypt, hasGamerFeature, logEvent } from '@/shared/utils'
 
 export function useTradingCardsList() {
   const { t } = useTranslation()
   const userSummary = useUserStore(state => state.userSummary)
   const userSettings = useUserStore(state => state.userSettings)
-  const isPro = useUserStore(state => state.isPro)
+  const proTier = useUserStore(state => state.proTier)
   const loadingItemPrice = useStateStore(state => state.loadingItemPrice)
   const setLoadingItemPrice = useStateStore(state => state.setLoadingItemPrice)
   const loadingListButton = useStateStore(state => state.loadingListButton)
@@ -583,7 +583,7 @@ export function useTradingCardsList() {
   }
 
   const handleSellAllDupes = async () => {
-    if (!isPro) {
+    if (!hasGamerFeature(proTier)) {
       return
     }
 

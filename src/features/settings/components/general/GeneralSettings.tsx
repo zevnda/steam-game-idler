@@ -10,13 +10,16 @@ import {
 } from '@/features/settings'
 import { ExtLink, LanguageSwitch, ProBadge, SettingsSwitch } from '@/shared/components'
 import { useStateStore, useUserStore } from '@/shared/stores'
+import { hasGamerFeature } from '@/shared/utils'
 
 export const GeneralSettings = () => {
   const { t } = useTranslation()
   const userSummary = useUserStore(state => state.userSummary)
   const setUserSettings = useUserStore(state => state.setUserSettings)
   const isPro = useUserStore(state => state.isPro)
+  const proTier = useUserStore(state => state.proTier)
   const setProModalOpen = useStateStore(state => state.setProModalOpen)
+  const setProModalRequiredTier = useStateStore(state => state.setProModalRequiredTier)
   const { keyValue, setKeyValue, hasKey, setHasKey } = useGeneralSettings()
 
   return (
@@ -119,13 +122,20 @@ export const GeneralSettings = () => {
               <p className='text-sm text-content font-bold'>
                 {t('settings.general.autoUpdateGamesList')}
               </p>
-              {!isPro && <ProBadge className='scale-65' />}
+              {!hasGamerFeature(proTier) && <ProBadge className='scale-65' requiredTier='gamer' />}
             </div>
             <p className='text-xs text-altwhite'>
               {t('settings.general.autoUpdateGamesList.description')}
             </p>
           </div>
-          <div onClick={() => !isPro && setProModalOpen(true)}>
+          <div
+            onClick={() => {
+              if (!hasGamerFeature(proTier)) {
+                setProModalRequiredTier('gamer')
+                setProModalOpen(true)
+              }
+            }}
+          >
             <SettingsSwitch type='general' name='autoUpdateGamesList' isProSetting={true} />
           </div>
         </div>

@@ -4,13 +4,15 @@ import { Button, Divider } from '@heroui/react'
 import { handleShowStoreLoginWindow, handleSignOutCurrentStoreUser } from '@/features/settings'
 import { Beta, ExtLink, ProBadge, SettingsSwitch } from '@/shared/components'
 import { useStateStore, useUserStore } from '@/shared/stores'
+import { hasGamerFeature } from '@/shared/utils'
 
 export const FreeGamesSettings = () => {
   const { t } = useTranslation()
-  const isPro = useUserStore(state => state.isPro)
+  const proTier = useUserStore(state => state.proTier)
   const userSettings = useUserStore(state => state.userSettings)
   const setUserSettings = useUserStore(state => state.setUserSettings)
   const setProModalOpen = useStateStore(state => state.setProModalOpen)
+  const setProModalRequiredTier = useStateStore(state => state.setProModalRequiredTier)
 
   return (
     <div className='relative flex flex-col gap-4 mt-9 pb-16 w-4/5'>
@@ -45,7 +47,7 @@ export const FreeGamesSettings = () => {
               <p className='text-sm text-content font-bold'>
                 {t('settings.general.autoRedeemFreeGames')}
               </p>
-              {!isPro && <ProBadge className='scale-65' />}
+              {!hasGamerFeature(proTier) && <ProBadge className='scale-65' requiredTier='gamer' />}
               <Beta />
             </div>
             <p className='text-xs text-altwhite'>
@@ -61,13 +63,18 @@ export const FreeGamesSettings = () => {
 
           <div
             className='flex flex-col justify-end gap-2'
-            onClick={() => !isPro && setProModalOpen(true)}
+            onClick={() => {
+              if (!hasGamerFeature(proTier)) {
+                setProModalRequiredTier('gamer')
+                setProModalOpen(true)
+              }
+            }}
           >
             <Button
               size='sm'
               className='bg-btn-secondary text-btn-text font-bold'
               radius='full'
-              isDisabled={!isPro}
+              isDisabled={!hasGamerFeature(proTier)}
               onPress={() => handleShowStoreLoginWindow(setUserSettings)}
             >
               {userSettings.general?.autoRedeemFreeGames
@@ -79,7 +86,7 @@ export const FreeGamesSettings = () => {
               variant='light'
               radius='full'
               color='danger'
-              isDisabled={!isPro}
+              isDisabled={!hasGamerFeature(proTier)}
               onPress={() => handleSignOutCurrentStoreUser(setUserSettings)}
             >
               {t('common.signOut')}

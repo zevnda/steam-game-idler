@@ -171,17 +171,17 @@ export default function TermsOfService() {
 
             <h3 className='text-xl font-medium mb-3'>6.2 Subscription Tiers and Pricing</h3>
             <p className='mb-4'>
-              PRO is available in three subscription tiers, all offering the same benefits:
+              PRO is available in two subscription tiers, each offering a different set of benefits:
             </p>
             <ul className='list-disc pl-6 space-y-2 mb-4'>
               <li>
-                <strong>Casual:</strong> $2 USD per month
+                <strong>Casual:</strong> $2 USD per month — ad-free experience, exclusive themes,
+                Discord role
               </li>
               <li>
-                <strong>Gamer:</strong> $4 USD per month
-              </li>
-              <li>
-                <strong>Legendary:</strong> $6 USD per month
+                <strong>Gamer:</strong> $4 USD per month — everything in Casual, plus automated
+                Steam credentials, games list updates, free game redemption, and sell duplicate
+                inventory items
               </li>
             </ul>
             <p className='mb-4'>

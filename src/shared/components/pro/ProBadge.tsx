@@ -1,22 +1,25 @@
 import { cn } from '@heroui/react'
-import { useUserStore } from '@/shared/stores'
 
-export const ProBadge = ({ className }: { className?: string }) => {
-  const isPro = useUserStore(state => state.isPro)
+interface ProBadgeProps {
+  className?: string
+  requiredTier?: 'casual' | 'gamer'
+}
 
+export const ProBadge = ({ className, requiredTier = 'casual' }: ProBadgeProps) => {
   return (
     <span
       className={cn(
-        'inline-block rounded-full px-2 ml-1 font-black text-white italic select-none',
+        'inline-block rounded-full px-2 font-black text-white italic select-none',
         className,
       )}
       style={{
-        backgroundImage: isPro
-          ? 'linear-gradient(90deg, hsl(var(--heroui-dynamic) / 0.2) 0%, hsl(var(--heroui-dynamic) / 0.8) 100%)'
-          : 'linear-gradient(100deg, #154d66ff 0%, #227ca5ff 40%, #2eabe5ff 70%, #34bfffff 100%)',
+        backgroundImage:
+          requiredTier === 'gamer'
+            ? 'linear-gradient(100deg, #3b0764ff 0%, #6b21a8ff 40%, #9333eaff 70%, #c026d3ff 100%)'
+            : 'linear-gradient(100deg, #154d66ff 0%, #227ca5ff 40%, #2eabe5ff 70%, #34bfffff 100%)',
       }}
     >
-      PRO
+      {requiredTier === 'gamer' ? 'GAMER' : 'CASUAL'}
     </span>
   )
 }

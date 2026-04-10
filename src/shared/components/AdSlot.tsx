@@ -3,10 +3,13 @@ import { useTranslation } from 'react-i18next'
 import { cn, Spinner } from '@heroui/react'
 import Image from 'next/image'
 import { ProBadge } from '@/shared/components'
-import { useNavigationStore, useStateStore } from '@/shared/stores'
+import { useNavigationStore, useStateStore, useUserStore } from '@/shared/stores'
+import { hasCasualFeature } from '@/shared/utils'
 
-export const AdSlot = ({ isPro }: { isPro: boolean | null }) => {
+export const AdSlot = () => {
   const { t } = useTranslation()
+  const isPro = useUserStore(state => state.isPro)
+  const proTier = useUserStore(state => state.proTier)
   const activePage = useNavigationStore(state => state.activePage)
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
   const setProModalOpen = useStateStore(state => state.setProModalOpen)
@@ -196,8 +199,8 @@ export const AdSlot = ({ isPro }: { isPro: boolean | null }) => {
         'transition-all ease-in-out border border-border p-2 pb-1 rounded-lg',
         sidebarCollapsed && activePage !== 'settings' ? 'scale-[.160]' : 'scale-[.75]',
         isPro === null && 'opacity-0',
-        isPro === true && 'opacity-0',
-        isPro === false && 'opacity-100',
+        isPro !== null && hasCasualFeature(proTier) && 'opacity-0',
+        isPro !== null && !hasCasualFeature(proTier) && 'opacity-100',
       )}
     >
       <div className='relative flex justify-center items-center overflow-hidden rounded-lg'>

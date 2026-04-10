@@ -4,13 +4,13 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { showDangerToast, showPrimaryToast } from '@/shared/components'
 import { useSearchStore, useUserStore } from '@/shared/stores'
-import { decrypt, logEvent } from '@/shared/utils'
+import { decrypt, hasGamerFeature, logEvent } from '@/shared/utils'
 
 export function useGamesList() {
   const { t } = useTranslation()
   const userSummary = useUserStore(state => state.userSummary)
   const userSettings = useUserStore(state => state.userSettings)
-  const isPro = useUserStore(state => state.isPro)
+  const proTier = useUserStore(state => state.proTier)
   const gamesList = useUserStore(state => state.gamesList)
   const setGamesList = useUserStore(state => state.setGamesList)
   const isQuery = useSearchStore(state => state.isQuery)
@@ -37,7 +37,12 @@ export function useGamesList() {
 
   const silentlyUpdateGamesList = useCallback(
     async (showToast: boolean) => {
-      if (!userSummary?.steamId || !isPro || !userSettings.general?.autoUpdateGamesList) return
+      if (
+        !userSummary?.steamId ||
+        !hasGamerFeature(proTier) ||
+        !userSettings.general?.autoUpdateGamesList
+      )
+        return
 
       // Respect the shared 15-minute cooldown regardless of how this was triggered
       const lastUpdate = Number(localStorage.getItem(AUTO_UPDATE_STORAGE_KEY) || 0)
@@ -70,7 +75,7 @@ export function useGamesList() {
     },
     [
       userSummary?.steamId,
-      isPro,
+      proTier,
       userSettings.general?.autoUpdateGamesList,
       userSettings.general?.apiKey,
       AUTO_UPDATE_COOLDOWN_MS,
@@ -153,7 +158,7 @@ export function useGamesList() {
   // Auto-update games list for PRO users when the setting is enabled
   useEffect(() => {
     if (isLoading) return
-    if (!isPro || !userSettings.general?.autoUpdateGamesList) return
+    if (!hasGamerFeature(proTier) || !userSettings.general?.autoUpdateGamesList) return
 
     // Check on mount — runs if >15 mins have passed since the last update (or never updated)
     silentlyUpdateGamesList(true)
@@ -161,7 +166,7 @@ export function useGamesList() {
     // Also check periodically in case the user stays on the page the whole time
     const interval = setInterval(() => silentlyUpdateGamesList(false), 15 * 60 * 1000)
     return () => clearInterval(interval)
-  }, [isLoading, isPro, userSettings.general?.autoUpdateGamesList, silentlyUpdateGamesList])
+  }, [isLoading, proTier, userSettings.general?.autoUpdateGamesList, silentlyUpdateGamesList])
 
   return {
     isLoading,
