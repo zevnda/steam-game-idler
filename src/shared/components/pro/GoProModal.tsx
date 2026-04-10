@@ -187,6 +187,10 @@ export const GoProModal = () => {
                 </li>
                 <li className='flex items-center gap-2'>
                   <FaCheck className='text-green-500' />
+                  <span>{t('proMode.modal.listDupes')}</span>
+                </li>
+                <li className='flex items-center gap-2'>
+                  <FaCheck className='text-green-500' />
                   <span>{t('proMode.modal.themes')}</span>
                 </li>
                 <li className='flex items-center gap-2'>
@@ -196,10 +200,6 @@ export const GoProModal = () => {
                 <li className='flex items-center gap-2'>
                   <FaCheck className='text-green-500' />
                   <span>{t('proMode.modal.cancelAnytime')}</span>
-                </li>
-                <li className='flex items-center gap-2'>
-                  <FaCheck className='text-green-500' />
-                  <span>{t('proMode.modal.moreBenefits')}</span>
                 </li>
               </ul>
             </div>
