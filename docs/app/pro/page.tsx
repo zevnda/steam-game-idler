@@ -1,6 +1,16 @@
 import { FaArrowLeft, FaArrowRight, FaCheck, FaDiscord } from 'react-icons/fa6'
 import { FiBook } from 'react-icons/fi'
-import { TbCards, TbDeviceGamepad2, TbSparkles } from 'react-icons/tb'
+import {
+  TbAd,
+  TbCards,
+  TbCurrencyDollar,
+  TbDeviceGamepad2,
+  TbGift,
+  TbKey,
+  TbPalette,
+  TbRefresh,
+  TbSparkles,
+} from 'react-icons/tb'
 import Link from 'next/link'
 
 export const metadata = {
@@ -27,37 +37,55 @@ export const metadata = {
   },
 }
 
-const casualFeatures = [
+const allFeatures = [
   {
+    icon: TbAd,
     title: 'Ad-Free Experience',
     description: 'Enjoy SGI without any advertisements for a completely clean interface.',
+    tier: 'casual',
+    span: 1,
   },
   {
+    icon: TbPalette,
     title: 'Exclusive Themes',
     description: 'Customize SGI with 6 unique themes available only to PRO subscribers.',
+    tier: 'casual',
+    span: 1,
   },
   {
+    icon: FaDiscord,
     title: 'Unique Discord Role',
     description: 'Stand out in our Discord community with a special @PRO role.',
+    tier: 'casual',
+    span: 1,
   },
-]
-
-const gamerFeatures = [
   {
+    icon: TbKey,
     title: 'Automated Steam Credentials',
     description: 'Instantly retrieve your Steam credentials without any manual input.',
+    tier: 'gamer',
+    span: 1,
   },
   {
+    icon: TbRefresh,
     title: 'Automated Games List Updates',
     description: 'Your games list updates automatically every 15 minutes as you add games.',
+    tier: 'gamer',
+    span: 2,
   },
   {
+    icon: TbGift,
     title: 'Automated Free Game Redemption',
     description: 'Automatically redeem free games on Steam the moment they become available.',
+    tier: 'gamer',
+    span: 2,
   },
   {
+    icon: TbCurrencyDollar,
     title: 'Sell Duplicate Inventory Items',
     description: 'Instantly list all duplicate inventory items for sale with a single click.',
+    tier: 'gamer',
+    span: 1,
   },
 ]
 
@@ -119,40 +147,10 @@ export default async function ProPage() {
               </span>
             </h1>
 
-            <p className='text-lg sm:text-xl text-gray-600 mb-4 leading-relaxed'>
-              Every core feature in SGI — card farming, achievement management, game idling,
-              inventory tools, and more — is{' '}
-              <span className='font-semibold text-gray-800'>
-                completely free and will always stay that way
-              </span>
-              .
-            </p>
             <p className='text-base sm:text-lg text-gray-500 mb-10 leading-relaxed'>
-              PRO doesn&apos;t lock anything away. It layers extras{' '}
-              <span className='italic'>on top</span> of the free experience: automation features,
-              personalization options, and quality-of-life improvements that take SGI further.
-              It&apos;s an optional way to support a solo developer and get something meaningful
-              back in return.
-            </p>
-
-            <div className='flex flex-col sm:flex-row gap-4 justify-center'>
-              <a
-                href={priceData.tierOne.url}
-                className='inline-flex items-center justify-center px-8 py-4 bg-linear-to-r from-purple-500 to-indigo-500 text-white font-bold rounded-xl hover:opacity-90 transition-opacity duration-200 shadow-lg'
-              >
-                Get Casual — ${priceData.tierOne.price}/mo
-                <FaArrowRight className='w-4 h-4 ml-3' />
-              </a>
-              <a
-                href={priceData.tierTwo.url}
-                className='inline-flex items-center justify-center px-8 py-4 bg-white border-2 border-purple-300 text-purple-700 font-bold rounded-xl hover:border-purple-500 transition-colors duration-200 shadow'
-              >
-                Get Gamer — ${priceData.tierTwo.price}/mo
-                <FaArrowRight className='w-4 h-4 ml-3' />
-              </a>
-            </div>
-            <p className='text-xs text-gray-400 mt-4'>
-              Prices in USD, excluding taxes. Cancel anytime.
+              Core features of SGI are and always will be free. PRO just makes it{' '}
+              <span className='font-semibold text-gray-700'>better</span> — less friction, more
+              automation, and a few extras that are genuinely worth having.
             </p>
           </div>
         </div>
@@ -170,7 +168,7 @@ export default async function ProPage() {
               </span>
             </h2>
             <p className='text-center text-gray-500 mb-12'>
-              Both tiers include everything in the tier below them.
+              Unlock the benefits that matter to you.
             </p>
 
             <div className='grid md:grid-cols-2 gap-8'>
@@ -186,21 +184,19 @@ export default async function ProPage() {
                     </span>
                     <span className='text-gray-500 mb-2'>/month</span>
                   </div>
-                  <p className='text-gray-500 text-sm mt-1'>
-                    Perfect for a cleaner, personalised experience.
-                  </p>
                 </div>
 
                 <ul className='space-y-3 flex-1 mb-8'>
-                  {casualFeatures.map(f => (
-                    <li key={f.title} className='flex items-start gap-3'>
-                      <FaCheck className='w-4 h-4 text-emerald-500 mt-0.5 shrink-0' />
-                      <div>
-                        <p className='font-semibold text-gray-800 text-sm'>{f.title}</p>
-                        <p className='text-xs text-gray-500'>{f.description}</p>
-                      </div>
-                    </li>
-                  ))}
+                  {allFeatures
+                    .filter(f => f.tier === 'casual')
+                    .map(f => (
+                      <li key={f.title} className='flex items-start gap-3'>
+                        <FaCheck className='w-4 h-4 text-emerald-500 mt-0.5 shrink-0' />
+                        <div>
+                          <p className='font-semibold text-gray-800 text-sm'>{f.title}</p>
+                        </div>
+                      </li>
+                    ))}
                 </ul>
 
                 <a
@@ -230,27 +226,25 @@ export default async function ProPage() {
                     </span>
                     <span className='text-gray-500 mb-2'>/month</span>
                   </div>
-                  <p className='text-gray-500 text-sm mt-1'>
-                    Everything in Casual, plus full automation.
-                  </p>
                 </div>
 
                 <ul className='space-y-3 flex-1 mb-8'>
                   <li className='flex items-start gap-3'>
                     <TbSparkles className='w-4 h-4 text-purple-400 mt-0.5 shrink-0' />
-                    <p className='font-semibold text-gray-500 text-sm italic'>
+                    <p className='font-semibold text-gray-800 text-sm italic'>
                       Everything in Casual
                     </p>
                   </li>
-                  {gamerFeatures.map(f => (
-                    <li key={f.title} className='flex items-start gap-3'>
-                      <FaCheck className='w-4 h-4 text-emerald-500 mt-0.5 shrink-0' />
-                      <div>
-                        <p className='font-semibold text-gray-800 text-sm'>{f.title}</p>
-                        <p className='text-xs text-gray-500'>{f.description}</p>
-                      </div>
-                    </li>
-                  ))}
+                  {allFeatures
+                    .filter(f => f.tier === 'gamer')
+                    .map(f => (
+                      <li key={f.title} className='flex items-start gap-3'>
+                        <FaCheck className='w-4 h-4 text-emerald-500 mt-0.5 shrink-0' />
+                        <div>
+                          <p className='font-semibold text-gray-800 text-sm'>{f.title}</p>
+                        </div>
+                      </li>
+                    ))}
                 </ul>
 
                 <a
@@ -262,6 +256,50 @@ export default async function ProPage() {
                 </a>
               </div>
             </div>
+
+            <p className='text-xs text-center text-gray-400 mt-4'>
+              Prices in USD, excluding taxes. Cancel anytime.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Features section */}
+      <section className='py-16 relative'>
+        <div className='container mx-auto relative z-10 px-4 sm:px-6 md:px-8'>
+          <div className='max-w-5xl mx-auto'>
+            <h2 className='text-3xl sm:text-4xl font-black text-gray-800 mb-4 text-center'>
+              EVERYTHING YOU
+              <span className='block text-transparent bg-clip-text bg-linear-to-r from-purple-500 to-indigo-500'>
+                GET
+              </span>
+            </h2>
+            <p className='text-center text-gray-500 mb-12'>
+              A closer look at every benefit included with PRO.
+            </p>
+
+            <div className='grid grid-cols-3 gap-4 auto-rows-fr'>
+              {allFeatures.map(f => (
+                <div
+                  key={f.title}
+                  className={[
+                    'bg-white rounded-2xl p-6 shadow-sm border flex flex-col',
+                    f.span === 2 ? 'col-span-2' : 'col-span-1',
+                    f.tier === 'casual' ? 'border-blue-100' : 'border-purple-100',
+                  ].join(' ')}
+                >
+                  <div className='flex items-start justify-between mb-4'>
+                    <f.icon
+                      className={`w-8 h-8 ${
+                        f.tier === 'casual' ? 'text-blue-500' : 'text-purple-500'
+                      }`}
+                    />
+                  </div>
+                  <h3 className='font-bold text-gray-800 mb-2'>{f.title}</h3>
+                  <p className='text-sm text-gray-500 leading-relaxed'>{f.description}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -270,37 +308,53 @@ export default async function ProPage() {
       <section className='py-16 relative'>
         <div className='absolute inset-0 bg-linear-to-br from-purple-50 to-indigo-50' />
         <div className='container mx-auto relative z-10 px-4 sm:px-6 md:px-8'>
-          <div className='max-w-3xl mx-auto text-center'>
-            <h2 className='text-3xl sm:text-4xl font-black text-gray-800 mb-6'>
+          <div className='max-w-5xl mx-auto'>
+            <h2 className='text-3xl sm:text-4xl font-black text-gray-800 mb-4 text-center'>
               WHY SUPPORT
               <span className='block text-transparent bg-clip-text bg-linear-to-r from-purple-500 to-indigo-500'>
                 STEAM GAME IDLER?
               </span>
             </h2>
-            <p className='text-gray-600 leading-relaxed mb-8'>
-              SGI is built and maintained by a single developer in their spare time. It&apos;s
-              completely free — and always will be. PRO subscriptions directly fund ongoing
-              development, server costs, and new features. Every subscriber makes a real difference.
+            <p className='text-center text-gray-500 max-w-2xl mx-auto mb-12'>
+              SGI is a solo passion project built entirely in spare time. It&apos;s always been free
+              and always will be — but keeping it running and improving takes real time and money.
+              PRO subscribers make that possible.
             </p>
 
-            <div className='grid sm:grid-cols-3 gap-6'>
-              <div className='bg-white border-2 border-gray-100 rounded-xl p-6 text-center'>
-                <TbDeviceGamepad2 className='w-8 h-8 text-purple-500 mx-auto mb-3' />
-                <h3 className='font-bold text-gray-800 mb-1 text-sm'>Funds Development</h3>
-                <p className='text-xs text-gray-500'>Your subscription keeps new features coming</p>
-              </div>
-              <div className='bg-white border-2 border-gray-100 rounded-xl p-6 text-center'>
-                <TbCards className='w-8 h-8 text-purple-500 mx-auto mb-3' />
-                <h3 className='font-bold text-gray-800 mb-1 text-sm'>Covers Costs</h3>
-                <p className='text-xs text-gray-500'>
-                  Helps pay for hosting, APIs, and infrastructure
+            <div className='grid sm:grid-cols-3 gap-6 mb-8'>
+              <div className='bg-white border-2 border-gray-100 rounded-2xl p-6'>
+                <TbDeviceGamepad2 className='w-8 h-8 text-purple-500 mb-3' />
+                <h3 className='font-bold text-gray-800 mb-2'>Funds Development</h3>
+                <p className='text-sm text-gray-500 leading-relaxed'>
+                  Every subscription directly funds the time spent building new features, fixing
+                  bugs, and keeping SGI compatible with Steam updates.
                 </p>
               </div>
-              <div className='bg-white border-2 border-gray-100 rounded-xl p-6 text-center'>
-                <FaDiscord className='w-8 h-8 text-purple-500 mx-auto mb-3' />
-                <h3 className='font-bold text-gray-800 mb-1 text-sm'>Builds Community</h3>
-                <p className='text-xs text-gray-500'>PRO subscribers get a special Discord role</p>
+              <div className='bg-white border-2 border-gray-100 rounded-2xl p-6'>
+                <TbCards className='w-8 h-8 text-purple-500 mb-3' />
+                <h3 className='font-bold text-gray-800 mb-2'>Covers Running Costs</h3>
+                <p className='text-sm text-gray-500 leading-relaxed'>
+                  Hosting, APIs, infrastructure, and tooling all cost money. PRO subscriptions keep
+                  those bills paid so SGI stays online and reliable.
+                </p>
               </div>
+              <div className='bg-white border-2 border-gray-100 rounded-2xl p-6'>
+                <FaDiscord className='w-8 h-8 text-purple-500 mb-3' />
+                <h3 className='font-bold text-gray-800 mb-2'>Builds the Community</h3>
+                <p className='text-sm text-gray-500 leading-relaxed'>
+                  PRO subscribers get a dedicated Discord role and help shape the direction of SGI
+                  through direct feedback and early access to new ideas.
+                </p>
+              </div>
+            </div>
+
+            <div className='bg-white border-2 border-purple-100 rounded-2xl p-8 text-center'>
+              <p className='text-gray-600 leading-relaxed max-w-2xl mx-auto'>
+                SGI has always been free because it should be. But if you get value from it, PRO is
+                the best way to say thanks — and you get genuinely useful extras in return. No
+                lock-ins, no paywalls on core features. Just an honest way to support something you
+                use.
+              </p>
             </div>
           </div>
         </div>
