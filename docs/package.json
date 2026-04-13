@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@orama/orama": "^3.1.16",
-    "@vercel/analytics": "^1.5.0",
+    "@vercel/analytics": "^2.0.1",
     "fumadocs-core": "16.5.1",
     "fumadocs-mdx": "14.2.6",
     "fumadocs-ui": "16.5.1",
