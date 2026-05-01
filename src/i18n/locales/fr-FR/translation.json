@@ -309,6 +309,7 @@
   "toast.tradingCards.failedRemove": "Impossible d'enlever les listes actives du marché Steam",
   "toast.tradingCards.priceOutOfRange": "Le prix de l'objet {{price}} est hors des limites de vente ({{min}} - {{max}})",
   "toast.tradingCards.cardLocked": "L'objet est bloqué et ne peut pas être mise en vente",
+  "toast.tradingCards.skippedCards": "{{count}} objet(s) bloqué(s) ou hors des limites de vente ignoré(s)",
   "toast.tradingCards.skippedLockedCards": "{{count}} objet(s) bloqué(s) ignoré(s)",
   "toast.tradingCards.allCardsLocked": "Tous les objets sont bloqués et ne peuvent pas être mis en vente",
   "toast.tradingCards.allCardsOutOfRange": "Tous les objets sont hors des limites de vente et ne peuvent pas être mis en vente",
