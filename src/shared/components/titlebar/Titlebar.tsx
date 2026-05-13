@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { TbLayoutSidebar, TbLayoutSidebarFilled } from 'react-icons/tb'
 import { VscChromeClose, VscChromeMaximize, VscChromeMinimize } from 'react-icons/vsc'
 import { cn } from '@heroui/react'
-import { GoPro, HelpDesk, Menu, Notifications, ProBadge, UpdateButton } from '@/shared/components'
+import { GoPro, HelpDesk, Menu, Notifications, UpdateButton } from '@/shared/components'
 import { useTitlebar } from '@/shared/hooks'
 import {
   useLoaderStore,
@@ -23,7 +23,6 @@ export const Titlebar = () => {
   const setTransitionDuration = useStateStore(state => state.setTransitionDuration)
   const activePage = useNavigationStore(state => state.activePage)
   const isPro = useUserStore(state => state.isPro)
-  const proTier = useUserStore(state => state.proTier)
   const [isPortable, setIsPortable] = useState<boolean | null>(null)
 
   useEffect(() => {
@@ -80,11 +79,7 @@ export const Titlebar = () => {
           activePage !== 'setup' &&
           activePage !== 'settings' && (
             <div className='flex justify-center items-center h-full'>
-              {isPro === false ? (
-                <GoPro />
-              ) : (
-                <ProBadge requiredTier={proTier ?? 'casual'} className='scale-70 -ml-3' />
-              )}
+              <GoPro />
             </div>
           )}
 

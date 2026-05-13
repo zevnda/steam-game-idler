@@ -334,7 +334,7 @@ export const CustomList = ({ type }: CustomListProps) => {
 
         {list.length > 0 && (
           <div>
-            <p className='text-lg font-black px-6'>{t('customLists.yourList')}</p>
+            <p className='text-lg font-black px-6 pb-3'>{t('customLists.yourList')}</p>
           </div>
         )}
         <DndContext onDragEnd={handleDragEnd}>

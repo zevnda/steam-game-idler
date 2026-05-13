@@ -148,9 +148,10 @@ export default async function ProPage() {
             </h1>
 
             <p className='text-base sm:text-lg text-gray-500 mb-10 leading-relaxed'>
-              Core features of SGI are and always will be free. PRO just makes it{' '}
-              <span className='font-semibold text-gray-700'>better</span> — less friction, more
-              automation, and a few extras that are genuinely worth having.
+              SGI&apos;s core features are free, and always will be. PRO exists purely for users who
+              wish to support the ongoing development of SGI — the extra features are our way of
+              saying <span className='font-semibold text-gray-700'>thank you</span> for your
+              support.
             </p>
           </div>
         </div>
