@@ -15,7 +15,7 @@ import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { Alert, Button, cn } from '@heroui/react'
 import { RecommendedCardDropsCarousel } from '@/features/card-farming'
-import { EditListModal, ManualAddModal, useCustomList } from '@/features/customlists'
+import { EditListModal, ManualAddModal, useCustomList } from '@/features/custom-lists'
 import { GameCard } from '@/shared/components'
 import { useNavigationStore, useStateStore, useUserStore } from '@/shared/stores'
 import {

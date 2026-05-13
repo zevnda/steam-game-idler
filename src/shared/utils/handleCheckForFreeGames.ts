@@ -7,7 +7,7 @@ import type {
 } from '@/shared/types'
 import { invoke } from '@tauri-apps/api/core'
 import i18next from 'i18next'
-import { handleRefreshGamesList } from '@/features/gameslist/utils/handleRefreshGamesList'
+import { handleRefreshGamesList } from '@/features/games-list/utils/handleRefreshGamesList'
 import { showDangerToast, showSuccessToast } from '@/shared/components'
 import { logEvent, sendNativeNotification } from '@/shared/utils'
 

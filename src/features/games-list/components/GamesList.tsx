@@ -8,7 +8,7 @@ import {
   RecentGamesCarousel,
   RecommendedGamesCarousel,
   useGamesList,
-} from '@/features/gameslist'
+} from '@/features/games-list'
 import { GameCard } from '@/shared/components'
 import { useStateStore, useUserStore } from '@/shared/stores'
 

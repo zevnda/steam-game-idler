@@ -2,7 +2,7 @@ import type { Game } from '@/shared/types'
 import { useTranslation } from 'react-i18next'
 import { TbPlus } from 'react-icons/tb'
 import { Button, cn, Input, NumberInput, useDisclosure } from '@heroui/react'
-import { useManualAdd } from '@/features/customlists'
+import { useManualAdd } from '@/features/custom-lists'
 import { CustomModal } from '@/shared/components'
 
 interface ManualAddModalProps {
