@@ -2,8 +2,8 @@ import type { Game, SortOption } from '@/shared/types'
 import { useTranslation } from 'react-i18next'
 import { TbX } from 'react-icons/tb'
 import { Button, cn, Divider, Tab, Tabs } from '@heroui/react'
-import { handleSortingChange } from '@/features/gameslist'
-import { handleRefreshGamesList } from '@/features/gameslist/utils/handleRefreshGamesList'
+import { handleSortingChange } from '@/features/games-list'
+import { handleRefreshGamesList } from '@/features/games-list/utils/handleRefreshGamesList'
 import { useSearchStore, useUserStore } from '@/shared/stores'
 
 interface PageHeaderProps {
