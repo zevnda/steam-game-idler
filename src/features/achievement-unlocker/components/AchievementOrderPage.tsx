@@ -551,7 +551,7 @@ export const AchievementOrderPage = () => {
                       type='number'
                       size='sm'
                       min={0}
-                      step={0.1}
+                      step='any'
                       placeholder='0'
                       className='w-16 mr-1'
                       value={delayBeforeFirstUnlock.toString()}
