@@ -6,7 +6,7 @@ import { cn, Modal, ModalBody, ModalContent, Tab, Tabs } from '@heroui/react'
 import { Manrope } from 'next/font/google'
 import Image from 'next/image'
 import { ExtLink } from '@/shared/components'
-import { useStateStore } from '@/shared/stores'
+import { useStateStore, useUserStore } from '@/shared/stores'
 
 const manrope = Manrope({
   subsets: ['latin'],
@@ -46,6 +46,7 @@ export const GoProModal = () => {
   const setProModalOpen = useStateStore(state => state.setProModalOpen)
   const proModalRequiredTier = useStateStore(state => state.proModalRequiredTier)
   const setProModalRequiredTier = useStateStore(state => state.setProModalRequiredTier)
+  const proTier = useUserStore(state => state.proTier)
   const [selectedKey, setSelectedKey] = useState<string>('tierOne')
   const [priceData, setPriceData] = useState<PriceData>({
     tierOne: { url: '', price: '0' },
@@ -125,16 +126,32 @@ export const GoProModal = () => {
                     </span>
                   </p>
 
-                  <ExtLink href={priceData?.tierOne?.url} className='w-full'>
-                    <div
-                      className={cn(
-                        'flex justify-center items-center w-full rounded-full font-medium',
-                        'text-white text-md bg-[#5750DF] py-2.5 hover:bg-[#5750DF]/90 hover:scale-[1.02] duration-150',
-                      )}
+                  {proTier !== 'casual' ? (
+                    <ExtLink href={priceData?.tierOne?.url} className='w-full'>
+                      <div
+                        className={cn(
+                          'flex justify-center items-center w-full rounded-full font-medium',
+                          'text-white text-md bg-[#5750DF] py-2.5 hover:bg-[#5750DF]/90 hover:scale-[1.02] duration-150',
+                        )}
+                      >
+                        {t('proMode.modal.getStarted')}
+                      </div>
+                    </ExtLink>
+                  ) : (
+                    <ExtLink
+                      href='https://billing.stripe.com/p/login/8x23cwf8CeNE6PLaAecbC00'
+                      className='w-full'
                     >
-                      {t('proMode.modal.getStarted')}
-                    </div>
-                  </ExtLink>
+                      <div
+                        className={cn(
+                          'flex justify-center items-center w-full rounded-full font-medium',
+                          'text-black text-md bg-white py-2.5 hover:opacity-90 hover:scale-[1.02] duration-150',
+                        )}
+                      >
+                        {t('settings.general.manageSubscription')}
+                      </div>
+                    </ExtLink>
+                  )}
                 </div>
               </Tab>
 
@@ -155,19 +172,27 @@ export const GoProModal = () => {
                         'text-white text-md bg-[#5750DF] py-2.5 hover:bg-[#5750DF]/90 hover:scale-[1.02] duration-150',
                       )}
                     >
-                      {t('proMode.modal.getStarted')}
+                      {proTier === 'casual'
+                        ? t('proMode.modal.upgrade')
+                        : t('proMode.modal.getStarted')}
                     </div>
                   </ExtLink>
                 </div>
               </Tab>
             </Tabs>
 
-            <ExtLink
-              href='https://steamgameidler.com/pro'
-              className='text-dynamic hover:text-dynamic-hover duration-150 text-xs'
-            >
-              <p>{t('proMode.modal.learnMore')}</p>
-            </ExtLink>
+            {(proTier === null || selectedKey === 'tierTwo') && (
+              <ExtLink href='https://steamgameidler.com/pro' className='w-full px-12'>
+                <div
+                  className={cn(
+                    'flex justify-center items-center w-full rounded-full font-medium',
+                    'text-black text-md bg-white py-2.5 hover:opacity-90 duration-150',
+                  )}
+                >
+                  {t('proMode.modal.learnMore')}
+                </div>
+              </ExtLink>
+            )}
 
             <div className='mt-4 w-full max-w-xs text-sm'>
               <p className='font-semibold mb-3'>{t('proMode.modal.benefits')}</p>
@@ -188,13 +213,15 @@ export const GoProModal = () => {
             <Image
               src='/powered-by-stripe.svg'
               alt='Powered by Stripe'
-              className='mt-6 select-none'
+              className='mt-10 select-none'
               width={130}
               height={50}
             />
             <p className='text-[10px] text-altwhite mt-2 select-none'>
               {t('proMode.modal.footer')}
             </p>
+
+            <p className='text-[10px] text-altwhite select-none'>{t('proMode.modal.footerTwo')}</p>
           </div>
         </ModalBody>
       </ModalContent>

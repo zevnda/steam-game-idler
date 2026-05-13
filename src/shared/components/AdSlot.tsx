@@ -226,12 +226,12 @@ export const AdSlot = () => {
       </div>
 
       <div
-        className='text-xs text-altwhite mt-1 text-center cursor-pointer hover:text-white duration-150 scale-125 pointer-events-auto'
+        className='text-xs text-altwhite mb-1 mt-1.5 text-center cursor-pointer hover:text-white duration-150 scale-125 pointer-events-auto'
         onClick={() => setProModalOpen(true)}
       >
         <p>
           {t('proMode.removeAdsWith')}
-          <ProBadge requiredTier='pro' className='scale-75' />
+          <ProBadge requiredTier='pro' className='scale-85' />
         </p>
       </div>
     </div>
