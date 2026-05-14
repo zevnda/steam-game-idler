@@ -1,8 +1,10 @@
 import type { Game, InvokeCustomList, InvokeSettings } from '@/shared/types'
 import { invoke } from '@tauri-apps/api/core'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { showDangerToast } from '@/shared/components'
-import { useStateStore, useUserStore } from '@/shared/stores'
+import { useSearchStore, useStateStore, useUserStore } from '@/shared/stores'
+
+export type CustomListTab = 'all' | 'list' | 'blacklist'
 
 export function useCustomList(listName: string) {
   const isAchievementUnlocker = useStateStore(state => state.isAchievementUnlocker)
@@ -10,12 +12,9 @@ export function useCustomList(listName: string) {
   const userSummary = useUserStore(state => state.userSummary)
   const gamesList = useUserStore(state => state.gamesList)
   const setUserSettings = useUserStore(state => state.setUserSettings)
+  const searchTerm = useSearchStore(state => state.customListQueryValue)
   const [list, setList] = useState<Game[]>([])
-  const [searchTerm, setSearchTerm] = useState('')
-  const [showInList, setShowInList] = useState(false)
-  const [showBlacklist, setShowBlacklist] = useState(false)
-  const [visibleGames, setVisibleGames] = useState(50)
-  const containerRef = useRef<HTMLDivElement>(null)
+  const [activeTab, setActiveTab] = useState<CustomListTab>('list')
 
   // Filter games based on search term
   const filteredGamesList = gamesList.filter(game =>
@@ -38,34 +37,6 @@ export function useCustomList(listName: string) {
     }
     getCustomLists()
   }, [userSummary?.steamId, isAchievementUnlocker, isCardFarming, listName])
-
-  useEffect(() => {
-    // Reset visible games when search query changes
-    setVisibleGames(50)
-  }, [searchTerm])
-
-  useEffect(() => {
-    // Setup infinite scroll
-    const container = containerRef.current
-    if (container) {
-      container.addEventListener('scroll', handleScroll)
-      return () => {
-        container.removeEventListener('scroll', handleScroll)
-      }
-    }
-  }, [filteredGamesList, visibleGames])
-
-  const handleScroll = () => {
-    if (containerRef.current) {
-      // Load more games when scrolled near bottom
-      if (
-        containerRef.current.scrollTop + containerRef.current.clientHeight >=
-        containerRef.current.scrollHeight - 10
-      ) {
-        setVisibleGames(prevVisibleGames => prevVisibleGames + 50)
-      }
-    }
-  }
 
   const handleAddGame = async (game: Game) => {
     // Add single game to the custom list
@@ -132,10 +103,6 @@ export function useCustomList(listName: string) {
     })
     if (!response.error) {
       setList(response.list_data)
-      if (response.list_data.length === 0) {
-        // Switch view mode if list becomes empty
-        setShowInList(false)
-      }
     } else {
       showDangerToast(response.error)
     }
@@ -154,9 +121,9 @@ export function useCustomList(listName: string) {
       ? currentBlacklist.filter(appid => appid !== game.appid)
       : [...currentBlacklist, game.appid]
 
-    if (updatedBlacklist.length === 0) {
-      // If blacklist is empty after update, switch view mode
-      setShowBlacklist(false)
+    if (updatedBlacklist.length === 0 && activeTab === 'blacklist') {
+      // Fall back to All Games when the blacklist empties while viewing it
+      setActiveTab('all')
     }
 
     invoke<InvokeSettings>('update_user_settings', {
@@ -197,30 +164,40 @@ export function useCustomList(listName: string) {
     })
     if (!response.error) {
       setList([])
-      setShowInList(false)
     } else {
       showDangerToast(response.error)
     }
   }
 
+  const handleClearBlacklist = () => {
+    invoke<InvokeSettings>('update_user_settings', {
+      steamId: userSummary?.steamId,
+      key: 'cardFarming.blacklist',
+      value: [],
+    })
+    setUserSettings(prevSettings => ({
+      ...prevSettings,
+      cardFarming: {
+        ...prevSettings.cardFarming,
+        blacklist: [],
+      },
+    }))
+  }
+
   return {
     list,
     setList,
-    visibleGames,
     filteredGamesList,
-    containerRef,
     searchTerm,
-    setSearchTerm,
-    showInList,
-    setShowInList,
-    showBlacklist,
-    setShowBlacklist,
+    activeTab,
+    setActiveTab,
     handleAddGame,
     handleAddAllGames,
     handleAddAllResults,
     handleRemoveGame,
     handleUpdateListOrder,
     handleClearList,
+    handleClearBlacklist,
     handleBlacklistGame,
   }
 }

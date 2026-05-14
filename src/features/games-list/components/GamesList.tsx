@@ -196,7 +196,7 @@ export const GamesList = () => {
               ? `collapsed-${windowSize.width}x${windowSize.height}`
               : `expanded-${windowSize.width}x${windowSize.height}`
           }
-          height={windowSize.height - 168}
+          height={windowSize.height - 172}
           itemCount={rows.length}
           itemSize={getRowHeight}
           width='100%'

@@ -87,7 +87,7 @@ export const Achievements = () => {
       <div className='relative flex flex-wrap gap-4 mt-2'>
         <div className='flex flex-col w-full'>
           <Tabs
-            aria-label='Settings tabs'
+            aria-label='Achievements tabs'
             color='default'
             variant='solid'
             radius='full'

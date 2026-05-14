@@ -11,6 +11,8 @@ interface SearchStore {
   setAchievementQueryValue: (value: string | ((prev: string) => string)) => void
   statisticQueryValue: string
   setStatisticQueryValue: (value: string | ((prev: string) => string)) => void
+  customListQueryValue: string
+  setCustomListQueryValue: (value: string | ((prev: string) => string)) => void
   recentSearches: string[]
   addRecentSearch: (value: string) => void
   removeRecentSearch: (value: string) => void
@@ -44,6 +46,11 @@ export const useSearchStore = create<SearchStore>(set => ({
   setStatisticQueryValue: value =>
     set(state => ({
       statisticQueryValue: typeof value === 'function' ? value(state.statisticQueryValue) : value,
+    })),
+  customListQueryValue: '',
+  setCustomListQueryValue: value =>
+    set(state => ({
+      customListQueryValue: typeof value === 'function' ? value(state.customListQueryValue) : value,
     })),
   recentSearches: [],
   addRecentSearch: value =>

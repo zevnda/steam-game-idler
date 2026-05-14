@@ -1,16 +1,17 @@
 import type { Game } from '@/shared/types'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { TbPlus } from 'react-icons/tb'
 import { Button, cn, Input, NumberInput, useDisclosure } from '@heroui/react'
 import { useManualAdd } from '@/features/custom-lists'
 import { CustomModal } from '@/shared/components'
 
 interface ManualAddModalProps {
+  listTitle: string
   listName: string
   setList: React.Dispatch<React.SetStateAction<Game[]>>
 }
 
-export const ManualAddModal = ({ listName, setList }: ManualAddModalProps) => {
+export const ManualAddModal = ({ listTitle, listName, setList }: ManualAddModalProps) => {
   const { t } = useTranslation()
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const manualAdd = useManualAdd(listName, setList)
@@ -45,6 +46,9 @@ export const ManualAddModal = ({ listName, setList }: ManualAddModalProps) => {
         title={t('customLists.manualAdd.title')}
         body={
           <>
+            <p className='text-sm text-altwhite'>
+              <Trans i18nKey='customLists.manualAdd.description' values={{ listType: listTitle }} />
+            </p>
             <Input
               autoFocus
               placeholder={t('customLists.manualAdd.gameName')}
