@@ -8,7 +8,6 @@ import {
   TbCards,
   TbChecks,
   TbDeviceGamepad2,
-  TbEdit,
   TbEraser,
   TbGift,
   TbHeart,
@@ -28,7 +27,7 @@ type ButtonType =
   | 'lock'
   | 'unlock-all'
   | 'lock-all'
-  | 'edit'
+  | 'all-games'
   | 'card-farming'
   | 'card-farming-action'
   | 'achievement-unlocker'
@@ -98,10 +97,10 @@ export default function MockButton({ type, content }: MockButtonProps) {
         <TbLockOpen fontSize={16} className='inline' /> Unlock All
       </span>
     )
-  } else if (type === 'edit') {
+  } else if (type === 'all-games') {
     return (
       <span className='inline-flex align-middle items-center justify-center bg-icon-light dark:bg-icon-dark text-icon-light dark:text-icon-dark text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
-        <TbEdit fontSize={16} className='inline' /> Edit List
+        All Games
       </span>
     )
   } else if (type === 'card-farming') {

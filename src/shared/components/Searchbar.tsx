@@ -32,6 +32,8 @@ export const Searchbar = ({ isModalOpen = false, onModalClose }: SearchbarProps)
       searchStore.setGameQueryValue(query)
     } else if (activePage === 'inventoryManager' && !showAchievements) {
       searchStore.setTradingCardQueryValue(query)
+    } else if (activePage.includes('customlists') && !showAchievements) {
+      searchStore.setCustomListQueryValue(query)
     } else if (showAchievements && currentTab === 'achievements') {
       searchStore.setAchievementQueryValue(query)
     } else if (showAchievements && currentTab === 'statistics') {
@@ -46,6 +48,9 @@ export const Searchbar = ({ isModalOpen = false, onModalClose }: SearchbarProps)
     if (activePage === 'inventoryManager' && !showAchievements) {
       return searchStore.tradingCardQueryValue
     }
+    if (activePage.includes('customlists') && !showAchievements) {
+      return searchStore.customListQueryValue
+    }
     if (showAchievements && currentTab === 'achievements') {
       return searchStore.achievementQueryValue
     }
@@ -59,6 +64,7 @@ export const Searchbar = ({ isModalOpen = false, onModalClose }: SearchbarProps)
     currentTab,
     searchStore.gameQueryValue,
     searchStore.tradingCardQueryValue,
+    searchStore.customListQueryValue,
     searchStore.achievementQueryValue,
     searchStore.statisticQueryValue,
   ])

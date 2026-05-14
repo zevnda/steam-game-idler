@@ -59,16 +59,20 @@ export const PageHeader = ({
               <p className='text-sm text-altwhite font-bold'>{t('common.sortBy')}</p>
 
               <Tabs
+                size='lg'
                 aria-label='sort options'
                 items={sortOptions}
                 selectedKey={sortStyle}
                 radius='full'
                 classNames={{
-                  tabList: 'gap-0 w-full bg-item-active',
-                  tab: 'data-[hover-unselected=true]:!bg-item-hover data-[hover-unselected=true]:opacity-100',
+                  tabList: 'gap-0 bg-item-active',
+                  tab: cn(
+                    'data-[hover-unselected=true]:!bg-item-hover',
+                    'data-[hover-unselected=true]:opacity-100',
+                  ),
+                  cursor: '!bg-item-active w-full',
                   tabContent:
-                    'text-sm group-data-[selected=true]:text-dynamic text-altwhite font-bold',
-                  cursor: '!bg-dynamic/10 w-full',
+                    'text-sm group-data-[selected=true]:text-content text-altwhite font-bold',
                 }}
                 onSelectionChange={key => {
                   handleSortingChange(key as string, setSortStyle)

@@ -30,6 +30,10 @@ export function useGamesList() {
   const AUTO_UPDATE_COOLDOWN_MS = 15 * 60 * 1000
   const AUTO_UPDATE_STORAGE_KEY = 'gamesListLastAutoUpdate'
 
+  useEffect(() => {
+    return () => setGameQueryValue('')
+  }, [setGameQueryValue])
+
   // Keep ref in sync with latest gamesList to avoid stale closures in auto-update
   useEffect(() => {
     gamesListRef.current = gamesList

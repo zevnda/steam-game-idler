@@ -2,24 +2,28 @@ import type {
   ActivePageType,
   CurrentSettingsTabType,
   Game,
-  InvokeSettings,
-  UserSummary,
+  // InvokeSettings,
+  // UserSummary,
 } from '@/shared/types'
 import type { DragEndEvent } from '@dnd-kit/core'
-import { invoke } from '@tauri-apps/api/core'
-import { useCallback, useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { TbAward, TbCards, TbEdit, TbHeart, TbHourglassLow, TbSettings } from 'react-icons/tb'
+// import { invoke } from '@tauri-apps/api/core'
+import { memo, useCallback, useEffect, useMemo, useState } from 'react'
+import { Trans, useTranslation } from 'react-i18next'
+import { FaMinus, FaPlus } from 'react-icons/fa6'
+import { TbAward, TbCards, TbHeart, TbHourglassLow, TbSettings, TbX } from 'react-icons/tb'
+import { FixedSizeList as List } from 'react-window'
 import { DndContext } from '@dnd-kit/core'
 import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { Alert, Button, cn } from '@heroui/react'
-import { RecommendedCardDropsCarousel } from '@/features/card-farming'
-import { EditListModal, ManualAddModal, useCustomList } from '@/features/custom-lists'
+import { Button, cn, Divider, Tab, Tabs } from '@heroui/react'
+import i18next from 'i18next'
+import Image from 'next/image'
+// import { RecommendedCardDropsCarousel } from '@/features/card-farming'
+import { ManualAddModal, useCustomList } from '@/features/custom-lists'
 import { GameCard } from '@/shared/components'
-import { useNavigationStore, useStateStore, useUserStore } from '@/shared/stores'
+import { useNavigationStore, useSearchStore, useStateStore, useUserStore } from '@/shared/stores'
 import {
-  getAllGamesWithDrops,
+  // getAllGamesWithDrops,
   startAchievementUnlocker,
   startAutoIdleGamesImpl,
   startCardFarming,
@@ -35,11 +39,11 @@ interface CustomListProps {
   type: CustomListType
 }
 
-interface GameWithDropsData {
-  id: string
-  name: string
-  remaining: number
-}
+// interface GameWithDropsData {
+//   id: string
+//   name: string
+//   remaining: number
+// }
 
 interface ListTypeConfig {
   title: string
@@ -57,26 +61,22 @@ export const CustomList = ({ type }: CustomListProps) => {
   const {
     list,
     setList,
-    visibleGames,
     filteredGamesList,
-    containerRef,
     searchTerm,
-    setSearchTerm,
-    showInList,
-    setShowInList,
-    showBlacklist,
-    setShowBlacklist,
+    activeTab,
+    setActiveTab,
     handleAddGame,
     handleAddAllGames,
     handleAddAllResults,
     handleRemoveGame,
     handleUpdateListOrder,
     handleClearList,
+    handleClearBlacklist,
     handleBlacklistGame,
   } = useCustomList(type)
-  const [isEditModalOpen, setEditModalOpen] = useState(false)
-  const [gamesWithDrops, setGamesWithDrops] = useState<Game[]>([])
-  const [isLoadingDrops, setIsLoadingDrops] = useState(false)
+  const setCustomListQueryValue = useSearchStore(state => state.setCustomListQueryValue)
+  // const [gamesWithDrops, setGamesWithDrops] = useState<Game[]>([])
+  // const [isLoadingDrops, setIsLoadingDrops] = useState(false)
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
   const transitionDuration = useStateStore(state => state.transitionDuration)
   const isCardFarming = useStateStore(state => state.isCardFarming)
@@ -89,6 +89,40 @@ export const CustomList = ({ type }: CustomListProps) => {
   const userSummary = useUserStore(state => state.userSummary)
   const userSettings = useUserStore(state => state.userSettings)
   const [columnCount, setColumnCount] = useState(5)
+  const [windowInnerHeight, setWindowInnerHeight] = useState(window.innerHeight)
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowInnerHeight(window.innerHeight)
+    }
+    window.addEventListener('resize', handleResize)
+    handleResize()
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [])
+
+  const blacklist = useMemo(
+    () => userSettings.cardFarming.blacklist || [],
+    [userSettings.cardFarming.blacklist],
+  )
+
+  const blacklistedGames = useMemo(
+    () => filteredGamesList.filter(g => blacklist.includes(g.appid)),
+    [filteredGamesList, blacklist],
+  )
+
+  const filteredList = useMemo(
+    () =>
+      searchTerm
+        ? list.filter(item => item.name.toLowerCase().includes(searchTerm.toLowerCase()))
+        : list,
+    [list, searchTerm],
+  )
+
+  useEffect(() => {
+    return () => setCustomListQueryValue('')
+  }, [setCustomListQueryValue])
 
   const handleResize = useCallback(() => {
     if (window.innerWidth >= 3200) {
@@ -123,50 +157,50 @@ export const CustomList = ({ type }: CustomListProps) => {
     }
   }
 
-  useEffect(() => {
-    const getGamesWithDrops = async () => {
-      if (type === 'cardFarmingList' && userSettings?.general?.showCardDropsCarousel) {
-        const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
+  // useEffect(() => {
+  //   const getGamesWithDrops = async () => {
+  //     if (type === 'cardFarmingList' && userSettings?.general?.showCardDropsCarousel) {
+  //       const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
 
-        const cachedUserSettings = await invoke<InvokeSettings>('get_user_settings', {
-          steamId: userSummary?.steamId,
-        })
+  //       const cachedUserSettings = await invoke<InvokeSettings>('get_user_settings', {
+  //         steamId: userSummary?.steamId,
+  //       })
 
-        setIsLoadingDrops(true)
+  //       setIsLoadingDrops(true)
 
-        const credentials = cachedUserSettings.settings.cardFarming.credentials
+  //       const credentials = cachedUserSettings.settings.cardFarming.credentials
 
-        if (!credentials?.sid || !credentials?.sls) {
-          setIsLoadingDrops(false)
-          return
-        }
+  //       if (!credentials?.sid || !credentials?.sls) {
+  //         setIsLoadingDrops(false)
+  //         return
+  //       }
 
-        const gamesWithDropsData = (await getAllGamesWithDrops(
-          userSummary?.steamId,
-          credentials.sid,
-          credentials.sls,
-          credentials?.sma,
-        )) as unknown as GameWithDropsData[]
+  //       const gamesWithDropsData = (await getAllGamesWithDrops(
+  //         userSummary?.steamId,
+  //         credentials.sid,
+  //         credentials.sls,
+  //         credentials?.sma,
+  //       )) as unknown as GameWithDropsData[]
 
-        const parsedGamesData: Game[] = gamesWithDropsData.map((game: GameWithDropsData) => ({
-          appid: parseInt(game.id),
-          name: game.name,
-          playtime_forever: 0,
-          img_icon_url: '',
-          has_community_visible_stats: false,
-          remaining: game.remaining,
-        }))
+  //       const parsedGamesData: Game[] = gamesWithDropsData.map((game: GameWithDropsData) => ({
+  //         appid: parseInt(game.id),
+  //         name: game.name,
+  //         playtime_forever: 0,
+  //         img_icon_url: '',
+  //         has_community_visible_stats: false,
+  //         remaining: game.remaining,
+  //       }))
 
-        const shuffledAndLimitedGames = [...parsedGamesData]
-          .sort(() => Math.random() - 0.5)
-          .slice(0, 10)
+  //       const shuffledAndLimitedGames = [...parsedGamesData]
+  //         .sort(() => Math.random() - 0.5)
+  //         .slice(0, 10)
 
-        setGamesWithDrops(shuffledAndLimitedGames)
-        setIsLoadingDrops(false)
-      }
-    }
-    getGamesWithDrops()
-  }, [type, userSettings?.general?.showCardDropsCarousel])
+  //       setGamesWithDrops(shuffledAndLimitedGames)
+  //       setIsLoadingDrops(false)
+  //     }
+  //   }
+  //   getGamesWithDrops()
+  // }, [type, userSettings?.general?.showCardDropsCarousel])
 
   const listTypes: Record<CustomListType, ListTypeConfig> = {
     cardFarmingList: {
@@ -210,188 +244,413 @@ export const CustomList = ({ type }: CustomListProps) => {
     return <p>{t('customLists.invalid')}</p>
   }
 
-  const handleAddGameFromCarousel = (game: Game) => {
-    handleAddGame(game)
-  }
+  // const handleAddGameFromCarousel = (game: Game) => {
+  //   handleAddGame(game)
+  // }
 
   const handleGameClick = (game: Game) => {
     setAchievementOrderGame(game)
     setShowAchievementOrder(true)
   }
 
+  // const carouselVisible =
+  //   type === 'cardFarmingList' &&
+  //   !!userSettings?.general?.showCardDropsCarousel &&
+  //   (isLoadingDrops || gamesWithDrops.length > 0)
+  // const credentialsAlertVisible =
+  //   type === 'cardFarmingList' && !userSettings.cardFarming.credentials
+  // const listHeight = Math.max(240, windowHeight - 280 - (carouselVisible ? 300 : 0) - (credentialsAlertVisible ? 50 : 0))
+
   return (
-    <>
-      <div
-        ref={containerRef}
-        className={cn(
-          'min-h-calc max-h-calc overflow-y-auto overflow-x-hidden mt-9 ease-in-out',
-          sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]',
-        )}
-        style={{
-          transitionDuration,
-          transitionProperty: 'width',
-        }}
-      >
-        <div className={cn('w-[calc(100vw-227px)] z-50 pl-6 pt-2')}>
-          <div className='flex justify-between items-center pb-3'>
-            <div className='flex items-center gap-1 select-none'>
-              <div className='flex flex-col justify-center'>
-                <p className='text-3xl font-black'>{listType.title}</p>
-                <p className='text-xs text-altwhite my-2'>{listType.description}</p>
+    <div
+      className={cn(
+        'min-h-calc max-h-calc overflow-y-auto overflow-x-hidden mt-9 ease-in-out',
+        sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]',
+      )}
+      style={{
+        transitionDuration,
+        transitionProperty: 'width',
+      }}
+    >
+      <div className={cn('w-[calc(100vw-227px)] z-50 pl-6 pt-2')}>
+        <div className='flex justify-between items-center pb-1.5'>
+          <div className='flex items-center gap-1 select-none'>
+            <div className='flex flex-col justify-center'>
+              <p className='text-3xl font-black'>{listType.title}</p>
+              <p className='text-xs text-altwhite my-2'>{listType.description}</p>
 
-                <div className='flex items-center gap-2 mt-1'>
+              <div className='flex items-center gap-2 mt-1'>
+                {listType.startButton && (
                   <Button
-                    className='bg-btn-secondary text-btn-text font-bold'
+                    className={cn(
+                      'text-white font-bold transition-all duration-300 relative overflow-hidden before:absolute',
+                      'before:inset-0 before:bg-linear-to-r before:from-transparent before:via-(--shimmer-color)',
+                      'before:to-transparent before:-translate-x-full before:animate-[custom-shimmer_2.7s_ease-in-out_infinite]',
+                      '*:relative *:z-10',
+                    )}
+                    style={{
+                      backgroundImage: 'var(--gradient-btn)',
+                    }}
                     radius='full'
-                    startContent={<TbEdit fontSize={20} />}
-                    onPress={() => setEditModalOpen(true)}
+                    startContent={listType.icon}
+                    onPress={
+                      listType.startButton === 'startCardFarming'
+                        ? () => {
+                            startCardFarming()
+                          }
+                        : listType.startButton === 'startAchievementUnlocker'
+                          ? () => {
+                              startAchievementUnlocker()
+                            }
+                          : listType.startButton === 'startAutoIdleGamesImpl'
+                            ? () => {
+                                if (userSummary?.steamId)
+                                  startAutoIdleGamesImpl(userSummary.steamId, true)
+                              }
+                            : undefined
+                    }
                   >
-                    {t('customLists.edit')}
+                    {listType.buttonLabel}
                   </Button>
+                )}
 
-                  <ManualAddModal listName={type} setList={setList} />
+                <ManualAddModal listTitle={listType.title} listName={type} setList={setList} />
 
-                  {listType.settingsButton && listType.settingsButtonLink && (
-                    <Button
-                      isIconOnly
-                      radius='full'
-                      className='bg-btn-secondary text-btn-text font-bold'
-                      startContent={<TbSettings size={20} />}
-                      isDisabled={isCardFarming || isAchievementUnlocker}
-                      onPress={() => {
-                        setPreviousActivePage(
-                          ('customlists/' + listType.settingsButtonLink) as ActivePageType,
-                        )
-                        setActivePage('settings')
-                        if (listType.settingsButtonLink) {
-                          setCurrentSettingsTab(
-                            listType.settingsButtonLink as CurrentSettingsTabType,
+                {listType.settingsButton && listType.settingsButtonLink && (
+                  <Button
+                    isIconOnly
+                    radius='full'
+                    className='bg-btn-secondary text-btn-text font-bold'
+                    startContent={<TbSettings size={20} />}
+                    isDisabled={isCardFarming || isAchievementUnlocker}
+                    onPress={() => {
+                      setPreviousActivePage(
+                        ('customlists/' + listType.settingsButtonLink) as ActivePageType,
+                      )
+                      setActivePage('settings')
+                      if (listType.settingsButtonLink) {
+                        setCurrentSettingsTab(listType.settingsButtonLink as CurrentSettingsTabType)
+                      }
+                    }}
+                  />
+                )}
+
+                <Tabs
+                  size='lg'
+                  aria-label='Custom list tabs'
+                  color='default'
+                  variant='solid'
+                  radius='full'
+                  selectedKey={activeTab}
+                  onSelectionChange={key => setActiveTab(key as 'all' | 'list' | 'blacklist')}
+                  classNames={{
+                    tabList: 'gap-0 bg-item-active',
+                    tab: cn(
+                      'data-[hover-unselected=true]:!bg-item-hover',
+                      'data-[hover-unselected=true]:opacity-100',
+                    ),
+                    cursor: '!bg-item-active w-full',
+                    tabContent:
+                      'text-sm group-data-[selected=true]:text-content text-altwhite font-bold',
+                  }}
+                >
+                  <Tab key='all' title={t('gamesList.allGames')} />
+                  <Tab key='list' title={`${listType.title} ${t('common.list')}`} />
+                  {type === 'cardFarmingList' && (
+                    <Tab key='blacklist' title={`${t('customLists.blacklist')}`} />
+                  )}
+                </Tabs>
+
+                {type === 'achievementUnlockerList' && activeTab === 'all' && (
+                  <div>
+                    {searchTerm === '' ? (
+                      <Button
+                        className='bg-btn-secondary text-btn-text font-bold'
+                        radius='full'
+                        isDisabled={
+                          filteredGamesList.length === 0 || list.length === filteredGamesList.length
+                        }
+                        onPress={() => handleAddAllGames(filteredGamesList)}
+                      >
+                        {t('customLists.addAll')}
+                      </Button>
+                    ) : (
+                      <Button
+                        className='bg-btn-secondary text-btn-text font-bold'
+                        radius='full'
+                        isDisabled={
+                          filteredGamesList.length === 0 ||
+                          filteredGamesList.every(game =>
+                            list.some(listGame => listGame.appid === game.appid),
                           )
                         }
-                      }}
-                    />
-                  )}
+                        onPress={() => handleAddAllResults(filteredGamesList)}
+                      >
+                        {t('customLists.addAllResults')}
+                      </Button>
+                    )}
+                  </div>
+                )}
 
-                  {listType.startButton && (
-                    <Button
-                      className={cn(
-                        'text-white font-bold transition-all duration-300 relative overflow-hidden before:absolute',
-                        'before:inset-0 before:bg-linear-to-r before:from-transparent before:via-(--shimmer-color)',
-                        'before:to-transparent before:-translate-x-full before:animate-[custom-shimmer_2.7s_ease-in-out_infinite]',
-                        '*:relative *:z-10',
-                      )}
-                      style={{
-                        backgroundImage: 'var(--gradient-btn)',
-                      }}
-                      radius='full'
-                      startContent={listType.icon}
-                      onPress={
-                        listType.startButton === 'startCardFarming'
-                          ? () => {
-                              startCardFarming()
-                            }
-                          : listType.startButton === 'startAchievementUnlocker'
-                            ? () => {
-                                startAchievementUnlocker()
-                              }
-                            : listType.startButton === 'startAutoIdleGamesImpl'
-                              ? () => {
-                                  if (userSummary?.steamId)
-                                    startAutoIdleGamesImpl(userSummary.steamId, true)
-                                }
-                              : undefined
-                      }
-                    >
-                      {listType.buttonLabel}
-                    </Button>
-                  )}
-                </div>
+                {((activeTab === 'list' && list.length > 0) ||
+                  (activeTab === 'blacklist' && blacklist.length > 0)) && (
+                  <Button
+                    color='danger'
+                    radius='full'
+                    className='font-semibold'
+                    onPress={activeTab === 'blacklist' ? handleClearBlacklist : handleClearList}
+                  >
+                    {t('common.clear')}
+                  </Button>
+                )}
+
+                {searchTerm && (
+                  <div className='flex items-center gap-2'>
+                    <Divider orientation='vertical' className='mx-2 h-8 bg-border' />
+                    <p className='text-sm text-altwhite font-bold'>{t('common.search')}</p>
+                    <div className='flex items-center gap-2 text-sm text-altwhite p-2 bg-item-active rounded-full max-w-64'>
+                      <p className='text-content truncate'>{searchTerm}</p>
+                      <div
+                        className='flex items-center justify-center cursor-pointer bg-item-hover hover:bg-item-hover/80 rounded-full p-1 duration-150'
+                        onClick={() => setCustomListQueryValue('')}
+                      >
+                        <TbX />
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
         </div>
+      </div>
 
-        {type === 'cardFarmingList' && !userSettings.cardFarming.credentials && (
-          <div className='mx-6 mb-1 max-w-fit'>
-            <Alert
-              color='primary'
-              variant='faded'
-              classNames={{
-                base: '!bg-dynamic/30 text-dynamic !border-dynamic/40',
-                iconWrapper: '!bg-dynamic/30 border-dynamic/40',
-                description: 'font-bold text-xs',
-              }}
-              description={t('settings.cardFarming.alert')}
-            />
-          </div>
-        )}
+      {/* <RecommendedCardDropsCarousel
+        gamesWithDrops={type === 'cardFarmingList' ? gamesWithDrops : []}
+        onAddGame={handleAddGameFromCarousel}
+        isLoading={type === 'cardFarmingList' ? isLoadingDrops : false}
+      /> */}
 
-        <RecommendedCardDropsCarousel
-          gamesWithDrops={type === 'cardFarmingList' ? gamesWithDrops : []}
-          onAddGame={handleAddGameFromCarousel}
-          isLoading={type === 'cardFarmingList' ? isLoadingDrops : false}
-        />
+      {activeTab === 'all' && (
+        <div className='mt-4'>
+          <List
+            height={windowInnerHeight - 188}
+            itemCount={filteredGamesList.length}
+            itemSize={56}
+            width='100%'
+            itemData={{
+              filteredGamesList,
+              list,
+              handleAddGame,
+              handleRemoveGame,
+              type,
+              handleBlacklistGame,
+              blacklist,
+            }}
+          >
+            {Row}
+          </List>
+        </div>
+      )}
 
-        {list.length > 0 && (
-          <div>
-            <p className='text-lg font-black px-6 pb-3'>{t('customLists.yourList')}</p>
-          </div>
-        )}
-        <DndContext onDragEnd={handleDragEnd}>
-          <SortableContext items={list.map(item => item.appid)}>
-            <div
-              className={cn(
-                'grid gap-x-5 gap-y-4 px-6',
-                columnCount === 7 ? 'grid-cols-7' : 'grid-cols-5',
-                columnCount === 8 ? 'grid-cols-8' : '',
-                columnCount === 10 ? 'grid-cols-10' : '',
-                columnCount === 12 ? 'grid-cols-12' : '',
-              )}
-            >
-              {list &&
-                list
-                  .slice(0, visibleGames)
-                  .map(item => (
-                    <SortableGameCard
+      {activeTab === 'list' && (
+        <div className='mt-4'>
+          {list.length === 0 ? (
+            <div className='flex flex-col justify-center items-center gap-2 h-[calc(100vh-250px)]'>
+              <p className='text-sm text-altwhite px-6'>
+                <Trans
+                  i18nKey='customLists.emptyList'
+                  values={{ title: listType.title }}
+                  components={{ 1: <span className='font-black' /> }}
+                />
+              </p>
+            </div>
+          ) : (
+            <div>
+              {searchTerm ? (
+                <div
+                  className={cn(
+                    'grid gap-x-5 gap-y-4 px-6',
+                    columnCount === 7 ? 'grid-cols-7' : 'grid-cols-5',
+                    columnCount === 8 ? 'grid-cols-8' : '',
+                    columnCount === 10 ? 'grid-cols-10' : '',
+                    columnCount === 12 ? 'grid-cols-12' : '',
+                  )}
+                >
+                  {filteredList.map(item => (
+                    <GameCard
                       key={item.appid}
                       item={item}
-                      type={type}
+                      isAchievementUnlocker={type === 'achievementUnlockerList'}
                       onOpen={() => handleGameClick(item)}
                     />
                   ))}
+                </div>
+              ) : (
+                <DndContext onDragEnd={handleDragEnd}>
+                  <SortableContext items={list.map(item => item.appid)}>
+                    <div
+                      className={cn(
+                        'grid gap-x-5 gap-y-4 px-6',
+                        columnCount === 7 ? 'grid-cols-7' : 'grid-cols-5',
+                        columnCount === 8 ? 'grid-cols-8' : '',
+                        columnCount === 10 ? 'grid-cols-10' : '',
+                        columnCount === 12 ? 'grid-cols-12' : '',
+                      )}
+                    >
+                      {list.map(item => (
+                        <SortableGameCard
+                          key={item.appid}
+                          item={item}
+                          type={type}
+                          onOpen={() => handleGameClick(item)}
+                        />
+                      ))}
+                    </div>
+                  </SortableContext>
+                </DndContext>
+              )}
             </div>
-          </SortableContext>
-        </DndContext>
-      </div>
+          )}
+        </div>
+      )}
 
-      <EditListModal
-        type={type}
-        list={list}
-        isOpen={isEditModalOpen}
-        filteredGamesList={filteredGamesList}
-        showInList={showInList}
-        showBlacklist={showBlacklist}
-        onOpenChange={setEditModalOpen}
-        onClose={() => {
-          setSearchTerm('')
-          setShowInList(false)
-          setShowBlacklist(false)
-        }}
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        setShowInList={setShowInList}
-        setShowBlacklist={setShowBlacklist}
-        handleAddGame={handleAddGame}
-        handleAddAllGames={handleAddAllGames}
-        handleAddAllResults={handleAddAllResults}
-        handleRemoveGame={handleRemoveGame}
-        handleClearList={handleClearList}
-        handleBlacklistGame={handleBlacklistGame}
-        blacklist={userSettings.cardFarming.blacklist || []}
-      />
-    </>
+      {activeTab === 'blacklist' && type === 'cardFarmingList' && (
+        <div className='mt-4'>
+          {blacklistedGames.length === 0 ? (
+            <div className='flex flex-col justify-center items-center gap-2 h-[calc(100vh-250px)]'>
+              <p className='text-sm text-altwhite px-6'>
+                <Trans
+                  i18nKey='customLists.emptyBlacklist'
+                  values={{ title: listType.title }}
+                  components={{ 1: <span className='font-black' /> }}
+                />
+              </p>
+            </div>
+          ) : (
+            <List
+              height={windowInnerHeight - 188}
+              itemCount={blacklistedGames.length}
+              itemSize={56}
+              width='100%'
+              itemData={{
+                filteredGamesList: blacklistedGames,
+                list,
+                handleAddGame,
+                handleRemoveGame,
+                type,
+                handleBlacklistGame,
+                blacklist,
+              }}
+            >
+              {Row}
+            </List>
+          )}
+        </div>
+      )}
+    </div>
   )
 }
+
+interface RowData {
+  filteredGamesList: Game[]
+  list: Game[]
+  handleAddGame: (game: Game) => void
+  handleRemoveGame: (game: Game) => void
+  type?: string
+  handleBlacklistGame?: (game: Game) => void
+  blacklist: number[]
+}
+
+interface RowProps {
+  index: number
+  style: React.CSSProperties
+  data: RowData
+}
+
+const Row = memo(({ index, style, data }: RowProps) => {
+  const {
+    filteredGamesList,
+    list,
+    handleAddGame,
+    handleRemoveGame,
+    type,
+    handleBlacklistGame,
+    blacklist,
+  } = data
+  const item = filteredGamesList[index]
+  const isInList = list.some(g => g.appid === item.appid)
+  const isBlacklisted = blacklist.includes(item.appid)
+
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    ;(e.target as HTMLImageElement).src = '/fallback.webp'
+  }
+
+  return (
+    <div
+      style={style}
+      className={cn(
+        'flex items-center gap-3 pr-6 pl-4 select-none cursor-pointer duration-150',
+        isInList
+          ? 'bg-success/5 hover:bg-success/10'
+          : isBlacklisted
+            ? 'bg-danger/5 hover:bg-danger/10'
+            : 'hover:bg-item-hover',
+      )}
+      onClick={() => (isInList ? handleRemoveGame(item) : !isBlacklisted && handleAddGame(item))}
+    >
+      <div
+        className={cn(
+          'w-0.5 h-9 rounded-full shrink-0',
+          isInList ? 'bg-success' : isBlacklisted ? 'bg-danger' : 'bg-transparent',
+        )}
+      />
+      <Image
+        src={`https://cdn.cloudflare.steamstatic.com/steam/apps/${item.appid}/header.jpg`}
+        width={92}
+        height={43}
+        alt={`${item.name} image`}
+        priority
+        className='rounded shrink-0'
+        onError={handleImageError}
+      />
+      <p className='text-sm font-semibold flex-1 truncate'>{item.name}</p>
+      <div className='flex items-center gap-2 shrink-0' onClick={e => e.stopPropagation()}>
+        {type === 'cardFarmingList' && handleBlacklistGame && (
+          <Button
+            size='sm'
+            radius='full'
+            isDisabled={isInList}
+            className={cn(
+              'font-semibold min-w-25',
+              isBlacklisted
+                ? 'bg-danger/15 text-danger'
+                : 'bg-item-hover text-altwhite hover:text-content',
+            )}
+            onPress={() => handleBlacklistGame(item)}
+          >
+            {isBlacklisted
+              ? i18next.t('customLists.blacklisted')
+              : i18next.t('customLists.blacklist')}
+          </Button>
+        )}
+        <Button
+          size='sm'
+          isIconOnly
+          radius='full'
+          isDisabled={isBlacklisted && !isInList}
+          color={isInList ? 'danger' : 'default'}
+          className={cn(!isInList && 'bg-item-hover text-content')}
+          onPress={() => (isInList ? handleRemoveGame(item) : handleAddGame(item))}
+        >
+          {isInList ? <FaMinus /> : <FaPlus />}
+        </Button>
+      </div>
+    </div>
+  )
+})
+
+Row.displayName = 'Row'
 
 interface SortableGameCardProps {
   item: Game

@@ -38,7 +38,6 @@ export const Sidebar = () => {
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
   const isCardFarming = useStateStore(state => state.isCardFarming)
   const isAchievementUnlocker = useStateStore(state => state.isAchievementUnlocker)
-  const showAchievements = useStateStore(state => state.showAchievements)
   const transitionDuration = useStateStore(state => state.transitionDuration)
   const setShowAchievements = useStateStore(state => state.setShowAchievements)
   const setShowAchievementOrder = useStateStore(state => state.setShowAchievementOrder)
@@ -226,18 +225,15 @@ export const Sidebar = () => {
           <Button
             isIconOnly={sidebarCollapsed}
             radius='full'
-            isDisabled={
-              activePage === 'idling' ||
-              activePage === 'freeGames' ||
-              (activePage.includes('customlists') && !showAchievements)
-            }
+            isDisabled={activePage === 'idling' || activePage === 'freeGames'}
             className={cn(
               'text-altwhite active:scale-95 w-full mt-4 duration-150',
               sidebarCollapsed ? 'w-0 justify-center' : 'min-w-40 justify-start',
               searchContent.gameQueryValue ||
                 searchContent.tradingCardQueryValue ||
                 searchContent.achievementQueryValue ||
-                searchContent.statisticQueryValue
+                searchContent.statisticQueryValue ||
+                searchContent.customListQueryValue
                 ? 'bg-dynamic/10 hover:bg-dynamic/20'
                 : 'bg-item-active hover:bg-item-active/90',
             )}
@@ -249,7 +245,8 @@ export const Sidebar = () => {
                 searchContent.gameQueryValue ||
                   searchContent.tradingCardQueryValue ||
                   searchContent.achievementQueryValue ||
-                  searchContent.statisticQueryValue
+                  searchContent.statisticQueryValue ||
+                  searchContent.customListQueryValue
                   ? 'text-dynamic'
                   : undefined,
               )}
@@ -269,6 +266,10 @@ export const Sidebar = () => {
                 ) : searchContent.statisticQueryValue ? (
                   <p className='text-sm text-dynamic font-bold'>
                     {searchContent.statisticQueryValue}
+                  </p>
+                ) : searchContent.customListQueryValue ? (
+                  <p className='text-sm text-dynamic font-bold'>
+                    {searchContent.customListQueryValue}
                   </p>
                 ) : (
                   <p className='text-sm font-bold'>{t('common.search')}</p>
