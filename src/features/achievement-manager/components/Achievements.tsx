@@ -26,6 +26,7 @@ export const Achievements = () => {
   const [imageLoaded, setImageLoaded] = useState(false)
   const [fallbackImage, setFallbackImage] = useState('')
   const achievementStates = useAchievements(
+    achievements,
     setIsLoading,
     setAchievements,
     setStatistics,

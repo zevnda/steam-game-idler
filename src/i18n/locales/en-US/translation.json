@@ -170,6 +170,8 @@
   "settings.general.manageSubscription": "Manage PRO Subscription",
   "settings.general.autoRedeemFreeGames": "Auto Redeem Free Games",
   "settings.general.autoRedeemFreeGames.description": "Automatically redeem free games on Steam when they become available",
+  "settings.general.discordPresence": "Discord Rich Presence",
+  "settings.general.discordPresence.description": "Show your SGI activity as your status on Discord",
   "settings.general.showRecommendedCarousel": "Show Recommended Games",
   "settings.general.showRecommendedCarousel.description": "Display a carousel of recommended games on the Your Games page",
   "settings.general.autoUpdateGamesList": "Automatically Update Games List",

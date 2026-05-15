@@ -7,7 +7,7 @@ import { Button, cn, Spinner } from '@heroui/react'
 import Image from 'next/image'
 import { handleCancel, useCardFarming } from '@/features/card-farming'
 import { useStateStore } from '@/shared/stores'
-import { startAchievementUnlocker, updateTrayIcon } from '@/shared/utils'
+import { startAchievementUnlocker, updateDiscordPresence, updateTrayIcon } from '@/shared/utils'
 
 export const CardFarming = ({ activePage }: { activePage: ActivePageType }) => {
   const { t } = useTranslation()
@@ -54,6 +54,10 @@ export const CardFarming = ({ activePage }: { activePage: ActivePageType }) => {
           total: gamesWithDrops.size,
         }),
         true,
+      )
+      updateDiscordPresence(
+        'Farming Cards',
+        `${gamesWithDrops.size} games with ${totalDropsRemaining} drops remaining`,
       )
     }
   }, [isCardFarming, gamesWithDrops.size, totalDropsRemaining, t])
@@ -202,6 +206,7 @@ export const CardFarming = ({ activePage }: { activePage: ActivePageType }) => {
                     handleCancel(gamesWithDrops, isMountedRef, abortControllerRef)
                     setIsCardFarming(false)
                     updateTrayIcon()
+                    updateDiscordPresence()
                   }}
                 >
                   {isComplete ? <p>{t('common.close')}</p> : <p>{t('common.stop')}</p>}
