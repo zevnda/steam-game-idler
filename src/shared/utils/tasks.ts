@@ -291,6 +291,19 @@ export async function updateTrayIcon(tooltip?: string, runningStatus?: boolean) 
   }
 }
 
+export async function updateDiscordPresence(details?: string, state?: string) {
+  try {
+    if (state) {
+      await invoke('update_drp', { details, state })
+    } else {
+      await invoke('update_drp')
+    }
+  } catch (error) {
+    console.error('Error in updateDiscordPresence:', error)
+    logEvent(`[Error] in updateDiscordPresence: ${error}`)
+  }
+}
+
 export async function isPortableCheck() {
   try {
     const portable = await invoke<boolean>('is_portable')

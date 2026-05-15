@@ -24,6 +24,7 @@ use user_data::*;
 use utils::*;
 
 use std::env;
+use std::sync::Mutex;
 use tauri::image::Image;
 use tauri::menu::{Menu, MenuItem};
 use tauri::tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent};
@@ -63,6 +64,7 @@ pub fn run() {
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_notification::init())
         .plugin(tauri_plugin_clipboard_manager::init())
+        .manage(DrpClient(Mutex::new(None)))
         .plugin({
             let mut builder = tauri_plugin_window_state::Builder::new().with_state_flags(
                 StateFlags::SIZE
@@ -145,9 +147,12 @@ pub fn run() {
             open_store_login_window,
             delete_store_cookies,
             redeem_free_game,
+            update_tray_menu,
+            start_drp,
+            update_drp,
+            stop_drp,
             set_zoom,
             quit_app,
-            update_tray_menu
         ])
         .build(tauri::generate_context!())
         .expect("Error while building tauri application")

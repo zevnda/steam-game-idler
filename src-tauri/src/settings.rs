@@ -20,6 +20,7 @@ fn get_default_settings() -> Value {
             "customBackground": null,
             "autoRedeemFreeGames": false,
             "autoUpdateGamesList": false,
+            "discordPresence": true,
             "showRecommendedCarousel": true,
             "showRecentCarousel": true,
             "showCardDropsCarousel": false

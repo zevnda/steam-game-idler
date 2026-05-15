@@ -4,9 +4,10 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { showAccountMismatchToast, showDangerToast } from '@/shared/components'
 import { useStateStore, useUserStore } from '@/shared/stores'
-import { checkSteamStatus, logEvent } from '@/shared/utils'
+import { checkSteamStatus, logEvent, updateDiscordPresence } from '@/shared/utils'
 
 export function useAchievements(
+  achievements: Achievement[],
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
   setAchievements: React.Dispatch<React.SetStateAction<Achievement[]>>,
   setStatistics: React.Dispatch<React.SetStateAction<Statistic[]>>,
@@ -15,11 +16,21 @@ export function useAchievements(
 ) {
   const { t } = useTranslation()
   const appId = useStateStore(state => state.appId)
+  const appName = useStateStore(state => state.appName)
   const userSummary = useUserStore(state => state.userSummary)
   const setAchievementsUnavailable = useUserStore(state => state.setAchievementsUnavailable)
   const setStatisticsUnavailable = useUserStore(state => state.setStatisticsUnavailable)
   const [windowInnerHeight, setWindowInnerHeight] = useState(window.innerHeight)
   const [refreshKey, setRefreshKey] = useState(0)
+
+  useEffect(() => {
+    if (appName && achievements?.length > 0) {
+      updateDiscordPresence(appName, `Managing ${achievements.length} achievements`)
+    }
+    return () => {
+      updateDiscordPresence()
+    }
+  }, [appName, achievements])
 
   useEffect(() => {
     const getAchievementData = async () => {

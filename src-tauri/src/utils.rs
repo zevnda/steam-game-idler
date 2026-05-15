@@ -1,4 +1,5 @@
 use base64::Engine;
+use discord_rich_presence::{activity, DiscordIpc, DiscordIpcClient};
 use lazy_static::lazy_static;
 use regex::Regex;
 use reqwest::Client;
@@ -12,6 +13,8 @@ use sysinfo::{ProcessesToUpdate, System};
 use tauri::Emitter;
 use tauri::Manager;
 
+pub struct DrpClient(pub Mutex<Option<(DiscordIpcClient, i64)>>);
+
 lazy_static! {
     static ref LAST_KNOWN_TITLES: Mutex<HashMap<String, String>> = Mutex::new(HashMap::new());
 }
@@ -19,6 +22,73 @@ lazy_static! {
 #[tauri::command]
 pub async fn is_dev() -> bool {
     cfg!(debug_assertions)
+}
+
+#[tauri::command]
+pub async fn start_drp(state: tauri::State<'_, DrpClient>) -> Result<(), String> {
+    let mut guard = state.inner().0.lock().unwrap();
+
+    let start_ts = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .unwrap()
+        .as_millis() as i64;
+
+    let mut client = DiscordIpcClient::new("1504784412288483408");
+    client.connect().map_err(|e| e.to_string())?;
+
+    let payload = activity::Activity::new()
+        .activity_type(activity::ActivityType::Competing)
+        .details("On the dashboard")
+        .state("Viewing their games list")
+        .timestamps(activity::Timestamps::new().start(start_ts))
+        .buttons(vec![
+            activity::Button::new("Download", "https://www.steamgameidler.com"),
+            activity::Button::new("GitHub", "https://github.com/zevnda/steam-game-idler"),
+        ]);
+    client.set_activity(payload).map_err(|e| e.to_string())?;
+
+    *guard = Some((client, start_ts));
+    Ok(())
+}
+
+#[tauri::command]
+pub async fn update_drp(
+    drp_state: tauri::State<'_, DrpClient>,
+    details: Option<String>,
+    state: Option<String>,
+) -> Result<(), String> {
+    let mut guard = drp_state.inner().0.lock().unwrap();
+    if let Some((client, start_ts)) = guard.as_mut() {
+        let mut payload = activity::Activity::new()
+            .activity_type(activity::ActivityType::Competing)
+            .timestamps(activity::Timestamps::new().start(*start_ts))
+            .buttons(vec![
+                activity::Button::new("Download", "https://www.steamgameidler.com"),
+                activity::Button::new("GitHub", "https://github.com/zevnda/steam-game-idler"),
+            ]);
+        if let Some(ref d) = details {
+            payload = payload.details(d);
+        } else {
+            payload = payload.details("On the dashboard");
+        }
+        if let Some(ref s) = state {
+            payload = payload.state(s);
+        } else {
+            payload = payload.state("Viewing their games list");
+        }
+        client.set_activity(payload).map_err(|e| e.to_string())?;
+    }
+    Ok(())
+}
+
+#[tauri::command]
+pub async fn stop_drp(state: tauri::State<'_, DrpClient>) -> Result<(), String> {
+    let mut guard = state.inner().0.lock().unwrap();
+    if let Some((mut client, _)) = guard.take() {
+        let _ = client.clear_activity();
+        let _ = client.close();
+    }
+    Ok(())
 }
 
 #[tauri::command]

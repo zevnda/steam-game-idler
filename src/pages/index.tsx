@@ -4,6 +4,7 @@ import {
   useCheckForPro,
   useCheckForUpdates,
   useContextMenu,
+  useDiscordPresence,
   useFreeGames,
   useInit,
   useInitSettings,
@@ -27,6 +28,7 @@ const Index = () => {
   useZoomControls()
   useContextMenu()
   useSteamMonitor()
+  useDiscordPresence()
 
   if (loaderVisible) return null
 
