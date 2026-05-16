@@ -15,6 +15,7 @@ export const Layout = ({ children }: React.PropsWithChildren) => {
   const loadingUserSummary = useStateStore(state => state.loadingUserSummary)
   const userSettings = useUserStore(state => state.userSettings)
   const isPro = useUserStore(state => state.isPro)
+  const proModalOpen = useStateStore(state => state.proModalOpen)
   const [customBackground, setCustomBackground] = useState('')
 
   useEffect(() => {
@@ -63,7 +64,7 @@ export const Layout = ({ children }: React.PropsWithChildren) => {
         </>
       )}
 
-      <Titlebar />
+      {!proModalOpen && <Titlebar />}
       <main className={`${inter.className} h-full min-h-screen text-content bg-gradient-bg`}>
         {children}
       </main>
