@@ -1,4 +1,5 @@
 {
+  "gamesList.private.change": "Muuta yksityisyysasetuksia",
   "automation.achievementUnlocker.progress": "Avaamassa <1>{{count}}</1> saavutusta kohteelle <3>{{appName}}</3>",
   "settings.achievementUnlocker.interval": "Avaa saavutuksia satunnaisesti {{min}} - {{max}} minuutin välein",
   "toast.startIdle.success": "Aloitettu idlaaminen {{appName}} ({{appId}})",
