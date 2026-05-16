@@ -178,8 +178,9 @@ export function useGamesList() {
   useEffect(() => {
     if (
       isLoading ||
+      !userSummary ||
       hasGamerFeature(proTier) ||
-      gamesListSessionUpdatedSet.has(userSummary?.steamId ?? '')
+      gamesListSessionUpdatedSet.has(userSummary.steamId)
     )
       return
 
