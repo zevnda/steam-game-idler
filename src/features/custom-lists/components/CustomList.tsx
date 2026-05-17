@@ -2,11 +2,11 @@ import type {
   ActivePageType,
   CurrentSettingsTabType,
   Game,
-  // InvokeSettings,
-  // UserSummary,
+  InvokeSettings,
+  UserSummary,
 } from '@/shared/types'
 import type { DragEndEvent } from '@dnd-kit/core'
-// import { invoke } from '@tauri-apps/api/core'
+import { invoke } from '@tauri-apps/api/core'
 import { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { FaMinus, FaPlus } from 'react-icons/fa6'
@@ -18,11 +18,12 @@ import { CSS } from '@dnd-kit/utilities'
 import { Button, cn, Divider, Tab, Tabs } from '@heroui/react'
 import i18next from 'i18next'
 import Image from 'next/image'
-// import { RecommendedCardDropsCarousel } from '@/features/card-farming'
+import { RecommendedCardDropsCarousel } from '@/features/card-farming'
 import { ManualAddModal, useCustomList } from '@/features/custom-lists'
 import { GameCard } from '@/shared/components'
 import { useNavigationStore, useSearchStore, useStateStore, useUserStore } from '@/shared/stores'
 import {
+  getAllGamesWithDrops,
   // getAllGamesWithDrops,
   startAchievementUnlocker,
   startAutoIdleGamesImpl,
@@ -39,11 +40,11 @@ interface CustomListProps {
   type: CustomListType
 }
 
-// interface GameWithDropsData {
-//   id: string
-//   name: string
-//   remaining: number
-// }
+interface GameWithDropsData {
+  id: string
+  name: string
+  remaining: number
+}
 
 interface ListTypeConfig {
   title: string
@@ -61,6 +62,7 @@ export const CustomList = ({ type }: CustomListProps) => {
   const {
     list,
     setList,
+    isLoading,
     filteredGamesList,
     searchTerm,
     activeTab,
@@ -75,8 +77,8 @@ export const CustomList = ({ type }: CustomListProps) => {
     handleBlacklistGame,
   } = useCustomList(type)
   const setCustomListQueryValue = useSearchStore(state => state.setCustomListQueryValue)
-  // const [gamesWithDrops, setGamesWithDrops] = useState<Game[]>([])
-  // const [isLoadingDrops, setIsLoadingDrops] = useState(false)
+  const [gamesWithDrops, setGamesWithDrops] = useState<Game[]>([])
+  const [isLoadingDrops, setIsLoadingDrops] = useState(false)
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
   const transitionDuration = useStateStore(state => state.transitionDuration)
   const isCardFarming = useStateStore(state => state.isCardFarming)
@@ -157,50 +159,50 @@ export const CustomList = ({ type }: CustomListProps) => {
     }
   }
 
-  // useEffect(() => {
-  //   const getGamesWithDrops = async () => {
-  //     if (type === 'cardFarmingList' && userSettings?.general?.showCardDropsCarousel) {
-  //       const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
+  useEffect(() => {
+    const getGamesWithDrops = async () => {
+      if (type === 'cardFarmingList' && userSettings?.general?.showCardDropsCarousel) {
+        const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
 
-  //       const cachedUserSettings = await invoke<InvokeSettings>('get_user_settings', {
-  //         steamId: userSummary?.steamId,
-  //       })
+        const cachedUserSettings = await invoke<InvokeSettings>('get_user_settings', {
+          steamId: userSummary?.steamId,
+        })
 
-  //       setIsLoadingDrops(true)
+        setIsLoadingDrops(true)
 
-  //       const credentials = cachedUserSettings.settings.cardFarming.credentials
+        const credentials = cachedUserSettings.settings.cardFarming.credentials
 
-  //       if (!credentials?.sid || !credentials?.sls) {
-  //         setIsLoadingDrops(false)
-  //         return
-  //       }
+        if (!credentials?.sid || !credentials?.sls) {
+          setIsLoadingDrops(false)
+          return
+        }
 
-  //       const gamesWithDropsData = (await getAllGamesWithDrops(
-  //         userSummary?.steamId,
-  //         credentials.sid,
-  //         credentials.sls,
-  //         credentials?.sma,
-  //       )) as unknown as GameWithDropsData[]
+        const gamesWithDropsData = (await getAllGamesWithDrops(
+          userSummary?.steamId,
+          credentials.sid,
+          credentials.sls,
+          credentials?.sma,
+        )) as unknown as GameWithDropsData[]
 
-  //       const parsedGamesData: Game[] = gamesWithDropsData.map((game: GameWithDropsData) => ({
-  //         appid: parseInt(game.id),
-  //         name: game.name,
-  //         playtime_forever: 0,
-  //         img_icon_url: '',
-  //         has_community_visible_stats: false,
-  //         remaining: game.remaining,
-  //       }))
+        const parsedGamesData: Game[] = gamesWithDropsData.map((game: GameWithDropsData) => ({
+          appid: parseInt(game.id),
+          name: game.name,
+          playtime_forever: 0,
+          img_icon_url: '',
+          has_community_visible_stats: false,
+          remaining: game.remaining,
+        }))
 
-  //       const shuffledAndLimitedGames = [...parsedGamesData]
-  //         .sort(() => Math.random() - 0.5)
-  //         .slice(0, 10)
+        const shuffledAndLimitedGames = [...parsedGamesData]
+          .sort(() => Math.random() - 0.5)
+          .slice(0, 10)
 
-  //       setGamesWithDrops(shuffledAndLimitedGames)
-  //       setIsLoadingDrops(false)
-  //     }
-  //   }
-  //   getGamesWithDrops()
-  // }, [type, userSettings?.general?.showCardDropsCarousel])
+        setGamesWithDrops(shuffledAndLimitedGames)
+        setIsLoadingDrops(false)
+      }
+    }
+    getGamesWithDrops()
+  }, [type, userSettings?.general?.showCardDropsCarousel])
 
   const listTypes: Record<CustomListType, ListTypeConfig> = {
     cardFarmingList: {
@@ -244,22 +246,19 @@ export const CustomList = ({ type }: CustomListProps) => {
     return <p>{t('customLists.invalid')}</p>
   }
 
-  // const handleAddGameFromCarousel = (game: Game) => {
-  //   handleAddGame(game)
-  // }
+  const handleAddGameFromCarousel = (game: Game) => {
+    handleAddGame(game)
+  }
 
   const handleGameClick = (game: Game) => {
     setAchievementOrderGame(game)
     setShowAchievementOrder(true)
   }
 
-  // const carouselVisible =
-  //   type === 'cardFarmingList' &&
-  //   !!userSettings?.general?.showCardDropsCarousel &&
-  //   (isLoadingDrops || gamesWithDrops.length > 0)
-  // const credentialsAlertVisible =
-  //   type === 'cardFarmingList' && !userSettings.cardFarming.credentials
-  // const listHeight = Math.max(240, windowHeight - 280 - (carouselVisible ? 300 : 0) - (credentialsAlertVisible ? 50 : 0))
+  const carouselVisible =
+    type === 'cardFarmingList' &&
+    !!userSettings?.general?.showCardDropsCarousel &&
+    (isLoadingDrops || gamesWithDrops.length > 0)
 
   return (
     <div
@@ -425,16 +424,10 @@ export const CustomList = ({ type }: CustomListProps) => {
         </div>
       </div>
 
-      {/* <RecommendedCardDropsCarousel
-        gamesWithDrops={type === 'cardFarmingList' ? gamesWithDrops : []}
-        onAddGame={handleAddGameFromCarousel}
-        isLoading={type === 'cardFarmingList' ? isLoadingDrops : false}
-      /> */}
-
       {activeTab === 'all' && (
         <div className='mt-4'>
           <List
-            height={windowInnerHeight - 188}
+            height={windowInnerHeight - 182}
             itemCount={filteredGamesList.length}
             itemSize={56}
             width='100%'
@@ -455,8 +448,19 @@ export const CustomList = ({ type }: CustomListProps) => {
 
       {activeTab === 'list' && (
         <div className='mt-4'>
-          {list.length === 0 ? (
-            <div className='flex flex-col justify-center items-center gap-2 h-[calc(100vh-250px)]'>
+          {carouselVisible && (
+            <RecommendedCardDropsCarousel
+              gamesWithDrops={type === 'cardFarmingList' ? gamesWithDrops : []}
+              onAddGame={handleAddGameFromCarousel}
+              isLoading={type === 'cardFarmingList' ? isLoadingDrops : false}
+            />
+          )}
+
+          {!isLoading && list.length === 0 ? (
+            <div
+              className='flex flex-col justify-center items-center gap-2'
+              style={{ height: windowInnerHeight - 257 - (carouselVisible ? 266 : 0) }}
+            >
               <p className='text-sm text-altwhite px-6'>
                 <Trans
                   i18nKey='customLists.emptyList'
@@ -481,8 +485,10 @@ export const CustomList = ({ type }: CustomListProps) => {
                     <GameCard
                       key={item.appid}
                       item={item}
+                      isCustomList={true}
                       isAchievementUnlocker={type === 'achievementUnlockerList'}
                       onOpen={() => handleGameClick(item)}
+                      handleRemoveGame={() => handleRemoveGame(item)}
                     />
                   ))}
                 </div>
@@ -504,6 +510,7 @@ export const CustomList = ({ type }: CustomListProps) => {
                           item={item}
                           type={type}
                           onOpen={() => handleGameClick(item)}
+                          handleRemoveGame={() => handleRemoveGame(item)}
                         />
                       ))}
                     </div>
@@ -529,7 +536,7 @@ export const CustomList = ({ type }: CustomListProps) => {
             </div>
           ) : (
             <List
-              height={windowInnerHeight - 188}
+              height={windowInnerHeight - 182}
               itemCount={blacklistedGames.length}
               itemSize={56}
               width='100%'
@@ -656,9 +663,10 @@ interface SortableGameCardProps {
   item: Game
   type: CustomListType
   onOpen: () => void
+  handleRemoveGame: (game: Game) => Promise<void>
 }
 
-function SortableGameCard({ item, type, onOpen }: SortableGameCardProps) {
+function SortableGameCard({ item, type, onOpen, handleRemoveGame }: SortableGameCardProps) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: item.appid,
   })
@@ -671,8 +679,10 @@ function SortableGameCard({ item, type, onOpen }: SortableGameCardProps) {
     <div className='cursor-grab' ref={setNodeRef} style={style} {...attributes} {...listeners}>
       <GameCard
         item={item}
+        isCustomList={true}
         isAchievementUnlocker={type === 'achievementUnlockerList'}
         onOpen={onOpen}
+        handleRemoveGame={() => handleRemoveGame(item)}
       />
     </div>
   )

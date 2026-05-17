@@ -14,6 +14,7 @@ export function useCustomList(listName: string) {
   const setUserSettings = useUserStore(state => state.setUserSettings)
   const searchTerm = useSearchStore(state => state.customListQueryValue)
   const [list, setList] = useState<Game[]>([])
+  const [isLoading, setIsLoading] = useState(true)
   const [activeTab, setActiveTab] = useState<CustomListTab>('list')
 
   // Filter games based on search term
@@ -34,6 +35,7 @@ export function useCustomList(listName: string) {
         showDangerToast(response.error)
         setList([])
       }
+      setIsLoading(false)
     }
     getCustomLists()
   }, [userSummary?.steamId, isAchievementUnlocker, isCardFarming, listName])
@@ -187,6 +189,7 @@ export function useCustomList(listName: string) {
   return {
     list,
     setList,
+    isLoading,
     filteredGamesList,
     searchTerm,
     activeTab,
