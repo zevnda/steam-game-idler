@@ -138,7 +138,7 @@ export const RecommendedCardDropsCarousel = ({
           </div>
         </div>
 
-        <div className='h-66.5 flex items-center justify-center'>
+        <div className='h-[257.64px] flex items-center justify-center'>
           <Spinner size='lg' />
         </div>
       </div>
