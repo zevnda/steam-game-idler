@@ -55,6 +55,8 @@
   "customLists.addAll": "Alle hinzufügen",
   "customLists.addAllResults": "Alle Ergebnisse hinzufügen",
   "customLists.invalid": "Ungültiger Listentyp",
+  "tradingCards.title": "Inventar Manager",
+  "tradingCards.subtitle": "Verkaufe deine Steam-Inventargegenstände auf dem Markt",
   "tradingCards.bulk": "Alle auflisten ({{count}})",
   "tradingCards.list": "Liste ausgewählt",
   "tradingCards.remove": "Alle entfernen",
