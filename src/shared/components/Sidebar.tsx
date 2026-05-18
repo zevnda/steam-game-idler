@@ -186,14 +186,16 @@ export const Sidebar = () => {
                 />
               </div>
               {!sidebarCollapsed && (
-                <div className={cn('transition-all duration-150 ease-in-out whitespace-nowrap')}>
+                <div
+                  className={cn('transition-all duration-150 ease-in-out min-w-0 overflow-hidden')}
+                >
                   <p
                     className={cn(
-                      'flex justify-center items-center text-sm font-bold',
+                      'flex items-center gap-1 text-sm font-bold',
                       isFreeGames && hasFreeGames ? 'text-[#ffc700]' : undefined,
                     )}
                   >
-                    {item.title}
+                    <span className='truncate'>{item.title}</span>
                     {isBeta && <Beta />}
                   </p>
                 </div>
@@ -256,27 +258,29 @@ export const Sidebar = () => {
               )}
             />
             {!sidebarCollapsed && (
-              <div>
+              <div className='overflow-hidden min-w-0'>
                 {searchContent.gameQueryValue ? (
-                  <p className='text-sm text-dynamic font-bold'>{searchContent.gameQueryValue}</p>
+                  <p className='text-sm text-dynamic font-bold truncate'>
+                    {searchContent.gameQueryValue}
+                  </p>
                 ) : searchContent.tradingCardQueryValue ? (
-                  <p className='text-sm text-dynamic font-bold'>
+                  <p className='text-sm text-dynamic font-bold truncate'>
                     {searchContent.tradingCardQueryValue}
                   </p>
                 ) : searchContent.achievementQueryValue ? (
-                  <p className='text-sm text-dynamic font-bold'>
+                  <p className='text-sm text-dynamic font-bold truncate'>
                     {searchContent.achievementQueryValue}
                   </p>
                 ) : searchContent.statisticQueryValue ? (
-                  <p className='text-sm text-dynamic font-bold'>
+                  <p className='text-sm text-dynamic font-bold truncate'>
                     {searchContent.statisticQueryValue}
                   </p>
                 ) : searchContent.customListQueryValue ? (
-                  <p className='text-sm text-dynamic font-bold'>
+                  <p className='text-sm text-dynamic font-bold truncate'>
                     {searchContent.customListQueryValue}
                   </p>
                 ) : (
-                  <p className='text-sm font-bold'>{t('common.search')}</p>
+                  <p className='text-sm font-bold truncate'>{t('common.search')}</p>
                 )}
               </div>
             )}

@@ -72,7 +72,7 @@ export const PageHeader = ({
                   ),
                   cursor: '!bg-item-active w-full',
                   tabContent:
-                    'text-sm group-data-[selected=true]:text-content text-altwhite font-bold',
+                    'text-sm group-data-[selected=true]:text-content text-altwhite font-bold max-w-50 truncate',
                 }}
                 onSelectionChange={key => {
                   handleSortingChange(key as string, setSortStyle)
