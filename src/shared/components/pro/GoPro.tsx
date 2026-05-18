@@ -1,9 +1,8 @@
 import { cn } from '@heroui/react'
-import { useNavigationStore, useStateStore, useUserStore } from '@/shared/stores'
+import { useStateStore, useUserStore } from '@/shared/stores'
 
 export const GoPro = () => {
   const setProModalOpen = useStateStore(state => state.setProModalOpen)
-  const activePage = useNavigationStore(state => state.activePage)
   const setProModalRequiredTier = useStateStore(state => state.setProModalRequiredTier)
   const proTier = useUserStore(state => state.proTier)
 
@@ -12,7 +11,6 @@ export const GoPro = () => {
       className={cn(
         'shiny-cta flex justify-between items-center min-w-17!',
         proTier === 'gamer' ? 'cursor-default! pointer-events-none' : '',
-        activePage === 'settings' ? 'ml-12' : '',
       )}
       style={
         {

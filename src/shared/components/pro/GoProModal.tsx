@@ -567,14 +567,16 @@ export const GoProModal = () => {
               </motion.p>
 
               {/* CTA — white pill */}
-              <Button
-                size='lg'
+              <motion.button
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.55, delay: 0.15 }}
                 className='flex items-center gap-2.5 px-7 py-3 rounded-full bg-white text-black font-black duration-250 uppercase cursor-pointer'
-                onPress={scrollToTiers}
+                onClick={scrollToTiers}
               >
                 {t('proMode.hero.viewTiers')}
                 <FaArrowDown className='w-3 h-3' />
-              </Button>
+              </motion.button>
 
               {/* Fine print */}
               <motion.p
