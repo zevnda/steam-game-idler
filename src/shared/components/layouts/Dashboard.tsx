@@ -17,7 +17,10 @@ export const Dashboard = () => {
   const isCardFarming = useStateStore(state => state.isCardFarming)
   const isAchievementUnlocker = useStateStore(state => state.isAchievementUnlocker)
   const activePage = useNavigationStore(state => state.activePage)
+  const previousActivePage = useNavigationStore(state => state.previousActivePage)
   const setActivePage = useNavigationStore(state => state.setActivePage)
+
+  const effectivePage = activePage === 'settings' ? previousActivePage : activePage
 
   useEffect(() => {
     setActivePage('games' as ActivePageType)
@@ -35,11 +38,11 @@ export const Dashboard = () => {
       'customlists/favorites': 'favoritesList',
     }
 
-    if (customListMap[activePage]) {
-      return <CustomList key={activePage} type={customListMap[activePage]} />
+    if (customListMap[effectivePage]) {
+      return <CustomList key={effectivePage} type={customListMap[effectivePage]} />
     }
 
-    switch (activePage) {
+    switch (effectivePage) {
       case 'idling':
         return <IdlingGamesList />
       case 'freeGames':
@@ -51,18 +54,15 @@ export const Dashboard = () => {
     }
   }
 
-  if (activePage === 'settings') {
-    return <Settings />
-  }
-
   return (
     <>
       <div className='flex w-full'>
         <Sidebar />
         <div className='z-4'>{renderContent()}</div>
       </div>
-      {isCardFarming && <CardFarming activePage={activePage} />}
-      {isAchievementUnlocker && <AchievementUnlocker activePage={activePage} />}
+      {isCardFarming && <CardFarming activePage={effectivePage} />}
+      {isAchievementUnlocker && <AchievementUnlocker activePage={effectivePage} />}
+      <Settings />
     </>
   )
 }
