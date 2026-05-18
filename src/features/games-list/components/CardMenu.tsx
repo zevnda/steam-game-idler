@@ -43,7 +43,7 @@ export const CardMenu = ({ item }: { item: Game }) => {
           onPress={() => handleIdle(item)}
           textValue='Idle game'
         >
-          <p className='text-sm text-content'>{t('cardMenu.idle')}</p>
+          <p className='text-sm text-content truncate'>{t('cardMenu.idle')}</p>
         </DropdownItem>
         <DropdownItem
           className='rounded-xl'
@@ -53,7 +53,7 @@ export const CardMenu = ({ item }: { item: Game }) => {
           onPress={() => viewAchievments(item, setAppId, setAppName, setShowAchievements)}
           textValue='View achievements'
         >
-          <p className='text-sm text-content'>{t('cardMenu.achievements')}</p>
+          <p className='text-sm text-content truncate'>{t('cardMenu.achievements')}</p>
         </DropdownItem>
         <DropdownItem
           className='rounded-xl'
@@ -63,7 +63,7 @@ export const CardMenu = ({ item }: { item: Game }) => {
           onPress={() => viewStorePage(item)}
           textValue='View store page'
         >
-          <p className='text-sm text-content'>{t('cardMenu.store')}</p>
+          <p className='text-sm text-content truncate'>{t('cardMenu.store')}</p>
         </DropdownItem>
       </DropdownMenu>
     </Dropdown>
