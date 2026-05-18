@@ -126,7 +126,7 @@ export const Sidebar = () => {
         className={cn(
           'px-4 py-1 mb-0 text-[12px] font-bold text-content uppercase tracking-wider select-none',
           'transition-all ease-in-out whitespace-nowrap truncate',
-          header !== 'Games' ? 'mt-4' : 'mt-0',
+          header !== t('sidebar.section.games') ? 'mt-4' : 'mt-0',
         )}
       >
         {header}
