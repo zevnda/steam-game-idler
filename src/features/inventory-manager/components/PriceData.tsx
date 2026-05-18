@@ -6,6 +6,126 @@ import { Button, cn, Spinner, useDisclosure } from '@heroui/react'
 import { CustomModal, showPriceFetchCooldownToast } from '@/shared/components'
 import { logEvent } from '@/shared/utils'
 
+const STEAM_CURRENCY_ISO: Record<string, string> = {
+  '1': 'USD',
+  '2': 'GBP',
+  '3': 'EUR',
+  '4': 'CHF',
+  '5': 'RUB',
+  '6': 'PLN',
+  '7': 'BRL',
+  '8': 'JPY',
+  '9': 'NOK',
+  '10': 'IDR',
+  '11': 'MYR',
+  '12': 'PHP',
+  '13': 'SGD',
+  '14': 'THB',
+  '15': 'VND',
+  '16': 'KRW',
+  '17': 'TRY',
+  '18': 'UAH',
+  '19': 'MXN',
+  '20': 'CAD',
+  '21': 'AUD',
+  '22': 'NZD',
+  '23': 'CNY',
+  '24': 'INR',
+  '25': 'CLP',
+  '26': 'PEN',
+  '27': 'COP',
+  '28': 'ZAR',
+  '29': 'HKD',
+  '30': 'TWD',
+  '31': 'SAR',
+  '32': 'AED',
+  '33': 'SEK',
+  '34': 'ARS',
+  '35': 'ILS',
+  '36': 'BYN',
+  '37': 'KZT',
+  '38': 'KWD',
+  '39': 'QAR',
+  '40': 'CRC',
+  '41': 'UYU',
+  '42': 'BGN',
+  '43': 'HRK',
+  '44': 'CZK',
+  '45': 'DKK',
+  '46': 'HUF',
+  '47': 'RON',
+  '9000': 'CNY', // RMB
+}
+
+const formatPrice = (price: number) => {
+  const code = localStorage.getItem('currency') || '1'
+  const iso = STEAM_CURRENCY_ISO[code]
+  if (!iso) return price.toFixed(2)
+  try {
+    return new Intl.NumberFormat(undefined, { style: 'currency', currency: iso }).format(price)
+  } catch {
+    return price.toFixed(2)
+  }
+}
+
+interface OrderTableProps {
+  title: string
+  summary?: string
+  rows?: unknown[]
+  onRowClick: (price: number) => void
+}
+
+const OrderTable = ({ title, summary, rows, onRowClick }: OrderTableProps) => {
+  const { t } = useTranslation()
+  const typedRows = Array.isArray(rows) ? (rows as [number, number][]) : []
+
+  return (
+    <div className='flex flex-col gap-2 flex-1 min-w-0'>
+      <div className='flex items-center justify-between gap-2'>
+        <p className='text-sm font-bold'>{title}</p>
+        {summary && <span className='text-xs text-altwhite shrink-0'>{summary}</span>}
+      </div>
+      <div className='rounded-lg border border-border overflow-hidden'>
+        <table className='text-xs w-full'>
+          <thead>
+            <tr className='bg-content/10'>
+              <th className='px-3 py-2 text-left font-semibold text-altwhite'>
+                {t('tradingCards.priceData.price')}
+              </th>
+              <th className='px-3 py-2 text-right font-semibold text-altwhite'>
+                {t('tradingCards.priceData.quantity')}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {typedRows.length > 0 ? (
+              typedRows.map((row, index) => (
+                <tr
+                  key={row[0]}
+                  className={cn(
+                    'border-t border-border/50 cursor-pointer transition-colors duration-100 hover:bg-content/10',
+                    index % 2 !== 0 && 'bg-content/5',
+                  )}
+                  onClick={() => onRowClick(row[0])}
+                >
+                  <td className='px-3 py-2 text-left text-dynamic'>{formatPrice(row[0])}</td>
+                  <td className='px-3 py-2 text-right'>{row[1]}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={2} className='px-3 py-4 text-center text-altwhite'>
+                  —
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )
+}
+
 interface PriceDataProps {
   item: TradingCard
   tradingCardContext: ReturnType<typeof useTradingCardsList>
@@ -22,20 +142,17 @@ export const PriceData = ({ item, tradingCardContext, isLocked }: PriceDataProps
       const now = Date.now()
       const cooldown = Number(localStorage.getItem(cooldownKey)) || 0
 
-      // If we already have price data, open the modal
       if (item.price_data) {
         onOpen()
         return
       }
 
-      // If we are in cooldown and don't have price data, show toast and do not open modal
       if (now < cooldown) {
         const secondsLeft = Math.ceil((cooldown - now) / 1000)
         showPriceFetchCooldownToast(secondsLeft)
         return
       }
 
-      // Not in cooldown, fetch price data, open modal and set new cooldown
       localStorage.setItem(cooldownKey, (now + 5_000).toString())
       onOpen()
       await tradingCardContext.fetchCardPrices(item.market_hash_name)
@@ -64,101 +181,32 @@ export const PriceData = ({ item, tradingCardContext, isLocked }: PriceDataProps
         className='max-w-2xl'
         title={item.full_name}
         body={
-          <div className='flex justify-center gap-4'>
+          <div className='flex gap-4 w-full'>
             {!tradingCardContext.loadingItemPrice[item.market_hash_name] ? (
               <>
-                <div className='flex flex-col gap-2'>
-                  <p className='font-bold'>{t('tradingCards.priceData.sellOrders')}</p>
-                  {item.price_data?.sell_order_summary && (
-                    <p
-                      className='text-xs text-altwhite'
-                      dangerouslySetInnerHTML={{ __html: item.price_data.sell_order_summary }}
-                    />
-                  )}
-                  <table className='text-xs border border-border w-full h-fit'>
-                    <thead>
-                      <tr className='bg-content/5'>
-                        <th className='px-2 py-1 text-center'>
-                          {t('tradingCards.priceData.price')}
-                        </th>
-                        <th className='px-2 py-1 text-center'>
-                          {t('tradingCards.priceData.quantity')}
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {item.price_data &&
-                        Array.isArray(item.price_data.sell_order_graph) &&
-                        item.price_data.sell_order_graph.map((row, index) => (
-                          <tr key={row[0]} className='border-t border-content/10'>
-                            <td
-                              className='px-2 py-1 text-center text-dynamic hover:text-dynamic-hover cursor-pointer'
-                              onClick={() => {
-                                const numericPrice = item.price_data.sell_order_graph?.[index]?.[0]
-                                  .toString()
-                                  .replace(/[^0-9.,]/g, '')
-                                  .replace(',', '.')
-                                const price = parseFloat(numericPrice)
-                                tradingCardContext.updateCardPrice(item.assetid, price)
-                                onOpenChange()
-                              }}
-                            >
-                              {row[2] ? row[2].split(' (')[0] : row[0]}
-                            </td>
-                            <td className='px-2 py-1 text-center'>{row[1]}</td>
-                          </tr>
-                        ))}
-                    </tbody>
-                  </table>
-                </div>
-
-                <div className='flex flex-col gap-2'>
-                  <p className='font-bold'>{t('tradingCards.priceData.buyOrders')}</p>
-                  {item.price_data?.buy_order_summary && (
-                    <p
-                      className='text-xs text-altwhite'
-                      dangerouslySetInnerHTML={{ __html: item.price_data.buy_order_summary }}
-                    />
-                  )}
-                  <table className='text-xs border border-border w-full h-fit'>
-                    <thead>
-                      <tr className='bg-content/5'>
-                        <th className='px-2 py-1 text-center'>
-                          {t('tradingCards.priceData.price')}
-                        </th>
-                        <th className='px-2 py-1 text-center'>
-                          {t('tradingCards.priceData.quantity')}
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {item.price_data &&
-                        Array.isArray(item.price_data.buy_order_graph) &&
-                        item.price_data.buy_order_graph.map((row, index) => (
-                          <tr key={row[0]} className='border-t border-content/10'>
-                            <td
-                              className='px-2 py-1 text-center text-dynamic hover:text-dynamic-hover cursor-pointer'
-                              onClick={() => {
-                                const numericPrice = item.price_data.buy_order_graph?.[index]?.[0]
-                                  .toString()
-                                  .replace(/[^0-9.,]/g, '')
-                                  .replace(',', '.')
-                                const price = parseFloat(numericPrice)
-                                tradingCardContext.updateCardPrice(item.assetid, price)
-                                onOpenChange()
-                              }}
-                            >
-                              {row[2] ? row[2].split(' (')[0] : row[0]}
-                            </td>
-                            <td className='px-2 py-1 text-center'>{row[1]}</td>
-                          </tr>
-                        ))}
-                    </tbody>
-                  </table>
-                </div>
+                <OrderTable
+                  title={t('tradingCards.priceData.sellOrders')}
+                  summary={item.price_data?.sell_order_summary}
+                  rows={item.price_data?.sell_order_graph}
+                  onRowClick={price => {
+                    tradingCardContext.updateCardPrice(item.assetid, price)
+                    onOpenChange()
+                  }}
+                />
+                <OrderTable
+                  title={t('tradingCards.priceData.buyOrders')}
+                  summary={item.price_data?.buy_order_summary}
+                  rows={item.price_data?.buy_order_graph}
+                  onRowClick={price => {
+                    tradingCardContext.updateCardPrice(item.assetid, price)
+                    onOpenChange()
+                  }}
+                />
               </>
             ) : (
-              <Spinner />
+              <div className='flex justify-center w-full py-4'>
+                <Spinner />
+              </div>
             )}
           </div>
         }

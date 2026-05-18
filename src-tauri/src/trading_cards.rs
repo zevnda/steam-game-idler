@@ -658,8 +658,6 @@ pub async fn get_card_price(
     market_hash_name: String,
     currency: Option<String>,
 ) -> Result<Value, String> {
-    use regex::Regex;
-
     let client = Client::builder()
         .redirect(reqwest::redirect::Policy::custom(|attempt| {
             if attempt.previous().len() > 10 {
@@ -671,92 +669,35 @@ pub async fn get_card_price(
         .build()
         .map_err(|e| e.to_string())?;
 
-    // Fetch the listing page HTML
-    let url = format!(
+    // Fetch the item's sell/buy history page
+    let qp = serde_json::to_string(&json!([753, market_hash_name]))
+        .map_err(|e| format!("Failed to serialize qp: {}", e))?;
+    let orderbook_url = format!(
+        "https://steamcommunity.com/market/orderbook?q=Load&qp={}&currency={}",
+        urlencoding::encode(&qp),
+        currency.as_deref().unwrap_or("1")
+    );
+    let referer = format!(
         "https://steamcommunity.com/market/listings/753/{}",
         urlencoding::encode(&market_hash_name)
     );
-    let resp = client
-        .get(&url)
-        .header("User-Agent", "Mozilla/5.0")
-        .send()
-        .await;
 
-    let resp = match resp {
-        Ok(r) => r,
-        Err(e) => {
-            return Ok(json!({
-                "success": false,
-                "error": format!("Failed to fetch listing page: {}", e)
-            }));
-        }
-    };
-
-    if !resp.status().is_success() {
-        return Ok(json!({
-            "success": false,
-            "error": format!("Failed to fetch listing page: HTTP {}", resp.status())
-        }));
-    }
-    let html = match resp.text().await {
-        Ok(t) => t,
-        Err(e) => {
-            return Ok(json!({
-                "success": false,
-                "error": format!("Failed to get HTML: {}", e)
-            }));
-        }
-    };
-
-    // Extract item_nameid from HTML
-    let re = Regex::new(r#"Market_LoadOrderSpread\(\s*(\d+)\s*\)"#);
-    let re = match re {
-        Ok(r) => r,
-        Err(e) => {
-            return Ok(json!({
-                "success": false,
-                "error": format!("Regex error: {}", e)
-            }));
-        }
-    };
-    let item_nameid = re
-        .captures(&html)
-        .and_then(|caps| caps.get(1))
-        .map(|m| m.as_str().to_string());
-
-    let item_nameid = match item_nameid {
-        Some(id) => id,
-        None => {
-            return Ok(json!({
-                "success": false,
-                "error": "Failed to extract item_nameid"
-            }));
-        }
-    };
-
-    // Fetch the histogram XHR
-    let histogram_url = format!(
-        "https://steamcommunity.com/market/itemordershistogram?currency={}&item_nameid={}&language=english",
-        currency.as_deref().unwrap_or(""),
-        item_nameid
-    );
-    // Fetch histogram with retry/backoff for HTTP 429 (rate limit)
     let json: Value = {
         let max_retries: u32 = 3;
         let mut retry_count: u32 = 0;
         loop {
-            let hist_resp = client
-                .get(&histogram_url)
-                .header("User-Agent", "Mozilla/5.0")
-                .header("Referer", &url)
+            let resp = client
+                .get(&orderbook_url)
+                .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+                .header("Referer", &referer)
                 .send()
                 .await;
 
-            match hist_resp {
+            match resp {
                 Err(e) => {
                     return Ok(json!({
                         "success": false,
-                        "error": format!("Failed to fetch histogram: {}", e)
+                        "error": format!("Failed to fetch orderbook: {}", e)
                     }));
                 }
                 Ok(r) if r.status().as_u16() == 429 => {
@@ -766,7 +707,6 @@ pub async fn get_card_price(
                             "error": "HTTP 429: Rate limited (max retries exceeded)"
                         }));
                     }
-                    // Exponential backoff: 5s, 10s, 20s
                     let delay_ms = 5_000u64 * (1u64 << retry_count);
                     retry_count += 1;
                     tokio::time::sleep(tokio::time::Duration::from_millis(delay_ms)).await;
@@ -782,7 +722,7 @@ pub async fn get_card_price(
                     Err(e) => {
                         return Ok(json!({
                             "success": false,
-                            "error": format!("Failed to parse histogram JSON: {}", e)
+                            "error": format!("Failed to parse orderbook JSON: {}", e)
                         }));
                     }
                 },
@@ -790,13 +730,67 @@ pub async fn get_card_price(
         }
     };
 
-    Ok({
-        let mut result = json.clone();
-        if let Some(obj) = result.as_object_mut() {
-            obj.insert("success".to_string(), json!(true));
-        }
-        result
-    })
+    let data = &json["data"];
+
+    let e_currency = data["eCurrency"].as_u64().unwrap_or(1) as u32;
+    let multiplier = if is_zero_decimal_currency(e_currency) {
+        1.0_f64
+    } else {
+        100.0_f64
+    };
+
+    // rgCompactSellOrders / rgCompactBuyOrders are flat [price, qty, price, qty, …] arrays
+    // where prices are in the currency's smallest unit (cents for USD/EUR, whole units for JPY/KRW…).
+    let sell_order_graph: Vec<Value> = data["rgCompactSellOrders"]
+        .as_array()
+        .map(|arr| {
+            arr.chunks(2)
+                .filter(|c| c.len() == 2)
+                .filter_map(|c| {
+                    let price = c[0].as_f64()? / multiplier;
+                    let qty = c[1].as_u64().unwrap_or(0);
+                    Some(json!([
+                        price,
+                        qty,
+                        format!("{} orders at {:.2}", qty, price)
+                    ]))
+                })
+                .collect()
+        })
+        .unwrap_or_default();
+
+    let buy_order_graph: Vec<Value> = data["rgCompactBuyOrders"]
+        .as_array()
+        .map(|arr| {
+            arr.chunks(2)
+                .filter(|c| c.len() == 2)
+                .filter_map(|c| {
+                    let price = c[0].as_f64()? / multiplier;
+                    let qty = c[1].as_u64().unwrap_or(0);
+                    Some(json!([
+                        price,
+                        qty,
+                        format!("{} orders at {:.2}", qty, price)
+                    ]))
+                })
+                .collect()
+        })
+        .unwrap_or_default();
+
+    let highest_buy_order = data["amtMaxBuyOrder"].as_f64().map(|p| p / multiplier);
+    let lowest_sell_order = data["amtMinSellOrder"].as_f64().map(|p| p / multiplier);
+    let c_buy = data["cBuyOrders"].as_u64().unwrap_or(0);
+    let c_sell = data["cSellOrders"].as_u64().unwrap_or(0);
+
+    Ok(json!({
+        "success": true,
+        "buy_order_graph": buy_order_graph,
+        "sell_order_graph": sell_order_graph,
+        "highest_buy_order": highest_buy_order,
+        "lowest_sell_order": lowest_sell_order,
+        "buy_order_summary": format!("{} buy orders", c_buy),
+        "sell_order_summary": format!("{} sell orders", c_sell),
+    }))
 }
 
 #[tauri::command]
