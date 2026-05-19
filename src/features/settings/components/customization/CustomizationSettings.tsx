@@ -11,6 +11,7 @@ import {
 } from '@/features/settings'
 import { ProBadge, SettingsSwitch } from '@/shared/components'
 import { useStateStore, useUserStore } from '@/shared/stores'
+import { hasGamerFeature } from '@/shared/utils'
 
 interface Theme {
   key: string
@@ -22,6 +23,8 @@ export const CustomizationSettings = () => {
   const { t } = useTranslation()
   const { setTheme, resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
+  const proTier = useUserStore(state => state.proTier)
+  const setProModalRequiredTier = useStateStore(state => state.setProModalRequiredTier)
   const setProModalOpen = useStateStore(state => state.setProModalOpen)
   const setUserSettings = useUserStore(state => state.setUserSettings)
   const isPro = useUserStore(state => state.isPro)
@@ -134,7 +137,12 @@ export const CustomizationSettings = () => {
 
           <div
             className='flex flex-col gap-4 w-62.5'
-            onClick={() => !isPro && setProModalOpen(true)}
+            onClick={() => {
+              if (!hasGamerFeature(proTier)) {
+                setProModalRequiredTier('casual')
+                setProModalOpen(true)
+              }
+            }}
           >
             <Input
               type='file'
@@ -184,7 +192,12 @@ export const CustomizationSettings = () => {
               {themes.map(theme => (
                 <div
                   key={theme.key}
-                  onClick={() => theme.isProTheme && !isPro && setProModalOpen(true)}
+                  onClick={() => {
+                    if (theme.isProTheme && !hasGamerFeature(proTier)) {
+                      setProModalRequiredTier('casual')
+                      setProModalOpen(true)
+                    }
+                  }}
                 >
                   <Radio
                     value={theme.key}

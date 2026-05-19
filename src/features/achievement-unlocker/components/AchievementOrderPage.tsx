@@ -6,15 +6,16 @@ import { useTranslation } from 'react-i18next'
 import { GoGrabber } from 'react-icons/go'
 import { TbClock, TbX } from 'react-icons/tb'
 import { FixedSizeList as List } from 'react-window'
+import { ImportTimingsModal } from './ImportTimingsModal'
 import { DndContext, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
 import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { Button, Checkbox, cn, Input, Spinner } from '@heroui/react'
+import { Button, Checkbox, cn, Input, Spinner, useDisclosure } from '@heroui/react'
 import Image from 'next/image'
-import { ExtLink, showAccountMismatchToast, showDangerToast } from '@/shared/components'
+import { ExtLink, ProBadge, showAccountMismatchToast, showDangerToast } from '@/shared/components'
 import { useStateStore, useUserStore } from '@/shared/stores'
-import { checkSteamStatus, logEvent } from '@/shared/utils'
+import { checkSteamStatus, hasGamerFeature, logEvent } from '@/shared/utils'
 
 interface SortableAchievementProps {
   appid: number
@@ -133,7 +134,7 @@ const SortableAchievement = memo(function SortableAchievement({
           step={0.1}
           placeholder='0'
           isDisabled={achievement.achieved}
-          className='w-16'
+          className='w-24'
           value={delayValue.toString()}
           onChange={handleDelayChange}
           size='sm'
@@ -201,10 +202,18 @@ const SortableRow = memo(function SortableRow({
 export const AchievementOrderPage = () => {
   const { t } = useTranslation()
   const userSummary = useUserStore(state => state.userSummary)
+  const proTier = useUserStore(state => state.proTier)
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
   const transitionDuration = useStateStore(state => state.transitionDuration)
   const achievementOrderGame = useStateStore(state => state.achievementOrderGame)
   const setShowAchievementOrder = useStateStore(state => state.setShowAchievementOrder)
+  const setProModalOpen = useStateStore(state => state.setProModalOpen)
+  const setProModalRequiredTier = useStateStore(state => state.setProModalRequiredTier)
+  const {
+    isOpen: isImportOpen,
+    onOpen: onImportOpen,
+    onOpenChange: onImportOpenChange,
+  } = useDisclosure()
 
   const item = achievementOrderGame!
 
@@ -484,6 +493,26 @@ export const AchievementOrderPage = () => {
             >
               {t('achievementManager.statistics.resetAll')}
             </Button>
+            <div
+              onClick={() => {
+                if (!hasGamerFeature(proTier)) {
+                  setProModalRequiredTier('gamer')
+                  setProModalOpen(true)
+                }
+              }}
+            >
+              <Button
+                className='bg-btn-secondary text-btn-text font-bold'
+                radius='full'
+                isDisabled={!hasGamerFeature(proTier)}
+                onPress={onImportOpen}
+              >
+                {t('customLists.achievementUnlocker.importTimings.title')}
+                {!hasGamerFeature(proTier) && (
+                  <ProBadge className='scale-70 -mx-2' requiredTier='gamer' />
+                )}
+              </Button>
+            </div>
             <Button
               className='bg-btn-secondary text-btn-text font-bold'
               radius='full'
@@ -585,6 +614,13 @@ export const AchievementOrderPage = () => {
           </div>
         </div>
       </div>
+      <ImportTimingsModal
+        isOpen={isImportOpen}
+        onOpenChange={onImportOpenChange}
+        appId={item.appid}
+        achievements={achievements}
+        onImport={setAchievements}
+      />
     </div>
   )
 }

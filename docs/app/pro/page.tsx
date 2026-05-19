@@ -3,6 +3,7 @@ import { FiBook } from 'react-icons/fi'
 import {
   TbAd,
   TbCards,
+  TbClock,
   TbCurrencyDollar,
   TbDeviceGamepad2,
   TbGift,
@@ -78,12 +79,20 @@ const allFeatures = [
     title: 'Automated Free Game Redemption',
     description: 'Automatically redeem free games on Steam the moment they become available.',
     tier: 'gamer',
-    span: 2,
+    span: 1,
   },
   {
     icon: TbCurrencyDollar,
     title: 'Sell Duplicate Inventory Items',
     description: 'Instantly list all duplicate inventory items for sale with a single click.',
+    tier: 'gamer',
+    span: 1,
+  },
+  {
+    icon: TbClock,
+    title: 'Import Achievement Unlock Timings',
+    description:
+      'Copy the exact achievement unlock order and timing delays from any public Steam profile.',
     tier: 'gamer',
     span: 1,
   },

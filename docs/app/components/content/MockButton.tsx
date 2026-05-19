@@ -8,6 +8,7 @@ import {
   TbCards,
   TbChecks,
   TbDeviceGamepad2,
+  TbDownload,
   TbEraser,
   TbGift,
   TbHeart,
@@ -54,6 +55,7 @@ type ButtonType =
   | 'steam'
   | 'start-manually'
   | 'checkbox'
+  | 'import-timings'
 
 interface MockButtonProps {
   type: ButtonType
@@ -249,6 +251,12 @@ export default function MockButton({ type, content }: MockButtonProps) {
     return (
       <span className='inline-flex align-middle items-center justify-center bg-icon-light dark:bg-icon-dark text-icon-light dark:text-icon-dark text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
         <TbHourglassLow fontSize={16} className='inline' /> Start Manually
+      </span>
+    )
+  } else if (type === 'import-timings') {
+    return (
+      <span className='inline-flex align-middle items-center justify-center bg-icon-light dark:bg-icon-dark text-icon-light dark:text-icon-dark text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
+        <TbDownload fontSize={16} className='inline' /> Import Timings
       </span>
     )
   } else if (type === 'checkbox') {

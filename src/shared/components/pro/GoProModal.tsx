@@ -3,6 +3,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import { FaArrowDown, FaArrowRight, FaCheck, FaChevronDown, FaDiscord } from 'react-icons/fa6'
 import {
   TbAd,
+  TbClock,
   TbCurrencyDollar,
   TbGift,
   TbKey,
@@ -13,6 +14,7 @@ import {
 import { Button, Modal, ModalBody, ModalContent } from '@heroui/react'
 import { AnimatePresence, motion } from 'framer-motion'
 import Image from 'next/image'
+import { ExtLink } from '@/shared/components'
 import { useStateStore, useUserStore } from '@/shared/stores'
 import { openExternalLink } from '@/shared/utils'
 
@@ -33,6 +35,7 @@ interface CardDef {
   videoBg?: string
   accentColor: string
   iconOpacity: number
+  learnMoreUrl?: string
 }
 
 // ─── Shooting stars ──────────────────────────────────────────────────────────
@@ -138,6 +141,7 @@ function ShootingStar({
 
 function FeatureCard({ card, index }: { card: CardDef; index: number }) {
   const ref = useRef<HTMLDivElement>(null)
+  const { t } = useTranslation()
 
   return (
     <motion.div
@@ -167,7 +171,16 @@ function FeatureCard({ card, index }: { card: CardDef; index: number }) {
 
       <div className='relative z-10 p-4 flex flex-col h-full'>
         <p className='text-2xl font-black mb-1.5'>{card.title}</p>
-        <p className=' leading-relaxed'>{card.description}</p>
+        <p className='leading-relaxed flex-1'>{card.description}</p>
+        {card.learnMoreUrl && (
+          <div className='flex justify-end mt-3'>
+            <ExtLink href={card.learnMoreUrl}>
+              <p className='text-xs text-content hover:text-content/90 duration-150 cursor-pointer'>
+                {t('common.learnMore')} →
+              </p>
+            </ExtLink>
+          </div>
+        )}
       </div>
     </motion.div>
   )
@@ -178,9 +191,9 @@ interface TierCardProps {
   price: string
   url: string
   features: { label: string; icon: React.ElementType }[]
-  isRequired?: boolean
   isOwned?: boolean
   isMostPopular?: boolean
+  isRequired?: boolean
   isCasual?: boolean
 }
 
@@ -189,9 +202,9 @@ function TierCard({
   price,
   url,
   features: tf,
-  isRequired,
   isOwned,
   isMostPopular,
+  isRequired,
   isCasual,
 }: TierCardProps) {
   const { t } = useTranslation()
@@ -204,6 +217,10 @@ function TierCard({
       className='relative rounded-4xl overflow-hidden flex flex-col'
       style={{
         background: isCasual ? '#131313' : 'linear-gradient(145deg, #150a2e 0%, #0f0a20 100%)',
+        ...(isRequired && {
+          outline: `2px solid ${accent}`,
+          boxShadow: `0 0 20px 8px ${isCasual ? 'rgba(59, 131, 246, 0.26)' : 'rgba(146, 51, 234, 0.35)'}`,
+        }),
       }}
     >
       {/* Gamer card: decorative sparkle backdrop */}
@@ -217,13 +234,13 @@ function TierCard({
       )}
 
       {/* Badge */}
-      {(isMostPopular || isRequired) && (
+      {isMostPopular && (
         <div className='absolute top-3.5 right-3.5 z-10'>
           <span
             className='px-2.5 py-1 text-[10px] font-black uppercase rounded-full tracking-widest'
             style={{ background: `linear-gradient(90deg, ${accent}, ${accentTo})` }}
           >
-            {isRequired ? t('proMode.tier.required') : t('proMode.tier.mostPopular')}
+            {t('proMode.tier.mostPopular')}
           </span>
         </div>
       )}
@@ -402,6 +419,7 @@ export const GoProModal = () => {
       videoBg: 'https://www.pexels.com/download/video/7914927/',
       accentColor: '#7c38c9',
       iconOpacity: 0.12,
+      learnMoreUrl: 'https://steamgameidler.com/docs/steam-credentials#automated-method',
     },
     {
       icon: TbRefresh,
@@ -424,17 +442,31 @@ export const GoProModal = () => {
       videoBg: 'https://www.pexels.com/download/video/27607570/',
       accentColor: '#7c38c9',
       iconOpacity: 0.1,
+      learnMoreUrl: 'https://steamgameidler.com/docs/features/free-games#automated-redemption',
     },
     {
       icon: TbCurrencyDollar,
       title: t('proMode.cards.sellDupes.title'),
       description: t('proMode.cards.sellDupes.description'),
       tier: 'gamer',
-      colSpan: 2,
+      colSpan: 1,
       bg: '#131313',
       videoBg: 'https://www.pexels.com/download/video/8816946/',
       accentColor: '#7c38c9',
       iconOpacity: 0.12,
+      learnMoreUrl: 'https://steamgameidler.com/docs/features/inventory-manager',
+    },
+    {
+      icon: TbClock,
+      title: t('proMode.cards.importTimings.title'),
+      description: t('proMode.cards.importTimings.description'),
+      tier: 'gamer',
+      colSpan: 1,
+      bg: '#131313',
+      videoBg: 'https://www.pexels.com/download/video/33975259/',
+      accentColor: '#7c38c9',
+      iconOpacity: 0.1,
+      learnMoreUrl: 'https://steamgameidler.com/docs/features/achievement-unlocker#import-timings',
     },
   ]
 
@@ -462,6 +494,14 @@ export const GoProModal = () => {
     }
     getPaymentLinks()
   }, [])
+
+  useEffect(() => {
+    if (!proModalOpen || !proModalRequiredTier) return
+    const timer = setTimeout(() => {
+      tierRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 400)
+    return () => clearTimeout(timer)
+  }, [proModalOpen, proModalRequiredTier])
 
   const handleOpenChange = (open: boolean) => {
     setProModalOpen(open)
@@ -624,8 +664,8 @@ export const GoProModal = () => {
                   { label: t('proMode.tier.casual.discordRole'), icon: FaDiscord },
                   { label: t('proMode.tier.casual.cancelAnytime'), icon: FaCheck },
                 ]}
-                isRequired={proModalRequiredTier === 'casual'}
                 isOwned={proTier === 'casual' || proTier === 'gamer'}
+                isRequired={proModalRequiredTier === 'casual'}
                 isCasual
               />
               <TierCard
@@ -637,10 +677,11 @@ export const GoProModal = () => {
                   { label: t('proMode.tier.gamer.gamesList'), icon: TbRefresh },
                   { label: t('proMode.tier.gamer.freeGames'), icon: TbGift },
                   { label: t('proMode.tier.gamer.sellDupes'), icon: TbCurrencyDollar },
+                  { label: t('proMode.tier.gamer.importTimings'), icon: TbClock },
                   { label: t('proMode.tier.gamer.cancelAnytime'), icon: FaCheck },
                 ]}
-                isRequired={proModalRequiredTier === 'gamer'}
                 isOwned={proTier === 'gamer'}
+                isRequired={proModalRequiredTier === 'gamer'}
                 isMostPopular={!proModalRequiredTier}
               />
             </div>
