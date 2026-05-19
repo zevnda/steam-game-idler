@@ -5,25 +5,33 @@ description: Configure settings for managing and selling Steam inventory items a
 
 # Inventory Manager Settings
 
+<Callout type="info">
+  The price you set is what the **buyer pays**. SGI accounts for Steam's 15% transaction fee automatically, so your received amount will be less. See [Marketplace Fees](/docs/features/inventory-manager#marketplace-fees) for details.
+</Callout>
+
 ## Default Sell Option
-Choose the default sell price for inventory items when using the `sell all` button
+Choose how SGI determines the default price when listing items
 
-Prices are fetched from the item's histogram data. For example, [this item](https://steamcommunity.com/market/listings/753/774861-Traitor) has it's own [price histogram data](https://steamcommunity.com/market/itemordershistogram?country=AU&language=english&currency=21&item_nameid=176219335). The histogram data is the same data that populates the tables on the [item's listing page](https://steamcommunity.com/market/listings/753/774861-Traitor)
+- **Highest Buy Order** — lists at the highest price someone is currently willing to pay for the item. This is more likely to sell quickly
+- **Lowest Sell Order** — lists at the lowest price another seller is currently asking. This may take longer to sell but can yield a slightly higher return
 
-The histogram data contains a `highest_buy_order` and `lowest_sell_order` price, which are used to determine the default sell price
+This setting only affects the default price applied when using **List All**. You can always override the price on individual items.
 
 ## Price Adjustment
-Add or subtract a fixed amount from the sale price of all inventory items listed for sale. This can be useful to adjust prices based on market trends or personal preferences
+Add or subtract a fixed amount from every item's sale price
 
-For example, if you set a price adjustment of `-0.10`, and sell an item listed at `1.00`, it will be sold for `0.90`
+Useful for undercutting the market or adding a small buffer above the default price. For example, setting `-0.05` reduces every listing price by $0.05.
+
+If the adjusted price falls below your [Sell Limit](#sell-limit) minimum, the item will not be listed.
 
 ## Sell Limit
-Set minimum and maximum price limits for selling inventory items
+Set a minimum and maximum price range for listings
 
-If the final sale price is below the minimum or above the maximum, the card will not be listed for sale. This helps avoid selling cards at unfavorable prices
+Items whose final price falls outside this range will be skipped and not listed for sale. This protects you from accidentally selling valuable items too cheaply or listing common items at unrealistic prices.
 
-For example, if you set a minimum price of `0.50` and a maximum price of `2.00`, cards priced below `0.50` or above `2.00` will not be sold
+For example, with a minimum of `0.05` and a maximum of `2.00`, only items priced between $0.05 and $2.00 will be listed.
 
 ## Sell Delay
+Set how long SGI waits between listing each item *(in seconds)*
 
-Set a delay between listing each trading card for sale to avoid being rate-limited by Steam's API
+Steam's marketplace API has strict rate limits. If you list items too quickly, Steam will temporarily block further listings. The valid range is **10–60 seconds**. A higher delay is safer if you're selling a large number of items.

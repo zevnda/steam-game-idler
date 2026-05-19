@@ -1,10 +1,56 @@
 ---
 title: Debug Settings
-description: Information about debug logs and troubleshooting issues.
+description: Use the debug tools to view logs, reset data, export settings, and troubleshoot issues with SGI.
 ---
 
-# Debugging and Logs
+# Debug Settings
 
-A log file is stored in `%appdata%/roaming/com.zevnda.steam-game-idler`. These logs are useful for debugging issues and understanding what SGI is doing behind the scenes.
+The Debug tab provides tools for diagnosing issues and managing SGI's local data. If something isn't working as expected, start here before reporting a bug.
 
-If you have any issues while using SGI, check these logs as they may display information regarding the issue.
+## Logs
+
+The Logs panel displays a live view of SGI's internal activity, including errors and events from features like Card Farming and Achievement Unlocker.
+
+- **Clear** — removes all entries from the log view
+- **Open Log File** — opens the folder containing the log file in File Explorer
+
+Log files are stored at:
+```
+%appdata%\roaming\com.zevnda.steam-game-idler
+```
+
+If you're reporting a bug on GitHub, include the relevant lines from this log file to help diagnose the issue. See the [Troubleshooting](/docs/troubleshooting) guide for more information.
+
+## Clear Data
+
+Wipes all local data stored by SGI, including your game lists, custom settings, and cached information.
+
+<Callout type="warn">
+  This action is irreversible. You will be logged out and all locally stored data will be deleted. Your Steam account and library are not affected.
+</Callout>
+
+Use this as a last resort if SGI is behaving unexpectedly and a settings reset hasn't resolved the issue.
+
+## Reset Settings
+
+Resets all SGI settings to their default values without deleting your game lists or other data.
+
+<Callout type="warn">
+  This action is irreversible. All settings — including your API key, credentials, theme, and feature configurations — will be cleared.
+</Callout>
+
+This is useful if you've misconfigured something and want to start fresh without wiping everything.
+
+## Export Settings
+
+Export your current SGI settings to clipboard. Use this to:
+
+- Back up your configuration before making changes
+- Transfer your settings to another machine
+- For debugging when opening an issue on GitHub
+
+The exported file can be re-imported by placing it in the SGI settings directory (see **Open Settings** below).
+
+## Open Settings
+
+Opens the folder where SGI stores its settings file in File Explorer. This is useful for manually inspecting or editing the settings file, or for pasting exported settings to restore a previous configuration.
