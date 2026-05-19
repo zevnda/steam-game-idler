@@ -313,7 +313,7 @@
   "toast.importTimings.success": "Imported timings for {{count}} achievement(s)",
   "toast.importTimings.privateProfile": "Profile is private or game stats are not public",
   "toast.importTimings.noTimestamps": "No unlocked achievements found for this profile",
-  "toast.importTimings.notFound": "Could not find a Steam profile with that input",
+  "toast.importTimings.notFound": "Could not find the requested profile",
   "toast.importTimings.error": "Failed to fetch achievement data",
   "toast.startIdle.success": "Started idling {{appName}} ({{appId}})",
   "toast.startIdle.alreadyIdling": "{{appName}} ({{appId}}) is already being idled",
