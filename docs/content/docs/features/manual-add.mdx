@@ -8,12 +8,12 @@ import { Step, Steps } from 'fumadocs-ui/components/steps';
 
 # How to Manually Add Steam Games
 
-In some cases, SGI may not automatically detect all the games in your Steam library [for reasons explained here](/docs/faq#:~:text=Why%20are%20some%20games%20not%20showing%20up%20in%20my%20games%20list%20in%20SGI%3F).
+In some cases, SGI may not automatically detect all the games in your Steam library [for reasons explained in the FAQ](/docs/faq#:~:text=Why%20are%20some%20games%20not%20showing%20up%20in%20my%20games%20list%20in%20SGI%3F).
 
-When this happens, you can manually add games to SGI to ensure they are included in features like [Card Farming](/docs/features/card-farming), [Achievement Unlocker](/docs/features/achievement-unlocker), and [Automatic Idler](/docs/features/auto-idler).
+When this happens, you can manually add a game by providing its name and AppID. Once added, it will be available in features like [Card Farming](/docs/features/card-farming), [Achievement Unlocker](/docs/features/achievement-unlocker), and [Automatic Idler](/docs/features/auto-idler).
 
 <Callout type="info">
-    Adding games manually does not always guarantee that all SGI features will work correctly with those games
+  Manually added games may not always work with all SGI features. If a feature fails for a manually added game, it's likely that the game's data isn't accessible through the standard Steam APIs.
 </Callout>
 
 <Steps>
@@ -22,17 +22,17 @@ When this happens, you can manually add games to SGI to ensure they are included
   </Step>
 
   <Step>
-    Click on the <MockButton type='context-add' /> button in the page header
+    Click the <MockButton type='context-add' /> button in the page header
   </Step>
 
   <Step>
-    In the modal that opens, enter the `game name` and `game id` of the game you want to add
+    In the modal that opens, enter the `game name` and `game id` (AppID) of the game
 
-    The `game id` is the number in the game's store page URL. For example, here it is `570`:
+    **How to find a game's AppID:**
 
-    ```
-    https://store.steampowered.com/app/570/Dota_2/
-    ```
+    - **Steam store URL** — the number in the URL is the AppID. For example, in `https://store.steampowered.com/app/570/Dota_2/`, the AppID is `570`
+    - **SteamDB** — search for the game at [steamdb.info](https://www.steamdb.info) and the AppID is shown prominently on the game's page
+    - **Steam Library** — right-click the game in your Steam Library, select **Properties**, and the AppID is listed on the General tab
   </Step>
 
   <Step>

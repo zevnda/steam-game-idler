@@ -9,15 +9,17 @@ import { Step, Steps } from 'fumadocs-ui/components/steps';
 
 # Auto-Idle Steam Games on Startup
 
-The Steam Automatic Idler feature allows you to automatically idle your Steam games when SGI is launched. This is useful for users who want to consistently boost playtime on specific games without having to manually idle them each time.
+The Automatic Idler lets you build a list of games that SGI will start idling automatically every time it launches. Once configured, you don't need to manually start anything — SGI handles it in the background.
 
-This makes for a hassle-free playtime boosting experience when used with the [Run At Startup](/docs/settings/general#run-at-startup) setting.
+This works best when combined with [Run At Startup](/docs/settings/general#run-at-startup) and [Start Minimized](/docs/settings/general#start-minimized), so SGI launches silently with Windows and begins idling your games without any input from you.
 
 <DocsCTA />
 
 <Callout type="info">
-    You can idle a maximum of 32 games simultaneously. This limit is imposed by the Steam client
+  You can idle a maximum of 32 games simultaneously. This limit is set by the Steam client.
 </Callout>
+
+## Setting Up Automatic Idler
 
 <Steps>
   <Step>
@@ -25,12 +27,22 @@ This makes for a hassle-free playtime boosting experience when used with the [Ru
   </Step>
 
   <Step>
-    Go to the <MockButton type='all-games' /> tab and click on individual games to add and remove them
+    Go to the <MockButton type='all-games' /> tab and click on individual games to add them to your idle list. Click a game again to remove it
   </Step>
 
   <Step>
-    The next time you launch SGI, the games in this list will be automatically idled
-    
-    Or click <MockButton type='start-manually' /> to start idling them immediately
+    The next time SGI launches, the games in this list will be idled automatically
+
+    Alternatively, click <MockButton type='start-manually' /> to start idling them right now without waiting for a restart
   </Step>
 </Steps>
+
+## Managing the List
+
+- **Remove a game** — go to the <MockButton type='all-games' /> tab and click the game again to deselect it, or use the **List** tab to manage games already in the list
+- **Reorder games** — drag and drop games within the **List** tab to change their order
+- **Clear the list** — use the clear button in the page header to remove all games at once
+
+## Additional Information
+
+Like [Playtime Booster](/docs/features/playtime-booster), Automatic Idler only increases playtime hours. It does not farm trading cards or unlock achievements. For those, see [Card Farming](/docs/features/card-farming) and [Achievement Unlocker](/docs/features/achievement-unlocker).
