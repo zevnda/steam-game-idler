@@ -147,6 +147,7 @@ pub fn run() {
             open_store_login_window,
             delete_store_cookies,
             redeem_free_game,
+            get_player_achievements,
             update_tray_menu,
             start_drp,
             update_drp,

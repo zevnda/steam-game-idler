@@ -356,6 +356,109 @@ pub async fn get_free_games() -> Result<serde_json::Value, String> {
     Ok(json!({ "games": free_games }))
 }
 
+#[tauri::command]
+pub async fn get_player_achievements(app_id: u32, steam_input: String) -> Result<Value, String> {
+    let key = std::env::var("KEY").map_err(|_| "NETWORK_ERROR".to_string())?;
+    let client = Client::new();
+
+    // Resolve steam_input to a SteamID64
+    let trimmed = steam_input.trim();
+    let steam_id = if trimmed.len() == 17 && trimmed.chars().all(|c| c.is_ascii_digit()) {
+        trimmed.to_string()
+    } else if let Some(idx) = trimmed.find("/profiles/") {
+        let rest = &trimmed[idx + 10..];
+        let id = rest.trim_end_matches('/').split('/').next().unwrap_or("");
+        id.to_string()
+    } else {
+        let vanity = if let Some(idx) = trimmed.find("/id/") {
+            let rest = &trimmed[idx + 4..];
+            rest.trim_end_matches('/')
+                .split('/')
+                .next()
+                .unwrap_or("")
+                .to_string()
+        } else {
+            trimmed.to_string()
+        };
+        let resolve_url = format!(
+            "https://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key={}&vanityurl={}",
+            key, vanity
+        );
+        let resp: Value = client
+            .get(&resolve_url)
+            .send()
+            .await
+            .map_err(|_| "NETWORK_ERROR".to_string())?
+            .json()
+            .await
+            .map_err(|_| "NETWORK_ERROR".to_string())?;
+        if resp["response"]["success"].as_i64() != Some(1) {
+            return Err("NOT_FOUND".to_string());
+        }
+        resp["response"]["steamid"]
+            .as_str()
+            .ok_or_else(|| "NOT_FOUND".to_string())?
+            .to_string()
+    };
+
+    // Fetch player achievements
+    let url = format!(
+        "https://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v0001/?appid={}&key={}&steamid={}",
+        app_id, key, steam_id
+    );
+    let body: Value = client
+        .get(&url)
+        .send()
+        .await
+        .map_err(|_| "NETWORK_ERROR".to_string())?
+        .json()
+        .await
+        .map_err(|_| "NETWORK_ERROR".to_string())?;
+
+    if body["playerstats"]["success"].as_bool() == Some(false)
+        || body["playerstats"]["success"].is_null()
+    {
+        return Err("PROFILE_PRIVATE".to_string());
+    }
+
+    // Filter to unlocked achievements with valid timestamps, sort ascending
+    let empty = vec![];
+    let achievements = body["playerstats"]["achievements"]
+        .as_array()
+        .unwrap_or(&empty);
+
+    let mut unlocked: Vec<(u64, &Value)> = achievements
+        .iter()
+        .filter_map(|a| {
+            let achieved = a["achieved"].as_u64().unwrap_or(0);
+            let unlock_time = a["unlocktime"].as_u64().unwrap_or(0);
+            if achieved == 1 && unlock_time > 0 {
+                Some((unlock_time, a))
+            } else {
+                None
+            }
+        })
+        .collect();
+
+    if unlocked.is_empty() {
+        return Err("NO_TIMESTAMPS".to_string());
+    }
+
+    unlocked.sort_by_key(|(t, _)| *t);
+
+    let result: Vec<Value> = unlocked
+        .iter()
+        .map(|(_, a)| {
+            json!({
+                "apiname": a["apiname"],
+                "unlocktime": a["unlocktime"]
+            })
+        })
+        .collect();
+
+    Ok(json!({ "achievements": result }))
+}
+
 // Redeem a free game by opening the Steam store page and clicking the "Add to Library" button if available
 #[tauri::command]
 pub async fn redeem_free_game(

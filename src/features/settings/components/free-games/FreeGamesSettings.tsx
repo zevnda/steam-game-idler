@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { TbChevronRight } from 'react-icons/tb'
 import { Button, Divider } from '@heroui/react'
 import { handleShowStoreLoginWindow, handleSignOutCurrentStoreUser } from '@/features/settings'
-import { Beta, ExtLink, ProBadge, SettingsSwitch } from '@/shared/components'
+import { ExtLink, ProBadge, SettingsSwitch } from '@/shared/components'
 import { useStateStore, useUserStore } from '@/shared/stores'
 import { hasGamerFeature } from '@/shared/utils'
 
@@ -48,7 +48,6 @@ export const FreeGamesSettings = () => {
                 {t('settings.general.autoRedeemFreeGames')}
               </p>
               {!hasGamerFeature(proTier) && <ProBadge className='scale-65' requiredTier='gamer' />}
-              <Beta />
             </div>
             <p className='text-xs text-altwhite'>
               {t('settings.general.autoRedeemFreeGames.description')}

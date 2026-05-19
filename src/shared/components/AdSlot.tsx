@@ -4,12 +4,13 @@ import { cn, Spinner } from '@heroui/react'
 import Image from 'next/image'
 import { ProBadge } from '@/shared/components'
 import { useNavigationStore, useStateStore, useUserStore } from '@/shared/stores'
-import { hasCasualFeature } from '@/shared/utils'
+import { hasCasualFeature, hasGamerFeature } from '@/shared/utils'
 
 export const AdSlot = () => {
   const { t } = useTranslation()
   const isPro = useUserStore(state => state.isPro)
   const proTier = useUserStore(state => state.proTier)
+  const setProModalRequiredTier = useStateStore(state => state.setProModalRequiredTier)
   const activePage = useNavigationStore(state => state.activePage)
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
   const setProModalOpen = useStateStore(state => state.setProModalOpen)
@@ -227,7 +228,12 @@ export const AdSlot = () => {
 
       <div
         className='text-xs text-altwhite mb-1 mt-1.5 text-center cursor-pointer hover:text-white duration-150 scale-125 pointer-events-auto'
-        onClick={() => setProModalOpen(true)}
+        onClick={() => {
+          if (!hasGamerFeature(proTier)) {
+            setProModalRequiredTier('casual')
+            setProModalOpen(true)
+          }
+        }}
       >
         <p>
           {t('proMode.removeAdsWith')}
