@@ -14,8 +14,7 @@ export const OpenDocs = ({ path, content = '', className = '' }: OpenDocsProps) 
       href={`https://steamgameidler.com/docs/${path}`}
       onClick={e => {
         e.preventDefault()
-        // openExternalLink(`https://steamgameidler.com/docs/${path}`)
-        openExternalLink(`http://localhost:3001/docs/${path}`)
+        openExternalLink(`https://steamgameidler.com/docs/${path}`)
       }}
     >
       {!content ? (
