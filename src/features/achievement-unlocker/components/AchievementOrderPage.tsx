@@ -1,5 +1,5 @@
 import type { Achievement, InvokeAchievementData } from '@/shared/types'
-import type { DragEndEvent } from '@dnd-kit/core'
+import type { DragEndEvent, DragOverEvent, DragStartEvent } from '@dnd-kit/core'
 import { invoke } from '@tauri-apps/api/core'
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -7,7 +7,7 @@ import { GoGrabber } from 'react-icons/go'
 import { TbClock, TbX } from 'react-icons/tb'
 import { FixedSizeList as List } from 'react-window'
 import { ImportTimingsModal } from './ImportTimingsModal'
-import { DndContext, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
+import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
 import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
@@ -36,7 +36,7 @@ const SortableAchievement = memo(function SortableAchievement({
   onSetDelay,
 }: SortableAchievementProps) {
   const { t } = useTranslation()
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: achievement.name,
   })
 
@@ -82,6 +82,7 @@ const SortableAchievement = memo(function SortableAchievement({
         'grid grid-cols-[28px_40px_1fr_auto_36px] items-center gap-3 px-3 py-2.5',
         'bg-card hover:bg-sidebar/60 group duration-150',
         (achievement.skip === true || achievement.achieved) && 'opacity-40',
+        isDragging && 'opacity-0',
       )}
     >
       {/* Checkbox */}
@@ -200,6 +201,81 @@ const SortableRow = memo(function SortableRow({
   )
 })
 
+const AchievementOverlayItem = memo(function AchievementOverlayItem({
+  appid,
+  achievement,
+}: {
+  appid: number
+  achievement: Achievement
+}) {
+  const { t } = useTranslation()
+  const iconUrl = 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/'
+  const icon = achievement.achieved
+    ? `${iconUrl}${appid}/${achievement.iconNormal}`
+    : `${iconUrl}${appid}/${achievement.iconLocked}`
+
+  return (
+    <div
+      className={cn(
+        'grid grid-cols-[28px_40px_1fr_auto_36px] items-center gap-3 px-3 py-2.5',
+        'bg-card shadow-xl rounded-lg cursor-grabbing',
+        (achievement.skip === true || achievement.achieved) && 'opacity-40',
+      )}
+    >
+      <div className='flex items-center justify-center'>
+        <Checkbox
+          isSelected={!achievement.achieved && achievement.skip !== true}
+          isDisabled={achievement.achieved}
+        />
+      </div>
+      <Image
+        className='rounded-full select-none'
+        src={icon}
+        width={36}
+        height={36}
+        alt={`${achievement.name} image`}
+        priority
+      />
+      <div className='min-w-0 select-none'>
+        <div className='flex items-baseline gap-2 min-w-0'>
+          <p className='font-semibold truncate'>{achievement.name}</p>
+          {achievement.percent !== undefined && achievement.percent > 0 && (
+            <span className='text-xs text-altwhite/60 shrink-0'>
+              {achievement.percent.toFixed(1)}%
+            </span>
+          )}
+        </div>
+        <p className='text-xs text-altwhite truncate'>{achievement.description}</p>
+      </div>
+      <div className='flex items-center gap-1.5 shrink-0 select-none'>
+        <Input
+          type='number'
+          min={0}
+          step={0.1}
+          placeholder='0'
+          isDisabled
+          className='w-24'
+          value={(achievement.delayNextUnlock ?? '').toString()}
+          size='sm'
+          classNames={{
+            inputWrapper: cn(
+              'bg-input data-[hover=true]:!bg-inputhover',
+              'group-data-[focus-within=true]:!bg-inputhover',
+              'group-data-[focus-visible=true]:ring-transparent',
+              'group-data-[focus-visible=true]:ring-offset-transparent',
+            ),
+            input: ['!text-content placeholder:text-altwhite/50'],
+          }}
+        />
+        <span className='text-xs text-altwhite'>{t('common.minutes')}</span>
+      </div>
+      <span className='cursor-grabbing justify-self-end'>
+        <GoGrabber size={28} className='text-altwhite' />
+      </span>
+    </div>
+  )
+})
+
 export const AchievementOrderPage = () => {
   const { t } = useTranslation()
   const userSummary = useUserStore(state => state.userSummary)
@@ -234,8 +310,13 @@ export const AchievementOrderPage = () => {
   const [delayBeforeFirstUnlock, setDelayBeforeFirstUnlock] = useState<number | ''>('')
   const [imageLoaded, setImageLoaded] = useState(false)
   const [fallbackImage, setFallbackImage] = useState('')
+  const [activeId, setActiveId] = useState<string | null>(null)
 
-  const handleDragEnd = useCallback((event: DragEndEvent) => {
+  const handleDragStart = useCallback((event: DragStartEvent) => {
+    setActiveId(event.active.id as string)
+  }, [])
+
+  const handleDragOver = useCallback((event: DragOverEvent) => {
     const { active, over } = event
     if (over && active.id !== over.id) {
       setAchievements(items => {
@@ -244,6 +325,10 @@ export const AchievementOrderPage = () => {
         return arrayMove(items, oldIndex, newIndex)
       })
     }
+  }, [])
+
+  const handleDragEnd = useCallback((_event: DragEndEvent) => {
+    setActiveId(null)
   }, [])
 
   const handleToggleSkip = useCallback((achievementName: string) => {
@@ -394,6 +479,11 @@ export const AchievementOrderPage = () => {
 
   const listOuterRef = useRef<HTMLDivElement>(null)
 
+  const activeAchievement = useMemo(
+    () => (activeId ? (achievements.find(a => a.name === activeId) ?? null) : null),
+    [activeId, achievements],
+  )
+
   const achievementList = useMemo(() => {
     const rowData: SortableRowData = {
       appid: item.appid,
@@ -404,6 +494,8 @@ export const AchievementOrderPage = () => {
     return (
       <DndContext
         sensors={sensors}
+        onDragStart={handleDragStart}
+        onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
         modifiers={[restrictToVerticalAxis]}
         autoScroll={{ canScroll: element => element === listOuterRef.current }}
@@ -420,10 +512,18 @@ export const AchievementOrderPage = () => {
             {SortableRow}
           </List>
         </SortableContext>
+        <DragOverlay>
+          {activeAchievement ? (
+            <AchievementOverlayItem appid={item.appid} achievement={activeAchievement} />
+          ) : null}
+        </DragOverlay>
       </DndContext>
     )
   }, [
     achievements,
+    activeAchievement,
+    handleDragStart,
+    handleDragOver,
     handleDragEnd,
     handleToggleSkip,
     handleSetDelay,
