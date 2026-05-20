@@ -118,7 +118,6 @@
   "settings.general.currency": "货币",
   "settings.general.currency.description": "选择用于集换式卡牌售价的货币",
   "settings.general.webApi": "Steam Web API 密钥（可选）",
-  "settings.general.helpTranslate": "帮助翻译 SGI。<1>进一步了解</1>",
   "settings.cardFarming.loading": "正在加载数据...",
   "settings.steamCredentials.automated": "自动方法",
   "settings.steamCredentials.manual": "手动方法",
