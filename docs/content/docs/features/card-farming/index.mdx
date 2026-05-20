@@ -1,6 +1,7 @@
 ---
 title: Card Farming
 description: Learn how to farm Steam trading cards automatically using the advanced card farming tool.
+index: true
 ---
 
 import DocsCTA from '@docs/components/content/DocsCTA';
@@ -57,29 +58,9 @@ The Card Farming feature allows you to automatically farm trading cards from you
   </Step>
 </Steps>
 
-## Account Restriction
 
-New Steam accounts and accounts that have recently refunded a game fall under the [Limited User Account](https://help.steampowered.com/en/faqs/view/71D3-35C2-AD96-AA3A) restrictions and may have to spend a minimum of **$5.00 USD**, and/or wait three hours before the first card will drop.
 
-## Card Drop Times
 
-The time it takes for cards to drop varies from game to game. This interval is set by the developer. Some games drop a card every 30 minutes, while others may take up to 2 hours.
 
-## Blacklisting Games
-You can blacklist specific games from being farmed for cards by going to the <MockButton type='all-games' /> tab and then clicking the <MockButton type='content' content='Blacklist' /> button next to individual games.
 
-Blacklisted games will not be farmed for cards in either mode, even if they have card drops remaining, and even if you have added them to your card farming list.
 
-## Card Farming Algorithm
-
-While farming cards, you may see `SteamUtility.exe (idle)` processes start and stop. This is normal — SGI uses the following sequence to trigger card drops as efficiently as possible:
-
-1. Idle each game for **5 minutes**
-2. Stop idling for **1 minute**
-3. Idle each game for **15 seconds** *(first card drop should occur here)*
-4. Stop idling for **1 minute**
-5. Idle each game for **30 minutes**
-6. Stop idling for **1 minute**
-7. Idle each game for **15 seconds** *(next card drop should occur here)*
-8. Stop idling for **1 minute**
-9. Repeat from step 5

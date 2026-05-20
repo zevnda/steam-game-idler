@@ -2,7 +2,8 @@ import { useTranslation } from 'react-i18next'
 import { TbChevronRight } from 'react-icons/tb'
 import { Button, Divider } from '@heroui/react'
 import { handleShowStoreLoginWindow, handleSignOutCurrentStoreUser } from '@/features/settings'
-import { ExtLink, ProBadge, SettingsSwitch } from '@/shared/components'
+import { ProBadge, SettingsSwitch } from '@/shared/components'
+import { OpenDocs } from '@/shared/components/OpenDocs'
 import { useStateStore, useUserStore } from '@/shared/stores'
 import { hasGamerFeature } from '@/shared/utils'
 
@@ -44,20 +45,15 @@ export const FreeGamesSettings = () => {
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
             <div className='flex items-center'>
-              <p className='text-sm text-content font-bold'>
+              <p className='flex items-center gap-2 text-sm text-content font-bold'>
                 {t('settings.general.autoRedeemFreeGames')}
+                <OpenDocs path='/features/free-games#automated-redemption' />
               </p>
               {!hasGamerFeature(proTier) && <ProBadge className='scale-65' requiredTier='gamer' />}
             </div>
             <p className='text-xs text-altwhite'>
               {t('settings.general.autoRedeemFreeGames.description')}
             </p>
-            <ExtLink
-              href='https://steamgameidler.com/docs/settings/free-games#auto-redeem-free-games'
-              className='text-xs text-dynamic hover:text-dynamic-hover duration-150'
-            >
-              {t('common.learnMore')}
-            </ExtLink>
           </div>
 
           <div

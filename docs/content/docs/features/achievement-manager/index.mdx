@@ -1,6 +1,7 @@
 ---
 title: Achievement Manager
 description: Learn how to use the Steam Achievement Manager to unlock, lock, and manage your Steam game achievements.
+index: true
 ---
 
 import DocsCTA from '@docs/components/content/DocsCTA';
@@ -52,13 +53,3 @@ The Steam Achievement Manager lets you manually unlock and lock achievements for
     Change the `value` of any statistics you want to modify and click <MockButton type='save-changes' />
   </Step>
 </Steps>
-
-## Special Flags
-
-Some achievements and statistics have restrictions set by the game developer that affect what you can change. These are indicated directly in the UI.
-
-- **Protected:** Only the game's official servers can modify these. The unlock/lock buttons will be disabled for protected achievements
-- **IncrementOnly:** This statistic can only increase in value — you can raise it from 5 to 6, but not lower it from 5 to 4
-- **Hidden:** The achievement's description is blurred by default — hover over it to reveal the text
-
-For statistics, any active flags are shown directly beneath the stat value in the Statistics tab.

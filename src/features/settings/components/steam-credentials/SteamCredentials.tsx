@@ -11,6 +11,7 @@ import {
 } from '@/features/settings'
 import { handleSaveCredentials } from '@/features/settings/utils/steam-credentials/handleSteamCredentials'
 import { CustomModal, ExtLink, ProBadge, showDangerToast } from '@/shared/components'
+import { OpenDocs } from '@/shared/components/OpenDocs'
 import { useStateStore, useUserStore } from '@/shared/stores'
 import { hasGamerFeature, logEvent } from '@/shared/utils'
 
@@ -94,20 +95,15 @@ export const SteamCredentials = () => {
         <div className='flex justify-between items-start'>
           <div className='flex flex-col gap-2 w-1/2'>
             <div className='flex items-center'>
-              <p className='text-sm text-content font-bold'>
+              <p className='flex items-center gap-2 text-sm text-content font-bold'>
                 {t('settings.steamCredentials.automated')}
+                <OpenDocs path='/steam-credentials#automated-method' />
               </p>
               {!hasGamerFeature(proTier) && <ProBadge className='scale-65' requiredTier='gamer' />}
             </div>
             <p className='text-xs text-altwhite'>
               {t('settings.steamCredentials.automated.description')}
             </p>
-            <ExtLink
-              href='https://steamgameidler.com/docs/steam-credentials#automated-method'
-              className='text-xs text-dynamic hover:text-dynamic-hover duration-150'
-            >
-              {t('common.learnMore')}
-            </ExtLink>
           </div>
 
           <div
@@ -145,21 +141,11 @@ export const SteamCredentials = () => {
 
         <div className='flex justify-between items-start'>
           <div className='flex flex-col gap-2 w-1/2'>
-            <p className='text-sm text-content font-bold'>
+            <p className='flex items-center gap-2 text-sm text-content font-bold'>
               {t('settings.steamCredentials.manual')}
+              <OpenDocs path='/steam-credentials#manual-method' />
             </p>
-            <p className='text-xs text-altwhite'>
-              <Trans i18nKey='settings.cardFarming.steamCredentials'>
-                Steam credentials are required in order to use the Card Farming and Trading Card
-                Manager features.&nbsp;
-                <ExtLink
-                  href='https://steamgameidler.com/docs/steam-credentials#manual-method'
-                  className='text-dynamic hover:text-dynamic-hover duration-150'
-                >
-                  Learn more
-                </ExtLink>
-              </Trans>
-            </p>
+            <p className='text-xs text-altwhite'>{t('settings.cardFarming.steamCredentials')}</p>
             <p className='text-xs text-altwhite'>
               <Trans i18nKey='settings.cardFarming.steamCredentialsTwo'>
                 Get your Steam credentials from.&nbsp;

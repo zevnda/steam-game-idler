@@ -1,0 +1,17 @@
+---
+title: Card Farming Algorithm
+---
+
+# Card Farming Algorithm
+
+While farming cards, you may see `SteamUtility.exe (idle)` processes start and stop. This is normal — SGI uses the following sequence to trigger card drops as efficiently as possible:
+
+1. Idle each game for **5 minutes**
+2. Stop idling for **1 minute**
+3. Idle each game for **15 seconds** *(first card drop should occur here)*
+4. Stop idling for **1 minute**
+5. Idle each game for **30 minutes**
+6. Stop idling for **1 minute**
+7. Idle each game for **15 seconds** *(next card drop should occur here)*
+8. Stop idling for **1 minute**
+9. Repeat from step 5

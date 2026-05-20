@@ -13,7 +13,8 @@ import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { Button, Checkbox, cn, Input, Spinner, useDisclosure } from '@heroui/react'
 import Image from 'next/image'
-import { ExtLink, ProBadge, showAccountMismatchToast, showDangerToast } from '@/shared/components'
+import { ProBadge, showAccountMismatchToast, showDangerToast } from '@/shared/components'
+import { OpenDocs } from '@/shared/components/OpenDocs'
 import { useStateStore, useUserStore } from '@/shared/stores'
 import { checkSteamStatus, hasGamerFeature, logEvent } from '@/shared/utils'
 
@@ -479,11 +480,10 @@ export const AchievementOrderPage = () => {
           </div>
 
           <div className='flex items-center gap-2'>
-            <ExtLink href='https://steamgameidler.com/docs/features/achievement-unlocker#custom-order--unlock-delay'>
-              <p className='text-xs cursor-pointer hover:text-altwhite duration-150 p-2 rounded-lg'>
-                {t('common.needHelp')}
-              </p>
-            </ExtLink>
+            <OpenDocs
+              path='/features/achievement-unlocker/custom-order-and-unlock-delay'
+              content={t('common.needHelp')}
+            />
             <Button
               color='danger'
               variant='light'
