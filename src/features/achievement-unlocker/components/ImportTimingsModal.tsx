@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button, cn, Input } from '@heroui/react'
 import { CustomModal, showDangerToast, showSuccessToast } from '@/shared/components'
+import { useUserStore } from '@/shared/stores'
+import { decrypt } from '@/shared/utils'
 
 interface ImportTimingsModalProps {
   isOpen: boolean
@@ -34,6 +36,7 @@ export const ImportTimingsModal = ({
   onImport,
 }: ImportTimingsModalProps) => {
   const { t } = useTranslation()
+  const userSettings = useUserStore(state => state.userSettings)
   const [inputValue, setInputValue] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
@@ -46,9 +49,11 @@ export const ImportTimingsModal = ({
     if (!inputValue.trim()) return
     setIsLoading(true)
     try {
+      const apiKey = userSettings.general?.apiKey || undefined
       const result = await invoke<{ achievements: RawAchievement[] }>('get_player_achievements', {
         appId,
         steamInput: inputValue.trim(),
+        apiKey: apiKey ? decrypt(apiKey) : null,
       })
 
       const raw = [...result.achievements].sort((a, b) => a.unlocktime - b.unlocktime)
