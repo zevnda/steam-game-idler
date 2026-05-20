@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button, cn, Input } from '@heroui/react'
 import { CustomModal, showDangerToast, showSuccessToast } from '@/shared/components'
+import { OpenDocs } from '@/shared/components/OpenDocs'
 import { useUserStore } from '@/shared/stores'
 import { decrypt } from '@/shared/utils'
 
@@ -100,7 +101,12 @@ export const ImportTimingsModal = ({
     <CustomModal
       isOpen={isOpen}
       onOpenChange={handleClose}
-      title={t('customLists.achievementUnlocker.importTimings.title')}
+      title={
+        <div className='flex items-center gap-2'>
+          <p>{t('customLists.achievementUnlocker.importTimings.title')}</p>
+          <OpenDocs path='/features/achievement-unlocker/import-timings' />
+        </div>
+      }
       body={
         <div className='flex flex-col gap-3'>
           <p className='text-sm text-altwhite'>

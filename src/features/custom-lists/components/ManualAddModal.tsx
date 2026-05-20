@@ -4,6 +4,7 @@ import { TbPlus } from 'react-icons/tb'
 import { Button, cn, Input, NumberInput, useDisclosure } from '@heroui/react'
 import { useManualAdd } from '@/features/custom-lists'
 import { CustomModal } from '@/shared/components'
+import { OpenDocs } from '@/shared/components/OpenDocs'
 
 interface ManualAddModalProps {
   listTitle: string
@@ -43,7 +44,12 @@ export const ManualAddModal = ({ listTitle, listName, setList }: ManualAddModalP
           onOpenChange()
           handleClose()
         }}
-        title={t('customLists.manualAdd.title')}
+        title={
+          <div className='flex items-center gap-2'>
+            <p>{t('customLists.manualAdd.title')}</p>
+            <OpenDocs path='/features/manual-add' />
+          </div>
+        }
         body={
           <>
             <p className='text-sm text-altwhite'>
