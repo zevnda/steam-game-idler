@@ -357,8 +357,12 @@ pub async fn get_free_games() -> Result<serde_json::Value, String> {
 }
 
 #[tauri::command]
-pub async fn get_player_achievements(app_id: u32, steam_input: String) -> Result<Value, String> {
-    let key = std::env::var("KEY").map_err(|_| "NETWORK_ERROR".to_string())?;
+pub async fn get_player_achievements(
+    app_id: u32,
+    steam_input: String,
+    api_key: Option<String>,
+) -> Result<Value, String> {
+    let key = api_key.unwrap_or_else(|| std::env::var("KEY").unwrap());
     let client = Client::new();
 
     // Resolve steam_input to a SteamID64
