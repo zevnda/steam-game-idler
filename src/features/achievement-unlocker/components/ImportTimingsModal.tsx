@@ -1,9 +1,9 @@
 import type { Achievement } from '@/shared/types'
 import { invoke } from '@tauri-apps/api/core'
 import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { Button, cn, Input } from '@heroui/react'
-import { CustomModal, showDangerToast, showSuccessToast } from '@/shared/components'
+import { CustomModal, ExtLink, showDangerToast, showSuccessToast } from '@/shared/components'
 import { OpenDocs } from '@/shared/components/OpenDocs'
 import { useUserStore } from '@/shared/stores'
 import { decrypt } from '@/shared/utils'
@@ -110,8 +110,21 @@ export const ImportTimingsModal = ({
       body={
         <div className='flex flex-col gap-3'>
           <p className='text-sm text-altwhite'>
-            {t('customLists.achievementUnlocker.importTimings.inputDescription')}
+            {t('customLists.achievementUnlocker.importTimings.description')}
           </p>
+          <p className='text-sm text-altwhite'>
+            <Trans i18nKey='customLists.achievementUnlocker.importTimings.descriptionTwo'>
+              Use achievement tracking sites like{' '}
+              <ExtLink
+                href={`https://steamhunters.com/apps/${appId}/users?sort=achievements`}
+                className='text-dynamic hover:text-dynamic-hover duration-150'
+              >
+                Steam Hunters
+              </ExtLink>{' '}
+              to find users with legitimate achievements
+            </Trans>
+          </p>
+
           <Input
             autoFocus
             placeholder={t('customLists.achievementUnlocker.importTimings.inputPlaceholder')}
