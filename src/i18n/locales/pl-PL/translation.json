@@ -195,7 +195,6 @@
   "confirmation.resetStatistics": "Czy na pewno chcesz <1>zresetować</1> wszystkie statystyki?",
   "confirmation.resetSettings": "Czy na pewno chcesz przywrócić ustawienia domyślne?",
   "confirmation.clearData": "Czy na pewno chcesz usunąć wszystkie dane?",
-  "confirmation.steamClosed": "Steam nie jest uruchomiony. Otwórz aplikację Steam, aby kontynuować",
   "proMode.modal.footer": "Wyświetlane ceny są w USD, podatek nie jest wliczony.",
   "proMode.removeAdsWith": "Usuń reklamy za pomocą",
   "toast.steam": "Steam nie jest uruchomiony",

@@ -231,7 +231,6 @@
   "confirmation.resetStatistics": "Tüm istatistikleri <1>sıfırlamak</1> istediğinize emin misiniz?",
   "confirmation.resetSettings": "Ayarları varsayılana döndürmek istediğinize emin misiniz?",
   "confirmation.clearData": "Tüm verileri silmek istediğinize emin misiniz?",
-  "confirmation.steamClosed": "Steam çalışmıyor. Devam etmek için Steam istemcisini açın",
   "proMode.hero.headline": "Daha fazla özellik aç",
   "proMode.tier.gamer.cancelAnytime": "İstediğiniz Zaman İptal Edin",
   "proMode.modal.footer": "Fiyatlar USD cinsindendir ve vergiler hariçtir.",
