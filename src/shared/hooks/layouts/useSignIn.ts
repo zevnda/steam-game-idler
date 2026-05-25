@@ -2,7 +2,7 @@ import type { InvokeUsers, InvokeUserSummary, UserSummary } from '@/shared/types
 import { invoke } from '@tauri-apps/api/core'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { showAccountMismatchToast, showDangerToast } from '@/shared/components'
+import { showDangerToast } from '@/shared/components'
 import { useUserStore } from '@/shared/stores'
 import { checkSteamStatus, decrypt, logEvent } from '@/shared/utils'
 
@@ -11,6 +11,7 @@ export function useSignIn(refreshKey: number) {
   const userSettings = useUserStore(state => state.userSettings)
   const setUserSummary = useUserStore(state => state.setUserSummary)
   const [isLoading, setIsLoading] = useState(true)
+  const [isSwitching, setIsSwitching] = useState(false)
   const [steamUsers, setSteamUsers] = useState<UserSummary[]>([])
   const [userSummaries, setUserSummaries] = useState<UserSummary[]>([])
   const [selectedUser, setSelectedUser] = useState<UserSummary | null>(null)
@@ -136,23 +137,50 @@ export function useSignIn(refreshKey: number) {
     getSteamUsers()
   }, [userSettings.general?.apiKey, refreshKey])
 
+  const handleSelectUser = async (user: UserSummary) => {
+    setSelectedUser(user)
+    if (user?.mostRecent !== 1) {
+      try {
+        await invoke('prepare_steam_account_switch', { steamId: user?.steamId })
+      } catch (error) {
+        console.error('Error in (prepare_steam_account_switch):', error)
+        logEvent(`[Error] in (prepare_steam_account_switch): ${error}`)
+      }
+    }
+  }
+
   const handleLogin = async (index: number) => {
     try {
-      // Make sure Steam is running
-      const isSteamRunning = await checkSteamStatus(true)
-
+      const isSwitchingAccount = userSummaries[index]?.mostRecent !== 1
       const devAccounts = ['76561198158912649', '76561198999797359']
       const isDev = await invoke('is_dev')
-
-      if (!isSteamRunning && !isDev && !devAccounts.includes(userSummaries[index]?.steamId ?? ''))
-        return
+      const isDevAccount = devAccounts.includes(userSummaries[index]?.steamId ?? '')
 
       setIsLoading(true)
       const userSummary = userSummaries[index]
 
-      // mostRecent !== 1 means this isn't the account that's currently logged in to Steam
-      // so show a warning to the user when they log in
-      if (userSummaries[index]?.mostRecent !== 1) showAccountMismatchToast('warning')
+      if (isSwitchingAccount && !isDev && !isDevAccount) {
+        // VDF + registry already written on card selection; just restart Steam
+        setIsSwitching(true)
+        try {
+          await invoke('switch_steam_account')
+        } catch (error) {
+          console.error('Error in (switch_steam_account):', error)
+          logEvent(`[Error] in (switch_steam_account): ${error}`)
+        }
+        setIsSwitching(false)
+      } else if (!isDev && !isDevAccount) {
+        // Same account: launch Steam if it isn't already running
+        const isSteamRunning = await checkSteamStatus(false)
+        if (!isSteamRunning) {
+          try {
+            await invoke('launch_steam')
+          } catch (error) {
+            console.error('Error in (launch_steam):', error)
+            logEvent(`[Error] in (launch_steam): ${error}`)
+          }
+        }
+      }
 
       // Save selected user to localStorage and context for app-wide access
       localStorage.setItem('userSummary', JSON.stringify(userSummary))
@@ -176,11 +204,12 @@ export function useSignIn(refreshKey: number) {
 
   return {
     isLoading,
+    isSwitching,
     userSummaries,
     handleLogin,
+    handleSelectUser,
     steamUsers,
     selectedUser,
-    setSelectedUser,
     getRandomAvatarUrl,
   }
 }

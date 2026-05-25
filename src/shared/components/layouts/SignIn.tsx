@@ -61,11 +61,12 @@ function UserSelectionArea({ onRefresh }: { onRefresh: () => void }) {
   const { t } = useTranslation()
   const {
     isLoading,
+    isSwitching,
     userSummaries,
     handleLogin,
+    handleSelectUser,
     steamUsers,
     selectedUser,
-    setSelectedUser,
     getRandomAvatarUrl,
   } = useSignIn(0) // always 0, since remounting resets the hook
 
@@ -100,7 +101,7 @@ function UserSelectionArea({ onRefresh }: { onRefresh: () => void }) {
         {/* User cards */}
         <div className='flex flex-row flex-wrap items-center justify-center mb-4 min-h-56 max-h-96 overflow-auto space-y-2 p-2 overflow-x-auto'>
           {/* Loader */}
-          {isLoading && (
+          {isLoading && userSummaries.length === 0 && (
             <div className='flex flex-col items-center space-y-2'>
               <Spinner variant='simple' />
             </div>
@@ -124,7 +125,7 @@ function UserSelectionArea({ onRefresh }: { onRefresh: () => void }) {
             <div
               key={user?.steamId}
               className='flex flex-col items-center mx-4 cursor-pointer hover:scale-105 transition-transform group duration-150'
-              onClick={() => setSelectedUser(user)}
+              onClick={() => handleSelectUser(user)}
             >
               {/* User avatar */}
               <div
@@ -176,6 +177,7 @@ function UserSelectionArea({ onRefresh }: { onRefresh: () => void }) {
               if (selectedUser) handleLogin(steamUsers.indexOf(selectedUser))
             }}
             isDisabled={!selectedUser}
+            isLoading={isLoading || isSwitching}
           >
             {t('common.continue')}
             <TbArrowRight className='group-hover:translate-x-1 duration-150' />
