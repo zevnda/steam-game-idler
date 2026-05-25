@@ -1,10 +1,9 @@
 import { invoke } from '@tauri-apps/api/core'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button, useDisclosure } from '@heroui/react'
 import { CustomModal } from '@/shared/components'
 import { useStateStore, useUserStore } from '@/shared/stores'
-import { checkSteamStatus } from '@/shared/utils'
 
 export const SteamWarning = () => {
   const { t } = useTranslation()
@@ -12,34 +11,47 @@ export const SteamWarning = () => {
   const setShowSteamWarning = useStateStore(state => state.setShowSteamWarning)
   const userSummary = useUserStore(state => state.userSummary)
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
+  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   useEffect(() => {
     const shouldShowWarning = async () => {
       const devAccounts = ['76561198158912649', '76561198999797359']
       const isDev = await invoke('is_dev')
-
       const isUserDev = devAccounts.includes(userSummary?.steamId ?? '')
-
       if (showSteamWarning && !isDev && !isUserDev) {
         onOpen()
       }
     }
-
     shouldShowWarning()
   }, [onOpen, showSteamWarning, userSummary?.steamId])
 
-  const verifySteamStatus = async () => {
-    const isSteamRunning = await checkSteamStatus(true)
-    if (isSteamRunning) {
-      setShowSteamWarning(false)
-      onOpenChange()
+  // Clear the polling interval whenever the modal closes
+  useEffect(() => {
+    if (!isOpen && pollRef.current) {
+      clearInterval(pollRef.current)
+      pollRef.current = null
     }
+  }, [isOpen])
+
+  const launchAndWaitForSteam = async () => {
+    await invoke('launch_steam')
+
+    // Poll every second until Steam is detected, then auto-close
+    pollRef.current = setInterval(async () => {
+      const running = await invoke<boolean>('is_steam_running')
+      if (running) {
+        clearInterval(pollRef.current!)
+        pollRef.current = null
+        setShowSteamWarning(false)
+        onOpenChange()
+      }
+    }, 1000)
   }
 
   return (
     <CustomModal
+      hideCloseButton
       isOpen={isOpen}
-      onOpenChange={verifySteamStatus}
       title={t('common.notice')}
       body={t('confirmation.steamClosed')}
       buttons={
@@ -47,9 +59,9 @@ export const SteamWarning = () => {
           size='sm'
           className='bg-btn-secondary text-btn-text font-bold'
           radius='full'
-          onPress={verifySteamStatus}
+          onPress={launchAndWaitForSteam}
         >
-          {t('common.confirm')}
+          {t('common.continue')}
         </Button>
       }
     />

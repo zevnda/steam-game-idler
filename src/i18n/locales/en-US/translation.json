@@ -244,7 +244,7 @@
   "confirmation.resetStatistics": "Are you sure you want to <1>reset</1> all statistics?",
   "confirmation.resetSettings": "Are you sure you want to reset settings to default?",
   "confirmation.clearData": "Are you sure you want to clear all data?",
-  "confirmation.steamClosed": "Steam is not running. Open the Steam client to continue",
+  "confirmation.steamClosed": "Steam is not running. Click 'Continue' to launch Steam",
   "proMode.hero.headline": "Unlock more features",
   "proMode.hero.subtext": "SGI's core features are <1>free</1>, and <3>always will be</3>. PRO exists purely for users who wish to support the ongoing development of SGI — the extra features are our way of saying <5>thank you</5> for your support.",
   "proMode.hero.viewTiers": "View PRO Tiers",

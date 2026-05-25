@@ -700,3 +700,168 @@ pub fn update_tray_menu(
 
     Ok(())
 }
+
+// Update AllowAutoLogin, MostRecent, and Timestamp fields in loginusers.vdf
+fn update_login_users_vdf(
+    content: &str,
+    target_steam_id: &str,
+    timestamp: u64,
+) -> Result<(String, String), String> {
+    let mut output = String::new();
+    let mut depth: i32 = 0;
+    let mut current_user_id = String::new();
+    let mut pending_block_key = String::new();
+    let mut target_account_name = String::new();
+
+    let block_key_re = Regex::new(r#"^\s*"([^"]*)"\s*$"#).map_err(|e| e.to_string())?;
+    let kv_re = Regex::new(r#"^\s*"([^"]*)"\s+"([^"]*)"\s*$"#).map_err(|e| e.to_string())?;
+
+    for line in content.lines() {
+        let trimmed = line.trim();
+
+        if trimmed == "{" {
+            depth += 1;
+            if depth == 2 && !pending_block_key.is_empty() {
+                current_user_id = pending_block_key.clone();
+            }
+            pending_block_key.clear();
+            output.push_str(line);
+            output.push('\n');
+        } else if trimmed == "}" {
+            if depth == 2 {
+                current_user_id.clear();
+            }
+            depth -= 1;
+            output.push_str(line);
+            output.push('\n');
+        } else if let Some(kv_cap) = kv_re.captures(line) {
+            let key = &kv_cap[1];
+            let value = &kv_cap[2];
+            let is_target = current_user_id == target_steam_id;
+            let leading = &line[..line.len() - line.trim_start().len()];
+
+            if depth == 2 {
+                match key {
+                    "AccountName" => {
+                        if is_target {
+                            target_account_name = value.to_string();
+                        }
+                        output.push_str(line);
+                        output.push('\n');
+                    }
+                    "AllowAutoLogin" => {
+                        let v = if is_target { "1" } else { "0" };
+                        output.push_str(&format!("{}\"AllowAutoLogin\"\t\t\"{}\"\n", leading, v));
+                    }
+                    "MostRecent" => {
+                        let v = if is_target { "1" } else { "0" };
+                        output.push_str(&format!("{}\"MostRecent\"\t\t\"{}\"\n", leading, v));
+                    }
+                    "Timestamp" => {
+                        let v = if is_target {
+                            timestamp.to_string()
+                        } else {
+                            value.to_string()
+                        };
+                        output.push_str(&format!("{}\"Timestamp\"\t\t\"{}\"\n", leading, v));
+                    }
+                    _ => {
+                        output.push_str(line);
+                        output.push('\n');
+                    }
+                }
+            } else {
+                output.push_str(line);
+                output.push('\n');
+            }
+        } else if let Some(bk_cap) = block_key_re.captures(line) {
+            if depth == 1 {
+                pending_block_key = bk_cap[1].to_string();
+            }
+            output.push_str(line);
+            output.push('\n');
+        } else {
+            output.push_str(line);
+            output.push('\n');
+        }
+    }
+
+    if target_account_name.is_empty() {
+        return Err(format!(
+            "Steam ID {} not found in loginusers.vdf",
+            target_steam_id
+        ));
+    }
+
+    Ok((output, target_account_name))
+}
+
+// Locate and launch Steam without killing the existing process first
+#[tauri::command]
+pub async fn launch_steam() -> Result<(), String> {
+    if let Ok(steam_dir) = SteamDir::locate() {
+        let steam_exe = steam_dir.path().join("steam.exe");
+        std::process::Command::new(&steam_exe)
+            .creation_flags(0x08000000)
+            .spawn()
+            .map_err(|e| e.to_string())?;
+    }
+    Ok(())
+}
+
+// Write VDF + registry for the target account
+#[tauri::command]
+pub async fn prepare_steam_account_switch(steam_id: String) -> Result<(), String> {
+    use std::time::{SystemTime, UNIX_EPOCH};
+
+    let timestamp = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap()
+        .as_secs();
+
+    let vdf_path = std::path::PathBuf::from(get_steam_location().await.map_err(|e| e.to_string())?);
+
+    let content = std::fs::read_to_string(&vdf_path).map_err(|e| e.to_string())?;
+    let (updated_content, account_name) = update_login_users_vdf(&content, &steam_id, timestamp)?;
+    std::fs::write(&vdf_path, updated_content).map_err(|e| e.to_string())?;
+
+    std::process::Command::new("reg")
+        .args([
+            "add",
+            r"HKCU\Software\Valve\Steam",
+            "/v",
+            "AutoLoginUser",
+            "/t",
+            "REG_SZ",
+            "/d",
+            &account_name,
+            "/f",
+        ])
+        .creation_flags(0x08000000)
+        .output()
+        .map_err(|e| e.to_string())?;
+
+    Ok(())
+}
+
+// Kill Steam and relaunch it so the already-prepared account switch takes effect
+#[tauri::command]
+pub async fn switch_steam_account() -> Result<(), String> {
+    // Kill Steam (ignore error if it wasn't running)
+    let _ = std::process::Command::new("taskkill")
+        .args(["/F", "/IM", "steam.exe"])
+        .creation_flags(0x08000000)
+        .output();
+
+    // Give Steam time to fully shut down before restarting
+    tokio::time::sleep(Duration::from_millis(2000)).await;
+
+    if let Ok(steam_dir) = SteamDir::locate() {
+        let steam_exe = steam_dir.path().join("steam.exe");
+        let _ = std::process::Command::new(&steam_exe)
+            .creation_flags(0x08000000)
+            .spawn();
+    }
+
+    Ok(())
+}
