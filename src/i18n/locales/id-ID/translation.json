@@ -193,7 +193,6 @@
   "confirmation.resetStatistics": "Apakah Anda yakin ingin <1>mengatur ulang</1> semua statistik?",
   "confirmation.resetSettings": "Apakah Anda yakin ingin mengatur ulang pengaturan Anda ke default?",
   "confirmation.clearData": "Apakah Anda yakin ingin menghapus semua data?",
-  "confirmation.steamClosed": "Steam tidak berjalan. Buka klien Steam untuk melanjutkan",
   "proMode.modal.footer": "Harga yang ditampilkan dalam USD dan belum termasuk pajak.",
   "proMode.removeAdsWith": "Hapus iklan dengan",
   "toast.steam": "Steam tidak berjalan",

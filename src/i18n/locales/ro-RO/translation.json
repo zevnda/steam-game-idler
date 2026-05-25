@@ -122,7 +122,6 @@
   "confirmation.resetStatistics": "Ești sigur că vrei să <1>resetezi</1> toate statisticile?",
   "confirmation.resetSettings": "Ești sigur că vrei să resetezi setările la valorile implicite?",
   "confirmation.clearData": "Ești sigur că vrei să ștergi toate datele?",
-  "confirmation.steamClosed": "Steam nu rulează. Deschideți clientul Steam pentru a continua",
   "toast.steam": "Steam nu rulează",
   "toast.mismatch": "Nepotrivire între contul Steam și SGI",
   "toast.incorrectCredentials": "Date de autentificare incorecte pentru colectarea cărților",

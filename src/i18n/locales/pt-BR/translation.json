@@ -244,7 +244,6 @@
   "confirmation.resetStatistics": "Tem certeza de que deseja <1>redefinir</1> todas as estatísticas?",
   "confirmation.resetSettings": "Tem certeza de que deseja redefinir as configurações para o padrão?",
   "confirmation.clearData": "Tem certeza de que deseja limpar todos os dados?",
-  "confirmation.steamClosed": "A Steam não está em execução. Abra o cliente da Steam para continuar",
   "proMode.hero.headline": "Desbloquear mais funcionalidades",
   "proMode.hero.subtext": "As principais funcionalidades da SGI são <1>gratuitas</1> e <3>sempre será</3> O PRO existe exclusivamente para usuários que desejam apoiar o desenvolvimento contínuo do SGI — os recursos extras são nossa maneira de dizer <5>obrigado</5>. Agradecemos seu apoio.",
   "proMode.hero.viewTiers": "Ver Níveis PRO",

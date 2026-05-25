@@ -235,7 +235,6 @@
   "confirmation.resetStatistics": "Êtes-vous sûr de vouloir <1>réinitialiser</1> toutes les statistiques ?",
   "confirmation.resetSettings": "Êtes-vous sûr de vouloir réinitialiser les paramètres par défaut ?",
   "confirmation.clearData": "Êtes-vous sûr de vouloir effacer toutes les données ?",
-  "confirmation.steamClosed": "Steam n'est pas en cours d'exécution. Ouvre le client Steam pour continuer",
   "proMode.modal.footer": "Les prix affichés sont en USD et hors taxes.",
   "proMode.removeAdsWith": "Supprimez les pubs avec",
   "toast.steam": "Steam n'est pas en cours d'exécution",
