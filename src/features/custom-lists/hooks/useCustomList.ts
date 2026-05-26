@@ -16,11 +16,19 @@ export function useCustomList(listName: string) {
   const [list, setList] = useState<Game[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [activeTab, setActiveTab] = useState<CustomListTab>('list')
+  const [disabledAutoIdleGames, setDisabledAutoIdleGames] = useState<Set<number>>(new Set())
 
   // Filter games based on search term
   const filteredGamesList = gamesList.filter(game =>
     game.name.toLowerCase().includes(searchTerm.toLowerCase()),
   )
+
+  useEffect(() => {
+    if (listName === 'autoIdleList' && userSummary?.steamId) {
+      const stored = localStorage.getItem(`autoIdleDisabled_${userSummary.steamId}`)
+      setDisabledAutoIdleGames(stored ? new Set(JSON.parse(stored) as number[]) : new Set())
+    }
+  }, [listName, userSummary?.steamId])
 
   useEffect(() => {
     const getCustomLists = async () => {
@@ -105,9 +113,32 @@ export function useCustomList(listName: string) {
     })
     if (!response.error) {
       setList(response.list_data)
+      if (
+        listName === 'autoIdleList' &&
+        userSummary?.steamId &&
+        disabledAutoIdleGames.has(game.appid)
+      ) {
+        setDisabledAutoIdleGames(prev => {
+          const next = new Set(prev)
+          next.delete(game.appid)
+          localStorage.setItem(`autoIdleDisabled_${userSummary.steamId}`, JSON.stringify([...next]))
+          return next
+        })
+      }
     } else {
       showDangerToast(response.error)
     }
+  }
+
+  const handleToggleAutoIdleGame = (appid: number) => {
+    if (!userSummary?.steamId) return
+    setDisabledAutoIdleGames(prev => {
+      const next = new Set(prev)
+      if (next.has(appid)) next.delete(appid)
+      else next.add(appid)
+      localStorage.setItem(`autoIdleDisabled_${userSummary.steamId}`, JSON.stringify([...next]))
+      return next
+    })
   }
 
   const handleBlacklistGame = async (game: Game) => {
@@ -202,5 +233,7 @@ export function useCustomList(listName: string) {
     handleClearList,
     handleClearBlacklist,
     handleBlacklistGame,
+    disabledAutoIdleGames,
+    handleToggleAutoIdleGame,
   }
 }
