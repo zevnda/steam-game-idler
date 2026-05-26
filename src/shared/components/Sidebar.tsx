@@ -1,5 +1,4 @@
 import type { SidebarItem } from '@/shared/types'
-import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FiLogOut } from 'react-icons/fi'
 import { RiSearchLine } from 'react-icons/ri'
@@ -16,7 +15,7 @@ import {
 } from 'react-icons/tb'
 import { Button, cn, Divider } from '@heroui/react'
 import Image from 'next/image'
-import { AdSlot, Beta, Brand, CustomModal, Searchbar } from '@/shared/components'
+import { AdSlot, Beta, Brand, CustomModal, Keybind, Searchbar } from '@/shared/components'
 import { useSidebar } from '@/shared/hooks'
 import {
   useIdleStore,
@@ -28,7 +27,6 @@ import {
 
 export const Sidebar = () => {
   const { t } = useTranslation()
-  const [showSearchModal, setShowSearchModal] = useState(false)
   const activePage = useNavigationStore(state => state.activePage)
   const previousActivePage = useNavigationStore(state => state.previousActivePage)
   const setActivePage = useNavigationStore(state => state.setActivePage)
@@ -43,12 +41,22 @@ export const Sidebar = () => {
   const transitionDuration = useStateStore(state => state.transitionDuration)
   const setShowAchievements = useStateStore(state => state.setShowAchievements)
   const setShowAchievementOrder = useStateStore(state => state.setShowAchievementOrder)
+  const showSearchModal = useStateStore(state => state.showSearchModal)
+  const setShowSearchModal = useStateStore(state => state.setShowSearchModal)
   const { isOpen, onOpenChange, openConfirmation, handleLogout } = useSidebar(
     activePage,
     setActivePage,
   )
 
   const effectivePage = activePage === 'settings' ? previousActivePage : activePage
+
+  const hasActiveQuery = !!(
+    searchContent.gameQueryValue ||
+    searchContent.tradingCardQueryValue ||
+    searchContent.achievementQueryValue ||
+    searchContent.statisticQueryValue ||
+    searchContent.customListQueryValue
+  )
 
   const mainSidebarItems: SidebarItem[] = [
     {
@@ -235,11 +243,7 @@ export const Sidebar = () => {
             className={cn(
               'text-altwhite active:scale-95 w-full mt-4 duration-150',
               sidebarCollapsed ? 'w-0 justify-center' : 'min-w-40 justify-start',
-              searchContent.gameQueryValue ||
-                searchContent.tradingCardQueryValue ||
-                searchContent.achievementQueryValue ||
-                searchContent.statisticQueryValue ||
-                searchContent.customListQueryValue
+              hasActiveQuery
                 ? 'bg-dynamic/10 hover:bg-dynamic/20'
                 : 'bg-item-active hover:bg-item-active/90',
             )}
@@ -247,15 +251,7 @@ export const Sidebar = () => {
           >
             <RiSearchLine
               fontSize={20}
-              className={cn(
-                searchContent.gameQueryValue ||
-                  searchContent.tradingCardQueryValue ||
-                  searchContent.achievementQueryValue ||
-                  searchContent.statisticQueryValue ||
-                  searchContent.customListQueryValue
-                  ? 'text-dynamic'
-                  : undefined,
-              )}
+              className={cn(hasActiveQuery ? 'text-dynamic' : undefined)}
             />
             {!sidebarCollapsed && (
               <div className='overflow-hidden min-w-0'>
@@ -282,6 +278,11 @@ export const Sidebar = () => {
                 ) : (
                   <p className='text-sm font-bold truncate'>{t('common.search')}</p>
                 )}
+              </div>
+            )}
+            {!sidebarCollapsed && !hasActiveQuery && (
+              <div className='ml-auto shrink-0 opacity-50'>
+                <Keybind keys={['Ctrl', 'K']} />
               </div>
             )}
           </Button>

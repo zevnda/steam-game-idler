@@ -10,6 +10,7 @@ import {
   GameSettings,
   GeneralSettings,
   InventoryManagerSettings,
+  KeybindsSettings,
   Logs,
   SteamCredentials,
   useSettings,
@@ -49,6 +50,8 @@ export const Settings = () => {
         return <FreeGamesSettings />
       case 'game-settings':
         return <GameSettings />
+      case 'keybinds':
+        return <KeybindsSettings />
       case 'debug':
         return <Logs />
       default:
@@ -113,6 +116,7 @@ export const Settings = () => {
                   <Tab key='inventory-manager' title={t('tradingCards.title')} />
                   <Tab key='free-games' title={t('freeGames.title')} />
                   <Tab key='game-settings' title={t('common.gameSettings')} />
+                  <Tab key='keybinds' title={t('settings.keybinds.title')} />
                   <Tab key='debug' title={t('settings.debug.title')} />
                 </Tabs>
               </div>

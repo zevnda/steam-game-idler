@@ -23,6 +23,7 @@ export type CurrentSettingsTabType =
   | 'steam-credentials'
   | 'game-settings'
   | 'customization'
+  | 'keybinds'
   | 'debug'
 
 export interface NavigationContextType {

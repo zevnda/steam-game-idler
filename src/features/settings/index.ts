@@ -59,3 +59,6 @@ export * from './utils/steam-credentials/handleSteamCredentials'
 // Inventory Manager Feature
 export { InventoryManagerSettings } from './components/inventory-manager/InventoryManagerSettings'
 export * from './utils/inventory-manager/handleSettingsChange'
+
+// Keybinds Feature
+export { KeybindsSettings } from './components/keybinds/KeybindsSettings'
