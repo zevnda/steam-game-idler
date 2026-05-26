@@ -82,6 +82,8 @@ export const CustomList = ({ type }: CustomListProps) => {
     handleClearList,
     handleClearBlacklist,
     handleBlacklistGame,
+    disabledAutoIdleGames,
+    handleToggleAutoIdleGame,
   } = useCustomList(type)
   const setCustomListQueryValue = useSearchStore(state => state.setCustomListQueryValue)
   const [gamesWithDrops, setGamesWithDrops] = useState<Game[]>([])
@@ -571,6 +573,9 @@ export const CustomList = ({ type }: CustomListProps) => {
                       item={item}
                       isCustomList={true}
                       isAchievementUnlocker={type === 'achievementUnlockerList'}
+                      isAutoIdleList={type === 'autoIdleList'}
+                      autoIdleEnabled={!disabledAutoIdleGames.has(item.appid)}
+                      onToggleAutoIdle={() => handleToggleAutoIdleGame(item.appid)}
                       onOpen={() => handleGameClick(item)}
                       handleRemoveGame={() => handleRemoveGame(item)}
                     />
@@ -595,6 +600,8 @@ export const CustomList = ({ type }: CustomListProps) => {
                           type={type}
                           onOpen={() => handleGameClick(item)}
                           handleRemoveGame={() => handleRemoveGame(item)}
+                          disabledAutoIdleGames={disabledAutoIdleGames}
+                          handleToggleAutoIdleGame={handleToggleAutoIdleGame}
                         />
                       ))}
                     </div>
@@ -748,9 +755,18 @@ interface SortableGameCardProps {
   type: CustomListType
   onOpen: () => void
   handleRemoveGame: (game: Game) => Promise<void>
+  disabledAutoIdleGames?: Set<number>
+  handleToggleAutoIdleGame?: (appid: number) => void
 }
 
-function SortableGameCard({ item, type, onOpen, handleRemoveGame }: SortableGameCardProps) {
+function SortableGameCard({
+  item,
+  type,
+  onOpen,
+  handleRemoveGame,
+  disabledAutoIdleGames,
+  handleToggleAutoIdleGame,
+}: SortableGameCardProps) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: item.appid,
   })
@@ -765,6 +781,9 @@ function SortableGameCard({ item, type, onOpen, handleRemoveGame }: SortableGame
         item={item}
         isCustomList={true}
         isAchievementUnlocker={type === 'achievementUnlockerList'}
+        isAutoIdleList={type === 'autoIdleList'}
+        autoIdleEnabled={disabledAutoIdleGames ? !disabledAutoIdleGames.has(item.appid) : true}
+        onToggleAutoIdle={() => handleToggleAutoIdleGame?.(item.appid)}
         onOpen={onOpen}
         handleRemoveGame={() => handleRemoveGame(item)}
       />

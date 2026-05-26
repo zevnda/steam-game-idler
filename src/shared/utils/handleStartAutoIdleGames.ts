@@ -58,8 +58,14 @@ export async function startAutoIdleGamesImpl(steamId: string, manual?: boolean) 
     }
 
     if (!customLists.error && customLists.list_data.length > 0) {
-      // Only idle a maximum of 32 games
-      const autoIdleGames = customLists.list_data.slice(0, 32)
+      const disabled = JSON.parse(
+        localStorage.getItem(`autoIdleDisabled_${steamId}`) || '[]',
+      ) as number[]
+      const disabledSet = new Set<number>(disabled)
+      // Only idle a maximum of 32 enabled games
+      const autoIdleGames = customLists.list_data
+        .filter(g => !disabledSet.has(g.appid))
+        .slice(0, 32)
       const gameIds = autoIdleGames.map(game => game.appid)
 
       // Get currently running games to avoid starting duplicates
