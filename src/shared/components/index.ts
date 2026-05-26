@@ -1,4 +1,5 @@
 export { AdSlot } from './AdSlot'
+export { Key, Keybind } from './Key'
 export { Beta } from './Beta'
 export { ChangelogModal } from './ChangelogModal'
 export { CustomModal } from './CustomModal'

@@ -38,6 +38,8 @@ interface StateStore {
   setLoadingUserSummary: (value: boolean | ((prev: boolean) => boolean)) => void
   gamesListSessionUpdatedSet: Set<string>
   setGamesListSessionUpdated: (steamId: string) => void
+  showSearchModal: boolean
+  setShowSearchModal: (value: boolean | ((prev: boolean) => boolean)) => void
 }
 
 export const useStateStore = create<StateStore>(set => ({
@@ -119,5 +121,10 @@ export const useStateStore = create<StateStore>(set => ({
   setGamesListSessionUpdated: steamId =>
     set(state => ({
       gamesListSessionUpdatedSet: new Set([...state.gamesListSessionUpdatedSet, steamId]),
+    })),
+  showSearchModal: false,
+  setShowSearchModal: value =>
+    set(state => ({
+      showSearchModal: typeof value === 'function' ? value(state.showSearchModal) : value,
     })),
 }))
