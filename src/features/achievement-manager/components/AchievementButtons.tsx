@@ -131,7 +131,7 @@ export const AchievementButtons = ({
       <Select
         aria-label='sort'
         disallowEmptySelection
-        radius='none'
+        radius='full'
         startContent={<TbSortDescending2 fontSize={26} />}
         items={sortOptions}
         className='w-57.5'
@@ -140,7 +140,7 @@ export const AchievementButtons = ({
           value: ['text-sm !text-content'],
           trigger: cn(
             'bg-btn-achievement-header data-[hover=true]:!bg-btn-achievement-header-hover',
-            'data-[open=true]:!bg-btn-achievement-header-open duration-100 rounded-lg',
+            'data-[open=true]:!bg-btn-achievement-header-open duration-100',
           ),
           popoverContent: ['bg-input rounded-xl justify-start !text-content'],
         }}

@@ -10,12 +10,20 @@ import { invoke } from '@tauri-apps/api/core'
 import { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { FaMinus, FaPlus } from 'react-icons/fa6'
-import { TbAward, TbCards, TbHeart, TbHourglassLow, TbSettings, TbX } from 'react-icons/tb'
+import {
+  TbAward,
+  TbCards,
+  TbHeart,
+  TbHourglassLow,
+  TbSettings,
+  TbSortDescending2,
+  TbX,
+} from 'react-icons/tb'
 import { FixedSizeList as List } from 'react-window'
 import { DndContext } from '@dnd-kit/core'
 import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { Button, cn, Divider, Tab, Tabs } from '@heroui/react'
+import { Button, cn, Divider, Select, SelectItem, Tab, Tabs } from '@heroui/react'
 import i18next from 'i18next'
 import Image from 'next/image'
 import { RecommendedCardDropsCarousel } from '@/features/card-farming'
@@ -24,7 +32,6 @@ import { GameCard } from '@/shared/components'
 import { useNavigationStore, useSearchStore, useStateStore, useUserStore } from '@/shared/stores'
 import {
   getAllGamesWithDrops,
-  // getAllGamesWithDrops,
   startAchievementUnlocker,
   startAutoIdleGamesImpl,
   startCardFarming,
@@ -92,6 +99,7 @@ export const CustomList = ({ type }: CustomListProps) => {
   const userSettings = useUserStore(state => state.userSettings)
   const [columnCount, setColumnCount] = useState(5)
   const [windowInnerHeight, setWindowInnerHeight] = useState(window.innerHeight)
+  const [sortStyle, setSortStyle] = useState('a-z')
 
   useEffect(() => {
     const handleResize = () => {
@@ -121,6 +129,47 @@ export const CustomList = ({ type }: CustomListProps) => {
         : list,
     [list, searchTerm],
   )
+
+  const sortOptions = [
+    { key: 'a-z', label: t('gamesList.sort.titleAsc') },
+    { key: 'z-a', label: t('gamesList.sort.titleDesc') },
+    { key: '1-0', label: t('gamesList.sort.playtimeDesc') },
+    { key: '0-1', label: t('gamesList.sort.playtimeAsc') },
+    ...(list.length > 0 ? [{ key: 'list', label: t('common.list') }] : []),
+  ]
+
+  const sortedFilteredGamesList = useMemo(() => {
+    const sorted = [...filteredGamesList]
+    switch (sortStyle) {
+      case 'a-z':
+        sorted.sort((a, b) => a.name.localeCompare(b.name))
+        break
+      case 'z-a':
+        sorted.sort((a, b) => b.name.localeCompare(a.name))
+        break
+      case '1-0':
+        sorted.sort((a, b) => (b.playtime_forever ?? 0) - (a.playtime_forever ?? 0))
+        break
+      case '0-1':
+        sorted.sort((a, b) => (a.playtime_forever ?? 0) - (b.playtime_forever ?? 0))
+        break
+      case 'list': {
+        const listIds = new Set(list.map(g => g.appid))
+        sorted.sort((a, b) => {
+          const aIn = listIds.has(a.appid)
+          const bIn = listIds.has(b.appid)
+          if (aIn !== bIn) return aIn ? -1 : 1
+          return a.name.localeCompare(b.name)
+        })
+        break
+      }
+    }
+    return sorted
+  }, [filteredGamesList, sortStyle, list])
+
+  useEffect(() => {
+    if (list.length === 0 && sortStyle === 'list') setSortStyle('a-z')
+  }, [list.length, sortStyle])
 
   useEffect(() => {
     return () => setCustomListQueryValue('')
@@ -360,6 +409,41 @@ export const CustomList = ({ type }: CustomListProps) => {
                   )}
                 </Tabs>
 
+                {activeTab === 'all' && (
+                  <Select
+                    aria-label='sort'
+                    disallowEmptySelection
+                    radius='full'
+                    startContent={<TbSortDescending2 fontSize={26} />}
+                    items={sortOptions}
+                    className='w-57.5 h-11'
+                    classNames={{
+                      value: ['text-sm !text-content'],
+                      trigger: cn(
+                        'bg-item-active data-[hover=true]:!bg-item-active/80 h-11',
+                        'data-[open=true]:!bg-btn-achievement-header-open duration-100',
+                      ),
+                      popoverContent: ['bg-input rounded-xl justify-start !text-content'],
+                    }}
+                    defaultSelectedKeys={['a-z']}
+                    onSelectionChange={e => {
+                      if (e.currentKey) setSortStyle(e.currentKey)
+                    }}
+                  >
+                    {item => (
+                      <SelectItem
+                        classNames={{
+                          base: [
+                            'data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content',
+                          ],
+                        }}
+                      >
+                        {item.label}
+                      </SelectItem>
+                    )}
+                  </Select>
+                )}
+
                 {type === 'achievementUnlockerList' && activeTab === 'all' && (
                   <div>
                     {searchTerm === '' ? (
@@ -432,7 +516,7 @@ export const CustomList = ({ type }: CustomListProps) => {
             itemSize={56}
             width='100%'
             itemData={{
-              filteredGamesList,
+              filteredGamesList: sortedFilteredGamesList,
               list,
               handleAddGame,
               handleRemoveGame,
