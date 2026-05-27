@@ -865,3 +865,8 @@ pub async fn switch_steam_account() -> Result<(), String> {
 
     Ok(())
 }
+
+#[tauri::command]
+pub async fn get_device_fingerprint() -> Result<String, String> {
+    machine_uid::get().map_err(|e| e.to_string())
+}

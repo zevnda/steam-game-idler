@@ -16,6 +16,7 @@ export type ActivePageType =
 export type CurrentTabType = 'achievements' | 'statistics'
 export type CurrentSettingsTabType =
   | 'general'
+  | 'subscription'
   | 'card-farming'
   | 'achievement-unlocker'
   | 'inventory-manager'
