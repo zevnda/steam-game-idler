@@ -46,14 +46,9 @@ pub async fn get_games_list(
         .map_err(|e| format!("Failed to execute check_ownership: {}", e))?;
 
     let output_str = String::from_utf8_lossy(&output.stdout);
-    let error_str = String::from_utf8_lossy(&output.stderr);
 
-    let cs_result: Value = serde_json::from_str(&output_str).map_err(|e| {
-        format!(
-            "Failed to parse output: {}\nSTDOUT: {}\nSTDERR: {}",
-            e, output_str, error_str
-        )
-    })?;
+    let cs_result: Value = serde_json::from_str(&output_str)
+        .map_err(|e| format!("Failed to parse output: {}", e))?;
 
     if !cs_result["success"].as_bool().unwrap_or(false) {
         return Err(format!(
