@@ -163,6 +163,7 @@ pub fn run() {
             stop_drp,
             set_zoom,
             quit_app,
+            get_device_fingerprint,
         ])
         .build(tauri::generate_context!())
         .expect("Error while building tauri application")

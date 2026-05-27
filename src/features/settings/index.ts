@@ -62,3 +62,6 @@ export * from './utils/inventory-manager/handleSettingsChange'
 
 // Keybinds Feature
 export { KeybindsSettings } from './components/keybinds/KeybindsSettings'
+
+// Subscription Feature
+export { SubscriptionSettings } from './components/subscription/SubscriptionSettings'

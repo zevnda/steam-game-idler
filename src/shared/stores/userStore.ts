@@ -2,6 +2,13 @@ import type { Game, UserSettings, UserSummary } from '@/shared/types'
 import { Time } from '@internationalized/date'
 import { create } from 'zustand'
 
+export interface ProDetails {
+  email: string | null
+  currentPeriodEnd: string | null
+  cancelAtPeriodEnd: boolean | null
+  status: string | null
+}
+
 interface UserStore {
   userSummary: UserSummary
   setUserSummary: (value: UserSummary | ((prev: UserSummary) => UserSummary)) => void
@@ -23,6 +30,8 @@ interface UserStore {
       | null
       | ((prev: 'casual' | 'gamer' | null) => 'casual' | 'gamer' | null),
   ) => void
+  proDetails: ProDetails | null
+  setProDetails: (value: ProDetails | null) => void
   userSettings: UserSettings
   setUserSettings: (value: UserSettings | ((prev: UserSettings) => UserSettings)) => void
 }
@@ -65,6 +74,8 @@ export const useUserStore = create<UserStore>(set => ({
     set(state => ({
       proTier: typeof value === 'function' ? value(state.proTier) : value,
     })),
+  proDetails: null,
+  setProDetails: value => set({ proDetails: value }),
   userSettings: {
     gameSettings: null,
     general: {

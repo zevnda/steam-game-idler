@@ -7,7 +7,7 @@ import { CustomList } from '@/features/custom-lists'
 import { FreeGamesList, GamesList, IdlingGamesList } from '@/features/games-list'
 import { TradingCardsList } from '@/features/inventory-manager'
 import { Settings } from '@/features/settings'
-import { Sidebar } from '@/shared/components'
+import { Banner, Sidebar } from '@/shared/components'
 import { useNavigationStore, useStateStore } from '@/shared/stores'
 import { antiAwayStatus } from '@/shared/utils'
 
@@ -63,6 +63,7 @@ export const Dashboard = () => {
       {isCardFarming && <CardFarming activePage={effectivePage} />}
       {isAchievementUnlocker && <AchievementUnlocker activePage={effectivePage} />}
       <Settings />
+      <Banner />
     </>
   )
 }

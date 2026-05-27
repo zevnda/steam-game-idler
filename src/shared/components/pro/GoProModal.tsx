@@ -475,6 +475,7 @@ export const GoProModal = () => {
       q: t('proMode.faq.subscriptionNotActivated.q'),
       a: t('proMode.faq.subscriptionNotActivated.a'),
     },
+    { q: t('proMode.faq.transferDevice.q'), a: t('proMode.faq.transferDevice.a') },
     { q: t('proMode.faq.cancel.q'), a: t('proMode.faq.cancel.a') },
     { q: t('proMode.faq.switchTier.q'), a: t('proMode.faq.switchTier.a') },
     { q: t('proMode.faq.invoices.q'), a: t('proMode.faq.invoices.a') },

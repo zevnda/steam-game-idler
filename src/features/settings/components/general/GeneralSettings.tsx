@@ -8,7 +8,7 @@ import {
   handleSteamWebAPIKeySave,
   useGeneralSettings,
 } from '@/features/settings'
-import { ExtLink, LanguageSwitch, ProBadge, SettingsSwitch } from '@/shared/components'
+import { LanguageSwitch, ProBadge, SettingsSwitch } from '@/shared/components'
 import { OpenDocs } from '@/shared/components/OpenDocs'
 import { useStateStore, useUserStore } from '@/shared/stores'
 import { hasGamerFeature } from '@/shared/utils'
@@ -17,7 +17,6 @@ export const GeneralSettings = () => {
   const { t } = useTranslation()
   const userSummary = useUserStore(state => state.userSummary)
   const setUserSettings = useUserStore(state => state.setUserSettings)
-  const isPro = useUserStore(state => state.isPro)
   const proTier = useUserStore(state => state.proTier)
   const setProModalOpen = useStateStore(state => state.setProModalOpen)
   const setProModalRequiredTier = useStateStore(state => state.setProModalRequiredTier)
@@ -57,18 +56,6 @@ export const GeneralSettings = () => {
               <span className='transition-all duration-200'>{userSummary?.steamId}</span>
             </p>
           </div>
-          {isPro && (
-            <ExtLink href='https://billing.stripe.com/p/login/8x23cwf8CeNE6PLaAecbC00'>
-              <div
-                className={cn(
-                  'flex justify-center items-center w-full rounded-full',
-                  'text-black bg-white font-semibold text-xs py-2 px-3',
-                )}
-              >
-                {t('settings.general.manageSubscription')}
-              </div>
-            </ExtLink>
-          )}
         </div>
 
         <Divider className='bg-border/70 my-4' />

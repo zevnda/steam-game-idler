@@ -13,6 +13,7 @@ import {
   KeybindsSettings,
   Logs,
   SteamCredentials,
+  SubscriptionSettings,
   useSettings,
 } from '@/features/settings'
 import { SocialButtons } from '@/shared/components'
@@ -36,6 +37,8 @@ export const Settings = () => {
 
   const renderContent = () => {
     switch (currentSettingsTab) {
+      case 'subscription':
+        return <SubscriptionSettings />
       case 'customization':
         return <CustomizationSettings />
       case 'steam-credentials':
@@ -106,6 +109,7 @@ export const Settings = () => {
                   }}
                 >
                   <Tab key='general' title={t('settings.general.title')} />
+                  <Tab key='subscription' title={t('settings.subscription.title')} />
                   <Tab key='customization' title={t('settings.customization.title')} />
                   <Tab
                     key='steam-credentials'
