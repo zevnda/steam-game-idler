@@ -131,7 +131,6 @@
   "settings.general.currency": "Валута",
   "settings.general.currency.description": "Изберете која валута да се користи за цените на trading cards",
   "settings.general.webApi": "Steam Web API клуч (незадолжително)",
-  "settings.general.manageSubscription": "Управувајте со PRO претплатата",
   "settings.general.autoRedeemFreeGames": "Автоматски откупи бесплатни игри",
   "settings.general.autoRedeemFreeGames.description": "Автоматски откупете ги бесплатните игри на Steam кога ќе станат достапни",
   "settings.general.showRecommendedCarousel": "Прикажи препорачани игри",

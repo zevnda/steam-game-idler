@@ -164,7 +164,6 @@
   "settings.general.currency": "Devise",
   "settings.general.currency.description": "Sélectionner quelle devise utiliser pour les prix des cartes à échanger",
   "settings.general.webApi": "Clé API Steam Web (optionnel)",
-  "settings.general.manageSubscription": "Gérer l'abonnement PRO",
   "settings.general.autoRedeemFreeGames": "Obtention automatique des Jeux Gratuits",
   "settings.general.autoRedeemFreeGames.description": "Obtenir automatiquement les jeux gratuits sur Steam lorsqu'ils deviennent disponibles",
   "settings.general.showRecommendedCarousel": "Afficher les Jeux recommandés",

@@ -134,7 +134,6 @@
   "settings.general.currency": "Waluta",
   "settings.general.currency.description": "Wybierz walutę używaną dla cen kart kolekcjonerskich",
   "settings.general.webApi": "Klucz Steam Web API (opcjonalne)",
-  "settings.general.manageSubscription": "Zarządzaj subskrypcją PRO",
   "settings.general.autoRedeemFreeGames": "Automatycznie odbieraj darmowe gry",
   "settings.general.autoRedeemFreeGames.description": "Automatycznie odbieraj darmowe gry na Steamie, gdy tylko staną się dostępne",
   "settings.general.showRecommendedCarousel": "Pokaż polecane gry",

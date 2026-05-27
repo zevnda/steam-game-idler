@@ -131,7 +131,6 @@
   "settings.general.currency": "Валюта",
   "settings.general.currency.description": "Оберіть валюту, яка використовуватиметься для торгівлі картками",
   "settings.general.webApi": "Токен Steam Web API (додатково)",
-  "settings.general.manageSubscription": "Керувати підпискою PRO",
   "settings.general.autoRedeemFreeGames": "Автозабирання безкоштовних ігор",
   "settings.general.autoRedeemFreeGames.description": "Автоматично забирайте ігри в Steam під час роздач",
   "settings.general.showRecommendedCarousel": "Показувати рекомендовані ігри",

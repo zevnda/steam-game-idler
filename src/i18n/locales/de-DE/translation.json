@@ -138,7 +138,6 @@
   "settings.general.currency": "Währung",
   "settings.general.currency.description": "Wählen Sie die Währung aus, die für den Kartenpreis verwendet werden, soll",
   "settings.general.webApi": "Steam Web API Key (optional)",
-  "settings.general.manageSubscription": "PRO-Abo verwalten",
   "settings.general.autoRedeemFreeGames": "Kostenlose Spiele automatisch einlösen",
   "settings.general.autoRedeemFreeGames.description": "Kostenlose Spiele bei Steam automatisch einlösen, wenn sie verfügbar sind",
   "settings.general.showRecommendedCarousel": "Empfohlene Spiele anzeigen",
