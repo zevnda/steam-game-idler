@@ -164,7 +164,6 @@
   "settings.general.currency": "Валюта",
   "settings.general.currency.description": "Выберите, какую валюту использовать для цен карточек",
   "settings.general.webApi": "Ключ веб-API Steam (необязательно)",
-  "settings.general.manageSubscription": "Управление PRO-подпиской",
   "settings.general.autoRedeemFreeGames": "Автоматическая активация бесплатных игр",
   "settings.general.autoRedeemFreeGames.description": "Автоматическое получение бесплатных игр в Steam по мере их появления",
   "settings.general.showRecommendedCarousel": "Показать рекомендуемые игры",
