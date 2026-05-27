@@ -6,6 +6,7 @@ export interface ProDetails {
   email: string | null
   currentPeriodEnd: string | null
   cancelAtPeriodEnd: boolean | null
+  status: string | null
 }
 
 interface UserStore {
