@@ -61,7 +61,7 @@ export const KeybindsSettings = () => {
         <Divider className='bg-border' />
         <KeybindRow label={t('settings.keybinds.prevTab')} keys={['Ctrl', '[']} />
         <Divider className='bg-border' />
-        <KeybindRow label={t('settings.keybinds.openSearch')} keys={['Ctrl', 'K']} />
+        <KeybindRow label={t('settings.keybinds.openSearch')} keys={['/']} />
         <Divider className='bg-border' />
         <KeybindRow label={t('settings.keybinds.openSettings')} keys={['Ctrl', ',']} />
         <Divider className='bg-border' />

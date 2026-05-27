@@ -200,12 +200,14 @@ export const SubscriptionSettings = () => {
                 {formatDate(proDetails.currentPeriodEnd)}
               </p>
             )}
-            <ExtLink href='https://billing.stripe.com/p/login/8x23cwf8CeNE6PLaAecbC00'>
-              <div className='flex items-center gap-1.5 text-black bg-white font-semibold text-xs py-2 px-3 rounded-full'>
-                {t('settings.general.manageSubscription')}
-                <TbExternalLink size={13} />
-              </div>
-            </ExtLink>
+            {isPro && (
+              <ExtLink href='https://billing.stripe.com/p/login/8x23cwf8CeNE6PLaAecbC00'>
+                <div className='flex items-center gap-1.5 text-black bg-white font-semibold text-xs py-2 px-3 rounded-full'>
+                  {t('settings.general.manageSubscription')}
+                  <TbExternalLink size={13} />
+                </div>
+              </ExtLink>
+            )}
           </div>
         </div>
 

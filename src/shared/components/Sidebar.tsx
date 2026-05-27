@@ -1,5 +1,5 @@
 import type { SidebarItem } from '@/shared/types'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { FiLogOut } from 'react-icons/fi'
 import { RiSearchLine } from 'react-icons/ri'
 import {
@@ -158,7 +158,7 @@ export const Sidebar = () => {
           {!sidebarCollapsed && (
             <div
               className={cn(
-                'mr-2 shrink-0 rounded-r-md transition-transform duration-150',
+                'mr-2 shrink-0 self-center rounded-r-md transition-transform duration-150',
                 'w-1.5 h-7',
                 isCurrentPage ? 'bg-dynamic scale-y-100' : 'scale-y-0',
               )}
@@ -241,17 +241,21 @@ export const Sidebar = () => {
             radius='full'
             isDisabled={activePage === 'idling' || activePage === 'freeGames'}
             className={cn(
-              'text-altwhite active:scale-95 w-full mt-4 duration-150',
+              'text-altwhite active:scale-95 w-full mt-4 duration-150 truncate',
               sidebarCollapsed ? 'w-0 justify-center' : 'min-w-40 justify-start',
               hasActiveQuery
                 ? 'bg-dynamic/10 hover:bg-dynamic/20'
                 : 'bg-item-active hover:bg-item-active/90',
             )}
+            style={{
+              transitionDuration,
+              transitionProperty: 'min-width, width',
+            }}
             onPress={() => setShowSearchModal(true)}
           >
             <RiSearchLine
               fontSize={20}
-              className={cn(hasActiveQuery ? 'text-dynamic' : undefined)}
+              className={cn('shrink-0', hasActiveQuery ? 'text-dynamic' : undefined)}
             />
             {!sidebarCollapsed && (
               <div className='overflow-hidden min-w-0'>
@@ -276,13 +280,12 @@ export const Sidebar = () => {
                     {searchContent.customListQueryValue}
                   </p>
                 ) : (
-                  <p className='text-sm font-bold truncate'>{t('common.search')}</p>
+                  <p className='flex items-center gap-1.5 text-sm font-bold truncate'>
+                    <Trans i18nKey='sidebar.search'>
+                      Type <Keybind keys={['/']} /> to search
+                    </Trans>
+                  </p>
                 )}
-              </div>
-            )}
-            {!sidebarCollapsed && !hasActiveQuery && (
-              <div className='ml-auto shrink-0 opacity-50'>
-                <Keybind keys={['Ctrl', 'K']} />
               </div>
             )}
           </Button>

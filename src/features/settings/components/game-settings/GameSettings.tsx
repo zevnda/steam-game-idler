@@ -116,7 +116,7 @@ export const GameSettings = () => {
         <Input
           isClearable
           placeholder={t('common.search')}
-          startContent={<RiSearchLine size={24} className='text-content/60' />}
+          startContent={<RiSearchLine size={20} className='text-content/60' />}
           classNames={{
             inputWrapper: cn(
               'bg-input data-[hover=true]:!bg-inputhover',
