@@ -15,8 +15,6 @@ const SIDEBAR_PAGES: ActivePageType[] = [
 
 export function useKeyboardShortcuts() {
   const handleKeydown = useCallback((e: KeyboardEvent) => {
-    if (!e.ctrlKey && !e.metaKey) return
-
     const target = e.target as HTMLElement
     if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable)
       return
@@ -39,6 +37,15 @@ export function useKeyboardShortcuts() {
       setShowAchievementOrder,
     } = useStateStore.getState()
 
+    if (e.key === '/' && !e.ctrlKey && !e.metaKey) {
+      if (activePage === 'idling' || activePage === 'freeGames') return
+      e.preventDefault()
+      setShowSearchModal(true)
+      return
+    }
+
+    if (!e.ctrlKey && !e.metaKey) return
+
     const effectivePage = activePage === 'settings' ? previousActivePage : activePage
 
     if (e.key === ']') {
@@ -52,10 +59,6 @@ export function useKeyboardShortcuts() {
       const prevIndex =
         currentIndex === -1 ? 0 : (currentIndex - 1 + SIDEBAR_PAGES.length) % SIDEBAR_PAGES.length
       setActivePage(SIDEBAR_PAGES[prevIndex])
-    } else if (e.key === 'k' || e.key === 'K') {
-      if (activePage === 'idling' || activePage === 'freeGames') return
-      e.preventDefault()
-      setShowSearchModal(true)
     } else if (e.key === ',') {
       e.preventDefault()
       if (isCardFarming || isAchievementUnlocker) return
