@@ -49,6 +49,7 @@ export const SubscriptionSettings = () => {
       email: data.results.email ?? null,
       currentPeriodEnd: data.results.current_period_end ?? null,
       cancelAtPeriodEnd: data.results.cancel_at_period_end ?? null,
+      status: data.results.status ?? null,
     })
   }
 
