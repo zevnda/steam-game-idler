@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { cn, Progress } from '@heroui/react'
 import { Unbounded } from 'next/font/google'
 
@@ -7,6 +8,8 @@ const unbounded = Unbounded({
 })
 
 export const UpdateLoader = () => {
+  const { t } = useTranslation()
+
   return (
     <div className={cn('fixed inset-0 w-screen h-screen z-9998 bg-base')}>
       <video
@@ -22,7 +25,7 @@ export const UpdateLoader = () => {
           Steam Game Idler
         </p>
         <div className='flex flex-col items-center space-y-3 w-64'>
-          <p className='text-sm text-content/60'>Downloading update...</p>
+          <p className='text-sm text-content/60'>{t('common.downloadingUpdate')}</p>
           <Progress
             isIndeterminate
             classNames={{

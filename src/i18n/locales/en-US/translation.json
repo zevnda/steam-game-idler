@@ -426,6 +426,7 @@
   "common.helpDesk": "Help Desk",
   "common.minutes": "minutes",
   "common.viewList": "View List",
+  "common.downloadingUpdate": "Downloading update...",
   "common.import": "Import",
   "changelog.star": "Star on GitHub",
   "tray.show": "Show",
