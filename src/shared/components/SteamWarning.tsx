@@ -25,18 +25,10 @@ export const SteamWarning = () => {
     shouldShowWarning()
   }, [onOpen, showSteamWarning, userSummary?.steamId])
 
-  // Clear the polling interval whenever the modal closes
+  // Poll every second while modal is open; auto-close when Steam is detected
   useEffect(() => {
-    if (!isOpen && pollRef.current) {
-      clearInterval(pollRef.current)
-      pollRef.current = null
-    }
-  }, [isOpen])
+    if (!isOpen) return
 
-  const launchAndWaitForSteam = async () => {
-    await invoke('launch_steam')
-
-    // Poll every second until Steam is detected, then auto-close
     pollRef.current = setInterval(async () => {
       const running = await invoke<boolean>('is_steam_running')
       if (running) {
@@ -46,6 +38,17 @@ export const SteamWarning = () => {
         onOpenChange()
       }
     }, 1000)
+
+    return () => {
+      if (pollRef.current) {
+        clearInterval(pollRef.current)
+        pollRef.current = null
+      }
+    }
+  }, [isOpen, onOpenChange, setShowSteamWarning])
+
+  const launchAndWaitForSteam = async () => {
+    await invoke('launch_steam')
   }
 
   return (
