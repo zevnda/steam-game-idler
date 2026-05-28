@@ -263,7 +263,7 @@ export const TradingCardsList = () => {
     <div
       key={tradingCardContext.refreshKey}
       className={cn(
-        'min-h-calc max-h-calc overflow-y-auto overflow-x-hidden mt-9 ease-in-out',
+        'min-h-calc max-h-calc overflow-y-auto overflow-x-hidden mt-12 ease-in-out',
         sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]',
       )}
       style={{
@@ -307,7 +307,7 @@ export const TradingCardsList = () => {
           </div>
         </div>
       ) : (
-        <div className='flex justify-center items-center w-calc h-[calc(100vh-224px)]'>
+        <div className='flex justify-center items-center w-calc h-[calc(100vh-236px)]'>
           <Spinner variant='simple' />
         </div>
       )}

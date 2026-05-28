@@ -171,7 +171,7 @@ export const GamesList = () => {
     <div
       key={gamesContext.refreshKey}
       className={cn(
-        'mt-9 ease-in-out',
+        'mt-12 ease-in-out',
         sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]',
       )}
       style={{
@@ -196,7 +196,7 @@ export const GamesList = () => {
               ? `collapsed-${windowSize.width}x${windowSize.height}`
               : `expanded-${windowSize.width}x${windowSize.height}`
           }
-          height={windowSize.height - 172}
+          height={windowSize.height - 184}
           itemCount={rows.length}
           itemSize={getRowHeight}
           width='100%'
@@ -208,7 +208,7 @@ export const GamesList = () => {
           {Row}
         </List>
       ) : (
-        <div className='flex justify-center items-center w-calc h-[calc(100vh-168px)]'>
+        <div className='flex justify-center items-center w-calc h-[calc(100vh-180px)]'>
           <Spinner variant='simple' />
         </div>
       )}

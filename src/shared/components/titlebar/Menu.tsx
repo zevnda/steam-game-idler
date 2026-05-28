@@ -77,7 +77,7 @@ export const Menu = () => {
             <div
               className={cn(
                 'flex items-center justify-center text-content hover:bg-header-hover/10',
-                'h-9 w-12 cursor-pointer active:scale-90 relative duration-150',
+                'h-12 w-12 cursor-pointer active:scale-90 relative duration-150',
               )}
             >
               <TbSquareRoundedChevronDown fontSize={18} />

@@ -17,13 +17,12 @@ import {
   TbHourglassLow,
   TbSettings,
   TbSortDescending2,
-  TbX,
 } from 'react-icons/tb'
 import { FixedSizeList as List } from 'react-window'
 import { DndContext } from '@dnd-kit/core'
 import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { Button, cn, Divider, Select, SelectItem, Tab, Tabs } from '@heroui/react'
+import { Button, cn, Select, SelectItem, Tab, Tabs } from '@heroui/react'
 import i18next from 'i18next'
 import Image from 'next/image'
 import { RecommendedCardDropsCarousel } from '@/features/card-farming'
@@ -314,7 +313,7 @@ export const CustomList = ({ type }: CustomListProps) => {
   return (
     <div
       className={cn(
-        'min-h-calc max-h-calc overflow-y-auto overflow-x-hidden mt-9 ease-in-out',
+        'min-h-calc max-h-calc overflow-y-auto overflow-x-hidden mt-12 ease-in-out',
         sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]',
       )}
       style={{
@@ -488,22 +487,6 @@ export const CustomList = ({ type }: CustomListProps) => {
                     {t('common.clear')}
                   </Button>
                 )}
-
-                {searchTerm && (
-                  <div className='flex items-center gap-2'>
-                    <Divider orientation='vertical' className='mx-2 h-8 bg-border' />
-                    <p className='text-sm text-altwhite font-bold'>{t('common.search')}</p>
-                    <div className='flex items-center gap-2 text-sm text-altwhite p-2 bg-item-active rounded-full max-w-64'>
-                      <p className='text-content truncate'>{searchTerm}</p>
-                      <div
-                        className='flex items-center justify-center cursor-pointer bg-item-hover hover:bg-item-hover/80 rounded-full p-1 duration-150'
-                        onClick={() => setCustomListQueryValue('')}
-                      >
-                        <TbX />
-                      </div>
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
           </div>
@@ -513,7 +496,7 @@ export const CustomList = ({ type }: CustomListProps) => {
       {activeTab === 'all' && (
         <div className='mt-4'>
           <List
-            height={windowInnerHeight - 182}
+            height={windowInnerHeight - 194}
             itemCount={filteredGamesList.length}
             itemSize={56}
             width='100%'
@@ -545,7 +528,7 @@ export const CustomList = ({ type }: CustomListProps) => {
           {!isLoading && list.length === 0 ? (
             <div
               className='flex flex-col justify-center items-center gap-2'
-              style={{ height: windowInnerHeight - 257 - (carouselVisible ? 266 : 0) }}
+              style={{ height: windowInnerHeight - 269 - (carouselVisible ? 266 : 0) }}
             >
               <p className='text-sm text-altwhite px-6'>
                 <Trans
@@ -616,7 +599,7 @@ export const CustomList = ({ type }: CustomListProps) => {
       {activeTab === 'blacklist' && type === 'cardFarmingList' && (
         <div className='mt-4'>
           {blacklistedGames.length === 0 ? (
-            <div className='flex flex-col justify-center items-center gap-2 h-[calc(100vh-250px)]'>
+            <div className='flex flex-col justify-center items-center gap-2 h-[calc(100vh-262px)]'>
               <p className='text-sm text-altwhite px-6'>
                 <Trans
                   i18nKey='customLists.emptyBlacklist'
@@ -627,7 +610,7 @@ export const CustomList = ({ type }: CustomListProps) => {
             </div>
           ) : (
             <List
-              height={windowInnerHeight - 182}
+              height={windowInnerHeight - 194}
               itemCount={blacklistedGames.length}
               itemSize={56}
               width='100%'

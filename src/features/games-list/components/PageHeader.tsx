@@ -1,10 +1,9 @@
 import type { Game, SortOption } from '@/shared/types'
 import { useTranslation } from 'react-i18next'
-import { TbX } from 'react-icons/tb'
 import { Button, cn, Divider, Tab, Tabs } from '@heroui/react'
 import { handleSortingChange } from '@/features/games-list'
 import { handleRefreshGamesList } from '@/features/games-list/utils/handleRefreshGamesList'
-import { useSearchStore, useUserStore } from '@/shared/stores'
+import { useUserStore } from '@/shared/stores'
 
 interface PageHeaderProps {
   sortStyle: string
@@ -22,8 +21,6 @@ export const PageHeader = ({
 }: PageHeaderProps) => {
   const { t } = useTranslation()
   const userSummary = useUserStore(state => state.userSummary)
-  const gameQueryValue = useSearchStore(state => state.gameQueryValue)
-  const setGameQueryValue = useSearchStore(state => state.setGameQueryValue)
 
   const sortOptions: SortOption[] = [
     { key: '1-0', label: t('gamesList.sort.playtimeDesc') },
@@ -80,22 +77,6 @@ export const PageHeader = ({
               >
                 {item => <Tab key={item.key} title={item.label} />}
               </Tabs>
-
-              {gameQueryValue && (
-                <div className='flex items-center gap-2'>
-                  <Divider orientation='vertical' className='mx-2 h-8 bg-border' />
-                  <p className='text-sm text-altwhite font-bold'>{t('common.search')}</p>
-                  <div className='flex items-center gap-2 text-sm text-altwhite p-2 bg-item-active rounded-full max-w-64'>
-                    <p className='text-content truncate'>{gameQueryValue}</p>
-                    <div
-                      className='flex items-center justify-center cursor-pointer bg-item-hover hover:bg-item-hover/80 rounded-full p-1 duration-150'
-                      onClick={() => setGameQueryValue('')}
-                    >
-                      <TbX />
-                    </div>
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         </div>

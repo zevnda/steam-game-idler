@@ -35,7 +35,7 @@ export const FreeGamesList = () => {
   return (
     <div
       className={cn(
-        'min-h-calc max-h-calc overflow-y-auto overflow-x-hidden mt-9 ease-in-out',
+        'min-h-calc max-h-calc overflow-y-auto overflow-x-hidden mt-12 ease-in-out',
         sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]',
       )}
       style={{

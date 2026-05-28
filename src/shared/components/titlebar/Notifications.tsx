@@ -36,7 +36,7 @@ export const Notifications = () => {
       <CustomTooltip content={t('common.notifications')}>
         <div
           className={cn(
-            'flex items-center justify-center hover:bg-header-hover/10 h-9 w-12',
+            'flex items-center justify-center hover:bg-header-hover/10 h-12 w-12',
             'cursor-pointer active:scale-95 relative duration-150',
           )}
           onClick={() => {

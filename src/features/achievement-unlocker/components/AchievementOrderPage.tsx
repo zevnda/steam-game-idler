@@ -503,7 +503,7 @@ export const AchievementOrderPage = () => {
         <SortableContext items={achievements.map(a => a.name)}>
           <List
             outerRef={listOuterRef}
-            height={windowInnerHeight - 245}
+            height={windowInnerHeight - 257}
             itemCount={achievements.length}
             itemSize={60}
             width='100%'
@@ -535,7 +535,7 @@ export const AchievementOrderPage = () => {
   return (
     <div
       className={cn(
-        'overflow-y-auto overflow-x-hidden mt-9 ease-in-out',
+        'overflow-y-auto overflow-x-hidden mt-12 ease-in-out',
         sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]',
       )}
       style={{ transitionDuration, transitionProperty: 'width' }}
