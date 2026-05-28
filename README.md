@@ -41,12 +41,11 @@ Contribute to this project by adding new translations or improving existing ones
 
 | Language             | Flag | Language            | Flag | Language   | Flag |
 | -------------------- | ---- | ------------------- | ---- | ---------- | ---- |
-| Chinese (Simplified) | 🇨🇳    | Czech               | 🇨🇿    | English    | 🇬🇧    |
-| Finnish              | 🇫🇮    | French              | 🇫🇷    | German     | 🇩🇪    |
-| Indonesian           | 🇮🇩    | Italian             | 🇮🇹    | Macedonian | 🇲🇰    |
-| Polish               | 🇵🇱    | Portuguese (Brazil) | 🇧🇷    | Romanian   | 🇷🇴    |
-| Russian              | 🇷🇺    | Spanish             | 🇪🇸    | Turkish    | 🇹🇷    |
-| Ukrainian            | 🇺🇦    |                     |      |            |      |
+| Chinese (Simplified) | 🇨🇳    | English             | 🇬🇧    | French     | 🇫🇷    |
+| German               | 🇩🇪    | Indonesian          | 🇮🇩    | Italian    | 🇮🇹    |
+| Macedonian           | 🇲🇰    | Polish              | 🇵🇱    | Portuguese (Brazil) | 🇧🇷 |
+| Romanian             | 🇷🇴    | Russian             | 🇷🇺    | Spanish    | 🇪🇸    |
+| Turkish              | 🇹🇷    | Ukrainian           | 🇺🇦    |            |      |
 
 <sup>*Some languages may only have partial support*</sup>
 
