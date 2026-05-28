@@ -216,6 +216,15 @@ pub fn get_tray_icon(default: bool) -> String {
     base64::engine::general_purpose::STANDARD.encode(icon_bytes)
 }
 
+pub fn atomic_write_json<T: serde::Serialize>(path: &std::path::Path, value: &T) -> std::io::Result<()> {
+    let json = serde_json::to_string_pretty(value)
+        .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e))?;
+    let tmp_path = path.with_extension("tmp");
+    std::fs::write(&tmp_path, &json)?;
+    std::fs::rename(&tmp_path, path)?;
+    Ok(())
+}
+
 pub fn get_lib_path() -> Result<String, String> {
     // Get the current executable path
     let mut path = std::env::current_exe().map_err(|e| e.to_string())?;

@@ -1,12 +1,12 @@
-use crate::utils::{get_cache_dir, get_steam_location};
+use crate::utils::{atomic_write_json, get_cache_dir, get_steam_location};
 use regex::Regex;
 use reqwest::Client;
 use serde_json;
 use serde_json::{json, Value};
 use std::collections::HashMap;
 use std::fs;
-use std::fs::{create_dir_all, File, OpenOptions};
-use std::io::{Read, Write};
+use std::fs::{create_dir_all, File};
+use std::io::Read;
 use std::path::PathBuf;
 
 #[tauri::command]
@@ -149,17 +149,7 @@ pub async fn get_user_summary(
             }
 
             // Write back to file
-            let mut file = OpenOptions::new()
-                .write(true)
-                .create(true)
-                .truncate(true)
-                .open(&file_path)
-                .map_err(|e| format!("Failed to open user summaries file for writing: {}", e))?;
-
-            let json_string = serde_json::to_string_pretty(&cached_summaries)
-                .map_err(|e| format!("Failed to serialize user summaries: {}", e))?;
-
-            file.write_all(json_string.as_bytes())
+            atomic_write_json(&file_path, &cached_summaries)
                 .map_err(|e| format!("Failed to write user summaries to file: {}", e))?;
 
             Ok(body)

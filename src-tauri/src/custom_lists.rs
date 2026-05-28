@@ -1,9 +1,8 @@
-use crate::utils::get_cache_dir;
+use crate::utils::{atomic_write_json, get_cache_dir};
 use serde_json::{json, Value};
 use std::fs;
 use std::fs::File;
 use std::io::Read;
-use std::io::Write;
 
 #[tauri::command]
 pub async fn get_achievement_order(
@@ -59,13 +58,7 @@ pub async fn save_achievement_order(
     let achievement_file_path = app_data_dir.join(&file_name);
 
     // Write the achievement order to file
-    let json_string = serde_json::to_string_pretty(&achievement_order)
-        .map_err(|e| format!("Failed to serialize achievement order JSON: {}", e))?;
-
-    let mut file = File::create(&achievement_file_path)
-        .map_err(|e| format!("Failed to create achievement order file: {}", e))?;
-
-    file.write_all(json_string.as_bytes())
+    atomic_write_json(&achievement_file_path, &achievement_order)
         .map_err(|e| format!("Failed to write achievement order: {}", e))?;
 
     Ok(json!({ "success": true }))
@@ -117,24 +110,16 @@ pub async fn get_custom_lists(
             );
                 // Reset to empty array
                 let empty_array = json!([]);
-                let json_string = serde_json::to_string_pretty(&empty_array)
-                    .map_err(|e| format!("Failed to serialize empty list JSON: {}", e))?;
-                let mut file = File::create(&games_file_path)
-                    .map_err(|e| format!("Failed to create list file: {}", e))?;
-                file.write_all(json_string.as_bytes())
-                    .map_err(|e| format!("Failed to write to list file: {}", e))?;
+                atomic_write_json(&games_file_path, &empty_array)
+                    .map_err(|e| format!("Failed to write list file: {}", e))?;
                 empty_array
             }
         }
     } else {
         // Create a new file with an empty array
         let empty_array = json!([]);
-        let json_string = serde_json::to_string_pretty(&empty_array)
-            .map_err(|e| format!("Failed to serialize empty list JSON: {}", e))?;
-        let mut file = File::create(&games_file_path)
-            .map_err(|e| format!("Failed to create list file: {}", e))?;
-        file.write_all(json_string.as_bytes())
-            .map_err(|e| format!("Failed to write to list file: {}", e))?;
+        atomic_write_json(&games_file_path, &empty_array)
+            .map_err(|e| format!("Failed to write list file: {}", e))?;
         empty_array
     };
 
@@ -199,14 +184,8 @@ pub async fn add_game_to_custom_list(
         games_array.push(game.clone());
 
         // Write updated list back to file
-        let json_string = serde_json::to_string_pretty(&games_list)
-            .map_err(|e| format!("Failed to serialize list JSON: {}", e))?;
-
-        let mut file =
-            File::create(&file_path).map_err(|e| format!("Failed to create list file: {}", e))?;
-
-        file.write_all(json_string.as_bytes())
-            .map_err(|e| format!("Failed to write to list file: {}", e))?;
+        atomic_write_json(&file_path, &games_list)
+            .map_err(|e| format!("Failed to write list file: {}", e))?;
 
         Ok(json!({
             "list_data": games_list
@@ -288,14 +267,8 @@ pub async fn remove_game_from_custom_list(
     }
 
     // Write updated list back to file
-    let json_string = serde_json::to_string_pretty(&games_list)
-        .map_err(|e| format!("Failed to serialize list JSON: {}", e))?;
-
-    let mut file =
-        File::create(&file_path).map_err(|e| format!("Failed to create list file: {}", e))?;
-
-    file.write_all(json_string.as_bytes())
-        .map_err(|e| format!("Failed to write to list file: {}", e))?;
+    atomic_write_json(&file_path, &games_list)
+        .map_err(|e| format!("Failed to write list file: {}", e))?;
 
     Ok(json!({
         "list_data": games_list
@@ -330,14 +303,8 @@ pub async fn update_custom_list(
     }
 
     // Write the new list to the file
-    let json_string = serde_json::to_string_pretty(&new_list)
-        .map_err(|e| format!("Failed to serialize list JSON: {}", e))?;
-
-    let mut file =
-        File::create(&file_path).map_err(|e| format!("Failed to create list file: {}", e))?;
-
-    file.write_all(json_string.as_bytes())
-        .map_err(|e| format!("Failed to write to list file: {}", e))?;
+    atomic_write_json(&file_path, &new_list)
+        .map_err(|e| format!("Failed to write list file: {}", e))?;
 
     Ok(json!({
         "list_data": new_list
