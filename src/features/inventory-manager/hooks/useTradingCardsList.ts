@@ -168,17 +168,20 @@ export function useTradingCardsList() {
         return { success: false, rateLimited: true }
       }
 
-      if (!cardPrices.success || !cardPrices.sell_order_graph || !cardPrices.buy_order_graph) {
+      if (!cardPrices.success) {
         return { success: false }
       }
 
+      const highestBuyOrder = cardPrices?.buy_order_graph?.[0]?.[0]
+      const lowestSellOrder = cardPrices?.sell_order_graph?.[0]?.[0]
       let price: string | undefined
-      if (userSettings.tradingCards?.sellOptions === 'highestBuyOrder') {
-        price = cardPrices?.buy_order_graph?.[0]?.[0]?.toString()
-      } else if (userSettings.tradingCards?.sellOptions === 'lowestSellOrder') {
-        price = cardPrices?.sell_order_graph?.[0]?.[0]?.toString()
+      if (userSettings.tradingCards?.sellOptions === 'lowestSellOrder') {
+        price = lowestSellOrder?.toString()
       } else {
-        price = cardPrices?.buy_order_graph?.[0]?.[0]?.toString()
+        price =
+          highestBuyOrder !== null && highestBuyOrder !== undefined
+            ? highestBuyOrder.toString()
+            : lowestSellOrder?.toString()
       }
 
       const priceDataCleaned = {
