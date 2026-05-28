@@ -280,11 +280,11 @@ export const Sidebar = () => {
                     {searchContent.customListQueryValue}
                   </p>
                 ) : (
-                  <p className='flex items-center gap-1.5 text-sm font-bold truncate'>
+                  <div className='flex items-center gap-1.5 text-sm font-bold truncate'>
                     <Trans i18nKey='sidebar.search'>
                       Type <Keybind keys={['/']} /> to search
                     </Trans>
-                  </p>
+                  </div>
                 )}
               </div>
             )}

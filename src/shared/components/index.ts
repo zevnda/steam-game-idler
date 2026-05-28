@@ -17,6 +17,7 @@ export { SignInHero } from './SignInHero'
 export { SocialButtons } from './SocialButtons'
 export { SteamWarning } from './SteamWarning'
 export { UpdateButton } from './UpdateButton'
+export { UpdateLoader } from './UpdateLoader'
 
 export { Dashboard } from './layouts/Dashboard'
 export { SignIn } from './layouts/SignIn'

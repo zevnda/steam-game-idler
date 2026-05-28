@@ -5,6 +5,8 @@ interface UpdateStore {
   setUpdateAvailable: (value: boolean | ((prev: boolean) => boolean)) => void
   showChangelog: boolean
   setShowChangelog: (value: boolean | ((prev: boolean) => boolean)) => void
+  isUpdating: boolean
+  setIsUpdating: (value: boolean) => void
 }
 
 export const useUpdateStore = create<UpdateStore>(set => ({
@@ -18,4 +20,6 @@ export const useUpdateStore = create<UpdateStore>(set => ({
     set(state => ({
       showChangelog: typeof value === 'function' ? value(state.showChangelog) : value,
     })),
+  isUpdating: false,
+  setIsUpdating: value => set({ isUpdating: value }),
 }))
