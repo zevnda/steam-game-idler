@@ -12,6 +12,7 @@ pub struct ProcessInfo {
     pub child: Child,
     pub app_id: u32,
     pub pid: u32,
+    pub source: String,
 }
 
 lazy_static::lazy_static! {
@@ -35,7 +36,7 @@ pub async fn start_idle(app_id: u32, app_name: String) -> Result<Value, String> 
 
     {
         let mut processes = SPAWNED_PROCESSES.lock().map_err(|e| e.to_string())?;
-        processes.push(ProcessInfo { child, app_id, pid });
+        processes.push(ProcessInfo { child, app_id, pid, source: "idle".to_string() });
     }
 
     tokio::time::sleep(Duration::from_millis(1000)).await;
@@ -107,6 +108,7 @@ pub async fn start_farm_idle(games_list: Vec<GameInfo>) -> Result<Value, String>
                 child,
                 app_id: game.app_id,
                 pid,
+                source: "farm".to_string(),
             });
         }
     }
@@ -148,7 +150,7 @@ pub async fn start_farm_idle(games_list: Vec<GameInfo>) -> Result<Value, String>
 pub async fn stop_farm_idle() -> Result<Value, String> {
     let pids: Vec<u32> = {
         let processes = SPAWNED_PROCESSES.lock().map_err(|e| e.to_string())?;
-        processes.iter().map(|p| p.pid).collect()
+        processes.iter().filter(|p| p.source == "farm").map(|p| p.pid).collect()
     };
 
     if !pids.is_empty() {
@@ -172,7 +174,7 @@ pub async fn stop_farm_idle() -> Result<Value, String> {
     }
 
     if let Ok(mut processes) = SPAWNED_PROCESSES.lock() {
-        processes.clear();
+        processes.retain(|p| p.source != "farm");
     }
 
     Ok(json!({"success": "Successfully stopped idling games"}))
