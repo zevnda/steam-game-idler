@@ -45,7 +45,7 @@ export const SignInHero = () => {
   )
 
   return (
-    <div className='relative flex items-center justify-center h-[75vh] w-full mt-9 overflow-hidden rounded-3xl inner-glow'>
+    <div className='relative flex items-center justify-center h-[75vh] w-full mt-12 overflow-hidden rounded-3xl inner-glow'>
       <div className='pointer-events-none absolute left-0 bottom-0 w-full h-1/4 z-20' />
       <div className='absolute flex flex-col items-center justify-between w-[90%] h-[90%] z-10 pointer-events-none'>
         <p className='font-black text-[52px] leading-14 text-center'>

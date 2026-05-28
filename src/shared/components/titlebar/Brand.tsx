@@ -14,7 +14,7 @@ export const Brand = () => {
   return (
     <div
       className={cn(
-        'flex items-center duration-300',
+        'flex items-center h-8 duration-300',
         sidebarCollapsed ? 'justify-center' : 'justify-start ml-2',
       )}
       data-tauri-drag-region

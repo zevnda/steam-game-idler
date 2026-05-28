@@ -45,7 +45,7 @@ export const Achievements = () => {
   return (
     <div
       className={cn(
-        'overflow-y-auto overflow-x-hidden mt-9 ease-in-out',
+        'overflow-y-auto overflow-x-hidden mt-12 ease-in-out',
         sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]',
       )}
       style={{

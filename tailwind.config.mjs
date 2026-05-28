@@ -19,13 +19,13 @@ const config = {
         calc: 'calc(100vw - 250px)',
       },
       height: {
-        calc: 'calc(100vh - 36px)',
+        calc: 'calc(100vh - 48px)',
       },
       maxHeight: {
-        calc: 'calc(100vh - 36px)',
+        calc: 'calc(100vh - 48px)',
       },
       minHeight: {
-        calc: 'calc(100vh - 36px)',
+        calc: 'calc(100vh - 48px)',
       },
       animation: {
         'skew-scroll': 'skew-scroll 30s linear infinite',

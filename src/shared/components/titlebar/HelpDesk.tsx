@@ -169,7 +169,7 @@ export const HelpDesk = () => {
           <CustomTooltip content={t('common.helpDesk')}>
             <div
               className={cn(
-                'flex justify-center items-center hover:bg-header-hover/10 h-9 w-12 px-2 ',
+                'flex justify-center items-center hover:bg-header-hover/10 h-12 w-12 px-2 ',
                 'duration-150 cursor-pointer transition-colors',
                 isOpen && 'text-primary',
                 showGuide && 'z-1002 relative pointer-events-none',
@@ -195,7 +195,7 @@ export const HelpDesk = () => {
           />
 
           {/* Floating card with arrow */}
-          <div className='fixed top-13 right-36 z-1002 flex flex-col items-end'>
+          <div className='fixed top-16 right-36 z-1002 flex flex-col items-end'>
             {/* Card */}
             <motion.div
               initial={{ opacity: 0, y: -20, scale: 0.95 }}

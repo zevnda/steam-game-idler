@@ -104,7 +104,7 @@ export const CardFarming = ({ activePage }: { activePage: ActivePageType }) => {
           </p>
         )}
 
-        <div className='p-2 rounded-lg w-full max-h-[calc(100vh-380px)] overflow-y-auto'>
+        <div className='p-2 rounded-lg w-full max-h-[calc(100vh-392px)] overflow-y-auto'>
           <div className='grid grid-cols-2 gap-2 px-2 overflow-y-auto'>
             {[...Array.from(gamesWithDrops)].map(item => (
               <div key={item.appid} className='flex gap-1 border border-border rounded-lg p-1'>
@@ -180,7 +180,7 @@ export const CardFarming = ({ activePage }: { activePage: ActivePageType }) => {
 
       <div
         className={cn(
-          'relative w-[calc(100vw-227px)] pl-6 pt-2 pr-12 mt-9 ease-in-out',
+          'relative w-[calc(100vw-227px)] pl-6 pt-2 pr-12 mt-12 ease-in-out',
           sidebarCollapsed ? 'ml-14' : 'ml-62.5',
         )}
         style={{
@@ -218,7 +218,7 @@ export const CardFarming = ({ activePage }: { activePage: ActivePageType }) => {
 
         <div
           className={cn(
-            'flex flex-col item max-h-[calc(100vh-92px)] ease-in-out pt-10 overflow-hidden',
+            'flex flex-col item max-h-[calc(100vh-104px)] ease-in-out pt-10 overflow-hidden',
             sidebarCollapsed ? 'w-[calc(100vw-106px)]' : 'w-[calc(100vw-300px)]',
           )}
           style={{

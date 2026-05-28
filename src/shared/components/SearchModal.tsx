@@ -6,12 +6,12 @@ import { cn, Input, Modal, ModalBody, ModalContent, ModalHeader } from '@heroui/
 import { useTitlebar } from '@/shared/hooks'
 import { useNavigationStore, useSearchStore, useStateStore, useUserStore } from '@/shared/stores'
 
-interface SearchbarProps {
+interface SearchModalProps {
   isModalOpen?: boolean
   onModalClose?: () => void
 }
 
-export const Searchbar = ({ isModalOpen = false, onModalClose }: SearchbarProps) => {
+export const SearchModal = ({ isModalOpen = false, onModalClose }: SearchModalProps) => {
   const { t } = useTranslation()
   const [inputValue, setInputValue] = useState<string>('')
   const searchStore = useSearchStore()
