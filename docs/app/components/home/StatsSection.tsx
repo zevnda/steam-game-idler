@@ -26,7 +26,7 @@ export default function StatsSection() {
 
   const stats = [
     {
-      value: '70K+',
+      value: '100K+',
       label: 'Downloads',
       icon: <FiDownload className='w-6 h-6' />,
       description: 'Active installations worldwide',

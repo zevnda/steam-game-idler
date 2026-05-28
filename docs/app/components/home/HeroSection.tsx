@@ -224,7 +224,7 @@ export default function HeroSection() {
                   className='text-lg sm:text-xl md:text-2xl font-bold text-purple-600'
                   aria-label='16 thousand plus Steam idlers'
                 >
-                  70K+
+                  100K+
                 </div>
                 <div className='text-xs text-gray-600 uppercase tracking-wider'>DOWNLOADS</div>
               </div>
