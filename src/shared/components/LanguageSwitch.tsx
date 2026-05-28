@@ -14,27 +14,20 @@ export const LanguageSwitch = ({
   const [mounted, setMounted] = useState(false)
 
   const languages = [
-    { key: 'cs-CZ', label: 'Čeština' },
     { key: 'de-DE', label: 'Deutsch' },
     { key: 'en-US', label: 'English' },
     { key: 'es-ES', label: 'Español' },
-    { key: 'fi-FI', label: 'Suomi' },
     { key: 'fr-FR', label: 'Français' },
-    // { key: 'hi-IN', label: 'हिन्दी' },
     { key: 'id-ID', label: 'Bahasa Indonesia' },
     { key: 'it-IT', label: 'Italiano' },
-    // { key: 'ja-JP', label: '日本語' },
-    // { key: 'ko-KR', label: '한국어' },
     { key: 'mk-MK', label: 'Македонски' },
     { key: 'pl-PL', label: 'Polski' },
     { key: 'pt-BR', label: 'Português (Brazil)' },
-    // { key: 'pt-PT', label: 'Português (Portugal)' },
     { key: 'ro-RO', label: 'Română' },
     { key: 'ru-RU', label: 'Русский' },
     { key: 'tr-TR', label: 'Türkçe' },
     { key: 'uk-UA', label: 'Українська' },
     { key: 'zh-CN', label: '简体中文' },
-    // { key: 'zh-TW', label: '繁體中文' },
   ]
 
   useEffect(() => {
