@@ -17,8 +17,8 @@ export const SteamWarning = () => {
     const shouldShowWarning = async () => {
       const devAccounts = ['76561198158912649', '76561198999797359']
       const isDev = await invoke('is_dev')
-      const isUserDev = devAccounts.includes(userSummary?.steamId ?? '')
-      if (showSteamWarning && !isDev && !isUserDev) {
+      const isDevAccount = devAccounts.includes(userSummary?.steamId ?? '')
+      if (showSteamWarning && !isDev && !isDevAccount) {
         onOpen()
       }
     }
