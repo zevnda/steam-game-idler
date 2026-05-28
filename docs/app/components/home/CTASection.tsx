@@ -36,7 +36,7 @@ export default function CTASection() {
 
           <p className='text-lg sm:text-xl md:text-2xl text-white/90 mb-8 sm:mb-12 leading-relaxed px-4 sm:px-0'>
             Download the ultimate Steam idle tool and card farmer today. Join thousands of users
-            automating their Steam experience. No registration, no subscriptions, completely free.
+            automating their Steam experience. No registration and no passwords.
           </p>
 
           {/* Action buttons */}
