@@ -1,129 +1,177 @@
 'use client'
 
+import { useRef, useState } from 'react'
 import { FiArrowUpRight, FiTrendingUp } from 'react-icons/fi'
 import { TbAward, TbBuildingStore, TbCards } from 'react-icons/tb'
+import { AnimatePresence, motion, useInView } from 'motion/react'
 import Link from 'next/link'
 
 const features = [
   {
-    icon: <TbCards className='w-8 h-8' />,
-    title: 'Steam Card Farmer & Trading Card Idler',
+    icon: TbCards,
+    color: 'text-blue-400',
+    title: 'Card Farming',
     description:
-      'Automatically farm Steam trading cards from your games with our advanced Steam card idler. The best Steam card farmer available - a more user-friendly alternative to ArchiSteamFarm for maximizing card drops and marketplace profit.',
+      'Collect trading card drops automatically from any game in your library. Runs quietly in the background while you focus on other things.',
     link: '/docs/features/card-farming',
-    gradient: 'from-blue-500 to-indigo-600',
-    bgGradient: 'from-blue-50 to-indigo-50',
-    borderColor: 'border-blue-200 hover:border-blue-300',
+    image: '/examples/card-farming.png',
   },
   {
-    icon: <TbAward className='w-8 h-8' />,
-    title: 'Steam Achievement Manager & Unlocker',
+    icon: TbAward,
+    color: 'text-purple-400',
+    title: 'Achievement Unlocker',
     description:
-      'Unlock Steam achievements automatically with human-like behavior, or manually manage achievements for any game. The safest Steam achievement unlocker - a streamlined alternative to Steam Achievement Manager with enhanced safety features.',
+      'View and manage achievements for any game you own. Unlock them manually or let the automated unlocker handle it with human-like timing.',
     link: '/docs/features/achievement-manager',
-    gradient: 'from-purple-500 to-pink-600',
-    bgGradient: 'from-purple-50 to-pink-50',
-    borderColor: 'border-purple-200 hover:border-purple-300',
+    image: '/examples/achievement-manager.png',
   },
   {
-    icon: <TbBuildingStore className='w-8 h-8' />,
-    title: 'Steam Inventory Manager & Marketplace Tool',
+    icon: TbBuildingStore,
+    color: 'text-emerald-400',
+    title: 'Inventory Manager',
     description:
-      'View and manage your entire Steam inventory. Sell items directly on the Steam marketplace from within the app, offering better integration than traditional Steam idling tools and card farmers.',
+      'Browse your entire Steam inventory and list items on the marketplace directly from within the app — no browser tabs required.',
     link: '/docs/features/inventory-manager',
-    gradient: 'from-emerald-500 to-teal-600',
-    bgGradient: 'from-emerald-50 to-teal-50',
-    borderColor: 'border-emerald-200 hover:border-emerald-300',
+    image: '/examples/inventory-manager.png',
   },
   {
-    icon: <FiTrendingUp className='w-8 h-8' />,
-    title: 'Steam Idle & Playtime Booster',
+    icon: FiTrendingUp,
+    color: 'text-orange-400',
+    title: 'Playtime Booster',
     description:
-      'Increase game playtime by idling Steam games in the background. A modern Steam idle tool evolution of Idle Master with improved efficiency and Steam detection avoidance for meeting hour requirements.',
+      'Idle up to 32 games simultaneously to build playtime and meet card drop eligibility requirements faster.',
     link: '/docs/features/playtime-booster',
-    gradient: 'from-orange-500 to-red-600',
-    bgGradient: 'from-orange-50 to-red-50',
-    borderColor: 'border-orange-200 hover:border-orange-300',
+    image: '/examples/playtime-booster.png',
   },
 ]
 
+const ease = [0.22, 1, 0.36, 1] as const
+
 export default function FeaturesSection() {
+  const [activeFeature, setActiveFeature] = useState('Card Farming')
+
+  const feature = features.find(f => f.title === activeFeature)!
+
+  const headerRef = useRef<HTMLElement>(null)
+  const headerInView = useInView(headerRef, { once: true, margin: '-60px' })
+
+  const bodyRef = useRef<HTMLDivElement>(null)
+  const bodyInView = useInView(bodyRef, { once: true, margin: '-60px' })
+
   return (
-    <section
-      className='py-12 sm:py-16 md:py-20 lg:py-24 relative'
-      aria-labelledby='features-heading'
-    >
-      {/* Top transition border */}
-      <div className='absolute top-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-purple-300 to-transparent' />
-
-      {/* Bottom transition overlay */}
-      <div className='absolute bottom-0 left-0 right-0 h-32 bg-linear-to-b from-transparent to-rose-50/50' />
-
-      <div className='container mx-auto relative z-10 px-4 sm:px-6 md:px-8'>
-        {/* Header */}
-        <header className='max-w-3xl mx-auto text-center mb-12 sm:mb-16 lg:mb-20'>
-          <h2 className='text-3xl sm:text-4xl md:text-5xl font-black text-gray-800 mb-6 sm:mb-8 leading-tight'>
-            POWERFUL STEAM IDLE{' '}
-            <span className='block text-transparent bg-clip-text bg-linear-to-r from-[#00c3ff] to-[#9d00ff]'>
-              AUTOMATION FEATURES
+    <section className='py-20 sm:py-24 lg:py-32 relative' aria-labelledby='features-heading'>
+      <div className='container mx-auto px-4 sm:px-6 md:px-8 max-w-5xl'>
+        <motion.header
+          ref={headerRef}
+          className='max-w-3xl mx-auto text-center mb-16 sm:mb-20'
+          initial={{ opacity: 0, y: 24 }}
+          animate={headerInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, ease }}
+        >
+          <h2
+            id='features-heading'
+            className='text-3xl sm:text-4xl md:text-5xl font-bold text-text-primary mb-6 leading-tight tracking-tight'
+          >
+            Everything you{' '}
+            <span
+              style={{
+                background: 'linear-gradient(135deg, #f5f5f5 20%, #555)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
+            >
+              need
             </span>
           </h2>
-          <p className='text-base sm:text-lg md:text-xl text-gray-700 leading-relaxed'>
-            Our advanced Steam automation tool is designed to enhance your Steam experience. From
-            being the best Steam card farmer to the most reliable Steam idle tool for achievements
-            and playtime boosting.
+          <p className='text-lg text-text-muted leading-relaxed'>
+            SGI combines the best features from all the popular Steam tools into a single,
+            user-friendly app — actively maintained and completely free.
           </p>
-        </header>
+        </motion.header>
 
-        {/* Features grid */}
-        <div className='grid md:grid-cols-2 gap-8 max-w-6xl mx-auto'>
-          {features.map((feature, index) => (
-            <article
-              key={feature.title}
-              className={`group block relative overflow-hidden bg-white border-2 ${feature.borderColor} rounded-3xl p-8 hover:shadow-lg transition-all duration-200 transform hover:-translate-y-1 hover:scale-[1.01]`}
-            >
-              <Link prefetch={false} href={feature.link} className='block'>
-                {/* Background gradient */}
-                <div
-                  className={`absolute inset-0 bg-linear-to-br ${feature.bgGradient} opacity-0 group-hover:opacity-50 transition-opacity duration-200`}
-                />
-
-                {/* Content */}
-                <div className='relative z-10'>
-                  {/* Icon and arrow */}
-                  <div className='flex items-start justify-between mb-6'>
+        <motion.div
+          ref={bodyRef}
+          className='flex flex-col gap-4'
+          initial={{ opacity: 0, y: 24 }}
+          animate={bodyInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, ease }}
+        >
+          {/* Feature selector tabs */}
+          <nav aria-label='Feature categories' className='grid grid-cols-2 sm:grid-cols-4 gap-3'>
+            {features.map(f => {
+              const isActive = activeFeature === f.title
+              const Icon = f.icon
+              return (
+                <button
+                  key={f.title}
+                  onClick={() => setActiveFeature(f.title)}
+                  className={`faq-tab${isActive ? ' faq-tab--active' : ''} cursor-pointer`}
+                  aria-current={isActive ? 'true' : undefined}
+                >
+                  <div className='faq-tab__content flex items-center gap-3 px-4 py-4'>
                     <div
-                      className={`relative p-4 rounded-2xl bg-linear-to-r ${feature.gradient} text-white shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-200`}
+                      className={`p-2 rounded-lg shrink-0 transition-all duration-200 ${
+                        isActive
+                          ? 'bg-white/8 border border-white/15'
+                          : 'bg-white/4 border border-white/8'
+                      }`}
                     >
-                      {feature.icon}
+                      <Icon
+                        className={`w-4 h-4 transition-colors duration-200 ${
+                          isActive ? f.color : 'text-text-muted'
+                        }`}
+                      />
                     </div>
-                    <FiArrowUpRight className='w-6 h-6 text-gray-400 group-hover:text-gray-700 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all duration-200' />
+                    <span
+                      className={`font-medium text-sm transition-colors duration-200 ${
+                        isActive ? 'text-text-primary' : 'text-text-muted'
+                      }`}
+                    >
+                      {f.title}
+                    </span>
                   </div>
+                </button>
+              )
+            })}
+          </nav>
 
-                  {/* Title */}
-                  <h3 className='text-2xl font-bold text-gray-900 mb-4 group-hover:text-gray-800 transition-colors duration-200'>
-                    {feature.title}
-                  </h3>
-
-                  {/* Description */}
-                  <p className='text-gray-600 leading-relaxed group-hover:text-gray-700 transition-colors duration-200 pb-4'>
-                    {feature.description}
-                  </p>
-
-                  {/* Hover decoration */}
-                  <div
-                    className={`absolute bottom-0 left-0 right-0 h-1 bg-linear-to-r ${feature.gradient} transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200 origin-left rounded-b-3xl`}
-                  />
-                </div>
-
-                {/* Corner decoration */}
-                <div
-                  className={`absolute top-0 right-0 w-20 h-20 bg-linear-to-br ${feature.gradient} opacity-10 transform rotate-45 translate-x-10 -translate-y-10 group-hover:translate-x-10 group-hover:-translate-y-10 transition-transform duration-200`}
+          {/* Feature content */}
+          <AnimatePresence mode='wait'>
+            <motion.div
+              key={activeFeature}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2, ease }}
+              className='flex flex-col gap-6 pt-4'
+            >
+              <div
+                className='border border-[#FFFFFF1A] bg-white/3 min-h-48'
+                style={{ borderRadius: '12px', overflow: 'hidden' }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={feature.image}
+                  alt={`${feature.title} screenshot`}
+                  className='w-full h-auto block'
                 />
-              </Link>
-            </article>
-          ))}
-        </div>
+              </div>
+
+              <div className='flex items-center justify-between gap-6'>
+                <p className='text-text-muted leading-relaxed max-w-xl'>{feature.description}</p>
+                <Link
+                  prefetch={false}
+                  href={feature.link}
+                  className='btn-ghost px-3 py-1.5 text-xs gap-1 group shrink-0'
+                >
+                  Read more
+                  <FiArrowUpRight className='w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-150' />
+                </Link>
+              </div>
+            </motion.div>
+          </AnimatePresence>
+        </motion.div>
       </div>
     </section>
   )

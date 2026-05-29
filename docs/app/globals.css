@@ -1,8 +1,29 @@
 @import 'tailwindcss';
 @import 'fumadocs-ui/css/neutral.css';
 @import 'fumadocs-ui/css/preset.css';
-@config "../tailwind.config.mjs";
 
+/* ─── Registered custom properties ─────────────────────────── */
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+/* ─── Design tokens ─────────────────────────────────────────── */
+@theme {
+  --color-background: #000000;
+  --color-surface: #0d0d0d;
+  --color-surface-raised: #1a1a1a;
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-text-primary: #f5f5f5;
+  --color-text-muted: #a3a3a3;
+  --color-accent: #00a3ff;
+
+  --radius-card: 12px;
+  --radius-button: 6px;
+}
+
+/* ─── Fumadocs theme vars (keep untouched) ────────────────── */
 .light {
   --base: #ffffff;
   --blockquote-border: #c7ccd2ff;
@@ -27,6 +48,383 @@
   --color-fd-primary: #5fb700ff;
 }
 
+/* ─── Reusable component classes ─────────────────────────── */
+@layer components {
+  /* Dark surface card — border-based depth, no drop shadow */
+  .card {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    transition: border-color 150ms ease;
+  }
+
+  .card:hover {
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+
+  /* Solid accent-colour CTA button */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background-color: var(--color-accent);
+    color: #ffffff;
+    border-radius: var(--radius-button);
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition:
+      background-color 150ms ease,
+      box-shadow 150ms ease;
+    white-space: nowrap;
+  }
+
+  .btn-primary:hover {
+    background-color: #0090e0;
+    box-shadow: 0 0 0 3px rgba(0, 163, 255, 0.2);
+  }
+
+  /* Ghost / outline button */
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: var(--color-text-primary);
+    border-radius: var(--radius-button);
+    font-weight: 600;
+    font-size: 0.875rem;
+    background-color: transparent;
+    transition:
+      background-color 150ms ease,
+      border-color 150ms ease;
+    white-space: nowrap;
+  }
+
+  .btn-ghost:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.25);
+  }
+
+  /* ── Glowing section divider ───────────────────────────────── */
+  .section-divider {
+    position: relative;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      transparent 0%,
+      rgba(255, 255, 255, 0.04) 15%,
+      rgba(255, 255, 255, 0.18) 35%,
+      rgba(255, 255, 255, 0.45) 46%,
+      rgba(255, 255, 255, 0.65) 50%,
+      rgba(255, 255, 255, 0.45) 54%,
+      rgba(255, 255, 255, 0.18) 65%,
+      rgba(255, 255, 255, 0.04) 85%,
+      transparent 100%
+    );
+    margin: 0;
+  }
+
+  /* Glow centered on the divider line — top half clipped, bottom half visible */
+  .section-divider::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 200px;
+    background: radial-gradient(
+      ellipse 50% 50% at 50% 50%,
+      rgba(151, 151, 151, 0.18) 0%,
+      transparent 45%
+    );
+    filter: blur(20px);
+    /* clip-path: inset(50% 0 0 0); */
+    pointer-events: none;
+  }
+
+  /* ── Spotlight border card ─────────────────────────────────── */
+  /*
+   * Border trick: the element's own background is the border colour.
+   * ::after at inset:1px covers the interior with the surface colour,
+   * leaving a 1px strip that shows the element background as a border.
+   * When hovered, ::before (spinning conic-gradient) overrides that strip.
+   */
+  .spotlight-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-card);
+    isolation: isolate;
+    /* this becomes the visible border colour */
+    background: rgba(255, 255, 255, 0.1);
+    text-align: left;
+    width: 100%;
+  }
+
+  .spotlight-card::before {
+    content: '';
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    top: -50%;
+    left: -50%;
+    background: conic-gradient(
+      from var(--angle),
+      transparent 70%,
+      rgba(255, 255, 255, 0.28) 80%,
+      transparent 90%
+    );
+    animation: spin 3s linear infinite;
+    z-index: 0;
+    opacity: 0;
+    transition: opacity 300ms ease;
+  }
+
+  .spotlight-card:hover::before {
+    opacity: 1;
+  }
+
+  /* Covers the interior, leaving only the 1px outer strip as border */
+  .spotlight-card::after {
+    content: '';
+    position: absolute;
+    inset: 1px;
+    border-radius: calc(var(--radius-card) - 1px);
+    background-color: var(--color-surface);
+    z-index: 1;
+  }
+
+  .spotlight-card__content {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+  }
+
+  /* 3D floating mockup */
+  .mockup-float {
+    animation: mockup-float 4s ease-in-out infinite;
+  }
+
+  /* ── Glow card (stats) — cursor glow only, no spinning border ── */
+  .glow-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-card);
+    isolation: isolate;
+    --mx: 50%;
+    --my: 50%;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    transition: border-color 200ms ease;
+  }
+
+  .glow-card:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .glow-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background-image: none;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .glow-card:hover::after {
+    background-image: radial-gradient(
+      circle 220px at var(--mx) var(--my),
+      rgba(255, 255, 255, 0.07) 0%,
+      transparent 55%
+    );
+  }
+
+  .glow-card__content {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── FAQ tab selector card ─────────────────────────────────── */
+  /*
+   * Border trick: the element's own background is the border colour.
+   * ::after at inset:1px covers the interior with the surface colour,
+   * leaving a 1px strip that shows the element background as a border.
+   * When active, ::before (spinning conic-gradient) overrides that strip.
+   */
+  .faq-tab {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-card);
+    isolation: isolate;
+    /* this becomes the visible border colour */
+    background: rgba(255, 255, 255, 0.1);
+    text-align: left;
+    width: 100%;
+  }
+
+  .faq-tab::before {
+    content: '';
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    top: -50%;
+    left: -50%;
+    background: conic-gradient(
+      from var(--angle),
+      transparent 70%,
+      rgba(255, 255, 255, 0.28) 80%,
+      transparent 90%
+    );
+    animation: spin 3s linear infinite;
+    z-index: 0;
+    opacity: 0;
+    transition: opacity 300ms ease;
+  }
+
+  .faq-tab--active::before {
+    opacity: 1;
+  }
+
+  /* Covers the interior, leaving only the 1px outer strip as border */
+  .faq-tab::after {
+    content: '';
+    position: absolute;
+    inset: 1px;
+    border-radius: calc(var(--radius-card) - 1px);
+    background-color: var(--color-surface);
+    z-index: 1;
+  }
+
+  .faq-tab__content {
+    position: relative;
+    z-index: 2;
+  }
+
+  /* ── Premium download button ────────────────────────────────── */
+  .btn-download {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: #ffffff;
+    color: #000000;
+    padding: 0.875rem 2rem;
+    border-radius: 9999px;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    letter-spacing: -0.01em;
+    position: relative;
+    overflow: hidden;
+    transition:
+      transform 150ms ease,
+      box-shadow 200ms ease,
+      background-color 150ms ease;
+    white-space: nowrap;
+  }
+
+  .btn-download::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.06) 50%, transparent 100%);
+    transform: translateX(-100%);
+  }
+
+  .btn-download:hover {
+    background-color: #f2f2f2;
+    box-shadow:
+      0 8px 32px rgba(255, 255, 255, 0.14),
+      0 0 0 1px rgba(255, 255, 255, 0.25);
+    transform: scale(1.05);
+  }
+
+  .btn-download:hover::before {
+    animation: shimmer-sweep 550ms ease forwards;
+  }
+
+  .btn-download:active {
+    transform: translateY(0);
+  }
+
+  /* ── Testimonials marquee ──────────────────────────────────── */
+  .testimonials-track {
+    animation: marquee 60s linear infinite;
+  }
+
+  .testimonials-container:hover .testimonials-track {
+    animation-play-state: paused;
+  }
+
+  /* Monotone pill badge */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    background-color: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: var(--color-text-muted);
+  }
+}
+
+@keyframes spin {
+  to {
+    --angle: 360deg;
+  }
+}
+
+@keyframes rainbow-border {
+  from {
+    --angle: 0deg;
+  }
+  to {
+    --angle: 360deg;
+  }
+}
+
+@keyframes shimmer-sweep {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes mockup-float {
+  0%,
+  100% {
+    transform: perspective(1000px) rotateX(8deg) rotateY(-12deg) rotateZ(2deg);
+  }
+  50% {
+    transform: perspective(1000px) rotateX(8deg) rotateY(-12deg) rotateZ(2deg);
+  }
+}
+
+/* ─── Prevent double scrollbar ─────────────────────────── */
+/*
+ * overflow-x: hidden on a descendant div implicitly becomes overflow-y: auto,
+ * creating a second scroll container. Use clip instead — it cuts off overflow
+ * without creating a new scroll container.
+ */
+body {
+  overflow-x: clip;
+}
+
+/* ─── Scrollbar ──────────────────────────────────────────── */
 .changelog-scroll::-webkit-scrollbar {
   width: 4px;
   background: linear-gradient(to bottom, #1d1d1dff 0%, #000000ff 100%);
@@ -41,6 +439,7 @@
   background: transparent;
 }
 
+/* ─── Fumadocs step styles ─────────────────────────────── */
 .fd-steps {
   margin-top: 3rem;
   margin-bottom: 3rem;
@@ -72,6 +471,7 @@ button[aria-label='Copy Link'] {
   cursor: pointer;
 }
 
+/* ─── Markdown body ────────────────────────────────────── */
 .markdown-body p {
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
