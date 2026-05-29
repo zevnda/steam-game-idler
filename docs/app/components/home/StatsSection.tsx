@@ -163,19 +163,19 @@ export default function StatsSection() {
 
         <motion.div
           ref={gridRef}
-          className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5'
+          className='grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5'
           variants={container}
           initial='hidden'
           animate={gridInView ? 'show' : 'hidden'}
         >
           {stats.map(stat => (
             <motion.article key={stat.label} variants={cardVariant}>
-              <div className='relative rounded-(--radius-card) bg-surface border border-white/6 overflow-hidden p-6 sm:p-8'>
+              <div className='relative rounded-(--radius-card) bg-surface border border-white/6 overflow-hidden p-4 sm:p-6 lg:p-8'>
                 <div className={`absolute inset-x-0 top-0 h-0.5 ${stat.accent}`} />
 
                 <div className='flex items-end justify-between mb-3'>
                   <div
-                    className='text-3xl sm:text-4xl font-bold text-text-primary tabular-nums leading-none'
+                    className='text-2xl sm:text-3xl lg:text-4xl font-bold text-text-primary tabular-nums leading-none'
                     aria-label={`${stat.label} statistic`}
                   >
                     {stat.value}

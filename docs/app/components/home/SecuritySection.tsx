@@ -195,7 +195,10 @@ export default function SecuritySection() {
   const rightInView = useInView(rightRef, { once: true, margin: '-80px' })
 
   return (
-    <section className='py-20 sm:py-24 lg:py-32 relative' aria-labelledby='security-heading'>
+    <section
+      className='py-20 sm:py-24 lg:py-32 relative overflow-x-hidden'
+      aria-labelledby='security-heading'
+    >
       <div className='container mx-auto px-4 sm:px-6 md:px-8'>
         <div className='grid lg:grid-cols-2 gap-12 lg:gap-16 items-center'>
           {/* Left — content */}

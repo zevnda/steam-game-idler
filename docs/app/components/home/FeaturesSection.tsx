@@ -147,7 +147,7 @@ export default function FeaturesSection() {
                 />
               </div>
 
-              <div className='flex items-center justify-between gap-6'>
+              <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-6'>
                 <p className='text-text-muted leading-relaxed max-w-xl'>{feature.description}</p>
                 <Link
                   prefetch={false}
