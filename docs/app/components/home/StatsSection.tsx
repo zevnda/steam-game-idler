@@ -5,6 +5,8 @@ import { FaStar } from 'react-icons/fa6'
 import { FiDownload, FiGlobe, FiStar } from 'react-icons/fi'
 import { TbCode } from 'react-icons/tb'
 import SpotlightCard from '@docs/components/home/SpotlightCard'
+import { ease } from '@docs/lib/motion'
+import { useGlobalStore } from '@docs/stores/globalStore'
 import { motion, useInView } from 'motion/react'
 
 function easeInOut(t: number) {
@@ -79,8 +81,6 @@ const testimonials = [
   'Finally hit 100% on all my achievements',
 ]
 
-const ease = [0.22, 1, 0.36, 1] as const
-
 const container = {
   hidden: {},
   show: { transition: { staggerChildren: 0.1 } },
@@ -92,16 +92,7 @@ const cardVariant = {
 }
 
 export default function StatsSection() {
-  const [githubStars, setGithubStars] = useState(0)
-  const [starsLoaded, setStarsLoaded] = useState(false)
-
-  useEffect(() => {
-    fetch('https://api.github.com/repos/zevnda/steam-game-idler')
-      .then(r => r.json())
-      .then(d => setGithubStars(d.stargazers_count || 999))
-      .catch(() => setGithubStars(999))
-      .finally(() => setStarsLoaded(true))
-  }, [])
+  const { repoStars } = useGlobalStore(state => state)
 
   const stats = [
     {
@@ -121,11 +112,12 @@ export default function StatsSection() {
       iconColor: 'text-teal-400',
     },
     {
-      value: starsLoaded ? (
-        <Counter target={githubStars} suffix='' />
-      ) : (
-        <span className='opacity-40'>…</span>
-      ),
+      value:
+        repoStars !== null ? (
+          <Counter target={repoStars} suffix='' />
+        ) : (
+          <span className='opacity-40'>…</span>
+        ),
       label: 'GitHub Stars',
       description: 'Community-backed open source project',
       icon: <FiStar className='w-4 h-4' />,
@@ -162,17 +154,7 @@ export default function StatsSection() {
             id='stats-heading'
             className='text-3xl sm:text-4xl md:text-5xl font-bold text-text-primary mb-4 leading-tight tracking-tight'
           >
-            Trusted by the{' '}
-            <span
-              style={{
-                background: 'linear-gradient(135deg, #f5f5f5 20%, #555)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-              }}
-            >
-              Steam community
-            </span>
+            Trusted by the <span className='gradient-text'>Steam community</span>
           </h2>
           <p className='text-lg text-text-muted leading-relaxed'>
             Hundreds of thousands of Steam users rely on SGI every day to automate their library.
@@ -181,19 +163,19 @@ export default function StatsSection() {
 
         <motion.div
           ref={gridRef}
-          className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5'
+          className='grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5'
           variants={container}
           initial='hidden'
           animate={gridInView ? 'show' : 'hidden'}
         >
           {stats.map(stat => (
-            <motion.article key={stat.label} variants={cardVariant}>
-              <div className='relative rounded-(--radius-card) bg-surface border border-white/6 overflow-hidden p-6 sm:p-8'>
+            <motion.article key={stat.label} variants={cardVariant} className='h-full'>
+              <div className='relative h-full rounded-(--radius-card) bg-surface border border-white/6 overflow-hidden p-4 sm:p-6 lg:p-8'>
                 <div className={`absolute inset-x-0 top-0 h-0.5 ${stat.accent}`} />
 
                 <div className='flex items-end justify-between mb-3'>
                   <div
-                    className='text-3xl sm:text-4xl font-bold text-text-primary tabular-nums leading-none'
+                    className='text-2xl sm:text-3xl lg:text-4xl font-bold text-text-primary tabular-nums leading-none'
                     aria-label={`${stat.label} statistic`}
                   >
                     {stat.value}

@@ -3,6 +3,7 @@
 import { useRef } from 'react'
 import { FaWindows } from 'react-icons/fa6'
 import CardBorder from '@docs/components/home/CardBorder'
+import { ease } from '@docs/lib/motion'
 import { useGlobalStore } from '@docs/stores/globalStore'
 import { motion, useInView } from 'motion/react'
 import Link from 'next/link'
@@ -12,8 +13,6 @@ const requirements = [
   { label: 'Download size', value: '~7 MB' },
   { label: 'License', value: 'MIT Open Source' },
 ]
-
-const ease = [0.22, 1, 0.36, 1] as const
 
 const container = {
   hidden: {},
@@ -49,17 +48,7 @@ export default function CTASection() {
             variants={item}
             className='text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-text-primary mb-6 leading-tight tracking-tight'
           >
-            Ready to automate{' '}
-            <span
-              style={{
-                background: 'linear-gradient(135deg, #f5f5f5 20%, #444)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-              }}
-            >
-              your library?
-            </span>
+            Ready to automate <span className='gradient-text'>your library?</span>
           </motion.h2>
 
           <motion.p

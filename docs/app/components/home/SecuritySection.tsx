@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { FiCode, FiEye, FiRefreshCw } from 'react-icons/fi'
 import { TbBrandGithub } from 'react-icons/tb'
+import { ease } from '@docs/lib/motion'
 import { motion, useInView } from 'motion/react'
 
 const trustPoints = [
@@ -169,8 +170,6 @@ function SecurityTerminal({ active }: { active: boolean }) {
   )
 }
 
-const ease = [0.22, 1, 0.36, 1] as const
-
 const leftContainer = {
   hidden: {},
   show: {
@@ -180,12 +179,12 @@ const leftContainer = {
 
 const leftItem = {
   hidden: { opacity: 0, y: 16 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] as const } },
+  show: { opacity: 1, y: 0, transition: { duration: 0.55, ease } },
 }
 
 const trustItem = {
   hidden: { opacity: 0, x: -16 },
-  show: { opacity: 1, x: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const } },
+  show: { opacity: 1, x: 0, transition: { duration: 0.5, ease } },
 }
 
 export default function SecuritySection() {
@@ -196,7 +195,10 @@ export default function SecuritySection() {
   const rightInView = useInView(rightRef, { once: true, margin: '-80px' })
 
   return (
-    <section className='py-20 sm:py-24 lg:py-32 relative' aria-labelledby='security-heading'>
+    <section
+      className='py-20 sm:py-24 lg:py-32 relative overflow-x-hidden'
+      aria-labelledby='security-heading'
+    >
       <div className='container mx-auto px-4 sm:px-6 md:px-8'>
         <div className='grid lg:grid-cols-2 gap-12 lg:gap-16 items-center'>
           {/* Left — content */}
@@ -212,17 +214,7 @@ export default function SecuritySection() {
               variants={leftItem}
               className='text-3xl sm:text-4xl md:text-5xl font-bold text-text-primary mb-6 leading-tight tracking-tight'
             >
-              Built with{' '}
-              <span
-                style={{
-                  background: 'linear-gradient(135deg, #f5f5f5 20%, #555)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
-                }}
-              >
-                transparency
-              </span>
+              Built with <span className='gradient-text'>transparency</span>
             </motion.h2>
 
             <motion.p variants={leftItem} className='text-lg text-text-muted mb-10 leading-relaxed'>

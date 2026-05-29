@@ -2,6 +2,7 @@
 
 import { useRef } from 'react'
 import { FiCheck, FiX } from 'react-icons/fi'
+import { ease } from '@docs/lib/motion'
 import { motion, useInView } from 'motion/react'
 
 const rows = [
@@ -21,8 +22,6 @@ const tools = [
   { short: 'SAM', full: 'Achievement Manager', highlight: false },
   { short: 'IM', full: 'Idle Master', highlight: false },
 ]
-
-const ease = [0.22, 1, 0.36, 1] as const
 
 export default function ComparisonSection() {
   const headerRef = useRef<HTMLElement>(null)
@@ -45,17 +44,7 @@ export default function ComparisonSection() {
             id='comparison-heading'
             className='text-3xl sm:text-4xl md:text-5xl font-bold text-text-primary mb-6 leading-tight tracking-tight'
           >
-            How we{' '}
-            <span
-              style={{
-                background: 'linear-gradient(135deg, #f5f5f5 20%, #555)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-              }}
-            >
-              compare
-            </span>
+            How we <span className='gradient-text'>compare</span>
           </h2>
           <p className='text-lg text-text-muted leading-relaxed'>
             See how SGI stacks up against the other Steam automation tools.
@@ -69,8 +58,79 @@ export default function ComparisonSection() {
           animate={tableInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.7, ease }}
         >
+          {/* Mobile layout — feature name stacked above icon row */}
           <div
-            className='rounded-xl overflow-hidden'
+            className='sm:hidden rounded-xl overflow-hidden'
+            style={{ border: '1px solid var(--color-border)' }}
+          >
+            {/* Tool legend */}
+            <div
+              className='grid grid-cols-4 px-4 py-3'
+              style={{
+                borderBottom: '1px solid var(--color-border)',
+                background: 'rgba(255,255,255,0.02)',
+              }}
+            >
+              {tools.map((tool, i) => (
+                <div
+                  key={tool.short}
+                  className='text-center py-1'
+                  style={
+                    i === 0
+                      ? {
+                          background: 'rgba(255,255,255,0.05)',
+                          borderBottom: '2px solid rgba(255,255,255,0.2)',
+                        }
+                      : {}
+                  }
+                >
+                  <span
+                    className={`text-xs font-bold ${tool.highlight ? 'text-text-primary' : 'text-text-muted'}`}
+                  >
+                    {tool.short}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            {/* Feature rows */}
+            {rows.map((row, i) => (
+              <motion.div
+                key={row.feature}
+                className='px-4 py-3'
+                style={{
+                  borderBottom: i < rows.length - 1 ? '1px solid var(--color-border)' : undefined,
+                  background: i % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.01)',
+                }}
+                initial={{ opacity: 0 }}
+                animate={tableInView ? { opacity: 1 } : {}}
+                transition={{ duration: 0.4, delay: 0.2 + i * 0.05, ease }}
+              >
+                <span className='block text-sm text-text-muted mb-2.5'>{row.feature}</span>
+                <div className='grid grid-cols-4'>
+                  {tools.map((tool, j) => {
+                    const has = row[tool.short.toLowerCase() as keyof typeof row] as boolean
+                    return (
+                      <div key={tool.short} className='flex justify-center'>
+                        {has ? (
+                          <FiCheck
+                            className={`w-4 h-4 ${j === 0 ? 'text-emerald-400' : 'text-emerald-600'}`}
+                            aria-label='Supported'
+                          />
+                        ) : (
+                          <FiX className='w-4 h-4 text-text-muted/30' aria-label='Not supported' />
+                        )}
+                      </div>
+                    )
+                  })}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Desktop layout — full grid table */}
+          <div
+            className='hidden sm:block rounded-xl overflow-hidden'
             style={{ border: '1px solid var(--color-border)' }}
           >
             {/* Header row */}
@@ -101,9 +161,7 @@ export default function ComparisonSection() {
                   >
                     {tool.short}
                   </div>
-                  <div className='text-xs text-text-muted mt-0.5 hidden sm:block leading-tight'>
-                    {tool.full}
-                  </div>
+                  <div className='text-xs text-text-muted mt-0.5 leading-tight'>{tool.full}</div>
                 </div>
               ))}
             </div>

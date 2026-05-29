@@ -2,6 +2,7 @@
 
 import { useRef, useState } from 'react'
 import { TbChevronDown } from 'react-icons/tb'
+import { ease } from '@docs/lib/motion'
 import { AnimatePresence, motion, useInView } from 'motion/react'
 
 const faqData = [
@@ -46,8 +47,6 @@ const faqData = [
       'Open an issue on our GitHub repository or join the Discord server. Community feedback directly shapes what gets built next.',
   },
 ]
-
-const ease = [0.22, 1, 0.36, 1] as const
 
 function AccordionItem({
   question,
@@ -118,17 +117,7 @@ export default function FAQSection() {
             id='faq-heading'
             className='text-3xl sm:text-4xl md:text-5xl font-bold text-text-primary mb-6 leading-tight tracking-tight'
           >
-            Common{' '}
-            <span
-              style={{
-                background: 'linear-gradient(135deg, #f5f5f5 20%, #555)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-              }}
-            >
-              questions
-            </span>
+            Common <span className='gradient-text'>questions</span>
           </h2>
           <p className='text-lg text-text-muted leading-relaxed max-w-xl mx-auto'>
             Everything you need to know before getting started.
