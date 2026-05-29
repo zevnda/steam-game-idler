@@ -6,14 +6,17 @@ import { ease } from '@docs/lib/motion'
 import { motion, useInView } from 'motion/react'
 
 const rows = [
-  { feature: 'Modern GUI', sgi: true, asf: false, sam: true, im: true },
-  { feature: 'Trading card farming', sgi: true, asf: true, sam: false, im: true },
-  { feature: 'Achievement management', sgi: true, asf: false, sam: true, im: false },
-  { feature: 'Automated achievement unlocker', sgi: true, asf: false, sam: false, im: false },
-  { feature: 'Inventory & marketplace', sgi: true, asf: false, sam: false, im: false },
-  { feature: 'Open source', sgi: true, asf: true, sam: true, im: false },
-  { feature: 'Minor configuration', sgi: true, asf: false, sam: true, im: true },
-  { feature: 'Active development', sgi: true, asf: true, sam: false, im: false },
+  { feature: 'Modern GUI', sgi: true, asf: false, sam: false, im: false },
+  { feature: 'Trading Card Farming', sgi: true, asf: true, sam: false, im: true },
+  { feature: 'Achievement Management', sgi: true, asf: false, sam: true, im: false },
+  { feature: 'Automated Achievement Unlocker', sgi: true, asf: false, sam: false, im: false },
+  { feature: 'Playtime Boosting', sgi: true, asf: true, sam: false, im: false },
+  { feature: 'Inventory Manager', sgi: true, asf: false, sam: false, im: false },
+  { feature: 'Marketplace Integration', sgi: true, asf: false, sam: false, im: false },
+  { feature: 'Multi-account Support', sgi: true, asf: true, sam: false, im: false },
+  { feature: 'Easy Setup', sgi: true, asf: false, sam: true, im: true },
+  { feature: 'Open Source', sgi: true, asf: true, sam: true, im: true },
+  { feature: 'Active Development', sgi: true, asf: true, sam: false, im: false },
 ]
 
 const tools = [
