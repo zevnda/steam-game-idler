@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react'
 import { FiArrowUpRight, FiTrendingUp } from 'react-icons/fi'
 import { TbAward, TbBuildingStore, TbCards } from 'react-icons/tb'
+import { ease } from '@docs/lib/motion'
 import { AnimatePresence, motion, useInView } from 'motion/react'
 import Link from 'next/link'
 
@@ -45,8 +46,6 @@ const features = [
   },
 ]
 
-const ease = [0.22, 1, 0.36, 1] as const
-
 export default function FeaturesSection() {
   const [activeFeature, setActiveFeature] = useState('Card Farming')
 
@@ -72,17 +71,7 @@ export default function FeaturesSection() {
             id='features-heading'
             className='text-3xl sm:text-4xl md:text-5xl font-bold text-text-primary mb-6 leading-tight tracking-tight'
           >
-            Everything you{' '}
-            <span
-              style={{
-                background: 'linear-gradient(135deg, #f5f5f5 20%, #555)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-              }}
-            >
-              need
-            </span>
+            Everything you <span className='gradient-text'>need</span>
           </h2>
           <p className='text-lg text-text-muted leading-relaxed'>
             SGI combines the best features from all the popular Steam tools into a single,

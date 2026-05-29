@@ -2,6 +2,7 @@
 
 import { useRef } from 'react'
 import { FiCheck, FiX } from 'react-icons/fi'
+import { ease } from '@docs/lib/motion'
 import { motion, useInView } from 'motion/react'
 
 const rows = [
@@ -21,8 +22,6 @@ const tools = [
   { short: 'SAM', full: 'Achievement Manager', highlight: false },
   { short: 'IM', full: 'Idle Master', highlight: false },
 ]
-
-const ease = [0.22, 1, 0.36, 1] as const
 
 export default function ComparisonSection() {
   const headerRef = useRef<HTMLElement>(null)
@@ -45,17 +44,7 @@ export default function ComparisonSection() {
             id='comparison-heading'
             className='text-3xl sm:text-4xl md:text-5xl font-bold text-text-primary mb-6 leading-tight tracking-tight'
           >
-            How we{' '}
-            <span
-              style={{
-                background: 'linear-gradient(135deg, #f5f5f5 20%, #555)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-              }}
-            >
-              compare
-            </span>
+            How we <span className='gradient-text'>compare</span>
           </h2>
           <p className='text-lg text-text-muted leading-relaxed'>
             See how SGI stacks up against the other Steam automation tools.

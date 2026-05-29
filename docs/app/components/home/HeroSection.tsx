@@ -2,11 +2,10 @@
 
 import { useState } from 'react'
 import { FaBook, FaDiscord, FaGithub, FaStar, FaWindows } from 'react-icons/fa6'
+import { ease } from '@docs/lib/motion'
 import { useGlobalStore } from '@docs/stores/globalStore'
 import { motion } from 'motion/react'
 import Link from 'next/link'
-
-const ease = [0.22, 1, 0.36, 1] as const
 
 const container = {
   hidden: {},
@@ -219,17 +218,7 @@ export default function HeroSection() {
             <motion.div variants={item}>
               <h1 className='text-5xl md:text-6xl lg:text-7xl font-bold leading-none tracking-tight'>
                 <span className='text-text-primary'>STEAM</span>{' '}
-                <span
-                  className='block'
-                  style={{
-                    background: 'linear-gradient(135deg, #f5f5f5 20%, #444)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text',
-                  }}
-                >
-                  GAME IDLER
-                </span>
+                <span className='block gradient-text'>GAME IDLER</span>
               </h1>
             </motion.div>
 

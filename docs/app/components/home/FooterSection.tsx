@@ -3,11 +3,10 @@
 import { useRef } from 'react'
 import { FaDiscord } from 'react-icons/fa6'
 import { FiBook, FiFileText, FiGithub, FiMail, FiShield } from 'react-icons/fi'
+import { ease } from '@docs/lib/motion'
 import { motion, useInView } from 'motion/react'
 import Image from 'next/image'
 import Link from 'next/link'
-
-const ease = [0.22, 1, 0.36, 1] as const
 
 export default function FooterSection() {
   const ref = useRef<HTMLElement>(null)
