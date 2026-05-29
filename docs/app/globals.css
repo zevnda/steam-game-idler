@@ -18,34 +18,17 @@
   --color-text-primary: #f5f5f5;
   --color-text-muted: #a3a3a3;
   --color-accent: #00a3ff;
+  --color-icon: rgb(29, 29, 29);
 
   --radius-card: 12px;
   --radius-button: 6px;
 }
 
-/* ─── Fumadocs theme vars (keep untouched) ────────────────── */
-.light {
-  --base: #ffffff;
-  --blockquote-border: #c7ccd2ff;
-  --blockquote-text: #727d90ff;
-  --code-bg: #f5f5f5ff;
-  --code-border: #d4d4d4ff;
-}
-
 .dark {
-  --base: #000000;
-  --blockquote-border: #71757aff;
-  --blockquote-text: #989fa7ff;
-  --code-bg: #2b2b2bff;
-  --code-border: #3c3c3cff;
-}
-
-.dark {
+  --color-fd-background: #000000;
+  --color-fd-card: #101010;
   --color-fd-primary: #a5f84cff;
-}
-
-.light {
-  --color-fd-primary: #5fb700ff;
+  --color-fd-secondary: #151515;
 }
 
 /* ─── Reusable component classes ─────────────────────────── */
