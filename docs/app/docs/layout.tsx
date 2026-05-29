@@ -15,6 +15,7 @@ export default function Layout({ children }: LayoutProps) {
     <DocsLayout
       {...base}
       tree={source.pageTree}
+      themeSwitch={{ enabled: false }}
       links={[
         {
           type: 'icon',
