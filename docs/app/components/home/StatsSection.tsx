@@ -169,8 +169,8 @@ export default function StatsSection() {
           animate={gridInView ? 'show' : 'hidden'}
         >
           {stats.map(stat => (
-            <motion.article key={stat.label} variants={cardVariant}>
-              <div className='relative rounded-(--radius-card) bg-surface border border-white/6 overflow-hidden p-4 sm:p-6 lg:p-8'>
+            <motion.article key={stat.label} variants={cardVariant} className='h-full'>
+              <div className='relative h-full rounded-(--radius-card) bg-surface border border-white/6 overflow-hidden p-4 sm:p-6 lg:p-8'>
                 <div className={`absolute inset-x-0 top-0 h-0.5 ${stat.accent}`} />
 
                 <div className='flex items-end justify-between mb-3'>
