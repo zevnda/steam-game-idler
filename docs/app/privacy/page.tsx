@@ -4,7 +4,7 @@ import Link from 'next/link'
 
 export default function PrivacyPolicy() {
   return (
-    <div className='min-h-screen overflow-hidden py-12'>
+    <div className='min-h-screen overflow-hidden py-12 bg-black'>
       {/* Home button */}
       <div className='absolute top-6 left-6'>
         <Link href='/' className='text-[#979797] hover:opacity-80 duration-150'>

@@ -9,15 +9,22 @@ import StatsSection from '@docs/components/home/StatsSection'
 
 export default function HomePage() {
   return (
-    <div className='min-h-screen bg-linear-to-b from-white to-gray-100 overflow-x-hidden'>
+    <div className='min-h-screen bg-background'>
       <div className='relative'>
         <HeroSection />
+        <div className='section-divider' />
         <FeaturesSection />
+        <div className='section-divider' />
         <ComparisonSection />
-        <FAQSection />
-        <SecuritySection />
+        <div className='section-divider' />
         <StatsSection />
+        <div className='section-divider' />
+        <SecuritySection />
+        <div className='section-divider' />
+        <FAQSection />
+        <div className='section-divider' />
         <CTASection />
+        <div className='section-divider' />
         <FooterSection />
       </div>
     </div>

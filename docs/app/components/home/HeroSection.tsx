@@ -1,302 +1,313 @@
 'use client'
 
+import { useState } from 'react'
 import { FaBook, FaDiscord, FaGithub, FaStar, FaWindows } from 'react-icons/fa6'
 import { useGlobalStore } from '@docs/stores/globalStore'
-import Image from 'next/image'
+import { motion } from 'motion/react'
 import Link from 'next/link'
+
+const ease = [0.22, 1, 0.36, 1] as const
+
+const container = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.1, delayChildren: 0.15 } },
+}
+
+const item = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease } },
+}
+
+function RainbowBadge({
+  children,
+  href,
+  target,
+}: {
+  children: React.ReactNode
+  href?: string
+  target?: string
+}) {
+  const [hovered, setHovered] = useState(false)
+
+  const inner = (
+    <div
+      className='relative inline-flex overflow-hidden rounded-full cursor-pointer'
+      style={{ padding: '1px' }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      {/* Single rotating full rainbow — one animation, no drift */}
+      <div
+        className='absolute inset-0 rounded-full'
+        style={{
+          background: `conic-gradient(
+            from var(--angle),
+            hsl(0,36%,50%),
+            hsl(50,36%,50%),
+            hsl(100,36%,50%),
+            hsl(160,36%,50%),
+            hsl(210,36%,50%),
+            hsl(265,36%,50%),
+            hsl(315,36%,50%),
+            hsl(360,36%,50%)
+          )`,
+          animation: 'rainbow-border 8s linear infinite',
+        }}
+      />
+      {/* Inner black mask — fades on hover to reveal the rainbow as a low-opacity fill */}
+      <div
+        className='absolute rounded-full'
+        style={{
+          inset: '1px',
+          background: hovered ? 'rgba(0,0,0,0.80)' : '#000000',
+          transition: 'background 300ms ease',
+        }}
+      />
+      {/* Content */}
+      <div className='relative z-10 flex items-center gap-1.5 px-4 py-1.5 text-sm font-medium text-text-muted'>
+        {children}
+      </div>
+    </div>
+  )
+
+  if (href) {
+    return (
+      <Link prefetch={false} href={href} target={target}>
+        {inner}
+      </Link>
+    )
+  }
+  return inner
+}
 
 export default function HeroSection() {
   const { downloadUrl, latestVersion, repoStars } = useGlobalStore(state => state)
 
   return (
-    <section className='min-h-screen flex items-center relative overflow-hidden bg-linear-to-b from-white via-gray-50 to-white'>
-      {/* Subtle background pattern */}
+    <section className='min-h-screen flex items-center relative overflow-hidden'>
+      {/* God rays — 3 thick shafts from an off-screen upper-right source */}
       <div
-        className='absolute inset-0 opacity-[0.4]'
+        className='absolute inset-0 pointer-events-none'
         style={{
-          backgroundImage: 'radial-gradient(circle at 2px 2px, rgb(139 69 193) 1px, transparent 0)',
-          backgroundSize: '24px 24px',
+          background: `conic-gradient(
+            from 160deg at 108% -25%,
+            transparent 0deg,
+            rgba(255,255,255,0.02) 4deg,
+            rgba(255,255,255,0.09) 10deg,
+            rgba(255,255,255,0.11) 16deg,
+            rgba(255,255,255,0.09) 22deg,
+            rgba(255,255,255,0.02) 28deg,
+            transparent 33deg,
+            transparent 45deg,
+            rgba(255,255,255,0.01) 48deg,
+            rgba(255,255,255,0.05) 52deg,
+            rgba(255,255,255,0.07) 55deg,
+            rgba(255,255,255,0.05) 58deg,
+            rgba(255,255,255,0.01) 62deg,
+            transparent 66deg,
+            transparent 74deg,
+            rgba(255,255,255,0.01) 77deg,
+            rgba(255,255,255,0.07) 82deg,
+            rgba(255,255,255,0.09) 86deg,
+            rgba(255,255,255,0.07) 90deg,
+            rgba(255,255,255,0.01) 94deg,
+            transparent 98deg,
+            transparent 360deg
+          )`,
+          maskImage:
+            'linear-gradient(to bottom left, black 0%, rgba(0,0,0,0.55) 38%, transparent 72%)',
+          WebkitMaskImage:
+            'linear-gradient(to bottom left, black 0%, rgba(0,0,0,0.55) 38%, transparent 72%)',
         }}
       />
 
-      {/* Gradient overlay for smooth transition */}
-      <div className='absolute inset-0 bg-linear-to-b from-white via-transparent to-white' />
-
-      <div className='absolute inset-0 pointer-events-none z-20'>
-        {/* Top left area */}
+      {/* App screenshot — right half, desktop only */}
+      <div
+        className='absolute top-0 right-0 bottom-0 hidden lg:flex items-center'
+        style={{ width: '55%', pointerEvents: 'none' }}
+      >
         <div
-          className='absolute hidden xl:block top-14 left-4 md:left-12 lg:left-16 transform -rotate-12 animate-float'
-          style={{ animationDelay: '0.1s' }}
+          className='w-full py-16 pr-6'
+          style={{
+            maskImage:
+              'linear-gradient(to right, transparent 0%, black 16%, black 88%, transparent 100%)',
+            WebkitMaskImage:
+              'linear-gradient(to right, transparent 0%, black 16%, black 88%, transparent 100%)',
+          }}
         >
-          <div className='relative p-px bg-linear-to-r from-purple-400 via-pink-400 to-yellow-400 rounded-xl'>
-            <div className='bg-white/95 rounded-xl px-4 py-3 shadow-xl max-w-xs'>
-              <div className='flex items-start space-x-3'>
-                <div className='flex text-yellow-400 text-sm'>★★★★★</div>
-                <div className='flex-1'>
-                  <p className='text-xs text-gray-700 font-medium'>
-                    &quot;Farmed 500+ cards in just 2 days!&quot;
-                  </p>
-                </div>
-              </div>
+          <motion.div
+            className='mockup-float'
+            style={{ willChange: 'transform' }}
+            initial={{ opacity: 0, x: 40 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.9, delay: 0.5, ease }}
+          >
+            <div
+              style={{
+                borderRadius: '12px',
+                overflow: 'hidden',
+                boxShadow: '0 40px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.07)',
+              }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src='/examples/example.png'
+                alt='Steam Game Idler application dashboard'
+                width={2000}
+                height={1200}
+                className='w-full h-auto block'
+                loading='eager'
+              />
             </div>
-          </div>
-        </div>
 
-        {/* Top right area */}
-        <div
-          className='absolute hidden xl:block top-12 right-4 md:right-12 lg:right-20 transform rotate-6 animate-float'
-          style={{ animationDelay: '0.5s' }}
-        >
-          <div className='relative p-px bg-linear-to-r from-green-400 via-blue-400 to-purple-400 rounded-xl'>
-            <div className='bg-white/95 rounded-xl px-4 py-3 shadow-xl max-w-xs'>
-              <div className='flex items-start space-x-3'>
-                <div className='flex text-yellow-400 text-sm'>★★★★★</div>
-                <div className='flex-1'>
-                  <p className='text-xs text-gray-700 font-medium'>
-                    &quot;Best idler I&apos;ve ever used. So simple!&quot;
-                  </p>
-                </div>
-              </div>
+            {/* Reflection */}
+            <div
+              className='blur-sm'
+              style={{
+                height: '80px',
+                overflow: 'hidden',
+                opacity: 0.2,
+                maskImage: 'linear-gradient(to bottom, black, transparent)',
+                WebkitMaskImage: 'linear-gradient(to bottom, black, transparent)',
+                marginTop: '1px',
+              }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src='/examples/example.png'
+                alt=''
+                aria-hidden='true'
+                style={{ width: '100%', height: 'auto', display: 'block', transform: 'scaleY(-1)' }}
+                loading='eager'
+              />
             </div>
-          </div>
-        </div>
-
-        {/* Bottom left area */}
-        <div
-          className='absolute hidden xl:block bottom-16 left-6 md:left-16 lg:left-24 transform rotate-6 animate-float'
-          style={{ animationDelay: '0.6s' }}
-        >
-          <div className='relative p-px bg-linear-to-r from-pink-400 via-rose-400 to-orange-400 rounded-xl'>
-            <div className='bg-white/95 rounded-xl px-4 py-3 shadow-xl max-w-xs'>
-              <div className='flex items-start space-x-3'>
-                <div className='flex text-yellow-400 text-sm'>★★★★★</div>
-                <div className='flex-1'>
-                  <p className='text-xs text-gray-700 font-medium'>
-                    &quot;Open source and completely safe to use&quot;
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom right area */}
-        <div
-          className='absolute hidden xl:block bottom-20 right-6 md:right-16 lg:right-28 transform -rotate-12 animate-float'
-          style={{ animationDelay: '1.0s' }}
-        >
-          <div className='relative p-px bg-linear-to-r from-orange-400 via-amber-400 to-yellow-400 rounded-xl'>
-            <div className='bg-white/95 rounded-xl px-4 py-3 shadow-xl max-w-xs'>
-              <div className='flex items-start space-x-3'>
-                <div className='flex text-yellow-400 text-sm'>★★★★★</div>
-                <div className='flex-1'>
-                  <p className='text-xs text-gray-700 font-medium'>
-                    &quot;Earned $50+ selling cards this month&quot;
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div
-          className='hidden xl:block absolute top-20 left-1/3 transform rotate-3 animate-float'
-          style={{ animationDelay: '1s' }}
-        >
-          <div className='relative p-px bg-linear-to-r from-indigo-400 via-purple-400 to-blue-400 rounded-xl'>
-            <div className='bg-white/95 rounded-xl px-4 py-3 shadow-xl max-w-xs'>
-              <div className='flex items-start space-x-3'>
-                <div className='flex text-yellow-400 text-sm'>★★★★★</div>
-                <div className='flex-1'>
-                  <p className='text-xs text-gray-700 font-medium'>
-                    &quot;Works perfectly with all my Steam games&quot;
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div
-          className='hidden xl:block absolute bottom-20 left-1/2 transform -translate-x-1/2 -rotate-3 animate-float'
-          style={{ animationDelay: '1.0s' }}
-        >
-          <div className='relative p-px bg-linear-to-r from-rose-400 via-pink-400 to-purple-400 rounded-xl'>
-            <div className='bg-white/95 rounded-xl px-4 py-3 shadow-xl max-w-xs'>
-              <div className='flex items-start space-x-3'>
-                <div className='flex text-yellow-400 text-sm'>★★★★★</div>
-                <div className='flex-1'>
-                  <p className='text-xs text-gray-700 font-medium'>
-                    &quot;Set it and forget it - works like magic!&quot;
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
+          </motion.div>
         </div>
       </div>
 
-      {/* Content */}
+      {/* Main content — left half */}
       <div className='container mx-auto relative z-10 px-4 md:px-6 lg:px-8'>
-        <div className='grid lg:grid-cols-2 gap-6 lg:gap-12 items-center min-h-screen py-12 sm:py-16 md:py-20'>
-          {/* Left column - Text content */}
-          <div className='space-y-4 sm:space-y-6 md:space-y-8 text-center lg:text-left'>
-            {/* Badges */}
-            <div className='flex flex-wrap gap-2 justify-center lg:justify-start'>
-              <div className='inline-flex items-center px-3 py-1.5 sm:px-4 sm:py-2 bg-linear-to-r from-green-200 to-blue-200 border border-green-300 rounded-full text-green-800 text-xs sm:text-sm font-medium shadow-lg'>
-                <span className='w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-500 rounded-full mr-2 animate-pulse' />
-                v{latestVersion} Available
-              </div>
+        <div className='min-h-screen py-16 sm:py-20 md:py-24 flex items-center'>
+          <motion.div
+            className='w-full lg:max-w-[50%] space-y-7 text-center lg:text-left'
+            variants={container}
+            initial='hidden'
+            animate='show'
+          >
+            {/* Rainbow badges */}
+            <motion.div
+              variants={item}
+              className='flex flex-wrap gap-2 justify-center lg:justify-start'
+            >
+              <RainbowBadge
+                href={`https://github.com/zevnda/steam-game-idler/releases/${latestVersion}`}
+                target='_blank'
+              >
+                <span className='w-1.5 h-1.5 bg-white/50 rounded-full animate-pulse' />v
+                {latestVersion} Available
+              </RainbowBadge>
+              <RainbowBadge
+                href='https://github.com/zevnda/steam-game-idler/stargazers'
+                target='_blank'
+              >
+                <FaStar className='w-3 h-3' />
+                {repoStars !== null ? repoStars.toLocaleString() : '…'} Stars
+              </RainbowBadge>
+            </motion.div>
 
-              <Link href='https://github.com/zevnda/steam-game-idler'>
-                <div className='inline-flex items-center px-3 py-1.5 sm:px-4 sm:py-2 bg-linear-to-r from-yellow-100 to-yellow-300 border border-yellow-300 rounded-full text-yellow-800 text-xs sm:text-sm font-medium shadow-lg'>
-                  <FaStar className='text-yellow-500 mr-1' />
-                  Star on GitHub{' '}
-                  <span className='bg-yellow-400 font-semibold rounded-full px-1.5 ml-1 '>
-                    {repoStars !== null ? repoStars.toLocaleString() : '...'}
-                  </span>
-                </div>
-              </Link>
-            </div>
-
-            {/* Main heading */}
-            <div className='space-y-2 sm:space-y-3 md:space-y-4'>
-              <h1 className='text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black leading-none'>
-                <span className='block text-gray-800'>STEAM</span>{' '}
-                <span className='text-transparent bg-clip-text bg-linear-to-r from-purple-500 via-pink-500 to-orange-500'>
+            {/* Heading */}
+            <motion.div variants={item}>
+              <h1 className='text-5xl md:text-6xl lg:text-7xl font-bold leading-none tracking-tight'>
+                <span className='text-text-primary'>STEAM</span>{' '}
+                <span
+                  className='block'
+                  style={{
+                    background: 'linear-gradient(135deg, #f5f5f5 20%, #444)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                  }}
+                >
                   GAME IDLER
                 </span>
               </h1>
-              <div className='w-40 sm:w-56 md:w-72 lg:w-80 xl:w-[24rem] h-1 bg-linear-to-r from-purple-500 to-pink-500 rounded-full mx-auto lg:mx-0' />
-            </div>
+            </motion.div>
 
             {/* Subtitle */}
-            <h2 className='text-sm sm:text-base md:text-lg lg:text-xl text-gray-700 max-w-lg leading-relaxed mx-auto lg:mx-0 px-4 sm:px-0'>
-              The most advanced Steam idle tool for farming trading cards, managing achievements,
-              and boosting playtime. Join thousands of Steam idlers using our card farmer.
-            </h2>
+            <motion.p
+              variants={item}
+              className='text-lg text-text-muted max-w-lg leading-relaxed mx-auto lg:mx-0'
+            >
+              Automate your Steam library. Farm trading cards, manage achievements, and boost
+              playtime — all from one free, open-source desktop app.
+            </motion.p>
 
-            {/* Action buttons */}
-            <div className='flex flex-col sm:flex-row gap-3 md:gap-4 justify-center lg:justify-start px-4 sm:px-0'>
-              <Link
-                prefetch={false}
-                href={downloadUrl}
-                className='group inline-flex items-center justify-center px-6 sm:px-6 md:px-8 py-3 sm:py-3 md:py-4 bg-linear-to-r from-purple-500 to-pink-500 text-white font-bold rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all duration-200 transform hover:scale-105 shadow-lg text-sm md:text-base'
-              >
-                <FaWindows className='w-4 h-4 md:w-5 md:h-5 mr-2 md:mr-3' />
-                DOWNLOAD
+            {/* Buttons */}
+            <motion.div
+              variants={item}
+              className='flex flex-wrap gap-3 justify-center lg:justify-start'
+            >
+              <Link prefetch={false} href={downloadUrl} className='btn-download'>
+                <FaWindows className='w-4 h-4' />
+                Download Free
               </Link>
-
-              <Link
-                prefetch={false}
-                href='/docs'
-                className='inline-flex items-center justify-center px-6 sm:px-6 md:px-8 py-3 sm:py-3 md:py-4 bg-white border-2 border-purple-300 text-purple-700 font-bold rounded-xl hover:bg-purple-50 hover:border-purple-400 transition-colors duration-200 shadow-md text-sm md:text-base'
-              >
-                <FaBook className='w-4 h-4 md:w-5 md:h-5 mr-2 md:mr-3' />
-                DOCUMENTATION
+              <Link prefetch={false} href='/docs' className='btn-ghost px-6 py-3'>
+                <FaBook className='w-4 h-4' />
+                Documentation
               </Link>
-
               <Link
                 prefetch={false}
                 href='https://github.com/zevnda/steam-game-idler'
                 target='_blank'
-                className='inline-flex items-center justify-center px-3 sm:px-3 md:px-4 py-3 sm:py-3 md:py-4 bg-white border-2 border-purple-300 text-purple-700 font-bold rounded-xl hover:bg-purple-50 hover:border-purple-400 transition-colors duration-200 shadow-md text-sm md:text-base'
+                className='btn-ghost px-4 py-3'
+                aria-label='View on GitHub'
               >
-                <FaGithub className='w-4 h-4 md:w-5 md:h-5 mr-2 sm:mr-0' />
-                <span className='block sm:hidden'>VIEW ON GITHUB</span>
+                <FaGithub className='w-4 h-4' />
               </Link>
-
               <Link
                 prefetch={false}
                 href='https://discord.com/invite/5kY2ZbVnZ8'
                 target='_blank'
-                className='inline-flex items-center justify-center px-3 sm:px-3 md:px-4 py-3 sm:py-3 md:py-4 bg-white border-2 border-purple-300 text-purple-700 font-bold rounded-xl hover:bg-purple-50 hover:border-purple-400 transition-colors duration-200 shadow-md text-sm md:text-base'
+                className='btn-ghost px-4 py-3'
+                aria-label='Join our Discord'
               >
-                <FaDiscord className='w-4 h-4 md:w-5 md:h-5 mr-2 sm:mr-0' />
-                <span className='block sm:hidden'>JOIN OUR DISCORD</span>
+                <FaDiscord className='w-4 h-4' />
               </Link>
-            </div>
+            </motion.div>
 
-            {/* Quick stats */}
-            <div className='flex items-center justify-center lg:justify-start gap-3 sm:gap-4 md:gap-6 lg:gap-8 pt-4 sm:pt-6 md:pt-8 px-4 sm:px-0'>
+            {/* Stats */}
+            <motion.div
+              variants={item}
+              className='flex items-center justify-center lg:justify-start gap-6 sm:gap-8 pt-2'
+            >
               <div className='text-center'>
-                <div
-                  className='text-lg sm:text-xl md:text-2xl font-bold text-purple-600'
-                  aria-label='16 thousand plus Steam idlers'
-                >
-                  100K+
+                <div className='text-xl sm:text-2xl font-bold text-text-primary'>100K+</div>
+                <div className='text-xs text-text-muted uppercase tracking-wider mt-1'>
+                  Downloads
                 </div>
-                <div className='text-xs text-gray-600 uppercase tracking-wider'>DOWNLOADS</div>
               </div>
-              <div className='w-px h-5 sm:h-6 md:h-8 bg-purple-300' />
+              <div
+                className='w-px h-8'
+                style={{ background: 'var(--color-border)' }}
+                aria-hidden='true'
+              />
               <div className='text-center'>
-                <div
-                  className='text-lg sm:text-xl md:text-2xl font-bold text-pink-600'
-                  aria-label='150,000 plus supported games'
-                >
-                  150K+
-                </div>
-                <div className='text-xs text-gray-600 uppercase tracking-wider'>
-                  SUPPORTED GAMES
-                </div>
+                <div className='text-xl sm:text-2xl font-bold text-text-primary'>150K+</div>
+                <div className='text-xs text-text-muted uppercase tracking-wider mt-1'>Games</div>
               </div>
-              <div className='w-px h-5 sm:h-6 md:h-8 bg-purple-300' />
+              <div
+                className='w-px h-8'
+                style={{ background: 'var(--color-border)' }}
+                aria-hidden='true'
+              />
               <div className='text-center'>
-                <div
-                  className='text-lg sm:text-xl md:text-2xl font-bold text-orange-600'
-                  aria-label='100 percent open source'
-                >
-                  100%
+                <div className='text-xl sm:text-2xl font-bold text-text-primary'>100%</div>
+                <div className='text-xs text-text-muted uppercase tracking-wider mt-1'>
+                  Open Source
                 </div>
-                <div className='text-xs text-gray-600 uppercase tracking-wider'>OPEN SOURCE</div>
               </div>
-            </div>
-          </div>
-
-          {/* Right column - Visual element */}
-          <div className='relative hidden lg:block overflow-hidden lg:overflow-visible mt-6 sm:mt-8 lg:mt-0 px-4 sm:px-0'>
-            {/* Floating decorative elements */}
-            <div className='absolute inset-0 pointer-events-none'>
-              {/* Gradient orbs */}
-              <div className='absolute top-10 left-4 w-32 h-32 bg-linear-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-xl animate-pulse' />
-              <div className='absolute bottom-20 right-8 w-24 h-24 bg-linear-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-lg animate-pulse delay-1000' />
-              <div className='absolute top-32 right-12 w-16 h-16 bg-linear-to-br from-pink-400/20 to-orange-400/20 rounded-full blur-md animate-pulse delay-500' />
-
-              {/* Floating geometric shapes */}
-              <div className='absolute top-8 right-4 w-3 h-3 bg-purple-400 rounded-full animate-bounce delay-300' />
-              <div className='absolute bottom-32 left-8 w-2 h-2 bg-pink-400 rounded-full animate-bounce delay-700' />
-              <div className='absolute top-40 left-12 w-1 h-1 bg-blue-400 rounded-full animate-ping delay-1000' />
-            </div>
-
-            <div className='relative'>
-              {/* Background glow effect */}
-              <div className='absolute inset-0 bg-linear-to-br from-purple-500/10 via-pink-500/10 to-orange-500/10 rounded-3xl blur-3xl transform scale-110' />
-
-              {/* Main image container */}
-              <div className='relative transform lg:-mr-64 xl:-mr-96 2xl:-mr-128'>
-                {/* Image backdrop with gradient */}
-                <div className='absolute inset-0 bg-linear-to-br from-white via-purple-50/50 to-pink-50/50 rounded-xl sm:rounded-2xl md:rounded-3xl' />
-
-                {/* Image with enhanced shadows and effects */}
-                <div className='relative'>
-                  <Image
-                    src='/examples/example.png'
-                    alt='Steam Game Idler Dashboard Screenshot'
-                    width={2000}
-                    height={1200}
-                    className='w-full sm:w-full md:w-[120%] lg:w-[200%] xl:w-[250%] 2xl:w-[300%] h-auto object-cover rounded-xl sm:rounded-2xl md:rounded-3xl shadow-2xl ring-1 ring-white/20'
-                    priority
-                  />
-
-                  {/* Subtle overlay gradient on image */}
-                  <div className='absolute inset-0 bg-linear-to-t from-purple-900/5 via-transparent to-transparent rounded-xl sm:rounded-2xl md:rounded-3xl' />
-                </div>
-
-                {/* Bottom reflection effect */}
-                <div className='absolute -bottom-2 left-0 right-0 h-8 bg-linear-to-t from-purple-100/20 to-transparent rounded-b-3xl blur-sm' />
-              </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
       </div>
     </section>

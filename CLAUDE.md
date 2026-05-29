@@ -127,11 +127,9 @@ Three env files: `.env` (shared), `.env.dev` (dev overrides), `.env.prod` (prod 
 
 ### Docs site (`docs/`)
 
-Built with **Fumadocs** (fumadocs-core, fumadocs-mdx, fumadocs-ui) on Next.js. Content is MDX files under two collections defined in `docs/source.config.ts`:
-- `content/docs/` — product documentation (`docs` collection)
-- `content/changelog/` — changelog entries (`blog` collection, requires `date` frontmatter)
+See [`docs/CLAUDE.md`](docs/CLAUDE.md) for the full docs-site architecture, routing, content schema, design system, and component reference.
 
-The docs site has its own `tailwind.config.mjs`, `tsconfig.json`, and `next.config.ts` — separate from the root app config. Deployed to Vercel (`docs/vercel.json`).
+In brief: Fumadocs + Next.js 16 static export, content in `content/docs/` (MDX) and `content/changelog/` (MDX). Deployed to Vercel (`docs/vercel.json`). The docs site has its own `tailwind.config.mjs`, `tsconfig.json`, and `next.config.ts` — separate from the root app config.
 
 ## Commit messages
 

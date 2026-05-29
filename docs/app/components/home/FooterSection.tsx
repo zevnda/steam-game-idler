@@ -1,74 +1,79 @@
 'use client'
 
+import { useRef } from 'react'
 import { FaDiscord } from 'react-icons/fa6'
 import { FiBook, FiFileText, FiGithub, FiMail, FiShield } from 'react-icons/fi'
+import { motion, useInView } from 'motion/react'
 import Image from 'next/image'
 import Link from 'next/link'
 
-export default function FooterSection() {
-  return (
-    <footer className='py-12 sm:py-16 md:py-20 relative'>
-      {/* Top transition overlay */}
-      <div className='absolute top-0 left-0 right-0 h-8 bg-linear-to-b from-purple-600/10 to-transparent' />
+const ease = [0.22, 1, 0.36, 1] as const
 
-      <div className='container mx-auto px-4 sm:px-6 md:px-8 relative z-10'>
-        {/* Main footer content */}
-        <div className='grid lg:grid-cols-3 gap-8 sm:gap-12 mb-12 sm:mb-16'>
-          {/* Brand section */}
+export default function FooterSection() {
+  const ref = useRef<HTMLElement>(null)
+  const isInView = useInView(ref, { once: true, margin: '-40px' })
+
+  return (
+    <motion.footer
+      ref={ref}
+      className='py-16 sm:py-20 relative'
+      initial={{ opacity: 0, y: 16 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.6, ease }}
+    >
+      <div className='container mx-auto px-4 sm:px-6 md:px-8'>
+        <div className='grid lg:grid-cols-3 gap-12 mb-12 sm:mb-16'>
+          {/* Brand */}
           <div className='lg:col-span-1'>
-            <div className='flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6'>
-              <Image
-                src='/logo.svg'
-                alt='Steam Game Idler'
-                width={28}
-                height={28}
-                className='sm:w-8 sm:h-8'
-              />
-              <span className='text-lg sm:text-xl font-black text-gray-800'>STEAM GAME IDLER</span>
+            <div className='flex items-center gap-3 mb-4'>
+              <Image src='/logo.svg' alt='Steam Game Idler' width={22} height={22} />
+              <span className='text-sm font-bold text-text-primary tracking-tight uppercase'>
+                Steam Game Idler
+              </span>
             </div>
-            <p className='text-sm sm:text-base text-gray-600 leading-relaxed mb-4 sm:mb-6'>
-              The ultimate desktop application for managing your Steam gaming activities. Idle
-              games, farm trading cards, unlock achievements, and optimize your Steam experience.
+            <p className='text-sm text-text-muted leading-relaxed mb-6'>
+              A free, open-source desktop app for automating your Steam library. Farm cards, manage
+              achievements, and boost playtime — no subscriptions, no data collection.
             </p>
-            <div className='flex gap-4'>
+            <div className='flex gap-2.5'>
               <a
                 href='https://github.com/zevnda/steam-game-idler'
                 target='_blank'
                 rel='noopener noreferrer'
-                className='w-9 h-9 sm:w-10 sm:h-10 bg-white border-2 border-indigo-200 flex items-center justify-center rounded-lg hover:border-indigo-400 hover:bg-indigo-50 transition-colors duration-200 shadow-sm'
+                className='btn-ghost p-2.5'
                 aria-label='Visit our GitHub repository'
               >
-                <FiGithub className='w-4 h-4 sm:w-5 sm:h-5 text-gray-600 hover:text-indigo-700' />
+                <FiGithub className='w-4 h-4' />
               </a>
               <a
                 href='https://discord.com/invite/5kY2ZbVnZ8'
                 target='_blank'
                 rel='noopener noreferrer'
-                className='w-9 h-9 sm:w-10 sm:h-10 bg-white border-2 border-indigo-200 flex items-center justify-center rounded-lg hover:border-indigo-400 hover:bg-indigo-50 transition-colors duration-200 shadow-sm'
+                className='btn-ghost p-2.5'
                 aria-label='Join our Discord server'
               >
-                <FaDiscord className='w-4 h-4 sm:w-5 sm:h-5 text-gray-600 hover:text-indigo-700' />
+                <FaDiscord className='w-4 h-4' />
               </a>
             </div>
           </div>
 
-          {/* Links sections */}
+          {/* Links */}
           <div className='lg:col-span-2 grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-12'>
             <nav aria-labelledby='resources-heading'>
               <h2
                 id='resources-heading'
-                className='text-gray-800 font-black text-xs sm:text-sm uppercase tracking-wider mb-4 sm:mb-6'
+                className='text-xs font-semibold text-text-muted uppercase tracking-wider mb-5'
               >
-                RESOURCES
+                Resources
               </h2>
-              <ul className='space-y-3 sm:space-y-4'>
+              <ul className='space-y-3'>
                 <li>
                   <Link
                     prefetch={false}
                     href='/docs'
-                    className='text-sm sm:text-base text-gray-600 hover:text-indigo-700 transition-colors duration-200 flex items-center gap-2 sm:gap-3'
+                    className='text-sm text-text-muted hover:text-text-primary transition-colors duration-150 flex items-center gap-2'
                   >
-                    <FiBook className='w-3 h-3 sm:w-4 sm:h-4' aria-hidden='true' />
+                    <FiBook className='w-3.5 h-3.5 shrink-0' aria-hidden='true' />
                     Documentation
                   </Link>
                 </li>
@@ -77,9 +82,9 @@ export default function FooterSection() {
                     href='https://github.com/zevnda/steam-game-idler'
                     target='_blank'
                     rel='noopener noreferrer'
-                    className='text-sm sm:text-base text-gray-600 hover:text-indigo-700 transition-colors duration-200 flex items-center gap-2 sm:gap-3'
+                    className='text-sm text-text-muted hover:text-text-primary transition-colors duration-150 flex items-center gap-2'
                   >
-                    <FiGithub className='w-3 h-3 sm:w-4 sm:h-4' aria-hidden='true' />
+                    <FiGithub className='w-3.5 h-3.5 shrink-0' aria-hidden='true' />
                     Source Code
                   </a>
                 </li>
@@ -89,18 +94,18 @@ export default function FooterSection() {
             <nav aria-labelledby='legal-heading'>
               <h2
                 id='legal-heading'
-                className='text-gray-800 font-black text-xs sm:text-sm uppercase tracking-wider mb-4 sm:mb-6'
+                className='text-xs font-semibold text-text-muted uppercase tracking-wider mb-5'
               >
-                LEGAL
+                Legal
               </h2>
-              <ul className='space-y-3 sm:space-y-4'>
+              <ul className='space-y-3'>
                 <li>
                   <Link
                     prefetch={false}
                     href='/privacy'
-                    className='text-sm sm:text-base text-gray-600 hover:text-indigo-700 transition-colors duration-200 flex items-center gap-2 sm:gap-3'
+                    className='text-sm text-text-muted hover:text-text-primary transition-colors duration-150 flex items-center gap-2'
                   >
-                    <FiShield className='w-3 h-3 sm:w-4 sm:h-4' aria-hidden='true' />
+                    <FiShield className='w-3.5 h-3.5 shrink-0' aria-hidden='true' />
                     Privacy Policy
                   </Link>
                 </li>
@@ -108,9 +113,9 @@ export default function FooterSection() {
                   <Link
                     prefetch={false}
                     href='/tos'
-                    className='text-sm sm:text-base text-gray-600 hover:text-indigo-700 transition-colors duration-200 flex items-center gap-2 sm:gap-3'
+                    className='text-sm text-text-muted hover:text-text-primary transition-colors duration-150 flex items-center gap-2'
                   >
-                    <FiFileText className='w-3 h-3 sm:w-4 sm:h-4' aria-hidden='true' />
+                    <FiFileText className='w-3.5 h-3.5 shrink-0' aria-hidden='true' />
                     Terms of Service
                   </Link>
                 </li>
@@ -120,17 +125,17 @@ export default function FooterSection() {
             <nav aria-labelledby='contact-heading'>
               <h2
                 id='contact-heading'
-                className='text-gray-800 font-black text-xs sm:text-sm uppercase tracking-wider mb-4 sm:mb-6'
+                className='text-xs font-semibold text-text-muted uppercase tracking-wider mb-5'
               >
-                CONTACT
+                Contact
               </h2>
-              <ul className='space-y-3 sm:space-y-4'>
+              <ul className='space-y-3'>
                 <li>
                   <a
                     href='mailto:contact@steamgameidler.com'
-                    className='text-sm sm:text-base text-gray-600 hover:text-indigo-700 transition-colors duration-200 flex items-center gap-2 sm:gap-3'
+                    className='text-sm text-text-muted hover:text-text-primary transition-colors duration-150 flex items-center gap-2'
                   >
-                    <FiMail className='w-3 h-3 sm:w-4 sm:h-4' aria-hidden='true' />
+                    <FiMail className='w-3.5 h-3.5 shrink-0' aria-hidden='true' />
                     Email Support
                   </a>
                 </li>
@@ -140,29 +145,29 @@ export default function FooterSection() {
         </div>
 
         {/* Bottom bar */}
-        <div className='pt-6 sm:pt-8 border-t-2 border-indigo-200 flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4'>
-          <div className='text-gray-600 text-xs sm:text-sm font-mono text-center sm:text-left'>
+        <div className='pt-6 sm:pt-8 border-t border-border flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4'>
+          <div className='text-text-muted text-xs font-mono text-center sm:text-left'>
             © 2024-{new Date().getFullYear()} STEAM GAME IDLER — ALL RIGHTS RESERVED
           </div>
           <div>
-            <p className='text-gray-400 text-xs sm:text-sm font-mono text-center sm:text-left uppercase'>
+            <p className='text-text-muted text-xs font-mono text-center sm:text-left uppercase'>
               Website created and managed by{' '}
               <Link
                 prefetch={false}
                 href='https://aswebdesign.com.au/'
                 target='_blank'
                 rel='noopener'
-                className='text-blue-400 hover:text-blue-500 duration-250'
+                className='text-accent hover:opacity-80 transition-opacity duration-150'
               >
                 AS Web Design
               </Link>
             </p>
           </div>
-          <div className='text-gray-600 text-xs uppercase tracking-wider text-center sm:text-right'>
+          <div className='text-text-muted text-xs uppercase tracking-wider text-center sm:text-right'>
             NOT AFFILIATED WITH VALVE CORPORATION
           </div>
         </div>
       </div>
-    </footer>
+    </motion.footer>
   )
 }
