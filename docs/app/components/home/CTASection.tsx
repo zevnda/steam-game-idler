@@ -38,7 +38,7 @@ export default function CTASection() {
       <div className='container mx-auto relative z-10 px-4 sm:px-6 md:px-8'>
         <motion.div
           ref={ref}
-          className='text-center max-w-3xl mx-auto'
+          className='text-center max-w-4xl mx-auto'
           variants={container}
           initial='hidden'
           animate={isInView ? 'show' : 'hidden'}
@@ -46,7 +46,7 @@ export default function CTASection() {
           <motion.h2
             id='cta-heading'
             variants={item}
-            className='text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-text-primary mb-6 leading-tight tracking-tight'
+            className='text-4xl sm:text-5xl md:text-6xl font-bold text-text-primary mb-6 leading-tight tracking-tight'
           >
             Ready to automate <span className='gradient-text'>your library?</span>
           </motion.h2>

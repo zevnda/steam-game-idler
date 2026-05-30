@@ -154,7 +154,7 @@ export default function StatsSection() {
             id='stats-heading'
             className='text-3xl sm:text-4xl md:text-5xl font-bold text-text-primary mb-4 leading-tight tracking-tight'
           >
-            Trusted by the <span className='gradient-text'>Steam community</span>
+            Backed by a <span className='gradient-text'>community</span>
           </h2>
           <p className='text-lg text-text-muted leading-relaxed'>
             Thousands of Steam users rely on SGI every day to automate their library.
