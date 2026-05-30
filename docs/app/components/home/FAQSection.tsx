@@ -1,15 +1,27 @@
 'use client'
 
 import { useRef, useState } from 'react'
+import { FiArrowUpRight } from 'react-icons/fi'
 import { TbChevronDown } from 'react-icons/tb'
 import { ease } from '@docs/lib/motion'
 import { AnimatePresence, motion, useInView } from 'motion/react'
+import Link from 'next/link'
 
 const faqData = [
   {
-    question: 'Do I need a Steam account to use it?',
+    question: 'Do I need a Steam account to use SGI?',
     answer:
-      'Yes, SGI connects to your existing Steam account. You authenticate through the Steam client — no passwords are ever entered into SGI itself.',
+      'Yes, you will need the Steam client installed, running, and signed into at least one Steam account.',
+  },
+  {
+    question: 'Do I need to give SGI my username or password?',
+    answer:
+      'No, SGI uses data provided by the Steam client in order to find your Steam accounts. No passwords are ever entered into SGI itself.',
+  },
+  {
+    question: 'What makes SGI different from other tools?',
+    answer:
+      'Instead of forcing you to manage separate tools for different tasks, SGI combines them into a single, modern desktop app with a clean, user-friendly interface, and no complex configuration files.',
   },
   {
     question: 'Which operating systems are supported?',
@@ -19,32 +31,27 @@ const faqData = [
   {
     question: 'Are automation tools safe to use?',
     answer:
-      'SGI uses official APIs and human-like unlock timing. As with any third-party tool, use it at your own discretion — our documentation covers best practices for minimising risk.',
+      'Historically, Steam does not ban accounts simply for using automation tools. SGI uses the official Steam API and SDK like many legitimate games do. As with any third-party tool, use it at your own discretion.',
   },
   {
-    question: 'How does card farming work?',
+    question: 'How does SGI farm trading cards?',
     answer:
-      'SGI launches games in a lightweight idle process that Steam recognises as playtime. Card drops accumulate at the same rate as normal gameplay — no Steam API tricks required.',
+      'SGI launches games in a lightweight idle process that Steam recognizes as a running game. Card drops accumulate at the same rate as they would during normal gameplay.',
+  },
+  {
+    question: 'How does SGI unlock achievements for games?',
+    answer:
+      "SGI uses the official Steamworks SDK to update a game's achievement states. This is the same method lots of legitimate games use internally to manager their own achievements.",
   },
   {
     question: 'How many games can I idle at once?',
     answer:
-      'You can idle up to 32 games simultaneously, which is the maximum Steam allows. SGI lets you configure the order and timing to match your preferences.',
-  },
-  {
-    question: 'How does achievement unlocking work?',
-    answer:
-      'SGI uses the official Steamworks SDK to write achievement state — the same method games use internally. The automated mode adds randomised delays between unlocks to mimic natural play.',
+      'You can idle up to 32 games simultaneously, which is the maximum Steam allows. SGI handles these limits for you, so you can focus on other things.',
   },
   {
     question: "Can I lock achievements I've already earned?",
     answer:
-      'Yes. You can lock any achievement you own, removing it from your profile. This is useful if you want to replay a game for the experience of earning achievements legitimately.',
-  },
-  {
-    question: 'How do I report a bug or request a feature?',
-    answer:
-      'Open an issue on our GitHub repository or join the Discord server. Community feedback directly shapes what gets built next.',
+      'Yes. You can lock any achievement you own, removing it from your profile. This is useful if you want to replay a game for the experience of earning those achievements again.',
   },
 ]
 
@@ -140,6 +147,22 @@ export default function FAQSection() {
               onToggle={() => setOpenItem(prev => (prev === question ? null : question))}
             />
           ))}
+        </motion.div>
+
+        <motion.div
+          className='flex justify-center mt-8'
+          initial={{ opacity: 0 }}
+          animate={bodyInView ? { opacity: 1 } : {}}
+          transition={{ duration: 0.6, ease, delay: 0.2 }}
+        >
+          <Link
+            prefetch={false}
+            href='/docs/faq'
+            className='btn-ghost px-3 py-1.5 text-xs gap-1 group'
+          >
+            View more FAQs
+            <FiArrowUpRight className='w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-150' />
+          </Link>
         </motion.div>
       </div>
     </section>

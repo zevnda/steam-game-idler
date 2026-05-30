@@ -18,7 +18,6 @@
   --color-text-primary: #f5f5f5;
   --color-text-muted: #a3a3a3;
   --color-accent: #00a3ff;
-  --color-icon: rgb(29, 29, 29);
 
   --radius-card: 12px;
   --radius-button: 6px;
@@ -26,9 +25,11 @@
 
 .dark {
   --color-fd-background: #000000;
-  --color-fd-card: #101010;
+  --color-fd-card: #0d0d0d;
   --color-fd-primary: #a5f84cff;
-  --color-fd-secondary: #151515;
+  --color-fd-secondary: #0d0d0d;
+  --color-fd-accent: #151515;
+  --color-fd-muted: #1d1d1d;
 }
 
 /* ─── Reusable component classes ─────────────────────────── */
@@ -300,6 +301,15 @@
 
   .testimonials-container:hover .testimonials-track {
     animation-play-state: paused;
+  }
+
+  @keyframes rainbow-border {
+    from {
+      --angle: 0deg;
+    }
+    to {
+      --angle: 360deg;
+    }
   }
 
   /* ── Gradient heading text ─────────────────────────────────── */

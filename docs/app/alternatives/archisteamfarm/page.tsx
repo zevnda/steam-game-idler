@@ -1,6 +1,8 @@
-import { FaArrowLeft, FaArrowRight } from 'react-icons/fa'
+import { FaArrowRight } from 'react-icons/fa'
 import { FiBook, FiCheck, FiDownload, FiX } from 'react-icons/fi'
 import { TbCards, TbShield, TbUsers } from 'react-icons/tb'
+import FooterSection from '@docs/components/home/FooterSection'
+import NavBar from '@docs/components/home/NavBar'
 import Link from 'next/link'
 
 export const metadata = {
@@ -90,213 +92,232 @@ function ComparisonIcon({ value }: { value: boolean | string }) {
     return (
       <div className='flex justify-center'>
         {value ? (
-          <FiCheck className='w-5 h-5 text-emerald-600' />
+          <FiCheck className='w-5 h-5 text-emerald-400' />
         ) : (
-          <FiX className='w-5 h-5 text-red-500' />
+          <FiX className='w-5 h-5 text-red-400' />
         )}
       </div>
     )
   }
-  return <span className='text-sm font-medium text-gray-700'>{value}</span>
+  return <span className='text-sm font-medium text-text-muted'>{value}</span>
 }
 
 export default function page() {
   return (
-    <div className='min-h-screen bg-linear-to-b from-white via-gray-50 to-white'>
-      {/* Hero Section */}
-      <section className='py-16 sm:py-20 md:py-24 relative overflow-hidden'>
-        {/* Go Back Button */}
-        <Link
-          prefetch={false}
-          href='/'
-          className='fixed top-6 left-6 z-50 inline-flex items-center px-4 py-2 bg-white/90 hover:bg-white border border-gray-200 rounded-lg text-gray-700 hover:text-gray-900 font-medium transition-all duration-200 shadow-sm hover:shadow-md'
-        >
-          <FaArrowLeft className='w-4 h-4 mr-2' />
-          Go Back
-        </Link>
+    <div className='min-h-screen bg-background'>
+      <NavBar />
+      <div className='relative'>
+        {/* Hero */}
+        <section className='pt-36 pb-24 sm:pt-44 sm:pb-32 relative overflow-hidden'>
+          <div
+            className='absolute inset-0 pointer-events-none'
+            style={{
+              backgroundImage:
+                'radial-gradient(circle at 2px 2px, rgba(255,255,255,0.055) 1px, transparent 0)',
+              backgroundSize: '24px 24px',
+              maskImage: 'radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 100%)',
+              WebkitMaskImage:
+                'radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 100%)',
+            }}
+          />
 
-        <div
-          className='absolute inset-0 opacity-[0.4]'
-          style={{
-            backgroundImage:
-              'radial-gradient(circle at 2px 2px, rgb(139 69 193) 1px, transparent 0)',
-            backgroundSize: '24px 24px',
-          }}
-        />
-        <div className='absolute inset-0 bg-linear-to-b from-white via-transparent to-white' />
+          <div className='container mx-auto relative z-10 px-4 sm:px-6 md:px-8'>
+            <div className='max-w-4xl mx-auto text-center'>
+              <div className='inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-blue-500/30 bg-blue-500/10 text-blue-300 text-sm font-medium mb-8'>
+                <TbCards className='w-4 h-4' />
+                Detailed Comparison
+              </div>
 
-        <div className='container mx-auto relative z-10 px-4 mt-10! md:mt-0! sm:px-6 md:px-8'>
-          <div className='max-w-4xl mx-auto text-center'>
-            <div className='inline-flex items-center px-4 py-2 bg-linear-to-r from-blue-200 to-purple-200 border border-blue-300 rounded-full text-blue-800 text-sm font-medium shadow-lg mb-6'>
-              <TbCards className='w-4 h-4 mr-2' />
-              Detailed Comparison
-            </div>
-
-            <h1 className='text-3xl sm:text-4xl md:text-5xl font-black text-gray-800 mb-6 leading-tight'>
-              ARCHISTEAMFARM
-              <span className='block'>VS</span>
-              <span className='block text-transparent bg-clip-text bg-linear-to-r from-blue-500 to-purple-500'>
-                STEAM GAME IDLER
-              </span>
-            </h1>
-
-            <p className='text-lg sm:text-xl text-gray-700 mb-8 leading-relaxed'>
-              Compare core features, usability, and capabilities of Steam Game Idler against
-              ArchiSteamFarm to make an informed choice for your Steam automation needs.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Detailed Comparison Table */}
-      <section className='py-16 relative'>
-        <div className='container mx-auto px-4 sm:px-6 md:px-8'>
-          <div className='max-w-6xl mx-auto'>
-            <h2 className='text-3xl sm:text-4xl font-black text-gray-800 mb-12 text-center'>
-              DETAILED FEATURE
-              <span className='block text-transparent bg-clip-text bg-linear-to-r from-blue-500 to-purple-500'>
-                COMPARISON
-              </span>
-            </h2>
-
-            <div className='space-y-8'>
-              {comparisonData.map(section => (
-                <div
-                  key={section.category}
-                  className='bg-white border-2 border-gray-200 rounded-2xl overflow-hidden shadow-lg'
+              <h1 className='text-4xl sm:text-5xl md:text-6xl font-bold leading-none tracking-tight mb-6'>
+                <span className='text-text-primary'>ARCHISTEAMFARM</span>
+                <span className='block text-text-muted'>VS</span>
+                <span
+                  className='block'
+                  style={{
+                    background: 'linear-gradient(135deg, #60a5fa, #a855f7)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                  }}
                 >
-                  <div className='bg-linear-to-r from-blue-500 to-purple-500 px-6 py-4'>
-                    <h3 className='text-xl font-bold text-white'>{section.category}</h3>
-                  </div>
+                  STEAM GAME IDLER
+                </span>
+              </h1>
 
-                  <div className='overflow-x-auto'>
-                    <table className='w-full'>
-                      <thead>
-                        <tr className='bg-gray-50'>
-                          <th className='text-left py-4 px-6 font-semibold text-gray-800 text-base'>
-                            Feature
-                          </th>
-                          <th className='text-center py-4 px-6 font-semibold text-purple-600 text-base'>
-                            Steam Game Idler
-                          </th>
-                          <th className='text-center py-4 px-6 font-semibold text-gray-600 text-base'>
-                            ArchiSteamFarm
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {section.features.map((feature, index) => (
-                          <tr
-                            key={feature.name}
-                            className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
-                          >
-                            <td className='py-4 px-6 font-medium text-gray-800'>{feature.name}</td>
-                            <td className='py-4 px-6 text-center'>
-                              <ComparisonIcon value={feature.steamGameIdler} />
-                            </td>
-                            <td className='py-4 px-6 text-center'>
-                              <ComparisonIcon value={feature.alt} />
-                            </td>
+              <p className='text-lg text-text-muted max-w-2xl mx-auto leading-relaxed'>
+                Compare core features, usability, and capabilities of Steam Game Idler against
+                ArchiSteamFarm to make an informed choice for your Steam automation needs.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <div className='section-divider' />
+
+        {/* Comparison Table */}
+        <section className='py-20 sm:py-24 relative'>
+          <div className='container mx-auto px-4 sm:px-6 md:px-8'>
+            <div className='max-w-5xl mx-auto'>
+              <div className='text-center mb-14'>
+                <h2 className='text-3xl sm:text-4xl md:text-5xl font-bold text-text-primary mb-4 leading-tight tracking-tight'>
+                  Detailed feature <span className='gradient-text'>comparison</span>
+                </h2>
+              </div>
+
+              <div className='space-y-6'>
+                {comparisonData.map(section => (
+                  <div key={section.category} className='card overflow-hidden'>
+                    <div
+                      className='px-6 py-4'
+                      style={{ borderBottom: '1px solid var(--color-border)' }}
+                    >
+                      <h3 className='text-base font-semibold text-text-primary'>
+                        {section.category}
+                      </h3>
+                    </div>
+
+                    <div className='overflow-x-auto'>
+                      <table className='w-full'>
+                        <thead>
+                          <tr style={{ borderBottom: '1px solid var(--color-border)' }}>
+                            <th
+                              className='text-left py-3 px-6 text-xs font-semibold text-text-muted uppercase tracking-wider'
+                              style={{ background: 'rgba(255,255,255,0.03)' }}
+                            >
+                              Feature
+                            </th>
+                            <th
+                              className='text-center py-3 px-6 text-xs font-semibold text-blue-400 uppercase tracking-wider'
+                              style={{ background: 'rgba(255,255,255,0.03)' }}
+                            >
+                              Steam Game Idler
+                            </th>
+                            <th
+                              className='text-center py-3 px-6 text-xs font-semibold text-text-muted uppercase tracking-wider'
+                              style={{ background: 'rgba(255,255,255,0.03)' }}
+                            >
+                              ArchiSteamFarm
+                            </th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                        </thead>
+                        <tbody>
+                          {section.features.map((feature, index) => (
+                            <tr
+                              key={feature.name}
+                              style={{
+                                background:
+                                  index % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.02)',
+                                borderBottom:
+                                  index < section.features.length - 1
+                                    ? '1px solid var(--color-border)'
+                                    : 'none',
+                              }}
+                            >
+                              <td className='py-3.5 px-6 text-sm font-medium text-text-primary'>
+                                {feature.name}
+                              </td>
+                              <td className='py-3.5 px-6 text-center'>
+                                <ComparisonIcon value={feature.steamGameIdler} />
+                              </td>
+                              <td className='py-3.5 px-6 text-center'>
+                                <ComparisonIcon value={feature.alt} />
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div className='section-divider' />
+
+        {/* Why Choose SGI */}
+        <section className='py-20 sm:py-24 relative'>
+          <div className='container mx-auto px-4 sm:px-6 md:px-8'>
+            <div className='max-w-5xl mx-auto'>
+              <div className='text-center mb-14'>
+                <h2 className='text-3xl sm:text-4xl md:text-5xl font-bold text-text-primary mb-4 leading-tight tracking-tight'>
+                  Why choose <span className='gradient-text'>Steam Game Idler?</span>
+                </h2>
+              </div>
+
+              <div className='grid sm:grid-cols-3 gap-4 mb-8'>
+                <div className='card p-6 text-center'>
+                  <TbUsers className='w-7 h-7 text-blue-400 mx-auto mb-4' />
+                  <h3 className='font-semibold text-text-primary mb-2'>User-Friendly</h3>
+                  <p className='text-sm text-text-muted leading-relaxed'>
+                    No complex configuration files or command line knowledge required
+                  </p>
                 </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Why Choose Steam Game Idler */}
-      <section className='py-16 relative'>
-        <div className='absolute inset-0 bg-linear-to-br from-purple-50 to-blue-50' />
-        <div className='container mx-auto relative z-10 px-4 sm:px-6 md:px-8'>
-          <div className='max-w-4xl mx-auto text-center'>
-            <h2 className='text-3xl sm:text-4xl font-black text-gray-800 mb-8'>
-              WHY CHOOSE
-              <span className='block text-transparent bg-clip-text bg-linear-to-r from-purple-500 to-pink-500'>
-                STEAM GAME IDLER?
-              </span>
-            </h2>
-
-            <div className='grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12'>
-              <div className='bg-white border-2 border-purple-200 rounded-xl p-6 text-center'>
-                <TbUsers className='w-8 h-8 text-purple-600 mx-auto mb-4' />
-                <h3 className='text-lg font-bold text-gray-800 mb-2'>User-Friendly</h3>
-                <p className='text-sm text-gray-600'>
-                  No complex configuration files or command line knowledge required
-                </p>
+                <div className='card p-6 text-center'>
+                  <TbCards className='w-7 h-7 text-blue-400 mx-auto mb-4' />
+                  <h3 className='font-semibold text-text-primary mb-2'>All-in-One</h3>
+                  <p className='text-sm text-text-muted leading-relaxed'>
+                    Card farming, achievements, and playtime boosting in one app
+                  </p>
+                </div>
+                <div className='card p-6 text-center'>
+                  <TbShield className='w-7 h-7 text-blue-400 mx-auto mb-4' />
+                  <h3 className='font-semibold text-text-primary mb-2'>Secure</h3>
+                  <p className='text-sm text-text-muted leading-relaxed'>
+                    Open source with transparent security practices
+                  </p>
+                </div>
               </div>
 
-              <div className='bg-white border-2 border-purple-200 rounded-xl p-6 text-center'>
-                <TbCards className='w-8 h-8 text-purple-600 mx-auto mb-4' />
-                <h3 className='text-lg font-bold text-gray-800 mb-2'>All-in-One</h3>
-                <p className='text-sm text-gray-600'>
-                  Card farming, achievements, and playtime boosting in one app
-                </p>
-              </div>
-
-              <div className='bg-white border-2 border-purple-200 rounded-xl p-6 text-center sm:col-span-2 lg:col-span-1'>
-                <TbShield className='w-8 h-8 text-purple-600 mx-auto mb-4' />
-                <h3 className='text-lg font-bold text-gray-800 mb-2'>Secure</h3>
-                <p className='text-sm text-gray-600'>
-                  Open source with transparent security practices
+              <div className='card p-8 text-center'>
+                <p className='text-text-muted leading-relaxed max-w-2xl mx-auto'>
+                  While ArchiSteamFarm excels for users managing multiple accounts, Steam Game Idler
+                  provides a more accessible and feature-rich experience for individual users who
+                  want comprehensive Steam automation without the complexity.
                 </p>
               </div>
             </div>
-
-            <p className='text-lg text-gray-700 mb-8'>
-              While ArchiSteamFarm excels for users managing multiple accounts, Steam Game Idler
-              provides a more accessible and feature-rich experience for individual users who want
-              comprehensive Steam automation without the complexity.
-            </p>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* CTA Section */}
-      <section className='py-16 relative overflow-hidden'>
-        <div className='absolute inset-0 bg-linear-to-br from-purple-600 to-blue-600' />
+        <div className='section-divider' />
 
-        <div className='container mx-auto relative z-10 px-4 sm:px-6 md:px-8'>
-          <div className='text-center max-w-3xl mx-auto'>
-            <h2 className='text-3xl sm:text-4xl font-black text-white mb-6'>
-              READY TO UPGRADE FROM
-              <span className='block text-transparent bg-clip-text bg-linear-to-r from-cyan-200 to-blue-200'>
-                ARCHISTEAMFARM?
-              </span>
-            </h2>
+        {/* CTA */}
+        <section className='py-24 sm:py-32 relative'>
+          <div className='container mx-auto relative z-10 px-4 sm:px-6 md:px-8'>
+            <div className='text-center max-w-2xl mx-auto'>
+              <h2 className='text-4xl sm:text-5xl md:text-6xl font-bold text-text-primary mb-6 leading-tight tracking-tight'>
+                Ready to upgrade from <span className='gradient-text'>ArchiSteamFarm?</span>
+              </h2>
+              <p className='text-text-muted text-lg mb-10'>
+                Experience the simplicity and power of Steam Game Idler. Download now and start
+                automating your Steam experience.
+              </p>
 
-            <p className='text-lg text-white/90 mb-8'>
-              Experience the simplicity and power of Steam Game Idler. Download now and start
-              automating your Steam experience.
-            </p>
-
-            <div className='flex flex-col sm:flex-row gap-4 justify-center'>
-              <Link
-                prefetch={false}
-                href='https://github.com/zevnda/steam-game-idler/releases/latest'
-                className='inline-flex items-center justify-center px-8 py-4 bg-white text-purple-700 font-bold rounded-xl hover:bg-gray-100 transition-colors duration-200 shadow-lg'
-              >
-                <FiDownload className='w-5 h-5 mr-3' />
-                DOWNLOAD NOW
-                <FaArrowRight className='w-4 h-4 ml-3' />
-              </Link>
-
-              <Link
-                prefetch={false}
-                href='/docs'
-                className='inline-flex items-center justify-center px-8 py-4 bg-white/20 text-white font-bold rounded-xl hover:bg-white/30 transition-colors duration-200'
-              >
-                <FiBook className='w-5 h-5 mr-3' />
-                VIEW DOCUMENTATION
-              </Link>
+              <div className='flex flex-col sm:flex-row gap-4 justify-center'>
+                <Link
+                  prefetch={false}
+                  href='https://github.com/zevnda/steam-game-idler/releases/latest'
+                  className='btn-download'
+                >
+                  <FiDownload className='w-4 h-4' />
+                  Download Now
+                  <FaArrowRight className='w-4 h-4' />
+                </Link>
+                <Link prefetch={false} href='/docs' className='btn-ghost px-8 py-3.5'>
+                  <FiBook className='w-4 h-4' />
+                  Documentation
+                </Link>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+
+        <div className='section-divider' />
+
+        <FooterSection />
+      </div>
     </div>
   )
 }

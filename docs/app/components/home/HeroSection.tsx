@@ -50,7 +50,7 @@ function RainbowBadge({
             hsl(315,36%,50%),
             hsl(360,36%,50%)
           )`,
-          animation: 'rainbow-border 8s linear infinite',
+          animation: 'rainbow-border 4s linear infinite',
         }}
       />
       {/* Inner black mask — fades on hover to reveal the rainbow as a low-opacity fill */}
