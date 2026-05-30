@@ -314,7 +314,7 @@
 
   /* ── Gradient heading text ─────────────────────────────────── */
   .gradient-text {
-    background: linear-gradient(135deg, #f5f5f5 20%, #555);
+    background: linear-gradient(135deg, #f5f5f5 20%, #909090);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;

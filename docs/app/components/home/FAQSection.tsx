@@ -11,7 +11,7 @@ const faqData = [
   {
     question: 'Do I need a Steam account to use SGI?',
     answer:
-      'Yes, you will need the Steam client installed, running, and signed into at least one Steam account.',
+      'Yes, SGI uses the official Steam API and SDK which means you will need the Steam client installed, running, and signed in to at least one Steam account.',
   },
   {
     question: 'Do I need to give SGI my username or password?',
@@ -31,7 +31,7 @@ const faqData = [
   {
     question: 'Are automation tools safe to use?',
     answer:
-      'Historically, Steam does not ban accounts simply for using automation tools. SGI uses the official Steam API and SDK like many legitimate games do. As with any third-party tool, use it at your own discretion.',
+      'Historically, Steam does not ban accounts simply for using automation tools. SGI uses the official Steam API and SDK like many legitimate games do. Use it at your own discretion.',
   },
   {
     question: 'How does SGI farm trading cards?',
@@ -115,14 +115,14 @@ export default function FAQSection() {
       <div className='container mx-auto px-4 sm:px-6 md:px-8 max-w-3xl'>
         <motion.header
           ref={headerRef}
-          className='text-center mb-12 sm:mb-16'
+          className='text-center mb-16 sm:mb-20'
           initial={{ opacity: 0, y: 24 }}
           animate={headerInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, ease }}
         >
           <h2
             id='faq-heading'
-            className='text-3xl sm:text-4xl md:text-5xl font-bold text-text-primary mb-6 leading-tight tracking-tight'
+            className='text-3xl sm:text-4xl md:text-5xl text-text-primary mb-6 leading-tight tracking-tight'
           >
             Common <span className='gradient-text'>questions</span>
           </h2>

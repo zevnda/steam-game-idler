@@ -51,7 +51,7 @@ export default function ComparisonSection() {
         >
           <h2
             id='comparison-heading'
-            className='text-3xl sm:text-4xl md:text-5xl font-bold text-text-primary mb-6 leading-tight tracking-tight'
+            className='text-3xl sm:text-4xl md:text-5xl text-text-primary mb-6 leading-tight tracking-tight'
           >
             How we <span className='gradient-text'>compare</span>
           </h2>

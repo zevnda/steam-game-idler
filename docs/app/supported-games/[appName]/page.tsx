@@ -100,7 +100,8 @@ function formatGameName(appName: string) {
     .join(' ')
 }
 
-function getRandomContent() {
+function getRandomContent(appName: string) {
+  const hash = [...appName].reduce((acc, ch) => acc + ch.charCodeAt(0), 0)
   const introTexts = [
     'Looking to maximize your {gameName} experience on Steam? Our Steam Game Idler is the perfect solution for collecting trading cards, farming achievements, and increasing your playtime in {gameName} without the grind. Start earning rewards from {gameName} today!',
     'Transform your {gameName} gaming experience with our advanced Steam Game Idler! Effortlessly collect trading cards, unlock achievements, and boost your Steam profile while {gameName} runs in the background. Get started with {gameName} idling now!',
@@ -190,19 +191,49 @@ function getRandomContent() {
   ]
 
   return {
-    introText: introTexts[Math.floor(Math.random() * introTexts.length)],
-    whyUseText: whyUseTexts[Math.floor(Math.random() * whyUseTexts.length)],
-    cardFeature: features[Math.floor(Math.random() * features.length)],
-    achievementFeature: achievementFeatures[Math.floor(Math.random() * achievementFeatures.length)],
-    howItWorksText: howItWorksTexts[Math.floor(Math.random() * howItWorksTexts.length)],
-    cardValueText: cardValueTexts[Math.floor(Math.random() * cardValueTexts.length)],
+    introText: introTexts[hash % introTexts.length],
+    whyUseText: whyUseTexts[(hash + 1) % whyUseTexts.length],
+    cardFeature: features[(hash + 2) % features.length],
+    achievementFeature: achievementFeatures[(hash + 3) % achievementFeatures.length],
+    howItWorksText: howItWorksTexts[(hash + 4) % howItWorksTexts.length],
+    cardValueText: cardValueTexts[(hash + 5) % cardValueTexts.length],
+  }
+}
+
+export async function generateMetadata(props: PageProps) {
+  const params = await props.params
+  const gameName = formatGameName(params.appName)
+
+  return {
+    title: `${gameName} Steam Trading Cards`,
+    description: `Automatically farm Steam trading cards for ${gameName} with Steam Game Idler. Idle ${gameName} to earn cards and boost playtime.`,
+    keywords: [
+      `${gameName} steam cards`,
+      `${gameName} card farming`,
+      `${gameName} trading cards`,
+      `${gameName} idle steam`,
+      `farm ${gameName} cards`,
+    ],
+    openGraph: {
+      url: `https://steamgameidler.com/supported-games/${params.appName}`,
+      title: `${gameName} Steam Trading Cards | Steam Game Idler`,
+      description: `Automatically farm Steam trading cards for ${gameName} with Steam Game Idler.`,
+      images: 'https://steamgameidler.com/og-image.png',
+      type: 'website',
+    },
+    twitter: {
+      title: `${gameName} Steam Trading Cards | Steam Game Idler`,
+      description: `Automatically farm Steam trading cards for ${gameName} with Steam Game Idler.`,
+      image: 'https://steamgameidler.com/og-image.png',
+    },
+    alternates: { canonical: `/supported-games/${params.appName}` },
   }
 }
 
 export default async function AdPage({ params }: PageProps) {
   const { appName } = await params
   const gameName = formatGameName(appName)
-  const randomContent = getRandomContent()
+  const randomContent = getRandomContent(appName)
 
   return (
     <div className='max-h-screen bg-[#121316] overflow-hidden relative'>

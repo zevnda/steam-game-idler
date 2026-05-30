@@ -69,13 +69,14 @@ export default function FeaturesSection() {
         >
           <h2
             id='features-heading'
-            className='text-3xl sm:text-4xl md:text-5xl font-bold text-text-primary mb-6 leading-tight tracking-tight'
+            className='text-3xl sm:text-4xl md:text-5xl text-text-primary mb-6 leading-tight tracking-tight'
           >
-            Everything you <span className='gradient-text'>need</span>
+            Everything you <span className='gradient-text'>need,</span> <br />
+            in a <span className='gradient-text'>single app</span>
           </h2>
           <p className='text-lg text-text-muted leading-relaxed'>
-            SGI combines the best features from all the popular Steam tools into a single,
-            user-friendly app — actively maintained and completely free.
+            Steam Game Idler combines the best features from all the popular Steam tools into a
+            single, user-friendly app — actively maintained and completely free.
           </p>
         </motion.header>
 

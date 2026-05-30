@@ -41,9 +41,9 @@ export default function NavBar() {
 
         {/* Nav links */}
         <nav className='hidden md:flex items-center gap-0.5'>
-          <a href='#features' className={linkClass}>
+          <Link prefetch={false} href='/#features' className={linkClass}>
             Features
-          </a>
+          </Link>
           <Link prefetch={false} href='/changelog' className={linkClass}>
             Changelog
           </Link>
@@ -63,7 +63,7 @@ export default function NavBar() {
           style={{ padding: '0.5rem 1.25rem', fontSize: '0.8125rem' }}
         >
           <FaWindows className='w-3.5 h-3.5' />
-          Download Free
+          Download
         </Link>
       </div>
     </header>

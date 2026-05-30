@@ -17,7 +17,7 @@ import NavBar from '@docs/components/home/NavBar'
 import Link from 'next/link'
 
 export const metadata = {
-  title: 'Steam Game Idler PRO',
+  title: { absolute: 'Steam Game Idler PRO' },
   description:
     'Upgrade to Steam Game Idler PRO. Remove ads, unlock exclusive themes, automate Steam credentials, free game redemption, and more. Starting at $2/month.',
   keywords: [
@@ -33,7 +33,14 @@ export const metadata = {
     title: 'Steam Game Idler PRO',
     description:
       'Upgrade to Steam Game Idler PRO. Remove ads, unlock exclusive themes, automate Steam credentials, free game redemption, and more.',
+    images: 'https://steamgameidler.com/og-image.png',
     type: 'website',
+  },
+  twitter: {
+    title: 'Steam Game Idler PRO',
+    description:
+      'Upgrade to Steam Game Idler PRO. Remove ads, unlock exclusive themes, automate Steam credentials, free game redemption, and more.',
+    image: 'https://steamgameidler.com/og-image.png',
   },
   alternates: {
     canonical: '/pro',
@@ -143,7 +150,7 @@ export default async function ProPage() {
             <div className='max-w-3xl mx-auto text-center'>
               <div className='inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-300 text-sm font-medium mb-8'>
                 <TbSparkles className='w-4 h-4' />
-                Support SGI &amp; unlock more
+                Support Steam Game Idler &amp; unlock more
               </div>
 
               <h1 className='text-5xl sm:text-6xl md:text-7xl font-bold leading-none tracking-tight mb-6'>
@@ -178,7 +185,7 @@ export default async function ProPage() {
           <div className='container mx-auto px-4 sm:px-6 md:px-8'>
             <div className='max-w-5xl mx-auto'>
               <div className='text-center mb-14'>
-                <h2 className='text-3xl sm:text-4xl md:text-5xl font-bold text-text-primary mb-4 leading-tight tracking-tight'>
+                <h2 className='text-3xl sm:text-4xl md:text-5xl text-text-primary mb-4 leading-tight tracking-tight'>
                   Choose your <span className='gradient-text'>tier</span>
                 </h2>
                 <p className='text-text-muted'>Unlock the benefits that matter to you.</p>
@@ -287,7 +294,7 @@ export default async function ProPage() {
           <div className='container mx-auto px-4 sm:px-6 md:px-8'>
             <div className='max-w-5xl mx-auto'>
               <div className='text-center mb-14'>
-                <h2 className='text-3xl sm:text-4xl md:text-5xl font-bold text-text-primary mb-4 leading-tight tracking-tight'>
+                <h2 className='text-3xl sm:text-4xl md:text-5xl text-text-primary mb-4 leading-tight tracking-tight'>
                   Everything you <span className='gradient-text'>get</span>
                 </h2>
                 <p className='text-text-muted'>A closer look at every benefit included with PRO.</p>
@@ -325,12 +332,12 @@ export default async function ProPage() {
           <div className='container mx-auto px-4 sm:px-6 md:px-8'>
             <div className='max-w-5xl mx-auto'>
               <div className='text-center mb-14'>
-                <h2 className='text-3xl sm:text-4xl md:text-5xl font-bold text-text-primary mb-4 leading-tight tracking-tight'>
+                <h2 className='text-3xl sm:text-4xl md:text-5xl text-text-primary mb-4 leading-tight tracking-tight'>
                   Why support <span className='gradient-text'>Steam Game Idler?</span>
                 </h2>
                 <p className='text-text-muted max-w-2xl mx-auto'>
                   SGI is a solo passion project built entirely in spare time. It&apos;s always been
-                  free and always will be — but keeping it running and improving takes real time and
+                  free and always will be, but keeping it running and improving takes real time and
                   money. PRO subscribers make that possible.
                 </p>
               </div>
@@ -365,7 +372,7 @@ export default async function ProPage() {
               <div className='card p-8 text-center' style={{ borderColor: 'rgba(168,85,247,0.2)' }}>
                 <p className='text-text-muted leading-relaxed max-w-2xl mx-auto'>
                   SGI has always been free because it should be. But if you get value from it, PRO
-                  is the best way to say thanks — and you get genuinely useful extras in return. No
+                  is the best way to say thanks, and you get genuinely useful extras in return. No
                   lock-ins, no paywalls on core features. Just an honest way to support something
                   you use.
                 </p>
@@ -380,7 +387,7 @@ export default async function ProPage() {
         <section className='py-24 sm:py-32 relative'>
           <div className='container mx-auto relative z-10 px-4 sm:px-6 md:px-8'>
             <div className='text-center max-w-2xl mx-auto'>
-              <h2 className='text-4xl sm:text-5xl md:text-6xl font-bold text-text-primary mb-6 leading-tight tracking-tight'>
+              <h2 className='text-4xl sm:text-5xl md:text-6xl text-text-primary mb-6 leading-tight tracking-tight'>
                 Ready to go <span className='gradient-text'>PRO?</span>
               </h2>
               <p className='text-text-muted text-lg mb-10'>
@@ -393,7 +400,11 @@ export default async function ProPage() {
                   Casual — ${priceData.tierOne.price}/mo
                   <FaArrowRight className='w-4 h-4' />
                 </a>
-                <a href={priceData.tierTwo.url} className='btn-ghost px-8 py-3.5 text-base'>
+                <a
+                  href={priceData.tierTwo.url}
+                  className='btn-primary px-8 py-3.5 text-base'
+                  style={{ background: 'linear-gradient(135deg, #a855f7, #6366f1)' }}
+                >
                   Gamer — ${priceData.tierTwo.price}/mo
                   <FaArrowRight className='w-4 h-4' />
                 </a>

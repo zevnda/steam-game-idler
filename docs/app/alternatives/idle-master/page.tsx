@@ -87,9 +87,29 @@ function ComparisonIcon({ value }: { value: boolean | string }) {
   return <span className='text-sm font-medium text-text-muted'>{value}</span>
 }
 
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  'headline': 'Idle Master Feature Comparison | Steam Game Idler',
+  'description':
+    'See why Steam Game Idler is the best alternative to Idle Master for Steam automation. Compare features like card farming, achievement management, and user experience',
+  'url': 'https://steamgameidler.com/alternatives/idle-master',
+  'image': 'https://steamgameidler.com/im-og-image.png',
+  'author': { '@type': 'Person', 'name': 'zevnda', 'url': 'https://github.com/zevnda' },
+  'publisher': {
+    '@type': 'Organization',
+    'name': 'Steam Game Idler',
+    'url': 'https://steamgameidler.com',
+  },
+}
+
 export default function page() {
   return (
     <div className='min-h-screen bg-background'>
+      <script
+        type='application/ld+json'
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
       <NavBar />
       <div className='relative'>
         {/* Hero */}
@@ -144,7 +164,7 @@ export default function page() {
           <div className='container mx-auto px-4 sm:px-6 md:px-8'>
             <div className='max-w-5xl mx-auto'>
               <div className='text-center mb-14'>
-                <h2 className='text-3xl sm:text-4xl md:text-5xl font-bold text-text-primary mb-4 leading-tight tracking-tight'>
+                <h2 className='text-3xl sm:text-4xl md:text-5xl text-text-primary mb-4 leading-tight tracking-tight'>
                   Detailed feature <span className='gradient-text'>comparison</span>
                 </h2>
               </div>
@@ -221,12 +241,42 @@ export default function page() {
 
         <div className='section-divider' />
 
+        {/* Narrative */}
+        <section className='py-20 sm:py-24 relative'>
+          <div className='container mx-auto px-4 sm:px-6 md:px-8'>
+            <div className='max-w-3xl mx-auto'>
+              <h2 className='text-2xl sm:text-3xl font-bold text-text-primary mb-6 leading-tight tracking-tight'>
+                How does Steam Game Idler compare to Idle Master?
+              </h2>
+              <p className='text-text-muted leading-relaxed mb-4'>
+                Idle Master did one thing well: it ran your games in the background to trigger Steam
+                card drops. For a long time it was the go-to tool for that, and it worked. However,
+                it hasn&apos;t seen active development for a number of years, and its feature set
+                was always limited to card farming alone — no achievements, no inventory tools, no
+                playtime management.
+              </p>
+              <p className='text-text-muted leading-relaxed mb-4'>
+                Steam Game Idler covers the same card farming ground with an up-to-date codebase,
+                and extends it significantly. Achievement management, automated unlocking, inventory
+                selling, and playtime boosting are all built in, so there&apos;s no need to run
+                multiple tools alongside each other.
+              </p>
+              <p className='text-text-muted leading-relaxed'>
+                If card farming was the main thing you used Idle Master for, Steam Game Idler does
+                the same job and gives you a lot more to work with.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <div className='section-divider' />
+
         {/* Why Choose SGI */}
         <section className='py-20 sm:py-24 relative'>
           <div className='container mx-auto px-4 sm:px-6 md:px-8'>
             <div className='max-w-5xl mx-auto'>
               <div className='text-center mb-14'>
-                <h2 className='text-3xl sm:text-4xl md:text-5xl font-bold text-text-primary mb-4 leading-tight tracking-tight'>
+                <h2 className='text-3xl sm:text-4xl md:text-5xl text-text-primary mb-4 leading-tight tracking-tight'>
                   Why choose <span className='gradient-text'>Steam Game Idler?</span>
                 </h2>
               </div>
@@ -272,7 +322,7 @@ export default function page() {
         <section className='py-24 sm:py-32 relative'>
           <div className='container mx-auto relative z-10 px-4 sm:px-6 md:px-8'>
             <div className='text-center max-w-2xl mx-auto'>
-              <h2 className='text-4xl sm:text-5xl md:text-6xl font-bold text-text-primary mb-6 leading-tight tracking-tight'>
+              <h2 className='text-4xl sm:text-5xl md:text-6xl text-text-primary mb-6 leading-tight tracking-tight'>
                 Ready to upgrade from <span className='gradient-text'>Idle Master?</span>
               </h2>
               <p className='text-text-muted text-lg mb-10'>

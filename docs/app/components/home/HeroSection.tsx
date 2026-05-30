@@ -185,7 +185,7 @@ export default function HeroSection() {
       </div>
 
       {/* Main content — left half */}
-      <div className='container mx-auto relative z-10 px-4 md:px-6 lg:px-8'>
+      <div className='container mx-auto relative z-10 px-4 sm:px-6 md:px-8'>
         <div className='min-h-screen py-16 sm:py-20 md:py-24 flex items-center'>
           <motion.div
             className='w-full lg:max-w-[50%] space-y-7 text-center lg:text-left'
@@ -228,7 +228,9 @@ export default function HeroSection() {
               className='text-lg text-text-muted max-w-lg leading-relaxed mx-auto lg:mx-0'
             >
               Automate your Steam library. Farm trading cards, manage achievements, and boost
-              playtime — all from one free, open-source desktop app.
+              playtime — all from one free, open-source desktop app. Trusted by over 100,000 Steam
+              users as a modern alternative to ArchiSteamFarm, Steam Achievement Manager, and Idle
+              Master.
             </motion.p>
 
             {/* Buttons */}
