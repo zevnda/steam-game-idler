@@ -74,7 +74,7 @@ export default function ChangelogClient({ children, totalPosts }: ChangelogClien
       {/* Loading indicator */}
       {visibleCount < totalPosts && (
         <div className='text-center py-8'>
-          <p className='text-gray-400 text-sm'>Loading more changelogs...</p>
+          <p className='text-text-muted text-sm'>Loading more changelogs...</p>
         </div>
       )}
     </>

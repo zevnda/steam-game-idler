@@ -152,7 +152,7 @@ export default function StatsSection() {
         >
           <h2
             id='stats-heading'
-            className='text-3xl sm:text-4xl md:text-5xl font-bold text-text-primary mb-4 leading-tight tracking-tight'
+            className='text-3xl sm:text-4xl md:text-5xl text-text-primary mb-6 leading-tight tracking-tight'
           >
             Backed by a <span className='gradient-text'>community</span>
           </h2>

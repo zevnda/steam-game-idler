@@ -32,7 +32,7 @@ export default function CTASection() {
 
   return (
     <section
-      className='py-24 sm:py-32 lg:py-40 relative overflow-hidden'
+      className='py-20 sm:py-24 lg:py-32 relative overflow-hidden'
       aria-labelledby='cta-heading'
     >
       <div className='container mx-auto relative z-10 px-4 sm:px-6 md:px-8'>
@@ -46,15 +46,12 @@ export default function CTASection() {
           <motion.h2
             id='cta-heading'
             variants={item}
-            className='text-4xl sm:text-5xl md:text-6xl font-bold text-text-primary mb-6 leading-tight tracking-tight'
+            className='text-4xl sm:text-5xl md:text-6xl text-text-primary mb-6 leading-tight tracking-tight'
           >
             Ready to automate <span className='gradient-text'>your library?</span>
           </motion.h2>
 
-          <motion.p
-            variants={item}
-            className='text-base sm:text-lg text-text-muted mb-10 leading-relaxed'
-          >
+          <motion.p variants={item} className='text-lg text-text-muted mb-10 leading-relaxed'>
             Download Steam Game Idler and get started within minutes. No sign-up required.
           </motion.p>
 

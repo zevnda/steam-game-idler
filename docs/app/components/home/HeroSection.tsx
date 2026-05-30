@@ -185,7 +185,7 @@ export default function HeroSection() {
       </div>
 
       {/* Main content — left half */}
-      <div className='container mx-auto relative z-10 px-4 md:px-6 lg:px-8'>
+      <div className='container mx-auto relative z-10 px-4 sm:px-6 md:px-8'>
         <div className='min-h-screen py-16 sm:py-20 md:py-24 flex items-center'>
           <motion.div
             className='w-full lg:max-w-[50%] space-y-7 text-center lg:text-left'

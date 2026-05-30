@@ -189,10 +189,10 @@ const trustItem = {
 
 export default function SecuritySection() {
   const leftRef = useRef<HTMLDivElement>(null)
-  const leftInView = useInView(leftRef, { once: true, margin: '-80px' })
+  const leftInView = useInView(leftRef, { once: true, margin: '-60px' })
 
   const rightRef = useRef<HTMLDivElement>(null)
-  const rightInView = useInView(rightRef, { once: true, margin: '-80px' })
+  const rightInView = useInView(rightRef, { once: true, margin: '-60px' })
 
   return (
     <section
@@ -212,7 +212,7 @@ export default function SecuritySection() {
             <motion.h2
               id='security-heading'
               variants={leftItem}
-              className='text-3xl sm:text-4xl md:text-5xl font-bold text-text-primary mb-6 leading-tight tracking-tight'
+              className='text-3xl sm:text-4xl md:text-5xl text-text-primary mb-6 leading-tight tracking-tight'
             >
               Built with <span className='gradient-text'>transparency</span>
             </motion.h2>

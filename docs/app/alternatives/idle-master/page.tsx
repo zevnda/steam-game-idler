@@ -144,7 +144,7 @@ export default function page() {
           <div className='container mx-auto px-4 sm:px-6 md:px-8'>
             <div className='max-w-5xl mx-auto'>
               <div className='text-center mb-14'>
-                <h2 className='text-3xl sm:text-4xl md:text-5xl font-bold text-text-primary mb-4 leading-tight tracking-tight'>
+                <h2 className='text-3xl sm:text-4xl md:text-5xl text-text-primary mb-4 leading-tight tracking-tight'>
                   Detailed feature <span className='gradient-text'>comparison</span>
                 </h2>
               </div>
@@ -226,7 +226,7 @@ export default function page() {
           <div className='container mx-auto px-4 sm:px-6 md:px-8'>
             <div className='max-w-5xl mx-auto'>
               <div className='text-center mb-14'>
-                <h2 className='text-3xl sm:text-4xl md:text-5xl font-bold text-text-primary mb-4 leading-tight tracking-tight'>
+                <h2 className='text-3xl sm:text-4xl md:text-5xl text-text-primary mb-4 leading-tight tracking-tight'>
                   Why choose <span className='gradient-text'>Steam Game Idler?</span>
                 </h2>
               </div>
@@ -272,7 +272,7 @@ export default function page() {
         <section className='py-24 sm:py-32 relative'>
           <div className='container mx-auto relative z-10 px-4 sm:px-6 md:px-8'>
             <div className='text-center max-w-2xl mx-auto'>
-              <h2 className='text-4xl sm:text-5xl md:text-6xl font-bold text-text-primary mb-6 leading-tight tracking-tight'>
+              <h2 className='text-4xl sm:text-5xl md:text-6xl text-text-primary mb-6 leading-tight tracking-tight'>
                 Ready to upgrade from <span className='gradient-text'>Idle Master?</span>
               </h2>
               <p className='text-text-muted text-lg mb-10'>
