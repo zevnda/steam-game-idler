@@ -243,7 +243,7 @@ export default function page() {
         {/* Narrative */}
         <section className='py-20 sm:py-24 relative'>
           <div className='container mx-auto px-4 sm:px-6 md:px-8'>
-            <div className='max-w-3xl mx-auto'>
+            <div className='max-w-3xl mx-auto text-center'>
               <h2 className='text-2xl sm:text-3xl font-bold text-text-primary mb-6 leading-tight tracking-tight'>
                 How does Steam Game Idler compare to Steam Achievement Manager?
               </h2>
