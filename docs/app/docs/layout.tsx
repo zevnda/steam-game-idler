@@ -39,7 +39,7 @@ export default function Layout({ children }: LayoutProps) {
         title: (
           <>
             <Image src='/logo.svg' alt='Steam Game Idler' width={24} height={24} />
-            <span className=''>Steam Game Idler</span>
+            <span className='font-bold tracking-tight'>Steam Game Idler</span>
           </>
         ),
       }}

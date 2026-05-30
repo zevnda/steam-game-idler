@@ -99,7 +99,7 @@ export default function StatsSection() {
       value: <Counter target={100} suffix='K+' />,
       label: 'Downloads',
       description: 'Active installations worldwide',
-      icon: <FiDownload className='w-4 h-4' />,
+      icon: <FiDownload />,
       accent: 'bg-sky-400/70',
       iconColor: 'text-sky-400',
     },
@@ -107,7 +107,7 @@ export default function StatsSection() {
       value: <Counter target={150} suffix='K+' />,
       label: 'Supported Games',
       description: 'Compatible with your entire library',
-      icon: <FiGlobe className='w-4 h-4' />,
+      icon: <FiGlobe />,
       accent: 'bg-teal-400/70',
       iconColor: 'text-teal-400',
     },
@@ -120,7 +120,7 @@ export default function StatsSection() {
         ),
       label: 'GitHub Stars',
       description: 'Community-backed open source project',
-      icon: <FiStar className='w-4 h-4' />,
+      icon: <FiStar />,
       accent: 'bg-amber-400/70',
       iconColor: 'text-amber-400',
     },
@@ -128,7 +128,7 @@ export default function StatsSection() {
       value: <Counter target={100} suffix='%' />,
       label: 'Open Source',
       description: 'No hidden code, no secrets',
-      icon: <TbCode className='w-4 h-4' />,
+      icon: <TbCode />,
       accent: 'bg-violet-400/70',
       iconColor: 'text-violet-400',
     },
@@ -157,7 +157,7 @@ export default function StatsSection() {
             Trusted by the <span className='gradient-text'>Steam community</span>
           </h2>
           <p className='text-lg text-text-muted leading-relaxed'>
-            Hundreds of thousands of Steam users rely on SGI every day to automate their library.
+            Thousands of Steam users rely on SGI every day to automate their library.
           </p>
         </motion.div>
 
@@ -173,14 +173,14 @@ export default function StatsSection() {
               <div className='relative h-full rounded-(--radius-card) bg-surface border border-white/6 overflow-hidden p-4 sm:p-6 lg:p-8'>
                 <div className={`absolute inset-x-0 top-0 h-0.5 ${stat.accent}`} />
 
-                <div className='flex items-end justify-between mb-3'>
+                <div className='flex items-center justify-between mb-3'>
                   <div
                     className='text-2xl sm:text-3xl lg:text-4xl font-bold text-text-primary tabular-nums leading-none'
                     aria-label={`${stat.label} statistic`}
                   >
                     {stat.value}
                   </div>
-                  <div className={stat.iconColor}>{stat.icon}</div>
+                  <div className={`${stat.iconColor} text-xl`}>{stat.icon}</div>
                 </div>
 
                 <div className='text-xs text-text-muted uppercase tracking-widest font-medium mb-3'>

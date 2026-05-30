@@ -57,7 +57,7 @@ export default function FooterSection() {
           </div>
 
           {/* Links */}
-          <div className='lg:col-span-2 grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-12'>
+          <div className='lg:col-span-2 grid grid-cols-2 sm:grid-cols-3 gap-8 sm:gap-12'>
             <nav aria-labelledby='resources-heading'>
               <h2
                 id='resources-heading'

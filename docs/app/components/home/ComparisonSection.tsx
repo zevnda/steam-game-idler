@@ -4,12 +4,13 @@ import { useRef } from 'react'
 import { FiCheck, FiX } from 'react-icons/fi'
 import { ease } from '@docs/lib/motion'
 import { motion, useInView } from 'motion/react'
+import Link from 'next/link'
 
 const rows = [
   { feature: 'Modern GUI', sgi: true, asf: false, sam: false, im: false },
   { feature: 'Trading Card Farming', sgi: true, asf: true, sam: false, im: true },
   { feature: 'Achievement Management', sgi: true, asf: false, sam: true, im: false },
-  { feature: 'Automated Achievement Unlocker', sgi: true, asf: false, sam: false, im: false },
+  { feature: 'Achievement Unlocker', sgi: true, asf: false, sam: false, im: false },
   { feature: 'Playtime Boosting', sgi: true, asf: true, sam: false, im: false },
   { feature: 'Inventory Manager', sgi: true, asf: false, sam: false, im: false },
   { feature: 'Marketplace Integration', sgi: true, asf: false, sam: false, im: false },
@@ -20,10 +21,15 @@ const rows = [
 ]
 
 const tools = [
-  { short: 'SGI', full: 'Steam Game Idler', highlight: true },
-  { short: 'ASF', full: 'ArchiSteamFarm', highlight: false },
-  { short: 'SAM', full: 'Achievement Manager', highlight: false },
-  { short: 'IM', full: 'Idle Master', highlight: false },
+  { short: 'SGI', full: 'Steam Game Idler', highlight: true, href: null },
+  { short: 'ASF', full: 'ArchiSteamFarm', highlight: false, href: '/alternatives/archisteamfarm' },
+  {
+    short: 'SAM',
+    full: 'Achievement Manager',
+    highlight: false,
+    href: '/alternatives/steam-achievement-manager',
+  },
+  { short: 'IM', full: 'Idle Master', highlight: false, href: '/alternatives/idle-master' },
 ]
 
 export default function ComparisonSection() {
@@ -81,17 +87,27 @@ export default function ComparisonSection() {
                   style={
                     i === 0
                       ? {
-                          background: 'rgba(255,255,255,0.05)',
-                          borderBottom: '2px solid rgba(255,255,255,0.2)',
+                          background: 'rgba(0,163,255,0.08)',
+                          borderBottom: '2px solid var(--color-accent)',
                         }
                       : {}
                   }
                 >
-                  <span
-                    className={`text-xs font-bold ${tool.highlight ? 'text-text-primary' : 'text-text-muted'}`}
-                  >
-                    {tool.short}
-                  </span>
+                  {tool.href ? (
+                    <Link
+                      prefetch={false}
+                      href={tool.href}
+                      className={`text-xs font-bold hover:opacity-70 transition-opacity duration-150 ${tool.highlight ? 'gradient-text' : 'text-text-muted'}`}
+                    >
+                      {tool.short}
+                    </Link>
+                  ) : (
+                    <span
+                      className={`text-xs font-bold ${tool.highlight ? 'gradient-text' : 'text-text-muted'}`}
+                    >
+                      {tool.short}
+                    </span>
+                  )}
                 </div>
               ))}
             </div>
@@ -146,27 +162,48 @@ export default function ComparisonSection() {
               }}
             >
               <div className='px-4 py-4' />
-              {tools.map(tool => (
-                <div
-                  key={tool.short}
-                  className='px-3 py-4 text-center'
-                  style={
-                    tool.highlight
-                      ? {
-                          background: 'rgba(255,255,255,0.05)',
-                          borderBottom: '2px solid rgba(255,255,255,0.2)',
-                        }
-                      : {}
-                  }
-                >
+              {tools.map(tool => {
+                const inner = (
+                  <>
+                    <div
+                      className={`text-sm font-bold tracking-tight ${tool.highlight ? 'gradient-text' : 'text-text-muted'}`}
+                    >
+                      {tool.short}
+                    </div>
+                    <div
+                      className={`text-xs mt-0.5 leading-tight ${tool.highlight ? 'text-text-primary' : 'text-text-muted'}`}
+                    >
+                      {tool.full}
+                    </div>
+                  </>
+                )
+                return (
                   <div
-                    className={`text-sm font-bold tracking-tight ${tool.highlight ? 'text-text-primary' : 'text-text-muted'}`}
+                    key={tool.short}
+                    className='px-3 py-4 text-center'
+                    style={
+                      tool.highlight
+                        ? {
+                            background: 'rgba(0,163,255,0.08)',
+                            borderBottom: '3px solid var(--color-accent)',
+                          }
+                        : {}
+                    }
                   >
-                    {tool.short}
+                    {tool.href ? (
+                      <Link
+                        prefetch={false}
+                        href={tool.href}
+                        className='block hover:opacity-70 transition-opacity duration-150'
+                      >
+                        {inner}
+                      </Link>
+                    ) : (
+                      inner
+                    )}
                   </div>
-                  <div className='text-xs text-text-muted mt-0.5 leading-tight'>{tool.full}</div>
-                </div>
-              ))}
+                )
+              })}
             </div>
 
             {/* Feature rows */}
@@ -184,7 +221,7 @@ export default function ComparisonSection() {
                 transition={{ duration: 0.4, delay: 0.2 + i * 0.05, ease }}
               >
                 <div className='px-4 py-3.5 flex items-center'>
-                  <span className='text-text-muted'>{row.feature}</span>
+                  <span className='text-text-muted text-sm'>{row.feature}</span>
                 </div>
                 {tools.map((tool, j) => {
                   const has = row[tool.short.toLowerCase() as keyof typeof row] as boolean
