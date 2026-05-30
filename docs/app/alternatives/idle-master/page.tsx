@@ -87,9 +87,29 @@ function ComparisonIcon({ value }: { value: boolean | string }) {
   return <span className='text-sm font-medium text-text-muted'>{value}</span>
 }
 
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  'headline': 'Idle Master Feature Comparison | Steam Game Idler',
+  'description':
+    'See why Steam Game Idler is the best alternative to Idle Master for Steam automation. Compare features like card farming, achievement management, and user experience',
+  'url': 'https://steamgameidler.com/alternatives/idle-master',
+  'image': 'https://steamgameidler.com/im-og-image.png',
+  'author': { '@type': 'Person', 'name': 'zevnda', 'url': 'https://github.com/zevnda' },
+  'publisher': {
+    '@type': 'Organization',
+    'name': 'Steam Game Idler',
+    'url': 'https://steamgameidler.com',
+  },
+}
+
 export default function page() {
   return (
     <div className='min-h-screen bg-background'>
+      <script
+        type='application/ld+json'
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
       <NavBar />
       <div className='relative'>
         {/* Hero */}

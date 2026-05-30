@@ -17,7 +17,7 @@ import NavBar from '@docs/components/home/NavBar'
 import Link from 'next/link'
 
 export const metadata = {
-  title: 'Steam Game Idler PRO',
+  title: { absolute: 'Steam Game Idler PRO' },
   description:
     'Upgrade to Steam Game Idler PRO. Remove ads, unlock exclusive themes, automate Steam credentials, free game redemption, and more. Starting at $2/month.',
   keywords: [
@@ -33,7 +33,14 @@ export const metadata = {
     title: 'Steam Game Idler PRO',
     description:
       'Upgrade to Steam Game Idler PRO. Remove ads, unlock exclusive themes, automate Steam credentials, free game redemption, and more.',
+    images: 'https://steamgameidler.com/og-image.png',
     type: 'website',
+  },
+  twitter: {
+    title: 'Steam Game Idler PRO',
+    description:
+      'Upgrade to Steam Game Idler PRO. Remove ads, unlock exclusive themes, automate Steam credentials, free game redemption, and more.',
+    image: 'https://steamgameidler.com/og-image.png',
   },
   alternates: {
     canonical: '/pro',

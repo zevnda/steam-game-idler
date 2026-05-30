@@ -199,6 +199,36 @@ function getRandomContent() {
   }
 }
 
+export async function generateMetadata(props: PageProps) {
+  const params = await props.params
+  const gameName = formatGameName(params.appName)
+
+  return {
+    title: `${gameName} Steam Trading Cards`,
+    description: `Automatically farm Steam trading cards for ${gameName} with Steam Game Idler. Idle ${gameName} to earn cards and boost playtime.`,
+    keywords: [
+      `${gameName} steam cards`,
+      `${gameName} card farming`,
+      `${gameName} trading cards`,
+      `${gameName} idle steam`,
+      `farm ${gameName} cards`,
+    ],
+    openGraph: {
+      url: `https://steamgameidler.com/supported-games/${params.appName}`,
+      title: `${gameName} Steam Trading Cards | Steam Game Idler`,
+      description: `Automatically farm Steam trading cards for ${gameName} with Steam Game Idler.`,
+      images: 'https://steamgameidler.com/og-image.png',
+      type: 'website',
+    },
+    twitter: {
+      title: `${gameName} Steam Trading Cards | Steam Game Idler`,
+      description: `Automatically farm Steam trading cards for ${gameName} with Steam Game Idler.`,
+      image: 'https://steamgameidler.com/og-image.png',
+    },
+    alternates: { canonical: `/supported-games/${params.appName}` },
+  }
+}
+
 export default async function AdPage({ params }: PageProps) {
   const { appName } = await params
   const gameName = formatGameName(appName)

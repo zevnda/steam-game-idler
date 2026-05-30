@@ -31,6 +31,7 @@ declare global {
 export const metadata = {
   title: {
     default: 'Steam Game Idler - Farm Cards, Unlock Achievements & Idle Games',
+    template: '%s | Steam Game Idler',
   },
   description:
     'Free Steam automation tool to farm trading cards, unlock achievements, boost playtime, and idle games. Modern alternative to SAM, ASF, and Idle Master.',
@@ -81,11 +82,25 @@ export const metadata = {
     'referrer': 'strict-origin-when-cross-origin',
   },
   alternates: {
-    canonical: './',
+    canonical: 'https://steamgameidler.com/',
   },
 }
 
 const schemaData = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    'name': 'Steam Game Idler',
+    'url': 'https://steamgameidler.com',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    'name': 'Steam Game Idler',
+    'url': 'https://steamgameidler.com',
+    'logo': 'https://steamgameidler.com/logo.png',
+    'sameAs': ['https://github.com/zevnda/steam-game-idler'],
+  },
   {
     '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
