@@ -241,6 +241,36 @@ export default function page() {
 
         <div className='section-divider' />
 
+        {/* Narrative */}
+        <section className='py-20 sm:py-24 relative'>
+          <div className='container mx-auto px-4 sm:px-6 md:px-8'>
+            <div className='max-w-3xl mx-auto'>
+              <h2 className='text-2xl sm:text-3xl font-bold text-text-primary mb-6 leading-tight tracking-tight'>
+                How does Steam Game Idler compare to Idle Master?
+              </h2>
+              <p className='text-text-muted leading-relaxed mb-4'>
+                Idle Master did one thing well: it ran your games in the background to trigger Steam
+                card drops. For a long time it was the go-to tool for that, and it worked. However,
+                it hasn&apos;t seen active development for a number of years, and its feature set
+                was always limited to card farming alone — no achievements, no inventory tools, no
+                playtime management.
+              </p>
+              <p className='text-text-muted leading-relaxed mb-4'>
+                Steam Game Idler covers the same card farming ground with an up-to-date codebase,
+                and extends it significantly. Achievement management, automated unlocking, inventory
+                selling, and playtime boosting are all built in, so there&apos;s no need to run
+                multiple tools alongside each other.
+              </p>
+              <p className='text-text-muted leading-relaxed'>
+                If card farming was the main thing you used Idle Master for, Steam Game Idler does
+                the same job and gives you a lot more to work with.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <div className='section-divider' />
+
         {/* Why Choose SGI */}
         <section className='py-20 sm:py-24 relative'>
           <div className='container mx-auto px-4 sm:px-6 md:px-8'>

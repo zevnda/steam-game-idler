@@ -150,7 +150,7 @@ export default async function ProPage() {
             <div className='max-w-3xl mx-auto text-center'>
               <div className='inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-300 text-sm font-medium mb-8'>
                 <TbSparkles className='w-4 h-4' />
-                Support SGI &amp; unlock more
+                Support Steam Game Idler &amp; unlock more
               </div>
 
               <h1 className='text-5xl sm:text-6xl md:text-7xl font-bold leading-none tracking-tight mb-6'>
@@ -337,7 +337,7 @@ export default async function ProPage() {
                 </h2>
                 <p className='text-text-muted max-w-2xl mx-auto'>
                   SGI is a solo passion project built entirely in spare time. It&apos;s always been
-                  free and always will be — but keeping it running and improving takes real time and
+                  free and always will be, but keeping it running and improving takes real time and
                   money. PRO subscribers make that possible.
                 </p>
               </div>
@@ -372,7 +372,7 @@ export default async function ProPage() {
               <div className='card p-8 text-center' style={{ borderColor: 'rgba(168,85,247,0.2)' }}>
                 <p className='text-text-muted leading-relaxed max-w-2xl mx-auto'>
                   SGI has always been free because it should be. But if you get value from it, PRO
-                  is the best way to say thanks — and you get genuinely useful extras in return. No
+                  is the best way to say thanks, and you get genuinely useful extras in return. No
                   lock-ins, no paywalls on core features. Just an honest way to support something
                   you use.
                 </p>
@@ -400,7 +400,11 @@ export default async function ProPage() {
                   Casual — ${priceData.tierOne.price}/mo
                   <FaArrowRight className='w-4 h-4' />
                 </a>
-                <a href={priceData.tierTwo.url} className='btn-ghost px-8 py-3.5 text-base'>
+                <a
+                  href={priceData.tierTwo.url}
+                  className='btn-primary px-8 py-3.5 text-base'
+                  style={{ background: 'linear-gradient(135deg, #a855f7, #6366f1)' }}
+                >
                   Gamer — ${priceData.tierTwo.price}/mo
                   <FaArrowRight className='w-4 h-4' />
                 </a>

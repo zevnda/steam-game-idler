@@ -1,5 +1,5 @@
 import { FaArrowRight } from 'react-icons/fa'
-import { FiBook, FiCheck, FiDownload, FiShield, FiX } from 'react-icons/fi'
+import { FiBook, FiCheck, FiDownload, FiX } from 'react-icons/fi'
 import { TbAward, TbCards, TbTrendingUp } from 'react-icons/tb'
 import FooterSection from '@docs/components/home/FooterSection'
 import NavBar from '@docs/components/home/NavBar'
@@ -240,6 +240,39 @@ export default function page() {
 
         <div className='section-divider' />
 
+        {/* Narrative */}
+        <section className='py-20 sm:py-24 relative'>
+          <div className='container mx-auto px-4 sm:px-6 md:px-8'>
+            <div className='max-w-3xl mx-auto'>
+              <h2 className='text-2xl sm:text-3xl font-bold text-text-primary mb-6 leading-tight tracking-tight'>
+                How does Steam Game Idler compare to Steam Achievement Manager?
+              </h2>
+              <p className='text-text-muted leading-relaxed mb-4'>
+                Steam Achievement Manager lets you manually unlock and lock achievements for any
+                game you own, you select them and apply the change instantly. It&apos;s a useful
+                tool for that specific task, but the approach is entirely manual and the scope stops
+                at achievements.
+              </p>
+              <p className='text-text-muted leading-relaxed mb-4'>
+                Steam Game Idler includes a manual achievement manager that works the same way, but
+                also adds an automated achievement unlocker, a separate mode that works through your
+                achievement list on its own, unlocking them gradually over time. By default it
+                follows the order of global unlock percentage, so common achievements unlock first
+                and rarer ones come later, the same pattern you&apos;d see from natural play. You
+                can also set a custom unlock order, configure per-achievement delays, and add an
+                initial wait period before the first unlock — giving you full control over how the
+                progression looks.
+              </p>
+              <p className='text-text-muted leading-relaxed'>
+                On top of that, card farming, inventory selling, and playtime boosting are all built
+                in, so Steam Game Idler covers the whole picture rather than just one part of it.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <div className='section-divider' />
+
         {/* Why Choose SGI */}
         <section className='py-20 sm:py-24 relative'>
           <div className='container mx-auto px-4 sm:px-6 md:px-8'>
@@ -252,33 +285,35 @@ export default function page() {
 
               <div className='grid sm:grid-cols-3 gap-4 mb-8'>
                 <div className='card p-6 text-center'>
-                  <TbCards className='w-7 h-7 text-emerald-400 mx-auto mb-4' />
-                  <h3 className='font-semibold text-text-primary mb-2'>Beyond Achievements</h3>
+                  <TbAward className='w-7 h-7 text-emerald-400 mx-auto mb-4' />
+                  <h3 className='font-semibold text-text-primary mb-2'>Automated Unlocker</h3>
                   <p className='text-sm text-text-muted leading-relaxed'>
-                    Complete Steam automation including cards, playtime, and inventory management
+                    Automatically unlocks achievements over time with configurable delays — dripping
+                    them in the order real players earn them to mimic natural progression
                   </p>
                 </div>
                 <div className='card p-6 text-center'>
-                  <FiShield className='w-7 h-7 text-emerald-400 mx-auto mb-4' />
-                  <h3 className='font-semibold text-text-primary mb-2'>Enhanced Safety</h3>
+                  <TbCards className='w-7 h-7 text-emerald-400 mx-auto mb-4' />
+                  <h3 className='font-semibold text-text-primary mb-2'>All-in-One</h3>
                   <p className='text-sm text-text-muted leading-relaxed'>
-                    Modern VAC detection avoidance and human-like behavior patterns
+                    Card farming, inventory selling, and playtime boosting alongside full
+                    achievement management — no need to run separate tools
                   </p>
                 </div>
                 <div className='card p-6 text-center'>
                   <TbTrendingUp className='w-7 h-7 text-emerald-400 mx-auto mb-4' />
-                  <h3 className='font-semibold text-text-primary mb-2'>Active Development</h3>
+                  <h3 className='font-semibold text-text-primary mb-2'>Custom Control</h3>
                   <p className='text-sm text-text-muted leading-relaxed'>
-                    Regular updates and community support versus legacy tools
+                    Set a custom unlock order, per-achievement delays, and an initial wait period —
+                    or let the default mode handle everything automatically
                   </p>
                 </div>
               </div>
 
               <div className='card p-8 text-center'>
                 <p className='text-text-muted leading-relaxed max-w-2xl mx-auto'>
-                  While Steam Achievement Manager was pioneering for its time, Steam Game Idler
-                  represents the modern evolution with comprehensive features, enhanced security,
-                  and ongoing development.
+                  Steam Achievement Manager handles achievements manually. Steam Game Idler does the
+                  same — and automates it, with timing you control and card farming built in.
                 </p>
               </div>
             </div>

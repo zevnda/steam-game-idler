@@ -72,11 +72,11 @@ function TestimonialCard({ quote }: { quote: string }) {
 
 const testimonials = [
   'Farmed 500+ cards in just 2 days',
-  "Best idler I've ever used — so simple!",
+  "Best idler I've ever used.. so simple!",
   'Open source and completely safe to use',
   'Earned $50+ from card sales this month',
   'Works perfectly across all my Steam games',
-  'Set it and forget it — works like magic',
+  'Set it and forget it, works like magic',
   'Zero configuration needed to get started',
   'Finally hit 100% on all my achievements',
 ]
@@ -157,7 +157,8 @@ export default function StatsSection() {
             Backed by a <span className='gradient-text'>community</span>
           </h2>
           <p className='text-lg text-text-muted leading-relaxed'>
-            Thousands of Steam users rely on SGI every day to automate their library.
+            Join thousands of Steam users who automate their entire library with Steam Game Idler
+            every day — for free.
           </p>
         </motion.div>
 

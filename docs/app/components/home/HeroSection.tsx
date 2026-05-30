@@ -228,7 +228,9 @@ export default function HeroSection() {
               className='text-lg text-text-muted max-w-lg leading-relaxed mx-auto lg:mx-0'
             >
               Automate your Steam library. Farm trading cards, manage achievements, and boost
-              playtime — all from one free, open-source desktop app.
+              playtime — all from one free, open-source desktop app. Trusted by over 100,000 Steam
+              users as a modern alternative to ArchiSteamFarm, Steam Achievement Manager, and Idle
+              Master.
             </motion.p>
 
             {/* Buttons */}

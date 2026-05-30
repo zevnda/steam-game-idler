@@ -63,7 +63,7 @@ export default function NavBar() {
           style={{ padding: '0.5rem 1.25rem', fontSize: '0.8125rem' }}
         >
           <FaWindows className='w-3.5 h-3.5' />
-          Download Free
+          Download
         </Link>
       </div>
     </header>

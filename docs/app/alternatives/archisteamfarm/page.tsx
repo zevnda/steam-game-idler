@@ -256,6 +256,37 @@ export default function page() {
 
         <div className='section-divider' />
 
+        {/* Narrative */}
+        <section className='py-20 sm:py-24 relative'>
+          <div className='container mx-auto px-4 sm:px-6 md:px-8'>
+            <div className='max-w-3xl mx-auto'>
+              <h2 className='text-2xl sm:text-3xl font-bold text-text-primary mb-6 leading-tight tracking-tight'>
+                How does Steam Game Idler compare to ArchiSteamFarm?
+              </h2>
+              <p className='text-text-muted leading-relaxed mb-4'>
+                ArchiSteamFarm is a capable tool, but it&apos;s designed around a command-line
+                workflow. Setup involves editing JSON configuration files, and running it typically
+                means keeping a terminal open or hosting it on a server. It&apos;s well suited to
+                users comfortable with that kind of setup, particularly those managing more than one
+                Steam account.
+              </p>
+              <p className='text-text-muted leading-relaxed mb-4'>
+                Steam Game Idler takes a different approach: a native desktop app with a visual
+                interface, no configuration files, and no command line. You sign in with Steam and
+                start farming within minutes. It also covers things ArchiSteamFarm doesn&apos;t —
+                achievement management, inventory selling, and playtime boosting — so you don&apos;t
+                need separate tools for each task.
+              </p>
+              <p className='text-text-muted leading-relaxed'>
+                If you want something you can open, use, and close without managing config files or
+                a terminal, Steam Game Idler is worth trying.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <div className='section-divider' />
+
         {/* Why Choose SGI */}
         <section className='py-20 sm:py-24 relative'>
           <div className='container mx-auto px-4 sm:px-6 md:px-8'>
