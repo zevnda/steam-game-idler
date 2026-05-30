@@ -11,7 +11,7 @@ const faqData = [
   {
     question: 'Do I need a Steam account to use SGI?',
     answer:
-      'Yes, you will need the Steam client installed, running, and signed into at least one Steam account.',
+      'Yes, SGI uses the official Steam API and SDK which means you will need the Steam client installed, running, and signed in to at least one Steam account.',
   },
   {
     question: 'Do I need to give SGI my username or password?',
@@ -31,7 +31,7 @@ const faqData = [
   {
     question: 'Are automation tools safe to use?',
     answer:
-      'Historically, Steam does not ban accounts simply for using automation tools. SGI uses the official Steam API and SDK like many legitimate games do. As with any third-party tool, use it at your own discretion.',
+      'Historically, Steam does not ban accounts simply for using automation tools. SGI uses the official Steam API and SDK like many legitimate games do. Use it at your own discretion.',
   },
   {
     question: 'How does SGI farm trading cards?',
