@@ -197,6 +197,17 @@ The home page at [app/(home)/page.tsx](app/(home)/page.tsx) renders these sectio
 
 `SectionAccent` ([SectionAccent.tsx](app/components/home/SectionAccent.tsx)) is a decorative radial gradient overlay dropped at the top of sections that need a subtle glow anchor point.
 
+### NavBar
+
+[NavBar.tsx](app/components/home/NavBar.tsx) is a `'use client'` fixed header rendered above all home sections. It is **not** part of the Fumadocs `DocsLayout` — it only appears on the `(home)` route group.
+
+**Behaviour:**
+- Transparent when at the top; gains a blurred dark background + border on scroll (`window.scrollY > 24`).
+- Desktop (`md+`): logo, inline nav links, download button.
+- Mobile (`< md`): logo + hamburger (`FiMenu`). Clicking opens a right-side drawer animated with `motion/react` (`AnimatePresence` + spring transition). The drawer contains all nav links and a full-width download button at the bottom. Body scroll is locked while the drawer is open.
+
+**Nav links defined in `navLinks` array** — add new top-level pages there (both desktop and drawer consume the same source).
+
 ## Adding content
 
 ### New doc page
