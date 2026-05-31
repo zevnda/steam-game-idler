@@ -105,12 +105,22 @@ export const SearchModal = ({ isModalOpen = false, onModalClose }: SearchModalPr
   }
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const { value } = e.currentTarget
+
     if (e.key === 'Enter') {
-      const target = e.target as HTMLInputElement
-      applySearchQuery(target.value)
-      saveSearchQuery(target.value)
+      applySearchQuery(value)
+      saveSearchQuery(value)
       searchStore.setIsQuery(true)
       onModalClose?.()
+    }
+
+    if (e.key === 'Escape') {
+      e.preventDefault()
+      if (value) {
+        handleClear()
+      } else {
+        onModalClose?.()
+      }
     }
   }
 
