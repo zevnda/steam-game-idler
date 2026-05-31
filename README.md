@@ -39,21 +39,20 @@ Refer to the **[documentation](https://steamgameidler.com/docs/)** for a detaile
 # Supported Languages
 Contribute to this project by adding new translations or improving existing ones. **[Read more here](https://github.com/zevnda/steam-game-idler/discussions/148)**
 
-| Language             | Flag | Language            | Flag | Language   | Flag |
-| -------------------- | ---- | ------------------- | ---- | ---------- | ---- |
-| Chinese (Simplified) | 🇨🇳    | English             | 🇬🇧    | French     | 🇫🇷    |
-| German               | 🇩🇪    | Indonesian          | 🇮🇩    | Italian    | 🇮🇹    |
-| Macedonian           | 🇲🇰    | Polish              | 🇵🇱    | Portuguese (Brazil) | 🇧🇷 |
-| Romanian             | 🇷🇴    | Russian             | 🇷🇺    | Spanish    | 🇪🇸    |
-| Turkish              | 🇹🇷    | Ukrainian           | 🇺🇦    |            |      |
+| Language             | Flag | Language   | Flag | Language            | Flag |
+| -------------------- | ---- | ---------- | ---- | ------------------- | ---- |
+| Chinese (Simplified) | 🇨🇳    | English    | 🇬🇧    | French              | 🇫🇷    |
+| German               | 🇩🇪    | Indonesian | 🇮🇩    | Italian             | 🇮🇹    |
+| Macedonian           | 🇲🇰    | Polish     | 🇵🇱    | Portuguese (Brazil) | 🇧🇷    |
+| Romanian             | 🇷🇴    | Russian    | 🇷🇺    | Spanish             | 🇪🇸    |
+| Turkish              | 🇹🇷    | Ukrainian  | 🇺🇦    |                     |      |
 
 <sup>*Some languages may only have partial support*</sup>
 
 # License
 Copyright © 2024-2026 zevnda — **[MIT License](./LICENSE)**
 
-[downloads]: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapibase.vercel.app%2Fapi%2Fgh-downloads%3Fuser%3Dzevnda%26repo%3Dsteam-game-idler&query=results.grandTotal&style=flat-square&color=%23a82869&label=Downloads
+[downloads]: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapibase.vercel.app%2Fapi%2Fgh-downloads%3Fuser%3Dzevnda%26repo%3Dsteam-game-idler%26full%3Dfalse&query=results.grandTotal&style=flat-square&color=%23a82869&label=Downloads
 [release]: https://img.shields.io/github/v/release/zevnda/steam-game-idler?style=flat-square&color=%232d6acc&label=Version
-
 [build]: https://img.shields.io/github/actions/workflow/status/zevnda/steam-game-idler/release.yml?style=flat-square&color=%2313a135&label=Build
 

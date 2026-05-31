@@ -4,7 +4,13 @@ import { useEffect } from 'react'
 import { useGlobalStore } from '@docs/stores/globalStore'
 
 export default function StoreLoader() {
-  const { setDownloadUrl, setLatestVersion, setRepoStars } = useGlobalStore(state => state)
+  const {
+    setDownloadUrl,
+    setLatestVersion,
+    setRepoStars,
+    setTotalDownloads,
+    setTotalDownloadsRaw,
+  } = useGlobalStore(state => state)
 
   // Fetch the latest release information from the GitHub API
   useEffect(() => {
@@ -43,6 +49,24 @@ export default function StoreLoader() {
       console.error('Error fetching GitHub stars:', error)
     }
   }, [setRepoStars])
+
+  // Fetch the total download count across all releases
+  useEffect(() => {
+    try {
+      fetch('https://apibase.vercel.app/api/gh-downloads?user=zevnda&repo=steam-game-idler')
+        .then(response => response.json())
+        .then(data => {
+          if (typeof data.results?.grandTotal === 'string') {
+            setTotalDownloads(data.results.grandTotal)
+          }
+          if (typeof data.results?.grandTotalRaw === 'number') {
+            setTotalDownloadsRaw(data.results.grandTotalRaw)
+          }
+        })
+    } catch (error) {
+      console.error('Error fetching download count:', error)
+    }
+  }, [setTotalDownloads, setTotalDownloadsRaw])
 
   return null
 }

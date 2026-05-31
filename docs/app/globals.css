@@ -296,7 +296,7 @@
 
   /* ── Testimonials marquee ──────────────────────────────────── */
   .testimonials-track {
-    animation: marquee 60s linear infinite;
+    animation: marquee 100s linear infinite;
   }
 
   .testimonials-container:hover .testimonials-track {
