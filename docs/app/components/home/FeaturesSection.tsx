@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { FiArrowUpRight, FiTrendingUp } from 'react-icons/fi'
 import { TbAward, TbBuildingStore, TbCards } from 'react-icons/tb'
 import { ease } from '@docs/lib/motion'
@@ -20,9 +20,9 @@ const features = [
   {
     icon: TbAward,
     color: 'text-purple-400',
-    title: 'Achievement Unlocker',
+    title: 'Achievement Manager',
     description:
-      'View and manage achievements for any game you own. Unlock them manually or let the automated unlocker handle it with human-like timing.',
+      'View and manage achievements for any game you own. Unlock them manually or let the automated achievement unlocker handle it with human-like timing.',
     link: '/docs/features/achievement-manager',
     image: '/examples/achievement-manager.png',
   },
@@ -50,6 +50,25 @@ export default function FeaturesSection() {
   const [activeFeature, setActiveFeature] = useState('Card Farming')
 
   const feature = features.find(f => f.title === activeFeature)!
+
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  const startInterval = useCallback(() => {
+    if (intervalRef.current) clearInterval(intervalRef.current)
+    intervalRef.current = setInterval(() => {
+      setActiveFeature(current => {
+        const idx = features.findIndex(f => f.title === current)
+        return features[(idx + 1) % features.length].title
+      })
+    }, 7000)
+  }, [])
+
+  useEffect(() => {
+    startInterval()
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current)
+    }
+  }, [startInterval])
 
   const headerRef = useRef<HTMLElement>(null)
   const headerInView = useInView(headerRef, { once: true, margin: '-60px' })
@@ -95,7 +114,13 @@ export default function FeaturesSection() {
               return (
                 <button
                   key={f.title}
-                  onClick={() => setActiveFeature(f.title)}
+                  onClick={() => {
+                    setActiveFeature(f.title)
+                    if (intervalRef.current) {
+                      clearInterval(intervalRef.current)
+                      intervalRef.current = null
+                    }
+                  }}
                   className={`faq-tab${isActive ? ' faq-tab--active' : ''} cursor-pointer`}
                   aria-current={isActive ? 'true' : undefined}
                 >
