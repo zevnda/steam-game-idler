@@ -1,5 +1,5 @@
 import { FaArrowRight } from 'react-icons/fa'
-import { FiAward, FiCheck, FiClock, FiTerminal } from 'react-icons/fi'
+import { FiAward, FiClock, FiTerminal } from 'react-icons/fi'
 import FooterSection from '@docs/components/home/FooterSection'
 import NavBar from '@docs/components/home/NavBar'
 import Link from 'next/link'
@@ -44,11 +44,6 @@ const comparisons = [
     Icon: FiTerminal,
     summary:
       'Steam Game Idler is the go-to ArchiSteamFarm alternative for users who want a visual desktop app instead of a CLI. Get card farming, achievement management, inventory selling, and playtime boosting — no config files, no command line.',
-    highlights: [
-      'No CLI, config files, or command line',
-      'No Java or Docker required',
-      'Achievements & inventory selling built in',
-    ],
   },
   {
     slug: 'steam-achievement-manager',
@@ -57,11 +52,6 @@ const comparisons = [
     Icon: FiAward,
     summary:
       'Steam Game Idler is a full Steam Achievement Manager alternative that goes beyond achievements. Manage, unlock, and lock achievements — plus card farming, inventory selling, and playtime boosting — all in one actively maintained app.',
-    highlights: [
-      'Actively maintained with regular updates',
-      'Card farming & inventory selling included',
-      'Works on modern Windows out of the box',
-    ],
   },
   {
     slug: 'idle-master',
@@ -70,11 +60,6 @@ const comparisons = [
     Icon: FiClock,
     summary:
       'Steam Game Idler is the modern Idle Master replacement. Idle Master is abandoned and no longer maintained — Steam Game Idler picks up where it left off with active development, achievement management, and a clean interface.',
-    highlights: [
-      'Actively developed — Idle Master is abandoned',
-      'Achievement management on top of card farming',
-      'Modern interface with more features',
-    ],
   },
 ]
 
@@ -138,23 +123,6 @@ export default function AlternativesPage() {
                   className='mb-5'
                   style={{ height: '1px', background: 'var(--color-border)' }}
                 />
-
-                {/* Highlights */}
-                <div className='flex flex-wrap gap-2 mb-5'>
-                  {alt.highlights.map(h => (
-                    <span
-                      key={h}
-                      className='inline-flex items-center gap-1.5 text-xs text-text-muted rounded-full px-3 py-1'
-                      style={{
-                        background: 'rgba(255,255,255,0.04)',
-                        border: '1px solid rgba(255,255,255,0.08)',
-                      }}
-                    >
-                      <FiCheck className='w-3 h-3 text-accent shrink-0' />
-                      {h}
-                    </span>
-                  ))}
-                </div>
 
                 {/* Summary */}
                 <p className='text-sm text-text-muted leading-relaxed'>{alt.summary}</p>
