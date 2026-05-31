@@ -92,11 +92,20 @@ const cardVariant = {
 }
 
 export default function StatsSection() {
-  const { repoStars } = useGlobalStore(state => state)
+  const { repoStars, totalDownloads } = useGlobalStore(state => state)
+
+  const dlMatch = totalDownloads.match(/^(\d+(?:\.\d+)?)([A-Za-z+]*)$/)
+  const dlTarget = dlMatch ? parseFloat(dlMatch[1]) : 0
+  const dlSuffix = dlMatch ? dlMatch[2] : ''
 
   const stats = [
     {
-      value: <Counter target={100} suffix='K+' />,
+      value:
+        dlTarget > 0 ? (
+          <Counter target={dlTarget} suffix={dlSuffix} />
+        ) : (
+          <span className='opacity-40'>…</span>
+        ),
       label: 'Downloads',
       description: 'Active installations worldwide',
       icon: <FiDownload />,

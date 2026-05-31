@@ -80,7 +80,7 @@ function RainbowBadge({
 }
 
 export default function HeroSection() {
-  const { downloadUrl, latestVersion, repoStars } = useGlobalStore(state => state)
+  const { downloadUrl, latestVersion, repoStars, totalDownloads } = useGlobalStore(state => state)
 
   return (
     <section className='min-h-screen flex items-center relative overflow-hidden'>
@@ -272,7 +272,9 @@ export default function HeroSection() {
               className='flex items-center justify-center lg:justify-start gap-6 sm:gap-8 pt-2'
             >
               <div className='text-center'>
-                <div className='text-xl sm:text-2xl font-bold text-text-primary'>100K+</div>
+                <div className='text-xl sm:text-2xl font-bold text-text-primary'>
+                  {totalDownloads ? `${totalDownloads}` : '100K+'}
+                </div>
                 <div className='text-xs text-text-muted uppercase tracking-wider mt-1'>
                   Downloads
                 </div>
