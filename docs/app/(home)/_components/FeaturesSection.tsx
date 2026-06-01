@@ -160,15 +160,6 @@ export default function FeaturesSection() {
 
           {/* Feature image — HUD frame */}
           <div className='relative pt-4'>
-            {/* Ambient colour glow */}
-            <div
-              className='absolute inset-0 -m-10 blur-3xl rounded-full pointer-events-none'
-              style={{
-                background: `radial-gradient(ellipse at 50% 60%, ${feature.glow}26, transparent 65%)`,
-                transition: 'background 500ms ease',
-              }}
-            />
-
             {/* Corner brackets */}
             <div
               className='absolute top-4 left-0 w-5 h-5 border-t border-l rounded-tl-lg pointer-events-none z-10'

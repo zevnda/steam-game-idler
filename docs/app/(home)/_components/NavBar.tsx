@@ -6,12 +6,22 @@ import { FiMenu, FiX } from 'react-icons/fi'
 import { AnimatePresence, motion } from 'motion/react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { useGlobalStore } from '@/app/lib/globalStore'
 
 export default function NavBar() {
   const [scrolled, setScrolled] = useState(false)
   const [drawerOpen, setDrawerOpen] = useState(false)
   const { downloadUrl } = useGlobalStore(state => state)
+  const pathname = usePathname()
+
+  const handleAnchorClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    const hash = href.startsWith('/#') ? href.slice(2) : null
+    if (hash && pathname === '/') {
+      e.preventDefault()
+      document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24)
@@ -69,6 +79,7 @@ export default function NavBar() {
                 prefetch={false}
                 href={href}
                 className={`${linkClass}${bold ? ' font-bold' : ''}`}
+                onClick={e => handleAnchorClick(e, href)}
               >
                 {label}
               </Link>
@@ -149,7 +160,10 @@ export default function NavBar() {
                     prefetch={false}
                     href={href}
                     className={`${drawerLinkClass}${bold ? ' font-bold' : ''}`}
-                    onClick={() => setDrawerOpen(false)}
+                    onClick={e => {
+                      handleAnchorClick(e, href)
+                      setDrawerOpen(false)
+                    }}
                   >
                     {label}
                   </Link>
