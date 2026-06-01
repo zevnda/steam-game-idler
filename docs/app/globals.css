@@ -294,15 +294,6 @@
     transform: translateY(0);
   }
 
-  /* ── Testimonials marquee ──────────────────────────────────── */
-  .testimonials-track {
-    animation: marquee 100s linear infinite;
-  }
-
-  .testimonials-container:hover .testimonials-track {
-    animation-play-state: paused;
-  }
-
   @keyframes rainbow-border {
     from {
       --angle: 0deg;
@@ -330,15 +321,6 @@
 @keyframes shimmer-sweep {
   to {
     transform: translateX(100%);
-  }
-}
-
-@keyframes marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
   }
 }
 
