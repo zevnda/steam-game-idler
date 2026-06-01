@@ -11,43 +11,48 @@ const features = [
   {
     icon: TbCards,
     color: 'text-blue-400',
+    glow: '#60a5fa',
     title: 'Card Farming',
     description:
       'Collect trading card drops automatically from any game in your library. Runs quietly in the background while you focus on other things.',
     link: '/docs/features/card-farming',
-    image: '/examples/card-farming.png',
+    image: 'https://pub-ca47df86597c4ccbb6ddf4366ca7f733.r2.dev/card-farming.png',
   },
   {
     icon: TbAward,
     color: 'text-purple-400',
+    glow: '#c084fc',
     title: 'Achievement Manager',
     description:
       'View and manage achievements for any game you own. Unlock them manually or let the automated achievement unlocker handle it with human-like timing.',
     link: '/docs/features/achievement-manager',
-    image: '/examples/achievement-manager.png',
+    image: 'https://pub-ca47df86597c4ccbb6ddf4366ca7f733.r2.dev/achievement-manager.png',
   },
   {
     icon: TbBuildingStore,
     color: 'text-emerald-400',
+    glow: '#34d399',
     title: 'Inventory Manager',
     description:
       'Browse your entire Steam inventory and list items on the marketplace directly from within the app — no browser tabs required.',
     link: '/docs/features/inventory-manager',
-    image: '/examples/inventory-manager.png',
+    image: 'https://pub-ca47df86597c4ccbb6ddf4366ca7f733.r2.dev/inventory-manager.png',
   },
   {
     icon: FiTrendingUp,
     color: 'text-orange-400',
+    glow: '#fb923c',
     title: 'Playtime Booster',
     description:
       'Idle up to 32 games simultaneously to build playtime and meet card drop eligibility requirements faster.',
     link: '/docs/features/playtime-booster',
-    image: '/examples/playtime-booster.png',
+    image: 'https://pub-ca47df86597c4ccbb6ddf4366ca7f733.r2.dev/playtime-booster.png',
   },
 ]
 
 export default function FeaturesSection() {
   const [activeFeature, setActiveFeature] = useState('Card Farming')
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true)
 
   const feature = features.find(f => f.title === activeFeature)!
 
@@ -55,6 +60,7 @@ export default function FeaturesSection() {
 
   const startInterval = useCallback(() => {
     if (intervalRef.current) clearInterval(intervalRef.current)
+    setIsAutoPlaying(true)
     intervalRef.current = setInterval(() => {
       setActiveFeature(current => {
         const idx = features.findIndex(f => f.title === current)
@@ -116,6 +122,7 @@ export default function FeaturesSection() {
                   key={f.title}
                   onClick={() => {
                     setActiveFeature(f.title)
+                    setIsAutoPlaying(false)
                     if (intervalRef.current) {
                       clearInterval(intervalRef.current)
                       intervalRef.current = null
@@ -151,39 +158,130 @@ export default function FeaturesSection() {
             })}
           </nav>
 
-          {/* Feature content */}
-          <AnimatePresence mode='wait'>
-            <motion.div
-              key={activeFeature}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.2, ease }}
-              className='flex flex-col gap-6 pt-4'
-            >
-              <div
-                className='border border-[#FFFFFF1A] bg-white/3 min-h-48'
-                style={{ borderRadius: '12px', overflow: 'hidden' }}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={feature.image}
-                  alt={`${feature.title} screenshot`}
-                  className='w-full h-auto block'
-                />
+          {/* Feature image — HUD frame */}
+          <div className='relative pt-4'>
+            {/* Ambient colour glow */}
+            <div
+              className='absolute inset-0 -m-10 blur-3xl rounded-full pointer-events-none'
+              style={{
+                background: `radial-gradient(ellipse at 50% 60%, ${feature.glow}26, transparent 65%)`,
+                transition: 'background 500ms ease',
+              }}
+            />
+
+            {/* Corner brackets */}
+            <div
+              className='absolute top-4 left-0 w-5 h-5 border-t border-l rounded-tl-lg pointer-events-none z-10'
+              style={{ borderColor: feature.glow, transition: 'border-color 300ms ease' }}
+            />
+            <div
+              className='absolute top-4 right-0 w-5 h-5 border-t border-r rounded-tr-lg pointer-events-none z-10'
+              style={{ borderColor: feature.glow, transition: 'border-color 300ms ease' }}
+            />
+            <div
+              className='absolute bottom-0 left-0 w-5 h-5 border-b border-l rounded-bl-lg pointer-events-none z-10'
+              style={{ borderColor: feature.glow, transition: 'border-color 300ms ease' }}
+            />
+            <div
+              className='absolute bottom-0 right-0 w-5 h-5 border-b border-r rounded-br-lg pointer-events-none z-10'
+              style={{ borderColor: feature.glow, transition: 'border-color 300ms ease' }}
+            />
+
+            {/* Main frame */}
+            <div className='relative border border-[#FFFFFF1A] overflow-hidden rounded-2xl'>
+              {/* Header bar */}
+              <div className='flex items-center justify-between px-4 py-2.5 border-b border-white/8 bg-white/3'>
+                <div className='flex items-center gap-2'>
+                  <span
+                    className='w-2 h-2 rounded-full block shrink-0'
+                    style={{ background: feature.glow, transition: 'background 300ms ease' }}
+                  />
+                  <span className='text-[10px] font-mono tracking-widest text-text-muted opacity-50 uppercase'>
+                    preview
+                  </span>
+                </div>
+
+                <AnimatePresence mode='wait'>
+                  <motion.span
+                    key={activeFeature + '-title'}
+                    className='absolute left-1/2 -translate-x-1/2 text-xs text-text-muted'
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.15 }}
+                  >
+                    {feature.title}
+                  </motion.span>
+                </AnimatePresence>
+
+                {/* Pill indicators */}
+                <div className='flex gap-1.5 items-center'>
+                  {features.map(f => (
+                    <motion.span
+                      key={f.title}
+                      className='block h-1.5 rounded-full'
+                      animate={{
+                        width: activeFeature === f.title ? 14 : 6,
+                        backgroundColor:
+                          activeFeature === f.title ? feature.glow : 'rgba(255,255,255,0.18)',
+                      }}
+                      transition={{ duration: 0.3 }}
+                    />
+                  ))}
+                </div>
               </div>
 
-              <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-6'>
-                <p className='text-text-muted leading-relaxed max-w-xl'>{feature.description}</p>
-                <Link
-                  prefetch={false}
-                  href={feature.link}
-                  className='btn-ghost px-3 py-1.5 text-xs gap-1 group shrink-0'
+              {/* Screenshot */}
+              <AnimatePresence mode='wait'>
+                <motion.div
+                  key={activeFeature + '-img'}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.25, ease }}
                 >
-                  Read more
-                  <FiArrowUpRight className='w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-150' />
-                </Link>
-              </div>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={feature.image}
+                    alt={`${feature.title} screenshot`}
+                    className='w-full h-auto block'
+                  />
+                </motion.div>
+              </AnimatePresence>
+
+              {/* Auto-play progress bar */}
+              {isAutoPlaying && (
+                <motion.div
+                  key={`bar-${activeFeature}`}
+                  className='h-px origin-left'
+                  style={{ background: feature.glow, opacity: 0.5 }}
+                  initial={{ scaleX: 1 }}
+                  animate={{ scaleX: 0 }}
+                  transition={{ duration: 7, ease: 'linear' }}
+                />
+              )}
+            </div>
+          </div>
+
+          {/* Description + link */}
+          <AnimatePresence mode='wait'>
+            <motion.div
+              key={activeFeature + '-desc'}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.2, ease }}
+              className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-6'
+            >
+              <p className='text-text-muted leading-relaxed max-w-xl'>{feature.description}</p>
+              <Link
+                prefetch={false}
+                href={feature.link}
+                className='btn-ghost px-3 py-1.5 text-xs gap-1 group shrink-0'
+              >
+                Read more
+                <FiArrowUpRight className='w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-150' />
+              </Link>
             </motion.div>
           </AnimatePresence>
         </motion.div>

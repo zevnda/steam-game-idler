@@ -150,7 +150,7 @@ export default function HeroSection() {
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src='/examples/example.png'
+                src='https://pub-ca47df86597c4ccbb6ddf4366ca7f733.r2.dev/example.png'
                 alt='Steam Game Idler application dashboard'
                 width={2000}
                 height={1200}
@@ -173,7 +173,7 @@ export default function HeroSection() {
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src='/examples/example.png'
+                src='https://pub-ca47df86597c4ccbb6ddf4366ca7f733.r2.dev/example.png'
                 alt=''
                 aria-hidden='true'
                 style={{ width: '100%', height: 'auto', display: 'block', transform: 'scaleY(-1)' }}
