@@ -116,6 +116,12 @@ const testimonials = [
   },
   {
     content:
+      'Steam Game Idler is perfect if you want to customize your profile or be that one person with thousands of hours on a joke game. Runs smoothly in the background. Simple, convenient, and works great.',
+    username: 'dlyay',
+    platform: 'Discord',
+  },
+  {
+    content:
       'Switched from Idle Master Extended after it broke with newer titles, and I was always put off by the setup process of ArchiSteamFarm — I love your app, it looks really modern and is working for the newer games.',
     username: 'Deathwalker',
     platform: 'Discord',
