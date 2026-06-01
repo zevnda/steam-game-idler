@@ -1,9 +1,9 @@
 import { FaArrowRight } from 'react-icons/fa'
 import { FiBook, FiCheck, FiDownload, FiX } from 'react-icons/fi'
 import { TbCards, TbShield, TbUsers } from 'react-icons/tb'
-import FooterSection from '@docs/components/home/FooterSection'
-import NavBar from '@docs/components/home/NavBar'
 import Link from 'next/link'
+import FooterSection from '@/app/(home)/_components/FooterSection'
+import NavBar from '@/app/(home)/_components/NavBar'
 
 export const metadata = {
   title: 'ArchiSteamFarm Feature Comparison',

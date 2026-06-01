@@ -38,7 +38,7 @@ export default function Layout({ children }: LayoutProps) {
         ...base.nav,
         title: (
           <>
-            <Image src='/logo.svg' alt='Steam Game Idler' width={24} height={24} />
+            <Image src='/logo.svg' alt='Steam Game Idler' width={24} height={24} loading='eager' />
             <span className='font-bold tracking-tight'>Steam Game Idler</span>
           </>
         ),

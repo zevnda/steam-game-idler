@@ -1,256 +1,184 @@
-# CLAUDE.md — docs/
+# docs/CLAUDE.md
 
-This is the documentation site for Steam Game Idler, built with **Fumadocs** on **Next.js 16** (App Router). It is a standalone pnpm workspace package (`steam-game-idler-docs`) deployed statically to Vercel. It has no relationship to the root Tauri app — `src/` changes have no effect here.
+This file provides guidance to Claude Code when working in the `docs/` package — the documentation and marketing site for Steam Game Idler.
+
+## Overview
+
+A **Next.js 16 + Fumadocs** static site deployed to Vercel. It serves two purposes:
+1. **Marketing home page** — landing page with feature highlights, comparisons, FAQ, testimonials
+2. **Documentation** — structured MDX docs for every app feature
+
+This package is fully independent of the root Tauri app. Changes here have no effect on the desktop app.
 
 ## Commands
 
-Run from the **repo root** (pnpm workspace aliases):
+Run from the **repo root** using root aliases:
 
 ```bash
-pnpm dd           # docs dev server (http://localhost:3001)
-pnpm build:docs   # production build + next-sitemap postbuild
-pnpm lint:docs    # ESLint for docs
+pnpm dd              # docs dev server (http://localhost:3000)
+pnpm build:docs      # production build + sitemap postbuild
+pnpm lint:docs       # ESLint
 ```
 
-Or from inside `docs/` directly:
+Or run directly inside `docs/`:
 
 ```bash
 pnpm dev
-pnpm build        # next build (static export) + postbuild (sitemap)
-pnpm types:check  # tsc --noEmit
+pnpm build           # static export → out/
+pnpm lint
+pnpm types:check     # fumadocs-mdx codegen + tsc --noEmit
 ```
 
-There is **no test framework**.
+**No test framework** — there is no jest/vitest setup.
 
 ## Architecture
 
-### Routing (App Router)
-
 ```
-app/
-  (home)/               # Route group — home page + changelog
-    layout.tsx          # Thin wrapper div
-    page.tsx            # Home page (assembles section components)
-    changelog/
-      page.tsx          # Changelog list
-      [slug]/page.tsx   # Individual changelog entry
-      client.tsx        # Client-side rendering logic
-  docs/
-    layout.tsx          # DocsLayout (Fumadocs sidebar + nav)
-    [[...slug]]/page.tsx  # Catch-all for all /docs/* pages
-  alternatives/         # Comparison pages (ArchiSteamFarm, Idle Master, SAM)
-  supported-games/
-    [appName]/page.tsx  # Dynamic per-game pages
-  pro/
-  privacy/
-  tos/
-  api/
-    search/route.ts     # Orama full-text search endpoint
-  layout.tsx            # Root layout: RootProvider, fonts, metadata, structured data
-  globals.css           # Full design system (tokens, component classes, keyframes)
-  manifest.ts           # PWA manifest
+docs/
+  app/                     # Next.js App Router
+    (home)/                # Marketing home — route group with its own layout
+      _components/         # Section components (Hero, Features, FAQ, etc.)
+      layout.tsx
+      page.tsx             # Composes all home sections
+      search.tsx           # Search dialog
+    docs/                  # Documentation pages
+      _components/         # Doc-specific UI (CardLink, Cards, Logo, MockButton, etc.)
+      _content/            # MDX source files (see Content section below)
+      [[...slug]]/page.tsx # Catch-all routing — renders every doc page
+      layout.tsx           # Docs layout (Fumadocs sidebar, breadcrumbs, search)
+    changelog/             # Changelog list + detail pages
+    alternatives/          # Comparison pages (ASF, Idle Master, SAM)
+    supported-games/       # Dynamic game pages (/supported-games/[appName])
+    privacy/ tos/ pro/     # Static pages
+    layout.tsx             # Root layout — SEO metadata, analytics, fonts, providers
+    globals.css            # Global styles
+  lib/
+    source.ts              # Fumadocs source loaders (docs + changelogs)
+    layout.shared.tsx      # Shared nav options reused across layouts
+  changelogs/              # Changelog MDX files (versioned, e.g. 5.3.0.mdx)
+  public/                  # Static assets — logos, OG images, ads.txt
+  source.config.ts         # Fumadocs collection definitions (docs + blog/changelogs)
+  next.config.ts           # Static export config + Fumadocs MDX plugin
+  mdx-components.tsx       # MDX component overrides (adds image zoom)
+  next-sitemap.config.mjs  # Sitemap + robots.txt generation (postbuild)
+  vercel.json              # Vercel deployment — skips build when docs/ unchanged
 ```
 
-### Path alias
+## Routing
 
-`@docs/*` resolves to `./app/*` — use `@docs/components/...`, `@docs/stores/...` etc.
+| Route                        | Source                                   |
+| ---------------------------- | ---------------------------------------- |
+| `/`                          | `app/(home)/page.tsx`                    |
+| `/docs`                      | `app/docs/_content/index.mdx`            |
+| `/docs/[...slug]`            | `app/docs/_content/**/*.mdx`             |
+| `/changelog`                 | `app/changelog/page.tsx`                 |
+| `/changelog/[slug]`          | `changelogs/*.mdx`                       |
+| `/alternatives`              | `app/alternatives/page.tsx`              |
+| `/alternatives/[tool]`       | `app/alternatives/[tool]/page.tsx`       |
+| `/supported-games/[appName]` | `app/supported-games/[appName]/page.tsx` |
+| `/privacy`, `/tos`, `/pro`   | Static page files                        |
 
-### Content layer (Fumadocs MDX)
+## Content
 
-Two MDX collections defined in [source.config.ts](source.config.ts):
+### Documentation MDX (`app/docs/_content/`)
 
-| Collection | Source dir | URL base | Notes |
-|---|---|---|---|
-| `docs` | `content/docs/` | `/docs` | `keywords` frontmatter added via Zod extension |
-| `blog` (changelog) | `content/changelog/` | `/changelog` | requires `date` frontmatter |
+Structure maps directly to sidebar navigation. Each feature folder contains:
+- `index.mdx` — overview page
+- `meta.json` — defines sidebar order and section title
+- Additional `.mdx` files — sub-topic pages
 
-The compiled source is output to `.source/` and loaded by [lib/source.ts](lib/source.ts).
+Current sections:
+```
+get-started/         install, how-to-sign-in, build-it-yourself
+features/
+  card-farming/      algorithm, drop times, blacklisting, account restrictions
+  achievement-manager/  special flags
+  achievement-unlocker/ import timings, custom order & unlock delay
+  inventory-manager/    marketplace fees, pricing, removing listings
+  playtime-booster/     stop idling, additional info
+  task-scheduling/      possible task chains
+  free-games/           notifications, what counts
+  auto-idler.mdx
+  manual-add.mdx
+settings/            general, customization, per-feature settings, debug
+faq.mdx
+troubleshooting.mdx
+steam-credentials.mdx
+pro.mdx
+```
 
-**Docs frontmatter schema:**
+**Frontmatter** for doc pages uses `frontmatterSchema` extended with:
+```ts
+keywords: z.array(z.string()).optional()
+```
 
+### Changelog MDX (`changelogs/`)
+
+Files named `{version}.mdx` (e.g. `5.3.0.mdx`). Frontmatter:
 ```yaml
-title: string          # required
-description: string    # optional
-icon: string           # optional — Lucide icon name (e.g. "Hand", "ArrowBigDownDash")
-index: boolean         # optional — marks a section index page
-keywords: string[]     # optional — used for SEO
+---
+title: "v5.3.0"
+date: "2025-01-15"       # ISO date — required
+tags: ["New", "Improved", "Fixed"]    # tags are optional, at least one is required
+---
 ```
 
-**Changelog frontmatter schema:**
+### Navigation (`meta.json`)
 
-```yaml
-title: string          # version number (e.g. "5.3.0")
-date: string           # ISO date (e.g. "2025-01-15")
-tags: string[]         # optional — e.g. ["Added", "Fixed", "Improved"]
-```
-
-**Sidebar ordering (`meta.json`):**
-
-Each directory under `content/docs/` can have a `meta.json` that controls sidebar order and injects section headers:
-
+Each `meta.json` in `_content/` controls sidebar ordering:
 ```json
-{
-  "pages": ["---Get Started---", "index", "./get-started/install", "---Features---", ...]
-}
+{ "title": "Card Farming", "pages": ["index", "card-farming-algorithm", "..."] }
 ```
 
-Strings wrapped in `---` become non-clickable section labels.
+## Key Files
 
-### MDX components
+### `source.config.ts`
+Defines Fumadocs collections:
+- **`docs`** — reads from `app/docs/_content/`, adds `keywords` frontmatter field
+- **`blog`** (changelogs) — reads from `changelogs/`, adds `date` + `tags` fields, async
 
-Custom MDX components are registered in [mdx-components.tsx](mdx-components.tsx). All images are wrapped in `ImageZoom` from fumadocs-ui. Standard Fumadocs components (`Steps`, `Step`, `Callout`, `Tabs`, `Tab`) are available in all MDX files without import.
+### `lib/source.ts`
+Creates Fumadocs source loaders used throughout the app:
+- `docs.getPage(slug)` / `docs.getPages()` — doc page access
+- `blog.getPage(slug)` / `blog.getPages()` — changelog access
+- `getLLMText(page)` — generates plain-text from processed MDX (used in LLM context files)
+- `getPageImage(page)` — returns OG image path per doc page
 
-Content-specific components under [app/components/content/](app/components/content/) can be used in MDX:
+### `lib/layout.shared.tsx`
+Returns base nav options (`{ nav: { title: 'Steam Game Idler' } }`). Imported by both the home and docs layouts.
 
-| Component | Use |
-|---|---|
-| `Cards` + `CardLink` | Grid of navigation links |
-| `CopyableFAQ` | Expandable FAQ with copy button |
-| `DocsCTA` | Call-to-action badge/link |
-| `MockButton` | Inline UI mockup element |
+### `mdx-components.tsx`
+Wraps all `<img>` tags with Fumadocs `<ImageZoom>` for click-to-zoom. Extended by every MDX page.
 
-To use in MDX, import at the top of the file:
-```mdx
-import { Cards, CardLink } from '@docs/components/content/Cards'
-```
+### `app/layout.tsx`
+Root layout that provides:
+- Fumadocs `RootProvider` (theming, search)
+- Google Analytics + AdSense scripts
+- Geist + Geist Mono fonts
+- Full SEO metadata (OG tags, Twitter card, JSON-LD schema)
 
-### State management
+### `app/docs/layout.tsx`
+Docs section layout using Fumadocs `DocsLayout`:
+- Sidebar with Orama-powered search
+- GitHub + Discord external links
+- Theme switch disabled
 
-Single Zustand store at [app/stores/globalStore.ts](app/stores/globalStore.ts):
-- `downloadUrl` — latest release download URL (fetched from GitHub API)
-- `latestVersion` — latest release version string
-- `repoStars` — GitHub star count
+## Styling
 
-Populated by [app/components/StoreLoader.tsx](app/components/StoreLoader.tsx) on mount (client component). Used in HeroSection to render live download link and version badge.
+**Tailwind CSS v4** via PostCSS (`@tailwindcss/postcss`). There is no `tailwind.config.mjs` — Fumadocs UI ships its own theme. Custom styles go in `globals.css`.
 
-### Search
+**Path alias**: `@/*` → `./` (docs root). Use `@/lib/source`, `@/app/docs/_components/...`, etc.
 
-Full-text search via **Orama** at the `/api/search` endpoint. The Fumadocs `RootProvider` in [app/layout.tsx](app/layout.tsx) is wired to a custom [app/components/search.tsx](app/components/search.tsx) dialog. No separate indexing step — Fumadocs builds the index at request time from the source.
+## Adding Content
 
-## Design system
+**New doc page**: Add an `.mdx` file to the appropriate `app/docs/_content/` subdirectory, then add its filename (without `.mdx`) to the corresponding `meta.json` `pages` array.
 
-All tokens, component classes, and keyframes live in [app/globals.css](app/globals.css). This is the single source of truth — do not add one-off inline styles for things that belong here.
+**New changelog entry**: Add `changelogs/{version}.mdx` with required `date` frontmatter. It appears automatically in `/changelog`.
 
-### Design tokens (`@theme`)
+**New MDX component**: Export it from `mdx-components.tsx` so it's available in all MDX files without imports.
 
-| Token | Value | Use |
-|---|---|---|
-| `--color-background` | `#000` | Page background |
-| `--color-surface` | `#111` | Card/panel backgrounds |
-| `--color-surface-raised` | `#1a1a1a` | Elevated surfaces |
-| `--color-border` | `rgba(255,255,255,0.08)` | Default border |
-| `--color-text-primary` | `#f5f5f5` | Body text |
-| `--color-text-muted` | `#a3a3a3` | Secondary text |
-| `--color-accent` | `#00a3ff` | Brand blue |
-| `--radius-card` | `12px` | Card corner radius |
-| `--radius-button` | `6px` | Button corner radius |
+## Deployment
 
-Dark theme only. Do not add a light theme.
+Deployed to Vercel as a static export (`output: 'export'` in `next.config.ts`). The `vercel.json` `ignoreCommand` skips rebuilds when no files under `docs/` changed. Sitemap and `robots.txt` are generated in the `postbuild` step via `next-sitemap`.
 
-### Reusable component classes
-
-| Class | Description |
-|---|---|
-| `.card` | Dark surface card with border and hover lift |
-| `.btn-primary` | Solid accent blue button |
-| `.btn-ghost` | Outlined ghost button |
-| `.btn-download` | White download button with shimmer shine animation |
-| `.badge` | Small pill label |
-| `.section-divider` | Glowing horizontal rule between home sections |
-| `.glow-card` | Card with cursor-tracked glow effect |
-| `.spotlight-card` | Card with spinning conic-gradient border + cursor glow |
-| `.mockup-float` | 3D perspective float animation for app screenshots |
-
-### Animations (keyframes)
-
-| Name | Use |
-|---|---|
-| `shimmer-sweep` | Left-to-right shine on `.btn-download` |
-| `rainbow-border` | 8s conic-gradient rotation on `.spotlight-card` |
-| `mockup-float` | 3D bob animation (translateY + perspective rotations) |
-
-### Interactive card components
-
-Three card primitives in [app/components/](app/components/):
-
-- [CardBorder.tsx](app/components/CardBorder.tsx) — server component; subtle gradient-masked top/side border overlay
-- [GlowCard.tsx](app/components/GlowCard.tsx) — client component; tracks cursor position via `--mx`/`--my` CSS vars; renders `.glow-card` wrapper
-- [SpotlightCard.tsx](app/components/SpotlightCard.tsx) — client component; extends GlowCard with a spinning conic-gradient border (`.spotlight-card`); composes `CardBorder` inside
-
-Use `SpotlightCard` for featured/prominent cards. Use `GlowCard` for secondary stat-style cards. Use `CardBorder` alone when you only need the border accent without the glow behavior.
-
-## Home page sections
-
-The home page at [app/(home)/page.tsx](app/(home)/page.tsx) renders these sections in order, separated by `.section-divider` elements:
-
-| Component | File | Description |
-|---|---|---|
-| `HeroSection` | [HeroSection.tsx](app/components/home/HeroSection.tsx) | Headline, download button (live from globalStore), version badge |
-| `AppMockupSection` | [AppMockupSection.tsx](app/components/home/AppMockupSection.tsx) | Scroll-triggered app screenshot with 3D float + reflection |
-| `FeaturesSection` | [FeaturesSection.tsx](app/components/home/FeaturesSection.tsx) | 4 SpotlightCard feature tiles |
-| `SecuritySection` | [SecuritySection.tsx](app/components/home/SecuritySection.tsx) | Open-source / no-telemetry trust signals |
-| `StatsSection` | [StatsSection.tsx](app/components/home/StatsSection.tsx) | GlowCard stat tiles (stars, downloads, games) |
-| `ComparisonSection` | [ComparisonSection.tsx](app/components/home/ComparisonSection.tsx) | Feature table vs SAM / ASF / Idle Master |
-| `FAQSection` | [FAQSection.tsx](app/components/home/FAQSection.tsx) | Accordion FAQ (also feeds FAQPage schema.org) |
-| `CTASection` | [CTASection.tsx](app/components/home/CTASection.tsx) | Final download CTA |
-| `FooterSection` | [FooterSection.tsx](app/components/home/FooterSection.tsx) | Nav links, legal |
-
-`SectionAccent` ([SectionAccent.tsx](app/components/home/SectionAccent.tsx)) is a decorative radial gradient overlay dropped at the top of sections that need a subtle glow anchor point.
-
-### NavBar
-
-[NavBar.tsx](app/components/home/NavBar.tsx) is a `'use client'` fixed header rendered above all home sections. It is **not** part of the Fumadocs `DocsLayout` — it only appears on the `(home)` route group.
-
-**Behaviour:**
-- Transparent when at the top; gains a blurred dark background + border on scroll (`window.scrollY > 24`).
-- Desktop (`md+`): logo, inline nav links, download button.
-- Mobile (`< md`): logo + hamburger (`FiMenu`). Clicking opens a right-side drawer animated with `motion/react` (`AnimatePresence` + spring transition). The drawer contains all nav links and a full-width download button at the bottom. Body scroll is locked while the drawer is open.
-
-**Nav links defined in `navLinks` array** — add new top-level pages there (both desktop and drawer consume the same source).
-
-## Adding content
-
-### New doc page
-
-1. Create `content/docs/<path>.mdx` with required `title` frontmatter.
-2. Add the path to the nearest `meta.json` `pages` array to control sidebar position.
-3. No component imports needed for `Steps`, `Step`, `Callout`, `Tabs`, `Tab` — these are auto-available.
-
-### New changelog entry
-
-1. Create `content/changelog/<version>.mdx`.
-2. Required frontmatter: `title` (version string) and `date` (ISO date).
-3. The changelog list page renders entries in reverse-chronological order automatically.
-
-### New docs collection route
-
-Not needed for normal content. If a new Fumadocs collection is required, add it in [source.config.ts](source.config.ts) and register the loader in [lib/source.ts](lib/source.ts).
-
-## Key dependencies
-
-| Package | Version | Role |
-|---|---|---|
-| `next` | 16.2.6 | Framework (App Router, static export) |
-| `react` | 19.2.4 | UI library |
-| `fumadocs-core` | 16.5.1 | Docs framework core |
-| `fumadocs-mdx` | 14.2.6 | MDX processing + source loader |
-| `fumadocs-ui` | 16.5.1 | Docs layout, sidebar, search UI |
-| `tailwindcss` | 4.3.x | Styling (new `@tailwindcss/postcss` pipeline) |
-| `motion` | 12.40.0 | Animations (`motion/react`, replaces framer-motion) |
-| `@orama/orama` | 3.1.16 | Full-text search |
-| `zustand` | 5.0.8 | Client state (globalStore) |
-| `zod` | 4.1.13 | Frontmatter schema validation |
-| `lucide-react` | latest | Icons in docs UI and MDX via `lucideIconsPlugin` |
-
-## Static export notes
-
-`next.config.ts` sets `output: 'export'` and `images.unoptimized: true`. This means:
-
-- No server-side rendering — all dynamic data (GitHub API) is fetched client-side
-- No `next/image` optimization — use plain `<img>` or wrap with ImageZoom
-- Route handlers (`/api/search`) work at build time only via Fumadocs' static index generation
-- Deploy output is in `out/`; sitemap is generated into `out/` via `next-sitemap` postbuild
-
-## Ads
-
-Google AdSense is injected in [app/layout.tsx](app/layout.tsx). Ad slots render in `AdOverlay` ([app/components/AdOverlay.tsx](app/components/AdOverlay.tsx)) and are suppressed on `/supported-games/*` and `/changelog/*` routes. Do not add ad slots to doc pages.
+Production URL: `https://steamgameidler.com`

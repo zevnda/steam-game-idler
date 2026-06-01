@@ -1,5 +1,5 @@
-import FooterSection from '@docs/components/home/FooterSection'
-import NavBar from '@docs/components/home/NavBar'
+import FooterSection from '@/app/(home)/_components/FooterSection'
+import NavBar from '@/app/(home)/_components/NavBar'
 
 export const metadata = {
   title: 'Terms of Service | Steam Game Idler',

@@ -12,9 +12,9 @@ import {
   TbRefresh,
   TbSparkles,
 } from 'react-icons/tb'
-import FooterSection from '@docs/components/home/FooterSection'
-import NavBar from '@docs/components/home/NavBar'
 import Link from 'next/link'
+import FooterSection from '@/app/(home)/_components/FooterSection'
+import NavBar from '@/app/(home)/_components/NavBar'
 
 export const metadata = {
   title: { absolute: 'Steam Game Idler PRO' },

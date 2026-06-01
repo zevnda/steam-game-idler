@@ -1,8 +1,8 @@
 import { FaArrowRight } from 'react-icons/fa'
 import { FiAward, FiClock, FiTerminal } from 'react-icons/fi'
-import FooterSection from '@docs/components/home/FooterSection'
-import NavBar from '@docs/components/home/NavBar'
 import Link from 'next/link'
+import FooterSection from '@/app/(home)/_components/FooterSection'
+import NavBar from '@/app/(home)/_components/NavBar'
 
 export const metadata = {
   title: 'The Best Alternative to ArchiSteamFarm, Idle Master & Steam Achievement Manager',

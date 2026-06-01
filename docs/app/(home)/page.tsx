@@ -1,12 +1,12 @@
-import ComparisonSection from '@docs/components/home/ComparisonSection'
-import CTASection from '@docs/components/home/CTASection'
-import FAQSection from '@docs/components/home/FAQSection'
-import FeaturesSection from '@docs/components/home/FeaturesSection'
-import FooterSection from '@docs/components/home/FooterSection'
-import HeroSection from '@docs/components/home/HeroSection'
-import NavBar from '@docs/components/home/NavBar'
-import SecuritySection from '@docs/components/home/SecuritySection'
-import StatsSection from '@docs/components/home/StatsSection'
+import ComparisonSection from '@/app/(home)/_components/ComparisonSection'
+import CTASection from '@/app/(home)/_components/CTASection'
+import FAQSection from '@/app/(home)/_components/FAQSection'
+import FeaturesSection from '@/app/(home)/_components/FeaturesSection'
+import FooterSection from '@/app/(home)/_components/FooterSection'
+import HeroSection from '@/app/(home)/_components/HeroSection'
+import NavBar from '@/app/(home)/_components/NavBar'
+import SecuritySection from '@/app/(home)/_components/SecuritySection'
+import StatsSection from '@/app/(home)/_components/StatsSection'
 
 export default function HomePage() {
   return (
