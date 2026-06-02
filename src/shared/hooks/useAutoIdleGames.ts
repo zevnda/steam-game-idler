@@ -1,9 +1,8 @@
 import { useEffect } from 'react'
-import { startAutoIdleGames } from '@/shared/utils'
+import { startAutoIdleGames } from '@/features/idle'
 
 export function useAutoIdleGames() {
   useEffect(() => {
-    // Start idling games in auto idle list
     startAutoIdleGames()
   }, [])
 }

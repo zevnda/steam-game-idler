@@ -14,30 +14,24 @@ import {
   TbStarFilled,
 } from 'react-icons/tb'
 import { cn, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@heroui/react'
-import { CustomTooltip, showDangerToast, showPrimaryToast } from '@/shared/components'
-import { useUpdateStore } from '@/shared/stores'
+import { CustomTooltip } from '@/shared/components/CustomTooltip'
+import { logEvent } from '@/shared/services/logService'
+import { toast } from '@/shared/services/toastService'
+import { useSessionStore } from '@/shared/stores'
 import {
   fetchLatest,
   isPortableCheck,
-  logEvent,
   openExternalLink,
   preserveKeysAndClearData,
 } from '@/shared/utils'
 
-export const Menu = () => {
+export function Menu() {
   const { t } = useTranslation()
-  const setShowChangelog = useUpdateStore(state => state.setShowChangelog)
-  const [showMenu, setShowMenu] = useState(false)
+  const setShowChangelog = useSessionStore(s => s.setShowChangelog)
   const [isPortable, setIsPortable] = useState(false)
 
-  const githubIssueUrl =
-    'https://github.com/zevnda/steam-game-idler/issues/new?assignees=zevnda&labels='
-
   useEffect(() => {
-    ;(async () => {
-      const portable = await isPortableCheck()
-      setIsPortable(portable)
-    })()
+    isPortableCheck().then(setIsPortable)
   }, [])
 
   const handleUpdate = async () => {
@@ -48,19 +42,18 @@ export const Menu = () => {
         await invoke('kill_all_steamutil_processes')
         const latest = await fetchLatest()
         await update.downloadAndInstall()
-        if (latest?.major) {
-          await preserveKeysAndClearData()
-        }
+        if (latest?.major) await preserveKeysAndClearData()
         await relaunch()
       } else {
-        showPrimaryToast(t('toast.checkUpdate.none'))
+        toast.primary(t('toast.checkUpdate.none'))
       }
     } catch (error) {
-      showDangerToast(t('toast.checkUpdate.error'))
-      console.error('Error in (handleUpdate):', error)
-      logEvent(`Error in (handleUpdate): ${error}`)
+      toast.danger(t('toast.checkUpdate.error'))
+      await logEvent(`Error in (handleUpdate): ${error}`)
     }
   }
+
+  const issueUrl = 'https://github.com/zevnda/steam-game-idler/issues/new?assignees=zevnda&labels='
 
   return (
     <CustomTooltip content={t('common.menu')}>
@@ -68,22 +61,17 @@ export const Menu = () => {
         <Dropdown
           aria-label='Settings actions'
           backdrop='opaque'
-          onOpenChange={() => setShowMenu(!showMenu)}
-          classNames={{
-            content: ['rounded-xl p-0 bg-transparent'],
-          }}
+          classNames={{ content: ['rounded-xl p-0 bg-transparent'] }}
         >
           <DropdownTrigger>
             <div
               className={cn(
-                'flex items-center justify-center text-content hover:bg-header-hover/10',
-                'h-12 w-12 cursor-pointer active:scale-90 relative duration-150',
+                'flex items-center justify-center text-content hover:bg-header-hover/10 h-12 w-12 cursor-pointer active:scale-90 relative duration-150',
               )}
             >
               <TbSquareRoundedChevronDown fontSize={18} />
             </div>
           </DropdownTrigger>
-
           <DropdownMenu
             aria-label='Settings actions'
             classNames={{ base: 'bg-popover border border-border rounded-xl' }}
@@ -97,11 +85,10 @@ export const Menu = () => {
               classNames={{
                 base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
               }}
-              onPress={() => openExternalLink('https://steamgameidler.com/docs/')}
+              onPress={() => openExternalLink('https://steamgameidlers.com/docs/')}
             >
               {t('menu.guide')}
             </DropdownItem>
-
             <DropdownItem
               key='report'
               startContent={<TbBugFilled size={18} />}
@@ -112,13 +99,12 @@ export const Menu = () => {
               }}
               onPress={() =>
                 openExternalLink(
-                  githubIssueUrl + 'bug%2Cinvestigating&projects=&template=issue_report.yml',
+                  issueUrl + 'bug%2Cinvestigating&projects=&template=issue_report.yml',
                 )
               }
             >
               {t('menu.issue')}
             </DropdownItem>
-
             <DropdownItem
               showDivider
               key='feature'
@@ -130,13 +116,12 @@ export const Menu = () => {
               }}
               onPress={() =>
                 openExternalLink(
-                  githubIssueUrl + 'feature+request&projects=&template=feature_request.yml',
+                  issueUrl + 'feature+request&projects=&template=feature_request.yml',
                 )
               }
             >
               {t('menu.feature')}
             </DropdownItem>
-
             <DropdownItem
               showDivider
               key='support-me'
@@ -150,10 +135,9 @@ export const Menu = () => {
             >
               {t('menu.support')}
             </DropdownItem>
-
             <DropdownItem
               showDivider
-              key='join-discord'
+              key='discord'
               startContent={<FaDiscord size={18} />}
               textValue='Join our Discord'
               className='rounded-xl text-content'
@@ -164,7 +148,6 @@ export const Menu = () => {
             >
               {t('menu.joinDiscord')}
             </DropdownItem>
-
             <DropdownItem
               key='changelog'
               startContent={<TbListCheck size={18} />}
@@ -177,8 +160,7 @@ export const Menu = () => {
             >
               {t('menu.changelog')}
             </DropdownItem>
-
-            {isPortable === false ? (
+            {!isPortable ? (
               <DropdownItem
                 key='updates'
                 startContent={<TbDownload size={18} />}

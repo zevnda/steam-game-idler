@@ -14,25 +14,28 @@ import {
 } from 'react-icons/tb'
 import { Button, cn, Divider } from '@heroui/react'
 import Image from 'next/image'
-import { AdSlot, Beta, Brand, CustomModal } from '@/shared/components'
-import { useSidebar } from '@/shared/hooks'
-import { useIdleStore, useNavigationStore, useStateStore, useUserStore } from '@/shared/stores'
+import { AdSlot } from '@/shared/components/AdSlot'
+import { Beta } from '@/shared/components/Beta'
+import { CustomModal } from '@/shared/components/CustomModal'
+import { Brand } from '@/shared/components/titlebar/Brand'
+import { useSidebar } from '@/shared/hooks/sidebar/useSidebar'
+import { useSessionStore, useUiStore, useUserStore } from '@/shared/stores'
 
-export const Sidebar = () => {
+export function Sidebar() {
   const { t } = useTranslation()
-  const activePage = useNavigationStore(state => state.activePage)
-  const previousActivePage = useNavigationStore(state => state.previousActivePage)
-  const setActivePage = useNavigationStore(state => state.setActivePage)
-  const setPreviousActivePage = useNavigationStore(state => state.setPreviousActivePage)
-  const freeGamesList = useUserStore(state => state.freeGamesList)
-  const userSummary = useUserStore(state => state.userSummary)
-  const idleGamesList = useIdleStore(state => state.idleGamesList)
-  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
-  const isCardFarming = useStateStore(state => state.isCardFarming)
-  const isAchievementUnlocker = useStateStore(state => state.isAchievementUnlocker)
-  const transitionDuration = useStateStore(state => state.transitionDuration)
-  const setShowAchievements = useStateStore(state => state.setShowAchievements)
-  const setShowAchievementOrder = useStateStore(state => state.setShowAchievementOrder)
+  const activePage = useUiStore(s => s.activePage)
+  const previousActivePage = useUiStore(s => s.previousActivePage)
+  const setActivePage = useUiStore(s => s.setActivePage)
+  const setPreviousActivePage = useUiStore(s => s.setPreviousActivePage)
+  const freeGamesList = useUserStore(s => s.freeGamesList)
+  const userSummary = useUserStore(s => s.userSummary)
+  const idleGamesList = useSessionStore(s => s.idleGamesList)
+  const sidebarCollapsed = useUiStore(s => s.sidebarCollapsed)
+  const isCardFarming = useSessionStore(s => s.isCardFarming)
+  const isAchievementUnlocker = useSessionStore(s => s.isAchievementUnlocker)
+  const transitionDuration = useUiStore(s => s.transitionDuration)
+  const setSelectedGame = useUiStore(s => s.setSelectedGame)
+  const setAchievementOrderGame = useUiStore(s => s.setAchievementOrderGame)
   const { isOpen, onOpenChange, openConfirmation, handleLogout } = useSidebar(
     activePage,
     setActivePage,
@@ -40,13 +43,8 @@ export const Sidebar = () => {
 
   const effectivePage = activePage === 'settings' ? previousActivePage : activePage
 
-  const mainSidebarItems: SidebarItem[] = [
-    {
-      id: 'games',
-      page: 'games',
-      title: t('gamesList.title'),
-      icon: TbDeviceGamepad2,
-    },
+  const items: SidebarItem[] = [
+    { id: 'games', page: 'games', title: t('gamesList.title'), icon: TbDeviceGamepad2 },
     {
       id: 'idling',
       page: 'idling',
@@ -61,12 +59,7 @@ export const Sidebar = () => {
       title: t('customLists.favorites.title'),
       icon: TbHeart,
     },
-    {
-      id: 'free-games',
-      page: 'freeGames',
-      title: t('freeGames.title'),
-      icon: TbGift,
-    },
+    { id: 'free-games', page: 'freeGames', title: t('freeGames.title'), icon: TbGift },
     {
       id: 'card-farming',
       page: 'customlists/card-farming',
@@ -97,25 +90,20 @@ export const Sidebar = () => {
     },
   ]
 
-  // Section headers and their corresponding first item indices
-  const sectionHeaders: { [index: number]: string } = {
+  const sectionHeaders: Record<number, string> = {
     0: t('sidebar.section.games'),
     4: t('sidebar.section.automation'),
     7: t('sidebar.section.misc'),
   }
 
-  // Helper to render section header if needed
-  const renderSectionHeader = (index: number) => {
+  const renderHeader = (index: number) => {
     const header = sectionHeaders[index]
     if (!header) return null
-    if (sidebarCollapsed) {
-      return <Divider className='w-full bg-border/60 mt-0.5 mb-2' />
-    }
+    if (sidebarCollapsed) return <Divider className='w-full bg-border/60 mt-0.5 mb-2' />
     return (
       <div
         className={cn(
-          'px-4 py-1 mb-0 text-[12px] font-bold text-content uppercase tracking-wider select-none',
-          'transition-all ease-in-out whitespace-nowrap truncate',
+          'px-4 py-1 mb-0 text-[12px] font-bold text-content uppercase tracking-wider select-none transition-all ease-in-out whitespace-nowrap truncate',
           header !== t('sidebar.section.games') ? 'mt-4' : 'mt-0',
         )}
       >
@@ -124,25 +112,21 @@ export const Sidebar = () => {
     )
   }
 
-  const renderSidebarItem = (item: SidebarItem, index: number) => {
+  const renderItem = (item: SidebarItem, index: number) => {
     const Icon = item.icon
-    const isCurrentPage = effectivePage === item.page
+    const isCurrent = effectivePage === item.page
     const isFreeGames = item.id === 'free-games'
     const hasFreeGames = freeGamesList.length > 0
-    const isBeta = item.isBeta
 
     return (
       <div key={item.id}>
-        {renderSectionHeader(index)}
-
+        {renderHeader(index)}
         <div className='flex w-full'>
-          {/* Left indicator */}
           {!sidebarCollapsed && (
             <div
               className={cn(
-                'mr-2 shrink-0 self-center rounded-r-md transition-transform duration-150',
-                'w-1.5 h-7',
-                isCurrentPage ? 'bg-dynamic scale-y-100' : 'scale-y-0',
+                'mr-2 shrink-0 self-center rounded-r-md transition-transform duration-150 w-1.5 h-7',
+                isCurrent ? 'bg-dynamic scale-y-100' : 'scale-y-0',
               )}
               aria-hidden
             />
@@ -150,7 +134,7 @@ export const Sidebar = () => {
           <div
             className={cn(
               'px-1.5 py-1.5 rounded-lg duration-150 cursor-pointer active:scale-95 w-full overflow-hidden',
-              isCurrentPage
+              isCurrent
                 ? sidebarCollapsed
                   ? 'bg-dynamic/10 text-dynamic'
                   : 'bg-linear-to-r from-dynamic/20 via-dynamic/2 to-dynamic/0 text-dynamic'
@@ -158,8 +142,8 @@ export const Sidebar = () => {
               item.customClassName,
             )}
             onClick={() => {
-              setShowAchievements(false)
-              setShowAchievementOrder(false)
+              setSelectedGame(null)
+              setAchievementOrderGame(null)
               setActivePage(item.page)
             }}
           >
@@ -186,7 +170,7 @@ export const Sidebar = () => {
                     )}
                   >
                     <span className='truncate'>{item.title}</span>
-                    {isBeta && <Beta />}
+                    {item.isBeta && <Beta />}
                   </p>
                 </div>
               )}
@@ -204,10 +188,7 @@ export const Sidebar = () => {
           'relative flex flex-col h-screen z-40 bg-sidebar/90 border-r border-border select-none ease-in-out',
           sidebarCollapsed ? 'min-w-14 max-w-14' : 'min-w-62.5 max-w-62.5',
         )}
-        style={{
-          transitionDuration,
-          transitionProperty: 'min-width, max-width',
-        }}
+        style={{ transitionDuration, transitionProperty: 'min-width, max-width' }}
       >
         <div
           className={cn(
@@ -217,23 +198,19 @@ export const Sidebar = () => {
         >
           <Brand />
         </div>
-
         <div
           className={cn(
             'flex flex-col gap-1 p-2 w-full min-w-0 overflow-y-auto',
             !sidebarCollapsed ? 'pl-0' : undefined,
           )}
         >
-          {mainSidebarItems.map((item, idx) => renderSidebarItem(item, idx))}
+          {items.map((item, idx) => renderItem(item, idx))}
         </div>
-
         {process.env.NODE_ENV === 'production' && (
           <div className='absolute bottom-8 left-0 right-0 flex flex-col items-center justify-end grow mb-1 overflow-hidden pointer-events-none'>
             <AdSlot />
           </div>
         )}
-
-        {/* Settings and signout */}
         <div
           className={cn(
             'flex items-center mt-auto w-full rounded-t-xl py-2 px-1.5',
@@ -255,7 +232,6 @@ export const Sidebar = () => {
                 className='rounded-full bg-white'
               />
             </div>
-
             {!sidebarCollapsed && (
               <div className='flex items-center justify-between w-full overflow-hidden'>
                 <div className='flex flex-col overflow-hidden'>
@@ -277,8 +253,8 @@ export const Sidebar = () => {
                     onClick={
                       !(isCardFarming || isAchievementUnlocker)
                         ? () => {
-                            setShowAchievements(false)
-                            setShowAchievementOrder(false)
+                            setSelectedGame(null)
+                            setAchievementOrderGame(null)
                             setPreviousActivePage(activePage)
                             setActivePage('settings')
                           }
@@ -315,8 +291,8 @@ export const Sidebar = () => {
                   onClick={
                     !(isCardFarming || isAchievementUnlocker)
                       ? () => {
-                          setShowAchievements(false)
-                          setShowAchievementOrder(false)
+                          setSelectedGame(null)
+                          setAchievementOrderGame(null)
                           setActivePage('settings')
                         }
                       : undefined
@@ -340,7 +316,6 @@ export const Sidebar = () => {
           </div>
         </div>
       </div>
-
       <CustomModal
         isOpen={isOpen}
         onOpenChange={onOpenChange}
@@ -363,8 +338,8 @@ export const Sidebar = () => {
               className='bg-btn-secondary text-btn-text font-bold'
               radius='full'
               onPress={() => {
-                setShowAchievements(false)
-                setShowAchievementOrder(false)
+                setSelectedGame(null)
+                setAchievementOrderGame(null)
                 handleLogout(onOpenChange)
               }}
             >

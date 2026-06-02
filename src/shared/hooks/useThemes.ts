@@ -3,54 +3,46 @@ import { invoke } from '@tauri-apps/api/core'
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useTheme } from 'next-themes'
-import { showDangerToast } from '@/shared/components'
+import { logEvent } from '@/shared/services/logService'
+import { toast } from '@/shared/services/toastService'
 import { useUserStore } from '@/shared/stores'
-import { hasCasualFeature, logEvent } from '@/shared/utils'
+import { hasCasualFeature } from '@/shared/utils'
 
 export function useThemes() {
   const { t } = useTranslation()
   const { setTheme } = useTheme()
-  const proTier = useUserStore(state => state.proTier)
-  const userSummary = useUserStore(state => state.userSummary)
+  const proTier = useUserStore(s => s.proTier)
+  const userSummary = useUserStore(s => s.userSummary)
 
   useEffect(() => {
-    const applyThemeForUser = async () => {
+    const applyTheme = async () => {
       try {
         if (!userSummary) return
 
-        const html = document.documentElement
-        // Themes
         const proThemes = ['blue', 'red', 'purple', 'pink', 'gold', 'black']
         let userTheme = 'dark'
 
-        // Get user settings if available
         if (hasCasualFeature(proTier)) {
-          const cachedUserSettings = await invoke<InvokeSettings>('get_user_settings', {
+          const res = await invoke<InvokeSettings>('get_user_settings', {
             steamId: userSummary.steamId,
           })
-          userTheme = cachedUserSettings.settings.general.theme || 'dark'
+          userTheme = res.settings.general.theme || 'dark'
         } else {
-          // If not pro, remove any pro themes
           const currentTheme = localStorage.getItem('theme')
-          if (currentTheme && proThemes.includes(currentTheme)) {
-            userTheme = 'dark'
-          } else {
-            userTheme = currentTheme || 'dark'
-          }
+          userTheme = currentTheme && !proThemes.includes(currentTheme) ? currentTheme : 'dark'
         }
 
-        // Always reset classes and apply the correct one
+        const html = document.documentElement
         html.className = ''
         html.classList.add(userTheme)
         localStorage.setItem('theme', userTheme)
         setTheme(userTheme)
       } catch (error) {
-        showDangerToast(t('common.error'))
-        console.error('Error in (applyThemeForUser):', error)
-        logEvent(`[Error] in (applyThemeForUser): ${error}`)
+        toast.danger(t('common.error'))
+        console.error('Error in applyTheme:', error)
+        await logEvent(`[Error] in (applyThemeForUser): ${error}`)
       }
     }
-
-    applyThemeForUser()
+    applyTheme()
   }, [userSummary, proTier, setTheme, t])
 }

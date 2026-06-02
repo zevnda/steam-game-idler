@@ -4,51 +4,40 @@ import type {
   GeneralSettings,
 } from '@/shared/types'
 import { cn, Switch } from '@heroui/react'
-import {
-  handleCheckboxChange,
-  handleRunAtStartupChange,
-  useAchievementSettings,
-  useCardSettings,
-  useGeneralSettings,
-} from '@/features/settings'
 import { useUserStore } from '@/shared/stores'
-import { antiAwayStatus } from '@/shared/utils'
 
-interface SettingsCheckboxProps {
+interface SettingsSwitchProps {
   type: 'general' | 'cardFarming' | 'achievementUnlocker'
   name: string
   isProSetting?: boolean
 }
 
-export const SettingsSwitch = ({ type, name, isProSetting = false }: SettingsCheckboxProps) => {
-  const userSummary = useUserStore(state => state.userSummary)
-  const userSettings = useUserStore(state => state.userSettings)
-  const setUserSettings = useUserStore(state => state.setUserSettings)
-  const isPro = useUserStore(state => state.isPro)
-  const { startupState, setStartupState } = useGeneralSettings()
+export function SettingsSwitch({ type, name, isProSetting = false }: SettingsSwitchProps) {
+  const userSummary = useUserStore(s => s.userSummary)
+  const userSettings = useUserStore(s => s.userSettings)
+  const setUserSettings = useUserStore(s => s.setUserSettings)
+  const isPro = useUserStore(s => s.isPro)
 
-  useCardSettings()
-  useAchievementSettings()
-
-  const isSettingEnabled = () => {
+  const isEnabled = () => {
     if (!userSettings) return false
-
-    if (type === 'general') {
+    if (type === 'general')
       return Boolean((userSettings.general as GeneralSettings)[name as keyof GeneralSettings])
-    }
-    if (type === 'cardFarming') {
+    if (type === 'cardFarming')
       return Boolean(
         (userSettings.cardFarming as CardFarmingSettings)[name as keyof CardFarmingSettings],
       )
-    }
-    if (type === 'achievementUnlocker') {
+    if (type === 'achievementUnlocker')
       return Boolean(
         (userSettings.achievementUnlocker as AchievementUnlockerSettings)[
           name as keyof AchievementUnlockerSettings
         ],
       )
-    }
     return false
+  }
+
+  const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { handleCheckboxChange } = await import('@/features/settings')
+    handleCheckboxChange(e, type, userSummary?.steamId, setUserSettings)
   }
 
   if (name === 'antiAway') {
@@ -56,13 +45,13 @@ export const SettingsSwitch = ({ type, name, isProSetting = false }: SettingsChe
       <Switch
         size='sm'
         name={name}
-        isSelected={isSettingEnabled()}
-        classNames={{
-          wrapper: cn('group-data-[selected=true]:!bg-dynamic !bg-switch'),
-        }}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+        isSelected={isEnabled()}
+        classNames={{ wrapper: cn('group-data-[selected=true]:!bg-dynamic !bg-switch') }}
+        onChange={async e => {
+          const { antiAwayStatus } = await import('@/shared/utils/system')
+          const { handleCheckboxChange } = await import('@/features/settings')
           handleCheckboxChange(e, 'general', userSummary?.steamId, setUserSettings)
-          antiAwayStatus(isSettingEnabled() ? null : undefined)
+          antiAwayStatus(isEnabled() ? null : undefined)
         }}
       />
     )
@@ -73,11 +62,12 @@ export const SettingsSwitch = ({ type, name, isProSetting = false }: SettingsChe
       <Switch
         size='sm'
         name={name}
-        isSelected={startupState || false}
-        classNames={{
-          wrapper: cn('group-data-[selected=true]:!bg-dynamic !bg-switch'),
+        isSelected={isEnabled()}
+        classNames={{ wrapper: cn('group-data-[selected=true]:!bg-dynamic !bg-switch') }}
+        onChange={async () => {
+          const { handleRunAtStartupChange } = await import('@/features/settings')
+          handleRunAtStartupChange()
         }}
-        onChange={() => handleRunAtStartupChange(setStartupState)}
       />
     )
   }
@@ -86,20 +76,10 @@ export const SettingsSwitch = ({ type, name, isProSetting = false }: SettingsChe
     <Switch
       size='sm'
       name={name}
-      isSelected={isSettingEnabled()}
+      isSelected={isEnabled()}
       isDisabled={isProSetting && !isPro}
-      classNames={{
-        wrapper: cn('group-data-[selected=true]:!bg-dynamic !bg-switch'),
-      }}
-      onChange={e => {
-        if (type === 'general') {
-          handleCheckboxChange(e, 'general', userSummary?.steamId, setUserSettings)
-        } else if (type === 'cardFarming') {
-          handleCheckboxChange(e, 'cardFarming', userSummary?.steamId, setUserSettings)
-        } else {
-          handleCheckboxChange(e, 'achievementUnlocker', userSummary?.steamId, setUserSettings)
-        }
-      }}
+      classNames={{ wrapper: cn('group-data-[selected=true]:!bg-dynamic !bg-switch') }}
+      onChange={handleChange}
     />
   )
 }

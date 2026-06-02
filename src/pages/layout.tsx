@@ -1,0 +1,59 @@
+import { useEffect, useState } from 'react'
+import { Inter } from 'next/font/google'
+import Head from 'next/head'
+import Image from 'next/image'
+import Script from 'next/script'
+import { Titlebar } from '@/shared/components/titlebar/Titlebar'
+import { useUiStore, useUserStore } from '@/shared/stores'
+
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
+
+export function Layout({ children }: React.PropsWithChildren) {
+  const loadingUserSummary = useUiStore(s => s.loadingUserSummary)
+  const userSettings = useUserStore(s => s.userSettings)
+  const isPro = useUserStore(s => s.isPro)
+  const proModalOpen = useUiStore(s => s.proModalOpen)
+  const [customBackground, setCustomBackground] = useState('')
+
+  useEffect(() => {
+    setCustomBackground(userSettings?.general?.customBackground || '')
+  }, [userSettings])
+
+  return (
+    <>
+      <Head>
+        <title>Steam Game Idler</title>
+      </Head>
+      <Script id='chatway' src='https://cdn.chatway.app/widget.js?id=1F2cY0TT2RKh' />
+      <Script id='chatway-hide-icon' strategy='afterInteractive'>{`
+        window.$chatwayOnLoad = function() {
+          if (window.$chatway && typeof window.$chatway.hideChatwayIcon === 'function') {
+            window.$chatway.hideChatwayIcon();
+          }
+        };
+      `}</Script>
+      {!loadingUserSummary && customBackground && isPro && (
+        <>
+          <Image
+            src={customBackground}
+            className='absolute top-0 left-0 w-full h-full object-cover pointer-events-none'
+            alt='background'
+            width={1920}
+            height={1080}
+            priority
+            style={{
+              WebkitMaskImage:
+                'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 40%)',
+              zIndex: 1,
+            }}
+          />
+          <div className='absolute top-0 left-0 bg-base/80 w-full h-screen backdrop-blur-xs pointer-events-none z-1' />
+        </>
+      )}
+      {!proModalOpen && <Titlebar />}
+      <main className={`${inter.className} h-full min-h-screen text-content bg-gradient-bg`}>
+        {children}
+      </main>
+    </>
+  )
+}

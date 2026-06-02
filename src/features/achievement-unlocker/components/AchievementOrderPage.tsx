@@ -1,5 +1,5 @@
 import type { Achievement, InvokeAchievementData } from '@/shared/types'
-import type { DragEndEvent, DragOverEvent, DragStartEvent } from '@dnd-kit/core'
+import type { DragOverEvent, DragStartEvent } from '@dnd-kit/core'
 import { invoke } from '@tauri-apps/api/core'
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -13,10 +13,12 @@ import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { Button, Checkbox, cn, Input, Spinner, useDisclosure } from '@heroui/react'
 import Image from 'next/image'
-import { ProBadge, showAccountMismatchToast, showDangerToast } from '@/shared/components'
 import { OpenDocs } from '@/shared/components/OpenDocs'
-import { useStateStore, useUserStore } from '@/shared/stores'
-import { checkSteamStatus, hasGamerFeature, logEvent } from '@/shared/utils'
+import { ProBadge } from '@/shared/components/pro/ProBadge'
+import { logEvent } from '@/shared/services/logService'
+import { toast } from '@/shared/services/toastService'
+import { useUiStore, useUserStore } from '@/shared/stores'
+import { checkSteamStatus, hasGamerFeature } from '@/shared/utils'
 
 interface SortableAchievementProps {
   appid: number
@@ -30,7 +32,6 @@ interface SortableAchievementProps {
 const SortableAchievement = memo(function SortableAchievement({
   appid,
   achievement,
-  index,
   style,
   onToggleSkip,
   onSetDelay,
@@ -39,30 +40,17 @@ const SortableAchievement = memo(function SortableAchievement({
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: achievement.name,
   })
-
   const iconUrl = 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/'
   const icon = achievement.achieved
     ? `${iconUrl}${appid}/${achievement.iconNormal}`
     : `${iconUrl}${appid}/${achievement.iconLocked}`
-
-  const [delayValue, setDelayValue] = useState<number | ''>(
-    achievement.delayNextUnlock !== undefined ? achievement.delayNextUnlock : '',
-  )
+  const [delayValue, setDelayValue] = useState<number | ''>(achievement.delayNextUnlock ?? '')
 
   useEffect(() => {
-    setDelayValue(achievement.delayNextUnlock !== undefined ? achievement.delayNextUnlock : '')
+    setDelayValue(achievement.delayNextUnlock ?? '')
   }, [achievement.delayNextUnlock])
 
-  const handleDelayChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value
-    if (val === '') {
-      setDelayValue('')
-    } else {
-      setDelayValue(Math.max(0, Number(val)))
-    }
-  }
-
-  const handleInputBlur = () => {
+  const handleBlur = () => {
     if (delayValue === '' || delayValue === 0) {
       onSetDelay(achievement.name, null)
     } else {
@@ -70,22 +58,16 @@ const SortableAchievement = memo(function SortableAchievement({
     }
   }
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') handleInputBlur()
-  }
-
   return (
     <div
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition, ...style }}
       className={cn(
-        'grid grid-cols-[28px_40px_1fr_auto_36px] items-center gap-3 px-3 py-2.5',
-        'bg-card hover:bg-sidebar/60 group duration-150',
+        'grid grid-cols-[28px_40px_1fr_auto_36px] items-center gap-3 px-3 py-2.5 bg-card hover:bg-sidebar/60 group duration-150',
         (achievement.skip === true || achievement.achieved) && 'opacity-40',
         isDragging && 'opacity-0',
       )}
     >
-      {/* Checkbox */}
       <div className='flex items-center justify-center'>
         <Checkbox
           isSelected={!achievement.achieved && achievement.skip !== true}
@@ -94,22 +76,18 @@ const SortableAchievement = memo(function SortableAchievement({
           onClick={e => e.stopPropagation()}
         />
       </div>
-
-      {/* Icon */}
       <Image
         className='rounded-full select-none'
         src={icon}
         width={36}
         height={36}
-        alt={`${achievement.name} image`}
+        alt={achievement.name}
         priority
       />
-
-      {/* Name + description */}
       <div className='min-w-0 select-none'>
-        <div className='flex items-baseline gap-2 min-w-0'>
+        <div className='flex items-baseline gap-2'>
           <p className='font-semibold truncate'>{achievement.name}</p>
-          {achievement.percent !== undefined && achievement.percent > 0 && (
+          {achievement.percent > 0 && (
             <span className='text-xs text-altwhite/60 shrink-0'>
               {achievement.percent.toFixed(1)}%
             </span>
@@ -124,8 +102,6 @@ const SortableAchievement = memo(function SortableAchievement({
           {achievement.description}
         </p>
       </div>
-
-      {/* Inline delay input */}
       <div
         className='flex items-center gap-1.5 shrink-0 select-none'
         onPointerDown={e => e.stopPropagation()}
@@ -138,24 +114,24 @@ const SortableAchievement = memo(function SortableAchievement({
           isDisabled={achievement.achieved}
           className='w-24'
           value={delayValue.toString()}
-          onChange={handleDelayChange}
+          onChange={e => {
+            const v = e.target.value
+            setDelayValue(v === '' ? '' : Math.max(0, Number(v)))
+          }}
           size='sm'
-          onBlur={handleInputBlur}
-          onKeyDown={handleKeyDown}
+          onBlur={handleBlur}
+          onKeyDown={e => {
+            if (e.key === 'Enter') handleBlur()
+          }}
           classNames={{
             inputWrapper: cn(
-              'bg-input data-[hover=true]:!bg-inputhover',
-              'group-data-[focus-within=true]:!bg-inputhover',
-              'group-data-[focus-visible=true]:ring-transparent',
-              'group-data-[focus-visible=true]:ring-offset-transparent',
+              'bg-input data-[hover=true]:!bg-inputhover group-data-[focus-within=true]:!bg-inputhover group-data-[focus-visible=true]:ring-transparent group-data-[focus-visible=true]:ring-offset-transparent',
             ),
             input: ['!text-content placeholder:text-altwhite/50'],
           }}
         />
         <span className='text-xs text-altwhite'>{t('common.minutes')}</span>
       </div>
-
-      {/* Drag handle */}
       <span
         {...listeners}
         {...attributes}
@@ -171,13 +147,6 @@ const SortableAchievement = memo(function SortableAchievement({
   )
 })
 
-interface SortableRowData {
-  appid: number
-  achievements: Achievement[]
-  onToggleSkip: (name: string) => void
-  onSetDelay: (name: string, value: number | null) => void
-}
-
 const SortableRow = memo(function SortableRow({
   index,
   style,
@@ -185,15 +154,20 @@ const SortableRow = memo(function SortableRow({
 }: {
   index: number
   style: React.CSSProperties
-  data: SortableRowData
+  data: {
+    appid: number
+    achievements: Achievement[]
+    onToggleSkip: (n: string) => void
+    onSetDelay: (n: string, v: number | null) => void
+  }
 }) {
-  const achievement = data.achievements[index]
-  if (!achievement) return null
+  const a = data.achievements[index]
+  if (!a) return null
   return (
     <SortableAchievement
       style={style}
       appid={data.appid}
-      achievement={achievement}
+      achievement={a}
       index={index}
       onToggleSkip={data.onToggleSkip}
       onSetDelay={data.onSetDelay}
@@ -201,91 +175,16 @@ const SortableRow = memo(function SortableRow({
   )
 })
 
-const AchievementOverlayItem = memo(function AchievementOverlayItem({
-  appid,
-  achievement,
-}: {
-  appid: number
-  achievement: Achievement
-}) {
+export function AchievementOrderPage() {
   const { t } = useTranslation()
-  const iconUrl = 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/'
-  const icon = achievement.achieved
-    ? `${iconUrl}${appid}/${achievement.iconNormal}`
-    : `${iconUrl}${appid}/${achievement.iconLocked}`
-
-  return (
-    <div
-      className={cn(
-        'grid grid-cols-[28px_40px_1fr_auto_36px] items-center gap-3 px-3 py-2.5',
-        'bg-card shadow-xl rounded-lg cursor-grabbing',
-        (achievement.skip === true || achievement.achieved) && 'opacity-40',
-      )}
-    >
-      <div className='flex items-center justify-center'>
-        <Checkbox
-          isSelected={!achievement.achieved && achievement.skip !== true}
-          isDisabled={achievement.achieved}
-        />
-      </div>
-      <Image
-        className='rounded-full select-none'
-        src={icon}
-        width={36}
-        height={36}
-        alt={`${achievement.name} image`}
-        priority
-      />
-      <div className='min-w-0 select-none'>
-        <div className='flex items-baseline gap-2 min-w-0'>
-          <p className='font-semibold truncate'>{achievement.name}</p>
-          {achievement.percent !== undefined && achievement.percent > 0 && (
-            <span className='text-xs text-altwhite/60 shrink-0'>
-              {achievement.percent.toFixed(1)}%
-            </span>
-          )}
-        </div>
-        <p className='text-xs text-altwhite truncate'>{achievement.description}</p>
-      </div>
-      <div className='flex items-center gap-1.5 shrink-0 select-none'>
-        <Input
-          type='number'
-          min={0}
-          step={0.1}
-          placeholder='0'
-          isDisabled
-          className='w-24'
-          value={(achievement.delayNextUnlock ?? '').toString()}
-          size='sm'
-          classNames={{
-            inputWrapper: cn(
-              'bg-input data-[hover=true]:!bg-inputhover',
-              'group-data-[focus-within=true]:!bg-inputhover',
-              'group-data-[focus-visible=true]:ring-transparent',
-              'group-data-[focus-visible=true]:ring-offset-transparent',
-            ),
-            input: ['!text-content placeholder:text-altwhite/50'],
-          }}
-        />
-        <span className='text-xs text-altwhite'>{t('common.minutes')}</span>
-      </div>
-      <span className='cursor-grabbing justify-self-end'>
-        <GoGrabber size={28} className='text-altwhite' />
-      </span>
-    </div>
-  )
-})
-
-export const AchievementOrderPage = () => {
-  const { t } = useTranslation()
-  const userSummary = useUserStore(state => state.userSummary)
-  const proTier = useUserStore(state => state.proTier)
-  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
-  const transitionDuration = useStateStore(state => state.transitionDuration)
-  const achievementOrderGame = useStateStore(state => state.achievementOrderGame)
-  const setShowAchievementOrder = useStateStore(state => state.setShowAchievementOrder)
-  const setProModalOpen = useStateStore(state => state.setProModalOpen)
-  const setProModalRequiredTier = useStateStore(state => state.setProModalRequiredTier)
+  const userSummary = useUserStore(s => s.userSummary)
+  const proTier = useUserStore(s => s.proTier)
+  const sidebarCollapsed = useUiStore(s => s.sidebarCollapsed)
+  const transitionDuration = useUiStore(s => s.transitionDuration)
+  const achievementOrderGame = useUiStore(s => s.achievementOrderGame)
+  const setAchievementOrderGame = useUiStore(s => s.setAchievementOrderGame)
+  const setProModalOpen = useUiStore(s => s.setProModalOpen)
+  const setProModalRequiredTier = useUiStore(s => s.setProModalRequiredTier)
   const {
     isOpen: isImportOpen,
     onOpen: onImportOpen,
@@ -293,17 +192,7 @@ export const AchievementOrderPage = () => {
   } = useDisclosure()
 
   const item = achievementOrderGame!
-
-  const [windowInnerHeight, setWindowInnerHeight] = useState(() =>
-    typeof window !== 'undefined' ? window.innerHeight : 800,
-  )
-
-  useEffect(() => {
-    const handleResize = () => setWindowInnerHeight(window.innerHeight)
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
-
+  const [windowH, setWindowH] = useState(typeof window !== 'undefined' ? window.innerHeight : 800)
   const [isLoading, setIsLoading] = useState(false)
   const [achievements, setAchievements] = useState<Achievement[]>([])
   const [originalAchievements, setOriginalAchievements] = useState<Achievement[]>([])
@@ -312,43 +201,45 @@ export const AchievementOrderPage = () => {
   const [fallbackImage, setFallbackImage] = useState('')
   const [activeId, setActiveId] = useState<string | null>(null)
 
-  const handleDragStart = useCallback((event: DragStartEvent) => {
-    setActiveId(event.active.id as string)
+  useEffect(() => {
+    const h = () => setWindowH(window.innerHeight)
+    window.addEventListener('resize', h)
+    return () => window.removeEventListener('resize', h)
   }, [])
 
-  const handleDragOver = useCallback((event: DragOverEvent) => {
-    const { active, over } = event
+  const handleDragStart = useCallback((e: DragStartEvent) => setActiveId(e.active.id as string), [])
+  const handleDragOver = useCallback((e: DragOverEvent) => {
+    const { active, over } = e
     if (over && active.id !== over.id) {
       setAchievements(items => {
-        const oldIndex = items.findIndex(a => a.name === active.id)
-        const newIndex = items.findIndex(a => a.name === over.id)
-        return arrayMove(items, oldIndex, newIndex)
+        const oi = items.findIndex(a => a.name === active.id)
+        const ni = items.findIndex(a => a.name === over.id)
+        return arrayMove(items, oi, ni)
       })
     }
   }, [])
-
-  const handleDragEnd = useCallback((_event: DragEndEvent) => {
-    setActiveId(null)
-  }, [])
-
-  const handleToggleSkip = useCallback((achievementName: string) => {
-    setAchievements(items =>
-      items.map(a => (a.name === achievementName ? { ...a, skip: a.skip !== true } : a)),
-    )
-  }, [])
-
-  const handleSetDelay = useCallback((achievementName: string, value: number | null) => {
-    setAchievements(items =>
-      items.map(a => {
-        if (a.name !== achievementName) return a
-        if (value === null) {
-          const { delayNextUnlock, ...rest } = a
-          return rest
-        }
-        return { ...a, delayNextUnlock: value }
-      }),
-    )
-  }, [])
+  const handleDragEnd = useCallback(() => setActiveId(null), [])
+  const handleToggleSkip = useCallback(
+    (name: string) =>
+      setAchievements(items =>
+        items.map(a => (a.name === name ? { ...a, skip: a.skip !== true } : a)),
+      ),
+    [],
+  )
+  const handleSetDelay = useCallback(
+    (name: string, value: number | null) =>
+      setAchievements(items =>
+        items.map(a => {
+          if (a.name !== name) return a
+          if (value === null) {
+            const { delayNextUnlock, ...rest } = a
+            return rest
+          }
+          return { ...a, delayNextUnlock: value }
+        }),
+      ),
+    [],
+  )
 
   const handleSave = async () => {
     try {
@@ -362,10 +253,10 @@ export const AchievementOrderPage = () => {
             : {}),
         },
       })
-      setShowAchievementOrder(false)
+      setAchievementOrderGame(null)
     } catch (error) {
+      toast.danger(t('toast.achievementOrder.error'))
       console.error('Error saving achievement order:', error)
-      showDangerToast(t('toast.achievementOrder.error'))
     }
   }
 
@@ -379,158 +270,94 @@ export const AchievementOrderPage = () => {
   }, [originalAchievements])
 
   useEffect(() => {
-    const getAchievementData = async () => {
+    const load = async () => {
       try {
         setIsLoading(true)
         setAchievements([])
         setOriginalAchievements([])
-
-        const isSteamRunning = await checkSteamStatus(true)
-        if (!isSteamRunning) return setIsLoading(false)
-
-        const customOrder = await invoke<{
-          achievement_order: {
-            achievements: Achievement[]
-            delayBeforeFirstUnlock?: number
-          } | null
-        }>('get_achievement_order', {
-          steamId: userSummary?.steamId,
-          appId: item.appid,
-        })
-
-        const response = await invoke<InvokeAchievementData | string>('get_achievement_data', {
-          steamId: userSummary?.steamId,
-          appId: item.appid,
-          refetch: false,
-        })
-
+        const running = await checkSteamStatus(true)
+        if (!running) return setIsLoading(false)
+        const [customOrder, response] = await Promise.all([
+          invoke<{
+            achievement_order: {
+              achievements: Achievement[]
+              delayBeforeFirstUnlock?: number
+            } | null
+          }>('get_achievement_order', { steamId: userSummary?.steamId, appId: item.appid }),
+          invoke<InvokeAchievementData | string>('get_achievement_data', {
+            steamId: userSummary?.steamId,
+            appId: item.appid,
+            refetch: false,
+          }),
+        ])
         if (typeof response === 'string' && response.includes('Failed to initialize Steam API')) {
           setIsLoading(false)
-          showAccountMismatchToast('danger')
-          logEvent(`Error in (getAchievementData): ${response}`)
+          toast.accountMismatch('danger')
           return
         }
-
-        const achievementData = response as InvokeAchievementData
-
-        if (
-          customOrder.achievement_order?.achievements &&
-          achievementData?.achievement_data?.achievements
-        ) {
-          const updatedAchievements = customOrder.achievement_order.achievements.map(a => {
-            const currentState = achievementData.achievement_data.achievements.find(
-              b => b.name === a.name,
-            )
-            return currentState ? { ...a, achieved: currentState.achieved } : a
+        const data = response as InvokeAchievementData
+        if (customOrder.achievement_order?.achievements && data?.achievement_data?.achievements) {
+          const updated = customOrder.achievement_order.achievements.map(a => {
+            const cur = data.achievement_data.achievements.find(b => b.name === a.name)
+            return cur ? { ...a, achieved: cur.achieved } : a
           })
-          setAchievements(updatedAchievements)
+          setAchievements(updated)
           setDelayBeforeFirstUnlock(customOrder.achievement_order.delayBeforeFirstUnlock ?? '')
           setOriginalAchievements(
-            achievementData.achievement_data.achievements.map(a => ({
+            data.achievement_data.achievements.map(a => ({
               ...a,
               skip: undefined,
               delayNextUnlock: undefined,
             })),
           )
-          setIsLoading(false)
-          return
-        }
-
-        if (achievementData?.achievement_data?.achievements?.length > 0) {
-          const sorted = [...achievementData.achievement_data.achievements].sort(
+        } else if (data?.achievement_data?.achievements?.length > 0) {
+          const sorted = [...data.achievement_data.achievements].sort(
             (a, b) => (b.percent || 0) - (a.percent || 0),
           )
           setAchievements(sorted)
           setOriginalAchievements(
-            achievementData.achievement_data.achievements.map(a => ({
+            data.achievement_data.achievements.map(a => ({
               ...a,
               skip: undefined,
               delayNextUnlock: undefined,
             })),
           )
         }
-
         setIsLoading(false)
       } catch (error) {
         setIsLoading(false)
-        showDangerToast(t('toast.achievementData.error'))
-        console.error('Error in (getAchievementData):', error)
-        logEvent(`Error in (getAchievementData): ${error}`)
+        toast.danger(t('toast.achievementData.error'))
+        await logEvent(`Error in (getAchievementData): ${error}`)
       }
     }
-
-    if (item?.appid) {
-      getAchievementData()
-    }
+    if (item?.appid) load()
   }, [item?.appid, userSummary?.steamId, t])
 
   const sensors = useSensors(useSensor(PointerSensor))
-
-  const unlockedAchievements = achievements.filter(a => !a.achieved)
-  const allSelected =
-    unlockedAchievements.length > 0 && unlockedAchievements.every(a => a.skip !== true)
-  const isIndeterminate = !allSelected && unlockedAchievements.some(a => a.skip !== true)
-
-  const handleToggleAll = useCallback(() => {
-    setAchievements(items =>
-      items.map(a => (a.achieved ? a : { ...a, skip: allSelected ? true : undefined })),
-    )
-  }, [allSelected])
-
-  const listOuterRef = useRef<HTMLDivElement>(null)
-
+  const unlocked = achievements.filter(a => !a.achieved)
+  const allSelected = unlocked.length > 0 && unlocked.every(a => a.skip !== true)
+  const isIndeterminate = !allSelected && unlocked.some(a => a.skip !== true)
+  const handleToggleAll = useCallback(
+    () =>
+      setAchievements(items =>
+        items.map(a => (a.achieved ? a : { ...a, skip: allSelected ? true : undefined })),
+      ),
+    [allSelected],
+  )
+  const listRef = useRef<HTMLDivElement>(null)
   const activeAchievement = useMemo(
     () => (activeId ? (achievements.find(a => a.name === activeId) ?? null) : null),
     [activeId, achievements],
   )
-
-  const achievementList = useMemo(() => {
-    const rowData: SortableRowData = {
+  const rowData = useMemo(
+    () => ({
       appid: item.appid,
       achievements,
       onToggleSkip: handleToggleSkip,
       onSetDelay: handleSetDelay,
-    }
-    return (
-      <DndContext
-        sensors={sensors}
-        onDragStart={handleDragStart}
-        onDragOver={handleDragOver}
-        onDragEnd={handleDragEnd}
-        modifiers={[restrictToVerticalAxis]}
-        autoScroll={{ canScroll: element => element === listOuterRef.current }}
-      >
-        <SortableContext items={achievements.map(a => a.name)}>
-          <List
-            outerRef={listOuterRef}
-            height={windowInnerHeight - 257}
-            itemCount={achievements.length}
-            itemSize={60}
-            width='100%'
-            itemData={rowData}
-          >
-            {SortableRow}
-          </List>
-        </SortableContext>
-        <DragOverlay>
-          {activeAchievement ? (
-            <AchievementOverlayItem appid={item.appid} achievement={activeAchievement} />
-          ) : null}
-        </DragOverlay>
-      </DndContext>
-    )
-  }, [
-    achievements,
-    activeAchievement,
-    handleDragStart,
-    handleDragOver,
-    handleDragEnd,
-    handleToggleSkip,
-    handleSetDelay,
-    item.appid,
-    sensors,
-    windowInnerHeight,
-  ])
+    }),
+    [item.appid, achievements, handleToggleSkip, handleSetDelay],
+  )
 
   return (
     <div
@@ -540,7 +367,6 @@ export const AchievementOrderPage = () => {
       )}
       style={{ transitionDuration, transitionProperty: 'width' }}
     >
-      {/* Background hero image */}
       <Image
         src={
           fallbackImage || `https://cdn.steamstatic.com/steam/apps/${item.appid}/library_hero.jpg`
@@ -562,23 +388,20 @@ export const AchievementOrderPage = () => {
       {imageLoaded && <div className='absolute top-0 left-0 w-full h-screen bg-base/70' />}
 
       <div className='relative p-4'>
-        {/* Page header */}
         <div className='relative flex justify-between items-center px-8'>
           <div className='flex items-center gap-3'>
             <Button
               isIconOnly
               radius='full'
               className='bg-btn-achievement-header hover:bg-btn-achievement-header-hover text-btn-alt'
-              onPress={() => setShowAchievementOrder(false)}
+              onPress={() => setAchievementOrderGame(null)}
             >
               <TbX />
             </Button>
-
             <div className='w-[320px]'>
               <p className='text-3xl font-black truncate'>{item.name}</p>
             </div>
           </div>
-
           <div className='flex items-center gap-2'>
             <OpenDocs
               path='/features/achievement-unlocker/custom-order-and-unlock-delay'
@@ -623,23 +446,18 @@ export const AchievementOrderPage = () => {
           </div>
         </div>
 
-        {/* Main content */}
         <div className='ml-8 mr-6 mt-6 flex flex-col gap-4 pb-8'>
-          {/* Achievement list card */}
           <div className='bg-base/50 rounded-xl border border-border/40 overflow-hidden'>
             {isLoading ? (
-              <div className='flex justify-center items-center p-12'>
+              <div className='flex justify-center p-12'>
                 <Spinner />
               </div>
             ) : achievements.length === 0 ? (
-              <div className='flex justify-center items-center p-12'>
-                <p className='text-center text-content'>
-                  {t('achievementManager.achievements.empty')}
-                </p>
+              <div className='flex justify-center p-12'>
+                <p>{t('achievementManager.achievements.empty')}</p>
               </div>
             ) : (
               <>
-                {/* Sticky column header */}
                 <div className='grid grid-cols-[28px_40px_1fr_auto_36px] items-center gap-3 px-3 py-2 border-b border-border/40 sticky top-0 bg-sidebar z-10'>
                   <div className='flex items-center justify-center'>
                     <Checkbox
@@ -657,8 +475,6 @@ export const AchievementOrderPage = () => {
                   </span>
                   <span />
                 </div>
-
-                {/* Initial delay */}
                 <div className='grid grid-cols-[28px_40px_1fr_auto_36px] items-center gap-3 px-3 py-2.5 bg-sidebar/60 border-b border-border/40'>
                   <span />
                   <div className='flex items-center justify-center'>
@@ -685,19 +501,12 @@ export const AchievementOrderPage = () => {
                       className='w-16 mr-1'
                       value={delayBeforeFirstUnlock.toString()}
                       onChange={e => {
-                        const val = e.target.value
-                        if (val === '') {
-                          setDelayBeforeFirstUnlock('')
-                        } else {
-                          setDelayBeforeFirstUnlock(Math.max(0, Number(val)))
-                        }
+                        const v = e.target.value
+                        setDelayBeforeFirstUnlock(v === '' ? '' : Math.max(0, Number(v)))
                       }}
                       classNames={{
                         inputWrapper: cn(
-                          'bg-input data-[hover=true]:!bg-inputhover',
-                          'group-data-[focus-within=true]:!bg-inputhover',
-                          'group-data-[focus-visible=true]:ring-transparent',
-                          'group-data-[focus-visible=true]:ring-offset-transparent',
+                          'bg-input data-[hover=true]:!bg-inputhover group-data-[focus-within=true]:!bg-inputhover group-data-[focus-visible=true]:ring-transparent group-data-[focus-visible=true]:ring-offset-transparent',
                         ),
                         input: ['!text-content placeholder:text-altwhite/50'],
                       }}
@@ -706,9 +515,34 @@ export const AchievementOrderPage = () => {
                   </div>
                   <span />
                 </div>
-
-                {/* List */}
-                {achievementList}
+                <DndContext
+                  sensors={sensors}
+                  onDragStart={handleDragStart}
+                  onDragOver={handleDragOver}
+                  onDragEnd={handleDragEnd}
+                  modifiers={[restrictToVerticalAxis]}
+                  autoScroll={{ canScroll: el => el === listRef.current }}
+                >
+                  <SortableContext items={achievements.map(a => a.name)}>
+                    <List
+                      outerRef={listRef}
+                      height={windowH - 257}
+                      itemCount={achievements.length}
+                      itemSize={60}
+                      width='100%'
+                      itemData={rowData}
+                    >
+                      {SortableRow}
+                    </List>
+                  </SortableContext>
+                  <DragOverlay>
+                    {activeAchievement ? (
+                      <div className='bg-card shadow-xl rounded-lg px-3 py-2.5 cursor-grabbing'>
+                        <p className='font-semibold'>{activeAchievement.name}</p>
+                      </div>
+                    ) : null}
+                  </DragOverlay>
+                </DndContext>
               </>
             )}
           </div>

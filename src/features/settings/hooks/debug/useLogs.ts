@@ -2,11 +2,9 @@ import type { LogEntry } from '@/shared/types'
 import { invoke } from '@tauri-apps/api/core'
 import { readTextFile } from '@tauri-apps/plugin-fs'
 import { useEffect, useState } from 'react'
-import i18next from 'i18next'
-import { showDangerToast } from '@/shared/components'
-import { logEvent } from '@/shared/utils'
+import { logEvent } from '@/shared/services/logService'
 
-export const useLogs = () => {
+export function useLogs() {
   const [logs, setLogs] = useState<LogEntry[]>([])
 
   useEffect(() => {
@@ -14,46 +12,35 @@ export const useLogs = () => {
       try {
         const fullLogPath = await invoke<string>('get_cache_dir_path')
         const logFilePath = `${fullLogPath}\\log.txt`
-
-        // Check if log file exists
-        let logContents = ''
+        let contents = ''
         try {
-          logContents = await readTextFile(logFilePath)
-        } catch (fileError) {
-          // Create log file if not exists
-          console.error('Error in (fetchLogs) - file had to be created:', fileError)
+          contents = await readTextFile(logFilePath)
+        } catch {
           await logEvent('No log file found so one was created')
-          // Try to read again
           try {
-            logContents = await readTextFile(logFilePath)
-          } catch (retryError) {
-            // Still failed, set empty logs
-            console.error('Error in (fetchLogs) - unable to create file:', retryError)
+            contents = await readTextFile(logFilePath)
+          } catch {
             setLogs([])
             return
           }
         }
-
-        // Process log contents
-        const logEntries = logContents
+        const entries = contents
           .split('\n')
-          .filter(entry => entry.trim() !== '')
-          .map(entry => {
-            const [timestamp, message] = entry.split(' + ')
-            return { timestamp, message }
+          .filter(l => l.trim())
+          .map(line => {
+            const match = line.match(/^\[(.+?)\]\s+(.+)$/)
+            return match
+              ? { timestamp: match[1], message: match[2] }
+              : { timestamp: '', message: line }
           })
-        setLogs(logEntries)
+          .filter(e => e.message)
+        setLogs(entries.reverse())
       } catch (error) {
-        showDangerToast(i18next.t('common.error'))
-        console.error('Error in (fetchLogs):', error)
-        logEvent(`[Error] in (fetchLogs): ${error}`)
+        console.error('Error fetching logs:', error)
+        setLogs([])
       }
     }
     fetchLogs()
-
-    const intervalId = setInterval(fetchLogs, 1000)
-
-    return () => clearInterval(intervalId)
   }, [])
 
   return { logs }

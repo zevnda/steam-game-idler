@@ -1,20 +1,37 @@
 import type { LogEntry } from '@/shared/types'
+import { invoke } from '@tauri-apps/api/core'
 import { useTranslation } from 'react-i18next'
 import { TbChevronRight, TbEraser, TbFolders } from 'react-icons/tb'
 import { Button, cn } from '@heroui/react'
 import { GeistMono } from 'geist/font/mono'
-import {
-  ClearData,
-  ExportSettings,
-  handleClearLogs,
-  handleOpenLogFile,
-  OpenSettings,
-  ResetSettings,
-  useLogs,
-  useSettings,
-} from '@/features/settings'
+import { ClearData } from '@/features/settings/components/debug/ClearData'
+import { ExportSettings } from '@/features/settings/components/debug/ExportSettings'
+import { OpenSettings } from '@/features/settings/components/debug/OpenSettings'
+import { ResetSettings } from '@/features/settings/components/debug/ResetSettings'
+import { useLogs } from '@/features/settings/hooks/debug/useLogs'
+import { useSettings } from '@/features/settings/hooks/useSettings'
+import { logEvent } from '@/shared/services/logService'
+import { toast } from '@/shared/services/toastService'
 
-export const Logs = () => {
+async function handleClearLogs() {
+  try {
+    await invoke('clear_log_file')
+    toast.success('Logs cleared')
+    await logEvent('[Settings - Logs] Logs cleared')
+  } catch {
+    toast.danger('Error clearing logs')
+  }
+}
+
+async function handleOpenLogFile() {
+  try {
+    await invoke('open_file_explorer', { path: 'log.txt' })
+  } catch {
+    toast.danger('Error opening log file')
+  }
+}
+
+export function Logs() {
   const { t } = useTranslation()
   const { logs }: { logs: LogEntry[] } = useLogs()
   const { setRefreshKey } = useSettings()
@@ -30,7 +47,6 @@ export const Logs = () => {
         </p>
         <p className='text-3xl font-black'>{t('settings.debug.title')}</p>
       </div>
-
       <div className='flex flex-col gap-4 mt-4'>
         <div className='flex items-center justify-between'>
           <div className='grid grid-cols-3 gap-2'>
@@ -50,7 +66,7 @@ export const Logs = () => {
               variant='light'
               radius='full'
               color='danger'
-              onPress={() => handleClearLogs()}
+              onPress={handleClearLogs}
               startContent={<TbEraser size={20} />}
             >
               {t('settings.debug.clearLogs')}
@@ -59,7 +75,6 @@ export const Logs = () => {
             <ClearData />
           </div>
         </div>
-
         <div className='border border-border rounded-lg overflow-hidden bg-base/20'>
           <div className='h-[calc(100vh-290px)] overflow-y-auto'>
             {logs.length > 0 ? (
@@ -80,37 +95,22 @@ export const Logs = () => {
                         )}
                       />
                     </div>
-
-                    <div className='min-w-0 flex-1'>
-                      <div className='flex items-baseline gap-3'>
-                        <span
-                          className={cn(
-                            'text-xs text-altwhite font-mono shrink-0',
-                            GeistMono.className,
-                          )}
-                        >
-                          [{log.timestamp}]
+                    <div className='flex flex-col gap-0.5 min-w-0 flex-1'>
+                      {log.timestamp && (
+                        <span className='text-[10px] text-altwhite/50 font-mono'>
+                          {log.timestamp}
                         </span>
-                        <span
-                          className={cn(
-                            'text-xs font-mono leading-relaxed break-all',
-                            log.message?.includes('Error') ? 'text-red-300' : 'text-content',
-                            GeistMono.className,
-                          )}
-                        >
-                          {log.message}
-                        </span>
-                      </div>
+                      )}
+                      <p className={`${GeistMono.className} text-xs text-content/85 break-all`}>
+                        {log.message}
+                      </p>
                     </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <div className='flex items-center justify-center py-16'>
-                <div className='text-center'>
-                  <div className='text-2xl text-altwhite/30 mb-2'>◯</div>
-                  <p className='text-sm text-altwhite/60 font-mono'>{t('settings.debug.noLogs')}</p>
-                </div>
+              <div className='flex items-center justify-center h-full'>
+                <p className='text-altwhite text-sm'>{t('settings.debug.noLogs')}</p>
               </div>
             )}
           </div>

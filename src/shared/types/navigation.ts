@@ -5,6 +5,7 @@ export type CustomListType =
   | 'achievementUnlockerList'
   | 'autoIdleList'
   | 'favoritesList'
+
 export type ActivePageType =
   | 'setup'
   | 'games'
@@ -13,7 +14,9 @@ export type ActivePageType =
   | 'settings'
   | `customlists/${string}`
   | 'inventoryManager'
+
 export type CurrentTabType = 'achievements' | 'statistics'
+
 export type CurrentSettingsTabType =
   | 'general'
   | 'subscription'
@@ -27,26 +30,12 @@ export type CurrentSettingsTabType =
   | 'keybinds'
   | 'debug'
 
-export interface NavigationContextType {
-  activePage: ActivePageType
-  setActivePage: (value: ActivePageType) => void
-  currentTab: CurrentTabType
-  setCurrentTab: (value: CurrentTabType) => void
-  currentSettingsTab: CurrentSettingsTabType
-  setCurrentSettingsTab: (value: CurrentSettingsTabType) => void
-  previousActivePage: ActivePageType
-  setPreviousActivePage: (value: ActivePageType) => void
-}
-
 export interface SidebarItem {
   id: string
   page: ActivePageType
   title: string
   icon: ComponentType<{ fontSize?: number; className?: string }>
-  shouldShow?: boolean
   isActive?: boolean
   customClassName?: string
-  hasDivider?: boolean
   isBeta?: boolean
-  hasUnread?: boolean
 }

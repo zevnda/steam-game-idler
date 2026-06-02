@@ -1,19 +1,10 @@
 import { useTranslation } from 'react-i18next'
 import { BiSolidMessageSquareError } from 'react-icons/bi'
 import { Button } from '@heroui/react'
-import { ExtLink } from '@/shared/components'
+import { ExtLink } from '@/shared/components/ExtLink'
 
-interface PrivateProps {
-  setRefreshKey: React.Dispatch<React.SetStateAction<number>>
-}
-
-export const Private = ({ setRefreshKey }: PrivateProps) => {
+export function Private({ onRefresh }: { onRefresh: () => void }) {
   const { t } = useTranslation()
-
-  const handleRefresh = () => {
-    setRefreshKey(prevKey => prevKey + 1)
-  }
-
   return (
     <div className='flex justify-center items-center w-calc h-calc'>
       <div className='flex justify-center items-center flex-col p-6 bg-tab-panel rounded-4xl border border-border'>
@@ -39,7 +30,7 @@ export const Private = ({ setRefreshKey }: PrivateProps) => {
         <Button
           className='bg-btn-secondary text-btn-text font-bold mt-4'
           radius='full'
-          onPress={handleRefresh}
+          onPress={onRefresh}
         >
           {t('gamesList.private.tryAgain')}
         </Button>

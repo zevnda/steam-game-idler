@@ -4,18 +4,13 @@ import { useEffect } from 'react'
 import { useUserStore } from '@/shared/stores'
 
 export function useInitSettings() {
-  const userSummary = useUserStore(state => state.userSummary)
-  const setUserSettings = useUserStore(state => state.setUserSettings)
+  const userSummary = useUserStore(s => s.userSummary)
+  const setUserSettings = useUserStore(s => s.setUserSettings)
 
   useEffect(() => {
-    const getAndSetUserSettings = async () => {
-      if (userSummary) {
-        const response = await invoke<InvokeSettings>('get_user_settings', {
-          steamId: userSummary.steamId,
-        })
-        setUserSettings(response.settings)
-      }
-    }
-    getAndSetUserSettings()
+    if (!userSummary) return
+    invoke<InvokeSettings>('get_user_settings', { steamId: userSummary.steamId })
+      .then(res => setUserSettings(res.settings))
+      .catch(console.error)
   }, [userSummary, setUserSettings])
 }

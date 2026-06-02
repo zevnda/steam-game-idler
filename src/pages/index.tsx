@@ -20,12 +20,12 @@ import {
   useThemes,
   useZoomControls,
 } from '@/shared/hooks'
-import { useLoaderStore, useUpdateStore, useUserStore } from '@/shared/stores'
+import { useSessionStore, useUserStore } from '@/shared/stores'
 
 const Index = () => {
-  const userSummary = useUserStore(state => state.userSummary)
-  const { loaderVisible } = useLoaderStore()
-  const isUpdating = useUpdateStore(state => state.isUpdating)
+  const userSummary = useUserStore(s => s.userSummary)
+  const loaderVisible = useSessionStore(s => s.loaderVisible)
+  const isUpdating = useSessionStore(s => s.isUpdating)
 
   useInit()
   useThemes()

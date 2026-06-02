@@ -1,17 +1,7 @@
 import type { ActivePageType } from '@/shared/types'
 import { useCallback, useEffect } from 'react'
-import { useNavigationStore, useStateStore } from '@/shared/stores'
-
-const SIDEBAR_PAGES: ActivePageType[] = [
-  'games',
-  'idling',
-  'customlists/favorites',
-  'freeGames',
-  'customlists/card-farming',
-  'customlists/achievement-unlocker',
-  'customlists/auto-idle',
-  'inventoryManager',
-]
+import { useSessionStore, useUiStore } from '@/shared/stores'
+import { SIDEBAR_PAGES } from '@/shared/utils'
 
 export function useKeyboardShortcuts() {
   const handleKeydown = useCallback((e: KeyboardEvent) => {
@@ -25,17 +15,15 @@ export function useKeyboardShortcuts() {
       setActivePage,
       setPreviousActivePage,
       setCurrentSettingsTab,
-    } = useNavigationStore.getState()
-    const {
       setShowSearchModal,
       sidebarCollapsed,
       setSidebarCollapsed,
       setTransitionDuration,
-      isCardFarming,
-      isAchievementUnlocker,
-      setShowAchievements,
-      setShowAchievementOrder,
-    } = useStateStore.getState()
+      setSelectedGame,
+      setAchievementOrderGame,
+    } = useUiStore.getState()
+
+    const { isCardFarming, isAchievementUnlocker } = useSessionStore.getState()
 
     if (e.key === '/' && !e.ctrlKey && !e.metaKey) {
       if (activePage === 'idling' || activePage === 'freeGames') return
@@ -50,15 +38,14 @@ export function useKeyboardShortcuts() {
 
     if (e.key === ']') {
       e.preventDefault()
-      const currentIndex = SIDEBAR_PAGES.indexOf(effectivePage)
-      const nextIndex = currentIndex === -1 ? 0 : (currentIndex + 1) % SIDEBAR_PAGES.length
-      setActivePage(SIDEBAR_PAGES[nextIndex])
+      const idx = SIDEBAR_PAGES.indexOf(effectivePage as ActivePageType)
+      setActivePage(SIDEBAR_PAGES[idx === -1 ? 0 : (idx + 1) % SIDEBAR_PAGES.length])
     } else if (e.key === '[') {
       e.preventDefault()
-      const currentIndex = SIDEBAR_PAGES.indexOf(effectivePage)
-      const prevIndex =
-        currentIndex === -1 ? 0 : (currentIndex - 1 + SIDEBAR_PAGES.length) % SIDEBAR_PAGES.length
-      setActivePage(SIDEBAR_PAGES[prevIndex])
+      const idx = SIDEBAR_PAGES.indexOf(effectivePage as ActivePageType)
+      setActivePage(
+        SIDEBAR_PAGES[idx === -1 ? 0 : (idx - 1 + SIDEBAR_PAGES.length) % SIDEBAR_PAGES.length],
+      )
     } else if (e.key === ',') {
       e.preventDefault()
       if (isCardFarming || isAchievementUnlocker) return
@@ -67,8 +54,8 @@ export function useKeyboardShortcuts() {
         setCurrentSettingsTab('general')
         setPreviousActivePage('games')
       } else {
-        setShowAchievements(false)
-        setShowAchievementOrder(false)
+        setSelectedGame(null)
+        setAchievementOrderGame(null)
         setPreviousActivePage(activePage)
         setActivePage('settings')
       }
@@ -80,12 +67,27 @@ export function useKeyboardShortcuts() {
       setTimeout(() => setTransitionDuration('0ms'), 100)
     } else if ((e.key === 'h' || e.key === 'H') && e.shiftKey) {
       e.preventDefault()
-      if (typeof window !== 'undefined' && window.$chatway) {
+      if (
+        typeof window !== 'undefined' &&
+        (
+          window as Window & {
+            $chatway?: { openChatwayWidget: () => void; closeChatwayWidget: () => void }
+          }
+        ).$chatway
+      ) {
         const widget = document.querySelector('.chatway--container')
         if (widget?.classList.contains('widget--open')) {
-          window.$chatway.closeChatwayWidget()
+          ;(
+            window as Window & {
+              $chatway?: { openChatwayWidget: () => void; closeChatwayWidget: () => void }
+            }
+          ).$chatway.closeChatwayWidget()
         } else {
-          window.$chatway.openChatwayWidget()
+          ;(
+            window as Window & {
+              $chatway?: { openChatwayWidget: () => void; closeChatwayWidget: () => void }
+            }
+          ).$chatway.openChatwayWidget()
         }
       }
     }

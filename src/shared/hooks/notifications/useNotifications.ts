@@ -10,34 +10,29 @@ interface Notification {
   seen: boolean
 }
 
-export const useNotifications = () => {
+export function useNotifications() {
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [showNotifications, setShowNotifications] = useState(false)
   const [unseenNotifications, setUnseenNotifications] = useState<Notification[]>([])
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    // Fetch notifications
     fetchNotifications(setNotifications, setUnseenNotifications)
-    const interval = setInterval(
+    const id = setInterval(
       () => fetchNotifications(setNotifications, setUnseenNotifications),
       60 * 60 * 1000,
     )
-    return () => clearInterval(interval)
+    return () => clearInterval(id)
   }, [])
 
   useEffect(() => {
-    // Close notification panel when clicking outside
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+    const handleClick = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
         setShowNotifications(false)
       }
     }
-
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
   }, [])
 
   return {
@@ -50,121 +45,87 @@ export const useNotifications = () => {
   }
 }
 
-// Fetch notifications and update state
-export const fetchNotifications = async (
+export async function fetchNotifications(
   setNotifications: React.Dispatch<React.SetStateAction<Notification[]>>,
   setUnseenNotifications: React.Dispatch<React.SetStateAction<Notification[]>>,
-) => {
-  const cooldownTimestamp = localStorage.getItem('notificationsCooldown')
-  const now = new Date().getTime()
+) {
+  const cooldown = localStorage.getItem('notificationsCooldown')
+  const now = Date.now()
 
-  // Check if cooldown is active and use cached notifications if it is
-  if (cooldownTimestamp && now < Number(cooldownTimestamp)) {
-    const cachedNotificationsStr = localStorage.getItem('cachedNotifications')
-    const cachedNotifications: Notification[] = cachedNotificationsStr
-      ? JSON.parse(cachedNotificationsStr)
-      : []
-    setNotifications(cachedNotifications)
-    checkUnseenNotifications(cachedNotifications, setUnseenNotifications)
+  if (cooldown && now < Number(cooldown)) {
+    const cached: Notification[] = JSON.parse(localStorage.getItem('cachedNotifications') || '[]')
+    setNotifications(cached)
+    checkUnseenNotifications(cached, setUnseenNotifications)
     return
   }
 
   try {
-    // Fetch notifications
-    const response = await fetch(
+    const res = await fetch(
       'https://raw.githubusercontent.com/zevnda/steam-game-idler/refs/heads/main/notifications.json',
     )
-    const data: Notification[] = await response.json()
-    const LimitNotifications = data.slice(0, 10)
-    setNotifications(LimitNotifications)
-    checkUnseenNotifications(LimitNotifications, setUnseenNotifications)
-    // Cache notifications and set cooldown timestamp
-    localStorage.setItem('cachedNotifications', JSON.stringify(LimitNotifications))
+    const data: Notification[] = await res.json()
+    const limited = data.slice(0, 10)
+    setNotifications(limited)
+    checkUnseenNotifications(limited, setUnseenNotifications)
+    localStorage.setItem('cachedNotifications', JSON.stringify(limited))
     localStorage.setItem('notificationsCooldown', String(now + 30 * 60 * 1000))
   } catch (error) {
     console.error('Error fetching notifications:', error)
   }
 }
 
-// Check for unseen notifications
-export const checkUnseenNotifications = (
+export function checkUnseenNotifications(
   notifications: Notification[],
   setUnseenNotifications: React.Dispatch<React.SetStateAction<Notification[]>>,
-) => {
-  const seenNotificationsStr = localStorage.getItem('seenNotifications')
-  const seenNotifications: string[] = seenNotificationsStr ? JSON.parse(seenNotificationsStr) : []
-  const unseen = notifications.filter(notification => !seenNotifications.includes(notification.id))
-  setUnseenNotifications(unseen)
+) {
+  const seen: string[] = JSON.parse(localStorage.getItem('seenNotifications') || '[]')
+  setUnseenNotifications(notifications.filter(n => !seen.includes(n.id)))
 }
 
-// Mark a notification as seen
-export const markAsSeen = (
+export function markAsSeen(
   id: string,
   unseenNotifications: Notification[],
   setUnseenNotifications: React.Dispatch<React.SetStateAction<Notification[]>>,
-) => {
-  const seenNotificationsStr = localStorage.getItem('seenNotifications')
-  const seenNotifications: string[] = seenNotificationsStr ? JSON.parse(seenNotificationsStr) : []
-  if (!seenNotifications.includes(id)) {
-    seenNotifications.push(id)
-    localStorage.setItem('seenNotifications', JSON.stringify(seenNotifications))
+) {
+  const seen: string[] = JSON.parse(localStorage.getItem('seenNotifications') || '[]')
+  if (!seen.includes(id)) {
+    seen.push(id)
+    localStorage.setItem('seenNotifications', JSON.stringify(seen))
   }
-  setUnseenNotifications(unseenNotifications.filter(notification => notification.id !== id))
+  setUnseenNotifications(unseenNotifications.filter(n => n.id !== id))
 }
 
-// Mark all notifications as seen
-export const markAllAsSeen = (
+export function markAllAsSeen(
   notifications: Notification[],
   setUnseenNotifications: React.Dispatch<React.SetStateAction<Notification[]>>,
-) => {
-  const seenNotificationsStr = localStorage.getItem('seenNotifications')
-  const seenNotifications: string[] = seenNotificationsStr ? JSON.parse(seenNotificationsStr) : []
-  notifications.forEach(notification => {
-    if (!seenNotifications.includes(notification.id)) {
-      if (seenNotifications.length >= 10) {
-        seenNotifications.shift()
-      }
-      seenNotifications.push(notification.id)
+) {
+  const seen: string[] = JSON.parse(localStorage.getItem('seenNotifications') || '[]')
+  for (const n of notifications) {
+    if (!seen.includes(n.id)) {
+      if (seen.length >= 10) seen.shift()
+      seen.push(n.id)
     }
-  })
-  localStorage.setItem('seenNotifications', JSON.stringify(seenNotifications))
+  }
+  localStorage.setItem('seenNotifications', JSON.stringify(seen))
   setUnseenNotifications([])
 }
 
-// Handle opening a URL and marking the notification as seen
-export const handleOpenUrl = async (
+export async function handleOpenUrl(
   url: string,
   id: string,
   unseenNotifications: Notification[],
   setUnseenNotifications: React.Dispatch<React.SetStateAction<Notification[]>>,
-) => {
+) {
   markAsSeen(id, unseenNotifications, setUnseenNotifications)
-  try {
-    await openExternalLink(url)
-  } catch (error) {
-    console.error('Failed to open link:', error)
-  }
+  await openExternalLink(url)
 }
 
-// Convert timestamp to relative time
-export const timeAgo = (timestamp: number) => {
-  const now = new Date()
-  const secondsPast = Math.floor(now.getTime() / 1000 - timestamp)
-
-  if (secondsPast < 60) {
-    return `${secondsPast}s`
-  }
-  if (secondsPast < 3600) {
-    return `${Math.floor(secondsPast / 60)}m`
-  }
-  if (secondsPast < 86400) {
-    return `${Math.floor(secondsPast / 3600)}h`
-  }
-  if (secondsPast < 2592000) {
-    return `${Math.floor(secondsPast / 86400)}d`
-  }
-  if (secondsPast < 31536000) {
-    return `${Math.floor(secondsPast / 2592000)}mo`
-  }
-  return `${Math.floor(secondsPast / 31536000)}y`
+export function timeAgo(timestamp: number) {
+  const s = Math.floor(Date.now() / 1000 - timestamp)
+  if (s < 60) return `${s}s`
+  if (s < 3600) return `${Math.floor(s / 60)}m`
+  if (s < 86400) return `${Math.floor(s / 3600)}h`
+  if (s < 2592000) return `${Math.floor(s / 86400)}d`
+  if (s < 31536000) return `${Math.floor(s / 2592000)}mo`
+  return `${Math.floor(s / 31536000)}y`
 }

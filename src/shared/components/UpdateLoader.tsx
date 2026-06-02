@@ -2,12 +2,9 @@ import { useTranslation } from 'react-i18next'
 import { cn, Progress } from '@heroui/react'
 import { Unbounded } from 'next/font/google'
 
-const unbounded = Unbounded({
-  subsets: ['latin'],
-  variable: '--font-unbounded',
-})
+const unbounded = Unbounded({ subsets: ['latin'], variable: '--font-unbounded' })
 
-export const UpdateLoader = () => {
+export function UpdateLoader() {
   const { t } = useTranslation()
 
   return (
@@ -28,11 +25,7 @@ export const UpdateLoader = () => {
           <p className='text-sm text-content/60'>{t('common.downloadingUpdate')}</p>
           <Progress
             isIndeterminate
-            classNames={{
-              base: 'w-full',
-              track: 'bg-white/20',
-              indicator: 'bg-white',
-            }}
+            classNames={{ base: 'w-full', track: 'bg-white/20', indicator: 'bg-white' }}
           />
         </div>
       </div>

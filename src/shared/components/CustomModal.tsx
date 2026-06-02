@@ -12,7 +12,7 @@ interface CustomModalProps {
   hideCloseButton?: boolean
 }
 
-export const CustomModal = ({
+export function CustomModal({
   isOpen,
   onOpenChange,
   className,
@@ -21,18 +21,14 @@ export const CustomModal = ({
   body,
   buttons,
   hideCloseButton = false,
-}: CustomModalProps) => {
+}: CustomModalProps) {
   return (
     <Modal
       isOpen={isOpen}
       onOpenChange={onOpenChange}
       hideCloseButton={hideCloseButton}
       className={cn('text-content bg-gradient-alt border border-border rounded-4xl', className)}
-      classNames={{
-        closeButton: 'mr-1.5 mt-1.5',
-        body: 'p-0',
-        ...classNames,
-      }}
+      classNames={{ closeButton: 'mr-1.5 mt-1.5', body: 'p-0', ...classNames }}
     >
       <ModalContent>
         <>

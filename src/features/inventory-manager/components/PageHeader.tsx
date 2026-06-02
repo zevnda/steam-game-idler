@@ -1,8 +1,7 @@
-import type { useTradingCardsList } from '@/features/inventory-manager'
-import type { cardSortOption, SortOption, TradingCard } from '@/shared/types'
+import type { useTradingCardsList } from '@/features/inventory-manager/hooks/useTradingCardsList'
+import type { TradingCard } from '@/shared/types'
 import { useTranslation } from 'react-i18next'
 import {
-  TbChecks,
   TbChevronLeft,
   TbChevronRight,
   TbEraser,
@@ -12,448 +11,254 @@ import {
   TbSortDescending2,
 } from 'react-icons/tb'
 import { Button, cn, Select, SelectItem, useDisclosure } from '@heroui/react'
-import { CustomModal, ProBadge } from '@/shared/components'
-import { useNavigationStore, useStateStore, useUserStore } from '@/shared/stores'
+import { CustomModal } from '@/shared/components/CustomModal'
+import { ProBadge } from '@/shared/components/pro/ProBadge'
+import { useUiStore, useUserStore } from '@/shared/stores'
 import { hasGamerFeature } from '@/shared/utils'
 
-// Helper function to format seconds to HH:MM:SS
-const formatTime = (seconds: number) => {
-  const hours = Math.floor(seconds / 3600)
-  const minutes = Math.floor((seconds % 3600) / 60)
-  const secs = Math.floor(seconds % 60)
+const SORT_OPTIONS = [
+  { key: 'a-z', label: 'tradingCards.sort.cardNameAsc' as const },
+  { key: 'z-a', label: 'tradingCards.sort.cardNameDesc' as const },
+  { key: 'aa-zz', label: 'tradingCards.sort.gameNameAsc' as const },
+  { key: 'zz-aa', label: 'tradingCards.sort.gameNameDesc' as const },
+  { key: 'badge-desc', label: 'tradingCards.sort.badgeLevel' as const },
+]
 
-  return [
-    hours.toString().padStart(2, '0'),
-    minutes.toString().padStart(2, '0'),
-    secs.toString().padStart(2, '0'),
-  ].join(':')
-}
+const FILTER_OPTIONS = [
+  { key: 'cards', label: 'tradingCards.filter.cards' as const },
+  { key: 'foil', label: 'tradingCards.filter.foil' as const },
+  { key: 'dupes', label: 'tradingCards.filter.dupes' as const },
+  { key: 'locked', label: 'tradingCards.filter.locked' as const },
+]
 
 interface PageHeaderProps {
-  selectedCardsWithPrice: string[]
-  tradingCardContext: ReturnType<typeof useTradingCardsList>
-  filteredTradingCardsList: TradingCard[]
-  currentPage: number
-  totalPages: number
-  onPageChange: (page: number) => void
-  lockedCards: string[]
+  ctx: ReturnType<typeof useTradingCardsList>
+  filteredList: TradingCard[]
   cardFilterValues: Set<string>
   setCardFilterValues: React.Dispatch<React.SetStateAction<Set<string>>>
+  currentPage: number
+  setCurrentPage: (p: number) => void
+  totalPages: number
 }
 
-export const PageHeader = ({
-  selectedCardsWithPrice,
-  tradingCardContext,
-  filteredTradingCardsList,
-  currentPage,
-  totalPages,
-  onPageChange,
-  lockedCards,
+export function PageHeader({
+  ctx,
+  filteredList,
   cardFilterValues,
   setCardFilterValues,
-}: PageHeaderProps) => {
+  currentPage,
+  setCurrentPage,
+  totalPages,
+}: PageHeaderProps) {
   const { t } = useTranslation()
-  const userSettings = useUserStore(state => state.userSettings)
-  const proTier = useUserStore(state => state.proTier)
-  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
-  const transitionDuration = useStateStore(state => state.transitionDuration)
-  const setProModalOpen = useStateStore(state => state.setProModalOpen)
-  const setProModalRequiredTier = useStateStore(state => state.setProModalRequiredTier)
-  const setActivePage = useNavigationStore(state => state.setActivePage)
-  const setPreviousActivePage = useNavigationStore(state => state.setPreviousActivePage)
-  const setCurrentSettingsTab = useNavigationStore(state => state.setCurrentSettingsTab)
-  const {
-    isOpen: isConfirmOpen,
-    onOpen: onConfirmOpen,
-    onOpenChange: onConfirmOpenChange,
-  } = useDisclosure()
-  const { isOpen: isBulkOpen, onOpen: onBulkOpen, onOpenChange: onBulkOpenChange } = useDisclosure()
-  const {
-    isOpen: isDupesOpen,
-    onOpen: onDupesOpen,
-    onOpenChange: onDupesOpenChange,
-  } = useDisclosure()
+  const sidebarCollapsed = useUiStore(s => s.sidebarCollapsed)
+  const transitionDuration = useUiStore(s => s.transitionDuration)
+  const proTier = useUserStore(s => s.proTier)
+  const setActivePage = useUiStore(s => s.setActivePage)
+  const setPreviousActivePage = useUiStore(s => s.setPreviousActivePage)
+  const setCurrentSettingsTab = useUiStore(s => s.setCurrentSettingsTab)
+  const activePage = useUiStore(s => s.activePage)
+  const setProModalOpen = useUiStore(s => s.setProModalOpen)
+  const setProModalRequiredTier = useUiStore(s => s.setProModalRequiredTier)
   const {
     isOpen: isRemoveOpen,
     onOpen: onRemoveOpen,
     onOpenChange: onRemoveOpenChange,
   } = useDisclosure()
 
-  const handleCardSorting = (key: string) => {
-    tradingCardContext.setCardSortStyle?.(key)
-  }
-
-  const cardSortOptions: cardSortOption[] = [
-    { key: 'a-z', label: t('tradingCards.sort.cardNameAsc') },
-    { key: 'z-a', label: t('tradingCards.sort.cardNameDesc') },
-    { key: 'aa-zz', label: t('tradingCards.sort.gameNameAsc') },
-    { key: 'zz-aa', label: t('tradingCards.sort.gameNameDesc') },
-    { key: 'badge-desc', label: t('tradingCards.sort.badgeLevel' as never) },
-  ]
-
-  const cardFilterOptions: SortOption[] = [
-    { key: 'cards', label: t('tradingCards.filter.cards' as never) },
-    { key: 'foil', label: t('tradingCards.filter.foil' as never) },
-    { key: 'backgrounds', label: t('tradingCards.filter.backgrounds' as never) },
-    { key: 'emoticons', label: t('tradingCards.filter.emoticons' as never) },
-    { key: 'boosters', label: t('tradingCards.filter.boosters' as never) },
-    { key: 'sale', label: t('tradingCards.filter.sale' as never) },
-    { key: 'badge', label: t('tradingCards.filter.badge' as never) },
-    { key: 'dupes', label: t('tradingCards.filter.dupes' as never) },
-    { key: 'locked', label: t('tradingCards.filter.locked' as never) },
-  ]
+  const selectedWithPrice = Object.entries(ctx.selectedCards)
+    .filter(([id, sel]) => sel && filteredList.find(c => c.id === id))
+    .map(([id]) => id)
 
   return (
-    <>
-      <div
-        className={cn(
-          'z-50 pl-6 pt-2',
-          sidebarCollapsed ? 'w-[calc(100vw-85px)]' : 'w-[calc(100vw-280px)]',
-        )}
-        style={{
-          transitionDuration,
-          transitionProperty: 'width',
-        }}
-      >
-        <div className='flex justify-between items-center pb-3 w-full'>
-          <div className='flex items-center gap-1 select-none w-full'>
-            <div className='flex flex-col justify-center w-full'>
-              <p className='text-3xl font-black'>{t('tradingCards.title')}</p>
-              <p className='text-xs text-altwhite my-2'>{t('tradingCards.subtitle')}</p>
+    <div
+      className={cn(
+        'sticky top-0 z-40 pl-6 pt-2 ease-in-out',
+        sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]',
+      )}
+      style={{ transitionDuration, transitionProperty: 'width' }}
+    >
+      <div className='select-none pb-3'>
+        <p className='text-3xl font-black'>{t('tradingCards.title')}</p>
+        <p className='text-xs text-altwhite my-2'>
+          {t('common.showing', { total: filteredList.length })}
+        </p>
+        <div className='flex items-center gap-2 mt-1'>
+          <Button
+            size='sm'
+            variant='light'
+            radius='full'
+            className='text-altwhite'
+            startContent={<TbSettings size={16} />}
+            onPress={() => {
+              setPreviousActivePage(activePage)
+              setActivePage('settings')
+              setCurrentSettingsTab('inventory-manager')
+            }}
+          >
+            {t('common.gameSettings')}
+          </Button>
 
-              <div className='flex flex-col justify-center gap-2 mt-1'>
-                <div className='flex items-center gap-2 mt-1'>
-                  <Button
-                    className='bg-btn-secondary text-btn-text font-bold'
-                    radius='full'
-                    onPress={() => tradingCardContext.handleRefresh()}
-                  >
-                    {t('common.refresh')}
-                  </Button>
+          {hasGamerFeature(proTier) && (
+            <>
+              {selectedWithPrice.length > 0 && (
+                <Button
+                  size='sm'
+                  className='bg-btn-secondary text-btn-text font-bold'
+                  radius='full'
+                  startContent={<TbPackageExport size={16} />}
+                  isLoading={ctx.loadingListButton}
+                  onPress={() =>
+                    ctx.handleListCards(
+                      filteredList.filter(c => selectedWithPrice.includes(c.id)),
+                      ctx.changedCardPrices,
+                    )
+                  }
+                >
+                  {t('tradingCards.list')} ({selectedWithPrice.length})
+                </Button>
+              )}
+              <Button
+                size='sm'
+                variant='light'
+                color='danger'
+                radius='full'
+                startContent={<TbEraser size={16} />}
+                isLoading={ctx.loadingRemoveListings}
+                onPress={onRemoveOpen}
+              >
+                {t('tradingCards.remove')}
+              </Button>
+            </>
+          )}
 
-                  <Button
-                    className='bg-btn-secondary text-btn-text font-bold'
-                    radius='full'
-                    isDisabled={selectedCardsWithPrice.length === 0}
-                    isLoading={tradingCardContext.loadingListButton}
-                    startContent={
-                      !tradingCardContext.loadingListButton && <TbChecks fontSize={20} />
-                    }
-                    onPress={onConfirmOpen}
-                  >
-                    {t('tradingCards.list')}{' '}
-                    {selectedCardsWithPrice.length > 0 && `(${selectedCardsWithPrice.length})`}
-                  </Button>
-
-                  <Button
-                    className='bg-btn-secondary text-btn-text font-bold'
-                    radius='full'
-                    isDisabled={tradingCardContext.tradingCardsList.length === 0}
-                    isLoading={tradingCardContext.loadingListButton}
-                    startContent={
-                      !tradingCardContext.loadingListButton && <TbPackageExport fontSize={20} />
-                    }
-                    onPress={onBulkOpen}
-                  >
-                    {t('tradingCards.bulk', {
-                      count: filteredTradingCardsList.length,
-                    })}
-                  </Button>
-
-                  <div
-                    onClick={() => {
-                      if (!hasGamerFeature(proTier)) {
-                        setProModalRequiredTier('gamer')
-                        setProModalOpen(true)
-                      }
-                    }}
-                  >
-                    <Button
-                      className='bg-btn-secondary text-btn-text font-bold'
-                      radius='full'
-                      isDisabled={
-                        tradingCardContext.tradingCardsList.length === 0 ||
-                        !hasGamerFeature(proTier)
-                      }
-                      isLoading={tradingCardContext.loadingListButton}
-                      startContent={
-                        !tradingCardContext.loadingListButton && <TbPackageExport fontSize={20} />
-                      }
-                      onPress={onDupesOpen}
-                    >
-                      {t('tradingCards.sellDupes')}
-                      {!hasGamerFeature(proTier) && (
-                        <ProBadge className='scale-70 -mx-2' requiredTier='gamer' />
-                      )}
-                    </Button>
-                  </div>
-
-                  <Button
-                    className='font-bold'
-                    radius='full'
-                    color='danger'
-                    isLoading={tradingCardContext.loadingRemoveListings}
-                    startContent={
-                      !tradingCardContext.loadingRemoveListings && <TbEraser fontSize={20} />
-                    }
-                    onPress={onRemoveOpen}
-                  >
-                    {t('tradingCards.remove')}
-                  </Button>
-
-                  <Button
-                    isIconOnly
-                    radius='full'
-                    className='bg-btn-secondary text-btn-text font-bold'
-                    startContent={<TbSettings size={20} />}
-                    onPress={() => {
-                      setPreviousActivePage('inventoryManager')
-                      setActivePage('settings')
-                      setCurrentSettingsTab('inventory-manager')
-                    }}
-                  />
-
-                  {/* Pagination */}
-                  {tradingCardContext.tradingCardsList.length > 0 && (
-                    <div className='flex ml-auto justify-center items-center gap-4'>
-                      <Button
-                        isIconOnly
-                        className='bg-btn-secondary text-btn-text font-bold'
-                        radius='full'
-                        startContent={<TbChevronLeft fontSize={20} />}
-                        disabled={currentPage === 1}
-                        onPress={() => onPageChange(currentPage - 1)}
-                      />
-
-                      <p className='text-sm'>
-                        {currentPage} / {totalPages}
-                      </p>
-
-                      <Button
-                        isIconOnly
-                        className='bg-btn-secondary text-btn-text font-bold'
-                        radius='full'
-                        startContent={<TbChevronRight fontSize={20} />}
-                        disabled={currentPage === totalPages}
-                        onPress={() => onPageChange(currentPage + 1)}
-                      />
-                    </div>
-                  )}
-                </div>
-
-                <div className='flex items-center gap-3 mt-1'>
-                  <Select
-                    aria-label='sort'
-                    disallowEmptySelection
-                    isDisabled={tradingCardContext.tradingCardsList.length === 0}
-                    radius='none'
-                    startContent={<TbSortDescending2 fontSize={22} />}
-                    items={cardSortOptions}
-                    className='w-52'
-                    classNames={{
-                      listbox: ['p-0'],
-                      value: ['text-sm !text-content'],
-                      trigger: cn(
-                        'bg-input data-[hover=true]:!bg-inputhover',
-                        'data-[open=true]:!bg-inputhover duration-100 rounded-lg',
-                      ),
-                      popoverContent: ['bg-input rounded-xl justify-start !text-content'],
-                    }}
-                    selectedKeys={[tradingCardContext.cardSortStyle]}
-                    onSelectionChange={e => {
-                      if (e.currentKey) handleCardSorting(e.currentKey)
-                    }}
-                  >
-                    {item => (
-                      <SelectItem
-                        key={item.key}
-                        classNames={{
-                          base: [
-                            'data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content',
-                          ],
-                        }}
-                      >
-                        {item.label}
-                      </SelectItem>
-                    )}
-                  </Select>
-
-                  <Select<SortOption>
-                    aria-label='filter'
-                    selectionMode='multiple'
-                    isDisabled={tradingCardContext.tradingCardsList.length === 0}
-                    radius='none'
-                    placeholder={t('tradingCards.filter.placeholder' as never)}
-                    startContent={<TbFilter fontSize={20} />}
-                    items={cardFilterOptions}
-                    className='w-56'
-                    classNames={{
-                      listbox: ['p-0'],
-                      value: ['text-sm !text-content'],
-                      trigger: cn(
-                        'bg-input data-[hover=true]:!bg-inputhover',
-                        'data-[open=true]:!bg-inputhover duration-100 rounded-lg',
-                      ),
-                      popoverContent: ['bg-input rounded-xl justify-start !text-content'],
-                    }}
-                    selectedKeys={cardFilterValues}
-                    renderValue={items =>
-                      items.length === 1
-                        ? items[0].rendered
-                        : t('tradingCards.filter.active' as never, { count: items.length })
-                    }
-                    onSelectionChange={selection => {
-                      if (selection === 'all') return
-                      setCardFilterValues(
-                        new Set(Array.from(selection as Set<React.Key>).map(String)),
-                      )
-                    }}
-                  >
-                    {(item: SortOption) => (
-                      <SelectItem
-                        key={item.key}
-                        classNames={{
-                          base: [
-                            'data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content',
-                          ],
-                        }}
-                      >
-                        {item.label}
-                      </SelectItem>
-                    )}
-                  </Select>
-                </div>
-              </div>
+          {!hasGamerFeature(proTier) && (
+            <div
+              onClick={() => {
+                setProModalRequiredTier('gamer')
+                setProModalOpen(true)
+              }}
+            >
+              <Button
+                size='sm'
+                className='bg-btn-secondary text-btn-text font-bold'
+                radius='full'
+                isDisabled
+                startContent={<TbPackageExport size={16} />}
+              >
+                {t('tradingCards.sellDupes')}
+                <ProBadge className='scale-70 -mx-2' requiredTier='gamer' />
+              </Button>
             </div>
-          </div>
+          )}
+
+          <Button
+            size='sm'
+            className='bg-btn-secondary text-btn-text font-bold'
+            radius='full'
+            onPress={() => ctx.setRefreshKey(k => k + 1)}
+          >
+            {t('common.refresh')}
+          </Button>
+
+          <Select
+            aria-label='sort'
+            disallowEmptySelection
+            radius='none'
+            items={SORT_OPTIONS}
+            className='w-42'
+            defaultSelectedKeys={[ctx.cardSortStyle]}
+            classNames={{
+              listbox: ['p-0'],
+              value: ['text-sm !text-content'],
+              trigger: cn(
+                'bg-input data-[hover=true]:!bg-inputhover data-[open=true]:!bg-input duration-100 rounded-lg',
+              ),
+              popoverContent: ['bg-input rounded-xl !text-content'],
+            }}
+            startContent={<TbSortDescending2 />}
+            onSelectionChange={e => {
+              if (e.currentKey) ctx.setCardSortStyle(e.currentKey)
+            }}
+          >
+            {item => (
+              <SelectItem
+                key={item.key}
+                classNames={{
+                  base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
+                }}
+              >
+                {t(item.label)}
+              </SelectItem>
+            )}
+          </Select>
+
+          <Select
+            aria-label='filter'
+            radius='none'
+            items={FILTER_OPTIONS}
+            className='w-36'
+            classNames={{
+              listbox: ['p-0'],
+              value: ['text-sm !text-content'],
+              trigger: cn(
+                'bg-input data-[hover=true]:!bg-inputhover data-[open=true]:!bg-input duration-100 rounded-lg',
+              ),
+              popoverContent: ['bg-input rounded-xl !text-content'],
+            }}
+            startContent={<TbFilter />}
+            selectionMode='multiple'
+            selectedKeys={cardFilterValues}
+            onSelectionChange={keys => setCardFilterValues(new Set(keys as Iterable<string>))}
+          >
+            {item => (
+              <SelectItem
+                key={item.key}
+                classNames={{
+                  base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
+                }}
+              >
+                {t(item.label)}
+              </SelectItem>
+            )}
+          </Select>
         </div>
       </div>
 
-      <CustomModal
-        isOpen={isConfirmOpen}
-        onOpenChange={onConfirmOpenChange}
-        title={t('common.notice')}
-        body={
-          <div className='whitespace-pre-line'>
-            {t('tradingCards.confirm', {
-              time: formatTime(Number(selectedCardsWithPrice.length) * 1.5),
-              count: Number(selectedCardsWithPrice.length),
-            })}
-          </div>
-        }
-        buttons={
-          <>
-            <Button
-              size='sm'
-              color='danger'
-              variant='light'
-              radius='full'
-              className='font-semibold'
-              onPress={onConfirmOpenChange}
-            >
-              {t('common.cancel')}
-            </Button>
-            <Button
-              size='sm'
-              className='bg-btn-secondary text-btn-text font-bold'
-              radius='full'
-              onPress={() => {
-                tradingCardContext.handleSellSelectedCards()
-                onConfirmOpenChange()
-              }}
-            >
-              {t('common.confirm')}
-            </Button>
-          </>
-        }
-      />
-
-      <CustomModal
-        isOpen={isBulkOpen}
-        onOpenChange={onBulkOpenChange}
-        title={t('common.notice')}
-        body={
-          <div className='whitespace-pre-line'>
-            {t('tradingCards.confirmBulk', {
-              time: formatTime(
-                Number(filteredTradingCardsList.length) *
-                  (userSettings.tradingCards.sellDelay || 10),
-              ),
-              count: Number(filteredTradingCardsList.length),
-            })}
-          </div>
-        }
-        buttons={
-          <>
-            <Button
-              size='sm'
-              color='danger'
-              variant='light'
-              radius='full'
-              className='font-semibold'
-              onPress={onBulkOpenChange}
-            >
-              {t('common.cancel')}
-            </Button>
-            <Button
-              size='sm'
-              className='bg-btn-secondary text-btn-text font-bold'
-              radius='full'
-              onPress={() => {
-                tradingCardContext.handleSellAllCards(filteredTradingCardsList)
-                onBulkOpenChange()
-              }}
-            >
-              {t('common.confirm')}
-            </Button>
-          </>
-        }
-      />
-
-      <CustomModal
-        isOpen={isDupesOpen}
-        onOpenChange={onDupesOpenChange}
-        title={t('common.notice')}
-        body={<div className='whitespace-pre-line'>{t('tradingCards.confirmDupes')}</div>}
-        buttons={
-          <>
-            <Button
-              size='sm'
-              color='danger'
-              variant='light'
-              radius='full'
-              className='font-semibold'
-              onPress={onDupesOpenChange}
-            >
-              {t('common.cancel')}
-            </Button>
-            <Button
-              size='sm'
-              className='bg-btn-secondary text-btn-text font-bold'
-              radius='full'
-              onPress={() => {
-                tradingCardContext.handleSellAllDupes()
-                onDupesOpenChange()
-              }}
-            >
-              {t('common.confirm')}
-            </Button>
-          </>
-        }
-      />
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className='flex items-center gap-2 mt-2'>
+          <Button
+            isIconOnly
+            size='sm'
+            variant='light'
+            radius='full'
+            isDisabled={currentPage <= 1}
+            onPress={() => setCurrentPage(currentPage - 1)}
+          >
+            <TbChevronLeft />
+          </Button>
+          <span className='text-sm text-altwhite'>
+            {currentPage} / {totalPages}
+          </span>
+          <Button
+            isIconOnly
+            size='sm'
+            variant='light'
+            radius='full'
+            isDisabled={currentPage >= totalPages}
+            onPress={() => setCurrentPage(currentPage + 1)}
+          >
+            <TbChevronRight />
+          </Button>
+        </div>
+      )}
 
       <CustomModal
         isOpen={isRemoveOpen}
         onOpenChange={onRemoveOpenChange}
-        title={t('common.notice')}
-        body={
-          <div className='whitespace-pre-line'>
-            {t('tradingCards.confirmRemove', {
-              time: formatTime(Number(tradingCardContext.tradingCardsList?.length) * 3),
-              count: Number(tradingCardContext.tradingCardsList?.length),
-            })}
-          </div>
-        }
+        title={t('common.confirm')}
+        body={t('tradingCards.confirmRemove')}
         buttons={
           <>
             <Button
@@ -461,7 +266,6 @@ export const PageHeader = ({
               color='danger'
               variant='light'
               radius='full'
-              className='font-semibold'
               onPress={onRemoveOpenChange}
             >
               {t('common.cancel')}
@@ -471,7 +275,7 @@ export const PageHeader = ({
               className='bg-btn-secondary text-btn-text font-bold'
               radius='full'
               onPress={() => {
-                tradingCardContext.handleRemoveActiveListings()
+                ctx.handleRemoveListings()
                 onRemoveOpenChange()
               }}
             >
@@ -480,6 +284,6 @@ export const PageHeader = ({
           </>
         }
       />
-    </>
+    </div>
   )
 }

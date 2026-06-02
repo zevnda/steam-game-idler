@@ -3,112 +3,70 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TbChevronLeft, TbChevronRight } from 'react-icons/tb'
 import { Button } from '@heroui/react'
-import { GameCard } from '@/shared/components'
+import { GameCard } from '@/shared/components/GameCard'
 
 interface RecommendedGamesCarouselProps {
-  gamesContext: {
-    unplayedGames: Game[]
-  }
+  unplayedGames: Game[]
 }
 
-export const RecommendedGamesCarousel = ({ gamesContext }: RecommendedGamesCarouselProps) => {
-  const scrollContainerRef = useRef<HTMLDivElement>(null)
+export function RecommendedGamesCarousel({ unplayedGames }: RecommendedGamesCarouselProps) {
+  const scrollRef = useRef<HTMLDivElement>(null)
   const [isAutoScrolling, setIsAutoScrolling] = useState(true)
-  const autoScrollIntervalRef = useRef<NodeJS.Timeout | null>(null)
-  const pauseTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const autoScrollRef = useRef<NodeJS.Timeout | null>(null)
+  const pauseRef = useRef<NodeJS.Timeout | null>(null)
   const { t } = useTranslation()
 
   const scroll = useCallback((direction: 'left' | 'right') => {
-    if (scrollContainerRef.current) {
-      const scrollAmount = 440 * 2 + 20 + 20
-      const container = scrollContainerRef.current
-      const maxScroll = container.scrollWidth - container.clientWidth
-      const currentScroll = container.scrollLeft
-
-      let newScroll
-      if (direction === 'left') {
-        if (currentScroll - scrollAmount > 0) {
-          newScroll = currentScroll - scrollAmount
-        } else if (currentScroll > 0) {
-          newScroll = 0
-        } else {
-          newScroll = maxScroll
-        }
-      } else {
-        if (currentScroll + scrollAmount < maxScroll) {
-          newScroll = currentScroll + scrollAmount
-        } else if (currentScroll < maxScroll) {
-          newScroll = maxScroll
-        } else {
-          newScroll = 0
-        }
-      }
-
-      container.scrollTo({
-        left: newScroll,
-        behavior: 'smooth',
-      })
+    const el = scrollRef.current
+    if (!el) return
+    const amount = 440 * 2 + 40
+    const max = el.scrollWidth - el.clientWidth
+    const cur = el.scrollLeft
+    let next: number
+    if (direction === 'left') {
+      next = cur - amount > 0 ? cur - amount : cur > 0 ? 0 : max
+    } else {
+      next = cur + amount < max ? cur + amount : cur < max ? max : 0
     }
+    el.scrollTo({ left: next, behavior: 'smooth' })
   }, [])
 
   const autoScroll = useCallback(() => {
-    if (scrollContainerRef.current) {
-      const container = scrollContainerRef.current
-      const maxScroll = container.scrollWidth - container.clientWidth
-      const currentScroll = container.scrollLeft
-
-      if (currentScroll >= maxScroll) {
-        container.scrollTo({
-          left: 0,
-          behavior: 'smooth',
-        })
-      } else {
-        scroll('right')
-      }
-    }
+    const el = scrollRef.current
+    if (!el) return
+    const max = el.scrollWidth - el.clientWidth
+    if (el.scrollLeft >= max) el.scrollTo({ left: 0, behavior: 'smooth' })
+    else scroll('right')
   }, [scroll])
 
   const handleManualScroll = useCallback(
     (direction: 'left' | 'right') => {
       setIsAutoScrolling(false)
       scroll(direction)
-
-      if (pauseTimeoutRef.current) {
-        clearTimeout(pauseTimeoutRef.current)
-      }
-
-      pauseTimeoutRef.current = setTimeout(() => {
-        setIsAutoScrolling(true)
-      }, 5000)
+      if (pauseRef.current) clearTimeout(pauseRef.current)
+      pauseRef.current = setTimeout(() => setIsAutoScrolling(true), 5000)
     },
     [scroll],
   )
 
   useEffect(() => {
-    if (isAutoScrolling && gamesContext.unplayedGames.length > 0) {
-      autoScrollIntervalRef.current = setInterval(autoScroll, 7000)
-    } else if (autoScrollIntervalRef.current) {
-      clearInterval(autoScrollIntervalRef.current)
+    if (isAutoScrolling && unplayedGames.length > 0) {
+      autoScrollRef.current = setInterval(autoScroll, 7000)
+    } else if (autoScrollRef.current) {
+      clearInterval(autoScrollRef.current)
     }
-
     return () => {
-      if (autoScrollIntervalRef.current) {
-        clearInterval(autoScrollIntervalRef.current)
-      }
+      if (autoScrollRef.current) clearInterval(autoScrollRef.current)
     }
-  }, [isAutoScrolling, autoScroll, gamesContext.unplayedGames.length])
+  }, [isAutoScrolling, autoScroll, unplayedGames.length])
 
   useEffect(() => {
     return () => {
-      if (pauseTimeoutRef.current) {
-        clearTimeout(pauseTimeoutRef.current)
-      }
+      if (pauseRef.current) clearTimeout(pauseRef.current)
     }
   }, [])
 
-  if (gamesContext.unplayedGames.length === 0) {
-    return <div />
-  }
+  if (unplayedGames.length === 0) return <div />
 
   return (
     <div className='mb-6 px-6 mt-4'>
@@ -135,9 +93,8 @@ export const RecommendedGamesCarousel = ({ gamesContext }: RecommendedGamesCarou
           </Button>
         </div>
       </div>
-
-      <div ref={scrollContainerRef} className='flex gap-5 pb-2 overflow-x-hidden'>
-        {gamesContext.unplayedGames.map(game => (
+      <div ref={scrollRef} className='flex gap-5 pb-2 overflow-x-hidden'>
+        {unplayedGames.map(game => (
           <div key={game.appid} className='shrink-0 w-110'>
             <GameCard item={game} />
           </div>

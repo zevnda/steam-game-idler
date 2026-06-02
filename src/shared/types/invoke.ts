@@ -1,14 +1,8 @@
-import type {
-  Achievement,
-  Game,
-  GameWithRemainingDrops,
-  Statistic,
-  TradingCard,
-  UserSettings,
-  UserSummary,
-} from '@/shared/types'
+import type { Achievement, Game, GameWithRemainingDrops, Statistic } from './games'
+import type { UserSettings } from './settings'
+import type { UserSummary } from './user'
 
-interface Processes {
+interface RunningProcess {
   appid: number
   name: string
   pid: number
@@ -35,7 +29,7 @@ export interface InvokeKillProcess {
 }
 
 export interface InvokeRunningProcess {
-  processes: Processes[]
+  processes: RunningProcess[]
 }
 
 export interface InvokeUserSummary {
@@ -54,9 +48,7 @@ export interface InvokeValidateSession {
 
 export interface InvokeValidateKey {
   error?: string
-  response?: {
-    players?: unknown[]
-  }
+  response?: { players?: unknown[] }
 }
 
 export interface InvokeFreeGames {
@@ -105,52 +97,6 @@ export interface InvokeDropsRemaining {
 export interface InvokeGamesWithDrops {
   error?: string
   gamesWithDrops: GameWithRemainingDrops[]
-}
-
-export interface InvokeCardData {
-  success: boolean
-  card_data: TradingCard[]
-}
-
-export type OrderGraphEntry = [number, number, string]
-
-export interface InvokeCardPrice {
-  success: boolean
-  sell_order_graph?: OrderGraphEntry[]
-  buy_order_graph?: OrderGraphEntry[]
-  highest_buy_order?: string
-  lowest_sell_order?: string
-  buy_order_summary?: string
-  sell_order_summary?: string
-  error?: string
-}
-
-export interface InvokeListCards {
-  results: {
-    assetid: string
-    message?: string
-    data?: {
-      email_domain: string
-      needs_email_confirmation: boolean
-      needs_mobile_confirmation: boolean
-      requires_confirmation: number
-      success: boolean
-    }
-    success: boolean
-  }[]
-  successful: number
-  total: number
-}
-
-export interface InvokeRemoveListings {
-  total_listings: number
-  processed_listings: number
-  results: {
-    listing_id: string
-    asset_id: string
-    success: boolean
-  }[]
-  successful_removals: number
 }
 
 export interface InvokeSteamCredentials {

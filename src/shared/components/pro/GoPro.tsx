@@ -1,56 +1,34 @@
 import { cn } from '@heroui/react'
-import { useStateStore, useUserStore } from '@/shared/stores'
+import { useUiStore, useUserStore } from '@/shared/stores'
 
-export const GoPro = () => {
-  const setProModalOpen = useStateStore(state => state.setProModalOpen)
-  const setProModalRequiredTier = useStateStore(state => state.setProModalRequiredTier)
-  const proTier = useUserStore(state => state.proTier)
+export function GoPro() {
+  const setProModalOpen = useUiStore(s => s.setProModalOpen)
+  const setProModalRequiredTier = useUiStore(s => s.setProModalRequiredTier)
+  const proTier = useUserStore(s => s.proTier)
+
+  const isGamer = proTier === 'gamer'
 
   return (
     <div
       className={cn(
         'shiny-cta flex justify-between items-center min-w-17!',
-        proTier === 'gamer' ? 'cursor-default! pointer-events-none' : '',
+        isGamer && 'cursor-default! pointer-events-none',
       )}
       style={
         {
-          'background':
-            proTier === 'gamer'
-              ? `
-          linear-gradient(100deg, #3b0764ff 0%, #6b21a8ff 40%, #9333eaff 70%, #c026d3ff 100%) padding-box,
-          conic-gradient(
-            from calc(var(--gradient-angle) - var(--gradient-angle-offset)),
-            transparent,
-            var(--shiny-cta-highlight) var(--gradient-percent),
-            var(--gradient-shine) calc(var(--gradient-percent) * 2),
-            var(--shiny-cta-highlight) calc(var(--gradient-percent) * 3),
-            transparent calc(var(--gradient-percent) * 4)
-          )
-          border-box
-        `
-              : `
-          linear-gradient(100deg, #154d66ff 0%, #227ca5ff 40%, #2eabe5ff 70%, #34bfffff 100%) padding-box,
-          conic-gradient(
-            from calc(var(--gradient-angle) - var(--gradient-angle-offset)),
-            transparent,
-            var(--shiny-cta-highlight) var(--gradient-percent),
-            var(--gradient-shine) calc(var(--gradient-percent) * 2),
-            var(--shiny-cta-highlight) calc(var(--gradient-percent) * 3),
-            transparent calc(var(--gradient-percent) * 4)
-          )
-          border-box
-        `,
-          '--shiny-cta-highlight': proTier === 'gamer' ? '#c026d3ff' : '#34bfffff',
-          '--shiny-cta-highlight-subtle': proTier === 'gamer' ? '#c026d3ff' : '#34bfffff',
+          'background': isGamer
+            ? `linear-gradient(100deg, #3b0764ff 0%, #6b21a8ff 40%, #9333eaff 70%, #c026d3ff 100%) padding-box,
+               conic-gradient(from calc(var(--gradient-angle) - var(--gradient-angle-offset)),transparent,var(--shiny-cta-highlight) var(--gradient-percent),var(--gradient-shine) calc(var(--gradient-percent) * 2),var(--shiny-cta-highlight) calc(var(--gradient-percent) * 3),transparent calc(var(--gradient-percent) * 4)) border-box`
+            : `linear-gradient(100deg, #154d66ff 0%, #227ca5ff 40%, #2eabe5ff 70%, #34bfffff 100%) padding-box,
+               conic-gradient(from calc(var(--gradient-angle) - var(--gradient-angle-offset)),transparent,var(--shiny-cta-highlight) var(--gradient-percent),var(--gradient-shine) calc(var(--gradient-percent) * 2),var(--shiny-cta-highlight) calc(var(--gradient-percent) * 3),transparent calc(var(--gradient-percent) * 4)) border-box`,
+          '--shiny-cta-highlight': isGamer ? '#c026d3ff' : '#34bfffff',
+          '--shiny-cta-highlight-subtle': isGamer ? '#c026d3ff' : '#34bfffff',
           '--shiny-cta-fg': '#ffffff',
         } as React.CSSProperties
       }
       onClick={() => {
-        if (proTier === 'gamer') {
-          return
-        } else if (proTier === 'casual') {
-          setProModalRequiredTier('gamer')
-        }
+        if (isGamer) return
+        if (proTier === 'casual') setProModalRequiredTier('gamer')
         setProModalOpen(true)
       }}
     >
@@ -66,18 +44,15 @@ export const GoPro = () => {
           </span>
         )}
       </p>
-      {proTier !== 'gamer' && (
+      {!isGamer && (
         <div
           className={cn(
             'bg-white py-1 px-1.5 rounded-full h-[90%] flex items-center',
-            proTier === null ? 'w-13' : '',
+            proTier === null && 'w-13',
           )}
         >
           <p
-            className={cn(
-              'text-[10px] font-black italic text-center uppercase',
-              proTier === null || 'casual' ? 'text-[#0092d0]' : 'text-[#9333eaff]',
-            )}
+            className={cn('text-[10px] font-black italic text-center uppercase', 'text-[#0092d0]')}
           >
             {proTier === 'casual' ? 'Upgrade' : 'Go Pro'}
           </p>

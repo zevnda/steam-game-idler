@@ -1,30 +1,32 @@
-import type { Achievement, InvokeAchievementData, Statistic } from '@/shared/types'
-import { invoke } from '@tauri-apps/api/core'
+import type { Achievement, Statistic } from '@/shared/types'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { showAccountMismatchToast, showDangerToast } from '@/shared/components'
-import { useStateStore, useUserStore } from '@/shared/stores'
-import { checkSteamStatus, logEvent, updateDiscordPresence } from '@/shared/utils'
+import { fetchAchievementData } from '@/features/achievement-manager/services/achievementsService'
+import { logEvent } from '@/shared/services/logService'
+import { toast } from '@/shared/services/toastService'
+import { useUiStore, useUserStore } from '@/shared/stores'
+import { checkSteamStatus, updateDiscordPresence } from '@/shared/utils'
 
-export function useAchievements(
-  achievements: Achievement[],
-  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
-  setAchievements: React.Dispatch<React.SetStateAction<Achievement[]>>,
-  setStatistics: React.Dispatch<React.SetStateAction<Statistic[]>>,
-  setProtectedAchievements: React.Dispatch<React.SetStateAction<boolean>>,
-  setProtectedStatistics: React.Dispatch<React.SetStateAction<boolean>>,
-) {
+export function useAchievements() {
   const { t } = useTranslation()
-  const appId = useStateStore(state => state.appId)
-  const appName = useStateStore(state => state.appName)
-  const userSummary = useUserStore(state => state.userSummary)
-  const setAchievementsUnavailable = useUserStore(state => state.setAchievementsUnavailable)
-  const setStatisticsUnavailable = useUserStore(state => state.setStatisticsUnavailable)
-  const [windowInnerHeight, setWindowInnerHeight] = useState(window.innerHeight)
+  const selectedGame = useUiStore(s => s.selectedGame)
+  const userSummary = useUserStore(s => s.userSummary)
+  const setAchievementsUnavailable = useUserStore(s => s.setAchievementsUnavailable)
+  const setStatisticsUnavailable = useUserStore(s => s.setStatisticsUnavailable)
+
+  const [isLoading, setIsLoading] = useState(true)
+  const [achievements, setAchievements] = useState<Achievement[]>([])
+  const [statistics, setStatistics] = useState<Statistic[]>([])
+  const [protectedAchievements, setProtectedAchievements] = useState(false)
+  const [protectedStatistics, setProtectedStatistics] = useState(false)
+  const [windowHeight, setWindowHeight] = useState(window.innerHeight)
   const [refreshKey, setRefreshKey] = useState(0)
 
+  const appId = selectedGame?.appid ?? null
+  const appName = selectedGame?.name ?? null
+
   useEffect(() => {
-    if (appName && achievements?.length > 0) {
+    if (appName && achievements.length > 0) {
       updateDiscordPresence(appName, `Managing ${achievements.length} achievements`)
     }
     return () => {
@@ -33,59 +35,44 @@ export function useAchievements(
   }, [appName, achievements])
 
   useEffect(() => {
-    const getAchievementData = async () => {
+    const handleResize = () => setWindowHeight(window.innerHeight)
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  useEffect(() => {
+    const load = async () => {
       try {
         setIsLoading(true)
-        // Make sure Steam client is running
-        const isSteamRunning = await checkSteamStatus(true)
-        if (!isSteamRunning) return setIsLoading(false)
+        const running = await checkSteamStatus(true)
+        if (!running) return setIsLoading(false)
 
-        // Fetch achievement data
-        const response = await invoke<InvokeAchievementData | string>('get_achievement_data', {
-          steamId: userSummary?.steamId,
-          appId,
-          refetch: refreshKey !== 0,
-        })
+        const data = await fetchAchievementData(userSummary?.steamId, appId, refreshKey !== 0)
 
-        // Handle case where Steam API initialization failed
-        // We already check if Steam client is running so usually account mismatch
-        if (typeof response === 'string' && response.includes('Failed to initialize Steam API')) {
+        if (!data) {
           setIsLoading(false)
           setAchievementsUnavailable(true)
           setStatisticsUnavailable(true)
-          showAccountMismatchToast('danger')
-          logEvent(`Error in (getAchievementData): ${response}`)
+          toast.accountMismatch('danger')
+          await logEvent('Error in (getAchievementData): Failed to initialize Steam API')
           return
         }
 
-        const achievementData = response as InvokeAchievementData
-
-        if (achievementData?.achievement_data?.achievements) {
-          // Check if any achievements are marked as protected
-          const hasProtectedAchievements = achievementData.achievement_data.achievements.some(
-            achievement => achievement.protected_achievement === true,
+        if (data?.achievement_data?.achievements?.length) {
+          const hasProtected = data.achievement_data.achievements.some(a => a.protected_achievement)
+          if (hasProtected) setProtectedAchievements(true)
+          const sorted = [...data.achievement_data.achievements].sort(
+            (a, b) => b.percent - a.percent,
           )
-          if (hasProtectedAchievements) setProtectedAchievements(true)
-
-          if (achievementData.achievement_data.achievements.length > 0) {
-            // Sort achievements by percent initially - prevents button state flickering
-            achievementData.achievement_data.achievements.sort((a, b) => b.percent - a.percent)
-            setAchievements(achievementData.achievement_data.achievements)
-            setAchievementsUnavailable(false)
-          }
+          setAchievements(sorted)
+          setAchievementsUnavailable(false)
         }
 
-        if (achievementData?.achievement_data?.stats) {
-          // Check if any statistics are marked as protected
-          const hasProtectedStatistics = achievementData.achievement_data.stats.some(
-            achievement => achievement.protected_stat === true,
-          )
-          if (hasProtectedStatistics) setProtectedStatistics(true)
-
-          if (achievementData.achievement_data.stats.length > 0) {
-            setStatistics(achievementData.achievement_data.stats)
-            setStatisticsUnavailable(false)
-          }
+        if (data?.achievement_data?.stats?.length) {
+          const hasProtected = data.achievement_data.stats.some(s => s.protected_stat)
+          if (hasProtected) setProtectedStatistics(true)
+          setStatistics(data.achievement_data.stats)
+          setStatisticsUnavailable(false)
         }
 
         setIsLoading(false)
@@ -93,37 +80,33 @@ export function useAchievements(
         setIsLoading(false)
         setAchievementsUnavailable(true)
         setStatisticsUnavailable(true)
-        showDangerToast(t('toast.achievementData.error'))
+        toast.danger(t('toast.achievementData.error'))
         console.error('Error in (getAchievementData):', error)
-        logEvent(`Error in (getAchievementData): ${error}`)
+        await logEvent(`Error in (getAchievementData): ${error}`)
       }
     }
-
-    getAchievementData()
+    load()
   }, [
     userSummary?.steamId,
     appId,
-    setAchievements,
-    setIsLoading,
-    setProtectedAchievements,
-    setProtectedStatistics,
-    setStatistics,
+    refreshKey,
     setAchievementsUnavailable,
     setStatisticsUnavailable,
-    refreshKey,
     t,
   ])
 
-  useEffect(() => {
-    const handleResize = () => {
-      setWindowInnerHeight(window.innerHeight)
-    }
-    window.addEventListener('resize', handleResize)
-    handleResize()
-    return () => {
-      window.removeEventListener('resize', handleResize)
-    }
-  }, [])
-
-  return { windowInnerHeight, setRefreshKey }
+  return {
+    isLoading,
+    achievements,
+    setAchievements,
+    statistics,
+    setStatistics,
+    protectedAchievements,
+    protectedStatistics,
+    windowHeight,
+    refreshKey,
+    setRefreshKey,
+    appId,
+    appName,
+  }
 }

@@ -1,19 +1,22 @@
 import { useTranslation } from 'react-i18next'
 import { TbChevronRight } from 'react-icons/tb'
 import { Button, Divider } from '@heroui/react'
-import { handleShowStoreLoginWindow, handleSignOutCurrentStoreUser } from '@/features/settings'
-import { ProBadge, SettingsSwitch } from '@/shared/components'
+import {
+  handleShowStoreLoginWindow,
+  handleSignOutCurrentStoreUser,
+} from '@/features/settings/services/freeGamesService'
 import { OpenDocs } from '@/shared/components/OpenDocs'
-import { useStateStore, useUserStore } from '@/shared/stores'
+import { ProBadge } from '@/shared/components/pro/ProBadge'
+import { SettingsSwitch } from '@/shared/components/SettingsSwitch'
+import { useUiStore, useUserStore } from '@/shared/stores'
 import { hasGamerFeature } from '@/shared/utils'
 
-export const FreeGamesSettings = () => {
+export function FreeGamesSettings() {
   const { t } = useTranslation()
-  const proTier = useUserStore(state => state.proTier)
-  const userSettings = useUserStore(state => state.userSettings)
-  const setUserSettings = useUserStore(state => state.setUserSettings)
-  const setProModalOpen = useStateStore(state => state.setProModalOpen)
-  const setProModalRequiredTier = useStateStore(state => state.setProModalRequiredTier)
+  const proTier = useUserStore(s => s.proTier)
+  const setUserSettings = useUserStore(s => s.setUserSettings)
+  const setProModalOpen = useUiStore(s => s.setProModalOpen)
+  const setProModalRequiredTier = useUiStore(s => s.setProModalRequiredTier)
 
   return (
     <div className='relative flex flex-col gap-4 mt-9 pb-16 w-4/5'>
@@ -26,7 +29,6 @@ export const FreeGamesSettings = () => {
         </p>
         <p className='text-3xl font-black'>{t('freeGames.title')}</p>
       </div>
-
       <div className='flex flex-col gap-3 mt-4'>
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
@@ -39,9 +41,7 @@ export const FreeGamesSettings = () => {
           </div>
           <SettingsSwitch type='general' name='freeGameNotifications' />
         </div>
-
         <Divider className='bg-border/70 my-4' />
-
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
             <div className='flex items-center'>
@@ -55,9 +55,8 @@ export const FreeGamesSettings = () => {
               {t('settings.general.autoRedeemFreeGames.description')}
             </p>
           </div>
-
           <div
-            className='flex flex-col justify-end gap-2'
+            className='flex items-center gap-2'
             onClick={() => {
               if (!hasGamerFeature(proTier)) {
                 setProModalRequiredTier('gamer')
@@ -72,20 +71,42 @@ export const FreeGamesSettings = () => {
               isDisabled={!hasGamerFeature(proTier)}
               onPress={() => handleShowStoreLoginWindow(setUserSettings)}
             >
-              {userSettings.general?.autoRedeemFreeGames
-                ? t('common.reauthenticate')
-                : t('common.signInSteam')}
+              {t('common.signInSteam')}
             </Button>
             <Button
               size='sm'
               variant='light'
-              radius='full'
               color='danger'
+              radius='full'
               isDisabled={!hasGamerFeature(proTier)}
               onPress={() => handleSignOutCurrentStoreUser(setUserSettings)}
             >
               {t('common.signOut')}
             </Button>
+          </div>
+        </div>
+        <Divider className='bg-border/70 my-4' />
+        <div className='flex justify-between items-center'>
+          <div className='flex flex-col gap-2 w-1/2'>
+            <div className='flex items-center'>
+              <p className='text-sm text-content font-bold'>
+                {t('settings.general.autoRedeemFreeGames')}
+              </p>
+              {!hasGamerFeature(proTier) && <ProBadge className='scale-65' requiredTier='gamer' />}
+            </div>
+            <p className='text-xs text-altwhite'>
+              {t('settings.general.autoRedeemFreeGames.description')}
+            </p>
+          </div>
+          <div
+            onClick={() => {
+              if (!hasGamerFeature(proTier)) {
+                setProModalRequiredTier('gamer')
+                setProModalOpen(true)
+              }
+            }}
+          >
+            <SettingsSwitch type='general' name='autoRedeemFreeGames' isProSetting={true} />
           </div>
         </div>
       </div>

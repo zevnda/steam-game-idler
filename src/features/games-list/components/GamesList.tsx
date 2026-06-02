@@ -2,64 +2,65 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { VariableSizeList as List } from 'react-window'
 import { cn, Spinner } from '@heroui/react'
-import {
-  PageHeader,
-  Private,
-  RecentGamesCarousel,
-  RecommendedGamesCarousel,
-  useGamesList,
-} from '@/features/games-list'
-import { GameCard } from '@/shared/components'
-import { useStateStore, useUserStore } from '@/shared/stores'
+import { PageHeader } from '@/features/games-list/components/PageHeader'
+import { Private } from '@/features/games-list/components/Private'
+import { RecentGamesCarousel } from '@/features/games-list/components/RecentGamesCarousel'
+import { RecommendedGamesCarousel } from '@/features/games-list/components/RecommendedGamesCarousel'
+import { useGamesList } from '@/features/games-list/hooks/useGamesList'
+import { refreshGamesList } from '@/features/games-list/services/gamesListService'
+import { GameCard } from '@/shared/components/GameCard'
+import { useUiStore, useUserStore } from '@/shared/stores'
 
-export const GamesList = () => {
-  const gamesContext = useGamesList()
-  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
-  const transitionDuration = useStateStore(state => state.transitionDuration)
-  const showAchievements = useStateStore(state => state.showAchievements)
-  const userSettings = useUserStore(state => state.userSettings)
+function useColumnCount() {
+  const [count, setCount] = useState(5)
+  const update = useCallback(() => {
+    if (window.innerWidth >= 3200) setCount(12)
+    else if (window.innerWidth >= 2300) setCount(10)
+    else if (window.innerWidth >= 2000) setCount(8)
+    else if (window.innerWidth >= 1500) setCount(7)
+    else setCount(5)
+  }, [])
+  useEffect(() => {
+    update()
+    window.addEventListener('resize', update)
+    return () => window.removeEventListener('resize', update)
+  }, [update])
+  return count
+}
+
+export function GamesList() {
   const { t } = useTranslation()
-
-  const [columnCount, setColumnCount] = useState(5)
+  const {
+    isLoading,
+    gamesList,
+    recentGames,
+    unplayedGames,
+    filteredGames,
+    sortStyle,
+    setSortStyle,
+    incrementRefreshKey,
+  } = useGamesList()
+  const sidebarCollapsed = useUiStore(s => s.sidebarCollapsed)
+  const transitionDuration = useUiStore(s => s.transitionDuration)
+  const selectedGame = useUiStore(s => s.selectedGame)
+  const userSettings = useUserStore(s => s.userSettings)
+  const userSummary = useUserStore(s => s.userSummary)
+  const columnCount = useColumnCount()
   const listRef = useRef<List>(null)
   const [windowSize, setWindowSize] = useState({
     width: window.innerWidth,
     height: window.innerHeight,
   })
 
-  const handleResize = useCallback(() => {
-    setWindowSize({ width: window.innerWidth, height: window.innerHeight })
-    if (window.innerWidth >= 3200) {
-      setColumnCount(12)
-    } else if (window.innerWidth >= 2300) {
-      setColumnCount(10)
-    } else if (window.innerWidth >= 2000) {
-      setColumnCount(8)
-    } else if (window.innerWidth >= 1500) {
-      setColumnCount(7)
-    } else {
-      setColumnCount(5)
-    }
-    if (listRef.current) {
-      listRef.current.resetAfterIndex(0, true)
-    }
+  useEffect(() => {
+    const update = () => setWindowSize({ width: window.innerWidth, height: window.innerHeight })
+    window.addEventListener('resize', update)
+    return () => window.removeEventListener('resize', update)
   }, [])
 
-  useEffect(() => {
-    handleResize()
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [handleResize])
+  const rowHeight = useCallback(() => (sidebarCollapsed ? 175 : 160), [sidebarCollapsed])
 
-  const recommendedHeight = 335
-  const recentsHeight = 210
-  const headerHeight = 40
-  const getDynamicRowHeight = useCallback(
-    (): number => (sidebarCollapsed ? 175 : 160),
-    [sidebarCollapsed],
-  )
-
-  const games = useMemo(() => gamesContext.filteredGames || [], [gamesContext.filteredGames])
+  const games = useMemo(() => filteredGames ?? [], [filteredGames])
   const gameRowCount = useMemo(
     () => Math.ceil(games.length / columnCount),
     [games.length, columnCount],
@@ -67,26 +68,15 @@ export const GamesList = () => {
 
   const hasRecommended = useMemo(
     () =>
-      !gamesContext.isLoading &&
-      gamesContext.unplayedGames.length > 0 &&
+      !isLoading &&
+      unplayedGames.length > 0 &&
       userSettings?.general?.showRecommendedCarousel !== false,
-    [
-      gamesContext.isLoading,
-      gamesContext.unplayedGames.length,
-      userSettings?.general?.showRecommendedCarousel,
-    ],
+    [isLoading, unplayedGames.length, userSettings?.general?.showRecommendedCarousel],
   )
-
   const hasRecent = useMemo(
     () =>
-      !gamesContext.isLoading &&
-      gamesContext.recentGames.length > 0 &&
-      userSettings?.general?.showRecentCarousel !== false,
-    [
-      gamesContext.isLoading,
-      gamesContext.recentGames.length,
-      userSettings?.general?.showRecentCarousel,
-    ],
+      !isLoading && recentGames.length > 0 && userSettings?.general?.showRecentCarousel !== false,
+    [isLoading, recentGames.length, userSettings?.general?.showRecentCarousel],
   )
 
   const rows = useMemo((): Array<'recommended' | 'recent' | 'header' | number> => {
@@ -98,47 +88,45 @@ export const GamesList = () => {
     return r
   }, [hasRecommended, hasRecent, gameRowCount])
 
-  // Reset list measurements when rows structure changes
   useEffect(() => {
-    if (listRef.current) {
-      listRef.current.resetAfterIndex(0, true)
-    }
+    if (listRef.current) listRef.current.resetAfterIndex(0, true)
   }, [rows])
 
   const getRowHeight = useCallback(
-    (index: number): number => {
-      const rowType = rows[index]
-      if (rowType === 'recommended') return recommendedHeight
-      if (rowType === 'recent') return recentsHeight
-      if (rowType === 'header') return headerHeight
-      return getDynamicRowHeight()
+    (index: number) => {
+      const type = rows[index]
+      if (type === 'recommended') return 335
+      if (type === 'recent') return 210
+      if (type === 'header') return 40
+      return rowHeight()
     },
-    [rows, getDynamicRowHeight],
+    [rows, rowHeight],
   )
 
   const Row = memo(({ index, style }: { index: number; style: React.CSSProperties }) => {
     const rowType = rows[index]
-    if (rowType === 'recommended') {
+    if (rowType === 'recommended')
       return (
         <div style={style}>
-          <RecommendedGamesCarousel gamesContext={gamesContext} />
+          <RecommendedGamesCarousel unplayedGames={unplayedGames} />
         </div>
       )
-    }
-    if (rowType === 'recent') {
+    if (rowType === 'recent')
       return (
         <div style={style}>
-          <RecentGamesCarousel gamesContext={gamesContext} />
+          <RecentGamesCarousel
+            recentGames={recentGames}
+            sortStyle={sortStyle}
+            setSortStyle={setSortStyle}
+          />
         </div>
       )
-    }
-    if (rowType === 'header') {
+    if (rowType === 'header')
       return (
         <div style={style}>
           <p className='text-lg font-black px-6'>{t('gamesList.allGames')}</p>
         </div>
       )
-    }
     if (typeof rowType === 'number') {
       return (
         <div
@@ -160,36 +148,33 @@ export const GamesList = () => {
     return null
   })
 
-  if (!gamesContext.isLoading && gamesContext.gamesList.length === 0)
+  if (!isLoading && gamesList.length === 0) {
     return (
       <div className={cn('w-calc min-h-calc max-h-calc overflow-x-hidden')}>
-        <Private setRefreshKey={gamesContext.setRefreshKey} />
+        <Private
+          onRefresh={() => refreshGamesList(userSummary?.steamId, incrementRefreshKey, true)}
+        />
       </div>
     )
+  }
 
   return (
     <div
-      key={gamesContext.refreshKey}
       className={cn(
         'mt-12 ease-in-out',
         sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]',
       )}
-      style={{
-        transitionDuration,
-        transitionProperty: 'width',
-      }}
+      style={{ transitionDuration, transitionProperty: 'width' }}
     >
-      {!showAchievements && (
+      {!selectedGame && (
         <PageHeader
-          sortStyle={gamesContext.sortStyle}
-          setSortStyle={gamesContext.setSortStyle}
-          filteredGames={gamesContext.filteredGames}
-          visibleGames={gamesContext.visibleGames}
-          setRefreshKey={gamesContext.setRefreshKey}
+          sortStyle={sortStyle}
+          setSortStyle={setSortStyle}
+          filteredGames={filteredGames}
+          incrementRefreshKey={incrementRefreshKey}
         />
       )}
-
-      {!gamesContext.isLoading ? (
+      {!isLoading ? (
         <List
           key={
             sidebarCollapsed
@@ -200,9 +185,7 @@ export const GamesList = () => {
           itemCount={rows.length}
           itemSize={getRowHeight}
           width='100%'
-          style={{
-            overflowX: 'hidden',
-          }}
+          style={{ overflowX: 'hidden' }}
           ref={listRef}
         >
           {Row}

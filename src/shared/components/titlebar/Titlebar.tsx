@@ -4,65 +4,55 @@ import { RiSearchLine } from 'react-icons/ri'
 import { TbLayoutSidebar, TbLayoutSidebarFilled, TbX } from 'react-icons/tb'
 import { VscChromeClose, VscChromeMaximize, VscChromeMinimize } from 'react-icons/vsc'
 import { cn } from '@heroui/react'
-import {
-  GoPro,
-  HelpDesk,
-  Menu,
-  Notifications,
-  SearchModal,
-  UpdateButton,
-} from '@/shared/components'
-import { useTitlebar } from '@/shared/hooks'
-import {
-  useLoaderStore,
-  useNavigationStore,
-  useSearchStore,
-  useStateStore,
-  useUpdateStore,
-  useUserStore,
-} from '@/shared/stores'
+import { GoPro } from '@/shared/components/pro/GoPro'
+import { SearchModal } from '@/shared/components/SearchModal'
+import { HelpDesk } from '@/shared/components/titlebar/HelpDesk'
+import { Menu } from '@/shared/components/titlebar/Menu'
+import { Notifications } from '@/shared/components/titlebar/Notifications'
+import { UpdateButton } from '@/shared/components/UpdateButton'
+import { useTitlebar } from '@/shared/hooks/titlebar/useTitlebar'
+import { useSessionStore, useUiStore, useUserStore } from '@/shared/stores'
 import { isPortableCheck } from '@/shared/utils'
 
-export const Titlebar = () => {
+export function Titlebar() {
   const { t } = useTranslation()
   const { windowMinimize, windowToggleMaximize, windowClose } = useTitlebar()
-  const loaderVisible = useLoaderStore(state => state.loaderVisible)
-  const updateAvailable = useUpdateStore(state => state.updateAvailable)
-  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
-  const transitionDuration = useStateStore(state => state.transitionDuration)
-  const setSidebarCollapsed = useStateStore(state => state.setSidebarCollapsed)
-  const setTransitionDuration = useStateStore(state => state.setTransitionDuration)
-  const showSearchModal = useStateStore(state => state.showSearchModal)
-  const setShowSearchModal = useStateStore(state => state.setShowSearchModal)
-  const showAchievements = useStateStore(state => state.showAchievements)
-  const activePage = useNavigationStore(state => state.activePage)
-  const isPro = useUserStore(state => state.isPro)
-  const searchContent = useSearchStore()
+  const loaderVisible = useSessionStore(s => s.loaderVisible)
+  const updateAvailable = useSessionStore(s => s.updateAvailable)
+  const sidebarCollapsed = useUiStore(s => s.sidebarCollapsed)
+  const transitionDuration = useUiStore(s => s.transitionDuration)
+  const setSidebarCollapsed = useUiStore(s => s.setSidebarCollapsed)
+  const setTransitionDuration = useUiStore(s => s.setTransitionDuration)
+  const showSearchModal = useUiStore(s => s.showSearchModal)
+  const setShowSearchModal = useUiStore(s => s.setShowSearchModal)
+  const selectedGame = useUiStore(s => s.selectedGame)
+  const activePage = useUiStore(s => s.activePage)
+  const isPro = useUserStore(s => s.isPro)
+  const gameQuery = useUiStore(s => s.gameQuery)
+  const tradingCardQuery = useUiStore(s => s.tradingCardQuery)
+  const achievementQuery = useUiStore(s => s.achievementQuery)
+  const statisticQuery = useUiStore(s => s.statisticQuery)
+  const customListQuery = useUiStore(s => s.customListQuery)
+  const setGameQuery = useUiStore(s => s.setGameQuery)
+  const setTradingCardQuery = useUiStore(s => s.setTradingCardQuery)
+  const setAchievementQuery = useUiStore(s => s.setAchievementQuery)
+  const setStatisticQuery = useUiStore(s => s.setStatisticQuery)
+  const setCustomListQuery = useUiStore(s => s.setCustomListQuery)
   const [isPortable, setIsPortable] = useState<boolean | null>(null)
 
   useEffect(() => {
-    ;(async () => {
-      const portable = await isPortableCheck()
-      setIsPortable(portable)
-    })()
+    isPortableCheck().then(setIsPortable)
   }, [])
 
-  const hasActiveQuery = !!(
-    searchContent.gameQueryValue ||
-    searchContent.tradingCardQueryValue ||
-    searchContent.achievementQueryValue ||
-    searchContent.statisticQueryValue ||
-    searchContent.customListQueryValue
+  const hasQuery = !!(
+    gameQuery ||
+    tradingCardQuery ||
+    achievementQuery ||
+    statisticQuery ||
+    customListQuery
   )
-
-  const currentQueryValue =
-    searchContent.gameQueryValue ||
-    searchContent.tradingCardQueryValue ||
-    searchContent.achievementQueryValue ||
-    searchContent.statisticQueryValue ||
-    searchContent.customListQueryValue ||
-    ''
-
+  const currentQuery =
+    gameQuery || tradingCardQuery || achievementQuery || statisticQuery || customListQuery || ''
   const showSearch = !loaderVisible && activePage !== 'setup'
 
   return (
@@ -72,21 +62,15 @@ export const Titlebar = () => {
           'absolute top-0 right-0 select-none pr-0 h-12 z-40 ease-in-out',
           sidebarCollapsed ? 'w-[calc(100vw-56px)]' : activePage === 'setup' ? 'w-full' : 'w-calc',
         )}
-        style={{
-          transitionDuration,
-          transitionProperty: 'width',
-        }}
+        style={{ transitionDuration, transitionProperty: 'width' }}
         data-tauri-drag-region
       >
         <div className='flex items-center h-12 w-full' data-tauri-drag-region>
-          {/* Left: sidebar toggle */}
           <div className='flex items-center h-full shrink-0'>
             {showSearch && (
               <div
                 className={cn(
-                  'flex justify-center items-center p-2 cursor-pointer group',
-                  'text-content hover:bg-sidebar/40 hover:text-content/80 h-12 w-12',
-                  'rounded-br-xl',
+                  'flex justify-center items-center p-2 cursor-pointer group text-content hover:bg-sidebar/40 hover:text-content/80 h-12 w-12 rounded-br-xl',
                 )}
                 style={{
                   transitionProperty: 'margin-left, color, background-color',
@@ -97,9 +81,7 @@ export const Titlebar = () => {
                   setTransitionDuration('300ms')
                   setSidebarCollapsed(!sidebarCollapsed)
                   localStorage.setItem('sidebarCollapsed', String(!sidebarCollapsed))
-                  setTimeout(() => {
-                    setTransitionDuration('0ms')
-                  }, 100)
+                  setTimeout(() => setTransitionDuration('0ms'), 100)
                 }}
               >
                 {sidebarCollapsed ? (
@@ -109,7 +91,6 @@ export const Titlebar = () => {
                 )}
               </div>
             )}
-
             {!loaderVisible && isPro !== null && activePage !== 'setup' && (
               <div className='flex justify-center items-center h-full'>
                 <GoPro />
@@ -117,64 +98,44 @@ export const Titlebar = () => {
             )}
           </div>
 
-          {/* Spacer — fills the middle so left/right sections stay flush */}
           <div className='flex-1' data-tauri-drag-region />
 
-          {/* Right: action buttons + window controls */}
           <div className='flex justify-end items-center h-full shrink-0'>
             {isPortable === false && updateAvailable && <UpdateButton />}
-
             <HelpDesk />
-
             {showSearch && (
               <>
                 <Notifications />
                 <Menu />
               </>
             )}
-
-            <div className='flex justify-center items-center'>
-              <div
-                className={cn(
-                  'flex justify-center items-center',
-                  'hover:bg-header-hover/10 h-12 w-12 px-2 duration-150 cursor-pointer',
-                  'hover:text-white transition-colors',
-                )}
-                onClick={windowMinimize}
-              >
-                <VscChromeMinimize fontSize={16} className='text-content' />
-              </div>
+            <div
+              className={cn(
+                'flex justify-center items-center hover:bg-header-hover/10 h-12 w-12 px-2 duration-150 cursor-pointer hover:text-white transition-colors',
+              )}
+              onClick={windowMinimize}
+            >
+              <VscChromeMinimize fontSize={16} className='text-content' />
             </div>
-
-            <div className='flex justify-center items-center'>
-              <div
-                className={cn(
-                  'flex justify-center items-center',
-                  'hover:bg-header-hover/10 h-12 w-12 px-2.5 duration-150 cursor-pointer',
-                  'hover:text-white transition-colors',
-                )}
-                onClick={windowToggleMaximize}
-              >
-                <VscChromeMaximize fontSize={16} className='text-content' />
-              </div>
+            <div
+              className={cn(
+                'flex justify-center items-center hover:bg-header-hover/10 h-12 w-12 px-2.5 duration-150 cursor-pointer hover:text-white transition-colors',
+              )}
+              onClick={windowToggleMaximize}
+            >
+              <VscChromeMaximize fontSize={16} className='text-content' />
             </div>
-
-            <div className='flex justify-center items-center'>
-              <div
-                className={cn(
-                  'flex justify-center items-center',
-                  'hover:bg-danger/90 h-12 w-12 px-2 duration-150 cursor-pointer',
-                  'hover:text-white transition-colors',
-                )}
-                onClick={windowClose}
-              >
-                <VscChromeClose fontSize={16} className='text-content' />
-              </div>
+            <div
+              className={cn(
+                'flex justify-center items-center hover:bg-danger/90 h-12 w-12 px-2 duration-150 cursor-pointer hover:text-white transition-colors',
+              )}
+              onClick={windowClose}
+            >
+              <VscChromeClose fontSize={16} className='text-content' />
             </div>
           </div>
         </div>
 
-        {/* Search button — absolutely centered on the full viewport so it aligns with the modal */}
         {showSearch && activePage !== 'idling' && activePage !== 'freeGames' && (
           <div
             className='absolute inset-y-0 flex items-center pointer-events-none ease-in-out'
@@ -186,31 +147,28 @@ export const Titlebar = () => {
           >
             <div
               className={cn(
-                'flex items-center gap-2 rounded-full h-9 w-72 pl-5 pr-3',
-                'select-none duration-150 cursor-pointer pointer-events-auto',
-                showAchievements
+                'flex items-center gap-2 rounded-full h-9 w-72 pl-5 pr-3 select-none duration-150 cursor-pointer pointer-events-auto',
+                selectedGame
                   ? 'bg-btn-achievement-header hover:bg-btn-achievement-header-hover'
                   : 'bg-item-active hover:bg-inputhover',
-                !hasActiveQuery && 'text-altwhite',
+                !hasQuery && 'text-altwhite',
               )}
               onClick={() => setShowSearchModal(true)}
             >
               <span className='flex items-center gap-2 text-sm font-semibold truncate flex-1'>
                 <RiSearchLine fontSize={18} className='shrink-0 text-altwhite' />
-                {currentQueryValue || t('common.search')}
+                {currentQuery || t('common.search')}
               </span>
-
-              {hasActiveQuery && (
+              {hasQuery && (
                 <div
                   className='shrink-0 flex items-center justify-center rounded-full hover:bg-item-active p-1 duration-150'
                   onClick={e => {
                     e.stopPropagation()
-                    searchContent.setGameQueryValue('')
-                    searchContent.setTradingCardQueryValue('')
-                    searchContent.setAchievementQueryValue('')
-                    searchContent.setStatisticQueryValue('')
-                    searchContent.setCustomListQueryValue('')
-                    searchContent.setIsQuery(false)
+                    setGameQuery('')
+                    setTradingCardQuery('')
+                    setAchievementQuery('')
+                    setStatisticQuery('')
+                    setCustomListQuery('')
                   }}
                 >
                   <TbX fontSize={14} />
@@ -220,7 +178,6 @@ export const Titlebar = () => {
           </div>
         )}
       </div>
-
       <SearchModal isModalOpen={showSearchModal} onModalClose={() => setShowSearchModal(false)} />
     </>
   )

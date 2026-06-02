@@ -4,22 +4,17 @@ import { emit } from '@tauri-apps/api/event'
 import { WebviewWindow } from '@tauri-apps/api/webviewWindow'
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useLoaderStore, useStateStore, useUserStore } from '@/shared/stores'
+import { useSessionStore, useUiStore, useUserStore } from '@/shared/stores'
 
 export function useInit() {
-  const setLoadingUserSummary = useStateStore(state => state.setLoadingUserSummary)
-  const setUserSummary = useUserStore(state => state.setUserSummary)
-  const { hideLoader } = useLoaderStore()
+  const setLoadingUserSummary = useUiStore(s => s.setLoadingUserSummary)
+  const setUserSummary = useUserStore(s => s.setUserSummary)
+  const { hideLoader } = useSessionStore()
   const { t, i18n } = useTranslation()
 
-  console.debug('Monitor for rerenders')
-
   useEffect(() => {
-    // Emit ready event to backend
     emit('ready')
-    // Start the Steam status monitor once globally
     invoke('start_steam_status_monitor')
-    // Start the processes monitor once globally
     invoke('start_processes_monitor')
   }, [])
 
@@ -32,18 +27,12 @@ export function useInit() {
   }, [t, i18n.language])
 
   useEffect(() => {
-    // Set user summary data
     const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
-
-    if (userSummary?.steamId) {
-      setUserSummary(userSummary)
-    }
+    if (userSummary?.steamId) setUserSummary(userSummary)
 
     setTimeout(() => {
       hideLoader()
-      setTimeout(() => {
-        setLoadingUserSummary(false)
-      }, 250)
+      setTimeout(() => setLoadingUserSummary(false), 250)
     }, 1500)
   }, [setUserSummary, setLoadingUserSummary, hideLoader])
 
@@ -55,7 +44,7 @@ export function useInit() {
           await webview?.close()
         }, 5000)
       } catch (error) {
-        console.error('Error in (closeWebview):', error)
+        console.error('Error in closeWebview:', error)
       }
     }
     closeWebview()

@@ -5,11 +5,11 @@ import { FaX } from 'react-icons/fa6'
 import { TbArrowsSort, TbAwardFilled, TbPlayerPlayFilled, TbPlayerStopFilled } from 'react-icons/tb'
 import { Button, Checkbox, cn } from '@heroui/react'
 import Image from 'next/image'
-import { CardMenu } from '@/features/games-list'
+import { CardMenu } from '@/features/games-list/components/CardMenu'
+import { handleIdle, handleStopIdle } from '@/features/idle'
 import { ExtLink } from '@/shared/components/ExtLink'
 import { IdleTimer } from '@/shared/components/IdleTimer'
-import { useIdleStore, useStateStore } from '@/shared/stores'
-import { handleIdle, handleStopIdle, viewAchievments } from '@/shared/utils'
+import { useSessionStore, useUiStore } from '@/shared/stores'
 
 interface GameCardProps {
   item: Game
@@ -34,17 +34,14 @@ export const GameCard = memo(function GameCard({
   onOpen,
   handleRemoveGame,
 }: GameCardProps) {
-  const idleGamesList = useIdleStore(state => state.idleGamesList)
-  const setIdleGamesList = useIdleStore(state => state.setIdleGamesList)
-  const setAppId = useStateStore(state => state.setAppId)
-  const setAppName = useStateStore(state => state.setAppName)
-  const setShowAchievements = useStateStore(state => state.setShowAchievements)
+  const idleGamesList = useSessionStore(s => s.idleGamesList)
+  const setSelectedGame = useUiStore(s => s.setSelectedGame)
 
-  const idlingGame = idleGamesList.find(game => game.appid === item.appid)
+  const idlingGame = idleGamesList.find(g => g.appid === item.appid)
   const isIdling = idlingGame !== undefined
 
-  const handleImageError = (event: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    ;(event.target as HTMLImageElement).src = '/fallback.webp'
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    ;(e.target as HTMLImageElement).src = '/fallback.webp'
   }
 
   if (isFreeGame) {
@@ -57,7 +54,7 @@ export const GameCard = memo(function GameCard({
               width={460}
               height={215}
               alt={`${item.name} image`}
-              priority={true}
+              priority
               onError={handleImageError}
               className='w-full h-full object-cover rounded-lg duration-150'
             />
@@ -70,7 +67,6 @@ export const GameCard = memo(function GameCard({
             <h3 className='text-xs font-bold text-altwhite group-hover:text-content truncate duration-150'>
               {item.name}
             </h3>
-
             <div className='flex gap-1'>
               <ExtLink href={`https://store.steampowered.com/app/${item.appid}`}>
                 <div className='bg-transparent hover:bg-item-hover text-altwhite hover:text-content p-2 rounded-full transition-colors duration-150'>
@@ -99,7 +95,7 @@ export const GameCard = memo(function GameCard({
             width={460}
             height={215}
             alt={`${item.name} image`}
-            priority={true}
+            priority
             onError={handleImageError}
             className='w-full h-full object-cover rounded-lg duration-150'
           />
@@ -112,7 +108,6 @@ export const GameCard = memo(function GameCard({
           <h3 className='text-xs font-bold text-altwhite group-hover:text-content truncate duration-150'>
             {item.name}
           </h3>
-
           <div className='flex gap-1'>
             <Button
               isIconOnly
@@ -120,46 +115,43 @@ export const GameCard = memo(function GameCard({
               radius='full'
               className='bg-transparent hover:bg-item-hover text-altwhite hover:text-content transition-colors duration-150'
               onPress={() =>
-                isIdling ? handleStopIdle(item, idleGamesList, setIdleGamesList) : handleIdle(item)
+                isIdling
+                  ? handleStopIdle(item, idleGamesList, gs =>
+                      useSessionStore.setState({ idleGamesList: gs }),
+                    )
+                  : handleIdle(item)
               }
             >
               {isIdling ? <TbPlayerStopFilled size={18} /> : <TbPlayerPlayFilled size={18} />}
             </Button>
-
             {!isAutoIdleList && (
               <Button
                 isIconOnly
                 size='sm'
                 radius='full'
                 className='bg-transparent hover:bg-item-hover text-altwhite hover:text-content transition-colors duration-150'
-                onPress={() => viewAchievments(item, setAppId, setAppName, setShowAchievements)}
+                onPress={() => setSelectedGame(item)}
               >
                 <TbAwardFilled size={18} />
               </Button>
             )}
-
             {isAchievementUnlocker && (
               <Button
                 isIconOnly
                 size='sm'
                 radius='full'
                 className='bg-transparent hover:bg-item-hover text-altwhite hover:text-content transition-colors duration-150'
-                onPress={() => {
-                  if (onOpen) onOpen()
-                }}
+                onPress={() => onOpen?.()}
               >
                 <TbArrowsSort size={18} />
               </Button>
             )}
-
             {isAutoIdleList && (
               <div className='flex items-center' onPointerDown={e => e.stopPropagation()}>
                 <Checkbox
                   size='sm'
                   isSelected={autoIdleEnabled !== false}
-                  classNames={{
-                    wrapper: cn('group-data-[selected=true]:!bg-dynamic'),
-                  }}
+                  classNames={{ wrapper: cn('group-data-[selected=true]:!bg-dynamic') }}
                   onValueChange={() => onToggleAutoIdle?.()}
                 />
               </div>
@@ -177,11 +169,7 @@ export const GameCard = memo(function GameCard({
           <div
             className='bg-danger hover:opacity-90 rounded-full cursor-pointer p-1.5 duration-150'
             onPointerDown={e => e.stopPropagation()}
-            onClick={() => {
-              if (handleRemoveGame) {
-                handleRemoveGame(item)
-              }
-            }}
+            onClick={() => handleRemoveGame?.(item)}
           >
             <FaX size={10} />
           </div>

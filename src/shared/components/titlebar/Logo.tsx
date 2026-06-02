@@ -3,7 +3,7 @@ interface LogoProps {
   height?: string
 }
 
-export const Logo = ({ width = '5', height = '5' }: LogoProps) => {
+export function Logo({ width = '5', height = '5' }: LogoProps) {
   return (
     <svg
       className={`w-${width} h-${height} fill-content pointer-events-none shrink-0`}

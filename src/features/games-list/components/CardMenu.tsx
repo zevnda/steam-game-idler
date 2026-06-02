@@ -3,29 +3,22 @@ import { useTranslation } from 'react-i18next'
 import { FaSteam } from 'react-icons/fa'
 import { TbAwardFilled, TbDotsVertical, TbPlayerPlayFilled } from 'react-icons/tb'
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@heroui/react'
-import { useStateStore } from '@/shared/stores'
-import { handleIdle, openExternalLink, viewAchievments } from '@/shared/utils'
+import { handleIdle } from '@/features/idle'
+import { useUiStore } from '@/shared/stores'
+import { checkSteamStatus, openExternalLink } from '@/shared/utils'
 
-export const CardMenu = ({ item }: { item: Game }) => {
+export function CardMenu({ item }: { item: Game }) {
   const { t } = useTranslation()
-  const setAppId = useStateStore(state => state.setAppId)
-  const setAppName = useStateStore(state => state.setAppName)
-  const setShowAchievements = useStateStore(state => state.setShowAchievements)
+  const setSelectedGame = useUiStore(s => s.setSelectedGame)
 
-  const viewStorePage = async (item: Game) => {
-    try {
-      await openExternalLink(`https://store.steampowered.com/app/${item.appid}`)
-    } catch (error) {
-      console.error('Failed to open link:', error)
-    }
+  const handleViewAchievements = async () => {
+    const running = await checkSteamStatus(true)
+    if (!running) return
+    setSelectedGame(item)
   }
 
   return (
-    <Dropdown
-      classNames={{
-        content: ['rounded-xl p-0 bg-transparent'],
-      }}
-    >
+    <Dropdown classNames={{ content: ['rounded-xl p-0 bg-transparent'] }}>
       <DropdownTrigger>
         <div className='p-1 bg-black/50 hover:bg-black hover:bg-opacity-80 cursor-pointer rounded-md duration-200'>
           <TbDotsVertical />
@@ -50,7 +43,7 @@ export const CardMenu = ({ item }: { item: Game }) => {
           classNames={{ base: ['data-[hover=true]:bg-item-hover'] }}
           key='achievements'
           startContent={<TbAwardFilled size={16} className='text-content' />}
-          onPress={() => viewAchievments(item, setAppId, setAppName, setShowAchievements)}
+          onPress={handleViewAchievements}
           textValue='View achievements'
         >
           <p className='text-sm text-content truncate'>{t('cardMenu.achievements')}</p>
@@ -60,7 +53,7 @@ export const CardMenu = ({ item }: { item: Game }) => {
           classNames={{ base: ['data-[hover=true]:bg-item-hover'] }}
           key='store'
           startContent={<FaSteam fontSize={16} className='text-content' />}
-          onPress={() => viewStorePage(item)}
+          onPress={() => openExternalLink(`https://store.steampowered.com/app/${item.appid}`)}
           textValue='View store page'
         >
           <p className='text-sm text-content truncate'>{t('cardMenu.store')}</p>

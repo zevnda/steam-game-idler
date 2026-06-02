@@ -2,32 +2,30 @@ import type { CurrentSettingsTabType } from '@/shared/types'
 import { useTranslation } from 'react-i18next'
 import { TbX } from 'react-icons/tb'
 import { Button, cn, Modal, ModalBody, ModalContent, Tab, Tabs } from '@heroui/react'
-import {
-  AchievementSettings,
-  CardSettings,
-  CustomizationSettings,
-  FreeGamesSettings,
-  GameSettings,
-  GeneralSettings,
-  InventoryManagerSettings,
-  KeybindsSettings,
-  Logs,
-  SteamCredentials,
-  SubscriptionSettings,
-  useSettings,
-} from '@/features/settings'
-import { SocialButtons } from '@/shared/components'
-import { useNavigationStore } from '@/shared/stores'
+import { AchievementSettings } from '@/features/settings/components/achievement-unlocker/AchievementSettings'
+import { CardSettings } from '@/features/settings/components/card-farming/CardSettings'
+import { CustomizationSettings } from '@/features/settings/components/customization/CustomizationSettings'
+import { Logs } from '@/features/settings/components/debug/Logs'
+import { FreeGamesSettings } from '@/features/settings/components/free-games/FreeGamesSettings'
+import { GameSettings } from '@/features/settings/components/game-settings/GameSettings'
+import { GeneralSettings } from '@/features/settings/components/general/GeneralSettings'
+import { InventoryManagerSettings } from '@/features/settings/components/inventory-manager/InventoryManagerSettings'
+import { KeybindsSettings } from '@/features/settings/components/keybinds/KeybindsSettings'
+import { SteamCredentials } from '@/features/settings/components/steam-credentials/SteamCredentials'
+import { SubscriptionSettings } from '@/features/settings/components/subscription/SubscriptionSettings'
+import { useSettings } from '@/features/settings/hooks/useSettings'
+import { SocialButtons } from '@/shared/components/SocialButtons'
+import { useUiStore } from '@/shared/stores'
 
-export const Settings = () => {
+export function Settings() {
   const { t } = useTranslation()
-  const { version, refreshKey } = useSettings()
-  const activePage = useNavigationStore(state => state.activePage)
-  const setActivePage = useNavigationStore(state => state.setActivePage)
-  const previousActivePage = useNavigationStore(state => state.previousActivePage)
-  const setPreviousActivePage = useNavigationStore(state => state.setPreviousActivePage)
-  const currentSettingsTab = useNavigationStore(state => state.currentSettingsTab)
-  const setCurrentSettingsTab = useNavigationStore(state => state.setCurrentSettingsTab)
+  const { version } = useSettings()
+  const activePage = useUiStore(s => s.activePage)
+  const setActivePage = useUiStore(s => s.setActivePage)
+  const previousActivePage = useUiStore(s => s.previousActivePage)
+  const setPreviousActivePage = useUiStore(s => s.setPreviousActivePage)
+  const currentSettingsTab = useUiStore(s => s.currentSettingsTab)
+  const setCurrentSettingsTab = useUiStore(s => s.setCurrentSettingsTab)
 
   const handleClose = () => {
     setActivePage(previousActivePage)
@@ -77,7 +75,7 @@ export const Settings = () => {
     >
       <ModalContent className='flex flex-col h-full overflow-hidden'>
         <ModalBody className='flex-1 min-h-0 p-0 overflow-hidden'>
-          <div key={refreshKey} className='flex h-full bg-gradient-alt'>
+          <div className='flex h-full bg-gradient-alt'>
             <div className='relative w-65 shrink-0 bg-sidebar/50 border-r border-border flex flex-col'>
               <div className='absolute top-3 left-3 z-40'>
                 <Button
@@ -88,7 +86,6 @@ export const Settings = () => {
                   onPress={handleClose}
                 />
               </div>
-
               <div className='flex-1 overflow-y-auto pt-14 pb-4'>
                 <Tabs
                   isVertical
@@ -99,8 +96,7 @@ export const Settings = () => {
                     base: 'w-full',
                     tabList: 'gap-0 bg-transparent p-4 w-full',
                     tab: cn(
-                      'data-[hover-unselected=true]:opacity-100',
-                      'rounded-lg bg-transparent justify-start py-5',
+                      'data-[hover-unselected=true]:opacity-100 rounded-lg bg-transparent justify-start py-5',
                     ),
                     tabContent:
                       'font-bold truncate duration-150 text-altwhite group-data-[hover-unselected=true]:text-content group-data-[selected=true]:text-content',
@@ -124,7 +120,6 @@ export const Settings = () => {
                   <Tab key='debug' title={t('settings.debug.title')} />
                 </Tabs>
               </div>
-
               <div className='flex flex-col items-center gap-4 px-6 pb-4'>
                 <SocialButtons />
                 <span className='text-xs text-altwhite text-center'>
@@ -132,7 +127,6 @@ export const Settings = () => {
                 </span>
               </div>
             </div>
-
             <div className='flex-1 overflow-y-auto pb-10 pl-10 pr-4 mt-9'>{renderContent()}</div>
           </div>
         </ModalBody>

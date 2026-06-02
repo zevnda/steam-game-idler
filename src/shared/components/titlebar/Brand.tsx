@@ -1,15 +1,12 @@
 import { cn } from '@heroui/react'
 import { Unbounded } from 'next/font/google'
-import { Logo } from '@/shared/components'
-import { useStateStore } from '@/shared/stores'
+import { Logo } from '@/shared/components/titlebar/Logo'
+import { useUiStore } from '@/shared/stores'
 
-const unbounded = Unbounded({
-  subsets: ['latin'],
-  variable: '--font-unbounded',
-})
+const unbounded = Unbounded({ subsets: ['latin'], variable: '--font-unbounded' })
 
-export const Brand = () => {
-  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
+export function Brand() {
+  const sidebarCollapsed = useUiStore(s => s.sidebarCollapsed)
 
   return (
     <div
@@ -20,12 +17,9 @@ export const Brand = () => {
       data-tauri-drag-region
     >
       <Logo />
-
       {!sidebarCollapsed && (
         <div
-          className={cn(
-            'flex justify-between items-center duration-500 ease-in-out overflow-hidden whitespace-nowrap transition-all',
-          )}
+          className='flex justify-between items-center duration-500 ease-in-out overflow-hidden whitespace-nowrap transition-all'
           data-tauri-drag-region
         >
           <p

@@ -3,44 +3,45 @@ import { Trans, useTranslation } from 'react-i18next'
 import { SiSteam, SiSteamdb } from 'react-icons/si'
 import { TbAlertHexagonFilled, TbFoldersFilled, TbX } from 'react-icons/tb'
 import { Alert, Button, cn } from '@heroui/react'
-import { CustomTooltip, ExtLink, showDangerToast } from '@/shared/components'
-import { useNavigationStore, useSearchStore, useStateStore, useUserStore } from '@/shared/stores'
-import { logEvent } from '@/shared/utils'
+import { CustomTooltip } from '@/shared/components/CustomTooltip'
+import { ExtLink } from '@/shared/components/ExtLink'
+import { logEvent } from '@/shared/services/logService'
+import { toast } from '@/shared/services/toastService'
+import { useUiStore, useUserStore } from '@/shared/stores'
 
 interface PageHeaderProps {
   protectedAchievements: boolean
   protectedStatistics: boolean
 }
 
-export const PageHeader = ({ protectedAchievements, protectedStatistics }: PageHeaderProps) => {
+export function PageHeader({ protectedAchievements, protectedStatistics }: PageHeaderProps) {
   const { t } = useTranslation()
-  const userSummary = useUserStore(state => state.userSummary)
-  const setAchievementsUnavailable = useUserStore(state => state.setAchievementsUnavailable)
-  const setStatisticsUnavailable = useUserStore(state => state.setStatisticsUnavailable)
-  const appId = useStateStore(state => state.appId)
-  const appName = useStateStore(state => state.appName)
-  const setShowAchievements = useStateStore(state => state.setShowAchievements)
-  const setAchievementQueryValue = useSearchStore(state => state.setAchievementQueryValue)
-  const setStatisticQueryValue = useSearchStore(state => state.setStatisticQueryValue)
-  const setCurrentTab = useNavigationStore(state => state.setCurrentTab)
+  const userSummary = useUserStore(s => s.userSummary)
+  const setAchievementsUnavailable = useUserStore(s => s.setAchievementsUnavailable)
+  const setStatisticsUnavailable = useUserStore(s => s.setStatisticsUnavailable)
+  const selectedGame = useUiStore(s => s.selectedGame)
+  const setSelectedGame = useUiStore(s => s.setSelectedGame)
+  const setAchievementQuery = useUiStore(s => s.setAchievementQuery)
+  const setStatisticQuery = useUiStore(s => s.setStatisticQuery)
+  const setCurrentTab = useUiStore(s => s.setCurrentTab)
 
-  const handleClick = () => {
-    setShowAchievements(false)
+  const handleClose = () => {
+    setSelectedGame(null)
     setCurrentTab('achievements')
-    setAchievementQueryValue('')
-    setStatisticQueryValue('')
+    setAchievementQuery('')
+    setStatisticQuery('')
     setAchievementsUnavailable(true)
     setStatisticsUnavailable(true)
   }
 
-  const handleOpenAchievementFile = async () => {
+  const handleOpenFile = async () => {
     try {
-      const filePath = `${userSummary?.steamId}\\achievement_data\\${appId}.json`
-      await invoke('open_file_explorer', { path: filePath })
+      await invoke('open_file_explorer', {
+        path: `${userSummary?.steamId}\\achievement_data\\${selectedGame?.appid}.json`,
+      })
     } catch (error) {
-      showDangerToast(t('common.error'))
-      console.error('Error in (handleOpenAchievementFile):', error)
-      logEvent(`[Error] in (handleOpenAchievementFile): ${error}`)
+      toast.danger(t('common.error'))
+      await logEvent(`[Error] in (handleOpenAchievementFile): ${error}`)
     }
   }
 
@@ -50,77 +51,65 @@ export const PageHeader = ({ protectedAchievements, protectedStatistics }: PageH
         <Button
           isIconOnly
           radius='full'
-          className='bg-btn-achievement-header hover:bg-btn-achievement-header-hover text-btn-alt'
+          className='bg-item-hover text-content mt-2'
           startContent={<TbX />}
-          onPress={handleClick}
+          onPress={handleClose}
         />
-
-        <div className='w-[320px]'>
-          <p className='text-3xl font-black truncate'>{appName}</p>
-        </div>
-
-        <div className='flex items-center gap-1 w-full'>
-          <CustomTooltip content={t('achievementManager.steam')} placement='top'>
-            <div>
-              <ExtLink href={`https://steamcommunity.com/stats/${appId}/achievements/`}>
-                <div className='bg-btn-achievement-header hover:bg-btn-achievement-header-hover rounded-full p-2 cursor-pointer duration-200'>
-                  <SiSteam fontSize={18} />
-                </div>
-              </ExtLink>
-            </div>
-          </CustomTooltip>
-
-          <CustomTooltip content={t('achievementManager.steamDB')} placement='top'>
-            <div>
-              <ExtLink href={`https://steamdb.info/app/${appId}/stats/`}>
-                <div className='bg-btn-achievement-header hover:bg-btn-achievement-header-hover rounded-full p-2 cursor-pointer duration-200'>
-                  <SiSteamdb fontSize={18} />
-                </div>
-              </ExtLink>
-            </div>
-          </CustomTooltip>
-
-          <CustomTooltip content={t('achievementManager.file')} placement='top'>
-            <div>
-              <div
-                className='bg-btn-achievement-header hover:bg-btn-achievement-header-hover rounded-full p-2 cursor-pointer duration-200'
-                onClick={handleOpenAchievementFile}
-              >
-                <TbFoldersFilled fontSize={18} />
-              </div>
-            </div>
-          </CustomTooltip>
+        <div className='mt-2'>
+          <p className='text-3xl font-black'>{selectedGame?.name}</p>
+          <p className='text-xs text-altwhite'>{selectedGame?.appid}</p>
         </div>
       </div>
 
-      {(protectedAchievements || protectedStatistics) && (
-        <div className='absolute top-0 right-0 pr-7'>
+      <div className='flex items-center gap-2'>
+        {(protectedAchievements || protectedStatistics) && (
           <Alert
-            hideIcon
-            title={
-              <p>
-                <Trans i18nKey='achievementManager.alert'>
-                  Some protected achievements or statistics have been disabled.
-                  <ExtLink
-                    className='text-dynamic hover:text-dynamic-hover duration-150'
-                    href='https://partner.steamgames.com/doc/features/achievements#game_server_stats:~:text=Stats%20and%20achievements%20that%20are%20settable%20by%20game%20servers%20cannot%20be%20set%20by%20clients.'
-                  >
-                    <span> Learn more</span>
-                  </ExtLink>
-                </Trans>
-              </p>
-            }
-            startContent={<TbAlertHexagonFilled fontSize={22} className='text-warning' />}
+            color='warning'
+            variant='faded'
             classNames={{
-              base: cn(
-                '!bg-base/60 h-10 py-1 flex justify-center items-center gap-0',
-                'rounded-lg text-content',
-              ),
-              title: ['text-sm'],
+              base: '!bg-warning/20 !border-warning/40',
+              iconWrapper: '!bg-warning/20 border-warning/40',
+              description: 'font-bold text-xs',
             }}
+            description={
+              <Trans
+                i18nKey='achievementManager.alert'
+                components={{ 1: <span className='font-black text-warning' /> }}
+              />
+            }
           />
-        </div>
-      )}
+        )}
+        <CustomTooltip content={t('achievementManager.file')}>
+          <Button
+            isIconOnly
+            radius='full'
+            className={cn('bg-item-hover text-content', !userSummary && 'hidden')}
+            onPress={handleOpenFile}
+            startContent={<TbFoldersFilled size={18} />}
+          />
+        </CustomTooltip>
+        <ExtLink href={`https://store.steampowered.com/app/${selectedGame?.appid}`}>
+          <Button
+            isIconOnly
+            radius='full'
+            className='bg-item-hover text-content'
+            startContent={<SiSteam size={18} />}
+          />
+        </ExtLink>
+        <ExtLink href={`https://www.steamdb.info/app/${selectedGame?.appid}/stats/`}>
+          <Button
+            isIconOnly
+            radius='full'
+            className='bg-item-hover text-content'
+            startContent={<SiSteamdb size={18} />}
+          />
+        </ExtLink>
+        {(protectedAchievements || protectedStatistics) && (
+          <CustomTooltip content={t('achievementManager.alert')} important>
+            <TbAlertHexagonFilled size={20} className='text-warning' />
+          </CustomTooltip>
+        )}
+      </div>
     </div>
   )
 }

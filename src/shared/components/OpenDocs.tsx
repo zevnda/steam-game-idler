@@ -7,25 +7,26 @@ interface OpenDocsProps {
   className?: string
 }
 
-export const OpenDocs = ({ path, content = '', className = '' }: OpenDocsProps) => {
+export function OpenDocs({ path, content = '', className = '' }: OpenDocsProps) {
+  const href = `https://steamgameidlers.com/docs/${path}`
   return (
     <a
       className={`w-fit h-fit cursor-pointer ${className}`}
-      href={`https://steamgameidler.com/docs/${path}`}
+      href={href}
       onClick={e => {
         e.preventDefault()
-        openExternalLink(`https://steamgameidler.com/docs/${path}`)
+        openExternalLink(href)
       }}
     >
-      {!content ? (
+      {content ? (
+        <p className='text-xs text-altwhite hover:text-altwhite/90 duration-150 cursor-pointer'>
+          {content}
+        </p>
+      ) : (
         <IoMdHelpCircleOutline
           size={16}
           className='text-altwhite hover:text-altwhite/90 duration-150 cursor-pointer'
         />
-      ) : (
-        <p className='text-xs text-altwhite hover:text-altwhite/90 duration-150 cursor-pointer'>
-          {content}
-        </p>
       )}
     </a>
   )

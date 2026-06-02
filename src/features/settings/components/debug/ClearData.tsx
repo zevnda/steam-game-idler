@@ -1,14 +1,22 @@
 import { useTranslation } from 'react-i18next'
 import { TbEraser } from 'react-icons/tb'
 import { Button, useDisclosure } from '@heroui/react'
-import { handleClearData } from '@/features/settings'
-import { CustomModal } from '@/shared/components'
+import { CustomModal } from '@/shared/components/CustomModal'
+import { logEvent } from '@/shared/services/logService'
 import { useUserStore } from '@/shared/stores'
+import { preserveKeysAndClearData } from '@/shared/utils'
 
-export const ClearData = () => {
+export function ClearData() {
   const { t } = useTranslation()
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
-  const setUserSummary = useUserStore(state => state.setUserSummary)
+  const setUserSummary = useUserStore(s => s.setUserSummary)
+
+  const handleClearData = async (onClose: () => void) => {
+    onClose()
+    await preserveKeysAndClearData()
+    setUserSummary(null)
+    await logEvent('[Settings] Cleared all data successfully')
+  }
 
   return (
     <>
@@ -22,7 +30,6 @@ export const ClearData = () => {
       >
         {t('settings.clearData.button')}
       </Button>
-
       <CustomModal
         isOpen={isOpen}
         onOpenChange={onOpenChange}
@@ -44,7 +51,7 @@ export const ClearData = () => {
               size='sm'
               className='bg-btn-secondary text-btn-text font-bold'
               radius='full'
-              onPress={() => handleClearData(onOpenChange, setUserSummary)}
+              onPress={() => handleClearData(onOpenChange)}
             >
               {t('common.confirm')}
             </Button>

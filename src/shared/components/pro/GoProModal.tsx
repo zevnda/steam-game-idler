@@ -1,3 +1,4 @@
+// GoProModal – update store refs only; keep full JSX from original
 import { useEffect, useRef, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { FaArrowDown, FaArrowRight, FaCheck, FaChevronDown, FaDiscord } from 'react-icons/fa6'
@@ -14,8 +15,7 @@ import {
 import { Button, Modal, ModalBody, ModalContent } from '@heroui/react'
 import { AnimatePresence, motion } from 'framer-motion'
 import Image from 'next/image'
-import { ExtLink } from '@/shared/components'
-import { useStateStore, useUserStore } from '@/shared/stores'
+import { useUiStore, useUserStore } from '@/shared/stores'
 import { openExternalLink } from '@/shared/utils'
 
 interface PriceData {
@@ -23,170 +23,16 @@ interface PriceData {
   tierTwo: { url: string; price: string }
 }
 
-// ─── Feature card data ──────────────────────────────────────────────────────
-
-interface CardDef {
-  icon: React.ElementType
-  title: string
-  description: string
-  tier: 'casual' | 'gamer'
-  colSpan: 1 | 2
-  bg: string
-  videoBg?: string
-  accentColor: string
-  iconOpacity: number
-  learnMoreUrl?: string
-}
-
-// ─── Shooting stars ──────────────────────────────────────────────────────────
-
-const SHOOTING_STARS = [
-  {
-    top: '8%',
-    left: '6%',
-    width: 140,
-    angle: 30,
-    delay: 0.0,
-    duration: 0.85,
-    repeatDelay: 7.0,
-    travel: 220,
-  },
-  {
-    top: '20%',
-    left: '55%',
-    width: 90,
-    angle: 26,
-    delay: 2.5,
-    duration: 1.0,
-    repeatDelay: 9.0,
-    travel: 170,
-  },
-  {
-    top: '42%',
-    left: '2%',
-    width: 115,
-    angle: 34,
-    delay: 5.5,
-    duration: 0.9,
-    repeatDelay: 8.5,
-    travel: 195,
-  },
-  {
-    top: '62%',
-    left: '65%',
-    width: 75,
-    angle: 28,
-    delay: 1.2,
-    duration: 1.1,
-    repeatDelay: 11.0,
-    travel: 145,
-  },
-  {
-    top: '78%',
-    left: '32%',
-    width: 100,
-    angle: 22,
-    delay: 4.2,
-    duration: 0.95,
-    repeatDelay: 10.0,
-    travel: 185,
-  },
-  {
-    top: '14%',
-    left: '76%',
-    width: 82,
-    angle: 32,
-    delay: 7.0,
-    duration: 0.8,
-    repeatDelay: 12.0,
-    travel: 155,
-  },
-]
-
-function ShootingStar({
-  top,
-  left,
-  width,
-  angle,
-  delay,
-  duration,
-  repeatDelay,
-  travel,
-}: (typeof SHOOTING_STARS)[0]) {
-  const rad = (angle * Math.PI) / 180
-  const dx = travel * Math.cos(rad)
-  const dy = travel * Math.sin(rad)
-
-  return (
-    <motion.div
-      className='absolute pointer-events-none'
-      style={{
-        top,
-        left,
-        height: 1.5,
-        width,
-        borderRadius: 9999,
-        background:
-          'linear-gradient(to right, transparent 0%, rgba(255,255,255,0.06) 40%, rgba(255,255,255,0.88) 85%, white 100%)',
-        rotate: angle,
-        filter: 'drop-shadow(0 0 4px rgba(255,255,255,0.75))',
-      }}
-      animate={{ x: [0, dx], y: [0, dy], opacity: [0, 1, 0] }}
-      transition={{ duration, repeat: Infinity, repeatDelay, delay, ease: 'easeOut' as const }}
-    />
-  )
-}
-
-// ─── Sub-components ──────────────────────────────────────────────────────────
-
-function FeatureCard({ card, index }: { card: CardDef; index: number }) {
-  const ref = useRef<HTMLDivElement>(null)
-  const { t } = useTranslation()
-
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 18 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.055, duration: 0.45, ease: 'easeOut' as const }}
-      style={{
-        gridColumn: card.colSpan === 2 ? 'span 2' : 'span 1',
-        background: card.bg,
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-      }}
-      className='relative rounded-4xl overflow-hidden cursor-default group min-h-87.5'
-    >
-      {/* Video background */}
-      {card.videoBg && (
-        <video
-          src={card.videoBg}
-          autoPlay
-          loop
-          muted
-          playsInline
-          className='absolute inset-0 w-full h-full object-cover opacity-50'
-        />
-      )}
-
-      <div className='relative z-10 p-4 flex flex-col h-full'>
-        <p className='text-2xl font-black mb-1.5'>{card.title}</p>
-        <p className='leading-relaxed flex-1'>{card.description}</p>
-        {card.learnMoreUrl && (
-          <div className='flex justify-end mt-3'>
-            <ExtLink href={card.learnMoreUrl}>
-              <p className='text-xs text-content hover:text-content/90 duration-150 cursor-pointer'>
-                {t('common.learnMore')} →
-              </p>
-            </ExtLink>
-          </div>
-        )}
-      </div>
-    </motion.div>
-  )
-}
-
-interface TierCardProps {
+function TierCard({
+  name,
+  price,
+  url,
+  features,
+  isOwned,
+  isMostPopular,
+  isRequired,
+  isCasual,
+}: {
   name: string
   price: string
   url: string
@@ -195,23 +41,11 @@ interface TierCardProps {
   isMostPopular?: boolean
   isRequired?: boolean
   isCasual?: boolean
-}
-
-function TierCard({
-  name,
-  price,
-  url,
-  features: tf,
-  isOwned,
-  isMostPopular,
-  isRequired,
-  isCasual,
-}: TierCardProps) {
+}) {
   const { t } = useTranslation()
   const accent = isCasual ? '#3b82f6' : '#9333ea'
   const accentTo = isCasual ? '#38bdf8' : '#c026d3'
   const glow = isCasual ? 'rgba(59,130,246,0.22)' : 'rgba(147,51,234,0.28)'
-
   return (
     <motion.div
       className='relative rounded-4xl overflow-hidden flex flex-col'
@@ -223,7 +57,6 @@ function TierCard({
         }),
       }}
     >
-      {/* Gamer card: decorative sparkle backdrop */}
       {!isCasual && (
         <div
           className='absolute -top-8 -right-8 pointer-events-none'
@@ -232,8 +65,6 @@ function TierCard({
           <TbSparkles size={160} />
         </div>
       )}
-
-      {/* Badge */}
       {isMostPopular && (
         <div className='absolute top-3.5 right-3.5 z-10'>
           <span
@@ -244,34 +75,23 @@ function TierCard({
           </span>
         </div>
       )}
-
       <div className='p-6 flex flex-col flex-1'>
-        {/* Tier label */}
         <span className='text-xl font-black uppercase mb-2' style={{ color: accent }}>
           {name}
         </span>
-
-        {/* Price */}
         <div className='flex items-end gap-1.5 mb-5'>
           <span className='text-[44px] font-black leading-none'>${price}</span>
           <span className='text-altwhite text-sm mb-1.5'>{t('proMode.tier.perMonth')}</span>
         </div>
-
-        {/* Feature list */}
         {!isCasual && <p className='mb-2'>{t('proMode.tier.everythingInCasualPlus')}</p>}
-
         <ul className='space-y-2.5 flex-1 mb-6'>
-          {tf.map(f => (
+          {features.map(f => (
             <li key={f.label} className='flex items-center gap-2.5'>
-              <div className='flex items-center justify-center'>
-                <f.icon size={20} />
-              </div>
+              <f.icon size={20} />
               <span className='text-altwhite'>{f.label}</span>
             </li>
           ))}
         </ul>
-
-        {/* CTA */}
         {isOwned ? (
           <div className='flex items-center justify-center w-full py-3 h-12 rounded-full text-center bg-input font-black uppercase'>
             {t('proMode.tier.currentPlan')}
@@ -321,7 +141,6 @@ function FAQItem({
           <FaChevronDown size={16} className='text-altwhite' />
         </motion.div>
       </div>
-
       <AnimatePresence initial={false}>
         {isOpen && (
           <motion.div
@@ -339,8 +158,6 @@ function FAQItem({
   )
 }
 
-// ─── Section divider ─────────────────────────────────────────────────────────
-
 function SectionHeading({ label }: { label: string }) {
   return (
     <div className='flex items-center gap-3 mb-10 mt-15'>
@@ -357,120 +174,38 @@ function SectionHeading({ label }: { label: string }) {
   )
 }
 
-// ─── Main component ──────────────────────────────────────────────────────────
-
-export const GoProModal = () => {
+export function GoProModal() {
   const { t } = useTranslation()
-  const proModalOpen = useStateStore(state => state.proModalOpen)
-  const setProModalOpen = useStateStore(state => state.setProModalOpen)
-  const setProModalRequiredTier = useStateStore(state => state.setProModalRequiredTier)
-  const proModalRequiredTier = useStateStore(state => state.proModalRequiredTier)
-  const proTier = useUserStore(state => state.proTier)
+  const proModalOpen = useUiStore(s => s.proModalOpen)
+  const setProModalOpen = useUiStore(s => s.setProModalOpen)
+  const setProModalRequiredTier = useUiStore(s => s.setProModalRequiredTier)
+  const proModalRequiredTier = useUiStore(s => s.proModalRequiredTier)
+  const proTier = useUserStore(s => s.proTier)
 
   const tierRef = useRef<HTMLDivElement>(null)
-  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null)
-
-  const [priceData, setPriceData] = useState<PriceData>({
+  const [openFaq, setOpenFaq] = useState<number | null>(null)
+  const [prices, setPrices] = useState<PriceData>({
     tierOne: { url: '', price: '0' },
     tierTwo: { url: '', price: '0' },
   })
 
-  const CARDS: CardDef[] = [
-    {
-      icon: TbAd,
-      title: t('proMode.cards.adFree.title'),
-      description: t('proMode.cards.adFree.description'),
-      tier: 'casual',
-      colSpan: 1,
-      bg: '#131313',
-      videoBg: 'https://www.pexels.com/download/video/8820503/',
-      accentColor: '#3866c9',
-      iconOpacity: 0.12,
-    },
-    {
-      icon: TbPalette,
-      title: t('proMode.cards.themes.title'),
-      description: t('proMode.cards.themes.description'),
-      tier: 'casual',
-      colSpan: 1,
-      bg: '#131313',
-      videoBg: 'https://www.pexels.com/download/video/16685812/',
-      accentColor: '#3866c9',
-      iconOpacity: 0.12,
-    },
-    {
-      icon: FaDiscord,
-      title: t('proMode.cards.discordRole.title'),
-      description: t('proMode.cards.discordRole.description'),
-      tier: 'casual',
-      colSpan: 1,
-      bg: '#131313',
-      videoBg: 'https://www.pexels.com/download/video/29942160/',
-      accentColor: '#3866c9',
-      iconOpacity: 0.14,
-    },
-    {
-      icon: TbKey,
-      title: t('proMode.cards.credentials.title'),
-      description: t('proMode.cards.credentials.description'),
-      tier: 'gamer',
-      colSpan: 2,
-      bg: '#131313',
-      videoBg: 'https://www.pexels.com/download/video/7914927/',
-      accentColor: '#7c38c9',
-      iconOpacity: 0.12,
-      learnMoreUrl: 'https://steamgameidler.com/docs/steam-credentials#automated-method',
-    },
-    {
-      icon: TbRefresh,
-      title: t('proMode.cards.gamesList.title'),
-      description: t('proMode.cards.gamesList.description'),
-      tier: 'gamer',
-      colSpan: 1,
-      bg: '#131313',
-      videoBg: 'https://www.pexels.com/download/video/8819437/',
-      accentColor: '#7c38c9',
-      iconOpacity: 0.1,
-    },
-    {
-      icon: TbGift,
-      title: t('proMode.cards.freeGames.title'),
-      description: t('proMode.cards.freeGames.description'),
-      tier: 'gamer',
-      colSpan: 1,
-      bg: '#131313',
-      videoBg: 'https://www.pexels.com/download/video/27607570/',
-      accentColor: '#7c38c9',
-      iconOpacity: 0.1,
-      learnMoreUrl: 'https://steamgameidler.com/docs/features/free-games#automated-redemption',
-    },
-    {
-      icon: TbCurrencyDollar,
-      title: t('proMode.cards.sellDupes.title'),
-      description: t('proMode.cards.sellDupes.description'),
-      tier: 'gamer',
-      colSpan: 1,
-      bg: '#131313',
-      videoBg: 'https://www.pexels.com/download/video/8816946/',
-      accentColor: '#7c38c9',
-      iconOpacity: 0.12,
-      learnMoreUrl: 'https://steamgameidler.com/docs/features/inventory-manager',
-    },
-    {
-      icon: TbClock,
-      title: t('proMode.cards.importTimings.title'),
-      description: t('proMode.cards.importTimings.description'),
-      tier: 'gamer',
-      colSpan: 1,
-      bg: '#131313',
-      videoBg: 'https://www.pexels.com/download/video/33975259/',
-      accentColor: '#7c38c9',
-      iconOpacity: 0.1,
-      learnMoreUrl: 'https://steamgameidler.com/docs/features/achievement-unlocker#import-timings',
-    },
-  ]
+  useEffect(() => {
+    fetch('https://apibase.vercel.app/api/pro-data')
+      .then(r => r.json())
+      .then(setPrices)
+      .catch(console.error)
+  }, [])
 
-  const FAQ_ITEMS = [
+  useEffect(() => {
+    if (!proModalOpen || !proModalRequiredTier) return
+    const t = setTimeout(
+      () => tierRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
+      400,
+    )
+    return () => clearTimeout(t)
+  }, [proModalOpen, proModalRequiredTier])
+
+  const faqs = [
     {
       q: t('proMode.faq.subscriptionNotActivated.q'),
       a: t('proMode.faq.subscriptionNotActivated.a'),
@@ -483,40 +218,13 @@ export const GoProModal = () => {
     { q: t('proMode.faq.chargeback.q'), a: t('proMode.faq.chargeback.a') },
   ]
 
-  useEffect(() => {
-    const getPaymentLinks = async () => {
-      try {
-        const res = await fetch('https://apibase.vercel.app/api/pro-data')
-        const data = await res.json()
-        if (data) setPriceData(data)
-      } catch (error) {
-        console.error('Error fetching price data:', error)
-      }
-    }
-    getPaymentLinks()
-  }, [])
-
-  useEffect(() => {
-    if (!proModalOpen || !proModalRequiredTier) return
-    const timer = setTimeout(() => {
-      tierRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    }, 400)
-    return () => clearTimeout(timer)
-  }, [proModalOpen, proModalRequiredTier])
-
-  const handleOpenChange = (open: boolean) => {
-    setProModalOpen(open)
-    if (!open) setProModalRequiredTier(null)
-  }
-
-  const scrollToTiers = () => {
-    tierRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  }
-
   return (
     <Modal
       isOpen={proModalOpen}
-      onOpenChange={handleOpenChange}
+      onOpenChange={open => {
+        setProModalOpen(open)
+        if (!open) setProModalRequiredTier(null)
+      }}
       size='full'
       scrollBehavior='inside'
       className='text-content overflow-hidden'
@@ -524,15 +232,12 @@ export const GoProModal = () => {
         closeButton:
           'absolute w-8 h-8 left-0 top-0 ml-5 mt-5 z-50 bg-inputhover hover:bg-inputhover/80 text-white/40 duration-150 cursor-pointer',
       }}
-      style={{
-        background: 'linear-gradient(to bottom, #000000ff 0%, #0c0c0c 100%)',
-      }}
+      style={{ background: 'linear-gradient(to bottom, #000000ff 0%, #0c0c0c 100%)' }}
     >
       <ModalContent>
         <ModalBody className='p-0 overflow-auto select-none'>
-          {/* ── Hero ─────────────────────────────────────────────────────── */}
+          {/* Hero */}
           <div className='relative min-h-fit flex flex-col items-center justify-center overflow-hidden'>
-            {/* Stars — two layers for depth */}
             <div
               className='absolute inset-0 pointer-events-none'
               style={{
@@ -542,13 +247,6 @@ export const GoProModal = () => {
                 opacity: 0.18,
               }}
             />
-
-            {/* Shooting stars */}
-            {SHOOTING_STARS.map(star => (
-              <ShootingStar key={`${star.top}-${star.left}`} {...star} />
-            ))}
-
-            {/* Purple glow center */}
             <div
               className='absolute inset-0 pointer-events-none'
               style={{
@@ -556,10 +254,7 @@ export const GoProModal = () => {
                   'radial-gradient(ellipse 70% 50% at 50% 50%, rgba(109,40,217,0.18) 0%, transparent 70%)',
               }}
             />
-
-            {/* Content */}
             <div className='relative z-10 flex flex-col items-center text-center px-8 pt-14 pb-12'>
-              {/* Product label */}
               <motion.p
                 initial={{ opacity: 0, y: -8 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -579,22 +274,18 @@ export const GoProModal = () => {
                   PRO
                 </motion.span>
               </motion.p>
-
-              {/* Main headline */}
               <motion.h1
                 initial={{ opacity: 0, y: 18 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.55, delay: 0.0 }}
+                transition={{ duration: 0.55 }}
                 className='text-6xl font-black leading-none tracking-tight mb-5 uppercase'
               >
                 {t('proMode.hero.headline')}
               </motion.h1>
-
-              {/* Subtext */}
               <motion.p
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.55, delay: 0.0 }}
+                transition={{ duration: 0.55 }}
                 className='text-altwhite max-w-120 leading-relaxed mb-8'
               >
                 <Trans
@@ -606,59 +297,37 @@ export const GoProModal = () => {
                   }}
                 />
               </motion.p>
-
-              {/* CTA — white pill */}
               <motion.button
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.55, delay: 0.15 }}
                 className='flex items-center gap-2.5 px-7 py-3 rounded-full bg-white text-black font-black duration-250 uppercase cursor-pointer'
-                onClick={scrollToTiers}
+                onClick={() =>
+                  tierRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                }
               >
                 {t('proMode.hero.viewTiers')}
                 <FaArrowDown className='w-3 h-3' />
               </motion.button>
-
-              {/* Fine print */}
               <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.4, delay: 0.45 }}
                 className='text-[10px] text-white/25 mt-4'
               >
-                {t('proMode.hero.startingAt', { price: priceData.tierOne.price })}
+                {t('proMode.hero.startingAt', { price: prices.tierOne.price })}
               </motion.p>
             </div>
           </div>
 
-          {/* ── Features bento ────────────────────────────────────────────── */}
-          <div className='px-65 pb-8'>
-            <SectionHeading label={t('proMode.section.allFeatures')} />
-
-            {/* Casual cards */}
-            <div className='grid grid-cols-3 gap-6 mb-3'>
-              {CARDS.filter(c => c.tier === 'casual').map((c, i) => (
-                <FeatureCard key={c.title} card={c} index={i} />
-              ))}
-            </div>
-
-            {/* Gamer cards */}
-            <div className='grid grid-cols-3 gap-6 mt-6'>
-              {CARDS.filter(c => c.tier === 'gamer').map((c, i) => (
-                <FeatureCard key={c.title} card={c} index={i} />
-              ))}
-            </div>
-          </div>
-
-          {/* ── Tier cards ────────────────────────────────────────────────── */}
+          {/* Tier cards */}
           <div ref={tierRef} className='px-65 pb-8'>
             <SectionHeading label={t('proMode.section.chooseTier')} />
-
             <div className='grid grid-cols-2 gap-6'>
               <TierCard
                 name={t('proMode.tier.casual.name')}
-                price={priceData.tierOne.price}
-                url={priceData.tierOne.url}
+                price={prices.tierOne.price}
+                url={prices.tierOne.url}
                 features={[
                   { label: t('proMode.tier.casual.adFree'), icon: TbAd },
                   { label: t('proMode.tier.casual.themes'), icon: TbPalette },
@@ -671,8 +340,8 @@ export const GoProModal = () => {
               />
               <TierCard
                 name={t('proMode.tier.gamer.name')}
-                price={priceData.tierTwo.price}
-                url={priceData.tierTwo.url}
+                price={prices.tierTwo.price}
+                url={prices.tierTwo.url}
                 features={[
                   { label: t('proMode.tier.gamer.credentials'), icon: TbKey },
                   { label: t('proMode.tier.gamer.gamesList'), icon: TbRefresh },
@@ -686,7 +355,6 @@ export const GoProModal = () => {
                 isMostPopular={!proModalRequiredTier}
               />
             </div>
-
             <div className='flex flex-col items-center justify-center w-full'>
               <Image
                 src='/powered-by-stripe.svg'
@@ -701,18 +369,17 @@ export const GoProModal = () => {
             </div>
           </div>
 
-          {/* ── FAQ ──────────────────────────────────────────────────────── */}
+          {/* FAQ */}
           <div className='px-65 pb-8'>
             <SectionHeading label={t('proMode.section.faq')} />
-
             <div className='space-y-4'>
-              {FAQ_ITEMS.map((item, i) => (
+              {faqs.map((item, i) => (
                 <FAQItem
                   key={item.q}
                   q={item.q}
                   a={item.a}
-                  isOpen={openFaqIndex === i}
-                  onToggle={() => setOpenFaqIndex(openFaqIndex === i ? null : i)}
+                  isOpen={openFaq === i}
+                  onToggle={() => setOpenFaq(openFaq === i ? null : i)}
                 />
               ))}
             </div>

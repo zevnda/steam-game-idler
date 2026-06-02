@@ -3,8 +3,10 @@ import { invoke } from '@tauri-apps/api/core'
 import { useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { Button, cn, Input } from '@heroui/react'
-import { CustomModal, ExtLink, showDangerToast, showSuccessToast } from '@/shared/components'
+import { CustomModal } from '@/shared/components/CustomModal'
+import { ExtLink } from '@/shared/components/ExtLink'
 import { OpenDocs } from '@/shared/components/OpenDocs'
+import { toast } from '@/shared/services/toastService'
 import { useUserStore } from '@/shared/stores'
 import { decrypt } from '@/shared/utils'
 
@@ -29,15 +31,15 @@ const getErrorKey = (e: unknown) => {
   return 'toast.importTimings.error'
 }
 
-export const ImportTimingsModal = ({
+export function ImportTimingsModal({
   isOpen,
   onOpenChange,
   appId,
   achievements,
   onImport,
-}: ImportTimingsModalProps) => {
+}: ImportTimingsModalProps) {
   const { t } = useTranslation()
-  const userSettings = useUserStore(state => state.userSettings)
+  const userSettings = useUserStore(s => s.userSettings)
   const [inputValue, setInputValue] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
@@ -56,21 +58,17 @@ export const ImportTimingsModal = ({
         steamInput: inputValue.trim(),
         apiKey: apiKey ? decrypt(apiKey) : null,
       })
-
       const raw = [...result.achievements].sort((a, b) => a.unlocktime - b.unlocktime)
-
       const delayMap = new Map<string, number>()
-      for (let i = 0; i < raw.length - 1; i++) {
-        const minutes = (raw[i + 1].unlocktime - raw[i].unlocktime) / 60
-        delayMap.set(raw[i].apiname, Math.round(minutes * 10) / 10)
-      }
-
+      for (let i = 0; i < raw.length - 1; i++)
+        delayMap.set(
+          raw[i].apiname,
+          Math.round(((raw[i + 1].unlocktime - raw[i].unlocktime) / 60) * 10) / 10,
+        )
       const orderMap = new Map<string, number>()
       raw.forEach((a, idx) => orderMap.set(a.apiname, idx))
-
       const matched: Achievement[] = []
       const unmatched: Achievement[] = []
-
       for (const a of achievements) {
         if (orderMap.has(a.id)) {
           const delay = delayMap.get(a.id)
@@ -80,21 +78,15 @@ export const ImportTimingsModal = ({
           unmatched.push({ ...rest, skip: true } as Achievement)
         }
       }
-
       matched.sort((a, b) => (orderMap.get(a.id) ?? 0) - (orderMap.get(b.id) ?? 0))
-
       onImport([...matched, ...unmatched])
-      showSuccessToast(t('toast.importTimings.success', { count: matched.length }))
+      toast.success(t('toast.importTimings.success', { count: matched.length }))
       handleClose()
     } catch (error) {
-      showDangerToast(t(getErrorKey(error)))
+      toast.danger(t(getErrorKey(error)))
     } finally {
       setIsLoading(false)
     }
-  }
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') handleImport()
   }
 
   return (
@@ -124,20 +116,18 @@ export const ImportTimingsModal = ({
               to find users with legitimate achievements
             </Trans>
           </p>
-
           <Input
             autoFocus
             placeholder={t('customLists.achievementUnlocker.importTimings.inputPlaceholder')}
             value={inputValue}
             onChange={e => setInputValue(e.target.value)}
-            onKeyDown={handleKeyDown}
+            onKeyDown={e => {
+              if (e.key === 'Enter') handleImport()
+            }}
             isDisabled={isLoading}
             classNames={{
               inputWrapper: cn(
-                'bg-input data-[hover=true]:!bg-inputhover',
-                'group-data-[focus-within=true]:!bg-inputhover',
-                'group-data-[focus-visible=true]:ring-transparent',
-                'group-data-[focus-visible=true]:ring-offset-transparent',
+                'bg-input data-[hover=true]:!bg-inputhover group-data-[focus-within=true]:!bg-inputhover group-data-[focus-visible=true]:ring-transparent group-data-[focus-visible=true]:ring-offset-transparent',
               ),
               input: ['!text-content placeholder:text-altwhite/50'],
             }}

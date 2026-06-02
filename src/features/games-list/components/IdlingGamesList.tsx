@@ -4,59 +4,53 @@ import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TbPlayerStopFilled } from 'react-icons/tb'
 import { Button, cn } from '@heroui/react'
-import { GameCard, showDangerToast, showSuccessToast } from '@/shared/components'
-import { useIdleStore, useStateStore } from '@/shared/stores'
-import { logEvent } from '@/shared/utils'
+import { GameCard } from '@/shared/components/GameCard'
+import { logEvent } from '@/shared/services/logService'
+import { toast } from '@/shared/services/toastService'
+import { useSessionStore, useUiStore } from '@/shared/stores'
 
-export const IdlingGamesList = () => {
-  const { t } = useTranslation()
-  const idleGamesList = useIdleStore(state => state.idleGamesList)
-  const setIdleGamesList = useIdleStore(state => state.setIdleGamesList)
-  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
-  const transitionDuration = useStateStore(state => state.transitionDuration)
-  const setIsCardFarming = useStateStore(state => state.setIsCardFarming)
-  const setIsAchievementUnlocker = useStateStore(state => state.setIsAchievementUnlocker)
-  const [columnCount, setColumnCount] = useState(5)
-
-  const handleResize = useCallback(() => {
-    if (window.innerWidth >= 3200) {
-      setColumnCount(12)
-    } else if (window.innerWidth >= 2300) {
-      setColumnCount(10)
-    } else if (window.innerWidth >= 2000) {
-      setColumnCount(8)
-    } else if (window.innerWidth >= 1500) {
-      setColumnCount(7)
-    } else {
-      setColumnCount(5)
-    }
+function useColumnCount() {
+  const [count, setCount] = useState(5)
+  const update = useCallback(() => {
+    if (window.innerWidth >= 3200) setCount(12)
+    else if (window.innerWidth >= 2300) setCount(10)
+    else if (window.innerWidth >= 2000) setCount(8)
+    else if (window.innerWidth >= 1500) setCount(7)
+    else setCount(5)
   }, [])
-
   useEffect(() => {
-    handleResize()
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [handleResize])
+    update()
+    window.addEventListener('resize', update)
+    return () => window.removeEventListener('resize', update)
+  }, [update])
+  return count
+}
 
-  const handleStopIdleAll = async () => {
+export function IdlingGamesList() {
+  const { t } = useTranslation()
+  const idleGamesList = useSessionStore(s => s.idleGamesList)
+  const setIdleGamesList = useSessionStore(s => s.setIdleGamesList)
+  const setIsCardFarming = useSessionStore(s => s.setIsCardFarming)
+  const setIsAchievementUnlocker = useSessionStore(s => s.setIsAchievementUnlocker)
+  const sidebarCollapsed = useUiStore(s => s.sidebarCollapsed)
+  const transitionDuration = useUiStore(s => s.transitionDuration)
+  const columnCount = useColumnCount()
+
+  const handleStopAll = async () => {
     try {
-      const response = await invoke<InvokeKillProcess>('kill_all_steamutil_processes')
-      if (response.success) {
-        showSuccessToast(
-          t('toast.stopIdleAll.success', {
-            count: response?.killed_count,
-          }),
-        )
+      const res = await invoke<InvokeKillProcess>('kill_all_steamutil_processes')
+      if (res.success) {
+        toast.success(t('toast.stopIdleAll.success', { count: res?.killed_count }))
         setIdleGamesList([])
         setIsCardFarming(false)
         setIsAchievementUnlocker(false)
       } else {
-        showDangerToast(t('toast.stopIdleAll.error'))
+        toast.danger(t('toast.stopIdleAll.error'))
       }
     } catch (error) {
-      showDangerToast(t('common.error'))
-      console.error('Error in handleStopIdleAll:', error)
-      logEvent(`Error in (handleStopIdleAll): ${error}`)
+      toast.danger(t('common.error'))
+      console.error('Error in handleStopAll:', error)
+      await logEvent(`Error in (handleStopIdleAll): ${error}`)
     }
   }
 
@@ -66,10 +60,7 @@ export const IdlingGamesList = () => {
         'min-h-calc max-h-calc overflow-y-auto overflow-x-hidden mt-12 ease-in-out',
         sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]',
       )}
-      style={{
-        transitionDuration,
-        transitionProperty: 'min-width, max-width',
-      }}
+      style={{ transitionDuration, transitionProperty: 'min-width, max-width' }}
     >
       <div className={cn('w-[calc(100vw-236px)] z-50 pl-6 pt-2 rounded-tl-xl')}>
         <div className='flex justify-between items-center pb-3'>
@@ -78,7 +69,6 @@ export const IdlingGamesList = () => {
             <div className='flex gap-1'>
               <p className='text-xs text-altwhite my-2'>{t('idlingGames.subtitle')}</p>
             </div>
-
             {idleGamesList?.length > 0 && (
               <div className='flex items-center gap-2 mt-1'>
                 <Button
@@ -87,7 +77,7 @@ export const IdlingGamesList = () => {
                   color='danger'
                   isDisabled={idleGamesList?.length === 0}
                   startContent={<TbPlayerStopFilled fontSize={20} />}
-                  onPress={handleStopIdleAll}
+                  onPress={handleStopAll}
                 >
                   {t('idlingGames.stopAll')}
                 </Button>
@@ -96,7 +86,6 @@ export const IdlingGamesList = () => {
           </div>
         </div>
       </div>
-
       <div
         className={cn(
           'grid gap-x-5 gap-y-4 px-6',
@@ -106,7 +95,9 @@ export const IdlingGamesList = () => {
           columnCount === 12 ? 'grid-cols-12' : '',
         )}
       >
-        {idleGamesList && idleGamesList.map(item => <GameCard key={item.appid} item={item} />)}
+        {idleGamesList?.map(item => (
+          <GameCard key={item.appid} item={item} />
+        ))}
       </div>
     </div>
   )

@@ -1,9 +1,9 @@
 import type { Game } from '@/shared/types'
-import { Trans, useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import { TbPlus } from 'react-icons/tb'
 import { Button, cn, Input, NumberInput, useDisclosure } from '@heroui/react'
-import { useManualAdd } from '@/features/custom-lists'
-import { CustomModal } from '@/shared/components'
+import { useManualAdd } from '@/features/custom-lists/hooks/useManualAdd'
+import { CustomModal } from '@/shared/components/CustomModal'
 import { OpenDocs } from '@/shared/components/OpenDocs'
 
 interface ManualAddModalProps {
@@ -12,85 +12,79 @@ interface ManualAddModalProps {
   setList: React.Dispatch<React.SetStateAction<Game[]>>
 }
 
-export const ManualAddModal = ({ listTitle, listName, setList }: ManualAddModalProps) => {
+export function ManualAddModal({ listTitle, listName, setList }: ManualAddModalProps) {
   const { t } = useTranslation()
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
-  const manualAdd = useManualAdd(listName, setList)
-
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>, onClose: () => void) => {
-    if (e.key === 'Enter') {
-      manualAdd.handleAdd(onClose)
-    }
-  }
-
-  const handleClose = () => {
-    manualAdd.setAppNameValue('')
-    manualAdd.setAppIdValue(0)
-  }
+  const {
+    isLoading,
+    appNameValue,
+    appIdValue,
+    setAppNameValue,
+    setAppIdValue,
+    handleNameChange,
+    handleIdChange,
+    handleAdd,
+  } = useManualAdd(listName, setList)
 
   return (
     <>
       <Button
-        isIconOnly
         className='bg-btn-secondary text-btn-text font-bold'
         radius='full'
-        startContent={<TbPlus fontSize={18} />}
+        startContent={<TbPlus size={18} />}
         onPress={onOpen}
-      />
-
+      >
+        {t('common.add')}
+      </Button>
       <CustomModal
         isOpen={isOpen}
         onOpenChange={() => {
+          setAppNameValue('')
+          setAppIdValue(0)
           onOpenChange()
-          handleClose()
         }}
         title={
           <div className='flex items-center gap-2'>
             <p>{t('customLists.manualAdd.title')}</p>
-            <OpenDocs path='/features/manual-add' />
+            <OpenDocs path='/features/custom-lists#manual-add' />
           </div>
         }
         body={
-          <>
-            <p className='text-sm text-altwhite'>
-              <Trans i18nKey='customLists.manualAdd.description' values={{ listType: listTitle }} />
-            </p>
+          <div className='flex flex-col gap-3'>
             <Input
-              autoFocus
+              label={t('customLists.manualAdd.gameName')}
+              labelPlacement='outside'
               placeholder={t('customLists.manualAdd.gameName')}
-              value={manualAdd.appNameValue || ''}
+              value={appNameValue}
+              onChange={handleNameChange}
+              onKeyDown={e => {
+                if (e.key === 'Enter' && appNameValue && appIdValue) handleAdd(onOpenChange)
+              }}
               classNames={{
                 inputWrapper: cn(
-                  'bg-input data-[hover=true]:!bg-inputhover',
-                  'group-data-[focus-within=true]:!bg-inputhover',
-                  'group-data-[focus-visible=true]:ring-transparent',
-                  'group-data-[focus-visible=true]:ring-offset-transparent',
+                  'bg-input data-[hover=true]:!bg-inputhover rounded-lg group-data-[focus-within=true]:!bg-inputhover',
                 ),
                 input: ['!text-content placeholder:text-altwhite/50'],
               }}
-              onChange={manualAdd.handleNameChange}
-              onKeyDown={e => handleKeyPress(e, onOpenChange)}
             />
-
             <NumberInput
-              hideStepper
               label={t('customLists.manualAdd.gameId')}
-              value={Number(manualAdd.appIdValue)}
-              formatOptions={{ useGrouping: false }}
-              aria-label='manual add'
+              labelPlacement='outside'
+              placeholder='0'
+              value={appIdValue}
+              onValueChange={v => handleIdChange(v)}
+              hideStepper
+              onKeyDown={e => {
+                if (e.key === 'Enter' && appNameValue && appIdValue) handleAdd(onOpenChange)
+              }}
               classNames={{
                 inputWrapper: cn(
-                  'bg-input data-[hover=true]:!bg-inputhover',
-                  'group-data-[focus-within=true]:!bg-inputhover',
-                  'group-data-[focus-visible=true]:ring-transparent',
-                  'group-data-[focus-visible=true]:ring-offset-transparent',
+                  'bg-input data-[hover=true]:!bg-inputhover rounded-lg group-data-[focus-within=true]:!bg-inputhover',
                 ),
-                input: ['text-sm !text-content placeholder:text-altwhite/50'],
+                input: ['!text-content placeholder:text-altwhite/50'],
               }}
-              onChange={e => manualAdd.handleIdChange(e)}
-              onKeyDown={e => handleKeyPress(e, onOpenChange)}
             />
-          </>
+          </div>
         }
         buttons={
           <>
@@ -101,6 +95,7 @@ export const ManualAddModal = ({ listTitle, listName, setList }: ManualAddModalP
               radius='full'
               className='font-semibold'
               onPress={onOpenChange}
+              isDisabled={isLoading}
             >
               {t('common.cancel')}
             </Button>
@@ -108,9 +103,9 @@ export const ManualAddModal = ({ listTitle, listName, setList }: ManualAddModalP
               size='sm'
               className='bg-btn-secondary text-btn-text font-bold'
               radius='full'
-              isLoading={manualAdd.isLoading}
-              isDisabled={!manualAdd.appNameValue || !manualAdd.appIdValue}
-              onPress={() => manualAdd.handleAdd(onOpenChange)}
+              isLoading={isLoading}
+              isDisabled={!appNameValue || !appIdValue}
+              onPress={() => handleAdd(onOpenChange)}
             >
               {t('common.add')}
             </Button>

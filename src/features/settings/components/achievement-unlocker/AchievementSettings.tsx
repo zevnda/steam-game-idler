@@ -2,31 +2,25 @@ import { useTranslation } from 'react-i18next'
 import { FaMinus, FaPlus } from 'react-icons/fa6'
 import { TbChevronRight } from 'react-icons/tb'
 import { Button, cn, Divider, Select, SelectItem, Slider, TimeInput } from '@heroui/react'
+import { useAchievementSettings } from '@/features/settings/hooks/achievement-unlocker/useAchievementSettings'
 import {
   handleIntervalChange,
+  handleNextTaskChange,
   handleScheduleChange,
-  useAchievementSettings,
-} from '@/features/settings'
-import { SettingsSwitch } from '@/shared/components'
+} from '@/features/settings/services/generalService'
+import { SettingsSwitch } from '@/shared/components/SettingsSwitch'
 import { useUserStore } from '@/shared/stores'
-import { handleNextTaskChange } from '@/shared/utils'
 
-export const AchievementSettings = () => {
+export function AchievementSettings() {
   const { t } = useTranslation()
-  const userSummary = useUserStore(state => state.userSummary)
-  const userSettings = useUserStore(state => state.userSettings)
-  const setUserSettings = useUserStore(state => state.setUserSettings)
+  const userSummary = useUserStore(s => s.userSummary)
+  const userSettings = useUserStore(s => s.userSettings)
+  const setUserSettings = useUserStore(s => s.setUserSettings)
   const { sliderLabel, setSliderLabel } = useAchievementSettings()
 
   const taskOptions = [
-    {
-      key: 'cardFarming',
-      label: t('common.cardFarming'),
-    },
-    {
-      key: 'autoIdle',
-      label: t('customLists.autoIdle.title'),
-    },
+    { key: 'cardFarming', label: t('common.cardFarming') },
+    { key: 'autoIdle', label: t('customLists.autoIdle.title') },
   ]
 
   return (
@@ -40,7 +34,6 @@ export const AchievementSettings = () => {
         </p>
         <p className='text-3xl font-black'>{t('common.achievementUnlocker')}</p>
       </div>
-
       <div className='flex flex-col gap-3 mt-4'>
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
@@ -53,9 +46,7 @@ export const AchievementSettings = () => {
           </div>
           <SettingsSwitch type='achievementUnlocker' name='idle' />
         </div>
-
         <Divider className='bg-border/70 my-4' />
-
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>
@@ -67,9 +58,7 @@ export const AchievementSettings = () => {
           </div>
           <SettingsSwitch type='achievementUnlocker' name='hidden' />
         </div>
-
         <Divider className='bg-border/70 my-4' />
-
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>{t('common.nextTask')}</p>
@@ -89,8 +78,7 @@ export const AchievementSettings = () => {
                 listbox: ['p-0'],
                 value: ['text-sm !text-content'],
                 trigger: cn(
-                  'bg-input data-[hover=true]:!bg-inputhover',
-                  'data-[open=true]:!bg-input duration-100 rounded-lg',
+                  'bg-input data-[hover=true]:!bg-inputhover data-[open=true]:!bg-input duration-100 rounded-lg',
                 ),
                 popoverContent: ['bg-input rounded-xl justify-start !text-content'],
               }}
@@ -100,14 +88,14 @@ export const AchievementSettings = () => {
                   ? [userSettings.achievementUnlocker.nextTask]
                   : []
               }
-              onSelectionChange={e => {
+              onSelectionChange={e =>
                 handleNextTaskChange(
                   'achievementUnlocker',
                   e.currentKey!,
                   userSummary,
                   setUserSettings,
                 )
-              }}
+              }
             >
               {item => (
                 <SelectItem
@@ -119,13 +107,10 @@ export const AchievementSettings = () => {
                 </SelectItem>
               )}
             </Select>
-
             <SettingsSwitch type='achievementUnlocker' name='nextTaskCheckbox' />
           </div>
         </div>
-
         <Divider className='bg-border/70 my-4' />
-
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>
@@ -144,9 +129,7 @@ export const AchievementSettings = () => {
               className='w-23.75'
               classNames={{
                 inputWrapper: cn(
-                  'rounded-lg min-h-[25px] max-h-[25px] bg-input',
-                  'hover:bg-inputhover border border-border',
-                  'focus-within:!bg-inputhover',
+                  'rounded-lg min-h-[25px] max-h-[25px] bg-input hover:bg-inputhover border border-border focus-within:!bg-inputhover',
                 ),
                 segment: ['!text-content'],
                 input: ['text-sm'],
@@ -155,9 +138,7 @@ export const AchievementSettings = () => {
                 handleScheduleChange(value, 'scheduleFrom', userSummary, setUserSettings)
               }
             />
-
             <p className='text-sm'>{t('settings.achievementUnlocker.scheduleTo')}</p>
-
             <TimeInput
               aria-label='schedule-to'
               isDisabled={!userSettings?.achievementUnlocker?.schedule}
@@ -166,9 +147,7 @@ export const AchievementSettings = () => {
               className='w-23.75'
               classNames={{
                 inputWrapper: cn(
-                  'rounded-lg min-h-[25px] max-h-[25px] bg-input',
-                  'hover:bg-inputhover border border-border',
-                  'focus-within:!bg-inputhover',
+                  'rounded-lg min-h-[25px] max-h-[25px] bg-input hover:bg-inputhover border border-border focus-within:!bg-inputhover',
                 ),
                 segment: ['!text-content'],
                 input: ['text-sm'],
@@ -180,9 +159,7 @@ export const AchievementSettings = () => {
             <SettingsSwitch type='achievementUnlocker' name='schedule' />
           </div>
         </div>
-
         <Divider className='bg-border/70 my-4' />
-
         <div className='flex justify-between items-start'>
           <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>
@@ -190,7 +167,6 @@ export const AchievementSettings = () => {
             </p>
             <p className='text-xs text-altwhite'>{sliderLabel}</p>
           </div>
-
           <div className='flex flex-col items-center gap-1'>
             <Slider
               size='md'
@@ -207,17 +183,12 @@ export const AchievementSettings = () => {
               }}
               onChangeEnd={e => handleIntervalChange(e, userSummary, setUserSettings)}
               onChange={e => {
-                if (Array.isArray(e)) {
+                if (Array.isArray(e))
                   setSliderLabel(
-                    t('settings.achievementUnlocker.interval', {
-                      min: e[0],
-                      max: e[1],
-                    }),
+                    t('settings.achievementUnlocker.interval', { min: e[0], max: e[1] }),
                   )
-                }
               }}
             />
-
             <div className='flex w-full justify-between'>
               <div>
                 <Button
@@ -228,8 +199,7 @@ export const AchievementSettings = () => {
                   startContent={<FaMinus />}
                   onPress={() => {
                     const [min, max] = userSettings?.achievementUnlocker?.interval
-                    const newValue = [Math.max(1, min - 1), max]
-                    handleIntervalChange(newValue, userSummary, setUserSettings)
+                    handleIntervalChange([Math.max(1, min - 1), max], userSummary, setUserSettings)
                   }}
                 />
                 <Button
@@ -240,12 +210,14 @@ export const AchievementSettings = () => {
                   startContent={<FaPlus />}
                   onPress={() => {
                     const [min, max] = userSettings?.achievementUnlocker?.interval
-                    const newValue = [Math.min(max, min + 1), max]
-                    handleIntervalChange(newValue, userSummary, setUserSettings)
+                    handleIntervalChange(
+                      [Math.min(max, min + 1), max],
+                      userSummary,
+                      setUserSettings,
+                    )
                   }}
                 />
               </div>
-
               <div>
                 <Button
                   isIconOnly
@@ -255,8 +227,11 @@ export const AchievementSettings = () => {
                   startContent={<FaMinus />}
                   onPress={() => {
                     const [min, max] = userSettings?.achievementUnlocker?.interval
-                    const newValue = [min, Math.max(min, max - 1)]
-                    handleIntervalChange(newValue, userSummary, setUserSettings)
+                    handleIntervalChange(
+                      [min, Math.max(min, max - 1)],
+                      userSummary,
+                      setUserSettings,
+                    )
                   }}
                 />
                 <Button
@@ -267,8 +242,11 @@ export const AchievementSettings = () => {
                   startContent={<FaPlus />}
                   onPress={() => {
                     const [min, max] = userSettings?.achievementUnlocker?.interval
-                    const newValue = [min, Math.min(2880, max + 1)]
-                    handleIntervalChange(newValue, userSummary, setUserSettings)
+                    handleIntervalChange(
+                      [min, Math.min(2880, max + 1)],
+                      userSummary,
+                      setUserSettings,
+                    )
                   }}
                 />
               </div>

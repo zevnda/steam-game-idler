@@ -6,7 +6,7 @@ interface ExtLinkProps {
   className?: string
 }
 
-export const ExtLink = ({ children, href, className = '' }: ExtLinkProps) => {
+export function ExtLink({ children, href, className = '' }: ExtLinkProps) {
   return (
     <a
       className={`w-fit h-fit cursor-pointer ${className}`}

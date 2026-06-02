@@ -1,32 +1,25 @@
-import type { ProTier } from '@/shared/utils'
+import type { ProTier } from '@/shared/types'
 import { invoke } from '@tauri-apps/api/core'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TbChevronRight, TbCopy, TbExternalLink, TbTrash } from 'react-icons/tb'
 import { Button, Chip, cn, Divider, Input } from '@heroui/react'
-import { CustomModal, ExtLink, ProBadge, showSuccessToast } from '@/shared/components'
+import { CustomModal } from '@/shared/components/CustomModal'
+import { ExtLink } from '@/shared/components/ExtLink'
+import { ProBadge } from '@/shared/components/pro/ProBadge'
+import { logEvent } from '@/shared/services/logService'
+import { toast } from '@/shared/services/toastService'
 import { useUserStore } from '@/shared/stores'
-import { GRANDFATHER_CUTOFF, logEvent } from '@/shared/utils'
+import { GRANDFATHER_CUTOFF } from '@/shared/utils'
 
-interface SubscriptionResult {
-  results: {
-    status: string
-    tier: string | null
-    created_at: string
-    email?: string | null
-    current_period_end?: string | null
-    cancel_at_period_end?: boolean | null
-  }
-}
-
-export const SubscriptionSettings = () => {
+export function SubscriptionSettings() {
   const { t } = useTranslation()
-  const isPro = useUserStore(state => state.isPro)
-  const proTier = useUserStore(state => state.proTier)
-  const proDetails = useUserStore(state => state.proDetails)
-  const setIsPro = useUserStore(state => state.setIsPro)
-  const setProTier = useUserStore(state => state.setProTier)
-  const setProDetails = useUserStore(state => state.setProDetails)
+  const isPro = useUserStore(s => s.isPro)
+  const proTier = useUserStore(s => s.proTier)
+  const proDetails = useUserStore(s => s.proDetails)
+  const setIsPro = useUserStore(s => s.setIsPro)
+  const setProTier = useUserStore(s => s.setProTier)
+  const setProDetails = useUserStore(s => s.setProDetails)
 
   const storedKey = typeof window !== 'undefined' ? (localStorage.getItem('licenseKey') ?? '') : ''
   const [inputKey, setInputKey] = useState('')
@@ -34,60 +27,62 @@ export const SubscriptionSettings = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [isTransferLoading, setIsTransferLoading] = useState(false)
   const [activationError, setActivationError] = useState<'not_found' | null>(null)
-  const [showTransferConfirm, setShowTransferConfirm] = useState(false)
+  const [showTransfer, setShowTransfer] = useState(false)
 
-  const applySubscriptionResult = (data: SubscriptionResult) => {
-    const createdAt = data.results.created_at
-    const tier = data.results.tier as ProTier
-    setIsPro(true)
-    if (createdAt && new Date(createdAt) < GRANDFATHER_CUTOFF) {
-      setProTier('gamer')
-    } else {
-      setProTier(tier ?? null)
+  const applyResult = (data: {
+    results: {
+      status: string
+      tier: string | null
+      created_at: string
+      email?: string | null
+      current_period_end?: string | null
+      cancel_at_period_end?: boolean | null
     }
+  }) => {
+    const { created_at, tier, email, current_period_end, cancel_at_period_end, status } =
+      data.results
+    setIsPro(true)
+    setProTier(
+      created_at && new Date(created_at) < GRANDFATHER_CUTOFF
+        ? 'gamer'
+        : ((tier as ProTier) ?? null),
+    )
     setProDetails({
-      email: data.results.email ?? null,
-      currentPeriodEnd: data.results.current_period_end ?? null,
-      cancelAtPeriodEnd: data.results.cancel_at_period_end ?? null,
-      status: data.results.status ?? null,
+      email: email ?? null,
+      currentPeriodEnd: current_period_end ?? null,
+      cancelAtPeriodEnd: cancel_at_period_end ?? null,
+      status: status ?? null,
     })
   }
 
   const handleActivate = async () => {
     const key = inputKey.trim()
     if (!key) return
-
     setIsLoading(true)
     setActivationError(null)
-
     try {
-      const deviceFingerprint = await invoke<string>('get_device_fingerprint')
-      const response = await fetch('https://apibase.vercel.app/api/subscriptions', {
+      const fp = await invoke<string>('get_device_fingerprint')
+      const res = await fetch('https://apibase.vercel.app/api/subscriptions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ licenseKey: key, deviceFingerprint }),
+        body: JSON.stringify({ licenseKey: key, deviceFingerprint: fp }),
       })
-
-      const data = await response.json()
-
+      const data = await res.json()
       if (data?.error === 'already_activated') {
         setPendingKey(key)
-        setShowTransferConfirm(true)
+        setShowTransfer(true)
         return
       }
-
       if (!data?.results?.status) {
         setActivationError('not_found')
         return
       }
-
       localStorage.setItem('licenseKey', key)
       setInputKey('')
-      showSuccessToast(t('settings.subscription.activateSuccess'))
-      applySubscriptionResult(data)
+      toast.success(t('settings.subscription.activateSuccess'))
+      applyResult(data)
     } catch (err) {
-      console.error('Activation error:', err)
-      logEvent(`[Error] in (handleActivate - Subscription): ${err}`)
+      await logEvent(`[Error] in (handleActivate): ${err}`)
       setActivationError('not_found')
     } finally {
       setIsLoading(false)
@@ -97,58 +92,35 @@ export const SubscriptionSettings = () => {
   const handleConfirmTransfer = async () => {
     setIsTransferLoading(true)
     setActivationError(null)
-
     try {
-      const deviceFingerprint = await invoke<string>('get_device_fingerprint')
-      const response = await fetch('https://apibase.vercel.app/api/subscriptions', {
+      const fp = await invoke<string>('get_device_fingerprint')
+      const res = await fetch('https://apibase.vercel.app/api/subscriptions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ licenseKey: pendingKey, deviceFingerprint, forceTransfer: true }),
+        body: JSON.stringify({
+          licenseKey: pendingKey,
+          deviceFingerprint: fp,
+          forceTransfer: true,
+        }),
       })
-
-      const data = await response.json()
-
+      const data = await res.json()
       if (!data?.results?.status) {
         setActivationError('not_found')
-        setShowTransferConfirm(false)
+        setShowTransfer(false)
         return
       }
-
       localStorage.setItem('licenseKey', pendingKey)
       setInputKey('')
       setPendingKey('')
-      setShowTransferConfirm(false)
-      showSuccessToast(t('settings.subscription.activateSuccess'))
-      applySubscriptionResult(data)
+      setShowTransfer(false)
+      toast.success(t('settings.subscription.activateSuccess'))
+      applyResult(data)
     } catch (err) {
-      console.error('Transfer error:', err)
-      logEvent(`[Error] in (handleConfirmTransfer - Subscription): ${err}`)
+      await logEvent(`[Error] in (handleConfirmTransfer): ${err}`)
       setActivationError('not_found')
-      setShowTransferConfirm(false)
+      setShowTransfer(false)
     } finally {
       setIsTransferLoading(false)
-    }
-  }
-
-  const handleCancelTransfer = () => {
-    setShowTransferConfirm(false)
-    setPendingKey('')
-  }
-
-  const handleClear = () => {
-    localStorage.removeItem('licenseKey')
-    setIsPro(false)
-    setProTier(null)
-    setProDetails(null)
-    setActivationError(null)
-    setShowTransferConfirm(false)
-    setPendingKey('')
-  }
-
-  const handleCopy = () => {
-    if (storedKey) {
-      navigator.clipboard.writeText(storedKey)
-      showSuccessToast(t('toast.exportData.success'))
     }
   }
 
@@ -166,9 +138,7 @@ export const SubscriptionSettings = () => {
         </p>
         <p className='text-3xl font-black'>{t('settings.subscription.title')}</p>
       </div>
-
       <div className='flex flex-col gap-3 mt-4'>
-        {/* Status */}
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>
@@ -210,10 +180,7 @@ export const SubscriptionSettings = () => {
             )}
           </div>
         </div>
-
         <Divider className='bg-border/70 my-4' />
-
-        {/* License Key */}
         <div className='flex justify-between items-start'>
           <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>
@@ -223,21 +190,16 @@ export const SubscriptionSettings = () => {
               {t('settings.subscription.licenseKey.description')}
             </p>
           </div>
-
           <div className='flex flex-col gap-3 w-62.5'>
-            {storedKey && (
+            {storedKey ? (
               <div className='flex flex-col gap-4'>
                 <Input
                   isReadOnly
-                  labelPlacement='outside'
                   type='password'
                   value={storedKey}
                   className='max-w-72.5'
                   classNames={{
-                    inputWrapper: cn(
-                      'bg-input data-[hover=true]:!bg-input',
-                      'rounded-lg group-data-[focus-within=true]:!bg-input',
-                    ),
+                    inputWrapper: cn('bg-input data-[hover=true]:!bg-input rounded-lg'),
                     input: ['!text-content font-mono'],
                   }}
                 />
@@ -247,7 +209,10 @@ export const SubscriptionSettings = () => {
                     variant='light'
                     radius='full'
                     className='text-content'
-                    onPress={handleCopy}
+                    onPress={() => {
+                      navigator.clipboard.writeText(storedKey)
+                      toast.success(t('toast.exportData.success'))
+                    }}
                     startContent={<TbCopy size={16} />}
                   >
                     {t('common.copy')}
@@ -257,36 +222,34 @@ export const SubscriptionSettings = () => {
                     variant='light'
                     radius='full'
                     color='danger'
-                    onPress={handleClear}
+                    onPress={() => {
+                      localStorage.removeItem('licenseKey')
+                      setIsPro(false)
+                      setProTier(null)
+                      setProDetails(null)
+                    }}
                     startContent={<TbTrash size={16} />}
                   >
                     {t('common.clear')}
                   </Button>
                 </div>
               </div>
-            )}
-
-            {!storedKey && (
+            ) : (
               <>
                 {activationError === 'not_found' && (
                   <p className='text-xs text-danger'>{t('settings.subscription.errorNotFound')}</p>
                 )}
-
                 <div className='flex flex-col gap-4'>
                   <Input
-                    labelPlacement='outside'
                     placeholder={t('settings.subscription.licenseKey.description')}
                     className='max-w-72.5'
                     classNames={{
-                      inputWrapper: cn(
-                        'bg-input data-[hover=true]:!bg-inputhover',
-                        'rounded-lg group-data-[focus-within=true]:!bg-inputhover',
-                      ),
+                      inputWrapper: cn('bg-input data-[hover=true]:!bg-inputhover rounded-lg'),
                       input: ['!text-content font-mono placeholder:text-altwhite/50'],
                     }}
                     value={inputKey}
-                    onValueChange={val => {
-                      setInputKey(val)
+                    onValueChange={v => {
+                      setInputKey(v)
                       setActivationError(null)
                     }}
                     onKeyDown={e => {
@@ -311,10 +274,12 @@ export const SubscriptionSettings = () => {
           </div>
         </div>
       </div>
-
       <CustomModal
-        isOpen={showTransferConfirm}
-        onOpenChange={handleCancelTransfer}
+        isOpen={showTransfer}
+        onOpenChange={() => {
+          setShowTransfer(false)
+          setPendingKey('')
+        }}
         title={t('common.confirm')}
         body={
           <p className='text-sm text-altwhite leading-relaxed'>
@@ -328,7 +293,10 @@ export const SubscriptionSettings = () => {
               radius='full'
               variant='light'
               isDisabled={isTransferLoading}
-              onPress={handleCancelTransfer}
+              onPress={() => {
+                setShowTransfer(false)
+                setPendingKey('')
+              }}
             >
               {t('common.cancel')}
             </Button>

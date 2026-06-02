@@ -1,4 +1,5 @@
 import type { TimeInputValue } from '@heroui/react'
+import type { CardFarmingUser } from './user'
 
 export interface AchievementUnlockerSettings {
   hidden: boolean
@@ -9,12 +10,6 @@ export interface AchievementUnlockerSettings {
   schedule: boolean
   scheduleFrom: TimeInputValue
   scheduleTo: TimeInputValue
-}
-
-export interface CardFarmingUser {
-  avatar: string
-  personaName: string
-  steamId: string
 }
 
 export interface CardFarmingSettings {

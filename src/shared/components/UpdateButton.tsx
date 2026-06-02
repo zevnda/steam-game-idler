@@ -5,10 +5,11 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TbCircleArrowDown } from 'react-icons/tb'
 import { Spinner } from '@heroui/react'
-import { CustomTooltip, showDangerToast } from '@/shared/components'
-import { logEvent } from '@/shared/utils'
+import { CustomTooltip } from '@/shared/components/CustomTooltip'
+import { logEvent } from '@/shared/services/logService'
+import { toast } from '@/shared/services/toastService'
 
-export const UpdateButton = () => {
+export function UpdateButton() {
   const { t } = useTranslation()
   const [isLoading, setIsLoading] = useState(false)
 
@@ -26,9 +27,9 @@ export const UpdateButton = () => {
       }
     } catch (error) {
       setIsLoading(false)
-      showDangerToast(t('toast.checkUpdate.error'))
-      console.error('Error in (handleUpdate):', error)
-      logEvent(`Error in (handleUpdate): ${error}`)
+      toast.danger(t('toast.checkUpdate.error'))
+      console.error('Error in handleUpdate:', error)
+      await logEvent(`Error in (handleUpdate): ${error}`)
     }
   }
 

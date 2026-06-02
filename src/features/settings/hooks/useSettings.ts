@@ -5,13 +5,8 @@ export function useSettings() {
   const [version, setVersion] = useState('0.0.0')
   const [refreshKey, setRefreshKey] = useState(0)
 
-  // Get the app version
   useEffect(() => {
-    const getAndSetVersion = async () => {
-      const version = await getAppVersion()
-      setVersion(version ? version : '0.0.0')
-    }
-    getAndSetVersion()
+    getAppVersion().then(v => setVersion(v || '0.0.0'))
   }, [])
 
   return { version, refreshKey, setRefreshKey }

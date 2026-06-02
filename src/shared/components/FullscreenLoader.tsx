@@ -1,20 +1,14 @@
 import { cn, Spinner } from '@heroui/react'
 import { Unbounded } from 'next/font/google'
 
-const unbounded = Unbounded({
-  subsets: ['latin'],
-  variable: '--font-unbounded',
-})
+const unbounded = Unbounded({ subsets: ['latin'], variable: '--font-unbounded' })
 
-export const FullscreenLoader = ({ loaderFadeOut = false }: { loaderFadeOut?: boolean }) => {
+export function FullscreenLoader({ loaderFadeOut = false }: { loaderFadeOut?: boolean }) {
   return (
     <div
       className={cn(
         'fixed inset-0 w-screen h-screen z-9998 bg-base transition-opacity duration-250',
-        {
-          'opacity-0 pointer-events-none': loaderFadeOut,
-          'opacity-100': !loaderFadeOut,
-        },
+        loaderFadeOut ? 'opacity-0 pointer-events-none' : 'opacity-100',
       )}
     >
       <video

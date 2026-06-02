@@ -8,18 +8,13 @@ import {
 import { useUserStore } from '@/shared/stores'
 
 export function useTitlebar() {
-  const userSettings = useUserStore(state => state.userSettings)
+  const userSettings = useUserStore(s => s.userSettings)
 
-  const windowMinimize = async () => {
-    await getCurrentWindow().minimize()
-  }
+  const windowMinimize = () => getCurrentWindow().minimize()
 
-  const windowToggleMaximize = async () => {
-    await getCurrentWindow().toggleMaximize()
-  }
+  const windowToggleMaximize = () => getCurrentWindow().toggleMaximize()
 
   const windowClose = async () => {
-    // If the user has not enabled "close to tray", quit the app
     if (!userSettings.general.closeToTray) {
       await invoke('quit_app')
       return
@@ -27,9 +22,9 @@ export function useTitlebar() {
 
     await getCurrentWindow().hide()
 
-    const minToTrayNotified = localStorage.getItem('minToTrayNotified') || 'false'
+    const notified = localStorage.getItem('minToTrayNotified') || 'false'
     let permissionGranted = await isPermissionGranted()
-    if (minToTrayNotified !== 'true') {
+    if (notified !== 'true') {
       if (!permissionGranted) {
         const permission = await requestPermission()
         permissionGranted = permission === 'granted'
@@ -44,9 +39,5 @@ export function useTitlebar() {
     localStorage.setItem('minToTrayNotified', 'true')
   }
 
-  return {
-    windowMinimize,
-    windowToggleMaximize,
-    windowClose,
-  }
+  return { windowMinimize, windowToggleMaximize, windowClose }
 }

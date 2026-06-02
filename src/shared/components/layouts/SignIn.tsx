@@ -4,13 +4,15 @@ import { Trans, useTranslation } from 'react-i18next'
 import { TbArrowRight } from 'react-icons/tb'
 import { Button, cn, Spinner } from '@heroui/react'
 import Image from 'next/image'
-import { ExtLink, LanguageSwitch, SignInHero } from '@/shared/components'
-import { useSignIn } from '@/shared/hooks'
-import { useNavigationStore } from '@/shared/stores'
+import { ExtLink } from '@/shared/components/ExtLink'
+import { LanguageSwitch } from '@/shared/components/LanguageSwitch'
+import { SignInHero } from '@/shared/components/SignInHero'
+import { useSignIn } from '@/shared/hooks/layouts/useSignIn'
+import { useUiStore } from '@/shared/stores'
 
-export const SignIn = () => {
+export function SignIn() {
   const { t } = useTranslation()
-  const setActivePage = useNavigationStore(state => state.setActivePage)
+  const setActivePage = useUiStore(s => s.setActivePage)
   const [refreshKey, setRefreshKey] = useState(0)
 
   useEffect(() => {
@@ -19,22 +21,20 @@ export const SignIn = () => {
 
   const handleRefresh = async () => {
     await invoke('delete_user_summary_file')
-    setRefreshKey(prev => prev + 1)
+    setRefreshKey(k => k + 1)
   }
 
   return (
     <>
-      {/* Language switch */}
       <div className='absolute bottom-0 right-0 p-10 z-10 flex items-center gap-4 pointer-events-none'>
         <ExtLink
-          href='https://steamgameidler.com/docs/get-started/how-to-sign-in'
+          href='https://steamgameidlers.com/docs/get-started/how-to-sign-in'
           className='pointer-events-auto'
         >
           <p className='text-sm text-altwhite hover:text-altwhite/90 duration-150'>
             {t('common.needHelp')}
           </p>
         </ExtLink>
-
         <LanguageSwitch
           className='w-45 pointer-events-auto'
           classNames={{
@@ -48,7 +48,6 @@ export const SignIn = () => {
         <div className='flex flex-col items-center w-[90%] justify-center h-calc'>
           <UserSelectionArea key={refreshKey} onRefresh={handleRefresh} />
         </div>
-
         <div className='relative flex flex-col items-center justify-center w-2/3 h-calc pr-10 select-none'>
           <SignInHero />
         </div>
@@ -65,16 +64,13 @@ function UserSelectionArea({ onRefresh }: { onRefresh: () => void }) {
     userSummaries,
     handleLogin,
     handleSelectUser,
-    steamUsers,
     selectedUser,
     getRandomAvatarUrl,
-  } = useSignIn(0) // always 0, since remounting resets the hook
+  } = useSignIn(0)
 
   return (
     <>
-      {/* Logo and glow effect */}
       <div className='relative flex items-center justify-center my-10'>
-        {/* Outer, soft vibrant glow */}
         <span
           className='absolute -inset-1 rounded-full'
           style={{
@@ -94,25 +90,21 @@ function UserSelectionArea({ onRefresh }: { onRefresh: () => void }) {
         />
       </div>
       <div className='flex flex-col items-center'>
-        {/* Welcome text */}
         <div className='flex flex-col items-center mb-6'>
           <p className='text-3xl font-semibold'>{t('signIn.chooseAccount')}</p>
         </div>
-        {/* User cards */}
         <div className='flex flex-row flex-wrap items-center justify-center mb-4 min-h-56 max-h-96 overflow-auto space-y-2 p-2 overflow-x-auto'>
-          {/* Loader */}
           {isLoading && userSummaries.length === 0 && (
             <div className='flex flex-col items-center space-y-2'>
               <Spinner variant='simple' />
             </div>
           )}
-          {/* No accounts found */}
           {!isLoading && userSummaries.length === 0 && (
             <div className='flex flex-col items-center text-center gap-2'>
               <p className='text-xl font-semibold'>{t('signIn.noUsers')}</p>
               <p className='text-xs text-altwhite max-w-md'>{t('signIn.noUsersTwo')}</p>
               <div className='flex items-center gap-4 mt-2'>
-                <ExtLink href='https://steamgameidler.com/docs/faq#error-messages:~:text=No%20Steam%20users%20found'>
+                <ExtLink href='https://steamgameidlers.com/docs/faq#error-messages:~:text=No%20Steam%20users%20found'>
                   <div className='border-2 border-content py-2 px-4 rounded-full hover:opacity-90 duration-150'>
                     <p className='text-sm font-semibold'>{t('common.learnMore')}</p>
                   </div>
@@ -120,14 +112,12 @@ function UserSelectionArea({ onRefresh }: { onRefresh: () => void }) {
               </div>
             </div>
           )}
-          {/* User cards */}
           {userSummaries.map(user => (
             <div
               key={user?.steamId}
               className='flex flex-col items-center mx-4 cursor-pointer hover:scale-105 transition-transform group duration-150'
               onClick={() => handleSelectUser(user)}
             >
-              {/* User avatar */}
               <div
                 className={cn(
                   'relative p-1 rounded-lg',
@@ -155,12 +145,10 @@ function UserSelectionArea({ onRefresh }: { onRefresh: () => void }) {
                   />
                 )}
               </div>
-              {/* User persona name */}
               <p className='text-lg mt-1'>{user?.personaName}</p>
             </div>
           ))}
         </div>
-        {/* Buttons */}
         <div className='flex gap-4 mb-6'>
           <Button
             radius='full'
@@ -174,7 +162,7 @@ function UserSelectionArea({ onRefresh }: { onRefresh: () => void }) {
             radius='full'
             className='font-semibold bg-content text-black group'
             onPress={() => {
-              if (selectedUser) handleLogin(steamUsers.indexOf(selectedUser))
+              if (selectedUser) handleLogin(userSummaries.indexOf(selectedUser))
             }}
             isDisabled={!selectedUser}
             isLoading={isLoading || isSwitching}
@@ -183,20 +171,19 @@ function UserSelectionArea({ onRefresh }: { onRefresh: () => void }) {
             <TbArrowRight className='group-hover:translate-x-1 duration-150' />
           </Button>
         </div>
-        {/* Agreement */}
         <p className='text-xs text-altwhite max-w-sm text-center'>
           <Trans
             i18nKey='signIn.acknowledge'
             components={[
               <ExtLink
-                href='https://steamgameidler.com/tos'
+                href='https://steamgameidlers.com/tos'
                 className='text-dynamic font-semibold hover:opacity-90 duration-150'
                 key='tos'
               >
                 Terms of Service
               </ExtLink>,
               <ExtLink
-                href='https://steamgameidler.com/privacy'
+                href='https://steamgameidlers.com/privacy'
                 className='text-dynamic font-semibold hover:opacity-90 duration-150'
                 key='privacy'
               >

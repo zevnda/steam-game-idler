@@ -7,8 +7,8 @@ import { openExternalLink } from '@/shared/utils'
 
 const BILLING_URL = 'https://billing.stripe.com/p/login/8x23cwf8CeNE6PLaAecbC00'
 
-export const Banner = () => {
-  const proDetails = useUserStore(state => state.proDetails)
+export function Banner() {
+  const proDetails = useUserStore(s => s.proDetails)
   const [dismissed, setDismissed] = useState(false)
 
   const show = proDetails?.status === 'past_due' && !dismissed

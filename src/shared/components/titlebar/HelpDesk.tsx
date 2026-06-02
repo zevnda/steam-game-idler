@@ -5,7 +5,7 @@ import { RiCustomerService2Line } from 'react-icons/ri'
 import { TbX } from 'react-icons/tb'
 import { Button, cn } from '@heroui/react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { CustomTooltip } from '@/shared/components'
+import { CustomTooltip } from '@/shared/components/CustomTooltip'
 import { useUserStore } from '@/shared/stores'
 import { isPortableCheck } from '@/shared/utils'
 
@@ -19,22 +19,20 @@ declare global {
   }
 }
 
-export const HelpDesk = () => {
+export function HelpDesk() {
   const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
   const [isLoaded, setIsLoaded] = useState(false)
   const [showGuide, setShowGuide] = useState(false)
   const [hasUnread, setHasUnread] = useState(false)
-  const userSummary = useUserStore(state => state.userSummary)
-  const userSettings = useUserStore(state => state.userSettings)
-  const isPro = useUserStore(state => state.isPro)
-  const proTier = useUserStore(state => state.proTier)
+  const userSummary = useUserStore(s => s.userSummary)
+  const userSettings = useUserStore(s => s.userSettings)
+  const isPro = useUserStore(s => s.isPro)
+  const proTier = useUserStore(s => s.proTier)
 
-  // If it's the user's first time using SGI, show an overlay
-  // that directs them to the help desk
   useEffect(() => {
-    const isFirstTimeUser = localStorage.getItem('isFirstTimeUser')
-    if (isFirstTimeUser === null) {
+    const isFirst = localStorage.getItem('isFirstTimeUser')
+    if (isFirst === null) {
       setTimeout(() => {
         setShowGuide(true)
         localStorage.setItem('isFirstTimeUser', 'false')
@@ -42,86 +40,57 @@ export const HelpDesk = () => {
     }
   }, [])
 
-  // Check if widget is loaded
   useEffect(() => {
-    const interval = setInterval(() => {
+    const id = setInterval(() => {
       const widget = document.querySelector('.chatway--container.has-loaded')
       if (widget) {
         setIsLoaded(true)
-
-        clearInterval(interval)
+        clearInterval(id)
       }
     }, 300)
-    return () => clearInterval(interval)
+    return () => clearInterval(id)
   }, [])
 
-  // Watch for widget open/close
   useEffect(() => {
     if (!isLoaded) return
-
     const widget = document.querySelector('.chatway--container')
     if (!widget) return
-
-    const observer = new MutationObserver(() => {
-      const isWidgetOpen = widget.classList.contains('widget--open')
-      setIsOpen(isWidgetOpen)
-    })
-
-    observer.observe(widget, { attributes: true, attributeFilter: ['class'] })
-
-    return () => observer.disconnect()
+    const obs = new MutationObserver(() => setIsOpen(widget.classList.contains('widget--open')))
+    obs.observe(widget, { attributes: true, attributeFilter: ['class'] })
+    return () => obs.disconnect()
   }, [isLoaded])
 
-  // Watch for unread messages
   useEffect(() => {
     if (!isLoaded) return
-
     const trigger = document.getElementById('chatway_widget_trigger')
     if (!trigger) return
-
-    const checkUnread = () => {
-      const unread = Number(trigger.getAttribute('data-unread-message') || '0')
-      setHasUnread(unread > 0)
-    }
-
-    checkUnread()
-
-    const observer = new MutationObserver(() => {
-      checkUnread()
-    })
-
-    observer.observe(trigger, {
-      attributes: true,
-      attributeFilter: ['data-unread-message', 'class'],
-    })
-
-    return () => observer.disconnect()
+    const check = () => setHasUnread(Number(trigger.getAttribute('data-unread-message') || '0') > 0)
+    check()
+    const obs = new MutationObserver(check)
+    obs.observe(trigger, { attributes: true, attributeFilter: ['data-unread-message', 'class'] })
+    return () => obs.disconnect()
   }, [isLoaded])
 
   useEffect(() => {
-    const setUserData = async () => {
+    const update = async () => {
       const version = await getVersion()
       const isPortable = await isPortableCheck()
-
-      if (userSummary && typeof window !== 'undefined' && window.$chatway) {
+      if (userSummary && window.$chatway) {
         window.$chatway.updateChatwayCustomData(
           'name',
           `${userSummary?.personaName} (${userSummary?.steamId}, v${version}, ${proTier ? proTier.charAt(0).toUpperCase() + proTier.slice(1) : 'Free'}, ${isPortable ? 'Portable' : 'Installer'})`,
         )
       }
     }
-    setUserData()
+    update()
   }, [userSummary, userSettings, isPro, proTier])
 
   const handleToggle = async () => {
-    if (!isLoaded || typeof window === 'undefined' || !window.$chatway) return
-
+    if (!isLoaded || !window.$chatway) return
     const version = await getVersion()
     const isPortable = await isPortableCheck()
-
     const widget = document.querySelector('.chatway--container')
-
-    if (widget && widget.classList.contains('widget--open')) {
+    if (widget?.classList.contains('widget--open')) {
       window.$chatway.closeChatwayWidget()
     } else {
       if (userSummary) {
@@ -136,9 +105,9 @@ export const HelpDesk = () => {
   }
 
   const handleClose = () => {
-    if (!isLoaded || typeof window === 'undefined' || !window.$chatway) return
+    if (!isLoaded || !window.$chatway) return
     const widget = document.querySelector('.chatway--container')
-    if (widget && widget.classList.contains('widget--open')) {
+    if (widget?.classList.contains('widget--open')) {
       window.$chatway.closeChatwayWidget()
       setIsOpen(false)
     }
@@ -158,9 +127,7 @@ export const HelpDesk = () => {
             />
           )}
         </AnimatePresence>
-
         <div className='flex justify-center items-center'>
-          {/* Pulsing highlight for focus guide */}
           {showGuide && (
             <span className='absolute z-1001 -top-2 left-1/2 -translate-x-1/2 pointer-events-none'>
               <span className='block h-12 w-12 rounded-full bg-dynamic/20 animate-ping ring-4 ring-dynamic/50' />
@@ -169,8 +136,7 @@ export const HelpDesk = () => {
           <CustomTooltip content={t('common.helpDesk')}>
             <div
               className={cn(
-                'flex justify-center items-center hover:bg-header-hover/10 h-12 w-12 px-2 ',
-                'duration-150 cursor-pointer transition-colors',
+                'flex justify-center items-center hover:bg-header-hover/10 h-12 w-12 px-2 duration-150 cursor-pointer transition-colors',
                 isOpen && 'text-primary',
                 showGuide && 'z-1002 relative pointer-events-none',
               )}
@@ -184,19 +150,13 @@ export const HelpDesk = () => {
           </CustomTooltip>
         </div>
       </div>
-
-      {/* Focus Guide Overlay */}
       {showGuide && (
         <>
-          {/* Dim background */}
           <div
             className='fixed inset-0 bg-black/60 z-1000 pointer-events-auto'
             onClick={() => setShowGuide(false)}
           />
-
-          {/* Floating card with arrow */}
           <div className='fixed top-16 right-36 z-1002 flex flex-col items-end'>
-            {/* Card */}
             <motion.div
               initial={{ opacity: 0, y: -20, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -211,7 +171,6 @@ export const HelpDesk = () => {
                 </span>{' '}
                 in the top-right corner to chat with us.
               </p>
-
               <Button
                 isIconOnly
                 radius='full'

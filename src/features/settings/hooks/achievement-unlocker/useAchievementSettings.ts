@@ -2,21 +2,17 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useUserStore } from '@/shared/stores'
 
-export const useAchievementSettings = () => {
+export function useAchievementSettings() {
   const { t } = useTranslation()
-  const userSettings = useUserStore(state => state.userSettings)
+  const userSettings = useUserStore(s => s.userSettings)
   const [sliderLabel, setSliderLabel] = useState('')
 
-  // Sync local settings with global settings when they change
   useEffect(() => {
     const interval = userSettings.achievementUnlocker?.interval
     setSliderLabel(
-      t('settings.achievementUnlocker.interval', {
-        min: interval[0],
-        max: interval[1],
-      }),
+      t('settings.achievementUnlocker.interval', { min: interval[0], max: interval[1] }),
     )
-  }, [userSettings.achievementUnlocker?.interval, setSliderLabel, t])
+  }, [userSettings.achievementUnlocker?.interval, t])
 
   return { sliderLabel, setSliderLabel }
 }

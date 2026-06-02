@@ -1,14 +1,15 @@
 import type { AppProps } from 'next/app'
 import { TbX } from 'react-icons/tb'
 import { HeroUIProvider, ToastProvider } from '@heroui/react'
-import { FullscreenLoader, Layout } from '@/shared/components'
+import { Layout } from '@/pages/layout'
+import { FullscreenLoader } from '@/shared/components'
 import { ErrorBoundaryProvider, I18nProvider, ThemeProvider } from '@/shared/providers'
-import { useLoaderStore, useStateStore } from '@/shared/stores'
+import { useSessionStore, useUiStore } from '@/shared/stores'
 import '@/styles/globals.css'
 
 const App = ({ Component, pageProps }: AppProps) => {
-  const { loadingUserSummary } = useStateStore()
-  const { loaderFadeOut } = useLoaderStore()
+  const loadingUserSummary = useUiStore(s => s.loadingUserSummary)
+  const loaderFadeOut = useSessionStore(s => s.loaderFadeOut)
 
   return (
     <ErrorBoundaryProvider>
