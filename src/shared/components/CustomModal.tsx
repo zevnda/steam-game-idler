@@ -27,19 +27,26 @@ export function CustomModal({
       isOpen={isOpen}
       onOpenChange={onOpenChange}
       hideCloseButton={hideCloseButton}
-      className={cn('text-content bg-gradient-alt border border-border rounded-4xl', className)}
-      classNames={{ closeButton: 'mr-1.5 mt-1.5', body: 'p-0', ...classNames }}
+      className={cn(
+        'text-content bg-surface border border-border/20 rounded-3xl shadow-2xl',
+        className,
+      )}
+      classNames={{
+        closeButton: 'mr-2 mt-2 text-altwhite hover:text-content',
+        body: 'p-0',
+        ...classNames,
+      }}
     >
       <ModalContent>
         <>
           <ModalHeader
-            className='flex flex-col gap-1 border-b border-border/40'
+            className='flex flex-col gap-1 px-6 pt-5 pb-4 border-b border-border/20'
             data-tauri-drag-region
           >
             {title}
           </ModalHeader>
-          <ModalBody className='my-0 p-6 text-sm max-h-80 overflow-auto'>{body}</ModalBody>
-          <ModalFooter className='border-t border-border/40 px-4 py-3'>{buttons}</ModalFooter>
+          <ModalBody className='my-0 px-6 py-5 text-sm max-h-80 overflow-auto'>{body}</ModalBody>
+          <ModalFooter className='border-t border-border/20 px-6 py-4'>{buttons}</ModalFooter>
         </>
       </ModalContent>
     </Modal>

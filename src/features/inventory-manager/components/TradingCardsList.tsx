@@ -94,7 +94,7 @@ export function TradingCardsList() {
     <div
       className={cn(
         'min-h-calc max-h-calc overflow-y-auto overflow-x-hidden mt-12 ease-in-out',
-        sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]',
+        sidebarCollapsed ? 'w-calc-collapsed' : 'w-calc',
       )}
       style={{ transitionDuration, transitionProperty: 'width' }}
     >
@@ -117,7 +117,7 @@ export function TradingCardsList() {
           <p className='text-altwhite'>{t('tradingCards.subtitle')}</p>
         </div>
       ) : (
-        <div className='grid grid-cols-6 gap-4 px-6 pb-6'>
+        <div className='grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-4 px-6 pb-6'>
           {paginated.map(card => (
             <TradingCardItem
               key={card.id}
@@ -177,7 +177,7 @@ function TradingCardItem({
   return (
     <div
       className={cn(
-        'relative group flex flex-col gap-2 bg-card rounded-xl p-3 border border-border/30 hover:border-border duration-150',
+        'relative group flex flex-col gap-2 bg-card rounded-xl p-2.5 border border-border/20 hover:border-border/50 duration-150',
         isLocked && 'opacity-50',
       )}
     >

@@ -3,7 +3,6 @@ import { invoke } from '@tauri-apps/api/core'
 import { memo, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { RiSearchLine } from 'react-icons/ri'
-import { TbChevronRight } from 'react-icons/tb'
 import { FixedSizeList as List } from 'react-window'
 import { cn, Divider, Input, NumberInput } from '@heroui/react'
 import Image from 'next/image'
@@ -103,15 +102,12 @@ export function GameSettings() {
   }
 
   return (
-    <div className='relative flex flex-col gap-4 mt-9 pb-16 w-full'>
-      <div className='flex flex-col gap-0 select-none'>
-        <p className='flex items-center text-xs text-altwhite font-bold'>
+    <div className='relative flex flex-col gap-4 pb-16 w-full'>
+      <div className='flex flex-col gap-0 select-none mb-3'>
+        <p className='text-[10px] uppercase tracking-widest text-altwhite/40 font-black mb-1'>
           {t('settings.title')}
-          <span>
-            <TbChevronRight size={12} />
-          </span>
         </p>
-        <p className='text-3xl font-black'>{t('common.gameSettings')}</p>
+        <p className='text-2xl font-black'>{t('common.gameSettings')}</p>
       </div>
       <div className='flex gap-6 mt-4'>
         <div className='flex flex-col gap-2 w-72 shrink-0'>
@@ -125,7 +121,7 @@ export function GameSettings() {
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
-          <div className='border border-border rounded-lg overflow-hidden'>
+          <div className='border border-border/20 rounded-xl overflow-hidden'>
             <List
               height={400}
               itemCount={filtered.length}
@@ -140,11 +136,13 @@ export function GameSettings() {
         {selectedGame ? (
           <div className='flex flex-col gap-4 flex-1'>
             <p className='text-lg font-bold truncate'>{selectedGame.name}</p>
-            <Divider className='bg-border/70' />
+            <Divider className='bg-border/15' />
             <div className='flex justify-between items-center'>
               <div className='flex flex-col gap-1'>
                 <p className='text-sm text-content font-bold'>{t('gameSettings.idle')}</p>
-                <p className='text-xs text-altwhite'>{t('gameSettings.idleSub')}</p>
+                <p className='text-[11px] text-altwhite/60 leading-relaxed'>
+                  {t('gameSettings.idleSub')}
+                </p>
               </div>
               <NumberInput
                 value={gameSettings.maxIdleTime ?? 0}
@@ -158,11 +156,13 @@ export function GameSettings() {
                 onValueChange={v => updateSetting(`${selectedGame.appid}.maxIdleTime`, v || null)}
               />
             </div>
-            <Divider className='bg-border/70' />
+            <Divider className='bg-border/15' />
             <div className='flex justify-between items-center'>
               <div className='flex flex-col gap-1'>
                 <p className='text-sm text-content font-bold'>{t('gameSettings.drops')}</p>
-                <p className='text-xs text-altwhite'>{t('gameSettings.dropsSub')}</p>
+                <p className='text-[11px] text-altwhite/60 leading-relaxed'>
+                  {t('gameSettings.dropsSub')}
+                </p>
               </div>
               <NumberInput
                 value={gameSettings.maxCardDrops ?? 0}
@@ -176,11 +176,13 @@ export function GameSettings() {
                 onValueChange={v => updateSetting(`${selectedGame.appid}.maxCardDrops`, v || null)}
               />
             </div>
-            <Divider className='bg-border/70' />
+            <Divider className='bg-border/15' />
             <div className='flex justify-between items-center'>
               <div className='flex flex-col gap-1'>
                 <p className='text-sm text-content font-bold'>{t('gameSettings.achievements')}</p>
-                <p className='text-xs text-altwhite'>{t('gameSettings.achievementsSub')}</p>
+                <p className='text-[11px] text-altwhite/60 leading-relaxed'>
+                  {t('gameSettings.achievementsSub')}
+                </p>
               </div>
               <NumberInput
                 value={gameSettings.maxAchievementUnlocks ?? 0}
@@ -200,11 +202,13 @@ export function GameSettings() {
         ) : (
           <div className='flex flex-col gap-4 flex-1'>
             <p className='text-lg font-bold'>{t('common.gameSettings')}</p>
-            <Divider className='bg-border/70' />
+            <Divider className='bg-border/15' />
             <div className='flex justify-between items-center'>
               <div className='flex flex-col gap-1'>
                 <p className='text-sm text-content font-bold'>{t('gameSettings.globalMaxIdle')}</p>
-                <p className='text-xs text-altwhite'>{t('gameSettings.globalMaxIdleSub')}</p>
+                <p className='text-[11px] text-altwhite/60 leading-relaxed'>
+                  {t('gameSettings.globalMaxIdleSub')}
+                </p>
               </div>
               <NumberInput
                 value={globalMax}

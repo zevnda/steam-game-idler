@@ -30,7 +30,7 @@ const Row = memo(
     const StatCell = ({ item }: { item: Statistic }) => (
       <div
         className={cn(
-          'flex justify-between items-center bg-card hover:bg-sidebar/60 duration-150 px-3 py-2.5 rounded-lg',
+          'flex justify-between items-center bg-surface hover:bg-surface-raised duration-150 px-3 py-2.5 rounded-xl',
         )}
       >
         <div className='flex flex-col min-w-0 mr-3'>
@@ -107,7 +107,7 @@ export function StatisticsList({
         setAchievements={setAchievements}
         setRefreshKey={setRefreshKey}
       />
-      <div className='border border-border/40 rounded-xl overflow-hidden bg-base/50'>
+      <div className='border border-border/20 rounded-2xl overflow-hidden bg-card'>
         {statistics.length === 0 ? (
           <div className='flex justify-center items-center p-12'>
             <p className='text-center text-content'>{t('achievementManager.statistics.empty')}</p>

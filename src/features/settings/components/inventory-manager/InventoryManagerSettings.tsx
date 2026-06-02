@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { TbChevronRight } from 'react-icons/tb'
 import { cn, Divider, NumberInput, Select, SelectItem } from '@heroui/react'
 import {
   handlePriceAdjustmentChange,
@@ -34,15 +33,12 @@ export function InventoryManagerSettings() {
   ]
 
   return (
-    <div className='relative flex flex-col gap-4 mt-9 pb-16 w-4/5'>
-      <div className='flex flex-col gap-0 select-none'>
-        <p className='flex items-center text-xs text-altwhite font-bold'>
+    <div className='relative flex flex-col gap-4 pb-16 w-4/5'>
+      <div className='flex flex-col gap-0 select-none mb-3'>
+        <p className='text-[10px] uppercase tracking-widest text-altwhite/40 font-black mb-1'>
           {t('settings.title')}
-          <span>
-            <TbChevronRight size={12} />
-          </span>
         </p>
-        <p className='text-3xl font-black'>{t('tradingCards.title')}</p>
+        <p className='text-2xl font-black'>{t('tradingCards.title')}</p>
       </div>
       <div className='flex flex-col gap-3 mt-4'>
         <div className='flex justify-between items-center'>
@@ -50,7 +46,7 @@ export function InventoryManagerSettings() {
             <p className='text-sm text-content font-bold'>
               {t('settings.tradingCards.sellOptions')}
             </p>
-            <p className='text-xs text-altwhite'>
+            <p className='text-[11px] text-altwhite/60 leading-relaxed'>
               {t('settings.tradingCards.sellOptions.description')}
             </p>
           </div>
@@ -84,13 +80,15 @@ export function InventoryManagerSettings() {
             )}
           </Select>
         </div>
-        <Divider className='bg-border/70 my-4' />
+        <Divider className='bg-border/15 my-5' />
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>
               {t('settings.tradingCards.priceAdjustment')}
             </p>
-            <p className='text-xs text-altwhite'>{t('settings.tradingCards.priceAdjustmentSub')}</p>
+            <p className='text-[11px] text-altwhite/60 leading-relaxed'>
+              {t('settings.tradingCards.priceAdjustmentSub')}
+            </p>
           </div>
           <NumberInput
             aria-label='priceAdjustment'
@@ -109,11 +107,13 @@ export function InventoryManagerSettings() {
             }
           />
         </div>
-        <Divider className='bg-border/70 my-4' />
+        <Divider className='bg-border/15 my-5' />
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>{t('settings.tradingCards.sellLimit')}</p>
-            <p className='text-xs text-altwhite'>{t('settings.tradingCards.sellLimitSub')}</p>
+            <p className='text-[11px] text-altwhite/60 leading-relaxed'>
+              {t('settings.tradingCards.sellLimitSub')}
+            </p>
           </div>
           <div className='flex items-center gap-2'>
             <NumberInput
@@ -163,11 +163,13 @@ export function InventoryManagerSettings() {
             />
           </div>
         </div>
-        <Divider className='bg-border/70 my-4' />
+        <Divider className='bg-border/15 my-5' />
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>{t('settings.tradingCards.sellDelay')}</p>
-            <p className='text-xs text-altwhite'>{t('settings.tradingCards.sellDelaySub')}</p>
+            <p className='text-[11px] text-altwhite/60 leading-relaxed'>
+              {t('settings.tradingCards.sellDelaySub')}
+            </p>
           </div>
           <NumberInput
             aria-label='sellDelay'

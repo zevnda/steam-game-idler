@@ -54,7 +54,7 @@ export function ExportSettings() {
   return (
     <Button
       size='sm'
-      className='bg-btn-secondary text-btn-text font-bold'
+      className='bg-btn-secondary text-btn-text font-semibold'
       radius='full'
       onPress={handleExport}
       startContent={<TbArrowBarUp size={20} />}

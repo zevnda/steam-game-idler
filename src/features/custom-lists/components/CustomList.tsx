@@ -77,7 +77,10 @@ const Row = memo(
     const COLS = 5
     const row = games.slice(index * COLS, (index + 1) * COLS)
     return (
-      <div style={style} className='grid grid-cols-5 gap-x-5 gap-y-4 px-6'>
+      <div
+        style={style}
+        className='grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-x-5 gap-y-4 px-6'
+      >
         {row.map(game => {
           if (type === 'cardFarmingList' && blacklist.includes(game.appid)) return null
           return (
@@ -229,25 +232,23 @@ export function CustomList({ type }: { type: CustomListType }) {
     <div
       className={cn(
         'min-h-calc max-h-calc overflow-y-auto overflow-x-hidden mt-12 ease-in-out',
-        sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]',
+        sidebarCollapsed ? 'w-calc-collapsed' : 'w-calc',
       )}
       style={{ transitionDuration, transitionProperty: 'width' }}
     >
-      <div className={cn('relative w-[calc(100vw-227px)] pl-6 pt-2')}>
-        <div className='pb-3'>
-          <div className='flex items-center gap-3 select-none'>
-            {config.icon}
-            <div>
-              <p className='text-3xl font-black'>{config.title}</p>
-              <p className='text-xs text-altwhite my-2'>
-                {t('common.showing', { total: list.length })}
-              </p>
-            </div>
+      <div className='px-6 pt-4 pb-3'>
+        <div className='flex items-end justify-between pb-3 select-none'>
+          <div>
+            <p className='text-2xl font-black'>{config.title}</p>
+            <p className='text-xs text-altwhite/60 mt-0.5'>
+              {t('common.showing', { total: list.length })}
+            </p>
           </div>
-          <div className='flex items-center gap-2 mt-1'>
+          <div className='flex items-center gap-2'>
             {config.startFn && (
               <Button
-                className='bg-btn-secondary text-btn-text font-bold'
+                size='sm'
+                className='bg-btn-secondary text-btn-text font-semibold'
                 radius='full'
                 isDisabled={config.isRunning || list.length === 0}
                 onPress={config.startFn}
@@ -278,6 +279,7 @@ export function CustomList({ type }: { type: CustomListType }) {
             <ManualAddModal listTitle={config.title} listName={listName} setList={setList} />
             {list.length > 0 && (
               <Button
+                size='sm'
                 variant='light'
                 color='danger'
                 radius='full'
@@ -297,10 +299,11 @@ export function CustomList({ type }: { type: CustomListType }) {
             size='sm'
             radius='full'
             classNames={{
-              tabList: 'bg-item-active gap-0',
+              tabList: 'bg-card border border-border/20 gap-0 px-1 py-1',
               tab: 'data-[hover-unselected=true]:!bg-item-hover data-[hover-unselected=true]:opacity-100',
-              cursor: '!bg-item-active w-full',
-              tabContent: 'text-sm group-data-[selected=true]:text-content text-altwhite font-bold',
+              cursor: '!bg-surface rounded-full w-full',
+              tabContent:
+                'text-xs group-data-[selected=true]:text-content text-altwhite/60 font-semibold',
             }}
           >
             <Tab key='all' title={`${t('customLists.allGames')} (${filteredGamesList.length})`} />
@@ -313,7 +316,7 @@ export function CustomList({ type }: { type: CustomListType }) {
             <div className='flex gap-2'>
               <Button
                 size='sm'
-                className='bg-btn-secondary text-btn-text font-bold'
+                className='bg-btn-secondary text-btn-text font-semibold'
                 radius='full'
                 onPress={() => handleAddAllGames(displayList)}
               >
@@ -322,7 +325,7 @@ export function CustomList({ type }: { type: CustomListType }) {
               {searchTerm && (
                 <Button
                   size='sm'
-                  className='bg-btn-secondary text-btn-text font-bold'
+                  className='bg-btn-secondary text-btn-text font-semibold'
                   radius='full'
                   onPress={() => handleAddAllResults(displayList)}
                 >

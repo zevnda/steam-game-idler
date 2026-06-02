@@ -363,7 +363,7 @@ export function AchievementOrderPage() {
     <div
       className={cn(
         'overflow-y-auto overflow-x-hidden mt-12 ease-in-out',
-        sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]',
+        sidebarCollapsed ? 'w-calc-collapsed' : 'w-calc',
       )}
       style={{ transitionDuration, transitionProperty: 'width' }}
     >
@@ -425,7 +425,7 @@ export function AchievementOrderPage() {
               }}
             >
               <Button
-                className='bg-btn-secondary text-btn-text font-bold'
+                className='bg-btn-secondary text-btn-text font-semibold'
                 radius='full'
                 isDisabled={!hasGamerFeature(proTier)}
                 onPress={onImportOpen}
@@ -437,7 +437,7 @@ export function AchievementOrderPage() {
               </Button>
             </div>
             <Button
-              className='bg-btn-secondary text-btn-text font-bold'
+              className='bg-btn-secondary text-btn-text font-semibold'
               radius='full'
               onPress={handleSave}
             >

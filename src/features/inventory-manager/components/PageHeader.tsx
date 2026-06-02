@@ -73,155 +73,159 @@ export function PageHeader({
   return (
     <div
       className={cn(
-        'sticky top-0 z-40 pl-6 pt-2 ease-in-out',
-        sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]',
+        'sticky top-0 z-40 backdrop-blur-md bg-base/80 border-b border-border/10 ease-in-out',
+        sidebarCollapsed ? 'w-calc-collapsed' : 'w-calc',
       )}
       style={{ transitionDuration, transitionProperty: 'width' }}
     >
-      <div className='select-none pb-3'>
-        <p className='text-3xl font-black'>{t('tradingCards.title')}</p>
-        <p className='text-xs text-altwhite my-2'>
-          {t('common.showing', { total: filteredList.length })}
-        </p>
-        <div className='flex items-center gap-2 mt-1'>
-          <Button
-            size='sm'
-            variant='light'
-            radius='full'
-            className='text-altwhite'
-            startContent={<TbSettings size={16} />}
-            onPress={() => {
-              setPreviousActivePage(activePage)
-              setActivePage('settings')
-              setCurrentSettingsTab('inventory-manager')
-            }}
-          >
-            {t('common.gameSettings')}
-          </Button>
-
-          {hasGamerFeature(proTier) && (
-            <>
-              {selectedWithPrice.length > 0 && (
-                <Button
-                  size='sm'
-                  className='bg-btn-secondary text-btn-text font-bold'
-                  radius='full'
-                  startContent={<TbPackageExport size={16} />}
-                  isLoading={ctx.loadingListButton}
-                  onPress={() =>
-                    ctx.handleListCards(
-                      filteredList.filter(c => selectedWithPrice.includes(c.id)),
-                      ctx.changedCardPrices,
-                    )
-                  }
-                >
-                  {t('tradingCards.list')} ({selectedWithPrice.length})
-                </Button>
-              )}
-              <Button
-                size='sm'
-                variant='light'
-                color='danger'
-                radius='full'
-                startContent={<TbEraser size={16} />}
-                isLoading={ctx.loadingRemoveListings}
-                onPress={onRemoveOpen}
-              >
-                {t('tradingCards.remove')}
-              </Button>
-            </>
-          )}
-
-          {!hasGamerFeature(proTier) && (
-            <div
-              onClick={() => {
-                setProModalRequiredTier('gamer')
-                setProModalOpen(true)
+      <div className='select-none px-6 pt-4 pb-3'>
+        <div className='flex items-end justify-between mb-2'>
+          <div>
+            <p className='text-2xl font-black'>{t('tradingCards.title')}</p>
+            <p className='text-xs text-altwhite/60 mt-0.5'>
+              {t('common.showing', { total: filteredList.length })}
+            </p>
+          </div>
+          <div className='flex items-center gap-2'>
+            <Button
+              size='sm'
+              variant='light'
+              radius='full'
+              className='text-altwhite'
+              startContent={<TbSettings size={16} />}
+              onPress={() => {
+                setPreviousActivePage(activePage)
+                setActivePage('settings')
+                setCurrentSettingsTab('inventory-manager')
               }}
             >
-              <Button
-                size='sm'
-                className='bg-btn-secondary text-btn-text font-bold'
-                radius='full'
-                isDisabled
-                startContent={<TbPackageExport size={16} />}
-              >
-                {t('tradingCards.sellDupes')}
-                <ProBadge className='scale-70 -mx-2' requiredTier='gamer' />
-              </Button>
-            </div>
-          )}
+              {t('common.gameSettings')}
+            </Button>
 
-          <Button
-            size='sm'
-            className='bg-btn-secondary text-btn-text font-bold'
-            radius='full'
-            onPress={() => ctx.setRefreshKey(k => k + 1)}
-          >
-            {t('common.refresh')}
-          </Button>
+            {hasGamerFeature(proTier) && (
+              <>
+                {selectedWithPrice.length > 0 && (
+                  <Button
+                    size='sm'
+                    className='bg-btn-secondary text-btn-text font-semibold'
+                    radius='full'
+                    startContent={<TbPackageExport size={16} />}
+                    isLoading={ctx.loadingListButton}
+                    onPress={() =>
+                      ctx.handleListCards(
+                        filteredList.filter(c => selectedWithPrice.includes(c.id)),
+                        ctx.changedCardPrices,
+                      )
+                    }
+                  >
+                    {t('tradingCards.list')} ({selectedWithPrice.length})
+                  </Button>
+                )}
+                <Button
+                  size='sm'
+                  variant='light'
+                  color='danger'
+                  radius='full'
+                  startContent={<TbEraser size={16} />}
+                  isLoading={ctx.loadingRemoveListings}
+                  onPress={onRemoveOpen}
+                >
+                  {t('tradingCards.remove')}
+                </Button>
+              </>
+            )}
 
-          <Select
-            aria-label='sort'
-            disallowEmptySelection
-            radius='none'
-            items={SORT_OPTIONS}
-            className='w-42'
-            defaultSelectedKeys={[ctx.cardSortStyle]}
-            classNames={{
-              listbox: ['p-0'],
-              value: ['text-sm !text-content'],
-              trigger: cn(
-                'bg-input data-[hover=true]:!bg-inputhover data-[open=true]:!bg-input duration-100 rounded-lg',
-              ),
-              popoverContent: ['bg-input rounded-xl !text-content'],
-            }}
-            startContent={<TbSortDescending2 />}
-            onSelectionChange={e => {
-              if (e.currentKey) ctx.setCardSortStyle(e.currentKey)
-            }}
-          >
-            {item => (
-              <SelectItem
-                key={item.key}
-                classNames={{
-                  base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
+            {!hasGamerFeature(proTier) && (
+              <div
+                onClick={() => {
+                  setProModalRequiredTier('gamer')
+                  setProModalOpen(true)
                 }}
               >
-                {t(item.label)}
-              </SelectItem>
+                <Button
+                  size='sm'
+                  className='bg-btn-secondary text-btn-text font-semibold'
+                  radius='full'
+                  isDisabled
+                  startContent={<TbPackageExport size={16} />}
+                >
+                  {t('tradingCards.sellDupes')}
+                  <ProBadge className='scale-70 -mx-2' requiredTier='gamer' />
+                </Button>
+              </div>
             )}
-          </Select>
 
-          <Select
-            aria-label='filter'
-            radius='none'
-            items={FILTER_OPTIONS}
-            className='w-36'
-            classNames={{
-              listbox: ['p-0'],
-              value: ['text-sm !text-content'],
-              trigger: cn(
-                'bg-input data-[hover=true]:!bg-inputhover data-[open=true]:!bg-input duration-100 rounded-lg',
-              ),
-              popoverContent: ['bg-input rounded-xl !text-content'],
-            }}
-            startContent={<TbFilter />}
-            selectionMode='multiple'
-            selectedKeys={cardFilterValues}
-            onSelectionChange={keys => setCardFilterValues(new Set(keys as Iterable<string>))}
-          >
-            {item => (
-              <SelectItem
-                key={item.key}
-                classNames={{
-                  base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
-                }}
-              >
-                {t(item.label)}
-              </SelectItem>
-            )}
-          </Select>
+            <Button
+              size='sm'
+              className='bg-btn-secondary text-btn-text font-semibold'
+              radius='full'
+              onPress={() => ctx.setRefreshKey(k => k + 1)}
+            >
+              {t('common.refresh')}
+            </Button>
+
+            <Select
+              aria-label='sort'
+              disallowEmptySelection
+              radius='none'
+              items={SORT_OPTIONS}
+              className='w-42'
+              defaultSelectedKeys={[ctx.cardSortStyle]}
+              classNames={{
+                listbox: ['p-0'],
+                value: ['text-sm !text-content'],
+                trigger: cn(
+                  'bg-input data-[hover=true]:!bg-inputhover data-[open=true]:!bg-input duration-100 rounded-lg',
+                ),
+                popoverContent: ['bg-input rounded-xl !text-content'],
+              }}
+              startContent={<TbSortDescending2 />}
+              onSelectionChange={e => {
+                if (e.currentKey) ctx.setCardSortStyle(e.currentKey)
+              }}
+            >
+              {item => (
+                <SelectItem
+                  key={item.key}
+                  classNames={{
+                    base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
+                  }}
+                >
+                  {t(item.label)}
+                </SelectItem>
+              )}
+            </Select>
+
+            <Select
+              aria-label='filter'
+              radius='none'
+              items={FILTER_OPTIONS}
+              className='w-36'
+              classNames={{
+                listbox: ['p-0'],
+                value: ['text-sm !text-content'],
+                trigger: cn(
+                  'bg-input data-[hover=true]:!bg-inputhover data-[open=true]:!bg-input duration-100 rounded-lg',
+                ),
+                popoverContent: ['bg-input rounded-xl !text-content'],
+              }}
+              startContent={<TbFilter />}
+              selectionMode='multiple'
+              selectedKeys={cardFilterValues}
+              onSelectionChange={keys => setCardFilterValues(new Set(keys as Iterable<string>))}
+            >
+              {item => (
+                <SelectItem
+                  key={item.key}
+                  classNames={{
+                    base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
+                  }}
+                >
+                  {t(item.label)}
+                </SelectItem>
+              )}
+            </Select>
+          </div>
         </div>
       </div>
 
@@ -272,7 +276,7 @@ export function PageHeader({
             </Button>
             <Button
               size='sm'
-              className='bg-btn-secondary text-btn-text font-bold'
+              className='bg-btn-secondary text-btn-text font-semibold'
               radius='full'
               onPress={() => {
                 ctx.handleRemoveListings()

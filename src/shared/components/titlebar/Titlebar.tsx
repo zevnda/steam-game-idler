@@ -59,24 +59,17 @@ export function Titlebar() {
     <>
       <div
         className={cn(
-          'absolute top-0 right-0 select-none pr-0 h-12 z-40 ease-in-out',
-          sidebarCollapsed ? 'w-[calc(100vw-56px)]' : activePage === 'setup' ? 'w-full' : 'w-calc',
+          'absolute top-0 right-0 select-none h-12 z-40 ease-in-out',
+          sidebarCollapsed ? 'left-14' : activePage === 'setup' ? 'left-0' : 'left-62.5',
         )}
-        style={{ transitionDuration, transitionProperty: 'width' }}
+        style={{ transitionDuration, transitionProperty: 'left' }}
         data-tauri-drag-region
       >
         <div className='flex items-center h-12 w-full' data-tauri-drag-region>
           <div className='flex items-center h-full shrink-0'>
             {showSearch && (
               <div
-                className={cn(
-                  'flex justify-center items-center p-2 cursor-pointer group text-content hover:bg-sidebar/40 hover:text-content/80 h-12 w-12 rounded-br-xl',
-                )}
-                style={{
-                  transitionProperty: 'margin-left, color, background-color',
-                  transitionDuration: `${transitionDuration}, 150ms, 150ms`,
-                  transitionTimingFunction: 'ease-in-out, ease, ease',
-                }}
+                className='flex justify-center items-center p-2 cursor-pointer text-content hover:bg-item-hover h-12 w-12 duration-150 transition-colors'
                 onClick={() => {
                   setTransitionDuration('300ms')
                   setSidebarCollapsed(!sidebarCollapsed)
@@ -109,54 +102,40 @@ export function Titlebar() {
                 <Menu />
               </>
             )}
+            <div className='w-px h-5 bg-border/20 mx-1 shrink-0' />
             <div
-              className={cn(
-                'flex justify-center items-center hover:bg-header-hover/10 h-12 w-12 px-2 duration-150 cursor-pointer hover:text-white transition-colors',
-              )}
+              className='flex justify-center items-center hover:bg-header-hover/10 h-12 w-10 duration-150 cursor-pointer hover:text-white transition-colors'
               onClick={windowMinimize}
             >
-              <VscChromeMinimize fontSize={16} className='text-content' />
+              <VscChromeMinimize fontSize={14} className='text-content' />
             </div>
             <div
-              className={cn(
-                'flex justify-center items-center hover:bg-header-hover/10 h-12 w-12 px-2.5 duration-150 cursor-pointer hover:text-white transition-colors',
-              )}
+              className='flex justify-center items-center hover:bg-header-hover/10 h-12 w-10 duration-150 cursor-pointer hover:text-white transition-colors'
               onClick={windowToggleMaximize}
             >
-              <VscChromeMaximize fontSize={16} className='text-content' />
+              <VscChromeMaximize fontSize={14} className='text-content' />
             </div>
             <div
-              className={cn(
-                'flex justify-center items-center hover:bg-danger/90 h-12 w-12 px-2 duration-150 cursor-pointer hover:text-white transition-colors',
-              )}
+              className='flex justify-center items-center hover:bg-danger/90 h-12 w-10 duration-150 cursor-pointer hover:text-white transition-colors'
               onClick={windowClose}
             >
-              <VscChromeClose fontSize={16} className='text-content' />
+              <VscChromeClose fontSize={14} className='text-content' />
             </div>
           </div>
         </div>
 
         {showSearch && activePage !== 'idling' && activePage !== 'freeGames' && (
-          <div
-            className='absolute inset-y-0 flex items-center pointer-events-none ease-in-out'
-            style={{
-              left: sidebarCollapsed ? 'calc(50vw - 56px)' : 'calc(50vw - 250px)',
-              transform: 'translateX(-50%)',
-              transitionDuration,
-            }}
-          >
+          <div className='absolute inset-y-0 left-0 right-0 flex items-center justify-center pointer-events-none'>
             <div
               className={cn(
-                'flex items-center gap-2 rounded-full h-9 w-72 pl-5 pr-3 select-none duration-150 cursor-pointer pointer-events-auto',
-                selectedGame
-                  ? 'bg-btn-achievement-header hover:bg-btn-achievement-header-hover'
-                  : 'bg-item-active hover:bg-inputhover',
+                'flex items-center gap-2 rounded-full h-8 w-64 pl-4 pr-3 select-none duration-150 cursor-pointer pointer-events-auto',
+                selectedGame ? 'bg-card hover:bg-surface-raised' : 'bg-item-active hover:bg-card',
                 !hasQuery && 'text-altwhite',
               )}
               onClick={() => setShowSearchModal(true)}
             >
               <span className='flex items-center gap-2 text-sm font-semibold truncate flex-1'>
-                <RiSearchLine fontSize={18} className='shrink-0 text-altwhite' />
+                <RiSearchLine fontSize={16} className='shrink-0 text-altwhite' />
                 {currentQuery || t('common.search')}
               </span>
               {hasQuery && (
@@ -171,7 +150,7 @@ export function Titlebar() {
                     setCustomListQuery('')
                   }}
                 >
-                  <TbX fontSize={14} />
+                  <TbX fontSize={13} />
                 </div>
               )}
             </div>

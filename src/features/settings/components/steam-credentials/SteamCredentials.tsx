@@ -1,7 +1,7 @@
 import type { InvokeSteamCredentials } from '@/shared/types'
 import { invoke } from '@tauri-apps/api/core'
 import { useTranslation } from 'react-i18next'
-import { TbChevronRight, TbEraser, TbUpload } from 'react-icons/tb'
+import { TbEraser, TbUpload } from 'react-icons/tb'
 import { Button, cn, Divider, Input, Spinner, useDisclosure } from '@heroui/react'
 import Image from 'next/image'
 import { useCardSettings } from '@/features/settings/hooks/card-farming/useCardSettings'
@@ -77,15 +77,12 @@ export function SteamCredentials() {
   }
 
   return (
-    <div className='relative flex flex-col gap-4 mt-9 pb-16 w-4/5'>
-      <div className='flex flex-col gap-0 select-none'>
-        <p className='flex items-center text-xs text-altwhite font-bold'>
+    <div className='relative flex flex-col gap-4 pb-16 w-4/5'>
+      <div className='flex flex-col gap-0 select-none mb-3'>
+        <p className='text-[10px] uppercase tracking-widest text-altwhite/40 font-black mb-1'>
           {t('settings.title')}
-          <span>
-            <TbChevronRight size={12} />
-          </span>
         </p>
-        <p className='text-3xl font-black'>{t('settings.cardFarming.steamCredentialsTitle')}</p>
+        <p className='text-2xl font-black'>{t('settings.cardFarming.steamCredentialsTitle')}</p>
       </div>
       <div className='flex flex-col gap-3 mt-4'>
         {/* Automated method */}
@@ -98,7 +95,7 @@ export function SteamCredentials() {
               </p>
               {!hasGamerFeature(proTier) && <ProBadge className='scale-65' requiredTier='gamer' />}
             </div>
-            <p className='text-xs text-altwhite'>
+            <p className='text-[11px] text-altwhite/60 leading-relaxed'>
               {t('settings.steamCredentials.automated.description')}
             </p>
           </div>
@@ -138,7 +135,7 @@ export function SteamCredentials() {
                     {!cs.isCFDataLoading && (
                       <Button
                         size='sm'
-                        className='bg-btn-secondary text-btn-text font-bold'
+                        className='bg-btn-secondary text-btn-text font-semibold'
                         radius='full'
                         onPress={() =>
                           fetchGamesWithDropsData(
@@ -155,7 +152,9 @@ export function SteamCredentials() {
                     {cs.isCFDataLoading && (
                       <div className='flex items-center gap-2'>
                         <Spinner size='sm' variant='simple' />
-                        <p className='text-xs text-altwhite'>{t('settings.cardFarming.loading')}</p>
+                        <p className='text-[11px] text-altwhite/60 leading-relaxed'>
+                          {t('settings.cardFarming.loading')}
+                        </p>
                       </div>
                     )}
                   </div>
@@ -163,7 +162,7 @@ export function SteamCredentials() {
                 <div className='flex gap-2'>
                   <Button
                     size='sm'
-                    className='bg-btn-secondary text-btn-text font-bold'
+                    className='bg-btn-secondary text-btn-text font-semibold'
                     radius='full'
                     isDisabled={!hasGamerFeature(proTier)}
                     onPress={handleShowLoginWindow}
@@ -185,7 +184,7 @@ export function SteamCredentials() {
             </div>
           </div>
         </div>
-        <Divider className='bg-border/70 my-4' />
+        <Divider className='bg-border/15 my-5' />
         {/* Manual method */}
         <div className='flex justify-between items-start'>
           <div className='flex flex-col gap-2 w-1/2'>
@@ -193,7 +192,9 @@ export function SteamCredentials() {
               {t('settings.steamCredentials.manual')}
               <OpenDocs path='/steam-credentials#manual-method' />
             </p>
-            <p className='text-xs text-altwhite'>{t('settings.cardFarming.steamCredentials')}</p>
+            <p className='text-[11px] text-altwhite/60 leading-relaxed'>
+              {t('settings.cardFarming.steamCredentials')}
+            </p>
           </div>
           <div className='flex flex-col gap-4 w-62.5'>
             <Input
@@ -272,7 +273,7 @@ export function SteamCredentials() {
               </Button>
               <Button
                 size='sm'
-                className='bg-btn-secondary text-btn-text font-bold'
+                className='bg-btn-secondary text-btn-text font-semibold'
                 radius='full'
                 isDisabled={cs.hasCookies || !cs.sidValue || !cs.slsValue}
                 onPress={() =>

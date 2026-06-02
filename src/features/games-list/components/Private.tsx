@@ -28,7 +28,7 @@ export function Private({ onRefresh }: { onRefresh: () => void }) {
           {t('gamesList.private.change')}
         </ExtLink>
         <Button
-          className='bg-btn-secondary text-btn-text font-bold mt-4'
+          className='bg-btn-secondary text-btn-text font-semibold mt-4'
           radius='full'
           onPress={onRefresh}
         >

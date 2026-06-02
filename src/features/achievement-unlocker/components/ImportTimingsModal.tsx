@@ -148,7 +148,7 @@ export function ImportTimingsModal({
           </Button>
           <Button
             size='sm'
-            className='bg-btn-secondary text-btn-text font-bold'
+            className='bg-btn-secondary text-btn-text font-semibold'
             radius='full'
             isLoading={isLoading}
             isDisabled={!inputValue.trim()}

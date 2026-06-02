@@ -49,7 +49,7 @@ export function ClearData() {
             </Button>
             <Button
               size='sm'
-              className='bg-btn-secondary text-btn-text font-bold'
+              className='bg-btn-secondary text-btn-text font-semibold'
               radius='full'
               onPress={() => handleClearData(onOpenChange)}
             >

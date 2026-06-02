@@ -1,7 +1,7 @@
 import { invoke } from '@tauri-apps/api/core'
 import { Trans, useTranslation } from 'react-i18next'
 import { SiSteam, SiSteamdb } from 'react-icons/si'
-import { TbAlertHexagonFilled, TbFoldersFilled, TbX } from 'react-icons/tb'
+import { TbFoldersFilled, TbX } from 'react-icons/tb'
 import { Alert, Button, cn } from '@heroui/react'
 import { CustomTooltip } from '@/shared/components/CustomTooltip'
 import { ExtLink } from '@/shared/components/ExtLink'
@@ -46,30 +46,31 @@ export function PageHeader({ protectedAchievements, protectedStatistics }: PageH
   }
 
   return (
-    <div className='relative flex justify-between items-center px-8'>
+    <div className='flex justify-between items-start px-6 py-4'>
       <div className='flex items-center gap-3'>
         <Button
           isIconOnly
           radius='full'
-          className='bg-item-hover text-content mt-2'
-          startContent={<TbX />}
+          size='sm'
+          className='bg-card border border-border/20 text-altwhite hover:text-content shrink-0'
+          startContent={<TbX size={16} />}
           onPress={handleClose}
         />
-        <div className='mt-2'>
-          <p className='text-3xl font-black'>{selectedGame?.name}</p>
-          <p className='text-xs text-altwhite'>{selectedGame?.appid}</p>
+        <div>
+          <p className='text-2xl font-black leading-tight'>{selectedGame?.name}</p>
+          <p className='text-xs text-altwhite/60 mt-0.5'>{selectedGame?.appid}</p>
         </div>
       </div>
 
-      <div className='flex items-center gap-2'>
+      <div className='flex items-center gap-2 mt-1'>
         {(protectedAchievements || protectedStatistics) && (
           <Alert
             color='warning'
             variant='faded'
             classNames={{
-              base: '!bg-warning/20 !border-warning/40',
-              iconWrapper: '!bg-warning/20 border-warning/40',
-              description: 'font-bold text-xs',
+              base: '!bg-warning/10 !border-warning/30',
+              iconWrapper: '!bg-warning/10 border-warning/30',
+              description: 'font-semibold text-xs',
             }}
             description={
               <Trans
@@ -82,33 +83,34 @@ export function PageHeader({ protectedAchievements, protectedStatistics }: PageH
         <CustomTooltip content={t('achievementManager.file')}>
           <Button
             isIconOnly
+            size='sm'
             radius='full'
-            className={cn('bg-item-hover text-content', !userSummary && 'hidden')}
+            className={cn(
+              'bg-card border border-border/20 text-altwhite hover:text-content',
+              !userSummary && 'hidden',
+            )}
             onPress={handleOpenFile}
-            startContent={<TbFoldersFilled size={18} />}
+            startContent={<TbFoldersFilled size={16} />}
           />
         </CustomTooltip>
         <ExtLink href={`https://store.steampowered.com/app/${selectedGame?.appid}`}>
           <Button
             isIconOnly
+            size='sm'
             radius='full'
-            className='bg-item-hover text-content'
-            startContent={<SiSteam size={18} />}
+            className='bg-card border border-border/20 text-altwhite hover:text-content'
+            startContent={<SiSteam size={16} />}
           />
         </ExtLink>
         <ExtLink href={`https://www.steamdb.info/app/${selectedGame?.appid}/stats/`}>
           <Button
             isIconOnly
+            size='sm'
             radius='full'
-            className='bg-item-hover text-content'
-            startContent={<SiSteamdb size={18} />}
+            className='bg-card border border-border/20 text-altwhite hover:text-content'
+            startContent={<SiSteamdb size={16} />}
           />
         </ExtLink>
-        {(protectedAchievements || protectedStatistics) && (
-          <CustomTooltip content={t('achievementManager.alert')} important>
-            <TbAlertHexagonFilled size={20} className='text-warning' />
-          </CustomTooltip>
-        )}
       </div>
     </div>
   )

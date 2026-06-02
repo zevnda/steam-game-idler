@@ -96,53 +96,46 @@ export function AchievementUnlocker({ activePage }: { activePage: ActivePageType
           }
           style={{
             WebkitMaskImage:
-              'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 70%)',
+              'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 5%, rgba(0,0,0,0) 55%)',
           }}
         />
       )}
-      {imageLoaded && <div className='absolute top-0 left-0 w-full h-screen bg-base/70' />}
+      {imageLoaded && <div className='absolute top-0 left-0 w-full h-screen bg-base/80' />}
 
       <div
         className={cn(
-          'relative w-[calc(100vw-227px)] pl-6 pt-2 pr-12 mt-12 ease-in-out',
+          'relative px-6 pt-4 mt-12 ease-in-out',
           sidebarCollapsed ? 'ml-14' : 'ml-62.5',
         )}
         style={{ transitionDuration, transitionProperty: 'margin-left' }}
       >
-        <div className='flex justify-between items-center pb-3'>
-          <div className='flex flex-col justify-center'>
-            <p className='text-3xl font-black'>{t('common.achievementUnlocker')}</p>
-            <p className='text-xs text-altwhite my-2'>
+        <div className='flex items-end justify-between pb-3 select-none'>
+          <div>
+            <p className='text-2xl font-black'>{t('common.achievementUnlocker')}</p>
+            <p className='text-xs text-altwhite/60 mt-0.5'>
               {t('automation.achievementUnlocker.running')}
             </p>
-            <div className='flex items-center gap-2 mt-1'>
-              <Button
-                color='danger'
-                radius='full'
-                className='font-bold'
-                startContent={<TbPlayerStopFilled size={18} />}
-                onPress={() => {
-                  abortRef.current.abort()
-                  stopIdle(currentGame?.appid, currentGame?.name)
-                  setIsAchievementUnlocker(false)
-                  updateTrayIcon()
-                  updateDiscordPresence()
-                }}
-              >
-                {isComplete ? t('common.close') : t('common.stop')}
-              </Button>
-            </div>
           </div>
+          <Button
+            size='sm'
+            color='danger'
+            radius='full'
+            className='font-semibold'
+            startContent={<TbPlayerStopFilled size={16} />}
+            onPress={() => {
+              abortRef.current.abort()
+              stopIdle(currentGame?.appid, currentGame?.name)
+              setIsAchievementUnlocker(false)
+              updateTrayIcon()
+              updateDiscordPresence()
+            }}
+          >
+            {isComplete ? t('common.close') : t('common.stop')}
+          </Button>
         </div>
 
-        <div
-          className={cn(
-            'flex max-h-[calc(100vh-104px)] ease-in-out pt-10 overflow-hidden',
-            sidebarCollapsed ? 'w-[calc(100vw-106px)]' : 'w-[calc(100vw-300px)]',
-          )}
-          style={{ transitionDuration, transitionProperty: 'width' }}
-        >
-          <div className='flex justify-center items-center flex-col p-6 bg-tab-panel min-h-[40vh] w-full rounded-4xl border border-border'>
+        <div className='max-w-2xl mt-2'>
+          <div className='flex justify-center items-center flex-col p-8 bg-surface min-h-[40vh] w-full rounded-3xl border border-border/20'>
             {isWaitingForSchedule && (
               <p className='font-semibold text-yellow-400'>
                 {t('automation.achievementUnlocker.scheduleWait')}
@@ -151,14 +144,14 @@ export function AchievementUnlocker({ activePage }: { activePage: ActivePageType
 
             {isComplete && (
               <>
-                <div className='border border-border rounded-full inline-block p-2 w-fit'>
-                  <TbCheck className='text-green-400' fontSize={50} />
+                <div className='bg-green-500/10 border border-green-500/30 rounded-full p-4'>
+                  <TbCheck className='text-green-400' size={40} />
                 </div>
-                <p className='mt-4'>{t('common.done')}</p>
+                <p className='mt-4 font-semibold'>{t('common.done')}</p>
               </>
             )}
 
-            {isInitialDelay && (
+            {isInitialDelay && !isComplete && (
               <p className='text-lg font-semibold'>
                 <Trans
                   i18nKey='automation.achievementUnlocker.initialDelay'
@@ -176,14 +169,14 @@ export function AchievementUnlocker({ activePage }: { activePage: ActivePageType
                 </p>
                 <Image
                   src={`https://cdn.cloudflare.steamstatic.com/steam/apps/${currentGame?.appid}/header.jpg`}
-                  width={230}
-                  height={115}
+                  width={320}
+                  height={150}
                   alt={`${currentGame?.name} image`}
                   priority
                   onError={e => {
                     ;(e.target as HTMLImageElement).src = '/fallback.webp'
                   }}
-                  className='w-57.5 h-28.75 object-cover rounded-lg duration-150 my-4'
+                  className='w-full max-w-xs aspect-460/215 object-cover rounded-xl my-4'
                 />
                 <p>
                   <Trans

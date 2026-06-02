@@ -92,7 +92,7 @@ const Row = memo(
       <div
         style={style}
         className={cn(
-          'grid grid-cols-[28px_40px_1fr_auto] items-center gap-3 px-3 hover:bg-item-hover/50 duration-150 cursor-pointer',
+          'grid grid-cols-[28px_40px_1fr_auto] items-center gap-3 px-3 hover:bg-surface-raised duration-150 cursor-pointer',
           achieved ? 'opacity-100' : 'opacity-70',
         )}
       >
@@ -208,7 +208,7 @@ export function AchievementsList({
         selectedToLock={selectedToLock}
         setSelectedToLock={setSelectedToLock}
       />
-      <div className='border border-border/40 rounded-xl overflow-hidden bg-base/50'>
+      <div className='border border-border/20 rounded-2xl overflow-hidden bg-card'>
         {achievements.length === 0 ? (
           <div className='flex justify-center items-center p-12'>
             <p className='text-center text-content'>{t('achievementManager.achievements.empty')}</p>

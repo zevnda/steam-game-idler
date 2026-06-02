@@ -2,7 +2,7 @@ import type { ProTier } from '@/shared/types'
 import { invoke } from '@tauri-apps/api/core'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { TbChevronRight, TbCopy, TbExternalLink, TbTrash } from 'react-icons/tb'
+import { TbCopy, TbExternalLink, TbTrash } from 'react-icons/tb'
 import { Button, Chip, cn, Divider, Input } from '@heroui/react'
 import { CustomModal } from '@/shared/components/CustomModal'
 import { ExtLink } from '@/shared/components/ExtLink'
@@ -128,15 +128,12 @@ export function SubscriptionSettings() {
     new Date(iso).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })
 
   return (
-    <div className='relative flex flex-col gap-4 mt-9 pb-16 w-4/5'>
-      <div className='flex flex-col gap-0 select-none'>
-        <p className='flex items-center text-xs text-altwhite font-bold'>
+    <div className='relative flex flex-col gap-4 pb-16 w-4/5'>
+      <div className='flex flex-col gap-0 select-none mb-3'>
+        <p className='text-[10px] uppercase tracking-widest text-altwhite/40 font-black mb-1'>
           {t('settings.title')}
-          <span>
-            <TbChevronRight size={12} />
-          </span>
         </p>
-        <p className='text-3xl font-black'>{t('settings.subscription.title')}</p>
+        <p className='text-2xl font-black'>{t('settings.subscription.title')}</p>
       </div>
       <div className='flex flex-col gap-3 mt-4'>
         <div className='flex justify-between items-center'>
@@ -144,18 +141,22 @@ export function SubscriptionSettings() {
             <p className='text-sm text-content font-bold'>
               {t('settings.general.manageSubscription')}
             </p>
-            <p className='text-xs text-altwhite'>{t('settings.subscription.manage.description')}</p>
+            <p className='text-[11px] text-altwhite/60 leading-relaxed'>
+              {t('settings.subscription.manage.description')}
+            </p>
           </div>
           <div className='flex flex-col items-end gap-2'>
             {isPro ? (
               <ProBadge requiredTier={proTier ?? 'casual'} className='scale-85' />
             ) : (
               <Chip>
-                <p className='text-xs text-altwhite'>{t('settings.subscription.inactive')}</p>
+                <p className='text-[11px] text-altwhite/60 leading-relaxed'>
+                  {t('settings.subscription.inactive')}
+                </p>
               </Chip>
             )}
             {isPro && proDetails?.email && (
-              <p className='text-xs text-altwhite'>{proDetails.email}</p>
+              <p className='text-[11px] text-altwhite/60 leading-relaxed'>{proDetails.email}</p>
             )}
             {isPro && proDetails?.currentPeriodEnd && (
               <p
@@ -180,13 +181,13 @@ export function SubscriptionSettings() {
             )}
           </div>
         </div>
-        <Divider className='bg-border/70 my-4' />
+        <Divider className='bg-border/15 my-5' />
         <div className='flex justify-between items-start'>
           <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>
               {t('settings.subscription.licenseKey')}
             </p>
-            <p className='text-xs text-altwhite'>
+            <p className='text-[11px] text-altwhite/60 leading-relaxed'>
               {t('settings.subscription.licenseKey.description')}
             </p>
           </div>
@@ -260,7 +261,7 @@ export function SubscriptionSettings() {
                     <Button
                       size='sm'
                       radius='full'
-                      className='bg-btn-secondary text-btn-text font-bold'
+                      className='bg-btn-secondary text-btn-text font-semibold'
                       isLoading={isLoading}
                       isDisabled={!inputKey.trim()}
                       onPress={handleActivate}
@@ -303,7 +304,7 @@ export function SubscriptionSettings() {
             <Button
               size='sm'
               radius='full'
-              className='bg-btn-secondary text-btn-text font-bold'
+              className='bg-btn-secondary text-btn-text font-semibold'
               isLoading={isTransferLoading}
               onPress={handleConfirmTransfer}
             >

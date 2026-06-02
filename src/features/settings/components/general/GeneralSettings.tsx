@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { TbChevronRight, TbEraser, TbUpload } from 'react-icons/tb'
+import { TbEraser, TbUpload } from 'react-icons/tb'
 import { CurrencySwitch } from './CurrencySwitch'
 import { Button, cn, Divider, Input } from '@heroui/react'
 import Image from 'next/image'
@@ -25,15 +25,12 @@ export function GeneralSettings() {
   const { keyValue, setKeyValue, hasKey, setHasKey } = useGeneralSettings()
 
   return (
-    <div className='relative flex flex-col gap-4 mt-9 pb-16 w-4/5'>
-      <div className='flex flex-col gap-0 select-none'>
-        <p className='flex items-center text-xs text-altwhite font-bold'>
+    <div className='relative flex flex-col gap-4 pb-16 w-4/5'>
+      <div className='flex flex-col gap-0 select-none mb-3'>
+        <p className='text-[10px] uppercase tracking-widest text-altwhite/40 font-black mb-1'>
           {t('settings.title')}
-          <span>
-            <TbChevronRight size={12} />
-          </span>
         </p>
-        <p className='text-3xl font-black'>{t('settings.general.title')}</p>
+        <p className='text-2xl font-black'>{t('settings.general.title')}</p>
       </div>
       <div className='flex flex-col gap-3 mt-4'>
         <div className='flex items-end gap-4 w-fit group'>
@@ -59,47 +56,51 @@ export function GeneralSettings() {
           </div>
         </div>
 
-        <Divider className='bg-border/70 my-4' />
+        <Divider className='bg-border/15 my-5' />
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>{t('settings.general.antiAway')}</p>
-            <p className='text-xs text-altwhite'>{t('settings.general.antiAway.description')}</p>
+            <p className='text-[11px] text-altwhite/60 leading-relaxed'>
+              {t('settings.general.antiAway.description')}
+            </p>
           </div>
           <SettingsSwitch type='general' name='antiAway' />
         </div>
 
-        <Divider className='bg-border/70 my-4' />
+        <Divider className='bg-border/15 my-5' />
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>{t('settings.general.runAtStartup')}</p>
-            <p className='text-xs text-altwhite'>
+            <p className='text-[11px] text-altwhite/60 leading-relaxed'>
               {t('settings.general.runAtStartup.description')}
             </p>
           </div>
           <SettingsSwitch type='general' name='runAtStartup' />
         </div>
 
-        <Divider className='bg-border/70 my-4' />
+        <Divider className='bg-border/15 my-5' />
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>{t('settings.general.startMinimized')}</p>
-            <p className='text-xs text-altwhite'>
+            <p className='text-[11px] text-altwhite/60 leading-relaxed'>
               {t('settings.general.startMinimized.description')}
             </p>
           </div>
           <SettingsSwitch type='general' name='startMinimized' />
         </div>
 
-        <Divider className='bg-border/70 my-4' />
+        <Divider className='bg-border/15 my-5' />
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>{t('settings.general.closeToTray')}</p>
-            <p className='text-xs text-altwhite'>{t('settings.general.closeToTray.description')}</p>
+            <p className='text-[11px] text-altwhite/60 leading-relaxed'>
+              {t('settings.general.closeToTray.description')}
+            </p>
           </div>
           <SettingsSwitch type='general' name='closeToTray' />
         </div>
 
-        <Divider className='bg-border/70 my-4' />
+        <Divider className='bg-border/15 my-5' />
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
             <div className='flex items-center'>
@@ -108,7 +109,7 @@ export function GeneralSettings() {
               </p>
               {!hasGamerFeature(proTier) && <ProBadge className='scale-65' requiredTier='gamer' />}
             </div>
-            <p className='text-xs text-altwhite'>
+            <p className='text-[11px] text-altwhite/60 leading-relaxed'>
               {t('settings.general.autoUpdateGamesList.description')}
             </p>
           </div>
@@ -124,45 +125,51 @@ export function GeneralSettings() {
           </div>
         </div>
 
-        <Divider className='bg-border/70 my-4' />
+        <Divider className='bg-border/15 my-5' />
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>
               {t('settings.general.discordPresence')}
             </p>
-            <p className='text-xs text-altwhite'>
+            <p className='text-[11px] text-altwhite/60 leading-relaxed'>
               {t('settings.general.discordPresence.description')}
             </p>
           </div>
           <SettingsSwitch type='general' name='discordPresence' />
         </div>
 
-        <Divider className='bg-border/70 my-4' />
+        <Divider className='bg-border/15 my-5' />
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>{t('settings.general.language')}</p>
-            <p className='text-xs text-altwhite'>{t('settings.general.description')}</p>
+            <p className='text-[11px] text-altwhite/60 leading-relaxed'>
+              {t('settings.general.description')}
+            </p>
           </div>
           <LanguageSwitch />
         </div>
 
-        <Divider className='bg-border/70 my-4' />
+        <Divider className='bg-border/15 my-5' />
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>{t('settings.general.currency')}</p>
-            <p className='text-xs text-altwhite'>{t('settings.general.currency.description')}</p>
+            <p className='text-[11px] text-altwhite/60 leading-relaxed'>
+              {t('settings.general.currency.description')}
+            </p>
           </div>
           <CurrencySwitch />
         </div>
 
-        <Divider className='bg-border/70 my-4' />
+        <Divider className='bg-border/15 my-5' />
         <div className='flex justify-between items-start'>
           <div className='flex flex-col gap-2 w-1/2'>
             <p className='flex items-center gap-2 text-sm text-content font-bold'>
               {t('settings.general.webApi')}
               <OpenDocs path='/settings/general#steam-web-api-key' />
             </p>
-            <p className='text-xs text-altwhite'>{t('settings.general.webApi.description')}</p>
+            <p className='text-[11px] text-altwhite/60 leading-relaxed'>
+              {t('settings.general.webApi.description')}
+            </p>
           </div>
           <div className='flex flex-col gap-4 w-62.5'>
             <Input
@@ -199,7 +206,7 @@ export function GeneralSettings() {
               </Button>
               <Button
                 size='sm'
-                className='bg-btn-secondary text-btn-text font-bold'
+                className='bg-btn-secondary text-btn-text font-semibold'
                 radius='full'
                 isDisabled={hasKey || !keyValue}
                 onPress={() =>

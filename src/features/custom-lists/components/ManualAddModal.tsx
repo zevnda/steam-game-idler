@@ -29,7 +29,7 @@ export function ManualAddModal({ listTitle, listName, setList }: ManualAddModalP
   return (
     <>
       <Button
-        className='bg-btn-secondary text-btn-text font-bold'
+        className='bg-btn-secondary text-btn-text font-semibold'
         radius='full'
         startContent={<TbPlus size={18} />}
         onPress={onOpen}
@@ -101,7 +101,7 @@ export function ManualAddModal({ listTitle, listName, setList }: ManualAddModalP
             </Button>
             <Button
               size='sm'
-              className='bg-btn-secondary text-btn-text font-bold'
+              className='bg-btn-secondary text-btn-text font-semibold'
               radius='full'
               isLoading={isLoading}
               isDisabled={!appNameValue || !appIdValue}

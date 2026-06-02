@@ -68,25 +68,26 @@ export function Settings() {
       }}
       hideCloseButton
       classNames={{
-        backdrop: 'bg-black/70 z-50',
-        base: 'w-[90vw] h-[90vh] max-w-[90vw] max-h-[90vh] bg-gradient-alt',
+        backdrop: 'bg-black/75 z-50',
+        base: 'w-[88vw] h-[88vh] max-w-[88vw] max-h-[88vh] bg-surface rounded-3xl border border-border/20 shadow-2xl',
         wrapper: 'overflow-hidden',
       }}
     >
       <ModalContent className='flex flex-col h-full overflow-hidden'>
         <ModalBody className='flex-1 min-h-0 p-0 overflow-hidden'>
-          <div className='flex h-full bg-gradient-alt'>
-            <div className='relative w-65 shrink-0 bg-sidebar/50 border-r border-border flex flex-col'>
+          <div className='flex h-full bg-surface'>
+            <div className='relative w-56 shrink-0 bg-base border-r border-border/20 flex flex-col'>
               <div className='absolute top-3 left-3 z-40'>
                 <Button
                   isIconOnly
+                  size='sm'
                   radius='full'
-                  className='bg-item-hover text-content'
-                  startContent={<TbX />}
+                  className='bg-card border border-border/20 text-altwhite hover:text-content'
+                  startContent={<TbX size={14} />}
                   onPress={handleClose}
                 />
               </div>
-              <div className='flex-1 overflow-y-auto pt-14 pb-4'>
+              <div className='flex-1 overflow-y-auto pt-12 pb-4'>
                 <Tabs
                   isVertical
                   aria-label='Settings tabs'
@@ -94,13 +95,13 @@ export function Settings() {
                   onSelectionChange={key => setCurrentSettingsTab(key as CurrentSettingsTabType)}
                   classNames={{
                     base: 'w-full',
-                    tabList: 'gap-0 bg-transparent p-4 w-full',
+                    tabList: 'gap-0.5 bg-transparent p-3 w-full',
                     tab: cn(
-                      'data-[hover-unselected=true]:opacity-100 rounded-lg bg-transparent justify-start py-5',
+                      'data-[hover-unselected=true]:opacity-100 rounded-xl bg-transparent justify-start py-2.5 px-3',
                     ),
                     tabContent:
-                      'font-bold truncate duration-150 text-altwhite group-data-[hover-unselected=true]:text-content group-data-[selected=true]:text-content',
-                    cursor: 'bg-transparent! shadow-none w-full',
+                      'font-semibold text-sm truncate duration-150 text-altwhite/60 group-data-[hover-unselected=true]:text-altwhite group-data-[selected=true]:text-content',
+                    cursor: '!bg-card border border-border/20 rounded-xl shadow-none w-full',
                     panel: 'hidden',
                   }}
                 >
@@ -120,14 +121,14 @@ export function Settings() {
                   <Tab key='debug' title={t('settings.debug.title')} />
                 </Tabs>
               </div>
-              <div className='flex flex-col items-center gap-4 px-6 pb-4'>
+              <div className='flex flex-col items-center gap-4 px-6 pb-4 border-t border-border/15 pt-4'>
                 <SocialButtons />
-                <span className='text-xs text-altwhite text-center'>
+                <span className='text-xs text-altwhite/50 text-center'>
                   Steam Game Idler v{version}
                 </span>
               </div>
             </div>
-            <div className='flex-1 overflow-y-auto pb-10 pl-10 pr-4 mt-9'>{renderContent()}</div>
+            <div className='flex-1 overflow-y-auto px-8 pt-7 pb-12'>{renderContent()}</div>
           </div>
         </ModalBody>
       </ModalContent>

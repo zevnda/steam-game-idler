@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next'
 import { FaMinus, FaPlus } from 'react-icons/fa6'
-import { TbChevronRight } from 'react-icons/tb'
 import { Button, cn, Divider, Select, SelectItem, Slider, TimeInput } from '@heroui/react'
 import { useAchievementSettings } from '@/features/settings/hooks/achievement-unlocker/useAchievementSettings'
 import {
@@ -24,15 +23,12 @@ export function AchievementSettings() {
   ]
 
   return (
-    <div className='relative flex flex-col gap-4 mt-9 pb-16 w-4/5'>
-      <div className='flex flex-col gap-0 select-none'>
-        <p className='flex items-center text-xs text-altwhite font-bold'>
+    <div className='relative flex flex-col gap-4 pb-16 w-4/5'>
+      <div className='flex flex-col gap-0 select-none mb-3'>
+        <p className='text-[10px] uppercase tracking-widest text-altwhite/40 font-black mb-1'>
           {t('settings.title')}
-          <span>
-            <TbChevronRight size={12} />
-          </span>
         </p>
-        <p className='text-3xl font-black'>{t('common.achievementUnlocker')}</p>
+        <p className='text-2xl font-black'>{t('common.achievementUnlocker')}</p>
       </div>
       <div className='flex flex-col gap-3 mt-4'>
         <div className='flex justify-between items-center'>
@@ -40,29 +36,29 @@ export function AchievementSettings() {
             <p className='text-sm text-content font-bold'>
               {t('settings.achievementUnlocker.idle')}
             </p>
-            <p className='text-xs text-altwhite'>
+            <p className='text-[11px] text-altwhite/60 leading-relaxed'>
               {t('settings.achievementUnlocker.idle.description')}
             </p>
           </div>
           <SettingsSwitch type='achievementUnlocker' name='idle' />
         </div>
-        <Divider className='bg-border/70 my-4' />
+        <Divider className='bg-border/15 my-5' />
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>
               {t('settings.achievementUnlocker.hidden')}
             </p>
-            <p className='text-xs text-altwhite'>
+            <p className='text-[11px] text-altwhite/60 leading-relaxed'>
               {t('settings.achievementUnlocker.hidden.description')}
             </p>
           </div>
           <SettingsSwitch type='achievementUnlocker' name='hidden' />
         </div>
-        <Divider className='bg-border/70 my-4' />
+        <Divider className='bg-border/15 my-5' />
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>{t('common.nextTask')}</p>
-            <p className='text-xs text-altwhite'>
+            <p className='text-[11px] text-altwhite/60 leading-relaxed'>
               {t('settings.achievementUnlocker.nextTask.description')}
             </p>
           </div>
@@ -110,13 +106,13 @@ export function AchievementSettings() {
             <SettingsSwitch type='achievementUnlocker' name='nextTaskCheckbox' />
           </div>
         </div>
-        <Divider className='bg-border/70 my-4' />
+        <Divider className='bg-border/15 my-5' />
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>
               {t('settings.achievementUnlocker.scheduleLabel')}
             </p>
-            <p className='text-xs text-altwhite'>
+            <p className='text-[11px] text-altwhite/60 leading-relaxed'>
               {t('settings.achievementUnlocker.schedule.description')}
             </p>
           </div>
@@ -159,13 +155,13 @@ export function AchievementSettings() {
             <SettingsSwitch type='achievementUnlocker' name='schedule' />
           </div>
         </div>
-        <Divider className='bg-border/70 my-4' />
+        <Divider className='bg-border/15 my-5' />
         <div className='flex justify-between items-start'>
           <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>
               {t('settings.achievementUnlocker.unlockInterval')}
             </p>
-            <p className='text-xs text-altwhite'>{sliderLabel}</p>
+            <p className='text-[11px] text-altwhite/60 leading-relaxed'>{sliderLabel}</p>
           </div>
           <div className='flex flex-col items-center gap-1'>
             <Slider

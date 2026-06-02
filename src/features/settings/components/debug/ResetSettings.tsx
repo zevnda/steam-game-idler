@@ -43,7 +43,7 @@ export function ResetSettings({
             </Button>
             <Button
               size='sm'
-              className='bg-btn-secondary text-btn-text font-bold'
+              className='bg-btn-secondary text-btn-text font-semibold'
               radius='full'
               onPress={() => handleResetSettings(onOpenChange, setRefreshKey)}
             >

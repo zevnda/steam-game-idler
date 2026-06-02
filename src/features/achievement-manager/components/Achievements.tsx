@@ -40,7 +40,7 @@ export function Achievements() {
     <div
       className={cn(
         'overflow-y-auto overflow-x-hidden mt-12 ease-in-out',
-        sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]',
+        sidebarCollapsed ? 'w-calc-collapsed' : 'w-calc',
       )}
       style={{ transitionDuration, transitionProperty: 'width' }}
     >
@@ -57,10 +57,10 @@ export function Achievements() {
         }
         style={{
           WebkitMaskImage:
-            'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 70%)',
+            'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 5%, rgba(0,0,0,0) 55%)',
         }}
       />
-      {imageLoaded && <div className='absolute top-0 left-0 w-full h-screen bg-base/70' />}
+      {imageLoaded && <div className='absolute top-0 left-0 w-full h-screen bg-base/80' />}
 
       {(isLoading || (!imageLoaded && !fallbackImage && !isLoading)) && (
         <div
@@ -70,30 +70,26 @@ export function Achievements() {
         </div>
       )}
 
-      <div className='p-4'>
+      <div className='relative z-10'>
         <PageHeader
           protectedAchievements={protectedAchievements}
           protectedStatistics={protectedStatistics}
         />
-      </div>
 
-      <div className='relative flex flex-wrap gap-4 mt-2'>
-        <div className='flex flex-col w-full'>
+        <div className='px-6'>
           <Tabs
             size='lg'
             aria-label='Achievements tabs'
             color='default'
             variant='solid'
             radius='full'
-            className='max-w-75 ml-5'
             classNames={{
-              tabList: 'gap-0 w-full bg-btn-achievement-header ml-7 mt-4',
-              tab: cn(
-                'data-[hover-unselected=true]:!bg-item-hover data-[hover-unselected=true]:opacity-100',
-              ),
-              cursor: '!bg-item-active w-full',
-              tabContent: 'text-sm group-data-[selected=true]:text-content text-altwhite font-bold',
-              panel: 'p-0 ml-12 mr-10 mt-6 rounded-xl',
+              tabList: 'gap-0 w-fit bg-card border border-border/20 px-1 py-1',
+              tab: 'data-[hover-unselected=true]:!bg-item-hover data-[hover-unselected=true]:opacity-100',
+              cursor: '!bg-surface rounded-full w-full',
+              tabContent:
+                'text-sm group-data-[selected=true]:text-content text-altwhite/60 font-semibold',
+              panel: 'p-0 mt-4',
             }}
             onSelectionChange={e => setCurrentTab(e as CurrentTabType)}
           >

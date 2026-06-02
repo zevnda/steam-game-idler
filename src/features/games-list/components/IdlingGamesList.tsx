@@ -2,7 +2,7 @@ import type { InvokeKillProcess } from '@/shared/types'
 import { invoke } from '@tauri-apps/api/core'
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { TbPlayerStopFilled } from 'react-icons/tb'
+import { TbPlayerPlay, TbPlayerStopFilled } from 'react-icons/tb'
 import { Button, cn } from '@heroui/react'
 import { GameCard } from '@/shared/components/GameCard'
 import { logEvent } from '@/shared/services/logService'
@@ -58,47 +58,51 @@ export function IdlingGamesList() {
     <div
       className={cn(
         'min-h-calc max-h-calc overflow-y-auto overflow-x-hidden mt-12 ease-in-out',
-        sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]',
+        sidebarCollapsed ? 'w-calc-collapsed' : 'w-calc',
       )}
-      style={{ transitionDuration, transitionProperty: 'min-width, max-width' }}
+      style={{ transitionDuration, transitionProperty: 'width' }}
     >
-      <div className={cn('w-[calc(100vw-236px)] z-50 pl-6 pt-2 rounded-tl-xl')}>
-        <div className='flex justify-between items-center pb-3'>
-          <div className='flex flex-col justify-center select-none'>
-            <p className='text-3xl font-black'>{t('idlingGames.title')}</p>
-            <div className='flex gap-1'>
-              <p className='text-xs text-altwhite my-2'>{t('idlingGames.subtitle')}</p>
-            </div>
-            {idleGamesList?.length > 0 && (
-              <div className='flex items-center gap-2 mt-1'>
-                <Button
-                  radius='full'
-                  className='font-bold'
-                  color='danger'
-                  isDisabled={idleGamesList?.length === 0}
-                  startContent={<TbPlayerStopFilled fontSize={20} />}
-                  onPress={handleStopAll}
-                >
-                  {t('idlingGames.stopAll')}
-                </Button>
-              </div>
-            )}
+      <div className='px-6 pt-4 pb-3 select-none'>
+        <div className='flex items-end justify-between'>
+          <div>
+            <p className='text-2xl font-black'>{t('idlingGames.title')}</p>
+            <p className='text-xs text-altwhite/60 mt-0.5'>{t('idlingGames.subtitle')}</p>
           </div>
+          {idleGamesList?.length > 0 && (
+            <Button
+              size='sm'
+              radius='full'
+              className='font-semibold'
+              color='danger'
+              startContent={<TbPlayerStopFilled fontSize={16} />}
+              onPress={handleStopAll}
+            >
+              {t('idlingGames.stopAll')}
+            </Button>
+          )}
         </div>
       </div>
-      <div
-        className={cn(
-          'grid gap-x-5 gap-y-4 px-6',
-          columnCount === 7 ? 'grid-cols-7' : 'grid-cols-5',
-          columnCount === 8 ? 'grid-cols-8' : '',
-          columnCount === 10 ? 'grid-cols-10' : '',
-          columnCount === 12 ? 'grid-cols-12' : '',
-        )}
-      >
-        {idleGamesList?.map(item => (
-          <GameCard key={item.appid} item={item} />
-        ))}
-      </div>
+
+      {idleGamesList?.length === 0 ? (
+        <div className='flex flex-col items-center justify-center h-[calc(100vh-200px)] gap-3 text-altwhite/40'>
+          <TbPlayerPlay size={48} />
+          <p className='text-sm'>{t('idlingGames.subtitle')}</p>
+        </div>
+      ) : (
+        <div
+          className={cn(
+            'grid gap-x-5 gap-y-4 px-6',
+            columnCount === 7 ? 'grid-cols-7' : 'grid-cols-5',
+            columnCount === 8 ? 'grid-cols-8' : '',
+            columnCount === 10 ? 'grid-cols-10' : '',
+            columnCount === 12 ? 'grid-cols-12' : '',
+          )}
+        >
+          {idleGamesList?.map(item => (
+            <GameCard key={item.appid} item={item} />
+          ))}
+        </div>
+      )}
     </div>
   )
 }

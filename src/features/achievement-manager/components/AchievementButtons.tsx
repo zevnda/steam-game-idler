@@ -103,10 +103,11 @@ export function AchievementButtons({
 
   return (
     <>
-      <div className='flex gap-2 mt-4 px-10 absolute top-0 right-0'>
+      <div className='flex items-center gap-2 py-3'>
         {hasChanges && (
           <Button
-            className='bg-btn-secondary text-btn-text font-bold'
+            size='sm'
+            className='bg-btn-secondary text-btn-text font-semibold'
             radius='full'
             onPress={onOpen}
           >
@@ -116,7 +117,8 @@ export function AchievementButtons({
           </Button>
         )}
         <Button
-          className='bg-btn-secondary text-btn-text font-bold'
+          size='sm'
+          className='bg-btn-secondary text-btn-text font-semibold'
           radius='full'
           onPress={() => {
             if (setRefreshKey) setRefreshKey(k => k + 1)
@@ -124,11 +126,13 @@ export function AchievementButtons({
         >
           {t('common.refresh')}
         </Button>
+        <div className='flex-1' />
         <Button
+          size='sm'
           radius='full'
-          className='font-bold'
+          className='font-semibold'
           color='success'
-          startContent={<TbLockOpen size={20} />}
+          startContent={<TbLockOpen size={16} />}
           isDisabled={protectedAchievements}
           onPress={() => {
             setAction('unlock')
@@ -138,10 +142,11 @@ export function AchievementButtons({
           {t('achievementManager.achievements.unlockAll')}
         </Button>
         <Button
+          size='sm'
           radius='full'
-          className='font-bold'
+          className='font-semibold'
           color='danger'
-          startContent={<TbLock size={20} />}
+          startContent={<TbLock size={16} />}
           isDisabled={protectedAchievements}
           onPress={() => {
             setAction('lock')
@@ -155,14 +160,14 @@ export function AchievementButtons({
           disallowEmptySelection
           radius='none'
           items={sortOptions}
-          className='w-50'
+          className='w-44'
           classNames={{
             listbox: ['p-0'],
             value: ['text-sm !text-content'],
             trigger: cn(
-              'bg-input data-[hover=true]:!bg-inputhover data-[open=true]:!bg-input duration-100 rounded-lg',
+              'bg-input data-[hover=true]:!bg-inputhover data-[open=true]:!bg-input duration-100 rounded-xl h-8',
             ),
-            popoverContent: ['bg-input rounded-xl !text-content'],
+            popoverContent: ['bg-surface border border-border/20 rounded-xl !text-content'],
           }}
           startContent={<TbSortDescending2 />}
           defaultSelectedKeys={['percent']}
@@ -231,7 +236,7 @@ export function AchievementButtons({
             </Button>
             <Button
               size='sm'
-              className='bg-btn-secondary text-btn-text font-bold'
+              className='bg-btn-secondary text-btn-text font-semibold'
               radius='full'
               onPress={() => (hasChanges ? handleApply(onOpenChange) : handleConfirm(onOpenChange))}
             >

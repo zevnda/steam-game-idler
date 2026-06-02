@@ -22,7 +22,7 @@ export function OpenSettings() {
   return (
     <Button
       size='sm'
-      className='bg-btn-secondary text-btn-text font-bold'
+      className='bg-btn-secondary text-btn-text font-semibold'
       radius='full'
       onPress={handleOpen}
       startContent={<TbFolders size={20} />}

@@ -51,7 +51,7 @@ export function SteamWarning() {
       buttons={
         <Button
           size='sm'
-          className='bg-btn-secondary text-btn-text font-bold'
+          className='bg-btn-secondary text-btn-text font-semibold'
           radius='full'
           onPress={() => invoke('launch_steam')}
         >

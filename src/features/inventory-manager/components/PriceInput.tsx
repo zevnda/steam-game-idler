@@ -63,7 +63,7 @@ export function PriceInput({
       <CustomTooltip content={t('common.list')} placement='top'>
         <Button
           isIconOnly
-          className='bg-btn-secondary text-btn-text font-bold'
+          className='bg-btn-secondary text-btn-text font-semibold'
           radius='full'
           isDisabled={!isPro || adjustedPrice <= 0}
           onPress={() => {

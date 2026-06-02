@@ -36,12 +36,14 @@ export function RecentGamesCarousel({ recentGames }: RecentGamesCarouselProps) {
   return (
     <div className={cn('duration-250 px-6 overflow-hidden group/carousel')}>
       <div className='flex items-center justify-between mb-3'>
-        <p className='text-lg font-black'>{t('gamesList.recentlyPlayed')}</p>
+        <p className='text-xs font-black uppercase tracking-wide text-altwhite/60'>
+          {t('gamesList.recentlyPlayed')}
+        </p>
         <div className='flex gap-2'>
           <Button
             isIconOnly
             size='sm'
-            className='bg-btn-secondary text-btn-text font-bold'
+            className='bg-card border border-border/20 text-altwhite hover:text-content font-semibold'
             radius='full'
             onPress={() => scroll('left')}
           >
@@ -50,7 +52,7 @@ export function RecentGamesCarousel({ recentGames }: RecentGamesCarouselProps) {
           <Button
             isIconOnly
             size='sm'
-            className='bg-btn-secondary text-btn-text font-bold'
+            className='bg-card border border-border/20 text-altwhite hover:text-content font-semibold'
             radius='full'
             onPress={() => scroll('right')}
           >

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { TbChevronRight, TbEraser } from 'react-icons/tb'
+import { TbEraser } from 'react-icons/tb'
 import { Button, cn, Divider, Input, Radio, RadioGroup } from '@heroui/react'
 import { useTheme } from 'next-themes'
 import Image from 'next/image'
@@ -48,15 +48,12 @@ export function CustomizationSettings() {
   if (!mounted) return null
 
   return (
-    <div className='relative flex flex-col gap-4 mt-9 pb-16 w-4/5'>
-      <div className='flex flex-col gap-0 select-none'>
-        <p className='flex items-center text-xs text-altwhite font-bold'>
+    <div className='relative flex flex-col gap-4 pb-16 w-4/5'>
+      <div className='flex flex-col gap-0 select-none mb-3'>
+        <p className='text-[10px] uppercase tracking-widest text-altwhite/40 font-black mb-1'>
           {t('settings.title')}
-          <span>
-            <TbChevronRight size={12} />
-          </span>
         </p>
-        <p className='text-3xl font-black'>{t('settings.customization.title')}</p>
+        <p className='text-2xl font-black'>{t('settings.customization.title')}</p>
       </div>
       <div className='flex flex-col gap-3 mt-4'>
         <div className='flex justify-between items-center'>
@@ -64,49 +61,49 @@ export function CustomizationSettings() {
             <p className='text-sm text-content font-bold'>
               {t('settings.general.disableTooltips')}
             </p>
-            <p className='text-xs text-altwhite'>
+            <p className='text-[11px] text-altwhite/60 leading-relaxed'>
               {t('settings.general.disableTooltips.description')}
             </p>
           </div>
           <SettingsSwitch type='general' name='disableTooltips' />
         </div>
-        <Divider className='bg-border/70 my-4' />
+        <Divider className='bg-border/15 my-5' />
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>
               {t('settings.general.showRecommendedCarousel')}
             </p>
-            <p className='text-xs text-altwhite'>
+            <p className='text-[11px] text-altwhite/60 leading-relaxed'>
               {t('settings.general.showRecommendedCarousel.description')}
             </p>
           </div>
           <SettingsSwitch type='general' name='showRecommendedCarousel' />
         </div>
-        <Divider className='bg-border/70 my-4' />
+        <Divider className='bg-border/15 my-5' />
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>
               {t('settings.general.showRecentCarousel')}
             </p>
-            <p className='text-xs text-altwhite'>
+            <p className='text-[11px] text-altwhite/60 leading-relaxed'>
               {t('settings.general.showRecentCarousel.description')}
             </p>
           </div>
           <SettingsSwitch type='general' name='showRecentCarousel' />
         </div>
-        <Divider className='bg-border/70 my-4' />
+        <Divider className='bg-border/15 my-5' />
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>
               {t('settings.general.showCardDropsCarousel')}
             </p>
-            <p className='text-xs text-altwhite'>
+            <p className='text-[11px] text-altwhite/60 leading-relaxed'>
               {t('settings.general.showCardDropsCarousel.description')}
             </p>
           </div>
           <SettingsSwitch type='general' name='showCardDropsCarousel' />
         </div>
-        <Divider className='bg-border/70 my-4' />
+        <Divider className='bg-border/15 my-5' />
         <div className='flex justify-between items-start'>
           <div className='flex flex-col gap-2 w-1/2'>
             <div className='flex items-center'>
@@ -115,7 +112,7 @@ export function CustomizationSettings() {
               </p>
               {!isPro && <ProBadge className='scale-65' />}
             </div>
-            <p className='text-xs text-altwhite'>
+            <p className='text-[11px] text-altwhite/60 leading-relaxed'>
               {t('settings.customization.backgroundImage.description')}
             </p>
           </div>
@@ -155,11 +152,13 @@ export function CustomizationSettings() {
             </div>
           </div>
         </div>
-        <Divider className='bg-border/70 my-4' />
+        <Divider className='bg-border/15 my-5' />
         <div className='flex flex-col justify-between gap-6'>
           <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>{t('settings.customization.theme')}</p>
-            <p className='text-xs text-altwhite'>{t('settings.customization.theme.description')}</p>
+            <p className='text-[11px] text-altwhite/60 leading-relaxed'>
+              {t('settings.customization.theme.description')}
+            </p>
           </div>
           <RadioGroup
             orientation='horizontal'

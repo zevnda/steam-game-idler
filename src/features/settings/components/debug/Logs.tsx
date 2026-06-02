@@ -1,7 +1,7 @@
 import type { LogEntry } from '@/shared/types'
 import { invoke } from '@tauri-apps/api/core'
 import { useTranslation } from 'react-i18next'
-import { TbChevronRight, TbEraser, TbFolders } from 'react-icons/tb'
+import { TbEraser, TbFolders } from 'react-icons/tb'
 import { Button, cn } from '@heroui/react'
 import { GeistMono } from 'geist/font/mono'
 import { ClearData } from '@/features/settings/components/debug/ClearData'
@@ -37,22 +37,19 @@ export function Logs() {
   const { setRefreshKey } = useSettings()
 
   return (
-    <div className='relative flex flex-col gap-4 mt-9 pr-10'>
-      <div className='flex flex-col gap-0 select-none'>
-        <p className='flex items-center text-xs text-altwhite font-bold'>
+    <div className='relative flex flex-col gap-4 pr-10'>
+      <div className='flex flex-col gap-0 select-none mb-3'>
+        <p className='text-[10px] uppercase tracking-widest text-altwhite/40 font-black mb-1'>
           {t('settings.title')}
-          <span>
-            <TbChevronRight size={12} />
-          </span>
         </p>
-        <p className='text-3xl font-black'>{t('settings.debug.title')}</p>
+        <p className='text-2xl font-black'>{t('settings.debug.title')}</p>
       </div>
       <div className='flex flex-col gap-4 mt-4'>
         <div className='flex items-center justify-between'>
           <div className='grid grid-cols-3 gap-2'>
             <Button
               size='sm'
-              className='bg-btn-secondary text-btn-text font-bold'
+              className='bg-btn-secondary text-btn-text font-semibold'
               radius='full'
               onPress={handleOpenLogFile}
               startContent={<TbFolders size={20} />}

@@ -124,7 +124,9 @@ export function GamesList() {
     if (rowType === 'header')
       return (
         <div style={style}>
-          <p className='text-lg font-black px-6'>{t('gamesList.allGames')}</p>
+          <p className='text-xs font-black uppercase tracking-wide text-altwhite/60 px-6'>
+            {t('gamesList.allGames')}
+          </p>
         </div>
       )
     if (typeof rowType === 'number') {
@@ -160,10 +162,7 @@ export function GamesList() {
 
   return (
     <div
-      className={cn(
-        'mt-12 ease-in-out',
-        sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]',
-      )}
+      className={cn('mt-12 ease-in-out', sidebarCollapsed ? 'w-calc-collapsed' : 'w-calc')}
       style={{ transitionDuration, transitionProperty: 'width' }}
     >
       {!selectedGame && (
@@ -181,7 +180,7 @@ export function GamesList() {
               ? `collapsed-${windowSize.width}x${windowSize.height}`
               : `expanded-${windowSize.width}x${windowSize.height}`
           }
-          height={windowSize.height - 184}
+          height={windowSize.height - 160}
           itemCount={rows.length}
           itemSize={getRowHeight}
           width='100%'

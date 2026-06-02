@@ -103,7 +103,7 @@ export function Sidebar() {
     return (
       <div
         className={cn(
-          'px-4 py-1 mb-0 text-[12px] font-bold text-content uppercase tracking-wider select-none transition-all ease-in-out whitespace-nowrap truncate',
+          'px-4 py-1 mb-0 text-[10px] font-black text-altwhite/40 uppercase tracking-[0.15em] select-none transition-all ease-in-out whitespace-nowrap truncate',
           header !== t('sidebar.section.games') ? 'mt-4' : 'mt-0',
         )}
       >
@@ -134,11 +134,7 @@ export function Sidebar() {
           <div
             className={cn(
               'px-1.5 py-1.5 rounded-lg duration-150 cursor-pointer active:scale-95 w-full overflow-hidden',
-              isCurrent
-                ? sidebarCollapsed
-                  ? 'bg-dynamic/10 text-dynamic'
-                  : 'bg-linear-to-r from-dynamic/20 via-dynamic/2 to-dynamic/0 text-dynamic'
-                : 'text-altwhite hover:bg-item-hover',
+              isCurrent ? 'bg-dynamic/10 text-dynamic' : 'text-altwhite hover:bg-item-hover',
               item.customClassName,
             )}
             onClick={() => {
@@ -156,7 +152,7 @@ export function Sidebar() {
               <div className='relative shrink-0'>
                 <Icon
                   fontSize={20}
-                  className={isFreeGames && hasFreeGames ? 'text-[#ffc700]' : undefined}
+                  className={isFreeGames && hasFreeGames ? 'text-gold' : undefined}
                 />
               </div>
               {!sidebarCollapsed && (
@@ -166,7 +162,7 @@ export function Sidebar() {
                   <p
                     className={cn(
                       'flex items-center gap-1 text-sm font-bold',
-                      isFreeGames && hasFreeGames ? 'text-[#ffc700]' : undefined,
+                      isFreeGames && hasFreeGames ? 'text-gold' : undefined,
                     )}
                   >
                     <span className='truncate'>{item.title}</span>
@@ -185,7 +181,7 @@ export function Sidebar() {
     <>
       <div
         className={cn(
-          'relative flex flex-col h-screen z-40 bg-sidebar/90 border-r border-border select-none ease-in-out',
+          'relative flex flex-col h-screen z-40 bg-surface border-r border-border/20 select-none ease-in-out',
           sidebarCollapsed ? 'min-w-14 max-w-14' : 'min-w-62.5 max-w-62.5',
         )}
         style={{ transitionDuration, transitionProperty: 'min-width, max-width' }}
@@ -213,13 +209,13 @@ export function Sidebar() {
         )}
         <div
           className={cn(
-            'flex items-center mt-auto w-full rounded-t-xl py-2 px-1.5',
-            sidebarCollapsed ? 'justify-center flex-col gap-2 pt-3' : 'justify-start',
+            'flex items-center mt-auto w-full border-t border-border/15 py-2 px-1.5',
+            sidebarCollapsed ? 'justify-center flex-col gap-2 pt-2' : 'justify-start',
           )}
         >
           <div
             className={cn(
-              'flex items-center w-full bg-item-active p-2 min-h-12.5 rounded-lg',
+              'flex items-center w-full bg-card border border-border/20 p-2.5 min-h-12.5 rounded-xl',
               sidebarCollapsed ? 'flex-col gap-2' : 'flex-row gap-3',
             )}
           >
@@ -335,7 +331,7 @@ export function Sidebar() {
             </Button>
             <Button
               size='sm'
-              className='bg-btn-secondary text-btn-text font-bold'
+              className='bg-btn-secondary text-btn-text font-semibold'
               radius='full'
               onPress={() => {
                 setSelectedGame(null)

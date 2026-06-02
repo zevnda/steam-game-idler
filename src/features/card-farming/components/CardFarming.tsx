@@ -144,64 +144,57 @@ export function CardFarming({ activePage }: { activePage: ActivePageType }) {
           }
           style={{
             WebkitMaskImage:
-              'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 70%)',
+              'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 5%, rgba(0,0,0,0) 55%)',
           }}
         />
       )}
-      {imageLoaded && <div className='absolute top-0 left-0 w-full h-screen bg-base/70' />}
+      {imageLoaded && <div className='absolute top-0 left-0 w-full h-screen bg-base/80' />}
 
       <div
         className={cn(
-          'relative w-[calc(100vw-227px)] pl-6 pt-2 pr-12 mt-12 ease-in-out',
+          'relative px-6 pt-4 mt-12 ease-in-out',
           sidebarCollapsed ? 'ml-14' : 'ml-62.5',
         )}
         style={{ transitionDuration, transitionProperty: 'margin-left' }}
       >
-        <div className='flex justify-between items-center pb-3'>
-          <div className='flex items-center gap-1 select-none'>
-            <div className='flex flex-col justify-center'>
-              <p className='text-3xl font-black'>{t('common.cardFarming')}</p>
-              <p className='text-xs text-altwhite my-2'>{t('automation.cardFarming.running')}</p>
-              <div className='flex items-center gap-2 mt-1'>
-                <Button
-                  color='danger'
-                  radius='full'
-                  className='font-bold'
-                  startContent={<TbPlayerStopFilled size={18} />}
-                  isDisabled={!isComplete && disableStop}
-                  onPress={handleStop}
-                >
-                  {isComplete ? t('common.close') : t('common.stop')}
-                </Button>
-              </div>
-            </div>
+        <div className='flex items-end justify-between pb-3 select-none'>
+          <div>
+            <p className='text-2xl font-black'>{t('common.cardFarming')}</p>
+            <p className='text-xs text-altwhite/60 mt-0.5'>{t('automation.cardFarming.running')}</p>
           </div>
+          <Button
+            size='sm'
+            color='danger'
+            radius='full'
+            className='font-semibold'
+            startContent={<TbPlayerStopFilled size={16} />}
+            isDisabled={!isComplete && disableStop}
+            onPress={handleStop}
+          >
+            {isComplete ? t('common.close') : t('common.stop')}
+          </Button>
         </div>
 
-        <div
-          className={cn(
-            'flex flex-col item max-h-[calc(100vh-104px)] ease-in-out pt-10 overflow-hidden',
-            sidebarCollapsed ? 'w-[calc(100vw-106px)]' : 'w-[calc(100vw-300px)]',
-          )}
-          style={{ transitionDuration, transitionProperty: 'width' }}
-        >
-          <div className='flex justify-center items-center flex-col p-6 bg-tab-panel rounded-4xl border border-border'>
+        <div className='max-w-2xl mt-2'>
+          <div className='flex flex-col p-8 bg-surface rounded-3xl border border-border/20'>
             {isComplete ? (
-              <div className='flex flex-col items-center justify-center'>
-                <div className='border border-border rounded-full inline-block p-2 w-fit'>
-                  <TbCheck className='text-green-400' fontSize={50} />
+              <div className='flex flex-col items-center justify-center py-4'>
+                <div className='bg-green-500/10 border border-green-500/30 rounded-full p-4'>
+                  <TbCheck className='text-green-400' size={40} />
                 </div>
-                <p className='mt-4'>{t('common.done')}</p>
+                <p className='mt-4 font-semibold'>{t('common.done')}</p>
               </div>
             ) : !gamesWithDrops.size ? (
-              <Spinner
-                variant='simple'
-                label={t('automation.cardFarming.initialDelay')}
-                classNames={{ label: 'text-content' }}
-              />
+              <div className='flex justify-center py-4'>
+                <Spinner
+                  variant='simple'
+                  label={t('automation.cardFarming.initialDelay')}
+                  classNames={{ label: 'text-content' }}
+                />
+              </div>
             ) : (
               <>
-                <p>
+                <p className='text-center mb-4'>
                   <Trans
                     i18nKey='automation.cardFarming.progress'
                     values={{ count: gamesWithDrops.size, total: totalDropsRemaining }}
@@ -211,28 +204,26 @@ export function CardFarming({ activePage }: { activePage: ActivePageType }) {
                     }}
                   />
                 </p>
-                <div className='p-2 rounded-lg w-full max-h-[calc(100vh-392px)] overflow-y-auto'>
-                  <div className='grid grid-cols-2 gap-2 px-2 overflow-y-auto'>
-                    {Array.from(gamesWithDrops).map(item => (
-                      <div
-                        key={item.appid}
-                        className='flex gap-1 border border-border rounded-lg p-1'
-                      >
-                        <Image
-                          src={`https://cdn.cloudflare.steamstatic.com/steam/apps/${item.appid}/header.jpg`}
-                          className='aspect-62/36 rounded'
-                          width={62}
-                          height={36}
-                          alt={`${item.name} image`}
-                          priority
-                        />
-                        <div className='flex flex-col px-2 max-w-[80%]'>
-                          <p className='text-sm font-semibold truncate'>{item.name}</p>
-                          <p className='text-xs text-altwhite'>{item.appid}</p>
-                        </div>
+                <div className='grid grid-cols-2 gap-3 mt-2 max-h-[calc(100vh-340px)] overflow-y-auto'>
+                  {Array.from(gamesWithDrops).map(item => (
+                    <div
+                      key={item.appid}
+                      className='flex gap-2 bg-card border border-border/20 rounded-xl p-2'
+                    >
+                      <Image
+                        src={`https://cdn.cloudflare.steamstatic.com/steam/apps/${item.appid}/header.jpg`}
+                        className='aspect-62/36 rounded-lg'
+                        width={62}
+                        height={36}
+                        alt={`${item.name} image`}
+                        priority
+                      />
+                      <div className='flex flex-col px-1 min-w-0'>
+                        <p className='text-sm font-semibold truncate'>{item.name}</p>
+                        <p className='text-xs text-altwhite/60'>{item.appid}</p>
                       </div>
-                    ))}
-                  </div>
+                    </div>
+                  ))}
                 </div>
               </>
             )}

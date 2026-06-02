@@ -46,34 +46,32 @@ export const GameCard = memo(function GameCard({
 
   if (isFreeGame) {
     return (
-      <div className='relative group select-none'>
-        <div className='overflow-hidden will-change-transform transition-transform duration-150'>
-          <div className='aspect-460/215 relative overflow-hidden'>
-            <Image
-              src={`https://cdn.cloudflare.steamstatic.com/steam/apps/${item.appid}/header.jpg`}
-              width={460}
-              height={215}
-              alt={`${item.name} image`}
-              priority
-              onError={handleImageError}
-              className='w-full h-full object-cover rounded-lg duration-150'
-            />
-            <div
-              className='pointer-events-none absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-150'
-              style={{ boxShadow: 'inset 0 0 0 2px hsl(var(--heroui-dynamic))' }}
-            />
-          </div>
-          <div className='flex justify-between items-center pt-3'>
-            <h3 className='text-xs font-bold text-altwhite group-hover:text-content truncate duration-150'>
-              {item.name}
-            </h3>
-            <div className='flex gap-1'>
-              <ExtLink href={`https://store.steampowered.com/app/${item.appid}`}>
-                <div className='bg-transparent hover:bg-item-hover text-altwhite hover:text-content p-2 rounded-full transition-colors duration-150'>
-                  <FaSteam size={18} />
-                </div>
-              </ExtLink>
-            </div>
+      <div className='relative group select-none rounded-xl overflow-hidden bg-card border border-border/20 hover:border-border/40 duration-150'>
+        <div className='aspect-460/215 relative overflow-hidden'>
+          <Image
+            src={`https://cdn.cloudflare.steamstatic.com/steam/apps/${item.appid}/header.jpg`}
+            width={460}
+            height={215}
+            alt={`${item.name} image`}
+            priority
+            onError={handleImageError}
+            className='w-full h-full object-cover duration-150 group-hover:scale-[1.02]'
+          />
+          <div
+            className='pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-150'
+            style={{ boxShadow: 'inset 0 0 0 2px hsl(var(--heroui-dynamic))' }}
+          />
+        </div>
+        <div className='flex justify-between items-center px-2.5 py-2'>
+          <h3 className='text-xs font-semibold text-altwhite group-hover:text-content truncate duration-150 flex-1 min-w-0'>
+            {item.name}
+          </h3>
+          <div className='flex gap-0.5 shrink-0'>
+            <ExtLink href={`https://store.steampowered.com/app/${item.appid}`}>
+              <div className='bg-transparent hover:bg-item-hover text-altwhite hover:text-content p-1.5 rounded-full transition-colors duration-150'>
+                <FaSteam size={16} />
+              </div>
+            </ExtLink>
           </div>
         </div>
       </div>
@@ -83,80 +81,78 @@ export const GameCard = memo(function GameCard({
   return (
     <div
       className={cn(
-        'relative group select-none',
+        'relative group select-none rounded-xl overflow-hidden bg-card border border-border/20 hover:border-border/40 duration-150',
         isAutoIdleList && autoIdleEnabled === false && 'opacity-50',
       )}
     >
-      <div className='overflow-hidden will-change-transform transition-transform duration-150'>
-        <div className='aspect-460/215 relative overflow-hidden'>
-          {isIdling && <IdleTimer startTime={idlingGame.startTime ?? 0} />}
-          <Image
-            src={`https://cdn.cloudflare.steamstatic.com/steam/apps/${item.appid}/header.jpg`}
-            width={460}
-            height={215}
-            alt={`${item.name} image`}
-            priority
-            onError={handleImageError}
-            className='w-full h-full object-cover rounded-lg duration-150'
-          />
-          <div
-            className='pointer-events-none absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-150'
-            style={{ boxShadow: 'inset 0 0 0 2px hsl(var(--heroui-dynamic))' }}
-          />
-        </div>
-        <div className='flex justify-between items-center pt-3'>
-          <h3 className='text-xs font-bold text-altwhite group-hover:text-content truncate duration-150'>
-            {item.name}
-          </h3>
-          <div className='flex gap-1'>
+      <div className='aspect-460/215 relative overflow-hidden'>
+        {isIdling && <IdleTimer startTime={idlingGame.startTime ?? 0} />}
+        <Image
+          src={`https://cdn.cloudflare.steamstatic.com/steam/apps/${item.appid}/header.jpg`}
+          width={460}
+          height={215}
+          alt={`${item.name} image`}
+          priority
+          onError={handleImageError}
+          className='w-full h-full object-cover duration-150 group-hover:scale-[1.02]'
+        />
+        <div
+          className='pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-150'
+          style={{ boxShadow: 'inset 0 0 0 2px hsl(var(--heroui-dynamic))' }}
+        />
+      </div>
+      <div className='flex justify-between items-center px-2.5 py-2'>
+        <h3 className='text-xs font-semibold text-altwhite group-hover:text-content truncate duration-150 flex-1 min-w-0'>
+          {item.name}
+        </h3>
+        <div className='flex gap-0.5 shrink-0'>
+          <Button
+            isIconOnly
+            size='sm'
+            radius='full'
+            className='bg-transparent hover:bg-item-hover text-altwhite hover:text-content transition-colors duration-150'
+            onPress={() =>
+              isIdling
+                ? handleStopIdle(item, idleGamesList, gs =>
+                    useSessionStore.setState({ idleGamesList: gs }),
+                  )
+                : handleIdle(item)
+            }
+          >
+            {isIdling ? <TbPlayerStopFilled size={16} /> : <TbPlayerPlayFilled size={16} />}
+          </Button>
+          {!isAutoIdleList && (
             <Button
               isIconOnly
               size='sm'
               radius='full'
               className='bg-transparent hover:bg-item-hover text-altwhite hover:text-content transition-colors duration-150'
-              onPress={() =>
-                isIdling
-                  ? handleStopIdle(item, idleGamesList, gs =>
-                      useSessionStore.setState({ idleGamesList: gs }),
-                    )
-                  : handleIdle(item)
-              }
+              onPress={() => setSelectedGame(item)}
             >
-              {isIdling ? <TbPlayerStopFilled size={18} /> : <TbPlayerPlayFilled size={18} />}
+              <TbAwardFilled size={16} />
             </Button>
-            {!isAutoIdleList && (
-              <Button
-                isIconOnly
+          )}
+          {isAchievementUnlocker && (
+            <Button
+              isIconOnly
+              size='sm'
+              radius='full'
+              className='bg-transparent hover:bg-item-hover text-altwhite hover:text-content transition-colors duration-150'
+              onPress={() => onOpen?.()}
+            >
+              <TbArrowsSort size={16} />
+            </Button>
+          )}
+          {isAutoIdleList && (
+            <div className='flex items-center' onPointerDown={e => e.stopPropagation()}>
+              <Checkbox
                 size='sm'
-                radius='full'
-                className='bg-transparent hover:bg-item-hover text-altwhite hover:text-content transition-colors duration-150'
-                onPress={() => setSelectedGame(item)}
-              >
-                <TbAwardFilled size={18} />
-              </Button>
-            )}
-            {isAchievementUnlocker && (
-              <Button
-                isIconOnly
-                size='sm'
-                radius='full'
-                className='bg-transparent hover:bg-item-hover text-altwhite hover:text-content transition-colors duration-150'
-                onPress={() => onOpen?.()}
-              >
-                <TbArrowsSort size={18} />
-              </Button>
-            )}
-            {isAutoIdleList && (
-              <div className='flex items-center' onPointerDown={e => e.stopPropagation()}>
-                <Checkbox
-                  size='sm'
-                  isSelected={autoIdleEnabled !== false}
-                  classNames={{ wrapper: cn('group-data-[selected=true]:!bg-dynamic') }}
-                  onValueChange={() => onToggleAutoIdle?.()}
-                />
-              </div>
-            )}
-          </div>
+                isSelected={autoIdleEnabled !== false}
+                classNames={{ wrapper: cn('group-data-[selected=true]:!bg-dynamic') }}
+                onValueChange={() => onToggleAutoIdle?.()}
+              />
+            </div>
+          )}
         </div>
       </div>
 

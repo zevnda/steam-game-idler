@@ -1,5 +1,4 @@
 import { useTranslation } from 'react-i18next'
-import { TbChevronRight } from 'react-icons/tb'
 import { Alert, cn, Divider, Select, SelectItem } from '@heroui/react'
 import { useCardSettings } from '@/features/settings/hooks/card-farming/useCardSettings'
 import { handleNextTaskChange } from '@/features/settings/services/generalService'
@@ -19,15 +18,12 @@ export function CardSettings() {
   ]
 
   return (
-    <div className='relative flex flex-col gap-4 mt-9 pb-16 w-4/5'>
-      <div className='flex flex-col gap-0 select-none'>
-        <p className='flex items-center text-xs text-altwhite font-bold'>
+    <div className='relative flex flex-col gap-4 pb-16 w-4/5'>
+      <div className='flex flex-col gap-0 select-none mb-3'>
+        <p className='text-[10px] uppercase tracking-widest text-altwhite/40 font-black mb-1'>
           {t('settings.title')}
-          <span>
-            <TbChevronRight size={12} />
-          </span>
         </p>
-        <p className='text-3xl font-black'>{t('common.cardFarming')}</p>
+        <p className='text-2xl font-black'>{t('common.cardFarming')}</p>
         {!cardFarmingUser && (
           <div className='mt-4'>
             <Alert
@@ -47,75 +43,75 @@ export function CardSettings() {
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>{t('settings.cardFarming.listGames')}</p>
-            <p className='text-xs text-altwhite'>
+            <p className='text-[11px] text-altwhite/60 leading-relaxed'>
               {t('settings.cardFarming.listGames.description')}
             </p>
           </div>
           <SettingsSwitch type='cardFarming' name='listGames' />
         </div>
-        <Divider className='bg-border/70 my-4' />
+        <Divider className='bg-border/15 my-5' />
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>{t('settings.cardFarming.allGames')}</p>
-            <p className='text-xs text-altwhite'>
+            <p className='text-[11px] text-altwhite/60 leading-relaxed'>
               {t('settings.cardFarming.allGames.description')}
             </p>
           </div>
           <SettingsSwitch type='cardFarming' name='allGames' />
         </div>
-        <Divider className='bg-border/70 my-4' />
+        <Divider className='bg-border/15 my-5' />
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>
               {t('settings.cardFarming.skipNoPlaytime')}
             </p>
-            <p className='text-xs text-altwhite'>
+            <p className='text-[11px] text-altwhite/60 leading-relaxed'>
               {t('settings.cardFarming.skipNoPlaytime.description')}
             </p>
           </div>
           <SettingsSwitch type='cardFarming' name='skipNoPlaytime' />
         </div>
-        <Divider className='bg-border/70 my-4' />
+        <Divider className='bg-border/15 my-5' />
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>
               {t('settings.cardFarming.farmUnplayedOnly')}
             </p>
-            <p className='text-xs text-altwhite'>
+            <p className='text-[11px] text-altwhite/60 leading-relaxed'>
               {t('settings.cardFarming.farmUnplayedOnly.description')}
             </p>
           </div>
           <SettingsSwitch type='cardFarming' name='farmUnplayedOnly' />
         </div>
-        <Divider className='bg-border/70 my-4' />
+        <Divider className='bg-border/15 my-5' />
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>
               {t('settings.cardFarming.sortByHighestDrops')}
             </p>
-            <p className='text-xs text-altwhite'>
+            <p className='text-[11px] text-altwhite/60 leading-relaxed'>
               {t('settings.cardFarming.sortByHighestDrops.description')}
             </p>
           </div>
           <SettingsSwitch type='cardFarming' name='sortByHighestDrops' />
         </div>
-        <Divider className='bg-border/70 my-4' />
+        <Divider className='bg-border/15 my-5' />
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>
               {t('settings.cardFarming.sortByLowestDrops')}
             </p>
-            <p className='text-xs text-altwhite'>
+            <p className='text-[11px] text-altwhite/60 leading-relaxed'>
               {t('settings.cardFarming.sortByLowestDrops.description')}
             </p>
           </div>
           <SettingsSwitch type='cardFarming' name='sortByLowestDrops' />
         </div>
-        <Divider className='bg-border/70 my-4' />
+        <Divider className='bg-border/15 my-5' />
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>{t('common.nextTask')}</p>
-            <p className='text-xs text-altwhite'>
+            <p className='text-[11px] text-altwhite/60 leading-relaxed'>
               {t('settings.cardFarming.nextTask.description')}
             </p>
           </div>

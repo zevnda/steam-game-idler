@@ -33,26 +33,20 @@ export function FreeGamesList() {
     <div
       className={cn(
         'min-h-calc max-h-calc overflow-y-auto overflow-x-hidden mt-12 ease-in-out',
-        sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]',
+        sidebarCollapsed ? 'w-calc-collapsed' : 'w-calc',
       )}
       style={{ transitionDuration, transitionProperty: 'width' }}
     >
-      <div className={cn('w-[calc(100vw-227px)] z-50 pl-6 pt-2')}>
-        <div className='flex justify-between items-center pb-3'>
-          <div className='flex items-center gap-1 select-none'>
-            <div className='flex flex-col justify-center'>
-              <p className='text-3xl font-black'>{t('freeGames.title')}</p>
-              <p className='text-xs text-altwhite my-2'>
-                {freeGamesList.length > 0
-                  ? t('common.showing', {
-                      count: freeGamesList.length,
-                      total: freeGamesList.length,
-                    })
-                  : t('freeGames.subtitle')}
-              </p>
-            </div>
-          </div>
-        </div>
+      <div className='px-6 pt-4 pb-3 select-none'>
+        <p className='text-2xl font-black'>{t('freeGames.title')}</p>
+        <p className='text-xs text-altwhite/60 mt-0.5'>
+          {freeGamesList.length > 0
+            ? t('common.showing', {
+                count: freeGamesList.length,
+                total: freeGamesList.length,
+              })
+            : t('freeGames.subtitle')}
+        </p>
       </div>
       <div
         className={cn(

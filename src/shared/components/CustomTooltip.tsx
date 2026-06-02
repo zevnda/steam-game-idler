@@ -26,10 +26,10 @@ export function CustomTooltip({
       showArrow
       content={content}
       placement={placement}
-      className={`font-semibold bg-[#0a0a0a] text-content ${className ?? ''}`}
+      className={`font-semibold bg-surface text-content rounded-xl px-3 py-1.5 ${className ?? ''}`}
       delay={250}
       closeDelay={100}
-      classNames={{ base: 'pointer-events-none before:bg-[#0a0a0a]!', content: 'shadow-none' }}
+      classNames={{ base: 'pointer-events-none before:bg-surface!', content: 'shadow-none' }}
     >
       {children as React.ReactElement}
     </Tooltip>

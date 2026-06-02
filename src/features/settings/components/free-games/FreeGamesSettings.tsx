@@ -1,5 +1,4 @@
 import { useTranslation } from 'react-i18next'
-import { TbChevronRight } from 'react-icons/tb'
 import { Button, Divider } from '@heroui/react'
 import {
   handleShowStoreLoginWindow,
@@ -19,15 +18,12 @@ export function FreeGamesSettings() {
   const setProModalRequiredTier = useUiStore(s => s.setProModalRequiredTier)
 
   return (
-    <div className='relative flex flex-col gap-4 mt-9 pb-16 w-4/5'>
-      <div className='flex flex-col gap-0 select-none'>
-        <p className='flex items-center text-xs text-altwhite font-bold'>
+    <div className='relative flex flex-col gap-4 pb-16 w-4/5'>
+      <div className='flex flex-col gap-0 select-none mb-3'>
+        <p className='text-[10px] uppercase tracking-widest text-altwhite/40 font-black mb-1'>
           {t('settings.title')}
-          <span>
-            <TbChevronRight size={12} />
-          </span>
         </p>
-        <p className='text-3xl font-black'>{t('freeGames.title')}</p>
+        <p className='text-2xl font-black'>{t('freeGames.title')}</p>
       </div>
       <div className='flex flex-col gap-3 mt-4'>
         <div className='flex justify-between items-center'>
@@ -35,13 +31,13 @@ export function FreeGamesSettings() {
             <p className='text-sm text-content font-bold'>
               {t('settings.general.freeGameNotifications')}
             </p>
-            <p className='text-xs text-altwhite'>
+            <p className='text-[11px] text-altwhite/60 leading-relaxed'>
               {t('settings.general.freeGameNotifications.description')}
             </p>
           </div>
           <SettingsSwitch type='general' name='freeGameNotifications' />
         </div>
-        <Divider className='bg-border/70 my-4' />
+        <Divider className='bg-border/15 my-5' />
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
             <div className='flex items-center'>
@@ -51,7 +47,7 @@ export function FreeGamesSettings() {
               </p>
               {!hasGamerFeature(proTier) && <ProBadge className='scale-65' requiredTier='gamer' />}
             </div>
-            <p className='text-xs text-altwhite'>
+            <p className='text-[11px] text-altwhite/60 leading-relaxed'>
               {t('settings.general.autoRedeemFreeGames.description')}
             </p>
           </div>
@@ -66,7 +62,7 @@ export function FreeGamesSettings() {
           >
             <Button
               size='sm'
-              className='bg-btn-secondary text-btn-text font-bold'
+              className='bg-btn-secondary text-btn-text font-semibold'
               radius='full'
               isDisabled={!hasGamerFeature(proTier)}
               onPress={() => handleShowStoreLoginWindow(setUserSettings)}
@@ -85,7 +81,7 @@ export function FreeGamesSettings() {
             </Button>
           </div>
         </div>
-        <Divider className='bg-border/70 my-4' />
+        <Divider className='bg-border/15 my-5' />
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
             <div className='flex items-center'>
@@ -94,7 +90,7 @@ export function FreeGamesSettings() {
               </p>
               {!hasGamerFeature(proTier) && <ProBadge className='scale-65' requiredTier='gamer' />}
             </div>
-            <p className='text-xs text-altwhite'>
+            <p className='text-[11px] text-altwhite/60 leading-relaxed'>
               {t('settings.general.autoRedeemFreeGames.description')}
             </p>
           </div>

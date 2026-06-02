@@ -81,9 +81,10 @@ export function StatisticButtons({
 
   return (
     <>
-      <div className='absolute top-0 right-0 flex gap-2 mt-4 px-10'>
+      <div className='flex items-center gap-2 py-3'>
         <Button
-          className='bg-btn-secondary text-btn-text font-bold'
+          size='sm'
+          className='bg-btn-secondary text-btn-text font-semibold'
           radius='full'
           onPress={() => {
             if (setRefreshKey) setRefreshKey(k => k + 1)
@@ -93,19 +94,22 @@ export function StatisticButtons({
         </Button>
         {changedCount > 0 && (
           <Button
-            className='bg-btn-secondary text-btn-text font-bold'
+            size='sm'
+            className='bg-btn-secondary text-btn-text font-semibold'
             radius='full'
-            startContent={<TbUpload size={20} />}
+            startContent={<TbUpload size={16} />}
             onPress={handleUpdate}
           >
             {t('achievementManager.statistics.saveChanges')}
           </Button>
         )}
+        <div className='flex-1' />
         <Button
+          size='sm'
           radius='full'
           color='danger'
-          className='font-bold'
-          startContent={<TbRotateClockwise className='rotate-90' size={20} />}
+          className='font-semibold'
+          startContent={<TbRotateClockwise className='rotate-90' size={16} />}
           onPress={onOpen}
         >
           {t('achievementManager.statistics.resetAll')}
@@ -135,7 +139,7 @@ export function StatisticButtons({
             </Button>
             <Button
               size='sm'
-              className='bg-btn-secondary text-btn-text font-bold'
+              className='bg-btn-secondary text-btn-text font-semibold'
               radius='full'
               onPress={() => handleReset(onOpenChange)}
             >

@@ -71,12 +71,14 @@ export function RecommendedGamesCarousel({ unplayedGames }: RecommendedGamesCaro
   return (
     <div className='mb-6 px-6 mt-4'>
       <div className='flex items-center justify-between mb-3'>
-        <p className='text-lg font-black'>{t('gamesList.recommended')}</p>
+        <p className='text-xs font-black uppercase tracking-wide text-altwhite/60'>
+          {t('gamesList.recommended')}
+        </p>
         <div className='flex gap-2'>
           <Button
             isIconOnly
             size='sm'
-            className='bg-btn-secondary text-btn-text font-bold'
+            className='bg-card border border-border/20 text-altwhite hover:text-content font-semibold'
             radius='full'
             onPress={() => handleManualScroll('left')}
           >
@@ -85,7 +87,7 @@ export function RecommendedGamesCarousel({ unplayedGames }: RecommendedGamesCaro
           <Button
             isIconOnly
             size='sm'
-            className='bg-btn-secondary text-btn-text font-bold'
+            className='bg-card border border-border/20 text-altwhite hover:text-content font-semibold'
             radius='full'
             onPress={() => handleManualScroll('right')}
           >
