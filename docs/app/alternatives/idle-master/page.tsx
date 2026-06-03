@@ -1,9 +1,9 @@
 import { FaArrowRight } from 'react-icons/fa'
 import { FiBook, FiCheck, FiDownload, FiRefreshCw, FiX } from 'react-icons/fi'
 import { TbCards, TbEye, TbShield } from 'react-icons/tb'
-import FooterSection from '@docs/components/home/FooterSection'
-import NavBar from '@docs/components/home/NavBar'
 import Link from 'next/link'
+import FooterSection from '@/app/(home)/_components/FooterSection'
+import NavBar from '@/app/(home)/_components/NavBar'
 
 export const metadata = {
   title: 'Idle Master Feature Comparison',

@@ -1,0 +1,13 @@
+---
+title: Pricing Details
+description: How Steam Game Idler determines listing prices for your Steam inventory items.
+---
+
+import MockButton from '@/app/docs/_components/MockButton';
+
+# Pricing Details
+
+When you use <MockButton type='list-all' />, the price used depends on your [Default Sell Option](/docs/settings/inventory-manager#default-sell-option) setting:
+
+- **Highest Buy Order** (default): lists each item at its `highest_buy_order`. If that price isn't available, it falls back to the `lowest_sell_order`. If neither price is available, the item won't be listed.
+- **Lowest Sell Order**: lists each item at its `lowest_sell_order`. If that price isn't available, the item won't be listed.

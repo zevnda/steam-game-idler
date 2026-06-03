@@ -22,7 +22,7 @@ jobs:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         run: |
           VERSION="${{ steps.get_version.outputs.version }}"
-          CHANGELOG_FILE="docs/content/changelog/${VERSION}.mdx"
+          CHANGELOG_FILE="docs/changelogs/${VERSION}.mdx"
           RELEASE_URL="https://github.com/${{ github.repository }}/releases/tag/${VERSION}"
           
           if [ ! -f "$CHANGELOG_FILE" ]; then

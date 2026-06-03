@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Working with Claude Code
+
+- **Never stage or commit git changes** — only the user does that. Do not run `git add`, `git mv` (for staging), or `git commit`.
+
 ## Monorepo structure
 
 This is a pnpm workspace with two packages:

@@ -1,5 +1,5 @@
 import AdComponent from './AdComponent'
-import AdComponentTwo from '@docs/supported-games/[appName]/AdComponentTwo'
+import AdComponentTwo from '@/app/supported-games/[appName]/AdComponentTwo'
 
 interface PageProps {
   params: {
