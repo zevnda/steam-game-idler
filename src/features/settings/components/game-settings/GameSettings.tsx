@@ -12,7 +12,7 @@ import { useUserStore } from '@/shared/stores'
 interface RowData {
   filteredGamesList: Game[]
   selectedGame: Game | null
-  onGameSelect: (game: Game) => void
+  onGameSelect: (game: Game | null) => void
 }
 
 interface RowProps {
@@ -40,7 +40,7 @@ const Row = memo(({ index, style, data }: RowProps) => {
         'duration-150 select-none',
         isSelected && 'bg-item-hover border-l-2 border-blue-500',
       )}
-      onClick={() => onGameSelect(item)}
+      onClick={() => onGameSelect(isSelected ? null : item)}
     >
       <div className='flex items-center gap-3 max-w-[90%]'>
         <Image
@@ -152,6 +152,7 @@ export const GameSettings = () => {
           <NumberInput
             size='sm'
             value={globalMaxIdleTime}
+            isDisabled={!!selectedGame}
             step={1}
             minValue={0}
             maxValue={99999}
@@ -165,7 +166,6 @@ export const GameSettings = () => {
                 'group-data-[focus-within=true]:!bg-inputhover',
                 'border group-data-[invalid=true]:border-red-500!',
                 'border group-data-[invalid=true]:bg-red-500/10!',
-                !selectedGame && 'opacity-50',
               ),
               input: ['text-sm !text-content'],
               stepperButton: ['!text-content', 'text-sm'],

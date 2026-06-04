@@ -133,7 +133,7 @@ export const Settings = () => {
               </div>
             </div>
 
-            <div className='flex-1 overflow-y-auto pb-10 pl-10 pr-4 mt-9'>{renderContent()}</div>
+            <div className='flex-1 overflow-y-auto pb-10 pl-10 pr-4 pt-11'>{renderContent()}</div>
           </div>
         </ModalBody>
       </ModalContent>
