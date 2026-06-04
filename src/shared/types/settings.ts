@@ -20,6 +20,7 @@ export interface CardFarmingUser {
 export interface CardFarmingSettings {
   allGames: boolean
   listGames: boolean
+  autoFarmCards: boolean
   nextTaskCheckbox: boolean
   nextTask: string | null
   credentials: {

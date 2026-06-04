@@ -25,30 +25,41 @@ export const startCardFarming = async () => {
     const isSteamRunning = await checkSteamStatus(true)
     if (!isSteamRunning) return
 
-    // Retrieve Steam cookies from local storage
     let credentials = userSettings.cardFarming.credentials
 
-    // Attempt to automatically revalidate Steam credentials for Gamer tier PRO users
-    if (hasGamerFeature(proTier)) {
-      const autoRevalidateResult = await autoRevalidateSteamCredentials(setUserSettings)
-      if (autoRevalidateResult?.credentials) {
-        credentials = autoRevalidateResult.credentials
-      }
+    // No credentials at all — try auto-revalidate for gamer tier before giving up
+    if ((!credentials?.sid || !credentials?.sls) && hasGamerFeature(proTier)) {
+      const result = await autoRevalidateSteamCredentials(setUserSettings)
+      if (result?.credentials) credentials = result.credentials
     }
 
     if (!credentials?.sid || !credentials?.sls) {
       return showMissingCredentialsToast()
     }
 
-    // Validate Steam session
-    const response = await invoke<InvokeValidateSession>('validate_session', {
-      sid: decrypt(credentials?.sid),
-      sls: decrypt(credentials?.sls),
-      sma: credentials?.sma,
+    // Validate Steam session with current credentials
+    let validationResponse = await invoke<InvokeValidateSession>('validate_session', {
+      sid: decrypt(credentials.sid),
+      sls: decrypt(credentials.sls),
+      sma: credentials.sma,
       steamid: userSummary?.steamId,
     })
 
-    if (!response.user) {
+    // Credentials present but invalid — try auto-revalidate as a fallback for gamer tier
+    if (!validationResponse.user && hasGamerFeature(proTier)) {
+      const result = await autoRevalidateSteamCredentials(setUserSettings)
+      if (result?.credentials) {
+        credentials = result.credentials
+        validationResponse = await invoke<InvokeValidateSession>('validate_session', {
+          sid: decrypt(credentials.sid),
+          sls: decrypt(credentials.sls),
+          sma: credentials.sma,
+          steamid: userSummary?.steamId,
+        })
+      }
+    }
+
+    if (!validationResponse.user) {
       await invoke<InvokeSettings>('update_user_settings', {
         steamId: userSummary?.steamId,
         key: 'cardFarming.credentials',

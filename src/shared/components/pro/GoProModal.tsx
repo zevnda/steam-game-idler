@@ -3,6 +3,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import { FaArrowDown, FaArrowRight, FaCheck, FaChevronDown, FaDiscord } from 'react-icons/fa6'
 import {
   TbAd,
+  TbCards,
   TbClock,
   TbCurrencyDollar,
   TbGift,
@@ -405,6 +406,14 @@ export const GoProModal = () => {
       learnMoreUrl: 'https://steamgameidler.com/docs/steam-credentials#automated-method',
     },
     {
+      title: t('proMode.cards.autoFarmCards.title'),
+      description: t('proMode.cards.autoFarmCards.description'),
+      tier: 'gamer',
+      colSpan: 1,
+      bg: '#131313',
+      gifBg: `${CDN_BASE_URL}/pro-modal/pro9.gif`,
+    },
+    {
       title: t('proMode.cards.gamesList.title'),
       description: t('proMode.cards.gamesList.description'),
       tier: 'gamer',
@@ -416,10 +425,19 @@ export const GoProModal = () => {
       title: t('proMode.cards.freeGames.title'),
       description: t('proMode.cards.freeGames.description'),
       tier: 'gamer',
-      colSpan: 1,
+      colSpan: 2,
       bg: '#131313',
       gifBg: `${CDN_BASE_URL}/pro-modal/pro6.gif`,
       learnMoreUrl: 'https://steamgameidler.com/docs/features/free-games#automated-redemption',
+    },
+    {
+      title: t('proMode.cards.importTimings.title'),
+      description: t('proMode.cards.importTimings.description'),
+      tier: 'gamer',
+      colSpan: 2,
+      bg: '#131313',
+      gifBg: `${CDN_BASE_URL}/pro-modal/pro8.gif`,
+      learnMoreUrl: 'https://steamgameidler.com/docs/features/achievement-unlocker#import-timings',
     },
     {
       title: t('proMode.cards.sellDupes.title'),
@@ -429,15 +447,6 @@ export const GoProModal = () => {
       bg: '#131313',
       gifBg: `${CDN_BASE_URL}/pro-modal/pro7.gif`,
       learnMoreUrl: 'https://steamgameidler.com/docs/features/inventory-manager',
-    },
-    {
-      title: t('proMode.cards.importTimings.title'),
-      description: t('proMode.cards.importTimings.description'),
-      tier: 'gamer',
-      colSpan: 1,
-      bg: '#131313',
-      gifBg: `${CDN_BASE_URL}/pro-modal/pro8.gif`,
-      learnMoreUrl: 'https://steamgameidler.com/docs/features/achievement-unlocker#import-timings',
     },
   ]
 
@@ -648,6 +657,7 @@ export const GoProModal = () => {
                   { label: t('proMode.tier.gamer.credentials'), icon: TbKey },
                   { label: t('proMode.tier.gamer.gamesList'), icon: TbRefresh },
                   { label: t('proMode.tier.gamer.freeGames'), icon: TbGift },
+                  { label: t('proMode.tier.gamer.autoFarmCards'), icon: TbCards },
                   { label: t('proMode.tier.gamer.sellDupes'), icon: TbCurrencyDollar },
                   { label: t('proMode.tier.gamer.importTimings'), icon: TbClock },
                   { label: t('proMode.tier.gamer.cancelAnytime'), icon: FaCheck },

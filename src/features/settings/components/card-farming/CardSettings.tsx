@@ -2,15 +2,18 @@ import { useTranslation } from 'react-i18next'
 import { TbChevronRight } from 'react-icons/tb'
 import { Alert, cn, Divider, Select, SelectItem } from '@heroui/react'
 import { useCardSettings } from '@/features/settings'
-import { SettingsSwitch } from '@/shared/components'
-import { useUserStore } from '@/shared/stores'
-import { handleNextTaskChange } from '@/shared/utils'
+import { ProBadge, SettingsSwitch } from '@/shared/components'
+import { useStateStore, useUserStore } from '@/shared/stores'
+import { handleNextTaskChange, hasGamerFeature } from '@/shared/utils'
 
 export const CardSettings = () => {
   const { t } = useTranslation()
   const userSummary = useUserStore(state => state.userSummary)
   const userSettings = useUserStore(state => state.userSettings)
   const setUserSettings = useUserStore(state => state.setUserSettings)
+  const proTier = useUserStore(state => state.proTier)
+  const setProModalOpen = useStateStore(state => state.setProModalOpen)
+  const setProModalRequiredTier = useStateStore(state => state.setProModalRequiredTier)
   const cardSettings = useCardSettings()
 
   const taskOptions = [
@@ -72,6 +75,32 @@ export const CardSettings = () => {
             </p>
           </div>
           <SettingsSwitch type='cardFarming' name='allGames' />
+        </div>
+
+        <Divider className='bg-border/70 my-4' />
+
+        <div className='flex justify-between items-center'>
+          <div className='flex flex-col gap-2 w-1/2'>
+            <div className='flex items-center'>
+              <p className='text-sm text-content font-bold'>
+                {t('settings.cardFarming.autoFarmCards')}
+              </p>
+              {!hasGamerFeature(proTier) && <ProBadge className='scale-65' requiredTier='gamer' />}
+            </div>
+            <p className='text-xs text-altwhite'>
+              {t('settings.cardFarming.autoFarmCards.description')}
+            </p>
+          </div>
+          <div
+            onClick={() => {
+              if (!hasGamerFeature(proTier)) {
+                setProModalRequiredTier('gamer')
+                setProModalOpen(true)
+              }
+            }}
+          >
+            <SettingsSwitch type='cardFarming' name='autoFarmCards' isProSetting={true} />
+          </div>
         </div>
 
         <Divider className='bg-border/70 my-4' />
