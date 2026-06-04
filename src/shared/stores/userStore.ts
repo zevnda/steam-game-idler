@@ -97,6 +97,7 @@ export const useUserStore = create<UserStore>(set => ({
     cardFarming: {
       listGames: false,
       allGames: true,
+      autoFarmCards: false,
       nextTaskCheckbox: false,
       nextTask: null,
       credentials: null,

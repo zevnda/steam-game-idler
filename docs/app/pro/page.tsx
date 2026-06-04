@@ -88,7 +88,7 @@ const allFeatures = [
     title: 'Automated Free Game Redemption',
     description: 'Automatically redeem free games on Steam the moment they become available.',
     tier: 'gamer',
-    span: 1,
+    span: 2,
   },
   {
     icon: TbCurrencyDollar,
@@ -104,6 +104,14 @@ const allFeatures = [
       'Copy the exact achievement unlock order and timing delays from any public Steam profile.',
     tier: 'gamer',
     span: 1,
+  },
+  {
+    icon: TbCards,
+    title: 'Auto Card Farming',
+    description:
+      'Automatically detects games with card drops remaining after every library sync and starts farming them — no manual check needed.',
+    tier: 'gamer',
+    span: 2,
   },
 ]
 

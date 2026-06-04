@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { showDangerToast, showPrimaryToast } from '@/shared/components'
 import { useSearchStore, useStateStore, useUserStore } from '@/shared/stores'
-import { decrypt, hasGamerFeature, logEvent } from '@/shared/utils'
+import { decrypt, handleAutoFarmCards, hasGamerFeature, logEvent } from '@/shared/utils'
 
 export function useGamesList() {
   const { t } = useTranslation()
@@ -74,6 +74,8 @@ export function useGamesList() {
           setGamesList(newGamesList)
           if (showToast) showPrimaryToast(t('toast.gamesListUpdated'))
         }
+
+        handleAutoFarmCards()
       } catch (error) {
         console.error('Error in (silentlyUpdateGamesList):', error)
         logEvent(`[Error] in (silentlyUpdateGamesList): ${error}`)
@@ -98,6 +100,8 @@ export function useGamesList() {
         const sortStyle = localStorage.getItem('sortStyle')
         if (sortStyle) setSortStyle(sortStyle)
 
+        const wasManualRefresh = refreshKey !== previousRefreshKeyRef.current
+
         // Fetch games data, either from cache or API
         const { gamesList, recentGamesList } = await fetchGamesList(
           userSummary?.steamId,
@@ -115,6 +119,8 @@ export function useGamesList() {
 
         setIsLoading(false)
         previousRefreshKeyRef.current = refreshKey
+
+        if (wasManualRefresh) handleAutoFarmCards()
       } catch (error) {
         setIsLoading(false)
         showDangerToast(t('common.error'))
