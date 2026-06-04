@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { TbChevronLeft, TbChevronRight, TbPlus } from 'react-icons/tb'
 import { Button, Spinner } from '@heroui/react'
 import Image from 'next/image'
+import { CDN_BASE_URL } from '@/shared/constants'
 
 interface RecommendedCardDropsCarouselProps {
   gamesWithDrops: Game[]
@@ -86,7 +87,7 @@ export const RecommendedCardDropsCarousel = ({
   }
 
   const handleImageError = (event: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    ;(event.target as HTMLImageElement).src = '/fallback.webp'
+    ;(event.target as HTMLImageElement).src = `${CDN_BASE_URL}/fallback.webp`
   }
 
   useEffect(() => {

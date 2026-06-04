@@ -8,6 +8,7 @@ import Image from 'next/image'
 import { CardMenu } from '@/features/games-list'
 import { ExtLink } from '@/shared/components/ExtLink'
 import { IdleTimer } from '@/shared/components/IdleTimer'
+import { CDN_BASE_URL } from '@/shared/constants'
 import { useIdleStore, useStateStore } from '@/shared/stores'
 import { handleIdle, handleStopIdle, viewAchievments } from '@/shared/utils'
 
@@ -44,7 +45,7 @@ export const GameCard = memo(function GameCard({
   const isIdling = idlingGame !== undefined
 
   const handleImageError = (event: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    ;(event.target as HTMLImageElement).src = '/fallback.webp'
+    ;(event.target as HTMLImageElement).src = `${CDN_BASE_URL}/fallback.webp`
   }
 
   if (isFreeGame) {

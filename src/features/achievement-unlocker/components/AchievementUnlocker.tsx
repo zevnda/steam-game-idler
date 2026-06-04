@@ -5,6 +5,7 @@ import { TbCheck, TbPlayerStopFilled } from 'react-icons/tb'
 import { Button, cn } from '@heroui/react'
 import Image from 'next/image'
 import { useAchievementUnlocker } from '@/features/achievement-unlocker'
+import { CDN_BASE_URL } from '@/shared/constants'
 import { useStateStore } from '@/shared/stores'
 import { startCardFarming, stopIdle, updateDiscordPresence, updateTrayIcon } from '@/shared/utils'
 
@@ -70,7 +71,7 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
   }, [currentGame?.appid])
 
   const handleImageError = (event: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    ;(event.target as HTMLImageElement).src = '/fallback.webp'
+    ;(event.target as HTMLImageElement).src = `${CDN_BASE_URL}/fallback.webp`
   }
 
   return (

@@ -12,6 +12,7 @@ import {
 import { handleSaveCredentials } from '@/features/settings/utils/steam-credentials/handleSteamCredentials'
 import { CustomModal, ExtLink, ProBadge, showDangerToast } from '@/shared/components'
 import { OpenDocs } from '@/shared/components/OpenDocs'
+import { CDN_BASE_URL } from '@/shared/constants'
 import { useStateStore, useUserStore } from '@/shared/stores'
 import { hasGamerFeature, logEvent } from '@/shared/utils'
 
@@ -76,7 +77,7 @@ export const SteamCredentials = () => {
   }
 
   const handleImageError = (event: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    ;(event.target as HTMLImageElement).src = '/fallback.webp'
+    ;(event.target as HTMLImageElement).src = `${CDN_BASE_URL}/fallback.webp`
   }
 
   return (

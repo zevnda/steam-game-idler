@@ -7,6 +7,7 @@ import { FixedSizeList as List } from 'react-window'
 import { cn, Divider, Input, NumberInput } from '@heroui/react'
 import Image from 'next/image'
 import { useGameSettings } from '@/features/settings'
+import { CDN_BASE_URL } from '@/shared/constants'
 import { useUserStore } from '@/shared/stores'
 
 interface RowData {
@@ -26,7 +27,7 @@ const Row = memo(({ index, style, data }: RowProps) => {
   const item = filteredGamesList[index]
 
   const handleImageError = (event: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    ;(event.target as HTMLImageElement).src = '/fallback.webp'
+    ;(event.target as HTMLImageElement).src = `${CDN_BASE_URL}/fallback.webp`
   }
 
   const isSelected = selectedGame?.appid === item.appid
