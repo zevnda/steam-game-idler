@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { cn, Spinner } from '@heroui/react'
 import Image from 'next/image'
 import { ProBadge } from '@/shared/components'
-import { useNavigationStore, useStateStore, useUserStore } from '@/shared/stores'
+import { useStateStore, useUserStore } from '@/shared/stores'
 import { hasCasualFeature, hasGamerFeature } from '@/shared/utils'
 
 export const AdSlot = () => {
@@ -11,7 +11,6 @@ export const AdSlot = () => {
   const isPro = useUserStore(state => state.isPro)
   const proTier = useUserStore(state => state.proTier)
   const setProModalRequiredTier = useStateStore(state => state.setProModalRequiredTier)
-  const activePage = useNavigationStore(state => state.activePage)
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
   const setProModalOpen = useStateStore(state => state.setProModalOpen)
   const [reloadKey, setReloadKey] = useState(0)
@@ -198,7 +197,7 @@ export const AdSlot = () => {
     <div
       className={cn(
         'transition-all ease-in-out border border-border p-2 pb-1 rounded-lg',
-        sidebarCollapsed && activePage !== 'settings' ? 'scale-[.160]' : 'scale-[.75]',
+        sidebarCollapsed ? 'scale-[.160]' : 'scale-[.75]',
         isPro === null && 'opacity-0',
         isPro !== null && hasCasualFeature(proTier) && 'opacity-0',
         isPro !== null && !hasCasualFeature(proTier) && 'opacity-100',
