@@ -15,6 +15,7 @@ import { Button, Modal, ModalBody, ModalContent } from '@heroui/react'
 import { AnimatePresence, motion } from 'framer-motion'
 import Image from 'next/image'
 import { ExtLink } from '@/shared/components'
+import { CDN_BASE_URL } from '@/shared/constants'
 import { useStateStore, useUserStore } from '@/shared/stores'
 import { openExternalLink } from '@/shared/utils'
 
@@ -26,15 +27,12 @@ interface PriceData {
 // ─── Feature card data ──────────────────────────────────────────────────────
 
 interface CardDef {
-  icon: React.ElementType
   title: string
   description: string
   tier: 'casual' | 'gamer'
   colSpan: 1 | 2
   bg: string
-  videoBg?: string
-  accentColor: string
-  iconOpacity: number
+  gifBg?: string
   learnMoreUrl?: string
 }
 
@@ -157,14 +155,11 @@ function FeatureCard({ card, index }: { card: CardDef; index: number }) {
       }}
       className='relative rounded-4xl overflow-hidden cursor-default group min-h-87.5'
     >
-      {/* Video background */}
-      {card.videoBg && (
-        <video
-          src={card.videoBg}
-          autoPlay
-          loop
-          muted
-          playsInline
+      {card.gifBg && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={card.gifBg}
+          alt=''
           className='absolute inset-0 w-full h-full object-cover opacity-50'
         />
       )}
@@ -377,95 +372,71 @@ export const GoProModal = () => {
 
   const CARDS: CardDef[] = [
     {
-      icon: TbAd,
       title: t('proMode.cards.adFree.title'),
       description: t('proMode.cards.adFree.description'),
       tier: 'casual',
       colSpan: 1,
       bg: '#131313',
-      videoBg: 'https://www.pexels.com/download/video/8820503/',
-      accentColor: '#3866c9',
-      iconOpacity: 0.12,
+      gifBg: `${CDN_BASE_URL}/pro-modal/pro1.gif`,
     },
     {
-      icon: TbPalette,
       title: t('proMode.cards.themes.title'),
       description: t('proMode.cards.themes.description'),
       tier: 'casual',
       colSpan: 1,
       bg: '#131313',
-      videoBg: 'https://www.pexels.com/download/video/16685812/',
-      accentColor: '#3866c9',
-      iconOpacity: 0.12,
+      gifBg: `${CDN_BASE_URL}/pro-modal/pro2.gif`,
     },
     {
-      icon: FaDiscord,
       title: t('proMode.cards.discordRole.title'),
       description: t('proMode.cards.discordRole.description'),
       tier: 'casual',
       colSpan: 1,
       bg: '#131313',
-      videoBg: 'https://www.pexels.com/download/video/29942160/',
-      accentColor: '#3866c9',
-      iconOpacity: 0.14,
+      gifBg: `${CDN_BASE_URL}/pro-modal/pro3.gif`,
     },
     {
-      icon: TbKey,
       title: t('proMode.cards.credentials.title'),
       description: t('proMode.cards.credentials.description'),
       tier: 'gamer',
       colSpan: 2,
       bg: '#131313',
-      videoBg: 'https://www.pexels.com/download/video/7914927/',
-      accentColor: '#7c38c9',
-      iconOpacity: 0.12,
+      gifBg: `${CDN_BASE_URL}/pro-modal/pro4.gif`,
       learnMoreUrl: 'https://steamgameidler.com/docs/steam-credentials#automated-method',
     },
     {
-      icon: TbRefresh,
       title: t('proMode.cards.gamesList.title'),
       description: t('proMode.cards.gamesList.description'),
       tier: 'gamer',
       colSpan: 1,
       bg: '#131313',
-      videoBg: 'https://www.pexels.com/download/video/8819437/',
-      accentColor: '#7c38c9',
-      iconOpacity: 0.1,
+      gifBg: `${CDN_BASE_URL}/pro-modal/pro5.gif`,
     },
     {
-      icon: TbGift,
       title: t('proMode.cards.freeGames.title'),
       description: t('proMode.cards.freeGames.description'),
       tier: 'gamer',
       colSpan: 1,
       bg: '#131313',
-      videoBg: 'https://www.pexels.com/download/video/27607570/',
-      accentColor: '#7c38c9',
-      iconOpacity: 0.1,
+      gifBg: `${CDN_BASE_URL}/pro-modal/pro6.gif`,
       learnMoreUrl: 'https://steamgameidler.com/docs/features/free-games#automated-redemption',
     },
     {
-      icon: TbCurrencyDollar,
       title: t('proMode.cards.sellDupes.title'),
       description: t('proMode.cards.sellDupes.description'),
       tier: 'gamer',
       colSpan: 1,
       bg: '#131313',
-      videoBg: 'https://www.pexels.com/download/video/8816946/',
-      accentColor: '#7c38c9',
-      iconOpacity: 0.12,
+      gifBg: `${CDN_BASE_URL}/pro-modal/pro7.gif`,
       learnMoreUrl: 'https://steamgameidler.com/docs/features/inventory-manager',
     },
     {
-      icon: TbClock,
       title: t('proMode.cards.importTimings.title'),
       description: t('proMode.cards.importTimings.description'),
       tier: 'gamer',
       colSpan: 1,
       bg: '#131313',
-      videoBg: 'https://www.pexels.com/download/video/33975259/',
-      accentColor: '#7c38c9',
-      iconOpacity: 0.1,
+      gifBg: `${CDN_BASE_URL}/pro-modal/pro8.gif`,
       learnMoreUrl: 'https://steamgameidler.com/docs/features/achievement-unlocker#import-timings',
     },
   ]
@@ -689,7 +660,7 @@ export const GoProModal = () => {
 
             <div className='flex flex-col items-center justify-center w-full'>
               <Image
-                src='/powered-by-stripe.svg'
+                src={`${CDN_BASE_URL}/pro-modal/stripe.svg`}
                 alt='Powered by Stripe'
                 className='mt-10 select-none'
                 width={130}

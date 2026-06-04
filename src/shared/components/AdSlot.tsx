@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { cn, Spinner } from '@heroui/react'
 import Image from 'next/image'
 import { ProBadge } from '@/shared/components'
+import { CDN_BASE_URL } from '@/shared/constants'
 import { useStateStore, useUserStore } from '@/shared/stores'
 import { hasCasualFeature, hasGamerFeature } from '@/shared/utils'
 
@@ -16,9 +17,12 @@ export const AdSlot = () => {
   const [reloadKey, setReloadKey] = useState(0)
   const [adFilled, setAdFilled] = useState(false)
 
-  // Add more fallback ad image paths here as needed
   const fallbackAds = useMemo(
-    () => ['/ads/ad-fallback-1.webp', '/ads/ad-fallback-2.webp', '/ads/ad-fallback-3.webp'],
+    () => [
+      `${CDN_BASE_URL}/ads/ad-fallback-1.webp`,
+      `${CDN_BASE_URL}/ads/ad-fallback-2.webp`,
+      `${CDN_BASE_URL}/ads/ad-fallback-3.webp`,
+    ],
     [],
   )
 

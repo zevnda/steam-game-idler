@@ -10,6 +10,7 @@ import {
   handleThemeChange,
 } from '@/features/settings'
 import { ProBadge, SettingsSwitch } from '@/shared/components'
+import { CDN_BASE_URL } from '@/shared/constants'
 import { useStateStore, useUserStore } from '@/shared/stores'
 import { hasGamerFeature } from '@/shared/utils'
 
@@ -209,7 +210,7 @@ export const CustomizationSettings = () => {
                   >
                     <div className='relative cursor-pointer'>
                       <Image
-                        src={`/themes/${theme.key}.webp`}
+                        src={`${CDN_BASE_URL}/themes/${theme.key}.webp`}
                         alt={theme.label}
                         width={147}
                         height={45}

@@ -28,6 +28,7 @@ import Image from 'next/image'
 import { RecommendedCardDropsCarousel } from '@/features/card-farming'
 import { ManualAddModal, useCustomList } from '@/features/custom-lists'
 import { GameCard } from '@/shared/components'
+import { CDN_BASE_URL } from '@/shared/constants'
 import { useNavigationStore, useSearchStore, useStateStore, useUserStore } from '@/shared/stores'
 import {
   getAllGamesWithDrops,
@@ -664,7 +665,7 @@ const Row = memo(({ index, style, data }: RowProps) => {
   const isBlacklisted = blacklist.includes(item.appid)
 
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    ;(e.target as HTMLImageElement).src = '/fallback.webp'
+    ;(e.target as HTMLImageElement).src = `${CDN_BASE_URL}/fallback.webp`
   }
 
   return (
