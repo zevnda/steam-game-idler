@@ -31,6 +31,11 @@ export function useCheckForPro() {
 
         const data = await response.json()
 
+        if (data?.revoked) {
+          await invoke('quit_app')
+          return
+        }
+
         // Migration: persist auto-generated key for legacy Steam ID subscribers
         if (!licenseKey && data?.licenseKey) {
           localStorage.setItem('licenseKey', data.licenseKey)
@@ -70,5 +75,7 @@ export function useCheckForPro() {
     }
 
     checkSubscription()
+    const interval = setInterval(checkSubscription, 3 * 60 * 60 * 1000)
+    return () => clearInterval(interval)
   }, [userSummary?.steamId, setIsPro, setProTier, setProDetails])
 }
