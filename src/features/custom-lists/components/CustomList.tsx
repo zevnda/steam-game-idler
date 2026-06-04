@@ -5,7 +5,7 @@ import type {
   InvokeSettings,
   UserSummary,
 } from '@/shared/types'
-import type { DragEndEvent } from '@dnd-kit/core'
+import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core'
 import { invoke } from '@tauri-apps/api/core'
 import { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
@@ -19,7 +19,7 @@ import {
   TbSortDescending2,
 } from 'react-icons/tb'
 import { FixedSizeList as List } from 'react-window'
-import { DndContext } from '@dnd-kit/core'
+import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { Button, cn, Select, SelectItem, Tab, Tabs } from '@heroui/react'
@@ -102,17 +102,10 @@ export const CustomList = ({ type }: CustomListProps) => {
   const [columnCount, setColumnCount] = useState(5)
   const [windowInnerHeight, setWindowInnerHeight] = useState(window.innerHeight)
   const [sortStyle, setSortStyle] = useState('a-z')
+  const [activeId, setActiveId] = useState<number | null>(null)
+  const [rowHeight, setRowHeight] = useState(220)
 
-  useEffect(() => {
-    const handleResize = () => {
-      setWindowInnerHeight(window.innerHeight)
-    }
-    window.addEventListener('resize', handleResize)
-    handleResize()
-    return () => {
-      window.removeEventListener('resize', handleResize)
-    }
-  }, [])
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }))
 
   const blacklist = useMemo(
     () => userSettings.cardFarming.blacklist || [],
@@ -173,23 +166,36 @@ export const CustomList = ({ type }: CustomListProps) => {
     if (list.length === 0 && sortStyle === 'list') setSortStyle('a-z')
   }, [list.length, sortStyle])
 
+  const rows = useMemo(() => {
+    const result: Game[][] = []
+    for (let i = 0; i < list.length; i += columnCount) {
+      result.push(list.slice(i, i + columnCount))
+    }
+    return result
+  }, [list, columnCount])
+
+  const activeItem = useMemo(
+    () => (activeId !== null ? (list.find(item => item.appid === activeId) ?? null) : null),
+    [activeId, list],
+  )
+
   useEffect(() => {
     return () => setCustomListQueryValue('')
   }, [setCustomListQueryValue])
 
   const handleResize = useCallback(() => {
-    if (window.innerWidth >= 3200) {
-      setColumnCount(12)
-    } else if (window.innerWidth >= 2300) {
-      setColumnCount(10)
-    } else if (window.innerWidth >= 2000) {
-      setColumnCount(8)
-    } else if (window.innerWidth >= 1500) {
-      setColumnCount(7)
-    } else {
-      setColumnCount(5)
-    }
-  }, [])
+    let cols = 5
+    if (window.innerWidth >= 3200) cols = 12
+    else if (window.innerWidth >= 2300) cols = 10
+    else if (window.innerWidth >= 2000) cols = 8
+    else if (window.innerWidth >= 1500) cols = 7
+    setColumnCount(cols)
+    setWindowInnerHeight(window.innerHeight)
+    const sidebarWidth = sidebarCollapsed ? 56 : 250
+    const availableWidth = window.innerWidth - sidebarWidth - 48
+    const colWidth = (availableWidth - (cols - 1) * 20) / cols
+    setRowHeight(Math.ceil(colWidth * (215 / 460) + 70))
+  }, [sidebarCollapsed])
 
   useEffect(() => {
     handleResize()
@@ -197,7 +203,12 @@ export const CustomList = ({ type }: CustomListProps) => {
     return () => window.removeEventListener('resize', handleResize)
   }, [handleResize])
 
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveId(event.active.id as number)
+  }
+
   const handleDragEnd = (event: DragEndEvent) => {
+    setActiveId(null)
     const { active, over } = event
     if (over && active.id !== over.id) {
       setList(items => {
@@ -566,30 +577,49 @@ export const CustomList = ({ type }: CustomListProps) => {
                   ))}
                 </div>
               ) : (
-                <DndContext onDragEnd={handleDragEnd}>
+                <DndContext
+                  sensors={sensors}
+                  onDragStart={handleDragStart}
+                  onDragEnd={handleDragEnd}
+                >
                   <SortableContext items={list.map(item => item.appid)}>
-                    <div
-                      className={cn(
-                        'grid gap-x-5 gap-y-4 px-6',
-                        columnCount === 7 ? 'grid-cols-7' : 'grid-cols-5',
-                        columnCount === 8 ? 'grid-cols-8' : '',
-                        columnCount === 10 ? 'grid-cols-10' : '',
-                        columnCount === 12 ? 'grid-cols-12' : '',
-                      )}
+                    <List
+                      height={windowInnerHeight - 209 - (carouselVisible ? 266 : 0)}
+                      itemCount={rows.length}
+                      itemSize={rowHeight}
+                      width='100%'
+                      itemData={{
+                        rows,
+                        type,
+                        activeId,
+                        disabledAutoIdleGames,
+                        handleGameClick,
+                        handleRemoveGame,
+                        handleToggleAutoIdleGame,
+                      }}
                     >
-                      {list.map(item => (
-                        <SortableGameCard
-                          key={item.appid}
-                          item={item}
-                          type={type}
-                          onOpen={() => handleGameClick(item)}
-                          handleRemoveGame={() => handleRemoveGame(item)}
-                          disabledAutoIdleGames={disabledAutoIdleGames}
-                          handleToggleAutoIdleGame={handleToggleAutoIdleGame}
-                        />
-                      ))}
-                    </div>
+                      {SortableRow}
+                    </List>
                   </SortableContext>
+                  <DragOverlay dropAnimation={null}>
+                    {activeItem ? (
+                      <div
+                        style={{
+                          width: `calc((100vw - ${sidebarCollapsed ? 56 : 250}px - 48px - ${(columnCount - 1) * 20}px) / ${columnCount})`,
+                        }}
+                      >
+                        <GameCard
+                          item={activeItem}
+                          isCustomList={true}
+                          isAchievementUnlocker={type === 'achievementUnlockerList'}
+                          isAutoIdleList={type === 'autoIdleList'}
+                          autoIdleEnabled={!disabledAutoIdleGames.has(activeItem.appid)}
+                          onOpen={() => handleGameClick(activeItem)}
+                          handleRemoveGame={() => handleRemoveGame(activeItem)}
+                        />
+                      </div>
+                    ) : null}
+                  </DragOverlay>
                 </DndContext>
               )}
             </div>
@@ -737,15 +767,17 @@ Row.displayName = 'Row'
 interface SortableGameCardProps {
   item: Game
   type: CustomListType
+  isActive: boolean
   onOpen: () => void
   handleRemoveGame: (game: Game) => Promise<void>
   disabledAutoIdleGames?: Set<number>
   handleToggleAutoIdleGame?: (appid: number) => void
 }
 
-function SortableGameCard({
+const SortableGameCard = memo(function SortableGameCard({
   item,
   type,
+  isActive,
   onOpen,
   handleRemoveGame,
   disabledAutoIdleGames,
@@ -760,7 +792,13 @@ function SortableGameCard({
   }
 
   return (
-    <div className='cursor-grab' ref={setNodeRef} style={style} {...attributes} {...listeners}>
+    <div
+      className={cn('cursor-grab', isActive && 'opacity-0')}
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+    >
       <GameCard
         item={item}
         isCustomList={true}
@@ -773,4 +811,54 @@ function SortableGameCard({
       />
     </div>
   )
+})
+
+interface SortableRowData {
+  rows: Game[][]
+  type: CustomListType
+  activeId: number | null
+  disabledAutoIdleGames: Set<number>
+  handleGameClick: (game: Game) => void
+  handleRemoveGame: (game: Game) => Promise<void>
+  handleToggleAutoIdleGame: (appid: number) => void
 }
+
+interface SortableRowProps {
+  index: number
+  style: React.CSSProperties
+  data: SortableRowData
+}
+
+const SortableRow = memo(({ index, style, data }: SortableRowProps) => {
+  const {
+    rows,
+    type,
+    activeId,
+    disabledAutoIdleGames,
+    handleGameClick,
+    handleRemoveGame,
+    handleToggleAutoIdleGame,
+  } = data
+  const rowGames = rows[index]
+  if (!rowGames) return null
+
+  return (
+    <div style={style} className='flex items-start gap-5 px-6 pb-4'>
+      {rowGames.map(item => (
+        <div key={item.appid} className='flex-1 min-w-0'>
+          <SortableGameCard
+            item={item}
+            type={type}
+            isActive={activeId === item.appid}
+            onOpen={() => handleGameClick(item)}
+            handleRemoveGame={() => handleRemoveGame(item)}
+            disabledAutoIdleGames={disabledAutoIdleGames}
+            handleToggleAutoIdleGame={handleToggleAutoIdleGame}
+          />
+        </div>
+      ))}
+    </div>
+  )
+})
+
+SortableRow.displayName = 'SortableRow'
