@@ -596,6 +596,7 @@ export const CustomList = ({ type }: CustomListProps) => {
                         handleGameClick,
                         handleRemoveGame,
                         handleToggleAutoIdleGame,
+                        columnCount,
                       }}
                     >
                       {SortableRow}
@@ -821,6 +822,7 @@ interface SortableRowData {
   handleGameClick: (game: Game) => void
   handleRemoveGame: (game: Game) => Promise<void>
   handleToggleAutoIdleGame: (appid: number) => void
+  columnCount: number
 }
 
 interface SortableRowProps {
@@ -838,24 +840,33 @@ const SortableRow = memo(({ index, style, data }: SortableRowProps) => {
     handleGameClick,
     handleRemoveGame,
     handleToggleAutoIdleGame,
+    columnCount,
   } = data
   const rowGames = rows[index]
   if (!rowGames) return null
 
   return (
-    <div style={style} className='flex items-start gap-5 px-6 pb-4'>
+    <div
+      style={style}
+      className={cn(
+        'grid gap-x-5 gap-y-4 px-6 pb-4 items-start',
+        columnCount === 7 ? 'grid-cols-7' : 'grid-cols-5',
+        columnCount === 8 ? 'grid-cols-8' : '',
+        columnCount === 10 ? 'grid-cols-10' : '',
+        columnCount === 12 ? 'grid-cols-12' : '',
+      )}
+    >
       {rowGames.map(item => (
-        <div key={item.appid} className='flex-1 min-w-0'>
-          <SortableGameCard
-            item={item}
-            type={type}
-            isActive={activeId === item.appid}
-            onOpen={() => handleGameClick(item)}
-            handleRemoveGame={() => handleRemoveGame(item)}
-            disabledAutoIdleGames={disabledAutoIdleGames}
-            handleToggleAutoIdleGame={handleToggleAutoIdleGame}
-          />
-        </div>
+        <SortableGameCard
+          key={item.appid}
+          item={item}
+          type={type}
+          isActive={activeId === item.appid}
+          onOpen={() => handleGameClick(item)}
+          handleRemoveGame={() => handleRemoveGame(item)}
+          disabledAutoIdleGames={disabledAutoIdleGames}
+          handleToggleAutoIdleGame={handleToggleAutoIdleGame}
+        />
       ))}
     </div>
   )
