@@ -165,6 +165,16 @@ pub async fn kill_all_steamutil_processes() -> Result<Value, String> {
     }
 }
 
+// Kill tracked SteamUtility processes via their existing handles
+pub fn kill_tracked_processes_blocking() {
+    if let Ok(mut processes) = SPAWNED_PROCESSES.lock() {
+        for process in processes.iter_mut() {
+            let _ = process.child.kill();
+        }
+        processes.clear();
+    }
+}
+
 // Helper function to clean up dead processes
 pub fn cleanup_dead_processes() -> Result<(), String> {
     let mut processes = SPAWNED_PROCESSES.lock().map_err(|e| e.to_string())?;

@@ -36,7 +36,12 @@ pub async fn start_idle(app_id: u32, app_name: String) -> Result<Value, String> 
 
     {
         let mut processes = SPAWNED_PROCESSES.lock().map_err(|e| e.to_string())?;
-        processes.push(ProcessInfo { child, app_id, pid, source: "idle".to_string() });
+        processes.push(ProcessInfo {
+            child,
+            app_id,
+            pid,
+            source: "idle".to_string(),
+        });
     }
 
     tokio::time::sleep(Duration::from_millis(1000)).await;
@@ -150,7 +155,11 @@ pub async fn start_farm_idle(games_list: Vec<GameInfo>) -> Result<Value, String>
 pub async fn stop_farm_idle() -> Result<Value, String> {
     let pids: Vec<u32> = {
         let processes = SPAWNED_PROCESSES.lock().map_err(|e| e.to_string())?;
-        processes.iter().filter(|p| p.source == "farm").map(|p| p.pid).collect()
+        processes
+            .iter()
+            .filter(|p| p.source == "farm")
+            .map(|p| p.pid)
+            .collect()
     };
 
     if !pids.is_empty() {
