@@ -170,9 +170,7 @@ pub fn run() {
         .run(move |_, event| match event {
             tauri::RunEvent::Exit => {
                 // Kill all SteamUtil processes on app exit
-                tauri::async_runtime::block_on(async {
-                    let _ = kill_all_steamutil_processes().await;
-                });
+                kill_tracked_processes_blocking();
             }
             _ => {}
         });
