@@ -422,7 +422,7 @@ const unlockAchievements = async (
         // Wait for a delay before unlocking the next achievement
         // Use delayNextUnlock from achievement if present, otherwise use a global unlock interval
         let delayMs: number
-        if (typeof achievement.delayNextUnlock === 'number' && achievement.delayNextUnlock > 0) {
+        if (typeof achievement.delayNextUnlock === 'number' && achievement.delayNextUnlock >= 0) {
           delayMs = achievement.delayNextUnlock * 60 * 1000
         } else {
           delayMs = getRandomDelay(interval[0], interval[1])
