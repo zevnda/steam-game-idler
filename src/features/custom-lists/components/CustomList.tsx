@@ -403,7 +403,10 @@ export const CustomList = ({ type }: CustomListProps) => {
                   variant='solid'
                   radius='full'
                   selectedKey={activeTab}
-                  onSelectionChange={key => setActiveTab(key as 'all' | 'list' | 'blacklist')}
+                  onSelectionChange={key => {
+                    setActiveTab(key as 'all' | 'list' | 'blacklist')
+                    setCustomListQueryValue('')
+                  }}
                   classNames={{
                     tabList: 'gap-0 bg-item-active',
                     tab: cn(
