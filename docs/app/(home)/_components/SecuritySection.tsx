@@ -17,7 +17,7 @@ const trustPoints = [
     icon: <FiEye className='w-5 h-5' />,
     iconClass: 'text-text-muted bg-white/5 border-white/10',
     title: 'No Data Collection',
-    desc: 'No analytics, no telemetry, no accounts. Your Steam credentials never leave your machine.',
+    desc: 'No analytics*, no telemetry*, no accounts. Your Steam credentials never leave your machine.',
   },
   {
     icon: <FiRefreshCw className='w-5 h-5' />,
@@ -33,8 +33,8 @@ const SEQUENCE = [
   { type: 'pass', text: '✓ SHA-256 matches source commit a4e86538' },
   { type: 'cmd', text: '$ netstat --filter=SteamGameIdler' },
   { type: 'log', text: 'Monitoring network activity...' },
-  { type: 'pass', text: '✓ 0 outbound connections (excl. Steam)' },
-  { type: 'pass', text: '✓ Zero telemetry endpoints detected' },
+  { type: 'pass', text: '✓ 0 outbound connections*' },
+  { type: 'pass', text: '✓ Zero telemetry endpoints detected*' },
   { type: 'cmd', text: '$ inspect --storage ~/.config/sgi/' },
   { type: 'log', text: 'Reading credential store...' },
   { type: 'pass', text: '✓ AES-256 encrypted via system keyring' },
@@ -279,6 +279,11 @@ export default function SecuritySection() {
             >
               VERIFIED SECURE
             </motion.div>
+
+            <p className='text-xs text-text-muted mt-3 italic'>
+              * excluding Steam, Google Ads & Vercel Analytics (the latter only applies when
+              visiting this website)
+            </p>
           </motion.div>
         </div>
       </div>
