@@ -4,6 +4,7 @@ description: Common issues and solutions.
 ---
 
 import { Step, Steps } from 'fumadocs-ui/components/steps';
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
 
 # Troubleshooting
 
@@ -38,130 +39,283 @@ This page covers common issues and their solutions when using Steam Game Idler.
   </Step>
 </Steps>
 
-## Common Issues
+## Installation Issues
 
-### Installation & Startup Problems
+<Accordions type="multiple">
+  <Accordion title="SGI won't install" id="install-fails">
+    - Make sure you downloaded the installer from the official [GitHub releases page](https://github.com/zevnda/steam-game-idler/releases) or [steamgameidler.com](https://steamgameidler.com) — files from other sources may be incomplete or modified
+    - Right-click the installer and select **Run as administrator**
+    - Temporarily disable your antivirus/Windows Defender during installation (see below), then re-enable it afterwards
+    - Make sure you have enough free disk space
+    - If the installer hangs or crashes, restart your PC and try again
+  </Accordion>
 
-#### SGI Won't Install
-**Symptoms:** Installation fails or shows errors
+  <Accordion title="Antivirus or Windows Defender is blocking SGI" id="antivirus-blocking">
+    SGI's installer and the bundled `SteamUtility.exe` (used for idling and achievement management) are not code-signed with a paid certificate, so Windows SmartScreen and some antivirus programs may flag them as "unknown publisher" or quarantine them. This is a false positive.
 
-**Solutions:**
-- Run the installer as administrator
-- Temporarily disable antivirus during installation
-- Make sure you have sufficient disk space
-- Download the installer again (it might be corrupted)
+    <Steps>
+      <Step>
+        ### If SmartScreen blocks the installer
+        Click **More info**, then **Run anyway**
+      </Step>
 
-#### SGI Won't Start
-**Symptoms:** Application doesn't open or shows blank screen
+      <Step>
+        ### If your antivirus quarantines or deletes a file
+        Restore the file from quarantine, then add an exclusion for SGI's install folder (default: `C:\Program Files\Steam Game Idler\`) and for `%appdata%\com.zevnda.steam-game-idler\`
+      </Step>
 
-**Solutions:**
-- Make sure Steam is running and you're signed in
-- Run SGI as administrator
-- Check if Windows Defender is blocking the application
-- Restart your computer and try again
+      <Step>
+        ### If idling won't start because SteamUtility.exe is removed
+        Re-run the installer to restore the missing file, after adding the exclusion above
+      </Step>
+    </Steps>
 
-### Card Farming Issues
+    <Callout type="info">
+      If you'd like to verify the source code yourself, SGI is fully open source — see the [GitHub repository](https://github.com/zevnda/steam-game-idler)
+    </Callout>
+  </Accordion>
 
-#### No Cards Dropping
-**Symptoms:** Card farming runs but no cards are received
+  <Accordion title="Missing .NET Framework / SteamUtility errors" id="dotnet-missing">
+    SGI's idling and achievement features rely on a bundled helper process (`SteamUtility.exe`) which requires the **.NET Framework 4.8** runtime. Most Windows 10/11 installs already include this, but if idling or achievement actions fail immediately with no clear error:
 
-**Solutions:**
-- Check if games actually have card drops remaining
-- Make sure you own the games (not family-shared)
-- Wait longer - new accounts may have a 3-hour+ delay
-- Check if the games are marked as private in your library
+    - Install the [.NET Framework 4.8 runtime](https://dotnet.microsoft.com/en-us/download/dotnet-framework/net48) from Microsoft
+    - Restart your PC after installing, then try again
+  </Accordion>
 
-#### "Incorrect card farming credentials" Error
-**Symptoms:** Card farming can't authenticate
+  <Accordion title="I need admin rights to install or update SGI" id="admin-rights">
+    SGI installs per-machine by default (available to all Windows users on the PC), which requires administrator privileges. If you don't have admin rights:
 
-**Solutions:**
-- Update your Steam cookies following the [Steam Credentials](/docs/steam-credentials) guide
-- Make sure you copied cookies from `steamcommunity.com`, not `store.steampowered.com`
-- Check if you need additional cookies (`steamParental`, `steamMachineAuth`)
-- Clear browser cache and get fresh cookies
+    - Ask an administrator to run the installer once
+    - Updates are installed silently in the background and also require the original install permissions — if updates consistently fail, reinstall with an administrator account
+  </Accordion>
+</Accordions>
 
-### Achievement Issues
+## Startup Issues
 
-#### Achievement Unlocker Fails to Unlock Achievements
-**Symptoms:** Achievement unlocker fails or shows errors
+<Accordions type="multiple">
+  <Accordion title="SGI won't start/run at all" id="wont-start">
+    <Steps>
+      <Step>
+        ### Check for a hidden window or tray icon
+        SGI's main window is hidden until it finishes loading, and may also be set to start minimized. Look for the SGI icon in your system tray (bottom-right of the taskbar, click the **^** arrow to see hidden icons)
+      </Step>
 
-**Solutions:**
-- Check if achievements are marked as "Protected" in [Achievement Manager](/docs/features/achievement-manager#special-flags)
-- Verify the game has achievements
-- Try unlocking them manually in [Achievement Manager](/docs/features/achievement-manager) first
+      <Step>
+        ### Check for leftover processes
+        Open **Task Manager** and look for `steam-game-idler.exe` and `SteamUtility.exe`. If either is running but nothing appears, end both processes and relaunch SGI
+      </Step>
 
-#### Achievement Manager Shows "No achievements/statistics found"
-**Symptoms:** Empty achievement list for a game
+      <Step>
+        ### Check the log file
+        If SGI ran before, check `%appdata%\com.zevnda.steam-game-idler\log.txt` for errors from the last session (see [Debug Settings](/docs/settings/debug))
+      </Step>
 
-**Solutions:**
-- Set your Steam profile's Game Details to public
-- Make sure the game actually has achievements and statistics
-- Delete the games's achievement cache file and try again:
-    1. Close SGI
-    2. Navigate to `%appdata%/roaming/com.zevnda.steam-game-idler/cache/{user_id}/achievement_data`
-    3. Delete the game's cache file (e.g., `12345.json`)
+      <Step>
+        ### Reset window state
+        A corrupted window-position file can prevent the window from appearing. Close SGI completely (including via Task Manager), then delete `%appdata%\com.zevnda.steam-game-idler\.window-state.json` (if present) and relaunch
+      </Step>
 
-### Performance Issues
+      <Step>
+        ### Reinstall
+        If none of the above works, uninstall SGI, restart your PC, and reinstall the latest version
+      </Step>
+    </Steps>
+  </Accordion>
 
-#### Too Many SteamUtility Processes
-**Symptoms:** Many `SteamUtility.exe` processes in Task Manager
+  <Accordion title="SGI is open in the system tray but I can't see the main window" id="tray-no-window">
+    This usually means **Start minimized to tray** is enabled, or the window was closed to tray and is simply hidden.
 
-**Solutions:**
-- This is normal when idling multiple games
-- Reduce the number of games being idled simultaneously
-- Restart SGI (or system) if processes don't close after stopping idling
+    - **Left-click** the SGI icon in the system tray to show and focus the main window
+    - If clicking the tray icon does nothing, right-click it and select **Show**
+    - If the window still doesn't appear, it may be positioned off-screen (see below)
+    - To stop SGI from starting minimized, go to **Settings → General** and disable **Start minimized**
+    - Can also happen if **WebView2** is missing or outdated — download the "Evergreen Bootstrapper" via [Microsoft's WebView2 download page](https://developer.microsoft.com/en-us/microsoft-edge/webview2/) and relaunch SGI
+  </Accordion>
 
-## Advanced Troubleshooting
+  <Accordion title="The window appears off-screen, too small, or in the wrong position" id="window-offscreen">
+    SGI remembers its window size and position between sessions. If you changed monitor setups (e.g. disconnected a second monitor) the window may open off-screen.
 
-### Check Log Files
+    - Try pressing **Win + Shift + Left/Right Arrow** while the window is focused (use Alt+Tab to focus it) to move it back to your main display
+    - Right-click the SGI taskbar icon and choose **Move** (or **Maximize**) if available
+    - As a last resort, fully close SGI, delete `%appdata%\com.zevnda.steam-game-idler\.window-state.json`, and relaunch — this resets the window to its default size and position
+  </Accordion>
 
-<Steps>
-    ### Locate Log Files
-    1. Press `Win + R` to open Run dialog
-    2. Navigate to `%appdata%/roaming/com.zevnda.steam-game-idler`
-    3. Open the `log.txt` file to check for errors
+  <Accordion title="SGI starts but crashes or closes immediately" id="crash-on-start">
+    - Check `%appdata%\com.zevnda.steam-game-idler\log.txt` for the last recorded entries before the crash
+    - Make sure your Windows is up to date — Tauri-based apps depend on the WebView2 runtime, which ships with Windows 10/11 but can be repaired via [Microsoft's WebView2 download page](https://developer.microsoft.com/en-us/microsoft-edge/webview2/) if missing or corrupted
+    - If your settings file is corrupted, SGI may fail to start. Navigate to `%appdata%\com.zevnda.steam-game-idler\` and rename or move the relevant `settings.json` (inside the folder named after your Steam ID) elsewhere, then relaunch — SGI will recreate it with defaults
+    - Try reinstalling the latest version
+  </Accordion>
+</Accordions>
 
-    ### Analyze Logs
-    Look for error messages, warnings, or unusual patterns that might indicate the issue
+## Sign-In Issues
 
-    ### Report Issues
-    If you find persistent errors, include relevant log excerpts when [reporting issues on GitHub](https://github.com/zevnda/steam-game-idler/issues/new?template=issue_report.yml)
-</Steps>
+<Accordions type="multiple">
+  <Accordion title="No Steam accounts show up on the sign-in screen" id="no-accounts">
+    SGI reads your locally saved Steam logins to populate the account picker.
 
-### Reset SGI Settings
+    - Make sure the Steam client is installed and that you've logged in to your account(s) through Steam at least once
+    - Open Steam and sign in normally, then restart SGI
+    - If you use **Steam Guard**, complete the login fully (don't cancel at the 2FA prompt) before switching to SGI
+  </Accordion>
 
-<Callout type="error">
-    This will reset all your customized settings and lists
-</Callout>
+  <Accordion title="Sign-in fails or gets stuck" id="signin-stuck">
+    - Make sure you have an active internet connection
+    - Make sure the Steam client is running and you're fully logged in (not just at the account-select screen)
+    - Close the SGI login window and try again — it can occasionally get stuck on a stale page
+  </Accordion>
 
-<Steps>
-    ### Close SGI Completely
-    Make sure SGI is not running
+  <Accordion title="Signed in, but my games list is empty or incomplete" id="empty-games-list">
+    - Your Steam profile (or at least your **game details**) must be set to **Public** for SGI to read your library — check this in your Steam profile's privacy settings
+    - Try toggling **Settings → Debug → Clear Data** as a last resort if the cached games list is stuck — note this signs you out and clears all local data
+  </Accordion>
+</Accordions>
 
-    ### Delete Settings
-    1. Press `Win + R` to open Run dialog
-    2. Navigate to `%appdata%/roaming/com.zevnda.steam-game-idler`
-    3. Delete all files and folders in this directory
+## Idling Issues
 
-    ### Restart SGI
-    Launch SGI and reconfigure your settings
-</Steps>
+<Accordions type="multiple">
+  <Accordion title="A game won't start idling" id="idle-wont-start">
+    - Make sure the Steam client is running and you're signed in to the same account you're using in SGI
+    - Make sure the game is actually owned on this account — SGI can't idle games you don't own
+    - Check the log file (`%appdata%\com.zevnda.steam-game-idler\log.txt`) for a "Failed to start idling" message
+    - If you recently reinstalled SGI, make sure `SteamUtility.exe` wasn't removed by your antivirus (see [Antivirus or Windows Defender is blocking SGI](#antivirus-blocking))
+    - Close and reopen SGI, then try idling the game again
+  </Accordion>
 
-### Registry Issues
+  <Accordion title="A game shows as idling in SGI but Steam doesn't show it as 'Currently in game'" id="idle-not-reflected">
+    - Give it a minute — there's a short delay before Steam's status updates
+    - Make sure Steam itself is online (not in **Offline Mode**), as idling relies on the Steam API being reachable
+    - Restarting Steam (not SGI) while a game is idling can desync the status — stop and restart idling for that game
+  </Accordion>
 
-If SGI can't find Steam, you may need reinstall Steam, or fix registry entries:
+  <Accordion title="Idling stops by itself" id="idle-stops">
+    - Make sure your PC isn't going to sleep — adjust Windows power settings so it stays awake while idling
+    - Steam will stop "in-game" status if you launch the same game manually, or if Steam restarts/updates in the background
+    - Check the log file for errors around the time idling stopped
+  </Accordion>
 
-<Steps>
-    ### Open Registry Editor
-    1. Press `Win + R`, type `regedit`, press Enter
-    2. Navigate to `HKEY_CURRENT_USER\Software\Valve\Steam`
+  <Accordion title="Leftover SteamUtility.exe processes after closing SGI or a crash" id="leftover-processes">
+    If SGI is force-closed (e.g. via Task Manager, or a crash) before it can clean up, idling helper processes can be left running.
 
-    ### Check Steam Path
-    Verify the `SteamPath` value points to your Steam installation (e.g., `C:\Program Files (x86)\Steam`)
+    - Open **Task Manager**, find any `SteamUtility.exe` entries, and select **End Task** for each
+    - This won't affect your Steam library or achievements — it only stops the idling helper
+    - To avoid this in future, close SGI normally (via the tray menu **Quit** option) rather than force-closing it
+  </Accordion>
+</Accordions>
 
-    ### Fix if Incorrect
-    Right-click `SteamPath`, select "Modify", and enter the correct path
-</Steps>
+## Card Farming Issues
+
+<Accordions type="multiple">
+  <Accordion title='"Not logged in" or authentication errors' id="card-farming-not-logged-in">
+    Card Farming and Inventory Manager rely on your Steam session cookies, which expire periodically.
+
+    - Go to **Settings → Steam Credentials** and re-authenticate using the **Steam Credentials** flow (see the [Steam Credentials](/docs/steam-credentials) guide)
+    - If you use **Family View** or have a **Steam Guard Mobile Authenticator**, make sure you complete the full login (these accounts often need the additional `steamMachineAuth` cookie)
+    - Session cookies typically last a few hours to a few weeks — if farming worked before and suddenly stops with login errors, this is the most common cause
+  </Accordion>
+
+  <Accordion title="Card Farming isn't detecting card drops" id="card-farming-no-drops">
+    - Make sure the games you're farming actually have **remaining card drops** for your account — check your Badges page on Steam
+    - Make sure your Steam profile's **game details/inventory** are set to Public
+    - Re-authenticate if your session has expired (see above)
+  </Accordion>
+
+  <Accordion title="Listing cards on the Marketplace fails" id="market-listing-fails">
+    - Make sure your Steam account doesn't have a **trade or market restriction** (new accounts, accounts without a phone number, or VAC-banned accounts can't use the Market)
+    - Make sure you have **Steam Guard Mobile Authenticator** enabled for at least 7 days — Valve requires this for market access
+    - If you're listing many items quickly, Steam may rate-limit you — wait a few minutes and try again
+    - Re-authenticate if your session cookies have expired
+  </Accordion>
+</Accordions>
+
+## Achievement Manager & Unlocker Issues
+
+<Accordions type="multiple">
+  <Accordion title="Achievements list is empty or won't load" id="achievements-empty">
+    - Make sure the game actually has achievements (some games genuinely have none)
+    - Try toggling the **refresh/refetch** option for that game to force SGI to re-fetch the achievement schema from Steam
+    - Make sure the Steam client is running and online
+  </Accordion>
+
+  <Accordion title="Unlocking, locking, or toggling an achievement fails" id="achievement-toggle-fails">
+    - Make sure the Steam client is running and you're signed in to the matching account
+    - Make sure the game isn't currently being idled by another tool, or already running through Steam itself, which can conflict with `SteamUtility.exe`
+    - Check the log file for a specific error from `SteamUtility.exe`
+    - Some games use **Family Sharing** or third-party anti-cheat that blocks stat writes — these games generally can't be modified
+  </Accordion>
+
+  <Accordion title="Achievement Unlocker isn't progressing / scheduled task isn't running" id="achievement-unlocker-stuck">
+    - Make sure SGI is open (it can be minimized to tray, but not fully closed) for scheduled unlocking to continue
+    - Check your unlock order, delay, and schedule settings under the Achievement Unlocker tab
+    - If you imported custom unlock timings, make sure the achievement names match exactly — see [Import Timings](/docs/features/achievement-unlocker/import-timings)
+    - Check the log file for errors during the scheduled run
+  </Accordion>
+</Accordions>
+
+## Settings & Data Issues
+
+<Accordions type="multiple">
+  <Accordion title="My settings reset, or SGI behaves like a fresh install" id="settings-reset">
+    SGI stores settings per Steam account in `%appdata%\com.zevnda.steam-game-idler\<your-steam-id>\settings.json`. If this file becomes corrupted or unreadable, SGI falls back to defaults.
+
+    - Check **Settings → Debug → Open Settings** to locate your settings folder
+    - If you have a previously exported settings backup, re-import it (see [Export Settings](/docs/settings/debug#export-settings))
+    - Switching Steam accounts in SGI loads a separate settings file per account — this is expected, not a bug
+  </Accordion>
+
+  <Accordion title="How do I fully reset SGI?" id="full-reset">
+    <Steps>
+      <Step>
+        ### Try Reset Settings first
+        **Settings → Debug → Reset Settings** restores defaults without touching your games list or cached data
+      </Step>
+
+      <Step>
+        ### Use Clear Data for a full wipe
+        **Settings → Debug → Clear Data** removes all locally stored data and signs you out
+        <Callout type="warn">
+          This is irreversible and will require you to sign in and reconfigure SGI again. Your Steam account and library are not affected.
+        </Callout>
+      </Step>
+
+      <Step>
+        ### Manual reset
+        If SGI won't open at all, close it completely and delete the folder `%appdata%\com.zevnda.steam-game-idler\`, then relaunch
+      </Step>
+    </Steps>
+  </Accordion>
+</Accordions>
+
+## Update Issues
+
+<Accordions type="multiple">
+  <Accordion title='"Check for updates" does nothing, or no updates are found' id="update-check-nothing">
+    - Make sure you have an active internet connection
+    - SGI checks for updates via GitHub — if GitHub is unreachable from your network (e.g. blocked by a firewall/VPN), the check will fail silently
+    - You can always download the latest release manually from the [GitHub releases page](https://github.com/zevnda/steam-game-idler/releases)
+    - **Portable** builds don't support automatic updates — download and replace the executable manually
+  </Accordion>
+
+  <Accordion title="Update downloads but SGI doesn't restart, or restarts into the old version" id="update-stuck">
+    - Manually close SGI completely (including from the system tray and Task Manager), then reopen it
+    - If the version number still hasn't changed, uninstall and reinstall using the latest installer from GitHub
+  </Accordion>
+</Accordions>
+
+## General Performance Issues
+
+<Accordions type="multiple">
+  <Accordion title="SGI is using high CPU or memory" id="high-cpu-memory">
+    - Idling many games simultaneously each spawns a separate helper process (`SteamUtility.exe`) — this is normal, but idling a very large number of games at once will increase resource usage
+    - Check **Task Manager** to confirm whether the usage comes from `steam-game-idler.exe`, `SteamUtility.exe` or `webview2.exe` processes
+    - Update to the latest version, as performance fixes are released regularly — see the [Changelog](/changelog)
+  </Accordion>
+
+  <Accordion title="SGI feels slow or unresponsive" id="sgi-slow">
+    - A large Steam library (thousands of games) can make initial loading slower — give it a moment on first launch after sign-in
+    - Check `%appdata%\com.zevnda.steam-game-idler\log.txt` for repeated errors that may indicate a stuck background task
+  </Accordion>
+</Accordions>
 
 ## Getting Help
 
