@@ -434,6 +434,7 @@
   "common.import": "Import",
   "changelog.star": "Star on GitHub",
   "tray.show": "Show",
+  "tray.recenter": "Reset Window Position",
   "tray.quit": "Quit",
   "tray.update": "Check for Updates.."
 }

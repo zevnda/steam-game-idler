@@ -287,6 +287,40 @@ pub fn quit_app(app_handle: tauri::AppHandle) {
     app_handle.exit(0);
 }
 
+// Force the window onto a detected monitor (preferring the primary monitor) and center it.
+// Used to recover windows that are stuck off-screen, e.g. after a monitor is unplugged.
+pub fn recenter_window(window: &tauri::WebviewWindow) -> Result<(), String> {
+    let _ = window.unminimize();
+
+    let monitor = window
+        .primary_monitor()
+        .map_err(|e| e.to_string())?
+        .or_else(|| {
+            window
+                .available_monitors()
+                .ok()
+                .and_then(|monitors| monitors.into_iter().next())
+        });
+
+    if let Some(monitor) = monitor {
+        let monitor_pos = monitor.position();
+        let monitor_size = monitor.size();
+        let window_size = window.outer_size().map_err(|e| e.to_string())?;
+
+        let x = monitor_pos.x + (monitor_size.width as i32 - window_size.width as i32) / 2;
+        let y = monitor_pos.y + (monitor_size.height as i32 - window_size.height as i32) / 2;
+
+        window
+            .set_position(tauri::Position::Physical(tauri::PhysicalPosition { x, y }))
+            .map_err(|e| e.to_string())?;
+    }
+
+    window.show().map_err(|e| e.to_string())?;
+    window.set_focus().map_err(|e| e.to_string())?;
+
+    Ok(())
+}
+
 // Command to set the zoom level of the webview
 #[tauri::command]
 pub fn set_zoom(webview: tauri::Webview, scale_factor: f64) -> Result<(), String> {
@@ -684,6 +718,7 @@ pub async fn delete_store_cookies(app_handle: tauri::AppHandle) -> Result<Value,
 pub fn update_tray_menu(
     app: tauri::AppHandle,
     show: String,
+    recenter: String,
     update: String,
     quit: String,
 ) -> Result<(), String> {
@@ -691,16 +726,19 @@ pub fn update_tray_menu(
 
     let show_item =
         MenuItem::with_id(&app, "show", &show, true, None::<&str>).map_err(|e| e.to_string())?;
+    let recenter_item = MenuItem::with_id(&app, "recenter", &recenter, true, None::<&str>)
+        .map_err(|e| e.to_string())?;
     let quit_item =
         MenuItem::with_id(&app, "quit", &quit, true, None::<&str>).map_err(|e| e.to_string())?;
 
     let menu = if !is_portable() {
         let update_item = MenuItem::with_id(&app, "update", &update, true, None::<&str>)
             .map_err(|e| e.to_string())?;
-        Menu::with_items(&app, &[&show_item, &update_item, &quit_item])
+        Menu::with_items(&app, &[&show_item, &recenter_item, &update_item, &quit_item])
             .map_err(|e| e.to_string())?
     } else {
-        Menu::with_items(&app, &[&show_item, &quit_item]).map_err(|e| e.to_string())?
+        Menu::with_items(&app, &[&show_item, &recenter_item, &quit_item])
+            .map_err(|e| e.to_string())?
     };
 
     if let Some(tray) = app.tray_by_id("1") {
