@@ -17,12 +17,10 @@ export const AdSlot = () => {
   const [reloadKey, setReloadKey] = useState(0)
   const [adFilled, setAdFilled] = useState(false)
 
+  const fallbackAdCount = 15
+
   const fallbackAds = useMemo(
-    () => [
-      `${CDN_BASE_URL}/ads/ad-fallback-1.webp`,
-      `${CDN_BASE_URL}/ads/ad-fallback-2.webp`,
-      `${CDN_BASE_URL}/ads/ad-fallback-3.webp`,
-    ],
+    () => Array.from({ length: fallbackAdCount }, (_, i) => `${CDN_BASE_URL}/ads/${i + 1}.png`),
     [],
   )
 
