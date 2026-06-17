@@ -26,6 +26,7 @@ export function useInit() {
   useEffect(() => {
     invoke('update_tray_menu', {
       show: t('tray.show'),
+      recenter: t('tray.recenter'),
       update: t('tray.update'),
       quit: t('tray.quit'),
     })

@@ -220,13 +220,14 @@ fn setup_tray_icon(app: &mut tauri::App) -> Result<(), Box<dyn std::error::Error
 
     // Create system tray menu
     let show = MenuItem::with_id(app, "show", "Show", true, None::<&str>)?;
+    let recenter = MenuItem::with_id(app, "recenter", "Reset Window Position", true, None::<&str>)?;
     let quit = MenuItem::with_id(app, "quit", "Quit", true, None::<&str>)?;
     // Only add "update" if not portable
     let menu = if !is_portable() {
         let update = MenuItem::with_id(app, "update", "Check for updates..", true, None::<&str>)?;
-        Menu::with_items(app, &[&show, &update, &quit])?
+        Menu::with_items(app, &[&show, &recenter, &update, &quit])?
     } else {
-        Menu::with_items(app, &[&show, &quit])?
+        Menu::with_items(app, &[&show, &recenter, &quit])?
     };
 
     // Load icon directly from binary resources
@@ -258,6 +259,11 @@ fn setup_tray_icon(app: &mut tauri::App) -> Result<(), Box<dyn std::error::Error
                 if let Some(window) = app.get_webview_window("main") {
                     window.show().unwrap();
                     window.set_focus().unwrap();
+                }
+            }
+            "recenter" => {
+                if let Some(window) = app.get_webview_window("main") {
+                    let _ = recenter_window(&window);
                 }
             }
             "update" => {
