@@ -11,6 +11,7 @@ import {
   useCardSettings,
 } from '@/features/settings'
 import { useUserStore } from '@/shared/stores'
+import { getCurrencyNumberFormatOptions, getCurrencyStep } from '@/shared/utils'
 
 export const InventoryManagerSettings = () => {
   const { t } = useTranslation()
@@ -139,12 +140,8 @@ export const InventoryManagerSettings = () => {
           <NumberInput
             size='sm'
             value={priceAdjustment}
-            formatOptions={{
-              style: 'decimal',
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            }}
-            step={0.01}
+            formatOptions={getCurrencyNumberFormatOptions()}
+            step={getCurrencyStep()}
             aria-label='price adjustment value'
             className='w-22.5'
             classNames={{
@@ -182,13 +179,9 @@ export const InventoryManagerSettings = () => {
             <NumberInput
               size='sm'
               value={sellLimitMin}
-              formatOptions={{
-                style: 'decimal',
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              }}
+              formatOptions={getCurrencyNumberFormatOptions()}
               minValue={0.01}
-              step={0.01}
+              step={getCurrencyStep()}
               aria-label='sell limit minimum value'
               className='w-22.5'
               classNames={{
@@ -216,12 +209,8 @@ export const InventoryManagerSettings = () => {
             <NumberInput
               size='sm'
               value={sellLimitMax}
-              formatOptions={{
-                style: 'decimal',
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              }}
-              step={0.01}
+              formatOptions={getCurrencyNumberFormatOptions()}
+              step={getCurrencyStep()}
               aria-label='sell limit maximum value'
               className='w-22.5'
               classNames={{

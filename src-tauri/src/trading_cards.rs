@@ -440,16 +440,25 @@ pub fn delete_user_trading_card_file(
 /// Returns true for Steam currency codes that have no sub-units (0 decimal places).
 /// For these currencies row[0] from the histogram is already in the smallest unit
 /// (e.g. ¥3 = 3, ₩100 = 100) so no ×100 conversion is needed.
+/// IDR is intentionally excluded: despite being used colloquially without decimals,
+/// Steam stores it in hundredths like USD/EUR.
 fn is_zero_decimal_currency(code: u32) -> bool {
     matches!(
         code,
         8   // JPY – Japanese Yen
-        | 10  // IDR – Indonesian Rupiah
         | 15  // VND – Vietnamese Dong
         | 16  // KRW – South Korean Won
-        | 25  // CLP – Chilean Peso
-        | 45 // HUF – Hungarian Forint
+        | 25 // CLP – Chilean Peso
     )
+}
+
+/// Formats a price with the correct number of decimal places for its currency.
+fn format_price(price: f64, currency_code: u32) -> String {
+    if is_zero_decimal_currency(currency_code) {
+        format!("{:.0}", price)
+    } else {
+        format!("{:.2}", price)
+    }
 }
 
 // Given a *buyer* target price in the currency's **smallest unit** (cents for USD/EUR,
@@ -738,7 +747,7 @@ pub async fn get_card_price(
                     Some(json!([
                         price,
                         qty,
-                        format!("{} orders at {:.2}", qty, price)
+                        format!("{} orders at {}", qty, format_price(price, e_currency))
                     ]))
                 })
                 .collect()
@@ -756,7 +765,7 @@ pub async fn get_card_price(
                     Some(json!([
                         price,
                         qty,
-                        format!("{} orders at {:.2}", qty, price)
+                        format!("{} orders at {}", qty, format_price(price, e_currency))
                     ]))
                 })
                 .collect()

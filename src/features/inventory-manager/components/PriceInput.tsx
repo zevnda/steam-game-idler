@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { TbPackageExport } from 'react-icons/tb'
 import { Button, cn, NumberInput } from '@heroui/react'
 import { CustomTooltip } from '@/shared/components'
+import { getCurrencyNumberFormatOptions, getCurrencyStep } from '@/shared/utils'
 
 interface PriceInputProps {
   item: TradingCard
@@ -26,12 +27,8 @@ export const PriceInput = ({ item, tradingCardContext, isLocked }: PriceInputPro
         value={tradingCardContext.getCardPriceValue(item.assetid)}
         maxValue={99999}
         defaultValue={0}
-        step={0.01}
-        formatOptions={{
-          style: 'decimal',
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        }}
+        step={getCurrencyStep()}
+        formatOptions={getCurrencyNumberFormatOptions()}
         aria-label='statistic value'
         className='w-21.25'
         classNames={{
