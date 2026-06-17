@@ -18,7 +18,7 @@ import {
   showSuccessToast,
 } from '@/shared/components'
 import { useStateStore, useUserStore } from '@/shared/stores'
-import { decrypt, hasGamerFeature, logEvent } from '@/shared/utils'
+import { decrypt, formatCurrencyNumber, hasGamerFeature, logEvent } from '@/shared/utils'
 
 export function useTradingCardsList() {
   const { t } = useTranslation()
@@ -281,9 +281,9 @@ export function useTradingCardsList() {
         const sellLimit = userSettings?.tradingCards?.sellLimit
         showDangerToast(
           t('toast.tradingCards.priceOutOfRange', {
-            price: adjustedPrice.toFixed(2),
-            min: sellLimit?.min?.toFixed(2) || '0.00',
-            max: sellLimit?.max?.toFixed(2) || '∞',
+            price: formatCurrencyNumber(adjustedPrice),
+            min: sellLimit?.min !== undefined ? formatCurrencyNumber(sellLimit.min) : '0',
+            max: sellLimit?.max !== undefined ? formatCurrencyNumber(sellLimit.max) : '∞',
           }),
         )
         logEvent(

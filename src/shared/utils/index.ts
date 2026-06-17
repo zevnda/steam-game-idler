@@ -11,3 +11,11 @@ export { startAchievementUnlocker } from './handleStartAchievementUnlocker'
 export { handleNextTaskChange } from './handleNextTaskChange'
 export { hasCasualFeature, hasGamerFeature, GRANDFATHER_CUTOFF } from './proFeatures'
 export type { ProTier } from './proFeatures'
+export {
+  getCurrentCurrencyId,
+  getCurrencyDecimalPlaces,
+  getCurrencyNumberFormatOptions,
+  getCurrencyStep,
+  formatCurrency,
+  formatCurrencyNumber,
+} from './currency'

@@ -4,69 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { TbArrowRight } from 'react-icons/tb'
 import { Button, cn, Spinner, useDisclosure } from '@heroui/react'
 import { CustomModal, showPriceFetchCooldownToast } from '@/shared/components'
-import { logEvent } from '@/shared/utils'
-
-const STEAM_CURRENCY_ISO: Record<string, string> = {
-  '1': 'USD',
-  '2': 'GBP',
-  '3': 'EUR',
-  '4': 'CHF',
-  '5': 'RUB',
-  '6': 'PLN',
-  '7': 'BRL',
-  '8': 'JPY',
-  '9': 'NOK',
-  '10': 'IDR',
-  '11': 'MYR',
-  '12': 'PHP',
-  '13': 'SGD',
-  '14': 'THB',
-  '15': 'VND',
-  '16': 'KRW',
-  '17': 'TRY',
-  '18': 'UAH',
-  '19': 'MXN',
-  '20': 'CAD',
-  '21': 'AUD',
-  '22': 'NZD',
-  '23': 'CNY',
-  '24': 'INR',
-  '25': 'CLP',
-  '26': 'PEN',
-  '27': 'COP',
-  '28': 'ZAR',
-  '29': 'HKD',
-  '30': 'TWD',
-  '31': 'SAR',
-  '32': 'AED',
-  '33': 'SEK',
-  '34': 'ARS',
-  '35': 'ILS',
-  '36': 'BYN',
-  '37': 'KZT',
-  '38': 'KWD',
-  '39': 'QAR',
-  '40': 'CRC',
-  '41': 'UYU',
-  '42': 'BGN',
-  '43': 'HRK',
-  '44': 'CZK',
-  '45': 'DKK',
-  '46': 'HUF',
-  '47': 'RON',
-  '9000': 'CNY', // RMB
-}
-
-const formatPrice = (price: number) => {
-  const code = localStorage.getItem('currency') || '1'
-  const iso = STEAM_CURRENCY_ISO[code]
-  if (!iso) return price.toFixed(2)
-  try {
-    return new Intl.NumberFormat(undefined, { style: 'currency', currency: iso }).format(price)
-  } catch {
-    return price.toFixed(2)
-  }
-}
+import { formatCurrency, logEvent } from '@/shared/utils'
 
 interface OrderTableProps {
   title: string
@@ -108,7 +46,7 @@ const OrderTable = ({ title, summary, rows, onRowClick }: OrderTableProps) => {
                   )}
                   onClick={() => onRowClick(row[0])}
                 >
-                  <td className='px-3 py-2 text-left text-dynamic'>{formatPrice(row[0])}</td>
+                  <td className='px-3 py-2 text-left text-dynamic'>{formatCurrency(row[0])}</td>
                   <td className='px-3 py-2 text-right'>{row[1]}</td>
                 </tr>
               ))

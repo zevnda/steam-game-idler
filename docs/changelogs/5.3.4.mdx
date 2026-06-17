@@ -1,0 +1,12 @@
+---
+title: 5.3.4
+date: 2026-06-17
+tags: ['Improved', 'Fixed']
+---
+
+### Improved 🚀
+- Removed currencies no longer supported by Steam from **Settings > General > Currency**
+- Price inputs and order prices in **Trading Card Manager** now show the correct number of decimal places for zero-decimal currencies *(JPY, KRW, VND, CLP)* instead of always forcing `.00`
+
+### Fixed 🐛
+- Fixed Indonesian Rupiah *(IDR)* prices in **Trading Card Manager** displaying 100x too high *(e.g. `IDR 232,100` instead of `IDR 2,321`)*, which also caused cards to be listed for 100x less than intended when selling
