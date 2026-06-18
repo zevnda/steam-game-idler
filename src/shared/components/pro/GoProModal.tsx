@@ -7,13 +7,14 @@ import {
   TbClock,
   TbCurrencyDollar,
   TbGift,
+  TbHeadset,
   TbKey,
   TbPalette,
   TbRefresh,
   TbSparkles,
 } from 'react-icons/tb'
 import { Button, Modal, ModalBody, ModalContent } from '@heroui/react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion, useInView } from 'framer-motion'
 import Image from 'next/image'
 import { ExtLink } from '@/shared/components'
 import { CDN_BASE_URL } from '@/shared/constants'
@@ -33,7 +34,7 @@ interface CardDef {
   tier: 'casual' | 'gamer'
   colSpan: 1 | 2
   bg: string
-  gifBg?: string
+  videoBg?: string
   learnMoreUrl?: string
 }
 
@@ -141,6 +142,7 @@ function ShootingStar({
 function FeatureCard({ card, index }: { card: CardDef; index: number }) {
   const ref = useRef<HTMLDivElement>(null)
   const { t } = useTranslation()
+  const isInView = useInView(ref, { once: true, margin: '200px 0px' })
 
   return (
     <motion.div
@@ -156,11 +158,14 @@ function FeatureCard({ card, index }: { card: CardDef; index: number }) {
       }}
       className='relative rounded-4xl overflow-hidden cursor-default group min-h-87.5'
     >
-      {card.gifBg && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={card.gifBg}
-          alt=''
+      {card.videoBg && isInView && (
+        <video
+          src={card.videoBg}
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload='none'
           className='absolute inset-0 w-full h-full object-cover opacity-50'
         />
       )}
@@ -378,23 +383,31 @@ export const GoProModal = () => {
       tier: 'casual',
       colSpan: 1,
       bg: '#131313',
-      gifBg: `${CDN_BASE_URL}/pro-modal/pro1.gif`,
+      videoBg: `${CDN_BASE_URL}/pro-modal/pro1.webm`,
     },
     {
       title: t('proMode.cards.themes.title'),
       description: t('proMode.cards.themes.description'),
       tier: 'casual',
-      colSpan: 1,
+      colSpan: 2,
       bg: '#131313',
-      gifBg: `${CDN_BASE_URL}/pro-modal/pro2.gif`,
+      videoBg: `${CDN_BASE_URL}/pro-modal/pro2.webm`,
     },
     {
       title: t('proMode.cards.discordRole.title'),
       description: t('proMode.cards.discordRole.description'),
       tier: 'casual',
+      colSpan: 2,
+      bg: '#131313',
+      videoBg: `${CDN_BASE_URL}/pro-modal/pro3.webm`,
+    },
+    {
+      title: t('proMode.cards.liveSupport.title'),
+      description: t('proMode.cards.liveSupport.description'),
+      tier: 'casual',
       colSpan: 1,
       bg: '#131313',
-      gifBg: `${CDN_BASE_URL}/pro-modal/pro3.gif`,
+      videoBg: `${CDN_BASE_URL}/pro-modal/pro10.webm`,
     },
     {
       title: t('proMode.cards.credentials.title'),
@@ -402,7 +415,7 @@ export const GoProModal = () => {
       tier: 'gamer',
       colSpan: 2,
       bg: '#131313',
-      gifBg: `${CDN_BASE_URL}/pro-modal/pro4.gif`,
+      videoBg: `${CDN_BASE_URL}/pro-modal/pro4.webm`,
       learnMoreUrl: 'https://steamgameidler.com/docs/steam-credentials#automated-method',
     },
     {
@@ -411,7 +424,7 @@ export const GoProModal = () => {
       tier: 'gamer',
       colSpan: 1,
       bg: '#131313',
-      gifBg: `${CDN_BASE_URL}/pro-modal/pro9.gif`,
+      videoBg: `${CDN_BASE_URL}/pro-modal/pro9.webm`,
     },
     {
       title: t('proMode.cards.gamesList.title'),
@@ -419,7 +432,7 @@ export const GoProModal = () => {
       tier: 'gamer',
       colSpan: 1,
       bg: '#131313',
-      gifBg: `${CDN_BASE_URL}/pro-modal/pro5.gif`,
+      videoBg: `${CDN_BASE_URL}/pro-modal/pro5.webm`,
     },
     {
       title: t('proMode.cards.freeGames.title'),
@@ -427,7 +440,7 @@ export const GoProModal = () => {
       tier: 'gamer',
       colSpan: 2,
       bg: '#131313',
-      gifBg: `${CDN_BASE_URL}/pro-modal/pro6.gif`,
+      videoBg: `${CDN_BASE_URL}/pro-modal/pro6.webm`,
       learnMoreUrl: 'https://steamgameidler.com/docs/features/free-games#automated-redemption',
     },
     {
@@ -436,7 +449,7 @@ export const GoProModal = () => {
       tier: 'gamer',
       colSpan: 2,
       bg: '#131313',
-      gifBg: `${CDN_BASE_URL}/pro-modal/pro8.gif`,
+      videoBg: `${CDN_BASE_URL}/pro-modal/pro8.webm`,
       learnMoreUrl: 'https://steamgameidler.com/docs/features/achievement-unlocker#import-timings',
     },
     {
@@ -445,7 +458,7 @@ export const GoProModal = () => {
       tier: 'gamer',
       colSpan: 1,
       bg: '#131313',
-      gifBg: `${CDN_BASE_URL}/pro-modal/pro7.gif`,
+      videoBg: `${CDN_BASE_URL}/pro-modal/pro7.webm`,
       learnMoreUrl: 'https://steamgameidler.com/docs/features/inventory-manager',
     },
   ]
@@ -643,6 +656,7 @@ export const GoProModal = () => {
                   { label: t('proMode.tier.casual.adFree'), icon: TbAd },
                   { label: t('proMode.tier.casual.themes'), icon: TbPalette },
                   { label: t('proMode.tier.casual.discordRole'), icon: FaDiscord },
+                  { label: t('proMode.tier.casual.liveSupport'), icon: TbHeadset },
                   { label: t('proMode.tier.casual.cancelAnytime'), icon: FaCheck },
                 ]}
                 isOwned={proTier === 'casual' || proTier === 'gamer'}

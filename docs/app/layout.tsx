@@ -2,7 +2,6 @@ import { RootProvider } from 'fumadocs-ui/provider/next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import Script from 'next/script'
 import AdOverlay from '@/app/(home)/_components/AdOverlay'
-import HelpDesk from '@/app/(home)/_components/HelpDesk'
 import StoreLoader from '@/app/(home)/_components/StoreLoader'
 import TelemetryLoader from '@/app/(home)/_components/TelemetryLoader'
 import SearchDialog from '@/app/(home)/search'
@@ -179,8 +178,6 @@ export default function Layout({ children }: LayoutProps) {
           src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8915288433444527'
           crossOrigin='anonymous'
         />
-
-        <HelpDesk />
       </head>
 
       <body className='flex flex-col min-h-screen'>
