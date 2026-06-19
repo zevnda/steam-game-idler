@@ -44,8 +44,8 @@ Contribute to this project by adding new translations or improving existing ones
 | Chinese (Simplified) | 🇨🇳    | English    | 🇬🇧    | French              | 🇫🇷    |
 | German               | 🇩🇪    | Indonesian | 🇮🇩    | Italian             | 🇮🇹    |
 | Macedonian           | 🇲🇰    | Polish     | 🇵🇱    | Portuguese (Brazil) | 🇧🇷    |
-| Romanian             | 🇷🇴    | Russian    | 🇷🇺    | Spanish             | 🇪🇸    |
-| Turkish              | 🇹🇷    | Ukrainian  | 🇺🇦    |                     |      |
+| Romanian             | 🇷🇴    | Russian    | 🇷🇺    | Slovenian           | 🇸🇮    |
+| Spanish              | 🇪🇸    | Turkish    | 🇹🇷    | Ukrainian           | 🇺🇦    |
 
 <sup>*Some languages may only have partial support*</sup>
 

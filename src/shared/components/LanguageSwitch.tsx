@@ -25,6 +25,7 @@ export const LanguageSwitch = ({
     { key: 'pt-BR', label: 'Português (Brazil)' },
     { key: 'ro-RO', label: 'Română' },
     { key: 'ru-RU', label: 'Русский' },
+    { key: 'sl-SI', label: 'Slovenščina' },
     { key: 'tr-TR', label: 'Türkçe' },
     { key: 'uk-UA', label: 'Українська' },
     { key: 'zh-CN', label: '简体中文' },
