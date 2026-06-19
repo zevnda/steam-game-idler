@@ -1,6 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
-import { FaArrowDown, FaArrowRight, FaCheck, FaChevronDown, FaDiscord } from 'react-icons/fa6'
+import { BsStripe } from 'react-icons/bs'
+import {
+  FaArrowDown,
+  FaArrowRight,
+  FaCheck,
+  FaChevronDown,
+  FaDiscord,
+  FaPaypal,
+} from 'react-icons/fa6'
 import {
   TbAd,
   TbCards,
@@ -15,11 +23,10 @@ import {
 } from 'react-icons/tb'
 import { Button, Modal, ModalBody, ModalContent } from '@heroui/react'
 import { AnimatePresence, motion, useInView } from 'framer-motion'
-import Image from 'next/image'
-import { ExtLink } from '@/shared/components'
+import { ExtLink, showDangerToast } from '@/shared/components'
 import { CDN_BASE_URL } from '@/shared/constants'
 import { useStateStore, useUserStore } from '@/shared/stores'
-import { openExternalLink } from '@/shared/utils'
+import { logEvent, openExternalLink } from '@/shared/utils'
 
 interface PriceData {
   tierOne: { url: string; price: string }
@@ -191,6 +198,7 @@ interface TierCardProps {
   name: string
   price: string
   url: string
+  tier: 'casual' | 'gamer'
   features: { label: string; icon: React.ElementType }[]
   isOwned?: boolean
   isMostPopular?: boolean
@@ -202,6 +210,7 @@ function TierCard({
   name,
   price,
   url,
+  tier,
   features: tf,
   isOwned,
   isMostPopular,
@@ -209,9 +218,32 @@ function TierCard({
   isCasual,
 }: TierCardProps) {
   const { t } = useTranslation()
+  const [isPaypalLoading, setIsPaypalLoading] = useState(false)
   const accent = isCasual ? '#3b82f6' : '#9333ea'
   const accentTo = isCasual ? '#38bdf8' : '#c026d3'
-  const glow = isCasual ? 'rgba(59,130,246,0.22)' : 'rgba(147,51,234,0.28)'
+
+  const handlePaypalSelect = async () => {
+    setIsPaypalLoading(true)
+    try {
+      const res = await fetch('https://apibase.vercel.app/api/paypal-create-subscription', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tier }),
+      })
+      const data = await res.json()
+      if (data?.url) {
+        openExternalLink(data.url)
+      } else {
+        showDangerToast(t('toast.paypalCheckout.error'))
+      }
+    } catch (error) {
+      console.error('Error creating PayPal subscription:', error)
+      logEvent(`[Error] in (handlePaypalSelect - GoProModal): ${error}`)
+      showDangerToast(t('toast.paypalCheckout.error'))
+    } finally {
+      setIsPaypalLoading(false)
+    }
+  }
 
   return (
     <motion.div
@@ -278,18 +310,39 @@ function TierCard({
             {t('proMode.tier.currentPlan')}
           </div>
         ) : (
-          <Button
-            size='lg'
-            className='relative w-full py-3 rounded-full font-black uppercase flex items-center justify-center gap-2 cursor-pointer overflow-hidden'
-            style={{
-              background: `linear-gradient(110deg, ${accent}, ${accentTo})`,
-              boxShadow: `0 4px 24px ${glow}`,
-            }}
-            onPress={() => url && openExternalLink(url)}
-          >
-            <span className='relative z-10'>{t('proMode.tier.getStarted')}</span>
-            <FaArrowRight className='relative z-10 w-3 h-3' />
-          </Button>
+          <div className='flex gap-2.5'>
+            <Button
+              size='lg'
+              className='relative w-full py-3 rounded-full font-black uppercase flex items-center justify-center gap-2 cursor-pointer overflow-hidden duration-150 hover:scale-[1.02]'
+              style={{
+                background: 'linear-gradient(110deg, #635bff, #7a73ff)',
+              }}
+              onPress={() => url && openExternalLink(url)}
+            >
+              <span className='relative z-10 flex items-center gap-2'>
+                <BsStripe className='w-3.5 h-3.5' />
+                {t('proMode.tier.continueWithStripe')}
+                <FaArrowRight className='w-3 h-3' />
+              </span>
+            </Button>
+            <Button
+              size='lg'
+              className='relative w-full py-3 rounded-full font-black uppercase flex items-center justify-center gap-2 cursor-pointer overflow-hidden duration-150 hover:scale-[1.02]'
+              style={{
+                background: 'linear-gradient(110deg, #003087, #0070ba)',
+              }}
+              isLoading={isPaypalLoading}
+              onPress={handlePaypalSelect}
+            >
+              {!isPaypalLoading && (
+                <span className='relative z-10 flex items-center gap-2'>
+                  <FaPaypal className='w-3.5 h-3.5' />
+                  {t('proMode.tier.continueWithPaypal')}
+                  <FaArrowRight className='w-3 h-3' />
+                </span>
+              )}
+            </Button>
+          </div>
         )}
       </div>
     </motion.div>
@@ -605,7 +658,7 @@ export const GoProModal = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.55, delay: 0.15 }}
-                className='flex items-center gap-2.5 px-7 py-3 rounded-full bg-white text-black font-black duration-250 uppercase cursor-pointer'
+                className='flex items-center gap-2.5 px-7 py-3 rounded-full bg-white text-black font-black uppercase cursor-pointer duration-150 hover:scale-[1.02]'
                 onClick={scrollToTiers}
               >
                 {t('proMode.hero.viewTiers')}
@@ -652,6 +705,7 @@ export const GoProModal = () => {
                 name={t('proMode.tier.casual.name')}
                 price={priceData.tierOne.price}
                 url={priceData.tierOne.url}
+                tier='casual'
                 features={[
                   { label: t('proMode.tier.casual.adFree'), icon: TbAd },
                   { label: t('proMode.tier.casual.themes'), icon: TbPalette },
@@ -667,6 +721,7 @@ export const GoProModal = () => {
                 name={t('proMode.tier.gamer.name')}
                 price={priceData.tierTwo.price}
                 url={priceData.tierTwo.url}
+                tier='gamer'
                 features={[
                   { label: t('proMode.tier.gamer.credentials'), icon: TbKey },
                   { label: t('proMode.tier.gamer.gamesList'), icon: TbRefresh },
@@ -682,18 +737,9 @@ export const GoProModal = () => {
               />
             </div>
 
-            <div className='flex flex-col items-center justify-center w-full'>
-              <Image
-                src={`${CDN_BASE_URL}/pro-modal/stripe.svg`}
-                alt='Powered by Stripe'
-                className='mt-10 select-none'
-                width={130}
-                height={50}
-              />
-              <p className='text-center text-white/25 text-[10px] mt-2'>
-                {t('proMode.modal.footer')}
-              </p>
-            </div>
+            <p className='text-center text-white/25 text-[10px] mt-4'>
+              {t('proMode.modal.footer')}
+            </p>
           </div>
 
           {/* ── FAQ ──────────────────────────────────────────────────────── */}

@@ -7,6 +7,7 @@ export interface ProDetails {
   currentPeriodEnd: string | null
   cancelAtPeriodEnd: boolean | null
   status: string | null
+  paymentProvider: string | null
 }
 
 interface UserStore {

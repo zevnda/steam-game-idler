@@ -59,6 +59,7 @@ export function useCheckForPro() {
             currentPeriodEnd: data.results.current_period_end ?? null,
             cancelAtPeriodEnd: data.results.cancel_at_period_end ?? null,
             status: data.results.status ?? null,
+            paymentProvider: data.results.payment_provider ?? null,
           })
         } else {
           setIsPro(false)

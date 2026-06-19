@@ -19,8 +19,7 @@ export default function PrivacyPolicy() {
         <div className='space-y-10'>
           <section>
             <p className='text-sm text-text-muted mb-6'>
-              <span className='text-text-primary font-semibold'>Last Updated:</span> December 16,
-              2025
+              <span className='text-text-primary font-semibold'>Last Updated:</span> June 20, 2026
             </p>
             <p className='text-text-muted leading-relaxed'>
               Steam Game Idler (&quot;SGI&quot;, &quot;the Application&quot;, &quot;we&quot;,
@@ -118,9 +117,12 @@ export default function PrivacyPolicy() {
                 server
               </li>
               <li>
-                <span className='text-text-primary font-medium'>Stripe Customer ID:</span> A
-                reference identifier linking your subscription to Stripe&apos;s payment system (we
-                do not store any credit card or payment details)
+                <span className='text-text-primary font-medium'>
+                  Payment Processor Reference ID:
+                </span>{' '}
+                A Stripe Customer ID or PayPal Payer ID, depending on which payment method you
+                choose, linking your subscription to our payment processor (we do not store any
+                credit card, PayPal, or banking details)
               </li>
               <li>
                 <span className='text-text-primary font-medium'>Subscription Status:</span>{' '}
@@ -130,7 +132,7 @@ export default function PrivacyPolicy() {
             <p className='text-text-muted leading-relaxed'>
               <span className='text-text-primary font-medium'>Important:</span> We do NOT store any
               credit card numbers, banking information, or payment details. All payment information
-              is securely handled and stored by Stripe, our payment processor.
+              is securely handled and stored by Stripe or PayPal, our payment processors.
             </p>
           </section>
 
@@ -199,7 +201,7 @@ export default function PrivacyPolicy() {
               <li>Steam ID</li>
               <li>Email address</li>
               <li>Discord User ID (if claimed)</li>
-              <li>Stripe Customer ID (reference only)</li>
+              <li>Stripe Customer ID or PayPal Payer ID (reference only)</li>
               <li>Subscription status and tier information</li>
             </ul>
 
@@ -256,11 +258,15 @@ export default function PrivacyPolicy() {
             </ul>
 
             <h3 className='text-base font-medium text-text-primary mb-3'>
-              4.2 Stripe Payment Processing
+              4.2 Payment Processing (Stripe &amp; PayPal)
             </h3>
             <p className='text-text-muted leading-relaxed mb-4'>
-              PRO subscriptions are processed through Stripe, a third-party payment processor. When
-              you subscribe to PRO:
+              PRO subscriptions are processed through one of two third-party payment processors,
+              depending on which option you choose at checkout: Stripe or PayPal.
+            </p>
+
+            <p className='text-text-muted leading-relaxed mb-2'>
+              <span className='text-text-primary font-medium'>If you pay with Stripe:</span>
             </p>
             <ul className='list-disc pl-6 space-y-2 text-text-muted mb-4'>
               <li>
@@ -284,10 +290,39 @@ export default function PrivacyPolicy() {
               </li>
               <li>Stripe is PCI-DSS compliant and uses industry-leading security practices</li>
             </ul>
+
+            <p className='text-text-muted leading-relaxed mb-2'>
+              <span className='text-text-primary font-medium'>If you pay with PayPal:</span>
+            </p>
+            <ul className='list-disc pl-6 space-y-2 text-text-muted mb-4'>
+              <li>
+                PayPal collects and processes your payment information (PayPal account, linked card
+                or bank account, etc.) directly
+              </li>
+              <li>
+                We receive only a PayPal Payer ID reference, your email address, and subscription
+                status from PayPal
+              </li>
+              <li>
+                We never have access to your PayPal login credentials or linked card/bank details
+              </li>
+              <li>
+                Your payment information is subject to{' '}
+                <a
+                  href='https://www.paypal.com/myaccount/privacy/fullpolicy'
+                  className='text-accent hover:opacity-80 transition-opacity duration-150 underline underline-offset-2'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                >
+                  PayPal&apos;s Privacy Policy
+                </a>
+              </li>
+            </ul>
+
             <p className='text-text-muted leading-relaxed mb-6'>
               For questions about payment processing or to update your payment information, you can
-              manage your subscription through the Stripe customer portal accessible from the
-              application&apos;s settings.
+              manage your subscription through the Stripe customer portal or your PayPal account
+              settings, whichever applies to you, accessible from the application&apos;s settings.
             </p>
 
             <h3 className='text-base font-medium text-text-primary mb-3'>
@@ -362,9 +397,9 @@ export default function PrivacyPolicy() {
               </li>
               <li>
                 <span className='text-text-primary font-medium'>Payment Processing:</span> When you
-                subscribe to PRO, your payment information is shared with Stripe to process your
-                subscription. We receive only subscription status and a customer reference ID from
-                Stripe
+                subscribe to PRO, your payment information is shared with Stripe or PayPal
+                (whichever you choose) to process your subscription. We receive only subscription
+                status and a customer/payer reference ID from them
               </li>
               <li>
                 <span className='text-text-primary font-medium'>Legal Requirements:</span> If
