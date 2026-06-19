@@ -1,4 +1,4 @@
-import type { ActiveBanner, BannerVariant } from '@/shared/types'
+import type { ActiveBanner, BannerVariant, PromoColor } from '@/shared/types'
 import { TbAlertTriangle, TbCircleCheck, TbInfoCircle, TbX } from 'react-icons/tb'
 import { Button } from '@heroui/react'
 import { AnimatePresence, motion } from 'framer-motion'
@@ -50,6 +50,53 @@ const ALERT_VARIANT_STYLES: Record<AlertVariant, VariantStyle> = {
     titleClassName: 'font-semibold text-content',
     messageClassName: 'text-content',
     ctaClassName: 'bg-white text-black font-semibold',
+  },
+}
+
+const PROMO_COLOR_STYLES: Record<
+  PromoColor,
+  { background: string; glow: string; ctaTextClassName: string; rainbowShimmer?: boolean }
+> = {
+  'purple': {
+    background: 'linear-gradient(to bottom, #1a0b2eff 0%, #0c0612ff 100%)',
+    glow: 'rgba(160, 40, 211, 0.35)',
+    ctaTextClassName: 'text-purple-700',
+  },
+  'blue': {
+    background: 'linear-gradient(to bottom, #0b1430ff 0%, #060a18ff 100%)',
+    glow: 'rgba(37, 99, 235, 0.4)',
+    ctaTextClassName: 'text-blue-700',
+  },
+  'red': {
+    background: 'linear-gradient(to bottom, #2e0b14ff 0%, #120609ff 100%)',
+    glow: 'rgba(220, 38, 38, 0.4)',
+    ctaTextClassName: 'text-red-700',
+  },
+  'orange': {
+    background: 'linear-gradient(to bottom, #2e1a0bff 0%, #120d06ff 100%)',
+    glow: 'rgba(234, 88, 12, 0.4)',
+    ctaTextClassName: 'text-orange-700',
+  },
+  'green': {
+    background: 'linear-gradient(to bottom, #0b2e1aff 0%, #06120dff 100%)',
+    glow: 'rgba(22, 163, 74, 0.4)',
+    ctaTextClassName: 'text-green-700',
+  },
+  'gold': {
+    background: 'linear-gradient(to bottom, #2e2710ff 0%, #121006ff 100%)',
+    glow: 'rgba(217, 119, 6, 0.4)',
+    ctaTextClassName: 'text-amber-700',
+  },
+  'black-gold': {
+    background: 'linear-gradient(to bottom, #161310ff 0%, #0a0908ff 100%)',
+    glow: 'rgba(250, 204, 21, 0.3)',
+    ctaTextClassName: 'text-amber-600',
+  },
+  'rainbow': {
+    background: 'linear-gradient(to bottom, #1a0b2eff 0%, #0c0612ff 100%)',
+    glow: 'rgba(255, 255, 255, 0.25)',
+    ctaTextClassName: 'text-purple-700',
+    rainbowShimmer: true,
   },
 }
 
@@ -109,6 +156,8 @@ function PromoStarfield() {
 }
 
 function PromoBanner({ banner, onDismiss }: { banner: ActiveBanner; onDismiss: () => void }) {
+  const colorStyle = PROMO_COLOR_STYLES[banner.color ?? 'purple']
+
   return (
     <motion.div
       initial={{ y: 140, opacity: 0 }}
@@ -116,16 +165,29 @@ function PromoBanner({ banner, onDismiss }: { banner: ActiveBanner; onDismiss: (
       exit={{ y: 140, opacity: 0 }}
       transition={{ type: 'spring', damping: 20, stiffness: 300 }}
       className='fixed bottom-0 left-0 right-0 z-50 overflow-hidden'
-      style={{ background: 'linear-gradient(to bottom, #1a0b2eff 0%, #0c0612ff 100%)' }}
+      style={{ background: colorStyle.background }}
     >
       <PromoStarfield />
       <div
         className='absolute inset-0 pointer-events-none'
         style={{
-          background:
-            'radial-gradient(ellipse 60% 120% at 50% 100%, rgba(160, 40, 211, 0.35) 0%, transparent 70%)',
+          background: `radial-gradient(ellipse 60% 120% at 50% 100%, ${colorStyle.glow} 0%, transparent 70%)`,
         }}
       />
+      {colorStyle.rainbowShimmer && (
+        <motion.div
+          className='absolute inset-0 pointer-events-none'
+          style={{
+            backgroundImage:
+              'linear-gradient(90deg, #f87171, #fb923c, #facc15, #4ade80, #38bdf8, #818cf8, #f472b6, #f87171)',
+            backgroundSize: '300% 100%',
+            opacity: 0.25,
+            mixBlendMode: 'screen',
+          }}
+          animate={{ backgroundPositionX: ['0%', '100%', '0%'] }}
+          transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
+        />
+      )}
       {banner.asset && (
         <div className='absolute inset-y-0 left-8 flex items-center pointer-events-none select-none'>
           <motion.div
@@ -160,7 +222,7 @@ function PromoBanner({ banner, onDismiss }: { banner: ActiveBanner; onDismiss: (
               size='md'
               radius='full'
               variant='solid'
-              className='bg-white text-purple-700 font-bold px-6 shadow-lg hover:scale-105 duration-150'
+              className={`bg-white ${colorStyle.ctaTextClassName} font-bold px-6 shadow-lg hover:scale-105 duration-150`}
               onPress={() => openExternalLink(banner.ctaUrl as string)}
             >
               {banner.ctaLabel}
