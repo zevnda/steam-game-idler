@@ -1,10 +1,11 @@
 {
   "id": "discord-invite-2026-06",
-  "variant": "info",
-  "title": "Discord Server",
-  "message": "Steam Game Idler has a Discord server! Join us to get support and stay up to date on the latest updates.",
-  "ctaLabel": "Join Discord",
+  "variant": "promo",
+  "title": "Join our Discord",
+  "message": "Steam Game Idler has a Discord community where you can get support, share feedback, request features, and connect with other users!",
+  "ctaLabel": "Join New",
   "ctaUrl": "https://discord.com/invite/5kY2ZbVnZ8",
+  "asset": "discord.webp",
   "dismissal": "permanent",
   "enabled": true
 }

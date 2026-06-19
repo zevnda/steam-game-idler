@@ -1,4 +1,4 @@
-export type BannerVariant = 'danger' | 'warning' | 'info' | 'success'
+export type BannerVariant = 'danger' | 'warning' | 'info' | 'success' | 'promo'
 export type BannerDismissal = 'session' | 'permanent'
 
 export interface RemoteBannerDef {
@@ -8,6 +8,7 @@ export interface RemoteBannerDef {
   message: string
   ctaLabel?: string
   ctaUrl?: string
+  asset?: string
   dismissal: BannerDismissal
   enabled: boolean
 }
@@ -19,5 +20,6 @@ export interface ActiveBanner {
   message: string
   ctaLabel?: string
   ctaUrl?: string
+  asset?: string
   dismissal: BannerDismissal
 }

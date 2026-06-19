@@ -53,9 +53,16 @@ export const useBanners = () => {
   const [remoteBanner, setRemoteBanner] = useState<RemoteBannerDef | null>(null)
   const [sessionDismissed, setSessionDismissed] = useState<Set<string>>(new Set())
   const [permanentlyDismissed, setPermanentlyDismissed] = useState<string[]>(getDismissedBanners)
+  const [ready, setReady] = useState(false)
 
   useEffect(() => {
     fetchRemoteBanner(setRemoteBanner)
+  }, [])
+
+  useEffect(() => {
+    // Give the app a moment to settle before showing any banner, system or remote
+    const timer = setTimeout(() => setReady(true), 3000)
+    return () => clearTimeout(timer)
   }, [])
 
   const eligibleSystemBanner = systemBanners.find(
@@ -69,7 +76,9 @@ export const useBanners = () => {
       ? remoteBanner
       : null
 
-  const activeBanner: ActiveBanner | null = eligibleSystemBanner ?? eligibleRemoteBanner
+  const activeBanner: ActiveBanner | null = ready
+    ? (eligibleSystemBanner ?? eligibleRemoteBanner)
+    : null
 
   const dismiss = (banner: ActiveBanner) => {
     if (banner.dismissal === 'permanent') {

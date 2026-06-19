@@ -1,82 +1,252 @@
-import type { BannerVariant } from '@/shared/types'
+import type { ActiveBanner, BannerVariant } from '@/shared/types'
 import { TbAlertTriangle, TbCircleCheck, TbInfoCircle, TbX } from 'react-icons/tb'
 import { Button } from '@heroui/react'
 import { AnimatePresence, motion } from 'framer-motion'
+import Image from 'next/image'
+import { CDN_BASE_URL } from '@/shared/constants'
 import { useBanners } from '@/shared/hooks'
 import { openExternalLink } from '@/shared/utils'
 
-const VARIANT_STYLES: Record<
-  BannerVariant,
-  { gradient: string; icon: typeof TbAlertTriangle; iconColor: string }
-> = {
+interface VariantStyle {
+  wrapperClassName: string
+  icon: typeof TbAlertTriangle
+  iconClassName: string
+  titleClassName: string
+  messageClassName: string
+  ctaClassName: string
+}
+
+type AlertVariant = Exclude<BannerVariant, 'promo'>
+
+const ALERT_VARIANT_STYLES: Record<AlertVariant, VariantStyle> = {
   danger: {
-    gradient: 'from-red-950 via-red-900 to-zinc-950',
+    wrapperClassName: 'bg-linear-to-r from-red-950 via-red-900 to-zinc-950',
     icon: TbAlertTriangle,
-    iconColor: 'text-red-400',
+    iconClassName: 'text-red-400',
+    titleClassName: 'font-semibold text-content',
+    messageClassName: 'text-content',
+    ctaClassName: 'bg-white text-black font-semibold',
   },
   warning: {
-    gradient: 'from-yellow-950 via-yellow-900 to-zinc-950',
+    wrapperClassName: 'bg-linear-to-r from-yellow-950 via-yellow-900 to-zinc-950',
     icon: TbAlertTriangle,
-    iconColor: 'text-yellow-400',
+    iconClassName: 'text-yellow-400',
+    titleClassName: 'font-semibold text-content',
+    messageClassName: 'text-content',
+    ctaClassName: 'bg-white text-black font-semibold',
   },
   info: {
-    gradient: 'from-blue-950 via-blue-900 to-zinc-950',
+    wrapperClassName: 'bg-linear-to-r from-blue-950 via-blue-900 to-zinc-950',
     icon: TbInfoCircle,
-    iconColor: 'text-blue-400',
+    iconClassName: 'text-blue-400',
+    titleClassName: 'font-semibold text-content',
+    messageClassName: 'text-content',
+    ctaClassName: 'bg-white text-black font-semibold',
   },
   success: {
-    gradient: 'from-green-950 via-green-900 to-zinc-950',
+    wrapperClassName: 'bg-linear-to-r from-green-950 via-green-900 to-zinc-950',
     icon: TbCircleCheck,
-    iconColor: 'text-green-400',
+    iconClassName: 'text-green-400',
+    titleClassName: 'font-semibold text-content',
+    messageClassName: 'text-content',
+    ctaClassName: 'bg-white text-black font-semibold',
   },
+}
+
+const PROMO_STARS = [
+  { top: '20%', left: '6%', width: 46, angle: 26, delay: 0, duration: 0.8, repeatDelay: 5.5 },
+  { top: '65%', left: '24%', width: 36, angle: 20, delay: 1.6, duration: 0.85, repeatDelay: 6.5 },
+  { top: '30%', left: '48%', width: 42, angle: 30, delay: 3.1, duration: 0.9, repeatDelay: 6 },
+  { top: '70%', left: '70%', width: 34, angle: 22, delay: 2.2, duration: 0.85, repeatDelay: 7 },
+  { top: '18%', left: '88%', width: 38, angle: 28, delay: 4.4, duration: 0.8, repeatDelay: 6.2 },
+]
+
+function PromoStarfield() {
+  return (
+    <>
+      <div
+        className='absolute inset-0 pointer-events-none'
+        style={{
+          backgroundImage:
+            'radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.55) 1px, transparent 0)',
+          backgroundSize: '22px 22px',
+          opacity: 0.18,
+        }}
+      />
+      {PROMO_STARS.map(star => {
+        const rad = (star.angle * Math.PI) / 180
+        const travel = 80
+        const dx = travel * Math.cos(rad)
+        const dy = travel * Math.sin(rad)
+        return (
+          <motion.div
+            key={`${star.top}-${star.left}`}
+            className='absolute pointer-events-none'
+            style={{
+              top: star.top,
+              left: star.left,
+              height: 1.5,
+              width: star.width,
+              borderRadius: 9999,
+              background:
+                'linear-gradient(to right, transparent 0%, rgba(255,255,255,0.06) 40%, rgba(255,255,255,0.9) 85%, white 100%)',
+              rotate: star.angle,
+              filter: 'drop-shadow(0 0 4px rgba(255,255,255,0.75))',
+            }}
+            animate={{ x: [0, dx], y: [0, dy], opacity: [0, 1, 0] }}
+            transition={{
+              duration: star.duration,
+              repeat: Infinity,
+              repeatDelay: star.repeatDelay,
+              delay: star.delay,
+              ease: 'easeOut',
+            }}
+          />
+        )
+      })}
+    </>
+  )
+}
+
+function PromoBanner({ banner, onDismiss }: { banner: ActiveBanner; onDismiss: () => void }) {
+  return (
+    <motion.div
+      initial={{ y: 140, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      exit={{ y: 140, opacity: 0 }}
+      transition={{ type: 'spring', damping: 20, stiffness: 300 }}
+      className='fixed bottom-0 left-0 right-0 z-50 overflow-hidden'
+      style={{ background: 'linear-gradient(to bottom, #1a0b2eff 0%, #0c0612ff 100%)' }}
+    >
+      <PromoStarfield />
+      <div
+        className='absolute inset-0 pointer-events-none'
+        style={{
+          background:
+            'radial-gradient(ellipse 60% 120% at 50% 100%, rgba(160, 40, 211, 0.35) 0%, transparent 70%)',
+        }}
+      />
+      {banner.asset && (
+        <div className='absolute inset-y-0 left-8 flex items-center pointer-events-none select-none'>
+          <motion.div
+            animate={{ y: [-6, 6, -6] }}
+            transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+          >
+            <Image
+              src={`${CDN_BASE_URL}/frosted/${banner.asset}`}
+              alt=''
+              width={300}
+              height={300}
+              loading='eager'
+              className='w-32 h-32 object-contain drop-shadow-2xl scale-x-[-1]'
+            />
+          </motion.div>
+        </div>
+      )}
+      <div className='relative flex items-center justify-between gap-6 px-8 py-5 min-h-28'>
+        <div className={`flex items-center gap-4 ${banner.asset ? 'ml-38' : ''}`}>
+          <div className='flex flex-col gap-0.5'>
+            {banner.title && (
+              <span className='text-lg font-black uppercase tracking-wide text-white leading-tight'>
+                {banner.title}
+              </span>
+            )}
+            <span className='text-sm text-white/70'>{banner.message}</span>
+          </div>
+        </div>
+        <div className='flex items-center gap-3 shrink-0'>
+          {banner.ctaUrl && banner.ctaLabel && (
+            <Button
+              size='md'
+              radius='full'
+              variant='solid'
+              className='bg-white text-purple-700 font-bold px-6 shadow-lg hover:scale-105 duration-150'
+              onPress={() => openExternalLink(banner.ctaUrl as string)}
+            >
+              {banner.ctaLabel}
+            </Button>
+          )}
+          <button
+            onClick={onDismiss}
+            className='flex items-center justify-center hover:bg-white/10 rounded-full p-1 duration-150 cursor-pointer'
+          >
+            <TbX fontSize={20} className='text-white/70 hover:text-white' />
+          </button>
+        </div>
+      </div>
+    </motion.div>
+  )
+}
+
+function AlertBanner({ banner, onDismiss }: { banner: ActiveBanner; onDismiss: () => void }) {
+  const {
+    wrapperClassName,
+    icon: Icon,
+    iconClassName,
+    titleClassName,
+    messageClassName,
+    ctaClassName,
+  } = ALERT_VARIANT_STYLES[banner.variant as AlertVariant]
+
+  return (
+    <motion.div
+      initial={{ y: 80, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      exit={{ y: 80, opacity: 0 }}
+      transition={{ type: 'spring', damping: 20, stiffness: 300 }}
+      className={`fixed bottom-0 left-0 right-0 z-50 ${wrapperClassName}`}
+    >
+      <div className='relative flex items-center justify-between gap-4 px-6 py-3'>
+        <div className='flex items-center gap-3'>
+          <Icon fontSize={20} className={`${iconClassName} shrink-0`} />
+          <p className='text-sm'>
+            {banner.title && <span className={`${titleClassName} mr-1`}>{banner.title}</span>}
+            <span className={messageClassName}>{banner.message}</span>
+          </p>
+        </div>
+        <div className='flex items-center gap-2 shrink-0'>
+          {banner.ctaUrl && banner.ctaLabel && (
+            <Button
+              size='sm'
+              radius='full'
+              variant='solid'
+              className={ctaClassName}
+              onPress={() => openExternalLink(banner.ctaUrl as string)}
+            >
+              {banner.ctaLabel}
+            </Button>
+          )}
+          <button
+            onClick={onDismiss}
+            className='flex items-center justify-center hover:bg-white/10 rounded-full p-1 duration-150 cursor-pointer'
+          >
+            <TbX fontSize={18} className='text-content' />
+          </button>
+        </div>
+      </div>
+    </motion.div>
+  )
 }
 
 export const Banner = () => {
   const { activeBanner, dismiss } = useBanners()
 
-  if (!activeBanner) return null
-
-  const { gradient, icon: Icon, iconColor } = VARIANT_STYLES[activeBanner.variant]
-
   return (
     <AnimatePresence>
-      <motion.div
-        key={activeBanner.id}
-        initial={{ y: 80, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        exit={{ y: 80, opacity: 0 }}
-        transition={{ type: 'spring', damping: 20, stiffness: 300 }}
-        className={`fixed bottom-0 left-0 right-0 z-50 bg-linear-to-r ${gradient}`}
-      >
-        <div className='flex items-center justify-between gap-4 px-6 py-3'>
-          <div className='flex items-center gap-3'>
-            <Icon fontSize={20} className={`${iconColor} shrink-0`} />
-            <p className='text-sm text-content'>
-              {activeBanner.title && <span className='font-semibold'>{activeBanner.title} </span>}
-              {activeBanner.message}
-            </p>
-          </div>
-          <div className='flex items-center gap-2 shrink-0'>
-            {activeBanner.ctaUrl && activeBanner.ctaLabel && (
-              <Button
-                size='sm'
-                radius='full'
-                variant='solid'
-                className='bg-white text-black font-semibold'
-                onPress={() => openExternalLink(activeBanner.ctaUrl as string)}
-              >
-                {activeBanner.ctaLabel}
-              </Button>
-            )}
-            <button
-              onClick={() => dismiss(activeBanner)}
-              className='flex items-center justify-center hover:bg-white/10 rounded-full p-1 duration-150 cursor-pointer'
-            >
-              <TbX fontSize={18} className='text-content' />
-            </button>
-          </div>
-        </div>
-      </motion.div>
+      {activeBanner?.variant === 'promo' && (
+        <PromoBanner
+          key={activeBanner.id}
+          banner={activeBanner}
+          onDismiss={() => dismiss(activeBanner)}
+        />
+      )}
+      {activeBanner && activeBanner.variant !== 'promo' && (
+        <AlertBanner
+          key={activeBanner.id}
+          banner={activeBanner}
+          onDismiss={() => dismiss(activeBanner)}
+        />
+      )}
     </AnimatePresence>
   )
 }
