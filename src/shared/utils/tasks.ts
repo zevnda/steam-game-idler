@@ -184,6 +184,7 @@ export const preserveKeysAndClearData = async () => {
       'theme',
       'minToTrayNotified',
       'seenNotifications',
+      'dismissedBanners',
       'hasUpdated',
       'isFirstTimeUser',
     ]
