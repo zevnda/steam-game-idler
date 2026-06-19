@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { cn, Spinner } from '@heroui/react'
 import Image from 'next/image'
@@ -17,25 +17,48 @@ export const AdSlot = () => {
   const [reloadKey, setReloadKey] = useState(0)
   const [adFilled, setAdFilled] = useState(false)
 
-  const fallbackAdCount = 15
+  const DEFAULT_FALLBACK_AD_COUNT = 15
+
+  const [manifestCount, setManifestCount] = useState(DEFAULT_FALLBACK_AD_COUNT)
+  const failedAdsRef = useRef<Set<string>>(new Set())
+
+  useEffect(() => {
+    fetch(`${CDN_BASE_URL}/ads/manifest.json`)
+      .then(res => res.json())
+      .then(data => {
+        if (typeof data?.count === 'number' && data.count > 0) {
+          setManifestCount(data.count)
+        }
+      })
+      .catch(() => {
+        // ignore and use default count
+      })
+  }, [])
 
   const fallbackAds = useMemo(
-    () => Array.from({ length: fallbackAdCount }, (_, i) => `${CDN_BASE_URL}/ads/${i + 1}.png`),
-    [],
+    () => Array.from({ length: manifestCount }, (_, i) => `${CDN_BASE_URL}/ads/${i + 1}.png`),
+    [manifestCount],
   )
 
   const [fallbackAd, setFallbackAd] = useState(
     () => fallbackAds[Math.floor(Math.random() * fallbackAds.length)],
   )
 
-  // Pick a random fallback ad that's different from the current one
+  // Pick a random fallback ad that's different from the current one and hasn't 404'd
   const pickNextFallback = useCallback(
-    (current: string) => {
-      const others = fallbackAds.filter(ad => ad !== current)
+    (current: string, excluded: Set<string> = failedAdsRef.current) => {
+      const others = fallbackAds.filter(ad => ad !== current && !excluded.has(ad))
+      if (others.length === 0) return current
       return others[Math.floor(Math.random() * others.length)]
     },
     [fallbackAds],
   )
+
+  // If a fallback ad fails to load (404/missing), blacklist it and roll to another one
+  const handleFallbackAdError = useCallback(() => {
+    failedAdsRef.current.add(fallbackAd)
+    setFallbackAd(current => pickNextFallback(current))
+  }, [fallbackAd, pickNextFallback])
 
   const gameSlugs = useMemo(
     () => [
@@ -137,6 +160,7 @@ export const AdSlot = () => {
   // Reset fallback state whenever the iframe loads a new page
   useEffect(() => {
     setAdFilled(false)
+    failedAdsRef.current = new Set()
     setFallbackAd(prev => pickNextFallback(prev))
   }, [gameUrl, reloadKey, fallbackAds, pickNextFallback])
 
@@ -221,6 +245,7 @@ export const AdSlot = () => {
               width={300}
               height={250}
               className='w-full h-full object-fill'
+              onError={handleFallbackAdError}
             />
           </div>
         )}
