@@ -1,11 +1,11 @@
 {
-  "id": "discord-invite-2026-06",
+  "id": "paypal-method-added-2026-06",
   "variant": "promo",
-  "title": "Join our Discord",
-  "message": "Steam Game Idler has a Discord community where you can get support, share feedback, request features, and connect with other users!",
-  "ctaLabel": "Join Now",
-  "ctaUrl": "https://discord.com/invite/5kY2ZbVnZ8",
-  "asset": "discord.webp",
+  "title": "PayPal Payment Method Added",
+  "message": "PayPal is now available as a payment method for PRO subscriptions. You can now choose to checkout with either Stripe or PayPal!",
+  "ctaLabel": "Go PRO",
+  "ctaUrl": "https://steamgameidler.com/pro",
+  "asset": "paypal.webp",
   "dismissal": "permanent",
   "enabled": true
 }
