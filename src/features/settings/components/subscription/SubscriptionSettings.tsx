@@ -16,6 +16,7 @@ interface SubscriptionResult {
     email?: string | null
     current_period_end?: string | null
     cancel_at_period_end?: boolean | null
+    payment_provider?: string | null
   }
 }
 
@@ -50,6 +51,7 @@ export const SubscriptionSettings = () => {
       currentPeriodEnd: data.results.current_period_end ?? null,
       cancelAtPeriodEnd: data.results.cancel_at_period_end ?? null,
       status: data.results.status ?? null,
+      paymentProvider: data.results.payment_provider ?? null,
     })
   }
 
@@ -200,7 +202,15 @@ export const SubscriptionSettings = () => {
                 {formatDate(proDetails.currentPeriodEnd)}
               </p>
             )}
-            {isPro && (
+            {isPro && proDetails?.paymentProvider === 'paypal' && (
+              <ExtLink href='https://www.paypal.com/myaccount/autopay/'>
+                <div className='flex items-center gap-1.5 text-black bg-white font-semibold text-xs py-2 px-3 rounded-full'>
+                  {t('settings.general.manageSubscription')}
+                  <TbExternalLink size={13} />
+                </div>
+              </ExtLink>
+            )}
+            {isPro && proDetails?.paymentProvider !== 'paypal' && (
               <ExtLink href='https://billing.stripe.com/p/login/8x23cwf8CeNE6PLaAecbC00'>
                 <div className='flex items-center gap-1.5 text-black bg-white font-semibold text-xs py-2 px-3 rounded-full'>
                   {t('settings.general.manageSubscription')}

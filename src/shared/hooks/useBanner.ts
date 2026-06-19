@@ -7,7 +7,8 @@ interface SystemBannerDef extends ActiveBanner {
   isEligible: (proDetails: ProDetails | null) => boolean
 }
 
-const BILLING_URL = 'https://billing.stripe.com/p/login/8x23cwf8CeNE6PLaAecbC00'
+const STRIPE_BILLING_URL = 'https://billing.stripe.com/p/login/8x23cwf8CeNE6PLaAecbC00'
+const PAYPAL_BILLING_URL = 'https://www.paypal.com/myaccount/autopay/'
 
 const systemBanners: SystemBannerDef[] = [
   {
@@ -16,7 +17,6 @@ const systemBanners: SystemBannerDef[] = [
     message:
       'Your PRO subscription is past due. Please update your payment method to avoid losing access.',
     ctaLabel: 'Manage Subscription',
-    ctaUrl: BILLING_URL,
     dismissal: 'session',
     isEligible: proDetails => proDetails?.status === 'past_due',
   },
@@ -77,7 +77,13 @@ export const useBanners = () => {
       : null
 
   const activeBanner: ActiveBanner | null = ready
-    ? (eligibleSystemBanner ?? eligibleRemoteBanner)
+    ? eligibleSystemBanner
+      ? {
+          ...eligibleSystemBanner,
+          ctaUrl:
+            proDetails?.paymentProvider === 'paypal' ? PAYPAL_BILLING_URL : STRIPE_BILLING_URL,
+        }
+      : eligibleRemoteBanner
     : null
 
   const dismiss = (banner: ActiveBanner) => {

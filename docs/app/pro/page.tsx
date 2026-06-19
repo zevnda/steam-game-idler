@@ -1,3 +1,4 @@
+import { BsStripe } from 'react-icons/bs'
 import { FaArrowRight, FaCheck, FaDiscord } from 'react-icons/fa6'
 import { FiBook } from 'react-icons/fi'
 import {
@@ -16,6 +17,7 @@ import {
 import Link from 'next/link'
 import FooterSection from '@/app/(home)/_components/FooterSection'
 import NavBar from '@/app/(home)/_components/NavBar'
+import PayPalButton from '@/app/pro/_components/PayPalButton'
 
 export const metadata = {
   title: { absolute: 'Steam Game Idler PRO' },
@@ -237,13 +239,21 @@ export default async function ProPage() {
                       ))}
                   </ul>
 
-                  <a
-                    href={priceData.tierOne.url}
-                    className='btn-primary w-full justify-center py-3'
-                  >
-                    Get Started
-                    <FaArrowRight className='w-4 h-4' />
-                  </a>
+                  <div className='flex flex-col gap-2.5'>
+                    <a
+                      href={priceData.tierOne.url}
+                      className='btn-primary w-full justify-center py-3'
+                      style={{ background: 'linear-gradient(110deg, #635bff, #7a73ff)' }}
+                    >
+                      <BsStripe className='w-4 h-4' />
+                      Stripe
+                      <FaArrowRight className='w-4 h-4' />
+                    </a>
+                    <PayPalButton
+                      tier='casual'
+                      className='btn-primary w-full justify-center py-3'
+                    />
+                  </div>
                 </div>
 
                 {/* Gamer card */}
@@ -286,14 +296,21 @@ export default async function ProPage() {
                       ))}
                   </ul>
 
-                  <a
-                    href={priceData.tierTwo.url}
-                    className='w-full inline-flex items-center justify-center gap-2 py-3 rounded-md font-semibold text-sm text-white transition-opacity duration-150 hover:opacity-80'
-                    style={{ background: 'linear-gradient(135deg, #a855f7, #6366f1)' }}
-                  >
-                    Get Started
-                    <FaArrowRight className='w-4 h-4' />
-                  </a>
+                  <div className='flex flex-col gap-2.5'>
+                    <a
+                      href={priceData.tierTwo.url}
+                      className='w-full inline-flex items-center justify-center gap-2 py-3 rounded-md font-semibold text-sm text-white transition-opacity duration-150 hover:opacity-80'
+                      style={{ background: 'linear-gradient(110deg, #635bff, #7a73ff)' }}
+                    >
+                      <BsStripe className='w-4 h-4' />
+                      Stripe
+                      <FaArrowRight className='w-4 h-4' />
+                    </a>
+                    <PayPalButton
+                      tier='gamer'
+                      className='w-full inline-flex items-center justify-center gap-2 py-3 rounded-md font-semibold text-sm text-white transition-opacity duration-150 hover:opacity-80'
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -412,19 +429,43 @@ export default async function ProPage() {
                 ${priceData.tierTwo.price}/month. Cancel anytime.
               </p>
 
-              <div className='flex flex-col sm:flex-row gap-4 justify-center mb-10'>
-                <a href={priceData.tierOne.url} className='btn-primary px-8 py-3.5 text-base'>
-                  Casual — ${priceData.tierOne.price}/mo
-                  <FaArrowRight className='w-4 h-4' />
-                </a>
-                <a
-                  href={priceData.tierTwo.url}
-                  className='btn-primary px-8 py-3.5 text-base'
-                  style={{ background: 'linear-gradient(135deg, #a855f7, #6366f1)' }}
-                >
-                  Gamer — ${priceData.tierTwo.price}/mo
-                  <FaArrowRight className='w-4 h-4' />
-                </a>
+              <div className='flex flex-col sm:flex-row gap-6 justify-center mb-10'>
+                <div className='flex flex-col gap-2.5 w-full sm:w-60'>
+                  <span className='text-xs text-text-muted uppercase tracking-wide font-semibold'>
+                    Casual — ${priceData.tierOne.price}/mo
+                  </span>
+                  <a
+                    href={priceData.tierOne.url}
+                    className='btn-primary justify-center py-3 text-base'
+                    style={{ background: 'linear-gradient(110deg, #635bff, #7a73ff)' }}
+                  >
+                    <BsStripe className='w-4 h-4' />
+                    Stripe
+                    <FaArrowRight className='w-4 h-4' />
+                  </a>
+                  <PayPalButton
+                    tier='casual'
+                    className='btn-primary justify-center py-3 text-base'
+                  />
+                </div>
+                <div className='flex flex-col gap-2.5 w-full sm:w-60'>
+                  <span className='text-xs text-text-muted uppercase tracking-wide font-semibold'>
+                    Gamer — ${priceData.tierTwo.price}/mo
+                  </span>
+                  <a
+                    href={priceData.tierTwo.url}
+                    className='btn-primary justify-center py-3 text-base'
+                    style={{ background: 'linear-gradient(110deg, #635bff, #7a73ff)' }}
+                  >
+                    <BsStripe className='w-4 h-4' />
+                    Stripe
+                    <FaArrowRight className='w-4 h-4' />
+                  </a>
+                  <PayPalButton
+                    tier='gamer'
+                    className='btn-primary justify-center py-3 text-base'
+                  />
+                </div>
               </div>
 
               <Link

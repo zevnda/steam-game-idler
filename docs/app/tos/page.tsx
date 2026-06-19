@@ -19,8 +19,7 @@ export default function TermsOfService() {
         <div className='space-y-10'>
           <section>
             <p className='text-sm text-text-muted mb-6'>
-              <span className='text-text-primary font-semibold'>Last Updated:</span> December 16,
-              2025
+              <span className='text-text-primary font-semibold'>Last Updated:</span> June 20, 2026
             </p>
             <p className='text-text-muted leading-relaxed'>
               These Terms of Service (&quot;Terms&quot;) govern your use of Steam Game Idler
@@ -210,7 +209,8 @@ export default function TermsOfService() {
             <ul className='list-disc pl-6 space-y-2 text-text-muted mb-6'>
               <li>
                 <span className='text-text-primary font-medium'>Payment Processing:</span> All
-                payments are processed securely through Stripe, our third-party payment processor
+                payments are processed securely through one of our third-party payment processors,
+                Stripe or PayPal, depending on which option you choose at checkout
               </li>
               <li>
                 <span className='text-text-primary font-medium'>Recurring Billing:</span> PRO
@@ -223,8 +223,8 @@ export default function TermsOfService() {
               </li>
               <li>
                 <span className='text-text-primary font-medium'>Payment Methods:</span> We accept
-                payment methods supported by Stripe (credit cards, debit cards, and other methods as
-                available)
+                payment methods supported by Stripe and PayPal (credit cards, debit cards, PayPal
+                balance, and other methods as available)
               </li>
               <li>
                 <span className='text-text-primary font-medium'>Failed Payments:</span> If a payment
@@ -251,7 +251,8 @@ export default function TermsOfService() {
             </ul>
             <p className='text-text-muted leading-relaxed mb-6'>
               We do NOT store your payment information. All payment details are securely handled by
-              Stripe. See our Privacy Policy for more information.
+              Stripe or PayPal, depending on which payment method you choose. See our Privacy Policy
+              for more information.
             </p>
 
             <h3 className='text-base font-medium text-text-primary mb-3'>6.5 Cancellation</h3>
