@@ -13,6 +13,7 @@ import translationPLPL from '@/i18n/locales/pl-PL/translation.json'
 import translationPTBR from '@/i18n/locales/pt-BR/translation.json'
 import translationRORO from '@/i18n/locales/ro-RO/translation.json'
 import translationRURU from '@/i18n/locales/ru-RU/translation.json'
+import translationSLSI from '@/i18n/locales/sl-SI/translation.json'
 import translationTRTR from '@/i18n/locales/tr-TR/translation.json'
 import translationUKUA from '@/i18n/locales/uk-UA/translation.json'
 import translationZHCN from '@/i18n/locales/zh-CN/translation.json'
@@ -32,6 +33,7 @@ const resources = {
   'pt-BR': { translation: translationPTBR },
   'ro-RO': { translation: translationRORO },
   'ru-RU': { translation: translationRURU },
+  'sl-SI': { translation: translationSLSI },
   'tr-TR': { translation: translationTRTR },
   'uk-UA': { translation: translationUKUA },
   'zh-CN': { translation: translationZHCN },
