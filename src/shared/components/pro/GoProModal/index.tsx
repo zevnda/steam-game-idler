@@ -42,7 +42,6 @@ export const GoProModal = () => {
 
   const tierRef = useRef<HTMLDivElement>(null)
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null)
-  const [lockedWidth, setLockedWidth] = useState<number | null>(null)
 
   const [priceData, setPriceData] = useState<PriceData>({
     tierOne: { url: '', price: '0' },
@@ -72,10 +71,6 @@ export const GoProModal = () => {
     }, 400)
     return () => clearTimeout(timer)
   }, [proModalOpen, proModalRequiredTier])
-
-  useEffect(() => {
-    if (proModalOpen) setLockedWidth(window.innerWidth)
-  }, [proModalOpen])
 
   const handleOpenChange = (open: boolean) => {
     setProModalOpen(open)
@@ -148,8 +143,8 @@ export const GoProModal = () => {
             {/* ── Hero + Features wrapper (hosts floating decorative images) ── */}
             <div className='relative'>
               <div
-                className='absolute inset-y-0 left-1/2 -translate-x-1/2 pointer-events-none'
-                style={{ width: lockedWidth ?? '100%' }}
+                className='absolute left-1/2 top-0 -translate-x-1/2 pointer-events-none'
+                style={{ width: 1440, height: 800 }}
               >
                 <FloatingImage
                   src={`${CDN_BASE_URL}/pro-modal/dragon.webp`}
@@ -163,7 +158,7 @@ export const GoProModal = () => {
                   size={300}
                   duration={6}
                   delay={1.1}
-                  style={{ top: 'calc(40% - 200px)', left: '2rem' }}
+                  style={{ top: '40rem', left: '2rem' }}
                 />
               </div>
 
@@ -279,14 +274,14 @@ export const GoProModal = () => {
             <div ref={tierRef} className='px-65 pb-8'>
               <SectionHeading label={t('proMode.section.chooseTier')} />
 
-              <div className='relative grid grid-cols-[repeat(2,26rem)] justify-center gap-6'>
+              <div className='relative grid grid-cols-[repeat(2,26rem)] gap-6 w-fit mx-auto'>
                 <Image
                   src={`${CDN_BASE_URL}/pro-modal/samurai.webp`}
                   alt=''
                   width={250}
                   height={250}
                   className='absolute z-10 pointer-events-none select-none object-contain opacity-90 drop-shadow-2xl'
-                  style={{ top: '46%', right: '-9rem', transform: 'translateY(-50%)' }}
+                  style={{ top: '46%', right: '-10rem', transform: 'translateY(-50%)' }}
                 />
                 <TierCard
                   name={t('proMode.tier.casual.name')}
