@@ -169,9 +169,9 @@ export const GoProModal = () => {
                   className='absolute inset-0 pointer-events-none'
                   style={{
                     background: [
-                      'radial-gradient(ellipse 55% 45% at 36% 40%, rgba(124, 58, 237, 0.24) 0%, transparent 70%)',
-                      'radial-gradient(ellipse 50% 40% at 68% 58%, rgba(217, 70, 239, 0.18) 0%, transparent 70%)',
-                      'radial-gradient(ellipse 45% 40% at 52% 30%, rgba(56, 189, 248, 0.16) 0%, transparent 72%)',
+                      'radial-gradient(ellipse 55% 45% at 36% 40%, rgba(124, 58, 237, 0.30) 0%, transparent 70%)',
+                      'radial-gradient(ellipse 50% 40% at 68% 58%, rgba(217, 70, 239, 0.22) 0%, transparent 70%)',
+                      'radial-gradient(ellipse 45% 40% at 52% 30%, rgba(56, 189, 248, 0.22) 0%, transparent 72%)',
                       'radial-gradient(ellipse 60% 48% at 58% 68%, rgba(0, 81, 255, 0.18) 0%, transparent 70%)',
                       'radial-gradient(ellipse 70% 55% at 50% 50%, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.25) 85%)',
                     ].join(', '),

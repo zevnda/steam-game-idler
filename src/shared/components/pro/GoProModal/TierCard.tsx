@@ -33,8 +33,8 @@ export function TierCard({
 }: TierCardProps) {
   const { t } = useTranslation()
   const [isPaypalLoading, setIsPaypalLoading] = useState(false)
-  const accent = isCasual ? '#3b82f6' : '#9b4ee4'
-  const accentTo = isCasual ? '#38bdf8' : '#c026d3'
+  const accent = isCasual ? '#3b82f6' : '#8a60ff'
+  const accentTo = isCasual ? '#38bdf8' : '#ab26d3'
 
   const handlePaypalSelect = async () => {
     setIsPaypalLoading(true)
