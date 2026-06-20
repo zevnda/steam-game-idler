@@ -51,7 +51,7 @@ interface CardDef {
 
 const SHOOTING_STARS = [
   {
-    top: '8%',
+    top: '4%',
     left: '6%',
     width: 140,
     angle: 30,
@@ -61,7 +61,7 @@ const SHOOTING_STARS = [
     travel: 220,
   },
   {
-    top: '20%',
+    top: '12%',
     left: '55%',
     width: 90,
     angle: 26,
@@ -71,7 +71,7 @@ const SHOOTING_STARS = [
     travel: 170,
   },
   {
-    top: '42%',
+    top: '24%',
     left: '2%',
     width: 115,
     angle: 34,
@@ -81,7 +81,17 @@ const SHOOTING_STARS = [
     travel: 195,
   },
   {
-    top: '62%',
+    top: '34%',
+    left: '76%',
+    width: 82,
+    angle: 32,
+    delay: 7.0,
+    duration: 0.8,
+    repeatDelay: 12.0,
+    travel: 155,
+  },
+  {
+    top: '44%',
     left: '65%',
     width: 75,
     angle: 28,
@@ -91,7 +101,7 @@ const SHOOTING_STARS = [
     travel: 145,
   },
   {
-    top: '78%',
+    top: '54%',
     left: '32%',
     width: 100,
     angle: 22,
@@ -101,14 +111,24 @@ const SHOOTING_STARS = [
     travel: 185,
   },
   {
-    top: '14%',
-    left: '76%',
-    width: 82,
-    angle: 32,
-    delay: 7.0,
-    duration: 0.8,
-    repeatDelay: 12.0,
-    travel: 155,
+    top: '64%',
+    left: '8%',
+    width: 95,
+    angle: 30,
+    delay: 3.0,
+    duration: 0.9,
+    repeatDelay: 9.5,
+    travel: 175,
+  },
+  {
+    top: '74%',
+    left: '58%',
+    width: 120,
+    angle: 26,
+    delay: 6.2,
+    duration: 1.0,
+    repeatDelay: 8.0,
+    travel: 200,
   },
 ]
 
@@ -171,6 +191,142 @@ function createStarfield(count: number, seed: number) {
 }
 
 const STARFIELD_BACKGROUND = createStarfield(260, 1337)
+
+// ─── Twinkling stars ──────────────────────────────────────────────────────────
+
+const TWINKLE_STARS = [
+  {
+    top: '10%',
+    left: '14%',
+    size: 2.5,
+    color: '#cfe3ff',
+    duration: 2.6,
+    delay: 0.2,
+    repeatDelay: 4.5,
+  },
+  {
+    top: '6%',
+    left: '62%',
+    size: 2,
+    color: '#ffe9c2',
+    duration: 3.2,
+    delay: 1.4,
+    repeatDelay: 5.5,
+  },
+  {
+    top: '18%',
+    left: '85%',
+    size: 1.8,
+    color: '#ffffff',
+    duration: 2.4,
+    delay: 2.6,
+    repeatDelay: 3.8,
+  },
+  {
+    top: '28%',
+    left: '38%',
+    size: 2.2,
+    color: '#ffd9b3',
+    duration: 3.0,
+    delay: 0.8,
+    repeatDelay: 6.0,
+  },
+  {
+    top: '34%',
+    left: '8%',
+    size: 1.6,
+    color: '#ffffff',
+    duration: 2.8,
+    delay: 3.5,
+    repeatDelay: 4.2,
+  },
+  {
+    top: '40%',
+    left: '92%',
+    size: 2.4,
+    color: '#cfe3ff',
+    duration: 2.5,
+    delay: 1.0,
+    repeatDelay: 5.0,
+  },
+  {
+    top: '48%',
+    left: '22%',
+    size: 1.8,
+    color: '#ffc9d6',
+    duration: 3.4,
+    delay: 2.0,
+    repeatDelay: 6.5,
+  },
+  {
+    top: '55%',
+    left: '70%',
+    size: 2,
+    color: '#ffffff',
+    duration: 2.7,
+    delay: 0.5,
+    repeatDelay: 4.8,
+  },
+  {
+    top: '62%',
+    left: '46%',
+    size: 2.2,
+    color: '#ffe9c2',
+    duration: 2.9,
+    delay: 3.0,
+    repeatDelay: 5.2,
+  },
+  {
+    top: '68%',
+    left: '12%',
+    size: 1.6,
+    color: '#cfe3ff',
+    duration: 3.1,
+    delay: 1.7,
+    repeatDelay: 4.0,
+  },
+  {
+    top: '72%',
+    left: '80%',
+    size: 2.4,
+    color: '#ffffff',
+    duration: 2.5,
+    delay: 2.3,
+    repeatDelay: 5.8,
+  },
+  {
+    top: '76%',
+    left: '58%',
+    size: 1.8,
+    color: '#ffd9b3',
+    duration: 3.3,
+    delay: 0.0,
+    repeatDelay: 4.6,
+  },
+] as const
+
+function TwinkleStar({
+  top,
+  left,
+  size,
+  color,
+  duration,
+  delay,
+  repeatDelay,
+}: (typeof TWINKLE_STARS)[number]) {
+  return (
+    <motion.div
+      className='absolute rounded-full pointer-events-none'
+      style={{ top, left, width: size, height: size }}
+      animate={{
+        opacity: [0.3, 1, 0.3],
+        backgroundColor: ['#ffffff', color, '#ffffff'],
+        boxShadow: [`0 0 0px ${color}`, `0 0 5px ${color}`, `0 0 0px ${color}`],
+      }}
+      transition={{ duration, repeat: Infinity, repeatDelay, delay, ease: 'easeInOut' as const }}
+    />
+  )
+}
 
 // ─── Floating decorative images ──────────────────────────────────────────────
 
@@ -624,6 +780,34 @@ export const GoProModal = () => {
               }}
             />
 
+            {/* Twinkling stars — a handful of colored stars flicker like real starlight */}
+            <div
+              className='absolute inset-0 pointer-events-none'
+              style={{
+                maskImage: 'linear-gradient(to bottom, black 0%, black 80%, transparent 100%)',
+                WebkitMaskImage:
+                  'linear-gradient(to bottom, black 0%, black 80%, transparent 100%)',
+              }}
+            >
+              {TWINKLE_STARS.map(star => (
+                <TwinkleStar key={`${star.top}-${star.left}`} {...star} />
+              ))}
+            </div>
+
+            {/* Shooting stars — spans hero through tier cards, fading out before the FAQ */}
+            <div
+              className='absolute inset-0 pointer-events-none overflow-hidden'
+              style={{
+                maskImage: 'linear-gradient(to bottom, black 0%, black 80%, transparent 100%)',
+                WebkitMaskImage:
+                  'linear-gradient(to bottom, black 0%, black 80%, transparent 100%)',
+              }}
+            >
+              {SHOOTING_STARS.map(star => (
+                <ShootingStar key={`${star.top}-${star.left}`} {...star} />
+              ))}
+            </div>
+
             {/* ── Hero + Features wrapper (hosts floating decorative images) ── */}
             <div className='relative'>
               <div
@@ -647,12 +831,7 @@ export const GoProModal = () => {
               </div>
 
               {/* ── Hero ───────────────────────────────────────────────────── */}
-              <div className='relative z-10 min-h-fit flex flex-col items-center justify-center overflow-hidden'>
-                {/* Shooting stars */}
-                {SHOOTING_STARS.map(star => (
-                  <ShootingStar key={`${star.top}-${star.left}`} {...star} />
-                ))}
-
+              <div className='relative z-10 min-h-fit flex flex-col items-center justify-center'>
                 {/* Nebula glow center */}
                 <motion.div
                   className='absolute inset-0 pointer-events-none'
@@ -665,6 +844,8 @@ export const GoProModal = () => {
                       'radial-gradient(ellipse 70% 55% at 50% 50%, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.25) 85%)',
                     ].join(', '),
                     filter: 'blur(6px)',
+                    maskImage: 'linear-gradient(to bottom, black 0%, transparent 100%)',
+                    WebkitMaskImage: 'linear-gradient(to bottom, black 0%, transparent 100%)',
                   }}
                   animate={{ opacity: [0.8, 1, 0.8] }}
                   transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' as const }}
