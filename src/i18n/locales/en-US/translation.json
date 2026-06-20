@@ -312,7 +312,7 @@
   "proMode.tier.gamer.credentials": "Automatic Steam Credentials Retrieval",
   "proMode.tier.gamer.gamesList": "Automatic Games List Updates",
   "proMode.tier.gamer.freeGames": "Automatic Free Game Redemption",
-  "proMode.tier.gamer.sellDupes": "Sell Duplicate Items",
+  "proMode.tier.gamer.sellDupes": "Sell Duplicate Inventory Items",
   "proMode.tier.gamer.importTimings": "Import Achievement Unlock Timings",
   "proMode.tier.gamer.autoFarmCards": "Automatic Card Farming",
   "proMode.tier.gamer.cancelAnytime": "Cancel Anytime",
