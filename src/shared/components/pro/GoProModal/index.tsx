@@ -319,9 +319,11 @@ export const GoProModal = () => {
                 />
               </div>
 
-              <p className='text-center text-white/45 text-[10px] mt-4'>
-                {t('proMode.modal.footer')}
-              </p>
+              <div className='flex justify-center w-full'>
+                <p className='text-center text-white/45 text-[10px] w-84 mt-4'>
+                  {t('proMode.modal.footer')}
+                </p>
+              </div>
             </div>
           </div>
 

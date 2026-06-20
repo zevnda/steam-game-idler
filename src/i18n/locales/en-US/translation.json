@@ -330,7 +330,7 @@
   "proMode.faq.refund.a": "PRO subscriptions are treated as donations and are generally non-refundable. Refunds are considered on a case-by-case basis. Contact us via the help desk at the top-right of the app or at contact@steamgameidler.com.",
   "proMode.faq.chargeback.q": "What happens if I file a chargeback?",
   "proMode.faq.chargeback.a": "Fraudulent chargebacks significantly impact this small independent project. Filing one without prior communication may result in your access to this app being permanently revoked. If there was a billing error, we are always happy to work with you to get it sorted as fast as possible, so please contact us via the help desk at the top-right of the app or at contact@steamgameidler.com.",
-  "proMode.modal.footer": "Prices displayed are in USD and exclude taxes.",
+  "proMode.modal.footer": "Prices displayed are in USD and exclude taxes and currency conversion fees which may apply depending on your location and payment method.",
   "proMode.removeAdsWith": "Remove ads with",
   "toast.steam": "Steam is not running",
   "toast.mismatch": "Account mismatch between Steam and SGI",
