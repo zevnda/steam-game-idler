@@ -146,6 +146,32 @@ function ShootingStar({
   )
 }
 
+// ─── Starfield background ─────────────────────────────────────────────────────
+
+function createStarfield(count: number, seed: number) {
+  let state = seed
+  const next = () => {
+    state = (state + 0x6d2b79f5) | 0
+    let t = Math.imul(state ^ (state >>> 15), 1 | state)
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+  }
+
+  const layers: string[] = []
+  for (let i = 0; i < count; i++) {
+    const x = (next() * 100).toFixed(2)
+    const y = (next() * 100).toFixed(2)
+    const size = (0.5 + next() * 1.6).toFixed(2)
+    const opacity = (0.25 + next() * 0.65).toFixed(2)
+    layers.push(
+      `radial-gradient(circle at ${x}% ${y}%, rgba(255,255,255,${opacity}) 0, rgba(255,255,255,${opacity}) ${size}px, transparent ${size}px)`,
+    )
+  }
+  return layers.join(', ')
+}
+
+const STARFIELD_BACKGROUND = createStarfield(260, 1337)
+
 // ─── Floating decorative images ──────────────────────────────────────────────
 
 function FloatingImage({
@@ -584,194 +610,198 @@ export const GoProModal = () => {
     >
       <ModalContent>
         <ModalBody className='p-0 overflow-auto overflow-x-hidden select-none'>
-          {/* ── Hero + Features wrapper (hosts floating decorative images) ── */}
+          {/* ── Starfield + Hero + Features + Tier cards wrapper ── */}
           <div className='relative'>
+            {/* Starfield — spans hero through tier cards, fading out before the FAQ */}
             <div
-              className='absolute inset-y-0 left-1/2 -translate-x-1/2 pointer-events-none'
-              style={{ width: lockedWidth ?? '100%' }}
-            >
-              <FloatingImage
-                src={`${CDN_BASE_URL}/pro-modal/dragon.webp`}
-                size={600}
-                duration={5}
-                delay={0}
-                style={{ top: '5rem', right: '-10rem' }}
-              />
-              <FloatingImage
-                src={`${CDN_BASE_URL}/pro-modal/pyramidhead.webp`}
-                size={300}
-                duration={6}
-                delay={1.1}
-                style={{ top: 'calc(40% - 200px)', left: '2rem' }}
-              />
-            </div>
+              className='absolute inset-0 pointer-events-none'
+              style={{
+                backgroundImage: STARFIELD_BACKGROUND,
+                backgroundRepeat: 'no-repeat',
+                maskImage: 'linear-gradient(to bottom, black 0%, black 80%, transparent 100%)',
+                WebkitMaskImage:
+                  'linear-gradient(to bottom, black 0%, black 80%, transparent 100%)',
+              }}
+            />
 
-            {/* ── Hero ───────────────────────────────────────────────────── */}
-            <div className='relative z-10 min-h-fit flex flex-col items-center justify-center overflow-hidden'>
-              {/* Stars — two layers for depth */}
+            {/* ── Hero + Features wrapper (hosts floating decorative images) ── */}
+            <div className='relative'>
               <div
-                className='absolute inset-0 pointer-events-none'
-                style={{
-                  backgroundImage:
-                    'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.55) 1px, transparent 0)',
-                  backgroundSize: '28px 28px',
-                  opacity: 0.18,
-                }}
-              />
-
-              {/* Shooting stars */}
-              {SHOOTING_STARS.map(star => (
-                <ShootingStar key={`${star.top}-${star.left}`} {...star} />
-              ))}
-
-              {/* Purple glow center */}
-              <div
-                className='absolute inset-0 pointer-events-none'
-                style={{
-                  background:
-                    'radial-gradient(ellipse 70% 50% at 50% 50%, rgba(0, 81, 255, 0.18) 0%, transparent 70%)',
-                }}
-              />
-
-              {/* Content */}
-              <div className='relative z-10 flex flex-col items-center text-center px-8 pt-28 pb-28'>
-                {/* Product label */}
-                <motion.p
-                  initial={{ opacity: 0, y: -8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.45 }}
-                  className='text-xl font-black uppercase tracking-[0.2em] text-altwhite mb-3'
-                >
-                  Steam Game Idler{' '}
-                  <motion.span
-                    className='text-transparent bg-clip-text'
-                    style={{
-                      backgroundImage:
-                        'linear-gradient(135deg, #c084fc 0%, #818cf8 45%, #60a5fa 100%)',
-                    }}
-                    animate={{ opacity: [0.85, 1, 0.85] }}
-                    transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
-                  >
-                    PRO
-                  </motion.span>
-                </motion.p>
-
-                {/* Main headline */}
-                <motion.h1
-                  initial={{ opacity: 0, y: 18 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.55, delay: 0.0 }}
-                  className='text-6xl font-bold leading-none tracking-tight mb-5 uppercase'
-                >
-                  {t('proMode.hero.headline')}
-                </motion.h1>
-
-                {/* Subtext */}
-                <motion.p
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.55, delay: 0.0 }}
-                  className='text-altwhite max-w-120 leading-relaxed mb-8'
-                >
-                  <Trans
-                    i18nKey='proMode.hero.subtext'
-                    components={{
-                      1: <span className='font-black' />,
-                      3: <span className='font-black' />,
-                      5: <span className='font-black' />,
-                    }}
-                  />
-                </motion.p>
-
-                {/* CTA — white pill */}
-                <motion.button
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.55, delay: 0.15 }}
-                  className='flex items-center gap-2.5 px-7 py-3 rounded-full bg-white text-black font-black uppercase cursor-pointer duration-150 hover:scale-[1.02]'
-                  onClick={scrollToTiers}
-                >
-                  {t('proMode.hero.viewTiers')}
-                  <FaArrowDown className='w-3 h-3' />
-                </motion.button>
-
-                {/* Fine print */}
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.4, delay: 0.45 }}
-                  className='text-[10px] text-white/25 mt-4'
-                >
-                  {t('proMode.hero.startingAt', { price: priceData.tierOne.price })}
-                </motion.p>
+                className='absolute inset-y-0 left-1/2 -translate-x-1/2 pointer-events-none'
+                style={{ width: lockedWidth ?? '100%' }}
+              >
+                <FloatingImage
+                  src={`${CDN_BASE_URL}/pro-modal/dragon.webp`}
+                  size={600}
+                  duration={5}
+                  delay={0}
+                  style={{ top: '5rem', right: '-10rem' }}
+                />
+                <FloatingImage
+                  src={`${CDN_BASE_URL}/pro-modal/pyramidhead.webp`}
+                  size={300}
+                  duration={6}
+                  delay={1.1}
+                  style={{ top: 'calc(40% - 200px)', left: '2rem' }}
+                />
               </div>
-            </div>
 
-            {/* ── Features bento ──────────────────────────────────────────── */}
-            <div className='relative z-10 px-65 pb-8'>
-              <SectionHeading label={t('proMode.section.allFeatures')} />
-
-              {/* Cards */}
-              <div className='grid grid-cols-[repeat(3,18.75rem)] justify-center gap-6 mb-3'>
-                {CARDS.map((c, i) => (
-                  <FeatureCard key={c.title} card={c} index={i} />
+              {/* ── Hero ───────────────────────────────────────────────────── */}
+              <div className='relative z-10 min-h-fit flex flex-col items-center justify-center overflow-hidden'>
+                {/* Shooting stars */}
+                {SHOOTING_STARS.map(star => (
+                  <ShootingStar key={`${star.top}-${star.left}`} {...star} />
                 ))}
+
+                {/* Purple glow center */}
+                <div
+                  className='absolute inset-0 pointer-events-none'
+                  style={{
+                    background:
+                      'radial-gradient(ellipse 70% 50% at 50% 50%, rgba(0, 81, 255, 0.18) 0%, transparent 70%)',
+                  }}
+                />
+
+                {/* Content */}
+                <div className='relative z-10 flex flex-col items-center text-center px-8 pt-28 pb-28'>
+                  {/* Product label */}
+                  <motion.p
+                    initial={{ opacity: 0, y: -8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.45 }}
+                    className='text-xl font-black uppercase tracking-[0.2em] text-altwhite mb-3'
+                  >
+                    Steam Game Idler{' '}
+                    <motion.span
+                      className='text-transparent bg-clip-text'
+                      style={{
+                        backgroundImage:
+                          'linear-gradient(135deg, #c084fc 0%, #818cf8 45%, #60a5fa 100%)',
+                      }}
+                      animate={{ opacity: [0.85, 1, 0.85] }}
+                      transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+                    >
+                      PRO
+                    </motion.span>
+                  </motion.p>
+
+                  {/* Main headline */}
+                  <motion.h1
+                    initial={{ opacity: 0, y: 18 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.55, delay: 0.0 }}
+                    className='text-6xl font-bold leading-none tracking-tight mb-5 uppercase'
+                  >
+                    {t('proMode.hero.headline')}
+                  </motion.h1>
+
+                  {/* Subtext */}
+                  <motion.p
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.55, delay: 0.0 }}
+                    className='text-altwhite max-w-120 leading-relaxed mb-8'
+                  >
+                    <Trans
+                      i18nKey='proMode.hero.subtext'
+                      components={{
+                        1: <span className='font-black' />,
+                        3: <span className='font-black' />,
+                        5: <span className='font-black' />,
+                      }}
+                    />
+                  </motion.p>
+
+                  {/* CTA — white pill */}
+                  <motion.button
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.55, delay: 0.15 }}
+                    className='flex items-center gap-2.5 px-7 py-3 rounded-full bg-white text-black font-black uppercase cursor-pointer duration-150 hover:scale-[1.02]'
+                    onClick={scrollToTiers}
+                  >
+                    {t('proMode.hero.viewTiers')}
+                    <FaArrowDown className='w-3 h-3' />
+                  </motion.button>
+
+                  {/* Fine print */}
+                  <motion.p
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.4, delay: 0.45 }}
+                    className='text-[10px] text-white/25 mt-4'
+                  >
+                    {t('proMode.hero.startingAt', { price: priceData.tierOne.price })}
+                  </motion.p>
+                </div>
+              </div>
+
+              {/* ── Features bento ──────────────────────────────────────────── */}
+              <div className='relative z-10 px-65 pb-8'>
+                <SectionHeading label={t('proMode.section.allFeatures')} />
+
+                {/* Cards */}
+                <div className='grid grid-cols-[repeat(3,18.75rem)] justify-center gap-6 mb-3'>
+                  {CARDS.map((c, i) => (
+                    <FeatureCard key={c.title} card={c} index={i} />
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* ── Tier cards ────────────────────────────────────────────────── */}
-          <div ref={tierRef} className='px-65 pb-8'>
-            <SectionHeading label={t('proMode.section.chooseTier')} />
+            {/* ── Tier cards ────────────────────────────────────────────────── */}
+            <div ref={tierRef} className='px-65 pb-8'>
+              <SectionHeading label={t('proMode.section.chooseTier')} />
 
-            <div className='relative grid grid-cols-[repeat(2,26rem)] justify-center gap-6'>
-              <Image
-                src={`${CDN_BASE_URL}/pro-modal/samurai.webp`}
-                alt=''
-                width={250}
-                height={250}
-                className='absolute z-10 pointer-events-none select-none object-contain opacity-90 drop-shadow-2xl'
-                style={{ top: '46%', right: '-9rem', transform: 'translateY(-50%)' }}
-              />
-              <TierCard
-                name={t('proMode.tier.casual.name')}
-                price={priceData.tierOne.price}
-                url={priceData.tierOne.url}
-                tier='casual'
-                features={[
-                  { label: t('proMode.tier.casual.adFree'), icon: TbAd },
-                  { label: t('proMode.tier.casual.themes'), icon: TbPalette },
-                  { label: t('proMode.tier.casual.discordRole'), icon: FaDiscord },
-                  { label: t('proMode.tier.casual.liveSupport'), icon: TbHeadset },
-                  { label: t('proMode.tier.casual.cancelAnytime'), icon: FaCheck },
-                ]}
-                isOwned={proTier === 'casual' || proTier === 'gamer'}
-                isRequired={proModalRequiredTier === 'casual'}
-                isCasual
-              />
-              <TierCard
-                name={t('proMode.tier.gamer.name')}
-                price={priceData.tierTwo.price}
-                url={priceData.tierTwo.url}
-                tier='gamer'
-                features={[
-                  { label: t('proMode.tier.gamer.credentials'), icon: TbKey },
-                  { label: t('proMode.tier.gamer.gamesList'), icon: TbRefresh },
-                  { label: t('proMode.tier.gamer.freeGames'), icon: TbGift },
-                  { label: t('proMode.tier.gamer.autoFarmCards'), icon: TbCards },
-                  { label: t('proMode.tier.gamer.sellDupes'), icon: TbCurrencyDollar },
-                  { label: t('proMode.tier.gamer.importTimings'), icon: TbClock },
-                  { label: t('proMode.tier.gamer.cancelAnytime'), icon: FaCheck },
-                ]}
-                isOwned={proTier === 'gamer'}
-                isRequired={proModalRequiredTier === 'gamer'}
-                isMostPopular={!proModalRequiredTier}
-              />
+              <div className='relative grid grid-cols-[repeat(2,26rem)] justify-center gap-6'>
+                <Image
+                  src={`${CDN_BASE_URL}/pro-modal/samurai.webp`}
+                  alt=''
+                  width={250}
+                  height={250}
+                  className='absolute z-10 pointer-events-none select-none object-contain opacity-90 drop-shadow-2xl'
+                  style={{ top: '46%', right: '-9rem', transform: 'translateY(-50%)' }}
+                />
+                <TierCard
+                  name={t('proMode.tier.casual.name')}
+                  price={priceData.tierOne.price}
+                  url={priceData.tierOne.url}
+                  tier='casual'
+                  features={[
+                    { label: t('proMode.tier.casual.adFree'), icon: TbAd },
+                    { label: t('proMode.tier.casual.themes'), icon: TbPalette },
+                    { label: t('proMode.tier.casual.discordRole'), icon: FaDiscord },
+                    { label: t('proMode.tier.casual.liveSupport'), icon: TbHeadset },
+                    { label: t('proMode.tier.casual.cancelAnytime'), icon: FaCheck },
+                  ]}
+                  isOwned={proTier === 'casual' || proTier === 'gamer'}
+                  isRequired={proModalRequiredTier === 'casual'}
+                  isCasual
+                />
+                <TierCard
+                  name={t('proMode.tier.gamer.name')}
+                  price={priceData.tierTwo.price}
+                  url={priceData.tierTwo.url}
+                  tier='gamer'
+                  features={[
+                    { label: t('proMode.tier.gamer.credentials'), icon: TbKey },
+                    { label: t('proMode.tier.gamer.gamesList'), icon: TbRefresh },
+                    { label: t('proMode.tier.gamer.freeGames'), icon: TbGift },
+                    { label: t('proMode.tier.gamer.autoFarmCards'), icon: TbCards },
+                    { label: t('proMode.tier.gamer.sellDupes'), icon: TbCurrencyDollar },
+                    { label: t('proMode.tier.gamer.importTimings'), icon: TbClock },
+                    { label: t('proMode.tier.gamer.cancelAnytime'), icon: FaCheck },
+                  ]}
+                  isOwned={proTier === 'gamer'}
+                  isRequired={proModalRequiredTier === 'gamer'}
+                  isMostPopular={!proModalRequiredTier}
+                />
+              </div>
+
+              <p className='text-center text-white/25 text-[10px] mt-4'>
+                {t('proMode.modal.footer')}
+              </p>
             </div>
-
-            <p className='text-center text-white/25 text-[10px] mt-4'>
-              {t('proMode.modal.footer')}
-            </p>
           </div>
 
           {/* ── FAQ ──────────────────────────────────────────────────────── */}
