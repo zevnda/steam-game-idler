@@ -22,8 +22,9 @@ import {
   TbSparkles,
 } from 'react-icons/tb'
 import { Button, Modal, ModalBody, ModalContent } from '@heroui/react'
-import { AnimatePresence, motion, useInView } from 'framer-motion'
-import { ExtLink, showDangerToast } from '@/shared/components'
+import { AnimatePresence, motion } from 'framer-motion'
+import Image from 'next/image'
+import { showDangerToast } from '@/shared/components'
 import { CDN_BASE_URL } from '@/shared/constants'
 import { useStateStore, useUserStore } from '@/shared/stores'
 import { logEvent, openExternalLink } from '@/shared/utils'
@@ -41,8 +42,9 @@ interface CardDef {
   tier: 'casual' | 'gamer'
   colSpan: 1 | 2
   bg: string
-  videoBg?: string
+  imgBg?: string
   learnMoreUrl?: string
+  darkText?: boolean
 }
 
 // ─── Shooting stars ──────────────────────────────────────────────────────────
@@ -144,16 +146,44 @@ function ShootingStar({
   )
 }
 
+// ─── Floating decorative images ──────────────────────────────────────────────
+
+function FloatingImage({
+  src,
+  size,
+  duration,
+  delay,
+  style,
+}: {
+  src: string
+  size: number
+  duration: number
+  delay: number
+  style: React.CSSProperties
+}) {
+  return (
+    <motion.div
+      className='absolute z-0 pointer-events-none select-none'
+      style={style}
+      animate={{ y: [0, -22, 0] }}
+      transition={{ duration, repeat: Infinity, ease: 'easeInOut' as const, delay }}
+    >
+      <Image
+        src={src}
+        alt=''
+        width={size}
+        height={size}
+        className='object-contain opacity-90 drop-shadow-2xl'
+      />
+    </motion.div>
+  )
+}
+
 // ─── Sub-components ──────────────────────────────────────────────────────────
 
 function FeatureCard({ card, index }: { card: CardDef; index: number }) {
-  const ref = useRef<HTMLDivElement>(null)
-  const { t } = useTranslation()
-  const isInView = useInView(ref, { once: true, margin: '200px 0px' })
-
   return (
     <motion.div
-      ref={ref}
       initial={{ opacity: 0, y: 18 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.055, duration: 0.45, ease: 'easeOut' as const }}
@@ -165,30 +195,13 @@ function FeatureCard({ card, index }: { card: CardDef; index: number }) {
       }}
       className='relative rounded-4xl overflow-hidden cursor-default group min-h-87.5'
     >
-      {card.videoBg && isInView && (
-        <video
-          src={card.videoBg}
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload='none'
-          className='absolute inset-0 w-full h-full object-cover opacity-50'
-        />
-      )}
+      {card.imgBg && <Image src={card.imgBg} alt='' fill className='object-cover opacity-80' />}
 
-      <div className='relative z-10 p-4 flex flex-col h-full'>
-        <p className='text-2xl font-black mb-1.5'>{card.title}</p>
-        <p className='leading-relaxed flex-1'>{card.description}</p>
-        {card.learnMoreUrl && (
-          <div className='flex justify-end mt-3'>
-            <ExtLink href={card.learnMoreUrl}>
-              <p className='text-xs text-content hover:text-content/90 duration-150 cursor-pointer'>
-                {t('common.learnMore')} →
-              </p>
-            </ExtLink>
-          </div>
-        )}
+      <div
+        className={`relative z-10 p-4 flex flex-col h-full ${card.darkText ? 'text-black' : ''}`}
+      >
+        <p className='text-xl font-black mb-1.5'>{card.title}</p>
+        <p className='text-sm font-semibold leading-relaxed flex-1'>{card.description}</p>
       </div>
     </motion.div>
   )
@@ -219,7 +232,7 @@ function TierCard({
 }: TierCardProps) {
   const { t } = useTranslation()
   const [isPaypalLoading, setIsPaypalLoading] = useState(false)
-  const accent = isCasual ? '#3b82f6' : '#9333ea'
+  const accent = isCasual ? '#3b82f6' : '#9b4ee4'
   const accentTo = isCasual ? '#38bdf8' : '#c026d3'
 
   const handlePaypalSelect = async () => {
@@ -249,7 +262,7 @@ function TierCard({
     <motion.div
       className='relative rounded-4xl overflow-hidden flex flex-col'
       style={{
-        background: isCasual ? '#131313' : 'linear-gradient(145deg, #150a2e 0%, #0f0a20 100%)',
+        background: isCasual ? '#161b2b' : 'linear-gradient(145deg, #630064 0%, #2f0474 100%)',
         ...(isRequired && {
           outline: `2px solid ${accent}`,
           boxShadow: `0 0 20px 8px ${isCasual ? 'rgba(59, 131, 246, 0.26)' : 'rgba(146, 51, 234, 0.35)'}`,
@@ -299,7 +312,7 @@ function TierCard({
               <div className='flex items-center justify-center'>
                 <f.icon size={20} />
               </div>
-              <span className='text-altwhite'>{f.label}</span>
+              <span className='text-content'>{f.label}</span>
             </li>
           ))}
         </ul>
@@ -362,7 +375,7 @@ function FAQItem({
 }) {
   return (
     <div
-      className='rounded-3xl overflow-hidden cursor-pointer py-2 bg-[#131313] hover:bg-[#151515] duration-150'
+      className='rounded-3xl overflow-hidden cursor-pointer py-2 bg-[#161616] hover:bg-[#181818] duration-150'
       onClick={onToggle}
     >
       <div className='flex items-center justify-between px-4 py-3.5 gap-3'>
@@ -423,6 +436,7 @@ export const GoProModal = () => {
 
   const tierRef = useRef<HTMLDivElement>(null)
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null)
+  const [lockedWidth, setLockedWidth] = useState<number | null>(null)
 
   const [priceData, setPriceData] = useState<PriceData>({
     tierOne: { url: '', price: '0' },
@@ -436,23 +450,24 @@ export const GoProModal = () => {
       tier: 'casual',
       colSpan: 1,
       bg: '#131313',
-      videoBg: `${CDN_BASE_URL}/pro-modal/pro1.webm`,
+      imgBg: `${CDN_BASE_URL}/pro-modal/pro1.webp`,
     },
     {
       title: t('proMode.cards.themes.title'),
       description: t('proMode.cards.themes.description'),
       tier: 'casual',
-      colSpan: 2,
+      colSpan: 1,
       bg: '#131313',
-      videoBg: `${CDN_BASE_URL}/pro-modal/pro2.webm`,
+      imgBg: `${CDN_BASE_URL}/pro-modal/pro2.webp`,
+      darkText: true,
     },
     {
       title: t('proMode.cards.discordRole.title'),
       description: t('proMode.cards.discordRole.description'),
       tier: 'casual',
-      colSpan: 2,
+      colSpan: 1,
       bg: '#131313',
-      videoBg: `${CDN_BASE_URL}/pro-modal/pro3.webm`,
+      imgBg: `${CDN_BASE_URL}/pro-modal/pro3.webp`,
     },
     {
       title: t('proMode.cards.liveSupport.title'),
@@ -460,16 +475,15 @@ export const GoProModal = () => {
       tier: 'casual',
       colSpan: 1,
       bg: '#131313',
-      videoBg: `${CDN_BASE_URL}/pro-modal/pro10.webm`,
+      imgBg: `${CDN_BASE_URL}/pro-modal/pro4.webp`,
     },
     {
       title: t('proMode.cards.credentials.title'),
       description: t('proMode.cards.credentials.description'),
       tier: 'gamer',
-      colSpan: 2,
+      colSpan: 1,
       bg: '#131313',
-      videoBg: `${CDN_BASE_URL}/pro-modal/pro4.webm`,
-      learnMoreUrl: 'https://steamgameidler.com/docs/steam-credentials#automated-method',
+      imgBg: `${CDN_BASE_URL}/pro-modal/pro5.webp`,
     },
     {
       title: t('proMode.cards.autoFarmCards.title'),
@@ -477,7 +491,7 @@ export const GoProModal = () => {
       tier: 'gamer',
       colSpan: 1,
       bg: '#131313',
-      videoBg: `${CDN_BASE_URL}/pro-modal/pro9.webm`,
+      imgBg: `${CDN_BASE_URL}/pro-modal/pro6.webp`,
     },
     {
       title: t('proMode.cards.gamesList.title'),
@@ -485,25 +499,16 @@ export const GoProModal = () => {
       tier: 'gamer',
       colSpan: 1,
       bg: '#131313',
-      videoBg: `${CDN_BASE_URL}/pro-modal/pro5.webm`,
+      imgBg: `${CDN_BASE_URL}/pro-modal/pro7.webp`,
     },
     {
       title: t('proMode.cards.freeGames.title'),
       description: t('proMode.cards.freeGames.description'),
       tier: 'gamer',
-      colSpan: 2,
+      colSpan: 1,
       bg: '#131313',
-      videoBg: `${CDN_BASE_URL}/pro-modal/pro6.webm`,
-      learnMoreUrl: 'https://steamgameidler.com/docs/features/free-games#automated-redemption',
-    },
-    {
-      title: t('proMode.cards.importTimings.title'),
-      description: t('proMode.cards.importTimings.description'),
-      tier: 'gamer',
-      colSpan: 2,
-      bg: '#131313',
-      videoBg: `${CDN_BASE_URL}/pro-modal/pro8.webm`,
-      learnMoreUrl: 'https://steamgameidler.com/docs/features/achievement-unlocker#import-timings',
+      imgBg: `${CDN_BASE_URL}/pro-modal/pro8.webp`,
+      darkText: true,
     },
     {
       title: t('proMode.cards.sellDupes.title'),
@@ -511,8 +516,7 @@ export const GoProModal = () => {
       tier: 'gamer',
       colSpan: 1,
       bg: '#131313',
-      videoBg: `${CDN_BASE_URL}/pro-modal/pro7.webm`,
-      learnMoreUrl: 'https://steamgameidler.com/docs/features/inventory-manager',
+      imgBg: `${CDN_BASE_URL}/pro-modal/pro9.webp`,
     },
   ]
 
@@ -550,6 +554,10 @@ export const GoProModal = () => {
     return () => clearTimeout(timer)
   }, [proModalOpen, proModalRequiredTier])
 
+  useEffect(() => {
+    if (proModalOpen) setLockedWidth(window.innerWidth)
+  }, [proModalOpen])
+
   const handleOpenChange = (open: boolean) => {
     setProModalOpen(open)
     if (!open) setProModalRequiredTier(null)
@@ -571,128 +579,144 @@ export const GoProModal = () => {
           'absolute w-8 h-8 left-0 top-0 ml-5 mt-5 z-50 bg-inputhover hover:bg-inputhover/80 text-white/40 duration-150 cursor-pointer',
       }}
       style={{
-        background: 'linear-gradient(to bottom, #000000ff 0%, #0c0c0c 100%)',
+        background: 'linear-gradient(to bottom, rgb(15, 15, 15) 0%, #0c0c0c 100%)',
       }}
     >
       <ModalContent>
-        <ModalBody className='p-0 overflow-auto select-none'>
-          {/* ── Hero ─────────────────────────────────────────────────────── */}
-          <div className='relative min-h-fit flex flex-col items-center justify-center overflow-hidden'>
-            {/* Stars — two layers for depth */}
+        <ModalBody className='p-0 overflow-auto overflow-x-hidden select-none'>
+          {/* ── Hero + Features wrapper (hosts floating decorative images) ── */}
+          <div className='relative'>
             <div
-              className='absolute inset-0 pointer-events-none'
-              style={{
-                backgroundImage:
-                  'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.55) 1px, transparent 0)',
-                backgroundSize: '28px 28px',
-                opacity: 0.18,
-              }}
-            />
+              className='absolute inset-y-0 left-1/2 -translate-x-1/2 pointer-events-none'
+              style={{ width: lockedWidth ?? '100%' }}
+            >
+              <FloatingImage
+                src={`${CDN_BASE_URL}/pro-modal/dragon.webp`}
+                size={600}
+                duration={5}
+                delay={0}
+                style={{ top: '5rem', right: '-10rem' }}
+              />
+              <FloatingImage
+                src={`${CDN_BASE_URL}/pro-modal/pyramidhead.webp`}
+                size={300}
+                duration={6}
+                delay={1.1}
+                style={{ top: 'calc(40% - 200px)', left: '2rem' }}
+              />
+            </div>
 
-            {/* Shooting stars */}
-            {SHOOTING_STARS.map(star => (
-              <ShootingStar key={`${star.top}-${star.left}`} {...star} />
-            ))}
+            {/* ── Hero ───────────────────────────────────────────────────── */}
+            <div className='relative z-10 min-h-fit flex flex-col items-center justify-center overflow-hidden'>
+              {/* Stars — two layers for depth */}
+              <div
+                className='absolute inset-0 pointer-events-none'
+                style={{
+                  backgroundImage:
+                    'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.55) 1px, transparent 0)',
+                  backgroundSize: '28px 28px',
+                  opacity: 0.18,
+                }}
+              />
 
-            {/* Purple glow center */}
-            <div
-              className='absolute inset-0 pointer-events-none'
-              style={{
-                background:
-                  'radial-gradient(ellipse 70% 50% at 50% 50%, rgba(109,40,217,0.18) 0%, transparent 70%)',
-              }}
-            />
+              {/* Shooting stars */}
+              {SHOOTING_STARS.map(star => (
+                <ShootingStar key={`${star.top}-${star.left}`} {...star} />
+              ))}
 
-            {/* Content */}
-            <div className='relative z-10 flex flex-col items-center text-center px-8 pt-14 pb-12'>
-              {/* Product label */}
-              <motion.p
-                initial={{ opacity: 0, y: -8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.45 }}
-                className='text-xl font-black uppercase tracking-[0.2em] text-altwhite mb-3'
-              >
-                Steam Game Idler{' '}
-                <motion.span
-                  className='text-transparent bg-clip-text'
-                  style={{
-                    backgroundImage:
-                      'linear-gradient(135deg, #c084fc 0%, #818cf8 45%, #60a5fa 100%)',
-                  }}
-                  animate={{ opacity: [0.85, 1, 0.85] }}
-                  transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+              {/* Purple glow center */}
+              <div
+                className='absolute inset-0 pointer-events-none'
+                style={{
+                  background:
+                    'radial-gradient(ellipse 70% 50% at 50% 50%, rgba(0, 81, 255, 0.18) 0%, transparent 70%)',
+                }}
+              />
+
+              {/* Content */}
+              <div className='relative z-10 flex flex-col items-center text-center px-8 pt-28 pb-28'>
+                {/* Product label */}
+                <motion.p
+                  initial={{ opacity: 0, y: -8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.45 }}
+                  className='text-xl font-black uppercase tracking-[0.2em] text-altwhite mb-3'
                 >
-                  PRO
-                </motion.span>
-              </motion.p>
+                  Steam Game Idler{' '}
+                  <motion.span
+                    className='text-transparent bg-clip-text'
+                    style={{
+                      backgroundImage:
+                        'linear-gradient(135deg, #c084fc 0%, #818cf8 45%, #60a5fa 100%)',
+                    }}
+                    animate={{ opacity: [0.85, 1, 0.85] }}
+                    transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
+                  >
+                    PRO
+                  </motion.span>
+                </motion.p>
 
-              {/* Main headline */}
-              <motion.h1
-                initial={{ opacity: 0, y: 18 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.55, delay: 0.0 }}
-                className='text-6xl font-black leading-none tracking-tight mb-5 uppercase'
-              >
-                {t('proMode.hero.headline')}
-              </motion.h1>
+                {/* Main headline */}
+                <motion.h1
+                  initial={{ opacity: 0, y: 18 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.55, delay: 0.0 }}
+                  className='text-6xl font-bold leading-none tracking-tight mb-5 uppercase'
+                >
+                  {t('proMode.hero.headline')}
+                </motion.h1>
 
-              {/* Subtext */}
-              <motion.p
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.55, delay: 0.0 }}
-                className='text-altwhite max-w-120 leading-relaxed mb-8'
-              >
-                <Trans
-                  i18nKey='proMode.hero.subtext'
-                  components={{
-                    1: <span className='font-black' />,
-                    3: <span className='font-black' />,
-                    5: <span className='font-black' />,
-                  }}
-                />
-              </motion.p>
+                {/* Subtext */}
+                <motion.p
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.55, delay: 0.0 }}
+                  className='text-altwhite max-w-120 leading-relaxed mb-8'
+                >
+                  <Trans
+                    i18nKey='proMode.hero.subtext'
+                    components={{
+                      1: <span className='font-black' />,
+                      3: <span className='font-black' />,
+                      5: <span className='font-black' />,
+                    }}
+                  />
+                </motion.p>
 
-              {/* CTA — white pill */}
-              <motion.button
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.55, delay: 0.15 }}
-                className='flex items-center gap-2.5 px-7 py-3 rounded-full bg-white text-black font-black uppercase cursor-pointer duration-150 hover:scale-[1.02]'
-                onClick={scrollToTiers}
-              >
-                {t('proMode.hero.viewTiers')}
-                <FaArrowDown className='w-3 h-3' />
-              </motion.button>
+                {/* CTA — white pill */}
+                <motion.button
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.55, delay: 0.15 }}
+                  className='flex items-center gap-2.5 px-7 py-3 rounded-full bg-white text-black font-black uppercase cursor-pointer duration-150 hover:scale-[1.02]'
+                  onClick={scrollToTiers}
+                >
+                  {t('proMode.hero.viewTiers')}
+                  <FaArrowDown className='w-3 h-3' />
+                </motion.button>
 
-              {/* Fine print */}
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.4, delay: 0.45 }}
-                className='text-[10px] text-white/25 mt-4'
-              >
-                {t('proMode.hero.startingAt', { price: priceData.tierOne.price })}
-              </motion.p>
+                {/* Fine print */}
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.4, delay: 0.45 }}
+                  className='text-[10px] text-white/25 mt-4'
+                >
+                  {t('proMode.hero.startingAt', { price: priceData.tierOne.price })}
+                </motion.p>
+              </div>
             </div>
-          </div>
 
-          {/* ── Features bento ────────────────────────────────────────────── */}
-          <div className='px-65 pb-8'>
-            <SectionHeading label={t('proMode.section.allFeatures')} />
+            {/* ── Features bento ──────────────────────────────────────────── */}
+            <div className='relative z-10 px-65 pb-8'>
+              <SectionHeading label={t('proMode.section.allFeatures')} />
 
-            {/* Casual cards */}
-            <div className='grid grid-cols-3 gap-6 mb-3'>
-              {CARDS.filter(c => c.tier === 'casual').map((c, i) => (
-                <FeatureCard key={c.title} card={c} index={i} />
-              ))}
-            </div>
-
-            {/* Gamer cards */}
-            <div className='grid grid-cols-3 gap-6 mt-6'>
-              {CARDS.filter(c => c.tier === 'gamer').map((c, i) => (
-                <FeatureCard key={c.title} card={c} index={i} />
-              ))}
+              {/* Cards */}
+              <div className='grid grid-cols-[repeat(3,18.75rem)] justify-center gap-6 mb-3'>
+                {CARDS.map((c, i) => (
+                  <FeatureCard key={c.title} card={c} index={i} />
+                ))}
+              </div>
             </div>
           </div>
 
@@ -700,7 +724,15 @@ export const GoProModal = () => {
           <div ref={tierRef} className='px-65 pb-8'>
             <SectionHeading label={t('proMode.section.chooseTier')} />
 
-            <div className='grid grid-cols-2 gap-6'>
+            <div className='relative grid grid-cols-[repeat(2,26rem)] justify-center gap-6'>
+              <Image
+                src={`${CDN_BASE_URL}/pro-modal/samurai.webp`}
+                alt=''
+                width={250}
+                height={250}
+                className='absolute z-10 pointer-events-none select-none object-contain opacity-90 drop-shadow-2xl'
+                style={{ top: '46%', right: '-9rem', transform: 'translateY(-50%)' }}
+              />
               <TierCard
                 name={t('proMode.tier.casual.name')}
                 price={priceData.tierOne.price}
@@ -746,7 +778,7 @@ export const GoProModal = () => {
           <div className='px-65 pb-8'>
             <SectionHeading label={t('proMode.section.faq')} />
 
-            <div className='space-y-4'>
+            <div className='space-y-4 w-214 mx-auto'>
               {FAQ_ITEMS.map((item, i) => (
                 <FAQItem
                   key={item.q}

@@ -293,8 +293,6 @@
   "proMode.cards.freeGames.description": "Automatically redeem free games on Steam the moment they become available — never miss a freebie.",
   "proMode.cards.sellDupes.title": "Sell Duplicate Items",
   "proMode.cards.sellDupes.description": "Easily list all duplicate inventory items for sale with a single click.",
-  "proMode.cards.importTimings.title": "Import Unlock Timings",
-  "proMode.cards.importTimings.description": "Copy the exact achievement unlock order and timing delays from any public Steam profile.",
   "proMode.cards.autoFarmCards.title": "Automatic Card Farming",
   "proMode.cards.autoFarmCards.description": "SGI monitors your library and automatically starts farming any game that still has card drops remaining.",
   "proMode.tier.mostPopular": "Most Popular",
