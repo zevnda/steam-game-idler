@@ -192,7 +192,6 @@
   "confirmation.resetStatistics": "Впевнені, що хочете <1>скинути</1> всю статистику?",
   "confirmation.resetSettings": "Впевнені, що хочете скинути налаштування?",
   "confirmation.clearData": "Впевнені, що хочете очистити всі дані?",
-  "proMode.modal.footer": "Ціни в доларах США без врахування податків.",
   "proMode.removeAdsWith": "Прибрати рекламу з",
   "toast.steam": "Steam не запущено",
   "toast.mismatch": "Акаунти в Steam і SGI не збігаються",
