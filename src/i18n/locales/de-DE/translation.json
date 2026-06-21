@@ -199,7 +199,6 @@
   "confirmation.resetStatistics": "Bist du sicher, dass du alle Statistiken <1>zurücksetzen</1> möchtest?",
   "confirmation.resetSettings": "Bist du sicher, dass du die Einstellungen auf Standardwerte zurücksetzen möchtest?",
   "confirmation.clearData": "Bist du sicher, dass du alle Daten löschen möchtest?",
-  "proMode.modal.footer": "Die angezeigten Preise verstehen sich in USD und verstehen sich zzgl. Steuern.",
   "proMode.removeAdsWith": "Werbung entfernen mit",
   "toast.steam": "Steam ist nicht gestartet",
   "toast.mismatch": "Kontomismatch zwischen Steam und SGI",
