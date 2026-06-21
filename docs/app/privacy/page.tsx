@@ -19,7 +19,7 @@ export default function PrivacyPolicy() {
         <div className='space-y-10'>
           <section>
             <p className='text-sm text-text-muted mb-6'>
-              <span className='text-text-primary font-semibold'>Last Updated:</span> June 20, 2026
+              <span className='text-text-primary font-semibold'>Last Updated:</span> June 21, 2026
             </p>
             <p className='text-text-muted leading-relaxed'>
               Steam Game Idler (&quot;SGI&quot;, &quot;the Application&quot;, &quot;we&quot;,
@@ -134,6 +134,18 @@ export default function PrivacyPolicy() {
               credit card numbers, banking information, or payment details. All payment information
               is securely handled and stored by Stripe or PayPal, our payment processors.
             </p>
+
+            <h3 className='text-base font-medium text-text-primary mb-3 mt-6'>
+              1.5 Device Identification
+            </h3>
+            <p className='text-text-muted leading-relaxed'>
+              To verify and protect PRO subscriptions from unauthorized sharing across devices, SGI
+              generates a device fingerprint (a non-personal hardware identifier) and sends it to
+              our subscription verification service together with your Steam ID or license key. Some
+              PRO subscribers, particularly legacy subscribers, are identified by their Steam ID
+              rather than a license key. A license key is active on one device at a time and can be
+              transferred to a new device through the application&apos;s settings.
+            </p>
           </section>
 
           <section>
@@ -204,6 +216,11 @@ export default function PrivacyPolicy() {
               <li>Stripe Customer ID or PayPal Payer ID (reference only)</li>
               <li>Subscription status and tier information</li>
             </ul>
+            <p className='text-text-muted leading-relaxed mb-6'>
+              To keep your subscription status up to date, the application periodically (roughly
+              every 3 hours) re-checks your subscription with this service, sending your device
+              fingerprint along with your Steam ID or license key. See section 4.6 for more detail.
+            </p>
 
             <h3 className='text-base font-medium text-text-primary mb-3'>3.3 Data Retention</h3>
             <p className='text-text-muted leading-relaxed mb-6'>
@@ -326,25 +343,75 @@ export default function PrivacyPolicy() {
             </p>
 
             <h3 className='text-base font-medium text-text-primary mb-3'>
-              4.3 No Analytics or Tracking
+              4.3 Analytics and Advertising
             </h3>
             <p className='text-text-muted leading-relaxed'>
-              <span className='text-text-primary font-medium'>Desktop Application:</span> We do not
-              use any third-party analytics or tracking services in the SGI desktop application.
-              However, Google AdSense may be used for advertising, as described in section 4.4. SGI
-              does not collect telemetry data or usage statistics from your application usage.
+              <span className='text-text-primary font-medium'>Desktop Application:</span> SGI does
+              not collect telemetry or usage statistics. Ad placements shown to non-PRO users load
+              content directly from our website in an embedded frame, which may include Google
+              AdSense and Google Analytics and set cookies in that context.
               <br />
               <br />
               <span className='text-text-primary font-medium'>Website:</span> Our website uses
-              Google AdSense for advertising (see section 4.4) and Next.js Analytics to collect
-              aggregated, non-personal usage statistics to help improve site performance and user
-              experience. No personally identifiable information is collected by Next.js Analytics.
+              Google AdSense for advertising (see section 4.7), Google Analytics to understand site
+              traffic and usage trends, and Vercel Analytics to collect aggregated, non-personal
+              usage statistics to help improve site performance and user experience. No personally
+              identifiable information is collected by Vercel Analytics.
+            </p>
+
+            <h3 className='text-base font-medium text-text-primary mb-3 mt-6'>
+              4.4 Discord Rich Presence (Optional)
+            </h3>
+            <p className='text-text-muted leading-relaxed'>
+              SGI includes a Discord Rich Presence feature, enabled by default, that shares your
+              current activity with Discord while the application is running, such as the game or
+              feature you are currently using (e.g. &quot;Farming Cards&quot;), a short activity
+              description (e.g. progress on achievement unlocking), and the time your session
+              started. You can disable this feature at any time in Settings. This data is subject to{' '}
+              <a
+                href='https://discord.com/privacy'
+                className='text-accent hover:opacity-80 transition-opacity duration-150 underline underline-offset-2'
+                target='_blank'
+                rel='noopener noreferrer'
+              >
+                Discord&apos;s Privacy Policy
+              </a>
+              .
+            </p>
+
+            <h3 className='text-base font-medium text-text-primary mb-3 mt-6'>
+              4.5 In-App Help Desk (Chatway)
+            </h3>
+            <p className='text-text-muted leading-relaxed'>
+              The application&apos;s in-app help desk is provided by a third-party live chat
+              service, Chatway. If you open the help desk, Chatway may collect your Steam username,
+              Steam ID, application version, PRO subscription tier, installation type, and license
+              key (if applicable) to help us assist you. This data is subject to{' '}
+              <a
+                href='https://chatway.app/privacy-policy'
+                className='text-accent hover:opacity-80 transition-opacity duration-150 underline underline-offset-2'
+                target='_blank'
+                rel='noopener noreferrer'
+              >
+                Chatway&apos;s Privacy Policy
+              </a>
+              .
+            </p>
+
+            <h3 className='text-base font-medium text-text-primary mb-3 mt-6'>
+              4.6 Subscription Verification Service
+            </h3>
+            <p className='text-text-muted leading-relaxed'>
+              SGI periodically verifies your PRO subscription status with a dedicated verification
+              service, sending a device fingerprint together with your Steam ID or license key (see
+              section 1.5). This service is operated separately from, and is not part of, our
+              open-source desktop application or website codebase (see section 7).
             </p>
           </section>
 
           <section>
             <h2 className='text-xl font-semibold text-text-primary mb-4'>
-              4.4 Google AdSense and Consent Management
+              4.7 Google AdSense and Consent Management
             </h2>
             <p className='text-text-muted leading-relaxed mb-4'>
               Both our website and desktop application may use Google AdSense to display
@@ -400,6 +467,14 @@ export default function PrivacyPolicy() {
                 subscribe to PRO, your payment information is shared with Stripe or PayPal
                 (whichever you choose) to process your subscription. We receive only subscription
                 status and a customer/payer reference ID from them
+              </li>
+              <li>
+                <span className='text-text-primary font-medium'>
+                  Support and Verification Services:
+                </span>{' '}
+                If you use the in-app help desk or hold a PRO subscription, limited data is shared
+                with our help desk provider (Chatway) and our subscription verification service, as
+                described in sections 4.5 and 4.6
               </li>
               <li>
                 <span className='text-text-primary font-medium'>Legal Requirements:</span> If
@@ -489,8 +564,8 @@ export default function PrivacyPolicy() {
               7. Open Source Transparency
             </h2>
             <p className='text-text-muted leading-relaxed'>
-              Steam Game Idler is fully open source. You can review our code, data handling
-              practices, and security measures at our{' '}
+              The Steam Game Idler desktop application and website are fully open source. You can
+              review their code, data handling practices, and security measures at our{' '}
               <a
                 href='https://github.com/zevnda/steam-game-idler'
                 className='text-accent hover:opacity-80 transition-opacity duration-150 underline underline-offset-2'
@@ -499,7 +574,10 @@ export default function PrivacyPolicy() {
               >
                 GitHub repository
               </a>
-              . This transparency ensures you can verify exactly how your data is being handled.
+              . This transparency lets you verify exactly how your data is handled by the
+              application and website themselves. Our subscription verification service (section
+              4.6), which processes only the data necessary to validate PRO subscription status, is
+              operated separately and is not part of this open-source codebase.
             </p>
           </section>
 
@@ -526,6 +604,11 @@ export default function PrivacyPolicy() {
               data practices, please contact us:
             </p>
             <ul className='list-disc pl-6 space-y-2 text-text-muted'>
+              <li>
+                <span className='text-text-primary font-medium'>Email:</span>{' '}
+                contact@steamgameidler.com (for data requests, including PRO subscription data
+                deletion)
+              </li>
               <li>
                 <span className='text-text-primary font-medium'>GitHub Issues:</span>{' '}
                 <a

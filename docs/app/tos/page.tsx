@@ -19,7 +19,7 @@ export default function TermsOfService() {
         <div className='space-y-10'>
           <section>
             <p className='text-sm text-text-muted mb-6'>
-              <span className='text-text-primary font-semibold'>Last Updated:</span> June 20, 2026
+              <span className='text-text-primary font-semibold'>Last Updated:</span> June 21, 2026
             </p>
             <p className='text-text-muted leading-relaxed'>
               These Terms of Service (&quot;Terms&quot;) govern your use of Steam Game Idler
@@ -260,10 +260,8 @@ export default function TermsOfService() {
               <li>
                 You may cancel your PRO subscription at any time through the application settings
               </li>
-              <li>
-                Upon cancellation, you will retain access to PRO benefits until the end of your
-                current billing period
-              </li>
+              <li>Stripe users retain PRO access until the end of the billing period</li>
+              <li>PayPal users lose access immediately upon cancellation</li>
               <li>No refunds will be issued for partial billing periods after cancellation</li>
               <li>You can resubscribe at any time after canceling</li>
             </ul>
@@ -320,10 +318,34 @@ export default function TermsOfService() {
             <p className='text-text-muted leading-relaxed mb-4'>
               We may suspend or terminate your PRO subscription if:
             </p>
-            <ul className='list-disc pl-6 space-y-2 text-text-muted'>
+            <ul className='list-disc pl-6 space-y-2 text-text-muted mb-6'>
               <li>You violate these Terms of Service</li>
               <li>You engage in fraudulent chargebacks</li>
               <li>You abuse PRO features or attempt to share access with others</li>
+            </ul>
+
+            <h3 className='text-base font-medium text-text-primary mb-3'>
+              6.11 License Keys and Device Transfers
+            </h3>
+            <p className='text-text-muted leading-relaxed mb-4'>
+              Some PRO subscriptions, particularly legacy subscriptions, are identified by their
+              Steam ID rather than a license key. A license key is active on only one device at a
+              time.
+            </p>
+            <ul className='list-disc pl-6 space-y-2 text-text-muted'>
+              <li>
+                You may transfer your license key to a new device at any time through Settings →
+                Subscription
+              </li>
+              <li>Transferring a license key deactivates PRO access on the previous device</li>
+              <li>
+                Reinstalling the application on the same device does not require a transfer, as the
+                device is recognized by its hardware identifier
+              </li>
+              <li>
+                Attempting to circumvent the one-device-at-a-time restriction may result in
+                suspension of your PRO subscription
+              </li>
             </ul>
           </section>
 
@@ -351,7 +373,7 @@ export default function TermsOfService() {
             </h2>
 
             <h3 className='text-base font-medium text-text-primary mb-3'>
-              7.1 Steam Account Risks
+              8.1 Steam Account Risks
             </h3>
             <p className='text-text-muted leading-relaxed mb-4'>
               <span className='text-text-primary font-medium'>USE AT YOUR OWN RISK:</span> While SGI
@@ -365,7 +387,7 @@ export default function TermsOfService() {
               <li>Temporary or permanent limitations on Steam features</li>
             </ul>
 
-            <h3 className='text-base font-medium text-text-primary mb-3'>7.2 No Guarantees</h3>
+            <h3 className='text-base font-medium text-text-primary mb-3'>8.2 No Guarantees</h3>
             <p className='text-text-muted leading-relaxed mb-4'>We do not guarantee that:</p>
             <ul className='list-disc pl-6 space-y-2 text-text-muted'>
               <li>SGI will always be compatible with Steam&apos;s current or future systems</li>
@@ -488,9 +510,10 @@ export default function TermsOfService() {
               15. Governing Law and Dispute Resolution
             </h2>
             <p className='text-text-muted leading-relaxed'>
-              These Terms shall be governed by and construed in accordance with applicable laws. Any
-              disputes arising from these Terms or your use of SGI should first be addressed through
-              our GitHub issues system.
+              These Terms shall be governed by and construed in accordance with the laws of
+              Australia, without regard to its conflict of law principles. Any disputes arising from
+              these Terms or your use of SGI should first be addressed by contacting us at
+              contact@steamgameidler.com.
             </p>
           </section>
 

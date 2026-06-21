@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { FiCode, FiEye, FiRefreshCw } from 'react-icons/fi'
+import { FiCode, FiLock, FiRefreshCw } from 'react-icons/fi'
 import { TbBrandGithub } from 'react-icons/tb'
 import { motion, useInView } from 'motion/react'
 import { ease } from '@/app/lib/motion'
@@ -14,10 +14,10 @@ const trustPoints = [
     desc: 'Every line of code is public on GitHub. Fork it, audit it, build on it.',
   },
   {
-    icon: <FiEye className='w-5 h-5' />,
+    icon: <FiLock className='w-5 h-5' />,
     iconClass: 'text-text-muted bg-white/5 border-white/10',
-    title: 'No Data Collection',
-    desc: 'No analytics*, no telemetry*, no accounts. Your Steam credentials never leave your machine.',
+    title: 'Encrypted by Design',
+    desc: 'Steam session cookies and API keys are encrypted with AES-256 and stored only on your device.',
   },
   {
     icon: <FiRefreshCw className='w-5 h-5' />,
@@ -31,14 +31,13 @@ const SEQUENCE = [
   { type: 'cmd', text: '$ sgi-audit --scan /proc/SteamGameIdler' },
   { type: 'log', text: 'Resolving binary hash...' },
   { type: 'pass', text: '✓ SHA-256 matches source commit a4e86538' },
-  { type: 'cmd', text: '$ netstat --filter=SteamGameIdler' },
-  { type: 'log', text: 'Monitoring network activity...' },
-  { type: 'pass', text: '✓ 0 outbound connections*' },
-  { type: 'pass', text: '✓ Zero telemetry endpoints detected*' },
   { type: 'cmd', text: '$ inspect --storage ~/.config/sgi/' },
   { type: 'log', text: 'Reading credential store...' },
-  { type: 'pass', text: '✓ AES-256 encrypted via system keyring' },
+  { type: 'pass', text: '✓ AES-256 encryption successfull' },
   { type: 'pass', text: '✓ No plaintext secrets on disk' },
+  { type: 'cmd', text: '$ trace --flow SteamSessionCookie' },
+  { type: 'log', text: 'Tracing credential usage...' },
+  { type: 'pass', text: '✓ Used only for direct Steam API requests' },
   { type: 'cmd', text: '$ verify --codesign SteamGameIdler.exe' },
   { type: 'log', text: 'Validating certificate chain...' },
   { type: 'pass', text: '✓ Signature valid — issuer: zevnda' },
@@ -279,11 +278,6 @@ export default function SecuritySection() {
             >
               VERIFIED SECURE
             </motion.div>
-
-            <p className='text-xs text-text-muted mt-3 italic'>
-              * excluding Steam, Google Ads & Vercel Analytics (the latter only applies when
-              visiting this website)
-            </p>
           </motion.div>
         </div>
       </div>
