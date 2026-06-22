@@ -313,7 +313,6 @@
   "proMode.faq.transferDevice.q": "Como faço para transferir minha chave de licença para um novo dispositivo?",
   "proMode.faq.transferDevice.a": "Sua chave de licença está vinculada a um dispositivo por vez. Para transferi-la, abra o aplicativo no seu novo dispositivo, acesse Configurações → Assinatura, insira sua chave de licença e clique em Ativar. Uma mensagem solicitará a confirmação da transferência. Após a confirmação, seu novo dispositivo estará ativo e o dispositivo anterior perderá o acesso ao aplicativo na próxima vez que for iniciado. Se você reinstalou o aplicativo no mesmo dispositivo, não é necessário fazer nenhuma transferência — ele será reconhecido pelo seu ID de hardware.",
   "proMode.faq.cancel.q": "Como faço para cancelar a minha assinatura?",
-  "proMode.faq.cancel.a": "Acesse Configurações → Geral → Gerenciar assinatura PRO e siga as instruções de cancelamento. Você manterá o acesso PRO até o final do seu período de faturamento atual.",
   "proMode.faq.switchTier.q": "Posso alternar entre níveis?",
   "proMode.faq.switchTier.a": "Sim. Cancele sua assinatura atual e, em seguida, assine novamente o plano desejado seguindo o processo de assinatura padrão.",
   "proMode.faq.invoices.q": "Onde posso encontrar faturas e recibos?",

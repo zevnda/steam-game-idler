@@ -316,7 +316,6 @@
   "proMode.faq.transferDevice.q": "Kako prenesem licenčni ključ na novo napravo?",
   "proMode.faq.transferDevice.a": "Vaš licenčni ključ je vezan na eno napravo. Če ga želite prenesti, odprite aplikacijo v novi napravi, pojdite v Nastavitve → Naročnina, vnesite licenčni ključ in kliknite Aktiviraj. Prikazal se bo poziv za potrditev prenosa. Ko je potrjen, je vaša nova naprava aktivna, prejšnja naprava pa ob naslednjem zagonu izgubi dostop do nje. Če ste aplikacijo znova namestili v isti računalnik, prenos ni potreben – vašo napravo prepozna ID strojne opreme.",
   "proMode.faq.cancel.q": "Kako prekličem naročnino?",
-  "proMode.faq.cancel.a": "Pojdite v Nastavitve → Naročnina → Upravljanje naročnine in sledite navodilom za preklic. Dostop do PRO boste ohranili do konca trenutnega obračunskega obdobja.",
   "proMode.faq.switchTier.q": "Ali lahko preklapljam med nivoji?",
   "proMode.faq.switchTier.a": "Da. Prekličite trenutno naročnino in se nato ponovno naročite na želeno raven po standardnem postopku naročnine.",
   "proMode.faq.invoices.q": "Kje lahko najdem račune in potrdila?",

@@ -320,7 +320,6 @@
   "proMode.faq.transferDevice.q": "如何将许可证密钥转移到新设备？",
   "proMode.faq.transferDevice.a": "您的许可证密钥一次仅绑定一台设备。如需转移，请在新设备上打开应用，进入“设置”→“订阅”，输入您的许可证密钥并点击激活。系统将提示您确认转移。确认后，新设备将被激活，旧设备在下次启动时将失去访问权限。如果在同一台机器上重装应用，无需转移——系统会通过硬件 ID 识别设备。",
   "proMode.faq.cancel.q": "如何取消订阅？",
-  "proMode.faq.cancel.a": "进入“设置”→“订阅”→“管理订阅”，按照提示操作即可取消。您将继续享有 PRO 权益直至当前计费周期结束。",
   "proMode.faq.switchTier.q": "可以更换档位吗？",
   "proMode.faq.switchTier.a": "可以，请先取消当前订阅，然后按照标准订阅流程重新订阅您想要的档位。",
   "proMode.faq.invoices.q": "在哪里可以找到发票和收据？",
