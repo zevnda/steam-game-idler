@@ -4,6 +4,7 @@ import { TbCards, TbShield, TbUsers } from 'react-icons/tb'
 import Link from 'next/link'
 import FooterSection from '@/app/(home)/_components/FooterSection'
 import NavBar from '@/app/(home)/_components/NavBar'
+import { FadeIn, StaggerGroup, StaggerItem } from '@/app/lib/animations'
 
 export const metadata = {
   title: 'ArchiSteamFarm Feature Comparison',
@@ -142,7 +143,7 @@ export default function page() {
           />
 
           <div className='container mx-auto relative z-10 px-4 sm:px-6 md:px-8'>
-            <div className='max-w-4xl mx-auto text-center'>
+            <FadeIn immediate className='max-w-4xl mx-auto text-center'>
               <div className='inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-blue-500/30 bg-blue-500/10 text-blue-300 text-sm font-medium mb-8'>
                 <TbCards className='w-4 h-4' />
                 Detailed Comparison
@@ -168,7 +169,7 @@ export default function page() {
                 Compare core features, usability, and capabilities of Steam Game Idler against
                 ArchiSteamFarm to make an informed choice for your Steam automation needs.
               </p>
-            </div>
+            </FadeIn>
           </div>
         </section>
 
@@ -178,78 +179,80 @@ export default function page() {
         <section className='py-20 sm:py-24 relative'>
           <div className='container mx-auto px-4 sm:px-6 md:px-8'>
             <div className='max-w-5xl mx-auto'>
-              <div className='text-center mb-14'>
+              <FadeIn className='text-center mb-14'>
                 <h2 className='text-3xl sm:text-4xl md:text-5xl text-text-primary mb-4 leading-tight tracking-tight'>
                   Detailed feature <span className='gradient-text'>comparison</span>
                 </h2>
-              </div>
+              </FadeIn>
 
-              <div className='space-y-6'>
+              <StaggerGroup className='space-y-6'>
                 {comparisonData.map(section => (
-                  <div key={section.category} className='card overflow-hidden'>
-                    <div
-                      className='px-6 py-4'
-                      style={{ borderBottom: '1px solid var(--color-border)' }}
-                    >
-                      <h3 className='text-base font-semibold text-text-primary'>
-                        {section.category}
-                      </h3>
-                    </div>
+                  <StaggerItem key={section.category}>
+                    <div className='card overflow-hidden'>
+                      <div
+                        className='px-6 py-4'
+                        style={{ borderBottom: '1px solid var(--color-border)' }}
+                      >
+                        <h3 className='text-base font-semibold text-text-primary'>
+                          {section.category}
+                        </h3>
+                      </div>
 
-                    <div className='overflow-x-auto'>
-                      <table className='w-full'>
-                        <thead>
-                          <tr style={{ borderBottom: '1px solid var(--color-border)' }}>
-                            <th
-                              className='text-left py-3 px-6 text-xs font-semibold text-text-muted uppercase tracking-wider'
-                              style={{ background: 'rgba(255,255,255,0.03)' }}
-                            >
-                              Feature
-                            </th>
-                            <th
-                              className='text-center py-3 px-6 text-xs font-semibold text-blue-400 uppercase tracking-wider'
-                              style={{ background: 'rgba(255,255,255,0.03)' }}
-                            >
-                              Steam Game Idler
-                            </th>
-                            <th
-                              className='text-center py-3 px-6 text-xs font-semibold text-text-muted uppercase tracking-wider'
-                              style={{ background: 'rgba(255,255,255,0.03)' }}
-                            >
-                              ArchiSteamFarm
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {section.features.map((feature, index) => (
-                            <tr
-                              key={feature.name}
-                              style={{
-                                background:
-                                  index % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.02)',
-                                borderBottom:
-                                  index < section.features.length - 1
-                                    ? '1px solid var(--color-border)'
-                                    : 'none',
-                              }}
-                            >
-                              <td className='py-3.5 px-6 text-sm font-medium text-text-primary'>
-                                {feature.name}
-                              </td>
-                              <td className='py-3.5 px-6 text-center'>
-                                <ComparisonIcon value={feature.steamGameIdler} />
-                              </td>
-                              <td className='py-3.5 px-6 text-center'>
-                                <ComparisonIcon value={feature.alt} />
-                              </td>
+                      <div className='overflow-x-auto'>
+                        <table className='w-full'>
+                          <thead>
+                            <tr style={{ borderBottom: '1px solid var(--color-border)' }}>
+                              <th
+                                className='text-left py-3 px-6 text-xs font-semibold text-text-muted uppercase tracking-wider'
+                                style={{ background: 'rgba(255,255,255,0.03)' }}
+                              >
+                                Feature
+                              </th>
+                              <th
+                                className='text-center py-3 px-6 text-xs font-semibold text-blue-400 uppercase tracking-wider'
+                                style={{ background: 'rgba(255,255,255,0.03)' }}
+                              >
+                                Steam Game Idler
+                              </th>
+                              <th
+                                className='text-center py-3 px-6 text-xs font-semibold text-text-muted uppercase tracking-wider'
+                                style={{ background: 'rgba(255,255,255,0.03)' }}
+                              >
+                                ArchiSteamFarm
+                              </th>
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                          </thead>
+                          <tbody>
+                            {section.features.map((feature, index) => (
+                              <tr
+                                key={feature.name}
+                                style={{
+                                  background:
+                                    index % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.02)',
+                                  borderBottom:
+                                    index < section.features.length - 1
+                                      ? '1px solid var(--color-border)'
+                                      : 'none',
+                                }}
+                              >
+                                <td className='py-3.5 px-6 text-sm font-medium text-text-primary'>
+                                  {feature.name}
+                                </td>
+                                <td className='py-3.5 px-6 text-center'>
+                                  <ComparisonIcon value={feature.steamGameIdler} />
+                                </td>
+                                <td className='py-3.5 px-6 text-center'>
+                                  <ComparisonIcon value={feature.alt} />
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
-                  </div>
+                  </StaggerItem>
                 ))}
-              </div>
+              </StaggerGroup>
             </div>
           </div>
         </section>
@@ -259,7 +262,7 @@ export default function page() {
         {/* Narrative */}
         <section className='py-20 sm:py-24 relative'>
           <div className='container mx-auto px-4 sm:px-6 md:px-8'>
-            <div className='max-w-3xl mx-auto text-center'>
+            <FadeIn className='max-w-3xl mx-auto text-center'>
               <h2 className='text-2xl sm:text-3xl font-bold text-text-primary mb-6 leading-tight tracking-tight'>
                 How does Steam Game Idler compare to ArchiSteamFarm?
               </h2>
@@ -281,7 +284,7 @@ export default function page() {
                 If you want something you can open, use, and close without managing config files or
                 a terminal, Steam Game Idler is worth trying.
               </p>
-            </div>
+            </FadeIn>
           </div>
         </section>
 
@@ -291,43 +294,49 @@ export default function page() {
         <section className='py-20 sm:py-24 relative'>
           <div className='container mx-auto px-4 sm:px-6 md:px-8'>
             <div className='max-w-5xl mx-auto'>
-              <div className='text-center mb-14'>
+              <FadeIn className='text-center mb-14'>
                 <h2 className='text-3xl sm:text-4xl md:text-5xl text-text-primary mb-4 leading-tight tracking-tight'>
                   Why choose <span className='gradient-text'>Steam Game Idler?</span>
                 </h2>
-              </div>
+              </FadeIn>
 
-              <div className='grid sm:grid-cols-3 gap-4 mb-8'>
-                <div className='card p-6 text-center'>
-                  <TbUsers className='w-7 h-7 text-blue-400 mx-auto mb-4' />
-                  <h3 className='font-semibold text-text-primary mb-2'>User-Friendly</h3>
-                  <p className='text-sm text-text-muted leading-relaxed'>
-                    No complex configuration files or command line knowledge required
-                  </p>
-                </div>
-                <div className='card p-6 text-center'>
-                  <TbCards className='w-7 h-7 text-blue-400 mx-auto mb-4' />
-                  <h3 className='font-semibold text-text-primary mb-2'>All-in-One</h3>
-                  <p className='text-sm text-text-muted leading-relaxed'>
-                    Card farming, achievements, and playtime boosting in one app
-                  </p>
-                </div>
-                <div className='card p-6 text-center'>
-                  <TbShield className='w-7 h-7 text-blue-400 mx-auto mb-4' />
-                  <h3 className='font-semibold text-text-primary mb-2'>Secure</h3>
-                  <p className='text-sm text-text-muted leading-relaxed'>
-                    Open source with transparent security practices
-                  </p>
-                </div>
-              </div>
+              <StaggerGroup className='grid sm:grid-cols-3 gap-4 mb-8'>
+                <StaggerItem>
+                  <div className='card p-6 text-center h-full'>
+                    <TbUsers className='w-7 h-7 text-blue-400 mx-auto mb-4' />
+                    <h3 className='font-semibold text-text-primary mb-2'>User-Friendly</h3>
+                    <p className='text-sm text-text-muted leading-relaxed'>
+                      No complex configuration files or command line knowledge required
+                    </p>
+                  </div>
+                </StaggerItem>
+                <StaggerItem>
+                  <div className='card p-6 text-center h-full'>
+                    <TbCards className='w-7 h-7 text-blue-400 mx-auto mb-4' />
+                    <h3 className='font-semibold text-text-primary mb-2'>All-in-One</h3>
+                    <p className='text-sm text-text-muted leading-relaxed'>
+                      Card farming, achievements, and playtime boosting in one app
+                    </p>
+                  </div>
+                </StaggerItem>
+                <StaggerItem>
+                  <div className='card p-6 text-center h-full'>
+                    <TbShield className='w-7 h-7 text-blue-400 mx-auto mb-4' />
+                    <h3 className='font-semibold text-text-primary mb-2'>Secure</h3>
+                    <p className='text-sm text-text-muted leading-relaxed'>
+                      Open source with transparent security practices
+                    </p>
+                  </div>
+                </StaggerItem>
+              </StaggerGroup>
 
-              <div className='card p-8 text-center'>
+              <FadeIn delay={0.15} className='card p-8 text-center'>
                 <p className='text-text-muted leading-relaxed max-w-2xl mx-auto'>
                   While ArchiSteamFarm excels for users managing multiple accounts, Steam Game Idler
                   provides a more accessible and feature-rich experience for individual users who
                   want comprehensive Steam automation without the complexity.
                 </p>
-              </div>
+              </FadeIn>
             </div>
           </div>
         </section>
@@ -337,7 +346,7 @@ export default function page() {
         {/* CTA */}
         <section className='py-24 sm:py-32 relative'>
           <div className='container mx-auto relative z-10 px-4 sm:px-6 md:px-8'>
-            <div className='text-center max-w-2xl mx-auto'>
+            <FadeIn className='text-center max-w-2xl mx-auto'>
               <h2 className='text-4xl sm:text-5xl md:text-6xl text-text-primary mb-6 leading-tight tracking-tight'>
                 Ready to upgrade from <span className='gradient-text'>ArchiSteamFarm?</span>
               </h2>
@@ -361,7 +370,7 @@ export default function page() {
                   Documentation
                 </Link>
               </div>
-            </div>
+            </FadeIn>
           </div>
         </section>
 

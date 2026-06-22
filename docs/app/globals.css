@@ -57,15 +57,24 @@
     border-radius: var(--radius-button);
     font-weight: 600;
     font-size: 0.875rem;
+    cursor: pointer;
     transition:
       background-color 150ms ease,
-      box-shadow 150ms ease;
+      box-shadow 150ms ease,
+      transform 150ms ease;
     white-space: nowrap;
   }
 
   .btn-primary:hover {
     background-color: #0090e0;
     box-shadow: 0 0 0 3px rgba(0, 163, 255, 0.2);
+    transform: translateY(-1px);
+  }
+
+  .btn-primary:disabled {
+    cursor: default;
+    opacity: 0.7;
+    transform: none;
   }
 
   /* Ghost / outline button */
@@ -80,15 +89,18 @@
     font-weight: 600;
     font-size: 0.875rem;
     background-color: transparent;
+    cursor: pointer;
     transition:
       background-color 150ms ease,
-      border-color 150ms ease;
+      border-color 150ms ease,
+      transform 150ms ease;
     white-space: nowrap;
   }
 
   .btn-ghost:hover {
     background-color: rgba(255, 255, 255, 0.05);
     border-color: rgba(255, 255, 255, 0.25);
+    transform: translateY(-1px);
   }
 
   /* ── Glowing section divider ───────────────────────────────── */
