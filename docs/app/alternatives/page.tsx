@@ -3,6 +3,7 @@ import { FiAward, FiClock, FiTerminal } from 'react-icons/fi'
 import Link from 'next/link'
 import FooterSection from '@/app/(home)/_components/FooterSection'
 import NavBar from '@/app/(home)/_components/NavBar'
+import { FadeIn, StaggerGroup, StaggerItem } from '@/app/lib/animations'
 
 export const metadata = {
   title: 'The Best Alternative to ArchiSteamFarm, Idle Master & Steam Achievement Manager',
@@ -70,7 +71,7 @@ export default function AlternativesPage() {
 
       <div className='container mx-auto px-4 sm:px-6 md:px-8 max-w-4xl pt-36 pb-24 sm:pt-44 sm:pb-32'>
         {/* Header */}
-        <div className='mb-16 text-center'>
+        <FadeIn immediate className='mb-16 text-center'>
           <h1 className='text-4xl sm:text-5xl font-bold text-text-primary mb-6 leading-tight tracking-tight'>
             The better alternative to popular <span className='gradient-text'>Steam tools</span>
           </h1>
@@ -79,57 +80,58 @@ export default function AlternativesPage() {
             Steam Game Idler replaces all three — with a modern interface, active development, and
             no complex configuration required.
           </p>
-        </div>
+        </FadeIn>
 
         {/* Comparison cards */}
-        <div className='flex flex-col gap-5'>
+        <StaggerGroup className='flex flex-col gap-5'>
           {comparisons.map(alt => (
-            <Link
-              key={alt.slug}
-              prefetch={false}
-              href={`/alternatives/${alt.slug}`}
-              className='card group block'
-            >
-              <div className='p-6 sm:p-8'>
-                {/* Card header */}
-                <div className='flex items-start justify-between gap-4 mb-5'>
-                  <div className='flex items-center gap-4'>
-                    <div
-                      className='w-10 h-10 rounded-lg flex items-center justify-center shrink-0'
-                      style={{
-                        background: 'rgba(255,255,255,0.04)',
-                        border: '1px solid rgba(255,255,255,0.08)',
-                      }}
-                    >
-                      <alt.Icon className='w-5 h-5 text-text-muted' />
+            <StaggerItem key={alt.slug}>
+              <Link
+                prefetch={false}
+                href={`/alternatives/${alt.slug}`}
+                className='card group block'
+              >
+                <div className='p-6 sm:p-8'>
+                  {/* Card header */}
+                  <div className='flex items-start justify-between gap-4 mb-5'>
+                    <div className='flex items-center gap-4'>
+                      <div
+                        className='w-10 h-10 rounded-lg flex items-center justify-center shrink-0'
+                        style={{
+                          background: 'rgba(255,255,255,0.04)',
+                          border: '1px solid rgba(255,255,255,0.08)',
+                        }}
+                      >
+                        <alt.Icon className='w-5 h-5 text-text-muted' />
+                      </div>
+                      <div>
+                        <span className='text-xs font-mono font-semibold text-text-muted uppercase tracking-widest'>
+                          {alt.abbr}
+                        </span>
+                        <h2 className='text-lg font-bold text-text-primary leading-snug'>
+                          {alt.name}
+                        </h2>
+                      </div>
                     </div>
-                    <div>
-                      <span className='text-xs font-mono font-semibold text-text-muted uppercase tracking-widest'>
-                        {alt.abbr}
-                      </span>
-                      <h2 className='text-lg font-bold text-text-primary leading-snug'>
-                        {alt.name}
-                      </h2>
+                    <div className='flex items-center gap-1.5 text-accent text-sm font-medium shrink-0 pt-1'>
+                      <span className='hidden sm:inline'>View comparison</span>
+                      <FaArrowRight className='w-3 h-3 group-hover:translate-x-1 transition-transform duration-150' />
                     </div>
                   </div>
-                  <div className='flex items-center gap-1.5 text-accent text-sm font-medium shrink-0 pt-1'>
-                    <span className='hidden sm:inline'>View comparison</span>
-                    <FaArrowRight className='w-3 h-3 group-hover:translate-x-1 transition-transform duration-150' />
-                  </div>
+
+                  {/* Divider */}
+                  <div
+                    className='mb-5'
+                    style={{ height: '1px', background: 'var(--color-border)' }}
+                  />
+
+                  {/* Summary */}
+                  <p className='text-sm text-text-muted leading-relaxed'>{alt.summary}</p>
                 </div>
-
-                {/* Divider */}
-                <div
-                  className='mb-5'
-                  style={{ height: '1px', background: 'var(--color-border)' }}
-                />
-
-                {/* Summary */}
-                <p className='text-sm text-text-muted leading-relaxed'>{alt.summary}</p>
-              </div>
-            </Link>
+              </Link>
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerGroup>
       </div>
 
       <div className='section-divider' />
