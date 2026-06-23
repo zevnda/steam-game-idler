@@ -1,6 +1,7 @@
 import { FaArrowRight } from 'react-icons/fa'
 import { FiAward, FiClock, FiTerminal } from 'react-icons/fi'
 import Link from 'next/link'
+import AdOverlay from '@/app/(home)/_components/AdOverlay'
 import FooterSection from '@/app/(home)/_components/FooterSection'
 import NavBar from '@/app/(home)/_components/NavBar'
 import { FadeIn, StaggerGroup, StaggerItem } from '@/app/lib/animations'
@@ -70,6 +71,8 @@ export default function AlternativesPage() {
       <NavBar />
 
       <div className='container mx-auto px-4 sm:px-6 md:px-8 max-w-4xl pt-36 pb-24 sm:pt-44 sm:pb-32'>
+        <AdOverlay slot='1265004536' />
+
         {/* Header */}
         <FadeIn immediate className='mb-16 text-center'>
           <h1 className='text-4xl sm:text-5xl font-bold text-text-primary mb-6 leading-tight tracking-tight'>
@@ -132,6 +135,8 @@ export default function AlternativesPage() {
             </StaggerItem>
           ))}
         </StaggerGroup>
+
+        <AdOverlay slot='3005445709' />
       </div>
 
       <div className='section-divider' />
