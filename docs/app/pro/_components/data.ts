@@ -12,12 +12,17 @@ import {
   TbRefresh,
 } from 'react-icons/tb'
 
+const CDN_BASE_URL = 'https://pub-ca47df86597c4ccbb6ddf4366ca7f733.r2.dev'
+
 export interface Feature {
   icon: IconType
   title: string
   description: string
   tier: 'casual' | 'gamer'
-  span: 1 | 2
+  imgBg?: string
+  darkText?: boolean
+  /** Overrides `title` when this feature is listed inside a tier card — app's source of truth uses different copy in a few cases. */
+  tierLabel?: string
 }
 
 export interface TierFeature {
@@ -29,23 +34,25 @@ export const allFeatures: Feature[] = [
   {
     icon: TbAd,
     title: 'Ad-Free Experience',
-    description: 'Enjoy SGI without any advertisements for a completely clean interface.',
+    description:
+      'Use SGI without any advertisements for a completely clean, distraction-free interface.',
     tier: 'casual',
-    span: 1,
+    imgBg: `${CDN_BASE_URL}/pro-modal/pro1.webp`,
   },
   {
     icon: TbPalette,
     title: 'Exclusive Themes',
     description: 'Customize SGI with 6 unique themes available only to PRO subscribers.',
     tier: 'casual',
-    span: 2,
+    imgBg: `${CDN_BASE_URL}/pro-modal/pro2.webp`,
+    darkText: true,
   },
   {
     icon: FaDiscord,
-    title: 'Unique Discord Role',
-    description: 'Stand out in our Discord community with a special @PRO role.',
+    title: 'Discord PRO Role',
+    description: 'Stand out in our Discord community with a special exclusive @PRO role.',
     tier: 'casual',
-    span: 2,
+    imgBg: `${CDN_BASE_URL}/pro-modal/pro3.webp`,
   },
   {
     icon: TbHeadset,
@@ -53,35 +60,48 @@ export const allFeatures: Feature[] = [
     description:
       'Skip the queue — chat directly with the developer via the in-app help desk and get support in real time.',
     tier: 'casual',
-    span: 1,
+    imgBg: `${CDN_BASE_URL}/pro-modal/pro4.webp`,
   },
   {
     icon: TbKey,
-    title: 'Automated Steam Credentials',
-    description: 'Instantly retrieve your Steam credentials without any manual input.',
+    title: 'Automatic Steam Credentials Retrieval',
+    description: 'Automatically retrieve your Steam credentials without any manual input.',
     tier: 'gamer',
-    span: 1,
+    imgBg: `${CDN_BASE_URL}/pro-modal/pro5.webp`,
+  },
+  {
+    icon: TbCards,
+    title: 'Automatic Card Farming',
+    description:
+      'SGI monitors your library and automatically starts farming any game that still has card drops remaining.',
+    tier: 'gamer',
+    imgBg: `${CDN_BASE_URL}/pro-modal/pro6.webp`,
   },
   {
     icon: TbRefresh,
-    title: 'Automated Games List Updates',
-    description: 'Your games list updates automatically every 15 minutes as you add games.',
+    title: 'Automatic Games List Updates',
+    description:
+      'Your games list refreshes automatically every 15 minutes as you add and play games.',
     tier: 'gamer',
-    span: 2,
+    imgBg: `${CDN_BASE_URL}/pro-modal/pro7.webp`,
   },
   {
     icon: TbGift,
-    title: 'Automated Free Game Redemption',
-    description: 'Automatically redeem free games on Steam the moment they become available.',
+    title: 'Free Game Redemption',
+    description:
+      'Automatically redeem free games on Steam the moment they become available — never miss a freebie.',
     tier: 'gamer',
-    span: 2,
+    imgBg: `${CDN_BASE_URL}/pro-modal/pro8.webp`,
+    darkText: true,
+    tierLabel: 'Automatic Free Game Redemption',
   },
   {
     icon: TbCurrencyDollar,
-    title: 'Sell Duplicate Inventory Items',
-    description: 'Instantly list all duplicate inventory items for sale with a single click.',
+    title: 'Sell Duplicate Items',
+    description: 'Easily list all duplicate inventory items for sale with a single click.',
     tier: 'gamer',
-    span: 1,
+    imgBg: `${CDN_BASE_URL}/pro-modal/pro9.webp`,
+    tierLabel: 'Sell Duplicate Inventory Items',
   },
   {
     icon: TbClock,
@@ -89,15 +109,6 @@ export const allFeatures: Feature[] = [
     description:
       'Copy the exact achievement unlock order and timing delays from any public Steam profile.',
     tier: 'gamer',
-    span: 1,
-  },
-  {
-    icon: TbCards,
-    title: 'Auto Card Farming',
-    description:
-      'Automatically detects games with card drops remaining after every library sync and starts farming them — no manual check needed.',
-    tier: 'gamer',
-    span: 2,
   },
 ]
 

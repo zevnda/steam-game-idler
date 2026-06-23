@@ -1,3 +1,5 @@
+'use client'
+
 import type { ProPriceData } from '@/app/pro/_components/data'
 import { FaArrowDown } from 'react-icons/fa6'
 import { FadeIn } from '@/app/lib/animations'
@@ -51,6 +53,10 @@ export default function HeroSection({ priceData }: HeroSectionProps) {
 
           <a
             href='#tiers'
+            onClick={e => {
+              e.preventDefault()
+              document.getElementById('tiers')?.scrollIntoView({ behavior: 'smooth' })
+            }}
             className='inline-flex items-center gap-2.5 px-7 py-3 rounded-full bg-white text-black font-black uppercase cursor-pointer transition-transform duration-150 hover:scale-105'
           >
             View PRO Tiers

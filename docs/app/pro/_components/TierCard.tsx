@@ -25,7 +25,7 @@ export default function TierCard({
 
   return (
     <div
-      className='relative rounded-3xl overflow-hidden flex flex-col p-7'
+      className='relative rounded-3xl overflow-hidden flex flex-col p-7 h-full'
       style={{
         background: isCasual ? '#161b2b' : 'linear-gradient(145deg, #630064 0%, #2f0474 100%)',
       }}
