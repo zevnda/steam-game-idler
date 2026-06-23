@@ -18,8 +18,6 @@ import {
   SHOOTING_STARS,
   ShootingStar,
   STARFIELD_BACKGROUND,
-  TWINKLE_STARS,
-  TwinkleStar,
 } from './BackgroundEffects'
 import { getFaqItems, getFeatureCards } from './data'
 import { FAQItem } from './FAQItem'
@@ -98,9 +96,9 @@ export const GoProModal = () => {
     >
       <ModalContent>
         <ModalBody className='p-0 overflow-auto overflow-x-hidden select-none'>
-          {/* ── Starfield + Hero + Features + Tier cards wrapper ── */}
+          {/* Starfield + Hero + Features + Tier cards wrapper */}
           <div className='relative'>
-            {/* Starfield — spans hero through tier cards, fading out before the FAQ */}
+            {/* Static starfield dots*/}
             <div
               className='absolute inset-0 pointer-events-none'
               style={{
@@ -112,35 +110,14 @@ export const GoProModal = () => {
               }}
             />
 
-            {/* Twinkling stars — a handful of colored stars flicker like real starlight */}
-            <div
-              className='absolute inset-0 pointer-events-none'
-              style={{
-                maskImage: 'linear-gradient(to bottom, black 0%, black 80%, transparent 100%)',
-                WebkitMaskImage:
-                  'linear-gradient(to bottom, black 0%, black 80%, transparent 100%)',
-              }}
-            >
-              {TWINKLE_STARS.map(star => (
-                <TwinkleStar key={`${star.top}-${star.left}`} {...star} />
-              ))}
-            </div>
-
-            {/* Shooting stars — spans hero through tier cards, fading out before the FAQ */}
-            <div
-              className='absolute inset-0 pointer-events-none overflow-hidden'
-              style={{
-                maskImage: 'linear-gradient(to bottom, black 0%, black 80%, transparent 100%)',
-                WebkitMaskImage:
-                  'linear-gradient(to bottom, black 0%, black 80%, transparent 100%)',
-              }}
-            >
+            {/* Shooting stars */}
+            <div className='absolute inset-0 pointer-events-none overflow-hidden'>
               {SHOOTING_STARS.map(star => (
                 <ShootingStar key={`${star.top}-${star.left}`} {...star} />
               ))}
             </div>
 
-            {/* ── Hero + Features wrapper (hosts floating decorative images) ── */}
+            {/* Hero + Features wrapper */}
             <div className='relative'>
               <div
                 className='absolute left-1/2 top-0 -translate-x-1/2 pointer-events-none'
@@ -162,25 +139,20 @@ export const GoProModal = () => {
                 />
               </div>
 
-              {/* ── Hero ───────────────────────────────────────────────────── */}
+              {/* Hero */}
               <div className='relative z-10 min-h-fit flex flex-col items-center justify-center'>
                 {/* Nebula glow center */}
-                <motion.div
+                <div
                   className='absolute inset-0 pointer-events-none'
                   style={{
                     background: [
-                      'radial-gradient(ellipse 55% 45% at 36% 40%, rgba(124, 58, 237, 0.30) 0%, transparent 70%)',
-                      'radial-gradient(ellipse 50% 40% at 68% 58%, rgba(217, 70, 239, 0.22) 0%, transparent 70%)',
-                      'radial-gradient(ellipse 45% 40% at 52% 30%, rgba(56, 189, 248, 0.22) 0%, transparent 72%)',
-                      'radial-gradient(ellipse 60% 48% at 58% 68%, rgba(0, 81, 255, 0.18) 0%, transparent 70%)',
-                      'radial-gradient(ellipse 70% 55% at 50% 50%, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.25) 85%)',
+                      'radial-gradient(ellipse 58% 48% at 36% 40%, rgba(124, 58, 237, 0.26) 0%, rgba(124, 58, 237, 0.10) 55%, transparent 75%)',
+                      'radial-gradient(ellipse 53% 43% at 68% 58%, rgba(217, 70, 239, 0.19) 0%, rgba(217, 70, 239, 0.07) 55%, transparent 75%)',
+                      'radial-gradient(ellipse 48% 43% at 52% 30%, rgba(56, 189, 248, 0.19) 0%, rgba(56, 189, 248, 0.07) 58%, transparent 77%)',
                     ].join(', '),
-                    filter: 'blur(6px)',
                     maskImage: 'linear-gradient(to bottom, black 0%, transparent 100%)',
                     WebkitMaskImage: 'linear-gradient(to bottom, black 0%, transparent 100%)',
                   }}
-                  animate={{ opacity: [0.8, 1, 0.8] }}
-                  transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' as const }}
                 />
 
                 {/* Content */}
@@ -193,17 +165,15 @@ export const GoProModal = () => {
                     className='text-xl font-black uppercase tracking-[0.2em] text-content mb-3'
                   >
                     Steam Game Idler{' '}
-                    <motion.span
+                    <span
                       className='text-transparent bg-clip-text'
                       style={{
                         backgroundImage:
                           'linear-gradient(135deg, #b700ff 0%, #6f00ff 45%, #3583e2 100%)',
                       }}
-                      animate={{ opacity: [0.85, 1, 0.85] }}
-                      transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' as const }}
                     >
                       PRO
-                    </motion.span>
+                    </span>
                   </motion.p>
 
                   {/* Main headline */}
@@ -257,7 +227,7 @@ export const GoProModal = () => {
                 </div>
               </div>
 
-              {/* ── Features bento ──────────────────────────────────────────── */}
+              {/* Features bento */}
               <div className='relative z-10 px-65 pb-8'>
                 <SectionHeading label={t('proMode.section.allFeatures')} />
 
@@ -270,7 +240,7 @@ export const GoProModal = () => {
               </div>
             </div>
 
-            {/* ── Tier cards ────────────────────────────────────────────────── */}
+            {/* Tier cards */}
             <div ref={tierRef} className='px-65 pb-8'>
               <SectionHeading label={t('proMode.section.chooseTier')} />
 
@@ -327,7 +297,7 @@ export const GoProModal = () => {
             </div>
           </div>
 
-          {/* ── FAQ ──────────────────────────────────────────────────────── */}
+          {/* FAQ */}
           <div className='px-65 pb-8'>
             <SectionHeading label={t('proMode.section.faq')} />
 

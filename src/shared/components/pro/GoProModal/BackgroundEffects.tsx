@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import Image from 'next/image'
 
 // ─── Shooting stars ──────────────────────────────────────────────────────────
@@ -166,9 +166,20 @@ export function ShootingStar({
   repeatDelay,
   travel,
 }: (typeof SHOOTING_STARS)[0]) {
+  const prefersReducedMotion = useReducedMotion()
+  if (prefersReducedMotion) return null
+
   const rad = (angle * Math.PI) / 180
   const dx = travel * Math.cos(rad)
   const dy = travel * Math.sin(rad)
+
+  // Bake the "travel, then long pause" cycle into a single repeating animation instead of using
+  // Motion's `repeatDelay` — repeatDelay can't run on the browser's native animation timeline, so
+  // Motion falls back to re-computing every value on the main thread on every frame, forever.
+  // Folding the pause into the keyframe timeline (via `times`) keeps the same look but lets this
+  // run on the compositor thread with no per-frame JS involvement.
+  const total = duration + repeatDelay
+  const travelEnd = duration / total
 
   return (
     <motion.div
@@ -180,12 +191,21 @@ export function ShootingStar({
         width,
         borderRadius: 9999,
         background:
-          'linear-gradient(to right, transparent 0%, rgba(255,255,255,0.06) 40%, rgba(255,255,255,0.88) 85%, white 100%)',
+          'linear-gradient(to right, transparent 0%, rgba(255,255,255,0.18) 40%, rgba(255,255,255,0.92) 85%, white 100%)',
         rotate: angle,
-        filter: 'drop-shadow(0 0 4px rgba(255,255,255,0.75))',
       }}
-      animate={{ x: [0, dx], y: [0, dy], opacity: [0, 1, 0] }}
-      transition={{ duration, repeat: Infinity, repeatDelay, delay, ease: 'easeOut' as const }}
+      animate={{ x: [0, dx, dx], y: [0, dy, dy], opacity: [0, 1, 0, 0] }}
+      transition={{
+        x: { duration: total, repeat: Infinity, delay, times: [0, travelEnd, 1], ease: 'easeOut' },
+        y: { duration: total, repeat: Infinity, delay, times: [0, travelEnd, 1], ease: 'easeOut' },
+        opacity: {
+          duration: total,
+          repeat: Infinity,
+          delay,
+          times: [0, travelEnd / 2, travelEnd, 1],
+          ease: 'linear',
+        },
+      }}
     />
   )
 }
@@ -216,142 +236,6 @@ function createStarfield(count: number, seed: number) {
 
 export const STARFIELD_BACKGROUND = createStarfield(260, 1337)
 
-// ─── Twinkling stars ──────────────────────────────────────────────────────────
-
-export const TWINKLE_STARS = [
-  {
-    top: '10%',
-    left: '14%',
-    size: 2.5,
-    color: '#cfe3ff',
-    duration: 2.6,
-    delay: 0.2,
-    repeatDelay: 4.5,
-  },
-  {
-    top: '6%',
-    left: '62%',
-    size: 2,
-    color: '#ffe9c2',
-    duration: 3.2,
-    delay: 1.4,
-    repeatDelay: 5.5,
-  },
-  {
-    top: '18%',
-    left: '85%',
-    size: 1.8,
-    color: '#ffffff',
-    duration: 2.4,
-    delay: 2.6,
-    repeatDelay: 3.8,
-  },
-  {
-    top: '28%',
-    left: '38%',
-    size: 2.2,
-    color: '#ffd9b3',
-    duration: 3.0,
-    delay: 0.8,
-    repeatDelay: 6.0,
-  },
-  {
-    top: '34%',
-    left: '8%',
-    size: 1.6,
-    color: '#ffffff',
-    duration: 2.8,
-    delay: 3.5,
-    repeatDelay: 4.2,
-  },
-  {
-    top: '40%',
-    left: '92%',
-    size: 2.4,
-    color: '#cfe3ff',
-    duration: 2.5,
-    delay: 1.0,
-    repeatDelay: 5.0,
-  },
-  {
-    top: '48%',
-    left: '22%',
-    size: 1.8,
-    color: '#ffc9d6',
-    duration: 3.4,
-    delay: 2.0,
-    repeatDelay: 6.5,
-  },
-  {
-    top: '55%',
-    left: '70%',
-    size: 2,
-    color: '#ffffff',
-    duration: 2.7,
-    delay: 0.5,
-    repeatDelay: 4.8,
-  },
-  {
-    top: '62%',
-    left: '46%',
-    size: 2.2,
-    color: '#ffe9c2',
-    duration: 2.9,
-    delay: 3.0,
-    repeatDelay: 5.2,
-  },
-  {
-    top: '68%',
-    left: '12%',
-    size: 1.6,
-    color: '#cfe3ff',
-    duration: 3.1,
-    delay: 1.7,
-    repeatDelay: 4.0,
-  },
-  {
-    top: '72%',
-    left: '80%',
-    size: 2.4,
-    color: '#ffffff',
-    duration: 2.5,
-    delay: 2.3,
-    repeatDelay: 5.8,
-  },
-  {
-    top: '76%',
-    left: '58%',
-    size: 1.8,
-    color: '#ffd9b3',
-    duration: 3.3,
-    delay: 0.0,
-    repeatDelay: 4.6,
-  },
-] as const
-
-export function TwinkleStar({
-  top,
-  left,
-  size,
-  color,
-  duration,
-  delay,
-  repeatDelay,
-}: (typeof TWINKLE_STARS)[number]) {
-  return (
-    <motion.div
-      className='absolute rounded-full pointer-events-none'
-      style={{ top, left, width: size, height: size }}
-      animate={{
-        opacity: [0.3, 1, 0.3],
-        backgroundColor: ['#ffffff', color, '#ffffff'],
-        boxShadow: [`0 0 0px ${color}`, `0 0 5px ${color}`, `0 0 0px ${color}`],
-      }}
-      transition={{ duration, repeat: Infinity, repeatDelay, delay, ease: 'easeInOut' as const }}
-    />
-  )
-}
-
 // ─── Floating decorative images ──────────────────────────────────────────────
 
 export function FloatingImage({
@@ -367,20 +251,16 @@ export function FloatingImage({
   delay: number
   style: React.CSSProperties
 }) {
+  const prefersReducedMotion = useReducedMotion()
+
   return (
     <motion.div
       className='absolute z-0 pointer-events-none select-none'
       style={style}
-      animate={{ y: [0, -22, 0] }}
+      animate={prefersReducedMotion ? undefined : { y: [0, -22, 0] }}
       transition={{ duration, repeat: Infinity, ease: 'easeInOut' as const, delay }}
     >
-      <Image
-        src={src}
-        alt=''
-        width={size}
-        height={size}
-        className='object-contain opacity-90 drop-shadow-2xl'
-      />
+      <Image src={src} alt='' width={size} height={size} className='object-contain opacity-90' />
     </motion.div>
   )
 }
