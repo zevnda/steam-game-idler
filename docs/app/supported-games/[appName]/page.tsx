@@ -1,6 +1,3 @@
-import AdComponent from './AdComponent'
-import AdComponentTwo from '@/app/supported-games/[appName]/AdComponentTwo'
-
 interface PageProps {
   params: {
     appName: string
@@ -455,10 +452,6 @@ export default async function AdPage({ params }: PageProps) {
           </div>
         </footer>
       </div>
-
-      {/* Google ads */}
-      <AdComponent />
-      <AdComponentTwo />
     </div>
   )
 }

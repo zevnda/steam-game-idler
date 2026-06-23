@@ -1,56 +1,36 @@
 'use client'
 
-import { useEffect } from 'react'
-import { usePathname } from 'next/navigation'
+import { useEffect, useRef } from 'react'
 
-export default function AdOverlay() {
-  const pathname = usePathname()
+interface AdOverlayProps {
+  slot: string
+  className?: string
+}
+
+export default function AdOverlay({ slot, className = '' }: AdOverlayProps) {
+  const pushed = useRef(false)
 
   useEffect(() => {
+    if (pushed.current) return
+    pushed.current = true
     try {
-      const adElements = document.querySelectorAll('.adsbygoogle')
-      adElements.forEach(() => {
-        ;(window.adsbygoogle = window.adsbygoogle || []).push({})
-      })
+      ;(window.adsbygoogle = window.adsbygoogle || []).push({})
     } catch (err) {
       console.error('AdSense error:', err)
     }
-  }, [pathname])
-
-  if (pathname.includes('/supported-games/') || pathname.includes('/changelog/')) {
-    return null
-  }
+  }, [])
 
   return (
-    <div key={pathname}>
-      {/* Desktop side ads */}
-      <div className='hidden 2xl:flex fixed top-1/2 -translate-y-1/2 left-4 flex-col gap-4 z-50'>
-        <ins
-          className='adsbygoogle'
-          data-ad-client='ca-pub-8915288433444527'
-          data-ad-slot='9143494556'
-          style={{ display: 'block', width: '160px', height: '600px' }}
-        />
-      </div>
-
-      <div className='hidden md:flex fixed bottom-4 right-4 flex-col gap-4 z-50'>
-        <ins
-          className='adsbygoogle'
-          data-ad-client='ca-pub-8915288433444527'
-          data-ad-slot='3005445709'
-          style={{ display: 'block', width: '300px', height: '250px' }}
-        />
-      </div>
-
-      {/* Mobile/Tablet banner ad */}
-      <div className='fixed md:hidden bottom-4 left-1/2 -translate-x-1/2 z-50'>
-        <ins
-          className='adsbygoogle'
-          data-ad-client='ca-pub-8915288433444527'
-          data-ad-slot='1265004536'
-          style={{ display: 'block', width: '300px', height: '50px' }}
-        />
-      </div>
+    <div className={`ad-wrapper my-8 ${className}`}>
+      <span className='mb-1 text-xs text-text-secondary'>Advertisement</span>
+      <ins
+        className='adsbygoogle w-full'
+        data-ad-client='ca-pub-8915288433444527'
+        data-ad-slot={slot}
+        data-ad-format='auto'
+        data-full-width-responsive='true'
+        style={{ display: 'block' }}
+      />
     </div>
   )
 }

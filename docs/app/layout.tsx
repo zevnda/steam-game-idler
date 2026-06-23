@@ -1,7 +1,6 @@
 import { RootProvider } from 'fumadocs-ui/provider/next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import Script from 'next/script'
-import AdOverlay from '@/app/(home)/_components/AdOverlay'
 import StoreLoader from '@/app/(home)/_components/StoreLoader'
 import TelemetryLoader from '@/app/(home)/_components/TelemetryLoader'
 import SearchDialog from '@/app/(home)/search'
@@ -189,7 +188,6 @@ export default function Layout({ children }: LayoutProps) {
           {children}
         </RootProvider>
 
-        <AdOverlay />
         <TelemetryLoader />
         <StoreLoader />
       </body>

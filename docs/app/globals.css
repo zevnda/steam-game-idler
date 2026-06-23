@@ -346,6 +346,18 @@
   }
 }
 
+/* AdSense — hide ad units that didn't fill so they don't show as blank boxes */
+.ad-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+}
+
+.ad-wrapper:has(ins.adsbygoogle[data-ad-status='unfilled']) {
+  display: none;
+}
+
 /* ─── Prevent double scrollbar ─────────────────────────── */
 /*
  * overflow-x: hidden on a descendant div implicitly becomes overflow-y: auto,

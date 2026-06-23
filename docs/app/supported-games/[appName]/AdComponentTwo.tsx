@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 
 declare global {
   interface Window {
@@ -9,53 +9,17 @@ declare global {
 }
 
 export default function AdComponentTwo() {
-  const [adKey, setAdKey] = useState(0)
-  const [ready, setReady] = useState(false)
-
   useEffect(() => {
-    const initialDelay = setTimeout(() => {
-      setReady(true)
-    }, 5000)
-
-    return () => {
-      clearTimeout(initialDelay)
-    }
-  }, [])
-
-  useEffect(() => {
-    if (!ready) return
-
     try {
       ;(window.adsbygoogle = window.adsbygoogle || []).push({})
     } catch (err) {
       console.error('AdSense error:', err)
     }
-
-    const scheduleNextRefresh = () => {
-      const interval = setTimeout(
-        () => {
-          setAdKey(prev => prev + 1)
-          scheduleNextRefresh()
-        },
-        3 * 60 * 1000,
-      )
-
-      return interval
-    }
-
-    const timeoutId = scheduleNextRefresh()
-
-    return () => {
-      clearTimeout(timeoutId)
-    }
-  }, [adKey, ready])
-
-  if (!ready) return null
+  }, [])
 
   return (
     <div className='flex fixed top-0 left-0 flex-col gap-4 z-40 bg-[#121316]'>
       <ins
-        key={adKey}
         className='adsbygoogle'
         data-ad-client='ca-pub-8915288433444527'
         data-ad-slot='3005445709'

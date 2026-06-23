@@ -2,6 +2,7 @@ import { FaArrowRight } from 'react-icons/fa'
 import { FiBook, FiCheck, FiDownload, FiX } from 'react-icons/fi'
 import { TbCards, TbShield, TbUsers } from 'react-icons/tb'
 import Link from 'next/link'
+import AdOverlay from '@/app/(home)/_components/AdOverlay'
 import FooterSection from '@/app/(home)/_components/FooterSection'
 import NavBar from '@/app/(home)/_components/NavBar'
 import { FadeIn, StaggerGroup, StaggerItem } from '@/app/lib/animations'
@@ -175,6 +176,8 @@ export default function page() {
 
         <div className='section-divider' />
 
+        <AdOverlay slot='1265004536' />
+
         {/* Comparison Table */}
         <section className='py-20 sm:py-24 relative'>
           <div className='container mx-auto px-4 sm:px-6 md:px-8'>
@@ -259,6 +262,8 @@ export default function page() {
 
         <div className='section-divider' />
 
+        <AdOverlay slot='3005445709' />
+
         {/* Narrative */}
         <section className='py-20 sm:py-24 relative'>
           <div className='container mx-auto px-4 sm:px-6 md:px-8'>
@@ -289,6 +294,8 @@ export default function page() {
         </section>
 
         <div className='section-divider' />
+
+        <AdOverlay slot='9143494556' />
 
         {/* Why Choose SGI */}
         <section className='py-20 sm:py-24 relative'>
@@ -342,6 +349,8 @@ export default function page() {
         </section>
 
         <div className='section-divider' />
+
+        <AdOverlay slot='9143494556' />
 
         {/* CTA */}
         <section className='py-24 sm:py-32 relative'>
