@@ -260,8 +260,10 @@ export default function TermsOfService() {
               <li>
                 You may cancel your PRO subscription at any time through the application settings
               </li>
-              <li>Stripe users retain PRO access until the end of the billing period</li>
-              <li>PayPal users lose access immediately upon cancellation</li>
+              <li>
+                After cancellation, you will retain access to PRO benefits until the end of your
+                current billing period
+              </li>
               <li>No refunds will be issued for partial billing periods after cancellation</li>
               <li>You can resubscribe at any time after canceling</li>
             </ul>

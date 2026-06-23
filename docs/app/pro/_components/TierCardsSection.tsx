@@ -11,11 +11,15 @@ interface TierCardsSectionProps {
 
 export default function TierCardsSection({ priceData }: TierCardsSectionProps) {
   const casualFeatures = [
-    ...allFeatures.filter(f => f.tier === 'casual').map(f => ({ title: f.title, icon: f.icon })),
+    ...allFeatures
+      .filter(f => f.tier === 'casual')
+      .map(f => ({ title: f.tierLabel ?? f.title, icon: f.icon })),
     { title: 'Cancel Anytime', icon: FaCheck },
   ]
   const gamerFeatures = [
-    ...allFeatures.filter(f => f.tier === 'gamer').map(f => ({ title: f.title, icon: f.icon })),
+    ...allFeatures
+      .filter(f => f.tier === 'gamer')
+      .map(f => ({ title: f.tierLabel ?? f.title, icon: f.icon })),
     { title: 'Cancel Anytime', icon: FaCheck },
   ]
 
@@ -27,8 +31,8 @@ export default function TierCardsSection({ priceData }: TierCardsSectionProps) {
             <SectionHeading label='Choose Your Tier' />
           </FadeIn>
 
-          <StaggerGroup className='grid md:grid-cols-2 gap-6'>
-            <StaggerItem>
+          <StaggerGroup className='grid md:grid-cols-2 gap-6 items-stretch'>
+            <StaggerItem className='h-full'>
               <TierCard
                 tier='casual'
                 name='Casual'
@@ -37,7 +41,7 @@ export default function TierCardsSection({ priceData }: TierCardsSectionProps) {
                 features={casualFeatures}
               />
             </StaggerItem>
-            <StaggerItem>
+            <StaggerItem className='h-full'>
               <TierCard
                 tier='gamer'
                 name='Gamer'

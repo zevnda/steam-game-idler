@@ -1,4 +1,5 @@
 import type { Feature } from '@/app/pro/_components/data'
+import Image from 'next/image'
 
 interface FeatureCardProps {
   feature: Feature
@@ -7,14 +8,15 @@ interface FeatureCardProps {
 export default function FeatureCard({ feature: f }: FeatureCardProps) {
   return (
     <div
-      className='relative rounded-3xl p-6 flex flex-col h-full'
+      className='relative rounded-3xl overflow-hidden h-full min-h-95'
       style={{ background: '#131313' }}
     >
-      <f.icon
-        className={`w-7 h-7 mb-4 ${f.tier === 'casual' ? 'text-blue-400' : 'text-purple-400'}`}
-      />
-      <h3 className='font-black uppercase text-text-primary mb-2'>{f.title}</h3>
-      <p className='text-sm text-text-muted leading-relaxed'>{f.description}</p>
+      {f.imgBg && <Image src={f.imgBg} alt='' fill className='object-cover opacity-80' />}
+
+      <div className={`relative z-10 p-4 flex flex-col h-full ${f.darkText ? 'text-black' : ''}`}>
+        <p className='text-xl font-black mb-1.5'>{f.title}</p>
+        <p className='text-sm font-semibold leading-relaxed flex-1'>{f.description}</p>
+      </div>
     </div>
   )
 }

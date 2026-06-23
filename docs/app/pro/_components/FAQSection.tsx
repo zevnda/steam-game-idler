@@ -16,7 +16,7 @@ const faqItems = [
   },
   {
     q: 'How do I cancel my subscription?',
-    a: 'Go to Settings → Subscription → Manage Subscription, and follow the cancellation prompts. Stripe users retain PRO access until the end of the billing period; PayPal users lose access immediately upon cancellation.',
+    a: 'Go to Settings → Subscription → Manage Subscription, and follow the cancellation prompts. After cancellation, you will retain access to PRO benefits until the end of your current billing period.',
   },
   {
     q: 'Can I switch between tiers?',

@@ -152,11 +152,7 @@ const schemaData = [
 
 export default function Layout({ children }: LayoutProps) {
   return (
-    <html
-      lang='en'
-      className={`${geist.variable} ${mono.variable} scroll-smooth`}
-      suppressHydrationWarning
-    >
+    <html lang='en' className={`${geist.variable} ${mono.variable}`} suppressHydrationWarning>
       <head>
         <Script
           type='application/ld+json'

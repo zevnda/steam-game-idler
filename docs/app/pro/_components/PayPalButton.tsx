@@ -38,9 +38,15 @@ export default function PayPalButton({ tier, className }: PayPalButtonProps) {
       className={className}
       style={{ background: 'linear-gradient(110deg, #003087, #0070ba)' }}
     >
-      <FaPaypal className='w-4 h-4' />
-      {isLoading ? 'Redirecting…' : 'PayPal'}
-      <FaArrowRight className='w-4 h-4' />
+      {!isLoading ? (
+        <span className='flex gap-2'>
+          <FaPaypal className='w-4 h-4' />
+          PayPal
+          <FaArrowRight className='w-4 h-4' />
+        </span>
+      ) : (
+        <span>Redirecting..</span>
+      )}
     </button>
   )
 }
