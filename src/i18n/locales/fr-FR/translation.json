@@ -321,7 +321,6 @@
   "proMode.faq.transferDevice.q": "Comment puis-je transférer ma clé de licence vers un nouvel appareil ?",
   "proMode.faq.transferDevice.a": "Votre clé de licence est liée à un appareil à la fois. Pour le transférer, ouvrez l'application sur votre nouvel appareil, allez dans Paramètres → Abonnement, entrez votre clé de licence et cliquez sur Activer. Un message vous demandera de confirmer le transfert. Une fois confirmé, votre nouvel appareil est actif et le périphérique précédent perd l'accès à son prochain lancement. Si vous avez réinstallé l'application sur la même machine, aucun transfert n'est nécessaire — votre appareil est reconnu par son ID matériel.",
   "proMode.faq.cancel.q": "Comment puis-je annuler mon abonnement ?",
-  "proMode.faq.cancel.a": "Allez dans Paramètres → Abonnement → Gérer l'abonnement, et suivez les instructions d'annulation. Les utilisateurs de Stripe conservent l'accès PRO jusqu'à la fin de la période de facturation ; les utilisateurs de PayPal perdent l'accès immédiatement après l'annulation.",
   "proMode.faq.switchTier.q": "Puis-je basculer entre les paliers ?",
   "proMode.faq.switchTier.a": "Oui. Annulez votre abonnement actuel puis réabonnez-vous à votre palier désiré après le processus d'abonnement standard.",
   "proMode.faq.invoices.q": "Où puis-je trouver des factures et des reçus ?",
