@@ -5,6 +5,7 @@ interface LoaderStore {
   loaderFadeOut: boolean
   showLoader: () => void
   hideLoader: () => void
+  hideLoaderImmediately: () => void
 }
 
 export const useLoaderStore = create<LoaderStore>(set => ({
@@ -15,4 +16,5 @@ export const useLoaderStore = create<LoaderStore>(set => ({
     set({ loaderFadeOut: true })
     setTimeout(() => set({ loaderVisible: false }), 250)
   },
+  hideLoaderImmediately: () => set({ loaderVisible: false, loaderFadeOut: true }),
 }))

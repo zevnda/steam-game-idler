@@ -4,7 +4,7 @@ import { check } from '@tauri-apps/plugin-updater'
 import { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { showDangerToast } from '@/shared/components'
-import { useUpdateStore } from '@/shared/stores'
+import { useLoaderStore, useStateStore, useUpdateStore } from '@/shared/stores'
 import { fetchLatest, isPortableCheck, logEvent, preserveKeysAndClearData } from '@/shared/utils'
 
 export function useCheckForUpdates() {
@@ -12,6 +12,8 @@ export function useCheckForUpdates() {
   const setUpdateAvailable = useUpdateStore(state => state.setUpdateAvailable)
   const setShowChangelog = useUpdateStore(state => state.setShowChangelog)
   const setIsUpdating = useUpdateStore(state => state.setIsUpdating)
+  const hideLoaderImmediately = useLoaderStore(state => state.hideLoaderImmediately)
+  const setLoadingUserSummary = useStateStore(state => state.setLoadingUserSummary)
   const isInitialCheck = useRef(true)
 
   useEffect(() => {
@@ -25,6 +27,8 @@ export function useCheckForUpdates() {
           const latest = await fetchLatest()
           if (latest?.major) {
             setIsUpdating(true)
+            hideLoaderImmediately()
+            setLoadingUserSummary(false)
             localStorage.setItem('hasUpdated', 'true')
             await invoke('kill_all_steamutil_processes')
             await Promise.all([
@@ -35,6 +39,8 @@ export function useCheckForUpdates() {
             await relaunch()
           } else if (isInitialCheck.current) {
             setIsUpdating(true)
+            hideLoaderImmediately()
+            setLoadingUserSummary(false)
             localStorage.setItem('hasUpdated', 'true')
             await invoke('kill_all_steamutil_processes')
             await Promise.all([
@@ -59,7 +65,7 @@ export function useCheckForUpdates() {
     return () => {
       clearInterval(intervalId)
     }
-  }, [setUpdateAvailable, setIsUpdating, t])
+  }, [setUpdateAvailable, setIsUpdating, hideLoaderImmediately, setLoadingUserSummary, t])
 
   useEffect(() => {
     // Show changelog after updates
