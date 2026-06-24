@@ -1,18 +1,16 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { FaWindows } from 'react-icons/fa6'
 import { FiMenu, FiX } from 'react-icons/fi'
 import { AnimatePresence, motion } from 'motion/react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useGlobalStore } from '@/app/lib/globalStore'
+import DownloadButton from '@/app/(home)/_components/DownloadButton'
 
 export default function NavBar() {
   const [scrolled, setScrolled] = useState(false)
   const [drawerOpen, setDrawerOpen] = useState(false)
-  const { downloadUrl } = useGlobalStore(state => state)
   const pathname = usePathname()
 
   const handleAnchorClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
@@ -87,15 +85,12 @@ export default function NavBar() {
           </nav>
 
           {/* Desktop download CTA */}
-          <Link
-            prefetch={false}
-            href={downloadUrl}
-            className='btn-download shrink-0 hidden md:inline-flex'
+          <DownloadButton
+            label='Download'
+            className='shrink-0 hidden md:inline-flex'
+            iconClassName='w-3.5 h-3.5'
             style={{ padding: '0.5rem 1.25rem', fontSize: '0.8125rem' }}
-          >
-            <FaWindows className='w-3.5 h-3.5' />
-            Download
-          </Link>
+          />
 
           {/* Mobile hamburger */}
           <button
@@ -172,16 +167,11 @@ export default function NavBar() {
 
               {/* Drawer download CTA */}
               <div className='p-4 shrink-0' style={{ borderTop: '1px solid var(--color-border)' }}>
-                <Link
-                  prefetch={false}
-                  href={downloadUrl}
-                  className='btn-download w-full justify-center'
+                <DownloadButton
+                  className='w-full justify-center'
                   style={{ padding: '0.625rem 1.25rem', fontSize: '0.875rem' }}
                   onClick={() => setDrawerOpen(false)}
-                >
-                  <FaWindows className='w-4 h-4' />
-                  Download for Windows
-                </Link>
+                />
               </div>
             </motion.div>
           </>

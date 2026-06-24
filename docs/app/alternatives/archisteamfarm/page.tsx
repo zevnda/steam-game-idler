@@ -1,8 +1,8 @@
-import { FaArrowRight } from 'react-icons/fa'
-import { FiBook, FiCheck, FiDownload, FiX } from 'react-icons/fi'
+import { FiBook, FiCheck, FiX } from 'react-icons/fi'
 import { TbCards, TbShield, TbUsers } from 'react-icons/tb'
 import Link from 'next/link'
 import AdOverlay from '@/app/(home)/_components/AdOverlay'
+import DownloadButton from '@/app/(home)/_components/DownloadButton'
 import FooterSection from '@/app/(home)/_components/FooterSection'
 import NavBar from '@/app/(home)/_components/NavBar'
 import { FadeIn, StaggerGroup, StaggerItem } from '@/app/lib/animations'
@@ -365,15 +365,7 @@ export default function page() {
               </p>
 
               <div className='flex flex-col sm:flex-row gap-4 justify-center'>
-                <Link
-                  prefetch={false}
-                  href='https://github.com/zevnda/steam-game-idler/releases/latest'
-                  className='btn-download'
-                >
-                  <FiDownload className='w-4 h-4' />
-                  Download Now
-                  <FaArrowRight className='w-4 h-4' />
-                </Link>
+                <DownloadButton />
                 <Link prefetch={false} href='/docs' className='btn-ghost px-8 py-3.5'>
                   <FiBook className='w-4 h-4' />
                   Documentation

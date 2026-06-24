@@ -5,6 +5,8 @@ interface globalStore {
   setDownloadUrl: (value: string | ((prev: string) => string)) => void
   latestVersion: string
   setLatestVersion: (value: string | ((prev: string) => string)) => void
+  downloadSize: string
+  setDownloadSize: (value: string | ((prev: string) => string)) => void
   repoStars: number
   setRepoStars: (value: number | ((prev: number) => number)) => void
   totalDownloads: string
@@ -23,6 +25,11 @@ export const useGlobalStore = create<globalStore>(set => ({
   setLatestVersion: value =>
     set(state => ({
       latestVersion: typeof value === 'function' ? value(state.latestVersion || '') : value,
+    })),
+  downloadSize: '',
+  setDownloadSize: value =>
+    set(state => ({
+      downloadSize: typeof value === 'function' ? value(state.downloadSize) : value,
     })),
   repoStars: 400,
   setRepoStars: value =>

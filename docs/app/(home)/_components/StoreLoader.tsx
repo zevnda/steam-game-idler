@@ -1,12 +1,14 @@
 'use client'
 
 import { useEffect } from 'react'
+import { formatBytes } from '@/app/lib/format'
 import { useGlobalStore } from '@/app/lib/globalStore'
 
 export default function StoreLoader() {
   const {
     setDownloadUrl,
     setLatestVersion,
+    setDownloadSize,
     setRepoStars,
     setTotalDownloads,
     setTotalDownloadsRaw,
@@ -22,18 +24,19 @@ export default function StoreLoader() {
           if (data.tag_name) {
             setLatestVersion(data.tag_name)
           }
-          // Find the installer asset and set the download URL
+          // Find the installer asset and set the download URL + size
           const installer = data.assets?.find((asset: { name: string }) =>
             asset.name.endsWith('_x64-setup.exe'),
           )
           if (installer) {
             setDownloadUrl(installer.browser_download_url)
+            setDownloadSize(formatBytes(installer.size))
           }
         })
     } catch (error) {
       console.error('Error fetching latest version:', error)
     }
-  }, [setDownloadUrl, setLatestVersion])
+  }, [setDownloadUrl, setLatestVersion, setDownloadSize])
 
   // Fetch the number of stars from the GitHub API
   useEffect(() => {
