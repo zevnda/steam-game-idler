@@ -1,9 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { FaBook, FaDiscord, FaGithub, FaStar, FaWindows } from 'react-icons/fa6'
+import { FaBook, FaDiscord, FaGithub, FaStar } from 'react-icons/fa6'
 import { motion } from 'motion/react'
 import Link from 'next/link'
+import DownloadButton from '@/app/(home)/_components/DownloadButton'
 import { useGlobalStore } from '@/app/lib/globalStore'
 import { ease } from '@/app/lib/motion'
 
@@ -80,7 +81,7 @@ function RainbowBadge({
 }
 
 export default function HeroSection() {
-  const { downloadUrl, latestVersion, repoStars, totalDownloads } = useGlobalStore(state => state)
+  const { latestVersion, repoStars, totalDownloads } = useGlobalStore(state => state)
 
   return (
     <section className='min-h-screen flex items-center relative overflow-hidden'>
@@ -238,10 +239,7 @@ export default function HeroSection() {
               variants={item}
               className='flex flex-wrap gap-3 justify-center lg:justify-start'
             >
-              <Link prefetch={false} href={downloadUrl} className='btn-download'>
-                <FaWindows className='w-4 h-4' />
-                Download Free
-              </Link>
+              <DownloadButton />
               <Link prefetch={false} href='/docs' className='btn-ghost px-6 py-3'>
                 <FaBook className='w-4 h-4' />
                 Documentation

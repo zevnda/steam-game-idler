@@ -1,18 +1,11 @@
 'use client'
 
 import { useRef } from 'react'
-import { FaWindows } from 'react-icons/fa6'
 import { motion, useInView } from 'motion/react'
-import Link from 'next/link'
 import CardBorder from '@/app/(home)/_components/CardBorder'
+import DownloadButton from '@/app/(home)/_components/DownloadButton'
 import { useGlobalStore } from '@/app/lib/globalStore'
 import { ease } from '@/app/lib/motion'
-
-const requirements = [
-  { label: 'Platform', value: 'Windows 10 / 11' },
-  { label: 'Download size', value: '~7 MB' },
-  { label: 'License', value: 'MIT Open Source' },
-]
 
 const container = {
   hidden: {},
@@ -25,10 +18,15 @@ const item = {
 }
 
 export default function CTASection() {
-  const { downloadUrl } = useGlobalStore(state => state)
-
+  const { downloadSize } = useGlobalStore(state => state)
   const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: true, margin: '-60px' })
+
+  const requirements = [
+    { label: 'Platform', value: 'Windows 10 / 11' },
+    { label: 'Download size', value: downloadSize || '~7 MB' },
+    { label: 'License', value: 'MIT Open Source' },
+  ]
 
   return (
     <section
@@ -59,10 +57,7 @@ export default function CTASection() {
             variants={item}
             className='flex flex-col sm:flex-row gap-4 justify-center mb-16'
           >
-            <Link prefetch={false} href={downloadUrl} className='btn-download'>
-              <FaWindows className='w-5 h-5' />
-              Download for Windows
-            </Link>
+            <DownloadButton iconClassName='w-5 h-5' />
           </motion.div>
 
           {/* System requirements */}

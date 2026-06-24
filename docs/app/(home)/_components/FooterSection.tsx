@@ -2,7 +2,7 @@
 
 import { useRef } from 'react'
 import { FaDiscord } from 'react-icons/fa6'
-import { FiBook, FiFileText, FiGithub, FiMail, FiShield } from 'react-icons/fi'
+import { FiBook, FiDownload, FiFileText, FiGithub, FiMail, FiShield } from 'react-icons/fi'
 import { motion, useInView } from 'motion/react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -66,6 +66,16 @@ export default function FooterSection() {
                 Resources
               </h2>
               <ul className='space-y-3'>
+                <li>
+                  <Link
+                    prefetch={false}
+                    href='/download'
+                    className='text-sm text-text-muted hover:text-text-primary transition-colors duration-150 flex items-center gap-2'
+                  >
+                    <FiDownload className='w-3.5 h-3.5 shrink-0' aria-hidden='true' />
+                    Download
+                  </Link>
+                </li>
                 <li>
                   <Link
                     prefetch={false}
