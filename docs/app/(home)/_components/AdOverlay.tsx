@@ -21,7 +21,9 @@ export default function AdOverlay({ slot, className = '' }: AdOverlayProps) {
   }, [])
 
   return (
-    <div className={`ad-wrapper my-8 ${className}`}>
+    <div
+      className={`ad-wrapper container mx-auto my-8 max-w-5xl px-4 sm:px-6 md:px-8 ${className}`}
+    >
       <span className='mb-1 text-xs text-text-secondary'>Advertisement</span>
       <ins
         className='adsbygoogle w-full'
