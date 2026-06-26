@@ -1,8 +1,13 @@
 import type { CardDef } from './types'
+import { useTranslation } from 'react-i18next'
+import { FaArrowRight } from 'react-icons/fa6'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
+import { openExternalLink } from '@/shared/utils'
 
 export function FeatureCard({ card, index }: { card: CardDef; index: number }) {
+  const { t } = useTranslation()
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 18 }}
@@ -23,6 +28,16 @@ export function FeatureCard({ card, index }: { card: CardDef; index: number }) {
       >
         <p className='text-xl font-black mb-1.5'>{card.title}</p>
         <p className='text-sm font-semibold leading-relaxed flex-1'>{card.description}</p>
+
+        {card.learnMoreUrl && (
+          <button
+            onClick={() => openExternalLink(card.learnMoreUrl as string)}
+            className='self-start flex items-center gap-1.5 mt-3 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide text-white bg-black/30 hover:bg-black/50 backdrop-blur-sm duration-150 cursor-pointer'
+          >
+            {t('common.learnMore')}
+            <FaArrowRight className='w-2.5 h-2.5' />
+          </button>
+        )}
       </div>
     </motion.div>
   )
