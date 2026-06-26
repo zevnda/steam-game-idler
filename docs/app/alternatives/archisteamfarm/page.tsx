@@ -331,7 +331,7 @@ export default function page() {
                     <TbShield className='w-7 h-7 text-blue-400 mx-auto mb-4' />
                     <h3 className='font-semibold text-text-primary mb-2'>Secure</h3>
                     <p className='text-sm text-text-muted leading-relaxed'>
-                      Open source with transparent security practices
+                      Public source code with transparent security practices
                     </p>
                   </div>
                 </StaggerItem>

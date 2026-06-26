@@ -25,7 +25,7 @@ export default function CTASection() {
   const requirements = [
     { label: 'Platform', value: 'Windows 10 / 11' },
     { label: 'Download size', value: downloadSize || '~7 MB' },
-    { label: 'License', value: 'Elastic-2.0 Open Source' },
+    { label: 'License', value: 'Elastic-2.0 Public Source Code' },
   ]
 
   return (

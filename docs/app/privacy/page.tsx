@@ -404,8 +404,8 @@ export default function PrivacyPolicy() {
             <p className='text-text-muted leading-relaxed'>
               SGI periodically verifies your PRO subscription status with a dedicated verification
               service, sending a device fingerprint together with your Steam ID or license key (see
-              section 1.5). This service is operated separately from, and is not part of, our
-              open-source desktop application or website codebase (see section 7).
+              section 1.5). This service is operated separately from, and is not part of, our public
+              desktop application or website codebase (see section 7).
             </p>
           </section>
 
@@ -561,11 +561,11 @@ export default function PrivacyPolicy() {
 
           <section>
             <h2 className='text-xl font-semibold text-text-primary mb-4'>
-              7. Open Source Transparency
+              7. Public Source Code Transparency
             </h2>
             <p className='text-text-muted leading-relaxed'>
-              The Steam Game Idler desktop application and website are fully open source. You can
-              review their code, data handling practices, and security measures at our{' '}
+              The Steam Game Idler desktop application and website both have enitely public source
+              code. You can review their code, data handling practices, and security measures at our{' '}
               <a
                 href='https://github.com/zevnda/steam-game-idler'
                 className='text-accent hover:opacity-80 transition-opacity duration-150 underline underline-offset-2'
@@ -577,7 +577,10 @@ export default function PrivacyPolicy() {
               . This transparency lets you verify exactly how your data is handled by the
               application and website themselves. Our subscription verification service (section
               4.6), which processes only the data necessary to validate PRO subscription status, is
-              operated separately and is not part of this open-source codebase.
+              operated separately and is not part of this public codebase. While you are free to
+              view, modify, and distribute the application&apos;s source code, our license does not
+              permit circumventing the license key checks that this verification service relies on —
+              see our Terms of Service for details.
             </p>
           </section>
 

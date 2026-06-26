@@ -31,7 +31,7 @@ export default function FooterSection() {
               </span>
             </div>
             <p className='text-sm text-text-muted leading-relaxed mb-6'>
-              A free, open-source desktop app for automating your Steam library. Farm cards, manage
+              A free, desktop app for automating your Steam library. Farm cards, manage
               achievements, and boost playtime.
             </p>
             <div className='flex gap-2.5'>

@@ -94,14 +94,14 @@ export default function StatsSection() {
           <span className='opacity-40'>…</span>
         ),
       label: 'GitHub Stars',
-      description: 'Community-backed open source project',
+      description: 'Community-backed public codebase project',
       icon: <FiStar />,
       accent: 'bg-amber-400/70',
       iconColor: 'text-amber-400',
     },
     {
       value: <Counter target={100} suffix='%' />,
-      label: 'Open Source',
+      label: 'Public Source Code',
       description: 'No hidden code, no secrets',
       icon: <TbCode />,
       accent: 'bg-violet-400/70',

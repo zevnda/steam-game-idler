@@ -16,7 +16,7 @@ const rows = [
   { feature: 'Marketplace Integration', sgi: true, asf: false, sam: false, im: false },
   { feature: 'Multi-account Support', sgi: true, asf: true, sam: false, im: false },
   { feature: 'Easy Setup', sgi: true, asf: false, sam: true, im: true },
-  { feature: 'Open Source', sgi: true, asf: true, sam: true, im: true },
+  { feature: 'Public Source Code', sgi: true, asf: true, sam: true, im: true },
   { feature: 'Active Development', sgi: true, asf: true, sam: false, im: false },
 ]
 
