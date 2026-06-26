@@ -115,7 +115,7 @@ export const allFeatures: Feature[] = [
     title: 'Unlock Achievements For Multiple Games',
     description: 'Unlock achievements for up to 32 games at the same time in Achievement Unlocker.',
     detail:
-      'Unlock up to 32 games in the Achievement Unlocker at once instead of running them one at a time. When one game finished, another it added to the queue immediately, so your entire backlog earns achievements in parallel.',
+      'Unlock up to 32 games in the Achievement Unlocker at once instead of running them one at a time. When one game finishes, another is added to the queue immediately, so your entire backlog earns achievements in parallel.',
     tier: 'gamer',
     imgBg: `${CDN_BASE_URL}/pro-modal/pro11.webp`,
     tierLabel: 'Unlock Achievement For Multiple Games',
