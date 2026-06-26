@@ -2,10 +2,10 @@
   "id": "new-pro-feature-2026-06",
   "variant": "promo",
   "title": "New PRO Feature Added",
-  "message": "PRO users can now run up to 32 games at the same time in Achievement Unlocker",
+  "message": "Enabling the \"Run Multiple Games\" setting in \"Settings → Achievement Unlocker\" allows PRO users to unlock achievement for up to 32 games at the same time in Achievement Unlocker",
   "ctaLabel": "Learn More",
   "ctaUrl": "https://steamgameidler.com/pro#unlock-achievements-for-multiple-games",
-  "asset": "achievement.webp",
+  "asset": "achievement-v2.webp",
   "dismissal": "permanent",
   "enabled": true
 }
