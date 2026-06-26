@@ -2,7 +2,7 @@
 name = "steam-game-idler"
 version = "0.1.0"
 authors = ["zevnda"]
-license = "GPL-3.0"
+license = "Elastic-2.0"
 repository = "https://github.com/zevnda/steam-game-idler"
 edition = "2021"
 

@@ -61,7 +61,7 @@ export default function DownloadHero() {
           </div>
 
           <p className='text-sm text-text-muted mt-10'>
-            Windows 10 / 11 &middot; {downloadSize || '~7 MB'} &middot; Elv2 License &middot;{' '}
+            Windows 10 / 11 &middot; {downloadSize || '~7 MB'} &middot; Elastic-2.0 License &middot;{' '}
             {totalDownloads || '100K+'} downloads
           </p>
         </FadeIn>
