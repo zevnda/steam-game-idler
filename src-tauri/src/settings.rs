@@ -42,6 +42,7 @@ fn get_default_settings() -> Value {
         },
         "achievementUnlocker": {
             "idle": true,
+            "multipleGames": false,
             "hidden": false,
             "nextTaskCheckbox": false,
             "nextTask": null,

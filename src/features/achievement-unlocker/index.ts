@@ -1,4 +1,4 @@
 export { AchievementOrderPage } from './components/AchievementOrderPage'
 export { AchievementUnlocker } from './components/AchievementUnlocker'
 
-export { useAchievementUnlocker } from './hooks/useAchievementUnlocker'
+export { MAX_CONCURRENT_GAMES, useAchievementUnlocker } from './hooks/useAchievementUnlocker'

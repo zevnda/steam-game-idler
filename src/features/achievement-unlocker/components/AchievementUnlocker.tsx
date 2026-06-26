@@ -1,18 +1,20 @@
-import type { ActivePageType, Game } from '@/shared/types'
-import type { UpcomingAchievement } from '../hooks/useAchievementUnlocker'
+import type { ActivePageType } from '@/shared/types'
+import type { ActiveGameState } from '../hooks/useAchievementUnlocker'
 import { useEffect, useRef, useState } from 'react'
-import { Trans, useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import { TbCheck, TbPlayerStopFilled } from 'react-icons/tb'
-import { UpcomingAchievementsList } from './UpcomingAchievementsList'
-import { Button, CircularProgress, cn } from '@heroui/react'
+import { GameRow } from './GameRow'
+import { Button, cn } from '@heroui/react'
 import Image from 'next/image'
-import { useAchievementUnlocker } from '@/features/achievement-unlocker'
-import { CDN_BASE_URL } from '@/shared/constants'
-import { useStateStore } from '@/shared/stores'
-import { startCardFarming, stopIdle, updateDiscordPresence, updateTrayIcon } from '@/shared/utils'
-
-// Matches the hardcoded 10 second grace period in useAchievementUnlocker before unlocking starts
-const INITIAL_DELAY_SECONDS = 10
+import { MAX_CONCURRENT_GAMES, useAchievementUnlocker } from '@/features/achievement-unlocker'
+import { useStateStore, useUserStore } from '@/shared/stores'
+import {
+  hasGamerFeature,
+  startCardFarming,
+  stopIdle,
+  updateDiscordPresence,
+  updateTrayIcon,
+} from '@/shared/utils'
 
 export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType }) => {
   const { t } = useTranslation()
@@ -20,31 +22,28 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
   const setIsAchievementUnlocker = useStateStore(state => state.setIsAchievementUnlocker)
   const transitionDuration = useStateStore(state => state.transitionDuration)
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
+  const proTier = useUserStore(state => state.proTier)
+  const userSettings = useUserStore(state => state.userSettings)
 
   const isMountedRef = useRef(true)
   const abortControllerRef = useRef<AbortController>(new AbortController())
 
-  const [isInitialDelay, setIsInitialDelay] = useState(true)
-  const [currentGame, setCurrentGame] = useState<Game | null>(null)
+  const [activeGames, setActiveGames] = useState<ActiveGameState[]>([])
   const [isComplete, setIsComplete] = useState(false)
-  const [achievementCount, setAchievementCount] = useState(0)
-  const [countdownTimer, setCountdownTimer] = useState('00:00:10')
-  const [isWaitingForSchedule, setIsWaitingForSchedule] = useState(false)
   const [imageLoaded, setImageLoaded] = useState(false)
   const [fallbackImage, setFallbackImage] = useState('')
-  const [upcomingAchievements, setUpcomingAchievements] = useState<UpcomingAchievement[]>([])
+
+  const maxConcurrentGames =
+    hasGamerFeature(proTier) && userSettings.achievementUnlocker.multipleGames
+      ? MAX_CONCURRENT_GAMES
+      : 1
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     useAchievementUnlocker(
-      isInitialDelay,
-      setIsInitialDelay,
-      setCurrentGame,
+      maxConcurrentGames,
+      setActiveGames,
       setIsComplete,
-      setAchievementCount,
-      setCountdownTimer,
-      setIsWaitingForSchedule,
-      setUpcomingAchievements,
       startCardFarming,
       isMountedRef,
       abortControllerRef,
@@ -59,29 +58,46 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  const isMultiple = activeGames.length > 1
+  const primaryGame = activeGames[0] ?? null
+
   useEffect(() => {
-    if (isAchievementUnlocker && currentGame && achievementCount) {
+    if (!isAchievementUnlocker || activeGames.length === 0) return
+
+    if (isMultiple) {
+      updateTrayIcon(t('trayIcon.achievementUnlockerMultiple', { count: activeGames.length }), true)
+      updateDiscordPresence(
+        t('common.achievementUnlocker'),
+        t('automation.achievementUnlocker.runningMultiple', { count: activeGames.length }),
+      )
+    } else if (primaryGame && primaryGame.achievementCount) {
       updateTrayIcon(
         t('trayIcon.achievementUnlocker', {
-          total: achievementCount,
-          appName: currentGame?.name || '',
+          total: primaryGame.achievementCount,
+          appName: primaryGame.game.name || '',
         }),
         true,
       )
-      updateDiscordPresence(currentGame?.name, `Unlocking ${achievementCount} achievements`)
+      updateDiscordPresence(
+        primaryGame.game.name,
+        `Unlocking ${primaryGame.achievementCount} achievements`,
+      )
     }
-  }, [isAchievementUnlocker, currentGame, achievementCount, t])
+  }, [isAchievementUnlocker, activeGames, isMultiple, primaryGame, t])
 
   useEffect(() => {
     setImageLoaded(false)
     setFallbackImage('')
-  }, [currentGame?.appid])
+  }, [primaryGame?.appId])
 
-  const handleImageError = (event: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    ;(event.target as HTMLImageElement).src = `${CDN_BASE_URL}/fallback.webp`
+  const handleStop = () => {
+    for (const entry of activeGames) {
+      stopIdle(entry.game.appid, entry.game.name)
+    }
+    setIsAchievementUnlocker(false)
+    updateTrayIcon()
+    updateDiscordPresence()
   }
-
-  const initialDelaySecondsRemaining = Number(countdownTimer.split(':')[2]) || 0
 
   return (
     <div
@@ -95,13 +111,13 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
         transitionProperty: 'width, left',
       }}
     >
-      {currentGame?.appid && (
+      {primaryGame?.game.appid && (
         <Image
           src={
             fallbackImage ||
-            `https://cdn.steamstatic.com/steam/apps/${currentGame.appid}/library_hero.jpg`
+            `https://cdn.steamstatic.com/steam/apps/${primaryGame.game.appid}/library_hero.jpg`
           }
-          className={cn('absolute top-0 left-0 w-full', !imageLoaded && 'hidden')}
+          className={cn('fixed top-0 left-0 w-full', !imageLoaded && 'hidden')}
           alt='background'
           width={1920}
           height={1080}
@@ -109,7 +125,7 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
           onLoad={() => setImageLoaded(true)}
           onError={() =>
             setFallbackImage(
-              `https://cdn.steamstatic.com/steam/apps/${currentGame.appid}/header.jpg`,
+              `https://cdn.steamstatic.com/steam/apps/${primaryGame.game.appid}/header.jpg`,
             )
           }
           style={{
@@ -118,11 +134,11 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
           }}
         />
       )}
-      {imageLoaded && <div className='absolute top-0 left-0 w-full h-screen bg-base/70' />}
+      {imageLoaded && <div className='fixed top-0 left-0 w-full h-screen bg-base/70' />}
 
       <div
         className={cn(
-          'relative w-[calc(100vw-227px)] pl-6 pt-2 pr-12 mt-12 ease-in-out',
+          'relative w-[calc(100vw-30px)] pl-6 pt-2 pr-12 mt-12 ease-in-out',
           sidebarCollapsed ? 'ml-14' : 'ml-62.5',
         )}
         style={{
@@ -145,12 +161,7 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
                   radius='full'
                   className='font-bold'
                   startContent={<TbPlayerStopFilled size={18} />}
-                  onPress={() => {
-                    stopIdle(currentGame?.appid, currentGame?.name)
-                    setIsAchievementUnlocker(false)
-                    updateTrayIcon()
-                    updateDiscordPresence()
-                  }}
+                  onPress={handleStop}
                 >
                   {isComplete ? <p>{t('common.close')}</p> : <p>{t('common.stop')}</p>}
                 </Button>
@@ -159,98 +170,20 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
           </div>
         </div>
 
-        <div
-          className={cn(
-            'flex gap-4 max-h-[calc(100vh-104px)] ease-in-out pt-10 overflow-hidden',
-            sidebarCollapsed ? 'w-[calc(100vw-106px)]' : 'w-[calc(100vw-300px)]',
-          )}
-          style={{
-            transitionDuration,
-            transitionProperty: 'width',
-          }}
-        >
+        {isComplete ? (
           <div className='flex justify-center items-center flex-col p-6 bg-tab-panel min-h-[40vh] w-full rounded-4xl border border-border'>
-            {isWaitingForSchedule && (
-              <p className='font-semibold text-yellow-400'>
-                {t('automation.achievementUnlocker.scheduleWait')}
-              </p>
-            )}
-
-            {isComplete && (
-              <>
-                <div className='border border-border rounded-full inline-block p-2 w-fit'>
-                  <TbCheck className='text-green-400' fontSize={50} />
-                </div>
-                <p className='mt-4'>{t('common.done')}</p>
-              </>
-            )}
-
-            {isInitialDelay && (
-              <div className='flex flex-col items-center gap-5'>
-                <p className='text-lg font-semibold'>
-                  {t('automation.achievementUnlocker.initialDelay')}
-                </p>
-
-                <CircularProgress
-                  aria-label={t('automation.achievementUnlocker.initialDelay')}
-                  value={
-                    ((INITIAL_DELAY_SECONDS - initialDelaySecondsRemaining) /
-                      INITIAL_DELAY_SECONDS) *
-                    100
-                  }
-                  valueLabel={initialDelaySecondsRemaining}
-                  showValueLabel
-                  strokeWidth={3}
-                  classNames={{
-                    svg: 'w-28 h-28 drop-shadow-lg',
-                    indicator: 'stroke-dynamic',
-                    track: 'stroke-white/10',
-                    value: 'text-4xl font-black text-content',
-                  }}
-                />
-              </div>
-            )}
-
-            {!isInitialDelay && !isComplete && !isWaitingForSchedule && (
-              <div className='flex flex-col items-center gap-4'>
-                <p className='text-xl font-black'>
-                  {t('automation.achievementUnlocker.currentGame')}
-                </p>
-
-                <Image
-                  src={`https://cdn.cloudflare.steamstatic.com/steam/apps/${currentGame?.appid}/header.jpg`}
-                  width={230}
-                  height={115}
-                  alt={`${currentGame?.name} image`}
-                  priority={true}
-                  onError={handleImageError}
-                  className='w-57.5 h-28.75 object-cover rounded-lg duration-150 my-4'
-                />
-
-                <p>
-                  <Trans
-                    i18nKey='automation.achievementUnlocker.progress'
-                    values={{
-                      count: achievementCount,
-                      appName: currentGame?.name,
-                    }}
-                    components={{
-                      1: <span className='font-bold text-dynamic' />,
-                      3: <span className='font-bold text-dynamic' />,
-                    }}
-                  />
-                </p>
-              </div>
-            )}
+            <div className='border border-border rounded-full inline-block p-2 w-fit'>
+              <TbCheck className='text-green-400' fontSize={50} />
+            </div>
+            <p className='mt-4'>{t('common.done')}</p>
           </div>
-
-          {!isInitialDelay && !isComplete && !isWaitingForSchedule && (
-            <UpcomingAchievementsList
-              appId={currentGame?.appid}
-              achievements={upcomingAchievements}
-            />
-          )}
-        </div>
+        ) : (
+          <div className='flex flex-col gap-4 w-full pt-10 pb-4'>
+            {activeGames.map(entry => (
+              <GameRow key={entry.appId} entry={entry} />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   )
