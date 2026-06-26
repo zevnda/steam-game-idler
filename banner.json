@@ -1,11 +1,11 @@
 {
-  "id": "paypal-method-added-2026-06",
+  "id": "new-pro-feature-2026-06",
   "variant": "promo",
-  "title": "PayPal Payment Method Added",
-  "message": "PayPal is now available as a payment method for PRO subscriptions. You can now choose to checkout with either Stripe or PayPal!",
-  "ctaLabel": "Go PRO",
-  "ctaUrl": "https://steamgameidler.com/pro",
-  "asset": "paypal.webp",
+  "title": "New PRO Feature Added",
+  "message": "PRO users can now run up to 32 games at the same time in Achievement Unlocker",
+  "ctaLabel": "Learn More",
+  "ctaUrl": "https://steamgameidler.com/pro#unlock-achievements-for-multiple-games",
+  "asset": "achievement.webp",
   "dismissal": "permanent",
   "enabled": true
 }
