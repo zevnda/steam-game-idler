@@ -1,7 +1,7 @@
 import type { IconType } from 'react-icons'
-import { FaDiscord } from 'react-icons/fa6'
 import {
   TbAd,
+  TbAward,
   TbCards,
   TbClock,
   TbCurrencyDollar,
@@ -48,13 +48,6 @@ export const allFeatures: Feature[] = [
     darkText: true,
   },
   {
-    icon: FaDiscord,
-    title: 'Discord PRO Role',
-    description: 'Stand out in our Discord community with a special exclusive @PRO role.',
-    tier: 'casual',
-    imgBg: `${CDN_BASE_URL}/pro-modal/pro3.webp`,
-  },
-  {
     icon: TbHeadset,
     title: 'Real-Time Live Support',
     description:
@@ -84,6 +77,14 @@ export const allFeatures: Feature[] = [
       'Your games list refreshes automatically every 15 minutes as you add and play games.',
     tier: 'gamer',
     imgBg: `${CDN_BASE_URL}/pro-modal/pro7.webp`,
+  },
+  {
+    icon: TbAward,
+    title: 'Unlock Achievements For Multiple Games',
+    description: 'Unlock achievements for up to 32 games at the same time in Achievement Unlocker.',
+    tier: 'gamer',
+    imgBg: `${CDN_BASE_URL}/pro-modal/pro11.webp`,
+    tierLabel: 'Unlock Achievement For Multiple Games',
   },
   {
     icon: TbGift,

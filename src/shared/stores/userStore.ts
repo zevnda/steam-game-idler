@@ -113,6 +113,7 @@ export const useUserStore = create<UserStore>(set => ({
     },
     achievementUnlocker: {
       idle: true,
+      multipleGames: false,
       hidden: false,
       nextTaskCheckbox: false,
       nextTask: null,

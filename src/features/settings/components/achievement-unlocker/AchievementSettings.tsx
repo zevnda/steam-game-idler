@@ -1,21 +1,25 @@
 import { useTranslation } from 'react-i18next'
 import { FaMinus, FaPlus } from 'react-icons/fa6'
 import { TbChevronRight } from 'react-icons/tb'
-import { Button, cn, Divider, Select, SelectItem, Slider, TimeInput } from '@heroui/react'
+import { Button, cn, Divider, Select, SelectItem, Slider, Switch, TimeInput } from '@heroui/react'
 import {
   handleIntervalChange,
+  handleMultipleGamesChange,
   handleScheduleChange,
   useAchievementSettings,
 } from '@/features/settings'
-import { SettingsSwitch } from '@/shared/components'
-import { useUserStore } from '@/shared/stores'
-import { handleNextTaskChange } from '@/shared/utils'
+import { ProBadge, SettingsSwitch } from '@/shared/components'
+import { useStateStore, useUserStore } from '@/shared/stores'
+import { handleNextTaskChange, hasGamerFeature } from '@/shared/utils'
 
 export const AchievementSettings = () => {
   const { t } = useTranslation()
   const userSummary = useUserStore(state => state.userSummary)
   const userSettings = useUserStore(state => state.userSettings)
   const setUserSettings = useUserStore(state => state.setUserSettings)
+  const proTier = useUserStore(state => state.proTier)
+  const setProModalOpen = useStateStore(state => state.setProModalOpen)
+  const setProModalRequiredTier = useStateStore(state => state.setProModalRequiredTier)
   const { sliderLabel, setSliderLabel } = useAchievementSettings()
 
   const taskOptions = [
@@ -52,6 +56,43 @@ export const AchievementSettings = () => {
             </p>
           </div>
           <SettingsSwitch type='achievementUnlocker' name='idle' />
+        </div>
+
+        <Divider className='bg-border/70 my-4' />
+
+        <div className='flex justify-between items-center'>
+          <div className='flex flex-col gap-2 w-1/2'>
+            <div className='flex items-center'>
+              <p className='text-sm text-content font-bold'>
+                {t('settings.achievementUnlocker.multipleGames')}
+              </p>
+              {!hasGamerFeature(proTier) && <ProBadge className='scale-65' requiredTier='gamer' />}
+            </div>
+            <p className='text-xs text-altwhite'>
+              {t('settings.achievementUnlocker.multipleGames.description')}
+            </p>
+          </div>
+          <div
+            onClick={() => {
+              if (!hasGamerFeature(proTier)) {
+                setProModalRequiredTier('gamer')
+                setProModalOpen(true)
+              }
+            }}
+          >
+            <Switch
+              size='sm'
+              name='multipleGames'
+              isSelected={userSettings.achievementUnlocker.multipleGames}
+              isDisabled={!hasGamerFeature(proTier)}
+              classNames={{
+                wrapper: cn('group-data-[selected=true]:!bg-dynamic !bg-switch'),
+              }}
+              onChange={e =>
+                handleMultipleGamesChange(e.target.checked, userSummary, setUserSettings)
+              }
+            />
+          </div>
         </div>
 
         <Divider className='bg-border/70 my-4' />

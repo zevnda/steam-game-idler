@@ -22,14 +22,6 @@ export function getFeatureCards(t: TFunction) {
       darkText: true,
     },
     {
-      title: t('proMode.cards.discordRole.title'),
-      description: t('proMode.cards.discordRole.description'),
-      tier: 'casual',
-      colSpan: 1,
-      bg: '#131313',
-      imgBg: `${CDN_BASE_URL}/pro-modal/pro3.webp`,
-    },
-    {
       title: t('proMode.cards.liveSupport.title'),
       description: t('proMode.cards.liveSupport.description'),
       tier: 'casual',
@@ -60,6 +52,14 @@ export function getFeatureCards(t: TFunction) {
       colSpan: 1,
       bg: '#131313',
       imgBg: `${CDN_BASE_URL}/pro-modal/pro7.webp`,
+    },
+    {
+      title: t('proMode.cards.multipleUnlockerGames.title'),
+      description: t('proMode.cards.multipleUnlockerGames.description'),
+      tier: 'gamer',
+      colSpan: 1,
+      bg: '#131313',
+      imgBg: `${CDN_BASE_URL}/pro-modal/pro11.webp`,
     },
     {
       title: t('proMode.cards.freeGames.title'),

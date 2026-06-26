@@ -12,6 +12,7 @@ export { AchievementSettings } from './components/achievement-unlocker/Achieveme
 export * from './hooks/achievement-unlocker/useAchievementSettings'
 export { handleIntervalChange } from './utils/achievement-unlocker/handleIntervalChange'
 export { handleScheduleChange } from './utils/achievement-unlocker/handleScheduleChange'
+export { handleMultipleGamesChange } from './utils/achievement-unlocker/handleMultipleGamesChange'
 
 // Card Farming Feature
 export { CardSettings } from './components/card-farming/CardSettings'
