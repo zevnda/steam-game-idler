@@ -3,6 +3,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import { TbChevronRight } from 'react-icons/tb'
 import { Alert, cn, Divider, NumberInput, Select, SelectItem } from '@heroui/react'
 import {
+  CurrencySwitch,
   handlePriceAdjustmentChange,
   handleSellDelayChange,
   handleSellLimitMaxChange,
@@ -74,6 +75,16 @@ export const InventoryManagerSettings = () => {
       </div>
 
       <div className='flex flex-col gap-3 mt-4'>
+        <div className='flex justify-between items-center'>
+          <div className='flex flex-col gap-2 w-1/2'>
+            <p className='text-sm text-content font-bold'>{t('settings.general.currency')}</p>
+            <p className='text-xs text-altwhite'>{t('settings.general.currency.description')}</p>
+          </div>
+          <CurrencySwitch />
+        </div>
+
+        <Divider className='bg-border/70 my-4' />
+
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>
