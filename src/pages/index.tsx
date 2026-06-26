@@ -8,8 +8,8 @@ import {
 } from '@/shared/components'
 import {
   useAutoIdleGames,
-  useCheckForPro,
   useCheckForUpdates,
+  useCheckSubscription,
   useContextMenu,
   useDiscordPresence,
   useFreeGames,
@@ -32,7 +32,7 @@ const Index = () => {
   useInitSettings()
   useCheckForUpdates()
   useAutoIdleGames()
-  useCheckForPro()
+  useCheckSubscription()
   useFreeGames()
   useZoomControls()
   useContextMenu()

@@ -4,14 +4,14 @@ import { Alert, cn, Divider, Select, SelectItem } from '@heroui/react'
 import { useCardSettings } from '@/features/settings'
 import { ProBadge, SettingsSwitch } from '@/shared/components'
 import { useStateStore, useUserStore } from '@/shared/stores'
-import { handleNextTaskChange, hasGamerFeature } from '@/shared/utils'
+import { handleNextTaskChange, hasGamerAccess } from '@/shared/utils'
 
 export const CardSettings = () => {
   const { t } = useTranslation()
   const userSummary = useUserStore(state => state.userSummary)
   const userSettings = useUserStore(state => state.userSettings)
   const setUserSettings = useUserStore(state => state.setUserSettings)
-  const proTier = useUserStore(state => state.proTier)
+  const subscriptionTier = useUserStore(state => state.subscriptionTier)
   const setProModalOpen = useStateStore(state => state.setProModalOpen)
   const setProModalRequiredTier = useStateStore(state => state.setProModalRequiredTier)
   const cardSettings = useCardSettings()
@@ -85,7 +85,9 @@ export const CardSettings = () => {
               <p className='text-sm text-content font-bold'>
                 {t('settings.cardFarming.autoFarmCards')}
               </p>
-              {!hasGamerFeature(proTier) && <ProBadge className='scale-65' requiredTier='gamer' />}
+              {!hasGamerAccess(subscriptionTier) && (
+                <ProBadge className='scale-65' requiredTier='gamer' />
+              )}
             </div>
             <p className='text-xs text-altwhite'>
               {t('settings.cardFarming.autoFarmCards.description')}
@@ -93,7 +95,7 @@ export const CardSettings = () => {
           </div>
           <div
             onClick={() => {
-              if (!hasGamerFeature(proTier)) {
+              if (!hasGamerAccess(subscriptionTier)) {
                 setProModalRequiredTier('gamer')
                 setProModalOpen(true)
               }

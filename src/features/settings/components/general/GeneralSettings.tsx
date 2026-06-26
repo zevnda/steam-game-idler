@@ -10,13 +10,13 @@ import {
 import { LanguageSwitch, ProBadge, SettingsSwitch } from '@/shared/components'
 import { OpenDocs } from '@/shared/components/OpenDocs'
 import { useStateStore, useUserStore } from '@/shared/stores'
-import { hasGamerFeature } from '@/shared/utils'
+import { hasGamerAccess } from '@/shared/utils'
 
 export const GeneralSettings = () => {
   const { t } = useTranslation()
   const userSummary = useUserStore(state => state.userSummary)
   const setUserSettings = useUserStore(state => state.setUserSettings)
-  const proTier = useUserStore(state => state.proTier)
+  const subscriptionTier = useUserStore(state => state.subscriptionTier)
   const setProModalOpen = useStateStore(state => state.setProModalOpen)
   const setProModalRequiredTier = useStateStore(state => state.setProModalRequiredTier)
   const { keyValue, setKeyValue, hasKey, setHasKey } = useGeneralSettings()
@@ -109,7 +109,9 @@ export const GeneralSettings = () => {
               <p className='text-sm text-content font-bold'>
                 {t('settings.general.autoUpdateGamesList')}
               </p>
-              {!hasGamerFeature(proTier) && <ProBadge className='scale-65' requiredTier='gamer' />}
+              {!hasGamerAccess(subscriptionTier) && (
+                <ProBadge className='scale-65' requiredTier='gamer' />
+              )}
             </div>
             <p className='text-xs text-altwhite'>
               {t('settings.general.autoUpdateGamesList.description')}
@@ -117,7 +119,7 @@ export const GeneralSettings = () => {
           </div>
           <div
             onClick={() => {
-              if (!hasGamerFeature(proTier)) {
+              if (!hasGamerAccess(subscriptionTier)) {
                 setProModalRequiredTier('gamer')
                 setProModalOpen(true)
               }

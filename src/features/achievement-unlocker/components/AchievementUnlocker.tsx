@@ -9,7 +9,7 @@ import Image from 'next/image'
 import { MAX_CONCURRENT_GAMES, useAchievementUnlocker } from '@/features/achievement-unlocker'
 import { useStateStore, useUserStore } from '@/shared/stores'
 import {
-  hasGamerFeature,
+  hasGamerAccess,
   startCardFarming,
   stopIdle,
   updateDiscordPresence,
@@ -22,7 +22,7 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
   const setIsAchievementUnlocker = useStateStore(state => state.setIsAchievementUnlocker)
   const transitionDuration = useStateStore(state => state.transitionDuration)
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
-  const proTier = useUserStore(state => state.proTier)
+  const subscriptionTier = useUserStore(state => state.subscriptionTier)
   const userSettings = useUserStore(state => state.userSettings)
 
   const isMountedRef = useRef(true)
@@ -34,7 +34,7 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
   const [fallbackImage, setFallbackImage] = useState('')
 
   const maxConcurrentGames =
-    hasGamerFeature(proTier) && userSettings.achievementUnlocker.multipleGames
+    hasGamerAccess(subscriptionTier) && userSettings.achievementUnlocker.multipleGames
       ? MAX_CONCURRENT_GAMES
       : 1
 

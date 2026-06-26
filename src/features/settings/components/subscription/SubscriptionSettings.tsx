@@ -22,12 +22,12 @@ interface SubscriptionResult {
 
 export const SubscriptionSettings = () => {
   const { t } = useTranslation()
-  const isPro = useUserStore(state => state.isPro)
-  const proTier = useUserStore(state => state.proTier)
-  const proDetails = useUserStore(state => state.proDetails)
-  const setIsPro = useUserStore(state => state.setIsPro)
-  const setProTier = useUserStore(state => state.setProTier)
-  const setProDetails = useUserStore(state => state.setProDetails)
+  const isSubscribed = useUserStore(state => state.isSubscribed)
+  const subscriptionTier = useUserStore(state => state.subscriptionTier)
+  const subscriptionDetails = useUserStore(state => state.subscriptionDetails)
+  const setIsSubscribed = useUserStore(state => state.setIsSubscribed)
+  const setSubscriptionTier = useUserStore(state => state.setSubscriptionTier)
+  const setSubscriptionDetails = useUserStore(state => state.setSubscriptionDetails)
 
   const storedKey = typeof window !== 'undefined' ? (localStorage.getItem('licenseKey') ?? '') : ''
   const [inputKey, setInputKey] = useState('')
@@ -39,14 +39,14 @@ export const SubscriptionSettings = () => {
 
   const applySubscriptionResult = (data: SubscriptionResult) => {
     const createdAt = data.results.created_at
-    const tier = data.results.tier as ProTier
-    setIsPro(true)
+    const tier = (data.results.tier as ProTier) ?? 'casual'
+    setIsSubscribed(true)
     if (createdAt && new Date(createdAt) < GRANDFATHER_CUTOFF) {
-      setProTier('gamer')
+      setSubscriptionTier('gamer')
     } else {
-      setProTier(tier ?? null)
+      setSubscriptionTier(tier)
     }
-    setProDetails({
+    setSubscriptionDetails({
       email: data.results.email ?? null,
       currentPeriodEnd: data.results.current_period_end ?? null,
       cancelAtPeriodEnd: data.results.cancel_at_period_end ?? null,
@@ -139,9 +139,9 @@ export const SubscriptionSettings = () => {
 
   const handleClear = () => {
     localStorage.removeItem('licenseKey')
-    setIsPro(false)
-    setProTier(null)
-    setProDetails(null)
+    setIsSubscribed(false)
+    setSubscriptionTier(null)
+    setSubscriptionDetails(null)
     setActivationError(null)
     setShowTransferConfirm(false)
     setPendingKey('')
@@ -179,30 +179,30 @@ export const SubscriptionSettings = () => {
             <p className='text-xs text-altwhite'>{t('settings.subscription.manage.description')}</p>
           </div>
           <div className='flex flex-col items-end gap-2'>
-            {isPro ? (
-              <ProBadge requiredTier={proTier ?? 'casual'} className='scale-85' />
+            {isSubscribed ? (
+              <ProBadge requiredTier={subscriptionTier ?? 'casual'} className='scale-85' />
             ) : (
               <Chip>
                 <p className='text-xs text-altwhite'>{t('settings.subscription.inactive')}</p>
               </Chip>
             )}
-            {isPro && proDetails?.email && (
-              <p className='text-xs text-altwhite'>{proDetails.email}</p>
+            {isSubscribed && subscriptionDetails?.email && (
+              <p className='text-xs text-altwhite'>{subscriptionDetails.email}</p>
             )}
-            {isPro && proDetails?.currentPeriodEnd && (
+            {isSubscribed && subscriptionDetails?.currentPeriodEnd && (
               <p
                 className={cn(
                   'text-xs',
-                  proDetails.cancelAtPeriodEnd ? 'text-danger' : 'text-altwhite',
+                  subscriptionDetails.cancelAtPeriodEnd ? 'text-danger' : 'text-altwhite',
                 )}
               >
-                {proDetails.cancelAtPeriodEnd
+                {subscriptionDetails.cancelAtPeriodEnd
                   ? t('settings.subscription.cancelsOn')
                   : t('settings.subscription.renewsOn')}{' '}
-                {formatDate(proDetails.currentPeriodEnd)}
+                {formatDate(subscriptionDetails.currentPeriodEnd)}
               </p>
             )}
-            {isPro && proDetails?.paymentProvider === 'paypal' && (
+            {isSubscribed && subscriptionDetails?.paymentProvider === 'paypal' && (
               <ExtLink href='https://www.paypal.com/myaccount/autopay/'>
                 <div className='flex items-center gap-1.5 text-black bg-white font-semibold text-xs py-2 px-3 rounded-full'>
                   {t('settings.general.manageSubscription')}
@@ -210,7 +210,7 @@ export const SubscriptionSettings = () => {
                 </div>
               </ExtLink>
             )}
-            {isPro && proDetails?.paymentProvider !== 'paypal' && (
+            {isSubscribed && subscriptionDetails?.paymentProvider !== 'paypal' && (
               <ExtLink href='https://billing.stripe.com/p/login/8x23cwf8CeNE6PLaAecbC00'>
                 <div className='flex items-center gap-1.5 text-black bg-white font-semibold text-xs py-2 px-3 rounded-full'>
                   {t('settings.general.manageSubscription')}

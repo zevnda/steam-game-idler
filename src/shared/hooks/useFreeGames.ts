@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { useGamesList } from '@/features/games-list'
 import { useUserStore } from '@/shared/stores'
-import { autoRedeemFreeGames, checkForFreeGames, hasGamerFeature } from '@/shared/utils'
+import { autoRedeemFreeGames, checkForFreeGames, hasGamerAccess } from '@/shared/utils'
 
 export function useFreeGames() {
   const gamesContext = useGamesList()
@@ -10,7 +10,7 @@ export function useFreeGames() {
   const freeGamesList = useUserStore(state => state.freeGamesList)
   const setFreeGamesList = useUserStore(state => state.setFreeGamesList)
   const gamesList = useUserStore(state => state.gamesList)
-  const proTier = useUserStore(state => state.proTier)
+  const subscriptionTier = useUserStore(state => state.subscriptionTier)
   const lastRedeemedIdsRef = useRef<string>('')
 
   const freeGamesCheck = useCallback(() => {
@@ -28,7 +28,7 @@ export function useFreeGames() {
   // Auto redeem free games
   useEffect(() => {
     if (
-      hasGamerFeature(proTier) &&
+      hasGamerAccess(subscriptionTier) &&
       userSettings.general.autoRedeemFreeGames &&
       freeGamesList.length > 0
     ) {
@@ -43,7 +43,7 @@ export function useFreeGames() {
       autoRedeemFreeGames(freeGamesList, setFreeGamesList, userSummary, gamesContext)
     }
   }, [
-    proTier,
+    subscriptionTier,
     userSettings.general.autoRedeemFreeGames,
     freeGamesList,
     setFreeGamesList,

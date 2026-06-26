@@ -14,7 +14,7 @@ import {
 import { Button, cn, Select, SelectItem, useDisclosure } from '@heroui/react'
 import { CustomModal, ProBadge } from '@/shared/components'
 import { useNavigationStore, useStateStore, useUserStore } from '@/shared/stores'
-import { hasGamerFeature } from '@/shared/utils'
+import { hasGamerAccess } from '@/shared/utils'
 
 // Helper function to format seconds to HH:MM:SS
 const formatTime = (seconds: number) => {
@@ -54,7 +54,7 @@ export const PageHeader = ({
 }: PageHeaderProps) => {
   const { t } = useTranslation()
   const userSettings = useUserStore(state => state.userSettings)
-  const proTier = useUserStore(state => state.proTier)
+  const subscriptionTier = useUserStore(state => state.subscriptionTier)
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
   const transitionDuration = useStateStore(state => state.transitionDuration)
   const setProModalOpen = useStateStore(state => state.setProModalOpen)
@@ -162,7 +162,7 @@ export const PageHeader = ({
 
                   <div
                     onClick={() => {
-                      if (!hasGamerFeature(proTier)) {
+                      if (!hasGamerAccess(subscriptionTier)) {
                         setProModalRequiredTier('gamer')
                         setProModalOpen(true)
                       }
@@ -173,7 +173,7 @@ export const PageHeader = ({
                       radius='full'
                       isDisabled={
                         tradingCardContext.tradingCardsList.length === 0 ||
-                        !hasGamerFeature(proTier)
+                        !hasGamerAccess(subscriptionTier)
                       }
                       isLoading={tradingCardContext.loadingListButton}
                       startContent={
@@ -182,7 +182,7 @@ export const PageHeader = ({
                       onPress={onDupesOpen}
                     >
                       {t('tradingCards.sellDupes')}
-                      {!hasGamerFeature(proTier) && (
+                      {!hasGamerAccess(subscriptionTier) && (
                         <ProBadge className='scale-70 -mx-2' requiredTier='gamer' />
                       )}
                     </Button>

@@ -5,11 +5,11 @@ import { handleShowStoreLoginWindow, handleSignOutCurrentStoreUser } from '@/fea
 import { ProBadge, SettingsSwitch } from '@/shared/components'
 import { OpenDocs } from '@/shared/components/OpenDocs'
 import { useStateStore, useUserStore } from '@/shared/stores'
-import { hasGamerFeature } from '@/shared/utils'
+import { hasGamerAccess } from '@/shared/utils'
 
 export const FreeGamesSettings = () => {
   const { t } = useTranslation()
-  const proTier = useUserStore(state => state.proTier)
+  const subscriptionTier = useUserStore(state => state.subscriptionTier)
   const userSettings = useUserStore(state => state.userSettings)
   const setUserSettings = useUserStore(state => state.setUserSettings)
   const setProModalOpen = useStateStore(state => state.setProModalOpen)
@@ -49,7 +49,9 @@ export const FreeGamesSettings = () => {
                 {t('settings.general.autoRedeemFreeGames')}
                 <OpenDocs path='/features/free-games#automated-redemption' />
               </p>
-              {!hasGamerFeature(proTier) && <ProBadge className='scale-65' requiredTier='gamer' />}
+              {!hasGamerAccess(subscriptionTier) && (
+                <ProBadge className='scale-65' requiredTier='gamer' />
+              )}
             </div>
             <p className='text-xs text-altwhite'>
               {t('settings.general.autoRedeemFreeGames.description')}
@@ -59,7 +61,7 @@ export const FreeGamesSettings = () => {
           <div
             className='flex flex-col justify-end gap-2'
             onClick={() => {
-              if (!hasGamerFeature(proTier)) {
+              if (!hasGamerAccess(subscriptionTier)) {
                 setProModalRequiredTier('gamer')
                 setProModalOpen(true)
               }
@@ -69,7 +71,7 @@ export const FreeGamesSettings = () => {
               size='sm'
               className='bg-btn-secondary text-btn-text font-bold'
               radius='full'
-              isDisabled={!hasGamerFeature(proTier)}
+              isDisabled={!hasGamerAccess(subscriptionTier)}
               onPress={() => handleShowStoreLoginWindow(setUserSettings)}
             >
               {userSettings.general?.autoRedeemFreeGames
@@ -81,7 +83,7 @@ export const FreeGamesSettings = () => {
               variant='light'
               radius='full'
               color='danger'
-              isDisabled={!hasGamerFeature(proTier)}
+              isDisabled={!hasGamerAccess(subscriptionTier)}
               onPress={() => handleSignOutCurrentStoreUser(setUserSettings)}
             >
               {t('common.signOut')}

@@ -12,12 +12,12 @@ import {
   autoRevalidateSteamCredentials,
   checkSteamStatus,
   decrypt,
-  hasGamerFeature,
+  hasGamerAccess,
   logEvent,
 } from '@/shared/utils'
 
 export const startCardFarming = async () => {
-  const { userSettings, userSummary, proTier, setUserSettings } = useUserStore.getState()
+  const { userSettings, userSummary, subscriptionTier, setUserSettings } = useUserStore.getState()
   const { setIsCardFarming } = useStateStore.getState()
 
   try {
@@ -28,7 +28,7 @@ export const startCardFarming = async () => {
     let credentials = userSettings.cardFarming.credentials
 
     // No credentials at all — try auto-revalidate for gamer tier before giving up
-    if ((!credentials?.sid || !credentials?.sls) && hasGamerFeature(proTier)) {
+    if ((!credentials?.sid || !credentials?.sls) && hasGamerAccess(subscriptionTier)) {
       const result = await autoRevalidateSteamCredentials(setUserSettings)
       if (result?.credentials) credentials = result.credentials
     }
@@ -46,7 +46,7 @@ export const startCardFarming = async () => {
     })
 
     // Credentials present but invalid — try auto-revalidate as a fallback for gamer tier
-    if (!validationResponse.user && hasGamerFeature(proTier)) {
+    if (!validationResponse.user && hasGamerAccess(subscriptionTier)) {
       const result = await autoRevalidateSteamCredentials(setUserSettings)
       if (result?.credentials) {
         credentials = result.credentials

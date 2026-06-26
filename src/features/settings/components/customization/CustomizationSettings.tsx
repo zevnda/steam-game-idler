@@ -12,7 +12,7 @@ import {
 import { ProBadge, SettingsSwitch } from '@/shared/components'
 import { CDN_BASE_URL } from '@/shared/constants'
 import { useStateStore, useUserStore } from '@/shared/stores'
-import { hasGamerFeature } from '@/shared/utils'
+import { hasGamerAccess } from '@/shared/utils'
 
 interface Theme {
   key: string
@@ -24,11 +24,11 @@ export const CustomizationSettings = () => {
   const { t } = useTranslation()
   const { setTheme, resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
-  const proTier = useUserStore(state => state.proTier)
+  const subscriptionTier = useUserStore(state => state.subscriptionTier)
   const setProModalRequiredTier = useStateStore(state => state.setProModalRequiredTier)
   const setProModalOpen = useStateStore(state => state.setProModalOpen)
   const setUserSettings = useUserStore(state => state.setUserSettings)
-  const isPro = useUserStore(state => state.isPro)
+  const isSubscribed = useUserStore(state => state.isSubscribed)
 
   // Themes
   const themes: Theme[] = [
@@ -129,7 +129,7 @@ export const CustomizationSettings = () => {
               <p className='text-sm text-content font-bold'>
                 {t('settings.customization.backgroundImage')}
               </p>
-              {!isPro && <ProBadge className='scale-65' />}
+              {!isSubscribed && <ProBadge className='scale-65' />}
             </div>
             <p className='text-xs text-altwhite'>
               {t('settings.customization.backgroundImage.description')}
@@ -139,7 +139,7 @@ export const CustomizationSettings = () => {
           <div
             className='flex flex-col gap-4 w-62.5'
             onClick={() => {
-              if (!hasGamerFeature(proTier)) {
+              if (!hasGamerAccess(subscriptionTier)) {
                 setProModalRequiredTier('casual')
                 setProModalOpen(true)
               }
@@ -149,7 +149,7 @@ export const CustomizationSettings = () => {
               type='file'
               accept='image/*'
               className='max-w-62.5'
-              isDisabled={!isPro}
+              isDisabled={!isSubscribed}
               classNames={{
                 base: '',
                 inputWrapper: cn(
@@ -194,7 +194,7 @@ export const CustomizationSettings = () => {
                 <div
                   key={theme.key}
                   onClick={() => {
-                    if (theme.isProTheme && !hasGamerFeature(proTier)) {
+                    if (theme.isProTheme && !hasGamerAccess(subscriptionTier)) {
                       setProModalRequiredTier('casual')
                       setProModalOpen(true)
                     }
@@ -202,7 +202,7 @@ export const CustomizationSettings = () => {
                 >
                   <Radio
                     value={theme.key}
-                    isDisabled={theme.isProTheme && !isPro}
+                    isDisabled={theme.isProTheme && !isSubscribed}
                     classNames={{
                       base: 'items-end gap-0',
                     }}
@@ -223,7 +223,7 @@ export const CustomizationSettings = () => {
                     </div>
                     <div className='flex items-center translate-y-0.5'>
                       <p className='text-altwhite'>{theme.label}</p>
-                      {theme.isProTheme && !isPro && <ProBadge className='ml-2 scale-75' />}
+                      {theme.isProTheme && !isSubscribed && <ProBadge className='ml-2 scale-75' />}
                     </div>
                   </Radio>
                 </div>

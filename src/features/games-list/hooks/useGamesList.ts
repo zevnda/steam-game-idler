@@ -4,13 +4,13 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { showDangerToast, showPrimaryToast } from '@/shared/components'
 import { useSearchStore, useStateStore, useUserStore } from '@/shared/stores'
-import { decrypt, handleAutoFarmCards, hasGamerFeature, logEvent } from '@/shared/utils'
+import { decrypt, handleAutoFarmCards, hasGamerAccess, logEvent } from '@/shared/utils'
 
 export function useGamesList() {
   const { t } = useTranslation()
   const userSummary = useUserStore(state => state.userSummary)
   const userSettings = useUserStore(state => state.userSettings)
-  const proTier = useUserStore(state => state.proTier)
+  const subscriptionTier = useUserStore(state => state.subscriptionTier)
   const gamesList = useUserStore(state => state.gamesList)
   const setGamesList = useUserStore(state => state.setGamesList)
   const gamesListSessionUpdatedSet = useStateStore(state => state.gamesListSessionUpdatedSet)
@@ -45,7 +45,7 @@ export function useGamesList() {
     async (showToast: boolean) => {
       if (
         !userSummary?.steamId ||
-        !hasGamerFeature(proTier) ||
+        !hasGamerAccess(subscriptionTier) ||
         !userSettings.general?.autoUpdateGamesList
       )
         return
@@ -83,7 +83,7 @@ export function useGamesList() {
     },
     [
       userSummary?.steamId,
-      proTier,
+      subscriptionTier,
       userSettings.general?.autoUpdateGamesList,
       userSettings.general?.apiKey,
       AUTO_UPDATE_COOLDOWN_MS,
@@ -170,7 +170,7 @@ export function useGamesList() {
   // Auto-update games list for PRO users when the setting is enabled
   useEffect(() => {
     if (isLoading) return
-    if (!hasGamerFeature(proTier) || !userSettings.general?.autoUpdateGamesList) return
+    if (!hasGamerAccess(subscriptionTier) || !userSettings.general?.autoUpdateGamesList) return
 
     // Check on mount — runs if >15 mins have passed since the last update (or never updated)
     silentlyUpdateGamesList(true)
@@ -178,14 +178,19 @@ export function useGamesList() {
     // Also check periodically in case the user stays on the page the whole time
     const interval = setInterval(() => silentlyUpdateGamesList(false), 15 * 60 * 1000)
     return () => clearInterval(interval)
-  }, [isLoading, proTier, userSettings.general?.autoUpdateGamesList, silentlyUpdateGamesList])
+  }, [
+    isLoading,
+    subscriptionTier,
+    userSettings.general?.autoUpdateGamesList,
+    silentlyUpdateGamesList,
+  ])
 
   // Auto-update once per session for non-pro users on app open
   useEffect(() => {
     if (
       isLoading ||
       !userSummary ||
-      hasGamerFeature(proTier) ||
+      hasGamerAccess(subscriptionTier) ||
       gamesListSessionUpdatedSet.has(userSummary.steamId)
     )
       return
@@ -220,7 +225,7 @@ export function useGamesList() {
     runSessionUpdate()
   }, [
     isLoading,
-    proTier,
+    subscriptionTier,
     gamesListSessionUpdatedSet,
     setGamesListSessionUpdated,
     userSummary,
