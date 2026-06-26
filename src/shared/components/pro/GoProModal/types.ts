@@ -13,3 +13,9 @@ export interface CardDef {
   learnMoreUrl?: string
   darkText?: boolean
 }
+
+export interface ComparisonRowDef {
+  label: string
+  icon: React.ElementType
+  tier: 'casual' | 'gamer'
+}

@@ -20,7 +20,8 @@ import {
   ShootingStar,
   STARFIELD_BACKGROUND,
 } from './BackgroundEffects'
-import { getFaqItems, getFeatureCards } from './data'
+import { ComparisonTable } from './ComparisonTable'
+import { getComparisonRows, getFaqItems, getFeatureCards } from './data'
 import { FAQItem } from './FAQItem'
 import { FeatureCard } from './FeatureCard'
 import { SectionHeading } from './SectionHeading'
@@ -49,6 +50,7 @@ export const GoProModal = () => {
 
   const CARDS = getFeatureCards(t)
   const FAQ_ITEMS = getFaqItems(t)
+  const COMPARISON_ROWS = getComparisonRows(t)
 
   useEffect(() => {
     const getPaymentLinks = async () => {
@@ -297,6 +299,12 @@ export const GoProModal = () => {
                 </p>
               </div>
             </div>
+          </div>
+
+          {/* Comparison table */}
+          <div className='px-65 pb-8'>
+            <SectionHeading label={t('proMode.section.comparePlans')} />
+            <ComparisonTable rows={COMPARISON_ROWS} priceData={priceData} />
           </div>
 
           {/* FAQ */}
