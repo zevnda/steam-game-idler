@@ -57,7 +57,8 @@ const cardVariant = {
 }
 
 export default function StatsSection() {
-  const { repoStars, totalDownloads } = useGlobalStore(state => state)
+  const { repoStars, totalDownloads, totalGames } = useGlobalStore(state => state)
+  const gamesTarget = Math.floor(totalGames / 1000)
 
   const dlMatch = totalDownloads.match(/^(\d+(?:\.\d+)?)([A-Za-z+]*)$/)
   const dlTarget = dlMatch ? parseFloat(dlMatch[1]) : 0
@@ -78,7 +79,7 @@ export default function StatsSection() {
       iconColor: 'text-sky-400',
     },
     {
-      value: <Counter target={150} suffix='K+' />,
+      value: <Counter target={gamesTarget} suffix='K+' />,
       label: 'Supported Games',
       description: 'Compatible with your entire library',
       icon: <FiGlobe />,

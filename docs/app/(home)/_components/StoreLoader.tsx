@@ -12,6 +12,7 @@ export default function StoreLoader() {
     setRepoStars,
     setTotalDownloads,
     setTotalDownloadsRaw,
+    setTotalGames,
   } = useGlobalStore(state => state)
 
   // Fetch the latest release information from the GitHub API
@@ -70,6 +71,23 @@ export default function StoreLoader() {
       console.error('Error fetching download count:', error)
     }
   }, [setTotalDownloads, setTotalDownloadsRaw])
+
+  // Fetch the total number of supported games from the steam-game-database metadata
+  useEffect(() => {
+    try {
+      fetch(
+        'https://raw.githubusercontent.com/zevnda/steam-game-database/refs/heads/main/metadata.json',
+      )
+        .then(response => response.json())
+        .then(data => {
+          if (typeof data.totalGames === 'number') {
+            setTotalGames(data.totalGames)
+          }
+        })
+    } catch (error) {
+      console.error('Error fetching total games count:', error)
+    }
+  }, [setTotalGames])
 
   return null
 }
