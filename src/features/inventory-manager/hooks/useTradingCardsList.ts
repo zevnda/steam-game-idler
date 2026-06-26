@@ -5,9 +5,10 @@ import type {
   InvokeRemoveListings,
   InvokeValidateSession,
   TradingCard,
+  UserSettings,
 } from '@/shared/types'
 import { invoke } from '@tauri-apps/api/core'
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   showDangerToast,
@@ -18,13 +19,20 @@ import {
   showSuccessToast,
 } from '@/shared/components'
 import { useStateStore, useUserStore } from '@/shared/stores'
-import { decrypt, formatCurrencyNumber, hasGamerFeature, logEvent } from '@/shared/utils'
+import {
+  autoRevalidateSteamCredentials,
+  decrypt,
+  formatCurrencyNumber,
+  hasGamerFeature,
+  logEvent,
+} from '@/shared/utils'
 
 export function useTradingCardsList() {
   const { t } = useTranslation()
   const userSummary = useUserStore(state => state.userSummary)
   const userSettings = useUserStore(state => state.userSettings)
   const proTier = useUserStore(state => state.proTier)
+  const setUserSettings = useUserStore(state => state.setUserSettings)
   const loadingItemPrice = useStateStore(state => state.loadingItemPrice)
   const setLoadingItemPrice = useStateStore(state => state.setLoadingItemPrice)
   const loadingListButton = useStateStore(state => state.loadingListButton)
@@ -61,10 +69,50 @@ export function useTradingCardsList() {
     }
   }, [tradingCardsList, cardSortStyle])
 
+  // No credentials at all — try auto-revalidate for gamer tier before giving up
+  const getValidCredentials = useCallback(async () => {
+    let credentials = userSettings.cardFarming.credentials
+
+    if ((!credentials?.sid || !credentials?.sls) && hasGamerFeature(proTier)) {
+      const result = await autoRevalidateSteamCredentials(setUserSettings)
+      if (result?.credentials) credentials = result.credentials
+    }
+
+    return credentials
+  }, [userSettings.cardFarming.credentials, proTier, setUserSettings])
+
+  // Credentials present but invalid — try auto-revalidate as a fallback for gamer tier
+  const validateCredentials = useCallback(
+    async (credentials: NonNullable<UserSettings['cardFarming']['credentials']>) => {
+      let validate = await invoke<InvokeValidateSession>('validate_session', {
+        sid: decrypt(credentials.sid),
+        sls: decrypt(credentials.sls),
+        sma: credentials?.sma,
+        steamid: userSummary?.steamId,
+      })
+
+      if (!validate.user && hasGamerFeature(proTier)) {
+        const result = await autoRevalidateSteamCredentials(setUserSettings)
+        if (result?.credentials) {
+          credentials = result.credentials
+          validate = await invoke<InvokeValidateSession>('validate_session', {
+            sid: decrypt(credentials.sid),
+            sls: decrypt(credentials.sls),
+            sma: credentials?.sma,
+            steamid: userSummary?.steamId,
+          })
+        }
+      }
+
+      return { validate, credentials }
+    },
+    [proTier, setUserSettings, userSummary?.steamId],
+  )
+
   useEffect(() => {
     const getTradingCards = async () => {
       try {
-        const credentials = userSettings.cardFarming.credentials
+        const credentials = await getValidCredentials()
         const apiKey = userSettings.general?.apiKey
 
         if (!credentials?.sid || !credentials?.sls) return
@@ -92,19 +140,14 @@ export function useTradingCardsList() {
         }
 
         // Validate credentials
-        const validate = await invoke<InvokeValidateSession>('validate_session', {
-          sid: decrypt(credentials.sid),
-          sls: decrypt(credentials.sls),
-          sma: credentials?.sma,
-          steamid: userSummary?.steamId,
-        })
+        const { validate, credentials: validCredentials } = await validateCredentials(credentials)
 
         if (!validate.user) return showIncorrectCredentialsToast()
 
         const response = await invoke<InvokeCardData>('get_trading_cards', {
-          sid: decrypt(credentials.sid),
-          sls: decrypt(credentials.sls),
-          sma: credentials?.sma,
+          sid: decrypt(validCredentials.sid),
+          sls: decrypt(validCredentials.sls),
+          sma: validCredentials?.sma,
           steamId: userSummary?.steamId,
           includePrices: true,
           apiKey: apiKey ? decrypt(apiKey) : null,
@@ -131,13 +174,15 @@ export function useTradingCardsList() {
     userSettings.cardFarming.credentials,
     userSummary?.steamId,
     userSettings.general?.apiKey,
+    getValidCredentials,
+    validateCredentials,
   ])
 
   const fetchCardPrices = async (hash: string) => {
     setLoadingItemPrice(prev => ({ ...prev, [hash]: true }))
 
     try {
-      const credentials = userSettings.cardFarming.credentials
+      const credentials = await getValidCredentials()
 
       if (!credentials?.sid || !credentials?.sls) {
         showMissingCredentialsToast()
@@ -145,12 +190,7 @@ export function useTradingCardsList() {
       }
 
       // Validate credentials
-      const validate = await invoke<InvokeValidateSession>('validate_session', {
-        sid: decrypt(credentials.sid),
-        sls: decrypt(credentials.sls),
-        sma: credentials?.sma,
-        steamid: userSummary?.steamId,
-      })
+      const { validate } = await validateCredentials(credentials)
 
       if (!validate.user) {
         showIncorrectCredentialsToast()
@@ -269,7 +309,7 @@ export function useTradingCardsList() {
         return
       }
 
-      const credentials = userSettings?.cardFarming.credentials
+      const credentials = await getValidCredentials()
 
       if (!credentials?.sid || !credentials?.sls) return showMissingCredentialsToast()
 
@@ -341,7 +381,7 @@ export function useTradingCardsList() {
 
   const handleSellSelectedCards = async () => {
     try {
-      const credentials = userSettings.cardFarming.credentials
+      const credentials = await getValidCredentials()
       const sellDelay = userSettings?.tradingCards?.sellDelay || 10
 
       if (!credentials?.sid || !credentials?.sls) return showMissingCredentialsToast()
@@ -456,7 +496,7 @@ export function useTradingCardsList() {
 
   // Shared helper: fetch price and list a batch of items sequentially with rate-limit handling
   const sellCardsList = async (items: TradingCard[], context: string) => {
-    const credentials = userSettings?.cardFarming.credentials
+    const credentials = await getValidCredentials()
     if (!credentials?.sid || !credentials?.sls) return showMissingCredentialsToast()
 
     const priceAdjustment = userSettings?.tradingCards?.priceAdjustment || 0.0
@@ -520,11 +560,13 @@ export function useTradingCardsList() {
           continue
         }
 
+        // fetchCardPrices above may have auto-revalidated credentials, so re-read the latest
+        const latestCredentials = useUserStore.getState().userSettings.cardFarming.credentials
         const cardForListing: [string, string] = [card.assetid, finalPrice.toString()]
         const response = await invoke<InvokeListCards>('list_trading_cards', {
-          sid: decrypt(credentials.sid),
-          sls: decrypt(credentials.sls),
-          sma: credentials?.sma,
+          sid: decrypt(latestCredentials?.sid || credentials.sid),
+          sls: decrypt(latestCredentials?.sls || credentials.sls),
+          sma: latestCredentials?.sma ?? credentials?.sma,
           steamId: userSummary?.steamId,
           cards: [cardForListing],
           currency: localStorage.getItem('currency') || '1',
@@ -570,7 +612,7 @@ export function useTradingCardsList() {
 
   const handleSellAllCards = async (list?: TradingCard[]) => {
     try {
-      const credentials = userSettings?.cardFarming.credentials
+      const credentials = await getValidCredentials()
       if (!credentials?.sid || !credentials?.sls) return showMissingCredentialsToast()
 
       setLoadingListButton(true)
@@ -591,7 +633,7 @@ export function useTradingCardsList() {
     }
 
     try {
-      const credentials = userSettings?.cardFarming.credentials
+      const credentials = await getValidCredentials()
       if (!credentials?.sid || !credentials?.sls) return showMissingCredentialsToast()
 
       // Group items by market_hash_name, keep 1 per group, collect the rest as dupes
@@ -628,17 +670,12 @@ export function useTradingCardsList() {
 
   const handleRemoveActiveListings = async () => {
     try {
-      const credentials = userSettings.cardFarming.credentials
+      const initialCredentials = await getValidCredentials()
 
-      if (!credentials?.sid || !credentials?.sls) return showMissingCredentialsToast()
+      if (!initialCredentials?.sid || !initialCredentials?.sls) return showMissingCredentialsToast()
 
       // Validate credentials
-      const validate = await invoke<InvokeValidateSession>('validate_session', {
-        sid: decrypt(credentials.sid),
-        sls: decrypt(credentials.sls),
-        sma: credentials?.sma,
-        steamid: userSummary?.steamId,
-      })
+      const { validate, credentials } = await validateCredentials(initialCredentials)
 
       if (!validate.user) return showIncorrectCredentialsToast()
 
