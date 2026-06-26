@@ -4,6 +4,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import { FaArrowDown, FaCheck, FaDiscord } from 'react-icons/fa6'
 import {
   TbAd,
+  TbAward,
   TbCards,
   TbClock,
   TbCurrencyDollar,
@@ -279,6 +280,7 @@ export const GoProModal = () => {
                     { label: t('proMode.tier.gamer.gamesList'), icon: TbRefresh },
                     { label: t('proMode.tier.gamer.freeGames'), icon: TbGift },
                     { label: t('proMode.tier.gamer.autoFarmCards'), icon: TbCards },
+                    { label: t('proMode.tier.gamer.multipleUnlockerGames'), icon: TbAward },
                     { label: t('proMode.tier.gamer.sellDupes'), icon: TbCurrencyDollar },
                     { label: t('proMode.tier.gamer.importTimings'), icon: TbClock },
                     { label: t('proMode.tier.gamer.cancelAnytime'), icon: FaCheck },

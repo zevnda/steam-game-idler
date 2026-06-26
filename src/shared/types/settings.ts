@@ -1,8 +1,9 @@
 import type { TimeInputValue } from '@heroui/react'
 
 export interface AchievementUnlockerSettings {
-  hidden: boolean
   idle: boolean
+  multipleGames: boolean
+  hidden: boolean
   nextTaskCheckbox: boolean
   nextTask: string | null
   interval: [number, number]
