@@ -25,9 +25,18 @@ interface AchievementToUnlock {
   gameName: string
   percentage: number
   name?: string
+  iconLocked?: string
   hidden?: boolean
   skip?: boolean
   delayNextUnlock?: number // <-- add optional delayNextUnlock property
+}
+
+export interface UpcomingAchievement {
+  id: string
+  name?: string
+  iconLocked?: string
+  percentage: number
+  unlockAt: number
 }
 
 export const useAchievementUnlocker = async (
@@ -38,6 +47,7 @@ export const useAchievementUnlocker = async (
   setAchievementCount: React.Dispatch<React.SetStateAction<number>>,
   setCountdownTimer: React.Dispatch<React.SetStateAction<string>>,
   setIsWaitingForSchedule: React.Dispatch<React.SetStateAction<boolean>>,
+  setUpcomingAchievements: React.Dispatch<React.SetStateAction<UpcomingAchievement[]>>,
   startCardFarming: () => Promise<void>,
   isMountedRef: React.RefObject<boolean>,
   abortControllerRef: React.RefObject<AbortController>,
@@ -71,6 +81,8 @@ export const useAchievementUnlocker = async (
 
       // Check if there are no games left to unlock achievements for
       if (achievementUnlockerList.list_data.length === 0) {
+        setUpcomingAchievements([])
+
         if (currentGame !== null) {
           await stopIdle(currentGame?.appid, currentGame.name)
         }
@@ -114,6 +126,7 @@ export const useAchievementUnlocker = async (
           setAchievementCount,
           setCountdownTimer,
           setIsWaitingForSchedule,
+          setUpcomingAchievements,
           isMountedRef,
           abortControllerRef,
         )
@@ -123,6 +136,8 @@ export const useAchievementUnlocker = async (
           `[Achievement Unlocker] ${game.name} (${game.appid}) has no achievements remaining - removed`,
         )
       }
+
+      setUpcomingAchievements([])
 
       // Rerun if component is still mounted - needed check if user stops feature during loop
       if (isMountedRef.current) {
@@ -259,6 +274,7 @@ const fetchAchievements = async (
               gameName: game.name,
               percentage: achievement.percent || 0,
               name: achievement.name,
+              iconLocked: achievement.iconLocked,
               hidden: achievement.hidden,
               skip: customAchievement?.skip,
               delayNextUnlock: customAchievement?.delayNextUnlock,
@@ -295,6 +311,7 @@ const fetchAchievements = async (
             gameName: game.name,
             percentage: achievement.percent || 0,
             name: achievement.name,
+            iconLocked: achievement.iconLocked,
             hidden: achievement.hidden,
           }))
           .sort((a, b) => b.percentage - a.percentage)
@@ -311,6 +328,7 @@ const fetchAchievements = async (
           gameName: game.name,
           percentage: achievement.percent || 0,
           name: achievement.name,
+          iconLocked: achievement.iconLocked,
           hidden: achievement.hidden,
         }))
         .sort((a, b) => b.percentage - a.percentage)
@@ -332,6 +350,7 @@ const unlockAchievements = async (
   setAchievementCount: React.Dispatch<React.SetStateAction<number>>,
   setCountdownTimer: React.Dispatch<React.SetStateAction<string>>,
   setIsWaitingForSchedule: React.Dispatch<React.SetStateAction<boolean>>,
+  setUpcomingAchievements: React.Dispatch<React.SetStateAction<UpcomingAchievement[]>>,
   isMountedRef: React.RefObject<boolean>,
   abortControllerRef: React.RefObject<AbortController>,
 ) => {
@@ -349,6 +368,17 @@ const unlockAchievements = async (
     let achievementsRemaining = achievements.length
     const maxAchievementUnlocks = await getMaxAchievementUnlocks(userSummary?.steamId, game.appid)
 
+    // Precompute the delay that follows each achievement so the upcoming queue and the
+    // actual wait use identical values, and so future unlock times can be projected ahead of time
+    const delayMap = new Map<string, number>()
+    for (const achievement of achievements) {
+      if (typeof achievement.delayNextUnlock === 'number' && achievement.delayNextUnlock >= 0) {
+        delayMap.set(achievement.id, achievement.delayNextUnlock * 60 * 1000)
+      } else {
+        delayMap.set(achievement.id, getRandomDelay(interval[0], interval[1]))
+      }
+    }
+
     // Apply delay before first unlock if configured for this game
     if (
       typeof delayBeforeFirstUnlock === 'number' &&
@@ -359,11 +389,14 @@ const unlockAchievements = async (
       logEvent(
         `[Achievement Unlocker] Waiting ${delayBeforeFirstUnlock} minute(s) before first unlock for ${game.name} (${game.appid})`,
       )
+      setUpcomingAchievements(buildUpcomingQueue(achievements, 0, firstDelayMs, delayMap, hidden))
       startCountdown(firstDelayMs / 60000, setCountdownTimer)
       await delay(firstDelayMs, isMountedRef, abortControllerRef)
+    } else {
+      setUpcomingAchievements(buildUpcomingQueue(achievements, 0, 0, delayMap, hidden))
     }
 
-    for (const achievement of achievements) {
+    for (const [achievementIndex, achievement] of achievements.entries()) {
       if (isMountedRef.current) {
         // Wait until within schedule if necessary
         if (schedule && !isWithinSchedule(scheduleFrom, scheduleTo)) {
@@ -409,6 +442,7 @@ const unlockAchievements = async (
           logEvent(
             `[Achievement Unlocker] Unlocked ${maxAchievementUnlocks !== null ? achievements.length - maxAchievementUnlocks : achievements.length}/${achievements.length} achievements for ${game.name} - removed`,
           )
+          setUpcomingAchievements([])
           break
         }
 
@@ -416,17 +450,16 @@ const unlockAchievements = async (
         if (achievementsRemaining === 0) {
           await stopIdle(game.appid, game.name)
           await removeGameFromUnlockerList(game.appid)
+          setUpcomingAchievements([])
           break
         }
 
         // Wait for a delay before unlocking the next achievement
-        // Use delayNextUnlock from achievement if present, otherwise use a global unlock interval
-        let delayMs: number
-        if (typeof achievement.delayNextUnlock === 'number' && achievement.delayNextUnlock >= 0) {
-          delayMs = achievement.delayNextUnlock * 60 * 1000
-        } else {
-          delayMs = getRandomDelay(interval[0], interval[1])
-        }
+        // Use the precomputed delay so the displayed upcoming queue matches the actual wait
+        const delayMs = delayMap.get(achievement.id) ?? getRandomDelay(interval[0], interval[1])
+        setUpcomingAchievements(
+          buildUpcomingQueue(achievements, achievementIndex + 1, delayMs, delayMap, hidden),
+        )
         startCountdown(delayMs / 60000, setCountdownTimer)
         await delay(delayMs, isMountedRef, abortControllerRef)
       }
@@ -479,6 +512,42 @@ const removeGameFromUnlockerList = async (gameId: number) => {
   } catch (error) {
     handleError('removeGameFromUnlockerList', error)
   }
+}
+
+// Build a projection of the next achievements to unlock and when each will unlock
+const buildUpcomingQueue = (
+  achievements: AchievementToUnlock[],
+  startIndex: number,
+  initialDelayMs: number,
+  delayMap: Map<string, number>,
+  hidden: boolean,
+  limit = 5,
+) => {
+  const queue: UpcomingAchievement[] = []
+  const now = Date.now()
+  let cumulativeMs = initialDelayMs
+  let previousId: string | null = null
+
+  for (let i = startIndex; i < achievements.length && queue.length < limit; i++) {
+    const achievement = achievements[i]
+    if (hidden && achievement.hidden) continue
+
+    if (previousId !== null) {
+      cumulativeMs += delayMap.get(previousId) ?? 0
+    }
+
+    queue.push({
+      id: achievement.id,
+      name: achievement.name,
+      iconLocked: achievement.iconLocked,
+      percentage: achievement.percentage,
+      unlockAt: now + cumulativeMs,
+    })
+
+    previousId = achievement.id
+  }
+
+  return queue
 }
 
 // Start the countdown timer

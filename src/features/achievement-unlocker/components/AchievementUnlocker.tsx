@@ -1,13 +1,18 @@
 import type { ActivePageType, Game } from '@/shared/types'
+import type { UpcomingAchievement } from '../hooks/useAchievementUnlocker'
 import { useEffect, useRef, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { TbCheck, TbPlayerStopFilled } from 'react-icons/tb'
-import { Button, cn } from '@heroui/react'
+import { UpcomingAchievementsList } from './UpcomingAchievementsList'
+import { Button, CircularProgress, cn } from '@heroui/react'
 import Image from 'next/image'
 import { useAchievementUnlocker } from '@/features/achievement-unlocker'
 import { CDN_BASE_URL } from '@/shared/constants'
 import { useStateStore } from '@/shared/stores'
 import { startCardFarming, stopIdle, updateDiscordPresence, updateTrayIcon } from '@/shared/utils'
+
+// Matches the hardcoded 10 second grace period in useAchievementUnlocker before unlocking starts
+const INITIAL_DELAY_SECONDS = 10
 
 export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType }) => {
   const { t } = useTranslation()
@@ -27,6 +32,7 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
   const [isWaitingForSchedule, setIsWaitingForSchedule] = useState(false)
   const [imageLoaded, setImageLoaded] = useState(false)
   const [fallbackImage, setFallbackImage] = useState('')
+  const [upcomingAchievements, setUpcomingAchievements] = useState<UpcomingAchievement[]>([])
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -38,6 +44,7 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
       setAchievementCount,
       setCountdownTimer,
       setIsWaitingForSchedule,
+      setUpcomingAchievements,
       startCardFarming,
       isMountedRef,
       abortControllerRef,
@@ -73,6 +80,8 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
   const handleImageError = (event: React.SyntheticEvent<HTMLImageElement, Event>) => {
     ;(event.target as HTMLImageElement).src = `${CDN_BASE_URL}/fallback.webp`
   }
+
+  const initialDelaySecondsRemaining = Number(countdownTimer.split(':')[2]) || 0
 
   return (
     <div
@@ -152,7 +161,7 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
 
         <div
           className={cn(
-            'flex max-h-[calc(100vh-104px)] ease-in-out pt-10 overflow-hidden',
+            'flex gap-4 max-h-[calc(100vh-104px)] ease-in-out pt-10 overflow-hidden',
             sidebarCollapsed ? 'w-[calc(100vw-106px)]' : 'w-[calc(100vw-300px)]',
           )}
           style={{
@@ -177,14 +186,29 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
             )}
 
             {isInitialDelay && (
-              <p className='text-lg font-semibold'>
-                <Trans
-                  i18nKey='automation.achievementUnlocker.initialDelay'
-                  values={{ timer: countdownTimer }}
-                >
-                  Starting in <span className='font-bold text-dynamic'>{countdownTimer}</span>
-                </Trans>
-              </p>
+              <div className='flex flex-col items-center gap-5'>
+                <p className='text-lg font-semibold'>
+                  {t('automation.achievementUnlocker.initialDelay')}
+                </p>
+
+                <CircularProgress
+                  aria-label={t('automation.achievementUnlocker.initialDelay')}
+                  value={
+                    ((INITIAL_DELAY_SECONDS - initialDelaySecondsRemaining) /
+                      INITIAL_DELAY_SECONDS) *
+                    100
+                  }
+                  valueLabel={initialDelaySecondsRemaining}
+                  showValueLabel
+                  strokeWidth={3}
+                  classNames={{
+                    svg: 'w-28 h-28 drop-shadow-lg',
+                    indicator: 'stroke-dynamic',
+                    track: 'stroke-white/10',
+                    value: 'text-4xl font-black text-content',
+                  }}
+                />
+              </div>
             )}
 
             {!isInitialDelay && !isComplete && !isWaitingForSchedule && (
@@ -216,19 +240,16 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
                     }}
                   />
                 </p>
-
-                <p className='text-sm'>
-                  <Trans
-                    i18nKey='automation.achievementUnlocker.delay'
-                    values={{ timer: countdownTimer }}
-                    components={{
-                      1: <span className='font-bold text-sm text-dynamic' />,
-                    }}
-                  />
-                </p>
               </div>
             )}
           </div>
+
+          {!isInitialDelay && !isComplete && !isWaitingForSchedule && (
+            <UpcomingAchievementsList
+              appId={currentGame?.appid}
+              achievements={upcomingAchievements}
+            />
+          )}
         </div>
       </div>
     </div>
