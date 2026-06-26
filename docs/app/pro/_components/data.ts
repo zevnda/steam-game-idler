@@ -1,4 +1,5 @@
 import type { IconType } from 'react-icons'
+import { FaDiscord } from 'react-icons/fa6'
 import {
   TbAd,
   TbAward,
@@ -46,6 +47,13 @@ export const allFeatures: Feature[] = [
     tier: 'casual',
     imgBg: `${CDN_BASE_URL}/pro-modal/pro2.webp`,
     darkText: true,
+  },
+  {
+    icon: FaDiscord,
+    title: 'Unique Discord Chat Role',
+    description: 'Stand out in the community with an exclusive Discord role for PRO subscribers.',
+    tier: 'casual',
+    tierLabel: 'Discord PRO Role',
   },
   {
     icon: TbHeadset,

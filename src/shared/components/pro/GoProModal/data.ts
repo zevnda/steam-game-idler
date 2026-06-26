@@ -1,5 +1,18 @@
 import type { TFunction } from 'i18next'
-import type { CardDef } from './types'
+import type { CardDef, ComparisonRowDef } from './types'
+import { FaDiscord } from 'react-icons/fa6'
+import {
+  TbAd,
+  TbAward,
+  TbCards,
+  TbClock,
+  TbCurrencyDollar,
+  TbGift,
+  TbHeadset,
+  TbKey,
+  TbPalette,
+  TbRefresh,
+} from 'react-icons/tb'
 import { CDN_BASE_URL } from '@/shared/constants'
 
 export function getFeatureCards(t: TFunction) {
@@ -80,6 +93,23 @@ export function getFeatureCards(t: TFunction) {
     },
   ]
   return cards
+}
+
+export function getComparisonRows(t: TFunction) {
+  const rows: ComparisonRowDef[] = [
+    { label: t('proMode.tier.casual.adFree'), icon: TbAd, tier: 'casual' },
+    { label: t('proMode.tier.casual.themes'), icon: TbPalette, tier: 'casual' },
+    { label: t('proMode.tier.casual.discordRole'), icon: FaDiscord, tier: 'casual' },
+    { label: t('proMode.tier.casual.liveSupport'), icon: TbHeadset, tier: 'casual' },
+    { label: t('proMode.tier.gamer.credentials'), icon: TbKey, tier: 'gamer' },
+    { label: t('proMode.tier.gamer.freeGames'), icon: TbGift, tier: 'gamer' },
+    { label: t('proMode.tier.gamer.gamesList'), icon: TbRefresh, tier: 'gamer' },
+    { label: t('proMode.tier.gamer.autoFarmCards'), icon: TbCards, tier: 'gamer' },
+    { label: t('proMode.tier.gamer.multipleUnlockerGames'), icon: TbAward, tier: 'gamer' },
+    { label: t('proMode.tier.gamer.sellDupes'), icon: TbCurrencyDollar, tier: 'gamer' },
+    { label: t('proMode.tier.gamer.importTimings'), icon: TbClock, tier: 'gamer' },
+  ]
+  return rows
 }
 
 export function getFaqItems(t: TFunction) {
