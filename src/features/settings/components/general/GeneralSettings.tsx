@@ -3,7 +3,6 @@ import { TbChevronRight, TbEraser, TbUpload } from 'react-icons/tb'
 import { Button, cn, Divider, Input } from '@heroui/react'
 import Image from 'next/image'
 import {
-  CurrencySwitch,
   handleSteamWebAPIKeyClear,
   handleSteamWebAPIKeySave,
   useGeneralSettings,
@@ -154,16 +153,6 @@ export const GeneralSettings = () => {
             <p className='text-xs text-altwhite'>{t('settings.general.description')}</p>
           </div>
           <LanguageSwitch />
-        </div>
-
-        <Divider className='bg-border/70 my-4' />
-
-        <div className='flex justify-between items-center'>
-          <div className='flex flex-col gap-2 w-1/2'>
-            <p className='text-sm text-content font-bold'>{t('settings.general.currency')}</p>
-            <p className='text-xs text-altwhite'>{t('settings.general.currency.description')}</p>
-          </div>
-          <CurrencySwitch />
         </div>
 
         <Divider className='bg-border/70 my-4' />

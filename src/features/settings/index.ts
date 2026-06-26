@@ -48,7 +48,6 @@ export { useGameSettings } from './hooks/game-settings/useGameSettings'
 
 // General Feature
 export { GeneralSettings } from './components/general/GeneralSettings'
-export { CurrencySwitch } from './components/general/CurrencySwitch'
 export * from './hooks/general/useGeneralSettings'
 export { handleRunAtStartupChange } from './utils/general/handleRunAtStartupChange'
 export * from './utils/general/handleSteamWebAPIKey'
@@ -59,6 +58,7 @@ export * from './utils/steam-credentials/handleSteamCredentials'
 
 // Inventory Manager Feature
 export { InventoryManagerSettings } from './components/inventory-manager/InventoryManagerSettings'
+export { CurrencySwitch } from './components/inventory-manager/CurrencySwitch'
 export * from './utils/inventory-manager/handleSettingsChange'
 
 // Keybinds Feature
