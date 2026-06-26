@@ -70,8 +70,6 @@
   "automation.cardFarming.initialDelay": "Це займе секунду...",
   "automation.cardFarming.progress": "Добування з <1>{{count}}</1> ігор <3>{{total}}</3> карток загалом",
   "automation.achievementUnlocker.running": "Розблоковуються досягнення",
-  "automation.achievementUnlocker.initialDelay": "До початку: <1>{{timer}}</1>",
-  "automation.achievementUnlocker.delay": "Наступне досягнення розблокується через <1>{{timer}}</1>",
   "automation.achievementUnlocker.currentGame": "Поточна гра",
   "automation.achievementUnlocker.progress": "Розблокування <1>{{count}}</1> досягнень у <3>{{appName}}</3>",
   "automation.achievementUnlocker.scheduleWait": "Розблокування призупинено через досягнення межі запланованого часу та буде поновлено в запланований час",

@@ -77,8 +77,6 @@
   "automation.cardFarming.initialDelay": "Dies könnte einen Moment dauern..",
   "automation.cardFarming.progress": "<1>{{count}}</1> Spiel(e) mit insgesamt <3>{{total}}</3> verbleibenden Kartendrops werden ausgeführt",
   "automation.achievementUnlocker.running": "Errungenschaftsfreischalter wird gerade ausgeführt",
-  "automation.achievementUnlocker.initialDelay": "Start in <1>{{timer}}</1>",
-  "automation.achievementUnlocker.delay": "Der nächste Erfolg wird in <1>{{timer}}</1> freigeschaltet werden",
   "automation.achievementUnlocker.currentGame": "Aktuelles Spiel",
   "automation.achievementUnlocker.progress": "<1>{{count}}</1> Errungenschaft(en) für <3>{{appName}}</3> werden freigeschaltet",
   "automation.achievementUnlocker.scheduleWait": "Errungenschafts-Freischaltung pausiert, da es außerhalb der geplanten Zeit liegt, und wird fortgesetzt, sobald die geplante Zeit erreicht ist",

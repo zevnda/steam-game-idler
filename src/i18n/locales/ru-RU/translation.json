@@ -102,8 +102,6 @@
   "automation.cardFarming.initialDelay": "Это может занять несколько секунд...",
   "automation.cardFarming.progress": "Выполняется бездействие для игр (<1>{{count}}</1>) с оставшимися выпадениями карточек (<3>{{total}}</3>)",
   "automation.achievementUnlocker.running": "Разблокировщик достижений запущен",
-  "automation.achievementUnlocker.initialDelay": "Запуск через <1>{{timer}}</1>",
-  "automation.achievementUnlocker.delay": "Следующее достижение будет доступно через <1>{{timer}}</1>",
   "automation.achievementUnlocker.currentGame": "Текущая игра",
   "automation.achievementUnlocker.progress": "Получение достижений (<1>{{count}}</1>) для <3>{{appName}}</3>",
   "automation.achievementUnlocker.scheduleWait": "Получение достижений приостановлено, так как текущее время не входит в расписание, и возобновится, как только попадёт в указанное время",
