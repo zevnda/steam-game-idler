@@ -23,7 +23,7 @@ import {
   autoRevalidateSteamCredentials,
   decrypt,
   formatCurrencyNumber,
-  hasGamerFeature,
+  hasGamerAccess,
   logEvent,
 } from '@/shared/utils'
 
@@ -31,7 +31,7 @@ export function useTradingCardsList() {
   const { t } = useTranslation()
   const userSummary = useUserStore(state => state.userSummary)
   const userSettings = useUserStore(state => state.userSettings)
-  const proTier = useUserStore(state => state.proTier)
+  const subscriptionTier = useUserStore(state => state.subscriptionTier)
   const setUserSettings = useUserStore(state => state.setUserSettings)
   const loadingItemPrice = useStateStore(state => state.loadingItemPrice)
   const setLoadingItemPrice = useStateStore(state => state.setLoadingItemPrice)
@@ -73,13 +73,13 @@ export function useTradingCardsList() {
   const getValidCredentials = useCallback(async () => {
     let credentials = userSettings.cardFarming.credentials
 
-    if ((!credentials?.sid || !credentials?.sls) && hasGamerFeature(proTier)) {
+    if ((!credentials?.sid || !credentials?.sls) && hasGamerAccess(subscriptionTier)) {
       const result = await autoRevalidateSteamCredentials(setUserSettings)
       if (result?.credentials) credentials = result.credentials
     }
 
     return credentials
-  }, [userSettings.cardFarming.credentials, proTier, setUserSettings])
+  }, [userSettings.cardFarming.credentials, subscriptionTier, setUserSettings])
 
   // Credentials present but invalid — try auto-revalidate as a fallback for gamer tier
   const validateCredentials = useCallback(
@@ -91,7 +91,7 @@ export function useTradingCardsList() {
         steamid: userSummary?.steamId,
       })
 
-      if (!validate.user && hasGamerFeature(proTier)) {
+      if (!validate.user && hasGamerAccess(subscriptionTier)) {
         const result = await autoRevalidateSteamCredentials(setUserSettings)
         if (result?.credentials) {
           credentials = result.credentials
@@ -106,7 +106,7 @@ export function useTradingCardsList() {
 
       return { validate, credentials }
     },
-    [proTier, setUserSettings, userSummary?.steamId],
+    [subscriptionTier, setUserSettings, userSummary?.steamId],
   )
 
   useEffect(() => {
@@ -628,7 +628,7 @@ export function useTradingCardsList() {
   }
 
   const handleSellAllDupes = async () => {
-    if (!hasGamerFeature(proTier)) {
+    if (!hasGamerAccess(subscriptionTier)) {
       return
     }
 

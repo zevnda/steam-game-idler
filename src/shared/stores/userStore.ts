@@ -2,7 +2,7 @@ import type { Game, UserSettings, UserSummary } from '@/shared/types'
 import { Time } from '@internationalized/date'
 import { create } from 'zustand'
 
-export interface ProDetails {
+export interface SubscriptionDetails {
   email: string | null
   currentPeriodEnd: string | null
   cancelAtPeriodEnd: boolean | null
@@ -21,18 +21,18 @@ interface UserStore {
   setGamesList: (value: Game[] | ((prev: Game[]) => Game[])) => void
   freeGamesList: Game[]
   setFreeGamesList: (value: Game[] | ((prev: Game[]) => Game[])) => void
-  isPro: boolean | null
-  setIsPro: (value: boolean | null | ((prev: boolean | null) => boolean | null)) => void
-  proTier: 'casual' | 'gamer' | null
-  setProTier: (
+  isSubscribed: boolean | null
+  setIsSubscribed: (value: boolean | null | ((prev: boolean | null) => boolean | null)) => void
+  subscriptionTier: 'casual' | 'gamer' | null
+  setSubscriptionTier: (
     value:
       | 'casual'
       | 'gamer'
       | null
       | ((prev: 'casual' | 'gamer' | null) => 'casual' | 'gamer' | null),
   ) => void
-  proDetails: ProDetails | null
-  setProDetails: (value: ProDetails | null) => void
+  subscriptionDetails: SubscriptionDetails | null
+  setSubscriptionDetails: (value: SubscriptionDetails | null) => void
   userSettings: UserSettings
   setUserSettings: (value: UserSettings | ((prev: UserSettings) => UserSettings)) => void
 }
@@ -65,18 +65,18 @@ export const useUserStore = create<UserStore>(set => ({
     set(state => ({
       freeGamesList: typeof value === 'function' ? value(state.freeGamesList) : value,
     })),
-  isPro: null,
-  setIsPro: value =>
+  isSubscribed: null,
+  setIsSubscribed: value =>
     set(state => ({
-      isPro: typeof value === 'function' ? value(state.isPro) : value,
+      isSubscribed: typeof value === 'function' ? value(state.isSubscribed) : value,
     })),
-  proTier: null,
-  setProTier: value =>
+  subscriptionTier: null,
+  setSubscriptionTier: value =>
     set(state => ({
-      proTier: typeof value === 'function' ? value(state.proTier) : value,
+      subscriptionTier: typeof value === 'function' ? value(state.subscriptionTier) : value,
     })),
-  proDetails: null,
-  setProDetails: value => set({ proDetails: value }),
+  subscriptionDetails: null,
+  setSubscriptionDetails: value => set({ subscriptionDetails: value }),
   userSettings: {
     gameSettings: null,
     general: {

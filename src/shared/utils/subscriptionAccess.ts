@@ -4,11 +4,11 @@ export type ProTier = 'casual' | 'gamer' | null
 export const GRANDFATHER_CUTOFF = new Date('2026-04-10')
 
 // Ad-free experience, exclusive themes, Discord role, live support
-export function hasCasualFeature(tier: ProTier) {
+export function hasCasualAccess(tier: ProTier) {
   return tier === 'casual' || tier === 'gamer'
 }
 
 // Automated Steam credentials, auto games list updates, free game redemption, sell dupes
-export function hasGamerFeature(tier: ProTier) {
+export function hasGamerAccess(tier: ProTier) {
   return tier === 'gamer'
 }

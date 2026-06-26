@@ -24,7 +24,7 @@ export const SettingsSwitch = ({ type, name, isProSetting = false }: SettingsChe
   const userSummary = useUserStore(state => state.userSummary)
   const userSettings = useUserStore(state => state.userSettings)
   const setUserSettings = useUserStore(state => state.setUserSettings)
-  const isPro = useUserStore(state => state.isPro)
+  const isSubscribed = useUserStore(state => state.isSubscribed)
   const { startupState, setStartupState } = useGeneralSettings()
 
   useCardSettings()
@@ -87,7 +87,7 @@ export const SettingsSwitch = ({ type, name, isProSetting = false }: SettingsChe
       size='sm'
       name={name}
       isSelected={isSettingEnabled()}
-      isDisabled={isProSetting && !isPro}
+      isDisabled={isProSetting && !isSubscribed}
       classNames={{
         wrapper: cn('group-data-[selected=true]:!bg-dynamic !bg-switch'),
       }}

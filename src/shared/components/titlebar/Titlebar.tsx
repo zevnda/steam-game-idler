@@ -36,7 +36,7 @@ export const Titlebar = () => {
   const setShowSearchModal = useStateStore(state => state.setShowSearchModal)
   const showAchievements = useStateStore(state => state.showAchievements)
   const activePage = useNavigationStore(state => state.activePage)
-  const isPro = useUserStore(state => state.isPro)
+  const isSubscribed = useUserStore(state => state.isSubscribed)
   const searchContent = useSearchStore()
   const [isPortable, setIsPortable] = useState<boolean | null>(null)
 
@@ -110,7 +110,7 @@ export const Titlebar = () => {
               </div>
             )}
 
-            {!loaderVisible && isPro !== null && activePage !== 'setup' && (
+            {!loaderVisible && isSubscribed !== null && activePage !== 'setup' && (
               <div className='flex justify-center items-center h-full'>
                 <GoPro />
               </div>

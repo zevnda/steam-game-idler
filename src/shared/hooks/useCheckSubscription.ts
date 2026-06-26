@@ -4,11 +4,11 @@ import { useEffect } from 'react'
 import { useUserStore } from '@/shared/stores'
 import { GRANDFATHER_CUTOFF, logEvent } from '@/shared/utils'
 
-export function useCheckForPro() {
+export function useCheckSubscription() {
   const userSummary = useUserStore(state => state.userSummary)
-  const setIsPro = useUserStore(state => state.setIsPro)
-  const setProTier = useUserStore(state => state.setProTier)
-  const setProDetails = useUserStore(state => state.setProDetails)
+  const setIsSubscribed = useUserStore(state => state.setIsSubscribed)
+  const setSubscriptionTier = useUserStore(state => state.setSubscriptionTier)
+  const setSubscriptionDetails = useUserStore(state => state.setSubscriptionDetails)
 
   useEffect(() => {
     const steamId = userSummary?.steamId
@@ -42,19 +42,19 @@ export function useCheckForPro() {
         }
 
         if (data?.results?.status) {
-          setIsPro(true)
+          setIsSubscribed(true)
 
           const createdAt = data?.results?.created_at
-          const tier = data?.results?.tier as ProTier
+          const tier = (data?.results?.tier as ProTier) ?? 'casual'
 
           // Grandfather: subscribers before cutoff get full Gamer access regardless of plan
           if (createdAt && new Date(createdAt) < GRANDFATHER_CUTOFF) {
-            setProTier('gamer')
+            setSubscriptionTier('gamer')
           } else {
-            setProTier(tier ?? null)
+            setSubscriptionTier(tier)
           }
 
-          setProDetails({
+          setSubscriptionDetails({
             email: data.results.email ?? null,
             currentPeriodEnd: data.results.current_period_end ?? null,
             cancelAtPeriodEnd: data.results.cancel_at_period_end ?? null,
@@ -62,21 +62,21 @@ export function useCheckForPro() {
             paymentProvider: data.results.payment_provider ?? null,
           })
         } else {
-          setIsPro(false)
-          setProTier(null)
-          setProDetails(null)
+          setIsSubscribed(false)
+          setSubscriptionTier(null)
+          setSubscriptionDetails(null)
         }
       } catch (error) {
         console.error('Error checking subscription:', error)
         logEvent(`[Error] in checkSubscription: ${error}`)
-        setIsPro(false)
-        setProTier(null)
-        setProDetails(null)
+        setIsSubscribed(false)
+        setSubscriptionTier(null)
+        setSubscriptionDetails(null)
       }
     }
 
     checkSubscription()
     const interval = setInterval(checkSubscription, 3 * 60 * 60 * 1000)
     return () => clearInterval(interval)
-  }, [userSummary?.steamId, setIsPro, setProTier, setProDetails])
+  }, [userSummary?.steamId, setIsSubscribed, setSubscriptionTier, setSubscriptionDetails])
 }

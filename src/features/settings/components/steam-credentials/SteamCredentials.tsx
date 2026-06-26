@@ -14,7 +14,7 @@ import { CustomModal, ExtLink, ProBadge, showDangerToast } from '@/shared/compon
 import { OpenDocs } from '@/shared/components/OpenDocs'
 import { CDN_BASE_URL } from '@/shared/constants'
 import { useStateStore, useUserStore } from '@/shared/stores'
-import { hasGamerFeature, logEvent } from '@/shared/utils'
+import { hasGamerAccess, logEvent } from '@/shared/utils'
 
 export const SteamCredentials = () => {
   const { t } = useTranslation()
@@ -23,7 +23,7 @@ export const SteamCredentials = () => {
   const userSummary = useUserStore(state => state.userSummary)
   const userSettings = useUserStore(state => state.userSettings)
   const setUserSettings = useUserStore(state => state.setUserSettings)
-  const proTier = useUserStore(state => state.proTier)
+  const subscriptionTier = useUserStore(state => state.subscriptionTier)
   const cardSettings = useCardSettings()
   const { isOpen, onOpenChange } = useDisclosure()
 
@@ -100,7 +100,9 @@ export const SteamCredentials = () => {
                 {t('settings.steamCredentials.automated')}
                 <OpenDocs path='/steam-credentials#automated-method' />
               </p>
-              {!hasGamerFeature(proTier) && <ProBadge className='scale-65' requiredTier='gamer' />}
+              {!hasGamerAccess(subscriptionTier) && (
+                <ProBadge className='scale-65' requiredTier='gamer' />
+              )}
             </div>
             <p className='text-xs text-altwhite'>
               {t('settings.steamCredentials.automated.description')}
@@ -110,7 +112,7 @@ export const SteamCredentials = () => {
           <div
             className='flex flex-col justify-end gap-2'
             onClick={() => {
-              if (!hasGamerFeature(proTier)) {
+              if (!hasGamerAccess(subscriptionTier)) {
                 setProModalRequiredTier('gamer')
                 setProModalOpen(true)
               }
@@ -120,7 +122,7 @@ export const SteamCredentials = () => {
               size='sm'
               className='bg-btn-secondary text-btn-text font-bold'
               radius='full'
-              isDisabled={!hasGamerFeature(proTier)}
+              isDisabled={!hasGamerAccess(subscriptionTier)}
               onPress={handleShowSteamLoginWindow}
             >
               {cardSettings.hasCookies ? t('common.reauthenticate') : t('common.signInSteam')}
@@ -130,7 +132,7 @@ export const SteamCredentials = () => {
               variant='light'
               radius='full'
               color='danger'
-              isDisabled={!hasGamerFeature(proTier)}
+              isDisabled={!hasGamerAccess(subscriptionTier)}
               onPress={handleSignOutCurrentUser}
             >
               {t('common.signOut')}

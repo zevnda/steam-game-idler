@@ -6,7 +6,7 @@ import { cn } from '@heroui/react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { CustomTooltip } from '@/shared/components'
 import { useUserStore } from '@/shared/stores'
-import { hasCasualFeature, isPortableCheck } from '@/shared/utils'
+import { hasCasualAccess, isPortableCheck } from '@/shared/utils'
 
 declare global {
   interface Window {
@@ -25,8 +25,8 @@ export const HelpDesk = () => {
   const [hasUnread, setHasUnread] = useState(false)
   const userSummary = useUserStore(state => state.userSummary)
   const userSettings = useUserStore(state => state.userSettings)
-  const isPro = useUserStore(state => state.isPro)
-  const proTier = useUserStore(state => state.proTier)
+  const isSubscribed = useUserStore(state => state.isSubscribed)
+  const subscriptionTier = useUserStore(state => state.subscriptionTier)
 
   // Check if widget is loaded
   useEffect(() => {
@@ -93,12 +93,12 @@ export const HelpDesk = () => {
         const licenseKey = localStorage.getItem('licenseKey') ?? 'N/A (legacy subscriber)'
         window.$chatway.updateChatwayCustomData(
           'name',
-          `${userSummary?.personaName} (${userSummary?.steamId}, v${version}, ${proTier ? proTier.charAt(0).toUpperCase() + proTier.slice(1) : 'Free'}, ${isPortable ? 'Portable' : 'Installer'}, ${licenseKey})`,
+          `${userSummary?.personaName} (${userSummary?.steamId}, v${version}, ${subscriptionTier ? subscriptionTier.charAt(0).toUpperCase() + subscriptionTier.slice(1) : 'Free'}, ${isPortable ? 'Portable' : 'Installer'}, ${licenseKey})`,
         )
       }
     }
     setUserData()
-  }, [userSummary, userSettings, isPro, proTier])
+  }, [userSummary, userSettings, isSubscribed, subscriptionTier])
 
   const handleToggle = async () => {
     if (!isLoaded || typeof window === 'undefined' || !window.$chatway) return
@@ -115,7 +115,7 @@ export const HelpDesk = () => {
         const licenseKey = localStorage.getItem('licenseKey') ?? 'N/A (legacy subscriber)'
         window.$chatway.updateChatwayCustomData(
           'name',
-          `${userSummary?.personaName} (${userSummary?.steamId}, v${version}, ${proTier ? proTier.charAt(0).toUpperCase() + proTier.slice(1) : 'Free'}, ${isPortable ? 'Portable' : 'Installer'}, ${licenseKey})`,
+          `${userSummary?.personaName} (${userSummary?.steamId}, v${version}, ${subscriptionTier ? subscriptionTier.charAt(0).toUpperCase() + subscriptionTier.slice(1) : 'Free'}, ${isPortable ? 'Portable' : 'Installer'}, ${licenseKey})`,
         )
       }
       window.$chatway.openChatwayWidget()
@@ -132,7 +132,7 @@ export const HelpDesk = () => {
     }
   }
 
-  if (!hasCasualFeature(proTier)) return null
+  if (!hasCasualAccess(subscriptionTier)) return null
 
   return (
     <div className='relative'>

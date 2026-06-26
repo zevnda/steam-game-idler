@@ -1,14 +1,14 @@
 import type { InvokeCustomList } from '@/shared/types'
 import { invoke } from '@tauri-apps/api/core'
 import { useStateStore, useUserStore } from '@/shared/stores'
-import { getAllGamesWithDrops, hasGamerFeature, logEvent, startCardFarming } from '@/shared/utils'
+import { getAllGamesWithDrops, hasGamerAccess, logEvent, startCardFarming } from '@/shared/utils'
 
 export const handleAutoFarmCards = async () => {
-  const { userSettings, userSummary, proTier } = useUserStore.getState()
+  const { userSettings, userSummary, subscriptionTier } = useUserStore.getState()
   const { isCardFarming } = useStateStore.getState()
 
   if (!userSettings.cardFarming.autoFarmCards) return
-  if (!hasGamerFeature(proTier)) return
+  if (!hasGamerAccess(subscriptionTier)) return
   if (isCardFarming) return
 
   const credentials = userSettings.cardFarming.credentials

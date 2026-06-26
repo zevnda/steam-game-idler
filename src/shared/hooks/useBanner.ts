@@ -1,10 +1,10 @@
-import type { ProDetails } from '@/shared/stores'
+import type { SubscriptionDetails } from '@/shared/stores'
 import type { ActiveBanner, RemoteBannerDef } from '@/shared/types'
 import { useEffect, useState } from 'react'
 import { useUserStore } from '@/shared/stores'
 
 interface SystemBannerDef extends ActiveBanner {
-  isEligible: (proDetails: ProDetails | null) => boolean
+  isEligible: (subscriptionDetails: SubscriptionDetails | null) => boolean
 }
 
 const STRIPE_BILLING_URL = 'https://billing.stripe.com/p/login/8x23cwf8CeNE6PLaAecbC00'
@@ -18,7 +18,7 @@ const systemBanners: SystemBannerDef[] = [
       'Your PRO subscription is past due. Please update your payment method to avoid losing access.',
     ctaLabel: 'Manage Subscription',
     dismissal: 'session',
-    isEligible: proDetails => proDetails?.status === 'past_due',
+    isEligible: subscriptionDetails => subscriptionDetails?.status === 'past_due',
   },
 ]
 
@@ -49,7 +49,7 @@ const getDismissedBanners = () => {
 }
 
 export const useBanners = () => {
-  const proDetails = useUserStore(state => state.proDetails)
+  const subscriptionDetails = useUserStore(state => state.subscriptionDetails)
   const [remoteBanner, setRemoteBanner] = useState<RemoteBannerDef | null>(null)
   const [sessionDismissed, setSessionDismissed] = useState<Set<string>>(new Set())
   const [permanentlyDismissed, setPermanentlyDismissed] = useState<string[]>(getDismissedBanners)
@@ -66,7 +66,7 @@ export const useBanners = () => {
   }, [])
 
   const eligibleSystemBanner = systemBanners.find(
-    banner => banner.isEligible(proDetails) && !sessionDismissed.has(banner.id),
+    banner => banner.isEligible(subscriptionDetails) && !sessionDismissed.has(banner.id),
   )
 
   const eligibleRemoteBanner =
@@ -81,7 +81,9 @@ export const useBanners = () => {
       ? {
           ...eligibleSystemBanner,
           ctaUrl:
-            proDetails?.paymentProvider === 'paypal' ? PAYPAL_BILLING_URL : STRIPE_BILLING_URL,
+            subscriptionDetails?.paymentProvider === 'paypal'
+              ? PAYPAL_BILLING_URL
+              : STRIPE_BILLING_URL,
         }
       : eligibleRemoteBanner
     : null

@@ -16,7 +16,7 @@ import Image from 'next/image'
 import { ProBadge, showAccountMismatchToast, showDangerToast } from '@/shared/components'
 import { OpenDocs } from '@/shared/components/OpenDocs'
 import { useStateStore, useUserStore } from '@/shared/stores'
-import { checkSteamStatus, hasGamerFeature, logEvent } from '@/shared/utils'
+import { checkSteamStatus, hasGamerAccess, logEvent } from '@/shared/utils'
 
 interface SortableAchievementProps {
   appid: number
@@ -279,7 +279,7 @@ const AchievementOverlayItem = memo(function AchievementOverlayItem({
 export const AchievementOrderPage = () => {
   const { t } = useTranslation()
   const userSummary = useUserStore(state => state.userSummary)
-  const proTier = useUserStore(state => state.proTier)
+  const subscriptionTier = useUserStore(state => state.subscriptionTier)
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
   const transitionDuration = useStateStore(state => state.transitionDuration)
   const achievementOrderGame = useStateStore(state => state.achievementOrderGame)
@@ -595,7 +595,7 @@ export const AchievementOrderPage = () => {
             </Button>
             <div
               onClick={() => {
-                if (!hasGamerFeature(proTier)) {
+                if (!hasGamerAccess(subscriptionTier)) {
                   setProModalRequiredTier('gamer')
                   setProModalOpen(true)
                 }
@@ -604,11 +604,11 @@ export const AchievementOrderPage = () => {
               <Button
                 className='bg-btn-secondary text-btn-text font-bold'
                 radius='full'
-                isDisabled={!hasGamerFeature(proTier)}
+                isDisabled={!hasGamerAccess(subscriptionTier)}
                 onPress={onImportOpen}
               >
                 {t('customLists.achievementUnlocker.importTimings.title')}
-                {!hasGamerFeature(proTier) && (
+                {!hasGamerAccess(subscriptionTier) && (
                   <ProBadge className='scale-70 -mx-2' requiredTier='gamer' />
                 )}
               </Button>

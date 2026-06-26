@@ -9,8 +9,8 @@ export { startCardFarming } from './handleStartCardFarming'
 export { handleAutoFarmCards } from './handleAutoFarmCards'
 export { startAchievementUnlocker } from './handleStartAchievementUnlocker'
 export { handleNextTaskChange } from './handleNextTaskChange'
-export { hasCasualFeature, hasGamerFeature, GRANDFATHER_CUTOFF } from './proFeatures'
-export type { ProTier } from './proFeatures'
+export { hasCasualAccess, hasGamerAccess, GRANDFATHER_CUTOFF } from './subscriptionAccess'
+export type { ProTier } from './subscriptionAccess'
 export {
   getCurrentCurrencyId,
   getCurrencyDecimalPlaces,

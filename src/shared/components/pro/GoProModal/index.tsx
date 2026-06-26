@@ -38,7 +38,7 @@ export const GoProModal = () => {
   const setProModalOpen = useStateStore(state => state.setProModalOpen)
   const setProModalRequiredTier = useStateStore(state => state.setProModalRequiredTier)
   const proModalRequiredTier = useStateStore(state => state.proModalRequiredTier)
-  const proTier = useUserStore(state => state.proTier)
+  const subscriptionTier = useUserStore(state => state.subscriptionTier)
 
   const tierRef = useRef<HTMLDivElement>(null)
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null)
@@ -268,7 +268,7 @@ export const GoProModal = () => {
                     { label: t('proMode.tier.casual.liveSupport'), icon: TbHeadset },
                     { label: t('proMode.tier.casual.cancelAnytime'), icon: FaCheck },
                   ]}
-                  isOwned={proTier === 'casual' || proTier === 'gamer'}
+                  isOwned={subscriptionTier === 'casual' || subscriptionTier === 'gamer'}
                   isRequired={proModalRequiredTier === 'casual'}
                   isCasual
                 />
@@ -287,7 +287,7 @@ export const GoProModal = () => {
                     { label: t('proMode.tier.gamer.importTimings'), icon: TbClock },
                     { label: t('proMode.tier.gamer.cancelAnytime'), icon: FaCheck },
                   ]}
-                  isOwned={proTier === 'gamer'}
+                  isOwned={subscriptionTier === 'gamer'}
                   isRequired={proModalRequiredTier === 'gamer'}
                   isMostPopular={!proModalRequiredTier}
                 />

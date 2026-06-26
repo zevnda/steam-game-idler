@@ -5,12 +5,12 @@ import Image from 'next/image'
 import { ProBadge } from '@/shared/components'
 import { CDN_BASE_URL } from '@/shared/constants'
 import { useStateStore, useUserStore } from '@/shared/stores'
-import { hasCasualFeature, hasGamerFeature } from '@/shared/utils'
+import { hasCasualAccess, hasGamerAccess } from '@/shared/utils'
 
 export const AdSlot = () => {
   const { t } = useTranslation()
-  const isPro = useUserStore(state => state.isPro)
-  const proTier = useUserStore(state => state.proTier)
+  const isSubscribed = useUserStore(state => state.isSubscribed)
+  const subscriptionTier = useUserStore(state => state.subscriptionTier)
   const setProModalRequiredTier = useStateStore(state => state.setProModalRequiredTier)
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
   const setProModalOpen = useStateStore(state => state.setProModalOpen)
@@ -224,9 +224,9 @@ export const AdSlot = () => {
       className={cn(
         'transition-all ease-in-out border border-border p-2 pb-1 rounded-lg',
         sidebarCollapsed ? 'scale-[.160]' : 'scale-[.75]',
-        isPro === null && 'opacity-0',
-        isPro !== null && hasCasualFeature(proTier) && 'opacity-0',
-        isPro !== null && !hasCasualFeature(proTier) && 'opacity-100',
+        isSubscribed === null && 'opacity-0',
+        isSubscribed !== null && hasCasualAccess(subscriptionTier) && 'opacity-0',
+        isSubscribed !== null && !hasCasualAccess(subscriptionTier) && 'opacity-100',
       )}
     >
       <div className='relative flex justify-center items-center overflow-hidden rounded-lg'>
@@ -255,7 +255,7 @@ export const AdSlot = () => {
       <div
         className='text-xs text-altwhite mb-1 mt-1.5 text-center cursor-pointer hover:text-white duration-150 scale-125 pointer-events-auto'
         onClick={() => {
-          if (!hasGamerFeature(proTier)) {
+          if (!hasGamerAccess(subscriptionTier)) {
             setProModalRequiredTier('casual')
             setProModalOpen(true)
           }

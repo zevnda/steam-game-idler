@@ -14,7 +14,7 @@ const inter = Inter({
 export const Layout = ({ children }: React.PropsWithChildren) => {
   const loadingUserSummary = useStateStore(state => state.loadingUserSummary)
   const userSettings = useUserStore(state => state.userSettings)
-  const isPro = useUserStore(state => state.isPro)
+  const isSubscribed = useUserStore(state => state.isSubscribed)
   const proModalOpen = useStateStore(state => state.proModalOpen)
   const [customBackground, setCustomBackground] = useState('')
 
@@ -43,7 +43,7 @@ export const Layout = ({ children }: React.PropsWithChildren) => {
         `}
       </Script>
 
-      {!loadingUserSummary && customBackground && isPro && (
+      {!loadingUserSummary && customBackground && isSubscribed && (
         <>
           <Image
             src={customBackground}
