@@ -70,8 +70,6 @@
   "automation.cardFarming.initialDelay": "Ова може да потрае некоја секунда..",
   "automation.cardFarming.progress": "Во мирување <1>{{count}}</1> игра(и) со <3>{{total}}</3> вкупно преостанати отпаѓања на картички",
   "automation.achievementUnlocker.running": "Отклучувачот на achievements моментално работи",
-  "automation.achievementUnlocker.initialDelay": "Почнува во <1>{{timer}}</1>",
-  "automation.achievementUnlocker.delay": "Следниот achievement ќе биде отклучен за <1>{{timer}}</1>",
   "automation.achievementUnlocker.currentGame": "Тековна игра",
   "automation.achievementUnlocker.progress": "Отклучување на <1>{{count}}</1> achievement(и) за <3>{{appName}}</3>",
   "automation.achievementUnlocker.scheduleWait": "Отклучувањето на achievements е паузирано поради тоа што е надвор од закажаното време и ќе продолжи повторно штом ќе биде во закажаното време",
