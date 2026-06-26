@@ -10,7 +10,7 @@ const trustPoints = [
   {
     icon: <TbBrandGithub className='w-5 h-5' />,
     iconClass: 'text-text-muted bg-white/5 border-white/10',
-    title: 'Fully Open Source',
+    title: 'Public Source Code',
     desc: 'Every line of code is public on GitHub. Fork it, audit it, build on it.',
   },
   {

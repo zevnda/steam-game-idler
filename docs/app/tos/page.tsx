@@ -404,9 +404,23 @@ export default function TermsOfService() {
               9. Intellectual Property
             </h2>
             <p className='text-text-muted leading-relaxed mb-4'>
-              SGI is open-source software released under the terms specified in our GitHub
-              repository. You may view, modify, and distribute the software in accordance with the
-              applicable open-source license.
+              SGI is a public source code software released under the{' '}
+              <a
+                href='https://github.com/zevnda/steam-game-idler/blob/main/LICENSE'
+                className='text-accent hover:opacity-80 transition-opacity duration-150 underline underline-offset-2'
+                target='_blank'
+                rel='noopener noreferrer'
+              >
+                Elastic License 2.0
+              </a>
+              . You may freely view, modify, and distribute the software, including for your own
+              personal use, in accordance with that license.
+            </p>
+            <p className='text-text-muted leading-relaxed mb-4'>
+              However, the license does not permit you to move, change, disable, or circumvent the
+              license key functionality that gates PRO features (see section 6.11), or to remove or
+              obscure any functionality protected by it. Distributing a modified copy of SGI that
+              bypasses PRO licensing checks is a violation of both the license and these Terms.
             </p>
             <p className='text-text-muted leading-relaxed'>
               Steam, the Steam logo, and related marks are trademarks of Valve Corporation. We are
@@ -486,11 +500,11 @@ export default function TermsOfService() {
 
           <section>
             <h2 className='text-xl font-semibold text-text-primary mb-4'>
-              14. Open Source and Community
+              14. Source Available and Community
             </h2>
             <p className='text-text-muted leading-relaxed mb-4'>
-              SGI is developed as an open-source project. You can contribute to its development,
-              report issues, or suggest improvements through our{' '}
+              SGI is developed as a public source code project. You can contribute to its
+              development, report issues, or suggest improvements through our{' '}
               <a
                 href='https://github.com/zevnda/steam-game-idler'
                 className='text-accent hover:opacity-80 transition-opacity duration-150 underline underline-offset-2'

@@ -33,7 +33,7 @@ Refer to the **[documentation](https://steamgameidler.com/docs/)** for a detaile
 * **[Automatic Idler](https://steamgameidler.com/docs/features/auto-idler)**: Automatically idle chosen games when SGI launches
 * **[Task Scheduling](https://steamgameidler.com/docs/features/task-scheduling)**: When one feature finishes, automatically start the next
 * **[Free Game Alerts](https://steamgameidler.com/docs/features/free-games)**: Get notified when there are free Steam games to claim
-* **Fully Open Source**: Rest assured that what you're downloading and running is safe
+* **Public Source Code**: Rest assured that what you're downloading and running is safe
 * **Actively Maintained**: Regular updates with new features and bug fixes
 
 # Supported Languages

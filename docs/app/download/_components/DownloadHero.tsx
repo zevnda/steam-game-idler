@@ -41,8 +41,8 @@ export default function DownloadHero() {
           </h1>
 
           <p className='text-lg text-text-muted leading-relaxed mb-10'>
-            Free and open source for Windows. Farm trading cards, manage achievements, and boost
-            playtime — ready in under a minute.
+            Farm trading cards, manage achievements, and boost playtime — ready to go in under a
+            minute.
           </p>
 
           <Link
