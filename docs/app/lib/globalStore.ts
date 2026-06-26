@@ -13,6 +13,8 @@ interface globalStore {
   setTotalDownloads: (value: string | ((prev: string) => string)) => void
   totalDownloadsRaw: number
   setTotalDownloadsRaw: (value: number | ((prev: number) => number)) => void
+  totalGames: number
+  setTotalGames: (value: number | ((prev: number) => number)) => void
 }
 
 export const useGlobalStore = create<globalStore>(set => ({
@@ -45,5 +47,10 @@ export const useGlobalStore = create<globalStore>(set => ({
   setTotalDownloadsRaw: value =>
     set(state => ({
       totalDownloadsRaw: typeof value === 'function' ? value(state.totalDownloadsRaw) : value,
+    })),
+  totalGames: 150000,
+  setTotalGames: value =>
+    set(state => ({
+      totalGames: typeof value === 'function' ? value(state.totalGames) : value,
     })),
 }))

@@ -5,6 +5,7 @@ import { FaBook, FaDiscord, FaGithub, FaStar } from 'react-icons/fa6'
 import { motion } from 'motion/react'
 import Link from 'next/link'
 import DownloadButton from '@/app/(home)/_components/DownloadButton'
+import { formatCount } from '@/app/lib/format'
 import { useGlobalStore } from '@/app/lib/globalStore'
 import { ease } from '@/app/lib/motion'
 
@@ -81,7 +82,7 @@ function RainbowBadge({
 }
 
 export default function HeroSection() {
-  const { latestVersion, repoStars, totalDownloads } = useGlobalStore(state => state)
+  const { latestVersion, repoStars, totalDownloads, totalGames } = useGlobalStore(state => state)
 
   return (
     <section className='min-h-screen flex items-center relative overflow-hidden'>
@@ -283,7 +284,9 @@ export default function HeroSection() {
                 aria-hidden='true'
               />
               <div className='text-center'>
-                <div className='text-xl sm:text-2xl font-bold text-text-primary'>150K+</div>
+                <div className='text-xl sm:text-2xl font-bold text-text-primary'>
+                  {formatCount(totalGames)}
+                </div>
                 <div className='text-xs text-text-muted uppercase tracking-wider mt-1'>Games</div>
               </div>
               <div
