@@ -1,7 +1,9 @@
 import type { ActivePageType, Game } from '@/shared/types'
+import type { UpcomingAchievement } from '../hooks/useAchievementUnlocker'
 import { useEffect, useRef, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { TbCheck, TbPlayerStopFilled } from 'react-icons/tb'
+import { UpcomingAchievementsList } from './UpcomingAchievementsList'
 import { Button, cn } from '@heroui/react'
 import Image from 'next/image'
 import { useAchievementUnlocker } from '@/features/achievement-unlocker'
@@ -27,6 +29,7 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
   const [isWaitingForSchedule, setIsWaitingForSchedule] = useState(false)
   const [imageLoaded, setImageLoaded] = useState(false)
   const [fallbackImage, setFallbackImage] = useState('')
+  const [upcomingAchievements, setUpcomingAchievements] = useState<UpcomingAchievement[]>([])
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -38,6 +41,7 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
       setAchievementCount,
       setCountdownTimer,
       setIsWaitingForSchedule,
+      setUpcomingAchievements,
       startCardFarming,
       isMountedRef,
       abortControllerRef,
@@ -152,7 +156,7 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
 
         <div
           className={cn(
-            'flex max-h-[calc(100vh-104px)] ease-in-out pt-10 overflow-hidden',
+            'flex gap-4 max-h-[calc(100vh-104px)] ease-in-out pt-10 overflow-hidden',
             sidebarCollapsed ? 'w-[calc(100vw-106px)]' : 'w-[calc(100vw-300px)]',
           )}
           style={{
@@ -216,19 +220,16 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
                     }}
                   />
                 </p>
-
-                <p className='text-sm'>
-                  <Trans
-                    i18nKey='automation.achievementUnlocker.delay'
-                    values={{ timer: countdownTimer }}
-                    components={{
-                      1: <span className='font-bold text-sm text-dynamic' />,
-                    }}
-                  />
-                </p>
               </div>
             )}
           </div>
+
+          {!isInitialDelay && !isComplete && !isWaitingForSchedule && (
+            <UpcomingAchievementsList
+              appId={currentGame?.appid}
+              achievements={upcomingAchievements}
+            />
+          )}
         </div>
       </div>
     </div>
