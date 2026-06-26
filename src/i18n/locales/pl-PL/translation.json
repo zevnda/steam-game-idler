@@ -73,8 +73,6 @@
   "automation.cardFarming.initialDelay": "To może chwilę potrwać..",
   "automation.cardFarming.progress": "Idling <1>{{count}}</1> gier, aby uzyskać <3>{{total}}</3> kart kolekcjonerskich",
   "automation.achievementUnlocker.running": "Odblokowywanie osiągnięć jest aktualnie uruchomione",
-  "automation.achievementUnlocker.initialDelay": "Początek za <1>{{timer}}</1>",
-  "automation.achievementUnlocker.delay": "Następne osiągnięcie zostanie odblokowane za <1>{{timer}}</1>",
   "automation.achievementUnlocker.currentGame": "Aktualna gra",
   "automation.achievementUnlocker.progress": "Odblokowywanie <1>{{count}}</1> osiągnięcia(-nięć) dla <3>{{appName}}</3>",
   "automation.achievementUnlocker.scheduleWait": "Odblokowywanie osiągnięć wstrzymane z powodu zaplanowanego czasu, odblokowywanie rozpocznie się ponownie w zaplanowanym czasie",

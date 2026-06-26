@@ -69,8 +69,6 @@
   "automation.cardFarming.initialDelay": "Asta poate dura câteva secunde...",
   "automation.cardFarming.progress": "Se lasă deschis <1>{{count}}</1> joc/jocuri cu <3>{{total}}</3> căderi de cărți rămase în total",
   "automation.achievementUnlocker.running": "Achievement Unlocker rulează în prezent",
-  "automation.achievementUnlocker.initialDelay": "Pornire în <1>{{timer}}</1>",
-  "automation.achievementUnlocker.delay": "Următorul achievement se deblochează în <1>{{timer}}</1>",
   "automation.achievementUnlocker.currentGame": "Joc curent",
   "automation.achievementUnlocker.progress": "Se deblochează <1>{{count}}</1> realizare/realizări pentru <3>{{appName}}</3>",
   "automation.achievementUnlocker.scheduleWait": "Deblocarea realizărilor este întreruptă deoarece este în afara intervalului programat și va fi reluată imediat ce se revine în intervalul programat",

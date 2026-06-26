@@ -70,8 +70,6 @@
   "automation.cardFarming.initialDelay": "Ini mungkin membutuhkan waktu sebentar..",
   "automation.cardFarming.progress": "<1>{{count}}</1> permainan sedang idle dengan <3>{{total}}</3> jumlah kartu drop yang tersisa",
   "automation.achievementUnlocker.running": "Pembuka Pencapaian sedang berjalan",
-  "automation.achievementUnlocker.initialDelay": "Dimulai dalam <1>{{timer}}</1>",
-  "automation.achievementUnlocker.delay": "Pencapaian selanjutnya akan terbuka dalam <1>{{timer}}</1>",
   "automation.achievementUnlocker.currentGame": "Permainan Saat Ini",
   "automation.achievementUnlocker.progress": "Membuka <1>{{count}}</1> pencapaian untuk <3>{{appName}}</3>",
   "automation.achievementUnlocker.scheduleWait": "Pembukaan pencapaian dihentikan sementara karena berada di luar waktu yang dijadwalkan dan akan dilanjutkan kembali setelah memasuki waktu yang dijadwalkan",

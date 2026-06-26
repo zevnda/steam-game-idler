@@ -75,7 +75,6 @@
   "automation.cardFarming.initialDelay": "Esto podría tardar unos segundos..",
   "automation.cardFarming.progress": "Idleando <1>{{count}}</1> juego(s) con <3>{{total}}</3> cromos total restantes",
   "automation.achievementUnlocker.running": "El desbloqueador de logros se está ejecutando actualmente",
-  "automation.achievementUnlocker.initialDelay": "Comenzando en <1>{{timer}}</1>",
   "automation.achievementUnlocker.scheduleWait": "Desbloqueo de logros  pausado debido a estar fuera de la hora programada. Se reanudará nuevamente dentro de la hora programada",
   "cardMenu.idle": "Empezar a farmear",
   "cardMenu.store": "Ver página de la tienda",
