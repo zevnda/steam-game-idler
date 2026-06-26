@@ -279,6 +279,7 @@
   "proMode.hero.startingAt": "Starting at ${{price}}/month · Cancel anytime",
   "proMode.section.allFeatures": "All Features",
   "proMode.section.chooseTier": "Choose Your Tier",
+  "proMode.section.comparePlans": "Compare Plans",
   "proMode.section.faq": "FAQ",
   "proMode.cards.adFree.title": "Ad-Free Experience",
   "proMode.cards.adFree.description": "Use SGI without any advertisements for a completely clean, distraction-free interface.",

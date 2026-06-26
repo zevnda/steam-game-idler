@@ -1,7 +1,9 @@
 import FooterSection from '@/app/(home)/_components/FooterSection'
 import NavBar from '@/app/(home)/_components/NavBar'
+import ComparisonSection from '@/app/pro/_components/ComparisonSection'
 import { fetchProData } from '@/app/pro/_components/data'
 import FAQSection from '@/app/pro/_components/FAQSection'
+import FeatureDetailsSection from '@/app/pro/_components/FeatureDetailsSection'
 import FeaturesSection from '@/app/pro/_components/FeaturesSection'
 import HeroSection from '@/app/pro/_components/HeroSection'
 import TierCardsSection from '@/app/pro/_components/TierCardsSection'
@@ -47,6 +49,8 @@ export default async function ProPage() {
         <HeroSection priceData={priceData} />
         <FeaturesSection />
         <TierCardsSection priceData={priceData} />
+        <ComparisonSection priceData={priceData} />
+        <FeatureDetailsSection />
         <FAQSection />
         <div className='section-divider' />
         <FooterSection />

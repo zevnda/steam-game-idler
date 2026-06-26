@@ -1,6 +1,21 @@
 import type { TFunction } from 'i18next'
-import type { CardDef } from './types'
+import type { CardDef, ComparisonRowDef } from './types'
+import { FaDiscord } from 'react-icons/fa6'
+import {
+  TbAd,
+  TbAward,
+  TbCards,
+  TbClock,
+  TbCurrencyDollar,
+  TbGift,
+  TbHeadset,
+  TbKey,
+  TbPalette,
+  TbRefresh,
+} from 'react-icons/tb'
 import { CDN_BASE_URL } from '@/shared/constants'
+
+const PRO_DOCS_URL = 'https://steamgameidler.com/pro'
 
 export function getFeatureCards(t: TFunction) {
   const cards: CardDef[] = [
@@ -11,6 +26,7 @@ export function getFeatureCards(t: TFunction) {
       colSpan: 1,
       bg: '#131313',
       imgBg: `${CDN_BASE_URL}/pro-modal/pro1.webp`,
+      learnMoreUrl: `${PRO_DOCS_URL}#ad-free-experience`,
     },
     {
       title: t('proMode.cards.themes.title'),
@@ -20,6 +36,7 @@ export function getFeatureCards(t: TFunction) {
       bg: '#131313',
       imgBg: `${CDN_BASE_URL}/pro-modal/pro2.webp`,
       darkText: true,
+      learnMoreUrl: `${PRO_DOCS_URL}#exclusive-themes`,
     },
     {
       title: t('proMode.cards.liveSupport.title'),
@@ -28,6 +45,7 @@ export function getFeatureCards(t: TFunction) {
       colSpan: 1,
       bg: '#131313',
       imgBg: `${CDN_BASE_URL}/pro-modal/pro4.webp`,
+      learnMoreUrl: `${PRO_DOCS_URL}#real-time-live-support`,
     },
     {
       title: t('proMode.cards.credentials.title'),
@@ -36,6 +54,7 @@ export function getFeatureCards(t: TFunction) {
       colSpan: 1,
       bg: '#131313',
       imgBg: `${CDN_BASE_URL}/pro-modal/pro5.webp`,
+      learnMoreUrl: `${PRO_DOCS_URL}#automatic-steam-credentials-retrieval`,
     },
     {
       title: t('proMode.cards.autoFarmCards.title'),
@@ -44,6 +63,7 @@ export function getFeatureCards(t: TFunction) {
       colSpan: 1,
       bg: '#131313',
       imgBg: `${CDN_BASE_URL}/pro-modal/pro6.webp`,
+      learnMoreUrl: `${PRO_DOCS_URL}#automatic-card-farming`,
     },
     {
       title: t('proMode.cards.gamesList.title'),
@@ -52,6 +72,7 @@ export function getFeatureCards(t: TFunction) {
       colSpan: 1,
       bg: '#131313',
       imgBg: `${CDN_BASE_URL}/pro-modal/pro7.webp`,
+      learnMoreUrl: `${PRO_DOCS_URL}#automatic-games-list-updates`,
     },
     {
       title: t('proMode.cards.multipleUnlockerGames.title'),
@@ -60,6 +81,7 @@ export function getFeatureCards(t: TFunction) {
       colSpan: 1,
       bg: '#131313',
       imgBg: `${CDN_BASE_URL}/pro-modal/pro11.webp`,
+      learnMoreUrl: `${PRO_DOCS_URL}#unlock-achievements-for-multiple-games`,
     },
     {
       title: t('proMode.cards.freeGames.title'),
@@ -69,6 +91,7 @@ export function getFeatureCards(t: TFunction) {
       bg: '#131313',
       imgBg: `${CDN_BASE_URL}/pro-modal/pro8.webp`,
       darkText: true,
+      learnMoreUrl: `${PRO_DOCS_URL}#free-game-redemption`,
     },
     {
       title: t('proMode.cards.sellDupes.title'),
@@ -77,9 +100,27 @@ export function getFeatureCards(t: TFunction) {
       colSpan: 1,
       bg: '#131313',
       imgBg: `${CDN_BASE_URL}/pro-modal/pro9.webp`,
+      learnMoreUrl: `${PRO_DOCS_URL}#sell-duplicate-items`,
     },
   ]
   return cards
+}
+
+export function getComparisonRows(t: TFunction) {
+  const rows: ComparisonRowDef[] = [
+    { label: t('proMode.tier.casual.adFree'), icon: TbAd, tier: 'casual' },
+    { label: t('proMode.tier.casual.themes'), icon: TbPalette, tier: 'casual' },
+    { label: t('proMode.tier.casual.discordRole'), icon: FaDiscord, tier: 'casual' },
+    { label: t('proMode.tier.casual.liveSupport'), icon: TbHeadset, tier: 'casual' },
+    { label: t('proMode.tier.gamer.credentials'), icon: TbKey, tier: 'gamer' },
+    { label: t('proMode.tier.gamer.freeGames'), icon: TbGift, tier: 'gamer' },
+    { label: t('proMode.tier.gamer.gamesList'), icon: TbRefresh, tier: 'gamer' },
+    { label: t('proMode.tier.gamer.autoFarmCards'), icon: TbCards, tier: 'gamer' },
+    { label: t('proMode.tier.gamer.multipleUnlockerGames'), icon: TbAward, tier: 'gamer' },
+    { label: t('proMode.tier.gamer.sellDupes'), icon: TbCurrencyDollar, tier: 'gamer' },
+    { label: t('proMode.tier.gamer.importTimings'), icon: TbClock, tier: 'gamer' },
+  ]
+  return rows
 }
 
 export function getFaqItems(t: TFunction) {
