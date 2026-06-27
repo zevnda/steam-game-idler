@@ -549,7 +549,7 @@ export const CustomList = ({ type }: CustomListProps) => {
                 <Trans
                   i18nKey='customLists.emptyList'
                   values={{ title: listType.title }}
-                  components={{ 1: <span className='font-black' /> }}
+                  components={{ 1: <strong /> }}
                 />
               </p>
             </div>
