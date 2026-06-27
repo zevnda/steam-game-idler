@@ -1,17 +1,15 @@
 import type { useTradingCardsList } from '@/features/inventory-manager'
-import type { cardSortOption, SortOption, TradingCard } from '@/shared/types'
+import type { TradingCard } from '@/shared/types'
 import { useTranslation } from 'react-i18next'
 import {
   TbChecks,
   TbChevronLeft,
   TbChevronRight,
   TbEraser,
-  TbFilter,
   TbPackageExport,
   TbSettings,
-  TbSortDescending2,
 } from 'react-icons/tb'
-import { Button, cn, Select, SelectItem, useDisclosure } from '@heroui/react'
+import { Button, useDisclosure } from '@heroui/react'
 import { CustomModal, ProBadge } from '@/shared/components'
 import { useNavigationStore, useStateStore, useUserStore } from '@/shared/stores'
 import { hasGamerAccess } from '@/shared/utils'
@@ -37,8 +35,6 @@ interface PageHeaderProps {
   totalPages: number
   onPageChange: (page: number) => void
   lockedCards: string[]
-  cardFilterValues: Set<string>
-  setCardFilterValues: React.Dispatch<React.SetStateAction<Set<string>>>
 }
 
 export const PageHeader = ({
@@ -49,14 +45,10 @@ export const PageHeader = ({
   totalPages,
   onPageChange,
   lockedCards,
-  cardFilterValues,
-  setCardFilterValues,
 }: PageHeaderProps) => {
   const { t } = useTranslation()
   const userSettings = useUserStore(state => state.userSettings)
   const subscriptionTier = useUserStore(state => state.subscriptionTier)
-  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
-  const transitionDuration = useStateStore(state => state.transitionDuration)
   const setProModalOpen = useStateStore(state => state.setProModalOpen)
   const setProModalRequiredTier = useStateStore(state => state.setProModalRequiredTier)
   const setActivePage = useNavigationStore(state => state.setActivePage)
@@ -79,42 +71,9 @@ export const PageHeader = ({
     onOpenChange: onRemoveOpenChange,
   } = useDisclosure()
 
-  const handleCardSorting = (key: string) => {
-    tradingCardContext.setCardSortStyle?.(key)
-  }
-
-  const cardSortOptions: cardSortOption[] = [
-    { key: 'a-z', label: t('tradingCards.sort.cardNameAsc') },
-    { key: 'z-a', label: t('tradingCards.sort.cardNameDesc') },
-    { key: 'aa-zz', label: t('tradingCards.sort.gameNameAsc') },
-    { key: 'zz-aa', label: t('tradingCards.sort.gameNameDesc') },
-    { key: 'badge-desc', label: t('tradingCards.sort.badgeLevel' as never) },
-  ]
-
-  const cardFilterOptions: SortOption[] = [
-    { key: 'cards', label: t('tradingCards.filter.cards' as never) },
-    { key: 'foil', label: t('tradingCards.filter.foil' as never) },
-    { key: 'backgrounds', label: t('tradingCards.filter.backgrounds' as never) },
-    { key: 'emoticons', label: t('tradingCards.filter.emoticons' as never) },
-    { key: 'boosters', label: t('tradingCards.filter.boosters' as never) },
-    { key: 'sale', label: t('tradingCards.filter.sale' as never) },
-    { key: 'badge', label: t('tradingCards.filter.badge' as never) },
-    { key: 'dupes', label: t('tradingCards.filter.dupes' as never) },
-    { key: 'locked', label: t('tradingCards.filter.locked' as never) },
-  ]
-
   return (
     <>
-      <div
-        className={cn(
-          'z-50 pl-6 pt-2',
-          sidebarCollapsed ? 'w-[calc(100vw-85px)]' : 'w-[calc(100vw-280px)]',
-        )}
-        style={{
-          transitionDuration,
-          transitionProperty: 'width',
-        }}
-      >
+      <div className='z-50 px-6 pt-2 w-full'>
         <div className='flex justify-between items-center pb-3 w-full'>
           <div className='flex items-center gap-1 select-none w-full'>
             <div className='flex flex-col justify-center w-full'>
@@ -239,89 +198,6 @@ export const PageHeader = ({
                       />
                     </div>
                   )}
-                </div>
-
-                <div className='flex items-center gap-3 mt-1'>
-                  <Select
-                    aria-label='sort'
-                    disallowEmptySelection
-                    isDisabled={tradingCardContext.tradingCardsList.length === 0}
-                    radius='none'
-                    startContent={<TbSortDescending2 fontSize={22} />}
-                    items={cardSortOptions}
-                    className='w-52'
-                    classNames={{
-                      listbox: ['p-0'],
-                      value: ['text-sm !text-content'],
-                      trigger: cn(
-                        'bg-input data-[hover=true]:!bg-inputhover',
-                        'data-[open=true]:!bg-inputhover duration-100 rounded-lg',
-                      ),
-                      popoverContent: ['bg-input rounded-xl justify-start !text-content'],
-                    }}
-                    selectedKeys={[tradingCardContext.cardSortStyle]}
-                    onSelectionChange={e => {
-                      if (e.currentKey) handleCardSorting(e.currentKey)
-                    }}
-                  >
-                    {item => (
-                      <SelectItem
-                        key={item.key}
-                        classNames={{
-                          base: [
-                            'data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content',
-                          ],
-                        }}
-                      >
-                        {item.label}
-                      </SelectItem>
-                    )}
-                  </Select>
-
-                  <Select<SortOption>
-                    aria-label='filter'
-                    selectionMode='multiple'
-                    isDisabled={tradingCardContext.tradingCardsList.length === 0}
-                    radius='none'
-                    placeholder={t('tradingCards.filter.placeholder' as never)}
-                    startContent={<TbFilter fontSize={20} />}
-                    items={cardFilterOptions}
-                    className='w-56'
-                    classNames={{
-                      listbox: ['p-0'],
-                      value: ['text-sm !text-content'],
-                      trigger: cn(
-                        'bg-input data-[hover=true]:!bg-inputhover',
-                        'data-[open=true]:!bg-inputhover duration-100 rounded-lg',
-                      ),
-                      popoverContent: ['bg-input rounded-xl justify-start !text-content'],
-                    }}
-                    selectedKeys={cardFilterValues}
-                    renderValue={items =>
-                      items.length === 1
-                        ? items[0].rendered
-                        : t('tradingCards.filter.active' as never, { count: items.length })
-                    }
-                    onSelectionChange={selection => {
-                      if (selection === 'all') return
-                      setCardFilterValues(
-                        new Set(Array.from(selection as Set<React.Key>).map(String)),
-                      )
-                    }}
-                  >
-                    {(item: SortOption) => (
-                      <SelectItem
-                        key={item.key}
-                        classNames={{
-                          base: [
-                            'data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content',
-                          ],
-                        }}
-                      >
-                        {item.label}
-                      </SelectItem>
-                    )}
-                  </Select>
                 </div>
               </div>
             </div>

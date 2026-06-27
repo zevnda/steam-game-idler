@@ -7,6 +7,7 @@ import { TbLock, TbLockOpen } from 'react-icons/tb'
 import { Checkbox, cn, Spinner } from '@heroui/react'
 import Image from 'next/image'
 import {
+  FilterPanel,
   PageHeader,
   PriceData,
   PriceInput,
@@ -23,7 +24,6 @@ export const TradingCardsList = () => {
   const userSettings = useUserStore(state => state.userSettings)
   const [lockedCards, setLockedCards] = useState<string[]>([])
   const [cardFilterValues, setCardFilterValues] = useState<Set<string>>(new Set())
-  const [cardsPerRow, setCardsPerRow] = useState(6)
   const [currentPage, setCurrentPage] = useState(1)
   const tradingCardContext = useTradingCardsList()
 
@@ -38,15 +38,6 @@ export const TradingCardsList = () => {
     if (storedLockedCards) {
       setLockedCards(JSON.parse(storedLockedCards))
     }
-  }, [])
-
-  useEffect(() => {
-    const updateCardsPerRow = () => {
-      setCardsPerRow(window.innerWidth >= 1536 ? 9 : 6)
-    }
-    updateCardsPerRow()
-    window.addEventListener('resize', updateCardsPerRow)
-    return () => window.removeEventListener('resize', updateCardsPerRow)
   }, [])
 
   const handleLockCard = (id: string) => {
@@ -138,7 +129,7 @@ export const TradingCardsList = () => {
       <div
         key={item.assetid}
         className={cn(
-          'flex flex-col justify-start items-center bg-sidebar mb-2 rounded-xl border border-border p-2',
+          'flex flex-col justify-start items-center bg-sidebar rounded-xl border border-border p-2',
           lockedCards.includes(item.id) && 'opacity-50',
           isFoil && 'holo-bg',
         )}
@@ -188,33 +179,16 @@ export const TradingCardsList = () => {
           </div>
         </div>
 
-        <CustomTooltip
-          important
-          placement='right'
-          content={
-            <div className='py-2'>
-              <Image
-                className='w-37.5 h-auto border border-border'
-                src={item.image}
-                width={224}
-                height={261}
-                alt={`${item.appname} image`}
-                priority={true}
-              />
-            </div>
-          }
-        >
-          <div className='flex items-center justify-center bg-input rounded-lg p-1.5 border border-border'>
-            <Image
-              className='w-20 h-24 object-contain border border-border'
-              src={item.image}
-              width={224}
-              height={261}
-              alt={`${item.appname} image`}
-              priority={true}
-            />
-          </div>
-        </CustomTooltip>
+        <div className='flex items-center justify-center p-1.5'>
+          <Image
+            className='w-30 h-30 object-contain'
+            src={item.image}
+            width={224}
+            height={261}
+            alt={`${item.appname} image`}
+            priority={true}
+          />
+        </div>
 
         <div className='flex flex-col items-center justify-center gap-0.5 mt-2'>
           <p className='text-xs truncate max-w-35'>
@@ -263,7 +237,7 @@ export const TradingCardsList = () => {
     <div
       key={tradingCardContext.refreshKey}
       className={cn(
-        'min-h-calc max-h-calc overflow-y-auto overflow-x-hidden mt-12 ease-in-out',
+        'flex flex-col h-calc mt-12 ease-in-out',
         sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]',
       )}
       style={{
@@ -279,27 +253,33 @@ export const TradingCardsList = () => {
         totalPages={totalPages}
         onPageChange={setCurrentPage}
         lockedCards={lockedCards}
-        cardFilterValues={cardFilterValues}
-        setCardFilterValues={setCardFilterValues}
       />
 
-      {!userSettings.cardFarming.credentials ? (
-        <div className='flex flex-col justify-center items-center gap-2 h-[calc(100vh-302px)]'>
-          <p className='text-sm text-altwhite px-6'>{t('settings.tradingCards.alert')}</p>
+      <div className='flex flex-1 min-h-0'>
+        <FilterPanel
+          tradingCardContext={tradingCardContext}
+          cardFilterValues={cardFilterValues}
+          setCardFilterValues={setCardFilterValues}
+        />
+
+        <div className='h-full overflow-y-auto overflow-x-hidden flex-1 min-w-0'>
+          {!userSettings.cardFarming.credentials ? (
+            <div className='flex flex-col justify-center items-center gap-2 h-full'>
+              <p className='text-sm text-altwhite px-6'>{t('settings.tradingCards.alert')}</p>
+            </div>
+          ) : !tradingCardContext.isLoading ? (
+            <div className='flex flex-col'>
+              <div className='grid gap-4 pr-6 pt-2 grid-cols-[repeat(auto-fill,minmax(190px,1fr))]'>
+                {paginatedCards.map(item => renderCard(item))}
+              </div>
+            </div>
+          ) : (
+            <div className='flex justify-center items-center w-full h-full'>
+              <Spinner variant='simple' />
+            </div>
+          )}
         </div>
-      ) : !tradingCardContext.isLoading ? (
-        <div className='flex flex-col'>
-          <div
-            className={`grid gap-4 px-6 pt-2 ${cardsPerRow === 9 ? 'grid-cols-9' : 'grid-cols-6'}`}
-          >
-            {paginatedCards.map(item => renderCard(item))}
-          </div>
-        </div>
-      ) : (
-        <div className='flex justify-center items-center w-calc h-[calc(100vh-302px)]'>
-          <Spinner variant='simple' />
-        </div>
-      )}
+      </div>
     </div>
   )
 }
