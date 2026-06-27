@@ -223,11 +223,11 @@ export const AdSlot = () => {
     <div
       className={cn(
         'transition-all ease-in-out border border-border p-2 pb-1 rounded-lg',
-        sidebarCollapsed ? 'scale-[.160]' : 'scale-[.75]',
         isSubscribed === null && 'opacity-0',
         isSubscribed !== null && hasCasualAccess(subscriptionTier) && 'opacity-0',
         isSubscribed !== null && !hasCasualAccess(subscriptionTier) && 'opacity-100',
       )}
+      style={{ zoom: sidebarCollapsed ? 0.16 : 0.75 }}
     >
       <div className='relative flex justify-center items-center overflow-hidden rounded-lg'>
         <iframe
