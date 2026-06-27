@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { FaCheckCircle } from 'react-icons/fa'
 import { SiExpertsexchange } from 'react-icons/si'
 import { TbLock, TbLockOpen } from 'react-icons/tb'
-import { Alert, Checkbox, cn, Spinner } from '@heroui/react'
+import { Checkbox, cn, Spinner } from '@heroui/react'
 import Image from 'next/image'
 import {
   PageHeader,
@@ -283,22 +283,11 @@ export const TradingCardsList = () => {
         setCardFilterValues={setCardFilterValues}
       />
 
-      {!userSettings.cardFarming.credentials && (
-        <div className='mx-6 max-w-fit'>
-          <Alert
-            color='primary'
-            variant='faded'
-            classNames={{
-              base: '!bg-dynamic/30 text-dynamic !border-dynamic/40',
-              iconWrapper: '!bg-dynamic/30 border-dynamic/40',
-              description: 'font-bold text-xs',
-            }}
-            description={t('settings.tradingCards.alert')}
-          />
+      {!userSettings.cardFarming.credentials ? (
+        <div className='flex flex-col justify-center items-center gap-2 h-[calc(100vh-302px)]'>
+          <p className='text-sm text-altwhite px-6'>{t('settings.tradingCards.alert')}</p>
         </div>
-      )}
-
-      {!tradingCardContext.isLoading ? (
+      ) : !tradingCardContext.isLoading ? (
         <div className='flex flex-col'>
           <div
             className={`grid gap-4 px-6 pt-2 ${cardsPerRow === 9 ? 'grid-cols-9' : 'grid-cols-6'}`}
