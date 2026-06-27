@@ -96,18 +96,18 @@ All ~50 commands are registered in `src-tauri/src/lib.rs` via `.invoke_handler(t
 
 ### Key Rust modules
 
-| File | Responsibility |
-|------|---------------|
-| `lib.rs` | Command registration, plugin setup, app initialization |
-| `idling.rs` | Spawns/kills SteamUtility processes, tracks PIDs |
-| `trading_cards.rs` | Steam inventory scraping (cookie-based auth: sid, sls, sma) |
-| `achievement_manager.rs` | Lock/unlock/toggle individual achievements |
-| `settings.rs` | JSON-persisted user settings with typed defaults |
-| `automation.rs` | Task scheduling (card farming → achievement unlock chains) |
-| `process_handler.rs` | Process lifecycle, cleanup on app close |
-| `crypto.rs` | API key encryption using the `KEY` env var |
-| `game_data.rs` | Steam API calls for game metadata and stats |
-| `user_data.rs` | Steam profile and library data |
+| File                     | Responsibility                                              |
+| ------------------------ | ----------------------------------------------------------- |
+| `lib.rs`                 | Command registration, plugin setup, app initialization      |
+| `idling.rs`              | Spawns/kills SteamUtility processes, tracks PIDs            |
+| `trading_cards.rs`       | Steam inventory scraping (cookie-based auth: sid, sls, sma) |
+| `achievement_manager.rs` | Lock/unlock/toggle individual achievements                  |
+| `settings.rs`            | JSON-persisted user settings with typed defaults            |
+| `automation.rs`          | Task scheduling (card farming → achievement unlock chains)  |
+| `process_handler.rs`     | Process lifecycle, cleanup on app close                     |
+| `crypto.rs`              | API key encryption using the `KEY` env var                  |
+| `game_data.rs`           | Steam API calls for game metadata and stats                 |
+| `user_data.rs`           | Steam profile and library data                              |
 
 ### Styling
 
@@ -123,11 +123,8 @@ All user-visible strings must use `useTranslation()` from `react-i18next`. Trans
 
 ### Environment variables
 
-Three env files: `.env` (shared), `.env.dev` (dev overrides), `.env.prod` (prod overrides). Key vars:
+A single `.env` file at the project root. Key vars:
 - `KEY` — AES encryption key used by `crypto.rs`
-- `NEXT_PUBLIC_PUSHER_KEY` / `NEXT_PUBLIC_PUSHER_CLUSTER` — Pusher real-time integration
-- `NEXT_PUBLIC_REMOTE_ENDPOINT` — remote auth endpoint
-- `NEXT_PUBLIC_DEV_ACCOUNTS` — Steam IDs with dev-only features enabled
 
 ### Docs site (`docs/`)
 
