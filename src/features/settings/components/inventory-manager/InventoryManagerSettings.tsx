@@ -39,11 +39,11 @@ export const InventoryManagerSettings = () => {
   const sellOptions = [
     {
       key: 'highestBuyOrder',
-      label: t('settings.tradingCards.sellOptions.highestBuyOrder'),
+      label: t('settings.inventoryManager.sellOptions.highestBuyOrder'),
     },
     {
       key: 'lowestSellOrder',
-      label: t('settings.tradingCards.sellOptions.lowestSellOrder'),
+      label: t('settings.inventoryManager.sellOptions.lowestSellOrder'),
     },
   ]
 
@@ -68,7 +68,7 @@ export const InventoryManagerSettings = () => {
                 iconWrapper: '!bg-dynamic/30 border-dynamic/40',
                 description: 'font-bold text-xs',
               }}
-              description={t('settings.tradingCards.alert')}
+              description={t('settings.inventoryManager.alert')}
             />
           </div>
         )}
@@ -78,7 +78,9 @@ export const InventoryManagerSettings = () => {
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>{t('settings.general.currency')}</p>
-            <p className='text-xs text-altwhite'>{t('settings.general.currency.description')}</p>
+            <p className='text-xs text-altwhite'>
+              {t('settings.inventoryManager.currency.description')}
+            </p>
           </div>
           <CurrencySwitch />
         </div>
@@ -88,10 +90,10 @@ export const InventoryManagerSettings = () => {
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>
-              {t('settings.tradingCards.sellOptions')}
+              {t('settings.inventoryManager.sellOptions')}
             </p>
             <p className='text-xs text-altwhite'>
-              {t('settings.tradingCards.sellOptions.description')}
+              {t('settings.inventoryManager.sellOptions.description')}
             </p>
           </div>
           <div className='flex items-center gap-4'>
@@ -138,11 +140,11 @@ export const InventoryManagerSettings = () => {
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>
-              {t('settings.tradingCards.priceAdjustment')}
+              {t('settings.inventoryManager.priceAdjustment')}
             </p>
             <p className='text-xs text-altwhite'>
               <Trans
-                i18nKey='settings.tradingCards.priceAdjustmentSub'
+                i18nKey='settings.inventoryManager.priceAdjustmentSub'
                 values={{ priceAdjustment }}
                 components={{ 1: <strong /> }}
               />
@@ -177,10 +179,12 @@ export const InventoryManagerSettings = () => {
 
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
-            <p className='text-sm text-content font-bold'>{t('settings.tradingCards.sellLimit')}</p>
+            <p className='text-sm text-content font-bold'>
+              {t('settings.inventoryManager.sellLimit')}
+            </p>
             <p className='text-xs text-altwhite'>
               <Trans
-                i18nKey='settings.tradingCards.sellLimitSub'
+                i18nKey='settings.inventoryManager.sellLimitSub'
                 values={{ sellLimitMin, sellLimitMax }}
                 components={{ 1: <strong />, 3: <strong /> }}
               />
@@ -253,10 +257,12 @@ export const InventoryManagerSettings = () => {
 
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
-            <p className='text-sm text-content font-bold'>{t('settings.tradingCards.sellDelay')}</p>
+            <p className='text-sm text-content font-bold'>
+              {t('settings.inventoryManager.sellDelay')}
+            </p>
             <p className='text-xs text-altwhite'>
               <Trans
-                i18nKey='settings.tradingCards.sellDelaySub'
+                i18nKey='settings.inventoryManager.sellDelaySub'
                 values={{ sellDelay }}
                 components={{ 1: <strong /> }}
               />
