@@ -1,5 +1,6 @@
 import type { Game, SortOption } from '@/shared/types'
 import { useTranslation } from 'react-i18next'
+import { TbRefresh } from 'react-icons/tb'
 import { Button, cn, Divider, Tab, Tabs } from '@heroui/react'
 import { handleSortingChange } from '@/features/games-list'
 import { handleRefreshGamesList } from '@/features/games-list/utils/handleRefreshGamesList'
@@ -44,12 +45,12 @@ export const PageHeader = ({
 
             <div className='flex items-center gap-2 mt-1'>
               <Button
+                isIconOnly
+                startContent={<TbRefresh size={18} />}
                 className='bg-btn-secondary text-btn-text font-bold'
                 radius='full'
                 onPress={() => handleRefreshGamesList(userSummary?.steamId, setRefreshKey, true)}
-              >
-                {t('common.refresh')}
-              </Button>
+              />
 
               <Divider orientation='vertical' className='mx-2 h-8 bg-border' />
 
