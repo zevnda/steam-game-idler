@@ -52,8 +52,8 @@ export const FilterPanel = ({
     { key: 'emoticons', label: t('tradingCards.filter.emoticons' as never), icon: TbMoodSmile },
     { key: 'boosters', label: t('tradingCards.filter.boosters' as never), icon: TbBox },
     { key: 'sale', label: t('tradingCards.filter.sale' as never), icon: TbTag },
-    { key: 'badge', label: t('tradingCards.filter.badge' as never), icon: TbAward },
     { key: 'dupes', label: t('tradingCards.filter.dupes' as never), icon: TbCopy },
+    { key: 'badge', label: t('tradingCards.filter.badge' as never), icon: TbAward },
     { key: 'locked', label: t('tradingCards.filter.locked' as never), icon: TbLock },
   ]
 
