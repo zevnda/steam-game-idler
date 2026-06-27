@@ -1,7 +1,7 @@
 import type { Achievement, SortOption } from '@/shared/types'
 import { useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
-import { TbLock, TbLockOpen, TbSortDescending2 } from 'react-icons/tb'
+import { TbLock, TbLockOpen, TbRefresh, TbSortDescending2 } from 'react-icons/tb'
 import { Button, cn, Select, SelectItem, useDisclosure } from '@heroui/react'
 import {
   handleApplyChanges,
@@ -85,14 +85,14 @@ export const AchievementButtons = ({
   return (
     <div className='absolute top-0 right-0 flex gap-2 mt-4 px-10'>
       <Button
+        isIconOnly
+        startContent={<TbRefresh size={18} />}
         className='bg-btn-secondary text-btn-text font-bold'
         radius='full'
         onPress={() => {
           if (setRefreshKey) setRefreshKey(prev => prev + 1)
         }}
-      >
-        {t('common.refresh')}
-      </Button>
+      />
 
       {hasChanges && (
         <Button

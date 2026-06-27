@@ -1,6 +1,6 @@
 import type { Achievement, ChangedStats, Statistic } from '@/shared/types'
 import { Trans, useTranslation } from 'react-i18next'
-import { TbRotateClockwise, TbUpload } from 'react-icons/tb'
+import { TbRefresh, TbRotateClockwise, TbUpload } from 'react-icons/tb'
 import { Button, useDisclosure } from '@heroui/react'
 import { handleResetAllStats, handleUpdateAllStats } from '@/features/achievement-manager'
 import { CustomModal } from '@/shared/components'
@@ -31,14 +31,14 @@ export const StatisticButtons = ({
   return (
     <div className='absolute top-0 right-0 flex gap-2 mt-4 px-10'>
       <Button
+        isIconOnly
+        startContent={<TbRefresh size={18} />}
         className='bg-btn-secondary text-btn-text font-bold'
         radius='full'
         onPress={() => {
           if (setRefreshKey) setRefreshKey(prev => prev + 1)
         }}
-      >
-        {t('common.refresh')}
-      </Button>
+      />
 
       <Button
         className='bg-btn-secondary text-btn-text font-bold'

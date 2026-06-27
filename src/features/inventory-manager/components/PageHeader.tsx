@@ -7,6 +7,7 @@ import {
   TbChevronRight,
   TbEraser,
   TbPackageExport,
+  TbRefresh,
   TbSettings,
 } from 'react-icons/tb'
 import { Button, useDisclosure } from '@heroui/react'
@@ -83,12 +84,12 @@ export const PageHeader = ({
               <div className='flex flex-col justify-center gap-2 mt-1'>
                 <div className='flex items-center gap-2 mt-1'>
                   <Button
+                    isIconOnly
+                    startContent={<TbRefresh size={18} />}
                     className='bg-btn-secondary text-btn-text font-bold'
                     radius='full'
                     onPress={() => tradingCardContext.handleRefresh()}
-                  >
-                    {t('common.refresh')}
-                  </Button>
+                  />
 
                   <Button
                     className='bg-btn-secondary text-btn-text font-bold'

@@ -1,7 +1,7 @@
 import type { InvokeSteamCredentials } from '@/shared/types'
 import { invoke } from '@tauri-apps/api/core'
 import { Trans, useTranslation } from 'react-i18next'
-import { TbChevronRight, TbEraser, TbUpload } from 'react-icons/tb'
+import { TbChevronRight, TbEraser, TbRefresh, TbUpload } from 'react-icons/tb'
 import { Button, cn, Divider, Input, Spinner, useDisclosure } from '@heroui/react'
 import Image from 'next/image'
 import {
@@ -216,6 +216,8 @@ export const SteamCredentials = () => {
                         {t('common.viewList')}
                       </Button>
                       <Button
+                        isIconOnly
+                        startContent={<TbRefresh size={18} />}
                         size='sm'
                         className='bg-btn-secondary text-btn-text font-bold'
                         radius='full'
@@ -228,9 +230,7 @@ export const SteamCredentials = () => {
                             cardSettings.setGamesWithDropsData,
                           )
                         }
-                      >
-                        {t('common.refresh')}
-                      </Button>
+                      />
                     </div>
                   </div>
                 ) : (

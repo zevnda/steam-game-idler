@@ -1,7 +1,7 @@
 import { invoke } from '@tauri-apps/api/core'
 import { useEffect, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
-import { TbArrowRight } from 'react-icons/tb'
+import { TbArrowRight, TbRefresh } from 'react-icons/tb'
 import { Button, cn, Spinner } from '@heroui/react'
 import Image from 'next/image'
 import { ExtLink, LanguageSwitch, SignInHero } from '@/shared/components'
@@ -163,13 +163,12 @@ function UserSelectionArea({ onRefresh }: { onRefresh: () => void }) {
         {/* Buttons */}
         <div className='flex gap-4 mb-6'>
           <Button
+            isIconOnly
+            startContent={<TbRefresh size={18} />}
             radius='full'
-            variant='bordered'
-            className='font-semibold border-white text-content'
+            className='bg-btn-secondary text-btn-text font-bold'
             onPress={onRefresh}
-          >
-            {t('common.refresh')}
-          </Button>
+          />
           <Button
             radius='full'
             className='font-semibold bg-content text-black group'
