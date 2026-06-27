@@ -1,5 +1,5 @@
 import type { Game } from '@/shared/types'
-import { Trans, useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import { TbPlus } from 'react-icons/tb'
 import { Button, cn, Input, NumberInput, useDisclosure } from '@heroui/react'
 import { useManualAdd } from '@/features/custom-lists'
@@ -53,7 +53,7 @@ export const ManualAddModal = ({ listTitle, listName, setList }: ManualAddModalP
         body={
           <>
             <p className='text-sm text-altwhite'>
-              <Trans i18nKey='customLists.manualAdd.description' values={{ listType: listTitle }} />
+              {t('customLists.manualAdd.description', { listType: listTitle })}
             </p>
             <Input
               autoFocus

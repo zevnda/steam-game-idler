@@ -99,15 +99,17 @@ export const PageHeader = ({ protectedAchievements, protectedStatistics }: PageH
             hideIcon
             title={
               <p>
-                <Trans i18nKey='achievementManager.alert'>
-                  Some protected achievements or statistics have been disabled.
-                  <ExtLink
-                    className='text-dynamic hover:text-dynamic-hover duration-150'
-                    href='https://partner.steamgames.com/doc/features/achievements#game_server_stats:~:text=Stats%20and%20achievements%20that%20are%20settable%20by%20game%20servers%20cannot%20be%20set%20by%20clients.'
-                  >
-                    <span> Learn more</span>
-                  </ExtLink>
-                </Trans>
+                <Trans
+                  i18nKey='achievementManager.alert'
+                  components={{
+                    1: (
+                      <ExtLink
+                        className='text-dynamic hover:text-dynamic-hover duration-150'
+                        href='https://partner.steamgames.com/doc/features/achievements#game_server_stats:~:text=Stats%20and%20achievements%20that%20are%20settable%20by%20game%20servers%20cannot%20be%20set%20by%20clients.'
+                      />
+                    ),
+                  }}
+                />
               </p>
             }
             startContent={<TbAlertHexagonFilled fontSize={22} className='text-warning' />}

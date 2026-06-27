@@ -56,6 +56,7 @@ export const GoPro = () => {
     >
       <p className='flex flex-col font-bold items-center text-[10px] mx-2 uppercase'>
         {subscriptionTier === null ? (
+          // eslint-disable-next-line i18next/no-literal-string
           <span className='flex flex-col font-bold items-center w-22.5 text-[8px] space-y-0.5 uppercase'>
             Support
             <span className='block w-full text-center'>Steam Game Idler</span>

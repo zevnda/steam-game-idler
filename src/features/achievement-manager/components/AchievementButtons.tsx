@@ -167,19 +167,27 @@ export const AchievementButtons = ({
         body={
           <p className='text-sm'>
             {state === 'applyChanges' ? (
-              <>
-                Are you sure you want to <strong>unlock {selectedToUnlock.size}</strong> and{' '}
-                <strong>lock {selectedToLock.size}</strong> achievement(s)?
-              </>
+              <Trans
+                i18nKey='achievementManager.achievements.applyChangesModal'
+                values={{
+                  unlockCount: selectedToUnlock.size,
+                  lockCount: selectedToLock.size,
+                }}
+                components={{
+                  1: <strong />,
+                  3: <strong />,
+                }}
+              />
             ) : (
               <Trans
                 i18nKey='achievementManager.achievements.modal'
                 values={{
                   state: getTranslatedState(state).toLowerCase(),
                 }}
-              >
-                Are you sure you want to <strong>{state}</strong> all achievements?
-              </Trans>
+                components={{
+                  1: <strong />,
+                }}
+              />
             )}
           </p>
         }

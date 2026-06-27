@@ -1,7 +1,7 @@
 import { openExternalLink } from '@/shared/utils'
 
 interface ExtLinkProps {
-  children: React.ReactNode
+  children?: React.ReactNode
   href: string
   className?: string
 }

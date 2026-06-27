@@ -113,16 +113,17 @@ export const ImportTimingsModal = ({
             {t('customLists.achievementUnlocker.importTimings.description')}
           </p>
           <p className='text-sm text-altwhite'>
-            <Trans i18nKey='customLists.achievementUnlocker.importTimings.descriptionTwo'>
-              Use achievement tracking sites like{' '}
-              <ExtLink
-                href={`https://steamhunters.com/apps/${appId}/users?sort=achievements`}
-                className='text-dynamic hover:text-dynamic-hover duration-150'
-              >
-                Steam Hunters
-              </ExtLink>{' '}
-              to find users with legitimate achievements
-            </Trans>
+            <Trans
+              i18nKey='customLists.achievementUnlocker.importTimings.descriptionTwo'
+              components={{
+                2: (
+                  <ExtLink
+                    href={`https://steamhunters.com/apps/${appId}/users?sort=achievements`}
+                    className='text-dynamic hover:text-dynamic-hover duration-150'
+                  />
+                ),
+              }}
+            />
           </p>
 
           <Input
