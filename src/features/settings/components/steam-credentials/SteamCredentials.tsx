@@ -150,15 +150,17 @@ export const SteamCredentials = () => {
             </p>
             <p className='text-xs text-altwhite'>{t('settings.cardFarming.steamCredentials')}</p>
             <p className='text-xs text-altwhite'>
-              <Trans i18nKey='settings.cardFarming.steamCredentialsTwo'>
-                Get your Steam credentials from.&nbsp;
-                <ExtLink
-                  href='https://steamcommunity.com/'
-                  className='text-dynamic hover:text-dynamic-hover duration-150'
-                >
-                  https://steamcommunity.com/
-                </ExtLink>
-              </Trans>
+              <Trans
+                i18nKey='settings.cardFarming.steamCredentialsTwo'
+                components={{
+                  1: (
+                    <ExtLink
+                      href='https://steamcommunity.com/'
+                      className='text-dynamic hover:text-dynamic-hover duration-150'
+                    />
+                  ),
+                }}
+              />
             </p>
             {cardSettings.cardFarmingUser && (
               <div className='flex gap-4 bg-tab-panel p-2 rounded-lg items-center w-fit min-w-[50%] mt-3'>
@@ -279,6 +281,7 @@ export const SteamCredentials = () => {
               type='password'
             />
             <Input
+              // eslint-disable-next-line i18next/no-literal-string -- literal Steam cookie names, not translatable
               label={<p>steamParental / steamMachineAuth</p>}
               labelPlacement='outside'
               placeholder='steamParental / steamMachineAuth'

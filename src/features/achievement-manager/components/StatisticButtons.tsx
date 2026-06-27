@@ -66,9 +66,7 @@ export const StatisticButtons = ({
         title={t('common.confirm')}
         body={
           <p className='text-sm'>
-            <Trans i18nKey='confirmation.resetStatistics'>
-              Are you sure you want to <strong>reset</strong> all statistics?
-            </Trans>
+            <Trans i18nKey='confirmation.resetStatistics' components={{ 1: <strong /> }} />
           </p>
         }
         buttons={

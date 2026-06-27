@@ -127,6 +127,7 @@ export const Settings = () => {
 
               <div className='flex flex-col items-center gap-4 px-6 pb-4'>
                 <SocialButtons />
+                {/* eslint-disable-next-line i18next/no-literal-string */}
                 <span className='text-xs text-altwhite text-center'>
                   Steam Game Idler v{version}
                 </span>

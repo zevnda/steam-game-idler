@@ -4,6 +4,7 @@ import { FlatCompat } from '@eslint/eslintrc'
 import js from '@eslint/js'
 import nextPlugin from '@next/eslint-plugin-next'
 import typescriptParser from '@typescript-eslint/parser'
+import i18nextPlugin from 'eslint-plugin-i18next'
 import reactPlugin from 'eslint-plugin-react'
 import reactHooksPlugin from 'eslint-plugin-react-hooks'
 import unusedImports from 'eslint-plugin-unused-imports'
@@ -120,6 +121,27 @@ const config = [
       react: {
         version: 'detect',
       },
+    },
+  },
+  {
+    files: ['src/**/*.{ts,tsx}'],
+    plugins: {
+      i18next: i18nextPlugin,
+    },
+    rules: {
+      'i18next/no-literal-string': [
+        'error',
+        {
+          words: {
+            exclude: [
+              'Steam Game Idler', // Brand name
+              'PRO', // Subscription model name
+              'beta', // Beta feature badge
+              '^[\\s:/%$—•◯[\\]-]+$', // Punctuation and symbol-only
+            ],
+          },
+        },
+      ],
     },
   },
 ]

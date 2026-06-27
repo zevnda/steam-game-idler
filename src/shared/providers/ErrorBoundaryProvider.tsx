@@ -53,6 +53,7 @@ ${errorInfo && errorInfo.componentStack}
       const encodedTitle = encodeURIComponent(issueTitle || 'Error in Steam Game Idler')
       const encodedBody = encodeURIComponent(issueBody)
 
+      // This screen must render even if i18n fails to initialize during a crash, so text is kept hardcoded
       return (
         <div className='bg-base h-screen w-screen'>
           <div
@@ -62,6 +63,7 @@ ${errorInfo && errorInfo.componentStack}
             )}
             data-tauri-drag-region
           >
+            {/* eslint-disable-next-line i18next/no-literal-string */}
             <p className='text-content font-bold'>Uh-oh!</p>
           </div>
 
@@ -72,9 +74,11 @@ ${errorInfo && errorInfo.componentStack}
                 'bg-tab-panel rounded-lg border border-border p-4',
               )}
             >
+              {/* eslint-disable-next-line i18next/no-literal-string */}
               <p className='text-sm'>An error occurred while rendering the application</p>
 
               <div className='flex flex-col'>
+                {/* eslint-disable-next-line i18next/no-literal-string */}
                 <p className='font-bold'>Error</p>
                 <p className='text-sm font-mono text-danger font-semibold'>
                   {error && String(error).replace('Error: ', '')}
@@ -82,6 +86,7 @@ ${errorInfo && errorInfo.componentStack}
               </div>
 
               <div className='flex flex-col overflow-hidden'>
+                {/* eslint-disable-next-line i18next/no-literal-string */}
                 <p className='font-bold'>Stack</p>
                 <div className='bg-base border border-border rounded-lg h-full w-full p-1 overflow-hidden'>
                   <div className='overflow-y-scroll h-full'>
@@ -98,6 +103,7 @@ ${errorInfo && errorInfo.componentStack}
                 href={`https://github.com/zevnda/steam-game-idler/issues/new?title=${encodedTitle}&body=${encodedBody}`}
               >
                 <div className='bg-warning p-2 font-semibold rounded-lg'>
+                  {/* eslint-disable-next-line i18next/no-literal-string */}
                   <p className='text-xs'>Report on GitHub</p>
                 </div>
               </ExtLink>
@@ -106,6 +112,7 @@ ${errorInfo && errorInfo.componentStack}
                 size='sm'
                 className='font-semibold rounded-lg bg-dynamic'
                 onPress={() => window.location.reload()}
+                // eslint-disable-next-line i18next/no-literal-string
               >
                 Reload
               </Button>

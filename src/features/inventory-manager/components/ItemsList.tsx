@@ -307,7 +307,7 @@ export const TradingCardsList = () => {
           </div>
         </div>
       ) : (
-        <div className='flex justify-center items-center w-calc h-[calc(100vh-236px)]'>
+        <div className='flex justify-center items-center w-calc h-[calc(100vh-302px)]'>
           <Spinner variant='simple' />
         </div>
       )}
