@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "Farm trading cards, manage achievements, and boost playtime effortlessly with Steam Game Idler",
   "author": "zevnda",
+  "license": "Elastic-2.0",
   "private": true,
   "workspaces": [
     "docs"
