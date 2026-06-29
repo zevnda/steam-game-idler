@@ -1,8 +1,25 @@
 use crate::utils::{atomic_write_json, get_cache_dir};
+use lazy_static::lazy_static;
 use serde_json::{json, Value};
+use std::collections::HashMap;
 use std::fs;
 use std::fs::File;
 use std::io::Read;
+use std::path::{Path, PathBuf};
+use std::sync::{Arc, Mutex};
+
+lazy_static! {
+    static ref LIST_FILE_LOCKS: Mutex<HashMap<PathBuf, Arc<Mutex<()>>>> =
+        Mutex::new(HashMap::new());
+}
+
+fn lock_for_path(path: &Path) -> Arc<Mutex<()>> {
+    let mut locks = LIST_FILE_LOCKS.lock().unwrap();
+    locks
+        .entry(path.to_path_buf())
+        .or_insert_with(|| Arc::new(Mutex::new(())))
+        .clone()
+}
 
 #[tauri::command]
 pub async fn get_achievement_order(
@@ -91,6 +108,9 @@ pub async fn get_custom_lists(
 
     // Read the specified list file
     let games_file_path = app_data_dir.join(file_name);
+    let file_lock = lock_for_path(&games_file_path);
+    let _guard = file_lock.lock().unwrap();
+
     let list_data = if games_file_path.exists() {
         let mut file = File::open(&games_file_path)
             .map_err(|e| format!("Failed to open games list file: {}", e))?;
@@ -149,6 +169,8 @@ pub async fn add_game_to_custom_list(
     };
 
     let file_path = app_data_dir.join(&file_name);
+    let file_lock = lock_for_path(&file_path);
+    let _guard = file_lock.lock().unwrap();
 
     // Check if the file exists
     if !file_path.exists() {
@@ -219,6 +241,8 @@ pub async fn remove_game_from_custom_list(
     };
 
     let file_path = app_data_dir.join(&file_name);
+    let file_lock = lock_for_path(&file_path);
+    let _guard = file_lock.lock().unwrap();
 
     // Check if the file exists
     if !file_path.exists() {
@@ -296,6 +320,8 @@ pub async fn update_custom_list(
     };
 
     let file_path = app_data_dir.join(&file_name);
+    let file_lock = lock_for_path(&file_path);
+    let _guard = file_lock.lock().unwrap();
 
     // Validate that the new list is an array
     if !new_list.is_array() {

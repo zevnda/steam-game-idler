@@ -216,10 +216,16 @@ pub fn get_tray_icon(default: bool) -> String {
     base64::engine::general_purpose::STANDARD.encode(icon_bytes)
 }
 
-pub fn atomic_write_json<T: serde::Serialize>(path: &std::path::Path, value: &T) -> std::io::Result<()> {
+static ATOMIC_WRITE_COUNTER: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
+
+pub fn atomic_write_json<T: serde::Serialize>(
+    path: &std::path::Path,
+    value: &T,
+) -> std::io::Result<()> {
     let json = serde_json::to_string_pretty(value)
         .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e))?;
-    let tmp_path = path.with_extension("tmp");
+    let unique = ATOMIC_WRITE_COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+    let tmp_path = path.with_extension(format!("{}-{}.tmp", std::process::id(), unique));
     std::fs::write(&tmp_path, &json)?;
     std::fs::rename(&tmp_path, path)?;
     Ok(())
@@ -734,8 +740,11 @@ pub fn update_tray_menu(
     let menu = if !is_portable() {
         let update_item = MenuItem::with_id(&app, "update", &update, true, None::<&str>)
             .map_err(|e| e.to_string())?;
-        Menu::with_items(&app, &[&show_item, &recenter_item, &update_item, &quit_item])
-            .map_err(|e| e.to_string())?
+        Menu::with_items(
+            &app,
+            &[&show_item, &recenter_item, &update_item, &quit_item],
+        )
+        .map_err(|e| e.to_string())?
     } else {
         Menu::with_items(&app, &[&show_item, &recenter_item, &quit_item])
             .map_err(|e| e.to_string())?

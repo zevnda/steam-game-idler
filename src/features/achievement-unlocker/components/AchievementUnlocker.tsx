@@ -1,9 +1,10 @@
 import type { ActivePageType } from '@/shared/types'
-import type { ActiveGameState } from '../hooks/useAchievementUnlocker'
+import type { ActiveGameState, ScanProgress } from '../hooks/useAchievementUnlocker'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TbCheck, TbPlayerStopFilled } from 'react-icons/tb'
 import { GameRow } from './GameRow'
+import { ScanProgressCard } from './ScanProgressCard'
 import { Button, cn } from '@heroui/react'
 import Image from 'next/image'
 import { MAX_CONCURRENT_GAMES, useAchievementUnlocker } from '@/features/achievement-unlocker'
@@ -30,6 +31,7 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
 
   const [activeGames, setActiveGames] = useState<ActiveGameState[]>([])
   const [isComplete, setIsComplete] = useState(false)
+  const [scanProgress, setScanProgress] = useState<ScanProgress | null>(null)
   const [imageLoaded, setImageLoaded] = useState(false)
   const [fallbackImage, setFallbackImage] = useState('')
 
@@ -44,6 +46,7 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
       maxConcurrentGames,
       setActiveGames,
       setIsComplete,
+      setScanProgress,
       startCardFarming,
       isMountedRef,
       abortControllerRef,
@@ -103,7 +106,7 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
     <div
       className={cn(
         'absolute top-0 z-4 w-full h-screen bg-gradient-bg',
-        'overflow-y-auto overflow-x-hidden ease-in-out',
+        'overflow-x-hidden ease-in-out',
         activePage !== 'customlists/achievement-unlocker' && 'hidden',
       )}
       style={{
@@ -138,7 +141,7 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
 
       <div
         className={cn(
-          'relative w-[calc(100vw-30px)] pl-6 pt-2 pr-12 mt-12 ease-in-out',
+          'relative flex flex-col h-calc w-[calc(100vw-30px)] pl-6 pt-2 pr-12 mt-12 ease-in-out',
           sidebarCollapsed ? 'ml-14' : 'ml-62.5',
         )}
         style={{
@@ -146,7 +149,7 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
           transitionProperty: 'margin-left',
         }}
       >
-        <div className='flex justify-between items-center pb-3'>
+        <div className='flex justify-between items-center pb-3 shrink-0'>
           <div className='flex items-center gap-1 select-none'>
             <div className='flex flex-col justify-center'>
               <p className='text-3xl font-black'>{t('common.achievementUnlocker')}</p>
@@ -178,10 +181,13 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
             <p className='mt-4'>{t('common.done')}</p>
           </div>
         ) : (
-          <div className='flex flex-col gap-4 w-full pt-10 pb-4'>
-            {activeGames.map(entry => (
-              <GameRow key={entry.appId} entry={entry} />
-            ))}
+          <div className='flex-1 min-h-0 overflow-y-auto overflow-x-hidden pr-1'>
+            <div className='flex flex-col gap-4 w-full pt-10 pb-4'>
+              {scanProgress && <ScanProgressCard progress={scanProgress} />}
+              {activeGames.map(entry => (
+                <GameRow key={entry.appId} entry={entry} />
+              ))}
+            </div>
           </div>
         )}
       </div>

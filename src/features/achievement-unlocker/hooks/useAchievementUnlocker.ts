@@ -54,12 +54,18 @@ export interface ActiveGameState {
   upcomingAchievements: UpcomingAchievement[]
 }
 
+export interface ScanProgress {
+  checked: number
+  total: number
+}
+
 type SetActiveGames = React.Dispatch<React.SetStateAction<ActiveGameState[]>>
 
 export const useAchievementUnlocker = async (
   maxConcurrentGames: number,
   setActiveGames: SetActiveGames,
   setIsComplete: React.Dispatch<React.SetStateAction<boolean>>,
+  setScanProgress: React.Dispatch<React.SetStateAction<ScanProgress | null>>,
   startCardFarming: () => Promise<void>,
   isMountedRef: React.RefObject<boolean>,
   abortControllerRef: React.RefObject<AbortController>,
@@ -69,6 +75,21 @@ export const useAchievementUnlocker = async (
   // `await`, so concurrent claim attempts can't race (JS runs each continuation to completion).
   const claimedAppIds = new Set<number>()
   const hasCompletedRef = { current: false }
+
+  // Tracks how many games from the initial backlog have had their achievement data checked, so
+  // the UI can show scan progress instead of a misleading "currently farming" card for games
+  // that turn out to have no achievements remaining.
+  let totalGamesToScan = 0
+  let scannedGameCount = 0
+
+  const reportGameScanned = () => {
+    scannedGameCount += 1
+    setScanProgress(
+      scannedGameCount < totalGamesToScan
+        ? { checked: scannedGameCount, total: totalGamesToScan }
+        : null,
+    )
+  }
 
   const updateGame = (
     appId: number,
@@ -83,14 +104,14 @@ export const useAchievementUnlocker = async (
     )
   }
 
-  const addActiveGame = (game: Game, isInitialDelay: boolean) => {
+  const addActiveGame = (game: Game, isInitialDelay: boolean, achievementCount = 0) => {
     setActiveGames(prev => [
       ...prev,
       {
         appId: game.appid,
         game,
         isInitialDelay,
-        achievementCount: 0,
+        achievementCount,
         countdownTimer: '00:00:10',
         isWaitingForSchedule: false,
         upcomingAchievements: [],
@@ -127,6 +148,7 @@ export const useAchievementUnlocker = async (
 
     hasCompletedRef.current = true
     setActiveGames([])
+    setScanProgress(null)
 
     const nextTask = await checkForNextTask()
 
@@ -151,6 +173,18 @@ export const useAchievementUnlocker = async (
   const workerCount = Math.max(1, Math.min(maxConcurrentGames, MAX_CONCURRENT_GAMES))
   const isMultipleGamesMode = workerCount > 1
 
+  // Snapshot how many games are queued before work starts, so scan progress reflects the
+  // backlog at the start of this run rather than shrinking as games get resolved
+  const initialUserSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
+  const initialList = await invoke<InvokeCustomList>('get_custom_lists', {
+    steamId: initialUserSummary?.steamId,
+    list: 'achievementUnlockerList',
+  })
+  totalGamesToScan = initialList.list_data.length
+  if (totalGamesToScan > 0) {
+    setScanProgress({ checked: 0, total: totalGamesToScan })
+  }
+
   const runWorker = async () => {
     let isFirstGameForWorker = true
 
@@ -166,52 +200,57 @@ export const useAchievementUnlocker = async (
           continue
         }
 
+        // Check achievement data before showing anything in the UI, so games with no
+        // achievements remaining never flash a misleading "currently farming" card
+        const {
+          achievements,
+          game: fetchedGame,
+          delayBeforeFirstUnlock,
+          achievementCount,
+        } = await fetchAchievements(game)
+        reportGameScanned()
+
+        if (!(achievements?.length > 0)) {
+          await removeGameFromUnlockerList(fetchedGame.appid)
+          logEvent(
+            `[Achievement Unlocker] ${fetchedGame.name} (${fetchedGame.appid}) has no achievements remaining - removed`,
+          )
+          claimedAppIds.delete(fetchedGame.appid)
+          continue
+        }
+
         if (isFirstGameForWorker) {
           // Show the background/initial delay immediately, matching the single-game behavior
-          addActiveGame(game, true)
-          startCountdown(10000 / 60000, game.appid, updateGame)
+          addActiveGame(fetchedGame, true, achievementCount)
+          startCountdown(10000 / 60000, fetchedGame.appid, updateGame)
           await delay(10000, isMountedRef, abortControllerRef)
           if (!isMountedRef.current) {
-            claimedAppIds.delete(game.appid)
+            claimedAppIds.delete(fetchedGame.appid)
             return
           }
-          updateGame(game.appid, { isInitialDelay: false })
+          updateGame(fetchedGame.appid, { isInitialDelay: false })
         } else {
-          const hasPreDelay = await gameHasPreDelay(userSummary?.steamId, game.appid)
+          const hasPreDelay = await gameHasPreDelay(userSummary?.steamId, fetchedGame.appid)
           if (!hasPreDelay && !isMultipleGamesMode) {
             logEvent('[Achievement Unlocker] Switching to next game in 2 minutes')
             await delay(INTER_GAME_DELAY_MS, isMountedRef, abortControllerRef)
           }
           if (!isMountedRef.current) {
-            claimedAppIds.delete(game.appid)
+            claimedAppIds.delete(fetchedGame.appid)
             return
           }
-          addActiveGame(game, false)
+          addActiveGame(fetchedGame, false, achievementCount)
         }
         isFirstGameForWorker = false
 
-        const {
+        await unlockAchievements(
           achievements,
-          game: fetchedGame,
+          fetchedGame,
           delayBeforeFirstUnlock,
-        } = await fetchAchievements(game, updateGame)
-        updateGame(game.appid, { game: fetchedGame })
-
-        if (achievements?.length > 0) {
-          await unlockAchievements(
-            achievements,
-            fetchedGame,
-            delayBeforeFirstUnlock,
-            updateGame,
-            isMountedRef,
-            abortControllerRef,
-          )
-        } else {
-          await removeGameFromUnlockerList(fetchedGame.appid)
-          logEvent(
-            `[Achievement Unlocker] ${fetchedGame.name} (${fetchedGame.appid}) has no achievements remaining - removed`,
-          )
-        }
+          updateGame,
+          isMountedRef,
+          abortControllerRef,
+        )
 
         removeActiveGame(fetchedGame.appid)
         claimedAppIds.delete(fetchedGame.appid)
@@ -225,10 +264,7 @@ export const useAchievementUnlocker = async (
 }
 
 // Fetch achievements for the current game
-const fetchAchievements = async (
-  game: Game,
-  updateGame: (appId: number, patch: Partial<ActiveGameState>) => void,
-) => {
+const fetchAchievements = async (game: Game) => {
   const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
   const maxAchievementUnlocks = await getMaxAchievementUnlocks(userSummary?.steamId, game.appid)
 
@@ -369,11 +405,12 @@ const fetchAchievements = async (
         .sort((a, b) => b.percentage - a.percentage)
     }
 
-    updateGame(game.appid, {
+    return {
+      achievements: orderedAchievements,
+      game,
+      delayBeforeFirstUnlock,
       achievementCount: maxAchievementUnlocks || orderedAchievements.length,
-    })
-
-    return { achievements: orderedAchievements, game, delayBeforeFirstUnlock }
+    }
   } catch (error) {
     handleError('fetchAchievements', error)
     return { achievements: [], game, delayBeforeFirstUnlock: undefined }
