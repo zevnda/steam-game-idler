@@ -5,7 +5,12 @@ import Image from 'next/image'
 import { ProBadge } from '@/shared/components'
 import { CDN_BASE_URL } from '@/shared/constants'
 import { useStateStore, useUserStore } from '@/shared/stores'
-import { hasCasualAccess, hasGamerAccess } from '@/shared/utils'
+import { hasCasualAccess, hasGamerAccess, openExternalLink } from '@/shared/utils'
+
+interface AdManifest {
+  count: number
+  links?: Record<string, string>
+}
 
 export const AdSlot = () => {
   const { t } = useTranslation()
@@ -17,17 +22,21 @@ export const AdSlot = () => {
   const [reloadKey, setReloadKey] = useState(0)
   const [adFilled, setAdFilled] = useState(false)
 
-  const DEFAULT_FALLBACK_AD_COUNT = 15
+  const DEFAULT_HOUSE_AD_COUNT = 15
 
-  const [manifestCount, setManifestCount] = useState(DEFAULT_FALLBACK_AD_COUNT)
-  const failedAdsRef = useRef<Set<string>>(new Set())
+  const [manifestCount, setManifestCount] = useState(DEFAULT_HOUSE_AD_COUNT)
+  const [manifestLinks, setManifestLinks] = useState<Record<string, string>>({})
+  const failedHouseAdsRef = useRef<Set<string>>(new Set())
 
   useEffect(() => {
     fetch(`${CDN_BASE_URL}/ads/manifest.json`)
       .then(res => res.json())
-      .then(data => {
+      .then((data: AdManifest) => {
         if (typeof data?.count === 'number' && data.count > 0) {
           setManifestCount(data.count)
+        }
+        if (data?.links && typeof data.links === 'object') {
+          setManifestLinks(data.links)
         }
       })
       .catch(() => {
@@ -35,30 +44,36 @@ export const AdSlot = () => {
       })
   }, [])
 
-  const fallbackAds = useMemo(
+  const houseAds = useMemo(
     () => Array.from({ length: manifestCount }, (_, i) => `${CDN_BASE_URL}/ads/${i + 1}.png`),
     [manifestCount],
   )
 
-  const [fallbackAd, setFallbackAd] = useState(
-    () => fallbackAds[Math.floor(Math.random() * fallbackAds.length)],
+  const [houseAd, setHouseAd] = useState(
+    () => houseAds[Math.floor(Math.random() * houseAds.length)],
   )
 
-  // Pick a random fallback ad that's different from the current one and hasn't 404'd
-  const pickNextFallback = useCallback(
-    (current: string, excluded: Set<string> = failedAdsRef.current) => {
-      const others = fallbackAds.filter(ad => ad !== current && !excluded.has(ad))
+  const houseAdLink = useMemo(() => {
+    const match = houseAd.match(/\/(\d+)\.png$/)
+    if (!match) return undefined
+    return manifestLinks[match[1]]
+  }, [houseAd, manifestLinks])
+
+  // Pick a random house ad that's different from the current one and hasn't 404'd
+  const pickNextHouseAd = useCallback(
+    (current: string, excluded: Set<string> = failedHouseAdsRef.current) => {
+      const others = houseAds.filter(ad => ad !== current && !excluded.has(ad))
       if (others.length === 0) return current
       return others[Math.floor(Math.random() * others.length)]
     },
-    [fallbackAds],
+    [houseAds],
   )
 
-  // If a fallback ad fails to load (404/missing), blacklist it and roll to another one
-  const handleFallbackAdError = useCallback(() => {
-    failedAdsRef.current.add(fallbackAd)
-    setFallbackAd(current => pickNextFallback(current))
-  }, [fallbackAd, pickNextFallback])
+  // If a house ad fails to load (404/missing), blacklist it and roll to another one
+  const handleHouseAdError = useCallback(() => {
+    failedHouseAdsRef.current.add(houseAd)
+    setHouseAd(current => pickNextHouseAd(current))
+  }, [houseAd, pickNextHouseAd])
 
   const gameSlugs = useMemo(
     () => [
@@ -148,7 +163,7 @@ export const AdSlot = () => {
   )
 
   // const randomSlug = gameSlugs[Math.floor(Math.random() * gameSlugs.length)]
-  // // const gameUrl = `http://localhost:3001/${randomSlug}`
+  // const gameUrl = `http://localhost:3001/${randomSlug}`
   // const gameUrl = `https://steamgameidler.com/${randomSlug}`
 
   const [gameUrl, setGameUrl] = useState(() => {
@@ -157,12 +172,12 @@ export const AdSlot = () => {
     return `https://steamgameidler.com/${randomSlug}`
   })
 
-  // Reset fallback state whenever the iframe loads a new page
+  // Reset house ad state whenever the iframe loads a new page
   useEffect(() => {
     setAdFilled(false)
-    failedAdsRef.current = new Set()
-    setFallbackAd(prev => pickNextFallback(prev))
-  }, [gameUrl, reloadKey, fallbackAds, pickNextFallback])
+    failedHouseAdsRef.current = new Set()
+    setHouseAd(prev => pickNextHouseAd(prev))
+  }, [gameUrl, reloadKey, houseAds, pickNextHouseAd])
 
   // Listen for ad-refresh from AdComponent to reset detection on each internal ad cycle
   useEffect(() => {
@@ -173,7 +188,7 @@ export const AdSlot = () => {
         const data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data
         if (data?.type === 'ad-refresh') {
           setAdFilled(false)
-          setFallbackAd(prev => pickNextFallback(prev))
+          setHouseAd(prev => pickNextHouseAd(prev))
         }
       } catch {
         // ignore
@@ -182,9 +197,9 @@ export const AdSlot = () => {
 
     window.addEventListener('message', handler)
     return () => window.removeEventListener('message', handler)
-  }, [fallbackAds, pickNextFallback])
+  }, [houseAds, pickNextHouseAd])
 
-  // adpnt is sent by AdSense only when an ad actually renders — hide fallback if it arrives
+  // adpnt is sent by AdSense only when an ad actually renders — hide house ad if it arrives
   useEffect(() => {
     const handler = (e: MessageEvent) => {
       if (e.origin !== 'https://googleads.g.doubleclick.net') return
@@ -238,14 +253,20 @@ export const AdSlot = () => {
           title='External Website'
         />
         {adFilled === false && (
-          <div className='absolute inset-0 z-10 flex items-center justify-center bg-[#121316]'>
+          <div
+            className={cn(
+              'absolute inset-0 z-10 flex items-center justify-center bg-[#121316]',
+              houseAdLink && 'cursor-pointer pointer-events-auto',
+            )}
+            onClick={() => houseAdLink && openExternalLink(houseAdLink)}
+          >
             <Image
-              src={fallbackAd}
+              src={houseAd}
               alt='Advertisement'
               width={300}
               height={250}
               className='w-full h-full object-fill'
-              onError={handleFallbackAdError}
+              onError={handleHouseAdError}
             />
           </div>
         )}
