@@ -45,8 +45,8 @@ export default function PayPalReturnPage() {
               <span className='gradient-text'>PRO</span>
             </h1>
 
-            <p className='text-text-muted leading-relaxed mb-2'>
-              Your PayPal subscription is active. Check your email for your license key.
+            <p className='leading-relaxed my-4 font-bold text-lg text-green-400'>
+              Check your email for your license key.
             </p>
             <p className='text-text-muted leading-relaxed mb-10'>
               Open Steam Game Idler, go to{' '}
