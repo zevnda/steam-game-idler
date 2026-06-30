@@ -166,7 +166,7 @@ export const SubscriptionSettings = () => {
             <TbChevronRight size={12} />
           </span>
         </p>
-        <p className='text-3xl font-black'>{t('settings.subscription.title')}</p>
+        <p className='text-3xl font-black text-content'>{t('settings.subscription.title')}</p>
       </div>
 
       <div className='flex flex-col gap-3 mt-4'>

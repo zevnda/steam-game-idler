@@ -42,7 +42,7 @@ export const AchievementSettings = () => {
             <TbChevronRight size={12} />
           </span>
         </p>
-        <p className='text-3xl font-black'>{t('common.achievementUnlocker')}</p>
+        <p className='text-3xl font-black text-content'>{t('common.achievementUnlocker')}</p>
       </div>
 
       <div className='flex flex-col gap-3 mt-4'>

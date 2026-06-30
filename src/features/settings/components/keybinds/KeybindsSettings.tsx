@@ -47,7 +47,7 @@ export const KeybindsSettings = () => {
             <TbChevronRight size={12} />
           </span>
         </p>
-        <p className='text-3xl font-black'>{t('settings.keybinds.title')}</p>
+        <p className='text-3xl font-black text-content'>{t('settings.keybinds.title')}</p>
       </div>
 
       <div className='flex flex-col gap-6 mt-4'>

@@ -24,7 +24,7 @@ export const FreeGamesSettings = () => {
             <TbChevronRight size={12} />
           </span>
         </p>
-        <p className='text-3xl font-black'>{t('freeGames.title')}</p>
+        <p className='text-3xl font-black text-content'>{t('freeGames.title')}</p>
       </div>
 
       <div className='flex flex-col gap-3 mt-4'>

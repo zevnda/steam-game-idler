@@ -28,7 +28,7 @@ export const Logs = () => {
             <TbChevronRight size={12} />
           </span>
         </p>
-        <p className='text-3xl font-black'>{t('settings.debug.title')}</p>
+        <p className='text-3xl font-black text-content'>{t('settings.debug.title')}</p>
       </div>
 
       <div className='flex flex-col gap-4 mt-4'>

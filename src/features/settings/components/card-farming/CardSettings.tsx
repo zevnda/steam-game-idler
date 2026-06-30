@@ -36,7 +36,7 @@ export const CardSettings = () => {
             <TbChevronRight size={12} />
           </span>
         </p>
-        <p className='text-3xl font-black'>{t('common.cardFarming')}</p>
+        <p className='text-3xl font-black text-content'>{t('common.cardFarming')}</p>
 
         {!cardSettings.cardFarmingUser && (
           <div className='mt-4'>

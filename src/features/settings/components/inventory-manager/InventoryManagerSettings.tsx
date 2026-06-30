@@ -56,7 +56,7 @@ export const InventoryManagerSettings = () => {
             <TbChevronRight size={12} />
           </span>
         </p>
-        <p className='text-3xl font-black'>{t('tradingCards.title')}</p>
+        <p className='text-3xl font-black text-content'>{t('tradingCards.title')}</p>
 
         {!cardSettings.cardFarmingUser && (
           <div className='mt-4'>
