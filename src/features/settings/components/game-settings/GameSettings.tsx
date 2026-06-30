@@ -110,7 +110,7 @@ export const GameSettings = () => {
             <TbChevronRight size={12} />
           </span>
         </p>
-        <p className='text-3xl font-black'>{t('common.gameSettings')}</p>
+        <p className='text-3xl font-black text-content'>{t('common.gameSettings')}</p>
       </div>
 
       <div className='flex flex-col gap-3 mt-4'>

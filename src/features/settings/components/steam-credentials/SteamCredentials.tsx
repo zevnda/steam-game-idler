@@ -89,7 +89,9 @@ export const SteamCredentials = () => {
             <TbChevronRight size={12} />
           </span>
         </p>
-        <p className='text-3xl font-black'>{t('settings.cardFarming.steamCredentialsTitle')}</p>
+        <p className='text-3xl font-black text-content'>
+          {t('settings.cardFarming.steamCredentialsTitle')}
+        </p>
       </div>
 
       <div className='flex flex-col gap-3 mt-4'>

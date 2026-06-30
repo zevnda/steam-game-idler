@@ -63,7 +63,7 @@ export const CustomizationSettings = () => {
             <TbChevronRight size={12} />
           </span>
         </p>
-        <p className='text-3xl font-black'>{t('settings.customization.title')}</p>
+        <p className='text-3xl font-black text-content'>{t('settings.customization.title')}</p>
       </div>
 
       <div className='flex flex-col gap-3 mt-4'>
