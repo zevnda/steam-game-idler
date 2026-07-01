@@ -8,12 +8,4 @@ export default {
   priority: 0.5,
   generateIndexSitemap: false,
   generateRobotsTxt: true,
-  robotsTxtOptions: {
-    policies: [
-      {
-        userAgent: '*',
-        disallow: ['/changelog'],
-      },
-    ],
-  },
 }
