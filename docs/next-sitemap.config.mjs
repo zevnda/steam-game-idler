@@ -1,6 +1,8 @@
+const outDir = process.env.VERCEL ? '/vercel/output/static' : './out'
+
 export default {
   siteUrl: 'https://steamgameidler.com',
-  outDir: './out',
+  outDir,
   sitemapBaseFileName: 'sitemap',
   changefreq: 'daily',
   priority: 0.5,
@@ -10,7 +12,7 @@ export default {
     policies: [
       {
         userAgent: '*',
-        disallow: ['/changelog', '/docs.txt', '/index.txt', '/privacy.txt', '/tos.txt'],
+        disallow: ['/changelog'],
       },
     ],
   },
