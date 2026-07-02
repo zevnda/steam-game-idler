@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "releases": {
+    "5.4.1": {
+      "Steam.Game.Idler_5.4.1_x64-portable.zip": {
+        "sha256": "c9c233dcf8c3451ce9f512bb3ddcfdab7607ed380d7a3c1c773e2f8264ec2fe7",
+        "flagged_vendors": [],
+        "stats": {
+          "malicious": 0,
+          "suspicious": 0,
+          "undetected": 58,
+          "harmless": 0
+        },
+        "permalink": "https://www.virustotal.com/gui/file/c9c233dcf8c3451ce9f512bb3ddcfdab7607ed380d7a3c1c773e2f8264ec2fe7/detection",
+        "last_checked": "2026-07-02T03:09:19Z"
+      },
+      "Steam.Game.Idler_5.4.1_x64-setup.exe": {
+        "sha256": "c09f332fc64cb74302bc7528e027e6d57dfbb576679c0f42472a386240bf4a43",
+        "flagged_vendors": [],
+        "stats": {
+          "malicious": 0,
+          "suspicious": 0,
+          "undetected": 69,
+          "harmless": 0
+        },
+        "permalink": "https://www.virustotal.com/gui/file/c09f332fc64cb74302bc7528e027e6d57dfbb576679c0f42472a386240bf4a43/detection",
+        "last_checked": "2026-07-02T03:09:19Z"
+      }
+    }
+  }
+}
