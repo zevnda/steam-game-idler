@@ -13,6 +13,7 @@ export function useGameSettings({ appId }: UseGameSettingsProps = {}) {
   const setUserSettings = useUserStore(state => state.setUserSettings)
   const [maxIdleTime, setMaxIdleTime] = useState(0)
   const [maxCardDrops, setMaxCardDrops] = useState(0)
+  const [maxCardFarmingTime, setMaxCardFarmingTime] = useState(0)
   const [maxAchievementUnlocks, setMaxAchievementUnlocks] = useState(0)
   const [globalMaxIdleTime, setGlobalMaxIdleTime] = useState(0)
   const isInitializedRef = useRef(false)
@@ -33,6 +34,7 @@ export function useGameSettings({ appId }: UseGameSettingsProps = {}) {
       }
       setMaxIdleTime(gameSettings.maxIdleTime || 0)
       setMaxCardDrops(gameSettings.maxCardDrops || 0)
+      setMaxCardFarmingTime(gameSettings.maxCardFarmingTime || 0)
       setMaxAchievementUnlocks(gameSettings.maxAchievementUnlocks || 0)
       setGlobalMaxIdleTime(
         (userSettings.gameSettings &&
@@ -49,7 +51,7 @@ export function useGameSettings({ appId }: UseGameSettingsProps = {}) {
     const newValue = value || 0
     setMaxIdleTime(newValue)
     if (isInitializedRef.current && appId) {
-      saveWithValues(newValue, maxCardDrops, maxAchievementUnlocks)
+      saveWithValues(newValue, maxCardDrops, maxCardFarmingTime, maxAchievementUnlocks)
     }
   }
 
@@ -57,7 +59,7 @@ export function useGameSettings({ appId }: UseGameSettingsProps = {}) {
     const newValue = value || 0
     setMaxAchievementUnlocks(newValue)
     if (isInitializedRef.current && appId) {
-      saveWithValues(maxIdleTime, maxCardDrops, newValue)
+      saveWithValues(maxIdleTime, maxCardDrops, maxCardFarmingTime, newValue)
     }
   }
 
@@ -65,11 +67,24 @@ export function useGameSettings({ appId }: UseGameSettingsProps = {}) {
     const newValue = value || 0
     setMaxCardDrops(newValue)
     if (isInitializedRef.current && appId) {
-      saveWithValues(maxIdleTime, newValue, maxAchievementUnlocks)
+      saveWithValues(maxIdleTime, newValue, maxCardFarmingTime, maxAchievementUnlocks)
     }
   }
 
-  const saveWithValues = async (idleTime: number, cardDrops: number, achievements: number) => {
+  const handleMaxCardFarmingTimeChange = (value: number) => {
+    const newValue = value || 0
+    setMaxCardFarmingTime(newValue)
+    if (isInitializedRef.current && appId) {
+      saveWithValues(maxIdleTime, maxCardDrops, newValue, maxAchievementUnlocks)
+    }
+  }
+
+  const saveWithValues = async (
+    idleTime: number,
+    cardDrops: number,
+    cardFarmingTime: number,
+    achievements: number,
+  ) => {
     if (!appId) return
 
     const gameSettings = userSettings.gameSettings || {}
@@ -82,6 +97,7 @@ export function useGameSettings({ appId }: UseGameSettingsProps = {}) {
           : {}),
         maxIdleTime: idleTime,
         maxCardDrops: cardDrops,
+        maxCardFarmingTime: cardFarmingTime,
         maxAchievementUnlocks: achievements,
       }
     }
@@ -118,6 +134,7 @@ export function useGameSettings({ appId }: UseGameSettingsProps = {}) {
     if (!appId) {
       setMaxIdleTime(0)
       setMaxCardDrops(0)
+      setMaxCardFarmingTime(0)
       setMaxAchievementUnlocks(0)
       return
     }
@@ -128,18 +145,22 @@ export function useGameSettings({ appId }: UseGameSettingsProps = {}) {
     }
     setMaxIdleTime(gameSettings.maxIdleTime || 0)
     setMaxCardDrops(gameSettings.maxCardDrops || 0)
+    setMaxCardFarmingTime(gameSettings.maxCardFarmingTime || 0)
     setMaxAchievementUnlocks(gameSettings.maxAchievementUnlocks || 0)
   }
 
   return {
     maxIdleTime,
     maxCardDrops,
+    maxCardFarmingTime,
     maxAchievementUnlocks,
     setMaxIdleTime,
     setMaxCardDrops,
+    setMaxCardFarmingTime,
     setMaxAchievementUnlocks,
     handleMaxIdleTimeChange,
     handleMaxCardDropsChange,
+    handleMaxCardFarmingTimeChange,
     handleMaxAchievementUnlocksChange,
     resetSettings,
     globalMaxIdleTime,

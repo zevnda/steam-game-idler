@@ -188,3 +188,37 @@ pub async fn stop_farm_idle() -> Result<Value, String> {
 
     Ok(json!({"success": "Successfully stopped idling games"}))
 }
+
+#[tauri::command]
+// Stop idling a single farming game by killing just its process (used by the
+// real-time maxCardFarmingTime timer)
+pub async fn stop_farm_idle_game(app_id: u32) -> Result<Value, String> {
+    let pid = {
+        let processes = SPAWNED_PROCESSES.lock().map_err(|e| e.to_string())?;
+        processes
+            .iter()
+            .find(|p| p.app_id == app_id && p.source == "farm")
+            .map(|p| p.pid)
+    };
+
+    let pid = match pid {
+        Some(pid) => pid,
+        // Already stopped via another path (batched stop_farm_idle, drops
+        // exhausted, handleCancel racing this call) -- not an error.
+        None => return Ok(json!({"success": "No matching farm process found (already stopped)"})),
+    };
+
+    let mut child = std::process::Command::new("taskkill")
+        .args(&["/F", "/PID", &pid.to_string()])
+        .creation_flags(0x08000000)
+        .spawn()
+        .map_err(|e| e.to_string())?;
+
+    child.wait().map_err(|e| e.to_string())?;
+
+    if let Ok(mut processes) = SPAWNED_PROCESSES.lock() {
+        processes.retain(|p| !(p.app_id == app_id && p.source == "farm"));
+    }
+
+    Ok(json!({"success": "Successfully stopped idling farm game"}))
+}

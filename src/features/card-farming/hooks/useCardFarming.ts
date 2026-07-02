@@ -15,6 +15,7 @@ import {
   startAutoIdleGames,
   startFarmIdle,
   stopFarmIdle,
+  stopFarmIdleGame,
 } from '@/shared/utils'
 
 export interface GameForFarming {
@@ -36,6 +37,51 @@ interface CycleStep {
   delay: number
 }
 
+// Track when each game started farming by appid
+const farmStartTimes: { [appId: number]: number } = {}
+
+const clearFarmStartTime = (appId: number) => {
+  delete farmStartTimes[appId]
+}
+
+// Real-time per-game maxCardFarmingTime timers
+const farmTimeouts: { [appId: number]: ReturnType<typeof setTimeout> } = {}
+
+// Appids whose farm process was just killed by a real-time timer but haven't
+// yet been filtered out of the in-flight beginFarmingCycle gamesSet.
+const expiredFarmAppIds = new Set<number>()
+
+const clearFarmTimeout = (appId: number) => {
+  if (farmTimeouts[appId]) {
+    clearTimeout(farmTimeouts[appId])
+    delete farmTimeouts[appId]
+  }
+}
+
+// Schedules exactly one live timer per appid, using the
+const ensureFarmTimeout = (appId: number, appName: string, maxCardFarmingTime: number) => {
+  if (farmTimeouts[appId]) return
+  const elapsedMs = appId in farmStartTimes ? Date.now() - farmStartTimes[appId] : 0
+  const remainingMs = Math.max(0, maxCardFarmingTime * 60000 - elapsedMs)
+  farmTimeouts[appId] = setTimeout(() => handleFarmTimeExpired(appId, appName), remainingMs)
+}
+
+// Fires exactly when maxCardFarmingTime elapses. Kills just that game's farm
+// process in real time
+const handleFarmTimeExpired = async (appId: number, appName: string) => {
+  try {
+    expiredFarmAppIds.add(appId)
+    await stopFarmIdleGame(appId, appName)
+    removeGameFromFarmingList(appId)
+  } catch (error) {
+    handleError('handleFarmTimeExpired', error)
+  } finally {
+    // Do NOT clear farmStartTimes here -- it must keep reading as
+    // "elapsed >= cap" for allGames-mode
+    clearFarmTimeout(appId)
+  }
+}
+
 export const useCardFarming = async (
   setIsComplete: React.Dispatch<React.SetStateAction<boolean>>,
   setIsCardFarming: (value: boolean) => void,
@@ -52,6 +98,11 @@ export const useCardFarming = async (
     }
   }
 
+  const syncFarmingUI = (updatedSet: Set<GameWithDrops>) => {
+    setGamesWithDrops(new Set(updatedSet))
+    setTotalDropsRemaining(Array.from(updatedSet).reduce((sum, game) => sum + game.dropsToCount, 0))
+  }
+
   const startCardFarming = async () => {
     try {
       if (!isMountedRef.current) return
@@ -64,7 +115,12 @@ export const useCardFarming = async (
       setGamesWithDrops(gamesSet)
 
       if (isMountedRef.current && gamesSet.size > 0) {
-        const success = await beginFarmingCycle(gamesSet, isMountedRef, abortControllerRef)
+        const success = await beginFarmingCycle(
+          gamesSet,
+          isMountedRef,
+          abortControllerRef,
+          syncFarmingUI,
+        )
         if (!success) {
           logEvent('[Card Farming] An error occurred (this error can often be ignored) - stopping')
           return setIsComplete(true)
@@ -228,13 +284,36 @@ const processGamesWithDrops = (
 
         const gameSetting = gameSettings[gameId]
         let maxCardDrops = remaining
+        let maxCardFarmingTime = 0
         if (
           typeof gameSetting === 'object' &&
           gameSetting !== null &&
           !Array.isArray(gameSetting)
         ) {
           maxCardDrops = gameSetting.maxCardDrops ?? remaining
+          maxCardFarmingTime = gameSetting.maxCardFarmingTime ?? 0
         }
+
+        if (maxCardFarmingTime > 0) {
+          if (!(gameId in farmStartTimes)) {
+            farmStartTimes[gameId] = Date.now()
+          }
+          const elapsedMs = Date.now() - farmStartTimes[gameId]
+          if (elapsedMs >= maxCardFarmingTime * 60000) {
+            logEvent(
+              `[Card Farming- maxCardFarmingTime] Farmed ${gameName} (${gameId}) for ${Math.round(elapsedMs / 60000)} min (limit ${maxCardFarmingTime} min) - removed from list`,
+            )
+            removeGameFromFarmingList(gameId)
+            clearFarmStartTime(gameId)
+            clearFarmTimeout(gameId)
+            continue
+          }
+          ensureFarmTimeout(gameId, gameName, maxCardFarmingTime)
+        } else {
+          clearFarmStartTime(gameId)
+          clearFarmTimeout(gameId)
+        }
+
         const dropsToCount = Math.min(remaining, maxCardDrops)
 
         gamesSet.add({
@@ -293,13 +372,36 @@ const processIndividualGames = async (
       if (dropsRemaining > 0) {
         const gameSetting = gameSettings[gameData.appid]
         let maxCardDrops = dropsRemaining
+        let maxCardFarmingTime = 0
         if (
           typeof gameSetting === 'object' &&
           gameSetting !== null &&
           !Array.isArray(gameSetting)
         ) {
           maxCardDrops = gameSetting.maxCardDrops ?? dropsRemaining
+          maxCardFarmingTime = gameSetting.maxCardFarmingTime ?? 0
         }
+
+        if (maxCardFarmingTime > 0) {
+          if (!(gameData.appid in farmStartTimes)) {
+            farmStartTimes[gameData.appid] = Date.now()
+          }
+          const elapsedMs = Date.now() - farmStartTimes[gameData.appid]
+          if (elapsedMs >= maxCardFarmingTime * 60000) {
+            logEvent(
+              `[Card Farming- maxCardFarmingTime] Farmed ${gameData.name} (${gameData.appid}) for ${Math.round(elapsedMs / 60000)} min (limit ${maxCardFarmingTime} min) - removed from list`,
+            )
+            removeGameFromFarmingList(gameData.appid)
+            clearFarmStartTime(gameData.appid)
+            clearFarmTimeout(gameData.appid)
+            return
+          }
+          ensureFarmTimeout(gameData.appid, gameData.name, maxCardFarmingTime)
+        } else {
+          clearFarmStartTime(gameData.appid)
+          clearFarmTimeout(gameData.appid)
+        }
+
         const dropsToCount = Math.min(Number(dropsRemaining), Number(maxCardDrops))
 
         gamesSet.add({
@@ -316,6 +418,8 @@ const processIndividualGames = async (
           `[Card Farming] ${dropsRemaining} drops remaining for ${gameData.name} - removed from list`,
         )
         removeGameFromFarmingList(gameData.appid)
+        clearFarmStartTime(gameData.appid)
+        clearFarmTimeout(gameData.appid)
       }
     } catch (error) {
       handleError('checkGame', error)
@@ -331,6 +435,7 @@ export const beginFarmingCycle = async (
   gamesSet: Set<GameWithDrops>,
   isMountedRef: React.RefObject<boolean>,
   abortControllerRef: React.RefObject<AbortController>,
+  onGamesSetChange?: (updatedSet: Set<GameWithDrops>) => void,
 ) => {
   const delays = {
     farming: 60000 * 30,
@@ -360,10 +465,26 @@ export const beginFarmingCycle = async (
         return false
       }
 
+      // Drop any games whose farm process was just killed
+      if (expiredFarmAppIds.size > 0) {
+        for (const game of Array.from(gamesSet)) {
+          if (expiredFarmAppIds.has(game.appid)) {
+            gamesSet.delete(game)
+            expiredFarmAppIds.delete(game.appid)
+          }
+        }
+      }
+
+      // No games left to farm -- stop the cycle now instead of running
+      // through the remaining scheduled steps on an empty set.
+      if (gamesSet.size < 1) {
+        return true
+      }
+
       const success = await step.action(gamesSet)
 
       if (success) {
-        await delay(step.delay, isMountedRef, abortControllerRef)
+        await delay(step.delay, isMountedRef, abortControllerRef, gamesSet, onGamesSetChange)
 
         if (step.action === stopFarmIdle) {
           gamesSet = await checkDropsRemaining(gamesSet)
@@ -378,6 +499,8 @@ export const beginFarmingCycle = async (
               }
             }
           }
+
+          onGamesSetChange?.(gamesSet)
         }
       } else {
         return false
@@ -404,6 +527,7 @@ const checkDropsRemaining = async (gameSet: Set<GameWithDrops>) => {
         steamId: userSummary?.steamId,
       })
       const credentials = response.settings.cardFarming.credentials
+      const gameSettings = response.settings.gameSettings || {}
 
       const dropsRemaining = await checkDrops(
         userSummary?.steamId,
@@ -413,13 +537,31 @@ const checkDropsRemaining = async (gameSet: Set<GameWithDrops>) => {
         credentials?.sma,
       )
 
+      const gameSetting = gameSettings[game.appid]
+      let maxCardFarmingTime = 0
+      if (typeof gameSetting === 'object' && gameSetting !== null && !Array.isArray(gameSetting)) {
+        maxCardFarmingTime = gameSetting.maxCardFarmingTime ?? 0
+      }
+      const elapsedMs = game.appid in farmStartTimes ? Date.now() - farmStartTimes[game.appid] : 0
+
       if (dropsRemaining <= 0) {
         removeGameFromFarmingList(Number(game.appid))
+        clearFarmStartTime(game.appid)
+        clearFarmTimeout(game.appid)
         logEvent(`[Card Farming] Farmed all drops for ${game.name} - removed from list`)
       } else if (game.initialDrops - dropsRemaining >= game.dropsToCount) {
         removeGameFromFarmingList(Number(game.appid))
+        clearFarmStartTime(game.appid)
+        clearFarmTimeout(game.appid)
         logEvent(
           `[Card Farming- maxCardDrops] Farmed ${game.initialDrops - dropsRemaining}/${dropsRemaining} cards for ${game.name} - removed from list`,
+        )
+      } else if (maxCardFarmingTime > 0 && elapsedMs >= maxCardFarmingTime * 60000) {
+        removeGameFromFarmingList(Number(game.appid))
+        clearFarmStartTime(game.appid)
+        clearFarmTimeout(game.appid)
+        logEvent(
+          `[Card Farming- maxCardFarmingTime] Farmed ${game.name} for ${Math.round(elapsedMs / 60000)}/${maxCardFarmingTime} min - removed from list`,
         )
       } else {
         updatedGameSet.add(game)
@@ -491,6 +633,8 @@ const delay = (
   ms: number,
   isMountedRef: React.RefObject<boolean>,
   abortControllerRef: React.RefObject<AbortController>,
+  gamesSet?: Set<GameWithDrops>,
+  onGamesSetChange?: (updatedSet: Set<GameWithDrops>) => void,
 ) => {
   return new Promise<void>((resolve, reject) => {
     if (!isMountedRef.current) {
@@ -503,7 +647,33 @@ const delay = (
       if (!isMountedRef.current) {
         clearInterval(intervalId)
         reject()
-      } else if (elapsedTime >= ms) {
+        return
+      }
+
+      // Prune any games whose farm process was just killed by maxCardFarmingTime timer
+      if (gamesSet) {
+        let pruned = false
+        for (const game of Array.from(gamesSet)) {
+          if (expiredFarmAppIds.has(game.appid)) {
+            gamesSet.delete(game)
+            expiredFarmAppIds.delete(game.appid)
+            pruned = true
+          }
+        }
+
+        if (pruned) {
+          onGamesSetChange?.(gamesSet)
+        }
+
+        if (gamesSet.size === 0) {
+          clearInterval(intervalId)
+          clearTimeout(timeoutId)
+          resolve()
+          return
+        }
+      }
+
+      if (elapsedTime >= ms) {
         clearInterval(intervalId)
         resolve()
       }
@@ -543,6 +713,13 @@ export const handleCancel = async (
   } finally {
     isMountedRef.current = false
     abortControllerRef.current.abort()
+    for (const appId of Object.keys(farmStartTimes)) {
+      delete farmStartTimes[Number(appId)]
+    }
+    for (const appId of Object.keys(farmTimeouts)) {
+      clearFarmTimeout(Number(appId))
+    }
+    expiredFarmAppIds.clear()
   }
 }
 

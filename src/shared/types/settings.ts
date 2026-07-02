@@ -42,6 +42,7 @@ export interface CardFarmingSettings {
 export interface GameSpecificSettings {
   maxAchievementUnlocks?: number
   maxCardDrops?: number
+  maxCardFarmingTime?: number
   maxIdleTime?: number
 }
 

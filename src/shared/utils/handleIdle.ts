@@ -186,6 +186,18 @@ export async function stopFarmIdle(gamesSet: Set<GameForFarming>) {
   }
 }
 
+// Stop farming idle for a single game (real-time maxCardFarmingTime cap)
+export async function stopFarmIdleGame(appId: number, appName: string) {
+  try {
+    await invoke('stop_farm_idle_game', { appId: Number(appId) })
+    logEvent(`[Card Farming] Stopped idling ${appName} (${appId}) - max card farming time reached`)
+    return true
+  } catch (error) {
+    console.error('Error in stopFarmIdleGame util (these errors can often be ignored): ', error)
+    return false
+  }
+}
+
 // Handle starting idling for a game
 export const handleIdle = async (item: Game) => {
   try {
