@@ -37,6 +37,7 @@ run-name: Build release v${{ github.event.inputs.version }}
 permissions:
   contents: write
   pull-requests: write
+  actions: write
 
 jobs:
   fetch_previous_version:
@@ -388,6 +389,18 @@ jobs:
         uses: geekyeggo/delete-artifact@v5
         with:
           name: dotnet-libs
+
+  trigger_virustotal_scan:
+    needs: build_release_bundle
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch VirusTotal scan workflow
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh workflow run virustotal-scan.yml \
+            --repo ${{ github.repository }} \
+            -f tag=${{ github.event.inputs.version }}
 
   send_discord_notification:
     needs: build_release_bundle
