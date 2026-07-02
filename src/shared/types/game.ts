@@ -8,7 +8,7 @@ export interface Game {
 }
 
 export interface GameWithRemainingDrops {
-  id: number
+  id: string
   name: string
   remaining: number
   playtime: number

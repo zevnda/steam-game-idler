@@ -2,6 +2,7 @@ import type {
   ActivePageType,
   CurrentSettingsTabType,
   Game,
+  GameWithRemainingDrops,
   InvokeSettings,
   UserSummary,
 } from '@/shared/types'
@@ -15,6 +16,7 @@ import {
   TbCards,
   TbHeart,
   TbHourglassLow,
+  TbRefresh,
   TbSettings,
   TbSortDescending2,
 } from 'react-icons/tb'
@@ -22,11 +24,12 @@ import { FixedSizeList as List } from 'react-window'
 import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { Button, cn, Select, SelectItem, Tab, Tabs } from '@heroui/react'
+import { Button, cn, Select, SelectItem, Spinner, Tab, Tabs } from '@heroui/react'
 import i18next from 'i18next'
 import Image from 'next/image'
 import { RecommendedCardDropsCarousel } from '@/features/card-farming'
 import { ManualAddModal, useCustomList } from '@/features/custom-lists'
+import { fetchGamesWithDropsData } from '@/features/settings'
 import { GameCard } from '@/shared/components'
 import { CDN_BASE_URL } from '@/shared/constants'
 import { useNavigationStore, useSearchStore, useStateStore, useUserStore } from '@/shared/stores'
@@ -99,11 +102,14 @@ export const CustomList = ({ type }: CustomListProps) => {
   const setCurrentSettingsTab = useNavigationStore(state => state.setCurrentSettingsTab)
   const userSummary = useUserStore(state => state.userSummary)
   const userSettings = useUserStore(state => state.userSettings)
+  const setUserSettings = useUserStore(state => state.setUserSettings)
   const [columnCount, setColumnCount] = useState(5)
   const [windowInnerHeight, setWindowInnerHeight] = useState(window.innerHeight)
   const [sortStyle, setSortStyle] = useState('a-z')
   const [activeId, setActiveId] = useState<number | null>(null)
   const [rowHeight, setRowHeight] = useState(220)
+  const [dropsData, setDropsData] = useState<GameWithRemainingDrops[]>([])
+  const [isDropsLoading, setIsDropsLoading] = useState(false)
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }))
 
@@ -115,6 +121,23 @@ export const CustomList = ({ type }: CustomListProps) => {
   const blacklistedGames = useMemo(
     () => filteredGamesList.filter(g => blacklist.includes(g.appid)),
     [filteredGamesList, blacklist],
+  )
+
+  const hasCardFarmingCredentials = !!(
+    userSettings.cardFarming.credentials?.sid && userSettings.cardFarming.credentials?.sls
+  )
+
+  const filteredDropsData = useMemo(
+    () =>
+      dropsData
+        .filter(g => g.name.toLowerCase().includes(searchTerm.toLowerCase()))
+        .map(g => ({
+          appid: Number(g.id),
+          name: g.name,
+          playtime_forever: g.playtime,
+          remaining: g.remaining,
+        })),
+    [dropsData, searchTerm],
   )
 
   const filteredList = useMemo(
@@ -266,6 +289,26 @@ export const CustomList = ({ type }: CustomListProps) => {
     getGamesWithDrops()
   }, [type, userSettings?.general?.showCardDropsCarousel])
 
+  useEffect(() => {
+    if (
+      type === 'cardFarmingList' &&
+      activeTab === 'dropsRemaining' &&
+      hasCardFarmingCredentials &&
+      dropsData.length === 0 &&
+      !isDropsLoading
+    ) {
+      fetchGamesWithDropsData(userSummary, setIsDropsLoading, setUserSettings, setDropsData)
+    }
+  }, [
+    type,
+    activeTab,
+    hasCardFarmingCredentials,
+    dropsData.length,
+    isDropsLoading,
+    userSummary,
+    setUserSettings,
+  ])
+
   const listTypes: Record<CustomListType, ListTypeConfig> = {
     cardFarmingList: {
       title: t('common.cardFarming'),
@@ -404,7 +447,7 @@ export const CustomList = ({ type }: CustomListProps) => {
                   radius='full'
                   selectedKey={activeTab}
                   onSelectionChange={key => {
-                    setActiveTab(key as 'all' | 'list' | 'blacklist')
+                    setActiveTab(key as 'all' | 'list' | 'blacklist' | 'dropsRemaining')
                     setCustomListQueryValue('')
                   }}
                   classNames={{
@@ -419,11 +462,32 @@ export const CustomList = ({ type }: CustomListProps) => {
                   }}
                 >
                   <Tab key='all' title={t('gamesList.allGames')} />
-                  <Tab key='list' title={`${listType.title} ${t('common.list')}`} />
+                  {type === 'cardFarmingList' && (
+                    <Tab key='dropsRemaining' title={t('customLists.dropsRemaining.title')} />
+                  )}
                   {type === 'cardFarmingList' && (
                     <Tab key='blacklist' title={`${t('customLists.blacklist')}`} />
                   )}
+                  <Tab key='list' title={`${listType.title} ${t('common.list')}`} />
                 </Tabs>
+
+                {activeTab === 'dropsRemaining' && type === 'cardFarmingList' && (
+                  <Button
+                    isIconOnly
+                    radius='full'
+                    className='bg-btn-secondary text-btn-text font-bold'
+                    startContent={<TbRefresh size={18} />}
+                    isDisabled={isDropsLoading || !hasCardFarmingCredentials}
+                    onPress={() =>
+                      fetchGamesWithDropsData(
+                        userSummary,
+                        setIsDropsLoading,
+                        setUserSettings,
+                        setDropsData,
+                      )
+                    }
+                  />
+                )}
 
                 {activeTab === 'all' && (
                   <Select
@@ -664,6 +728,45 @@ export const CustomList = ({ type }: CustomListProps) => {
           )}
         </div>
       )}
+
+      {activeTab === 'dropsRemaining' && type === 'cardFarmingList' && (
+        <div className='mt-4'>
+          {!hasCardFarmingCredentials ? (
+            <div className='flex flex-col justify-center items-center gap-2 h-[calc(100vh-262px)]'>
+              <p className='text-sm text-altwhite px-6 text-center'>
+                {t('customLists.dropsRemaining.noCredentials')}
+              </p>
+            </div>
+          ) : isDropsLoading ? (
+            <div className='flex justify-center items-center h-[calc(100vh-262px)]'>
+              <Spinner />
+            </div>
+          ) : filteredDropsData.length === 0 ? (
+            <div className='flex flex-col justify-center items-center gap-2 h-[calc(100vh-262px)]'>
+              <p className='text-sm text-altwhite px-6'>{t('customLists.dropsRemaining.empty')}</p>
+            </div>
+          ) : (
+            <List
+              height={windowInnerHeight - 194}
+              itemCount={filteredDropsData.length}
+              itemSize={56}
+              width='100%'
+              itemData={{
+                filteredGamesList: filteredDropsData,
+                list,
+                handleAddGame,
+                handleRemoveGame,
+                type,
+                handleBlacklistGame,
+                blacklist,
+                showDrops: true,
+              }}
+            >
+              {Row}
+            </List>
+          )}
+        </div>
+      )}
     </div>
   )
 }
@@ -676,6 +779,7 @@ interface RowData {
   type?: string
   handleBlacklistGame?: (game: Game) => void
   blacklist: number[]
+  showDrops?: boolean
 }
 
 interface RowProps {
@@ -693,6 +797,7 @@ const Row = memo(({ index, style, data }: RowProps) => {
     type,
     handleBlacklistGame,
     blacklist,
+    showDrops,
   } = data
   const item = filteredGamesList[index]
   const isInList = list.some(g => g.appid === item.appid)
@@ -731,6 +836,11 @@ const Row = memo(({ index, style, data }: RowProps) => {
         onError={handleImageError}
       />
       <p className='text-sm font-semibold flex-1 truncate'>{item.name}</p>
+      {showDrops && (
+        <p className='text-xs text-altwhite shrink-0'>
+          {i18next.t('customLists.cardFarming.drops', { count: item.remaining ?? 0 })}
+        </p>
+      )}
       <div className='flex items-center gap-2 shrink-0' onClick={e => e.stopPropagation()}>
         {type === 'cardFarmingList' && handleBlacklistGame && (
           <Button
