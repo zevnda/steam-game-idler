@@ -505,7 +505,7 @@ export const CustomList = ({ type }: CustomListProps) => {
                       ),
                       popoverContent: ['bg-input rounded-xl justify-start !text-content'],
                     }}
-                    defaultSelectedKeys={['a-z']}
+                    selectedKeys={[sortStyle]}
                     onSelectionChange={e => {
                       if (e.currentKey) setSortStyle(e.currentKey)
                     }}
