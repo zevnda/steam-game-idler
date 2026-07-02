@@ -1,0 +1,142 @@
+name: VirusTotal release scan
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to scan (defaults to latest if omitted)"
+        required: false
+
+permissions:
+  contents: write
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Resolve release tag
+        id: tag
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ -n "${{ github.event.release.tag_name }}" ]; then
+            TAG="${{ github.event.release.tag_name }}"
+          elif [ -n "${{ github.event.inputs.tag }}" ]; then
+            TAG="${{ github.event.inputs.tag }}"
+          else
+            TAG=$(gh release view --json tagName --jq .tagName)
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Download release assets
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p vt-assets
+          gh release download "${{ steps.tag.outputs.tag }}" \
+            --pattern "*x64-setup.exe" \
+            --pattern "*x64-portable.zip" \
+            --dir vt-assets \
+            --clobber
+
+      - name: Scan assets with VirusTotal
+        env:
+          VIRUSTOTAL_API_KEY: ${{ secrets.VIRUSTOTAL_API_KEY }}
+        run: |
+          mkdir -p vt-results
+          i=0
+          for f in vt-assets/*; do
+            i=$((i + 1))
+            name=$(basename "$f")
+            echo "Scanning $name..."
+            bash .github/scripts/vt-scan.sh new "$f" "$name" | tee "vt-results/$i.json"
+          done
+
+      - name: Notify Discord of any flags
+        env:
+          DISCORD_SECURITY_WEBHOOK: ${{ secrets.DISCORD_SECURITY_WEBHOOK }}
+        run: |
+          TAG="${{ steps.tag.outputs.tag }}"
+          for rf in vt-results/*.json; do
+            malicious=$(jq -r '.malicious' "$rf")
+            suspicious=$(jq -r '.suspicious' "$rf")
+            name=$(jq -r '.name' "$rf")
+
+            if [ "$malicious" -gt 0 ] || [ "$suspicious" -gt 0 ]; then
+              payload=$(jq -n \
+                --arg tag "$TAG" \
+                --arg name "$name" \
+                --arg flagged "$(jq -r '.flagged_vendors | join(", ")' "$rf")" \
+                --arg stats "malicious: $malicious, suspicious: $suspicious" \
+                --arg permalink "$(jq -r '.permalink' "$rf")" \
+                '{
+                  content: "@here",
+                  embeds: [{
+                    title: "VirusTotal flagged a new release asset",
+                    color: 15158332,
+                    description: ("**Steam Game Idler " + $tag + "**"),
+                    fields: [
+                      { name: "File", value: $name },
+                      { name: "Flagged by", value: $flagged },
+                      { name: "Stats", value: $stats },
+                      { name: "Report", value: $permalink }
+                    ]
+                  }]
+                }')
+              curl -s -H "Content-Type: application/json" -d "$payload" "$DISCORD_SECURITY_WEBHOOK"
+            else
+              echo "$name is clean."
+            fi
+          done
+
+      - name: Record baseline on vt-status branch
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ steps.tag.outputs.tag }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # automation/vt-status is an unprotected branch dedicated to scan state,
+          # kept separate from main so this workflow never touches main's branch protection.
+          if git ls-remote --exit-code --heads origin automation/vt-status > /dev/null 2>&1; then
+            git fetch origin automation/vt-status
+            git checkout -B automation/vt-status origin/automation/vt-status
+          else
+            git checkout --orphan automation/vt-status
+            git rm -rf . > /dev/null 2>&1 || true
+          fi
+
+          if [ ! -f vt-status.json ]; then
+            echo '{"schema_version":1,"releases":{}}' > vt-status.json
+          fi
+
+          for rf in vt-results/*.json; do
+            name=$(jq -r '.name' "$rf")
+            tmp=$(mktemp)
+            jq --arg tag "$TAG" --arg name "$name" --slurpfile r "$rf" '
+              .releases[$tag] = ((.releases[$tag] // {}) + {
+                ($name): {
+                  sha256: $r[0].sha256,
+                  flagged_vendors: $r[0].flagged_vendors,
+                  stats: { malicious: $r[0].malicious, suspicious: $r[0].suspicious, undetected: $r[0].undetected, harmless: $r[0].harmless },
+                  permalink: $r[0].permalink,
+                  last_checked: (now | todate)
+                }
+              })
+            ' vt-status.json > "$tmp"
+            mv "$tmp" vt-status.json
+          done
+
+          git add vt-status.json
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(vt-status): record baseline scan for $TAG"
+            git push origin automation/vt-status
+          else
+            echo "No changes to vt-status.json"
+          fi
