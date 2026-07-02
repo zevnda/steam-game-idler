@@ -8,7 +8,14 @@ import type {
 import { invoke } from '@tauri-apps/api/core'
 import i18next from 'i18next'
 import { showDangerToast, showOutdatedCredentialsToast } from '@/shared/components'
-import { decrypt, getAllGamesWithDrops, logEvent } from '@/shared/utils'
+import { useUserStore } from '@/shared/stores'
+import {
+  autoRevalidateSteamCredentials,
+  decrypt,
+  getAllGamesWithDrops,
+  hasGamerAccess,
+  logEvent,
+} from '@/shared/utils'
 
 export const fetchGamesWithDropsData = async (
   userSummary: UserSummary,
@@ -23,7 +30,14 @@ export const fetchGamesWithDropsData = async (
       steamId: userSummary?.steamId,
     })
 
-    const credentials = cachedUserSummary.settings.cardFarming.credentials
+    let credentials = cachedUserSummary.settings.cardFarming.credentials
+    const subscriptionTier = useUserStore.getState().subscriptionTier
+
+    // No credentials at all — try auto-revalidate for gamer tier before giving up
+    if ((!credentials?.sid || !credentials?.sls) && hasGamerAccess(subscriptionTier)) {
+      const result = await autoRevalidateSteamCredentials(setUserSettings)
+      if (result?.credentials) credentials = result.credentials
+    }
 
     if (!credentials || !credentials.sid || !credentials.sls) {
       setIsCFDataLoading(false)
@@ -31,12 +45,26 @@ export const fetchGamesWithDropsData = async (
     }
 
     // Validate credentials
-    const validate = await invoke<InvokeValidateSession>('validate_session', {
+    let validate = await invoke<InvokeValidateSession>('validate_session', {
       sid: decrypt(credentials.sid),
       sls: decrypt(credentials.sls),
       sma: credentials?.sma,
       steamid: userSummary?.steamId,
     })
+
+    // Credentials present but invalid — try auto-revalidate as a fallback for gamer tier
+    if (!validate.user && hasGamerAccess(subscriptionTier)) {
+      const result = await autoRevalidateSteamCredentials(setUserSettings)
+      if (result?.credentials) {
+        credentials = result.credentials
+        validate = await invoke<InvokeValidateSession>('validate_session', {
+          sid: decrypt(credentials.sid),
+          sls: decrypt(credentials.sls),
+          sma: credentials?.sma,
+          steamid: userSummary?.steamId,
+        })
+      }
+    }
 
     if (!validate.user) {
       await invoke<InvokeSettings>('update_user_settings', {

@@ -28,14 +28,15 @@ export const handleAutoFarmCards = async () => {
     let eligibleGames = gamesWithDrops
     if (skipNoPlaytime) eligibleGames = eligibleGames.filter(g => g.playtime > 0)
     if (farmUnplayedOnly) eligibleGames = eligibleGames.filter(g => g.playtime === 0)
-    if (blacklist?.length) eligibleGames = eligibleGames.filter(g => !blacklist.includes(g.id))
+    if (blacklist?.length)
+      eligibleGames = eligibleGames.filter(g => !blacklist.includes(Number(g.id)))
 
     if (!eligibleGames.length) return
 
     await invoke<InvokeCustomList>('update_custom_list', {
       steamId: userSummary?.steamId,
       list: 'cardFarmingList',
-      newList: eligibleGames.map(g => ({ appid: g.id, name: g.name })),
+      newList: eligibleGames.map(g => ({ appid: Number(g.id), name: g.name })),
     })
 
     await startCardFarming()

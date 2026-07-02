@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { showDangerToast } from '@/shared/components'
 import { useSearchStore, useStateStore, useUserStore } from '@/shared/stores'
 
-export type CustomListTab = 'all' | 'list' | 'blacklist'
+export type CustomListTab = 'all' | 'list' | 'blacklist' | 'dropsRemaining'
 
 export function useCustomList(listName: string) {
   const isAchievementUnlocker = useStateStore(state => state.isAchievementUnlocker)
