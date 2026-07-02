@@ -72,10 +72,12 @@ export const GameSettings = () => {
     globalMaxIdleTime,
     maxIdleTime,
     maxCardDrops,
+    maxCardFarmingTime,
     handleGlobalMaxIdleTimeChange,
     maxAchievementUnlocks,
     handleMaxIdleTimeChange,
     handleMaxCardDropsChange,
+    handleMaxCardFarmingTimeChange,
     handleMaxAchievementUnlocksChange,
   } = useGameSettings({ appId: selectedGame?.appid })
 
@@ -205,6 +207,39 @@ export const GameSettings = () => {
               stepperButton: ['!text-content', 'text-sm'],
             }}
             onValueChange={handleMaxIdleTimeChange}
+          />
+        </div>
+
+        <Divider className='bg-border/70 my-4' />
+
+        <div className='flex justify-between items-center'>
+          <div className='flex flex-col gap-2 w-1/2'>
+            <p className='text-sm text-content font-bold'>{t('gameSettings.cardFarmingTime')}</p>
+            <p className='text-xs text-altwhite'>{t('gameSettings.cardFarmingTimeSub')}</p>
+          </div>
+          <NumberInput
+            size='sm'
+            value={maxCardFarmingTime}
+            step={1}
+            minValue={0}
+            maxValue={99999}
+            aria-label='max card farming time'
+            className='w-22.5'
+            isDisabled={!selectedGame}
+            classNames={{
+              inputWrapper: cn(
+                'bg-input data-[hover=true]:!bg-inputhover border-none',
+                'group-data-[focus-visible=true]:ring-transparent',
+                'group-data-[focus-visible=true]:ring-offset-transparent',
+                'group-data-[focus-within=true]:!bg-inputhover',
+                'border group-data-[invalid=true]:border-red-500!',
+                'border group-data-[invalid=true]:bg-red-500/10!',
+                !selectedGame && 'opacity-50',
+              ),
+              input: ['text-sm !text-content'],
+              stepperButton: ['!text-content', 'text-sm'],
+            }}
+            onValueChange={handleMaxCardFarmingTimeChange}
           />
         </div>
 

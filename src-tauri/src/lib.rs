@@ -99,6 +99,7 @@ pub fn run() {
             stop_idle,
             start_farm_idle,
             stop_farm_idle,
+            stop_farm_idle_game,
             unlock_achievement,
             lock_achievement,
             toggle_achievement,
