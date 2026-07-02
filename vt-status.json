@@ -26,6 +26,34 @@
         "permalink": "https://www.virustotal.com/gui/file/c09f332fc64cb74302bc7528e027e6d57dfbb576679c0f42472a386240bf4a43/detection",
         "last_checked": "2026-07-02T03:09:19Z"
       }
+    },
+    "5.4.2": {
+      "Steam.Game.Idler_5.4.2_x64-portable.zip": {
+        "sha256": "23b0246c3921768e08ab8fcb5f1cc735006a143708b5f9c80737a094db4ea421",
+        "flagged_vendors": [],
+        "stats": {
+          "malicious": 0,
+          "suspicious": 0,
+          "undetected": 60,
+          "harmless": 0
+        },
+        "permalink": "https://www.virustotal.com/gui/file/23b0246c3921768e08ab8fcb5f1cc735006a143708b5f9c80737a094db4ea421/detection",
+        "last_checked": "2026-07-02T03:49:08Z"
+      },
+      "Steam.Game.Idler_5.4.2_x64-setup.exe": {
+        "sha256": "66b675b39d373898ea9a492be6f2348d2ae8f32d6d5a039aa377e6185205dd14",
+        "flagged_vendors": [
+          "APEX"
+        ],
+        "stats": {
+          "malicious": 1,
+          "suspicious": 0,
+          "undetected": 65,
+          "harmless": 0
+        },
+        "permalink": "https://www.virustotal.com/gui/file/66b675b39d373898ea9a492be6f2348d2ae8f32d6d5a039aa377e6185205dd14/detection",
+        "last_checked": "2026-07-02T03:49:08Z"
+      }
     }
   }
 }
