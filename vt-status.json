@@ -58,17 +58,15 @@
     "5.4.3": {
       "Steam.Game.Idler_5.4.3_x64-portable.zip": {
         "sha256": "92df405e3845656af2e4ba2f4a8cd41d41aa5abf2ab5c8db637d36782f8f0ddc",
-        "flagged_vendors": [
-          "MaxSecure"
-        ],
+        "flagged_vendors": [],
         "stats": {
-          "malicious": 1,
+          "malicious": 0,
           "suspicious": 0,
-          "undetected": 59,
+          "undetected": 66,
           "harmless": 0
         },
         "permalink": "https://www.virustotal.com/gui/file/92df405e3845656af2e4ba2f4a8cd41d41aa5abf2ab5c8db637d36782f8f0ddc/detection",
-        "last_checked": "2026-07-02T12:09:00Z"
+        "last_checked": "2026-07-02T12:48:26Z"
       },
       "Steam.Game.Idler_5.4.3_x64-setup.exe": {
         "sha256": "5c831919f74c542dba72c5a9ef82a9b9fb550c58962d60efcc88f2d11f98d5cb",
@@ -79,11 +77,11 @@
         "stats": {
           "malicious": 2,
           "suspicious": 0,
-          "undetected": 59,
+          "undetected": 67,
           "harmless": 0
         },
         "permalink": "https://www.virustotal.com/gui/file/5c831919f74c542dba72c5a9ef82a9b9fb550c58962d60efcc88f2d11f98d5cb/detection",
-        "last_checked": "2026-07-02T12:35:49Z"
+        "last_checked": "2026-07-02T12:48:26Z"
       },
       "": {
         "sha256": null,
