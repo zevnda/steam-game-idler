@@ -294,6 +294,15 @@ const processGamesWithDrops = (
           maxCardFarmingTime = gameSetting.maxCardFarmingTime ?? 0
         }
 
+        // Check for globalMaxCardFarmingTime first
+        const globalMaxCardFarmingTime =
+          typeof gameSettings.globalMaxCardFarmingTime === 'number'
+            ? gameSettings.globalMaxCardFarmingTime
+            : 0
+        if (globalMaxCardFarmingTime > 0) {
+          maxCardFarmingTime = globalMaxCardFarmingTime
+        }
+
         if (maxCardFarmingTime > 0) {
           if (!(gameId in farmStartTimes)) {
             farmStartTimes[gameId] = Date.now()
@@ -380,6 +389,15 @@ const processIndividualGames = async (
         ) {
           maxCardDrops = gameSetting.maxCardDrops ?? dropsRemaining
           maxCardFarmingTime = gameSetting.maxCardFarmingTime ?? 0
+        }
+
+        // Check for globalMaxCardFarmingTime first
+        const globalMaxCardFarmingTime =
+          typeof gameSettings.globalMaxCardFarmingTime === 'number'
+            ? gameSettings.globalMaxCardFarmingTime
+            : 0
+        if (globalMaxCardFarmingTime > 0) {
+          maxCardFarmingTime = globalMaxCardFarmingTime
         }
 
         if (maxCardFarmingTime > 0) {
@@ -542,6 +560,16 @@ const checkDropsRemaining = async (gameSet: Set<GameWithDrops>) => {
       if (typeof gameSetting === 'object' && gameSetting !== null && !Array.isArray(gameSetting)) {
         maxCardFarmingTime = gameSetting.maxCardFarmingTime ?? 0
       }
+
+      // Check for globalMaxCardFarmingTime first
+      const globalMaxCardFarmingTime =
+        typeof gameSettings.globalMaxCardFarmingTime === 'number'
+          ? gameSettings.globalMaxCardFarmingTime
+          : 0
+      if (globalMaxCardFarmingTime > 0) {
+        maxCardFarmingTime = globalMaxCardFarmingTime
+      }
+
       const elapsedMs = game.appid in farmStartTimes ? Date.now() - farmStartTimes[game.appid] : 0
 
       if (dropsRemaining <= 0) {

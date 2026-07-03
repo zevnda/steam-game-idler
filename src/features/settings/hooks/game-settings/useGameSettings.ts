@@ -16,6 +16,7 @@ export function useGameSettings({ appId }: UseGameSettingsProps = {}) {
   const [maxCardFarmingTime, setMaxCardFarmingTime] = useState(0)
   const [maxAchievementUnlocks, setMaxAchievementUnlocks] = useState(0)
   const [globalMaxIdleTime, setGlobalMaxIdleTime] = useState(0)
+  const [globalMaxCardFarmingTime, setGlobalMaxCardFarmingTime] = useState(0)
   const isInitializedRef = useRef(false)
 
   function isGameSpecificSettings(val: unknown) {
@@ -39,6 +40,11 @@ export function useGameSettings({ appId }: UseGameSettingsProps = {}) {
       setGlobalMaxIdleTime(
         (userSettings.gameSettings &&
           (userSettings.gameSettings as GameSettings).globalMaxIdleTime) ||
+          0,
+      )
+      setGlobalMaxCardFarmingTime(
+        (userSettings.gameSettings &&
+          (userSettings.gameSettings as GameSettings).globalMaxCardFarmingTime) ||
           0,
       )
       isInitializedRef.current = true
@@ -130,6 +136,25 @@ export function useGameSettings({ appId }: UseGameSettingsProps = {}) {
     saveGlobalMaxIdleTime(newValue)
   }
 
+  const saveGlobalMaxCardFarmingTime = async (value: number) => {
+    const gameSettings = { ...(userSettings.gameSettings || {}) }
+    ;(gameSettings as GameSettings).globalMaxCardFarmingTime = value
+
+    const updateResponse = await invoke<InvokeSettings>('update_user_settings', {
+      steamId: userSummary?.steamId,
+      key: 'gameSettings',
+      value: gameSettings,
+    })
+
+    setUserSettings(updateResponse.settings)
+  }
+
+  const handleGlobalMaxCardFarmingTimeChange = (value: number) => {
+    const newValue = value || 0
+    setGlobalMaxCardFarmingTime(newValue)
+    saveGlobalMaxCardFarmingTime(newValue)
+  }
+
   const resetSettings = () => {
     if (!appId) {
       setMaxIdleTime(0)
@@ -166,5 +191,8 @@ export function useGameSettings({ appId }: UseGameSettingsProps = {}) {
     globalMaxIdleTime,
     setGlobalMaxIdleTime,
     handleGlobalMaxIdleTimeChange,
+    globalMaxCardFarmingTime,
+    setGlobalMaxCardFarmingTime,
+    handleGlobalMaxCardFarmingTimeChange,
   }
 }

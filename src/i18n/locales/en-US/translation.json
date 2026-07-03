@@ -124,6 +124,8 @@
   "cardMenu.store": "View store page",
   "gameSettings.globalMaxIdle": "Global Max Idle Time",
   "gameSettings.globalMaxIdleSub": "The maximum amount of time (in minutes) that all games idled by Playtime Booster and Achievement Unlocker should be idled for before stopping (overrides individual game settings)",
+  "gameSettings.globalCardFarmingTime": "Global Max Card Farming Time",
+  "gameSettings.globalCardFarmingTimeSub": "The maximum amount of time (in minutes) that all games should be farmed for by Card Farming before stopping (overrides individual game settings)",
   "gameSettings.idle": "Max Idle Time",
   "gameSettings.idleSub": "The maximum amount of time (in minutes) that this game should be idled for by Playtime Booster and Achievement Unlocker before stopping",
   "gameSettings.drops": "Max Card Drops",
