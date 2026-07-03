@@ -40,12 +40,21 @@ jobs:
         run: |
           mkdir -p vt-results
           i=0
+          failed=0
           for f in vt-assets/*; do
             i=$((i + 1))
             name=$(basename "$f")
             echo "Rescanning $name..."
-            bash .github/scripts/vt-scan.sh rescan "$f" "$name" | tee "vt-results/$i.json"
+            if ! bash .github/scripts/vt-scan.sh rescan "$f" "$name" > "vt-results/$i.json"; then
+              echo "::error::Failed to rescan $name"
+              rm -f "vt-results/$i.json"
+              failed=1
+            fi
           done
+          if [ "$failed" -eq 1 ]; then
+            echo "::error::One or more assets failed to rescan; aborting before diff step."
+            exit 1
+          fi
 
       - name: Diff against known state, notify and commit on change
         env:
@@ -70,6 +79,11 @@ jobs:
 
           changed=0
           for rf in vt-results/*.json; do
+            if ! jq -e . "$rf" > /dev/null 2>&1; then
+              echo "Skipping invalid result file: $rf"
+              continue
+            fi
+
             name=$(jq -r '.name' "$rf")
 
             old_vendors=$(jq -c --arg tag "$TAG" --arg name "$name" '.releases[$tag][$name].flagged_vendors // []' vt-status.json)
