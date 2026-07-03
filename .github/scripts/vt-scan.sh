@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Shared VirusTotal v3 scan helper, used by virustotal-scan.yml and virustotal-rescan.yml.
+# Shared VirusTotal v3 scan helper, used by virustotal-scan.yml.
 #
 # Usage: vt-scan.sh <new|rescan> <file-path> [display-name]
 #   new    - always uploads the file for a fresh analysis (used on release publish)
