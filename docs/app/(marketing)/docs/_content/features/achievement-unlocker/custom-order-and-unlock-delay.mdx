@@ -1,0 +1,51 @@
+---
+title: Custom Order & Unlock Delay
+description: Configure a custom achievement unlock order and set delays between unlocks in Steam Game Idler.
+---
+
+import MockButton from '@/app/(marketing)/docs/_components/MockButton';
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+
+# Custom Order & Unlock Delay
+
+The `custom order` feature lets you set the exact order in which achievements are unlocked, and allows you to skip any that you don’t want unlocked.
+
+The `unlock delay` is how long SGI waits after unlocking one achievement before unlocking the next.
+
+<Callout type="info">
+  If you set a delay of 10 minutes on achievement one, SGI will unlock achievement one, wait 10 minutes, and then unlock achievement two.
+</Callout>
+
+Unlock delays override the global value set in [Settings → General → Unlock Interval](/docs/settings/achievement-unlocker#unlock-interval). If no unlock delay is set, the global value is used.
+
+You can customize the order, set delays, or both — each step is optional.
+
+<Steps>
+  <Step>
+    Follow steps 1 and 2 from the [Default Mode](#default-mode) section above
+  </Step>
+
+  <Step>
+    Click <MockButton type='unlock-order' /> below the game you want to customize
+  </Step>
+
+  <Step>
+    Drag and drop achievements by grabbing the <MockButton type='grabber' /> to set their unlock order
+  </Step>
+
+  <Step>
+    Click <MockButton type='checkbox' /> to uncheck achievements that you want to exclude from being unlocked
+  </Step>
+
+  <Step>
+    The first row in the list is **Initial Delay** — enter a value (in minutes) to set how long SGI waits before unlocking the very first achievement
+  </Step>
+
+  <Step>
+    Enter a delay (in minutes) in the input field of each achievement to set how long SGI waits after unlocking that achievement before moving to the next one
+  </Step>
+
+  <Step>
+    Click <MockButton type='save-alt' /> and then click <MockButton type='achievement-unlocker-action' />
+  </Step>
+</Steps>

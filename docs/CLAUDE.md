@@ -33,31 +33,41 @@ pnpm types:check     # fumadocs-mdx codegen + tsc --noEmit
 
 ## Architecture
 
+The app uses Next.js's **multiple root layouts** pattern: there is no single top-level `app/layout.tsx`. Instead, every route belongs to one of two top-level route groups, each with its own independent root layout (own `<html>`/`<body>`, own providers/scripts):
+
+- **`(marketing)`** — the full marketing/docs site (home, docs, changelog list, alternatives, download, pro, privacy, tos, paypal). Root layout includes Fumadocs `RootProvider`, Google Analytics, AdSense, `StoreLoader`, `TelemetryLoader`, full SEO metadata.
+- **`(embed)`** — routes meant to be loaded inside the desktop app's webview (currently just `/changelog/[slug]`, the single-changelog-entry view shown in `ChangelogModal.tsx`'s iframe). Root layout is intentionally minimal: fonts + global styles only, no analytics, no ads, no Fumadocs provider, no background fetches — this route is the one exception the app's Vercel Firewall rule allows through from `tauri.localhost`, so it should stay lightweight.
+
 ```
 docs/
   app/                     # Next.js App Router
-    (home)/                # Marketing home — route group with its own layout
-      _components/         # Section components (Hero, Features, FAQ, etc.)
-      layout.tsx
-      page.tsx             # Composes all home sections
-      search.tsx           # Search dialog
-    docs/                  # Documentation pages
-      _components/         # Doc-specific UI (CardLink, Cards, Logo, MockButton, etc.)
-      _content/            # MDX source files (see Content section below)
-      [[...slug]]/page.tsx # Catch-all routing — renders every doc page
-      layout.tsx           # Docs layout (Fumadocs sidebar, breadcrumbs, search)
-    changelog/             # Changelog list + detail pages
-    alternatives/          # Comparison pages (ASF, Idle Master, SAM)
-    supported-games/       # Dynamic game pages (/supported-games/[appName])
-    privacy/ tos/ pro/     # Static pages
-    layout.tsx             # Root layout — SEO metadata, analytics, fonts, providers
-    globals.css            # Global styles
+    (marketing)/           # Full-layout marketing/docs site — route group, own root layout
+      (home)/              # Marketing home — nested route group with its own sub-layout
+        _components/       # Section components (Hero, Features, FAQ, etc.)
+        layout.tsx
+        page.tsx           # Composes all home sections
+        search.tsx         # Search dialog
+      docs/                # Documentation pages
+        _components/       # Doc-specific UI (CardLink, Cards, Logo, MockButton, etc.)
+        _content/          # MDX source files (see Content section below)
+        [[...slug]]/page.tsx # Catch-all routing — renders every doc page
+        layout.tsx         # Docs layout (Fumadocs sidebar, breadcrumbs, search)
+      changelog/           # Changelog list page only (/changelog) — full layout, has NavBar/FooterSection
+      alternatives/        # Comparison pages (ASF, Idle Master, SAM)
+      privacy/ tos/ pro/ download/ paypal/  # Static/other pages
+      layout.tsx           # Marketing root layout — SEO metadata, analytics, ads, fonts, providers
+    (embed)/               # Minimal-layout routes loaded inside the desktop app's webview
+      changelog/[slug]/    # Single changelog entry (/changelog/[slug]) — no analytics/ads/RootProvider
+      layout.tsx           # Minimal root layout — fonts + global styles only
+    api/                   # Route Handlers (search index, llms-full.txt) — outside the layout tree
+    llms-full.txt/
+    globals.css            # Global styles — imported independently by both root layouts
   lib/
     source.ts              # Fumadocs source loaders (docs + changelogs)
     layout.shared.tsx      # Shared nav options reused across layouts
   changelogs/              # Changelog MDX files (versioned, e.g. 5.3.0.mdx)
   public/                  # Static assets — logos, OG images, ads.txt
-  source.config.ts         # Fumadocs collection definitions (docs + blog/changelogs)
+  source.config.ts         # Fumadocs collection definitions (docs dir: app/(marketing)/docs/_content)
   next.config.ts           # Static export config + Fumadocs MDX plugin
   mdx-components.tsx       # MDX component overrides (adds image zoom)
   next-sitemap.config.mjs  # Sitemap + robots.txt generation (postbuild)
@@ -66,21 +76,22 @@ docs/
 
 ## Routing
 
-| Route                        | Source                                   |
-| ---------------------------- | ---------------------------------------- |
-| `/`                          | `app/(home)/page.tsx`                    |
-| `/docs`                      | `app/docs/_content/index.mdx`            |
-| `/docs/[...slug]`            | `app/docs/_content/**/*.mdx`             |
-| `/changelog`                 | `app/changelog/page.tsx`                 |
-| `/changelog/[slug]`          | `changelogs/*.mdx`                       |
-| `/alternatives`              | `app/alternatives/page.tsx`              |
-| `/alternatives/[tool]`       | `app/alternatives/[tool]/page.tsx`       |
-| `/supported-games/[appName]` | `app/supported-games/[appName]/page.tsx` |
-| `/privacy`, `/tos`, `/pro`   | Static page files                        |
+| Route                      | Source                                                                                                   |
+| -------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `/`                        | `app/(marketing)/(home)/page.tsx`                                                                        |
+| `/docs`                    | `app/(marketing)/docs/_content/index.mdx`                                                                |
+| `/docs/[...slug]`          | `app/(marketing)/docs/_content/**/*.mdx`                                                                 |
+| `/changelog`               | `app/(marketing)/changelog/page.tsx`                                                                     |
+| `/changelog/[slug]`        | `app/(embed)/changelog/[slug]/page.tsx` + `changelogs/*.mdx` — minimal layout, loaded by the desktop app |
+| `/alternatives`            | `app/(marketing)/alternatives/page.tsx`                                                                  |
+| `/alternatives/[tool]`     | `app/(marketing)/alternatives/[tool]/page.tsx`                                                           |
+| `/privacy`, `/tos`, `/pro` | Static page files under `app/(marketing)/`                                                               |
+
+Route groups (`(marketing)`, `(embed)`, `(home)`) don't appear in the URL — only affect file organization and which root layout a route uses.
 
 ## Content
 
-### Documentation MDX (`app/docs/_content/`)
+### Documentation MDX (`app/(marketing)/docs/_content/`)
 
 Structure maps directly to sidebar navigation. Each feature folder contains:
 - `index.mdx` — overview page
@@ -134,7 +145,7 @@ Each `meta.json` in `_content/` controls sidebar ordering:
 
 ### `source.config.ts`
 Defines Fumadocs collections:
-- **`docs`** — reads from `app/docs/_content/`, adds `keywords` frontmatter field
+- **`docs`** — reads from `app/(marketing)/docs/_content/`, adds `keywords` frontmatter field
 - **`blog`** (changelogs) — reads from `changelogs/`, adds `date` + `tags` fields, async
 
 ### `lib/source.ts`
@@ -150,14 +161,17 @@ Returns base nav options (`{ nav: { title: 'Steam Game Idler' } }`). Imported by
 ### `mdx-components.tsx`
 Wraps all `<img>` tags with Fumadocs `<ImageZoom>` for click-to-zoom. Extended by every MDX page.
 
-### `app/layout.tsx`
-Root layout that provides:
+### `app/(marketing)/layout.tsx`
+Marketing root layout that provides:
 - Fumadocs `RootProvider` (theming, search)
 - Google Analytics + AdSense scripts
 - Geist + Geist Mono fonts
 - Full SEO metadata (OG tags, Twitter card, JSON-LD schema)
 
-### `app/docs/layout.tsx`
+### `app/(embed)/layout.tsx`
+Minimal root layout for `/changelog/[slug]` only — Geist/Geist Mono fonts + `globals.css`, no analytics, no ads, no Fumadocs `RootProvider`. Kept deliberately light since this is the one route the desktop app's webview still loads directly.
+
+### `app/(marketing)/docs/layout.tsx`
 Docs section layout using Fumadocs `DocsLayout`:
 - Sidebar with Orama-powered search
 - GitHub + Discord external links
@@ -167,11 +181,11 @@ Docs section layout using Fumadocs `DocsLayout`:
 
 **Tailwind CSS v4** via PostCSS (`@tailwindcss/postcss`). There is no `tailwind.config.mjs` — Fumadocs UI ships its own theme. Custom styles go in `globals.css`.
 
-**Path alias**: `@/*` → `./` (docs root). Use `@/lib/source`, `@/app/docs/_components/...`, etc.
+**Path alias**: `@/*` → `./` (docs root). Use `@/lib/source`, `@/app/(marketing)/docs/_components/...`, etc.
 
 ## Adding Content
 
-**New doc page**: Add an `.mdx` file to the appropriate `app/docs/_content/` subdirectory, then add its filename (without `.mdx`) to the corresponding `meta.json` `pages` array.
+**New doc page**: Add an `.mdx` file to the appropriate `app/(marketing)/docs/_content/` subdirectory, then add its filename (without `.mdx`) to the corresponding `meta.json` `pages` array.
 
 **New changelog entry**: Add `changelogs/{version}.mdx` with required `date` frontmatter. It appears automatically in `/changelog`.
 

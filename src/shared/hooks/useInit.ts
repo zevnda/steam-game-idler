@@ -1,7 +1,6 @@
 import type { UserSummary } from '@/shared/types'
 import { invoke } from '@tauri-apps/api/core'
 import { emit } from '@tauri-apps/api/event'
-import { WebviewWindow } from '@tauri-apps/api/webviewWindow'
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLoaderStore, useStateStore, useUserStore } from '@/shared/stores'
@@ -47,18 +46,4 @@ export function useInit() {
       }, 250)
     }, 1500)
   }, [setUserSummary, setLoadingUserSummary, hideLoader])
-
-  useEffect(() => {
-    const closeWebview = async () => {
-      try {
-        const webview = await WebviewWindow.getByLabel('webview')
-        setTimeout(async () => {
-          await webview?.close()
-        }, 5000)
-      } catch (error) {
-        console.error('Error in (closeWebview):', error)
-      }
-    }
-    closeWebview()
-  }, [])
 }

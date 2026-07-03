@@ -1,0 +1,57 @@
+---
+title: General
+description: Configure general application settings such as startup behavior, language, and Steam Web API key.
+---
+
+import MockButton from '@/app/(marketing)/docs/_components/MockButton';
+
+# General Settings
+
+## Always Online
+Prevents Steam from setting your status as away while SGI is running
+
+When enabled, SGI will automatically switch your Steam status back to online if it changes to away, offline, or invisible while the app is running. This is useful when you want to appear active on Steam while games are idling in the background.
+
+## Run At Startup
+Automatically launch SGI when Windows starts
+
+SGI will be added to your Windows startup programs so it runs in the background whenever you log in, without needing to open it manually. Works best when paired with [Start Minimized](#start-minimized).
+
+## Start Minimized
+Launch SGI to the system tray instead of showing the main window
+
+When enabled, SGI opens silently in the background on startup. You can access it at any time by clicking the SGI icon in the system tray. Pairs well with [Run At Startup](#run-at-startup) for a fully hands-off setup.
+
+## Close to Tray
+Keep SGI running when you close the window
+
+When enabled, clicking the X button minimizes SGI to the system tray instead of exiting it. To fully close the app, right-click the system tray icon and select `Quit`.
+
+## Automatically Update Games List
+Automatically refresh your games list every 15 minutes *(Pro — Gamer tier)*
+
+When enabled, SGI periodically checks for changes to your Steam library — such as newly purchased or removed games — and updates the list without requiring a manual refresh.
+
+## Discord Rich Presence
+Show your SGI activity as your Discord status
+
+When enabled, your Discord profile will display what SGI is currently doing, such as which game is being idled or which automation is running.
+
+## Language
+Choose the display language for SGI
+
+The language is set automatically based on your system settings, but you can change it to any supported language from the dropdown. If you'd like to help translate SGI into your language, see the [contribution guide](https://github.com/zevnda/steam-game-idler/discussions/148).
+
+## Currency
+Choose the currency used for price display in SGI
+
+This affects prices shown in the [Inventory Manager](/docs/features/inventory-manager), including suggested sell prices fetched from the Steam marketplace.
+
+## Steam Web API Key
+Use your own Steam Web API key to access private profile data
+
+By default, SGI fetches your profile and game data from public Steam APIs. Providing your own API key lets SGI access data even when your Steam profile is set to private.
+
+- API keys are free for all Steam accounts — [get yours here](https://steamcommunity.com/dev/apikey)
+- The API key must belong to the same Steam account you're signed into in SGI. If you use multiple accounts, you'll need to set the key for each one separately
+- Some features may still be limited with a private profile even with an API key
