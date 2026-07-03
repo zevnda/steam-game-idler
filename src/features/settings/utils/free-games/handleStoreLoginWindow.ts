@@ -10,7 +10,9 @@ export const handleShowStoreLoginWindow = async (
 ) => {
   const { userSummary } = useUserStore.getState()
 
-  const result = await invoke<InvokeSteamCredentials>('open_store_login_window')
+  const result = await invoke<InvokeSteamCredentials>('open_store_login_window', {
+    steamId: userSummary?.steamId,
+  })
 
   if (!result || result.success === false) {
     showDangerToast(i18next.t('common.error'))
@@ -38,7 +40,9 @@ export const handleSignOutCurrentStoreUser = async (
 ) => {
   const { userSummary } = useUserStore.getState()
 
-  const result = await invoke<InvokeSteamCredentials>('delete_store_cookies')
+  const result = await invoke<InvokeSteamCredentials>('delete_store_cookies', {
+    steamId: userSummary?.steamId,
+  })
 
   if (!result || result.success === false) {
     showDangerToast(i18next.t('common.error'))

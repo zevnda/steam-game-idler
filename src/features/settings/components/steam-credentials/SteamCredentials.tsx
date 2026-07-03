@@ -28,7 +28,9 @@ export const SteamCredentials = () => {
   const { isOpen, onOpenChange } = useDisclosure()
 
   const handleShowSteamLoginWindow = async () => {
-    const result = await invoke<InvokeSteamCredentials>('open_steam_login_window')
+    const result = await invoke<InvokeSteamCredentials>('open_steam_login_window', {
+      steamId: userSummary?.steamId,
+    })
 
     if (!result || result.success === false) {
       showDangerToast(t('common.error'))
@@ -53,7 +55,9 @@ export const SteamCredentials = () => {
   }
 
   const handleSignOutCurrentUser = async () => {
-    const result = await invoke<InvokeSteamCredentials>('delete_login_window_cookies')
+    const result = await invoke<InvokeSteamCredentials>('delete_login_window_cookies', {
+      steamId: userSummary?.steamId,
+    })
 
     if (!result || result.success === false) {
       showDangerToast(t('common.error'))

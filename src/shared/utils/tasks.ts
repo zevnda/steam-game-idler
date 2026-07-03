@@ -98,7 +98,11 @@ export async function autoRevalidateSteamCredentials(
   setUserSettings: (value: UserSettings) => void,
 ) {
   try {
-    const result = await invoke<InvokeSteamCredentials>('open_steam_login_window')
+    const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
+
+    const result = await invoke<InvokeSteamCredentials>('open_steam_login_window', {
+      steamId: userSummary?.steamId,
+    })
 
     if (!result || result.success === false) {
       showDangerToast(i18next.t('common.error'))
@@ -111,8 +115,6 @@ export async function autoRevalidateSteamCredentials(
       result.sessionid.length > 0 &&
       result.steamLoginSecure.length > 0
     ) {
-      const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
-
       const cachedUserSettings = await invoke<InvokeSettings>('get_user_settings', {
         steamId: userSummary?.steamId,
       })

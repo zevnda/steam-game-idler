@@ -401,13 +401,21 @@ pub async fn start_steam_status_monitor(app_handle: tauri::AppHandle) {
 
 // Open a Steam login window, allow user to log in, and retrieve session cookies automatically
 #[tauri::command]
-pub async fn open_steam_login_window(app_handle: tauri::AppHandle) -> Result<Value, String> {
+pub async fn open_steam_login_window(
+    app_handle: tauri::AppHandle,
+    steam_id: String,
+) -> Result<Value, String> {
     use std::time::Duration;
+
+    let label = format!("steam-login-{}", steam_id);
+    let data_directory = get_cache_dir(&app_handle)?
+        .join(&steam_id)
+        .join("webview-data");
 
     // Create a new window for Steam login (initially hidden)
     let window = tauri::webview::WebviewWindowBuilder::new(
         &app_handle,
-        "steam-login",
+        &label,
         tauri::WebviewUrl::External(
             "https://steamcommunity.com/login/home/?goto="
                 .parse()
@@ -417,6 +425,7 @@ pub async fn open_steam_login_window(app_handle: tauri::AppHandle) -> Result<Val
     .title("Steam Login")
     .inner_size(800.0, 700.0)
     .visible(false)
+    .data_directory(data_directory)
     .build()
     .map_err(|e| e.to_string())?;
 
@@ -424,7 +433,7 @@ pub async fn open_steam_login_window(app_handle: tauri::AppHandle) -> Result<Val
     tokio::time::sleep(Duration::from_millis(500)).await;
 
     // Check if we already have valid cookies
-    if let Some(webview) = window.get_webview("steam-login") {
+    if let Some(webview) = window.get_webview(&label) {
         if let Ok(cookies) =
             webview.cookies_for_url(tauri::Url::parse("https://steamcommunity.com/").unwrap())
         {
@@ -485,7 +494,7 @@ pub async fn open_steam_login_window(app_handle: tauri::AppHandle) -> Result<Val
         }
 
         // Get cookies from the webview
-        if let Some(webview) = window_clone.get_webview("steam-login") {
+        if let Some(webview) = window_clone.get_webview(&label) {
             // Get all cookies
             if let Ok(cookies) =
                 webview.cookies_for_url(tauri::Url::parse("https://steamcommunity.com/").unwrap())
@@ -526,23 +535,32 @@ pub async fn open_steam_login_window(app_handle: tauri::AppHandle) -> Result<Val
 
 // Delete Steam login window cookies to sign out the user
 #[tauri::command]
-pub async fn delete_login_window_cookies(app_handle: tauri::AppHandle) -> Result<Value, String> {
+pub async fn delete_login_window_cookies(
+    app_handle: tauri::AppHandle,
+    steam_id: String,
+) -> Result<Value, String> {
+    let label = format!("steam-logout-{}", steam_id);
+    let data_directory = get_cache_dir(&app_handle)?
+        .join(&steam_id)
+        .join("webview-data");
+
     // Create a hidden window
     let window = tauri::webview::WebviewWindowBuilder::new(
         &app_handle,
-        "steam-logout",
+        &label,
         tauri::WebviewUrl::External("https://steamcommunity.com/".parse().unwrap()),
     )
     .title("Steam Logout")
     .inner_size(0.0, 0.0)
     .visible(false)
+    .data_directory(data_directory)
     .build()
     .map_err(|e| e.to_string())?;
 
     // Wait for webview to fully initialize
     tokio::time::sleep(Duration::from_millis(1500)).await;
 
-    if let Some(webview) = window.get_webview("steam-logout") {
+    if let Some(webview) = window.get_webview(&label) {
         // Get all cookies first
         let cookies = webview.cookies().map_err(|e| e.to_string())?;
 
@@ -590,13 +608,21 @@ pub async fn delete_login_window_cookies(app_handle: tauri::AppHandle) -> Result
 
 // Open a Steam store login window and retrieve session cookies automatically
 #[tauri::command]
-pub async fn open_store_login_window(app_handle: tauri::AppHandle) -> Result<Value, String> {
+pub async fn open_store_login_window(
+    app_handle: tauri::AppHandle,
+    steam_id: String,
+) -> Result<Value, String> {
     use std::time::Duration;
+
+    let label = format!("store-login-{}", steam_id);
+    let data_directory = get_cache_dir(&app_handle)?
+        .join(&steam_id)
+        .join("webview-data");
 
     // Create a new window for Steam store login (initially hidden)
     let window = tauri::webview::WebviewWindowBuilder::new(
         &app_handle,
-        "store-login",
+        &label,
         tauri::WebviewUrl::External(
             "https://store.steampowered.com/login/?redir=&redir_ssl=1"
                 .parse()
@@ -606,6 +632,7 @@ pub async fn open_store_login_window(app_handle: tauri::AppHandle) -> Result<Val
     .title("Steam Store Login")
     .inner_size(800.0, 700.0)
     .visible(false)
+    .data_directory(data_directory)
     .build()
     .map_err(|e| e.to_string())?;
 
@@ -613,7 +640,7 @@ pub async fn open_store_login_window(app_handle: tauri::AppHandle) -> Result<Val
     tokio::time::sleep(Duration::from_millis(500)).await;
 
     // Check if we already have valid cookies
-    if let Some(webview) = window.get_webview("store-login") {
+    if let Some(webview) = window.get_webview(&label) {
         if let Ok(cookies) =
             webview.cookies_for_url(tauri::Url::parse("https://store.steampowered.com/").unwrap())
         {
@@ -662,7 +689,7 @@ pub async fn open_store_login_window(app_handle: tauri::AppHandle) -> Result<Val
         }
 
         // Get cookies from the webview
-        if let Some(webview) = window_clone.get_webview("store-login") {
+        if let Some(webview) = window_clone.get_webview(&label) {
             if let Ok(cookies) = webview
                 .cookies_for_url(tauri::Url::parse("https://store.steampowered.com/").unwrap())
             {
@@ -690,23 +717,32 @@ pub async fn open_store_login_window(app_handle: tauri::AppHandle) -> Result<Val
 
 // Delete Steam store cookies to sign out the user
 #[tauri::command]
-pub async fn delete_store_cookies(app_handle: tauri::AppHandle) -> Result<Value, String> {
+pub async fn delete_store_cookies(
+    app_handle: tauri::AppHandle,
+    steam_id: String,
+) -> Result<Value, String> {
+    let label = format!("store-logout-{}", steam_id);
+    let data_directory = get_cache_dir(&app_handle)?
+        .join(&steam_id)
+        .join("webview-data");
+
     // Create a hidden window
     let window = tauri::webview::WebviewWindowBuilder::new(
         &app_handle,
-        "store-logout",
+        &label,
         tauri::WebviewUrl::External("https://store.steampowered.com/".parse().unwrap()),
     )
     .title("Steam Store Logout")
     .inner_size(0.0, 0.0)
     .visible(false)
+    .data_directory(data_directory)
     .build()
     .map_err(|e| e.to_string())?;
 
     // Wait for webview to fully initialize
     tokio::time::sleep(Duration::from_millis(1500)).await;
 
-    if let Some(webview) = window.get_webview("store-logout") {
+    if let Some(webview) = window.get_webview(&label) {
         // Get cookies for store domain
         let cookies = webview
             .cookies_for_url(tauri::Url::parse("https://store.steampowered.com/").unwrap())
