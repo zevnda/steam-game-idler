@@ -48,6 +48,7 @@ export interface GameSpecificSettings {
 
 export interface GameSettings {
   globalMaxIdleTime?: number
+  globalMaxCardFarmingTime?: number
   [appId: string]: GameSpecificSettings | number | undefined
 }
 
