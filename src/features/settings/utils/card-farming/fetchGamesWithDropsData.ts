@@ -67,6 +67,12 @@ export const fetchGamesWithDropsData = async (
     }
 
     if (!validate.user) {
+      setIsCFDataLoading(false)
+
+      if (validate.error !== 'Not logged in') {
+        return showDangerToast(i18next.t('common.error'))
+      }
+
       await invoke<InvokeSettings>('update_user_settings', {
         steamId: userSummary?.steamId,
         key: 'cardFarming.credentials',
@@ -80,7 +86,6 @@ export const fetchGamesWithDropsData = async (
       })
 
       setUserSettings(response.settings)
-      setIsCFDataLoading(false)
       return showOutdatedCredentialsToast()
     }
 
