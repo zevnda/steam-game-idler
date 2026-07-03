@@ -1,0 +1,42 @@
+---
+title: Import Timings
+description: Import custom achievement unlock timings to replicate realistic playtime patterns.
+---
+
+import MockButton from '@/app/(marketing)/docs/_components/MockButton';
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+
+# Import Timings
+
+The `import timings` feature lets you copy the unlock order and achievement delays from another Steam user's profile. This is useful for matching a specific playstyle or replicating naturally-timed unlocks.
+
+<Callout type="info">
+  The target profile and their game details must be set to public on Steam. You can verify this by viewing their games list in an incognito browser window.
+</Callout>
+
+<Steps>
+  <Step>
+    Follow steps 1 and 2 from the [Default Mode](#default-mode) section above
+  </Step>
+
+  <Step>
+    Click <MockButton type='unlock-order' /> below the game you want to customize
+  </Step>
+
+  <Step>
+    Click <MockButton type='import-timings' /> in the top-right of the custom order page
+  </Step>
+
+  <Step>
+    Enter the target user's **SteamID64**, **profile URL**, or **username** and click <MockButton type='content' content='Import' />
+    - To find users with legitimate achievements, try achievement tracking sites like [Steam Hunters](https://steamhunters.com/) — search for the game, open the **Players** tab, and copy a username from there
+  </Step>
+
+  <Step>
+    The achievement list will be reordered to match their unlock sequence, with delays calculated from the time between each unlock. Any achievement not unlocked by the target profile will be skipped. You can still adjust the order and delays manually before saving
+  </Step>
+
+  <Step>
+    Click <MockButton type='save-alt' /> and then click <MockButton type='achievement-unlocker-action' />
+  </Step>
+</Steps>

@@ -1,0 +1,46 @@
+---
+title: Automatic Idler
+description: Learn how to use the Automatic Idler feature to auto-idle your Steam games when SGI starts, boosting playtime effortlessly.
+---
+
+import DocsCTA from '@/app/(marketing)/docs/_components/DocsCTA';
+import MockButton from '@/app/(marketing)/docs/_components/MockButton';
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+
+# Auto-Idle Steam Games on Startup
+
+The Automatic Idler lets you build a list of games that SGI will start idling automatically every time it launches. Once configured, you don't need to manually start anything — SGI handles it in the background.
+
+This works best when combined with [Run At Startup](/docs/settings/general#run-at-startup) and [Start Minimized](/docs/settings/general#start-minimized), so SGI launches silently with Windows and begins idling your games without any input from you.
+
+<DocsCTA />
+
+<Callout type="info">
+  You can idle a maximum of 32 games simultaneously. This limit is set by the Steam client.
+</Callout>
+
+## Setting Up Automatic Idler
+
+<Steps>
+  <Step>
+    Click <MockButton type='auto-idle' /> in the sidebar
+  </Step>
+
+  <Step>
+    Go to the <MockButton type='all-games' /> tab and click on individual games to add and remove them
+  </Step>
+
+  <Step>
+    The next time SGI launches, the games in this list will be idled automatically
+
+    Alternatively, click <MockButton type='start-manually' /> to start idling them right now without waiting for a restart
+  </Step>
+</Steps>
+
+Like [Playtime Booster](/docs/features/playtime-booster), Automatic Idler only increases playtime hours. It does not farm trading cards or unlock achievements. For those, see [Card Farming](/docs/features/card-farming) and [Achievement Unlocker](/docs/features/achievement-unlocker).
+
+## Enabling and Disabling Individual Games
+
+Each game card in the list has a checkbox that lets you toggle it on or off without removing it from the list. Games that are unchecked will be skipped when idling starts, both on launch and when using <MockButton type='start-manually' />.
+
+This is useful when you want to temporarily pause idling a specific game while keeping it in your list for later.
