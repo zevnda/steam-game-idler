@@ -183,7 +183,7 @@ pub async fn stop_farm_idle() -> Result<Value, String> {
     }
 
     if let Ok(mut processes) = SPAWNED_PROCESSES.lock() {
-        processes.retain(|p| p.source != "farm");
+        processes.retain(|p| !(p.source == "farm" && pids.contains(&p.pid)));
     }
 
     Ok(json!({"success": "Successfully stopped idling games"}))

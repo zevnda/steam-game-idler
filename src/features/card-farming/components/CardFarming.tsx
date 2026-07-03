@@ -202,8 +202,8 @@ export const CardFarming = ({ activePage }: { activePage: ActivePageType }) => {
                   className='font-bold'
                   startContent={<TbPlayerStopFilled size={18} />}
                   isDisabled={!isComplete && disableStopButton}
-                  onPress={() => {
-                    handleCancel(gamesWithDrops, isMountedRef, abortControllerRef)
+                  onPress={async () => {
+                    await handleCancel(gamesWithDrops, isMountedRef, abortControllerRef)
                     setIsCardFarming(false)
                     updateTrayIcon()
                     updateDiscordPresence()
