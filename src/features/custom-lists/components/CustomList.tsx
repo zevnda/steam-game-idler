@@ -105,11 +105,32 @@ export const CustomList = ({ type }: CustomListProps) => {
   const setUserSettings = useUserStore(state => state.setUserSettings)
   const [columnCount, setColumnCount] = useState(5)
   const [windowInnerHeight, setWindowInnerHeight] = useState(window.innerHeight)
-  const [sortStyle, setSortStyle] = useState('a-z')
+  const [sortStyle, setSortStyleState] = useState(
+    () => localStorage.getItem(`customListSortStyle_${type}`) || 'a-z',
+  )
+  const [dropsSortStyle, setDropsSortStyleState] = useState(
+    () => localStorage.getItem(`customListDropsSortStyle_${type}`) || 'drops-desc',
+  )
   const [activeId, setActiveId] = useState<number | null>(null)
   const [rowHeight, setRowHeight] = useState(220)
   const [dropsData, setDropsData] = useState<GameWithRemainingDrops[]>([])
   const [isDropsLoading, setIsDropsLoading] = useState(false)
+
+  const setSortStyle = useCallback(
+    (style: string) => {
+      setSortStyleState(style)
+      localStorage.setItem(`customListSortStyle_${type}`, style)
+    },
+    [type],
+  )
+
+  const setDropsSortStyle = useCallback(
+    (style: string) => {
+      setDropsSortStyleState(style)
+      localStorage.setItem(`customListDropsSortStyle_${type}`, style)
+    },
+    [type],
+  )
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }))
 
@@ -127,18 +148,40 @@ export const CustomList = ({ type }: CustomListProps) => {
     userSettings.cardFarming.credentials?.sid && userSettings.cardFarming.credentials?.sls
   )
 
-  const filteredDropsData = useMemo(
-    () =>
-      dropsData
-        .filter(g => g.name.toLowerCase().includes(searchTerm.toLowerCase()))
-        .map(g => ({
-          appid: Number(g.id),
-          name: g.name,
-          playtime_forever: g.playtime,
-          remaining: g.remaining,
-        })),
-    [dropsData, searchTerm],
-  )
+  const dropsSortOptions = [
+    { key: 'drops-desc', label: t('gamesList.sort.dropsDesc') },
+    { key: 'drops-asc', label: t('gamesList.sort.dropsAsc') },
+    { key: 'a-z', label: t('gamesList.sort.titleAsc') },
+    { key: 'z-a', label: t('gamesList.sort.titleDesc') },
+  ]
+
+  const filteredDropsData = useMemo(() => {
+    const filtered = dropsData
+      .filter(g => g.name.toLowerCase().includes(searchTerm.toLowerCase()))
+      .map(g => ({
+        appid: Number(g.id),
+        name: g.name,
+        playtime_forever: g.playtime,
+        remaining: g.remaining,
+      }))
+
+    const sorted = [...filtered]
+    switch (dropsSortStyle) {
+      case 'drops-desc':
+        sorted.sort((a, b) => (b.remaining ?? 0) - (a.remaining ?? 0))
+        break
+      case 'drops-asc':
+        sorted.sort((a, b) => (a.remaining ?? 0) - (b.remaining ?? 0))
+        break
+      case 'a-z':
+        sorted.sort((a, b) => a.name.localeCompare(b.name))
+        break
+      case 'z-a':
+        sorted.sort((a, b) => b.name.localeCompare(a.name))
+        break
+    }
+    return sorted
+  }, [dropsData, searchTerm, dropsSortStyle])
 
   const filteredList = useMemo(
     () =>
@@ -187,7 +230,7 @@ export const CustomList = ({ type }: CustomListProps) => {
 
   useEffect(() => {
     if (list.length === 0 && sortStyle === 'list') setSortStyle('a-z')
-  }, [list.length, sortStyle])
+  }, [list.length, sortStyle, setSortStyle])
 
   const rows = useMemo(() => {
     const result: Game[][] = []
@@ -470,6 +513,41 @@ export const CustomList = ({ type }: CustomListProps) => {
                   )}
                   <Tab key='list' title={`${listType.title} ${t('common.list')}`} />
                 </Tabs>
+
+                {activeTab === 'dropsRemaining' && type === 'cardFarmingList' && (
+                  <Select
+                    aria-label='sort'
+                    disallowEmptySelection
+                    radius='full'
+                    startContent={<TbSortDescending2 fontSize={26} />}
+                    items={dropsSortOptions}
+                    className='w-57.5 h-11'
+                    classNames={{
+                      value: ['text-sm !text-content'],
+                      trigger: cn(
+                        'bg-item-active data-[hover=true]:!bg-item-active/80 h-11',
+                        'data-[open=true]:!bg-btn-achievement-header-open duration-100',
+                      ),
+                      popoverContent: ['bg-input rounded-xl justify-start !text-content'],
+                    }}
+                    selectedKeys={[dropsSortStyle]}
+                    onSelectionChange={e => {
+                      if (e.currentKey) setDropsSortStyle(e.currentKey)
+                    }}
+                  >
+                    {item => (
+                      <SelectItem
+                        classNames={{
+                          base: [
+                            'data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content',
+                          ],
+                        }}
+                      >
+                        {item.label}
+                      </SelectItem>
+                    )}
+                  </Select>
+                )}
 
                 {activeTab === 'dropsRemaining' && type === 'cardFarmingList' && (
                   <Button
