@@ -19,6 +19,30 @@ lazy_static! {
     static ref LAST_KNOWN_TITLES: Mutex<HashMap<String, String>> = Mutex::new(HashMap::new());
 }
 
+// Shared browser fingerprint for cookie-authentication requests
+pub const STEAM_USER_AGENT: &str = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
+
+// Default header set toi mimic real browser
+pub fn steam_headers() -> reqwest::header::HeaderMap {
+    use reqwest::header::{HeaderMap, HeaderValue, ACCEPT, ACCEPT_LANGUAGE, USER_AGENT};
+
+    let mut headers = HeaderMap::new();
+    headers.insert(USER_AGENT, HeaderValue::from_static(STEAM_USER_AGENT));
+    headers.insert(
+        ACCEPT,
+        HeaderValue::from_static("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"),
+    );
+    headers.insert(ACCEPT_LANGUAGE, HeaderValue::from_static("en-US,en;q=0.9"));
+    headers
+}
+
+pub fn steam_client() -> Result<Client, String> {
+    Client::builder()
+        .default_headers(steam_headers())
+        .build()
+        .map_err(|e| e.to_string())
+}
+
 #[tauri::command]
 pub async fn is_dev() -> bool {
     cfg!(debug_assertions)
@@ -107,7 +131,7 @@ pub async fn validate_session(
     sma: Option<String>,
     steamid: String,
 ) -> Result<Value, String> {
-    let client = Client::new();
+    let client = steam_client()?;
 
     // Construct the cookie value based on the provided parameters
     let cookie_value = match sma {
@@ -118,17 +142,6 @@ pub async fn validate_session(
         None => format!("sessionid={}; steamLoginSecure={}", sid, sls),
     };
 
-    // Send the request and handle the response
-    let response = client
-        .get("https://steamcommunity.com/?l=english")
-        .header("Content-Type", "application/json")
-        .header("Cookie", cookie_value)
-        .send()
-        .await
-        .map_err(|e| e.to_string())?;
-
-    let html = response.text().await.map_err(|e| e.to_string())?;
-
     let regex = Regex::new(
         r#"<div\s+class="popup_block_new"\s+id="account_dropdown"\s+style="display:\s*none;"#,
     )
@@ -136,16 +149,42 @@ pub async fn validate_session(
     let regex_two = Regex::new(r#"<a\s+href="https://steamcommunity\.com/(id|profiles)/[^"]*"\s+data-miniprofile="\d+">([^<]+)</a>"#)
         .map_err(|e| e.to_string())?;
 
-    // Check if the user is logged in based on the response HTML
-    if let Some(_m) = regex.find(&html) {
-        if let Some(captures) = regex_two.captures(&html) {
-            Ok(json!({ "user": captures[2].to_string() }))
-        } else {
-            Ok(json!({ "error": "Not logged in" }))
+    const MAX_ATTEMPTS: u8 = 2;
+
+    for attempt in 0..MAX_ATTEMPTS {
+        let response = client
+            .get("https://steamcommunity.com/?l=english")
+            .header("Content-Type", "application/json")
+            .header("Cookie", &cookie_value)
+            .send()
+            .await
+            .map_err(|e| e.to_string())?;
+
+        let session_revoked = response.headers().get_all("set-cookie").iter().any(|value| {
+            value
+                .to_str()
+                .map(|s| s.contains("steamLoginSecure=deleted"))
+                .unwrap_or(false)
+        });
+
+        let html = response.text().await.map_err(|e| e.to_string())?;
+
+        if regex.find(&html).is_some() {
+            if let Some(captures) = regex_two.captures(&html) {
+                return Ok(json!({ "user": captures[2].to_string() }));
+            }
         }
-    } else {
-        Ok(json!({ "error": "Not logged in" }))
+
+        if session_revoked {
+            return Ok(json!({ "error": "Not logged in" }));
+        }
+
+        if attempt + 1 < MAX_ATTEMPTS {
+            tokio::time::sleep(Duration::from_millis(1500)).await;
+        }
     }
+
+    Ok(json!({ "error": "Inconclusive" }))
 }
 
 #[tauri::command]

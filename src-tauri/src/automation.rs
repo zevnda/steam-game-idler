@@ -1,6 +1,6 @@
+use crate::utils::steam_client;
 use futures::future::join_all;
 use regex::Regex;
-use reqwest::Client;
 use scraper::{Html, Selector};
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
@@ -21,7 +21,7 @@ pub async fn get_drops_remaining(
     steam_id: String,
     app_id: u32,
 ) -> Result<Value, String> {
-    let client = Client::new();
+    let client = steam_client()?;
 
     // Construct the cookie value based on the provided parameters
     let cookie_value = match sma {
@@ -94,7 +94,7 @@ pub async fn get_games_with_drops(
     sma: Option<String>,
     steamid: String,
 ) -> Result<Value, String> {
-    let client = Client::new();
+    let client = steam_client()?;
 
     // Construct the cookie value based on the provided parameters
     let cookie_value = match sma {

@@ -60,6 +60,10 @@ export const startCardFarming = async () => {
     }
 
     if (!validationResponse.user) {
+      if (validationResponse.error !== 'Not logged in') {
+        return showDangerToast(i18next.t('common.error'))
+      }
+
       await invoke<InvokeSettings>('update_user_settings', {
         steamId: userSummary?.steamId,
         key: 'cardFarming.credentials',

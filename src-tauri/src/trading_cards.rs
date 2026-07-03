@@ -1,4 +1,4 @@
-use crate::utils::{atomic_write_json, get_cache_dir};
+use crate::utils::{atomic_write_json, get_cache_dir, steam_headers};
 use reqwest::Client;
 use serde_json::{json, Value};
 use std::collections::HashMap;
@@ -24,6 +24,7 @@ pub async fn get_trading_cards(
                 attempt.follow()
             }
         }))
+        .default_headers(steam_headers())
         .build()
         .map_err(|e| e.to_string())?;
 
@@ -512,6 +513,7 @@ pub async fn list_trading_cards(
                 attempt.follow()
             }
         }))
+        .default_headers(steam_headers())
         .build()
         .map_err(|e| e.to_string())?;
 
@@ -586,7 +588,6 @@ pub async fn list_trading_cards(
             .header("Cookie", &cookie_value)
             .header("Referer", format!("https://steamcommunity.com/profiles/{}/inventory", steam_id))
             .header("Origin", "https://steamcommunity.com")
-            .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
             .form(&form_data)
             .send()
             .await {
@@ -661,6 +662,7 @@ pub async fn get_card_price(
                 attempt.follow()
             }
         }))
+        .default_headers(steam_headers())
         .build()
         .map_err(|e| e.to_string())?;
 
@@ -683,7 +685,6 @@ pub async fn get_card_price(
         loop {
             let resp = client
                 .get(&orderbook_url)
-                .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
                 .header("Referer", &referer)
                 .send()
                 .await;
@@ -803,6 +804,7 @@ pub async fn remove_market_listings(
                 attempt.follow()
             }
         }))
+        .default_headers(steam_headers())
         .build()
         .map_err(|e| e.to_string())?;
 
@@ -924,7 +926,6 @@ pub async fn remove_market_listings(
             .header("Cookie", &cookie_value)
             .header("Referer", "https://steamcommunity.com/market/")
             .header("Origin", "https://steamcommunity.com")
-            .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
             .header("X-Requested-With", "XMLHttpRequest")
             .header("Accept", "*/*")
             .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")

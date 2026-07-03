@@ -50,6 +50,7 @@ export interface InvokeUserSummary {
 
 export interface InvokeValidateSession {
   user: string | null
+  error?: string
 }
 
 export interface InvokeValidateKey {
