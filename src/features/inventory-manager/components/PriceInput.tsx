@@ -60,7 +60,6 @@ export const PriceInput = ({ item, tradingCardContext, isLocked }: PriceInputPro
           onPress={() => {
             tradingCardContext.handleSellSingleCard(
               item.assetid,
-              item.id,
               tradingCardContext.getCardPriceValue(item.assetid),
             )
           }}

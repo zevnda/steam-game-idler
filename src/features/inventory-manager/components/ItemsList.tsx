@@ -63,7 +63,7 @@ export const TradingCardsList = () => {
 
     // By default hide locked items; include them only when the locked filter is active
     if (!cardFilterValues.has('locked')) {
-      list = list.filter(card => !lockedCards.includes(card.id))
+      list = list.filter(card => !lockedCards.includes(card.assetid))
     }
 
     if (cardFilterValues.size === 0) return list
@@ -95,7 +95,7 @@ export const TradingCardsList = () => {
       }
       if (cardFilterValues.has('badge') && !(card.badge_level > 0)) return false
       if (cardFilterValues.has('dupes') && !(dupeMap[card.market_hash_name] > 1)) return false
-      if (cardFilterValues.has('locked') && !lockedCards.includes(card.id)) return false
+      if (cardFilterValues.has('locked') && !lockedCards.includes(card.assetid)) return false
       return true
     })
   }, [tradingCardContext.tradingCardsList, tradingCardQueryValue, cardFilterValues, lockedCards])
@@ -122,7 +122,7 @@ export const TradingCardsList = () => {
   const renderCard = (item: TradingCard) => {
     if (!item) return null
 
-    const isLocked = lockedCards.includes(item.id)
+    const isLocked = lockedCards.includes(item.assetid)
     const isFoil = item.foil
 
     return (
@@ -130,7 +130,7 @@ export const TradingCardsList = () => {
         key={item.assetid}
         className={cn(
           'flex flex-col justify-start items-center bg-sidebar rounded-xl border border-border p-2',
-          lockedCards.includes(item.id) && 'opacity-50',
+          lockedCards.includes(item.assetid) && 'opacity-50',
           isFoil && 'holo-bg',
         )}
       >
@@ -155,7 +155,7 @@ export const TradingCardsList = () => {
             <CustomTooltip content={t('tradingCards.lockCard')} placement='top'>
               <div
                 className='hover:bg-item-hover rounded-full p-1 cursor-pointer duration-200'
-                onClick={() => handleLockCard(item.id)}
+                onClick={() => handleLockCard(item.assetid)}
               >
                 {isLocked ? (
                   <TbLock fontSize={14} className='text-yellow-500' />
