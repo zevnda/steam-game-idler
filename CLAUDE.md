@@ -5,6 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Working with Claude Code
 
 - **Never stage or commit git changes** — only the user does that. Do not run `git add`, `git mv` (for staging), or `git commit`.
+- **Never run `pnpm prettier` (or `prettier --write .`) against the whole project** — it reformats every file in the repo, not just the ones you touched. Only run Prettier on the specific files you've edited, e.g. `pnpm prettier --write path/to/file.tsx`.
 
 ## Monorepo structure
 
