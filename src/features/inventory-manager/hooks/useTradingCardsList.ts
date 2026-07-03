@@ -301,10 +301,10 @@ export function useTradingCardsList() {
     }
   }
 
-  const handleSellSingleCard = async (assetId: string, itemId: string, price: number) => {
+  const handleSellSingleCard = async (assetId: string, price: number) => {
     try {
       const card = tradingCardsList.find(c => c.assetid === assetId)
-      if (card && isCardLocked(card.id)) {
+      if (card && isCardLocked(card.assetid)) {
         showDangerToast(t('toast.tradingCards.cardLocked'))
         return
       }
@@ -396,7 +396,7 @@ export function useTradingCardsList() {
       // Filter out locked cards
       const unlockedCards = cardsToSell.filter(assetId => {
         const card = tradingCardsList.find(c => c.assetid === assetId)
-        return !card || !isCardLocked(card.id)
+        return !card || !isCardLocked(card.assetid)
       })
 
       const lockedCardsCount = cardsToSell.length - unlockedCards.length
@@ -514,7 +514,7 @@ export function useTradingCardsList() {
       }
 
       // Skip locked cards
-      if (isCardLocked(card.id)) {
+      if (isCardLocked(card.assetid)) {
         skippedCards.push(card.assetid)
         logEvent(`[Info] in (${context}): Skipped locked item ${card.assetid}`)
         continue
