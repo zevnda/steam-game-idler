@@ -95,7 +95,7 @@ export const AdSlot = () => {
       )}
       style={{ zoom: sidebarCollapsed ? 0.16 : 0.75 }}
     >
-      <div className='relative flex justify-center items-center overflow-hidden rounded-lg w-150 h-150'>
+      <div className='relative flex justify-center items-center overflow-hidden rounded-lg w-75 h-62.5'>
         <div
           className={cn(
             'absolute inset-0 z-10 flex items-center justify-center bg-[#121316]',
