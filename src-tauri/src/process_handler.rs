@@ -48,40 +48,44 @@ fn get_any_window_title_for_pid(pid: u32) -> Option<String> {
 #[tauri::command]
 // Get all running SteamUtility processes with window title
 pub async fn get_running_processes() -> Result<Value, String> {
-    let mut system = System::new_all();
-    system.refresh_processes(ProcessesToUpdate::All, true);
+    tokio::task::spawn_blocking(|| {
+        let mut system = System::new_all();
+        system.refresh_processes(ProcessesToUpdate::All, true);
 
-    let mut processes = Vec::new();
+        let mut processes = Vec::new();
 
-    for (_pid, process) in system.processes() {
-        let proc_name = process.name().to_ascii_lowercase();
-        if proc_name == "steamutility" || proc_name == "steamutility.exe" {
-            let pid = process.pid().as_u32();
-            let window_title = get_any_window_title_for_pid(pid).unwrap_or_default();
+        for (_pid, process) in system.processes() {
+            let proc_name = process.name().to_ascii_lowercase();
+            if proc_name == "steamutility" || proc_name == "steamutility.exe" {
+                let pid = process.pid().as_u32();
+                let window_title = get_any_window_title_for_pid(pid).unwrap_or_default();
 
-            let (game_name, app_id) = if let Some(start) = window_title.find('[') {
-                if let Some(end) = window_title[start..].find(']') {
-                    let app_id_str = &window_title[start + 1..start + end];
-                    let name = window_title[..start].trim().trim_end_matches(" -");
-                    (name.to_string(), app_id_str.parse::<u32>().unwrap_or(0))
+                let (game_name, app_id) = if let Some(start) = window_title.find('[') {
+                    if let Some(end) = window_title[start..].find(']') {
+                        let app_id_str = &window_title[start + 1..start + end];
+                        let name = window_title[..start].trim().trim_end_matches(" -");
+                        (name.to_string(), app_id_str.parse::<u32>().unwrap_or(0))
+                    } else {
+                        ("".to_string(), 0)
+                    }
                 } else {
                     ("".to_string(), 0)
-                }
-            } else {
-                ("".to_string(), 0)
-            };
+                };
 
-            if app_id > 0 {
-                processes.push(json!({
-                    "appid": app_id,
-                    "pid": pid,
-                    "name": game_name,
-                }));
+                if app_id > 0 {
+                    processes.push(json!({
+                        "appid": app_id,
+                        "pid": pid,
+                        "name": game_name,
+                    }));
+                }
             }
         }
-    }
 
-    Ok(json!({"processes": processes}))
+        json!({"processes": processes})
+    })
+    .await
+    .map_err(|e| format!("Failed to join blocking task: {}", e))
 }
 
 #[tauri::command]

@@ -1,0 +1,12 @@
+---
+title: 5.4.6
+date: 2026-07-05
+tags: ['Improved', 'Fixed']
+---
+
+### Improved 🚀
+- **Achievement Unlocker** now scans games much faster by reusing previously fetched achievement data instead of re-scanning every game each time
+
+### Fixed 🐛
+- Fixed **Achievement Unlocker** incorrectly logging achievements as unlocked (and removing games from the list) even when the unlock actually failed, when running many games concurrently
+- Fixed a backend bottleneck in **Achievement Unlocker** that caused long delays and frequent failures when unlocking achievements for many games at once

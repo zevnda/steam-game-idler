@@ -23,6 +23,9 @@ export const MAX_CONCURRENT_GAMES = 32
 
 const INTER_GAME_DELAY_MS = 120000
 
+const MAX_UNLOCK_ATTEMPTS = 3
+const RETRY_BACKOFF_MS = [2000, 5000]
+
 interface AchievementToUnlock {
   appId: number
   id: string
@@ -264,7 +267,7 @@ const fetchAchievements = async (game: Game) => {
       {
         steamId: userSummary?.steamId,
         appId: game.appid,
-        refetch: true,
+        refetch: false,
       },
     )
 
@@ -491,26 +494,47 @@ const unlockAchievements = async (
         }
 
         // Unlock the achievement
-        await unlockAchievement(userSummary?.steamId, game.appid, achievement.id, game.name)
-        achievementsRemaining--
-        logEvent(`[Achievement Unlocker] Unlocked ${achievement.name} for ${game.name}`)
-        updateGame(game.appid, prev => ({
-          achievementCount: Math.max(prev.achievementCount - 1, 0),
-        }))
-
-        // Stop idling and remove game from list if max achievement unlocks is reached
-        if (
-          achievementsRemaining === 0 ||
-          (maxAchievementUnlocks &&
-            achievementsRemaining <= achievements.length - maxAchievementUnlocks)
-        ) {
-          await stopIdle(game.appid, game.name)
-          await removeGameFromUnlockerList(game.appid)
-          logEvent(
-            `[Achievement Unlocker] Unlocked ${maxAchievementUnlocks !== null ? achievements.length - maxAchievementUnlocks : achievements.length}/${achievements.length} achievements for ${game.name} - removed`,
+        let unlockSucceeded = false
+        for (let attempt = 0; attempt < MAX_UNLOCK_ATTEMPTS && isMountedRef.current; attempt++) {
+          unlockSucceeded = await unlockAchievement(
+            userSummary?.steamId,
+            game.appid,
+            achievement.id,
+            game.name,
           )
-          updateGame(game.appid, { upcomingAchievements: [] })
-          break
+          if (unlockSucceeded) break
+          if (attempt < MAX_UNLOCK_ATTEMPTS - 1) {
+            await delay(RETRY_BACKOFF_MS[attempt], isMountedRef, abortControllerRef)
+          }
+        }
+
+        if (!isMountedRef.current) break
+
+        if (!unlockSucceeded) {
+          logEvent(
+            `[Achievement Unlocker] Giving up on ${achievement.name} for ${game.name} after ${MAX_UNLOCK_ATTEMPTS} attempts this pass - will retry on the next scan pass`,
+          )
+        } else {
+          achievementsRemaining--
+          logEvent(`[Achievement Unlocker] Unlocked ${achievement.name} for ${game.name}`)
+          updateGame(game.appid, prev => ({
+            achievementCount: Math.max(prev.achievementCount - 1, 0),
+          }))
+
+          // Stop idling and remove game from list if max achievement unlocks is reached
+          if (
+            achievementsRemaining === 0 ||
+            (maxAchievementUnlocks &&
+              achievementsRemaining <= achievements.length - maxAchievementUnlocks)
+          ) {
+            await stopIdle(game.appid, game.name)
+            await removeGameFromUnlockerList(game.appid)
+            logEvent(
+              `[Achievement Unlocker] Unlocked ${maxAchievementUnlocks !== null ? achievements.length - maxAchievementUnlocks : achievements.length}/${achievements.length} achievements for ${game.name} - removed`,
+            )
+            updateGame(game.appid, { upcomingAchievements: [] })
+            break
+          }
         }
 
         // Wait for a delay before unlocking the next achievement
