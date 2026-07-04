@@ -171,11 +171,20 @@ export default function Layout({ children }: LayoutProps) {
           `}
         </Script>
 
-        <script
+        <Script
           async
           src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8915288433444527'
           crossOrigin='anonymous'
         />
+
+        <Script data-cfasync='false' src='https://cmp.gatekeeperconsent.com/min.js' />
+        <Script data-cfasync='false' src='https://the.gatekeeperconsent.com/cmp.min.js' />
+        <Script async src='//www.ezojs.com/ezoic/sa.min.js' />
+        <Script>
+          window.ezstandalone = window.ezstandalone || {}; ezstandalone.cmd = ezstandalone.cmd ||
+          [];
+        </Script>
+        <Script src='//ezoicanalytics.com/analytics.js' />
       </head>
 
       <body className='flex flex-col min-h-screen'>
