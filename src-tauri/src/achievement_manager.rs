@@ -1,8 +1,38 @@
 use crate::utils::{get_cache_dir, get_lib_path};
+use lazy_static::lazy_static;
 use serde_json::{json, Value};
 use std::fs::File;
 use std::io::Read;
 use std::os::windows::process::CommandExt;
+use tokio::sync::Semaphore;
+
+lazy_static! {
+    // Caps concurrent SteamUtility.exe child processes spawned for achievement/stat
+    // operations
+    static ref ACHIEVEMENT_PROCESS_LIMIT: Semaphore = Semaphore::new(6);
+}
+
+// Runs a SteamUtility.exe subcommand off the async runtime's worker threads and
+// throttles concurrent achievement-related processes
+async fn run_lib_command(args: Vec<String>) -> Result<String, String> {
+    let _permit = ACHIEVEMENT_PROCESS_LIMIT
+        .acquire()
+        .await
+        .map_err(|e| format!("Failed to acquire achievement process slot: {}", e))?;
+
+    let exe_path = get_lib_path()?;
+    let output = tokio::task::spawn_blocking(move || {
+        std::process::Command::new(exe_path)
+            .args(&args)
+            .creation_flags(0x08000000)
+            .output()
+    })
+    .await
+    .map_err(|e| format!("Failed to join blocking task: {}", e))?
+    .map_err(|e| format!("Failed to execute unlocker: {}", e))?;
+
+    Ok(String::from_utf8_lossy(&output.stdout).to_string())
+}
 
 #[tauri::command]
 pub async fn get_achievement_data(
@@ -26,14 +56,12 @@ pub async fn get_achievement_data(
         let cache_dir_str = cache_dir.to_string_lossy().to_string();
 
         // Fetch new data
-        let exe_path = get_lib_path()?;
-        let output = std::process::Command::new(exe_path)
-            .args(&["get_achievement_data", &app_id.to_string(), &cache_dir_str])
-            .creation_flags(0x08000000)
-            .output()
-            .map_err(|e| format!("Failed to execute unlocker: {}", e))?;
-
-        let output_str = String::from_utf8_lossy(&output.stdout);
+        let output_str = run_lib_command(vec![
+            "get_achievement_data".to_string(),
+            app_id.to_string(),
+            cache_dir_str,
+        ])
+        .await?;
 
         if output_str.contains("error") {
             return Ok(output_str.to_string().into());
@@ -71,97 +99,69 @@ pub async fn get_achievement_data(
 #[tauri::command]
 // Unlock an achievement
 pub async fn unlock_achievement(app_id: u32, achievement_id: &str) -> Result<String, String> {
-    let exe_path = get_lib_path()?;
-    let output = std::process::Command::new(exe_path)
-        .args(&["unlock_achievement", &app_id.to_string(), achievement_id])
-        .creation_flags(0x08000000)
-        .output()
-        .expect("failed to execute unlocker");
-
-    let output_str = String::from_utf8_lossy(&output.stdout);
-    Ok(output_str.to_string())
+    run_lib_command(vec![
+        "unlock_achievement".to_string(),
+        app_id.to_string(),
+        achievement_id.to_string(),
+    ])
+    .await
 }
 
 #[tauri::command]
 // Lock an achievement
 pub async fn lock_achievement(app_id: u32, achievement_id: &str) -> Result<String, String> {
-    let exe_path = get_lib_path()?;
-    let output = std::process::Command::new(exe_path)
-        .args(&["lock_achievement", &app_id.to_string(), achievement_id])
-        .creation_flags(0x08000000)
-        .output()
-        .expect("failed to execute unlocker");
-
-    let output_str = String::from_utf8_lossy(&output.stdout);
-    Ok(output_str.to_string())
+    run_lib_command(vec![
+        "lock_achievement".to_string(),
+        app_id.to_string(),
+        achievement_id.to_string(),
+    ])
+    .await
 }
 
 #[tauri::command]
 // Unlock an achievement
 pub async fn toggle_achievement(app_id: u32, achievement_id: &str) -> Result<String, String> {
-    let exe_path = get_lib_path()?;
-    let output = std::process::Command::new(exe_path)
-        .args(&["toggle_achievement", &app_id.to_string(), achievement_id])
-        .creation_flags(0x08000000)
-        .output()
-        .expect("failed to execute unlocker");
-
-    let output_str = String::from_utf8_lossy(&output.stdout);
-    Ok(output_str.to_string())
+    run_lib_command(vec![
+        "toggle_achievement".to_string(),
+        app_id.to_string(),
+        achievement_id.to_string(),
+    ])
+    .await
 }
 
 #[tauri::command]
 // Unlock all achievements
 pub async fn unlock_all_achievements(app_id: u32) -> Result<String, String> {
-    let exe_path = get_lib_path()?;
-    let output = std::process::Command::new(exe_path)
-        .args(&["unlock_all_achievements", &app_id.to_string()])
-        .creation_flags(0x08000000)
-        .output()
-        .expect("failed to execute unlocker");
-
-    let output_str = String::from_utf8_lossy(&output.stdout);
-    Ok(output_str.to_string())
+    run_lib_command(vec![
+        "unlock_all_achievements".to_string(),
+        app_id.to_string(),
+    ])
+    .await
 }
 
 #[tauri::command]
 // Lock all achievements
 pub async fn lock_all_achievements(app_id: u32) -> Result<String, String> {
-    let exe_path = get_lib_path()?;
-    let output = std::process::Command::new(exe_path)
-        .args(&["lock_all_achievements", &app_id.to_string()])
-        .creation_flags(0x08000000)
-        .output()
-        .expect("failed to execute unlocker");
-
-    let output_str = String::from_utf8_lossy(&output.stdout);
-    Ok(output_str.to_string())
+    run_lib_command(vec![
+        "lock_all_achievements".to_string(),
+        app_id.to_string(),
+    ])
+    .await
 }
 
 #[tauri::command]
 // Update achievement statistic
 pub async fn update_stats(app_id: u32, stats_arr: &str) -> Result<String, String> {
-    let exe_path = get_lib_path()?;
-    let output = std::process::Command::new(exe_path)
-        .args(&["update_stats", &app_id.to_string(), stats_arr])
-        .creation_flags(0x08000000)
-        .output()
-        .expect("failed to execute stat updater");
-
-    let output_str = String::from_utf8_lossy(&output.stdout);
-    Ok(output_str.to_string())
+    run_lib_command(vec![
+        "update_stats".to_string(),
+        app_id.to_string(),
+        stats_arr.to_string(),
+    ])
+    .await
 }
 
 #[tauri::command]
 // Reset all achievement statistics
 pub async fn reset_all_stats(app_id: u32) -> Result<String, String> {
-    let exe_path = get_lib_path()?;
-    let output = std::process::Command::new(exe_path)
-        .args(&["reset_all_stats", &app_id.to_string()])
-        .creation_flags(0x08000000)
-        .output()
-        .expect("failed to execute stat updater");
-
-    let output_str = String::from_utf8_lossy(&output.stdout);
-    Ok(output_str.to_string())
+    run_lib_command(vec!["reset_all_stats".to_string(), app_id.to_string()]).await
 }

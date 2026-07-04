@@ -153,14 +153,11 @@ pub async fn get_games_with_drops(
         );
         let client = client.clone();
         let cookie_value = cookie_value.clone();
-        println!("Queueing fetch for page {}: {}", page, url);
         page_futures.push(async move {
             let resp = client.get(&url).header("Cookie", cookie_value).send().await;
             match resp {
                 Ok(r) => {
                     let text = r.text().await.unwrap_or_default();
-                    println!("Fetched page {} HTML length: {}", page, text.len());
-
                     // Parse the HTML for games with drops INSIDE the async block
                     let badge_row_selector = Selector::parse(".badge_row").unwrap();
                     let progress_info_bold_selector =
