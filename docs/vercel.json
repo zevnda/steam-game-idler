@@ -5,5 +5,12 @@
       "automation/vt-status": false
     }
   },
-  "ignoreCommand": "bash -c 'if git diff HEAD^ HEAD --quiet -- .; then echo \"No changes in docs, skipping build\"; exit 0; else echo \"Changes detected in docs, proceeding with build\"; exit 1; fi'"
+  "ignoreCommand": "bash -c 'if git diff HEAD^ HEAD --quiet -- .; then echo \"No changes in docs, skipping build\"; exit 0; else echo \"Changes detected in docs, proceeding with build\"; exit 1; fi'",
+  "redirects": [
+    {
+      "source": "/ads.txt",
+      "destination": "https://srv.adstxtmanager.com/19390/steamgameidler.com",
+      "permanent": true
+    }
+  ]
 }
