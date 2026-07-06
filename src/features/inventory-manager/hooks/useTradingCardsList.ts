@@ -44,7 +44,14 @@ export function useTradingCardsList() {
   const [changedCardPrices, setChangedCardPrices] = useState<Record<string, number>>({})
   const [selectedCards, setSelectedCards] = useState<Record<string, boolean>>({})
   const [refreshKey, setRefreshKey] = useState(0)
-  const [cardSortStyle, setCardSortStyle] = useState('a-z')
+  const [cardSortStyle, setCardSortStyleState] = useState(
+    () => localStorage.getItem('inventorySortStyle') || 'a-z',
+  )
+
+  const setCardSortStyle = useCallback((style: string) => {
+    setCardSortStyleState(style)
+    localStorage.setItem('inventorySortStyle', style)
+  }, [])
 
   // Sorting logic
   const sortedTradingCardsList = useMemo(() => {
