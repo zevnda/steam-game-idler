@@ -2,7 +2,6 @@
 
 import type { ProPriceData } from '@/app/(marketing)/pro/_components/data'
 import { FaArrowDown } from 'react-icons/fa6'
-import { FadeIn } from '@/app/lib/animations'
 
 interface HeroSectionProps {
   priceData: ProPriceData
@@ -26,7 +25,7 @@ export default function HeroSection({ priceData }: HeroSectionProps) {
       />
 
       <div className='container mx-auto relative z-10 px-4 sm:px-6 md:px-8'>
-        <FadeIn immediate className='max-w-2xl mx-auto text-center'>
+        <div className='max-w-2xl mx-auto text-center'>
           <p className='text-sm font-black uppercase tracking-[0.2em] text-text-primary mb-4'>
             Steam Game Idler{' '}
             <span
@@ -66,7 +65,7 @@ export default function HeroSection({ priceData }: HeroSectionProps) {
           <p className='text-xs text-text-muted/70 mt-4'>
             Starting at ${priceData.tierOne.price}/month &middot; Cancel anytime
           </p>
-        </FadeIn>
+        </div>
       </div>
     </section>
   )

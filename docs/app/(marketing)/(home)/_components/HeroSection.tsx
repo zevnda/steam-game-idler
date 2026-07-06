@@ -2,22 +2,10 @@
 
 import { useState } from 'react'
 import { FaBook, FaDiscord, FaGithub, FaStar } from 'react-icons/fa6'
-import { motion } from 'motion/react'
 import Link from 'next/link'
 import DownloadButton from '@/app/(marketing)/(home)/_components/DownloadButton'
 import { formatCount } from '@/app/lib/format'
 import { useGlobalStore } from '@/app/lib/globalStore'
-import { ease } from '@/app/lib/motion'
-
-const container = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.1, delayChildren: 0.15 } },
-}
-
-const item = {
-  hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease } },
-}
 
 function RainbowBadge({
   children,
@@ -136,13 +124,7 @@ export default function HeroSection() {
               'linear-gradient(to right, transparent 0%, black 16%, black 88%, transparent 100%)',
           }}
         >
-          <motion.div
-            className='mockup-float'
-            style={{ willChange: 'transform' }}
-            initial={{ opacity: 0, x: 40 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.9, ease }}
-          >
+          <div className='mockup-float' style={{ willChange: 'transform' }}>
             <div
               style={{
                 borderRadius: '12px',
@@ -182,24 +164,16 @@ export default function HeroSection() {
                 loading='eager'
               />
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
 
       {/* Main content — left half */}
       <div className='container mx-auto relative z-10 px-4 sm:px-6 md:px-8'>
         <div className='min-h-screen py-16 sm:py-20 md:py-24 flex items-center'>
-          <motion.div
-            className='w-full lg:max-w-[50%] space-y-7 text-center lg:text-left'
-            variants={container}
-            initial='hidden'
-            animate='show'
-          >
+          <div className='w-full lg:max-w-[50%] space-y-7 text-center lg:text-left'>
             {/* Rainbow badges */}
-            <motion.div
-              variants={item}
-              className='flex flex-wrap gap-2 justify-center lg:justify-start'
-            >
+            <div className='flex flex-wrap gap-2 justify-center lg:justify-start'>
               <RainbowBadge
                 href={`https://github.com/zevnda/steam-game-idler/releases/${latestVersion}`}
                 target='_blank'
@@ -214,31 +188,25 @@ export default function HeroSection() {
                 <FaStar className='w-3 h-3' />
                 {repoStars !== null ? repoStars.toLocaleString() : '…'} Stars
               </RainbowBadge>
-            </motion.div>
+            </div>
 
             {/* Heading */}
-            <motion.div variants={item}>
+            <div>
               <h1 className='text-5xl md:text-6xl lg:text-7xl font-bold leading-none tracking-tight'>
                 <span className='text-text-primary'>STEAM</span>{' '}
                 <span className='block gradient-text'>GAME IDLER</span>
               </h1>
-            </motion.div>
+            </div>
 
             {/* Subtitle */}
-            <motion.p
-              variants={item}
-              className='text-lg text-text-muted max-w-lg leading-relaxed mx-auto lg:mx-0'
-            >
+            <p className='text-lg text-text-muted max-w-lg leading-relaxed mx-auto lg:mx-0'>
               Automate your Steam library. Farm trading cards, manage achievements, and boost
               playtime — all from a single free desktop app. Trusted by over 100,000 Steam users as
               a modern alternative to ArchiSteamFarm, Steam Achievement Manager, and Idle Master.
-            </motion.p>
+            </p>
 
             {/* Buttons */}
-            <motion.div
-              variants={item}
-              className='flex flex-wrap gap-3 justify-center lg:justify-start'
-            >
+            <div className='flex flex-wrap gap-3 justify-center lg:justify-start'>
               <DownloadButton />
               <Link prefetch={false} href='/docs' className='btn-ghost px-6 py-3'>
                 <FaBook className='w-4 h-4' />
@@ -262,13 +230,10 @@ export default function HeroSection() {
               >
                 <FaDiscord className='w-4 h-4' />
               </Link>
-            </motion.div>
+            </div>
 
             {/* Stats */}
-            <motion.div
-              variants={item}
-              className='flex items-center justify-center lg:justify-start gap-6 sm:gap-8 pt-2'
-            >
+            <div className='flex items-center justify-center lg:justify-start gap-6 sm:gap-8 pt-2'>
               <div className='text-center'>
                 <div className='text-xl sm:text-2xl font-bold text-text-primary'>
                   {totalDownloads ? `${totalDownloads}` : '100K+'}
@@ -299,8 +264,8 @@ export default function HeroSection() {
                   Public Source Code
                 </div>
               </div>
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
