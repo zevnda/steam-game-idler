@@ -152,6 +152,15 @@ export default function Layout({ children }: LayoutProps) {
   return (
     <html lang='en' className={`${geist.variable} ${mono.variable}`} suppressHydrationWarning>
       <head>
+        <link rel='preconnect' href='https://pub-ca47df86597c4ccbb6ddf4366ca7f733.r2.dev' />
+        <link rel='preconnect' href='https://www.googletagmanager.com' />
+        <link
+          rel='preconnect'
+          href='https://pagead2.googlesyndication.com'
+          crossOrigin='anonymous'
+        />
+        <link rel='dns-prefetch' href='https://cmp.gatekeeperconsent.com' />
+
         <Script
           type='application/ld+json'
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
@@ -159,10 +168,10 @@ export default function Layout({ children }: LayoutProps) {
 
         <Script
           src='https://www.googletagmanager.com/gtag/js?id=G-W2GWCP59BN'
-          strategy='afterInteractive'
+          strategy='lazyOnload'
         />
 
-        <Script id='ga-init' strategy='afterInteractive'>
+        <Script id='ga-init' strategy='lazyOnload'>
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
@@ -170,21 +179,6 @@ export default function Layout({ children }: LayoutProps) {
             gtag('config', 'G-W2GWCP59BN');
           `}
         </Script>
-
-        <Script
-          async
-          src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8915288433444527'
-          crossOrigin='anonymous'
-        />
-
-        <Script data-cfasync='false' src='https://cmp.gatekeeperconsent.com/min.js' />
-        <Script data-cfasync='false' src='https://the.gatekeeperconsent.com/cmp.min.js' />
-        <Script async src='//www.ezojs.com/ezoic/sa.min.js' />
-        <Script>
-          window.ezstandalone = window.ezstandalone || {}; ezstandalone.cmd = ezstandalone.cmd ||
-          [];
-        </Script>
-        <Script src='//ezoicanalytics.com/analytics.js' />
       </head>
 
       <body className='flex flex-col min-h-screen'>

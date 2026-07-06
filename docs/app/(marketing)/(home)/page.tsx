@@ -1,5 +1,6 @@
 import AdOverlay from '@/app/(marketing)/(home)/_components/AdOverlay'
 import AdOverlayTwo from '@/app/(marketing)/(home)/_components/AdOverlayTwo'
+import AdScripts from '@/app/(marketing)/(home)/_components/AdScripts'
 import ComparisonSection from '@/app/(marketing)/(home)/_components/ComparisonSection'
 import CTASection from '@/app/(marketing)/(home)/_components/CTASection'
 import FAQSection from '@/app/(marketing)/(home)/_components/FAQSection'
@@ -13,6 +14,7 @@ import StatsSection from '@/app/(marketing)/(home)/_components/StatsSection'
 export default function HomePage() {
   return (
     <div className='min-h-screen bg-background'>
+      <AdScripts />
       <NavBar />
       <div className='relative'>
         <HeroSection />
