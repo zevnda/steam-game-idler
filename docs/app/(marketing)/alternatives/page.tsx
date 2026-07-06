@@ -5,7 +5,7 @@ import AdOverlay from '@/app/(marketing)/(home)/_components/AdOverlay'
 import AdScripts from '@/app/(marketing)/(home)/_components/AdScripts'
 import FooterSection from '@/app/(marketing)/(home)/_components/FooterSection'
 import NavBar from '@/app/(marketing)/(home)/_components/NavBar'
-import { FadeIn, StaggerGroup, StaggerItem } from '@/app/lib/animations'
+import { StaggerGroup, StaggerItem } from '@/app/lib/animations'
 
 export const metadata = {
   title: 'The Best Alternative to ArchiSteamFarm, Idle Master & Steam Achievement Manager',
@@ -76,7 +76,7 @@ export default function AlternativesPage() {
         <AdOverlay slot='1265004536' />
 
         {/* Header */}
-        <FadeIn immediate className='mb-16 text-center'>
+        <div className='mb-16 text-center'>
           <h1 className='text-4xl sm:text-5xl font-bold text-text-primary mb-6 leading-tight tracking-tight'>
             The better alternative to popular <span className='gradient-text'>Steam tools</span>
           </h1>
@@ -85,7 +85,7 @@ export default function AlternativesPage() {
             Steam Game Idler replaces all three — with a modern interface, active development, and
             no complex configuration required.
           </p>
-        </FadeIn>
+        </div>
 
         {/* Comparison cards */}
         <StaggerGroup className='flex flex-col gap-5'>
