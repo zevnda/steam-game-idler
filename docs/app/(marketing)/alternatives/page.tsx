@@ -2,6 +2,7 @@ import { FaArrowRight } from 'react-icons/fa'
 import { FiAward, FiClock, FiTerminal } from 'react-icons/fi'
 import Link from 'next/link'
 import AdOverlay from '@/app/(marketing)/(home)/_components/AdOverlay'
+import AdScripts from '@/app/(marketing)/(home)/_components/AdScripts'
 import FooterSection from '@/app/(marketing)/(home)/_components/FooterSection'
 import NavBar from '@/app/(marketing)/(home)/_components/NavBar'
 import { FadeIn, StaggerGroup, StaggerItem } from '@/app/lib/animations'
@@ -68,6 +69,7 @@ const comparisons = [
 export default function AlternativesPage() {
   return (
     <div className='min-h-screen bg-background'>
+      <AdScripts />
       <NavBar />
 
       <div className='container mx-auto px-4 sm:px-6 md:px-8 max-w-4xl pt-36 pb-24 sm:pt-44 sm:pb-32'>

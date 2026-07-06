@@ -16,7 +16,7 @@ const features = [
     description:
       'Collect trading card drops automatically from any game in your library. Runs quietly in the background while you focus on other things.',
     link: '/docs/features/card-farming',
-    image: 'https://pub-ca47df86597c4ccbb6ddf4366ca7f733.r2.dev/card-farming.png',
+    image: 'https://pub-ca47df86597c4ccbb6ddf4366ca7f733.r2.dev/card-farming.webp',
   },
   {
     icon: TbAward,
@@ -26,7 +26,7 @@ const features = [
     description:
       'View and manage achievements for any game you own. Unlock them manually or let the automated achievement unlocker handle it with human-like timing.',
     link: '/docs/features/achievement-manager',
-    image: 'https://pub-ca47df86597c4ccbb6ddf4366ca7f733.r2.dev/achievement-manager.png',
+    image: 'https://pub-ca47df86597c4ccbb6ddf4366ca7f733.r2.dev/achievement-manager.webp',
   },
   {
     icon: TbBuildingStore,
@@ -36,7 +36,7 @@ const features = [
     description:
       'Browse your entire Steam inventory and list items on the marketplace directly from within the app — no browser tabs required.',
     link: '/docs/features/inventory-manager',
-    image: 'https://pub-ca47df86597c4ccbb6ddf4366ca7f733.r2.dev/inventory-manager.png',
+    image: 'https://pub-ca47df86597c4ccbb6ddf4366ca7f733.r2.dev/inventory-manager.webp',
   },
   {
     icon: FiTrendingUp,
@@ -46,7 +46,7 @@ const features = [
     description:
       'Idle up to 32 games simultaneously to build playtime and meet card drop eligibility requirements faster.',
     link: '/docs/features/playtime-booster',
-    image: 'https://pub-ca47df86597c4ccbb6ddf4366ca7f733.r2.dev/playtime-booster.png',
+    image: 'https://pub-ca47df86597c4ccbb6ddf4366ca7f733.r2.dev/playtime-booster.webp',
   },
 ]
 

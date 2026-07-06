@@ -2,6 +2,7 @@ import { FiBook, FiCheck, FiX } from 'react-icons/fi'
 import { TbAward, TbCards, TbTrendingUp } from 'react-icons/tb'
 import Link from 'next/link'
 import AdOverlay from '@/app/(marketing)/(home)/_components/AdOverlay'
+import AdScripts from '@/app/(marketing)/(home)/_components/AdScripts'
 import DownloadButton from '@/app/(marketing)/(home)/_components/DownloadButton'
 import FooterSection from '@/app/(marketing)/(home)/_components/FooterSection'
 import NavBar from '@/app/(marketing)/(home)/_components/NavBar'
@@ -107,6 +108,7 @@ const articleSchema = {
 export default function page() {
   return (
     <div className='min-h-screen bg-background'>
+      <AdScripts />
       <script
         type='application/ld+json'
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}

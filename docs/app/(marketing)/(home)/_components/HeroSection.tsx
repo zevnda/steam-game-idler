@@ -141,7 +141,7 @@ export default function HeroSection() {
             style={{ willChange: 'transform' }}
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.9, delay: 0.5, ease }}
+            transition={{ duration: 0.9, ease }}
           >
             <div
               style={{
@@ -152,10 +152,10 @@ export default function HeroSection() {
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src='https://pub-ca47df86597c4ccbb6ddf4366ca7f733.r2.dev/example.png'
+                src='https://pub-ca47df86597c4ccbb6ddf4366ca7f733.r2.dev/example.webp'
                 alt='Steam Game Idler application dashboard'
-                width={2000}
-                height={1200}
+                width={1600}
+                height={860}
                 className='w-full h-auto block'
                 loading='eager'
               />
@@ -175,7 +175,7 @@ export default function HeroSection() {
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src='https://pub-ca47df86597c4ccbb6ddf4366ca7f733.r2.dev/example.png'
+                src='https://pub-ca47df86597c4ccbb6ddf4366ca7f733.r2.dev/example.webp'
                 alt=''
                 aria-hidden='true'
                 style={{ width: '100%', height: 'auto', display: 'block', transform: 'scaleY(-1)' }}
