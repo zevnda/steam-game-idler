@@ -1,7 +1,7 @@
 import { RootProvider } from 'fumadocs-ui/provider/next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import Script from 'next/script'
-import TelemetryLoader from '@/app/(marketing)/(home)/_components/TelemetryLoader'
+import VercelAnalytics from '@/app/(marketing)/(home)/_components/VercelAnalytics'
 import SearchDialog from '@/app/(marketing)/(home)/search'
 import '../globals.css'
 
@@ -190,7 +190,7 @@ export default function Layout({ children }: LayoutProps) {
           {children}
         </RootProvider>
 
-        <TelemetryLoader />
+        <VercelAnalytics />
       </body>
     </html>
   )
