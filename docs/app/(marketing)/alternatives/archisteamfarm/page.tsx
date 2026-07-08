@@ -297,7 +297,7 @@ export default function page() {
 
         <div className='section-divider' />
 
-        <AdOverlay slot='9143494556' />
+        <AdOverlay slot='1265004536' />
 
         {/* Why Choose SGI */}
         <section className='py-20 sm:py-24 relative'>
@@ -352,7 +352,7 @@ export default function page() {
 
         <div className='section-divider' />
 
-        <AdOverlay slot='9143494556' />
+        <AdOverlay slot='3005445709' />
 
         {/* CTA */}
         <section className='py-24 sm:py-32 relative'>
