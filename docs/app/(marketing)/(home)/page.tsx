@@ -1,5 +1,4 @@
 import AdOverlay from '@/app/(marketing)/(home)/_components/AdOverlay'
-import AdOverlayTwo from '@/app/(marketing)/(home)/_components/AdOverlayTwo'
 import AdScripts from '@/app/(marketing)/(home)/_components/AdScripts'
 import ComparisonSection from '@/app/(marketing)/(home)/_components/ComparisonSection'
 import CTASection from '@/app/(marketing)/(home)/_components/CTASection'
@@ -19,24 +18,24 @@ export default function HomePage() {
       <div className='relative'>
         <HeroSection />
         <div className='section-divider' />
-        <AdOverlayTwo />
+        <AdOverlay slot='1265004536' />
         <div id='features'>
           <FeaturesSection />
         </div>
         <div className='section-divider' />
-        <AdOverlay slot='1265004536' />
+        <AdOverlay slot='3005445709' />
         <ComparisonSection />
         <div className='section-divider' />
-        <AdOverlayTwo />
+        <AdOverlay slot='9143494556' />
         <StatsSection />
         <div className='section-divider' />
-        <AdOverlay slot='3005445709' />
+        <AdOverlay slot='9100790437' />
         <SecuritySection />
         <div className='section-divider' />
-        <AdOverlayTwo />
+        <AdOverlay slot='2284296837' />
         <FAQSection />
         <div className='section-divider' />
-        <AdOverlay slot='9143494556' />
+        <AdOverlay slot='3052629191' />
         <CTASection />
         <div className='section-divider' />
         <FooterSection />
