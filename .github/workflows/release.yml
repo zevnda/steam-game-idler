@@ -285,16 +285,24 @@ jobs:
           # the release still gets published but no existing user's auto-update would ever fire,
           # since latest.json would still claim the old version is current. Verify both files
           # actually changed rather than trusting the replace succeeded.
+          #
+          # Get-Content returns a string array (one element per line). Applying -match/-notmatch
+          # to an array does NOT yield a boolean - it returns the subset of elements that satisfy
+          # the condition, which for -notmatch is "every line that doesn't contain the version"
+          # (i.e. almost every line in the file). That array is always non-empty and therefore
+          # always truthy, so the check would throw unconditionally regardless of whether the
+          # replace worked. Join to a single string first so -notmatch actually evaluates the
+          # whole file content as one match target.
           $tauriConf = Get-Content src-tauri/tauri.conf.json
-          $updatedTauriConf = $tauriConf -replace $previousVersion, $newVersion
-          if ($updatedTauriConf -notmatch [regex]::Escape($newVersion)) {
+          $updatedTauriConf = $tauriConf -replace [regex]::Escape($previousVersion), $newVersion
+          if (($updatedTauriConf -join "`n") -notmatch [regex]::Escape($newVersion)) {
             throw "tauri.conf.json version replace did not match - previous_version ($previousVersion) may not match file content"
           }
           $updatedTauriConf | Set-Content src-tauri/tauri.conf.json
 
           $latest = Get-Content latest.json
-          $updatedLatest = $latest -replace $previousVersion, $newVersion
-          if ($updatedLatest -notmatch [regex]::Escape($newVersion)) {
+          $updatedLatest = $latest -replace [regex]::Escape($previousVersion), $newVersion
+          if (($updatedLatest -join "`n") -notmatch [regex]::Escape($newVersion)) {
             throw "latest.json version replace did not match - previous_version ($previousVersion) may not match file content"
           }
           $updatedLatest | Set-Content latest.json
@@ -310,7 +318,7 @@ jobs:
           # collision) - confirmed via grep before relying on this regex.
           $cargoToml = Get-Content src-tauri/Cargo.toml
           $updatedCargoToml = $cargoToml -replace '^version = "[^"]+"$', "version = `"$newVersion`""
-          if ($updatedCargoToml -notmatch [regex]::Escape($newVersion)) {
+          if (($updatedCargoToml -join "`n") -notmatch [regex]::Escape($newVersion)) {
             throw "Cargo.toml version replace did not match expected 'version = `"...`"' line"
           }
           $updatedCargoToml | Set-Content src-tauri/Cargo.toml
