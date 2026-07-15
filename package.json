@@ -16,6 +16,7 @@
     "build": "next build",
     "build:docs": "pnpm --filter steam-game-idler-docs build",
     "build:all": "pnpm build && pnpm build:docs",
+    "build:libs": "dotnet publish ./libs/SteamUtility/SteamUtility.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:PublishTrimmed=true -p:DebugType=none -o ./src-tauri/libs/",
     "start": "next start",
     "start:docs": "pnpm --filter steam-game-idler-docs start",
     "lint": "eslint .",
