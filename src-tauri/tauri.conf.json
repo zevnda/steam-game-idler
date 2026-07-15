@@ -23,7 +23,8 @@
       "timestampUrl": "",
       "nsis": {
         "installerIcon": "icons/icon.ico",
-        "installMode": "perMachine"
+        "installMode": "perMachine",
+        "installerHooks": "./installer-hooks.nsh"
       }
     },
     "longDescription": "Idle any game in your Steam library",
@@ -35,7 +36,7 @@
       "providerShortName": null,
       "signingIdentity": null
     },
-    "resources": ["libs/*", "LICENSE", ".installed"],
+    "resources": ["libs/*", "LICENSE", "THIRD-PARTY-NOTICES.md", ".installed"],
     "linux": {
       "deb": {
         "depends": []

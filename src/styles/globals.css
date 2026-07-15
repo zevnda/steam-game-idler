@@ -1,211 +1,64 @@
 @import 'tailwindcss';
-@config "../../tailwind.config.mjs";
+@import '@heroui/styles';
+@import './theme.css';
 
-:root {
-  --gradient-bg: linear-gradient(to bottom, #171717ff 0%, #070707ff 100%);
-  --gradient-alt: linear-gradient(to bottom, #171717ff 0%, #0c0c0cff 100%);
-  --gradient-btn: linear-gradient(
-    100deg,
-    #154d66ff 0%,
-    #227ca5ff 40%,
-    #2eabe5ff 70%,
-    #34bfffff 100%
-  );
-  --sb-thumb: #515255;
-  --sb-track: #222326;
-  --holo-bg: linear-gradient(120deg, #3031358f 0%, #2020228f 50%, #3031358f 100%);
-  --holo-shine: linear-gradient(
-    115deg,
-    transparent 38%,
-    rgba(255, 255, 255, 0.33) 46%,
-    rgba(255, 255, 255, 0.66) 50%,
-    rgba(255, 255, 255, 0.33) 54%,
-    transparent 62%
-  );
-  --holo-border: linear-gradient(120deg, #1d1d208f 0%, #7778868f 50%, #1d1d208f 100%);
-  --shimmer-color: #ffffff38;
+/* App-wide font - `--font-inter` is the next/font-generated CSS variable set on <Html> in
+   _document.tsx. Overriding Tailwind's `--font-sans` token (rather than setting `font-family`
+   directly on `html`/`body`) means every existing `font-sans` utility class and HeroUI component
+   (which reads this same token via Preflight) picks up Inter with no per-component changes. Inter
+   is the free-tier default (see `font.ts`'s `FONT_CSS_VARS`/`applyFont.ts`) - every other bundled
+   font, including Poppins, is a selectable Casual-tier override. */
+@theme {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 }
 
-/* // Themes */
-.dark {
-  --gradient-bg: linear-gradient(to bottom, #171717ff 0%, #070707ff 100%);
-  --gradient-alt: linear-gradient(to bottom, #171717ff 0%, #0c0c0cff 100%);
-  --gradient-btn: linear-gradient(
-    100deg,
-    #154d66ff 0%,
-    #227ca5ff 40%,
-    #2eabe5ff 70%,
-    #34bfffff 100%
-  );
-}
-
-.blue {
-  --gradient-bg: linear-gradient(to bottom, #131a26 0%, #05080c 100%);
-  --gradient-alt: linear-gradient(to bottom, #131a26 0%, #0a0f15 100%);
-  --gradient-btn: linear-gradient(
-    100deg,
-    #154d66ff 0%,
-    #227ca5ff 40%,
-    #2eabe5ff 70%,
-    #34bfffff 100%
-  );
-}
-
-.red {
-  --gradient-bg: linear-gradient(to bottom, #1b1114 0%, #060305 100%);
-  --gradient-alt: linear-gradient(to bottom, #1b1114 0%, #0d080a 100%);
-  --gradient-btn: linear-gradient(
-    100deg,
-    #661515ff 0%,
-    #a52222ff 40%,
-    #e52e2eff 70%,
-    #ff3434ff 100%
-  );
-}
-
-.purple {
-  --gradient-bg: linear-gradient(to bottom, #181428 0%, #08070c 100%);
-  --gradient-alt: linear-gradient(to bottom, #181428 0%, #100e17 100%);
-  --gradient-btn: linear-gradient(
-    100deg,
-    #3f1566ff 0%,
-    #7322a5ff 40%,
-    #962ee5ff 70%,
-    #9d34ffff 100%
-  );
-}
-
-.pink {
-  --gradient-bg: linear-gradient(to bottom, #281423 0%, #0a0910 100%);
-  --gradient-alt: linear-gradient(to bottom, #281423 0%, #140e18 100%);
-  --gradient-btn: linear-gradient(
-    100deg,
-    #621566ff 0%,
-    #a522a5ff 40%,
-    #dc2ee5ff 70%,
-    #f534ffff 100%
-  );
-}
-
-.gold {
-  --gradient-bg: linear-gradient(to bottom, #3a3629 0%, #040404 100%);
-  --gradient-alt: linear-gradient(to bottom, #3a3629 0%, #0e0e0b 100%);
-  --gradient-btn: linear-gradient(
-    100deg,
-    #3e3928ff 0%,
-    #605a38ff 38%,
-    #978d5fff 68%,
-    #c0ae6cff 100%
-  );
-}
-
-.black {
-  --gradient-bg: linear-gradient(to bottom, #000000 0%, #050505 100%);
-  --gradient-alt: linear-gradient(to bottom, #000000 0%, #0a0a0a 100%);
-  --gradient-btn: linear-gradient(
-    100deg,
-    #232323ff 0%,
-    #383838ff 40%,
-    #5e5e5eff 70%,
-    #606060ff 100%
-  );
-}
-
-::-webkit-scrollbar {
-  width: 4px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--sb-track);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--sb-thumb);
-  border-radius: 6px;
-}
-
+/* The window is frameless and transparent (see src-tauri/tauri.conf.json's `transparent: true`,
+   `decorations: false`) - without this, the webview's default background shows through as a
+   white flash before any component paints. */
 html {
   background-color: transparent !important;
 }
 
+/* No page-level scrolling in this app shell - individual features that need scrollable regions
+   scope it to their own container instead. */
 body {
   overflow: hidden;
 }
 
-svg {
-  outline: none;
+:focus-visible,
+[data-focus-visible='true'],
+[data-focus-within='true'] {
+  outline: none !important;
+  box-shadow: none !important;
 }
 
-.holo-bg {
-  position: relative;
-  overflow: hidden;
-  background: var(--holo-bg);
-}
-
+/* SignInHero (src/shared/components/SignInHero.tsx) - ported verbatim from `main`. `.inner-glow`
+   is an inset vignette so the cover-art wall fades into the panel's edges instead of hard-cutting.
+   `.animate-skew-scroll` drives the continuous upward drift of that wall; the 3D transform reads
+   as a flat shear rather than true depth since no `perspective` is set on an ancestor (matches
+   `main`'s own rendering - not a regression). */
 .inner-glow {
   box-shadow:
     inset 0 0 60px 10px rgba(0, 0, 0, 1),
     inset 0 0 120px 20px rgba(0, 0, 0, 1);
 }
 
-.holo-bg::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1px;
-  background: var(--holo-border);
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.holo-bg::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: var(--holo-shine);
-  filter: blur(30px);
-  opacity: 0.3;
-  transform: translateX(-100%) skewX(-16deg);
-  animation: holo-shine 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-}
-
-@keyframes holo-shine {
+@keyframes skew-scroll {
   0% {
-    transform: translateX(-160%) skewX(-16deg);
-    opacity: 0;
-  }
-  10% {
-    opacity: 0.3;
-  }
-  90% {
-    opacity: 0.3;
+    transform: rotateX(20deg) rotateZ(-20deg) skewX(20deg) translateZ(0) translateY(0);
   }
   100% {
-    transform: translateX(250%) skewX(-16deg);
-    opacity: 0;
+    transform: rotateX(20deg) rotateZ(-20deg) skewX(20deg) translateZ(0) translateY(-100%);
   }
 }
 
-/* Chatway */
-
-.chatway--frame-container {
-  min-width: 550px !important;
-  top: 48px !important;
-  right: 36px !important;
-  left: auto !important;
+.animate-skew-scroll {
+  animation: skew-scroll 30s linear infinite;
 }
 
-/* Go pro button */
+/* Go Pro button (src/shared/components/pro/GoPro.tsx) - ported verbatim from `main`, an animated
+   conic-gradient border + dot pattern + inner shimmer built from CSS `@property` custom properties
+   so the browser can animate them directly (no JS/framer-motion). */
 
 @property --gradient-angle {
   syntax: '<angle>';
@@ -231,8 +84,7 @@ svg {
   inherits: false;
 }
 
-.shiny-cta,
-.shiny-cta-link {
+.shiny-cta {
   --shiny-cta-bg: #000000ff;
   --shiny-cta-bg-subtle: #1a1818;
   --shiny-cta-fg: #ffffff;
@@ -274,18 +126,9 @@ svg {
   transition-property: --gradient-angle-offset, --gradient-percent, --gradient-shine;
 }
 
-/* Link-specific styles */
-.shiny-cta-link {
-  display: inline-block;
-  text-decoration: none;
-}
-
 .shiny-cta::before,
 .shiny-cta::after,
-.shiny-cta span::before,
-.shiny-cta-link::before,
-.shiny-cta-link::after,
-.shiny-cta-link span::before {
+.shiny-cta span::before {
   content: '';
   pointer-events: none;
   position: absolute;
@@ -296,8 +139,7 @@ svg {
 }
 
 /* Dots pattern */
-.shiny-cta::before,
-.shiny-cta-link::before {
+.shiny-cta::before {
   --size: calc(100% - var(--shadow-size) * 3);
   --position: 2px;
   --space: calc(var(--position) * 2);
@@ -323,8 +165,7 @@ svg {
 }
 
 /* Inner shimmer */
-.shiny-cta::after,
-.shiny-cta-link::after {
+.shiny-cta::after {
   --animation: shimmer linear infinite;
   width: 100%;
   aspect-ratio: 1;
@@ -333,13 +174,11 @@ svg {
   opacity: 0.6;
 }
 
-.shiny-cta span,
-.shiny-cta-link span {
+.shiny-cta span {
   z-index: 1;
 }
 
-.shiny-cta span::before,
-.shiny-cta-link span::before {
+.shiny-cta span::before {
   --size: calc(100% + 1rem);
   width: var(--size);
   height: var(--size);
@@ -349,21 +188,16 @@ svg {
   animation: calc(var(--duration) * 1.5) breathe linear infinite;
 }
 
-/* Animate */
 .shiny-cta,
 .shiny-cta::before,
-.shiny-cta::after,
-.shiny-cta-link,
-.shiny-cta-link::before,
-.shiny-cta-link::after {
+.shiny-cta::after {
   animation:
     var(--animation) var(--duration),
     var(--animation) calc(var(--duration) / 0.4) reverse paused;
   animation-composition: add;
 }
 
-.shiny-cta:is(:hover, :focus-visible),
-.shiny-cta-link:is(:hover, :focus-visible) {
+.shiny-cta:is(:hover, :focus-visible) {
   --gradient-percent: 20%;
   --gradient-angle-offset: 95deg;
   --gradient-shine: var(--shiny-cta-highlight-subtle);
@@ -371,15 +205,11 @@ svg {
 
 .shiny-cta:is(:hover, :focus-visible),
 .shiny-cta:is(:hover, :focus-visible)::before,
-.shiny-cta:is(:hover, :focus-visible)::after,
-.shiny-cta-link:is(:hover, :focus-visible),
-.shiny-cta-link:is(:hover, :focus-visible)::before,
-.shiny-cta-link:is(:hover, :focus-visible)::after {
+.shiny-cta:is(:hover, :focus-visible)::after {
   animation-play-state: running;
 }
 
-.shiny-cta:is(:hover, :focus-visible) span::before,
-.shiny-cta-link:is(:hover, :focus-visible) span::before {
+.shiny-cta:is(:hover, :focus-visible) span::before {
   opacity: 1;
 }
 
@@ -411,14 +241,371 @@ svg {
   }
 }
 
-@keyframes custom-shimmer {
-  0% {
-    transform: translateX(0%);
+/* Go Pro modal (src/shared/components/pro/GoProModal/) - CSS-only replacements for `main`'s
+   framer-motion entrance/ambient animations.
+
+   `pro-fade-in`/`pro-fade-in-up` replace `main`'s per-element `motion.div/p/button` mount
+   animations - apply the class and set `animation-delay` inline to stagger, matching `main`'s
+   `transition={{ delay }}` usage.
+
+   `pro-shooting-star`/`pro-floating-image` replace `main`'s ambient background motion. A shooting
+   star's CSS `@keyframes` can't vary its travel-completion percentage per-instance the way
+   framer-motion's per-instance `times` array did, so every star shares one representative
+   travel/fade curve (only `--pro-shooting-star-tx/-ty` and the animation's total duration/delay
+   vary per star, both set inline) - purely decorative, so the timing approximation is
+   imperceptible. `prefers-reduced-motion` replaces `main`'s `useReducedMotion()` JS hook. */
+
+@keyframes pro-fade-in {
+  from {
+    opacity: 0;
   }
-  50% {
-    transform: translateX(200%);
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pro-fade-in-up {
+  from {
+    opacity: 0;
+    translate: 0 16px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+.pro-fade-in {
+  animation: pro-fade-in 0.5s ease-out both;
+}
+
+.pro-fade-in-up {
+  animation: pro-fade-in-up 0.55s ease-out both;
+}
+
+@keyframes pro-shooting-star {
+  0% {
+    translate: 0 0;
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  16% {
+    translate: var(--pro-shooting-star-tx) var(--pro-shooting-star-ty);
+    opacity: 1;
+  }
+  20% {
+    translate: var(--pro-shooting-star-tx) var(--pro-shooting-star-ty);
+    opacity: 0;
   }
   100% {
-    transform: translateX(200%);
+    translate: var(--pro-shooting-star-tx) var(--pro-shooting-star-ty);
+    opacity: 0;
+  }
+}
+
+.pro-shooting-star {
+  height: 1.5px;
+  border-radius: 9999px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(255, 255, 255, 0.18) 40%,
+    rgba(255, 255, 255, 0.92) 85%,
+    white 100%
+  );
+  animation-name: pro-shooting-star;
+  animation-timing-function: ease-out;
+  animation-iteration-count: infinite;
+}
+
+@keyframes pro-float {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -22px;
+  }
+}
+
+.pro-floating-image {
+  animation-name: pro-float;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pro-fade-in,
+  .pro-fade-in-up,
+  .overlay-fade-in {
+    animation: none;
+    opacity: 1;
+    translate: 0 0;
+  }
+
+  .pro-shooting-star {
+    display: none;
+  }
+
+  .pro-floating-image {
+    animation: none;
+  }
+}
+
+/* Generic overlay backdrop fade (HelpDesk's dim backdrop, and any future plain-div overlay that
+   isn't HeroUI's own Modal/AlertDialog) - reuses `pro-fade-in`'s keyframe but at HeroUI's own real
+   Modal backdrop entrance duration (150ms ease-out, see `.modal__backdrop[data-entering=true]` in
+   `@heroui/styles`) rather than the 500ms `pro-fade-in`/`pro-fade-in-up` use for GoProModal's much
+   larger, more deliberate reveal. */
+.overlay-fade-in {
+  animation: pro-fade-in 150ms ease-out both;
+}
+
+/* Foil-item card background (InventoryItemCard, applied when `item.foil` is true) - `main` had an
+   equivalent `.holo-bg` effect, but built from hardcoded dark-gray hex values that only look right
+   against its one fixed theme. This app has multiple hue-shifted theme presets, so the shimmer is
+   rebuilt on this app's own elevation tokens (`--surface`/
+   `--border`/`--surface-tertiary`) instead - it now follows whichever preset is active rather than
+   reading as a flat mismatch under e.g. the `orange`/`purple` presets. Draws its own gradient ring
+   via `::after` (masked to a border-width strip, same trick `main` used), so a foil card should
+   drop the caller's flat `border-border` rather than layering both - see InventoryItemCard.tsx. */
+.holo-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: inherit;
+  background: linear-gradient(
+    120deg,
+    color-mix(in oklch, var(--surface) 100%, white 6%) 0%,
+    var(--surface) 50%,
+    color-mix(in oklch, var(--surface) 100%, white 6%) 100%
+  );
+}
+
+.holo-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    120deg,
+    var(--border) 0%,
+    var(--surface-tertiary) 50%,
+    var(--border) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.holo-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    115deg,
+    transparent 38%,
+    rgba(255, 255, 255, 0.33) 46%,
+    rgba(255, 255, 255, 0.66) 50%,
+    rgba(255, 255, 255, 0.33) 54%,
+    transparent 62%
+  );
+  filter: blur(30px);
+  opacity: 0.3;
+  transform: translateX(-100%) skewX(-16deg);
+  animation: holo-shine 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes holo-shine {
+  0% {
+    transform: translateX(-160%) skewX(-16deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.3;
+  }
+  90% {
+    opacity: 0.3;
+  }
+  100% {
+    transform: translateX(250%) skewX(-16deg);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .holo-card::before {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+/* Chatway - forces the widget's own popup frame to open on the right, under the titlebar's
+   button cluster (HelpDesk.tsx's trigger among them), instead of Chatway's own default left-side
+   placement. `right: 36px` is ported verbatim from `main` (confirmed live via CDP: viewport width
+   minus 36px minus the frame's own 550px width lines up exactly with the frame's observed left
+   edge) - the frame's right edge sits near the window's top-right corner rather than literally
+   centered under any one icon, matching main's own placement (HelpDesk isn't the rightmost button
+   there either - Notifications/Menu/the 3 window controls sit to its right in both codebases).
+   `top: 40px` is NOT copied verbatim - main's titlebar is 48px tall (`h-12`), this rewrite's is
+   40px (`h-10`, confirmed via the HelpDesk button's own bounding box), so 40px is what actually
+   sits the frame flush under this titlebar instead of leaving main's tuned 48px as an 8px gap. */
+.chatway--frame-container {
+  min-width: 550px !important;
+  top: 64px !important;
+  right: 36px !important;
+  left: auto !important;
+}
+
+/* FAQItem's expand/collapse - a pure-CSS grid-rows trick (0fr -> 1fr) rather than `main`'s
+   framer-motion `height: 0 -> auto` measurement, so the collapsed panel never needs a JS-measured
+   height and the transition stays on the compositor. */
+.pro-faq-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.28s ease-in-out;
+}
+
+.pro-faq-panel.is-open {
+  grid-template-rows: 1fr;
+}
+
+.pro-faq-panel > div {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.pro-faq-chevron {
+  transition: transform 0.25s ease;
+}
+
+.pro-faq-chevron.is-open {
+  transform: rotate(180deg);
+}
+
+/* Bottom-of-screen system/promo banner (src/shared/components/Banner.tsx) - `main` drove mount/
+   dismiss with framer-motion's `AnimatePresence` (`initial`/`animate`/`exit` on a `y` offset);
+   dropped project-wide, so `Banner.tsx` instead toggles between the `-enter`/
+   `-exit` class pairs below, deferring the actual dismiss (removal from `useBanners`' eligible
+   set) via `setTimeout` until the exit animation's duration elapses - keep `EXIT_DURATION_MS` in
+   Banner.tsx equal to both `-exit` animations' `animation-duration` (300ms) if either changes.
+   The eased-back timing curve approximates `main`'s spring (damping: 20, stiffness: 300), which
+   has a small overshoot on entrance. */
+@keyframes banner-alert-slide-in {
+  from {
+    translate: 0 80px;
+    opacity: 0;
+  }
+  to {
+    translate: 0 0;
+    opacity: 1;
+  }
+}
+
+@keyframes banner-alert-slide-out {
+  from {
+    translate: 0 0;
+    opacity: 1;
+  }
+  to {
+    translate: 0 80px;
+    opacity: 0;
+  }
+}
+
+.banner-alert-enter {
+  animation: banner-alert-slide-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.banner-alert-exit {
+  animation: banner-alert-slide-out 0.3s ease-in both;
+}
+
+@keyframes banner-promo-slide-in {
+  from {
+    translate: 0 140px;
+    opacity: 0;
+  }
+  to {
+    translate: 0 0;
+    opacity: 1;
+  }
+}
+
+@keyframes banner-promo-slide-out {
+  from {
+    translate: 0 0;
+    opacity: 1;
+  }
+  to {
+    translate: 0 140px;
+    opacity: 0;
+  }
+}
+
+.banner-promo-enter {
+  animation: banner-promo-slide-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.banner-promo-exit {
+  animation: banner-promo-slide-out 0.3s ease-in both;
+}
+
+/* PromoBanner's rainbow-color-variant shimmer - `main`'s framer-motion
+   `backgroundPositionX: ['0%', '100%', '0%']` over 8s, linear, infinite. */
+@keyframes banner-promo-rainbow-shimmer {
+  0%,
+  100% {
+    background-position-x: 0%;
+  }
+  50% {
+    background-position-x: 100%;
+  }
+}
+
+.banner-promo-rainbow {
+  animation: banner-promo-rainbow-shimmer 8s linear infinite;
+}
+
+/* PromoBanner's floating asset image - `main`'s framer-motion `y: [-6, 6, -6]` over 6s,
+   ease-in-out, infinite. Amplitude/phase differ from `.pro-floating-image` (GoProModal's own
+   float, 0 -> -22px -> 0) enough that reusing it would visibly change the motion, so this is its
+   own keyframe rather than a parameterized share. */
+@keyframes banner-asset-float {
+  0%,
+  100% {
+    translate: 0 -6px;
+  }
+  50% {
+    translate: 0 6px;
+  }
+}
+
+.banner-asset-float {
+  animation: banner-asset-float 6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .banner-alert-enter,
+  .banner-alert-exit,
+  .banner-promo-enter,
+  .banner-promo-exit {
+    animation: none;
+    translate: 0 0;
+    opacity: 1;
+  }
+
+  .banner-promo-rainbow,
+  .banner-asset-float {
+    animation: none;
   }
 }

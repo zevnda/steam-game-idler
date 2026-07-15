@@ -1,0 +1,108 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <PlatformTarget>x64</PlatformTarget>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <!-- Interop/NativeStrings.cs uses raw pointer arithmetic for UTF-8 marshaling. -->
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <!-- Registry access (SteamPathHelper) and Win32 window creation (Cli/IdleWindow) are inherently
+         Windows-only, matching this project's win-x64-only RuntimeIdentifier - declaring that here
+         silences the platform-compatibility analyzer instead of suppressing warnings ad hoc. -->
+    <SupportedOSPlatform>windows</SupportedOSPlatform>
+    <AssemblyName>SteamUtility</AssemblyName>
+    <RootNamespace>SteamUtility</RootNamespace>
+    <!-- Bumped to 2.0.0 to mark the merge of the old Steamworks.NET SteamUtility (last at 1.6.0)
+         and SteamAgent (SteamKit2) into one project - libs/.github/workflows/release.yml's version
+         bump step regex-replaces this value directly instead of the old AssemblyInfo.cs, which an
+         SDK-style csproj doesn't use. -->
+    <Version>2.0.0</Version>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
+    <OutputPath>..\..\src-tauri\libs\</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <!-- Embeds the native runtime DLLs (coreclr.dll etc.) into the single-file exe too, instead of
+         leaving them as loose files - they're extracted to a per-run temp cache on first launch.
+         Combined with RemovePublishExtras below, SteamUtility.exe ends up the only file that
+         matters (plus steam_api64.dll, which Steamworks.NET's native interop can't embed). -->
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+  </PropertyGroup>
+
+  <!-- Post Build (dev) -->
+  <Target Name="PostBuild" AfterTargets="Build">
+    <ItemGroup>
+      <BuildOutputFiles Include="$(OutputPath)**\*.*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(BuildOutputFiles)" DestinationFolder="..\..\src-tauri\target\debug\libs\%(RecursiveDir)" Condition="'$(Configuration)'=='Debug'" />
+    <Copy SourceFiles="@(BuildOutputFiles)" DestinationFolder="..\..\src-tauri\target\release\libs\%(RecursiveDir)" Condition="'$(Configuration)'=='Release'" />
+  </Target>
+
+  <!-- PublishSingleFile still writes a full "normal" publish output (every managed dependency as a
+       loose DLL) into PublishDir alongside the bundle - the bundle already embeds all of that, so the
+       loose copies are pure duplication (see https://aka.ms/dotnet-single-file). Strip everything but
+       the exe itself (and the native steam_api64.dll, which must stay a loose file) so `dotnet publish`
+       alone produces a clean output with no follow-up cleanup step. -->
+  <Target Name="RemovePublishExtras" AfterTargets="Publish">
+    <ItemGroup>
+      <PublishExtras Include="$(PublishDir)*" Exclude="$(PublishDir)$(TargetName).exe;$(PublishDir)steam_api64.dll;$(PublishDir)icon.ico" />
+    </ItemGroup>
+    <Delete Files="@(PublishExtras)" />
+  </Target>
+
+  <ItemGroup>
+    <PackageReference Include="SteamKit2" Version="3.4.0" />
+  </ItemGroup>
+
+  <!-- The Steamworks.NET NuGet package (2024.8.0, the latest published there) turned out to be
+       built against a different Steamworks SDK snapshot than any redistributable native
+       steam_api64.dll available - confirmed by two separate EntryPointNotFoundExceptions during
+       live testing (SteamInternal_SteamAPI_Init missing with one steam_api64.dll, then
+       SteamAPI_ISteamClient_GetISteamGameSearch missing with a newer one paired with the NuGet
+       managed wrapper). The flat P/Invoke surface between the managed wrapper and the native DLL
+       must come from the exact same release. Referencing the managed DLL directly from
+       Steamworks.NET's own GitHub release 2025.163.0 (SDK 1.63), matched with that same release's
+       bundled steam_api64.dll below, resolved both errors. -->
+  <ItemGroup>
+    <Reference Include="Steamworks.NET">
+      <HintPath>Steamworks.NET.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <!-- Marks the whole assembly Windows-only (registry access, Win32 window creation, and the win-x64
+       RuntimeIdentifier above already make this true) so the platform-compatibility analyzer stops
+       flagging every call site up the chain individually. -->
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.Versioning.SupportedOSPlatformAttribute">
+      <_Parameter1>windows</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <!-- steam_api64.dll is the native library Steamworks.NET.dll P/Invokes into - both must ship
+       alongside the exe. -->
+  <ItemGroup>
+    <Content Include="steam_api64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <!-- PublishTrimmed disables System.Text.Json's reflection-based serialization by default (the
+       JsonSerializerIsReflectionEnabledByDefault feature switch) - a real prior incident (documented
+       here since it was discovered the hard way in the pre-merge SteamAgent project) showed every
+       JsonSerializer.Serialize/Deserialize call over stdin/stdout throws InvalidOperationException at
+       runtime under a trimmed publish, with the exception silently swallowed inside a fire-and-forget
+       Task.Run - the process looks "hung" with zero output. TrimMode=partial and
+       _DefaultValueAttributeSupport (protobuf-net also reads DefaultValueAttribute reflectively) are
+       kept as defense-in-depth. -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <TrimMode>partial</TrimMode>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(PublishTrimmed)' == 'true'">
+    <_DefaultValueAttributeSupport>true</_DefaultValueAttributeSupport>
+    <JsonSerializerIsReflectionEnabledByDefault>true</JsonSerializerIsReflectionEnabledByDefault>
+  </PropertyGroup>
+
+</Project>

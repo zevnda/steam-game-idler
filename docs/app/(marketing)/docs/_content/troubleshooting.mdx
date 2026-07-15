@@ -20,15 +20,15 @@ This page covers common issues and their solutions when using Steam Game Idler.
   <Step>
     ### Check System Requirements
     - Windows 10/11 (64-bit)
-    - Steam client installed
     - Internet connection
+    - Steam client installed and running — only required if you use [Legacy Sign In](/docs/get-started/how-to-sign-in#legacy-sign-in)
   </Step>
 
   <Step>
-    ### Verify Steam Setup
-    - Steam client is running
-    - You're signed in to at least one Steam account
-    - Your Steam profile is set to public (for some features)
+    ### Verify Your Sign-In
+    - If using [Sign in with Steam](/docs/get-started/how-to-sign-in#sign-in-with-steam), make sure you completed any Steam Guard prompt fully
+    - If using [Legacy Sign In](/docs/get-started/how-to-sign-in#legacy-sign-in), make sure the Steam client is running and you're signed in to at least one account
+    - Your Steam profile is set to public (required for some features regardless of sign-in method)
   </Step>
 
   <Step>
@@ -51,7 +51,7 @@ This page covers common issues and their solutions when using Steam Game Idler.
   </Accordion>
 
   <Accordion title="Antivirus or Windows Defender is blocking SGI" id="antivirus-blocking">
-    SGI's installer and the bundled `SteamUtility.exe` (used for idling and achievement management) are not code-signed with a paid certificate, so Windows SmartScreen and some antivirus programs may flag them as "unknown publisher" or quarantine them. This is a false positive.
+    SGI's installer and its bundled helper process (`SteamUtility.exe`, used for idling, achievement management, and Sign in with Steam) are not code-signed with a paid certificate, so Windows SmartScreen and some antivirus programs may flag them as "unknown publisher" or quarantine them. This is a false positive.
 
     <Steps>
       <Step>
@@ -65,7 +65,7 @@ This page covers common issues and their solutions when using Steam Game Idler.
       </Step>
 
       <Step>
-        ### If idling won't start because SteamUtility.exe is removed
+        ### If a feature won't start because SteamUtility.exe is removed
         Re-run the installer to restore the missing file, after adding the exclusion above
       </Step>
     </Steps>
@@ -76,7 +76,7 @@ This page covers common issues and their solutions when using Steam Game Idler.
   </Accordion>
 
   <Accordion title="Missing .NET Framework / SteamUtility errors" id="dotnet-missing">
-    SGI's idling and achievement features rely on a bundled helper process (`SteamUtility.exe`) which requires the **.NET Framework 4.8** runtime. Most Windows 10/11 installs already include this, but if idling or achievement actions fail immediately with no clear error:
+    SGI's idling, sign-in, and achievement features rely on a bundled helper process (`SteamUtility.exe`) which requires the **.NET Framework 4.8** runtime. Most Windows 10/11 installs already include this, but if idling, sign-in, or achievement actions fail immediately with no clear error:
 
     - Install the [.NET Framework 4.8 runtime](https://dotnet.microsoft.com/en-us/download/dotnet-framework/net48) from Microsoft
     - Restart your PC after installing, then try again
@@ -151,23 +151,34 @@ This page covers common issues and their solutions when using Steam Game Idler.
 ## Sign-In Issues
 
 <Accordions type="multiple">
-  <Accordion title="No Steam accounts show up on the sign-in screen" id="no-accounts">
-    SGI reads your locally saved Steam logins to populate the account picker.
+  <Accordion title="'Sign in with Steam' fails or gets stuck" id="agent-signin-stuck">
+    - Make sure you have an active internet connection
+    - Double check your username and password — if you're not sure, try signing in on [steamcommunity.com](https://steamcommunity.com/) directly first
+    - If using the QR code, make sure you scanned it with the **Steam** mobile app's own QR scanner (top-right icon), not a generic QR app, and approve the prompt on your phone
+    - An unscanned QR code expires after a short time and will automatically refresh itself — no need to reopen the sign-in screen
+    - Close the sign-in window and try again — it can occasionally get stuck on a stale attempt
+  </Accordion>
+
+  <Accordion title="No Steam accounts show up on the Legacy Sign In screen" id="no-accounts">
+    Legacy Sign In reads your locally saved Steam logins to populate the account picker.
 
     - Make sure the Steam client is installed and that you've logged in to your account(s) through Steam at least once
     - Open Steam and sign in normally, then restart SGI
     - If you use **Steam Guard**, complete the login fully (don't cancel at the 2FA prompt) before switching to SGI
+    - If you'd rather not deal with the local Steam client at all, use [Sign in with Steam](/docs/get-started/how-to-sign-in#sign-in-with-steam) instead
   </Accordion>
 
-  <Accordion title="Sign-in fails or gets stuck" id="signin-stuck">
-    - Make sure you have an active internet connection
-    - Make sure the Steam client is running and you're fully logged in (not just at the account-select screen)
-    - Close the SGI login window and try again — it can occasionally get stuck on a stale page
+  <Accordion title="A 'Steam is closed' warning appears while using SGI" id="steam-closed-warning">
+    This only affects **Legacy Sign In** accounts, which depend on the local Steam client staying open and signed in. If Steam closes, is restarted, or you sign out of it while SGI is running, any active idling/farming/unlocking for that account is stopped and this warning appears until Steam is running and signed in again.
+
+    - Reopen the Steam client and make sure you're signed in to the same account
+    - This doesn't affect accounts signed in with [Sign in with Steam](/docs/get-started/how-to-sign-in#sign-in-with-steam) — they don't need a local Steam client at all
   </Accordion>
 
   <Accordion title="Signed in, but my games list is empty or incomplete" id="empty-games-list">
     - Your Steam profile (or at least your **game details**) must be set to **Public** for SGI to read your library — check this in your Steam profile's privacy settings
-    - Try toggling **Settings → Debug → Clear Data** as a last resort if the cached games list is stuck — note this signs you out and clears all local data
+    - Try clicking **Refresh** on the Your Games page
+    - Try toggling **Settings → Debug → Clear Data** as a last resort if the cached games list is stuck — note this signs out every account and clears all local data
   </Accordion>
 </Accordions>
 
@@ -175,7 +186,7 @@ This page covers common issues and their solutions when using Steam Game Idler.
 
 <Accordions type="multiple">
   <Accordion title="A game won't start idling" id="idle-wont-start">
-    - Make sure the Steam client is running and you're signed in to the same account you're using in SGI
+    - If using **Legacy Sign In**, make sure the Steam client is running and you're signed in to the same account you're using in SGI
     - Make sure the game is actually owned on this account — SGI can't idle games you don't own
     - Check the log file (`%appdata%\com.zevnda.steam-game-idler\log.txt`) for a "Failed to start idling" message
     - If you recently reinstalled SGI, make sure `SteamUtility.exe` wasn't removed by your antivirus (see [Antivirus or Windows Defender is blocking SGI](#antivirus-blocking))
@@ -184,32 +195,33 @@ This page covers common issues and their solutions when using Steam Game Idler.
 
   <Accordion title="A game shows as idling in SGI but Steam doesn't show it as 'Currently in game'" id="idle-not-reflected">
     - Give it a minute — there's a short delay before Steam's status updates
-    - Make sure Steam itself is online (not in **Offline Mode**), as idling relies on the Steam API being reachable
-    - Restarting Steam (not SGI) while a game is idling can desync the status — stop and restart idling for that game
+    - Make sure Steam itself is online (not in **Offline Mode**), as idling relies on Steam's servers being reachable
+    - If using **Legacy Sign In**, restarting Steam (not SGI) while a game is idling can desync the status — stop and restart idling for that game
   </Accordion>
 
   <Accordion title="Idling stops by itself" id="idle-stops">
     - Make sure your PC isn't going to sleep — adjust Windows power settings so it stays awake while idling
-    - Steam will stop "in-game" status if you launch the same game manually, or if Steam restarts/updates in the background
+    - If using **Legacy Sign In**, Steam will stop "in-game" status if you launch the same game manually, or if Steam restarts/updates in the background
     - Check the log file for errors around the time idling stopped
   </Accordion>
 
   <Accordion title="Leftover SteamUtility.exe processes after closing SGI or a crash" id="leftover-processes">
-    If SGI is force-closed (e.g. via Task Manager, or a crash) before it can clean up, idling helper processes can be left running.
+    If SGI is force-closed (e.g. via Task Manager, or a crash) before it can clean up, helper processes can be left running.
 
     - Open **Task Manager**, find any `SteamUtility.exe` entries, and select **End Task** for each
-    - This won't affect your Steam library or achievements — it only stops the idling helper
+    - This won't affect your Steam library or achievements — it only stops the helper process
     - To avoid this in future, close SGI normally (via the tray menu **Quit** option) rather than force-closing it
   </Accordion>
 </Accordions>
 
-## Card Farming Issues
+## Card Farming & Inventory Manager Issues
 
 <Accordions type="multiple">
   <Accordion title='"Not logged in" or authentication errors' id="card-farming-not-logged-in">
-    Card Farming and Inventory Manager rely on your Steam session cookies, which expire periodically.
+    Card Farming and Inventory Manager rely on [Steam Credentials](/docs/steam-credentials) — Steam Community session cookies, which are separate from your SGI sign-in and expire periodically.
 
-    - Go to **Settings → Steam Credentials** and re-authenticate using the **Steam Credentials** flow (see the [Steam Credentials](/docs/steam-credentials) guide)
+    - Go to **Settings → Steam Credentials** and re-authenticate (see the [Steam Credentials](/docs/steam-credentials) guide)
+    - If you're on a **Gamer** tier account signed in with Steam, this normally happens automatically — check that your subscription is still active
     - If you use **Family View** or have a **Steam Guard Mobile Authenticator**, make sure you complete the full login (these accounts often need the additional `steamMachineAuth` cookie)
     - Session cookies typically last a few hours to a few weeks — if farming worked before and suddenly stops with login errors, this is the most common cause
   </Accordion>
@@ -234,19 +246,19 @@ This page covers common issues and their solutions when using Steam Game Idler.
   <Accordion title="Achievements list is empty or won't load" id="achievements-empty">
     - Make sure the game actually has achievements (some games genuinely have none)
     - Try toggling the **refresh/refetch** option for that game to force SGI to re-fetch the achievement schema from Steam
-    - Make sure the Steam client is running and online
+    - If using **Legacy Sign In**, make sure the Steam client is running and online
   </Accordion>
 
   <Accordion title="Unlocking, locking, or toggling an achievement fails" id="achievement-toggle-fails">
-    - Make sure the Steam client is running and you're signed in to the matching account
+    - If using **Legacy Sign In**, make sure the Steam client is running and you're signed in to the matching account
     - Make sure the game isn't currently being idled by another tool, or already running through Steam itself, which can conflict with `SteamUtility.exe`
-    - Check the log file for a specific error from `SteamUtility.exe`
+    - Check the log file for a specific error
     - Some games use **Family Sharing** or third-party anti-cheat that blocks stat writes — these games generally can't be modified
   </Accordion>
 
-  <Accordion title="Achievement Unlocker isn't progressing / scheduled task isn't running" id="achievement-unlocker-stuck">
+  <Accordion title="Achievement Unlocker isn't progressing" id="achievement-unlocker-stuck">
     - Make sure SGI is open (it can be minimized to tray, but not fully closed) for scheduled unlocking to continue
-    - Check your unlock order, delay, and schedule settings under the Achievement Unlocker tab
+    - Check your unlock order, delay, and schedule settings under [Settings → Achievement Unlocker](/docs/settings/achievement-unlocker)
     - If you imported custom unlock timings, make sure the achievement names match exactly — see [Import Timings](/docs/features/achievement-unlocker/import-timings)
     - Check the log file for errors during the scheduled run
   </Accordion>
@@ -260,7 +272,7 @@ This page covers common issues and their solutions when using Steam Game Idler.
 
     - Check **Settings → Debug → Open Settings** to locate your settings folder
     - If you have a previously exported settings backup, re-import it (see [Export Settings](/docs/settings/debug#export-settings))
-    - Switching Steam accounts in SGI loads a separate settings file per account — this is expected, not a bug
+    - Switching accounts in SGI loads a separate settings file per account — this is expected, not a bug
   </Accordion>
 
   <Accordion title="How do I fully reset SGI?" id="full-reset">
@@ -272,7 +284,7 @@ This page covers common issues and their solutions when using Steam Game Idler.
 
       <Step>
         ### Use Clear Data for a full wipe
-        **Settings → Debug → Clear Data** removes all locally stored data and signs you out
+        **Settings → Debug → Clear Data** removes all locally stored data and signs out every account
         <Callout type="warn">
           This is irreversible and will require you to sign in and reconfigure SGI again. Your Steam account and library are not affected.
         </Callout>
@@ -306,13 +318,14 @@ This page covers common issues and their solutions when using Steam Game Idler.
 
 <Accordions type="multiple">
   <Accordion title="SGI is using high CPU or memory" id="high-cpu-memory">
-    - Idling many games simultaneously each spawns a separate helper process (`SteamUtility.exe`) — this is normal, but idling a very large number of games at once will increase resource usage
+    - If using **Legacy Sign In**, idling many games simultaneously spawns a separate helper process per game — this is normal, but idling a very large number of games at once will increase resource usage. Accounts signed in with Steam idle through one shared session instead, which uses noticeably less
     - Check **Task Manager** to confirm whether the usage comes from `steam-game-idler.exe`, `SteamUtility.exe` or `webview2.exe` processes
     - Update to the latest version, as performance fixes are released regularly — see the [Changelog](/changelog)
   </Accordion>
 
   <Accordion title="SGI feels slow or unresponsive" id="sgi-slow">
     - A large Steam library (thousands of games) can make initial loading slower — give it a moment on first launch after sign-in
+    - Running several accounts signed in with Steam at once (see [Multi-Account](/docs/get-started/multi-account)) uses more memory and network than a single account — reduce the number of concurrently signed-in accounts if resources are tight
     - Check `%appdata%\com.zevnda.steam-game-idler\log.txt` for repeated errors that may indicate a stuck background task
   </Accordion>
 </Accordions>
@@ -327,6 +340,7 @@ If these troubleshooting steps don't solve your issue:
    - Detailed description of the problem
    - Steps to reproduce
    - Your system information (Windows version, Steam version)
+   - Which sign-in method you're using (Sign in with Steam or Legacy Sign In)
    - Relevant log file excerpts
    - Screenshots if applicable
 

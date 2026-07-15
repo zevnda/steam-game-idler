@@ -1,174 +1,77 @@
-import type { Achievement } from '@/shared/types'
-import { invoke } from '@tauri-apps/api/core'
 import { useState } from 'react'
-import { Trans, useTranslation } from 'react-i18next'
-import { Button, cn, Input } from '@heroui/react'
-import { CustomModal, ExtLink, showDangerToast, showSuccessToast } from '@/shared/components'
-import { OpenDocs } from '@/shared/components/OpenDocs'
-import { useUserStore } from '@/shared/stores'
-import { decrypt } from '@/shared/utils'
+import { useTranslation } from 'react-i18next'
+import { Button, Input, Modal, Typography } from '@heroui/react'
 
 interface ImportTimingsModalProps {
   isOpen: boolean
-  onOpenChange: () => void
-  appId: number
-  achievements: Achievement[]
-  onImport: (reordered: Achievement[]) => void
+  isImporting: boolean
+  onOpenChange: (open: boolean) => void
+  onImport: (steamInput: string) => Promise<boolean>
 }
 
-interface RawAchievement {
-  apiname: string
-  unlocktime: number
-}
-
-const getErrorKey = (e: unknown) => {
-  const s = String(e)
-  if (s.includes('PROFILE_PRIVATE')) return 'toast.importTimings.privateProfile'
-  if (s.includes('NO_TIMESTAMPS')) return 'toast.importTimings.noTimestamps'
-  if (s.includes('NOT_FOUND')) return 'toast.importTimings.notFound'
-  return 'toast.importTimings.error'
-}
-
+// Gamer-tier gated by its one caller (AchievementOrderOverlay's button that opens this) - this
+// modal itself has no tier awareness, same "gate at the one call site" convention every other
+// Pro-tier gate in this codebase already follows.
 export const ImportTimingsModal = ({
   isOpen,
+  isImporting,
   onOpenChange,
-  appId,
-  achievements,
   onImport,
 }: ImportTimingsModalProps) => {
   const { t } = useTranslation()
-  const userSettings = useUserStore(state => state.userSettings)
-  const [inputValue, setInputValue] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
+  const [steamInput, setSteamInput] = useState('')
 
   const handleClose = () => {
-    setInputValue('')
-    onOpenChange()
+    setSteamInput('')
+    onOpenChange(false)
   }
 
   const handleImport = async () => {
-    if (!inputValue.trim()) return
-    setIsLoading(true)
-    try {
-      const apiKey = userSettings.general?.apiKey || undefined
-      const result = await invoke<{ achievements: RawAchievement[] }>('get_player_achievements', {
-        appId,
-        steamInput: inputValue.trim(),
-        apiKey: apiKey ? decrypt(apiKey) : null,
-      })
-
-      const raw = [...result.achievements].sort((a, b) => a.unlocktime - b.unlocktime)
-
-      const delayMap = new Map<string, number>()
-      for (let i = 0; i < raw.length - 1; i++) {
-        const minutes = (raw[i + 1].unlocktime - raw[i].unlocktime) / 60
-        delayMap.set(raw[i].apiname, Math.round(minutes * 10) / 10)
-      }
-
-      const orderMap = new Map<string, number>()
-      raw.forEach((a, idx) => orderMap.set(a.apiname, idx))
-
-      const matched: Achievement[] = []
-      const unmatched: Achievement[] = []
-
-      for (const a of achievements) {
-        if (orderMap.has(a.id)) {
-          const delay = delayMap.get(a.id)
-          matched.push(delay !== undefined ? { ...a, delayNextUnlock: delay } : { ...a })
-        } else {
-          const { delayNextUnlock: _, ...rest } = a
-          unmatched.push({ ...rest, skip: true } as Achievement)
-        }
-      }
-
-      matched.sort((a, b) => (orderMap.get(a.id) ?? 0) - (orderMap.get(b.id) ?? 0))
-
-      onImport([...matched, ...unmatched])
-      showSuccessToast(t('toast.importTimings.success', { count: matched.length }))
-      handleClose()
-    } catch (error) {
-      showDangerToast(t(getErrorKey(error)))
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') handleImport()
+    if (!steamInput.trim()) return
+    const ok = await onImport(steamInput.trim())
+    if (ok) handleClose()
   }
 
   return (
-    <CustomModal
-      isOpen={isOpen}
-      onOpenChange={handleClose}
-      title={
-        <div className='flex items-center gap-2'>
-          <p>{t('customLists.achievementUnlocker.importTimings.title')}</p>
-          <OpenDocs path='/features/achievement-unlocker/import-timings' />
-        </div>
-      }
-      body={
-        <div className='flex flex-col gap-3'>
-          <p className='text-sm text-altwhite'>
-            {t('customLists.achievementUnlocker.importTimings.description')}
-          </p>
-          <p className='text-sm text-altwhite'>
-            <Trans
-              i18nKey='customLists.achievementUnlocker.importTimings.descriptionTwo'
-              components={{
-                2: (
-                  <ExtLink
-                    href={`https://steamhunters.com/apps/${appId}/users?sort=achievements`}
-                    className='text-dynamic hover:text-dynamic-hover duration-150'
-                  />
-                ),
-              }}
-            />
-          </p>
-
-          <Input
-            autoFocus
-            placeholder={t('customLists.achievementUnlocker.importTimings.inputPlaceholder')}
-            value={inputValue}
-            onChange={e => setInputValue(e.target.value)}
-            onKeyDown={handleKeyDown}
-            isDisabled={isLoading}
-            classNames={{
-              inputWrapper: cn(
-                'bg-input data-[hover=true]:!bg-inputhover',
-                'group-data-[focus-within=true]:!bg-inputhover',
-                'group-data-[focus-visible=true]:ring-transparent',
-                'group-data-[focus-visible=true]:ring-offset-transparent',
-              ),
-              input: ['!text-content placeholder:text-altwhite/50'],
-            }}
-          />
-        </div>
-      }
-      buttons={
-        <>
-          <Button
-            size='sm'
-            color='danger'
-            variant='light'
-            radius='full'
-            onPress={handleClose}
-            isDisabled={isLoading}
-          >
-            {t('common.cancel')}
-          </Button>
-          <Button
-            size='sm'
-            className='bg-btn-secondary text-btn-text font-bold'
-            radius='full'
-            isLoading={isLoading}
-            isDisabled={!inputValue.trim()}
-            onPress={handleImport}
-          >
-            {t('common.import')}
-          </Button>
-        </>
-      }
-    />
+    <Modal isOpen={isOpen} onOpenChange={open => !open && handleClose()}>
+      <Modal.Backdrop>
+        <Modal.Container>
+          <Modal.Dialog>
+            <Modal.Header>
+              <Modal.Heading>
+                {t('dashboard.achievementUnlocker.importTimings.title')}
+              </Modal.Heading>
+              <Modal.CloseTrigger />
+            </Modal.Header>
+            <Modal.Body>
+              <div className='flex flex-col gap-3'>
+                <Typography color='muted' type='body-sm'>
+                  {t('dashboard.achievementUnlocker.importTimings.description')}
+                </Typography>
+                <Input
+                  autoFocus
+                  placeholder={t('dashboard.achievementUnlocker.importTimings.inputPlaceholder')}
+                  value={steamInput}
+                  onChange={event => setSteamInput(event.target.value)}
+                  onKeyDown={event => event.key === 'Enter' && handleImport()}
+                />
+              </div>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button isDisabled={isImporting} variant='secondary' onPress={handleClose}>
+                {t('common.actions.cancel')}
+              </Button>
+              <Button
+                isDisabled={!steamInput.trim()}
+                isPending={isImporting}
+                onPress={handleImport}
+              >
+                {t('dashboard.achievementUnlocker.importTimings.importButton')}
+              </Button>
+            </Modal.Footer>
+          </Modal.Dialog>
+        </Modal.Container>
+      </Modal.Backdrop>
+    </Modal>
   )
 }

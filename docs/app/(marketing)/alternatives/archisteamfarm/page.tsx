@@ -50,16 +50,18 @@ const comparisonData = [
   {
     category: 'Core Features',
     features: [
+      { name: 'No local Steam client required', steamGameIdler: true, alt: true },
+      { name: 'Multiple Account Support', steamGameIdler: true, alt: true },
+      { name: 'Simultaneous Account Farming', steamGameIdler: true, alt: true },
       { name: 'Automated Card Farming', steamGameIdler: true, alt: true },
       { name: 'Queue-based Farming', steamGameIdler: true, alt: true },
       { name: 'Custom Queue Order', steamGameIdler: true, alt: false },
-      { name: 'Simultaneous Game Farming', steamGameIdler: true, alt: 'Partial' },
+      { name: 'Simultaneous Game Farming', steamGameIdler: true, alt: false },
       { name: 'Achievement Management', steamGameIdler: true, alt: false },
       { name: 'Inventory Manager', steamGameIdler: true, alt: false },
       { name: 'Marketplace Integration', steamGameIdler: true, alt: false },
       { name: 'Playtime Boosting', steamGameIdler: true, alt: false },
-      { name: 'Multiple Account Support', steamGameIdler: true, alt: true },
-      { name: 'Simultaneous Account Farming', steamGameIdler: false, alt: true },
+      { name: 'Automatic Free Game Claiming', steamGameIdler: true, alt: false },
     ],
   },
   {
@@ -73,12 +75,7 @@ const comparisonData = [
       { name: 'Setup Complexity', steamGameIdler: 'Simple', alt: 'Complex' },
       { name: 'Settings Configuration', steamGameIdler: 'Simple', alt: 'Complex' },
       { name: 'Settings Configuration Method', steamGameIdler: 'GUI-based', alt: 'JSON Files' },
-      {
-        name: 'Multi-language Support',
-        steamGameIdler: 'Partial Translations',
-        alt: 'Partial Translations',
-      },
-      { name: 'Resource Usage', steamGameIdler: 'Moderate', alt: 'Low' },
+      { name: 'Resource Usage', steamGameIdler: 'Moderate', alt: 'Moderate' },
       { name: 'Platform Support', steamGameIdler: 'Windows', alt: 'Cross-platform' },
       {
         name: 'Installation',

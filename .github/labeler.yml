@@ -19,73 +19,161 @@ ci:templates:
 versioning:
 - all:
   - changed-files:
-    - any-glob-to-any-file:
-      - "CHANGELOG.md"
-      - "latest.json"
+    - any-glob-to-any-file: "latest.json"
 
 notifications:
 - all:
   - changed-files:
     - any-glob-to-any-file: "notifications.json"
 
-# Documentation labels
+# Documentation labels (docs/ — Fumadocs site)
 docs:config:
 - all:
   - changed-files:
     - any-glob-to-any-file:
       - "docs/.gitignore"
       - "docs/*.config.*"
-      - "docs/jsconfig.*"
+      - "docs/tsconfig.json"
+      - "docs/vercel.json"
 
 docs:deps:
 - all:
   - changed-files:
-    - any-glob-to-any-file:
-      - "docs/package.json"
-      - "docs/pnpm-lock.yaml"
+    - any-glob-to-any-file: "docs/package.json"
 
 docs:site:
 - all:
   - changed-files:
     - any-glob-to-any-file: "docs/**/*"
 
-docs:components:
-- all:
-  - changed-files:
-    - any-glob-to-any-file: 
-      - "docs/src/components/**/*"
-      - "docs/app/**/*"
-
 docs:content:
 - all:
   - changed-files:
-    - any-glob-to-any-file: "docs/src/content/**/*"
+    - any-glob-to-any-file: "docs/app/(marketing)/docs/_content/**/*"
+
+docs:changelog:
+- all:
+  - changed-files:
+    - any-glob-to-any-file: "docs/changelogs/**/*"
 
 docs:assets:
 - all:
   - changed-files:
     - any-glob-to-any-file: "docs/public/**/*"
 
-# React specific labels
-ui:components:
+# Feature areas — one label per feature that spans both the Next.js UI
+# (src/features/<x>) and its Tauri backend module (src-tauri/src/<x>), so a
+# PR touching one conceptual feature gets one label instead of two disjoint
+# ui:/tauri: ones. Backends with no single owning feature (steam_community,
+# local_steam — shared across multiple areas per CLAUDE.md) stay as
+# tauri:* infra labels below instead of being forced into an area.
+area:sign-in:
 - all:
   - changed-files:
-    - any-glob-to-any-file: "src/components/**/*"
+    - any-glob-to-any-file:
+      - "src/features/account-switcher/**/*"
+      - "src/features/agent-sign-in/**/*"
+      - "src/features/local-sign-in/**/*"
+      - "src/features/sign-in-landing/**/*"
+      - "src-tauri/src/steam_agent/**/*"
 
-ui:states:
+area:achievements:
 - all:
   - changed-files:
-    - any-glob-to-any-file: "src/components/contexts/**/*"
+    - any-glob-to-any-file:
+      - "src/features/achievement-manager/**/*"
+      - "src-tauri/src/achievements/**/*"
 
-ui:ui:
+area:achievement-unlocker:
 - all:
   - changed-files:
-    - any-glob-to-any-file: "src/components/ui/**/*"
+    - any-glob-to-any-file:
+      - "src/features/achievement-unlocker/**/*"
+      - "src-tauri/src/achievement_unlocker/**/*"
+
+area:auto-idle:
+- all:
+  - changed-files:
+    - any-glob-to-any-file:
+      - "src/features/auto-idle/**/*"
+      - "src-tauri/src/auto_idle/**/*"
+
+area:card-farming:
+- all:
+  - changed-files:
+    - any-glob-to-any-file:
+      - "src/features/card-farming/**/*"
+      - "src-tauri/src/card_farming/**/*"
+
+area:favorites:
+- all:
+  - changed-files:
+    - any-glob-to-any-file:
+      - "src/features/favorites/**/*"
+      - "src-tauri/src/favorites/**/*"
+
+area:free-games:
+- all:
+  - changed-files:
+    - any-glob-to-any-file:
+      - "src/features/free-games/**/*"
+      - "src-tauri/src/free_games/**/*"
+
+area:games-list:
+- all:
+  - changed-files:
+    - any-glob-to-any-file:
+      - "src/features/games-list/**/*"
+      - "src-tauri/src/games/**/*"
+
+area:idling:
+- all:
+  - changed-files:
+    - any-glob-to-any-file:
+      - "src/features/idling/**/*"
+      - "src-tauri/src/idling/**/*"
+
+area:inventory-manager:
+- all:
+  - changed-files:
+    - any-glob-to-any-file:
+      - "src/features/inventory-manager/**/*"
+      - "src-tauri/src/inventory/**/*"
+
+area:settings:
+- all:
+  - changed-files:
+    - any-glob-to-any-file:
+      - "src/features/settings/**/*"
+      - "src-tauri/src/settings/**/*"
+
+# React/Next.js labels — shared UI layers only; feature UI is covered by area:* above
+ui:shared:
+- all:
+  - changed-files:
+    - any-glob-to-any-file:
+      - "src/shared/components/**/*"
+      - "src/shared/search/**/*"
 
 ui:hooks:
 - all:
   - changed-files:
-    - any-glob-to-any-file: "src/hooks/**/*"
+    - any-glob-to-any-file: "src/shared/hooks/**/*"
+
+ui:stores:
+- all:
+  - changed-files:
+    - any-glob-to-any-file: "src/shared/stores/**/*"
+
+ui:theme:
+- all:
+  - changed-files:
+    - any-glob-to-any-file: "src/shared/theme/**/*"
+
+ui:utils:
+- all:
+  - changed-files:
+    - any-glob-to-any-file: "src/shared/utils/**/*"
 
 ui:i18n:
 - all:
@@ -101,11 +189,6 @@ ui:styles:
 - all:
   - changed-files:
     - any-glob-to-any-file: "src/styles/**/*"
-
-ui:utils:
-- all:
-  - changed-files:
-    - any-glob-to-any-file: "src/utils/**/*"
 
 ui:assets:
 - all:
@@ -143,11 +226,55 @@ tauri:config:
   - changed-files:
     - any-glob-to-any-file: "src-tauri/*.json"
 
-tauri:src:
+# Cross-cutting single-file infra with no dedicated feature area
+tauri:shared:
 - all:
   - changed-files:
     - any-glob-to-any-file:
-      - "src-tauri/src/commands/**/*"
+      - "src-tauri/src/async_utils.rs"
+      - "src-tauri/src/credential_store.rs"
+      - "src-tauri/src/embedded_api_key.rs"
+      - "src-tauri/src/error.rs"
+      - "src-tauri/src/fs_utils.rs"
+      - "src-tauri/src/legacy_migration.rs"
+      - "src-tauri/src/logging.rs"
+      - "src-tauri/src/platform.rs"
+      - "src-tauri/src/steam_utility_exe.rs"
+      - "src-tauri/src/steam_web_api.rs"
+      - "src-tauri/src/tray.rs"
+      - "src-tauri/src/zoom.rs"
+
+tauri:subscription:
+- all:
+  - changed-files:
+    - any-glob-to-any-file: "src-tauri/src/subscription.rs"
+
+tauri:updater:
+- all:
+  - changed-files:
+    - any-glob-to-any-file: "src-tauri/src/updater.rs"
+
+# Shared backends used by more than one area (see CLAUDE.md: "card farming /
+# inventory-manager / trading cards are separate infrastructure")
+tauri:local-steam:
+- all:
+  - changed-files:
+    - any-glob-to-any-file: "src-tauri/src/local_steam/**/*"
+
+tauri:steam-community:
+- all:
+  - changed-files:
+    - any-glob-to-any-file: "src-tauri/src/steam_community/**/*"
+
+tauri:customization:
+- all:
+  - changed-files:
+    - any-glob-to-any-file: "src-tauri/src/customization/**/*"
+
+tauri:debug:
+- all:
+  - changed-files:
+    - any-glob-to-any-file: "src-tauri/src/debug/**/*"
 
 # Core labels
 core:deps:
@@ -161,12 +288,11 @@ core:config:
 - all:
   - changed-files:
     - any-glob-to-any-file:
-      - ".eslintrc.*"
       - ".gitignore"
       - ".gitmodules"
       - ".npmrc"
       - "*.config.*"
-      - "jsconfig.*"
+      - "tsconfig.json"
       - ".husky/*"
       - "*.yml"
 
@@ -179,7 +305,7 @@ core:docs:
 libs:
 - all:
   - changed-files:
-    - any-glob-to-any-file: 
+    - any-glob-to-any-file:
       - "libs/**/*"
       - "libs/**"
 
@@ -219,3 +345,7 @@ build:
 performance:
 - all:
   - head-branch: ["^perf", "perf/"]
+
+dependencies:
+- all:
+  - head-branch: ["^dependabot/"]

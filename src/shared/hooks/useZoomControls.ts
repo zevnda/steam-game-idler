@@ -1,86 +1,78 @@
-import { invoke } from '@tauri-apps/api/core'
-import { useCallback, useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { showDangerToast } from '@/shared/components'
-import { logEvent } from '@/shared/utils'
+﻿import { useCallback, useEffect, useState } from 'react'
+import { invoke } from '@/shared/utils/invoke'
 
-export function useZoomControls() {
-  const { t } = useTranslation()
+const ZOOM_STORAGE_KEY = 'zoomLevel'
+const MIN_ZOOM = 0.7
+const MAX_ZOOM = 1.3
+const ZOOM_STEP = 0.1
+
+const applyZoom = (scaleFactor: number) => {
+  invoke('set_zoom', { scaleFactor }).catch(error => {
+    console.error('Error in (set_zoom):', error)
+  })
+}
+
+// Mounted once at the app root (`_app.tsx`), not just inside `DashboardShell` - unlike every other
+// shortcut this rewrite has (all dashboard-scoped, see `useDashboardShortcuts.ts`), zoom is useful
+// on the pre-dashboard sign-in screens too, matching `main`'s own `useZoomControls.ts` mounting on
+// `pages/index.tsx` unconditionally. The zoom level itself is a pure frontend preference in
+// `localStorage`, never `settings.json` - see `zoom.rs`'s doc comment for why the Rust side has
+// nothing of its own to persist.
+export const useZoomControls = () => {
   const [zoom, setZoom] = useState(1.0)
 
-  // Set initial zoom level from localStorage
   useEffect(() => {
-    const storedZoom = localStorage.getItem('zoomLevel')
-    if (storedZoom) {
-      const parsedZoom = parseFloat(storedZoom)
-      if (!isNaN(parsedZoom)) {
-        setZoom(parsedZoom)
-        invoke('set_zoom', { scaleFactor: parsedZoom })
-      }
-    }
+    const stored = localStorage.getItem(ZOOM_STORAGE_KEY)
+    if (!stored) return
+    const parsed = Number.parseFloat(stored)
+    if (Number.isNaN(parsed)) return
+    setZoom(parsed)
+    applyZoom(parsed)
   }, [])
 
-  // Zoom controls
-  const handleZoomControls = useCallback(
-    async (e: KeyboardEvent) => {
-      try {
-        if (e.ctrlKey || e.metaKey) {
-          if (e.key === '=' || e.key === '+') {
-            e.preventDefault()
-            const newZoom = Math.min(zoom + 0.1, 1.3)
-            setZoom(newZoom)
-            localStorage.setItem('zoomLevel', newZoom.toString())
-            await invoke('set_zoom', { scaleFactor: newZoom })
-          } else if (e.key === '-') {
-            e.preventDefault()
-            const newZoom = Math.max(zoom - 0.1, 0.7)
-            setZoom(newZoom)
-            localStorage.setItem('zoomLevel', newZoom.toString())
-            await invoke('set_zoom', { scaleFactor: newZoom })
-          } else if (e.key === '0') {
-            e.preventDefault()
-            setZoom(1.0)
-            localStorage.setItem('zoomLevel', '1.0')
-            await invoke('set_zoom', { scaleFactor: 1.0 })
-          }
-        }
-      } catch (error) {
-        showDangerToast(t('common.error'))
-        console.error('Error in (handleZoomControls):', error)
-        logEvent(`[Error] in (handleZoomControls): ${error}`)
+  const commitZoom = useCallback((newZoom: number) => {
+    const clamped = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, newZoom))
+    setZoom(clamped)
+    localStorage.setItem(ZOOM_STORAGE_KEY, String(clamped))
+    applyZoom(clamped)
+  }, [])
+
+  const handleKeydown = useCallback(
+    (e: KeyboardEvent) => {
+      if (!e.ctrlKey && !e.metaKey) return
+
+      if (e.key === '+' || e.key === '=') {
+        e.preventDefault()
+        commitZoom(zoom + ZOOM_STEP)
+      } else if (e.key === '-') {
+        e.preventDefault()
+        commitZoom(zoom - ZOOM_STEP)
+      } else if (e.key === '0') {
+        e.preventDefault()
+        commitZoom(1.0)
       }
     },
-    [zoom, t],
+    [zoom, commitZoom],
   )
 
-  // Zoom controls - mouse wheel
-  const handleWheelZoom = useCallback(
-    async (e: WheelEvent) => {
-      try {
-        if (e.ctrlKey || e.metaKey) {
-          e.preventDefault()
-          const delta = e.deltaY > 0 ? -0.1 : 0.1
-          const newZoom = Math.min(Math.max(zoom + delta, 0.7), 1.3)
-          setZoom(newZoom)
-          localStorage.setItem('zoomLevel', newZoom.toString())
-          await invoke('set_zoom', { scaleFactor: newZoom })
-        }
-      } catch (error) {
-        showDangerToast(t('common.error'))
-        console.error('Error in (handleWheelZoom):', error)
-        logEvent(`[Error] in (handleWheelZoom): ${error}`)
-      }
+  const handleWheel = useCallback(
+    (e: WheelEvent) => {
+      if (!e.ctrlKey && !e.metaKey) return
+      e.preventDefault()
+      commitZoom(zoom + (e.deltaY > 0 ? -ZOOM_STEP : ZOOM_STEP))
     },
-    [zoom, t],
+    [zoom, commitZoom],
   )
 
   useEffect(() => {
-    document.addEventListener('keydown', handleZoomControls, { capture: true })
-    return () => document.removeEventListener('keydown', handleZoomControls, { capture: true })
-  }, [handleZoomControls])
+    // Capture phase, matching `main`'s exact listener setup - keeps zoom shortcuts working even if
+    // a descendant handler (e.g. a modal) calls `stopPropagation` on the bubble phase.
+    document.addEventListener('keydown', handleKeydown, { capture: true })
+    return () => document.removeEventListener('keydown', handleKeydown, { capture: true })
+  }, [handleKeydown])
 
   useEffect(() => {
-    document.addEventListener('wheel', handleWheelZoom, { passive: false })
-    return () => document.removeEventListener('wheel', handleWheelZoom)
-  }, [handleWheelZoom])
+    document.addEventListener('wheel', handleWheel, { passive: false })
+    return () => document.removeEventListener('wheel', handleWheel)
+  }, [handleWheel])
 }

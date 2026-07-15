@@ -1,11 +1,11 @@
 {
-  "id": "new-pro-feature-2026-06",
+  "id": "sgi-rewrite-2026-07",
   "variant": "promo",
-  "title": "New PRO Feature Added",
-  "message": "Enabling the \"Run Multiple Games\" setting in \"Settings → Achievement Unlocker\" allows PRO users to unlock achievements for up to 32 games at the same time in Achievement Unlocker",
+  "title": "Steam Game Idler v6 is Here",
+  "message": "Steam Game Idler has been completely rebuilt from the ground up with full multi-account support, new sign-in method, and an improved interface.",
   "ctaLabel": "Learn More",
-  "ctaUrl": "https://steamgameidler.com/pro#unlock-achievements-for-multiple-games",
-  "asset": "achievement-v2.webp",
+  "ctaUrl": "https://steamgameidler.com/changelog/6.0.0",
+  "asset": "update.webp",
   "dismissal": "permanent",
   "enabled": true
 }

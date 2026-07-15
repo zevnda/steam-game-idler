@@ -7,6 +7,7 @@ import {
   TbBuildingStore,
   TbCards,
   TbChecks,
+  TbCopy,
   TbDeviceGamepad2,
   TbDownload,
   TbEraser,
@@ -56,6 +57,7 @@ type ButtonType =
   | 'start-manually'
   | 'checkbox'
   | 'import-timings'
+  | 'sell-dupes'
 
 interface MockButtonProps {
   type: ButtonType
@@ -265,6 +267,12 @@ export default function MockButton({ type, content }: MockButtonProps) {
         <span className='w-3 h-3 block'>
           <FaCheck fontSize={12} />
         </span>
+      </span>
+    )
+  } else if (type === 'sell-dupes') {
+    return (
+      <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
+        <TbCopy fontSize={16} className='inline' /> Sell Dupes
       </span>
     )
   }

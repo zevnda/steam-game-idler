@@ -1,6 +1,8 @@
 import { FaChevronDown } from 'react-icons/fa6'
-import { AnimatePresence, motion } from 'framer-motion'
 
+// Ported from `main` - the expand/collapse (`AnimatePresence` + `motion.div` height/opacity
+// measurement) is now a pure-CSS grid-rows transition (`.pro-faq-panel`, see globals.css), which
+// needs no JS-measured height.
 export function FAQItem({
   q,
   a,
@@ -14,33 +16,22 @@ export function FAQItem({
 }) {
   return (
     <div
-      className='rounded-3xl overflow-hidden cursor-pointer py-2 bg-[#161616] hover:bg-[#181818] duration-150'
+      className='cursor-pointer overflow-hidden rounded-3xl bg-[#161616] py-2 duration-150 hover:bg-[#181818]'
       onClick={onToggle}
     >
-      <div className='flex items-center justify-between px-4 py-3.5 gap-3'>
-        <span className='text-lg font-semibold'>{q}</span>
-        <motion.div
-          animate={{ rotate: isOpen ? 180 : 0 }}
-          transition={{ duration: 0.25 }}
-          className='shrink-0'
-        >
-          <FaChevronDown size={16} className='text-altwhite' />
-        </motion.div>
+      <div className='flex items-center justify-between gap-3 px-4 py-3.5'>
+        <span className='text-lg font-semibold text-white'>{q}</span>
+        <FaChevronDown
+          className={`pro-faq-chevron shrink-0 text-muted ${isOpen ? 'is-open' : ''}`}
+          size={16}
+        />
       </div>
 
-      <AnimatePresence initial={false}>
-        {isOpen && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.28, ease: 'easeInOut' as const }}
-            className='overflow-hidden'
-          >
-            <p className='text-altwhite px-4 pb-4 leading-relaxed'>{a}</p>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <div className={`pro-faq-panel ${isOpen ? 'is-open' : ''}`}>
+        <div>
+          <p className='px-4 pb-4 leading-relaxed text-muted'>{a}</p>
+        </div>
+      </div>
     </div>
   )
 }

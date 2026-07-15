@@ -12,49 +12,47 @@ edition = "2021"
 # The `_lib` suffix may seem redundant but it is necessary
 # to make the lib name unique and wouldn't conflict with the bin name.
 # This seems to be only an issue on Windows, see https://github.com/rust-lang/cargo/issues/8519
-name = "steam_game_idler_lib_v2"
+name = "steam_game_idler_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]
 tauri-build = { version = "2", features = [] }
 
 [dependencies]
-dotenvs = "0.1.0"
-scraper = "0.22.0"
-lazy_static = "1.5.0"
+tauri = { version = "2.8.0", features = ["unstable", "tray-icon", "image-png"] }
+tokio = { version = "1", features = ["process", "io-util", "sync", "time", "rt", "macros"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+base64 = "0.22"
+thiserror = "2"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+tracing-appender = "0.2"
+keyring = { version = "4.1.4", default-features = false, features = ["v1", "windows-native-keyring-store"] }
 steamlocate = "2.0.1"
-base64 = "0.22.1"
-urlencoding = "2.1.3"
-sysinfo = "0.36.0"
-futures = "0.3.31"
-windows = { version = "0.56", features = ["Win32_Foundation", "Win32_UI_WindowsAndMessaging", "Win32_System_Threading"] }
-tokio = { version = "1.44.2", features = ["time", "rt", "sync"] }
-chrono = { version = "0.4.39", features = ["clock"] }
-serde = { version = "1.0.217", features = ["derive"] }
-reqwest = { version = "0.12.12", features = ["json"] }
-serde_json = { version = "1.0.138", features = ["std"] }
 regex = { version = "1.11.1", default-features = false, features = ["std"] }
-winapi = { version = "0.3.9", features = ["processthreadsapi", "handleapi", "winnt"] }
-tauri = { version = "2.8.0", features = ["tray-icon", "image-png", "unstable"] }
-tauri-plugin-notification = "2.3.0"
-tauri-plugin-process = "2.3.0"
-tauri-plugin-dialog = "2.3.0"
-tauri-plugin-fs = "2.4.0"
-tauri-plugin-os = "2.3.0"
-tauri-plugin-clipboard-manager = "2.3.2"
-tauri-plugin-opener = "2"
-tauri-plugin-single-instance = "2.4.2"
-discord-rich-presence = "1.1.0"
-aes = "0.8"
+reqwest = { version = "0.12.12", features = ["json", "gzip", "brotli", "deflate"] }
+sysinfo = "0.36.0"
+scraper = "0.23"
 machine-uid = "0.5"
+futures = "0.3"
+rand = "0.8"
+chrono = "0.4"
+urlencoding = "2.1.3"
+tauri-plugin-opener = "2"
+tauri-plugin-dialog = "2.7"
 
 [features]
 custom-protocol = ["tauri/custom-protocol"]
 
 [target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
-tauri-plugin-autostart = "2.5.0"
-tauri-plugin-updater = "2.9.0"
 tauri-plugin-window-state = { git = "https://github.com/zevnda/plugins-workspace-custom" }
+tauri-plugin-updater = "2.9.0"
+tauri-plugin-process = "2.3.0"
+tauri-plugin-single-instance = "2.4.2"
+tauri-plugin-autostart = "2.5.0"
+tauri-plugin-notification = "2.3.0"
+tauri-plugin-clipboard-manager = "2.3.2"
 
 [profile.dev]
 opt-level = 1

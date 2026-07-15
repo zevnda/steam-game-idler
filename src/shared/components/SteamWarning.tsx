@@ -1,72 +1,95 @@
-import { invoke } from '@tauri-apps/api/core'
-import { useEffect, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button, useDisclosure } from '@heroui/react'
-import { CustomModal } from '@/shared/components'
-import { useStateStore, useUserStore } from '@/shared/stores'
+import { Button, Modal } from '@heroui/react'
+import { useSessionStore } from '@/shared/stores/sessionStore'
+import { useSteamWarningStore } from '@/shared/stores/steamWarningStore'
+import { invoke } from '@/shared/utils/invoke'
 
+// Hardcoded dev-account bypass, unchanged from `main` - known dev/test Steam IDs that should never
+// see this modal, even outside a debug build.
+const DEV_ACCOUNT_STEAM_IDS = ['76561198158912649', '76561198999797359']
+
+const STEAM_RUNNING_POLL_INTERVAL_MS = 1000
+
+// Mounted once in DashboardShell alongside `useSteamMonitor` (which sets `showSteamWarning` when
+// the backend detects the local Steam client has closed mid-session). Blocking, undismissable -
+// CLI-mode automations genuinely can't function without a real local Steam client, so this isn't
+// optional/dismissable UI. Polls `is_steam_running` itself once open, independent of the backend's
+// push event, so recovery is detected even if that event was somehow missed - mirrors `main`'s
+// SteamWarning.tsx exactly.
 export const SteamWarning = () => {
   const { t } = useTranslation()
-  const showSteamWarning = useStateStore(state => state.showSteamWarning)
-  const setShowSteamWarning = useStateStore(state => state.setShowSteamWarning)
-  const userSummary = useUserStore(state => state.userSummary)
-  const { isOpen, onOpen, onOpenChange } = useDisclosure()
-  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const showSteamWarning = useSteamWarningStore(state => state.showSteamWarning)
+  const setShowSteamWarning = useSteamWarningStore(state => state.setShowSteamWarning)
+  const accounts = useSessionStore(state => state.accounts)
+  const [isOpen, setIsOpen] = useState(false)
+
+  const localSteamId =
+    Object.values(accounts).find(account => account.mode === 'local')?.steamId ?? null
 
   useEffect(() => {
-    const shouldShowWarning = async () => {
-      const devAccounts = ['76561198158912649', '76561198999797359']
-      const isDev = await invoke('is_dev')
-      const isDevAccount = devAccounts.includes(userSummary?.steamId ?? '')
-      if (showSteamWarning && !isDev && !isDevAccount) {
-        onOpen()
-      }
-    }
-    shouldShowWarning()
-  }, [onOpen, showSteamWarning, userSummary?.steamId])
+    if (!showSteamWarning) return
+    let cancelled = false
 
-  // Poll every second while modal is open; auto-close when Steam is detected
+    invoke<boolean>('is_dev')
+      .then(isDev => {
+        if (cancelled) return
+        const isDevAccount = localSteamId ? DEV_ACCOUNT_STEAM_IDS.includes(localSteamId) : false
+        if (!isDev && !isDevAccount) setIsOpen(true)
+      })
+      .catch(error => {
+        console.error('Error in (is_dev):', error)
+        // Fails open (shows the warning) - a dev-tooling check failing shouldn't hide a real,
+        // user-facing signal that CLI-mode automations just stopped.
+        setIsOpen(true)
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [showSteamWarning, localSteamId])
+
   useEffect(() => {
     if (!isOpen) return
 
-    pollRef.current = setInterval(async () => {
-      const running = await invoke<boolean>('is_steam_running')
-      if (running) {
-        clearInterval(pollRef.current!)
-        pollRef.current = null
-        setShowSteamWarning(false)
-        onOpenChange()
+    const interval = setInterval(async () => {
+      try {
+        if (await invoke<boolean>('is_steam_running')) {
+          clearInterval(interval)
+          setShowSteamWarning(false)
+          setIsOpen(false)
+        }
+      } catch (error) {
+        console.error('Error in (is_steam_running):', error)
       }
-    }, 1000)
+    }, STEAM_RUNNING_POLL_INTERVAL_MS)
 
-    return () => {
-      if (pollRef.current) {
-        clearInterval(pollRef.current)
-        pollRef.current = null
-      }
-    }
-  }, [isOpen, onOpenChange, setShowSteamWarning])
+    return () => clearInterval(interval)
+  }, [isOpen, setShowSteamWarning])
 
-  const launchAndWaitForSteam = async () => {
-    await invoke('launch_steam')
+  const handleLaunchSteam = () => {
+    invoke('launch_steam').catch(error => {
+      console.error('Error in (launch_steam):', error)
+    })
   }
 
   return (
-    <CustomModal
-      hideCloseButton
-      isOpen={isOpen}
-      title={t('common.notice')}
-      body={t('confirmation.steamClosed')}
-      buttons={
-        <Button
-          size='sm'
-          className='bg-btn-secondary text-btn-text font-bold'
-          radius='full'
-          onPress={launchAndWaitForSteam}
-        >
-          {t('common.continue')}
-        </Button>
-      }
-    />
+    <Modal isOpen={isOpen}>
+      <Modal.Backdrop isDismissable={false} isKeyboardDismissDisabled>
+        <Modal.Container size='sm'>
+          <Modal.Dialog>
+            <Modal.Header>
+              <Modal.Heading>{t('common.steamWarning.title')}</Modal.Heading>
+            </Modal.Header>
+            <Modal.Body>
+              <p>{t('common.steamWarning.description')}</p>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button onPress={handleLaunchSteam}>{t('common.actions.continue')}</Button>
+            </Modal.Footer>
+          </Modal.Dialog>
+        </Modal.Container>
+      </Modal.Backdrop>
+    </Modal>
   )
 }

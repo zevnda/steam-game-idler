@@ -1,6 +1,6 @@
 ---
 title: How to Sign In
-description: Learn how to sign in using your Steam account.
+description: Learn how to sign in to Steam Game Idler using Sign in with Steam or Legacy Sign In.
 icon: UserCheck
 ---
 
@@ -8,12 +8,62 @@ import { Step, Steps } from 'fumadocs-ui/components/steps';
 
 # How to Sign In
 
-<Callout type='warning'>
-    You must have the [Steam client](https://store.steampowered.com/about) installed, running, and signed in to at least one account
-</Callout>
+SGI has two ways to sign in. They both give you access to the same features (with a couple of documented exceptions), the difference is purely in *how* SGI talks to Steam.
+
+| | **Sign in with Steam** *(recommended)* | **Legacy Sign In** |
+|---|---|---|
+| Steam client required? | No | Yes — must be installed, running, and signed in |
+| Sign-in method | Your Steam username/password, or scan a QR code | Pick from accounts already signed in to the local Steam client |
+| Multiple accounts at once? | Yes — see [Multi-Account](/docs/get-started/multi-account) | No — one account at a time |
 
 <Callout type='info'>
-    If you are signed in to more than one Steam account in the Steam client, SGI will list all available accounts for you to choose from on the account selection screen
+    Not sure which to pick? Use **Sign in with Steam** unless you specifically don't want to enter your username/password into SGI — in that case, use **Legacy Sign In**
+</Callout>
+
+## Sign in with Steam
+
+This is the recommended method. SGI signs in directly to Steam's servers using the same underlying protocol the official Steam client uses, so it doesn't need the Steam client installed or running on your PC at all.
+
+<Steps>
+  <Step>
+    ### Open SGI
+    On first launch, you'll land on the sign-in screen
+  </Step>
+
+  <Step>
+    ### Choose Sign in with Steam
+    Click the **Sign in with Steam** button
+  </Step>
+
+  <Step>
+    ### Sign in
+    - Enter your Steam **username and password**, or
+    - Scan the **QR code** shown on screen using the Steam mobile app
+  </Step>
+
+  <Step>
+    ### Steam Guard
+    If prompted, approve the sign-in from your Steam mobile app, or enter the Steam Guard code sent to your email
+  </Step>
+
+  <Step>
+    ### Continue
+    Once signed in, you're taken straight to the dashboard
+  </Step>
+</Steps>
+
+<Callout type='warning'>
+    Your Steam credentials are sent directly to Steam's own servers to establish the sign-in, the same as signing in through the official Steam client or mobile app. SGI never sees or stores your password
+</Callout>
+
+Once signed in, you can add further accounts without signing out of this one — see [Multi-Account](/docs/get-started/multi-account).
+
+## Legacy Sign In
+
+Use this if you'd rather not enter your Steam username/password into SGI at all. It requires the Steam client to already be installed, running, and signed in — SGI reads the account(s) that are already logged in through Steam itself.
+
+<Callout type='warning'>
+    You must have the [Steam client](https://store.steampowered.com/about) installed, running, and signed in to at least one account
 </Callout>
 
 <Steps>
@@ -23,17 +73,38 @@ import { Step, Steps } from 'fumadocs-ui/components/steps';
   </Step>
 
   <Step>
-    ### Sign In
+    ### Sign in to Steam
     Sign in to your Steam account via the Steam client
   </Step>
 
   <Step>
-    ### Select Your Account
-    Open SGI and choose your account from the account selection screen by clicking your avatar
+    ### Choose Legacy Sign In
+    Open SGI and click **Legacy Sign In** on the sign-in screen
+  </Step>
+
+  <Step>
+    ### Select your account
+    If you're signed in to more than one account in the Steam client, SGI lists all of them — choose yours by clicking its avatar
   </Step>
 
   <Step>
     ### Continue
-    After selecting your account, click the **Continue** button to proceed to the dashboard
+    Click **Continue** to proceed to the dashboard
   </Step>
 </Steps>
+
+<Callout type='info'>
+    Legacy Sign In only supports one signed-in account at a time — this is a real limitation of the Steam client itself, not something SGI can lift. To use more than one account at once, sign in to the additional accounts with **Sign in with Steam** instead
+</Callout>
+
+## What's different between the two
+
+A small number of features behave differently depending on which method you used to sign in — each is called out on its own feature page, but the full list is:
+
+- **Idling many games at once** — The **Sign in with Steam** method can idle up to 32 games from one background session; Legacy Sign In launches one helper process per game (same 32-game Steam-imposed ceiling either way)
+- **Game Coordinator titles** (TF2, Dota 2, CS2, Left 4 Dead 2, Portal 2) — can only be idled and have their achievements managed correctly via **Legacy Sign In**
+- **Global achievement rarity %** — only shown via **Legacy Sign In** in the [Achievement Manager](/docs/features/achievement-manager)
+- **[Steam Credentials](/docs/steam-credentials)** for Card Farming/Inventory Manager — **Sign in with Steam** accounts can skip this step entirely (a gamer-tier perk); Legacy Sign In accounts always need it
+- **[Free Games](/docs/features/free-games) auto-redeem** — works as a plain toggle for **Sign in with Steam** accounts; Legacy Sign In accounts need a separate one-time store sign-in first
+
+Everything else — Card Farming, Achievement Unlocker, Achievement Manager, Inventory Manager, Idling, Auto-Idle, Favorites — works the same regardless of which method you used.

@@ -15,52 +15,35 @@ The Card Farming feature allows you to automatically farm trading cards from you
 <DocsCTA />
 
 <Callout type="info">
-    You must add your [Steam Credentials](/docs/steam-credentials) before you can use this feature
+    You must add your [Steam Credentials](/docs/steam-credentials) before you can use this feature — unless you [signed in with Steam](/docs/get-started/how-to-sign-in) on a **Gamer** tier account, in which case this happens automatically
 </Callout>
 
-### Farm Games In The Card Farming List Only
+Card Farming has three tabs: **Games With Drops** (every eligible game, browse and queue from here), **Queue** (games you've chosen to farm), and **Blacklisted** (games excluded from farming entirely).
+
+### Farm Specific Games
 
 <Steps>
-  <Step>
-    Enable [`Farm Games In List`](/docs/settings/card-farming#farm-games-in-list) in <MockButton type='context-cog' content='Settings → Card Farming' />
-  </Step>
-
-  <Step>
-    Click <MockButton type='card-farming' /> in the sidebar
-  </Step>
-  
-  <Step>
-    Go to the <MockButton type='all-games' /> tab and click on individual games to add and remove them
-  </Step>
-
-  <Step>  
-    Click <MockButton type='content' content='Done' /> and then <MockButton type='card-farming-action' />
-  </Step>
-</Steps>
-
-### Farm All Games With Drops Remaining
-
-<Steps>
-  <Step>
-    Enable [`Farm All Games`](/docs/settings/card-farming#farm-games-in-list) in <MockButton type='context-cog' content='Settings → Card Farming' />
-  </Step>
-
   <Step>
     Click <MockButton type='card-farming' /> in the sidebar
   </Step>
 
   <Step>
-    Optionally, go to the <MockButton type='all-games' /> tab and click <MockButton type='content' content='Blacklist' /> on individual games to blacklist them from being farmed
+    Go to the <MockButton type='all-games' /> tab and click on individual games to add them to your queue
   </Step>
 
   <Step>
-    Click <MockButton type='card-farming-action' />
+    Switch to the <MockButton type='content' content='Queue' /> tab to review what you've added, then click <MockButton type='card-farming-action' />
   </Step>
 </Steps>
 
+<Callout type="info">
+    Only games in your **Queue** tab are farmed when you start — adding a game to the queue doesn't start farming by itself. If you'd rather farm every eligible game in your library without queuing them individually, enable [Farm All Games](/docs/settings/card-farming#farm-all-games) instead
+</Callout>
 
+### Blacklist a Game
 
+Blacklisting removes a game from farming entirely, even if it still has card drops remaining. See [Blacklisting Games](/docs/features/card-farming/blacklisting-games) for details.
 
+### Automatic Farming *(Pro — Gamer tier)*
 
-
-
+Enable [Auto Farm Cards](/docs/settings/card-farming#auto-farm-cards) in <MockButton type='context-cog' content='Settings → Card Farming' /> to have SGI automatically farm every queued game with drops remaining on a recurring schedule, with no need to start it manually.

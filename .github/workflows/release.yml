@@ -34,9 +34,17 @@ on:
 
 run-name: Build release v${{ github.event.inputs.version }}
 
-permissions:
-  contents: write
-  pull-requests: write
+# Prevents two dispatches from racing (both bumping the same version files / publishing at once).
+# cancel-in-progress: false queues a second dispatch behind the first rather than auto-killing it -
+# manually cancelling a run yourself from the Actions UI/CLI is unaffected by this and still works
+# at any time.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+# Least privilege by default - only build_release_bundle (the job that actually creates the
+# release/PR/deletes the build artifact) is granted elevated scopes, below.
+permissions: {}
 
 jobs:
   fetch_previous_version:
@@ -46,8 +54,20 @@ jobs:
     steps:
       - name: Get latest release version
         id: get_version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          PREVIOUS_VERSION=$(curl -s https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r .tag_name)
+          # Authenticated request avoids the 60 req/hr unauthenticated rate limit; a token is still
+          # valid for this even under this workflow's now-zero default permissions.
+          RESPONSE=$(curl -s -H "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/repos/${{ github.repository }}/releases/latest)
+          PREVIOUS_VERSION=$(echo "$RESPONSE" | jq -r .tag_name)
+
+          if [ -z "$PREVIOUS_VERSION" ] || [ "$PREVIOUS_VERSION" = "null" ]; then
+            echo "::error::Failed to fetch latest release version from GitHub API. Response was:"
+            echo "$RESPONSE"
+            exit 1
+          fi
+
           echo "Found previous version: $PREVIOUS_VERSION"
           echo "previous_version=$PREVIOUS_VERSION" >> $GITHUB_OUTPUT
 
@@ -82,16 +102,21 @@ jobs:
                 `${prevMajor}.${prevMinor + 1}.0 (minor)`,
                 `${prevMajor + 1}.0.0 (major)`
               ];
-              
+
               core.setFailed(
                 `❌ Invalid version increment!\n\n` +
                 `Current: ${prev}\n` +
                 `Attempted: ${next}\n\n` +
                 `Valid options:\n${validOptions.map(v => `  • ${v}`).join('\n')}`
               );
+              return;
             }
-            
+
             console.log(`✅ Valid version increment: ${prev} → ${next}`);
+            await core.summary
+              .addHeading('Release version')
+              .addRaw(`Bumping ${prev} → ${next}`)
+              .write();
 
   build_dotnet_libs:
     runs-on: windows-latest
@@ -100,11 +125,11 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          submodules: recursive
 
-      - name: Setup MSBuild
-        uses: microsoft/setup-msbuild@v2
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
 
       - name: Prepare NuGet cache directory
         run: |
@@ -129,13 +154,23 @@ jobs:
         uses: actions/cache@v4
         with:
           path: src-tauri/libs/
-          key: ${{ runner.os }}-dotnet-${{ hashFiles('libs/**/*.cs', 'libs/**/*.csproj') }}
+          key: ${{ runner.os }}-dotnet-${{ hashFiles('libs/**/*.cs', 'libs/**/*.csproj', '.github/workflows/release.yml') }}
           restore-keys: |
             ${{ runner.os }}-dotnet-
 
-      - name: Build .NET libraries
+      - name: Build SteamUtility
         if: steps.cache-dotnet.outputs.cache-hit != 'true' || github.event.inputs.force_dotnet_build == 'true'
-        run: MSBuild.exe .\libs\SteamUtility.csproj
+        # -o is resolved relative to this step's cwd (repo root), not the project file's directory.
+        # DebugType=none - tauri.conf.json bundles everything under libs/*, so a .pdb here would
+        # otherwise ship in the installer for nothing. Single dotnet publish step now that the old
+        # Steamworks.NET SteamUtility and SteamKit2 SteamAgent projects have been merged into one.
+        # $ErrorActionPreference/$LASTEXITCODE check: a pwsh step's pass/fail is the wrapping
+        # pwsh.exe exit code, NOT $LASTEXITCODE - a failing dotnet publish would otherwise report
+        # this step green and silently carry a stale/missing SteamUtility.exe into the release.
+        run: |
+          $ErrorActionPreference = 'Stop'
+          dotnet publish .\libs\SteamUtility\SteamUtility.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:PublishTrimmed=true -p:DebugType=none -o .\src-tauri\libs\
+          if ($LASTEXITCODE -ne 0) { throw "dotnet publish failed with exit code $LASTEXITCODE" }
         shell: pwsh
 
       - name: Upload built .NET libraries
@@ -145,15 +180,24 @@ jobs:
           path: src-tauri/libs/
           retention-days: 1
 
+      - name: Record dotnet build summary
+        shell: pwsh
+        run: |
+          $usedCache = "${{ steps.cache-dotnet.outputs.cache-hit }}" -eq 'true' -and "${{ github.event.inputs.force_dotnet_build }}" -ne 'true'
+          $source = if ($usedCache) { 'cache' } else { 'fresh build' }
+          "## .NET build`nSteamUtility.exe: $source" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+
   build_release_bundle:
     needs: [build_dotnet_libs, fetch_previous_version, validate_version]
     timeout-minutes: 30
     runs-on: windows-latest
+    permissions:
+      contents: write # create the GitHub release (softprops/action-gh-release)
+      pull-requests: write # open the version-bump PR
+      actions: write # delete the dotnet-libs artifact in the cleanup step
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          submodules: recursive
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -186,7 +230,11 @@ jobs:
 
       - name: Install dependencies (pnpm)
         if: steps.cache-pnpm.outputs.cache-hit != 'true' || github.event.inputs.force_pnpm_install == 'true'
-        run: pnpm install --frozen-lockfile
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          pnpm install --frozen-lockfile
+          if ($LASTEXITCODE -ne 0) { throw "pnpm install failed with exit code $LASTEXITCODE" }
 
       - name: Setup Next.js cache
         id: cache-nextjs
@@ -200,6 +248,7 @@ jobs:
       - name: Clean Next.js cache
         if: steps.cache-nextjs.outputs.cache-hit != 'true' || github.event.inputs.force_nextjs_build == 'true'
         run: |
+          $ErrorActionPreference = 'Stop'
           if (Test-Path ".next") {
             Remove-Item -Recurse -Force .next
             Write-Host "Next.js cache cleared"
@@ -216,22 +265,55 @@ jobs:
 
       - name: Clean Cargo artifacts
         if: steps.cache-rust.outputs.cache-hit != 'true' || github.event.inputs.force_cargo_clean == 'true'
-        run: cargo clean
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          cargo clean
+          if ($LASTEXITCODE -ne 0) { throw "cargo clean failed with exit code $LASTEXITCODE" }
         working-directory: ./src-tauri
 
       - name: Update version numbers
         id: update-versions
+        shell: pwsh
         run: |
+          $ErrorActionPreference = 'Stop'
           $previousVersion = "${{ needs.fetch_previous_version.outputs.previous_version }}"
           $newVersion = "${{ github.event.inputs.version }}"
 
+          # latest.json is what the Tauri updater plugin polls on every existing install - if this
+          # replace silently no-ops (e.g. $previousVersion doesn't textually match file content),
+          # the release still gets published but no existing user's auto-update would ever fire,
+          # since latest.json would still claim the old version is current. Verify both files
+          # actually changed rather than trusting the replace succeeded.
           $tauriConf = Get-Content src-tauri/tauri.conf.json
           $updatedTauriConf = $tauriConf -replace $previousVersion, $newVersion
+          if ($updatedTauriConf -notmatch [regex]::Escape($newVersion)) {
+            throw "tauri.conf.json version replace did not match - previous_version ($previousVersion) may not match file content"
+          }
           $updatedTauriConf | Set-Content src-tauri/tauri.conf.json
 
           $latest = Get-Content latest.json
           $updatedLatest = $latest -replace $previousVersion, $newVersion
+          if ($updatedLatest -notmatch [regex]::Escape($newVersion)) {
+            throw "latest.json version replace did not match - previous_version ($previousVersion) may not match file content"
+          }
           $updatedLatest | Set-Content latest.json
+
+          # package.json/Cargo.toml are stuck at 0.1.0, not the previous release tag, so a
+          # $previousVersion replace (as above) would silently match nothing. Bump each directly
+          # instead. Neither value feeds the shipped exe's FileVersion/ProductVersion (that comes
+          # from tauri.conf.json alone) - this is version-string hygiene only.
+          npm pkg set version="$newVersion"
+          if ($LASTEXITCODE -ne 0) { throw "npm pkg set failed with exit code $LASTEXITCODE" }
+
+          # Cargo.toml has exactly one `version = "..."` line (under [package], no dependency-table
+          # collision) - confirmed via grep before relying on this regex.
+          $cargoToml = Get-Content src-tauri/Cargo.toml
+          $updatedCargoToml = $cargoToml -replace '^version = "[^"]+"$', "version = `"$newVersion`""
+          if ($updatedCargoToml -notmatch [regex]::Escape($newVersion)) {
+            throw "Cargo.toml version replace did not match expected 'version = `"...`"' line"
+          }
+          $updatedCargoToml | Set-Content src-tauri/Cargo.toml
 
       - name: Create .env file
         run: |
@@ -246,18 +328,37 @@ jobs:
           path: src-tauri/libs/
 
       - name: Build and package Tauri app
-        if: steps.update-versions.outcome == 'success'
         run: |
+          $ErrorActionPreference = 'Stop'
           $env:NEXT_TELEMETRY_DISABLED = "1"
           $env:TAURI_CI = "1"
           pnpm tauri build
+          if ($LASTEXITCODE -ne 0) { throw "pnpm tauri build failed with exit code $LASTEXITCODE" }
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         shell: pwsh
 
+      - name: Record build artifacts summary
+        shell: pwsh
+        run: |
+          $bundleDir = "./src-tauri/target/release/bundle/nsis"
+          $produced = if (Test-Path $bundleDir) { Get-ChildItem $bundleDir -File | ForEach-Object { $_.Name } } else { @() }
+          $lines = @("## Tauri bundle output")
+          if ($produced.Count -eq 0) {
+            $lines += "No files found in $bundleDir"
+          } else {
+            $lines += $produced | ForEach-Object { "- $_" }
+          }
+          $lines -join "`n" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+
       - name: Update latest.json with signature
+        shell: pwsh
+        # latest.json's signature is what the Tauri updater verifies against on every existing
+        # install - if this python invocation throws (e.g. the .sig file is missing because the
+        # build silently failed earlier) and the exit code goes unchecked, this step would report
+        # green while shipping a stale/wrong signature, breaking auto-update for the whole release.
         run: |
           python -c "
           import base64
@@ -282,6 +383,7 @@ jobs:
 
           print('Updated latest.json with new signature')
           "
+          if ($LASTEXITCODE -ne 0) { throw "Updating latest.json signature failed with exit code $LASTEXITCODE" }
 
       - uses: actions/create-github-app-token@v1
         id: generate-token
@@ -297,9 +399,9 @@ jobs:
           commit-message: "chore(version): bump to ${{ github.event.inputs.version }}"
           title: "chore(version): bump to ${{ github.event.inputs.version }}"
           body: |
-            Automated version bump for release [v${{ github.event.inputs.version }}](https://github.com/zevnda/steam-game-idler/releases/tag/${{ github.event.inputs.version }})
+            Automated version bump for release [v${{ github.event.inputs.version }}](https://github.com/${{ github.repository }}/releases/tag/${{ github.event.inputs.version }})
 
-            Generated by workflow run [${{ github.run_id }}](https://github.com/zevnda/steam-game-idler/actions/runs/${{ github.run_id }})
+            Generated by workflow run [${{ github.run_id }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
 
             Merging this PR allows the release to be distributed through Tauri Updater for auto-updates
           branch: "version-bump-${{ github.event.inputs.version }}-${{ github.run_id }}"
@@ -307,6 +409,9 @@ jobs:
           add-paths: |
             src-tauri/tauri.conf.json
             latest.json
+            package.json
+            src-tauri/Cargo.toml
+            src-tauri/Cargo.lock
           sign-commits: true
 
       - name: Generate release notes
@@ -349,6 +454,12 @@ jobs:
 
       - name: Prepare portable executable
         run: |
+          # Stop on the first Copy-Item/etc failure - these are non-terminating by default, so
+          # without this a missing source file (e.g. from an earlier silently-failed build step)
+          # would print an error and keep going, packaging a broken/partial portable zip instead
+          # of failing the workflow.
+          $ErrorActionPreference = 'Stop'
+
           # Create portable package directory
           $portableDir = "./portable-package"
           New-Item -ItemType Directory -Force -Path $portableDir

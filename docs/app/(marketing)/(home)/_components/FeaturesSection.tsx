@@ -42,10 +42,10 @@ const features = [
     icon: FiTrendingUp,
     color: 'text-orange-400',
     glow: '#fb923c',
-    title: 'Playtime Booster',
+    title: 'Idling',
     description:
       'Idle up to 32 games simultaneously to build playtime and meet card drop eligibility requirements faster.',
-    link: '/docs/features/playtime-booster',
+    link: '/docs/features/idling',
     image: 'https://pub-ca47df86597c4ccbb6ddf4366ca7f733.r2.dev/playtime-booster.webp',
   },
 ]

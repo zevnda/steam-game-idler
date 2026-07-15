@@ -1,6 +1,6 @@
 import type { ProPriceData } from '@/app/(marketing)/pro/_components/data'
 import ComparisonTable from '@/app/(marketing)/pro/_components/ComparisonTable'
-import { allFeatures } from '@/app/(marketing)/pro/_components/data'
+import { comparisonRows } from '@/app/(marketing)/pro/_components/data'
 import SectionHeading from '@/app/(marketing)/pro/_components/SectionHeading'
 import { FadeIn } from '@/app/lib/animations'
 
@@ -14,12 +14,12 @@ export default function ComparisonSection({ priceData }: ComparisonSectionProps)
       <div className='container mx-auto px-4 sm:px-6 md:px-8'>
         <div className='max-w-3xl mx-auto'>
           <FadeIn>
-            <SectionHeading label='Compare Plans' />
+            <SectionHeading label='Compare Tiers' />
           </FadeIn>
 
           <FadeIn delay={0.1}>
             <ComparisonTable
-              rows={allFeatures}
+              rows={comparisonRows}
               casualPrice={priceData.tierOne.price}
               gamerPrice={priceData.tierTwo.price}
             />

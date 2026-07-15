@@ -10,7 +10,7 @@ import { Step, Steps } from 'fumadocs-ui/components/steps';
 
 # How to Manage Steam Achievements Manually
 
-The Steam Achievement Manager lets you manually unlock and lock achievements for any game in your library, as well as modify game statistics. Unlike the [Achievement Unlocker](/docs/features/achievement-unlocker), this is a one-by-one manual tool — useful for targeting specific achievements without automation.
+The Achievement Manager lets you manually unlock and lock achievements for any game in your library, as well as modify game statistics. Unlike the [Achievement Unlocker](/docs/features/achievement-unlocker), this is a one-by-one manual tool — useful for targeting specific achievements without automation.
 
 <DocsCTA />
 
@@ -26,13 +26,19 @@ The Steam Achievement Manager lets you manually unlock and lock achievements for
   </Step>
 
   <Step>
-    On the achievement manager screen you will see a list of achievements for that game, if any are available
+    On the achievement manager screen you will see a list of achievements for that game, if any are available. Select the achievements you want to change using their checkboxes
 
-    Click <MockButton type='unlock' /> or <MockButton type='lock' /> next to an achievement to unlock or lock that specific achievement
+    Click <MockButton type='unlock' /> or <MockButton type='lock' /> next to an achievement to unlock or lock it individually, or use <MockButton type='unlock-all' /> / <MockButton type='lock-all' /> in the page header to affect every achievement at once
+  </Step>
 
-    Click <MockButton type='unlock-all' /> or <MockButton type='lock-all' /> in the page header to unlock or lock all achievements for that game at once
+  <Step>
+    Click <MockButton type='save-changes' /> to apply your selected changes
   </Step>
 </Steps>
+
+<Callout type='info'>
+    Some achievements/statistics are marked **Protected** and can't be modified — see [Special Flags](/docs/features/achievement-manager/special-flags)
+</Callout>
 
 ### Statistics
 

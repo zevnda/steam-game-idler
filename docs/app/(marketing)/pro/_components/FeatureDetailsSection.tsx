@@ -1,12 +1,12 @@
 import { FaArrowRight } from 'react-icons/fa6'
 import Link from 'next/link'
-import { allFeatures } from '@/app/(marketing)/pro/_components/data'
+import { featureDetails } from '@/app/(marketing)/pro/_components/data'
 import SectionHeading from '@/app/(marketing)/pro/_components/SectionHeading'
 import { FadeIn, StaggerGroup, StaggerItem } from '@/app/lib/animations'
 
 export default function FeatureDetailsSection() {
   return (
-    <section className='py-12 sm:py-16 relative'>
+    <section id='feature-details' className='py-12 sm:py-16 relative'>
       <div className='container mx-auto px-4 sm:px-6 md:px-8'>
         <div className='max-w-3xl mx-auto'>
           <FadeIn>
@@ -16,7 +16,7 @@ export default function FeatureDetailsSection() {
           <FadeIn delay={0.1}>
             <div className='rounded-3xl overflow-hidden bg-[#101013] border border-white/5'>
               <StaggerGroup className='divide-y divide-white/5'>
-                {allFeatures.map(f => {
+                {featureDetails.map(f => {
                   const isCasual = f.tier === 'casual'
                   return (
                     <StaggerItem key={f.title}>

@@ -1,5 +1,3 @@
-import { invoke } from '@tauri-apps/api/core'
-import { relaunch } from '@tauri-apps/plugin-process'
 import { check } from '@tauri-apps/plugin-updater'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -13,188 +11,135 @@ import {
   TbSquareRoundedChevronDown,
   TbStarFilled,
 } from 'react-icons/tb'
-import { cn, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@heroui/react'
-import { CustomTooltip, showDangerToast, showPrimaryToast } from '@/shared/components'
-import { useUpdateStore } from '@/shared/stores'
-import {
-  fetchLatest,
-  isPortableCheck,
-  logEvent,
-  openExternalLink,
-  preserveKeysAndClearData,
-} from '@/shared/utils'
+import { Dropdown, toast } from '@heroui/react'
+import { AppTooltip } from '@/shared/components/AppTooltip'
+import { useUpdateStore } from '@/shared/stores/updateStore'
+import { logFrontendWarn } from '@/shared/utils/frontendLogging'
+import { openExternalLink } from '@/shared/utils/links'
+import { fetchLatest, isPortableCheck, performUpdate } from '@/shared/utils/update'
 
+const GITHUB_ISSUE_URL =
+  'https://github.com/zevnda/steam-game-idler/issues/new?assignees=zevnda&labels='
+
+type MenuAction =
+  'guide' | 'report' | 'feature' | 'support' | 'discord' | 'changelog' | 'checkUpdate'
+
+// Titlebar overflow menu - guide/report/feature/support/discord links, a changelog toggle, and an
+// opt-in "check for updates" entry (hidden on portable builds, which self-update by replacing the
+// running exe manually rather than via the Tauri updater). Uses HeroUI v3's Dropdown (react-aria
+// Menu underneath) rather than main's older Dropdown/DropdownItem API.
 export const Menu = () => {
   const { t } = useTranslation()
   const setShowChangelog = useUpdateStore(state => state.setShowChangelog)
-  const [showMenu, setShowMenu] = useState(false)
+  const setIsUpdating = useUpdateStore(state => state.setIsUpdating)
   const [isPortable, setIsPortable] = useState(false)
-
-  const githubIssueUrl =
-    'https://github.com/zevnda/steam-game-idler/issues/new?assignees=zevnda&labels='
+  const [isChecking, setIsChecking] = useState(false)
 
   useEffect(() => {
-    ;(async () => {
-      const portable = await isPortableCheck()
-      setIsPortable(portable)
-    })()
+    isPortableCheck().then(setIsPortable)
   }, [])
 
-  const handleUpdate = async () => {
+  const handleCheckForUpdates = async () => {
     try {
+      setIsChecking(true)
       const update = await check()
-      if (update) {
-        localStorage.setItem('hasUpdated', 'true')
-        await invoke('kill_all_steamutil_processes')
-        const latest = await fetchLatest()
-        await update.downloadAndInstall()
-        if (latest?.major) {
-          await preserveKeysAndClearData()
-        }
-        await relaunch()
-      } else {
-        showPrimaryToast(t('toast.checkUpdate.none'))
+      if (!update) {
+        toast.info(t('toast.checkUpdate.none'))
+        return
       }
+      const latest = await fetchLatest()
+      await performUpdate(update, { major: !!latest?.major, setIsUpdating })
     } catch (error) {
-      showDangerToast(t('toast.checkUpdate.error'))
-      console.error('Error in (handleUpdate):', error)
-      logEvent(`Error in (handleUpdate): ${error}`)
+      toast.danger(t('toast.checkUpdate.error'))
+      console.error('Error in (handleCheckForUpdates):', error)
+      logFrontendWarn('Menu', 'manual update check failed', { error: String(error) })
+    } finally {
+      setIsChecking(false)
+    }
+  }
+
+  const handleAction = (key: MenuAction) => {
+    switch (key) {
+      case 'guide':
+        openExternalLink('https://steamgameidler.com/docs/')
+        break
+      case 'report':
+        openExternalLink(
+          `${GITHUB_ISSUE_URL}bug%2Cinvestigating&projects=&template=issue_report.yml`,
+        )
+        break
+      case 'feature':
+        openExternalLink(
+          `${GITHUB_ISSUE_URL}feature+request&projects=&template=feature_request.yml`,
+        )
+        break
+      case 'support':
+        openExternalLink('https://github.com/sponsors/zevnda')
+        break
+      case 'discord':
+        openExternalLink('https://discord.com/invite/5kY2ZbVnZ8')
+        break
+      case 'changelog':
+        setShowChangelog(true)
+        break
+      case 'checkUpdate':
+        void handleCheckForUpdates()
+        break
     }
   }
 
   return (
-    <CustomTooltip content={t('common.menu')}>
-      <div>
-        <Dropdown
-          aria-label='Settings actions'
-          backdrop='opaque'
-          onOpenChange={() => setShowMenu(!showMenu)}
-          classNames={{
-            content: ['rounded-xl p-0 bg-transparent'],
-          }}
-        >
-          <DropdownTrigger>
-            <div
-              className={cn(
-                'flex items-center justify-center text-content hover:bg-header-hover/10',
-                'h-12 w-12 cursor-pointer active:scale-90 relative duration-150',
-              )}
-            >
-              <TbSquareRoundedChevronDown fontSize={18} />
-            </div>
-          </DropdownTrigger>
-
-          <DropdownMenu
-            aria-label='Settings actions'
-            classNames={{ base: 'bg-popover border border-border rounded-xl' }}
+    <Dropdown.Root>
+      <AppTooltip.Root delay={300}>
+        <AppTooltip.Trigger>
+          <Dropdown.Trigger
+            aria-label={t('common.menu')}
+            className='flex h-14 w-12 items-center justify-center text-foreground outline-none transition-colors hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-focus'
+            isDisabled={isChecking}
           >
-            <DropdownItem
-              showDivider
-              key='help'
-              startContent={<TbBookFilled size={18} />}
-              textValue='Help'
-              className='rounded-xl text-content'
-              classNames={{
-                base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
-              }}
-              onPress={() => openExternalLink('https://steamgameidler.com/docs/')}
-            >
-              {t('menu.guide')}
-            </DropdownItem>
+            <TbSquareRoundedChevronDown fontSize={18} />
+          </Dropdown.Trigger>
+        </AppTooltip.Trigger>
+        <AppTooltip.Content placement='bottom'>{t('common.menu')}</AppTooltip.Content>
+      </AppTooltip.Root>
 
-            <DropdownItem
-              key='report'
-              startContent={<TbBugFilled size={18} />}
-              textValue='Report an issue'
-              className='rounded-xl text-content'
-              classNames={{
-                base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
-              }}
-              onPress={() =>
-                openExternalLink(
-                  githubIssueUrl + 'bug%2Cinvestigating&projects=&template=issue_report.yml',
-                )
-              }
-            >
-              {t('menu.issue')}
-            </DropdownItem>
-
-            <DropdownItem
-              showDivider
-              key='feature'
-              startContent={<TbBulbFilled size={18} />}
-              textValue='Feature request'
-              className='rounded-xl text-content'
-              classNames={{
-                base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
-              }}
-              onPress={() =>
-                openExternalLink(
-                  githubIssueUrl + 'feature+request&projects=&template=feature_request.yml',
-                )
-              }
-            >
-              {t('menu.feature')}
-            </DropdownItem>
-
-            <DropdownItem
-              showDivider
-              key='support-me'
-              startContent={<TbStarFilled size={18} />}
-              textValue='Support me'
-              className='rounded-xl text-content'
-              classNames={{
-                base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
-              }}
-              onPress={() => openExternalLink('https://github.com/sponsors/zevnda')}
-            >
-              {t('menu.support')}
-            </DropdownItem>
-
-            <DropdownItem
-              showDivider
-              key='join-discord'
-              startContent={<FaDiscord size={18} />}
-              textValue='Join our Discord'
-              className='rounded-xl text-content'
-              classNames={{
-                base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
-              }}
-              onPress={() => openExternalLink('https://discord.com/invite/5kY2ZbVnZ8')}
-            >
-              {t('menu.joinDiscord')}
-            </DropdownItem>
-
-            <DropdownItem
-              key='changelog'
-              startContent={<TbListCheck size={18} />}
-              textValue='Changelog'
-              className='rounded-xl text-content'
-              classNames={{
-                base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
-              }}
-              onPress={() => setShowChangelog(true)}
-            >
-              {t('menu.changelog')}
-            </DropdownItem>
-
-            {isPortable === false ? (
-              <DropdownItem
-                key='updates'
-                startContent={<TbDownload size={18} />}
-                textValue='Check for updates'
-                className='rounded-xl text-content'
-                classNames={{
-                  base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
-                }}
-                onPress={handleUpdate}
-              >
-                {t('menu.update')}
-              </DropdownItem>
-            ) : null}
-          </DropdownMenu>
-        </Dropdown>
-      </div>
-    </CustomTooltip>
+      <Dropdown.Popover placement='bottom end'>
+        <Dropdown.Menu
+          aria-label={t('common.menu')}
+          onAction={key => handleAction(key as MenuAction)}
+        >
+          <Dropdown.Item id='guide' textValue={t('menu.guide')}>
+            <TbBookFilled fontSize={16} />
+            {t('menu.guide')}
+          </Dropdown.Item>
+          <Dropdown.Item id='report' textValue={t('menu.issue')}>
+            <TbBugFilled fontSize={16} />
+            {t('menu.issue')}
+          </Dropdown.Item>
+          <Dropdown.Item id='feature' textValue={t('menu.feature')}>
+            <TbBulbFilled fontSize={16} />
+            {t('menu.feature')}
+          </Dropdown.Item>
+          <Dropdown.Item id='support' textValue={t('menu.support')}>
+            <TbStarFilled fontSize={16} />
+            {t('menu.support')}
+          </Dropdown.Item>
+          <Dropdown.Item id='discord' textValue={t('menu.joinDiscord')}>
+            <FaDiscord fontSize={16} />
+            {t('menu.joinDiscord')}
+          </Dropdown.Item>
+          <Dropdown.Item id='changelog' textValue={t('menu.changelog')}>
+            <TbListCheck fontSize={16} />
+            {t('menu.changelog')}
+          </Dropdown.Item>
+          {!isPortable && (
+            <Dropdown.Item id='checkUpdate' textValue={t('menu.update')}>
+              <TbDownload fontSize={16} />
+              {t('menu.update')}
+            </Dropdown.Item>
+          )}
+        </Dropdown.Menu>
+      </Dropdown.Popover>
+    </Dropdown.Root>
   )
 }
