@@ -1,53 +1,41 @@
 import { useEffect, useState } from 'react'
 import { TbPlayerPlayFilled } from 'react-icons/tb'
-import { cn } from '@heroui/react'
 
-export const IdleTimer = ({ startTime }: { startTime: number }) => {
-  const formatTime = (elapsed: number) => {
-    const hours = Math.floor(elapsed / (1000 * 60 * 60))
-    const minutes = Math.floor((elapsed % (1000 * 60 * 60)) / (1000 * 60))
-    const seconds = Math.floor((elapsed % (1000 * 60)) / 1000)
+interface IdleTimerProps {
+  startTime: number
+}
 
-    if (hours > 0) {
-      // When hours reach 10-99 show 2 digits
-      if (hours >= 10 && hours < 100) {
-        return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
-      }
-      // When hours reach 100+ show 3 digits
-      else if (hours >= 100) {
-        return `${String(hours).padStart(3, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
-      }
-      // For 1-9 hours show 1 digit
-      return `${hours}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
-    }
-    // Less than 1 hour
-    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
+const formatElapsed = (elapsedMs: number) => {
+  const hours = Math.floor(elapsedMs / (1000 * 60 * 60))
+  const minutes = Math.floor((elapsedMs % (1000 * 60 * 60)) / (1000 * 60))
+  const seconds = Math.floor((elapsedMs % (1000 * 60)) / 1000)
+  const pad = (n: number, width: number) => String(n).padStart(width, '0')
+
+  if (hours <= 0) {
+    return `${pad(minutes, 2)}:${pad(seconds, 2)}`
   }
+  // Widens past the usual 1-digit hour count only once it actually matters, rather than always
+  // reserving 2-3 digits of space.
+  const hourWidth = hours >= 100 ? 3 : hours >= 10 ? 2 : 1
+  return `${pad(hours, hourWidth)}:${pad(minutes, 2)}:${pad(seconds, 2)}`
+}
 
-  const [, forceUpdate] = useState<Record<string, never>>({})
+// Elapsed-time badge for a currently-idling game card. `startTime` is a frontend-only timestamp
+// (see idlingStore) - neither backend reports when idling actually started, only what's currently
+// idling, so this can only ever measure "since this session last observed it idling," not true
+// wall-clock idle duration across app restarts.
+export const IdleTimer = ({ startTime }: IdleTimerProps) => {
+  const [, forceUpdate] = useState(0)
 
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      forceUpdate({})
-    }, 1000)
-
+    const intervalId = setInterval(() => forceUpdate(n => n + 1), 1000)
     return () => clearInterval(intervalId)
   }, [])
 
-  // Calculate time directly in render
-  const elapsed = Date.now() - startTime
-  const displayTime = formatTime(elapsed)
-
   return (
-    <div
-      className={cn(
-        'absolute top-1.5 left-1.5 flex items-center gap-1',
-        'bg-black/70 pl-1 pr-2 py-px',
-        'rounded-md text-xs',
-      )}
-    >
+    <div className='absolute top-1.5 left-1.5 flex items-center gap-1 rounded-md bg-black/70 py-px pr-2 pl-1 text-xs text-white'>
       <TbPlayerPlayFilled size={14} />
-      {displayTime}
+      {formatElapsed(Date.now() - startTime)}
     </div>
   )
 }

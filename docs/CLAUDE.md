@@ -100,23 +100,29 @@ Structure maps directly to sidebar navigation. Each feature folder contains:
 
 Current sections:
 ```
-get-started/         install, how-to-sign-in, build-it-yourself
+get-started/         install, how-to-sign-in, multi-account, build-it-yourself
 features/
-  card-farming/      algorithm, drop times, blacklisting, account restrictions
-  achievement-manager/  special flags
-  achievement-unlocker/ import timings, custom order & unlock delay
-  inventory-manager/    marketplace fees, pricing, removing listings
-  playtime-booster/     stop idling, additional info
-  task-scheduling/      possible task chains
-  free-games/           notifications, what counts
-  auto-idler.mdx
-  manual-add.mdx
-settings/            general, customization, per-feature settings, debug
+  card-farming/      index, drop times, blacklisting games, account restrictions
+  achievement-manager/  index, special flags
+  achievement-unlocker/ index, import timings, custom order & unlock delay
+  inventory-manager/    index, marketplace fees, pricing, removing listings
+  free-games/           index, notifications, what counts as a free game
+  idling.mdx
+  favorites.mdx
+  auto-idle.mdx
+settings/            general, customization, card-farming, achievement-unlocker,
+                     inventory-manager, free-games, game-settings, keybinds, subscription, debug
 faq.mdx
 troubleshooting.mdx
-steam-credentials.mdx
+steam-credentials.mdx  # Steam Community cookies for Card Farming/Inventory Manager only —
+                        # distinct from app sign-in, which lives under get-started/how-to-sign-in
 pro.mdx
 ```
+
+Sign-in is documented once on `get-started/how-to-sign-in.mdx` — **Sign in with Steam** (agent
+mode, recommended, no local Steam client needed) vs. **Legacy Sign In** (CLI mode, fallback,
+requires a real local running Steam client) — and referenced elsewhere rather than re-explained
+wherever a feature behaves differently per sign-in mode.
 
 **Frontmatter** for doc pages uses `frontmatterSchema` extended with:
 ```ts

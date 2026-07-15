@@ -1,9 +1,9 @@
-import type { Feature } from '@/app/(marketing)/pro/_components/data'
+import type { ComparisonRow } from '@/app/(marketing)/pro/_components/data'
 import { FaCheck, FaXmark } from 'react-icons/fa6'
 import { StaggerGroup, StaggerItem } from '@/app/lib/animations'
 
 interface ComparisonTableProps {
-  rows: Feature[]
+  rows: ComparisonRow[]
   casualPrice: string
   gamerPrice: string
 }
@@ -11,9 +11,14 @@ interface ComparisonTableProps {
 export default function ComparisonTable({ rows, casualPrice, gamerPrice }: ComparisonTableProps) {
   return (
     <div className='rounded-3xl overflow-hidden bg-[#101013] border border-white/5'>
-      <div className='grid grid-cols-[1fr_4.5rem_4.5rem] sm:grid-cols-[1fr_7rem_7rem]'>
+      <div className='grid grid-cols-[1fr_3.25rem_4.5rem_4.5rem] sm:grid-cols-[1fr_5rem_7rem_7rem]'>
         {/* Header row */}
         <div className='flex items-center px-4 sm:px-6 py-5' />
+
+        <div className='flex flex-col items-center justify-center gap-1 py-5 px-2 border-l border-white/5'>
+          <span className='text-xs sm:text-sm font-black uppercase text-white/50'>Free</span>
+          <span className='text-white/40 text-[9px] sm:text-[11px]'>$0/mo</span>
+        </div>
 
         <div className='flex flex-col items-center justify-center gap-1 py-5 px-2 border-l border-white/5'>
           <span className='text-sm sm:text-xl font-black uppercase' style={{ color: '#3b82f6' }}>
@@ -44,14 +49,14 @@ export default function ComparisonTable({ rows, casualPrice, gamerPrice }: Compa
         {/* Rows */}
         <StaggerGroup className='contents'>
           {rows.map((row, i) => (
-            <StaggerItem key={row.title} className='contents'>
+            <StaggerItem key={row.label} className='contents'>
               <div
                 className={`flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-3 sm:py-3.5 text-xs sm:text-sm font-semibold text-white border-t border-white/5 ${
                   i % 2 === 0 ? 'bg-white/1.5' : ''
                 }`}
               >
                 <row.icon className='w-4 h-4 text-white/50 shrink-0' />
-                <span>{row.tierLabel ?? row.title}</span>
+                <span>{row.label}</span>
               </div>
 
               <div
@@ -59,7 +64,25 @@ export default function ComparisonTable({ rows, casualPrice, gamerPrice }: Compa
                   i % 2 === 0 ? 'bg-white/1.5' : ''
                 }`}
               >
-                {row.tier === 'casual' ? (
+                {row.freeValue ? (
+                  <span className='text-xs sm:text-sm font-black text-white/50'>
+                    {row.freeValue}
+                  </span>
+                ) : (
+                  <FaXmark size={14} className='text-white/15' />
+                )}
+              </div>
+
+              <div
+                className={`flex items-center justify-center border-t border-l border-white/5 ${
+                  i % 2 === 0 ? 'bg-white/1.5' : ''
+                }`}
+              >
+                {row.casualValue ? (
+                  <span className='text-sm font-black' style={{ color: '#3b82f6' }}>
+                    {row.casualValue}
+                  </span>
+                ) : row.tier === 'casual' ? (
                   <FaCheck size={14} style={{ color: '#3b82f6' }} />
                 ) : (
                   <FaXmark size={14} className='text-white/15' />
@@ -73,7 +96,13 @@ export default function ComparisonTable({ rows, casualPrice, gamerPrice }: Compa
                     'linear-gradient(180deg, rgba(138,96,255,0.12), rgba(171,38,211,0.07))',
                 }}
               >
-                <FaCheck size={14} style={{ color: '#d6a8ff' }} />
+                {row.gamerValue ? (
+                  <span className='relative z-10 text-sm font-black' style={{ color: '#d6a8ff' }}>
+                    {row.gamerValue}
+                  </span>
+                ) : (
+                  <FaCheck size={14} style={{ color: '#d6a8ff' }} />
+                )}
               </div>
             </StaggerItem>
           ))}

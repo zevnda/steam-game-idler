@@ -1,110 +1,115 @@
-import { invoke } from '@tauri-apps/api/core'
 import { Menu, MenuItem } from '@tauri-apps/api/menu'
 import { readText, writeText } from '@tauri-apps/plugin-clipboard-manager'
-import { useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { invoke } from '@/shared/utils/invoke'
 
+// Mounted once at the app root (`_app.tsx`), same root-level reasoning as `useZoomControls` -
+// refreshing during pre-dashboard sign-in isn't safe either (a mid-flow reload of the local-sign-in
+// webview/QR login would just orphan that state).
+//
+// Refreshing the window (F5/Ctrl+R/Ctrl+Shift+R) while a game is idling or an automation
+// (achievement unlocker, card farming, auto-idle) is running tears down the whole React tree
+// without telling the backend - idling processes/agent sessions carry on server-side, but the
+// frontend's view of "what's running" goes out of sync until a full app relaunch. Blocking refresh
+// is simpler and safer than making every automation re-hydrate its state correctly from a mid-run
+// reload. Right-clicking the window also exposes the native context menu's own "Reload" entry, so
+// that's replaced with a custom Copy/Paste-only menu below - otherwise text selection would have no
+// way to be copied at all. Skipped in dev, where refreshing to pick up changes is expected;
+// Ctrl+Alt+Shift+F5 still force-reloads regardless, for recovering a genuinely stuck window without
+// relaunching the app.
 export function useContextMenu() {
-  // Disable context menu and refresh actions
+  const { t } = useTranslation()
+  const [isDev, setIsDev] = useState(false)
+
   useEffect(() => {
-    const disableContextMenuAndRefresh = async () => {
-      const isDev = await invoke<boolean>('is_dev')
-      if (!isDev) {
-        document.addEventListener('contextmenu', event => event.preventDefault())
-
-        document.addEventListener('keydown', function (event) {
-          if (event.key === 'F5') {
-            event.preventDefault()
-          }
-
-          if (event.ctrlKey && (event.key === 'r' || event.key === 'R')) {
-            event.preventDefault()
-          }
-
-          if (event.ctrlKey && event.shiftKey && (event.key === 'R' || event.key === 'r')) {
-            event.preventDefault()
-          }
-
-          if (event.ctrlKey && event.altKey && event.shiftKey && event.key === 'F5') {
-            this.location.reload()
-          }
-        })
-      }
-    }
-    disableContextMenuAndRefresh()
+    invoke<boolean>('is_dev')
+      .then(setIsDev)
+      .catch(error => console.error('Error in (is_dev):', error))
   }, [])
 
-  // Create the context menu once on mount
+  const handleKeydown = useCallback(
+    (event: KeyboardEvent) => {
+      if (event.ctrlKey && event.altKey && event.shiftKey && event.key === 'F5') {
+        window.location.reload()
+        return
+      }
+
+      if (isDev) return
+
+      const isRefreshShortcut =
+        event.key === 'F5' || (event.ctrlKey && (event.key === 'r' || event.key === 'R'))
+
+      if (isRefreshShortcut) {
+        event.preventDefault()
+      }
+    },
+    [isDev],
+  )
+
   useEffect(() => {
-    const handleGlobalContextMenu = async (e: MouseEvent) => {
-      e.preventDefault()
+    document.addEventListener('keydown', handleKeydown)
+    return () => document.removeEventListener('keydown', handleKeydown)
+  }, [handleKeydown])
+
+  const handleContextMenu = useCallback(
+    async (event: MouseEvent) => {
+      event.preventDefault()
+
+      const hasSelection = !!window.getSelection()?.toString()
+      const activeElement = document.activeElement
+      const canPaste =
+        activeElement instanceof HTMLInputElement || activeElement instanceof HTMLTextAreaElement
 
       try {
-        const hasSelection = !!window.getSelection()?.toString()
-        const activeElement = document.activeElement
-        const canPaste =
-          activeElement instanceof HTMLInputElement || activeElement instanceof HTMLTextAreaElement
-
-        // Create menu dynamically based on current state
         const menu = await Menu.new({
           items: [
             await MenuItem.new({
               id: 'copy',
-              text: 'Copy',
+              text: t('common.actions.copy'),
               enabled: hasSelection,
-              action: async () => {
-                try {
-                  const selectedText = window.getSelection()?.toString()
-                  if (selectedText) {
-                    await writeText(selectedText)
-                  }
-                } catch (error) {
-                  console.error('Copy failed:', error)
-                }
+              action: () => {
+                const selectedText = window.getSelection()?.toString()
+                if (!selectedText) return
+                writeText(selectedText).catch(error =>
+                  console.error('Error in (writeText):', error),
+                )
               },
             }),
             await MenuItem.new({
               id: 'paste',
-              text: 'Paste',
+              text: t('common.actions.paste'),
               enabled: canPaste,
               action: async () => {
                 try {
                   const text = await readText()
-                  if (text) {
-                    // Insert text at cursor pos of input/textarea
-                    const activeElement = document.activeElement
-                    if (
-                      activeElement instanceof HTMLInputElement ||
-                      activeElement instanceof HTMLTextAreaElement
-                    ) {
-                      const start = activeElement.selectionStart || 0
-                      const end = activeElement.selectionEnd || 0
-                      const currentValue = activeElement.value
-                      const newValue =
-                        currentValue.substring(0, start) + text + currentValue.substring(end)
-
-                      // Ensure setter works properly for React controlled inputs
-                      const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
-                        window.HTMLInputElement.prototype,
-                        'value',
-                      )?.set
-
-                      if (nativeInputValueSetter) {
-                        nativeInputValueSetter.call(activeElement, newValue)
-                      }
-
-                      // Set cursor pos
-                      activeElement.selectionStart = activeElement.selectionEnd =
-                        start + text.length
-
-                      // Trigger both input chaneg events
-                      const inputEvent = new Event('input', { bubbles: true })
-                      const changeEvent = new Event('change', { bubbles: true })
-                      activeElement.dispatchEvent(inputEvent)
-                      activeElement.dispatchEvent(changeEvent)
-                    }
+                  const target = document.activeElement
+                  if (
+                    !text ||
+                    (!(target instanceof HTMLInputElement) &&
+                      !(target instanceof HTMLTextAreaElement))
+                  ) {
+                    return
                   }
+
+                  const start = target.selectionStart ?? target.value.length
+                  const end = target.selectionEnd ?? target.value.length
+                  const newValue = target.value.slice(0, start) + text + target.value.slice(end)
+
+                  // React's controlled inputs track value changes through their own synthetic
+                  // setter, so writing `target.value` directly doesn't trigger a re-render - go
+                  // through the native prototype setter and dispatch a real `input` event so
+                  // React picks up the change, matching what a real keyboard paste does.
+                  const proto =
+                    target instanceof HTMLTextAreaElement
+                      ? window.HTMLTextAreaElement.prototype
+                      : window.HTMLInputElement.prototype
+                  const nativeSetter = Object.getOwnPropertyDescriptor(proto, 'value')?.set
+                  nativeSetter?.call(target, newValue)
+                  target.selectionStart = target.selectionEnd = start + text.length
+                  target.dispatchEvent(new Event('input', { bubbles: true }))
                 } catch (error) {
-                  console.error('Paste failed:', error)
+                  console.error('Error in (readText):', error)
                 }
               },
             }),
@@ -113,14 +118,14 @@ export function useContextMenu() {
 
         await menu.popup()
       } catch (error) {
-        console.error('Error showing context menu:', error)
+        console.error('Error in (context menu popup):', error)
       }
-    }
+    },
+    [t],
+  )
 
-    document.addEventListener('contextmenu', handleGlobalContextMenu)
-
-    return () => {
-      document.removeEventListener('contextmenu', handleGlobalContextMenu)
-    }
-  }, [])
+  useEffect(() => {
+    document.addEventListener('contextmenu', handleContextMenu)
+    return () => document.removeEventListener('contextmenu', handleContextMenu)
+  }, [handleContextMenu])
 }

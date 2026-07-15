@@ -5,27 +5,22 @@ description: Configure the Achievement Unlocker feature to automatically unlock 
 
 # Achievement Unlocker Settings
 
-## Idle Game
+## Idle While Unlocking
 Keep the game running in the background while achievements are being unlocked
 
 When enabled, SGI will idle the current game during the unlocking process, increasing its playtime alongside the achievements. This makes the activity look more consistent with natural gameplay.
 
-## Run Multiple Games
-Allow SGI to unlock achievements for up to 32 games at the same time *(Pro — Gamer tier)*
+## Run Multiple Games At Once
+Work through several queued games concurrently instead of one at a time *(Pro — Casual tier)*
 
-When enabled, games added to the Achievement Unlocker list are processed concurrently instead of one at a time, each with its own independent unlock schedule.
+When enabled, games in the Achievement Unlocker queue are processed concurrently instead of one at a time, each with its own independent unlock schedule. Casual subscribers can run up to 3 games at once; Gamer subscribers can run up to 32 — both within the combined limit of 32 games idling at once shared with every other idling feature (see [Idling](/docs/features/idling)).
 
 ## Skip Hidden Achievements
 Skip achievements that the game developer has marked as hidden
 
 Hidden achievements don't reveal their unlock conditions in Steam. Enable this if you prefer to discover and unlock these naturally yourself, while still automating the rest.
 
-## Schedule Next Task
-Automatically start another feature when Achievement Unlocker finishes
-
-Select which feature should start when unlocking is complete — either Card Farming or Automatic Idler. Enable the checkbox to activate this, then choose your next task from the dropdown. See [Task Scheduling](/docs/features/task-scheduling) for more details.
-
-## Time Range
+## Only Unlock During A Schedule
 Restrict achievement unlocking to a specific time window
 
 When enabled, SGI will only unlock achievements while inside your scheduled time range. Outside of those hours, the Achievement Unlocker continues running but pauses unlocking until the window opens again.
@@ -42,4 +37,9 @@ For example, with a range of `60` to `180` minutes, SGI will wait between 1 and 
 - **Minimum value:** 1 minute
 - **Maximum value:** 2880 minutes (48 hours)
 
-Per-achievement delays set in the [Custom Order](/docs/features/achievement-unlocker#custom-order--unlock-delay) page override this global interval for individual achievements.
+Per-achievement delays set in the [Custom Order](/docs/features/achievement-unlocker/custom-order-and-unlock-delay) page override this global interval for individual achievements.
+
+## Start Another Task When Done
+Automatically start another feature once the Achievement Unlocker queue is empty
+
+Enable the checkbox and choose either **Card Farming** or **Auto-Idle** from the dropdown to have it start automatically once every queued game has finished unlocking.

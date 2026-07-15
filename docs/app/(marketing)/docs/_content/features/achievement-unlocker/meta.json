@@ -1,4 +1,4 @@
 {
   "title": "Achievement Unlocker",
-  "page": ["custom-order-and-unlock-delay", "import-timings"]
+  "pages": ["custom-order-and-unlock-delay", "import-timings"]
 }

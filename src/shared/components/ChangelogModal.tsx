@@ -1,110 +1,78 @@
-import { useEffect, useState } from 'react'
-import {
-  Button,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  Spinner,
-  useDisclosure,
-} from '@heroui/react'
-import 'github-markdown-css/github-markdown-light.css'
 import { getVersion } from '@tauri-apps/api/app'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FaStar } from 'react-icons/fa6'
-import { useUpdateStore } from '@/shared/stores'
-import { openExternalLink } from '@/shared/utils'
+import { Button, Modal, Spinner } from '@heroui/react'
+import { useUpdateStore } from '@/shared/stores/updateStore'
+import { openExternalLink } from '@/shared/utils/links'
 
+// Mounted once at root (`_app.tsx`), toggled from anywhere via `updateStore.showChangelog` (the
+// Menu's "Changelog" item, and future update-flow entry points) - mirrors `main`'s equivalent
+// exactly: the changelog content itself lives on steamgameidler.com, not maintained locally, so
+// this is just a version-aware iframe wrapper rather than a content-authoring surface.
+//
+// No visible `Modal.Header` - `main` renders the iframe edge-to-edge against the dialog's own
+// rounded corners, with only the footer visually separated (`border-t`). Same no-header/sr-only-
+// heading/floating-close-button pattern as GoProModal and SettingsModal.
 export const ChangelogModal = () => {
   const { t } = useTranslation()
   const showChangelog = useUpdateStore(state => state.showChangelog)
   const setShowChangelog = useUpdateStore(state => state.setShowChangelog)
-  const { isOpen, onOpen, onOpenChange } = useDisclosure()
-  const [appVersion, setAppVersion] = useState('')
-  const [isVersionLoaded, setIsVersionLoaded] = useState(false)
+  const [appVersion, setAppVersion] = useState<string | null>(null)
 
   useEffect(() => {
-    if (showChangelog && isVersionLoaded) {
-      onOpen()
-      setShowChangelog(false)
+    if (showChangelog && appVersion === null) {
+      getVersion()
+        .then(setAppVersion)
+        .catch(() => setAppVersion('latest'))
     }
-  }, [onOpen, showChangelog, setShowChangelog, isVersionLoaded])
-
-  useEffect(() => {
-    ;(async () => {
-      try {
-        const version = await getVersion()
-        setAppVersion(version)
-        setIsVersionLoaded(true)
-      } catch (error) {
-        console.error('Failed to get app version:', error)
-        setAppVersion('latest')
-        setIsVersionLoaded(true)
-      }
-    })()
-  }, [])
+  }, [showChangelog, appVersion])
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onOpenChange={onOpenChange}
-      size='lg'
-      className='text-content bg-transparent border border-border rounded-4xl'
-      classNames={{
-        closeButton: 'mr-1.5 mt-1.5',
-      }}
-      style={{
-        backgroundImage: 'linear-gradient(to bottom, #1d1d1dff 0%, #000000ff 100%)',
-      }}
-    >
-      <ModalContent>
-        <ModalBody className='p-0'>
-          {isVersionLoaded ? (
-            <iframe
-              src={`https://steamgameidler.com/changelog/${appVersion}`}
-              className='min-h-125'
-            />
-          ) : (
-            <div className='flex items-center justify-center min-h-125'>
-              <Spinner variant='simple' className='m-10' />
-            </div>
-          )}
-        </ModalBody>
-
-        <ModalFooter className='border-t border-border justify-between'>
-          <Button
-            size='sm'
-            color='warning'
-            variant='flat'
-            radius='full'
-            className='font-semibold'
-            startContent={<FaStar size={20} />}
-            onPress={() => openExternalLink('https://github.com/zevnda/steam-game-idler')}
-          >
-            {t('changelog.star')}
-          </Button>
-          <div className='flex gap-2'>
-            <Button
-              size='sm'
-              color='danger'
-              variant='light'
-              radius='full'
-              className='font-semibold'
-              onPress={onOpenChange}
-            >
-              {t('common.close')}
-            </Button>
-            <Button
-              size='sm'
-              radius='full'
-              className='bg-white text-black font-semibold'
-              onPress={() => openExternalLink(`https://steamgameidler.com/changelog#${appVersion}`)}
-            >
-              {t('menu.changelog')}
-            </Button>
-          </div>
-        </ModalFooter>
-      </ModalContent>
+    <Modal isOpen={showChangelog} onOpenChange={open => setShowChangelog(open)}>
+      <Modal.Backdrop>
+        <Modal.Container size='lg'>
+          <Modal.Dialog className='overflow-hidden p-0 bg-[#1a1a1a]'>
+            <Modal.Header className='p-4'>
+              <Modal.Heading>{t('menu.changelog')}</Modal.Heading>
+              <Modal.CloseTrigger />
+            </Modal.Header>
+            <Modal.Heading className='sr-only'>{t('menu.changelog')}</Modal.Heading>
+            <Modal.Body className='p-0'>
+              {appVersion ? (
+                <iframe
+                  className='min-h-125 w-full'
+                  src={`https://steamgameidler.com/changelog/${appVersion}`}
+                  title={t('menu.changelog')}
+                />
+              ) : (
+                <div className='flex min-h-125 items-center justify-center'>
+                  <Spinner size='lg' />
+                </div>
+              )}
+            </Modal.Body>
+            <Modal.Footer className='justify-between border-t border-border mt-0 p-4 bg-[#0e0e0e]'>
+              <Button
+                size='sm'
+                className='bg-amber-500 hover:bg-amber-500'
+                onPress={() => openExternalLink('https://github.com/zevnda/steam-game-idler')}
+              >
+                <FaStar fontSize={16} />
+                {t('changelog.star')}
+              </Button>
+              <Button
+                size='sm'
+                className='bg-white text-black hover:bg-white/90'
+                onPress={() =>
+                  openExternalLink(`https://steamgameidler.com/changelog#${appVersion ?? ''}`)
+                }
+              >
+                {t('menu.changelog')}
+              </Button>
+            </Modal.Footer>
+          </Modal.Dialog>
+        </Modal.Container>
+      </Modal.Backdrop>
     </Modal>
   )
 }

@@ -9,38 +9,43 @@ import { File, Folder, Files } from 'fumadocs-ui/components/files';
 
 # Build It Yourself
 
+SGI's source is fully public. The desktop app is a [Tauri](https://tauri.app/) app (Rust + Next.js), and it drives a bundled helper process, `SteamUtility.exe`, built from a separate C#/.NET project at `libs/SteamUtility/`.
+
 ## Prerequisites
 
 * [Node.js](https://nodejs.org/en/download/prebuilt-installer) >= 20.0
-* [Rust](https://www.rust-lang.org/tools/install) = 1.77.2
-* [.NET SDK](https://dotnet.microsoft.com/en-us/download) >= 8.0
-* [.NET Framework Developer Pack](https://dotnet.microsoft.com/en-us/download/dotnet-framework/net48) = 4.8
-* [VS Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/) = latest
-* [WebView2](https://developer.microsoft.com/en-us/Microsoft-edge/webview2/) = latest - *pre-installed on Windows 11 and the latest version of Windows 10*
+* [pnpm](https://pnpm.io/installation) — the project uses pnpm workspaces, not npm/yarn
+* [Rust](https://www.rust-lang.org/tools/install) (stable toolchain)
+* [.NET SDK](https://dotnet.microsoft.com/en-us/download) >= 8.0 — `libs/SteamUtility` targets `net8.0` only
+* [VS Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/) = latest, with the "Desktop development with C++" workload
+* [WebView2](https://developer.microsoft.com/en-us/Microsoft-edge/webview2/) = latest — *pre-installed on Windows 11 and recent Windows 10*
 
 <Steps>
   <Step>
-    ### Clone Repo And Submodules
+    ### Clone Repo
     ```bash
-    git clone --recursive https://github.com/zevnda/steam-game-idler.git
+    git clone https://github.com/zevnda/steam-game-idler.git
     cd ./steam-game-idler
     ```
   </Step>
 
   <Step>
     ### Install Dependencies
-
-    ```npm
-    npm install
+    ```bash
+    pnpm install
     ```
+
+    This installs dependencies for both the root app and the `docs/` workspace package
   </Step>
 
   <Step>
-    ### Build Libraries
+    ### Build SteamUtility
 
     ```bash
-    dotnet build ./libs/SteamUtility.csproj # Outputs to `/src-tauri/libs/`
+    dotnet build ./libs/SteamUtility/SteamUtility.csproj
     ```
+
+    This outputs `SteamUtility.exe` to `src-tauri/target/debug/libs/` (or `release/libs/` for a release build) — `pnpm tauri dev`/`pnpm tauri build` expect it to already be there
   </Step>
 
   <Step>
@@ -52,9 +57,11 @@ import { File, Folder, Files } from 'fumadocs-ui/components/files';
       <Folder name="steam-game-idler" defaultOpen>
         <Folder name="public" />
         <Folder name="libs" />
+        <Folder name="docs" />
         <Folder name="src" defaultOpen>
             <Folder name="pages" />
-            <Folder name="components" />
+            <Folder name="features" />
+            <Folder name="shared" />
         </Folder>
         <Folder name="src-tauri" defaultOpen>
             <Folder name="tauri.conf.json" />
@@ -73,12 +80,24 @@ import { File, Folder, Files } from 'fumadocs-ui/components/files';
   <Step>
     ### Development or Production Build
 
-    ```npm
+    ```bash
     # Development
-    npm run tauri dev
+    pnpm td       # shorthand for `tauri dev`
 
     # Production
-    npm run tauri build # Outputs to `/src-tauri/target/release/bundle/`
+    pnpm tb       # shorthand for `tauri build` — outputs to `src-tauri/target/release/bundle/`
     ```
   </Step>
 </Steps>
+
+## Other Useful Scripts
+
+Run these from the repo root:
+
+| Script | What it does |
+|---|---|
+| `pnpm typecheck` | `tsc --noEmit` for the desktop app |
+| `pnpm lint` | ESLint for the desktop app |
+| `pnpm dd` | Starts the docs site dev server (this site) |
+| `pnpm build:docs` | Production build of the docs site |
+| `pnpm i18n:check` | Checks `en-US.json` for duplicate translation values |

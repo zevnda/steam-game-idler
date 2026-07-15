@@ -63,7 +63,7 @@ export default function NavBar() {
         <div className='container mx-auto px-4 sm:px-6 md:px-8 h-14 flex items-center justify-between gap-4'>
           {/* Logo */}
           <Link prefetch={false} href='/' className='flex items-center gap-2.5 shrink-0'>
-            <Image src='/logo.svg' alt='Steam Game Idler' width={24} height={24} loading='eager' />
+            <Image src='/logo.png' alt='Steam Game Idler' width={24} height={24} loading='eager' />
             <span className='font-bold text-text-primary tracking-tight block'>
               Steam Game Idler
             </span>

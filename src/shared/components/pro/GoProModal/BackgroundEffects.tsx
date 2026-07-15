@@ -1,5 +1,12 @@
-import { motion, useReducedMotion } from 'framer-motion'
 import Image from 'next/image'
+
+// Decorative starfield/shooting-stars/floating-image effects, ported from `main`
+// (src/shared/components/pro/GoProModal/BackgroundEffects.tsx). `main` drove the shooting-star
+// travel and floating-image bounce with framer-motion + a `useReducedMotion` early-return; this
+// codebase dropped framer-motion, so both animations are
+// plain CSS keyframes instead (`.pro-shooting-star`/`.pro-floating-image` in globals.css), driven
+// per-instance via inline custom properties, with `@media (prefers-reduced-motion: reduce)`
+// handling what the JS hook used to.
 
 // ─── Shooting stars ──────────────────────────────────────────────────────────
 
@@ -154,7 +161,7 @@ export const SHOOTING_STARS = [
     repeatDelay: 6.0,
     travel: 200,
   },
-]
+] as const
 
 export function ShootingStar({
   top,
@@ -165,47 +172,26 @@ export function ShootingStar({
   duration,
   repeatDelay,
   travel,
-}: (typeof SHOOTING_STARS)[0]) {
-  const prefersReducedMotion = useReducedMotion()
-  if (prefersReducedMotion) return null
-
+}: (typeof SHOOTING_STARS)[number]) {
   const rad = (angle * Math.PI) / 180
-  const dx = travel * Math.cos(rad)
-  const dy = travel * Math.sin(rad)
-
-  // Bake the "travel, then long pause" cycle into a single repeating animation instead of using
-  // Motion's `repeatDelay` — repeatDelay can't run on the browser's native animation timeline, so
-  // Motion falls back to re-computing every value on the main thread on every frame, forever.
-  // Folding the pause into the keyframe timeline (via `times`) keeps the same look but lets this
-  // run on the compositor thread with no per-frame JS involvement.
-  const total = duration + repeatDelay
-  const travelEnd = duration / total
+  const tx = travel * Math.cos(rad)
+  const ty = travel * Math.sin(rad)
 
   return (
-    <motion.div
-      className='absolute pointer-events-none'
-      style={{
-        top,
-        left,
-        height: 1.5,
-        width,
-        borderRadius: 9999,
-        background:
-          'linear-gradient(to right, transparent 0%, rgba(255,255,255,0.18) 40%, rgba(255,255,255,0.92) 85%, white 100%)',
-        rotate: angle,
-      }}
-      animate={{ x: [0, dx, dx], y: [0, dy, dy], opacity: [0, 1, 0, 0] }}
-      transition={{
-        x: { duration: total, repeat: Infinity, delay, times: [0, travelEnd, 1], ease: 'easeOut' },
-        y: { duration: total, repeat: Infinity, delay, times: [0, travelEnd, 1], ease: 'easeOut' },
-        opacity: {
-          duration: total,
-          repeat: Infinity,
-          delay,
-          times: [0, travelEnd / 2, travelEnd, 1],
-          ease: 'linear',
-        },
-      }}
+    <div
+      className='pro-shooting-star absolute pointer-events-none'
+      style={
+        {
+          top,
+          left,
+          width,
+          'rotate': `${angle}deg`,
+          '--pro-shooting-star-tx': `${tx}px`,
+          '--pro-shooting-star-ty': `${ty}px`,
+          'animationDuration': `${duration + repeatDelay}s`,
+          'animationDelay': `${delay}s`,
+        } as React.CSSProperties
+      }
     />
   )
 }
@@ -251,16 +237,12 @@ export function FloatingImage({
   delay: number
   style: React.CSSProperties
 }) {
-  const prefersReducedMotion = useReducedMotion()
-
   return (
-    <motion.div
-      className='absolute z-0 pointer-events-none select-none'
-      style={style}
-      animate={prefersReducedMotion ? undefined : { y: [0, -22, 0] }}
-      transition={{ duration, repeat: Infinity, ease: 'easeInOut' as const, delay }}
+    <div
+      className='pro-floating-image absolute z-0 pointer-events-none select-none'
+      style={{ ...style, animationDuration: `${duration}s`, animationDelay: `${delay}s` }}
     >
       <Image src={src} alt='' width={size} height={size} className='object-contain opacity-90' />
-    </motion.div>
+    </div>
   )
 }

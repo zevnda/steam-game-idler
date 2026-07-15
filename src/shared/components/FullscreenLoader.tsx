@@ -1,36 +1,44 @@
+import { useEffect, useState } from 'react'
 import { cn, Spinner } from '@heroui/react'
-import { Unbounded } from 'next/font/google'
+import { SplashScreen } from '@/shared/components/SplashScreen'
 
-const unbounded = Unbounded({
-  subsets: ['latin'],
-  variable: '--font-unbounded',
-})
+const FADE_MS = 250
 
-export const FullscreenLoader = ({ loaderFadeOut = false }: { loaderFadeOut?: boolean }) => {
+interface FullscreenLoaderProps {
+  visible: boolean
+}
+
+// App-launch splash screen - see SplashScreen for the shared shell (video + wordmark) this and
+// UpdateLoader both compose. Unlike `main`, this owns its own fade-out/unmount timing internally
+// off a single `visible` prop instead of a global loaderStore that other features (there, useInit
+// and useCheckForUpdates) both raced to mutate. A caller just flips `visible` off once its real
+// work is done; nothing else needs to coordinate.
+export const FullscreenLoader = ({ visible }: FullscreenLoaderProps) => {
+  const [shouldRender, setShouldRender] = useState(visible)
+  const [fadeOut, setFadeOut] = useState(!visible)
+
+  useEffect(() => {
+    if (visible) {
+      setShouldRender(true)
+      setFadeOut(false)
+      return
+    }
+
+    setFadeOut(true)
+    const timeout = setTimeout(() => setShouldRender(false), FADE_MS)
+    return () => clearTimeout(timeout)
+  }, [visible])
+
+  if (!shouldRender) return null
+
   return (
-    <div
-      className={cn(
-        'fixed inset-0 w-screen h-screen z-9998 bg-base transition-opacity duration-250',
-        {
-          'opacity-0 pointer-events-none': loaderFadeOut,
-          'opacity-100': !loaderFadeOut,
-        },
-      )}
+    <SplashScreen
+      className={cn('transition-opacity duration-250', {
+        'pointer-events-none opacity-0': fadeOut,
+        'opacity-100': !fadeOut,
+      })}
     >
-      <video
-        src='/loader.webm'
-        autoPlay
-        loop
-        muted
-        playsInline
-        className='w-screen h-screen object-cover absolute blur inset-0'
-      />
-      <div className='flex flex-col space-y-10 absolute inset-0 items-center justify-center z-10'>
-        <p className={`${unbounded.className} text-4xl font-black uppercase text-content`}>
-          Steam Game Idler
-        </p>
-        <Spinner size='lg' variant='simple' color='white' />
-      </div>
-    </div>
+      <Spinner className='text-white' color='current' size='lg' />
+    </SplashScreen>
   )
 }

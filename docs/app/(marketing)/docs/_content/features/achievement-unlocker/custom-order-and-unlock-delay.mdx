@@ -8,7 +8,7 @@ import { Step, Steps } from 'fumadocs-ui/components/steps';
 
 # Custom Order & Unlock Delay
 
-The `custom order` feature lets you set the exact order in which achievements are unlocked, and allows you to skip any that you don’t want unlocked.
+The `custom order` feature lets you set the exact order in which achievements are unlocked, and allows you to skip any that you don't want unlocked.
 
 The `unlock delay` is how long SGI waits after unlocking one achievement before unlocking the next.
 
@@ -16,13 +16,13 @@ The `unlock delay` is how long SGI waits after unlocking one achievement before 
   If you set a delay of 10 minutes on achievement one, SGI will unlock achievement one, wait 10 minutes, and then unlock achievement two.
 </Callout>
 
-Unlock delays override the global value set in [Settings → General → Unlock Interval](/docs/settings/achievement-unlocker#unlock-interval). If no unlock delay is set, the global value is used.
+Unlock delays override the global value set in [Settings → Achievement Unlocker → Unlock Interval](/docs/settings/achievement-unlocker#unlock-interval). If no unlock delay is set, the global value is used.
 
 You can customize the order, set delays, or both — each step is optional.
 
 <Steps>
   <Step>
-    Follow steps 1 and 2 from the [Default Mode](#default-mode) section above
+    Follow steps 1 and 2 from the [Default Mode](/docs/features/achievement-unlocker#default-mode) section
   </Step>
 
   <Step>
@@ -49,3 +49,7 @@ You can customize the order, set delays, or both — each step is optional.
     Click <MockButton type='save-alt' /> and then click <MockButton type='achievement-unlocker-action' />
   </Step>
 </Steps>
+
+<Callout type="info">
+    Importing custom unlock timings *(Pro — Gamer tier)* from another player's profile can also populate order and delays automatically — see [Import Timings](/docs/features/achievement-unlocker/import-timings)
+</Callout>

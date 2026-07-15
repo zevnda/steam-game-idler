@@ -25,7 +25,7 @@ export default function FooterSection() {
           {/* Brand */}
           <div className='lg:col-span-1'>
             <div className='flex items-center gap-3 mb-4'>
-              <Image src='/logo.svg' alt='Steam Game Idler' width={22} height={22} />
+              <Image src='/logo.png' alt='Steam Game Idler' width={22} height={22} />
               <span className='text-sm font-bold text-text-primary tracking-tight uppercase'>
                 Steam Game Idler
               </span>

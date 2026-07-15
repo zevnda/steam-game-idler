@@ -11,6 +11,7 @@
 
 # testing
 /coverage
+/test-results
 
 # next.js
 /.next/
@@ -21,7 +22,12 @@
 
 # misc
 .DS_Store
+Thumbs.db
+desktop.ini
 *.pem
+
+# claude code runtime state
+/.claude/
 
 # debug
 npm-debug.log*
@@ -47,4 +53,5 @@ src-tauri/gen
 # rust-analyzer
 target
 
+# Ad hoc CDP testing scripts (scratch WebSocket-driving scripts written per session) stay untracked.
 *.ps1

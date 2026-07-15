@@ -1,184 +1,95 @@
-import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { GoDotFill } from 'react-icons/go'
 import { TbBell } from 'react-icons/tb'
-import { cn } from '@heroui/react'
-import { AnimatePresence, motion } from 'framer-motion'
-import { CustomTooltip } from '@/shared/components'
-import { handleOpenUrl, markAllAsSeen, timeAgo, useNotifications } from '@/shared/hooks'
+import { Badge, cn, Popover } from '@heroui/react'
+import { AppTooltip } from '@/shared/components/AppTooltip'
+import { timeAgo, useNotifications } from '@/shared/hooks/useNotifications'
 
+// Titlebar bell icon - fetches a small remote notifications feed (see useNotifications.ts), no
+// tier gating. Popover rather than main's hand-rolled `framer-motion` overlay, matching this
+// rewrite's other titlebar/sidebar dropdowns (see AccountSwitcher.tsx) - HeroUI v3's Popover
+// already handles its own enter/exit animation and outside-click dismissal.
 export const Notifications = () => {
   const { t } = useTranslation()
-  const {
-    notifications,
-    showNotifications,
-    setShowNotifications,
-    unseenNotifications,
-    setUnseenNotifications,
-    dropdownRef,
-  } = useNotifications()
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setShowNotifications(false)
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [dropdownRef, setShowNotifications])
+  const { notifications, unseen, markAllSeen, openNotification } = useNotifications()
 
   return (
-    <div className='relative'>
-      <CustomTooltip content={t('common.notifications')}>
-        <div
-          className={cn(
-            'flex items-center justify-center hover:bg-header-hover/10 h-12 w-12',
-            'cursor-pointer active:scale-95 relative duration-150',
-          )}
-          onClick={() => {
-            setShowNotifications(!showNotifications)
-          }}
-        >
-          <TbBell
-            fontSize={20}
-            className={cn(unseenNotifications.length > 0 ? 'text-yellow-400' : 'text-content')}
-          />
-          {/* Notification counter badge */}
-          {unseenNotifications.length > 0 && (
-            <span className='absolute flex justify-center items-center w-4 h-4 top-1 right-2 bg-danger text-white text-[10px] font-bold rounded-full shadow'>
-              {unseenNotifications.length}
-            </span>
-          )}
-        </div>
-      </CustomTooltip>
-      <AnimatePresence>
-        {showNotifications && (
-          <>
-            <motion.div
-              className='fixed inset-0 bg-black opacity-50 z-998'
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 0.5 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowNotifications(false)}
-            />
-            <motion.div
-              ref={dropdownRef}
-              className={cn(
-                'absolute right-0 mx-auto mt-3 w-120 p-0 m-0 rounded-xl',
-                'outline-none z-999 shadow-2xl bg-popover border border-border',
+    <Popover.Root>
+      <AppTooltip.Root delay={300}>
+        <AppTooltip.Trigger>
+          <Popover.Trigger
+            aria-label={t('common.notifications')}
+            className='flex h-14 w-12 items-center justify-center text-foreground outline-none transition-colors hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-focus'
+          >
+            <Badge.Anchor>
+              <TbBell fontSize={18} />
+              {unseen.length > 0 && (
+                <Badge color='danger' placement='top-right' size='sm'>
+                  <Badge.Label>{unseen.length}</Badge.Label>
+                </Badge>
               )}
-              initial={{
-                opacity: 0,
-                y: -10,
-                scale: 0.95,
-              }}
-              animate={{
-                opacity: 1,
-                y: 0,
-                scale: 1,
-              }}
-              exit={{
-                opacity: 0,
-                y: -10,
-                scale: 0.95,
-              }}
-              transition={{
-                type: 'spring',
-                damping: 20,
-                stiffness: 300,
-              }}
-            >
-              {/* Header */}
-              <div
-                className={cn(
-                  'flex items-center justify-between h-10 rounded-t-xl px-6 border-b',
-                  'border-border sticky top-0 z-999',
-                )}
-              >
-                <span />
-                <div className='flex gap-3'>
-                  {notifications.length > 0 && (
-                    <button
-                      className={cn(
-                        'text-xs text-altwhite hover:text-content font-semibold cursor-pointer duration-100 py-1 rounded',
-                      )}
-                      onClick={() => markAllAsSeen(notifications, setUnseenNotifications)}
-                    >
-                      {t('notifications.markAllRead')}
-                    </button>
-                  )}
-                </div>
-              </div>
-              {/* Notification list or empty state */}
-              <div className='max-h-137.5 overflow-y-auto'>
-                {notifications.length === 0 ? (
-                  <div className='flex flex-col items-center justify-center py-16 text-center text-altwhite/85 bg-item-hover/50'>
-                    <TbBell size={48} className='mb-2 opacity-30' />
-                    <p className='text-sm'>{t('notifications.empty')}</p>
-                  </div>
-                ) : (
-                  notifications.map(notification => (
-                    <div
-                      key={notification.id}
-                      className={cn(
-                        'flex items-start gap-3 w-full border-b last:border-none border-border px-6 py-4 cursor-pointer duration-150',
-                        unseenNotifications.some(unseen => unseen.id === notification.id)
-                          ? 'bg-item-active hover:bg-item-hover font-semibold'
-                          : 'hover:bg-item-hover',
-                      )}
-                      onClick={() =>
-                        handleOpenUrl(
-                          notification.url,
-                          notification.id,
-                          unseenNotifications,
-                          setUnseenNotifications,
-                        )
-                      }
-                    >
-                      {/* Icon for notification */}
-                      <GoDotFill
-                        className={cn(
-                          'min-w-4',
-                          unseenNotifications.some(unseen => unseen.id === notification.id)
-                            ? 'text-dynamic'
-                            : 'text-content/40',
-                        )}
-                        fontSize={16}
-                      />
+            </Badge.Anchor>
+          </Popover.Trigger>
+        </AppTooltip.Trigger>
+        <AppTooltip.Content placement='bottom'>{t('common.notifications')}</AppTooltip.Content>
+      </AppTooltip.Root>
 
-                      {/* Notification content */}
-                      <div className='flex flex-col gap-1 w-full'>
-                        <div className='flex items-center gap-2'>
-                          <span className='text-content text-xs font-semibold truncate'>
-                            {notification.title}
-                          </span>
-                          <span className='font-normal text-altwhite text-[11px] ml-1 min-w-12'>
-                            • {timeAgo(Number(notification.timestamp))}
-                          </span>
-                        </div>
-                        <span className='text-xs text-wrap text-altwhite/90'>
-                          {notification.message}
+      <Popover.Content placement='bottom'>
+        <Popover.Dialog className='flex w-96 flex-col overflow-hidden rounded-[inherit] p-0'>
+          <div className='flex h-10 shrink-0 items-center justify-end border-b border-border px-4'>
+            {notifications.length > 0 && (
+              <button
+                className='text-xs font-semibold text-muted outline-none transition-colors hover:text-foreground'
+                type='button'
+                onClick={markAllSeen}
+              >
+                {t('notifications.markAllRead')}
+              </button>
+            )}
+          </div>
+
+          <div className='max-h-100 overflow-y-auto'>
+            {notifications.length === 0 ? (
+              <div className='flex flex-col items-center justify-center gap-2 py-12 text-center text-muted'>
+                <TbBell size={40} className='opacity-30' />
+                <span className='text-sm'>{t('notifications.empty')}</span>
+              </div>
+            ) : (
+              notifications.map(notification => {
+                const isUnseen = unseen.some(entry => entry.id === notification.id)
+                return (
+                  <button
+                    key={notification.id}
+                    className={cn(
+                      'flex w-full items-start gap-3 border-b border-border px-4 py-3 text-left outline-none last:border-none',
+                      'transition-colors hover:bg-surface-hover cursor-pointer',
+                      isUnseen && 'bg-surface-tertiary/30 hover:bg-surface-hover',
+                    )}
+                    type='button'
+                    onClick={() => openNotification(notification)}
+                  >
+                    <GoDotFill
+                      className={cn('mt-1 shrink-0', isUnseen ? 'text-accent' : 'text-muted/40')}
+                      fontSize={14}
+                    />
+                    <div className='flex min-w-0 flex-1 flex-col gap-0.5'>
+                      <div className='flex items-center gap-2'>
+                        <span className='truncate text-xs font-semibold text-foreground'>
+                          {notification.title}
+                        </span>
+                        <span className='shrink-0 text-[11px] text-muted'>
+                          • {timeAgo(Number(notification.timestamp))}
                         </span>
                       </div>
+                      <span className='text-xs text-wrap text-muted'>{notification.message}</span>
                     </div>
-                  ))
-                )}
-              </div>
-              {/* Footer */}
-              <div
-                className={cn(
-                  'flex items-center justify-end h-8 rounded-b-xl px-6 border-t',
-                  'border-border sticky bottom-0 z-999',
-                )}
-              />
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-    </div>
+                  </button>
+                )
+              })
+            )}
+          </div>
+        </Popover.Dialog>
+      </Popover.Content>
+    </Popover.Root>
   )
 }

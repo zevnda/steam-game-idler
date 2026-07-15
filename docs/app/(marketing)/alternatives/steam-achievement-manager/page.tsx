@@ -47,6 +47,9 @@ const comparisonData = [
   {
     category: 'Core Features',
     features: [
+      { name: 'No local Steam client required', steamGameIdler: true, alt: false },
+      { name: 'Multiple Account Support', steamGameIdler: true, alt: false },
+      { name: 'Simultaneous Game Achievement Unlocking', steamGameIdler: true, alt: false },
       { name: 'Achievement Management', steamGameIdler: true, alt: true },
       { name: 'Automated Achievement Unlocker', steamGameIdler: true, alt: false },
       { name: 'Unlock/Lock Single Achievements', steamGameIdler: true, alt: true },
@@ -58,6 +61,7 @@ const comparisonData = [
       { name: 'Inventory Manager', steamGameIdler: true, alt: false },
       { name: 'Playtime Boosting', steamGameIdler: true, alt: false },
       { name: 'Game Cover Art', steamGameIdler: true, alt: true },
+      { name: 'Automatic Free Game Claiming', steamGameIdler: true, alt: false },
     ],
   },
   {
@@ -65,7 +69,6 @@ const comparisonData = [
     features: [
       { name: 'Graphical User Interface', steamGameIdler: 'Native', alt: 'Native' },
       { name: 'Setup Complexity', steamGameIdler: 'Simple', alt: 'Simple' },
-      { name: 'Multi-language Support', steamGameIdler: 'Partial Translations', alt: false },
       { name: 'Resource Usage', steamGameIdler: 'Moderate', alt: 'Low' },
       { name: 'Platform Support', steamGameIdler: 'Windows', alt: 'Windows' },
       { name: 'Installation', steamGameIdler: 'Installer & Portable', alt: 'Portable' },

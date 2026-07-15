@@ -1,0 +1,119 @@
+/* Default theme color-token overrides, plus the app-wide scrollbar rule that consumes two of them
+   — the seed for a swappable theme system.
+
+   This re-declares a subset of @heroui/styles' CSS custom properties (imported in globals.css
+   just above this file) at the same `[data-theme="dark"]` selector _document.tsx hardcodes on
+   <html> (this app is dark-only). HeroUI's own definitions live inside
+   `@layer base` (node_modules/@heroui/styles/dist/themes/default/variables.css); this file is
+   deliberately left unlayered, so per the CSS cascade-layers spec these declarations always win
+   over HeroUI's regardless of import order or selector specificity - no `!important` needed.
+   Anything not re-declared here (accent/success/warning/danger, spacing, radius, etc.) keeps
+   HeroUI's stock value untouched.
+
+   Elevation model - each step is a deliberate, perceptible lightness jump. Before this file
+   existed, the app used HeroUI's `--surface` for the page canvas (via `bg-surface` in
+   DashboardShell/Sidebar), but HeroUI's own Card/Modal/Accordion/etc. components *also* read
+   `--surface` for their own background - same variable, so cards and modals were visually
+   identical to the page they sat on. Inputs had the same problem one layer worse: dark mode's
+   `--field-background` was already equal to stock `--surface`, and `--field-border` was
+   `transparent` with `--field-border-width: 0`, so form fields had no visible boundary at all.
+
+     --background                  page canvas. Kept at HeroUI's stock --surface value (the shade
+                                    already on screen and already liked) - only the *meaning*
+                                    changed, not the color.
+     --field-background/-border    form fields (Input/TextField/Select/etc.) - a distinct fill
+                                    plus a real border, so a field reads clearly whether it sits
+                                    directly on the page or inside a card.
+     --surface / --overlay         cards, modals, popovers, accordions, tooltips.
+     --default / --surface-secondary  secondary buttons, badges, chips, nested-in-card elevation.
+     --separator                   subtle dividers.
+     --border / --surface-tertiary the most prominent neutral tier - crisp field outlines and the
+                                    deepest nesting level.
+
+   Structure note: this is one file, not a `themes/` directory, because only one theme (this one)
+   exists yet - per this project's "don't pre-build structure speculatively" convention. Split
+   into `src/styles/themes/default.css` + siblings when a second (Pro) theme actually gets built,
+   not before.
+*/
+[data-theme='dark'] {
+  --background: oklch(0.21 0.006 285.89);
+
+  --surface: oklch(0.28 0.006 285.89);
+  --overlay: oklch(24.521% 0.00755 285.784);
+
+  --default: oklch(0.33 0.006 285.89);
+  --surface-secondary: oklch(0.33 0.006 285.89);
+
+  --separator: oklch(0.31 0.006 285.89);
+
+  --border: oklch(0.36 0.006 285.89);
+  --surface-tertiary: oklch(0.4 0.006 285.89);
+
+  --field-background: var(--surface);
+  --field-hover: var(--surface-secondary);
+
+  /* Scrollbar thumb/track - reuses HeroUI's own token names (`--scrollbar-thumb`/`-track`), but
+     driven by `::-webkit-scrollbar` below instead of HeroUI's `scrollbar-color`/`scrollbar-width`
+     system (see this file's scrollbar rule for why). Thumb sits at the same lightness as
+     --surface-tertiary/--field-border - the "most prominent neutral" tier, since it needs to read
+     clearly against every other layer. */
+  --scrollbar-thumb: oklch(0.4 0.006 285.89);
+  --scrollbar-track: transparent;
+}
+
+.button--primary {
+  --button-bg: var(--white);
+  --button-bg-hover: color-mix(in oklab, var(--white) 90%, var(--black) 10%);
+  --button-bg-pressed: color-mix(in oklab, var(--white) 85%, var(--black) 15%);
+  --button-fg: var(--black);
+}
+
+.button--secondary {
+  --button-fg: var(--white);
+}
+
+/* Inverted for the `white` preset (the only one setting `data-theme='light'` - see `presets.ts`'s
+   `LIGHT_THEME_PRESETS`): a white-bg/black-text primary button was built to pop against the dark
+   presets' dark canvas, so on a near-white canvas it reads as near-invisible instead. Flipping to
+   black bg/white text (and secondary's text to black) keeps the same contrast relationship, just
+   mirrored for a light background. */
+[data-theme='light'] .button--primary {
+  --button-bg: var(--black);
+  --button-bg-hover: color-mix(in oklab, var(--black) 90%, var(--white) 10%);
+  --button-bg-pressed: color-mix(in oklab, var(--black) 85%, var(--white) 15%);
+  --button-fg: var(--white);
+}
+
+[data-theme='light'] .button--secondary {
+  --button-fg: var(--black);
+}
+
+/* App-wide scrollbar styling, matching `main`'s width/shape (4px, 6px-rounded thumb) via
+   `::-webkit-scrollbar` pseudo-elements - available since this app only ever runs on WebView2
+   (Chromium), so no cross-browser fallback is needed. Deliberately NOT using HeroUI's own
+   `scrollbar-color`/`scrollbar-width` system (see node_modules/@heroui/styles/dist/base/base.css)
+   even though it already defines matching `--scrollbar-thumb`/`-track` tokens - HeroUI ships that
+   activation rule commented out, with a note that applying it globally broke modal backdrop-click-
+   to-close. `::-webkit-scrollbar` only ever renders on elements that actually overflow, and a
+   modal backdrop never does, so it doesn't carry the same risk - `main` ran this exact mechanism
+   globally in production without issue. */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 6px;
+}
+
+/* Hides the scrollbar on an element that still needs to scroll (e.g. GameCarousel's horizontal
+   row) - it already has its own chevron buttons for non-pointer users, so a persistent scrollbar
+   is just visual noise `main`'s carousels didn't have either. */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}

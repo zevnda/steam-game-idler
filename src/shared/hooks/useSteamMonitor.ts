@@ -1,68 +1,73 @@
-import type { Game, InvokeRunningProcess } from '@/shared/types'
-import { invoke } from '@tauri-apps/api/core'
+import type { SignedInAccount } from '@/shared/stores/sessionStore'
 import { listen } from '@tauri-apps/api/event'
 import { useEffect } from 'react'
-import { useIdleStore, useStateStore, useUserStore } from '@/shared/stores'
+import { useSessionStore } from '@/shared/stores/sessionStore'
+import { useSteamWarningStore } from '@/shared/stores/steamWarningStore'
+import { logFrontendInfo } from '@/shared/utils/frontendLogging'
+import { invoke } from '@/shared/utils/invoke'
 
-export function useSteamMonitor() {
-  const userSummary = useUserStore(state => state.userSummary)
-  const setIsCardFarming = useStateStore(state => state.setIsCardFarming)
-  const setIsAchievementUnlocker = useStateStore(state => state.setIsAchievementUnlocker)
-  const setShowSteamWarning = useStateStore(state => state.setShowSteamWarning)
-  const setIdleGamesList = useIdleStore(state => state.setIdleGamesList)
+// Matches src-tauri/src/local_steam/commands.rs's STEAM_STATUS_EVENT constant.
+const STEAM_STATUS_EVENT = 'steam-status-changed'
 
-  // Listen for Steam status changes
+interface SteamStatusEventPayload {
+  isRunning: boolean
+}
+
+// Only ever at most one CLI-mode ("local") account can exist at a time - a real local Steam client
+// can only be logged into one account - so there's no ambiguity in picking
+// "the" local entry, independent of which account is denormalized as "active".
+function resolveLocalAccount() {
+  const entry = Object.values(useSessionStore.getState().accounts).find(
+    account => account.mode === 'local',
+  )
+  return entry ?? null
+}
+
+// Stops CLI-mode automations that can no longer function once the local Steam client they depend
+// on has closed. Each stop command is independently idempotent (a no-op if nothing was tracked) and
+// already logs its own failure via the shared `invoke` wrapper - run them concurrently rather than
+// sequentially so one hanging/failing command doesn't delay the others.
+async function stopLocalAutomations(account: SignedInAccount) {
+  await Promise.allSettled([
+    invoke('stop_all_idling', { account }),
+    invoke('stop_farming', { account }),
+    invoke('stop_achievement_unlocker', { account }),
+  ])
+}
+
+// Mounted once in DashboardShell alongside `SteamWarning` - CLI-mode only, since agent mode has no
+// dependency on a local Steam client. Starts the
+// backend's steam.exe status poll once a CLI-mode account is signed in, and reacts to it going down
+// mid-session by stopping whatever CLI-mode automation depended on it and surfacing the
+// SteamWarning modal. Mirrors `main`'s `useSteamMonitor.ts`, minus its `running_processes_changed`
+// listener - idling's process list already syncs independently via `useIdlingSync`'s own
+// `IDLE_STATE_EVENT`, so there's nothing left for that second listener to do here.
+export const useSteamMonitor = () => {
+  const hasLocalAccount = useSessionStore(state =>
+    Object.values(state.accounts).some(account => account.mode === 'local'),
+  )
+  const setShowSteamWarning = useSteamWarningStore(state => state.setShowSteamWarning)
+
   useEffect(() => {
-    const unlistenPromise = listen<boolean>('steam_status_changed', event => {
-      const isSteamRunning = event.payload
-      if (!isSteamRunning && userSummary) {
-        invoke('kill_all_steamutil_processes')
-        setIsCardFarming(false)
-        setIsAchievementUnlocker(false)
-        setShowSteamWarning(true)
-      }
+    if (!hasLocalAccount) return
+
+    invoke('start_steam_status_monitor').catch(error => {
+      console.error('Error in (start_steam_status_monitor):', error)
+    })
+
+    const unlisten = listen<SteamStatusEventPayload>(STEAM_STATUS_EVENT, event => {
+      if (event.payload.isRunning) return
+
+      const account = resolveLocalAccount()
+      if (!account) return
+
+      logFrontendInfo('useSteamMonitor', 'local Steam client closed, stopping CLI-mode automations')
+      setShowSteamWarning(true)
+      stopLocalAutomations(account)
     })
 
     return () => {
-      unlistenPromise.then(unlisten => unlisten())
+      unlisten.then(fn => fn())
     }
-  }, [userSummary, setIsAchievementUnlocker, setIsCardFarming, setShowSteamWarning])
-
-  // Listen for running processes changes
-  useEffect(() => {
-    const unlistenPromise = listen('running_processes_changed', event => {
-      const response = event.payload as InvokeRunningProcess
-      const processes = response?.processes
-
-      setIdleGamesList((prevList: Game[]) => {
-        if (prevList.length !== processes.length) {
-          return processes.map(process => {
-            const existingGame = prevList.find(game => game.appid === process.appid)
-            return {
-              ...process,
-              // Track start time for idle timer
-              startTime: existingGame?.startTime || Date.now(),
-            }
-          })
-        }
-
-        // Only update if the list of games has actually changed
-        const prevMap = new Map(prevList.map(item => [item.appid, item]))
-        const newMap = new Map(processes.map(item => [item.appid, item]))
-
-        if (
-          prevList.some(item => !newMap.has(item.appid)) ||
-          processes.some(item => !prevMap.has(item.appid))
-        ) {
-          return processes
-        }
-
-        return prevList
-      })
-    })
-
-    return () => {
-      unlistenPromise.then(unlisten => unlisten())
-    }
-  }, [setIdleGamesList])
+  }, [hasLocalAccount, setShowSteamWarning])
 }

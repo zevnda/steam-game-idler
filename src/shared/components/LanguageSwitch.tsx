@@ -1,77 +1,83 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { TbLanguage } from 'react-icons/tb'
-import { cn, Select, SelectItem } from '@heroui/react'
+import { cn, ListBox, Select } from '@heroui/react'
+import { openExternalLink } from '@/shared/utils/links'
 
-export const LanguageSwitch = ({
-  className,
-  classNames,
-}: {
-  className?: string
-  classNames?: Record<string, string[]>
-}) => {
-  const { i18n } = useTranslation()
+// Locale code -> native display name, ported from `main`'s `LanguageSwitch.tsx`. Must stay in sync
+// with `.github/crowdin.yml`'s locale set and `src/i18n/index.ts`'s `resources` map - Crowdin only
+// ever syncs the locales this list offers. Every locale but `en-US` starts as an empty `{}`
+// translation file (see `src/i18n/index.ts`'s doc comment) and has no real translators yet, so
+// they're shown dimmed/non-selectable below rather than selectable-but-empty.
+const LANGUAGES = [
+  { id: 'en-US', label: 'English' },
+  { id: 'fr-FR', label: 'Français' },
+  { id: 'it-IT', label: 'Italiano' },
+  { id: 'pt-BR', label: 'Português (Brazil)' },
+  { id: 'ru-RU', label: 'Русский' },
+  { id: 'sl-SI', label: 'Slovenščina' },
+  { id: 'tr-TR', label: 'Türkçe' },
+  { id: 'zh-CN', label: '简体中文' },
+] as const
+
+// Where a click on a not-yet-translated language goes instead of switching - the community
+// translation discussion, so interested users can see how to help rather than landing on a
+// half-English UI.
+const TRANSLATION_HELP_URL = 'https://github.com/zevnda/steam-game-idler/discussions/148'
+
+export const LanguageSwitch = () => {
+  const { t, i18n } = useTranslation()
+  // `output: 'export'` (next.config.ts) means this always server-renders as if no language were
+  // detected yet - gating the real value behind a mount effect avoids a hydration mismatch against
+  // whatever `i18next-browser-languagedetector` picks up client-side from localStorage/navigator,
+  // matching main's own LanguageSwitch.tsx for the same reason.
   const [mounted, setMounted] = useState(false)
-
-  const languages = [
-    { key: 'de-DE', label: 'Deutsch' },
-    { key: 'en-US', label: 'English' },
-    { key: 'es-ES', label: 'Español' },
-    { key: 'fr-FR', label: 'Français' },
-    { key: 'id-ID', label: 'Bahasa Indonesia' },
-    { key: 'it-IT', label: 'Italiano' },
-    { key: 'mk-MK', label: 'Македонски' },
-    { key: 'pl-PL', label: 'Polski' },
-    { key: 'pt-BR', label: 'Português (Brazil)' },
-    { key: 'ro-RO', label: 'Română' },
-    { key: 'ru-RU', label: 'Русский' },
-    { key: 'sl-SI', label: 'Slovenščina' },
-    { key: 'tr-TR', label: 'Türkçe' },
-    { key: 'uk-UA', label: 'Українська' },
-    { key: 'zh-CN', label: '简体中文' },
-  ]
 
   useEffect(() => {
     setMounted(true)
-  }, [i18n])
+  }, [])
 
   if (!mounted) return null
 
-  const currentLanguage = languages.find(lang => lang.key === i18n.language)
+  const currentLanguage = LANGUAGES.some(lang => lang.id === i18n.language)
     ? i18n.language
     : 'en-US'
 
   return (
-    <Select
-      aria-label='language'
-      disallowEmptySelection
-      radius='none'
-      startContent={<TbLanguage />}
-      items={languages}
-      className={cn('w-62.5', className)}
-      classNames={{
-        listbox: 'p-0',
-        value: 'text-sm !text-content',
-        trigger:
-          'bg-input data-[hover=true]:!bg-inputhover data-[open=true]:!bg-input duration-100 rounded-lg',
-        popoverContent: 'bg-input rounded-xl justify-start !text-content',
-        ...classNames,
-      }}
-      defaultSelectedKeys={[currentLanguage]}
-      onSelectionChange={e => {
-        const selectedLanguage = e.currentKey
-        i18n.changeLanguage(selectedLanguage)
+    <Select.Root
+      aria-label={t('dashboard.settings.general.language.label')}
+      className='w-62.5'
+      selectedKey={currentLanguage}
+      onSelectionChange={key => {
+        const id = String(key)
+        // Not `disabledKeys` on the untranslated items below - react-aria's `disabledKeys` stops
+        // `onSelectionChange` from firing at all for that key, which would break this intercept
+        // (same reasoning as SteamCookiesConnectPanel.tsx's gated tab). Leaving `currentLanguage`
+        // untouched for a non-`en-US` id snaps the Select's displayed value back to the real
+        // current language instead of showing a language that was never actually switched to.
+        if (id === 'en-US') {
+          i18n.changeLanguage(id)
+        } else {
+          void openExternalLink(TRANSLATION_HELP_URL)
+        }
       }}
     >
-      {language => (
-        <SelectItem
-          classNames={{
-            base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
-          }}
-        >
-          {language.label}
-        </SelectItem>
-      )}
-    </Select>
+      <Select.Trigger className='border-none'>
+        <Select.Value />
+        <Select.Indicator />
+      </Select.Trigger>
+      <Select.Popover>
+        <ListBox items={LANGUAGES}>
+          {item => (
+            <ListBox.Item
+              className={cn('w-full justify-between', item.id !== 'en-US' && 'opacity-40')}
+              id={item.id}
+              textValue={item.label}
+            >
+              <span className='truncate'>{item.label}</span>
+            </ListBox.Item>
+          )}
+        </ListBox>
+      </Select.Popover>
+    </Select.Root>
   )
 }

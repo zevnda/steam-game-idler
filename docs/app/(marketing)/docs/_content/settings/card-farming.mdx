@@ -1,26 +1,26 @@
 ---
 title: Card Farming
-description: Configure the Card Farming feature to farm Steam trading cards for selected games or your entire library.
+description: Configure the Card Farming feature to farm Steam trading cards for queued games or your entire library.
 ---
 
 # Card Farming Settings
 
-## Farm Games In List
-Only farm cards for games you've manually added to your Card Farming list
+## Farm Games In Queue
+Only farm cards for games you've added to your [Card Farming queue](/docs/features/card-farming)
 
 SGI will ignore all other games in your library. Use this mode when you want precise control over which games get farmed.
 
 <Callout type="info">
-  **Farm Games In List** and **Farm All Games** are mutually exclusive — enabling one will disable the other.
+  **Farm Games In Queue** and **Farm All Games** are mutually exclusive — enabling one will disable the other.
 </Callout>
 
 ## Farm All Games
-Automatically farm cards for every game in your library that still has drops remaining
+Automatically farm cards for every owned game that still has drops remaining, ignoring the queue
 
-SGI will go through all eligible games without you needing to add them individually. You can check which games have drops remaining on your [Steam Badges page](https://steamcommunity.com/my/badges/).
+SGI will go through all eligible games without you needing to queue them individually. Blacklisted games are still skipped even in this mode.
 
 <Callout type="info">
-  **Farm Games In List** and **Farm All Games** are mutually exclusive — enabling one will disable the other.
+  **Farm Games In Queue** and **Farm All Games** are mutually exclusive — enabling one will disable the other.
 </Callout>
 
 ## Skip Unplayed Games
@@ -37,21 +37,18 @@ Only farm cards for games that have never been played *(0 playtime)*
   **Skip Unplayed Games** and **Unplayed Games Only** are mutually exclusive — enabling one will disable the other.
 </Callout>
 
-## Highest Drops First
-Prioritize games with the most card drops remaining, farming them before games with fewer drops
+## Drop Order
+Choose which games to farm first when there's more than one queued
 
-<Callout type="info">
-  **Highest Drops First** and **Lowest Drops First** are mutually exclusive — enabling one will disable the other.
-</Callout>
+- **Highest Drops First** — prioritizes games with the most card drops remaining
+- **Lowest Drops First** — prioritizes games with the fewest card drops remaining
 
-## Lowest Drops First
-Prioritize games with the fewest card drops remaining, farming those first
+## Automatically Farm Cards
+Periodically check for owned games with card drops remaining and automatically start farming them *(Pro — Gamer tier)*
 
-<Callout type="info">
-  **Highest Drops First** and **Lowest Drops First** are mutually exclusive — enabling one will disable the other.
-</Callout>
+When enabled, SGI monitors your library on a recurring schedule and starts a farming cycle without you needing to trigger it manually.
 
-## Schedule Next Task
-Automatically start another feature when Card Farming finishes
+## Start Another Task When Done
+Automatically start another feature once Card Farming finishes
 
-Select which feature should start when farming is complete — either Achievement Unlocker or Automatic Idler. Enable the checkbox to activate this, then choose your next task from the dropdown. See [Task Scheduling](/docs/features/task-scheduling) for more details.
+Enable the checkbox and choose either **Achievement Unlocker** or **Auto-Idle** from the dropdown to have it start automatically once your current farming cycle completes.

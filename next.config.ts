@@ -3,7 +3,6 @@ import type { NextConfig } from 'next'
 const nextConfig: NextConfig = {
   output: 'export',
   devIndicators: false,
-  transpilePackages: ['geist'],
   images: {
     unoptimized: true,
     remotePatterns: [
@@ -14,6 +13,10 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'cdn.cloudflare.steamstatic.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'steamcommunity-a.akamaihd.net',
       },
       {
         protocol: 'https',

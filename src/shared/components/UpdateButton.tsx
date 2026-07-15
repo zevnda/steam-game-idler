@@ -1,52 +1,55 @@
-import { invoke } from '@tauri-apps/api/core'
-import { relaunch } from '@tauri-apps/plugin-process'
 import { check } from '@tauri-apps/plugin-updater'
 import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import { TbCircleArrowDown } from 'react-icons/tb'
-import { Spinner } from '@heroui/react'
-import { CustomTooltip, showDangerToast } from '@/shared/components'
-import { logEvent } from '@/shared/utils'
+import { Button } from '@heroui/react'
+import { useUpdateStore } from '@/shared/stores/updateStore'
+import { logFrontendWarn } from '@/shared/utils/frontendLogging'
+import { fetchLatest, performUpdate } from '@/shared/utils/update'
 
+/**
+ * Opt-in update button for the non-major/non-first-check case (see `useCheckForUpdates`) - the
+ * user clicks to download and install rather than it happening silently.
+ *
+ * Mounted twice, both reading the same `updateStore.updateAvailable`: pre-sign-in in
+ * `src/pages/index.tsx`, and for signed-in users in `DashboardShell` - both positioned below the
+ * global `Titlebar` at the same fixed top-right spot, so a user parked on `/dashboard/*` for a
+ * later non-major update isn't stranded without a way to trigger it.
+ */
 export const UpdateButton = () => {
-  const { t } = useTranslation()
-  const [isLoading, setIsLoading] = useState(false)
+  const setIsUpdating = useUpdateStore(state => state.setIsUpdating)
+  // Local, not the store's `isUpdating` - covers only the brief `check()` round trip below.
+  // `performUpdate` takes over from there, flipping the store's `isUpdating` to show
+  // `UpdateLoader`, which unmounts this button almost immediately anyway.
+  const [isChecking, setIsChecking] = useState(false)
 
   const handleUpdate = async () => {
     try {
-      setIsLoading(true)
+      setIsChecking(true)
       const update = await check()
-      if (update) {
-        localStorage.setItem('hasUpdated', 'true')
-        await invoke('kill_all_steamutil_processes')
-        await update.downloadAndInstall()
-        await relaunch()
-      } else {
-        setIsLoading(false)
+      if (!update) {
+        setIsChecking(false)
+        return
       }
+
+      const latest = await fetchLatest()
+      await performUpdate(update, { major: !!latest?.major, setIsUpdating })
     } catch (error) {
-      setIsLoading(false)
-      showDangerToast(t('toast.checkUpdate.error'))
+      setIsChecking(false)
+      setIsUpdating(false)
       console.error('Error in (handleUpdate):', error)
-      logEvent(`Error in (handleUpdate): ${error}`)
+      logFrontendWarn('UpdateButton', 'manual update check failed', { error: String(error) })
     }
   }
 
   return (
-    <div>
-      {isLoading ? (
-        <div className='flex items-center p-2 rounded-full'>
-          <Spinner size='sm' variant='simple' />
-        </div>
-      ) : (
-        <CustomTooltip content={t('common.updateReady')}>
-          <div className='flex justify-center items-center cursor-pointer' onClick={handleUpdate}>
-            <div className='flex items-center px-1 py-1.5 text-success hover:text-success/80 duration-150'>
-              <TbCircleArrowDown fontSize={20} />
-            </div>
-          </div>
-        </CustomTooltip>
-      )}
-    </div>
+    <Button
+      isIconOnly
+      aria-label='Update ready'
+      isPending={isChecking}
+      variant='secondary'
+      onPress={handleUpdate}
+    >
+      <TbCircleArrowDown fontSize={20} />
+    </Button>
   )
 }
