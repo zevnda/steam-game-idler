@@ -42,6 +42,7 @@ export const AchievementUnlockerGameCard = ({
         <Button
           isIconOnly
           aria-label={isQueued ? `Remove ${displayName}` : `Add ${displayName}`}
+          className='shrink-0'
           isPending={isPending}
           size='sm'
           variant='ghost'

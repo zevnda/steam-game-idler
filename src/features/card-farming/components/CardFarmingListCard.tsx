@@ -31,6 +31,7 @@ export const CardFarmingListCard = ({ game, isPending, onRemove }: CardFarmingQu
         <Button
           isIconOnly
           aria-label={`Remove ${game.name}`}
+          className='shrink-0'
           isPending={isPending}
           size='sm'
           variant='ghost'

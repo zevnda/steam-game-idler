@@ -34,6 +34,7 @@ export const CardFarmingBlacklistCard = ({
         <Button
           isIconOnly
           aria-label={`Remove ${game.name} from blacklist`}
+          className='shrink-0'
           isPending={isPending}
           size='sm'
           variant='ghost'

@@ -29,6 +29,7 @@ export const FavoriteListCard = ({ favorite, isPending, onRemove }: FavoriteList
         <Button
           isIconOnly
           aria-label={`Remove ${favorite.name} from favorites`}
+          className='shrink-0'
           isPending={isPending}
           size='sm'
           variant='ghost'

@@ -44,6 +44,7 @@ export const FavoriteGameCard = ({
           aria-label={
             isFavorited ? `Remove ${displayName} from favorites` : `Add ${displayName} to favorites`
           }
+          className='shrink-0'
           isPending={isPending}
           size='sm'
           variant='ghost'
