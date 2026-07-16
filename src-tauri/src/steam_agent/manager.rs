@@ -11,7 +11,7 @@ use crate::error::{AppError, AppResult};
 use crate::settings;
 
 use super::ipc::{AchievementChange, IpcRequest, IpcResponse};
-use super::process::AgentProcess;
+use super::process::{AgentProcess, OWNED_APPS_REQUEST_TIMEOUT};
 
 /// Outcome of a `login` (or `submit_guard_code`) round trip, mirroring the `status` values
 /// `AuthFlow.cs` can send back for the `login` command: immediate success, or a prompt that the
@@ -374,13 +374,21 @@ impl AgentManager {
     /// `get_owned_apps` IPC command (PICS-based, no local Steam client needed - see
     /// `Daemon/Bot/OwnershipManager.cs`). No playtime here - that's `games::web_api`'s job, the
     /// same Steam Web API enrichment step CLI mode's ownership check also funnels through.
+    ///
+    /// Uses `OWNED_APPS_REQUEST_TIMEOUT` rather than the default `send_request` timeout - unlike
+    /// every other command sent through this manager, PICS-based ownership resolution scales with
+    /// the account's library size (thousands of individual PICS requests for a 5,000-10,000+ game
+    /// library), so the standard fixed-cost timeout was firing on large libraries while the daemon
+    /// was still legitimately working, not stuck.
     pub async fn get_owned_apps(
         &self,
         username: &str,
     ) -> AppResult<Vec<crate::games::RawOwnedGame>> {
         let key = Self::key_for(username);
         let process = self.existing(&key).await?;
-        let response = process.send_request(IpcRequest::get_owned_apps).await?;
+        let response = process
+            .send_request_with_timeout(IpcRequest::get_owned_apps, OWNED_APPS_REQUEST_TIMEOUT)
+            .await?;
 
         if !response.ok {
             return Err(AppError::Agent(

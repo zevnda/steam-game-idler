@@ -14,8 +14,19 @@ use super::ipc::{IpcLine, IpcMessage, IpcRequest, IpcResponse};
 
 /// Conservative upper bound for a Steam network round trip; not derived from any specific
 /// SteamKit2/Steam API deadline - just long enough that a miss means the request is genuinely
-/// stuck, not merely slow.
+/// stuck, not merely slow. Fine for every request type except `get_owned_apps` - see
+/// `OWNED_APPS_REQUEST_TIMEOUT`.
 const REQUEST_TIMEOUT: Duration = Duration::from_secs(30);
+/// `get_owned_apps` is the one daemon request whose cost scales with the account's library size,
+/// not a fixed per-call cost like every other command here. `OwnershipManager.GetOwnedGamesAsync`
+/// (`libs/SteamUtility/Daemon/Bot/OwnershipManager.cs`) resolves ownership via PICS: one
+/// `PICSGetProductInfo` batch over every owned package/license, then another over every resolved
+/// app id - for a 5,000-10,000+ game library that's thousands of individual PICS requests, and
+/// Steam's PICS service measurably slows down on large batches. `REQUEST_TIMEOUT`'s 30s was tuned
+/// for single-app-scale commands (login, achievements, idle_set) and reliably fired mid-resolution
+/// for large libraries even though the daemon was still working, not stuck - see the
+/// `agent_request_timeout` incident this constant was added to fix.
+pub(crate) const OWNED_APPS_REQUEST_TIMEOUT: Duration = Duration::from_secs(600);
 /// Event emitted to the frontend for every SteamUtility async event (`status_changed`,
 /// `idle_state`, `auth_required`, `refresh_token`, `login_failed`, `guard_code_incorrect`, ...).
 /// One channel for all of them, distinguished by the `event`/`account` fields in the payload,
@@ -104,13 +115,25 @@ impl AgentProcess {
         self.idle_app_ids.lock().unwrap().clone()
     }
 
-    /// Sends one request and awaits its matching response by `id`, with a timeout - SteamUtility
-    /// guarantees exactly one response per request `id` (see `DaemonHost.HandleLineAsync`), so a
-    /// missing response after `REQUEST_TIMEOUT` means the round trip is genuinely stuck rather
-    /// than merely slow.
+    /// Sends one request and awaits its matching response by `id`, capped at the default
+    /// `REQUEST_TIMEOUT` - SteamUtility guarantees exactly one response per request `id` (see
+    /// `DaemonHost.HandleLineAsync`), so a missing response after the timeout means the round trip
+    /// is genuinely stuck rather than merely slow. Use `send_request_with_timeout` directly for a
+    /// command whose cost isn't fixed-per-call (currently only `get_owned_apps`).
     pub async fn send_request(
         &self,
         build: impl FnOnce(String) -> IpcRequest,
+    ) -> AppResult<IpcResponse> {
+        self.send_request_with_timeout(build, REQUEST_TIMEOUT).await
+    }
+
+    /// Same as `send_request`, with an explicit timeout override - see `OWNED_APPS_REQUEST_TIMEOUT`
+    /// for why this exists as a separate entry point rather than just raising `REQUEST_TIMEOUT`
+    /// globally.
+    pub async fn send_request_with_timeout(
+        &self,
+        build: impl FnOnce(String) -> IpcRequest,
+        timeout: Duration,
     ) -> AppResult<IpcResponse> {
         let id = self.next_id.fetch_add(1, Ordering::Relaxed).to_string();
         let request = build(id.clone());
@@ -129,7 +152,7 @@ impl AgentProcess {
             }
         }
 
-        match tokio::time::timeout(REQUEST_TIMEOUT, rx).await {
+        match tokio::time::timeout(timeout, rx).await {
             Ok(Ok(response)) => Ok(response),
             Ok(Err(_)) => Err(AppError::ProcessExited),
             Err(_) => {
