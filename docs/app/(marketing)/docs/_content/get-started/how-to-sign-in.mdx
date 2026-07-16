@@ -15,6 +15,7 @@ SGI has two ways to sign in. They both give you access to the same features (wit
 | Steam client required? | No | Yes — must be installed, running, and signed in |
 | Sign-in method | Your Steam username/password, or scan a QR code | Pick from accounts already signed in to the local Steam client |
 | Multiple accounts at once? | Yes — see [Multi-Account](/docs/get-started/multi-account) | No — one account at a time |
+| Play games normally while idling? | No — see [What's different](#whats-different-between-the-two) below | Yes |
 
 <Callout type='info'>
     Not sure which to pick? Use **Sign in with Steam** unless you specifically don't want to enter your username/password into SGI — in that case, use **Legacy Sign In**
@@ -101,6 +102,7 @@ Use this if you'd rather not enter your Steam username/password into SGI at all.
 
 A small number of features behave differently depending on which method you used to sign in — each is called out on its own feature page, but the full list is:
 
+- **Playing games normally while idling** — **Sign in with Steam** talks to Steam using the same underlying protocol as the real Steam client, so if you launch and play a game yourself while SGI is idling that account, Steam treats it as a conflicting session. Idling stays uninterrupted with **Legacy Sign In**, since it works alongside your already-running Steam client rather than opening a second session — if you want to idle and play at the same time, use **Legacy Sign In**
 - **Idling many games at once** — The **Sign in with Steam** method can idle up to 32 games from one background session; Legacy Sign In launches one helper process per game (same 32-game Steam-imposed ceiling either way)
 - **Game Coordinator titles** (TF2, Dota 2, CS2, Left 4 Dead 2, Portal 2) — can only be idled and have their achievements managed correctly via **Legacy Sign In**
 - **Global achievement rarity %** — only shown via **Legacy Sign In** in the [Achievement Manager](/docs/features/achievement-manager)
