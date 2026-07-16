@@ -42,6 +42,9 @@ jobs:
           CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
           CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
 
+      - name: Fix file ownership after Crowdin Docker action
+        run: sudo chown -R "$(id -u):$(id -g)" .
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
