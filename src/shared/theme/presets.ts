@@ -46,7 +46,7 @@ export const THEME_PRESETS = {
     fieldBackground: 'oklch(0.2329 0.003 285.89)',
     fieldBorder: 'oklch(0.32 0.003 285.89)',
     surface: 'oklch(0.19 0.003 285.89)',
-    overlay: 'oklch(0.19 0.003 285.89)',
+    overlay: 'oklch(0.1706 0.003 285.89)',
     default: 'oklch(0.24 0.003 285.89)',
     surfaceSecondary: 'oklch(0.24 0.003 285.89)',
     separator: 'oklch(0.22 0.003 285.89)',

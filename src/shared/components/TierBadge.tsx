@@ -23,7 +23,7 @@ export const TierBadge = ({ tier, className }: TierBadgeProps) => {
     <span
       className={cn(
         'rounded-full px-2 py-0.5 text-[9px] font-black uppercase tracking-widest leading-3.5',
-        tier === 'gamer' && 'bg-[linear-gradient(90deg,#8a60ff,#ab26d3)] text-white',
+        tier === 'gamer' && 'bg-[linear-gradient(90deg,#8f00ff,#9c27b0)] text-white',
         tier === 'casual' && 'bg-[linear-gradient(90deg,#3b82f6,#38bdf8)] text-white',
         tier === null && 'bg-surface-hover text-muted',
         className,

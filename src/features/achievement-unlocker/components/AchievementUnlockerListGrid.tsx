@@ -1,10 +1,22 @@
 import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core'
+import type { CellComponentProps } from 'react-window'
 import type { AchievementUnlockerEntry } from '../types'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
+import { Grid } from 'react-window'
 import { AchievementUnlockerListCard } from './AchievementUnlockerListCard'
 import { SortableAchievementUnlockerListCard } from './SortableAchievementUnlockerListCard'
 import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { arrayMove, SortableContext } from '@dnd-kit/sortable'
+import {
+  GAME_GRID_GAP as GAP,
+  GAME_CARD_INFO_HEIGHT as INFO_HEIGHT,
+  GAME_CARD_THUMBNAIL_ASPECT as THUMBNAIL_ASPECT,
+  useResponsiveColumnCount,
+} from '@/shared/hooks/useGameGridColumns'
+
+// See VirtualizedGameGrid.tsx's top comment for why horizontal padding is a spacer column instead
+// of CSS padding on the Grid itself.
+const PADDING = 24
 
 interface AchievementUnlockerListGridProps {
   queue: AchievementUnlockerEntry[]
@@ -14,8 +26,69 @@ interface AchievementUnlockerListGridProps {
   onEditOrder: (game: AchievementUnlockerEntry) => void
 }
 
-// Mirrors favorites/FavoritesListGrid.tsx exactly - same dnd-kit shape for the same reason (a
-// per-account ordered list of app ids reordered by dragging whole cards).
+interface CellProps {
+  queue: AchievementUnlockerEntry[]
+  realColumnCount: number
+  cardWidth: number
+  activeId: number | null
+  pendingAppIds: Set<number>
+  onRemove: (appId: number) => void
+  onEditOrder: (game: AchievementUnlockerEntry) => void
+}
+
+const Cell = ({
+  ariaAttributes,
+  columnIndex,
+  rowIndex,
+  style,
+  queue,
+  realColumnCount,
+  cardWidth,
+  activeId,
+  pendingAppIds,
+  onRemove,
+  onEditOrder,
+}: CellComponentProps<CellProps>) => {
+  // Column 0 and the last column are PADDING-wide spacers, not real cards - see this file's top
+  // comment / VirtualizedGameGrid.tsx.
+  if (columnIndex === 0 || columnIndex === realColumnCount + 1) return null
+  const game = queue[rowIndex * realColumnCount + (columnIndex - 1)]
+  if (!game) return null
+  const height = (style.height as number) - GAP
+  return (
+    <div {...ariaAttributes} style={{ ...style, width: cardWidth, height }}>
+      {/* Keyed by appId, not just positioned by react-window's own rowIndex:columnIndex key on
+          this Cell - react-window recycles a Cell's DOM node across renders of the same grid slot,
+          so without this key a reorder would leave the *same* SortableAchievementUnlockerListCard
+          instance (and its useSortable hook) silently rebound to a different item's id with no
+          remount, which briefly renders with the FLIP transform meant for the old item and reads as
+          a snap-back-then-correct glitch right after dropping. */}
+      <SortableAchievementUnlockerListCard
+        key={game.appId}
+        game={game}
+        isDragging={activeId === game.appId}
+        isPending={pendingAppIds.has(game.appId)}
+        onEditOrder={() => onEditOrder(game)}
+        onRemove={() => onRemove(game.appId)}
+      />
+    </div>
+  )
+}
+
+// Virtualized replacement for the previous plain `.map()` grid - "Add all to queue"
+// (AchievementUnlockerPage.tsx) can now push the queue into the hundreds/thousands, so mounting
+// every card at once is no longer safe to assume. Mirrors VirtualizedGameGrid.tsx's Grid/Cell/
+// spacer-column mechanics (see that file for the padding/gap reasoning) combined with @dnd-kit
+// sortable per AchievementOrderList.tsx's precedent for pairing react-window virtualization with
+// drag-reorder: only the currently mounted (visible) cards are real drop targets at any moment, and
+// dragging near either edge auto-scrolls the Grid's own scrollable root (dnd-kit's default
+// PointerSensor autoscroll target) to bring the next rows into range - both are dnd-kit's own
+// documented tradeoff, already accepted for AchievementOrderList. `DndContext`/`SortableContext` are
+// owned here (not by the caller) since, unlike AchievementOrderOverlay/AchievementOrderList, nothing
+// else outside this component needs to observe the drag.
+//
+// FavoritesListGrid/CardFarmingListGrid/AutoIdleListGrid keep the old non-virtualized shape - none
+// of them has a bulk-add entry point (yet), so their queues stay genuinely small/bounded.
 export const AchievementUnlockerListGrid = ({
   queue,
   pendingAppIds,
@@ -23,9 +96,19 @@ export const AchievementUnlockerListGrid = ({
   onReorder,
   onEditOrder,
 }: AchievementUnlockerListGridProps) => {
+  const containerRef = useRef<HTMLDivElement>(null)
   const [activeId, setActiveId] = useState<number | null>(null)
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }))
   const activeItem = queue.find(item => item.appId === activeId) ?? null
+  const {
+    width,
+    usableWidth,
+    columnCount: realColumnCount,
+  } = useResponsiveColumnCount(containerRef)
+  const cardColumnWidth = usableWidth / realColumnCount
+  const cardWidth = cardColumnWidth - GAP
+  const rowHeight = Math.round(cardWidth * THUMBNAIL_ASPECT) + INFO_HEIGHT + GAP
+  const rowCount = Math.ceil(queue.length / realColumnCount)
 
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(event.active.id as number)
@@ -44,17 +127,30 @@ export const AchievementUnlockerListGrid = ({
   return (
     <DndContext sensors={sensors} onDragEnd={handleDragEnd} onDragStart={handleDragStart}>
       <SortableContext items={queue.map(item => item.appId)}>
-        <div className='grid grid-cols-2 gap-4 p-6 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6'>
-          {queue.map(game => (
-            <SortableAchievementUnlockerListCard
-              key={game.appId}
-              game={game}
-              isDragging={activeId === game.appId}
-              isPending={pendingAppIds.has(game.appId)}
-              onEditOrder={() => onEditOrder(game)}
-              onRemove={() => onRemove(game.appId)}
+        {/* No horizontal padding here (or on Grid) - see VirtualizedGameGrid.tsx's top comment. */}
+        <div ref={containerRef} className='h-full w-full'>
+          {width > 0 && (
+            <Grid
+              cellComponent={Cell}
+              cellProps={{
+                queue,
+                realColumnCount,
+                cardWidth,
+                activeId,
+                pendingAppIds,
+                onRemove,
+                onEditOrder,
+              }}
+              className='py-6'
+              columnCount={realColumnCount + 2}
+              columnWidth={index =>
+                index === 0 || index === realColumnCount + 1 ? PADDING : cardColumnWidth
+              }
+              rowCount={rowCount}
+              rowHeight={rowHeight}
+              style={{ height: '100%', width: '100%' }}
             />
-          ))}
+          )}
         </div>
       </SortableContext>
       <DragOverlay dropAnimation={null}>

@@ -664,6 +664,11 @@
         "running_one": "Unlocking {{count}} game",
         "running_other": "Unlocking {{count}} games"
       },
+      "addAllToQueue": "Add all to queue",
+      "confirmAddAllToQueue": {
+        "title": "Add all {{count}} games to the queue?",
+        "description": "Each game needs to be scanned for achievements, which can take a long time for a large library. Manually adding games is recommended."
+      },
       "confirmClearQueue": {
         "title": "Clear the achievement unlocker queue?",
         "description": "This will remove all {{count}} games from the achievement unlocker queue."
