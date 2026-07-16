@@ -32,7 +32,7 @@ export default async function Page(props: PageProps) {
         backgroundImage: 'linear-gradient(to bottom, #1d1d1dff 0%, #000000ff 100%)',
       }}
     >
-      <div className='max-w-4xl mx-auto px-6 pt-12 pb-4'>
+      <div className='max-w-4xl mx-auto px-6 pt-3 pb-4'>
         {/* Single Post */}
         <article className='flex flex-col md:flex-row items-start'>
           {/* Date and Tags */}

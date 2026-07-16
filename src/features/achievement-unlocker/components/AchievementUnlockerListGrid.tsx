@@ -30,12 +30,17 @@ interface CellProps {
   queue: AchievementUnlockerEntry[]
   realColumnCount: number
   cardWidth: number
+  cardHeight: number
   activeId: number | null
   pendingAppIds: Set<number>
   onRemove: (appId: number) => void
   onEditOrder: (game: AchievementUnlockerEntry) => void
 }
 
+// Every card - including the last in a row/column - renders at this fixed `cardWidth`/`cardHeight`.
+// No per-cell shrinking needed here: `columnWidth`/`rowHeight` below already allocate each *slot* as
+// card+trailing-gap (or just card, for the last row/column) - see VirtualizedGameGrid.tsx's
+// `cardWidth` comment for why that split has to happen there and not here.
 const Cell = ({
   ariaAttributes,
   columnIndex,
@@ -44,6 +49,7 @@ const Cell = ({
   queue,
   realColumnCount,
   cardWidth,
+  cardHeight,
   activeId,
   pendingAppIds,
   onRemove,
@@ -54,9 +60,8 @@ const Cell = ({
   if (columnIndex === 0 || columnIndex === realColumnCount + 1) return null
   const game = queue[rowIndex * realColumnCount + (columnIndex - 1)]
   if (!game) return null
-  const height = (style.height as number) - GAP
   return (
-    <div {...ariaAttributes} style={{ ...style, width: cardWidth, height }}>
+    <div {...ariaAttributes} style={{ ...style, width: cardWidth, height: cardHeight }}>
       {/* Keyed by appId, not just positioned by react-window's own rowIndex:columnIndex key on
           this Cell - react-window recycles a Cell's DOM node across renders of the same grid slot,
           so without this key a reorder would leave the *same* SortableAchievementUnlockerListCard
@@ -105,9 +110,11 @@ export const AchievementUnlockerListGrid = ({
     usableWidth,
     columnCount: realColumnCount,
   } = useResponsiveColumnCount(containerRef)
-  const cardColumnWidth = usableWidth / realColumnCount
-  const cardWidth = cardColumnWidth - GAP
-  const rowHeight = Math.round(cardWidth * THUMBNAIL_ASPECT) + INFO_HEIGHT + GAP
+  // See VirtualizedGameGrid.tsx's matching comment: `usableWidth` fits N cards plus the (N-1) gaps
+  // *between* them, not N gaps (a trailing gap for every column, including the last, which has
+  // nothing to gap against).
+  const cardWidth = (usableWidth - GAP * (realColumnCount - 1)) / realColumnCount
+  const cardHeight = Math.round(cardWidth * THUMBNAIL_ASPECT) + INFO_HEIGHT
   const rowCount = Math.ceil(queue.length / realColumnCount)
 
   const handleDragStart = (event: DragStartEvent) => {
@@ -136,6 +143,7 @@ export const AchievementUnlockerListGrid = ({
                 queue,
                 realColumnCount,
                 cardWidth,
+                cardHeight,
                 activeId,
                 pendingAppIds,
                 onRemove,
@@ -143,11 +151,18 @@ export const AchievementUnlockerListGrid = ({
               }}
               className='py-6'
               columnCount={realColumnCount + 2}
-              columnWidth={index =>
-                index === 0 || index === realColumnCount + 1 ? PADDING : cardColumnWidth
-              }
+              // Every real column's slot is `cardWidth` plus a trailing GAP to the next card -
+              // except the last real column, which has no next card to gap against - see
+              // VirtualizedGameGrid.tsx's matching comment for why.
+              columnWidth={index => {
+                if (index === 0 || index === realColumnCount + 1) return PADDING
+                if (index === realColumnCount) return cardWidth
+                return cardWidth + GAP
+              }}
               rowCount={rowCount}
-              rowHeight={rowHeight}
+              // The last row gets `cardHeight` alone (no trailing GAP) - see
+              // VirtualizedGameGrid.tsx's matching comment for why.
+              rowHeight={index => (index === rowCount - 1 ? cardHeight : cardHeight + GAP)}
               style={{ height: '100%', width: '100%' }}
             />
           )}

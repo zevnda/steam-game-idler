@@ -36,9 +36,14 @@ interface CellProps {
   // actually means.
   realColumnCount: number
   cardWidth: number
+  cardHeight: number
   renderCard: (game: OwnedGame) => ReactNode
 }
 
+// Every card - including the last in a row/column - renders at this fixed `cardWidth`/`cardHeight`.
+// No per-cell shrinking needed here: `columnWidth`/`rowHeight` below already allocate each *slot* as
+// card+trailing-gap (or just card, for the last row/column, which has nothing to gap against) - see
+// this file's `cardWidth` comment for why that split has to happen there and not here.
 const Cell = ({
   ariaAttributes,
   columnIndex,
@@ -47,6 +52,7 @@ const Cell = ({
   games,
   realColumnCount,
   cardWidth,
+  cardHeight,
   renderCard,
 }: CellComponentProps<CellProps>) => {
   // Column 0 and the last column are PADDING-wide spacers, not real cards - see this file's top
@@ -54,19 +60,8 @@ const Cell = ({
   if (columnIndex === 0 || columnIndex === realColumnCount + 1) return null
   const game = games[rowIndex * realColumnCount + (columnIndex - 1)]
   if (!game) return null
-  // `style` is react-window's full cell slot (columnWidth/rowHeight, which both include GAP) -
-  // shrinking width/height here (instead of changing columnWidth/rowHeight themselves) is what
-  // leaves a GAP-sized gutter to the right/below each card, mirroring the CSS grid's `gap-4`.
-  // Always shrink by GAP, including the last real column/row - an earlier version left those at
-  // the full slot size to keep the right edge/bottom flush with the padding spacer/`py-6`, but that
-  // made every rightmost card (and the whole bottom row) up to GAP px bigger than its siblings,
-  // which an aspect-ratio thumbnail turns into a very visible size mismatch (confirmed live: the
-  // last card in every row rendered noticeably larger than the rest). A GAP-sized gap beyond the
-  // intended padding on those two edges is a far less noticeable trade-off than inconsistently
-  // sized cards.
-  const height = (style.height as number) - GAP
   return (
-    <div {...ariaAttributes} style={{ ...style, width: cardWidth, height }}>
+    <div {...ariaAttributes} style={{ ...style, width: cardWidth, height: cardHeight }}>
       {renderCard(game)}
     </div>
   )
@@ -99,9 +94,15 @@ export const VirtualizedGameGrid = ({ games, renderCard }: VirtualizedGameGridPr
     usableWidth,
     columnCount: realColumnCount,
   } = useResponsiveColumnCount(containerRef)
-  const cardColumnWidth = usableWidth / realColumnCount
-  const cardWidth = cardColumnWidth - GAP
-  const rowHeight = Math.round(cardWidth * THUMBNAIL_ASPECT) + INFO_HEIGHT + GAP
+  // `usableWidth` has to fit N cards plus the (N-1) gaps *between* them - not N gaps, which is what
+  // `usableWidth / realColumnCount - GAP` (an earlier version of this formula) worked out to: that
+  // reserved a trailing GAP for every column including the last, which has no following card to gap
+  // against, leaving one GAP's worth of dead space unaccounted for (it showed up as a gap wider than
+  // intended somewhere along the right edge, however the leftover space happened to get allocated).
+  // This is the same `(usableWidth - GAP * (columnCount - 1)) / columnCount` shape GamesList.tsx's
+  // flex-row cards already use correctly.
+  const cardWidth = (usableWidth - GAP * (realColumnCount - 1)) / realColumnCount
+  const cardHeight = Math.round(cardWidth * THUMBNAIL_ASPECT) + INFO_HEIGHT
   const rowCount = Math.ceil(games.length / realColumnCount)
 
   return (
@@ -111,14 +112,23 @@ export const VirtualizedGameGrid = ({ games, renderCard }: VirtualizedGameGridPr
       {width > 0 && (
         <Grid
           cellComponent={Cell}
-          cellProps={{ games, realColumnCount, cardWidth, renderCard }}
+          cellProps={{ games, realColumnCount, cardWidth, cardHeight, renderCard }}
           className='py-6'
           columnCount={realColumnCount + 2}
-          columnWidth={index =>
-            index === 0 || index === realColumnCount + 1 ? PADDING : cardColumnWidth
-          }
+          // Every real column's slot is `cardWidth` plus a trailing GAP to the next card - except
+          // the last real column, which has no next card to gap against, so its slot is `cardWidth`
+          // alone (sits flush against the right PADDING spacer instead of leaving a dead GAP before
+          // it).
+          columnWidth={index => {
+            if (index === 0 || index === realColumnCount + 1) return PADDING
+            if (index === realColumnCount) return cardWidth
+            return cardWidth + GAP
+          }}
           rowCount={rowCount}
-          rowHeight={rowHeight}
+          // Mirrors columnWidth above for the vertical axis: the last row's slot is `cardHeight`
+          // alone so it sits flush against the bottom `py-6` padding instead of leaving a dead GAP
+          // beneath it.
+          rowHeight={index => (index === rowCount - 1 ? cardHeight : cardHeight + GAP)}
           style={{ height: '100%', width: '100%' }}
         />
       )}
