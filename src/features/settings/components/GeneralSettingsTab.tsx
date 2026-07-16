@@ -439,10 +439,9 @@ export const GeneralSettingsTab = ({
                 aria-label={t('dashboard.settings.general.customIdleStatus.label')}
                 className='w-62.5'
                 isDisabled={presence.isLoading || presence.isSaving}
-                // Same gate as the persona-state Select above - hides the real saved value while
-                // gated (rather than leaking a Pro-only setting's content to a non-Pro viewer),
-                // matching `ToggleSwitch isSelected={false}`'s convention elsewhere in this tab.
-                value={canUsePresenceSettings ? customIdleStatusValue : ''}
+                // Typable regardless of tier - only Save/Clear below are gated, so a non-Pro user
+                // can draft a message before hitting the upsell rather than being blocked upfront.
+                value={customIdleStatusValue}
                 onChange={setCustomIdleStatusValue}
               >
                 <Input placeholder={t('dashboard.settings.general.customIdleStatus.placeholder')} />
