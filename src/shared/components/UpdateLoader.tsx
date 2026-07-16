@@ -23,7 +23,7 @@ export const UpdateLoader = () => {
     <SplashScreen>
       <div className='flex w-64 flex-col items-center space-y-3'>
         <p className='text-sm text-white/60'>{t('update.downloading')}</p>
-        <ProgressBar aria-label={t('update.downloading')} className='w-full'>
+        <ProgressBar isIndeterminate aria-label={t('update.downloading')} className='w-full'>
           <ProgressBar.Track style={{ backgroundColor: 'rgba(255, 255, 255, 0.2)' }}>
             <ProgressBar.Fill style={{ backgroundColor: '#ffffff' }} />
           </ProgressBar.Track>

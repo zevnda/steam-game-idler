@@ -163,7 +163,7 @@ export const HelpDesk = () => {
           >
             <RiCustomerService2Line fontSize={18} />
             {hasUnread && (
-              <span className='absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-danger' />
+              <span className='absolute right-3 top-4 h-2 w-2 rounded-full bg-danger' />
             )}
           </button>
         </AppTooltip.Trigger>
