@@ -74,6 +74,7 @@ export const LanguageSwitch = () => {
               textValue={item.label}
             >
               <span className='truncate'>{item.label}</span>
+              <ListBox.ItemIndicator />
             </ListBox.Item>
           )}
         </ListBox>

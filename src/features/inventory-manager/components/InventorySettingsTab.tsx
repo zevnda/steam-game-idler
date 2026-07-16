@@ -118,7 +118,11 @@ export const InventorySettingsTab = ({
           </Select.Trigger>
           <Select.Popover>
             <ListBox items={CURRENCY_OPTIONS}>
-              {item => <ListBox.Item id={item.id}>{item.label}</ListBox.Item>}
+              {item => (
+                <ListBox.Item id={item.id}>
+                  {item.label} <ListBox.ItemIndicator />
+                </ListBox.Item>
+              )}
             </ListBox>
           </Select.Popover>
         </Select.Root>

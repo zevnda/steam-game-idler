@@ -45,7 +45,8 @@ export const GameSortSelect = <T extends string>({
       <ListBox items={options}>
         {item => (
           <ListBox.Item id={item.id}>
-            {item.label} <ListBox.ItemIndicator />
+            {item.label}
+            <ListBox.ItemIndicator />
           </ListBox.Item>
         )}
       </ListBox>

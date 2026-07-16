@@ -313,6 +313,7 @@ export const CustomizationSettingsTab = ({
               {item => (
                 <ListBox.Item id={item.id} textValue={FONT_DISPLAY_NAMES[item.id]}>
                   {FONT_DISPLAY_NAMES[item.id]}
+                  <ListBox.ItemIndicator />
                 </ListBox.Item>
               )}
             </ListBox>
