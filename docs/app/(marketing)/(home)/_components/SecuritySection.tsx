@@ -16,8 +16,8 @@ const trustPoints = [
   {
     icon: <FiLock className='w-5 h-5' />,
     iconClass: 'text-text-muted bg-white/5 border-white/10',
-    title: 'Encrypted by Design',
-    desc: 'Steam session cookies and API keys are encrypted with AES-256 and stored only on your device.',
+    title: 'Secured by Design',
+    desc: 'Steam session cookies and credentials are stored in your OS Credential Manager, never in plaintext, never in the cloud.',
   },
   {
     icon: <FiRefreshCw className='w-5 h-5' />,
@@ -31,9 +31,9 @@ const SEQUENCE = [
   { type: 'cmd', text: '$ sgi-audit --scan /proc/SteamGameIdler' },
   { type: 'log', text: 'Resolving binary hash...' },
   { type: 'pass', text: '✓ SHA-256 matches source commit a4e86538' },
-  { type: 'cmd', text: '$ inspect --storage ~/.config/sgi/' },
+  { type: 'cmd', text: '$ inspect --storage Windows Credential Manager' },
   { type: 'log', text: 'Reading credential store...' },
-  { type: 'pass', text: '✓ AES-256 encryption successfull' },
+  { type: 'pass', text: '✓ Secrets held by OS-native keyring' },
   { type: 'pass', text: '✓ No plaintext secrets on disk' },
   { type: 'cmd', text: '$ trace --flow SteamSessionCookie' },
   { type: 'log', text: 'Tracing credential usage...' },
