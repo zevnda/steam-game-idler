@@ -32,7 +32,12 @@ const LOG_POLL_INTERVAL_MS = 1000
 // `main`'s ExportSettings.tsx excluding `apiKey`/`steamCookies` for the same "don't leak
 // account-identifying data into a bug-report paste" reason. `sgi.session.accounts` isn't a
 // "setting" anyway (it's login state, already covered by `account`/`isPortable` context above it).
-const EXCLUDED_LOCAL_STORAGE_KEYS = ['sgi.session.accounts', 'sgi.session.account', 'licenseKey']
+const EXCLUDED_LOCAL_STORAGE_KEYS = [
+  'sgi.session.accounts',
+  'sgi.session.account',
+  'licenseKey',
+  'cachedSubscription',
+]
 
 function collectLocalStorageSnapshot() {
   const snapshot: Record<string, unknown> = {}
