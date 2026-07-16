@@ -214,10 +214,9 @@ export const allFeatures: Feature[] = [
   {
     icon: TbUserCircle,
     title: 'Custom Steam Status',
-    description:
-      'Choose your Steam online status and show a custom message to friends instead of "Playing [game]" while idling.',
+    description: 'Show a custom message to friends instead of "Playing [game]" while idling.',
     detail:
-      'Available when signed in with Steam: pick which online status (Online, Away, Busy, Snooze, Looking to Trade, Looking to Play, Invisible, or Offline) friends see while you\'re signed in, and set a custom message that replaces the default "Playing [game]" text while idling.',
+      'Available when signed in with Steam: set a custom message that replaces the default "Playing [game]" text while idling.',
     tier: 'gamer',
     id: 'custom-online-status',
   },
@@ -261,7 +260,7 @@ export const comparisonRows: ComparisonRow[] = [
   { label: 'Automatic Card Farming', icon: TbCards, tier: 'gamer' },
   { label: 'Sell Duplicate Inventory Items', icon: TbCurrencyDollar, tier: 'gamer' },
   { label: 'Import Achievement Unlock Timings', icon: TbClock, tier: 'gamer' },
-  { label: 'Custom Steam Status', icon: TbUserCircle, tier: 'gamer' },
+  { label: 'Custom Idle Status Message', icon: TbUserCircle, tier: 'gamer' },
 ]
 
 // Casual-then-gamer order for FeatureDetailsSection's "Every Feature, Explained" full list -

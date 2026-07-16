@@ -396,63 +396,33 @@ export const GeneralSettingsTab = ({
       {/* Agent-mode only (no CLI-mode equivalent) - see presence_settings.rs's module doc comment. */}
       {activeAccount?.mode === 'agent' && (
         <>
+          {/* Free for every agent-mode account - only the custom idle status message below stays
+              Gamer-gated. */}
           <SettingsRow
             description={t('dashboard.settings.general.personaState.description')}
-            title={
-              <span className='flex items-center gap-2'>
-                {t('dashboard.settings.general.personaState.label')}
-                {!canUsePresenceSettings && <TierBadge tier='gamer' />}
-              </span>
-            }
+            title={t('dashboard.settings.general.personaState.label')}
           >
-            {canUsePresenceSettings ? (
-              <Select.Root
-                aria-label={t('dashboard.settings.general.personaState.label')}
-                className='w-62.5'
-                isDisabled={presence.isLoading || !presence.settings}
-                selectedKey={presence.settings?.personaState ?? 'Online'}
-                onSelectionChange={key => handleChangePersonaState(key as PersonaState)}
-              >
-                <Select.Trigger className='border-none'>
-                  <Select.Value />
-                  <Select.Indicator />
-                </Select.Trigger>
-                <Select.Popover>
-                  <ListBox items={PERSONA_STATE_OPTIONS}>
-                    {item => (
-                      <ListBox.Item id={item.id} textValue={t(item.labelKey)}>
-                        {t(item.labelKey)}
-                      </ListBox.Item>
-                    )}
-                  </ListBox>
-                </Select.Popover>
-              </Select.Root>
-            ) : (
-              // Same gate pattern as autoUpdateGamesList above, applied to a Select instead of a
-              // Switch - a real, enabled-looking control whose selection opens the upsell instead
-              // of saving.
-              <AppTooltip.Root>
-                <AppTooltip.Trigger>
-                  <Select.Root
-                    aria-label={t('dashboard.settings.general.personaState.label')}
-                    className='w-62.5'
-                    selectedKey='Online'
-                    onSelectionChange={() => openProModalWithTier('gamer')}
-                  >
-                    <Select.Trigger className='border-none'>
-                      <Select.Value />
-                      <Select.Indicator />
-                    </Select.Trigger>
-                    <Select.Popover>
-                      <ListBox items={PERSONA_STATE_OPTIONS}>
-                        {item => <ListBox.Item id={item.id}>{t(item.labelKey)}</ListBox.Item>}
-                      </ListBox>
-                    </Select.Popover>
-                  </Select.Root>
-                </AppTooltip.Trigger>
-                <AppTooltip.Content>{t('common.proTier.gamerRequired')}</AppTooltip.Content>
-              </AppTooltip.Root>
-            )}
+            <Select.Root
+              aria-label={t('dashboard.settings.general.personaState.label')}
+              className='w-62.5'
+              isDisabled={presence.isLoading || !presence.settings}
+              selectedKey={presence.settings?.personaState ?? 'Online'}
+              onSelectionChange={key => handleChangePersonaState(key as PersonaState)}
+            >
+              <Select.Trigger className='border-none'>
+                <Select.Value />
+                <Select.Indicator />
+              </Select.Trigger>
+              <Select.Popover>
+                <ListBox items={PERSONA_STATE_OPTIONS}>
+                  {item => (
+                    <ListBox.Item id={item.id} textValue={t(item.labelKey)}>
+                      {t(item.labelKey)}
+                    </ListBox.Item>
+                  )}
+                </ListBox>
+              </Select.Popover>
+            </Select.Root>
           </SettingsRow>
 
           <SettingsRow
