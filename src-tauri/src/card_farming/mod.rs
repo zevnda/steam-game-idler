@@ -87,6 +87,11 @@ pub enum CompletedFarmReason {
     /// Hit its max-playtime cap - either detected before it ever started farming (`manager::
     /// fetch_queued_games`'s own pre-check) or partway through (`manager::poll_active`'s check).
     MaxPlaytime,
+    /// Was already queued with zero card drops remaining before this cycle ever started (e.g.
+    /// queued via the game card's context menu without checking first) - `manager::
+    /// fetch_queued_games`'s own pre-check, mirroring `achievement_unlocker::
+    /// CompletedUnlockReason::NothingToUnlock`'s identical role for that feature.
+    NoDropsRemaining,
 }
 
 /// One game a farming cycle fully finished with this pass, tagged with why - every reason now also

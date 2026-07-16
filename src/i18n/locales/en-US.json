@@ -614,7 +614,8 @@
         "dropsRemaining_other": "{{count}} drops remaining",
         "completedMaxCardDrops": "Max card drops reached ({{remaining}} left)",
         "completedMaxCardFarmingTime": "Max farming time reached ({{remaining}} left)",
-        "completedMaxPlaytime": "Max playtime reached ({{remaining}} left)"
+        "completedMaxPlaytime": "Max playtime reached ({{remaining}} left)",
+        "completedNoDropsRemaining": "Nothing left to farm"
       },
       "errors": {
         "title": "Couldn't update card farming",

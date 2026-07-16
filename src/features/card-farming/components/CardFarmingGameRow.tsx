@@ -24,6 +24,9 @@ interface CardFarmingGameRowProps {
 // elaboration beyond the checkmark (0 remaining is implied), but the three cap-based reasons get a
 // neutral info icon plus a label naming the cap and how many drops were left when it stopped, since
 // those aren't really "successes" and would otherwise look identical to a real finish.
+// `'noDropsRemaining'` gets the same neutral treatment - a game queued (e.g. via the context menu)
+// that already had zero drops before this cycle ever started, so there's nothing to elaborate with a
+// `remaining` count (see `CompletedFarm.remaining`'s doc comment - always `0` for this reason).
 export const CardFarmingGameRow = ({
   name,
   remaining,
@@ -48,7 +51,9 @@ export const CardFarmingGameRow = ({
                 ? t('dashboard.cardFarming.progress.completedMaxCardDrops', { remaining })
                 : reason === 'maxCardFarmingTime'
                   ? t('dashboard.cardFarming.progress.completedMaxCardFarmingTime', { remaining })
-                  : t('dashboard.cardFarming.progress.completedMaxPlaytime', { remaining })}
+                  : reason === 'maxPlaytime'
+                    ? t('dashboard.cardFarming.progress.completedMaxPlaytime', { remaining })
+                    : t('dashboard.cardFarming.progress.completedNoDropsRemaining')}
             </Typography>
           </div>
         ) : (

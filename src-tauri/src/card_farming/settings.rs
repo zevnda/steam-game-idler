@@ -17,7 +17,7 @@
 //! `skip_no_playtime`, and `farm_unplayed_only` are the exception**: `commands::start_farming`
 //! reads them directly (not through `manager`) to decide what to farm *before* a cycle ever starts
 //! - when `all_games` is on, the persisted queue is bypassed entirely in favor of every owned game
-//! with drops remaining, filtered by the other two (see `commands::resolve_all_games_app_ids`).
+//! with drops remaining, filtered by the other two (see `commands::resolve_all_games`).
 //! Once a cycle is running, `manager`/`scraper` still don't re-read any of these three - the
 //! resolved app ID set is fixed for the cycle's lifetime, same as queue-mode's persisted queue
 //! always was.
