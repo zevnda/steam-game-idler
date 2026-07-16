@@ -116,7 +116,8 @@
   "titlebar": {
     "closeToTrayNotification": "Steam Game Idler will continue to run in the background",
     "goPro": "Go Pro",
-    "helpDesk": "Help Desk"
+    "helpDesk": "Help Desk",
+    "updateReady": "Update ready"
   },
   "tray": {
     "show": "Show",

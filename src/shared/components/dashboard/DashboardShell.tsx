@@ -17,7 +17,6 @@ import { Banner } from '@/shared/components/Banner'
 import { CustomBackground } from '@/shared/components/CustomBackground'
 import { GlobalSearchModal } from '@/shared/components/search/GlobalSearchModal'
 import { SteamWarning } from '@/shared/components/SteamWarning'
-import { UpdateButton } from '@/shared/components/UpdateButton'
 import { useAccountSummaries } from '@/shared/hooks/useAccountSummaries'
 import { useAchievementUnlockerConcurrencyGuard } from '@/shared/hooks/useAchievementUnlockerConcurrencyGuard'
 import { useAntiAwayStatus } from '@/shared/hooks/useAntiAwayStatus'
@@ -32,7 +31,6 @@ import { useSortPreferencesSync } from '@/shared/hooks/useSortPreferencesSync'
 import { useSteamCookiesSync } from '@/shared/hooks/useSteamCookiesSync'
 import { useSteamMonitor } from '@/shared/hooks/useSteamMonitor'
 import { useSubscriptionCacheSync } from '@/shared/hooks/useSubscriptionCacheSync'
-import { useUpdateStore } from '@/shared/stores/updateStore'
 
 interface DashboardShellProps {
   children: ReactNode
@@ -70,8 +68,6 @@ export const DashboardShell = ({ children }: DashboardShellProps) => {
   useSteamCookiesSync()
   useSortPreferencesSync()
 
-  const updateAvailable = useUpdateStore(state => state.updateAvailable)
-
   return (
     <div className='flex h-screen w-screen'>
       <CustomBackground />
@@ -82,15 +78,6 @@ export const DashboardShell = ({ children }: DashboardShellProps) => {
           area's canvas, whether that's a plain solid layer or a Casual-tier image, see its own
           doc comment. */}
       <main className='min-w-0 flex-1 overflow-y-auto pt-16'>{children}</main>
-
-      {/* Closes the gap noted in UpdateButton's own doc comment - a signed-in dashboard user now
-          gets the same opt-in non-major-update affordance pre-sign-in users get from
-          `pages/index.tsx`. Same fixed top-right placement below the global Titlebar. */}
-      {updateAvailable ? (
-        <div className='fixed right-4 top-14'>
-          <UpdateButton />
-        </div>
-      ) : null}
 
       <SettingsModal />
       <AddAccountModal />

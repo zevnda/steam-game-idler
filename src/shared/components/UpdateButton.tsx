@@ -1,7 +1,8 @@
 import { check } from '@tauri-apps/plugin-updater'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { TbCircleArrowDown } from 'react-icons/tb'
-import { Button } from '@heroui/react'
+import { AppTooltip } from '@/shared/components/AppTooltip'
 import { useUpdateStore } from '@/shared/stores/updateStore'
 import { logFrontendWarn } from '@/shared/utils/frontendLogging'
 import { fetchLatest, performUpdate } from '@/shared/utils/update'
@@ -10,12 +11,15 @@ import { fetchLatest, performUpdate } from '@/shared/utils/update'
  * Opt-in update button for the non-major/non-first-check case (see `useCheckForUpdates`) - the
  * user clicks to download and install rather than it happening silently.
  *
- * Mounted twice, both reading the same `updateStore.updateAvailable`: pre-sign-in in
- * `src/pages/index.tsx`, and for signed-in users in `DashboardShell` - both positioned below the
- * global `Titlebar` at the same fixed top-right spot, so a user parked on `/dashboard/*` for a
- * later non-major update isn't stranded without a way to trigger it.
+ * Mounted once, from `Titlebar` itself (left of `HelpDesk`) - `Titlebar` is global (mounted once
+ * in `_app.tsx`, present on every screen including sign-in), so this single mount point covers
+ * both the pre-sign-in and signed-in-dashboard cases `updateStore.updateAvailable` gates,
+ * replacing what used to be two separate fixed-position mounts in `pages/index.tsx` and
+ * `DashboardShell`. Not tier-gated, unlike `HelpDesk` - an available update is never a monetization
+ * concern.
  */
 export const UpdateButton = () => {
+  const { t } = useTranslation()
   const setIsUpdating = useUpdateStore(state => state.setIsUpdating)
   // Local, not the store's `isUpdating` - covers only the brief `check()` round trip below.
   // `performUpdate` takes over from there, flipping the store's `isUpdating` to show
@@ -42,14 +46,19 @@ export const UpdateButton = () => {
   }
 
   return (
-    <Button
-      isIconOnly
-      aria-label='Update ready'
-      isPending={isChecking}
-      variant='secondary'
-      onPress={handleUpdate}
-    >
-      <TbCircleArrowDown fontSize={20} />
-    </Button>
+    <AppTooltip.Root delay={300}>
+      <AppTooltip.Trigger>
+        <button
+          type='button'
+          aria-label={t('titlebar.updateReady')}
+          className='flex h-14 w-12 items-center justify-center text-accent outline-none transition-colors hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-focus disabled:pointer-events-none disabled:opacity-50 cursor-pointer'
+          disabled={isChecking}
+          onClick={handleUpdate}
+        >
+          <TbCircleArrowDown fontSize={18} />
+        </button>
+      </AppTooltip.Trigger>
+      <AppTooltip.Content placement='bottom'>{t('titlebar.updateReady')}</AppTooltip.Content>
+    </AppTooltip.Root>
   )
 }
