@@ -24,7 +24,16 @@ pub fn init(app_handle: &tauri::AppHandle) -> Result<WorkerGuard, Box<dyn std::e
     let log_dir = log_dir(app_handle)?;
     std::fs::create_dir_all(&log_dir)?;
 
-    let file_appender = tracing_appender::rolling::daily(&log_dir, "steam-game-idler.log");
+    // `rolling::daily(dir, "steam-game-idler.log")` would append the rotation date *after* the
+    // given filename (e.g. `steam-game-idler.log.2026-07-16`), making the OS-visible extension the
+    // date rather than `.log` - GitHub's issue attachment upload rejects that as an unrecognized
+    // file type. `Builder` with an explicit prefix/suffix keeps the date in the middle instead
+    // (`steam-game-idler.2026-07-16.log`), so `.log` stays the real trailing extension.
+    let file_appender = tracing_appender::rolling::Builder::new()
+        .rotation(tracing_appender::rolling::Rotation::DAILY)
+        .filename_prefix("steam-game-idler")
+        .filename_suffix("log")
+        .build(&log_dir)?;
     let (non_blocking, guard) = tracing_appender::non_blocking(file_appender);
 
     let filter =
