@@ -10,13 +10,17 @@
 //! outer struct) because every on-disk `card_farming_settings.json` predating this field is a full
 //! serialization without it - omitting the attribute would fail deserialization for existing users.
 //!
-//! **None of `CardFarmingSettings`'s own fields are wired into `manager`'s farming cycle** - this
-//! was true when this module only had persistence + a settings UI tab, and stays true now that the
-//! Game Settings tab's auto-stop caps (below) have been added, since those caps live in sibling
-//! fields on [`CachedSettings`], not on `CardFarmingSettings` itself (see this module's second doc
-//! comment below for why). `listGames`/`allGames`/etc. still don't affect `scraper`/`manager`
-//! behavior, matching `main`'s own split between its CardSettings.tsx toggles and its separate
-//! GameSettings.tsx caps.
+//! **Most of `CardFarmingSettings`'s own fields still aren't wired into `manager`'s farming
+//! cycle** - `list_games`/`drop_sort_order`/`next_task*`/`auto_farm_cards` only affect the
+//! settings UI, queue sort order, and next-task chaining, matching `main`'s own split between its
+//! CardSettings.tsx toggles and its separate GameSettings.tsx caps. **`all_games`,
+//! `skip_no_playtime`, and `farm_unplayed_only` are the exception**: `commands::start_farming`
+//! reads them directly (not through `manager`) to decide what to farm *before* a cycle ever starts
+//! - when `all_games` is on, the persisted queue is bypassed entirely in favor of every owned game
+//! with drops remaining, filtered by the other two (see `commands::resolve_all_games_app_ids`).
+//! Once a cycle is running, `manager`/`scraper` still don't re-read any of these three - the
+//! resolved app ID set is fixed for the cycle's lifetime, same as queue-mode's persisted queue
+//! always was.
 //!
 //! **Auto-stop caps (`globalMaxCardFarmingTime`/`maxCardDrops`/`maxCardFarmingTime`) live in
 //! [`CachedSettings`], not in [`CardFarmingSettings`].** `CardFarmingSettings` is wholesale-replaced

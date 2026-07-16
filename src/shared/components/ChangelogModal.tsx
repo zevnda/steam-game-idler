@@ -32,7 +32,7 @@ export const ChangelogModal = () => {
     <Modal isOpen={showChangelog} onOpenChange={open => setShowChangelog(open)}>
       <Modal.Backdrop>
         <Modal.Container size='lg'>
-          <Modal.Dialog className='overflow-hidden p-0 bg-[#1a1a1a]'>
+          <Modal.Dialog className='overflow-hidden p-0 bg-[#1d1d1dff]'>
             <Modal.Header className='p-4'>
               <Modal.Heading>{t('menu.changelog')}</Modal.Heading>
               <Modal.CloseTrigger />
@@ -51,7 +51,7 @@ export const ChangelogModal = () => {
                 </div>
               )}
             </Modal.Body>
-            <Modal.Footer className='justify-between border-t border-border mt-0 p-4 bg-[#0e0e0e]'>
+            <Modal.Footer className='justify-between mt-0 p-4 bg-[#000000ff]'>
               <Button
                 size='sm'
                 className='bg-amber-500 hover:bg-amber-500'
