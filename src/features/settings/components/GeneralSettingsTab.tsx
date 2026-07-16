@@ -418,6 +418,7 @@ export const GeneralSettingsTab = ({
                   {item => (
                     <ListBox.Item id={item.id} textValue={t(item.labelKey)}>
                       {t(item.labelKey)}
+                      <ListBox.ItemIndicator />
                     </ListBox.Item>
                   )}
                 </ListBox>
