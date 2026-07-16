@@ -65,8 +65,11 @@ export const CardFarmingPageHeader = ({
               {t('dashboard.cardFarming.actions.stop')}
             </Button>
           ) : (
+            // An empty queue only blocks starting in queue mode - "all games" mode farms every
+            // owned game with drops directly (see `start_farming`'s doc comment) and never reads
+            // the persisted queue at all, so it must stay startable regardless of `queueCount`.
             <Button
-              isDisabled={queueCount === 0}
+              isDisabled={!allGames && queueCount === 0}
               isPending={isStarting}
               variant='primary'
               onPress={onStart}

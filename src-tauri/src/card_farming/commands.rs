@@ -1,9 +1,9 @@
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 
 use tauri::{AppHandle, State};
 
 use crate::error::AppResult;
-use crate::games::commands::{resolve_steam_id, GamesAccount};
+use crate::games::commands::{get_owned_games_cache, resolve_steam_id, GamesAccount};
 use crate::local_steam::commands::require_steam_running;
 use crate::steam_agent::AgentManager;
 
@@ -75,15 +75,55 @@ pub async fn get_games_with_drops(
     Ok(games)
 }
 
-/// Starts a farming cycle for `account`: idles this account's currently-*queued* games with card
-/// drops remaining (see [`queue`]) concurrently, up to 32 at once, polling each until its drops
-/// hit zero and backfilling more from the queue as slots free up, until none are left. Idempotent -
+/// Resolves the app IDs to farm when `CardFarmingSettings::all_games` is on: every currently
+/// scraped game with drops remaining, minus blacklisted games, further filtered by
+/// `skip_no_playtime`/`farm_unplayed_only` against the owned-games cache's real playtime (the same
+/// source `manager::playtime_lookup` uses) - the persisted queue is bypassed entirely in this mode,
+/// matching `main`'s "all games" behavior. Best-effort on the playtime lookup: a cache-read failure
+/// degrades to "0 minutes known" for every game (mirrors `manager::playtime_lookup`) rather than
+/// failing the whole start attempt over an unrelated cache miss.
+fn resolve_all_games_app_ids(
+    app_handle: &AppHandle,
+    steam_id: &str,
+    games: Vec<GameWithDrops>,
+    blacklisted: &HashSet<u32>,
+    farming_settings: &CardFarmingSettings,
+) -> HashSet<u32> {
+    let playtime_by_app_id: HashMap<u32, u64> =
+        get_owned_games_cache(app_handle.clone(), steam_id.to_string())
+            .unwrap_or_default()
+            .into_iter()
+            .map(|g| (g.app_id, g.playtime_forever_minutes))
+            .collect();
+    games
+        .into_iter()
+        .filter(|g| !blacklisted.contains(&g.app_id))
+        .filter(|g| {
+            let playtime = playtime_by_app_id.get(&g.app_id).copied().unwrap_or(0);
+            if farming_settings.skip_no_playtime && playtime == 0 {
+                return false;
+            }
+            if farming_settings.farm_unplayed_only && playtime > 0 {
+                return false;
+            }
+            true
+        })
+        .map(|g| g.app_id)
+        .collect()
+}
+
+/// Starts a farming cycle for `account`. Normally idles this account's currently-*queued* games
+/// with card drops remaining (see [`queue`]) concurrently, up to 32 at once, polling each until its
+/// drops hit zero and backfilling more from the queue as slots free up, until none are left - but
+/// when `CardFarmingSettings::all_games` is on, the persisted queue is bypassed entirely and every
+/// owned game with drops remaining is farmed instead (see [`resolve_all_games_app_ids`]), since
+/// "all games" mode has no queue for the user to have populated in the first place. Idempotent -
 /// calling this while a cycle is already running for the account just returns its current state
 /// rather than starting a second one. `manual_cookies` behaves exactly as in
 /// [`get_drops_remaining`]/[`get_games_with_drops`] - resolved once here and reused for the whole
 /// cycle's repeated polling, not re-resolved per poll. See `manager.rs`'s module doc comment for
 /// how this matches `main`'s concurrency without its toggle-timing design. Blacklisted app IDs are
-/// filtered out of the queued set here too - defense in depth alongside the frontend removing a
+/// filtered out of the farmed set here too - defense in depth alongside the frontend removing a
 /// newly-blacklisted game from the persisted queue directly (see [`blacklist`]'s doc comment).
 #[tauri::command]
 pub async fn start_farming(
@@ -111,12 +151,18 @@ pub async fn start_farming(
         .into_iter()
         .map(|entry| entry.app_id)
         .collect();
-    let queued_app_ids: HashSet<u32> = queue::read(&app_handle, &steam_id)
-        .await?
-        .into_iter()
-        .map(|entry| entry.app_id)
-        .filter(|app_id| !blacklisted.contains(app_id))
-        .collect();
+    let farming_settings = settings::get(&app_handle, &steam_id).await?;
+    let queued_app_ids: HashSet<u32> = if farming_settings.all_games {
+        let games = scraper::get_games_with_drops(&steam_id, &cookies).await?;
+        resolve_all_games_app_ids(&app_handle, &steam_id, games, &blacklisted, &farming_settings)
+    } else {
+        queue::read(&app_handle, &steam_id)
+            .await?
+            .into_iter()
+            .map(|entry| entry.app_id)
+            .filter(|app_id| !blacklisted.contains(app_id))
+            .collect()
+    };
     card_farming_manager
         .start(&app_handle, steam_id, account, cookies, queued_app_ids)
         .await
