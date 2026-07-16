@@ -49,8 +49,9 @@ type AchievementUnlockerTab = 'browse' | 'queue'
 // AchievementUnlockerListGrid's `onReorder` replaces the *entire* persisted queue order
 // (`set_achievement_unlocker_queue_order`) - filtering its `queue` prop would let a drag during an
 // active search silently drop every filtered-out queued game from the saved order. See
-// FavoritesPage.tsx's matching comment for the full reasoning (also inherently small/bounded,
-// already exempt from virtualization for the same @dnd-kit reason).
+// FavoritesPage.tsx's matching comment for the full reasoning. Unlike FavoritesListGrid, the queue
+// tab's own grid IS virtualized (AchievementUnlockerListGrid.tsx) - "Add all to queue" below can
+// push it well past "small/bounded".
 export const AchievementUnlockerPage = () => {
   const { t } = useTranslation()
   const router = useRouter()
@@ -70,6 +71,7 @@ export const AchievementUnlockerPage = () => {
   const openOrderEditor = useAchievementOrderStore(state => state.open)
   const [activeTab, setActiveTab] = useState<AchievementUnlockerTab>('browse')
   const [confirmClearOpen, setConfirmClearOpen] = useState(false)
+  const [confirmAddAllOpen, setConfirmAddAllOpen] = useState(false)
   const [isManualAddOpen, setIsManualAddOpen] = useState(false)
   // Lives in `achievementUnlockerStore` (account-keyed, survives this page unmounting) rather than
   // local state - see that store's `dismissedFinished` doc comment for why: a page remount must not
@@ -100,6 +102,23 @@ export const AchievementUnlockerPage = () => {
   const queuedAppIds = useMemo(() => new Set(queue.map(game => game.appId)), [queue])
   const showFinishedSummary =
     !runState.isRunning && !dismissedFinished && runState.completed.length > 0
+
+  // Adds every currently browse-visible game (i.e. already filtered by global search + sorted) that
+  // isn't already queued, in one `reorder` call rather than N sequential `addToQueue` round trips -
+  // `reorder` persists the full queue order via `set_achievement_unlocker_queue_order` and already
+  // has optimistic-update handling built in, so appending here reuses that instead of adding a new
+  // bulk-add Tauri command.
+  const addableGames = useMemo(
+    () => sortedFilteredGames.filter(game => !queuedAppIds.has(game.appId)),
+    [sortedFilteredGames, queuedAppIds],
+  )
+  const handleAddAllToQueue = () => {
+    if (addableGames.length === 0) return
+    reorder([
+      ...queue,
+      ...addableGames.map(game => ({ appId: game.appId, name: game.name ?? String(game.appId) })),
+    ])
+  }
 
   useEffect(() => {
     if (!account) {
@@ -199,15 +218,24 @@ export const AchievementUnlockerPage = () => {
               </TabList>
             </TabListContainer>
             {activeTab === 'browse' && (
-              <GameSortSelect
-                ariaLabel='Sort games'
-                options={OWNED_GAME_SORT_STYLES.map(style => ({
-                  id: style,
-                  label: t(OWNED_GAME_SORT_LABEL_KEYS[style]),
-                }))}
-                value={sortStyle}
-                onChange={style => setSortStyle('achievementUnlocker', style)}
-              />
+              <div className='flex shrink-0 items-center gap-3'>
+                <Button
+                  isDisabled={addableGames.length === 0}
+                  variant='secondary'
+                  onPress={() => setConfirmAddAllOpen(true)}
+                >
+                  {t('dashboard.achievementUnlocker.addAllToQueue')}
+                </Button>
+                <GameSortSelect
+                  ariaLabel='Sort games'
+                  options={OWNED_GAME_SORT_STYLES.map(style => ({
+                    id: style,
+                    label: t(OWNED_GAME_SORT_LABEL_KEYS[style]),
+                  }))}
+                  value={sortStyle}
+                  onChange={style => setSortStyle('achievementUnlocker', style)}
+                />
+              </div>
             )}
             {activeTab === 'queue' && queue.length > 0 && (
               <Button
@@ -322,6 +350,44 @@ export const AchievementUnlockerPage = () => {
                   }}
                 >
                   {t('common.actions.clear')}
+                </Button>
+              </AlertDialog.Footer>
+            </AlertDialog.Dialog>
+          </AlertDialog.Container>
+        </AlertDialog.Backdrop>
+      </AlertDialog>
+
+      {/* Achievement eligibility isn't known up front (see manager.rs's per-game `scan_game`) - a
+          large "add all" queue means a correspondingly long initial scan pass once a run starts, so
+          this warns rather than silently queuing hundreds/thousands of games with no explanation
+          for why the run doesn't start unlocking immediately. */}
+      <AlertDialog isOpen={confirmAddAllOpen} onOpenChange={setConfirmAddAllOpen}>
+        <AlertDialog.Backdrop>
+          <AlertDialog.Container>
+            <AlertDialog.Dialog>
+              <AlertDialog.Header>
+                <AlertDialog.Heading>
+                  {t('dashboard.achievementUnlocker.confirmAddAllToQueue.title', {
+                    count: addableGames.length,
+                  })}
+                </AlertDialog.Heading>
+              </AlertDialog.Header>
+              <AlertDialog.Body>
+                {t('dashboard.achievementUnlocker.confirmAddAllToQueue.description')}
+              </AlertDialog.Body>
+              <AlertDialog.Footer>
+                <Button size='sm' variant='secondary' onPress={() => setConfirmAddAllOpen(false)}>
+                  {t('common.actions.cancel')}
+                </Button>
+                <Button
+                  size='sm'
+                  variant='primary'
+                  onPress={() => {
+                    handleAddAllToQueue()
+                    setConfirmAddAllOpen(false)
+                  }}
+                >
+                  {t('dashboard.achievementUnlocker.addAllToQueue')}
                 </Button>
               </AlertDialog.Footer>
             </AlertDialog.Dialog>
