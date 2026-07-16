@@ -1,0 +1,68 @@
+---
+title: 6.0.1
+date: 2026-07-16
+tags: ['New', 'Improved', 'Fixed']
+---
+
+Steam Game Idler v6.0.0 is a complete ground-up rewrite of the entire application. Every part of the frontend and backend was rebuilt from scratch. Over time the old codebase had become difficult to maintain safely, which made some bugs slower to fix and some features harder to build well. This release is the result of taking a step back and rebuilding SGI on a cleaner, more maintainable foundation, with a redesigned account system as the centerpiece.
+
+None of this changes what SGI is for: idling, farming cards, unlocking achievements, and managing your inventory are all still here. What's changed is *how* SGI talks to Steam, how much of that it can do without needing the Steam client at all, and a fair amount of UI polish along the way.
+
+### New 🎉
+- **Sign in with Steam**: a brand new way to sign in using just your Steam username and password, or by scanning a QR code with the Steam mobile app, with **no local Steam client required at all**. This is now the recommended way to use SGI
+  - Previously, SGI could only read accounts already signed in through a locally running Steam client. That method still exists (now called **Legacy Sign In**) but is no longer required
+- **Multi-account support**: sign in to multiple Steam accounts at the same time and switch between them from one app window, without signing out. Each account keeps idling, farming, and unlocking independently in the background while you view a different one
+  - Free accounts can have 1 account signed in with Steam at a time, Casual can have 2, and Gamer can have up to 10. This is a brand new capability; the old version could only ever manage one account at once
+- **Custom Steam status** *(PRO Gamer tier)*: when signed in with Steam, choose what online status friends see (Online, Away, Busy, Snooze, Looking to Trade, Looking to Play, Invisible, or Offline), and set a custom message that replaces the default "Playing [game]" text while idling
+- **Max playtime caps**: added a new **Max Playtime** setting to **Settings > Game Settings** to set a maximum playtime for each game, or a global maximum for all games, and SGI will automatically stop idling that game when the cap is reached. This is useful for games that have a time-limited card drop window, or for managing your own time spent in games
+- **Feature summary screens**: **Card Farming** and **Achievement Unlocker** now show a summary of the games that finished during that session once a farming/unlocking cycle ends - Achievement Unlocker's summary also shows how many achievements were unlocked out of the total for each game
+- **New app icon and logo**: SGI has a fresh new look with a redesigned icon and logo, inside the app, on the website, and in the taskbar. The name hasn't changed, just the branding
+
+### Improved 🚀
+Because this was a full rewrite from the ground up rather than a series of patches on the old codebase, nearly everything about SGI is better as a result: every page has been redesigned for a better user experience, core logic has been improved to be more robust, efficient, and less prone to breaking.
+
+The app should feel faster and more responsive, and a large number of long-standing bugs and rough edges were fixed along the way simply by building things properly the second time around.
+
+There are far too many individual improvements to list here, but this is the most significant single upgrade SGI has ever had.
+
+## A Fresh Start - Your Settings Won't Carry Over
+
+Because this is a ground-up rewrite, the only realistic way to move to the new account architecture and a cleaner codebase without carrying forward years of incompatible data shapes, was to start fresh, **v6.0.0 is effectively a new application under the hood**.
+
+Treat it like a fresh install:
+
+- You'll need to **sign in again** on every account
+- Saved **Steam Credentials** (Card Farming/Inventory Manager cookies) will need to be re-added
+- Your **Card Farming queue, Achievement Unlocker queue, Auto-Idle list, and Favorites** will be empty and need to be rebuilt
+- All **settings** (General, Customization, per-feature settings, etc.) will be reset to their defaults
+- Your **games list** will be refetched from Steam automatically the first time you sign in
+
+<Callout type="info">
+    Your **PRO subscription license key is preserved automatically**; you won't need to re-activate it after updating. Everything else above will need to be reconfigured
+</Callout>
+
+---
+
+## For Developers
+
+The rest of this section is more technical, for anyone curious about what changed under the hood:
+
+- The desktop app is still [Tauri](https://tauri.app/), but the Rust backend was rebuilt from scratch with a proper module structure, structured logging (`tracing`) throughout, and typed error handling instead of ad-hoc error strings
+- The bundled C# helper (`SteamUtility`) used to be Steamworks.NET-only, backing Legacy Sign In. It now also has a SteamKit2-based backend for Sign in with Steam, restructured into one project with a clean `Core`/`Backends`/`Cli`/`Daemon` separation and one consistent JSON envelope for both process modes
+- Every feature now goes through a single command surface internally, branching on the signed-in account's mode, removing a lot of duplicated logic
+- The frontend was rebuilt (in Next.js, again) with real file-based routing for the dashboard (replacing client-side page-switching), a persistent shell so long-running features like Card Farming survive navigation, and a from-scratch i18n setup
+- Idling across every feature is now coordinated through a shared claims registry, so two features can't silently clobber each other's idle sessions
+
+This rewrite was kept under wraps for the past several months, so all of the work happened on private/local branches with hundreds of commits. When it came time to release, that work was merged into the main branch as a single squash commit. The public Git history won't show the step-by-step development process because of this, but the full diff between the old and new codebases is available on GitHub if you're curious.
+
+---
+
+## Thank You
+
+A huge thank you to everyone who used, supported, reported bugs, suggested features, translated, or contributed code to SGI up through v5.4.6. This rewrite genuinely wouldn't have been worth doing without a community actively using the app and caring about it enough to help make it better.
+
+If you're interested in contributing to the new codebase, see the [Build It Yourself](/docs/get-started/build-it-yourself) guide to get set up, and feel free to open a pull request on [GitHub](https://github.com/zevnda/steam-game-idler).
+
+If you'd like to help translate SGI into your language, head over to the [Crowdin project](https://crowdin.com/project/steam-game-idler). This rewrite's English content is complete, but every other language is starting fresh and could use a hand.
+
+And as always, if you run into a bug, have a feature suggestion, or just want to give feedback on this release, please [open an issue on GitHub](https://github.com/zevnda/steam-game-idler/issues) or drop by the [Discord server](https://discord.gg/5kY2ZbVnZ8).
