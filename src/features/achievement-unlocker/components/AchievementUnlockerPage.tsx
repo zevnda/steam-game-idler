@@ -29,8 +29,9 @@ import { errorMessageKey as gamesErrorMessageKey } from '@/features/games-list/u
 import { GameSortSelect } from '@/shared/components/GameSortSelect'
 import { searchGames } from '@/shared/search/fuzzySearch'
 import { useAchievementOrderStore } from '@/shared/stores/achievementOrderStore'
+import { useAchievementUnlockerStore } from '@/shared/stores/achievementUnlockerStore'
 import { useSearchStore } from '@/shared/stores/searchStore'
-import { useSessionStore } from '@/shared/stores/sessionStore'
+import { getAccountKey, useSessionStore } from '@/shared/stores/sessionStore'
 import { useSortPreferencesStore } from '@/shared/stores/sortPreferencesStore'
 import {
   OWNED_GAME_SORT_LABEL_KEYS,
@@ -67,8 +68,12 @@ export const AchievementUnlockerPage = () => {
   const openOrderEditor = useAchievementOrderStore(state => state.open)
   const [activeTab, setActiveTab] = useState<AchievementUnlockerTab>('browse')
   const [confirmClearOpen, setConfirmClearOpen] = useState(false)
-  // See the `wasRunning` effect below - cleared on the next unlocker start, not on a timer/unmount.
-  const [dismissedFinished, setDismissedFinished] = useState(false)
+  // Lives in `achievementUnlockerStore` (account-keyed, survives this page unmounting) rather than
+  // local state - see that store's `dismissedFinished` doc comment for why: a page remount must not
+  // resurrect an already-dismissed summary.
+  const accountKey = account ? getAccountKey(account) : null
+  const dismissedFinished = useAchievementUnlockerStore(state => state.dismissedFinishedForActive)
+  const dismissFinished = useAchievementUnlockerStore(state => state.dismissFinished)
   const searchQuery = useSearchStore(state => state.queries.achievementUnlocker ?? '')
   const setActiveTabSearchable = useSearchStore(state => state.setActiveTabSearchable)
   const filteredGames = useMemo(() => searchGames(games, searchQuery), [games, searchQuery])
@@ -107,16 +112,13 @@ export const AchievementUnlockerPage = () => {
   // doesn't carry the queue (see useAchievementUnlockerQueue's `refresh` doc comment) - so the
   // queue tab/header count otherwise stay stale until the page remounts. Refetch once on the
   // running->stopped edge (covers both a full run completing and a manual stop) rather than on
-  // every state event, since the queue tab isn't even rendered while a run is active. The same edge
-  // also re-arms `showFinishedSummary` for the *next* run's own eventual result, rather than
-  // leaving the previous run's dismissal carried over.
+  // every state event, since the queue tab isn't even rendered while a run is active.
+  // `showFinishedSummary`'s own re-arming for the next run lives in achievementUnlockerStore's
+  // `updateState` now, not here - see that store's `dismissedFinished` doc comment.
   const wasRunning = useRef(runState.isRunning)
   useEffect(() => {
     if (wasRunning.current && !runState.isRunning) {
       refreshQueue()
-    }
-    if (!wasRunning.current && runState.isRunning) {
-      setDismissedFinished(false)
     }
     wasRunning.current = runState.isRunning
   }, [runState.isRunning, refreshQueue])
@@ -168,7 +170,9 @@ export const AchievementUnlockerPage = () => {
         <div className='min-h-0 flex-1 overflow-y-auto'>
           <AchievementUnlockerProgressView
             state={runState}
-            onDismissFinished={showFinishedSummary ? () => setDismissedFinished(true) : undefined}
+            onDismissFinished={
+              showFinishedSummary && accountKey ? () => dismissFinished(accountKey) : undefined
+            }
           />
         </div>
       ) : (

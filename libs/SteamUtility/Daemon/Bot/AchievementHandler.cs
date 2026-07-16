@@ -35,6 +35,37 @@ namespace SteamUtility.Daemon.Bot
         public static bool IsGameCoordinatorTitle(uint appId) =>
             GameCoordinatorAppIds.Contains(appId);
 
+        // Caps concurrent in-flight ClientGetUserStats round trips. Without this, a burst of
+        // schema-less games in the achievement unlocker's scan phase (Rust's
+        // achievements_get_agent_racing_schema_check races this call against a fast Web API
+        // schema check and abandons its own future the instant the Web API wins - see that
+        // function's doc comment) lets scan workers fire a new request here every time the Web
+        // API resolves, without ever waiting out the ~7-10s this call takes for a schema-less
+        // title. Dropping the Rust future doesn't stop this side's request - the bytes are
+        // already on the wire by the time the race is decided - so nothing upstream throttles how
+        // many of these pile up. Each one holds a SteamKit2 AsyncJob (job-manager bookkeeping,
+        // protobuf buffers) alive for the full round trip, all funneled through one
+        // single-threaded callback pump (SteamBot.RunCallbackLoop) - a large queue of no-
+        // achievement games at high worker concurrency could stack up hundreds to thousands of
+        // these at once, which is what drove SteamUtility.exe to spike to several GB of memory and
+        // 100% CPU. Scoped to this one wire call (not the whole achievements_get/etc. method) so
+        // only the actual expensive network round trip is rate-limited, not StoreStats or the
+        // in-memory schema/stat processing around it.
+        private static readonly SemaphoreSlim StatsRequestThrottle = new(6, 6);
+
+        private async Task<StatsResult> GetStatsThrottled(uint appId, ulong steamId)
+        {
+            await StatsRequestThrottle.WaitAsync();
+            try
+            {
+                return await GetStats(appId, steamId);
+            }
+            finally
+            {
+                StatsRequestThrottle.Release();
+            }
+        }
+
         // Mirrors SteamworksSession.RequestUserStats's CLI-mode handling: EResult.Fail from
         // ClientGetUserStats commonly just means "this game has no stats/achievements schema"
         // (e.g. Once Human 2139460, Banana Hellp 2068520), not a real request failure. Treating it
@@ -137,7 +168,7 @@ namespace SteamUtility.Daemon.Bot
                 throw new GameCoordinatorUnsupportedException();
             }
 
-            var statsResult = await GetStats(appId, steamId);
+            var statsResult = await GetStatsThrottled(appId, steamId);
             if (statsResult.Result != EResult.OK && !IsNoStatsResult(statsResult.Result))
             {
                 throw new StatsRequestFailedException(statsResult.Result.ToString());
@@ -216,7 +247,7 @@ namespace SteamUtility.Daemon.Bot
                 throw new GameCoordinatorUnsupportedException();
             }
 
-            var statsResult = await GetStats(appId, steamId);
+            var statsResult = await GetStatsThrottled(appId, steamId);
             if (statsResult.Result != EResult.OK && !IsNoStatsResult(statsResult.Result))
             {
                 throw new StatsRequestFailedException(statsResult.Result.ToString());
@@ -275,7 +306,7 @@ namespace SteamUtility.Daemon.Bot
                 throw new GameCoordinatorUnsupportedException();
             }
 
-            var statsResult = await GetStats(appId, steamId);
+            var statsResult = await GetStatsThrottled(appId, steamId);
             if (statsResult.Result != EResult.OK && !IsNoStatsResult(statsResult.Result))
             {
                 throw new StatsRequestFailedException(statsResult.Result.ToString());
@@ -341,7 +372,7 @@ namespace SteamUtility.Daemon.Bot
                 throw new GameCoordinatorUnsupportedException();
             }
 
-            var statsResult = await GetStats(appId, steamId);
+            var statsResult = await GetStatsThrottled(appId, steamId);
             if (statsResult.Result != EResult.OK && !IsNoStatsResult(statsResult.Result))
             {
                 throw new StatsRequestFailedException(statsResult.Result.ToString());
@@ -359,7 +390,10 @@ namespace SteamUtility.Daemon.Bot
             {
                 if (!defById.TryGetValue(achievementId, out var def))
                 {
-                    Log.Warn("AchievementHandler", $"Bulk set: achievement not found: {achievementId}");
+                    Log.Warn(
+                        "AchievementHandler",
+                        $"Bulk set: achievement not found: {achievementId}"
+                    );
                     failed.Add(achievementId);
                     continue;
                 }
@@ -367,7 +401,10 @@ namespace SteamUtility.Daemon.Bot
                 var flags = StatFlagHelper.GetFlags(def.Permission, false, true);
                 if ((flags & StatFlags.Protected) != 0)
                 {
-                    Log.Warn("AchievementHandler", $"Bulk set: achievement protected: {achievementId}");
+                    Log.Warn(
+                        "AchievementHandler",
+                        $"Bulk set: achievement protected: {achievementId}"
+                    );
                     failed.Add(achievementId);
                     continue;
                 }
@@ -399,7 +436,10 @@ namespace SteamUtility.Daemon.Bot
                 // The one batched StoreStats call failed - none of the attempted changes above
                 // actually persisted, so move them all to failed rather than reporting a false
                 // success.
-                Log.Warn("AchievementHandler", $"Bulk set: StoreStats failed for app {appId}, {succeeded.Count} changes not persisted");
+                Log.Warn(
+                    "AchievementHandler",
+                    $"Bulk set: StoreStats failed for app {appId}, {succeeded.Count} changes not persisted"
+                );
                 failed.AddRange(succeeded);
                 succeeded.Clear();
             }
@@ -419,7 +459,7 @@ namespace SteamUtility.Daemon.Bot
                 throw new GameCoordinatorUnsupportedException();
             }
 
-            var statsResult = await GetStats(appId, steamId);
+            var statsResult = await GetStatsThrottled(appId, steamId);
             if (statsResult.Result != EResult.OK && !IsNoStatsResult(statsResult.Result))
             {
                 throw new StatsRequestFailedException(statsResult.Result.ToString());
