@@ -5,6 +5,7 @@ import { AlertDialog, Button, Input, TextField, Typography } from '@heroui/react
 import { SettingsRow } from '@/shared/components/SettingsRow'
 import { TierBadge } from '@/shared/components/TierBadge'
 import { PAYPAL_BILLING_URL, STRIPE_BILLING_URL } from '@/shared/constants'
+import { useProModalStore } from '@/shared/stores/proModalStore'
 import { useSubscriptionStore } from '@/shared/stores/subscriptionStore'
 import { openExternalLink } from '@/shared/utils/links'
 
@@ -23,6 +24,7 @@ export const SubscriptionSettingsTab = () => {
   const isSubscribed = useSubscriptionStore(state => state.isSubscribed)
   const subscriptionTier = useSubscriptionStore(state => state.subscriptionTier)
   const subscriptionDetails = useSubscriptionStore(state => state.subscriptionDetails)
+  const openProModalWithTier = useProModalStore(state => state.openWithTier)
   const {
     storedKey,
     inputKey,
@@ -79,20 +81,32 @@ export const SubscriptionSettingsTab = () => {
               </Typography>
             )}
             {isSubscribed && (
-              <Button
-                size='sm'
-                className='inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-semibold'
-                onPress={() =>
-                  openExternalLink(
-                    subscriptionDetails?.paymentProvider === 'paypal'
-                      ? PAYPAL_BILLING_URL
-                      : STRIPE_BILLING_URL,
-                  )
-                }
-              >
-                {t('dashboard.settings.subscription.status.manage')}
-                <TbExternalLink fontSize={14} />
-              </Button>
+              <div className='flex items-center gap-2'>
+                {subscriptionTier === 'casual' && (
+                  <Button
+                    size='sm'
+                    variant='secondary'
+                    className='rounded-full px-3 py-1.5 font-semibold'
+                    onPress={() => openProModalWithTier('gamer')}
+                  >
+                    {t('dashboard.settings.subscription.status.upgrade')}
+                  </Button>
+                )}
+                <Button
+                  size='sm'
+                  className='inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-semibold'
+                  onPress={() =>
+                    openExternalLink(
+                      subscriptionDetails?.paymentProvider === 'paypal'
+                        ? PAYPAL_BILLING_URL
+                        : STRIPE_BILLING_URL,
+                    )
+                  }
+                >
+                  {t('dashboard.settings.subscription.status.manage')}
+                  <TbExternalLink fontSize={14} />
+                </Button>
+              </div>
             )}
           </div>
         )}

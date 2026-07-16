@@ -951,7 +951,8 @@
           "inactive": "Inactive",
           "renewsOn": "Renews on {{date}}",
           "cancelsOn": "Cancels on {{date}}",
-          "manage": "Manage subscription"
+          "manage": "Manage subscription",
+          "upgrade": "Upgrade"
         },
         "licenseKey": {
           "title": "License key",
