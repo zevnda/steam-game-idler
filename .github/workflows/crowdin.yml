@@ -22,6 +22,8 @@ jobs:
           app-id: ${{ secrets.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
 
+      # Downloads into the local checkout only - push_translations/create_pull_request are off
+      # here so the empty-placeholder cleanup step below can run before anything is committed
       - name: Download Crowdin Translations
         uses: crowdin/github-action@v2
         with:
@@ -33,16 +35,29 @@ jobs:
           export_only_approved: true
           skip_untranslated_strings: true
 
-          create_pull_request: true
-
-          localization_branch_name: chore/i18n-crowdin
-          pull_request_base_branch_name: "main"
-          pull_request_title: "chore(i18n): pull translations from crowdin"
-          commit_message: "chore(i18n): pull translations from crowdin"
-
-          github_user_name: "sgi-actions[bot]"
-          github_user_email: "205271180+sgi-actions[bot]@users.noreply.github.com"
+          push_translations: false
+          create_pull_request: false
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
           CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
           CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Strip Crowdin empty translation placeholders
+        run: node scripts/strip-crowdin-empty-translations.mjs
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v8
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
+          add-paths: src/i18n/locales/*.json
+          branch: chore/i18n-crowdin
+          base: main
+          title: "chore(i18n): pull translations from crowdin"
+          commit-message: "chore(i18n): pull translations from crowdin"
+          committer: "sgi-actions[bot] <205271180+sgi-actions[bot]@users.noreply.github.com>"
+          author: "sgi-actions[bot] <205271180+sgi-actions[bot]@users.noreply.github.com>"
