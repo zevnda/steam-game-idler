@@ -323,8 +323,11 @@ a revenue-shaping decision, not a technical one, so raise it rather than guessin
 - **Gamer** (implies casual) — up to 10 (sanity-capped) concurrent agent-mode accounts, automated
   Steam Community cookie retrieval/revalidation (manual cookie paste stays free-tier), free-game
   auto-redemption (manual claim stays free-tier), automatic card farming, achievement-unlocker's
-  full 32-game concurrency, inventory-manager "sell dupes", and presence (persona state/custom idle
-  status, agent-mode only).
+  full 32-game concurrency, inventory-manager "sell dupes", and presence's custom idle status
+  message (agent-mode only). Presence's online status picker itself (`personaState`) is **not**
+  tier-gated — free for every agent-mode account; only the custom message shown while idling
+  (`customIdleStatus`) is Gamer-gated. `usePresenceProGuard` resets only `customIdleStatus` on a
+  downgrade, leaving `personaState` untouched.
 
 **Gating UI pattern**: a gated control stays a real, pressable element (see the HeroUI gotcha
 above) with a `TierBadge` and its action rerouted to `proModalStore`'s `openWithTier(tier)` instead

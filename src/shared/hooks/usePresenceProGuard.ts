@@ -14,10 +14,12 @@ import { hasGamerAccess } from '@/shared/utils/subscriptionAccess'
 // blindly reapplying whatever's already on disk regardless of tier unless the persisted values
 // themselves are corrected. This is the one lever that reaches every trigger path.
 //
-// Resets `personaState` to `Online` and clears `customIdleStatus` for every signed-in agent-mode
-// account once a downgrade is confirmed - reuses `agent_set_presence_settings` unchanged (persists
-// and live-applies), so no new backend surface is needed. Naturally idempotent, so re-running on
-// every dependency change is safe rather than needing a one-shot ref.
+// `personaState` (the online status picker) is free for every agent-mode account and is
+// deliberately left untouched here - only `customIdleStatus` (the custom message shown while
+// idling) is still Gamer-gated, so that's the only field cleared once a downgrade is confirmed.
+// Reuses `agent_set_presence_settings` unchanged (persists and live-applies), so no new backend
+// surface is needed. Naturally idempotent, so re-running on every dependency change is safe rather
+// than needing a one-shot ref.
 export const usePresenceProGuard = () => {
   const accounts = useSessionStore(state => state.accounts)
   const subscriptionTier = useSubscriptionStore(state => state.subscriptionTier)
@@ -36,11 +38,11 @@ export const usePresenceProGuard = () => {
           const settings = await invoke<PresenceSettings>('agent_get_presence_settings', {
             username,
           })
-          if (settings.personaState === 'Online' && !settings.customIdleStatus) return
+          if (!settings.customIdleStatus) return
 
           await invoke('agent_set_presence_settings', {
             username,
-            settings: { personaState: 'Online', customIdleStatus: null },
+            settings: { ...settings, customIdleStatus: null },
           })
         } catch (error) {
           console.error('Error in (agent_set_presence_settings) for presence pro-guard:', error)
