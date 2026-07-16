@@ -2,6 +2,7 @@ import type { FarmingProgress } from '../types'
 import { useTranslation } from 'react-i18next'
 import { ProgressBar, Typography } from '@heroui/react'
 import { GameThumbnail } from '@/shared/components/GameThumbnail'
+import { gameCardContextAttrs } from '@/shared/utils/gameCardContext'
 
 interface CardFarmingActiveCardProps {
   game: FarmingProgress
@@ -18,7 +19,10 @@ export const CardFarmingActiveCard = ({ game }: CardFarmingActiveCardProps) => {
   const { appId, name, initialRemaining, remaining } = game
 
   return (
-    <div className='flex flex-col gap-3 rounded-2xl border border-border bg-surface/80 p-4 backdrop-blur-sm'>
+    <div
+      className='flex flex-col gap-3 rounded-2xl border border-border bg-surface/80 p-4 backdrop-blur-sm'
+      {...gameCardContextAttrs(appId, name)}
+    >
       <GameThumbnail appId={appId} name={name} />
       <Typography title={name} truncate type='body-sm' weight='semibold'>
         {name}

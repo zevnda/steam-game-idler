@@ -5,6 +5,7 @@ import { Button, Typography } from '@heroui/react'
 import { GameThumbnail } from '@/shared/components/GameThumbnail'
 import { IdleTimer } from '@/shared/components/IdleTimer'
 import { useAchievementManagerStore } from '@/shared/stores/achievementManagerStore'
+import { gameCardContextAttrs } from '@/shared/utils/gameCardContext'
 
 interface GameCardProps {
   game: OwnedGame
@@ -32,7 +33,7 @@ export const GameCard = ({
   const displayName = game.name ?? t('dashboard.games.unknownName', { appId: game.appId })
 
   return (
-    <div className='group flex flex-col gap-2'>
+    <div className='group flex flex-col gap-2' {...gameCardContextAttrs(game.appId, displayName)}>
       <GameThumbnail appId={game.appId} name={displayName}>
         {isIdling && idleStartTime !== undefined && <IdleTimer startTime={idleStartTime} />}
       </GameThumbnail>

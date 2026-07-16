@@ -18,6 +18,13 @@
       "paste": "Paste",
       "add": "Add"
     },
+    "gameCardMenu": {
+      "startIdling": "Start Idling",
+      "stopIdling": "Stop Idling",
+      "manageAchievements": "Manage Achievements",
+      "viewOnSteam": "View on Steam",
+      "addTo": "Add To"
+    },
     "minutes": "minutes",
     "zeroUnlimitedHint": "0 = unlimited",
     "errorBoundary": {

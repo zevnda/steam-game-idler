@@ -1,6 +1,7 @@
 ﻿import type { FavoriteEntry } from '../types'
 import { useCallback, useEffect, useState } from 'react'
 import { useSessionStore } from '@/shared/stores/sessionStore'
+import { onGameListChange } from '@/shared/utils/gameListsBus'
 import { invoke } from '@/shared/utils/invoke'
 
 // Unlike games-list/idling, favorites has no `DashboardShell`-mounted sync hook or shared store.
@@ -46,6 +47,11 @@ export const useFavorites = () => {
       cancelled = true
     }
   }, [account])
+
+  // The game-card context menu (useContextMenu.ts) can add a favorite from outside this page's own
+  // UI, bypassing addFavorite below - subscribe so this instance's list stays correct without
+  // needing a remount. See gameListsBus.ts's own doc comment.
+  useEffect(() => onGameListChange('favorites', setFavorites), [])
 
   const addFavorite = useCallback(
     async (game: FavoriteEntry) => {

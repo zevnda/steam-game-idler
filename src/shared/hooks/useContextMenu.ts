@@ -2,6 +2,9 @@ import { Menu, MenuItem } from '@tauri-apps/api/menu'
 import { readText, writeText } from '@tauri-apps/plugin-clipboard-manager'
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSessionStore } from '@/shared/stores/sessionStore'
+import { buildGameCardMenu } from '@/shared/utils/buildGameCardMenu'
+import { findGameCardTarget } from '@/shared/utils/gameCardContext'
 import { invoke } from '@/shared/utils/invoke'
 
 // Mounted once at the app root (`_app.tsx`), same root-level reasoning as `useZoomControls` -
@@ -17,7 +20,11 @@ import { invoke } from '@/shared/utils/invoke'
 // that's replaced with a custom Copy/Paste-only menu below - otherwise text selection would have no
 // way to be copied at all. Skipped in dev, where refreshing to pick up changes is expected;
 // Ctrl+Alt+Shift+F5 still force-reloads regardless, for recovering a genuinely stuck window without
-// relaunching the app.
+// relaunching the app. Right-clicking a game card anywhere (games list, favorites,
+// achievement-unlocker, auto-idle, card-farming - any component whose root carries
+// gameCardContext.ts's data attributes) instead pops a game-specific menu built by
+// buildGameCardMenu.ts, since that's a fundamentally different action set than the
+// window-wide Copy/Paste fallback below.
 export function useContextMenu() {
   const { t } = useTranslation()
   const [isDev, setIsDev] = useState(false)
@@ -55,6 +62,20 @@ export function useContextMenu() {
   const handleContextMenu = useCallback(
     async (event: MouseEvent) => {
       event.preventDefault()
+
+      const gameCardTarget = findGameCardTarget(event.target)
+      const account = useSessionStore.getState().account
+      if (gameCardTarget && account) {
+        try {
+          const menu = await Menu.new({
+            items: await buildGameCardMenu({ ...gameCardTarget, account, t }),
+          })
+          await menu.popup()
+        } catch (error) {
+          console.error('Error in (game card context menu popup):', error)
+        }
+        return
+      }
 
       const hasSelection = !!window.getSelection()?.toString()
       const activeElement = document.activeElement

@@ -1,6 +1,7 @@
 ﻿import type { AchievementUnlockerEntry } from '../types'
 import { useCallback, useEffect, useState } from 'react'
 import { useSessionStore } from '@/shared/stores/sessionStore'
+import { onGameListChange } from '@/shared/utils/gameListsBus'
 import { invoke } from '@/shared/utils/invoke'
 
 // Mirrors favorites/hooks/useFavorites.ts exactly - same shape problem (a per-account ordered list
@@ -43,6 +44,11 @@ export const useAchievementUnlockerQueue = () => {
       cancelled = true
     }
   }, [account])
+
+  // The game-card context menu (useContextMenu.ts) can add to this queue from outside this page's
+  // own UI, bypassing addToQueue below - subscribe so this instance's list stays correct without
+  // needing a remount. See gameListsBus.ts's own doc comment.
+  useEffect(() => onGameListChange('achievementUnlockerQueue', setQueue), [])
 
   // A run auto-dequeues (`cache::remove`) each game as it finishes, but that mutation isn't part
   // of `AchievementUnlockerState`/its change event (see that type's doc comment) - so this local

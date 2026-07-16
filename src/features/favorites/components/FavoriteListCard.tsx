@@ -2,6 +2,7 @@ import type { FavoriteEntry } from '../types'
 import { TbX } from 'react-icons/tb'
 import { Button, Typography } from '@heroui/react'
 import { GameThumbnail } from '@/shared/components/GameThumbnail'
+import { gameCardContextAttrs } from '@/shared/utils/gameCardContext'
 
 interface FavoriteListCardProps {
   favorite: FavoriteEntry
@@ -13,7 +14,10 @@ interface FavoriteListCardProps {
 // (the whole card is draggable to reorder - see SortableFavoriteListCard, which wraps this).
 export const FavoriteListCard = ({ favorite, isPending, onRemove }: FavoriteListCardProps) => {
   return (
-    <div className='group flex flex-col gap-2'>
+    <div
+      className='group flex flex-col gap-2'
+      {...gameCardContextAttrs(favorite.appId, favorite.name)}
+    >
       <GameThumbnail appId={favorite.appId} name={favorite.name} />
       <div className='flex items-center justify-between gap-2'>
         <Typography
