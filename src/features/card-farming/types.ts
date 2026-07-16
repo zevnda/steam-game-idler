@@ -39,7 +39,7 @@ export interface FarmingProgress {
 
 // Mirrors src-tauri/src/card_farming/mod.rs::CompletedFarmReason.
 export type CompletedFarmReason =
-  'dropsExhausted' | 'maxCardDrops' | 'maxCardFarmingTime' | 'maxPlaytime'
+  'dropsExhausted' | 'maxCardDrops' | 'maxCardFarmingTime' | 'maxPlaytime' | 'noDropsRemaining'
 
 // Mirrors src-tauri/src/card_farming/mod.rs::CompletedFarm.
 export interface CompletedFarm {
