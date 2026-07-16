@@ -5,7 +5,7 @@
 
 Steam Game Idler (SGI) is a Steam automation tool for farming trading cards, managing achievements, and boosting playtime across all games in your Steam library — no local Steam client required.
 
-See how it stacks up against other software, such as [ArchiSteamFarm](https://steamgameidler.com/alternatives/archisteamfarm), [Steam Achievement Manager](https://steamgameidler.com/alternatives/steam-achievement-manager), and [Idle Master](https://steamgameidler.com/alternatives/idle-master).
+See how it stacks up against other software, such as **[ArchiSteamFarm](https://steamgameidler.com/alternatives/archisteamfarm)**, **[Steam Achievement Manager](https://steamgameidler.com/alternatives/steam-achievement-manager)**, and **[Idle Master](https://steamgameidler.com/alternatives/idle-master)**.
 
 [![Downloads][downloads]](https://github.com/zevnda/steam-game-idler/releases)
 [![Release][release]](https://github.com/zevnda/steam-game-idler/releases/latest)
