@@ -15,7 +15,8 @@
       "clear": "Clear",
       "done": "Done",
       "copy": "Copy",
-      "paste": "Paste"
+      "paste": "Paste",
+      "add": "Add"
     },
     "minutes": "minutes",
     "zeroUnlimitedHint": "0 = unlimited",
@@ -29,6 +30,15 @@
       "smaLabel": "steamMachineAuth",
       "smaDescription": "Optional. Only needed if your account has a pending Steam Guard machine confirmation.",
       "savedFromSettingsNote": "Loaded from the Steam Credentials saved in Settings."
+    },
+    "manualAdd": {
+      "title": "Add game manually",
+      "description": "Add a game by its Steam App ID if it isn't showing up automatically.",
+      "nameLabel": "Name",
+      "namePlaceholder": "e.g. K-On! The Movie",
+      "appIdLabel": "App ID",
+      "appIdPlaceholder": "e.g. 518440",
+      "duplicateError": "This App ID is already in the list"
     },
     "search": {
       "placeholder": "Search",

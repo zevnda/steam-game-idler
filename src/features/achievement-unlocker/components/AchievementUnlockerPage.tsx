@@ -27,6 +27,7 @@ import { useRouter } from 'next/router'
 import { useGamesList } from '@/features/games-list/hooks/useGamesList'
 import { errorMessageKey as gamesErrorMessageKey } from '@/features/games-list/utils/errorMessageKey'
 import { GameSortSelect } from '@/shared/components/GameSortSelect'
+import { ManualAddGameModal } from '@/shared/components/ManualAddGameModal'
 import { searchGames } from '@/shared/search/fuzzySearch'
 import { useAchievementOrderStore } from '@/shared/stores/achievementOrderStore'
 import { useAchievementUnlockerStore } from '@/shared/stores/achievementUnlockerStore'
@@ -60,6 +61,7 @@ export const AchievementUnlockerPage = () => {
     isLoading: queueLoading,
     errorCode: queueErrorCode,
     pendingAppIds,
+    addToQueue,
     removeFromQueue,
     reorder,
     toggleQueued,
@@ -68,6 +70,7 @@ export const AchievementUnlockerPage = () => {
   const openOrderEditor = useAchievementOrderStore(state => state.open)
   const [activeTab, setActiveTab] = useState<AchievementUnlockerTab>('browse')
   const [confirmClearOpen, setConfirmClearOpen] = useState(false)
+  const [isManualAddOpen, setIsManualAddOpen] = useState(false)
   // Lives in `achievementUnlockerStore` (account-keyed, survives this page unmounting) rather than
   // local state - see that store's `dismissedFinished` doc comment for why: a page remount must not
   // resurrect an already-dismissed summary.
@@ -146,6 +149,7 @@ export const AchievementUnlockerPage = () => {
         isStarting={isStarting}
         isStopping={isStopping}
         queueCount={queue.length}
+        onManualAdd={() => setIsManualAddOpen(true)}
         onStart={start}
         onStop={handleStop}
       />
@@ -324,6 +328,13 @@ export const AchievementUnlockerPage = () => {
           </AlertDialog.Container>
         </AlertDialog.Backdrop>
       </AlertDialog>
+
+      <ManualAddGameModal
+        existingAppIds={queue.map(game => game.appId)}
+        isOpen={isManualAddOpen}
+        onAdd={addToQueue}
+        onOpenChange={setIsManualAddOpen}
+      />
     </div>
   )
 }

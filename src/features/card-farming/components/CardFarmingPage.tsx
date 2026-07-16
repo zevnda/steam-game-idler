@@ -34,6 +34,7 @@ import {
 import { useRouter } from 'next/router'
 import { GameGridSkeleton } from '@/shared/components/GameGridSkeleton'
 import { GameSortSelect } from '@/shared/components/GameSortSelect'
+import { ManualAddGameModal } from '@/shared/components/ManualAddGameModal'
 import { useAutoConnectSteamCookies } from '@/shared/hooks/useAutoConnectSteamCookies'
 import { searchGames } from '@/shared/search/fuzzySearch'
 import { useCardFarmingStore } from '@/shared/stores/cardFarmingStore'
@@ -96,6 +97,7 @@ export const CardFarmingPage = () => {
     queue,
     isLoading: queueLoading,
     pendingAppIds,
+    addToQueue,
     removeFromQueue,
     reorder,
     toggleQueued,
@@ -120,6 +122,7 @@ export const CardFarmingPage = () => {
   // Shared by the queue and blacklist tabs' "Clear" actions - each tab clears a different list, so
   // this tracks which one the open dialog is confirming rather than duplicating the dialog itself.
   const [confirmClearTarget, setConfirmClearTarget] = useState<'queue' | 'blacklist' | null>(null)
+  const [isManualAddOpen, setIsManualAddOpen] = useState(false)
   // Global search filters only the "browse" tab's `browseGames` array - mirrors FavoritesPage's/
   // AchievementUnlockerPage's browse-tab-only wiring. The queue/blacklist tabs stay unfiltered for
   // the same reorder-data-loss reason those pages document: `CardFarmingListGrid`'s `onReorder`
@@ -233,6 +236,7 @@ export const CardFarmingPage = () => {
         isStarting={isStarting}
         isStopping={isStopping}
         queueCount={queue.length}
+        onManualAdd={() => setIsManualAddOpen(true)}
         onStart={start}
         onStop={handleStop}
       />
@@ -443,6 +447,13 @@ export const CardFarmingPage = () => {
           </AlertDialog.Container>
         </AlertDialog.Backdrop>
       </AlertDialog>
+
+      <ManualAddGameModal
+        existingAppIds={queue.map(game => game.appId)}
+        isOpen={isManualAddOpen}
+        onAdd={addToQueue}
+        onOpenChange={setIsManualAddOpen}
+      />
     </div>
   )
 }

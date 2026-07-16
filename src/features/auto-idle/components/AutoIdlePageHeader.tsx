@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { TbPlayerPlayFilled } from 'react-icons/tb'
+import { TbPlayerPlayFilled, TbPlus } from 'react-icons/tb'
 import { Button, Typography } from '@heroui/react'
 
 interface AutoIdlePageHeaderProps {
@@ -7,6 +7,7 @@ interface AutoIdlePageHeaderProps {
   enabledCount: number
   isStarting: boolean
   onStartNow: () => void
+  onManualAdd: () => void
 }
 
 export const AutoIdlePageHeader = ({
@@ -14,6 +15,7 @@ export const AutoIdlePageHeader = ({
   enabledCount,
   isStarting,
   onStartNow,
+  onManualAdd,
 }: AutoIdlePageHeaderProps) => {
   const { t } = useTranslation()
 
@@ -38,6 +40,9 @@ export const AutoIdlePageHeader = ({
         >
           <TbPlayerPlayFilled fontSize={16} />
           {t('common.actions.start')}
+        </Button>
+        <Button isIconOnly aria-label={t('common.manualAdd.title')} onPress={onManualAdd}>
+          <TbPlus fontSize={18} />
         </Button>
       </div>
     </div>

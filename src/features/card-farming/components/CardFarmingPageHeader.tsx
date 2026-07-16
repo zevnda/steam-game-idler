@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { TbPlayerPlayFilled, TbPlayerStopFilled, TbSettings } from 'react-icons/tb'
+import { TbPlayerPlayFilled, TbPlayerStopFilled, TbPlus, TbSettings } from 'react-icons/tb'
 import { Button, Typography } from '@heroui/react'
 import { useSettingsModalStore } from '@/shared/stores/settingsModalStore'
 
@@ -15,6 +15,7 @@ interface CardFarmingPageHeaderProps {
   isStopping: boolean
   onStart: () => void
   onStop: () => void
+  onManualAdd: () => void
 }
 
 // Mirrors AchievementUnlockerPageHeader's shape (title/status, start/stop, settings) - only shown
@@ -32,6 +33,7 @@ export const CardFarmingPageHeader = ({
   isStopping,
   onStart,
   onStop,
+  onManualAdd,
 }: CardFarmingPageHeaderProps) => {
   const { t } = useTranslation()
   const openSettings = useSettingsModalStore(state => state.open)
@@ -73,6 +75,9 @@ export const CardFarmingPageHeader = ({
               {t('common.actions.start')}
             </Button>
           )}
+          <Button isIconOnly aria-label={t('common.manualAdd.title')} onPress={onManualAdd}>
+            <TbPlus fontSize={18} />
+          </Button>
           <Button
             isIconOnly
             aria-label={t('common.actions.settings')}
