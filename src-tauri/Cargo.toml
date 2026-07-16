@@ -1,6 +1,6 @@
 [package]
 name = "steam-game-idler"
-version = "6.0.2"
+version = "6.0.3"
 authors = ["zevnda"]
 license = "Elastic-2.0"
 repository = "https://github.com/zevnda/steam-game-idler"
