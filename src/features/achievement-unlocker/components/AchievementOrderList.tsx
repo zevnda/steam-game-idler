@@ -7,15 +7,17 @@ import { AchievementOrderRow } from './AchievementOrderRow'
 import { NumberField, Typography } from '@heroui/react'
 
 // AchievementOrderRow's intrinsic height (44px icon + 2 * 10px `py-2.5` padding + 2px border = 66)
-// plus an 8px gap, carved out of each row's own slot via the `Row` wrapper's own `pb-2` below -
-// unlike AchievementsList.tsx's row, AchievementOrderRow/DelayRow deliberately don't stretch to
-// `h-full` (DragOverlay renders AchievementOrderRow outside this list entirely, with no defined
-// parent height for a percentage height to resolve against, so it must size from its own content
-// either way) - react-window needs a fixed row height known ahead of render, so a flex `gap`
-// becomes per-row padding here instead (same tradeoff as VirtualizedGameGrid.tsx's
-// GAP-via-cell-shrink, just via padding since react-window v2's `List` rows are single-column, not
-// `Grid` cells). The delay-before-first-unlock row (index 0, see below) reuses the same height so
-// `rowHeight` stays a single constant.
+// plus an 8px gap, carved out of each row's own slot via the `Row` wrapper's own `pb-2` below - the
+// description line added below the name still fits under the 44px icon column (name + description
+// text stack to ~36px), so the icon still drives the card's height, not the text. Unlike
+// AchievementsList.tsx's row, AchievementOrderRow/DelayRow
+// deliberately don't stretch to `h-full` (DragOverlay renders AchievementOrderRow outside this list
+// entirely, with no defined parent height for a percentage height to resolve against, so it must
+// size from its own content either way) - react-window needs a fixed row height known ahead of
+// render, so a flex `gap` becomes per-row padding here instead (same tradeoff as
+// VirtualizedGameGrid.tsx's GAP-via-cell-shrink, just via padding since react-window v2's `List`
+// rows are single-column, not `Grid` cells). The delay-before-first-unlock row (index 0, see below)
+// reuses the same height so `rowHeight` stays a single constant.
 const ROW_HEIGHT = 74
 
 interface DelayRowProps {

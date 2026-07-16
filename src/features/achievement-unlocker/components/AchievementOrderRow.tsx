@@ -15,7 +15,8 @@ const ICON_BASE_URL = 'https://steamcdn-a.akamaihd.net/steamcommunity/public/ima
 
 // Card treatment mirrors AchievementRow.tsx's row shape (see that file's doc comment for why) -
 // the rarity pill even reuses the exact same util, since this editor's rows are still real
-// AchievementDto data (OrderableAchievement extends it) with the same `percent` field. Keep
+// AchievementDto data (OrderableAchievement extends it) with the same `percent` field, and the
+// description line below the name mirrors AchievementRow.tsx's own treatment too. Keep
 // AchievementOrderList.tsx's ROW_HEIGHT in sync with this row's actual rendered height.
 const ROW_GRID = 'grid-cols-[28px_44px_1fr_auto_28px]'
 
@@ -121,6 +122,16 @@ export const AchievementOrderRow = ({
             </span>
           )}
         </div>
+        {/* AchievementRow.tsx's equivalent blur condition also checks `!achievement.achieved` -
+            omitted here since useAchievementOrder.ts's `load` only ever populates this list from
+            already-unlocked-filtered achievements, so `achieved` is always false for every row. */}
+        <Typography
+          className={cn('truncate', achievement.hidden && 'blur-xs hover:blur-none')}
+          color='muted'
+          type='body-xs'
+        >
+          {achievement.description || t('dashboard.achievements.noDescription')}
+        </Typography>
       </div>
 
       <div className='flex shrink-0 items-center gap-1.5'>
