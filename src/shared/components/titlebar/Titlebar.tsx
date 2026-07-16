@@ -15,9 +15,11 @@ import { GlobalSearchBar } from '@/shared/components/search/GlobalSearchBar'
 import { HelpDesk } from '@/shared/components/titlebar/HelpDesk'
 import { Menu } from '@/shared/components/titlebar/Menu'
 import { Notifications } from '@/shared/components/titlebar/Notifications'
+import { UpdateButton } from '@/shared/components/UpdateButton'
 import { useTitlebar } from '@/shared/hooks/useTitlebar'
 import { useSidebarStore } from '@/shared/stores/sidebarStore'
 import { useSubscriptionStore } from '@/shared/stores/subscriptionStore'
+import { useUpdateStore } from '@/shared/stores/updateStore'
 
 const unbounded = Unbounded({
   subsets: ['latin'],
@@ -51,6 +53,7 @@ export const Titlebar = ({ minimal = false }: TitlebarProps) => {
   // (mounted in DashboardShell) needs a moment to resolve on first mount, and showing the upsell
   // pill before that would flash it for a Gamer-tier user who should never see it at all.
   const isSubscribed = useSubscriptionStore(state => state.isSubscribed)
+  const updateAvailable = useUpdateStore(state => state.updateAvailable)
 
   return (
     <div
@@ -130,6 +133,7 @@ export const Titlebar = ({ minimal = false }: TitlebarProps) => {
         <div className='flex h-14 shrink-0 items-center justify-end'>
           {!minimal && (
             <>
+              {updateAvailable && <UpdateButton />}
               <HelpDesk />
               <Notifications />
               <Menu />

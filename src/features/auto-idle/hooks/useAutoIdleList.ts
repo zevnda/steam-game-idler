@@ -2,6 +2,7 @@
 import type { AutoIdleEntry } from '../types'
 import { useCallback, useEffect, useState } from 'react'
 import { useSessionStore } from '@/shared/stores/sessionStore'
+import { onGameListChange } from '@/shared/utils/gameListsBus'
 import { invoke } from '@/shared/utils/invoke'
 
 // Mirrors src/features/favorites/hooks/useFavorites.ts almost exactly - a page-scoped
@@ -47,6 +48,11 @@ export const useAutoIdleList = () => {
       cancelled = true
     }
   }, [account])
+
+  // The game-card context menu (useContextMenu.ts) can add to this list from outside this page's
+  // own UI, bypassing addGame below - subscribe so this instance's list stays correct without
+  // needing a remount. See gameListsBus.ts's own doc comment.
+  useEffect(() => onGameListChange('autoIdleList', setGames), [])
 
   const addGame = useCallback(
     async (game: AutoIdleEntry) => {

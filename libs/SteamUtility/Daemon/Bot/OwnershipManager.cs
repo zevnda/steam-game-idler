@@ -7,7 +7,6 @@ using SteamKit2.Internal;
 using SteamUtility.Core.Errors;
 using SteamUtility.Core.Logging;
 using SteamUtility.Core.Models;
-using SteamUtility.Core.Services;
 
 namespace SteamUtility.Daemon.Bot
 {
@@ -15,8 +14,6 @@ namespace SteamUtility.Daemon.Bot
     // Steam client needed. Correctly reflects Family Sharing / borrowed games.
     public sealed class OwnershipManager
     {
-        private readonly GameWhitelistProvider _whitelistProvider = new();
-
         public async Task<IReadOnlyList<OwnedGame>> GetOwnedGamesAsync(SteamBot bot)
         {
             if (!bot.IsLoggedOn)
@@ -24,7 +21,14 @@ namespace SteamUtility.Daemon.Bot
                 throw new NotLoggedOnException();
             }
 
-            var whitelist = await _whitelistProvider.GetWhitelistAsync();
+            // Deliberately unfiltered: every PICS-resolved app id tied to an owned license comes
+            // through as-is (games, videos/movies, DLC, tools, demos, soundtracks) - agent mode has
+            // no curated-whitelist dependency the way CLI mode's SteamworksLocalBackend does, so
+            // there's no ownership-check reason to intersect against GameWhitelistProvider here.
+            // This intentionally surfaces non-game owned content (e.g. Steam movies like
+            // 518440/518450) that the whitelist used to drop. CLI mode is unaffected - it still
+            // depends on the whitelist as its only ownership-check candidate list, see
+            // SteamworksLocalBackend.CheckOwnershipAsync.
 
             // LicenseListCallback (what OwnedLicenses below is built from) is a separate server
             // push with no ordering guarantee relative to the login success this call is triggered
@@ -33,7 +37,6 @@ namespace SteamUtility.Daemon.Bot
             // WaitForLicenseListAsync doc comment.
             await bot.WaitForLicenseListAsync(TimeSpan.FromSeconds(10));
             var ownedAppIds = await ResolveOwnedAppIdsAsync(bot);
-            ownedAppIds.IntersectWith(whitelist);
 
             var games = new List<OwnedGame>();
             if (ownedAppIds.Count > 0)

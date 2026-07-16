@@ -24,6 +24,11 @@ const ALLOWLIST = new Set([
   // specifically the OS window-chrome close button, a distinct component/context.
   'common.actions.close',
   'titlebar.close',
+  // "View on Steam" - common.gameCardMenu.viewOnSteam links to a game's store page (the game-card
+  // context menu); dashboard.achievements.header.viewOnSteam links to that game's Steam Community
+  // achievements-stats page instead. Same English text today, different URL/role.
+  'common.gameCardMenu.viewOnSteam',
+  'dashboard.achievements.header.viewOnSteam',
 ])
 
 const collectLeaves = (node, path, valuesOut, pathsOut) => {

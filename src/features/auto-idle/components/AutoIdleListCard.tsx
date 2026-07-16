@@ -2,6 +2,7 @@ import type { AutoIdleEntry } from '../types'
 import { TbX } from 'react-icons/tb'
 import { Button, Switch, Typography } from '@heroui/react'
 import { GameThumbnail } from '@/shared/components/GameThumbnail'
+import { gameCardContextAttrs } from '@/shared/utils/gameCardContext'
 
 interface AutoIdleListCardProps {
   game: AutoIdleEntry
@@ -27,6 +28,7 @@ export const AutoIdleListCard = ({
       className={
         game.enabled ? 'group flex flex-col gap-2' : 'group flex flex-col gap-2 opacity-50'
       }
+      {...gameCardContextAttrs(game.appId, game.name)}
     >
       <GameThumbnail appId={game.appId} name={game.name} />
       <div className='flex items-center justify-between gap-2'>

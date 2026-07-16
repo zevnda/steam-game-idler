@@ -25,6 +25,7 @@ import { useRouter } from 'next/router'
 import { useGamesList } from '@/features/games-list/hooks/useGamesList'
 import { errorMessageKey as gamesErrorMessageKey } from '@/features/games-list/utils/errorMessageKey'
 import { GameSortSelect } from '@/shared/components/GameSortSelect'
+import { ManualAddGameModal } from '@/shared/components/ManualAddGameModal'
 import { searchGames } from '@/shared/search/fuzzySearch'
 import { useSearchStore } from '@/shared/stores/searchStore'
 import { useSessionStore } from '@/shared/stores/sessionStore'
@@ -51,6 +52,7 @@ export const AutoIdlePage = () => {
     errorCode: queueErrorCode,
     pendingAppIds,
     isStarting,
+    addGame,
     removeGame,
     reorder,
     setEnabled,
@@ -59,6 +61,7 @@ export const AutoIdlePage = () => {
   } = useAutoIdleList()
   const [activeTab, setActiveTab] = useState<AutoIdleTab>('browse')
   const [confirmClearOpen, setConfirmClearOpen] = useState(false)
+  const [isManualAddOpen, setIsManualAddOpen] = useState(false)
   const searchQuery = useSearchStore(state => state.queries.autoIdle ?? '')
   const setActiveTabSearchable = useSearchStore(state => state.setActiveTabSearchable)
   const filteredGames = useMemo(() => searchGames(games, searchQuery), [games, searchQuery])
@@ -95,6 +98,7 @@ export const AutoIdlePage = () => {
         enabledCount={enabledCount}
         gameCount={queue.length}
         isStarting={isStarting}
+        onManualAdd={() => setIsManualAddOpen(true)}
         onStartNow={startNow}
       />
 
@@ -253,6 +257,13 @@ export const AutoIdlePage = () => {
           </AlertDialog.Container>
         </AlertDialog.Backdrop>
       </AlertDialog>
+
+      <ManualAddGameModal
+        existingAppIds={queue.map(g => g.appId)}
+        isOpen={isManualAddOpen}
+        onAdd={game => addGame({ ...game, enabled: true })}
+        onOpenChange={setIsManualAddOpen}
+      />
     </div>
   )
 }

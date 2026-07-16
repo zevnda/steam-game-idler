@@ -1,6 +1,7 @@
 import type { CardFarmingQueueEntry } from '../types'
 import { useCallback, useEffect, useState } from 'react'
 import { useSessionStore } from '@/shared/stores/sessionStore'
+import { onGameListChange } from '@/shared/utils/gameListsBus'
 import { invoke } from '@/shared/utils/invoke'
 
 // Mirrors achievement-unlocker/hooks/useAchievementUnlockerQueue.ts exactly - same shape problem (a
@@ -45,6 +46,11 @@ export const useCardFarmingQueue = () => {
       cancelled = true
     }
   }, [account])
+
+  // The game-card context menu (useContextMenu.ts) can add to this queue from outside this page's
+  // own UI, bypassing addToQueue below - subscribe so this instance's list stays correct without
+  // needing a remount. See gameListsBus.ts's own doc comment.
+  useEffect(() => onGameListChange('cardFarmingQueue', setQueue), [])
 
   // A farming cycle auto-dequeues each game as its drops are exhausted, but `FarmingState`'s change
   // event doesn't carry the persisted queue (see `card_farming::manager::poll_active`'s doc

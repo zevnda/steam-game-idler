@@ -220,33 +220,65 @@ namespace SteamUtility.Core.SchemaParsing
             }
         }
 
-        private static byte ReadValueU8(Stream input) => (byte)input.ReadByte();
+        // `Stream.ReadByte()` returns -1 at end-of-stream rather than throwing - casting that
+        // straight to `byte` silently wraps to 255, which doesn't match any real KeyValueType
+        // (including End=8), so the caller's read loop just keeps going past EOF instead of
+        // stopping. That mattered in practice for a 0-byte schema (an achievement-unlocker scan
+        // hitting a schema-less game - see AchievementHandler's IsNoStatsResult): the very first
+        // byte read hit this immediately, and the type byte fell straight through into
+        // ReadStringUnicode's read loop below, which has the same EOF gap and would spin forever
+        // growing an unbounded byte list until the process ran out of memory. Throwing here lets
+        // ReadAsBinary's existing catch-and-fail-gracefully handling take over instead.
+        private static byte ReadValueU8(Stream input)
+        {
+            var value = input.ReadByte();
+            if (value < 0)
+            {
+                throw new EndOfStreamException("Unexpected end of stream reading a KeyValue byte.");
+            }
+            return (byte)value;
+        }
+
+        // `Stream.Read` can return fewer bytes than requested at EOF (unlike ReadByte, it doesn't
+        // signal this with a sentinel) - the four fixed-size readers below used to ignore that and
+        // just ran BitConverter over a partially/never-filled buffer, silently turning truncated
+        // input into a bogus zero-ish value instead of the parse failure ReadAsBinary's catch is
+        // built to handle. Same root cause class as ReadValueU8/ReadStringUnicode above.
+        private static void ReadFully(Stream input, byte[] buffer)
+        {
+            if (input.Read(buffer, 0, buffer.Length) != buffer.Length)
+            {
+                throw new EndOfStreamException(
+                    "Unexpected end of stream reading a KeyValue value."
+                );
+            }
+        }
 
         private static int ReadValueS32(Stream input)
         {
             var data = new byte[4];
-            input.Read(data, 0, 4);
+            ReadFully(input, data);
             return BitConverter.ToInt32(data, 0);
         }
 
         private static uint ReadValueU32(Stream input)
         {
             var data = new byte[4];
-            input.Read(data, 0, 4);
+            ReadFully(input, data);
             return BitConverter.ToUInt32(data, 0);
         }
 
         private static ulong ReadValueU64(Stream input)
         {
             var data = new byte[8];
-            input.Read(data, 0, 8);
+            ReadFully(input, data);
             return BitConverter.ToUInt64(data, 0);
         }
 
         private static float ReadValueF32(Stream input)
         {
             var data = new byte[4];
-            input.Read(data, 0, 4);
+            ReadFully(input, data);
             return BitConverter.ToSingle(data, 0);
         }
 
@@ -256,6 +288,14 @@ namespace SteamUtility.Core.SchemaParsing
             while (true)
             {
                 var b = input.ReadByte();
+                // See ReadValueU8's comment - EOF (-1) is not the same as a null terminator (0)
+                // and must not be treated as ordinary string content, or this loop never ends.
+                if (b < 0)
+                {
+                    throw new EndOfStreamException(
+                        "Unexpected end of stream reading a KeyValue string."
+                    );
+                }
                 if (b == 0)
                 {
                     break;

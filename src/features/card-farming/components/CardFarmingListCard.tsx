@@ -2,6 +2,7 @@ import type { CardFarmingQueueEntry } from '../types'
 import { TbX } from 'react-icons/tb'
 import { Button, Typography } from '@heroui/react'
 import { GameThumbnail } from '@/shared/components/GameThumbnail'
+import { gameCardContextAttrs } from '@/shared/utils/gameCardContext'
 
 interface CardFarmingQueueCardProps {
   game: CardFarmingQueueEntry
@@ -15,7 +16,7 @@ interface CardFarmingQueueCardProps {
 // which games are queued at all.
 export const CardFarmingListCard = ({ game, isPending, onRemove }: CardFarmingQueueCardProps) => {
   return (
-    <div className='group flex flex-col gap-2'>
+    <div className='group flex flex-col gap-2' {...gameCardContextAttrs(game.appId, game.name)}>
       <GameThumbnail appId={game.appId} name={game.name} />
       <div className='flex items-center justify-between gap-2'>
         <Typography
@@ -31,6 +32,7 @@ export const CardFarmingListCard = ({ game, isPending, onRemove }: CardFarmingQu
         <Button
           isIconOnly
           aria-label={`Remove ${game.name}`}
+          className='shrink-0'
           isPending={isPending}
           size='sm'
           variant='ghost'

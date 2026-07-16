@@ -1,11 +1,13 @@
 import { useTranslation } from 'react-i18next'
-import { Typography } from '@heroui/react'
+import { TbPlus } from 'react-icons/tb'
+import { Button, Typography } from '@heroui/react'
 
 interface FavoritesPageHeaderProps {
   favoriteCount: number
+  onManualAdd: () => void
 }
 
-export const FavoritesPageHeader = ({ favoriteCount }: FavoritesPageHeaderProps) => {
+export const FavoritesPageHeader = ({ favoriteCount, onManualAdd }: FavoritesPageHeaderProps) => {
   const { t } = useTranslation()
 
   return (
@@ -19,6 +21,11 @@ export const FavoritesPageHeader = ({ favoriteCount }: FavoritesPageHeaderProps)
             ? t('dashboard.favorites.count', { count: favoriteCount })
             : t('dashboard.favorites.empty.title')}
         </Typography>
+      </div>
+      <div className='flex shrink-0 items-center gap-2'>
+        <Button isIconOnly aria-label={t('common.manualAdd.title')} onPress={onManualAdd}>
+          <TbPlus fontSize={18} />
+        </Button>
       </div>
     </div>
   )

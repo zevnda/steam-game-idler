@@ -25,6 +25,7 @@ import { useRouter } from 'next/router'
 import { useGamesList } from '@/features/games-list/hooks/useGamesList'
 import { errorMessageKey as gamesErrorMessageKey } from '@/features/games-list/utils/errorMessageKey'
 import { GameSortSelect } from '@/shared/components/GameSortSelect'
+import { ManualAddGameModal } from '@/shared/components/ManualAddGameModal'
 import { searchGames } from '@/shared/search/fuzzySearch'
 import { useSearchStore } from '@/shared/stores/searchStore'
 import { useSessionStore } from '@/shared/stores/sessionStore'
@@ -57,12 +58,14 @@ export const FavoritesPage = () => {
     isLoading: favoritesLoading,
     errorCode: favoritesErrorCode,
     pendingAppIds,
+    addFavorite,
     removeFavorite,
     reorder,
     toggleFavorite,
   } = useFavorites()
   const [activeTab, setActiveTab] = useState<FavoritesTab>('browse')
   const [confirmClearOpen, setConfirmClearOpen] = useState(false)
+  const [isManualAddOpen, setIsManualAddOpen] = useState(false)
   const searchQuery = useSearchStore(state => state.queries.favorites ?? '')
   const setActiveTabSearchable = useSearchStore(state => state.setActiveTabSearchable)
   const filteredGames = useMemo(() => searchGames(games, searchQuery), [games, searchQuery])
@@ -98,7 +101,10 @@ export const FavoritesPage = () => {
 
   return (
     <div className='flex h-full flex-col'>
-      <FavoritesPageHeader favoriteCount={favorites.length} />
+      <FavoritesPageHeader
+        favoriteCount={favorites.length}
+        onManualAdd={() => setIsManualAddOpen(true)}
+      />
 
       {favoritesErrorCode && (
         <div className='px-6 pt-4'>
@@ -254,6 +260,13 @@ export const FavoritesPage = () => {
           </AlertDialog.Container>
         </AlertDialog.Backdrop>
       </AlertDialog>
+
+      <ManualAddGameModal
+        existingAppIds={favorites.map(f => f.appId)}
+        isOpen={isManualAddOpen}
+        onAdd={addFavorite}
+        onOpenChange={setIsManualAddOpen}
+      />
     </div>
   )
 }
