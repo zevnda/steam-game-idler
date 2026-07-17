@@ -28,6 +28,11 @@ pub async fn claim_free_game(
     app_id: u32,
     api_key: Option<String>,
 ) -> AppResult<FreeGameClaimOutcome> {
+    // Cloned before the match consumes `account` by value - kept only so the log lines below can
+    // identify which account a claim outcome belongs to (there was previously no account
+    // identifier in this log line at all, which made a background account's claim indistinguishable
+    // from the currently-active one when diagnosing an auto-redeem issue).
+    let account_for_log = account.clone();
     let outcome = match account {
         GamesAccount::Agent { username } => {
             agent_manager
@@ -42,8 +47,12 @@ pub async fn claim_free_game(
     // IPC round trip, not a multi-attempt poll worth narrating step by step the way CLI mode's
     // `claim` is) - logging the resolved outcome here covers both modes uniformly in one place.
     match &outcome {
-        Ok(result) => tracing::info!(app_id, outcome = ?result, "free games: claim resolved"),
-        Err(e) => tracing::warn!(app_id, error = %e.code(), "free games: claim errored"),
+        Ok(result) => {
+            tracing::info!(account = ?account_for_log, app_id, outcome = ?result, "free games: claim resolved")
+        }
+        Err(e) => {
+            tracing::warn!(account = ?account_for_log, app_id, error = %e.code(), "free games: claim errored")
+        }
     }
     outcome
 }
