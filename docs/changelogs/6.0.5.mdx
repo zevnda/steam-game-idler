@@ -15,3 +15,5 @@ tags: ['Improved', 'Fixed']
 - Fixed **Free Games** notifications and the sidebar's claimable indicator sometimes triggering for a game you already own, caused by the free games list loading before your owned games list had finished loading
 - Fixed **Auto-redeem free games** silently never retrying a game that had already been seen once (e.g. before auto-redeem was turned on), even if it was never actually claimed
 - Fixed a claimed free game sticking around in the **Free Games** tab instead of disappearing once it was claimed
+- Fixed **Sign in with Steam** accounts occasionally being sent back to the sign-in screen on launch instead of resuming, even though the saved session was actually still valid
+- Fixed a rare timing issue where a **Sign in with Steam** account could fail to reconnect and be silently swapped for a different signed-in account
