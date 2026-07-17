@@ -26,9 +26,10 @@ interface FreeGamesStore {
 // Discovery (get_free_games) is public, mode-agnostic data with no per-account meaning (see
 // useFreeGamesWatcher's doc comment) - unlike gamesListStore/idlingStore/cardFarmingStore, this
 // isn't account-keyed, just one flat entry. Populated by `useFreeGamesWatcher` (mounted once in
-// `DashboardShell`, fetches immediately on mount and hourly thereafter) rather than by
-// `FreeGamesPage` itself, so the discovery list is already sitting here - fetched during the same
-// window the app is settling in right after sign-in - by the time the user ever navigates to the
+// `DashboardShell`, fetches once the owned-games list has loaded and hourly thereafter - see that
+// hook's own doc comment for why it waits) rather than by `FreeGamesPage` itself, so the discovery
+// list is already sitting here - fetched during the same window the app is settling in right after
+// sign-in - by the time the user ever navigates to the
 // page, instead of every page visit re-fetching from scratch.
 export const useFreeGamesStore = create<FreeGamesStore>(set => ({
   phase: 'loading',
