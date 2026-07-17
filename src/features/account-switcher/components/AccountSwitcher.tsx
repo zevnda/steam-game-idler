@@ -1,7 +1,7 @@
 import type { AccountKey, SignedInAccount } from '@/shared/stores/sessionStore'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { TbChevronDown, TbLogout, TbPlus } from 'react-icons/tb'
+import { TbAlertTriangle, TbChevronDown, TbLogout, TbPlus } from 'react-icons/tb'
 import { AlertDialog, Avatar, Button, cn, Popover, Spinner, toast } from '@heroui/react'
 import { useRouter } from 'next/router'
 import { AppTooltip } from '@/shared/components/AppTooltip'
@@ -10,9 +10,11 @@ import { signOutAccount } from '@/shared/hooks/signOutAccount'
 import { useAccountSummaryStore } from '@/shared/stores/accountSummaryStore'
 import { useAchievementUnlockerStore } from '@/shared/stores/achievementUnlockerStore'
 import { useAddAccountModalStore } from '@/shared/stores/addAccountModalStore'
+import { useAgentReauthStore } from '@/shared/stores/agentReauthStore'
 import { useCardFarmingStore } from '@/shared/stores/cardFarmingStore'
 import { useIdlingStore } from '@/shared/stores/idlingStore'
 import { useProModalStore } from '@/shared/stores/proModalStore'
+import { useReauthModalStore } from '@/shared/stores/reauthModalStore'
 import { useSessionStore } from '@/shared/stores/sessionStore'
 import { useSteamWarningStore } from '@/shared/stores/steamWarningStore'
 import { useSubscriptionStore } from '@/shared/stores/subscriptionStore'
@@ -38,8 +40,14 @@ interface AccountRowProps {
   // spinner and makes the row non-interactive so a slow check doesn't look like an unresponsive
   // click.
   isSwitching: boolean
+  // True while agentReauthStore has this account flagged (kicked by a concurrent login on
+  // another device/session) - see useAgentReauthWatcher. Takes priority over isOverCap: an
+  // over-cap account is still a normal live session just not switchable, while this one has
+  // already had its automation stopped and needs fresh credentials before anything else applies.
+  needsReauth: boolean
   onSwitch: (key: AccountKey) => void
   onUpsell: () => void
+  onReauth: (key: AccountKey) => void
   onRequestSignOut: (
     accountKey: AccountKey,
     displayName: string,
@@ -53,8 +61,10 @@ const AccountRow = ({
   isActive,
   isOverCap,
   isSwitching,
+  needsReauth,
   onSwitch,
   onUpsell,
+  onReauth,
   onRequestSignOut,
 }: AccountRowProps) => {
   const { t } = useTranslation()
@@ -70,13 +80,15 @@ const AccountRow = ({
   const initial = displayName.trim().charAt(0).toUpperCase() || '?'
 
   // Not a native-disabled control - it stays a real, pressable row (rerouted to the upsell modal
-  // instead of switching) matching every other gamer-gated control's convention - a native
-  // `disabled` swallows the click entirely, which would leave a locked account with no way
-  // to explain itself). `isSwitching` is the one exception - a row already mid-switch ignores
-  // further clicks rather than re-dispatching the pre-flight check.
+  // or the re-auth modal instead of switching) matching every other gamer-gated control's
+  // convention - a native `disabled` swallows the click entirely, which would leave a locked
+  // account with no way to explain itself. `isSwitching` is the one exception - a row already
+  // mid-switch ignores further clicks rather than re-dispatching the pre-flight check.
   const handleActivate = () => {
     if (isSwitching) return
-    if (isOverCap) {
+    if (needsReauth) {
+      onReauth(accountKey)
+    } else if (isOverCap) {
       onUpsell()
     } else {
       onSwitch(accountKey)
@@ -98,7 +110,7 @@ const AccountRow = ({
         if (event.key === 'Enter' || event.key === ' ') handleActivate()
       }}
     >
-      <span className={cn('relative shrink-0', isOverCap && 'opacity-50')}>
+      <span className={cn('relative shrink-0', (isOverCap || needsReauth) && 'opacity-50')}>
         <Avatar size='sm'>
           {summary?.avatarUrl ? <Avatar.Image alt={displayName} src={summary.avatarUrl} /> : null}
           <Avatar.Fallback>{initial}</Avatar.Fallback>
@@ -110,7 +122,9 @@ const AccountRow = ({
           />
         ) : null}
       </span>
-      <div className={cn('flex min-w-0 flex-1 flex-col', isOverCap && 'opacity-50')}>
+      <div
+        className={cn('flex min-w-0 flex-1 flex-col', (isOverCap || needsReauth) && 'opacity-50')}
+      >
         <span className='truncate text-sm font-medium text-foreground'>{displayName}</span>
         <span className='flex min-w-0 items-center gap-1.5 text-xs text-muted'>
           {/* `truncate` lives on this inner span, not the flex row above - `text-overflow:
@@ -123,6 +137,19 @@ const AccountRow = ({
               : t('dashboard.sidebar.accountSwitcher.modeLocal')}
           </span>
           {isOverCap ? <TierBadge className='shrink-0' tier='gamer' /> : null}
+          {needsReauth ? (
+            <AppTooltip.Root delay={300}>
+              <AppTooltip.Trigger>
+                <span className='flex shrink-0 items-center gap-1 rounded-full bg-danger/15 px-2 py-0.5 text-[9px] font-black uppercase tracking-widest leading-3.5 text-danger'>
+                  <TbAlertTriangle fontSize={10} />
+                  {t('dashboard.sidebar.accountSwitcher.reauth.badge')}
+                </span>
+              </AppTooltip.Trigger>
+              <AppTooltip.Content placement='top'>
+                {t('dashboard.sidebar.accountSwitcher.reauth.tooltip')}
+              </AppTooltip.Content>
+            </AppTooltip.Root>
+          ) : null}
         </span>
       </div>
       {isSwitching ? (
@@ -179,6 +206,8 @@ export const AccountSwitcher = ({ compact = false }: AccountSwitcherProps) => {
   const switchAccount = useSessionStore(state => state.switchAccount)
   const setShowSteamWarning = useSteamWarningStore(state => state.setShowSteamWarning)
   const openAddAccount = useAddAccountModalStore(state => state.open)
+  const openReauth = useReauthModalStore(state => state.open)
+  const reauthEntries = useAgentReauthStore(state => state.entries)
   const subscriptionTier = useSubscriptionStore(state => state.subscriptionTier)
   const openProModalWithTier = useProModalStore(state => state.openWithTier)
   const summaries = useAccountSummaryStore(state => state.summaries)
@@ -312,6 +341,11 @@ export const AccountSwitcher = ({ compact = false }: AccountSwitcherProps) => {
                 isActive={key === activeAccountKey}
                 isOverCap={!allowedAccountKeys.has(key)}
                 isSwitching={switchingKey === key}
+                needsReauth={Boolean(reauthEntries[key])}
+                onReauth={reauthKey => {
+                  setIsOpen(false)
+                  openReauth(reauthKey)
+                }}
                 onRequestSignOut={handleRequestSignOut}
                 onSwitch={switchKey => {
                   void (async () => {
