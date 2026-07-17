@@ -1,9 +1,11 @@
+import type { SelectableGame } from '@/shared/hooks/useCardSelection'
 import type { OwnedGame } from '../types'
 import { useTranslation } from 'react-i18next'
 import { TbPlayerPlayFilled, TbPlayerStopFilled, TbTrophyFilled } from 'react-icons/tb'
 import { Button, Typography } from '@heroui/react'
 import { GameThumbnail } from '@/shared/components/GameThumbnail'
 import { IdleTimer } from '@/shared/components/IdleTimer'
+import { useCardSelection } from '@/shared/hooks/useCardSelection'
 import { useAchievementManagerStore } from '@/shared/stores/achievementManagerStore'
 import { gameCardContextAttrs } from '@/shared/utils/gameCardContext'
 
@@ -13,6 +15,11 @@ interface GameCardProps {
   isIdlePending: boolean
   idleStartTime: number | undefined
   onToggleIdle: () => void
+  // The full ordered games array this card is currently rendered from (display names already
+  // resolved) - needed for Shift-click range-select, and its mere presence opts the card into
+  // multi-select at all (see `useCardSelection.ts`). Omitted for cards rendered outside the main
+  // grid (e.g. carousels).
+  orderedGames?: SelectableGame[]
 }
 
 // Idle controls live directly on this card (matching `main`'s GameCard), not on a separate
@@ -27,13 +34,19 @@ export const GameCard = ({
   isIdlePending,
   idleStartTime,
   onToggleIdle,
+  orderedGames,
 }: GameCardProps) => {
   const { t } = useTranslation()
   const openAchievementManager = useAchievementManagerStore(state => state.open)
   const displayName = game.name ?? t('dashboard.games.unknownName', { appId: game.appId })
+  const { isSelected, onMouseDown } = useCardSelection(game.appId, displayName, orderedGames)
 
   return (
-    <div className='group flex flex-col gap-2' {...gameCardContextAttrs(game.appId, displayName)}>
+    <div
+      className={`group flex flex-col gap-2 ${isSelected ? 'ring-primary rounded-md ring-2' : ''}`}
+      {...gameCardContextAttrs(game.appId, displayName)}
+      onMouseDown={onMouseDown}
+    >
       <GameThumbnail appId={game.appId} name={displayName}>
         {isIdling && idleStartTime !== undefined && <IdleTimer startTime={idleStartTime} />}
       </GameThumbnail>

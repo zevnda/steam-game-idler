@@ -1,3 +1,4 @@
+import type { SelectableGame } from '@/shared/hooks/useCardSelection'
 import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core'
 import type { CellComponentProps } from 'react-window'
 import type { AchievementUnlockerEntry } from '../types'
@@ -13,6 +14,7 @@ import {
   GAME_CARD_THUMBNAIL_ASPECT as THUMBNAIL_ASPECT,
   useResponsiveColumnCount,
 } from '@/shared/hooks/useGameGridColumns'
+import { useSelectableGames } from '@/shared/hooks/useSelectableGames'
 
 // See VirtualizedGameGrid.tsx's top comment for why horizontal padding is a spacer column instead
 // of CSS padding on the Grid itself.
@@ -28,6 +30,7 @@ interface AchievementUnlockerListGridProps {
 
 interface CellProps {
   queue: AchievementUnlockerEntry[]
+  selectableGames: SelectableGame[]
   realColumnCount: number
   cardWidth: number
   cardHeight: number
@@ -47,6 +50,7 @@ const Cell = ({
   rowIndex,
   style,
   queue,
+  selectableGames,
   realColumnCount,
   cardWidth,
   cardHeight,
@@ -73,6 +77,7 @@ const Cell = ({
         game={game}
         isDragging={activeId === game.appId}
         isPending={pendingAppIds.has(game.appId)}
+        orderedGames={selectableGames}
         onEditOrder={() => onEditOrder(game)}
         onRemove={() => onRemove(game.appId)}
       />
@@ -105,6 +110,7 @@ export const AchievementUnlockerListGrid = ({
   const [activeId, setActiveId] = useState<number | null>(null)
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }))
   const activeItem = queue.find(item => item.appId === activeId) ?? null
+  const selectableGames = useSelectableGames(queue)
   const {
     width,
     usableWidth,
@@ -141,6 +147,7 @@ export const AchievementUnlockerListGrid = ({
               cellComponent={Cell}
               cellProps={{
                 queue,
+                selectableGames,
                 realColumnCount,
                 cardWidth,
                 cardHeight,

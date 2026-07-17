@@ -1,3 +1,4 @@
+import type { SelectableGame } from '@/shared/hooks/useCardSelection'
 import type { AchievementUnlockerEntry } from '../types'
 import { AchievementUnlockerListCard } from './AchievementUnlockerListCard'
 import { useSortable } from '@dnd-kit/sortable'
@@ -9,6 +10,7 @@ interface SortableAchievementUnlockerListCardProps {
   isPending?: boolean
   onRemove: () => void
   onEditOrder: () => void
+  orderedGames?: SelectableGame[]
 }
 
 export const SortableAchievementUnlockerListCard = ({
@@ -17,6 +19,7 @@ export const SortableAchievementUnlockerListCard = ({
   isPending,
   onRemove,
   onEditOrder,
+  orderedGames,
 }: SortableAchievementUnlockerListCardProps) => {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: game.appId,
@@ -33,6 +36,7 @@ export const SortableAchievementUnlockerListCard = ({
       <AchievementUnlockerListCard
         game={game}
         isPending={isPending}
+        orderedGames={orderedGames}
         onEditOrder={onEditOrder}
         onRemove={onRemove}
       />

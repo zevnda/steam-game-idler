@@ -23,7 +23,7 @@ use crate::steam_agent::AgentManager;
 
 use super::auto_stop::IdleAutoStopRegistry;
 use super::claims::{IdleClaimsRegistry, OWNER_AUTO_IDLE, OWNER_MANUAL};
-use super::{cap_app_ids, settings, IdleSetResult, IdleTarget, IdlingManager};
+use super::{cap_app_ids, settings, IdleFailure, IdleSetResult, IdleTarget, IdlingManager};
 
 /// The actual per-backend announce, with no concept of "owner" - takes the literal full set to
 /// idle and nothing else. **Not registered as a Tauri command and must never be called directly
@@ -170,6 +170,101 @@ pub async fn toggle_manual_idle(
     auto_stop
         .schedule_if_capped(&app_handle, &steam_id, app_id, OWNER_MANUAL, account)
         .await?;
+
+    Ok(result)
+}
+
+/// Bulk version of [`toggle_manual_idle`] for the multi-select context menu's "start/stop idling"
+/// action - decides start-vs-stop per app id (see
+/// [`IdleClaimsRegistry::toggle_manual_bulk`]) so a mixed selection (some already idling, some
+/// not) resolves correctly in one announce instead of requiring the frontend to split the
+/// selection and fire the single-game command once per game.
+#[tauri::command]
+pub async fn toggle_manual_idle_bulk(
+    app_handle: AppHandle,
+    agent_manager: State<'_, AgentManager>,
+    idling_manager: State<'_, IdlingManager>,
+    claims: State<'_, IdleClaimsRegistry>,
+    auto_stop: State<'_, IdleAutoStopRegistry>,
+    account: GamesAccount,
+    targets: Vec<IdleTarget>,
+) -> AppResult<IdleSetResult> {
+    let steam_id = resolve_steam_id(&account, &agent_manager).await?;
+
+    let mut will_start_any = false;
+    for target in &targets {
+        if !claims
+            .is_claimed(&agent_manager, &account, target.app_id)
+            .await?
+        {
+            will_start_any = true;
+            break;
+        }
+    }
+    if will_start_any && matches!(account, GamesAccount::Local { .. }) {
+        require_steam_running()?;
+    }
+
+    // Max-playtime cap applies per target that would be a "start" - drop those individually
+    // (recorded as failures) rather than aborting the whole batch, unlike the single-game
+    // version which can just return `Err` outright since there's nothing else in its "batch" to
+    // preserve.
+    let cached_playtimes =
+        games::commands::get_owned_games_cache(app_handle.clone(), steam_id.clone())
+            .unwrap_or_default();
+    let mut cap_failures = Vec::new();
+    let mut allowed_targets = Vec::with_capacity(targets.len());
+    for target in targets {
+        let is_start = !claims
+            .is_claimed(&agent_manager, &account, target.app_id)
+            .await?;
+        if is_start {
+            let cached_playtime = cached_playtimes
+                .iter()
+                .find(|g| g.app_id == target.app_id)
+                .map(|g| g.playtime_forever_minutes)
+                .unwrap_or(0);
+            if max_playtime::settings::is_over_cap(
+                &app_handle,
+                &steam_id,
+                target.app_id,
+                cached_playtime,
+            )
+            .await?
+            {
+                cap_failures.push(IdleFailure {
+                    app_id: target.app_id,
+                    error: AppError::MaxPlaytimeCapReached.code(),
+                });
+                continue;
+            }
+        }
+        allowed_targets.push(target);
+    }
+
+    let (mut result, started, stopped) = claims
+        .toggle_manual_bulk(
+            &app_handle,
+            agent_manager,
+            idling_manager,
+            account.clone(),
+            allowed_targets,
+        )
+        .await?;
+    result.failures.extend(cap_failures);
+
+    // Cheap in-process bookkeeping, not an extra IPC/process round trip per game - mirrors
+    // `auto_idle::commands::start_auto_idle_games`'s own per-target auto-stop loop after its bulk
+    // claim.
+    for app_id in started {
+        auto_stop
+            .schedule_if_capped(&app_handle, &steam_id, app_id, OWNER_MANUAL, account.clone())
+            .await?;
+    }
+    for app_id in stopped {
+        auto_stop.bump(&steam_id, app_id, OWNER_MANUAL).await;
+        auto_stop.bump(&steam_id, app_id, OWNER_AUTO_IDLE).await;
+    }
 
     Ok(result)
 }

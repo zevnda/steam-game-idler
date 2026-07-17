@@ -5,6 +5,7 @@ import { FavoriteListCard } from './FavoriteListCard'
 import { SortableFavoriteListCard } from './SortableFavoriteListCard'
 import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { arrayMove, SortableContext } from '@dnd-kit/sortable'
+import { useSelectableGames } from '@/shared/hooks/useSelectableGames'
 
 interface FavoritesListGridProps {
   favorites: FavoriteEntry[]
@@ -26,6 +27,7 @@ export const FavoritesListGrid = ({
   const [activeId, setActiveId] = useState<number | null>(null)
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }))
   const activeItem = favorites.find(item => item.appId === activeId) ?? null
+  const selectableGames = useSelectableGames(favorites)
 
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(event.active.id as number)
@@ -51,6 +53,7 @@ export const FavoritesListGrid = ({
               favorite={favorite}
               isDragging={activeId === favorite.appId}
               isPending={pendingAppIds.has(favorite.appId)}
+              orderedGames={selectableGames}
               onRemove={() => onRemove(favorite.appId)}
             />
           ))}

@@ -5,6 +5,7 @@ import { AutoIdleListCard } from './AutoIdleListCard'
 import { SortableAutoIdleListCard } from './SortableAutoIdleListCard'
 import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { arrayMove, SortableContext } from '@dnd-kit/sortable'
+import { useSelectableGames } from '@/shared/hooks/useSelectableGames'
 
 interface AutoIdleListGridProps {
   games: AutoIdleEntry[]
@@ -25,6 +26,7 @@ export const AutoIdleListGrid = ({
   const [activeId, setActiveId] = useState<number | null>(null)
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }))
   const activeItem = games.find(item => item.appId === activeId) ?? null
+  const selectableGames = useSelectableGames(games)
 
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(event.active.id as number)
@@ -50,6 +52,7 @@ export const AutoIdleListGrid = ({
               game={game}
               isDragging={activeId === game.appId}
               isPending={pendingAppIds.has(game.appId)}
+              orderedGames={selectableGames}
               onRemove={() => onRemove(game.appId)}
               onToggleEnabled={() => onToggleEnabled(game.appId, !game.enabled)}
             />

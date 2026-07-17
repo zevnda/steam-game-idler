@@ -28,6 +28,7 @@ import { useGamesList } from '@/features/games-list/hooks/useGamesList'
 import { errorMessageKey as gamesErrorMessageKey } from '@/features/games-list/utils/errorMessageKey'
 import { GameSortSelect } from '@/shared/components/GameSortSelect'
 import { ManualAddGameModal } from '@/shared/components/ManualAddGameModal'
+import { useClearSelectionOnTabChange } from '@/shared/hooks/useClearSelectionOnTabChange'
 import { searchGames } from '@/shared/search/fuzzySearch'
 import { useAchievementOrderStore } from '@/shared/stores/achievementOrderStore'
 import { useAchievementUnlockerStore } from '@/shared/stores/achievementUnlockerStore'
@@ -70,6 +71,7 @@ export const AchievementUnlockerPage = () => {
   } = useAchievementUnlockerQueue()
   const openOrderEditor = useAchievementOrderStore(state => state.open)
   const [activeTab, setActiveTab] = useState<AchievementUnlockerTab>('browse')
+  useClearSelectionOnTabChange(activeTab)
   const [confirmClearOpen, setConfirmClearOpen] = useState(false)
   const [confirmAddAllOpen, setConfirmAddAllOpen] = useState(false)
   const [isManualAddOpen, setIsManualAddOpen] = useState(false)

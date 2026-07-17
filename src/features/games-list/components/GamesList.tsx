@@ -1,3 +1,4 @@
+import type { SelectableGame } from '@/shared/hooks/useCardSelection'
 import type { RowComponentProps } from 'react-window'
 import type { OwnedGame } from '../types'
 import { useMemo, useRef } from 'react'
@@ -12,6 +13,7 @@ import {
   GAME_GRID_GAP,
   useResponsiveColumnCount,
 } from '@/shared/hooks/useGameGridColumns'
+import { useSelectableGames } from '@/shared/hooks/useSelectableGames'
 
 // Fixed carousel card widths matching `main`'s own GamesList.tsx (`w-110`/`w-48`) - "Recommended"/
 // "Recently Played" are a discovery surface with their own horizontal scroll, not part of the
@@ -44,6 +46,7 @@ interface GamesListProps {
 
 interface RowProps {
   rows: ListRow[]
+  selectableGames: SelectableGame[]
   cardWidth: number
   cardRowHeight: number
   recommendedGames: OwnedGame[]
@@ -80,6 +83,7 @@ const GamesListRow = ({
   index,
   style,
   rows,
+  selectableGames,
   cardWidth,
   cardRowHeight,
   recommendedGames,
@@ -94,12 +98,17 @@ const GamesListRow = ({
 }: RowComponentProps<RowProps>) => {
   const row = rows[index]
 
-  const renderGameCard = (game: OwnedGame) => (
+  // `orderedGames` is only passed for the main "All Games" grid rows below, not the carousel rows
+  // (`renderItem={renderGameCard}` calls this with a single arg) - carousels are a discovery
+  // surface, not part of the multi-select grid, so their cards opt out of selection entirely (see
+  // `useCardSelection.ts`).
+  const renderGameCard = (game: OwnedGame, orderedGames?: SelectableGame[]) => (
     <GameCard
       game={game}
       idleStartTime={idleStartTimes[game.appId]}
       isIdlePending={idlePendingAppIds.has(game.appId)}
       isIdling={idlingAppIds.includes(game.appId)}
+      orderedGames={orderedGames}
       onToggleIdle={() => onToggleIdle(game.appId)}
     />
   )
@@ -151,7 +160,7 @@ const GamesListRow = ({
     >
       {row.games.map(game => (
         <div className='shrink-0' key={game.appId} style={{ width: cardWidth }}>
-          {renderGameCard(game)}
+          {renderGameCard(game, selectableGames)}
         </div>
       ))}
     </div>
@@ -179,6 +188,8 @@ export const GamesList = ({
   const cardRowHeight =
     Math.round(cardWidth * GAME_CARD_THUMBNAIL_ASPECT) + GAME_CARD_INFO_HEIGHT + GAME_GRID_GAP
 
+  const selectableGames = useSelectableGames(games)
+
   const rows = useMemo<ListRow[]>(() => {
     const result: ListRow[] = []
     if (showRecommendedCarousel && recommendedGames.length > 0) result.push({ type: 'recommended' })
@@ -199,6 +210,7 @@ export const GamesList = ({
 
   const rowProps: RowProps = {
     rows,
+    selectableGames,
     cardWidth,
     cardRowHeight,
     recommendedGames,

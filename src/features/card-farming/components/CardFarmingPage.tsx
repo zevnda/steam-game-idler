@@ -36,6 +36,7 @@ import { GameGridSkeleton } from '@/shared/components/GameGridSkeleton'
 import { GameSortSelect } from '@/shared/components/GameSortSelect'
 import { ManualAddGameModal } from '@/shared/components/ManualAddGameModal'
 import { useAutoConnectSteamCookies } from '@/shared/hooks/useAutoConnectSteamCookies'
+import { useClearSelectionOnTabChange } from '@/shared/hooks/useClearSelectionOnTabChange'
 import { searchGames } from '@/shared/search/fuzzySearch'
 import { useCardFarmingStore } from '@/shared/stores/cardFarmingStore'
 import { useSearchStore } from '@/shared/stores/searchStore'
@@ -113,6 +114,7 @@ export const CardFarmingPage = () => {
   } = useCardFarmingBlacklist()
   const { isChecking, isAutoConnecting } = useAutoConnectSteamCookies(account, connect)
   const [activeTab, setActiveTab] = useState<CardFarmingTab>('browse')
+  useClearSelectionOnTabChange(activeTab)
   // Lives in `cardFarmingStore` (account-keyed, survives this page unmounting) rather than local
   // state - see that store's `dismissedFinished` doc comment for why: a page remount must not
   // resurrect an already-dismissed summary.

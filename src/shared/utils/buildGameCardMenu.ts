@@ -11,9 +11,13 @@ import { emitGameListChange } from '@/shared/utils/gameListsBus'
 import { invoke } from '@/shared/utils/invoke'
 import { openExternalLink } from '@/shared/utils/links'
 
-interface BuildGameCardMenuArgs {
+interface GameCardTargetGame {
   appId: number
   name: string
+}
+
+interface BuildGameCardMenuArgs {
+  games: GameCardTargetGame[]
   account: SignedInAccount
   t: TFunction
 }
@@ -22,9 +26,23 @@ function reportFailure(t: TFunction, code: string) {
   toast.danger(t(errorMessageKey(code), { code }))
 }
 
-async function toggleIdling(appId: number, name: string, account: SignedInAccount, t: TFunction) {
+// Single-game path keeps calling the original `toggle_manual_idle` command unchanged; a selection
+// of more than one game goes through `toggle_manual_idle_bulk`, which decides start-vs-stop **per
+// app id** on the backend so a mixed selection (some already idling, some not) resolves correctly
+// in one call rather than needing the frontend to pre-split the selection.
+async function toggleIdling(games: GameCardTargetGame[], account: SignedInAccount, t: TFunction) {
   try {
-    const result = await invoke<IdleSetResult>('toggle_manual_idle', { account, appId, name })
+    const result =
+      games.length === 1
+        ? await invoke<IdleSetResult>('toggle_manual_idle', {
+            account,
+            appId: games[0].appId,
+            name: games[0].name,
+          })
+        : await invoke<IdleSetResult>('toggle_manual_idle_bulk', {
+            account,
+            targets: games,
+          })
     const failure = result.failures[0]?.error
     if (failure) reportFailure(t, failure)
   } catch (error) {
@@ -39,22 +57,45 @@ async function toggleIdling(appId: number, name: string, account: SignedInAccoun
 // round trips before the menu could even open. No card-farming drops-eligibility check either,
 // mirroring the existing "Manual Add" button (CardFarmingPageHeader.tsx), which already allows
 // queuing any app id regardless of drops.
+//
+// Loops the single-game command across `games` rather than a new bulk Tauri command - each command
+// already returns the full updated list, so the last successfully-resolved one is authoritative;
+// a per-game failure is logged and otherwise ignored, matching the single-game call site's own
+// silent-on-error behavior (no toast today for this action).
 async function addToList(
   command: string,
   list: GameListName,
   account: SignedInAccount,
-  game: Record<string, unknown>,
+  games: GameCardTargetGame[],
 ) {
-  try {
-    const result = await invoke<unknown[]>(command, { account, game })
-    emitGameListChange(list, result)
-  } catch (error) {
-    console.error(`Error in (${command}):`, error)
+  const results = await Promise.allSettled(
+    games.map(game => invoke<unknown[]>(command, { account, game })),
+  )
+  for (const result of results) {
+    if (result.status === 'rejected') {
+      console.error(`Error in (${command}):`, result.reason)
+    }
   }
+  const lastFulfilled = results.findLast(
+    (result): result is PromiseFulfilledResult<unknown[]> => result.status === 'fulfilled',
+  )
+  if (lastFulfilled) emitGameListChange(list, lastFulfilled.value)
 }
 
-export async function buildGameCardMenu({ appId, name, account, t }: BuildGameCardMenuArgs) {
-  const isIdling = useIdlingStore.getState().appIds.includes(appId)
+export async function buildGameCardMenu({ games, account, t }: BuildGameCardMenuArgs) {
+  const isBulk = games.length > 1
+  const idlingAppIds = useIdlingStore.getState().appIds
+  const idlingCount = games.filter(game => idlingAppIds.includes(game.appId)).length
+
+  const toggleIdleLabel = isBulk
+    ? idlingCount === 0
+      ? t('common.gameCardMenu.startIdlingSelected', { count: games.length })
+      : idlingCount === games.length
+        ? t('common.gameCardMenu.stopIdlingSelected', { count: games.length })
+        : t('common.gameCardMenu.toggleIdlingSelected', { count: games.length })
+    : idlingAppIds.includes(games[0].appId)
+      ? t('common.gameCardMenu.stopIdling')
+      : t('common.gameCardMenu.startIdling')
 
   const addToSubmenu = await Submenu.new({
     id: 'game-card-add-to',
@@ -63,32 +104,34 @@ export async function buildGameCardMenu({ appId, name, account, t }: BuildGameCa
       await MenuItem.new({
         id: 'game-card-add-to-favorites',
         text: t('dashboard.sidebar.nav.favorites'),
-        action: () => addToList('add_favorite', 'favorites', account, { appId, name }),
+        action: () => addToList('add_favorite', 'favorites', account, games),
       }),
       await MenuItem.new({
         id: 'game-card-add-to-card-farming',
         text: t('dashboard.sidebar.nav.cardFarming'),
-        action: () =>
-          addToList('add_to_card_farming_queue', 'cardFarmingQueue', account, { appId, name }),
+        action: () => addToList('add_to_card_farming_queue', 'cardFarmingQueue', account, games),
       }),
       await MenuItem.new({
         id: 'game-card-add-to-achievement-unlocker',
         text: t('dashboard.sidebar.nav.achievementUnlocker'),
         action: () =>
-          addToList('add_to_achievement_unlocker_queue', 'achievementUnlockerQueue', account, {
-            appId,
-            name,
-          }),
+          addToList(
+            'add_to_achievement_unlocker_queue',
+            'achievementUnlockerQueue',
+            account,
+            games,
+          ),
       }),
       await MenuItem.new({
         id: 'game-card-add-to-auto-idle',
         text: t('dashboard.sidebar.nav.autoIdle'),
         action: () =>
-          addToList('add_to_auto_idle_list', 'autoIdleList', account, {
-            appId,
-            name,
-            enabled: true,
-          }),
+          addToList(
+            'add_to_auto_idle_list',
+            'autoIdleList',
+            account,
+            games.map(game => ({ ...game, enabled: true })),
+          ),
       }),
     ],
   })
@@ -96,19 +139,21 @@ export async function buildGameCardMenu({ appId, name, account, t }: BuildGameCa
   return [
     await MenuItem.new({
       id: 'game-card-toggle-idle',
-      text: isIdling ? t('common.gameCardMenu.stopIdling') : t('common.gameCardMenu.startIdling'),
-      action: () => toggleIdling(appId, name, account, t),
+      text: toggleIdleLabel,
+      action: () => toggleIdling(games, account, t),
     }),
     await MenuItem.new({
       id: 'game-card-manage-achievements',
       text: t('common.gameCardMenu.manageAchievements'),
-      action: () => useAchievementManagerStore.getState().open(appId, name),
+      enabled: !isBulk,
+      action: () => useAchievementManagerStore.getState().open(games[0].appId, games[0].name),
     }),
     await PredefinedMenuItem.new({ item: 'Separator' }),
     await MenuItem.new({
       id: 'game-card-view-on-steam',
       text: t('common.gameCardMenu.viewOnSteam'),
-      action: () => openExternalLink(`https://store.steampowered.com/app/${appId}`),
+      enabled: !isBulk,
+      action: () => openExternalLink(`https://store.steampowered.com/app/${games[0].appId}`),
     }),
     await PredefinedMenuItem.new({ item: 'Separator' }),
     addToSubmenu,

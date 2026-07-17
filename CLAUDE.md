@@ -189,10 +189,6 @@ release, not just in a dev environment.
 - **No implicit manual-install requirements.** If a feature needs something present on the user's
   machine, bundle/install it automatically (extend the NSIS installer) — never document it as a
   manual step.
-- **The Steam Web API key is only obfuscated (compile-time embedded), not actually secure** — a
-  deliberate, permanent decision. The real fix (a project-controlled proxy server) is a real infra
-  commitment nobody's taken on; not revisiting unless the current approach proves insufficient
-  (key extracted/abused).
 
 ## The updater — do not break the update path
 

@@ -1,3 +1,4 @@
+import type { SelectableGame } from '@/shared/hooks/useCardSelection'
 import type { CardFarmingQueueEntry } from '../types'
 import { CardFarmingListCard } from './CardFarmingListCard'
 import { useSortable } from '@dnd-kit/sortable'
@@ -8,6 +9,7 @@ interface SortableCardFarmingQueueCardProps {
   isDragging: boolean
   isPending?: boolean
   onRemove: () => void
+  orderedGames?: SelectableGame[]
 }
 
 export const SortableCardFarmingQueueCard = ({
@@ -15,6 +17,7 @@ export const SortableCardFarmingQueueCard = ({
   isDragging,
   isPending,
   onRemove,
+  orderedGames,
 }: SortableCardFarmingQueueCardProps) => {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: game.appId,
@@ -28,7 +31,12 @@ export const SortableCardFarmingQueueCard = ({
       {...attributes}
       {...listeners}
     >
-      <CardFarmingListCard game={game} isPending={isPending} onRemove={onRemove} />
+      <CardFarmingListCard
+        game={game}
+        isPending={isPending}
+        orderedGames={orderedGames}
+        onRemove={onRemove}
+      />
     </div>
   )
 }

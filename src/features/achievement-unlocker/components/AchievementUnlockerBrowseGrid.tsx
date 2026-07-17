@@ -1,6 +1,7 @@
 import type { OwnedGame } from '@/features/games-list/types'
 import { AchievementUnlockerGameCard } from './AchievementUnlockerGameCard'
 import { VirtualizedGameGrid } from '@/shared/components/VirtualizedGameGrid'
+import { useSelectableGames } from '@/shared/hooks/useSelectableGames'
 
 interface AchievementUnlockerBrowseGridProps {
   games: OwnedGame[]
@@ -15,6 +16,8 @@ export const AchievementUnlockerBrowseGrid = ({
   pendingAppIds,
   onToggle,
 }: AchievementUnlockerBrowseGridProps) => {
+  const selectableGames = useSelectableGames(games)
+
   return (
     <VirtualizedGameGrid
       games={games}
@@ -23,6 +26,7 @@ export const AchievementUnlockerBrowseGrid = ({
           game={game}
           isPending={pendingAppIds.has(game.appId)}
           isQueued={queuedAppIds.has(game.appId)}
+          orderedGames={selectableGames}
           onToggle={() => onToggle(game)}
         />
       )}

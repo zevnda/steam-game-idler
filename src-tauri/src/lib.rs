@@ -124,6 +124,7 @@ pub fn run() {
             games::commands::resolve_account_steam_id,
             idling::commands::get_idle_state,
             idling::commands::toggle_manual_idle,
+            idling::commands::toggle_manual_idle_bulk,
             idling::commands::stop_all_idling,
             idling::commands::get_idle_claims,
             idling::commands::stop_owner_idling,

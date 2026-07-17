@@ -1,5 +1,6 @@
 import type { CardFarmingBlacklistEntry } from '../types'
 import { CardFarmingBlacklistCard } from './CardFarmingBlacklistCard'
+import { useSelectableGames } from '@/shared/hooks/useSelectableGames'
 
 interface CardFarmingBlacklistGridProps {
   blacklist: CardFarmingBlacklistEntry[]
@@ -14,6 +15,8 @@ export const CardFarmingBlacklistGrid = ({
   pendingAppIds,
   onRemove,
 }: CardFarmingBlacklistGridProps) => {
+  const selectableGames = useSelectableGames(blacklist)
+
   return (
     <div className='grid grid-cols-2 gap-4 p-6 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6'>
       {blacklist.map(game => (
@@ -21,6 +24,7 @@ export const CardFarmingBlacklistGrid = ({
           key={game.appId}
           game={game}
           isPending={pendingAppIds.has(game.appId)}
+          orderedGames={selectableGames}
           onRemove={() => onRemove(game.appId)}
         />
       ))}

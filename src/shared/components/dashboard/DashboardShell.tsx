@@ -23,6 +23,8 @@ import { useAntiAwayStatus } from '@/shared/hooks/useAntiAwayStatus'
 import { useAutoUpdateGamesListStatus } from '@/shared/hooks/useAutoUpdateGamesListStatus'
 import { useCarouselSettingsSync } from '@/shared/hooks/useCarouselSettingsSync'
 import { useCheckSubscription } from '@/shared/hooks/useCheckSubscription'
+import { useClearSelectionOnEscape } from '@/shared/hooks/useClearSelectionOnEscape'
+import { useClearSelectionOnNavigation } from '@/shared/hooks/useClearSelectionOnNavigation'
 import { useDashboardShortcuts } from '@/shared/hooks/useDashboardShortcuts'
 import { useDisableTooltipsSync } from '@/shared/hooks/useDisableTooltipsSync'
 import { useGlobalSearchShortcut } from '@/shared/hooks/useGlobalSearchShortcut'
@@ -67,6 +69,8 @@ export const DashboardShell = ({ children }: DashboardShellProps) => {
   useSteamMonitor()
   useSteamCookiesSync()
   useSortPreferencesSync()
+  useClearSelectionOnEscape()
+  useClearSelectionOnNavigation()
 
   return (
     <div className='flex h-screen w-screen'>

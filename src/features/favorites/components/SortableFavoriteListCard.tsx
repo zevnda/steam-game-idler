@@ -1,3 +1,4 @@
+import type { SelectableGame } from '@/shared/hooks/useCardSelection'
 import type { FavoriteEntry } from '../types'
 import { FavoriteListCard } from './FavoriteListCard'
 import { useSortable } from '@dnd-kit/sortable'
@@ -8,6 +9,7 @@ interface SortableFavoriteListCardProps {
   isDragging: boolean
   isPending?: boolean
   onRemove: () => void
+  orderedGames?: SelectableGame[]
 }
 
 export const SortableFavoriteListCard = ({
@@ -15,6 +17,7 @@ export const SortableFavoriteListCard = ({
   isDragging,
   isPending,
   onRemove,
+  orderedGames,
 }: SortableFavoriteListCardProps) => {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: favorite.appId,
@@ -28,7 +31,12 @@ export const SortableFavoriteListCard = ({
       {...attributes}
       {...listeners}
     >
-      <FavoriteListCard favorite={favorite} isPending={isPending} onRemove={onRemove} />
+      <FavoriteListCard
+        favorite={favorite}
+        isPending={isPending}
+        orderedGames={orderedGames}
+        onRemove={onRemove}
+      />
     </div>
   )
 }

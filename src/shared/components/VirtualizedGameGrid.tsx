@@ -26,7 +26,11 @@ const PADDING = 24
 
 interface VirtualizedGameGridProps {
   games: OwnedGame[]
-  renderCard: (game: OwnedGame) => ReactNode
+  // Second argument is the full `games` array (display order) - lets each caller's `renderCard`
+  // thread it through as `orderedGames` for Shift-click range-select (see
+  // `useCardSelection.ts`/`SelectableGame`), without this grid needing to know anything about
+  // selection itself.
+  renderCard: (game: OwnedGame, games: OwnedGame[]) => ReactNode
 }
 
 interface CellProps {
@@ -37,7 +41,7 @@ interface CellProps {
   realColumnCount: number
   cardWidth: number
   cardHeight: number
-  renderCard: (game: OwnedGame) => ReactNode
+  renderCard: (game: OwnedGame, games: OwnedGame[]) => ReactNode
 }
 
 // Every card - including the last in a row/column - renders at this fixed `cardWidth`/`cardHeight`.
@@ -62,7 +66,7 @@ const Cell = ({
   if (!game) return null
   return (
     <div {...ariaAttributes} style={{ ...style, width: cardWidth, height: cardHeight }}>
-      {renderCard(game)}
+      {renderCard(game, games)}
     </div>
   )
 }

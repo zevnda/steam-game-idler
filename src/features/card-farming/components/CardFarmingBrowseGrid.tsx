@@ -1,5 +1,6 @@
 import type { GameWithDrops } from '../types'
 import { CardFarmingBrowseCard } from './CardFarmingBrowseCard'
+import { useSelectableGames } from '@/shared/hooks/useSelectableGames'
 
 interface CardFarmingBrowseGridProps {
   games: GameWithDrops[]
@@ -22,6 +23,8 @@ export const CardFarmingBrowseGrid = ({
   onToggle,
   onBlacklist,
 }: CardFarmingBrowseGridProps) => {
+  const selectableGames = useSelectableGames(games)
+
   return (
     <div className='grid grid-cols-2 gap-4 p-6 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6'>
       {games.map(game => (
@@ -31,6 +34,7 @@ export const CardFarmingBrowseGrid = ({
           isBlacklistPending={pendingBlacklistAppIds.has(game.appId)}
           isPending={pendingAppIds.has(game.appId)}
           isQueued={queuedAppIds.has(game.appId)}
+          orderedGames={selectableGames}
           onBlacklist={() => onBlacklist(game)}
           onToggle={() => onToggle(game)}
         />

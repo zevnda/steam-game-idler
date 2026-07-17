@@ -145,6 +145,71 @@ impl IdleClaimsRegistry {
         .await
     }
 
+    /// Bulk version of the manual start/stop toggle - decides start-vs-stop **per app id**
+    /// (mirrors `toggle_manual_idle`'s single-game decision: claimed by any owner means stop,
+    /// clearing every owner; unclaimed means start, added to `"manual"`), all under one lock hold
+    /// so a mixed selection (some already idling, some not) resolves correctly in a single
+    /// announce instead of one call per game - see the multi-select context menu's bulk "start/stop
+    /// idling" action. Returns which app ids ended up newly-started vs newly-stopped so the caller
+    /// can schedule/bump auto-stop timers for exactly those, mirroring what the single-game
+    /// `toggle_manual_idle` command does after its own start/stop branch.
+    pub async fn toggle_manual_bulk(
+        &self,
+        app_handle: &AppHandle,
+        agent_manager: State<'_, AgentManager>,
+        idling_manager: State<'_, IdlingManager>,
+        account: GamesAccount,
+        targets: Vec<IdleTarget>,
+    ) -> AppResult<(IdleSetResult, Vec<u32>, Vec<u32>)> {
+        let steam_id = resolve_steam_id(&account, &agent_manager).await?;
+        self.accounts
+            .lock()
+            .await
+            .insert(steam_id.clone(), account.clone());
+        let mut claims = self.claims.lock().await;
+        let account_claims = claims.entry(steam_id.clone()).or_default();
+
+        let mut started = Vec::new();
+        let mut stopped = Vec::new();
+        for IdleTarget { app_id, name } in targets {
+            let claimed_elsewhere = account_claims
+                .values()
+                .any(|owner_claims| owner_claims.contains_key(&app_id));
+            if claimed_elsewhere {
+                for owner_claims in account_claims.values_mut() {
+                    owner_claims.remove(&app_id);
+                }
+                stopped.push(app_id);
+            } else {
+                account_claims
+                    .entry(OWNER_MANUAL)
+                    .or_default()
+                    .insert(app_id, name);
+                started.push(app_id);
+            }
+        }
+        account_claims.retain(|_, owner_claims| !owner_claims.is_empty());
+        let union = union_targets(account_claims);
+        drop(claims);
+        tracing::info!(
+            steam_id,
+            started = started.len(),
+            stopped = stopped.len(),
+            "idling: bulk manual toggle"
+        );
+
+        let result = apply_idle_targets(
+            app_handle.clone(),
+            agent_manager,
+            idling_manager,
+            account,
+            union,
+        )
+        .await?;
+
+        Ok((result, started, stopped))
+    }
+
     /// Removes `app_id` from only `owner`'s claim *for `account`*, then announces the resulting
     /// union - backs `idling::auto_stop`'s per-owner max-idle-time timer, so a game idling under
     /// more than one owner at once (e.g. manually started while also sitting in the auto-idle

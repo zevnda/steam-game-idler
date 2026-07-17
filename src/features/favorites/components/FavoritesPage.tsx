@@ -26,6 +26,7 @@ import { useGamesList } from '@/features/games-list/hooks/useGamesList'
 import { errorMessageKey as gamesErrorMessageKey } from '@/features/games-list/utils/errorMessageKey'
 import { GameSortSelect } from '@/shared/components/GameSortSelect'
 import { ManualAddGameModal } from '@/shared/components/ManualAddGameModal'
+import { useClearSelectionOnTabChange } from '@/shared/hooks/useClearSelectionOnTabChange'
 import { searchGames } from '@/shared/search/fuzzySearch'
 import { useSearchStore } from '@/shared/stores/searchStore'
 import { useSessionStore } from '@/shared/stores/sessionStore'
@@ -64,6 +65,7 @@ export const FavoritesPage = () => {
     toggleFavorite,
   } = useFavorites()
   const [activeTab, setActiveTab] = useState<FavoritesTab>('browse')
+  useClearSelectionOnTabChange(activeTab)
   const [confirmClearOpen, setConfirmClearOpen] = useState(false)
   const [isManualAddOpen, setIsManualAddOpen] = useState(false)
   const searchQuery = useSearchStore(state => state.queries.favorites ?? '')

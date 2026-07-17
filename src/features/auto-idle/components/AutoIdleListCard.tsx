@@ -1,7 +1,9 @@
+import type { SelectableGame } from '@/shared/hooks/useCardSelection'
 import type { AutoIdleEntry } from '../types'
 import { TbX } from 'react-icons/tb'
 import { Button, Switch, Typography } from '@heroui/react'
 import { GameThumbnail } from '@/shared/components/GameThumbnail'
+import { useCardSelection } from '@/shared/hooks/useCardSelection'
 import { gameCardContextAttrs } from '@/shared/utils/gameCardContext'
 
 interface AutoIdleListCardProps {
@@ -9,6 +11,7 @@ interface AutoIdleListCardProps {
   isPending: boolean
   onToggleEnabled: () => void
   onRemove: () => void
+  orderedGames?: SelectableGame[]
 }
 
 // Used in the "Queue" tab - a thumbnail + name + an enable/disable switch + a remove button (the
@@ -22,13 +25,21 @@ export const AutoIdleListCard = ({
   isPending,
   onToggleEnabled,
   onRemove,
+  orderedGames,
 }: AutoIdleListCardProps) => {
+  const { isSelected, onMouseDown } = useCardSelection(game.appId, game.name, orderedGames)
+
   return (
     <div
-      className={
-        game.enabled ? 'group flex flex-col gap-2' : 'group flex flex-col gap-2 opacity-50'
-      }
+      className={[
+        'group flex flex-col gap-2',
+        game.enabled ? '' : 'opacity-50',
+        isSelected ? 'ring-primary rounded-md ring-2' : '',
+      ]
+        .filter(Boolean)
+        .join(' ')}
       {...gameCardContextAttrs(game.appId, game.name)}
+      onMouseDown={onMouseDown}
     >
       <GameThumbnail appId={game.appId} name={game.name} />
       <div className='flex items-center justify-between gap-2'>

@@ -2,6 +2,7 @@ import { Menu, MenuItem } from '@tauri-apps/api/menu'
 import { readText, writeText } from '@tauri-apps/plugin-clipboard-manager'
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useGameSelectionStore } from '@/shared/stores/gameSelectionStore'
 import { useSessionStore } from '@/shared/stores/sessionStore'
 import { buildGameCardMenu } from '@/shared/utils/buildGameCardMenu'
 import { findGameCardTarget } from '@/shared/utils/gameCardContext'
@@ -67,8 +68,13 @@ export function useContextMenu() {
       const account = useSessionStore.getState().account
       if (gameCardTarget && account) {
         try {
+          const selected = useGameSelectionStore.getState().selected
+          const games =
+            selected.size > 1 && selected.has(gameCardTarget.appId)
+              ? [...selected.entries()].map(([appId, name]) => ({ appId, name }))
+              : [gameCardTarget]
           const menu = await Menu.new({
-            items: await buildGameCardMenu({ ...gameCardTarget, account, t }),
+            items: await buildGameCardMenu({ games, account, t }),
           })
           await menu.popup()
         } catch (error) {

@@ -1,3 +1,4 @@
+import type { SelectableGame } from '@/shared/hooks/useCardSelection'
 import type { AutoIdleEntry } from '../types'
 import { AutoIdleListCard } from './AutoIdleListCard'
 import { useSortable } from '@dnd-kit/sortable'
@@ -9,6 +10,7 @@ interface SortableAutoIdleListCardProps {
   isPending: boolean
   onToggleEnabled: () => void
   onRemove: () => void
+  orderedGames?: SelectableGame[]
 }
 
 export const SortableAutoIdleListCard = ({
@@ -17,6 +19,7 @@ export const SortableAutoIdleListCard = ({
   isPending,
   onToggleEnabled,
   onRemove,
+  orderedGames,
 }: SortableAutoIdleListCardProps) => {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: game.appId,
@@ -33,6 +36,7 @@ export const SortableAutoIdleListCard = ({
       <AutoIdleListCard
         game={game}
         isPending={isPending}
+        orderedGames={orderedGames}
         onRemove={onRemove}
         onToggleEnabled={onToggleEnabled}
       />

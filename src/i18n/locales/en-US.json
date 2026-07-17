@@ -21,6 +21,9 @@
     "gameCardMenu": {
       "startIdling": "Start Idling",
       "stopIdling": "Stop Idling",
+      "startIdlingSelected": "Start Idling ({{count}})",
+      "stopIdlingSelected": "Stop Idling ({{count}})",
+      "toggleIdlingSelected": "Toggle Idling ({{count}})",
       "manageAchievements": "Manage Achievements",
       "viewOnSteam": "View on Steam",
       "addTo": "Add To"

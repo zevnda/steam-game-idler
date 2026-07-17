@@ -5,6 +5,7 @@ import { CardFarmingListCard } from './CardFarmingListCard'
 import { SortableCardFarmingQueueCard } from './SortableCardFarmingQueueCard'
 import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { arrayMove, SortableContext } from '@dnd-kit/sortable'
+import { useSelectableGames } from '@/shared/hooks/useSelectableGames'
 
 interface CardFarmingQueueGridProps {
   queue: CardFarmingQueueEntry[]
@@ -24,6 +25,7 @@ export const CardFarmingListGrid = ({
   const [activeId, setActiveId] = useState<number | null>(null)
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }))
   const activeItem = queue.find(item => item.appId === activeId) ?? null
+  const selectableGames = useSelectableGames(queue)
 
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(event.active.id as number)
@@ -49,6 +51,7 @@ export const CardFarmingListGrid = ({
               game={game}
               isDragging={activeId === game.appId}
               isPending={pendingAppIds.has(game.appId)}
+              orderedGames={selectableGames}
               onRemove={() => onRemove(game.appId)}
             />
           ))}

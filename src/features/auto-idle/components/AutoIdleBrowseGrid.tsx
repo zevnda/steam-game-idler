@@ -1,6 +1,7 @@
 import type { OwnedGame } from '@/features/games-list/types'
 import { AutoIdleGameCard } from './AutoIdleGameCard'
 import { VirtualizedGameGrid } from '@/shared/components/VirtualizedGameGrid'
+import { useSelectableGames } from '@/shared/hooks/useSelectableGames'
 
 interface AutoIdleBrowseGridProps {
   games: OwnedGame[]
@@ -15,6 +16,8 @@ export const AutoIdleBrowseGrid = ({
   pendingAppIds,
   onToggle,
 }: AutoIdleBrowseGridProps) => {
+  const selectableGames = useSelectableGames(games)
+
   return (
     <VirtualizedGameGrid
       games={games}
@@ -23,6 +26,7 @@ export const AutoIdleBrowseGrid = ({
           game={game}
           isPending={pendingAppIds.has(game.appId)}
           isQueued={queuedAppIds.has(game.appId)}
+          orderedGames={selectableGames}
           onToggle={() => onToggle(game)}
         />
       )}

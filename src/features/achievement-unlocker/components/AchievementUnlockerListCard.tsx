@@ -1,7 +1,9 @@
+import type { SelectableGame } from '@/shared/hooks/useCardSelection'
 import type { AchievementUnlockerEntry } from '../types'
 import { TbListNumbers, TbX } from 'react-icons/tb'
 import { Button, Typography } from '@heroui/react'
 import { GameThumbnail } from '@/shared/components/GameThumbnail'
+import { useCardSelection } from '@/shared/hooks/useCardSelection'
 import { gameCardContextAttrs } from '@/shared/utils/gameCardContext'
 
 interface AchievementUnlockerListCardProps {
@@ -9,6 +11,7 @@ interface AchievementUnlockerListCardProps {
   isPending?: boolean
   onRemove: () => void
   onEditOrder: () => void
+  orderedGames?: SelectableGame[]
 }
 
 // Used in the "Queue" tab - thumbnail + name + an "edit order" button (opens the per-game
@@ -20,9 +23,16 @@ export const AchievementUnlockerListCard = ({
   isPending,
   onRemove,
   onEditOrder,
+  orderedGames,
 }: AchievementUnlockerListCardProps) => {
+  const { isSelected, onMouseDown } = useCardSelection(game.appId, game.name, orderedGames)
+
   return (
-    <div className='group flex flex-col gap-2' {...gameCardContextAttrs(game.appId, game.name)}>
+    <div
+      className={`group flex flex-col gap-2 ${isSelected ? 'ring-primary rounded-md ring-2' : ''}`}
+      {...gameCardContextAttrs(game.appId, game.name)}
+      onMouseDown={onMouseDown}
+    >
       <GameThumbnail appId={game.appId} name={game.name} />
       <div className='flex items-center justify-between gap-2'>
         <Typography
