@@ -40,13 +40,20 @@ namespace SteamUtility.Daemon.Bot
 
         public event Action? Connected;
         public event Action<EResult>? LogOnStatusChanged;
-        // bool argument: whether this disconnect is one Start()'s own auto-reconnect/backoff below
-        // is about to retry on its own (network drop mid-session), as opposed to a permanent one
+
+        // First bool: whether this disconnect is one Start()'s own auto-reconnect/backoff below is
+        // about to retry on its own (network drop mid-session), as opposed to a permanent one
         // (Stop() called, or the disconnect happened before any LogOnAsync was ever issued).
         // Consumers that cache connection-derived state (e.g. AgentProcess's steam_id in the Rust
         // host) need this to avoid treating a transient reconnect-in-progress as a fully-gone
-        // session.
-        public event Action<bool>? Disconnected;
+        // session. Second bool: whether the server force-logged this client off because the same
+        // account signed in elsewhere - either EResult.LoggedInElsewhere (a second session started
+        // actually playing a game, the "currently playing" exclusivity conflict) or
+        // EResult.LogonSessionReplaced (a second client of the same logon type - e.g. another
+        // SteamKit2-based client, no game-playing involved at all - confirmed by real-world testing:
+        // two SGI instances signed into the same account with nothing idling on either side still
+        // kicked each other in a tight ~2s loop, which is this case, not LoggedInElsewhere.
+        public event Action<bool, bool>? Disconnected;
 
         private volatile bool _running;
         private SteamUser.LogOnDetails? _pendingLogOnDetails;
@@ -54,6 +61,11 @@ namespace SteamUtility.Daemon.Bot
         private TaskCompletionSource? _pendingConnectTcs;
         private TaskCompletionSource<bool>? _licenseListTcs;
         private int _reconnectDelayMs = InitialReconnectDelayMs;
+
+        // Captured by OnLoggedOff (fired by the server before the matching DisconnectedCallback when
+        // it force-logs the client off) and consumed/cleared by the very next OnDisconnected - see
+        // that method for why the reason isn't otherwise available there.
+        private EResult? _lastLoggedOffResult;
 
         public SteamBot()
         {
@@ -67,6 +79,7 @@ namespace SteamUtility.Daemon.Bot
             Manager.Subscribe<SteamClient.ConnectedCallback>(OnConnected);
             Manager.Subscribe<SteamClient.DisconnectedCallback>(OnDisconnected);
             Manager.Subscribe<SteamUser.LoggedOnCallback>(OnLoggedOn);
+            Manager.Subscribe<SteamUser.LoggedOffCallback>(OnLoggedOff);
             Manager.Subscribe<SteamApps.LicenseListCallback>(OnLicenseList);
         }
 
@@ -145,6 +158,14 @@ namespace SteamUtility.Daemon.Bot
             }
         }
 
+        private void OnLoggedOff(SteamUser.LoggedOffCallback callback)
+        {
+            // Just captures the reason for the OnDisconnected that immediately follows - the server
+            // sends this over the still-open connection right before tearing it down, so ordering
+            // relative to DisconnectedCallback is reliable.
+            _lastLoggedOffResult = callback.Result;
+        }
+
         private void OnDisconnected(SteamClient.DisconnectedCallback callback)
         {
             IsLoggedOn = false;
@@ -157,11 +178,27 @@ namespace SteamUtility.Daemon.Bot
             _pendingLogOnTcs?.TrySetResult(EResult.NoConnection);
             _pendingLogOnTcs = null;
 
+            var loggedOffResult = _lastLoggedOffResult;
+            _lastLoggedOffResult = null;
+            var wasKicked =
+                loggedOffResult == EResult.LoggedInElsewhere
+                || loggedOffResult == EResult.LogonSessionReplaced;
+
             // Computed before invoking the event so subscribers get an accurate signal, not just a
             // bare "disconnected" they'd have to re-derive the same reconnect eligibility for
-            // themselves.
-            var willReconnect = _running && !callback.UserInitiated && _pendingLogOnDetails != null;
-            Disconnected?.Invoke(willReconnect);
+            // themselves. Never reconnect after a kick - see the `Disconnected` event's doc comment.
+            var willReconnect =
+                !wasKicked && _running && !callback.UserInitiated && _pendingLogOnDetails != null;
+            Disconnected?.Invoke(willReconnect, wasKicked);
+
+            if (wasKicked)
+            {
+                // Drop the cached credentials/token too, not just skip this round's reconnect -
+                // otherwise a later, unrelated Client.Connect() (if one ever happened) would hit
+                // OnConnected's own reconnect-case branch and silently re-log-on with stale details,
+                // re-triggering the exact fight this is meant to stop.
+                _pendingLogOnDetails = null;
+            }
 
             if (!willReconnect)
             {

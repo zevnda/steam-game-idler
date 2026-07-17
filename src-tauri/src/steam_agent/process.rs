@@ -275,6 +275,39 @@ async fn handle_line(
                 let resolved = payload.get("steamId").and_then(|v| v.as_str());
                 let reconnecting =
                     payload.get("result").and_then(|v| v.as_str()) == Some("Reconnecting");
+                let kicked =
+                    payload.get("result").and_then(|v| v.as_str()) == Some("LoggedInElsewhere");
+
+                if kicked {
+                    // Must run before the cache-clearing branch below - should_update_steam_id
+                    // nulls the cache for exactly this case (no resolved steamId, not
+                    // "Reconnecting"), and the stop calls need the last-known SteamID64 to find
+                    // this account's running automation.
+                    let last_steam_id = steam_id.lock().unwrap().clone();
+                    match last_steam_id {
+                        Some(sid) => {
+                            // Spawned, not awaited inline - this loop is the sole reader of this
+                            // account's AgentProcess stdout, and handle_session_superseded's idle-
+                            // claims clear sends an `idle_set` IPC request back to that same
+                            // process and awaits its response. Awaiting it here would deadlock:
+                            // the response can only ever be read by this same loop reading its
+                            // next line, which can't happen while it's blocked awaiting this call
+                            // (observed as a real 30s REQUEST_TIMEOUT stall in testing, which also
+                            // delayed the generic AGENT_EVENT emit below by the same 30s since it
+                            // runs later in this function).
+                            let app_handle = app_handle.clone();
+                            let account_key = account_key.to_string();
+                            tauri::async_runtime::spawn(async move {
+                                handle_session_superseded(&app_handle, &account_key, &sid).await;
+                            });
+                        }
+                        None => tracing::warn!(
+                            account = %account_key,
+                            "steam agent: account kicked by concurrent login, but no cached steamId to stop automation with"
+                        ),
+                    }
+                }
+
                 if should_update_steam_id(resolved, reconnecting) {
                     *steam_id.lock().unwrap() = resolved.map(|s| s.to_string());
                 }
@@ -311,6 +344,58 @@ async fn handle_line(
             );
         }
     }
+}
+
+/// Reacts to `status_changed{result: "LoggedInElsewhere"}` - the account was force-logged-off by
+/// Steam because it signed in elsewhere (another device/session, or the real Steam client). Stops
+/// this account's automation via the exact same underlying calls
+/// `stop_farming`/`stop_achievement_unlocker`/`stop_all_idling` already make, rather than letting
+/// the daemon's own auto-reconnect (already suppressed for this case - see
+/// `SteamBot.cs::OnDisconnected`) leave stale automation state around. Runs unconditionally here
+/// (not gated behind the frontend being mounted/listening) so pausing is reliable regardless of
+/// whether anyone's looking at the app right now.
+///
+/// Deliberately does not call `agent_logout`/kill the `AgentProcess` - the daemon connection is
+/// already dead Steam-side, and keeping the process alive means a normal re-login later
+/// (`AgentManager::login`, whose `respawn()` already kills any stale existing process for the key
+/// and spawns fresh) is all that's needed to resume - no separate "resume" path required.
+async fn handle_session_superseded(app_handle: &AppHandle, account_key: &str, steam_id: &str) {
+    if let Err(e) = app_handle
+        .state::<crate::card_farming::CardFarmingManager>()
+        .stop(steam_id)
+        .await
+    {
+        tracing::warn!(account = %account_key, error = %e, "steam agent: failed to stop card farming after concurrent-login kick");
+    }
+
+    if let Err(e) = app_handle
+        .state::<crate::achievement_unlocker::AchievementUnlockerManager>()
+        .stop(steam_id)
+        .await
+    {
+        tracing::warn!(account = %account_key, error = %e, "steam agent: failed to stop achievement unlocker after concurrent-login kick");
+    }
+
+    let account = crate::games::commands::GamesAccount::Agent {
+        username: account_key.to_string(),
+    };
+    if let Err(e) = app_handle
+        .state::<crate::idling::claims::IdleClaimsRegistry>()
+        .clear_all(
+            app_handle,
+            app_handle.state::<crate::steam_agent::AgentManager>(),
+            app_handle.state::<crate::idling::IdlingManager>(),
+            account,
+        )
+        .await
+    {
+        tracing::warn!(account = %account_key, error = %e, "steam agent: failed to clear idle claims after concurrent-login kick");
+    }
+
+    tracing::warn!(
+        account = %account_key,
+        "steam agent: account signed in on another device - automation paused, re-authentication required"
+    );
 }
 
 /// Whether a `status_changed` event's `steamId` should overwrite `AgentProcess::steam_id`'s cache.

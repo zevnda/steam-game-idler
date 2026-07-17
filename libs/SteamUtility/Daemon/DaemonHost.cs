@@ -58,7 +58,7 @@ namespace SteamUtility.Daemon
                     }
                 );
             };
-            _bot.Disconnected += willReconnect =>
+            _bot.Disconnected += (willReconnect, wasKicked) =>
             {
                 IpcServer.SendEvent(
                     "status_changed",
@@ -68,7 +68,13 @@ namespace SteamUtility.Daemon
                         // "Reconnecting" lets the Rust host (steam_agent/process.rs) tell this
                         // transient, self-recovering disconnect apart from a genuinely dead
                         // session - see that file's handle_line for why the distinction matters.
-                        result = willReconnect ? "Reconnecting" : "Disconnected",
+                        // "LoggedInElsewhere" is a third, distinct sentinel: the account was force-
+                        // logged-off because it signed in elsewhere (another device/session) - the
+                        // Rust host reacts to this one by pausing automation instead of waiting on a
+                        // reconnect that will never come.
+                        result = wasKicked
+                            ? "LoggedInElsewhere"
+                            : (willReconnect ? "Reconnecting" : "Disconnected"),
                         steamId = (string?)null,
                     }
                 );

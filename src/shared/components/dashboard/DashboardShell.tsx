@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { Sidebar } from './Sidebar'
 import { AddAccountModal } from '@/features/account-switcher/components/AddAccountModal'
+import { ReauthModal } from '@/features/account-switcher/components/ReauthModal'
 import { useAgentAccountCapEnforcement } from '@/features/account-switcher/hooks/useAgentAccountCapEnforcement'
 import { AchievementManagerOverlay } from '@/features/achievement-manager/components/AchievementManagerOverlay'
 import { AchievementOrderOverlay } from '@/features/achievement-unlocker/components/AchievementOrderOverlay'
@@ -19,6 +20,7 @@ import { GlobalSearchModal } from '@/shared/components/search/GlobalSearchModal'
 import { SteamWarning } from '@/shared/components/SteamWarning'
 import { useAccountSummaries } from '@/shared/hooks/useAccountSummaries'
 import { useAchievementUnlockerConcurrencyGuard } from '@/shared/hooks/useAchievementUnlockerConcurrencyGuard'
+import { useAgentReauthWatcher } from '@/shared/hooks/useAgentReauthWatcher'
 import { useAntiAwayStatus } from '@/shared/hooks/useAntiAwayStatus'
 import { useAutoUpdateGamesListStatus } from '@/shared/hooks/useAutoUpdateGamesListStatus'
 import { useCarouselSettingsSync } from '@/shared/hooks/useCarouselSettingsSync'
@@ -53,6 +55,7 @@ export const DashboardShell = ({ children }: DashboardShellProps) => {
   useSubscriptionCacheSync()
   useCheckSubscription()
   useAgentAccountCapEnforcement()
+  useAgentReauthWatcher()
   usePresenceProGuard()
   useAchievementUnlockerConcurrencyGuard()
   useGlobalSearchShortcut()
@@ -81,6 +84,7 @@ export const DashboardShell = ({ children }: DashboardShellProps) => {
 
       <SettingsModal />
       <AddAccountModal />
+      <ReauthModal />
       <AchievementManagerOverlay />
       <AchievementOrderOverlay />
       <GlobalSearchModal />

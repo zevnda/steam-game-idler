@@ -360,6 +360,15 @@
           "capReached_other": "The {{tier}} plan allows {{count}} accounts signed in with Steam at a time. Sign out of one to add another, or upgrade for more.",
           "capReachedMax": "You've reached the maximum number of accounts that can be signed in with Steam at the same time.",
           "added": "Added {{name}}"
+        },
+        "reauth": {
+          "badge": "Signed in elsewhere",
+          "tooltip": "This account was signed in on another device, so its automation has been paused. Sign in again to continue.",
+          "modalTitle": "Signed in on another device",
+          "modalDescription": "{{account}} was signed in on another device, so its automation has been paused. Sign in again to continue.",
+          "reconnect": "Reconnect",
+          "methodExplainer": "Sign in with Steam only allows one active session per account. If you'd like to keep playing games while Steam Game Idler runs, use Legacy sign in instead.",
+          "useDifferentMethod": "Use a different sign-in method"
         }
       },
       "ads": {
