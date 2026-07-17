@@ -385,7 +385,9 @@
       },
       "sort": {
         "playtimeDesc": "Playtime (High to Low)",
-        "playtimeAsc": "Playtime (Low to High)"
+        "playtimeAsc": "Playtime (Low to High)",
+        "recentlyPlayedDesc": "Recently Played (Newest First)",
+        "recentlyPlayedAsc": "Recently Played (Oldest First)"
       },
       "empty": {
         "title": "No games found",
