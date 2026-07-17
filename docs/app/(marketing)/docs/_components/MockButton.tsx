@@ -1,26 +1,40 @@
 import { FaCheck } from 'react-icons/fa'
-import { FaSteam } from 'react-icons/fa6'
+import { FaPaypal, FaSteam, FaStripe } from 'react-icons/fa6'
 import { GoGrabber } from 'react-icons/go'
 import {
+  TbArrowRight,
   TbArrowsSort,
   TbAward,
   TbBuildingStore,
   TbCards,
   TbChecks,
   TbCopy,
+  TbCreditCard,
   TbDeviceGamepad2,
   TbDownload,
   TbEraser,
+  TbExternalLink,
+  TbFileExport,
+  TbFolderOpen,
   TbGift,
   TbHeart,
   TbHourglassLow,
+  TbKey,
   TbLock,
   TbLockOpen,
+  TbLogin2,
+  TbLogout2,
   TbPackageExport,
   TbPlayerPlay,
+  TbPlayerStopFilled,
   TbPlus,
+  TbQrcode,
+  TbRefresh,
   TbSettings,
+  TbTrash,
   TbUpload,
+  TbUserCircle,
+  TbUserPlus,
 } from 'react-icons/tb'
 
 type ButtonType =
@@ -58,6 +72,29 @@ type ButtonType =
   | 'checkbox'
   | 'import-timings'
   | 'sell-dupes'
+  | 'sign-in-with-steam'
+  | 'legacy-sign-in'
+  | 'qr-sign-in'
+  | 'continue'
+  | 'account-switcher'
+  | 'add-account'
+  | 'sign-out'
+  | 'manage-subscription'
+  | 'upgrade'
+  | 'activate'
+  | 'copy'
+  | 'clear'
+  | 'view-log-file'
+  | 'open-settings-file'
+  | 'export-settings'
+  | 'clear-logs'
+  | 'reset-settings'
+  | 'clear-data'
+  | 'stop'
+  | 'stop-all'
+  | 'go-pro'
+  | 'pay-stripe'
+  | 'pay-paypal'
 
 interface MockButtonProps {
   type: ButtonType
@@ -192,7 +229,7 @@ export default function MockButton({ type, content }: MockButtonProps) {
   } else if (type === 'your-games') {
     return (
       <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
-        <TbDeviceGamepad2 fontSize={16} className='inline' /> Your Games
+        <TbDeviceGamepad2 fontSize={16} className='inline' /> Games
       </span>
     )
   } else if (type === 'inventory-manager') {
@@ -204,7 +241,7 @@ export default function MockButton({ type, content }: MockButtonProps) {
   } else if (type === 'idling-games') {
     return (
       <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
-        <TbPlayerPlay fontSize={16} className='inline' /> Idling Games
+        <TbPlayerPlay fontSize={16} className='inline' /> Idling
       </span>
     )
   } else if (type === 'auto-idle') {
@@ -234,7 +271,7 @@ export default function MockButton({ type, content }: MockButtonProps) {
   } else if (type === 'favorites') {
     return (
       <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
-        <TbHeart fontSize={16} className='inline' /> Favorite Games
+        <TbHeart fontSize={16} className='inline' /> Favorites
       </span>
     )
   } else if (type === 'start-idle') {
@@ -273,6 +310,148 @@ export default function MockButton({ type, content }: MockButtonProps) {
     return (
       <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
         <TbCopy fontSize={16} className='inline' /> Sell Dupes
+      </span>
+    )
+  } else if (type === 'sign-in-with-steam') {
+    return (
+      <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
+        <FaSteam fontSize={16} className='inline' /> Sign in with Steam
+      </span>
+    )
+  } else if (type === 'legacy-sign-in') {
+    return (
+      <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
+        <TbLogin2 fontSize={16} className='inline' /> Legacy sign in
+      </span>
+    )
+  } else if (type === 'qr-sign-in') {
+    return (
+      <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
+        <TbQrcode fontSize={16} className='inline' /> Or sign in with QR
+      </span>
+    )
+  } else if (type === 'continue') {
+    return (
+      <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
+        <TbArrowRight fontSize={16} className='inline' /> Continue
+      </span>
+    )
+  } else if (type === 'account-switcher') {
+    return (
+      <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1 h-8'>
+        <TbUserCircle fontSize={16} className='inline' />
+      </span>
+    )
+  } else if (type === 'add-account') {
+    return (
+      <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
+        <TbUserPlus fontSize={16} className='inline' /> Add another account
+      </span>
+    )
+  } else if (type === 'sign-out') {
+    return (
+      <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
+        <TbLogout2 fontSize={16} className='inline' /> Sign out
+      </span>
+    )
+  } else if (type === 'manage-subscription') {
+    return (
+      <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
+        <TbCreditCard fontSize={16} className='inline' /> Manage subscription{' '}
+        <TbExternalLink fontSize={14} className='inline' />
+      </span>
+    )
+  } else if (type === 'upgrade') {
+    return (
+      <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
+        Upgrade
+      </span>
+    )
+  } else if (type === 'activate') {
+    return (
+      <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
+        <TbKey fontSize={16} className='inline' /> Activate
+      </span>
+    )
+  } else if (type === 'copy') {
+    return (
+      <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
+        <TbCopy fontSize={16} className='inline' /> Copy
+      </span>
+    )
+  } else if (type === 'clear') {
+    return (
+      <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
+        Clear
+      </span>
+    )
+  } else if (type === 'view-log-file') {
+    return (
+      <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
+        View log file
+      </span>
+    )
+  } else if (type === 'open-settings-file') {
+    return (
+      <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
+        <TbFolderOpen fontSize={16} className='inline' /> Open settings file
+      </span>
+    )
+  } else if (type === 'export-settings') {
+    return (
+      <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
+        <TbFileExport fontSize={16} className='inline' /> Export settings
+      </span>
+    )
+  } else if (type === 'clear-logs') {
+    return (
+      <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
+        Clear logs
+      </span>
+    )
+  } else if (type === 'reset-settings') {
+    return (
+      <span className='inline-flex align-middle items-center justify-center text-icon-dark bg-red-500 text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
+        <TbRefresh fontSize={16} className='inline' /> Reset settings
+      </span>
+    )
+  } else if (type === 'clear-data') {
+    return (
+      <span className='inline-flex align-middle items-center justify-center text-icon-dark bg-red-500 text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
+        <TbTrash fontSize={16} className='inline' /> Clear data
+      </span>
+    )
+  } else if (type === 'stop') {
+    return (
+      <span className='inline-flex align-middle items-center justify-center text-icon-dark bg-red-500 text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
+        <TbPlayerStopFilled fontSize={16} className='inline' /> Stop
+      </span>
+    )
+  } else if (type === 'stop-all') {
+    return (
+      <span className='inline-flex align-middle items-center justify-center text-icon-dark bg-red-500 text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
+        <TbPlayerStopFilled fontSize={16} className='inline' /> Stop all
+      </span>
+    )
+  } else if (type === 'go-pro') {
+    return (
+      <span
+        className='inline-flex align-middle items-center justify-center bg-white text-[11px] font-black uppercase italic px-2 rounded-full shadow-sm select-none'
+        style={{ color: '#0092d0' }}
+      >
+        Go Pro
+      </span>
+    )
+  } else if (type === 'pay-stripe') {
+    return (
+      <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
+        <FaStripe fontSize={20} className='inline' /> Stripe
+      </span>
+    )
+  } else if (type === 'pay-paypal') {
+    return (
+      <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
+        <FaPaypal fontSize={16} className='inline' /> PayPal
       </span>
     )
   }

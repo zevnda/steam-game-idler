@@ -3,7 +3,11 @@ title: Card Farming
 description: Configure the Card Farming feature to farm Steam trading cards for queued games or your entire library.
 ---
 
+import MockButton from '@/app/(marketing)/docs/_components/MockButton';
+
 # Card Farming Settings
+
+You'll find these options under <MockButton type='context-cog' content='Settings → Card Farming' />.
 
 ## Farm Games In Queue
 Only farm cards for games you've added to your [Card Farming queue](/docs/features/card-farming)
@@ -11,7 +15,7 @@ Only farm cards for games you've added to your [Card Farming queue](/docs/featur
 SGI will ignore all other games in your library. Use this mode when you want precise control over which games get farmed.
 
 <Callout type="info">
-  **Farm Games In Queue** and **Farm All Games** are mutually exclusive — enabling one will disable the other.
+  **Farm Games In Queue** and **Farm All Games** are mutually exclusive: enabling one will disable the other.
 </Callout>
 
 ## Farm All Games
@@ -20,31 +24,31 @@ Automatically farm cards for every owned game that still has drops remaining, ig
 SGI will go through all eligible games without you needing to queue them individually. Blacklisted games are still skipped even in this mode.
 
 <Callout type="info">
-  **Farm Games In Queue** and **Farm All Games** are mutually exclusive — enabling one will disable the other.
+  **Farm Games In Queue** and **Farm All Games** are mutually exclusive: enabling one will disable the other.
 </Callout>
 
 ## Skip Unplayed Games
 Skip games that have never been played *(0 playtime)* during card farming
 
 <Callout type="info">
-  **Skip Unplayed Games** and **Unplayed Games Only** are mutually exclusive — enabling one will disable the other.
+  **Skip Unplayed Games** and **Unplayed Games Only** are mutually exclusive: enabling one will disable the other.
 </Callout>
 
 ## Unplayed Games Only
 Only farm cards for games that have never been played *(0 playtime)*
 
 <Callout type="info">
-  **Skip Unplayed Games** and **Unplayed Games Only** are mutually exclusive — enabling one will disable the other.
+  **Skip Unplayed Games** and **Unplayed Games Only** are mutually exclusive: enabling one will disable the other.
 </Callout>
 
 ## Drop Order
 Choose which games to farm first when there's more than one queued
 
-- **Highest Drops First** — prioritizes games with the most card drops remaining
-- **Lowest Drops First** — prioritizes games with the fewest card drops remaining
+- **Highest Drops First**: prioritizes games with the most card drops remaining
+- **Lowest Drops First**: prioritizes games with the fewest card drops remaining
 
 ## Automatically Farm Cards
-Periodically check for owned games with card drops remaining and automatically start farming them *(Pro — Gamer tier)*
+Periodically check for owned games with card drops remaining and automatically start farming them *(Pro Gamer tier)*
 
 When enabled, SGI monitors your library on a recurring schedule and starts a farming cycle without you needing to trigger it manually.
 

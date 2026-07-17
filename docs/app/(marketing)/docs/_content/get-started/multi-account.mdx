@@ -4,14 +4,15 @@ description: Learn how to sign in to and switch between multiple Steam accounts 
 icon: Users
 ---
 
+import MockButton from '@/app/(marketing)/docs/_components/MockButton';
 import { Step, Steps } from 'fumadocs-ui/components/steps';
 
 # Multi-Account
 
-SGI can keep several **Sign in with Steam** accounts signed in and running at the same time — each with its own idling, card farming, and achievement unlocking happening independently. You switch between them from one app window without signing out.
+SGI can keep several **Sign in with Steam** accounts signed in and running at the same time, each with its own idling, card farming, and achievement unlocking happening independently. You switch between them from one app window without signing out.
 
 <Callout type='info'>
-    This only applies to accounts signed in with [Sign in with Steam](/docs/get-started/how-to-sign-in#sign-in-with-steam). A [Legacy Sign In](/docs/get-started/how-to-sign-in#legacy-sign-in) account is always limited to one at a time — that's a limitation of the Steam client itself, not SGI
+    This only applies to accounts signed in with [Sign in with Steam](/docs/get-started/how-to-sign-in#sign-in-with-steam). A [Legacy Sign In](/docs/get-started/how-to-sign-in#legacy-sign-in) account is always limited to one at a time. That's a limitation of the Steam client itself, not SGI
 </Callout>
 
 ## How Many Accounts Can I Add?
@@ -24,10 +25,14 @@ The number of **Sign in with Steam** accounts you can have signed in *at the sam
 | Casual | 3 |
 | Gamer | 10 |
 
-This limit only applies to how many accounts can be **signed in and active simultaneously** — you can freely sign out of one account and into a different one any number of times on the Free tier.
+This limit only applies to how many accounts can be **signed in and active simultaneously**. You can freely sign out of one account and into a different one any number of times on the Free tier.
 
 <Callout type='info'>
-  You can still have one **Legacy Sign In** account signed in alongside your **Sign in with Steam** accounts, regardless of tier — it doesn't count against this limit
+  You can still have one **Legacy Sign In** account signed in alongside your **Sign in with Steam** accounts, regardless of tier. It doesn't count against this limit
+</Callout>
+
+<Callout type='warning'>
+  If you're over your tier's limit after a subscription downgrade, SGI never signs an account out for you. Every account you already added stays signed in and keeps its saved place, just greyed out and unusable until you either sign one out yourself or upgrade again
 </Callout>
 
 ## Adding an Account
@@ -40,7 +45,7 @@ This limit only applies to how many accounts can be **signed in and active simul
 
   <Step>
     ### Add another account
-    Click **Add another account**
+    Click <MockButton type='add-account' />
   </Step>
 
   <Step>
@@ -51,8 +56,12 @@ This limit only applies to how many accounts can be **signed in and active simul
 
 ## Switching Between Accounts
 
-Click your account name/avatar at the bottom of the sidebar, then click the account you want to switch to. Every account you've added keeps idling, farming, and unlocking in the background while you're viewing a different one — switching only changes which account's dashboard you're looking at.
+Click your account name/avatar at the bottom of the sidebar, then click the account you want to switch to. Every account you've added keeps idling, farming, and unlocking in the background while you're viewing a different one. Switching only changes which account's dashboard you're looking at.
+
+<Callout type='info'>
+  Switching to a Legacy Sign In account checks that the local Steam client is running first. If it isn't, SGI asks you to start it before the switch can continue
+</Callout>
 
 ## Signing Out
 
-Open the account switcher and choose to sign out the account you no longer want signed in. Signing out an account stops all of its running automations (idling, card farming, achievement unlocking) — the other signed-in accounts are unaffected.
+Click your account name/avatar at the bottom of the sidebar and click <MockButton type='sign-out' /> on the account you no longer want signed in. If that account has idling, card farming, or achievement unlocking actively running, SGI asks you to confirm first since you'll lose that progress; otherwise it signs out immediately. The other signed-in accounts are unaffected, and signing out the account you're currently viewing automatically switches you to another one that's still signed in.

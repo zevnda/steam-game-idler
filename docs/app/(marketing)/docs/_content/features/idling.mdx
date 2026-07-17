@@ -35,18 +35,18 @@ Idling a game increases its playtime hours without you needing to actually play 
 
 ## The Idling Page
 
-Every game currently idling — whether started manually, or by Auto-Idle, Card Farming, or the Achievement Unlocker — shows up on the <MockButton type='idling-games' /> page, grouped into a section per feature. If a game is claimed by more than one feature at once (e.g. manually started while also queued for Auto-Idle), it's only shown once, under whichever feature has priority.
+Every game currently idling (whether started manually, or by Auto-Idle, Card Farming, or the Achievement Unlocker) shows up on the <MockButton type='idling-games' /> page, grouped into a section per feature. If a game is claimed by more than one feature at once (e.g. manually started while also queued for Auto-Idle), it's only shown once, under whichever feature has priority.
 
 ## Stopping Idling
 
-To stop a single game, click its stop button on either <MockButton type='your-games' /> or <MockButton type='idling-games' />.
+To stop a single game, click its <MockButton type='stop' /> button on either <MockButton type='your-games' /> or <MockButton type='idling-games' />.
 
-To stop everything one feature is idling, click that section's **Stop** button on the <MockButton type='idling-games' /> page. To stop every idling game across every feature at once, click **Stop all** in the page header.
+To stop everything one feature is idling, click that section's <MockButton type='stop' /> button on the <MockButton type='idling-games' /> page. To stop every idling game across every feature at once, click <MockButton type='stop-all' /> in the page header.
 
 <Callout type="info">
-  Idling only increases playtime hours — it does not automatically unlock achievements or farm trading cards. For those, see [Achievement Unlocker](/docs/features/achievement-unlocker) and [Card Farming](/docs/features/card-farming)
+  Idling only increases playtime hours. It does not automatically unlock achievements or farm trading cards. For those, see [Achievement Unlocker](/docs/features/achievement-unlocker) and [Card Farming](/docs/features/card-farming)
 </Callout>
 
 ## Additional Information
 
-When you idle a game, SGI opens a background helper process for each game to register it as active with Steam (or, when [signed in with Steam](/docs/get-started/how-to-sign-in), announces it via one shared session instead of a process per game). You don't need to manage these yourself — they clean up automatically when you stop idling or exit SGI.
+When you idle a game, SGI opens a background helper process for each game to register it as active with Steam (or, when [signed in with Steam](/docs/get-started/how-to-sign-in), announces it via one shared session instead of a process per game). You don't need to manage these yourself. They clean up automatically when you stop idling or exit SGI.

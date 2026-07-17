@@ -1,12 +1,19 @@
-import { FiBook, FiCheck, FiRefreshCw, FiX } from 'react-icons/fi'
-import { TbCards, TbEye, TbShield } from 'react-icons/tb'
+import { FiBook } from 'react-icons/fi'
 import Link from 'next/link'
 import AdOverlay from '@/app/(marketing)/(home)/_components/AdOverlay'
 import AdScripts from '@/app/(marketing)/(home)/_components/AdScripts'
 import DownloadButton from '@/app/(marketing)/(home)/_components/DownloadButton'
 import FooterSection from '@/app/(marketing)/(home)/_components/FooterSection'
 import NavBar from '@/app/(marketing)/(home)/_components/NavBar'
-import { FadeIn, StaggerGroup, StaggerItem } from '@/app/lib/animations'
+import AlternativeComparisonTable from '@/app/(marketing)/alternatives/_components/AlternativeComparisonTable'
+import AlternativeHero from '@/app/(marketing)/alternatives/_components/AlternativeHero'
+import NarrativeSection from '@/app/(marketing)/alternatives/_components/NarrativeSection'
+import WhyChooseSection from '@/app/(marketing)/alternatives/_components/WhyChooseSection'
+import { COMPETITORS } from '@/app/(marketing)/alternatives/_data/competitors'
+import SectionHeading from '@/app/(marketing)/pro/_components/SectionHeading'
+import { FadeIn } from '@/app/lib/animations'
+
+const competitor = COMPETITORS['idle-master']
 
 export const metadata = {
   title: 'Idle Master Feature Comparison',
@@ -43,53 +50,6 @@ export const metadata = {
   },
 }
 
-const comparisonData = [
-  {
-    category: 'Core Features',
-    features: [
-      { name: 'No Local Steam Client Required', steamGameIdler: true, alt: false },
-      { name: 'Multiple Account Support', steamGameIdler: true, alt: false },
-      { name: 'Automated Card Farming', steamGameIdler: true, alt: true },
-      { name: 'Simultaneous Account Farming', steamGameIdler: true, alt: false },
-      { name: 'Simultaneous Game Farming', steamGameIdler: true, alt: false },
-      { name: 'Custom Queue Order', steamGameIdler: true, alt: false },
-      { name: 'Blacklist Games From Farming', steamGameIdler: true, alt: true },
-      { name: 'Achievement Manager', steamGameIdler: true, alt: false },
-      { name: 'Automated Achievement Unlocker', steamGameIdler: true, alt: false },
-      { name: 'Inventory Manager', steamGameIdler: true, alt: false },
-      { name: 'Playtime Boosting', steamGameIdler: true, alt: true },
-      { name: 'Marketplace Integration', steamGameIdler: true, alt: false },
-      { name: 'Automatic Free Game Claiming', steamGameIdler: true, alt: false },
-    ],
-  },
-  {
-    category: 'Technical',
-    features: [
-      { name: 'Graphical User Interface', steamGameIdler: 'Native', alt: 'Native' },
-      { name: 'Setup Complexity', steamGameIdler: 'Simple', alt: 'Simple' },
-      { name: 'Resource Usage', steamGameIdler: 'Moderate', alt: 'Low' },
-      { name: 'Platform Support', steamGameIdler: 'Windows', alt: 'Windows' },
-      { name: 'Installation', steamGameIdler: 'Installer & Portable', alt: 'Portable' },
-      { name: 'Updates', steamGameIdler: 'Automatic', alt: 'Manual' },
-    ],
-  },
-]
-
-function ComparisonIcon({ value }: { value: boolean | string }) {
-  if (typeof value === 'boolean') {
-    return (
-      <div className='flex justify-center'>
-        {value ? (
-          <FiCheck className='w-5 h-5 text-emerald-400' />
-        ) : (
-          <FiX className='w-5 h-5 text-red-400' />
-        )}
-      </div>
-    )
-  }
-  return <span className='text-sm font-medium text-text-muted'>{value}</span>
-}
-
 const articleSchema = {
   '@context': 'https://schema.org',
   '@type': 'Article',
@@ -116,133 +76,19 @@ export default function page() {
       />
       <NavBar />
       <div className='relative'>
-        {/* Hero */}
-        <section className='pt-36 pb-24 sm:pt-44 sm:pb-32 relative overflow-hidden'>
-          <div
-            className='absolute inset-0 pointer-events-none'
-            style={{
-              backgroundImage:
-                'radial-gradient(circle at 2px 2px, rgba(255,255,255,0.055) 1px, transparent 0)',
-              backgroundSize: '24px 24px',
-              maskImage: 'radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 100%)',
-              WebkitMaskImage:
-                'radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 100%)',
-            }}
-          />
-
-          <div className='container mx-auto relative z-10 px-4 sm:px-6 md:px-8'>
-            <div className='max-w-4xl mx-auto text-center'>
-              <div className='inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-orange-500/30 bg-orange-500/10 text-orange-300 text-sm font-medium mb-8'>
-                <TbCards className='w-4 h-4' />
-                Detailed Comparison
-              </div>
-
-              <h1 className='text-4xl sm:text-5xl md:text-6xl font-bold leading-none tracking-tight mb-6'>
-                <span className='text-text-primary'>IDLE MASTER</span>
-                <span className='block text-text-muted'>VS</span>
-                <span
-                  className='block'
-                  style={{
-                    background: 'linear-gradient(135deg, #fb923c, #f87171)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text',
-                  }}
-                >
-                  STEAM GAME IDLER
-                </span>
-              </h1>
-
-              <p className='text-lg text-text-muted max-w-2xl mx-auto leading-relaxed'>
-                Compare core features, usability, and capabilities of Steam Game Idler against Idle
-                Master to make an informed choice for your Steam automation needs.
-              </p>
-            </div>
-          </div>
-        </section>
+        <AlternativeHero competitor={competitor} />
 
         <div className='section-divider' />
 
         <AdOverlay slot='1265004536' />
 
-        {/* Comparison Table */}
         <section className='py-20 sm:py-24 relative'>
           <div className='container mx-auto px-4 sm:px-6 md:px-8'>
             <div className='max-w-5xl mx-auto'>
-              <FadeIn className='text-center mb-14'>
-                <h2 className='text-3xl sm:text-4xl md:text-5xl text-text-primary mb-4 leading-tight tracking-tight'>
-                  Detailed feature <span className='gradient-text'>comparison</span>
-                </h2>
+              <FadeIn>
+                <SectionHeading label='Detailed Feature Comparison' />
               </FadeIn>
-
-              <StaggerGroup className='space-y-6'>
-                {comparisonData.map(section => (
-                  <StaggerItem key={section.category}>
-                    <div className='card overflow-hidden'>
-                      <div
-                        className='px-6 py-4'
-                        style={{ borderBottom: '1px solid var(--color-border)' }}
-                      >
-                        <h3 className='text-base font-semibold text-text-primary'>
-                          {section.category}
-                        </h3>
-                      </div>
-
-                      <div className='overflow-x-auto'>
-                        <table className='w-full'>
-                          <thead>
-                            <tr style={{ borderBottom: '1px solid var(--color-border)' }}>
-                              <th
-                                className='text-left py-3 px-6 text-xs font-semibold text-text-muted uppercase tracking-wider'
-                                style={{ background: 'rgba(255,255,255,0.03)' }}
-                              >
-                                Feature
-                              </th>
-                              <th
-                                className='text-center py-3 px-6 text-xs font-semibold text-orange-400 uppercase tracking-wider'
-                                style={{ background: 'rgba(255,255,255,0.03)' }}
-                              >
-                                Steam Game Idler
-                              </th>
-                              <th
-                                className='text-center py-3 px-6 text-xs font-semibold text-text-muted uppercase tracking-wider'
-                                style={{ background: 'rgba(255,255,255,0.03)' }}
-                              >
-                                Idle Master
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {section.features.map((feature, index) => (
-                              <tr
-                                key={feature.name}
-                                style={{
-                                  background:
-                                    index % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.02)',
-                                  borderBottom:
-                                    index < section.features.length - 1
-                                      ? '1px solid var(--color-border)'
-                                      : 'none',
-                                }}
-                              >
-                                <td className='py-3.5 px-6 text-sm font-medium text-text-primary'>
-                                  {feature.name}
-                                </td>
-                                <td className='py-3.5 px-6 text-center'>
-                                  <ComparisonIcon value={feature.steamGameIdler} />
-                                </td>
-                                <td className='py-3.5 px-6 text-center'>
-                                  <ComparisonIcon value={feature.alt} />
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </StaggerItem>
-                ))}
-              </StaggerGroup>
+              <AlternativeComparisonTable competitor={competitor} />
             </div>
           </div>
         </section>
@@ -251,31 +97,9 @@ export default function page() {
 
         <AdOverlay slot='3005445709' />
 
-        {/* Narrative */}
         <section className='py-20 sm:py-24 relative'>
           <div className='container mx-auto px-4 sm:px-6 md:px-8'>
-            <FadeIn className='max-w-3xl mx-auto text-center'>
-              <h2 className='text-2xl sm:text-3xl font-bold text-text-primary mb-6 leading-tight tracking-tight'>
-                How does Steam Game Idler compare to Idle Master?
-              </h2>
-              <p className='text-text-muted leading-relaxed mb-4'>
-                Idle Master did one thing well: it ran your games in the background to trigger Steam
-                card drops. For a long time it was the go-to tool for that, and it worked. However,
-                it hasn&apos;t seen active development for a number of years, and its feature set
-                was always limited to card farming alone — no achievements, no inventory tools, no
-                playtime management.
-              </p>
-              <p className='text-text-muted leading-relaxed mb-4'>
-                Steam Game Idler covers the same card farming ground with an up-to-date codebase,
-                and extends it significantly. Achievement management, automated unlocking, inventory
-                selling, and playtime boosting are all built in, so there&apos;s no need to run
-                multiple tools alongside each other.
-              </p>
-              <p className='text-text-muted leading-relaxed'>
-                If card farming was the main thing you used Idle Master for, Steam Game Idler does
-                the same job and gives you a lot more to work with.
-              </p>
-            </FadeIn>
+            <NarrativeSection competitor={competitor} />
           </div>
         </section>
 
@@ -283,54 +107,9 @@ export default function page() {
 
         <AdOverlay slot='1265004536' />
 
-        {/* Why Choose SGI */}
         <section className='py-20 sm:py-24 relative'>
           <div className='container mx-auto px-4 sm:px-6 md:px-8'>
-            <div className='max-w-5xl mx-auto'>
-              <FadeIn className='text-center mb-14'>
-                <h2 className='text-3xl sm:text-4xl md:text-5xl text-text-primary mb-4 leading-tight tracking-tight'>
-                  Why choose <span className='gradient-text'>Steam Game Idler?</span>
-                </h2>
-              </FadeIn>
-
-              <StaggerGroup className='grid sm:grid-cols-3 gap-4 mb-8'>
-                <StaggerItem>
-                  <div className='card p-6 text-center h-full'>
-                    <FiRefreshCw className='w-7 h-7 text-orange-400 mx-auto mb-4' />
-                    <h3 className='font-semibold text-text-primary mb-2'>Active Development</h3>
-                    <p className='text-sm text-text-muted leading-relaxed'>
-                      Regular updates and new features versus Idle Master&apos;s abandoned status
-                    </p>
-                  </div>
-                </StaggerItem>
-                <StaggerItem>
-                  <div className='card p-6 text-center h-full'>
-                    <TbEye className='w-7 h-7 text-orange-400 mx-auto mb-4' />
-                    <h3 className='font-semibold text-text-primary mb-2'>Modern Interface</h3>
-                    <p className='text-sm text-text-muted leading-relaxed'>
-                      Beautiful, intuitive design with real-time progress tracking
-                    </p>
-                  </div>
-                </StaggerItem>
-                <StaggerItem>
-                  <div className='card p-6 text-center h-full'>
-                    <TbShield className='w-7 h-7 text-orange-400 mx-auto mb-4' />
-                    <h3 className='font-semibold text-text-primary mb-2'>Enhanced Security</h3>
-                    <p className='text-sm text-text-muted leading-relaxed'>
-                      Modern safety features and VAC detection avoidance
-                    </p>
-                  </div>
-                </StaggerItem>
-              </StaggerGroup>
-
-              <FadeIn delay={0.15} className='card p-8 text-center'>
-                <p className='text-text-muted leading-relaxed max-w-2xl mx-auto'>
-                  While Idle Master was revolutionary in its time, Steam Game Idler represents the
-                  modern evolution of card farming tools with comprehensive features, active
-                  development, and enhanced security.
-                </p>
-              </FadeIn>
-            </div>
+            <WhyChooseSection competitor={competitor} />
           </div>
         </section>
 
@@ -338,17 +117,13 @@ export default function page() {
 
         <AdOverlay slot='3005445709' />
 
-        {/* CTA */}
         <section className='py-24 sm:py-32 relative'>
           <div className='container mx-auto relative z-10 px-4 sm:px-6 md:px-8'>
             <FadeIn className='text-center max-w-2xl mx-auto'>
               <h2 className='text-4xl sm:text-5xl md:text-6xl text-text-primary mb-6 leading-tight tracking-tight'>
                 Ready to upgrade from <span className='gradient-text'>Idle Master?</span>
               </h2>
-              <p className='text-text-muted text-lg mb-10'>
-                Experience the next generation of Steam card farming. Download Steam Game Idler and
-                discover what modern automation can do.
-              </p>
+              <p className='text-text-muted text-lg mb-10'>{competitor.ctaDescription}</p>
 
               <div className='flex flex-col sm:flex-row gap-4 justify-center'>
                 <DownloadButton />

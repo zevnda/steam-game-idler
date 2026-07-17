@@ -213,7 +213,7 @@ export const faqData = [
     question: 'Is there a way to unlock achievements in a specific order?',
     markdown:
       '**Is there a way to unlock achievements in a specific order?**\n' +
-      '> By default, the automatic [Achievement Unlocker](/docs/features/achievement-unlocker) will unlock achievements in the order of global completion percentage (Legacy Sign In only).\n' +
+      '> By default, the automatic [Achievement Unlocker](/docs/features/achievement-unlocker) will unlock achievements in order of global completion percentage, most common first.\n' +
       '>\n' +
       '> If you need to unlock achievements in a specific order, see [Custom Order & Unlock Delay](/docs/features/achievement-unlocker/custom-order-and-unlock-delay).',
   },

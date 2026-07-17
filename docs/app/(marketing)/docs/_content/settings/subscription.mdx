@@ -3,22 +3,27 @@ title: Subscription
 description: Manage your Steam Game Idler PRO subscription, license key, and device transfers.
 ---
 
+import MockButton from '@/app/(marketing)/docs/_components/MockButton';
+
 # Subscription Settings
 
-This tab manages your [Steam Game Idler PRO](/docs/pro) subscription. It doesn't offer a purchase flow itself — for how to subscribe, see [How to Subscribe to PRO](/docs/pro#faq).
+You'll find this tab under <MockButton type='context-cog' content='Settings → Subscription' />. It doesn't offer a purchase flow itself. For how to subscribe, see [How to Subscribe to PRO](/docs/pro#faq).
 
 ## Status
 
-Shows whether you're currently subscribed and which tier (**Casual** or **Gamer**), along with your renewal or cancellation date. Click **Manage** to open your billing portal (Stripe or PayPal, depending on how you subscribed) to update payment details, view invoices, or cancel.
+Shows whether you're currently subscribed and which tier (**Casual** or **Gamer**), along with your renewal or cancellation date.
+
+- Click <MockButton type='manage-subscription' /> to open your billing portal (Stripe or PayPal, depending on how you subscribed) to update payment details, view invoices, or cancel
+- If you're on **Casual**, an <MockButton type='upgrade' /> button also appears next to it to move up to **Gamer**
 
 ## License Key
 
 Once you've subscribed, you'll receive a license key by email.
 
-- **Activate** — paste your license key and click **Activate** to unlock PRO on this device
-- **Copy** — copies your currently-activated key to the clipboard
-- **Clear** — removes the key from this device, deactivating PRO here (your subscription itself isn't cancelled — you can re-activate on any device later)
+- **Activate**: paste your license key and click <MockButton type='activate' /> to unlock PRO on this device
+- **Copy**: click <MockButton type='copy' /> to copy your currently-activated key to the clipboard
+- **Clear**: click <MockButton type='clear' /> to remove the key from this device, deactivating PRO here (your subscription itself isn't cancelled, you can re-activate on any device later)
 
 <Callout type="info">
-    Your license key is tied to one device at a time. Activating it on a new device while it's already active elsewhere will prompt you to confirm transferring it — see [Transferring to a New Device](/docs/pro#faq)
+    Your license key is tied to one device at a time. Activating it on a new device while it's already active elsewhere will prompt you to confirm transferring it. See [Transferring to a New Device](/docs/pro#faq)
 </Callout>

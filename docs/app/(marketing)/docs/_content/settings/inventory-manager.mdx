@@ -3,7 +3,11 @@ title: Inventory Manager
 description: Configure settings for managing and selling Steam inventory items automatically.
 ---
 
+import MockButton from '@/app/(marketing)/docs/_components/MockButton';
+
 # Inventory Manager Settings
+
+You'll find these options under <MockButton type='context-cog' content='Settings → Inventory Manager' />.
 
 <Callout type="info">
   The price you set is what the **buyer pays**. SGI accounts for Steam's 15% transaction fee automatically, so your received amount will be less. See [Marketplace Fees](/docs/features/inventory-manager/marketplace-fees) for details.
@@ -14,13 +18,13 @@ Choose the currency used for price display in SGI
 
 This affects prices shown throughout the [Inventory Manager](/docs/features/inventory-manager), including suggested sell prices fetched from the Steam marketplace.
 
-## Default Sell Option
+## Default Price
 Choose how SGI determines the default price when listing items
 
-- **Highest Buy Order** — lists at the highest price someone is currently willing to pay for the item. This is more likely to sell quickly
-- **Lowest Sell Order** — lists at the lowest price another seller is currently asking. This may take longer to sell but can yield a slightly higher return
+- **Highest Buy Order**: lists at the highest price someone is currently willing to pay for the item. This is more likely to sell quickly
+- **Lowest Sell Order**: lists at the lowest price another seller is currently asking. This may take longer to sell but can yield a slightly higher return
 
-This setting only affects the default price applied when using **List All**. You can always override the price on individual items.
+This setting only affects the default price applied when using <MockButton type='list-all' />. You can always override the price on individual items.
 
 ## Price Adjustment
 Add or subtract a fixed amount from every item's sale price

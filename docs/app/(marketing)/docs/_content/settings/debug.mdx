@@ -1,56 +1,58 @@
 ---
-title: Debug Settings
+title: Debug
 description: Use the debug tools to view logs, reset data, export settings, and troubleshoot issues with SGI.
 ---
 
-# Debug Settings
+import MockButton from '@/app/(marketing)/docs/_components/MockButton';
 
-The Debug tab provides tools for diagnosing issues and managing SGI's local data. If something isn't working as expected, start here before reporting a bug.
+# Debug
+
+You'll find these tools under <MockButton type='context-cog' content='Settings → Debug' />. If something isn't working as expected, start here before reporting a bug.
 
 ## Logs
 
 The Logs panel displays a live view of SGI's internal activity, including errors and events from features like Card Farming and Achievement Unlocker.
 
-- **Clear** — removes all entries from the log view
-- **Open Log File** — opens the folder containing the log file in File Explorer
+- Click <MockButton type='view-log-file' /> to open today's log file
+- Click <MockButton type='clear-logs' /> to clear the log view
 
-Log files are stored at:
-```
-%appdata%\com.zevnda.steam-game-idler\log.txt
-```
-
-If you're reporting a bug on GitHub, include the relevant lines from this log file to help diagnose the issue. See the [Troubleshooting](/docs/troubleshooting) guide for more information.
-
-## Clear Data
-
-Wipes all local data stored by SGI, including your game lists, custom settings, and cached information. This signs out every signed-in account (not just the one you're currently viewing).
-
-<Callout type="warn">
-  This action is irreversible. You will be logged out of every account and all locally stored data will be deleted. Your Steam account and library are not affected.
+<Callout type="info">
+  Logs are written to a new file every day, kept in a `logs` folder next to where SGI stores its
+  settings and cache: `<install folder>/logs/` for the portable version, or your Windows user
+  profile's app-data folder for the installed version. <MockButton type='view-log-file' /> always
+  opens the right one for you, so you don't need to remember the exact path.
 </Callout>
 
-Use this as a last resort if SGI is behaving unexpectedly and a settings reset hasn't resolved the issue.
+If you're reporting a bug on GitHub, include the relevant lines from the log file to help diagnose the issue. See the [Troubleshooting](/docs/troubleshooting) guide for more information.
 
 ## Reset Settings
 
-Resets all SGI settings to their default values without deleting your game lists or other data.
+Click <MockButton type='reset-settings' /> to reset your Steam Web API key override and, if you're signed in, that account's Achievement Unlocker, Inventory Manager, Card Farming, and Free Games settings back to their defaults.
 
 <Callout type="warn">
-  This action is irreversible. All settings — including your API key, credentials, theme, and feature configurations — will be cleared.
+  This action is irreversible, but **your signed-in accounts stay signed in**. Reset Settings never signs you out.
 </Callout>
 
 This is useful if you've misconfigured something and want to start fresh without wiping everything.
 
+## Clear Data
+
+Click <MockButton type='clear-data' /> to sign every account out, stop any running automation, and clear all locally-stored app data on this device (logs, recent searches, inventory locks, and similar cached data).
+
+<Callout type="warn">
+  This action is irreversible. You will be signed out of every account. Your Steam account and library are not affected; only data stored locally by SGI is cleared.
+</Callout>
+
+Use this as a last resort if SGI is behaving unexpectedly and Reset Settings hasn't resolved the issue.
+
 ## Export Settings
 
-Export your current SGI settings to clipboard. Use this to:
+Click <MockButton type='export-settings' /> to copy your current SGI settings to the clipboard. Use this to:
 
 - Back up your configuration before making changes
 - Transfer your settings to another machine
-- For debugging when opening an issue on GitHub
+- Attach to a bug report when opening an issue on GitHub
 
-The exported file can be re-imported by placing it in the SGI settings directory (see **Open Settings** below).
+## Open Settings File
 
-## Open Settings
-
-Opens the folder where SGI stores its settings file in File Explorer. This is useful for manually inspecting or editing the settings file, or for pasting exported settings to restore a previous configuration.
+Click <MockButton type='open-settings-file' /> to open the folder where SGI stores its settings file in File Explorer. Useful for manually inspecting the file, or pasting in an exported settings backup to restore a previous configuration.
