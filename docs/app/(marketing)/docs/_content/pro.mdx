@@ -6,6 +6,7 @@ description: Upgrade to PRO to enhance your experience.
 import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
 import { Step, Steps } from 'fumadocs-ui/components/steps';
 import { FaCheck, FaXmark } from 'react-icons/fa6';
+import MockButton from '@/app/(marketing)/docs/_components/MockButton';
 
 export const Yes = () => <FaCheck className='text-green-500 inline' />
 export const No = () => <FaXmark className='text-red-400/50 inline' />
@@ -15,7 +16,7 @@ First and foremost, Steam Game Idler is completely free to use, and always will 
 
 Steam Game Idler **PRO** is an optional way to support the development of SGI. To thank you for your support, **PRO** subscribers receive a range of additional benefits that enhance the SGI experience.
 
-There are two subscription tiers available — **Casual** and **Gamer** — each unlocking a different set of benefits.
+There are two subscription tiers available: **Casual** and **Gamer**, each unlocking a different set of benefits.
 
 By subscribing to **PRO**, you help with the ongoing development and maintenance of SGI, ensuring that it continues to improve and evolve over time.
 
@@ -40,7 +41,7 @@ By subscribing to **PRO**, you help with the ongoing development and maintenance
 <p className='text-xs text-muted-foreground -mt-4'>* Prices are in USD and exclude taxes. Billed monthly, cancel anytime.</p>
 
 <Callout type='info'>
-    Every tier — including Free — includes every core feature: Card Farming, Achievement Unlocker, Achievement Manager, Inventory Manager, Idling, Auto-Idle, Favorites, and manual Free Games claiming. PRO only unlocks the automation/convenience extras listed above
+    Every tier, including Free, includes every core feature: Card Farming, Achievement Unlocker, Achievement Manager, Inventory Manager, Idling, Auto-Idle, Favorites, and manual Free Games claiming. PRO only unlocks the automation/convenience extras listed above
 </Callout>
 
 ## FAQ
@@ -52,19 +53,19 @@ By subscribing to **PRO**, you help with the ongoing development and maintenance
         Open Steam Game Idler
       </Step>
       <Step>
-        Click the "**Go PRO**" badge in the app's title bar
+        Click the <MockButton type='go-pro' /> badge in the app's title bar
       </Step>
       <Step>
         Select your desired subscription tier *(Casual or Gamer)*
       </Step>
       <Step>
-        Click "**Stripe**" or "**PayPal**" depending on your preferred payment method, then complete your purchase
+        Click <MockButton type='pay-stripe' /> or <MockButton type='pay-paypal' /> depending on your preferred payment method, then complete your purchase
       </Step>
       <Step>
         You will receive an email containing your **license key**
       </Step>
       <Step>
-        Open Steam Game Idler, navigate to **Settings → Subscription**, paste your license key into the input field, and click "**Activate**"
+        Open Steam Game Idler, navigate to <MockButton type='context-cog' content='Settings → Subscription' />, paste your license key into the input field, and click <MockButton type='activate' />
 
         Your license key is tied to one device at a time. To transfer it to a new device, activate it on the new device and confirm the transfer when prompted.
       </Step>
@@ -77,13 +78,10 @@ By subscribing to **PRO**, you help with the ongoing development and maintenance
         Open Steam Game Idler
       </Step>
       <Step>
-        Click "**Settings**" in the sidebar
+        Navigate to <MockButton type='context-cog' content='Settings → Subscription' />
       </Step>
       <Step>
-        Navigate to the "**Subscription**" tab
-      </Step>
-      <Step>
-        Click the "**Manage**" button
+        Click <MockButton type='manage-subscription' />
       </Step>
       <Step>
         Follow the prompts to confirm your cancellation
@@ -99,13 +97,13 @@ By subscribing to **PRO**, you help with the ongoing development and maintenance
         Open Steam Game Idler on your **new device**
       </Step>
       <Step>
-        Navigate to **Settings → Subscription**
+        Navigate to <MockButton type='context-cog' content='Settings → Subscription' />
       </Step>
       <Step>
-        Enter your license key and click "**Activate**"
+        Enter your license key and click <MockButton type='activate' />
       </Step>
       <Step>
-        A prompt will appear asking you to confirm the transfer — click "**Continue**"
+        A prompt will appear asking you to confirm the transfer. Click <MockButton type='continue' />
       </Step>
     </Steps>
     Your subscription will immediately become active on the new device. The previous device will lose access on its next launch.
@@ -124,13 +122,10 @@ By subscribing to **PRO**, you help with the ongoing development and maintenance
         Open Steam Game Idler
       </Step>
       <Step>
-        Click "**Settings**" in the sidebar
+        Navigate to <MockButton type='context-cog' content='Settings → Subscription' />
       </Step>
       <Step>
-        Navigate to the "**Subscription**" tab
-      </Step>
-      <Step>
-        Click the "**Manage**" button
+        Click <MockButton type='manage-subscription' />
       </Step>
       <Step>
         Follow the prompts to view your billing history and invoices

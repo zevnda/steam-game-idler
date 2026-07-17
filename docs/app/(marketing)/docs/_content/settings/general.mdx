@@ -3,24 +3,28 @@ title: General
 description: Configure general application settings such as startup behavior, language, and Steam Web API key.
 ---
 
+import MockButton from '@/app/(marketing)/docs/_components/MockButton';
+
 # General Settings
+
+You'll find these options under <MockButton type='context-cog' content='Settings → General' />.
 
 ## Always Online
 Prevents Steam from setting your status as away while SGI is running *(Legacy Sign In only)*
 
 When enabled, SGI will automatically switch your Steam status back to online if it changes to away, offline, or invisible while the app is running. This is useful when you want to appear active on Steam while games are idling in the background.
 
-Only available for accounts using [Legacy Sign In](/docs/get-started/how-to-sign-in) (a real local Steam client). Accounts signed in with Steam don't need this — see [Online Status](#online-status) below, which covers the same need without any periodic re-checking required.
+Only available for accounts using [Legacy Sign In](/docs/get-started/how-to-sign-in) (a real local Steam client). Accounts signed in with Steam don't need this. See [Online Status](#online-status) below, which covers the same need without any periodic re-checking required.
 
 ## Online Status
 Choose what online status friends see while signed in *(Sign in with Steam only)*
 
-Pick which status — Online, Away, Busy, Snooze, Looking to Trade, Looking to Play, Invisible, or Offline — your account shows to friends. Unlike Legacy Sign In's Always Online above, this status doesn't drift back to Away on its own, so there's nothing to periodically refresh — it's set once and stays that way until you change it.
+Pick which status (Online, Away, Busy, Snooze, Looking to Trade, Looking to Play, Invisible, or Offline) your account shows to friends. Unlike Legacy Sign In's Always Online above, this status doesn't drift back to Away on its own, so there's nothing to periodically refresh. It's set once and stays that way until you change it.
 
 ## Custom Status While Idling
-Replace the "Playing [game]" text friends see while idling *(Sign in with Steam only · Pro — Gamer tier)*
+Replace the "Playing [game]" text friends see while idling *(Sign in with Steam only · Pro Gamer tier)*
 
-Set your own custom message to show instead of the game's name while idling. You can set this before, during, or after idling starts — it only becomes visible to friends once you're actually idling a game you own.
+Set your own custom message to show instead of the game's name while idling. You can set this before, during, or after idling starts. It only becomes visible to friends once you're actually idling a game you own.
 
 ## Run At Startup
 Automatically launch SGI when Windows starts
@@ -38,9 +42,9 @@ Keep SGI running when you close the window
 When enabled, clicking the X button minimizes SGI to the system tray instead of exiting it. To fully close the app, right-click the system tray icon and select `Quit`.
 
 ## Automatically Update Games List
-Automatically refresh your games list every 15 minutes *(Pro — Casual tier)*
+Silently refresh your games list in the background so it stays current without a manual refresh *(Pro Casual tier)*
 
-When enabled, SGI periodically checks for changes to your Steam library — such as newly purchased or removed games — and updates the list without requiring a manual refresh.
+When enabled, SGI periodically checks for changes to your Steam library, such as newly purchased or removed games, and updates the list without requiring a manual refresh. The check runs every 5 minutes by default, or every minute if you've set your own [Steam Web API Key](#steam-web-api-key) below (the shared built-in key checks less often to stay within Steam's rate limits).
 
 ## Language
 Choose the display language for SGI
@@ -52,7 +56,7 @@ Use your own Steam Web API key to access private profile data
 
 By default, SGI fetches your profile and game data from public Steam APIs. Providing your own API key lets SGI access data even when your Steam profile is set to private.
 
-- API keys are free for all Steam accounts — [get yours here](https://steamcommunity.com/dev/apikey)
+- API keys are free for all Steam accounts. [Get yours here](https://steamcommunity.com/dev/apikey)
 - The API key must belong to the same Steam account you're signed into in SGI. If you use multiple accounts, you'll need to set the key for each one separately
 - Some features may still be limited with a private profile even with an API key
 - Your key is validated against Steam before it's saved, and stored securely rather than in a plain settings file

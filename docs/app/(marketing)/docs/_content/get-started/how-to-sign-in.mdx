@@ -4,6 +4,7 @@ description: Learn how to sign in to Steam Game Idler using Sign in with Steam o
 icon: UserCheck
 ---
 
+import MockButton from '@/app/(marketing)/docs/_components/MockButton';
 import { Step, Steps } from 'fumadocs-ui/components/steps';
 
 # How to Sign In
@@ -12,13 +13,13 @@ SGI has two ways to sign in. They both give you access to the same features (wit
 
 | | **Sign in with Steam** *(recommended)* | **Legacy Sign In** |
 |---|---|---|
-| Steam client required? | No | Yes — must be installed, running, and signed in |
+| Steam client required? | No | Yes, must be installed, running, and signed in |
 | Sign-in method | Your Steam username/password, or scan a QR code | Pick from accounts already signed in to the local Steam client |
-| Multiple accounts at once? | Yes — see [Multi-Account](/docs/get-started/multi-account) | No — one account at a time |
-| Play games normally while idling? | No — see [What's different](#whats-different-between-the-two) below | Yes |
+| Multiple accounts at once? | Yes, see [Multi-Account](/docs/get-started/multi-account) | No, one account at a time |
+| Play games normally while idling? | No, see [What's different](#whats-different-between-the-two) below | Yes |
 
 <Callout type='info'>
-    Not sure which to pick? Use **Sign in with Steam** unless you specifically don't want to enter your username/password into SGI — in that case, use **Legacy Sign In**
+    Not sure which to pick? Use <MockButton type='sign-in-with-steam' /> unless you specifically don't want to enter your username/password into SGI; in that case, use <MockButton type='legacy-sign-in' />
 </Callout>
 
 ## Sign in with Steam
@@ -33,13 +34,13 @@ This is the recommended method. SGI signs in directly to Steam's servers using t
 
   <Step>
     ### Choose Sign in with Steam
-    Click the **Sign in with Steam** button
+    Click <MockButton type='sign-in-with-steam' />
   </Step>
 
   <Step>
     ### Sign in
     - Enter your Steam **username and password**, or
-    - Scan the **QR code** shown on screen using the Steam mobile app
+    - Use the <MockButton type='qr-sign-in' /> panel shown next to it, and scan the code with the Steam mobile app
   </Step>
 
   <Step>
@@ -49,7 +50,7 @@ This is the recommended method. SGI signs in directly to Steam's servers using t
 
   <Step>
     ### Continue
-    Once signed in, you're taken straight to the dashboard
+    Once signed in, you're taken straight to the dashboard automatically
   </Step>
 </Steps>
 
@@ -57,11 +58,11 @@ This is the recommended method. SGI signs in directly to Steam's servers using t
     Your Steam credentials are sent directly to Steam's own servers to establish the sign-in, the same as signing in through the official Steam client or mobile app. SGI never sees or stores your password
 </Callout>
 
-Once signed in, you can add further accounts without signing out of this one — see [Multi-Account](/docs/get-started/multi-account).
+Once signed in, you can add further accounts without signing out of this one. See [Multi-Account](/docs/get-started/multi-account).
 
 ## Legacy Sign In
 
-Use this if you'd rather not enter your Steam username/password into SGI at all. It requires the Steam client to already be installed, running, and signed in — SGI reads the account(s) that are already logged in through Steam itself.
+Use this if you'd rather not enter your Steam username/password into SGI at all. It requires the Steam client to already be installed, running, and signed in. SGI reads the account(s) that are already logged in through Steam itself.
 
 <Callout type='warning'>
     You must have the [Steam client](https://store.steampowered.com/about) installed, running, and signed in to at least one account
@@ -80,33 +81,32 @@ Use this if you'd rather not enter your Steam username/password into SGI at all.
 
   <Step>
     ### Choose Legacy Sign In
-    Open SGI and click **Legacy Sign In** on the sign-in screen
+    Open SGI and click <MockButton type='legacy-sign-in' /> on the sign-in screen
   </Step>
 
   <Step>
     ### Select your account
-    If you're signed in to more than one account in the Steam client, SGI lists all of them — choose yours by clicking its avatar
+    If you're signed in to more than one account in the Steam client, SGI lists all of them; choose yours by clicking its avatar
   </Step>
 
   <Step>
     ### Continue
-    Click **Continue** to proceed to the dashboard
+    Click <MockButton type='continue' /> to proceed to the dashboard
   </Step>
 </Steps>
 
 <Callout type='info'>
-    Legacy Sign In only supports one signed-in account at a time — this is a real limitation of the Steam client itself, not something SGI can lift. To use more than one account at once, sign in to the additional accounts with **Sign in with Steam** instead
+    Legacy Sign In only supports one signed-in account at a time. This is a real limitation of the Steam client itself, not something SGI can lift. To use more than one account at once, sign in to the additional accounts with <MockButton type='sign-in-with-steam' /> instead
 </Callout>
 
 ## What's different between the two
 
-A small number of features behave differently depending on which method you used to sign in — each is called out on its own feature page, but the full list is:
+A small number of features behave differently depending on which method you used to sign in. Each is called out on its own feature page, but the full list is:
 
-- **Playing games normally while idling** — **Sign in with Steam** talks to Steam using the same underlying protocol as the real Steam client, so if you launch and play a game yourself while SGI is idling that account, Steam treats it as a conflicting session. Idling stays uninterrupted with **Legacy Sign In**, since it works alongside your already-running Steam client rather than opening a second session — if you want to idle and play at the same time, use **Legacy Sign In**
-- **Idling many games at once** — The **Sign in with Steam** method can idle up to 32 games from one background session; Legacy Sign In launches one helper process per game (same 32-game Steam-imposed ceiling either way)
-- **Game Coordinator titles** (TF2, Dota 2, CS2, Left 4 Dead 2, Portal 2) — can only be idled and have their achievements managed correctly via **Legacy Sign In**
-- **Global achievement rarity %** — only shown via **Legacy Sign In** in the [Achievement Manager](/docs/features/achievement-manager)
-- **[Steam Credentials](/docs/steam-credentials)** for Card Farming/Inventory Manager — **Sign in with Steam** accounts can skip this step entirely (a gamer-tier perk); Legacy Sign In accounts always need it
-- **[Free Games](/docs/features/free-games) auto-redeem** — works as a plain toggle for **Sign in with Steam** accounts; Legacy Sign In accounts need a separate one-time store sign-in first
+- **Playing games normally while idling**: **Sign in with Steam** talks to Steam using the same underlying protocol as the real Steam client, so if you launch and play a game yourself while SGI is idling that account, Steam treats it as a conflicting session. Idling stays uninterrupted with **Legacy Sign In**, since it works alongside your already-running Steam client rather than opening a second session; if you want to idle and play at the same time, use **Legacy Sign In**
+- **Idling many games at once**: The **Sign in with Steam** method can idle up to 32 games from one background session; Legacy Sign In launches one helper process per game (same 32-game Steam-imposed ceiling either way)
+- **Game Coordinator titles** (TF2, Dota 2, CS2, Left 4 Dead 2, Portal 2): can only be idled and have their achievements managed correctly via **Legacy Sign In**
+- **[Steam Credentials](/docs/steam-credentials)** for Card Farming/Inventory Manager: **Sign in with Steam** accounts can skip this step entirely (a gamer-tier perk); Legacy Sign In accounts always need it
+- **[Free Games](/docs/features/free-games) auto-redeem**: works as a plain toggle for **Sign in with Steam** accounts; Legacy Sign In accounts need a separate one-time store sign-in first
 
-Everything else — Card Farming, Achievement Unlocker, Achievement Manager, Inventory Manager, Idling, Auto-Idle, Favorites — works the same regardless of which method you used.
+Everything else (Card Farming, Achievement Unlocker, Achievement Manager, Inventory Manager, Idling, Auto-Idle, Favorites) works the same regardless of which method you used.

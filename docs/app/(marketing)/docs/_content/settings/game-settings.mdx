@@ -1,52 +1,62 @@
 ---
 title: Game Settings
-description: Configure individual game settings such as max idle time, card drop limits, and achievement unlock limits.
+description: Configure individual game settings such as max playtime, idle time, card drop limits, and achievement unlock limits.
 ---
+
+import MockButton from '@/app/(marketing)/docs/_components/MockButton';
 
 # Individual Game Settings
 
-Use this page to set per-game limits for idling, card farming, and achievement unlocking. Select a game from the list, then configure its limits below.
+You'll find this page under <MockButton type='context-cog' content='Settings → Game Settings' />. Use it to set per-game limits for playtime, idling, card farming, and achievement unlocking. Select a game from the list, then configure its limits below. Every limit set to `0` means unlimited.
 
-## Global Max Idle Time
+<Callout type="info">
+    Enable **Only show games with custom settings** to filter the game list down to just the games you've already customized.
+</Callout>
+
+## Playtime
+
+These limits apply everywhere a game can be idled: manual [Idling](/docs/features/idling), [Auto-Idle](/docs/features/auto-idle), [Achievement Unlocker](/docs/features/achievement-unlocker), and [Card Farming](/docs/features/card-farming) all respect them.
+
+### Max Playtime (All Games)
+
+Automatically stop a game, and remove it from every queue, once its total playtime reaches this many minutes. Applies to every game unless it has its own override below.
+
+### Max Playtime
+
+Same as above, but for the selected game only. Overrides **Max Playtime (All Games)** when set.
+
+## Idling
+
+These limits only apply to manually and automatically idled games. Card Farming and Achievement Unlocker have their own separate caps below.
+
+### Max Idle Time (All Games)
 
 Set a default maximum idle time (in minutes) that applies to all games. Individual per-game limits take priority over this value when set.
 
-This only applies to games idled via manual [Idling](/docs/features/idling) or [Auto-Idle](/docs/features/auto-idle). It has no effect on games running through [Card Farming](/docs/features/card-farming) or [Achievement Unlocker](/docs/features/achievement-unlocker).
+### Max Idle Time
 
-Set to `0` to idle indefinitely.
+Set the maximum idle time (in minutes) for the selected game. SGI will stop idling this game when the time limit is reached, overriding the value above.
 
-## Max Idle Time
+## Card Farming
 
-Set the maximum idle time (in minutes) for the selected game. SGI will stop idling this game when the time limit is reached.
+These limits only apply to Card Farming sessions.
 
-This only applies to games idled via manual [Idling](/docs/features/idling) or [Auto-Idle](/docs/features/auto-idle). It has no effect on games running through [Card Farming](/docs/features/card-farming) or [Achievement Unlocker](/docs/features/achievement-unlocker).
-
-Set to `0` to idle indefinitely.
-
-## Global Max Card Farming Time
+### Max Card Farming Time (All Games)
 
 Set a default maximum farming time (in minutes) that applies to all games. Individual per-game limits take priority over this value when set.
 
-This only applies to games farmed by [Card Farming](/docs/features/card-farming). It has no effect on games idled via [Idling](/docs/features/idling), [Auto-Idle](/docs/features/auto-idle), or games running through [Achievement Unlocker](/docs/features/achievement-unlocker).
+### Max Card Farming Time
 
-Set to `0` to farm indefinitely.
+Set the maximum farming time (in minutes) for the selected game. SGI will stop farming this game when the time limit is reached, overriding the value above.
 
-## Max Card Farming Time
-
-Set the maximum farming time (in minutes) for the selected game. SGI will stop farming this game when the time limit is reached.
-
-This only applies to games farmed by [Card Farming](/docs/features/card-farming). It has no effect on games idled via [Idling](/docs/features/idling), [Auto-Idle](/docs/features/auto-idle), or games running through [Achievement Unlocker](/docs/features/achievement-unlocker).
-
-Set to `0` to farm indefinitely.
-
-## Max Card Drops
+### Max Card Drops
 
 Set the maximum number of card drops to farm for the selected game before stopping.
 
-Set to `0` to farm all available drops. Note that because card drop timing is not precisely predictable, SGI will try to stay within this limit but it may not always be exact.
+Note that because card drop timing is not precisely predictable, SGI will try to stay within this limit but it may not always be exact.
 
-## Max Achievement Unlocks
+## Achievement Unlocker
+
+### Max Achievement Unlocks
 
 Set the maximum number of achievements to unlock for the selected game. SGI will stop unlocking and remove the game from the Achievement Unlocker queue once this limit is reached.
-
-Set to `0` to unlock all achievements.

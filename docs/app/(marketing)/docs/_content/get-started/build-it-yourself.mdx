@@ -14,11 +14,11 @@ SGI's source is fully public. The desktop app is a [Tauri](https://tauri.app/) a
 ## Prerequisites
 
 * [Node.js](https://nodejs.org/en/download/prebuilt-installer) >= 20.0
-* [pnpm](https://pnpm.io/installation) — the project uses pnpm workspaces, not npm/yarn
+* [pnpm](https://pnpm.io/installation): the project uses pnpm workspaces, not npm/yarn
 * [Rust](https://www.rust-lang.org/tools/install) (stable toolchain)
-* [.NET SDK](https://dotnet.microsoft.com/en-us/download) >= 8.0 — `libs/SteamUtility` targets `net8.0` only
+* [.NET SDK](https://dotnet.microsoft.com/en-us/download) >= 8.0 (`libs/SteamUtility` targets `net8.0` only)
 * [VS Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/) = latest, with the "Desktop development with C++" workload
-* [WebView2](https://developer.microsoft.com/en-us/Microsoft-edge/webview2/) = latest — *pre-installed on Windows 11 and recent Windows 10*
+* [WebView2](https://developer.microsoft.com/en-us/Microsoft-edge/webview2/) = latest (*pre-installed on Windows 11 and recent Windows 10*)
 
 <Steps>
   <Step>
@@ -45,7 +45,7 @@ SGI's source is fully public. The desktop app is a [Tauri](https://tauri.app/) a
     dotnet build ./libs/SteamUtility/SteamUtility.csproj
     ```
 
-    This outputs `SteamUtility.exe` to `src-tauri/target/debug/libs/` (or `release/libs/` for a release build) — `pnpm tauri dev`/`pnpm tauri build` expect it to already be there
+    This outputs `SteamUtility.exe` to `src-tauri/target/debug/libs/` (or `release/libs/` for a release build); `pnpm tauri dev`/`pnpm tauri build` expect it to already be there
   </Step>
 
   <Step>
@@ -85,7 +85,7 @@ SGI's source is fully public. The desktop app is a [Tauri](https://tauri.app/) a
     pnpm td       # shorthand for `tauri dev`
 
     # Production
-    pnpm tb       # shorthand for `tauri build` — outputs to `src-tauri/target/release/bundle/`
+    pnpm tb       # shorthand for `tauri build`, outputs to `src-tauri/target/release/bundle/`
     ```
   </Step>
 </Steps>
