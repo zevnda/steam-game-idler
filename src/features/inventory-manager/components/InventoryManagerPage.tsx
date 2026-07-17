@@ -55,7 +55,7 @@ export const InventoryManagerPage = () => {
   const {
     items,
     settings,
-    hasLoaded,
+    canAccessInventory,
     isInitializing,
     isFetching,
     isManualRefreshing,
@@ -408,12 +408,13 @@ export const InventoryManagerPage = () => {
   return (
     <div className='flex h-full flex-col'>
       {/* Always mounted, like every other page's header (GamesPageHeader/CardFarmingPageHeader/
-          etc.) - only the action buttons are gated on `hasLoaded`, so the title/count row stays
-          visible through the initial skeleton and the connect panel instead of the page looking
-          headerless until a fetch succeeds. */}
+          etc.) - only the action buttons are gated on `hasLoaded` (here, `canAccessInventory` -
+          see useInventory.ts's doc comment for why raw `hasLoaded` alone isn't sufficient), so the
+          title/count row stays visible through the initial skeleton and the connect panel instead
+          of the page looking headerless until a fetch succeeds. */}
       <InventoryPageHeader
         dupesCount={dupeCandidates.length}
-        hasLoaded={hasLoaded}
+        hasLoaded={canAccessInventory}
         isBusy={isBusy}
         isFetching={isFetching}
         isListing={isListing}
@@ -431,7 +432,7 @@ export const InventoryManagerPage = () => {
         onSellDupes={handleSellDupes}
       />
 
-      {hasLoaded && errorCode && (
+      {canAccessInventory && errorCode && (
         <div className='px-6 pt-4'>
           <Alert status='danger'>
             <Alert.Indicator />
@@ -457,7 +458,7 @@ export const InventoryManagerPage = () => {
           gridClassName='grid grid-cols-[repeat(auto-fill,minmax(190px,1fr))] gap-4 p-6'
           tileClassName='h-64 rounded-xl'
         />
-      ) : !hasLoaded ? (
+      ) : !canAccessInventory ? (
         // Centered in the remaining content area - matches CardFarmingStartPanel's identical
         // centering so both cookie-prompt screens look the same.
         <div className='flex flex-1 items-center justify-center overflow-y-auto'>

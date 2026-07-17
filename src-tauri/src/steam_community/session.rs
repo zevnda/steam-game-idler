@@ -215,18 +215,20 @@ async fn derive_from_agent_session(
     })
 }
 
-/// Resolves the cookies a Steam Community call should use: passes `manual` straight through
-/// untouched if the caller supplied one (the casual/free-tier fallback - no webview, no tier check
-/// here), otherwise branches on sign-in mode - agent mode derives cookies directly from its live
-/// daemon session ([`derive_from_agent_session`]), local mode falls back to the automatic webview
-/// flow in [`acquire`], its only option. No cross-mode fallback: if agent mode's derivation fails,
-/// that's surfaced as a real error rather than silently falling through to a webview/login prompt,
-/// which would defeat the reason this path exists.
+/// Resolves the cookies a Steam Community call should use: no tier check here regardless of
+/// mode - the caller supplying `manual` at all is the casual/free-tier fallback. Branches on
+/// sign-in mode - agent mode derives cookies directly from its live daemon session
+/// ([`derive_from_agent_session`]) when no manual override is given, local mode falls back to the
+/// automatic webview flow in [`acquire`], its only option. No cross-mode fallback: if agent mode's
+/// derivation fails, that's surfaced as a real error rather than silently falling through to a
+/// webview/login prompt, which would defeat the reason this path exists.
 ///
-/// Local mode's result also goes through [`ensure_valid`] - unlike an agent-mode session (always
-/// freshly derived, see below), a webview-acquired or manually-pasted cookie set can look present
-/// while the underlying Steam session has actually expired (~24h manual-credentials expiry), and
-/// neither the OS credential store nor the webview's own persisted profile track that on their own.
+/// Every manually-supplied cookie set (either mode) and every Local-mode result also goes through
+/// [`ensure_valid`] - a webview-acquired or manually-pasted cookie set can look present while the
+/// underlying Steam session has actually expired (~24h manual-credentials expiry), and neither the
+/// OS credential store nor the webview's own persisted profile track that on their own. Only a
+/// freshly-derived agent-mode session skips this (see [`derive_from_agent_session`]'s own doc
+/// comment on why it's always fresh).
 pub async fn resolve(
     app_handle: &AppHandle,
     agent_manager: &AgentManager,
@@ -238,7 +240,11 @@ pub async fn resolve(
         GamesAccount::Agent { username } => {
             if let Some(cookies) = manual {
                 tracing::info!(steam_id, "steam community: using manually-supplied cookies");
-                return Ok(cookies);
+                // Always `is_manual: true` here - this arm is only reached with a manual
+                // override, and agent mode has no live webview session for `ensure_valid`'s
+                // silent-retry path to fall back to, so a confirmed logout goes straight to
+                // clearing the saved credential + `SteamCommunitySessionExpired`.
+                return ensure_valid(app_handle, steam_id, cookies, true).await;
             }
             tracing::info!(
                 steam_id,
@@ -285,6 +291,21 @@ pub enum SessionStatus {
 const VALIDATE_MAX_ATTEMPTS: u8 = 2;
 const VALIDATE_RETRY_DELAY: Duration = Duration::from_millis(1500);
 
+/// Whether `response`'s Set-Cookie headers include Steam's own signal that it just revoked this
+/// session's `steamLoginSecure` cookie - the one unambiguous "you are logged out" signal
+/// [`validate`] relies on. Unlike the `account_dropdown` HTML marker, whose *absence* is only
+/// trustworthy across `validate`'s own retry/backoff loop (a bare miss there is `Inconclusive`,
+/// not confirmed logout), this header is definitive on a single response - safe to reuse for a
+/// single-shot inline check (see `card_farming::scraper`'s per-poll usage) with no retry needed.
+pub(crate) fn is_session_revoked(response: &reqwest::Response) -> bool {
+    response.headers().get_all("set-cookie").iter().any(|value| {
+        value
+            .to_str()
+            .map(|s| s.contains("steamLoginSecure=deleted"))
+            .unwrap_or(false)
+    })
+}
+
 pub async fn validate(steam_id: &str, cookies: &SteamCookies) -> AppResult<SessionStatus> {
     let client =
         steam_client().map_err(|e| AppError::SteamCommunitySessionFailed(e.to_string()))?;
@@ -307,16 +328,7 @@ pub async fn validate(steam_id: &str, cookies: &SteamCookies) -> AppResult<Sessi
             .await
             .map_err(|e| AppError::SteamCommunitySessionFailed(e.to_string()))?;
 
-        let session_revoked = response
-            .headers()
-            .get_all("set-cookie")
-            .iter()
-            .any(|value| {
-                value
-                    .to_str()
-                    .map(|s| s.contains("steamLoginSecure=deleted"))
-                    .unwrap_or(false)
-            });
+        let session_revoked = is_session_revoked(&response);
 
         let html = response
             .text()

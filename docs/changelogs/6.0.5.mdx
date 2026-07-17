@@ -1,0 +1,14 @@
+---
+title: 6.0.5
+date: 2026-07-18
+tags: ['Improved', 'Fixed']
+---
+
+### Improved 🚀
+- Steam credential validation errors are now shown consistently inline within the credentials panel across **Card Farming**, **Inventory Manager**, and **Settings > Steam Credentials**, instead of appearing differently (or not at all) depending on where you entered them
+- Added a **Clear** button to the Steam credentials panel in **Card Farming** and **Inventory Manager**, matching **Settings > Steam Credentials**
+
+### Fixed 🐛
+- Fixed a misleading "Your Steam Community session has expired" message shown in **Card Farming** and **Inventory Manager** when entering credentials that had never been valid in the first place, rather than a session that had actually expired
+- Fixed an issue in **Settings > Steam Credentials** where a failed save could show no error message, or a leftover one from a previous attempt, instead of the actual error
+- Fixed an issue in **Inventory Manager** where accounts using **Legacy Sign In** with no saved Steam credentials could keep showing a previously cached inventory list indefinitely instead of prompting to reconnect

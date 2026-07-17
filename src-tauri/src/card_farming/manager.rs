@@ -21,11 +21,12 @@ use tokio::task::JoinHandle;
 use crate::achievement_unlocker;
 use crate::async_utils::wait_ticking;
 use crate::auto_idle;
-use crate::error::AppResult;
+use crate::error::{AppError, AppResult};
 use crate::games::{self, commands::GamesAccount};
 use crate::idling::{self, IdleTarget, IdlingManager};
 use crate::max_playtime;
 use crate::steam_agent::AgentManager;
+use crate::steam_community::credentials;
 
 use super::settings::FarmingCaps;
 use super::{
@@ -342,6 +343,11 @@ fn is_capped(progress: &FarmingProgress, caps: &FarmingCaps) -> Option<Completed
 /// both features now behave the same way: a cap-based stop is just as final as a genuine finish for
 /// *this account's queue* - raising the cap and re-adding the game is an explicit, deliberate action
 /// rather than something that silently resumes on its own.
+///
+/// Returns `Err(SteamCommunitySessionExpired)` instead of a per-game warn-and-continue if *any*
+/// game's poll confirms the session itself is dead - every active game shares the same cookies, so
+/// this is a hard-stop-the-cycle condition, not a per-item transient failure like every other poll
+/// error this function tolerates.
 async fn poll_active(
     app_handle: &AppHandle,
     state: &Arc<Mutex<FarmingState>>,
@@ -349,10 +355,10 @@ async fn poll_active(
     cookies: &SteamCookies,
     caps: &FarmingCaps,
     queued_games: &mut HashMap<u32, String>,
-) -> bool {
+) -> AppResult<bool> {
     let app_ids: Vec<u32> = state.lock().await.active.iter().map(|p| p.app_id).collect();
     if app_ids.is_empty() {
-        return false;
+        return Ok(false);
     }
 
     let results = join_all(app_ids.iter().map(|&app_id| async move {
@@ -370,6 +376,14 @@ async fn poll_active(
                 if let Some(progress) = s.active.iter_mut().find(|p| p.app_id == app_id) {
                     progress.remaining = drops.remaining;
                 }
+            }
+            Err(AppError::SteamCommunitySessionExpired(id)) => {
+                tracing::warn!(
+                    app_id,
+                    steam_id = %id,
+                    "card farming: steam community session expired, stopping cycle"
+                );
+                return Err(AppError::SteamCommunitySessionExpired(id));
             }
             Err(e) => {
                 tracing::warn!(
@@ -461,7 +475,7 @@ async fn poll_active(
             reason,
         });
     }
-    finished_any
+    Ok(finished_any)
 }
 
 /// Replaces card farming's own owner claim with exactly `active` - also how the cycle releases its
@@ -594,10 +608,11 @@ fn maybe_start_next_task<'a>(
 /// (`queued_games`) picked up new drops mid-session, and stopping for good once that filtered
 /// refetch also comes back empty.
 ///
-/// Reached the bottom either because there's genuinely nothing left to farm or because [`stop`] set
-/// `stopped` - both converge on the same cleanup below, which is safe to run twice (`stop` awaits
-/// this very task before returning, so there's no concurrent double-run, but `set_idle_games([])`/
-/// removing an already-removed map entry are idempotent regardless).
+/// Reached the bottom because there's genuinely nothing left to farm, [`stop`] set `stopped`, or a
+/// mid-cycle Steam Community session expiry was confirmed (see [`FarmingState::session_expired`])
+/// - all converge on the same cleanup below, which is safe to run twice (`stop` awaits this very
+/// task before returning, so there's no concurrent double-run, but `set_idle_games([])`/removing an
+/// already-removed map entry are idempotent regardless).
 async fn run_cycle(
     app_handle: AppHandle,
     steam_id: String,
@@ -647,6 +662,15 @@ async fn run_cycle(
                     state.lock().await.queue = games;
                     continue;
                 }
+                Err(AppError::SteamCommunitySessionExpired(id)) => {
+                    let _ = credentials::clear(&id);
+                    state.lock().await.session_expired = true;
+                    tracing::warn!(
+                        steam_id,
+                        "card farming: steam community session expired mid-cycle, stopping"
+                    );
+                    break;
+                }
                 Err(e) => {
                     tracing::warn!(
                         steam_id,
@@ -679,7 +703,7 @@ async fn run_cycle(
             tracing::warn!(steam_id, error = %e.code(), "card farming: failed to read auto-stop caps, treating as uncapped this poll");
             FarmingCaps::default()
         });
-        let finished = poll_active(
+        let poll_result = poll_active(
             &app_handle,
             &state,
             &steam_id,
@@ -688,6 +712,19 @@ async fn run_cycle(
             &mut queued_games,
         )
         .await;
+
+        let finished = match poll_result {
+            Ok(finished) => finished,
+            Err(AppError::SteamCommunitySessionExpired(id)) => {
+                let _ = credentials::clear(&id);
+                state.lock().await.session_expired = true;
+                emit_state(&app_handle, &steam_id, &state).await;
+                break;
+            }
+            // `poll_active` never actually returns any other error variant today - matched
+            // explicitly anyway so this stays exhaustive if that ever changes.
+            Err(_) => false,
+        };
         emit_state(&app_handle, &steam_id, &state).await;
 
         if finished {

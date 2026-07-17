@@ -30,3 +30,20 @@ const KNOWN_ERROR_KEYS: Record<string, TranslationKey> = {
 const GENERIC_KEY: TranslationKey = 'dashboard.cardFarming.errors.generic'
 
 export const errorMessageKey = (code: string) => KNOWN_ERROR_KEYS[code] ?? GENERIC_KEY
+
+// CardFarmingStartPanel's own mapper for its errorSlot - overrides `sessionExpired` back to
+// `sessionFailed`'s "check your cookies" copy, since every code this panel ever sees comes from a
+// fresh, not-yet-proven candidate (a first-time manual paste, or an auto-connect retry of a
+// previously-saved set that's about to get cleared either way). Steam's validation response can't
+// actually distinguish "these cookies were never valid" from "these were valid and got revoked" -
+// see `steam_community::session::validate`'s doc comment - so `sessionExpired`'s "your session
+// expired, please reconnect" wording is misleading here regardless of which of the two ambiguous
+// Rust-side outcomes produced it. Mirrors `settings::steamCredentialsErrorMessageKey`'s identical
+// override, made for the exact same reason. `errorMessageKey` above is unchanged and still used for
+// CardFarmingPage's page-level banner, where a `sessionExpired` really does mean an
+// already-connected, already-working session just broke (e.g. mid-farm - see `useCardFarming`'s
+// `state.sessionExpired` effect).
+export const connectErrorMessageKey = (code: string) =>
+  code === 'steam_community_session_expired'
+    ? KNOWN_ERROR_KEYS.steam_community_session_failed
+    : errorMessageKey(code)

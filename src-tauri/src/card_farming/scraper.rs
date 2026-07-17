@@ -10,6 +10,7 @@ use scraper::selectable::Selectable;
 use scraper::{Html, Selector};
 
 use crate::error::{AppError, AppResult};
+use crate::steam_community::session::is_session_revoked;
 use crate::steam_community::{cookie_header, steam_client};
 
 use super::{DropsRemaining, GameWithDrops, SteamCookies};
@@ -58,6 +59,14 @@ pub async fn get_drops_remaining(
         .send()
         .await
         .map_err(|e| AppError::CardFarmingScrapeFailed(e.to_string()))?;
+
+    // Checked before consuming the response body: a dead session serves a login/redirect page
+    // whose selectors just silently don't match below, degrading to a false "0 remaining" instead
+    // of the real cause - see `session::is_session_revoked`'s doc comment on why this specific
+    // signal is safe to trust on a single response, unlike `validate`'s other marker.
+    if is_session_revoked(&response) {
+        return Err(AppError::SteamCommunitySessionExpired(steam_id.to_string()));
+    }
 
     let html = response
         .text()
@@ -166,7 +175,11 @@ fn parse_games_with_drops(html: &str) -> Vec<GameWithDrops> {
 /// Every owned game with at least one card drop remaining, scraped from the account's badge
 /// overview pages (paginated - fetches page 1 first to discover the real page count via
 /// `detect_max_page`, then fetches the rest concurrently, mirroring `main`'s `join_all` shape). A
-/// single page's request failure is skipped rather than failing the whole call, same as `main`.
+/// single page's request failure is skipped rather than failing the whole call, same as `main` -
+/// except page 1 specifically, which also errors the whole call with
+/// `AppError::SteamCommunitySessionExpired` if the session turns out to be dead (see
+/// `is_session_revoked`), rather than silently returning an empty/partial games list that would
+/// look like "nothing left to farm".
 pub async fn get_games_with_drops(
     steam_id: &str,
     cookies: &SteamCookies,
@@ -177,12 +190,21 @@ pub async fn get_games_with_drops(
         format!("https://steamcommunity.com/profiles/{steam_id}/badges/?l=english&sort=p&p={page}")
     };
 
-    let first_page_html = client
+    let first_page_response = client
         .get(page_url(1))
         .header("Cookie", cookie_value.clone())
         .send()
         .await
-        .map_err(|e| AppError::CardFarmingScrapeFailed(e.to_string()))?
+        .map_err(|e| AppError::CardFarmingScrapeFailed(e.to_string()))?;
+
+    // Checked only on page 1: pagination viability is decided from this page, and if the session
+    // is dead it's dead account-wide, so there's no need to repeat this per page. Pages 2+ keep
+    // their existing best-effort `Vec::new()` degradation on any failure, untouched.
+    if is_session_revoked(&first_page_response) {
+        return Err(AppError::SteamCommunitySessionExpired(steam_id.to_string()));
+    }
+
+    let first_page_html = first_page_response
         .text()
         .await
         .map_err(|e| AppError::CardFarmingScrapeFailed(e.to_string()))?;

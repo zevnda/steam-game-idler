@@ -143,6 +143,13 @@ export const CardFarmingPage = () => {
     [filteredBrowseGames, sortStyle],
   )
   const queuedAppIds = useMemo(() => new Set(queue.map(game => game.appId)), [queue])
+  // Connect-time failures (a bad cookie paste, or the connect panel's own automatic-path failure)
+  // render inline inside CardFarmingStartPanel's errorSlot instead - see that component's doc
+  // comment - so this page-level banner only needs to cover errors reachable while already
+  // connected: start/stop failures, plus refreshBrowse's rare non-session failure edge case (see
+  // useCardFarming's connect/refreshBrowse doc comments). Gated on `connected`, mirroring
+  // InventoryManagerPage's `canAccessInventory && errorCode` banner, so this never overlaps with
+  // the connect panel's own inline error.
   const displayedErrorCode = errorCode ?? connectErrorCode
   const showFinishedSummary = !state.isFarming && !dismissedFinished && state.completed.length > 0
 
@@ -241,7 +248,7 @@ export const CardFarmingPage = () => {
         onStop={handleStop}
       />
 
-      {displayedErrorCode && (
+      {connected && displayedErrorCode && (
         <div className='px-6 pt-4'>
           <Alert status='danger'>
             <Alert.Indicator />
@@ -272,7 +279,11 @@ export const CardFarmingPage = () => {
         <GameGridSkeleton />
       ) : !connected ? (
         <div className='flex flex-1 items-center justify-center overflow-y-auto'>
-          <CardFarmingStartPanel isConnecting={isConnecting} onConnect={connect} />
+          <CardFarmingStartPanel
+            errorCode={connectErrorCode}
+            isConnecting={isConnecting}
+            onConnect={connect}
+          />
         </div>
       ) : (
         <TabsRoot

@@ -1,6 +1,6 @@
 import type { SteamCookies } from '../types'
 import { useTranslation } from 'react-i18next'
-import { errorMessageKey } from '../utils/errorMessageKey'
+import { connectErrorMessageKey } from '../utils/errorMessageKey'
 import { Alert } from '@heroui/react'
 import { SteamCookiesConnectPanel } from '@/shared/components/SteamCookiesConnectPanel'
 
@@ -38,7 +38,7 @@ export const InventoryConnectPanel = ({
             <Alert.Indicator />
             <Alert.Content>
               <Alert.Description>
-                {t(errorMessageKey(errorCode), { code: errorCode })}
+                {t(connectErrorMessageKey(errorCode), { code: errorCode })}
               </Alert.Description>
             </Alert.Content>
           </Alert>
@@ -47,6 +47,7 @@ export const InventoryConnectPanel = ({
       isSubmitting={isConnecting}
       manualTabLabel={t('common.connect.manualTab')}
       savedCredentialsNote={t('common.manualCookies.savedFromSettingsNote')}
+      showClear
       title={t('dashboard.inventoryManager.connect.title')}
       onConnect={onConnect}
     />

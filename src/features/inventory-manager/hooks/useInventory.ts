@@ -10,10 +10,13 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { errorMessageKey } from '../utils/errorMessageKey'
 import { toast } from '@heroui/react'
+import { useSavedSteamCookies } from '@/shared/hooks/useSavedSteamCookies'
 import { useSessionStore } from '@/shared/stores/sessionStore'
+import { useSubscriptionStore } from '@/shared/stores/subscriptionStore'
 import { invoke } from '@/shared/utils/invoke'
 import { showErrorToast } from '@/shared/utils/showErrorToast'
 import { clearSavedSteamCookies } from '@/shared/utils/steamCommunitySessionExpired'
+import { canResolveCookiesAutomatically, hasGamerAccess } from '@/shared/utils/subscriptionAccess'
 
 // Data/actions for the inventory-manager page - fetch/cache/connect, market actions (price lookup,
 // listing, removing listings), and this account's selling-preferences settings. Page-scoped, not
@@ -29,10 +32,16 @@ import { clearSavedSteamCookies } from '@/shared/utils/steamCommunitySessionExpi
 export const useInventory = () => {
   const { t } = useTranslation()
   const account = useSessionStore(state => state.account)
+  const subscriptionTier = useSubscriptionStore(state => state.subscriptionTier)
+  const { savedCookies } = useSavedSteamCookies<SteamCookies>()
   const [resolvedSteamId, setResolvedSteamId] = useState<string | null>(null)
   const [items, setItems] = useState<InventoryItem[]>([])
   const [settings, setSettings] = useState<InventorySettings | null>(null)
   const [hasLoaded, setHasLoaded] = useState(false)
+  // Set only by a real, cookie-gated `connect()` success - unlike `hasLoaded`, never set by the
+  // cache-based instant paint below, so `canAccessInventory` can tell "we showed cached data" apart
+  // from "we actually proved this account can authenticate right now".
+  const [hasVerifiedConnection, setHasVerifiedConnection] = useState(false)
   const [isInitializing, setIsInitializing] = useState(true)
   const [isFetching, setIsFetching] = useState(false)
   const [isListing, setIsListing] = useState(false)
@@ -45,17 +54,78 @@ export const useInventory = () => {
     (error: unknown) => {
       const code = String(error)
       showErrorToast(t(errorMessageKey(code), { code }), code, t('common.learnMore'))
-      // A definitive session expiry (Rust already cleared any saved credentials - see
-      // AppError::SteamCommunitySessionExpired's doc comment). Drops the cached manual cookies so
-      // the next action doesn't silently retry the same dead ones (unlike card-farming, which
-      // drops straight back to its connect panel instead).
-      if (code === 'steam_community_session_expired' && account) {
+      // Either outcome means the Steam Community session itself couldn't be confirmed for this
+      // action (as opposed to a per-item failure like a rate limit) - both must drop back to
+      // requiring a verified connect (`hasVerifiedConnection: false` forces `canAccessInventory`
+      // false, hiding whatever stale content/items were already showing), matching what
+      // card-farming already gets for free from its `connected` flag only ever flipping true on an
+      // actual success. Both also clear the displayed/reused credential (ref + the shared
+      // `steamCookiesStore` cache, not the OS-level store - that's Rust's own `ensure_valid`
+      // decision, unaffected here): `failed` was originally meant to cover only a transient network
+      // hiccup without wiping a possibly-still-good credential (see `SessionStatus::Inconclusive`'s
+      // doc comment), but in practice even a genuine, permanent Steam-side sign-out often surfaces
+      // as `failed` rather than a definitive `expired` (Steam doesn't reliably send the one
+      // unambiguous logged-out signal `validate` looks for) - leaving `failed` untouched left real
+      // dead credentials sitting in the connect panel's fields indefinitely.
+      if (
+        (code === 'steam_community_session_expired' || code === 'steam_community_session_failed') &&
+        account
+      ) {
+        setHasVerifiedConnection(false)
+        setHasLoaded(false)
+        setItems([])
         manualCookiesRef.current = undefined
         clearSavedSteamCookies(account)
       }
     },
     [t, account],
   )
+
+  // Refuses to let `manualCookies: undefined` reach the backend for a non-gamer account -
+  // `session::resolve` has no Rust-side tier check at all, so without this, any action that reuses
+  // `manualCookiesRef.current` (which is `undefined` both right after a session-expiry reset and
+  // whenever `hasLoaded` came from `get_inventory_cache` alone, without a real connect ever having
+  // run - see this hook's init effect) would silently succeed via automatic derivation for free.
+  // Treated like a dead credential: clear the ref/saved cookies and drop back to the connect panel
+  // (`hasLoaded: false`, discarding whatever cache was showing) rather than proceeding.
+  const enforceCookieGate = useCallback(
+    (manualCookies: SteamCookies | undefined) => {
+      if (!account) return false
+      if (canResolveCookiesAutomatically(manualCookies !== undefined, subscriptionTier)) return true
+      manualCookiesRef.current = undefined
+      clearSavedSteamCookies(account)
+      setHasLoaded(false)
+      setItems([])
+      setHasVerifiedConnection(false)
+      return false
+    },
+    [account, subscriptionTier],
+  )
+
+  // The actual "safe to show inventory content" gate `InventoryManagerPage` renders on - `hasLoaded`
+  // alone isn't proof of that: it's also set by the cache-based instant paint below, which never
+  // goes through `enforceCookieGate` (nothing calls `connect` just to display a cache hit). Without
+  // this, an account with no saved manual cookies at all could keep showing stale cached items
+  // indefinitely, since neither of `useAutoConnectSteamCookies`'s branches ever fires for that
+  // combination to trigger a real re-check. True if either this session already proved a real
+  // connection, or `useAutoConnectSteamCookies` is actually about to run a background re-check for
+  // this account right now.
+  //
+  // Deliberately mirrors `useAutoConnectSteamCookies`'s own two trigger branches exactly, NOT
+  // `canResolveCookiesAutomatically(!!savedCookies, subscriptionTier)` - that function answers "is
+  // an automatic connect *tier-permitted* right now" (correct for `enforceCookieGate`'s use below,
+  // which gates an already-in-flight action), not "*will* an automatic connect actually happen in
+  // the background" (what this gate needs). Those two questions diverge for a gamer-tier **local**
+  // (CLI) account with no saved cookies: `canResolveCookiesAutomatically` says yes (gamer tier can
+  // always resolve automatically once attempted), but `useAutoConnectSteamCookies`'s agent-mode
+  // daemon-derive branch never fires for local mode - local mode's own "automatic" path only ever
+  // runs from an explicit user click on the connect panel's Automatic tab, never silently on mount.
+  // Using the wrong predicate here left exactly that account shape (gamer-tier, CLI/local mode, no
+  // saved cookies) stuck showing yesterday's cached inventory forever, even across an app restart,
+  // since nothing ever ran the real re-check this gate assumed was coming.
+  const willAutoVerifyInBackground =
+    (account?.mode === 'agent' && hasGamerAccess(subscriptionTier)) || !!savedCookies
+  const canAccessInventory = hasLoaded && (hasVerifiedConnection || willAutoVerifyInBackground)
 
   // Re-reads just the settings half of init() - exposed as `refreshSettings` so this page's own
   // copy doesn't go stale after a save from the Settings *modal* (an overlay - see
@@ -117,7 +187,7 @@ export const useInventory = () => {
   // whether a gamer-tier agent-mode/saved-cookie auto-attempt actually worked.
   const connect = useCallback(
     async (manualCookies: SteamCookies | undefined) => {
-      if (!account) return false
+      if (!account || !enforceCookieGate(manualCookies)) return false
       setIsFetching(true)
       setErrorCode(null)
       try {
@@ -128,6 +198,7 @@ export const useInventory = () => {
         manualCookiesRef.current = manualCookies
         setItems(fresh)
         setHasLoaded(true)
+        setHasVerifiedConnection(true)
         // A successful fetch proves the account resolves cleanly - opportunistically retry the
         // SteamID64 resolution if the mount-time attempt hadn't settled yet (e.g. called right
         // after agent-mode sign-in, before the daemon's first `status_changed` event landed), so
@@ -142,9 +213,17 @@ export const useInventory = () => {
         console.error('Error in (get_inventory):', error)
         const code = String(error)
         setErrorCode(code)
-        // See toastActionError's identical handling for why this drops the cached manual cookies -
-        // `connect` reaches this same expired outcome both on a fresh connect and via `refresh`.
-        if (code === 'steam_community_session_expired') {
+        // See toastActionError's identical handling (both codes drop `hasLoaded`/`items` back to
+        // requiring a fresh verified connect, and clear the displayed/reused credential) -
+        // `connect` reaches this same outcome both on a fresh connect and via `refresh` reusing
+        // already-loaded content that just failed to reverify.
+        if (
+          code === 'steam_community_session_expired' ||
+          code === 'steam_community_session_failed'
+        ) {
+          setHasVerifiedConnection(false)
+          setHasLoaded(false)
+          setItems([])
           manualCookiesRef.current = undefined
           clearSavedSteamCookies(account)
         }
@@ -153,7 +232,7 @@ export const useInventory = () => {
         setIsFetching(false)
       }
     },
-    [account, resolvedSteamId],
+    [enforceCookieGate, account, resolvedSteamId],
   )
 
   // Deliberately separate from `isFetching` - that flag also covers the *first* connect (before
@@ -209,6 +288,7 @@ export const useInventory = () => {
   const listItems = useCallback(
     async (pairs: [string, string][], delay?: number) => {
       if (!account || pairs.length === 0) return null
+      if (!enforceCookieGate(manualCookiesRef.current)) return null
       setIsListing(true)
       try {
         const result = await invoke<ListItemsResult>('list_items', {
@@ -237,11 +317,12 @@ export const useInventory = () => {
         setIsListing(false)
       }
     },
-    [account, settings?.currency, t, toastActionError],
+    [enforceCookieGate, account, settings?.currency, t, toastActionError],
   )
 
   const removeListings = useCallback(async () => {
     if (!account) return null
+    if (!enforceCookieGate(manualCookiesRef.current)) return null
     setIsRemovingListings(true)
     try {
       const result = await invoke<RemoveListingsResult>('remove_market_listings', {
@@ -269,12 +350,13 @@ export const useInventory = () => {
     } finally {
       setIsRemovingListings(false)
     }
-  }, [account, refresh, t, toastActionError])
+  }, [enforceCookieGate, account, refresh, t, toastActionError])
 
   return {
     items,
     settings,
     hasLoaded,
+    canAccessInventory,
     isInitializing,
     isFetching,
     isManualRefreshing,

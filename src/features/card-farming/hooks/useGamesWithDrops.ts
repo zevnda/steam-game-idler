@@ -13,12 +13,17 @@ export const useGamesWithDrops = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [errorCode, setErrorCode] = useState<string | null>(null)
 
-  // Returns whether the fetch succeeded (not the games themselves - callers that also need to know
-  // whether cookies actually resolved, like `useCardFarming`'s `connect`, read this instead of
-  // wiring up their own try/catch around a second fetch).
+  // Returns `null` on success, or the error code on failure (not the games themselves - callers
+  // that also need to know whether cookies actually resolved, like `useCardFarming`'s `connect`,
+  // read this instead of wiring up their own try/catch around a second fetch). Returns the code
+  // directly rather than having the caller read this hook's own `errorCode` state afterward -
+  // `errorCode` only updates on this hook's *next* render, which hasn't happened yet by the time an
+  // awaiting caller's own closure resumes, so a post-await read of `errorCode` off the object this
+  // hook returned earlier is always one render stale (previously caused `connect` to silently miss
+  // every failure code, since it read a snapshot from before this exact attempt).
   const refresh = useCallback(
     async (manualCookies: SteamCookies | undefined) => {
-      if (!account) return false
+      if (!account) return 'no_account'
       setIsLoading(true)
       setErrorCode(null)
       try {
@@ -28,11 +33,12 @@ export const useGamesWithDrops = () => {
             manualCookies: manualCookies ?? null,
           }),
         )
-        return true
+        return null
       } catch (error) {
         console.error('Error in (get_games_with_drops) [browse]:', error)
-        setErrorCode(String(error))
-        return false
+        const code = String(error)
+        setErrorCode(code)
+        return code
       } finally {
         setIsLoading(false)
       }

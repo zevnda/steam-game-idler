@@ -85,11 +85,20 @@ export const useAutoFarmCards = () => {
         logFrontendInfo('useAutoFarmCards', `auto-started card farming for ${queue.length} game(s)`)
       } catch (error) {
         console.error('Error in (useAutoFarmCards check):', error)
-        // A definitive session expiry for a CLI-mode account's saved cookies - Rust already cleared
-        // the OS-credential-store copy (see `ensure_valid`'s doc comment), but `steamCookiesStore`'s
-        // own client-side cache doesn't know that on its own; clearing it here stops this loop from
-        // silently retrying the same dead cookies every tick until the user reconnects manually.
-        if (account.mode !== 'agent' && String(error) === 'steam_community_session_expired') {
+        // A session failure for a CLI-mode account's saved cookies - Rust already cleared the
+        // OS-credential-store copy for a confirmed `expired` (see `ensure_valid`'s doc comment),
+        // but `steamCookiesStore`'s own client-side cache doesn't know that on its own; clearing it
+        // here stops this loop from silently retrying the same dead cookies every tick until the
+        // user reconnects manually. Also covers `failed` (deliberately transient on the Rust side,
+        // see `SessionStatus::Inconclusive`) - in practice even a genuine, permanent Steam-side
+        // sign-out often surfaces as `failed` rather than a definitive `expired`, so treating only
+        // `expired` this way left this loop retrying real dead cookies indefinitely (see
+        // useCardFarming.ts's identical `isSessionCode` handling for the full reasoning).
+        const code = String(error)
+        if (
+          account.mode !== 'agent' &&
+          (code === 'steam_community_session_expired' || code === 'steam_community_session_failed')
+        ) {
           clearSavedSteamCookies(account)
         }
       }

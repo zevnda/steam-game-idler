@@ -138,6 +138,13 @@ pub struct FarmingState {
     /// slots free up.
     pub queue: Vec<GameWithDrops>,
     pub completed: Vec<CompletedFarm>,
+    /// Set once by `manager::run_cycle`/`manager::poll_active` on a definitive mid-cycle Steam
+    /// Community session expiry (see `AppError::SteamCommunitySessionExpired`) - a hard stop, not
+    /// the per-item warn-and-continue pattern the rest of this loop uses for other poll failures,
+    /// since every active game shares the same cookies: one expiring means all of them are dead.
+    /// Defaults to `false` via `#[derive(Default)]`, so every freshly-built `FarmingState` (a new
+    /// cycle starting) picks it up for free with no extra code.
+    pub session_expired: bool,
 }
 
 /// One game in [`FarmingState::active`], with a live `remaining` count updated as the cycle polls.
