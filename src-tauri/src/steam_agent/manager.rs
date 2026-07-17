@@ -502,16 +502,23 @@ impl AgentManager {
     /// `SteamApps.RequestFreeLicense` - see `libs/SteamUtility/Daemon/Bot/FreeLicenseManager.cs`).
     /// No cookies/webview needed for the common case - the live, already-authenticated SteamKit2
     /// session covers it in one IPC round trip. Maps the daemon's
-    /// `{granted, grantedApps, grantedPackages, result}` DTO into `FreeGameClaimOutcome`:
-    /// `Result == OK` does *not* by itself mean success - Steam can return `OK` with an empty
-    /// granted list for two genuinely different reasons the wire response can't distinguish
-    /// (`FreeLicenseCallback` only ever carries `Result`/`GrantedApps`/`GrantedPackages`, nothing
-    /// more specific): the game is already owned, *or* its promo package simply isn't a
-    /// `FreeOnDemand` package this SteamKit2 opcode can grant at all (some limited-time free
-    /// promos go through Steam's normal cart/checkout flow instead - exactly what CLI mode's
-    /// `local_steam::free_game_claim` already targets). So `granted=false, Result=OK` is
-    /// disambiguated with a real ownership check (`get_owned_apps`) before ever reporting
-    /// `AlreadyOwned` - if that confirms the game genuinely isn't owned, this falls back to
+    /// `{granted, grantedApps, grantedPackages, result}` DTO into `FreeGameClaimOutcome`.
+    ///
+    /// **Checks real ownership (`get_owned_apps`) up front, before ever calling
+    /// `RequestFreeLicense`** - Steam has been observed echoing `granted=true` (a non-empty
+    /// `GrantedApps`/`GrantedPackages`) for a package the account already owns, rather than the
+    /// empty-list response `FreeLicenseManager.cs`'s own doc comment assumes. Trusting
+    /// `granted=true` unconditionally reported an already-owned game as freshly `Granted` on
+    /// every single auto-redeem poll, forever - confirmed via `claim_free_game`'s logged outcome
+    /// repeating `Granted` for a title one account had owned for a while. A failed ownership
+    /// check here is treated as "not owned" so a transient `get_owned_apps` error still gets a
+    /// real claim attempt below, rather than silently reporting a false `AlreadyOwned`.
+    ///
+    /// If the pre-check confirms the app isn't owned yet and `RequestFreeLicense` still comes
+    /// back `Result == OK` with nothing granted, the only remaining explanation is that its promo
+    /// package simply isn't a `FreeOnDemand` package this opcode can grant at all (some
+    /// limited-time free promos go through Steam's normal cart/checkout flow instead - exactly
+    /// what CLI mode's `local_steam::free_game_claim` already targets). That falls back to
     /// `local_steam::free_game_claim::claim_via_agent_session`, the same store-page webview-claim
     /// mechanism CLI mode uses, cookie-primed from this account's live session (`get_web_session`)
     /// instead of an interactive login.
@@ -523,6 +530,15 @@ impl AgentManager {
         api_key: Option<String>,
     ) -> AppResult<crate::free_games::FreeGameClaimOutcome> {
         use crate::free_games::FreeGameClaimOutcome;
+
+        let already_owned = self
+            .get_owned_apps(username)
+            .await
+            .map(|games| games.iter().any(|game| game.app_id == app_id))
+            .unwrap_or(false);
+        if already_owned {
+            return Ok(FreeGameClaimOutcome::AlreadyOwned);
+        }
 
         let key = Self::key_for(username);
         let process = self.existing(&key).await?;
@@ -558,19 +574,6 @@ impl AgentManager {
             return Ok(FreeGameClaimOutcome::Failed {
                 reason: steam_result,
             });
-        }
-
-        // Ambiguous - confirm real ownership rather than assuming it (see this fn's doc comment).
-        // A failed ownership check is treated as "not owned" so a transient `get_owned_apps` error
-        // still gets a real claim attempt via the fallback below, rather than silently reporting a
-        // false `AlreadyOwned`.
-        let already_owned = self
-            .get_owned_apps(username)
-            .await
-            .map(|games| games.iter().any(|game| game.app_id == app_id))
-            .unwrap_or(false);
-        if already_owned {
-            return Ok(FreeGameClaimOutcome::AlreadyOwned);
         }
 
         tracing::info!(
