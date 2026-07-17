@@ -4,10 +4,11 @@ import type { FreeGameClaimOutcome, FreeGameEntry, FreeGamesSettings } from '../
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from '@heroui/react'
+import { fetchGamesList } from '@/features/games-list/hooks/useGamesListSync'
 import { useFreeGameNotificationsStore } from '@/shared/stores/freeGameNotificationsStore'
 import { useFreeGamesStore } from '@/shared/stores/freeGamesStore'
 import { useGamesListStore } from '@/shared/stores/gamesListStore'
-import { useSessionStore } from '@/shared/stores/sessionStore'
+import { getAccountKey, useSessionStore } from '@/shared/stores/sessionStore'
 import { useSubscriptionStore } from '@/shared/stores/subscriptionStore'
 import { invoke } from '@/shared/utils/invoke'
 import { sendNativeNotification } from '@/shared/utils/nativeNotification'
@@ -56,14 +57,27 @@ function writeSeenAppIds(appIds: Iterable<number>) {
   }
 }
 
-// Attempts `newGames` for every currently signed-in account with gamer access (a global,
-// device-wide check, not per-account) and its own `autoRedeem` setting on.
-// Doesn't pre-filter by ownership - `claim_free_game`'s own outcome already reports `alreadyOwned`
-// (agent mode) or a documented, accepted `failed` (CLI mode), so there's no
-// need for a second ownership fetch per account before attempting a claim.
-async function autoRedeemForSignedInAccounts(newGames: FreeGameEntry[], t: TFunction) {
+// Attempts every currently-discovered free game for every signed-in account with gamer access (a
+// global, device-wide check, not per-account) and its own `autoRedeem` setting on. Deliberately
+// NOT limited to newly-discovered games (see the poll loop's own doc comment on why) - this must
+// keep retrying on every poll for as long as a game stays live on the discovery list and a given
+// account doesn't yet own it, regardless of whether the user was already notified about it.
+//
+// Pre-filters against each account's own cached owned-games list (`gamesListStore`'s per-account
+// `entries`) when one is available, skipping a game that account already owns. Not required for
+// correctness - `claim_free_game`'s own outcome already reports `alreadyOwned` for agent mode - but
+// it avoids re-running CLI mode's hidden-webview store-page claim, and its documented, ambiguous
+// `failed` outcome for an already-owned game (see `FreeGameClaimOutcome`'s doc comment), on every
+// single hourly poll forever. Falls back to attempting the claim directly when this account has no
+// cached entry yet (e.g. a background agent-mode account never made active this session) - agent
+// mode's own `alreadyOwned` outcome handles that case safely with no ambiguity, and CLI mode is
+// single-account-only so its sole possible account always has a cached entry the moment it's
+// signed in (see `useGamesListSync`).
+async function autoRedeemForSignedInAccounts(games: FreeGameEntry[], t: TFunction) {
+  if (games.length === 0) return
   if (!hasGamerAccess(useSubscriptionStore.getState().subscriptionTier)) return
 
+  const { entries } = useGamesListStore.getState()
   const accounts = Object.values(useSessionStore.getState().accounts)
   for (const account of accounts) {
     let settings: FreeGamesSettings
@@ -75,7 +89,13 @@ async function autoRedeemForSignedInAccounts(newGames: FreeGameEntry[], t: TFunc
     }
     if (!settings.autoRedeem) continue
 
-    for (const game of newGames) {
+    const ownedGames = entries[getAccountKey(account)]?.games
+    const claimableGames = ownedGames
+      ? games.filter(game => !ownedGames.some(owned => owned.appId === game.appId))
+      : games
+
+    let grantedAny = false
+    for (const game of claimableGames) {
       try {
         const outcome = await invoke<FreeGameClaimOutcome>('claim_free_game', {
           account,
@@ -83,6 +103,11 @@ async function autoRedeemForSignedInAccounts(newGames: FreeGameEntry[], t: TFunc
         })
         if (outcome.outcome === 'granted') {
           toast.success(t('dashboard.freeGames.autoRedeem.success', { name: game.name }))
+          // Same optimistic removal `useClaimFreeGame`'s manual claim path does - drops it from
+          // the Free Games tab immediately rather than waiting on the owned-games refresh below
+          // (or, if this account isn't the active one, waiting on nothing at all).
+          useFreeGamesStore.getState().removeGame(game.appId)
+          grantedAny = true
         } else if (outcome.outcome === 'failed') {
           toast.danger(t('dashboard.freeGames.autoRedeem.failure', { name: game.name }))
         }
@@ -90,6 +115,14 @@ async function autoRedeemForSignedInAccounts(newGames: FreeGameEntry[], t: TFunc
       } catch (error) {
         console.error('Error in (claim_free_game) during auto-redeem:', error)
       }
+    }
+
+    // One refresh per account, after every game this poll granted it - not one per claim, since
+    // `get_owned_games` is a full re-fetch (playtime enrichment over the account's whole library,
+    // potentially thousands of games) that claiming 3 games back-to-back has no reason to trigger
+    // 3 times.
+    if (grantedAny) {
+      fetchGamesList(account)
     }
   }
 }
@@ -101,12 +134,13 @@ async function autoRedeemForSignedInAccounts(newGames: FreeGameEntry[], t: TFunc
 // persisted app-wide setting once (mirrors `useAntiAwayStatus`'s identical hydration effect), then
 // - once the active account's owned-games list has finished its first load (see the polling effect
 // below) - immediately and on an hourly interval thereafter (matching `main`'s own polling cadence)
-// fetches the discovery list into `freeGamesStore`, diffs it against whatever was last seen, and
-// for anything new: sends a native OS notification (if enabled) and attempts auto-redeem for every
-// signed-in, gamer-tier, opted-in account. Only the very first fetch flips `freeGamesStore.phase`
-// to 'ready' - every subsequent hourly poll writes through `setGamesSilently` instead, so a
-// scheduled re-poll can never re-trigger the page's initial loading skeleton, mirroring
-// `silentlyRefreshGamesList`'s identical restraint.
+// fetches the discovery list into `freeGamesStore`. Diffs it against whatever was last seen to send
+// a native OS notification (if enabled) for anything new, and separately attempts auto-redeem
+// against the full discovery list (not just what's new - see `autoRedeemForSignedInAccounts`'s own
+// doc comment) for every signed-in, gamer-tier, opted-in account. Only the very first fetch flips
+// `freeGamesStore.phase` to 'ready' - every subsequent hourly poll writes through
+// `setGamesSilently` instead, so a scheduled re-poll can never re-trigger the page's initial
+// loading skeleton, mirroring `silentlyRefreshGamesList`'s identical restraint.
 export const useFreeGamesWatcher = () => {
   const { t } = useTranslation()
   const setNotificationsEnabled = useFreeGameNotificationsStore(state => state.setEnabled)
@@ -144,25 +178,24 @@ export const useFreeGamesWatcher = () => {
         store.setGamesSilently(games)
       }
 
+      // `seen` only tracks "has the user already been told about this" - it must stay scoped to
+      // the notification below, not to auto-redeem further down. Auto-redeem needs to keep trying
+      // on every poll regardless of whether a game was already seen (e.g. auto-redeem got turned
+      // on after the game was first discovered, or an earlier claim attempt didn't go through) -
+      // gating it on this same diff used to mean a game already marked "seen" silently never got
+      // another auto-redeem attempt again, with no error or log to explain why.
       const seen = readSeenAppIds()
       const newGames = games.filter(game => !seen.has(game.appId))
       // Persisted regardless of whether anything is new, so a game that later rotates out of the
-      // discovery list and back in isn't treated as new again, and so a game correctly skipped
-      // below because the user already owns it never re-qualifies as "new" on a later poll either
-      // - this is what stops the same game notifying again on every subsequent app open.
+      // discovery list and back in isn't treated as new again.
       writeSeenAppIds(games.map(game => game.appId))
 
-      if (newGames.length === 0) return
-
-      if (useFreeGameNotificationsStore.getState().enabled) {
+      if (newGames.length > 0 && useFreeGameNotificationsStore.getState().enabled) {
         // Filtered against the active account's owned-games cache (same source `useFreeGames.ts`
         // filters the page grid with) so a game the user already owns doesn't trigger an OS
         // notification just because the app-wide discovery scrape has no ownership concept. Safe
         // to read directly (not gated here) because the effect below never starts polling until
         // that cache has finished its first load.
-        // Doesn't gate `autoRedeemForSignedInAccounts` below - that loop covers every signed-in
-        // account, not just the active one, and already tolerates `alreadyOwned` per-account
-        // without a pre-filter (see that function's own doc comment).
         const ownedAppIds = new Set(useGamesListStore.getState().games.map(game => game.appId))
         const notifiableGames = newGames.filter(game => !ownedAppIds.has(game.appId))
         if (notifiableGames.length > 0) {
@@ -174,7 +207,9 @@ export const useFreeGamesWatcher = () => {
         }
       }
 
-      await autoRedeemForSignedInAccounts(newGames, t)
+      // Always run against the full discovery list, not just `newGames` - see this function's own
+      // doc comment for why auto-redeem must not be gated by the notification-dedup `seen` list.
+      await autoRedeemForSignedInAccounts(games, t)
     }
 
     const startPolling = () => {
