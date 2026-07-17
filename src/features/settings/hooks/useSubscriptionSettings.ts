@@ -42,8 +42,14 @@ export function useSubscriptionSettings() {
   // key so `confirmTransfer` can re-POST it with `forceTransfer: true` without the user re-typing.
   const [pendingTransferKey, setPendingTransferKey] = useState<string | null>(null)
 
-  const storedKey =
-    typeof window !== 'undefined' ? localStorage.getItem(LICENSE_KEY_STORAGE_KEY) : null
+  // Real component state rather than a plain `localStorage.getItem` read during render - the latter
+  // only reflects a `clear()`/`activate()` mutation once something else happens to trigger a
+  // re-render, which isn't guaranteed (e.g. `clearSubscription()`'s `setState` is a no-op re-render
+  // if `subscriptionStore` was already in the cleared shape, since zustand's selector hooks bail out
+  // via `Object.is` on an unchanged slice).
+  const [storedKey, setStoredKey] = useState<string | null>(() =>
+    typeof window !== 'undefined' ? localStorage.getItem(LICENSE_KEY_STORAGE_KEY) : null,
+  )
 
   const activate = async () => {
     const key = inputKey.trim()
@@ -63,6 +69,7 @@ export function useSubscriptionSettings() {
       }
 
       localStorage.setItem(LICENSE_KEY_STORAGE_KEY, key)
+      setStoredKey(key)
       setInputKey('')
       applySubscriptionResult(data.results)
       toast.success(t('dashboard.settings.subscription.licenseKey.activated'))
@@ -88,6 +95,7 @@ export function useSubscriptionSettings() {
       }
 
       localStorage.setItem(LICENSE_KEY_STORAGE_KEY, pendingTransferKey)
+      setStoredKey(pendingTransferKey)
       setInputKey('')
       applySubscriptionResult(data.results)
       toast.success(t('dashboard.settings.subscription.licenseKey.activated'))
@@ -105,6 +113,7 @@ export function useSubscriptionSettings() {
 
   const clear = () => {
     localStorage.removeItem(LICENSE_KEY_STORAGE_KEY)
+    setStoredKey(null)
     clearSubscription()
     logFrontendInfo('useSubscriptionSettings', 'license key cleared')
   }
