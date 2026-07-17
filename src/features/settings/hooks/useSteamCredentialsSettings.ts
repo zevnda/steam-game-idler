@@ -13,17 +13,22 @@ import { invoke } from '@/shared/utils/invoke'
 // component decides whether to show the form at all based on the account's `mode`, this hook just
 // loads/saves/clears whatever's saved for the signed-in account's resolved SteamID64 regardless.
 //
-// Every action that actually changes the saved cookie set also writes straight through to
-// `steamCookiesStore` (not just this hook's own local `cookies` state) - that store is what
-// `useAutoConnectSteamCookies` reads on the card-farming/inventory-manager pages, checked once per
-// account by `useSteamCookiesSync` rather than re-fetched on every page visit (see that store's
-// own doc comment). Without this, clearing/saving/acquiring credentials here wouldn't be visible
-// to those pages until the next app restart.
+// `cookies` reads from `steamCookiesStore` directly rather than keeping its own separately-loaded
+// copy - that store is the one place `SteamCookiesConnectPanel` (card-farming/inventory-manager)
+// and a mid-cycle session-expiry clear (`clearSavedSteamCookiesByKey`) also write through, so this
+// tab needs to read it back too or it would keep showing whatever it loaded the very first time it
+// was ever opened this session, oblivious to a cookie set entered/invalidated on any other surface
+// since (this hook instance stays alive - and `useTabGatedLoad` deliberately never reloads for the
+// same account - for as long as `SettingsModal` itself does, the whole session, not just while the
+// modal happens to be open). `load()` still does its own real `get_steam_credentials` fetch on
+// first open per account (in case `useSteamCookiesSync` hasn't already checked this account) and
+// writes the result into the shared store rather than local state, so every subsequent render
+// (from any surface's action, not just this tab's own) shows the same live value.
 export const useSteamCredentialsSettings = () => {
   const isOpen = useSettingsModalStore(state => state.isOpen)
   const activeTab = useSettingsModalStore(state => state.activeTab)
   const account = useSessionStore(state => state.account)
-  const [cookies, setCookies] = useState<SteamCookies | null>(null)
+  const cookies = useSteamCookiesStore(state => state.savedCookies) as SteamCookies | null
   const [isLoading, setIsLoading] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [isClearing, setIsClearing] = useState(false)
@@ -36,7 +41,10 @@ export const useSteamCredentialsSettings = () => {
     setIsLoading(true)
     setLoadErrorCode(null)
     try {
-      setCookies(await invoke<SteamCookies | null>('get_steam_credentials', { account }))
+      const fetched = await invoke<SteamCookies | null>('get_steam_credentials', { account })
+      useSteamCookiesStore
+        .getState()
+        .updateEntry(getAccountKey(account), { isChecked: true, savedCookies: fetched })
     } catch (error) {
       console.error('Error in (get_steam_credentials):', error)
       setLoadErrorCode(String(error))
@@ -61,7 +69,6 @@ export const useSteamCredentialsSettings = () => {
         // (used elsewhere once cookies are already known-good, see that command's doc comment),
         // this tab has no separate "prove it works" step of its own before this call.
         await invoke('validate_and_save_steam_credentials', { account, cookies: next })
-        setCookies(next)
         useSteamCookiesStore
           .getState()
           .updateEntry(getAccountKey(account), { isChecked: true, savedCookies: next })
@@ -83,7 +90,6 @@ export const useSteamCredentialsSettings = () => {
     setActionErrorCode(null)
     try {
       await invoke('clear_steam_credentials', { account })
-      setCookies(null)
       useSteamCookiesStore
         .getState()
         .updateEntry(getAccountKey(account), { isChecked: true, savedCookies: null })
@@ -107,7 +113,6 @@ export const useSteamCredentialsSettings = () => {
     setActionErrorCode(null)
     try {
       const acquired = await invoke<SteamCookies>('acquire_and_save_steam_credentials', { account })
-      setCookies(acquired)
       useSteamCookiesStore
         .getState()
         .updateEntry(getAccountKey(account), { isChecked: true, savedCookies: acquired })

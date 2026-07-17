@@ -54,6 +54,10 @@ export interface FarmingState {
   active: FarmingProgress[]
   queue: GameWithDrops[]
   completed: CompletedFarm[]
+  // Set once by the running cycle on a confirmed mid-cycle Steam Community session expiry - see
+  // `FarmingState::session_expired`'s doc comment. A hard stop, distinct from the cycle just
+  // finishing normally.
+  sessionExpired: boolean
 }
 
 export const DEFAULT_FARMING_STATE: FarmingState = {
@@ -61,6 +65,7 @@ export const DEFAULT_FARMING_STATE: FarmingState = {
   active: [],
   queue: [],
   completed: [],
+  sessionExpired: false,
 }
 
 // Mirrors src-tauri/src/card_farming/settings.rs::DropSortOrder - a two-option preference (like

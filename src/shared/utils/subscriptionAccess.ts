@@ -16,6 +16,21 @@ export function hasGamerAccess(tier: ProTier) {
   return tier === 'gamer'
 }
 
+// Automatic Steam Community cookie acquisition (no manually-pasted set) is Gamer-tier for both
+// sign-in modes - `session::resolve`'s Rust side has no tier check at all by design (see its own
+// doc comment; "no Rust-side tier enforcement anywhere in this system" is the deliberate,
+// documented architecture), so every frontend call site that could end up invoking a
+// cookie-gated command with no manual override must check this itself - not just the two places
+// that already do (`useAutoConnectSteamCookies`'s mount-time decision,
+// `SteamCookiesConnectPanel`'s own submit handler). A `refresh`/`start`/`listItems`-style action
+// that reuses whatever manual-cookie ref currently holds can otherwise silently succeed via
+// automatic derivation for a non-gamer account whenever that ref happens to be `undefined` - after
+// a session-expiry reset, or because a cache-based instant-paint skipped the real connect step
+// entirely (see `useInventory.ts`'s `hasLoaded`-from-cache doc comment).
+export function canResolveCookiesAutomatically(hasManualOverride: boolean, tier: ProTier) {
+  return hasManualOverride || hasGamerAccess(tier)
+}
+
 // Gamer's "unlimited" concurrent agent-mode accounts is a marketing promise, not a literal
 // implementation ceiling - each concurrent account is a real child process + network connection,
 // so a real hard cap still applies.

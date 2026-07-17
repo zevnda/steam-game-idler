@@ -91,7 +91,7 @@
     },
     "connect": {
       "automaticTab": "Automatic",
-      "manualTab": "Manual cookies"
+      "manualTab": "Manual"
     },
     "sort": {
       "nameAsc": "Name (A-Z)",

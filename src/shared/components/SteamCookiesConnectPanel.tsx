@@ -72,10 +72,23 @@ export function SteamCookiesConnectPanel<T extends SteamCookiesLike>({
 
   // Prefills once per load, not on every `savedCookies` identity change - same "sync once" pattern
   // as SteamCredentialsTab's own effect. Doesn't overwrite anything the user's already typed.
+  //
+  // Also clears back to empty if `savedCookies` disappears out from under an already-prefilled
+  // form - a session-expiry detection (`session::ensure_valid`/mid-cycle scraper check) clears
+  // the credential store (and this store's cached copy via `clearSavedSteamCookiesByKey`) while
+  // this panel can still be mounted showing the now-dead value, so without this branch the fields
+  // would keep silently displaying credentials the backend has already discarded. Guarded on
+  // `prefilledFromSaved` rather than firing whenever `savedCookies` is falsy - that's also the
+  // normal state for a first-time user who's mid-typing a brand-new set that never came from a
+  // prefill, and blowing that away would be wrong.
   useEffect(() => {
-    if (isLoaded && savedCookies && !prefilledFromSaved) {
+    if (!isLoaded) return
+    if (savedCookies && !prefilledFromSaved) {
       setCookiesForm({ sid: savedCookies.sid, sls: savedCookies.sls, sma: savedCookies.sma ?? '' })
       setPrefilledFromSaved(true)
+    } else if (!savedCookies && prefilledFromSaved) {
+      setCookiesForm(EMPTY_MANUAL_COOKIES_FORM_VALUE)
+      setPrefilledFromSaved(false)
     }
   }, [isLoaded, savedCookies, prefilledFromSaved])
 
@@ -105,7 +118,19 @@ export function SteamCookiesConnectPanel<T extends SteamCookiesLike>({
       sma: cookiesForm.sma.trim() || undefined,
     } as T
     const ok = await onConnect(manualCookies)
-    if (ok) save(manualCookies)
+    if (ok) {
+      save(manualCookies)
+    } else {
+      // A failed submit means these exact values are confirmed not to work right now - never leave
+      // them sitting in the form looking like they might still be fine. Force a genuine re-entry
+      // rather than a "maybe just retry the same paste" state, matching this app's "notify, clear,
+      // reenter" pattern for a dead/invalid credential elsewhere (steamCommunitySessionExpired.ts).
+      // Unconditional on the specific error code - the effect above only catches a value that was
+      // *previously* saved-and-valid going bad later; a fresh, never-saved attempt failing has no
+      // `savedCookies` transition for that effect to react to at all, so this has to clear directly.
+      setCookiesForm(EMPTY_MANUAL_COOKIES_FORM_VALUE)
+      setPrefilledFromSaved(false)
+    }
   }
 
   const manualForm = (

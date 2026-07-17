@@ -332,7 +332,7 @@ export const AccountSwitcher = ({ compact = false }: AccountSwitcherProps) => {
             ))}
             <div className='my-1 border-t border-border' />
             <button
-              className='flex w-full items-center gap-2 rounded-full px-2 py-1.5 text-left text-xs font-medium text-muted outline-none transition-colors hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-focus'
+              className='flex w-full items-center gap-2 rounded-full px-2 py-1.5 text-left text-xs font-medium text-muted outline-none transition-colors hover:bg-surface-hover cursor-pointer'
               type='button'
               onClick={() => {
                 setIsOpen(false)

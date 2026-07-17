@@ -107,7 +107,7 @@ export const DebugSettingsTab = ({
         <Button isPending={isExporting} size='sm' variant='secondary' onPress={exportSettings}>
           {t('dashboard.settings.debug.exportSettings.button')}
         </Button>
-        <Button isPending={isClearingLogs} size='sm' variant='secondary' onPress={clearLogs}>
+        <Button isPending={isClearingLogs} size='sm' variant='danger' onPress={clearLogs}>
           {t('dashboard.settings.debug.logs.clear')}
         </Button>
         <Button size='sm' variant='danger' onPress={() => setOpenDialog('reset')}>

@@ -60,9 +60,14 @@ function toFormValue(cookies: SteamCookies | null) {
 // every time (see `src-tauri/src/steam_community/credentials.rs`'s doc comment - the same store
 // backs all three surfaces via the frontend's `useSavedSteamCookies` hook).
 //
-// Agent-mode accounts never need this (they derive cookies straight from their live daemon
-// session) - shown as an inline note instead of the
-// form. The automatic/manual tab split always shows both tabs regardless of tier (brought in line
+// Only a Gamer-tier agent-mode account never needs this (it derives cookies straight from its
+// live daemon session unconditionally - see `session.rs::derive_from_agent_session`) - shown as
+// an inline note instead of the form. A Casual/free-tier agent-mode account still falls back to
+// manually-pasted cookies exactly like Local mode does (automatic derivation for agent mode is
+// gamer-gated in `useAutoConnectSteamCookies.ts`/`SteamCookiesConnectPanel.tsx`, not a hard mode
+// gate), so it gets the same tabbed UI everyone else does - gating on `mode === 'agent'` alone
+// used to hide this account's only way to view/edit/clear its manually-saved cookies. The
+// automatic/manual tab split always shows both tabs regardless of tier (brought in line
 // 2026-07-13 with `SteamCookiesConnectPanel`'s own pattern, which this previously diverged from)
 // - the automatic tab is never `isDisabled`/hidden for a non-gamer
 // account, just intercepted in `onSelectionChange` to open the upsell instead of switching tabs.
@@ -117,6 +122,12 @@ export const SteamCredentialsTab = ({
       toast.success(t('dashboard.settings.steamCredentials.saved'))
     } else {
       reportError(actionErrorCode)
+      // These exact values just failed validation - never leave them sitting in the form looking
+      // like they might still be usable (matches SteamCookiesConnectPanel's identical behavior on
+      // a failed manual submit). The credential store itself is untouched on this path
+      // (`validate_and_save_steam_credentials` deliberately never clears an existing saved value
+      // for a failed *candidate* - see that command's doc comment), so this only clears the draft.
+      setDraft(EMPTY_MANUAL_COOKIES_FORM_VALUE)
     }
   }
 
@@ -189,7 +200,7 @@ export const SteamCredentialsTab = ({
         <Typography type='h3' className='font-bold'>
           {t('dashboard.settings.steamCredentials.title')}
         </Typography>
-        {account?.mode !== 'agent' && (
+        {!(account?.mode === 'agent' && canUseAutomatic) && (
           <Button
             size='sm'
             variant='secondary'
@@ -206,7 +217,7 @@ export const SteamCredentialsTab = ({
         {t('dashboard.settings.steamCredentials.description')}
       </Typography>
 
-      {account?.mode === 'agent' ? (
+      {account?.mode === 'agent' && canUseAutomatic ? (
         <Alert status='default'>
           <Alert.Indicator />
           <Alert.Content>

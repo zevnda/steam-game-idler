@@ -5,6 +5,7 @@ import { useEffect } from 'react'
 import { useCardFarmingStore } from '@/shared/stores/cardFarmingStore'
 import { getAccountKey, useSessionStore } from '@/shared/stores/sessionStore'
 import { invoke } from '@/shared/utils/invoke'
+import { clearSavedSteamCookiesByKey } from '@/shared/utils/steamCommunitySessionExpired'
 
 interface FarmingStateEventPayload {
   steamId: string
@@ -64,7 +65,15 @@ export const useCardFarmingSync = () => {
 
     const unlisten = listen<FarmingStateEventPayload>(FARMING_STATE_EVENT, event => {
       const eventKey = steamIdToAccountKey.get(event.payload.steamId)
-      if (eventKey) updateState(eventKey, event.payload.state)
+      if (!eventKey) return
+      updateState(eventKey, event.payload.state)
+      // Fires regardless of whether the card-farming page is mounted - a backgrounded account's
+      // cycle (started via useAutoFarmCards, or just left running while the user navigated away)
+      // can expire without useCardFarming's page-local effect ever seeing it, so the cached-cookie
+      // cleanup has to live here rather than there. See steamCommunitySessionExpired.ts.
+      if (event.payload.state.sessionExpired) {
+        clearSavedSteamCookiesByKey(eventKey)
+      }
     })
 
     return () => {
