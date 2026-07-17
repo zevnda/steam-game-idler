@@ -200,6 +200,16 @@ export const useSessionBootstrap = () => {
           })
           if (Object.keys(lateResumed).length > 0) {
             useSessionStore.getState().hydrateAccounts(lateResumed, activeKey)
+            // Mirror the initial pass's navigation: a straggler resolving late still means a
+            // genuinely valid session just became available, and the user must not be left
+            // stranded on the sign-in screen (`pages/index.tsx`) with no way back short of a
+            // manual sign-in or app restart. Only yank them over if they're still outside
+            // /dashboard/* - if they already navigated there themselves (e.g. by finishing a
+            // manual sign-in for a different account while this one was still resolving), leave
+            // them where they are.
+            if (!router.pathname.startsWith('/dashboard')) {
+              router.replace('/dashboard')
+            }
           }
         })
       }

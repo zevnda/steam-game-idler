@@ -66,6 +66,20 @@ pub struct AgentManager {
     /// `refresh_token` event resolves one; never populated by the credentials flow, which already
     /// knows its real key upfront.
     pending_qr: Mutex<HashMap<String, Arc<AgentProcess>>>,
+    /// Per-account-key serialization for [`login_with_token`](Self::login_with_token) - keyed
+    /// separately from `sessions` since it must exist (and be lockable) before a session does.
+    /// Without this, two overlapping resume attempts for the same account (e.g. a second app
+    /// window reload landing while the first reload's resume for that account is still mid-flight)
+    /// can both pass the `steam_id().is_some()` no-op check below before either has logged on, and
+    /// both go on to send a real `login_with_token` IPC request - two concurrent `LogOnAsync` calls
+    /// against the same `SteamBot`, which only keeps one pending-logon/license-list waiter each
+    /// (`SteamBot.cs`'s `_pendingLogOnTcs`/`_licenseListTcs`), so the loser's waiter is silently
+    /// orphaned and the resulting overlapping logon traffic can disrupt the whole CM connection
+    /// (observed as repeated `TaskCanceledException`s out of `OwnershipManager` and an account's
+    /// resume failing for that boot cycle). Serializing here means the second caller simply waits
+    /// for the first to finish, then re-hits the no-op check and returns immediately instead of
+    /// sending a duplicate logon.
+    resume_locks: Mutex<HashMap<String, Arc<Mutex<()>>>>,
 }
 
 impl AgentManager {
@@ -73,7 +87,17 @@ impl AgentManager {
         Self {
             sessions: Mutex::new(HashMap::new()),
             pending_qr: Mutex::new(HashMap::new()),
+            resume_locks: Mutex::new(HashMap::new()),
         }
+    }
+
+    async fn resume_lock(&self, key: &str) -> Arc<Mutex<()>> {
+        self.resume_locks
+            .lock()
+            .await
+            .entry(key.to_string())
+            .or_insert_with(|| Arc::new(Mutex::new(())))
+            .clone()
     }
 
     fn key_for(username: &str) -> String {
@@ -257,6 +281,13 @@ impl AgentManager {
         username: String,
     ) -> AppResult<bool> {
         let key = Self::key_for(&username);
+
+        // Serializes concurrent resume attempts for this same key - see `resume_locks`'s doc
+        // comment. Held for the whole function body so a waiting second caller only proceeds once
+        // the first has either logged on (making its own no-op check below true) or genuinely
+        // failed (in which case retrying for real is correct).
+        let lock = self.resume_lock(&key).await;
+        let _resume_guard = lock.lock().await;
 
         // A session for this account can already be live and logged on here - the frontend calls
         // this on every app boot to resume a persisted session, but a live `AgentProcess` survives
