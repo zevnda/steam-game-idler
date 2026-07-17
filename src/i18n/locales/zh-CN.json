@@ -1,1 +1,1157 @@
-{}
+{
+  "common": {
+    "actions": {
+      "submit": "提交",
+      "cancel": "取消",
+      "tryAgain": "重试",
+      "continue": "继续",
+      "refresh": "刷新",
+      "save": "保存",
+      "settings": "设置",
+      "signIn": "登录",
+      "signOut": "登出",
+      "start": "开始",
+      "stop": "停止",
+      "clear": "清除",
+      "done": "完成",
+      "copy": "复制",
+      "paste": "粘贴",
+      "add": "添加"
+    },
+    "gameCardMenu": {
+      "startIdling": "开始挂机",
+      "stopIdling": "停止挂机",
+      "manageAchievements": "管理成就",
+      "viewOnSteam": "在 Steam 上查看",
+      "addTo": "添加到"
+    },
+    "minutes": "分钟",
+    "zeroUnlimitedHint": "0 为 无限制",
+    "errorBoundary": {
+      "title": "出错了",
+      "description": "发生了意外的错误，请重试，如果问题持续存在，请通过「帮助与支持」联系我们"
+    },
+    "manualCookies": {
+      "sidLabel": "sessionid",
+      "slsLabel": "steamLoginSecure",
+      "smaLabel": "steamMachineAuth",
+      "smaDescription": "可选，仅当您的账号有待处理的 Steam 令牌设备确认时 需要",
+      "savedFromSettingsNote": "从「设置」中保存的 Steam 凭据加载"
+    },
+    "manualAdd": {
+      "title": "手动添加游戏",
+      "description": "如果游戏未自动显示，请通过其 Steam 应用 ID 添加",
+      "nameLabel": "名称",
+      "namePlaceholder": "例如：轻音少女！剧场版",
+      "appIdLabel": "应用 ID",
+      "appIdPlaceholder": "例如：518440",
+      "duplicateError": "此应用 ID 已在列表中"
+    },
+    "search": {
+      "placeholder": "搜索",
+      "recentSearches": "最近搜索",
+      "noRecentSearches": "暂无最近搜索",
+      "noResults": "未找到结果",
+      "noResultsTitle": "没有游戏匹配您的搜索",
+      "noResultsDescription": "请尝试使用其他名称或应用 ID"
+    },
+    "errors": {
+      "generic": "出错了，请重试，（{{code}}）",
+      "steamUtilityMissing": "此安装中缺少 Steam 代理组件",
+      "processSpawnFailed": "无法启动 Steam 代理进程",
+      "processExited": "Steam 代理进程意外关闭",
+      "timeout": "Steam 响应超时，请重试",
+      "sessionNotFound": "您的 Steam 会话已失效，请重新登录",
+      "steamIdUnknown": "您的 Steam ID 尚未解析，请稍后重试",
+      "steamNotRunning": "Steam 未运行，请启动 Steam 后重试"
+    },
+    "notifications": "通知",
+    "menu": "菜单",
+    "needHelp": "需要帮助？",
+    "learnMore": "了解更多",
+    "status": {
+      "saved": "已保存",
+      "cleared": "已清除"
+    },
+    "steamWarning": {
+      "title": "提示",
+      "description": "Steam 已关闭，请重新启动 Steam 以继续"
+    },
+    "banner": {
+      "pastDue": "您的 PRO 订阅已逾期，请更新付款方式以免失去访问权限",
+      "manageSubscription": "管理订阅"
+    },
+    "proTier": {
+      "gamerRequired": "需要 Gamer 套餐",
+      "casualRequired": "需要 Casual 套餐"
+    },
+    "tabs": {
+      "allGames": "所有游戏",
+      "queue": "队列"
+    },
+    "connect": {
+      "automaticTab": "自动"
+    },
+    "sort": {
+      "nameAsc": "名称（A-Z）",
+      "nameDesc": "名称（Z-A）"
+    },
+    "noGamesQueued": "队列中无游戏",
+    "gamesQueuedCount_one": "{{count}} 款游戏在队列中",
+    "gamesQueuedCount_other": "{{count}} 款游戏在队列中",
+    "completedThisSessionCount": "本次会话已完成（{{count}}）"
+  },
+  "update": {
+    "downloading": "正在下载更新……"
+  },
+  "toast": {
+    "checkUpdate": {
+      "none": "您已使用最新版本",
+      "error": "无法检查更新，请重试"
+    },
+    "paypalCheckout": {
+      "error": "无法启动 PayPal 结账，请重试"
+    }
+  },
+  "notifications": {
+    "markAllRead": "全部标为已读",
+    "empty": "暂无通知"
+  },
+  "menu": {
+    "guide": "说明文档",
+    "issue": "报告问题",
+    "feature": "功能建议",
+    "support": "支持我们",
+    "joinDiscord": "加入 Discord",
+    "changelog": "更新日志",
+    "update": "检查更新"
+  },
+  "changelog": {
+    "star": "在 GitHub 上标星"
+  },
+  "titlebar": {
+    "closeToTrayNotification": "Steam Game Idler 将在后台继续运行",
+    "goPro": "升级至 Pro",
+    "helpDesk": "帮助中心",
+    "updateReady": "更新已就绪"
+  },
+  "tray": {
+    "show": "显示",
+    "recenter": "重置窗口位置",
+    "update": "检查更新……",
+    "quit": "退出"
+  },
+  "proMode": {
+    "hero": {
+      "headline": "解锁更多功能",
+      "subtext": "SGI 的核心功能是 <1>免费</1> 的，且 <3>永远免费</3>，PRO 套餐纯粹为希望支持 SGI 持续发展的用户设立——额外是功能是我们对您的支持表示 <5>感谢</5> 的方式",
+      "viewTiers": "查看 PRO 套餐",
+      "startingAt": "起价 ${{price}}/月 · 可随时取消"
+    },
+    "section": {
+      "allFeatures": "全部功能",
+      "chooseTier": "选择您的套餐",
+      "comparePlans": "对比套餐",
+      "faq": "常见问题"
+    },
+    "cards": {
+      "adFree": {
+        "title": "无广告的体验",
+        "description": "使用 SGI 时无任何广告，享受纯净、无干扰的界面"
+      },
+      "themes": {
+        "title": "专属主题",
+        "description": "使用 6 个仅对 PRO 用户开放的独特主题来自定义 SGI"
+      },
+      "customBackground": {
+        "title": "自定义背景图片"
+      },
+      "customFont": {
+        "title": "自定义字体"
+      },
+      "liveSupport": {
+        "title": "实时在线支持",
+        "description": "无需排队——通过应用内帮助中心直接与开发者聊天，获得实时支持"
+      },
+      "credentials": {
+        "title": "自动获取 Steam 凭据"
+      },
+      "multiAccount": {
+        "title": "多账号支持",
+        "description": "同时登录并管理多个 Steam 账号"
+      },
+      "autoFarmCards": {
+        "title": "自动挂卡",
+        "description": "SGI 会监控您的游戏库，自动开始挂取仍可掉落卡牌的游戏"
+      },
+      "gamesList": {
+        "title": "自动更新游戏列表",
+        "description": "每 15 分钟自动刷新游戏列表，同步新增与游玩记录"
+      },
+      "multipleUnlockerGames": {
+        "title": "同时为多款游戏解锁成就",
+        "description": "在成就解锁器中同时处理多款游戏，无需逐款等待"
+      },
+      "freeGames": {
+        "title": "免费游戏领取",
+        "description": "第一时间自动领取 Steam 限时免费游戏，绝不错过福利"
+      },
+      "sellDupes": {
+        "title": "出售重复物品",
+        "description": "一键轻松上架所有重复的库存物品"
+      },
+      "customPresence": {
+        "title": "自定义 Steam 状态"
+      }
+    },
+    "tier": {
+      "mostPopular": "最受欢迎",
+      "perMonth": "/月",
+      "everythingInCasualPlus": "包含 Casual 全部功能，外加",
+      "currentPlan": "当前套餐",
+      "continueWithStripe": "Stripe",
+      "continueWithPaypal": "PayPal",
+      "processing": "处理中……",
+      "cancelAnytime": "随时取消",
+      "casual": {
+        "name": "Casual",
+        "discordRole": "Discord PRO 身份",
+        "multiAccount": "3 个并行账号",
+        "multipleUnlockerGames": "同时解锁 3 款游戏"
+      },
+      "gamer": {
+        "name": "Gamer",
+        "freeGames": "自动领取免费游戏",
+        "sellDupes": "出售重复库存物品",
+        "importTimings": "导入成就解锁时间",
+        "multipleUnlockerGames": "同时解锁 32 款游戏",
+        "multiAccount": "10 个并行账号"
+      }
+    },
+    "faq": {
+      "subscriptionNotActivated": {
+        "q": "我购买了 PRO 套餐，但订阅未激活？",
+        "a": "结账后，您会收到一封包含许可证密钥的电子邮件，打开应用，进入「设置」→「订阅」，将您的许可证密钥粘贴到输入框中，然后点击「激活」，如果问题仍然存在，请通过应用右上角的帮助中心或 contact@steamgameidler.com 联系我们"
+      },
+      "transferDevice": {
+        "q": "如何将我的许可证密钥转移到新设备？",
+        "a": "您的许可证密钥一次只能绑定一台设备，如需转移，请在新设备上打开应用，进入「设置」→「订阅」，输入您的许可证密钥并点击「激活」，系统会提示您确认转移，确认后，新设备将激活，旧设备在下次启动时会失去访问权限，如果您在同一台机器上重新安装了应用，则无需转移——设备会通过硬件 ID 自动识别"
+      },
+      "cancel": {
+        "q": "如何取消订阅？",
+        "a": "前往「设置」→「订阅」→「管理订阅」，然后按取消提示操作，取消后，您仍在当前计费周期结束前享受 PRO 权益"
+      },
+      "switchTier": {
+        "q": "我可以在不同套餐之间切换吗？",
+        "a": "可以，先取消当前订阅，然后按标准订阅流程重新订阅您想要的套餐"
+      },
+      "invoices": {
+        "q": "在哪里可以找到发票和收据？",
+        "a": "订阅后您会收到邮件收据，如需完整账单记录，请前往「设置」→「订阅」→「管理订阅」"
+      },
+      "refund": {
+        "q": "退款政策是什么？",
+        "a": "PRO 订阅被视为捐赠，通常不予退款，退款将根据具体情况酌情考虑，请通过应用右上角的帮助中心或 contact@steamgameidler.com 联系我们"
+      },
+      "chargeback": {
+        "q": "发起拒付会有什么后果？",
+        "a": "恶意拒付将严重影响本项目运营，未经沟通直接拒付可能导致应用访问权限被永久撤销，如果存在计费错误，我们很乐意与您尽快沟通解决，因此请通过应用右上角的帮助中心或 contact@steamgameidler.com 联系我们"
+      }
+    },
+    "modal": {
+      "footer": "显示的价格为美元，不含税费和货币转换费（可能因您所在地区和付款方式而异）"
+    },
+    "comparisonTable": {
+      "learnMoreFeatures": "了解每项功能的更多信息"
+    }
+  },
+  "auth": {
+    "landing": {
+      "title": "登录 Steam Game Idler",
+      "agentButton": "通过 Steam 登录",
+      "localButton": "旧版登录",
+      "localAlreadySignedIn": "已登录一个本地 Steam 客户端账号——单次仅能登录一个",
+      "acknowledge": "继续即表示您同意 <0>服务条款</0>，并确认您已阅读我们的 <1>隐私政策</1>"
+    },
+    "signIn": {
+      "usernameLabel": "用户名",
+      "usernamePlaceholder": "输入您的 Steam 用户名",
+      "passwordLabel": "密码",
+      "passwordPlaceholder": "输入您的 Steam 密码",
+      "usernameRequired": "请输入您的 Steam 用户名",
+      "passwordRequired": "请输入您的 Steam 密码",
+      "credentialsSectionLabel": "使用账号名登录",
+      "guardCode": {
+        "deviceTitle": "请查看您的 Steam 手机应用",
+        "deviceDescription": "请输入 Steam 手机应用中的验证码",
+        "emailTitle": "请查看您的电子邮件",
+        "emailDescription": "我们已将验证码发送至 {{email}}，请在下方输入",
+        "confirmationTitle": "确认此登录",
+        "confirmationDescription": "请在 Steam 手机应用中批准登录请求以继续",
+        "codeLabel": "Steam 令牌验证码",
+        "incorrectCode": "验证码不正确，请重试",
+        "submitButton": "验证"
+      },
+      "qrCode": {
+        "sectionLabel": "或通过二维码登录",
+        "instructions": "使用 Steam 手机应用扫描二维码登录"
+      },
+      "errors": {
+        "title": "登录失败",
+        "invalidCredentials": "用户名或密码错误",
+        "denied": "Steam 手机应用中登录请求被拒绝，请重试",
+        "generic": "登录时出错，请重试，（{{code}}）"
+      }
+    },
+    "localSignIn": {
+      "title": "选择一个账号",
+      "noAccounts": "此设备上未找到 Steam 账号，请至少登录一次 Steam 客户端，然后刷新",
+      "errors": {
+        "steamNotFound": "未找到本地安装的 Steam 客户端",
+        "loginVdfUnreadable": "无法读取此设备上保存的 Steam 账号",
+        "accountNotFound": "找不到该账号",
+        "switchFailed": "无法切换 Steam 账号",
+        "launchFailed": "无法启动 Steam 客户端",
+        "summaryUnavailable": "当前无法加载账号详情"
+      }
+    },
+    "hero": {
+      "title": "您唯一需要的<1/>Steam 自动化工具<1/>",
+      "subtitle": "集挂卡、成就解锁、时长累积于一体，一站式自动化您的 Steam 体验"
+    }
+  },
+  "dashboard": {
+    "sidebar": {
+      "section": {
+        "automation": "自动化",
+        "misc": "其他"
+      },
+      "nav": {
+        "games": "游戏库",
+        "idling": "挂机中",
+        "favorites": "收藏夹",
+        "freeGames": "免费游戏",
+        "cardFarming": "挂卡",
+        "achievementUnlocker": "成就解锁器",
+        "autoIdle": "自动挂机",
+        "inventoryManager": "库存管理器"
+      },
+      "signOut": {
+        "confirmTitle": "确认登出？",
+        "confirmDescription": "这将停止当前为 {{name}} 进行的自动化任务并登出该账号",
+        "error": "登出清理未完全完成，但您已成功登出"
+      },
+      "tier": {
+        "label": "套餐",
+        "free": "免费"
+      },
+      "accountSwitcher": {
+        "modeAgent": "已通过 Steam 登录",
+        "modeLocal": "本地 Steam 客户端",
+        "switched": "已切换到 {{name}}",
+        "steamRequired": "需运行 Steam 才能切换至此账号",
+        "addAccount": {
+          "trigger": "添加其他账号",
+          "capReached_one": "{{tier}} 套餐允许同时登录 {{count}} 个 Steam 账号。请先登出一个账号以添加新账号，或升级套餐",
+          "capReached_other": "{{tier}} 套餐允许同时登录 {{count}} 个 Steam 账号。请先登出一个账号以添加新账号，或升级套餐",
+          "capReachedMax": "已达到同时登录 Steam 账号的上限",
+          "added": "已添加 {{name}}"
+        }
+      },
+      "ads": {
+        "removeAdsWith": "通过以下方式移除广告"
+      }
+    },
+    "games": {
+      "count_one": "{{count}} 款游戏",
+      "count_other": "{{count}} 款游戏",
+      "unknownName": "应用 {{appId}}",
+      "carousels": {
+        "recommended": "推荐",
+        "recent": "最近游玩"
+      },
+      "sort": {
+        "playtimeDesc": "游戏时长（从高到低）",
+        "playtimeAsc": "游戏时长（从低到高）"
+      },
+      "empty": {
+        "title": "未找到游戏",
+        "description": "此账号尚未拥有任何游戏"
+      },
+      "errors": {
+        "title": "无法加载游戏",
+        "webApiUnavailable": "暂时无法从 Steam 获取时长数据",
+        "cacheIoFailed": "无法获取游戏缓存",
+        "generic": "加载游戏时出错，请重试，（{{code}}）"
+      },
+      "privacyWarning": {
+        "title": "部分游戏数据可能缺失",
+        "description": "您的 Steam 个人资料或游戏详情似乎设置为私密，因此导致游戏时长、最近游玩记录及部分游戏显示不完整，请将您的个人资料设为公开，或在「设置」中添加您的 Steam Web API 密钥以解决此问题",
+        "changeSettings": "更改隐私设置",
+        "useOwnKey": "添加我的 API 密钥"
+      }
+    },
+    "idling": {
+      "count_one": "{{count}} 款游戏正在挂机",
+      "count_other": "{{count}} 款游戏正在挂机",
+      "stopAll": "全部停止",
+      "sections": {
+        "manual": "手动挂机",
+        "other": "其他"
+      },
+      "empty": {
+        "title": "没有游戏在挂机",
+        "description": "请从「游戏库」标签页启动挂机，即可在此查看"
+      },
+      "errors": {
+        "startFailed": "无法开始挂机该游戏",
+        "maxPlaytimeCapReached": "该游戏已达到最大游戏时长上限",
+        "generic": "更新挂机状态时出错，请重试，（{{code}}）"
+      }
+    },
+    "favorites": {
+      "count_one": "{{count}} 款收藏",
+      "count_other": "{{count}} 款收藏",
+      "confirmClear": {
+        "title": "清除所有收藏？",
+        "description": "这将从您的收藏列表中移除 {{count}} 款游戏"
+      },
+      "empty": {
+        "title": "暂无收藏",
+        "description": "从「所有游戏」标签页添加游戏，即可在此查看"
+      },
+      "errors": {
+        "title": "无法更新收藏",
+        "cacheIoFailed": "无法获取收藏缓存",
+        "generic": "更新收藏时出错，请重试，（{{code}}）"
+      }
+    },
+    "freeGames": {
+      "count_one": "{{count}} 款免费游戏可领取",
+      "count_other": "{{count}} 款免费游戏可领取",
+      "actions": {
+        "claim": "领取",
+        "claimed": "已领取"
+      },
+      "outcomes": {
+        "alreadyOwned": "您已拥有该游戏"
+      },
+      "empty": {
+        "title": "当前没有免费游戏",
+        "description": "请稍后再来——Steam 会不定期推出免费游戏"
+      },
+      "errors": {
+        "title": "无法加载免费游戏",
+        "scrapeFailed": "暂时无法从 Steam 检查免费游戏",
+        "storeLoginFailed": "无法登录 Steam 商店，请重试",
+        "storeLogoutFailed": "无法登出 Steam 商店，请重试",
+        "claimFailed": "无法领取该游戏，它可能已结束免费，或者您已拥有它",
+        "generic": "加载免费游戏时出错，请重试，（{{code}}）"
+      },
+      "notifications": {
+        "title": "有免费游戏可领取！",
+        "bodyOne": "{{name}} 现已在 Steam 上免费",
+        "bodyMany": "Steam 上现有 {{count}} 款免费游戏可领取"
+      },
+      "autoRedeem": {
+        "success": "已自动领取 {{name}}",
+        "failure": "无法自动领取 {{name}}"
+      },
+      "correction": {
+        "granted": "{{name}} 其实已成功领取——之前的通知有误"
+      }
+    },
+    "achievements": {
+      "tabs": {
+        "achievements": "成就",
+        "statistics": "统计数据"
+      },
+      "header": {
+        "viewOnSteam": "在 Steam 上查看",
+        "viewOnSteamDb": "在 SteamDB 上查看"
+      },
+      "protectedAlert": {
+        "title": "部分项目受保护",
+        "description": "标记为受保护的成就或统计数据由游戏服务器设置，客户端无法更改"
+      },
+      "unlockedCount": "已解锁 {{unlocked}} / {{total}}",
+      "statCount_one": "{{count}} 项统计数据",
+      "statCount_other": "{{count}} 项统计数据",
+      "noDescription": "无描述",
+      "protectedTooltip": "由游戏服务器设置，客户端无法更改",
+      "statFlags": "标签：{{flags}}",
+      "edited": "已编辑",
+      "editedCount": "{{count}} 项已编辑",
+      "incrementOnlyTooltip": "此统计数据只能增加，不能减少",
+      "sort": {
+        "percent": "全球解锁百分比",
+        "unlocked": "已解锁优先",
+        "locked": "未解锁优先",
+        "unprotected": "未受保护优先",
+        "protected": "受保护优先"
+      },
+      "rarity": {
+        "common": "普通",
+        "uncommon": "稀有",
+        "rare": "史诗",
+        "epic": "传说",
+        "legendary": "传说"
+      },
+      "actions": {
+        "unlock": "解锁",
+        "lock": "锁定",
+        "unlockAll": "全部解锁",
+        "lockAll": "全部锁定",
+        "applyChanges": "应用更改",
+        "applyChangesCount": "应用更改（{{count}}）",
+        "saveChanges": "保存更改",
+        "saveChangesCount": "保存更改（{{count}}）",
+        "resetAll": "全部重置"
+      },
+      "confirmUnlockAll": {
+        "title": "解锁全部成就？",
+        "description": "这将解锁该游戏所有尚未解锁或不受保护的成就"
+      },
+      "confirmLockAll": {
+        "title": "锁定全部成就？",
+        "description": "这将锁定该游戏所有尚未锁定或不受保护的成就"
+      },
+      "confirmApplyChanges": {
+        "title": "应用暂存的更改？",
+        "descriptionBoth": "这将解锁 {{unlockCount}} 项并锁定 {{lockCount}} 项暂存的成就",
+        "descriptionUnlockOnly": "这将解锁 {{unlockCount}} 项暂存的成就",
+        "descriptionLockOnly": "这将锁定 {{lockCount}} 项暂存的成就"
+      },
+      "confirmResetStats": {
+        "title": "重置所有统计数据？",
+        "description": "这将把该游戏的所有统计数据重置为默认值，此操作不可撤销"
+      },
+      "empty": {
+        "title": "无成就",
+        "description": "该游戏没有成就"
+      },
+      "emptyStats": {
+        "title": "无统计数据",
+        "description": "该游戏没有统计数据"
+      },
+      "searchNoResults": {
+        "title": "没有匹配的搜索结果",
+        "description": "请尝试其他搜索词"
+      },
+      "toasts": {
+        "achievementUnlocked": "{{name}} 已解锁",
+        "achievementLocked": "{{name}} 已锁定",
+        "bulkUnlocked_one": "已解锁 {{count}} 项成就",
+        "bulkUnlocked_other": "已解锁 {{count}} 项成就",
+        "bulkLocked_one": "已锁定 {{count}} 项成就",
+        "bulkLocked_other": "已锁定 {{count}} 项成就",
+        "bulkNoChanges": "无需更改——目标状态已达成或项目受保护。",
+        "changesApplied_one": "{{count}} 项成就已更新",
+        "changesApplied_other": "{{count}} 项成就已更新",
+        "applyPartialFailure": "部分暂存成就更新失败，请重试。",
+        "statsSaved_one": "{{count}} 项统计已保存",
+        "statsSaved_other": "{{count}} 项统计已保存",
+        "statsReset": "统计数据已重置"
+      },
+      "errors": {
+        "title": "无法加载成就",
+        "invalidApp": "此应用没有成就数据",
+        "achievementNotFound": "找不到该成就",
+        "statNotFound": "找不到该统计数据",
+        "protected": "该值由游戏服务器设置，无法更改",
+        "unsupportedGameCoordinator": "通过 Steam 登录时，该游戏不支持成就——请改用您的本地 Steam 客户端",
+        "generic": "加载成就时出错，请重试，（{{code}}）"
+      }
+    },
+    "cardFarming": {
+      "status": {
+        "idle": "未在挂卡",
+        "modeAllGames": "挂卡模式：全部游戏",
+        "modeQueue": "挂卡模式：队列游戏",
+        "farming_one": "正在为 {{count}} 款游戏挂卡",
+        "farming_other": "正在为 {{count}} 款游戏挂卡"
+      },
+      "actions": {
+        "stop": "停止挂卡"
+      },
+      "confirmClearQueue": {
+        "title": "清空挂卡队列？",
+        "description": "这将从挂卡队列中移除 {{count}} 款游戏"
+      },
+      "confirmClearBlacklist": {
+        "title": "清空挂卡黑名单？",
+        "description": "这将从挂卡黑名单中移除 {{count}} 款游戏"
+      },
+      "tabs": {
+        "gamesWithDrops": "仍可掉落卡牌的游戏",
+        "blacklisted": "黑名单"
+      },
+      "sort": {
+        "dropsDesc": "剩余卡牌数（从高到低）",
+        "dropsAsc": "剩余卡牌数（从低到高）"
+      },
+      "browseEmpty": {
+        "title": "没有可掉落的卡牌",
+        "description": "所有拥有游戏的卡牌均已挂完，或无可用掉落"
+      },
+      "empty": {
+        "description": "从「仍可掉落卡牌的游戏」标签页添加游戏，将其加入挂卡队列"
+      },
+      "blacklistEmpty": {
+        "title": "暂无黑名单游戏",
+        "description": "您在「仍可掉落卡牌的游戏」中拉黑的游戏将永远不会被挂卡，并会显示在此处"
+      },
+      "connect": {
+        "title": "连接挂卡功能",
+        "description": "连接您的 Steam 社区会话，以查看并挂取仍有卡牌掉落的游戏",
+        "automaticDescription": "自动登录 Steam 社区以检查卡牌掉落"
+      },
+      "progress": {
+        "activeTitle": "挂卡中（{{count}}）",
+        "queueTitle": "即将挂卡（{{count}}）",
+        "dropsRemaining_one": "剩余 {{count}} 张卡牌",
+        "dropsRemaining_other": "剩余 {{count}} 张卡牌",
+        "completedMaxCardDrops": "已达到最大卡牌掉落数（剩余 {{remaining}}）",
+        "completedMaxCardFarmingTime": "已达到最大挂卡时间（剩余 {{remaining}}）",
+        "completedMaxPlaytime": "已达到最大游戏时长（剩余 {{remaining}}）",
+        "completedNoDropsRemaining": "无剩余卡牌可挂"
+      },
+      "errors": {
+        "title": "无法更新挂卡状态",
+        "sessionFailed": "无法登录 Steam 社区，请检查您的 Cookie 并重试",
+        "sessionExpired": "您的 Steam 社区会话已过期，请重新连接以继续",
+        "scrapeFailed": "当前无法从 Steam 检查卡牌掉落",
+        "generic": "更新挂卡状态时出错，请重试，（{{code}}）"
+      },
+      "settings": {
+        "autoFarmCards": {
+          "title": "自动挂卡",
+          "description": "定期检查已拥有游戏中仍有卡牌掉落的游戏，并自动开始挂卡"
+        },
+        "listGames": {
+          "title": "挂取队列游戏",
+          "description": "仅挂取「挂卡队列」中的游戏"
+        },
+        "allGames": {
+          "title": "挂取所有游戏",
+          "description": "为所有仍有卡牌掉落的已拥有游戏挂卡"
+        },
+        "skipNoPlaytime": {
+          "title": "跳过未游玩的游戏",
+          "description": "不挂取游戏时长为零的游戏"
+        },
+        "farmUnplayedOnly": {
+          "title": "仅挂取未游玩的游戏",
+          "description": "仅挂取游戏时长为零的游戏"
+        },
+        "dropSortOrder": {
+          "title": "挂卡顺序",
+          "description": "按剩余卡牌数量决定挂卡的优先级",
+          "options": {
+            "highestFirst": "剩余卡牌多优先",
+            "lowestFirst": "剩余卡牌少优先"
+          }
+        },
+        "nextTask": {
+          "title": "完成后启动另一项任务",
+          "description": "挂卡完成后，自动启动另一项自动化任务"
+        }
+      }
+    },
+    "achievementUnlocker": {
+      "status": {
+        "running_one": "正在为 {{count}} 款游戏解锁成就",
+        "running_other": "正在为 {{count}} 款游戏解锁成就"
+      },
+      "addAllToQueue": "全部加入队列",
+      "confirmAddAllToQueue": {
+        "title": "将全部 {{count}} 款游戏加入队列？",
+        "description": "每款游戏都需要扫描成就，对于较大型的游戏库可能耗时较长，建议手动添加游戏"
+      },
+      "confirmClearQueue": {
+        "title": "清空成就解锁器队列？",
+        "description": "这将从成就解锁器队列中移除 {{count}} 款游戏"
+      },
+      "empty": {
+        "description": "从「所有游戏」标签页添加游戏，将其加入自动解锁成就的队列"
+      },
+      "settings": {
+        "idle": {
+          "title": "解锁时挂机",
+          "description": "在解锁成就的同时挂机该游戏"
+        },
+        "hidden": {
+          "title": "跳过隐藏成就",
+          "description": "不解锁 Steam 标记为隐藏的成就"
+        },
+        "multipleGames": {
+          "title": "同时运行多款游戏",
+          "description": "同时处理最多 {{count}} 款队列中的游戏，而非每次一款"
+        },
+        "interval": {
+          "title": "解锁间隔",
+          "description": "在每次解锁之间等待 {{min}} 到 {{max}} 分钟的随机延迟",
+          "to": "至"
+        },
+        "schedule": {
+          "title": "仅在计划时间内解锁",
+          "description": "仅在以下时间段内解锁成就"
+        },
+        "nextTask": {
+          "description": "队列清空后，自动启动另一项任务"
+        }
+      },
+      "order": {
+        "delayBeforeFirstUnlock": "首次解锁前的延迟",
+        "reset": "重置",
+        "skipped": "已跳过",
+        "empty": {
+          "title": "无可排序项",
+          "description": "该游戏没有剩余成就可解锁"
+        },
+        "toasts": {
+          "saved": "成就顺序已保存"
+        }
+      },
+      "importTimings": {
+        "title": "导入时间轴",
+        "description": "获取另一位玩家的真实成就解锁时间，并据此推导出符合实际的每项成就延迟",
+        "inputPlaceholder": "SteamID64、个人资料 URL 或自定义 URL",
+        "importButton": "导入",
+        "success_one": "已导入 {{count}} 项成就的时间",
+        "success_other": "已导入 {{count}} 项成就的时间",
+        "errors": {
+          "profilePrivate": "该个人资料为私密，或没有公开的成就数据",
+          "noTimestamps": "该玩家无此游戏带有时间戳的成就解锁记录",
+          "notFound": "无法解析该个人资料",
+          "generic": "当前无法导入时间轴，请重试，（{{code}}）"
+        }
+      },
+      "progress": {
+        "scanning": "正在检查队列中的游戏是否有可解锁的成就",
+        "scanningCount": "已检查 {{checked}} / {{total}}",
+        "remaining_one": "剩余 {{count}} 项成就",
+        "remaining_other": "剩余 {{count}} 项成就",
+        "starting": "正在启动……",
+        "waitingForSchedule": "等待计划解锁时段",
+        "currentGame": "当前游戏",
+        "upNext": "下一个",
+        "completedCount": "已解锁 {{unlocked}}/{{total}}",
+        "completedMaxUnlocksReached": "已解锁 {{unlocked}}/{{total}}（已达到最大解锁数）",
+        "completedMaxPlaytimeWithCount": "已解锁 {{unlocked}}/{{total}}（已达到最大游戏时长）",
+        "completedMaxPlaytime": "已达到最大游戏时长",
+        "completedNothingToUnlock": "无剩余成就可解锁"
+      },
+      "errors": {
+        "title": "无法更新成就解锁器",
+        "queueCacheIoFailed": "无法获取成就解锁器队列",
+        "settingsIoFailed": "无法获取成就解锁器设置",
+        "orderIoFailed": "无法获取该游戏的成就顺序"
+      }
+    },
+    "autoIdle": {
+      "confirmClearQueue": {
+        "title": "清空自动挂机队列？",
+        "description": "这将从自动挂机队列中移除 {{count}} 款游戏"
+      },
+      "empty": {
+        "description": "从「所有游戏」标签页添加游戏，应用启动时将自动挂机它们"
+      },
+      "errors": {
+        "title": "无法更新自动挂机",
+        "cacheIoFailed": "无法获取自动挂机队列",
+        "generic": "更新自动挂机时出错，请重试，（{{code}}）"
+      }
+    },
+    "inventoryManager": {
+      "count_one": "{{count}} 件物品",
+      "count_other": "{{count}} 件物品",
+      "fetchPrice": "获取价格",
+      "fetchingPrice": "正在获取价格……",
+      "badgeLevel": "徽章等级 {{level}}",
+      "noBadge": "未合成徽章",
+      "connect": {
+        "title": "连接您的库存",
+        "description": "加载您的 Steam 社区库存以管理和出售物品",
+        "automaticDescription": "自动登录 Steam 社区以加载您的库存"
+      },
+      "actions": {
+        "listSelected": "上架所选（{{count}}）",
+        "sellAll": "全部出售（{{count}}）",
+        "sellDupes": "出售重复物品",
+        "sellDupesGamerRequired": "自动出售重复物品需要 Gamer 计划",
+        "removeListings": "移除上架",
+        "lockItem": "锁定此物品，使其永远不会被自动出售",
+        "list": "在市场上架",
+        "cardExchange": "在 Steam Card Exchange 上查看"
+      },
+      "confirm": {
+        "listSelected": {
+          "title": "上架 {{count}} 件所选物品？",
+          "description": "这将按输入的价格上架每件所选物品，预计时间：{{time}}，请保持应用运行直至完成"
+        },
+        "sellAll": {
+          "title": "出售所有可见物品？",
+          "description": "这将为当前显示的至多 {{count}} 件物品获取市场价格并上架，使用您库存设置中的价格偏好和出售限制，预计时间：{{time}}，请保持应用运行直至完成"
+        },
+        "sellDupes": {
+          "title": "出售重复物品？",
+          "description": "这将为至多 {{count}} 件重复物品（每种保留一个）获取市场价格并上架，使用您库存设置中的价格偏好和出售限制，预计时间：{{time}}，请保持应用运行直至完成"
+        },
+        "removeListings": {
+          "title": "移除所有活跃上架？",
+          "description": "这将取消此账号的所有活跃市场挂牌，预计时间：{{time}}，请保持应用运行直至完成"
+        }
+      },
+      "filter": {
+        "label": "筛选",
+        "cards": "集换式卡牌",
+        "foil": "闪卡",
+        "backgrounds": "背景",
+        "emoticons": "表情",
+        "boosters": "补充包",
+        "sale": "特卖中",
+        "dupes": "重复项",
+        "badge": "已有徽章",
+        "locked": "已锁定"
+      },
+      "sort": {
+        "label": "排序",
+        "game-asc": "游戏（A-Z）",
+        "game-desc": "游戏（Z-A）",
+        "badge-desc": "徽章等级"
+      },
+      "empty": {
+        "title": "未找到物品",
+        "description": "当前搜索与筛选条件下无可交易物品"
+      },
+      "priceData": {
+        "sellOrders": "出售订单",
+        "buyOrders": "求购订单"
+      },
+      "settings": {
+        "currency": {
+          "title": "货币",
+          "description": "获取市场价及上架物品所用的货币单位"
+        },
+        "pricePreference": {
+          "title": "默认价格",
+          "description": "批量出售物品时使用的价格基准",
+          "options": {
+            "highestBuyOrder": "最高求购价",
+            "lowestSellOrder": "最低出售价"
+          }
+        },
+        "priceAdjustment": {
+          "title": "价格调整",
+          "description": "为每个上架价格增加 {{value}}，无论是自动填充还是手动输入"
+        },
+        "sellLimit": {
+          "title": "出售限制",
+          "description": "仅上架价格在 {{min}} 到 {{max}} 之间的物品"
+        },
+        "sellDelay": {
+          "title": "出售延迟",
+          "description": "每上架一件物品后等待 {{value}} 秒，以避免频率限制"
+        }
+      },
+      "toasts": {
+        "listed_one": "已上架 {{count}} 件物品",
+        "listed_other": "已上架 {{count}} 件物品",
+        "listFailed_one": "{{count}} 件物品无法上架",
+        "listFailed_other": "{{count}} 件物品无法上架",
+        "noListings": "您没有活跃的市场挂牌",
+        "removedListings": "已移除 {{total}} 个挂牌中的 {{count}} 个",
+        "removeFailed": "无法移除任何挂牌",
+        "noneEligible": "没有符合条件的物品可出售——请检查您的库存设置中的出售限制",
+        "priceFetchCooldown": "请等待 {{seconds}} 秒后再获取更多物品价格",
+        "itemLocked": "此物品已锁定，无法上架",
+        "priceOutOfRange": "{{price}} 超出了您设置的出售限制（{{min}}-{{max}}）",
+        "skippedLocked_one": "跳过了 {{count}} 个已锁定物品",
+        "skippedLocked_other": "跳过了 {{count}} 个已锁定物品",
+        "skippedOutOfRange_one": "跳过了 {{count}} 个超出出售限制的物品",
+        "skippedOutOfRange_other": "跳过了 {{count}} 个超出出售限制的物品"
+      },
+      "errors": {
+        "title": "无法更新您的库存",
+        "fetchFailed": "当前无法加载您的 Steam 社区库存",
+        "cacheIoFailed": "无法获取库存缓存",
+        "priceFetchFailed": "当前无法获取市场价格",
+        "priceRateLimited": "Steam 当前限制了价格查询频率，请稍后重试",
+        "itemNotFound": "在缓存的库存中找不到该物品",
+        "listingsFetchFailed": "无法读取您的活跃市场挂牌",
+        "settingsIoFailed": "无法获取您的库存设置",
+        "generic": "更新您的库存时出错，请重试，（{{code}}）"
+      }
+    },
+    "settings": {
+      "title": "设置",
+      "general": {
+        "title": "常规",
+        "account": {
+          "displayNameLabel": "显示名称",
+          "steamIdLabel": "Steam ID"
+        },
+        "apiKey": {
+          "label": "Steam Web API 密钥",
+          "placeholder": "留空以使用内置密钥",
+          "description": "覆盖应用内置的 Steam Web API 密钥"
+        },
+        "antiAway": {
+          "label": "始终保持在线",
+          "description": "定期刷新您的 Steam 状态，使您在挂机时不会显示为离开"
+        },
+        "runAtStartup": {
+          "label": "开机自启动",
+          "description": "当您登录 Windows 时自动启动 Steam Game Idler"
+        },
+        "startMinimized": {
+          "label": "启动时最小化",
+          "description": "启动时隐藏 Steam Game Idler 在系统托盘中，不显示窗口"
+        },
+        "closeToTray": {
+          "label": "关闭至托盘",
+          "description": "关闭窗口时将 Steam Game Idler 保持在系统托盘中运行"
+        },
+        "autoUpdateGamesList": {
+          "label": "自动更新游戏列表",
+          "description": "在后台静默刷新您的游戏列表，使其无需手动刷新即可保持最新"
+        },
+        "personaState": {
+          "label": "在线状态",
+          "description": "选择您登录时在好友面前显示的状态",
+          "options": {
+            "online": "在线",
+            "busy": "忙碌",
+            "away": "离开",
+            "snooze": "打盹",
+            "lookingToTrade": "寻找交易",
+            "lookingToPlay": "寻求一起游戏",
+            "invisible": "隐身",
+            "offline": "离线"
+          }
+        },
+        "customIdleStatus": {
+          "label": "挂机时的自定义状态",
+          "description": "用您自己的自定义消息替换好友在挂机时看到的「正在玩 [游戏]」文本",
+          "placeholder": "例如：正在挂卡"
+        },
+        "language": {
+          "label": "语言",
+          "description": "选择应用的显示语言",
+          "helpTranslate": "协助翻译 SGI"
+        }
+      },
+      "subscription": {
+        "title": "订阅",
+        "status": {
+          "title": "订阅状态",
+          "description": "您当前的套餐和账单详情",
+          "inactive": "未激活",
+          "renewsOn": "续费日期：{{date}}",
+          "cancelsOn": "取消日期：{{date}}",
+          "manage": "管理订阅",
+          "upgrade": "升级"
+        },
+        "licenseKey": {
+          "title": "许可证密钥",
+          "description": "在此设备上激活许可证密钥以解锁 Pro 功能",
+          "placeholder": "输入您的许可证密钥",
+          "activate": "激活",
+          "activated": "许可证密钥已激活",
+          "copied": "许可证密钥已复制"
+        },
+        "transfer": {
+          "title": "转移此许可证密钥？",
+          "description": "此许可证密钥已在另一台设备上激活，在此激活将停用那边的设备"
+        },
+        "errors": {
+          "activationFailed": "无法激活此许可证密钥，请检查密钥是否正确后重试"
+        }
+      },
+      "customization": {
+        "title": "个性化",
+        "tooltips": {
+          "label": "禁用提示",
+          "description": "隐藏应用中的悬停提示"
+        },
+        "carousels": {
+          "recommended": {
+            "label": "显示「推荐」轮播",
+            "description": "在游戏列表顶部显示一排未游玩的游戏"
+          },
+          "recent": {
+            "label": "显示「最近游玩」轮播",
+            "description": "在游戏列表顶部显示您最近游玩的游戏"
+          }
+        },
+        "background": {
+          "label": "背景图片",
+          "description": "使用自定义图片作为应用背景",
+          "choose": "选择图片",
+          "saved": "背景已更新",
+          "cleared": "背景已清除"
+        },
+        "theme": {
+          "label": "主题",
+          "description": "选择应用的配色主题",
+          "saved": "主题已更新",
+          "names": {
+            "default": "默认",
+            "blue": "蓝色",
+            "red": "红色",
+            "purple": "紫色",
+            "pink": "粉色",
+            "orange": "橙色",
+            "black": "黑色",
+            "white": "白色"
+          }
+        },
+        "font": {
+          "label": "字体",
+          "description": "选择应用的字体",
+          "saved": "字体已更新"
+        },
+        "errors": {
+          "backgroundInvalid": "无法使用该图片——请检查文件类型和大小后重试",
+          "generic": "更新个性化设置时出错，请重试，（{{code}}）"
+        }
+      },
+      "steamCredentials": {
+        "title": "Steam 凭据",
+        "description": "使用「挂卡」和「库存管理器」功能需要 Steam 凭据",
+        "agentModeNote": "无需填写，此账号通过 Steam 登录并自动获取 Steam 社区会话",
+        "automaticDescription": "自动登录 Steam 社区并在此 Cookie",
+        "errors": {
+          "storeIoFailed": "无法获取您保存的 Steam 凭据",
+          "generic": "更新您的 Steam 凭据时出错，请重试，（{{code}}）"
+        }
+      },
+      "freeGames": {
+        "notifications": {
+          "label": "免费游戏通知",
+          "description": "当 Steam 上有新免费游戏时收到通知"
+        },
+        "autoRedeem": {
+          "label": "自动领取免费游戏",
+          "description": "自动为新发现的免费游戏领取至本账号",
+          "signIn": "登录 Steam",
+          "reauthenticate": "重新认证",
+          "sessionEstablished": "已登录 Steam 商店",
+          "sessionCleared": "已登出 Steam 商店"
+        },
+        "errors": {
+          "ioFailed": "无法获取此账号的免费游戏设置",
+          "generic": "更新您的免费游戏设置时出错，请重试，（{{code}}）"
+        }
+      },
+      "gameSettings": {
+        "title": "游戏设置",
+        "maxPlaytimeSection": "游戏时长",
+        "maxPlaytimeScopeNote": "适用于所有挂机场景——手动和自动挂机、成就解锁器以及挂卡",
+        "idlingScopeNote": "仅适用于手动和自动挂机的游戏——挂卡与成就解锁器另有独立的上限",
+        "cardFarmingScopeNote": "仅适用于挂卡会话",
+        "globalMaxPlaytime": {
+          "label": "最大游戏时长（所有游戏）",
+          "description": "当游戏总时长达到此分钟数时，自动停止该游戏并将其从队列中移除"
+        },
+        "maxPlaytime": {
+          "label": "最大游戏时长",
+          "description": "当该游戏总时长达到此分钟数时，自动停止挂机并将其从队列中移除，若已设置，则覆盖上方的所有游戏值"
+        },
+        "globalMaxIdleTime": {
+          "label": "最大挂机时间（所有游戏）",
+          "description": "挂机达到此分钟数后自动停止"
+        },
+        "maxIdleTime": {
+          "label": "最大挂机时间",
+          "description": "挂机该游戏达到此分钟数后自动停止，若已设置，则覆盖上方的所有游戏值"
+        },
+        "globalMaxCardFarmingTime": {
+          "label": "最大挂卡时间（所有游戏）",
+          "description": "为游戏挂卡达到此分钟数后自动停止"
+        },
+        "maxCardFarmingTime": {
+          "label": "最大挂卡时间",
+          "description": "为该游戏挂卡达到此分钟数后自动停止，若已设置，则覆盖上方的所有游戏值"
+        },
+        "maxCardDrops": {
+          "label": "最大卡牌掉落数",
+          "description": "本次会话中该游戏掉落达到此数量后停止挂卡",
+          "hint": "0 为 挂至完成"
+        },
+        "maxAchievementUnlocks": {
+          "label": "最大成就解锁数",
+          "description": "该游戏解锁达到此数量后停止成就解锁器"
+        },
+        "filterCustomized": "仅显示有自定义设置的游戏",
+        "errors": {
+          "generic": "更新您的游戏设置时出错，请重试，（{{code}}）"
+        }
+      },
+      "keybinds": {
+        "title": "快捷键",
+        "zoom": "缩放",
+        "zoomIn": "放大",
+        "zoomOut": "缩小",
+        "resetZoom": "重置缩放",
+        "scrollUp": "向上滚动",
+        "scrollDown": "向下滚动",
+        "navigation": "导航",
+        "nextPage": "下一页",
+        "prevPage": "上一页",
+        "openSearch": "打开搜索",
+        "toggleSettings": "切换设置",
+        "toggleSidebar": "切换侧边栏"
+      },
+      "debug": {
+        "title": "调试",
+        "system": {
+          "os": "{{osVersion}}（{{arch}}）",
+          "portable": "便携版",
+          "installed": "安装版"
+        },
+        "logs": {
+          "description": "应用最近的日志行，自动刷新",
+          "viewFile": "查看日志文件",
+          "clear": "清除日志",
+          "cleared": "日志已清除",
+          "empty": "暂无日志记录"
+        },
+        "settingsFile": {
+          "viewFile": "打开设置文件"
+        },
+        "exportSettings": {
+          "button": "导出设置",
+          "success": "设置已复制到剪贴板",
+          "error": "无法导出设置"
+        },
+        "resetSettings": {
+          "button": "重置设置",
+          "success": "设置已恢复为默认值",
+          "confirmTitle": "将设置重置为默认值？",
+          "confirmDescription": "重置您的 Steam Web API 密钥覆盖，以及（如果您已登录）此账号的成就解锁器、库存管理器、挂卡和免费游戏设置，已登录的账号将保持登录状态"
+        },
+        "clearData": {
+          "button": "清除数据",
+          "confirmTitle": "清除所有本地数据？",
+          "confirmDescription": "登出所有账号，停止所有正在运行的自动化任务，清除日志和此设备上本地存储的应用数据（最近搜索、库存锁定等），此操作不可撤销"
+        },
+        "errors": {
+          "logIoFailed": "无法获取日志文件"
+        }
+      },
+      "footer": {
+        "version": "Steam Game Idler v{{version}}",
+        "github": "在 GitHub 上查看源码"
+      },
+      "errors": {
+        "title": "无法加载设置",
+        "ioFailed": "无法获取您的设置文件",
+        "apiKeyInvalid": "Steam 拒绝了该 API 密钥，请仔细检查后重试",
+        "credentialStoreFailed": "无法访问 Windows 凭据管理器以存储您的 API 密钥",
+        "generic": "更新设置时出错，请重试，（{{code}}）"
+      }
+    }
+  }
+}
