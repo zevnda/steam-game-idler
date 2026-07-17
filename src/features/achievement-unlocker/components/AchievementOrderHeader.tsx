@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { TbX } from 'react-icons/tb'
 import { Button, Typography } from '@heroui/react'
+import { TierBadge } from '@/shared/components/TierBadge'
 
 interface AchievementOrderHeaderProps {
   name: string
@@ -62,7 +63,10 @@ export const AchievementOrderHeader = ({
           // of `isDisabled` (loading/error/empty), since opening the upsell modal isn't an edit.
           <span className='inline-flex' title={t('common.proTier.gamerRequired')}>
             <Button className='opacity-50' size='sm' variant='secondary' onPress={onUpsell}>
-              {t('dashboard.achievementUnlocker.importTimings.title')}
+              <span className='flex items-center gap-1.5'>
+                {t('dashboard.achievementUnlocker.importTimings.title')}
+                <TierBadge tier='gamer' />
+              </span>
             </Button>
           </span>
         )}
