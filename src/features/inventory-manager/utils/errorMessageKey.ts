@@ -33,3 +33,14 @@ const KNOWN_ERROR_KEYS: Record<string, TranslationKey> = {
 const GENERIC_KEY: TranslationKey = 'dashboard.inventoryManager.errors.generic'
 
 export const errorMessageKey = (code: string) => KNOWN_ERROR_KEYS[code] ?? GENERIC_KEY
+
+// InventoryConnectPanel's own mapper for its errorSlot - see card-farming's identical
+// `connectErrorMessageKey` doc comment for the full reasoning (Steam's validation response can't
+// distinguish "never valid" from "valid, now revoked", so `sessionExpired`'s "reconnect" wording is
+// only accurate once an already-working session breaks, never for a fresh, not-yet-proven
+// candidate - which is the only kind of attempt this panel's errorSlot ever shows). `errorMessageKey`
+// above is unchanged and still used for InventoryManagerPage's page-level banner.
+export const connectErrorMessageKey = (code: string) =>
+  code === 'steam_community_session_expired'
+    ? KNOWN_ERROR_KEYS.steam_community_session_failed
+    : errorMessageKey(code)

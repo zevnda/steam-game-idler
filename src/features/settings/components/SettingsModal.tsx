@@ -244,14 +244,11 @@ export const SettingsModal = () => {
                 <SettingsPanel id='steamCredentials'>
                   <SteamCredentialsTab
                     actionErrorCode={steamCredentials.actionErrorCode}
-                    cookies={steamCredentials.cookies}
                     isAcquiring={steamCredentials.isAcquiring}
-                    isClearing={steamCredentials.isClearing}
                     isLoading={steamCredentials.isLoading}
                     isSaving={steamCredentials.isSaving}
                     loadErrorCode={steamCredentials.loadErrorCode}
                     onAcquire={steamCredentials.acquire}
-                    onClear={steamCredentials.clear}
                     onRefresh={steamCredentials.refresh}
                     onSave={steamCredentials.save}
                   />

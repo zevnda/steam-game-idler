@@ -16,7 +16,7 @@ import { useSubscriptionStore } from '@/shared/stores/subscriptionStore'
 import { invoke } from '@/shared/utils/invoke'
 import { showErrorToast } from '@/shared/utils/showErrorToast'
 import { clearSavedSteamCookies } from '@/shared/utils/steamCommunitySessionExpired'
-import { canResolveCookiesAutomatically } from '@/shared/utils/subscriptionAccess'
+import { canResolveCookiesAutomatically, hasGamerAccess } from '@/shared/utils/subscriptionAccess'
 
 // Data/actions for the inventory-manager page - fetch/cache/connect, market actions (price lookup,
 // listing, removing listings), and this account's selling-preferences settings. Page-scoped, not
@@ -105,14 +105,27 @@ export const useInventory = () => {
   // The actual "safe to show inventory content" gate `InventoryManagerPage` renders on - `hasLoaded`
   // alone isn't proof of that: it's also set by the cache-based instant paint below, which never
   // goes through `enforceCookieGate` (nothing calls `connect` just to display a cache hit). Without
-  // this, a non-gamer account with no saved manual cookies at all could keep showing stale cached
-  // items indefinitely, since neither of `useAutoConnectSteamCookies`'s branches ever fires for
-  // that combination to trigger a real re-check. True if either this session already proved a real
-  // connection, or the account has a legitimate path to one (gamer-tier automatic, or an existing
-  // saved manual set `useAutoConnectSteamCookies` will validate in the background).
-  const canAccessInventory =
-    hasLoaded &&
-    (hasVerifiedConnection || canResolveCookiesAutomatically(!!savedCookies, subscriptionTier))
+  // this, an account with no saved manual cookies at all could keep showing stale cached items
+  // indefinitely, since neither of `useAutoConnectSteamCookies`'s branches ever fires for that
+  // combination to trigger a real re-check. True if either this session already proved a real
+  // connection, or `useAutoConnectSteamCookies` is actually about to run a background re-check for
+  // this account right now.
+  //
+  // Deliberately mirrors `useAutoConnectSteamCookies`'s own two trigger branches exactly, NOT
+  // `canResolveCookiesAutomatically(!!savedCookies, subscriptionTier)` - that function answers "is
+  // an automatic connect *tier-permitted* right now" (correct for `enforceCookieGate`'s use below,
+  // which gates an already-in-flight action), not "*will* an automatic connect actually happen in
+  // the background" (what this gate needs). Those two questions diverge for a gamer-tier **local**
+  // (CLI) account with no saved cookies: `canResolveCookiesAutomatically` says yes (gamer tier can
+  // always resolve automatically once attempted), but `useAutoConnectSteamCookies`'s agent-mode
+  // daemon-derive branch never fires for local mode - local mode's own "automatic" path only ever
+  // runs from an explicit user click on the connect panel's Automatic tab, never silently on mount.
+  // Using the wrong predicate here left exactly that account shape (gamer-tier, CLI/local mode, no
+  // saved cookies) stuck showing yesterday's cached inventory forever, even across an app restart,
+  // since nothing ever ran the real re-check this gate assumed was coming.
+  const willAutoVerifyInBackground =
+    (account?.mode === 'agent' && hasGamerAccess(subscriptionTier)) || !!savedCookies
+  const canAccessInventory = hasLoaded && (hasVerifiedConnection || willAutoVerifyInBackground)
 
   // Re-reads just the settings half of init() - exposed as `refreshSettings` so this page's own
   // copy doesn't go stale after a save from the Settings *modal* (an overlay - see

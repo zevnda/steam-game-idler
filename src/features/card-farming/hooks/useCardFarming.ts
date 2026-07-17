@@ -119,6 +119,11 @@ export const useCardFarming = () => {
       if (!account || !enforceCookieGate(manualCookies)) return false
       setIsConnecting(true)
       setConnectErrorCode(null)
+      // A successful reconnect must also clear any stale `errorCode` left over from an earlier
+      // start/stop failure - otherwise CardFarmingPage's page-level banner (gated on `connected`,
+      // fed by `errorCode ?? connectErrorCode`) would resurrect that old error the instant
+      // `connected` flips back to true, even though the user just fixed the underlying problem.
+      setErrorCode(null)
       // Use `refresh`'s own return value, not a post-await read of `browse.errorCode` - that
       // property only updates on `useGamesWithDrops`' *next* render, which hasn't happened yet by
       // the time this closure resumes, so it was always a stale (pre-attempt) snapshot here. That
@@ -160,11 +165,16 @@ export const useCardFarming = () => {
       // Unlike card farming's other errors, a session-related failure isn't fixable without
       // reconnecting, and this page has no separate "Reconnect" affordance the way
       // InventoryPageHeader does, so drop back to CardFarmingStartPanel directly rather than
-      // leaving the user stuck looking at an empty tab view with only an error banner.
+      // leaving the user stuck looking at an empty tab view with only an error banner. Also mirrors
+      // the reason into `connectErrorCode` (same as the `state.sessionExpired` effect below) since
+      // CardFarmingPage's page-level banner is gated on `connected` - once this flips it false, only
+      // the connect panel's own inline errorSlot (fed by connectErrorCode) is still on screen to
+      // show why.
       if (isSessionCode(String(error))) {
         manualCookiesRef.current = undefined
         clearSavedSteamCookies(account)
         setConnected(false)
+        setConnectErrorCode(String(error))
       }
     } finally {
       setIsStarting(false)

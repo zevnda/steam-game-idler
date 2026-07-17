@@ -36,7 +36,10 @@
       "slsLabel": "steamLoginSecure",
       "smaLabel": "steamMachineAuth",
       "smaDescription": "Optional. Only needed if your account has a pending Steam Guard machine confirmation.",
-      "savedFromSettingsNote": "Loaded from the Steam Credentials saved in Settings."
+      "savedFromSettingsNote": "Loaded from the Steam Credentials saved in Settings.",
+      "savedToast": "Credentials saved",
+      "clearedToast": "Credentials cleared",
+      "clearFailed": "Couldn't clear your saved Steam credentials. ({{code}})"
     },
     "manualAdd": {
       "title": "Add game manually",
@@ -1023,8 +1026,6 @@
         "description": "Steam credentials are required in order to use the Card Farming and Inventory Manager features.",
         "agentModeNote": "Not needed. This account signs in via Steam and gets its Steam Community session automatically.",
         "automaticDescription": "Signs in to Steam Community automatically and saves the cookies here.",
-        "saved": "Credentials saved",
-        "cleared": "Credentials cleared",
         "errors": {
           "storeIoFailed": "Couldn't read or write your saved Steam credentials.",
           "generic": "Something went wrong updating your Steam credentials. Please try again. ({{code}})"
