@@ -99,13 +99,14 @@ async function autoRedeemForSignedInAccounts(newGames: FreeGameEntry[], t: TFunc
 // anyone navigates to that page, instead of the page fetching for itself on every visit (see
 // `freeGamesStore`'s own doc comment). Hydrates `freeGameNotificationsStore` from the real
 // persisted app-wide setting once (mirrors `useAntiAwayStatus`'s identical hydration effect), then
-// immediately and on an hourly interval thereafter (matching `main`'s own polling cadence) fetches
-// the discovery list into `freeGamesStore`, diffs it against whatever was last seen, and for
-// anything new: sends a native OS notification (if enabled) and attempts auto-redeem for every
-// signed-in, gamer-tier, opted-in account. Only the very first fetch (mount) flips
-// `freeGamesStore.phase` to 'ready' - every subsequent hourly poll writes through
-// `setGamesSilently` instead, so a scheduled re-poll can never re-trigger the page's initial
-// loading skeleton, mirroring `silentlyRefreshGamesList`'s identical restraint.
+// - once the active account's owned-games list has finished its first load (see the polling effect
+// below) - immediately and on an hourly interval thereafter (matching `main`'s own polling cadence)
+// fetches the discovery list into `freeGamesStore`, diffs it against whatever was last seen, and
+// for anything new: sends a native OS notification (if enabled) and attempts auto-redeem for every
+// signed-in, gamer-tier, opted-in account. Only the very first fetch flips `freeGamesStore.phase`
+// to 'ready' - every subsequent hourly poll writes through `setGamesSilently` instead, so a
+// scheduled re-poll can never re-trigger the page's initial loading skeleton, mirroring
+// `silentlyRefreshGamesList`'s identical restraint.
 export const useFreeGamesWatcher = () => {
   const { t } = useTranslation()
   const setNotificationsEnabled = useFreeGameNotificationsStore(state => state.setEnabled)
@@ -122,6 +123,9 @@ export const useFreeGamesWatcher = () => {
   }, [])
 
   useEffect(() => {
+    let cancelled = false
+    let interval: ReturnType<typeof setInterval> | null = null
+
     const poll = async () => {
       const store = useFreeGamesStore.getState()
       const isInitialFetch = store.phase === 'loading'
@@ -143,7 +147,9 @@ export const useFreeGamesWatcher = () => {
       const seen = readSeenAppIds()
       const newGames = games.filter(game => !seen.has(game.appId))
       // Persisted regardless of whether anything is new, so a game that later rotates out of the
-      // discovery list and back in isn't treated as new again.
+      // discovery list and back in isn't treated as new again, and so a game correctly skipped
+      // below because the user already owns it never re-qualifies as "new" on a later poll either
+      // - this is what stops the same game notifying again on every subsequent app open.
       writeSeenAppIds(games.map(game => game.appId))
 
       if (newGames.length === 0) return
@@ -151,7 +157,9 @@ export const useFreeGamesWatcher = () => {
       if (useFreeGameNotificationsStore.getState().enabled) {
         // Filtered against the active account's owned-games cache (same source `useFreeGames.ts`
         // filters the page grid with) so a game the user already owns doesn't trigger an OS
-        // notification just because the app-wide discovery scrape has no ownership concept.
+        // notification just because the app-wide discovery scrape has no ownership concept. Safe
+        // to read directly (not gated here) because the effect below never starts polling until
+        // that cache has finished its first load.
         // Doesn't gate `autoRedeemForSignedInAccounts` below - that loop covers every signed-in
         // account, not just the active one, and already tolerates `alreadyOwned` per-account
         // without a pre-filter (see that function's own doc comment).
@@ -169,8 +177,41 @@ export const useFreeGamesWatcher = () => {
       await autoRedeemForSignedInAccounts(newGames, t)
     }
 
-    poll()
-    const interval = setInterval(poll, POLL_INTERVAL_MS)
-    return () => clearInterval(interval)
+    const startPolling = () => {
+      if (cancelled) return
+      poll()
+      interval = setInterval(poll, POLL_INTERVAL_MS)
+    }
+
+    // The owned-games fetch (`useGamesListSync`) and this discovery fetch both kick off around app
+    // start, but the discovery scrape has historically resolved first - polling immediately used to
+    // read `useGamesListStore.getState().games` while it was still empty, so a game the user
+    // already owned looked "unowned" for that first check: a false native notification, plus a
+    // gold sidebar icon (`useFreeGames.ts`'s `unownedFreeGames`) until the owned list caught up and
+    // silently corrected it. Wait for that first load to finish before ever checking free games at
+    // all, so ownership is known-accurate on the very first check instead of racing it.
+    // `gamesListStore.phase` only reverts to 'loading' again on a mid-session switch to an
+    // account with no cached entry yet (see `useGamesListSync`) - narrow enough that letting the
+    // next hourly poll pick up the correct ownership is an acceptable trade-off there, rather than
+    // re-gating every single poll on it.
+    if (useGamesListStore.getState().phase === 'ready') {
+      startPolling()
+    } else {
+      const unsubscribe = useGamesListStore.subscribe(state => {
+        if (state.phase !== 'ready') return
+        unsubscribe()
+        startPolling()
+      })
+      return () => {
+        cancelled = true
+        unsubscribe()
+        if (interval) clearInterval(interval)
+      }
+    }
+
+    return () => {
+      cancelled = true
+      if (interval) clearInterval(interval)
+    }
   }, [t])
 }
