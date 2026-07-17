@@ -125,7 +125,10 @@ function wrapPos(pos: number, halfWidth: number) {
 }
 
 export default function TestimonialsSlider() {
-  const [shuffled] = useState(() => [...testimonials].sort(() => Math.random() - 0.5))
+  const [shuffled, setShuffled] = useState(testimonials)
+  useEffect(() => {
+    setShuffled([...testimonials].sort(() => Math.random() - 0.5))
+  }, [])
   const trackRef = useRef<HTMLDivElement>(null)
   const posRef = useRef(0)
   const isPausedRef = useRef(false)
