@@ -28,17 +28,14 @@ import { useGamesList } from '@/features/games-list/hooks/useGamesList'
 import { errorMessageKey as gamesErrorMessageKey } from '@/features/games-list/utils/errorMessageKey'
 import { GameSortSelect } from '@/shared/components/GameSortSelect'
 import { ManualAddGameModal } from '@/shared/components/ManualAddGameModal'
+import { useOwnedGameSort } from '@/shared/hooks/useOwnedGameSort'
 import { searchGames } from '@/shared/search/fuzzySearch'
 import { useAchievementOrderStore } from '@/shared/stores/achievementOrderStore'
 import { useAchievementUnlockerStore } from '@/shared/stores/achievementUnlockerStore'
 import { useSearchStore } from '@/shared/stores/searchStore'
 import { getAccountKey, useSessionStore } from '@/shared/stores/sessionStore'
 import { useSortPreferencesStore } from '@/shared/stores/sortPreferencesStore'
-import {
-  OWNED_GAME_SORT_LABEL_KEYS,
-  OWNED_GAME_SORT_STYLES,
-  sortOwnedGames,
-} from '@/shared/utils/sortOwnedGames'
+import { OWNED_GAME_SORT_LABEL_KEYS, sortOwnedGames } from '@/shared/utils/sortOwnedGames'
 
 type AchievementUnlockerTab = 'browse' | 'queue'
 
@@ -86,9 +83,11 @@ export const AchievementUnlockerPage = () => {
   // GamesPage.tsx's identical wiring.
   const sortStyle = useSortPreferencesStore(state => state.achievementUnlocker)
   const setSortStyle = useSortPreferencesStore(state => state.setSortPreference)
+  const { options: sortStyleOptions, effectiveStyle: effectiveSortStyle } =
+    useOwnedGameSort(sortStyle)
   const sortedFilteredGames = useMemo(
-    () => sortOwnedGames(filteredGames, sortStyle),
-    [filteredGames, sortStyle],
+    () => sortOwnedGames(filteredGames, effectiveSortStyle),
+    [filteredGames, effectiveSortStyle],
   )
   const {
     state: runState,
@@ -228,11 +227,11 @@ export const AchievementUnlockerPage = () => {
                 </Button>
                 <GameSortSelect
                   ariaLabel='Sort games'
-                  options={OWNED_GAME_SORT_STYLES.map(style => ({
+                  options={sortStyleOptions.map(style => ({
                     id: style,
                     label: t(OWNED_GAME_SORT_LABEL_KEYS[style]),
                   }))}
-                  value={sortStyle}
+                  value={effectiveSortStyle}
                   onChange={style => setSortStyle('achievementUnlocker', style)}
                 />
               </div>

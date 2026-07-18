@@ -10,6 +10,7 @@ import { Alert, Button, EmptyState, Typography } from '@heroui/react'
 import { useRouter } from 'next/router'
 import { useIdling } from '@/features/idling/hooks/useIdling'
 import { GameGridSkeleton } from '@/shared/components/GameGridSkeleton'
+import { useOwnedGameSort } from '@/shared/hooks/useOwnedGameSort'
 import { searchGames } from '@/shared/search/fuzzySearch'
 import { useCarouselSettingsStore } from '@/shared/stores/carouselSettingsStore'
 import { useSearchStore } from '@/shared/stores/searchStore'
@@ -48,9 +49,11 @@ export const GamesPage = () => {
   // `useSortPreferencesSync` in DashboardShell.
   const sortStyle = useSortPreferencesStore(state => state.games)
   const setSortStyle = useSortPreferencesStore(state => state.setSortPreference)
+  const { options: sortStyleOptions, effectiveStyle: effectiveSortStyle } =
+    useOwnedGameSort(sortStyle)
   const sortedFilteredGames = useMemo(
-    () => sortOwnedGames(filteredGames, sortStyle),
-    [filteredGames, sortStyle],
+    () => sortOwnedGames(filteredGames, effectiveSortStyle),
+    [filteredGames, effectiveSortStyle],
   )
 
   // A manual refresh replaces the whole page with the skeleton again (real, visible feedback that
@@ -97,7 +100,8 @@ export const GamesPage = () => {
       <GamesPageHeader
         gameCount={games.length}
         isRefreshing={isRefreshing}
-        sortStyle={sortStyle}
+        sortStyle={effectiveSortStyle}
+        sortStyleOptions={sortStyleOptions}
         onRefresh={refresh}
         onSortStyleChange={style => setSortStyle('games', style)}
       />
