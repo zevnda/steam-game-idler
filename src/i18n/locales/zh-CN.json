@@ -36,7 +36,10 @@
       "slsLabel": "steamLoginSecure",
       "smaLabel": "steamMachineAuth",
       "smaDescription": "可选，仅当您的账号有待处理的 Steam 令牌设备确认时 需要",
-      "savedFromSettingsNote": "从「设置」中保存的 Steam 凭据加载"
+      "savedFromSettingsNote": "从「设置」中保存的 Steam 凭据加载",
+      "savedToast": "凭据已保存",
+      "clearedToast": "凭据已清除",
+      "clearFailed": "无法清除您保存的 Steam 凭据（{{code}}）"
     },
     "manualAdd": {
       "title": "手动添加游戏",
@@ -90,7 +93,8 @@
       "queue": "队列"
     },
     "connect": {
-      "automaticTab": "自动"
+      "automaticTab": "自动",
+      "manualTab": "手动"
     },
     "sort": {
       "nameAsc": "名称（A-Z）",
@@ -356,6 +360,15 @@
           "capReached_other": "{{tier}} 套餐允许同时登录 {{count}} 个 Steam 账号。请先登出一个账号以添加新账号，或升级套餐",
           "capReachedMax": "已达到同时登录 Steam 账号的上限",
           "added": "已添加 {{name}}"
+        },
+        "reauth": {
+          "badge": "已在其他设备登录",
+          "tooltip": "该账号已在其他设备登录，自动化任务已暂停，请重新登录以继续",
+          "modalTitle": "已在其他设备登录",
+          "modalDescription": "{{account}} 已在其他设备登录，自动化任务已暂停，请重新登录以继续",
+          "reconnect": "重新连接",
+          "methodExplainer": "通过 Steam 登录方式登录的每个账号仅允许一个活动会话，如果您希望在 Steam Game Idler 运行期间仍能继续游玩游戏，请改用旧版登录方式登录",
+          "useDifferentMethod": "使用其他登录方式"
         }
       },
       "ads": {
@@ -372,7 +385,9 @@
       },
       "sort": {
         "playtimeDesc": "游戏时长（从高到低）",
-        "playtimeAsc": "游戏时长（从低到高）"
+        "playtimeAsc": "游戏时长（从低到高）",
+        "recentlyPlayedDesc": "最近游玩（最新）",
+        "recentlyPlayedAsc": "最近游玩（最早）"
       },
       "empty": {
         "title": "未找到游戏",
