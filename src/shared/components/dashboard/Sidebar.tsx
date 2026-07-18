@@ -149,7 +149,7 @@ export const Sidebar = () => {
       <div className='h-10 shrink-0' data-tauri-drag-region />
       <div
         className={cn(
-          'flex flex-1 flex-col gap-4 overflow-y-auto px-2 pb-2',
+          'flex flex-1 flex-col gap-4 overflow-y-auto overflow-x-hidden px-2 pb-2',
           collapsed ? ' pt-6' : ' pt-9',
         )}
       >
