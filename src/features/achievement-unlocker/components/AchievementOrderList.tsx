@@ -47,10 +47,10 @@ const DelayRow = ({ delayBeforeFirstUnlock, isDisabled, onDelayChange }: DelayRo
         <NumberField
           aria-label={t('dashboard.achievementUnlocker.order.delayBeforeFirstUnlock')}
           className='w-36'
-          formatOptions={{ maximumFractionDigits: 1, useGrouping: false }}
+          formatOptions={{ maximumFractionDigits: 2, useGrouping: false }}
           isDisabled={isDisabled}
           minValue={0}
-          step={0.1}
+          step={0.01}
           value={delayBeforeFirstUnlock === '' ? NaN : delayBeforeFirstUnlock}
           onChange={value => onDelayChange(Number.isNaN(value) ? '' : value)}
         >

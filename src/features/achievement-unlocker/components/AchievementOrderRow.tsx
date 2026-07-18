@@ -138,10 +138,10 @@ export const AchievementOrderRow = ({
         <NumberField
           aria-label={`Unlock delay for ${achievement.name}`}
           className='w-35'
-          formatOptions={{ maximumFractionDigits: 1, useGrouping: false }}
+          formatOptions={{ maximumFractionDigits: 2, useGrouping: false }}
           isDisabled={achievement.skip}
           minValue={0}
-          step={0.1}
+          step={0.01}
           value={achievement.delayNextUnlock ?? NaN}
           onChange={handleDelayChange}
         >
