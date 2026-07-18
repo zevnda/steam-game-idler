@@ -2,7 +2,7 @@ import type { ActiveGameProgress } from '../types'
 import { useTranslation } from 'react-i18next'
 import { TbClockHour4, TbHourglassLow } from 'react-icons/tb'
 import { formatCountdown, INITIAL_DELAY_MS } from '../utils/formatCountdown'
-import { ProgressBar, Typography } from '@heroui/react'
+import { ProgressCircle, Typography } from '@heroui/react'
 import { GameThumbnail } from '@/shared/components/GameThumbnail'
 
 interface AchievementUnlockerCurrentGamePanelProps {
@@ -11,8 +11,9 @@ interface AchievementUnlockerCurrentGamePanelProps {
 }
 
 // Left-hand panel of a running game's row - mirrors `main`'s GameRow.tsx (cover art + status),
-// swapping its CircularProgress initial-delay indicator for the linear `ProgressBar` this rewrite's
-// HeroUI kit actually exports (see AchievementUnlockerScanProgressCard.tsx for the same swap).
+// including its circular initial-delay indicator (HeroUI v3's kit gained `ProgressCircle` after
+// this rewrite originally shipped, so this no longer needs the linear `ProgressBar` fallback used
+// by AchievementUnlockerScanProgressCard.tsx, which stays linear by design for a determinate scan).
 export const AchievementUnlockerCurrentGamePanel = ({
   entry,
   now,
@@ -46,17 +47,18 @@ export const AchievementUnlockerCurrentGamePanel = ({
           <Typography type='body-sm' weight='semibold'>
             {t('dashboard.achievementUnlocker.progress.starting')}
           </Typography>
-          <ProgressBar
+          <ProgressCircle
             aria-label={t('dashboard.achievementUnlocker.progress.starting')}
-            className='w-40'
             maxValue={INITIAL_DELAY_MS}
             minValue={0}
+            size='lg'
             value={INITIAL_DELAY_MS - initialDelayRemainingMs}
           >
-            <ProgressBar.Track>
-              <ProgressBar.Fill />
-            </ProgressBar.Track>
-          </ProgressBar>
+            <ProgressCircle.Track>
+              <ProgressCircle.TrackCircle cx={18} cy={18} r={15} strokeWidth={6} />
+              <ProgressCircle.FillCircle cx={18} cy={18} r={15} strokeWidth={6} />
+            </ProgressCircle.Track>
+          </ProgressCircle>
           <Typography className='font-mono' color='muted' type='body-xs'>
             {formatCountdown(initialDelayRemainingMs)}
           </Typography>
