@@ -3,12 +3,13 @@ import { useTranslation } from 'react-i18next'
 import { TbRefresh } from 'react-icons/tb'
 import { Button, Typography } from '@heroui/react'
 import { GameSortSelect } from '@/shared/components/GameSortSelect'
-import { OWNED_GAME_SORT_LABEL_KEYS, OWNED_GAME_SORT_STYLES } from '@/shared/utils/sortOwnedGames'
+import { OWNED_GAME_SORT_LABEL_KEYS } from '@/shared/utils/sortOwnedGames'
 
 interface GamesPageHeaderProps {
   gameCount: number
   isRefreshing: boolean
   sortStyle: OwnedGameSortStyle
+  sortStyleOptions: OwnedGameSortStyle[]
   onSortStyleChange: (style: OwnedGameSortStyle) => void
   onRefresh: () => void
 }
@@ -17,12 +18,13 @@ export const GamesPageHeader = ({
   gameCount,
   isRefreshing,
   sortStyle,
+  sortStyleOptions,
   onSortStyleChange,
   onRefresh,
 }: GamesPageHeaderProps) => {
   const { t } = useTranslation()
 
-  const sortOptions = OWNED_GAME_SORT_STYLES.map(style => ({
+  const sortOptions = sortStyleOptions.map(style => ({
     id: style,
     label: t(OWNED_GAME_SORT_LABEL_KEYS[style]),
   }))

@@ -26,15 +26,12 @@ import { useGamesList } from '@/features/games-list/hooks/useGamesList'
 import { errorMessageKey as gamesErrorMessageKey } from '@/features/games-list/utils/errorMessageKey'
 import { GameSortSelect } from '@/shared/components/GameSortSelect'
 import { ManualAddGameModal } from '@/shared/components/ManualAddGameModal'
+import { useOwnedGameSort } from '@/shared/hooks/useOwnedGameSort'
 import { searchGames } from '@/shared/search/fuzzySearch'
 import { useSearchStore } from '@/shared/stores/searchStore'
 import { useSessionStore } from '@/shared/stores/sessionStore'
 import { useSortPreferencesStore } from '@/shared/stores/sortPreferencesStore'
-import {
-  OWNED_GAME_SORT_LABEL_KEYS,
-  OWNED_GAME_SORT_STYLES,
-  sortOwnedGames,
-} from '@/shared/utils/sortOwnedGames'
+import { OWNED_GAME_SORT_LABEL_KEYS, sortOwnedGames } from '@/shared/utils/sortOwnedGames'
 
 type FavoritesTab = 'browse' | 'list'
 
@@ -73,9 +70,11 @@ export const FavoritesPage = () => {
   // GamesPage.tsx's identical wiring.
   const sortStyle = useSortPreferencesStore(state => state.favorites)
   const setSortStyle = useSortPreferencesStore(state => state.setSortPreference)
+  const { options: sortStyleOptions, effectiveStyle: effectiveSortStyle } =
+    useOwnedGameSort(sortStyle)
   const sortedFilteredGames = useMemo(
-    () => sortOwnedGames(filteredGames, sortStyle),
-    [filteredGames, sortStyle],
+    () => sortOwnedGames(filteredGames, effectiveSortStyle),
+    [filteredGames, effectiveSortStyle],
   )
 
   const favoritedAppIds = useMemo(() => new Set(favorites.map(f => f.appId)), [favorites])
@@ -141,11 +140,11 @@ export const FavoritesPage = () => {
           {activeTab === 'browse' && (
             <GameSortSelect
               ariaLabel='Sort games'
-              options={OWNED_GAME_SORT_STYLES.map(style => ({
+              options={sortStyleOptions.map(style => ({
                 id: style,
                 label: t(OWNED_GAME_SORT_LABEL_KEYS[style]),
               }))}
-              value={sortStyle}
+              value={effectiveSortStyle}
               onChange={style => setSortStyle('favorites', style)}
             />
           )}

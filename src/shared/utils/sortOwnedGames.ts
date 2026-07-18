@@ -32,6 +32,12 @@ export const OWNED_GAME_SORT_LABEL_KEYS: Record<OwnedGameSortStyle, TranslationK
   recentlyPlayedAsc: 'dashboard.games.sort.recentlyPlayedAsc',
 }
 
+// Shared by useOwnedGameSort.ts, which hides both of these styles from a CLI-mode account with no
+// user-supplied Web API key - see that hook's doc comment for why (`rtime_last_played` silently
+// comes back as 0 for every game in that case, degrading this sort to a no-op).
+export const isRecentlyPlayedSortStyle = (style: OwnedGameSortStyle) =>
+  style === 'recentlyPlayedDesc' || style === 'recentlyPlayedAsc'
+
 // Never-played games (rtimeLastPlayed === 0) sink to the bottom for both directions rather than
 // flipping to the top under "oldest first" - a 0 isn't a meaningful timestamp, and surfacing every
 // unplayed game before any actually-played one would make the ascending direction useless for its
