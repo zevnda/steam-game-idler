@@ -4,9 +4,10 @@ import type { IdleOwner, IdleSetResult } from '../types'
 import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { errorMessageKey } from '../utils/errorMessageKey'
+import { syncClaims } from './useIdlingSync'
 import { toast } from '@heroui/react'
 import { useIdlingStore } from '@/shared/stores/idlingStore'
-import { useSessionStore } from '@/shared/stores/sessionStore'
+import { getAccountKey, useSessionStore } from '@/shared/stores/sessionStore'
 import { invoke } from '@/shared/utils/invoke'
 
 // The command each owner's per-section "Stop" needs to call. Card-farming/achievement-unlocker
@@ -42,21 +43,32 @@ function stopOwnerCommand(owner: IdleOwner, account: SignedInAccount) {
 // used to risk a race where a concurrent automation's claim change got clobbered by a
 // slightly-stale full-replace originating here.
 //
-// Neither action applies its own `IdleSetResult.appIds` to `idlingStore` (an earlier version of
-// this hook did) - only `.failures` is read here now, for the toast. In agent mode,
+// Neither action applies its own `IdleSetResult.appIds` to `idlingStore` directly (an earlier
+// version of this hook did) - only `.failures` is read here for the toast. In agent mode,
 // `AgentManager::set_idle_games`'s own doc comment (src-tauri/src/steam_agent/manager.rs) states
 // its return value is an unconfirmed request echo, not a confirmed result - the daemon's real
 // `idle_state` event isn't correlated to the request and can arrive (and get applied by
 // `useIdlingSync`) before this command's own promise resolves back here, so reapplying that stale
-// echo afterward could clobber a concurrently-arrived, more current state. `stopSection` below
-// never had this problem since it already only relies on the event stream - toggle/stop-all now
-// match it instead of double-sourcing state.
+// echo directly could clobber a concurrently-arrived, more current state.
+//
+// Both actions do, however, call `refreshIdleState` (a fresh `get_idle_state` read, not the
+// command's own echo) once the command resolves - closing a real race with `useIdlingSync`'s event
+// listener: `listen()` is itself async (an IPC round trip to register with the Rust event system
+// before it's actually live), so a user who clicks idle/stop right after a fresh sign-in - already
+// moused over the games list, unlike after a slower session-resume - can trigger the backend's
+// `idling-state-changed` push before the listener has finished registering, silently dropping the
+// only update that would otherwise ever reflect this action. A fetch done *after* the command
+// resolves reads whatever the backend's truth is at that later point, so unlike the command's own
+// echo it can't be stale relative to a concurrent change - it only ever catches up to or matches
+// the latest state.
 export const useIdling = (games: OwnedGame[]) => {
   const { t } = useTranslation()
   const account = useSessionStore(state => state.account)
   const appIds = useIdlingStore(state => state.appIds)
   const startTimes = useIdlingStore(state => state.startTimes)
   const claimsByOwner = useIdlingStore(state => state.claimsByOwner)
+  const setAppIds = useIdlingStore(state => state.setAppIds)
+  const setClaimsByOwner = useIdlingStore(state => state.setClaimsByOwner)
   const [pendingAppIds, setPendingAppIds] = useState<Set<number>>(new Set())
   const [isStoppingAll, setIsStoppingAll] = useState(false)
   const [pendingOwners, setPendingOwners] = useState<Set<IdleOwner>>(new Set())
@@ -71,6 +83,18 @@ export const useIdling = (games: OwnedGame[]) => {
     [t],
   )
 
+  const refreshIdleState = useCallback(async () => {
+    if (!account) return
+    const key = getAccountKey(account)
+    try {
+      const freshAppIds = await invoke<number[]>('get_idle_state', { account })
+      setAppIds(key, freshAppIds)
+      syncClaims(key, account, setClaimsByOwner)
+    } catch (error) {
+      console.error('Error in (get_idle_state):', error)
+    }
+  }, [account, setAppIds, setClaimsByOwner])
+
   const toggleIdle = useCallback(
     async (appId: number) => {
       if (!account) return
@@ -80,6 +104,7 @@ export const useIdling = (games: OwnedGame[]) => {
         const result = await invoke<IdleSetResult>('toggle_manual_idle', { account, appId, name })
         const failure = result.failures[0]?.error
         if (failure) reportFailure(failure)
+        await refreshIdleState()
       } catch (error) {
         console.error('Error in (toggle_manual_idle):', error)
         reportFailure(String(error))
@@ -91,7 +116,7 @@ export const useIdling = (games: OwnedGame[]) => {
         })
       }
     },
-    [account, games, reportFailure],
+    [account, games, reportFailure, refreshIdleState],
   )
 
   const stopAll = useCallback(async () => {
@@ -101,19 +126,20 @@ export const useIdling = (games: OwnedGame[]) => {
       const result = await invoke<IdleSetResult>('stop_all_idling', { account })
       const failure = result.failures[0]?.error
       if (failure) reportFailure(failure)
+      await refreshIdleState()
     } catch (error) {
       console.error('Error in (stop_all_idling):', error)
       reportFailure(String(error))
     } finally {
       setIsStoppingAll(false)
     }
-  }, [account, reportFailure])
+  }, [account, reportFailure, refreshIdleState])
 
   // Per-section "Stop" on the Idling page - see stopOwnerCommand's doc comment for why this
-  // dispatches to a different command depending on the owner. Doesn't update `idlingStore` itself
-  // (unlike toggleIdle/stopAll above): stop_farming/stop_achievement_unlocker return `()`, so every
-  // owner's effect surfaces uniformly via the existing idling-state-changed event/useIdlingSync
-  // instead of being handled ad hoc per command here.
+  // dispatches to a different command depending on the owner. Doesn't reapply its own command
+  // result to `idlingStore` (unlike toggleIdle/stopAll, stop_farming/stop_achievement_unlocker
+  // return `()`, so there's nothing to reapply anyway) - but still calls `refreshIdleState`
+  // afterward for the same reason toggleIdle/stopAll do (see this hook's top doc comment).
   const stopSection = useCallback(
     async (owner: IdleOwner) => {
       if (!account) return
@@ -121,6 +147,7 @@ export const useIdling = (games: OwnedGame[]) => {
       const { command, params } = stopOwnerCommand(owner, account)
       try {
         await invoke(command, params)
+        await refreshIdleState()
       } catch (error) {
         console.error(`Error in (${command}):`, error)
         reportFailure(String(error))
@@ -132,7 +159,7 @@ export const useIdling = (games: OwnedGame[]) => {
         })
       }
     },
-    [account, reportFailure],
+    [account, reportFailure, refreshIdleState],
   )
 
   return {
