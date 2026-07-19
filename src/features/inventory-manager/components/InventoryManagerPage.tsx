@@ -332,18 +332,31 @@ export const InventoryManagerPage = () => {
   }, [selectedIds, priceDrafts, listItems, settings, isLocked, currencyDecimalPlaces, t])
 
   // Shared by "Sell all" (candidates = the currently filtered view, matching `main`'s own scoping)
-  // and "Sell dupes" (candidates = dupeCandidates, ignores filters) - fetches a price for any item
-  // that doesn't already have one cached, applies this account's price preference/adjustment, skips
-  // anything outside the configured sell-limit range, then lists everything that qualified in one
-  // batched `list_items` call (the backend spaces the actual listing requests out by
-  // `settings.sellDelay` itself - see inventory/market.rs - so this doesn't need its own
-  // per-item client-side delay loop the way `main`'s sequential version did).
+  // and "Sell dupes" (candidates = dupeCandidates, ignores filters). A user-entered `priceDrafts`
+  // value (from the price modal or manual input, whichever is why the card shows as selected) wins
+  // over the auto-computed price - it's an explicit override, not just a selection side-effect, so
+  // it must be honored here the same as it already is by handleListSingle/handleListSelected. Only
+  // items with no draft fall back to fetching a price and applying this account's price
+  // preference/adjustment. Either way, anything outside the configured sell-limit range is skipped,
+  // then everything that qualified is listed in one batched `list_items` call (the backend spaces
+  // the actual listing requests out by `settings.sellDelay` itself - see inventory/market.rs - so
+  // this doesn't need its own per-item client-side delay loop the way `main`'s sequential version
+  // did).
   const sellCandidates = useCallback(
     async (candidates: InventoryItem[]) => {
       if (!settings) return
       const pairs: [string, string][] = []
+      const listedIds: string[] = []
       for (const item of candidates) {
         if (isLocked(item.assetid)) continue
+        const customPrice = priceDrafts[item.assetid]
+        if (customPrice > 0) {
+          const finalPrice = customPrice + settings.priceAdjustment
+          if (finalPrice < settings.sellLimit.min || finalPrice > settings.sellLimit.max) continue
+          pairs.push([item.assetid, finalPrice.toFixed(currencyDecimalPlaces)])
+          listedIds.push(item.assetid)
+          continue
+        }
         let priceData = item.priceData
         if (!priceData) {
           try {
@@ -367,14 +380,25 @@ export const InventoryManagerPage = () => {
         const finalPrice = base + settings.priceAdjustment
         if (finalPrice < settings.sellLimit.min || finalPrice > settings.sellLimit.max) continue
         pairs.push([item.assetid, finalPrice.toFixed(currencyDecimalPlaces)])
+        listedIds.push(item.assetid)
       }
       if (pairs.length === 0) {
         toast.warning(t('dashboard.inventoryManager.toasts.noneEligible'))
         return
       }
       await listItems(pairs, settings.sellDelay)
+      setPriceDrafts(prev => {
+        const next = { ...prev }
+        for (const id of listedIds) delete next[id]
+        return next
+      })
+      setSelectedIds(prev => {
+        const next = new Set(prev)
+        for (const id of listedIds) next.delete(id)
+        return next
+      })
     },
-    [settings, isLocked, fetchItemPrice, listItems, t, currencyDecimalPlaces],
+    [settings, isLocked, priceDrafts, fetchItemPrice, listItems, t, currencyDecimalPlaces],
   )
 
   const handleSellAll = useCallback(async () => {
