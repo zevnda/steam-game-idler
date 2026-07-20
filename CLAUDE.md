@@ -535,11 +535,6 @@ pre-bundled `next/font/google` fonts, all declared on `<Html className>` in `_do
 needs a runtime download regardless of tier. `inter` is the free-tier default/sentinel key; every
 other font (including Poppins) is a Casual-tier selectable override.
 
-**Planned, not built yet**: a Gamer-tier live custom color picker (HeroUI `ColorPicker`) that
-would produce a `ThemeTokens` object fed straight into the existing `applyTheme()` — the registry
-architecture above was chosen so that feature won't require reworking this mechanism. Don't start
-building it until a session is actually scoped for it.
-
 ## Dependency notes
 
 - **TypeScript and ESLint majors are deliberately deferred** — TS 7's Go-based compiler doesn't yet
@@ -549,9 +544,3 @@ building it until a session is actually scoped for it.
 - **Cascading removal rule**: when a dep update/removal makes another dep unneeded, remove that one
   too in the same change — don't leave it as unused weight (e.g. dropping HeroUI v2 for v3 also
   meant removing `framer-motion`, a v2-only peer dependency).
-
-## Todo checklist
-
-- [ ] Archive/delete the standalone `zevnda/steam-utility` GitHub repo — its code now lives at
-      `libs/SteamUtility/` in this repo (folded in from the former git submodule, relicensed MIT →
-      Elastic 2.0); the standalone repo is dormant, not deleted yet.
