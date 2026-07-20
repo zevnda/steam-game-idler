@@ -3,16 +3,17 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
+    <!-- Default/dev-build RID - unchanged, so a plain `dotnet build`/`dotnet publish` with no `-r`
+         flag keeps producing the exact win-x64 output it always has. A Linux daemon-only publish
+         overrides this from the command line (`dotnet publish -r linux-x64 ...`), which sets
+         RuntimeIdentifier as an MSBuild global property and wins over this project-file default -
+         that's what every `'$(RuntimeIdentifier)' != 'win-x64'` Condition below keys off of. -->
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <PlatformTarget>x64</PlatformTarget>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <!-- Interop/NativeStrings.cs uses raw pointer arithmetic for UTF-8 marshaling. -->
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <!-- Registry access (SteamPathHelper) and Win32 window creation (Cli/IdleWindow) are inherently
-         Windows-only, matching this project's win-x64-only RuntimeIdentifier - declaring that here
-         silences the platform-compatibility analyzer instead of suppressing warnings ad hoc. -->
-    <SupportedOSPlatform>windows</SupportedOSPlatform>
     <AssemblyName>SteamUtility</AssemblyName>
     <RootNamespace>SteamUtility</RootNamespace>
     <!-- Bumped to 2.0.0 to mark the merge of the old Steamworks.NET SteamUtility (last at 1.6.0)
@@ -31,6 +32,21 @@
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
   </PropertyGroup>
 
+  <!-- Windows-only build surface (win-x64, the default/dev RID above): registry access
+       (SteamPathHelper) and Win32 window creation (Cli/IdleWindow) are inherently Windows-only.
+       Declaring SupportedOSPlatform here (and only here, not for the Linux daemon-only RID below)
+       silences the platform-compatibility analyzer instead of suppressing warnings ad hoc. -->
+  <PropertyGroup Condition="'$(RuntimeIdentifier)' == 'win-x64'">
+    <SupportedOSPlatform>windows</SupportedOSPlatform>
+  </PropertyGroup>
+
+  <!-- Linux publish is agent (daemon) mode only - no local Steam client, so no Steamworks.NET/CLI
+       surface exists at all for that RID (see the Compile-Remove ItemGroup and Program.cs's matching
+       `#if LINUX_DAEMON_ONLY`). DefineConstants is how that RID Condition reaches C# code. -->
+  <PropertyGroup Condition="'$(RuntimeIdentifier)' != 'win-x64'">
+    <DefineConstants>$(DefineConstants);LINUX_DAEMON_ONLY</DefineConstants>
+  </PropertyGroup>
+
   <!-- Post Build (dev) -->
   <Target Name="PostBuild" AfterTargets="Build">
     <ItemGroup>
@@ -46,8 +62,15 @@
        the exe itself (and the native steam_api64.dll, which must stay a loose file) so `dotnet publish`
        alone produces a clean output with no follow-up cleanup step. -->
   <Target Name="RemovePublishExtras" AfterTargets="Publish">
+    <!-- win-x64 publishes "SteamUtility.exe"; every other RID (Linux) has no extension at all -
+         without this split, the Exclude below would miss the real Linux binary and the Delete
+         would remove the one file this target exists to keep. -->
+    <PropertyGroup>
+      <_PublishedExeName Condition="'$(RuntimeIdentifier)' == 'win-x64'">$(TargetName).exe</_PublishedExeName>
+      <_PublishedExeName Condition="'$(RuntimeIdentifier)' != 'win-x64'">$(TargetName)</_PublishedExeName>
+    </PropertyGroup>
     <ItemGroup>
-      <PublishExtras Include="$(PublishDir)*" Exclude="$(PublishDir)$(TargetName).exe;$(PublishDir)steam_api64.dll;$(PublishDir)icon.ico" />
+      <PublishExtras Include="$(PublishDir)*" Exclude="$(PublishDir)$(_PublishedExeName);$(PublishDir)steam_api64.dll;$(PublishDir)icon.ico" />
     </ItemGroup>
     <Delete Files="@(PublishExtras)" />
   </Target>
@@ -64,8 +87,10 @@
        managed wrapper). The flat P/Invoke surface between the managed wrapper and the native DLL
        must come from the exact same release. Referencing the managed DLL directly from
        Steamworks.NET's own GitHub release 2025.163.0 (SDK 1.63), matched with that same release's
-       bundled steam_api64.dll below, resolved both errors. -->
-  <ItemGroup>
+       bundled steam_api64.dll below, resolved both errors.
+       CLI-mode-only (see the RID Condition), so the Linux daemon-only publish needs neither this
+       reference nor a native steam_api64.dll to link against. -->
+  <ItemGroup Condition="'$(RuntimeIdentifier)' == 'win-x64'">
     <Reference Include="Steamworks.NET">
       <HintPath>Steamworks.NET.dll</HintPath>
     </Reference>
@@ -73,19 +98,41 @@
 
   <!-- Marks the whole assembly Windows-only (registry access, Win32 window creation, and the win-x64
        RuntimeIdentifier above already make this true) so the platform-compatibility analyzer stops
-       flagging every call site up the chain individually. -->
-  <ItemGroup>
+       flagging every call site up the chain individually. Only applies to the win-x64 build - the
+       Linux daemon-only build has no Windows-only call sites left to guard (see Compile-Remove below). -->
+  <ItemGroup Condition="'$(RuntimeIdentifier)' == 'win-x64'">
     <AssemblyAttribute Include="System.Runtime.Versioning.SupportedOSPlatformAttribute">
       <_Parameter1>windows</_Parameter1>
     </AssemblyAttribute>
   </ItemGroup>
 
   <!-- steam_api64.dll is the native library Steamworks.NET.dll P/Invokes into - both must ship
-       alongside the exe. -->
-  <ItemGroup>
+       alongside the exe. CLI-mode-only, so it's irrelevant (and wouldn't work) on Linux. -->
+  <ItemGroup Condition="'$(RuntimeIdentifier)' == 'win-x64'">
     <Content Include="steam_api64.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <!-- Linux publish (RuntimeIdentifier != win-x64) is agent (daemon) mode only. These files all sit
+       behind CLI mode / the local Steam client, which has no Linux equivalent (see the root
+       CLAUDE.md's "Agent mode vs. CLI mode" section):
+         - Cli/**            - the entire one-shot CLI dispatch surface, Steamworks.NET-backed.
+         - Interop/**         - the raw steamclient64.dll P/Invoke layer, only ever consumed by
+                                 Backends/SteamworksLocalBackend.cs below.
+         - Backends/SteamworksLocalBackend.cs, Backends/SteamworksSession.cs - the Steamworks.NET
+                                 backend implementation and its init/shutdown session wrapper.
+         - Core/Services/SteamPathHelper.cs - Win32 registry read, reachable only from
+                                 SteamworksLocalBackend above, nothing in the daemon (SteamKit2) path.
+       Everything else under Core/**, Daemon/**, and Backends/SteamKitRemoteBackend.cs is already
+       plain managed .NET/SteamKit2 with no Windows-only dependency, and keeps compiling unchanged
+       for both RIDs. -->
+  <ItemGroup Condition="'$(RuntimeIdentifier)' != 'win-x64'">
+    <Compile Remove="Cli\**\*.cs" />
+    <Compile Remove="Interop\**\*.cs" />
+    <Compile Remove="Backends\SteamworksLocalBackend.cs" />
+    <Compile Remove="Backends\SteamworksSession.cs" />
+    <Compile Remove="Core\Services\SteamPathHelper.cs" />
   </ItemGroup>
 
   <!-- PublishTrimmed disables System.Text.Json's reflection-based serialization by default (the

@@ -14,6 +14,7 @@ import { useCheckForUpdates } from '@/shared/hooks/useCheckForUpdates'
 import { useContextMenu } from '@/shared/hooks/useContextMenu'
 import { useGlobalErrorLogging } from '@/shared/hooks/useGlobalErrorLogging'
 import { useLegacyMigrationCleanup } from '@/shared/hooks/useLegacyMigrationCleanup'
+import { usePlatform } from '@/shared/hooks/usePlatform'
 import { useSessionBootstrap } from '@/shared/hooks/useSessionBootstrap'
 import { useTraySync } from '@/shared/hooks/useTraySync'
 import { useZoomControls } from '@/shared/hooks/useZoomControls'
@@ -32,6 +33,9 @@ const App = ({ Component, pageProps }: AppProps) => {
   // comment for why this is a separate one-off check rather than piggybacking on
   // useCheckForUpdates' `is_major` path.
   useLegacyMigrationCleanup()
+  // Root-mounted so the pre-dashboard sign-in landing page (the first consumer - hiding CLI-mode
+  // sign-in on Linux) has the OS available as early as possible. See usePlatform's own doc comment.
+  usePlatform()
   // Root-mounted (not just on the sign-in landing page) so a hard reload landing directly on a
   // `/dashboard/*` URL re-validates the session before that route's own `if (!account)` guard gets
   // a chance to run - see useSessionBootstrap's own doc comment for the freeze/false-sign-out this

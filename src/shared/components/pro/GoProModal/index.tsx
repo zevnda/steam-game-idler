@@ -33,6 +33,7 @@ import { TierCard } from './TierCard'
 import { Modal } from '@heroui/react'
 import Image from 'next/image'
 import { CDN_BASE_URL } from '@/shared/constants'
+import { usePlatformStore } from '@/shared/stores/platformStore'
 import { useProModalStore } from '@/shared/stores/proModalStore'
 import { useSubscriptionStore } from '@/shared/stores/subscriptionStore'
 import { hasCasualAccess, hasGamerAccess } from '@/shared/utils/subscriptionAccess'
@@ -57,6 +58,9 @@ export const GoProModal = () => {
   const requiredTier = useProModalStore(state => state.requiredTier)
   const close = useProModalStore(state => state.close)
   const subscriptionTier = useSubscriptionStore(state => state.subscriptionTier)
+  // WebKitGTK's compositor makes this modal's ambient motion meaningfully more expensive than
+  // Windows' WebView2 - see the `.force-reduced-motion` comment in globals.css.
+  const isLinux = usePlatformStore(state => state.currentOs) === 'linux'
 
   const tierRef = useRef<HTMLDivElement>(null)
   const hasFetchedPriceData = useRef(false)
@@ -126,7 +130,7 @@ export const GoProModal = () => {
             <Modal.CloseTrigger className='absolute left-5 top-5 z-50 h-8 w-8 bg-field text-muted duration-150 hover:bg-field-hover rounded-full' />
 
             <Modal.Body className='select-none overflow-x-hidden overflow-y-auto p-0'>
-              <div className='relative'>
+              <div className={`relative ${isLinux ? 'force-reduced-motion' : ''}`}>
                 <div
                   className='pointer-events-none absolute inset-0'
                   style={{

@@ -16,7 +16,7 @@ import { AppTooltip } from '@/shared/components/AppTooltip'
 import { useUpdateStore } from '@/shared/stores/updateStore'
 import { logFrontendWarn } from '@/shared/utils/frontendLogging'
 import { openExternalLink } from '@/shared/utils/links'
-import { fetchLatest, isPortableCheck, performUpdate } from '@/shared/utils/update'
+import { canAutoUpdateCheck, fetchLatest, performUpdate } from '@/shared/utils/update'
 
 const GITHUB_ISSUE_URL =
   'https://github.com/zevnda/steam-game-idler/issues/new?assignees=zevnda&labels='
@@ -25,18 +25,18 @@ type MenuAction =
   'guide' | 'report' | 'feature' | 'support' | 'discord' | 'changelog' | 'checkUpdate'
 
 // Titlebar overflow menu - guide/report/feature/support/discord links, a changelog toggle, and an
-// opt-in "check for updates" entry (hidden on portable builds, which self-update by replacing the
-// running exe manually rather than via the Tauri updater). Uses HeroUI v3's Dropdown (react-aria
-// Menu underneath) rather than main's older Dropdown/DropdownItem API.
+// opt-in "check for updates" entry (hidden on builds that can't self-update - a portable Windows
+// zip, or a Linux deb/rpm install; see platform::can_auto_update's doc comment). Uses HeroUI v3's
+// Dropdown (react-aria Menu underneath) rather than main's older Dropdown/DropdownItem API.
 export const Menu = () => {
   const { t } = useTranslation()
   const setShowChangelog = useUpdateStore(state => state.setShowChangelog)
   const setIsUpdating = useUpdateStore(state => state.setIsUpdating)
-  const [isPortable, setIsPortable] = useState(false)
+  const [canAutoUpdate, setCanAutoUpdate] = useState(false)
   const [isChecking, setIsChecking] = useState(false)
 
   useEffect(() => {
-    isPortableCheck().then(setIsPortable)
+    canAutoUpdateCheck().then(setCanAutoUpdate)
   }, [])
 
   const handleCheckForUpdates = async () => {
@@ -132,7 +132,7 @@ export const Menu = () => {
             <TbListCheck fontSize={16} />
             {t('menu.changelog')}
           </Dropdown.Item>
-          {!isPortable && (
+          {canAutoUpdate && (
             <Dropdown.Item id='checkUpdate' textValue={t('menu.update')}>
               <TbDownload fontSize={16} />
               {t('menu.update')}

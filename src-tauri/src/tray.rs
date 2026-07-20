@@ -9,8 +9,8 @@ use crate::platform;
 /// The only way to recover the window once `close_to_tray`/`start_minimized` has hidden it (see
 /// `settings::Settings` and `lib.rs::setup_window`) - a frameless/custom-chrome window has no OS
 /// taskbar entry to click once hidden. Tray menu (`Show`/`Reset Window Position`/
-/// `Check for updates..`/`Quit`), with the update item dropped for portable builds since
-/// `platform::is_portable()` builds skip update checks entirely.
+/// `Check for updates..`/`Quit`), with the update item dropped for builds that can't self-update
+/// (see `platform::can_auto_update`'s doc comment - not the same thing as `is_portable`).
 pub fn setup(app_handle: &AppHandle) -> tauri::Result<()> {
     let show = MenuItem::with_id(app_handle, "show", "Show", true, None::<&str>)?;
     let recenter = MenuItem::with_id(
@@ -22,7 +22,7 @@ pub fn setup(app_handle: &AppHandle) -> tauri::Result<()> {
     )?;
     let quit = MenuItem::with_id(app_handle, "quit", "Quit", true, None::<&str>)?;
 
-    let menu = if platform::is_portable() {
+    let menu = if !platform::can_auto_update() {
         Menu::with_items(app_handle, &[&show, &recenter, &quit])?
     } else {
         let update = MenuItem::with_id(
@@ -94,7 +94,7 @@ pub fn update_tray_menu(
     let quit_item = MenuItem::with_id(&app_handle, "quit", &quit, true, None::<&str>)
         .map_err(|err| err.to_string())?;
 
-    let menu = if platform::is_portable() {
+    let menu = if !platform::can_auto_update() {
         Menu::with_items(&app_handle, &[&show_item, &recenter_item, &quit_item])
     } else {
         let update_item = MenuItem::with_id(&app_handle, "update", &update, true, None::<&str>)

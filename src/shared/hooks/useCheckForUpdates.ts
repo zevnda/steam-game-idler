@@ -2,7 +2,7 @@ import { check } from '@tauri-apps/plugin-updater'
 import { useEffect, useRef } from 'react'
 import { useUpdateStore } from '@/shared/stores/updateStore'
 import { logFrontendWarn } from '@/shared/utils/frontendLogging'
-import { fetchLatest, isPortableCheck, performUpdate } from '@/shared/utils/update'
+import { canAutoUpdateCheck, fetchLatest, performUpdate } from '@/shared/utils/update'
 
 const CHECK_INTERVAL_MS = 5 * 60 * 1000
 
@@ -13,7 +13,8 @@ const CHECK_INTERVAL_MS = 5 * 60 * 1000
  *   behavior - existing users shouldn't linger on a stale version just because the update
  *   happened to be minor/patch); every check after that only flips `updateAvailable`, leaving the
  *   actual install to an opt-in action (e.g. `UpdateButton`).
- * Portable builds skip checking entirely, since they have no installer to run.
+ * Builds that can't self-update (a portable Windows zip, or a Linux deb/rpm install - see
+ * platform::can_auto_update's doc comment) skip checking entirely.
  */
 export function useCheckForUpdates() {
   const setUpdateAvailable = useUpdateStore(state => state.setUpdateAvailable)
@@ -34,7 +35,7 @@ export function useCheckForUpdates() {
   useEffect(() => {
     const checkForUpdates = async () => {
       try {
-        if (await isPortableCheck()) return
+        if (!(await canAutoUpdateCheck())) return
 
         const update = await check()
         if (!update) return

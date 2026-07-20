@@ -6,6 +6,7 @@
 //! dead and no error shown would be worse than the original failure ever was.
 
 use std::fs;
+#[cfg(windows)]
 use std::os::windows::process::CommandExt;
 use std::path::Path;
 use std::sync::atomic::{AtomicBool, Ordering};
@@ -21,7 +22,14 @@ use super::vdf::{self, LocalSteamUser};
 use super::{locate_steam, login_users_vdf_path, steam_web_api};
 
 /// Win32 `CREATE_NO_WINDOW` - suppresses the console window that would otherwise flash briefly for
-/// the `steam.exe`/`reg`/`taskkill` child processes this module spawns.
+/// the `steam.exe`/`reg`/`taskkill` child processes this module spawns. This whole file is
+/// CLI-mode-only and thus Windows-only in practice (no local Steam client concept on Linux - see
+/// `local_steam` module doc), but it must still compile on Linux (never exercised there - no
+/// CLI-mode sign-in option in the Linux frontend), so each Windows-only call site below gets a
+/// plain `cfg(windows)` split rather than excluding this file from the Linux build outright -
+/// several sibling modules in `local_steam` (e.g. `free_game_claim`) are genuinely shared with
+/// agent mode and must keep compiling for Linux regardless.
+#[cfg(windows)]
 const CREATE_NO_WINDOW: u32 = 0x08000000;
 
 /// Lists every account that has signed into the local Steam client at least once, parsed from
@@ -155,9 +163,12 @@ pub fn start_steam_status_monitor(app_handle: AppHandle, monitor: State<'_, Stea
 /// spawn.
 #[tauri::command]
 pub fn anti_away() -> AppResult<()> {
-    std::process::Command::new("cmd")
-        .args(["/C", "start", "", "steam://friends/status/online"])
-        .creation_flags(CREATE_NO_WINDOW)
+    let mut command = std::process::Command::new("cmd");
+    command.args(["/C", "start", "", "steam://friends/status/online"]);
+    #[cfg(windows)]
+    command.creation_flags(CREATE_NO_WINDOW);
+
+    command
         .spawn()
         .map(|_| ())
         .map_err(|e| AppError::LocalProcessSpawn(e.to_string()))
@@ -191,19 +202,22 @@ pub fn prepare_steam_account_switch(steam_id: String) -> AppResult<()> {
         vdf::update_login_users_vdf(&content, &steam_id, timestamp)?;
     fs::write(&vdf_path, updated_content).map_err(|e| AppError::LoginVdfIo(e.to_string()))?;
 
-    std::process::Command::new("reg")
-        .args([
-            "add",
-            r"HKCU\Software\Valve\Steam",
-            "/v",
-            "AutoLoginUser",
-            "/t",
-            "REG_SZ",
-            "/d",
-            &account_name,
-            "/f",
-        ])
-        .creation_flags(CREATE_NO_WINDOW)
+    let mut reg_command = std::process::Command::new("reg");
+    reg_command.args([
+        "add",
+        r"HKCU\Software\Valve\Steam",
+        "/v",
+        "AutoLoginUser",
+        "/t",
+        "REG_SZ",
+        "/d",
+        &account_name,
+        "/f",
+    ]);
+    #[cfg(windows)]
+    reg_command.creation_flags(CREATE_NO_WINDOW);
+
+    reg_command
         .output()
         .map_err(|e| AppError::RegistryUpdate(e.to_string()))?;
 
@@ -227,10 +241,12 @@ const KILL_POLL_TIMEOUT: Duration = Duration::from_secs(5);
 #[tauri::command]
 pub async fn switch_steam_account() -> AppResult<()> {
     // A non-zero exit (e.g. Steam wasn't running) isn't an error for this command's purposes.
-    let _ = std::process::Command::new("taskkill")
-        .args(["/F", "/IM", "steam.exe"])
-        .creation_flags(CREATE_NO_WINDOW)
-        .output();
+    let mut taskkill_command = std::process::Command::new("taskkill");
+    taskkill_command.args(["/F", "/IM", "steam.exe"]);
+    #[cfg(windows)]
+    taskkill_command.creation_flags(CREATE_NO_WINDOW);
+
+    let _ = taskkill_command.output();
 
     wait_for_steam_exit(KILL_POLL_TIMEOUT).await;
 
@@ -258,8 +274,11 @@ async fn wait_for_steam_exit(timeout: Duration) {
 }
 
 fn spawn_detached(exe: &Path) -> AppResult<()> {
-    std::process::Command::new(exe)
-        .creation_flags(CREATE_NO_WINDOW)
+    let mut command = std::process::Command::new(exe);
+    #[cfg(windows)]
+    command.creation_flags(CREATE_NO_WINDOW);
+
+    command
         .spawn()
         .map(|_| ())
         .map_err(|e| AppError::LocalProcessSpawn(e.to_string()))

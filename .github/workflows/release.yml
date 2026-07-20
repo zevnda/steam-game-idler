@@ -31,6 +31,26 @@ on:
         required: false
         type: boolean
         default: false
+      dry_run:
+        # Validates a real build without the public side effects of a real release: no Discord
+        # ping, no version-bump PR (opening one from a branch this far behind main would show the
+        # whole branch diff, not a clean version bump), no public GitHub release. Bundle output
+        # goes to a workflow-run artifact instead, downloadable from the run's summary page.
+        description: "Dry run - skip PR/release/Discord, upload build output as an artifact instead"
+        required: false
+        type: boolean
+        default: false
+      dry_run_skip_windows:
+        # Only takes effect when dry_run is also true (see build_dotnet_libs'/build_release_bundle's
+        # `if:` below) - iterating on a Linux-only fix shouldn't have to pay for a full Windows
+        # dotnet+Tauri build every time. build_release_bundle_linux tolerates build_release_bundle
+        # being skipped this way (its own `if:` checks for a 'skipped' result, not just 'success') -
+        # its dry-run checkout step already falls back to github.ref instead of depending on
+        # anything the Windows job produces, so skipping Windows costs it nothing.
+        description: "Dry run only: skip the Windows build entirely to save time"
+        required: false
+        type: boolean
+        default: false
 
 run-name: Build release v${{ github.event.inputs.version }}
 
@@ -42,8 +62,9 @@ concurrency:
   group: release
   cancel-in-progress: false
 
-# Least privilege by default - only build_release_bundle (the job that actually creates the
-# release/PR/deletes the build artifact) is granted elevated scopes, below.
+# Least privilege by default - only build_release_bundle and build_release_bundle_linux (the jobs
+# that actually create the release/PR, push the version-bump commit, and delete their own build
+# artifacts) are granted elevated scopes, below.
 permissions: {}
 
 jobs:
@@ -121,6 +142,10 @@ jobs:
   build_dotnet_libs:
     runs-on: windows-latest
     needs: [fetch_previous_version, validate_version]
+    # Skipped only on a dry run that also requests dry_run_skip_windows - its only consumer
+    # (build_release_bundle below) is skipped by the same condition, so there's nothing left to
+    # build this for in that case.
+    if: github.event.inputs.dry_run != 'true' || github.event.inputs.dry_run_skip_windows != 'true'
     timeout-minutes: 15
     steps:
       - name: Checkout repository
@@ -187,8 +212,72 @@ jobs:
           $source = if ($usedCache) { 'cache' } else { 'fresh build' }
           "## .NET build`nSteamUtility.exe: $source" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
 
+  # Agent-mode-only daemon build for Linux (libs/SteamUtility.csproj excludes Cli/**/Steamworks.NET
+  # for any RuntimeIdentifier != win-x64). Runs on plain ubuntu-latest, not the pinned older base
+  # build_release_bundle_linux uses below - a self-contained .NET publish for linux-x64 bundles its
+  # own portable runtime, unlike the native Rust/GTK build, which needs the oldest-supported base
+  # to avoid raising the binary's minimum glibc requirement.
+  build_dotnet_libs_linux:
+    runs-on: ubuntu-latest
+    needs: [fetch_previous_version, validate_version]
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Setup NuGet cache
+        id: cache-msbuild
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Setup .NET cache
+        id: cache-dotnet
+        uses: actions/cache@v4
+        with:
+          path: src-tauri/libs/
+          key: ${{ runner.os }}-dotnet-linux-${{ hashFiles('libs/**/*.cs', 'libs/**/*.csproj', '.github/workflows/release.yml') }}
+          restore-keys: |
+            ${{ runner.os }}-dotnet-linux-
+
+      - name: Build SteamUtility (daemon-only)
+        if: steps.cache-dotnet.outputs.cache-hit != 'true' || github.event.inputs.force_dotnet_build == 'true'
+        # No .exe extension on Linux - steam_utility_exe.rs::locate() branches on #[cfg(windows)]
+        # for this.
+        run: |
+          set -euo pipefail
+          dotnet publish ./libs/SteamUtility/SteamUtility.csproj -c Release -r linux-x64 --self-contained true -p:PublishSingleFile=true -p:PublishTrimmed=true -p:DebugType=none -o ./src-tauri/libs/
+
+      - name: Upload built .NET libraries
+        uses: actions/upload-artifact@v4
+        with:
+          name: dotnet-libs-linux
+          path: src-tauri/libs/
+          retention-days: 1
+
+      - name: Record dotnet build summary
+        run: |
+          if [ "${{ steps.cache-dotnet.outputs.cache-hit }}" = "true" ] && [ "${{ github.event.inputs.force_dotnet_build }}" != "true" ]; then
+            SOURCE="cache"
+          else
+            SOURCE="fresh build"
+          fi
+          echo "## .NET build (Linux)" >> "$GITHUB_STEP_SUMMARY"
+          echo "SteamUtility: $SOURCE" >> "$GITHUB_STEP_SUMMARY"
+
   build_release_bundle:
     needs: [build_dotnet_libs, fetch_previous_version, validate_version]
+    # Same skip condition as build_dotnet_libs above - build_release_bundle_linux tolerates this
+    # job being skipped (see its own `if:` below), so a Linux-only dry run never needs this at all.
+    if: github.event.inputs.dry_run != 'true' || github.event.inputs.dry_run_skip_windows != 'true'
     timeout-minutes: 30
     runs-on: windows-latest
     permissions:
@@ -395,12 +484,18 @@ jobs:
 
       - uses: actions/create-github-app-token@v1
         id: generate-token
+        if: github.event.inputs.dry_run != 'true'
         with:
           app-id: ${{ secrets.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
 
       - name: Create PR for version changes
         id: create-pr
+        # Skipped on a dry run - main has none of this branch's commits yet, so a PR opened from
+        # here would show the entire branch diff against main (computed at the merge-base), not a
+        # clean version bump. build_release_bundle_linux falls back to checking out github.ref
+        # directly instead of this step's branch when dry_run is set - see that job's checkout step.
+        if: github.event.inputs.dry_run != 'true'
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ steps.generate-token.outputs.token }}
@@ -489,6 +584,7 @@ jobs:
         shell: pwsh
 
       - name: Create release
+        if: github.event.inputs.dry_run != 'true'
         uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -502,14 +598,301 @@ jobs:
             ./src-tauri/target/release/bundle/nsis/Steam Game Idler_${{ github.event.inputs.version }}_x64-setup.nsis.zip.sig
             ./src-tauri/target/release/Steam Game Idler_${{ github.event.inputs.version }}_x64-portable.zip
 
+      - name: Upload build output (dry run)
+        if: github.event.inputs.dry_run == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-bundle-dry-run
+          retention-days: 3
+          path: |
+            ./src-tauri/target/release/bundle/nsis/Steam Game Idler_${{ github.event.inputs.version }}_x64-setup.exe
+            ./src-tauri/target/release/bundle/nsis/Steam Game Idler_${{ github.event.inputs.version }}_x64-setup.nsis.zip
+            ./src-tauri/target/release/bundle/nsis/Steam Game Idler_${{ github.event.inputs.version }}_x64-setup.nsis.zip.sig
+            ./src-tauri/target/release/Steam Game Idler_${{ github.event.inputs.version }}_x64-portable.zip
+            ./latest.json
+
       - name: Cleanup artifacts
         if: always()
         uses: geekyeggo/delete-artifact@v5
         with:
           name: dotnet-libs
 
+  # Builds the Linux AppImage/deb/rpm bundle, adds it to the same GitHub release build_release_bundle
+  # just created, and appends a `platforms.linux-x86_64` entry to the same version-bump PR's
+  # latest.json. Deliberately depends on build_release_bundle (not just fetch_previous_version/
+  # validate_version) so it runs *after* that job's version-bump branch/PR and GitHub release both
+  # already exist - this job checks out that same branch (already at the bumped version, so no need
+  # to redo the tauri.conf.json/package.json/Cargo.toml edits here) and pushes one more commit onto
+  # it, and appends assets to the same release tag rather than creating a second one.
+  #
+  # runs-on: ubuntu-22.04, NOT ubuntu-latest and NOT a `container:` image - a pinned, specific-version
+  # GitHub-hosted runner is the oldest still-current base with WebKitGTK 4.1 available directly from
+  # apt (Tauri's own documented recommendation - building against a newer glibc/webkit2gtk than a
+  # user's system has raises the compiled binary's minimum required version and it refuses to launch
+  # on anything older). A real VM/native runner also sidesteps the FUSE-in-a-container problems the
+  # AppImage tooling (linuxdeploy) is known to hit under Docker.
+  build_release_bundle_linux:
+    needs: [build_dotnet_libs_linux, build_release_bundle]
+    # always() overrides the default "every job in needs succeeded" gate, so this still runs when
+    # build_release_bundle was deliberately skipped (dry_run_skip_windows) - but not when it
+    # actually failed for real, which the explicit result checks below still catch.
+    if: |
+      always() &&
+      needs.build_dotnet_libs_linux.result == 'success' &&
+      (needs.build_release_bundle.result == 'success' || needs.build_release_bundle.result == 'skipped')
+    timeout-minutes: 30
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write # push the latest.json update to the version-bump branch; upload release assets
+      actions: write # delete the dotnet-libs-linux artifact in the cleanup step
+    steps:
+      - name: Checkout version-bump branch
+        # On a dry run, build_release_bundle never pushes this branch (its create-pull-request step
+        # is skipped - see that job's comment), so fall back to the ref this workflow was actually
+        # dispatched from. That ref still gets a real build; it just carries whatever version is
+        # already committed in tauri.conf.json rather than the freshly-bumped one, which doesn't
+        # matter for a dry run's purpose (proving the Linux job itself works).
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.dry_run == 'true' && github.ref || format('version-bump-{0}-{1}', github.event.inputs.version, github.run_id) }}
+
+      - name: Install Linux system dependencies
+        # webkit2gtk/javascriptcoregtk are pinned to 2.44.3-0ubuntu0.22.04.1, the last version
+        # published before a confirmed, still-open upstream WebKitGTK regression (bugs.webkit.org
+        # #297921, "[GTK] EGL_BAD_PARAMETER crash") - every release after 2.44 can fail EGL display
+        # creation on Wayland with certain graphics drivers, aborting before any window ever renders
+        # (same root cause and fix as gitbutlerapp/gitbutler#5282).
+        #
+        # Ubuntu's live jammy-updates/jammy-security archives only keep the *current*
+        # security-patched version downloadable, not superseded historical ones, so the pinned
+        # version has to come from snapshot.ubuntu.com (Canonical's dated-archive-snapshot service)
+        # rather than a plain apt-cache lookup. Pinned to the 2024-10-01 snapshot, which predates
+        # the first broken version (2.46.1, published 2024-10-22). libwebkit2gtk-4.1-* lives in
+        # `universe`, libjavascriptcoregtk-4.1-* lives in `main` - both components are needed on
+        # the source line below. Both `-dev` packages also hard-depend on a matching-version
+        # `gir1.2-*` introspection package that apt won't auto-resolve on its own, so those are
+        # requested explicitly too. The snapshot source is removed again immediately after use so
+        # it can't affect any other package installed later in this job.
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          WEBKIT_VERSION="2.44.3-0ubuntu0.22.04.1"
+          echo "deb https://snapshot.ubuntu.com/ubuntu/20241001T000000Z/ jammy-updates main universe" | sudo tee /etc/apt/sources.list.d/webkit-snapshot.list
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-0="$WEBKIT_VERSION" \
+            libwebkit2gtk-4.1-dev="$WEBKIT_VERSION" \
+            libjavascriptcoregtk-4.1-0="$WEBKIT_VERSION" \
+            libjavascriptcoregtk-4.1-dev="$WEBKIT_VERSION" \
+            gir1.2-webkit2-4.1="$WEBKIT_VERSION" \
+            gir1.2-javascriptcoregtk-4.1="$WEBKIT_VERSION"
+          sudo apt-mark hold \
+            libwebkit2gtk-4.1-0 libwebkit2gtk-4.1-dev \
+            libjavascriptcoregtk-4.1-0 libjavascriptcoregtk-4.1-dev \
+            gir1.2-webkit2-4.1 gir1.2-javascriptcoregtk-4.1
+          sudo rm /etc/apt/sources.list.d/webkit-snapshot.list
+          sudo apt-get update
+          sudo apt-get install -y \
+            libsoup-3.0-dev \
+            libgtk-3-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev \
+            libssl-dev \
+            libxdo-dev \
+            build-essential \
+            curl \
+            wget \
+            file \
+            patchelf \
+            xdg-utils \
+            pkg-config
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Setup pnpm cache
+        id: cache-pnpm
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.pnpm-store
+            node_modules
+          key: ${{ runner.OS }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.OS }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}-
+
+      - name: Install dependencies (pnpm)
+        if: steps.cache-pnpm.outputs.cache-hit != 'true' || github.event.inputs.force_pnpm_install == 'true'
+        run: |
+          set -euo pipefail
+          pnpm install --frozen-lockfile
+
+      - name: Setup Rust cache
+        id: cache-rust
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: "./src-tauri -> target"
+
+      - name: Clean Cargo artifacts
+        if: steps.cache-rust.outputs.cache-hit != 'true' || github.event.inputs.force_cargo_clean == 'true'
+        run: cargo clean
+        working-directory: ./src-tauri
+
+      - name: Create .env file
+        run: echo "KEY=${{ secrets.KEY }}" > .env
+        working-directory: ${{ github.workspace }}
+
+      - name: Download built .NET libraries
+        uses: actions/download-artifact@v4
+        with:
+          name: dotnet-libs-linux
+          path: src-tauri/libs/
+
+      - name: Make SteamUtility executable
+        # tar/zip artifact upload-download round-trips don't reliably preserve the Unix executable
+        # bit - Program.cs's daemon spawn (steam_utility_exe.rs::locate()) needs +x to run at all.
+        run: chmod +x src-tauri/libs/SteamUtility
+
+      - name: Build and package Tauri app
+        # tauri.conf.json's bundle.targets: "all" produces AppImage + deb + rpm automatically once
+        # running on a Linux host - no separate per-format build invocation needed.
+        run: |
+          set -euo pipefail
+          export NEXT_TELEMETRY_DISABLED=1
+          export TAURI_CI=1
+          pnpm tauri build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+
+      - name: Record build artifacts summary
+        run: |
+          echo "## Tauri bundle output (Linux)" >> "$GITHUB_STEP_SUMMARY"
+          for dir in appimage deb rpm; do
+            bundleDir="./src-tauri/target/release/bundle/$dir"
+            if [ -d "$bundleDir" ]; then
+              find "$bundleDir" -maxdepth 1 -type f -printf '- %f\n' >> "$GITHUB_STEP_SUMMARY"
+            else
+              echo "No files found in $bundleDir" >> "$GITHUB_STEP_SUMMARY"
+            fi
+          done
+
+      - name: Update latest.json with signature
+        # Mirrors the Windows job's equivalent step, but discovers the updater artifact's actual
+        # filename at runtime instead of assuming one, since Tauri's exact AppImage-bundle naming
+        # convention isn't guaranteed - a hardcoded filename would be a silent latest.json footgun
+        # if it's ever wrong. GitHub replaces literal spaces in an uploaded release asset's
+        # filename with dots in its generated download URL - replicated here to match.
+        run: |
+          set -euo pipefail
+          python3 -c "
+          import glob
+          import json
+          import os
+
+          bundle_dir = './src-tauri/target/release/bundle/appimage'
+          sig_matches = glob.glob(os.path.join(bundle_dir, '*.AppImage.tar.gz.sig'))
+          if not sig_matches:
+              raise SystemExit(f'No .AppImage.tar.gz.sig file found in {bundle_dir}')
+          sig_path = sig_matches[0]
+          artifact_name = os.path.basename(sig_path)[: -len('.sig')]
+
+          with open(sig_path, 'r') as sig_file:
+              new_signature = sig_file.read().strip()
+
+          latest_json_path = './latest.json'
+          with open(latest_json_path, 'r') as json_file:
+              latest_json = json.load(json_file)
+
+          url = f\"https://github.com/${{ github.repository }}/releases/download/${{ github.event.inputs.version }}/{artifact_name.replace(' ', '.')}\"
+          latest_json['platforms']['linux-x86_64'] = {'signature': new_signature, 'url': url}
+
+          with open(latest_json_path, 'w') as json_file:
+              json.dump(latest_json, json_file, indent=2)
+
+          print(f'Updated latest.json with linux-x86_64 entry: {url}')
+          "
+
+      - name: Commit latest.json update to version-bump branch
+        # Appends to the same branch/PR build_release_bundle's create-pull-request step opened -
+        # not a second PR. A plain git push (not create-pull-request again) is enough since the
+        # branch and PR already exist; this just needs write access to an unprotected feature
+        # branch, which the default GITHUB_TOKEN already has via this job's own contents: write.
+        # Skipped entirely on a dry run - there's no version-bump branch to push to (the checkout
+        # step above fell back to github.ref instead), and pushing straight onto whatever real
+        # branch that is would be exactly the kind of unwanted side effect dry_run exists to avoid.
+        if: github.event.inputs.dry_run != 'true'
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add latest.json
+          if git diff --cached --quiet; then
+            echo "No latest.json changes to commit"
+          else
+            git commit -m "chore(version): add linux-x86_64 entry to latest.json"
+            git push origin "HEAD:version-bump-${{ github.event.inputs.version }}-${{ github.run_id }}"
+          fi
+
+      - name: Add Linux bundles to release
+        if: github.event.inputs.dry_run != 'true'
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # No body/body_path here on purpose - action-gh-release preserves an existing release's
+        # current body/metadata when those inputs are omitted, so this only appends the Linux
+        # assets to the release build_release_bundle already created rather than clobbering its
+        # generated release notes.
+        with:
+          tag_name: ${{ github.event.inputs.version }}
+          files: |
+            ./src-tauri/target/release/bundle/appimage/*.AppImage
+            ./src-tauri/target/release/bundle/appimage/*.AppImage.tar.gz
+            ./src-tauri/target/release/bundle/appimage/*.AppImage.tar.gz.sig
+            ./src-tauri/target/release/bundle/deb/*.deb
+            ./src-tauri/target/release/bundle/rpm/*.rpm
+
+      - name: Upload build output (dry run)
+        if: github.event.inputs.dry_run == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-bundle-dry-run
+          retention-days: 3
+          path: |
+            ./src-tauri/target/release/bundle/appimage/*.AppImage
+            ./src-tauri/target/release/bundle/appimage/*.AppImage.tar.gz
+            ./src-tauri/target/release/bundle/appimage/*.AppImage.tar.gz.sig
+            ./src-tauri/target/release/bundle/deb/*.deb
+            ./src-tauri/target/release/bundle/rpm/*.rpm
+            ./latest.json
+
+      - name: Cleanup artifacts
+        if: always()
+        uses: geekyeggo/delete-artifact@v5
+        with:
+          name: dotnet-libs-linux
+
   send_discord_notification:
-    needs: build_release_bundle
+    needs: [build_release_bundle, build_release_bundle_linux]
+    # Skipped on a dry run - the entire point of dry_run is a real build with none of a real
+    # release's public side effects, and this is the one that pings the official Discord server.
+    if: github.event.inputs.dry_run != 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

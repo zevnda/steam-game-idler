@@ -89,6 +89,10 @@ the live user base, not just useful in local dev.
 
 ## Working with Claude Code
 
+- **Never commit or push any files, and never offer to.** Committing is purely a user-done action
+  in this project — end a task by stating what changed and leave it uncommitted, with no "let me
+  know if you'd like me to commit this" or similar. Applies no matter how routine or low-risk the
+  change looks; the user initiates commits themselves, always.
 - **Never run `prettier --write .` or the `prettier` package.json script at all**, even with file
   args — the script is hardcoded to `prettier --write .` and pnpm/npm append extra args rather
   than replacing them, so scoping never actually happens. Use `pnpm exec prettier --write

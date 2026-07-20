@@ -8,7 +8,15 @@ import { existsSync, readdirSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 
 const SOURCE_DIR = join(import.meta.dirname, '..', 'libs', 'SteamUtility')
-const BUILT_EXE = join(import.meta.dirname, '..', 'src-tauri', 'libs', 'SteamUtility.exe')
+// win-x64 publishes keep the `.exe` suffix; the linux-x64 daemon-only publish doesn't (see
+// `SteamUtility.csproj`'s RID-conditioned `RemovePublishExtras` target).
+const BUILT_EXE = join(
+  import.meta.dirname,
+  '..',
+  'src-tauri',
+  'libs',
+  process.platform === 'win32' ? 'SteamUtility.exe' : 'SteamUtility',
+)
 const SKIP_DIRS = new Set(['bin', 'obj'])
 
 function newestSourceMtime(dir) {

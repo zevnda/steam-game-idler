@@ -1,3 +1,4 @@
+import type { CurrentOs } from '@/shared/stores/platformStore'
 import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -13,6 +14,7 @@ import { arrayMove, SortableContext } from '@dnd-kit/sortable'
 import { Alert, Button, EmptyState, Modal, Skeleton, Typography } from '@heroui/react'
 import { errorMessageKey as achievementDataErrorMessageKey } from '@/features/achievement-manager/utils/errorMessageKey'
 import { useAchievementOrderStore } from '@/shared/stores/achievementOrderStore'
+import { usePlatformStore } from '@/shared/stores/platformStore'
 import { useProModalStore } from '@/shared/stores/proModalStore'
 import { useSubscriptionStore } from '@/shared/stores/subscriptionStore'
 import { hasGamerAccess } from '@/shared/utils/subscriptionAccess'
@@ -21,8 +23,10 @@ import { hasGamerAccess } from '@/shared/utils/subscriptionAccess'
 // either command, so this tries achievement-manager's mapping first (the achievement-data domain
 // codes it already knows about) and falls back to this feature's own (achievement_order_io_failed
 // and friends) rather than duplicating achievement-manager's known-code list a second time.
-const loadErrorMessageKey = (code: string) => {
-  const achievementsKey = achievementDataErrorMessageKey(code)
+// `currentOs` only affects achievement-manager's `unsupported_game_coordinator` case - passed
+// through unconditionally since it's a no-op for every other code.
+const loadErrorMessageKey = (code: string, currentOs: CurrentOs | null) => {
+  const achievementsKey = achievementDataErrorMessageKey(code, currentOs)
   return achievementsKey !== 'dashboard.achievements.errors.generic'
     ? achievementsKey
     : errorMessageKey(code)
@@ -40,6 +44,7 @@ export const AchievementOrderOverlay = () => {
   const { t } = useTranslation()
   const openGame = useAchievementOrderStore(state => state.openGame)
   const close = useAchievementOrderStore(state => state.close)
+  const currentOs = usePlatformStore(state => state.currentOs)
   const subscriptionTier = useSubscriptionStore(state => state.subscriptionTier)
   const canImportTimings = hasGamerAccess(subscriptionTier)
   const openProModalWithTier = useProModalStore(state => state.openWithTier)
@@ -131,7 +136,9 @@ export const AchievementOrderOverlay = () => {
                       <Alert.Content>
                         <Alert.Title>{t('dashboard.achievementUnlocker.errors.title')}</Alert.Title>
                         <Alert.Description>
-                          {t(loadErrorMessageKey(loadErrorCode), { code: loadErrorCode })}
+                          {t(loadErrorMessageKey(loadErrorCode, currentOs), {
+                            code: loadErrorCode,
+                          })}
                         </Alert.Description>
                       </Alert.Content>
                     </Alert>

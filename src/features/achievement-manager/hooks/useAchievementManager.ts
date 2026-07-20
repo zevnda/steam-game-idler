@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { errorMessageKey } from '../utils/errorMessageKey'
 import { toast } from '@heroui/react'
+import { usePlatformStore } from '@/shared/stores/platformStore'
 import { useSessionStore } from '@/shared/stores/sessionStore'
 import { logFrontendWarn } from '@/shared/utils/frontendLogging'
 import { invoke } from '@/shared/utils/invoke'
@@ -29,6 +30,7 @@ interface OpenGame {
 export const useAchievementManager = (openGame: OpenGame | null) => {
   const { t } = useTranslation()
   const account = useSessionStore(state => state.account)
+  const currentOs = usePlatformStore(state => state.currentOs)
   const [data, setData] = useState<AchievementData | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [isMutating, setIsMutating] = useState(false)
@@ -53,9 +55,9 @@ export const useAchievementManager = (openGame: OpenGame | null) => {
   const toastActionError = useCallback(
     (error: unknown) => {
       const code = String(error)
-      showErrorToast(t(errorMessageKey(code), { code }), code, t('common.learnMore'))
+      showErrorToast(t(errorMessageKey(code, currentOs), { code }), code, t('common.learnMore'))
     },
-    [t],
+    [t, currentOs],
   )
 
   useEffect(() => {

@@ -33,6 +33,18 @@ export async function isPortableCheck() {
   }
 }
 
+// Distinct from isPortableCheck() - a build can be "not portable" (uses app_data_dir) but still
+// unable to self-update, e.g. a Linux deb/rpm install. Gates whether update-check UI/logic runs
+// at all; see platform::can_auto_update's doc comment for why the two checks diverge on Linux.
+export async function canAutoUpdateCheck() {
+  try {
+    return await invoke<boolean>('can_auto_update')
+  } catch (error) {
+    console.error('Error in (canAutoUpdateCheck):', error)
+    return false
+  }
+}
+
 // Keys a major update's data reset should carry across relaunch, e.g. so the changelog still
 // shows and the user isn't re-flagged as first-time. These are the rewrite's own current key
 // names (`sgi-theme`/`closeToTrayNotified`, see `theme/applyTheme.ts`/`useTitlebar.ts`) - not

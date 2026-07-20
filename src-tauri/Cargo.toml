@@ -1,6 +1,6 @@
 [package]
 name = "steam-game-idler"
-version = "6.0.6"
+version = "6.0.7"
 authors = ["zevnda"]
 license = "Elastic-2.0"
 repository = "https://github.com/zevnda/steam-game-idler"
@@ -53,6 +53,14 @@ tauri-plugin-single-instance = "2.4.2"
 tauri-plugin-autostart = "2.5.0"
 tauri-plugin-notification = "2.3.0"
 tauri-plugin-clipboard-manager = "2.3.2"
+
+# Pinned to the exact version wry/tauri already vendor for this target family (see `wry`'s own
+# Cargo.toml) so this doesn't pull in a second copy of the crate - only used directly by
+# `zoom.rs` for `WebViewExt::set_zoom_level`, WebKitGTK's equivalent of the WebView2
+# `SetZoomFactor` call it makes on Windows (reached there via tauri's own re-exported
+# `webview2_com` types, so no equivalent direct Windows dependency is needed here).
+[target.'cfg(any(target_os = "linux", target_os = "dragonfly", target_os = "freebsd", target_os = "netbsd", target_os = "openbsd"))'.dependencies]
+webkit2gtk = "=2.0.2"
 
 [profile.dev]
 opt-level = 1

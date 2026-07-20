@@ -19,7 +19,12 @@ use crate::error::{AppError, AppResult};
 use super::{cap_targets, IdleFailure, IdleSetResult, IdleTarget, IDLE_STATE_EVENT};
 
 /// Win32 `CREATE_NO_WINDOW` - suppresses the console window that would otherwise flash briefly.
-/// `idle` itself also creates its own hidden `IdleWindow`, which this flag doesn't affect.
+/// `idle` itself also creates its own hidden `IdleWindow`, which this flag doesn't affect. This
+/// whole module is CLI-mode-only (see module doc) and thus Windows-only in practice, but it must
+/// still compile on Linux (never exercised there - no CLI-mode sign-in option in the Linux
+/// frontend) rather than being cfg-gated out entirely, so this stays a plain `cfg(windows)` split
+/// like every other Windows-only call site instead of excluding the module from the Linux build.
+#[cfg(windows)]
 const CREATE_NO_WINDOW: u32 = 0x08000000;
 /// How long to wait for `idle`'s single startup stdout line before deciding the process is at
 /// least alive. `IdleCommand.cs` never prints a second line even on success, so a timeout here
@@ -184,16 +189,18 @@ async fn run_poller(app_handle: AppHandle) {
 async fn spawn_idle_process(target: &IdleTarget) -> AppResult<Child> {
     let exe_path = crate::steam_utility_exe::locate()?;
 
-    let mut child = Command::new(&exe_path)
+    let mut command = Command::new(&exe_path);
+    command
         .arg("idle")
         .arg(target.app_id.to_string())
         .arg(&target.name)
         .kill_on_drop(true)
-        .creation_flags(CREATE_NO_WINDOW)
         .stdout(std::process::Stdio::piped())
-        .stderr(std::process::Stdio::piped())
-        .spawn()
-        .map_err(AppError::ProcessSpawn)?;
+        .stderr(std::process::Stdio::piped());
+    #[cfg(windows)]
+    command.creation_flags(CREATE_NO_WINDOW);
+
+    let mut child = command.spawn().map_err(AppError::ProcessSpawn)?;
 
     let stdout = child.stdout.take().expect("stdout was piped at spawn");
     let stderr = child.stderr.take().expect("stderr was piped at spawn");
