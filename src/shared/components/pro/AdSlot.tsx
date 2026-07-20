@@ -16,7 +16,7 @@ interface AdManifest {
 }
 
 const DEFAULT_HOUSE_AD_COUNT = 15
-const ROTATE_INTERVAL_MS = 5 * 60 * 1000
+const ROTATE_INTERVAL_MS = 30 * 1000
 
 // House-ad slot in the sidebar footer, shown only to free-tier accounts - ported from `main`'s
 // AdSlot.tsx. One fixed bug: the "Remove ads" upsell now checks `hasCasualAccess` (matching the
@@ -65,14 +65,33 @@ export const AdSlot = () => {
     return manifestLinks[match[1]]
   }, [houseAd, manifestLinks])
 
-  // Picks a random house ad that's different from the current one and hasn't 404'd.
+  // Ads with a manifest-declared link, used to give linked ads a 50/50 shot at being
+  // picked regardless of how outnumbered they are by unlinked ads.
+  const linkedHouseAds = useMemo(() => {
+    const linked = new Set<string>()
+    for (const ad of houseAds) {
+      const match = ad.match(/\/(\d+)\.png$/)
+      if (match && manifestLinks[match[1]]) linked.add(ad)
+    }
+    return linked
+  }, [houseAds, manifestLinks])
+
+  // Picks a house ad that's different from the current one and hasn't 404'd
   const pickNextHouseAd = useCallback(
     (current: string, excluded: Set<string> = failedHouseAdsRef.current) => {
-      const others = houseAds.filter(ad => ad !== current && !excluded.has(ad))
-      if (others.length === 0) return current
-      return others[Math.floor(Math.random() * others.length)]
+      const candidates = houseAds.filter(ad => ad !== current && !excluded.has(ad))
+      if (candidates.length === 0) return current
+
+      const linked = candidates.filter(ad => linkedHouseAds.has(ad))
+      const unlinked = candidates.filter(ad => !linkedHouseAds.has(ad))
+
+      const preferLinked = Math.random() < 0.5
+      let pool = preferLinked ? linked : unlinked
+      if (pool.length === 0) pool = preferLinked ? unlinked : linked
+
+      return pool[Math.floor(Math.random() * pool.length)]
     },
-    [houseAds],
+    [houseAds, linkedHouseAds],
   )
 
   // A 404/missing image blacklists that ad and rolls to another one immediately.
