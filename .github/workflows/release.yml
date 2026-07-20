@@ -657,28 +657,32 @@ jobs:
           ref: ${{ github.event.inputs.dry_run == 'true' && github.ref || format('version-bump-{0}-{1}', github.event.inputs.version, github.run_id) }}
 
       - name: Install Linux system dependencies
-        # webkit2gtk/javascriptcoregtk are pinned to 2.44.3-0ubuntu0.22.04.1, the last version
-        # published before a confirmed, still-open upstream WebKitGTK regression (bugs.webkit.org
-        # #297921, "[GTK] EGL_BAD_PARAMETER crash") - every release after 2.44 can fail EGL display
-        # creation on Wayland with certain graphics drivers, aborting before any window ever renders
-        # (same root cause and fix as gitbutlerapp/gitbutler#5282).
+        # EXPERIMENTAL PIN CHANGE (2026-07-20): was 2.44.3-0ubuntu0.22.04.1, now
+        # 2.50.4-0ubuntu0.22.04.1 - testing whether a modern webkit2gtk lets the native-Wayland
+        # fix (main.rs, commit 1c4ee17f) actually eliminate the AppImage's XWayland lag. 2.44.3
+        # predates that fix entirely; a CI build against it still forced the slow path regardless
+        # of the fix being present, confirmed via a real VM test comparing this release's CI-built
+        # AppImage (laggy) against a locally-built one on unpinned 2.52.3 (not laggy, same commit).
         #
-        # Ubuntu's live jammy-updates/jammy-security archives only keep the *current*
-        # security-patched version downloadable, not superseded historical ones, so the pinned
-        # version has to come from snapshot.ubuntu.com (Canonical's dated-archive-snapshot service)
-        # rather than a plain apt-cache lookup. Pinned to the 2024-10-01 snapshot, which predates
-        # the first broken version (2.46.1, published 2024-10-22). libwebkit2gtk-4.1-* lives in
-        # `universe`, libjavascriptcoregtk-4.1-* lives in `main` - both components are needed on
-        # the source line below. Both `-dev` packages also hard-depend on a matching-version
-        # `gir1.2-*` introspection package that apt won't auto-resolve on its own, so those are
-        # requested explicitly too. The snapshot source is removed again immediately after use so
-        # it can't affect any other package installed later in this job.
+        # Still UNVERIFIED whether 2.50.4 avoids the original EGL_BAD_PARAMETER crash
+        # (bugs.webkit.org #297921) that motivated the pin in the first place - that bug had fresh
+        # reports on 2.48.5/2.49.4 as of late 2025, both older than this version, so this is a real
+        # open question, not assumed safe from the version number alone. Do not treat this as
+        # trusted/final until confirmed via a real dry-run + VM test round-trip (both: does the
+        # crash stay gone, does the lag actually go away).
+        #
+        # No snapshot.ubuntu.com needed here (unlike the previous pin) since 2.50.4 is still the
+        # *current* published version in the live jammy-updates/jammy-security archives as of this
+        # writing (published 2026-01-13), not a superseded historical one - a plain version-pinned
+        # apt-get install works directly. libwebkit2gtk-4.1-* lives in `universe`,
+        # libjavascriptcoregtk-4.1-* lives in `main` - both components are needed on the source line
+        # below. Both `-dev` packages also hard-depend on a matching-version `gir1.2-*`
+        # introspection package that apt won't auto-resolve on its own, so those are requested
+        # explicitly too.
         run: |
           set -euo pipefail
           sudo apt-get update
-          WEBKIT_VERSION="2.44.3-0ubuntu0.22.04.1"
-          echo "deb https://snapshot.ubuntu.com/ubuntu/20241001T000000Z/ jammy-updates main universe" | sudo tee /etc/apt/sources.list.d/webkit-snapshot.list
-          sudo apt-get update
+          WEBKIT_VERSION="2.50.4-0ubuntu0.22.04.1"
           sudo apt-get install -y \
             libwebkit2gtk-4.1-0="$WEBKIT_VERSION" \
             libwebkit2gtk-4.1-dev="$WEBKIT_VERSION" \
@@ -690,7 +694,6 @@ jobs:
             libwebkit2gtk-4.1-0 libwebkit2gtk-4.1-dev \
             libjavascriptcoregtk-4.1-0 libjavascriptcoregtk-4.1-dev \
             gir1.2-webkit2-4.1 gir1.2-javascriptcoregtk-4.1
-          sudo rm /etc/apt/sources.list.d/webkit-snapshot.list
           sudo apt-get update
           sudo apt-get install -y \
             libsoup-3.0-dev \
