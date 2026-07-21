@@ -68,9 +68,11 @@ export const DEFAULT_FARMING_STATE: FarmingState = {
   sessionExpired: false,
 }
 
-// Mirrors src-tauri/src/card_farming/settings.rs::DropSortOrder - a two-option preference (like
-// inventory-manager's PricePreference), not two independent booleans.
-export type DropSortOrder = 'highestFirst' | 'lowestFirst'
+// Mirrors src-tauri/src/card_farming/settings.rs::DropSortOrder - a multi-option preference (like
+// inventory-manager's PricePreference), not independent booleans. `queueOrder` (the default) farms
+// games in the order they appear in the account's curated card-farming queue (drag-reorderable on
+// the Queue tab); `highestFirst`/`lowestFirst` ignore the queue's order and resort by drop count.
+export type DropSortOrder = 'queueOrder' | 'highestFirst' | 'lowestFirst'
 
 // Mirrors src-tauri/src/card_farming/settings.rs::CardFarmingSettings. Blacklisting now lives in
 // its own list (`CardFarmingBlacklistEntry`/`useCardFarmingBlacklist`, backed by its own file) -
