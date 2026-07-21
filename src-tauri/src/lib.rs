@@ -87,6 +87,7 @@ pub fn run() {
         .setup(|app| {
             let log_guard = logging::init(app.handle())?;
             app.manage(log_guard);
+            logging::purge_old_logs(app.handle());
             // Must run before the webview loads (see legacy_migration's doc comment) - before
             // setup_window/tray so nothing else touches the cache directory first.
             let migrated = legacy_migration::run(app.handle());
