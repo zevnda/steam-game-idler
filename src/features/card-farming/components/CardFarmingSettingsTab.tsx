@@ -95,7 +95,7 @@ export const CardFarmingSettingsTab = ({
         <Typography type='h3' className='font-bold mb-4'>
           {t('dashboard.sidebar.nav.cardFarming')}
         </Typography>
-        {Array.from({ length: 6 }, (_, index) => (
+        {Array.from({ length: 7 }, (_, index) => (
           <Skeleton key={index} className='h-10 w-full rounded-lg' />
         ))}
       </div>
@@ -129,6 +129,16 @@ export const CardFarmingSettingsTab = ({
         <ToggleSwitch
           isSelected={draft.allGames}
           onChange={value => commit({ ...draft, allGames: value, listGames: !value })}
+        />
+      </SettingsRow>
+
+      <SettingsRow
+        description={t('dashboard.cardFarming.settings.singleFarmingMode.description')}
+        title={t('dashboard.cardFarming.settings.singleFarmingMode.title')}
+      >
+        <ToggleSwitch
+          isSelected={draft.singleFarmingMode}
+          onChange={value => commit({ ...draft, singleFarmingMode: value })}
         />
       </SettingsRow>
 

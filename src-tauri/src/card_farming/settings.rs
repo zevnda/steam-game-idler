@@ -85,6 +85,20 @@ pub struct CardFarmingSettings {
     /// existing on-disk settings file (serialized before this field existed) still deserializes.
     #[serde(default)]
     pub auto_farm_cards: bool,
+    /// Whether the user has dismissed the one-time "farming multiple games at once can slow down
+    /// drops" notice shown from `Start` when more than one game would be farmed at once - never
+    /// re-shown once true. `#[serde(default)]` so an existing on-disk settings file (serialized
+    /// before this field existed) still deserializes.
+    #[serde(default)]
+    pub multi_game_farming_notice_seen: bool,
+    /// When on, `manager::run_cycle` caps its active set to exactly one game at a time instead of
+    /// [`manager::MAX_CONCURRENT_FARMING`] - the queue itself is untouched (still holds as many
+    /// games as the user's added), only how many are actually farmed concurrently changes. Read
+    /// fresh every loop iteration (see `manager::run_cycle`), so toggling this mid-session takes
+    /// effect on the very next poll rather than needing a restart. `#[serde(default)]` so an
+    /// existing on-disk settings file (serialized before this field existed) still deserializes.
+    #[serde(default)]
+    pub single_farming_mode: bool,
 }
 
 impl Default for CardFarmingSettings {
@@ -100,6 +114,8 @@ impl Default for CardFarmingSettings {
             next_task_checkbox: false,
             next_task: None,
             auto_farm_cards: false,
+            multi_game_farming_notice_seen: false,
+            single_farming_mode: false,
         }
     }
 }

@@ -593,6 +593,10 @@
         "title": "Clear the card farming queue?",
         "description": "This will remove all {{count}} games from the card farming queue."
       },
+      "multiGameNotice": {
+        "title": "Farming multiple games at once?",
+        "description": "Farming multiple games at the same time can slow down how quickly cards drop per game. If you don't see any cards drop for a while, try enabling 'Single farming mode' in Settings → Card Farming."
+      },
       "confirmClearBlacklist": {
         "title": "Clear the card farming blacklist?",
         "description": "This will remove all {{count}} games from the card farming blacklist."
@@ -639,6 +643,10 @@
         "generic": "Something went wrong updating card farming. Please try again. ({{code}})"
       },
       "settings": {
+        "singleFarmingMode": {
+          "title": "Single farming mode",
+          "description": "Farm one game in your queue at a time instead of multiple at once, which can help cards drop faster per game."
+        },
         "autoFarmCards": {
           "title": "Automatically farm cards",
           "description": "Periodically check for owned games with card drops remaining and automatically start farming them."

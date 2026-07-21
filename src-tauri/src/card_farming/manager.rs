@@ -1,12 +1,14 @@
 //! The farming-cycle background task: idles up to [`MAX_CONCURRENT_FARMING`] games with card drops
-//! remaining *concurrently*, polls each one's remaining count, drops finished games out of the
-//! active set and backfills more from the queue as slots free up, repeats until the account has
-//! none left - see `mod.rs`'s doc comment for why this matches `main`'s concurrency but not its
-//! toggle-timing design. Calls `idling::claims::IdleClaimsRegistry::replace_owner_claim` (owner
-//! `OWNER_CARD_FARMING`) for the actual idling mechanics - not `idling::commands::set_idle_games`
-//! directly, since that would full-replace the real announced set and stomp whatever manual/
-//! auto-idle/achievement-unlocker idling is also currently claimed (see `idling::claims`'s module
-//! doc comment). This module owns no process/spawn logic of its own.
+//! remaining *concurrently* - or exactly one at a time if `single_farming_mode` is on (see
+//! `settings::CardFarmingSettings::single_farming_mode`'s doc comment) - polls each active game's
+//! remaining count, drops finished games out of the active set and backfills more from the queue
+//! as slots free up, repeats until the account has none left - see `mod.rs`'s doc comment for why
+//! this matches `main`'s concurrency but not its toggle-timing design. Calls
+//! `idling::claims::IdleClaimsRegistry::replace_owner_claim` (owner `OWNER_CARD_FARMING`) for the
+//! actual idling mechanics - not `idling::commands::set_idle_games` directly, since that would
+//! full-replace the real announced set and stomp whatever manual/auto-idle/achievement-unlocker
+//! idling is also currently claimed (see `idling::claims`'s module doc comment). This module owns
+//! no process/spawn logic of its own.
 
 use std::collections::{HashMap, HashSet};
 use std::sync::atomic::{AtomicBool, Ordering};
@@ -348,13 +350,15 @@ impl CardFarmingManager {
     }
 }
 
-/// Moves games from `queue` into `active` until `active` reaches [`MAX_CONCURRENT_FARMING`] or
-/// `queue` runs out - returns `true` if anything was added (the caller uses this to decide whether
-/// the idling set needs to be re-announced). `playtime_by_app_id` seeds each newly-active game's
+/// Moves games from `queue` into `active` until `active` reaches `cap` (normally
+/// [`MAX_CONCURRENT_FARMING`], or `1` when `single_farming_mode` is on - see
+/// `settings::CardFarmingSettings::single_farming_mode`'s doc comment) or `queue` runs out -
+/// returns `true` if anything was added (the caller uses this to decide whether the idling set
+/// needs to be re-announced). `playtime_by_app_id` seeds each newly-active game's
 /// [`FarmingProgress::baseline_playtime_minutes`] - see that field's doc comment.
-fn backfill_active(farming: &mut FarmingState, playtime_by_app_id: &HashMap<u32, u64>) -> bool {
+fn backfill_active(farming: &mut FarmingState, playtime_by_app_id: &HashMap<u32, u64>, cap: usize) -> bool {
     let mut added = false;
-    while farming.active.len() < MAX_CONCURRENT_FARMING {
+    while farming.active.len() < cap {
         let Some(game) = (!farming.queue.is_empty()).then(|| farming.queue.remove(0)) else {
             break;
         };
@@ -726,9 +730,16 @@ async fn run_cycle(
 
     while !stopped.load(Ordering::SeqCst) {
         let playtime_by_app_id = playtime_lookup(&app_handle, &steam_id);
+        // Read fresh every iteration (not just once at cycle start) so toggling this setting
+        // mid-session takes effect on the very next poll - same reasoning as `caps` below.
+        let single_farming_mode = settings::get(&app_handle, &steam_id)
+            .await
+            .map(|s| s.single_farming_mode)
+            .unwrap_or(false);
+        let cap = if single_farming_mode { 1 } else { MAX_CONCURRENT_FARMING };
         let added = {
             let mut s = state.lock().await;
-            backfill_active(&mut s, &playtime_by_app_id)
+            backfill_active(&mut s, &playtime_by_app_id, cap)
         };
 
         let active_empty = state.lock().await.active.is_empty();
@@ -903,7 +914,7 @@ mod tests {
             ..Default::default()
         };
 
-        let added = backfill_active(&mut farming, &HashMap::new());
+        let added = backfill_active(&mut farming, &HashMap::new(), MAX_CONCURRENT_FARMING);
 
         assert!(added);
         assert_eq!(farming.active.len(), MAX_CONCURRENT_FARMING);
@@ -928,7 +939,7 @@ mod tests {
             ..Default::default()
         };
 
-        let added = backfill_active(&mut farming, &HashMap::new());
+        let added = backfill_active(&mut farming, &HashMap::new(), MAX_CONCURRENT_FARMING);
 
         assert!(!added);
         assert_eq!(farming.active.len(), MAX_CONCURRENT_FARMING);
@@ -938,7 +949,31 @@ mod tests {
     #[test]
     fn backfill_reports_unchanged_when_the_queue_is_already_empty() {
         let mut farming = FarmingState::default();
-        assert!(!backfill_active(&mut farming, &HashMap::new()));
+        assert!(!backfill_active(
+            &mut farming,
+            &HashMap::new(),
+            MAX_CONCURRENT_FARMING
+        ));
+    }
+
+    #[test]
+    fn backfill_caps_to_one_when_single_farming_mode_is_on() {
+        let mut farming = FarmingState {
+            queue: (0..5).map(|i| game(i, 1)).collect(),
+            ..Default::default()
+        };
+
+        let added = backfill_active(&mut farming, &HashMap::new(), 1);
+
+        assert!(added);
+        assert_eq!(farming.active.len(), 1);
+        assert_eq!(farming.queue.len(), 4);
+
+        // A second backfill at the same cap is a no-op while that one game is still active -
+        // mirrors run_cycle only ever calling this once per poll, with the cap re-derived fresh
+        // from the live setting each time.
+        assert!(!backfill_active(&mut farming, &HashMap::new(), 1));
+        assert_eq!(farming.active.len(), 1);
     }
 
     fn progress(
