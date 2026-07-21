@@ -11,7 +11,7 @@ import { useProModalStore } from '@/shared/stores/proModalStore'
 import { useSubscriptionStore } from '@/shared/stores/subscriptionStore'
 import { hasGamerAccess } from '@/shared/utils/subscriptionAccess'
 
-const DROP_SORT_ORDERS: DropSortOrder[] = ['highestFirst', 'lowestFirst']
+const DROP_SORT_ORDERS: DropSortOrder[] = ['queueOrder', 'highestFirst', 'lowestFirst']
 
 interface CardFarmingSettingsTabProps {
   settings: CardFarmingSettings | null

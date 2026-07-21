@@ -48,14 +48,20 @@ const SETTINGS_FILE_NAME: &str = "card_farming_settings.json";
 
 static WRITE_LOCK: LazyLock<Mutex<()>> = LazyLock::new(|| Mutex::new(()));
 
-/// Which end of the drops-remaining range to farm first - was two mutually-exclusive booleans
+/// Which order to farm queued games in - was two mutually-exclusive booleans
 /// (`sort_by_highest_drops`/`sort_by_lowest_drops`, one always forced off when the other turned
 /// on), collapsed into a real enum matching `inventory::settings::PricePreference`'s pattern (a
-/// two-option preference that's always exactly one value, never both-off/both-on).
+/// multi-option preference that's always exactly one value, never both-off/both-on).
+/// `QueueOrder` (the default) farms games in the order they appear in the account's curated
+/// card-farming queue (`queue.rs`) - drag-reorder on the Queue tab only had any actual effect on
+/// farming order once this variant existed; before it, the queue's order was purely cosmetic and
+/// every farm always resorted by drop count. `HighestFirst`/`LowestFirst` still resort by the
+/// scraped drop count instead, ignoring the queue's own order.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub enum DropSortOrder {
     #[default]
+    QueueOrder,
     HighestFirst,
     LowestFirst,
 }
@@ -110,7 +116,7 @@ impl Default for CardFarmingSettings {
             all_games: true,
             skip_no_playtime: false,
             farm_unplayed_only: false,
-            drop_sort_order: DropSortOrder::HighestFirst,
+            drop_sort_order: DropSortOrder::QueueOrder,
             next_task_checkbox: false,
             next_task: None,
             auto_farm_cards: false,

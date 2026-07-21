@@ -117,7 +117,19 @@ async fn fetch_queued_games(
     }
 
     let drop_sort_order = settings::get(app_handle, steam_id).await?.drop_sort_order;
-    sort_by_drop_order(&mut games, drop_sort_order);
+    // Only read the persisted queue's order when it's actually going to be used - `all_games`
+    // mode farms games that were never added to this queue at all, so a read here would just be
+    // wasted I/O for a position lookup `sort_by_drop_order` will never find a match for anyway.
+    let queue_order: Vec<u32> = if drop_sort_order == settings::DropSortOrder::QueueOrder {
+        queue::read(app_handle, steam_id)
+            .await?
+            .into_iter()
+            .map(|entry| entry.app_id)
+            .collect()
+    } else {
+        Vec::new()
+    };
+    sort_by_drop_order(&mut games, drop_sort_order, &queue_order);
     Ok((games, excluded))
 }
 
@@ -135,12 +147,27 @@ fn playtime_lookup(app_handle: &AppHandle, steam_id: &str) -> HashMap<u32, u64> 
 
 /// Pure sort step split out of [`fetch_queued_games`] so it's unit-testable without the
 /// network/settings-file I/O around it - mirrors `is_capped`'s split for the same reason.
-fn sort_by_drop_order(games: &mut [GameWithDrops], order: settings::DropSortOrder) {
+/// `queue_order` is the account's persisted queue, app-id-only, in the user's drag-reordered
+/// sequence - only consulted for [`settings::DropSortOrder::QueueOrder`]; empty otherwise. Uses
+/// `sort_by_key` (a stable sort) rather than `sort_by`, so a game with no entry in `queue_order`
+/// (e.g. `all_games` mode, which never populates the queue at all) falls back to whatever relative
+/// order the scraper returned it in rather than being reshuffled against every other such game.
+fn sort_by_drop_order(
+    games: &mut [GameWithDrops],
+    order: settings::DropSortOrder,
+    queue_order: &[u32],
+) {
     match order {
         settings::DropSortOrder::HighestFirst => {
             games.sort_by(|a, b| b.remaining.cmp(&a.remaining))
         }
         settings::DropSortOrder::LowestFirst => games.sort_by(|a, b| a.remaining.cmp(&b.remaining)),
+        settings::DropSortOrder::QueueOrder => games.sort_by_key(|g| {
+            queue_order
+                .iter()
+                .position(|&app_id| app_id == g.app_id)
+                .unwrap_or(usize::MAX)
+        }),
     }
 }
 
@@ -890,7 +917,7 @@ mod tests {
     #[test]
     fn sort_by_drop_order_highest_first_orders_by_descending_remaining() {
         let mut games = vec![game(1, 3), game(2, 10), game(3, 1)];
-        sort_by_drop_order(&mut games, settings::DropSortOrder::HighestFirst);
+        sort_by_drop_order(&mut games, settings::DropSortOrder::HighestFirst, &[]);
         assert_eq!(
             games.iter().map(|g| g.app_id).collect::<Vec<_>>(),
             vec![2, 1, 3]
@@ -900,10 +927,37 @@ mod tests {
     #[test]
     fn sort_by_drop_order_lowest_first_orders_by_ascending_remaining() {
         let mut games = vec![game(1, 3), game(2, 10), game(3, 1)];
-        sort_by_drop_order(&mut games, settings::DropSortOrder::LowestFirst);
+        sort_by_drop_order(&mut games, settings::DropSortOrder::LowestFirst, &[]);
         assert_eq!(
             games.iter().map(|g| g.app_id).collect::<Vec<_>>(),
             vec![3, 1, 2]
+        );
+    }
+
+    #[test]
+    fn sort_by_drop_order_queue_order_orders_by_queue_position() {
+        let mut games = vec![game(1, 3), game(2, 10), game(3, 1)];
+        sort_by_drop_order(
+            &mut games,
+            settings::DropSortOrder::QueueOrder,
+            &[3, 1, 2],
+        );
+        assert_eq!(
+            games.iter().map(|g| g.app_id).collect::<Vec<_>>(),
+            vec![3, 1, 2]
+        );
+    }
+
+    #[test]
+    fn sort_by_drop_order_queue_order_appends_unqueued_games_in_original_order() {
+        let mut games = vec![game(1, 3), game(2, 10), game(3, 1)];
+        // Only app 2 has a known queue position - the rest (1, 3) aren't in `queue_order` at all
+        // (mirrors `all_games` mode, which never populates the queue) and should keep their
+        // original relative order rather than being reshuffled against each other.
+        sort_by_drop_order(&mut games, settings::DropSortOrder::QueueOrder, &[2]);
+        assert_eq!(
+            games.iter().map(|g| g.app_id).collect::<Vec<_>>(),
+            vec![2, 1, 3]
         );
     }
 

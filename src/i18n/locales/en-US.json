@@ -668,9 +668,10 @@
           "description": "Only farm games that have zero recorded playtime."
         },
         "dropSortOrder": {
-          "title": "Drop order",
-          "description": "Which games to farm first when queuing by card drops remaining.",
+          "title": "Farming order",
+          "description": "Choose which order games in the queue should be farmed in.",
           "options": {
+            "queueOrder": "Queue order",
             "highestFirst": "Highest drops first",
             "lowestFirst": "Lowest drops first"
           }
