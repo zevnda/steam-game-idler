@@ -374,6 +374,19 @@ async fn poll_active(
         match result {
             Ok(drops) => {
                 if let Some(progress) = s.active.iter_mut().find(|p| p.app_id == app_id) {
+                    // Only a real state change is worth a log line - this fires at most once per
+                    // actual card, not once per poll, so it stays useful signal even with a large
+                    // batch (unlike logging every game on every 5-minute tick regardless of
+                    // whether anything happened).
+                    if drops.remaining < progress.remaining {
+                        tracing::info!(
+                            app_id,
+                            name = %progress.name,
+                            previous_remaining = progress.remaining,
+                            remaining = drops.remaining,
+                            "card farming: card dropped"
+                        );
+                    }
                     progress.remaining = drops.remaining;
                 }
             }
