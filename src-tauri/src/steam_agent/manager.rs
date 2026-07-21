@@ -248,6 +248,10 @@ impl AgentManager {
         let Some(process) = self.pending_qr.lock().await.remove(event_account_key) else {
             return;
         };
+        // The other half of re-keying: this process's own reader tasks tag every event they emit
+        // with whatever `process.rekey` last set, independent of which map key it lives under
+        // here - see `AgentProcess::account_key`'s doc comment for why both halves are needed.
+        process.rekey(real_key);
 
         let mut sessions = self.sessions.lock().await;
         // Mirrors `respawn`'s safety: an existing session at the real key (e.g. re-scanning an
