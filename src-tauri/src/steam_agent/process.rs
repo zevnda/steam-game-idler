@@ -47,6 +47,13 @@ pub struct AgentProcess {
     stdin: Mutex<ChildStdin>,
     pending: PendingMap,
     next_id: AtomicU64,
+    /// The key this process's stdout/stderr reader tasks tag every log line and emitted event
+    /// with - shared (not a plain `String`) so [`Self::rekey`] can update it in place once a QR
+    /// login resolves a real username, and have that change picked up by the reader tasks
+    /// spawned back in [`Self::spawn`], which otherwise captured the QR placeholder key by value
+    /// forever. See `AgentManager::promote_pending_qr_session`'s doc comment for the other half
+    /// of QR re-keying (moving this process to its real key in `AgentManager::sessions`).
+    account_key: Arc<StdMutex<String>>,
     /// The account's SteamID64, learned from the daemon's `status_changed` event (see
     /// `handle_line`) - `None` until a successful logon actually resolves one. `games::commands`
     /// needs this to key the owned-games cache the same way CLI mode's already-known `steam_id`
@@ -79,6 +86,7 @@ impl AgentProcess {
         let stderr = child.stderr.take().expect("stderr was piped at spawn");
 
         let pending: PendingMap = Arc::new(StdMutex::new(HashMap::new()));
+        let account_key: Arc<StdMutex<String>> = Arc::new(StdMutex::new(account_key));
         let steam_id: Arc<StdMutex<Option<String>>> = Arc::new(StdMutex::new(None));
         let idle_app_ids: Arc<StdMutex<Vec<u32>>> = Arc::new(StdMutex::new(Vec::new()));
 
@@ -92,13 +100,15 @@ impl AgentProcess {
         );
         spawn_stderr_forwarder(stderr, account_key.clone());
 
-        tracing::info!(account = %account_key, exe = %exe_path.display(), "spawned SteamUtility agent process");
+        let logged_key = account_key.lock().unwrap().clone();
+        tracing::info!(account = %logged_key, exe = %exe_path.display(), "spawned SteamUtility agent process");
 
         Ok(Self {
             child: Mutex::new(child),
             stdin: Mutex::new(stdin),
             pending,
             next_id: AtomicU64::new(1),
+            account_key,
             steam_id,
             idle_app_ids,
         })
@@ -113,6 +123,13 @@ impl AgentProcess {
     /// The daemon's last-reported idling set - see the `idle_app_ids` field doc comment.
     pub fn idle_app_ids(&self) -> Vec<u32> {
         self.idle_app_ids.lock().unwrap().clone()
+    }
+
+    /// Updates the key this process's reader tasks tag every subsequent log line/emitted event
+    /// with - see the `account_key` field doc comment. Called by `AgentManager::
+    /// promote_pending_qr_session` once a QR login resolves a real username.
+    pub fn rekey(&self, new_key: &str) {
+        *self.account_key.lock().unwrap() = new_key.to_string();
     }
 
     /// Sends one request and awaits its matching response by `id`, capped at the default
@@ -172,7 +189,7 @@ fn spawn_stdout_reader(
     stdout: tokio::process::ChildStdout,
     pending: PendingMap,
     app_handle: AppHandle,
-    account_key: String,
+    account_key: Arc<StdMutex<String>>,
     steam_id: Arc<StdMutex<Option<String>>>,
     idle_app_ids: Arc<StdMutex<Vec<u32>>>,
 ) {
@@ -196,13 +213,15 @@ fn spawn_stdout_reader(
                 }
                 Ok(None) => break,
                 Err(e) => {
-                    tracing::warn!(account = %account_key, error = %e, "steam agent stdout read error");
+                    let key = account_key.lock().unwrap().clone();
+                    tracing::warn!(account = %key, error = %e, "steam agent stdout read error");
                     break;
                 }
             }
         }
 
-        tracing::info!(account = %account_key, "steam agent stdout closed, process has exited");
+        let key = account_key.lock().unwrap().clone();
+        tracing::info!(account = %key, "steam agent stdout closed, process has exited");
         let mut pending = pending.lock().unwrap();
         for (_, tx) in pending.drain() {
             let _ = tx.send(IpcResponse {
@@ -214,11 +233,12 @@ fn spawn_stdout_reader(
     });
 }
 
-fn spawn_stderr_forwarder(stderr: tokio::process::ChildStderr, account_key: String) {
+fn spawn_stderr_forwarder(stderr: tokio::process::ChildStderr, account_key: Arc<StdMutex<String>>) {
     tokio::spawn(async move {
         let mut lines = BufReader::new(stderr).lines();
         while let Ok(Some(line)) = lines.next_line().await {
-            tracing::info!(account = %account_key, "steam_utility: {line}");
+            let key = account_key.lock().unwrap().clone();
+            tracing::info!(account = %key, "steam_utility: {line}");
         }
     });
 }
@@ -227,14 +247,15 @@ async fn handle_line(
     line: &str,
     pending: &PendingMap,
     app_handle: &AppHandle,
-    account_key: &str,
+    account_key: &Arc<StdMutex<String>>,
     steam_id: &Arc<StdMutex<Option<String>>>,
     idle_app_ids: &Arc<StdMutex<Vec<u32>>>,
 ) {
     let message: IpcMessage = match serde_json::from_str(line) {
         Ok(m) => m,
         Err(e) => {
-            tracing::warn!(account = %account_key, error = %e, raw = %line, "failed to parse steam agent IPC line");
+            let key = account_key.lock().unwrap().clone();
+            tracing::warn!(account = %key, error = %e, raw = %line, "failed to parse steam agent IPC line");
             return;
         }
     };
@@ -247,7 +268,8 @@ async fn handle_line(
             error,
         } => {
             let Some(id) = id else {
-                tracing::warn!(account = %account_key, "steam agent response line missing id");
+                let key = account_key.lock().unwrap().clone();
+                tracing::warn!(account = %key, "steam agent response line missing id");
                 return;
             };
             if let Some(tx) = pending.lock().unwrap().remove(&id) {
@@ -255,18 +277,27 @@ async fn handle_line(
             }
         }
         IpcLine::Event { name, payload } => {
-            tracing::info!(account = %account_key, event = %name, "steam agent event");
+            let key = account_key.lock().unwrap().clone();
+            tracing::info!(account = %key, event = %name, "steam agent event");
 
             if name == "refresh_token" {
-                if let Some(real_key) = persist_refresh_token(app_handle, account_key, &payload) {
+                if let Some(real_key) = persist_refresh_token(app_handle, &key, &payload) {
                     // No-op for the credentials flow, whose account_key already equals real_key -
                     // only a QR attempt's placeholder key ever needs re-keying. See
                     // `AgentManager::promote_pending_qr_session`'s doc comment.
-                    if real_key != account_key {
+                    if real_key != key {
                         app_handle
                             .state::<crate::steam_agent::AgentManager>()
-                            .promote_pending_qr_session(account_key, &real_key)
+                            .promote_pending_qr_session(&key, &real_key)
                             .await;
+                        // Updates the shared cell `spawn_stdout_reader`/`spawn_stderr_forwarder`
+                        // read from - without this, this process's reader tasks keep tagging
+                        // every subsequent event (idle_state, status_changed, ...) with the QR
+                        // placeholder key forever, which the frontend's `sessionStore` (keyed by
+                        // the real username once resolved) can never match - silently dropping
+                        // every one of those events for the rest of this process's lifetime. See
+                        // the `account_key` field doc comment on `AgentProcess`.
+                        *account_key.lock().unwrap() = real_key;
                     }
                 }
             }
@@ -296,13 +327,13 @@ async fn handle_line(
                             // delayed the generic AGENT_EVENT emit below by the same 30s since it
                             // runs later in this function).
                             let app_handle = app_handle.clone();
-                            let account_key = account_key.to_string();
+                            let key = key.clone();
                             tauri::async_runtime::spawn(async move {
-                                handle_session_superseded(&app_handle, &account_key, &sid).await;
+                                handle_session_superseded(&app_handle, &key, &sid).await;
                             });
                         }
                         None => tracing::warn!(
-                            account = %account_key,
+                            account = %key,
                             "steam agent: account kicked by concurrent login, but no cached steamId to stop automation with"
                         ),
                     }
@@ -330,14 +361,19 @@ async fn handle_line(
                 *idle_app_ids.lock().unwrap() = ids.clone();
                 let _ = app_handle.emit(
                     crate::idling::IDLE_STATE_EVENT,
-                    serde_json::json!({ "account": account_key, "appIds": ids }),
+                    serde_json::json!({ "account": key, "appIds": ids }),
                 );
             }
 
+            // Re-resolved rather than reusing `key` from the top of this arm - a `refresh_token`
+            // event that just re-keyed `account_key` above must still have *this* generic forward
+            // (which fires unconditionally for every event, including this one) carry the new
+            // real key, not the stale pre-promotion snapshot.
+            let key = account_key.lock().unwrap().clone();
             let _ = app_handle.emit(
                 AGENT_EVENT,
                 serde_json::json!({
-                    "account": account_key,
+                    "account": key,
                     "event": name,
                     "payload": payload,
                 }),

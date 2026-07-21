@@ -12,3 +12,6 @@ tags: ['New', 'Improved', 'Fixed']
 
 ### Fixed 🐛
 - Fixed an issue where the **Sign-in** screen would briefly flash on screen before loading into the dashboard when relaunching the app while already signed in
+- Fixed an issue on the **Card Farming** page where the header buttons (Stop, Manual Add, Settings) would take a while to reappear after navigating away and back while a farming session was already running
+- Fixed an issue where clicking **Stop All** on the **Idling** page didn't actually stop an in-progress **Card Farming** or **Achievement Unlocker** session, leaving it stuck reporting progress with nothing actually idling
+- Fixed an issue where stopping an individual game's card on the **Idling** page while it was actively being farmed or unlocked didn't remove it from that session, so it could silently resume idling on its own shortly after
