@@ -84,4 +84,6 @@ export interface CardFarmingSettings {
   nextTaskCheckbox: boolean
   nextTask: string | null
   autoFarmCards: boolean
+  multiGameFarmingNoticeSeen: boolean
+  singleFarmingMode: boolean
 }

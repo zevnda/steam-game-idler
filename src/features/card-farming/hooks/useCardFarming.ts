@@ -47,6 +47,11 @@ export const useCardFarming = () => {
   // Settings modal's card-farming tab is open). `refreshSettingsMode` lets CardFarmingPage re-read
   // it on the modal's close transition, same pattern as useInventory's `refreshSettings`.
   const [allGames, setAllGames] = useState<boolean | null>(null)
+  // Whether the one-time "farming multiple games at once" notice has already been dismissed for
+  // this account - read alongside `allGames` for the same reason (needed at Start-click time,
+  // outside the Settings modal). `null` until the first fetch resolves, so CardFarmingPage can
+  // avoid showing (or wrongly skipping) the notice before the real value is known.
+  const [multiGameFarmingNoticeSeen, setMultiGameFarmingNoticeSeen] = useState<boolean | null>(null)
 
   // Both outcomes mean the Steam Community session itself couldn't be confirmed (as opposed to
   // some other card-farming-specific failure) - a confirmed `expired` and a merely
@@ -67,6 +72,7 @@ export const useCardFarming = () => {
     try {
       const settings = await invoke<CardFarmingSettings>('get_card_farming_settings', { account })
       setAllGames(settings.allGames)
+      setMultiGameFarmingNoticeSeen(settings.multiGameFarmingNoticeSeen)
     } catch (error) {
       console.error('Error in (get_card_farming_settings):', error)
     }
@@ -75,6 +81,23 @@ export const useCardFarming = () => {
   useEffect(() => {
     refreshSettingsMode()
   }, [refreshSettingsMode])
+
+  // Persists the multi-game notice as dismissed so it never shows again for this account -
+  // read-then-write the whole settings object since `set_card_farming_settings` is a full
+  // replace, not a per-field patch (mirrors `useCardFarmingSettings.ts`'s `save`).
+  const markMultiGameNoticeSeen = useCallback(async () => {
+    if (!account) return
+    setMultiGameFarmingNoticeSeen(true)
+    try {
+      const current = await invoke<CardFarmingSettings>('get_card_farming_settings', { account })
+      await invoke('set_card_farming_settings', {
+        account,
+        settings: { ...current, multiGameFarmingNoticeSeen: true },
+      })
+    } catch (error) {
+      console.error('Error in (set_card_farming_settings):', error)
+    }
+  }, [account])
 
   // A cycle that was already running when its session expired mid-farm (as opposed to `start`'s
   // own catch block below, which only covers a fresh connect/start attempt failing) - reached via
@@ -228,7 +251,9 @@ export const useCardFarming = () => {
     removeBrowseGame: browse.removeGame,
     refreshBrowse,
     allGames,
+    multiGameFarmingNoticeSeen,
     refreshSettingsMode,
+    markMultiGameNoticeSeen,
     connect,
     start,
     stop,
