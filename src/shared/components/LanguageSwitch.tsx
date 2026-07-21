@@ -21,7 +21,7 @@ const LANGUAGES = [
 
 // Locales with a real, complete translation and thus selectable - everything else in LANGUAGES is
 // shown dimmed and routes to TRANSLATION_HELP_URL instead of switching.
-const ENABLED_LANGUAGES: ReadonlySet<string> = new Set(['en-US', 'zh-CN'])
+const ENABLED_LANGUAGES: ReadonlySet<string> = new Set(['en-US', 'zh-CN', 'it-IT'])
 
 // Where a click on a not-yet-translated language goes instead of switching - the community
 // translation discussion, so interested users can see how to help rather than landing on a
