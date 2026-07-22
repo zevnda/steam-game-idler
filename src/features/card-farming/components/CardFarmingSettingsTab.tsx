@@ -4,10 +4,12 @@ import { useTranslation } from 'react-i18next'
 import { errorMessageKey } from '../utils/errorMessageKey'
 import { Alert, Button, Separator, Skeleton, toast, Typography } from '@heroui/react'
 import { AppTooltip } from '@/shared/components/AppTooltip'
+import { BetaBadge } from '@/shared/components/BetaBadge'
 import { SettingsRow } from '@/shared/components/SettingsRow'
 import { TierBadge } from '@/shared/components/TierBadge'
 import { ToggleSwitch } from '@/shared/components/ToggleSwitch'
 import { useProModalStore } from '@/shared/stores/proModalStore'
+import { useSessionStore } from '@/shared/stores/sessionStore'
 import { useSubscriptionStore } from '@/shared/stores/subscriptionStore'
 import { hasGamerAccess } from '@/shared/utils/subscriptionAccess'
 
@@ -46,6 +48,8 @@ export const CardFarmingSettingsTab = ({
   const subscriptionTier = useSubscriptionStore(state => state.subscriptionTier)
   const canAutoFarm = hasGamerAccess(subscriptionTier)
   const openProModalWithTier = useProModalStore(state => state.openWithTier)
+  const account = useSessionStore(state => state.account)
+  const isAgentMode = account?.mode === 'agent'
   const [draft, setDraft] = useState<CardFarmingSettings | null>(null)
 
   // Syncs the draft from the loaded setting once per load, not on every `settings` identity
@@ -134,7 +138,12 @@ export const CardFarmingSettingsTab = ({
 
       <SettingsRow
         description={t('dashboard.cardFarming.settings.singleFarmingMode.description')}
-        title={t('dashboard.cardFarming.settings.singleFarmingMode.title')}
+        title={
+          <span className='flex items-center gap-2'>
+            {t('dashboard.cardFarming.settings.singleFarmingMode.title')}
+            <BetaBadge />
+          </span>
+        }
       >
         <ToggleSwitch
           isSelected={draft.singleFarmingMode}
@@ -168,6 +177,27 @@ export const CardFarmingSettingsTab = ({
           </AppTooltip.Root>
         )}
       </SettingsRow>
+
+      {/* Agent-mode only - no purchase-date data exists for a CLI-mode account, so the row is
+          hidden entirely rather than shown disabled, matching GeneralSettingsTab.tsx's
+          antiAway/personaState mode-gating (whole `SettingsRow` conditionally rendered on
+          `activeAccount?.mode`). */}
+      {isAgentMode && (
+        <SettingsRow
+          description={t('dashboard.cardFarming.settings.skipRefundableGames.description')}
+          title={
+            <span className='flex items-center gap-2'>
+              {t('dashboard.cardFarming.settings.skipRefundableGames.title')}
+              <BetaBadge />
+            </span>
+          }
+        >
+          <ToggleSwitch
+            isSelected={draft.skipRefundableGames}
+            onChange={value => commit({ ...draft, skipRefundableGames: value })}
+          />
+        </SettingsRow>
+      )}
 
       <SettingsRow
         description={t('dashboard.cardFarming.settings.skipNoPlaytime.description')}

@@ -88,6 +88,9 @@
       "gamerRequired": "Requires the Gamer plan.",
       "casualRequired": "Requires the Casual plan."
     },
+    "badges": {
+      "beta": "Beta"
+    },
     "tabs": {
       "allGames": "All Games",
       "queue": "Queue"
@@ -633,7 +636,8 @@
         "completedMaxCardDrops": "Max card drops reached ({{remaining}} left)",
         "completedMaxCardFarmingTime": "Max farming time reached ({{remaining}} left)",
         "completedMaxPlaytime": "Max playtime reached ({{remaining}} left)",
-        "completedNoDropsRemaining": "Nothing left to farm"
+        "completedNoDropsRemaining": "Nothing left to farm",
+        "completedRefundWindow": "Still inside the refund window (farmable again {{date}})"
       },
       "errors": {
         "title": "Couldn't update card farming",
@@ -646,6 +650,10 @@
         "singleFarmingMode": {
           "title": "Single farming mode",
           "description": "Farm one game in your queue at a time instead of multiple at once, which can help cards drop faster per game."
+        },
+        "skipRefundableGames": {
+          "title": "Skip refundable games",
+          "description": "Don't farm a game while it's still inside Steam's refund window (bought within the last 14 days with under 2 hours of playtime)."
         },
         "autoFarmCards": {
           "title": "Automatically farm cards",

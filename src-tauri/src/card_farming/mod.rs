@@ -29,6 +29,7 @@ pub mod blacklist;
 pub mod commands;
 pub mod manager;
 pub mod queue;
+mod refund_window;
 mod scraper;
 pub mod settings;
 
@@ -92,15 +93,21 @@ pub enum CompletedFarmReason {
     /// fetch_queued_games`'s own pre-check, mirroring `achievement_unlocker::
     /// CompletedUnlockReason::NothingToUnlock`'s identical role for that feature.
     NoDropsRemaining,
+    /// Still inside Steam's refund window per `settings::CardFarmingSettings::skip_refundable_games`
+    /// (`refund_window::farmable_at_if_in_refund_window`) - detected before it ever started farming
+    /// (`manager::fetch_queued_games`'s pre-check) or partway through (`manager::poll_active`'s
+    /// re-check). **Deliberately does not dequeue from the persisted `queue`** unlike every other
+    /// reason below - see [`CompletedFarm::farmable_at`]'s doc comment.
+    RefundWindow,
 }
 
-/// One game a farming cycle fully finished with this pass, tagged with why - every reason now also
-/// dequeues the game from the account's *persisted* `queue` (see `manager::poll_active`'s doc
-/// comment for why this used to only apply to `DropsExhausted`, and why that was changed for parity
-/// with `achievement_unlocker`, which always dequeues on any cap). Mirrors
-/// `achievement_unlocker::CompletedUnlock`'s identical role in `AchievementUnlockerState::completed`.
-/// Not populated for a user-initiated stop - matches achievement-unlocker's same distinction (a
-/// manual stop isn't "this game is done").
+/// One game a farming cycle fully finished with this pass, tagged with why - every reason except
+/// [`CompletedFarmReason::RefundWindow`] also dequeues the game from the account's *persisted*
+/// `queue` (see `manager::poll_active`'s doc comment for why this used to only apply to
+/// `DropsExhausted`, and why that was changed for parity with `achievement_unlocker`, which always
+/// dequeues on any cap). Mirrors `achievement_unlocker::CompletedUnlock`'s identical role in
+/// `AchievementUnlockerState::completed`. Not populated for a user-initiated stop - matches
+/// achievement-unlocker's same distinction (a manual stop isn't "this game is done").
 #[derive(Debug, Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CompletedFarm {
@@ -110,6 +117,12 @@ pub struct CompletedFarm {
     /// remaining, unlike `DropsExhausted` where 0 is always accurate.
     pub remaining: u32,
     pub reason: CompletedFarmReason,
+    /// Only `Some` when `reason` is [`CompletedFarmReason::RefundWindow`] - unix seconds after
+    /// which this game is expected to exit Steam's refund window based on its purchase date, so the
+    /// frontend can tell the user *when* it'll resume rather than just that it's paused. Every other
+    /// reason requires a deliberate user action (raise a cap, re-add the game) to become farmable
+    /// again, so there's no equivalent "resumes at" moment worth reporting for them.
+    pub farmable_at: Option<i64>,
 }
 
 /// One queued game as persisted to disk by [`queue`] - mirrors

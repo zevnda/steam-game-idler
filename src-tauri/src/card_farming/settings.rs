@@ -105,6 +105,28 @@ pub struct CardFarmingSettings {
     /// existing on-disk settings file (serialized before this field existed) still deserializes.
     #[serde(default)]
     pub single_farming_mode: bool,
+    /// When on, farming skips any game still inside Steam's refund window - purchased via a real
+    /// monetary payment method within the last [`crate::card_farming::refund_window::REFUND_WINDOW_DAYS`]
+    /// days, with under [`crate::card_farming::refund_window::REFUND_WINDOW_MAX_PLAYTIME_MINUTES`]
+    /// minutes of recorded playtime - so idling for card drops doesn't quietly burn through the
+    /// refund eligibility of a game the user might still want their money back on.
+    ///
+    /// Agent-mode only: the purchase-date data this relies on
+    /// (`games::OwnedGame::last_refund_eligible_purchase_unix_seconds`) only ever comes from the
+    /// SteamKit2 daemon's license list - CLI mode's local-client backend has no equivalent API
+    /// surface at all. A CLI-mode account with this on is a silent no-op (every game's purchase
+    /// data is `None`, so nothing ever matches), never an error - matches this project's fail-open
+    /// convention for missing per-app data rather than adding account-mode branching here.
+    ///
+    /// Re-evaluated live on every farming pass (`manager::fetch_queued_games`'s pre-check,
+    /// `manager::poll_active`'s re-check for already-active games) rather than decided once at
+    /// queue-build time, since both the 14-day and playtime thresholds change while a session runs
+    /// - farming itself accrues the playtime that eventually clears a game to farm normally.
+    ///
+    /// `#[serde(default)]` so an existing on-disk settings file (serialized before this field
+    /// existed) still deserializes.
+    #[serde(default)]
+    pub skip_refundable_games: bool,
 }
 
 impl Default for CardFarmingSettings {
@@ -122,6 +144,7 @@ impl Default for CardFarmingSettings {
             auto_farm_cards: false,
             multi_game_farming_notice_seen: false,
             single_farming_mode: false,
+            skip_refundable_games: false,
         }
     }
 }
