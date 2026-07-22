@@ -28,12 +28,12 @@ import {
   TabIndicator,
   TabList,
   TabListContainer,
-  TabPanel,
   TabsRoot,
   Typography,
 } from '@heroui/react'
 import { useRouter } from 'next/router'
 import { GameGridSkeleton } from '@/shared/components/GameGridSkeleton'
+import { GameListTabPanel } from '@/shared/components/GameListTabPanel'
 import { GameSortSelect } from '@/shared/components/GameSortSelect'
 import { ManualAddGameModal } from '@/shared/components/ManualAddGameModal'
 import { useAutoConnectSteamCookies } from '@/shared/hooks/useAutoConnectSteamCookies'
@@ -367,7 +367,7 @@ export const CardFarmingPage = () => {
             )}
           </div>
 
-          <TabPanel className='min-h-0 flex-1 overflow-y-auto p-0' id='browse'>
+          <GameListTabPanel id='browse'>
             {isBrowseLoading ? (
               <GameGridSkeleton />
             ) : browseGames.length === 0 ? (
@@ -396,9 +396,9 @@ export const CardFarmingPage = () => {
                 onToggle={game => toggleQueued(game.appId, game.name)}
               />
             )}
-          </TabPanel>
+          </GameListTabPanel>
 
-          <TabPanel className='min-h-0 flex-1 overflow-y-auto p-0' id='queue'>
+          <GameListTabPanel id='queue'>
             {queueLoading ? (
               <GameGridSkeleton />
             ) : queue.length === 0 ? (
@@ -417,9 +417,9 @@ export const CardFarmingPage = () => {
                 onReorder={reorder}
               />
             )}
-          </TabPanel>
+          </GameListTabPanel>
 
-          <TabPanel className='min-h-0 flex-1 overflow-y-auto p-0' id='blacklist'>
+          <GameListTabPanel id='blacklist'>
             {blacklistLoading ? (
               <GameGridSkeleton />
             ) : blacklist.length === 0 ? (
@@ -437,7 +437,7 @@ export const CardFarmingPage = () => {
                 onRemove={handleUnblacklist}
               />
             )}
-          </TabPanel>
+          </GameListTabPanel>
         </TabsRoot>
       )}
 

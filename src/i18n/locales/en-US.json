@@ -16,7 +16,8 @@
       "done": "Done",
       "copy": "Copy",
       "paste": "Paste",
-      "add": "Add"
+      "add": "Add",
+      "backToTop": "Back to top"
     },
     "gameCardMenu": {
       "startIdling": "Start Idling",

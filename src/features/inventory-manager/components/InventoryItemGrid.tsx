@@ -2,9 +2,11 @@ import type { CellComponentProps } from 'react-window'
 import type { InventoryItem } from '../types'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Grid } from 'react-window'
+import { Grid, useGridCallbackRef } from 'react-window'
 import { InventoryItemCard } from './InventoryItemCard'
 import { EmptyState, Typography } from '@heroui/react'
+import { BackToTopButton } from '@/shared/components/BackToTopButton'
+import { useBackToTop } from '@/shared/hooks/useBackToTop'
 import { useResponsiveColumnCount } from '@/shared/hooks/useGameGridColumns'
 
 // Own copy of VirtualizedGameGrid's column-gap/padding constants and spacer-column padding trick
@@ -110,6 +112,9 @@ export const InventoryItemGrid = ({ items, ...callbacks }: InventoryItemGridProp
   // mounted below, applied to this narrower case.
   const [measureEl, setMeasureEl] = useState<HTMLDivElement | null>(null)
   const [cardHeight, setCardHeight] = useState(ESTIMATED_CARD_HEIGHT)
+  const [gridApi, setGridApi] = useGridCallbackRef()
+  const { setScrollElement, isVisible, scrollToTop } = useBackToTop()
+  useEffect(() => setScrollElement(gridApi?.element ?? null), [gridApi, setScrollElement])
   const {
     width,
     usableWidth,
@@ -176,6 +181,7 @@ export const InventoryItemGrid = ({ items, ...callbacks }: InventoryItemGridProp
             cellProps={{ items, realColumnCount, rowCount, cardWidth, callbacks }}
             className='py-6'
             columnCount={realColumnCount + 2}
+            gridRef={setGridApi}
             columnWidth={index =>
               index === 0 || index === realColumnCount + 1 ? PADDING : cardColumnWidth
             }
@@ -185,6 +191,7 @@ export const InventoryItemGrid = ({ items, ...callbacks }: InventoryItemGridProp
           />
         )
       )}
+      {items.length > 0 && <BackToTopButton visible={isVisible} onPress={scrollToTop} />}
     </div>
   )
 }
