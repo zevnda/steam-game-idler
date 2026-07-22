@@ -660,8 +660,6 @@
           "description": "Raccogli carte solo dai giochi con zero tempo di gioco registrato."
         },
         "dropSortOrder": {
-          "title": "Ordine carte",
-          "description": "Quali giochi usare per primi quando la coda viene ordinata per carte rimanenti.",
           "options": {
             "highestFirst": "Prima con più carte",
             "lowestFirst": "Prima con meno carte"
