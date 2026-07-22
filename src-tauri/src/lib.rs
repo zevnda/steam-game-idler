@@ -106,6 +106,8 @@ pub fn run() {
             steam_agent::commands::agent_logout,
             steam_agent::commands::agent_get_presence_settings,
             steam_agent::commands::agent_set_presence_settings,
+            steam_agent::commands::agent_get_ownership_settings,
+            steam_agent::commands::agent_set_ownership_settings,
             platform::is_portable,
             platform::is_dev,
             updater::kill_all_steam_utility_processes,

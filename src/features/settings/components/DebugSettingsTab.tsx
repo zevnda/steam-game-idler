@@ -6,13 +6,14 @@ import { useSessionStore } from '@/shared/stores/sessionStore'
 
 interface DebugSettingsTabProps {
   // Re-fetch callbacks from SettingsModal's own General/Achievement Unlocker/Inventory Manager/
-  // Card Farming hook instances - see useDebugSettings.ts's doc comment for why `resetSettings`
-  // needs these rather than fetching its own independent copies.
+  // Card Farming/Ownership hook instances - see useDebugSettings.ts's doc comment for why
+  // `resetSettings` needs these rather than fetching its own independent copies.
   refreshGeneralSettings: () => void
   refreshAchievementUnlockerSettings: () => void
   refreshInventorySettings: () => void
   refreshCardFarmingSettings: () => void
   refreshFreeGamesSettings: () => void
+  refreshOwnershipSettings: () => void
 }
 
 // The Debug tab of the (app-wide) SettingsModal - see useDebugSettings.ts's doc comment for the
@@ -26,6 +27,7 @@ export const DebugSettingsTab = ({
   refreshInventorySettings,
   refreshCardFarmingSettings,
   refreshFreeGamesSettings,
+  refreshOwnershipSettings,
 }: DebugSettingsTabProps) => {
   const { t } = useTranslation()
   const account = useSessionStore(state => state.account)
@@ -57,6 +59,7 @@ export const DebugSettingsTab = ({
     refreshInventorySettings,
     refreshCardFarmingSettings,
     refreshFreeGamesSettings,
+    refreshOwnershipSettings,
   })
 
   // Raw tracing lines have no id of their own, and can legitimately repeat (e.g. the same warning

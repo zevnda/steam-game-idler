@@ -3,6 +3,7 @@ use tauri::{AppHandle, State};
 use crate::error::AppResult;
 
 use super::manager::{AgentManager, LoginOutcome, QrChallenge};
+use super::ownership_settings::{self, OwnershipSettings};
 use super::presence_settings::{self, PresenceSettings};
 
 /// Starts (or restarts) an agent-mode sign-in for `username`/`password`. Resolves as soon as
@@ -121,4 +122,30 @@ pub async fn agent_set_presence_settings(
     }
 
     Ok(saved)
+}
+
+/// Reads this account's saved owned-games scope setting (all content vs. games-only) - agent-mode
+/// only, no CLI-mode equivalent (CLI mode always uses the games-only whitelist).
+#[tauri::command]
+pub async fn agent_get_ownership_settings(
+    app_handle: AppHandle,
+    manager: State<'_, AgentManager>,
+    username: String,
+) -> AppResult<OwnershipSettings> {
+    let steam_id = manager.steam_id(&username).await?;
+    ownership_settings::get(&app_handle, &steam_id).await
+}
+
+/// Saves this account's owned-games scope setting. No live-apply step - unlike presence settings,
+/// this has no daemon-side effect to push; the frontend triggers a fresh `get_owned_games` fetch
+/// itself once the save resolves (see `useAgentOwnershipSettings.ts`).
+#[tauri::command]
+pub async fn agent_set_ownership_settings(
+    app_handle: AppHandle,
+    manager: State<'_, AgentManager>,
+    username: String,
+    settings: OwnershipSettings,
+) -> AppResult<OwnershipSettings> {
+    let steam_id = manager.steam_id(&username).await?;
+    ownership_settings::set(&app_handle, &steam_id, settings).await
 }

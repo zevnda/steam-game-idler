@@ -74,8 +74,10 @@ namespace SteamUtility.Backends
             // PICS-based ownership resolves the account's full owned library itself - it has no
             // concept of "checking a candidate list", unlike the local-client backend's
             // BIsSubscribedApp loop. candidateAppIds is accepted for interface parity but ignored;
-            // the whitelist filter inside GetOwnedGamesAsync already narrows to real games.
-            var games = await _ownershipManager.GetOwnedGamesAsync(_bot);
+            // gamesOnly: true asks GetOwnedGamesAsync to apply the same whitelist filter
+            // SteamworksLocalBackend's own candidate list uses, so this backend's ownership scope
+            // matches it exactly.
+            var games = await _ownershipManager.GetOwnedGamesAsync(_bot, gamesOnly: true);
             return games.ToList();
         }
     }

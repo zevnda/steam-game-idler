@@ -203,7 +203,10 @@ namespace SteamUtility.Daemon
 
                     case "get_owned_apps":
                     {
-                        var games = await _ownershipManager.GetOwnedGamesAsync(_bot);
+                        var games = await _ownershipManager.GetOwnedGamesAsync(
+                            _bot,
+                            request.GamesOnly ?? false
+                        );
                         IpcServer.SendResponse(request.Id, true, new { games });
                         break;
                     }

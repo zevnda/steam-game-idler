@@ -7,6 +7,7 @@ using SteamKit2.Internal;
 using SteamUtility.Core.Errors;
 using SteamUtility.Core.Logging;
 using SteamUtility.Core.Models;
+using SteamUtility.Core.Services;
 
 namespace SteamUtility.Daemon.Bot
 {
@@ -14,6 +15,8 @@ namespace SteamUtility.Daemon.Bot
     // Steam client needed. Correctly reflects Family Sharing / borrowed games.
     public sealed class OwnershipManager
     {
+        private readonly GameWhitelistProvider _whitelistProvider = new();
+
         // Payment methods that were never an actual money transaction through Steam's checkout -
         // Steam's refund policy has nothing to refund for these regardless of how recently the
         // license was granted, so they're excluded entirely from "recently purchased" tracking
@@ -44,21 +47,23 @@ namespace SteamUtility.Daemon.Bot
             Dictionary<uint, DateTime> LastRefundEligiblePurchaseUtcByAppId
         );
 
-        public async Task<IReadOnlyList<OwnedGame>> GetOwnedGamesAsync(SteamBot bot)
+        public async Task<IReadOnlyList<OwnedGame>> GetOwnedGamesAsync(SteamBot bot, bool gamesOnly)
         {
             if (!bot.IsLoggedOn)
             {
                 throw new NotLoggedOnException();
             }
 
-            // Deliberately unfiltered: every PICS-resolved app id tied to an owned license comes
-            // through as-is (games, videos/movies, DLC, tools, demos, soundtracks) - agent mode has
-            // no curated-whitelist dependency the way CLI mode's SteamworksLocalBackend does, so
-            // there's no ownership-check reason to intersect against GameWhitelistProvider here.
-            // This intentionally surfaces non-game owned content (e.g. Steam movies like
-            // 518440/518450) that the whitelist used to drop. CLI mode is unaffected - it still
-            // depends on the whitelist as its only ownership-check candidate list, see
-            // SteamworksLocalBackend.CheckOwnershipAsync.
+            // By default (gamesOnly: false) this is deliberately unfiltered: every PICS-resolved
+            // app id tied to an owned license comes through as-is (games, videos/movies, DLC,
+            // tools, demos, soundtracks) - some users specifically want this, including non-game
+            // owned content (e.g. Steam movies like 518440/518450) that the whitelist would drop.
+            // When gamesOnly is true (a user-facing setting - see
+            // src-tauri/src/steam_agent/ownership_settings.rs), the resolved app ids are
+            // intersected against the same curated GameWhitelistProvider candidate list CLI mode's
+            // SteamworksLocalBackend.CheckOwnershipAsync always uses, matching CLI mode's scope
+            // exactly. Family Sharing / borrowed games are unaffected either way - that's inherent
+            // to bot.OwnedLicenses below, not something either mode filters.
 
             // LicenseListCallback (what OwnedLicenses below is built from) is a separate server
             // push with no ordering guarantee relative to the login success this call is triggered
@@ -68,10 +73,17 @@ namespace SteamUtility.Daemon.Bot
             await bot.WaitForLicenseListAsync(TimeSpan.FromSeconds(10));
             var resolution = await ResolveOwnedAppIdsAsync(bot);
 
-            var games = new List<OwnedGame>();
-            if (resolution.AppIds.Count > 0)
+            var appIds = resolution.AppIds;
+            if (gamesOnly)
             {
-                var appRequests = resolution.AppIds
+                var whitelist = await _whitelistProvider.GetWhitelistAsync();
+                appIds = new HashSet<uint>(appIds.Where(whitelist.Contains));
+            }
+
+            var games = new List<OwnedGame>();
+            if (appIds.Count > 0)
+            {
+                var appRequests = appIds
                     .Select(appId => new SteamApps.PICSRequest(appId))
                     .ToList();
 

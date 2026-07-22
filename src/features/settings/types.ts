@@ -33,6 +33,7 @@ export interface ResetSettingsResult {
   inventorySettings: InventorySettings | null
   cardFarmingSettings: CardFarmingSettings | null
   freeGamesSettings: FreeGamesSettings | null
+  ownershipSettings: OwnershipSettings | null
 }
 
 // Mirrors src-tauri/src/steam_community/mod.rs::SteamCookies. Each cookie-authenticated feature
@@ -61,4 +62,10 @@ export type PersonaState =
 export interface PresenceSettings {
   personaState: PersonaState
   customIdleStatus: string | null
+}
+
+// Mirrors src-tauri/src/steam_agent/ownership_settings.rs's `OwnershipSettings` (serde
+// `rename_all = "camelCase"`). Agent-mode only - see that module's doc comment.
+export interface OwnershipSettings {
+  gamesOnly: boolean
 }

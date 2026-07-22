@@ -103,6 +103,9 @@ pub enum AppError {
     #[error("failed to read/write the presence settings cache: {0}")]
     PresenceSettingsIo(String),
 
+    #[error("failed to read/write the ownership settings cache: {0}")]
+    OwnershipSettingsIo(String),
+
     #[error("failed to read/write a custom achievement order file: {0}")]
     AchievementOrderIo(String),
 
@@ -260,6 +263,7 @@ impl AppError {
                 "achievement_unlocker_settings_io_failed".to_string()
             }
             AppError::PresenceSettingsIo(_) => "presence_settings_io_failed".to_string(),
+            AppError::OwnershipSettingsIo(_) => "ownership_settings_io_failed".to_string(),
             AppError::AchievementOrderIo(_) => "achievement_order_io_failed".to_string(),
             AppError::PlayerProfilePrivate => "player_profile_private".to_string(),
             AppError::PlayerNoTimestamps => "player_no_timestamps".to_string(),

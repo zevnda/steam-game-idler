@@ -1,5 +1,5 @@
 import type { TranslationKey } from '@/i18n'
-import type { PersonaState } from '../types'
+import type { OwnershipSettings, PersonaState } from '../types'
 import { disable, enable, isEnabled } from '@tauri-apps/plugin-autostart'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -14,6 +14,7 @@ import {
   Input,
   ListBox,
   Select,
+  Skeleton,
   TextField,
   toast,
   Typography,
@@ -70,6 +71,15 @@ interface GeneralSettingsTabProps {
   onSaveStartMinimized: (enabled: boolean) => Promise<boolean>
   onSaveCloseToTray: (enabled: boolean) => Promise<boolean>
   onSaveAutoUpdateGamesList: (enabled: boolean) => Promise<boolean>
+  // Lifted to `SettingsModal` (unlike `presence`, which stays self-contained below) so
+  // `useDebugSettings`'s "Reset Settings" can refresh this tab's displayed value the same way it
+  // already does for achievement-unlocker/inventory-manager/card-farming/free-games - see
+  // `useAgentOwnershipSettings.ts`'s doc comment.
+  ownershipSettings: OwnershipSettings | null
+  ownershipIsLoading: boolean
+  ownershipIsSaving: boolean
+  ownershipActionErrorCode: string | null
+  onSaveOwnership: (settings: OwnershipSettings) => Promise<boolean>
 }
 
 export const GeneralSettingsTab = ({
@@ -86,6 +96,11 @@ export const GeneralSettingsTab = ({
   onSaveStartMinimized,
   onSaveCloseToTray,
   onSaveAutoUpdateGamesList,
+  ownershipSettings,
+  ownershipIsLoading,
+  ownershipIsSaving,
+  ownershipActionErrorCode,
+  onSaveOwnership,
 }: GeneralSettingsTabProps) => {
   const { t } = useTranslation()
   const [keyValue, setKeyValue] = useState('')
@@ -204,6 +219,15 @@ export const GeneralSettingsTab = ({
     await onSaveCloseToTray(next)
     if (actionErrorCode) {
       toast.danger(t(errorMessageKey(actionErrorCode), { code: actionErrorCode }))
+    }
+  }
+
+  // Instant-apply, matching antiAway/autoUpdateGamesList - `onSaveOwnership` already re-fetches the
+  // games list itself once the setting's saved, so no extra logic is needed here.
+  const handleToggleGamesOnly = async (next: boolean) => {
+    const ok = await onSaveOwnership({ gamesOnly: next })
+    if (!ok && ownershipActionErrorCode) {
+      toast.danger(t(errorMessageKey(ownershipActionErrorCode), { code: ownershipActionErrorCode }))
     }
   }
 
@@ -478,6 +502,25 @@ export const GeneralSettingsTab = ({
                 </Button>
               </div>
             </div>
+          </SettingsRow>
+
+          <SettingsRow
+            description={t('dashboard.settings.general.gamesOnly.description')}
+            title={t('dashboard.settings.general.gamesOnly.label')}
+          >
+            {/* No fallback-guessed `isSelected` while loading - the real default is `true`, but a
+                user who's saved `false` would otherwise flash as "enabled" for a moment on every
+                tab open before flipping to their actual saved value. A skeleton avoids ever
+                showing a wrong state, matching FreeGamesSettingsTab's identical loading gate. */}
+            {ownershipIsLoading || !ownershipSettings ? (
+              <Skeleton className='h-8 w-24 rounded-lg' />
+            ) : (
+              <ToggleSwitch
+                isSelected={ownershipSettings.gamesOnly}
+                isDisabled={ownershipIsSaving}
+                onChange={handleToggleGamesOnly}
+              />
+            )}
           </SettingsRow>
         </>
       )}

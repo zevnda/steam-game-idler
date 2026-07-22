@@ -969,6 +969,10 @@
           "description": "Replace the \"Playing [game]\" text your friends see while idling with your own custom message.",
           "placeholder": "e.g. Farming trading cards"
         },
+        "gamesOnly": {
+          "label": "Show games only",
+          "description": "Only show owned games and family-shared games in your library, hiding DLC, soundtracks, videos, and tools. Changing this refreshes your games list."
+        },
         "language": {
           "label": "Language",
           "description": "Choose the app's display language.",
