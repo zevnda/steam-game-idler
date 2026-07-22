@@ -39,7 +39,12 @@ export interface FarmingProgress {
 
 // Mirrors src-tauri/src/card_farming/mod.rs::CompletedFarmReason.
 export type CompletedFarmReason =
-  'dropsExhausted' | 'maxCardDrops' | 'maxCardFarmingTime' | 'maxPlaytime' | 'noDropsRemaining'
+  | 'dropsExhausted'
+  | 'maxCardDrops'
+  | 'maxCardFarmingTime'
+  | 'maxPlaytime'
+  | 'noDropsRemaining'
+  | 'refundWindow'
 
 // Mirrors src-tauri/src/card_farming/mod.rs::CompletedFarm.
 export interface CompletedFarm {
@@ -47,6 +52,9 @@ export interface CompletedFarm {
   name: string
   remaining: number
   reason: CompletedFarmReason
+  // Only set when `reason` is `'refundWindow'` - unix seconds after which this game is expected
+  // to exit Steam's refund window and resume farming automatically.
+  farmableAt: number | null
 }
 
 export interface FarmingState {
@@ -88,4 +96,7 @@ export interface CardFarmingSettings {
   autoFarmCards: boolean
   multiGameFarmingNoticeSeen: boolean
   singleFarmingMode: boolean
+  // Agent-mode only - see `card_farming::settings::CardFarmingSettings::skip_refundable_games`'s
+  // doc comment. A no-op for CLI-mode accounts (no purchase-date data exists for them).
+  skipRefundableGames: boolean
 }

@@ -19,5 +19,14 @@ namespace SteamUtility.Core.Models
         // Steam Community profile-visibility settings) for playtime data.
         public uint? PlaytimeForeverMinutes { get; init; }
         public uint? RtimeLastPlayed { get; init; }
+
+        // Unix seconds (UTC) of the most recent license grant for this app that was actually paid
+        // for (see OwnershipManager.IsRefundEligiblePurchase) - null if every license granting this
+        // app was a gift, key redemption, family-share, or other free/promotional grant, since Steam
+        // never considers those refundable regardless of age. Always null for the local-client
+        // (CLI-mode) backend, which has no license-grant-time API surface at all. Unix seconds
+        // rather than DateTime so this never depends on the JSON serializer's DateTimeKind handling
+        // across the IPC boundary.
+        public long? LastRefundEligiblePurchaseUnixSeconds { get; init; }
     }
 }

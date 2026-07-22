@@ -30,12 +30,23 @@ use crate::max_playtime;
 use crate::steam_agent::AgentManager;
 use crate::steam_community::credentials;
 
+use super::refund_window;
 use super::settings::FarmingCaps;
 use super::{
     queue, scraper, settings, CompletedFarm, CompletedFarmReason, FarmingProgress, FarmingState,
     GameWithDrops, SteamCookies,
 };
 use super::{DROPS_POLL_INTERVAL, FARMING_STATE_EVENT};
+
+/// One owned-games-cache entry's worth of data this module's checks care about - bundles
+/// playtime (max-playtime cap, refund-window playtime threshold) and purchase recency
+/// (refund-window date threshold) so [`fetch_queued_games`] and [`poll_active`] each only need one
+/// cache read/lookup instead of a separate one per check.
+#[derive(Debug, Clone, Copy, Default)]
+struct CachedGameInfo {
+    playtime_forever_minutes: u64,
+    last_refund_eligible_purchase_unix_seconds: Option<i64>,
+}
 
 /// Mirrors `idling`'s own concurrent-games cap (a real Steam protocol limit - see that module's doc
 /// comment on `MAX_CONCURRENT_GAMES`), defined again here (rather than reaching into `idling`'s
@@ -64,21 +75,31 @@ async fn fetch_queued_games(
     cookies: &SteamCookies,
     queued_games: &HashMap<u32, String>,
 ) -> AppResult<(Vec<GameWithDrops>, Vec<CompletedFarm>)> {
+    let farming_settings = settings::get(app_handle, steam_id).await?;
+
     let mut games = scraper::get_games_with_drops(steam_id, cookies).await?;
     games.retain(|g| queued_games.contains_key(&g.app_id));
 
     // Exclude games that have already reached their max-playtime cap - `playtime_hours` above is
     // a different, badge-page-scraped display value, not real playtime, so this needs its own
     // owned-games-cache lookup rather than reusing it. Best-effort: a read failure degrades to
-    // "no known playtime" for every game rather than failing the whole candidate fetch.
-    let playtime_by_app_id = playtime_lookup(app_handle, steam_id);
+    // "no known playtime/purchase data" for every game rather than failing the whole candidate
+    // fetch.
+    let game_cache = owned_game_cache_lookup(app_handle, steam_id);
     let mut kept = Vec::with_capacity(games.len());
     let mut excluded = Vec::new();
     let mut found_app_ids = HashSet::with_capacity(games.len());
     for game in games {
         found_app_ids.insert(game.app_id);
-        let playtime = playtime_by_app_id.get(&game.app_id).copied().unwrap_or(0);
-        if max_playtime::settings::is_over_cap(app_handle, steam_id, game.app_id, playtime).await? {
+        let cached = game_cache.get(&game.app_id).copied().unwrap_or_default();
+        if max_playtime::settings::is_over_cap(
+            app_handle,
+            steam_id,
+            game.app_id,
+            cached.playtime_forever_minutes,
+        )
+        .await?
+        {
             if let Err(e) = queue::remove(app_handle, steam_id, game.app_id).await {
                 tracing::warn!(app_id = game.app_id, error = %e.code(), "card farming: failed to remove over-max-playtime game from queue");
             } else {
@@ -92,11 +113,48 @@ async fn fetch_queued_games(
                 name: game.name,
                 remaining: game.remaining,
                 reason: CompletedFarmReason::MaxPlaytime,
+                farmable_at: None,
             });
             continue;
         }
         kept.push(game);
     }
+
+    // Refund-window exclusion - see `settings::CardFarmingSettings::skip_refundable_games`'s doc
+    // comment. Deliberately doesn't dequeue from the persisted queue (unlike the max-playtime
+    // exclusion above): this reason resolves itself as time passes or playtime accrues elsewhere,
+    // so the game should still be there next time this account's queue is read.
+    let kept = if farming_settings.skip_refundable_games {
+        let now = chrono::Utc::now().timestamp();
+        let mut still_kept = Vec::with_capacity(kept.len());
+        for game in kept {
+            let cached = game_cache.get(&game.app_id).copied().unwrap_or_default();
+            if let Some(farmable_at) = refund_window::farmable_at_if_in_refund_window(
+                cached.last_refund_eligible_purchase_unix_seconds,
+                cached.playtime_forever_minutes,
+                now,
+            ) {
+                tracing::info!(
+                    app_id = game.app_id,
+                    name = %game.name,
+                    farmable_at,
+                    "card farming: skipped game still inside refund window"
+                );
+                excluded.push(CompletedFarm {
+                    app_id: game.app_id,
+                    name: game.name,
+                    remaining: game.remaining,
+                    reason: CompletedFarmReason::RefundWindow,
+                    farmable_at: Some(farmable_at),
+                });
+                continue;
+            }
+            still_kept.push(game);
+        }
+        still_kept
+    } else {
+        kept
+    };
     let mut games = kept;
 
     for (&app_id, name) in queued_games {
@@ -113,10 +171,11 @@ async fn fetch_queued_games(
             name: name.clone(),
             remaining: 0,
             reason: CompletedFarmReason::NoDropsRemaining,
+            farmable_at: None,
         });
     }
 
-    let drop_sort_order = settings::get(app_handle, steam_id).await?.drop_sort_order;
+    let drop_sort_order = farming_settings.drop_sort_order;
     // Only read the persisted queue's order when it's actually going to be used - `all_games`
     // mode farms games that were never added to this queue at all, so a read here would just be
     // wasted I/O for a position lookup `sort_by_drop_order` will never find a match for anyway.
@@ -133,15 +192,24 @@ async fn fetch_queued_games(
     Ok((games, excluded))
 }
 
-/// Best-effort `app_id -> playtime_forever_minutes` lookup from the owned-games cache - shared by
-/// [`fetch_queued_games`]'s candidate filter and [`backfill_active`]'s per-game baseline. A read
-/// failure degrades to an empty map (every game reads as "0 minutes known") rather than failing
-/// the caller outright.
-fn playtime_lookup(app_handle: &AppHandle, steam_id: &str) -> HashMap<u32, u64> {
+/// Best-effort `app_id -> `[`CachedGameInfo`]` lookup from the owned-games cache - shared by
+/// [`fetch_queued_games`]'s candidate filter, [`poll_active`]'s live re-checks, and
+/// [`backfill_active`]'s per-game playtime baseline. A read failure degrades to an empty map
+/// (every game reads as "nothing known") rather than failing the caller outright.
+fn owned_game_cache_lookup(app_handle: &AppHandle, steam_id: &str) -> HashMap<u32, CachedGameInfo> {
     games::commands::get_owned_games_cache(app_handle.clone(), steam_id.to_string())
         .unwrap_or_default()
         .into_iter()
-        .map(|g| (g.app_id, g.playtime_forever_minutes))
+        .map(|g| {
+            (
+                g.app_id,
+                CachedGameInfo {
+                    playtime_forever_minutes: g.playtime_forever_minutes,
+                    last_refund_eligible_purchase_unix_seconds: g
+                        .last_refund_eligible_purchase_unix_seconds,
+                },
+            )
+        })
         .collect()
 }
 
@@ -381,9 +449,13 @@ impl CardFarmingManager {
 /// [`MAX_CONCURRENT_FARMING`], or `1` when `single_farming_mode` is on - see
 /// `settings::CardFarmingSettings::single_farming_mode`'s doc comment) or `queue` runs out -
 /// returns `true` if anything was added (the caller uses this to decide whether the idling set
-/// needs to be re-announced). `playtime_by_app_id` seeds each newly-active game's
+/// needs to be re-announced). `game_cache` seeds each newly-active game's
 /// [`FarmingProgress::baseline_playtime_minutes`] - see that field's doc comment.
-fn backfill_active(farming: &mut FarmingState, playtime_by_app_id: &HashMap<u32, u64>, cap: usize) -> bool {
+fn backfill_active(
+    farming: &mut FarmingState,
+    game_cache: &HashMap<u32, CachedGameInfo>,
+    cap: usize,
+) -> bool {
     let mut added = false;
     while farming.active.len() < cap {
         let Some(game) = (!farming.queue.is_empty()).then(|| farming.queue.remove(0)) else {
@@ -402,7 +474,10 @@ fn backfill_active(farming: &mut FarmingState, playtime_by_app_id: &HashMap<u32,
             remaining: game.remaining,
             playtime_hours: game.playtime_hours,
             started_at: Instant::now(),
-            baseline_playtime_minutes: playtime_by_app_id.get(&game.app_id).copied().unwrap_or(0),
+            baseline_playtime_minutes: game_cache
+                .get(&game.app_id)
+                .map(|c| c.playtime_forever_minutes)
+                .unwrap_or(0),
         });
         added = true;
     }
@@ -446,14 +521,16 @@ fn is_capped(progress: &FarmingProgress, caps: &FarmingCaps) -> Option<Completed
 /// zero *or* whose `caps` auto-stop condition is met into `completed` - returns `true` if anything
 /// finished, since a finished game must stop idling immediately, not just get requeued next poll.
 ///
-/// Every reason now also dequeues the game from the account's *persisted* `queue` (mirrors
-/// `achievement_unlocker::manager`'s identical dequeue-on-any-terminal-outcome behavior) - an
-/// earlier version of this function only dequeued on a genuine `DropsExhausted`, reasoning that a
-/// cap-based stop could leave real drops remaining and so should stay queued for next time. That
-/// asymmetry with achievement-unlocker (which always dequeues) was a source of user confusion, so
-/// both features now behave the same way: a cap-based stop is just as final as a genuine finish for
-/// *this account's queue* - raising the cap and re-adding the game is an explicit, deliberate action
-/// rather than something that silently resumes on its own.
+/// Every reason except [`CompletedFarmReason::RefundWindow`] also dequeues the game from the
+/// account's *persisted* `queue` (mirrors `achievement_unlocker::manager`'s identical
+/// dequeue-on-any-terminal-outcome behavior) - an earlier version of this function only dequeued on
+/// a genuine `DropsExhausted`, reasoning that a cap-based stop could leave real drops remaining and
+/// so should stay queued for next time. That asymmetry with achievement-unlocker (which always
+/// dequeues) was a source of user confusion, so both features now behave the same way for every cap:
+/// a cap-based stop is just as final as a genuine finish for *this account's queue* - raising the cap
+/// and re-adding the game is an explicit, deliberate action rather than something that silently
+/// resumes on its own. `RefundWindow` is the one deliberate exception - see
+/// [`CompletedFarm::farmable_at`]'s doc comment for why.
 ///
 /// Returns `Err(SteamCommunitySessionExpired)` instead of a per-game warn-and-continue if *any*
 /// game's poll confirms the session itself is dead - every active game shares the same cookies, so
@@ -465,6 +542,7 @@ async fn poll_active(
     steam_id: &str,
     cookies: &SteamCookies,
     caps: &FarmingCaps,
+    skip_refundable_games: bool,
     queued_games: &mut HashMap<u32, String>,
 ) -> AppResult<bool> {
     let app_ids: Vec<u32> = state.lock().await.active.iter().map(|p| p.app_id).collect();
@@ -531,7 +609,7 @@ async fn poll_active(
             i += 1;
             continue;
         };
-        finished.push((s.active.remove(i), reason));
+        finished.push((s.active.remove(i), reason, None));
     }
     drop(s);
 
@@ -556,6 +634,7 @@ async fn poll_active(
             finished.push((
                 still_active.active.remove(i),
                 CompletedFarmReason::MaxPlaytime,
+                None,
             ));
         } else {
             i += 1;
@@ -563,8 +642,39 @@ async fn poll_active(
     }
     drop(still_active);
 
+    // Refund-window re-check - live, not decided once when the game entered `active`, since the
+    // 14-day purchase window keeps elapsing and this same idling session is what's accruing the
+    // playtime that will eventually clear it. Only re-derives `farmable_at` for games not already
+    // caught above this poll (mirrors the max-playtime pass's own "didn't already stop" scoping).
+    if skip_refundable_games {
+        let game_cache = owned_game_cache_lookup(app_handle, steam_id);
+        let now = chrono::Utc::now().timestamp();
+        let mut i = 0;
+        let mut still_active = state.lock().await;
+        while i < still_active.active.len() {
+            let progress = &still_active.active[i];
+            let estimated_minutes =
+                progress.baseline_playtime_minutes + progress.started_at.elapsed().as_secs() / 60;
+            let purchase = game_cache
+                .get(&progress.app_id)
+                .and_then(|c| c.last_refund_eligible_purchase_unix_seconds);
+            if let Some(farmable_at) =
+                refund_window::farmable_at_if_in_refund_window(purchase, estimated_minutes, now)
+            {
+                finished.push((
+                    still_active.active.remove(i),
+                    CompletedFarmReason::RefundWindow,
+                    Some(farmable_at),
+                ));
+            } else {
+                i += 1;
+            }
+        }
+        drop(still_active);
+    }
+
     let finished_any = !finished.is_empty();
-    for (done, reason) in finished {
+    for (done, reason, farmable_at) in finished {
         match reason {
             CompletedFarmReason::DropsExhausted => {
                 tracing::info!(app_id = done.app_id, name = %done.name, "card farming: drops exhausted");
@@ -578,6 +688,9 @@ async fn poll_active(
             CompletedFarmReason::MaxPlaytime => {
                 tracing::info!(app_id = done.app_id, name = %done.name, "card farming: max playtime cap reached");
             }
+            CompletedFarmReason::RefundWindow => {
+                tracing::info!(app_id = done.app_id, name = %done.name, farmable_at, "card farming: skipped game still inside refund window");
+            }
             // Never actually reached from here - `NoDropsRemaining` is only ever assigned by
             // `fetch_queued_games`'s pre-check, before a game ever enters `active` for `poll_active`
             // to find. Matched explicitly anyway so this stays exhaustive if that ever changes.
@@ -585,8 +698,13 @@ async fn poll_active(
                 tracing::info!(app_id = done.app_id, name = %done.name, "card farming: no card drops remaining");
             }
         }
-        if let Err(e) = queue::remove(app_handle, steam_id, done.app_id).await {
-            tracing::warn!(app_id = done.app_id, error = %e.code(), "card farming: failed to remove finished game from queue");
+        // `RefundWindow` deliberately skips the persisted-queue removal every other reason gets -
+        // see `CompletedFarm::farmable_at`'s doc comment: this reason resolves itself, the others
+        // need a deliberate user action before the game is farmable again.
+        if !matches!(reason, CompletedFarmReason::RefundWindow) {
+            if let Err(e) = queue::remove(app_handle, steam_id, done.app_id).await {
+                tracing::warn!(app_id = done.app_id, error = %e.code(), "card farming: failed to remove finished game from queue");
+            }
         }
         // See `CardFarmingManager::start`'s identical prune - without this, a cap-based stop whose
         // game still has real drops remaining would reappear in the next `active`/`queue`-both-empty
@@ -597,6 +715,7 @@ async fn poll_active(
             name: done.name,
             remaining: done.remaining,
             reason,
+            farmable_at,
         });
     }
     Ok(finished_any)
@@ -756,17 +875,18 @@ async fn run_cycle(
     let mut queue_genuinely_empty = false;
 
     while !stopped.load(Ordering::SeqCst) {
-        let playtime_by_app_id = playtime_lookup(&app_handle, &steam_id);
-        // Read fresh every iteration (not just once at cycle start) so toggling this setting
+        let game_cache = owned_game_cache_lookup(&app_handle, &steam_id);
+        // Read fresh every iteration (not just once at cycle start) so toggling either setting
         // mid-session takes effect on the very next poll - same reasoning as `caps` below.
-        let single_farming_mode = settings::get(&app_handle, &steam_id)
-            .await
-            .map(|s| s.single_farming_mode)
-            .unwrap_or(false);
-        let cap = if single_farming_mode { 1 } else { MAX_CONCURRENT_FARMING };
+        let farming_settings = settings::get(&app_handle, &steam_id).await.unwrap_or_default();
+        let cap = if farming_settings.single_farming_mode {
+            1
+        } else {
+            MAX_CONCURRENT_FARMING
+        };
         let added = {
             let mut s = state.lock().await;
-            backfill_active(&mut s, &playtime_by_app_id, cap)
+            backfill_active(&mut s, &game_cache, cap)
         };
 
         let active_empty = state.lock().await.active.is_empty();
@@ -852,7 +972,16 @@ async fn run_cycle(
         });
         let poll_result = {
             let mut qg = queued_games.lock().await;
-            poll_active(&app_handle, &state, &steam_id, &cookies, &caps, &mut qg).await
+            poll_active(
+                &app_handle,
+                &state,
+                &steam_id,
+                &cookies,
+                &caps,
+                farming_settings.skip_refundable_games,
+                &mut qg,
+            )
+            .await
         };
 
         let finished = match poll_result {
