@@ -16,7 +16,8 @@
       "done": "Fatto",
       "copy": "Copia",
       "paste": "Incolla",
-      "add": "Aggiungi"
+      "add": "Aggiungi",
+      "backToTop": "Torna in alto"
     },
     "gameCardMenu": {
       "startIdling": "Inizia idle",
@@ -87,6 +88,9 @@
     "proTier": {
       "gamerRequired": "Richiede il piano Gamer.",
       "casualRequired": "Richiede il piano Casual."
+    },
+    "badges": {
+      "beta": "Beta"
     },
     "tabs": {
       "allGames": "Tutti i giochi",
@@ -593,6 +597,10 @@
         "title": "Cancellare la coda di Raccolta carte?",
         "description": "Questo rimuoverà tutti i {{count}} giochi dalla coda di Raccolta carte."
       },
+      "multiGameNotice": {
+        "title": "Raccogliere carte da più giochi contemporaneamente?",
+        "description": "Raccogliere carte da più giochi contemporaneamente può rallentare la velocità con cui vengono ottenute per ciascun gioco. Se per un po' non ottieni carte, prova ad attivare la 'Modalità raccolta singola' in Impostazioni → Raccolta carte."
+      },
       "confirmClearBlacklist": {
         "title": "Cancellare la lista nera di Raccolta carte?",
         "description": "Questo rimuoverà tutti i {{count}} giochi dalla lista nera di Raccolta carte."
@@ -629,7 +637,8 @@
         "completedMaxCardDrops": "Numero massimo di carte raggiunto ({{remaining}} rimaste)",
         "completedMaxCardFarmingTime": "Tempo massimo di raccolta raggiunto ({{remaining}} rimaste)",
         "completedMaxPlaytime": "Tempo massimo di gioco raggiunto ({{remaining}} rimaste)",
-        "completedNoDropsRemaining": "Niente più da raccogliere"
+        "completedNoDropsRemaining": "Niente più da raccogliere",
+        "completedRefundWindow": "Ancora nel periodo di rimborso (raccoglibile di nuovo il {{date}})"
       },
       "errors": {
         "title": "Impossibile aggiornare Raccolta carte",
@@ -639,6 +648,14 @@
         "generic": "Qualcosa è andato storto durante l'aggiornamento di Raccolta carte. Riprova. ({{code}})"
       },
       "settings": {
+        "singleFarmingMode": {
+          "title": "Modalità raccolta singola",
+          "description": "Raccogli carte da un solo gioco della coda alla volta anziché da più giochi contemporaneamente: può accelerare l'ottenimento di carte per ciascun gioco."
+        },
+        "skipRefundableGames": {
+          "title": "Salta i giochi rimborsabili",
+          "description": "Non raccogliere carte da un gioco finché si trova ancora nel periodo di rimborso di Steam (acquistato negli ultimi 14 giorni con meno di 2 ore di gioco)."
+        },
         "autoFarmCards": {
           "title": "Raccolta carte automatica",
           "description": "Controlla periodicamente i giochi posseduti con carte rimanenti e avvia automaticamente la raccolta."
@@ -660,7 +677,10 @@
           "description": "Raccogli carte solo dai giochi con zero tempo di gioco registrato."
         },
         "dropSortOrder": {
+          "title": "Ordine di raccolta",
+          "description": "Scegli l'ordine in cui raccogliere carte dai giochi nella coda.",
           "options": {
+            "queueOrder": "Ordine della coda",
             "highestFirst": "Prima con più carte",
             "lowestFirst": "Prima con meno carte"
           }
@@ -948,6 +968,10 @@
           "label": "Stato personalizzato durante l'idle",
           "description": "Sostituisce il testo \"Sta giocando a [gioco]\" che gli amici vedono durante l'idle con un messaggio personalizzato.",
           "placeholder": "es. Raccolta carte collezionabili"
+        },
+        "gamesOnly": {
+          "label": "Mostra solo giochi",
+          "description": "Mostra nella libreria solo i giochi posseduti e condivisi in famiglia, nascondendo DLC, colonne sonore, video e strumenti. La modifica aggiorna l'elenco dei giochi."
         },
         "language": {
           "label": "Lingua",
