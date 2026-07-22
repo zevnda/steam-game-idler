@@ -365,11 +365,16 @@ async fn handle_line(
                 );
             }
 
-            // Re-resolved rather than reusing `key` from the top of this arm - a `refresh_token`
-            // event that just re-keyed `account_key` above must still have *this* generic forward
-            // (which fires unconditionally for every event, including this one) carry the new
-            // real key, not the stale pre-promotion snapshot.
-            let key = account_key.lock().unwrap().clone();
+            // Deliberately reuses `key` from the top of this arm, NOT a fresh post-rekey read - a
+            // `refresh_token` event produced by a QR attempt must still be emitted under the
+            // placeholder key the frontend is still watching for at this exact moment
+            // (`useAgentQrSignIn.ts`'s `sessionKeyRef`, only updated to `null`/resolved *inside*
+            // its `refresh_token` handler). Emitting the already-rekeyed real key here means the
+            // frontend's `payload.account !== sessionKeyRef.current` filter never matches, so the
+            // handler - and the QR sign-in flow - never fires at all, even though the daemon and
+            // Rust backend both completed the login successfully. Every *subsequent* event for
+            // this process still gets the new key correctly, since each is a fresh `handle_line`
+            // call that re-reads `account_key` at its own top, after the rekey above has landed.
             let _ = app_handle.emit(
                 AGENT_EVENT,
                 serde_json::json!({
