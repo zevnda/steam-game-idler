@@ -18,6 +18,37 @@ interface AdManifest {
 const DEFAULT_HOUSE_AD_COUNT = 15
 const ROTATE_INTERVAL_MS = 30 * 1000
 
+// Real `/supported-games/*` slugs the sidebar iframe rotates through to request a Google ad -
+// these are dedicated marketing/SEO landing pages (docs/app/(marketing)/supported-games), each
+// carrying its own fixed-corner ad unit, kept as a static list rather than derived from the docs
+// site's data since the two are separate deployable packages. Add new game slugs here as they
+// land in `docs/app/(marketing)/supported-games/_data/games.ts`.
+const AD_HOST_GAME_SLUGS = [
+  'counter-strike-2',
+  'dota-2',
+  'team-fortress-2',
+  'pubg-battlegrounds',
+  'grand-theft-auto-v',
+  'rust',
+  'garrys-mod',
+  'left-4-dead-2',
+  'portal-2',
+  'terraria',
+  'stardew-valley',
+  'among-us',
+  'valheim',
+  'sea-of-thieves',
+  'rocket-league',
+  'payday-2',
+  'cyberpunk-2077',
+  'dead-by-daylight',
+]
+
+// AdSense's own "ad actually painted" signal - Google's ad iframe posts this straight to
+// `window.top` when it renders, which is us (the app is the outermost window, the docs page and
+// the Google ad iframe are both nested inside our own iframe below). No custom relay needed.
+const GOOGLE_AD_FILL_ORIGIN = 'https://googleads.g.doubleclick.net'
+
 // House-ad slot in the sidebar footer, shown only to free-tier accounts - ported from `main`'s
 // AdSlot.tsx. One fixed bug: the "Remove ads" upsell now checks `hasCasualAccess` (matching the
 // visibility gate below), not `main`'s `hasGamerAccess` - ad removal is a Casual-tier perk.
@@ -35,6 +66,28 @@ export const AdSlot = () => {
   const [manifestCount, setManifestCount] = useState(DEFAULT_HOUSE_AD_COUNT)
   const [manifestLinks, setManifestLinks] = useState<Record<string, string>>({})
   const failedHouseAdsRef = useRef<Set<string>>(new Set())
+
+  const [adFilled, setAdFilled] = useState(false)
+  const [gameSlug] = useState(
+    () => AD_HOST_GAME_SLUGS[Math.floor(Math.random() * AD_HOST_GAME_SLUGS.length)],
+  )
+
+  useEffect(() => {
+    const handleAdFillMessage = (event: MessageEvent) => {
+      if (event.origin !== GOOGLE_AD_FILL_ORIGIN) return
+      try {
+        const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data
+        if (data?.googMsgType === 'adpnt') {
+          setAdFilled(true)
+        }
+      } catch {
+        // ignore malformed payloads
+      }
+    }
+
+    window.addEventListener('message', handleAdFillMessage)
+    return () => window.removeEventListener('message', handleAdFillMessage)
+  }, [])
 
   useEffect(() => {
     fetch(`${CDN_BASE_URL}/ads/manifest.json`)
@@ -115,22 +168,32 @@ export const AdSlot = () => {
       style={{ zoom: collapsed ? 0.16 : 0.75 }}
     >
       <div className='relative flex h-62.5 w-75 items-center justify-center overflow-hidden rounded-lg'>
-        <div
-          className={cn(
-            'absolute inset-0 z-10 flex items-center justify-center bg-[#121316]',
-            houseAdLink && 'cursor-pointer',
-          )}
-          onClick={() => houseAdLink && openExternalLink(houseAdLink)}
-        >
-          <Image
-            alt='Advertisement'
-            className='h-full w-full object-fill'
-            height={250}
-            src={houseAd}
-            width={300}
-            onError={handleHouseAdError}
-          />
-        </div>
+        <iframe
+          className='overflow-scroll -mt-87.5 -ml-75 h-150 w-150'
+          sandbox='allow-scripts allow-same-origin allow-forms allow-popups allow-top-navigation-by-user-activation'
+          src={`https://steamgameidler.com/supported-games/${gameSlug}`}
+          width='600'
+          height='600'
+          title='Advertisement'
+        />
+        {!adFilled && (
+          <div
+            className={cn(
+              'absolute inset-0 z-10 flex items-center justify-center bg-[#121316]',
+              houseAdLink && 'cursor-pointer',
+            )}
+            onClick={() => houseAdLink && openExternalLink(houseAdLink)}
+          >
+            <Image
+              alt='Advertisement'
+              className='h-full w-full object-fill'
+              height={250}
+              src={houseAd}
+              width={300}
+              onError={handleHouseAdError}
+            />
+          </div>
+        )}
       </div>
 
       <div
