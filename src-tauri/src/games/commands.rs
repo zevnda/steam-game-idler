@@ -75,7 +75,14 @@ pub async fn get_owned_games(
     let steam_id = resolve_steam_id(&account, &agent_manager).await?;
     let is_agent = matches!(account, GamesAccount::Agent { .. });
     let raw_games = match account {
-        GamesAccount::Agent { username } => agent_manager.get_owned_apps(&username).await?,
+        GamesAccount::Agent { username } => {
+            // Read internally rather than make every caller plumb it through - same convention as
+            // the Steam Web API key override below.
+            let games_only = crate::steam_agent::ownership_settings::get(&app_handle, &steam_id)
+                .await?
+                .games_only;
+            agent_manager.get_owned_apps(&username, games_only).await?
+        }
         GamesAccount::Local { .. } => local_steam::ownership::check_ownership().await?,
     };
 

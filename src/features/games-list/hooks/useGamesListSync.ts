@@ -29,10 +29,24 @@ const STALE_AFTER_MS = 5 * 60 * 1000
 // current one's denormalized view (it still lands in `entries[key]` either way). Exported (not
 // just used internally by `useGamesListSync`) so `useGamesList` can drive the same manual-refresh
 // button behavior both `GamesPage` and `IdlingPage` already had.
-export async function fetchGamesList(account: SignedInAccount) {
+//
+// `showLoadingState` drives `phase` back to `'loading'` for the duration of the fetch - both
+// consuming pages already key their full skeleton off `phase === 'loading'` (see
+// `GamesPage.tsx`/`IdlingPage.tsx`), so this is what a caller outside either page (e.g.
+// `useAgentOwnershipSettings`'s scope toggle) uses to make an otherwise-silent refetch visibly
+// obvious, without needing its own local "manual refreshing" state the way each page's own refresh
+// button does.
+export async function fetchGamesList(
+  account: SignedInAccount,
+  options?: { showLoadingState?: boolean },
+) {
   const key = getAccountKey(account)
   const { updateEntry } = useGamesListStore.getState()
-  updateEntry(key, { isRefreshing: true, errorCode: null })
+  updateEntry(key, {
+    isRefreshing: true,
+    errorCode: null,
+    ...(options?.showLoadingState ? { phase: 'loading' } : {}),
+  })
 
   try {
     const fresh = await invoke<OwnedGamesResult>('get_owned_games', { account })

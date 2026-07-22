@@ -13,6 +13,7 @@ use crate::inventory::settings::InventorySettings;
 use crate::logging;
 use crate::platform;
 use crate::settings::{self, commands::SettingsResponse};
+use crate::steam_agent::ownership_settings::OwnershipSettings;
 use crate::steam_agent::AgentManager;
 
 /// `tracing_appender::rolling::daily` names files by prefix + rotation date, so there's no fixed
@@ -138,6 +139,9 @@ pub struct ResetSettingsResult {
     pub inventory_settings: Option<InventorySettings>,
     pub card_farming_settings: Option<CardFarmingSettings>,
     pub free_games_settings: Option<FreeGamesSettings>,
+    /// `None` for a CLI-mode account too (not just no account) - this setting has no CLI-mode
+    /// equivalent, see `steam_agent::ownership_settings`'s module doc comment.
+    pub ownership_settings: Option<OwnershipSettings>,
 }
 
 /// Resets every app-wide setting (`settings.json` via `settings::reset`, the Steam Web API key
@@ -182,9 +186,28 @@ pub async fn reset_settings(
         inventory_settings,
         card_farming_settings,
         free_games_settings,
+        ownership_settings,
     ) = match account {
         Some(account) => {
             let steam_id = resolve_steam_id(&account, &agent_manager).await?;
+            // Agent-mode only - CLI mode has no `ownership_settings.json` at all (see that
+            // module's doc comment), so resetting it for a CLI-mode account would just create an
+            // unused file.
+            let ownership = match &account {
+                GamesAccount::Agent { .. } => Some(
+                    crate::steam_agent::ownership_settings::set(
+                        &app_handle,
+                        &steam_id,
+                        OwnershipSettings::default(),
+                    )
+                    .await
+                    .map_err(|e| {
+                        tracing::warn!(steam_id, error = %e, "settings reset: failed to reset ownership settings");
+                        e
+                    })?,
+                ),
+                GamesAccount::Local { .. } => None,
+            };
             // `reset` (not `set`) for achievement-unlocker/card-farming - `set` deliberately only
             // touches `.settings` on their own writes, leaving per-game overrides/caps alone (see
             // each module's doc comment), so a full reset needs the dedicated wipe entry point or
@@ -242,9 +265,10 @@ pub async fn reset_settings(
                 Some(inventory),
                 Some(card_farming),
                 Some(free_games),
+                ownership,
             )
         }
-        None => (None, None, None, None),
+        None => (None, None, None, None, None),
     };
 
     tracing::info!(had_account, "settings reset: completed");
@@ -255,5 +279,6 @@ pub async fn reset_settings(
         inventory_settings,
         card_farming_settings,
         free_games_settings,
+        ownership_settings,
     })
 }

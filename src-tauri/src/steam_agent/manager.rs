@@ -410,6 +410,11 @@ impl AgentManager {
     /// `Daemon/Bot/OwnershipManager.cs`). No playtime here - that's `games::web_api`'s job, the
     /// same Steam Web API enrichment step CLI mode's ownership check also funnels through.
     ///
+    /// `games_only` mirrors CLI mode's scope (games + family-shared, no DLC/soundtracks/videos/
+    /// tools) by asking the daemon to intersect against the same curated whitelist
+    /// `SteamworksLocalBackend` uses - see `steam_agent::ownership_settings` (defaults to `true`;
+    /// `false` opts into the unfiltered "all content" scope some users specifically want).
+    ///
     /// Uses `OWNED_APPS_REQUEST_TIMEOUT` rather than the default `send_request` timeout - unlike
     /// every other command sent through this manager, PICS-based ownership resolution scales with
     /// the account's library size (thousands of individual PICS requests for a 5,000-10,000+ game
@@ -418,11 +423,15 @@ impl AgentManager {
     pub async fn get_owned_apps(
         &self,
         username: &str,
+        games_only: bool,
     ) -> AppResult<Vec<crate::games::RawOwnedGame>> {
         let key = Self::key_for(username);
         let process = self.existing(&key).await?;
         let response = process
-            .send_request_with_timeout(IpcRequest::get_owned_apps, OWNED_APPS_REQUEST_TIMEOUT)
+            .send_request_with_timeout(
+                |id| IpcRequest::get_owned_apps(id, games_only),
+                OWNED_APPS_REQUEST_TIMEOUT,
+            )
             .await?;
 
         if !response.ok {
@@ -535,8 +544,11 @@ impl AgentManager {
     ) -> AppResult<crate::free_games::FreeGameClaimOutcome> {
         use crate::free_games::FreeGameClaimOutcome;
 
+        // Always unfiltered (games_only: false) here regardless of the user's display-scope
+        // setting - this is a real-ownership correctness check for an arbitrary promo app id
+        // (which may not be a curated "real game"), not the owned-games list shown to the user.
         let already_owned = self
-            .get_owned_apps(username)
+            .get_owned_apps(username, false)
             .await
             .map(|games| games.iter().any(|game| game.app_id == app_id))
             .unwrap_or(false);

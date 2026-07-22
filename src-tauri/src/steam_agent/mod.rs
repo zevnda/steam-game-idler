@@ -5,6 +5,7 @@
 pub mod commands;
 mod ipc;
 mod manager;
+pub mod ownership_settings;
 pub mod presence_settings;
 mod process;
 

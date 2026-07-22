@@ -53,6 +53,9 @@ pub struct IpcRequest {
     /// `SteamUtility.Daemon.Ipc.IpcRequest.Language`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub language: Option<String>,
+    /// `get_owned_apps` only - see `SteamUtility.Daemon.Ipc.IpcRequest.GamesOnly`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub games_only: Option<bool>,
 }
 
 impl IpcRequest {
@@ -73,6 +76,7 @@ impl IpcRequest {
             persona_state: None,
             game_extra_info: None,
             language: None,
+            games_only: None,
         }
     }
 
@@ -96,6 +100,7 @@ impl IpcRequest {
             persona_state: None,
             game_extra_info: None,
             language: None,
+            games_only: None,
         }
     }
 
@@ -116,6 +121,7 @@ impl IpcRequest {
             persona_state: None,
             game_extra_info: None,
             language: None,
+            games_only: None,
         }
     }
 
@@ -136,6 +142,7 @@ impl IpcRequest {
             persona_state: None,
             game_extra_info: None,
             language: None,
+            games_only: None,
         }
     }
 
@@ -156,6 +163,7 @@ impl IpcRequest {
             persona_state: None,
             game_extra_info: None,
             language: None,
+            games_only: None,
         }
     }
 
@@ -179,10 +187,11 @@ impl IpcRequest {
             persona_state: None,
             game_extra_info: None,
             language: None,
+            games_only: None,
         }
     }
 
-    pub fn get_owned_apps(id: String) -> Self {
+    pub fn get_owned_apps(id: String, games_only: bool) -> Self {
         Self {
             id,
             cmd: "get_owned_apps",
@@ -199,6 +208,7 @@ impl IpcRequest {
             persona_state: None,
             game_extra_info: None,
             language: None,
+            games_only: Some(games_only),
         }
     }
 
@@ -227,6 +237,7 @@ impl IpcRequest {
             persona_state: None,
             game_extra_info,
             language: None,
+            games_only: None,
         }
     }
 
@@ -250,6 +261,7 @@ impl IpcRequest {
             persona_state: Some(persona_state),
             game_extra_info: None,
             language: None,
+            games_only: None,
         }
     }
 
@@ -273,6 +285,7 @@ impl IpcRequest {
             persona_state: None,
             game_extra_info: None,
             language: None,
+            games_only: None,
         }
     }
 
@@ -300,6 +313,7 @@ impl IpcRequest {
             persona_state: None,
             game_extra_info: None,
             language: Some(language.to_string()),
+            games_only: None,
         }
     }
 
@@ -323,6 +337,7 @@ impl IpcRequest {
             persona_state: None,
             game_extra_info: None,
             language: None,
+            games_only: None,
         }
     }
 
@@ -347,6 +362,7 @@ impl IpcRequest {
             persona_state: None,
             game_extra_info: None,
             language: None,
+            games_only: None,
         }
     }
 
@@ -368,6 +384,7 @@ impl IpcRequest {
             persona_state: None,
             game_extra_info: None,
             language: None,
+            games_only: None,
         }
     }
 
@@ -390,6 +407,7 @@ impl IpcRequest {
             persona_state: None,
             game_extra_info: None,
             language: None,
+            games_only: None,
         }
     }
 }
