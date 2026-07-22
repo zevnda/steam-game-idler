@@ -176,9 +176,9 @@ export const SettingsModal = () => {
                       {TABS.map(tab => (
                         <Tab
                           className={cn(
-                            'w-full justify-start rounded-lg px-3 py-2 text-left text-sm font-medium text-muted',
-                            'transition-colors hover:text-foreground',
-                            'data-[selected=true]:font-semibold data-[selected=true]:text-foreground',
+                            'w-full justify-start rounded-lg px-3 py-2 text-left text-sm font-medium',
+                            'text-muted hover:text-foreground data-[selected=true]:font-semibold ',
+                            'data-[selected=true]:text-foreground',
                           )}
                           id={tab.key}
                           key={tab.key}
