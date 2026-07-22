@@ -1,12 +1,14 @@
 import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core'
 import type { CellComponentProps } from 'react-window'
 import type { AchievementUnlockerEntry } from '../types'
-import { useRef, useState } from 'react'
-import { Grid } from 'react-window'
+import { useEffect, useRef, useState } from 'react'
+import { Grid, useGridCallbackRef } from 'react-window'
 import { AchievementUnlockerListCard } from './AchievementUnlockerListCard'
 import { SortableAchievementUnlockerListCard } from './SortableAchievementUnlockerListCard'
 import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { arrayMove, SortableContext } from '@dnd-kit/sortable'
+import { BackToTopButton } from '@/shared/components/BackToTopButton'
+import { useBackToTop } from '@/shared/hooks/useBackToTop'
 import {
   GAME_GRID_GAP as GAP,
   GAME_CARD_INFO_HEIGHT as INFO_HEIGHT,
@@ -105,6 +107,9 @@ export const AchievementUnlockerListGrid = ({
   const [activeId, setActiveId] = useState<number | null>(null)
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }))
   const activeItem = queue.find(item => item.appId === activeId) ?? null
+  const [gridApi, setGridApi] = useGridCallbackRef()
+  const { setScrollElement, isVisible, scrollToTop } = useBackToTop()
+  useEffect(() => setScrollElement(gridApi?.element ?? null), [gridApi, setScrollElement])
   const {
     width,
     usableWidth,
@@ -134,8 +139,10 @@ export const AchievementUnlockerListGrid = ({
   return (
     <DndContext sensors={sensors} onDragEnd={handleDragEnd} onDragStart={handleDragStart}>
       <SortableContext items={queue.map(item => item.appId)}>
-        {/* No horizontal padding here (or on Grid) - see VirtualizedGameGrid.tsx's top comment. */}
-        <div ref={containerRef} className='h-full w-full'>
+        {/* No horizontal padding here (or on Grid) - see VirtualizedGameGrid.tsx's top comment.
+            `relative` only affects positioning context - anchors BackToTopButton below to this
+            grid's own viewport. */}
+        <div ref={containerRef} className='relative h-full w-full'>
           {width > 0 && (
             <Grid
               cellComponent={Cell}
@@ -151,6 +158,7 @@ export const AchievementUnlockerListGrid = ({
               }}
               className='py-6'
               columnCount={realColumnCount + 2}
+              gridRef={setGridApi}
               // Every real column's slot is `cardWidth` plus a trailing GAP to the next card -
               // except the last real column, which has no next card to gap against - see
               // VirtualizedGameGrid.tsx's matching comment for why.
@@ -166,6 +174,7 @@ export const AchievementUnlockerListGrid = ({
               style={{ height: '100%', width: '100%' }}
             />
           )}
+          <BackToTopButton visible={isVisible} onPress={scrollToTop} />
         </div>
       </SortableContext>
       <DragOverlay dropAnimation={null}>

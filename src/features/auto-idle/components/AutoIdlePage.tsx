@@ -24,6 +24,7 @@ import {
 import { useRouter } from 'next/router'
 import { useGamesList } from '@/features/games-list/hooks/useGamesList'
 import { errorMessageKey as gamesErrorMessageKey } from '@/features/games-list/utils/errorMessageKey'
+import { GameListTabPanel } from '@/shared/components/GameListTabPanel'
 import { GameSortSelect } from '@/shared/components/GameSortSelect'
 import { ManualAddGameModal } from '@/shared/components/ManualAddGameModal'
 import { useOwnedGameSort } from '@/shared/hooks/useOwnedGameSort'
@@ -199,7 +200,7 @@ export const AutoIdlePage = () => {
           )}
         </TabPanel>
 
-        <TabPanel className='min-h-0 flex-1 overflow-y-auto p-0' id='queue'>
+        <GameListTabPanel id='queue'>
           {queueLoading ? (
             <div className='grid grid-cols-2 gap-4 p-6 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6'>
               {Array.from({ length: 6 }, (_, index) => (
@@ -223,7 +224,7 @@ export const AutoIdlePage = () => {
               onToggleEnabled={setEnabled}
             />
           )}
-        </TabPanel>
+        </GameListTabPanel>
       </TabsRoot>
 
       <AlertDialog isOpen={confirmClearOpen} onOpenChange={setConfirmClearOpen}>
