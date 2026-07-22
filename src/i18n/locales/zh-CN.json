@@ -660,8 +660,6 @@
           "description": "仅挂取游戏时长为零的游戏"
         },
         "dropSortOrder": {
-          "title": "挂卡顺序",
-          "description": "按剩余卡牌数量决定挂卡的优先级",
           "options": {
             "highestFirst": "剩余卡牌多优先",
             "lowestFirst": "剩余卡牌少优先"
