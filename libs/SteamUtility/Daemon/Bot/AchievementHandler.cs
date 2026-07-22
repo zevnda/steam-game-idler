@@ -158,10 +158,16 @@ namespace SteamUtility.Daemon.Bot
             }
         }
 
+        // `language` is one of Steam's schema language keys (e.g. "english", "italian",
+        // "schinese") - see Rust's `achievements::steam_language::steam_language_for_locale`,
+        // which is what maps this app's own locale to that key before this ever gets called.
+        // Defaults to English so every other caller of this method (SetAchievementAsync,
+        // SetAchievementsBulkAsync, etc., none of which surface display text back to the
+        // frontend) doesn't need to change.
         public async Task<(
             IReadOnlyList<AchievementDto> Achievements,
             IReadOnlyList<StatDto> Stats
-        )> GetAchievementsAndStatsAsync(uint appId, SteamID steamId)
+        )> GetAchievementsAndStatsAsync(uint appId, SteamID steamId, string language = "english")
         {
             if (IsGameCoordinatorTitle(appId))
             {
@@ -176,9 +182,10 @@ namespace SteamUtility.Daemon.Bot
 
             var achievementDefs = SchemaWalker.ParseAchievementDefinitions(
                 appId,
-                statsResult.Schema
+                statsResult.Schema,
+                language
             );
-            var statDefs = SchemaWalker.ParseStatDefinitions(appId, statsResult.Schema);
+            var statDefs = SchemaWalker.ParseStatDefinitions(appId, statsResult.Schema, language);
             var statValues = statsResult.Stats.ToDictionary(s => s.stat_id, s => s.stat_value);
 
             var achievements = achievementDefs

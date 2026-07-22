@@ -4,6 +4,7 @@
 //! automation feature, which needs the same primitives plus its own queue/timing logic.
 
 pub mod commands;
+pub mod steam_language;
 pub mod web_api;
 
 use serde::{Deserialize, Serialize};

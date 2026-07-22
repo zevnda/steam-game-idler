@@ -222,7 +222,8 @@ namespace SteamUtility.Daemon
                         var (achievements, stats) =
                             await _achievementHandler.GetAchievementsAndStatsAsync(
                                 request.AppId ?? 0,
-                                steamId
+                                steamId,
+                                request.Language ?? "english"
                             );
                         IpcServer.SendResponse(request.Id, true, new { achievements, stats });
                         break;

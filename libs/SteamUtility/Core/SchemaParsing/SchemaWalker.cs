@@ -17,7 +17,8 @@ namespace SteamUtility.Core.SchemaParsing
     {
         public static List<AchievementDefinition> ParseAchievementDefinitions(
             uint appId,
-            byte[] schemaBytes
+            byte[] schemaBytes,
+            string language = "english"
         )
         {
             var result = new List<AchievementDefinition>();
@@ -72,8 +73,8 @@ namespace SteamUtility.Core.SchemaParsing
                                 StatId = statId,
                                 BitNumber = bitNumber,
                                 Permission = bit["permission"].AsInteger(0),
-                                Name = ResolveLocalizedString(bit["display"]["name"]),
-                                Description = ResolveLocalizedString(bit["display"]["desc"]),
+                                Name = ResolveLocalizedString(bit["display"]["name"], language),
+                                Description = ResolveLocalizedString(bit["display"]["desc"], language),
                                 IconNormal = bit["display"]["icon"].AsString(""),
                                 IconLocked = bit["display"]["icon_gray"].AsString(""),
                                 Hidden = bit["display"]["hidden"].AsBoolean(false),
@@ -86,7 +87,11 @@ namespace SteamUtility.Core.SchemaParsing
             return result;
         }
 
-        public static List<StatDefinition> ParseStatDefinitions(uint appId, byte[] schemaBytes)
+        public static List<StatDefinition> ParseStatDefinitions(
+            uint appId,
+            byte[] schemaBytes,
+            string language = "english"
+        )
         {
             var result = new List<StatDefinition>();
 
@@ -116,7 +121,7 @@ namespace SteamUtility.Core.SchemaParsing
                 }
 
                 var id = stat["name"].AsString("");
-                var displayName = ResolveLocalizedString(stat["display"]["name"]);
+                var displayName = ResolveLocalizedString(stat["display"]["name"], language);
                 var isInteger = rawType == 1;
 
                 result.Add(
@@ -214,12 +219,15 @@ namespace SteamUtility.Core.SchemaParsing
         }
 
         // display/name and display/desc are per-language dictionaries (english, german, schinese,
-        // ...), unlike display/icon or display/hidden which are flat values. The real Steam client
-        // resolves these via SteamUserStats.GetAchievementDisplayAttribute using its own configured
-        // language; that API isn't usable here (SchemaWalker has no live Steam session), so both
-        // backends default to English and fall back to the raw schema string when a live
-        // localized-attribute lookup fails or isn't available.
-        public static string ResolveLocalizedString(KeyValue node)
+        // ...), unlike display/icon or display/hidden which are flat values, and every language
+        // arrives together in the same schema blob regardless of which one is requested. The real
+        // Steam client resolves these via SteamUserStats.GetAchievementDisplayAttribute using its
+        // own configured language; the local-client backend still prefers that live call and only
+        // reaches this fallback when it returns empty, so it's fine for that path to keep using the
+        // "english" default rather than threading a language through. The daemon/agent-mode backend
+        // has no live Steam session and no equivalent call, so it depends entirely on `preferredLanguage`
+        // here - see AchievementHandler.GetAchievementsAndStatsAsync.
+        public static string ResolveLocalizedString(KeyValue node, string preferredLanguage = "english")
         {
             if (node.Valid && node.Type == KeyValueType.String)
             {
@@ -229,6 +237,14 @@ namespace SteamUtility.Core.SchemaParsing
             if (node.Children == null)
             {
                 return "";
+            }
+
+            var preferred = node.Children.FirstOrDefault(c =>
+                string.Equals(c.Name, preferredLanguage, StringComparison.OrdinalIgnoreCase)
+            );
+            if (preferred is { Valid: true })
+            {
+                return preferred.AsString("");
             }
 
             var english = node.Children.FirstOrDefault(c =>

@@ -48,6 +48,11 @@ pub struct IpcRequest {
     pub persona_state: Option<&'static str>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub game_extra_info: Option<String>,
+    /// `achievements_get` only - a Steam schema language key (`"english"`, `"schinese"`, ...) from
+    /// `achievements::steam_language::steam_language_for_locale`. See
+    /// `SteamUtility.Daemon.Ipc.IpcRequest.Language`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub language: Option<String>,
 }
 
 impl IpcRequest {
@@ -67,6 +72,7 @@ impl IpcRequest {
             achievement_changes: None,
             persona_state: None,
             game_extra_info: None,
+            language: None,
         }
     }
 
@@ -89,6 +95,7 @@ impl IpcRequest {
             achievement_changes: None,
             persona_state: None,
             game_extra_info: None,
+            language: None,
         }
     }
 
@@ -108,6 +115,7 @@ impl IpcRequest {
             achievement_changes: None,
             persona_state: None,
             game_extra_info: None,
+            language: None,
         }
     }
 
@@ -127,6 +135,7 @@ impl IpcRequest {
             achievement_changes: None,
             persona_state: None,
             game_extra_info: None,
+            language: None,
         }
     }
 
@@ -146,6 +155,7 @@ impl IpcRequest {
             achievement_changes: None,
             persona_state: None,
             game_extra_info: None,
+            language: None,
         }
     }
 
@@ -168,6 +178,7 @@ impl IpcRequest {
             achievement_changes: None,
             persona_state: None,
             game_extra_info: None,
+            language: None,
         }
     }
 
@@ -187,6 +198,7 @@ impl IpcRequest {
             achievement_changes: None,
             persona_state: None,
             game_extra_info: None,
+            language: None,
         }
     }
 
@@ -214,6 +226,7 @@ impl IpcRequest {
             achievement_changes: None,
             persona_state: None,
             game_extra_info,
+            language: None,
         }
     }
 
@@ -236,6 +249,7 @@ impl IpcRequest {
             achievement_changes: None,
             persona_state: Some(persona_state),
             game_extra_info: None,
+            language: None,
         }
     }
 
@@ -258,6 +272,7 @@ impl IpcRequest {
             achievement_changes: None,
             persona_state: None,
             game_extra_info: None,
+            language: None,
         }
     }
 
@@ -265,7 +280,10 @@ impl IpcRequest {
     /// `achievements_get` command - see `Daemon/Bot/AchievementHandler.cs`. Throws
     /// `unsupported_game_coordinator` for GC titles (440/570/730/550/620), a daemon-only
     /// restriction the CLI/local-client path doesn't share.
-    pub fn achievements_get(id: String, app_id: u32) -> Self {
+    ///
+    /// `language` is a Steam schema language key (`"english"`, `"schinese"`, ...) - see
+    /// `achievements::steam_language::steam_language_for_locale`.
+    pub fn achievements_get(id: String, app_id: u32, language: &str) -> Self {
         Self {
             id,
             cmd: "achievements_get",
@@ -281,6 +299,7 @@ impl IpcRequest {
             achievement_changes: None,
             persona_state: None,
             game_extra_info: None,
+            language: Some(language.to_string()),
         }
     }
 
@@ -303,6 +322,7 @@ impl IpcRequest {
             achievement_changes: None,
             persona_state: None,
             game_extra_info: None,
+            language: None,
         }
     }
 
@@ -326,6 +346,7 @@ impl IpcRequest {
             achievement_changes: Some(changes),
             persona_state: None,
             game_extra_info: None,
+            language: None,
         }
     }
 
@@ -346,6 +367,7 @@ impl IpcRequest {
             achievement_changes: None,
             persona_state: None,
             game_extra_info: None,
+            language: None,
         }
     }
 
@@ -367,6 +389,7 @@ impl IpcRequest {
             achievement_changes: None,
             persona_state: None,
             game_extra_info: None,
+            language: None,
         }
     }
 }
