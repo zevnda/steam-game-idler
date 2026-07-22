@@ -32,6 +32,10 @@ interface SearchStore {
   queries: Partial<Record<SearchScopeId, string>>
   setQuery: (scope: SearchScopeId, value: string) => void
   clearQuery: (scope: SearchScopeId) => void
+  // Every query is scoped to the active Steam account's data (owned games, achievements, cards),
+  // so a leftover query from the previous account is stale/meaningless once the active account
+  // changes - see AccountSwitcher's handleSwitch/performSignOut, the only two callers.
+  clearAllQueries: () => void
   // Doubles as the global search modal's open flag (null = closed) - one field instead of two that
   // must stay in sync, same idea `settingsModalStore`'s `isOpen`/`activeTab` pair already uses.
   activeScope: SearchScopeId | null
@@ -55,6 +59,7 @@ export const useSearchStore = create<SearchStore>((set, get) => ({
   queries: {},
   setQuery: (scope, value) => set(state => ({ queries: { ...state.queries, [scope]: value } })),
   clearQuery: scope => set(state => ({ queries: { ...state.queries, [scope]: '' } })),
+  clearAllQueries: () => set({ queries: {} }),
   activeScope: null,
   open: scope => set({ activeScope: scope }),
   close: () => set({ activeScope: null }),

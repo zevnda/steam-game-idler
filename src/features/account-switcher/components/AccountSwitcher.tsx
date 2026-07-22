@@ -15,6 +15,7 @@ import { useCardFarmingStore } from '@/shared/stores/cardFarmingStore'
 import { useIdlingStore } from '@/shared/stores/idlingStore'
 import { useProModalStore } from '@/shared/stores/proModalStore'
 import { useReauthModalStore } from '@/shared/stores/reauthModalStore'
+import { useSearchStore } from '@/shared/stores/searchStore'
 import { useSessionStore } from '@/shared/stores/sessionStore'
 import { useSteamWarningStore } from '@/shared/stores/steamWarningStore'
 import { useSubscriptionStore } from '@/shared/stores/subscriptionStore'
@@ -247,6 +248,9 @@ export const AccountSwitcher = ({ compact = false }: AccountSwitcherProps) => {
       }
     }
     switchAccount(key)
+    // A query is scoped to the previous account's data (owned games, achievements, cards) - stale
+    // once the active account changes, same reasoning as the page redirect above.
+    useSearchStore.getState().clearAllQueries()
     const displayName = summaries[key]?.personaName || identifierFor(target)
     logFrontendInfo('accountSwitcher', 'switched active account', { mode: target.mode })
     toast.info(t('dashboard.sidebar.accountSwitcher.switched', { name: displayName }))
@@ -259,6 +263,11 @@ export const AccountSwitcher = ({ compact = false }: AccountSwitcherProps) => {
     const { accountsRemaining, cleanupFailed } = await signOutAccount(key)
     if (cleanupFailed) {
       toast.danger(t('dashboard.sidebar.signOut.error'))
+    }
+    if (wasActive) {
+      // Signing out the active account changes (or clears) which account's data is on screen, so
+      // any in-flight query is stale the same way handleSwitch's is - see clearAllQueries there.
+      useSearchStore.getState().clearAllQueries()
     }
     if (accountsRemaining === 0) {
       router.replace('/')
