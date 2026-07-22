@@ -31,5 +31,9 @@ namespace SteamUtility.Daemon.Ipc
         // announcement with this text instead. Only takes visible effect when paired with a real,
         // owned app id; Steam silently ignores it for a synthetic/unowned game_id.
         public string? GameExtraInfo { get; set; }
+
+        // `achievements_get` only - a Steam schema language key (e.g. "english", "schinese"),
+        // pre-mapped Rust-side from the app's own locale. See AchievementHandler.GetAchievementsAndStatsAsync.
+        public string? Language { get; set; }
     }
 }

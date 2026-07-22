@@ -604,15 +604,19 @@ impl AgentManager {
     /// `achievements_get` command - see `Daemon/Bot/AchievementHandler.cs`. Fails with
     /// `unsupported_game_coordinator` for GC titles (440/570/730/550/620), a daemon-only
     /// restriction the CLI/local-client path doesn't share.
+    ///
+    /// `language` is a Steam schema language key (`"english"`, `"schinese"`, ...) - see
+    /// `achievements::steam_language::steam_language_for_locale`.
     pub async fn achievements_get(
         &self,
         username: &str,
         app_id: u32,
+        language: &'static str,
     ) -> AppResult<crate::achievements::AchievementData> {
         let key = Self::key_for(username);
         let process = self.existing(&key).await?;
         let response = process
-            .send_request(move |id| IpcRequest::achievements_get(id, app_id))
+            .send_request(move |id| IpcRequest::achievements_get(id, app_id, language))
             .await?;
 
         let result = ok_or_agent_error_with_result(response)?;
@@ -650,7 +654,9 @@ impl AgentManager {
     ) -> AppResult<crate::achievements::BulkAchievementResult> {
         use crate::achievements::BulkAchievementResult;
 
-        let data = self.achievements_get(username, app_id).await?;
+        // Only `id`/`achieved`/`protected_achievement` matter here, never display text, so the
+        // schema language is irrelevant - always "english".
+        let data = self.achievements_get(username, app_id, "english").await?;
         let key = Self::key_for(username);
         let process = self.existing(&key).await?;
 

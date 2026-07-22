@@ -508,10 +508,13 @@ async fn scan_game(
         .unwrap_or(None);
 
     let agent_manager = app_handle.state::<AgentManager>();
+    // Backend automation loop, no frontend locale to follow - the fetched name/description are
+    // only ever used in `tracing::` log lines below, not shown to the user, so "english" is fine.
     let data = match achievements::commands::get_achievement_data(
         agent_manager,
         account.clone(),
         entry.app_id,
+        "english".to_string(),
     )
     .await
     {

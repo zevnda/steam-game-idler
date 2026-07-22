@@ -27,7 +27,7 @@ interface OpenGame {
 // save-stats/reset-stats) fire a toast instead of touching this state, so a single failed toggle
 // doesn't blank out the entire view behind a full-page error.
 export const useAchievementManager = (openGame: OpenGame | null) => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const account = useSessionStore(state => state.account)
   const [data, setData] = useState<AchievementData | null>(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -40,7 +40,11 @@ export const useAchievementManager = (openGame: OpenGame | null) => {
     setLoadErrorCode(null)
     try {
       setData(
-        await invoke<AchievementData>('get_achievement_data', { account, appId: openGame.appId }),
+        await invoke<AchievementData>('get_achievement_data', {
+          account,
+          appId: openGame.appId,
+          locale: i18n.language,
+        }),
       )
     } catch (error) {
       console.error('Error in (get_achievement_data):', error)
@@ -48,7 +52,7 @@ export const useAchievementManager = (openGame: OpenGame | null) => {
     } finally {
       setIsLoading(false)
     }
-  }, [account, openGame])
+  }, [account, openGame, i18n.language])
 
   const toastActionError = useCallback(
     (error: unknown) => {
