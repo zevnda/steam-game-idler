@@ -257,10 +257,16 @@ jobs:
       - name: Build SteamUtility (daemon-only)
         if: steps.cache-dotnet.outputs.cache-hit != 'true' || github.event.inputs.force_dotnet_build == 'true'
         # No .exe extension on Linux - steam_utility_exe.rs::locate() branches on #[cfg(windows)]
-        # for this.
+        # for this. PublishSingleFile=false to match build_dotnet_libs' Windows job (#1953) - that
+        # switch was to dodge SecureAge's VirusTotal false-positive flag on a self-extracting
+        # single-file bundle, confirmed there for the .exe specifically, not independently
+        # reproduced here for the Linux ELF equivalent - but there's no reason to leave this
+        # artifact on the one publish mode already proven to trip AV heuristics on the other
+        # platform when matching costs nothing (SteamUtility.csproj's RemoveDiagnosticOnlyPublishFiles
+        # target already handles multi-file cleanup for either RID).
         run: |
           set -euo pipefail
-          dotnet publish ./libs/SteamUtility/SteamUtility.csproj -c Release -r linux-x64 --self-contained true -p:PublishSingleFile=true -p:PublishTrimmed=true -p:DebugType=none -o ./src-tauri/libs/
+          dotnet publish ./libs/SteamUtility/SteamUtility.csproj -c Release -r linux-x64 --self-contained true -p:PublishSingleFile=false -p:PublishTrimmed=true -p:DebugType=none -o ./src-tauri/libs/
 
       - name: Upload built .NET libraries
         uses: actions/upload-artifact@v4
