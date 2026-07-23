@@ -56,12 +56,37 @@ const GOOGLE_AD_FILL_ORIGIN = 'https://googleads.g.doubleclick.net'
 // permanently mounted `opacity-0` box - there's no reason to reserve sidebar footer space for an
 // ad slot a paying account will never see. `.pro-fade-in` (globals.css, shared with GoPro/
 // GoProModal) covers the mount transition that opacity-0 previously handled.
+// Windows-only reference size (Windows' WebView2/Chromium renders this correctly via `zoom`,
+// used only as a same-frame fallback below until the real measurement lands - see `naturalSize`'s
+// own comment for why these exact numbers don't need to be exact).
+const FALLBACK_NATURAL_SIZE = { width: 318, height: 292 }
+
 export const AdSlot = () => {
   const { t } = useTranslation()
   const isSubscribed = useSubscriptionStore(state => state.isSubscribed)
   const subscriptionTier = useSubscriptionStore(state => state.subscriptionTier)
   const collapsed = useSidebarStore(state => state.collapsed)
   const openProModalWithTier = useProModalStore(state => state.openWithTier)
+  const scale = collapsed ? 0.16 : 0.75
+
+  const innerRef = useRef<HTMLDivElement>(null)
+  // The wrapper's own actual rendered box (border+padding+content, at scale 1) - measured rather
+  // than hardcoded so a locale where "Remove ads with" wraps differently still gets a correctly
+  // sized reserved footprint (see CLAUDE.md's locale-length-resilience rules). `offsetWidth`/
+  // `offsetHeight` (not getBoundingClientRect, which would report the already-transformed size)
+  // and a plain ResizeObserver (not react-resize-observer or similar - genuinely this simple)
+  // since this only ever needs to react to a real layout-size change (locale text reflow), not to
+  // `scale` itself changing, which is handled by the render below multiplying it directly.
+  const [naturalSize, setNaturalSize] = useState(FALLBACK_NATURAL_SIZE)
+  useEffect(() => {
+    const el = innerRef.current
+    if (!el) return
+    const observer = new ResizeObserver(() => {
+      setNaturalSize({ width: el.offsetWidth, height: el.offsetHeight })
+    })
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
 
   const [manifestCount, setManifestCount] = useState(DEFAULT_HOUSE_AD_COUNT)
   const [manifestLinks, setManifestLinks] = useState<Record<string, string>>({})
@@ -163,47 +188,58 @@ export const AdSlot = () => {
   if (isSubscribed === null || hasCasualAccess(subscriptionTier)) return null
 
   return (
+    // Outer wrapper reserves exactly the post-scale footprint in the sidebar's layout - the inner
+    // div below is rendered at its natural (unscaled) size and visually shrunk via `transform`,
+    // not `zoom` (see this file's own AdSlot doc comment for why: `zoom` on an ancestor doesn't
+    // reliably scale a nested <iframe>'s own rendered content the same way across engines,
+    // `transform` does).
     <div
-      className='pro-fade-in rounded-lg border border-border p-2 pb-1'
-      style={{ zoom: collapsed ? 0.16 : 0.75 }}
+      className='pro-fade-in overflow-hidden'
+      style={{ width: naturalSize.width * scale, height: naturalSize.height * scale }}
     >
-      <div className='relative flex h-62.5 w-75 items-center justify-center overflow-hidden rounded-lg'>
-        <iframe
-          className='overflow-scroll -mt-87.5 -ml-75 h-150 w-150'
-          sandbox='allow-scripts allow-same-origin allow-forms allow-popups allow-top-navigation-by-user-activation'
-          src={`https://steamgameidler.com/supported-games/${gameSlug}`}
-          width='600'
-          height='600'
-          title='Advertisement'
-        />
-        {!adFilled && (
-          <div
-            className={cn(
-              'absolute inset-0 z-10 flex items-center justify-center bg-[#121316]',
-              houseAdLink && 'cursor-pointer',
-            )}
-            onClick={() => houseAdLink && openExternalLink(houseAdLink)}
-          >
-            <Image
-              alt='Advertisement'
-              className='h-full w-full object-fill'
-              height={250}
-              src={houseAd}
-              width={300}
-              onError={handleHouseAdError}
-            />
-          </div>
-        )}
-      </div>
-
       <div
-        className='mt-1.5 mb-1 scale-125 cursor-pointer text-center text-xs text-muted duration-150 hover:text-foreground'
-        onClick={() => openProModalWithTier('casual')}
+        ref={innerRef}
+        className='w-fit rounded-lg border border-border p-2 pb-1'
+        style={{ transform: `scale(${scale})`, transformOrigin: 'top left' }}
       >
-        <p className='flex items-center justify-center'>
-          {t('dashboard.sidebar.ads.removeAdsWith')}
-          <TierBadge className='scale-85' tier='casual' />
-        </p>
+        <div className='relative flex h-62.5 w-75 items-center justify-center overflow-hidden rounded-lg'>
+          <iframe
+            className='overflow-scroll -mt-87.5 -ml-75 h-150 w-150'
+            sandbox='allow-scripts allow-same-origin allow-forms allow-popups allow-top-navigation-by-user-activation'
+            src={`https://steamgameidler.com/supported-games/${gameSlug}`}
+            width='600'
+            height='600'
+            title='Advertisement'
+          />
+          {!adFilled && (
+            <div
+              className={cn(
+                'absolute inset-0 z-10 flex items-center justify-center bg-[#121316]',
+                houseAdLink && 'cursor-pointer',
+              )}
+              onClick={() => houseAdLink && openExternalLink(houseAdLink)}
+            >
+              <Image
+                alt='Advertisement'
+                className='h-full w-full object-fill'
+                height={250}
+                src={houseAd}
+                width={300}
+                onError={handleHouseAdError}
+              />
+            </div>
+          )}
+        </div>
+
+        <div
+          className='mt-1.5 mb-1 scale-125 cursor-pointer text-center text-xs text-muted duration-150 hover:text-foreground'
+          onClick={() => openProModalWithTier('casual')}
+        >
+          <p className='flex items-center justify-center'>
+            {t('dashboard.sidebar.ads.removeAdsWith')}
+            <TierBadge className='scale-85' tier='casual' />
+          </p>
+        </div>
       </div>
     </div>
   )
