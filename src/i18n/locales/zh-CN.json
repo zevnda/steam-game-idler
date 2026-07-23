@@ -16,7 +16,8 @@
       "done": "完成",
       "copy": "复制",
       "paste": "粘贴",
-      "add": "添加"
+      "add": "添加",
+      "backToTop": "返回顶部"
     },
     "gameCardMenu": {
       "startIdling": "开始挂机",
@@ -87,6 +88,9 @@
     "proTier": {
       "gamerRequired": "需要 Gamer 套餐",
       "casualRequired": "需要 Casual 套餐"
+    },
+    "badges": {
+      "beta": "Beta"
     },
     "tabs": {
       "allGames": "所有游戏",
@@ -272,8 +276,6 @@
   "auth": {
     "landing": {
       "title": "登录 Steam Game Idler",
-      "agentButton": "通过 Steam 登录",
-      "localButton": "旧版登录",
       "localAlreadySignedIn": "已登录一个本地 Steam 客户端账号——单次仅能登录一个",
       "acknowledge": "继续即表示您同意 <0>服务条款</0>，并确认您已阅读我们的 <1>隐私政策</1>"
     },
@@ -367,7 +369,6 @@
           "modalTitle": "已在其他设备登录",
           "modalDescription": "{{account}} 已在其他设备登录，自动化任务已暂停，请重新登录以继续",
           "reconnect": "重新连接",
-          "methodExplainer": "通过 Steam 登录方式登录的每个账号仅允许一个活动会话，如果您希望在 Steam Game Idler 运行期间仍能继续游玩游戏，请改用旧版登录方式登录",
           "useDifferentMethod": "使用其他登录方式"
         }
       },
@@ -593,6 +594,10 @@
         "title": "清空挂卡队列？",
         "description": "这将从挂卡队列中移除 {{count}} 款游戏"
       },
+      "multiGameNotice": {
+        "title": "想要一次挂取多个游戏？",
+        "description": "同时挂取多个游戏可能会降低每个游戏的卡牌掉落速度。如果在一段时间内没有任何卡牌掉落，尝试在 设置 → 挂卡 中开启“挂取单一游戏”。"
+      },
       "confirmClearBlacklist": {
         "title": "清空挂卡黑名单？",
         "description": "这将从挂卡黑名单中移除 {{count}} 款游戏"
@@ -629,7 +634,8 @@
         "completedMaxCardDrops": "已达到最大卡牌掉落数（剩余 {{remaining}}）",
         "completedMaxCardFarmingTime": "已达到最大挂卡时间（剩余 {{remaining}}）",
         "completedMaxPlaytime": "已达到最大游戏时长（剩余 {{remaining}}）",
-        "completedNoDropsRemaining": "无剩余卡牌可挂"
+        "completedNoDropsRemaining": "无剩余卡牌可挂",
+        "completedRefundWindow": "仍在退款期限内（{{date}}时可挂卡）"
       },
       "errors": {
         "title": "无法更新挂卡状态",
@@ -639,6 +645,14 @@
         "generic": "更新挂卡状态时出错，请重试，（{{code}}）"
       },
       "settings": {
+        "singleFarmingMode": {
+          "title": "挂取单一游戏",
+          "description": "每次仅挂取队列中的一个游戏，而非多个。这可以加快单个游戏的掉落。"
+        },
+        "skipRefundableGames": {
+          "title": "跳过可退款游戏",
+          "description": "跳过仍在 Steam 退款期限内的游戏（购买后14天、游戏时间不超过2小时）。"
+        },
         "autoFarmCards": {
           "title": "自动挂卡",
           "description": "定期检查已拥有游戏中仍有卡牌掉落的游戏，并自动开始挂卡"
@@ -660,7 +674,10 @@
           "description": "仅挂取游戏时长为零的游戏"
         },
         "dropSortOrder": {
+          "title": "挂卡顺序",
+          "description": "选择队列中游戏的挂卡顺序。",
           "options": {
+            "queueOrder": "按队列顺序",
             "highestFirst": "剩余卡牌多优先",
             "lowestFirst": "剩余卡牌少优先"
           }
@@ -948,6 +965,10 @@
           "label": "挂机时的自定义状态",
           "description": "用您自己的自定义消息替换好友在挂机时看到的「正在玩 [游戏]」文本",
           "placeholder": "例如：正在挂卡"
+        },
+        "gamesOnly": {
+          "label": "仅显示游戏",
+          "description": "仅显示库内已有和家庭共享游戏，隐藏DLC、原声音轨、视频、工具。更改此选项后游戏列表会刷新。"
         },
         "language": {
           "label": "语言",

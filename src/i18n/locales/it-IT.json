@@ -276,8 +276,6 @@
   "auth": {
     "landing": {
       "title": "Accedi a Steam Game Idler",
-      "agentButton": "Accedi con Steam",
-      "localButton": "Accesso legacy",
       "localAlreadySignedIn": "Un account del client Steam locale ha già effettuato l'accesso: può essercene solo uno alla volta.",
       "acknowledge": "Continuando, accetti i <0>Termini di servizio</0> e confermi di aver letto la nostra <1>Informativa sulla privacy</1>."
     },
@@ -371,7 +369,6 @@
           "modalTitle": "Accesso effettuato su un altro dispositivo",
           "modalDescription": "{{account}} ha effettuato l'accesso su un altro dispositivo, quindi la sua automazione è stata messa in pausa. Accedi di nuovo per continuare.",
           "reconnect": "Riconnetti",
-          "methodExplainer": "L'accesso con Steam consente una sola sessione attiva per account. Se vuoi continuare a giocare mentre Steam Game Idler è in esecuzione, usa invece l'accesso legacy.",
           "useDifferentMethod": "Usa un metodo di accesso diverso"
         }
       },

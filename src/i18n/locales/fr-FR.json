@@ -39,8 +39,8 @@
       "smaDescription": "Optionnel. Nécessaire uniquement si votre compte fait l'objet d'une confirmation en attente Steam Guard.",
       "savedFromSettingsNote": "Chargé depuis les Indetifiants Steam enregistrés dans les Paramètres.",
       "savedToast": "Identifiants enregistrés",
-      "clearedToast": "Identifiants validés",
-      "clearFailed": "Impossible de valider vos identifiants Steam. ({{code}})"
+      "clearedToast": "Identifiants effacés",
+      "clearFailed": "Impossible d'effacer vos identifiants Steam. ({{code}})"
     },
     "manualAdd": {
       "title": "Ajouter un jeu manuellement",
@@ -138,7 +138,7 @@
     "star": "Mettez une étoile sur GitHub"
   },
   "titlebar": {
-    "closeToTrayNotification": "Steam Game Idle va continuer à tourner en fond",
+    "closeToTrayNotification": "Steam Game Idler va continuer à tourner en fond",
     "goPro": "Passez à la version Pro",
     "helpDesk": "Centre d'Aide",
     "updateReady": "Mise à jour prête"
@@ -275,9 +275,7 @@
   },
   "auth": {
     "landing": {
-      "title": "Se connecter à Steam Game Idle",
-      "agentButton": "Se connecter avec Steam",
-      "localButton": "Connexion legacy",
+      "title": "Se connecter à Steam Game Idler",
       "localAlreadySignedIn": "Un compte Steam local est déjà connecté - un seul peut être connecté en même temps.",
       "acknowledge": "En continuant, vous acceptez les <0>Conditions d'Utilisations</0> et confirmez avoir lu notre <1>Politique de Confidentialité</1>."
     },
@@ -360,7 +358,7 @@
         "steamRequired": "Steam doit être en cours d'exécution pour passer à ce compte",
         "addAccount": {
           "trigger": "Ajouter un autre compte",
-          "capReached_one": "Le palier {{tier}} permet {{count}} compte connecté avec Steam en même temps. Déconnectez-vous d'un compte pour en ajouter un, ou changez de plus pour en avoir plus.",
+          "capReached_one": "Le palier {{tier}} permet {{count}} compte connecté avec Steam en même temps. Déconnectez-vous d'un compte pour en ajouter un, ou mettez à niveau pour en avoir plus.",
           "capReached_other": "Le palier {{tier}} permet {{count}} comptes connectés avec Steam en même temps. Déconnectez-vous d'un compte pour en ajouter un, ou changez de plus pour en avoir plus.",
           "capReachedMax": "Vous avez atteint le nombre maximum de comptes connecté avec Steam en même temps.",
           "added": "{{name}} ajouté"
@@ -371,7 +369,6 @@
           "modalTitle": "Connecté sur un autre appareil",
           "modalDescription": "{{account}} a été connecté sur un autre appareil, son automatisation a donc été mise en pause. Connectez-vous à nouveau pour continuer.",
           "reconnect": "Reconnexion",
-          "methodExplainer": "La connexion avec Steam autorise une seule session active par compte. Si vous voulez continuer à jouer à des jeux lorsque Steam Game Idler est en cours d'exécution, utilisé la connexion legacy à la place.",
           "useDifferentMethod": "Utiliser une autre méthode de connexion"
         }
       },
@@ -382,7 +379,7 @@
     "games": {
       "count_one": "{{count}} jeu",
       "count_other": "{{count}} jeux",
-      "unknownName": "Ajouter {{appId}}",
+      "unknownName": "Application {{appId}}",
       "carousels": {
         "recommended": "Recommandés",
         "recent": "Joués récemment"
@@ -415,7 +412,7 @@
       "count_other": "{{count}} jeux idle en cours",
       "stopAll": "Tout arrêter",
       "sections": {
-        "manual": "Manuellement désactivé",
+        "manual": "Joué en mode idle manuellement",
         "other": "Autre"
       },
       "empty": {
@@ -607,7 +604,7 @@
       },
       "tabs": {
         "gamesWithDrops": "Jeux avec drops",
-        "blacklisted": "Bloqué"
+        "blacklisted": "Blacklisté"
       },
       "sort": {
         "dropsDesc": "Drops restants (Décroissant)",
@@ -839,7 +836,7 @@
       "filter": {
         "label": "Filtrer",
         "cards": "Cartes à collectionner",
-        "foil": "Profil",
+        "foil": "Premium",
         "backgrounds": "Arrière-plans",
         "emoticons": "Émoticônes",
         "boosters": "Packs de boosters",
@@ -894,7 +891,7 @@
         "listFailed_one": "{{count}} élément n'a pas pu être listé",
         "listFailed_other": "{{count}} éléments n'ont pas pu être listés",
         "noListings": "Vous n'avez aucune annonce active sur le marché.",
-        "removedListings": "Supprimer {{count}} de {{total}} annonces",
+        "removedListings": "Supprimé {{count}} de {{total}} annonces",
         "removeFailed": "Impossible de supprimer une annonce.",
         "noneEligible": "Aucun élément ne satisfait les condition requises pour la vente - vérifiez les limites de vente dans les paramètres de votre inventaire.",
         "priceFetchCooldown": "Veuillez patienter {{seconds}} secondes avant de récupérer plus de prix d'objets",
