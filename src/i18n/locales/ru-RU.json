@@ -95,8 +95,7 @@
   },
   "auth": {
     "landing": {
-      "title": "Войти в Steam Game Idler",
-      "agentButton": "Войти через Steam"
+      "title": "Войти в Steam Game Idler"
     },
     "signIn": {
       "passwordLabel": "Пароль",
