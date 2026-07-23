@@ -50,6 +50,11 @@ Refer to the **[documentation](https://steamgameidler.com/docs/)** for a detaile
 # Supported Languages
 Help contribute to this project by adding new translations or improving existing ones. **[Read more here](https://github.com/zevnda/steam-game-idler/discussions/148)**
 
+| Language             | Flag | Language | Flag | Language | Flag |
+| -------------------- | ---- | -------- | ---- | -------- | ---- |
+| Chinese (Simplified) | 🇨🇳    | English  | 🇬🇧    | French   | 🇫🇷    |
+| Italian              | 🇮🇹    |          |      |          |      |
+
 # License
 Copyright © 2024-2026 zevnda — **[Elastic-2.0 License](./LICENSE)**
 
