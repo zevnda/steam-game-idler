@@ -3,7 +3,9 @@
 
 <h1>Steam Game Idler</h1>
 
-Steam Game Idler (SGI) is a Steam automation tool for farming trading cards, managing achievements, and boosting playtime across all games in your Steam library — no local Steam client required. Runs on **Windows** and **Linux**.
+Steam Game Idler (SGI) is a Steam automation tool for farming trading cards, managing achievements, and boosting playtime across all games in your Steam library.
+
+Full **Windows** and **Linux** support. No local Steam client required.
 
 See how it stacks up against other software, such as **[ArchiSteamFarm](https://steamgameidler.com/alternatives/archisteamfarm)**, **[Steam Achievement Manager](https://steamgameidler.com/alternatives/steam-achievement-manager)**, and **[Idle Master](https://steamgameidler.com/alternatives/idle-master)**.
 
@@ -18,17 +20,13 @@ See how it stacks up against other software, such as **[ArchiSteamFarm](https://
 
 # Installation
 
-**Windows**
+### Windows
 1. Download the `setup.exe` installer from the **[releases page](https://github.com/zevnda/steam-game-idler/releases/latest)**
 2. Run the installer and follow the steps
 
-A portable `.zip` build is also available on the same releases page for anyone who'd rather not install.
-
-**Linux**
-1. Download the `.deb`/`.rpm` (recommended) or the `.AppImage` from the **[releases page](https://github.com/zevnda/steam-game-idler/releases/latest)**
-2. Install with your package manager (`.deb`/`.rpm`), or make the AppImage executable and run it directly
-
-See the **[Linux install guide](https://steamgameidler.com/docs/get-started/install#linux)** for the full breakdown, including the trade-off between formats.
+### Linux
+3. Download the `.deb`, `.rpm` or `.AppImage` from the **[releases page](https://github.com/zevnda/steam-game-idler/releases/latest)**
+4. See the **[linux install guide](https://steamgameidler.com/docs/get-started/install#linux)** for the full steps
 
 Or if you prefer, you can **[build it yourself](https://steamgameidler.com/docs/get-started/build-it-yourself)** on either platform.
 
