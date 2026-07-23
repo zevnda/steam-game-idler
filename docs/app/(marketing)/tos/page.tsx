@@ -83,8 +83,8 @@ export default function TermsOfService() {
             <ul className='list-disc pl-6 space-y-2 text-text-muted'>
               <li>Own a legitimate Steam account in good standing</li>
               <li>
-                If using Legacy Sign In, have the Steam client installed and running on your device
-                — Sign in with Steam does not require this
+                If using Legacy Sign-in, have the Steam client installed and running on your device
+                — Steam Sign-in does not require this
               </li>
               <li>Own the games you wish to idle or manage achievements for</li>
               <li>

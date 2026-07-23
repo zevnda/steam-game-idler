@@ -26,7 +26,7 @@ type ReconnectPhase =
 //
 // "Use a different sign-in method" defers entirely to the normal AddAccountModal flow (same one
 // "+ Add another account" opens) rather than a locked-username password form of its own - that's
-// the only path that actually lets the user reach Legacy sign in (a different sign-in mode
+// the only path that actually lets the user reach Legacy Sign-in (a different sign-in mode
 // entirely, not just different credentials for this same agent-mode account), which is exactly
 // what methodExplainer below is telling them to consider. Also used as the automatic fallback when
 // there's no saved token left to reconnect with (`agent_no_saved_credentials`) - nothing left to

@@ -137,7 +137,7 @@ export const allFeatures: Feature[] = [
     title: 'Automatic Steam Credentials Retrieval',
     description: 'Automatically retrieve your Steam credentials without any manual input.',
     detail:
-      "Sign in with Steam once and SGI handles the rest — automatically capturing and refreshing the session cookies that Card Farming and Inventory Manager need, without needing to manually copy values out of your browser's dev tools.",
+      "Use Steam Sign-in once and SGI handles the rest — automatically capturing and refreshing the session cookies that Card Farming and Inventory Manager need, without needing to manually copy values out of your browser's dev tools.",
     tier: 'gamer',
     id: 'automatic-steam-credentials-retrieval',
   },

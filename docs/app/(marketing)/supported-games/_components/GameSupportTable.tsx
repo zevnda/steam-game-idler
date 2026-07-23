@@ -59,8 +59,8 @@ function buildRows(game: GameData) {
       feature: 'Sign-in Method',
       status: game.gcTitle ? 'varies' : 'yes',
       note: game.gcTitle
-        ? 'Legacy Sign In (CLI) only, with a real local Steam client'
-        : 'Works with either Agent Mode or Legacy Sign In',
+        ? 'Legacy Sign-in (CLI) only, with a real local Steam client'
+        : 'Works with either Agent Mode or Legacy Sign-in',
     },
   ]
 
