@@ -587,7 +587,12 @@ jobs:
 
           # Copy the LICENSE file
           Copy-Item "./LICENSE" -Destination "$portableDir/LICENSE" -Force
-          
+
+          # Copy the third-party notices file (mirrors tauri.conf.json's bundle.resources, which
+          # only applies to the NSIS installer - the portable zip is staged manually here so it
+          # needs the same file copied explicitly).
+          Copy-Item "./src-tauri/THIRD-PARTY-NOTICES.md" -Destination "$portableDir/THIRD-PARTY-NOTICES.md" -Force
+
           # Create the portable zip
           Compress-Archive -Path "$portableDir/*" -DestinationPath "./src-tauri/target/release/Steam Game Idler_${{ github.event.inputs.version }}_x64-portable.zip" -Force
           
