@@ -1,8 +1,8 @@
-// Guards `pnpm td` against the class of bug where SteamUtility.exe silently drifts out of sync
-// with libs/SteamUtility/**/*.cs on a given machine (e.g. C# changes pulled from git but never
-// rebuilt locally) - see the ownership-count discrepancy this was added to fix. Runs as `pretd`
-// (pnpm auto-runs this before `td`), so it's a no-op most launches and only pays the full
-// `dotnet publish` cost when source actually changed.
+// Guards `pnpm td`/`pnpm tb` against the class of bug where SteamUtility.exe silently drifts out
+// of sync with libs/SteamUtility/**/*.cs on a given machine (e.g. C# changes pulled from git but
+// never rebuilt locally) - see the ownership-count discrepancy this was added to fix. Runs as
+// `pretd`/`pretb` (pnpm auto-runs these before `td`/`tb`), so it's a no-op most launches and only
+// pays the full `dotnet publish` cost when source actually changed.
 import { execSync } from 'node:child_process'
 import { existsSync, readdirSync, statSync } from 'node:fs'
 import { join } from 'node:path'
