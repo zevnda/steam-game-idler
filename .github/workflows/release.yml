@@ -701,13 +701,39 @@ jobs:
         # `gir1.2-*` introspection package that apt won't auto-resolve on its own, so those are
         # requested explicitly too. The snapshot source is removed again immediately after use so
         # it can't affect any other package installed later in this job.
+        #
+        # snapshot.ubuntu.com has been observed intermittently 500ing on individual index/pool
+        # fetches (confirmed twice in a row on 2026-07-23/24, from two different backend IPs -
+        # consistent with a subset of nodes in its backend pool being unhealthy rather than the
+        # snapshot itself being gone). retry() re-runs a whole failed apt invocation with backoff;
+        # Acquire::Retries lets apt itself retry an individual download within one invocation. Together
+        # these let the job self-heal through that kind of transient failure instead of needing a
+        # manual "Re-run failed jobs" every time.
         run: |
           set -euo pipefail
-          sudo apt-get update
+
+          retry() {
+            local attempt=1
+            local max_attempts=5
+            local delay=15
+            until "$@"; do
+              if (( attempt >= max_attempts )); then
+                echo "::error::Command failed after $max_attempts attempts: $*"
+                return 1
+              fi
+              echo "Attempt $attempt/$max_attempts failed, retrying in ${delay}s..."
+              attempt=$((attempt + 1))
+              sleep "$delay"
+            done
+          }
+
+          APT_OPTS=(-o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30)
+
+          retry sudo apt-get "${APT_OPTS[@]}" update
           WEBKIT_VERSION="2.44.3-0ubuntu0.22.04.1"
           echo "deb https://snapshot.ubuntu.com/ubuntu/20241001T000000Z/ jammy-updates main universe" | sudo tee /etc/apt/sources.list.d/webkit-snapshot.list
-          sudo apt-get update
-          sudo apt-get install -y \
+          retry sudo apt-get "${APT_OPTS[@]}" update
+          retry sudo apt-get "${APT_OPTS[@]}" install -y \
             libwebkit2gtk-4.1-0="$WEBKIT_VERSION" \
             libwebkit2gtk-4.1-dev="$WEBKIT_VERSION" \
             libjavascriptcoregtk-4.1-0="$WEBKIT_VERSION" \
@@ -719,8 +745,8 @@ jobs:
             libjavascriptcoregtk-4.1-0 libjavascriptcoregtk-4.1-dev \
             gir1.2-webkit2-4.1 gir1.2-javascriptcoregtk-4.1
           sudo rm /etc/apt/sources.list.d/webkit-snapshot.list
-          sudo apt-get update
-          sudo apt-get install -y \
+          retry sudo apt-get "${APT_OPTS[@]}" update
+          retry sudo apt-get "${APT_OPTS[@]}" install -y \
             libsoup-3.0-dev \
             libgtk-3-dev \
             libayatana-appindicator3-dev \
