@@ -9,7 +9,7 @@ import { File, Folder, Files } from 'fumadocs-ui/components/files';
 
 # Build It Yourself
 
-SGI's source is fully public. The desktop app is a [Tauri](https://tauri.app/) app (Rust + Next.js), and it drives a bundled helper process, `SteamUtility.exe`, built from a separate C#/.NET project at `libs/SteamUtility/`.
+SGI's source is fully public. The desktop app is a [Tauri](https://tauri.app/) app (Rust + Next.js), and it drives a bundled helper process, `SteamUtility` (`SteamUtility.exe` on Windows, no extension on Linux), built from a separate C#/.NET project at `libs/SteamUtility/`. These steps work the same on both Windows and Linux except where noted.
 
 ## Prerequisites
 
@@ -17,8 +17,17 @@ SGI's source is fully public. The desktop app is a [Tauri](https://tauri.app/) a
 * [pnpm](https://pnpm.io/installation): the project uses pnpm workspaces, not npm/yarn
 * [Rust](https://www.rust-lang.org/tools/install) (stable toolchain)
 * [.NET SDK](https://dotnet.microsoft.com/en-us/download) >= 8.0 (`libs/SteamUtility` targets `net8.0` only)
+
+**Windows only:**
 * [VS Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/) = latest, with the "Desktop development with C++" workload
 * [WebView2](https://developer.microsoft.com/en-us/Microsoft-edge/webview2/) = latest (*pre-installed on Windows 11 and recent Windows 10*)
+
+**Linux only** — the system packages [Tauri's Linux prerequisites](https://v2.tauri.app/start/prerequisites/#linux) require, e.g. on Ubuntu/Debian:
+  ```bash
+  sudo apt install libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev \
+    librsvg2-dev libsoup-3.0-dev libssl-dev libxdo-dev build-essential patchelf pkg-config
+  ```
+  Note: SGI on Linux ships **agent-mode sign-in only** (no local Steam client integration) — see [Platform scope in the repo's `CLAUDE.md`](https://github.com/zevnda/steam-game-idler/blob/main/CLAUDE.md#platform-scope) for the full breakdown of what that excludes.
 
 <Steps>
   <Step>
@@ -45,7 +54,7 @@ SGI's source is fully public. The desktop app is a [Tauri](https://tauri.app/) a
     dotnet build ./libs/SteamUtility/SteamUtility.csproj
     ```
 
-    This outputs `SteamUtility.exe` to `src-tauri/target/debug/libs/` (or `release/libs/` for a release build); `pnpm tauri dev`/`pnpm tauri build` expect it to already be there
+    This outputs `SteamUtility` (`SteamUtility.exe` on Windows) to `src-tauri/target/debug/libs/` (or `release/libs/` for a release build); `pnpm tauri dev`/`pnpm tauri build` expect it to already be there
   </Step>
 
   <Step>

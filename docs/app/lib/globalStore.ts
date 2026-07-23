@@ -15,6 +15,27 @@ interface globalStore {
   setTotalDownloadsRaw: (value: number | ((prev: number) => number)) => void
   totalGames: number
   setTotalGames: (value: number | ((prev: number) => number)) => void
+  // Linux release assets - all default to '' until a real Linux release exists (the CI pipeline
+  // only started publishing these alongside the Windows installer once Linux support shipped).
+  // .deb is the primary/recommended Linux format (see CLAUDE.md's Platform scope) - .rpm and
+  // AppImage are offered as secondary links wherever a Linux download is shown.
+  linuxDownloadUrl: string
+  setLinuxDownloadUrl: (value: string | ((prev: string) => string)) => void
+  linuxDownloadSize: string
+  setLinuxDownloadSize: (value: string | ((prev: string) => string)) => void
+  linuxRpmUrl: string
+  setLinuxRpmUrl: (value: string | ((prev: string) => string)) => void
+  linuxAppImageUrl: string
+  setLinuxAppImageUrl: (value: string | ((prev: string) => string)) => void
+  // Which platform's download CTA to show, site-wide. Defaults to 'windows' (matches the
+  // historical, pre-Linux-support behavior and is SSR-safe) until either a one-time client-side
+  // OS sniff (see detectOS.ts, run once from OSDetector.tsx) or a manual toggle says otherwise.
+  selectedOS: 'windows' | 'linux'
+  setSelectedOS: (value: 'windows' | 'linux') => void
+  // True once the user has manually picked a platform via a toggle - stops OSDetector's one-time
+  // auto-detect effect from ever overwriting their explicit choice.
+  osOverridden: boolean
+  overrideOS: (value: 'windows' | 'linux') => void
 }
 
 export const useGlobalStore = create<globalStore>(set => ({
@@ -53,4 +74,28 @@ export const useGlobalStore = create<globalStore>(set => ({
     set(state => ({
       totalGames: typeof value === 'function' ? value(state.totalGames) : value,
     })),
+  linuxDownloadUrl: '',
+  setLinuxDownloadUrl: value =>
+    set(state => ({
+      linuxDownloadUrl: typeof value === 'function' ? value(state.linuxDownloadUrl) : value,
+    })),
+  linuxDownloadSize: '',
+  setLinuxDownloadSize: value =>
+    set(state => ({
+      linuxDownloadSize: typeof value === 'function' ? value(state.linuxDownloadSize) : value,
+    })),
+  linuxRpmUrl: '',
+  setLinuxRpmUrl: value =>
+    set(state => ({
+      linuxRpmUrl: typeof value === 'function' ? value(state.linuxRpmUrl) : value,
+    })),
+  linuxAppImageUrl: '',
+  setLinuxAppImageUrl: value =>
+    set(state => ({
+      linuxAppImageUrl: typeof value === 'function' ? value(state.linuxAppImageUrl) : value,
+    })),
+  selectedOS: 'windows',
+  setSelectedOS: value => set({ selectedOS: value }),
+  osOverridden: false,
+  overrideOS: value => set({ selectedOS: value, osOverridden: true }),
 }))

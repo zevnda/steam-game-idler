@@ -1,15 +1,33 @@
 'use client'
 
-import { FaWindows } from 'react-icons/fa6'
+import { FaLinux, FaWindows } from 'react-icons/fa6'
 import { FiRefreshCw } from 'react-icons/fi'
 import Link from 'next/link'
 import { FadeIn } from '@/app/lib/animations'
 import { useGlobalStore } from '@/app/lib/globalStore'
 
 export default function DownloadHero() {
-  const { downloadUrl, latestVersion, downloadSize, totalDownloads } = useGlobalStore(
-    state => state,
-  )
+  const {
+    downloadUrl,
+    latestVersion,
+    downloadSize,
+    totalDownloads,
+    linuxDownloadUrl,
+    linuxDownloadSize,
+    linuxRpmUrl,
+    linuxAppImageUrl,
+    selectedOS,
+    overrideOS,
+  } = useGlobalStore(state => state)
+
+  // A Linux release only actually exists once the CI pipeline has published one - fall back to
+  // Windows regardless of detection/a prior manual override until then, so this page never
+  // offers a dead link. Resolves itself automatically the moment a real Linux release ships, no
+  // redeploy needed (see StoreLoader.tsx).
+  const linuxAvailable = Boolean(linuxDownloadUrl)
+  const isLinux = selectedOS === 'linux' && linuxAvailable
+  const primaryUrl = isLinux ? linuxDownloadUrl : downloadUrl
+  const primarySize = (isLinux ? linuxDownloadSize : downloadSize) || '~7 MB'
 
   return (
     <section className='pt-36 pb-24 sm:pt-44 sm:pb-28 relative overflow-hidden'>
@@ -47,12 +65,12 @@ export default function DownloadHero() {
 
           <Link
             prefetch={false}
-            href={downloadUrl}
+            href={primaryUrl}
             className='btn-download justify-center'
             style={{ padding: '1.125rem 2.5rem', fontSize: '1rem' }}
           >
-            <FaWindows className='w-4 h-4' />
-            Download for Windows
+            {isLinux ? <FaLinux className='w-4 h-4' /> : <FaWindows className='w-4 h-4' />}
+            Download for {isLinux ? 'Linux' : 'Windows'}
           </Link>
 
           <div className='flex items-center justify-center gap-1.5 text-xs text-text-muted mt-4'>
@@ -61,9 +79,48 @@ export default function DownloadHero() {
           </div>
 
           <p className='text-sm text-text-muted mt-10'>
-            Windows 10 / 11 &middot; {downloadSize || '~7 MB'} &middot; Elastic-2.0 License &middot;{' '}
-            {totalDownloads || '100K+'} downloads
+            {isLinux ? '.deb &middot; most 64-bit distros' : 'Windows 10 / 11'} &middot;{' '}
+            {primarySize} &middot; Elastic-2.0 License &middot; {totalDownloads || '100K+'}{' '}
+            downloads
           </p>
+
+          {isLinux && (linuxRpmUrl || linuxAppImageUrl) && (
+            <p className='text-xs text-text-muted mt-3'>
+              On Fedora/openSUSE or another distro?{' '}
+              {linuxRpmUrl && (
+                <Link
+                  prefetch={false}
+                  href={linuxRpmUrl}
+                  className='underline hover:text-text-primary'
+                >
+                  .rpm
+                </Link>
+              )}
+              {linuxRpmUrl && linuxAppImageUrl && ' · '}
+              {linuxAppImageUrl && (
+                <Link
+                  prefetch={false}
+                  href={linuxAppImageUrl}
+                  className='underline hover:text-text-primary'
+                >
+                  AppImage
+                </Link>
+              )}
+            </p>
+          )}
+
+          {/* Manual override - the platform above is only ever a best-effort default (client-side
+              OS sniff, or a prior visit's choice), never a hard gate. Only offered once a real
+              Linux build actually exists to switch to. */}
+          {linuxAvailable && (
+            <button
+              type='button'
+              onClick={() => overrideOS(isLinux ? 'windows' : 'linux')}
+              className='mt-6 text-xs text-text-muted underline hover:text-text-primary transition-colors duration-150'
+            >
+              Not on {isLinux ? 'Linux' : 'Windows'}? Get it for {isLinux ? 'Windows' : 'Linux'}
+            </button>
+          )}
         </FadeIn>
       </div>
     </section>

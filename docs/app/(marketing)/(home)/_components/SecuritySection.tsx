@@ -31,7 +31,7 @@ const SEQUENCE = [
   { type: 'cmd', text: '$ sgi-audit --scan /proc/SteamGameIdler' },
   { type: 'log', text: 'Resolving binary hash...' },
   { type: 'pass', text: '✓ SHA-256 matches source commit a4e86538' },
-  { type: 'cmd', text: '$ inspect --storage Windows Credential Manager' },
+  { type: 'cmd', text: '$ inspect --storage OS-native credential store' },
   { type: 'log', text: 'Reading credential store...' },
   { type: 'pass', text: '✓ Secrets held by OS-native keyring' },
   { type: 'pass', text: '✓ No plaintext secrets on disk' },

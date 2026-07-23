@@ -18,9 +18,10 @@ The Logs panel displays a live view of SGI's internal activity, including errors
 
 <Callout type="info">
   Logs are written to a new file every day, kept in a `logs` folder next to where SGI stores its
-  settings and cache: `<install folder>/logs/` for the portable version, or your Windows user
-  profile's app-data folder for the installed version. <MockButton type='view-log-file' /> always
-  opens the right one for you, so you don't need to remember the exact path.
+  settings and cache: `<install folder>/logs/` for the Windows portable version, or your OS's
+  app-data location otherwise (`%appdata%\com.zevnda.steam-game-idler\` on Windows,
+  `~/.local/share/com.zevnda.steam-game-idler/` on Linux). <MockButton type='view-log-file' />
+  always opens the right one for you, so you don't need to remember the exact path.
 </Callout>
 
 If you're reporting a bug on GitHub, include the relevant lines from the log file to help diagnose the issue. See the [Troubleshooting](/docs/troubleshooting) guide for more information.

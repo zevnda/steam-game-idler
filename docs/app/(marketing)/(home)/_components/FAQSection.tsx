@@ -26,7 +26,7 @@ const faqData = [
   {
     question: 'Which operating systems are supported?',
     answer:
-      'SGI is currently a Windows desktop application (Windows 10 and 11). macOS and Linux builds are not available at this time.',
+      'SGI runs on Windows (10 and 11) and Linux (via .deb, .rpm, or AppImage). On Linux, SGI supports "Sign in with Steam" only — Legacy Sign In (which needs a local Steam client) is Windows-only. macOS is not supported.',
   },
   {
     question: 'Are automation tools safe to use?',

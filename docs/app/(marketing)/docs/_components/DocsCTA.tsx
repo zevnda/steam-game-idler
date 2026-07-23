@@ -1,11 +1,14 @@
 'use client'
 
-import { FaWindows } from 'react-icons/fa'
+import { FaLinux, FaWindows } from 'react-icons/fa'
 import { FiGithub } from 'react-icons/fi'
 import { Logo } from './Logo'
 import Link from 'next/link'
+import { useGlobalStore } from '@/app/lib/globalStore'
 
 export default function DocsCTA() {
+  const selectedOS = useGlobalStore(state => state.selectedOS)
+
   return (
     <div className='not-prose my-8'>
       <div className='relative overflow-hidden rounded-lg border border-neutral-200 bg-neutral-50 p-6 dark:border-neutral-800 dark:bg-neutral-900/50'>
@@ -29,7 +32,11 @@ export default function DocsCTA() {
               href='/download'
               className='inline-flex items-center justify-center px-4 py-2 bg-neutral-900 text-white text-sm font-medium rounded-md hover:bg-neutral-800 transition-colors dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-200'
             >
-              <FaWindows className='w-4 h-4 mr-2' />
+              {selectedOS === 'linux' ? (
+                <FaLinux className='w-4 h-4 mr-2' />
+              ) : (
+                <FaWindows className='w-4 h-4 mr-2' />
+              )}
               Go to Downloads
             </Link>
 
