@@ -20,14 +20,10 @@ See how it stacks up against other software, such as **[ArchiSteamFarm](https://
 
 # Installation
 
-### Windows
-1. Download the `setup.exe` installer from the **[releases page](https://github.com/zevnda/steam-game-idler/releases/latest)**
-2. Run the installer and follow the steps
-
-### Linux
-1. Download the `.deb`, `.rpm` or `.AppImage` from the **[releases page](https://github.com/zevnda/steam-game-idler/releases/latest)**
-2. See the **[linux install guide](https://steamgameidler.com/docs/get-started/install#linux)** for the full steps
-3. Check the list of **[known Linux quirks & limitations](https://github.com/zevnda/steam-game-idler/wiki#known-linux-quirks--limitations)**
+1. Download the latest release for your OS from the **[releases page](https://github.com/zevnda/steam-game-idler/releases/latest)** or the **[website](https://steamgameidler.com/download)**
+    * **Windows (installer)**: Run the installer and follow the steps
+    * **Windows (portable)**: Extract the contents of the `.zip` file and run `Steam Game Idler.exe`
+    * **Linux**: See the **[linux install guide](https://steamgameidler.com/docs/get-started/install#linux)** for the full steps
 
 Or if you prefer, you can **[build it yourself](https://steamgameidler.com/docs/get-started/build-it-yourself)** on either platform.
 
