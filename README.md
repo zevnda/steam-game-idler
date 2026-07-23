@@ -20,13 +20,12 @@ See how it stacks up against other software, such as **[ArchiSteamFarm](https://
 
 # Installation
 
-### Windows
-1. Download the `setup.exe` installer from the **[releases page](https://github.com/zevnda/steam-game-idler/releases/latest)**
-2. Run the installer and follow the steps
-
-### Linux
-3. Download the `.deb`, `.rpm` or `.AppImage` from the **[releases page](https://github.com/zevnda/steam-game-idler/releases/latest)**
-4. See the **[linux install guide](https://steamgameidler.com/docs/get-started/install#linux)** for the full steps
+1. Download the latest release for your OS from the **[releases page](https://github.com/zevnda/steam-game-idler/releases/latest)** or the **[website](https://steamgameidler.com/download)**
+    * **Windows (installer)**: Run the installer and follow the steps
+    * **Windows (portable)**: Extract the contents of the `.zip` file and run `Steam Game Idler.exe`
+    * **Linux**: See the **[linux install guide](https://steamgameidler.com/docs/get-started/install#linux)** for the full steps
+2. Choose between **[Steam Sign-in](https://steamgameidler.com/docs/get-started/how-to-sign-in#sign-in-with-steam)** or **[Legacy Sign-in](https://steamgameidler.com/docs/get-started/how-to-sign-in#legacy-sign-in)** mode
+3. Start idling!
 
 Or if you prefer, you can **[build it yourself](https://steamgameidler.com/docs/get-started/build-it-yourself)** on either platform.
 
@@ -56,4 +55,3 @@ Copyright © 2024-2026 zevnda — **[Elastic-2.0 License](./LICENSE)**
 [release]: https://img.shields.io/github/v/release/zevnda/steam-game-idler?style=flat-square&color=%232d6acc&label=Version
 [build]: https://img.shields.io/github/actions/workflow/status/zevnda/steam-game-idler/release.yml?style=flat-square&color=%2313a135&label=Build
 [discord]: https://img.shields.io/discord/1445588897076871277?label=Discord&style=flat-square&color=%236577e6
-
