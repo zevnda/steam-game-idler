@@ -27,7 +27,7 @@
     "react-icons": "^5.5.0",
     "react-markdown": "^10.1.0",
     "zod": "^4.4.3",
-    "zustand": "^5.0.8"
+    "zustand": "^5.0.14"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.0",
