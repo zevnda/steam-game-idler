@@ -37,9 +37,6 @@ pub enum AppError {
     #[error("{0}")]
     Agent(String),
 
-    #[error("failed to terminate SteamUtility.exe process(es): {0}")]
-    ProcessKill(String),
-
     #[error("could not locate a local Steam installation: {0}")]
     SteamNotFound(String),
 
@@ -233,7 +230,6 @@ impl AppError {
             AppError::RequestTimeout => "agent_request_timeout".to_string(),
             AppError::Json(_) => "agent_ipc_malformed".to_string(),
             AppError::Agent(code) => code.clone(),
-            AppError::ProcessKill(_) => "process_kill_failed".to_string(),
             AppError::SteamNotFound(_) => "steam_not_found".to_string(),
             AppError::LoginVdfIo(_) => "login_vdf_io_failed".to_string(),
             AppError::LoginVdfParse(_) => "login_vdf_parse_failed".to_string(),

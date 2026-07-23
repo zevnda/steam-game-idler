@@ -34,7 +34,9 @@ pub(crate) const OWNED_APPS_REQUEST_TIMEOUT: Duration = Duration::from_secs(600)
 /// to a single `listen()` call regardless of how many event types SteamUtility grows.
 pub const AGENT_EVENT: &str = "steam-agent-event";
 /// Win32 `CREATE_NO_WINDOW` process-creation flag - suppresses the console window that would
-/// otherwise flash briefly for the spawned SteamUtility.exe agent process.
+/// otherwise flash briefly for the spawned SteamUtility agent process. No Linux equivalent needed
+/// - a spawned child there has no console window to flash in the first place.
+#[cfg(windows)]
 const CREATE_NO_WINDOW: u32 = 0x08000000;
 
 type PendingMap = Arc<StdMutex<HashMap<String, oneshot::Sender<IpcResponse>>>>;
@@ -68,7 +70,7 @@ pub struct AgentProcess {
 
 impl AgentProcess {
     pub fn spawn(app_handle: AppHandle, account_key: String) -> AppResult<Self> {
-        let exe_path = crate::steam_utility_exe::locate()?;
+        let exe_path = crate::steam_utility_exe::locate_for_agent(&app_handle)?;
 
         let mut command = Command::new(&exe_path);
         command
@@ -76,8 +78,9 @@ impl AgentProcess {
             .stdin(std::process::Stdio::piped())
             .stdout(std::process::Stdio::piped())
             .stderr(std::process::Stdio::piped())
-            .kill_on_drop(true)
-            .creation_flags(CREATE_NO_WINDOW);
+            .kill_on_drop(true);
+        #[cfg(windows)]
+        command.creation_flags(CREATE_NO_WINDOW);
 
         let mut child = command.spawn()?;
 

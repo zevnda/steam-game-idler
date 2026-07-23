@@ -13,6 +13,10 @@ export default function StoreLoader() {
     setTotalDownloads,
     setTotalDownloadsRaw,
     setTotalGames,
+    setLinuxDownloadUrl,
+    setLinuxDownloadSize,
+    setLinuxRpmUrl,
+    setLinuxAppImageUrl,
   } = useGlobalStore(state => state)
 
   // Fetch the latest release information from the GitHub API
@@ -33,11 +37,35 @@ export default function StoreLoader() {
             setDownloadUrl(installer.browser_download_url)
             setDownloadSize(formatBytes(installer.size))
           }
+          // Linux assets only exist from the first release published after Linux support shipped
+          // - these all stay unset (empty string) on any older release, which every Linux-aware
+          // consumer (DownloadHero, CTASection, DocsCTA) already treats as "not available yet"
+          // and falls back to Windows for, so this needs no feature-flagging of its own.
+          const deb = data.assets?.find((asset: { name: string }) => asset.name.endsWith('.deb'))
+          if (deb) {
+            setLinuxDownloadUrl(deb.browser_download_url)
+            setLinuxDownloadSize(formatBytes(deb.size))
+          }
+          const rpm = data.assets?.find((asset: { name: string }) => asset.name.endsWith('.rpm'))
+          if (rpm) setLinuxRpmUrl(rpm.browser_download_url)
+          // Not `.AppImage.tar.gz`/`.sig` - the updater's own companion files, not the app itself
+          const appImage = data.assets?.find((asset: { name: string }) =>
+            asset.name.endsWith('.AppImage'),
+          )
+          if (appImage) setLinuxAppImageUrl(appImage.browser_download_url)
         })
     } catch (error) {
       console.error('Error fetching latest version:', error)
     }
-  }, [setDownloadUrl, setLatestVersion, setDownloadSize])
+  }, [
+    setDownloadUrl,
+    setLatestVersion,
+    setDownloadSize,
+    setLinuxDownloadUrl,
+    setLinuxDownloadSize,
+    setLinuxRpmUrl,
+    setLinuxAppImageUrl,
+  ])
 
   // Fetch the number of stars from the GitHub API
   useEffect(() => {

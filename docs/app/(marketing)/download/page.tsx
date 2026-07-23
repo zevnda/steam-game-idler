@@ -5,13 +5,14 @@ import DownloadHero from '@/app/(marketing)/download/_components/DownloadHero'
 import PreviousVersionsSection from '@/app/(marketing)/download/_components/PreviousVersionsSection'
 
 export const metadata = {
-  title: 'Download Steam Game Idler for Windows',
+  title: 'Download Steam Game Idler for Windows & Linux',
   description:
-    'Download Steam Game Idler for free. Get the latest version with automatic updates, or grab a portable .zip of a previous release.',
+    'Download Steam Game Idler for free on Windows or Linux. Get the latest version with automatic updates, or grab a portable .zip of a previous release.',
   keywords: [
     'Steam Game Idler download',
     'download Steam Game Idler',
     'Steam Game Idler for Windows',
+    'Steam Game Idler for Linux',
     'Steam Game Idler installer',
     'Steam Game Idler portable',
     'Steam Game Idler previous versions',
@@ -19,16 +20,16 @@ export const metadata = {
   openGraph: {
     url: 'https://steamgameidler.com/download',
     siteName: 'Steam Game Idler',
-    title: 'Download Steam Game Idler for Windows',
+    title: 'Download Steam Game Idler for Windows & Linux',
     description:
-      'Download Steam Game Idler for free. Get the latest version with automatic updates, or grab a portable .zip of a previous release.',
+      'Download Steam Game Idler for free on Windows or Linux. Get the latest version with automatic updates, or grab a portable .zip of a previous release.',
     images: 'https://steamgameidler.com/og-image.png',
     type: 'website',
   },
   twitter: {
-    title: 'Download Steam Game Idler for Windows',
+    title: 'Download Steam Game Idler for Windows & Linux',
     description:
-      'Download Steam Game Idler for free. Get the latest version with automatic updates, or grab a portable .zip of a previous release.',
+      'Download Steam Game Idler for free on Windows or Linux. Get the latest version with automatic updates, or grab a portable .zip of a previous release.',
     image: 'https://steamgameidler.com/og-image.png',
   },
   alternates: {

@@ -354,6 +354,29 @@ body {
   }
 }
 
+/* WebKitGTK's compositor makes GoProModal's ambient motion (15 infinitely-looping shooting stars +
+   a floating-image bounce, over a 260-gradient masked starfield background) meaningfully more
+   expensive than on Windows' WebView2 - a genuine Linux/WebKitGTK compositor-capability gap, not a
+   weak-GPU or virtualization artifact. Applied unconditionally via GoProModal's own `isLinux`
+   check (platformStore) rather than gating on the user's prefers-reduced-motion OS setting, since
+   this isn't a motion-sensitivity accommodation - mirrors the ruleset above exactly so both
+   mechanisms stay in sync if either changes. */
+.force-reduced-motion .pro-fade-in,
+.force-reduced-motion .pro-fade-in-up,
+.force-reduced-motion .overlay-fade-in {
+  animation: none;
+  opacity: 1;
+  translate: 0 0;
+}
+
+.force-reduced-motion .pro-shooting-star {
+  display: none;
+}
+
+.force-reduced-motion .pro-floating-image {
+  animation: none;
+}
+
 /* Generic overlay backdrop fade (HelpDesk's dim backdrop, and any future plain-div overlay that
    isn't HeroUI's own Modal/AlertDialog) - reuses `pro-fade-in`'s keyframe but at HeroUI's own real
    Modal backdrop entrance duration (150ms ease-out, see `.modal__backdrop[data-entering=true]` in

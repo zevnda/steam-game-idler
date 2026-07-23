@@ -3,7 +3,9 @@
 
 <h1>Steam Game Idler</h1>
 
-Steam Game Idler (SGI) is a Steam automation tool for farming trading cards, managing achievements, and boosting playtime across all games in your Steam library — no local Steam client required.
+Steam Game Idler (SGI) is a Steam automation tool for farming trading cards, managing achievements, and boosting playtime across all games in your Steam library.
+
+Full **Windows** and **Linux** support. No local Steam client required.
 
 See how it stacks up against other software, such as **[ArchiSteamFarm](https://steamgameidler.com/alternatives/archisteamfarm)**, **[Steam Achievement Manager](https://steamgameidler.com/alternatives/steam-achievement-manager)**, and **[Idle Master](https://steamgameidler.com/alternatives/idle-master)**.
 
@@ -17,10 +19,16 @@ See how it stacks up against other software, such as **[ArchiSteamFarm](https://
 </div>
 
 # Installation
+
+### Windows
 1. Download the `setup.exe` installer from the **[releases page](https://github.com/zevnda/steam-game-idler/releases/latest)**
 2. Run the installer and follow the steps
 
-Or if you prefer, you can **[build it yourself](https://steamgameidler.com/docs/get-started/build-it-yourself)**
+### Linux
+3. Download the `.deb`, `.rpm` or `.AppImage` from the **[releases page](https://github.com/zevnda/steam-game-idler/releases/latest)**
+4. See the **[linux install guide](https://steamgameidler.com/docs/get-started/install#linux)** for the full steps
+
+Or if you prefer, you can **[build it yourself](https://steamgameidler.com/docs/get-started/build-it-yourself)** on either platform.
 
 # Features
 Refer to the **[documentation](https://steamgameidler.com/docs/)** for a detailed guide on each feature

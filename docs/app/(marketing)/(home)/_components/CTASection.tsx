@@ -18,13 +18,17 @@ const item = {
 }
 
 export default function CTASection() {
-  const { downloadSize } = useGlobalStore(state => state)
+  const { downloadSize, linuxDownloadUrl, linuxDownloadSize, selectedOS } = useGlobalStore(
+    state => state,
+  )
   const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: true, margin: '-60px' })
 
+  // Same "fall back to Windows until a real Linux release exists" rule as DownloadHero.tsx.
+  const isLinux = selectedOS === 'linux' && Boolean(linuxDownloadUrl)
   const requirements = [
-    { label: 'Platform', value: 'Windows 10 / 11' },
-    { label: 'Download size', value: downloadSize || '~7 MB' },
+    { label: 'Platform', value: isLinux ? 'Linux (64-bit)' : 'Windows 10 / 11' },
+    { label: 'Download size', value: (isLinux ? linuxDownloadSize : downloadSize) || '~7 MB' },
     { label: 'License', value: 'Elastic-2.0' },
   ]
 

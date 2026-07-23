@@ -579,6 +579,7 @@
         "statNotFound": "That statistic couldn't be found.",
         "protected": "That value is set by the game server and can't be changed.",
         "unsupportedGameCoordinator": "This game isn't supported for achievements when signed in with Steam - use your local Steam client instead.",
+        "unsupportedGameCoordinatorLinux": "This game isn't supported for achievements when signed in with Steam.",
         "generic": "Something went wrong loading achievements. Please try again. ({{code}})"
       }
     },

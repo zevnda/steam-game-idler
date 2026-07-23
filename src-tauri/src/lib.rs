@@ -110,6 +110,8 @@ pub fn run() {
             steam_agent::commands::agent_set_ownership_settings,
             platform::is_portable,
             platform::is_dev,
+            platform::current_os,
+            platform::can_auto_update,
             updater::kill_all_steam_utility_processes,
             local_steam::commands::get_users,
             local_steam::commands::get_user_summary,
@@ -272,26 +274,50 @@ pub fn run() {
 }
 
 /// The window starts hidden (`tauri.conf.json`'s `visible`/`focus` are both `false`) so the
-/// frontend's blank-then-painted webview never flashes as a visible window. It's shown only once
-/// the frontend emits `ready` after its first real paint - unless `Settings::start_minimized` is
-/// set, in which case it's deliberately left hidden (not OS-taskbar-minimized, matching `main`'s
-/// real semantics - see that field's own doc comment) and only recoverable via the tray's "Show".
-/// Falls back to showing if settings fail to load, same as `main`'s own error-fallback behavior.
+/// frontend's blank-then-painted webview never flashes as a visible window. On Windows it's shown
+/// only once the frontend emits `ready` after its first real paint - unless `Settings::
+/// start_minimized` is set, in which case it's deliberately left hidden (not OS-taskbar-minimized,
+/// matching `main`'s real semantics - see that field's own doc comment) and only recoverable via
+/// the tray's "Show". Falls back to showing if settings fail to load, same as `main`'s own
+/// error-fallback behavior.
+///
+/// **Linux shows immediately here instead of waiting for `ready`.** GNOME/Wayland's
+/// compositor-level anti-focus-stealing protection silently no-ops a programmatic `show()`/
+/// `set_focus()` call unless it's tied to a real user-input event - the tray's "Show" (a real
+/// click) works, but the same call from the `ready` handler never visibly shows the window at all.
+/// Windows has no such restriction. Trades the brief unstyled flash the hidden-start exists to
+/// avoid (Linux only) for the window reliably appearing at all - revisit if a Wayland-safe
+/// activation-token approach is worth the extra complexity later.
 fn setup_window(app_handle: &tauri::AppHandle) -> tauri::Result<()> {
     let window = app_handle
         .get_webview_window("main")
         .expect("main window must exist at setup time");
 
-    let window_for_ready = window.clone();
-    let app_handle_for_ready = app_handle.clone();
-    window.once("ready", move |_| {
-        let should_start_minimized = settings::load(&app_handle_for_ready)
-            .map(|settings| settings.start_minimized)
-            .unwrap_or(false);
+    let should_start_minimized = settings::load(app_handle)
+        .map(|settings| settings.start_minimized)
+        .unwrap_or(false);
 
+    if cfg!(target_os = "linux") {
         if !should_start_minimized {
-            let _ = window_for_ready.show();
-            let _ = window_for_ready.set_focus();
+            if let Err(err) = window.show() {
+                tracing::warn!(?err, "setup_window: failed to show main window immediately");
+            }
+            if let Err(err) = window.set_focus() {
+                tracing::warn!(?err, "setup_window: failed to focus main window immediately");
+            }
+        }
+        return Ok(());
+    }
+
+    let window_for_ready = window.clone();
+    window.once("ready", move |_| {
+        if !should_start_minimized {
+            if let Err(err) = window_for_ready.show() {
+                tracing::warn!(?err, "setup_window: failed to show main window on ready");
+            }
+            if let Err(err) = window_for_ready.set_focus() {
+                tracing::warn!(?err, "setup_window: failed to focus main window on ready");
+            }
         }
     });
 

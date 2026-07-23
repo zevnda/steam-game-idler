@@ -87,48 +87,5 @@ namespace SteamUtility.Cli
             );
             return result.Ok ? 0 : 1;
         }
-
-        public static void ShowUsage()
-        {
-            var commandUsages = new Dictionary<string, string>
-            {
-                {
-                    "check_ownership [app_ids_json]",
-                    "Check if the user owns a list of games (defaults to the curated whitelist)"
-                },
-                { "idle <app_id> [app_name]", "Start idling a specific game" },
-                { "get_achievement_data <app_id> [specific_id]", "Get achievement/stat data" },
-                { "unlock_achievement <app_id> <ach_id>", "Unlock a single achievement" },
-                { "lock_achievement <app_id> <ach_id>", "Lock a single achievement" },
-                {
-                    "toggle_achievement <app_id> <ach_id>",
-                    "Toggle a single achievement's lock state"
-                },
-                { "unlock_all_achievements <app_id>", "Unlock all achievements" },
-                { "lock_all_achievements <app_id>", "Lock all achievements" },
-                { "update_stats <app_id> <[stat_objects...]>", "Update achievement statistics" },
-                { "reset_all_stats <app_id>", "Reset all statistics" },
-            };
-
-            var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-            Console.WriteLine(
-                $"SteamUtility {version} by zevnda - https://github.com/zevnda/steam-game-idler"
-            );
-            Console.WriteLine();
-            Console.WriteLine("Usage:");
-            Console.WriteLine(
-                "    SteamUtility.exe agent               Start persistent daemon mode (sign in with Steam credentials)"
-            );
-            Console.WriteLine(
-                "    SteamUtility.exe <command> [args...] Run a one-shot command against a local, running Steam client"
-            );
-            Console.WriteLine("    SteamUtility.exe [--help | -h]");
-            Console.WriteLine();
-            Console.WriteLine("Commands:");
-            foreach (var cmd in commandUsages)
-            {
-                Console.WriteLine($"    {cmd.Key, -45} {cmd.Value}");
-            }
-        }
     }
 }

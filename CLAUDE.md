@@ -89,6 +89,10 @@ the live user base, not just useful in local dev.
 
 ## Working with Claude Code
 
+- **Never commit or push any files, and never offer to.** Committing is purely a user-done action
+  in this project — end a task by stating what changed and leave it uncommitted, with no "let me
+  know if you'd like me to commit this" or similar. Applies no matter how routine or low-risk the
+  change looks; the user initiates commits themselves, always.
 - **Never run `prettier --write .` or the `prettier` package.json script at all**, even with file
   args — the script is hardcoded to `prettier --write .` and pnpm/npm append extra args rather
   than replacing them, so scoping never actually happens. Use `pnpm exec prettier --write
@@ -170,10 +174,92 @@ the live user base, not just useful in local dev.
 
 ## Platform scope
 
-**Windows-only** this release — use Windows-specific integration where it's the fastest/cleanest
-path (Windows Credential Manager via `keyring`, `windows`/`winapi` crates). Keep the door open for
-other OSes where it costs nothing (no hardcoded path separators, no gratuitous `cfg(windows)`) —
-but don't spend design effort chasing cross-platform support this release doesn't need.
+**Windows and Linux desktop**, with different capability levels: Windows supports both sign-in
+methods (CLI mode + agent mode — see "Agent mode vs. CLI mode" below); Linux ships **agent-mode
+only** (no local-Steam-client integration at all — no Steamworks.NET/Win32 port exists or is
+planned). Packaging: Windows gets an NSIS installer + a portable zip; Linux gets an AppImage
+(primary, self-updating like the Windows portable zip) plus `.deb`/`.rpm` (secondary — actually
+**the recommended Linux install method**, since the AppImage has a known, accepted performance
+caveat, see below). Every Windows-specific integration (`Windows Credential Manager` via
+`keyring`, `windows`/`winapi` crates) stays exactly as it is — this is genuinely two supported
+platforms now, not "Windows plus best-effort portability."
+
+**Platform gating pattern**: `platform::current_os` (a Tauri command, `std::env::consts::OS`
+passthrough) is cached once at the frontend root via `platformStore`/`usePlatform` (mounted in
+`_app.tsx`, alongside `useTheme`/`useZoomControls`) — don't re-invoke it per component. Every
+consumer treats `null` (not yet resolved) as "not Linux," so a slow/failed check fails open onto
+the pre-existing Windows-only behavior for one frame rather than flashing Linux-only UI, or
+blocking render, while it resolves. Use this exact pattern (store + root-mounted hook, `null` =
+not-Linux) for any new platform-conditional frontend code — see `usePlatformStore`'s `isLinux`
+gate on `LinuxResizeHandles.tsx`/`GoProModal` for worked examples.
+
+**`src-tauri/capabilities/desktop.json`'s `"platforms"` array must include `"linux"`.** This is
+config JSON, not Rust/TS source — a plain grep-for-Windows-only-code audit will not catch a
+capability scoped to the wrong platform list. A permission missing from this list doesn't error;
+the gated API call just silently no-ops on the excluded platform, which is much harder to
+diagnose than a compile error. Check this file explicitly whenever platform support or a new
+window/event/updater/clipboard permission changes.
+
+### Known Linux-specific quirks (durable — verify still true before removing any of these)
+
+- **`release.yml`'s Linux release job pins `libwebkit2gtk-4.1`/`libjavascriptcoregtk-4.1` to
+  `2.44.3-0ubuntu0.22.04.1`.** This works around a confirmed, still-open upstream WebKitGTK
+  regression (bugs.webkit.org #297921) that breaks EGL display creation on Wayland for every
+  release after 2.44. **Do not remove this pin** without confirming that bug is actually fixed
+  upstream and enough time has passed for `ubuntu-22.04`'s apt archive to carry a fixed version by
+  default.
+- **Tauri's built-in native edge/corner resize-drag mechanism does not work on Linux/Wayland**,
+  even with `core:window:allow-start-resize-dragging` granted (that permission gates the
+  mechanism, but the mechanism itself silently no-ops under this app's Wayland session despite the
+  window being genuinely resizable at the compositor level — a suspected Wayland input-event-serial
+  issue in WebKitGTK's event forwarding, not fixable from this app's code). The real, working fix
+  is `src/shared/components/LinuxResizeHandles.tsx` — a Linux-only (`currentOs === 'linux'`-gated)
+  set of custom edge/corner hit-test divs that call `Window.startResizeDragging()` directly. Don't
+  "fix" a Linux resize regression by re-checking that permission grant; verify this component is
+  still mounted and still Linux-gated instead.
+- **The AppImage is forced through XWayland** (`linuxdeploy-plugin-gtk`'s bundled `AppRun` script
+  sets `GDK_BACKEND=x11` unconditionally, itself a deliberate, currently-necessary workaround for a
+  separate, still-open "GTK crashes under native Wayland" class of Tauri bug,
+  `tauri-apps/tauri#8541`). This causes a real, hardware-independent rendering lag vs. `.deb`/`.rpm`
+  (which run under native Wayland with no translation layer) — confirmed on both a VM's paravirtual
+  GPU and a real discrete GPU via WSL2. This is why `.deb`/`.rpm` are the recommended install
+  method and the AppImage is offered with this as a known, accepted caveat. Don't patch out the
+  `GDK_BACKEND=x11` forcing without first confirming upstream has actually fixed the native-Wayland
+  crash class it exists to prevent.
+- **Linux has no "portable mode" concept.** `platform::is_portable()`'s `.installed`-marker check
+  is Windows-only (`#[cfg(windows)]`-gated) — Linux always uses `app_data_dir()`, never "write next
+  to the executable," since an AppImage's squashfs mount is read-only at runtime and `.deb`/`.rpm`
+  install to `/usr/bin`, which a regular user can't write to either. Every Linux packaging format
+  *does* support auto-update, unlike Windows portable mode — gate on `platform::can_auto_update()`
+  (a separate check from `is_portable()`) if a feature needs to distinguish the two.
+- **The daemon binary's resolved path differs by Linux packaging format.** `steam_utility_exe::
+  locate_for_agent()` (used only by `AgentProcess::spawn`, the one call site that must work on
+  every Linux format) builds the path directly from the `APPDIR` env var when launched from an
+  AppImage, and falls back to Tauri's `resource_dir()` resolver otherwise (`.deb`/`.rpm`, and
+  Windows) — `resource_dir()`'s own documented AppImage-aware fallback logic did not actually
+  resolve correctly in practice, confirmed via a real VM test, so don't revert to relying on it
+  alone for the AppImage case without re-verifying on a real AppImage build first.
+- **Known, accepted Linux-only cosmetic limitations — not fixable from this app's code, don't
+  reattempt without new information:** no rounded window corners (Windows' rounding comes entirely
+  from Windows 11 DWM auto-rounding every undecorated window; this app has zero CSS-level corner
+  rounding of its own anywhere); tray left-click always opens the tray menu instead of
+  showing/focusing the window (Linux's StatusNotifierItem/libayatana-appindicator tray protocol has
+  no left-click-vs-right-click distinction at all, unlike Windows/macOS); one extra click is needed
+  on anything after using the frameless titlebar's drag region (a currently-open upstream
+  Tauri/wry/GTK issue — `tauri-apps/tauri#9751`, `tauri-apps/wry#622`, `tauri-apps/tauri#9901`);
+  the tray's "Reset window position" is a silent no-op (Wayland's `xdg-shell` protocol gives
+  clients no way to set an absolute window position at all); an AppImage's taskbar/dock icon shows
+  a generic icon even though its tray icon and its `.deb`/`.rpm` equivalent are both correct (GNOME
+  resolves a taskbar icon via a `.desktop` file match, and AppImages don't self-install one by
+  design/ecosystem convention — confirmed even mature tools like `electron-builder` deliberately
+  don't self-integrate AppImages with the desktop, deferring to external tools like Gear Lever).
+- **CSS `zoom` renders inconsistently between WebKitGTK and WebView2/Chromium** — use
+  `transform: scale()` for any new scaled-UI element instead (see `AdSlot.tsx`'s self-measuring
+  `ResizeObserver` + `transform` approach). Separately, **CSS `filter` (e.g. `blur()`) applied
+  directly to a `<video>` element has WebKitGTK-specific compositing bugs** (the video silently
+  fails to render at all, no error) — bake the filter into the video asset itself instead (see how
+  `public/loader.webm` is pre-blurred via `ffmpeg`'s `gblur` filter) rather than applying it via
+  CSS at runtime.
 
 ## Production readiness — this is a live public app
 
@@ -201,16 +287,28 @@ The Tauri updater plugin's config (`tauri.conf.json`'s `plugins.updater.pubkey`,
 previously-installed binary. **Never regenerate the minisign keypair or change the endpoint URL** —
 doing so silently breaks updates for every existing user, since they can never verify a release
 signed with a different key. `latest.json` (repo root) is CI-regenerated per release
-(`.github/workflows/release.yml`): `{version, major, platforms.windows-x86_64: {signature, url}}`
-— `url` must match whatever artifact name the Tauri bundler actually produces. `major` is a manual
+(`.github/workflows/release.yml`): `{version, major, platforms.windows-x86_64: {signature, url},
+platforms.linux-x86_64: {signature, url}}` — `url` must match whatever artifact name the Tauri
+bundler actually produces for that platform. The Linux entry is added by a second job
+(`build_release_bundle_linux`) that runs *after* the Windows job (`build_release_bundle`), reusing
+the same version-bump branch/PR rather than opening a second one, and appends its own bundle files
+to the same release tag instead of creating a second release. The Linux updater artifact's exact
+filename is discovered at build time via a glob over the produced `.AppImage.tar.gz.sig`, never
+hardcoded — Tauri's Linux bundle-naming convention shouldn't be assumed the way the Windows NSIS
+name safely can be (already confirmed against real shipped releases). `major` is a manual
 `workflow_dispatch` input (not inferred from semver): `true` silently installs mid-session for
 already-running instances; `false` just offers click-to-update via `UpdateButton`, except on an
 app's very first check since launch, which always installs silently either way. Portable builds
-skip update checks entirely (`platform::is_portable()`).
+(Windows only — Linux has no portable-mode concept, see "Platform scope" above) skip update checks
+entirely (`platform::is_portable()`); every Linux packaging format supports auto-update, gated on
+the separate `platform::can_auto_update()` check instead.
 
-**Pre-install cleanup** (`updater.rs`'s `kill_all_steam_utility_processes`) must keep killing every
-`SteamUtility.exe` process this app's process model can spawn (per-account agent sessions, plus any
-per-game CLI-mode `idle` processes) — extend it if the process model grows a new spawn shape.
+**Pre-install cleanup** (`updater.rs`'s `kill_all_steam_utility_processes`) is a cross-platform
+`sysinfo`-based implementation (not a Windows `taskkill` shell-out) that must keep killing every
+`SteamUtility`/`SteamUtility.exe` process this app's process model can spawn (per-account agent
+sessions, plus any per-game CLI-mode `idle` processes on Windows) — matches by substring so it
+catches both the Windows and Linux binary names; extend it if the process model grows a new spawn
+shape.
 `src-tauri/installer-hooks.nsh`'s `NSIS_HOOK_PREINSTALL` explicitly deletes known orphaned files
 from prior releases on upgrade (NSIS never deletes a file that existed in a prior install but isn't
 part of the current one) — extend this list if a future release drops a previously-shipped file.
@@ -271,7 +369,10 @@ way; several serde-side field-naming bugs have been found this way.
 - **Agent mode** (username/password or QR sign-in, SteamKit2/daemon-backed) is the **recommended**
   method. No local Steam client needed.
 - **CLI mode** is the **fallback** for users who don't want to sign in with Steam credentials —
-  requires a real local Steam client running and signed in.
+  requires a real local Steam client running and signed in. **Windows-only** — Linux has no CLI
+  mode at all (see "Platform scope" above), so `SignInLanding.tsx` (the one component behind both
+  the sign-in landing page and `AddAccountModal`) hides the local/CLI-mode button entirely when
+  `usePlatformStore`'s `currentOs === 'linux'`.
 - **Support both modes where possible.** Where a feature genuinely can't be (see capability
   differences below), the frontend must adapt gracefully per sign-in method rather than assume
   uniform capability.

@@ -1,8 +1,9 @@
 'use client'
 
 import type { CSSProperties } from 'react'
-import { FaWindows } from 'react-icons/fa6'
+import { FaLinux, FaWindows } from 'react-icons/fa6'
 import Link from 'next/link'
+import { useGlobalStore } from '@/app/lib/globalStore'
 
 interface DownloadButtonProps {
   label?: string
@@ -12,7 +13,12 @@ interface DownloadButtonProps {
   onClick?: () => void
 }
 
-/** Single source of truth for every CTA that links to the /download page. */
+/**
+ * Single source of truth for every CTA that links to the /download page. Icon follows the
+ * detected/selected platform (`globalStore`'s `selectedOS`, set by `OSDetector.tsx`) - the actual
+ * per-platform download links (and the "no Linux release yet" fallback) live on the /download
+ * page itself (`DownloadHero.tsx`), this is just a generic entry point.
+ */
 export default function DownloadButton({
   label = 'Go to Downloads',
   className = '',
@@ -20,6 +26,8 @@ export default function DownloadButton({
   style,
   onClick,
 }: DownloadButtonProps) {
+  const selectedOS = useGlobalStore(state => state.selectedOS)
+
   return (
     <Link
       prefetch={false}
@@ -28,7 +36,11 @@ export default function DownloadButton({
       style={style}
       onClick={onClick}
     >
-      <FaWindows className={iconClassName} />
+      {selectedOS === 'linux' ? (
+        <FaLinux className={iconClassName} />
+      ) : (
+        <FaWindows className={iconClassName} />
+      )}
       {label}
     </Link>
   )

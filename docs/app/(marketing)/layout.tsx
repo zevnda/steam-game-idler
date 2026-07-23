@@ -1,6 +1,7 @@
 import { RootProvider } from 'fumadocs-ui/provider/next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import Script from 'next/script'
+import OSDetector from '@/app/(marketing)/(home)/_components/OSDetector'
 import VercelAnalytics from '@/app/(marketing)/(home)/_components/VercelAnalytics'
 import SearchDialog from '@/app/(marketing)/(home)/search'
 import '../globals.css'
@@ -106,7 +107,7 @@ const schemaData = [
     'description':
       'Farm Steam trading cards, manage achievements, and idle games automatically — an all-in-one alternative to ArchiSteamFarm, Steam Achievement Manager, and Idle Master.',
     'applicationCategory': 'UtilitiesApplication',
-    'operatingSystem': 'Windows',
+    'operatingSystem': 'Windows, Linux',
     'offers': {
       '@type': 'Offer',
       'price': '0',
@@ -191,6 +192,7 @@ export default function Layout({ children }: LayoutProps) {
         </RootProvider>
 
         <VercelAnalytics />
+        <OSDetector />
       </body>
     </html>
   )

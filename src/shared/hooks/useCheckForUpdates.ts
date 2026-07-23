@@ -2,8 +2,7 @@ import { check } from '@tauri-apps/plugin-updater'
 import { useEffect, useRef } from 'react'
 import { useUpdateStore } from '@/shared/stores/updateStore'
 import { logFrontendWarn } from '@/shared/utils/frontendLogging'
-import { invoke } from '@/shared/utils/invoke'
-import { fetchLatest, isPortableCheck, performUpdate } from '@/shared/utils/update'
+import { canAutoUpdateCheck, fetchLatest, performUpdate } from '@/shared/utils/update'
 
 const CHECK_INTERVAL_MS = 5 * 60 * 1000
 
@@ -14,9 +13,8 @@ const CHECK_INTERVAL_MS = 5 * 60 * 1000
  *   behavior - existing users shouldn't linger on a stale version just because the update
  *   happened to be minor/patch); every check after that only flips `updateAvailable`, leaving the
  *   actual install to an opt-in action (e.g. `UpdateButton`).
- * Portable builds skip checking entirely, since they have no installer to run. Dev builds
- * (`pnpm tauri dev`) also skip checking, since a downloaded production installer relaunching over
- * a dev session would be a surprising, disruptive side effect of local development.
+ * Builds that can't self-update (a portable Windows zip, or a Linux deb/rpm install - see
+ * platform::can_auto_update's doc comment) skip checking entirely.
  */
 export function useCheckForUpdates() {
   const setUpdateAvailable = useUpdateStore(state => state.setUpdateAvailable)
@@ -37,14 +35,7 @@ export function useCheckForUpdates() {
   useEffect(() => {
     const checkForUpdates = async () => {
       try {
-        // A `pnpm tauri dev` build's version compares against the same public `latest.json` as a
-        // real release, so an unlucky version match can otherwise walk straight into
-        // `performUpdate` and downloadAndInstall a production installer over a dev session. Fails
-        // toward checking (matches production) if `is_dev` itself errors.
-        const isDev = await invoke<boolean>('is_dev').catch(() => false)
-        if (isDev) return
-
-        if (await isPortableCheck()) return
+        if (!(await canAutoUpdateCheck())) return
 
         const update = await check()
         if (!update) return

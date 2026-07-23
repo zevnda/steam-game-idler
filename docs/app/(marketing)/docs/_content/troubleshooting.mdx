@@ -20,9 +20,9 @@ This page covers common issues and their solutions when using Steam Game Idler.
 <Steps>
   <Step>
     ### Check System Requirements
-    - Windows 10/11 (64-bit)
+    - Windows 10/11 or Linux (64-bit)
     - Internet connection
-    - Steam client installed and running (only required if you use [Legacy Sign In](/docs/get-started/how-to-sign-in#legacy-sign-in))
+    - Steam client installed and running (only required if you use [Legacy Sign In](/docs/get-started/how-to-sign-in#legacy-sign-in), which is Windows-only — Linux supports Sign in with Steam only)
   </Step>
 
   <Step>
@@ -331,6 +331,34 @@ This page covers common issues and their solutions when using Steam Game Idler.
   </Accordion>
 </Accordions>
 
+## Linux-Specific Notes
+
+<Accordions type="multiple">
+  <Accordion title="Which Linux install format should I use?" id="linux-which-format">
+    `.deb` and `.rpm` are recommended — they run under native Wayland and don't have the AppImage's performance caveat below, plus they support the desktop's normal application launcher integration. The trade-off is no in-app automatic updates (see [Install](/docs/get-started/install#linux) for the full comparison). Use the AppImage if you want automatic updates, or if your distro doesn't provide a compatible `.deb`/`.rpm`.
+  </Accordion>
+
+  <Accordion title="The AppImage feels slower or laggier than the .deb/.rpm install" id="linux-appimage-lag">
+    This is expected, not a bug. The AppImage runs through a compatibility layer (XWayland) on a Wayland desktop, which has a real, hardware-independent performance cost. A `.deb`/`.rpm` install runs under native Wayland with no such layer. Switch to `.deb`/`.rpm` if this is noticeable for you.
+  </Accordion>
+
+  <Accordion title="A few visual quirks on Linux" id="linux-visual-quirks">
+    A handful of small, cosmetic differences from Windows are known platform limitations, not bugs, and aren't fixable from SGI's side:
+    - The window doesn't have rounded corners (Windows gets this from Windows 11's own window manager; Linux desktops have no equivalent for an undecorated window)
+    - Left-clicking the tray icon always opens the tray menu instead of showing the window (a Linux tray-icon protocol limitation with no left/right-click distinction)
+    - One extra click is sometimes needed after dragging the window by its titlebar (a currently-open upstream GTK issue)
+    - An AppImage's taskbar/dock icon may show as generic instead of the SGI icon, even though the tray icon is correct — install via `.deb`/`.rpm` if this bothers you, since desktop icon integration is an AppImage ecosystem limitation, not something specific to SGI
+  </Accordion>
+
+  <Accordion title="Missing dependency errors on install" id="linux-missing-deps">
+    A `.deb`/`.rpm` install pulls in its required system libraries (WebKitGTK, GTK, `libayatana-appindicator3`, `libsecret`) automatically via your package manager. If you see a missing-dependency error anyway, make sure your package manager's repositories are up to date (`sudo apt update` / `sudo dnf check-update`) and try reinstalling. The AppImage bundles most of what it needs, so this shouldn't affect it.
+  </Accordion>
+
+  <Accordion title="Where does SGI store its data on Linux?" id="linux-data-location">
+    `~/.local/share/com.zevnda.steam-game-idler` — the equivalent of Windows' `%appdata%\com.zevnda.steam-game-idler\` referenced elsewhere on this page. The log file and settings file live there too, same structure as Windows.
+  </Accordion>
+</Accordions>
+
 ## Getting Help
 
 If these troubleshooting steps don't solve your issue:
@@ -340,7 +368,7 @@ If these troubleshooting steps don't solve your issue:
 3. **Create a new issue** with:
    - Detailed description of the problem
    - Steps to reproduce
-   - Your system information (Windows version, Steam version)
+   - Your system information (OS/version, Steam version)
    - Which sign-in method you're using (Sign in with Steam or Legacy Sign In)
    - Relevant log file excerpts
    - Screenshots if applicable

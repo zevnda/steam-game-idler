@@ -8,6 +8,7 @@ import { StatisticsTab } from './StatisticsTab'
 import { Alert, Button, Modal, Skeleton, TabPanel, TabsRoot } from '@heroui/react'
 import Image from 'next/image'
 import { useAchievementManagerStore } from '@/shared/stores/achievementManagerStore'
+import { usePlatformStore } from '@/shared/stores/platformStore'
 import { heroImageUrl } from '@/shared/utils/heroImageUrl'
 
 type AchievementManagerTab = 'achievements' | 'statistics'
@@ -19,6 +20,7 @@ export const AchievementManagerOverlay = () => {
   const { t } = useTranslation()
   const openGame = useAchievementManagerStore(state => state.openGame)
   const close = useAchievementManagerStore(state => state.close)
+  const currentOs = usePlatformStore(state => state.currentOs)
   const [activeTab, setActiveTab] = useState<AchievementManagerTab>('achievements')
   const [query, setQuery] = useState('')
   // 0 = library_hero.jpg, 1 = header.jpg fallback, 2 = both failed - mirrors GameThumbnail.tsx's
@@ -111,7 +113,7 @@ export const AchievementManagerOverlay = () => {
                       <Alert.Content>
                         <Alert.Title>{t('dashboard.achievements.errors.title')}</Alert.Title>
                         <Alert.Description>
-                          {t(errorMessageKey(loadErrorCode), { code: loadErrorCode })}
+                          {t(errorMessageKey(loadErrorCode, currentOs), { code: loadErrorCode })}
                         </Alert.Description>
                       </Alert.Content>
                     </Alert>

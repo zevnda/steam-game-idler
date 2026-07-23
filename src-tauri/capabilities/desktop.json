@@ -1,6 +1,6 @@
 {
   "identifier": "desktop-capability",
-  "platforms": ["windows"],
+  "platforms": ["windows", "linux"],
   "windows": ["main"],
   "permissions": [
     "core:default",
@@ -17,6 +17,7 @@
     "core:window:allow-toggle-maximize",
     "core:window:allow-close",
     "core:window:allow-start-dragging",
+    "core:window:allow-start-resize-dragging",
     "core:window:allow-hide",
     "clipboard-manager:allow-read-text",
     "clipboard-manager:allow-write-text"

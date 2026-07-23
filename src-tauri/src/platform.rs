@@ -8,20 +8,31 @@ use tauri::Manager;
 use crate::error::{AppError, AppResult};
 
 /// Always `false` in debug builds; in release, `false` only when a `.installed` marker file sits
-/// next to the executable (written by the NSIS installer, absent from the portable zip).
+/// next to the executable (written by the NSIS installer, absent from the portable zip) - a
+/// Windows-only concept. Linux has no "extract and run anywhere" equivalent: an AppImage's
+/// squashfs mount is read-only at runtime, and deb/rpm install to `/usr/bin`, which a regular user
+/// can't write to either. Every Linux release build uses `app_data_dir()` instead.
 #[tauri::command]
 pub fn is_portable() -> bool {
     if cfg!(debug_assertions) {
         return false;
     }
 
-    match tauri::utils::platform::current_exe() {
-        Ok(mut exe_path) => {
-            exe_path.pop();
-            exe_path.push(".installed");
-            !exe_path.exists()
+    #[cfg(windows)]
+    {
+        match tauri::utils::platform::current_exe() {
+            Ok(mut exe_path) => {
+                exe_path.pop();
+                exe_path.push(".installed");
+                !exe_path.exists()
+            }
+            Err(_) => true,
         }
-        Err(_) => true,
+    }
+
+    #[cfg(not(windows))]
+    {
+        false
     }
 }
 
@@ -30,6 +41,44 @@ pub fn is_portable() -> bool {
 #[tauri::command]
 pub fn is_dev() -> bool {
     cfg!(debug_assertions)
+}
+
+/// Whether this build can self-update via the Tauri updater plugin - distinct from `is_portable()`
+/// (which governs where data is stored, not whether an update can install). The two always agree
+/// on Windows (a portable zip has no installer to invoke; an installed exe does), but diverge on
+/// Linux: every packaging format uses `app_data_dir()`, yet only an AppImage can self-update,
+/// since Tauri's Linux updater replaces the running AppImage file in place - not possible for a
+/// deb/rpm install, whose binary lives in `/usr/bin`, owned by the system package manager.
+/// Detected via the `APPIMAGE` env var, which every AppImage runtime sets unconditionally.
+/// Always `false` in debug builds first, same as `is_portable()` - a `pnpm tauri dev` session
+/// must never walk into `performUpdate`'s downloadAndInstall/relaunch over itself. Checked
+/// explicitly rather than delegated to `!is_portable()`/an `APPIMAGE` check, since both of those
+/// resolve to values that would otherwise let a dev build through (`is_portable()` itself is
+/// `false` in debug builds, and `APPIMAGE` may happen to be set on a dev machine).
+#[tauri::command]
+pub fn can_auto_update() -> bool {
+    if cfg!(debug_assertions) {
+        return false;
+    }
+
+    #[cfg(windows)]
+    {
+        !is_portable()
+    }
+
+    #[cfg(not(windows))]
+    {
+        std::env::var_os("APPIMAGE").is_some()
+    }
+}
+
+/// The running OS, as `"windows"`/`"linux"` (i.e. `std::env::consts::OS` verbatim) - lets the
+/// frontend gate CLI-mode sign-in (Windows-only; requires a real local Steam client) and the 5
+/// Game Coordinator titles (unsupported via the daemon path on both OSes, but Windows has CLI
+/// mode as a fallback and Linux doesn't) without a separate capability-flag command per feature.
+#[tauri::command]
+pub fn current_os() -> &'static str {
+    std::env::consts::OS
 }
 
 /// Portable-aware base directory every per-install file is rooted under: `<exe_dir>` in portable

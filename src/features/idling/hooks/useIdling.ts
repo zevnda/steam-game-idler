@@ -51,16 +51,13 @@ function stopOwnerCommand(owner: IdleOwner, account: SignedInAccount) {
 // `useIdlingSync`) before this command's own promise resolves back here, so reapplying that stale
 // echo directly could clobber a concurrently-arrived, more current state.
 //
-// Both actions do, however, call `refreshIdleState` (a fresh `get_idle_state` read, not the
-// command's own echo) once the command resolves - closing a real race with `useIdlingSync`'s event
-// listener: `listen()` is itself async (an IPC round trip to register with the Rust event system
-// before it's actually live), so a user who clicks idle/stop right after a fresh sign-in - already
-// moused over the games list, unlike after a slower session-resume - can trigger the backend's
-// `idling-state-changed` push before the listener has finished registering, silently dropping the
-// only update that would otherwise ever reflect this action. A fetch done *after* the command
-// resolves reads whatever the backend's truth is at that later point, so unlike the command's own
-// echo it can't be stale relative to a concurrent change - it only ever catches up to or matches
-// the latest state.
+// Both actions also call `refreshIdleState` (a fresh `get_idle_state` read, not the command's own
+// echo) once the command resolves - closes a race with `useIdlingSync`'s event listener:
+// `listen()` registration is itself async, so a user clicking idle/stop right after a fast
+// sign-in can trigger the backend's `idling-state-changed` push before the listener is live,
+// silently dropping the only update that would reflect this action. A fetch taken after the
+// command resolves always reflects backend truth at that point, so it can't go stale the way a
+// push-event race can.
 export const useIdling = (games: OwnedGame[]) => {
   const { t } = useTranslation()
   const account = useSessionStore(state => state.account)

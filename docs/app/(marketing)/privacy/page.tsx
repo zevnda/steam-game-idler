@@ -242,6 +242,10 @@ export default function PrivacyPolicy() {
                 <span className='text-text-primary font-medium'>Windows:</span>{' '}
                 %AppData%\Roaming\com.zevnda.steam-game-idler
               </li>
+              <li>
+                <span className='text-text-primary font-medium'>Linux:</span>{' '}
+                ~/.local/share/com.zevnda.steam-game-idler
+              </li>
             </ul>
           </section>
 
