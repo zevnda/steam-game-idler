@@ -103,7 +103,7 @@ jobs:
           version: ${{ github.event.inputs.version }}
       
       - name: Validate version increment
-        uses: actions/github-script@v7
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b  # v7
         with:
           script: |
             const prev = '${{ needs.fetch_previous_version.outputs.previous_version }}'.replace(/^v/, '');
@@ -152,7 +152,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9  # v4
         with:
           dotnet-version: 8.0.x
 
@@ -232,7 +232,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9  # v4
         with:
           dotnet-version: 8.0.x
 
@@ -306,7 +306,7 @@ jobs:
           node-version: 20
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v3
+        uses: pnpm/action-setup@a3252b78c470c02df07e9d59298aecedc3ccdd6d  # v3
         with:
           version: 9
 
@@ -508,7 +508,7 @@ jobs:
         # clean version bump. build_release_bundle_linux falls back to checking out github.ref
         # directly instead of this step's branch when dry_run is set - see that job's checkout step.
         if: github.event.inputs.dry_run != 'true'
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@22a9089034f40e5a961c8808d113e2c98fb63676  # v7
         with:
           token: ${{ steps.generate-token.outputs.token }}
           commit-message: "chore(version): bump to ${{ github.event.inputs.version }}"
@@ -531,7 +531,7 @@ jobs:
 
       - name: Generate release notes
         id: generate_notes
-        uses: actions/github-script@v7
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b  # v7
         with:
           script: |
             const { data } = await github.rest.repos.generateReleaseNotes({
@@ -602,7 +602,7 @@ jobs:
 
       - name: Create release
         if: github.event.inputs.dry_run != 'true'
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844  # v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -796,7 +796,7 @@ jobs:
           node-version: 20
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v3
+        uses: pnpm/action-setup@a3252b78c470c02df07e9d59298aecedc3ccdd6d  # v3
         with:
           version: 9
 
@@ -959,7 +959,7 @@ jobs:
 
       - name: Add Linux bundles to release
         if: github.event.inputs.dry_run != 'true'
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844  # v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         # No body/body_path here on purpose - action-gh-release preserves an existing release's
