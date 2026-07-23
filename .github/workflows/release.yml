@@ -36,7 +36,7 @@ on:
         # ping, no version-bump PR (opening one from a branch this far behind main would show the
         # whole branch diff, not a clean version bump), no public GitHub release. Bundle output
         # goes to a workflow-run artifact instead, downloadable from the run's summary page.
-        description: "Dry run - skip PR/release/Discord, upload build output as an artifact instead"
+        description: "Skip PR/release/Discord, upload build output as an artifact instead"
         required: false
         type: boolean
         default: false
@@ -47,7 +47,7 @@ on:
         # being skipped this way (its own `if:` checks for a 'skipped' result, not just 'success') -
         # its dry-run checkout step already falls back to github.ref instead of depending on
         # anything the Windows job produces, so skipping Windows costs it nothing.
-        description: "Dry run only: skip the Windows build entirely to save time"
+        description: "Dry run only - skip the Windows build entirely"
         required: false
         type: boolean
         default: false
@@ -764,6 +764,29 @@ jobs:
         run: |
           set -euo pipefail
           pnpm install --frozen-lockfile
+
+      - name: Setup Next.js cache
+        id: cache-nextjs
+        uses: actions/cache@v4
+        with:
+          path: .next/cache
+          key: ${{ runner.OS }}-nextjs-${{ hashFiles('**.[jt]sx', '**.[jt]s', 'package.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-nextjs-
+
+      - name: Clean Next.js cache
+        # Mirrors build_release_bundle's equivalent Windows step - without this, every Linux
+        # release build did a fully uncached Next.js build from scratch every time (not a
+        # correctness bug, just wasted CI minutes and no respect for force_nextjs_build).
+        if: steps.cache-nextjs.outputs.cache-hit != 'true' || github.event.inputs.force_nextjs_build == 'true'
+        run: |
+          set -euo pipefail
+          if [ -d ".next" ]; then
+            rm -rf .next
+            echo "Next.js cache cleared"
+          else
+            echo "No Next.js cache found"
+          fi
 
       - name: Setup Rust cache
         id: cache-rust

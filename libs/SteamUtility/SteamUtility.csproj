@@ -89,15 +89,23 @@
     <Delete Files="@(PublishExtras)" />
   </Target>
 
-  <!-- Only applies in multi-file mode: these 6 files are debugger/crash-dump/symbol-reading
+  <!-- Only applies in multi-file mode: these are debugger/crash-dump/symbol-reading/tracing
        infrastructure, confirmed dead weight via a startup + agent-mode smoke test - DebugType=none
        means no .pdb ever ships (nothing for DiaSymReader to read), mscordaccore/mscordbi/createdump
        only matter if an external debugger attaches or the process hard-crashes natively, and
-       clretwrc only feeds an external ETW profiler (PerfView/dotnet-trace). Trims ~6.5MB with no
-       functional loss. -->
+       clretwrc/coreclrtraceptprovider only feed an external ETW/LTTng profiler (PerfView/
+       dotnet-trace). Trims ~6.5MB (Windows) with no functional loss. The Linux entries include
+       libcoreclrtraceptprovider.so specifically because it's not just dead weight there - as a
+       loose multi-file-publish output, linuxdeploy scans it like every other .so and fails the
+       whole AppImage bundle when it can't resolve libcoreclrtraceptprovider's own
+       liblttng-ust.so.0 dependency (not installed on the build machine, and not worth installing
+       just to satisfy a profiler this app never uses) - discovered via a real Linux AppImage build
+       failure, not proactively. `<Delete>` silently no-ops on any filename that doesn't exist for
+       the current RID, so this one unconditioned list is safe for both platforms without a
+       RuntimeIdentifier split. -->
   <Target Name="RemoveDiagnosticOnlyPublishFiles" AfterTargets="Publish" Condition="'$(PublishSingleFile)' != 'true'">
     <ItemGroup>
-      <DiagnosticOnlyFiles Include="$(PublishDir)mscordaccore.dll;$(PublishDir)mscordaccore_*.dll;$(PublishDir)mscordbi.dll;$(PublishDir)createdump.exe;$(PublishDir)Microsoft.DiaSymReader.Native.amd64.dll;$(PublishDir)clretwrc.dll" />
+      <DiagnosticOnlyFiles Include="$(PublishDir)mscordaccore.dll;$(PublishDir)mscordaccore_*.dll;$(PublishDir)mscordbi.dll;$(PublishDir)createdump.exe;$(PublishDir)Microsoft.DiaSymReader.Native.amd64.dll;$(PublishDir)clretwrc.dll;$(PublishDir)libmscordaccore.so;$(PublishDir)libmscordbi.so;$(PublishDir)createdump;$(PublishDir)libcoreclrtraceptprovider.so" />
     </ItemGroup>
     <Delete Files="@(DiagnosticOnlyFiles)" />
   </Target>
