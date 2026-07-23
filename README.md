@@ -28,7 +28,7 @@ A portable `.zip` build is also available on the same releases page for anyone w
 1. Download the `.deb`/`.rpm` (recommended) or the `.AppImage` from the **[releases page](https://github.com/zevnda/steam-game-idler/releases/latest)**
 2. Install with your package manager (`.deb`/`.rpm`), or make the AppImage executable and run it directly
 
-See the **[Linux install guide](https://steamgameidler.com/docs/get-started/install#linux)** for the full breakdown, including the trade-off between formats. Linux support is **agent-mode sign-in only** — see [Sign In Methods](https://steamgameidler.com/docs/get-started/how-to-sign-in).
+See the **[Linux install guide](https://steamgameidler.com/docs/get-started/install#linux)** for the full breakdown, including the trade-off between formats.
 
 Or if you prefer, you can **[build it yourself](https://steamgameidler.com/docs/get-started/build-it-yourself)** on either platform.
 
