@@ -48,6 +48,14 @@ pub struct IpcRequest {
     pub persona_state: Option<&'static str>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub game_extra_info: Option<String>,
+    /// `achievements_get` only - a Steam schema language key (`"english"`, `"schinese"`, ...) from
+    /// `achievements::steam_language::steam_language_for_locale`. See
+    /// `SteamUtility.Daemon.Ipc.IpcRequest.Language`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub language: Option<String>,
+    /// `get_owned_apps` only - see `SteamUtility.Daemon.Ipc.IpcRequest.GamesOnly`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub games_only: Option<bool>,
 }
 
 impl IpcRequest {
@@ -67,6 +75,8 @@ impl IpcRequest {
             achievement_changes: None,
             persona_state: None,
             game_extra_info: None,
+            language: None,
+            games_only: None,
         }
     }
 
@@ -89,6 +99,8 @@ impl IpcRequest {
             achievement_changes: None,
             persona_state: None,
             game_extra_info: None,
+            language: None,
+            games_only: None,
         }
     }
 
@@ -108,6 +120,8 @@ impl IpcRequest {
             achievement_changes: None,
             persona_state: None,
             game_extra_info: None,
+            language: None,
+            games_only: None,
         }
     }
 
@@ -127,6 +141,8 @@ impl IpcRequest {
             achievement_changes: None,
             persona_state: None,
             game_extra_info: None,
+            language: None,
+            games_only: None,
         }
     }
 
@@ -146,6 +162,8 @@ impl IpcRequest {
             achievement_changes: None,
             persona_state: None,
             game_extra_info: None,
+            language: None,
+            games_only: None,
         }
     }
 
@@ -168,10 +186,12 @@ impl IpcRequest {
             achievement_changes: None,
             persona_state: None,
             game_extra_info: None,
+            language: None,
+            games_only: None,
         }
     }
 
-    pub fn get_owned_apps(id: String) -> Self {
+    pub fn get_owned_apps(id: String, games_only: bool) -> Self {
         Self {
             id,
             cmd: "get_owned_apps",
@@ -187,6 +207,8 @@ impl IpcRequest {
             achievement_changes: None,
             persona_state: None,
             game_extra_info: None,
+            language: None,
+            games_only: Some(games_only),
         }
     }
 
@@ -214,6 +236,8 @@ impl IpcRequest {
             achievement_changes: None,
             persona_state: None,
             game_extra_info,
+            language: None,
+            games_only: None,
         }
     }
 
@@ -236,6 +260,8 @@ impl IpcRequest {
             achievement_changes: None,
             persona_state: Some(persona_state),
             game_extra_info: None,
+            language: None,
+            games_only: None,
         }
     }
 
@@ -258,6 +284,8 @@ impl IpcRequest {
             achievement_changes: None,
             persona_state: None,
             game_extra_info: None,
+            language: None,
+            games_only: None,
         }
     }
 
@@ -265,7 +293,10 @@ impl IpcRequest {
     /// `achievements_get` command - see `Daemon/Bot/AchievementHandler.cs`. Throws
     /// `unsupported_game_coordinator` for GC titles (440/570/730/550/620), a daemon-only
     /// restriction the CLI/local-client path doesn't share.
-    pub fn achievements_get(id: String, app_id: u32) -> Self {
+    ///
+    /// `language` is a Steam schema language key (`"english"`, `"schinese"`, ...) - see
+    /// `achievements::steam_language::steam_language_for_locale`.
+    pub fn achievements_get(id: String, app_id: u32, language: &str) -> Self {
         Self {
             id,
             cmd: "achievements_get",
@@ -281,6 +312,8 @@ impl IpcRequest {
             achievement_changes: None,
             persona_state: None,
             game_extra_info: None,
+            language: Some(language.to_string()),
+            games_only: None,
         }
     }
 
@@ -303,6 +336,8 @@ impl IpcRequest {
             achievement_changes: None,
             persona_state: None,
             game_extra_info: None,
+            language: None,
+            games_only: None,
         }
     }
 
@@ -326,6 +361,8 @@ impl IpcRequest {
             achievement_changes: Some(changes),
             persona_state: None,
             game_extra_info: None,
+            language: None,
+            games_only: None,
         }
     }
 
@@ -346,6 +383,8 @@ impl IpcRequest {
             achievement_changes: None,
             persona_state: None,
             game_extra_info: None,
+            language: None,
+            games_only: None,
         }
     }
 
@@ -367,6 +406,8 @@ impl IpcRequest {
             achievement_changes: None,
             persona_state: None,
             game_extra_info: None,
+            language: None,
+            games_only: None,
         }
     }
 }

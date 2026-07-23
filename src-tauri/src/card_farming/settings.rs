@@ -48,14 +48,20 @@ const SETTINGS_FILE_NAME: &str = "card_farming_settings.json";
 
 static WRITE_LOCK: LazyLock<Mutex<()>> = LazyLock::new(|| Mutex::new(()));
 
-/// Which end of the drops-remaining range to farm first - was two mutually-exclusive booleans
+/// Which order to farm queued games in - was two mutually-exclusive booleans
 /// (`sort_by_highest_drops`/`sort_by_lowest_drops`, one always forced off when the other turned
 /// on), collapsed into a real enum matching `inventory::settings::PricePreference`'s pattern (a
-/// two-option preference that's always exactly one value, never both-off/both-on).
+/// multi-option preference that's always exactly one value, never both-off/both-on).
+/// `QueueOrder` (the default) farms games in the order they appear in the account's curated
+/// card-farming queue (`queue.rs`) - drag-reorder on the Queue tab only had any actual effect on
+/// farming order once this variant existed; before it, the queue's order was purely cosmetic and
+/// every farm always resorted by drop count. `HighestFirst`/`LowestFirst` still resort by the
+/// scraped drop count instead, ignoring the queue's own order.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub enum DropSortOrder {
     #[default]
+    QueueOrder,
     HighestFirst,
     LowestFirst,
 }
@@ -85,6 +91,42 @@ pub struct CardFarmingSettings {
     /// existing on-disk settings file (serialized before this field existed) still deserializes.
     #[serde(default)]
     pub auto_farm_cards: bool,
+    /// Whether the user has dismissed the one-time "farming multiple games at once can slow down
+    /// drops" notice shown from `Start` when more than one game would be farmed at once - never
+    /// re-shown once true. `#[serde(default)]` so an existing on-disk settings file (serialized
+    /// before this field existed) still deserializes.
+    #[serde(default)]
+    pub multi_game_farming_notice_seen: bool,
+    /// When on, `manager::run_cycle` caps its active set to exactly one game at a time instead of
+    /// [`manager::MAX_CONCURRENT_FARMING`] - the queue itself is untouched (still holds as many
+    /// games as the user's added), only how many are actually farmed concurrently changes. Read
+    /// fresh every loop iteration (see `manager::run_cycle`), so toggling this mid-session takes
+    /// effect on the very next poll rather than needing a restart. `#[serde(default)]` so an
+    /// existing on-disk settings file (serialized before this field existed) still deserializes.
+    #[serde(default)]
+    pub single_farming_mode: bool,
+    /// When on, farming skips any game still inside Steam's refund window - purchased via a real
+    /// monetary payment method within the last [`crate::card_farming::refund_window::REFUND_WINDOW_DAYS`]
+    /// days, with under [`crate::card_farming::refund_window::REFUND_WINDOW_MAX_PLAYTIME_MINUTES`]
+    /// minutes of recorded playtime - so idling for card drops doesn't quietly burn through the
+    /// refund eligibility of a game the user might still want their money back on.
+    ///
+    /// Agent-mode only: the purchase-date data this relies on
+    /// (`games::OwnedGame::last_refund_eligible_purchase_unix_seconds`) only ever comes from the
+    /// SteamKit2 daemon's license list - CLI mode's local-client backend has no equivalent API
+    /// surface at all. A CLI-mode account with this on is a silent no-op (every game's purchase
+    /// data is `None`, so nothing ever matches), never an error - matches this project's fail-open
+    /// convention for missing per-app data rather than adding account-mode branching here.
+    ///
+    /// Re-evaluated live on every farming pass (`manager::fetch_queued_games`'s pre-check,
+    /// `manager::poll_active`'s re-check for already-active games) rather than decided once at
+    /// queue-build time, since both the 14-day and playtime thresholds change while a session runs
+    /// - farming itself accrues the playtime that eventually clears a game to farm normally.
+    ///
+    /// `#[serde(default)]` so an existing on-disk settings file (serialized before this field
+    /// existed) still deserializes.
+    #[serde(default)]
+    pub skip_refundable_games: bool,
 }
 
 impl Default for CardFarmingSettings {
@@ -96,10 +138,13 @@ impl Default for CardFarmingSettings {
             all_games: true,
             skip_no_playtime: false,
             farm_unplayed_only: false,
-            drop_sort_order: DropSortOrder::HighestFirst,
+            drop_sort_order: DropSortOrder::QueueOrder,
             next_task_checkbox: false,
             next_task: None,
             auto_farm_cards: false,
+            multi_game_farming_notice_seen: false,
+            single_farming_mode: false,
+            skip_refundable_games: false,
         }
     }
 }

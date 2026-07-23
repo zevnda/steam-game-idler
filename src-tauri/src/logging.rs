@@ -73,6 +73,68 @@ pub(crate) fn log_dir(
     Ok(crate::platform::logs_dir(app_handle)?)
 }
 
+/// How long a rotated log file is kept before `purge_old_logs` deletes it on next launch.
+const MAX_LOG_AGE: std::time::Duration = std::time::Duration::from_secs(7 * 24 * 60 * 60);
+
+/// Deletes rotated log files older than `MAX_LOG_AGE`, so daily rotation (see `init`) doesn't
+/// accumulate indefinitely for a long-running install. Best-effort and non-fatal by design, called
+/// once per launch from `lib.rs`'s `setup` right after `init` - a stat/delete failure on one file
+/// (permissions, the file open in another process) must never block the rest of the app from
+/// starting, so this logs and moves on rather than returning a `Result` the caller would have to
+/// handle. Age is judged by mtime rather than parsing the date out of the rotated filename, mirroring
+/// `debug::commands::current_log_file`'s reasoning: it stays correct even if `init`'s naming scheme
+/// changes. Never touches the current day's file since its mtime is always fresh.
+pub fn purge_old_logs(app_handle: &tauri::AppHandle) {
+    let dir = match log_dir(app_handle) {
+        Ok(dir) => dir,
+        Err(e) => {
+            tracing::warn!(error = %e, "log cleanup: failed to resolve log directory");
+            return;
+        }
+    };
+
+    let entries = match std::fs::read_dir(&dir) {
+        Ok(entries) => entries,
+        Err(e) => {
+            tracing::warn!(error = %e, path = %dir.display(), "log cleanup: failed to read log directory");
+            return;
+        }
+    };
+
+    let cutoff = std::time::SystemTime::now() - MAX_LOG_AGE;
+    let mut deleted = 0u32;
+
+    for entry in entries.filter_map(|entry| entry.ok()) {
+        let path = entry.path();
+        if !path.is_file() {
+            continue;
+        }
+
+        let modified = match entry.metadata().and_then(|m| m.modified()) {
+            Ok(modified) => modified,
+            Err(e) => {
+                tracing::warn!(error = %e, path = %path.display(), "log cleanup: failed to read file metadata");
+                continue;
+            }
+        };
+
+        if modified > cutoff {
+            continue;
+        }
+
+        match std::fs::remove_file(&path) {
+            Ok(()) => deleted += 1,
+            Err(e) => {
+                tracing::warn!(error = %e, path = %path.display(), "log cleanup: failed to delete old log file");
+            }
+        }
+    }
+
+    if deleted > 0 {
+        tracing::info!(deleted, "log cleanup: removed old log files");
+    }
+}
+
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum FrontendLogLevel {

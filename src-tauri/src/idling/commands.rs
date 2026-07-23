@@ -100,8 +100,15 @@ pub async fn get_idle_state(
 /// otherwise clicking a card that's idling because achievement-unlocker/card-farming/auto-idle
 /// claimed it would silently no-op (re-adding it under `"manual"`, which the union already
 /// contains it in) instead of actually stopping it. A "stop" therefore releases `app_id` from
-/// every owner via [`IdleClaimsRegistry::release_app_id`]; a "start" adds it to the `"manual"`
+/// every owner via [`IdleClaimsRegistry::release_app_id`] - and, since card-farming/achievement-
+/// unlocker each track their own active-game state independently of the claims registry (see
+/// `CardFarmingManager::remove_active_game`/`AchievementUnlockerManager::remove_active_game`'s doc
+/// comments), also tells whichever of those two owns this specific game to drop it from its own
+/// session bookkeeping - otherwise that session doesn't learn the game stopped and can silently
+/// resurrect its claim on its own next unrelated state change. Both calls are cheap no-ops when
+/// `app_id` isn't part of that manager's session at all. A "start" adds it to the `"manual"`
 /// owner's claim and re-announces the union.
+#[allow(clippy::too_many_arguments)]
 #[tauri::command]
 pub async fn toggle_manual_idle(
     app_handle: AppHandle,
@@ -109,6 +116,8 @@ pub async fn toggle_manual_idle(
     idling_manager: State<'_, IdlingManager>,
     claims: State<'_, IdleClaimsRegistry>,
     auto_stop: State<'_, IdleAutoStopRegistry>,
+    card_farming_manager: State<'_, crate::card_farming::CardFarmingManager>,
+    unlocker_manager: State<'_, crate::achievement_unlocker::AchievementUnlockerManager>,
     account: GamesAccount,
     app_id: u32,
     name: String,
@@ -123,6 +132,10 @@ pub async fn toggle_manual_idle(
         // above), so `release_app_id` below clears every owner - both timers need invalidating.
         auto_stop.bump(&steam_id, app_id, OWNER_MANUAL).await;
         auto_stop.bump(&steam_id, app_id, OWNER_AUTO_IDLE).await;
+        card_farming_manager
+            .remove_active_game(&app_handle, &steam_id, app_id)
+            .await;
+        unlocker_manager.remove_active_game(&steam_id, app_id).await;
         return claims
             .release_app_id(&app_handle, agent_manager, idling_manager, account, app_id)
             .await;
@@ -235,15 +248,32 @@ pub async fn get_idling_customized_app_ids(
     settings::customized_app_ids(&app_handle, &steam_id).await
 }
 
-/// Stops everything, from every owner - the Idling page's "Stop All" button.
+/// Stops everything, from every owner - the Idling page's "Stop All" button. Unlike
+/// [`IdleClaimsRegistry::clear_all`] alone (which only clears the announced claims), this also
+/// stops card-farming's and achievement-unlocker's own per-account session loops first - mirrors
+/// `stopOwnerCommand`'s per-section reasoning (`src/features/idling/hooks/useIdling.ts`): a
+/// loop-backed owner just re-claims its games on its own next poll tick if only the claim is
+/// released, leaving a "zombie" session that still reports running/progress in its own page
+/// without anything actually idling underneath it. Both stop calls are idempotent no-ops when
+/// nothing is running for this account, so calling them unconditionally (rather than checking
+/// `claims_by_owner` first) is safe and avoids a second resolve-steam-id round trip.
 #[tauri::command]
 pub async fn stop_all_idling(
     app_handle: AppHandle,
     agent_manager: State<'_, AgentManager>,
     idling_manager: State<'_, IdlingManager>,
     claims: State<'_, IdleClaimsRegistry>,
+    card_farming_manager: State<'_, crate::card_farming::CardFarmingManager>,
+    unlocker_manager: State<'_, crate::achievement_unlocker::AchievementUnlockerManager>,
     account: GamesAccount,
 ) -> AppResult<IdleSetResult> {
+    let steam_id = resolve_steam_id(&account, &agent_manager).await?;
+    if let Err(e) = card_farming_manager.stop(&steam_id).await {
+        tracing::warn!(steam_id, error = %e.code(), "stop_all_idling: failed to stop card farming session");
+    }
+    if let Err(e) = unlocker_manager.stop(&steam_id).await {
+        tracing::warn!(steam_id, error = %e.code(), "stop_all_idling: failed to stop achievement unlocker session");
+    }
     claims
         .clear_all(&app_handle, agent_manager, idling_manager, account)
         .await

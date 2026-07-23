@@ -184,9 +184,11 @@ export const Sidebar = () => {
         ))}
       </div>
 
-      <div className='flex shrink-0 items-center justify-center overflow-hidden px-2 mb-2'>
-        <AdSlot />
-      </div>
+      {process.env.NODE_ENV === 'production' && (
+        <div className='flex shrink-0 items-center justify-center overflow-hidden px-2 mb-2'>
+          <AdSlot />
+        </div>
+      )}
 
       <div className='shrink-0 border-t border-border p-2'>
         {/* Tier indicator - clickable for `casual` only (the one tier with somewhere left to

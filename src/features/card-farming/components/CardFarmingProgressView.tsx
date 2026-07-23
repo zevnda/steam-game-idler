@@ -81,6 +81,7 @@ export const CardFarmingProgressView = ({
               {state.completed.map(game => (
                 <CardFarmingGameRow
                   key={game.appId}
+                  farmableAt={game.farmableAt}
                   name={game.name}
                   reason={game.reason}
                   remaining={game.remaining}

@@ -36,6 +36,13 @@ pub struct RawOwnedGame {
     pub playtime_forever_minutes: Option<u64>,
     #[serde(default)]
     pub rtime_last_played: Option<u64>,
+    /// Unix seconds of the most recent license grant for this app that was an actual purchase
+    /// (see `OwnershipManager.IsRefundEligiblePurchase`), or `None` if every license granting it
+    /// was a gift/key redemption/family-share/other free grant. Always `None` for the CLI-mode
+    /// backend, which has no license-grant-time API surface at all - `card_farming`'s refund-
+    /// window check treats an absent value as "no refund risk to report" rather than an error.
+    #[serde(default)]
+    pub last_refund_eligible_purchase_unix_seconds: Option<i64>,
 }
 
 /// One merged, cached, frontend-facing game entry. `name` stays `Option` rather than falling back
@@ -54,6 +61,11 @@ pub struct OwnedGame {
     /// instead of erroring - same resilience `settings::Settings` applies to its own fields.
     #[serde(default)]
     pub rtime_last_played: u64,
+    /// See `RawOwnedGame::last_refund_eligible_purchase_unix_seconds`. `#[serde(default)]` so a
+    /// cache file written before this field existed still deserializes as `None` rather than
+    /// erroring, same resilience `settings::Settings` applies to its own fields.
+    #[serde(default)]
+    pub last_refund_eligible_purchase_unix_seconds: Option<i64>,
 }
 
 /// `commands::get_owned_games`'s return shape - carries `possibly_private` alongside the games

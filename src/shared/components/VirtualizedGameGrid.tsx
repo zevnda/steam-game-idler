@@ -1,8 +1,10 @@
 import type { OwnedGame } from '@/features/games-list/types'
 import type { ReactNode } from 'react'
 import type { CellComponentProps } from 'react-window'
-import { useRef } from 'react'
-import { Grid } from 'react-window'
+import { useEffect, useRef } from 'react'
+import { Grid, useGridCallbackRef } from 'react-window'
+import { BackToTopButton } from './BackToTopButton'
+import { useBackToTop } from '@/shared/hooks/useBackToTop'
 import {
   GAME_GRID_GAP as GAP,
   GAME_CARD_INFO_HEIGHT as INFO_HEIGHT,
@@ -83,6 +85,9 @@ const Cell = ({
 // `achievement-manager/components/AchievementsList.tsx`.
 export const VirtualizedGameGrid = ({ games, renderCard }: VirtualizedGameGridProps) => {
   const containerRef = useRef<HTMLDivElement>(null)
+  const [gridApi, setGridApi] = useGridCallbackRef()
+  const { setScrollElement, isVisible, scrollToTop } = useBackToTop()
+  useEffect(() => setScrollElement(gridApi?.element ?? null), [gridApi, setScrollElement])
   // The container is measured full-bleed (no padding of its own - see this file's top comment), so
   // the hook's own PADDING/SCROLLBAR_WIDTH reservation is what leaves cards the actual space they
   // have to lay out in (without it, columns would size to the *full* measured width, but the
@@ -107,14 +112,17 @@ export const VirtualizedGameGrid = ({ games, renderCard }: VirtualizedGameGridPr
 
   return (
     // No horizontal padding here (or on Grid) - see this file's top comment. `h-full w-full` only,
-    // so react-window's own scrollbar sits flush against this container's true edge.
-    <div ref={containerRef} className='h-full w-full'>
+    // so react-window's own scrollbar sits flush against this container's true edge. `relative`
+    // only affects positioning context (not layout), so it's safe alongside that - it's what lets
+    // BackToTopButton below anchor to this grid's own viewport instead of the whole app window.
+    <div ref={containerRef} className='relative h-full w-full'>
       {width > 0 && (
         <Grid
           cellComponent={Cell}
           cellProps={{ games, realColumnCount, cardWidth, cardHeight, renderCard }}
           className='py-6'
           columnCount={realColumnCount + 2}
+          gridRef={setGridApi}
           // Every real column's slot is `cardWidth` plus a trailing GAP to the next card - except
           // the last real column, which has no next card to gap against, so its slot is `cardWidth`
           // alone (sits flush against the right PADDING spacer instead of leaving a dead GAP before
@@ -132,6 +140,7 @@ export const VirtualizedGameGrid = ({ games, renderCard }: VirtualizedGameGridPr
           style={{ height: '100%', width: '100%' }}
         />
       )}
+      <BackToTopButton visible={isVisible} onPress={scrollToTop} />
     </div>
   )
 }

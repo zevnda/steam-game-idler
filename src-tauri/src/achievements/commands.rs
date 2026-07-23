@@ -11,15 +11,28 @@ use super::{AchievementData, BulkAchievementResult, StatUpdate};
 /// Fetches achievement/stat data for `app_id`. One command for both sign-in modes, branching
 /// internally. Agent mode fails with `unsupported_game_coordinator` for Game Coordinator titles
 /// (440/570/730/550/620) - a daemon-only restriction CLI mode doesn't share.
+///
+/// `locale` is the frontend's own i18next locale (`i18n.language`, e.g. `"it-IT"`), mapped to a
+/// Steam schema language key via `steam_language::steam_language_for_locale`. Only agent mode
+/// uses it - CLI mode already gets live-localized text from the local Steam client itself, see
+/// that module's doc comment for why this app's locale can't influence CLI mode the same way.
 #[tauri::command]
 pub async fn get_achievement_data(
     agent_manager: State<'_, AgentManager>,
     account: GamesAccount,
     app_id: u32,
+    locale: String,
 ) -> AppResult<AchievementData> {
     let mut data = match account {
         GamesAccount::Agent { username } => {
-            achievements_get_agent_racing_schema_check(&agent_manager, &username, app_id).await?
+            let steam_language = super::steam_language::steam_language_for_locale(&locale);
+            achievements_get_agent_racing_schema_check(
+                &agent_manager,
+                &username,
+                app_id,
+                steam_language,
+            )
+            .await?
         }
         GamesAccount::Local { .. } => local_steam::achievements::get_achievement_data(app_id).await?,
     };
@@ -39,8 +52,9 @@ async fn achievements_get_agent_racing_schema_check(
     agent_manager: &AgentManager,
     username: &str,
     app_id: u32,
+    steam_language: &'static str,
 ) -> AppResult<AchievementData> {
-    let daemon_fut = agent_manager.achievements_get(username, app_id);
+    let daemon_fut = agent_manager.achievements_get(username, app_id, steam_language);
     tokio::pin!(daemon_fut);
     let schema_check_fut = super::web_api::confirm_empty_schema(app_id);
     tokio::pin!(schema_check_fut);

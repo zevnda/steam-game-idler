@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next'
 import { debugErrorMessageKey, errorMessageKey } from '../utils/errorMessageKey'
 import { toast } from '@heroui/react'
 import { useRouter } from 'next/router'
+import { fetchGamesList } from '@/features/games-list/hooks/useGamesListSync'
 import { signOutAccount } from '@/shared/hooks/signOutAccount'
 import { useAntiAwayStore } from '@/shared/stores/antiAwayStore'
 import { useAutoUpdateGamesListStore } from '@/shared/stores/autoUpdateGamesListStore'
@@ -67,6 +68,7 @@ interface UseDebugSettingsArgs {
   refreshInventorySettings: () => void
   refreshCardFarmingSettings: () => void
   refreshFreeGamesSettings: () => void
+  refreshOwnershipSettings: () => void
 }
 
 // Backs the Debug tab: a live-polling log viewer, reveal-in-Explorer for the log/settings files, a
@@ -81,6 +83,7 @@ export function useDebugSettings({
   refreshInventorySettings,
   refreshCardFarmingSettings,
   refreshFreeGamesSettings,
+  refreshOwnershipSettings,
 }: UseDebugSettingsArgs) {
   const { t } = useTranslation()
   const router = useRouter()
@@ -230,6 +233,14 @@ export function useDebugSettings({
         refreshCardFarmingSettings()
         refreshFreeGamesSettings()
       }
+      if (account?.mode === 'agent') {
+        // Ownership settings reset back to its default (games-only) alongside every other
+        // per-account setting above - unlike those, a changed scope also changes what
+        // `get_owned_games` itself returns, so the games list needs an explicit refetch, not just
+        // this modal's own displayed value refreshing.
+        refreshOwnershipSettings()
+        fetchGamesList(account, { showLoadingState: true })
+      }
 
       // `refreshGeneralSettings()` only updates this modal's own local snapshot - every denormalized
       // live-sync store (theme/font/tooltips/carousels/background/anti-away/auto-update-games-list)
@@ -266,6 +277,7 @@ export function useDebugSettings({
     refreshInventorySettings,
     refreshCardFarmingSettings,
     refreshFreeGamesSettings,
+    refreshOwnershipSettings,
     t,
   ])
 

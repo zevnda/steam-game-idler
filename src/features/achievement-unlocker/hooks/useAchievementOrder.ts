@@ -30,7 +30,7 @@ const byPercentDescending = (a: AchievementDto, b: AchievementDto) =>
 // own fields (name/icon/achieved) - mirrors `main`'s AchievementOrderPage.tsx reconciliation, just
 // keyed by `id` instead of the display `name`.
 export const useAchievementOrder = (openGame: OpenGame | null) => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const account = useSessionStore(state => state.account)
   const [achievements, setAchievements] = useState<OrderableAchievement[]>([])
   const [delayBeforeFirstUnlock, setDelayBeforeFirstUnlock] = useState<number | ''>('')
@@ -47,6 +47,7 @@ export const useAchievementOrder = (openGame: OpenGame | null) => {
         invoke<{ achievements: AchievementDto[] }>('get_achievement_data', {
           account,
           appId: openGame.appId,
+          locale: i18n.language,
         }),
         invoke<AchievementOrder | null>('get_achievement_order', {
           account,
@@ -89,7 +90,7 @@ export const useAchievementOrder = (openGame: OpenGame | null) => {
     } finally {
       setIsLoading(false)
     }
-  }, [account, openGame])
+  }, [account, openGame, i18n.language])
 
   useEffect(() => {
     if (openGame) {

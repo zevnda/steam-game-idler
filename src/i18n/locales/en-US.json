@@ -16,7 +16,8 @@
       "done": "Done",
       "copy": "Copy",
       "paste": "Paste",
-      "add": "Add"
+      "add": "Add",
+      "backToTop": "Back to top"
     },
     "gameCardMenu": {
       "startIdling": "Start Idling",
@@ -87,6 +88,9 @@
     "proTier": {
       "gamerRequired": "Requires the Gamer plan.",
       "casualRequired": "Requires the Casual plan."
+    },
+    "badges": {
+      "beta": "Beta"
     },
     "tabs": {
       "allGames": "All Games",
@@ -594,6 +598,10 @@
         "title": "Clear the card farming queue?",
         "description": "This will remove all {{count}} games from the card farming queue."
       },
+      "multiGameNotice": {
+        "title": "Farming multiple games at once?",
+        "description": "Farming multiple games at the same time can slow down how quickly cards drop per game. If you don't see any cards drop for a while, try enabling 'Single farming mode' in Settings → Card Farming."
+      },
       "confirmClearBlacklist": {
         "title": "Clear the card farming blacklist?",
         "description": "This will remove all {{count}} games from the card farming blacklist."
@@ -630,7 +638,8 @@
         "completedMaxCardDrops": "Max card drops reached ({{remaining}} left)",
         "completedMaxCardFarmingTime": "Max farming time reached ({{remaining}} left)",
         "completedMaxPlaytime": "Max playtime reached ({{remaining}} left)",
-        "completedNoDropsRemaining": "Nothing left to farm"
+        "completedNoDropsRemaining": "Nothing left to farm",
+        "completedRefundWindow": "Still inside the refund window (farmable again {{date}})"
       },
       "errors": {
         "title": "Couldn't update card farming",
@@ -640,6 +649,14 @@
         "generic": "Something went wrong updating card farming. Please try again. ({{code}})"
       },
       "settings": {
+        "singleFarmingMode": {
+          "title": "Single farming mode",
+          "description": "Farm one game in your queue at a time instead of multiple at once, which can help cards drop faster per game."
+        },
+        "skipRefundableGames": {
+          "title": "Skip refundable games",
+          "description": "Don't farm a game while it's still inside Steam's refund window (bought within the last 14 days with under 2 hours of playtime)."
+        },
         "autoFarmCards": {
           "title": "Automatically farm cards",
           "description": "Periodically check for owned games with card drops remaining and automatically start farming them."
@@ -661,9 +678,10 @@
           "description": "Only farm games that have zero recorded playtime."
         },
         "dropSortOrder": {
-          "title": "Drop order",
-          "description": "Which games to farm first when queuing by card drops remaining.",
+          "title": "Farming order",
+          "description": "Choose which order games in the queue should be farmed in.",
           "options": {
+            "queueOrder": "Queue order",
             "highestFirst": "Highest drops first",
             "lowestFirst": "Lowest drops first"
           }
@@ -951,6 +969,10 @@
           "label": "Custom status while idling",
           "description": "Replace the \"Playing [game]\" text your friends see while idling with your own custom message.",
           "placeholder": "e.g. Farming trading cards"
+        },
+        "gamesOnly": {
+          "label": "Show games only",
+          "description": "Only show owned games and family-shared games in your library, hiding DLC, soundtracks, videos, and tools. Changing this refreshes your games list."
         },
         "language": {
           "label": "Language",

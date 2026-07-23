@@ -7,6 +7,7 @@ using SteamKit2.Internal;
 using SteamUtility.Core.Errors;
 using SteamUtility.Core.Logging;
 using SteamUtility.Core.Models;
+using SteamUtility.Core.Services;
 
 namespace SteamUtility.Daemon.Bot
 {
@@ -14,21 +15,55 @@ namespace SteamUtility.Daemon.Bot
     // Steam client needed. Correctly reflects Family Sharing / borrowed games.
     public sealed class OwnershipManager
     {
-        public async Task<IReadOnlyList<OwnedGame>> GetOwnedGamesAsync(SteamBot bot)
+        private readonly GameWhitelistProvider _whitelistProvider = new();
+
+        // Payment methods that were never an actual money transaction through Steam's checkout -
+        // Steam's refund policy has nothing to refund for these regardless of how recently the
+        // license was granted, so they're excluded entirely from "recently purchased" tracking
+        // rather than treated as a purchase with a normal date.
+        private static readonly HashSet<EPaymentMethod> NonMonetaryPaymentMethods = new()
+        {
+            EPaymentMethod.None,
+            EPaymentMethod.ActivationCode,
+            EPaymentMethod.HardwarePromo,
+            EPaymentMethod.AutoGrant,
+            EPaymentMethod.OEMTicket,
+            EPaymentMethod.Complimentary,
+            EPaymentMethod.FamilyGroup,
+            EPaymentMethod.MasterComp,
+            EPaymentMethod.Promotional,
+        };
+
+        private static bool IsRefundEligiblePurchase(EPaymentMethod paymentMethod) =>
+            !NonMonetaryPaymentMethods.Contains(paymentMethod);
+
+        // Resolved once per ResolveOwnedAppIdsAsync call: every owned app id, plus - for apps with
+        // at least one refund-eligible license - the most recent qualifying license's TimeCreated.
+        // "Most recent" (not earliest) because what matters for refund-window purposes is the most
+        // recent time this account paid for the app; an old license on the same app id doesn't make
+        // a newer paid purchase any less refundable.
+        private readonly record struct OwnedAppResolution(
+            HashSet<uint> AppIds,
+            Dictionary<uint, DateTime> LastRefundEligiblePurchaseUtcByAppId
+        );
+
+        public async Task<IReadOnlyList<OwnedGame>> GetOwnedGamesAsync(SteamBot bot, bool gamesOnly)
         {
             if (!bot.IsLoggedOn)
             {
                 throw new NotLoggedOnException();
             }
 
-            // Deliberately unfiltered: every PICS-resolved app id tied to an owned license comes
-            // through as-is (games, videos/movies, DLC, tools, demos, soundtracks) - agent mode has
-            // no curated-whitelist dependency the way CLI mode's SteamworksLocalBackend does, so
-            // there's no ownership-check reason to intersect against GameWhitelistProvider here.
-            // This intentionally surfaces non-game owned content (e.g. Steam movies like
-            // 518440/518450) that the whitelist used to drop. CLI mode is unaffected - it still
-            // depends on the whitelist as its only ownership-check candidate list, see
-            // SteamworksLocalBackend.CheckOwnershipAsync.
+            // By default (gamesOnly: false) this is deliberately unfiltered: every PICS-resolved
+            // app id tied to an owned license comes through as-is (games, videos/movies, DLC,
+            // tools, demos, soundtracks) - some users specifically want this, including non-game
+            // owned content (e.g. Steam movies like 518440/518450) that the whitelist would drop.
+            // When gamesOnly is true (a user-facing setting - see
+            // src-tauri/src/steam_agent/ownership_settings.rs), the resolved app ids are
+            // intersected against the same curated GameWhitelistProvider candidate list CLI mode's
+            // SteamworksLocalBackend.CheckOwnershipAsync always uses, matching CLI mode's scope
+            // exactly. Family Sharing / borrowed games are unaffected either way - that's inherent
+            // to bot.OwnedLicenses below, not something either mode filters.
 
             // LicenseListCallback (what OwnedLicenses below is built from) is a separate server
             // push with no ordering guarantee relative to the login success this call is triggered
@@ -36,12 +71,19 @@ namespace SteamUtility.Daemon.Bot
             // authenticated bot can race ahead of it and resolve zero owned games. See SteamBot's
             // WaitForLicenseListAsync doc comment.
             await bot.WaitForLicenseListAsync(TimeSpan.FromSeconds(10));
-            var ownedAppIds = await ResolveOwnedAppIdsAsync(bot);
+            var resolution = await ResolveOwnedAppIdsAsync(bot);
+
+            var appIds = resolution.AppIds;
+            if (gamesOnly)
+            {
+                var whitelist = await _whitelistProvider.GetWhitelistAsync();
+                appIds = new HashSet<uint>(appIds.Where(whitelist.Contains));
+            }
 
             var games = new List<OwnedGame>();
-            if (ownedAppIds.Count > 0)
+            if (appIds.Count > 0)
             {
-                var appRequests = ownedAppIds
+                var appRequests = appIds
                     .Select(appId => new SteamApps.PICSRequest(appId))
                     .ToList();
 
@@ -59,12 +101,19 @@ namespace SteamUtility.Daemon.Bot
                         var rawName = info.KeyValues["common"]["name"].AsString();
                         var name = string.IsNullOrEmpty(rawName) ? null : rawName;
                         playtimes.TryGetValue(appId, out var playtime);
+                        resolution.LastRefundEligiblePurchaseUtcByAppId.TryGetValue(
+                            appId,
+                            out var lastRefundEligiblePurchaseUtc
+                        );
                         games.Add(new OwnedGame
                         {
                             AppId = appId,
                             Name = name,
                             PlaytimeForeverMinutes = playtime.PlaytimeForeverMinutes,
                             RtimeLastPlayed = playtime.RtimeLastPlayed,
+                            LastRefundEligiblePurchaseUnixSeconds = lastRefundEligiblePurchaseUtc == default
+                                ? null
+                                : new DateTimeOffset(lastRefundEligiblePurchaseUtc, TimeSpan.Zero).ToUnixTimeSeconds(),
                         });
                     }
                 }
@@ -120,9 +169,10 @@ namespace SteamUtility.Daemon.Bot
             return result;
         }
 
-        private static async Task<HashSet<uint>> ResolveOwnedAppIdsAsync(SteamBot bot)
+        private static async Task<OwnedAppResolution> ResolveOwnedAppIdsAsync(SteamBot bot)
         {
             var ownedAppIds = new HashSet<uint>();
+            var lastRefundEligiblePurchaseUtcByAppId = new Dictionary<uint, DateTime>();
 
             var packageRequests = bot
                 .OwnedLicenses.Select(license => new SteamApps.PICSRequest(
@@ -133,8 +183,13 @@ namespace SteamUtility.Daemon.Bot
 
             if (packageRequests.Count == 0)
             {
-                return ownedAppIds;
+                return new OwnedAppResolution(ownedAppIds, lastRefundEligiblePurchaseUtcByAppId);
             }
+
+            // Grouped rather than a throwing ToDictionary - a duplicate PackageID reported by
+            // SteamKit2 must never crash ownership resolution, so we deliberately just keep
+            // whichever one we see first.
+            var licensesByPackageId = bot.OwnedLicenses.ToLookup(license => license.PackageID);
 
             var packageResultSet = await bot.SteamAppsHandler.PICSGetProductInfo(
                 apps: Enumerable.Empty<SteamApps.PICSRequest>(),
@@ -143,7 +198,7 @@ namespace SteamUtility.Daemon.Bot
 
             foreach (var result in packageResultSet.Results!)
             {
-                foreach (var package in result.Packages.Values)
+                foreach (var (packageId, package) in result.Packages)
                 {
                     var appIdsNode = package.KeyValues["appids"];
                     if (appIdsNode.Children is not { Count: > 0 })
@@ -151,14 +206,39 @@ namespace SteamUtility.Daemon.Bot
                         continue;
                     }
 
-                    foreach (var child in appIdsNode.Children)
+                    var appIds = appIdsNode.Children.Select(child => child.AsUnsignedInteger(0)).ToList();
+
+                    foreach (var appId in appIds)
                     {
-                        ownedAppIds.Add(child.AsUnsignedInteger(0));
+                        ownedAppIds.Add(appId);
+                    }
+
+                    var license = licensesByPackageId[packageId].FirstOrDefault();
+                    if (license == null || !IsRefundEligiblePurchase(license.PaymentMethod))
+                    {
+                        continue;
+                    }
+
+                    // SteamKit2 builds TimeCreated from a raw Unix timestamp with DateTimeKind
+                    // left as Unspecified - force Utc explicitly so downstream conversion to Unix
+                    // seconds is never silently wrong for whatever the calling machine's local
+                    // timezone happens to be.
+                    var timeCreatedUtc = DateTime.SpecifyKind(license.TimeCreated, DateTimeKind.Utc);
+
+                    foreach (var appId in appIds)
+                    {
+                        if (
+                            !lastRefundEligiblePurchaseUtcByAppId.TryGetValue(appId, out var existing)
+                            || timeCreatedUtc > existing
+                        )
+                        {
+                            lastRefundEligiblePurchaseUtcByAppId[appId] = timeCreatedUtc;
+                        }
                     }
                 }
             }
 
-            return ownedAppIds;
+            return new OwnedAppResolution(ownedAppIds, lastRefundEligiblePurchaseUtcByAppId);
         }
     }
 }

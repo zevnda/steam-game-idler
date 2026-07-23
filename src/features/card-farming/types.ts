@@ -39,7 +39,12 @@ export interface FarmingProgress {
 
 // Mirrors src-tauri/src/card_farming/mod.rs::CompletedFarmReason.
 export type CompletedFarmReason =
-  'dropsExhausted' | 'maxCardDrops' | 'maxCardFarmingTime' | 'maxPlaytime' | 'noDropsRemaining'
+  | 'dropsExhausted'
+  | 'maxCardDrops'
+  | 'maxCardFarmingTime'
+  | 'maxPlaytime'
+  | 'noDropsRemaining'
+  | 'refundWindow'
 
 // Mirrors src-tauri/src/card_farming/mod.rs::CompletedFarm.
 export interface CompletedFarm {
@@ -47,6 +52,9 @@ export interface CompletedFarm {
   name: string
   remaining: number
   reason: CompletedFarmReason
+  // Only set when `reason` is `'refundWindow'` - unix seconds after which this game is expected
+  // to exit Steam's refund window and resume farming automatically.
+  farmableAt: number | null
 }
 
 export interface FarmingState {
@@ -68,9 +76,11 @@ export const DEFAULT_FARMING_STATE: FarmingState = {
   sessionExpired: false,
 }
 
-// Mirrors src-tauri/src/card_farming/settings.rs::DropSortOrder - a two-option preference (like
-// inventory-manager's PricePreference), not two independent booleans.
-export type DropSortOrder = 'highestFirst' | 'lowestFirst'
+// Mirrors src-tauri/src/card_farming/settings.rs::DropSortOrder - a multi-option preference (like
+// inventory-manager's PricePreference), not independent booleans. `queueOrder` (the default) farms
+// games in the order they appear in the account's curated card-farming queue (drag-reorderable on
+// the Queue tab); `highestFirst`/`lowestFirst` ignore the queue's order and resort by drop count.
+export type DropSortOrder = 'queueOrder' | 'highestFirst' | 'lowestFirst'
 
 // Mirrors src-tauri/src/card_farming/settings.rs::CardFarmingSettings. Blacklisting now lives in
 // its own list (`CardFarmingBlacklistEntry`/`useCardFarmingBlacklist`, backed by its own file) -
@@ -84,4 +94,9 @@ export interface CardFarmingSettings {
   nextTaskCheckbox: boolean
   nextTask: string | null
   autoFarmCards: boolean
+  multiGameFarmingNoticeSeen: boolean
+  singleFarmingMode: boolean
+  // Agent-mode only - see `card_farming::settings::CardFarmingSettings::skip_refundable_games`'s
+  // doc comment. A no-op for CLI-mode accounts (no purchase-date data exists for them).
+  skipRefundableGames: boolean
 }

@@ -18,11 +18,17 @@ interface CardFarmingPageHeaderProps {
   onManualAdd: () => void
 }
 
-// Mirrors AchievementUnlockerPageHeader's shape (title/status, start/stop, settings) - only shown
-// once `connected` (before that, `CardFarmingStartPanel` occupies the whole page, so there's
-// nothing here to start yet). While idle, the status line shows the current farming mode
-// (all games vs. games in queue) instead of a generic "not farming" - the mode is otherwise only
-// visible inside the Settings modal.
+// Mirrors AchievementUnlockerPageHeader's shape (title/status, start/stop, settings) - shown once
+// `connected`, or once `isFarming` (before that, `CardFarmingStartPanel` occupies the whole page,
+// so there's nothing here to start yet). The `isFarming` half of that check matters because
+// `connected` is local `useCardFarming` state that resets on every CardFarmingPage remount and
+// only flips back to true once `useAutoConnectSteamCookies` re-resolves cookies and re-scrapes
+// browse data - but a farming cycle already running is proof the account was connected, and
+// `state.isFarming` reflects that instantly via the account-scoped `cardFarmingStore` (kept live
+// by `useCardFarmingSync` regardless of which page is mounted), so Stop/Manual Add/Settings
+// shouldn't wait on a fresh reconnect just to reappear. While idle, the status line shows the
+// current farming mode (all games vs. games in queue) instead of a generic "not farming" - the
+// mode is otherwise only visible inside the Settings modal.
 export const CardFarmingPageHeader = ({
   connected,
   queueCount,
@@ -57,7 +63,7 @@ export const CardFarmingPageHeader = ({
             : idleStatus}
         </Typography>
       </div>
-      {connected && (
+      {(connected || isFarming) && (
         <div className='flex shrink-0 items-center gap-2'>
           {isFarming ? (
             <Button isPending={isStopping} variant='danger' onPress={onStop}>

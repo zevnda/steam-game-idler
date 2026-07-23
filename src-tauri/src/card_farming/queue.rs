@@ -108,7 +108,10 @@ pub async fn remove(
     Ok(queue)
 }
 
-/// Bulk-replaces the whole queue, preserving the given order - used after drag-reorder.
+/// Bulk-replaces the whole queue, preserving the given order - used after drag-reorder. This order
+/// is read back by `manager::fetch_queued_games` when the account's `DropSortOrder::QueueOrder`
+/// setting is active (the default), so a drag-reorder here directly changes the order games are
+/// farmed in, not just their display order.
 pub async fn set_order(
     app_handle: &AppHandle,
     steam_id: &str,

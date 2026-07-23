@@ -87,6 +87,7 @@ pub fn run() {
         .setup(|app| {
             let log_guard = logging::init(app.handle())?;
             app.manage(log_guard);
+            logging::purge_old_logs(app.handle());
             // Must run before the webview loads (see legacy_migration's doc comment) - before
             // setup_window/tray so nothing else touches the cache directory first.
             let migrated = legacy_migration::run(app.handle());
@@ -105,6 +106,8 @@ pub fn run() {
             steam_agent::commands::agent_logout,
             steam_agent::commands::agent_get_presence_settings,
             steam_agent::commands::agent_set_presence_settings,
+            steam_agent::commands::agent_get_ownership_settings,
+            steam_agent::commands::agent_set_ownership_settings,
             platform::is_portable,
             platform::is_dev,
             platform::current_os,

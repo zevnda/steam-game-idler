@@ -5,6 +5,7 @@ import { getVersion } from '@tauri-apps/api/app'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TbChevronRight } from 'react-icons/tb'
+import { useAgentOwnershipSettings } from '../hooks/useAgentOwnershipSettings'
 import { useSettingsModal } from '../hooks/useSettingsModal'
 import { useSteamCredentialsSettings } from '../hooks/useSteamCredentialsSettings'
 import { CustomizationSettingsTab } from './CustomizationSettingsTab'
@@ -137,6 +138,7 @@ export const SettingsModal = () => {
   const cardFarming = useCardFarmingSettings()
   const steamCredentials = useSteamCredentialsSettings()
   const freeGames = useFreeGamesSettings()
+  const ownership = useAgentOwnershipSettings()
   const [appVersion, setAppVersion] = useState<string | null>(null)
 
   // Structural parity with `main`'s sidebar footer (a version string below the tab list).
@@ -176,9 +178,9 @@ export const SettingsModal = () => {
                       {TABS.map(tab => (
                         <Tab
                           className={cn(
-                            'w-full justify-start rounded-lg px-3 py-2 text-left text-sm font-medium text-muted',
-                            'transition-colors hover:text-foreground',
-                            'data-[selected=true]:font-semibold data-[selected=true]:text-foreground',
+                            'w-full justify-start rounded-lg px-3 py-2 text-left text-sm font-medium',
+                            'text-muted hover:text-foreground data-[selected=true]:font-semibold ',
+                            'data-[selected=true]:text-foreground',
                           )}
                           id={tab.key}
                           key={tab.key}
@@ -216,7 +218,12 @@ export const SettingsModal = () => {
                     onSaveAntiAway={saveAntiAway}
                     onSaveAutoUpdateGamesList={saveAutoUpdateGamesList}
                     onSaveCloseToTray={saveCloseToTray}
+                    onSaveOwnership={ownership.save}
                     onSaveStartMinimized={saveStartMinimized}
+                    ownershipActionErrorCode={ownership.actionErrorCode}
+                    ownershipIsLoading={ownership.isLoading}
+                    ownershipIsSaving={ownership.isSaving}
+                    ownershipSettings={ownership.settings}
                   />
                 </SettingsPanel>
 
@@ -332,6 +339,7 @@ export const SettingsModal = () => {
                     refreshFreeGamesSettings={freeGames.refresh}
                     refreshGeneralSettings={refresh}
                     refreshInventorySettings={inventoryManager.refresh}
+                    refreshOwnershipSettings={ownership.refresh}
                   />
                 </SettingsPanel>
               </TabsRoot>

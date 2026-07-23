@@ -25,6 +25,9 @@ pub fn merge(raw_games: Vec<RawOwnedGame>, web_games: Vec<WebApiGame>) -> Vec<Ow
             name,
             playtime_forever_minutes,
             rtime_last_played,
+            // The Steam Web API has no purchase-date data at all - only agent mode's daemon
+            // (via `merge::from_agent`) can ever populate this.
+            last_refund_eligible_purchase_unix_seconds: None,
         });
         seen.insert(game.app_id);
     }
@@ -39,6 +42,7 @@ pub fn merge(raw_games: Vec<RawOwnedGame>, web_games: Vec<WebApiGame>) -> Vec<Ow
                 name: web_game.name,
                 playtime_forever_minutes: web_game.playtime_forever,
                 rtime_last_played: web_game.rtime_last_played,
+                last_refund_eligible_purchase_unix_seconds: None,
             });
         }
     }
@@ -61,6 +65,7 @@ pub fn from_agent(raw_games: Vec<RawOwnedGame>) -> Vec<OwnedGame> {
             name: game.name,
             playtime_forever_minutes: game.playtime_forever_minutes.unwrap_or(0),
             rtime_last_played: game.rtime_last_played.unwrap_or(0),
+            last_refund_eligible_purchase_unix_seconds: game.last_refund_eligible_purchase_unix_seconds,
         })
         .collect()
 }

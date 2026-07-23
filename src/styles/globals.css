@@ -393,17 +393,55 @@ body {
    `--border`/`--surface-tertiary`) instead - it now follows whichever preset is active rather than
    reading as a flat mismatch under e.g. the `orange`/`purple` presets. Draws its own gradient ring
    via `::after` (masked to a border-width strip, same trick `main` used), so a foil card should
-   drop the caller's flat `border-border` rather than layering both - see InventoryItemCard.tsx. */
+   drop the caller's flat `border-border` rather than layering both - see InventoryItemCard.tsx.
+   The rainbow layer below is a fixed-opacity (not blend-mode-derived) tint precisely so it reads
+   the same across both very light and very dark themes - blend modes like `overlay`/`color-dodge`
+   wash out or invert unpredictably depending on how light `--surface` is, which a flat alpha layer
+   doesn't. `holo-drift` slowly pans it for an idle color-shift; the `::before` shine sweep below
+   uses `color-dodge` (safe there since it's a short-lived bright pulse, not the base tint) so it
+   punches through the rainbow like real foil catching light at an angle. */
 .holo-card {
   position: relative;
   overflow: hidden;
-  border-radius: inherit;
-  background: linear-gradient(
-    120deg,
-    color-mix(in oklch, var(--surface) 100%, white 6%) 0%,
-    var(--surface) 50%,
-    color-mix(in oklch, var(--surface) 100%, white 6%) 100%
-  );
+  background:
+    linear-gradient(
+      115deg,
+      transparent 15%,
+      hsl(355 85% 65% / 22%) 27%,
+      hsl(45 85% 65% / 22%) 36%,
+      hsl(140 75% 55% / 22%) 45%,
+      hsl(195 85% 60% / 22%) 54%,
+      hsl(260 80% 68% / 22%) 63%,
+      hsl(320 80% 65% / 22%) 72%,
+      transparent 85%
+    ),
+    linear-gradient(
+      120deg,
+      color-mix(in oklch, var(--surface) 100%, white 6%) 0%,
+      var(--surface) 50%,
+      color-mix(in oklch, var(--surface) 100%, white 6%) 100%
+    );
+  background-size:
+    250% 250%,
+    100% 100%;
+  background-position:
+    0% 30%,
+    0 0;
+  animation: holo-drift 7s ease-in-out infinite;
+}
+
+@keyframes holo-drift {
+  0%,
+  100% {
+    background-position:
+      0% 30%,
+      0 0;
+  }
+  50% {
+    background-position:
+      100% 70%,
+      0 0;
+  }
 }
 
 .holo-card::after {
@@ -436,14 +474,15 @@ body {
   pointer-events: none;
   background: linear-gradient(
     115deg,
-    transparent 38%,
-    rgba(255, 255, 255, 0.33) 46%,
-    rgba(255, 255, 255, 0.66) 50%,
-    rgba(255, 255, 255, 0.33) 54%,
-    transparent 62%
+    transparent 35%,
+    rgba(255, 255, 255, 0.45) 46%,
+    rgba(255, 255, 255, 0.85) 50%,
+    rgba(255, 255, 255, 0.45) 54%,
+    transparent 65%
   );
-  filter: blur(30px);
-  opacity: 0.3;
+  mix-blend-mode: color-dodge;
+  filter: blur(22px);
+  opacity: 0.55;
   transform: translateX(-100%) skewX(-16deg);
   animation: holo-shine 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
@@ -466,6 +505,13 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .holo-card {
+    animation: none;
+    background-position:
+      20% 40%,
+      0 0;
+  }
+
   .holo-card::before {
     animation: none;
     opacity: 0;

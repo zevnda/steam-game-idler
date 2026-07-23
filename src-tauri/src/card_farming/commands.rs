@@ -78,10 +78,11 @@ pub async fn get_games_with_drops(
 /// Resolves the games to farm when `CardFarmingSettings::all_games` is on: every currently scraped
 /// game with drops remaining, minus blacklisted games, further filtered by `skip_no_playtime`/
 /// `farm_unplayed_only` against the owned-games cache's real playtime (the same source `manager::
-/// playtime_lookup` uses) - the persisted queue is bypassed entirely in this mode, matching `main`'s
-/// "all games" behavior. Best-effort on the playtime lookup: a cache-read failure degrades to "0
-/// minutes known" for every game (mirrors `manager::playtime_lookup`) rather than failing the whole
-/// start attempt over an unrelated cache miss. Returns app id -> name (not just app ids) to match
+/// owned_game_cache_lookup` uses) - the persisted queue is bypassed entirely in this mode, matching
+/// `main`'s "all games" behavior. Best-effort on the playtime lookup: a cache-read failure degrades
+/// to "0 minutes known" for every game (mirrors `manager::owned_game_cache_lookup`) rather than
+/// failing the whole start attempt over an unrelated cache miss. Returns app id -> name (not just
+/// app ids) to match
 /// `manager::CardFarmingManager::start`'s `queued_games` shape - every candidate here already came
 /// from a drops-remaining scrape, so (unlike the persisted-queue path below) this mode can never
 /// itself surface a zero-drops game.

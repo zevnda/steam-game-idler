@@ -1,5 +1,12 @@
 [
   {
+    "id": "40",
+    "title": "Linux Support Needs Testers",
+    "message": "A Linux preview build is now available for testing. If you use Linux and have some time to try it out and report back, it would help a lot before this goes live",
+    "url": "https://github.com/zevnda/steam-game-idler/pull/1923",
+    "timestamp": "1784536240"
+  },
+  {
     "id": "39",
     "title": "Issues Loading Game Achievements",
     "message": "A recent Steam Beta update broke achievement viewing functionality. Click here to learn how to fix it",

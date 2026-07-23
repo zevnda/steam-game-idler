@@ -248,6 +248,10 @@ impl AgentManager {
         let Some(process) = self.pending_qr.lock().await.remove(event_account_key) else {
             return;
         };
+        // The other half of re-keying: this process's own reader tasks tag every event they emit
+        // with whatever `process.rekey` last set, independent of which map key it lives under
+        // here - see `AgentProcess::account_key`'s doc comment for why both halves are needed.
+        process.rekey(real_key);
 
         let mut sessions = self.sessions.lock().await;
         // Mirrors `respawn`'s safety: an existing session at the real key (e.g. re-scanning an
@@ -406,6 +410,11 @@ impl AgentManager {
     /// `Daemon/Bot/OwnershipManager.cs`). No playtime here - that's `games::web_api`'s job, the
     /// same Steam Web API enrichment step CLI mode's ownership check also funnels through.
     ///
+    /// `games_only` mirrors CLI mode's scope (games + family-shared, no DLC/soundtracks/videos/
+    /// tools) by asking the daemon to intersect against the same curated whitelist
+    /// `SteamworksLocalBackend` uses - see `steam_agent::ownership_settings` (defaults to `true`;
+    /// `false` opts into the unfiltered "all content" scope some users specifically want).
+    ///
     /// Uses `OWNED_APPS_REQUEST_TIMEOUT` rather than the default `send_request` timeout - unlike
     /// every other command sent through this manager, PICS-based ownership resolution scales with
     /// the account's library size (thousands of individual PICS requests for a 5,000-10,000+ game
@@ -414,11 +423,15 @@ impl AgentManager {
     pub async fn get_owned_apps(
         &self,
         username: &str,
+        games_only: bool,
     ) -> AppResult<Vec<crate::games::RawOwnedGame>> {
         let key = Self::key_for(username);
         let process = self.existing(&key).await?;
         let response = process
-            .send_request_with_timeout(IpcRequest::get_owned_apps, OWNED_APPS_REQUEST_TIMEOUT)
+            .send_request_with_timeout(
+                |id| IpcRequest::get_owned_apps(id, games_only),
+                OWNED_APPS_REQUEST_TIMEOUT,
+            )
             .await?;
 
         if !response.ok {
@@ -531,8 +544,11 @@ impl AgentManager {
     ) -> AppResult<crate::free_games::FreeGameClaimOutcome> {
         use crate::free_games::FreeGameClaimOutcome;
 
+        // Always unfiltered (games_only: false) here regardless of the user's display-scope
+        // setting - this is a real-ownership correctness check for an arbitrary promo app id
+        // (which may not be a curated "real game"), not the owned-games list shown to the user.
         let already_owned = self
-            .get_owned_apps(username)
+            .get_owned_apps(username, false)
             .await
             .map(|games| games.iter().any(|game| game.app_id == app_id))
             .unwrap_or(false);
@@ -600,15 +616,19 @@ impl AgentManager {
     /// `achievements_get` command - see `Daemon/Bot/AchievementHandler.cs`. Fails with
     /// `unsupported_game_coordinator` for GC titles (440/570/730/550/620), a daemon-only
     /// restriction the CLI/local-client path doesn't share.
+    ///
+    /// `language` is a Steam schema language key (`"english"`, `"schinese"`, ...) - see
+    /// `achievements::steam_language::steam_language_for_locale`.
     pub async fn achievements_get(
         &self,
         username: &str,
         app_id: u32,
+        language: &'static str,
     ) -> AppResult<crate::achievements::AchievementData> {
         let key = Self::key_for(username);
         let process = self.existing(&key).await?;
         let response = process
-            .send_request(move |id| IpcRequest::achievements_get(id, app_id))
+            .send_request(move |id| IpcRequest::achievements_get(id, app_id, language))
             .await?;
 
         let result = ok_or_agent_error_with_result(response)?;
@@ -646,7 +666,9 @@ impl AgentManager {
     ) -> AppResult<crate::achievements::BulkAchievementResult> {
         use crate::achievements::BulkAchievementResult;
 
-        let data = self.achievements_get(username, app_id).await?;
+        // Only `id`/`achieved`/`protected_achievement` matter here, never display text, so the
+        // schema language is irrelevant - always "english".
+        let data = self.achievements_get(username, app_id, "english").await?;
         let key = Self::key_for(username);
         let process = self.existing(&key).await?;
 

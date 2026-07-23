@@ -1,11 +1,13 @@
 import type { RowComponentProps } from 'react-window'
 import type { OwnedGame } from '../types'
-import { useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { List } from 'react-window'
+import { List, useListCallbackRef } from 'react-window'
 import { GameCard } from './GameCard'
 import { Typography } from '@heroui/react'
+import { BackToTopButton } from '@/shared/components/BackToTopButton'
 import { GameCarousel } from '@/shared/components/GameCarousel'
+import { useBackToTop } from '@/shared/hooks/useBackToTop'
 import {
   GAME_CARD_INFO_HEIGHT,
   GAME_CARD_THUMBNAIL_ASPECT,
@@ -172,6 +174,9 @@ export const GamesList = ({
   const { t } = useTranslation()
   const containerRef = useRef<HTMLDivElement>(null)
   const { width, usableWidth, columnCount } = useResponsiveColumnCount(containerRef)
+  const [listApi, setListApi] = useListCallbackRef()
+  const { setScrollElement, isVisible, scrollToTop } = useBackToTop()
+  useEffect(() => setScrollElement(listApi?.element ?? null), [listApi, setScrollElement])
 
   const cardWidth = columnCount
     ? (usableWidth - GAME_GRID_GAP * (columnCount - 1)) / columnCount
@@ -216,10 +221,11 @@ export const GamesList = ({
     // No horizontal padding here - each row applies its own `px-6`, same reasoning as
     // VirtualizedGameGrid's full-bleed container (only that one needs the spacer-column
     // workaround; a `List` row is plain document flow, so ordinary CSS padding works here).
-    <div className='h-full w-full' ref={containerRef}>
+    <div className='relative h-full w-full' ref={containerRef}>
       {width > 0 && (
         <List
           className='py-6'
+          listRef={setListApi}
           rowComponent={GamesListRow}
           rowCount={rows.length}
           rowHeight={getRowHeight}
@@ -227,6 +233,7 @@ export const GamesList = ({
           style={{ height: '100%', width: '100%' }}
         />
       )}
+      <BackToTopButton visible={isVisible} onPress={scrollToTop} />
     </div>
   )
 }

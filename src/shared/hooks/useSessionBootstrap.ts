@@ -29,6 +29,15 @@ class PermanentResumeFailure extends Error {}
 // longer holds every other account's sign-in hostage.
 const BOOT_RESUME_TIMEOUT_MS = 4000
 
+// A second, shorter budget applied only when the first pass above resolved NOTHING at all (every
+// persisted account is still pending) - see the `graceRaced` block below. Without this, that
+// specific case flips `phase` to 'idle' with nothing resumed, which genuinely mounts the real
+// sign-in screen (`pages/index.tsx`), and if a straggler then resolves a few hundred ms later the
+// user gets redirected straight back out - a confusing flash even though nothing was actually
+// wrong. Bounded independently of BOOT_RESUME_TIMEOUT_MS so a truly stuck account (one that never
+// resolves) still only ever adds this fixed amount on top, never blocks indefinitely.
+const BOOT_RESUME_GRACE_MS = 1500
+
 // Re-validates one persisted account against real backend state - shared by every entry in the
 // persisted accounts map, not just the previously-active one. Deliberately does not blindly trust
 // the persisted value the way `main`'s `useInit`/`userSummary` localStorage blob does:
@@ -158,7 +167,7 @@ export const useSessionBootstrap = () => {
       if (cancelled) return
 
       const resumed: Record<AccountKey, SignedInAccount> = { ...overCapAccounts }
-      const stragglers: typeof pending = []
+      let stragglers: typeof pending = []
 
       pending.forEach((p, index) => {
         const outcome = raced[index]
@@ -171,6 +180,35 @@ export const useSessionBootstrap = () => {
         }
       })
 
+      // Only worth the extra wait when the main pass resolved literally nothing - if at least one
+      // account already resumed, we're navigating to /dashboard regardless, so there's no sign-in
+      // screen for a late straggler to flash past. Bounded by BOOT_RESUME_GRACE_MS (see its own doc
+      // comment) so this can never turn into a second indefinite block.
+      if (Object.keys(resumed).length === 0 && stragglers.length > 0) {
+        const graceTimedOut = Symbol('boot-resume-grace-timeout')
+        const graceTimeoutPromise = new Promise<typeof graceTimedOut>(resolve =>
+          setTimeout(() => resolve(graceTimedOut), BOOT_RESUME_GRACE_MS),
+        )
+        const graceRaced = await Promise.all(
+          stragglers.map(p => Promise.race([p.result, graceTimeoutPromise])),
+        )
+
+        if (cancelled) return
+
+        const stillPending: typeof stragglers = []
+        stragglers.forEach((p, index) => {
+          const outcome = graceRaced[index]
+          if (outcome === graceTimedOut) {
+            stillPending.push(p)
+          } else if (outcome.status === 'resumed') {
+            resumed[p.key] = p.account
+          } else {
+            logAndMaybeClearOnFailure(p.key, outcome.error)
+          }
+        })
+        stragglers = stillPending
+      }
+
       // Route the initial decision purely off whatever's resolved within the timeout budget - the
       // stragglers resolve on their own below and get folded into the switcher whenever they do,
       // without yanking the user off whatever screen they're on. A slow account isn't dropped, it
@@ -179,11 +217,24 @@ export const useSessionBootstrap = () => {
         useSessionStore.getState().hydrateAccounts(resumed, activeKey)
         // Only navigate when starting from outside /dashboard/* (the normal cold-start-at-`/`
         // case) - a reload that landed directly on e.g. `/dashboard/card-farming` should resume in
-        // place, not get yanked back to the dashboard root.
+        // place, not get yanked back to the dashboard root. Awaited (rather than fire-and-forget)
+        // so `phase` doesn't flip to 'idle' - and drop the FullscreenLoader - until router.pathname
+        // has actually caught up to '/dashboard'; otherwise `_app.tsx` briefly renders `/`'s own
+        // sign-in screen for one frame using the still-stale pathname before the route transition
+        // finishes, flashing it in between the boot splash and the dashboard.
         if (!router.pathname.startsWith('/dashboard')) {
-          router.replace('/dashboard')
+          try {
+            await router.replace('/dashboard')
+          } catch (error) {
+            // A rejected navigation must never leave the boot splash stuck forever - fall through
+            // to setPhase('idle') below same as a successful one. Not expected in practice (this
+            // app navigates between statically-exported local routes, not over a real network),
+            // but the whole point of this guard is to not bet the loading screen on that holding.
+            console.error('Error navigating to /dashboard after session resume:', error)
+          }
         }
       }
+      if (cancelled) return
       setPhase('idle')
 
       if (stragglers.length > 0) {

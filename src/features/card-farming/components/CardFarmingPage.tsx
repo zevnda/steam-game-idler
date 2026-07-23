@@ -23,16 +23,17 @@ import {
   AlertDialog,
   Button,
   EmptyState,
+  Modal,
   Tab,
   TabIndicator,
   TabList,
   TabListContainer,
-  TabPanel,
   TabsRoot,
   Typography,
 } from '@heroui/react'
 import { useRouter } from 'next/router'
 import { GameGridSkeleton } from '@/shared/components/GameGridSkeleton'
+import { GameListTabPanel } from '@/shared/components/GameListTabPanel'
 import { GameSortSelect } from '@/shared/components/GameSortSelect'
 import { ManualAddGameModal } from '@/shared/components/ManualAddGameModal'
 import { useAutoConnectSteamCookies } from '@/shared/hooks/useAutoConnectSteamCookies'
@@ -88,7 +89,9 @@ export const CardFarmingPage = () => {
     removeBrowseGame,
     refreshBrowse,
     allGames,
+    multiGameFarmingNoticeSeen,
     refreshSettingsMode,
+    markMultiGameNoticeSeen,
     connect,
     start,
     stop,
@@ -123,6 +126,7 @@ export const CardFarmingPage = () => {
   // this tracks which one the open dialog is confirming rather than duplicating the dialog itself.
   const [confirmClearTarget, setConfirmClearTarget] = useState<'queue' | 'blacklist' | null>(null)
   const [isManualAddOpen, setIsManualAddOpen] = useState(false)
+  const [showMultiGameNotice, setShowMultiGameNotice] = useState(false)
   // Global search filters only the "browse" tab's `browseGames` array - mirrors FavoritesPage's/
   // AchievementUnlockerPage's browse-tab-only wiring. The queue/blacklist tabs stay unfiltered for
   // the same reorder-data-loss reason those pages document: `CardFarmingListGrid`'s `onReorder`
@@ -194,6 +198,30 @@ export const CardFarmingPage = () => {
     await stop()
   }
 
+  // One-time (ever, per account) heads-up shown the first time Start would farm more than one
+  // game at once - `allGames` mode can also idle many games concurrently, not just a queue with
+  // more than one entry (see CardFarmingPageHeader's own doc comment on that distinction), so both
+  // count. `multiGameFarmingNoticeSeen === false` specifically (not just falsy) - `null` means
+  // useCardFarming's fetch hasn't resolved yet, and this must never block Start over that, only
+  // over a confirmed not-yet-seen value.
+  const isMultiGameStart = allGames === true || queue.length > 1
+  const handleStart = () => {
+    if (isMultiGameStart && multiGameFarmingNoticeSeen === false) {
+      setShowMultiGameNotice(true)
+      return
+    }
+    start()
+  }
+
+  // Dismissing (backdrop/escape/close button) always marks the notice seen so it never reappears,
+  // same as clicking through it - only the explicit "Continue" action also starts farming, so an
+  // accidental outside click or Escape press can't silently kick off a farming cycle nobody asked
+  // to actually start yet.
+  const dismissMultiGameNotice = () => {
+    setShowMultiGameNotice(false)
+    markMultiGameNoticeSeen()
+  }
+
   // A farming cycle auto-dequeues each game as its drops are exhausted, but `FarmingState`'s change
   // event doesn't carry the persisted queue (see useCardFarmingQueue's `refresh` doc comment) - so
   // the queue tab/header count otherwise stay stale until the page remounts. Refetch on the
@@ -244,7 +272,7 @@ export const CardFarmingPage = () => {
         isStopping={isStopping}
         queueCount={queue.length}
         onManualAdd={() => setIsManualAddOpen(true)}
-        onStart={start}
+        onStart={handleStart}
         onStop={handleStop}
       />
 
@@ -339,7 +367,7 @@ export const CardFarmingPage = () => {
             )}
           </div>
 
-          <TabPanel className='min-h-0 flex-1 overflow-y-auto p-0' id='browse'>
+          <GameListTabPanel id='browse'>
             {isBrowseLoading ? (
               <GameGridSkeleton />
             ) : browseGames.length === 0 ? (
@@ -368,9 +396,9 @@ export const CardFarmingPage = () => {
                 onToggle={game => toggleQueued(game.appId, game.name)}
               />
             )}
-          </TabPanel>
+          </GameListTabPanel>
 
-          <TabPanel className='min-h-0 flex-1 overflow-y-auto p-0' id='queue'>
+          <GameListTabPanel id='queue'>
             {queueLoading ? (
               <GameGridSkeleton />
             ) : queue.length === 0 ? (
@@ -389,9 +417,9 @@ export const CardFarmingPage = () => {
                 onReorder={reorder}
               />
             )}
-          </TabPanel>
+          </GameListTabPanel>
 
-          <TabPanel className='min-h-0 flex-1 overflow-y-auto p-0' id='blacklist'>
+          <GameListTabPanel id='blacklist'>
             {blacklistLoading ? (
               <GameGridSkeleton />
             ) : blacklist.length === 0 ? (
@@ -409,7 +437,7 @@ export const CardFarmingPage = () => {
                 onRemove={handleUnblacklist}
               />
             )}
-          </TabPanel>
+          </GameListTabPanel>
         </TabsRoot>
       )}
 
@@ -458,6 +486,38 @@ export const CardFarmingPage = () => {
           </AlertDialog.Container>
         </AlertDialog.Backdrop>
       </AlertDialog>
+
+      <Modal
+        isOpen={showMultiGameNotice}
+        onOpenChange={open => {
+          if (!open) dismissMultiGameNotice()
+        }}
+      >
+        <Modal.Backdrop>
+          <Modal.Container size='sm'>
+            <Modal.Dialog>
+              <Modal.Header>
+                <Modal.Heading>{t('dashboard.cardFarming.multiGameNotice.title')}</Modal.Heading>
+                <Modal.CloseTrigger />
+              </Modal.Header>
+              <Modal.Body>
+                <p>{t('dashboard.cardFarming.multiGameNotice.description')}</p>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button
+                  onPress={() => {
+                    setShowMultiGameNotice(false)
+                    markMultiGameNoticeSeen()
+                    start()
+                  }}
+                >
+                  {t('common.actions.continue')}
+                </Button>
+              </Modal.Footer>
+            </Modal.Dialog>
+          </Modal.Container>
+        </Modal.Backdrop>
+      </Modal>
 
       <ManualAddGameModal
         existingAppIds={queue.map(game => game.appId)}

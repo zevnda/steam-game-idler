@@ -3,12 +3,21 @@ import { useTranslation } from 'react-i18next'
 import { TbCheck, TbHourglassLow, TbInfoCircle } from 'react-icons/tb'
 import { Typography } from '@heroui/react'
 
+const formatFarmableAt = (unixSeconds: number) =>
+  new Date(unixSeconds * 1000).toLocaleDateString(undefined, {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
+
 interface CardFarmingGameRowProps {
   name: string
   remaining: number
   variant: 'queued' | 'completed'
   // Only present for `variant: 'completed'` - see the reason-label switch below for why.
   reason?: CompletedFarmReason
+  // Only present when `reason === 'refundWindow'` - see `CompletedFarm.farmableAt`'s doc comment.
+  farmableAt?: number | null
 }
 
 // One row within CardFarmingProgressView's queue/completed lists - a plain list, not a card grid:
@@ -27,11 +36,15 @@ interface CardFarmingGameRowProps {
 // `'noDropsRemaining'` gets the same neutral treatment - a game queued (e.g. via the context menu)
 // that already had zero drops before this cycle ever started, so there's nothing to elaborate with a
 // `remaining` count (see `CompletedFarm.remaining`'s doc comment - always `0` for this reason).
+// `'refundWindow'` also gets the neutral treatment, but names a resume date instead of a remaining
+// count - unlike every other reason, this one clears itself once `farmableAt` passes, without the
+// user having to do anything.
 export const CardFarmingGameRow = ({
   name,
   remaining,
   variant,
   reason,
+  farmableAt,
 }: CardFarmingGameRowProps) => {
   const { t } = useTranslation()
 
@@ -53,7 +66,11 @@ export const CardFarmingGameRow = ({
                   ? t('dashboard.cardFarming.progress.completedMaxCardFarmingTime', { remaining })
                   : reason === 'maxPlaytime'
                     ? t('dashboard.cardFarming.progress.completedMaxPlaytime', { remaining })
-                    : t('dashboard.cardFarming.progress.completedNoDropsRemaining')}
+                    : reason === 'refundWindow'
+                      ? t('dashboard.cardFarming.progress.completedRefundWindow', {
+                          date: farmableAt ? formatFarmableAt(farmableAt) : '',
+                        })
+                      : t('dashboard.cardFarming.progress.completedNoDropsRemaining')}
             </Typography>
           </div>
         ) : (

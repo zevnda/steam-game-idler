@@ -11,6 +11,8 @@ import { Alert, Button, EmptyState, Skeleton, Typography } from '@heroui/react'
 import { useRouter } from 'next/router'
 import { useGamesList } from '@/features/games-list/hooks/useGamesList'
 import { errorMessageKey as gamesErrorMessageKey } from '@/features/games-list/utils/errorMessageKey'
+import { BackToTopButton } from '@/shared/components/BackToTopButton'
+import { useBackToTop } from '@/shared/hooks/useBackToTop'
 import { useSessionStore } from '@/shared/stores/sessionStore'
 
 // Section titles reuse the sidebar's existing feature-name keys where one already exists -
@@ -46,6 +48,7 @@ export const IdlingPage = () => {
     stopAll,
     stopSection,
   } = useIdling(games)
+  const { setScrollElement, isVisible, scrollToTop } = useBackToTop()
 
   useEffect(() => {
     // Same as GamesPage: nothing in this rewrite yet persists "who's signed in" across a page
@@ -100,7 +103,10 @@ export const IdlingPage = () => {
           </Typography>
         </EmptyState>
       ) : (
-        <div className='flex flex-1 flex-col gap-6 overflow-y-auto p-6'>
+        <div
+          ref={setScrollElement}
+          className='relative flex flex-1 flex-col gap-6 overflow-y-auto p-6'
+        >
           {groups.map(group => {
             const groupGameIds = new Set(group.appIds)
             const groupGames = idlingGames.filter(game => groupGameIds.has(game.appId))
@@ -120,6 +126,7 @@ export const IdlingPage = () => {
               />
             )
           })}
+          <BackToTopButton visible={isVisible} onPress={scrollToTop} />
         </div>
       )}
     </div>

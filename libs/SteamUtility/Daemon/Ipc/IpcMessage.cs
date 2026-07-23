@@ -31,5 +31,15 @@ namespace SteamUtility.Daemon.Ipc
         // announcement with this text instead. Only takes visible effect when paired with a real,
         // owned app id; Steam silently ignores it for a synthetic/unowned game_id.
         public string? GameExtraInfo { get; set; }
+
+        // `achievements_get` only - a Steam schema language key (e.g. "english", "schinese"),
+        // pre-mapped Rust-side from the app's own locale. See AchievementHandler.GetAchievementsAndStatsAsync.
+        public string? Language { get; set; }
+
+        // `get_owned_apps` only - when true, intersect the PICS-resolved owned app ids against the
+        // same curated whitelist CLI mode's SteamworksLocalBackend uses as its ownership-check
+        // candidate list, so agent mode can match CLI mode's "games only" scope. See
+        // OwnershipManager.GetOwnedGamesAsync.
+        public bool? GamesOnly { get; set; }
     }
 }

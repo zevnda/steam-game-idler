@@ -80,6 +80,12 @@ struct UnlockerSession {
     /// Live-updatable worker count - see this module's doc comment on why a session-start-only
     /// value isn't enough. Re-read (and re-clamped) at the top of every pass in [`run_loop`].
     max_concurrent_games: Arc<AtomicU32>,
+    /// Shared with the spawned `run_loop` task so [`AchievementUnlockerManager::
+    /// remove_active_game`] can immediately drop a game's idling claim and, via
+    /// `excluded_app_ids`, permanently block it from being re-idled for the rest of this session -
+    /// see that method's doc comment for the resurrection this closes.
+    idling_apps: Arc<Mutex<HashMap<u32, String>>>,
+    excluded_app_ids: Arc<Mutex<HashSet<u32>>>,
 }
 
 /// Tracks at most one unlocker session per account (keyed by resolved SteamID64, matching
@@ -130,6 +136,8 @@ impl AchievementUnlockerManager {
         }));
         let stopped = Arc::new(AtomicBool::new(false));
         let max_concurrent_games = Arc::new(AtomicU32::new(worker_count));
+        let idling_apps: Arc<Mutex<HashMap<u32, String>>> = Arc::new(Mutex::new(HashMap::new()));
+        let excluded_app_ids: Arc<Mutex<HashSet<u32>>> = Arc::new(Mutex::new(HashSet::new()));
 
         let handle = tokio::spawn(run_loop(
             app_handle.clone(),
@@ -138,6 +146,8 @@ impl AchievementUnlockerManager {
             max_concurrent_games.clone(),
             state.clone(),
             stopped.clone(),
+            idling_apps.clone(),
+            excluded_app_ids.clone(),
         ));
 
         let snapshot = state.lock().await.clone();
@@ -148,6 +158,8 @@ impl AchievementUnlockerManager {
                 stopped,
                 state,
                 max_concurrent_games,
+                idling_apps,
+                excluded_app_ids,
             },
         );
         Ok(snapshot)
@@ -184,6 +196,49 @@ impl AchievementUnlockerManager {
             Some(session) => session.state.lock().await.clone(),
             None => AchievementUnlockerState::default(),
         }
+    }
+
+    /// Excludes `app_id` from idling for the rest of a running session for `steam_id` - the
+    /// Idling page's per-card "stop" toggle already releases the actual idling claim via
+    /// `idling::claims::IdleClaimsRegistry::release_app_id` (this session finds out its game
+    /// stopped idling from that, not from here), but this manager tracks its own desired idling
+    /// set (`idling_apps`) independently and would otherwise never learn a specific game was
+    /// pulled out from under it - the next unrelated `set_game_idling` call (a different worker's
+    /// game starting/stopping its own idling) re-announces this session's *entire* current
+    /// `idling_apps` map, silently resurrecting the game the user just stopped. Removing it from
+    /// `idling_apps` here closes that immediate resurrection path; recording it in
+    /// `excluded_app_ids` additionally stops *this same* game's own worker from re-idling it later
+    /// (e.g. resuming after a schedule-wait pause) - see `unlock_game`'s one
+    /// `set_game_idling(..., true)` call site.
+    ///
+    /// Deliberately doesn't touch the achievement-unlocking work itself (the queue, `active`, or
+    /// the worker currently processing this game) - unlike card farming, where idling *is* the
+    /// entire activity, achievement unlocking only optionally idles a game
+    /// (`settings::AchievementUnlockerSettings::idle`) as a side effect, so stopping a game's
+    /// idling from the Idling page shouldn't also silently abandon its in-progress unlock queue
+    /// entry. A no-op (`false`, nothing logged) if no session is running for `steam_id` or the
+    /// game wasn't currently idling under it - `excluded_app_ids` is still recorded either way,
+    /// pre-emptively covering a game mid-schedule-wait that hasn't started idling yet.
+    pub async fn remove_active_game(&self, steam_id: &str, app_id: u32) -> bool {
+        // See `CardFarmingManager::remove_active_game`'s identical doc comment for why the
+        // manager-wide `sessions` lock is dropped before the per-session locks below.
+        let (idling_apps, excluded_app_ids) = {
+            let sessions = self.sessions.lock().await;
+            let Some(session) = sessions.get(steam_id) else {
+                return false;
+            };
+            (session.idling_apps.clone(), session.excluded_app_ids.clone())
+        };
+        excluded_app_ids.lock().await.insert(app_id);
+        let removed = idling_apps.lock().await.remove(&app_id).is_some();
+        if removed {
+            tracing::info!(
+                steam_id,
+                app_id,
+                "achievement unlocker: game excluded from idling for the rest of this session (manually stopped via idling page)"
+            );
+        }
+        removed
     }
 
     async fn remove(&self, steam_id: &str) {
@@ -453,10 +508,13 @@ async fn scan_game(
         .unwrap_or(None);
 
     let agent_manager = app_handle.state::<AgentManager>();
+    // Backend automation loop, no frontend locale to follow - the fetched name/description are
+    // only ever used in `tracing::` log lines below, not shown to the user, so "english" is fine.
     let data = match achievements::commands::get_achievement_data(
         agent_manager,
         account.clone(),
         entry.app_id,
+        "english".to_string(),
     )
     .await
     {
@@ -723,6 +781,7 @@ async fn run_scan_phase(
 /// achievement is unlocked or the per-game max-unlocks override is reached (matches `main`'s
 /// `unlockAchievements`). Settings are read once at the start and reused for the whole game, same
 /// as `main` - a mid-run settings change only takes effect for the *next* game a worker picks up.
+#[allow(clippy::too_many_arguments)]
 async fn unlock_game(
     app_handle: &AppHandle,
     account: &GamesAccount,
@@ -730,6 +789,7 @@ async fn unlock_game(
     game: &ScannedGame,
     state: &Arc<Mutex<AchievementUnlockerState>>,
     idling_apps: &Arc<Mutex<HashMap<u32, String>>>,
+    excluded_app_ids: &Arc<Mutex<HashSet<u32>>>,
     stopped: &Arc<AtomicBool>,
 ) {
     let app_id = game.app_id;
@@ -866,7 +926,10 @@ async fn unlock_game(
             }
             update_game(state, app_id, |g| g.is_waiting_for_schedule = false).await;
             emit_state(app_handle, steam_id, state).await;
-        } else if !is_idling && unlocker_settings.idle {
+        } else if !is_idling
+            && unlocker_settings.idle
+            && !excluded_app_ids.lock().await.contains(&app_id)
+        {
             set_game_idling(idling_apps, app_handle, account, app_id, &game.name, true).await;
             is_idling = true;
         }
@@ -975,6 +1038,7 @@ async fn unlock_game(
 /// [`INTER_GAME_DELAY`] only in single-worker mode and only when the game has no
 /// `delayBeforeFirstUnlock` of its own (matches `main`'s `gameHasPreDelay` check, reusing the value
 /// already computed during scanning instead of re-reading the order file a second time).
+#[allow(clippy::too_many_arguments)]
 async fn run_unlock_phase(
     app_handle: &AppHandle,
     account: &GamesAccount,
@@ -983,6 +1047,7 @@ async fn run_unlock_phase(
     worker_count: u32,
     state: &Arc<Mutex<AchievementUnlockerState>>,
     idling_apps: &Arc<Mutex<HashMap<u32, String>>>,
+    excluded_app_ids: &Arc<Mutex<HashSet<u32>>>,
     stopped: &Arc<AtomicBool>,
 ) {
     let queue = Arc::new(Mutex::new(VecDeque::from(ready)));
@@ -995,6 +1060,7 @@ async fn run_unlock_phase(
         let steam_id = steam_id.to_string();
         let state = state.clone();
         let idling_apps = idling_apps.clone();
+        let excluded_app_ids = excluded_app_ids.clone();
         let stopped = stopped.clone();
 
         handles.push(tokio::spawn(async move {
@@ -1060,6 +1126,7 @@ async fn run_unlock_phase(
                     &game,
                     &state,
                     &idling_apps,
+                    &excluded_app_ids,
                     &stopped,
                 )
                 .await;
@@ -1162,6 +1229,7 @@ fn maybe_start_next_task<'a>(
 /// is requested, then releases any idling this session claimed, clears the tracked state, chains
 /// into the next task if configured (only on a genuine empty-queue ending), and deregisters itself
 /// from the manager.
+#[allow(clippy::too_many_arguments)]
 async fn run_loop(
     app_handle: AppHandle,
     steam_id: String,
@@ -1169,8 +1237,9 @@ async fn run_loop(
     max_concurrent_games: Arc<AtomicU32>,
     state: Arc<Mutex<AchievementUnlockerState>>,
     stopped: Arc<AtomicBool>,
+    idling_apps: Arc<Mutex<HashMap<u32, String>>>,
+    excluded_app_ids: Arc<Mutex<HashSet<u32>>>,
 ) {
-    let idling_apps: Arc<Mutex<HashMap<u32, String>>> = Arc::new(Mutex::new(HashMap::new()));
     let end_reason;
 
     loop {
@@ -1224,6 +1293,7 @@ async fn run_loop(
             worker_count,
             &state,
             &idling_apps,
+            &excluded_app_ids,
             &stopped,
         )
         .await;
