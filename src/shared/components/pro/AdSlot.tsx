@@ -114,6 +114,15 @@ export const AdSlot = () => {
     return () => window.removeEventListener('message', handleAdFillMessage)
   }, [])
 
+  // Give a confirmed-filled Google ad 30s of visibility, then drop back to the house-ad overlay
+  // and let its own 30s shuffle (below) keep rotating as normal - a filled Google ad would
+  // otherwise stay shown indefinitely, permanently starving house ads of this slot.
+  useEffect(() => {
+    if (!adFilled) return
+    const timeoutId = setTimeout(() => setAdFilled(false), ROTATE_INTERVAL_MS)
+    return () => clearTimeout(timeoutId)
+  }, [adFilled])
+
   useEffect(() => {
     fetch(`${CDN_BASE_URL}/ads/manifest.json`)
       .then(res => res.json())
