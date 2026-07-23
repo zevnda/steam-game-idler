@@ -11,12 +11,12 @@ const faqData = [
   {
     question: 'Do I need a Steam account to use SGI?',
     answer:
-      'SGI gives you two ways to sign in. "Sign in with Steam" is the recommended method and needs no local Steam client at all - you sign in with your Steam username/password or a QR code. "Legacy Sign In" is the fallback for anyone who\'d rather not enter Steam credentials into SGI - it requires the Steam client to be installed, running, and already signed in.',
+      'SGI gives you two ways to sign in. "Steam Sign-in" is the recommended method and needs no local Steam client at all - you sign in with your Steam username/password or a QR code. "Legacy Sign-in" is the fallback for anyone who\'d rather not enter Steam credentials into SGI - it requires the Steam client to be installed, running, and already signed in.',
   },
   {
     question: 'Do I need to give SGI my username or password?',
     answer:
-      'Only if you choose "Sign in with Steam", the recommended method - your credentials are sent directly to Steam\'s own servers, the same as signing in through the official Steam client, and SGI never sees or stores your password. If you\'d rather not enter your username/password at all, use "Legacy Sign In" instead, which reads the account(s) already signed in through a running local Steam client.',
+      'Only if you choose "Steam Sign-in", the recommended method - your credentials are sent directly to Steam\'s own servers, the same as signing in through the official Steam client, and SGI never sees or stores your password. If you\'d rather not enter your username/password at all, use "Legacy Sign-in" instead, which reads the account(s) already signed in through a running local Steam client.',
   },
   {
     question: 'What makes SGI different from other tools?',
@@ -26,7 +26,7 @@ const faqData = [
   {
     question: 'Which operating systems are supported?',
     answer:
-      'SGI runs on Windows (10 and 11) and Linux (via .deb, .rpm, or AppImage). On Linux, SGI supports "Sign in with Steam" only — Legacy Sign In (which needs a local Steam client) is Windows-only. macOS is not supported.',
+      'SGI runs on Windows (10 and 11) and Linux (via .deb, .rpm, or AppImage). On Linux, SGI supports "Steam Sign-in" only — Legacy Sign-in (which needs a local Steam client) is Windows-only. macOS is not supported.',
   },
   {
     question: 'Are automation tools safe to use?',

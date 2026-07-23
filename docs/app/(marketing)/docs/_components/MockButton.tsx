@@ -72,7 +72,7 @@ type ButtonType =
   | 'checkbox'
   | 'import-timings'
   | 'sell-dupes'
-  | 'sign-in-with-steam'
+  | 'steam-sign-in'
   | 'legacy-sign-in'
   | 'qr-sign-in'
   | 'continue'
@@ -312,16 +312,16 @@ export default function MockButton({ type, content }: MockButtonProps) {
         <TbCopy fontSize={16} className='inline' /> Sell Dupes
       </span>
     )
-  } else if (type === 'sign-in-with-steam') {
+  } else if (type === 'steam-sign-in') {
     return (
       <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
-        <FaSteam fontSize={16} className='inline' /> Sign in with Steam
+        <FaSteam fontSize={16} className='inline' /> Steam Sign-in
       </span>
     )
   } else if (type === 'legacy-sign-in') {
     return (
       <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
-        <TbLogin2 fontSize={16} className='inline' /> Legacy sign in
+        <TbLogin2 fontSize={16} className='inline' /> Legacy Sign-in
       </span>
     )
   } else if (type === 'qr-sign-in') {

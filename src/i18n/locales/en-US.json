@@ -276,8 +276,8 @@
   "auth": {
     "landing": {
       "title": "Sign in to Steam Game Idler",
-      "agentButton": "Sign in with Steam",
-      "localButton": "Legacy sign in",
+      "agentButton": "Steam Sign-in",
+      "localButton": "Legacy Sign-in",
       "localAlreadySignedIn": "A local Steam client account is already signed in — only one can be signed in at a time.",
       "acknowledge": "By continuing, you agree to the <0>Terms of Service</0> and acknowledge that you have read our <1>Privacy Policy</1>."
     },
@@ -371,7 +371,7 @@
           "modalTitle": "Signed in on another device",
           "modalDescription": "{{account}} was signed in on another device, so its automation has been paused. Sign in again to continue.",
           "reconnect": "Reconnect",
-          "methodExplainer": "Sign in with Steam only allows one active session per account. If you'd like to keep playing games while Steam Game Idler runs, use Legacy sign in instead.",
+          "methodExplainer": "Steam Sign-in only allows one active session per account. If you'd like to keep playing games while Steam Game Idler runs, use Legacy Sign-in instead.",
           "useDifferentMethod": "Use a different sign-in method"
         }
       },

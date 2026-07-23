@@ -22,13 +22,13 @@ This page covers common issues and their solutions when using Steam Game Idler.
     ### Check System Requirements
     - Windows 10/11 or Linux (64-bit)
     - Internet connection
-    - Steam client installed and running (only required if you use [Legacy Sign In](/docs/get-started/how-to-sign-in#legacy-sign-in), which is Windows-only — Linux supports Sign in with Steam only)
+    - Steam client installed and running (only required if you use [Legacy Sign-in](/docs/get-started/how-to-sign-in#legacy-sign-in), which is Windows-only — Linux supports Steam Sign-in only)
   </Step>
 
   <Step>
     ### Verify Your Sign-In
-    - If using [Sign in with Steam](/docs/get-started/how-to-sign-in#sign-in-with-steam), make sure you completed any Steam Guard prompt fully
-    - If using [Legacy Sign In](/docs/get-started/how-to-sign-in#legacy-sign-in), make sure the Steam client is running and you're signed in to at least one account
+    - If using [Steam Sign-in](/docs/get-started/how-to-sign-in#steam-sign-in), make sure you completed any Steam Guard prompt fully
+    - If using [Legacy Sign-in](/docs/get-started/how-to-sign-in#legacy-sign-in), make sure the Steam client is running and you're signed in to at least one account
     - Your Steam profile is set to public (required for some features regardless of sign-in method)
   </Step>
 
@@ -52,7 +52,7 @@ This page covers common issues and their solutions when using Steam Game Idler.
   </Accordion>
 
   <Accordion title="Antivirus or Windows Defender is blocking SGI" id="antivirus-blocking">
-    SGI's installer and its bundled helper process (`SteamUtility.exe`, used for idling, achievement management, and Sign in with Steam) are not code-signed with a paid certificate, so Windows SmartScreen and some antivirus programs may flag them as "unknown publisher" or quarantine them. This is a false positive.
+    SGI's installer and its bundled helper process (`SteamUtility.exe`, used for idling, achievement management, and Steam Sign-in) are not code-signed with a paid certificate, so Windows SmartScreen and some antivirus programs may flag them as "unknown publisher" or quarantine them. This is a false positive.
 
     <Steps>
       <Step>
@@ -152,7 +152,7 @@ This page covers common issues and their solutions when using Steam Game Idler.
 ## Sign-In Issues
 
 <Accordions type="multiple">
-  <Accordion title="'Sign in with Steam' fails or gets stuck" id="agent-signin-stuck">
+  <Accordion title="'Steam Sign-in' fails or gets stuck" id="agent-signin-stuck">
     - Make sure you have an active internet connection
     - Double check your username and password. If you're not sure, try signing in on [steamcommunity.com](https://steamcommunity.com/) directly first
     - If using the QR code, make sure you scanned it with the **Steam** mobile app's own QR scanner (top-right icon), not a generic QR app, and approve the prompt on your phone
@@ -160,20 +160,20 @@ This page covers common issues and their solutions when using Steam Game Idler.
     - Close the sign-in window and try again. It can occasionally get stuck on a stale attempt
   </Accordion>
 
-  <Accordion title="No Steam accounts show up on the Legacy Sign In screen" id="no-accounts">
-    Legacy Sign In reads your locally saved Steam logins to populate the account picker.
+  <Accordion title="No Steam accounts show up on the Legacy Sign-in screen" id="no-accounts">
+    Legacy Sign-in reads your locally saved Steam logins to populate the account picker.
 
     - Make sure the Steam client is installed and that you've logged in to your account(s) through Steam at least once
     - Open Steam and sign in normally, then restart SGI
     - If you use **Steam Guard**, complete the login fully (don't cancel at the 2FA prompt) before switching to SGI
-    - If you'd rather not deal with the local Steam client at all, use [Sign in with Steam](/docs/get-started/how-to-sign-in#sign-in-with-steam) instead
+    - If you'd rather not deal with the local Steam client at all, use [Steam Sign-in](/docs/get-started/how-to-sign-in#steam-sign-in) instead
   </Accordion>
 
   <Accordion title="A 'Steam is closed' warning appears while using SGI" id="steam-closed-warning">
-    This only affects **Legacy Sign In** accounts, which depend on the local Steam client staying open and signed in. If Steam closes, is restarted, or you sign out of it while SGI is running, any active idling/farming/unlocking for that account is stopped and this warning appears until Steam is running and signed in again.
+    This only affects **Legacy Sign-in** accounts, which depend on the local Steam client staying open and signed in. If Steam closes, is restarted, or you sign out of it while SGI is running, any active idling/farming/unlocking for that account is stopped and this warning appears until Steam is running and signed in again.
 
     - Reopen the Steam client and make sure you're signed in to the same account
-    - This doesn't affect accounts signed in with [Sign in with Steam](/docs/get-started/how-to-sign-in#sign-in-with-steam), since they don't need a local Steam client at all
+    - This doesn't affect [Steam Sign-in](/docs/get-started/how-to-sign-in#steam-sign-in) accounts, since they don't need a local Steam client at all
   </Accordion>
 
   <Accordion title="Signed in, but my games list is empty or incomplete" id="empty-games-list">
@@ -187,7 +187,7 @@ This page covers common issues and their solutions when using Steam Game Idler.
 
 <Accordions type="multiple">
   <Accordion title="A game won't start idling" id="idle-wont-start">
-    - If using **Legacy Sign In**, make sure the Steam client is running and you're signed in to the same account you're using in SGI
+    - If using **Legacy Sign-in**, make sure the Steam client is running and you're signed in to the same account you're using in SGI
     - Make sure the game is actually owned on this account. SGI can't idle games you don't own
     - Check the log file (<MockButton type='view-log-file' /> in [Debug Settings](/docs/settings/debug)) for a "Failed to start idling" message
     - If you recently reinstalled SGI, make sure `SteamUtility.exe` wasn't removed by your antivirus (see [Antivirus or Windows Defender is blocking SGI](#antivirus-blocking))
@@ -197,12 +197,12 @@ This page covers common issues and their solutions when using Steam Game Idler.
   <Accordion title="A game shows as idling in SGI but Steam doesn't show it as 'Currently in game'" id="idle-not-reflected">
     - Give it a minute, since there's a short delay before Steam's status updates
     - Make sure Steam itself is online (not in **Offline Mode**), as idling relies on Steam's servers being reachable
-    - If using **Legacy Sign In**, restarting Steam (not SGI) while a game is idling can desync the status. Stop and restart idling for that game
+    - If using **Legacy Sign-in**, restarting Steam (not SGI) while a game is idling can desync the status. Stop and restart idling for that game
   </Accordion>
 
   <Accordion title="Idling stops by itself" id="idle-stops">
     - Make sure your PC isn't going to sleep. Adjust Windows power settings so it stays awake while idling
-    - If using **Legacy Sign In**, Steam will stop "in-game" status if you launch the same game manually, or if Steam restarts/updates in the background
+    - If using **Legacy Sign-in**, Steam will stop "in-game" status if you launch the same game manually, or if Steam restarts/updates in the background
     - Check the log file for errors around the time idling stopped
   </Accordion>
 
@@ -222,7 +222,7 @@ This page covers common issues and their solutions when using Steam Game Idler.
     Card Farming and Inventory Manager rely on [Steam Credentials](/docs/steam-credentials), Steam Community session cookies which are separate from your SGI sign-in and expire periodically.
 
     - Go to **Settings → Steam Credentials** and re-authenticate (see the [Steam Credentials](/docs/steam-credentials) guide)
-    - If you're on a **Gamer** tier account signed in with Steam, this normally happens automatically. Check that your subscription is still active
+    - If you're on a **Gamer** tier account using **Steam Sign-in**, this normally happens automatically. Check that your subscription is still active
     - If you use **Family View** or have a **Steam Guard Mobile Authenticator**, make sure you complete the full login (these accounts often need the additional `steamMachineAuth` cookie)
     - Session cookies typically last a few hours to a few weeks. If farming worked before and suddenly stops with login errors, this is the most common cause
   </Accordion>
@@ -247,11 +247,11 @@ This page covers common issues and their solutions when using Steam Game Idler.
   <Accordion title="Achievements list is empty or won't load" id="achievements-empty">
     - Make sure the game actually has achievements (some games genuinely have none)
     - Try toggling the **refresh/refetch** option for that game to force SGI to re-fetch the achievement schema from Steam
-    - If using **Legacy Sign In**, make sure the Steam client is running and online
+    - If using **Legacy Sign-in**, make sure the Steam client is running and online
   </Accordion>
 
   <Accordion title="Unlocking, locking, or toggling an achievement fails" id="achievement-toggle-fails">
-    - If using **Legacy Sign In**, make sure the Steam client is running and you're signed in to the matching account
+    - If using **Legacy Sign-in**, make sure the Steam client is running and you're signed in to the matching account
     - Make sure the game isn't currently being idled by another tool, or already running through Steam itself, which can conflict with `SteamUtility.exe`
     - Check the log file for a specific error
     - Some games use **Family Sharing** or third-party anti-cheat that blocks stat writes. These games generally can't be modified
@@ -319,14 +319,14 @@ This page covers common issues and their solutions when using Steam Game Idler.
 
 <Accordions type="multiple">
   <Accordion title="SGI is using high CPU or memory" id="high-cpu-memory">
-    - If using **Legacy Sign In**, idling many games simultaneously spawns a separate helper process per game. This is normal, but idling a very large number of games at once will increase resource usage. Accounts signed in with Steam idle through one shared session instead, which uses noticeably less
+    - If using **Legacy Sign-in**, idling many games simultaneously spawns a separate helper process per game. This is normal, but idling a very large number of games at once will increase resource usage. **Steam Sign-in** accounts idle through one shared session instead, which uses noticeably less
     - Check **Task Manager** to confirm whether the usage comes from `steam-game-idler.exe`, `SteamUtility.exe` or `webview2.exe` processes
     - Update to the latest version, as performance fixes are released regularly. See the [Changelog](/changelog)
   </Accordion>
 
   <Accordion title="SGI feels slow or unresponsive" id="sgi-slow">
     - A large Steam library (thousands of games) can make initial loading slower. Give it a moment on first launch after sign-in
-    - Running several accounts signed in with Steam at once (see [Multi-Account](/docs/get-started/multi-account)) uses more memory and network than a single account. Reduce the number of concurrently signed-in accounts if resources are tight
+    - Running several **Steam Sign-in** accounts at once (see [Multi-Account](/docs/get-started/multi-account)) uses more memory and network than a single account. Reduce the number of concurrently signed-in accounts if resources are tight
     - Check the log file ([Debug Settings](/docs/settings/debug)) for repeated errors that may indicate a stuck background task
   </Accordion>
 </Accordions>
@@ -369,7 +369,7 @@ If these troubleshooting steps don't solve your issue:
    - Detailed description of the problem
    - Steps to reproduce
    - Your system information (OS/version, Steam version)
-   - Which sign-in method you're using (Sign in with Steam or Legacy Sign In)
+   - Which sign-in method you're using (Steam Sign-in or Legacy Sign-in)
    - Relevant log file excerpts
    - Screenshots if applicable
 

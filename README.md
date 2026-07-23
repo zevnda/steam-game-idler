@@ -24,7 +24,7 @@ See how it stacks up against other software, such as **[ArchiSteamFarm](https://
     * **Windows (installer)**: Run the installer and follow the steps
     * **Windows (portable)**: Extract the contents of the `.zip` file and run `Steam Game Idler.exe`
     * **Linux**: See the **[linux install guide](https://steamgameidler.com/docs/get-started/install#linux)** for the full steps
-2. Choose between **[Steam Sign-in](https://steamgameidler.com/docs/get-started/how-to-sign-in#sign-in-with-steam)** or **[Legacy Sign-in](https://steamgameidler.com/docs/get-started/how-to-sign-in#legacy-sign-in)** mode
+2. Choose between **[Steam Sign-in](https://steamgameidler.com/docs/get-started/how-to-sign-in#steam-sign-in)** or **[Legacy Sign-in](https://steamgameidler.com/docs/get-started/how-to-sign-in#legacy-sign-in)** mode
 3. Start idling!
 
 Or if you prefer, you can **[build it yourself](https://steamgameidler.com/docs/get-started/build-it-yourself)** on either platform.

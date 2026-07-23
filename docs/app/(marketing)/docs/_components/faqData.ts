@@ -65,13 +65,13 @@ export const faqData = [
       '**Can I get banned for using a Steam idler or achievement unlocker?**\n' +
       '> No. Steam idlers and achievement unlockers have been around for 10+ years with no valid reports of people getting banned.\n' +
       '>\n' +
-      "> SGI interacts with Steam through Valve's official Steamworks SDK ([Legacy Sign In](/docs/get-started/how-to-sign-in#legacy-sign-in)) or the same protocol the official Steam apps use ([Sign in with Steam](/docs/get-started/how-to-sign-in#sign-in-with-steam)) — either way, just like normal gaming activity.",
+      "> SGI interacts with Steam through Valve's official Steamworks SDK ([Legacy Sign-in](/docs/get-started/how-to-sign-in#legacy-sign-in)) or the same protocol the official Steam apps use ([Steam Sign-in](/docs/get-started/how-to-sign-in#steam-sign-in)) — either way, just like normal gaming activity.",
   },
   {
-    question: "What's the difference between 'Sign in with Steam' and 'Legacy Sign In'?",
+    question: "What's the difference between 'Steam Sign-in' and 'Legacy Sign-in'?",
     markdown:
-      "**What's the difference between 'Sign in with Steam' and 'Legacy Sign In'?**\n" +
-      '> See the full breakdown on the [How to Sign In](/docs/get-started/how-to-sign-in) page. In short: **Sign in with Steam** is the recommended method and needs no local Steam client, while **Legacy Sign In** requires the Steam client to be installed, running, and signed in.',
+      "**What's the difference between 'Steam Sign-in' and 'Legacy Sign-in'?**\n" +
+      '> See the full breakdown on the [How to Sign In](/docs/get-started/how-to-sign-in) page. In short: **Steam Sign-in** is the recommended method and needs no local Steam client, while **Legacy Sign-in** requires the Steam client to be installed, running, and signed in.',
   },
   {
     question: 'Is it possible to run SGI in sleep/hibernation mode?',
@@ -128,16 +128,16 @@ export const faqData = [
     markdown:
       '**Why am I unable to idle some games?**\n' +
       '> There could be several reasons why you are unable to idle certain games:\n' +
-      '> * If using [Legacy Sign In](/docs/get-started/how-to-sign-in#legacy-sign-in), the Steam client may not be running, or you may not be signed in to the correct account\n' +
+      '> * If using [Legacy Sign-in](/docs/get-started/how-to-sign-in#legacy-sign-in), the Steam client may not be running, or you may not be signed in to the correct account\n' +
       '> * Another person may be currently playing the game on your account\n' +
       '> * You may not own the game on your account\n' +
       '> * The game may be [marked as private](https://help.steampowered.com/en/faqs/view/1150-C06F-4D62-4966) on your Steam profile\n' +
       '> * Some demos and playtests may not show up correctly in SGI, or be able to be idled\n' +
       '> * Some games may have restrictions that prevent them from being idled, such as region locks or account bans\n' +
       '> * Some games may have their own third-party launcher that needs to be used to launch the game instead of the Steam client (EA, Ubisoft, etc.)\n' +
-      "> * [Game Coordinator titles](/docs/get-started/how-to-sign-in#whats-different-between-the-two) (TF2, Dota 2, CS2, Left 4 Dead 2, Portal 2) don't idle correctly when signed in with Steam — use Legacy Sign In for these\n" +
+      "> * [Game Coordinator titles](/docs/get-started/how-to-sign-in#whats-different-between-the-two) (TF2, Dota 2, CS2, Left 4 Dead 2, Portal 2) don't idle correctly with Steam Sign-in — use Legacy Sign-in for these\n" +
       '>\n' +
-      '> If using Legacy Sign In, sometimes running SGI as an administrator can help resolve some issues with idling certain games.',
+      '> If using Legacy Sign-in, sometimes running SGI as an administrator can help resolve some issues with idling certain games.',
   },
   {
     question: 'Why is my playtime not increasing on Steam when using SGI?',
@@ -150,9 +150,9 @@ export const faqData = [
       '> Some users have reported that simply closing the Steam client completely, or signing out and then back in can fix this inconsistency. And sometimes it resolves on its own after a few hours.\n' +
       '>\n' +
       '> While this is generally always a Steam server issue, there are some things that can affect playtime being tracked correctly:\n' +
-      '> * If using Legacy Sign In, the Steam client may have been closed while idling, or you may not be signed in to the correct account\n' +
+      '> * If using Legacy Sign-in, the Steam client may have been closed while idling, or you may not be signed in to the correct account\n' +
       '> * You were disconnected from the internet while idling and only playtime before the disconnection was recorded\n' +
-      "> * The game didn't exit properly when stopping idling. Try restarting SGI (and the Steam client, if using Legacy Sign In) to resolve this issue",
+      "> * The game didn't exit properly when stopping idling. Try restarting SGI (and the Steam client, if using Legacy Sign-in) to resolve this issue",
   },
   {
     question: 'Can I use SGI to idle in-game items or join game servers?',
@@ -222,15 +222,15 @@ export const faqData = [
     question: 'Steam is not running',
     markdown:
       '**Steam is not running**\n' +
-      '> This only affects accounts using [Legacy Sign In](/docs/get-started/how-to-sign-in#legacy-sign-in) — this method requires the Steam client to be running, and you must be signed in to the same account you are currently signed in to SGI with.\n' +
+      '> This only affects accounts using [Legacy Sign-in](/docs/get-started/how-to-sign-in#legacy-sign-in) — this method requires the Steam client to be running, and you must be signed in to the same account you are currently signed in to SGI with.\n' +
       '>\n' +
-      "> If you'd rather not depend on the Steam client at all, switch to [Sign in with Steam](/docs/get-started/how-to-sign-in#sign-in-with-steam) instead.",
+      "> If you'd rather not depend on the Steam client at all, switch to [Steam Sign-in](/docs/get-started/how-to-sign-in#steam-sign-in) instead.",
   },
   {
     question: 'No Steam users found',
     markdown:
       '**No Steam users found**\n' +
-      '> This error only appears when using [Legacy Sign In](/docs/get-started/how-to-sign-in#legacy-sign-in):\n' +
+      '> This error only appears when using [Legacy Sign-in](/docs/get-started/how-to-sign-in#legacy-sign-in):\n' +
       '> * The Steam client needs to be installed\n' +
       '> * You need to be signed in to at least one Steam account in the Steam client\n' +
       '> * SGI failed to find the install directory for Steam. Try reinstalling Steam in its default location `C:\\Program Files (x86)\\Steam`\n' +
@@ -242,7 +242,7 @@ export const faqData = [
       '> 4. If the value is not set to the correct path of your Steam installation, you can manually set it by right-clicking on `SteamPath`, selecting `Modify`, and entering the correct path (e.g., `c:/program files (x86)/steam`)\n' +
       '> 5. Close the Registry Editor and restart SGI\n' +
       '>\n' +
-      '> Alternatively, use [Sign in with Steam](/docs/get-started/how-to-sign-in#sign-in-with-steam) to skip this requirement entirely.',
+      '> Alternatively, use [Steam Sign-in](/docs/get-started/how-to-sign-in#steam-sign-in) to skip this requirement entirely.',
   },
   {
     question: 'There are no games in your queue',
@@ -256,7 +256,7 @@ export const faqData = [
       '**Account mismatch between Steam and SGI**\n' +
       '> This error can be thrown for a few reasons. The most common one is:\n' +
       '>\n' +
-      '> * If using [Legacy Sign In](/docs/get-started/how-to-sign-in#legacy-sign-in), you are logged in to the Steam client with a different account than you are using in SGI. This method requires you to be logged in to the same account in both the Steam client and SGI\n' +
+      '> * If using [Legacy Sign-in](/docs/get-started/how-to-sign-in#legacy-sign-in), you are logged in to the Steam client with a different account than you are using in SGI. This method requires you to be logged in to the same account in both the Steam client and SGI\n' +
       '>\n' +
       '> If you confirm that you are logged in to the same account in both SGI and the Steam client and the error message persists, please report the issue on the [GitHub Issues page](https://github.com/zevnda/steam-game-idler/issues).',
   },
@@ -273,7 +273,7 @@ export const faqData = [
     question: 'Missing Steam Credentials',
     markdown:
       '**Missing Steam Credentials**\n' +
-      '> SGI requires [Steam Credentials](/docs/steam-credentials) for the account you plan to farm cards or manage inventory on, to check card drops and access the Steam marketplace. If you [signed in with Steam](/docs/get-started/how-to-sign-in#sign-in-with-steam) on a Gamer tier account this is handled automatically — otherwise, read the [Steam Credentials](/docs/steam-credentials) page for how to add them.',
+      '> SGI requires [Steam Credentials](/docs/steam-credentials) for the account you plan to farm cards or manage inventory on, to check card drops and access the Steam marketplace. If you used [Steam Sign-in](/docs/get-started/how-to-sign-in#steam-sign-in) on a Gamer tier account this is handled automatically — otherwise, read the [Steam Credentials](/docs/steam-credentials) page for how to add them.',
   },
   {
     question: 'Steam Credentials need to be updated',

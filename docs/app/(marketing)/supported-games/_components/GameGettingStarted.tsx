@@ -7,8 +7,8 @@ import { useGlobalStore } from '@/app/lib/globalStore'
 
 export default function GameGettingStarted({ game }: { game: GameData }) {
   const selectedOS = useGlobalStore(state => state.selectedOS)
-  // Game Coordinator titles (TF2, Dota 2, CS2, Left 4 Dead 2, Portal 2) require Legacy Sign In,
-  // which needs a real local Steam client - Linux has no Legacy Sign In at all (agent-mode only),
+  // Game Coordinator titles (TF2, Dota 2, CS2, Left 4 Dead 2, Portal 2) require Legacy Sign-in,
+  // which needs a real local Steam client - Linux has no Legacy Sign-in at all (agent-mode only),
   // so these 5 games genuinely can't be idled on Linux, not just "use the other sign-in method."
   const gcUnsupportedOnLinux = game.gcTitle && selectedOS === 'linux'
 
@@ -24,12 +24,12 @@ export default function GameGettingStarted({ game }: { game: GameData }) {
       title: gcUnsupportedOnLinux
         ? 'Not supported on Linux'
         : game.gcTitle
-          ? 'Sign in with Legacy Sign In'
+          ? 'Sign in with Legacy Sign-in'
           : 'Sign in with Agent Mode',
       description: gcUnsupportedOnLinux
-        ? `${game.name} requires Legacy Sign In (a local Steam client), which isn't available on Linux.`
+        ? `${game.name} requires Legacy Sign-in (a local Steam client), which isn't available on Linux.`
         : game.gcTitle
-          ? `${game.name} needs a real local Steam client, so use Legacy Sign In for this one.`
+          ? `${game.name} needs a real local Steam client, so use Legacy Sign-in for this one.`
           : 'Sign in with your Steam username and password - no local Steam client required.',
     },
     {

@@ -17,7 +17,7 @@ export interface GameData {
   summary: string[]
   highlights: GameHighlight[]
   // Valve's Game Coordinator titles - per src-tauri, these aren't reachable via the SteamKit2
-  // daemon (agent mode) at all, only via a real local Steam client (CLI/"Legacy Sign In" mode).
+  // daemon (agent mode) at all, only via a real local Steam client (CLI/"Legacy Sign-in" mode).
   // Worth calling out on these pages since it's a genuine, user-relevant capability difference.
   gcTitle?: boolean
   // Tri-state: `true` for games confirmed to have a Steam trading card badge, `false` for the
@@ -71,7 +71,7 @@ export const GAMES: GameData[] = [
       {
         question: 'Can I idle CS2 while signed in with Agent Mode?',
         answer:
-          "Not currently. CS2 is one of a handful of Valve Game Coordinator titles that only work through Steam Game Idler's Legacy Sign In (CLI) method, which needs a real Steam client running locally. Agent Mode can't reach CS2's Game Coordinator.",
+          "Not currently. CS2 is one of a handful of Valve Game Coordinator titles that only work through Steam Game Idler's Legacy Sign-in (CLI) method, which needs a real Steam client running locally. Agent Mode can't reach CS2's Game Coordinator.",
       },
       {
         question: 'Are there Steam achievements for CS2?',
@@ -122,7 +122,7 @@ export const GAMES: GameData[] = [
       {
         question: 'Does Dota 2 work with Agent Mode sign-in?',
         answer:
-          "No - Dota 2 is a Game Coordinator title, so idling it requires Steam Game Idler's Legacy Sign In (CLI) method with a real local Steam client, not Agent Mode.",
+          "No - Dota 2 is a Game Coordinator title, so idling it requires Steam Game Idler's Legacy Sign-in (CLI) method with a real local Steam client, not Agent Mode.",
       },
     ],
   },
@@ -165,9 +165,9 @@ export const GAMES: GameData[] = [
           "No - TF2 predates the Steam trading card system and was never retrofitted with a badge, so Card Farming won't apply here.",
       },
       {
-        question: 'Why does TF2 need Legacy Sign In instead of Agent Mode?',
+        question: 'Why does TF2 need Legacy Sign-in instead of Agent Mode?',
         answer:
-          'TF2 is a Game Coordinator title. Its achievement and item systems only respond to requests routed through a real local Steam client, which is what Legacy Sign In (CLI mode) provides.',
+          'TF2 is a Game Coordinator title. Its achievement and item systems only respond to requests routed through a real local Steam client, which is what Legacy Sign-in (CLI mode) provides.',
       },
     ],
   },
@@ -207,7 +207,7 @@ export const GAMES: GameData[] = [
       {
         question: 'Do I need PUBG installed to idle it?',
         answer:
-          "With Legacy Sign In (CLI mode) you need a local Steam client running with the game in your library, though it doesn't need to actually launch. Agent Mode idling doesn't require a local install at all.",
+          "With Legacy Sign-in (CLI mode) you need a local Steam client running with the game in your library, though it doesn't need to actually launch. Agent Mode idling doesn't require a local install at all.",
       },
       {
         question: 'Will idling PUBG affect my in-game stats or ban status?',
@@ -302,7 +302,7 @@ export const GAMES: GameData[] = [
       {
         question: 'Does Rust support Agent Mode idling?',
         answer:
-          "Yes - Rust isn't a Game Coordinator title, so it works through both Agent Mode and Legacy Sign In (CLI) without restriction.",
+          "Yes - Rust isn't a Game Coordinator title, so it works through both Agent Mode and Legacy Sign-in (CLI) without restriction.",
       },
     ],
   },
@@ -359,7 +359,7 @@ export const GAMES: GameData[] = [
     tagline: 'Idle L4D2 for its trading cards and work through its achievement list',
     summary: [
       'Left 4 Dead 2 carries both a Steam trading card badge and a real achievement list (including some genuinely difficult campaign-completion ones), which makes it a solid fit for idling toward the easier playtime-based unlocks while you decide whether to tackle the harder ones yourself.',
-      "Unlike Dota 2, TF2, and CS2, L4D2's Steam-facing systems are reachable a little differently under the hood - it's still a Game Coordinator title, so it needs Legacy Sign In rather than Agent Mode.",
+      "Unlike Dota 2, TF2, and CS2, L4D2's Steam-facing systems are reachable a little differently under the hood - it's still a Game Coordinator title, so it needs Legacy Sign-in rather than Agent Mode.",
     ],
     highlights: [
       {
@@ -385,9 +385,9 @@ export const GAMES: GameData[] = [
           "Yes - L4D2 has a standard Steam trading card badge, unlike some of Valve's other multiplayer titles.",
       },
       {
-        question: 'Why does L4D2 need Legacy Sign In?',
+        question: 'Why does L4D2 need Legacy Sign-in?',
         answer:
-          "L4D2 is one of Valve's Game Coordinator titles, so its achievement and idling data only respond to requests from a real local Steam client - that's what Legacy Sign In (CLI mode) provides.",
+          "L4D2 is one of Valve's Game Coordinator titles, so its achievement and idling data only respond to requests from a real local Steam client - that's what Legacy Sign-in (CLI mode) provides.",
       },
       {
         question: 'Can Achievement Unlocker complete every L4D2 achievement automatically?',
@@ -404,7 +404,7 @@ export const GAMES: GameData[] = [
     tagline: 'Idle Portal 2 for its trading cards while you work through its puzzles',
     summary: [
       "Portal 2's achievement list is mostly tied to specific puzzle solutions and co-op moments, so it's better suited to actually playing than idling - but its Steam trading card badge is exactly the kind of thing worth farming passively in the background.",
-      'Like TF2, Dota 2, CS2, and L4D2, Portal 2 is a Game Coordinator title, so idling it requires Legacy Sign In (CLI mode) with a real local Steam client rather than Agent Mode.',
+      'Like TF2, Dota 2, CS2, and L4D2, Portal 2 is a Game Coordinator title, so idling it requires Legacy Sign-in (CLI mode) with a real local Steam client rather than Agent Mode.',
     ],
     highlights: [
       {
@@ -437,7 +437,7 @@ export const GAMES: GameData[] = [
       {
         question: 'Why is Portal 2 grouped with CS2 and TF2 as a special case?',
         answer:
-          'All five (CS2, Dota 2, TF2, L4D2, Portal 2) are Valve Game Coordinator titles, meaning they need a real local Steam client (Legacy Sign In) rather than Agent Mode to idle.',
+          'All five (CS2, Dota 2, TF2, L4D2, Portal 2) are Valve Game Coordinator titles, meaning they need a real local Steam client (Legacy Sign-in) rather than Agent Mode to idle.',
       },
     ],
   },
@@ -523,7 +523,7 @@ export const GAMES: GameData[] = [
       {
         question: 'Does Stardew Valley need a local Steam client to idle?',
         answer:
-          "No - it isn't a Game Coordinator title, so it works through both Agent Mode and Legacy Sign In.",
+          "No - it isn't a Game Coordinator title, so it works through both Agent Mode and Legacy Sign-in.",
       },
     ],
   },
@@ -610,7 +610,7 @@ export const GAMES: GameData[] = [
       {
         question: 'Does Valheim work with Agent Mode?',
         answer:
-          "Yes - Valheim isn't a Game Coordinator title, so both Agent Mode and Legacy Sign In work without restriction.",
+          "Yes - Valheim isn't a Game Coordinator title, so both Agent Mode and Legacy Sign-in work without restriction.",
       },
     ],
   },
@@ -653,7 +653,7 @@ export const GAMES: GameData[] = [
       {
         question: 'Is Sea of Thieves a Game Coordinator title?',
         answer:
-          'No - it idles the same as any standard Steam game, through either Agent Mode or Legacy Sign In.',
+          'No - it idles the same as any standard Steam game, through either Agent Mode or Legacy Sign-in.',
       },
     ],
   },
@@ -825,7 +825,7 @@ export const GAMES: GameData[] = [
       {
         question: 'Does Dead by Daylight need a local Steam client to idle?',
         answer:
-          "No - it isn't a Game Coordinator title, so it idles through both Agent Mode and Legacy Sign In.",
+          "No - it isn't a Game Coordinator title, so it idles through both Agent Mode and Legacy Sign-in.",
       },
     ],
   },

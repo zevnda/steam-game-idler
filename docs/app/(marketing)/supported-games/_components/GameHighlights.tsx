@@ -29,7 +29,7 @@ export default function GameHighlights({ game }: { game: GameData }) {
                 href='/docs/get-started/how-to-sign-in'
                 className='text-accent hover:opacity-80 transition-opacity duration-150'
               >
-                Legacy Sign In
+                Legacy Sign-in
               </Link>{' '}
               with a real local Steam client - Agent Mode can&apos;t reach its Game Coordinator.
             </p>
