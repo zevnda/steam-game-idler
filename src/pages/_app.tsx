@@ -6,6 +6,7 @@ import { ChangelogModal } from '@/shared/components/ChangelogModal'
 import { DashboardShell } from '@/shared/components/dashboard/DashboardShell'
 import { ErrorBoundary } from '@/shared/components/ErrorBoundary'
 import { FullscreenLoader } from '@/shared/components/FullscreenLoader'
+import { LinuxResizeHandles } from '@/shared/components/LinuxResizeHandles'
 import { GoProModal } from '@/shared/components/pro/GoProModal'
 import { Titlebar } from '@/shared/components/titlebar/Titlebar'
 import { UpdateLoader } from '@/shared/components/UpdateLoader'
@@ -79,6 +80,7 @@ const App = ({ Component, pageProps }: AppProps) => {
     // the routed page) stays skipped - none of it is meaningful mid-update.
     return (
       <>
+        <LinuxResizeHandles />
         <Titlebar minimal />
         <UpdateLoader />
       </>
@@ -109,6 +111,7 @@ const App = ({ Component, pageProps }: AppProps) => {
           `toast.*` singleton (imported directly wherever a toast is fired) works from anywhere
           once this is mounted once; no context/provider prop-drilling needed. */}
       <Toast.Provider />
+      <LinuxResizeHandles />
       <Titlebar minimal={bootstrapPhase === 'checking'} />
       <ChangelogModal />
       <GoProModal />
