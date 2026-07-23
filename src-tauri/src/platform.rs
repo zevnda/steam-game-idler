@@ -50,8 +50,17 @@ pub fn is_dev() -> bool {
 /// since Tauri's Linux updater replaces the running AppImage file in place - not possible for a
 /// deb/rpm install, whose binary lives in `/usr/bin`, owned by the system package manager.
 /// Detected via the `APPIMAGE` env var, which every AppImage runtime sets unconditionally.
+/// Always `false` in debug builds first, same as `is_portable()` - a `pnpm tauri dev` session
+/// must never walk into `performUpdate`'s downloadAndInstall/relaunch over itself. Checked
+/// explicitly rather than delegated to `!is_portable()`/an `APPIMAGE` check, since both of those
+/// resolve to values that would otherwise let a dev build through (`is_portable()` itself is
+/// `false` in debug builds, and `APPIMAGE` may happen to be set on a dev machine).
 #[tauri::command]
 pub fn can_auto_update() -> bool {
+    if cfg!(debug_assertions) {
+        return false;
+    }
+
     #[cfg(windows)]
     {
         !is_portable()
@@ -59,7 +68,7 @@ pub fn can_auto_update() -> bool {
 
     #[cfg(not(windows))]
     {
-        cfg!(debug_assertions) || std::env::var_os("APPIMAGE").is_some()
+        std::env::var_os("APPIMAGE").is_some()
     }
 }
 
