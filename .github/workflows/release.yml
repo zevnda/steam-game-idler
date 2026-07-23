@@ -663,15 +663,44 @@ jobs:
       contents: write # push the latest.json update to the version-bump branch; upload release assets
       actions: write # delete the dotnet-libs-linux artifact in the cleanup step
     steps:
+      # Generates a token for the same GitHub App (sgi-actions) that build_release_bundle's
+      # create-pull-request step already commits as. Without this, the later "Commit latest.json
+      # update" step falls back to actions/checkout's default GITHUB_TOKEN-based identity
+      # (github-actions[bot]) - a second, different bot committing onto the same PR that
+      # sgi-actions[bot] opened. Skipped on a dry run to match build_release_bundle's own gating -
+      # there's no branch to push to in that case anyway.
+      - uses: actions/create-github-app-token@v1
+        id: generate-token
+        if: github.event.inputs.dry_run != 'true'
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      # The GitHub-recommended way to build a GitHub App's bot commit-author email
+      # (<user-id>+<app-slug>[bot]@users.noreply.github.com) - the numeric ID isn't guessable and
+      # has to be looked up via the API using the token minted above.
+      - name: Get GitHub App user ID
+        id: get-user-id
+        if: github.event.inputs.dry_run != 'true'
+        run: echo "user-id=$(gh api "/users/${{ steps.generate-token.outputs.app-slug }}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+
       - name: Checkout version-bump branch
         # On a dry run, build_release_bundle never pushes this branch (its create-pull-request step
         # is skipped - see that job's comment), so fall back to the ref this workflow was actually
         # dispatched from. That ref still gets a real build; it just carries whatever version is
         # already committed in tauri.conf.json rather than the freshly-bumped one, which doesn't
         # matter for a dry run's purpose (proving the Linux job itself works).
+        #
+        # token: uses the app token (real run) so every git operation in this job - including the
+        # later push - authenticates as sgi-actions[bot] instead of the default GITHUB_TOKEN
+        # identity. Falls back to github.token on a dry run, matching pre-existing behavior exactly
+        # (generate-token is skipped then, so its output would otherwise be empty).
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.inputs.dry_run == 'true' && github.ref || format('version-bump-{0}-{1}', github.event.inputs.version, github.run_id) }}
+          token: ${{ github.event.inputs.dry_run == 'true' && github.token || steps.generate-token.outputs.token }}
 
       - name: Install Linux system dependencies
         # webkit2gtk/javascriptcoregtk are pinned to 2.44.3-0ubuntu0.22.04.1, the last version
@@ -909,16 +938,17 @@ jobs:
       - name: Commit latest.json update to version-bump branch
         # Appends to the same branch/PR build_release_bundle's create-pull-request step opened -
         # not a second PR. A plain git push (not create-pull-request again) is enough since the
-        # branch and PR already exist; this just needs write access to an unprotected feature
-        # branch, which the default GITHUB_TOKEN already has via this job's own contents: write.
+        # branch and PR already exist; the checkout step above already persisted the sgi-actions
+        # app token as this job's git credentials, so this push authenticates as the same bot that
+        # opened the PR rather than the job's own default GITHUB_TOKEN identity.
         # Skipped entirely on a dry run - there's no version-bump branch to push to (the checkout
         # step above fell back to github.ref instead), and pushing straight onto whatever real
         # branch that is would be exactly the kind of unwanted side effect dry_run exists to avoid.
         if: github.event.inputs.dry_run != 'true'
         run: |
           set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "${{ steps.generate-token.outputs.app-slug }}[bot]"
+          git config user.email "${{ steps.get-user-id.outputs.user-id }}+${{ steps.generate-token.outputs.app-slug }}[bot]@users.noreply.github.com"
           git add latest.json
           if git diff --cached --quiet; then
             echo "No latest.json changes to commit"
