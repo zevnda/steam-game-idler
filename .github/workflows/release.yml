@@ -167,9 +167,15 @@ jobs:
         # $ErrorActionPreference/$LASTEXITCODE check: a pwsh step's pass/fail is the wrapping
         # pwsh.exe exit code, NOT $LASTEXITCODE - a failing dotnet publish would otherwise report
         # this step green and silently carry a stale/missing SteamUtility.exe into the release.
+        # PublishSingleFile=false (deliberately, was true) - the bundled single-file exe was
+        # confirmed via side-by-side VirusTotal testing to be what SecureAge's engine flags as
+        # malicious (a self-extracting single-file .NET bundle reads as packer-like behavior to its
+        # heuristics); the plain multi-file self-contained output came back clean across several
+        # test configurations. SteamUtility.csproj's RemoveDiagnosticOnlyPublishFiles target prunes
+        # the resulting loose-file output back down close to the old single-file size.
         run: |
           $ErrorActionPreference = 'Stop'
-          dotnet publish .\libs\SteamUtility\SteamUtility.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:PublishTrimmed=true -p:DebugType=none -o .\src-tauri\libs\
+          dotnet publish .\libs\SteamUtility\SteamUtility.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=false -p:PublishTrimmed=true -p:DebugType=none -o .\src-tauri\libs\
           if ($LASTEXITCODE -ne 0) { throw "dotnet publish failed with exit code $LASTEXITCODE" }
         shell: pwsh
 
