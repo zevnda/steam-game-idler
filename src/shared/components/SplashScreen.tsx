@@ -27,7 +27,7 @@ export const SplashScreen = ({ children, className }: SplashScreenProps) => {
         loop
         muted
         playsInline
-        className='absolute inset-0 h-screen w-screen object-cover blur'
+        className='absolute inset-0 h-screen w-screen object-cover'
         src='/loader.webm'
       />
       <div className='absolute inset-0 z-10 flex flex-col items-center justify-center space-y-10'>
