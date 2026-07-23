@@ -18,7 +18,7 @@
     "@vercel/analytics": "^2.0.1",
     "fumadocs-core": "^16.9.3",
     "fumadocs-mdx": "^15.2.0",
-    "fumadocs-ui": "^16.9.3",
+    "fumadocs-ui": "^16.11.5",
     "lucide-react": "^0.563.0",
     "motion": "^12.40.0",
     "next": "^16.2.6",
