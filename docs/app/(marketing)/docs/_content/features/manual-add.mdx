@@ -1,0 +1,51 @@
+---
+title: Manual Add
+description: Learn how to manually add a game by its Steam App ID when it's delisted from the Steam store, or doesn't show up automatically.
+---
+
+import DocsCTA from '@/app/(marketing)/docs/_components/DocsCTA';
+import MockButton from '@/app/(marketing)/docs/_components/MockButton';
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+
+# Manually Add a Game by App ID
+
+Sometimes Steam or the app's developer removes a game from the Steam store entirely, and even though you still technically own it, it can no longer be found automatically. This feature is also useful for adding content like DLC, soundtracks, videos, and tools from your library that SGI doesn't automatically detect.
+
+<Callout type='info'>
+  Manual Add doesn't verify the App ID against Steam. Double check the ID is correct by using a tool like [SteamDB](https://steamdb.info/).
+</Callout>
+
+## Where It's Available
+
+The <MockButton type='manual-add' /> button appears in the header of these pages:
+
+- [Favorites](/docs/features/favorites)
+- [Card Farming](/docs/features/card-farming)
+- [Achievement Unlocker](/docs/features/achievement-unlocker)
+- [Auto-Idle](/docs/features/auto-idle)
+
+Each page adds the game to its own list only. For example, adding a game manually in Card Farming doesn't also add it to Favorites or Automatic Idler. Repeat the process on each page where you want it to appear.
+
+## Adding a Game
+
+<Steps>
+  <Step>
+    Click the <MockButton type='manual-add' /> button in the top-right of the page header
+  </Step>
+
+  <Step>
+    Enter a name for the game and its Steam App ID
+
+    You can find a game's App ID in its Steam store URL, e.g. `store.steampowered.com/app/252950` has an App ID of `252950`. If the game is no longer available on the Steam store, you can use a tool like [SteamDB](https://steamdb.info/)
+  </Step>
+
+  <Step>
+    Click <MockButton type='content' content='Add' /> to add it to the list
+  </Step>
+
+  <Step>
+    Once a game has been added, you can right-click it to bring up a menu where you can idle it, view its achievements, and easily add it to other lists
+  </Step>
+</Steps>
+
+<DocsCTA />

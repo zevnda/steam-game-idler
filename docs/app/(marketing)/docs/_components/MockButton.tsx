@@ -89,6 +89,7 @@ type ButtonType =
   | 'pay-paypal'
   | 'blacklist'
   | 'refresh'
+  | 'manual-add'
 
 interface MockButtonProps {
   type: ButtonType
@@ -453,6 +454,12 @@ export default function MockButton({ type, content }: MockButtonProps) {
     return (
       <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
         <FaStripe fontSize={20} className='inline' /> Stripe
+      </span>
+    )
+  } else if (type === 'manual-add') {
+    return (
+      <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1 h-8'>
+        <TbPlus fontSize={16} className='inline' />
       </span>
     )
   } else if (type === 'pay-paypal') {
