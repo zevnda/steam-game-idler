@@ -1,20 +1,64 @@
 'use client'
 
+import type { ComparisonFeatureRow } from '@/app/(marketing)/alternatives/_data/competitors'
 import { useRef } from 'react'
-import { FiCheck, FiX } from 'react-icons/fi'
+import { FaCheck, FaXmark } from 'react-icons/fa6'
 import { motion, useInView } from 'motion/react'
 import Link from 'next/link'
+import { COMPETITORS } from '@/app/(marketing)/alternatives/_data/competitors'
+import { FadeIn } from '@/app/lib/animations'
 import { ease } from '@/app/lib/motion'
 
-const rows = [
+type SupportValue = boolean | string
+
+interface ComparisonRow {
+  feature: string
+  sgi: SupportValue
+  asf: SupportValue
+  sam: SupportValue
+  im: SupportValue
+}
+
+function flattenFeatures(slug: string) {
+  const map = new Map<string, ComparisonFeatureRow>()
+  for (const category of COMPETITORS[slug].comparisonData) {
+    for (const feature of category.features) {
+      map.set(feature.name, feature)
+    }
+  }
+  return map
+}
+
+// Derived from the same COMPETITORS data that backs each /alternatives/[slug] page, so this table
+// can't silently drift from the detailed per-competitor comparisons. Only features present on all
+// three competitors' tables are included here - the rest is a small manually maintained list below
+// for concepts (GUI polish, setup friction, project health) that aren't modeled as per-feature rows.
+const asfFeatures = flattenFeatures('archisteamfarm')
+const imFeatures = flattenFeatures('idle-master')
+const samFeatures = flattenFeatures('steam-achievement-manager')
+
+const sharedFeatureRows: ComparisonRow[] = Array.from(asfFeatures.values())
+  // Technical-category rows (Setup Complexity, Resource Usage, etc.) share names across all three
+  // competitors too, but every tool's value there is a descriptive string, not a boolean - keep
+  // only genuinely boolean SGI-supported features so those don't collapse into a false "not
+  // supported" row for Steam Game Idler itself.
+  .filter(
+    feature =>
+      feature.steamGameIdler === true &&
+      imFeatures.has(feature.name) &&
+      samFeatures.has(feature.name),
+  )
+  .map(feature => ({
+    feature: feature.name,
+    sgi: feature.steamGameIdler,
+    asf: feature.alt,
+    im: imFeatures.get(feature.name)!.alt,
+    sam: samFeatures.get(feature.name)!.alt,
+  }))
+
+const rows: ComparisonRow[] = [
+  ...sharedFeatureRows,
   { feature: 'Modern GUI', sgi: true, asf: false, sam: false, im: false },
-  { feature: 'Trading Card Farming', sgi: true, asf: true, sam: false, im: true },
-  { feature: 'Achievement Management', sgi: true, asf: false, sam: true, im: false },
-  { feature: 'Achievement Unlocker', sgi: true, asf: false, sam: false, im: false },
-  { feature: 'Playtime Boosting', sgi: true, asf: true, sam: false, im: false },
-  { feature: 'Inventory Manager', sgi: true, asf: false, sam: false, im: false },
-  { feature: 'Marketplace Integration', sgi: true, asf: false, sam: false, im: false },
-  { feature: 'Multi-account Support', sgi: true, asf: true, sam: false, im: false },
   { feature: 'Easy Setup', sgi: true, asf: false, sam: true, im: true },
   { feature: 'Public Source Code', sgi: true, asf: true, sam: true, im: true },
   { feature: 'Active Development', sgi: true, asf: true, sam: false, im: false },
@@ -32,12 +76,45 @@ const tools = [
   { short: 'IM', full: 'Idle Master', highlight: false, href: '/alternatives/idle-master' },
 ]
 
+// Mirrors AlternativeComparisonTable's per-competitor header glow + persistent column tint, using
+// the site's general accent blue rather than a competitor-specific hue since this table isn't
+// pitted against one single tool.
+const sgiHeaderGlowGradient = 'linear-gradient(180deg, #0c4a6e 0%, #1e3a8a 100%)'
+const sgiHeaderGlowShadow = '0 0 24px 6px rgba(0, 163, 255, 0.25)'
+const sgiHeaderGlowTextColor = '#7dd3fc'
+const sgiRowTintGradient = 'linear-gradient(180deg, rgba(0,163,255,0.12), rgba(0,163,255,0.04))'
+
+// Mirrors AlternativeComparisonTable's ComparisonValue: booleans render as a check/X icon, a
+// string (e.g. ASF's "Plugin required") renders as its own text instead of collapsing to a plain
+// X, so that caveat isn't lost on the condensed home table. Sized down from the detailed
+// /alternatives page's text-sm to fit this table's much narrower 5-column layout.
+function ComparisonValue({ value, accent }: { value: SupportValue; accent?: string }) {
+  if (typeof value === 'boolean') {
+    if (!value) {
+      return <FaXmark size={16} className='text-white/15' aria-label='Not supported' />
+    }
+    return (
+      <FaCheck
+        size={16}
+        style={accent ? { color: accent } : undefined}
+        className={accent ? undefined : 'text-emerald-400'}
+        aria-label='Supported'
+      />
+    )
+  }
+  return (
+    <span
+      className={`text-[11px] font-semibold leading-tight text-center ${accent ? '' : 'text-white/70'}`}
+      style={accent ? { color: accent } : undefined}
+    >
+      {value}
+    </span>
+  )
+}
+
 export default function ComparisonSection() {
   const headerRef = useRef<HTMLElement>(null)
   const headerInView = useInView(headerRef, { once: true, margin: '-60px' })
-
-  const tableRef = useRef<HTMLDivElement>(null)
-  const tableInView = useInView(tableRef, { once: true, margin: '-60px' })
 
   return (
     <section className='py-20 sm:py-24 lg:py-32 relative' aria-labelledby='comparison-heading'>
@@ -60,50 +137,33 @@ export default function ComparisonSection() {
           </p>
         </motion.header>
 
-        <motion.div
-          ref={tableRef}
-          className='max-w-5xl mx-auto'
-          initial={{ opacity: 0, y: 32 }}
-          animate={tableInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.7, ease }}
-        >
+        <FadeIn className='max-w-5xl mx-auto'>
           {/* Mobile layout — feature name stacked above icon row */}
-          <div
-            className='sm:hidden rounded-xl overflow-hidden'
-            style={{ border: '1px solid var(--color-border)' }}
-          >
+          <div className='sm:hidden rounded-3xl overflow-hidden bg-[#101013] border border-white/5'>
             {/* Tool legend */}
             <div
-              className='grid grid-cols-4 px-4 py-3'
-              style={{
-                borderBottom: '1px solid var(--color-border)',
-                background: 'rgba(255,255,255,0.02)',
-              }}
+              className='grid grid-cols-4 px-4 py-3 border-b border-white/5'
+              style={{ background: 'rgba(255,255,255,0.03)' }}
             >
               {tools.map((tool, i) => (
                 <div
                   key={tool.short}
                   className='text-center py-1'
-                  style={
-                    i === 0
-                      ? {
-                          background: 'rgba(0,163,255,0.08)',
-                          borderBottom: '2px solid var(--color-accent)',
-                        }
-                      : {}
-                  }
+                  style={i === 0 ? { background: 'rgba(0,163,255,0.08)' } : {}}
                 >
                   {tool.href ? (
                     <Link
                       prefetch={false}
                       href={tool.href}
-                      className={`text-xs font-bold hover:opacity-70 transition-opacity duration-150 ${tool.highlight ? 'gradient-text' : 'text-text-muted'}`}
+                      className='text-xs font-bold hover:opacity-70 transition-opacity duration-150'
+                      style={i === 0 ? { color: sgiHeaderGlowTextColor } : undefined}
                     >
                       {tool.short}
                     </Link>
                   ) : (
                     <span
-                      className={`text-xs font-bold ${tool.highlight ? 'gradient-text' : 'text-text-muted'}`}
+                      className='text-xs font-bold'
+                      style={i === 0 ? { color: sgiHeaderGlowTextColor } : undefined}
                     >
                       {tool.short}
                     </span>
@@ -114,51 +174,33 @@ export default function ComparisonSection() {
 
             {/* Feature rows */}
             {rows.map((row, i) => (
-              <motion.div
+              <div
                 key={row.feature}
-                className='px-4 py-3'
-                style={{
-                  borderBottom: i < rows.length - 1 ? '1px solid var(--color-border)' : undefined,
-                  background: i % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.01)',
-                }}
-                initial={{ opacity: 0 }}
-                animate={tableInView ? { opacity: 1 } : {}}
-                transition={{ duration: 0.4, delay: 0.2 + i * 0.05, ease }}
+                className={`px-4 py-3 border-t border-white/5 ${i % 2 === 0 ? '' : 'bg-white/2'}`}
               >
-                <span className='block text-sm text-text-muted mb-2.5'>{row.feature}</span>
+                <span className='block text-sm font-medium text-white mb-2.5'>{row.feature}</span>
                 <div className='grid grid-cols-4'>
-                  {tools.map((tool, j) => {
-                    const has = row[tool.short.toLowerCase() as keyof typeof row] as boolean
-                    return (
-                      <div key={tool.short} className='flex justify-center'>
-                        {has ? (
-                          <FiCheck
-                            className={`w-4 h-4 ${j === 0 ? 'text-emerald-400' : 'text-emerald-600'}`}
-                            aria-label='Supported'
-                          />
-                        ) : (
-                          <FiX className='w-4 h-4 text-text-muted/30' aria-label='Not supported' />
-                        )}
-                      </div>
-                    )
-                  })}
+                  {tools.map((tool, j) => (
+                    <div key={tool.short} className='flex justify-center items-center px-1'>
+                      <ComparisonValue
+                        value={row[tool.short.toLowerCase() as keyof ComparisonRow] as SupportValue}
+                        accent={j === 0 ? sgiHeaderGlowTextColor : undefined}
+                      />
+                    </div>
+                  ))}
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
 
           {/* Desktop layout — full grid table */}
-          <div
-            className='hidden sm:block rounded-xl overflow-hidden'
-            style={{ border: '1px solid var(--color-border)' }}
-          >
+          <div className='hidden sm:block rounded-3xl overflow-hidden bg-[#101013] border border-white/5'>
             {/* Header row */}
             <div
-              className='grid'
+              className='grid border-b border-white/5'
               style={{
                 gridTemplateColumns: '1fr repeat(4, minmax(0, 1fr))',
-                borderBottom: '1px solid var(--color-border)',
-                background: 'rgba(255,255,255,0.02)',
+                background: 'rgba(255,255,255,0.03)',
               }}
             >
               <div className='px-4 py-4' />
@@ -166,40 +208,38 @@ export default function ComparisonSection() {
                 const inner = (
                   <>
                     <div
-                      className={`text-sm font-bold tracking-tight ${tool.highlight ? 'gradient-text' : 'text-text-muted'}`}
-                    >
-                      {tool.short}
-                    </div>
-                    <div
-                      className={`text-xs mt-0.5 leading-tight ${tool.highlight ? 'text-text-primary' : 'text-text-muted'}`}
+                      className={`text-sm font-bold leading-tight ${tool.highlight ? 'text-white' : 'text-white/40'}`}
                     >
                       {tool.full}
+                    </div>
+                    <div
+                      className='text-xs mt-0.5 tracking-tight'
+                      style={tool.highlight ? { color: sgiHeaderGlowTextColor } : undefined}
+                    >
+                      {tool.short}
                     </div>
                   </>
                 )
                 return (
                   <div
                     key={tool.short}
-                    className='px-3 py-4 text-center'
+                    className='relative px-3 py-4 text-center border-l border-white/10'
                     style={
                       tool.highlight
-                        ? {
-                            background: 'rgba(0,163,255,0.08)',
-                            borderBottom: '3px solid var(--color-accent)',
-                          }
-                        : {}
+                        ? { background: sgiHeaderGlowGradient, boxShadow: sgiHeaderGlowShadow }
+                        : undefined
                     }
                   >
                     {tool.href ? (
                       <Link
                         prefetch={false}
                         href={tool.href}
-                        className='block hover:opacity-70 transition-opacity duration-150'
+                        className='relative z-10 block hover:opacity-70 transition-opacity duration-150'
                       >
                         {inner}
                       </Link>
                     ) : (
-                      inner
+                      <div className='relative z-10'>{inner}</div>
                     )}
                   </div>
                 )
@@ -208,44 +248,30 @@ export default function ComparisonSection() {
 
             {/* Feature rows */}
             {rows.map((row, i) => (
-              <motion.div
-                key={`${row.feature}-wrapper`}
-                className='grid'
-                style={{
-                  gridTemplateColumns: '1fr repeat(4, minmax(0, 1fr))',
-                  borderBottom: i < rows.length - 1 ? '1px solid var(--color-border)' : undefined,
-                  background: i % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.01)',
-                }}
-                initial={{ opacity: 0 }}
-                animate={tableInView ? { opacity: 1 } : {}}
-                transition={{ duration: 0.4, delay: 0.2 + i * 0.05, ease }}
+              <div
+                key={row.feature}
+                className={`grid border-t border-white/5 ${i % 2 === 0 ? '' : 'bg-white/2'}`}
+                style={{ gridTemplateColumns: '1fr repeat(4, minmax(0, 1fr))' }}
               >
                 <div className='px-4 py-3.5 flex items-center'>
-                  <span className='text-text-muted text-sm'>{row.feature}</span>
+                  <span className='text-sm font-medium text-white'>{row.feature}</span>
                 </div>
-                {tools.map((tool, j) => {
-                  const has = row[tool.short.toLowerCase() as keyof typeof row] as boolean
-                  return (
-                    <div
-                      key={`${row.feature}-${tool.short}`}
-                      className='px-3 py-3.5 flex items-center justify-center'
-                      style={j === 0 ? { background: 'rgba(255,255,255,0.03)' } : {}}
-                    >
-                      {has ? (
-                        <FiCheck
-                          className={`w-4 h-4 ${j === 0 ? 'text-emerald-400' : 'text-emerald-600'}`}
-                          aria-label='Supported'
-                        />
-                      ) : (
-                        <FiX className='w-4 h-4 text-text-muted/30' aria-label='Not supported' />
-                      )}
-                    </div>
-                  )
-                })}
-              </motion.div>
+                {tools.map((tool, j) => (
+                  <div
+                    key={`${row.feature}-${tool.short}`}
+                    className='px-3 py-3.5 flex items-center justify-center border-l border-white/10'
+                    style={j === 0 ? { background: sgiRowTintGradient } : undefined}
+                  >
+                    <ComparisonValue
+                      value={row[tool.short.toLowerCase() as keyof ComparisonRow] as SupportValue}
+                      accent={j === 0 ? sgiHeaderGlowTextColor : undefined}
+                    />
+                  </div>
+                ))}
+              </div>
             ))}
           </div>
-        </motion.div>
+        </FadeIn>
       </div>
     </section>
   )
