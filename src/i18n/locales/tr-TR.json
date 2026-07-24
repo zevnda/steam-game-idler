@@ -381,7 +381,8 @@
       },
       "sort": {
         "playtimeDesc": "Oyun Süresi (Yüksek-Düşük)",
-        "playtimeAsc": "Oyun Süresi (Düşük-Yüksek)"
+        "playtimeAsc": "Oyun Süresi (Düşük-Yüksek)",
+        "recentlyPlayedDesc": "Son Oynanan (En Yeni)"
       }
     },
     "achievements": {
