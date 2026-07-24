@@ -12,19 +12,13 @@ import { Step, Steps } from 'fumadocs-ui/components/steps';
 
 The Achievement Unlocker automatically unlocks achievements for your Steam games over time, with customizable delays and ordering to mimic natural gameplay.
 
-<DocsCTA />
-
 <Callout type="info">
     Configure this feature's settings in [Settings → Achievement Unlocker](/docs/settings/achievement-unlocker) before using it
 </Callout>
 
-<Callout type="info">
-    PRO subscribers can unlock achievements for multiple games at the same time by enabling [Run Multiple Games](/docs/settings/achievement-unlocker#run-multiple-games), up to 3 at once on Casual, or up to 32 on Gamer
-</Callout>
-
 ### Default Mode
 
-In default mode, achievements are unlocked in order of global achievement rarity (most common first), with the delay set in [Settings → Achievement Unlocker → Unlock Interval](/docs/settings/achievement-unlocker#unlock-interval).
+In default mode, achievements are unlocked in order of global achievement rarity (most common first), with the delay set in [<MockButton type='context-cog' content='Settings → Achievement Unlocker → Unlock Interval' />](/docs/settings/achievement-unlocker#unlock-interval).
 
 If you want to define a custom order, and dial in more accurate delays, use the [Custom Order & Unlock Delay](/docs/features/achievement-unlocker/custom-order-and-unlock-delay)
 
@@ -34,7 +28,7 @@ If you want to define a custom order, and dial in more accurate delays, use the 
   </Step>
 
   <Step>
-    Go to the <MockButton type='all-games' /> tab and click on individual games to add and remove them
+    Go to the <MockButton type='all-games' /> tab and click the <MockButton type='context-add' /> button on individual games to add them to your queue
   </Step>
 
   <Step>
@@ -42,8 +36,10 @@ If you want to define a custom order, and dial in more accurate delays, use the 
   </Step>
 
   <Step>
-    Click <MockButton type='achievement-unlocker-action' />
+    Switch to the <MockButton type='content' content='Queue' /> tab to review what you've added, then click <MockButton type='achievement-unlocker-action' />
   </Step>
 </Steps>
 
 While running, each active game shows a live countdown to its next achievement, with the next several upcoming achievements listed below it.
+
+<DocsCTA />

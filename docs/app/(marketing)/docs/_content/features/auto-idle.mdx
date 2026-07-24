@@ -13,8 +13,6 @@ Automatic idler lets you build a list of games that SGI will start idling automa
 
 This works best when combined with [Run At Startup](/docs/settings/general#run-at-startup) and [Start Minimized](/docs/settings/general#start-minimized), so SGI launches silently at login and begins idling your games without any input from you.
 
-<DocsCTA />
-
 <Callout type="info">
   You can idle a maximum of 32 games simultaneously, across every SGI feature combined. This limit is set by the Steam client.
 </Callout>
@@ -27,7 +25,11 @@ This works best when combined with [Run At Startup](/docs/settings/general#run-a
   </Step>
 
   <Step>
-    Go to the <MockButton type='all-games' /> tab and click on individual games to add and remove them
+    Go to the <MockButton type='all-games' /> tab and click the <MockButton type='context-add' /> button on individual games to add them to your queue
+  </Step>
+
+  <Step>
+    Switch to the <MockButton type='content' content='Queue' /> tab to review what you've added
   </Step>
 
   <Step>
@@ -37,12 +39,10 @@ This works best when combined with [Run At Startup](/docs/settings/general#run-a
   </Step>
 </Steps>
 
-Like manual [Idling](/docs/features/idling), Automatic Idler only increases playtime hours. It does not farm trading cards or unlock achievements. For those, see [Card Farming](/docs/features/card-farming) and [Achievement Unlocker](/docs/features/achievement-unlocker).
-
-You can also chain Automatic Idler to start automatically once [Card Farming](/docs/settings/card-farming#next-task) or the [Achievement Unlocker](/docs/settings/achievement-unlocker#next-task) finishes.
-
 ## Enabling and Disabling Individual Games
 
-Each game card in the list has a checkbox that lets you toggle it on or off without removing it from the list. Games that are unchecked will be skipped when idling starts, both on launch and when using <MockButton type='start-manually' />.
+Each game card in the <MockButton type='content' content='Queue' /> tab has a switch that lets you toggle it on or off without removing it from the list. Games that are switched off will be skipped when idling starts, both on launch and when using <MockButton type='start-manually' />.
 
 This is useful when you want to temporarily pause idling a specific game while keeping it in your list for later.
+
+<DocsCTA />

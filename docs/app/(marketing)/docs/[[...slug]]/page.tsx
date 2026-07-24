@@ -1,8 +1,8 @@
 import { createRelativeLink } from 'fumadocs-ui/mdx'
 import { DocsBody, DocsPage } from 'fumadocs-ui/page'
 import { notFound } from 'next/navigation'
-import AdOverlay from '@/app/(marketing)/(home)/_components/AdOverlay'
 import AdScripts from '@/app/(marketing)/(home)/_components/AdScripts'
+import AdSlot from '@/app/(marketing)/(home)/_components/AdSlot'
 import { source } from '@/lib/source'
 import { getMDXComponents } from '@/mdx-components'
 
@@ -23,7 +23,7 @@ export default async function Page(props: PageProps) {
     <DocsPage toc={page.data.toc} full={page.data.full} tableOfContent={{ style: 'clerk' }}>
       <AdScripts />
       <DocsBody>
-        <AdOverlay slot='1265004536' />
+        <AdSlot slot='1265004536' />
         {/* eslint-disable-next-line */}
         <MDX
           components={getMDXComponents({
@@ -31,7 +31,7 @@ export default async function Page(props: PageProps) {
             a: createRelativeLink(source, page),
           })}
         />
-        <AdOverlay slot='3005445709' />
+        <AdSlot slot='3005445709' />
       </DocsBody>
     </DocsPage>
   )

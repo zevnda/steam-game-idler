@@ -12,8 +12,6 @@ import { Step, Steps } from 'fumadocs-ui/components/steps';
 
 The Achievement Manager lets you manually unlock and lock achievements for any game in your library, as well as modify game statistics. Unlike the [Achievement Unlocker](/docs/features/achievement-unlocker), this is a one-by-one manual tool: useful for targeting specific achievements without automation.
 
-<DocsCTA />
-
 ### Achievements
 
 <Steps>
@@ -22,17 +20,17 @@ The Achievement Manager lets you manually unlock and lock achievements for any g
   </Step>
 
   <Step>
-    Click <MockButton type='achievement-manager' /> beneath the game image to open the achievement manager
+    Click the <MockButton type='achievement-manager' /> button on individual games to open them in the achievement manager
   </Step>
 
   <Step>
-    On the achievement manager screen you will see a list of achievements for that game, if any are available. Select the achievements you want to change using their checkboxes
+    On the achievement manager screen you will see a list of achievements for that game, if any are available
+    
+    Click <MockButton type='unlock' /> or <MockButton type='lock' /> next to an achievement to unlock or lock it individually
+    
+    Click  <MockButton type='unlock-all' /> or <MockButton type='lock-all' /> in the page header to affect every achievement at once
 
-    Click <MockButton type='unlock' /> or <MockButton type='lock' /> next to an achievement to unlock or lock it individually, or use <MockButton type='unlock-all' /> / <MockButton type='lock-all' /> in the page header to affect every achievement at once
-  </Step>
-
-  <Step>
-    Click <MockButton type='save-changes' /> to apply your selected changes
+    Use the <MockButton type='checkbox' /> next to each achievement to toggle its state, then click <MockButton type='content' content='Save changes' /> to apply the changes
   </Step>
 </Steps>
 
@@ -48,14 +46,16 @@ The Achievement Manager lets you manually unlock and lock achievements for any g
   </Step>
 
   <Step>
-    Click <MockButton type='achievement-manager' /> beneath the game image to open the achievement manager
+    Click the <MockButton type='achievement-manager' /> button on individual games to open them in the achievement manager
   </Step>
 
   <Step>
-    On the achievement manager screen, click the <MockButton type='content' content='Statistics' /> tab. You will see a list of statistics for that game, if any are available
+    On the achievement manager screen, click the <MockButton type='content' content='Statistics' /> tab in the page header. You will see a list of statistics for that game, if any are available
   </Step>
 
   <Step>
     Change the `value` of any statistics you want to modify and click <MockButton type='save-changes' />
   </Step>
 </Steps>
+
+<DocsCTA />

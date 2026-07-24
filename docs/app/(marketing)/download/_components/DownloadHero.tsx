@@ -1,7 +1,6 @@
 'use client'
 
 import { FaLinux, FaWindows } from 'react-icons/fa6'
-import { FiRefreshCw } from 'react-icons/fi'
 import Link from 'next/link'
 import { FadeIn } from '@/app/lib/animations'
 import { useGlobalStore } from '@/app/lib/globalStore'
@@ -16,6 +15,7 @@ export default function DownloadHero() {
     linuxDownloadSize,
     linuxRpmUrl,
     linuxAppImageUrl,
+    windowsPortableUrl,
     selectedOS,
     overrideOS,
   } = useGlobalStore(state => state)
@@ -73,40 +73,47 @@ export default function DownloadHero() {
             Download for {isLinux ? 'Linux' : 'Windows'}
           </Link>
 
-          <div className='flex items-center justify-center gap-1.5 text-xs text-text-muted mt-4'>
-            <FiRefreshCw className='w-3 h-3' />
-            Includes automatic updates
-          </div>
-
-          <p className='text-sm text-text-muted mt-10'>
-            {isLinux ? '.deb &middot; most 64-bit distros' : 'Windows 10 / 11'} &middot;{' '}
-            {primarySize} &middot; Elastic-2.0 License &middot; {totalDownloads || '100K+'}{' '}
-            downloads
+          <p className='text-sm text-text-muted mt-6'>
+            {isLinux ? 'Most 64-bit Distros' : 'Windows 10 / 11'} &middot; {primarySize} &middot;{' '}
+            Elastic-2.0 License &middot; {totalDownloads || '100K+'} downloads
           </p>
 
           {isLinux && (linuxRpmUrl || linuxAppImageUrl) && (
-            <p className='text-xs text-text-muted mt-3'>
-              On Fedora/openSUSE or another distro?{' '}
+            <div className='flex flex-wrap items-center justify-center gap-3 mt-5'>
               {linuxRpmUrl && (
                 <Link
                   prefetch={false}
                   href={linuxRpmUrl}
-                  className='underline hover:text-text-primary'
+                  className='inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/15 bg-white/5 text-sm text-text-primary hover:bg-white/10 hover:border-white/25 transition-colors duration-150'
                 >
-                  .rpm
+                  <FaLinux className='w-3.5 h-3.5' />
+                  Download .rpm
                 </Link>
               )}
-              {linuxRpmUrl && linuxAppImageUrl && ' · '}
               {linuxAppImageUrl && (
                 <Link
                   prefetch={false}
                   href={linuxAppImageUrl}
-                  className='underline hover:text-text-primary'
+                  className='inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/15 bg-white/5 text-sm text-text-primary hover:bg-white/10 hover:border-white/25 transition-colors duration-150'
                 >
-                  AppImage
+                  <FaLinux className='w-3.5 h-3.5' />
+                  Download .AppImage
                 </Link>
               )}
-            </p>
+            </div>
+          )}
+
+          {!isLinux && windowsPortableUrl && (
+            <div className='flex flex-wrap items-center justify-center gap-3 mt-5'>
+              <Link
+                prefetch={false}
+                href={windowsPortableUrl}
+                className='inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/15 bg-white/5 text-sm text-text-primary hover:bg-white/10 hover:border-white/25 transition-colors duration-150'
+              >
+                <FaWindows className='w-3.5 h-3.5' />
+                Download portable .zip
+              </Link>
+            </div>
           )}
 
           {/* Manual override - the platform above is only ever a best-effort default (client-side
@@ -116,7 +123,7 @@ export default function DownloadHero() {
             <button
               type='button'
               onClick={() => overrideOS(isLinux ? 'windows' : 'linux')}
-              className='mt-6 text-xs text-text-muted underline hover:text-text-primary transition-colors duration-150'
+              className='mt-6 text-xs text-text-muted underline hover:text-text-primary transition-colors duration-150 cursor-pointer'
             >
               Not on {isLinux ? 'Linux' : 'Windows'}? Get it for {isLinux ? 'Windows' : 'Linux'}
             </button>

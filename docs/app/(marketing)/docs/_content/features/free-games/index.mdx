@@ -12,8 +12,6 @@ import { Step, Steps } from 'fumadocs-ui/components/steps';
 
 The Free Games feature allows you to discover and claim free games on Steam, either manually or automatically. This is perfect for users who want to expand their game library without spending money.
 
-<DocsCTA />
-
 <Callout type="info">
   DLC, free-to-play games, and games that you already own are not shown in the Free Games list
 </Callout>
@@ -26,7 +24,15 @@ The Free Games feature allows you to discover and claim free games on Steam, eit
   </Step>
 
   <Step>
-    Click <MockButton type='steam' /> beneath the game image to open its Steam store page where you can add the game to your library
+    Click the <MockButton type='content' content='Claim' /> button on individual games to claim them
+  </Step>
+
+  <Step>
+    A Steam store login window will open, sign in to your Steam account in the new window via:
+    - Username and password
+    - Scanning the QR Code
+
+    Optionally, if you would prefer to not sign into your Steam account, you can visit the game's Steam store page in your browser and claim it manually.
   </Step>
 
   <Step>
@@ -34,9 +40,9 @@ The Free Games feature allows you to discover and claim free games on Steam, eit
   </Step>
 </Steps>
 
-## Automated Redemption *(Pro Gamer tier)*
+## Automated Redemption
 
-How you enable this depends on how you [signed in](/docs/get-started/how-to-sign-in):
+How you enable this depends on how you [signed in](/docs/get-started/how-to-sign-in)
 
 <Steps>
   <Step>
@@ -46,11 +52,9 @@ How you enable this depends on how you [signed in](/docs/get-started/how-to-sign
 
   <Step>
     ### Legacy Sign-in
-    Click <MockButton type='content' content='Sign in to Steam' /> in <MockButton type='context-cog' content='Settings → Free Games' /> and sign in to your Steam account in the new window via:
+    Go to <MockButton type='context-cog' content='Settings → Free Games' /> and click <MockButton type='content' content='Sign in to Steam' /> and sign in to your Steam account in the new window via:
     - Username and password
     - Scanning the QR Code
-
-    Then enable [Auto Redeem Free Games](/docs/settings/free-games#auto-redeem-free-games)
   </Step>
 
   <Step>
@@ -58,3 +62,5 @@ How you enable this depends on how you [signed in](/docs/get-started/how-to-sign
     As free games become available, SGI will automatically attempt to redeem them to your Steam account
   </Step>
 </Steps>
+
+<DocsCTA />

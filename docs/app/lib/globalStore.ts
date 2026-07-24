@@ -27,6 +27,11 @@ interface globalStore {
   setLinuxRpmUrl: (value: string | ((prev: string) => string)) => void
   linuxAppImageUrl: string
   setLinuxAppImageUrl: (value: string | ((prev: string) => string)) => void
+  // The Windows portable zip - offered as a secondary link alongside the primary NSIS installer,
+  // same pattern as .rpm/AppImage alongside the primary .deb. Defaults to '' until the release
+  // asset is fetched (see StoreLoader.tsx).
+  windowsPortableUrl: string
+  setWindowsPortableUrl: (value: string | ((prev: string) => string)) => void
   // Which platform's download CTA to show, site-wide. Defaults to 'windows' (matches the
   // historical, pre-Linux-support behavior and is SSR-safe) until either a one-time client-side
   // OS sniff (see detectOS.ts, run once from OSDetector.tsx) or a manual toggle says otherwise.
@@ -93,6 +98,11 @@ export const useGlobalStore = create<globalStore>(set => ({
   setLinuxAppImageUrl: value =>
     set(state => ({
       linuxAppImageUrl: typeof value === 'function' ? value(state.linuxAppImageUrl) : value,
+    })),
+  windowsPortableUrl: '',
+  setWindowsPortableUrl: value =>
+    set(state => ({
+      windowsPortableUrl: typeof value === 'function' ? value(state.windowsPortableUrl) : value,
     })),
   selectedOS: 'windows',
   setSelectedOS: value => set({ selectedOS: value }),

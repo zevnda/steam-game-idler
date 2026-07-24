@@ -5,36 +5,28 @@ import {
   TbArrowRight,
   TbArrowsSort,
   TbAward,
+  TbBan,
   TbBuildingStore,
   TbCards,
-  TbChecks,
   TbCopy,
-  TbCreditCard,
   TbDeviceGamepad2,
-  TbDownload,
-  TbEraser,
   TbExternalLink,
-  TbFileExport,
-  TbFolderOpen,
   TbGift,
   TbHeart,
   TbHourglassLow,
-  TbKey,
   TbLock,
   TbLockOpen,
-  TbLogin2,
   TbLogout2,
   TbPackageExport,
   TbPlayerPlay,
+  TbPlayerPlayFilled,
   TbPlayerStopFilled,
   TbPlus,
-  TbQrcode,
   TbRefresh,
   TbSettings,
-  TbTrash,
+  TbTrophyFilled,
   TbUpload,
   TbUserCircle,
-  TbUserPlus,
 } from 'react-icons/tb'
 
 type ButtonType =
@@ -95,6 +87,8 @@ type ButtonType =
   | 'go-pro'
   | 'pay-stripe'
   | 'pay-paypal'
+  | 'blacklist'
+  | 'refresh'
 
 interface MockButtonProps {
   type: ButtonType
@@ -123,7 +117,7 @@ export default function MockButton({ type, content }: MockButtonProps) {
   } else if (type === 'remove-all') {
     return (
       <span className='inline bg-red-500 text-white text-[12px] font-semibold px-2 py-1.5 rounded-full shadow-sm select-none'>
-        <TbEraser fontSize={16} className='inline' /> Remove All
+        Remove listings
       </span>
     )
   } else if (type === 'unlock') {
@@ -153,7 +147,7 @@ export default function MockButton({ type, content }: MockButtonProps) {
   } else if (type === 'card-farming-action') {
     return (
       <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
-        <TbCards fontSize={16} className='inline' /> Start Card Farming
+        <TbPlayerPlayFilled fontSize={16} className='inline' /> Start
       </span>
     )
   } else if (type === 'achievement-unlocker') {
@@ -165,13 +159,13 @@ export default function MockButton({ type, content }: MockButtonProps) {
   } else if (type === 'achievement-unlocker-action') {
     return (
       <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
-        <TbAward fontSize={16} className='inline' /> Start Achievement Unlocker
+        <TbPlayerPlayFilled fontSize={16} className='inline' /> Start
       </span>
     )
   } else if (type === 'achievement-manager') {
     return (
       <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1 h-8'>
-        <TbAward fontSize={16} className='inline' />
+        <TbTrophyFilled fontSize={16} className='inline' />
       </span>
     )
   } else if (type === 'list-card') {
@@ -183,13 +177,13 @@ export default function MockButton({ type, content }: MockButtonProps) {
   } else if (type === 'list-selected') {
     return (
       <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
-        <TbChecks fontSize={16} className='inline' /> List Selected
+        Sell Selected
       </span>
     )
   } else if (type === 'list-all') {
     return (
       <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
-        <TbPackageExport fontSize={16} className='inline' /> List All
+        Sell All
       </span>
     )
   } else if (type === 'save') {
@@ -224,6 +218,12 @@ export default function MockButton({ type, content }: MockButtonProps) {
         className={`inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1 ${content === undefined && 'h-8'}`}
       >
         <TbSettings fontSize={16} className='inline' /> {content}
+      </span>
+    )
+  } else if (type === 'refresh') {
+    return (
+      <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1 h-8'>
+        <TbRefresh fontSize={16} className='inline' />
       </span>
     )
   } else if (type === 'your-games') {
@@ -277,7 +277,7 @@ export default function MockButton({ type, content }: MockButtonProps) {
   } else if (type === 'start-idle') {
     return (
       <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1 h-8'>
-        <TbPlayerPlay fontSize={16} className='inline' />
+        <TbPlayerPlayFilled fontSize={16} className='inline' />
       </span>
     )
   } else if (type === 'steam') {
@@ -289,13 +289,13 @@ export default function MockButton({ type, content }: MockButtonProps) {
   } else if (type === 'start-manually') {
     return (
       <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
-        <TbHourglassLow fontSize={16} className='inline' /> Start Manually
+        <TbPlayerPlayFilled fontSize={16} className='inline' /> Start
       </span>
     )
   } else if (type === 'import-timings') {
     return (
       <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
-        <TbDownload fontSize={16} className='inline' /> Import Timings
+        Import Timings
       </span>
     )
   } else if (type === 'checkbox') {
@@ -315,19 +315,19 @@ export default function MockButton({ type, content }: MockButtonProps) {
   } else if (type === 'steam-sign-in') {
     return (
       <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
-        <FaSteam fontSize={16} className='inline' /> Steam Sign-in
+        Steam Sign-in
       </span>
     )
   } else if (type === 'legacy-sign-in') {
     return (
       <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
-        <TbLogin2 fontSize={16} className='inline' /> Legacy Sign-in
+        Legacy Sign-in
       </span>
     )
   } else if (type === 'qr-sign-in') {
     return (
       <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
-        <TbQrcode fontSize={16} className='inline' /> Or sign in with QR
+        Or sign in with QR
       </span>
     )
   } else if (type === 'continue') {
@@ -345,7 +345,15 @@ export default function MockButton({ type, content }: MockButtonProps) {
   } else if (type === 'add-account') {
     return (
       <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
-        <TbUserPlus fontSize={16} className='inline' /> Add another account
+        <TbPlus fontSize={16} className='inline' /> Add another account
+      </span>
+    )
+  } else if (type === 'blacklist') {
+    return (
+      <span
+        className={`inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1 ${content === undefined && 'h-8'}`}
+      >
+        <TbBan fontSize={16} className='inline' /> {content}
       </span>
     )
   } else if (type === 'sign-out') {
@@ -357,8 +365,7 @@ export default function MockButton({ type, content }: MockButtonProps) {
   } else if (type === 'manage-subscription') {
     return (
       <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
-        <TbCreditCard fontSize={16} className='inline' /> Manage subscription{' '}
-        <TbExternalLink fontSize={14} className='inline' />
+        Manage subscription <TbExternalLink fontSize={14} className='inline' />
       </span>
     )
   } else if (type === 'upgrade') {
@@ -370,7 +377,7 @@ export default function MockButton({ type, content }: MockButtonProps) {
   } else if (type === 'activate') {
     return (
       <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
-        <TbKey fontSize={16} className='inline' /> Activate
+        Activate
       </span>
     )
   } else if (type === 'copy') {
@@ -394,13 +401,13 @@ export default function MockButton({ type, content }: MockButtonProps) {
   } else if (type === 'open-settings-file') {
     return (
       <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
-        <TbFolderOpen fontSize={16} className='inline' /> Open settings file
+        Open settings file
       </span>
     )
   } else if (type === 'export-settings') {
     return (
       <span className='inline-flex align-middle items-center justify-center bg-fd-muted text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
-        <TbFileExport fontSize={16} className='inline' /> Export settings
+        Export settings
       </span>
     )
   } else if (type === 'clear-logs') {
@@ -412,13 +419,13 @@ export default function MockButton({ type, content }: MockButtonProps) {
   } else if (type === 'reset-settings') {
     return (
       <span className='inline-flex align-middle items-center justify-center text-icon-dark bg-red-500 text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
-        <TbRefresh fontSize={16} className='inline' /> Reset settings
+        Reset settings
       </span>
     )
   } else if (type === 'clear-data') {
     return (
       <span className='inline-flex align-middle items-center justify-center text-icon-dark bg-red-500 text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1'>
-        <TbTrash fontSize={16} className='inline' /> Clear data
+        Clear data
       </span>
     )
   } else if (type === 'stop') {

@@ -9,7 +9,7 @@ import { File, Folder, Files } from 'fumadocs-ui/components/files';
 
 # Build It Yourself
 
-SGI's source is fully public. The desktop app is a [Tauri](https://tauri.app/) app (Rust + Next.js), and it drives a bundled helper process, `SteamUtility`, built from a separate C#/.NET project at `libs/SteamUtility/`.
+SGI's source code is fully public on [GitHub](https://github.com/zevnda/steam-game-idler). The desktop app is a [Tauri](https://tauri.app/) app (Rust + Next.js), and it drives a bundled helper process, `SteamUtility`, built from a separate C#/.NET project at `libs/SteamUtility/`.
 
 ## Prerequisites
 
@@ -20,7 +20,7 @@ SGI's source is fully public. The desktop app is a [Tauri](https://tauri.app/) a
 
 **Windows only:**
 * [VS Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/) = latest, with the "Desktop development with C++" workload
-* [WebView2](https://developer.microsoft.com/en-us/Microsoft-edge/webview2/) = latest (*pre-installed on Windows 11 and recent Windows 10*)
+* [WebView2](https://developer.microsoft.com/en-us/Microsoft-edge/webview2/) = latest (*pre-installed on Windows 11 and newer Windows 10 versions*)
 
 **Linux only:** 
 * [Tauri's Linux prerequisite](https://v2.tauri.app/start/prerequisites/#linux) system dependencies for your distro
@@ -50,7 +50,7 @@ SGI's source is fully public. The desktop app is a [Tauri](https://tauri.app/) a
     dotnet build ./libs/SteamUtility/SteamUtility.csproj
     ```
 
-    This outputs `SteamUtility` (`SteamUtility.exe` on Windows) to `src-tauri/target/debug/libs/` (or `release/libs/` for a release build); `pnpm tauri dev`/`pnpm tauri build` expect it to already be there
+    This outputs `SteamUtility` to `src-tauri/target/debug/libs/` (or `release/libs/` for a release build); `pnpm tauri dev`/`pnpm tauri build` expect it to already be there
   </Step>
 
   <Step>
@@ -105,4 +105,5 @@ Run these from the repo root:
 | `pnpm lint` | ESLint for the desktop app |
 | `pnpm dd` | Starts the docs site dev server (this site) |
 | `pnpm build:docs` | Production build of the docs site |
+| `pnpm build:libs` | Builds the `./libs/SteamUtility.csproj` |
 | `pnpm i18n:check` | Checks `en-US.json` for duplicate translation values |

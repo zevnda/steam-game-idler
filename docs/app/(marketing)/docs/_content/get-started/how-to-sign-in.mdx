@@ -19,12 +19,16 @@ SGI has two ways to sign in. They both give you access to the same features (wit
 | Play games normally while idling? | No, see [What's different](#whats-different-between-the-two) below | Yes |
 
 <Callout type='info'>
-    Not sure which to pick? Use <MockButton type='steam-sign-in' /> unless you specifically don't want to enter your username/password into SGI; in that case, use <MockButton type='legacy-sign-in' />
+    Not sure which to pick? Use [Steam Sign-in](/docs/get-started/how-to-sign-in#steam-sign-in) unless you specifically don't want to use your username/password; in that case, use [Legacy Sign-in](/docs/get-started/how-to-sign-in#legacy-sign-in)
 </Callout>
 
 ## Steam Sign-in
 
-This is the recommended method. SGI signs in directly to Steam's servers using the same underlying protocol the official Steam client uses, so it doesn't need the Steam client installed or running on your PC at all.
+This is the recommended method. SGI signs in directly to Steam's servers so it doesn't need the Steam client installed or running on your PC at all.
+
+<Callout type='info'>
+    SGI never sees or stores your password. Your information is sent directly to Steam's own servers to establish the sign-in, the same as signing in through the official Steam client or mobile app
+</Callout>
 
 <Steps>
   <Step>
@@ -54,10 +58,6 @@ This is the recommended method. SGI signs in directly to Steam's servers using t
   </Step>
 </Steps>
 
-<Callout type='warning'>
-    Your Steam credentials are sent directly to Steam's own servers to establish the sign-in, the same as signing in through the official Steam client or mobile app. SGI never sees or stores your password
-</Callout>
-
 Once signed in, you can add further accounts without signing out of this one. See [Multi-Account](/docs/get-started/multi-account).
 
 ## Legacy Sign-in
@@ -66,6 +66,10 @@ Use this if you'd rather not enter your Steam username/password into SGI at all.
 
 <Callout type='warning'>
     You must have the [Steam client](https://store.steampowered.com/about) installed, running, and signed in to at least one account
+</Callout>
+
+<Callout type='info'>
+    Legacy Sign-in only supports one signed-in account at a time. This is a real limitation of the Steam client itself, not something SGI can lift. To use more than one account at once, sign in to the additional accounts with [Steam Sign-in](/docs/get-started/how-to-sign-in#steam-sign-in) instead
 </Callout>
 
 <Steps>
@@ -94,10 +98,6 @@ Use this if you'd rather not enter your Steam username/password into SGI at all.
     Click <MockButton type='continue' /> to proceed to the dashboard
   </Step>
 </Steps>
-
-<Callout type='info'>
-    Legacy Sign-in only supports one signed-in account at a time. This is a real limitation of the Steam client itself, not something SGI can lift. To use more than one account at once, sign in to the additional accounts with <MockButton type='steam-sign-in' /> instead
-</Callout>
 
 ## What's different between the two
 

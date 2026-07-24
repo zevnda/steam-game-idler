@@ -1,7 +1,7 @@
 import { FiBook } from 'react-icons/fi'
 import Link from 'next/link'
-import AdOverlay from '@/app/(marketing)/(home)/_components/AdOverlay'
 import AdScripts from '@/app/(marketing)/(home)/_components/AdScripts'
+import AdSlot from '@/app/(marketing)/(home)/_components/AdSlot'
 import DownloadButton from '@/app/(marketing)/(home)/_components/DownloadButton'
 import FooterSection from '@/app/(marketing)/(home)/_components/FooterSection'
 import NavBar from '@/app/(marketing)/(home)/_components/NavBar'
@@ -83,7 +83,7 @@ export default function page() {
 
         <div className='section-divider' />
 
-        <AdOverlay slot='1265004536' />
+        <AdSlot slot='1265004536' />
 
         <section className='py-20 sm:py-24 relative'>
           <div className='container mx-auto px-4 sm:px-6 md:px-8'>
@@ -98,7 +98,7 @@ export default function page() {
 
         <div className='section-divider' />
 
-        <AdOverlay slot='3005445709' />
+        <AdSlot slot='3005445709' />
 
         <section className='py-20 sm:py-24 relative'>
           <div className='container mx-auto px-4 sm:px-6 md:px-8'>
@@ -108,7 +108,7 @@ export default function page() {
 
         <div className='section-divider' />
 
-        <AdOverlay slot='1265004536' />
+        <AdSlot slot='1265004536' />
 
         <section className='py-20 sm:py-24 relative'>
           <div className='container mx-auto px-4 sm:px-6 md:px-8'>
@@ -118,7 +118,7 @@ export default function page() {
 
         <div className='section-divider' />
 
-        <AdOverlay slot='3005445709' />
+        <AdSlot slot='3005445709' />
 
         <section className='py-24 sm:py-32 relative'>
           <div className='container mx-auto relative z-10 px-4 sm:px-6 md:px-8'>
