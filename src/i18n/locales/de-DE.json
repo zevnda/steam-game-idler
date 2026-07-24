@@ -1,9 +1,765 @@
 {
   "common": {
+    "actions": {
+      "submit": "Einreichen",
+      "cancel": "Abbrechen",
+      "tryAgain": "Versuche es noch einmal",
+      "continue": "Weiter",
+      "refresh": "Aktualisieren",
+      "save": "Speichern",
+      "settings": "Einstellungen",
+      "signIn": "Anmelden",
+      "signOut": "Abmelden",
+      "start": "Start",
+      "stop": "Stoppen",
+      "clear": "Löschen",
+      "done": "Fertig",
+      "copy": "Kopieren",
+      "paste": "Einfügen",
+      "add": "Hinzufügen",
+      "backToTop": "Zum Seitenanfang"
+    },
+    "gameCardMenu": {
+      "startIdling": "Leerlauf starten",
+      "stopIdling": "Leerlauf stoppen",
+      "manageAchievements": "Errungenschaft verwalten",
+      "viewOnSteam": "Auf Steam anzeigen",
+      "addTo": "Hinzufügen zu"
+    },
+    "minutes": "Minuten",
+    "zeroUnlimitedHint": "0 = unbegrenzt",
+    "errorBoundary": {
+      "title": "Etwas ist schiefgelaufen",
+      "description": "Ein unerwarteter Fehler ist aufgetreten. Versuchen Sie es noch einmal, und wenn es weiter passiert, wenden Sie sich an Hilfe & Support."
+    },
     "manualCookies": {
       "sidLabel": "sessionid",
       "slsLabel": "steamLoginSecure",
-      "smaLabel": "steamMachineAuth"
+      "smaLabel": "steamMachineAuth",
+      "smaDescription": "Optional. Nur erforderlich, wenn für Ihr Konto eine Steam Guard-Maschinenbestätigung aussteht.",
+      "savedFromSettingsNote": "Von den in den Einstellungen gespeicherten Steam-Zugangsdaten geladen.",
+      "savedToast": "Anmeldedaten gespeichert",
+      "clearedToast": "Anmeldedaten gelöscht",
+      "clearFailed": "Deine gespeicherten Steam-Anmeldeinformationen konnten nicht gelöscht werden. ({{code}})"
+    },
+    "manualAdd": {
+      "title": "Spiel manuell hinzufügen",
+      "description": "Füge ein Spiel anhand seiner Steam-App-ID hinzu, falls es nicht automatisch angezeigt wird.",
+      "nameLabel": "Name",
+      "namePlaceholder": "z.B. K-On! Der Film",
+      "appIdLabel": "App-ID",
+      "appIdPlaceholder": "z. B. 518440",
+      "duplicateError": "Diese App-ID ist bereits in der Liste"
+    },
+    "search": {
+      "placeholder": "Suchen",
+      "recentSearches": "Letzte Suchanfragen",
+      "noRecentSearches": "Keine kürzlichen Suchen",
+      "noResults": "Keine Ergebnisse gefunden",
+      "noResultsTitle": "Keine Spiele passen zur Suche",
+      "noResultsDescription": "Versuchen Sie einen anderen Titel oder eine andere App-ID."
+    },
+    "errors": {
+      "generic": "Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut. ({{code}})",
+      "steamUtilityMissing": "Die Steam-Agent-Komponente fehlt in dieser Installation.",
+      "processSpawnFailed": "Der Steam-Agent-Prozess konnte nicht gestartet werden.",
+      "processExited": "Der Steam-Agent-Prozess wurde unerwartet beendet.",
+      "timeout": "Steam hat zu lange gebraucht, um zu antworten. Bitte versuchen Sie es erneut.",
+      "sessionNotFound": "Deine Steam-Sitzung ist nicht mehr aktiv. Bitte melde dich erneut an.",
+      "steamIdUnknown": "Deine Steam ID wurde noch nicht gelöst. Bitte versuche es in einem Moment erneut.",
+      "steamNotRunning": "Steam ist nicht aktiv. Bitte starten Sie Steam und versuchen Sie es erneut."
+    },
+    "notifications": "Benachrichtigungen",
+    "menu": "Menü",
+    "needHelp": "Brauchst du Hilfe?",
+    "learnMore": "Erfahre mehr",
+    "status": {
+      "saved": "Gespeichert",
+      "cleared": "Gelöscht"
+    },
+    "steamWarning": {
+      "title": "Hinweis",
+      "description": "Steam ist geschlossen. Bitte starten Sie Steam neu, um fortzufahren."
+    },
+    "banner": {
+      "pastDue": "Ihr PRO-Abonnement ist überfällig. Bitte aktualisieren Sie Ihre Zahlungsmethode, um den Zugriff nicht zu verlieren.",
+      "manageSubscription": "Abonnement verwalten"
+    },
+    "proTier": {
+      "gamerRequired": "Erfordert den Gamer-Plan.",
+      "casualRequired": "Erfordert den Casual-Plan."
+    },
+    "badges": {
+      "beta": "Beta"
+    },
+    "tabs": {
+      "allGames": "Alle Spiele",
+      "queue": "Warteschlange"
+    },
+    "connect": {
+      "automaticTab": "Automatisch",
+      "manualTab": "Handbuch"
+    },
+    "sort": {
+      "nameAsc": "Name (A-Z)",
+      "nameDesc": "Name (Z-A)"
+    },
+    "noGamesQueued": "Keine Spiele in der Warteschlange",
+    "gamesQueuedCount_one": "{{count}} Spiel in Warteschlange",
+    "gamesQueuedCount_other": "{{count}} Spiel in Warteschlange",
+    "completedThisSessionCount": "Diese Sitzung wurde abgeschlossen ({{count}})"
+  },
+  "update": {
+    "downloading": "Aktualisierung wird heruntergeladen..."
+  },
+  "toast": {
+    "checkUpdate": {
+      "none": "Du bist bereits auf der neuesten Version",
+      "error": "Es konnte nicht nach Updates gesucht werden. Bitte versuchen Sie es erneut."
+    },
+    "paypalCheckout": {
+      "error": "Der PayPal-Bezahlvorgang konnte nicht gestartet werden. Bitte versuchen Sie es erneut."
+    }
+  },
+  "notifications": {
+    "markAllRead": "Alle als gelesen markieren",
+    "empty": "Noch keine Benachrichtigungen"
+  },
+  "menu": {
+    "guide": "Dokumentation",
+    "issue": "Problem melden",
+    "feature": "Funktion vorschlagen",
+    "support": "Unterstütze mich",
+    "joinDiscord": "Tritt unserem Discord bei",
+    "changelog": "Änderungsverlauf",
+    "update": "Nach Updates suchen"
+  },
+  "changelog": {
+    "star": "Star on GitHub"
+  },
+  "titlebar": {
+    "closeToTrayNotification": "Steam Game Idler wird weiterhin im Hintergrund ausgeführt",
+    "goPro": "Pro holen",
+    "helpDesk": "Hilfe-Center",
+    "updateReady": "Aktualisierung bereit"
+  },
+  "tray": {
+    "show": "Anzeigen",
+    "recenter": "Fensterpositionen Zurücksetzen",
+    "update": "Auf Updates überprüfen..",
+    "quit": "Beenden"
+  },
+  "proMode": {
+    "hero": {
+      "headline": "Schalte mehr Funktionen frei",
+      "subtext": "Die Hauptfunktionen von SGI sind <1>kostenlos</1>, und <3>immer werden</3>. PRO existiert nur für Benutzer, die die laufende Entwicklung von SGI unterstützen wollen – die zusätzlichen Funktionen sind unsere Art, <5>Vielen Dank</5> für Ihre Unterstützung zu sagen.",
+      "viewTiers": "PRO-Stufen ansehen",
+      "startingAt": "Ab ${{price}}/Monat · Jederzeit kündbar"
+    },
+    "section": {
+      "allFeatures": "Alle Funktionen",
+      "chooseTier": "Wählen Sie Ihre Stufe",
+      "comparePlans": "Stufen vergleichen",
+      "faq": "Häufig gestellte Fragen"
+    },
+    "cards": {
+      "adFree": {
+        "title": "Werbefreies Erlebnis",
+        "description": "Nutzen Sie SGI ohne Werbung für eine völlig übersichtliche und ablenkungsfreie Benutzeroberfläche."
+      },
+      "themes": {
+        "title": "Exklusive Designs",
+        "description": "Passen Sie SGI mit 6 einzigartigen Designs an, die nur PRO-Abonnenten zur Verfügung stehen."
+      },
+      "customBackground": {
+        "title": "Individuelles Hintergrundbild"
+      },
+      "customFont": {
+        "title": "Benutzerdefinierte Schriftarten"
+      },
+      "liveSupport": {
+        "title": "Live-Support in Echtzeit",
+        "description": "Überspringen Sie die Warteschlange – chatten Sie direkt mit dem Entwickler über den In-App-Helpdesk und erhalten Sie Unterstützung in Echtzeit."
+      },
+      "credentials": {
+        "title": "Automatisierter Abruf von Steam-Anmeldeinformationen"
+      },
+      "multiAccount": {
+        "title": "Unterstützung mehrerer Konten",
+        "description": "Melden Sie sich an und verwalten Sie mehrere Steamkonten gleichzeitig."
+      },
+      "autoFarmCards": {
+        "title": "Automatisches Kartenfarmen",
+        "description": "SGI überwacht Ihre Bibliothek und beginnt automatisch mit dem Farmen in allen Spielen, in denen noch Karten übrig sind."
+      },
+      "gamesList": {
+        "title": "Automatische Aktualisierung der Spiele liste",
+        "description": "Ihre Spiele liste wird alle 15 Minuten automatisch aktualisiert, wenn Sie Spiele hinzufügen und spielen."
+      },
+      "multipleUnlockerGames": {
+        "title": "Schalte Erfolge für mehrere Spiele frei",
+        "description": "Schalte Errungenschaften für mehrere Spiele gleichzeitig im Achievement Unlocker frei statt eines nach dem anderen."
+      },
+      "freeGames": {
+        "title": "Kostenlose Spieleinlösung",
+        "description": "Kostenlose Spiele auf Steam werden automatisch eingelöst, sobald sie verfügbar sind – so verpassen Sie nie wieder ein Gratisspiel."
+      },
+      "sellDupes": {
+        "title": "Doppelte Artikel verkaufen",
+        "description": "Alle doppelten Inventarartikel einfach mit einem Klick zum Verkauf auflisten."
+      },
+      "customPresence": {
+        "title": "Benutzerdefinierter Steam Status"
+      }
+    },
+    "tier": {
+      "mostPopular": "Am beliebtesten",
+      "perMonth": "/Monat",
+      "everythingInCasualPlus": "Alles im Casual plan, plus",
+      "currentPlan": "Aktueller Plan",
+      "continueWithStripe": "Stripe",
+      "continueWithPaypal": "PayPal",
+      "processing": "Verarbeite...",
+      "cancelAnytime": "Jederzeit kündbar",
+      "casual": {
+        "name": "Casual",
+        "discordRole": "Discord PRO Rolle",
+        "multiAccount": "3 gleichzeitige Konten",
+        "multipleUnlockerGames": "Schalte 3 Spiele gleichzeitig frei"
+      },
+      "gamer": {
+        "name": "Gamer",
+        "freeGames": "Automatische Einlösung des Gratisspiels",
+        "sellDupes": "Doppelte Inventar Gegenstände verkaufen",
+        "importTimings": "Erfolgs-Entsperrzeitpunkte importieren",
+        "multipleUnlockerGames": "Schalte 32 Spiele gleichzeitig frei",
+        "multiAccount": "10 gleichzeitige Konten"
+      }
+    },
+    "faq": {
+      "subscriptionNotActivated": {
+        "q": "Ich habe PRO gekauft, aber mein Abonnement ist nicht aktiviert?",
+        "a": "Nach dem Kauf erhalten Sie eine E-Mail mit Ihrem Lizenzschlüssel. Öffnen Sie die App, gehen Sie zu Einstellungen → Abonnement, fügen Sie Ihren Lizenzschlüssel in das Eingabefeld ein und klicken Sie auf Aktivieren. Sollten weiterhin Probleme auftreten, kontaktieren Sie uns bitte über den Hilfebereich oben rechts in der App oder per E-Mail an contact@steamgameidler.com."
+      },
+      "transferDevice": {
+        "q": "Wie übertrage ich meinen Lizenzschlüssel auf ein neues Gerät?",
+        "a": "Ihr Lizenzschlüssel ist jeweils nur an ein Gerät gebunden. Um ihn zu übertragen, öffnen Sie die App auf Ihrem neuen Gerät, gehen Sie zu Einstellungen → Abonnement, geben Sie Ihren Lizenzschlüssel ein und klicken Sie auf Aktivieren. Sie werden aufgefordert, die Übertragung zu bestätigen. Nach der Bestätigung ist Ihr neues Gerät aktiv und das vorherige Gerät verliert beim nächsten Start den Zugriff. Wenn Sie die App auf demselben Gerät neu installiert haben, ist keine Übertragung erforderlich – Ihr Gerät wird anhand seiner Hardware-ID erkannt."
+      },
+      "cancel": {
+        "q": "Wie kündige ich mein Abonnement?",
+        "a": "Gehen Sie zu Einstellungen → Abonnement → Abonnement verwalten und folgen Sie den Anweisungen zur Kündigung. Nach der Kündigung behalten Sie bis zum Ende Ihres aktuellen Abrechnungszeitraums weiterhin Zugriff auf die PRO-Vorteile."
+      },
+      "switchTier": {
+        "q": "Kann ich zwischen verschiedenen Plänen wechseln?",
+        "a": "Ja. Kündigen Sie Ihr aktuelles Abonnement und abonnieren Sie anschließend Ihr gewünschtes Abonnement gemäß dem üblichen Abonnementprozess neu."
+      },
+      "invoices": {
+        "q": "Wo finde ich Rechnungen und Quittungen?",
+        "a": "Nach dem Abonnieren erhalten Sie eine E-Mail-Quittung. Für den vollständigen Zahlungsverlauf gehen Sie auf Einstellungen → Abonnement → Abonnement verwalten."
+      },
+      "refund": {
+        "q": "Wie lauten die Rückerstattungsbedingungen?",
+        "a": "PRO Abonnements werden als Spenden behandelt und sind in der Regel nicht rückerstattbar. Rückerstattungen werden im Einzelfall geprüft. Kontaktieren Sie uns über den Hilfebereich oben rechts in der App oder per E-Mail an contact@steamgameidler.com."
+      },
+      "chargeback": {
+        "q": "Was passiert, wenn ich eine Rückbuchung veranlasse?",
+        "a": "Betrügerische Rückbuchungen schaden diesem kleinen, unabhängigen Projekt erheblich. Wenn Sie ohne vorherige Absprache eine Rückbuchung veranlassen, kann Ihr Zugang zu dieser App dauerhaft gesperrt werden. Sollte ein Abrechnungsfehler vorliegen, helfen wir Ihnen gerne, diesen schnellstmöglich zu beheben. Bitte kontaktieren Sie uns dazu über den Hilfebereich oben rechts in der App oder per E-Mail an contact@steamgameidler.com."
+      }
+    },
+    "modal": {
+      "footer": "Die angezeigten Preise verstehen sich in US-Dollar und beinhalten keine Steuern und Gebühren für die Währungsumrechnung, die je nach Standort und Zahlungsmethode anfallen können."
+    },
+    "comparisonTable": {
+      "learnMoreFeatures": "Erfahren Sie mehr über die einzelnen Funktionen"
+    }
+  },
+  "auth": {
+    "landing": {
+      "title": "Melde dich bei Steam Game Idler an",
+      "agentButton": "Steam Anmeldung",
+      "localButton": "Anmeldung Legacy-Verfahren",
+      "localAlreadySignedIn": "Ein lokaler Steam-Client-Account ist bereits angemeldet – es kann immer nur einer gleichzeitig angemeldet sein.",
+      "acknowledge": "Durch Klicken auf ‚Weiter‘ stimmst du den <0> Nutzungsbedingungen </0> zu und bestätigst, dass du unsere <1> Datenschutzerklärung </1> gelesen hast."
+    },
+    "signIn": {
+      "usernameLabel": "Benutzername",
+      "usernamePlaceholder": "Steam Benutzername eingeben",
+      "passwordLabel": "Passwort",
+      "passwordPlaceholder": "Steam Passwort eingeben",
+      "usernameRequired": "Steam Benutzername eingeben.",
+      "passwordRequired": "Steam Passwort eingeben.",
+      "credentialsSectionLabel": "Mit dem Kontonamen anmelden",
+      "guardCode": {
+        "deviceTitle": "Überprüfe deine Steam Mobile App",
+        "deviceDescription": "Geben Sie den Code aus der Steam Mobile App ein.",
+        "emailTitle": "Überprüfen Sie Ihren Posteingang",
+        "emailDescription": "Wir haben einen Code an {{email}} gesendet. Geben Sie ihn unten ein.",
+        "confirmationTitle": "Diese Anmeldung bestätigen",
+        "confirmationDescription": "Bestätige die Anmeldeanfrage in deiner Steam Mobile App, um fortzufahren.",
+        "codeLabel": "Steam Guard code",
+        "incorrectCode": "Der Code ist falsch. Bitte versuche es noch einmal.",
+        "submitButton": "Verifizieren"
+      },
+      "qrCode": {
+        "sectionLabel": "Oder melden Sie sich mit QR-Code an",
+        "instructions": "Verwenden Sie die Steam Mobile App um sich über QR-Code anzumelden."
+      },
+      "errors": {
+        "title": "Anmeldefehler",
+        "invalidCredentials": "Falscher Benutzername oder Passwort.",
+        "denied": "Die Anmeldeanfrage in der Steam Mobile-App wurde abgelehnt. Bitte versuchen Sie es erneut.",
+        "generic": "Beim Anmelden ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut. ({{code}})"
+      }
+    },
+    "localSignIn": {
+      "title": "Wähle ein Konto",
+      "noAccounts": "Auf diesem Gerät wurden keine Steam-Konten gefunden. Melde dich mindestens einmal im Steam-Client an und aktualisiere anschließend die Seite.",
+      "errors": {
+        "steamNotFound": "Es konnte keine lokale Steam-Installation gefunden werden.",
+        "loginVdfUnreadable": "Die auf diesem Gerät gespeicherten Steam-Konten konnten nicht gelesen werden.",
+        "accountNotFound": "Dieses Konto konnte nicht mehr gefunden werden.",
+        "switchFailed": "Konnte Steam-Konten nicht wechseln.",
+        "launchFailed": "Der Steam-Client konnte nicht gestartet werden.",
+        "summaryUnavailable": "Die Kontodetails konnten momentan nicht geladen werden."
+      }
+    },
+    "hero": {
+      "title": "Das einzige Steam-<1/> Automatisierungstool <1/>, das du jemals brauchen wirst",
+      "subtitle": "Sammle Sammelkarten, schalte Erfolge frei, verlängere deine Spielzeit und automatisiere dein Steam-Erlebnis – alles mit einem einzigen Tool."
+    }
+  },
+  "dashboard": {
+    "sidebar": {
+      "section": {
+        "automation": "Automatisierung",
+        "misc": "Sonstiges"
+      },
+      "nav": {
+        "games": "Spiele",
+        "idling": "Leerlauf",
+        "favorites": "Favoriten",
+        "freeGames": "Kostenlose Spiele",
+        "cardFarming": "Karten Farmen",
+        "achievementUnlocker": "Errungenschaft Freischalter",
+        "autoIdle": "Automatischer Leerlauf",
+        "inventoryManager": "Inventar Manager"
+      },
+      "signOut": {
+        "confirmTitle": "Abmelden?",
+        "confirmDescription": "Dadurch wird die aktuell für {{name}} laufende Automatisierung gestoppt und das Konto abgemeldet.",
+        "error": "Die Abmeldebereinigung wurde nicht vollständig abgeschlossen, aber Sie wurden abgemeldet."
+      },
+      "tier": {
+        "label": "Plan",
+        "free": "Kostenlos"
+      },
+      "accountSwitcher": {
+        "modeAgent": "Über Steam angemeldet",
+        "modeLocal": "Lokaler Steam Client",
+        "switched": "Umgeschaltet auf {{name}}",
+        "steamRequired": "Steam muss ausgeführt werden, um zu diesem Konto zu wechseln",
+        "addAccount": {
+          "trigger": "Weiteres Konto hinzufügen",
+          "capReached_one": "Mit dem {{tier}} Plan können gleichzeitig {{count}} Benutzerkonten über Steam angemeldet sein. Melde eines davon ab, um ein weiteres hinzuzufügen, oder upgrade deinen Plan für mehr.",
+          "capReached_other": "Mit dem {{tier}} Plan können gleichzeitig {{count}} Benutzerkonten über Steam angemeldet sein. Melde eines davon ab, um ein weiteres hinzuzufügen, oder upgrade deinen Tarif für mehr.",
+          "capReachedMax": "Du hast die maximale Anzahl an Accounts erreicht, die gleichzeitig mit Steam angemeldet werden können.",
+          "added": "{{name}} hinzugefügt"
+        },
+        "reauth": {
+          "badge": "Andernorts angemeldet",
+          "tooltip": "Dieses Konto wurde auf einem anderen Gerät angemeldet, daher wurde die Automatisierung pausiert. Melden Sie sich erneut an, um fortzufahren.",
+          "modalTitle": "Auf einem anderen Gerät angemeldet",
+          "modalDescription": "{{account}} war auf einem anderen Gerät angemeldet, daher wurde die Automatisierung pausiert. Melden Sie sich erneut an, um fortzufahren.",
+          "reconnect": "Erneutes Verbinden",
+          "methodExplainer": "Die Anmeldung mit Steam erlaubt nur eine aktive Sitzung pro Konto. Wenn Sie weiterspielen möchten, während Steam Game Idler läuft, verwenden Sie stattdessen die Legacy-Anmeldung.",
+          "useDifferentMethod": "Verwenden Sie eine andere Anmeldemethode"
+        }
+      },
+      "ads": {
+        "removeAdsWith": "Werbung entfernen mit"
+      }
+    },
+    "games": {
+      "count_one": "{{count}} Spiel",
+      "count_other": "{{count}} Spiele",
+      "unknownName": "App {{appId}}",
+      "carousels": {
+        "recommended": "Empfohlen",
+        "recent": "Zuletzt gespielt"
+      },
+      "sort": {
+        "playtimeDesc": "Spielzeit (Hoch zu Niedrig)",
+        "playtimeAsc": "Spielzeit (Niedrig zu Hoch)",
+        "recentlyPlayedDesc": "Zuletzt gespielt (Neueste zuerst)",
+        "recentlyPlayedAsc": "Kürzlich gespielt (Älteste erst)"
+      },
+      "empty": {
+        "title": "Keine Spiele gefunden",
+        "description": "Dieses Konto besitzt noch keine Spiele."
+      },
+      "errors": {
+        "title": "Spiele konnten nicht geladen werden",
+        "webApiUnavailable": "Spielzeitdaten von Steam konnten momentan nicht geladen werden.",
+        "cacheIoFailed": "Der Spielecache konnte nicht gelesen oder beschrieben werden.",
+        "generic": "Beim Laden deiner Spiele ist ein Fehler aufgetreten. Bitte versuche es erneut. ({{code}})"
+      },
+      "privacyWarning": {
+        "title": "Es fehlen möglicherweise einige Spieldaten",
+        "description": "Dein Steam-Profil oder deine Spieldetails scheinen auf privat eingestellt zu sein, daher sind Spielzeit, zuletzt gespielte Spiele und einige Spiele möglicherweise unvollständig. Stelle dein Profil auf öffentlich oder füge deinen eigenen Steam-Web-API-Schlüssel in den Einstellungen hinzu, um dieses Problem zu beheben.",
+        "changeSettings": "Privatsphäre Einstellungen ändern",
+        "useOwnKey": "Eigenen API Schlüssel hinzufügen"
+      }
+    },
+    "idling": {
+      "count_one": "{{count}} Spiel im Leerlauf",
+      "count_other": "{{count}} Spiele im Leerlauf",
+      "stopAll": "Alle stoppen",
+      "sections": {
+        "manual": "Manuell im Leerlauf",
+        "other": "Sonstiges"
+      },
+      "empty": {
+        "title": "Keine Spiele im Leerlauf",
+        "description": "Starten Sie ein Spiel über die Registerkarte „Spiele“, um es hier anzuzeigen."
+      },
+      "errors": {
+        "startFailed": "Das Spiel konnte nicht im Leerlauf gestartet werden.",
+        "maxPlaytimeCapReached": "Dieses Spiel hat bereits seine maximale Spielzeit erreicht.",
+        "generic": "Beim Aktualisieren des Leerlaufs ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut. ({{code}})"
+      }
+    },
+    "favorites": {
+      "count_one": "{{count}} Favorit",
+      "count_other": "{{count}} Favoriten",
+      "confirmClear": {
+        "title": "Alle Favoriten löschen?",
+        "description": "Dadurch werden alle {{count}} Spiele aus Ihrer Favoritenliste entfernt."
+      },
+      "empty": {
+        "title": "Noch keine Favoriten",
+        "description": "Füge Spiele über die Registerkarte „Alle Spiele“ hinzu, um sie hier anzuzeigen."
+      },
+      "errors": {
+        "title": "Favoriten konnten nicht aktualisiert werden",
+        "cacheIoFailed": "Favoriten-Cache konnte nicht gelesen oder geschrieben werden.",
+        "generic": "Beim Aktualisieren der Favoriten ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut. ({{code}})"
+      }
+    },
+    "freeGames": {
+      "count_one": "{{count}} Kostenloses Spiel verfügbar",
+      "count_other": "{{count}} Kostenlose Spiele verfügbar",
+      "actions": {
+        "claim": "Einfordern",
+        "claimed": "Erhalten"
+      },
+      "outcomes": {
+        "alreadyOwned": "Du besitzt dieses Spiel bereits."
+      },
+      "empty": {
+        "title": "Derzeit keine Gratisspiele",
+        "description": "Schauen Sie später noch einmal vorbei – Steam bietet regelmäßig Spiele kostenlos an."
+      },
+      "errors": {
+        "title": "Kostenlose Spiele konnten nicht geladen werden",
+        "scrapeFailed": "Steam konnte momentan nicht auf kostenlose Spiele überprüft werden.",
+        "storeLoginFailed": "Anmeldung im Steam App Store fehlgeschlagen. Bitte versuchen Sie es erneut.",
+        "storeLogoutFailed": "Die Abmeldung vom Steam Store ist fehlgeschlagen. Bitte versuchen Sie es erneut.",
+        "claimFailed": "Dieses Spiel konnte nicht beansprucht werden. Es ist möglicherweise nicht mehr kostenlos oder Sie besitzen es bereits.",
+        "generic": "Beim Laden der kostenlosen Spiele ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut. ({{code}})"
+      },
+      "notifications": {
+        "title": "Kostenlose Spiele verfügbar!",
+        "bodyOne": "{{name}} ist jetzt kostenlos auf Steam erhältlich.",
+        "bodyMany": "{{count}} neue kostenlose Spiele sind auf Steam verfügbar."
+      },
+      "autoRedeem": {
+        "success": "Automatisch eingelöst {{name}}",
+        "failure": "Automatische Einlösung fehlgeschlagen {{name}}"
+      },
+      "correction": {
+        "granted": "{{name}} wurde tatsächlich erfolgreich beansprucht – die vorherige Fehlermeldung war falsch."
+      }
+    },
+    "achievements": {
+      "tabs": {
+        "achievements": "Errungenschaften",
+        "statistics": "Statistiken"
+      },
+      "header": {
+        "viewOnSteam": "Auf Steam anzeigen",
+        "viewOnSteamDb": "Auf SteamDB anzeigen"
+      },
+      "protectedAlert": {
+        "title": "Einige Gegenstände sind geschützt",
+        "description": "Als geschützt gekennzeichnete Erfolge oder Statistiken werden vom Spielserver festgelegt und können von Clients nicht geändert werden."
+      },
+      "unlockedCount": "{{unlocked}} / {{total}} freigeschaltet",
+      "statCount_one": "{{count}} Statistik",
+      "statCount_other": "{{count}} Statistiken",
+      "noDescription": "Keine Beschreibung",
+      "protectedTooltip": "Wird vom Spielserver festgelegt und kann von Clients nicht geändert werden.",
+      "statFlags": "Flaggen: {{flags}}",
+      "edited": "Bearbeitet",
+      "editedCount": "{{count}} bearbeitet",
+      "incrementOnlyTooltip": "Diese Statistik kann nur erhöht und nicht verringert werden.",
+      "sort": {
+        "percent": "Globale Entsperrung %",
+        "unlocked": "Zuerst freigeschaltet",
+        "locked": "Zuerst gesperrt",
+        "unprotected": "Ungeschützt zuerst",
+        "protected": "Geschützt zuerst"
+      },
+      "rarity": {
+        "common": "Gewöhnlich",
+        "uncommon": "Ungewöhnlich",
+        "rare": "Selten",
+        "epic": "Episch",
+        "legendary": "Legendär"
+      },
+      "actions": {
+        "unlock": "Freischalten",
+        "lock": "Sperren",
+        "unlockAll": "Alle entsperren",
+        "lockAll": "Alle sperren",
+        "applyChanges": "Änderungen übernehmen",
+        "applyChangesCount": "Änderungen übernehmen ({{count}})",
+        "saveChanges": "Änderungen speichern",
+        "saveChangesCount": "Änderungen speichern ({{count}})",
+        "resetAll": "Alle zurücksetzen"
+      },
+      "confirmUnlockAll": {
+        "title": "Alle Erfolge freischalten?",
+        "description": "Dies wird alle Errungenschaften für dieses Spiel freischalten, die noch nicht freigeschaltet oder geschützt sind."
+      },
+      "confirmLockAll": {
+        "title": "Alle Erfolge sperren?",
+        "description": "Dies wird jede Errungenschaft für dieses Spiel sperren, die noch nicht gesperrt oder geschützt ist."
+      },
+      "confirmApplyChanges": {
+        "title": "Inszenierte Änderungen anwenden?",
+        "descriptionBoth": "Dies wird {{unlockCount}} freischalten und {{lockCount}} gestaffelte Leistung(en) sperren.",
+        "descriptionUnlockOnly": "Dies wird {{unlockCount}} gestaffelte Leistung(en) freischalten.",
+        "descriptionLockOnly": "Dies sperrt {{lockCount}} gestaffelte Leistung(en)."
+      },
+      "confirmResetStats": {
+        "title": "Alle Statistiken zurücksetzen?",
+        "description": "Dadurch wird jede Statistik für dieses Spiel auf seinen Standardwert zurückgesetzt. Dies kann nicht rückgängig gemacht werden."
+      },
+      "empty": {
+        "title": "Keine Errungenschaften",
+        "description": "Dieses Spiel hat keine Errungenschaften."
+      },
+      "emptyStats": {
+        "title": "Keine Statistiken",
+        "description": "Dieses Spiel verfügt über keine Statistiken."
+      },
+      "searchNoResults": {
+        "title": "Keine Treffer für den Suchbegriff",
+        "description": "Versuchen Sie einen anderen Suchbegriff."
+      },
+      "toasts": {
+        "achievementUnlocked": "\"{{name}}\" entsperrt",
+        "achievementLocked": "\"{{name}}\" gesperrt",
+        "bulkUnlocked_one": "{{count}} Errungenschaft freigeschaltet",
+        "bulkUnlocked_other": "{{count}} Errungenschaften freigeschaltet",
+        "bulkLocked_one": "{{count}} Errungenschaft gesperrt",
+        "bulkLocked_other": "{{count}} Errungenschaften gesperrt",
+        "bulkNoChanges": "Nichts zu ändern - befindet sich bereits im gewünschten Zustand oder ist geschützt.",
+        "changesApplied_one": "{{count}} Errungenschaft aktualisiert",
+        "changesApplied_other": "{{count}} Errungenschaften aktualisiert",
+        "applyPartialFailure": "Einige inszenierte Errungenschaften konnten nicht aktualisiert werden. Bitte versuche es erneut.",
+        "statsSaved_one": "{{count}} Statistik aktualisiert",
+        "statsSaved_other": "{{count}} Statistiken aktualisiert",
+        "statsReset": "Statistik zurückgesetzt"
+      },
+      "errors": {
+        "title": "Errungenschaften konnten nicht geladen werden",
+        "invalidApp": "Diese App hat keine Errungenschaft Dateien.",
+        "achievementNotFound": "Diese Errungenschaft konnte nicht gefunden werden.",
+        "statNotFound": "Diese Statistik konnte nicht gefunden werden.",
+        "protected": "Dieser Wert wird vom Spielserver festgelegt und kann nicht geändert werden.",
+        "unsupportedGameCoordinator": "Für dieses Spiel werden keine Erfolge unterstützt, wenn Sie bei Steam angemeldet sind – verwenden Sie stattdessen Ihren lokalen Steam-Client.",
+        "unsupportedGameCoordinatorLinux": "Für dieses Spiel werden keine Errungenschaften unterstützt, wenn Sie bei Steam angemeldet sind.",
+        "generic": "Beim laden der Errungenschaften ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut. ({{code}})"
+      }
+    },
+    "cardFarming": {
+      "settings": {
+        "dropSortOrder": {
+          "options": {
+            "highestFirst": "Höchster Drop zuerst",
+            "lowestFirst": "Niedrigster Drop zuerst"
+          }
+        },
+        "nextTask": {
+          "title": "Eine weitere Aufgabe starten, wenn erledigt",
+          "description": "Sobald das sammeln beendet ist, starten Sie automatisch eine weitere Automatisierung."
+        }
+      }
+    },
+    "achievementUnlocker": {
+      "status": {
+        "running_one": "Entsperre {{count}} Spiel",
+        "running_other": "Entsperre {{count}} Spiele"
+      },
+      "addAllToQueue": "Alle zur Warteschlange hinzufügen",
+      "confirmAddAllToQueue": {
+        "title": "Alle {{count}} Spiele zur Warteschlange hinzufügen?",
+        "description": "Jedes Spiel muss nach Errungenschaften überprüft werden, was bei einer großen Bibliothek eine lange Zeit dauern kann. Manuelles hinzufügen von Spielen wird empfohlen."
+      },
+      "confirmClearQueue": {
+        "title": "Warteschlange für Errungenschaften löschen?",
+        "description": "Dies wird alle {{count}} Spiele von der Errungenschaftswarteschlange entfernen."
+      },
+      "empty": {
+        "description": "Füge Spiele von der Registerkarte Alle Spiele hinzu, um sie für die automatische Entsperrung von Errungenschaften in Warteschlange zu stellen."
+      },
+      "settings": {
+        "idle": {
+          "title": "Leerlauf beim Entsperren",
+          "description": "Das Spiel wird während des Freischaltens der Errungenschaften im Leerlauf gelassen."
+        },
+        "hidden": {
+          "title": "Versteckte Errungenschaften überspringen",
+          "description": "Errungenschaften die Steam als ausgeblendet markiert hat nicht freischalten."
+        },
+        "multipleGames": {
+          "title": "Mehrere Spiele gleichzeitig ausführen",
+          "description": "Bearbeite bis zu {{count}} in der Warteschlange befindliche Spiele gleichzeitig, anstatt eines nach dem anderen."
+        },
+        "interval": {
+          "title": "Entsperr Intervall",
+          "description": "Zwischen den Entsperrvorgängen eine zufällige Verzögerung zwischen {{min}} und {{max}} Minuten hinzufügen.",
+          "to": "zu"
+        },
+        "schedule": {
+          "title": "Nur während eines Zeitplans entsperren",
+          "description": "Nur Errungenschaften zwischen den folgenden Zeiten freischalten."
+        },
+        "nextTask": {
+          "description": "Sobald die Warteschlange leer ist, wird automatisch eine weitere Automatisierung gestartet."
+        }
+      },
+      "order": {
+        "delayBeforeFirstUnlock": "Verzögerung vor der ersten Entsperrung",
+        "reset": "Zurücksetzen",
+        "skipped": "Übersprungen",
+        "empty": {
+          "title": "Es gibt nichts mehr zu bestellen",
+          "description": "Dieses Spiel hat keine verbleibenden Errungenschaften zum freizuschalten."
+        },
+        "toasts": {
+          "saved": "Errungenschaftsreihenfolge gespeichert"
+        }
+      },
+      "importTimings": {
+        "title": "Zeiten importieren",
+        "description": "Holen Sie die tatsächlichen Freischaltzeiten der Erfolge anderer Spieler und verwenden Sie diese, um realistische Verzögerungen pro Erfolg abzuleiten.",
+        "inputPlaceholder": "SteamID64, Profil-URL oder Vanity-URL",
+        "importButton": "Importieren",
+        "success_one": "Importiertes Zeitangabe für {{count}} Errungenschaft",
+        "success_other": "Importierte Zeitangaben für {{count}} Errungenschaften",
+        "errors": {
+          "profilePrivate": "Dieses Profil ist Privat oder hat keine öffentlichen Errungenschafts daten.",
+          "noTimestamps": "Dieser Spieler hat keine Errungenschaften mit dem Entsperrzeitstempel für dieses Spiel.",
+          "notFound": "Das Profil konnte nicht aufgelöst werden.",
+          "generic": "Die Zeitangaben konnten momentan nicht importiert werden. Bitte versuchen Sie es erneut. ({{code}})"
+        }
+      },
+      "progress": {
+        "scanning": "Überprüfe Warteschlange auf Errungenschaften zum Entsperren",
+        "scanningCount": "{{checked}} von {{total}} geprüft",
+        "remaining_one": "{{count}} verbleibende Errungenschaft",
+        "remaining_other": "{{count}} verbleibende Errungenschaften",
+        "starting": "Startet…",
+        "waitingForSchedule": "Warten auf das geplante Entsperrfenster",
+        "currentGame": "Aktuelle Spiel",
+        "upNext": "Als nächstes"
+      }
+    },
+    "inventoryManager": {
+      "filter": {
+        "badge": "Hat Abzeichen",
+        "locked": "Gesperrt"
+      },
+      "sort": {
+        "label": "Sortieren nach",
+        "game-asc": "Spiel (A-Z)",
+        "game-desc": "Spiel (Z-A)",
+        "badge-desc": "Abzeichenstufe"
+      },
+      "empty": {
+        "title": "Keine Gegenstände gefunden",
+        "description": "Es wurden keine marktfähigen Gegenstände gefunden, die den aktuellen Such- und Filterkriterien entsprechen."
+      },
+      "priceData": {
+        "sellOrders": "Verkaufsaufträge",
+        "buyOrders": "Kaufaufträge"
+      },
+      "settings": {
+        "currency": {
+          "title": "Währung",
+          "description": "In welcher Währung die Marktpreise und Listenelemente abgerufen werden sollen."
+        },
+        "pricePreference": {
+          "title": "Standardpreis",
+          "description": "Welcher Preis für den Massenverkauf von Gegenständen.",
+          "options": {
+            "highestBuyOrder": "Höchster Kaufauftrag",
+            "lowestSellOrder": "Niedrigster Kaufauftrag"
+          }
+        },
+        "priceAdjustment": {
+          "title": "Preisanpassung",
+          "description": "Fügt {{value}} zu jedem Angebotspreis hinzu, egal ob dieser automatisch ausgefüllt oder manuell eingegeben wurde."
+        },
+        "sellLimit": {
+          "title": "Verkaufs Limit",
+          "description": "Es werden nur Artikel aufgelistet, deren Preis zwischen {{min}} und {{max}} liegt."
+        },
+        "sellDelay": {
+          "title": "Verkaufsverzögerung",
+          "description": "Warten Sie {{value}} Sekunden zwischen dem Auflisten der einzelnen Elemente, um eine Ratenbegrenzung zu vermeiden."
+        }
+      },
+      "toasts": {
+        "listed_one": "{{count}} Gegenstand aufgelistet",
+        "listed_other": "{{count}} Gegenstände aufgelistet",
+        "listFailed_one": "{{count}} Gegenstand konnte nicht aufgelistet werden",
+        "listFailed_other": "{{count}} Gegenstände konnten nicht aufgelistet werden",
+        "noListings": "Sie haben keine aktiven Markteinträge.",
+        "removedListings": "{{count}} der {{total}} Einträge entfernt",
+        "removeFailed": "Es konnten keine Einträge entfernt werden.",
+        "noneEligible": "Keine Gegenstände waren zum Verkauf berechtigt - überprüfen Sie die Verkaufsgrenzen Ihrer Inventareinstellungen.",
+        "priceFetchCooldown": "Bitte warten Sie {{seconds}} Sekunden, bevor Sie weitere Gegenstandspreise abrufen",
+        "itemLocked": "Dieser Gegenstand ist gesperrt und kann nicht angeboten werden.",
+        "priceOutOfRange": "{{price}} liegt außerhalb Ihres konfigurierten Verkaufslimits ({{min}}-{{max}}).",
+        "skippedLocked_one": "{{count}} gesperrter Gegenstand übersprungen",
+        "skippedLocked_other": "{{count}} gesperrte Gegenstände übersprungen",
+        "skippedOutOfRange_one": "{{count}} Gegenstand außerhalb Ihres Verkaufslimits übersprungen",
+        "skippedOutOfRange_other": "{{count}} Gegenstände außerhalb Ihres Verkaufslimits übersprungen"
+      },
+      "errors": {
+        "title": "Ihr Inventar konnte nicht aktualisiert werden",
+        "fetchFailed": "Dein Steam Community Inventar konnte momentan nicht geladen werden.",
+        "cacheIoFailed": "Der Inventarcache konnte nicht gelesen oder beschrieben werden.",
+        "priceFetchFailed": "Konnte derzeit keinen Marktpreis abrufen.",
+        "priceRateLimited": "Steam beschränkt derzeit die Anzahl der Preisabfragen. Bitte versuchen Sie es in Kürze erneut.",
+        "itemNotFound": "Dieser Gegenstand konnte in deinem zwischengespeicherten Inventar nicht gefunden werden.",
+        "listingsFetchFailed": "Ihre aktiven Marktangebote konnten nicht gelesen werden.",
+        "settingsIoFailed": "Ihre Inventareinstellungen konnten nicht gelesen oder geschrieben werden.",
+        "generic": "Beim Aktualisieren Ihres Inventars ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut. ({{code}})"
+      }
+    },
+    "settings": {
+      "title": "Einstellungen",
+      "general": {
+        "title": "Allgemein",
+        "account": {
+          "displayNameLabel": "Anzeigename",
+          "steamIdLabel": "Steam ID"
+        }
+      }
     }
   }
 }

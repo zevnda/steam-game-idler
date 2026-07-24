@@ -3,46 +3,70 @@
     "actions": {
       "submit": "Отправить",
       "cancel": "Отмена",
+      "tryAgain": "Попробовать снова",
       "continue": "Продолжить",
       "refresh": "Обновить",
       "save": "Сохранить",
       "settings": "Настройки",
       "signIn": "Войти",
       "signOut": "Выйти",
+      "start": "Запуск",
       "stop": "Остановить",
       "clear": "Очистить",
       "done": "Готово",
       "copy": "Скопировать",
       "paste": "Вставить",
-      "add": "Добавить"
+      "add": "Добавить",
+      "backToTop": "Вернуться наверх"
     },
     "gameCardMenu": {
+      "startIdling": "Начать бездействие",
+      "stopIdling": "Закончить бездействие",
+      "manageAchievements": "Управлять достижениями",
       "viewOnSteam": "Посмотреть в Steam",
       "addTo": "Добавить в"
     },
     "minutes": "мин.",
     "zeroUnlimitedHint": "0 = неограниченно",
     "errorBoundary": {
-      "title": "Что-то пошло не так"
+      "title": "Что-то пошло не так",
+      "description": "Произошла непредвиденная ошибка. Попробуйте заново, и если это продолжается, то скажите об этом в Помощь & Поддержка."
     },
     "manualCookies": {
       "sidLabel": "sessionid",
       "slsLabel": "steamLoginSecure",
       "smaLabel": "steamMachineAuth",
+      "smaDescription": "Необязательно. Нужно только, если у вашего аккаунта есть рассматриваемая Steam Guard машинная конфирмация.",
+      "savedFromSettingsNote": "Загружено со Steam Credentials, сохранено в настройках.",
       "savedToast": "Учётные данные сохранены",
-      "clearedToast": "Учётные данные очищены"
+      "clearedToast": "Учётные данные очищены",
+      "clearFailed": "Не можем очистить ваши сохраненные Steam полномочия. ({{code}})"
     },
     "manualAdd": {
-      "namePlaceholder": "например, «К-Он! Фильм»"
+      "title": "Добавить игру вручную",
+      "description": "Добавить игру по его Steam App ID, если она не показывается автоматически.",
+      "nameLabel": "Имя",
+      "namePlaceholder": "например, «К-Он! Фильм»",
+      "appIdLabel": "ID Приложения",
+      "appIdPlaceholder": "напр. 518440",
+      "duplicateError": "Этот App ID уже есть в листе"
     },
     "search": {
+      "placeholder": "Поиск",
       "recentSearches": "Недавние запросы",
-      "noRecentSearches": "Нет недавних запросов"
+      "noRecentSearches": "Нет недавних запросов",
+      "noResults": "По вашему запросу ничего не найдено",
+      "noResultsTitle": "Никакие игры не подходят к вашему запросу",
+      "noResultsDescription": "Попробуйте другое название или ID приложения."
     },
     "errors": {
       "steamUtilityMissing": "Компонент Steam Agent отсутствует в этой установке.",
       "processSpawnFailed": "Не удалось запустить процесс Steam Agent.",
-      "processExited": "Процесс Steam Agent неожиданно завершился."
+      "processExited": "Процесс Steam Agent неожиданно завершился.",
+      "timeout": "Steam занял много времени загружаясь. Пожалуйста, попробуйте еще раз.",
+      "sessionNotFound": "Ваша сессия Steam неактивна. Пожалуйста, войдите снова.",
+      "steamIdUnknown": "Ваш Steam ID еще не был решенным. Пожалуйста, попробуйте еще раз в другое время.",
+      "steamNotRunning": "Steam неактивен. Пожалуйста, откройте его и попробуйте еще раз."
     },
     "notifications": "Уведомления",
     "menu": "Меню",
@@ -57,25 +81,72 @@
       "description": "Steam закрыт. Перезапустите Steam, чтобы продолжить."
     },
     "banner": {
+      "pastDue": "Ваша подписка PRO истекла. Пожалуйста, обновите вашу подписку чтобы не потерять к ней доступ.",
       "manageSubscription": "Управление подпиской"
     },
     "proTier": {
       "gamerRequired": "Требуется тариф Gamer.",
       "casualRequired": "Требуется тариф Casual."
     },
+    "badges": {
+      "beta": "Бета"
+    },
     "tabs": {
       "allGames": "Все игры",
       "queue": "Очередь"
     },
     "connect": {
-      "automaticTab": "Автоматически"
+      "automaticTab": "Автоматически",
+      "manualTab": "Руководство"
+    },
+    "sort": {
+      "nameAsc": "Название (A-Z)",
+      "nameDesc": "Название (Z-A)"
     },
     "noGamesQueued": "Нет игр в очереди",
     "gamesQueuedCount_one": "{{count}} игра в очереди",
-    "gamesQueuedCount_other": "{{count}} игр в очереди"
+    "gamesQueuedCount_other": "{{count}} игр в очереди",
+    "completedThisSessionCount": "Выполнена эта сессия ({{count}})"
   },
   "update": {
     "downloading": "Скачивание обновления..."
+  },
+  "toast": {
+    "checkUpdate": {
+      "none": "Вы уже на последней версии",
+      "error": "Не удалось проверить обновления. Попробуйте еще раз."
+    },
+    "paypalCheckout": {
+      "error": "Не удалось начать платеж PayPal. Попробуйте еще раз."
+    }
+  },
+  "notifications": {
+    "markAllRead": "Отметить как \"Прочитано\"",
+    "empty": "Еще нет уведомлений"
+  },
+  "menu": {
+    "guide": "Документация",
+    "issue": "Сообщить об проблеме",
+    "feature": "Предложить новую фичу",
+    "support": "Поддержите нас",
+    "joinDiscord": "Зайти в наш Discord канал",
+    "changelog": "Список изменений",
+    "update": "Проверить на обновления"
+  },
+  "changelog": {
+    "star": "Поставить звезду на GitHub"
+  },
+  "titlebar": {
+    "closeToTrayNotification": "Steam Game Idler продолжит использоваться в фоне",
+    "goPro": "Купить PRO-подписку",
+    "helpDesk": "Поддержка",
+    "updateReady": "Обновление готово"
+  },
+  "tray": {
+    "show": "Показать",
+    "recenter": "Сбросить положение окна",
+    "update": "Проверить на обновления...",
+    "quit": "Выйти"
   },
   "proMode": {
     "tier": {

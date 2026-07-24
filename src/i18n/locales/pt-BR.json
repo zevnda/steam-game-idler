@@ -1,1 +1,273 @@
-{}
+{
+  "common": {
+    "actions": {
+      "submit": "Enviar",
+      "cancel": "Cancelar",
+      "tryAgain": "Tente novamente",
+      "continue": "Continuar",
+      "refresh": "Atualizar",
+      "save": "Salvar",
+      "settings": "Configurações",
+      "signIn": "Entrar",
+      "signOut": "Sair",
+      "start": "Começar",
+      "stop": "Parar",
+      "clear": "Claro",
+      "done": "Feito",
+      "copy": "Cópia",
+      "paste": "Colar",
+      "add": "Adicionar"
+    },
+    "gameCardMenu": {
+      "startIdling": "Iniciar idle",
+      "stopIdling": "Parar idle",
+      "manageAchievements": "Gerenciar Conquistas",
+      "viewOnSteam": "Ver na Steam",
+      "addTo": "Adicionar a"
+    },
+    "minutes": "minutos",
+    "zeroUnlimitedHint": "0 = ilimitado",
+    "errorBoundary": {
+      "title": "Algo inesperado aconteceu",
+      "description": "Ocorreu um erro inesperado. Tente novamente e, se o problema persistir, entre em contato com o Suporte."
+    },
+    "manualCookies": {
+      "sidLabel": "sessionid",
+      "slsLabel": "steamLoginSecure",
+      "smaLabel": "steamMachineAuth",
+      "smaDescription": "Opcional. Necessário apenas se sua conta tiver uma confirmação de máquina Steam Guard pendente.",
+      "savedFromSettingsNote": "Carregado a partir das credenciais do Steam salvas nas Configurações.",
+      "savedToast": "Credenciais salvas",
+      "clearedToast": "Credenciais apagadas",
+      "clearFailed": "Credenciais não puderam ser salvas ({{code}})"
+    },
+    "manualAdd": {
+      "title": "Adicionar jogo manualmente",
+      "description": "Adicione um jogo pelo seu ID do aplicativo Steam se ele não estiver aparecendo automaticamente.",
+      "nameLabel": "Nome",
+      "namePlaceholder": "p.ex. K-On! O Filme",
+      "appIdLabel": "ID do aplicativo",
+      "appIdPlaceholder": "p.ex. 518440",
+      "duplicateError": "Este ID de aplicativo já está na lista"
+    },
+    "search": {
+      "placeholder": "Pesquisar",
+      "recentSearches": "Buscas recentes",
+      "noRecentSearches": "Nenhuma busca recente",
+      "noResults": "Nenhum resultado encontrado",
+      "noResultsTitle": "Nenhum jogo corresponde à sua pesquisa",
+      "noResultsDescription": "Tente um título ou ID de aplicativo diferente."
+    },
+    "errors": {
+      "generic": "Algo deu errado. Por favor, tente novamente. ({{code}})",
+      "steamUtilityMissing": "O componente do agente Steam está ausente desta instalação.",
+      "processSpawnFailed": "Não foi possível iniciar o processo do agente Steam.",
+      "processExited": "O processo do agente Steam fechou inesperadamente.",
+      "timeout": "O Steam demorou muito para responder. Tente novamente.",
+      "sessionNotFound": "Sua sessão Steam não está mais ativa. Por favor, faça login novamente.",
+      "steamIdUnknown": "Seu ID Steam ainda não foi resolvido. Tente novamente em instantes.",
+      "steamNotRunning": "O Steam não está funcionando. Por favor, abra o Steam e tente novamente."
+    },
+    "notifications": "Notificações",
+    "menu": "Menu",
+    "needHelp": "Precisa de ajuda?",
+    "learnMore": "Saiba mais",
+    "status": {
+      "saved": "Salvo",
+      "cleared": "Limpo"
+    },
+    "steamWarning": {
+      "title": "Aviso",
+      "description": "Steam foi encerrado. Favor reinicie o aplicativo para prosseguir."
+    },
+    "banner": {
+      "pastDue": "Sua assinatura PRO está próxima de vencer. Favor atualize seu método de pagamento para não perder acesso.",
+      "manageSubscription": "Gerenciamento de assinatura"
+    },
+    "proTier": {
+      "gamerRequired": "Requer a assinatura Gamer.",
+      "casualRequired": "Requer a assinatura Casual."
+    },
+    "tabs": {
+      "allGames": "Todos os jogos",
+      "queue": "Fila"
+    },
+    "connect": {
+      "automaticTab": "Automático",
+      "manualTab": "Manual"
+    },
+    "sort": {
+      "nameAsc": "Nome (A-Z)",
+      "nameDesc": "Nome (Z-A)"
+    },
+    "noGamesQueued": "Nenhum jogo na fila",
+    "gamesQueuedCount_one": "{{count}} jogo em fila",
+    "gamesQueuedCount_other": "{{count}} jogos na fila",
+    "completedThisSessionCount": "Completos nessa sessão ({{count}})"
+  },
+  "update": {
+    "downloading": "Baixando a atualização..."
+  },
+  "toast": {
+    "checkUpdate": {
+      "none": "Você já está na versão mais recente",
+      "error": "Não foi possível checar por atualizações. Por favor, tente novamente."
+    },
+    "paypalCheckout": {
+      "error": "Não pode ser iniciado o pagamento via PayPal. Por favor, tente novamente."
+    }
+  },
+  "notifications": {
+    "markAllRead": "Marcar todas como lidas",
+    "empty": "Nenhuma notificação"
+  },
+  "menu": {
+    "guide": "Documentação",
+    "issue": "Reportar problemas",
+    "feature": "Pedir novas funções",
+    "support": "Me apoie",
+    "joinDiscord": "Junte-se ao nosso Discord",
+    "changelog": "Lista de atualizações",
+    "update": "Checar por atualizações"
+  },
+  "changelog": {
+    "star": "Estrelar no GitHub"
+  },
+  "titlebar": {
+    "closeToTrayNotification": "Steam Game Idler irá continuar funcionando em segundo plano",
+    "goPro": "Assinar Pro",
+    "helpDesk": "Central de ajuda",
+    "updateReady": "Atualização disponível"
+  },
+  "tray": {
+    "show": "Mostrar",
+    "recenter": "Restaurar posição da janela",
+    "update": "Checando por atualizações..",
+    "quit": "Sair"
+  },
+  "proMode": {
+    "hero": {
+      "headline": "Destravar mais funções",
+      "subtext": "As funções principais do SGI são <1>gratuita</1>, e<3>sempre será</3>. PRO existe unicamente para usuários que desejam apoiar o desenvolvimento da SGI - As funções extras são o nosso jeito de dizer <5>Obrigado</5> pelo seu apoio.",
+      "viewTiers": "Ver os níveis de PRO",
+      "startingAt": "Começão a ${{price}} por mês - Pode cancelar a qualquer momento"
+    },
+    "section": {
+      "allFeatures": "Todas as funções",
+      "chooseTier": "Escolha seu nível",
+      "comparePlans": "Comparar níveis",
+      "faq": "Perguntas frequentes"
+    },
+    "cards": {
+      "adFree": {
+        "title": "Experiencia sem anúncios",
+        "description": "Use o SGI sem anúncios para uma ‘interface’ limpa e sem distrações."
+      },
+      "themes": {
+        "title": "Temas exclusivos",
+        "description": "A customização da SGI com 6 temas exclusivos está limitada apenas a assinantes PRO."
+      },
+      "customBackground": {
+        "title": "Imagem de fundo customizada"
+      },
+      "customFont": {
+        "title": "Fontes customizadas"
+      },
+      "liveSupport": {
+        "title": "Suporte técnico em tempo real",
+        "description": "Pule as filas - fale diretamente com o desenvolvedor via a central de ajuda no aplicativo e tenha suporte em tempo real."
+      },
+      "credentials": {
+        "title": "Recuperação automática de credenciais Steam"
+      },
+      "multiAccount": {
+        "title": "Suporte para múltiplas contas",
+        "description": "Faça login e gerencie múltiplas contas Steam simultaneamente."
+      },
+      "autoFarmCards": {
+        "title": "Farm de cartas automático",
+        "description": "O SGI monitora a sua biblioteca e automaticamente começa a farmar qualquer jogo que ainda possua drops restantes."
+      },
+      "gamesList": {
+        "title": "Update da lista de jogos automáticos",
+        "description": "A sua lista de jogos atualiza automaticamente a cada 15 minutos conforme você adiciona e joga seus jogos."
+      },
+      "multipleUnlockerGames": {
+        "title": "Destrave conquistas para múltiplos jogos",
+        "description": "Destrave conquistas para múltiplos jogos ao mesmo tempo, no destravador de conquistas ao invés de um por vez."
+      },
+      "freeGames": {
+        "title": "Resgatar jogos gratuitos",
+        "description": "Automaticamente resgata jogos gratuitos no Steam assim que ficam disponíveis - Nunca perca um presente."
+      },
+      "sellDupes": {
+        "title": "Vender itens duplicados",
+        "description": "Liste com facilidade a venda todos os itens duplicados do seu inventário com um único clique."
+      },
+      "customPresence": {
+        "title": "Status do Steam customizado"
+      }
+    },
+    "tier": {
+      "mostPopular": "Populares",
+      "perMonth": "/por Mês",
+      "everythingInCasualPlus": "Tudo do Casual, Plus",
+      "currentPlan": "Plano atual",
+      "continueWithStripe": "Stripe",
+      "continueWithPaypal": "PayPal",
+      "processing": "Processando...",
+      "cancelAnytime": "Cancele a qualquer momento",
+      "casual": {
+        "name": "Casual",
+        "discordRole": "Título no Discord PRO",
+        "multiAccount": "3 contas simultâneas",
+        "multipleUnlockerGames": "Destrave 3 jogos de uma só vez"
+      },
+      "gamer": {
+        "name": "Gamer",
+        "freeGames": "Resgate automático de jogos",
+        "sellDupes": "Venda de itens duplicados",
+        "importTimings": "Importe o tempo de destrave das conquistas",
+        "multipleUnlockerGames": "Destrave 32 jogos de uma só vez",
+        "multiAccount": "10 contas simultâneas"
+      }
+    },
+    "faq": {
+      "subscriptionNotActivated": {
+        "q": "Eu comprei o PRO, mas a minha assinatura não foi ativada?",
+        "a": "Após o pagamento, você receberá um email contendo sua chave de licença. Abra o aplicativo, vá em configurações → Assinaturas, copie sua chave no campo e clique ativar. Se ainda estiver tendo problemas, contate-nos através da central de ajuda no campo superior direito do aplicativo ou através do contact@teamgameidler.com."
+      },
+      "transferDevice": {
+        "q": "Como transferir minha chave para um dispositivo novo?"
+      }
+    },
+    "modal": {
+      "footer": "Os preços exibidos estão em USD e não incluem impostos e taxas de conversão de moeda, que podem ser aplicados dependendo da sua localização e método de pagamento."
+    },
+    "comparisonTable": {
+      "learnMoreFeatures": "Saiba mais sobre cada recurso"
+    }
+  },
+  "auth": {
+    "landing": {
+      "title": "Entrar no Steam Game Idler"
+    },
+    "localSignIn": {
+      "errors": {
+        "summaryUnavailable": "Não deu para carregar os detalhes da conta agora."
+      }
+    },
+    "hero": {
+      "title": "A única ferramenta de<1/>automação da Steam<1/>que você vai precisar"
+    }
+  },
+  "dashboard": {
+    "settings": {
+      "debug": {
+        "system": {
+          "os": "{{osVersion}} ({{arch}})"
+        }
+      }
+    }
+  }
+}
