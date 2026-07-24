@@ -1,1 +1,29 @@
-{}
+{
+  "common": {
+    "actions": {
+      "submit": "Potrdi",
+      "cancel": "Prekliči",
+      "tryAgain": "Poskusi znova",
+      "continue": "Nadaljuj",
+      "refresh": "Osveži",
+      "save": "Shrani",
+      "settings": "Nastavitve",
+      "signIn": "Prijava",
+      "signOut": "Odjava",
+      "start": "Začni",
+      "stop": "Ustavi"
+    },
+    "manualCookies": {
+      "smaDescription": "Neobvezno. Potrebno le, če ima vaš račun čakajočo potrditev naprave Steam Guard."
+    }
+  },
+  "dashboard": {
+    "settings": {
+      "debug": {
+        "resetSettings": {
+          "confirmDescription": "Ponastavi preglasitev ključa Steam Web API in, če ste prijavljeni, nastavitve odklepanja dosežkov, upravitelja inventarja, kmetovanja kart in brezplačnih iger tega računa na privzete vrednosti. Vaši prijavljeni računi ostanejo prijavljeni."
+        }
+      }
+    }
+  }
+}
