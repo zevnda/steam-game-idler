@@ -1,8 +1,8 @@
 import { FaArrowRight } from 'react-icons/fa'
 import { FiAward, FiClock, FiTerminal } from 'react-icons/fi'
 import Link from 'next/link'
-import AdOverlay from '@/app/(marketing)/(home)/_components/AdOverlay'
 import AdScripts from '@/app/(marketing)/(home)/_components/AdScripts'
+import AdSlot from '@/app/(marketing)/(home)/_components/AdSlot'
 import FooterSection from '@/app/(marketing)/(home)/_components/FooterSection'
 import NavBar from '@/app/(marketing)/(home)/_components/NavBar'
 import { StaggerGroup, StaggerItem } from '@/app/lib/animations'
@@ -73,7 +73,7 @@ export default function AlternativesPage() {
       <NavBar />
 
       <div className='container mx-auto px-4 sm:px-6 md:px-8 max-w-4xl pt-36 pb-24 sm:pt-44 sm:pb-32'>
-        <AdOverlay slot='1265004536' />
+        <AdSlot slot='1265004536' />
 
         {/* Header */}
         <div className='mb-16 text-center'>
@@ -138,7 +138,7 @@ export default function AlternativesPage() {
           ))}
         </StaggerGroup>
 
-        <AdOverlay slot='3005445709' />
+        <AdSlot slot='3005445709' />
       </div>
 
       <div className='section-divider' />

@@ -23,7 +23,11 @@ export default function GameHero({ game }: { game: GameData }) {
 
         <div className='flex flex-wrap gap-3 justify-center'>
           <DownloadButton iconClassName='w-4 h-4' />
-          <Link prefetch={false} href='/docs/features/idling' className='btn-ghost px-6 py-3 group'>
+          <Link
+            prefetch={false}
+            href='/docs/features/playtime-booster'
+            className='btn-ghost px-6 py-3 group'
+          >
             How idling works
             <FiArrowUpRight className='w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-150' />
           </Link>

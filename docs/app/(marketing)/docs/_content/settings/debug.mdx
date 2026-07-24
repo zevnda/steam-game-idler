@@ -24,27 +24,27 @@ The Logs panel displays a live view of SGI's internal activity, including errors
   always opens the right one for you, so you don't need to remember the exact path.
 </Callout>
 
-If you're reporting a bug on GitHub, include the relevant lines from the log file to help diagnose the issue. See the [Troubleshooting](/docs/troubleshooting) guide for more information.
+If you're reporting a bug on GitHub, include the relevant log files to help diagnose the issue. See the [Troubleshooting](/docs/troubleshooting) guide for more information.
 
 ## Reset Settings
 
-Click <MockButton type='reset-settings' /> to reset your Steam Web API key override, [Customization](/docs/settings/customization) settings (theme, font, tooltips, carousels, background image), [Always Online](/docs/settings/general#always-online), and [Automatically Update Games List](/docs/settings/general#automatically-update-games-list) back to their defaults, along with, if you're signed in, that account's [Show Games Only](/docs/settings/general#show-games-only), Achievement Unlocker, Inventory Manager, Card Farming, and Free Games settings.
-
 <Callout type="warn">
-  This action is irreversible, but **your signed-in accounts stay signed in**. Reset Settings never signs you out.
+  This action is irreversible
 </Callout>
+
+Click <MockButton type='reset-settings' /> to reset all of SGI's settings back to default
 
 This is useful if you've misconfigured something and want to start fresh without wiping everything.
 
 ## Clear Data
 
-Click <MockButton type='clear-data' /> to sign every account out, stop any running automation, and clear all locally-stored app data on this device (logs, recent searches, inventory locks, and similar cached data).
-
 <Callout type="warn">
-  This action is irreversible. You will be signed out of every account. Your Steam account and library are not affected; only data stored locally by SGI is cleared.
+  This action is irreversible. You will be signed out of every account in SGI.
 </Callout>
 
-Use this as a last resort if SGI is behaving unexpectedly and Reset Settings hasn't resolved the issue.
+Click <MockButton type='clear-data' /> to sign every account out, stop any running automation, and clear all locally-stored app data on this device (settings, feature queues, logs, recent searches, inventory locks, etc).
+
+Use this as a last resort if SGI is behaving unexpectedly and [Reset Settings](/docs/settings/debug#reset-settings) hasn't resolved the issue.
 
 ## Export Settings
 

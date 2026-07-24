@@ -172,7 +172,7 @@ export const faqData = [
     question: 'How many games can SGI idle simultaneously?',
     markdown:
       '**How many games can SGI idle simultaneously?**\n' +
-      '> You can idle a maximum of 32 games simultaneously, combined across manual [Idling](/docs/features/idling), [Auto-Idle](/docs/features/auto-idle), [Card Farming](/docs/features/card-farming), and the [Achievement Unlocker](/docs/features/achievement-unlocker). This limit is imposed by the Steam client.',
+      '> You can idle a maximum of 32 games simultaneously, combined across manual [Playtime Booster](/docs/features/playtime-booster), [Auto-Idle](/docs/features/auto-idle), [Card Farming](/docs/features/card-farming), and the [Achievement Unlocker](/docs/features/achievement-unlocker). This limit is imposed by the Steam client.',
   },
   { section: 'Unlocking & locking achievements (auto & manual)' },
   {

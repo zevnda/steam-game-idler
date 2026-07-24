@@ -12,14 +12,14 @@ import { Step, Steps } from 'fumadocs-ui/components/steps';
 
 The Inventory Manager feature allows you to manage your Steam inventory directly within SGI, including the ability to view all your marketable items (trading cards, foil cards, emoticons, backgrounds, and more) and sell them on the Steam marketplace.
 
-<DocsCTA />
-
 <Callout type="warn">
     This feature uses an undocumented Steam API endpoint with strict rate limits to fetch card prices. If you encounter errors while selling cards or fetching card prices, please try increasing the [Sell Delay](/docs/settings/inventory-manager#sell-delay), or wait a few hours before trying  again
 </Callout>
 
 <Callout type="info">
-    You must add your [Steam Credentials](/docs/steam-credentials) before you can use this feature, unless you [signed in with Steam](/docs/get-started/how-to-sign-in) on a **Gamer** tier account, in which case this happens automatically
+    You must add your [Steam Credentials](/docs/steam-credentials) before you can use this feature.
+    
+    Users using [Steam Sign-in](/docs/get-started/how-to-sign-in) with a [Gamer tier subscription](/pro) do not need to manually enter their Steam credentials.
 </Callout>
 
 <Callout type="info">
@@ -31,34 +31,34 @@ The Inventory Manager feature allows you to manage your Steam inventory directly
     Click <MockButton type='inventory-manager' /> in the sidebar
   </Step>
 
-    #### List individual items
+    #### Sell individual items
     <Steps>
       <Step>
         Find the item you want to sell and input a sale price
       </Step>
       <Step>
-        Click <MockButton type='list-card' /> to list the item
+        Click the <MockButton type='list-card' /> button to list the item
       </Step>
     </Steps>
 
-    #### List selected items
+    #### Sell multiple selected items
     <Steps>
       <Step>
         Find the items you want to sell and input a sale price for each one
       </Step>
       <Step>
-        Click <MockButton type='list-selected' /> to list only the selected items
+        Click <MockButton type='list-selected' /> to list the selected items
       </Step>
     </Steps>
 
-    #### List all items
+    #### Sell all items
     <Steps>
       <Step>
-        Click <MockButton type='list-all' /> to list all items
+        Click <MockButton type='list-all' /> to list all items in your inventory
       </Step>
     </Steps>
 
-    #### List duplicate items *(Pro Gamer tier)*
+    #### Sell duplicate items
     <Steps>
       <Step>
         Click <MockButton type='sell-dupes' /> to automatically list all duplicate items for sale, keeping one copy of each
@@ -66,12 +66,16 @@ The Inventory Manager feature allows you to manage your Steam inventory directly
     </Steps>
 
   <Step>
-    Confirm each listing via the Steam mobile app or email depending on your [Steam Guard](https://help.steampowered.com/en/faqs/view/06B0-26E6-2CF8-254C) settings
+    Confirm each listing via the Steam mobile app, the [Steam market page](https://steamcommunity.com/market/), or via email depending on your [Steam Guard](https://help.steampowered.com/en/faqs/view/06B0-26E6-2CF8-254C) settings
   </Step>
 
   <Step>
-    Click <MockButton type='content' content='Refresh' /> in the page header to update your card list
+    Click <MockButton type='refresh' /> in the page header to update your card list
   </Step>
 </Steps>
 
-Foil (holographic) items are shown with a shimmer effect on their card, and every item links out to [SteamCardExchange](https://www.steamcardexchange.net/) for reference pricing.
+### Removing Listings
+
+Click <MockButton type='remove-all'/> to remove all your active listings from the Steam marketplace.
+
+<DocsCTA />

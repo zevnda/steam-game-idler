@@ -2,12 +2,12 @@
 
 import { useEffect, useRef } from 'react'
 
-interface AdOverlayProps {
+interface AdSlotProps {
   slot: string
   className?: string
 }
 
-export default function AdOverlay({ slot, className = '' }: AdOverlayProps) {
+export default function AdSlot({ slot, className = '' }: AdSlotProps) {
   const pushed = useRef(false)
 
   useEffect(() => {
@@ -22,16 +22,14 @@ export default function AdOverlay({ slot, className = '' }: AdOverlayProps) {
 
   return (
     <div
-      className={`ad-wrapper container mx-auto my-8 max-w-5xl px-4 sm:px-6 md:px-8 ${className}`}
+      className={`ad-wrapper container mx-auto my-8 max-w-5xl overflow-x-auto px-4 sm:px-6 md:px-8 ${className}`}
     >
       <span className='mb-1 text-xs text-text-secondary'>Advertisement</span>
       <ins
-        className='adsbygoogle w-full'
+        className='adsbygoogle mx-auto'
         data-ad-client='ca-pub-8915288433444527'
         data-ad-slot={slot}
-        data-ad-format='auto'
-        data-full-width-responsive='true'
-        style={{ display: 'block' }}
+        style={{ display: 'inline-block', width: '728px', height: '90px' }}
       />
     </div>
   )

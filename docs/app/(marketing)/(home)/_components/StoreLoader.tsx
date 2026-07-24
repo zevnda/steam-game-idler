@@ -17,6 +17,7 @@ export default function StoreLoader() {
     setLinuxDownloadSize,
     setLinuxRpmUrl,
     setLinuxAppImageUrl,
+    setWindowsPortableUrl,
   } = useGlobalStore(state => state)
 
   // Fetch the latest release information from the GitHub API
@@ -37,6 +38,12 @@ export default function StoreLoader() {
             setDownloadUrl(installer.browser_download_url)
             setDownloadSize(formatBytes(installer.size))
           }
+          // Portable zip - secondary link alongside the primary installer (see release.yml's
+          // "Prepare portable executable" step for the exact naming convention)
+          const portable = data.assets?.find((asset: { name: string }) =>
+            asset.name.endsWith('_x64-portable.zip'),
+          )
+          if (portable) setWindowsPortableUrl(portable.browser_download_url)
           // Linux assets only exist from the first release published after Linux support shipped
           // - these all stay unset (empty string) on any older release, which every Linux-aware
           // consumer (DownloadHero, CTASection, DocsCTA) already treats as "not available yet"
@@ -65,6 +72,7 @@ export default function StoreLoader() {
     setLinuxDownloadSize,
     setLinuxRpmUrl,
     setLinuxAppImageUrl,
+    setWindowsPortableUrl,
   ])
 
   // Fetch the number of stars from the GitHub API
