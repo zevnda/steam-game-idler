@@ -2,6 +2,10 @@ packages:
   - '.'
   - 'docs'
 
+allowBuilds:
+  esbuild: true
+  sharp: true
+
 # esbuild/sharp both need their native postinstall scripts to run to work at all (esbuild's binary
 # download, sharp's prebuilt libvips binding) - pnpm blocks these by default as a supply-chain
 # guard. Allowlisted here instead of relying on each machine's local `pnpm approve-builds` cache,

@@ -98,12 +98,12 @@ jobs:
     steps:
       - name: Validate semantic version format
         id: validate_format
-        uses: matt-usurp/validate-semver@v2
+        uses: matt-usurp/validate-semver@v3
         with:
           version: ${{ github.event.inputs.version }}
       
       - name: Validate version increment
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const prev = '${{ needs.fetch_previous_version.outputs.previous_version }}'.replace(/^v/, '');
@@ -308,7 +308,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v3
         with:
-          version: 9
+          version: 11.17.0
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -531,7 +531,7 @@ jobs:
 
       - name: Generate release notes
         id: generate_notes
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const { data } = await github.rest.repos.generateReleaseNotes({
@@ -798,7 +798,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v3
         with:
-          version: 9
+          version: 11.17.0
 
       - name: Setup Python
         uses: actions/setup-python@v5
