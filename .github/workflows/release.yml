@@ -406,26 +406,18 @@ jobs:
 
       - name: Setup pnpm cache
         id: cache-pnpm
-        # Skipped entirely on force_pnpm_install - restoring here and then merely re-running
-        # `pnpm install` on top of the restored node_modules below isn't a real fresh install:
-        # pnpm sees an already-satisfied lockfile and fast-paths to "Already up to date" instead of
-        # reinstalling, so a corrupted/incomplete cache entry (e.g. a symlink that didn't survive
-        # this platform's cache save/restore round-trip) stays corrupted. Skipping the restore
-        # outright leaves steps.cache-pnpm.outputs.cache-hit unset, which the next step's `if:`
-        # already treats as a miss, so it still runs `pnpm install` - just against nothing instead
-        # of against a possibly-broken tree.
+        # Only ~/.pnpm-store is cached, never node_modules - its symlink-heavy layout doesn't
+        # reliably survive a Windows tar cache round-trip (confirmed: broke fumadocs-mdx's postinstall).
         if: github.event.inputs.force_pnpm_install != 'true'
         uses: actions/cache@v4
         with:
-          path: |
-            ~/.pnpm-store
-            node_modules
+          path: ~/.pnpm-store
           key: ${{ runner.OS }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.OS }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}-
 
       - name: Install dependencies (pnpm)
-        if: steps.cache-pnpm.outputs.cache-hit != 'true' || github.event.inputs.force_pnpm_install == 'true'
+        # Always runs - node_modules is never cached (see above), so this recreates it every run.
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
@@ -585,7 +577,6 @@ jobs:
           Copy-Item "./src-tauri/target/release/Steam Game Idler_${{ github.event.inputs.version }}_x64-portable.zip" -Destination ./dist-windows/
           Copy-Item ./latest.json -Destination ./dist-windows/
           Copy-Item ./src-tauri/Cargo.lock -Destination ./dist-windows/
-          if ($LASTEXITCODE -ne 0) { throw "staging failed" }
 
       - name: Upload windows-bundle
         uses: actions/upload-artifact@v4
@@ -737,26 +728,18 @@ jobs:
 
       - name: Setup pnpm cache
         id: cache-pnpm
-        # Skipped entirely on force_pnpm_install - restoring here and then merely re-running
-        # `pnpm install` on top of the restored node_modules below isn't a real fresh install:
-        # pnpm sees an already-satisfied lockfile and fast-paths to "Already up to date" instead of
-        # reinstalling, so a corrupted/incomplete cache entry (e.g. a symlink that didn't survive
-        # this platform's cache save/restore round-trip) stays corrupted. Skipping the restore
-        # outright leaves steps.cache-pnpm.outputs.cache-hit unset, which the next step's `if:`
-        # already treats as a miss, so it still runs `pnpm install` - just against nothing instead
-        # of against a possibly-broken tree.
+        # Only ~/.pnpm-store is cached, never node_modules - its symlink-heavy layout doesn't
+        # reliably survive a Windows tar cache round-trip (confirmed: broke fumadocs-mdx's postinstall).
         if: github.event.inputs.force_pnpm_install != 'true'
         uses: actions/cache@v4
         with:
-          path: |
-            ~/.pnpm-store
-            node_modules
+          path: ~/.pnpm-store
           key: ${{ runner.OS }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.OS }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}-
 
       - name: Install dependencies (pnpm)
-        if: steps.cache-pnpm.outputs.cache-hit != 'true' || github.event.inputs.force_pnpm_install == 'true'
+        # Always runs - node_modules is never cached (see above), so this recreates it every run.
         run: |
           set -euo pipefail
           pnpm install --frozen-lockfile
