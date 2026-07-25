@@ -19,7 +19,6 @@ import {
   toast,
   Typography,
 } from '@heroui/react'
-import { AppTooltip } from '@/shared/components/AppTooltip'
 import { LanguageSwitch } from '@/shared/components/LanguageSwitch'
 import { SettingsRow } from '@/shared/components/SettingsRow'
 import { TierBadge } from '@/shared/components/TierBadge'
@@ -565,12 +564,7 @@ export const GeneralSettingsTab = ({
           // instead of saving, so the control doesn't visually read as unclickable (the
           // `TierBadge` above already signals the gate, this switch itself should look like
           // every other switch in the tab).
-          <AppTooltip.Root>
-            <AppTooltip.Trigger>
-              <ToggleSwitch isSelected={false} onChange={() => openProModalWithTier('casual')} />
-            </AppTooltip.Trigger>
-            <AppTooltip.Content>{t('common.proTier.casualRequired')}</AppTooltip.Content>
-          </AppTooltip.Root>
+          <ToggleSwitch isSelected={false} onChange={() => openProModalWithTier('casual')} />
         )}
       </SettingsRow>
 

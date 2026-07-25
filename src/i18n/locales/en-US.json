@@ -85,10 +85,6 @@
       "pastDue": "Your PRO subscription is past due. Please update your payment method to avoid losing access.",
       "manageSubscription": "Manage Subscription"
     },
-    "proTier": {
-      "gamerRequired": "Requires the Gamer plan.",
-      "casualRequired": "Requires the Casual plan."
-    },
     "badges": {
       "beta": "Beta"
     },
@@ -129,7 +125,6 @@
     "guide": "Documentation",
     "issue": "Report an issue",
     "feature": "Feature request",
-    "support": "Support me",
     "joinDiscord": "Join our Discord",
     "changelog": "Changelog",
     "update": "Check for updates"
@@ -809,7 +804,6 @@
         "listSelected": "List selected ({{count}})",
         "sellAll": "Sell all ({{count}})",
         "sellDupes": "Sell dupes",
-        "sellDupesGamerRequired": "Selling duplicate items automatically requires the Gamer plan.",
         "removeListings": "Remove listings",
         "lockItem": "Lock this item so it's never sold automatically",
         "list": "List on the market",

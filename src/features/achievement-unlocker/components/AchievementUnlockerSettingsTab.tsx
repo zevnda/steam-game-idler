@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next'
 import { CASUAL_MAX_CONCURRENT_GAMES, MAX_CONCURRENT_GAMES } from '../types'
 import { errorMessageKey } from '../utils/errorMessageKey'
 import { Alert, Button, Separator, Skeleton, TimeField, toast, Typography } from '@heroui/react'
-import { AppTooltip } from '@/shared/components/AppTooltip'
 import { InputField } from '@/shared/components/InputField'
 import { SettingsRow } from '@/shared/components/SettingsRow'
 import { TierBadge } from '@/shared/components/TierBadge'
@@ -156,12 +155,7 @@ export const AchievementUnlockerSettingsTab = ({
         ) : (
           // Not `isDisabled` - see GeneralSettingsTab's identical gate for why this stays a real,
           // normal-looking Switch whose `onChange` opens the upsell instead of saving.
-          <AppTooltip.Root>
-            <AppTooltip.Trigger>
-              <ToggleSwitch isSelected={false} onChange={() => openProModalWithTier('casual')} />
-            </AppTooltip.Trigger>
-            <AppTooltip.Content>{t('common.proTier.casualRequired')}</AppTooltip.Content>
-          </AppTooltip.Root>
+          <ToggleSwitch isSelected={false} onChange={() => openProModalWithTier('casual')} />
         )}
       </SettingsRow>
 
