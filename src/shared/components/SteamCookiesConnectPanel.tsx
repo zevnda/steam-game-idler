@@ -2,6 +2,7 @@ import type { SteamCookiesLike } from '@/shared/stores/steamCookiesStore'
 import type { ReactNode } from 'react'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { TbExternalLink } from 'react-icons/tb'
 import AuthCard from './AuthCard'
 import { EMPTY_MANUAL_COOKIES_FORM_VALUE, ManualCookiesForm } from './ManualCookiesForm'
 import {
@@ -19,18 +20,24 @@ import { TierBadge } from '@/shared/components/TierBadge'
 import { useSavedSteamCookies } from '@/shared/hooks/useSavedSteamCookies'
 import { useProModalStore } from '@/shared/stores/proModalStore'
 import { useSubscriptionStore } from '@/shared/stores/subscriptionStore'
+import { openExternalLink } from '@/shared/utils/links'
 import { showErrorToast } from '@/shared/utils/showErrorToast'
 import { hasGamerAccess } from '@/shared/utils/subscriptionAccess'
+
+// Single source of truth for the Steam Credentials docs link - shared by every surface that shows
+// a "Learn more" button pointing at it (SteamCredentialsTab's own embedded title row, and this
+// component's standalone-variant title row via `showLearnMoreLink`) so the URL only lives in one
+// place.
+export const STEAM_CREDENTIALS_DOCS_URL = 'https://steamgameidler.com/docs/steam-credentials'
 
 type CookieMethod = 'automatic' | 'manual'
 
 interface SteamCookiesConnectPanelProps<T extends SteamCookiesLike> {
   // Only rendered in the default 'standalone' variant (AuthCard's heading) - 'embedded' skips
   // both, since that caller (SteamCredentialsTab) already renders its own heading row above this
-  // component (it also needs a "Learn more" docs link inline with the title, which this component
-  // has no slot for).
+  // component, including its own "Learn more" docs link (see `showLearnMoreLink`'s doc comment
+  // for why that tab renders its own instead of reusing this component's title row).
   title?: ReactNode
-  description?: ReactNode
   // 'standalone' (default): centered, max-width card with its own title/description - a full
   // pre-dashboard-style connect prompt (CardFarmingStartPanel/InventoryConnectPanel). 'embedded':
   // no AuthCard/centering wrapper, just the error slot/tabs/form/buttons at the host's own width -
@@ -49,6 +56,11 @@ interface SteamCookiesConnectPanelProps<T extends SteamCookiesLike> {
   // since CardFarmingStartPanel/InventoryConnectPanel only opted in once Settings' Clear button
   // became the template for parity - see this component's own doc comment.
   showClear?: boolean
+  // Adds a "Learn more" docs-link button next to the title, in the same spot/style as
+  // SteamCredentialsTab's own embedded title row (see `variant`'s doc comment for why that tab
+  // renders its own instead of using this prop). Only meaningful for the 'standalone' variant -
+  // 'embedded' has no title row of its own here for it to attach to.
+  showLearnMoreLink?: boolean
   // Toasts "Credentials saved"/"Credentials cleared" on a successful submit/clear - only
   // SteamCredentialsTab needs this: a Settings save/clear has no other visible feedback (the tab
   // just stays put), whereas CardFarmingStartPanel/InventoryConnectPanel's successful connect
@@ -84,7 +96,6 @@ interface SteamCookiesConnectPanelProps<T extends SteamCookiesLike> {
 // one of these three screens makes that visible on the others too.
 export function SteamCookiesConnectPanel<T extends SteamCookiesLike>({
   title,
-  description,
   variant = 'standalone',
   automaticTabLabel,
   manualTabLabel,
@@ -93,6 +104,7 @@ export function SteamCookiesConnectPanel<T extends SteamCookiesLike>({
   isSubmitting,
   errorSlot,
   showClear = false,
+  showLearnMoreLink = false,
   showSuccessToast = false,
   skipAutoSave = false,
   onConnect,
@@ -254,6 +266,7 @@ export function SteamCookiesConnectPanel<T extends SteamCookiesLike>({
       <div className='flex items-center gap-3'>
         {showClear && savedCookies && (
           <Button
+            size='sm'
             isDisabled={isSubmitting}
             isPending={isClearing}
             variant='secondary'
@@ -263,6 +276,7 @@ export function SteamCookiesConnectPanel<T extends SteamCookiesLike>({
           </Button>
         )}
         <Button
+          size='sm'
           isDisabled={!canSubmit || isClearing}
           isPending={isSubmitting}
           onPress={handleSubmit}
@@ -278,8 +292,25 @@ export function SteamCookiesConnectPanel<T extends SteamCookiesLike>({
   }
 
   return (
-    <div className='w-full max-w-md p-8'>
-      <AuthCard className='w-full' description={description} title={title}>
+    <div className='w-full max-w-lg p-8'>
+      <AuthCard
+        className='w-full'
+        title={title}
+        titleAction={
+          showLearnMoreLink ? (
+            <Button
+              className='inline-flex shrink-0 items-center gap-1 text-sm duration-150 cursor-pointer'
+              size='sm'
+              type='button'
+              variant='secondary'
+              onClick={() => openExternalLink(STEAM_CREDENTIALS_DOCS_URL)}
+            >
+              {t('common.learnMore')}
+              <TbExternalLink fontSize={14} />
+            </Button>
+          ) : undefined
+        }
+      >
         {content}
       </AuthCard>
     </div>

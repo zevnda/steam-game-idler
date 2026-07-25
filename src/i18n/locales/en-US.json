@@ -625,8 +625,6 @@
         "description": "Games you blacklist from the Games With Drops tab will never be farmed and appear here."
       },
       "connect": {
-        "title": "Connect card farming",
-        "description": "Connect your Steam Community session to see and farm games with card drops remaining.",
         "automaticDescription": "Signs in to Steam Community automatically to check for drops."
       },
       "progress": {
@@ -804,7 +802,6 @@
       "badgeLevel": "Badge level {{level}}",
       "noBadge": "No badge crafted",
       "connect": {
-        "title": "Connect your inventory",
         "description": "Load your Steam Community inventory to manage and sell items.",
         "automaticDescription": "Signs in to Steam Community automatically to load your inventory."
       },

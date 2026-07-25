@@ -31,7 +31,6 @@ export const InventoryConnectPanel = ({
     <SteamCookiesConnectPanel<SteamCookies>
       automaticDescription={t('dashboard.inventoryManager.connect.automaticDescription')}
       automaticTabLabel={t('common.connect.automaticTab')}
-      description={t('dashboard.inventoryManager.connect.description')}
       errorSlot={
         errorCode ? (
           <Alert status='danger'>
@@ -48,7 +47,8 @@ export const InventoryConnectPanel = ({
       manualTabLabel={t('common.connect.manualTab')}
       savedCredentialsNote={t('common.manualCookies.savedFromSettingsNote')}
       showClear
-      title={t('dashboard.inventoryManager.connect.title')}
+      showLearnMoreLink
+      title={t('dashboard.settings.steamCredentials.title')}
       onConnect={onConnect}
     />
   )
