@@ -16,8 +16,7 @@
       "done": "Bitti",
       "copy": "Kopyala",
       "paste": "Yapıştır",
-      "add": "Ekle",
-      "backToTop": "Başa dön"
+      "add": "Ekle"
     },
     "gameCardMenu": {
       "startIdling": "Süre Kasmayı başlat",
@@ -85,10 +84,6 @@
       "pastDue": "PRO aboneliğinizin vadesi geçmiş. Erişimi kaybetmemek için lütfen ödeme yönteminizi güncelleyin.",
       "manageSubscription": "Aboneliği Yönet"
     },
-    "proTier": {
-      "gamerRequired": "Gamer planını gerektirir.",
-      "casualRequired": "Sıradan bir plan gerektirir."
-    },
     "badges": {
       "beta": "Deneme"
     },
@@ -129,7 +124,6 @@
     "guide": "Dökümanlar",
     "issue": "Sorun bildir",
     "feature": "Özellik İsteği",
-    "support": "Beni Destekle",
     "joinDiscord": "Discord kanalımıza katıl",
     "changelog": "Değişiklikler",
     "update": "Güncellemeleri kontrol et"

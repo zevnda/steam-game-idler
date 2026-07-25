@@ -16,8 +16,7 @@
       "done": "Terminé",
       "copy": "Copier",
       "paste": "Coller",
-      "add": "Ajouter",
-      "backToTop": "Retour en haut"
+      "add": "Ajouter"
     },
     "gameCardMenu": {
       "startIdling": "Démarrer le mot idle",
@@ -85,10 +84,6 @@
       "pastDue": "Votre abonnement PRO a expirée. Mettez à jour votre méthode de paiement pour éviter de perdre accès.",
       "manageSubscription": "Gérer l'abonnement"
     },
-    "proTier": {
-      "gamerRequired": "Nécessite le palier Joueur.",
-      "casualRequired": "Nécessite le palier Occasionnel."
-    },
     "badges": {
       "beta": "Bêta"
     },
@@ -129,7 +124,6 @@
     "guide": "Documentation",
     "issue": "Signaler un problème",
     "feature": "Demande de fonctionnalité",
-    "support": "Me soutenir",
     "joinDiscord": "Rejoindre notre Discord",
     "changelog": "Journal de modifications",
     "update": "Vérifier les mises à jour"
@@ -621,8 +615,6 @@
         "description": "Les jeux blacklistés de l'onglet Jeux avec Drops ne seront jamais farmés et apparaissent ici."
       },
       "connect": {
-        "title": "Connexion au farming de cartes",
-        "description": "Connectez votre session Steam Community pour voir et farmer des jeux avec des drops restants.",
         "automaticDescription": "Se connecte automatiquement à Steam Community pour rechercher des drops."
       },
       "progress": {
@@ -800,7 +792,6 @@
       "badgeLevel": "Badge de niveau {{level}}",
       "noBadge": "Aucun badge fabriqué",
       "connect": {
-        "title": "Connectez votre inventaire",
         "description": "Chargez votre inventaire Steam Community pour gérer et vendre des éléments.",
         "automaticDescription": "Se connecte automatiquement à Steam Community pour charger votre inventaire."
       },
@@ -808,7 +799,6 @@
         "listSelected": "Liste sélectionnée ({{count}})",
         "sellAll": "Tout vendre ({{count}})",
         "sellDupes": "Vendre les doublons",
-        "sellDupesGamerRequired": "Vendre automatiquement les doublons nécessite le palier Joueur.",
         "removeListings": "Supprimer les annonces",
         "lockItem": "Verrouiller cet élément pour qu'il ne soit jamais vendu automatiquement",
         "list": "Mettre sur le marché",
@@ -1117,7 +1107,6 @@
           "label": "Nombre maximum de déblocages de succès",
           "description": "Arrêter le débloqueur de succès sur ce jeu lorsque ce nombre de succès ont été débloqués."
         },
-        "filterCustomized": "Afficher uniquement les jeux avec des paramètres personnalisés",
         "errors": {
           "generic": "Une erreur s'est produite lors de la mise à jour de vos paramètres de jeux. Veuillez réessayer. ({{code}})"
         }
