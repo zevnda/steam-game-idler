@@ -2,7 +2,6 @@ import type { FreeGamesSettings } from '@/features/free-games/types'
 import { useTranslation } from 'react-i18next'
 import { freeGamesErrorMessageKey } from '../utils/errorMessageKey'
 import { Alert, Button, Skeleton, toast, Typography } from '@heroui/react'
-import { AppTooltip } from '@/shared/components/AppTooltip'
 import { SettingsRow } from '@/shared/components/SettingsRow'
 import { TierBadge } from '@/shared/components/TierBadge'
 import { ToggleSwitch } from '@/shared/components/ToggleSwitch'
@@ -145,12 +144,7 @@ export const FreeGamesSettingsTab = ({
         ) : !canAutoRedeem ? (
           // Not `isDisabled` - see GeneralSettingsTab's identical gate for why this stays a real,
           // normal-looking Switch whose `onChange` opens the upsell instead of saving.
-          <AppTooltip.Root>
-            <AppTooltip.Trigger>
-              <ToggleSwitch isSelected={false} onChange={() => openProModalWithTier('gamer')} />
-            </AppTooltip.Trigger>
-            <AppTooltip.Content>{t('common.proTier.gamerRequired')}</AppTooltip.Content>
-          </AppTooltip.Root>
+          <ToggleSwitch isSelected={false} onChange={() => openProModalWithTier('gamer')} />
         ) : account?.mode === 'agent' ? (
           <ToggleSwitch
             isSelected={settings?.autoRedeem ?? false}

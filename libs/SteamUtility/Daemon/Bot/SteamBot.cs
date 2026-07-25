@@ -41,6 +41,12 @@ namespace SteamUtility.Daemon.Bot
         public event Action? Connected;
         public event Action<EResult>? LogOnStatusChanged;
 
+        // Fires on every LicenseListCallback after the first (post-login) one, which
+        // WaitForLicenseListAsync's one-shot _licenseListTcs already covers - lets a caller elsewhere
+        // in the bot's lifetime (FreeLicenseManager) wait for a subsequent push rather than only the
+        // very first one. See WaitForPackagesInLicensesAsync below for why this is needed.
+        public event Action? LicenseListUpdated;
+
         // First bool: whether this disconnect is one Start()'s own auto-reconnect/backoff below is
         // about to retry on its own (network drop mid-session), as opposed to a permanent one
         // (Stop() called, or the disconnect happened before any LogOnAsync was ever issued).
@@ -254,6 +260,7 @@ namespace SteamUtility.Daemon.Bot
             // holding a caller for the full timeout when it's already known to have failed just
             // adds latency for no benefit.
             _licenseListTcs?.TrySetResult(true);
+            LicenseListUpdated?.Invoke();
         }
 
         // Lets OwnershipManager block until the post-logon license list has actually been
@@ -265,6 +272,49 @@ namespace SteamUtility.Daemon.Bot
         {
             var tcs = _licenseListTcs;
             return tcs == null ? Task.CompletedTask : Task.WhenAny(tcs.Task, Task.Delay(timeout));
+        }
+
+        // Blocks until OwnedLicenses includes at least one of `packageIds`, or `timeout` elapses -
+        // whichever first. Needed because RequestFreeLicense's grant response and the LicenseListCallback
+        // that actually updates OwnedLicenses are two independent server pushes with no ordering
+        // guarantee (the same class of race WaitForLicenseListAsync already guards at login, see its
+        // own doc comment) - a caller that re-checks ownership immediately after a "Granted" response
+        // can otherwise still read back the pre-grant license set. Checks before and after subscribing
+        // to LicenseListUpdated to avoid missing an update that lands in between; degrades to a timeout
+        // (not an exception) if the callback never arrives, since the license was still genuinely
+        // granted at the Steam-network level regardless of when/whether this local state catches up.
+        public async Task WaitForPackagesInLicensesAsync(
+            IReadOnlyCollection<uint> packageIds,
+            TimeSpan timeout
+        )
+        {
+            if (packageIds.Count == 0 || OwnedLicenses.Any(l => packageIds.Contains(l.PackageID)))
+            {
+                return;
+            }
+
+            var tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+            void OnUpdated()
+            {
+                if (OwnedLicenses.Any(l => packageIds.Contains(l.PackageID)))
+                {
+                    tcs.TrySetResult(true);
+                }
+            }
+
+            LicenseListUpdated += OnUpdated;
+            try
+            {
+                if (OwnedLicenses.Any(l => packageIds.Contains(l.PackageID)))
+                {
+                    return;
+                }
+                await Task.WhenAny(tcs.Task, Task.Delay(timeout));
+            }
+            finally
+            {
+                LicenseListUpdated -= OnUpdated;
+            }
         }
     }
 }

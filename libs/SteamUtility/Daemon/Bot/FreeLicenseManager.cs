@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,6 +22,14 @@ namespace SteamUtility.Daemon.Bot
     // src-tauri/src/local_steam/free_game_claim.rs).
     public sealed class FreeLicenseManager
     {
+        // Bounded wait for OwnershipManager's next PICS-based ownership read (get_owned_apps, and
+        // therefore the Rust side's immediate post-claim games-list refresh) to actually reflect a
+        // grant this call already confirmed - see SteamBot.WaitForPackagesInLicensesAsync's doc
+        // comment for why this can't be assumed to already be true the instant RequestFreeLicense
+        // returns. 10s comfortably covers the CM's normal license-list-repush latency without
+        // meaningfully delaying the claim UI, and stays well under the Rust host's 30s IPC timeout.
+        private static readonly TimeSpan LicenseListSyncTimeout = TimeSpan.FromSeconds(10);
+
         public async Task<FreeLicenseResult> RequestFreeLicenseAsync(SteamBot bot, uint appId)
         {
             if (!bot.IsLoggedOn)
@@ -35,6 +44,11 @@ namespace SteamUtility.Daemon.Bot
             // Actions.AddFreeLicenseApp, the most widely-used real consumer of
             // this exact SteamKit2 API). Granted-list-non-empty is the only reliable success check.
             var granted = callback.GrantedApps.Count > 0 || callback.GrantedPackages.Count > 0;
+
+            if (granted && callback.GrantedPackages.Count > 0)
+            {
+                await bot.WaitForPackagesInLicensesAsync(callback.GrantedPackages, LicenseListSyncTimeout);
+            }
 
             return new FreeLicenseResult
             {

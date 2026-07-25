@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { errorMessageKey } from '../utils/errorMessageKey'
 import { Alert, Button, Separator, Skeleton, toast, Typography } from '@heroui/react'
-import { AppTooltip } from '@/shared/components/AppTooltip'
 import { BetaBadge } from '@/shared/components/BetaBadge'
 import { SettingsRow } from '@/shared/components/SettingsRow'
 import { TierBadge } from '@/shared/components/TierBadge'
@@ -169,12 +168,7 @@ export const CardFarmingSettingsTab = ({
           // Not `isDisabled` - see AchievementUnlockerSettingsTab's identical `multipleGames` gate
           // for why this stays a real, normal-looking Switch whose `onChange` opens the upsell
           // instead of saving.
-          <AppTooltip.Root>
-            <AppTooltip.Trigger>
-              <ToggleSwitch isSelected={false} onChange={() => openProModalWithTier('gamer')} />
-            </AppTooltip.Trigger>
-            <AppTooltip.Content>{t('common.proTier.gamerRequired')}</AppTooltip.Content>
-          </AppTooltip.Root>
+          <ToggleSwitch isSelected={false} onChange={() => openProModalWithTier('gamer')} />
         )}
       </SettingsRow>
 

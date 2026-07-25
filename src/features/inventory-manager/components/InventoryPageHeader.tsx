@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TbRefresh, TbSettings } from 'react-icons/tb'
 import { AlertDialog, Button, cn, Typography } from '@heroui/react'
-import { AppTooltip } from '@/shared/components/AppTooltip'
 import { useProModalStore } from '@/shared/stores/proModalStore'
 import { useSubscriptionStore } from '@/shared/stores/subscriptionStore'
 import { formatDuration } from '@/shared/utils/formatDuration'
@@ -107,21 +106,6 @@ export const InventoryPageHeader = ({
         <div className='flex flex-wrap items-center justify-end gap-2'>
           {hasLoaded && (
             <>
-              <AppTooltip.Root>
-                <AppTooltip.Trigger>
-                  <Button
-                    isIconOnly
-                    aria-label={t('common.actions.refresh')}
-                    isPending={isFetching}
-                    variant='secondary'
-                    onPress={onRefresh}
-                  >
-                    <TbRefresh fontSize={18} />
-                  </Button>
-                </AppTooltip.Trigger>
-                <AppTooltip.Content>{t('common.actions.refresh')}</AppTooltip.Content>
-              </AppTooltip.Root>
-
               <Button
                 isDisabled={selectedCount === 0 || isBusy}
                 isPending={isListing}
@@ -140,33 +124,24 @@ export const InventoryPageHeader = ({
                 {t('dashboard.inventoryManager.actions.sellAll', { count: itemCount })}
               </Button>
 
-              <AppTooltip.Root>
-                <AppTooltip.Trigger>
-                  {/* `isDisabled` only reflects the real "nothing to sell" reason (itemCount === 0)
+              {/* `isDisabled` only reflects the real "nothing to sell" reason (itemCount === 0)
                       - a gamer-tier gate is styled to look disabled but stays a real, pressable
                       Button whose `onPress` opens the upsell instead. HeroUI's Button maps
                       `isDisabled` to a native `disabled` attribute, which would otherwise swallow
                       the real click a gated upsell needs entirely (confirmed live via CDP), not
                       just block bubbling to a wrapper. */}
-                  <Button
-                    className={!canSellDupes ? 'opacity-50' : undefined}
-                    isDisabled={itemCount === 0 || isBusy}
-                    isPending={isSellingDupes}
-                    variant='secondary'
-                    onPress={() =>
-                      canSellDupes ? setOpenDialog('sellDupes') : openProModalWithTier('gamer')
-                    }
-                  >
-                    {t('dashboard.inventoryManager.actions.sellDupes')}
-                    {!canSellDupes && <Badge tone='gamer'>{t('proMode.tier.gamer.name')}</Badge>}
-                  </Button>
-                </AppTooltip.Trigger>
-                {!canSellDupes && (
-                  <AppTooltip.Content>
-                    {t('dashboard.inventoryManager.actions.sellDupesGamerRequired')}
-                  </AppTooltip.Content>
-                )}
-              </AppTooltip.Root>
+              <Button
+                className={!canSellDupes ? 'opacity-50' : undefined}
+                isDisabled={itemCount === 0 || isBusy}
+                isPending={isSellingDupes}
+                variant='secondary'
+                onPress={() =>
+                  canSellDupes ? setOpenDialog('sellDupes') : openProModalWithTier('gamer')
+                }
+              >
+                {t('dashboard.inventoryManager.actions.sellDupes')}
+                {!canSellDupes && <Badge tone='gamer'>{t('proMode.tier.gamer.name')}</Badge>}
+              </Button>
 
               <Button
                 isDisabled={itemCount === 0 || isBusy}
@@ -179,14 +154,18 @@ export const InventoryPageHeader = ({
             </>
           )}
 
-          <AppTooltip.Root>
-            <AppTooltip.Trigger>
-              <Button isIconOnly aria-label={t('common.actions.settings')} onPress={onOpenSettings}>
-                <TbSettings fontSize={18} />
-              </Button>
-            </AppTooltip.Trigger>
-            <AppTooltip.Content>{t('common.actions.settings')}</AppTooltip.Content>
-          </AppTooltip.Root>
+          <Button
+            isIconOnly
+            aria-label={t('common.actions.refresh')}
+            isPending={isFetching}
+            onPress={onRefresh}
+          >
+            <TbRefresh fontSize={18} />
+          </Button>
+
+          <Button isIconOnly aria-label={t('common.actions.settings')} onPress={onOpenSettings}>
+            <TbSettings fontSize={18} />
+          </Button>
         </div>
       </div>
 

@@ -18,7 +18,6 @@ import {
   toast,
   Typography,
 } from '@heroui/react'
-import { AppTooltip } from '@/shared/components/AppTooltip'
 import { SettingsRow } from '@/shared/components/SettingsRow'
 import { TierBadge } from '@/shared/components/TierBadge'
 import { ToggleSwitch } from '@/shared/components/ToggleSwitch'
@@ -343,24 +342,19 @@ export const CustomizationSettingsTab = ({
               {t('dashboard.settings.customization.background.choose')}
             </Button>
           ) : (
-            <AppTooltip.Root>
-              <AppTooltip.Trigger>
-                {/* Not `isDisabled` - HeroUI's Button maps that to a real native `disabled`
-                    attribute, which suppresses real trusted click events entirely (confirmed live
-                    via CDP), not just bubbling. Styled to look disabled instead, with a real
-                    `onPress` that opens the upsell - the same reason InventoryPageHeader/
-                    AchievementOrderOverlay's gated buttons below do the same. */}
-                <Button
-                  className='opacity-50'
-                  size='sm'
-                  variant='secondary'
-                  onPress={() => openProModalWithTier('casual')}
-                >
-                  {t('dashboard.settings.customization.background.choose')}
-                </Button>
-              </AppTooltip.Trigger>
-              <AppTooltip.Content>{t('common.proTier.casualRequired')}</AppTooltip.Content>
-            </AppTooltip.Root>
+            // Not `isDisabled` - HeroUI's Button maps that to a real native `disabled`
+            //         attribute, which suppresses real trusted click events entirely (confirmed live
+            //         via CDP), not just bubbling. Styled to look disabled instead, with a real
+            //         `onPress` that opens the upsell - the same reason InventoryPageHeader/
+            //         AchievementOrderOverlay's gated buttons below do the same.
+            <Button
+              className='opacity-50'
+              size='sm'
+              variant='secondary'
+              onPress={() => openProModalWithTier('casual')}
+            >
+              {t('dashboard.settings.customization.background.choose')}
+            </Button>
           )}
           {/* Not gated behind `canUseCasualFeatures` unlike "Choose" above - a background set while
               subscribed must stay clearable after a downgrade (it already stops rendering per
@@ -423,14 +417,7 @@ export const CustomizationSettingsTab = ({
               </Radio>
             )
 
-            if (!isLocked) return <div key={key}>{swatch}</div>
-
-            return (
-              <AppTooltip.Root key={key}>
-                <AppTooltip.Trigger>{swatch}</AppTooltip.Trigger>
-                <AppTooltip.Content>{t('common.proTier.casualRequired')}</AppTooltip.Content>
-              </AppTooltip.Root>
-            )
+            return <div key={key}>{swatch}</div>
           })}
         </RadioGroup>
       </div>
