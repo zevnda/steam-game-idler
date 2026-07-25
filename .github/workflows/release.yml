@@ -41,12 +41,11 @@ on:
         type: boolean
         default: false
       dry_run_skip_windows:
-        # Only takes effect when dry_run is also true (see build_dotnet_libs'/build_release_bundle's
+        # Only takes effect when dry_run is also true (see build_dotnet_libs'/build_windows_bundle's
         # `if:` below) - iterating on a Linux-only fix shouldn't have to pay for a full Windows
-        # dotnet+Tauri build every time. build_release_bundle_linux tolerates build_release_bundle
-        # being skipped this way (its own `if:` checks for a 'skipped' result, not just 'success') -
-        # its dry-run checkout step already falls back to github.ref instead of depending on
-        # anything the Windows job produces, so skipping Windows costs it nothing.
+        # dotnet+Tauri build every time. build_linux_bundle no longer depends on the Windows job at
+        # all (each platform job is independent - see `publish`), so skipping Windows costs it
+        # nothing regardless of dry_run.
         description: "Skip Windows build (dry run only)"
         required: false
         type: boolean
@@ -62,9 +61,9 @@ concurrency:
   group: release
   cancel-in-progress: false
 
-# Least privilege by default - only build_release_bundle and build_release_bundle_linux (the jobs
-# that actually create the release/PR, push the version-bump commit, and delete their own build
-# artifacts) are granted elevated scopes, below.
+# Least privilege by default - only `publish` (the one job that pushes the version-bump branch,
+# opens the PR, creates the GitHub release, and deletes its own build artifacts) is granted
+# elevated scopes, below.
 permissions: {}
 
 jobs:
@@ -101,22 +100,22 @@ jobs:
         uses: matt-usurp/validate-semver@v3
         with:
           version: ${{ github.event.inputs.version }}
-      
+
       - name: Validate version increment
         uses: actions/github-script@v8
         with:
           script: |
             const prev = '${{ needs.fetch_previous_version.outputs.previous_version }}'.replace(/^v/, '');
             const next = '${{ github.event.inputs.version }}'.replace(/^v/, '');
-            
+
             const [prevMajor, prevMinor, prevPatch] = prev.split('.').map(Number);
             const [nextMajor, nextMinor, nextPatch] = next.split('.').map(Number);
-            
+
             // Check if it's a valid increment
             const isMajor = nextMajor > prevMajor && nextMinor === 0 && nextPatch === 0;
             const isMinor = nextMajor === prevMajor && nextMinor > prevMinor && nextPatch === 0;
             const isPatch = nextMajor === prevMajor && nextMinor === prevMinor && nextPatch === prevPatch + 1;
-            
+
             if (!isMajor && !isMinor && !isPatch) {
               const validOptions = [
                 `${prevMajor}.${prevMinor}.${prevPatch + 1} (patch)`,
@@ -139,11 +138,90 @@ jobs:
               .addRaw(`Bumping ${prev} → ${next}`)
               .write();
 
+  # Computes the version bump exactly once, so build_windows_bundle/build_linux_bundle can each
+  # apply the same bumped files before building (tauri.conf.json's version stamps the compiled
+  # binary's FileVersion/ProductVersion) without duplicating this script per platform or having one
+  # platform inherit it from a branch the other platform's job used to create. Never commits/pushes
+  # anywhere - just produces files an artifact download applies to each consumer's checkout.
+  prepare:
+    runs-on: ubuntu-latest
+    needs: [fetch_previous_version, validate_version]
+    timeout-minutes: 5
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Update version numbers
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $previousVersion = "${{ needs.fetch_previous_version.outputs.previous_version }}"
+          $newVersion = "${{ github.event.inputs.version }}"
+
+          # latest.json is what the Tauri updater plugin polls on every existing install - if this
+          # replace silently no-ops (e.g. $previousVersion doesn't textually match file content),
+          # the release still gets published but no existing user's auto-update would ever fire,
+          # since latest.json would still claim the old version is current. Verify both files
+          # actually changed rather than trusting the replace succeeded.
+          #
+          # Get-Content returns a string array (one element per line). Applying -match/-notmatch
+          # to an array does NOT yield a boolean - it returns the subset of elements that satisfy
+          # the condition, which for -notmatch is "every line that doesn't contain the version"
+          # (i.e. almost every line in the file). That array is always non-empty and therefore
+          # always truthy, so the check would throw unconditionally regardless of whether the
+          # replace worked. Join to a single string first so -notmatch actually evaluates the
+          # whole file content as one match target.
+          $tauriConf = Get-Content src-tauri/tauri.conf.json
+          $updatedTauriConf = $tauriConf -replace [regex]::Escape($previousVersion), $newVersion
+          if (($updatedTauriConf -join "`n") -notmatch [regex]::Escape($newVersion)) {
+            throw "tauri.conf.json version replace did not match - previous_version ($previousVersion) may not match file content"
+          }
+          $updatedTauriConf | Set-Content src-tauri/tauri.conf.json
+
+          $latest = Get-Content latest.json
+          $updatedLatest = $latest -replace [regex]::Escape($previousVersion), $newVersion
+          if (($updatedLatest -join "`n") -notmatch [regex]::Escape($newVersion)) {
+            throw "latest.json version replace did not match - previous_version ($previousVersion) may not match file content"
+          }
+          $updatedLatest | Set-Content latest.json
+
+          # package.json/Cargo.toml are stuck at 0.1.0, not the previous release tag, so a
+          # $previousVersion replace (as above) would silently match nothing. Bump each directly
+          # instead. Neither value feeds the shipped exe's FileVersion/ProductVersion (that comes
+          # from tauri.conf.json alone) - this is version-string hygiene only.
+          npm pkg set version="$newVersion"
+          if ($LASTEXITCODE -ne 0) { throw "npm pkg set failed with exit code $LASTEXITCODE" }
+
+          # Cargo.toml has exactly one `version = "..."` line (under [package], no dependency-table
+          # collision) - confirmed via grep before relying on this regex.
+          $cargoToml = Get-Content src-tauri/Cargo.toml
+          $updatedCargoToml = $cargoToml -replace '^version = "[^"]+"$', "version = `"$newVersion`""
+          if (($updatedCargoToml -join "`n") -notmatch [regex]::Escape($newVersion)) {
+            throw "Cargo.toml version replace did not match expected 'version = `"...`"' line"
+          }
+          $updatedCargoToml | Set-Content src-tauri/Cargo.toml
+
+      - name: Upload version-bumped files
+        uses: actions/upload-artifact@v4
+        with:
+          name: version-files
+          retention-days: 1
+          path: |
+            src-tauri/tauri.conf.json
+            latest.json
+            package.json
+            src-tauri/Cargo.toml
+
   build_dotnet_libs:
     runs-on: windows-latest
     needs: [fetch_previous_version, validate_version]
     # Skipped only on a dry run that also requests dry_run_skip_windows - its only consumer
-    # (build_release_bundle below) is skipped by the same condition, so there's nothing left to
+    # (build_windows_bundle below) is skipped by the same condition, so there's nothing left to
     # build this for in that case.
     if: github.event.inputs.dry_run != 'true' || github.event.inputs.dry_run_skip_windows != 'true'
     timeout-minutes: 15
@@ -220,7 +298,7 @@ jobs:
 
   # Agent-mode-only daemon build for Linux (libs/SteamUtility.csproj excludes Cli/**/Steamworks.NET
   # for any RuntimeIdentifier != win-x64). Runs on plain ubuntu-latest, not the pinned older base
-  # build_release_bundle_linux uses below - a self-contained .NET publish for linux-x64 bundles its
+  # build_linux_bundle uses below - a self-contained .NET publish for linux-x64 bundles its
   # own portable runtime, unlike the native Rust/GTK build, which needs the oldest-supported base
   # to avoid raising the binary's minimum glibc requirement.
   build_dotnet_libs_linux:
@@ -285,20 +363,28 @@ jobs:
           echo "## .NET build (Linux)" >> "$GITHUB_STEP_SUMMARY"
           echo "SteamUtility: $SOURCE" >> "$GITHUB_STEP_SUMMARY"
 
-  build_release_bundle:
-    needs: [build_dotnet_libs, fetch_previous_version, validate_version]
-    # Same skip condition as build_dotnet_libs above - build_release_bundle_linux tolerates this
-    # job being skipped (see its own `if:` below), so a Linux-only dry run never needs this at all.
+  # Builds the Windows NSIS installer + portable zip. Deliberately independent of
+  # build_linux_bundle (needs only build_dotnet_libs/prepare, not the Linux job) so both platform
+  # builds run concurrently - neither touches git or the GitHub release directly anymore; both just
+  # build and upload a bundle artifact for `publish` to pick up once both platforms are confirmed
+  # green.
+  build_windows_bundle:
+    needs: [build_dotnet_libs, prepare]
+    # Same skip condition as build_dotnet_libs above.
     if: github.event.inputs.dry_run != 'true' || github.event.inputs.dry_run_skip_windows != 'true'
     timeout-minutes: 30
     runs-on: windows-latest
     permissions:
-      contents: write # create the GitHub release (softprops/action-gh-release)
-      pull-requests: write # open the version-bump PR
-      actions: write # delete the dotnet-libs artifact in the cleanup step
+      actions: write # delete this job's own dotnet-libs artifact in the cleanup step
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Apply version-bumped files
+        uses: actions/download-artifact@v4
+        with:
+          name: version-files
+          path: .
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -373,57 +459,6 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw "cargo clean failed with exit code $LASTEXITCODE" }
         working-directory: ./src-tauri
 
-      - name: Update version numbers
-        id: update-versions
-        shell: pwsh
-        run: |
-          $ErrorActionPreference = 'Stop'
-          $previousVersion = "${{ needs.fetch_previous_version.outputs.previous_version }}"
-          $newVersion = "${{ github.event.inputs.version }}"
-
-          # latest.json is what the Tauri updater plugin polls on every existing install - if this
-          # replace silently no-ops (e.g. $previousVersion doesn't textually match file content),
-          # the release still gets published but no existing user's auto-update would ever fire,
-          # since latest.json would still claim the old version is current. Verify both files
-          # actually changed rather than trusting the replace succeeded.
-          #
-          # Get-Content returns a string array (one element per line). Applying -match/-notmatch
-          # to an array does NOT yield a boolean - it returns the subset of elements that satisfy
-          # the condition, which for -notmatch is "every line that doesn't contain the version"
-          # (i.e. almost every line in the file). That array is always non-empty and therefore
-          # always truthy, so the check would throw unconditionally regardless of whether the
-          # replace worked. Join to a single string first so -notmatch actually evaluates the
-          # whole file content as one match target.
-          $tauriConf = Get-Content src-tauri/tauri.conf.json
-          $updatedTauriConf = $tauriConf -replace [regex]::Escape($previousVersion), $newVersion
-          if (($updatedTauriConf -join "`n") -notmatch [regex]::Escape($newVersion)) {
-            throw "tauri.conf.json version replace did not match - previous_version ($previousVersion) may not match file content"
-          }
-          $updatedTauriConf | Set-Content src-tauri/tauri.conf.json
-
-          $latest = Get-Content latest.json
-          $updatedLatest = $latest -replace [regex]::Escape($previousVersion), $newVersion
-          if (($updatedLatest -join "`n") -notmatch [regex]::Escape($newVersion)) {
-            throw "latest.json version replace did not match - previous_version ($previousVersion) may not match file content"
-          }
-          $updatedLatest | Set-Content latest.json
-
-          # package.json/Cargo.toml are stuck at 0.1.0, not the previous release tag, so a
-          # $previousVersion replace (as above) would silently match nothing. Bump each directly
-          # instead. Neither value feeds the shipped exe's FileVersion/ProductVersion (that comes
-          # from tauri.conf.json alone) - this is version-string hygiene only.
-          npm pkg set version="$newVersion"
-          if ($LASTEXITCODE -ne 0) { throw "npm pkg set failed with exit code $LASTEXITCODE" }
-
-          # Cargo.toml has exactly one `version = "..."` line (under [package], no dependency-table
-          # collision) - confirmed via grep before relying on this regex.
-          $cargoToml = Get-Content src-tauri/Cargo.toml
-          $updatedCargoToml = $cargoToml -replace '^version = "[^"]+"$', "version = `"$newVersion`""
-          if (($updatedCargoToml -join "`n") -notmatch [regex]::Escape($newVersion)) {
-            throw "Cargo.toml version replace did not match expected 'version = `"...`"' line"
-          }
-          $updatedCargoToml | Set-Content src-tauri/Cargo.toml
-
       - name: Create .env file
         run: |
           echo "KEY=${{ secrets.KEY }}" > .env
@@ -467,10 +502,11 @@ jobs:
         # latest.json's signature is what the Tauri updater verifies against on every existing
         # install - if this python invocation throws (e.g. the .sig file is missing because the
         # build silently failed earlier) and the exit code goes unchecked, this step would report
-        # green while shipping a stale/wrong signature, breaking auto-update for the whole release.
+        # green while shipping a stale/wrong signature. Only this job's own windows-x86_64 entry is
+        # written here - `publish` merges this with the Linux job's entry into the single latest.json
+        # that actually gets committed, and sets `major` itself (once, not once per platform).
         run: |
           python -c "
-          import base64
           import json
 
           nsis_signature_path = './src-tauri/target/release/bundle/nsis/Steam Game Idler_${{ github.event.inputs.version }}_x64-setup.nsis.zip.sig'
@@ -484,88 +520,12 @@ jobs:
 
           latest_json['platforms']['windows-x86_64']['signature'] = new_signature
 
-          is_major = True if '${{ github.event.inputs.is_major }}' == 'true' else False
-          latest_json['major'] = is_major
-
           with open(latest_json_path, 'w') as json_file:
               json.dump(latest_json, json_file, indent=2)
 
           print('Updated latest.json with new signature')
           "
           if ($LASTEXITCODE -ne 0) { throw "Updating latest.json signature failed with exit code $LASTEXITCODE" }
-
-      - uses: actions/create-github-app-token@v1
-        id: generate-token
-        if: github.event.inputs.dry_run != 'true'
-        with:
-          app-id: ${{ secrets.APP_ID }}
-          private-key: ${{ secrets.APP_PRIVATE_KEY }}
-
-      - name: Create PR for version changes
-        id: create-pr
-        # Skipped on a dry run - main has none of this branch's commits yet, so a PR opened from
-        # here would show the entire branch diff against main (computed at the merge-base), not a
-        # clean version bump. build_release_bundle_linux falls back to checking out github.ref
-        # directly instead of this step's branch when dry_run is set - see that job's checkout step.
-        if: github.event.inputs.dry_run != 'true'
-        uses: peter-evans/create-pull-request@v7
-        with:
-          token: ${{ steps.generate-token.outputs.token }}
-          commit-message: "chore(version): bump to ${{ github.event.inputs.version }}"
-          title: "chore(version): bump to ${{ github.event.inputs.version }}"
-          body: |
-            Automated version bump for release [v${{ github.event.inputs.version }}](https://github.com/${{ github.repository }}/releases/tag/${{ github.event.inputs.version }})
-
-            Generated by workflow run [${{ github.run_id }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
-
-            Merging this PR allows the release to be distributed through Tauri Updater for auto-updates
-          branch: "version-bump-${{ github.event.inputs.version }}-${{ github.run_id }}"
-          base: "main"
-          add-paths: |
-            src-tauri/tauri.conf.json
-            latest.json
-            package.json
-            src-tauri/Cargo.toml
-            src-tauri/Cargo.lock
-          sign-commits: true
-
-      - name: Generate release notes
-        id: generate_notes
-        uses: actions/github-script@v8
-        with:
-          script: |
-            const { data } = await github.rest.repos.generateReleaseNotes({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              tag_name: '${{ github.event.inputs.version }}',
-              previous_tag_name: '${{ needs.fetch_previous_version.outputs.previous_version }}'
-            });
-            
-            // Remove lines for version bumps, docs, ci, etc
-            let body = data.body;
-            const lines = body.split('\n');
-            const filtered = lines.filter(line => {
-              const trimmed = line.trim();
-              if (trimmed.startsWith('* chore: update changelog')) return false;
-              if (trimmed.startsWith('* chore(version): bump to')) return false;
-              if (trimmed.startsWith('* chore: push notification')) return false;
-              if (trimmed.startsWith('* chore(i18n): pull translations from crowdin')) return false;
-              if (trimmed.startsWith('* chore(ci):')) return false;
-              if (trimmed.startsWith('* ci:')) return false;
-              if (trimmed.startsWith('* docs:')) return false;
-              return true;
-            });
-            
-            const cleanedBody = filtered.join('\n');
-            
-            // Save to file
-            const fs = require('fs');
-            fs.writeFileSync('./release_notes.md', cleanedBody);
-            
-            console.log('Generated release notes:');
-            console.log(cleanedBody);
-            
-            return cleanedBody;
 
       - name: Prepare portable executable
         run: |
@@ -578,10 +538,10 @@ jobs:
           # Create portable package directory
           $portableDir = "./portable-package"
           New-Item -ItemType Directory -Force -Path $portableDir
-          
+
           # Copy the executable with the correct name
           Copy-Item "./src-tauri/target/release/Steam Game Idler.exe" -Destination "$portableDir/Steam Game Idler.exe"
-          
+
           # Copy the libs folder
           Copy-Item "./src-tauri/libs" -Destination "$portableDir/libs" -Recurse -Force
 
@@ -595,38 +555,35 @@ jobs:
 
           # Create the portable zip
           Compress-Archive -Path "$portableDir/*" -DestinationPath "./src-tauri/target/release/Steam Game Idler_${{ github.event.inputs.version }}_x64-portable.zip" -Force
-          
+
           # Clean up temporary directory
           Remove-Item -Recurse -Force $portableDir
         shell: pwsh
 
-      - name: Create release
-        if: github.event.inputs.dry_run != 'true'
-        uses: softprops/action-gh-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.event.inputs.version }}
-          name: Steam Game Idler v${{ github.event.inputs.version }}
-          body_path: ./release_notes.md
-          files: |
-            ./src-tauri/target/release/bundle/nsis/Steam Game Idler_${{ github.event.inputs.version }}_x64-setup.exe
-            ./src-tauri/target/release/bundle/nsis/Steam Game Idler_${{ github.event.inputs.version }}_x64-setup.nsis.zip
-            ./src-tauri/target/release/bundle/nsis/Steam Game Idler_${{ github.event.inputs.version }}_x64-setup.nsis.zip.sig
-            ./src-tauri/target/release/Steam Game Idler_${{ github.event.inputs.version }}_x64-portable.zip
+      - name: Stage bundle for publish
+        # Collects everything `publish` needs from this platform into one directory: the bundle
+        # files themselves, this job's windows-x86_64-only latest.json (for publish to merge), and
+        # the Cargo.lock this job's `cargo`/`pnpm tauri build` regenerated against the bumped
+        # Cargo.toml (publish restores this into its own checkout before opening the version-bump
+        # PR, since Cargo.lock is never hand-edited - only ever a build byproduct, same as today).
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          New-Item -ItemType Directory -Force -Path ./dist-windows | Out-Null
+          Copy-Item "./src-tauri/target/release/bundle/nsis/Steam Game Idler_${{ github.event.inputs.version }}_x64-setup.exe" -Destination ./dist-windows/
+          Copy-Item "./src-tauri/target/release/bundle/nsis/Steam Game Idler_${{ github.event.inputs.version }}_x64-setup.nsis.zip" -Destination ./dist-windows/
+          Copy-Item "./src-tauri/target/release/bundle/nsis/Steam Game Idler_${{ github.event.inputs.version }}_x64-setup.nsis.zip.sig" -Destination ./dist-windows/
+          Copy-Item "./src-tauri/target/release/Steam Game Idler_${{ github.event.inputs.version }}_x64-portable.zip" -Destination ./dist-windows/
+          Copy-Item ./latest.json -Destination ./dist-windows/
+          Copy-Item ./src-tauri/Cargo.lock -Destination ./dist-windows/
+          if ($LASTEXITCODE -ne 0) { throw "staging failed" }
 
-      - name: Upload build output (dry run)
-        if: github.event.inputs.dry_run == 'true'
+      - name: Upload windows-bundle
         uses: actions/upload-artifact@v4
         with:
-          name: windows-bundle-dry-run
-          retention-days: 3
-          path: |
-            ./src-tauri/target/release/bundle/nsis/Steam Game Idler_${{ github.event.inputs.version }}_x64-setup.exe
-            ./src-tauri/target/release/bundle/nsis/Steam Game Idler_${{ github.event.inputs.version }}_x64-setup.nsis.zip
-            ./src-tauri/target/release/bundle/nsis/Steam Game Idler_${{ github.event.inputs.version }}_x64-setup.nsis.zip.sig
-            ./src-tauri/target/release/Steam Game Idler_${{ github.event.inputs.version }}_x64-portable.zip
-            ./latest.json
+          name: windows-bundle
+          retention-days: 1
+          path: ./dist-windows/*
 
       - name: Cleanup artifacts
         if: always()
@@ -634,13 +591,12 @@ jobs:
         with:
           name: dotnet-libs
 
-  # Builds the Linux AppImage/deb/rpm bundle, adds it to the same GitHub release build_release_bundle
-  # just created, and appends a `platforms.linux-x86_64` entry to the same version-bump PR's
-  # latest.json. Deliberately depends on build_release_bundle (not just fetch_previous_version/
-  # validate_version) so it runs *after* that job's version-bump branch/PR and GitHub release both
-  # already exist - this job checks out that same branch (already at the bumped version, so no need
-  # to redo the tauri.conf.json/package.json/Cargo.toml edits here) and pushes one more commit onto
-  # it, and appends assets to the same release tag rather than creating a second one.
+  # Builds the Linux AppImage/deb/rpm bundle and uploads it as an artifact for `publish` to attach
+  # to the same GitHub release build_windows_bundle's output goes into. Deliberately independent of
+  # build_windows_bundle (needs only build_dotnet_libs_linux/prepare) so both platform builds run
+  # concurrently instead of one waiting on the other - neither platform job touches git/the GitHub
+  # release directly anymore; that's all consolidated into `publish`, which only runs once both
+  # platforms are confirmed green.
   #
   # runs-on: ubuntu-22.04, NOT ubuntu-latest and NOT a `container:` image - a pinned, specific-version
   # GitHub-hosted runner is the oldest still-current base with WebKitGTK 4.1 available directly from
@@ -648,59 +604,21 @@ jobs:
   # user's system has raises the compiled binary's minimum required version and it refuses to launch
   # on anything older). A real VM/native runner also sidesteps the FUSE-in-a-container problems the
   # AppImage tooling (linuxdeploy) is known to hit under Docker.
-  build_release_bundle_linux:
-    needs: [build_dotnet_libs_linux, build_release_bundle]
-    # always() overrides the default "every job in needs succeeded" gate, so this still runs when
-    # build_release_bundle was deliberately skipped (dry_run_skip_windows) - but not when it
-    # actually failed for real, which the explicit result checks below still catch.
-    if: |
-      always() &&
-      needs.build_dotnet_libs_linux.result == 'success' &&
-      (needs.build_release_bundle.result == 'success' || needs.build_release_bundle.result == 'skipped')
+  build_linux_bundle:
+    needs: [build_dotnet_libs_linux, prepare]
     timeout-minutes: 30
     runs-on: ubuntu-22.04
     permissions:
-      contents: write # push the latest.json update to the version-bump branch; upload release assets
-      actions: write # delete the dotnet-libs-linux artifact in the cleanup step
+      actions: write # delete this job's own dotnet-libs-linux artifact in the cleanup step
     steps:
-      # Generates a token for the same GitHub App (sgi-actions) that build_release_bundle's
-      # create-pull-request step already commits as. Without this, the later "Commit latest.json
-      # update" step falls back to actions/checkout's default GITHUB_TOKEN-based identity
-      # (github-actions[bot]) - a second, different bot committing onto the same PR that
-      # sgi-actions[bot] opened. Skipped on a dry run to match build_release_bundle's own gating -
-      # there's no branch to push to in that case anyway.
-      - uses: actions/create-github-app-token@v1
-        id: generate-token
-        if: github.event.inputs.dry_run != 'true'
-        with:
-          app-id: ${{ secrets.APP_ID }}
-          private-key: ${{ secrets.APP_PRIVATE_KEY }}
-
-      # The GitHub-recommended way to build a GitHub App's bot commit-author email
-      # (<user-id>+<app-slug>[bot]@users.noreply.github.com) - the numeric ID isn't guessable and
-      # has to be looked up via the API using the token minted above.
-      - name: Get GitHub App user ID
-        id: get-user-id
-        if: github.event.inputs.dry_run != 'true'
-        run: echo "user-id=$(gh api "/users/${{ steps.generate-token.outputs.app-slug }}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
-        env:
-          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
-
-      - name: Checkout version-bump branch
-        # On a dry run, build_release_bundle never pushes this branch (its create-pull-request step
-        # is skipped - see that job's comment), so fall back to the ref this workflow was actually
-        # dispatched from. That ref still gets a real build; it just carries whatever version is
-        # already committed in tauri.conf.json rather than the freshly-bumped one, which doesn't
-        # matter for a dry run's purpose (proving the Linux job itself works).
-        #
-        # token: uses the app token (real run) so every git operation in this job - including the
-        # later push - authenticates as sgi-actions[bot] instead of the default GITHUB_TOKEN
-        # identity. Falls back to github.token on a dry run, matching pre-existing behavior exactly
-        # (generate-token is skipped then, so its output would otherwise be empty).
+      - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Apply version-bumped files
+        uses: actions/download-artifact@v4
         with:
-          ref: ${{ github.event.inputs.dry_run == 'true' && github.ref || format('version-bump-{0}-{1}', github.event.inputs.version, github.run_id) }}
-          token: ${{ github.event.inputs.dry_run == 'true' && github.token || steps.generate-token.outputs.token }}
+          name: version-files
+          path: .
 
       - name: Install Linux system dependencies
         # webkit2gtk/javascriptcoregtk are pinned to 2.44.3-0ubuntu0.22.04.1, the last version
@@ -835,7 +753,7 @@ jobs:
             ${{ runner.OS }}-nextjs-
 
       - name: Clean Next.js cache
-        # Mirrors build_release_bundle's equivalent Windows step - without this, every Linux
+        # Mirrors build_windows_bundle's equivalent Windows step - without this, every Linux
         # release build did a fully uncached Next.js build from scratch every time (not a
         # correctness bug, just wasted CI minutes and no respect for force_nextjs_build).
         if: steps.cache-nextjs.outputs.cache-hit != 'true' || github.event.inputs.force_nextjs_build == 'true'
@@ -904,7 +822,9 @@ jobs:
         # filename at runtime instead of assuming one, since Tauri's exact AppImage-bundle naming
         # convention isn't guaranteed - a hardcoded filename would be a silent latest.json footgun
         # if it's ever wrong. GitHub replaces literal spaces in an uploaded release asset's
-        # filename with dots in its generated download URL - replicated here to match.
+        # filename with dots in its generated download URL - replicated here to match. Only this
+        # job's own linux-x86_64 entry is written here - `publish` merges this with the Windows
+        # job's entry into the single latest.json that actually gets committed.
         run: |
           set -euo pipefail
           python3 -c "
@@ -935,59 +855,23 @@ jobs:
           print(f'Updated latest.json with linux-x86_64 entry: {url}')
           "
 
-      - name: Commit latest.json update to version-bump branch
-        # Appends to the same branch/PR build_release_bundle's create-pull-request step opened -
-        # not a second PR. A plain git push (not create-pull-request again) is enough since the
-        # branch and PR already exist; the checkout step above already persisted the sgi-actions
-        # app token as this job's git credentials, so this push authenticates as the same bot that
-        # opened the PR rather than the job's own default GITHUB_TOKEN identity.
-        # Skipped entirely on a dry run - there's no version-bump branch to push to (the checkout
-        # step above fell back to github.ref instead), and pushing straight onto whatever real
-        # branch that is would be exactly the kind of unwanted side effect dry_run exists to avoid.
-        if: github.event.inputs.dry_run != 'true'
+      - name: Stage bundle for publish
         run: |
           set -euo pipefail
-          git config user.name "${{ steps.generate-token.outputs.app-slug }}[bot]"
-          git config user.email "${{ steps.get-user-id.outputs.user-id }}+${{ steps.generate-token.outputs.app-slug }}[bot]@users.noreply.github.com"
-          git add latest.json
-          if git diff --cached --quiet; then
-            echo "No latest.json changes to commit"
-          else
-            git commit -m "chore(version): add linux-x86_64 entry to latest.json"
-            git push origin "HEAD:version-bump-${{ github.event.inputs.version }}-${{ github.run_id }}"
-          fi
+          mkdir -p ./dist-linux
+          cp ./src-tauri/target/release/bundle/appimage/*.AppImage ./dist-linux/
+          cp ./src-tauri/target/release/bundle/appimage/*.AppImage.tar.gz ./dist-linux/
+          cp ./src-tauri/target/release/bundle/appimage/*.AppImage.tar.gz.sig ./dist-linux/
+          cp ./src-tauri/target/release/bundle/deb/*.deb ./dist-linux/
+          cp ./src-tauri/target/release/bundle/rpm/*.rpm ./dist-linux/
+          cp ./latest.json ./dist-linux/
 
-      - name: Add Linux bundles to release
-        if: github.event.inputs.dry_run != 'true'
-        uses: softprops/action-gh-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        # No body/body_path here on purpose - action-gh-release preserves an existing release's
-        # current body/metadata when those inputs are omitted, so this only appends the Linux
-        # assets to the release build_release_bundle already created rather than clobbering its
-        # generated release notes.
-        with:
-          tag_name: ${{ github.event.inputs.version }}
-          files: |
-            ./src-tauri/target/release/bundle/appimage/*.AppImage
-            ./src-tauri/target/release/bundle/appimage/*.AppImage.tar.gz
-            ./src-tauri/target/release/bundle/appimage/*.AppImage.tar.gz.sig
-            ./src-tauri/target/release/bundle/deb/*.deb
-            ./src-tauri/target/release/bundle/rpm/*.rpm
-
-      - name: Upload build output (dry run)
-        if: github.event.inputs.dry_run == 'true'
+      - name: Upload linux-bundle
         uses: actions/upload-artifact@v4
         with:
-          name: linux-bundle-dry-run
-          retention-days: 3
-          path: |
-            ./src-tauri/target/release/bundle/appimage/*.AppImage
-            ./src-tauri/target/release/bundle/appimage/*.AppImage.tar.gz
-            ./src-tauri/target/release/bundle/appimage/*.AppImage.tar.gz.sig
-            ./src-tauri/target/release/bundle/deb/*.deb
-            ./src-tauri/target/release/bundle/rpm/*.rpm
-            ./latest.json
+          name: linux-bundle
+          retention-days: 1
+          path: ./dist-linux/*
 
       - name: Cleanup artifacts
         if: always()
@@ -995,16 +879,229 @@ jobs:
         with:
           name: dotnet-libs-linux
 
+  # The only job that mutates git or GitHub release state. Deliberately consolidated here - rather
+  # than split across the two platform jobs, as it used to be - so nothing user-visible (branch
+  # push, PR, GitHub release, Discord ping) can happen until BOTH platform builds are confirmed
+  # green. See the `if:` below: a real failure on either platform skips this job entirely, unlike
+  # before, where the Windows job's PR/release already existed by the time a Linux failure could
+  # even occur. Consolidating the git-mutating steps into one job also means only one job ever
+  # pushes to the version-bump branch or calls action-gh-release, eliminating any possibility of a
+  # race between two jobs writing to the same branch/release concurrently.
+  publish:
+    needs: [fetch_previous_version, build_windows_bundle, build_linux_bundle]
+    if: |
+      always() &&
+      needs.build_linux_bundle.result == 'success' &&
+      (needs.build_windows_bundle.result == 'success' || needs.build_windows_bundle.result == 'skipped')
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # push the version-bump branch commit, create the GitHub release
+      pull-requests: write # open the version-bump PR
+      actions: write # delete the version-files/windows-bundle/linux-bundle artifacts
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Apply version-bumped files
+        uses: actions/download-artifact@v4
+        with:
+          name: version-files
+          path: .
+
+      - name: Download windows bundle
+        if: needs.build_windows_bundle.result == 'success'
+        uses: actions/download-artifact@v4
+        with:
+          name: windows-bundle
+          path: ./dist-windows
+
+      - name: Download linux bundle
+        uses: actions/download-artifact@v4
+        with:
+          name: linux-bundle
+          path: ./dist-linux
+
+      - name: Merge platform signatures into latest.json
+        # Each platform job only ever wrote its own platforms.<x>.signature entry into its own copy
+        # of latest.json (see build_windows_bundle's/build_linux_bundle's "Update latest.json with
+        # signature" steps) - this is the one place both get combined into the single latest.json
+        # that actually gets committed/published. `major` is set here, once, instead of being
+        # duplicated per platform.
+        run: |
+          python -c "
+          import json
+          import os
+
+          with open('latest.json', 'r') as f:
+              latest_json = json.load(f)
+
+          if os.path.exists('dist-windows/latest.json'):
+              with open('dist-windows/latest.json', 'r') as f:
+                  windows_latest = json.load(f)
+              latest_json['platforms']['windows-x86_64'] = windows_latest['platforms']['windows-x86_64']
+
+          with open('dist-linux/latest.json', 'r') as f:
+              linux_latest = json.load(f)
+          latest_json['platforms']['linux-x86_64'] = linux_latest['platforms']['linux-x86_64']
+
+          is_major = True if '${{ github.event.inputs.is_major }}' == 'true' else False
+          latest_json['major'] = is_major
+
+          with open('latest.json', 'w') as f:
+              json.dump(latest_json, f, indent=2)
+
+          print('Merged platform signatures into latest.json')
+          "
+
+      - name: Restore built Cargo.lock
+        if: needs.build_windows_bundle.result == 'success'
+        run: cp dist-windows/Cargo.lock src-tauri/Cargo.lock
+
+      - name: Upload windows bundle (dry run)
+        if: github.event.inputs.dry_run == 'true' && needs.build_windows_bundle.result == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-bundle-dry-run
+          retention-days: 3
+          path: |
+            dist-windows/*
+            latest.json
+
+      - name: Upload linux bundle (dry run)
+        if: github.event.inputs.dry_run == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-bundle-dry-run
+          retention-days: 3
+          path: |
+            dist-linux/*
+            latest.json
+
+      - uses: actions/create-github-app-token@v1
+        id: generate-token
+        if: github.event.inputs.dry_run != 'true'
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - name: Create PR for version changes
+        id: create-pr
+        # Skipped on a dry run - main has none of this branch's commits yet, so a PR opened from
+        # here would show the entire branch diff against main (computed at the merge-base), not a
+        # clean version bump.
+        if: github.event.inputs.dry_run != 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
+          commit-message: "chore(version): bump to ${{ github.event.inputs.version }}"
+          title: "chore(version): bump to ${{ github.event.inputs.version }}"
+          body: |
+            Automated version bump for release [v${{ github.event.inputs.version }}](https://github.com/${{ github.repository }}/releases/tag/${{ github.event.inputs.version }})
+
+            Generated by workflow run [${{ github.run_id }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+
+            Merging this PR allows the release to be distributed through Tauri Updater for auto-updates
+          branch: "version-bump-${{ github.event.inputs.version }}-${{ github.run_id }}"
+          base: "main"
+          add-paths: |
+            src-tauri/tauri.conf.json
+            latest.json
+            package.json
+            src-tauri/Cargo.toml
+            src-tauri/Cargo.lock
+          sign-commits: true
+
+      - name: Generate release notes
+        if: github.event.inputs.dry_run != 'true'
+        id: generate_notes
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const { data } = await github.rest.repos.generateReleaseNotes({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_name: '${{ github.event.inputs.version }}',
+              previous_tag_name: '${{ needs.fetch_previous_version.outputs.previous_version }}'
+            });
+
+            // Remove lines for version bumps, docs, ci, etc
+            let body = data.body;
+            const lines = body.split('\n');
+            const filtered = lines.filter(line => {
+              const trimmed = line.trim();
+              if (trimmed.startsWith('* chore: update changelog')) return false;
+              if (trimmed.startsWith('* chore(version): bump to')) return false;
+              if (trimmed.startsWith('* chore: push notification')) return false;
+              if (trimmed.startsWith('* chore(i18n): pull translations from crowdin')) return false;
+              if (trimmed.startsWith('* chore(ci):')) return false;
+              if (trimmed.startsWith('* ci:')) return false;
+              if (trimmed.startsWith('* docs:')) return false;
+              return true;
+            });
+
+            const cleanedBody = filtered.join('\n');
+
+            // Save to file
+            const fs = require('fs');
+            fs.writeFileSync('./release_notes.md', cleanedBody);
+
+            console.log('Generated release notes:');
+            console.log(cleanedBody);
+
+            return cleanedBody;
+
+      - name: Create release
+        if: github.event.inputs.dry_run != 'true'
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.event.inputs.version }}
+          name: Steam Game Idler v${{ github.event.inputs.version }}
+          body_path: ./release_notes.md
+          files: |
+            ./dist-windows/Steam Game Idler_${{ github.event.inputs.version }}_x64-setup.exe
+            ./dist-windows/Steam Game Idler_${{ github.event.inputs.version }}_x64-setup.nsis.zip
+            ./dist-windows/Steam Game Idler_${{ github.event.inputs.version }}_x64-setup.nsis.zip.sig
+            ./dist-windows/Steam Game Idler_${{ github.event.inputs.version }}_x64-portable.zip
+            ./dist-linux/*.AppImage
+            ./dist-linux/*.AppImage.tar.gz
+            ./dist-linux/*.AppImage.tar.gz.sig
+            ./dist-linux/*.deb
+            ./dist-linux/*.rpm
+
+      - name: Cleanup version-files artifact
+        if: always()
+        uses: geekyeggo/delete-artifact@v5
+        with:
+          name: version-files
+
+      - name: Cleanup windows-bundle artifact
+        if: always() && needs.build_windows_bundle.result == 'success'
+        uses: geekyeggo/delete-artifact@v5
+        with:
+          name: windows-bundle
+
+      - name: Cleanup linux-bundle artifact
+        if: always()
+        uses: geekyeggo/delete-artifact@v5
+        with:
+          name: linux-bundle
+
   send_discord_notification:
-    needs: [build_release_bundle, build_release_bundle_linux]
+    needs: [publish]
     # Skipped on a dry run - the entire point of dry_run is a real build with none of a real
     # release's public side effects, and this is the one that pings the official Discord server.
+    # If publish itself was skipped (a real platform failure), ordinary needs-gating skips this
+    # job too - no `always()` here, so a failure stays silent instead of pinging Discord about a
+    # release that doesn't exist.
     if: github.event.inputs.dry_run != 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      
+
       - name: Send changelog to Discord
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
@@ -1012,15 +1109,15 @@ jobs:
           VERSION="${{ github.event.inputs.version }}"
           CHANGELOG_FILE="docs/changelogs/${VERSION}.mdx"
           RELEASE_URL="https://github.com/${{ github.repository }}/releases/tag/${VERSION}"
-          
+
           if [ ! -f "$CHANGELOG_FILE" ]; then
             echo "Error: Changelog file not found: $CHANGELOG_FILE"
             exit 1
           fi
-          
+
           # Extract changelog body after frontmatter (remove everything between --- markers and trim)
           CHANGELOG_BODY=$(awk 'BEGIN{p=0} /^---$/{p++; next} p==2{print}' "$CHANGELOG_FILE" | sed '/^$/d')
-          
+
           # Create JSON payload using jq to properly escape everything
           jq -n \
             --arg version "$VERSION" \
