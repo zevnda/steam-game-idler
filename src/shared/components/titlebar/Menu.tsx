@@ -9,7 +9,6 @@ import {
   TbDownload,
   TbListCheck,
   TbSquareRoundedChevronDown,
-  TbStarFilled,
 } from 'react-icons/tb'
 import { Dropdown, toast } from '@heroui/react'
 import { AppTooltip } from '@/shared/components/AppTooltip'
@@ -119,10 +118,6 @@ export const Menu = () => {
           <Dropdown.Item id='feature' textValue={t('menu.feature')}>
             <TbBulbFilled fontSize={16} />
             {t('menu.feature')}
-          </Dropdown.Item>
-          <Dropdown.Item id='support' textValue={t('menu.support')}>
-            <TbStarFilled fontSize={16} />
-            {t('menu.support')}
           </Dropdown.Item>
           <Dropdown.Item id='discord' textValue={t('menu.joinDiscord')}>
             <FaDiscord fontSize={16} />

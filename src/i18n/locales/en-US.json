@@ -16,8 +16,7 @@
       "done": "Done",
       "copy": "Copy",
       "paste": "Paste",
-      "add": "Add",
-      "backToTop": "Back to top"
+      "add": "Add"
     },
     "gameCardMenu": {
       "startIdling": "Start Idling",
@@ -85,10 +84,6 @@
       "pastDue": "Your PRO subscription is past due. Please update your payment method to avoid losing access.",
       "manageSubscription": "Manage Subscription"
     },
-    "proTier": {
-      "gamerRequired": "Requires the Gamer plan.",
-      "casualRequired": "Requires the Casual plan."
-    },
     "badges": {
       "beta": "Beta"
     },
@@ -129,7 +124,6 @@
     "guide": "Documentation",
     "issue": "Report an issue",
     "feature": "Feature request",
-    "support": "Support me",
     "joinDiscord": "Join our Discord",
     "changelog": "Changelog",
     "update": "Check for updates"
@@ -139,7 +133,6 @@
   },
   "titlebar": {
     "closeToTrayNotification": "Steam Game Idler will continue to run in the background",
-    "goPro": "Go Pro",
     "helpDesk": "Help Desk",
     "updateReady": "Update ready"
   },
@@ -626,8 +619,6 @@
         "description": "Games you blacklist from the Games With Drops tab will never be farmed and appear here."
       },
       "connect": {
-        "title": "Connect card farming",
-        "description": "Connect your Steam Community session to see and farm games with card drops remaining.",
         "automaticDescription": "Signs in to Steam Community automatically to check for drops."
       },
       "progress": {
@@ -805,7 +796,6 @@
       "badgeLevel": "Badge level {{level}}",
       "noBadge": "No badge crafted",
       "connect": {
-        "title": "Connect your inventory",
         "description": "Load your Steam Community inventory to manage and sell items.",
         "automaticDescription": "Signs in to Steam Community automatically to load your inventory."
       },
@@ -813,7 +803,6 @@
         "listSelected": "List selected ({{count}})",
         "sellAll": "Sell all ({{count}})",
         "sellDupes": "Sell dupes",
-        "sellDupesGamerRequired": "Selling duplicate items automatically requires the Gamer plan.",
         "removeListings": "Remove listings",
         "lockItem": "Lock this item so it's never sold automatically",
         "list": "List on the market",
@@ -1122,7 +1111,6 @@
           "label": "Max achievement unlocks",
           "description": "Stop the achievement unlocker on this game after unlocking this many achievements."
         },
-        "filterCustomized": "Only show games with custom settings",
         "errors": {
           "generic": "Something went wrong updating your game settings. Please try again. ({{code}})"
         }

@@ -16,8 +16,7 @@
       "done": "Fatto",
       "copy": "Copia",
       "paste": "Incolla",
-      "add": "Aggiungi",
-      "backToTop": "Torna in alto"
+      "add": "Aggiungi"
     },
     "gameCardMenu": {
       "startIdling": "Inizia idle",
@@ -85,10 +84,6 @@
       "pastDue": "Il tuo abbonamento PRO è scaduto. Aggiorna il metodo di pagamento per evitare di perdere l'accesso.",
       "manageSubscription": "Gestisci abbonamento"
     },
-    "proTier": {
-      "gamerRequired": "Richiede il piano Gamer.",
-      "casualRequired": "Richiede il piano Casual."
-    },
     "badges": {
       "beta": "Beta"
     },
@@ -129,7 +124,6 @@
     "guide": "Documentazione",
     "issue": "Segnala un problema",
     "feature": "Richiedi una funzionalità",
-    "support": "Supportami",
     "joinDiscord": "Unisciti al nostro Discord",
     "changelog": "Changelog",
     "update": "Controlla aggiornamenti"
@@ -139,7 +133,6 @@
   },
   "titlebar": {
     "closeToTrayNotification": "Steam Game Idler continuerà a funzionare in background",
-    "goPro": "Passa a PRO",
     "helpDesk": "Servizio assistenza",
     "updateReady": "Aggiornamento pronto"
   },
@@ -626,8 +619,6 @@
         "description": "I giochi che aggiungi alla lista nera dalla scheda Giochi con carte non verranno mai usati per la raccolta e appariranno qui."
       },
       "connect": {
-        "title": "Connetti Raccolta carte",
-        "description": "Connetti la tua sessione Steam Community per vedere e raccogliere carte dai giochi con carte rimanenti.",
         "automaticDescription": "Accede automaticamente a Steam Community per controllare le carte."
       },
       "progress": {
@@ -805,7 +796,6 @@
       "badgeLevel": "Livello medaglia {{level}}",
       "noBadge": "Nessuna medaglia creata",
       "connect": {
-        "title": "Connetti il tuo inventario",
         "description": "Carica il tuo inventario di Steam Community per gestire e vendere oggetti.",
         "automaticDescription": "Accede automaticamente a Steam Community per caricare il tuo inventario."
       },
@@ -813,7 +803,6 @@
         "listSelected": "Vendi selezionati ({{count}})",
         "sellAll": "Vendi tutti ({{count}})",
         "sellDupes": "Vendi duplicati",
-        "sellDupesGamerRequired": "La vendita automatica degli oggetti duplicati richiede il piano Gamer.",
         "removeListings": "Rimuovi inserzioni",
         "lockItem": "Blocca vendita automatica",
         "list": "Vendi sul mercato",
@@ -1122,7 +1111,6 @@
           "label": "Massimo obiettivi",
           "description": "Ferma Sblocco obiettivi su questo gioco dopo aver sbloccato questo numero di obiettivi."
         },
-        "filterCustomized": "Solo giochi con impostazioni personalizzate",
         "errors": {
           "generic": "Qualcosa è andato storto durante l'aggiornamento delle impostazioni gioco. Riprova. ({{code}})"
         }

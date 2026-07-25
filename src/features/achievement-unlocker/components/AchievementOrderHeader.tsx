@@ -39,7 +39,7 @@ export const AchievementOrderHeader = ({
       data-tauri-drag-region
     >
       <div className='flex min-w-0 items-center gap-2' data-tauri-drag-region>
-        <Button isIconOnly aria-label='Close' variant='ghost' onPress={onClose}>
+        <Button isIconOnly variant='ghost' onPress={onClose}>
           <TbX fontSize={18} />
         </Button>
         <Typography className='max-w-65 truncate' data-tauri-drag-region type='h3'>
@@ -61,14 +61,12 @@ export const AchievementOrderHeader = ({
           // The wrapping span only supplies the native hover tooltip; the Button itself stays real
           // and pressable, styled to look disabled, with `onPress` opening the upsell - regardless
           // of `isDisabled` (loading/error/empty), since opening the upsell modal isn't an edit.
-          <span className='inline-flex' title={t('common.proTier.gamerRequired')}>
-            <Button className='opacity-50' size='sm' variant='secondary' onPress={onUpsell}>
-              <span className='flex items-center gap-1.5'>
-                {t('dashboard.achievementUnlocker.importTimings.title')}
-                <TierBadge tier='gamer' />
-              </span>
-            </Button>
-          </span>
+          <Button className='opacity-50' size='sm' variant='secondary' onPress={onUpsell}>
+            <span className='flex items-center gap-1.5'>
+              {t('dashboard.achievementUnlocker.importTimings.title')}
+              <TierBadge tier='gamer' />
+            </span>
+          </Button>
         )}
       </div>
     </div>

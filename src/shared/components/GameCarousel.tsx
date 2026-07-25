@@ -93,7 +93,6 @@ export function GameCarousel<T>({
           <Button
             isIconOnly
             variant='secondary'
-            aria-label='Scroll left'
             onPress={() => (autoScrollIntervalMs ? handleManualScroll(-1) : scrollBy(-1))}
           >
             <TbChevronLeft />
@@ -101,7 +100,6 @@ export function GameCarousel<T>({
           <Button
             isIconOnly
             variant='secondary'
-            aria-label='Scroll right'
             onPress={() => (autoScrollIntervalMs ? handleManualScroll(1) : scrollBy(1))}
           >
             <TbChevronRight />

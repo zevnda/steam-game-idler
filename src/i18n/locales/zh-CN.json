@@ -16,8 +16,7 @@
       "done": "完成",
       "copy": "复制",
       "paste": "粘贴",
-      "add": "添加",
-      "backToTop": "返回顶部"
+      "add": "添加"
     },
     "gameCardMenu": {
       "startIdling": "开始挂机",
@@ -85,10 +84,6 @@
       "pastDue": "您的 PRO 订阅已逾期，请更新付款方式以免失去访问权限",
       "manageSubscription": "管理订阅"
     },
-    "proTier": {
-      "gamerRequired": "需要 Gamer 套餐",
-      "casualRequired": "需要 Casual 套餐"
-    },
     "badges": {
       "beta": "Beta"
     },
@@ -129,7 +124,6 @@
     "guide": "说明文档",
     "issue": "报告问题",
     "feature": "功能建议",
-    "support": "支持我们",
     "joinDiscord": "加入 Discord",
     "changelog": "更新日志",
     "update": "检查更新"
@@ -139,7 +133,6 @@
   },
   "titlebar": {
     "closeToTrayNotification": "Steam Game Idler 将在后台继续运行",
-    "goPro": "升级至 Pro",
     "helpDesk": "帮助中心",
     "updateReady": "更新已就绪"
   },
@@ -626,8 +619,6 @@
         "description": "您在「仍可掉落卡牌的游戏」中拉黑的游戏将永远不会被挂卡，并会显示在此处"
       },
       "connect": {
-        "title": "连接挂卡功能",
-        "description": "连接您的 Steam 社区会话，以查看并挂取仍有卡牌掉落的游戏",
         "automaticDescription": "自动登录 Steam 社区以检查卡牌掉落"
       },
       "progress": {
@@ -805,7 +796,6 @@
       "badgeLevel": "徽章等级 {{level}}",
       "noBadge": "未合成徽章",
       "connect": {
-        "title": "连接您的库存",
         "description": "加载您的 Steam 社区库存以管理和出售物品",
         "automaticDescription": "自动登录 Steam 社区以加载您的库存"
       },
@@ -813,7 +803,6 @@
         "listSelected": "上架所选（{{count}}）",
         "sellAll": "全部出售（{{count}}）",
         "sellDupes": "出售重复物品",
-        "sellDupesGamerRequired": "自动出售重复物品需要 Gamer 计划",
         "removeListings": "移除上架",
         "lockItem": "锁定此物品，使其永远不会被自动出售",
         "list": "在市场上架",
@@ -1122,7 +1111,6 @@
           "label": "最大成就解锁数",
           "description": "该游戏解锁达到此数量后停止成就解锁器"
         },
-        "filterCustomized": "仅显示有自定义设置的游戏",
         "errors": {
           "generic": "更新您的游戏设置时出错，请重试，（{{code}}）"
         }

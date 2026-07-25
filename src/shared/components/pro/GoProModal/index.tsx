@@ -126,7 +126,6 @@ export const GoProModal = () => {
                 starfield with no header chrome (see this file's top doc comment). `Modal.Heading`
                 still renders (visually hidden) so the dialog keeps a real accessible name for
                 screen readers/automation instead of none at all. */}
-            <Modal.Heading className='sr-only'>{t('titlebar.goPro')}</Modal.Heading>
             <Modal.CloseTrigger className='absolute left-5 top-5 z-50 h-8 w-8 bg-field text-muted duration-150 hover:bg-field-hover rounded-full' />
 
             <Modal.Body className='select-none overflow-x-hidden overflow-y-auto p-0'>

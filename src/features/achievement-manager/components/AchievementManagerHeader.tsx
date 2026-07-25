@@ -54,7 +54,7 @@ export const AchievementManagerHeader = ({
     >
       <div className='flex items-center justify-between gap-4' data-tauri-drag-region>
         <div className='flex min-w-0 items-center gap-2' data-tauri-drag-region>
-          <Button isIconOnly aria-label='Close' variant='ghost' onPress={onClose}>
+          <Button isIconOnly variant='ghost' onPress={onClose}>
             <TbX fontSize={18} />
           </Button>
           <Typography className='max-w-65 truncate' data-tauri-drag-region type='h3'>
@@ -118,7 +118,7 @@ export const AchievementManagerHeader = ({
           />
           {query && (
             <InputGroup.Suffix>
-              <button aria-label='Clear search' type='button' onClick={() => onQueryChange('')}>
+              <button type='button' onClick={() => onQueryChange('')}>
                 <TbX fontSize={16} />
               </button>
             </InputGroup.Suffix>

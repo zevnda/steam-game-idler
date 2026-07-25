@@ -60,7 +60,6 @@ const AccountPicker = ({
       ) : null}
 
       <RadioGroup
-        aria-label='Steam accounts'
         className='flex flex-row flex-wrap justify-center gap-3 mb-4'
         value={selectedSteamId}
         onChange={onSelect}

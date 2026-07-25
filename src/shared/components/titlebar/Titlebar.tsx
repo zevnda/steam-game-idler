@@ -142,13 +142,7 @@ export const Titlebar = ({ minimal = false }: TitlebarProps) => {
             </>
           )}
 
-          <Button
-            isIconOnly
-            aria-label='Minimize'
-            className='h-14 w-12 rounded-none'
-            variant='ghost'
-            onPress={minimize}
-          >
+          <Button isIconOnly className='h-14 w-12 rounded-none' variant='ghost' onPress={minimize}>
             <VscChromeMinimize fontSize={16} />
           </Button>
           <Button
@@ -162,7 +156,6 @@ export const Titlebar = ({ minimal = false }: TitlebarProps) => {
           </Button>
           <Button
             isIconOnly
-            aria-label='Close'
             className='h-14 w-12 rounded-none hover:bg-danger'
             variant='ghost'
             onPress={close}
