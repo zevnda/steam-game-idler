@@ -10,8 +10,10 @@ import { openExternalLink } from '@/shared/utils/links'
 // they're shown dimmed/non-selectable below rather than selectable-but-empty.
 const LANGUAGES = [
   { id: 'en-US', label: 'English' },
+  { id: 'de-DE', label: 'Deutsch' },
   { id: 'fr-FR', label: 'Français' },
   { id: 'it-IT', label: 'Italiano' },
+  { id: 'ja-JP', label: '日本語' },
   { id: 'pt-BR', label: 'Português (Brazil)' },
   { id: 'ru-RU', label: 'Русский' },
   { id: 'sl-SI', label: 'Slovenščina' },
@@ -19,9 +21,15 @@ const LANGUAGES = [
   { id: 'zh-CN', label: '简体中文' },
 ] as const
 
-// Locales with a real, complete translation and thus selectable - everything else in LANGUAGES is
+// Locales with a real, complete (or partial - more than 50% completed) translation and thus selectable - everything else in LANGUAGES is
 // shown dimmed and routes to TRANSLATION_HELP_URL instead of switching.
-const ENABLED_LANGUAGES: ReadonlySet<string> = new Set(['en-US', 'zh-CN', 'it-IT', 'fr-FR'])
+const ENABLED_LANGUAGES: ReadonlySet<string> = new Set([
+  'en-US',
+  'de-DE',
+  'fr-FR',
+  'it-IT',
+  'zh-CN',
+])
 
 // Where a click on a not-yet-translated language goes instead of switching - the community
 // translation discussion, so interested users can see how to help rather than landing on a

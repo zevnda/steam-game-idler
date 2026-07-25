@@ -19,8 +19,10 @@
 pub fn steam_language_for_locale(locale: &str) -> &'static str {
     match locale {
         "en-US" => "english",
+        "de-DE" => "german",
         "fr-FR" => "french",
         "it-IT" => "italian",
+        "ja-JP" => "japanese",
         "pt-BR" => "brazilian",
         "ru-RU" => "russian",
         "tr-TR" => "turkish",
