@@ -406,6 +406,15 @@ jobs:
 
       - name: Setup pnpm cache
         id: cache-pnpm
+        # Skipped entirely on force_pnpm_install - restoring here and then merely re-running
+        # `pnpm install` on top of the restored node_modules below isn't a real fresh install:
+        # pnpm sees an already-satisfied lockfile and fast-paths to "Already up to date" instead of
+        # reinstalling, so a corrupted/incomplete cache entry (e.g. a symlink that didn't survive
+        # this platform's cache save/restore round-trip) stays corrupted. Skipping the restore
+        # outright leaves steps.cache-pnpm.outputs.cache-hit unset, which the next step's `if:`
+        # already treats as a miss, so it still runs `pnpm install` - just against nothing instead
+        # of against a possibly-broken tree.
+        if: github.event.inputs.force_pnpm_install != 'true'
         uses: actions/cache@v4
         with:
           path: |
@@ -728,6 +737,15 @@ jobs:
 
       - name: Setup pnpm cache
         id: cache-pnpm
+        # Skipped entirely on force_pnpm_install - restoring here and then merely re-running
+        # `pnpm install` on top of the restored node_modules below isn't a real fresh install:
+        # pnpm sees an already-satisfied lockfile and fast-paths to "Already up to date" instead of
+        # reinstalling, so a corrupted/incomplete cache entry (e.g. a symlink that didn't survive
+        # this platform's cache save/restore round-trip) stays corrupted. Skipping the restore
+        # outright leaves steps.cache-pnpm.outputs.cache-hit unset, which the next step's `if:`
+        # already treats as a miss, so it still runs `pnpm install` - just against nothing instead
+        # of against a possibly-broken tree.
+        if: github.event.inputs.force_pnpm_install != 'true'
         uses: actions/cache@v4
         with:
           path: |
