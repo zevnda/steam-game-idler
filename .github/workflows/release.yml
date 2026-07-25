@@ -396,6 +396,17 @@ jobs:
         with:
           version: 11.17.0
 
+      - name: Get pnpm store directory
+        id: pnpm-store-path
+        # pnpm's real store path is OS/version-dependent (not the old ~/.pnpm-store default) -
+        # query it instead of hardcoding a guess, per pnpm's own CI docs.
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $storePath = pnpm store path
+          if ($LASTEXITCODE -ne 0) { throw "pnpm store path failed with exit code $LASTEXITCODE" }
+          "store-path=$storePath" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -406,12 +417,12 @@ jobs:
 
       - name: Setup pnpm cache
         id: cache-pnpm
-        # Only ~/.pnpm-store is cached, never node_modules - its symlink-heavy layout doesn't
-        # reliably survive a Windows tar cache round-trip (confirmed: broke fumadocs-mdx's postinstall).
+        # Only pnpm's real store dir (queried above) is cached, never node_modules - its
+        # symlink-heavy layout doesn't reliably survive a Windows tar cache round-trip.
         if: github.event.inputs.force_pnpm_install != 'true'
         uses: actions/cache@v4
         with:
-          path: ~/.pnpm-store
+          path: ${{ steps.pnpm-store-path.outputs.store-path }}
           key: ${{ runner.OS }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.OS }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}-
@@ -718,6 +729,14 @@ jobs:
         with:
           version: 11.17.0
 
+      - name: Get pnpm store directory
+        id: pnpm-store-path
+        # pnpm's real store path is OS/version-dependent (not the old ~/.pnpm-store default) -
+        # query it instead of hardcoding a guess, per pnpm's own CI docs.
+        run: |
+          set -euo pipefail
+          echo "store-path=$(pnpm store path)" >> "$GITHUB_OUTPUT"
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -728,12 +747,12 @@ jobs:
 
       - name: Setup pnpm cache
         id: cache-pnpm
-        # Only ~/.pnpm-store is cached, never node_modules - its symlink-heavy layout doesn't
-        # reliably survive a Windows tar cache round-trip (confirmed: broke fumadocs-mdx's postinstall).
+        # Only pnpm's real store dir (queried above) is cached, never node_modules - its
+        # symlink-heavy layout doesn't reliably survive a Windows tar cache round-trip.
         if: github.event.inputs.force_pnpm_install != 'true'
         uses: actions/cache@v4
         with:
-          path: ~/.pnpm-store
+          path: ${{ steps.pnpm-store-path.outputs.store-path }}
           key: ${{ runner.OS }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.OS }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}-
