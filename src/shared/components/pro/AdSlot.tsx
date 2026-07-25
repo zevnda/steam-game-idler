@@ -16,7 +16,7 @@ interface AdManifest {
 }
 
 const DEFAULT_HOUSE_AD_COUNT = 15
-const ROTATE_INTERVAL_MS = 45 * 1000
+const ROTATE_INTERVAL_MS = 60 * 1000
 const HOUSE_ADS_PER_GOOGLE_ATTEMPT = 5
 
 // Real `/supported-games/*` slugs the sidebar iframe rotates through to request a Google ad -
