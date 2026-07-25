@@ -276,6 +276,8 @@
   "auth": {
     "landing": {
       "title": "登录 Steam Game Idler",
+      "agentButton": "Steam 登录",
+      "localButton": "旧版登录",
       "localAlreadySignedIn": "已登录一个本地 Steam 客户端账号——单次仅能登录一个",
       "acknowledge": "继续即表示您同意 <0>服务条款</0>，并确认您已阅读我们的 <1>隐私政策</1>"
     },
@@ -369,6 +371,7 @@
           "modalTitle": "已在其他设备登录",
           "modalDescription": "{{account}} 已在其他设备登录，自动化任务已暂停，请重新登录以继续",
           "reconnect": "重新连接",
+          "methodExplainer": "Steam 登录仅允许每个账号同时存在一个活动会话，若希望在 Steam Game Idler 运行期间继续游玩游戏，请改用传统登录。",
           "useDifferentMethod": "使用其他登录方式"
         }
       },
@@ -576,6 +579,7 @@
         "statNotFound": "找不到该统计数据",
         "protected": "该值由游戏服务器设置，无法更改",
         "unsupportedGameCoordinator": "通过 Steam 登录时，该游戏不支持成就——请改用您的本地 Steam 客户端",
+        "unsupportedGameCoordinatorLinux": "此游戏在通过 Steam 登录时不支持成就功能。",
         "generic": "加载成就时出错，请重试，（{{code}}）"
       }
     },
