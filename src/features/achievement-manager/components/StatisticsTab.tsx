@@ -2,7 +2,7 @@ import type { StatDto } from '../types'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { RiSearchLine } from 'react-icons/ri'
-import { TbChartBar, TbDeviceFloppy, TbRefresh, TbRotateClockwise } from 'react-icons/tb'
+import { TbChartBar, TbRefresh, TbRotateClockwise, TbUpload } from 'react-icons/tb'
 import { searchByName } from '../utils/searchByName'
 import { StatisticsList } from './StatisticsList'
 import { AlertDialog, Button, EmptyState, Typography } from '@heroui/react'
@@ -95,7 +95,7 @@ export const StatisticsTab = ({
         </div>
         <div className='flex gap-2'>
           <Button isDisabled={editedCount === 0} isPending={isMutating} onPress={handleSave}>
-            <TbDeviceFloppy fontSize={16} />
+            <TbUpload fontSize={16} />
             {editedCount > 0
               ? t('dashboard.achievements.actions.saveChangesCount', { count: editedCount })
               : t('dashboard.achievements.actions.saveChanges')}

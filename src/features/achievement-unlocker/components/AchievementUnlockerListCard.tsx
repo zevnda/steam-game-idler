@@ -1,5 +1,5 @@
 import type { AchievementUnlockerEntry } from '../types'
-import { TbListNumbers, TbX } from 'react-icons/tb'
+import { TbArrowsSort, TbX } from 'react-icons/tb'
 import { Button, Typography } from '@heroui/react'
 import { GameThumbnail } from '@/shared/components/GameThumbnail'
 import { gameCardContextAttrs } from '@/shared/utils/gameCardContext'
@@ -43,7 +43,7 @@ export const AchievementUnlockerListCard = ({
             variant='ghost'
             onPress={onEditOrder}
           >
-            <TbListNumbers fontSize={16} />
+            <TbArrowsSort fontSize={16} />
           </Button>
           <Button
             isIconOnly
