@@ -16,7 +16,8 @@ interface AdManifest {
 }
 
 const DEFAULT_HOUSE_AD_COUNT = 15
-const ROTATE_INTERVAL_MS = 30 * 1000
+const ROTATE_INTERVAL_MS = 45 * 1000
+const HOUSE_ADS_PER_GOOGLE_ATTEMPT = 5
 
 // Real `/supported-games/*` slugs the sidebar iframe rotates through to request a Google ad -
 // these are dedicated marketing/SEO landing pages (docs/app/(marketing)/supported-games), each
@@ -48,6 +49,9 @@ const AD_HOST_GAME_SLUGS = [
 // `window.top` when it renders, which is us (the app is the outermost window, the docs page and
 // the Google ad iframe are both nested inside our own iframe below). No custom relay needed.
 const GOOGLE_AD_FILL_ORIGIN = 'https://googleads.g.doubleclick.net'
+
+const pickRandomGameSlug = () =>
+  AD_HOST_GAME_SLUGS[Math.floor(Math.random() * AD_HOST_GAME_SLUGS.length)]
 
 // House-ad slot in the sidebar footer, shown only to free-tier accounts - ported from `main`'s
 // AdSlot.tsx. One fixed bug: the "Remove ads" upsell now checks `hasCasualAccess` (matching the
@@ -93,9 +97,13 @@ export const AdSlot = () => {
   const failedHouseAdsRef = useRef<Set<string>>(new Set())
 
   const [adFilled, setAdFilled] = useState(false)
-  const [gameSlug] = useState(
-    () => AD_HOST_GAME_SLUGS[Math.floor(Math.random() * AD_HOST_GAME_SLUGS.length)],
-  )
+  // Which /supported-games page the single persistent iframe below points at - reassigned (not a
+  // new iframe) each time a fresh Google ad attempt is due, which reloads the iframe and triggers
+  // a new ad request.
+  const [gameSlug, setGameSlug] = useState(pickRandomGameSlug)
+  // Only the setter is used (functional updates read the latest value) - the count itself never
+  // needs to drive a render.
+  const [, setHouseAdStreak] = useState(0)
 
   useEffect(() => {
     const handleAdFillMessage = (event: MessageEvent) => {
@@ -114,9 +122,10 @@ export const AdSlot = () => {
     return () => window.removeEventListener('message', handleAdFillMessage)
   }, [])
 
-  // Give a confirmed-filled Google ad 30s of visibility, then drop back to the house-ad overlay
-  // and let its own 30s shuffle (below) keep rotating as normal - a filled Google ad would
-  // otherwise stay shown indefinitely, permanently starving house ads of this slot.
+  // Give a confirmed-filled Google ad 45s of visibility, then drop back to the house-ad overlay
+  // and let its own 45s shuffle (below) resume - a filled Google ad would otherwise stay shown
+  // indefinitely, permanently starving house ads of this slot. The house-ad effect below picks up
+  // the 5-ad countdown again from here, eventually swapping `gameSlug` to retry Google.
   useEffect(() => {
     if (!adFilled) return
     const timeoutId = setTimeout(() => setAdFilled(false), ROTATE_INTERVAL_MS)
@@ -187,12 +196,26 @@ export const AdSlot = () => {
     setHouseAd(current => pickNextHouseAd(current))
   }, [houseAd, pickNextHouseAd])
 
+  // Rotates the house ad every 45s, but only while a house ad is actually the thing on screen -
+  // paused (interval cleared) for as long as `adFilled` is true, then resumed with a fresh 45s
+  // window once the fill-visibility effect above drops it back to false. Every 5th house ad,
+  // instead of just rotating to another one, reassigns `gameSlug` to re-request a Google ad on
+  // the same persistent iframe; if that fill never lands, nothing else happens here and house ads
+  // keep rotating/counting as normal, which is the "fall back to house ad" behavior by default.
   useEffect(() => {
+    if (adFilled) return
     const intervalId = setInterval(() => {
       setHouseAd(current => pickNextHouseAd(current))
+      setHouseAdStreak(streak => {
+        if (streak + 1 >= HOUSE_ADS_PER_GOOGLE_ATTEMPT) {
+          setGameSlug(pickRandomGameSlug())
+          return 0
+        }
+        return streak + 1
+      })
     }, ROTATE_INTERVAL_MS)
     return () => clearInterval(intervalId)
-  }, [pickNextHouseAd])
+  }, [adFilled, pickNextHouseAd])
 
   if (isSubscribed === null || hasCasualAccess(subscriptionTier)) return null
 
