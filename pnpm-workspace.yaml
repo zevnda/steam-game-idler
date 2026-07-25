@@ -2,6 +2,9 @@ packages:
   - '.'
   - 'docs'
 
+# Do not reject newly-published package versions
+minimumReleaseAge: 0
+
 allowBuilds:
   esbuild: true
   sharp: true
