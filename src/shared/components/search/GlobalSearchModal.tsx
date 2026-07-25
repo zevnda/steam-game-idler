@@ -101,11 +101,7 @@ export const GlobalSearchModal = () => {
                 />
                 {query && (
                   <InputGroup.Suffix className='border-none! bg-transparent!'>
-                    <button
-                      aria-label='Clear search'
-                      type='button'
-                      onClick={() => activeScope && setQuery(activeScope, '')}
-                    >
+                    <button type='button' onClick={() => activeScope && setQuery(activeScope, '')}>
                       <TbX fontSize={16} />
                     </button>
                   </InputGroup.Suffix>

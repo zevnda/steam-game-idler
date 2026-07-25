@@ -125,7 +125,7 @@ export const InventoryFilterPanel = ({
         />
         {searchQuery && (
           <InputGroup.Suffix>
-            <button aria-label='Clear search' type='button' onClick={() => onSearchQueryChange('')}>
+            <button type='button' onClick={() => onSearchQueryChange('')}>
               <TbX fontSize={16} />
             </button>
           </InputGroup.Suffix>

@@ -140,7 +140,7 @@ export const GameSettingsTab = () => {
               />
               {searchTerm && (
                 <InputGroup.Suffix>
-                  <button aria-label='Clear search' type='button' onClick={() => setSearchTerm('')}>
+                  <button type='button' onClick={() => setSearchTerm('')}>
                     <TbX fontSize={14} />
                   </button>
                 </InputGroup.Suffix>
@@ -150,7 +150,6 @@ export const GameSettingsTab = () => {
               isIconOnly
               isDisabled={customizedAppIds.size === 0}
               isSelected={showOnlyCustomized}
-              aria-label={t('dashboard.settings.gameSettings.filterCustomized')}
               onChange={setShowOnlyCustomized}
             >
               <RiPencilLine fontSize={16} />

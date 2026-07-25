@@ -16,8 +16,7 @@
       "done": "Done",
       "copy": "Copy",
       "paste": "Paste",
-      "add": "Add",
-      "backToTop": "Back to top"
+      "add": "Add"
     },
     "gameCardMenu": {
       "startIdling": "Start Idling",
@@ -1112,7 +1111,6 @@
           "label": "Max achievement unlocks",
           "description": "Stop the achievement unlocker on this game after unlocking this many achievements."
         },
-        "filterCustomized": "Only show games with custom settings",
         "errors": {
           "generic": "Something went wrong updating your game settings. Please try again. ({{code}})"
         }

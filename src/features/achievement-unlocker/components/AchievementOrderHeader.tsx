@@ -39,7 +39,7 @@ export const AchievementOrderHeader = ({
       data-tauri-drag-region
     >
       <div className='flex min-w-0 items-center gap-2' data-tauri-drag-region>
-        <Button isIconOnly aria-label='Close' variant='ghost' onPress={onClose}>
+        <Button isIconOnly variant='ghost' onPress={onClose}>
           <TbX fontSize={18} />
         </Button>
         <Typography className='max-w-65 truncate' data-tauri-drag-region type='h3'>

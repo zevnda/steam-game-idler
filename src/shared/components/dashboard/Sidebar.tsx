@@ -205,7 +205,6 @@ export const Sidebar = () => {
           !collapsed &&
           (subscriptionTier === 'casual' ? (
             <button
-              aria-label='Upgrade plan'
               className='flex w-full items-center justify-between rounded-lg px-3 py-2 cursor-pointer outline-none transition-colors hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-focus'
               type='button'
               onClick={() => openProModalWithTier('gamer')}
