@@ -16,8 +16,7 @@
       "done": "Fertig",
       "copy": "Kopieren",
       "paste": "Einfügen",
-      "add": "Hinzufügen",
-      "backToTop": "Zum Seitenanfang"
+      "add": "Hinzufügen"
     },
     "gameCardMenu": {
       "startIdling": "Leerlauf starten",
@@ -85,10 +84,6 @@
       "pastDue": "Ihr PRO-Abonnement ist überfällig. Bitte aktualisieren Sie Ihre Zahlungsmethode, um den Zugriff nicht zu verlieren.",
       "manageSubscription": "Abonnement verwalten"
     },
-    "proTier": {
-      "gamerRequired": "Erfordert den Gamer-Plan.",
-      "casualRequired": "Erfordert den Casual-Plan."
-    },
     "badges": {
       "beta": "Beta"
     },
@@ -129,7 +124,6 @@
     "guide": "Dokumentation",
     "issue": "Problem melden",
     "feature": "Funktion vorschlagen",
-    "support": "Unterstütze mich",
     "joinDiscord": "Tritt unserem Discord bei",
     "changelog": "Änderungsverlauf",
     "update": "Nach Updates suchen"

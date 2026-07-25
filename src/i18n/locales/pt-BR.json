@@ -84,10 +84,6 @@
       "pastDue": "Sua assinatura PRO está próxima de vencer. Favor atualize seu método de pagamento para não perder acesso.",
       "manageSubscription": "Gerenciamento de assinatura"
     },
-    "proTier": {
-      "gamerRequired": "Requer a assinatura Gamer.",
-      "casualRequired": "Requer a assinatura Casual."
-    },
     "tabs": {
       "allGames": "Todos os jogos",
       "queue": "Fila"
@@ -125,7 +121,6 @@
     "guide": "Documentação",
     "issue": "Reportar problemas",
     "feature": "Pedir novas funções",
-    "support": "Me apoie",
     "joinDiscord": "Junte-se ao nosso Discord",
     "changelog": "Lista de atualizações",
     "update": "Checar por atualizações"
