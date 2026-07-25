@@ -31,7 +31,6 @@ export const CardFarmingStartPanel = ({
     <SteamCookiesConnectPanel<SteamCookies>
       automaticDescription={t('dashboard.cardFarming.connect.automaticDescription')}
       automaticTabLabel={t('common.connect.automaticTab')}
-      description={t('dashboard.cardFarming.connect.description')}
       errorSlot={
         errorCode ? (
           <Alert status='danger'>
@@ -48,7 +47,8 @@ export const CardFarmingStartPanel = ({
       manualTabLabel={t('common.connect.manualTab')}
       savedCredentialsNote={t('common.manualCookies.savedFromSettingsNote')}
       showClear
-      title={t('dashboard.cardFarming.connect.title')}
+      showLearnMoreLink
+      title={t('dashboard.settings.steamCredentials.title')}
       onConnect={onConnect}
     />
   )

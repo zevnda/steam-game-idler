@@ -3,13 +3,14 @@ import { useTranslation } from 'react-i18next'
 import { TbExternalLink } from 'react-icons/tb'
 import { steamCredentialsErrorMessageKey } from '../utils/errorMessageKey'
 import { Alert, Button, Skeleton, Typography } from '@heroui/react'
-import { SteamCookiesConnectPanel } from '@/shared/components/SteamCookiesConnectPanel'
+import {
+  STEAM_CREDENTIALS_DOCS_URL,
+  SteamCookiesConnectPanel,
+} from '@/shared/components/SteamCookiesConnectPanel'
 import { useSessionStore } from '@/shared/stores/sessionStore'
 import { useSubscriptionStore } from '@/shared/stores/subscriptionStore'
 import { openExternalLink } from '@/shared/utils/links'
 import { hasGamerAccess } from '@/shared/utils/subscriptionAccess'
-
-const STEAM_CREDENTIALS_DOCS_URL = 'https://steamgameidler.com/docs/steam-credentials'
 
 interface SteamCredentialsTabProps {
   isLoading: boolean
