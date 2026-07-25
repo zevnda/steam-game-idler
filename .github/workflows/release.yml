@@ -36,7 +36,7 @@ on:
         # ping, no version-bump PR (opening one from a branch this far behind main would show the
         # whole branch diff, not a clean version bump), no public GitHub release. Bundle output
         # goes to a workflow-run artifact instead, downloadable from the run's summary page.
-        description: "Skip PR/release/Discord, upload build output as an artifact instead"
+        description: "Dry run"
         required: false
         type: boolean
         default: false
@@ -47,7 +47,7 @@ on:
         # being skipped this way (its own `if:` checks for a 'skipped' result, not just 'success') -
         # its dry-run checkout step already falls back to github.ref instead of depending on
         # anything the Windows job produces, so skipping Windows costs it nothing.
-        description: "Dry run only - skip the Windows build entirely"
+        description: "Skip Windows build (dry run only)"
         required: false
         type: boolean
         default: false
