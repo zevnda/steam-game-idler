@@ -308,10 +308,7 @@ export const AccountSwitcher = ({ compact = false }: AccountSwitcherProps) => {
         {compact ? (
           <AppTooltip.Root delay={300}>
             <AppTooltip.Trigger>
-              <Popover.Trigger
-                aria-label='Switch account'
-                className='flex shrink-0 items-center justify-center rounded-lg p-1.5 outline-none transition-colors hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-focus'
-              >
+              <Popover.Trigger className='flex shrink-0 items-center justify-center rounded-lg p-1.5 outline-none transition-colors hover:bg-surface-hover focus-visible:ring-2 focus-visible:ring-focus'>
                 <Avatar size='sm'>
                   {activeSummary?.avatarUrl ? (
                     <Avatar.Image alt={activeDisplayName} src={activeSummary.avatarUrl} />

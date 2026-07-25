@@ -42,7 +42,6 @@ export const GlobalSearchBar = () => {
         </button>
         {query && (
           <button
-            aria-label='Clear search'
             className='mr-1 shrink-0 rounded-full p-1 hover:bg-surface-hover cursor-pointer'
             type='button'
             onClick={() => clearQuery(scope.id)}

@@ -297,7 +297,6 @@ function AlertBanner({
             </Button>
           )}
           <button
-            aria-label='Close'
             className='flex items-center justify-center hover:bg-white/10 rounded-full p-1 duration-150 cursor-pointer'
             onClick={onDismiss}
           >
