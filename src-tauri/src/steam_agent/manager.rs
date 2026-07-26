@@ -410,10 +410,10 @@ impl AgentManager {
     /// `Daemon/Bot/OwnershipManager.cs`). No playtime here - that's `games::web_api`'s job, the
     /// same Steam Web API enrichment step CLI mode's ownership check also funnels through.
     ///
-    /// `games_only` mirrors CLI mode's scope (games + family-shared, no DLC/soundtracks/videos/
-    /// tools) by asking the daemon to intersect against the same curated whitelist
-    /// `SteamworksLocalBackend` uses - see `steam_agent::ownership_settings` (defaults to `true`;
-    /// `false` opts into the unfiltered "all content" scope some users specifically want).
+    /// `games_only` asks the daemon to keep only apps whose PICS `common.type` is `"Game"` (games
+    /// + family-shared, no DLC/soundtracks/videos/tools) - not CLI mode's curated whitelist, which
+    /// agent mode doesn't depend on for this; see `steam_agent::ownership_settings` (defaults to
+    /// `true`; `false` opts into the unfiltered "all content" scope some users specifically want).
     ///
     /// Uses `OWNED_APPS_REQUEST_TIMEOUT` rather than the default `send_request` timeout - unlike
     /// every other command sent through this manager, PICS-based ownership resolution scales with
