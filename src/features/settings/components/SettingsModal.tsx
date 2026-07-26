@@ -174,18 +174,23 @@ export const SettingsModal = () => {
                     nav column for visual consistency with the rest of the app's chrome. */}
                 <div className='flex h-full w-64 shrink-0 flex-col border-r border-border bg-background pt-16'>
                   <TabListContainer className='min-h-0 flex-1 overflow-y-auto bg-transparent px-3'>
-                    <TabList className='gap-0.5 p-0'>
+                    <TabList className='w-full gap-0.5 p-0'>
                       {TABS.map(tab => (
                         <Tab
                           className={cn(
-                            'w-full justify-start rounded-lg px-3 py-2 text-left text-sm font-medium',
+                            'w-full min-w-0 justify-start rounded-lg px-3 py-2 text-left text-sm font-medium',
                             'text-muted hover:text-foreground data-[selected=true]:font-semibold ',
                             'data-[selected=true]:text-foreground',
                           )}
                           id={tab.key}
                           key={tab.key}
                         >
-                          {t(tab.labelKey)}
+                          {/* `Tab` itself renders `display:flex` (HeroUI's `.tabs__tab`), so
+                              `truncate` has to live on a child span, not the `Tab` directly - a
+                              flex container can't ellipsis its own anonymous-flex-item text.
+                              Mirrors SidebarItem.tsx's identical `<span className='truncate'>`
+                              pattern. */}
+                          <span className='truncate'>{t(tab.labelKey)}</span>
                         </Tab>
                       ))}
                     </TabList>
