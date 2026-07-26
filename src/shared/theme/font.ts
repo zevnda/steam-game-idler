@@ -1,14 +1,15 @@
 import {
-  Chakra_Petch,
+  Audiowide,
+  Black_Ops_One as BlackOpsOne,
+  Bungee,
+  Cinzel_Decorative as CinzelDecorative,
   Inter,
-  Lato,
+  Michroma,
+  Monoton,
   Montserrat,
-  Nunito,
-  Open_Sans,
   Orbitron,
-  Poppins,
-  Rajdhani,
-  Roboto,
+  Silkscreen,
+  Zen_Dots as ZenDots,
 } from 'next/font/google'
 
 // Self-hosted by next/font at build time (downloaded once, bundled into the app) - no runtime
@@ -19,61 +20,63 @@ import {
 // on selection.
 export const inter = Inter({
   subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700'],
+  weight: ['400', '500', '600', '700'],
   variable: '--font-inter',
   display: 'swap',
 })
 
-export const poppins = Poppins({
+// Futuristic sci-fi HUD font. Only ships weight 400.
+export const audiowide = Audiowide({
   subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700'],
-  variable: '--font-poppins',
+  weight: ['400'],
+  variable: '--font-audiowide',
   display: 'swap',
 })
 
-export const roboto = Roboto({
+// Military stencil font. Only ships weight 400.
+export const blackOpsOne = BlackOpsOne({
   subsets: ['latin'],
-  weight: ['300', '400', '500', '700'],
-  variable: '--font-roboto',
+  weight: ['400'],
+  variable: '--font-black-ops-one',
   display: 'swap',
 })
 
-export const openSans = Open_Sans({
+// Chunky rounded graffiti-style display font. Only ships weight 400.
+export const bungee = Bungee({
   subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700'],
-  variable: '--font-open-sans',
+  weight: ['400'],
+  variable: '--font-bungee',
   display: 'swap',
 })
 
-export const lato = Lato({
+// Ornate engraved/carved-stone display font. Only ships weight 400, 700, 900.
+export const cinzelDecorative = CinzelDecorative({
   subsets: ['latin'],
-  weight: ['300', '400', '700'],
-  variable: '--font-lato',
+  weight: ['700'],
+  variable: '--font-cinzel-decorative',
+  display: 'swap',
+})
+
+// Wide futuristic tech font. Only ships weight 400.
+export const michroma = Michroma({
+  subsets: ['latin'],
+  weight: ['400'],
+  variable: '--font-michroma',
+  display: 'swap',
+})
+
+// Neon-tube sign display font. Only ships weight 400.
+export const monoton = Monoton({
+  subsets: ['latin'],
+  weight: ['400'],
+  variable: '--font-monoton',
   display: 'swap',
 })
 
 export const montserrat = Montserrat({
   subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700'],
+  weight: ['400', '500', '600', '700'],
   variable: '--font-montserrat',
-  display: 'swap',
-})
-
-export const nunito = Nunito({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700'],
-  variable: '--font-nunito',
-  display: 'swap',
-})
-
-// Angular/technical display faces, popular for gaming/esports UIs - offered alongside the
-// conventional sans options above for a more "gamer" aesthetic. Still legible at UI text sizes
-// (unlike a fully decorative display face), so usable app-wide via `--font-sans` like every other
-// entry here, not just for headings.
-export const rajdhani = Rajdhani({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700'],
-  variable: '--font-rajdhani',
   display: 'swap',
 })
 
@@ -85,10 +88,19 @@ export const orbitron = Orbitron({
   display: 'swap',
 })
 
-export const chakraPetch = Chakra_Petch({
+// Crisp pixel font. Only ships weight 400 and 700.
+export const silkscreen = Silkscreen({
   subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700'],
-  variable: '--font-chakra-petch',
+  weight: ['400', '700'],
+  variable: '--font-silkscreen',
+  display: 'swap',
+})
+
+// Playful geometric dot-matrix display font. Only ships weight 400.
+export const zenDots = ZenDots({
+  subsets: ['latin'],
+  weight: ['400'],
+  variable: '--font-zen-dots',
   display: 'swap',
 })
 
@@ -98,15 +110,16 @@ export const chakraPetch = Chakra_Petch({
 // never which fonts are loaded.
 export const FONT_VARIABLE_CLASSNAME = [
   inter,
-  poppins,
-  roboto,
-  openSans,
-  lato,
+  audiowide,
+  blackOpsOne,
+  bungee,
+  cinzelDecorative,
+  michroma,
+  monoton,
   montserrat,
-  nunito,
-  rajdhani,
   orbitron,
-  chakraPetch,
+  silkscreen,
+  zenDots,
 ]
   .map(font => font.variable)
   .join(' ')
@@ -119,45 +132,65 @@ export const FONT_VARIABLE_CLASSNAME = [
 // `poppins`, the previous default) is a Casual-tier selectable override.
 export const FONT_CSS_VARS = {
   inter: '--font-inter',
-  poppins: '--font-poppins',
-  roboto: '--font-roboto',
-  openSans: '--font-open-sans',
-  lato: '--font-lato',
+  audiowide: '--font-audiowide',
+  blackOpsOne: '--font-black-ops-one',
+  bungee: '--font-bungee',
+  cinzelDecorative: '--font-cinzel-decorative',
+  michroma: '--font-michroma',
+  monoton: '--font-monoton',
   montserrat: '--font-montserrat',
-  nunito: '--font-nunito',
-  rajdhani: '--font-rajdhani',
   orbitron: '--font-orbitron',
-  chakraPetch: '--font-chakra-petch',
+  silkscreen: '--font-silkscreen',
+  zenDots: '--font-zen-dots',
 } as const
 
 export type FontPreset = keyof typeof FONT_CSS_VARS
 
-// Display order for the Customization settings tab's font picker, `inter` (the default) first.
+// Display order for the Customization settings tab's font picker - `inter` (the default) first,
+// then every other font alphabetical by display name.
 export const FONT_KEYS: FontPreset[] = [
   'inter',
-  'poppins',
-  'roboto',
-  'openSans',
-  'lato',
+  'audiowide',
+  'blackOpsOne',
+  'bungee',
+  'cinzelDecorative',
+  'michroma',
+  'monoton',
   'montserrat',
-  'nunito',
-  'rajdhani',
   'orbitron',
-  'chakraPetch',
+  'silkscreen',
+  'zenDots',
 ]
 
 // Display name shown in the font picker. Not run through i18n - a font's name is a brand name
 // (structurally non-translatable), same carve-out `poppins` in `_document.tsx`'s className
 // already relies on implicitly.
 export const FONT_DISPLAY_NAMES: Record<FontPreset, string> = {
-  inter: 'Inter',
-  poppins: 'Poppins',
-  roboto: 'Roboto',
-  openSans: 'Open Sans',
-  lato: 'Lato',
+  inter: 'Inter (default)',
+  audiowide: 'Audiowide',
+  blackOpsOne: 'Black Ops One',
+  bungee: 'Bungee',
+  cinzelDecorative: 'Cinzel Decorative',
+  michroma: 'Michroma',
+  monoton: 'Monoton',
   montserrat: 'Montserrat',
-  nunito: 'Nunito',
-  rajdhani: 'Rajdhani',
   orbitron: 'Orbitron',
-  chakraPetch: 'Chakra Petch',
+  silkscreen: 'Silkscreen',
+  zenDots: 'Zen Dots',
+}
+
+// Per-font visual size correction, multiplied into every Tailwind `--text-*` token (see
+// globals.css's `@theme` block) via `--font-size-scale` - some display fonts (pixel fonts
+// especially) render noticeably larger than their nominal font-size at the same rem value, so a
+// flat font swap alone leaves them looking oversized next to every other font. Only list an entry
+// here for a font that actually needs correcting; `applyFont.ts`/`fontInitScript.ts` fall back to
+// `1` (no-op) for any key missing from this map, so most fonts don't need one.
+export const FONT_SIZE_SCALE: Partial<Record<FontPreset, number>> = {
+  bungee: 0.9,
+  cinzelDecorative: 0.9,
+  michroma: 0.9,
+  monoton: 0.9,
+  orbitron: 0.95,
+  silkscreen: 0.9,
+  zenDots: 0.9,
 }

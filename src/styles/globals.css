@@ -10,6 +10,25 @@
    font, including Poppins, is a selectable Casual-tier override. */
 @theme {
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  /* Re-expressed from Tailwind's own defaults, multiplied by `--font-size-scale` (set by
+     `applyFont.ts`/`fontInitScript.ts` per selected font, via `font.ts`'s `FONT_SIZE_SCALE`) - a
+     font whose glyphs render visually larger/smaller than average at the same rem value (pixel
+     fonts especially) can be corrected app-wide without breaking the relative text-xs..text-7xl
+     scale, since every size utility still resolves through these same vars and line-height stays
+     a unitless ratio of font-size. `var(--font-size-scale, 1)` is a no-op for every font without a
+     `FONT_SIZE_SCALE` entry. */
+  --text-xs: calc(0.75rem * var(--font-size-scale, 1));
+  --text-sm: calc(0.875rem * var(--font-size-scale, 1));
+  --text-base: calc(1rem * var(--font-size-scale, 1));
+  --text-lg: calc(1.125rem * var(--font-size-scale, 1));
+  --text-xl: calc(1.25rem * var(--font-size-scale, 1));
+  --text-2xl: calc(1.5rem * var(--font-size-scale, 1));
+  --text-3xl: calc(1.875rem * var(--font-size-scale, 1));
+  --text-4xl: calc(2.25rem * var(--font-size-scale, 1));
+  --text-5xl: calc(3rem * var(--font-size-scale, 1));
+  --text-6xl: calc(3.75rem * var(--font-size-scale, 1));
+  --text-7xl: calc(4.5rem * var(--font-size-scale, 1));
 }
 
 /* The window is frameless and transparent (see src-tauri/tauri.conf.json's `transparent: true`,
