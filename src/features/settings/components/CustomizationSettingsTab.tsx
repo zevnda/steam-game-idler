@@ -28,7 +28,7 @@ import { useProModalStore } from '@/shared/stores/proModalStore'
 import { useSubscriptionStore } from '@/shared/stores/subscriptionStore'
 import { applyFont, FONT_STORAGE_KEY } from '@/shared/theme/applyFont'
 import { applyTheme, THEME_STORAGE_KEY } from '@/shared/theme/applyTheme'
-import { FONT_DISPLAY_NAMES, FONT_KEYS } from '@/shared/theme/font'
+import { FONT_CSS_VARS, FONT_DISPLAY_NAMES, FONT_KEYS } from '@/shared/theme/font'
 import {
   DEFAULT_THEME_PREVIEW_TOKENS,
   isLightThemePreset,
@@ -308,10 +308,15 @@ export const CustomizationSettingsTab = ({
             {/* No per-item lock badge - the row-level TierBadge above already signals the gate for
                 the whole control; `handleSelectFont` (not this component) is what actually stops a
                 gated font from being applied. */}
+            {/* Each item previews itself in its own typeface (via the CSS var already present on
+                <html>, see FONT_VARIABLE_CLASSNAME) - with 20+ fonts to trial, picking one is
+                only meaningful if the list actually shows what each font looks like. */}
             <ListBox items={FONT_KEYS.map(key => ({ id: key }))}>
               {item => (
                 <ListBox.Item id={item.id} textValue={FONT_DISPLAY_NAMES[item.id]}>
-                  {FONT_DISPLAY_NAMES[item.id]}
+                  <span style={{ fontFamily: `var(${FONT_CSS_VARS[item.id]})` }}>
+                    {FONT_DISPLAY_NAMES[item.id]}
+                  </span>
                   <ListBox.ItemIndicator />
                 </ListBox.Item>
               )}

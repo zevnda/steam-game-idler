@@ -1,5 +1,5 @@
 import type { FontPreset } from './font'
-import { FONT_CSS_VARS } from './font'
+import { FONT_CSS_VARS, FONT_SIZE_SCALE } from './font'
 
 // `localStorage` key the pre-hydration inline script in `_document.tsx` reads synchronously (and
 // `useFont.ts` keeps current) so the first paint already shows the right font instead of flashing
@@ -7,8 +7,9 @@ import { FONT_CSS_VARS } from './font'
 // exactly.
 export const FONT_STORAGE_KEY = 'sgi-font'
 
-// Writes (or clears) `--font-sans`'s inline override on `<html>`. Inline styles win over
-// globals.css's stylesheet rule unconditionally, same as `applyTheme.ts`.
+// Writes (or clears) `--font-sans`'s inline override on `<html>`, plus `--font-size-scale` for any
+// font with a `FONT_SIZE_SCALE` correction (see that map's own comment in font.ts). Inline styles
+// win over globals.css's stylesheet rule unconditionally, same as `applyTheme.ts`.
 //
 // `font: null` (or `'inter'`) is the default case - clears any previously-applied override so
 // the element falls back to globals.css's own `--font-sans` baseline (which already points at
@@ -20,7 +21,14 @@ export function applyFont(font: FontPreset | null) {
       '--font-sans',
       `var(${FONT_CSS_VARS[font]}), ui-sans-serif, system-ui, sans-serif`,
     )
+    const scale = FONT_SIZE_SCALE[font]
+    if (scale !== undefined) {
+      root.style.setProperty('--font-size-scale', String(scale))
+    } else {
+      root.style.removeProperty('--font-size-scale')
+    }
   } else {
     root.style.removeProperty('--font-sans')
+    root.style.removeProperty('--font-size-scale')
   }
 }
