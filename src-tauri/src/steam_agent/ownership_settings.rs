@@ -1,14 +1,20 @@
 //! Per-account owned-games scope setting - agent-mode only, no CLI-mode equivalent (CLI mode
-//! always uses the curated whitelist as its ownership-check candidate list, see
-//! `local_steam::ownership`). Steam-id-scoped file, mirroring `presence_settings`'s pattern
-//! (typed whole-struct get/set, self-healing on a corrupt/unreadable file).
+//! always uses the curated `GameWhitelistProvider` list as its ownership-check candidate list,
+//! see `local_steam::ownership` - a hard technical requirement there, since Steamworks'
+//! `IsSubscribedApp` can only answer yes/no for an app id you already have, unlike PICS). Steam-
+//! id-scoped file, mirroring `presence_settings`'s pattern (typed whole-struct get/set,
+//! self-healing on a corrupt/unreadable file).
 //!
-//! Agent mode's own ownership check (`OwnershipManager.GetOwnedGamesAsync`) can optionally
-//! intersect against the same curated whitelist CLI mode's `SteamworksLocalBackend` always uses,
-//! matching CLI mode's scope (games + family-shared only). `games_only` defaults to `true` - some
-//! users specifically want the unfiltered DLC/soundtracks/videos/tools scope instead, so it's an
-//! explicit opt-out, not an opt-in. Family Sharing / borrowed games are included either way -
-//! that's inherent to PICS-resolved ownership, not something this setting affects.
+//! Agent mode's own ownership check (`OwnershipManager.GetOwnedGamesAsync`) already resolves the
+//! account's real, complete owned-app-id set via PICS with no candidate list needed, so unlike
+//! CLI mode it isn't bound to the curated whitelist at all. `games_only` instead filters per-app
+//! on PICS's own `common.type == "Game"` classification, which stays accurate even for apps
+//! delisted from the store after purchase (e.g. Rocket League, 252950) - a case the curated
+//! whitelist used to silently drop, since it's sourced from active store listings. `games_only`
+//! defaults to `true` - some users specifically want the unfiltered DLC/soundtracks/videos/tools
+//! scope instead, so it's an explicit opt-out, not an opt-in. Family Sharing / borrowed games are
+//! included either way - that's inherent to PICS-resolved ownership, not something this setting
+//! affects.
 
 use std::fs;
 use std::path::PathBuf;

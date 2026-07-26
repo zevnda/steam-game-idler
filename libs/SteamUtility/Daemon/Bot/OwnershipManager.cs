@@ -7,7 +7,6 @@ using SteamKit2.Internal;
 using SteamUtility.Core.Errors;
 using SteamUtility.Core.Logging;
 using SteamUtility.Core.Models;
-using SteamUtility.Core.Services;
 
 namespace SteamUtility.Daemon.Bot
 {
@@ -15,8 +14,6 @@ namespace SteamUtility.Daemon.Bot
     // Steam client needed. Correctly reflects Family Sharing / borrowed games.
     public sealed class OwnershipManager
     {
-        private readonly GameWhitelistProvider _whitelistProvider = new();
-
         // Payment methods that were never an actual money transaction through Steam's checkout -
         // Steam's refund policy has nothing to refund for these regardless of how recently the
         // license was granted, so they're excluded entirely from "recently purchased" tracking
@@ -47,6 +44,23 @@ namespace SteamUtility.Daemon.Bot
             Dictionary<uint, DateTime> LastRefundEligiblePurchaseUtcByAppId
         );
 
+        // PICS's own app classification (common.type - SteamKit2's EAppType as a raw string:
+        // "Game", "DLC", "Demo", "Tool", "Application", "Music", "Video", "Config", etc.) is what
+        // gamesOnly filters on below. Deliberately not GameWhitelistProvider's curated external
+        // list (unlike CLI mode's SteamworksLocalBackend.CheckOwnershipAsync, which has no choice -
+        // Steamworks' IsSubscribedApp only answers yes/no for an app id you already have, so CLI
+        // mode depends on the whitelist as its candidate list, not just a filter). Agent mode
+        // already resolves the real, complete owned-app-id set via PICS with no candidate list
+        // needed, so it isn't bound by that constraint - and a store-delisted-but-still-owned game
+        // (e.g. Rocket League, 252950, delisted 2020) keeps its PICS common.type of "Game" even
+        // after falling out of whatever active-store-listing source the external whitelist is
+        // built from, so classifying from PICS directly (rather than an externally curated list)
+        // catches those correctly.
+        private static readonly HashSet<string> GameAppTypes = new(StringComparer.OrdinalIgnoreCase)
+        {
+            "Game",
+        };
+
         public async Task<IReadOnlyList<OwnedGame>> GetOwnedGamesAsync(SteamBot bot, bool gamesOnly)
         {
             if (!bot.IsLoggedOn)
@@ -57,13 +71,13 @@ namespace SteamUtility.Daemon.Bot
             // By default (gamesOnly: false) this is deliberately unfiltered: every PICS-resolved
             // app id tied to an owned license comes through as-is (games, videos/movies, DLC,
             // tools, demos, soundtracks) - some users specifically want this, including non-game
-            // owned content (e.g. Steam movies like 518440/518450) that the whitelist would drop.
-            // When gamesOnly is true (a user-facing setting - see
-            // src-tauri/src/steam_agent/ownership_settings.rs), the resolved app ids are
-            // intersected against the same curated GameWhitelistProvider candidate list CLI mode's
-            // SteamworksLocalBackend.CheckOwnershipAsync always uses, matching CLI mode's scope
-            // exactly. Family Sharing / borrowed games are unaffected either way - that's inherent
-            // to bot.OwnedLicenses below, not something either mode filters.
+            // owned content (e.g. Steam movies like 518440/518450) that gamesOnly would drop. When
+            // gamesOnly is true (a user-facing setting - see
+            // src-tauri/src/steam_agent/ownership_settings.rs), each resolved app id's own PICS
+            // common.type (see GameAppTypes above) decides whether it's kept - applied per-app
+            // below, once PICSGetProductInfo's response is in hand, since type isn't known until
+            // then. Family Sharing / borrowed games are unaffected either way - that's inherent to
+            // bot.OwnedLicenses below, not something either mode filters.
 
             // LicenseListCallback (what OwnedLicenses below is built from) is a separate server
             // push with no ordering guarantee relative to the login success this call is triggered
@@ -74,11 +88,6 @@ namespace SteamUtility.Daemon.Bot
             var resolution = await ResolveOwnedAppIdsAsync(bot);
 
             var appIds = resolution.AppIds;
-            if (gamesOnly)
-            {
-                var whitelist = await _whitelistProvider.GetWhitelistAsync();
-                appIds = new HashSet<uint>(appIds.Where(whitelist.Contains));
-            }
 
             var games = new List<OwnedGame>();
             if (appIds.Count > 0)
@@ -98,6 +107,11 @@ namespace SteamUtility.Daemon.Bot
                 {
                     foreach (var (appId, info) in result.Apps)
                     {
+                        if (gamesOnly && !GameAppTypes.Contains(info.KeyValues["common"]["type"].AsString() ?? ""))
+                        {
+                            continue;
+                        }
+
                         var rawName = info.KeyValues["common"]["name"].AsString();
                         var name = string.IsNullOrEmpty(rawName) ? null : rawName;
                         playtimes.TryGetValue(appId, out var playtime);
