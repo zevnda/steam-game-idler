@@ -70,7 +70,6 @@
         "minWidth": 920,
         "minHeight": 600,
         "fullscreen": false,
-        "maximized": true,
         "resizable": true,
         "decorations": false,
         "transparent": true,
