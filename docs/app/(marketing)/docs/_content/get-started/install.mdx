@@ -4,14 +4,11 @@ description: Learn how to install Steam Game Idler using the installer or portab
 icon: ArrowBigDownDash
 ---
 
-import DocsCTA from '@/app/(marketing)/docs/_components/DocsCTA';
 import { Step, Steps } from 'fumadocs-ui/components/steps';
 
 # Install
 
 SGI supports **Windows** (10/11, 64-bit) and **Linux** (64-bit). Follow the steps below for your OS and install method.
-
-<DocsCTA />
 
 ## Windows Installer
 
@@ -65,6 +62,10 @@ SGI supports **Windows** (10/11, 64-bit) and **Linux** (64-bit). Follow the step
     Linux supports [Steam Sign-in](/docs/get-started/how-to-sign-in#steam-sign-in) only
 </Callout>
 
+<Callout type='info'>
+    SGI needs a working OS keyring (the [Secret Service API](https://specifications.freedesktop.org/secret-service/latest/)) to securely store your session. This is preconfigured on most desktops, but if sign-in fails, or you get a "your Steam session isn't active anymore" error — see [this troubleshooting entry](/docs/troubleshooting#linux-keyring-secret-service)
+</Callout>
+
 <Callout type='warn'>
     The `.deb` / `.rpm` versions do not support automatic updates. You'll need to download and install the new package manually for each release
 </Callout>
@@ -72,7 +73,7 @@ SGI supports **Windows** (10/11, 64-bit) and **Linux** (64-bit). Follow the step
 <Steps>
   <Step>
     ### Download
-    Grab the file matching your distro/format from the [latest release](https://github.com/zevnda/steam-game-idler/releases/latest/) page on GitHub:
+    Download the file matching your distro/format from the [latest release](https://github.com/zevnda/steam-game-idler/releases/latest/) page on GitHub:
     - **Debian/Ubuntu-based**: `Steam.Game.Idler_X.X.X_amd64.deb`
     - **Fedora/openSUSE-based**: `Steam.Game.Idler_X.X.X-1.x86_64.rpm`
     - **Any distro**: `Steam.Game.Idler_X.X.X_amd64.AppImage`
@@ -80,13 +81,23 @@ SGI supports **Windows** (10/11, 64-bit) and **Linux** (64-bit). Follow the step
 
   <Step>
     ### Install
-    * **deb**: `sudo dpkg -i Steam.Game.Idler_X.X.X_amd64.deb`
-    * **rpm**: `sudo rpm -i Steam.Game.Idler_X.X.X-1.x86_64.rpm`
-    * **AppImage**: make it executable (`chmod +x Steam.Game.Idler_X.X.X_amd64.AppImage`) and run it directly
+    * **deb**: 
+      ```bash
+      sudo dpkg -i Steam.Game.Idler_X.X.X_amd64.deb
+      ```
+    * **rpm**:
+      ```bash
+      sudo rpm -i Steam.Game.Idler_X.X.X-1.x86_64.rpm
+      ```
   </Step>
 
   <Step>
     ### Run
-    Launch SGI from your desktop's application launcher (`.deb`/`.rpm`), or by running the AppImage file directly
+    * **deb/rpm**: launch SGI from your desktop's application launcher
+    * **AppImage**: make it executable and run it directly
+      ```bash
+      chmod +x Steam.Game.Idler_X.X.X_amd64.AppImage
+      ./Steam.Game.Idler_X.X.X_amd64.AppImage
+      ```
   </Step>
 </Steps>
