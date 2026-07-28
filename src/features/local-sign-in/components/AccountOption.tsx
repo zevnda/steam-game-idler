@@ -16,17 +16,18 @@ const AccountOption = ({ account }: AccountOptionProps) => {
 
   return (
     <Radio value={account.steamId}>
-      <Radio.Content className='group flex w-36 cursor-pointer flex-col items-center gap-2 rounded-lg p-2 outline-none data-focus-visible:ring-2 data-focus-visible:ring-focus'>
+      <Radio.Content className='group flex w-24 cursor-pointer flex-col items-center gap-2 rounded-lg p-2 outline-none data-focus-visible:ring-2 data-focus-visible:ring-focus lg:w-36'>
         <div className='rounded-lg p-1 group-data-selected:bg-linear-to-tr group-data-selected:from-cyan-500 group-data-selected:via-blue-500 group-data-selected:to-violet-700'>
           {/* Square-rounded and large, not HeroUI's default small circular sizing - matches
               main's 128x128 `rounded-md` avatar (its `UserSelectionArea`). tailwind-merge resolves the
               `size-*`/`rounded-*` conflicts in favor of this className over Avatar's own slot
-              classes. */}
-          <Avatar className='size-32 rounded-lg' size='lg'>
+              classes. Shrunk below `lg` (window width) so more accounts fit per row and per screen
+              before AccountPicker's scroll container kicks in - see its own doc comment. */}
+          <Avatar className='size-20 rounded-lg lg:size-32' size='lg'>
             {account.avatarUrl ? (
               <Avatar.Image alt={account.personaName} src={account.avatarUrl} />
             ) : null}
-            <Avatar.Fallback className='rounded-lg text-2xl'>{initial}</Avatar.Fallback>
+            <Avatar.Fallback className='rounded-lg text-lg lg:text-2xl'>{initial}</Avatar.Fallback>
           </Avatar>
         </div>
         {/* Plain element, not `Typography` - `Typography` renders react-aria-components' `Text`,

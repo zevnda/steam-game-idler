@@ -230,10 +230,17 @@ export const GoProModal = () => {
                     </div>
                   </div>
 
-                  <div className='relative z-10 px-65 pb-8'>
+                  <div className='relative z-10 px-4 pb-8'>
                     <SectionHeading label={t('proMode.section.allFeatures')} />
 
-                    <div className='mb-3 grid grid-cols-[repeat(3,18.75rem)] justify-center gap-6'>
+                    {/* Fixed `grid-cols-[repeat(3,18.75rem)]` (948px, 3x 300px cards) never fit
+                        under the ~1420px+ window width it implicitly assumed - `justify-center`
+                        on an overflowing grid centers the *tracks*, not the content, so cards were
+                        pushed off both edges rather than reflowing. Fluid `1fr` columns inside a
+                        capped `max-w-237` (948px = 3x18.75rem+2x1.5rem gap) instead: 2-up below
+                        `lg`, 3-up (each column naturally settling back to 300px at the cap) at
+                        `lg`+, and centered via `mx-auto` at every width in between. */}
+                    <div className='mx-auto mb-3 grid w-full max-w-237 grid-cols-2 gap-6 lg:grid-cols-3'>
                       {cards.map((card, i) => (
                         <FeatureCard card={card} index={i} key={card.title} />
                       ))}
@@ -241,10 +248,13 @@ export const GoProModal = () => {
                   </div>
                 </div>
 
-                <div className='px-65 pb-8' ref={tierRef}>
+                <div className='px-4 pb-8' ref={tierRef}>
                   <SectionHeading label={t('proMode.section.chooseTier')} />
 
-                  <div className='relative mx-auto grid w-fit grid-cols-[repeat(2,26rem)] gap-6'>
+                  {/* Same fluid-up-to-a-cap fix as the feature grid above - `max-w-214` (856px)
+                      matches the original fixed 2x26rem+1.5rem-gap width, `mx-auto` keeps it
+                      centered instead of left-anchored once the window is narrower than that. */}
+                  <div className='relative mx-auto grid w-full max-w-214 grid-cols-1 gap-6 sm:grid-cols-2'>
                     <Image
                       alt=''
                       className='pointer-events-none absolute z-10 select-none object-contain opacity-90 drop-shadow-2xl'
@@ -304,15 +314,15 @@ export const GoProModal = () => {
                 </div>
               </div>
 
-              <div className='px-65 pb-8'>
+              <div className='px-4 pb-8'>
                 <SectionHeading label={t('proMode.section.comparePlans')} />
                 <ComparisonTable priceData={priceData} rows={comparisonRows} />
               </div>
 
-              <div className='px-65 pb-8'>
+              <div className='px-4 pb-8'>
                 <SectionHeading label={t('proMode.section.faq')} />
 
-                <div className='mx-auto w-214 space-y-4'>
+                <div className='mx-auto w-full max-w-214 space-y-4'>
                   {faqItems.map((item, i) => (
                     <FAQItem
                       a={item.a}

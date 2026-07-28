@@ -122,8 +122,15 @@ export const GameSettingsTab = () => {
         {t('dashboard.settings.gameSettings.title')}
       </Typography>
 
-      <div className='flex min-h-0 flex-1 gap-6'>
-        <div className='flex w-72 shrink-0 flex-col gap-2'>
+      {/* Row layout (fixed w-72 game list + flex-1 fields, each independently scrollable) only
+          holds up once the modal's content column has enough width for both at once - at this
+          tab's nav-sidebar-plus-max-w-4xl content width, that's roughly the `lg` breakpoint and
+          up. Below it, stacking (game list full-width on top, fields full-width below) gives the
+          fields column the width it actually needs instead of squeezing it into whatever's left
+          over after a fixed 288px sidebar - see the two children below for the matching per-side
+          responsive classes. */}
+      <div className='flex min-h-0 flex-1 flex-col gap-6 lg:flex-row'>
+        <div className='flex w-full shrink-0 flex-col gap-2 lg:w-72'>
           <Typography color='muted' type='body-xs' weight='semibold'>
             {t('dashboard.sidebar.nav.games')}
           </Typography>
@@ -169,7 +176,11 @@ export const GameSettingsTab = () => {
           </div>
         </div>
 
-        <div className='flex flex-1 flex-col gap-5 overflow-y-auto'>
+        {/* No independent scroll/flex-1 below `lg` - stacked under the now full-width game list,
+            this just flows with the tab's own outer scroll (SettingsModal's SettingsPanel) instead
+            of fighting it for height inside a column that's no longer sharing a row with anything
+            fixed-height. */}
+        <div className='flex min-w-0 flex-col gap-5 lg:min-h-0 lg:flex-1 lg:overflow-y-auto'>
           {isLoading ? (
             <div className='flex flex-col gap-5'>
               {[

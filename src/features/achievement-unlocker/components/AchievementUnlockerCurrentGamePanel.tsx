@@ -33,6 +33,15 @@ export const AchievementUnlockerCurrentGamePanel = ({
     : INITIAL_DELAY_MS
 
   return (
+    // `w-full` (not capped) so this panel keeps filling all remaining row width next to
+    // AchievementUnlockerUpcomingPanel's fixed `sm:w-80`, matching how the row filled the
+    // available area before - only the thumbnail below is sized/responsive, not this box. `h-96`
+    // stays fixed at every width - even the largest thumbnail step (`2xl:w-100`, this panel's
+    // original 400px image) leaves comfortable slack inside the existing fixed height (the
+    // panel's content - label, image, name, remaining-count text - tops out well under 384px), so
+    // there's no need to grow height and risk this panel drifting out of alignment with the
+    // upcoming-achievements panel's own fixed `h-96` (load-bearing there - it needs the room for
+    // up to 5 achievement rows).
     <div className='flex h-96 w-full flex-col items-center justify-center gap-4 rounded-2xl border border-border bg-surface/80 p-6 backdrop-blur-sm'>
       {isWaitingForSchedule ? (
         <div className='flex flex-col items-center gap-2 text-center'>
@@ -68,7 +77,14 @@ export const AchievementUnlockerCurrentGamePanel = ({
           <Typography color='muted' type='body-xs' weight='semibold'>
             {t('dashboard.achievementUnlocker.progress.currentGame')}
           </Typography>
-          <div className='w-100'>
+          {/* Was a flat `w-100` (400px) always - every other GameThumbnail caller in the app
+              (card-farming's active grid, the achievement-unlocker queue list, etc.) lets the
+              thumbnail size come from its grid cell instead of a hardcoded width, and none of them
+              go anywhere near this large at a small window. Scales from `w-56` (224px) up through
+              `lg`/`xl` to `2xl:w-100` - back to the original 400px, but now only once the window
+              is actually wide enough to give it room, instead of that being the size at every
+              width. */}
+          <div className='w-56 lg:w-64 xl:w-72 2xl:w-100'>
             <GameThumbnail appId={appId} name={name} />
           </div>
           <Typography title={name} truncate type='body' weight='semibold'>
