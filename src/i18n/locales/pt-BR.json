@@ -84,6 +84,9 @@
       "pastDue": "Sua assinatura PRO está próxima de vencer. Favor atualize seu método de pagamento para não perder acesso.",
       "manageSubscription": "Gerenciamento de assinatura"
     },
+    "badges": {
+      "beta": "Beta"
+    },
     "tabs": {
       "allGames": "Todos os jogos",
       "queue": "Fila"
