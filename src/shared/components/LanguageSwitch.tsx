@@ -29,6 +29,7 @@ const ENABLED_LANGUAGES: ReadonlySet<string> = new Set([
   'fr-FR',
   'it-IT',
   'zh-CN',
+  'tr-TR',
 ])
 
 // Where a click on a not-yet-translated language goes instead of switching - the community
