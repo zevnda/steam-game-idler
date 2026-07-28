@@ -22,15 +22,25 @@ export const SignInHero = () => {
   return (
     <div className='inner-glow relative flex h-[75vh] w-full items-center justify-center overflow-hidden rounded-3xl'>
       <div className='pointer-events-none absolute z-10 flex h-[90%] w-[90%] flex-col items-center justify-between'>
-        <p className='text-center text-[52px] font-black leading-14'>
+        {/* This panel is a fixed 40% of the window (AuthLayout's `w-3/5`/`flex-1` split isn't
+            itself responsive), so at the window's minWidth its available width is a fraction of
+            what the original fixed `text-[52px]`/730px-wide mockup assumed - both scale down here
+            instead of overflowing/clipping against `overflow-hidden` above. Breakpoints are window
+            width (this column is a constant 40% of it): `lg` (1024px window ~= 370px column) and
+            `xl` (1280px window ~= 470px column, close to this app's `tauri.conf.json` default
+            width) restore the size step by step, landing back at the original 52px/730px only
+            once the window's actually wide enough for it. */}
+        <p className='text-center text-[26px] font-black leading-8 lg:text-[36px] lg:leading-10 xl:text-[52px] xl:leading-14'>
           <Trans components={{ 1: <br /> }} i18nKey='auth.hero.title' />
         </p>
 
-        <p className='mt-4 text-center text-lg'>{t('auth.hero.subtitle')}</p>
+        <p className='mt-2 text-center text-sm lg:mt-3 lg:text-base xl:mt-4 xl:text-lg'>
+          {t('auth.hero.subtitle')}
+        </p>
 
         <Image
           alt='App screenshot'
-          className='-translate-x-3 mt-10'
+          className='-translate-x-3 mt-4 h-auto w-full max-w-182.5 lg:mt-6 xl:mt-10'
           height={380}
           loading='eager'
           src={`${CDN_BASE_URL}/mock.webp`}

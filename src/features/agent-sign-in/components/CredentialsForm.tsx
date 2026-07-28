@@ -23,7 +23,7 @@ const CredentialsForm = ({ isSubmitting, errorCode, onSubmit }: CredentialsFormP
   }
 
   return (
-    <div className='flex w-64 flex-col gap-3'>
+    <div className='flex w-56 flex-col gap-3 lg:w-64'>
       <p className='text-xs font-semibold uppercase tracking-wide text-primary'>
         {t('auth.signIn.credentialsSectionLabel')}
       </p>

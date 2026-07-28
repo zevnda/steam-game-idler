@@ -68,7 +68,7 @@
         "width": 1300,
         "height": 850,
         "minWidth": 920,
-        "minHeight": 600,
+        "minHeight": 620,
         "fullscreen": false,
         "resizable": true,
         "decorations": false,

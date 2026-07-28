@@ -20,7 +20,10 @@ export const GoPro = () => {
       type='button'
       onClick={() => openProModal()}
     >
-      <p className='mx-2 flex flex-col items-center text-[10px] font-bold uppercase'>
+      {/* Hidden below `lg` (1024px) - matches GlobalSearchBar's same breakpoint for the same
+          narrow-window overlap reason (see its comment). Only the white "Go Pro" pill stays
+          visible; the "Support Steam Game Idler" copy is upsell framing, not load-bearing. */}
+      <p className='mx-2 hidden flex-col items-center text-[10px] font-bold uppercase xl:flex'>
         {/* eslint-disable-next-line i18next/no-literal-string */}
         <span className='flex w-22.5 flex-col items-center space-y-0.5 text-[8px] font-bold uppercase'>
           Support

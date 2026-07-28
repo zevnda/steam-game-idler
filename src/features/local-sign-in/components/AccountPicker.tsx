@@ -59,15 +59,23 @@ const AccountPicker = ({
         </Alert>
       ) : null}
 
-      <RadioGroup
-        className='flex flex-row flex-wrap justify-center gap-3 mb-4'
-        value={selectedSteamId}
-        onChange={onSelect}
-      >
-        {accounts.map(account => (
-          <AccountOption key={account.steamId} account={account} />
-        ))}
-      </RadioGroup>
+      {/* Bounded + independently scrollable, rather than letting the account grid grow the whole
+          card (and, in turn, AuthLayout's left column) tall enough to need a page-level scrollbar
+          - the Continue/Refresh actions below stay reachable without scrolling past however many
+          accounts are signed into this Steam client. `max-h-56`/`lg:max-h-80` roughly track
+          AccountOption's own responsive avatar size (`size-20`/`lg:size-32`) so about two rows are
+          visible at each before this container takes over the scrolling. */}
+      <div className='mb-4 max-h-56 w-full overflow-y-auto lg:max-h-80'>
+        <RadioGroup
+          className='flex flex-row flex-wrap justify-center gap-3 p-1'
+          value={selectedSteamId}
+          onChange={onSelect}
+        >
+          {accounts.map(account => (
+            <AccountOption key={account.steamId} account={account} />
+          ))}
+        </RadioGroup>
+      </div>
 
       {actionErrorCode ? (
         <Alert status='danger'>

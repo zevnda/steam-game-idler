@@ -20,7 +20,7 @@ export function ComparisonTable({
   const { t } = useTranslation()
 
   return (
-    <div className='relative mx-auto w-214'>
+    <div className='relative mx-auto w-full max-w-214'>
       <div className='grid grid-cols-[1fr_7rem_9.5rem_9.5rem] overflow-hidden rounded-4xl border border-white/5 bg-[#101013]'>
         <div className='flex items-center px-6 py-5' />
 

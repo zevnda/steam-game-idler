@@ -69,7 +69,14 @@ const SignInScreen = ({ onBack }: SignInScreenProps) => {
         <Spinner size='lg' />
       ) : (
         <AuthCard className='w-auto'>
-          <div className='flex items-stretch gap-6'>
+          {/* `gap-6` (matched by CredentialsForm's own `w-64`) put this row's total width right at
+              the edge of what `AuthLayout`'s left column (a fixed 60% of the window, not itself
+              responsive) has to give at the window's minWidth - narrow enough to trigger an
+              x-scrollbar rather than actually clip anything. Both sides need to stay side by side
+              (QrSignInPanel can't shrink further - it's already at its QR-code-plus-padding floor),
+              so the fix is trimming the gap and CredentialsForm's width below `lg`, see its own
+              responsive class. */}
+          <div className='flex items-stretch gap-4 lg:gap-6'>
             <CredentialsForm
               errorCode={errorCode}
               isSubmitting={phase.kind === 'submitting'}

@@ -329,7 +329,7 @@ export const GeneralSettingsTab = ({
       </Typography>
 
       {activeAccount && (
-        <div className='flex items-end gap-4 mb-8'>
+        <div className='flex flex-wrap items-end gap-4 mb-8'>
           <Avatar size='lg'>
             {accountSummary?.avatarUrl ? (
               <Avatar.Image alt={displayName ?? ''} src={accountSummary.avatarUrl} />
