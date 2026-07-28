@@ -354,6 +354,29 @@ This page covers common issues and their solutions when using Steam Game Idler.
     A `.deb`/`.rpm` install pulls in its required system libraries (WebKitGTK, GTK, `libayatana-appindicator3`, `libsecret`) automatically via your package manager. If you see a missing-dependency error anyway, make sure your package manager's repositories are up to date (`sudo apt update` / `sudo dnf check-update`) and try reinstalling. The AppImage bundles most of what it needs, so this shouldn't affect it.
   </Accordion>
 
+  <Accordion title="Sign-in fails or 'Your Steam session isn't active anymore' error" id="linux-keyring-secret-service">
+    SGI securely saves your session using your OS's built-in keyring. If your Linux setup doesn't have one running or SGI can't access it, you will need to fix this on your system, since SGI can't install or unlock it for you.
+
+    - **GNOME desktops** (Ubuntu, Fedora Workstation, etc.): usually works automatically. If not, install it and log back in:
+      ```bash
+      sudo apt install gnome-keyring   # Ubuntu/Debian
+      sudo dnf install gnome-keyring   # Fedora
+      ```
+    - **KDE Plasma desktops** (Kubuntu, Fedora KDE, etc.): go to **System Settings → KDE Wallet** and enable **"Enable the KDE Wallet subsystem"**
+    - **Minimal desktops/tiling window managers** (Sway, i3, Hyprland, etc.): install it, then set it to start with your session — check your window manager's documentation for how to autostart it
+      ```bash
+      sudo pacman -S gnome-keyring   # Arch-based
+      ```
+    - **Bazzite and similar handheld/console distros**: sign in from **Desktop Mode**, not **Gaming Mode** — Gaming Mode's console-style session doesn't reliably support the keyring, which is a known limitation of that mode, not an SGI bug
+
+    Already installed but still failing? It's likely locked or not running for your current session, rather than missing:
+
+    - **GNOME**: open **Passwords and Keys** from your app menu. If the "Login" keyring shows a lock icon, click it and unlock with your password
+    - **KDE Plasma**: open **KWallet Manager** (search "wallet" in your app menu) and unlock your wallet
+    - **Auto-login users** (no password at your login screen): your keyring can't auto-unlock without a login password to unlock it with, so it stays locked every session. Unlock it manually as above each time, or open your keyring/wallet app and set it to use a blank password so it unlocks automatically
+    - **Minimal desktops/tiling window managers**: if you just installed `gnome-keyring`, it still won't be running until your next login (or your session's autostart config is set up) — log out and back in, or start it once with `gnome-keyring-daemon --start --components=secrets` before relaunching SGI
+  </Accordion>
+
   <Accordion title="Where does SGI store its data on Linux?" id="linux-data-location">
     `~/.local/share/com.zevnda.steam-game-idler` — the equivalent of Windows' `%appdata%\com.zevnda.steam-game-idler\` referenced elsewhere on this page. The log file and settings file live there too, same structure as Windows.
   </Accordion>
