@@ -1,4 +1,4 @@
-import type { InventoryItem } from '../types'
+import type { InventoryItem, PriceData } from '../types'
 import type { FilterKey } from './InventoryFilterPanel'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -347,6 +347,8 @@ export const InventoryManagerPage = () => {
       if (!settings) return
       const pairs: [string, string][] = []
       const listedIds: string[] = []
+      // Cache price per item name so duplicate copies reuse one fetch instead of one each.
+      const priceCache = new Map<string, PriceData | undefined>()
       for (const item of candidates) {
         if (isLocked(item.assetid)) continue
         const customPrice = priceDrafts[item.assetid]
@@ -357,19 +359,26 @@ export const InventoryManagerPage = () => {
           listedIds.push(item.assetid)
           continue
         }
-        let priceData = item.priceData
-        if (!priceData) {
-          try {
-            priceData = (await fetchItemPrice(item, { silent: true })) ?? undefined
-          } catch (error) {
-            // Mirrors `main`'s sellCardsList: stop the whole batch the moment price-fetching hits
-            // Steam's rate limit instead of hammering it again for every remaining candidate.
-            if (String(error) === 'market_price_rate_limited') {
-              toast.warning(t('dashboard.inventoryManager.errors.priceRateLimited'))
-              break
+        let priceData: PriceData | undefined
+        if (priceCache.has(item.marketHashName)) {
+          priceData = priceCache.get(item.marketHashName)
+        } else {
+          priceData = item.priceData
+          if (!priceData) {
+            try {
+              priceData = (await fetchItemPrice(item, { silent: true })) ?? undefined
+            } catch (error) {
+              // Mirrors `main`'s sellCardsList: stop the whole batch the moment price-fetching hits
+              // Steam's rate limit instead of hammering it again for every remaining candidate.
+              if (String(error) === 'market_price_rate_limited') {
+                toast.warning(t('dashboard.inventoryManager.errors.priceRateLimited'))
+                break
+              }
+              priceCache.set(item.marketHashName, undefined)
+              continue
             }
-            continue
           }
+          priceCache.set(item.marketHashName, priceData)
         }
         if (!priceData) continue
         const base =

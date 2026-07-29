@@ -45,9 +45,14 @@ fn main() {
                     std::env::set_var("WEBKIT_FORCE_SANDBOX", "0");
                 }
             }
-            // Host GTK input-method modules can link against a different GLib/GTK than what's
-            // bundled inside the AppImage, causing load failures - restrict to the builtin module.
-            if std::env::var_os("GTK_IM_MODULE").is_none() {
+            // Force the builtin input method when GTK_IM_MODULE is unset or set only to xim.
+            // A plain Xfce/X11 session can export xim with no ibus/fcitx running, which broke keyboard input entirely.
+            let im_module = std::env::var_os("GTK_IM_MODULE");
+            let should_override_im_module = match im_module.as_deref().and_then(|v| v.to_str()) {
+                None => true,
+                Some(value) => value.split(':').all(|m| m == "xim"),
+            };
+            if should_override_im_module {
                 unsafe {
                     std::env::set_var("GTK_IM_MODULE", "gtk-im-context-simple");
                 }
