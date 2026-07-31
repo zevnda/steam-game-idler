@@ -36,6 +36,7 @@
       "slsLabel": "steamLoginSecure",
       "smaLabel": "steamMachineAuth",
       "smaDescription": "可选，仅当您的账号有待处理的 Steam 令牌设备确认时 需要",
+      "getCookiesNote": "您必须从以下获取您的 cookies",
       "savedFromSettingsNote": "从「设置」中保存的 Steam 凭据加载",
       "savedToast": "凭据已保存",
       "clearedToast": "凭据已清除",
