@@ -30,6 +30,11 @@ import { hasGamerAccess } from '@/shared/utils/subscriptionAccess'
 // place.
 export const STEAM_CREDENTIALS_DOCS_URL = 'https://steamgameidler.com/docs/steam-credentials'
 
+// Where the manual-entry tab's "get your cookies from" note links to - the cookies themselves are
+// only readable from a Steam Community page's own cookie jar, so this just points at the site
+// itself rather than any particular sub-page.
+const STEAM_COMMUNITY_URL = 'https://steamcommunity.com/'
+
 type CookieMethod = 'automatic' | 'manual'
 
 interface SteamCookiesConnectPanelProps<T extends SteamCookiesLike> {
@@ -215,6 +220,17 @@ export function SteamCookiesConnectPanel<T extends SteamCookiesLike>({
 
   const manualForm = (
     <>
+      <Typography color='muted' type='body-xs'>
+        {t('common.manualCookies.getCookiesNote')}{' '}
+        <button
+          type='button'
+          className='inline-flex cursor-pointer items-center gap-1 text-accent hover:text-accent/80 duration-150'
+          onClick={() => openExternalLink(STEAM_COMMUNITY_URL)}
+        >
+          {STEAM_COMMUNITY_URL}
+          <TbExternalLink fontSize={12} />
+        </button>
+      </Typography>
       {prefilledFromSaved && (
         <Typography color='muted' type='body-xs'>
           {savedCredentialsNote}
