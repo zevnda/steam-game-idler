@@ -2,6 +2,7 @@ import type { ParseKeys } from 'i18next'
 import { initReactI18next } from 'react-i18next'
 import deDE from './locales/de-DE.json'
 import enUS from './locales/en-US.json'
+import esES from './locales/es-ES.json'
 import frFR from './locales/fr-FR.json'
 import itIT from './locales/it-IT.json'
 import jaJP from './locales/ja-JP.json'
@@ -24,6 +25,7 @@ export const defaultNS = 'translation' as const
 const resources = {
   'en-US': { translation: enUS },
   'de-DE': { translation: deDE },
+  'es-ES': { translation: esES },
   'fr-FR': { translation: frFR },
   'it-IT': { translation: itIT },
   'ja-JP': { translation: jaJP },

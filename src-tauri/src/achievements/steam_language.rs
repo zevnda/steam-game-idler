@@ -20,6 +20,7 @@ pub fn steam_language_for_locale(locale: &str) -> &'static str {
     match locale {
         "en-US" => "english",
         "de-DE" => "german",
+        "es-ES" => "spanish",
         "fr-FR" => "french",
         "it-IT" => "italian",
         "ja-JP" => "japanese",
@@ -38,6 +39,7 @@ mod tests {
     #[test]
     fn maps_known_locales() {
         assert_eq!(steam_language_for_locale("it-IT"), "italian");
+        assert_eq!(steam_language_for_locale("es-ES"), "spanish");
         assert_eq!(steam_language_for_locale("zh-CN"), "schinese");
         assert_eq!(steam_language_for_locale("pt-BR"), "brazilian");
     }
