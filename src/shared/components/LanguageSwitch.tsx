@@ -14,10 +14,8 @@ const LANGUAGES = [
   { id: 'es-ES', label: 'Español' },
   { id: 'fr-FR', label: 'Français' },
   { id: 'it-IT', label: 'Italiano' },
-  { id: 'ja-JP', label: '日本語' },
   { id: 'pt-BR', label: 'Português (Brazil)' },
   { id: 'ru-RU', label: 'Русский' },
-  { id: 'sl-SI', label: 'Slovenščina' },
   { id: 'tr-TR', label: 'Türkçe' },
   { id: 'zh-CN', label: '简体中文' },
 ] as const

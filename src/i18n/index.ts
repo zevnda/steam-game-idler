@@ -5,10 +5,8 @@ import enUS from './locales/en-US.json'
 import esES from './locales/es-ES.json'
 import frFR from './locales/fr-FR.json'
 import itIT from './locales/it-IT.json'
-import jaJP from './locales/ja-JP.json'
 import ptBR from './locales/pt-BR.json'
 import ruRU from './locales/ru-RU.json'
-import slSI from './locales/sl-SI.json'
 import trTR from './locales/tr-TR.json'
 import zhCN from './locales/zh-CN.json'
 import i18n from 'i18next'
@@ -28,10 +26,8 @@ const resources = {
   'es-ES': { translation: esES },
   'fr-FR': { translation: frFR },
   'it-IT': { translation: itIT },
-  'ja-JP': { translation: jaJP },
   'pt-BR': { translation: ptBR },
   'ru-RU': { translation: ruRU },
-  'sl-SI': { translation: slSI },
   'tr-TR': { translation: trTR },
   'zh-CN': { translation: zhCN },
 }

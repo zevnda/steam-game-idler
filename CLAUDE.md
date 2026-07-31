@@ -532,8 +532,8 @@ design. Sidebar is a real `SidebarItem` component rendered from a data-driven se
 
 ## i18n
 
-Only `en-US.json` is hand-maintained; the 7 other shipped locales (it-IT, ru-RU, fr-FR, zh-CN,
-sl-SI, pt-BR, tr-TR) sync via Crowdin (`.github/workflows/crowdin.yml`) — don't hand-edit or
+Only `en-US.json` is hand-maintained; the 6 other shipped locales (it-IT, ru-RU, fr-FR, zh-CN,
+pt-BR, tr-TR) sync via Crowdin (`.github/workflows/crowdin.yml`) — don't hand-edit or
 recreate them. `src/i18n/index.ts` types `i18next`'s resources from `en-US.json` and exports
 `TranslationKey` (every valid dot-path key) for compile-time key checking on literal `t()` calls.
 
