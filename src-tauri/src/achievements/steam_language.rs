@@ -6,9 +6,9 @@
 //! (`SteamworksLocalBackend`'s `GetAchievementDisplayAttribute` call), independent of this app's
 //! own locale.
 //!
-//! Not every app locale maps onto a real Steam language - Steam has no Slovenian schema language,
-//! for instance - and a locale can land in this app before its Steam equivalent is confirmed.
-//! Both cases fall through to `"english"` here, matching `ResolveLocalizedString`'s own
+//! Not every app locale maps onto a real Steam language, and a locale can land in this app before
+//! its Steam equivalent is confirmed. Both cases fall through to `"english"` here, matching
+//! `ResolveLocalizedString`'s own
 //! english-then-first-available fallback for whichever achievements don't have the requested
 //! language in their own schema entry.
 //!
@@ -23,7 +23,6 @@ pub fn steam_language_for_locale(locale: &str) -> &'static str {
         "es-ES" => "spanish",
         "fr-FR" => "french",
         "it-IT" => "italian",
-        "ja-JP" => "japanese",
         "pt-BR" => "brazilian",
         "ru-RU" => "russian",
         "tr-TR" => "turkish",
@@ -46,7 +45,6 @@ mod tests {
 
     #[test]
     fn falls_back_to_english_for_unmapped_locales() {
-        assert_eq!(steam_language_for_locale("sl-SI"), "english");
         assert_eq!(steam_language_for_locale("xx-XX"), "english");
     }
 }
