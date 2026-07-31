@@ -19,6 +19,9 @@
       "add": "Añadir"
     },
     "gameCardMenu": {
+      "startIdling": "Iniciar farmeo",
+      "stopIdling": "Detener farmeo",
+      "manageAchievements": "Gestionar Logros",
       "viewOnSteam": "Ver en Steam",
       "addTo": "Añadir a"
     },
@@ -29,6 +32,11 @@
       "description": "Se ha producido un error inesperado. Inténtalo de nuevo y, si el problema persiste, ponte en contacto con el servicio de Ayuda y Soporte."
     },
     "manualCookies": {
+      "sidLabel": "sessionid",
+      "slsLabel": "steamLoginSecure",
+      "smaLabel": "steamMachineAuth",
+      "smaDescription": "Opcional. Solo es necesario si Steam Guard solicita confirmar este equipo.",
+      "getCookiesNote": "Debes obtener las cookies de",
       "savedFromSettingsNote": "Cargado desde las credenciales de Steam guardadas en la configuración.",
       "savedToast": "Credenciales guardadas",
       "clearedToast": "Credenciales borradas",
@@ -38,7 +46,9 @@
       "title": "Agregar juego manualmente",
       "description": "Agrega un juego por su ID de la aplicación de Steam si no aparece automáticamente.",
       "nameLabel": "Nombre",
+      "namePlaceholder": "por ejemplo, K-On! La película",
       "appIdLabel": "ID de la aplicación",
+      "appIdPlaceholder": "por ejemplo, 518440",
       "duplicateError": "Este ID de aplicación ya está en la lista"
     },
     "search": {
@@ -75,19 +85,25 @@
       "pastDue": "Tu suscripción PRO está vencida. Actualiza tu método de pago para evitar perder el acceso.",
       "manageSubscription": "Administrar suscripción"
     },
+    "badges": {
+      "beta": "Beta"
+    },
     "tabs": {
       "allGames": "Todos los juegos",
       "queue": "Cola"
     },
     "connect": {
-      "automaticTab": "Automático"
+      "automaticTab": "Automático",
+      "manualTab": "Manual"
     },
     "sort": {
       "nameAsc": "Nombre (A-Z)",
       "nameDesc": "Nombre (Z-A)"
     },
     "noGamesQueued": "No hay juegos en cola",
-    "gamesQueuedCount_one": "{{count}} Juego en cola"
+    "gamesQueuedCount_one": "{{count}} Juego en cola",
+    "gamesQueuedCount_other": "{{count}} Juego en cola",
+    "completedThisSessionCount": "Completados en esta sesión ({{count}})"
   },
   "update": {
     "downloading": "Descargando actualización..."
@@ -117,6 +133,7 @@
     "star": "Estrella en GitHub"
   },
   "titlebar": {
+    "closeToTrayNotification": "Steam Game Idler seguirá ejecutándose en segundo plano",
     "helpDesk": "Mesa de ayuda",
     "updateReady": "Actualización lista"
   },
@@ -128,6 +145,7 @@
   },
   "proMode": {
     "hero": {
+      "headline": "Desbloquear más funciones",
       "subtext": "Las funciones principales de SGI son <1>gratuitas</1> y <3>siempre lo serán</3>. PRO existe exclusivamente para los usuarios que desean apoyar el desarrollo continuo de SGI; las funciones adicionales son nuestra forma de <5>agradecer</5> su apoyo.",
       "viewTiers": "Ver niveles PRO",
       "startingAt": "Comenzando en ${{price}}/mes · Cancela cuando quieras"
@@ -165,7 +183,7 @@
         "description": "Inicia sesión y gestiona varias cuentas de Steam al mismo tiempo."
       },
       "autoFarmCards": {
-        "title": "Cultivo automático de tarjetas",
+        "title": "Farmeo automático de cromos",
         "description": "SGI supervisa tu biblioteca y comienza automáticamente a cultivar cualquier juego que aún tenga cartas disponibles."
       },
       "gamesList": {
@@ -173,7 +191,8 @@
         "description": "Tu lista de juegos se actualiza automáticamente cada 15 minutos a medida que añades y juegas a nuevos juegos."
       },
       "multipleUnlockerGames": {
-        "title": "Desbloquea logros para varios juegos"
+        "title": "Desbloquea logros para varios juegos",
+        "description": "Desbloquea logros de varios juegos al mismo tiempo en el Desbloqueador de logros, en lugar de hacerlo de uno en uno."
       },
       "freeGames": {
         "title": "Canje de juegos gratuitos",
@@ -192,9 +211,12 @@
       "perMonth": "/Mes",
       "everythingInCasualPlus": "Todo en estilo casual, plus",
       "currentPlan": "Plan actual",
+      "continueWithStripe": "Stripe",
+      "continueWithPaypal": "PayPal",
       "processing": "Procesando...",
       "cancelAnytime": "Cancela en cualquier momento",
       "casual": {
+        "name": "Casual",
         "discordRole": "Discord Rol PRO",
         "multiAccount": "3 Cuentas Concurrentes",
         "multipleUnlockerGames": "Desbloquea 3 juegos a la vez"
@@ -204,7 +226,8 @@
         "freeGames": "Canje automático de juegos gratuitos",
         "sellDupes": "Vender artículos duplicados del inventario",
         "importTimings": "Importar tiempos de desbloqueo de logros",
-        "multipleUnlockerGames": "Desbloquea 32 juegos a la vez"
+        "multipleUnlockerGames": "Desbloquea 32 juegos a la vez",
+        "multiAccount": "10 cuentas simultáneas"
       }
     },
     "faq": {
@@ -246,6 +269,7 @@
   },
   "auth": {
     "landing": {
+      "title": "Iniciar sesión en Steam Game Idler",
       "agentButton": "Iniciar sesión en Steam",
       "localButton": "Inicio de sesión heredado",
       "localAlreadySignedIn": "Ya hay una cuenta de cliente de Steam local iniciada; solo se puede iniciar sesión una cuenta a la vez.",
@@ -266,6 +290,7 @@
         "emailDescription": "Hemos enviado un código a {{email}}. Introdúcelo a continuación.",
         "confirmationTitle": "Confirma este inicio de sesión",
         "confirmationDescription": "Aprueba la solicitud de inicio de sesión en tu aplicación Steam Móvil para continuar.",
+        "codeLabel": "Código de Steam Guard",
         "incorrectCode": "El código no es correcto. Inténtalo de nuevo.",
         "submitButton": "Verificar"
       },
@@ -305,8 +330,12 @@
       },
       "nav": {
         "games": "Juegos",
+        "idling": "Farmeando",
         "favorites": "Favoritos",
         "freeGames": "Juegos Gratis",
+        "cardFarming": "Farmeo de cromos",
+        "achievementUnlocker": "Desbloquear logros",
+        "autoIdle": "Añadidos automáticamente",
         "inventoryManager": "Gestor de inventario"
       },
       "signOut": {
@@ -315,23 +344,28 @@
         "error": "La limpieza del registro de salida no ha finalizado por completo, pero su sesión ha sido cerrada."
       },
       "tier": {
+        "label": "Plan",
         "free": "Gratis"
       },
       "accountSwitcher": {
+        "modeAgent": "Sesión iniciada con Steam",
         "modeLocal": "Cliente local de Steam",
         "switched": "Cambiada a {{name}}",
         "steamRequired": "Steam debe estar en ejecución para cambiar a esta cuenta",
         "addAccount": {
           "trigger": "Agregar otra cuenta",
+          "capReached_one": "El plan {{tier}} permite {{count}} cuentas iniciadas en Steam simultáneamente. Cierra sesión en una para añadir otra, o actualiza para obtener más.",
           "capReached_other": "El plan {{tier}} permite {{count}} cuentas iniciadas en Steam simultáneamente. Cierra sesión en una para añadir otra, o actualiza para obtener más.",
           "capReachedMax": "Has alcanzado el número máximo de cuentas que pueden estar conectadas a Steam simultáneamente.",
           "added": "Añadido: {{name}}"
         },
         "reauth": {
+          "badge": "Sesión iniciada en otro lugar",
           "tooltip": "Esta cuenta se ha iniciado sesión en otro dispositivo, por lo que su automatización se ha pausado. Inicie sesión de nuevo para continuar.",
           "modalTitle": "Iniciaste sesión en otro dispositivo",
           "modalDescription": "Se ha iniciado sesión en {{account}} desde otro dispositivo, por lo que su automatización se ha pausado. Inicie sesión de nuevo para continuar.",
           "reconnect": "Reconectar",
+          "methodExplainer": "El inicio de sesión con Steam solo permite una sesión activa por cuenta. Si quieres seguir jugando mientras usas Steam Game Idler, utiliza el inicio de sesión clásico en su lugar.",
           "useDifferentMethod": "Utilice un método de inicio de sesión diferente"
         }
       },
@@ -342,13 +376,16 @@
     "games": {
       "count_one": "{{count}} Juego",
       "count_other": "{{count}} Juegos",
+      "unknownName": "App {{appId}}",
       "carousels": {
         "recommended": "Recomendado",
         "recent": "Jugado recientemente"
       },
       "sort": {
         "playtimeDesc": "Tiempo Jugado (Más-Menos)",
-        "playtimeAsc": "Tiempo Jugado (Menos-Más)"
+        "playtimeAsc": "Tiempo Jugado (Menos-Más)",
+        "recentlyPlayedDesc": "Jugados recientemente (más recientes primero)",
+        "recentlyPlayedAsc": "Jugados recientemente (más antiguos primero)"
       },
       "empty": {
         "title": "No se encontraron juegos",
@@ -380,6 +417,7 @@
         "description": "Inicia un juego en segundo plano desde la pestaña Juegos para verlo aquí."
       },
       "errors": {
+        "startFailed": "No se ha podido iniciar el farmeo de este juego.",
         "maxPlaytimeCapReached": "Este juego ya ha alcanzado su límite máximo de tiempo de juego.",
         "generic": "Se produjo un error al actualizar el estado inactivo. Inténtalo de nuevo. ({{code}})"
       }
@@ -425,7 +463,8 @@
       },
       "notifications": {
         "title": "¡Juegos gratis disponibles!",
-        "bodyOne": "{{name}} está disponible gratis en Steam ahora mismo."
+        "bodyOne": "{{name}} está disponible gratis en Steam ahora mismo.",
+        "bodyMany": "Hay {{count}} nuevos juegos gratis disponibles en Steam."
       },
       "autoRedeem": {
         "success": "Canjeado automáticamente {{name}}",
@@ -441,7 +480,8 @@
         "statistics": "Estadísticas"
       },
       "header": {
-        "viewOnSteam": "Ver en Steam"
+        "viewOnSteam": "Ver en Steam",
+        "viewOnSteamDb": "Ver en SteamDB"
       },
       "protectedAlert": {
         "title": "Algunos artículos están protegidos",
@@ -472,6 +512,7 @@
       },
       "actions": {
         "unlock": "Desbloquear",
+        "lock": "Bloquear",
         "unlockAll": "Desbloquear todo",
         "lockAll": "Bloquear todo",
         "applyChanges": "Realizar cambios",
@@ -568,13 +609,15 @@
         "dropsAsc": "Drops restantes (de menor a mayor)"
       },
       "browseEmpty": {
+        "title": "No te quedan más cromos por obtener",
         "description": "En todos los juegos que poseo, las cartas que se pueden obtener mediante cultivo ya se han conseguido todas o no hay ninguna disponible en este momento."
       },
       "empty": {
         "description": "Agrega juegos desde la pestaña \"Juegos con Drops\" para ponerlos en cola para la obtención de cartas."
       },
       "blacklistEmpty": {
-        "title": "No hay juegos en la lista negra"
+        "title": "No hay juegos en la lista negra",
+        "description": "Los juegos que añadas a la lista negra desde la pestaña «Juegos con drops» nunca se farmearán y aparecerán aquí."
       },
       "connect": {
         "automaticDescription": "Inicia sesión automáticamente en la Comunidad de Steam para comprobar si hay novedades."
@@ -615,6 +658,7 @@
           "description": "Solo cultivar juegos que están en la lista de Cultivo de Cromos."
         },
         "allGames": {
+          "title": "Farmear todos los juegos",
           "description": "Cartas de granja para todos los juegos con cartas restantes."
         },
         "skipNoPlaytime": {
@@ -622,6 +666,7 @@
           "description": "No intentes jugar partidas que no tengan ningún tiempo de juego registrado."
         },
         "farmUnplayedOnly": {
+          "title": "Solo juegos no jugados",
           "description": "Solo juegos de granja que no tengan tiempo de juego registrado."
         },
         "dropSortOrder": {
@@ -671,7 +716,8 @@
         },
         "interval": {
           "title": "Intervalo de desbloqueo",
-          "description": "Espere un retraso aleatorio de entre {{min}} y {{max}} minutos entre desbloqueos."
+          "description": "Espere un retraso aleatorio de entre {{min}} y {{max}} minutos entre desbloqueos.",
+          "to": "a"
         },
         "schedule": {
           "title": "Desbloquear solo durante un horario",
@@ -714,6 +760,7 @@
         "remaining_other": "{{count}} Logros restantes",
         "starting": "Iniciando…",
         "waitingForSchedule": "Esperando la ventana de desbloqueo programada",
+        "currentGame": "Juego actual",
         "upNext": "A continuación",
         "completedCount": "{{unlocked}}/{{total}} desbloqueado",
         "completedMaxUnlocksReached": "{{unlocked}}/{{total}} Desbloqueado (desbloqueo máximo alcanzado)",
@@ -722,7 +769,9 @@
         "completedNothingToUnlock": "No queda nada por desbloquear"
       },
       "errors": {
+        "title": "No se ha podido actualizar el desbloqueador de logros",
         "queueCacheIoFailed": "No se pudo leer ni escribir en la cola de desbloqueo de logros.",
+        "settingsIoFailed": "No se ha podido leer o guardar la configuración del desbloqueador de logros.",
         "orderIoFailed": "No pude leer ni escribir el orden de los logros de este juego."
       }
     },
@@ -746,6 +795,7 @@
       "fetchPrice": "Obtener precio",
       "fetchingPrice": "Obteniendo Precio…",
       "badgeLevel": "Nivel de insignia {{level}}",
+      "noBadge": "Sin insignia fabricada",
       "connect": {
         "description": "Carga tu inventario de la Comunidad de Steam para gestionar y vender artículos.",
         "automaticDescription": "Inicia sesión automáticamente en la Comunidad de Steam para cargar tu inventario."
@@ -756,7 +806,8 @@
         "sellDupes": "Vender duplicados",
         "removeListings": "Eliminar listados",
         "lockItem": "Bloquea este artículo para que nunca se venda automáticamente",
-        "list": "Listado en el mercado"
+        "list": "Listado en el mercado",
+        "cardExchange": "Ver en SteamCardExchange"
       },
       "confirm": {
         "listSelected": {
@@ -779,6 +830,7 @@
       "filter": {
         "label": "Filtro",
         "cards": "Intercambio de cartas",
+        "foil": "Reflectante",
         "backgrounds": "Fondos",
         "emoticons": "Emoticonos",
         "boosters": "Paquetes potenciadores",
@@ -790,14 +842,16 @@
       "sort": {
         "label": "Ordenar por",
         "game-asc": "Nombre (A-Z)",
-        "game-desc": "Nombre (Z-A)"
+        "game-desc": "Nombre (Z-A)",
+        "badge-desc": "Nivel de insignia"
       },
       "empty": {
         "title": "Ítems no encontrados",
         "description": "No se encontraron artículos comercializables que coincidan con la búsqueda y los filtros actuales."
       },
       "priceData": {
-        "sellOrders": "Órdenes de venta"
+        "sellOrders": "Órdenes de venta",
+        "buyOrders": "Órdenes de compra"
       },
       "settings": {
         "currency": {
@@ -817,7 +871,8 @@
           "description": "Agrega {{value}} a cada precio de lista, ya sea que se complete automáticamente o se ingrese manualmente."
         },
         "sellLimit": {
-          "title": "Límite de Venta"
+          "title": "Límite de Venta",
+          "description": "Solo poner a la venta artículos con un precio entre {{min}} y {{max}}."
         },
         "sellDelay": {
           "title": "Retraso en la venta",
@@ -838,7 +893,8 @@
         "priceOutOfRange": "{{price}} está fuera de su límite de venta configurado ({{min}}-{{max}}).",
         "skippedLocked_one": "Se omitió {{count}} elemento bloqueado",
         "skippedLocked_other": "Se omitieron {{count}} elementos bloqueados",
-        "skippedOutOfRange_one": "Se omitió {{count}} artículo fuera de su límite de venta"
+        "skippedOutOfRange_one": "Se omitió {{count}} artículo fuera de su límite de venta",
+        "skippedOutOfRange_other": "Se omitieron {{count}} artículos por estar fuera de tu límite de venta"
       },
       "errors": {
         "title": "No se pudo actualizar su inventario",
@@ -855,6 +911,7 @@
     "settings": {
       "title": "Configuraciones",
       "general": {
+        "title": "General",
         "account": {
           "displayNameLabel": "Nombre para mostrar",
           "steamIdLabel": "ID de Steam"
@@ -869,19 +926,23 @@
           "description": "Actualiza periódicamente tu estado en Steam para que no aparezcas ausente mientras estás inactivo."
         },
         "runAtStartup": {
-          "label": "Ejecutar al iniciar"
+          "label": "Ejecutar al iniciar",
+          "description": "Iniciar Steam Game Idler automáticamente al iniciar sesión en Windows."
         },
         "startMinimized": {
-          "label": "Iniciar minimizado"
+          "label": "Iniciar minimizado",
+          "description": "Iniciar Steam Game Idler minimizado en la bandeja del sistema en lugar de mostrar la ventana."
         },
         "closeToTray": {
-          "label": "Cerrar en la bandeja"
+          "label": "Cerrar en la bandeja",
+          "description": "Mantener Steam Game Idler en la bandeja del sistema al cerrar la ventana."
         },
         "autoUpdateGamesList": {
           "label": "Actualizar automáticamente la lista de juegos",
           "description": "Actualiza tu lista de juegos en segundo plano de forma silenciosa para que se mantenga al día sin necesidad de actualizarla manualmente."
         },
         "personaState": {
+          "label": "En línea",
           "description": "Elige qué estado aparecerás con tus amigos mientras estés conectado.",
           "options": {
             "online": "En línea",
@@ -890,12 +951,14 @@
             "snooze": "Durmiendo",
             "lookingToTrade": "Buscando comerciar",
             "lookingToPlay": "Buscando que jugar",
+            "invisible": "Invisible",
             "offline": "Desconectado"
           }
         },
         "customIdleStatus": {
           "label": "Estado personalizado mientras está inactivo",
-          "description": "Reemplaza el texto \"Jugando a [juego]\" que ven tus amigos cuando estás inactivo con tu propio mensaje personalizado."
+          "description": "Reemplaza el texto \"Jugando a [juego]\" que ven tus amigos cuando estás inactivo con tu propio mensaje personalizado.",
+          "placeholder": "por ejemplo, farmear cromos"
         },
         "gamesOnly": {
           "label": "Mostrar solo juegos",
@@ -946,13 +1009,16 @@
             "description": "Muestra una fila de juegos no jugados en la parte superior de la lista de juegos."
           },
           "recent": {
+            "label": "Mostrar carrusel de juegos jugados recientemente",
             "description": "Muestra una fila con tus juegos jugados más recientemente en la parte superior de la lista de juegos."
           }
         },
         "background": {
           "label": "Imagen de Fondo",
           "description": "Utiliza una imagen personalizada como fondo de la aplicación.",
-          "choose": "Elegir imágenes"
+          "choose": "Elegir imágenes",
+          "saved": "Fondo actualizado",
+          "cleared": "Imagen de fondo"
         },
         "theme": {
           "label": "Tema",
@@ -1026,6 +1092,7 @@
           "description": "Dejará de funcionar en ralentí automáticamente después de esta cantidad de minutos."
         },
         "maxIdleTime": {
+          "label": "Tiempo máximo de inactividad",
           "description": "Detener automáticamente el juego en modo inactivo después de esta cantidad de minutos. Si se ha configurado, anula el valor anterior."
         },
         "globalMaxCardFarmingTime": {
@@ -1051,6 +1118,7 @@
       },
       "keybinds": {
         "title": "Combinaciones de teclas",
+        "zoom": "Zoom",
         "zoomIn": "Acercarse",
         "zoomOut": "Alejarse",
         "resetZoom": "Restablecer zoom",
@@ -1066,6 +1134,7 @@
       "debug": {
         "title": "Depurar",
         "system": {
+          "os": "{{osVersion}} ({{arch}})",
           "portable": "Compilación portable",
           "installed": "Compilación instalada"
         },
@@ -1087,7 +1156,8 @@
         "resetSettings": {
           "button": "Restablecer ajustes",
           "success": "La configuración se ha restablecido a los valores predeterminados",
-          "confirmTitle": "¿Restablecer la configuración por defecto?"
+          "confirmTitle": "¿Restablecer la configuración por defecto?",
+          "confirmDescription": "Restablece la configuración predeterminada de la clave de la API web de Steam y, si has iniciado sesión, también la del desbloqueador de logros, el administrador de inventario, la obtención de cartas y los juegos gratuitos de esta cuenta. Tus cuentas con sesión iniciada permanecerán con la sesión iniciada."
         },
         "clearData": {
           "button": "Limpiar datos",
@@ -1099,6 +1169,7 @@
         }
       },
       "footer": {
+        "version": "Steam Game Idler v{{version}}",
         "github": "Ver el código fuente en GitHub"
       },
       "errors": {
