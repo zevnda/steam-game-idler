@@ -32,7 +32,7 @@
       "description": "Si è verificato un errore imprevisto. Riprova e, se continua a succedere, contattaci dal servizio assistenza."
     },
     "manualCookies": {
-      "sidLabel": "ID Sessione",
+      "sidLabel": "sessionid",
       "slsLabel": "steamLoginSecure",
       "smaLabel": "steamMachineAuth",
       "smaDescription": "Facoltativo. Necessario solo se il tuo account ha una conferma macchina Steam Guard in sospeso.",
