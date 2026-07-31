@@ -11,6 +11,7 @@ import { openExternalLink } from '@/shared/utils/links'
 const LANGUAGES = [
   { id: 'en-US', label: 'English' },
   { id: 'de-DE', label: 'Deutsch' },
+  { id: 'es-ES', label: 'Español' },
   { id: 'fr-FR', label: 'Français' },
   { id: 'it-IT', label: 'Italiano' },
   { id: 'ja-JP', label: '日本語' },
@@ -26,6 +27,7 @@ const LANGUAGES = [
 const ENABLED_LANGUAGES: ReadonlySet<string> = new Set([
   'en-US',
   'de-DE',
+  'es-ES',
   'fr-FR',
   'it-IT',
   'ru-RU',
