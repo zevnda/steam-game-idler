@@ -36,6 +36,7 @@
       "slsLabel": "steamLoginSecure",
       "smaLabel": "steamMachineAuth",
       "smaDescription": "Optional. Only needed if your account has a pending Steam Guard machine confirmation.",
+      "getCookiesNote": "You must get your cookies from",
       "savedFromSettingsNote": "Loaded from the Steam Credentials saved in Settings.",
       "savedToast": "Credentials saved",
       "clearedToast": "Credentials cleared",
