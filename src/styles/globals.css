@@ -232,6 +232,17 @@ body {
   opacity: 1;
 }
 
+/* Same reduced motion gating as GoProModal, this animation is expensive under WebKitGTK too. */
+.shiny-cta.force-reduced-motion,
+.shiny-cta.force-reduced-motion::before,
+.shiny-cta.force-reduced-motion::after {
+  animation: none;
+}
+
+.shiny-cta.force-reduced-motion span::before {
+  animation: none;
+}
+
 @keyframes gradient-angle {
   to {
     --gradient-angle: 360deg;

@@ -1,3 +1,4 @@
+import { usePlatformStore } from '@/shared/stores/platformStore'
 import { useProModalStore } from '@/shared/stores/proModalStore'
 import { useSubscriptionStore } from '@/shared/stores/subscriptionStore'
 
@@ -11,12 +12,13 @@ import { useSubscriptionStore } from '@/shared/stores/subscriptionStore'
 export const GoPro = () => {
   const subscriptionTier = useSubscriptionStore(state => state.subscriptionTier)
   const openProModal = useProModalStore(state => state.open)
+  const isLinux = usePlatformStore(state => state.currentOs) === 'linux'
 
   if (subscriptionTier !== null) return null
 
   return (
     <button
-      className='shiny-cta mx-2 flex min-w-17! items-center justify-between'
+      className={`shiny-cta mx-2 flex min-w-17! items-center justify-between ${isLinux ? 'force-reduced-motion' : ''}`}
       type='button'
       onClick={() => openProModal()}
     >
