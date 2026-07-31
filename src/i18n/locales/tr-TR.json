@@ -334,7 +334,6 @@
         "freeGames": "Bedava Oyunlar",
         "cardFarming": "Kart Kasma",
         "achievementUnlocker": "Başarım Açıcı",
-        "autoIdle": "Otomatik Kart Kasıcı",
         "inventoryManager": "Envanter Yöneticisi"
       },
       "signOut": {
@@ -486,7 +485,6 @@
         "description": "Korumalı olarak görünen başarımlar ve istatistikler oyunun sunucusu tarafından ayarlanmıştır ve müşteriler tarafından değiştirilemez."
       },
       "unlockedCount": "{{unlocked}} / {{total}} açılan",
-      "statCount_one": "{{count}} istatistiklik",
       "statCount_other": "{{count}} istatistikler",
       "noDescription": "Açıklama yok",
       "protectedTooltip": "Sunucu tarafından ayarlanmıştır ve değiştirilemez.",
@@ -503,14 +501,11 @@
       },
       "rarity": {
         "common": "Yaygın",
-        "uncommon": "Nadir",
-        "rare": "Sıra dışı",
         "epic": "Destansı",
         "legendary": "Efsanevi"
       },
       "actions": {
         "unlock": "Açmak",
-        "lock": "Kilitli",
         "unlockAll": "Hepsinin kilidini aç",
         "lockAll": "Hepsini Kilitle",
         "applyChanges": "Değişiklikleri uygula",
@@ -539,8 +534,7 @@
         "description": "Bu oyunda herhangi bir başarım yok."
       },
       "emptyStats": {
-        "title": "İstatistik yok",
-        "description": "Bu oyunda herhangi bir istatistiklik yok."
+        "title": "İstatistik yok"
       },
       "searchNoResults": {
         "title": "Aramanızla uyuşan bir sonuç yok",
@@ -565,7 +559,6 @@
         "title": "Başarımlar yüklenemiyor",
         "invalidApp": "Bu uygulama başarım verisine sahip değil.",
         "achievementNotFound": "Belirtilen başarım bulunamıyor.",
-        "statNotFound": "Belirtilen istatislik bulunamıyor.",
         "protected": "Bu değer oyun sunucusu tarafından belirlenir ve değiştirilemez.",
         "unsupportedGameCoordinator": "Bu oyun, Steam ile oturum açıldığında başarımları desteklemiyor. Bunun yerine yerel Steam istemcinizi kullanın.",
         "unsupportedGameCoordinatorLinux": "Bu oyun, Steam ile oturum açıldığında başarımları desteklemiyor.",
@@ -641,8 +634,7 @@
           "description": "Aynı anda birden fazla oyun yerine, kuyruğunuzdaki oyunları tek tek kasar. Bu, her oyun için kartların daha hızlı düşmesine yardımcı olabilir."
         },
         "skipRefundableGames": {
-          "title": "İade edilebilir oyunları atla",
-          "description": "Don't farm a game while it's still inside Steam's refund window (bought within the last 14 days with under 2 hours of playtime)."
+          "title": "İade edilebilir oyunları atla"
         },
         "autoFarmCards": {
           "title": "Kartları otomatik kas",
@@ -711,8 +703,7 @@
         },
         "interval": {
           "title": "Başarım açma aralığı",
-          "description": "Her başarım açma işlemi arasında {{min}} ile {{max}} dakika arasında rastgele bekler.",
-          "to": "şuna"
+          "description": "Her başarım açma işlemi arasında {{min}} ile {{max}} dakika arasında rastgele bekler."
         },
         "schedule": {
           "title": "Başarımları yalnızca belirlenen zaman aralığında aç",
@@ -794,6 +785,82 @@
       "connect": {
         "description": "Öğeleri yönetmek ve satmak için Steam Topluluğu envanterinizi yükleyin.",
         "automaticDescription": "Envanterinizi yüklemek için Steam Topluluğu'na otomatik olarak giriş yapar."
+      },
+      "settings": {
+        "pricePreference": {
+          "options": {
+            "lowestSellOrder": "En düşük fiyatlı satış emri"
+          }
+        },
+        "priceAdjustment": {
+          "title": "Fiyat düzenleme",
+          "description": "Otomatik olarak doldurulan veya manuel olarak girilen her liste fiyatına {{value}} ekler."
+        },
+        "sellLimit": {
+          "title": "Satış Limiti",
+          "description": "Sadece {{min}} ve {{max}} arasındaki fiyatta ürünleri listele."
+        },
+        "sellDelay": {
+          "title": "Satış Gecikmesi",
+          "description": "Aşırı satış sınırlamasından kaçınmak için her bir öğenin listelenmesi arasında {{value}} saniye kadar bekleyin."
+        }
+      },
+      "toasts": {
+        "listed_one": "{{count}} adet öğe listelenmiş",
+        "listFailed_one": "{{count}} adet öğe listelenemiyor",
+        "listFailed_other": "{{count}} adet öğeler listelenemiyor",
+        "noListings": "Aktif market listelemeniz bulunmamaktadır.",
+        "removedListings": "{{total}} listelenmelerden {{count}} adet listeleme kaldırıldı",
+        "removeFailed": "Listelenme silinemiyor.",
+        "noneEligible": "Satılmaya elverişli öğe yoktu - envanter ayarlarınızdan satış limitini kontrol ediniz.",
+        "priceFetchCooldown": "Lütfen daha fazla ürün fiyatı getirmeden önce {{seconds}} saniye kadar bekleyiniz",
+        "itemLocked": "Bu öğe kilitlenmiş listelenemez.",
+        "priceOutOfRange": "Fiyat {{price}} kadar belirlenmiş satış limitinizin ({{min}}-{{max}}) dışında.",
+        "skippedLocked_one": "{{count}} kilitli öğe atlandı",
+        "skippedLocked_other": "{{count}} kilitli öğeler atlandı",
+        "skippedOutOfRange_one": "Satış limitinizin dışında olan {{count}} kilitli öğe atlandı",
+        "skippedOutOfRange_other": "Satış limitinizin dışında olan {{count}} kilitli öğeler atlandı"
+      },
+      "errors": {
+        "title": "Envanteriniz güncellenemedi",
+        "fetchFailed": "Şuanda Steam Topluluk envanteriniz yüklenemiyor.",
+        "cacheIoFailed": "Envanter önbelleğiniz okunamadı veya üzerine yazılamadı.",
+        "priceFetchFailed": "Şuanda topluluk fiyatı getirilemiyor.",
+        "priceRateLimited": "Steam şu anda fiyat aramalarında hız sınırlayıcı uygulama yapıyor. Lütfen kısa bir süre sonra tekrar deneyin.",
+        "itemNotFound": "Bu öğe önbelleğe alınmış envanterinizde bulunamadı.",
+        "listingsFetchFailed": "Aktif pazar listelemeleriniz okunamadı.",
+        "settingsIoFailed": "Envanter ayarlarınızı okunamadı veya üzerine yazılamadı.",
+        "generic": "Envanteriniz güncellenirken bir şeyler yanlış gitti. Lütfen tekrar deneyiniz. Hata kodu: ({{code}})"
+      }
+    },
+    "settings": {
+      "title": "Ayarlar",
+      "general": {
+        "title": "Genel",
+        "account": {
+          "steamIdLabel": "Steam Kimliği"
+        },
+        "apiKey": {
+          "label": "Steam Tarayıcı arayüzü API anahtarı",
+          "placeholder": "Yerleşik bir anahtar kullanmak için boş bırak",
+          "description": "Uygulamanın yerleşik Steam Web API anahtarını geçersiz kılar."
+        },
+        "antiAway": {
+          "label": "Her Zaman Çevrimiçi",
+          "description": "Aralıklarla Steam durumunuzu yeniler bu sayede steam de boşta durumda gözükmezsiniz."
+        },
+        "runAtStartup": {
+          "label": "Açılışta çalıştır",
+          "description": "Steam Game Idler Windows'a giriş yaptığınızda otomatik açılır."
+        },
+        "startMinimized": {
+          "label": "Simge durumunda başlat",
+          "description": "Pencereyi göstermek yerine sistem tepsisinde gizli olan Steam Game Idler'ı başlatın."
+        },
+        "closeToTray": {
+          "label": "Küçük simge olarak kapat",
+          "description": "Pencereyi kapattığınızda Steam Game Idler'ı sistem tepsisinde çalışır durumda tutun."
+        }
       }
     }
   }
