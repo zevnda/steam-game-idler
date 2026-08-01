@@ -49,7 +49,7 @@ export const ManualCookiesForm = ({ value, isDisabled, onChange }: ManualCookies
         onChange={sma => onChange({ ...value, sma })}
       >
         <Label>{t('common.manualCookies.smaLabel')}</Label>
-        <Input autoComplete='off' placeholder='steamMachineAuth (optional)' type='password' />
+        <Input autoComplete='off' placeholder='steamMachineAuth' type='password' />
         <Description>{t('common.manualCookies.smaDescription')}</Description>
       </TextField>
     </div>
